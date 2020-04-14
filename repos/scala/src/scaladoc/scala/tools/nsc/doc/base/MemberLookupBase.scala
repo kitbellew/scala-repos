@@ -6,7 +6,7 @@ import comment._
 
 /** This trait extracts all required information for documentation from compilation units.
   *  The base trait has been extracted to allow getting light-weight documentation
-  * for a particular symbol in the IDE.*/
+  * for a particular symbol in the IDE. */
 trait MemberLookupBase {
 
   val global: Global
@@ -223,7 +223,7 @@ trait MemberLookupBase {
     val length = query.length
     while (index < length) {
       if ((query.charAt(index) == '.' || query.charAt(index) == '#') &&
-          ((index == 0) || (query.charAt(index - 1) != '\\'))) {
+        ((index == 0) || (query.charAt(index - 1) != '\\'))) {
 
         val member =
           query.substring(last_index, index).replaceAll("\\\\([#\\.])", "$1")

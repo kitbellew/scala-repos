@@ -6,8 +6,7 @@ package expr
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008
-  */
+  * Date: 06.03.2008 */
 
 trait ScTuple extends ScInfixArgumentExpression {
   def exprs: Seq[ScExpression] =

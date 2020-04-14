@@ -283,8 +283,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           case _ =>
             val res = run(c.elseClause)
             if (opt && !c.elseClause.nodeType
-                  .asInstanceOf[ScalaType[_]]
-                  .nullable) Option(res)
+                .asInstanceOf[ScalaType[_]]
+                .nullable) Option(res)
             else res
         }
       case QueryParameter(extractor, _, _) =>
@@ -303,10 +303,10 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         if ((condV.asInstanceOf[AnyRef] eq null) || condV == None) {
           val defaultV = run(default)
           if (n.nodeType.isInstanceOf[OptionType] && !default.nodeType
-                .isInstanceOf[OptionType]) Some(defaultV)
+              .isInstanceOf[OptionType]) Some(defaultV)
           else defaultV
         } else if (n.nodeType.isInstanceOf[OptionType] && !cond.nodeType
-                     .isInstanceOf[OptionType]) Some(condV)
+            .isInstanceOf[OptionType]) Some(condV)
         else condV
       case Library.In(what, where) =>
         val whatV = run(what)
@@ -400,8 +400,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         logDebug("[chV: " + chV.mkString(", ") + "]")
         if (n.nodeType.isInstanceOf[OptionType]) {
           if (chV.exists {
-                case (t, v) => t.isInstanceOf[OptionType] && (v == None)
-              }) None
+              case (t, v) => t.isInstanceOf[OptionType] && (v == None)
+            }) None
           else {
             val chPlainV = chV.map {
               case (t: OptionType, v) =>

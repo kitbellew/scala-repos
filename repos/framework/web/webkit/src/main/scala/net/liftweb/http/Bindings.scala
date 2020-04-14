@@ -37,7 +37,7 @@ import scala.xml.{NodeSeq, Text}
   *
   * <pre>
   * import net.liftweb.http.Bindings._
-
+  *
   * case class MyClass(str: String, i: Int, other: MyOtherClass)
   * case class MyOtherClass(foo: String)
   *

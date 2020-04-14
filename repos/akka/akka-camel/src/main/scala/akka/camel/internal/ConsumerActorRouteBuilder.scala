@@ -17,8 +17,6 @@ import scala.language.existentials
   * Builder of a route to a target which can be an actor.
   *
   * @param endpointUri endpoint URI of the consumer actor.
-  *
-  *
   */
 private[camel] class ConsumerActorRouteBuilder(
     endpointUri: String,

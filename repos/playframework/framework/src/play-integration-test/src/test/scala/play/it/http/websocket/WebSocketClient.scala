@@ -284,8 +284,8 @@ object WebSocketClient {
 
             val handleServerClose = Flow[WebSocketFrame].filter { frame =>
               if (frame
-                    .isInstanceOf[CloseWebSocketFrame] && !clientInitiatedClose
-                    .get()) {
+                  .isInstanceOf[CloseWebSocketFrame] && !clientInitiatedClose
+                  .get()) {
                 serverInitiatedClose.set(true)
                 true
               } else {

@@ -28,8 +28,8 @@ object MacroInferUtil {
       expectedType: Option[ScType],
       place: PsiElement): Option[ScType] = {
     if (!f.isInstanceOf[ScMacroDefinition] && !f
-          .hasAnnotation("scala.reflect.macros.internal.macroImpl")
-          .isDefined) {
+        .hasAnnotation("scala.reflect.macros.internal.macroImpl")
+        .isDefined) {
       return None
     }
 

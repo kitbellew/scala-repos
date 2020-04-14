@@ -43,7 +43,6 @@ class AudioTrack(override val delegate: jfxsm.AudioTrack)
 
   /**
     * Retrieves the language of the audio track.
-    *
     */
   @deprecated(
     "This method is deprecated, due to deprecation of the underlying JavaFX method 'getLanguage'. Use 'locale' instead. For now, this method call is redirected to utilise 'locale'.",

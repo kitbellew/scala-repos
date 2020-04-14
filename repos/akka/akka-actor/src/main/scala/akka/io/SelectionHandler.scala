@@ -247,9 +247,9 @@ private[io] object SelectionHandler {
     private def execute(task: Task): Unit = {
       executionContext.execute(task)
       if (wakeUp.compareAndSet(
-            false,
-            true
-          )) // if possible avoid syscall and trade off with LOCK CMPXCHG
+          false,
+          true
+        )) // if possible avoid syscall and trade off with LOCK CMPXCHG
         selector.wakeup()
     }
 

@@ -87,9 +87,9 @@ private[http] object Handshake {
       // val extensions = find[`Sec-WebSocket-Extensions`]
 
       if (upgrade.exists(_.hasWebSocket) &&
-          connection.exists(_.hasUpgrade) &&
-          version.exists(_.hasVersion(CurrentWebSocketVersion)) &&
-          key.exists(k ⇒ k.isValid)) {
+        connection.exists(_.hasUpgrade) &&
+        version.exists(_.hasVersion(CurrentWebSocketVersion)) &&
+        key.exists(k ⇒ k.isValid)) {
 
         val header = new UpgradeToWebSocketLowLevel {
           def requestedProtocols: Seq[String] = clientSupportedSubprotocols

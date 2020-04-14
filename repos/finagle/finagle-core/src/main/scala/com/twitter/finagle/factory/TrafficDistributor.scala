@@ -117,7 +117,7 @@ private[finagle] object TrafficDistributor {
   * A traffic distributor groups the input `dest` into distinct weight classes and
   * allocates traffic to each class. Classes are encoded in the stream of [[Address]]
   * instances in `dest`. The class operates with the following regime:
-
+  *
   * 1. For every distinct [[Address]] observed in `dest`, it creates a `newEndpoint`.
   * Each resulting `newEndpoint` is paired with a weight extracted from the [[Address]].
   * Calls to `newEndpoint` are assumed to be expensive, so they are cached by input address.

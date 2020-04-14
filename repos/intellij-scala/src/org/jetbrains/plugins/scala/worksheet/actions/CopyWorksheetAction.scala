@@ -102,8 +102,7 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
               var j = lastEnd
 
               while (getFromLeft(
-                       j).trim.length == 0 && j < leftDocument.getLineCount)
-                j += 1
+                  j).trim.length == 0 && j < leftDocument.getLineCount) j += 1
               if (j == leftDocument.getLineCount) return result.toString()
               else j
             }

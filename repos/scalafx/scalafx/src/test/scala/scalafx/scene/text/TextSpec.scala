@@ -37,8 +37,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * Text Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TextSpec

@@ -12,8 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 04.05.2008
-  */
+  * Date: 04.05.2008 */
 class ScalaWithTryCatchFinallySurrounder extends ScalaExpressionSurrounder {
   override def getTemplateAsString(elements: Array[PsiElement]): String = {
     val arrow =

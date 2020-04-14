@@ -111,7 +111,7 @@ case class Explode(child: Expression)
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (child.dataType.isInstanceOf[ArrayType] || child.dataType
-          .isInstanceOf[MapType]) {
+        .isInstanceOf[MapType]) {
       TypeCheckResult.TypeCheckSuccess
     } else {
       TypeCheckResult.TypeCheckFailure(

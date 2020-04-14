@@ -22,7 +22,7 @@ package breeze.linalg
   * TODO
   *
   * @author dlwh
- **/
+  */
 package object support {
   type CanMapValues[From, A, B, To] = mapValues.Impl2[From, A => B, To]
   type CanMapActiveValues[From, A, B, To] =

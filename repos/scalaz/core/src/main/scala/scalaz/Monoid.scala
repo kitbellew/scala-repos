@@ -14,7 +14,6 @@ package scalaz
   *
   * @see [[scalaz.syntax.MonoidOps]]
   * @see [[scalaz.Monoid.MonoidLaw]]
-  *
   */
 ////
 trait Monoid[F] extends Semigroup[F] { self =>
@@ -105,7 +104,7 @@ object Monoid {
     val zero = F.point(M.zero)
   }
 
-  /**A monoid for sequencing Applicative effects. */
+  /** A monoid for sequencing Applicative effects. */
   def liftMonoid[F[_], M](implicit
       F0: Applicative[F],
       M0: Monoid[M]): Monoid[F[M]] =

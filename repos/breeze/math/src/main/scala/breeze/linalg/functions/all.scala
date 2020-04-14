@@ -12,7 +12,7 @@ import scala.util.control.ControlThrowable
   * all(f, t) returns true if all elements of t satisfy f
   *
   * @author dlwh
-  **/
+  */
 object all extends UFunc {
   private case object Found extends ControlThrowable
 

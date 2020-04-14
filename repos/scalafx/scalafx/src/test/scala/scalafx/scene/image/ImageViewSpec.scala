@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ImageView Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ImageViewSpec

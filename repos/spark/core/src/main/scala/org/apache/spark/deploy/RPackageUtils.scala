@@ -197,10 +197,10 @@ private[deploy] object RPackageUtils extends Logging {
           }
           try {
             if (!rPackageBuilder(
-                  rSource,
-                  printStream,
-                  verbose,
-                  RUtils.rPackages.get)) {
+                rSource,
+                printStream,
+                verbose,
+                RUtils.rPackages.get)) {
               print(s"ERROR: Failed to build R package in $file.", printStream)
               print(RJarDoc, printStream)
             }

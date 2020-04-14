@@ -105,7 +105,7 @@ private[process] trait ProcessImpl {
       )
     }
 
-    /** Start and block until the exit value is available and then return it in Some.  Return None if destroyed (use 'run')*/
+    /** Start and block until the exit value is available and then return it in Some.  Return None if destroyed (use 'run') */
     protected[this] def runAndExitValue(): Option[Int]
 
     protected[this] def runInterruptible[T](action: => T)(

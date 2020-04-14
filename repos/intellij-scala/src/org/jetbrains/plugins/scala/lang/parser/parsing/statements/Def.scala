@@ -12,8 +12,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.top.TmplDef
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 11.02.2008
-  */
+  * Date: 11.02.2008 */
 
 /*
  * Def ::= [{Annotation} {Modifier}]

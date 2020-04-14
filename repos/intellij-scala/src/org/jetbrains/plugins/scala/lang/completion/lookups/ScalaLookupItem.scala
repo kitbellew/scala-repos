@@ -245,8 +245,8 @@ class ScalaLookupItem(
     presentation.setStrikeout(isDeprecated)
     presentation.setItemTextBold(bold)
     if (ScalaProjectSettings
-          .getInstance(element.getProject)
-          .isShowImplisitConversions) {
+        .getInstance(element.getProject)
+        .isShowImplisitConversions) {
       presentation.setItemTextUnderlined(isUnderlined)
     }
   }
@@ -309,13 +309,11 @@ class ScalaLookupItem(
                 classOf[ScImportSelectors]) == null //do not complete in sel
           if (ref == null) return
           while (ref.getParent != null && ref.getParent
-                   .isInstanceOf[ScReferenceElement] &&
-                 (ref.getParent
-                   .asInstanceOf[ScReferenceElement]
-                   .qualifier match {
-                   case Some(r) => r != ref
-                   case _       => true
-                 }))
+              .isInstanceOf[ScReferenceElement] &&
+            (ref.getParent.asInstanceOf[ScReferenceElement].qualifier match {
+              case Some(r) => r != ref
+              case _       => true
+            }))
             ref = ref.getParent.asInstanceOf[ScReferenceElement]
           val newRef = ref match {
             case ref: ScReferenceExpression if prefixCompletion =>

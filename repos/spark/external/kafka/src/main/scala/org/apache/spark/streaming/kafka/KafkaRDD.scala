@@ -195,7 +195,7 @@ private[kafka] class KafkaRDD[
       if (resp.hasError) {
         val err = resp.errorCode(part.topic, part.partition)
         if (err == ErrorMapping.LeaderNotAvailableCode ||
-            err == ErrorMapping.NotLeaderForPartitionCode) {
+          err == ErrorMapping.NotLeaderForPartitionCode) {
           log.error(
             s"Lost leader for topic ${part.topic} partition ${part.partition}, " +
               s" sleeping for ${kc.config.refreshLeaderBackoffMs}ms")

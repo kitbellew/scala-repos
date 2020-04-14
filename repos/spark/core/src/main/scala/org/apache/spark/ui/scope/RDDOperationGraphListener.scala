@@ -64,7 +64,7 @@ private[ui] class RDDOperationGraphListener(conf: SparkConf)
           .replaceAll(RDDOperationGraph.STAGE_CLUSTER_PREFIX, "")
           .toInt
         if (skippedStageIds.contains(stageId) && !g.rootCluster.name.contains(
-              "skipped")) {
+            "skipped")) {
           g.rootCluster.setName(g.rootCluster.name + " (skipped)")
         }
       }

@@ -96,7 +96,6 @@ class ScrollToEvent[T](override val delegate: jfxsc.ScrollToEvent[T])
     this(new jfxsc.ScrollToEvent[T](source, target, eventType, scrollTarget))
 
   /**
-    *
     */
   def scrollTarget: T = delegate.getScrollTarget
 

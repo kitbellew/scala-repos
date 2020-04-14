@@ -40,7 +40,6 @@ trait NamedCometActorSnippet {
     *
     * This causes every comet actor for class @cometClass with the same @name
     * to include the same Comet Actor
-    *
     */
   def name: String
 

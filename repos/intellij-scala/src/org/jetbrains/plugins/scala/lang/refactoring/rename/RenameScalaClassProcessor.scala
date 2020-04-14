@@ -72,7 +72,7 @@ class RenameScalaClassProcessor
         }
         val file = td.getContainingFile
         if (file != null && isTop(
-              element.getContext) && file.name == td.name + ".scala") {
+            element.getContext) && file.name == td.name + ".scala") {
           allRenames.put(file, newName + ".scala")
         }
       case docTagParam: ScTypeParam =>

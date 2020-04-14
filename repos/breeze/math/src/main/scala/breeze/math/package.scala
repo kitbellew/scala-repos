@@ -16,7 +16,6 @@ package breeze
  limitations under the License.
  */
 /**
-  *
   * @author dlwh
   */
 package object math {

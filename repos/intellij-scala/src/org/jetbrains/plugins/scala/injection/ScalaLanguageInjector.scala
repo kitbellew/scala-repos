@@ -57,13 +57,13 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
     if (literals.isEmpty) return
 
     if (injectUsingIntention(
-          registrar,
-          host,
-          literals) || injectInInterpolation(registrar, host, literals)) return
+        registrar,
+        host,
+        literals) || injectInInterpolation(registrar, host, literals)) return
 
     if (ScalaProjectSettings
-          .getInstance(host.getProject)
-          .isDisableLangInjection) return
+        .getInstance(host.getProject)
+        .isDisableLangInjection) return
 
     injectUsingAnnotation(registrar, host, literals) || injectUsingPatterns(
       registrar,

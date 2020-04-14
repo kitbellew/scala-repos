@@ -22,8 +22,8 @@ case class HookConfig(
     copy(
       color =
         if (mode == Mode.Rated &&
-            lila.game.Game.variantsWhereWhiteIsBetter(variant) &&
-            color != Color.Random) Color.Random
+          lila.game.Game.variantsWhereWhiteIsBetter(variant) &&
+          color != Color.Random) Color.Random
         else color)
 
   // allowAnons -> membersOnly

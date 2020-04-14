@@ -47,7 +47,6 @@ import org.apache.spark.graphx._
   * val canonicalGraph = graph.mapEdges(e => 1).removeSelfEdges().canonicalizeEdges()
   * val counts = TriangleCount.runPreCanonicalized(canonicalGraph).vertices
   * }}}
-  *
   */
 object TriangleCount {
 

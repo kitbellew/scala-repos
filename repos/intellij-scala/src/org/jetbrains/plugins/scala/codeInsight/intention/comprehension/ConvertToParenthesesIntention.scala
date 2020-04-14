@@ -35,23 +35,23 @@ class ConvertToParenthesesIntention extends PsiElementBaseIntentionAction {
     val block = ScalaPsiElementFactory.parseElement("(_)", manager)
 
     for (lBrace <-
-           Option(statement.findFirstChildByType(ScalaTokenTypes.tLBRACE))) {
+        Option(statement.findFirstChildByType(ScalaTokenTypes.tLBRACE))) {
       lBrace.replace(block.getFirstChild)
     }
 
     for (rBrace <-
-           Option(statement.findFirstChildByType(ScalaTokenTypes.tRBRACE))) {
+        Option(statement.findFirstChildByType(ScalaTokenTypes.tRBRACE))) {
       rBrace.replace(block.getLastChild)
     }
 
     for (enumerators <- statement.enumerators;
-         cr <- enumerators.findChildrenByType(TokenType.WHITE_SPACE)
-         if cr.getText.contains('\n')) {
+      cr <- enumerators.findChildrenByType(TokenType.WHITE_SPACE)
+      if cr.getText.contains('\n')) {
       cr.replace(ScalaPsiElementFactory.createSemicolon(manager))
     }
 
     for (cr <- statement.findChildrenByType(TokenType.WHITE_SPACE)
-         if cr.getText.contains('\n')) {
+      if cr.getText.contains('\n')) {
       cr.delete()
     }
   }

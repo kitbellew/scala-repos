@@ -30,8 +30,7 @@ import org.jsoup.select._
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 8/15/11
-  */
+  * Date: 8/15/11 */
 object ContentExtractor extends Logging {
   val logPrefix = "ContentExtractor: "
 }
@@ -303,7 +302,6 @@ trait ContentExtractor {
     * boost a parent node that it should be connected to other paragraphs, at least for the first n paragraphs
     * so we'll want to make sure that the next sibling is a paragraph and has at least some substatial weight to it
     *
-    *
     * @param node
     * @return
     */
@@ -464,7 +462,7 @@ trait ContentExtractor {
         for (a <- attrs) {
           try {
             if ((a.getValue.contains(youtubeStr) || a.getValue.contains(
-                  vimdeoStr)) && (a.getKey == "src")) {
+                vimdeoStr)) && (a.getKey == "src")) {
               trace(logPrefix + "This page has a video!: " + a.getValue)
               goodMovies += el
             }
@@ -520,7 +518,7 @@ trait ContentExtractor {
     } {
       trace(logPrefix + "CLEANUP  NODE: " + e.id + " class: " + e.attr("class"))
       if (isHighLinkDensity(e) || isTableTagAndNoParagraphsExist(
-            e) || !isNodeScoreThreshholdMet(node, e)) {
+          e) || !isNodeScoreThreshholdMet(node, e)) {
         try {
           e.remove()
         } catch {

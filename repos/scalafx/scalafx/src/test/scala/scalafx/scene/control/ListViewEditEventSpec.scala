@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ListView.EditEvent Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ListViewEditEventSpec[T <: Any]

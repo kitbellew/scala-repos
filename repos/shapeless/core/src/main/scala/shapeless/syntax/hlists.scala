@@ -744,7 +744,6 @@ final class HListOps[L <: HList](l: L) extends Serializable {
       scanR: RightScanner[L, A, op.type]): scanR.Out = scanR(l, z)
 
   /**
-    *
     * Produces a new `HList` where a slice of this `HList` is replaced by another. Available only if there are at least
     * ``n`` plus ``m`` elements.
     */

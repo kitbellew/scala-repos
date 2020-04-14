@@ -249,7 +249,6 @@ object JFXApp {
   *      }
   *   }
   * }}}
-  *
   */
 trait JFXApp extends DelayedInit {
 

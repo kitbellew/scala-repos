@@ -252,15 +252,15 @@ trait SyntheticMethods extends ast.TreeDSL {
     /* The _1, _2, etc. methods to implement ProductN, disabled
      * until we figure out how to introduce ProductN without cycles.
      */
-    /****
-    def productNMethods = {
-      val accs = accessors.toIndexedSeq
-      1 to arity map (num => productProj(arity, num) -> (() => projectionMethod(accs(num - 1), num)))
-    }
-    def projectionMethod(accessor: Symbol, num: Int) = {
-      createMethod(nme.productAccessorName(num), accessor.tpe.resultType)(_ => REF(accessor))
-    }
-    ****/
+    /**
+      *    def productNMethods = {
+      *      val accs = accessors.toIndexedSeq
+      *      1 to arity map (num => productProj(arity, num) -> (() => projectionMethod(accs(num - 1), num)))
+      *    }
+      *    def projectionMethod(accessor: Symbol, num: Int) = {
+      *      createMethod(nme.productAccessorName(num), accessor.tpe.resultType)(_ => REF(accessor))
+      *    }
+      * ** */
 
     // methods for both classes and objects
     def productMethods = {
@@ -422,7 +422,7 @@ trait SyntheticMethods extends ast.TreeDSL {
       def isRewrite(sym: Symbol) = sym.isCaseAccessorMethod && !sym.isPublic
 
       for (ddef @ DefDef(_, _, _, _, _, _) <- templ.body;
-           if isRewrite(ddef.symbol)) {
+        if isRewrite(ddef.symbol)) {
         val original = ddef.symbol
         val i = original.owner.caseFieldAccessors.indexOf(original)
         def freshAccessorName = {

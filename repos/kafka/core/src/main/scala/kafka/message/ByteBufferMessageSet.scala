@@ -237,7 +237,6 @@ private class OffsetAssigner(offsets: Seq[Long]) {
   *
   * Option 2: Give it a list of messages along with instructions relating to serialization format. Producers will use this method.
   *
-  *
   * Message format v1 has the following changes:
   * - For non-compressed messages, timestamp and timestamp type attributes have been added. The offsets of
   *   the messages remain absolute offsets.
@@ -283,7 +282,6 @@ private class OffsetAssigner(offsets: Seq[Long]) {
   *    AO = AO_Of_Last_Inner_Message + RO
   *
   * 4. This solution works for compacted message sets as well.
-  *
   */
 class ByteBufferMessageSet(val buffer: ByteBuffer)
     extends MessageSet
@@ -378,7 +376,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
   /** iterator over compressed messages without decompressing */
   def shallowIterator: Iterator[MessageAndOffset] = internalIterator(true)
 
-  /** When flag isShallow is set to be true, we do a shallow iteration: just traverse the first level of messages. **/
+  /** When flag isShallow is set to be true, we do a shallow iteration: just traverse the first level of messages. * */
   private def internalIterator(
       isShallow: Boolean = false): Iterator[MessageAndOffset] = {
     new IteratorTemplate[MessageAndOffset] {
@@ -681,7 +679,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
       timestampType: TimestampType,
       timestampDiffMaxMs: Long) {
     if (timestampType == TimestampType.CREATE_TIME && math.abs(
-          message.timestamp - now) > timestampDiffMaxMs)
+        message.timestamp - now) > timestampDiffMaxMs)
       throw new InvalidTimestampException(
         s"Timestamp ${message.timestamp} of message is out of range. " +
           s"The timestamp should be within [${now - timestampDiffMaxMs}, ${now + timestampDiffMaxMs}")

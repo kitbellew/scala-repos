@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TreeView.EditEvent Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TreeViewEditEventSpec[T]

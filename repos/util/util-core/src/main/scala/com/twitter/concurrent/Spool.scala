@@ -209,7 +209,6 @@ sealed trait Spool[+A] {
   def concat[B >: A](that: Spool[B]): Spool[B] = this ++ that
 
   /**
-    *
     * Builds a new Spool from this one by filtering out duplicate elements,
     * elements for which fn returns the same value.
     *

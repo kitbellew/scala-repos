@@ -257,7 +257,6 @@ class SubSource[+Out, +Mat](
     * '''Completes when''' upstream completes
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def filter(p: function.Predicate[Out]): SubSource[Out, Mat] =
     new SubSource(delegate.filter(p.test))
@@ -634,7 +633,6 @@ class SubSource[+Out, +Mat](
     * '''Completes when''' upstream completes or upstream failed with exception pf can handle
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def recover[T >: Out](pf: PartialFunction[Throwable, T]): SubSource[T, Mat] =
     new SubSource(delegate.recover(pf))
@@ -655,7 +653,6 @@ class SubSource[+Out, +Mat](
     * '''Completes when''' upstream completes or upstream failed with exception pf can handle
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
@@ -725,7 +722,6 @@ class SubSource[+Out, +Mat](
     *
     * @param seed Provides the first state for a conflated value using the first unconsumed element as a start
     * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-    *
     */
   def conflateWithSeed[S](
       seed: function.Function[Out, S],
@@ -754,7 +750,6 @@ class SubSource[+Out, +Mat](
     * see also [[SubSource.conflateWithSeed]] [[SubSource.batch]] [[SubSource.batchWeighted]]
     *
     * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-    *
     */
   def conflate[O2 >: Out](
       aggregate: function.Function2[O2, O2, O2]): SubSource[O2, Mat] =
@@ -928,7 +923,6 @@ class SubSource[+Out, +Mat](
     * '''Completes when''' upstream completes and all consumed substreams complete
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])

@@ -91,7 +91,7 @@ abstract class AutoPlugin extends Plugins.Basic with PluginsFunctions {
 
   override def toString: String = label
 
-  /** The [[Configuration]]s to add to each project that activates this AutoPlugin.*/
+  /** The [[Configuration]]s to add to each project that activates this AutoPlugin. */
   def projectConfigurations: Seq[Configuration] = Nil
 
   /** The [[Setting]]s to add in the scope of each project that activates this AutoPlugin. */
@@ -162,10 +162,10 @@ sealed trait PluginsFunctions {
 object Plugins extends PluginsFunctions {
 
   /** Given the available auto plugins `defined`, returns a function that selects [[AutoPlugin]]s for the provided [[AutoPlugin]]s.
-    * The [[AutoPlugin]]s are topologically sorted so that a required [[AutoPlugin]] comes before its requiring [[AutoPlugin]].*/
+    * The [[AutoPlugin]]s are topologically sorted so that a required [[AutoPlugin]] comes before its requiring [[AutoPlugin]]. */
   def deducer(
       defined0: List[AutoPlugin]): (Plugins, Logger) => Seq[AutoPlugin] =
-    if (defined0.isEmpty)(_, _) => Nil
+    if (defined0.isEmpty) (_, _) => Nil
     else {
       // TODO: defined should return all the plugins
       val allReqs = (defined0 flatMap { asRequirements }).toSet

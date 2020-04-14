@@ -157,8 +157,8 @@ class SbtModuleBuilder
     val propertiesFile = projectDir / Sbt.PropertiesFile
 
     if (!buildFile.createNewFile() ||
-        !projectDir.mkdir() ||
-        !pluginsFile.createNewFile()) return
+      !projectDir.mkdir() ||
+      !pluginsFile.createNewFile()) return
 
     writeToFile(
       buildFile,

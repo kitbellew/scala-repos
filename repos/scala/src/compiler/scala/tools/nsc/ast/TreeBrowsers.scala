@@ -539,7 +539,7 @@ abstract class TreeBrowsers {
       prefix + t.symbol
     }
 
-    /** Return t's symbol type  */
+    /** Return t's symbol type */
     def symbolTypeDoc(t: Tree): Document = {
       val s = t.symbol
       if (s ne null)

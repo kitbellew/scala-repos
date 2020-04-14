@@ -241,8 +241,8 @@ trait MemberTemplateEntity
   def valueParams: List[List[ValueParam]]
 
   /** The direct super-type of this template
-      e.g: {{{class A extends B[C[Int]] with D[E]}}} will have two direct parents: class B and D
-      NOTE: we are dropping the refinement here! */
+    *      e.g: {{{class A extends B[C[Int]] with D[E]}}} will have two direct parents: class B and D
+    *      NOTE: we are dropping the refinement here! */
   def parentTypes: List[(TemplateEntity, TypeEntity)]
 }
 
@@ -315,7 +315,7 @@ trait DocTemplateEntity extends MemberTemplateEntity {
       : List[(DocTemplateEntity, ImplicitConversion)]
 
   /** Classes to which this class can be implicitly converted to
-      NOTE: Some classes might not be included in the scaladoc run so they will be NoDocTemplateEntities */
+    *      NOTE: Some classes might not be included in the scaladoc run so they will be NoDocTemplateEntities */
   def outgoingImplicitlyConvertedClasses
       : List[(TemplateEntity, TypeEntity, ImplicitConversion)]
 
@@ -476,7 +476,7 @@ trait Annotation extends Entity {
 /** A trait that signals the member results from an implicit conversion */
 trait ImplicitConversion {
 
-  /** The source of the implicit conversion*/
+  /** The source of the implicit conversion */
   def source: DocTemplateEntity
 
   /** The result type after the conversion */
@@ -521,8 +521,8 @@ trait ImplicitMemberShadowing {
   def shadowingMembers: List[MemberEntity]
 
   /** The members that ambiguate this implicit conversion
-      Note: for ambiguatingMembers you have the following invariant:
-      assert(ambiguatingMembers.foreach(_.byConversion.isDefined) */
+    *      Note: for ambiguatingMembers you have the following invariant:
+    *      assert(ambiguatingMembers.foreach(_.byConversion.isDefined) */
   def ambiguatingMembers: List[MemberEntity]
 
   def isShadowed: Boolean = !shadowingMembers.isEmpty

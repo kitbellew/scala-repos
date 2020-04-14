@@ -160,18 +160,17 @@ trait MetadataGenerators extends util.ArbitraryJValue {
       yield BooleanValueStats(count, trueCount)
   def genLongMetadata: Gen[LongValueStats] =
     for (count <- choose(0, 1000); a <- arbLong.arbitrary;
-         b <- arbLong.arbitrary) yield LongValueStats(count, a min b, a max b)
+      b <- arbLong.arbitrary) yield LongValueStats(count, a min b, a max b)
   def genDoubleMetadata: Gen[DoubleValueStats] =
     for (count <- choose(0, 1000); a <- arbDouble.arbitrary;
-         b <- arbDouble.arbitrary)
-      yield DoubleValueStats(count, a min b, a max b)
+      b <- arbDouble.arbitrary) yield DoubleValueStats(count, a min b, a max b)
   def genBigDecimalMetadata: Gen[BigDecimalValueStats] =
     for (count <- choose(0, 1000); a <- arbBigDecimal.arbitrary;
-         b <- arbBigDecimal.arbitrary)
+      b <- arbBigDecimal.arbitrary)
       yield BigDecimalValueStats(count, a min b, a max b)
   def genStringMetadata: Gen[StringValueStats] =
     for (count <- choose(0, 1000); a <- arbString.arbitrary;
-         b <- arbString.arbitrary)
+      b <- arbString.arbitrary)
       yield StringValueStats(
         count,
         Order[String].min(a, b),

@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Service Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ServiceSpec[T]

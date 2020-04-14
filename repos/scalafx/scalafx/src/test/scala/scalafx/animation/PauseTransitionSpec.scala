@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PauseTransition Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PauseTransitionSpec

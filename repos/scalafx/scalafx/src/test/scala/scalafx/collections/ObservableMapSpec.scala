@@ -40,8 +40,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ObservableMap[K, V] Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ObservableMapSpec[K, V]

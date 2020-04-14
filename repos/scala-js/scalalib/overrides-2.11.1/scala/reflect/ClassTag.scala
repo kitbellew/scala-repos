@@ -6,7 +6,6 @@ import scala.language.{implicitConversions, existentials}
 import scala.runtime.ScalaRunTime.{arrayClass, arrayElementClass}
 
 /**
-  *
   * A `ClassTag[T]` stores the erased class of a given type `T`, accessible via the `runtimeClass`
   * field. This is particularly useful for instantiating `Array`s whose element types are unknown
   * at compile time.
@@ -32,7 +31,6 @@ import scala.runtime.ScalaRunTime.{arrayClass, arrayElementClass}
   * See [[scala.reflect.api.TypeTags]] for more examples, or the
   * [[http://docs.scala-lang.org/overviews/reflection/typetags-manifests.html Reflection Guide: TypeTags]]
   * for more details.
-  *
   */
 @scala.annotation.implicitNotFound(msg = "No ClassTag available for ${T}")
 trait ClassTag[T]

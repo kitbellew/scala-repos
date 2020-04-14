@@ -186,8 +186,8 @@ class SbtProjectDataServiceTest extends ProjectDataServiceTestCase {
     val actualLanguageLevel = languageLevelProjectExtension.getLanguageLevel
     assertEquals(expectedLanguageLevel, actualLanguageLevel)
     if (data.SdkUtils
-          .defaultJavaLanguageLevelIn(expectedSdk)
-          .fold(false)(_ != expectedLanguageLevel))
+        .defaultJavaLanguageLevelIn(expectedSdk)
+        .fold(false)(_ != expectedLanguageLevel))
       assertFalse(languageLevelProjectExtension.getDefault)
   }
 }

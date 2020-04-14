@@ -27,7 +27,7 @@ object PrettyDuration {
   implicit class PrettyPrintableDuration(val duration: Duration)
       extends AnyVal {
 
-    /** Selects most apropriate TimeUnit for given duration and formats it accordingly, with 4 digits precision **/
+    /** Selects most apropriate TimeUnit for given duration and formats it accordingly, with 4 digits precision * */
     def pretty: String = pretty(includeNanos = false)
 
     /** Selects most apropriate TimeUnit for given duration and formats it accordingly */

@@ -410,9 +410,9 @@ object WorksheetEditorPrinter {
           new CaretAdapter {
             override def caretPositionChanged(e: CaretEvent) {
               if (!e.getEditor
-                    .asInstanceOf[EditorImpl]
-                    .getContentComponent
-                    .hasFocus) return
+                  .asInstanceOf[EditorImpl]
+                  .getContentComponent
+                  .hasFocus) return
               recipient.getCaretModel.moveToVisualPosition(
                 new VisualPosition(
                   Math.min(
@@ -424,9 +424,9 @@ object WorksheetEditorPrinter {
       } getOrElse new CaretAdapter {
         override def caretPositionChanged(e: CaretEvent) {
           if (!e.getEditor
-                .asInstanceOf[EditorImpl]
-                .getContentComponent
-                .hasFocus) return
+              .asInstanceOf[EditorImpl]
+              .getContentComponent
+              .hasFocus) return
           recipient.getCaretModel.moveToVisualPosition(
             don.getCaretModel.getVisualPosition)
         }

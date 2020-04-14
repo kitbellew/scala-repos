@@ -664,7 +664,7 @@ abstract class GenJSCode
               val mutatedImmutableLocalVals =
                 (mutatedLocalVars -- mutableLocalVars).toList
               if (unmutatedMutableLocalVars.isEmpty &&
-                  mutatedImmutableLocalVals.isEmpty) {
+                mutatedImmutableLocalVals.isEmpty) {
                 // OK, we're good (common case)
                 methodDef
               } else {
@@ -1552,7 +1552,7 @@ abstract class GenJSCode
 
         // Initialize the module instance just after the super constructor call.
         if (isStaticModule(currentClassSym) && !isModuleInitialized &&
-            currentMethodSym.isClassConstructor) {
+          currentMethodSym.isClassConstructor) {
           isModuleInitialized = true
           val thisType = jstpe.ClassType(encodeClassFullName(currentClassSym))
           val initModule = js.StoreModule(thisType, js.This()(thisType))
@@ -2342,9 +2342,9 @@ abstract class GenJSCode
                   rsrc)
               case REFERENCE(_) =>
                 if (eqeq &&
-                    // don't call equals if we have a literal null at either side
-                    !lsrc.isInstanceOf[js.Null] &&
-                    !rsrc.isInstanceOf[js.Null]) {
+                  // don't call equals if we have a literal null at either side
+                  !lsrc.isInstanceOf[js.Null] &&
+                  !rsrc.isInstanceOf[js.Null]) {
                   val body =
                     genEqEqPrimitive(args(0).tpe, args(1).tpe, lsrc, rsrc)
                   if (not) js.UnaryOp(js.UnaryOp.Boolean_!, body) else body
@@ -2840,9 +2840,8 @@ abstract class GenJSCode
                         case _             => false
                       }
                     if (rtClass == BoxedDoubleClass &&
-                        toTypeKind(
-                          implMethodSym.tpe.resultType) == DoubleKind &&
-                        isIntOrLongKind(toTypeKind(sym.tpe.resultType))) {
+                      toTypeKind(implMethodSym.tpe.resultType) == DoubleKind &&
+                      isIntOrLongKind(toTypeKind(sym.tpe.resultType))) {
                       // This must be an Int, and not a Double
                       IntegerReflectiveCallClass
                     } else {
@@ -3813,7 +3812,7 @@ abstract class GenJSCode
             } else {
               val name = dd.name.toString
               if (name == "apply" || (ddsym.isSpecialized && name.startsWith(
-                    "apply$"))) {
+                  "apply$"))) {
                 if ((applyDef eq null) || ddsym.isSpecialized)
                   applyDef = dd
               } else {
@@ -3838,8 +3837,8 @@ abstract class GenJSCode
         val ctorParams = sym.primaryConstructor.tpe.params
 
         if (paramAccessors.size != ctorParams.size &&
-            !(paramAccessors.size == ctorParams.size - 1 &&
-              ctorParams.head.unexpandedName == jsnme.arg_outer)) {
+          !(paramAccessors.size == ctorParams.size - 1 &&
+            ctorParams.head.unexpandedName == jsnme.arg_outer)) {
           fail(
             s"Have param accessors $paramAccessors but " +
               s"ctor params $ctorParams in anon function $cd")

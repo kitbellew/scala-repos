@@ -176,7 +176,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     *             op( op( ... op(x_1, x_2) ..., x_{n-1}), x_n)
     *           }}}
     *           where `x,,1,,, ..., x,,n,,` are the elements of this $coll.
-    *  @throws UnsupportedOperationException if this $coll is empty.   */
+    *  @throws UnsupportedOperationException if this $coll is empty. */
   def reduceLeft[B >: A](op: (B, A) => B): B = {
     if (isEmpty)
       throw new UnsupportedOperationException("empty.reduceLeft")
@@ -418,7 +418,7 @@ trait TraversableOnce[+A] extends Any with GenTraversableOnce[A] {
     *      scala> val h = a.addString(b)
     *      h: StringBuilder = 1234
     * }}}
-
+    *
     *  @param  b    the string builder to which elements are appended.
     *  @return      the string builder `b` to which elements were appended.
     */

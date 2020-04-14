@@ -281,7 +281,6 @@ object Interleave {
   * '''Completes when''' all upstreams complete (eagerClose=false) or one upstream completes (eagerClose=true)
   *
   * '''Cancels when''' downstream cancels
-  *
   */
 final class Interleave[T] private (
     val inputPorts: Int,
@@ -444,7 +443,6 @@ object Broadcast {
   *
   * '''Cancels when'''
   *   If eagerCancel is enabled: when any downstream cancels; otherwise: when all downstreams cancel
-  *
   */
 final class Broadcast[T](private val outputPorts: Int, eagerCancel: Boolean)
     extends GraphStage[UniformFanOutShape[T, T]] {
@@ -884,7 +882,7 @@ final class Concat[T](inputPorts: Int)
                   activeStream += 1
                   // Skip closed inputs
                   while (activeStream < inputPorts && isClosed(
-                           in(activeStream))) activeStream += 1
+                      in(activeStream))) activeStream += 1
                   if (activeStream == inputPorts) completeStage()
                   else if (isAvailable(out)) pull(in(activeStream))
                 }

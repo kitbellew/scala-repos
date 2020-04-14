@@ -40,7 +40,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
 
   def printSymbol(level: Int, symbol: Symbol) {
     if (!symbol.isLocal &&
-        !(symbol.isPrivate && !printPrivates)) {
+      !(symbol.isPrivate && !printPrivates)) {
       def indent() { for (i <- 1 to level) print("  ") }
 
       printSymbolAttributes(symbol, true, indent)

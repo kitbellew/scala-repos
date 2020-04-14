@@ -26,7 +26,7 @@ import org.scalatest.prop.Checkers
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait HasCdfTestBase extends FunSuite with Checkers {
   type Distr <: Density[Double] with Rand[Double] with HasCdf
   implicit def arbDistr: Arbitrary[Distr]

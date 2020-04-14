@@ -830,7 +830,6 @@ trait Response {
 
 /**
   * The response to an HTTP request, as long as the server responds with *SOMETHING*
-  *
   */
 class HttpResponse(
     baseUrl: String,
@@ -845,7 +844,6 @@ class HttpResponse(
 
 /**
   * The response to an HTTP request, as long as the server responds with *SOMETHING*
-  *
   */
 class TheResponse(
     baseUrl: String,
@@ -867,7 +865,6 @@ trait TestResponse extends Response {
 
 /**
   * The response to an HTTP request, as long as the server responds with *SOMETHING*
-  *
   */
 abstract class BaseResponse(
     override val baseUrl: String,

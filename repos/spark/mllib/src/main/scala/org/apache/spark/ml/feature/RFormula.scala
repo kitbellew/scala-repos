@@ -170,7 +170,7 @@ class RFormula(override val uid: String)
     encoderStages += new ColumnPruner(tempColumns.toSet)
 
     if (dataset.schema.fieldNames.contains(resolvedFormula.label) &&
-        dataset.schema(resolvedFormula.label).dataType == StringType) {
+      dataset.schema(resolvedFormula.label).dataType == StringType) {
       encoderStages += new StringIndexer()
         .setInputCol(resolvedFormula.label)
         .setOutputCol($(labelCol))

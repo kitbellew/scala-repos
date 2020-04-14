@@ -44,7 +44,7 @@ class PerspectiveCamera(
     extends Camera(delegate)
     with SFXDelegate[jfxs.PerspectiveCamera] {
 
-  /** Constructs a PerspectiveCamera with the specified fixedEyeAtCameraZero flag.  */
+  /** Constructs a PerspectiveCamera with the specified fixedEyeAtCameraZero flag. */
   def this(fixedEyeAtCameraZero: Boolean) =
     this(new jfxs.PerspectiveCamera(fixedEyeAtCameraZero))
 

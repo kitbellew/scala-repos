@@ -25,8 +25,7 @@ import _root_.scala.collection.mutable.ListBuffer
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 13.03.2008
-  */
+  * Date: 13.03.2008 */
 
 class ScExistentialTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
@@ -86,9 +85,9 @@ class ScExistentialTypeElementImpl(node: ASTNode)
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     if (lastParent == quantified || (lastParent.isInstanceOf[ScalaPsiElement] &&
-        lastParent
-          .asInstanceOf[ScalaPsiElement]
-          .getDeepSameElementInContext == quantified)) {
+      lastParent
+        .asInstanceOf[ScalaPsiElement]
+        .getDeepSameElementInContext == quantified)) {
       for (decl <- clause.declarations) {
         decl match {
           case alias: ScTypeAliasDeclaration =>

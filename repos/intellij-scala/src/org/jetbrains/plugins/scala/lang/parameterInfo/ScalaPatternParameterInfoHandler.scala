@@ -267,7 +267,7 @@ class ScalaPatternParameterInfoHandler
                 val name = ref.refName
                 val variants: Array[ResolveResult] = ref.multiResolve(false)
                 for (variant <- variants
-                     if variant.isInstanceOf[ScalaResolveResult]) {
+                  if variant.isInstanceOf[ScalaResolveResult]) {
                   val r = variant.asInstanceOf[ScalaResolveResult]
                   r.element match {
                     case fun: ScFunction if fun.parameters.nonEmpty =>

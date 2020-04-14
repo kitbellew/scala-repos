@@ -44,10 +44,10 @@ private final class InfoChecker(
     val className = expectedInfo.encodedName
 
     if (info.encodedName != expectedInfo.encodedName ||
-        info.isExported != expectedInfo.isExported ||
-        info.kind != expectedInfo.kind ||
-        info.superClass != expectedInfo.superClass ||
-        info.interfaces.toSet != expectedInfo.interfaces.toSet) {
+      info.isExported != expectedInfo.isExported ||
+      info.kind != expectedInfo.kind ||
+      info.superClass != expectedInfo.superClass ||
+      info.interfaces.toSet != expectedInfo.interfaces.toSet) {
       errorCount += 1
       logger.error(s"Class info mismatch for $className")
       logger.error(s"Expected:\n${classInfoHeaderString(expectedInfo)}")
@@ -115,22 +115,22 @@ private final class InfoChecker(
     }
 
     if (info.encodedName != expectedInfo.encodedName ||
-        info.isStatic != expectedInfo.isStatic ||
-        info.isAbstract != expectedInfo.isAbstract ||
-        info.isExported != expectedInfo.isExported ||
-        !mapIncludes(info.methodsCalled, expectedInfo.methodsCalled) ||
-        !mapIncludes(
-          info.methodsCalledStatically,
-          expectedInfo.methodsCalledStatically) ||
-        !mapIncludes(
-          info.staticMethodsCalled,
-          expectedInfo.staticMethodsCalled) ||
-        !listIncludes(
-          info.instantiatedClasses,
-          expectedInfo.instantiatedClasses) ||
-        !listIncludes(info.accessedModules, expectedInfo.accessedModules) ||
-        !listIncludes(info.usedInstanceTests, expectedInfo.usedInstanceTests) ||
-        !listIncludes(info.accessedClassData, expectedInfo.accessedClassData)) {
+      info.isStatic != expectedInfo.isStatic ||
+      info.isAbstract != expectedInfo.isAbstract ||
+      info.isExported != expectedInfo.isExported ||
+      !mapIncludes(info.methodsCalled, expectedInfo.methodsCalled) ||
+      !mapIncludes(
+        info.methodsCalledStatically,
+        expectedInfo.methodsCalledStatically) ||
+      !mapIncludes(
+        info.staticMethodsCalled,
+        expectedInfo.staticMethodsCalled) ||
+      !listIncludes(
+        info.instantiatedClasses,
+        expectedInfo.instantiatedClasses) ||
+      !listIncludes(info.accessedModules, expectedInfo.accessedModules) ||
+      !listIncludes(info.usedInstanceTests, expectedInfo.usedInstanceTests) ||
+      !listIncludes(info.accessedClassData, expectedInfo.accessedClassData)) {
       errorCount += 1
       logger.error(
         s"Method info mismatch for $className.${expectedInfo.encodedName}" +

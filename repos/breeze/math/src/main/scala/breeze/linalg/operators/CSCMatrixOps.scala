@@ -17,7 +17,7 @@ import scalaxy.debug._
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   // don't remove
   import breeze.math.PowImplicits._
@@ -1769,7 +1769,7 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait CSCMatrixOpsLowPrio extends SerializableLogging {
   this: CSCMatrixOps =>
   implicit def canMulM_V_def[T, A, B <: Vector[T]](implicit

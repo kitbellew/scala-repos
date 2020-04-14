@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * RadioButton Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class RadioButtonSpec

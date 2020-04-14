@@ -32,7 +32,7 @@ trait RemoteModule {
   private[akka] def typedActorsFactories
       : ConcurrentHashMap[String, () => AnyRef]
 
-  /** Lookup methods **/
+  /** Lookup methods * */
 
   private[akka] def findActorById(id: String): ActorRef = actors.get(id)
 
@@ -626,7 +626,7 @@ trait RemoteClientModule extends RemoteModule { self: RemoteModule =>
     */
   def restartClientConnection(address: InetSocketAddress): Boolean
 
-  /** Methods that needs to be implemented by a transport **/
+  /** Methods that needs to be implemented by a transport * */
 
   protected[akka] def typedActorFor[T](
       intfClass: Class[T],

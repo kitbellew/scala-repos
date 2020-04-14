@@ -20,10 +20,10 @@ trait Foldable[F[_]] { self =>
     foldMap(fa)(x => some(f(x)))
   }
 
-  /**Right-associative fold of a structure. */
+  /** Right-associative fold of a structure. */
   def foldRight[A, B](fa: F[A], z: => B)(f: (A, => B) => B): B
 
-  /**The composition of Foldables `F` and `G`, `[x]F[G[x]]`, is a Foldable */
+  /** The composition of Foldables `F` and `G`, `[x]F[G[x]]`, is a Foldable */
   def compose[G[_]](implicit G0: Foldable[G]): Foldable[λ[α => F[G[α]]]] =
     new CompositionFoldable[F, G] {
       implicit def F = self
@@ -37,14 +37,14 @@ trait Foldable[F[_]] { self =>
       def G = implicitly
     }
 
-  /**The product of Foldables `F` and `G`, `[x](F[x], G[x]])`, is a Foldable */
+  /** The product of Foldables `F` and `G`, `[x](F[x], G[x]])`, is a Foldable */
   def product[G[_]](implicit G0: Foldable[G]): Foldable[λ[α => (F[α], G[α])]] =
     new ProductFoldable[F, G] {
       implicit def F = self
       implicit def G = G0
     }
 
-  /**The product of Foldable `F` and Foldable1 `G`, `[x](F[x], G[x]])`, is a Foldable1 */
+  /** The product of Foldable `F` and Foldable1 `G`, `[x](F[x], G[x]])`, is a Foldable1 */
   def product0[G[_]](implicit
       G0: Foldable1[G]): Foldable1[λ[α => (F[α], G[α])]] =
     new ProductFoldable1R[F, G] {
@@ -52,7 +52,7 @@ trait Foldable[F[_]] { self =>
       def G = G0
     }
 
-  /**Left-associative fold of a structure. */
+  /** Left-associative fold of a structure. */
   def foldLeft[A, B](fa: F[A], z: B)(f: (B, A) => B): B = {
     import Dual._, Endo._, syntax.std.all._
     Tag.unwrap(
@@ -60,12 +60,12 @@ trait Foldable[F[_]] { self =>
         dualMonoid)) apply (z)
   }
 
-  /**Right-associative, monadic fold of a structure. */
+  /** Right-associative, monadic fold of a structure. */
   def foldRightM[G[_], A, B](fa: F[A], z: => B)(f: (A, => B) => G[B])(implicit
       M: Monad[G]): G[B] =
     foldLeft[A, B => G[B]](fa, M.point(_))((b, a) => w => M.bind(f(a, w))(b))(z)
 
-  /**Left-associative, monadic fold of a structure. */
+  /** Left-associative, monadic fold of a structure. */
   def foldLeftM[G[_], A, B](fa: F[A], z: B)(f: (B, A) => G[B])(implicit
       M: Monad[G]): G[B] =
     foldRight[A, B => G[B]](fa, M.point(_))((a, b) => w => M.bind(f(w, a))(b))(
@@ -90,7 +90,7 @@ trait Foldable[F[_]] { self =>
       G: Unapply[Applicative, GB]): G.M[Unit] =
     traverse_[G.M, A, G.A](fa)(G.leibniz.onF(f))(G.TC)
 
-  /** `traverse_` specialized to `State` **/
+  /** `traverse_` specialized to `State` * */
   def traverseS_[S, A, B](fa: F[A])(f: A => State[S, B]): State[S, Unit] =
     State { s: S =>
       (foldLeft(fa, s)((s, a) => f(a)(s)._1), ())
@@ -100,16 +100,16 @@ trait Foldable[F[_]] { self =>
   def sequence_[M[_], A](fa: F[M[A]])(implicit a: Applicative[M]): M[Unit] =
     traverse_(fa)(x => x)
 
-  /** `sequence_` specialized to `State` **/
+  /** `sequence_` specialized to `State` * */
   def sequenceS_[S, A](fga: F[State[S, A]]): State[S, Unit] =
     traverseS_(fga)(x => x)
 
-  /** `sequence_` for Free. collapses into a single Free **/
+  /** `sequence_` for Free. collapses into a single Free * */
   def sequenceF_[M[_], A](ffa: F[Free[M, A]]): Free[M, Unit] =
     foldLeft[Free[M, A], Free[M, Unit]](ffa, Free.pure[M, Unit](()))((c, d) =>
       c.flatMap(_ => d.map(_ => ())))
 
-  /**Curried version of `foldRight` */
+  /** Curried version of `foldRight` */
   final def foldr[A, B](fa: F[A], z: => B)(f: A => (=> B) => B): B =
     foldRight(fa, z)((a, b) => f(a)(b))
   def foldMapRight1Opt[A, B](fa: F[A])(z: A => B)(
@@ -122,7 +122,7 @@ trait Foldable[F[_]] { self =>
     foldRight(fa, None: Option[A])((a, optA) =>
       optA map (aa => f(a)(aa)) orElse Some(a))
 
-  /**Curried version of `foldLeft` */
+  /** Curried version of `foldLeft` */
   final def foldl[A, B](fa: F[A], z: B)(f: B => A => B) =
     foldLeft(fa, z)((b, a) => f(b)(a))
   def foldMapLeft1Opt[A, B](fa: F[A])(z: A => B)(f: (B, A) => B): Option[B] =
@@ -134,12 +134,12 @@ trait Foldable[F[_]] { self =>
     foldLeft(fa, None: Option[A])((optA, a) =>
       optA map (aa => f(aa)(a)) orElse Some(a))
 
-  /**Curried version of `foldRightM` */
+  /** Curried version of `foldRightM` */
   final def foldrM[G[_], A, B](fa: F[A], z: => B)(f: A => (=> B) => G[B])(
       implicit M: Monad[G]): G[B] =
     foldRightM(fa, z)((a, b) => f(a)(b))
 
-  /**Curried version of `foldLeftM` */
+  /** Curried version of `foldLeftM` */
   final def foldlM[G[_], A, B](fa: F[A], z: => B)(f: B => A => G[B])(implicit
       M: Monad[G]): G[B] =
     foldLeftM(fa, z)((b, a) => f(b)(a))

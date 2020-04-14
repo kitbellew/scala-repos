@@ -43,7 +43,7 @@ abstract class SubComponent {
   /** True if this phase runs after all other phases. Usually, `terminal`. */
   val terminal: Boolean = false
 
-  /** SubComponent are added to a HashSet and two phases are the same if they have the same name  */
+  /** SubComponent are added to a HashSet and two phases are the same if they have the same name */
   override def hashCode() = phaseName.hashCode()
 
   /** New flags defined by the phase which are not valid before */

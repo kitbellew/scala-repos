@@ -36,8 +36,6 @@ import scalafx.Includes._
 
 /**
   * TimeStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TimeStringConverterSpec

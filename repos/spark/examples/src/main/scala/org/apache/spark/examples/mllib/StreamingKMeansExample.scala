@@ -48,7 +48,6 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
   *
   * As you add text files to `trainingDir` the clusters will continuously update.
   * Anytime you add text files to `testDir`, you'll see predicted labels using the current model.
-  *
   */
 object StreamingKMeansExample {
 

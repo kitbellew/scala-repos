@@ -57,17 +57,16 @@ abstract class ParallelIterableCheck[T](collName: String)
 
   def collectionPairsWith2Indices =
     for (inst <- instances(values);
-         f <- choose(0, inst.size);
-         s <- choose(0, inst.size))
+      f <- choose(0, inst.size);
+      s <- choose(0, inst.size))
       yield (inst, fromTraversable(inst), f, s)
 
   def collectionTriplets =
     for (inst <- instances(values);
-         updStart <- choose(0, inst.size); howMany <- choose(0, inst.size))
-      yield {
-        val modif = inst.toSeq.patch(updStart, inst.toSeq, howMany)
-        (inst, fromTraversable(inst), modif)
-      }
+      updStart <- choose(0, inst.size); howMany <- choose(0, inst.size)) yield {
+      val modif = inst.toSeq.patch(updStart, inst.toSeq, howMany)
+      (inst, fromTraversable(inst), modif)
+    }
 
   def areEqual(t1: GenTraversable[T], t2: GenTraversable[T]) =
     if (hasStrictOrder) {

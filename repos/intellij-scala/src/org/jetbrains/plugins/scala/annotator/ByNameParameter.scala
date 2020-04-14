@@ -26,12 +26,12 @@ object ByNameParameter extends AnnotatorPart[ScExpression] {
       holder: AnnotationHolder,
       typeAware: Boolean) {
     if (!ScalaProjectSettings
-          .getInstance(exp.getProject)
-          .isShowArgumentsToByNameParams) return
+        .getInstance(exp.getProject)
+        .isShowArgumentsToByNameParams) return
 
     if (!ScalaProjectSettings
-          .getInstance(exp.getProject)
-          .isIncludeBlockExpressions && exp.isInstanceOf[ScBlockExpr]) return
+        .getInstance(exp.getProject)
+        .isIncludeBlockExpressions && exp.isInstanceOf[ScBlockExpr]) return
 
     val parameter =
       ScalaPsiUtil.parameterOf(exp) //.orElse(conversionParameterOf(exp))

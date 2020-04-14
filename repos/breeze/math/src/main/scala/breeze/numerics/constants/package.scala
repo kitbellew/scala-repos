@@ -1,6 +1,6 @@
 package breeze.numerics
 
-/**This package specifies standard numerical/scientific constants in SI units.
+/** This package specifies standard numerical/scientific constants in SI units.
   *
   * @author ktakagaki * @date 3/13/14.
   */
@@ -38,7 +38,7 @@ package object constants {
   // <editor-fold defaultstate="collapsed" desc=" Electromagnetism ">
 
   /** [N / A2]
-    *@see <a href="http://physics.nist.gov/cgi-bin/cuu/Value?mu0">http://physics.nist.gov/cgi-bin/cuu/Value?mu0</a>
+    * @see <a href="http://physics.nist.gov/cgi-bin/cuu/Value?mu0">http://physics.nist.gov/cgi-bin/cuu/Value?mu0</a>
     */
   val MagneticConstant: Double = 4.0e-7 * Pi
 
@@ -47,7 +47,7 @@ package object constants {
   lazy val Mu0: Double = MagneticConstant
 
   /** [F / m]
-    *@see <a href="http://physics.nist.gov/cgi-bin/cuu/Value?ep0">http://physics.nist.gov/cgi-bin/cuu/Value?ep0</a>
+    * @see <a href="http://physics.nist.gov/cgi-bin/cuu/Value?ep0">http://physics.nist.gov/cgi-bin/cuu/Value?ep0</a>
     */
   val ElectricConstant: Double = 8.854187817e-12
 
@@ -56,7 +56,7 @@ package object constants {
   lazy val Epsilon0: Double = ElectricConstant
 
   /** []
-    *@see <a href="http://physics.nist.gov/cgi-bin/cuu/Value?alph">http://physics.nist.gov/cgi-bin/cuu/Value?alph</a>
+    * @see <a href="http://physics.nist.gov/cgi-bin/cuu/Value?alph">http://physics.nist.gov/cgi-bin/cuu/Value?alph</a>
     */
   val FineStructureConstant: Double = 7.2973525698e-3
 
@@ -189,91 +189,91 @@ package object constants {
 
   // <editor-fold defaultstate="collapsed" desc=" SI Prefixes ">
 
-  /**SI prefix for 1.0E24*/
+  /** SI prefix for 1.0E24 */
   val yotta = 1.0e24
 
-  /**SI prefix for 1.0E21*/
+  /** SI prefix for 1.0E21 */
   val zetta = 1.0e21
 
-  /**SI prefix for 1.0E18*/
+  /** SI prefix for 1.0E18 */
   val exa = 1.0e18
 
-  /**SI prefix for 1.0E15*/
+  /** SI prefix for 1.0E15 */
   val peta = 1.0e15
 
-  /**SI prefix for 1.0E12*/
+  /** SI prefix for 1.0E12 */
   val tera = 1.0e12
 
-  /**SI prefix for 1.0E9*/
+  /** SI prefix for 1.0E9 */
   val giga = 1.0e9
 
-  /**SI prefix for 1.0E6*/
+  /** SI prefix for 1.0E6 */
   val mega = 1.0e6
 
-  /**SI prefix for 1.0E3*/
+  /** SI prefix for 1.0E3 */
   val kilo = 1.0e3
 
-  /**SI prefix for 1.0E2*/
+  /** SI prefix for 1.0E2 */
   val hecto = 1.0e2
 
-  /**SI prefix for 1.0E1*/
+  /** SI prefix for 1.0E1 */
   val deca = 1.0e1
 
-  /**SI prefix for 1.0E-1*/
+  /** SI prefix for 1.0E-1 */
   val deci = 1.0e-1
 
-  /**SI prefix for 1.0E-2*/
+  /** SI prefix for 1.0E-2 */
   val centi = 1.0e-2
 
-  /**SI prefix for 1.0E-3*/
+  /** SI prefix for 1.0E-3 */
   val milli = 1.0e-3
 
-  /**SI prefix for 1.0E-6*/
+  /** SI prefix for 1.0E-6 */
   val micro = 1.0e-6
 
-  /**SI prefix for 1.0E-9*/
+  /** SI prefix for 1.0E-9 */
   val nano = 1.0e-9
 
-  /**SI prefix for 1.0E-12*/
+  /** SI prefix for 1.0E-12 */
   val pico = 1.0e-12
 
-  /**SI prefix for 1.0E-15*/
+  /** SI prefix for 1.0E-15 */
   val femto = 1.0e-15
 
-  /**SI prefix for 1.0E-18*/
+  /** SI prefix for 1.0E-18 */
   val atto = 1.0e-18
 
-  /**SI prefix for 1.0E-21*/
+  /** SI prefix for 1.0E-21 */
   val zepto = 1.0e-21
 
-  /**SI prefix for 1.0E-24*/
+  /** SI prefix for 1.0E-24 */
   val yocto = 1.0e-24
 
   // </editor-fold>
   // <editor-fold defaultstate="collapsed" desc=" Binary Prefixes ">
 
-  /**Binary prefix for pow(2, 10)*/
+  /** Binary prefix for pow(2, 10) */
   val kibi = pow(2.0, 10d)
 
-  /**Binary prefix for pow(2, 20)*/
+  /** Binary prefix for pow(2, 20) */
   val mebi = pow(2.0, 20d)
 
-  /**Binary prefix for pow(2, 30)*/
+  /** Binary prefix for pow(2, 30) */
   val gibi = pow(2.0, 30d)
 
-  /**Binary prefix for pow(2, 40)*/
+  /** Binary prefix for pow(2, 40) */
   val tebi = pow(2.0, 40d)
 
-  /**Binary prefix for pow(2, 50)*/
+  /** Binary prefix for pow(2, 50) */
   val pebi = pow(2.0, 50d)
 
-  /**Binary prefix for pow(2, 60)*/
+  /** Binary prefix for pow(2, 60) */
   val exbi = pow(2.0, 60d)
 
-  /**Binary prefix for pow(2, 70)*/
+  /** Binary prefix for pow(2, 70) */
   val zebi = pow(2.0, 70d)
 
-  /**Binary prefix for pow(2, 80)*/
+  /** Binary prefix for pow(2, 80) */
   val yobi = pow(2.0, 80d)
 
   // </editor-fold>

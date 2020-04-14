@@ -84,15 +84,15 @@ object InputTask {
       : Initialize[InputTask[T]] =
     separate(p)(std.FullInstance.flattenFun[I, T](action))
 
-  /** A dummy parser that consumes no input and produces nothing useful (unit).*/
+  /** A dummy parser that consumes no input and produces nothing useful (unit). */
   def emptyParser: State => Parser[Unit] =
     Types.const(sbt.internal.util.complete.DefaultParsers.success(()))
 
-  /** Implementation detail that is public because it is used by a macro.*/
+  /** Implementation detail that is public because it is used by a macro. */
   def parserAsInput[T](p: Parser[T]): Initialize[State => Parser[T]] =
     Def.valueStrict(Types.const(p))
 
-  /** Implementation detail that is public because it is used by a macro.*/
+  /** Implementation detail that is public because it is used by a macro. */
   def initParserAsInput[T](
       i: Initialize[Parser[T]]): Initialize[State => Parser[T]] = i(Types.const)
 

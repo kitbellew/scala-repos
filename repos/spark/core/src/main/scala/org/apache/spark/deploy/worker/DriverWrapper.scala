@@ -56,8 +56,8 @@ object DriverWrapper {
         val userJarUrl = new File(userJar).toURI().toURL()
         val loader =
           if (sys.props
-                .getOrElse("spark.driver.userClassPathFirst", "false")
-                .toBoolean) {
+              .getOrElse("spark.driver.userClassPathFirst", "false")
+              .toBoolean) {
             new ChildFirstURLClassLoader(Array(userJarUrl), currentLoader)
           } else {
             new MutableURLClassLoader(Array(userJarUrl), currentLoader)

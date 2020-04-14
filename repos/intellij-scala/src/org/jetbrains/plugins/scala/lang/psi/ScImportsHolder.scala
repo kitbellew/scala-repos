@@ -71,7 +71,7 @@ trait ScImportsHolder extends ScalaPsiElement {
       while (run != null) {
         ProgressManager.checkCanceled()
         if (run.isInstanceOf[ScImportStmt] &&
-            !run.processDeclarations(processor, state, lastParent, place))
+          !run.processDeclarations(processor, state, lastParent, place))
           return false
         run = ScalaPsiUtil.getPrevStubOrPsiElement(run)
       }
@@ -259,8 +259,8 @@ trait ScImportsHolder extends ScalaPsiElement {
       val sortedRanges = importRanges.toSeq.sortBy(_._1.getStartOffset)
       val selectedRange =
         if (refsContainer != null && ScalaCodeStyleSettings
-              .getInstance(getProject)
-              .isAddImportMostCloseToReference)
+            .getInstance(getProject)
+            .isAddImportMostCloseToReference)
           sortedRanges.reverse.find(
             _._1.getEndOffset < refsContainer.getTextRange.getStartOffset)
         else sortedRanges.headOption

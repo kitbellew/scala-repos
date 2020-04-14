@@ -235,7 +235,6 @@ object Dtab {
     *
     * where the production `dentry` is from the grammar documented in
     * [[com.twitter.finagle.Dentry.read Dentry.read]]
-    *
     */
   def read(s: String): Dtab = NameTreeParsers.parseDtab(s)
 

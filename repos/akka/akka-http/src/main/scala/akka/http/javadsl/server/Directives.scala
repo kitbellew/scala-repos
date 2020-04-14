@@ -10,7 +10,6 @@ import scala.collection.immutable
 abstract class AllDirectives extends WebSocketDirectives
 
 /**
-  *
   */
 object Directives extends AllDirectives {
 

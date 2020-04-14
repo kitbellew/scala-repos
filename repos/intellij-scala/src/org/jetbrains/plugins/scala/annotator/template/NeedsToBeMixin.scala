@@ -45,7 +45,7 @@ object NeedsToBeMixin extends AnnotatorPart[ScTemplateDefinition] {
           m match {
             case f: ScFunctionDefinition =>
               if (f.hasModifierPropertyScala("abstract") && f
-                    .hasModifierPropertyScala("override")) {
+                  .hasModifierPropertyScala("override")) {
                 signature.supers.find {
                   case node =>
                     node.info.namedElement match {

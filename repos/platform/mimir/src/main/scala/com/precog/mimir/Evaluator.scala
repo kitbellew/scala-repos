@@ -901,7 +901,7 @@ trait EvaluatorModule[M[+_]]
               }
 
             /**
-          returns an array (to be dereferenced later) containing the result of each reduction
+              *          returns an array (to be dereferenced later) containing the result of each reduction
               */
             case m @ MegaReduce(reds, parent) =>
               val firstCoalesce = reds.map {

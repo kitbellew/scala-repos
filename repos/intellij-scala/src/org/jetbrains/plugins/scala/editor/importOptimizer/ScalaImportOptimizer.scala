@@ -355,7 +355,7 @@ object ScalaImportOptimizer {
     if (optimizers.isEmpty) return None
 
     if (topLevelFile.getViewProvider.getPsi(
-          ScalaFileType.SCALA_LANGUAGE) == null) return None
+        ScalaFileType.SCALA_LANGUAGE) == null) return None
 
     val i = optimizers.iterator()
     while (i.hasNext) {
@@ -540,8 +540,8 @@ object ScalaImportOptimizer {
       var i = infos.size
       infos.insert(i, newInfo)
       while (i > 0 && greater(infos(i - 1), infos(i), settings) && swapWithNext(
-               infos,
-               i - 1)) {
+          infos,
+          i - 1)) {
         i -= 1
       }
     }

@@ -29,17 +29,17 @@ trait CombParserHelpers {
 
   def EOF = '\u001a'
 
-  /** the type of input elements defined in the Parsers trait is <code>Char</code>  */
+  /** the type of input elements defined in the Parsers trait is <code>Char</code> */
   type Elem = Char
 
-  /** @return a CharArray input build from a String  */
+  /** @return a CharArray input build from a String */
   implicit def strToInput(in: String): Input =
     new scala.util.parsing.input.CharArrayReader(in.toCharArray)
 
-  /** @return true if the character is an end of file  */
+  /** @return true if the character is an end of file */
   def isEof(c: Char): Boolean = c == EOF
 
-  /** @return true if the character is not an end of file  */
+  /** @return true if the character is not an end of file */
   def notEof(c: Char): Boolean = !isEof(c)
 
   /**
@@ -62,7 +62,7 @@ trait CombParserHelpers {
     */
   def notNum(c: Char): Boolean = !isNum(c)
 
-  /** @return true if the character is a space character  */
+  /** @return true if the character is a space character */
   def wsc(c: Char): Boolean = c == ' ' || c == '\n' || c == '\r' || c == '\t'
 
   /** @return a whitespace parser */

@@ -94,7 +94,7 @@ object Util {
     val content = versionLine(version) + "\ntimestamp=" + timestamp
     val f = dir / "xsbt.version.properties"
     if (!f.exists || f.lastModified < lastCompilationTime(
-          analysis) || !containsVersion(f, version)) {
+        analysis) || !containsVersion(f, version)) {
       s.log.info("Writing version information to " + f + " :\n" + content)
       IO.write(f, content)
     }

@@ -12,8 +12,7 @@ import org.jetbrains.plugins.scala.icons.Icons;
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 08.05.2008
-  */
+  * Date: 08.05.2008 */
 
 class ScalaValueItemPresentation(
     private val element: PsiElement,

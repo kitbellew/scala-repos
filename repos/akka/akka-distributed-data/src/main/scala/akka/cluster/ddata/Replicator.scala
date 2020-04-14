@@ -1161,7 +1161,7 @@ final class Replicator(settings: ReplicatorSettings)
 
     if (subscribers.nonEmpty) {
       for (key ← changed; if subscribers.contains(key);
-           subs ← subscribers.get(key))
+        subs ← subscribers.get(key))
         notify(key, subs)
     }
 
@@ -1471,7 +1471,7 @@ final class Replicator(settings: ReplicatorSettings)
       envelope: DataEnvelope): DataEnvelope = {
     val pruningCleanuped = pruningCleanupTombstoned(removed, envelope.data)
     if ((pruningCleanuped ne envelope.data) || envelope.pruning.contains(
-          removed))
+        removed))
       envelope.copy(
         data = pruningCleanuped,
         pruning = envelope.pruning - removed)

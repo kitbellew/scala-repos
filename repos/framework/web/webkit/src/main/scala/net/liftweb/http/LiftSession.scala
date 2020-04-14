@@ -776,7 +776,7 @@ class LiftSession(
         for {
           (key, pageInfo) <- postPageFunctions
         } if (!pageInfo.longLife &&
-              (now - pageInfo.lastSeen) > LiftRules.unusedFunctionsLifeTime) {
+          (now - pageInfo.lastSeen) > LiftRules.unusedFunctionsLifeTime) {
           postPageFunctions -= key
         }
       }
@@ -978,7 +978,7 @@ class LiftSession(
     */
   private[http] def locTemplate: Box[NodeSeq] =
     for (loc <- S.location;
-         template <- loc.template) yield template
+      template <- loc.template) yield template
 
   /**
     * Define the context path for this session.  This allows different
@@ -1745,7 +1745,7 @@ class LiftSession(
     // Locate a snippet as defined by our SiteMap Loc
     def locSnippet(snippet: String): Box[NodeSeq] =
       for (loc <- S.location;
-           func <- loc.snippet(snippet)) yield func(kids)
+        func <- loc.snippet(snippet)) yield func(kids)
 
     def locateAndCacheSnippet(tagName: String): Box[AnyRef] =
       snippetMap.is.get(tagName) orElse {
@@ -1868,9 +1868,9 @@ class LiftSession(
                           case null => false
                           case pt: ParameterizedType =>
                             if (isFunc1(pt.getRawType) &&
-                                pt.getActualTypeArguments.length == 2 &&
-                                isNodeSeq(pt.getActualTypeArguments()(0)) &&
-                                isNodeSeq(pt.getActualTypeArguments()(1)))
+                              pt.getActualTypeArguments.length == 2 &&
+                              isNodeSeq(pt.getActualTypeArguments()(0)) &&
+                              isNodeSeq(pt.getActualTypeArguments()(1)))
                               true
                             else testGeneric(pt.getRawType)
 
@@ -2291,7 +2291,6 @@ class LiftSession(
     *              translation fails, an error will be logged and the raw
     *              JsonAST.JValue will be sent to the actor
     *
-    *
     * @return a JsExp that contains a function that can be called with a parameter
     *         and when the function is called, the parameter is JSON serialized and sent to
     *         the server
@@ -2344,7 +2343,6 @@ class LiftSession(
     * @param dataFilter messages are passed through this function... it allows conversion of
     *                   data from
     * @return a server-side Actor that is a proxy for the client-side Actor/Function call
-    *
     */
   def serverActorForClient(
       toCall: String,
@@ -2982,8 +2980,8 @@ class LiftSession(
             func match {
               case StreamRoundTrip(_, func) =>
                 try {
-                  for (v <- func.asInstanceOf[Function1[Any, Stream[Any]]](
-                         reified)) {
+                  for (v <-
+                      func.asInstanceOf[Function1[Any, Stream[Any]]](reified)) {
                     v match {
                       case jsCmd: JsCmd => ca ! jsCmd
                       case jsExp: JsExp => ca ! jsExp

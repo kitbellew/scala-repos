@@ -14,8 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.05.2008
-  */
+  * Date: 22.05.2008 */
 
 class ValueDefinitionFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
@@ -27,11 +26,11 @@ class ValueDefinitionFilter extends ElementFilter {
       parent.getParent match {
         case _: ScGenerator | _: ScEnumerator | _: ScExistentialClause =>
           if ((leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-              leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
-              (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
-              (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-              !parent.getPrevSibling.getPrevSibling.getLastChild
-                .isInstanceOf[PsiErrorElement])))
+            leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
+            (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
+            (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
+            !parent.getPrevSibling.getPrevSibling.getLastChild
+              .isInstanceOf[PsiErrorElement])))
             return true
         case _ =>
       }

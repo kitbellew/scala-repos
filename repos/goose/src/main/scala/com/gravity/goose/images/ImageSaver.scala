@@ -42,8 +42,7 @@ import com.gravity.goose.network.HtmlFetcher
 /**
   * This class will be responsible for storing images to disk
   *
-  * @author Jim Plush
-  */
+  * @author Jim Plush */
 object ImageSaver extends Logging {
   private def getFileExtension(
       config: Configuration,

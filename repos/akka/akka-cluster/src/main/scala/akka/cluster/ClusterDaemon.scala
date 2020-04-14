@@ -636,7 +636,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   def leaving(address: Address): Unit = {
     // only try to update if the node is available (in the member ring)
     if (latestGossip.members.exists(m ⇒
-          m.address == address && m.status == Up)) {
+        m.address == address && m.status == Up)) {
       val newMembers = latestGossip.members map { m ⇒
         if (m.address == address) m.copy(status = Leaving) else m
       } // mark node as LEAVING
@@ -716,8 +716,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   def receiveGossipStatus(status: GossipStatus): Unit = {
     val from = status.from
     if (!latestGossip.overview.reachability.isReachable(
-          selfUniqueAddress,
-          from))
+        selfUniqueAddress,
+        from))
       logInfo("Ignoring received gossip status from unreachable [{}] ", from)
     else if (latestGossip.members.forall(_.uniqueAddress != from))
       log.debug(
@@ -765,8 +765,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         envelope.to)
       Ignored
     } else if (!localGossip.overview.reachability.isReachable(
-                 selfUniqueAddress,
-                 from)) {
+        selfUniqueAddress,
+        from)) {
       logInfo("Ignoring received gossip from unreachable [{}] ", from)
       Ignored
     } else if (localGossip.members.forall(_.uniqueAddress != from)) {
@@ -776,7 +776,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         from)
       Ignored
     } else if (remoteGossip.members.forall(
-                 _.uniqueAddress != selfUniqueAddress)) {
+        _.uniqueAddress != selfUniqueAddress)) {
       logInfo(
         "Ignoring received gossip that does not contain myself, from [{}]",
         from)
@@ -806,7 +806,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           val prunedLocalGossip = localGossip.members.foldLeft(localGossip) {
             (g, m) ⇒
               if (Gossip.removeUnreachableWithMemberStatus(
-                    m.status) && !remoteGossip.members.contains(m)) {
+                  m.status) && !remoteGossip.members.contains(m)) {
                 log.debug(
                   "Cluster Node [{}] - Pruned conflicting local gossip: {}",
                   selfAddress,
@@ -818,7 +818,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
           val prunedRemoteGossip = remoteGossip.members.foldLeft(remoteGossip) {
             (g, m) ⇒
               if (Gossip.removeUnreachableWithMemberStatus(
-                    m.status) && !localGossip.members.contains(m)) {
+                  m.status) && !localGossip.members.contains(m)) {
                 log.debug(
                   "Cluster Node [{}] - Pruned conflicting remote gossip: {}",
                   selfAddress,
@@ -902,7 +902,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
       val preferredGossipTargets: Vector[UniqueAddress] =
         if (ThreadLocalRandom.current
-              .nextDouble() < adjustedGossipDifferentViewProbability) {
+            .nextDouble() < adjustedGossipDifferentViewProbability) {
           // If it's time to try to gossip to some nodes with a different view
           // gossip to a random alive member with preference to a member with older gossip version
           localGossip.members.collect {
@@ -999,7 +999,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         case m if m.status == Down ⇒ m.uniqueAddress
       }
       if (downed.forall(node ⇒
-            unreachable(node) || latestGossip.seenByNode(node))) {
+          unreachable(node) || latestGossip.seenByNode(node))) {
         // the reason for not shutting down immediately is to give the gossip a chance to spread
         // the downing information to other downed nodes, so that they can shutdown themselves
         logInfo("Shutting down myself")
@@ -1387,7 +1387,6 @@ private[cluster] final class FirstSeedNodeProcess(
   * 3. seed1 is started and joins itself
   * 4. seed2 retries the join procedure and gets an ack from seed1, and then joins to seed1
   * 5. seed3 retries the join procedure and gets acks from seed2 first, and then joins to seed2
-  *
   */
 private[cluster] final class JoinSeedNodeProcess(
     seedNodes: immutable.IndexedSeq[Address])

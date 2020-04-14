@@ -35,7 +35,6 @@ import org.apache.spark.util.random.XORShiftRandom
 /**
   * Trait that holds Layer properties, that are needed to instantiate it.
   * Implements Layer instantiation.
-  *
   */
 private[ann] trait Layer extends Serializable {
 

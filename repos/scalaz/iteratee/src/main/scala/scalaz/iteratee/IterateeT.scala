@@ -296,7 +296,7 @@ trait IterateeTFunctions {
     cont(step)
   }
 
-  /**An iteratee that consumes the head of the input **/
+  /** An iteratee that consumes the head of the input * */
   def head[E, F[_]: Applicative]: IterateeT[E, F, Option[E]] = {
     def step(s: Input[E]): IterateeT[E, F, Option[E]] =
       s(
@@ -315,7 +315,7 @@ trait IterateeTFunctions {
     }
   }
 
-  /**An iteratee that returns the first element of the input **/
+  /** An iteratee that returns the first element of the input * */
   def peek[E, F[_]: Applicative]: IterateeT[E, F, Option[E]] = {
     def step(s: Input[E]): IterateeT[E, F, Option[E]] =
       s(
@@ -334,7 +334,7 @@ trait IterateeTFunctions {
     }
   }
 
-  /**An iteratee that skips the first n elements of the input **/
+  /** An iteratee that skips the first n elements of the input * */
   def drop[E, F[_]: Applicative](n: Int): IterateeT[E, F, Unit] = {
     def step(s: Input[E]): IterateeT[E, F, Unit] =
       s(el = _ => drop(n - 1), empty = cont(step), eof = done((), eofInput[E]))

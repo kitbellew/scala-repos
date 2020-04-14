@@ -25,7 +25,7 @@ import breeze.integrate.trapezoid
 
 /**
   * @author jrj-d
- **/
+  */
 trait UnivariateContinuousDistrTestBase extends FunSuite with Checkers {
   type Distr <: ContinuousDistr[Double]
   implicit def arbDistr: Arbitrary[Distr]

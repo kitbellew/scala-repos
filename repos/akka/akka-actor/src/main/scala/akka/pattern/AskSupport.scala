@@ -72,7 +72,6 @@ trait AskSupport {
     *     EnrichedMessage(response)
     *   } pipeTo nextActor
     * }}}
-    *
     */
   def ask(actorRef: ActorRef, message: Any)(implicit
       timeout: Timeout): Future[Any] =
@@ -124,7 +123,6 @@ trait AskSupport {
     *     EnrichedMessage(response)
     *   } pipeTo nextActor
     * }}}
-    *
     */
   def ask(actorSelection: ActorSelection, message: Any)(implicit
       timeout: Timeout): Future[Any] =
@@ -247,7 +245,6 @@ trait ExplicitAskSupport {
     *   EnrichedMessage(response)
     * } pipeTo nextActor
     * }}}
-    *
     */
   def ask(actorSelection: ActorSelection, messageFactory: ActorRef ⇒ Any)(
       implicit timeout: Timeout): Future[Any] =
@@ -656,10 +653,10 @@ private[akka] final class PromiseActorRef private (
         if (message == null)
           throw new InvalidMessageException("Message is null")
         if (!(result.tryComplete(message match {
-              case Status.Success(r) ⇒ Success(r)
-              case Status.Failure(f) ⇒ Failure(f)
-              case other ⇒ Success(other)
-            }))) provider.deadLetters ! message
+            case Status.Success(r) ⇒ Success(r)
+            case Status.Failure(f) ⇒ Failure(f)
+            case other ⇒ Success(other)
+          }))) provider.deadLetters ! message
     }
 
   override def sendSystemMessage(message: SystemMessage): Unit =

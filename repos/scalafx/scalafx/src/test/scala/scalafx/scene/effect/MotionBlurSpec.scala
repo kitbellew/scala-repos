@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * MotionBlur Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class MotionBlurSpec

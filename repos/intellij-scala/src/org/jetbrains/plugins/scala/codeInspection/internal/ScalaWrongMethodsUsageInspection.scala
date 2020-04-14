@@ -68,9 +68,9 @@ class ScalaWrongMethodsUsageInspection extends LocalInspectionTool {
                       instance.getCachedClass(m.getResolveScope, clazz).orNull
                     if (cachedClass != null && containingClass != null) {
                       if (cachedClass == containingClass || instance
-                            .cachedDeepIsInheritor(
-                              cachedClass,
-                              containingClass)) {
+                          .cachedDeepIsInheritor(
+                            cachedClass,
+                            containingClass)) {
                         true
                       } else false
                     } else false

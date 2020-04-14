@@ -7,8 +7,7 @@ package expr
 import com.intellij.psi.PsiElement
 
 /**
-  * @author Alexander Podkhalyuzin
-  */
+  * @author Alexander Podkhalyuzin */
 
 trait ScWhileStmt extends ScExpression {
   def condition: Option[ScExpression]

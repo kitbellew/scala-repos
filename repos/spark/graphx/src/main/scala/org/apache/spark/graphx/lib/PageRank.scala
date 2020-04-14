@@ -98,7 +98,6 @@ object PageRank extends Logging {
     *
     * @return the graph containing with each vertex containing the PageRank and each edge
     *         containing the normalized weight.
-    *
     */
   def runWithOptions[VD: ClassTag, ED: ClassTag](
       graph: Graph[VD, ED],

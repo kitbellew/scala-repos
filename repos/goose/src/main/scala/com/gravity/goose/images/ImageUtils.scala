@@ -58,7 +58,7 @@ object ImageUtils extends Logging {
     val imageInfo = execToString(Array(identifyProgram, filePath))
     val imageDetails: ImageDetails = new ImageDetails
     if (imageInfo == null || imageInfo.contains(
-          "no decode delegate for this image format")) {
+        "no decode delegate for this image format")) {
       throw new IOException(
         "Unable to get Image Information (no decode delegate) for: " + filePath + "\n\tcommand '" + identifyProgram + " " + filePath + "' returned: " + imageInfo)
     }

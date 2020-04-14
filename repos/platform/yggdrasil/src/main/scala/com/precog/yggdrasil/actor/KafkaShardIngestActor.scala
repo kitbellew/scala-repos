@@ -330,7 +330,7 @@ abstract class KafkaShardIngestActor(
         logger.error(
           "Ingest will continue, but query results may be inconsistent until the problem is resolved.")
         for (messages <- ingestCache.get(checkpoint).toSeq;
-             (offset, ingestMessage) <- messages) {
+          (offset, ingestMessage) <- messages) {
           failureLog =
             failureLog.logFailed(offset, ingestMessage, lastCheckpoint)
         }

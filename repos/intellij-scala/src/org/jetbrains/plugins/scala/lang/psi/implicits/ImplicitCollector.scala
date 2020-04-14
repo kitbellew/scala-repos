@@ -163,11 +163,11 @@ class ImplicitCollector(
       var stop = false
       while (!stop) {
         if (placeForTreeWalkUp == null || !placeForTreeWalkUp
-              .processDeclarations(
-                processor,
-                ResolveState.initial(),
-                lastParent,
-                place)) stop = true
+            .processDeclarations(
+              processor,
+              ResolveState.initial(),
+              lastParent,
+              place)) stop = true
         placeForTreeWalkUp match {
           case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
           case _                                       => if (!processor.changedLevel) stop = true
@@ -201,9 +201,9 @@ class ImplicitCollector(
       if (!fullInfo) processor = new ImplicitParametersProcessor(true)
 
       for (obj <- ScalaPsiUtil.collectImplicitObjects(
-             expandedTp,
-             place.getProject,
-             place.getResolveScope)) {
+          expandedTp,
+          place.getProject,
+          place.getResolveScope)) {
         processor.processType(obj, place, ResolveState.initial())
       }
 
@@ -271,8 +271,8 @@ class ImplicitCollector(
             case memb: ScMember if memb.hasModifierProperty("implicit") =>
               placeCalculated = true
               if (!isPredefPriority && !ResolveUtils.isAccessible(
-                    memb,
-                    getPlace)) return true
+                  memb,
+                  getPlace)) return true
               addResult(
                 new ScalaResolveResult(
                   named,
@@ -291,8 +291,8 @@ class ImplicitCollector(
             case memb: ScMember if memb.hasModifierProperty("implicit") =>
               placeCalculated = true
               if (!isPredefPriority && !ResolveUtils.isAccessible(
-                    memb,
-                    getPlace)) return true
+                  memb,
+                  getPlace)) return true
               addResult(
                 new ScalaResolveResult(
                   named,
@@ -304,8 +304,8 @@ class ImplicitCollector(
         case function: ScFunction if function.hasModifierProperty("implicit") =>
           placeCalculated = true
           if (isPredefPriority || (ScImplicitlyConvertible
-                .checkFucntionIsEligible(function, place) &&
-              ResolveUtils.isAccessible(function, getPlace))) {
+              .checkFucntionIsEligible(function, place) &&
+            ResolveUtils.isAccessible(function, getPlace))) {
             addResult(
               new ScalaResolveResult(
                 named,
@@ -409,7 +409,7 @@ class ImplicitCollector(
           case fun: ScFunction
               if !PsiTreeUtil.isContextAncestor(fun, place, false) =>
             if (isImplicitConversion && (fun.name == "conforms" || fun.name == "$conforms") &&
-                fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef")
+              fun.containingClass != null && fun.containingClass.qualifiedName == "scala.Predef")
               return None
             if (!fun.hasTypeParameters && withLocalTypeInference) return None
 
@@ -424,7 +424,7 @@ class ImplicitCollector(
                   val qName = "scala.Function" + funNum
                   val classQualifiedName = cl.qualifiedName
                   if (classQualifiedName != qName && classQualifiedName != "java.lang.Object" &&
-                      classQualifiedName != "scala.ScalaObject") {
+                    classQualifiedName != "scala.ScalaObject") {
                     if (fullInfo)
                       return Some(
                         c.copy(
@@ -543,7 +543,7 @@ class ImplicitCollector(
                               .getInstance(place.getProject)
                               .getImplicitParametersSearchDepth
                             if (lastImplicit.isDefined &&
-                                (depth < 0 || searchImplicitsRecursively < depth)) {
+                              (depth < 0 || searchImplicitsRecursively < depth)) {
                               predicate match {
                                 case Some(predicateFunction)
                                     if isExtensionConversion =>
@@ -551,9 +551,9 @@ class ImplicitCollector(
                                     return reportWrong(BadTypeResult))) match {
                                     case (ScFunctionType(rt, _), _) =>
                                       if (predicateFunction(
-                                            c.copy(implicitParameterType =
-                                              Some(rt)),
-                                            subst).isEmpty)
+                                          c.copy(implicitParameterType =
+                                            Some(rt)),
+                                          subst).isEmpty)
                                         return reportWrong(
                                           CantFindExtensionMethodResult)
                                     //this is not a function, when we still need to pass implicit?..
@@ -578,7 +578,7 @@ class ImplicitCollector(
                                       CantInferTypeParameterResult)
                                 }
                               if (fullInfo && results.exists(_.exists(
-                                    _.name == InferUtil.notFoundParameterName)))
+                                  _.name == InferUtil.notFoundParameterName)))
                                 return Some(
                                   c.copy(
                                     implicitParameters =
@@ -648,12 +648,12 @@ class ImplicitCollector(
                           !searches.exists {
                             case t: ScType if tp.isInstanceOf[ScType] =>
                               if (Equivalence
-                                    .equivInner(
-                                      t,
-                                      tp.asInstanceOf[ScType],
-                                      new ScUndefinedSubstitutor(),
-                                      falseUndef = false)
-                                    ._1) true
+                                  .equivInner(
+                                    t,
+                                    tp.asInstanceOf[ScType],
+                                    new ScUndefinedSubstitutor(),
+                                    falseUndef = false)
+                                  ._1) true
                               else dominates(tp.asInstanceOf[ScType], t)
                             case _ => false
                           }

@@ -445,7 +445,6 @@ trait Reifiers { self: Quasiquotes =>
       *
       *    > group(List(1, 1, 0, 0, 1, 0)) { _ == _ }
       *    List(List(1, 1), List(0, 0), List(1), List(0))
-      *
       */
     def group[T](lst: List[T])(similar: (T, T) => Boolean) =
       lst.foldLeft[List[List[T]]](List()) {

@@ -67,7 +67,7 @@ class ScalaAotCompletionContributor extends ScalaCompletionContributor {
           positionFromParameters(parameters).getContext.getContext.getContext
 
         if (!scope.isInstanceOf[ScVariableDeclaration] && !scope
-              .isInstanceOf[ScValueDeclaration]) return
+            .isInstanceOf[ScValueDeclaration]) return
 
         addCompletions0(parameters, result, typed = false) { (text, element) =>
           val declaration = createValueDeclarationFrom(text, element)

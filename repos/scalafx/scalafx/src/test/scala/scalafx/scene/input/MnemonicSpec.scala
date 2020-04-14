@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Mnemonic Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class MnemonicSpec

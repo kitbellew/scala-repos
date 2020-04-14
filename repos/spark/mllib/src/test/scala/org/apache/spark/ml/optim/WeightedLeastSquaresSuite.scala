@@ -196,8 +196,8 @@ class WeightedLeastSquaresSuite
 
     var idx = 0
     for (fitIntercept <- Seq(false, true);
-         regParam <- Seq(0.0, 0.1, 1.0);
-         standardizeFeatures <- Seq(false, true)) {
+      regParam <- Seq(0.0, 0.1, 1.0);
+      standardizeFeatures <- Seq(false, true)) {
       val wls = new WeightedLeastSquares(
         fitIntercept,
         regParam,

@@ -188,7 +188,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   private def verifyLibraryCache(
       cache: InjectorPersistentCache): InjectorPersistentCache = {
     if (ScalaPluginVersionVerifier.getPluginVersion.exists(
-          _ != cache.pluginVersion))
+        _ != cache.pluginVersion))
       InjectorPersistentCache(
         ScalaPluginVersionVerifier.getPluginVersion.get,
         new util.HashMap())

@@ -147,12 +147,12 @@ trait MySQLProfile extends JdbcProfile { profile =>
               case Some(s) => s
               case None =>
                 if (sym
-                      .flatMap(_.findColumnOption[
-                        RelationalProfile.ColumnOption.Default[_]])
-                      .isDefined ||
-                    sym
-                      .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
-                      .isDefined)
+                    .flatMap(_.findColumnOption[
+                      RelationalProfile.ColumnOption.Default[_]])
+                    .isDefined ||
+                  sym
+                    .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
+                    .isDefined)
                   "VARCHAR(254)"
                 else "TEXT"
             }

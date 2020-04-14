@@ -1250,7 +1250,7 @@ abstract class RDD[T: ClassTag](
 
         // Don't trigger TreeAggregation when it doesn't save wall-clock time
         while (numPartitions > scale + math.ceil(
-                 numPartitions.toDouble / scale)) {
+            numPartitions.toDouble / scale)) {
           numPartitions /= scale
           val curNumPartitions = numPartitions
           partiallyAggregated = partiallyAggregated
@@ -1550,7 +1550,7 @@ abstract class RDD[T: ClassTag](
   /**
     * Returns the max of this RDD as defined by the implicit Ordering[T].
     * @return the maximum element of the RDD
-    * */
+    */
   def max()(implicit ord: Ordering[T]): T =
     withScope {
       this.reduce(ord.max)
@@ -1559,7 +1559,7 @@ abstract class RDD[T: ClassTag](
   /**
     * Returns the min of this RDD as defined by the implicit Ordering[T].
     * @return the minimum element of the RDD
-    * */
+    */
   def min()(implicit ord: Ordering[T]): T =
     withScope {
       this.reduce(ord.min)
@@ -1694,7 +1694,7 @@ abstract class RDD[T: ClassTag](
   def localCheckpoint(): this.type =
     RDDCheckpointData.synchronized {
       if (conf.getBoolean("spark.dynamicAllocation.enabled", false) &&
-          conf.contains("spark.dynamicAllocation.cachedExecutorIdleTimeout")) {
+        conf.contains("spark.dynamicAllocation.cachedExecutorIdleTimeout")) {
         logWarning(
           "Local checkpointing is NOT safe to use with dynamic allocation, " +
             "which removes executors along with their cached blocks. If you must use both " +

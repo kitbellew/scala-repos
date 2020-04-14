@@ -444,14 +444,14 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
             // if we have only one child, which is not a HashTrieSet but a self-contained set like
             // HashSet1 or HashSetCollision1, return the child instead
             if (elemsNew.length == 1 && !elemsNew(0)
-                  .isInstanceOf[HashTrieMap[_, _]])
+                .isInstanceOf[HashTrieMap[_, _]])
               elemsNew(0)
             else
               new HashTrieMap(bitmapNew, elemsNew, sizeNew)
           } else
             HashMap.empty[A, B]
         } else if (elems.length == 1 && !subNew
-                     .isInstanceOf[HashTrieMap[_, _]]) {
+            .isInstanceOf[HashTrieMap[_, _]]) {
           subNew
         } else {
           val elemsNew = new Array[HashMap[A, B]](elems.length)
@@ -498,7 +498,7 @@ object HashMap extends ImmutableMapFactory[HashMap] with BitOperations.Int {
         // unchanged
         this
       } else if (offset == offset0 + 1 && !buffer(offset0)
-                   .isInstanceOf[HashTrieMap[A, B]]) {
+          .isInstanceOf[HashTrieMap[A, B]]) {
         // leaf
         buffer(offset0)
       } else {

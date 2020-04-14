@@ -29,7 +29,7 @@ sealed abstract class ==>>[A, B] {
 
   /** inserts a new key/value - O(log n).
     *
-    * If the key is already present, its value is replaced by the provided value.  */
+    * If the key is already present, its value is replaced by the provided value. */
   def insert(kx: A, x: B)(implicit n: Order[A]): A ==>> B =
     this match {
       case Tip() =>

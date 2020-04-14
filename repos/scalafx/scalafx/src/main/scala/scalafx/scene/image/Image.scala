@@ -116,7 +116,6 @@ class Image(override val delegate: jfxsi.Image)
         backgroundLoading))
 
   /**
-    *
     */
   def this(that: AnyRef, imagePath: String) =
     this(new jfxsi.Image(that.getClass.getResourceAsStream(imagePath)))

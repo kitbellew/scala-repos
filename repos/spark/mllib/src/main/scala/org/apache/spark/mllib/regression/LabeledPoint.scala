@@ -42,7 +42,6 @@ case class LabeledPoint @Since("1.0.0") (
 
 /**
   * Parser for [[org.apache.spark.mllib.regression.LabeledPoint]].
-  *
   */
 @Since("1.1.0")
 object LabeledPoint {
@@ -50,7 +49,6 @@ object LabeledPoint {
   /**
     * Parses a string resulted from `LabeledPoint#toString` into
     * an [[org.apache.spark.mllib.regression.LabeledPoint]].
-    *
     */
   @Since("1.1.0")
   def parse(s: String): LabeledPoint = {

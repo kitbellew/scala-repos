@@ -283,7 +283,7 @@ object WorksheetSourceProcessor {
           val lineNums = psiToLineNumbers(imp)
           val memberName =
             if (el.isInstanceOf[ScValue] || el
-                  .isInstanceOf[ScVariable]) //variable to avoid weird errors
+                .isInstanceOf[ScVariable]) //variable to avoid weird errors
               variableInstanceName(qualifierName)
             else qualifierName
 

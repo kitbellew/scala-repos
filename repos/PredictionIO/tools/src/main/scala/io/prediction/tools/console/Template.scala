@@ -363,9 +363,9 @@ object Template extends Logging {
         val nameOnly = new File(destFilename).getName
 
         if (organization != "" &&
-            (nameOnly.endsWith(".scala") ||
-            nameOnly == "build.sbt" ||
-            nameOnly == "engine.json")) {
+          (nameOnly.endsWith(".scala") ||
+          nameOnly == "build.sbt" ||
+          nameOnly == "engine.json")) {
           filesToModify += destFilename
         }
       }

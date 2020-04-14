@@ -24,7 +24,6 @@ import common._
 /**
   * Abstracts the management of asynchronous HTTP requests in order
   * to allow requests to be suspended and resumed later on.
-  *
   */
 trait ServletAsyncProvider {
 

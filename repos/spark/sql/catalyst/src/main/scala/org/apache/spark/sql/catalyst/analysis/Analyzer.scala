@@ -967,7 +967,7 @@ class Analyzer(
           // If resolution was successful and we see the filter has an aggregate in it, add it to
           // the original aggregate operator.
           if (resolvedOperator.resolved && containsAggregate(
-                resolvedAggregateFilter)) {
+              resolvedAggregateFilter)) {
             val aggExprsWithHaving = resolvedAggregateFilter +: originalAggExprs
 
             Project(

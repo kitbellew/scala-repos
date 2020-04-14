@@ -36,8 +36,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * Shear Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ShearSpec

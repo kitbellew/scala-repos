@@ -37,8 +37,8 @@ abstract class CharsetEncoder protected (
 
   final def replaceWith(newReplacement: Array[Byte]): CharsetEncoder = {
     if (newReplacement == null || newReplacement.length == 0 ||
-        newReplacement.length > maxBytesPerChar ||
-        !isLegalReplacement(newReplacement))
+      newReplacement.length > maxBytesPerChar ||
+      !isLegalReplacement(newReplacement))
       throw new IllegalArgumentException
 
     _replacement = newReplacement

@@ -27,9 +27,9 @@ class ConvertStringConcatenationToInterpolatedString
       editor: Editor,
       element: PsiElement): Boolean = {
     if (!super.isAvailable(
-          project: Project,
-          editor: Editor,
-          element: PsiElement)) return false
+        project: Project,
+        editor: Editor,
+        element: PsiElement)) return false
     element.scalaLanguageLevel.getOrElse(
       ScalaLanguageLevel.Default) >= Scala_2_10
   }

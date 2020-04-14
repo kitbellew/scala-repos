@@ -195,10 +195,10 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
       if (s.startsWith(prefix)) baseRelevance + 50 else baseRelevance
 
     if (matchesPrefix(
-          s,
-          prefix,
-          matchEntire = false,
-          caseSens = caseSense) && !s.contains("$")) {
+        s,
+        prefix,
+        matchEntire = false,
+        caseSens = caseSense) && !s.contains("$")) {
       e match {
         case e: ExecutableElement if !typesOnly =>
           List(methodInfo(e, relevance + 5))
@@ -227,13 +227,13 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     def addTypeMembers(tel: TypeElement, relevance: Int): Unit = {
       for (el <- info.getElements().getAllMembers(tel)) {
         for (info <- filterElement(
-               info,
-               el,
-               prefix,
-               caseSense,
-               false,
-               constructing,
-               relevance)) {
+            info,
+            el,
+            prefix,
+            caseSense,
+            false,
+            constructing,
+            relevance)) {
           candidates += info
         }
       }
@@ -258,13 +258,13 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     while (s != null) {
       for (el <- s.getLocalElements()) {
         for (info <- filterElement(
-               info,
-               el,
-               prefix,
-               caseSense,
-               false,
-               constructing,
-               relavence)) {
+            info,
+            el,
+            prefix,
+            caseSense,
+            false,
+            constructing,
+            relavence)) {
           candidates += info
         }
       }

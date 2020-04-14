@@ -325,7 +325,6 @@ trait GenTraversableLike[+A, +Repr]
     *               }}}
     *               That is, every key `k` is bound to a $coll of those elements `x`
     *               for which `f(x)` equals `k`.
-    *
     */
   def groupBy[K](f: A => K): GenMap[K, Repr]
 

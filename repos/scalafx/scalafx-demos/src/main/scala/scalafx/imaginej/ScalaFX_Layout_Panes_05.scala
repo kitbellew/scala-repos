@@ -59,7 +59,6 @@ import scalafx.scene.text.{Font, FontWeight, Text}
   *         note: no linear gradient and hard coded positioning of stack pane
   *
   *         http://docs.oracle.com/javafx/2.0/layout/builtin_layouts.htm
-  *
   */
 
 object ScalaFX_Layout_Panes_05 extends JFXApp {

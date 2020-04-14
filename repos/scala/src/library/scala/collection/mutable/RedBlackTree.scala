@@ -554,8 +554,8 @@ private[collection] object RedBlackTree {
 
     private[this] def setNullIfAfterEnd(): Unit =
       if (end.isDefined && (nextNode ne null) && ord.compare(
-            nextNode.key,
-            end.get) >= 0)
+          nextNode.key,
+          end.get) >= 0)
         nextNode = null
 
     setNullIfAfterEnd()
@@ -610,7 +610,7 @@ private[collection] object RedBlackTree {
       if (node eq null) true
       else {
         if ((node.left ne null) && (node.left.parent ne node) ||
-            (node.right ne null) && (node.right.parent ne node)) false
+          (node.right ne null) && (node.right.parent ne node)) false
         else hasProperParentRefs(node.left) && hasProperParentRefs(node.right)
       }
     }
@@ -627,7 +627,7 @@ private[collection] object RedBlackTree {
     if (node eq null) true
     else {
       if ((node.left ne null) && (ord.compare(node.key, node.left.key) <= 0) ||
-          (node.right ne null) && (ord.compare(node.key, node.right.key) >= 0))
+        (node.right ne null) && (ord.compare(node.key, node.right.key) >= 0))
         false
       else isValidBST(node.left) && isValidBST(node.right)
     }

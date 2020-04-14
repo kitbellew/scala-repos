@@ -168,7 +168,7 @@ object ConsumerPerformance {
     var lastConsumedTime = System.currentTimeMillis
 
     while (messagesRead < count && System
-             .currentTimeMillis() - lastConsumedTime <= timeout) {
+        .currentTimeMillis() - lastConsumedTime <= timeout) {
       val records = consumer.poll(100)
       if (records.count() > 0)
         lastConsumedTime = System.currentTimeMillis

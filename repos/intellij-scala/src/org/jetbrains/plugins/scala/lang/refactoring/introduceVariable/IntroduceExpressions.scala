@@ -331,7 +331,7 @@ trait IntroduceExpressions {
         offsets.forall(document.getLineNumber(_) == lineNumber)
       }
       while (parent != null && !parent.isInstanceOf[PsiFile] && atSameLine(
-               parent)) {
+          parent)) {
         parent = parent.getParent
       }
       val insideExpression = parent match {

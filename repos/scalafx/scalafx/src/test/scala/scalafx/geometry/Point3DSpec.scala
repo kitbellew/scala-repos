@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Point3D Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class Point3DSpec

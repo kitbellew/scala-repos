@@ -39,27 +39,27 @@ trait TimeHelpers { self: ControlHelpers =>
   // Logger must be lazy, since we cannot instantiate until after boot is complete
   private lazy val logger = Logger(classOf[TimeHelpers])
 
-  /** transforms a long to a TimeSpanBuilder object. Usage: 3L.seconds returns a TimeSpan of 3000L millis  */
+  /** transforms a long to a TimeSpanBuilder object. Usage: 3L.seconds returns a TimeSpan of 3000L millis */
   implicit def longToTimeSpanBuilder(in: Long): TimeSpanBuilder =
     TimeSpanBuilder(in)
 
-  /** transforms an int to a TimeSpanBuilder object. Usage: 3.seconds returns a TimeSpan of 3000L millis  */
+  /** transforms an int to a TimeSpanBuilder object. Usage: 3.seconds returns a TimeSpan of 3000L millis */
   implicit def intToTimeSpanBuilder(in: Int): TimeSpanBuilder =
     TimeSpanBuilder(in)
 
-  /** transforms a long to a TimeSpan object. Usage: 3000L returns a TimeSpan of 3000L millis  */
+  /** transforms a long to a TimeSpan object. Usage: 3000L returns a TimeSpan of 3000L millis */
   @deprecated(
     "Long to TimeSpan conversion will be removed for possibility of ambiguous behaviours, use TimeSpan(in) instead if you are using in.millis",
     "3.0.0")
   implicit def longToTimeSpan(in: Long): TimeSpan = TimeSpan(in)
 
-  /** transforms an int to a TimeSpan object. Usage: 3000 returns a TimeSpan of 3000L millis  */
+  /** transforms an int to a TimeSpan object. Usage: 3000 returns a TimeSpan of 3000L millis */
   @deprecated(
     "Int to TimeSpan conversion will be removed for possibility of ambiguous behaviours, use TimeSpan(in) instead if you are using in.millis",
     "3.0.0")
   implicit def intToTimeSpan(in: Int): TimeSpan = TimeSpan(in)
 
-  /** class building TimeSpans given an amount (len) and a method specify the time unit  */
+  /** class building TimeSpans given an amount (len) and a method specify the time unit */
   case class TimeSpanBuilder(len: Long) {
     def seconds = new TimeSpan(Left(Duration.standardSeconds(len)))
     def second = seconds
@@ -291,7 +291,7 @@ trait TimeHelpers { self: ControlHelpers =>
     */
   object TimeSpan {
 
-    /** time units and values used when converting a total number of millis to those units (see the format function)  */
+    /** time units and values used when converting a total number of millis to those units (see the format function) */
     val scales = List(
       (1000L, "milli"),
       (60L, "second"),
@@ -300,7 +300,7 @@ trait TimeHelpers { self: ControlHelpers =>
       (7L, "day"),
       (10000L, "week"))
 
-    /** explicit constructor for a TimeSpan  */
+    /** explicit constructor for a TimeSpan */
     def apply(in: Long) = new TimeSpan(in)
 
     /**
@@ -367,7 +367,7 @@ trait TimeHelpers { self: ControlHelpers =>
   /** @return the current System.nanoTime() */
   def nano = System.nanoTime()
 
-  /** @return the current number of millis: System.currentTimeMillis  */
+  /** @return the current number of millis: System.currentTimeMillis */
   def millis = System.currentTimeMillis
 
   /** @return the number of millis corresponding to 'in' seconds */
@@ -512,7 +512,7 @@ trait TimeHelpers { self: ControlHelpers =>
   /** @return a standard format for the date yyyy/MM/dd */
   def dateFormatter = new SimpleDateFormat("yyyy/MM/dd")
 
-  /** @return a format for the time which includes the TimeZone: HH:mm zzz*/
+  /** @return a format for the time which includes the TimeZone: HH:mm zzz */
   def timeFormatter = new SimpleDateFormat("HH:mm zzz")
 
   /** @return today's date formatted as yyyy/MM/dd */
@@ -551,7 +551,7 @@ trait TimeHelpers { self: ControlHelpers =>
   /** @return the current time as an internet date */
   def nowAsInternetDate: String = toInternetDate(millis)
 
-  /** @return a Full(date) or a failure if the input couldn't be translated to date (or Empty if the input is null)*/
+  /** @return a Full(date) or a failure if the input couldn't be translated to date (or Empty if the input is null) */
   def toDate(in: Any): Box[Date] = {
     try {
       in match {

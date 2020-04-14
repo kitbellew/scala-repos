@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Line Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class LineSpec

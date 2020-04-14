@@ -178,7 +178,7 @@ object ScalaSigEntryParsers extends RulesWithState with MemoisableRules {
 
   def symbolEntry(key: Int) = symHeader(key) -~ symbolInfo
 
-  /***************************************************
+  /** ***********************************************
     * Symbol table attribute format:
     *   Symtab         = nentries_Nat {Entry}
     *   Entry          = 1 TERMNAME len_Nat NameInfo
@@ -323,7 +323,7 @@ case class Children(symbolRefs: Seq[Int]) //sym_Ref {sym_Ref}
 
 case class AnnotInfo(refs: Seq[Int]) // attarg_Ref {constant_Ref attarg_Ref}
 
-/***************************************************
+/** ***********************************************
   *                  | 49 TREE len_Nat 1 EMPTYtree
   *                  | 49 TREE len_Nat 2 PACKAGEtree type_Ref sym_Ref mods_Ref name_Ref {tree_Ref}
   *                  | 49 TREE len_Nat 3 CLASStree type_Ref sym_Ref mods_Ref name_Ref tree_Ref {tree_Ref}

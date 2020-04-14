@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Light.Distant Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class LightDistantSpec

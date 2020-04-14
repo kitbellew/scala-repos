@@ -193,7 +193,7 @@ private[csv] object CSVTypeCast {
       nullValue: String = ""): Any = {
 
     if (datum == nullValue && nullable && (!castType
-          .isInstanceOf[StringType])) {
+        .isInstanceOf[StringType])) {
       null
     } else {
       castType match {

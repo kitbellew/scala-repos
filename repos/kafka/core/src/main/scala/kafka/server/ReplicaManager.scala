@@ -222,10 +222,10 @@ class ReplicaManager(
     val now = System.currentTimeMillis()
     isrChangeSet synchronized {
       if (isrChangeSet.nonEmpty &&
-          (lastIsrChangeMs
-            .get() + ReplicaManager.IsrChangePropagationBlackOut < now ||
-          lastIsrPropagationMs
-            .get() + ReplicaManager.IsrChangePropagationInterval < now)) {
+        (lastIsrChangeMs
+          .get() + ReplicaManager.IsrChangePropagationBlackOut < now ||
+        lastIsrPropagationMs
+          .get() + ReplicaManager.IsrChangePropagationInterval < now)) {
         ReplicationUtils.propagateIsrChanges(zkUtils, isrChangeSet)
         isrChangeSet.clear()
         lastIsrPropagationMs.set(now)
@@ -432,9 +432,9 @@ class ReplicaManager(
       }
 
       if (delayedRequestRequired(
-            requiredAcks,
-            messagesPerPartition,
-            localProduceResults)) {
+          requiredAcks,
+          messagesPerPartition,
+          localProduceResults)) {
         // create delayed produce operation
         val produceMetadata = ProduceMetadata(requiredAcks, produceStatus)
         val delayedProduce =
@@ -511,7 +511,7 @@ class ReplicaManager(
 
         // reject appending to internal topics if it is not allowed
         if (TopicConstants.INTERNAL_TOPICS.contains(
-              topicPartition.topic) && !internalTopicsAllowed) {
+            topicPartition.topic) && !internalTopicsAllowed) {
           (
             topicPartition,
             LogAppendResult(
@@ -1012,9 +1012,9 @@ class ReplicaManager(
       partitionState.foreach {
         case (partition, partitionStateInfo) =>
           if (partition.makeLeader(
-                controllerId,
-                partitionStateInfo,
-                correlationId))
+              controllerId,
+              partitionStateInfo,
+              correlationId))
             partitionsToMakeLeaders += partition
           else
             stateChangeLogger.info(
@@ -1124,9 +1124,9 @@ class ReplicaManager(
             // Only change partition state when the leader is available
             case Some(leaderBroker) =>
               if (partition.makeFollower(
-                    controllerId,
-                    partitionStateInfo,
-                    correlationId))
+                  controllerId,
+                  partitionStateInfo,
+                  correlationId))
                 partitionsToMakeFollower += partition
               else
                 stateChangeLogger.info(

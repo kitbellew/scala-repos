@@ -894,7 +894,7 @@ object Uri {
 
         var lastPercentSignIndexPlus3 = ix + 3
         while (lastPercentSignIndexPlus3 < string.length && string.charAt(
-                 lastPercentSignIndexPlus3) == '%')
+            lastPercentSignIndexPlus3) == '%')
           lastPercentSignIndexPlus3 += 3
         val bytesCount = (lastPercentSignIndexPlus3 - ix) / 3
         val bytes = new Array[Byte](bytesCount)
@@ -908,7 +908,7 @@ object Uri {
 
         // if we have only ASCII chars and the charset is ASCII compatible we don't need to involve it in decoding
         if (((decodeBytes() >> 7) == 0) && UriRendering.isAsciiCompatible(
-              charset)) {
+            charset)) {
           @tailrec def appendBytes(i: Int = 0): Unit =
             if (i < bytesCount) {
               sb.append(bytes(i).toChar); appendBytes(i + 1)

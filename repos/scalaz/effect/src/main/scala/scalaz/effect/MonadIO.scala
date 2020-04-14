@@ -3,7 +3,6 @@ package effect
 
 ////
 /**
-  *
   */
 ////
 trait MonadIO[F[_]] extends LiftIO[F] with Monad[F] { self =>

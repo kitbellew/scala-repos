@@ -152,7 +152,7 @@ abstract class Duplicators extends Analyzer {
     private def invalidate(tree: Tree, owner: Symbol = NoSymbol) {
       debuglog(s"attempting to invalidate symbol = ${tree.symbol}")
       if ((tree.isDef || tree
-            .isInstanceOf[Function]) && tree.symbol != NoSymbol) {
+          .isInstanceOf[Function]) && tree.symbol != NoSymbol) {
         debuglog("invalid " + tree.symbol)
         invalidSyms(tree.symbol) = tree
 
@@ -220,8 +220,8 @@ abstract class Duplicators extends Analyzer {
       debuglog("typing " + tree + ": " + tree.tpe + ", " + tree.getClass)
       val origtreesym = tree.symbol
       if (tree.hasSymbolField && tree.symbol != NoSymbol
-          && !tree.symbol.isLabel // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
-          && invalidSyms.isDefinedAt(tree.symbol)) {
+        && !tree.symbol.isLabel // labels cannot be retyped by the type checker as LabelDef has no ValDef/return type trees
+        && invalidSyms.isDefinedAt(tree.symbol)) {
         debuglog("removed symbol " + tree.symbol)
         tree.symbol = NoSymbol
       }

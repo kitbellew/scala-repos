@@ -149,7 +149,6 @@ class WeightedPageRank(args: Args) extends Job(args) {
     * tw(N_j): N_j's total out weights
     * then
     * pagerankNext(N_i) = (\sum_{j points to i} inputPagerank(N_j) * w(N_j, N_i) / tw(N_j))
-    *
     */
   def doPageRank(nodeRows: RichPipe, inputPagerank: RichPipe): RichPipe = {
     // 'src_id, 'dst_ids, 'weights, 'mass_prior, 'mass_input

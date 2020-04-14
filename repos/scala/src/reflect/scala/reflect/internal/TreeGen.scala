@@ -297,7 +297,7 @@ abstract class TreeGen {
       wrapInApply: Boolean = true): Tree =
     mkSingleTypeApply(value, tpe, typeCastSymbol(any), wrapInApply)
 
-  /** Cast `tree` to `pt`, unless tpe is a subtype of pt, or pt is Unit.  */
+  /** Cast `tree` to `pt`, unless tpe is a subtype of pt, or pt is Unit. */
   def maybeMkAsInstanceOf(
       tree: Tree,
       pt: Type,
@@ -585,7 +585,7 @@ abstract class TreeGen {
   def mkSyntheticUnit() =
     Literal(Constant(())).updateAttachment(SyntheticUnitAttachment)
 
-  /** Create block of statements `stats`  */
+  /** Create block of statements `stats` */
   def mkBlock(stats: List[Tree], doFlatten: Boolean = true): Tree =
     if (stats.isEmpty) mkSyntheticUnit()
     else if (!stats.last.isTerm) Block(stats, mkSyntheticUnit())

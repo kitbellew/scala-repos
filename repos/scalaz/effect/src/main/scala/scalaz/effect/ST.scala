@@ -10,32 +10,32 @@ import ST._
 import std.function._
 import Id._
 
-/**Mutable variable in state thread S containing a value of type A. [[http://research.microsoft.com/en-us/um/people/simonpj/papers/lazy-functional-state-threads.ps.Z]] */
+/** Mutable variable in state thread S containing a value of type A. [[http://research.microsoft.com/en-us/um/people/simonpj/papers/lazy-functional-state-threads.ps.Z]] */
 sealed abstract class STRef[S, A] {
   protected var value: A
 
-  /**Reads the value pointed at by this reference. */
+  /** Reads the value pointed at by this reference. */
   def read: ST[S, A] = returnST(value)
 
-  /**Modifies the value at this reference with the given function. */
+  /** Modifies the value at this reference with the given function. */
   def mod[B](f: A => A): ST[S, STRef[S, A]] =
     st((s: Tower[S]) => {
       value = f(value);
       (s, this)
     })
 
-  /**Associates this reference with the given value. */
+  /** Associates this reference with the given value. */
   def write(a: => A): ST[S, STRef[S, A]] =
     st((s: Tower[S]) => {
       value = a;
       (s, this)
     })
 
-  /**Synonym for write*/
+  /** Synonym for write */
   def |=(a: => A): ST[S, STRef[S, A]] =
     write(a)
 
-  /**Swap the value at this reference with the value at another. */
+  /** Swap the value at this reference with the value at another. */
   def swap(that: STRef[S, A]): ST[S, Unit] =
     for {
       v1 <- this.read
@@ -61,12 +61,12 @@ object STRef extends STRefInstances {
 
 sealed abstract class STRefInstances {
 
-  /**Equality for STRefs is reference equality */
+  /** Equality for STRefs is reference equality */
   implicit def STRefEqual[S, A]: Equal[STRef[S, A]] =
     Equal.equalA // todo reference equality?
 }
 
-/**Mutable array in state thread S containing values of type A. */
+/** Mutable array in state thread S containing values of type A. */
 sealed abstract class STArray[S, A] {
   def size: Int
   def z: A
@@ -76,21 +76,21 @@ sealed abstract class STArray[S, A] {
 
   import ST._
 
-  /**Reads the value at the given index. */
+  /** Reads the value at the given index. */
   def read(i: Int): ST[S, A] = returnST(value(i))
 
-  /**Writes the given value to the array, at the given offset. */
+  /** Writes the given value to the array, at the given offset. */
   def write(i: Int, a: A): ST[S, STArray[S, A]] =
     st(s => {
       value(i) = a;
       (s, this)
     })
 
-  /**Turns a mutable array into an immutable one which is safe to return. */
+  /** Turns a mutable array into an immutable one which is safe to return. */
   def freeze: ST[S, ImmutableArray[A]] =
     st(s => (s, ImmutableArray.fromArray(value)))
 
-  /**Fill this array from the given association list. */
+  /** Fill this array from the given association list. */
   def fill[B](f: (A, B) => A, xs: Traversable[(Int, B)]): ST[S, Unit] =
     xs match {
       case Nil => returnST(())
@@ -101,7 +101,7 @@ sealed abstract class STArray[S, A] {
         } yield ()
     }
 
-  /**Combine the given value with the value at the given index, using the given function. */
+  /** Combine the given value with the value at the given index, using the given function. */
   def update[B](f: (A, B) => A, i: Int, v: B) =
     for {
       x <- read(i)
@@ -155,25 +155,25 @@ object ST extends STInstances {
   implicit def STToIO[A](st: ST[IvoryTower, A]): IO[A] =
     IO.io(rw => Free.return_(st(rw)))
 
-  /**Put a value in a state thread */
+  /** Put a value in a state thread */
   def returnST[S, A](a: => A): ST[S, A] =
     st(s => (s, a))
 
-  /**Run a state thread */
+  /** Run a state thread */
   def runST[A](f: Forall[ST[?, A]]): A =
     f.apply.apply(ivoryTower)._2
 
-  /**Allocates a fresh mutable reference. */
+  /** Allocates a fresh mutable reference. */
   def newVar[S]: Id ~> λ[α => ST[S, STRef[S, α]]] =
     new (Id ~> λ[α => ST[S, STRef[S, α]]]) {
       def apply[A](a: A) = returnST(stRef[S](a))
     }
 
-  /**Allocates a fresh mutable array. */
+  /** Allocates a fresh mutable array. */
   def newArr[S, A: ClassTag](size: Int, z: A): ST[S, STArray[S, A]] =
     returnST(stArray[S, A](size, z))
 
-  /**Allows the result of a state transformer computation to be used lazily inside the computation. */
+  /** Allows the result of a state transformer computation to be used lazily inside the computation. */
   def fixST[S, A](k: (=> A) => ST[S, A]): ST[S, A] =
     st(s => {
       lazy val ans: (Tower[S], A) = k(r)(s)
@@ -181,7 +181,7 @@ object ST extends STInstances {
       ans
     })
 
-  /**Accumulates an integer-associated list into an immutable array. */
+  /** Accumulates an integer-associated list into an immutable array. */
   def accumArray[F[_], A: ClassTag, B](
       size: Int,
       f: (A, B) => A,

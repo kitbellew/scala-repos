@@ -110,7 +110,7 @@ private[hive] class HiveClientImpl(
     // and spark.yarn.principal set in SparkSubmit, as yarn.Client resets the
     // keytab configuration for the link name in distributed cache
     if (sparkConf.contains("spark.yarn.principal") && sparkConf.contains(
-          "spark.yarn.keytab")) {
+        "spark.yarn.keytab")) {
       val principalName = sparkConf.get("spark.yarn.principal")
       val keytabFileName = sparkConf.get("spark.yarn.keytab")
       if (!new File(keytabFileName).exists()) {
@@ -216,7 +216,7 @@ private[hive] class HiveClientImpl(
     while (target != null) {
       val msg = target.getMessage()
       if (msg != null && msg.matches(
-            "(?s).*(TApplication|TProtocol|TTransport)Exception.*")) {
+          "(?s).*(TApplication|TProtocol|TTransport)Exception.*")) {
         return true
       }
       target = target.getCause()

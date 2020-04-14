@@ -303,7 +303,7 @@ trait PrepJSExports { this: PrepJSInterop =>
       if (sym.isModuleClass || (sym.isClass && isJSAny(sym))) {
         sym
       } else if (sym.isConstructor && sym.isPublic && !isJSAny(sym.owner) &&
-                 sym.owner.isConcreteClass && !sym.owner.isModuleClass) {
+        sym.owner.isConcreteClass && !sym.owner.isModuleClass) {
         sym.owner
       } else {
         NoSymbol

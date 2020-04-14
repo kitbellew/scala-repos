@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Tab Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TabSpec

@@ -186,8 +186,8 @@ class LinearRegression @Since("1.3.0") (
     val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))
 
     if (($(solver) == "auto" && $(elasticNetParam) == 0.0 &&
-        numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES) || $(
-          solver) == "normal") {
+      numFeatures <= WeightedLeastSquares.MAX_NUM_FEATURES) || $(
+        solver) == "normal") {
       require(
         $(elasticNetParam) == 0.0,
         "Only L2 regularization can be used when normal " +
@@ -844,7 +844,6 @@ class LinearRegressionSummary private[regression] (
   * {{{
   * \sum_i w_i^\prime x_i - y / \hat{y} + offset
   * }}}
-  *
   *
   * Note that the effective coefficients and offset don't depend on training dataset,
   * so they can be precomputed.

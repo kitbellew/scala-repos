@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Toggle Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ToggleSpec

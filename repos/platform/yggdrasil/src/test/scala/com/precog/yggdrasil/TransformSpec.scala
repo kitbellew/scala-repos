@@ -1314,12 +1314,12 @@ trait TransformSpec[M[+_]]
     implicit val gen =
       sample(_ => Seq(JPath("[0]") -> CLong, JPath("[1]") -> CLong))
     check { (sample0: SampleData) =>
-      /***
-      important note:
-      `sample` is excluding the cases when we have JArrays of size 1
-      this is because then the concat array would return
-      array.concat(undefined) = array
-      which is incorrect but is what the code currently does
+      /**
+        *      important note:
+        *      `sample` is excluding the cases when we have JArrays of size 1
+        *      this is because then the concat array would return
+        *      array.concat(undefined) = array
+        *      which is incorrect but is what the code currently does
         */
 
       val sample = SampleData(sample0.data flatMap { jv =>
@@ -2621,13 +2621,13 @@ trait TransformSpec[M[+_]]
   def checkArraySwap = {
     implicit val gen = sample(arraySchema(_, 3))
     check { (sample0: SampleData) =>
-      /***
-      important note:
-      `sample` is excluding the cases when we have JArrays of sizes 1 and 2
-      this is because then the array swap would go out of bounds of the index
-      and insert an undefined in to the array
-      this will never happen in the real system
-      so the test ignores this case
+      /**
+        *      important note:
+        *      `sample` is excluding the cases when we have JArrays of sizes 1 and 2
+        *      this is because then the array swap would go out of bounds of the index
+        *      and insert an undefined in to the array
+        *      this will never happen in the real system
+        *      so the test ignores this case
         */
       val sample = SampleData(sample0.data flatMap { jv =>
         (jv \ "value") match {

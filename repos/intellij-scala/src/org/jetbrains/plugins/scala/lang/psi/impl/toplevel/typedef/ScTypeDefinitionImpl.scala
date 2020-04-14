@@ -423,9 +423,9 @@ abstract class ScTypeDefinitionImpl protected (
     var toDelete: PsiElement = this
     var parent: PsiElement = getParent
     while (parent.isInstanceOf[ScToplevelElement] && parent
-             .asInstanceOf[ScToplevelElement]
-             .typeDefinitions
-             .length == 1) {
+        .asInstanceOf[ScToplevelElement]
+        .typeDefinitions
+        .length == 1) {
       toDelete = parent
       parent = toDelete.getParent
     }
@@ -451,8 +451,7 @@ abstract class ScTypeDefinitionImpl protected (
 
   def signaturesByName(name: String): Seq[PhysicalSignature] = {
     (for ((s: PhysicalSignature, _) <-
-            TypeDefinitionMembers.getSignatures(this).forName(name)._1)
-      yield s) ++
+        TypeDefinitionMembers.getSignatures(this).forName(name)._1) yield s) ++
       syntheticMethodsNoOverride
         .filter(_.name == name)
         .map(new PhysicalSignature(_, ScSubstitutor.empty))

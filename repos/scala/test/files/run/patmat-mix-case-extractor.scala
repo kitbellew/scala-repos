@@ -75,7 +75,7 @@ class B {
   }
 
   def f1(x: CaseClass) = x match { case CaseClass(y, z) => y }
-  def f2(x: Any) = x match { case Extractor(y, z)       => y }
+  def f2(x: Any) = x match { case Extractor(y, z) => y }
 
   def f3(x: CaseSeq) =
     x match {
@@ -88,7 +88,7 @@ class B {
       case CaseSeq(x, y, z @ _*) => z
     }
 
-  def f5(x: Any) = x match { case ExtractorSeq(x, y, z)      => z }
+  def f5(x: Any) = x match { case ExtractorSeq(x, y, z) => z }
   def f6(x: Any) = x match { case ExtractorSeq(x, y, z @ _*) => z }
 
   def g1(x: CaseClass0) =

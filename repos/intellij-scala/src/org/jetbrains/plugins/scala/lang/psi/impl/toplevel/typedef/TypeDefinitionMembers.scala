@@ -108,14 +108,14 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for (method <- clazz.getMethods if nonBridge(place, method) &&
-             !method.isConstructor && !method.hasModifierProperty("static") &&
-             method.getParameterList.getParametersCount == 0) {
+          !method.isConstructor && !method.hasModifierProperty("static") &&
+          method.getParameterList.getParametersCount == 0) {
         val phys = new PhysicalSignature(method, subst)
         map addToMap (phys, new Node(phys, subst))
       }
 
       for (field <- clazz.getFields
-           if nonBridge(place, field) && !field.hasModifierProperty("static")) {
+        if nonBridge(place, field) && !field.hasModifierProperty("static")) {
         val sig = new Signature(field.getName, Seq.empty, 0, subst, field)
         map addToMap (sig, new Node(sig, subst))
       }
@@ -250,7 +250,7 @@ object TypeDefinitionMembers {
       }
 
       for (method <- template.syntheticMethodsWithOverride
-           if method.getParameterList.getParametersCount == 0) {
+        if method.getParameterList.getParametersCount == 0) {
         val sig = new PhysicalSignature(method, subst)
         addSignature(sig)
       }
@@ -271,7 +271,7 @@ object TypeDefinitionMembers {
 
       if (!base) {
         for (method <- template.syntheticMethodsNoOverride
-             if method.getParameterList.getParametersCount == 0) {
+          if method.getParameterList.getParametersCount == 0) {
           val sig = new PhysicalSignature(method, subst)
           addSignature(sig)
         }
@@ -284,10 +284,10 @@ object TypeDefinitionMembers {
         place: Option[PsiElement]) {
       for ((sign, _) <- cp.signatureMap) {
         if (sign.paramLength.sum == 0 && (ScalaPsiUtil.nameContext(
-              sign.namedElement) match {
-              case m: PsiMember => nonBridge(place, m)
-              case _            => false
-            })) {
+            sign.namedElement) match {
+            case m: PsiMember => nonBridge(place, m)
+            case _            => false
+          })) {
           map addToMap (sign, new Node(sign, sign.substitutor))
         }
       }
@@ -334,7 +334,7 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for (inner <- clazz.getInnerClasses if nonBridge(place, inner) &&
-             !inner.hasModifierProperty("static")) {
+          !inner.hasModifierProperty("static")) {
         map addToMap (inner, new Node(inner, subst))
       }
     }
@@ -366,7 +366,7 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for ((name, TypeAliasSignature(_, _, _, _, _, alias)) <- cp.typesMap
-           if nonBridge(place, alias)) {
+        if nonBridge(place, alias)) {
         map addToMap (alias, new Node(alias, ScSubstitutor.empty))
       }
     }
@@ -425,13 +425,13 @@ object TypeDefinitionMembers {
         map: Map,
         place: Option[PsiElement]) {
       for (method <- clazz.getMethods if nonBridge(place, method) &&
-             !method.isConstructor && !method.hasModifierProperty("static")) {
+          !method.isConstructor && !method.hasModifierProperty("static")) {
         val phys = new PhysicalSignature(method, subst)
         map addToMap (phys, new Node(phys, subst))
       }
 
       for (field <- clazz.getFields
-           if nonBridge(place, field) && !field.hasModifierProperty("static")) {
+        if nonBridge(place, field) && !field.hasModifierProperty("static")) {
         val sig = new Signature(field.getName, Seq.empty, 0, subst, field)
         map addToMap (sig, new Node(sig, subst))
       }
@@ -644,9 +644,9 @@ object TypeDefinitionMembers {
         place: Option[PsiElement]) {
       for ((sign, _) <- cp.signatureMap) {
         if (ScalaPsiUtil.nameContext(sign.namedElement) match {
-              case m: PsiMember => nonBridge(place, m)
-              case _            => false
-            }) {
+            case m: PsiMember => nonBridge(place, m)
+            case _            => false
+          }) {
           map addToMap (sign, new Node(sign, sign.substitutor))
         }
       }
@@ -866,35 +866,35 @@ object TypeDefinitionMembers {
     }
 
     if (BaseProcessor.isImplicitProcessor(processor) && !clazz
-          .isInstanceOf[ScTemplateDefinition]) return true
+        .isInstanceOf[ScTemplateDefinition]) return true
 
     if (!privateProcessDeclarations(
-          processor,
-          state,
-          lastParent,
-          place,
-          () => getSignatures(clazz, Option(place)),
-          () => getParameterlessSignatures(clazz),
-          () => getTypes(clazz),
-          isSupers = false,
-          isObject = clazz.isInstanceOf[ScObject],
-          signaturesForJava = () => signaturesForJava,
-          syntheticMethods = () => syntheticMethods
-        )) return false
+        processor,
+        state,
+        lastParent,
+        place,
+        () => getSignatures(clazz, Option(place)),
+        () => getParameterlessSignatures(clazz),
+        () => getTypes(clazz),
+        isSupers = false,
+        isObject = clazz.isInstanceOf[ScObject],
+        signaturesForJava = () => signaturesForJava,
+        syntheticMethods = () => syntheticMethods
+      )) return false
 
     if (!(types.AnyRef
+        .asClass(clazz.getProject)
+        .getOrElse(return true)
+        .processDeclarations(processor, state, lastParent, place) &&
+        types.Any
           .asClass(clazz.getProject)
           .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
-            .asClass(clazz.getProject)
-            .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
+          .processDeclarations(processor, state, lastParent, place)))
       return false
 
     if (shouldProcessMethods(processor) && !processEnum(
-          clazz,
-          processor.execute(_, state))) return false
+        clazz,
+        processor.execute(_, state))) return false
     true
   }
 
@@ -905,25 +905,25 @@ object TypeDefinitionMembers {
       lastParent: PsiElement,
       place: PsiElement): Boolean = {
     if (!privateProcessDeclarations(
-          processor,
-          state,
-          lastParent,
-          place,
-          () => getSignatures(td),
-          () => getParameterlessSignatures(td),
-          () => getTypes(td),
-          isSupers = true,
-          isObject = td.isInstanceOf[ScObject]
-        )) return false
+        processor,
+        state,
+        lastParent,
+        place,
+        () => getSignatures(td),
+        () => getParameterlessSignatures(td),
+        () => getTypes(td),
+        isSupers = true,
+        isObject = td.isInstanceOf[ScObject]
+      )) return false
 
     if (!(types.AnyRef
+        .asClass(td.getProject)
+        .getOrElse(return true)
+        .processDeclarations(processor, state, lastParent, place) &&
+        types.Any
           .asClass(td.getProject)
           .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
-            .asClass(td.getProject)
-            .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
+          .processDeclarations(processor, state, lastParent, place)))
       return false
     true
   }
@@ -937,29 +937,29 @@ object TypeDefinitionMembers {
     val compoundTypeThisType = Option(
       state.get(BaseProcessor.COMPOUND_TYPE_THIS_TYPE_KEY)).getOrElse(None)
     if (!privateProcessDeclarations(
-          processor,
-          state,
-          lastParent,
-          place,
-          () => getSignatures(comp, compoundTypeThisType, place),
-          () => getParameterlessSignatures(comp, compoundTypeThisType, place),
-          () => getTypes(comp, compoundTypeThisType, place),
-          isSupers = false,
-          isObject = false
-        )) return false
+        processor,
+        state,
+        lastParent,
+        place,
+        () => getSignatures(comp, compoundTypeThisType, place),
+        () => getParameterlessSignatures(comp, compoundTypeThisType, place),
+        () => getTypes(comp, compoundTypeThisType, place),
+        isSupers = false,
+        isObject = false
+      )) return false
 
     val project =
       if (lastParent != null) lastParent.getProject
       else if (place != null) place.getProject
       else return true
     if (!(types.AnyRef
+        .asClass(project)
+        .getOrElse(return true)
+        .processDeclarations(processor, state, lastParent, place) &&
+        types.Any
           .asClass(project)
           .getOrElse(return true)
-          .processDeclarations(processor, state, lastParent, place) &&
-          types.Any
-            .asClass(project)
-            .getOrElse(return true)
-            .processDeclarations(processor, state, lastParent, place)))
+          .processDeclarations(processor, state, lastParent, place)))
       return false
 
     true
@@ -1038,30 +1038,29 @@ object TypeDefinitionMembers {
                 true,
                 classOf[ScTemplateDefinition])
               if (clazz != null && clazz
-                    .isInstanceOf[ScClass] && !p.isEffectiveVal) {
+                  .isInstanceOf[ScClass] && !p.isEffectiveVal) {
                 //this is member only for class scope
                 if (PsiTreeUtil.isContextAncestor(
-                      clazz,
-                      place,
-                      false) && checkName(p.name)) {
+                    clazz,
+                    place,
+                    false) && checkName(p.name)) {
                   //we can accept this member
                   if (!processor.execute(
-                        elem,
-                        state.put(
-                          ScSubstitutor.key,
-                          n.substitutor followed subst)))
+                      elem,
+                      state
+                        .put(ScSubstitutor.key, n.substitutor followed subst)))
                     return false
                 } else {
                   if (n.supers.nonEmpty &&
-                      !processor.execute(
-                        n.supers
-                          .apply(0)
-                          .info
-                          .asInstanceOf[Signature]
-                          .namedElement,
-                        state.put(
-                          ScSubstitutor.key,
-                          n.supers.apply(0).substitutor followed subst)))
+                    !processor.execute(
+                      n.supers
+                        .apply(0)
+                        .info
+                        .asInstanceOf[Signature]
+                        .namedElement,
+                      state.put(
+                        ScSubstitutor.key,
+                        n.supers.apply(0).substitutor followed subst)))
                     return false
                 }
               } else if (!tail) return false
@@ -1069,9 +1068,9 @@ object TypeDefinitionMembers {
           }
           def tail: Boolean = {
             if (processValsForScala && checkName(elem.name) &&
-                !processor.execute(
-                  elem,
-                  state.put(ScSubstitutor.key, n.substitutor followed subst)))
+              !processor.execute(
+                elem,
+                state.put(ScSubstitutor.key, n.substitutor followed subst)))
               return false
 
             if (name == null || name.isEmpty || checkName(s"${elem.name}_=")) {
@@ -1079,10 +1078,10 @@ object TypeDefinitionMembers {
                 case t: ScTypedDefinition
                     if t.isVar && signature.name.endsWith("_=") =>
                   if (processValsForScala && !processor.execute(
-                        t.getUnderEqualsMethod,
-                        state.put(
-                          ScSubstitutor.key,
-                          n.substitutor followed subst))) return false
+                      t.getUnderEqualsMethod,
+                      state
+                        .put(ScSubstitutor.key, n.substitutor followed subst)))
+                    return false
                 case _ =>
               }
             }
@@ -1092,19 +1091,19 @@ object TypeDefinitionMembers {
                 case t: ScTypedDefinition =>
                   def process(method: PsiMethod): Boolean = {
                     if (processValsForScala &&
-                        !processor.execute(
-                          method,
-                          state.put(
-                            ScSubstitutor.key,
-                            n.substitutor followed subst))) return false
+                      !processor.execute(
+                        method,
+                        state.put(
+                          ScSubstitutor.key,
+                          n.substitutor followed subst))) return false
                     true
                   }
                   if (decodedName.startsWith("set") && !process(
-                        t.getSetBeanMethod)) return false
+                      t.getSetBeanMethod)) return false
                   if (decodedName.startsWith("get") && !process(
-                        t.getGetBeanMethod)) return false
+                      t.getGetBeanMethod)) return false
                   if (decodedName.startsWith("is") && !process(
-                        t.getIsBeanMethod)) return false
+                      t.getIsBeanMethod)) return false
                   if (decodedName.isEmpty) {
                     //completion processor    a
                     val beanMethodsIterator = t.getBeanMethods.iterator
@@ -1128,8 +1127,8 @@ object TypeDefinitionMembers {
             if (checkName(method.name)) {
               val substitutor = n.substitutor followed subst
               if (!processor.execute(
-                    method,
-                    state.put(ScSubstitutor.key, substitutor))) return false
+                  method,
+                  state.put(ScSubstitutor.key, substitutor))) return false
             }
             true
           }
@@ -1216,9 +1215,8 @@ object TypeDefinitionMembers {
             if (method != null && checkName(method.name)) {
               val substitutor = n.substitutor followed subst
               if (!processor.execute(
-                    method,
-                    state.put(ScSubstitutor.key, substitutor)))
-                return Some(false)
+                  method,
+                  state.put(ScSubstitutor.key, substitutor))) return Some(false)
             }
           }
           None
@@ -1254,8 +1252,8 @@ object TypeDefinitionMembers {
         while (iterator.hasNext) {
           val (_, n) = iterator.next()
           if (!processor.execute(
-                n.info,
-                state.put(ScSubstitutor.key, n.substitutor followed subst)))
+              n.info,
+              state.put(ScSubstitutor.key, n.substitutor followed subst)))
             return false
         }
       } else {
@@ -1269,8 +1267,8 @@ object TypeDefinitionMembers {
             if (checkName(n.info.name)) {
               ProgressManager.checkCanceled()
               if (!processor.execute(
-                    n.info,
-                    state.put(ScSubstitutor.key, n.substitutor followed subst)))
+                  n.info,
+                  state.put(ScSubstitutor.key, n.substitutor followed subst)))
                 return false
             }
           }
@@ -1296,9 +1294,9 @@ object TypeDefinitionMembers {
         while (iterator.hasNext) {
           val (_, n) = iterator.next()
           if (n.info.isInstanceOf[ScTypeDefinition] &&
-              !processor.execute(
-                n.info,
-                state.put(ScSubstitutor.key, n.substitutor followed subst)))
+            !processor.execute(
+              n.info,
+              state.put(ScSubstitutor.key, n.substitutor followed subst)))
             return false
         }
       } else {
@@ -1312,9 +1310,9 @@ object TypeDefinitionMembers {
             if (checkName(n.info.name)) {
               ProgressManager.checkCanceled()
               if (n.info.isInstanceOf[ScTypeDefinition] &&
-                  !processor.execute(
-                    n.info,
-                    state.put(ScSubstitutor.key, n.substitutor followed subst)))
+                !processor.execute(
+                  n.info,
+                  state.put(ScSubstitutor.key, n.substitutor followed subst)))
                 return false
             }
           }

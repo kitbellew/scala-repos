@@ -5,7 +5,7 @@ import breeze.linalg._
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-/**Tests for breeze.linalg.max.scala
+/** Tests for breeze.linalg.max.scala
   * Test for clip is currently located in "DenseVectorTest.scala"
   * @author ktakagaki
   * @date 3/13/14.

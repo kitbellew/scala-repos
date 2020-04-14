@@ -258,8 +258,8 @@ object TestUtils extends Logging {
     rack.foreach(props.put("broker.rack", _))
 
     if (protocolAndPorts.exists {
-          case (protocol, _) => usesSslTransportLayer(protocol)
-        })
+        case (protocol, _) => usesSslTransportLayer(protocol)
+      })
       props.putAll(
         sslConfigs(Mode.SERVER, false, trustStoreFile, s"server$nodeId"))
 
@@ -438,7 +438,6 @@ object TestUtils extends Logging {
 
   /**
     *  Throw an exception if an iterable has different length than expected
-    *
     */
   def checkLength[T](s1: Iterator[T], expectedLength: Int) {
     var n = 0
@@ -596,7 +595,7 @@ object TestUtils extends Logging {
      * SSL client auth fails.
      */
     if (!producerProps.containsKey(
-          CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
+        CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
       producerProps.putAll(
         producerSecurityConfigs(securityProtocol, trustStoreFile))
 
@@ -660,7 +659,7 @@ object TestUtils extends Logging {
      * SSL client auth fails.
      */
     if (!consumerProps.containsKey(
-          CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
+        CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
       consumerProps.putAll(
         consumerSecurityConfigs(securityProtocol, trustStoreFile))
 
@@ -863,7 +862,7 @@ object TestUtils extends Logging {
 
     var leader: Option[Int] = None
     while (!isLeaderElectedOrChanged && System
-             .currentTimeMillis() < startTime + timeoutMs) {
+        .currentTimeMillis() < startTime + timeoutMs) {
       // check if leader is elected
       leader = zkUtils.getLeaderForPartition(topic, partition)
       leader match {
@@ -1238,7 +1237,7 @@ object TestUtils extends Logging {
         try {
           var i = 0
           while ((shouldGetAllMessages && iterator
-                   .hasNext()) || (i < nMessagesPerThread)) {
+              .hasNext()) || (i < nMessagesPerThread)) {
             assertTrue(iterator.hasNext)
             val message =
               iterator.next.message // will throw a timeout exception if the message isn't there

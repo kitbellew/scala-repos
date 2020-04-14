@@ -4,7 +4,6 @@ import breeze.optimize.linear.LinearProgram
 import collection.mutable.ArrayBuffer
 
 /**
-  *
   * @author dlwh
   */
 

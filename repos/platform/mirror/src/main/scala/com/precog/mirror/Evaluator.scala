@@ -131,7 +131,7 @@ trait EvaluatorModule
           val toRes = loop(env, restrict)(to)
 
           val fromIdx = Set(fromRes map { case (ids, _) => ids }: _*)
-          val toIdx = Set(toRes map { case (ids, _)     => ids }: _*)
+          val toIdx = Set(toRes map { case (ids, _) => ids }: _*)
 
           loop(
             env,

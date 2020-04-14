@@ -157,7 +157,7 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
           for (message <- compileContext.getMessages(category)) {
             val msg: String = message.getMessage
             if (category != CompilerMessageCategory.INFORMATION || !msg
-                  .startsWith("Compilation completed successfully")) {
+                .startsWith("Compilation completed successfully")) {
               myMessages += (category + ": " + msg)
             }
           }

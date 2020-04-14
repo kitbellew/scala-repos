@@ -17,8 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.05.2008
-  */
+  * Date: 28.05.2008 */
 class DefTypeFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
     if (context.isInstanceOf[PsiComment]) return false
@@ -36,11 +35,11 @@ class DefTypeFilter extends ElementFilter {
               .asInstanceOf[ScalaFile]
               .isScriptFile() =>
           if ((leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-              leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
-              (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
-              (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-              !parent.getPrevSibling.getPrevSibling.getLastChild
-                .isInstanceOf[PsiErrorElement])))
+            leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF) &&
+            (parent.getPrevSibling == null || parent.getPrevSibling.getPrevSibling == null ||
+            (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
+            !parent.getPrevSibling.getPrevSibling.getLastChild
+              .isInstanceOf[PsiErrorElement])))
             return true
         case _ =>
       }

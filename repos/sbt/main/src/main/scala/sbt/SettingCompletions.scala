@@ -31,7 +31,7 @@ private[sbt] class SetResult(
     val verboseSummary: String,
     val quietSummary: String)
 
-/** Defines methods for implementing the `set` command.*/
+/** Defines methods for implementing the `set` command. */
 private[sbt] object SettingCompletions {
 
   /**
@@ -193,7 +193,7 @@ private[sbt] object SettingCompletions {
       yield ScopedKey(scope, key)
   }
 
-  /** Parser for the `in` method name that slightly augments the naive completion to give a hint of the purpose of `in`.*/
+  /** Parser for the `in` method name that slightly augments the naive completion to give a hint of the purpose of `in`. */
   val inParser = tokenDisplay(Space ~> InMethod, "%s <scope>".format(InMethod))
 
   /**
@@ -408,7 +408,7 @@ private[sbt] object SettingCompletions {
     */
   def configScalaID(c: String): String = Util.quoteIfKeyword(c.capitalize)
 
-  /** Applies a function on the underlying manifest for T for `key` depending if it is for a `Setting[T]`, `Task[T]`, or `InputTask[T]`.*/
+  /** Applies a function on the underlying manifest for T for `key` depending if it is for a `Setting[T]`, `Task[T]`, or `InputTask[T]`. */
   def keyType[S](key: AttributeKey[_])(
       onSetting: Manifest[_] => S,
       onTask: Manifest[_] => S,
@@ -440,7 +440,7 @@ private[sbt] object SettingCompletions {
   def isInputTask(key: AttributeKey[_]): Boolean =
     keyType(key)(const(false), const(false), const(true))
 
-  /** True if the `key` represents a setting, false if it represents a task or an input task.*/
+  /** True if the `key` represents a setting, false if it represents a task or an input task. */
   def isSetting(key: AttributeKey[_]): Boolean =
     keyType(key)(const(true), const(false), const(false))
 
@@ -457,7 +457,7 @@ private[sbt] object SettingCompletions {
   /** The simple name of the global scope axis, which can be used to reference it in the default setting context. */
   final val GlobalID = Global.getClass.getSimpleName.stripSuffix("$")
 
-  /** Character used to quote a Scala identifier that would otherwise be interpreted as a keyword.*/
+  /** Character used to quote a Scala identifier that would otherwise be interpreted as a keyword. */
   final val Backtick = '`'
 
   /** Name of the method that modifies the scope of a key. */
@@ -484,7 +484,7 @@ private[sbt] object SettingCompletions {
   /** The assignment methods except for the ones that append. */
   val assignNoAppend: Set[Assign.Value] = Set(Define, Update)
 
-  /** Class values to approximate which types can be appended*/
+  /** Class values to approximate which types can be appended */
   val appendableClasses = Seq(
     classOf[Seq[_]],
     classOf[Map[_, _]],

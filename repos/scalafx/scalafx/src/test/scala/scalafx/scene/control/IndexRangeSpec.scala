@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * IndexRange Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class IndexRangeSpec

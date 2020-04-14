@@ -26,7 +26,6 @@ import AsmNode._
   *
   * EXAMPLE
   * See test/files/jvm/bytecode-test-example for an example of bytecode test.
-  *
   */
 abstract class BytecodeTest {
   import ASMConverters._

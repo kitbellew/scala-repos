@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Font Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class FontSpec

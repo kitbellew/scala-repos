@@ -80,9 +80,9 @@ class ScalaMoveClassesOrPackagesHandler
 
     import scala.collection.JavaConversions._
     if (!CommonRefactoringUtil.checkReadOnlyStatusRecursively(
-          project,
-          adjustedElements.toSeq,
-          true)) {
+        project,
+        adjustedElements.toSeq,
+        true)) {
       return
     }
     val initialTargetPackageName: String = MoveClassesOrPackagesImpl

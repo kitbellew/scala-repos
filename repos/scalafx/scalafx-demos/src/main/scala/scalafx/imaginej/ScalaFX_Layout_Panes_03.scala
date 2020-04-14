@@ -56,7 +56,6 @@ import scalafx.scene.text.{Font, FontWeight, Text}
   *         based upon: Example 1-3 Create a VBox Pane
   *
   *         http://docs.oracle.com/javafx/2.0/layout/builtin_layouts.htm
-  *
   */
 
 object ScalaFX_Layout_Panes_03 extends JFXApp {

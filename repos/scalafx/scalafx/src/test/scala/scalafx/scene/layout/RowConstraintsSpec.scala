@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * RowConstraints Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class RowConstraintsSpec

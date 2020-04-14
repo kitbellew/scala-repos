@@ -24,8 +24,7 @@ import com.gravity.goose.utils.Logging
 import org.jsoup.nodes.Element
 
 /**
-  * Implement this class to extract the {@link Date} of when this article was published.
-  */
+  * Implement this class to extract the {@link Date} of when this article was published. */
 /**
   * Created by IntelliJ IDEA.
   * User: robbie

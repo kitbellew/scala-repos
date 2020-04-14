@@ -180,12 +180,12 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
         * TODO: plumb this through a different way?
         */
       if (enableVectorizedParquetReader &&
-          format.getClass.getName == "org.apache.parquet.hadoop.ParquetInputFormat") {
+        format.getClass.getName == "org.apache.parquet.hadoop.ParquetInputFormat") {
         val parquetReader: VectorizedParquetRecordReader =
           new VectorizedParquetRecordReader()
         if (!parquetReader.tryInitialize(
-              split.serializableHadoopSplit.value,
-              hadoopAttemptContext)) {
+            split.serializableHadoopSplit.value,
+            hadoopAttemptContext)) {
           parquetReader.close()
         } else {
           reader = parquetReader.asInstanceOf[RecordReader[Void, V]]
@@ -261,9 +261,9 @@ private[spark] class SqlNewHadoopRDD[V: ClassTag](
           if (getBytesReadCallback.isDefined) {
             updateBytesRead()
           } else if (split.serializableHadoopSplit.value
-                       .isInstanceOf[FileSplit] ||
-                     split.serializableHadoopSplit.value
-                       .isInstanceOf[CombineFileSplit]) {
+              .isInstanceOf[FileSplit] ||
+            split.serializableHadoopSplit.value
+              .isInstanceOf[CombineFileSplit]) {
             // If we can't get the bytes read from the FS stats, fall back to the split size,
             // which may be inaccurate.
             try {

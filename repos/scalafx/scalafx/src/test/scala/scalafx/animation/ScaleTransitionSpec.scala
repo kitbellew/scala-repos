@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ScaleTransition Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ScaleTransitionSpec

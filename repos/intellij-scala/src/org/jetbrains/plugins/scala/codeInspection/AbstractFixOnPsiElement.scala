@@ -7,8 +7,7 @@ import com.intellij.psi.{PsiElement, PsiFile, SmartPointerManager}
 
 /**
   * Nikolay.Tropin
-  * 2014-11-12
-  */
+  * 2014-11-12 */
 abstract class AbstractFixOnPsiElement[T <: PsiElement](
     name: String,
     startElement: T,

@@ -59,7 +59,7 @@ object Box extends BoxTrait with Tryo {
   /**
     * Helper class to provide an easy way for converting a `List[Box[T]]` into
     * a `Box[List[T]]`.
-  **/
+    */
   implicit class ListOfBoxes[T](val theListOfBoxes: List[Box[T]])
       extends AnyVal {
 
@@ -85,7 +85,7 @@ object Box extends BoxTrait with Tryo {
       *
       * @param failureErrorMessage The string that should be placed in the message for the Failure.
       * @return A `Full[List[T]]` if no `Failure`s were present. `ParamFailure[List[Box[T]]]` otherwise.
-    **/
+      */
     def toSingleBox(failureErrorMessage: String): Box[List[T]] = {
       if (theListOfBoxes.exists(_.isInstanceOf[Failure])) {
         val failureChain =
@@ -512,7 +512,6 @@ sealed abstract class Box[+A] extends Product with Serializable {
   def forall(func: A => Boolean): Boolean = true
 
   /**
-    *
     * If this `Box` contains a value and it does '''not''' satisfy the specified
     * `f`, return the `Box` unchanged. Otherwise, return an `Empty`.
     */

@@ -237,7 +237,7 @@ private[r] class RBackendHandler(server: RBackend)
               }
             }
             if ((parameterType.isPrimitive || args(i) != null) &&
-                !parameterWrapperType.isInstance(args(i))) {
+              !parameterWrapperType.isInstance(args(i))) {
               argMatched = false
             }
           }
@@ -254,7 +254,7 @@ private[r] class RBackendHandler(server: RBackend)
 
           (0 until numArgs).map { i =>
             if (parameterTypes(i) == classOf[Seq[Any]] && args(
-                  i).getClass.isArray) {
+                i).getClass.isArray) {
               // Convert a Java array to scala Seq
               args(i) = args(i).asInstanceOf[Array[_]].toSeq
             }

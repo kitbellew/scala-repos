@@ -431,7 +431,7 @@ object LinearProgram {
       case _ => "Unknown"
     }
   }
- */
+   */
 }
 
 case class InfeasibleProblem(prob: LinearProgram#Problem)

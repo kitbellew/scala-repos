@@ -36,7 +36,7 @@ object BasicAuthExample {
     val realm = "Scalatra Basic Auth Example"
 
     protected def fromSession = { case id: String => MyUser(id) }
-    protected def toSession = { case usr: MyUser  => usr.id }
+    protected def toSession = { case usr: MyUser => usr.id }
 
     protected val scentryConfig =
       (new ScentryConfig {}).asInstanceOf[ScentryConfiguration]

@@ -38,7 +38,7 @@ case class JetDim(dimension: Int) {
   * two components: the "real" component x, and an "infinitesimal" component y.
   * Surprisingly, this leads to a convenient method for computing exact
   * derivatives without needing to manipulate complicated symbolic expressions.
-
+  *
   * For example, consider the function
   * {{{
   *   f(x) = x * x ,
@@ -97,7 +97,7 @@ case class JetDim(dimension: Int) {
   *
   *   val xValue = 9.47892774
   *   val yValue = 0.287740
-
+  *
   *   // The "2" means there should be 2 dual number components.
   *   implicit val dimension = JetDim(2)
   *   val x: Jet[Double] = xValue + Jet.h[Double](0);  // Pick the 0th dual number for x.
@@ -109,14 +109,14 @@ case class JetDim(dimension: Int) {
   *
   * For the more mathematically inclined, this file implements first-order
   * "jets". A 1st order jet is an element of the ring
-  *{{{
+  * {{{
   *   T[N] = T[t_1, ..., t_N] / (t_1, ..., t_N)^2
-  *}}}
+  * }}}
   * which essentially means that each jet consists of a "scalar" value 'a' from T
   * and a 1st order perturbation vector 'v' of length N:
-  *{{{
+  * {{{
   *   x = a + \sum_i v[i] t_i
-  *}}}
+  * }}}
   * A shorthand is to write an element as x = a + u, where u is the perturbation.
   * Then, the main point about the arithmetic of jets is that the product of
   * perturbations is zero:

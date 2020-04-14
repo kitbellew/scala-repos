@@ -580,8 +580,8 @@ private[joins] class SortMergeJoinScanner(
       bufferedMatches.clear()
       false
     } else if (matchJoinKey != null && keyOrdering.compare(
-                 streamedRowKey,
-                 matchJoinKey) == 0) {
+        streamedRowKey,
+        matchJoinKey) == 0) {
       // The new streamed row has the same join key as the previous row, so return the same matches.
       true
     } else if (bufferedRow == null) {
@@ -633,8 +633,8 @@ private[joins] class SortMergeJoinScanner(
       false
     } else {
       if (matchJoinKey != null && keyOrdering.compare(
-            streamedRowKey,
-            matchJoinKey) == 0) {
+          streamedRowKey,
+          matchJoinKey) == 0) {
         // Matches the current group, so do nothing.
       } else {
         // The streamed row does not match the current group.
@@ -920,14 +920,14 @@ private class SortMergeFullOuterJoinScanner(
     rightIndex = 0
 
     while (leftRowKey != null && keyOrdering.compare(
-             leftRowKey,
-             matchingKey) == 0) {
+        leftRowKey,
+        matchingKey) == 0) {
       leftMatches += leftRow.copy()
       advancedLeft()
     }
     while (rightRowKey != null && keyOrdering.compare(
-             rightRowKey,
-             matchingKey) == 0) {
+        rightRowKey,
+        matchingKey) == 0) {
       rightMatches += rightRow.copy()
       advancedRight()
     }

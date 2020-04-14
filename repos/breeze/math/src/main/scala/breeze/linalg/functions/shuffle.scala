@@ -8,7 +8,7 @@ import scala.collection.mutable.ArrayBuffer
 import scala.reflect.ClassTag
 import breeze.stats.distributions.Rand
 
-/**Returns the given DenseVector, Array, or DenseMatrix as a shuffled copy. (Fisher-Yates shuffle)
+/** Returns the given DenseVector, Array, or DenseMatrix as a shuffled copy. (Fisher-Yates shuffle)
   * @author ktakagaki
   * @date 05/12/2014.
   */

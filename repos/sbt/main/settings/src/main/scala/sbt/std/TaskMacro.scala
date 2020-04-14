@@ -51,7 +51,7 @@ object ParserInstance extends Instance {
     const(DefaultParsers.success(t()))
 }
 
-/** Composes the Task and Initialize Instances to provide an Instance for [T] Initialize[Task[T]].*/
+/** Composes the Task and Initialize Instances to provide an Instance for [T] Initialize[Task[T]]. */
 object FullInstance
     extends Instance.Composed[Initialize, Task](
       InitializeInstance,

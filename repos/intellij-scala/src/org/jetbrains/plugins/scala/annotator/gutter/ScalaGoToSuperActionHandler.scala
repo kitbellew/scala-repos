@@ -113,13 +113,12 @@ private object ScalaGoToSuperActionHandler {
       var el = file.findElementAt(offset)
       val elOrig = el
       while (el != null && !(el
-               .isInstanceOf[ScTypedDefinition] && el != elOrig))
-        el = el.getParent
+          .isInstanceOf[ScTypedDefinition] && el != elOrig)) el = el.getParent
       val elements = d.declaredElements
       if (elements.isEmpty) return empty
       val supers = mutable.HashSet[NavigatablePsiElement](
         (if (el != null && elements.contains(
-               el.asInstanceOf[ScTypedDefinition])) {
+             el.asInstanceOf[ScTypedDefinition])) {
            ScalaPsiUtil.superValsSignatures(el.asInstanceOf[ScTypedDefinition])
          } else ScalaPsiUtil.superValsSignatures(elements.head))
           .flatMap(_.namedElement match {

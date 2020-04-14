@@ -114,8 +114,8 @@ class DefaultGitUploadPack(owner: String, repoName: String)
     getRepository(owner, repoName.replaceFirst("\\.wiki\\Z", "")).foreach {
       repositoryInfo =>
         if (!repositoryInfo.repository.isPrivate || isWritableUser(
-              user,
-              repositoryInfo)) {
+            user,
+            repositoryInfo)) {
           using(Git.open(getRepositoryDir(owner, repoName))) { git =>
             val repository = git.getRepository
             val upload = new UploadPack(repository)
@@ -158,10 +158,10 @@ class PluginGitUploadPack(repoName: String, routing: GitRepositoryRouting)
   override protected def runTask(user: String)(implicit
       session: Session): Unit = {
     if (routing.filter.filter(
-          "/" + repoName,
-          Some(user),
-          loadSystemSettings(),
-          false)) {
+        "/" + repoName,
+        Some(user),
+        loadSystemSettings(),
+        false)) {
       val path =
         routing.urlPattern.r.replaceFirstIn(repoName, routing.localPath)
       using(Git.open(new File(Directory.GitBucketHome, path))) { git =>
@@ -180,10 +180,10 @@ class PluginGitReceivePack(repoName: String, routing: GitRepositoryRouting)
   override protected def runTask(user: String)(implicit
       session: Session): Unit = {
     if (routing.filter.filter(
-          "/" + repoName,
-          Some(user),
-          loadSystemSettings(),
-          true)) {
+        "/" + repoName,
+        Some(user),
+        loadSystemSettings(),
+        true)) {
       val path =
         routing.urlPattern.r.replaceFirstIn(repoName, routing.localPath)
       using(Git.open(new File(Directory.GitBucketHome, path))) { git =>

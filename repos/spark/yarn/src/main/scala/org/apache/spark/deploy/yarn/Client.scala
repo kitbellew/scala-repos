@@ -1139,8 +1139,8 @@ private[spark] class Client(
       }
 
       if (state == YarnApplicationState.FINISHED ||
-          state == YarnApplicationState.FAILED ||
-          state == YarnApplicationState.KILLED) {
+        state == YarnApplicationState.FAILED ||
+        state == YarnApplicationState.KILLED) {
         cleanupStagingDir(appId)
         return (state, report.getFinalApplicationStatus)
       }
@@ -1203,12 +1203,12 @@ private[spark] class Client(
       val (yarnApplicationState, finalApplicationStatus) = monitorApplication(
         appId)
       if (yarnApplicationState == YarnApplicationState.FAILED ||
-          finalApplicationStatus == FinalApplicationStatus.FAILED) {
+        finalApplicationStatus == FinalApplicationStatus.FAILED) {
         throw new SparkException(
           s"Application $appId finished with failed status")
       }
       if (yarnApplicationState == YarnApplicationState.KILLED ||
-          finalApplicationStatus == FinalApplicationStatus.KILLED) {
+        finalApplicationStatus == FinalApplicationStatus.KILLED) {
         throw new SparkException(s"Application $appId is killed")
       }
       if (finalApplicationStatus == FinalApplicationStatus.UNDEFINED) {
@@ -1557,7 +1557,7 @@ object Client extends Logging {
     val srcUri = srcFs.getUri()
     val dstUri = destFs.getUri()
     if (srcUri.getScheme() == null || srcUri.getScheme() != dstUri
-          .getScheme()) {
+        .getScheme()) {
       return false
     }
 

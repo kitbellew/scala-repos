@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ListCell Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ListCellSpec[T]

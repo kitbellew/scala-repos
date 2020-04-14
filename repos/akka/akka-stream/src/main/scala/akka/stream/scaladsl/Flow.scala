@@ -486,7 +486,6 @@ trait FlowOps[+Out, +Mat] {
     * '''Completes when''' upstream completes or upstream failed with exception pf can handle
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def recover[T >: Out](pf: PartialFunction[Throwable, T]): Repr[T] =
     andThen(Recover(pf))
@@ -507,7 +506,6 @@ trait FlowOps[+Out, +Mat] {
     * '''Completes when''' upstream completes or upstream failed with exception pf can handle
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, Graph[SourceShape[T], NotUsed]]): Repr[T] =
@@ -524,7 +522,6 @@ trait FlowOps[+Out, +Mat] {
     * '''Completes when''' upstream completes
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def map[T](f: Out ⇒ T): Repr[T] = andThen(Map(f))
 
@@ -544,7 +541,6 @@ trait FlowOps[+Out, +Mat] {
     * '''Completes when''' upstream completes and all remaining elements have been emitted
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def mapConcat[T](f: Out ⇒ immutable.Iterable[T]): Repr[T] =
     statefulMapConcat(() => f)

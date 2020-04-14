@@ -160,7 +160,7 @@ private[sql] case class InMemoryRelation(
             var rowCount = 0
             var totalSize = 0L
             while (rowIterator.hasNext && rowCount < batchSize
-                   && totalSize < ColumnBuilder.MAX_BATCH_SIZE_IN_BYTE) {
+              && totalSize < ColumnBuilder.MAX_BATCH_SIZE_IN_BYTE) {
               val row = rowIterator.next()
 
               // Added for SPARK-6082. This assertion can be useful for scenarios when something

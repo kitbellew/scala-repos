@@ -290,7 +290,6 @@ object ButtonBar {
   * @define ORIGINALDOC Original Documentation]].
   * @constructor      Creates a default ButtonBar instance using the default properties for
   *                   the users operating system.
-
   */
 class ButtonBar(override val delegate: jfxsc.ButtonBar = new jfxsc.ButtonBar())
     extends Control(delegate)

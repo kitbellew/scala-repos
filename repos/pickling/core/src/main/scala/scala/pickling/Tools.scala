@@ -177,9 +177,9 @@ class Tools[C <: Context](val c: C) {
             val cache = MutableMap[Symbol, MutableList[Symbol]]()
             def updateCache(bc: Symbol, c: Symbol) = {
               if (bc != c && isRelevantSubclass(
-                    bc,
-                    c
-                  )) // TODO: what else do we want to ignore?
+                  bc,
+                  c
+                )) // TODO: what else do we want to ignore?
                 cache.getOrElseUpdate(bc, MutableList()) += c
             }
             def loop(pkg: Symbol): Unit = {
@@ -460,9 +460,9 @@ abstract class Macro extends RichTypes { self =>
     debug(candidates)
 
     if ((candidates.size >= 2) && {
-          val theirPt = candidates.tail.head.pt
-          ourPt =:= theirPt
-        }) {
+        val theirPt = candidates.tail.head.pt
+        ourPt =:= theirPt
+      }) {
       debug(
         s"no, because: ourPt = $ourPt, theirPt = ${candidates.tail.head.pt}")
       // c.diverge()

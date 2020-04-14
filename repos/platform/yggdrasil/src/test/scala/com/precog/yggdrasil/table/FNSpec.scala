@@ -56,7 +56,7 @@ class FNSpec extends Specification {
       (f2(col4, col0) |> f1).isDefinedAt(0) must beFalse
       (f2(col5, col1) |> f1).isDefinedAt(0) must beFalse
       (f2(col4, col1) |> f1 |> f1).isDefinedAt(0) must beFalse
-     */
+       */
     }
 
     /* performance test
@@ -103,7 +103,7 @@ class FNSpec extends Specification {
       //pt.start
       ok
     }
-   */
+     */
   }
 
   val AddOneLongP = CF1P("testing::ct::addOneLong") {

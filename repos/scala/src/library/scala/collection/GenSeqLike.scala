@@ -128,7 +128,6 @@ trait GenSeqLike[+A, +Repr]
     *    @inheritdoc
     *
     *    $mayNotTerminateInf
-    *
     */
   def indexOf[B >: A](elem: B): Int = indexOf(elem, 0)
 
@@ -144,7 +143,6 @@ trait GenSeqLike[+A, +Repr]
     *    @inheritdoc
     *
     *    $mayNotTerminateInf
-    *
     */
   def indexOf[B >: A](elem: B, from: Int): Int = indexWhere(elem == _, from)
 
@@ -159,7 +157,6 @@ trait GenSeqLike[+A, +Repr]
     *    @inheritdoc
     *
     *    $willNotTerminateInf
-    *
     */
   def lastIndexOf[B >: A](elem: B): Int = lastIndexWhere(elem == _)
 

@@ -262,7 +262,7 @@ object Request {
 
   /**
     * Create an HTTP/1.1 GET Request from URI string.
-    * */
+    */
   def apply(uri: String): Request =
     apply(Method.Get, uri)
 

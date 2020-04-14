@@ -9,8 +9,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunctionDefinition
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008
-  */
+  * Date: 06.03.2008 */
 
 trait ScReturnStmt extends ScExpression {
   def expr = findChild(classOf[ScExpression])

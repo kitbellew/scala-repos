@@ -58,11 +58,11 @@ class ScalaAttachSourcesNotificationProvider(
       else getFQN(psiFile)
     if (fqn == null) return null
     if (isScala && ScalaEditorFileSwapper.findSourceFile(
-          myProject,
-          file) != null) return null
+        myProject,
+        file) != null) return null
     if (!isScala && JavaEditorFileSwapper.findSourceFile(
-          myProject,
-          file) != null) return null
+        myProject,
+        file) != null) return null
     val panel: EditorNotificationPanel = new EditorNotificationPanel
     val sourceFile: VirtualFile = findSourceFile(file)
     var defaultAction: AttachSourcesProvider.AttachSourcesAction = null
@@ -86,12 +86,12 @@ class ScalaAttachSourcesNotificationProvider(
       for (action <- each.getActions(libraries, psiFile)) {
         if (hasNonLightAction) {
           if (!action
-                .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction]) {
+              .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction]) {
             actions.add(action)
           }
         } else {
           if (!action
-                .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction]) {
+              .isInstanceOf[AttachSourcesProvider.LightAttachSourcesAction]) {
             actions.clear()
             hasNonLightAction = true
           }
@@ -120,7 +120,7 @@ class ScalaAttachSourcesNotificationProvider(
         new Runnable {
           def run() {
             if (!Comparing
-                  .equal(libraries, findOrderEntriesContainingFile(file))) {
+                .equal(libraries, findOrderEntriesContainingFile(file))) {
               Messages.showErrorDialog(
                 myProject,
                 "Cannot find library for " + StringUtil.getShortName(fqn),

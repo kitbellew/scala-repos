@@ -21,7 +21,7 @@ trait BindRec[F[_]] extends Bind[F] { self =>
   override def forever[A, B](fa: F[A]): F[B] =
     tailrecM[Unit, B](u => map(fa)(_ => \/.left(u)))(())
 
-  /**The product of BindRec `F` and `G`, `[x](F[x], G[x]])`, is a BindRec */
+  /** The product of BindRec `F` and `G`, `[x](F[x], G[x]])`, is a BindRec */
   def product[G[_]](implicit G0: BindRec[G]): BindRec[λ[α => (F[α], G[α])]] =
     new ProductBindRec[F, G] {
       def F = self

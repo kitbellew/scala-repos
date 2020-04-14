@@ -258,9 +258,9 @@ trait ResolvableStableCodeReferenceElement
         //todo: improve checking for this and super
         val refText: String = ref.getText
         if (!refText.contains("this") && !refText.contains("super") && (
-              refText.contains(".") || ref.getContext
-                .isInstanceOf[ScStableCodeReferenceElement]
-            )) {
+            refText.contains(".") || ref.getContext
+              .isInstanceOf[ScStableCodeReferenceElement]
+          )) {
           //so this is full qualified reference => findClass, or findPackage
           val facade = JavaPsiFacade.getInstance(getProject)
           val manager = ScalaPsiManager.instance(getProject)
@@ -301,10 +301,10 @@ trait ResolvableStableCodeReferenceElement
               treeWalkUp(p.analog.get, lastParent)
             case p =>
               if (!p.processDeclarations(
-                    processor,
-                    ResolveState.initial,
-                    lastParent,
-                    ref)) return
+                  processor,
+                  ResolveState.initial,
+                  lastParent,
+                  ref)) return
               place match {
                 case (_: ScTemplateBody | _: ScExtendsBlock) => // template body and inherited members are at the same level.
                 case _                                       => if (!processor.changedLevel) return

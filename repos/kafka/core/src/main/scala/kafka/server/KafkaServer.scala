@@ -492,8 +492,8 @@ class KafkaServer(
             try {
 
               if (!networkClient.blockingReady(
-                    node(prevController),
-                    socketTimeoutMs))
+                  node(prevController),
+                  socketTimeoutMs))
                 throw socketTimeoutException
 
               // send the controlled shutdown request
@@ -564,7 +564,7 @@ class KafkaServer(
           zkUtils.getBrokerInfo(controllerId) match {
             case Some(broker) =>
               if (channel == null || prevController == null || !prevController
-                    .equals(broker)) {
+                  .equals(broker)) {
                 // if this is the first attempt or if the controller has changed, create a channel to the most recent
                 // controller
                 if (channel != null)
@@ -602,7 +602,7 @@ class KafkaServer(
               val shutdownResponse = kafka.api.ControlledShutdownResponse
                 .readFrom(response.payload())
               if (shutdownResponse.errorCode == Errors.NONE.code && shutdownResponse.partitionsRemaining != null &&
-                  shutdownResponse.partitionsRemaining.size == 0) {
+                shutdownResponse.partitionsRemaining.size == 0) {
                 shutdownSucceeded = true
                 info("Controlled shutdown succeeded")
               } else {

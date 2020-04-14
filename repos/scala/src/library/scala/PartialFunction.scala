@@ -47,7 +47,6 @@ package scala
   *  val numbers = sample map (isEven orElse isOdd)
   *  }}}
   *
-  *
   *  @author  Martin Odersky, Pavel Pavlov, Adriaan Moors
   *  @version 1.0, 16/07/2003
   */

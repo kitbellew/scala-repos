@@ -58,8 +58,8 @@ private[annotator] object ModifierChecker {
         if (withPrivate) ("private", "override") else ("", "")
       )
       for ((bad1, bad2) <- illegalCombinations
-           if (bad1 == text && owner.hasModifierPropertyScala(bad2)) ||
-             (bad2 == text && owner.hasModifierPropertyScala(bad1))) {
+        if (bad1 == text && owner.hasModifierPropertyScala(bad2)) ||
+          (bad2 == text && owner.hasModifierPropertyScala(bad1))) {
         proccessError(
           ScalaBundle.message("illegal.modifiers.combination", bad1, bad2),
           element,
@@ -163,8 +163,8 @@ private[annotator] object ModifierChecker {
                   }
                 case e: ScClassParameter =>
                   if (PsiTreeUtil
-                        .getParentOfType(e, classOf[ScTypeDefinition])
-                        .hasFinalModifier) {
+                      .getParentOfType(e, classOf[ScTypeDefinition])
+                      .hasFinalModifier) {
                     if (checkDublicates(modifierPsi, "final")) {
                       proccessWarning(
                         ScalaBundle.message(
@@ -213,7 +213,7 @@ private[annotator] object ModifierChecker {
                       member.getParent.isInstanceOf[ScTemplateBody] =>
                   // 'abstract override' modifier only allowed for members of traits
                   if (!member.containingClass.isInstanceOf[ScTrait] && owner
-                        .hasModifierProperty("override")) {
+                      .hasModifierProperty("override")) {
                     proccessError(
                       ScalaBundle.message(
                         "abstract.override.modifier.is.not.allowed"),
@@ -291,7 +291,7 @@ private[annotator] object ModifierChecker {
                               else if (parameters.head.isRepeatedParameter)
                                 errorResult()
                               else if (clauses.length > 2 || (clauses.length == 2 && !clauses(
-                                         1).isImplicit)) errorResult()
+                                  1).isImplicit)) errorResult()
                             }
                           case _ => errorResult()
                         }

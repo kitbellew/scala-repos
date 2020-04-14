@@ -19,7 +19,6 @@ import breeze.math.Semiring
  */
 
 /**
-  *
   * @author dlwh
   */
 @SerialVersionUID(1L)

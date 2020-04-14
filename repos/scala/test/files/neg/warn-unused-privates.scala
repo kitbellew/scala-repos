@@ -19,10 +19,10 @@ class B1(msg: String) extends A(msg)
 class B2(msg0: String) extends A(msg0)
 class B3(msg0: String) extends A("msg")
 
-/*** Early defs warnings disabled primarily due to SI-6595.
+/** Early defs warnings disabled primarily due to SI-6595.
   *   The test case is here to assure we aren't issuing false positives;
   *   the ones labelled "warn" don't warn.
- ***/
+  * * */
 class Boppy extends {
   private val hmm: String = "abc" // no warn, used in early defs
   private val hom: String = "def" // no warn, used in body

@@ -274,7 +274,6 @@ object hlist {
 
   /**
     * Type class computing the sum type corresponding to this `HList`.
-    *
     */
   trait lowPriorityToSum {
     implicit def hlistToSum[H, T <: HList](implicit
@@ -820,7 +819,7 @@ object hlist {
 
   /**
     * Type aliases and constructors provided for backward compatibility
-   **/
+    */
   type ToArray[L <: HList, Lub] = ToTraversable.Aux[L, Array, Lub]
   def ToArray[L <: HList, Lub](implicit toArray: ToArray[L, Lub]) = toArray
 

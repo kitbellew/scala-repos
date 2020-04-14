@@ -7,7 +7,7 @@ import testing.{Fingerprint, AnnotatedFingerprint, TestFingerprint}
 
 sealed abstract class Discovered extends Fingerprint with NotNull {
 
-  /** Whether a test is a module or a class*/
+  /** Whether a test is a module or a class */
   def isModule: Boolean
   def className: String
   // for TestFingerprint
@@ -15,7 +15,7 @@ sealed abstract class Discovered extends Fingerprint with NotNull {
   def toDefinition: TestDefinition = new TestDefinition(className, this)
 }
 
-/** Represents a class 'className' that has 'superClassName' as an ancestor.*/
+/** Represents a class 'className' that has 'superClassName' as an ancestor. */
 final case class DiscoveredSubclass(
     isModule: Boolean,
     className: String,
@@ -27,7 +27,7 @@ final case class DiscoveredSubclass(
      else "") + className + SubSuperSeparator + superClassName
 }
 
-/** Represents an annotation on a method or class.*/
+/** Represents an annotation on a method or class. */
 final case class DiscoveredAnnotated(
     isModule: Boolean,
     className: String,

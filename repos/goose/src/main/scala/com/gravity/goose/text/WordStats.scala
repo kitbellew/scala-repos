@@ -24,8 +24,7 @@ import java.util.List
 /**
   * User: Jim Plush
   * Date: Oct 29, 2010
-  * Time: 3:59:44 PM
-  */
+  * Time: 3:59:44 PM */
 object WordStats {
   var EMPTY: WordStats = new WordStats
 }

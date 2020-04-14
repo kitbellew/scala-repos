@@ -115,12 +115,12 @@ private[remote] class FailureInjectorTransportAdapter(
       statusPromise: Promise[AssociationHandle]): Unit = {
     // Association is simulated to be failed if there was either an inbound or outbound message drop
     if (shouldDropInbound(
-          remoteAddress,
-          Unit,
-          "interceptAssociate") || shouldDropOutbound(
-          remoteAddress,
-          Unit,
-          "interceptAssociate"))
+        remoteAddress,
+        Unit,
+        "interceptAssociate") || shouldDropOutbound(
+        remoteAddress,
+        Unit,
+        "interceptAssociate"))
       statusPromise.failure(
         new FailureInjectorException(
           "Simulated failure of association to " + remoteAddress))
@@ -218,18 +218,18 @@ private[remote] final case class FailureInjectorHandle(
 
   override def write(payload: ByteString): Boolean =
     if (!gremlinAdapter.shouldDropOutbound(
-          wrappedHandle.remoteAddress,
-          payload,
-          "handler.write")) wrappedHandle.write(payload)
+        wrappedHandle.remoteAddress,
+        payload,
+        "handler.write")) wrappedHandle.write(payload)
     else true
 
   override def disassociate(): Unit = wrappedHandle.disassociate()
 
   override def notify(ev: HandleEvent): Unit =
     if (!gremlinAdapter.shouldDropInbound(
-          wrappedHandle.remoteAddress,
-          ev,
-          "handler.notify"))
+        wrappedHandle.remoteAddress,
+        ev,
+        "handler.notify"))
       upstreamListener notify ev
 
 }

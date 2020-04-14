@@ -73,7 +73,6 @@ object Logger {
     * {{{
     * Logger.setup = Full(Logback.withFile(url))
     * }}}
-    *
     */
   var setup: Box[() => Unit] = Empty
 

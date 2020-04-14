@@ -103,8 +103,8 @@ object InfixExpr {
     if (priority(id1, assignments = true) < priority(id2, assignments = true))
       true //  a * b + c  =((a * b) + c)
     else if (priority(id1, assignments = true) > priority(
-               id2,
-               assignments = true)) false //  a + b * c = (a + (b * c))
+        id2,
+        assignments = true)) false //  a + b * c = (a + (b * c))
     else if (associate(id1) == associate(id2))
       if (associate(id1) == -1) true
       else false

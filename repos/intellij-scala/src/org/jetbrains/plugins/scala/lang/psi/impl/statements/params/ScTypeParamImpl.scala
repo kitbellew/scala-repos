@@ -27,8 +27,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScParameterizedType, ScType}
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 
 class ScTypeParamImpl private (
     stub: StubElement[ScTypeParam],

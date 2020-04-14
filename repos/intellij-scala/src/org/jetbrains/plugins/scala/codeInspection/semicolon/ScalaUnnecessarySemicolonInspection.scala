@@ -34,8 +34,8 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
         if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
           val file = element.getContainingFile
           val nextLeaf = file.findElementAt(endOffset(element))
-          if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains(
-                "\n")) {
+          if (nextLeaf
+              .isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains("\n")) {
             val whitespaceOffset = endOffset(nextLeaf)
             val offset = startOffset(element)
             val text = file.getText
@@ -46,7 +46,7 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
             var elem1 = file.findElementAt(offset - 1)
             var elem2 = newFile.findElementAt(offset - 1)
             while (elem1 != null && endOffset(
-                     elem1) <= offset && elem2 != null) {
+                elem1) <= offset && elem2 != null) {
               if (elem1.getText != elem2.getText) return
               if (elem1.getNode.getElementType != elem2.getNode.getElementType)
                 return
@@ -55,13 +55,13 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
             }
             if (elem2 == null) return
             if (shiftInNewFile(startOffset(elem2), offset) > startOffset(
-                  elem1) ||
-                shiftInNewFile(endOffset(elem2), offset) < endOffset(elem1))
+                elem1) ||
+              shiftInNewFile(endOffset(elem2), offset) < endOffset(elem1))
               return
             elem1 = file.findElementAt(whitespaceOffset)
             elem2 = newFile.findElementAt(whitespaceOffset - 1)
             while (elem1 != null && startOffset(
-                     elem1) >= whitespaceOffset && elem2 != null) {
+                elem1) >= whitespaceOffset && elem2 != null) {
               if (elem1.getText != elem2.getText) return
               if (elem1.getNode.getElementType != elem2.getNode.getElementType)
                 return
@@ -70,8 +70,8 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
             }
             if (elem2 == null) return
             if (shiftInNewFile(startOffset(elem2), offset) > startOffset(
-                  elem1) ||
-                shiftInNewFile(endOffset(elem2), offset) < endOffset(elem1))
+                elem1) ||
+              shiftInNewFile(endOffset(elem2), offset) < endOffset(elem1))
               return
             holder.registerProblem(
               holder.getManager.createProblemDescriptor(

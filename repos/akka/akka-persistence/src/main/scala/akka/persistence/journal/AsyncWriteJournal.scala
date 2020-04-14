@@ -315,7 +315,6 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
     *
     * Allows plugin implementers to use `f pipeTo self` and
     * handle additional messages for implementing advanced features
-    *
     */
   def receivePluginInternal: Actor.Receive = Actor.emptyBehavior
   //#journal-plugin-api

@@ -155,10 +155,10 @@ class ScPackagingImpl private (
       val p = ScPackageImpl(
         JavaPsiFacade.getInstance(getProject).findPackage(pName))
       if (p != null && !p.processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place)) {
+          processor,
+          state,
+          lastParent,
+          place)) {
         return false
       }
 
@@ -177,17 +177,17 @@ class ScPackagingImpl private (
 
     if (lastParent != null && lastParent.getContext == this) {
       if (!super[ScImportsHolder].processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place)) return false
+          processor,
+          state,
+          lastParent,
+          place)) return false
 
       if (ScalaFileImpl.isProcessLocalClasses(lastParent) &&
-          !super[ScDeclarationSequenceHolder].processDeclarations(
-            processor,
-            state,
-            lastParent,
-            place)) return false
+        !super[ScDeclarationSequenceHolder].processDeclarations(
+          processor,
+          state,
+          lastParent,
+          place)) return false
     }
 
     true

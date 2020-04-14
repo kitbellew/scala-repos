@@ -90,15 +90,15 @@ object ScalaMoveUtil {
             className + "." + ScalaFileType.DEFAULT_EXTENSION)
           // moving second of two classes which were in the same file to a different directory (IDEADEV-3089)
           if (moveDestination != file.getContainingDirectory && fileWithOldFileName != null && classCanBeAdded(
-                file,
-                aClass)) {
+              file,
+              aClass)) {
             newClass = fileWithOldFileName.add(td).asInstanceOf[PsiClass]
             deleteClass(td)
           }
           //moving class to the existing file with the same name
           else if (fileWithClassName != null && classCanBeAdded(
-                     fileWithClassName,
-                     aClass)) {
+              fileWithClassName,
+              aClass)) {
             newClass = fileWithClassName.add(td).asInstanceOf[PsiClass]
             deleteClass(td)
           }

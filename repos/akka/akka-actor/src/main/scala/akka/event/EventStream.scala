@@ -112,8 +112,8 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
       initiallySubscribedOrUnsubscriber.get match {
         case value @ Left(subscribers) ⇒
           if (initiallySubscribedOrUnsubscriber.compareAndSet(
-                value,
-                Right(unsubscriber))) {
+              value,
+              Right(unsubscriber))) {
             if (debug)
               publish(Logging.Debug(
                 simpleName(this),
@@ -147,7 +147,7 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
     if (sys ne null) initiallySubscribedOrUnsubscriber.get match {
       case value @ Left(subscribers) ⇒
         if (!initiallySubscribedOrUnsubscriber
-              .compareAndSet(value, Left(subscribers + subscriber)))
+            .compareAndSet(value, Left(subscribers + subscriber)))
           registerWithUnsubscriber(subscriber)
 
       case Right(unsubscriber) ⇒
@@ -169,7 +169,7 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
     if (sys ne null) initiallySubscribedOrUnsubscriber.get match {
       case value @ Left(subscribers) ⇒
         if (!initiallySubscribedOrUnsubscriber
-              .compareAndSet(value, Left(subscribers - subscriber)))
+            .compareAndSet(value, Left(subscribers - subscriber)))
           unregisterIfNoMoreSubscribedChannels(subscriber)
 
       case Right(unsubscriber) ⇒

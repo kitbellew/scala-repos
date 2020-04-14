@@ -25,9 +25,9 @@ class TransactionFilter extends Filter {
       res: ServletResponse,
       chain: FilterChain): Unit = {
     if (req
-          .asInstanceOf[HttpServletRequest]
-          .getServletPath()
-          .startsWith("/assets/")) {
+        .asInstanceOf[HttpServletRequest]
+        .getServletPath()
+        .startsWith("/assets/")) {
       // assets don't need transaction
       chain.doFilter(req, res)
     } else {

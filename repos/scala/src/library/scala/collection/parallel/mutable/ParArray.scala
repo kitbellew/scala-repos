@@ -46,7 +46,6 @@ import scala.reflect.ClassTag
   *
   *  @define Coll `ParArray`
   *  @define coll parallel array
-  *
   */
 @SerialVersionUID(1L)
 class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])

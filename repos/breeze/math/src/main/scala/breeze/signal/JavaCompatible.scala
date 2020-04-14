@@ -3,7 +3,7 @@ package breeze.signal
 import breeze.math.Complex
 import breeze.util.JavaArrayOps._
 
-/**This class is a converter for using breeze.signal functions on Arrays of Double and Complex, from Java/Matlab/Mathematica.
+/** This class is a converter for using breeze.signal functions on Arrays of Double and Complex, from Java/Matlab/Mathematica.
   *
   * @author ktakagaki
   * @date 3/11/14.
@@ -17,10 +17,9 @@ object JavaCompatible {
 
   // <editor-fold defaultstate="collapsed" desc=" discrete Fourier transforms ">
 
-  /**Returns the discrete fourier transform.
+  /** Returns the discrete fourier transform.
     * Use fourierTrC instead for complex array imput.
     * Use fourierTr2/2C instead for 2D Fourier tranform.
-    *
     *
     * @return
     * @author ktakagaki, dlwh
@@ -28,22 +27,22 @@ object JavaCompatible {
   def fourierTrD(data: Array[Double]): Array[Complex] =
     dvCToArray(breeze.signal.fourierTr(arrayDToDv(data)))
 
-  /**See [[fourierTrD]]*/
+  /** See [[fourierTrD]] */
   def fourierTrC(data: Array[Complex]): Array[Complex] =
     dvCToArray(breeze.signal.fourierTr(arrayCToDv(data)))
 
-  /**See [[fourierTrD]]*/
+  /** See [[fourierTrD]] */
   def iFourierTrC(data: Array[Complex]): Array[Complex] =
     dvCToArray(breeze.signal.iFourierTr(arrayCToDv(data)))
 
-  /**See [[fourierTrD]]*/
+  /** See [[fourierTrD]] */
   def fourierTr2C(data: Array[Array[Complex]]): Array[Array[Complex]] =
     dmCToArray2(breeze.signal.fourierTr(array2CToDm(data)))
 
   // </editor-fold>
   // <editor-fold defaultstate="collapsed" desc=" Fourier transform related convenience functions ">
 
-  /**Shift the zero-frequency component to the center of the spectrum.
+  /** Shift the zero-frequency component to the center of the spectrum.
     * Use fourierShiftC instead for complex array input.
     * This function swaps half-spaces for all axes listed (defaults to all). Note that y[0] is the Nyquist component only if len(x) is even.
     *
@@ -53,11 +52,11 @@ object JavaCompatible {
   def fourierShiftD(data: Array[Double]): Array[Double] =
     dvDToArray(breeze.signal.fourierShift(arrayDToDv(data)))
 
-  /**See [[fourierShiftD]]*/
+  /** See [[fourierShiftD]] */
   def fourierShiftC(data: Array[Complex]): Array[Complex] =
     dvCToArray(breeze.signal.fourierShift(arrayCToDv(data)))
 
-  /**Shift the zero-frequency component to the center of the spectrum.
+  /** Shift the zero-frequency component to the center of the spectrum.
     * Use fourierShiftC instead for complex array input.
     * This function swaps half-spaces for all axes listed (defaults to all). Note that y[0] is the Nyquist component only if len(x) is even.
     *
@@ -67,11 +66,11 @@ object JavaCompatible {
   def iFourierShiftD(data: Array[Double]): Array[Double] =
     dvDToArray(breeze.signal.iFourierShift(arrayDToDv(data)))
 
-  /**See [[iFourierShiftD]]*/
+  /** See [[iFourierShiftD]] */
   def iFourierShiftC(data: Array[Complex]): Array[Complex] =
     dvCToArray(breeze.signal.iFourierShift(arrayCToDv(data)))
 
-  /**Returns the frequencies for each tap in a discrete Fourier transform, useful for plotting.
+  /** Returns the frequencies for each tap in a discrete Fourier transform, useful for plotting.
     * You must specify either an fs or a dt argument. If you specify both, which is redundant,
     * fs == 1.0/dt must be true.
     *
@@ -88,7 +87,7 @@ object JavaCompatible {
       shifted: Boolean): Array[Double] =
     dvDToArray(breeze.signal.fourierFreq(windowLength, fs, -1, shifted))
 
-  /**See [[fourierFreq]]. shifted = false
+  /** See [[fourierFreq]]. shifted = false
     */
   def fourierFreqD(windowLength: Int, fs: Double): Array[Double] =
     fourierFreqD(windowLength, fs, false)
@@ -96,7 +95,7 @@ object JavaCompatible {
   // </editor-fold>
 
   // <editor-fold defaultstate="collapsed" desc=" (FIR) filters ">
-  /**Bandpass filter the data using a windowed FIR filter.
+  /** Bandpass filter the data using a windowed FIR filter.
     * See/use [[breeze.signal.filterBP()]] for more details, and to set advanced options.
     *
     * @param data data to filter
@@ -116,7 +115,7 @@ object JavaCompatible {
       breeze.signal
         .filterBP(arrayDToDv(data), (omegaLow, omegaHigh), sampleRate, taps))
 
-  /**See [[filterBP]]
+  /** See [[filterBP]]
     */
   def filterBP(
       data: Array[Double],
@@ -125,7 +124,7 @@ object JavaCompatible {
       sampleRate: Double): Array[Double] =
     filterBP(data, omegaLow, omegaHigh, sampleRate, 512)
 
-  /**See [[filterBP]]
+  /** See [[filterBP]]
     */
   def filterBP(
       data: Array[Double],
@@ -133,7 +132,7 @@ object JavaCompatible {
       omegaHigh: Double): Array[Double] =
     filterBP(data, omegaLow, omegaHigh, 2d, 512)
 
-  /**Bandstop filter the data using a windowed FIR filter.
+  /** Bandstop filter the data using a windowed FIR filter.
     * See/use [[breeze.signal.filterBS()]] for more details, and to set advanced options.
     *
     * @param data data to filter
@@ -153,7 +152,7 @@ object JavaCompatible {
       breeze.signal
         .filterBS(arrayDToDv(data), (omegaLow, omegaHigh), sampleRate, taps))
 
-  /**See [[filterBS]]
+  /** See [[filterBS]]
     */
   def filterBS(
       data: Array[Double],
@@ -162,7 +161,7 @@ object JavaCompatible {
       sampleRate: Double): Array[Double] =
     filterBS(data, omegaLow, omegaHigh, sampleRate, 512)
 
-  /**See [[filterBS]]
+  /** See [[filterBS]]
     */
   def filterBS(
       data: Array[Double],
@@ -170,7 +169,7 @@ object JavaCompatible {
       omegaHigh: Double): Array[Double] =
     filterBS(data, omegaLow, omegaHigh, 2d, 512)
 
-  /**Low pass filter the data using a windowed FIR filter.
+  /** Low pass filter the data using a windowed FIR filter.
     * See/use [[breeze.signal.filterLP()]] for more details, and to set advanced options.
     *
     * @param data data to filter
@@ -187,7 +186,7 @@ object JavaCompatible {
     dvDToArray(
       breeze.signal.filterLP(arrayDToDv(data), omega, sampleRate, taps))
 
-  /**See [[filterLP]]
+  /** See [[filterLP]]
     */
   def filterLP(
       data: Array[Double],
@@ -195,12 +194,12 @@ object JavaCompatible {
       sampleRate: Double): Array[Double] =
     filterLP(data, omega, sampleRate, 512)
 
-  /**See [[filterLP]]
+  /** See [[filterLP]]
     */
   def filterLP(data: Array[Double], omega: Double): Array[Double] =
     filterLP(data, omega, 2d, 512)
 
-  /**High pass filter the data using a windowed FIR filter.
+  /** High pass filter the data using a windowed FIR filter.
     * See/use [[breeze.signal.filterHP()]] for more details, and to set advanced options.
     *
     * @param data data to filter
@@ -217,7 +216,7 @@ object JavaCompatible {
     dvDToArray(
       breeze.signal.filterHP(arrayDToDv(data), omega, sampleRate, taps))
 
-  /**See [[filterHP]]
+  /** See [[filterHP]]
     */
   def filterHP(
       data: Array[Double],
@@ -225,7 +224,7 @@ object JavaCompatible {
       sampleRate: Double): Array[Double] =
     filterHP(data, omega, sampleRate, 512)
 
-  /**See [[filterHP]]
+  /** See [[filterHP]]
     */
   def filterHP(data: Array[Double], omega: Double): Array[Double] =
     filterHP(data, omega, 2d, 512)
@@ -234,7 +233,7 @@ object JavaCompatible {
 
   // <editor-fold defaultstate="collapsed" desc=" wavelets ">
 
-  /**Return the padded fast haar transformation of a vector or matrix. Note that
+  /** Return the padded fast haar transformation of a vector or matrix. Note that
     * the output will always be padded to a power of 2.</p>
     * A matrix will cause a 2D fht. The 2D haar transformation is defined for squared power of 2
     * matrices. A new matrix will thus be created and the old matrix will be placed in the upper-left
@@ -247,14 +246,14 @@ object JavaCompatible {
   def haarTrD(data: Array[Double]) =
     dvDToArray(breeze.signal.haarTr(arrayDToDv(data)))
 
-  /**See [[haarTrD]]
+  /** See [[haarTrD]]
     */
   def haarTr2D(data: Array[Array[Double]]) =
     dmDToArray2(breeze.signal.haarTr(array2DToDm(data)))
 
   // </editor-fold>
 
-  /**Root mean square of a vector.*/
+  /** Root mean square of a vector. */
   def rootMeanSquareD(data: Array[Double]): Double =
     breeze.signal.rootMeanSquare(arrayDToDv(data))
 

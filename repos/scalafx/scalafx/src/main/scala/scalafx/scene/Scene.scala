@@ -249,7 +249,7 @@ class Scene(
     cursor() = v
   }
 
-  /** The effective node orientation of a scene resolves the inheritance of node orientation, returning either left-to-right or right-to-left.  */
+  /** The effective node orientation of a scene resolves the inheritance of node orientation, returning either left-to-right or right-to-left. */
   def effectiveNodeOrientation: ReadOnlyObjectProperty[jfxg.NodeOrientation] =
     delegate.effectiveNodeOrientationProperty
 

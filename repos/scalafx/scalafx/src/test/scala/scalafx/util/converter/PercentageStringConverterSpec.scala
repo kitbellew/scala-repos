@@ -36,8 +36,6 @@ import scalafx.Includes._
 
 /**
   * PercentageStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PercentageStringConverterSpec

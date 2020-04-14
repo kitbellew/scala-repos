@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * DoubleStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class DoubleStringConverterSpec

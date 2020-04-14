@@ -94,11 +94,11 @@ sealed abstract class IO[A] {
   def catchLeft: IO[Throwable \/ A] =
     map(\/.right[Throwable, A]) except (t => IO(-\/(t)))
 
-  /**Like "catchLeft" but takes a predicate to select which exceptions are caught. */
+  /** Like "catchLeft" but takes a predicate to select which exceptions are caught. */
   def catchSomeLeft[B](p: Throwable => Option[B]): IO[B \/ A] =
     catchLeft map (_.leftMap(e => p(e).getOrElse(throw e)))
 
-  /**Like "finally", but only performs the final action if there was an exception. */
+  /** Like "finally", but only performs the final action if there was an exception. */
   def onException[B](action: IO[B]): IO[A] =
     this except (e =>
       for {
@@ -117,18 +117,18 @@ sealed abstract class IO[A] {
       _ <- after(a)
     } yield r
 
-  /**Like "bracket", but takes only a computation to run afterward. Generalizes "finally". */
+  /** Like "bracket", but takes only a computation to run afterward. Generalizes "finally". */
   def ensuring[B](sequel: IO[B]): IO[A] =
     for {
       r <- onException(sequel)
       _ <- sequel
     } yield r
 
-  /**A variant of "bracket" where the return value of this computation is not needed. */
+  /** A variant of "bracket" where the return value of this computation is not needed. */
   def bracket_[B, C](after: IO[B])(during: IO[C]): IO[C] =
     bracket(_ => after)(_ => during)
 
-  /**A variant of "bracket" that performs the final action only if there was an error. */
+  /** A variant of "bracket" that performs the final action only if there was an error. */
   def bracketOnError[B, C](after: A => IO[B])(during: A => IO[C]): IO[C] =
     for {
       a <- this
@@ -214,7 +214,7 @@ object IO extends IOInstances {
         ()
       }))
 
-  /** Writes a string to standard output, followed by a newline.*/
+  /** Writes a string to standard output, followed by a newline. */
   def putStrLn(s: String): IO[Unit] =
     io(rw =>
       return_(rw -> {
@@ -252,7 +252,7 @@ object IO extends IOInstances {
   def newIORef[A](a: => A): IO[IORef[A]] =
     STToIO(newVar(a)) flatMap (v => IO(IORef.ioRef(v)))
 
-  /**Throw the given error in the IO monad. */
+  /** Throw the given error in the IO monad. */
   def throwIO[A](e: Throwable): IO[A] = IO(throw e)
 
   def idLiftControl[M[_], A](f: RunInBase[M, M] => M[A])(implicit

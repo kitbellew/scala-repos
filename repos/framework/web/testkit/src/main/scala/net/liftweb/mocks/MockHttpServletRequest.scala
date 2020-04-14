@@ -57,7 +57,6 @@ import json.JsonAST._
   *
   * @param url The URL to extract from
   * @param contextPath The context path for this request. Defaults to "" per the Servlet API.
-  *
   */
 class MockHttpServletRequest(
     val url: String = null,
@@ -274,7 +273,7 @@ class MockHttpServletRequest(
 
   // BEGIN PRIMARY CONSTRUCTOR LOGIC
   if (contextPath.length > 0 && (contextPath(
-        0) != '/' || contextPath.last == '/')) {
+      0) != '/' || contextPath.last == '/')) {
     throw new IllegalArgumentException(
       "Context path must be empty, or must start with a '/' and not end with a '/': " + contextPath)
   }

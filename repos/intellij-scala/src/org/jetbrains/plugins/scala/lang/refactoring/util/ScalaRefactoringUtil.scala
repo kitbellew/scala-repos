@@ -97,17 +97,13 @@ object ScalaRefactoringUtil {
     var end = editor.getSelectionModel.getSelectionEnd
     if (start == end) return
     while (file.findElementAt(start).isInstanceOf[PsiWhiteSpace] ||
-           (file
-             .findElementAt(start)
-             .isInstanceOf[PsiComment] && trimComments) ||
-           file.getText.charAt(start) == '\n' ||
-           file.getText.charAt(start) == ' ') start = start + 1
+      (file.findElementAt(start).isInstanceOf[PsiComment] && trimComments) ||
+      file.getText.charAt(start) == '\n' ||
+      file.getText.charAt(start) == ' ') start = start + 1
     while (file.findElementAt(end - 1).isInstanceOf[PsiWhiteSpace] ||
-           (file
-             .findElementAt(end - 1)
-             .isInstanceOf[PsiComment] && trimComments) ||
-           file.getText.charAt(end - 1) == '\n' ||
-           file.getText.charAt(end - 1) == ' ') end = end - 1
+      (file.findElementAt(end - 1).isInstanceOf[PsiComment] && trimComments) ||
+      file.getText.charAt(end - 1) == '\n' ||
+      file.getText.charAt(end - 1) == ' ') end = end - 1
     editor.getSelectionModel.setSelection(start, end)
   }
 
@@ -952,7 +948,7 @@ object ScalaRefactoringUtil {
             case typeInParenthesis: ScParenthesisedTypeElement =>
               val inType = typeInParenthesis.typeElement
               if (inType.isDefined && !res.contains(
-                    typeInParenthesis.typeElement.get)) {
+                  typeInParenthesis.typeElement.get)) {
                 res += typeInParenthesis.typeElement.get
               }
             case typeElement: ScTypeElement =>
@@ -1415,9 +1411,9 @@ object ScalaRefactoringUtil {
       }
 
       if (funDef != null && PsiTreeUtil.isAncestor(
-            candidate,
-            funDef,
-            true) && oneExprBody(funDef))
+          candidate,
+          funDef,
+          true) && oneExprBody(funDef))
         funDef.body.get
       else if (isCaseClausesBlock) container(candidate.getContext, file)
       else candidate
@@ -1494,7 +1490,7 @@ object ScalaRefactoringUtil {
     }
 
     if (elements.isEmpty || !elements.exists(
-          _.isInstanceOf[ScBlockStatement])) {
+        _.isInstanceOf[ScBlockStatement])) {
       showErrorHint(
         ScalaBundle.message("cannot.extract.empty.message"),
         project,

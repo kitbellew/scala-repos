@@ -4,7 +4,7 @@ package tests.core
 
 import reporters.{Reporter => CompilerReporter}
 
-/** Trait encapsulating the creation of a presentation compiler's instance.*/
+/** Trait encapsulating the creation of a presentation compiler's instance. */
 private[tests] trait PresentationCompilerInstance extends TestSettings {
   protected val settings = new Settings
 
@@ -23,7 +23,7 @@ private[tests] trait PresentationCompilerInstance extends TestSettings {
     * Called before instantiating the presentation compiler's instance.
     * You should provide an implementation of this method if you need
     * to customize the `settings` used to instantiate the presentation compiler.
-    * */
+    */
   protected def prepareSettings(settings: Settings) {}
 
   protected def printClassPath(implicit reporter: Reporter) {

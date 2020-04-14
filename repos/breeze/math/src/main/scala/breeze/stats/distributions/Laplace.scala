@@ -6,7 +6,7 @@ import breeze.numerics.{exp, log}
   * http://en.wikipedia.org/wiki/Laplace_distribution
   *
   * @author dlwh
- **/
+  */
 case class Laplace(location: Double, scale: Double)(implicit
     rand: RandBasis = Rand)
     extends ContinuousDistr[Double]

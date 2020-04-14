@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * RadioMenuItem Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class RadioMenuItemSpec

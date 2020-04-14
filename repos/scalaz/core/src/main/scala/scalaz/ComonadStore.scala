@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /**
-  *
   */
 ////
 trait ComonadStore[F[_], S] extends Comonad[F] { self =>

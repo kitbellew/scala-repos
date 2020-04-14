@@ -206,7 +206,7 @@ private class StringIteratorReader(val iter: Iterator[String])
     refill()
     var n = 0
     if ((off < 0) || (off > cbuf.length) || (len < 0) ||
-        ((off + len) > cbuf.length) || ((off + len) < 0)) {
+      ((off + len) > cbuf.length) || ((off + len) < 0)) {
       throw new IndexOutOfBoundsException()
     } else if (len == 0) {
       n = 0

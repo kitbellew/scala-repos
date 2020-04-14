@@ -108,7 +108,6 @@ class ChoiceBox[J <: Any](
   /**
     * The value of this ChoiceBox is defined as the selected item in the
     * ChoiceBox selection model.
-    *
     */
   def value: ObjectProperty[J] = delegate.valueProperty
   def value_=(v: J) {

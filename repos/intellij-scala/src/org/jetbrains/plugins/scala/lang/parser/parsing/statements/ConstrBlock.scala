@@ -13,8 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.{
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 13.03.2008
-  */
+  * Date: 13.03.2008 */
 
 object ConstrBlock {
   def parse(builder: ScalaPsiBuilder): Boolean = {
@@ -41,8 +40,8 @@ object ConstrBlock {
                 builder error ErrMsg("rbrace.expected")
                 builder.restoreNewlinesState
                 while (!builder.eof && !ScalaTokenTypes.tRBRACE.eq(
-                         builder.getTokenType) &&
-                       !builder.newlineBeforeCurrentToken) {
+                    builder.getTokenType) &&
+                  !builder.newlineBeforeCurrentToken) {
                   builder.advanceLexer()
                 }
                 constrExprMarker.done(ScalaElementTypes.CONSTR_BLOCK)
@@ -52,8 +51,8 @@ object ConstrBlock {
               builder error ErrMsg("rbrace.expected")
               builder.restoreNewlinesState
               while (!builder.eof && !ScalaTokenTypes.tRBRACE.eq(
-                       builder.getTokenType) &&
-                     !builder.newlineBeforeCurrentToken) {
+                  builder.getTokenType) &&
+                !builder.newlineBeforeCurrentToken) {
                 builder.advanceLexer()
               }
               constrExprMarker.done(ScalaElementTypes.CONSTR_BLOCK)

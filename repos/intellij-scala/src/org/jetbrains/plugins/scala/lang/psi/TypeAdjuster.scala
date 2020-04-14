@@ -163,8 +163,8 @@ object TypeAdjuster extends ApplicationAdapter {
     }
 
     if (info.origTypeElem.parentsInFile
-          .filterByType(classOf[ScTypeElement])
-          .exists(isMarkedToReplace)) None
+        .filterByType(classOf[ScTypeElement])
+        .exists(isMarkedToReplace)) None
     else
       info match {
         case cmp: CompoundInfo =>
@@ -399,7 +399,7 @@ object TypeAdjuster extends ApplicationAdapter {
       extends ReplacementInfo {
 
     if (childInfos.isEmpty || childInfos.exists(i =>
-          !tempTypeElem.isAncestorOf(i.origTypeElem))) {
+        !tempTypeElem.isAncestorOf(i.origTypeElem))) {
       throw new IllegalArgumentException("Wrong usage of CompoundInfo")
     }
 

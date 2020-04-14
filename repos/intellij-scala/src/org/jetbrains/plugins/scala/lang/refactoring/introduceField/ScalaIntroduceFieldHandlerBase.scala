@@ -103,9 +103,9 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       .find(_.getTextRange.getEndOffset >= firstOccOffset)
     anchor.getOrElse {
       if (PsiTreeUtil.isAncestor(
-            aClass.extendsBlock.templateBody.orNull,
-            commonParent,
-            false)) null
+          aClass.extendsBlock.templateBody.orNull,
+          commonParent,
+          false)) null
       else {
         aClass.extendsBlock match {
           case ScExtendsBlock.EarlyDefinitions(earlyDef) =>

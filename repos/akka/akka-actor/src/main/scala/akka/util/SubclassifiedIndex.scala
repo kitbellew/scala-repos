@@ -207,7 +207,7 @@ private[akka] class SubclassifiedIndex[K, V] private (
       else
         n.innerFindSubKeys(key, except) ++ {
           if (sc.isSubclass(n.key, key) && !except.exists(e ⇒
-                sc.isEqual(key, e.key)))
+              sc.isEqual(key, e.key)))
             s + n.key
           else
             s

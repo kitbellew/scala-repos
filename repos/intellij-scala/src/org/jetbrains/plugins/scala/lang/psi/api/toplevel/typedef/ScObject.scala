@@ -12,8 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.TypeDefinition
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 20.02.2008
-  */
+  * Date: 20.02.2008 */
 
 trait ScObject
     extends ScTypeDefinition

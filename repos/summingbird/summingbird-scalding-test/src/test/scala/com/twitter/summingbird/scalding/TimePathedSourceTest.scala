@@ -83,9 +83,9 @@ object TimePathSourceLaws extends Properties("Time path source") {
         genEmbiggen(data.embiggen),
         genVertractor(data.availableRange))(data.requestedRange)
       if (rangeWithEmbgginContained(
-            data.requestedRange,
-            data.embiggen,
-            data.availableRange)) {
+          data.requestedRange,
+          data.embiggen,
+          data.availableRange)) {
         retData == Some(data.requestedRange)
       } else true // not tested here
     }

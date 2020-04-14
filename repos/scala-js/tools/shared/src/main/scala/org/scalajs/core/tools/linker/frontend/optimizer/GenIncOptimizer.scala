@@ -163,9 +163,9 @@ abstract class GenIncOptimizer private[optimizer] (
       getInterface(linkedClass.encodedName).ancestors = linkedClass.ancestors
 
       if (linkedClass.hasInstances &&
-          linkedClass.kind != ClassKind.RawJSType &&
-          linkedClass.kind != ClassKind.Interface &&
-          linkedClass.kind != ClassKind.JSClass) {
+        linkedClass.kind != ClassKind.RawJSType &&
+        linkedClass.kind != ClassKind.Interface &&
+        linkedClass.kind != ClassKind.JSClass) {
         CollOps.put(neededClasses, linkedClass.encodedName, linkedClass)
       }
 
@@ -173,7 +173,7 @@ abstract class GenIncOptimizer private[optimizer] (
         CollOps.put(neededStatics, linkedClass.encodedName, linkedClass)
 
       if (linkedClass.kind == ClassKind.Interface &&
-          linkedClass.memberMethods.nonEmpty) {
+        linkedClass.memberMethods.nonEmpty) {
         CollOps.put(neededDefaults, linkedClass.encodedName, linkedClass)
       }
     }
@@ -461,9 +461,9 @@ abstract class GenIncOptimizer private[optimizer] (
         method.delete()
       classes -= encodedName
       /* Note: no need to tag methods that call *statically* one of the methods
-     * of the deleted classes, since they've got to be invalidated by
-     * themselves.
-     */
+       * of the deleted classes, since they've got to be invalidated by
+       * themselves.
+       */
     }
 
     /** UPDATE PASS ONLY. */
@@ -513,7 +513,7 @@ abstract class GenIncOptimizer private[optimizer] (
             intf.tagDynamicCallersOf(methodName)
           }
           if (newInterfaces.size != oldInterfaces.size ||
-              newInterfaces.size != existingInterfaces.size) {
+            newInterfaces.size != existingInterfaces.size) {
             val allMethodNames = allMethods().keys
             for {
               intf <- oldInterfaces ++ newInterfaces -- existingInterfaces

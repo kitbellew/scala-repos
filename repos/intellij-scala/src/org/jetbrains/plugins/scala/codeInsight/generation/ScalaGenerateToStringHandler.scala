@@ -30,9 +30,9 @@ class ScalaGenerateToStringHandler extends LanguageCodeInsightActionHandler {
       editor: Editor,
       psiFile: PsiFile): Unit = {
     if (CodeInsightUtilBase.prepareEditorForWrite(editor) &&
-        FileDocumentManager.getInstance.requestWriting(
-          editor.getDocument,
-          project)) {
+      FileDocumentManager.getInstance.requestWriting(
+        editor.getDocument,
+        project)) {
       GenerationUtil
         .elementOfTypeAtCaret(
           editor,

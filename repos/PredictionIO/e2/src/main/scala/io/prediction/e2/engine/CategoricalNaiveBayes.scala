@@ -150,7 +150,6 @@ case class CategoricalNaiveBayesModel(
     * Return the label that yields the highest score
     *
     * @param features features for classification
-    *
     */
   def predict(features: Array[String]): String = {
     priors.keySet

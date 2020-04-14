@@ -23,12 +23,10 @@ import org.jsoup.nodes.Element
   * Created by IntelliJ IDEA.
   * User: robbie
   * Date: 5/19/11
-  * Time: 2:45 PM
-  */
+  * Time: 2:45 PM */
 /**
   * Encapsulates the process of extracting some type <code>T</code> from an article
-  * @param <T> the type of {@link Object} the implementing class will return
-  */
+  * @param <T> the type of {@link Object} the implementing class will return */
 trait Extractor[T] {
 
   /**

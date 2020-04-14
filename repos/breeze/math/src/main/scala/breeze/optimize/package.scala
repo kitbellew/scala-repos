@@ -1,7 +1,6 @@
 package breeze
 
 /**
-  *
   * @author dlwh
   */
 package object optimize {

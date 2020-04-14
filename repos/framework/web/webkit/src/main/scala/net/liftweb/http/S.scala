@@ -451,7 +451,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   /**
     * The user agent of the current request, if any.
-  **/
+    */
   def userAgent = request.flatMap(_.userAgent)
 
   /**
@@ -477,7 +477,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def receivedCookies: List[HTTPCookie] =
     for (rc <- Box.legacyNullTest(_responseCookies.value).toList;
-         c <- rc.inCookies)
+      c <- rc.inCookies)
       yield c.clone().asInstanceOf[HTTPCookie]
 
   /**
@@ -600,10 +600,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   // TODO: Is this used anywhere? - DCB
   def templateFromTemplateAttr: Box[NodeSeq] =
     for (templateName <- attr("template") ?~ "Template Attribute missing";
-         tmplList = templateName.roboSplit("/");
-         template <-
-           Templates(tmplList) ?~
-             "couldn't find template") yield template
+      tmplList = templateName.roboSplit("/");
+      template <-
+        Templates(tmplList) ?~
+          "couldn't find template") yield template
 
   /**
     * Returns the Locale for this request based on the LiftRules.localeCalculator
@@ -805,7 +805,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *     S.clearSessionRewriter
     * }
     * </pre>
-    *
     *
     * @param name A name for the rewrite function so that it can be replaced or deleted later.
     * @rw The rewrite partial function
@@ -1341,7 +1340,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   /**
     * If true, then the xml header at the beginning of
     * the returned XHTML page will not be inserted.
-    *
     */
   def skipXmlHeader: Boolean = _skipXmlHeader.is
 
@@ -1742,7 +1740,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   def getRequestHeader(name: String): Box[String] =
     for (req <- request;
-         hdr <- req.header(name))
+      hdr <- req.header(name))
       yield hdr
 
   /**
@@ -1882,8 +1880,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     */
   private def getCookies(request: Box[HTTPRequest]): List[HTTPCookie] =
     for (r <- (request).toList;
-         ca <- Box.legacyNullTest(r.cookies).toList;
-         c <- ca) yield c
+      ca <- Box.legacyNullTest(r.cookies).toList;
+      c <- ca) yield c
 
   private def _init[B](request: Box[Req], session: LiftSession)(
       f: () => B): B = {
@@ -1993,7 +1991,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # prefixedAttrsToMap ( String )
     * @see # prefixedAttrsToMetaData ( String )
     * @see # prefixedAttrsToMetaData ( String, Map )
-    *
     */
   def prefixedAttrsToMap(
       prefix: String,
@@ -2019,7 +2016,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # prefixedAttrsToMap ( String, Map )
     * @see # prefixedAttrsToMetaData ( String )
     * @see # prefixedAttrsToMetaData ( String, Map )
-    *
     */
   def prefixedAttrsToMap(prefix: String): Map[String, String] =
     prefixedAttrsToMap(prefix: String, Map.empty)
@@ -2044,7 +2040,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # prefixedAttrsToMap ( String )
     * @see # prefixedAttrsToMap ( String, Map )
     * @see # prefixedAttrsToMetaData ( String )
-    *
     */
   def prefixedAttrsToMetaData(
       prefix: String,
@@ -2068,7 +2063,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @return MetaData representing the Map of attributes as unprefixed attributes.
     *
     * @see # prefixedAttrsToMetaData ( String, Map )
-    *
     */
   def mapToAttrs(in: Map[String, String]): MetaData =
     in.foldLeft[MetaData](Null) {
@@ -2122,7 +2116,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * returns <code>true</code>, then the attribute is included in the MetaData.
     *
     * @see # attrsToMetaData
-    *
     */
   def attrsToMetaData(predicate: String => Boolean): MetaData = {
     attrs.foldLeft[MetaData](Null) {
@@ -2165,7 +2158,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * returns <code>true</code>, then the attribute is included in the MetaData.
     *
     * @see # attrsToMetaData
-    *
     */
   def currentAttrsToMetaData(predicate: String => Boolean): MetaData = {
     currentAttrs.filter(a => predicate(a.key))
@@ -2215,17 +2207,17 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * attributes:
     *
     * <pre name="code" class="scala">
-  // Get a Box for the attribute:
-  val myAttr = S.attr("test") openOr "Not found"
-
-  // Get an attribute or return a default value:
-  val myAttr = S.attr("name", "Fred")
-
-  // Apply a transform function on the attribute value, or return an Empty:
-  val pageSize = S.attr("count", _.toInt) openOr 20
-
-  // There are also prefixed versions:
-  val prefixedAttr = S.attr("prefix", "name") openOr "Not found"
+    *  // Get a Box for the attribute:
+    *  val myAttr = S.attr("test") openOr "Not found"
+    *
+    *  // Get an attribute or return a default value:
+    *  val myAttr = S.attr("name", "Fred")
+    *
+    *  // Apply a transform function on the attribute value, or return an Empty:
+    *  val pageSize = S.attr("count", _.toInt) openOr 20
+    *
+    *  // There are also prefixed versions:
+    *  val prefixedAttr = S.attr("prefix", "name") openOr "Not found"
     * </pre>
     *
     * Note that this uses the data held in S.attrs, which means that
@@ -2360,17 +2352,17 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * attributes:
     *
     * <pre name="code" class="scala">
-  // Get a Box for the attribute:
-  val myAttr = S.currentAttr("test") openOr "Not found"
-
-  // Get an attribute or return a default value:
-  val myAttr = S.currentAttr("name", "Fred")
-
-  // Apply a transform function on the attribute value, or return an Empty:
-  val pageSize = S.currentAttr("count", _.toInt) openOr 20
-
-  // There are also prefixed versions:
-  val prefixedAttr = S.currentAttr("prefix", "name") openOr "Not found"
+    *  // Get a Box for the attribute:
+    *  val myAttr = S.currentAttr("test") openOr "Not found"
+    *
+    *  // Get an attribute or return a default value:
+    *  val myAttr = S.currentAttr("name", "Fred")
+    *
+    *  // Apply a transform function on the attribute value, or return an Empty:
+    *  val pageSize = S.currentAttr("count", _.toInt) openOr 20
+    *
+    *  // There are also prefixed versions:
+    *  val prefixedAttr = S.currentAttr("prefix", "name") openOr "Not found"
     * </pre>
     *
     * Note that this uses the data held in S.currentAttrs, which means that
@@ -2432,7 +2424,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # setSessionAttribute
     * @see # unset
     * @see # unsetSessionAttribute
-    *
     */
   def getSessionAttribute(what: String): Box[String] =
     containerSession.flatMap(_.attribute(what) match {
@@ -2450,7 +2441,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * Returns the 'type' S attribute. This corresponds to the current Snippet's name. For example, the snippet:
     *
     * <pre name="code" class="xml">
-  &lt;lift:Hello.world /&gt;
+    *  &lt;lift:Hello.world /&gt;
     * </pre>
     *
     * Will return "Hello.world".
@@ -2465,7 +2456,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # set
     * @see # unset
     * @see # unsetSessionAttribute
-    *
     */
   def setSessionAttribute(name: String, value: String) =
     containerSession.foreach(_.setAttribute(name, value))
@@ -2478,7 +2468,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # setSessionAttribute
     * @see # unset
     * @see # unsetSessionAttribute
-    *
     */
   def set(name: String, value: String) = session.foreach(_.set(name, value))
 
@@ -2490,7 +2479,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # set
     * @see # setSessionAttribute
     * @see # unset
-    *
     */
   def unsetSessionAttribute(name: String) =
     containerSession.foreach(_.removeAttribute(name))
@@ -2503,7 +2491,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # set
     * @see # setSessionAttribute
     * @see # unsetSessionAttribute
-    *
     */
   def unset(name: String) = session.foreach(_.unset(name))
 
@@ -2608,7 +2595,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     _ignoreFailedSnippets.doWith(ignore)(f)
 
   /**
-    *
     * @return should failed snippets be ignored and have the original NodeSeq
     *         returned?
     */
@@ -2638,31 +2624,31 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * which snippet function to use for a given snippet in the template. Our code would look like:
     *
     * <pre name="code" class="scala" >
-  import scala.xml.{ NodeSeq,Text }
-  class SnipMap  {
-  def topSnippet (xhtml : NodeSeq) : NodeSeq =  {
-  if (S.param("showAll").isDefined)  {
-  S.mapSnippet("listing", listing)
-  } else  {
-  S.mapSnippet("listing",  { ignore => Text("") } )
-  }
-
-  ...
-  }
-
-  def listing(xhtml : NodeSeq) : NodeSeq =  {
-  ...
-  }
-  </pre>
+    *  import scala.xml.{ NodeSeq,Text }
+    *  class SnipMap  {
+    *  def topSnippet (xhtml : NodeSeq) : NodeSeq =  {
+    *  if (S.param("showAll").isDefined)  {
+    *  S.mapSnippet("listing", listing)
+    *  } else  {
+    *  S.mapSnippet("listing",  { ignore => Text("") } )
+    *  }
+    *
+    *  ...
+    *  }
+    *
+    *  def listing(xhtml : NodeSeq) : NodeSeq =  {
+    *  ...
+    *  }
+    *  </pre>
     *
     * Then, your template would simply look like:
     *
     * <pre name="code" class="scala" >
-  &lt;lift:surround with="default" at="content"&gt;
-  ...
-  &lt;p&gt;&lt;lift:SnipMap.topSnippet /&gt;&lt;/p&gt;
-  &lt;p&gt;&lt;lift:listing /&gt;&lt;/p&gt;
-  &lt;/lift:surround&gt;
+    *  &lt;lift:surround with="default" at="content"&gt;
+    *  ...
+    *  &lt;p&gt;&lt;lift:SnipMap.topSnippet /&gt;&lt;/p&gt;
+    *  &lt;p&gt;&lt;lift:listing /&gt;&lt;/p&gt;
+    *  &lt;/lift:surround&gt;
     * </pre>
     *
     * Snippets are processed in the order that they're defined in the
@@ -2957,7 +2943,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
   /**
     * Returns the JsCmd that holds the notices markup
-    *
     */
   private[http] def noticesToJsCmd: JsCmd = LiftRules.noticesToJsCmd()
 
@@ -3267,7 +3252,6 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     *            takes one parameter which is the function that must be invoked
     *            for returning the actual response to the client. Note that f function
     *            is invoked asynchronously in the context of a different thread.
-    *
     */
   def respondAsync(f: => Box[LiftResponse]): () => Box[LiftResponse] = {
     RestContinuation.async { reply => reply(f.openOr(EmptyResponse)) }

@@ -38,7 +38,6 @@ import scalafx.scene.text.{Font, FontWeight}
 
 /**
   * @author Rafael
-  *
   */
 class SliderControl(title: String) extends HBox {
 

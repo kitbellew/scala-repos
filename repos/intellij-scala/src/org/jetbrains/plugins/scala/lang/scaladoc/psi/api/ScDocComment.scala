@@ -9,8 +9,7 @@ import com.intellij.psi.javadoc.{PsiDocComment, PsiDocTag}
 
 /**
   * User: Alexander Podkhalyuzin
-  * Date: 22.07.2008
-  */
+  * Date: 22.07.2008 */
 trait ScDocComment extends PsiDocComment with ScalaPsiElement {
   def version: Int
 

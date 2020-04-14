@@ -62,7 +62,7 @@ object TestEvaluator {
       input: Seq[(EvalInfo, (EvalInfo, Seq[(Query, Prediction, Actual)]))])
     = input
   }
- */
+   */
 
 }
 

@@ -31,10 +31,10 @@ private[akka] trait Dispatch { this: ActorCell ⇒
   @tailrec final def swapMailbox(newMailbox: Mailbox): Mailbox = {
     val oldMailbox = mailbox
     if (!Unsafe.instance.compareAndSwapObject(
-          this,
-          AbstractActorCell.mailboxOffset,
-          oldMailbox,
-          newMailbox)) swapMailbox(newMailbox)
+        this,
+        AbstractActorCell.mailboxOffset,
+        oldMailbox,
+        newMailbox)) swapMailbox(newMailbox)
     else oldMailbox
   }
 

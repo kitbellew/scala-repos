@@ -270,7 +270,7 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     logInfo("Restarted JobGenerator at " + restartTime)
   }
 
-  /** Generate jobs and perform checkpoint for the given `time`.  */
+  /** Generate jobs and perform checkpoint for the given `time`. */
   private def generateJobs(time: Time) {
     // Set the SparkEnv in this thread, so that job generation code can access the environment
     // Example: BlockRDDs are created in this thread, and it needs to access BlockManager
@@ -332,7 +332,7 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
   /** Perform checkpoint for the give `time`. */
   private def doCheckpoint(time: Time, clearCheckpointDataLater: Boolean) {
     if (shouldCheckpoint && (time - graph.zeroTime).isMultipleOf(
-          ssc.checkpointDuration)) {
+        ssc.checkpointDuration)) {
       logInfo("Checkpointing graph for time " + time)
       ssc.graph.updateCheckpointData(time)
       checkpointWriter.write(

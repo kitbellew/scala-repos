@@ -367,8 +367,8 @@ private[spark] class MemoryStore(
             // an exclusive write lock on blocks which are candidates for eviction. We perform a
             // non-blocking "tryLock" here in order to ignore blocks which are locked for reading:
             if (blockManager.blockInfoManager
-                  .lockForWriting(blockId, blocking = false)
-                  .isDefined) {
+                .lockForWriting(blockId, blocking = false)
+                .isDefined) {
               selectedBlocks += blockId
               freedMemory += pair.getValue.size
             }

@@ -5,8 +5,7 @@ import breeze.macros.expand
 
 /**
   * Returns a cumulative sum of the vector (ie cumsum).
-  * @author ktakagaki
-  */
+  * @author ktakagaki */
 object accumulate extends UFunc {
 
   @expand

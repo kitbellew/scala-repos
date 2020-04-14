@@ -12,8 +12,7 @@
   * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+  * limitations under the License. */
 
 package kafka.cluster
 
@@ -116,7 +115,7 @@ class Replica(
       return false
     val other = that.asInstanceOf[Replica]
     if (topic.equals(other.topic) && brokerId == other.brokerId && partition
-          .equals(other.partition))
+        .equals(other.partition))
       return true
     false
   }

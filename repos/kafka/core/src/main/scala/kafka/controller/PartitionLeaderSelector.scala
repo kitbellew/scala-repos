@@ -76,13 +76,13 @@ class OfflinePartitionLeaderSelector(
             // Prior to electing an unclean (i.e. non-ISR) leader, ensure that doing so is not disallowed by the configuration
             // for unclean leader election.
             if (!LogConfig
-                  .fromProps(
-                    config.originals,
-                    AdminUtils.fetchEntityConfig(
-                      controllerContext.zkUtils,
-                      ConfigType.Topic,
-                      topicAndPartition.topic))
-                  .uncleanLeaderElectionEnable) {
+                .fromProps(
+                  config.originals,
+                  AdminUtils.fetchEntityConfig(
+                    controllerContext.zkUtils,
+                    ConfigType.Topic,
+                    topicAndPartition.topic))
+                .uncleanLeaderElectionEnable) {
               throw new NoReplicaOnlineException(
                 ("No broker in ISR for partition " +
                   "%s is alive. Live brokers are: [%s],".format(
@@ -229,8 +229,8 @@ class PreferredReplicaPartitionLeaderSelector(
           " Trigerring preferred replica leader election")
       // check if preferred replica is not the current leader and is alive and in the isr
       if (controllerContext.liveBrokerIds.contains(
-            preferredReplica) && currentLeaderAndIsr.isr.contains(
-            preferredReplica)) {
+          preferredReplica) && currentLeaderAndIsr.isr.contains(
+          preferredReplica)) {
         (
           new LeaderAndIsr(
             preferredReplica,

@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Axis Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class AxisSpec[T]

@@ -32,10 +32,10 @@ class ScalaFileNameInspection extends LocalInspectionTool {
       manager: InspectionManager,
       isOnTheFly: Boolean): Array[ProblemDescriptor] = {
     if (!file.isInstanceOf[ScalaFile] ||
-        InjectedLanguageManager
-          .getInstance(file.getProject)
-          .isInjectedFragment(file) ||
-        !IntentionAvailabilityChecker.checkInspection(this, file))
+      InjectedLanguageManager
+        .getInstance(file.getProject)
+        .isInjectedFragment(file) ||
+      !IntentionAvailabilityChecker.checkInspection(this, file))
       return Array.empty
     if (file.getName == ScalaLanguageConsoleView.SCALA_CONSOLE)
       return Array.empty
@@ -68,7 +68,7 @@ class ScalaFileNameInspection extends LocalInspectionTool {
     val res = new ArrayBuffer[ProblemDescriptor]
     if (hasProblems) {
       for (clazz <- definitions;
-           scalaClass: ScTypeDefinition = clazz) {
+        scalaClass: ScTypeDefinition = clazz) {
         res += manager.createProblemDescriptor(
           scalaClass.nameId,
           "Class doesn't correspond to file name",

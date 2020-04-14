@@ -41,7 +41,6 @@ import scalafx.collections.ObservableBuffer
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.collections.transformation.FilteredBuffer]].
   */
 @RunWith(classOf[JUnitRunner])

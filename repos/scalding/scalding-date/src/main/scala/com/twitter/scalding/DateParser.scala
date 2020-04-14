@@ -109,5 +109,4 @@ object DateParser {
   * RichDate(dates.get(0))
   * }
   * }
-  *
   */

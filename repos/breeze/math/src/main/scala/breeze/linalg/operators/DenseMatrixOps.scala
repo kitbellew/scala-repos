@@ -78,11 +78,11 @@ trait DenseMatrixMultiplyStuff
       // if we have a weird stride...
       val a: DenseMatrix[Double] =
         if (_a.majorStride < math
-              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
+            .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
         else _a
       val b: DenseMatrix[Double] =
         if (_b.majorStride < math
-              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
+            .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
         else _b
 
       blas.dgemm(
@@ -382,11 +382,11 @@ trait DenseMatrixFloatMultiplyStuff
       // if we have a weird stride...
       val a: DenseMatrix[Float] =
         if (_a.majorStride < math
-              .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
+            .max(if (_a.isTranspose) _a.cols else _a.rows, 1)) _a.copy
         else _a
       val b: DenseMatrix[Float] =
         if (_b.majorStride < math
-              .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
+            .max(if (_b.isTranspose) _b.cols else _b.rows, 1)) _b.copy
         else _b
 
       blas.sgemm(
@@ -1304,9 +1304,9 @@ trait LowPriorityDenseMatrix extends LowPriorityDenseMatrix1 {
       require(a.cols == b.cols, "Matrixs must have same number of columns")
 
       if (a.data.length - a.offset == a.rows * a.cols
-          && b.data.length - b.offset == a.rows * a.cols
-          && a.majorStride == b.majorStride
-          && a.isTranspose == b.isTranspose) {
+        && b.data.length - b.offset == a.rows * a.cols
+        && a.majorStride == b.majorStride
+        && a.isTranspose == b.isTranspose) {
 
         System.arraycopy(b.data, b.offset, a.data, a.offset, a.size)
 
@@ -1530,7 +1530,7 @@ trait LowPriorityDenseMatrix1 {
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait DenseMatrix_OrderingOps extends DenseMatrixOps { this: DenseMatrix.type =>
 
   @expand

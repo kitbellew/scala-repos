@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * WebView Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class WebViewSpec

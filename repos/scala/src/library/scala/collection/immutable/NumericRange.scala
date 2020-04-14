@@ -192,9 +192,9 @@ abstract class NumericRange[T](
       // If there is no overflow, use arithmetic series formula
       //   a + ... (n terms total) ... + b = n*(a+b)/2
       if ((num eq scala.math.Numeric.IntIsIntegral) ||
-          (num eq scala.math.Numeric.ShortIsIntegral) ||
-          (num eq scala.math.Numeric.ByteIsIntegral) ||
-          (num eq scala.math.Numeric.CharIsIntegral)) {
+        (num eq scala.math.Numeric.ShortIsIntegral) ||
+        (num eq scala.math.Numeric.ByteIsIntegral) ||
+        (num eq scala.math.Numeric.CharIsIntegral)) {
         // We can do math with no overflow in a Long--easy
         val exact =
           (numRangeElements * ((num toLong head) + (num toInt last))) / 2
@@ -215,7 +215,7 @@ abstract class NumericRange[T](
             }
         ans.asInstanceOf[B]
       } else if ((num eq scala.math.Numeric.FloatAsIfIntegral) ||
-                 (num eq scala.math.Numeric.DoubleAsIfIntegral)) {
+        (num eq scala.math.Numeric.DoubleAsIfIntegral)) {
         // Try to compute sum with reasonable accuracy, avoiding over/underflow
         val numAsIntegral = num.asInstanceOf[Integral[B]]
         import numAsIntegral._
@@ -228,7 +228,7 @@ abstract class NumericRange[T](
         else
           (nre / two) * (head + last) // Don't need to worry about infinity; this will be more accurate and avoid underflow
       } else if ((num eq scala.math.Numeric.BigIntIsIntegral) ||
-                 (num eq scala.math.Numeric.BigDecimalIsFractional)) {
+        (num eq scala.math.Numeric.BigDecimalIsFractional)) {
         // No overflow, so we can use arithmetic series formula directly
         // (not going to worry about running out of memory)
         val numAsIntegral = num.asInstanceOf[Integral[B]]

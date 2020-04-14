@@ -22,7 +22,6 @@ import generic.CanBuildFrom
   *  This map is not intended to contain more than 2^29 entries (approximately
   *  500 million).  The maximum capacity is 2^30, but performance will degrade
   *  rapidly as 2^30 is approached.
-  *
   */
 final class LongMap[V] private[collection] (
     defaultEntry: Long => V,

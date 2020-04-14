@@ -13,7 +13,6 @@ import breeze.linalg.max
 import breeze.util.Implicits._
 
 /**
-  *
   * NonlinearMinimizer solves the problem that has the following structure
   * minimize f(x) + g(x)
   *

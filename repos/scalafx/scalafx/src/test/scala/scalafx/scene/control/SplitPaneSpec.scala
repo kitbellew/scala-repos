@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * SplitPane Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SplitPaneSpec

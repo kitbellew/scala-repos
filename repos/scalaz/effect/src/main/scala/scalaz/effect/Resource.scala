@@ -5,7 +5,6 @@ package effect
 import java.io.Closeable
 
 /**
-  *
   */
 ////
 trait Resource[F] { self =>

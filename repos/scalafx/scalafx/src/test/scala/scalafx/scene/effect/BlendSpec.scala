@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Blend Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BlendSpec

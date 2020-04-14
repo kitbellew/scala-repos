@@ -612,15 +612,15 @@ object AkkaBuild extends Build {
   lazy val resolverSettings = {
     // should we be allowed to use artifacts published to the local maven repository
     if (System
-          .getProperty("akka.build.useLocalMavenResolver", "false")
-          .toBoolean)
+        .getProperty("akka.build.useLocalMavenResolver", "false")
+        .toBoolean)
       Seq(resolvers += mavenLocalResolver)
     else Seq.empty
   } ++ {
     // should we be allowed to use artifacts from sonatype snapshots
     if (System
-          .getProperty("akka.build.useSnapshotSonatypeResolver", "false")
-          .toBoolean)
+        .getProperty("akka.build.useSnapshotSonatypeResolver", "false")
+        .toBoolean)
       Seq(resolvers += Resolver.sonatypeRepo("snapshots"))
     else Seq.empty
   } ++ Seq(

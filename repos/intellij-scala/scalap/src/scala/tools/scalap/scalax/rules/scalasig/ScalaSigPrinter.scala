@@ -840,7 +840,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         def isIdentifierPart(c: Char) =
           (c == '$') || Character.isUnicodeIdentifierPart(c)
 
-        /** Is character a math or other symbol in Unicode?  */
+        /** Is character a math or other symbol in Unicode? */
         def isSpecial(c: Char) = {
           val chtp = Character.getType(c)
           chtp == Character.MATH_SYMBOL.toInt || chtp == Character.OTHER_SYMBOL.toInt
@@ -858,7 +858,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         if (id.isEmpty) return false
         if (isIdentifierStart(id(0))) {
           if (id.indexWhere(c =>
-                !isIdentifierPart(c) && !isOperatorPart(c) && c != '_') >= 0)
+              !isIdentifierPart(c) && !isOperatorPart(c) && c != '_') >= 0)
             return false
           val index = id.indexWhere(isOperatorPart)
           if (index < 0) return true
@@ -870,7 +870,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       }
       val result = NameTransformer.decode(name)
       if (!isIdentifier(result) || keywordList.contains(
-            result) || result == "=") "`" + result + "`"
+          result) || result == "=") "`" + result + "`"
       else result
     }
     val stripped = stripPrivatePrefix(name)

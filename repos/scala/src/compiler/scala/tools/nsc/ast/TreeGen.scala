@@ -184,7 +184,7 @@ abstract class TreeGen extends scala.reflect.internal.TreeGen with TreeDSL {
     */
   def mkCastArray(tree: Tree, elemtp: Type, pt: Type) =
     if (elemtp.typeSymbol == AnyClass && isPrimitiveValueType(
-          tree.tpe.typeArgs.head))
+        tree.tpe.typeArgs.head))
       mkCast(mkRuntimeCall(nme.toObjectArray, List(tree)), pt)
     else
       mkCast(tree, pt)

@@ -21,7 +21,6 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.FunSuite
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])

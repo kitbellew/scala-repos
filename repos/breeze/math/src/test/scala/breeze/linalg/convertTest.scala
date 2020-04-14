@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
   * TODO
   *
   * @author dlwh
- **/
+  */
 class convertTest extends FunSuite {
   test("Int -> {Double, Short}") {
     assert(

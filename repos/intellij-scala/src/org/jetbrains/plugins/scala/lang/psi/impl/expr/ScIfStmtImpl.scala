@@ -18,8 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008
-  */
+  * Date: 06.03.2008 */
 
 class ScIfStmtImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
@@ -89,7 +88,7 @@ class ScIfStmtImpl(node: ASTNode)
     (thenBranch, elseBranch) match {
       case (Some(t), Some(e)) =>
         for (tt <- t.getType(TypingContext.empty);
-             et <- e.getType(TypingContext.empty)) yield {
+          et <- e.getType(TypingContext.empty)) yield {
           Bounds.weakLub(tt, et)
         }
       case (Some(t), None) =>

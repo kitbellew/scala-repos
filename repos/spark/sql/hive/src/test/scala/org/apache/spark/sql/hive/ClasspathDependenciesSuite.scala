@@ -24,7 +24,6 @@ import org.apache.spark.SparkFunSuite
 /**
   * Verify that some classes load and that others are not found on the classpath.
   *
-  *
   * This is used to detect classpath and shading conflict, especially between
   * Spark's required Kryo version and that which can be found in some Hive versions.
   */

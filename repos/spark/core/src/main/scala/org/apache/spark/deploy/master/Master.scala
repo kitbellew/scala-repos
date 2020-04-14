@@ -325,7 +325,7 @@ private[deploy] class Master(
             // Only retry certain number of times so we don't go into an infinite loop.
             if (!normalExit) {
               if (appInfo
-                    .incrementRetryCount() < ApplicationState.MAX_NUM_RETRY) {
+                  .incrementRetryCount() < ApplicationState.MAX_NUM_RETRY) {
                 schedule()
               } else {
                 val execs = appInfo.executors.values

@@ -37,7 +37,7 @@ class JavaFunctionUsagesSearcher
           def execute(element: PsiElement, offsetInElement: Int): Boolean = {
             val references = inReadAction(element.getReferences)
             for (ref <- references if ref.getRangeInElement.contains(
-                   offsetInElement) && !collectedReferences.contains(ref)) {
+                offsetInElement) && !collectedReferences.contains(ref)) {
               inReadAction {
                 ref match {
                   case refElement: PsiReferenceExpression =>

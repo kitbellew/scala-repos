@@ -193,5 +193,5 @@ class LBatchView(
       .mapValues( _.sortBy(_.eventTime.getMillis).map(map(_)) )
       .toMap
   }
- */
+   */
 }

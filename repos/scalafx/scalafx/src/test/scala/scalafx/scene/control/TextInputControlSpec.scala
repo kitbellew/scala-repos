@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TextInputControl Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TextInputControlSpec

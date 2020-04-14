@@ -99,7 +99,6 @@ object RightPartialAction {
   * 5. for all `g` in `G` and `p` in `P` such that `g ?|+|> p` is defined:
   *
   * `(g ?|+|> p).get === (p <|+|? g.inverse).get`
-  *
   */
 trait PartialAction[P, G]
     extends Any

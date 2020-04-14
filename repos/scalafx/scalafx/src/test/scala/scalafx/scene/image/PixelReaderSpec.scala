@@ -37,7 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PixelReader Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PixelReaderSpec

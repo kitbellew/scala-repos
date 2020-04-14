@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Canvas Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class CanvasSpec

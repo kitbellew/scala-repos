@@ -402,7 +402,6 @@ class ClusterSingletonManagerIsStuck(message: String)
   * Use factory method [[ClusterSingletonManager#props]] to create the
   * [[akka.actor.Props]] for the actor.
   *
-  *
   * @param singletonProps [[akka.actor.Props]] of the singleton actor instance.
   *
   * @param terminationMessage When handing over to a new oldest node

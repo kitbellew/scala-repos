@@ -129,10 +129,10 @@ class ScObjectImpl protected (
       place: PsiElement): Boolean = {
     if (DumbService.getInstance(getProject).isDumb) return true
     if (!super[ScTemplateDefinition].processDeclarationsForTemplateBody(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+        processor,
+        state,
+        lastParent,
+        place)) return false
     if (isPackageObject && name != "`package`") {
       val newState = state.put(BaseProcessor.FROM_TYPE_KEY, null)
       val qual = qualifiedName
@@ -140,11 +140,11 @@ class ScObjectImpl protected (
       val pack =
         facade.findPackage(qual) //do not wrap into ScPackage to avoid SOE
       if (pack != null && !ResolveUtils.packageProcessDeclarations(
-            pack,
-            processor,
-            newState,
-            lastParent,
-            place))
+          pack,
+          processor,
+          newState,
+          lastParent,
+          place))
         return false
     }
     true
@@ -229,8 +229,8 @@ class ScObjectImpl protected (
   @Cached(synchronized = false, ModCount.getBlockModificationCount, this)
   private def getModuleField: Option[PsiField] = {
     if (getQualifiedName
-          .split('.')
-          .exists(JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this)))) None
+        .split('.')
+        .exists(JavaLexer.isKeyword(_, PsiUtil.getLanguageLevel(this)))) None
     else {
       val field: LightField = new LightField(
         getManager,

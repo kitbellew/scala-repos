@@ -19,7 +19,6 @@ import breeze.linalg.{normalize, norm}
 import org.scalacheck.Prop
 
 /**
-  *
   * @author dlwh
   */
 

@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Ellipse Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class EllipseSpec

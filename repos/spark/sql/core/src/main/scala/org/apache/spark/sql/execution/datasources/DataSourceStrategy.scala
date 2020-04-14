@@ -443,7 +443,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     while (resultIdx < requiredColumns.length) {
       val attr = requiredColumns(resultIdx)
       if (inputIdx < dataColumns.length && requiredColumns(
-            resultIdx) == dataColumns(inputIdx)) {
+          resultIdx) == dataColumns(inputIdx)) {
         result.setColumn(resultIdx, input.column(inputIdx))
         inputIdx += 1
       } else {
@@ -569,8 +569,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       bucketSpec: Option[BucketSpec]): Option[BitSet] = {
 
     if (bucketSpec.isEmpty ||
-        bucketSpec.get.numBuckets == 1 ||
-        bucketSpec.get.bucketColumnNames.length != 1) {
+      bucketSpec.get.numBuckets == 1 ||
+      bucketSpec.get.bucketColumnNames.length != 1) {
       // None means all the buckets need to be scanned
       return None
     }
@@ -699,8 +699,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     }
 
     if (projects.map(_.toAttribute) == projects &&
-        projectSet.size == projects.size &&
-        filterSet.subsetOf(projectSet)) {
+      projectSet.size == projects.size &&
+      filterSet.subsetOf(projectSet)) {
       // When it is possible to just use column pruning to get the right projection and
       // when the columns of this projection are enough to evaluate all filter conditions,
       // just do a scan followed by a filter, with no extra project.

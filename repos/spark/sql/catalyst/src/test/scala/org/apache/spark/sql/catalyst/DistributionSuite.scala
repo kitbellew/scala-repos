@@ -97,7 +97,7 @@ class DistributionSuite extends SparkFunSuite {
       ClusteredDistribution(Seq('b)),
       ClusteredDistribution(Seq('b + 1)),
       true)
-   */
+     */
   }
 
   test("RangePartitioning is the output partitioning") {

@@ -13,8 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.ScCaseClause
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.05.2008
-  */
+  * Date: 28.05.2008 */
 
 class IfFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
@@ -26,9 +25,9 @@ class IfFilter extends ElementFilter {
         if (parent.getNode.getElementType == ScalaElementTypes.FOR_STMT) {
           import org.jetbrains.plugins.scala.extensions._
           if (leaf.getParent != null && //reference
-              leaf.getParent.getParent != null && //pattern
-              leaf.getParent.getParent.getPrevSiblingNotWhitespace != null && //case keyword
-              leaf.getParent.getParent.getPrevSiblingNotWhitespace.getNode.getElementType == ScalaTokenTypes.kCASE)
+            leaf.getParent.getParent != null && //pattern
+            leaf.getParent.getParent.getPrevSiblingNotWhitespace != null && //case keyword
+            leaf.getParent.getParent.getPrevSiblingNotWhitespace.getNode.getElementType == ScalaTokenTypes.kCASE)
             return false
           return true
         }

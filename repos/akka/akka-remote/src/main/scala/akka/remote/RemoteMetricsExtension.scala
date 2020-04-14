@@ -28,8 +28,8 @@ private[akka] object RemoteMetricsExtension
 
   override def createExtension(system: ExtendedActorSystem): RemoteMetrics =
     if (system.settings.config
-          .getString("akka.remote.log-frame-size-exceeding")
-          .toLowerCase == "off")
+        .getString("akka.remote.log-frame-size-exceeding")
+        .toLowerCase == "off")
       new RemoteMetricsOff
     else
       new RemoteMetricsOn(system)

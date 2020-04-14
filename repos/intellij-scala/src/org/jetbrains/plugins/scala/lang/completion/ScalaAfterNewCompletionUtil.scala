@@ -160,7 +160,7 @@ object ScalaAfterNewCompletionUtil {
       psiClass match {
         case clazz: PsiClass =>
           if (psiClass.isInterface || psiClass.isInstanceOf[ScTrait] ||
-              psiClass.hasModifierPropertyScala("abstract")) {
+            psiClass.hasModifierPropertyScala("abstract")) {
             tailText += " {...}"
           }
           val location: String = clazz.getPresentation.getLocationString
@@ -204,16 +204,16 @@ object ScalaAfterNewCompletionUtil {
       }
     lookupElement.isRenamed = isRenamed
     if (ApplicationManager.getApplication.isUnitTestMode || psiClass.isInterface ||
-        psiClass.isInstanceOf[ScTrait] || psiClass.hasModifierPropertyScala(
-          "abstract"))
+      psiClass.isInstanceOf[ScTrait] || psiClass.hasModifierPropertyScala(
+        "abstract"))
       lookupElement.setAutoCompletionPolicy(
         if (ApplicationManager.getApplication.isUnitTestMode)
           AutoCompletionPolicy.ALWAYS_AUTOCOMPLETE
         else AutoCompletionPolicy.NEVER_AUTOCOMPLETE)
     val qualName = psiClass.qualifiedName
     if (ScalaCodeStyleSettings
-          .getInstance(psiClass.getProject)
-          .hasImportWithPrefix(qualName)) {
+        .getInstance(psiClass.getProject)
+        .hasImportWithPrefix(qualName)) {
       lookupElement.prefixCompletion = true
     }
     lookupElement.setInsertHandler(new ScalaConstructorInsertHandler)
@@ -247,8 +247,8 @@ object ScalaAfterNewCompletionUtil {
         }
         //todo: filter inner classes smarter (how? don't forget deep inner classes)
         if (clazz.containingClass != null && (!clazz.containingClass
-              .isInstanceOf[ScObject] ||
-            clazz.hasModifierPropertyScala("static"))) return null
+            .isInstanceOf[ScObject] ||
+          clazz.hasModifierPropertyScala("static"))) return null
         if (!ResolveUtils.isAccessible(clazz, place, forCompletion = true))
           return null
         if (addedClasses.contains(clazz.qualifiedName)) return null

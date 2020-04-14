@@ -112,7 +112,6 @@ object ButtonType {
 }
 
 /**
-  *
   * The ButtonType is used to specify which buttons should be shown to users in the dialogs.
   *
   * Wraps a $JFX $URL0 $TC]].

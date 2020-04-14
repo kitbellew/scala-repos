@@ -26,8 +26,7 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008
-  */
+  * Date: 07.03.2008 */
 
 trait ScPrimaryConstructor
     extends ScMember
@@ -138,7 +137,7 @@ trait ScPrimaryConstructor
     clausePosition match {
       case -1 =>
         for (param <- parameters
-             if ScalaPsiUtil.memberNamesEquals(param.name, name))
+          if ScalaPsiUtil.memberNamesEquals(param.name, name))
           return Some(param)
         None
       case i if i < 0                                 => None
@@ -146,7 +145,7 @@ trait ScPrimaryConstructor
       case i =>
         val clause: ScParameterClause = effectiveParameterClauses.apply(i)
         for (param <- clause.parameters
-             if ScalaPsiUtil.memberNamesEquals(param.name, name))
+          if ScalaPsiUtil.memberNamesEquals(param.name, name))
           return Some(param)
         None
     }

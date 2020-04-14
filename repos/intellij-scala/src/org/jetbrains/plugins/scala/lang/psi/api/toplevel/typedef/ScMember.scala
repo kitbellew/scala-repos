@@ -157,8 +157,8 @@ trait ScMember extends ScalaPsiElement with ScModifierListOwner with PsiMember {
                     while (membersIterator.hasNext) {
                       val member = membersIterator.next()
                       if (isSimilarMemberForNavigation(
-                            member,
-                            isStrict = false)) buf += member
+                          member,
+                          isStrict = false)) buf += member
                     }
                     if (buf.isEmpty) this
                     else if (buf.length == 1) buf(0)

@@ -283,7 +283,7 @@ private[internal] trait TypeMaps {
     }
 
     /** Map over a set of annotation arguments.  If any
-      *  of the arguments cannot be mapped, then return Nil.  */
+      *  of the arguments cannot be mapped, then return Nil. */
     def mapOverAnnotArgs(args: List[Tree]): List[Tree] = {
       val args1 = args mapConserve mapOver
       if (args1 contains UnmappableTree) Nil
@@ -364,19 +364,19 @@ private[internal] trait TypeMaps {
         }
     }
 
-  /***
-    *@M: I think this is more desirable, but Martin prefers to leave raw-types as-is as much as possible
-    object rawToExistentialInJava extends TypeMap {
-      def apply(tp: Type): Type = tp match {
-        // any symbol that occurs in a java sig, not just java symbols
-        // see https://issues.scala-lang.org/browse/SI-2454?focusedCommentId=46618
-        case TypeRef(pre, sym, List()) if !sym.typeParams.isEmpty =>
-          val eparams = typeParamsToExistentials(sym, sym.typeParams)
-          existentialAbstraction(eparams, TypeRef(pre, sym, eparams map (_.tpe)))
-        case _ =>
-          mapOver(tp)
-      }
-    }
+  /**
+    * @M: I think this is more desirable, but Martin prefers to leave raw-types as-is as much as possible
+    *    object rawToExistentialInJava extends TypeMap {
+    *      def apply(tp: Type): Type = tp match {
+    *        // any symbol that occurs in a java sig, not just java symbols
+    *        // see https://issues.scala-lang.org/browse/SI-2454?focusedCommentId=46618
+    *        case TypeRef(pre, sym, List()) if !sym.typeParams.isEmpty =>
+    *          val eparams = typeParamsToExistentials(sym, sym.typeParams)
+    *          existentialAbstraction(eparams, TypeRef(pre, sym, eparams map (_.tpe)))
+    *        case _ =>
+    *          mapOver(tp)
+    *      }
+    *    }
     */
 
   /** Used by existentialAbstraction.

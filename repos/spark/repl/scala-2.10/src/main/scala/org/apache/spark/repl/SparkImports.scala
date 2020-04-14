@@ -191,7 +191,7 @@ private[repl] trait SparkImports {
         // level if the import might conflict with some other import
         case x: ImportHandler =>
           if (x.importsWildcard || currentImps.exists(
-                x.importedNames contains _))
+              x.importedNames contains _))
             addWrapper()
 
           code append (x.member + "\n")
@@ -224,7 +224,7 @@ private[repl] trait SparkImports {
             val valName = "$VAL" + newValId()
 
             if (!code.toString
-                  .endsWith(".`" + imv + "`;\n")) { // Which means already imported
+                .endsWith(".`" + imv + "`;\n")) { // Which means already imported
               code.append("val " + valName + " = " + objName + ".INSTANCE;\n")
               code.append(
                 "import " + valName + req.accessPath + ".`" + imv + "`;\n")

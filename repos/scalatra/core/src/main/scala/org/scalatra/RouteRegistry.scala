@@ -35,7 +35,6 @@ class RouteRegistry {
   /**
     * Return a route for a specific HTTP response status code.
     * @param statusCode the status code.
-    *
     */
   def apply(statusCode: Int): Option[Route] = _statusRoutes.get(statusCode)
 

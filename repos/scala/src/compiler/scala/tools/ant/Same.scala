@@ -124,7 +124,7 @@ import org.apache.tools.ant.types.Mapper
     val originBuffer = new Array[Byte](bufferSize)
     val destBuffer = new Array[Byte](bufferSize)
     for (originName: String <- originNames;
-         destName: String <- mapper.mapFileName(originName)) {
+      destName: String <- mapper.mapFileName(originName)) {
       //println("originName="+originName)
       //println("destName  ="+destName)
       var equalNow = true

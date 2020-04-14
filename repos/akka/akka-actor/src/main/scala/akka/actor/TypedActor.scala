@@ -714,8 +714,6 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
   /**
     * Scala API: return a new TypedProps that will use the specified Timeout for its non-void-returning methods,
     * if None is specified, it will use the default timeout as specified in the configuration.
-    *
-    *
     */
   def withTimeout(timeout: Option[Timeout]): TypedProps[T] =
     this.copy(timeout = timeout)
@@ -830,7 +828,7 @@ class TypedActorExtension(val system: ExtendedActorSystem)
   private[akka] def invocationHandlerFor(
       typedActor: AnyRef): TypedActorInvocationHandler =
     if ((typedActor ne null) && classOf[Proxy].isAssignableFrom(
-          typedActor.getClass) && Proxy.isProxyClass(typedActor.getClass))
+        typedActor.getClass) && Proxy.isProxyClass(typedActor.getClass))
       typedActor match {
         case null ⇒ null
         case other ⇒

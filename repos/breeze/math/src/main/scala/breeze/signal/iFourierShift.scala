@@ -8,7 +8,7 @@ import breeze.math.Complex
 
 //ToDo: 2D fourierShift/iFourierShift, make horz/vert join function first
 
-/**Inverse shift the zero-frequency component to the center of the spectrum. For odd sequences, this is not
+/** Inverse shift the zero-frequency component to the center of the spectrum. For odd sequences, this is not
   * equivalent to [[breeze.signal.fourierShift]]
   *
   * @param dft input array

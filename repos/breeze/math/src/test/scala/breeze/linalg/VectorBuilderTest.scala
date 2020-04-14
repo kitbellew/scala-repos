@@ -9,7 +9,6 @@ import org.scalatest.prop.Checkers
 import breeze.numerics.closeTo
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])
@@ -74,7 +73,6 @@ class VectorBuilderTest extends FunSuite with Checkers {
 }
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])

@@ -20,7 +20,6 @@ import scala.collection.immutable.HashMap
 import org.apache.spark.rdd.RDD
 
 /** Immutable Bi-directional Map
-  *
   */
 class BiMap[K, V] private[prediction] (
     private val m: Map[K, V],

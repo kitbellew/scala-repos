@@ -8,7 +8,7 @@ package scalaz
 trait ApplicativePlus[F[_]] extends Applicative[F] with PlusEmpty[F] { self =>
   ////
 
-  /**The composition of ApplicativePlus `F` and Applicative `G`, `[x]F[G[x]]`, is a ApplicativePlus */
+  /** The composition of ApplicativePlus `F` and Applicative `G`, `[x]F[G[x]]`, is a ApplicativePlus */
   override def compose[G[_]](implicit
       G0: Applicative[G]): ApplicativePlus[λ[α => F[G[α]]]] =
     new CompositionApplicativePlus[F, G] {
@@ -16,7 +16,7 @@ trait ApplicativePlus[F[_]] extends Applicative[F] with PlusEmpty[F] { self =>
       implicit def G = G0
     }
 
-  /**The product of ApplicativePlus `F` and `G`, `[x](F[x], G[x]])`, is a ApplicativePlus */
+  /** The product of ApplicativePlus `F` and `G`, `[x](F[x], G[x]])`, is a ApplicativePlus */
   def product[G[_]](implicit
       G0: ApplicativePlus[G]): ApplicativePlus[λ[α => (F[α], G[α])]] =
     new ProductApplicativePlus[F, G] {

@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * QuadCurve Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class QuadCurveSpec

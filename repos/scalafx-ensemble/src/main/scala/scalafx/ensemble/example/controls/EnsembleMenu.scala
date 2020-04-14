@@ -78,7 +78,7 @@ class EnsembleMenu extends EnsembleExample {
                     fooMenuItem.setVisible(selected())
                     println(
                       """Menu item "foo" is now """ + (if (fooMenuItem
-                                                             .visible()) ""
+                                                           .visible()) ""
                                                        else "not") + " visible")
                   }
                 }

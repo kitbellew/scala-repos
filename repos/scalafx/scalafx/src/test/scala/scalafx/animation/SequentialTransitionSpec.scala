@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * SequentialTransition Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SequentialTransitionSpec

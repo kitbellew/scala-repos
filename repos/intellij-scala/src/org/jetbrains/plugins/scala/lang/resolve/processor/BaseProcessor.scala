@@ -246,15 +246,15 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         //not scala from scala
         var break = true
         for (method <- e.getMethods
-             if break && method.hasModifierProperty("static")) {
+          if break && method.hasModifierProperty("static")) {
           if (!execute(method, state)) break = false
         }
         for (cl <- e.getInnerClasses
-             if break && cl.hasModifierProperty("static")) {
+          if break && cl.hasModifierProperty("static")) {
           if (!execute(cl, state)) break = false
         }
         for (field <- e.getFields
-             if break && field.hasModifierProperty("static")) {
+          if break && field.hasModifierProperty("static")) {
           if (!execute(field, state)) break = false
         }
         if (!break) return false
@@ -363,15 +363,15 @@ abstract class BaseProcessor(val kinds: Set[ResolveTargets.Value])
         SyntheticClasses.get(place.getProject).byName(name) match {
           case Some(c) =>
             if (!c.processDeclarations(this, state, null, place) ||
-                !(tSuper match {
-                  case Some(ts) =>
-                    processType(
-                      ts,
-                      place,
-                      visitedAliases = visitedAliases,
-                      visitedTypeParameter = visitedTypeParameter)
-                  case _ => true
-                })) return false
+              !(tSuper match {
+                case Some(ts) =>
+                  processType(
+                    ts,
+                    place,
+                    visitedAliases = visitedAliases,
+                    visitedTypeParameter = visitedTypeParameter)
+                case _ => true
+              })) return false
           case None => //nothing to do
         }
 

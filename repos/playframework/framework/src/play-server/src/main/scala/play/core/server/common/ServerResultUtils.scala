@@ -20,15 +20,13 @@ object ServerResultUtils {
       result: Result): ConnectionHeader = {
     if (request.version == HttpProtocol.HTTP_1_1) {
       if (result.header.headers
-            .get(CONNECTION)
-            .exists(_.equalsIgnoreCase(CLOSE))) {
+          .get(CONNECTION)
+          .exists(_.equalsIgnoreCase(CLOSE))) {
         // Close connection, header already exists
         DefaultClose
       } else if ((result.body.isInstanceOf[
-                   HttpEntity.Streamed] && result.body.contentLength.isEmpty)
-                 || request.headers
-                   .get(CONNECTION)
-                   .exists(_.equalsIgnoreCase(CLOSE))) {
+          HttpEntity.Streamed] && result.body.contentLength.isEmpty)
+        || request.headers.get(CONNECTION).exists(_.equalsIgnoreCase(CLOSE))) {
         // We need to close the connection and set the header
         SendClose
       } else {
@@ -36,14 +34,14 @@ object ServerResultUtils {
       }
     } else {
       if (result.header.headers
-            .get(CONNECTION)
-            .exists(_.equalsIgnoreCase(CLOSE))) {
+          .get(CONNECTION)
+          .exists(_.equalsIgnoreCase(CLOSE))) {
         DefaultClose
       } else if ((result.body.isInstanceOf[
-                   HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
-                 request.headers
-                   .get(CONNECTION)
-                   .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) {
+          HttpEntity.Streamed] && result.body.contentLength.isEmpty) ||
+        request.headers
+          .get(CONNECTION)
+          .forall(!_.equalsIgnoreCase(KEEP_ALIVE))) {
         DefaultClose
       } else {
         SendKeepAlive
@@ -59,7 +57,7 @@ object ServerResultUtils {
   def validateResult(request: RequestHeader, result: Result)(implicit
       mat: Materializer): Result = {
     if (request.version == HttpProtocol.HTTP_1_0 && result.body
-          .isInstanceOf[HttpEntity.Chunked]) {
+        .isInstanceOf[HttpEntity.Chunked]) {
       cancelEntity(result.body)
       Results
         .Status(Status.HTTP_VERSION_NOT_SUPPORTED)
@@ -67,7 +65,7 @@ object ServerResultUtils {
           "The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
         .withHeaders(CONNECTION -> CLOSE)
     } else if (!mayHaveEntity(
-                 result.header.status) && !result.body.isKnownEmpty) {
+        result.header.status) && !result.body.isKnownEmpty) {
       cancelEntity(result.body)
       result.copy(body =
         HttpEntity.Strict(ByteString.empty, result.body.contentType))

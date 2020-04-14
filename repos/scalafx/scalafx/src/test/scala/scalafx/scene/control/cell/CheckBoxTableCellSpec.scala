@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * CheckBoxTableCell Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class CheckBoxTableCellSpec[S, T]

@@ -72,7 +72,7 @@ trait BlockParsers extends Parsers {
   // non-recursive blocks //
   //////////////////////////
 
-  /**:?
+  /** :?
     * Represents a block of verbatim xml
     */
   class VerbatimXml(line: XmlChunk) extends MarkdownBlock {
@@ -306,7 +306,7 @@ trait BlockParsers extends Parsers {
 
   def emptyLine: Parser[EmptyLine] = line(classOf[EmptyLine])
 
-  /**accepts zero or more empty lines
+  /** accepts zero or more empty lines
     */
   def optEmptyLines: Parser[List[MarkdownLine]] = emptyLine *
 
@@ -423,7 +423,7 @@ trait BlockParsers extends Parsers {
       case e ~ c ~ cs => e ++ (c :: cs)
     }
 
-  /**parses an item in an unsorted list
+  /** parses an item in an unsorted list
     */
   def uItem: Parser[ListItem] =
     lookup ~ line(
@@ -432,7 +432,7 @@ trait BlockParsers extends Parsers {
       case lu ~ s ~ ls ~ cs ~ e => new ListItem(s :: ls ++ cs.flatten ++ e, lu)
     }
 
-  /**parses an item in a sorted list
+  /** parses an item in a sorted list
     */
   def oItem: Parser[ListItem] =
     lookup ~ line(

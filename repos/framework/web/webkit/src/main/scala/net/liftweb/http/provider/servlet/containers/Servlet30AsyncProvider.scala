@@ -73,7 +73,6 @@ object Servlet30AsyncProvider extends AsyncProviderMeta {
   * Servlet30AsyncProvider
   *
   * Implemented by using Servlet30 Continuation API
-  *
   */
 class Servlet30AsyncProvider(req: HTTPRequest)
     extends ServletAsyncProvider

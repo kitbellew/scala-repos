@@ -8,8 +8,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 08.02.2008
-  */
+  * Date: 08.02.2008 */
 
 /*
  * ClassParamClauses ::= {ClassParamClause}

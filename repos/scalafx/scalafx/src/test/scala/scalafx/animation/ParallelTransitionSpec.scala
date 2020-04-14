@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ParallelTransition Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ParallelTransitionSpec

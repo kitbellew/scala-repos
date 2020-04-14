@@ -398,9 +398,9 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
       }
 
       if (!typer.checkFeature(
-            macroDdef.pos,
-            currentRun.runDefinitions.MacrosFeature,
-            immediate = true)) {
+          macroDdef.pos,
+          currentRun.runDefinitions.MacrosFeature,
+          immediate = true)) {
         macroLogVerbose(
           "typecheck terminated unexpectedly: language.experimental.macros feature is not enabled")
         fail()

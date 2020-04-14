@@ -49,7 +49,7 @@ class GitRepositoryServlet extends GitServlet with SystemSettingsService {
     val agent = req.getHeader("USER-AGENT")
     val index = req.getRequestURI.indexOf(".git")
     if (index >= 0 && (agent == null || agent.toLowerCase.indexOf(
-          "git/") < 0)) {
+        "git/") < 0)) {
       // redirect for browsers
       val paths = req.getRequestURI.substring(0, index).split("/")
       res.sendRedirect(
@@ -97,8 +97,8 @@ class GitBucketReceivePackFactory
     val receivePack = new ReceivePack(db)
 
     if (PluginRegistry()
-          .getRepositoryRouting(request.gitRepositoryPath)
-          .isEmpty) {
+        .getRepositoryRouting(request.gitRepositoryPath)
+        .isEmpty) {
       val pusher =
         request.getAttribute(Keys.Request.UserName).asInstanceOf[String]
 
@@ -215,13 +215,13 @@ class CommitLogHook(
           val defaultBranch = repositoryInfo.repository.defaultBranch
           val newCommits = commits.flatMap { commit =>
             if (!existIds.contains(commit.id) && !pushedIds.contains(
-                  commit.id)) {
+                commit.id)) {
               if (issueCount > 0) {
                 pushedIds.add(commit.id)
                 createIssueComment(owner, repository, commit)
                 // close issues
                 if (refName(
-                      1) == "heads" && branchName == defaultBranch && command.getType == ReceiveCommand.Type.UPDATE) {
+                    1) == "heads" && branchName == defaultBranch && command.getType == ReceiveCommand.Type.UPDATE) {
                   closeIssuesFromMessage(
                     commit.fullMessage,
                     pusher,
@@ -297,7 +297,7 @@ class CommitLogHook(
           // call web hook
           callWebHookOf(owner, repository, WebHook.Push) {
             for (pusherAccount <- getAccountByUserName(pusher);
-                 ownerAccount <- getAccountByUserName(owner)) yield {
+              ownerAccount <- getAccountByUserName(owner)) yield {
               WebHookPushPayload(
                 git,
                 pusherAccount,

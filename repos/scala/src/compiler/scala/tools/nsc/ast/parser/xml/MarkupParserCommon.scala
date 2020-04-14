@@ -51,7 +51,7 @@ private[scala] trait MarkupParserCommon {
   }
 
   /** attribute value, terminated by either `'` or `"`. value may not contain `<`.
-   @param endCh either `'` or `"`
+    *   @param endCh either `'` or `"`
     */
   def xAttributeValue(endCh: Char): String = {
     val buf = new StringBuilder
@@ -159,7 +159,7 @@ private[scala] trait MarkupParserCommon {
   }
   def xToken(that: Seq[Char]) { that foreach xToken }
 
-  /** scan [S] '=' [S]*/
+  /** scan [S] '=' [S] */
   def xEQ() = { xSpaceOpt(); xToken('='); xSpaceOpt() }
 
   /** skip optional space S? */

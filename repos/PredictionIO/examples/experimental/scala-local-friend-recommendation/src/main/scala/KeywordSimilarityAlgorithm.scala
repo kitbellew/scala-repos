@@ -54,7 +54,7 @@ class KeywordSimilarityAlgorithm(val ap: FriendRecommendationAlgoParams)
       query: FriendRecommendationQuery): FriendRecommendationPrediction = {
     // Currently use empty map for unseen users or items
     if (model.userIdMap.contains(query.user) &&
-        model.itemIdMap.contains(query.item)) {
+      model.itemIdMap.contains(query.item)) {
       val confidence = findKeywordSimilarity(
         model.userKeyword(model.userIdMap(query.user)),
         model.itemKeyword(model.itemIdMap(query.item)))

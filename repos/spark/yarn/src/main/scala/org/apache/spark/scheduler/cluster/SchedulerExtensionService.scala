@@ -131,7 +131,6 @@ private[spark] class SchedulerExtensionServices
 
   /**
     * Stop the services; idempotent.
-    *
     */
   override def stop(): Unit = {
     if (started.getAndSet(false)) {

@@ -111,7 +111,7 @@ trait MultipartUnmarshallers {
       parserSettings: ParserSettings = null): FromEntityUnmarshaller[T] =
     Unmarshaller.withMaterializer { implicit ec ⇒ mat => entity ⇒
       if (entity.contentType.mediaType.isMultipart && mediaRange.matches(
-            entity.contentType.mediaType)) {
+          entity.contentType.mediaType)) {
         entity.contentType.mediaType.params.get("boundary") match {
           case None ⇒
             FastFuture.failed(new RuntimeException(

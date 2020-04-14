@@ -79,7 +79,7 @@ final class LoadedBuildUnit(
     */
   val root = rootProjects.head
 
-  /** The base directory of the build unit (not the build definition).*/
+  /** The base directory of the build unit (not the build definition). */
   def localBase = unit.localBase
 
   /**

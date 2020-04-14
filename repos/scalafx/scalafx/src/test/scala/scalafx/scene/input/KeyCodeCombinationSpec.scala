@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * KeyCodeCombination Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class KeyCodeCombinationSpec

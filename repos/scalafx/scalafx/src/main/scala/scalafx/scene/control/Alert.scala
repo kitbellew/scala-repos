@@ -95,7 +95,7 @@ object Alert {
       */
     val Error = AlertType(jfxsc.Alert.AlertType.ERROR)
 
-    /** Contain constants which will be source for `values` List  */
+    /** Contain constants which will be source for `values` List */
     override protected def unsortedValues =
       Array(None, Information, Warning, Confirmation, Error)
   }
@@ -115,10 +115,10 @@ object Alert {
   * Example of displaying an information dialog:
   * {{{
   *   new Alert(AlertType.Information) {
-       title = "Information Dialog"
-       headerText = "Look, an Information Dialog"
-       contentText = "I have a great message for you!"
-     }.showAndWait()
+  *       title = "Information Dialog"
+  *       headerText = "Look, an Information Dialog"
+  *       contentText = "I have a great message for you!"
+  *     }.showAndWait()
   * }}}
   *
   * A bit more elaborated example that is using a custom buttons:

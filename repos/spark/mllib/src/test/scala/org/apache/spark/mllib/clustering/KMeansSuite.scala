@@ -248,7 +248,7 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     case class VectorWithCompare(x: Vector) extends Ordered[VectorWithCompare] {
       override def compare(that: VectorWithCompare): Int = {
         if (this.x.toArray.foldLeft[Double](0.0)((acc, x) => acc + x * x) >
-              that.x.toArray.foldLeft[Double](0.0)((acc, x) => acc + x * x)) {
+            that.x.toArray.foldLeft[Double](0.0)((acc, x) => acc + x * x)) {
           -1
         } else {
           1

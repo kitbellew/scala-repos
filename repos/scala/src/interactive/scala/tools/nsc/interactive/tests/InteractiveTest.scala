@@ -30,9 +30,9 @@ import scala.collection.mutable.ListBuffer
   *
   *  To define a custom operation you have to:
   *
-  *  	(1) Define a new marker by extending `TestMarker`
-  *  	(2) Provide an implementation for the operation you want to check by extending `PresentationCompilerTestDef`
-  *  	(3) Add the class defined in (1) to the set of executed test actions by calling `++` on `InteractiveTest`.
+  *   (1) Define a new marker by extending `TestMarker`
+  *   (2) Provide an implementation for the operation you want to check by extending `PresentationCompilerTestDef`
+  *   (3) Add the class defined in (1) to the set of executed test actions by calling `++` on `InteractiveTest`.
   *
   *  Then you can simply use the new defined `marker` in your test sources and the testing
   *  framework will automatically pick it up.
@@ -105,13 +105,13 @@ abstract class InteractiveTest
   }
 
   /** Perform n random tests with random changes. */
-  /****
-  private def randomTests(n: Int, files: Array[SourceFile]) {
-    val tester = new Tester(n, files, settings) {
-      override val compiler = self.compiler
-      override val reporter = new reporters.StoreReporter
-    }
-    tester.run()
-  }
-  ****/
+  /**
+    *  private def randomTests(n: Int, files: Array[SourceFile]) {
+    *    val tester = new Tester(n, files, settings) {
+    *      override val compiler = self.compiler
+    *      override val reporter = new reporters.StoreReporter
+    *    }
+    *    tester.run()
+    *  }
+    * ** */
 }

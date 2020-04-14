@@ -5,7 +5,7 @@ import breeze.stats.distributions.{RandBasis, Rand}
 import scala.reflect.ClassTag
 import breeze.storage.Zero
 
-/**Gives a random Double.
+/** Gives a random Double.
   * +  randomDouble()... returns a random double, in [0, 1]
   * +  randomDouble( n: Int )... returns a DenseVector with n random doubles, in [0, 1]
   * +  randomDouble( n: Int, (r1: Double, r2: Double) )... returns a DenseVector with n random doubles, in [r1, r2]
@@ -32,7 +32,7 @@ object randomDouble extends RandomGeneratorUFunc[Double] {
 
 }
 
-/**Gives a random Int.
+/** Gives a random Int.
   * +  randomInt()... returns a random Int, in [0, 1]
   * +  randomInt( n: Int )... returns a DenseVector with n random Ints, in [0, 1]
   * +  randomInt( n: Int, (r1: Int, r2: Int) )... returns a DenseVector with n random Ints, in [r1, r2)
@@ -59,7 +59,7 @@ object randomInt extends RandomGeneratorUFunc[Int] {
 
 }
 
-/**Gives Gaussian-distributed random Double(s)
+/** Gives Gaussian-distributed random Double(s)
   * +  randn()... returns a Gaussian random variable with mean 0, variance 1
   * +  randn( n: Int )... returns a DenseVector with n randn's
   * +  randn( (n1: Int, n2: Int) )... returns an n1 x n2 DenseMatrix with randn's

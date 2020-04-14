@@ -141,9 +141,8 @@ object ReplicaVerificationTool extends Logging {
     val brokerMap = topicsMetadataResponse.brokers.map(b => (b.id, b)).toMap
     val filteredTopicMetadata =
       topicsMetadataResponse.topicsMetadata.filter(topicMetadata =>
-        if (topicWhiteListFiler.isTopicAllowed(
-              topicMetadata.topic,
-              excludeInternalTopics = false))
+        if (topicWhiteListFiler
+            .isTopicAllowed(topicMetadata.topic, excludeInternalTopics = false))
           true
         else
           false)
@@ -367,8 +366,8 @@ private class ReplicaBuffer(
 
               // only verify up to the high watermark
               if (messageAndOffset.offset >= fetchResponsePerReplica
-                    .get(replicaId)
-                    .hw)
+                  .get(replicaId)
+                  .hw)
                 isMessageInAllReplicas = false
               else {
                 messageInfoFromFirstReplicaOpt match {

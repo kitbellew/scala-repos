@@ -103,5 +103,5 @@ class StochasticAveragedGradientTest extends OptimizeTestBase {
     init(1 until init.length by 2) := 1.0
     assert(optimizeThis(init))
    }
- */
+   */
 }

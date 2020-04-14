@@ -31,6 +31,6 @@ object Test {
         .$asInstanceOf[scala.this.Int]()
       ).a();
 
-   */
+     */
   }
 }

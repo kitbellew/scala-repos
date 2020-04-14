@@ -6,8 +6,6 @@ import org.scalatest.prop._
 import spire.implicits._
 
 /**
-  *
-  *
   * @author stucchio
   */
 class splitTest extends FunSuite {

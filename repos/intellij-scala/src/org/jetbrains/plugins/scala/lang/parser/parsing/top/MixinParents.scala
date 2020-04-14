@@ -10,8 +10,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.AnnotType
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.02.2008
-  */
+  * Date: 06.02.2008 */
 
 /*
  * MixinParents ::= AnnotType {'with' AnnotType}

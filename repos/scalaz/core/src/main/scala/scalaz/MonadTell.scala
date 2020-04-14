@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /** The class of monads supporting write operations
-  *
   */
 ////
 trait MonadTell[F[_], S] extends Monad[F] { self =>

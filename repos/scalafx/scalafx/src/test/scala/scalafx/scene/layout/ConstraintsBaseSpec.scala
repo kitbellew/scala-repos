@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ConstraintsBase Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ConstraintsBaseSpec

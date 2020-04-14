@@ -119,7 +119,7 @@ class PresentationCompilerCompleter(intp: IMain) extends Completion {
               Candidates(cursor - r.positionDelta, memberCompletions)
             else Candidates(cursor, "" :: memberCompletions)
           } else if (matching.nonEmpty && matching.forall(
-                       _.symNameDropLocal == r.name))
+              _.symNameDropLocal == r.name))
             Completion.NoCandidates // don't offer completion if the only option has been fully typed already
           else {
             // regular completion

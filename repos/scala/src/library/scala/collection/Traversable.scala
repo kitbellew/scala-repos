@@ -28,7 +28,7 @@ trait Traversable[+A]
   override def seq: Traversable[A] = this
 
   /* The following methods are inherited from TraversableLike
- *
+   *
   override def isEmpty: Boolean
   override def size: Int
   override def hasDefiniteSize
@@ -84,7 +84,7 @@ trait Traversable[+A]
   override def stringPrefix : String
   override def view
   override def view(from: Int, until: Int): TraversableView[A, Traversable[A]]
- */
+   */
 }
 
 /** $factoryInfo

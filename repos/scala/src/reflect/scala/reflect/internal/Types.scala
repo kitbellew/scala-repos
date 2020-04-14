@@ -1069,7 +1069,6 @@ trait Types
       * while `findMember(excludedFlags = 0, requiredFlags = 0).filter(_.isDeferred)` may not (if there's a corresponding concrete member)
       *
       * Requirements take precedence over exclusions, so requiring and excluding DEFERRED will yield a DEFERRED member (if there is one).
-      *
       */
     def findMembers(excludedFlags: Long, requiredFlags: Long): Scope = {
       def findMembersInternal =
@@ -1110,7 +1109,7 @@ trait Types
             boundSyms = boundSyms ::: quantified
           case TypeRef(_, sym, _) =>
             if ((sym.isExistentialSkolem || sym.isGADTSkolem) && // treat GADT skolems like existential skolems
-                !((boundSyms contains sym) || (skolems contains sym)))
+              !((boundSyms contains sym) || (skolems contains sym)))
               skolems = sym :: skolems
           case _ =>
         }
@@ -1184,7 +1183,7 @@ trait Types
     override def prefix: Type = NoType
     override def typeArgs: List[Type] = List()
     override def typeParams: List[Symbol] = List()
-   */
+     */
   }
 
   /** An object representing an erroneous type */
@@ -2323,7 +2322,7 @@ trait Types
     final def relativize(tp: Type): Type =
       if (tp.isTrivial) tp
       else if (args.isEmpty && (phase.erasedTypes || !isHigherKinded || isRawIfWithoutArgs(
-                 sym))) tp.asSeenFrom(pre, sym.owner)
+          sym))) tp.asSeenFrom(pre, sym.owner)
       else {
         // The type params and type args should always match in length,
         // though a mismatch can arise when a typevar is encountered for which
@@ -2551,7 +2550,7 @@ trait Types
           } else if (isTupleTypeDirect(this))
             tupleTypeString
           else if (sym.isAliasType && prefixChain.exists(
-                     _.termSymbol.isSynthetic) && (this ne dealias))
+              _.termSymbol.isSynthetic) && (this ne dealias))
             "" + dealias
           else
             ""
@@ -2731,7 +2730,7 @@ trait Types
 
     override def atOwner(owner: Symbol) =
       if (!allSymbolsHaveOwner(params, owner) || (resultType.atOwner(
-            owner) ne resultType))
+          owner) ne resultType))
         cloneInfo(owner)
       else
         this
@@ -2834,7 +2833,7 @@ trait Types
 
     override def atOwner(owner: Symbol) =
       if (!allSymbolsHaveOwner(typeParams, owner) || (resultType.atOwner(
-            owner) ne resultType))
+          owner) ne resultType))
         cloneInfo(owner)
       else
         this
@@ -3915,8 +3914,8 @@ trait Types
     // don't expand cyclical type alias
     // we require that object is initialized, thus info.typeParams instead of typeParams.
     if (sym1.isAliasType && sameLength(
-          sym1.info.typeParams,
-          args) && !sym1.lockOK)
+        sym1.info.typeParams,
+        args) && !sym1.lockOK)
       throw new RecoverableCyclicReference(sym1)
 
     val pre1 = pre match {
@@ -3935,8 +3934,8 @@ trait Types
     tp match {
       case TypeRef(pre0, sym0, _) if pre == pre0 && sym0.name == sym.name =>
         if (sym.isAliasType && sameLength(
-              sym.info.typeParams,
-              args) && !sym.lockOK)
+            sym.info.typeParams,
+            args) && !sym.lockOK)
           throw new RecoverableCyclicReference(sym)
 
         TypeRef(pre, sym, args)
@@ -3976,24 +3975,23 @@ trait Types
       case _         => refinedType(tps, commonOwner(tps))
     }
 
-  /**** This implementation to merge parents was checked in in commented-out
-      form and has languished unaltered for five years.  I think we should
-      use it or lose it.
-
-      def merge(tps: List[Type]): List[Type] = tps match {
-        case tp :: tps1 =>
-          val tps1a = tps1 filter (_.typeSymbol.==(tp.typeSymbol))
-          val tps1b = tps1 filter (_.typeSymbol.!=(tp.typeSymbol))
-          mergePrefixAndArgs(tps1a, -1) match {
-            case Some(tp1) => tp1 :: merge(tps1b)
-            case None => throw new MalformedType(
-              "malformed type: "+refinedType(tps, owner)+" has repeated parent class "+
-              tp.typeSymbol+" with incompatible prefixes or type arguments")
-          }
-        case _ => tps
-      }
-      refinedType(merge(tps), owner)
-    */
+  /** This implementation to merge parents was checked in in commented-out
+    *      form and has languished unaltered for five years.  I think we should
+    *      use it or lose it.
+    *
+    *      def merge(tps: List[Type]): List[Type] = tps match {
+    *        case tp :: tps1 =>
+    *          val tps1a = tps1 filter (_.typeSymbol.==(tp.typeSymbol))
+    *          val tps1b = tps1 filter (_.typeSymbol.!=(tp.typeSymbol))
+    *          mergePrefixAndArgs(tps1a, -1) match {
+    *            case Some(tp1) => tp1 :: merge(tps1b)
+    *            case None => throw new MalformedType(
+    *              "malformed type: "+refinedType(tps, owner)+" has repeated parent class "+
+    *              tp.typeSymbol+" with incompatible prefixes or type arguments")
+    *          }
+    *        case _ => tps
+    *      }
+    *      refinedType(merge(tps), owner) */
 
   /** A creator for type applications */
   def appliedType(tycon: Type, args: List[Type]): Type = {
@@ -4544,19 +4542,19 @@ trait Types
     *  types which are used internally in type applications and
     *  types which are not.
     */
-  /**** Not used right now, but kept around to document which Types
+  /** Not used right now, but kept around to document which Types
     *    land in which bucket.
-  private def isInternalTypeNotUsedAsTypeArg(tp: Type): Boolean = tp match {
-    case AntiPolyType(pre, targs)            => true
-    case ClassInfoType(parents, defs, clazz) => true
-    case ErasedValueType(tref)               => true
-    case NoPrefix                            => true
-    case NoType                              => true
-    case SuperType(thistpe, supertpe)        => true
-    case TypeBounds(lo, hi)                  => true
-    case _                                   => false
-  }
-  ****/
+    *  private def isInternalTypeNotUsedAsTypeArg(tp: Type): Boolean = tp match {
+    *    case AntiPolyType(pre, targs)            => true
+    *    case ClassInfoType(parents, defs, clazz) => true
+    *    case ErasedValueType(tref)               => true
+    *    case NoPrefix                            => true
+    *    case NoType                              => true
+    *    case SuperType(thistpe, supertpe)        => true
+    *    case TypeBounds(lo, hi)                  => true
+    *    case _                                   => false
+    *  }
+    * ** */
   private def isInternalTypeUsedAsTypeArg(tp: Type): Boolean =
     tp match {
       case WildcardType           => true
@@ -4822,42 +4820,41 @@ trait Types
   }
 
   /** matchesType above is an optimized version of the following implementation:
-
-  def matchesType2(tp1: Type, tp2: Type, alwaysMatchSimple: Boolean): Boolean = {
-    def matchesQuantified(tparams1: List[Symbol], tparams2: List[Symbol], res1: Type, res2: Type): Boolean =
-      tparams1.length == tparams2.length &&
-      matchesType(res1, res2.substSym(tparams2, tparams1), alwaysMatchSimple)
-    (tp1, tp2) match {
-      case (MethodType(params1, res1), MethodType(params2, res2)) =>
-        params1.length == params2.length && // useful pre-screening optimization
-        matchingParams(params1, params2, tp1.isInstanceOf[JavaMethodType], tp2.isInstanceOf[JavaMethodType]) &&
-        matchesType(res1, res2, alwaysMatchSimple) &&
-        tp1.isImplicit == tp2.isImplicit
-      case (PolyType(tparams1, res1), PolyType(tparams2, res2)) =>
-        matchesQuantified(tparams1, tparams2, res1, res2)
-      case (NullaryMethodType(rtp1), MethodType(List(), rtp2)) =>
-        matchesType(rtp1, rtp2, alwaysMatchSimple)
-      case (MethodType(List(), rtp1), NullaryMethodType(rtp2)) =>
-        matchesType(rtp1, rtp2, alwaysMatchSimple)
-      case (ExistentialType(tparams1, res1), ExistentialType(tparams2, res2)) =>
-        matchesQuantified(tparams1, tparams2, res1, res2)
-      case (ExistentialType(_, res1), _) if alwaysMatchSimple =>
-        matchesType(res1, tp2, alwaysMatchSimple)
-      case (_, ExistentialType(_, res2)) if alwaysMatchSimple =>
-        matchesType(tp1, res2, alwaysMatchSimple)
-      case (NullaryMethodType(rtp1), _) =>
-        matchesType(rtp1, tp2, alwaysMatchSimple)
-      case (_, NullaryMethodType(rtp2)) =>
-        matchesType(tp1, rtp2, alwaysMatchSimple)
-      case (MethodType(_, _), _) => false
-      case (PolyType(_, _), _)   => false
-      case (_, MethodType(_, _)) => false
-      case (_, PolyType(_, _))   => false
-      case _ =>
-        alwaysMatchSimple || tp1 =:= tp2
-    }
-  }
-    */
+    *
+    *  def matchesType2(tp1: Type, tp2: Type, alwaysMatchSimple: Boolean): Boolean = {
+    *    def matchesQuantified(tparams1: List[Symbol], tparams2: List[Symbol], res1: Type, res2: Type): Boolean =
+    *      tparams1.length == tparams2.length &&
+    *      matchesType(res1, res2.substSym(tparams2, tparams1), alwaysMatchSimple)
+    *    (tp1, tp2) match {
+    *      case (MethodType(params1, res1), MethodType(params2, res2)) =>
+    *        params1.length == params2.length && // useful pre-screening optimization
+    *        matchingParams(params1, params2, tp1.isInstanceOf[JavaMethodType], tp2.isInstanceOf[JavaMethodType]) &&
+    *        matchesType(res1, res2, alwaysMatchSimple) &&
+    *        tp1.isImplicit == tp2.isImplicit
+    *      case (PolyType(tparams1, res1), PolyType(tparams2, res2)) =>
+    *        matchesQuantified(tparams1, tparams2, res1, res2)
+    *      case (NullaryMethodType(rtp1), MethodType(List(), rtp2)) =>
+    *        matchesType(rtp1, rtp2, alwaysMatchSimple)
+    *      case (MethodType(List(), rtp1), NullaryMethodType(rtp2)) =>
+    *        matchesType(rtp1, rtp2, alwaysMatchSimple)
+    *      case (ExistentialType(tparams1, res1), ExistentialType(tparams2, res2)) =>
+    *        matchesQuantified(tparams1, tparams2, res1, res2)
+    *      case (ExistentialType(_, res1), _) if alwaysMatchSimple =>
+    *        matchesType(res1, tp2, alwaysMatchSimple)
+    *      case (_, ExistentialType(_, res2)) if alwaysMatchSimple =>
+    *        matchesType(tp1, res2, alwaysMatchSimple)
+    *      case (NullaryMethodType(rtp1), _) =>
+    *        matchesType(rtp1, tp2, alwaysMatchSimple)
+    *      case (_, NullaryMethodType(rtp2)) =>
+    *        matchesType(tp1, rtp2, alwaysMatchSimple)
+    *      case (MethodType(_, _), _) => false
+    *      case (PolyType(_, _), _)   => false
+    *      case (_, MethodType(_, _)) => false
+    *      case (_, PolyType(_, _))   => false
+    *      case _ =>
+    *        alwaysMatchSimple || tp1 =:= tp2
+    *    }
+    *  } */
 
   /** Are `syms1` and `syms2` parameter lists with pairwise equivalent types? */
   protected[internal] def matchingParams(
@@ -4969,7 +4966,7 @@ trait Types
               if (args.tail forall (_ =:= args.head))
                 typeRef(pre, sym, List(args.head))
               else if (args exists (arg =>
-                         isPrimitiveValueClass(arg.typeSymbol))) ObjectTpe
+                  isPrimitiveValueClass(arg.typeSymbol))) ObjectTpe
               else typeRef(pre, sym, List(lub(args)))
             }
           } else
@@ -5349,5 +5346,5 @@ object TypesStats {
     try op
     finally
   }
- */
+   */
 }

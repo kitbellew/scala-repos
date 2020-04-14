@@ -47,7 +47,6 @@ import org.apache.spark.sql.types._
   * - [[BinaryExpression]]: an expression that has two children.
   * - [[BinaryOperator]]: a special case of [[BinaryExpression]] that requires two children to have
   *                       the same output data type.
-  *
   */
 abstract class Expression extends TreeNode[Expression] {
 

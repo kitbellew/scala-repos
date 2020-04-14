@@ -11,7 +11,6 @@ object InteriorPoint {
   val TOLERANCE = 1e-18
 
   /**
-    *
     * Solves the LP:
     *
     * minimize_x c * x

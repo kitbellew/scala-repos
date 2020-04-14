@@ -172,7 +172,7 @@ class AlgorithmChecker(
       // “neutral, lacking security”.
       val january2017 = new DateTime(2017, 1, 1, 0, 0, 0, 0)
       if (january2017.isEqual(expirationDate) || january2017.isBefore(
-            expirationDate)) {
+          expirationDate)) {
         warnOnSunset(x509Cert, expirationDate)
       }
     }

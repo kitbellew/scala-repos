@@ -35,7 +35,7 @@ private[streaming] trait PythonStreamingListener {
   /** Called when a batch of jobs has been submitted for processing. */
   def onBatchSubmitted(batchSubmitted: JavaStreamingListenerBatchSubmitted) {}
 
-  /** Called when processing of a batch of jobs has started.  */
+  /** Called when processing of a batch of jobs has started. */
   def onBatchStarted(batchStarted: JavaStreamingListenerBatchStarted) {}
 
   /** Called when processing of a batch of jobs has completed. */
@@ -78,7 +78,7 @@ private[streaming] class PythonStreamingListenerWrapper(
     listener.onBatchSubmitted(batchSubmitted)
   }
 
-  /** Called when processing of a batch of jobs has started.  */
+  /** Called when processing of a batch of jobs has started. */
   override def onBatchStarted(
       batchStarted: JavaStreamingListenerBatchStarted): Unit = {
     listener.onBatchStarted(batchStarted)
@@ -126,7 +126,7 @@ private[streaming] class JavaStreamingListener {
   def onBatchSubmitted(
       batchSubmitted: JavaStreamingListenerBatchSubmitted): Unit = {}
 
-  /** Called when processing of a batch of jobs has started.  */
+  /** Called when processing of a batch of jobs has started. */
   def onBatchStarted(batchStarted: JavaStreamingListenerBatchStarted): Unit = {}
 
   /** Called when processing of a batch of jobs has completed. */

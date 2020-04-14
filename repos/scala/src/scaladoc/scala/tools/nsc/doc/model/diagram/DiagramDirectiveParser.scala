@@ -156,7 +156,7 @@ trait DiagramDirectiveParser {
       val clazz2Name = getName(clazz2)
       for ((clazz1Filter, clazz2Filter) <- hideEdgesFilter) {
         if (clazz1Filter.matcher(clazz1Name).matches &&
-            clazz2Filter.matcher(clazz2Name).matches) {
+          clazz2Filter.matcher(clazz2Name).matches) {
           // println(clazz1Filter + ".matcher(" + clazz1Name + ").matches = " + clazz1Filter.matcher(clazz1Name).matches)
           // println(clazz2Filter + ".matcher(" + clazz2Name + ").matches = " + clazz2Filter.matcher(clazz2Name).matches)
           return true
@@ -266,13 +266,13 @@ trait DiagramDirectiveParser {
           if (hideDiagram0)
             NoDiagramAtAll
           else if ((hideNodesFilter0.isEmpty) &&
-                   (hideEdgesFilter0.isEmpty) &&
-                   (hideIncomingImplicits0 == false) &&
-                   (hideOutgoingImplicits0 == false) &&
-                   (hideSuperclasses0 == false) &&
-                   (hideSubclasses0 == false) &&
-                   (hideInheritedNodes0 == false) &&
-                   (hideDiagram0 == false))
+            (hideEdgesFilter0.isEmpty) &&
+            (hideIncomingImplicits0 == false) &&
+            (hideOutgoingImplicits0 == false) &&
+            (hideSuperclasses0 == false) &&
+            (hideSubclasses0 == false) &&
+            (hideInheritedNodes0 == false) &&
+            (hideDiagram0 == false))
             FullDiagram
           else
             AnnotationDiagramFilter(

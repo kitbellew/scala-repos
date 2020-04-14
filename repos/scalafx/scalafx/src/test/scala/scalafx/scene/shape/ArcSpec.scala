@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Arc Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ArcSpec

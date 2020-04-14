@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /**
-  *
   */
 ////
 trait Comonad[F[_]] extends Cobind[F] { self =>

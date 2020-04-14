@@ -230,7 +230,6 @@ private[math] object Multiplication {
     *          <table border="0">
     *  <tbody>
     *
-    *
     *  <tr>
     *  <td align="center">A=</td>
     *  <td>a<sub>3</sub></td>

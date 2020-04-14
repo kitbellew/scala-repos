@@ -152,7 +152,7 @@ private[deploy] class DriverRunner(
     val localJarFilename = localJarFile.getAbsolutePath
 
     if (!localJarFile
-          .exists()) { // May already exist if running multiple workers on one node
+        .exists()) { // May already exist if running multiple workers on one node
       logInfo(s"Copying user jar $jarPath to $destPath")
       Utils.fetchFile(
         driverDesc.jarUrl,

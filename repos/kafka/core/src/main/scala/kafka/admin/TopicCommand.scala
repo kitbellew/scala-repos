@@ -159,7 +159,7 @@ object TopicCommand extends Logging {
       val configs =
         AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
       if (opts.options.has(opts.configOpt) || opts.options.has(
-            opts.deleteConfigOpt)) {
+          opts.deleteConfigOpt)) {
         println(
           "WARNING: Altering topic configuration from this script has been deprecated and may be removed in future releases.")
         println(
@@ -278,9 +278,9 @@ object TopicCommand extends Logging {
                 zkUtils.getInSyncReplicasForPartition(topic, partitionId)
               val leader = zkUtils.getLeaderForPartition(topic, partitionId)
               if ((!reportUnderReplicatedPartitions && !reportUnavailablePartitions) ||
-                  (reportUnderReplicatedPartitions && inSyncReplicas.size < assignedReplicas.size) ||
-                  (reportUnavailablePartitions && (!leader.isDefined || !liveBrokers
-                    .contains(leader.get)))) {
+                (reportUnderReplicatedPartitions && inSyncReplicas.size < assignedReplicas.size) ||
+                (reportUnavailablePartitions && (!leader.isDefined || !liveBrokers
+                  .contains(leader.get)))) {
                 print("\tTopic: " + topic)
                 print("\tPartition: " + partitionId)
                 print(

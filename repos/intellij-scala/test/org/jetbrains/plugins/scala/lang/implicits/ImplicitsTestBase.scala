@@ -55,8 +55,8 @@ abstract class ImplicitsTestBase
 
     val addOne =
       if (PsiTreeUtil.getParentOfType(
-            scalaFile.findElementAt(startOffset),
-            classOf[ScExpression]) != null) 0
+          scalaFile.findElementAt(startOffset),
+          classOf[ScExpression]) != null) 0
       else 1 //for xml tests
     val expr: ScExpression = PsiTreeUtil.findElementOfClassAtRange(
       scalaFile,

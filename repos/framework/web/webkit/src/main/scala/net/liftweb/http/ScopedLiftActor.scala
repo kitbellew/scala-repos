@@ -26,7 +26,6 @@ import Helpers._
   * A LiftActor that runs in the scope of the current Session, repleat with SessionVars, etc.
   * In general, you'll want to use a ScopedLiftActor when you do stuff with clientActorFor, etc.
   * so that you have the session scope
-  *
   */
 trait ScopedLiftActor extends LiftActor with LazyLoggable {
 

@@ -121,7 +121,6 @@ trait TraversableLike[+A, +Repr]
     *
     *    Note: this method underlies the implementation of most other bulk operations.
     *    It's important to implement this method in an efficient way.
-    *
     */
   def foreach[U](f: A => U): Unit
 
@@ -301,15 +300,15 @@ trait TraversableLike[+A, +Repr]
     *    @return       a new $coll resulting from applying the given option-valued function
     *                  `f` to each element and collecting all defined results.
     *                  The order of the elements is preserved.
-  def filterMap[B, That](f: A => Option[B])(implicit bf: CanBuildFrom[Repr, B, That]): That = {
-    val b = bf(repr)
-    for (x <- this)
-      f(x) match {
-        case Some(y) => b += y
-        case _ =>
-      }
-    b.result
-  }
+    *  def filterMap[B, That](f: A => Option[B])(implicit bf: CanBuildFrom[Repr, B, That]): That = {
+    *    val b = bf(repr)
+    *    for (x <- this)
+    *      f(x) match {
+    *        case Some(y) => b += y
+    *        case _ =>
+    *      }
+    *    b.result
+    *  }
     */
 
   /** Partitions this $coll in two ${coll}s according to a predicate.

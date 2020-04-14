@@ -10,7 +10,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * SkinBase Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SkinBaseSpec

@@ -59,7 +59,7 @@ case class SiteMap(
     else locs = locs + (name -> in.asInstanceOf[Loc[_]])
 
     if (SiteMap.enforceUniqueLinks && !in.link.external_? &&
-        locPath.contains(in.link.uriList))
+      locPath.contains(in.link.uriList))
       throw new SiteMapException(
         "Location " + name +
           " defines a duplicate link " +

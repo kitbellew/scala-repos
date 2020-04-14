@@ -154,7 +154,6 @@ private[spark] class CoalescedRDD[T: ClassTag](
   * it tries to also achieve locality. This is done by allowing a slack (balanceSlack) between two
   * bins. If two bins are within the slack in terms of balance, the algorithm will assign partitions
   * according to locality. (contact alig for questions)
-  *
   */
 
 private class PartitionCoalescer(
@@ -349,7 +348,7 @@ private class PartitionCoalescer(
       }
     } else {
       for (p <- prev.partitions
-           if (!initialHash.contains(p))) { // throw every partition into group
+        if (!initialHash.contains(p))) { // throw every partition into group
         pickBin(p).arr += p
       }
     }

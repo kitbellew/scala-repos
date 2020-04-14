@@ -40,7 +40,7 @@ class MergeIfToAndIntention extends PsiElementBaseIntentionAction {
     if (condition == null) return false
 
     if (!(ifStmt.getTextRange.getStartOffset <= offset &&
-          offset <= condition.getTextRange.getStartOffset - 1)) return false
+        offset <= condition.getTextRange.getStartOffset - 1)) return false
 
     thenBranch match {
       case branch: ScBlockExpr =>

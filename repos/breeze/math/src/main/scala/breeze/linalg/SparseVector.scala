@@ -43,7 +43,7 @@ import scala.reflect.ClassTag
   *  }
   * }}}
   *
-  *@author dlwh
+  * @author dlwh
   */
 @SerialVersionUID(1)
 class SparseVector[@spec(Double, Int, Float, Long) V](
@@ -293,7 +293,7 @@ object SparseVector
       : CanMapValues[SparseVector[V], V, V2, SparseVector[V2]] = {
     new CanMapValues[SparseVector[V], V, V2, SparseVector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       override def apply(
           from: SparseVector[V],
           fn: (V) => V2): SparseVector[V2] = {
@@ -306,7 +306,7 @@ object SparseVector
       : CanMapActiveValues[SparseVector[V], V, V2, SparseVector[V2]] = {
     new CanMapActiveValues[SparseVector[V], V, V2, SparseVector[V2]] {
 
-      /**Maps all active key-value pairs from the given collection. */
+      /** Maps all active key-value pairs from the given collection. */
       override def apply(
           from: SparseVector[V],
           fn: (V) => V2): SparseVector[V2] = {
@@ -386,7 +386,7 @@ object SparseVector
     new CanTransformValues[SparseVector[V], V] {
       val z = implicitly[Zero[V]]
 
-      /**Transforms all key-value pairs from the given collection. */
+      /** Transforms all key-value pairs from the given collection. */
       def transform(from: SparseVector[V], fn: (V) => V): Unit = {
         val newData = mutable.ArrayBuilder.make[V]()
         val newIndex = mutable.ArrayBuilder.make[Int]()
@@ -404,7 +404,7 @@ object SparseVector
         from.array.use(newIndex.result(), newData.result(), used)
       }
 
-      /**Transforms all active key-value pairs from the given collection. */
+      /** Transforms all active key-value pairs from the given collection. */
       def transformActive(from: SparseVector[V], fn: (V) => V): Unit = {
         var i = 0
         while (i < from.activeSize) {
@@ -419,12 +419,12 @@ object SparseVector
       : CanMapKeyValuePairs[SparseVector[V], Int, V, V2, SparseVector[V2]] = {
     new CanMapKeyValuePairs[SparseVector[V], Int, V, V2, SparseVector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       def map(from: SparseVector[V], fn: (Int, V) => V2): SparseVector[V2] = {
         SparseVector.tabulate(from.length)(i => fn(i, from(i)))
       }
 
-      /**Maps all active key-value pairs from the given collection. */
+      /** Maps all active key-value pairs from the given collection. */
       def mapActive(
           from: SparseVector[V],
           fn: (Int, V) => V2): SparseVector[V2] = {

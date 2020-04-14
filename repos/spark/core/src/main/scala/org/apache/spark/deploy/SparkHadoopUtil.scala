@@ -88,7 +88,7 @@ class SparkHadoopUtil extends Logging {
     if (conf != null) {
       // Explicitly check for S3 environment variables
       if (System.getenv("AWS_ACCESS_KEY_ID") != null &&
-          System.getenv("AWS_SECRET_ACCESS_KEY") != null) {
+        System.getenv("AWS_SECRET_ACCESS_KEY") != null) {
         val keyId = System.getenv("AWS_ACCESS_KEY_ID")
         val accessKey = System.getenv("AWS_SECRET_ACCESS_KEY")
 

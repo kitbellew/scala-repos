@@ -10,7 +10,6 @@ import akka.http.scaladsl.unmarshalling.FromMessageUnmarshaller
 
 /**
   * INTERNAL API
-  *
   */
 private[http] case class UnmarshallerImpl[T](
     scalaUnmarshaller: FromMessageUnmarshaller[T])(implicit

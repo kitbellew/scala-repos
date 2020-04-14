@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * AudioEqualizer Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class AudioEqualizerSpec

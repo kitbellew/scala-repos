@@ -29,7 +29,7 @@ class ChangeTypeFix(typeElement: ScTypeElement, newType: ScType)
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!typeElement.isValid) return
     if (!FileModificationService.getInstance.prepareFileForWrite(
-          typeElement.getContainingFile)) return
+        typeElement.getContainingFile)) return
     if (typeElement.getParent == null || typeElement.getParent.getNode == null)
       return
     val newTypeElement = ScalaPsiElementFactory.createTypeElementFromText(

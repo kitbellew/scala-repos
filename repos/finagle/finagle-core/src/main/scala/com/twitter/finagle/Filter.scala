@@ -35,7 +35,6 @@ abstract class Filter[-ReqIn, +RepOut, +ReqOut, -RepIn]
     *
     * @param request the input request type
     * @param service a service that takes the output request type and the input response type
-    *
     */
   def apply(request: ReqIn, service: Service[ReqOut, RepIn]): Future[RepOut]
 

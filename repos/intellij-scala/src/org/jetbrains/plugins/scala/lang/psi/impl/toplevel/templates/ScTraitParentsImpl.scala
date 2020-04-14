@@ -18,8 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 /**
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
-  * Time: 9:22:37
-  */
+  * Time: 9:22:37 */
 class ScTraitParentsImpl private (
     stub: StubElement[ScTemplateParents],
     nodeType: IElementType,

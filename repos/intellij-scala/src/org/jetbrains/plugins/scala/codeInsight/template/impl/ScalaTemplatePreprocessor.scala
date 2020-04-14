@@ -32,7 +32,7 @@ class ScalaTemplatePreprocessor extends TemplatePreprocessor {
           val document = editor.getDocument
           //first, make sure that the 'def' is on the same line (i.e. it is a redundant 'def' indeed and not a part of other unfinished code)
           if (document.getLineNumber(elem.getStartOffset) == document
-                .getLineNumber(caretOffset)) {
+              .getLineNumber(caretOffset)) {
             //get rid of extra 'def' when expanding 'main' template (any other templates with 'def' will get affected too)
             document.deleteString(elem.getStartOffset, caretOffset)
             editor.getCaretModel.moveToOffset(elem.getStartOffset)

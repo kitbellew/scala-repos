@@ -7,7 +7,6 @@ import org.jboss.netty.buffer.ChannelBuffer
   * Adapts a single Netty ChannelBuffer to a Thrift TTransport
   *
   * @param  underlying  a netty channelBuffer
-  *
   */
 private[thrift] class ChannelBufferToTransport(underlying: ChannelBuffer)
     extends TTransport {
@@ -31,7 +30,6 @@ private[thrift] class ChannelBufferToTransport(underlying: ChannelBuffer)
   *
   * @param  input   a netty channelBuffer to be read from
   * @param  output  a netty channelBuffer to write to
-  *
   */
 private[thrift] class DuplexChannelBufferTransport(
     input: ChannelBuffer,

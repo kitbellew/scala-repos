@@ -25,10 +25,10 @@ import breeze.generic._
   */
 trait Density[T] {
 
-  /** Returns the unnormalized value of the measure*/
+  /** Returns the unnormalized value of the measure */
   def apply(x: T): Double
 
-  /** Returns the log unnormalized value of the measure*/
+  /** Returns the log unnormalized value of the measure */
   def logApply(x: T): Double = apply(x)
 }
 
@@ -39,11 +39,11 @@ trait Density[T] {
   */
 trait ContinuousDistr[T] extends Density[T] with Rand[T] {
 
-  /** Returns the probability density function at that point.*/
+  /** Returns the probability density function at that point. */
   def pdf(x: T): Double = math.exp(logPdf(x))
   def logPdf(x: T): Double = unnormalizedLogPdf(x) - logNormalizer
 
-  /** Returns the probability density function up to a constant at that point.*/
+  /** Returns the probability density function up to a constant at that point. */
   def unnormalizedPdf(x: T): Double = math.exp(unnormalizedLogPdf(x))
 
   def unnormalizedLogPdf(x: T): Double

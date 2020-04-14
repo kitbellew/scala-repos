@@ -37,7 +37,6 @@ import scalafx.geometry.Insets
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.scene.layout.BorderImageSpec]].
   */
 @RunWith(classOf[JUnitRunner])

@@ -61,7 +61,6 @@ object PatternAnnotator {
   /**
     * Logic in this method is mimicked from compiler sources:
     * [[scala.tools.nsc.typechecker.Infer.Inferencer]] and [[scala.tools.nsc.typechecker.Checkable]]
-    *
     */
   private def checkPatternType(
       patType: ScType,

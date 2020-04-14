@@ -114,7 +114,7 @@ sealed class StreamT[M[_], A](val step: M[StreamT.Step[A, StreamT[M, A]]]) {
         done = m.point(Done))
     }
 
-  /**Don't use iteratively! */
+  /** Don't use iteratively! */
   def tail(implicit m: Functor[M]): StreamT[M, A] =
     stepMap {
       _(

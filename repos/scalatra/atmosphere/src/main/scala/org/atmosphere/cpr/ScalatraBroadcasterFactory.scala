@@ -16,7 +16,9 @@ object ScalatraBroadcasterFactory {}
 
 class ScalatraBroadcasterFactory(
     var cfg: AtmosphereConfig,
-    bCfg: BroadcasterConf)(implicit wireFormat: WireFormat, system: ActorSystem)
+    bCfg: BroadcasterConf)(implicit
+    wireFormat: WireFormat,
+    system: ActorSystem)
     extends BroadcasterFactory {
   BroadcasterFactory.setBroadcasterFactory(this, cfg)
 

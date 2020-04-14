@@ -37,8 +37,6 @@ import common.{Empty, Full, Box, Loggable}
   * If wee do not have this actor on our Map. create a new
   * Dispatcher that will monitor this value, add it to our Map
   * and return the Ref to this new dispatcher so it updates the UI
-  *
-  *
   */
 object NamedCometListener extends Loggable {
 
@@ -77,7 +75,6 @@ object NamedCometListener extends Loggable {
     *
     * A common use case for this method is if you are sending updates to comet actors from a rest endpoint,
     * you do not want to create dispatchers if no comet is presently monitoring the @str key
-    *
     */
   def getDispatchersFor(str: Box[String]): LAFuture[Box[LiftActor]] =
     synchronized {

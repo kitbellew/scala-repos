@@ -37,7 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PixelWriter Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PixelWriterSpec

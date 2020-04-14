@@ -232,7 +232,7 @@ object Exception {
     catching(exceptions: _*) withApply (x => throw unwrap(x))
   }
 
-  /** Private **/
+  /** Private * */
   private def wouldMatch(
       x: Throwable,
       classes: scala.collection.Seq[Class[_]]): Boolean =

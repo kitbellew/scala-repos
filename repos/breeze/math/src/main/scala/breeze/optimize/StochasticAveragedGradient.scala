@@ -5,8 +5,6 @@ import breeze.stats.distributions.Rand
 import breeze.linalg._
 
 /**
-  *
-  *
   * @author dlwh
   */
 class StochasticAveragedGradient[T](
@@ -77,7 +75,7 @@ class StochasticAveragedGradient[T](
       if (tuneStepFrequency > 0 && (oldState.iter % tuneStepFrequency) == 0) {
         val xdiff = newX - oldState.x
         if ((f.valueAt(newX, IndexedSeq(nextPos)) + l2Regularization / 2 * norm(
-              newX) - oldState.adjustedValue) > (oldState.adjustedGradient dot xdiff) + (xdiff dot xdiff) / (2 * stepSize)) {
+            newX) - oldState.adjustedValue) > (oldState.adjustedGradient dot xdiff) + (xdiff dot xdiff) / (2 * stepSize)) {
           stepSize / 2
         } else {
           stepSize * 1.5

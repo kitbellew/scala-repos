@@ -272,7 +272,6 @@ trait AssociationHandle {
     * some transports may not support it (hardware connections). Remote endpoint of the channel or connection MAY
     * be notified, but this is not guaranteed. The Transport that provides the handle MUST guarantee that disassociate()
     * could be called arbitrarily many times.
-    *
     */
   def disassociate(): Unit
 

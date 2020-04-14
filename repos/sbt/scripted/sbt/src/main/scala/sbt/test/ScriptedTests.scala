@@ -53,7 +53,7 @@ final class ScriptedTests(
     import GlobFilter._
     var failed = false
     for (groupDir <- (resourceBaseDirectory * group).get;
-         nme <- (groupDir * name).get) yield {
+      nme <- (groupDir * name).get) yield {
       val g = groupDir.getName
       val n = nme.getName
       val str = s"$g / $n"

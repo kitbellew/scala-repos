@@ -11,8 +11,7 @@ import com.intellij.psi.PsiElement;
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 04.05.2008
-  */
+  * Date: 04.05.2008 */
 abstract class ScalaItemPresentation(protected val myElement: PsiElement)
     extends ColoredItemPresentation {
   def getLocationString: String = null

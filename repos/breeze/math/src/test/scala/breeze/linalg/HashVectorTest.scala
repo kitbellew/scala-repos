@@ -8,7 +8,6 @@ import breeze.stats.mean
 import org.scalacheck.Arbitrary
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])
@@ -231,7 +230,6 @@ class HashVectorTest extends FunSuite {
 }
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])
@@ -264,7 +262,6 @@ class HashVectorOps_DoubleTest
 }
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])
@@ -301,7 +298,6 @@ class HashVectorOps_FloatTest
 }
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])

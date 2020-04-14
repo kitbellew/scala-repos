@@ -38,7 +38,6 @@ import org.apache.spark.unsafe.types.UTF8String
   * The unrolling (building columnar cache) is already slow, putLong/putDouble will not help much,
   * so we do not have helper methods for them.
   *
-  *
   * WARNING: This only works with HeapByteBuffer
   */
 private[columnar] object ByteBufferHelper {

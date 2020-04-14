@@ -51,7 +51,6 @@ import org.apache.spark.streaming.kinesis.KinesisUtils
   *   <endpoint-url> endpoint of the Kinesis service
   *     (e.g. https://kinesis.us-east-1.amazonaws.com)
   *
-  *
   * Example:
   *      # export AWS keys if necessary
   *      $ export AWS_ACCESS_KEY_ID=<your-access-key>

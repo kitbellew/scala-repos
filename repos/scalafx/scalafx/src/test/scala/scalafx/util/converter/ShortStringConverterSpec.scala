@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * ShortStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ShortStringConverterSpec

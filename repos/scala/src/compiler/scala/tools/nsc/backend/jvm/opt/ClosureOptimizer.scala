@@ -98,7 +98,7 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     // warning. The `toList` in the next line prevents modifying closureInstantiations while
     // iterating it: minimalRemoveUnreachableCode (called in the loop) removes elements.
     for (method <- closureInstantiations.keysIterator.toList
-         if AsmAnalyzer.sizeOKForBasicValue(method))
+      if AsmAnalyzer.sizeOKForBasicValue(method))
       closureInstantiations.get(method) match {
         case Some(closureInitsBeforeDCE) if closureInitsBeforeDCE.nonEmpty =>
           val ownerClass = closureInitsBeforeDCE.head._2.ownerClass.internalName
@@ -339,10 +339,10 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         if (invokeArgTypes(i) == implMethodArgTypes(i)) {
           res(i) = None
         } else if (isPrimitiveType(implMethodArgTypes(i)) && invokeArgTypes(
-                     i).getDescriptor == ObjectRef.descriptor) {
+            i).getDescriptor == ObjectRef.descriptor) {
           res(i) = Some(getScalaUnbox(implMethodArgTypes(i)))
         } else if (isPrimitiveType(invokeArgTypes(i)) && implMethodArgTypes(
-                     i).getDescriptor == ObjectRef.descriptor) {
+            i).getDescriptor == ObjectRef.descriptor) {
           res(i) = Some(getScalaBox(invokeArgTypes(i)))
         } else {
           assert(!isPrimitiveType(invokeArgTypes(i)), invokeArgTypes(i))
@@ -420,13 +420,13 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     val bodyReturnType = Type.getReturnType(lambdaBodyHandle.getDesc)
     val invocationReturnType = Type.getReturnType(invocation.desc)
     if (isPrimitiveType(
-          invocationReturnType) && bodyReturnType.getDescriptor == ObjectRef.descriptor) {
+        invocationReturnType) && bodyReturnType.getDescriptor == ObjectRef.descriptor) {
       val op =
         if (invocationReturnType.getSort == Type.VOID) getPop(1)
         else getScalaUnbox(invocationReturnType)
       ownerMethod.instructions.insertBefore(invocation, op)
     } else if (isPrimitiveType(
-                 bodyReturnType) && invocationReturnType.getDescriptor == ObjectRef.descriptor) {
+        bodyReturnType) && invocationReturnType.getDescriptor == ObjectRef.descriptor) {
       val op =
         if (bodyReturnType.getSort == Type.VOID) getBoxedUnit
         else getScalaBox(bodyReturnType)
@@ -506,8 +506,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     unreachableCodeEliminated -= ownerMethod
 
     if (hasAdaptedImplMethod(closureInit) && inliner
-          .canInlineBody(bodyMethodCallsite)
-          .isEmpty)
+        .canInlineBody(bodyMethodCallsite)
+        .isEmpty)
       inliner.inlineCallsite(bodyMethodCallsite)
   }
 

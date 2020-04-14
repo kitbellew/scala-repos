@@ -34,12 +34,10 @@ import breeze.linalg.support._
   * with the following implicit:
   *
   * {{{
-    implicit object logComplexImpl extends breeze.numerics.log.Impl[Complex, Complex] { def apply(v: Complex) = v.log }
+  *    implicit object logComplexImpl extends breeze.numerics.log.Impl[Complex, Complex] { def apply(v: Complex) = v.log }
   * }}}
   *
-  *
-  *
-  *@author dlwh
+  * @author dlwh
   */
 trait UFunc {
   final def apply[

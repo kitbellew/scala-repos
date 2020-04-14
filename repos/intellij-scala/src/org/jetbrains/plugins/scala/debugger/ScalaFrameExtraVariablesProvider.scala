@@ -59,8 +59,7 @@ import scala.util.Try
 
 /**
   * Nikolay.Tropin
-  * 2014-12-04
-  */
+  * 2014-12-04 */
 class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
   override def isAvailable(
       sourcePosition: SourcePosition,
@@ -77,7 +76,7 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
     val method = Try(
       evaluationContext.getFrameProxy.location().method()).toOption
     if (method.isEmpty || DebuggerUtils.isSynthetic(
-          method.get) || ScalaSyntheticProvider.isMacroDefined(method.get))
+        method.get) || ScalaSyntheticProvider.isMacroDefined(method.get))
       return Collections.emptySet()
 
     val element = inReadAction(sourcePosition.getElementAt)

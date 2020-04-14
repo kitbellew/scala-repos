@@ -366,7 +366,7 @@ private[finagle] abstract class BaseResolver(f: () => Seq[Resolver]) {
     * Parse and evaluate the argument into a Name. Eval parses
     * a simple grammar: a scheme is followed by a bang, followed
     * by an argument:
-    * 	name := scheme ! arg
+    *  name := scheme ! arg
     * The scheme is looked up from registered Resolvers, and the
     * argument is passed in.
     *

@@ -625,8 +625,8 @@ trait IssuesService {
       if (getIssue(owner, repository, issueId).isDefined) {
         // Not add if refer comment already exist.
         if (!getComments(owner, repository, issueId.toInt).exists { x =>
-              x.action == "refer" && x.content == content
-            }) {
+            x.action == "refer" && x.content == content
+          }) {
           createComment(
             owner,
             repository,
@@ -743,7 +743,7 @@ object IssuesService {
         allow: Seq[String] = Nil): Option[String] = {
       val value = request.getParameter(name)
       if (value == null || value.isEmpty || (allow.nonEmpty && !allow.contains(
-            value))) None
+          value))) None
       else Some(value)
     }
 

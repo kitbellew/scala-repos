@@ -2,32 +2,32 @@ import cascading.pipe.Pipe
 import com.twitter.scalding._
 
 /**
-Scalding Tutorial ported to use the Type-safe API (TDsl)
-(rather than Cascading's Fields API). The examples here roughly correspond
-to those in `tutorial/Tutorial{0..5}.scala`.
-
-These tutorials are all run from this single file; which one is run can
-be chosen with a command-line flag "--tutorial". For instance, to run the
-first tutorial example:
-
-> ./scripts/scald.rb --local tutorial/TypedTutorial.scala \
-      --tutorial 0 \
-      --input tutorial/data/hello.txt \
-      --output tutorial/data/output0.txt \
-      --words tutorial/data/word_scores.tsv
-
-(Note: only tutorial 5 uses "word_scores.tsv")
-**/
+  * Scalding Tutorial ported to use the Type-safe API (TDsl)
+  * (rather than Cascading's Fields API). The examples here roughly correspond
+  * to those in `tutorial/Tutorial{0..5}.scala`.
+  *
+  * These tutorials are all run from this single file; which one is run can
+  * be chosen with a command-line flag "--tutorial". For instance, to run the
+  * first tutorial example:
+  *
+  * > ./scripts/scald.rb --local tutorial/TypedTutorial.scala \
+  *      --tutorial 0 \
+  *      --input tutorial/data/hello.txt \
+  *      --output tutorial/data/output0.txt \
+  *      --words tutorial/data/word_scores.tsv
+  *
+  * (Note: only tutorial 5 uses "word_scores.tsv")
+  */
 class TypedTutorial(args: Args) extends Job(args) {
 
   args("tutorial") match {
 
     /**
-    Tutorial {0,1}: Write out to a TSV file.
-    ----------------------------------------
-    In this first version we will be as explicit as possible to show all
-    the steps required to go from a raw text file to a typed stream.
-    **/
+      *    Tutorial {0,1}: Write out to a TSV file.
+      *    ----------------------------------------
+      *    In this first version we will be as explicit as possible to show all
+      *    the steps required to go from a raw text file to a typed stream.
+      */
     case "0" | "1" => {
 
       // The TextLine source splits the input by lines.
@@ -42,11 +42,11 @@ class TypedTutorial(args: Args) extends Job(args) {
     }
 
     /**
-    Tutorial 2: Simple map
-    ----------------------
-    Reverse all the strings. Notice that we've now left off the [String] type.
-    Scala can generally infer these types for us, making the code cleaner.
-    **/
+      *    Tutorial 2: Simple map
+      *    ----------------------
+      *    Reverse all the strings. Notice that we've now left off the [String] type.
+      *    Scala can generally infer these types for us, making the code cleaner.
+      */
     case "2" | "map" => {
       // Create a typed pipe from the TextLine (of type TypedPipe[String] still)
       TypedPipe
@@ -61,10 +61,10 @@ class TypedTutorial(args: Args) extends Job(args) {
     }
 
     /**
-    Tutorial 3: Flat Map
-    ---------------------
-    Dump all the words.
-    **/
+      *    Tutorial 3: Flat Map
+      *    ---------------------
+      *    Dump all the words.
+      */
     case "3" | "flatmap" => {
       TypedPipe
         .from(TextLine(args("input")))
@@ -78,11 +78,11 @@ class TypedTutorial(args: Args) extends Job(args) {
     }
 
     /**
-    Tutorial 4: Word Count
-    ----------------------
-    Now that we have a stream of words, clearly we're ready for
-    that most exciting of MapReduce examples: the Word Count.
-    **/
+      *    Tutorial 4: Word Count
+      *    ----------------------
+      *    Now that we have a stream of words, clearly we're ready for
+      *    that most exciting of MapReduce examples: the Word Count.
+      */
     case "4" | "wordcount" => {
       // Get the words (just like above in case "3")
       val words = TypedPipe
@@ -118,13 +118,13 @@ class TypedTutorial(args: Args) extends Job(args) {
     }
 
     /**
-    Tutorial 5: Demonstrate joins
-    -----------------------------
-    Associate a score with each word and compute a score for each line.
-
-    Note: this example is a bit contrived, but serves to demonstrate
-    how to combine multiple input sources.
-    **/
+      *    Tutorial 5: Demonstrate joins
+      *    -----------------------------
+      *    Associate a score with each word and compute a score for each line.
+      *
+      *    Note: this example is a bit contrived, but serves to demonstrate
+      *    how to combine multiple input sources.
+      */
     case "5" | "join" => {
       // Load the scores for each word from TSV file and group by word.
       val scores: Grouped[String, Double] =
@@ -187,22 +187,22 @@ class TypedTutorial(args: Args) extends Job(args) {
     }
 
     /**
-    Interoperability with Fields API
-    --------------------------------
-    Scalding also provides a thinner, un-type-safe wrapper over Cascading
-    which is known as the Fields API because each record has a number of
-    named "fields".
-
-    Most jobs can be done completely in the Typed API, but for compatibility,
-    there are ways to go back and forth between the two schemes, which the
-    next couple cases demonstrate.
-    **/
+      *    Interoperability with Fields API
+      *    --------------------------------
+      *    Scalding also provides a thinner, un-type-safe wrapper over Cascading
+      *    which is known as the Fields API because each record has a number of
+      *    named "fields".
+      *
+      *    Most jobs can be done completely in the Typed API, but for compatibility,
+      *    there are ways to go back and forth between the two schemes, which the
+      *    next couple cases demonstrate.
+      */
 
     /**
-    Pipe vs. TypedPipe
-    ------------------
-    TypedPipes can be easily converted to Pipes and vice-versa.
-    **/
+      *    Pipe vs. TypedPipe
+      *    ------------------
+      *    TypedPipes can be easily converted to Pipes and vice-versa.
+      */
     case "pipes" => {
       // calling 'read' on a source returns an un-typed Pipe
       // TextLine, by default, contains two fields: 'offset, and 'line.
@@ -227,13 +227,13 @@ class TypedTutorial(args: Args) extends Job(args) {
     }
 
     /**
-    Bonus: Typed blocks
-    -------------------
-    An alternative to working completely in typed mode is to use
-    `typed` blocks, which create a TypedPipe within the scope, and then
-    map the output back into an untyped Pipe. You specify the fields to
-    map in and out using the `->` pair passed to `typed()`.
-    **/
+      *    Bonus: Typed blocks
+      *    -------------------
+      *    An alternative to working completely in typed mode is to use
+      *    `typed` blocks, which create a TypedPipe within the scope, and then
+      *    map the output back into an untyped Pipe. You specify the fields to
+      *    map in and out using the `->` pair passed to `typed()`.
+      */
     case "block" => {
       // Get the .typed enrichment
       import TDsl._

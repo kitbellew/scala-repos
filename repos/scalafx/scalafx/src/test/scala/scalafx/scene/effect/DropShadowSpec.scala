@@ -36,8 +36,6 @@ import scalafx.testutil.{DimensionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * DropShadow Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class DropShadowSpec

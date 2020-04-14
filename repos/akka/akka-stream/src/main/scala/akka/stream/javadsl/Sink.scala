@@ -193,7 +193,6 @@ object Sink {
     * of the actor will grow. For potentially slow consumer actors it is recommended
     * to use a bounded mailbox with zero `mailbox-push-timeout-time` or use a rate
     * limiting stage in front of this `Sink`.
-    *
     */
   def actorRef[In](ref: ActorRef, onCompleteMessage: Any): Sink[In, NotUsed] =
     new Sink(scaladsl.Sink.actorRef[In](ref, onCompleteMessage))

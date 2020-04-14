@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * WebEvent[_] Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class WebEventSpec[T]

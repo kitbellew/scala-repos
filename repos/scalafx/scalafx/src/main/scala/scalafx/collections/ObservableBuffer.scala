@@ -252,7 +252,6 @@ object ObservableBuffer extends SeqFactory[ObservableBuffer] {
   * @define buf `Buffer`
   * @define WhyOverride Overridden method to make it behave like a wrapped $OL.
   * @define noCL The new $OB won't have Change and Invalidation Listeners from original $buf.
-  *
   */
 class ObservableBuffer[T](
     override val delegate: jfxc.ObservableList[T] =

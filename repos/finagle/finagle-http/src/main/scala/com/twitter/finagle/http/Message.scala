@@ -41,13 +41,13 @@ abstract class Message extends HttpMessageProxy {
   /**
     * A read-only handle to the internal stream of bytes, representing the
     * message body. See [[com.twitter.io.Reader]] for more information.
-   **/
+    */
   def reader: BufReader = readerWriter
 
   /**
     * A write-only handle to the internal stream of bytes, representing the
     * message body. See [[com.twitter.io.Writer]] for more information.
-   **/
+    */
   def writer: BufWriter with Closable = readerWriter
 
   def isRequest: Boolean

@@ -14,7 +14,6 @@ import org.apache.commons.math3.random.MersenneTwister
 import FirstOrderMinimizer.ConvergenceCheck
 
 /**
-  *
   * @author dlwh
   */
 abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
@@ -429,7 +428,6 @@ object FirstOrderMinimizer {
     * 2) useStochastic=false,useL1=true: OWLQN with L1 regularization
     * 3) useStochastic=true,useL1=false: AdaptiveGradientDescent with L2 regularization
     * 3) useStochastic=true,useL1=true: AdaptiveGradientDescent with L1 regularization
-    *
     *
     * @param batchSize size of batches to use if useStochastic and you give a BatchDiffFunction
     * @param regularization regularization constant to use.

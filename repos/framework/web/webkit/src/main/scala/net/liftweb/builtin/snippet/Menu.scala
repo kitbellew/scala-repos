@@ -333,7 +333,7 @@ object Menu extends DispatchSnippet {
   def title(text: NodeSeq): NodeSeq = {
     val r =
       for (request <- S.request;
-           loc <- request.location) yield loc.title
+        loc <- request.location) yield loc.title
 
     text match {
       case TitleText(attrs, str) => {
@@ -399,7 +399,7 @@ object Menu extends DispatchSnippet {
     * the template, and iterates over `li` elements. You can customize
     * these settings using the `repeatedSelector`, `linkSelector`, and
     * `hrefSelector` parameters; for example:
-    *.
+    * .
     * {{{
     * <p data-lift="Menu.group?group=test&repeatedSelector=p&linkSelector=p&hrefSelector=[data-link]"
     *    data-link="/sample/link">
@@ -476,11 +476,9 @@ object Menu extends DispatchSnippet {
     * set the "donthide" attribute on the tag to force it to show text only (same text as normal,
     * but not in an anchor tag)</p>
     *
-    *
     * <p>Alternatively, you can set the "linkToSelf" attribute to "true" to force a link. You
     * can specify your own link text with the tag's contents. Note that <b>case is significant</b>, so
     * make sure you specify "linkToSelf" and not "linktoself".</p>
-    *
     */
   def item(_text: NodeSeq): NodeSeq = {
     val donthide = S.attr("donthide").map(Helpers.toBoolean) openOr false

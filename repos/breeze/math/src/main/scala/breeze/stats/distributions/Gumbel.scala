@@ -7,7 +7,7 @@ import breeze.numerics.{exp, log}
   * TODO
   *
   * @author dlwh
- **/
+  */
 case class Gumbel(location: Double, scale: Double)(implicit
     rand: RandBasis = Rand)
     extends ContinuousDistr[Double]

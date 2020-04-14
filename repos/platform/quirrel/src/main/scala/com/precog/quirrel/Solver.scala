@@ -56,10 +56,10 @@ trait Solver extends parser.AST with typer.Binder {
         case Div(loc, left, right) if left equalsIgnoreLoc right =>
           Set(NumLit(loc, "1"))
       },
-      { case Add(loc, left, right)         => Set(Add(loc, right, left)) },
-      { case Sub(loc, left, right)         => Set(Add(loc, Neg(loc, right), left)) },
+      { case Add(loc, left, right) => Set(Add(loc, right, left)) },
+      { case Sub(loc, left, right) => Set(Add(loc, Neg(loc, right), left)) },
       { case Add(loc, Neg(_, left), right) => Set(Sub(loc, right, left)) },
-      { case Mul(loc, left, right)         => Set(Mul(loc, right, left)) },
+      { case Mul(loc, left, right) => Set(Mul(loc, right, left)) },
       {
         case Add(loc, Add(loc2, x, y), z) => Set(Add(loc, x, Add(loc2, y, z)))
       },
@@ -144,25 +144,25 @@ trait Solver extends parser.AST with typer.Binder {
       {
         case Add(loc, left, right) =>
           for (left2 <- possibilities(left) + left;
-               right2 <- possibilities(right) + right)
+            right2 <- possibilities(right) + right)
             yield Add(loc, left2, right2)
       },
       {
         case Sub(loc, left, right) =>
           for (left2 <- possibilities(left) + left;
-               right2 <- possibilities(right) + right)
+            right2 <- possibilities(right) + right)
             yield Sub(loc, left2, right2)
       },
       {
         case Mul(loc, left, right) =>
           for (left2 <- possibilities(left) + left;
-               right2 <- possibilities(right) + right)
+            right2 <- possibilities(right) + right)
             yield Mul(loc, left2, right2)
       },
       {
         case Div(loc, left, right) =>
           for (left2 <- possibilities(left) + left;
-               right2 <- possibilities(right) + right)
+            right2 <- possibilities(right) + right)
             yield Div(loc, left2, right2)
       },
       { case Neg(loc, child) => possibilities(child) map neg(loc) },

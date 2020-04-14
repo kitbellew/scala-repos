@@ -37,7 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Insets Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class InsetsSpec

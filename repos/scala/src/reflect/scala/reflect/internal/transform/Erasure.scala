@@ -394,8 +394,8 @@ trait Erasure {
         }
       else specialErasure(sym)(tp)
     } else if (sym.owner != NoSymbol &&
-               sym.owner.owner == ArrayClass &&
-               sym == Array_update.paramss.head(1)) {
+      sym.owner.owner == ArrayClass &&
+      sym == Array_update.paramss.head(1)) {
       // special case for Array.update: the non-erased type remains, i.e. (Int,A)Unit
       // since the erasure type map gets applied to every symbol, we have to catch the
       // symbol here

@@ -41,8 +41,6 @@ import scalafx.testutil.{
 
 /**
   * Rectangle Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class RectangleSpec

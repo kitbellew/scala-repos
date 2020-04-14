@@ -438,7 +438,7 @@ trait DocComments { self: Global =>
 
       (
         if (end == raw.length - 2) raw else raw.substring(0, end) + "*/",
-        defines map { case (start, end)  => raw.substring(start, end) },
+        defines map { case (start, end) => raw.substring(start, end) },
         usecases map { case (start, end) => decomposeUseCase(start, end) })
     }
 

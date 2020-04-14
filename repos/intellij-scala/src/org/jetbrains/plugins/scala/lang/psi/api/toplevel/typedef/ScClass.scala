@@ -17,8 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 20.02.2008
-  */
+  * Date: 20.02.2008 */
 
 trait ScClass extends ScTypeDefinition with ScParameterOwner {
   def constructor: Option[ScPrimaryConstructor]
@@ -103,7 +102,7 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
         val paramString = constructor match {
           case Some(x: ScPrimaryConstructor) =>
             (if (x.parameterList.clauses.length == 1 &&
-                 x.parameterList.clauses.head.isImplicit) "()"
+               x.parameterList.clauses.head.isImplicit) "()"
              else "") + x.parameterList.clauses
               .map(c =>
                 c.parameters

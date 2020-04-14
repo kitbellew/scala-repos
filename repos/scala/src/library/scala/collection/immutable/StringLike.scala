@@ -214,8 +214,8 @@ trait StringLike[+Repr]
 
   private def escape(ch: Char): String =
     if ((ch >= 'a') && (ch <= 'z') ||
-        (ch >= 'A') && (ch <= 'Z') ||
-        (ch >= '0' && ch <= '9')) ch.toString
+      (ch >= 'A') && (ch <= 'Z') ||
+      (ch >= '0' && ch <= '9')) ch.toString
     else "\\" + ch
 
   /** Split this string around the separator character
@@ -231,7 +231,6 @@ trait StringLike[+Repr]
     * matching surrogate characters if they are not part of a surrogate pair
     *
     * The behaviour follows, and is implemented in terms of <a href="http://docs.oracle.com/javase/7/docs/api/java/lang/String.html#split%28java.lang.String%29">String.split(re: String)</a>
-    *
     *
     * @example {{{
     * "a.b".split('.') //returns Array("a", "b")

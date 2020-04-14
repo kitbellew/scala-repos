@@ -22,7 +22,7 @@ trait TestReportListener {
   /** called if test completed */
   def endGroup(name: String, result: TestResult.Value)
 
-  /** Used by the test framework for logging test results*/
+  /** Used by the test framework for logging test results */
   def contentLogger(test: TestDefinition): Option[ContentLogger] = None
 }
 

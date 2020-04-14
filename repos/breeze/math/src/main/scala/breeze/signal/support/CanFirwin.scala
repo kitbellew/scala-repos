@@ -36,7 +36,6 @@ trait CanFirwin[Output] {
 object CanFirwin {
 
   /** Use via implicit delegate syntax firwin(xxxx)
-    *
     */
   implicit def firwinDouble: CanFirwin[Double] = {
     new CanFirwin[Double] {

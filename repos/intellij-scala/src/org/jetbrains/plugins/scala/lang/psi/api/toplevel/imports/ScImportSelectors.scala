@@ -9,8 +9,7 @@ import com.intellij.psi.PsiElement
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 20.02.2008
-  */
+  * Date: 20.02.2008 */
 
 trait ScImportSelectors extends ScalaPsiElement {
   def selectors: Array[ScImportSelector]

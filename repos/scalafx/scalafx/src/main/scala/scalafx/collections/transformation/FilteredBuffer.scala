@@ -85,7 +85,6 @@ class FilteredBuffer[E](override val delegate: jfxct.FilteredList[E])
         }))
 
   /**
-    *
     * The predicate that will match the elements that will be in this FilteredBuffer.
     */
   def predicate: ObjectProperty[ju.function.Predicate[_ >: E]] =

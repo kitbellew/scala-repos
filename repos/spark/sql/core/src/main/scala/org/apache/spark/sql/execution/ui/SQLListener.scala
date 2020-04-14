@@ -97,7 +97,7 @@ private[sql] class SQLListener(conf: SparkConf)
       val toRemove = math.max(retainedExecutions / 10, 1)
       executions.take(toRemove).foreach { execution =>
         for (executionUIData <-
-               _executionIdToData.remove(execution.executionId)) {
+            _executionIdToData.remove(execution.executionId)) {
           for (jobId <- executionUIData.jobs.keys) {
             _jobIdToExecutionId.remove(jobId)
           }
@@ -137,7 +137,7 @@ private[sql] class SQLListener(conf: SparkConf)
     synchronized {
       val jobId = jobEnd.jobId
       for (executionId <- _jobIdToExecutionId.get(jobId);
-           executionUIData <- _executionIdToData.get(executionId)) {
+        executionUIData <- _executionIdToData.get(executionId)) {
         jobEnd.jobResult match {
           case JobSucceeded =>
             executionUIData.jobs(jobId) = JobExecutionStatus.SUCCEEDED
@@ -157,7 +157,7 @@ private[sql] class SQLListener(conf: SparkConf)
       executorMetricsUpdate: SparkListenerExecutorMetricsUpdate): Unit =
     synchronized {
       for ((taskId, stageId, stageAttemptID, accumUpdates) <-
-             executorMetricsUpdate.accumUpdates) {
+          executorMetricsUpdate.accumUpdates) {
         updateTaskAccumulatorValues(
           taskId,
           stageId,
@@ -327,9 +327,9 @@ private[sql] class SQLListener(conf: SparkConf)
         case Some(executionUIData) =>
           val accumulatorUpdates = {
             for (stageId <- executionUIData.stages;
-                 stageMetrics <- _stageIdToStageMetrics.get(stageId).toIterable;
-                 taskMetrics <- stageMetrics.taskIdToMetricUpdates.values;
-                 accumulatorUpdate <- taskMetrics.accumulatorUpdates) yield {
+              stageMetrics <- _stageIdToStageMetrics.get(stageId).toIterable;
+              taskMetrics <- stageMetrics.taskIdToMetricUpdates.values;
+              accumulatorUpdate <- taskMetrics.accumulatorUpdates) yield {
               assert(
                 accumulatorUpdate.update.isDefined,
                 s"accumulator update from " +

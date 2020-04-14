@@ -1595,7 +1595,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
         // progress update
         informTime(globalPhase.description, startTime)
         if ((settings.Xprint containsPhase globalPhase) || settings.printLate && runIsAt(
-              cleanupPhase)) {
+            cleanupPhase)) {
           // print trees
           if (settings.Xshowtrees || settings.XshowtreesCompact || settings.XshowtreesStringified)
             nodePrinters.printAll()

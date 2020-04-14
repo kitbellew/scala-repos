@@ -15,7 +15,6 @@ import parallel.mutable.ParSeq
 /** A template trait for mutable sequences of type `mutable.Seq[A]`.
   *  @tparam A    the type of the elements of the set
   *  @tparam This the type of the set itself.
-  *
   */
 trait SeqLike[A, +This <: SeqLike[A, This] with Seq[A]]
     extends scala.collection.SeqLike[A, This]

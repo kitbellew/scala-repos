@@ -283,7 +283,7 @@ object TestTransport {
 
       push((params: A) ⇒
         for (delayed ← controlPromise.future;
-             original ← originalBehavior(params)) yield original)
+          original ← originalBehavior(params)) yield original)
 
       controlPromise
     }

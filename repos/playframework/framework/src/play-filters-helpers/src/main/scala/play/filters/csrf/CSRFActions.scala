@@ -55,7 +55,7 @@ class CSRFAction(
 
     // Only filter unsafe methods and content types
     if (config.checkMethod(request.method) && config.checkContentType(
-          request.contentType)) {
+        request.contentType)) {
 
       if (!requiresCsrfCheck(request, config)) {
         continue
@@ -105,9 +105,9 @@ class CSRFAction(
         }
       }
     } else if (getTokenToValidate(
-                 request,
-                 config,
-                 tokenSigner).isEmpty && config.createIfNotFound(request)) {
+        request,
+        config,
+        tokenSigner).isEmpty && config.createIfNotFound(request)) {
 
       // No token in header and we have to create one if not found, so create a new token
       val newToken = tokenProvider.generateToken
@@ -165,7 +165,7 @@ class CSRFAction(
             config,
             { body =>
               if (extractor(body, tokenName).fold(false)(
-                    tokenProvider.compareTokens(_, tokenFromHeader))) {
+                  tokenProvider.compareTokens(_, tokenFromHeader))) {
                 filterLogger.trace("[CSRF] Valid token found in body")
                 true
               } else {
@@ -496,7 +496,7 @@ object CSRFAction {
       request: RequestHeader,
       config: CSRFConfig): Boolean = {
     if (config.bypassCorsTrustedOrigins && request.tags.contains(
-          CORSFilter.RequestTag)) {
+        CORSFilter.RequestTag)) {
       filterLogger.trace(
         "[CSRF] Bypassing check because CORSFilter request tag found")
       false
@@ -593,7 +593,7 @@ case class CSRFCheck @Inject() (
 
       // Maybe bypass
       if (!CSRFAction.requiresCsrfCheck(request, config) || !config
-            .checkContentType(request.contentType)) {
+          .checkContentType(request.contentType)) {
         wrapped(request)
       } else {
         // Get token from header

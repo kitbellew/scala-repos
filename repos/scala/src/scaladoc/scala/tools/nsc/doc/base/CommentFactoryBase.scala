@@ -1001,7 +1001,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     final def jump(chars: String): Boolean = {
       var index = 0
       while (index < chars.length && char == chars.charAt(
-               index) && char != endOfText) {
+          index) && char != endOfText) {
         nextChar()
         index += 1
       }

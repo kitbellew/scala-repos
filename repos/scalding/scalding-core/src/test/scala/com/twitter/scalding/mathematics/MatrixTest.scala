@@ -545,15 +545,15 @@ class MatrixTest extends WordSpec with Matchers {
     TUtil.printStack {
       JobTest(new Randwalk(_))
       /*
-         * 1.0 4.0
-         * 0.0 3.0
-         * row normalized:
-         * 1.0/5.0 4.0/5.0
-         * 0.0 1.0
-         * product with itself:
-         * 1.0/25.0 (4.0/25.0 + 4.0/5.0)
-         * 0.0 1.0
-         */
+       * 1.0 4.0
+       * 0.0 3.0
+       * row normalized:
+       * 1.0/5.0 4.0/5.0
+       * 0.0 1.0
+       * product with itself:
+       * 1.0/25.0 (4.0/25.0 + 4.0/5.0)
+       * 0.0 1.0
+       */
         .source(
           Tsv("mat1", ('x1, 'y1, 'v1)),
           List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
@@ -707,8 +707,8 @@ class MatrixTest extends WordSpec with Matchers {
     TUtil.printStack {
       JobTest(new DiagonalOps(_))
       /* [[1.0 4.0]
-         *  [0.0 3.0]]
-         */
+       *  [0.0 3.0]]
+       */
         .source(
           Tsv("mat1", ('x1, 'y1, 'v1)),
           List((1, 1, 1.0), (2, 2, 3.0), (1, 2, 4.0)))
@@ -752,10 +752,10 @@ class MatrixTest extends WordSpec with Matchers {
     TUtil.printStack {
       JobTest(new PropJob(_))
       /* [[0 1 1],
-         *  [0 0 1],
-         *  [1 0 0]] = List((0,1,1), (0,2,1), (1,2,1), (2,0,1))
-         * [1.0 2.0 4.0] = List((0,1.0), (1,2.0), (2,4.0))
-         */
+       *  [0 0 1],
+       *  [1 0 0]] = List((0,1,1), (0,2,1), (1,2,1), (2,0,1))
+       * [1.0 2.0 4.0] = List((0,1.0), (1,2.0), (2,4.0))
+       */
         .source(
           TypedTsv[(Int, Int, Int)]("graph"),
           List((0, 1, 1), (0, 2, 1), (1, 2, 1), (2, 0, 1)))

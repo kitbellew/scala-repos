@@ -126,8 +126,8 @@ object NumberConverter {
     */
   def convert(n: Array[Byte], fromBase: Int, toBase: Int): UTF8String = {
     if (fromBase < Character.MIN_RADIX || fromBase > Character.MAX_RADIX
-        || Math.abs(toBase) < Character.MIN_RADIX
-        || Math.abs(toBase) > Character.MAX_RADIX) {
+      || Math.abs(toBase) < Character.MIN_RADIX
+      || Math.abs(toBase) > Character.MAX_RADIX) {
       return null
     }
 

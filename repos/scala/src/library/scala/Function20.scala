@@ -10,7 +10,6 @@
 package scala
 
 /** A function of 20 parameters.
-  *
   */
 trait Function20[
     -T1,

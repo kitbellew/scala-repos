@@ -176,7 +176,7 @@ object ScalaExtractMethodUtils {
                   named: PsiNamedElement,
                   subst: ScSubstitutor)) =>
             if (named.getContainingFile == method.getContainingFile && named.getTextOffset < offset &&
-                !named.name.startsWith("_")) {
+              !named.name.startsWith("_")) {
               val oldName = named.name
               var break = false
               for (param <- settings.parameters if !break) {

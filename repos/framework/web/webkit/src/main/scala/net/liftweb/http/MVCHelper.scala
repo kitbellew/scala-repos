@@ -110,7 +110,6 @@ trait MVCHelper extends LiftRules.DispatchPF {
     * NodeSeq (run the template),
     * LiftResponse (send the response back),
     * or Box or Option of any of the above.
-    *
     */
   protected sealed trait MVCResponse {
     def toResponse: Box[LiftResponse]

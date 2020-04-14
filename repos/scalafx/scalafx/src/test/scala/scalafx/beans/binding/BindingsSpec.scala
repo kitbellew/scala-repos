@@ -40,8 +40,6 @@ import scalafx.delegate.SFXDelegate
 
 /**
   * Bindings Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BindingsSpec extends FlatSpec with BeforeAndAfterEach {

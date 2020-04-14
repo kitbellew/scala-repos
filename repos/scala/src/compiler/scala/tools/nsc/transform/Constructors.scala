@@ -644,7 +644,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
       val result = mkAssign(to, Ident(from))
 
       if (from.name != nme.OUTER ||
-          from.tpe.typeSymbol.isPrimitiveValueClass) result
+        from.tpe.typeSymbol.isPrimitiveValueClass) result
       else
         localTyper.typedPos(to.pos) {
           // `throw null` has the same effect as `throw new NullPointerException`, see JVM spec on instruction `athrow`

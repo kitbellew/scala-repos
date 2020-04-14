@@ -23,8 +23,7 @@ import breeze.util.Isomorphism
 /**
   * Represents a differentiable function whose output is guaranteed to be consistent
   *
-  * @author dlwh
-  */
+  * @author dlwh */
 trait DiffFunction[T] extends StochasticDiffFunction[T] { outer =>
   def cached(implicit copy: CanCopy[T]) = {
     if (this.isInstanceOf[CachedDiffFunction[_]]) {

@@ -18,8 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.{
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 11.04.2008
-  */
+  * Date: 11.04.2008 */
 
 class ScWildcardTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

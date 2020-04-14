@@ -7,7 +7,7 @@ import breeze.stats.mean
   * TODO
   *
   * @author dlwh
- **/
+  */
 class BroadcastedTest extends FunSuite {
   test("broadcast DenseMatrix along columns") {
     val dm = DenseMatrix((1.0, 2.0, 3.0), (4.0, 5.0, 6.0))

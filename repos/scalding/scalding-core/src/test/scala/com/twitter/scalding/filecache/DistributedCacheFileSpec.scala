@@ -84,5 +84,5 @@ class DistributedCacheFileSpec extends WordSpec with Matchers {
       an[RuntimeException] should be thrownBy (dcf.add()(mode))
     }
   }
- */
+   */
 }

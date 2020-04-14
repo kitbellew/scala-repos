@@ -48,7 +48,6 @@ import org.apache.spark.unsafe.types.CalendarInterval
   *     }
   *   }
   * }}}
-  *
   */
 object LiteralGenerator {
 

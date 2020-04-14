@@ -191,7 +191,6 @@ object Evolutions {
   }
 
   /**
-    *
     * Compare two evolution sequences.
     *
     * @param downs the seq of downs

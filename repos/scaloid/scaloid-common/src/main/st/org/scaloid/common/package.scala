@@ -13,7 +13,6 @@ import scala.util.Try
   * Scaloid marries Android code with Scala resulting in easier to understand
   * and maintain code.
   *
-  *
   * @example
   *
   * {{{

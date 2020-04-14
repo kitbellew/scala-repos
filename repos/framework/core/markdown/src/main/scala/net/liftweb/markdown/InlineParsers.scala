@@ -102,7 +102,7 @@ trait InlineParsers extends BaseParsers {
 
           val xmlEscape = escapeFastForXml(c)
           if (markdownEscapes && c == '\\' && i + 1 < end && escapableMarkdownChars(
-                s.charAt(i + 1)) != null) {
+              s.charAt(i + 1)) != null) {
             result.append(s.subSequence(start, i).toString)
             result.append(escapableMarkdownChars(s.charAt(i + 1)))
             i += 2
@@ -348,7 +348,7 @@ trait InlineParsers extends BaseParsers {
   def spanUnderscore(ctx: InlineContext) =
     strongUnderscore(ctx) | emUnderscore(ctx)
 
-  /**Parses emphasized text wrapped in asterisks: *foo*
+  /** Parses emphasized text wrapped in asterisks: *foo*
     */
   def emAsterisk(ctx: InlineContext): Parser[String] =
     if (ctx.tags.contains("em")) {
@@ -357,7 +357,7 @@ trait InlineParsers extends BaseParsers {
       span("*", ctx.addTag("em")) ^^ { deco.decorateEmphasis(_) }
     }
 
-  /**Parses emphasized text wrapped in underscores: _foo_
+  /** Parses emphasized text wrapped in underscores: _foo_
     */
   def emUnderscore(ctx: InlineContext): Parser[String] =
     if (ctx.tags.contains("em")) {
@@ -366,7 +366,7 @@ trait InlineParsers extends BaseParsers {
       span("_", ctx.addTag("em")) ^^ { deco.decorateEmphasis(_) }
     }
 
-  /**Parses strong text in asterisks: **foo**
+  /** Parses strong text in asterisks: **foo**
     */
   def strongAsterisk(ctx: InlineContext): Parser[String] =
     if (ctx.tags.contains("strong")) {
@@ -375,7 +375,7 @@ trait InlineParsers extends BaseParsers {
       span("**", ctx.addTag("strong")) ^^ { deco.decorateStrong(_) }
     }
 
-  /**Parses strong text in underscores: __foo__
+  /** Parses strong text in underscores: __foo__
     */
   def strongUnderscore(ctx: InlineContext): Parser[String] =
     if (ctx.tags.contains("strong")) {

@@ -86,7 +86,7 @@ object IntroduceImplicitParameterIntention {
 
     for (p <- expr.parameters) {
       if (!occurrences.keySet.contains(p.name) || occurrences(
-            p.name) < previousOffset)
+          p.name) < previousOffset)
         return Right(
           InspectionBundle.message("introduce.implicit.incorrect.order"))
       previousOffset = occurrences(p.name)

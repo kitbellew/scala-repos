@@ -88,7 +88,6 @@ private[akka] object RemoteWatcher {
   *
   * For bi-directional watch between two nodes the same thing will be established in
   * both directions, but independent of each other.
-  *
   */
 private[akka] class RemoteWatcher(
     failureDetector: FailureDetectorRegistry[Address],
@@ -214,7 +213,7 @@ private[akka] class RemoteWatcher(
   def watchNode(watchee: InternalActorRef): Unit = {
     val watcheeAddress = watchee.path.address
     if (!watcheeByNodes.contains(watcheeAddress) && unreachable(
-          watcheeAddress)) {
+        watcheeAddress)) {
       // first watch to that node after a previous unreachable
       unreachable -= watcheeAddress
       failureDetector.remove(watcheeAddress)
@@ -304,7 +303,7 @@ private[akka] class RemoteWatcher(
 
   def triggerFirstHeartbeat(address: Address): Unit =
     if (watcheeByNodes.contains(address) && !failureDetector.isMonitoring(
-          address)) {
+        address)) {
       log.debug("Trigger extra expected heartbeat from [{}]", address)
       failureDetector.heartbeat(address)
     }

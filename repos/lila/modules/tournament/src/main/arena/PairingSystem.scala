@@ -126,8 +126,8 @@ object PairingSystem extends AbstractPairingSystem {
               Math.abs(a.player.rating - b.player.rating) +
               justPlayedTogether(a.player.userId, b.player.userId).?? {
                 if (veryMuchJustPlayedTogether(
-                      a.player.userId,
-                      b.player.userId)) 9000 * 1000
+                    a.player.userId,
+                    b.player.userId)) 9000 * 1000
                 else 8000 * 1000
               }
         }

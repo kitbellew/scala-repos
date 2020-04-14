@@ -249,7 +249,6 @@ trait MatchApproximation
 
   /**
     * Represent a match as a formula in propositional logic that encodes whether the match matches (abstractly: we only consider types)
-    *
     */
   trait MatchApproximator extends TreeMakers with TreesAndTypesDomain {
     object Test {

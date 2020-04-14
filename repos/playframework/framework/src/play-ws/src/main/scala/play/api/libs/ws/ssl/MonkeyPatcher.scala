@@ -8,7 +8,6 @@ package play.api.libs.ws.ssl
 import java.lang.reflect.Field
 
 /**
-  *
   */
 trait MonkeyPatcher {
 

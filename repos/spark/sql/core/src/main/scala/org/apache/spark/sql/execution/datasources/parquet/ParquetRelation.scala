@@ -103,7 +103,7 @@ private[sql] class DefaultSource
         val shortParquetCompressionCodecNames =
           ParquetRelation.shortParquetCompressionCodecNames
         if (!shortParquetCompressionCodecNames.contains(
-              codecName.toLowerCase)) {
+            codecName.toLowerCase)) {
           val availableCodecs =
             shortParquetCompressionCodecNames.keys.map(_.toLowerCase)
           throw new IllegalArgumentException(s"Codec [$codecName] " +

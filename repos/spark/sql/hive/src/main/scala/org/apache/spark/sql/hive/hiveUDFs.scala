@@ -75,7 +75,7 @@ private[hive] class HiveFunctionRegistry(
       // catch the exception and throw AnalysisException instead.
       try {
         if (classOf[GenericUDFMacro].isAssignableFrom(
-              functionInfo.getFunctionClass)) {
+            functionInfo.getFunctionClass)) {
           val udf = HiveGenericUDF(
             name,
             new HiveFunctionWrapper(
@@ -85,7 +85,7 @@ private[hive] class HiveFunctionRegistry(
           udf.dataType // Force it to check input data types.
           udf
         } else if (classOf[UDF].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
+            functionInfo.getFunctionClass)) {
           val udf = HiveSimpleUDF(
             name,
             new HiveFunctionWrapper(functionClassName),
@@ -93,7 +93,7 @@ private[hive] class HiveFunctionRegistry(
           udf.dataType // Force it to check input data types.
           udf
         } else if (classOf[GenericUDF].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
+            functionInfo.getFunctionClass)) {
           val udf = HiveGenericUDF(
             name,
             new HiveFunctionWrapper(functionClassName),
@@ -101,7 +101,7 @@ private[hive] class HiveFunctionRegistry(
           udf.dataType // Force it to check input data types.
           udf
         } else if (classOf[AbstractGenericUDAFResolver].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
+            functionInfo.getFunctionClass)) {
           val udaf = HiveUDAFFunction(
             name,
             new HiveFunctionWrapper(functionClassName),
@@ -109,7 +109,7 @@ private[hive] class HiveFunctionRegistry(
           udaf.dataType // Force it to check input data types.
           udaf
         } else if (classOf[UDAF].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
+            functionInfo.getFunctionClass)) {
           val udaf = HiveUDAFFunction(
             name,
             new HiveFunctionWrapper(functionClassName),
@@ -118,7 +118,7 @@ private[hive] class HiveFunctionRegistry(
           udaf.dataType // Force it to check input data types.
           udaf
         } else if (classOf[GenericUDTF].isAssignableFrom(
-                     functionInfo.getFunctionClass)) {
+            functionInfo.getFunctionClass)) {
           val udtf = HiveGenericUDTF(
             name,
             new HiveFunctionWrapper(functionClassName),

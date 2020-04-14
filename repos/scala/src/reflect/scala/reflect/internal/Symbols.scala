@@ -2302,7 +2302,6 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       *
       *  Morale: DO:    if (clazz.typeOfThis.typeConstructor ne clazz.typeConstructor) ...
       *          DON'T: if (clazz.thisSym ne clazz) ...
-      *
       */
     def thisSym: Symbol = this
 
@@ -2468,7 +2467,6 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       *  In this case the owner chain of `g` is `x`, followed by `C` but
       *  g.logicallyEnclosingMember is the primary constructor symbol `<init>`
       *  (or, for traits: `$init`) of `C`.
-      *
       */
     final def logicallyEnclosingMember: Symbol =
       if (isLocalDummy) enclClass.primaryConstructor
@@ -2756,7 +2754,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     final def caseModule: Symbol = {
       var modname = name.toTermName
       if (privateWithin.isClass && !privateWithin.isModuleClass && !hasFlag(
-            EXPANDEDNAME))
+          EXPANDEDNAME))
         modname = nme.expandedName(modname, privateWithin)
       initialize.owner.info.decl(modname).suchThat(_.isModule)
     }
@@ -3120,14 +3118,14 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     override def isModule = this hasFlag MODULE
     override def isOverloaded = this hasFlag OVERLOADED
 
-    /*** !!! TODO: shouldn't we do something like the following:
-    override def isOverloaded       = (
-      if (this.isInitialized)
-        this hasFlag OVERLOADED
-      else
-        (infos ne null) && infos.info.isInstanceOf[OverloadedType]
-    )
-    ***/
+    /** !!! TODO: shouldn't we do something like the following:
+      *    override def isOverloaded       = (
+      *      if (this.isInitialized)
+      *        this hasFlag OVERLOADED
+      *      else
+      *        (infos ne null) && infos.info.isInstanceOf[OverloadedType]
+      *    )
+      * * */
     override def isValueParameter = this hasFlag PARAM
 
     override def isSetterParameter = isValueParameter && owner.isSetter
@@ -3513,7 +3511,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       this
     }
 
-    /*** example:
+    /** example:
       * public class Test3<T> {}
       * public class Test1<T extends Test3> {}
       * info for T in Test1 should be >: Nothing <: Test3[_]

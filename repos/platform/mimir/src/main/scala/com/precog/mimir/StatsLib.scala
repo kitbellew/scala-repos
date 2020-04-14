@@ -443,7 +443,7 @@ trait StatsLibModule[M[+_]]
 
                 while (row < smoothed.length) {
                   if (values.isDefinedAt(row) && alphas.isDefinedAt(
-                        row) && betas.isDefinedAt(row)) {
+                      row) && betas.isDefinedAt(row)) {
                     defined.set(row)
                     if (first) {
                       // I hope we can do better here eventually.
@@ -1916,7 +1916,6 @@ trait StatsLibModule[M[+_]]
       }
 
       /**
-        *
         */
       def scan(
           ctxt: RankContext,
@@ -2060,7 +2059,7 @@ trait StatsLibModule[M[+_]]
         // compare each subsequent row against the last valid row
         while (row < end) {
           if (defined
-                .get(row) && !isDuplicate(cols, definedCols, lastRow, row, 0)) {
+              .get(row) && !isDuplicate(cols, definedCols, lastRow, row, 0)) {
             duplicateRows.clear(row - start)
             lastRow = row
           }
@@ -2077,7 +2076,6 @@ trait StatsLibModule[M[+_]]
           ctxt: RankContext): (Array[Long], Long, Long)
 
       /**
-        *
         */
       def scan(
           ctxt: RankContext,

@@ -546,8 +546,8 @@ trait ScFunction
 
   def getReturnType: PsiType = {
     if (DumbService
-          .getInstance(getProject)
-          .isDumb || !SyntheticClasses.get(getProject).isClassesRegistered) {
+        .getInstance(getProject)
+        .isDumb || !SyntheticClasses.get(getProject).isClassesRegistered) {
       return null //no resolve during dumb mode or while synthetic classes is not registered
     }
     getReturnTypeImpl

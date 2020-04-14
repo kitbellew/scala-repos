@@ -175,8 +175,8 @@ object TraversableHelpers {
             val acheck = aps + minpsize
             val bcheck = bps + minpsize
             if (apsize != bpsize &&
-                acheck < endA &&
-                bcheck < endB) {
+              acheck < endA &&
+              bcheck < endB) {
               // exactly one of them has a pivot value
               ord.compare(a(acheck), b(bcheck))
             } else {

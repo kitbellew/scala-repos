@@ -119,7 +119,6 @@ abstract class Node protected (override val delegate: jfxs.Node)
     * The screen reader uses the role of a node to determine the
     * attributes and actions that are supported.
     *
-    *
     * @since JavaFX 8u40
     */
   def accessibleRole: ObjectProperty[jfxs.AccessibleRole] =

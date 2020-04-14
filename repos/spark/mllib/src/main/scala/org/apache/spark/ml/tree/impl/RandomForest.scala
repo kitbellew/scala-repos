@@ -299,8 +299,8 @@ private[ml] object RandomForest extends Logging {
         var splitIndex = 0
         while (splitIndex < numSplits) {
           if (featureSplits(splitIndex).shouldGoLeft(
-                featureValue,
-                featureSplits)) {
+              featureValue,
+              featureSplits)) {
             agg.featureUpdate(
               leftNodeFeatureOffset,
               splitIndex,
@@ -720,7 +720,7 @@ private[ml] object RandomForest extends Logging {
     // If left child or right child doesn't satisfy minimum instances per node,
     // then this split is invalid, return invalid information gain stats.
     if ((leftCount < metadata.minInstancesPerNode) ||
-        (rightCount < metadata.minInstancesPerNode)) {
+      (rightCount < metadata.minInstancesPerNode)) {
       return ImpurityStats.getInvalidImpurityStats(parentImpurityCalculator)
     }
 

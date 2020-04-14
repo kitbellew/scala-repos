@@ -75,7 +75,6 @@ class KeyEvent(override val delegate: jfxsi.KeyEvent)
 
   /**
     * The key code associated with the key in this key pressed or key released event.
-    *
     */
   def code: KeyCode = delegate.getCode
 

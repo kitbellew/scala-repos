@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ProgressBar Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ProgressBarSpec

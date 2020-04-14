@@ -487,8 +487,8 @@ private[spark] class CoarseMesosSchedulerBackend(
       // this application when the driver exits. There is currently not a great way to detect
       // this through Mesos, since the shuffle services are set up independently.
       if (state.equals(TaskState.RUNNING) &&
-          shuffleServiceEnabled &&
-          !slave.shuffleRegistered) {
+        shuffleServiceEnabled &&
+        !slave.shuffleRegistered) {
         assume(
           mesosExternalShuffleClient.isDefined,
           "External shuffle client was not instantiated even though shuffle service is enabled.")
@@ -561,7 +561,7 @@ private[spark] class CoarseMesosSchedulerBackend(
 
     // slaveIdsWithExecutors has no memory barrier, so this is eventually consistent
     while (numExecutors() > 0 &&
-           System.nanoTime() - startTime < shutdownTimeoutMS * 1000L * 1000L) {
+      System.nanoTime() - startTime < shutdownTimeoutMS * 1000L * 1000L) {
       Thread.sleep(100)
     }
 

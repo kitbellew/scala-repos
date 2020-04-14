@@ -36,8 +36,8 @@ class FieldFromDelayedInitInspection
             case td: ScTemplateDefinition => td
           }
           if (!classContainers.exists(c =>
-                c == delayedInitClass || c
-                  .isInheritor(delayedInitClass, deep = true)))
+              c == delayedInitClass || c
+                .isInheritor(delayedInitClass, deep = true)))
             holder.registerProblem(
               ref.nameId,
               "Field defined in DelayedInit is likely to be null")
@@ -53,10 +53,10 @@ class FieldFromDelayedInitInspection
               (_: ScPatternDefinition | _: ScVariableDefinition),
               ContainingClass(clazz @ (_: ScClass | _: ScObject))) =>
           if (srr.fromType.exists(
-                InspectionsUtil.conformsToTypeFromClass(
-                  _,
-                  "scala.DelayedInit",
-                  clazz.getProject))) Some(clazz)
+              InspectionsUtil.conformsToTypeFromClass(
+                _,
+                "scala.DelayedInit",
+                clazz.getProject))) Some(clazz)
           else None
         case _ => None
       }

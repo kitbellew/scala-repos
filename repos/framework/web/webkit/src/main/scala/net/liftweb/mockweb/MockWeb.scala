@@ -45,7 +45,6 @@ package net.liftweb {
       *   <li>statelessTest</li>
       *   <li>statefulRewrite</li>
       * </ul>
-      *
       */
     object MockWeb {
 
@@ -120,14 +119,14 @@ package net.liftweb {
         * object testVar extends SessionVar[String]("Empty")
         *
         * val testSession = testS("http://foo.com/test") {
-       testVar("Foo!")
-       S.session // returns the current session
-     }
-
-     // A second test
-     testS("http://foo.com/test2", session = testSession) {
-       testVar.is must_== "Foo!"
-     }
+        *       testVar("Foo!")
+        *       S.session // returns the current session
+        *     }
+        *
+        *     // A second test
+        *     testS("http://foo.com/test2", session = testSession) {
+        *       testVar.is must_== "Foo!"
+        *     }
         * </pre>
         *
         * @param url The url to use for this request. Can either be a
@@ -203,7 +202,6 @@ package net.liftweb {
         * for more details
         *
         * @param f The function to execute in the context of the emulated snippet
-        *
         */
       def withSnippet[T](name: String, attrs: MetaData = Null)(f: => T): T =
         S.withAttrs(attrs) {

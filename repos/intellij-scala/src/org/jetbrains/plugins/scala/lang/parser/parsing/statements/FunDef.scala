@@ -13,8 +13,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserPatcher
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 13.02.2008
-  */
+  * Date: 13.02.2008 */
 
 /*
  * FunDef ::= FunSig [':' Type] '=' Expr

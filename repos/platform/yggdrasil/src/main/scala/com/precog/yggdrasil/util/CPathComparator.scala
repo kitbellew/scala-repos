@@ -258,7 +258,9 @@ private[yggdrasil] final class HalfArrayCPathComparator[
     @spec(Boolean, Long, Double) B](
     lPath: CPath,
     lCol: HomogeneousArrayColumn[_],
-    rCol: Int => B)(implicit ma: Manifest[A], ho: HetOrder[A, B])
+    rCol: Int => B)(implicit
+    ma: Manifest[A],
+    ho: HetOrder[A, B])
     extends CPathComparator
     with ArrayCPathComparatorSupport {
 

@@ -8,8 +8,6 @@ import scala.reflect.ClassTag
   * breeze
   * 7/10/14
   * @author Gabriel Schubiner <gabeos@cs.washington.edu>
-  *
-  *
   */
 trait CanCreateZeros[+T, I] {
   def apply(d: I): T

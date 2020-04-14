@@ -303,8 +303,8 @@ class PlannerSuite extends SharedSQLContext {
   private def assertDistributionRequirementsAreSatisfied(
       outputPlan: SparkPlan): Unit = {
     if (outputPlan.children.length > 1
-        && outputPlan.requiredChildDistribution.toSet != Set(
-          UnspecifiedDistribution)) {
+      && outputPlan.requiredChildDistribution.toSet != Set(
+        UnspecifiedDistribution)) {
       val childPartitionings = outputPlan.children.map(_.outputPartitioning)
       if (!Partitioning.allCompatible(childPartitionings)) {
         fail(s"Partitionings are not compatible: $childPartitionings")

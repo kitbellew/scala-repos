@@ -41,11 +41,11 @@ class StringLiteralProcessor extends CopyPastePreProcessor {
     val e = file.findElementAt(offset)
 
     if (e.isInstanceOf[
-          PsiElement] && e.getLanguage == ScalaFileType.SCALA_LANGUAGE && offset > e.getTextOffset) {
+        PsiElement] && e.getLanguage == ScalaFileType.SCALA_LANGUAGE && offset > e.getTextOffset) {
       val elementType =
         if (e.getNode == null) null else e.getNode.getElementType
       if ((elementType == ScalaTokenTypes.tSTRING || elementType == ScalaTokenTypes.tCHAR)
-          && rawText != null && rawText.rawText != null) {
+        && rawText != null && rawText.rawText != null) {
         rawText.rawText
       } else if (elementType == ScalaTokenTypes.tSTRING) {
         LineTokenizer

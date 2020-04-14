@@ -34,21 +34,20 @@ object Acl {
   val AclsKey = "acls"
 
   /**
-    *
     * @param aclJson
     *
     * <p>
-      {
-        "version": 1,
-        "acls": [
-          {
-            "host":"host1",
-            "permissionType": "Deny",
-            "operation": "Read",
-            "principal": "User:alice"
-          }
-        ]
-      }
+    *      {
+    *        "version": 1,
+    *        "acls": [
+    *          {
+    *            "host":"host1",
+    *            "permissionType": "Deny",
+    *            "operation": "Read",
+    *            "principal": "User:alice"
+    *          }
+    *        ]
+    *      }
     * </p>
     *
     * @return

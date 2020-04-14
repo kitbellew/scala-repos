@@ -121,11 +121,11 @@ object NameTransformer {
               i += ops.code.length()
             }
             /* Handle the decoding of Unicode glyphs that are
-           * not valid Java/JVM identifiers */
+             * not valid Java/JVM identifiers */
           } else if ((len - i) >= 6 && // Check that there are enough characters left
-                     ch1 == 'u' &&
-                     ((Character.isDigit(ch2)) ||
-                     ('A' <= ch2 && ch2 <= 'F'))) {
+            ch1 == 'u' &&
+            ((Character.isDigit(ch2)) ||
+            ('A' <= ch2 && ch2 <= 'F'))) {
             /* Skip past "$u", next four should be hexadecimal */
             val hex = name.substring(i + 2, i + 6)
             try {
@@ -141,7 +141,7 @@ object NameTransformer {
             } catch {
               case _: NumberFormatException =>
               /* `hex` did not decode to a hexadecimal number, so
-             * do nothing. */
+               * do nothing. */
             }
           }
         }

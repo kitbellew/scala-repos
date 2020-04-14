@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
 import org.junit.runner.RunWith
 import org.scalatest.junit.JUnitRunner
 
-/**Tests for breeze.stats.mcmc.MetropolisHastings
+/** Tests for breeze.stats.mcmc.MetropolisHastings
   * Test for clip is currently located in "DenseVectorTest.scala"
   * @author stucchio
   * @date 3/13/14.

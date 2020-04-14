@@ -70,8 +70,8 @@ private[netty] class Dispatcher(nettyEnv: NettyRpcEnv) extends Logging {
         throw new IllegalStateException("RpcEnv has been stopped")
       }
       if (endpoints.putIfAbsent(
-            name,
-            new EndpointData(name, endpoint, endpointRef)) != null) {
+          name,
+          new EndpointData(name, endpoint, endpointRef)) != null) {
         throw new IllegalArgumentException(
           s"There is already an RpcEndpoint called $name")
       }

@@ -261,7 +261,6 @@ case class UnresolvedStar(target: Option[Seq[String]])
   * as follows:
   *  MultiAlias(stack_function, Seq(a, b))
   *
-
   * @param child the computation being performed
   * @param names the names to be associated with each output of computing [[child]].
   */
@@ -342,7 +341,6 @@ case class UnresolvedExtractValue(child: Expression, extraction: Expression)
   *
   * @param child The computation that is needs to be resolved during analysis.
   * @param aliasName The name if specified to be associated with the result of computing [[child]]
-  *
   */
 case class UnresolvedAlias(child: Expression, aliasName: Option[String] = None)
     extends UnaryExpression

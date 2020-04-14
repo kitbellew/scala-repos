@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Transform Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TransformSpec

@@ -128,8 +128,6 @@ class WriteAheadLogBackedBlockRDDSuite
     * It can also test if the partitions that were read from the log were again stored in
     * block manager.
     *
-    *
-    *
     * @param numPartitions Number of partitions in RDD
     * @param numPartitionsInBM Number of partitions to write to the BlockManager.
     *                          Partitions 0 to (numPartitionsInBM-1) will be written to BlockManager

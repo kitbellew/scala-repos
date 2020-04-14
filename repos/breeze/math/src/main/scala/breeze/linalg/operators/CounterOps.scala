@@ -325,7 +325,7 @@ trait CounterOps {
   class CanZipMapValuesCounter[K, V, RV: Zero: Semiring]
       extends CanZipMapValues[Counter[K, V], V, RV, Counter[K, RV]] {
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(from: Counter[K, V], from2: Counter[K, V], fn: (V, V) => RV) = {
       val result = Counter[K, RV]()
       for (k <- (from.keySet ++ from2.keySet)) {
@@ -342,7 +342,7 @@ trait CounterOps {
   class CanZipMapKeyValuesCounter[K, V, RV: Zero: Semiring]
       extends CanZipMapKeyValues[Counter[K, V], K, V, RV, Counter[K, RV]] {
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(from: Counter[K, V], from2: Counter[K, V], fn: (K, V, V) => RV) = {
       val result = Counter[K, RV]()
       for (k <- (from.keySet ++ from2.keySet)) {

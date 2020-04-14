@@ -120,7 +120,7 @@ class LanguageFeatureInspection
       val module = ModuleUtilCore.findModuleForPsiElement(e)
 
       if (module != null && module.scalaSdk.exists(
-            _.languageLevel >= Scala_2_10)) {
+          _.languageLevel >= Scala_2_10)) {
         Features.foreach(_.process(e, holder))
       }
     }

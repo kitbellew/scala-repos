@@ -38,7 +38,6 @@ class CustomRecoveryModeFactory(
   /**
     * PersistenceEngine defines how the persistent data(Information about worker, driver etc..)
     * is handled for recovery.
-    *
     */
   override def createPersistenceEngine(): PersistenceEngine =
     new CustomPersistenceEngine(serializer)

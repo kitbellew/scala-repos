@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * MediaPlayer Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class MediaPlayerSpec

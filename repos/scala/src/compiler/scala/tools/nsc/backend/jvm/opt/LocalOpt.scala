@@ -106,10 +106,8 @@ import scala.tools.nsc.backend.jvm.opt.BytecodeUtils._
   *     - store-load pairs (a `GOTO l; l: ...` is removed between store and load)
   *     - push-pop (`IFNULL l; l: ...` is replaced by `POP`)
   *
-  *
   * The following cleanup optimizations don't enable any upstream optimizations, so they can be
   * executed once at the end, when the above optimizations reach a fixpoint.
-  *
   *
   * empty local variable descriptors (removes unused variables from the local variable table)
   *   + enables downstream:
@@ -121,7 +119,6 @@ import scala.tools.nsc.backend.jvm.opt.BytecodeUtils._
   *
   * stale labels (eliminate labels that are not referenced, merge sequences of label definitions)
   *
-  *
   * Note on a method's maxLocals / maxStack: the backend only uses those values for running
   * Analyzers. The values can be conservative approximations: if an optimization removes code and
   * the maximal stack size is now smaller, the larger maxStack value will still work fine for
@@ -130,7 +127,6 @@ import scala.tools.nsc.backend.jvm.opt.BytecodeUtils._
   * To keep things simpler, we don't update the max values in every optimization:
   *   - we do it in `removeUnreachableCodeImpl`, because it's quite straightforward
   *   - maxLocals is updated in `compactLocalVariables`, which runs at the end of method optimizations
-  *
   *
   * Note on updating the call graph: whenever an optimization eliminates a callsite or a closure
   * instantiation, we eliminate the corresponding entry from the call graph.
@@ -634,8 +630,8 @@ class LocalOpt[BT <: BTypes](val btypes: BT) {
           val frame = typeAnalyzer.frameAt(ti)
           val valueTp = frame.getValue(frame.stackTop)
           if (valueTp.isReference && isSubType(
-                valueTp.getType.getDescriptor,
-                ti.desc)) {
+              valueTp.getType.getDescriptor,
+              ti.desc)) {
             toRemove += ti
           }
 
@@ -978,8 +974,8 @@ object LocalOptImpls {
           nextExecutableInstruction(jump, alsoKeep = jumpTargets) match {
             case Some(Goto(goto)) =>
               if (nextExecutableInstruction(
-                    goto,
-                    alsoKeep = Set(jump.label)) contains jump.label) {
+                  goto,
+                  alsoKeep = Set(jump.label)) contains jump.label) {
                 val newJump =
                   new JumpInsnNode(negateJumpOpcode(jump.getOpcode), goto.label)
                 method.instructions.set(jump, newJump)
@@ -1028,7 +1024,7 @@ object LocalOptImpls {
 
       // `.toList` because we're modifying the map while iterating over it
       for ((jumpInsn, inTryBlock) <- jumpInsns.toList
-           if jumpInsns.contains(jumpInsn) && isJumpNonJsr(jumpInsn)) {
+        if jumpInsns.contains(jumpInsn) && isJumpNonJsr(jumpInsn)) {
         var jumpRemoved = simplifyThenElseSameTarget(jumpInsn)
 
         if (!jumpRemoved) {

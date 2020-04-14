@@ -72,8 +72,8 @@ class ScalaUnusedImportPass(
           list add (HighlightInfo fromAnnotation annotation))
 
         if (ScalaApplicationSettings
-              .getInstance()
-              .OPTIMIZE_IMPORTS_ON_THE_FLY) {
+            .getInstance()
+            .OPTIMIZE_IMPORTS_ON_THE_FLY) {
           myOptimizeImportsRunnable =
             new ScalaImportOptimizer().processFile(file, progress)
         }
@@ -91,9 +91,8 @@ class ScalaUnusedImportPass(
 
     if (editor != null && !myHighlights.isEmpty) {
       if (myOptimizeImportsRunnable != null &&
-          ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY &&
-          ScalaUnusedImportPass.timeToOptimizeImports(
-            file) && file.isWritable) {
+        ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY &&
+        ScalaUnusedImportPass.timeToOptimizeImports(file) && file.isWritable) {
         ScalaUnusedImportPass.invokeOnTheFlyImportOptimizer(
           myOptimizeImportsRunnable,
           file)
@@ -161,7 +160,7 @@ object ScalaUnusedImportPass {
     val codeAnalyzer: DaemonCodeAnalyzerEx =
       DaemonCodeAnalyzerEx.getInstanceEx(file.getProject)
     if (file == null || !codeAnalyzer.isHighlightingAvailable(file) || !file
-          .isInstanceOf[ScalaFile]) return false
+        .isInstanceOf[ScalaFile]) return false
     if (!codeAnalyzer.isErrorAnalyzingFinished(file)) return false
     val errors: Boolean = containsErrorsPreventingOptimize(file)
     !errors && DaemonListeners.canChangeFileSilently(file)

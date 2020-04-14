@@ -244,7 +244,7 @@ object BytecodeUtils {
   def parametersSize(methodNode: MethodNode): Int = {
     (Type
       .getArgumentsAndReturnSizes(methodNode.desc) >> 2) - (if (isStaticMethod(
-                                                                  methodNode)) 1
+                                                                methodNode)) 1
                                                             else 0)
   }
 

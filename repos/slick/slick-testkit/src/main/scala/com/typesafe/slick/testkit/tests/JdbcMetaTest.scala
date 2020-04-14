@@ -98,6 +98,6 @@ class JdbcMetaTest extends AsyncTest[JdbcTestDB] {
         (Set("orders_xx", "users_xx") intersect newTables).isEmpty)
 
     } else Action.successful(())
-       */
+         */
       ))
 }

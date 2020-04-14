@@ -18,7 +18,7 @@ class SeqCoder(words: List[String]) {
     for ((digit, letters) <- m; letter <- letters) yield letter -> digit
 
   /** Maps a word to the digit string it represents,
-    * e.g. `Java` -> `5282`  */
+    * e.g. `Java` -> `5282` */
   private def wordCode(word: String): String = word.toUpperCase map charCode
 
   /** A map from digit strings to the words that represent
@@ -81,7 +81,7 @@ class ParCoder(words: List[String]) {
     for ((digit, letters) <- m; letter <- letters) yield letter -> digit
 
   /** Maps a word to the digit string it represents,
-    * e.g. `Java` -> `5282`  */
+    * e.g. `Java` -> `5282` */
   private def wordCode(word: String): String = word.toUpperCase map charCode
 
   /** A map from digit strings to the words that represent

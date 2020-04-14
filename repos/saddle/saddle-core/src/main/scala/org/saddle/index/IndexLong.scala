@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle.index
 
@@ -114,7 +114,7 @@ class IndexLong(keys: Vec[Long]) extends Index[Long] {
 
   def toArray: Array[Long] = keys.toArray
 
-  /**Default equality does an iterative, element-wise equality check of all values. */
+  /** Default equality does an iterative, element-wise equality check of all values. */
   override def equals(o: Any): Boolean = {
     o match {
       case rv: IndexInt =>

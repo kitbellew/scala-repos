@@ -36,7 +36,6 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.scene.control.DialogEvent]].
   */
 @RunWith(classOf[JUnitRunner])

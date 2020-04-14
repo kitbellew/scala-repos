@@ -102,7 +102,6 @@ import org.apache.spark.unsafe.types.UTF8String
   * NOTICE: HiveVarchar/HiveChar is not supported by catalyst, it will be simply considered as
   *  String type.
   *
-  *
   * 2. Hive ObjectInspector is a group of flexible APIs to inspect value in different data
   *  representation, and developers can extend those API as needed, so technically,
   *  object inspector supports arbitrary data type in java.
@@ -110,19 +109,19 @@ import org.apache.spark.unsafe.types.UTF8String
   * Fortunately, only few built-in Hive Object Inspectors are used in generic udf/udaf/udtf
   * evaluation.
   * 1) Primitive Types (PrimitiveObjectInspector & its sub classes)
-  {{{
-   public interface PrimitiveObjectInspector {
-     // Java Primitives (java.lang.Integer, java.lang.String etc.)
-     Object getPrimitiveJavaObject(Object o);
-     // Writables (hadoop.io.IntWritable, hadoop.io.Text etc.)
-     Object getPrimitiveWritableObject(Object o);
-     // ObjectInspector only inspect the `writable` always return true, we need to check it
-     // before invoking the methods above.
-     boolean preferWritable();
-     ...
-   }
-  }}}
-
+  *  {{{
+  *   public interface PrimitiveObjectInspector {
+  *     // Java Primitives (java.lang.Integer, java.lang.String etc.)
+  *     Object getPrimitiveJavaObject(Object o);
+  *     // Writables (hadoop.io.IntWritable, hadoop.io.Text etc.)
+  *     Object getPrimitiveWritableObject(Object o);
+  *     // ObjectInspector only inspect the `writable` always return true, we need to check it
+  *     // before invoking the methods above.
+  *     boolean preferWritable();
+  *     ...
+  *   }
+  *  }}}
+  *
   * 2) Complex Types:
   *   ListObjectInspector: inspects java array or [[java.util.List]]
   *   MapObjectInspector: inspects [[java.util.Map]]
@@ -135,11 +134,11 @@ import org.apache.spark.unsafe.types.UTF8String
   * constant value as its property, usually the value is created when the constant object inspector
   * constructed.
   * {{{
-   public interface ConstantObjectInspector extends ObjectInspector {
-      Object getWritableConstantValue();
-      ...
-    }
-  }}}
+  *   public interface ConstantObjectInspector extends ObjectInspector {
+  *      Object getWritableConstantValue();
+  *      ...
+  *    }
+  *  }}}
   * Hive provides 3 built-in constant object inspectors:
   * Primitive Object Inspectors:
   *     WritableConstantStringObjectInspector
@@ -163,13 +162,11 @@ import org.apache.spark.unsafe.types.UTF8String
   * Struct Object Inspector: Hive doesn't provide the built-in constant object inspector for Struct
   * Union Object Inspector: Hive doesn't provide the built-in constant object inspector for Union
   *
-  *
   * 3. This trait facilitates:
   *    Data Unwrapping: Hive Data => Catalyst Data (unwrap)
   *    Data Wrapping: Catalyst Data => Hive Data (wrap)
   *    Binding the Object Inspector for Catalyst Data (toInspector)
   *    Retrieving the Catalyst Data Type from Object Inspector (inspectorToDataType)
-  *
   *
   * 4. Future Improvement (TODO)
   *   This implementation is quite ugly and inefficient:

@@ -27,8 +27,6 @@ import scala.annotation.tailrec
   *  Here, `A` is the type of the sequence elements and `Repr` is the type of the sequence itself.
   *  Note that default implementations are provided via inheritance, but these
   *  should be overridden for performance.
-  *
-  *
   */
 trait LinearSeqOptimized[+A, +Repr <: LinearSeqOptimized[A, Repr]]
     extends LinearSeqLike[A, Repr] { self: Repr =>

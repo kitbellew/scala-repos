@@ -292,7 +292,7 @@ trait MethodSynthesis {
       def flagsMask: Long
 
       /** The flags that the derived symbol has in addition to those retained from
-        *  the original symbol*/
+        *  the original symbol */
       def flagsExtra: Long
 
       /** type completer for the synthetic member.

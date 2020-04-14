@@ -58,7 +58,7 @@ class ScalaChangeUtilSupport extends TreeCopyHandler {
     if (!element.isInstanceOf[ScalaPsiElement]) return null
     if (element.isInstanceOf[CompositeElement]) {
       if (element.getElementType == ScalaElementTypes.REFERENCE || element.getElementType == ScalaElementTypes.REFERENCE_EXPRESSION ||
-          element.getElementType == ScalaElementTypes.TYPE_PROJECTION) {
+        element.getElementType == ScalaElementTypes.TYPE_PROJECTION) {
         var ref = SourceTreeToPsiMap
           .treeElementToPsi(element)
           .asInstanceOf[ScReferenceElement]

@@ -110,7 +110,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         }
       } else {
         if (file.getExtension == "scala" && file.isValid && scope.contains(
-              file)) {
+            file)) {
           PsiManager.getInstance(project).findFile(file) match {
             case f: ScalaFile if !f.isScriptFile() => acc += file
             case _                                 => // do nothing
@@ -136,7 +136,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         true
       case (_, param: String) =>
         if (!ScaladocCommandLineState.generatedParamsWithoutArgs.contains(
-              param)) result += param
+            param)) result += param
         false
     }
 
@@ -318,7 +318,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
         for (param <- paramListSimple) {
           var paramEsc = param
           if (param.contains(" ") && !(param.startsWith("\"") && param.endsWith(
-                "\""))) {
+              "\""))) {
             paramEsc = "\"" + param + "\""
           }
 

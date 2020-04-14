@@ -63,7 +63,7 @@ trait WebSocketDirectives {
       subprotocol: Option[String]): Route =
     extractUpgradeToWebSocket { upgrade ⇒
       if (subprotocol.forall(sub ⇒
-            upgrade.requestedProtocols.exists(_ equalsIgnoreCase sub)))
+          upgrade.requestedProtocols.exists(_ equalsIgnoreCase sub)))
         complete(upgrade.handleMessages(handler, subprotocol))
       else
         reject(

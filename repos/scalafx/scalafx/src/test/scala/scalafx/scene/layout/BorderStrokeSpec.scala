@@ -37,7 +37,6 @@ import scalafx.scene.paint.Color
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.scene.layout.BorderStrokeSpec]].
   */
 @RunWith(classOf[JUnitRunner])

@@ -9,7 +9,6 @@ import org.jfree.chart.plot.DefaultDrawingSupplier
 import breeze.plot.Plot.Listener
 
 /**
-  *
   * @author dlwh, dramage
   */
 class Figure(
@@ -22,7 +21,7 @@ class Figure(
   private var width_ = 600
   private var height_ = 400
 
-  /**Selects the given subplot.  */
+  /** Selects the given subplot. */
   def subplot(i: Int) = selectPlot(i)
 
   def clearPlot(i: Int) {

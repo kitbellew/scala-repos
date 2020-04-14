@@ -23,7 +23,6 @@ import java.net.URLEncoder
   *
   * It's identified by the event type (class name) and id. An event
   * can have clones with different paths.
-  *
   */
 
 trait Event extends Serializable {

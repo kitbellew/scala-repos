@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TitledPane Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TitledPaneSpec

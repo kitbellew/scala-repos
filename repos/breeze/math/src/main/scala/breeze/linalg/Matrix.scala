@@ -28,7 +28,6 @@ import scala.annotation.unchecked.uncheckedVariance
 import breeze.stats.distributions.Rand
 
 /**
-  *
   * @author dlwh
   */
 trait MatrixLike[@spec(Double, Int, Float, Long) V, +Self <: Matrix[V]]

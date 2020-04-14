@@ -87,7 +87,6 @@ trait JSArtifacts {
 
   /**
     * Rewrites the incomming path with the actual script path
-    *
     */
   def pathRewriter: PartialFunction[List[String], List[String]] =
     new PartialFunction[List[String], List[String]] {

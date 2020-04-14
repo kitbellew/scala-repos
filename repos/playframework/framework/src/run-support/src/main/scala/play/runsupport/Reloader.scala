@@ -359,7 +359,7 @@ object Reloader {
         def getRootCause(t: Throwable): Throwable =
           if (t.getCause == null) t else getRootCause(t.getCause)
         if (getRootCause(
-              e).getClass.getName == "play.core.server.ServerListenException") {
+            e).getClass.getName == "play.core.server.ServerListenException") {
           throw new ServerStartException(e)
         }
         throw e
@@ -411,7 +411,6 @@ class Reloader(
     * trigger a reload of the app if something has changed.
     *
     * Since this communicates across classloaders, it must return only simple objects.
-    *
     *
     * @return Either
     * - Throwable - If something went wrong (eg, a compile error).

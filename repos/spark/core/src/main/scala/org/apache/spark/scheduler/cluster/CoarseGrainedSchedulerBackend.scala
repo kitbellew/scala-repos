@@ -419,7 +419,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
     * Reset the state of CoarseGrainedSchedulerBackend to the initial state. Currently it will only
     * be called in the yarn-client mode when AM re-registers after a failure, also dynamic
     * allocation is enabled.
-    * */
+    */
   protected def reset(): Unit =
     synchronized {
       if (Utils.isDynamicAllocationEnabled(conf)) {
@@ -474,7 +474,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
       return true
     }
     if ((System
-          .currentTimeMillis() - createTime) >= maxRegisteredWaitingTimeMs) {
+        .currentTimeMillis() - createTime) >= maxRegisteredWaitingTimeMs) {
       logInfo(
         "SchedulerBackend is ready for scheduling beginning after waiting " +
           s"maxRegisteredResourcesWaitingTime: $maxRegisteredWaitingTimeMs(ms)")

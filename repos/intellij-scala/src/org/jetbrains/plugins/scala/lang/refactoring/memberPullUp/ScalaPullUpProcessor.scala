@@ -49,7 +49,7 @@ class ScalaPullUpProcessor(
 
   /**
     * Should be invoked in write action
-    * */
+    */
   def moveMembersToBase() {
     val manager = targetClass.getManager
     val extendsBlock = targetClass.extendsBlock

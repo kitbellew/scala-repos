@@ -39,7 +39,6 @@ package play {
     * {{{
     * val application = Application(new File("."), this.getClass.getClassloader, None, Play.Mode.DEV)
     * }}}
-    *
     */
   package object api
 

@@ -6,9 +6,8 @@ import breeze.linalg._
 import breeze.interpolation._
 
 /**
-  *
   * @author chrismedrela
- **/
+  */
 
 class LinearInterpolatorTest extends FunSuite {
   test("basics") {

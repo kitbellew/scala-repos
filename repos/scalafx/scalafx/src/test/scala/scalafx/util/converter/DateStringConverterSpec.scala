@@ -36,8 +36,6 @@ import scalafx.Includes._
 
 /**
   * DateStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class DateStringConverterSpec

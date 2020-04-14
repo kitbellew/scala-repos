@@ -15,7 +15,6 @@ import scala.reflect.ClassTag
   * injection being used. End users are encouraged to use the facilities provided by the dependency injection framework
   * they are using directly, for example, if using Guice, use [[http://google.github.io/guice/api-docs/latest/javadoc/index.html?com/google/inject/Injector.html com.google.inject.Injector]]
   * instead of this.
-  *
   */
 trait Injector {
 

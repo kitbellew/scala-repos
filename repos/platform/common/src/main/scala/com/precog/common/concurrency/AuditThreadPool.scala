@@ -90,7 +90,7 @@ class AuditExecutor(
   }
 
   /**
-    Called by threads to determine if they should continue waiting when the queue has no work for them
+    *    Called by threads to determine if they should continue waiting when the queue has no work for them
     */
   private def shouldContinue: Boolean = {
     val currentCount = threadCount.get

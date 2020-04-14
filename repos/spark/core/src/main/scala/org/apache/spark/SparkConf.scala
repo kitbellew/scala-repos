@@ -63,7 +63,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   private[spark] def loadFromSystemProperties(silent: Boolean): SparkConf = {
     // Load any spark.* system properties
     for ((key, value) <- Utils.getSystemProperties
-         if key.startsWith("spark.")) {
+      if key.startsWith("spark.")) {
       set(key, value, silent)
     }
     this
@@ -191,8 +191,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
       entry: OptionalConfigEntry[T],
       value: T): SparkConf = {
     if (settings.putIfAbsent(
-          entry.key,
-          entry.rawStringConverter(value)) == null) {
+        entry.key,
+        entry.rawStringConverter(value)) == null) {
       logDeprecationWarning(entry.key)
     }
     this

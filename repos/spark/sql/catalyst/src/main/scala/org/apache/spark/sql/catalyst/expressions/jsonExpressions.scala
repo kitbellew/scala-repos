@@ -377,7 +377,7 @@ case class JsonTuple(children: Seq[Expression])
       TypeCheckResult.TypeCheckFailure(
         s"$prettyName requires at least two arguments")
     } else if (children.forall(child =>
-                 StringType.acceptsType(child.dataType))) {
+        StringType.acceptsType(child.dataType))) {
       TypeCheckResult.TypeCheckSuccess
     } else {
       TypeCheckResult.TypeCheckFailure(

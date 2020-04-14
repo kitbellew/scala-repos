@@ -116,7 +116,7 @@ object JsMacroImpl {
             case t @ TypeRef(_, _, args) =>
               import c.universe.definitions.TupleClass
               if (!TupleClass.seq.exists(tupleSym =>
-                    t.baseType(tupleSym) ne NoType)) Some(List(t))
+                  t.baseType(tupleSym) ne NoType)) Some(List(t))
               else if (t <:< typeOf[Product]) Some(args)
               else None
             case _ => None
@@ -248,7 +248,7 @@ object JsMacroImpl {
                 else if (tpe.typeConstructor <:< typeOf[Seq[_]].typeConstructor)
                   readsWritesHelper("seq")
                 else if (tpe.typeConstructor <:< typeOf[
-                           Map[_, _]].typeConstructor)
+                    Map[_, _]].typeConstructor)
                   readsWritesHelper("map")
                 else List(q"this.lazyStuff")
 

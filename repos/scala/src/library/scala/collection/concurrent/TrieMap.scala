@@ -201,9 +201,9 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 case null =>
                   if (sn.hc == hc && equal(sn.k, k, ct)) {
                     if (GCAS(
-                          cn,
-                          cn.updatedAt(pos, new SNode(k, v, hc), gen),
-                          ct)) Some(sn.v)
+                        cn,
+                        cn.updatedAt(pos, new SNode(k, v, hc), gen),
+                        ct)) Some(sn.v)
                     else null
                   } else {
                     val rn = if (cn.gen eq gen) cn else cn.renewed(gen, ct)
@@ -242,17 +242,17 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
                 case INode.KEY_PRESENT =>
                   if (sn.hc == hc && equal(sn.k, k, ct)) {
                     if (GCAS(
-                          cn,
-                          cn.updatedAt(pos, new SNode(k, v, hc), gen),
-                          ct)) Some(sn.v)
+                        cn,
+                        cn.updatedAt(pos, new SNode(k, v, hc), gen),
+                        ct)) Some(sn.v)
                     else null
                   } else None
                 case otherv =>
                   if (sn.hc == hc && equal(sn.k, k, ct) && sn.v == otherv) {
                     if (GCAS(
-                          cn,
-                          cn.updatedAt(pos, new SNode(k, v, hc), gen),
-                          ct)) Some(sn.v)
+                        cn,
+                        cn.updatedAt(pos, new SNode(k, v, hc), gen),
+                        ct)) Some(sn.v)
                     else null
                   } else None
               }
@@ -385,9 +385,9 @@ private[collection] final class INode[K, V](bn: MainNode[K, V], g: Gen)
               }
             case sn: SNode[K, V] =>
               if (sn.hc == hc && equal(
-                    sn.k,
-                    k,
-                    ct) && (v == null || sn.v == v)) {
+                  sn.k,
+                  k,
+                  ct) && (v == null || sn.v == v)) {
                 val ncn = cn.removedAt(pos, flag, gen).toContracted(lev)
                 if (GCAS(cn, ncn, ct)) Some(sn.v) else null
               } else None

@@ -9,8 +9,6 @@ import breeze.linalg.support._
 import breeze.util.Isomorphism
 
 /**
-  *
-  *
   * @author dlwh
   */
 trait MutablizingAdaptor[+VS[_, _], MVS[_, _], V, S] {

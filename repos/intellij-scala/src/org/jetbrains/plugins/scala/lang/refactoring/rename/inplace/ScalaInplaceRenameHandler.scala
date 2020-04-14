@@ -84,7 +84,7 @@ trait ScalaInplaceRenameHandler {
               case s: String if s == positive =>
                 val file = subst.getContainingFile.getVirtualFile
                 if (FileDocumentManager.getInstance.getDocument(
-                      file) == editor.getDocument) {
+                    file) == editor.getDocument) {
                   editor.getCaretModel.moveToOffset(subst.getTextOffset)
                   inplaceRename(subst)
                 } else {

@@ -5,6 +5,6 @@ object testCQ {
   /* ... but this one does?
   abstract class T;
   case class Thing2( name:String, contains:List[ T ]  ) extends T;
- */
+   */
 
 }

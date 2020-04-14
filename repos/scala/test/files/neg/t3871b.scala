@@ -1,24 +1,22 @@
 /**
-
-The protected modifier applies to class member definitions. Protected members of a class can be accessed from within
-
-  0a. the companion module of any of those classes
-
-A protected identifier x may be used as a member name in a selection r.x only
-if one of the following applies:
-  1a. The access is within the template defining the member, or,
-  if a qualification C is given,
-  1b. inside the package C, or
-  1c. the class C , or its companion module, or
-  2.  r is one of the reserved words this and super, or
-  3.  r’s type conforms to a type-instance of the class which contains the access.
-
-  4. A different form of qualification is protected[this]. A member M marked with this
-     modifier is called object-protected; it can be accessed only from within the object
-     in which it is defined. That is, a selection p.M is only legal if the prefix is this
-     or O.this, for some class O enclosing the reference. In addition, the restrictions
-     for unqualified protected apply.
-  */
+  * The protected modifier applies to class member definitions. Protected members of a class can be accessed from within
+  *
+  *  0a. the companion module of any of those classes
+  *
+  * A protected identifier x may be used as a member name in a selection r.x only
+  * if one of the following applies:
+  *  1a. The access is within the template defining the member, or,
+  *  if a qualification C is given,
+  *  1b. inside the package C, or
+  *  1c. the class C , or its companion module, or
+  *  2.  r is one of the reserved words this and super, or
+  *  3.  r’s type conforms to a type-instance of the class which contains the access.
+  *
+  *  4. A different form of qualification is protected[this]. A member M marked with this
+  *     modifier is called object-protected; it can be accessed only from within the object
+  *     in which it is defined. That is, a selection p.M is only legal if the prefix is this
+  *     or O.this, for some class O enclosing the reference. In addition, the restrictions
+  *     for unqualified protected apply. */
 
 object E {
   val e = new E

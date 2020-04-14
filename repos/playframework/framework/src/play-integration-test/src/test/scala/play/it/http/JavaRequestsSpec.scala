@@ -13,7 +13,6 @@ import play.mvc.Http
 import play.mvc.Http.{Context, RequestBody, RequestImpl}
 
 /**
-  *
   */
 class JavaRequestsSpec extends PlaySpecification with Mockito {
 

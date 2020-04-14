@@ -128,6 +128,5 @@ package com.twitter.finagle
   * an indefinite lease. Adhering to the lease is optional, but the server may
   * reject requests or provide degraded service should the lease expire. This is
   * used by servers to implement features like garbage collection avoidance.
-  *
   */
 package object mux

@@ -17,7 +17,6 @@ package breeze.math
  */
 
 /**
-  *
   * @author dlwh
   */
 trait Semiring[@specialized(Int, Short, Long, Float, Double) V]

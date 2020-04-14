@@ -13,7 +13,7 @@ object HelloWorld extends js.JSApp {
     import js.DynamicImplicits.truthValue
 
     if (js.Dynamic.global.document &&
-        js.Dynamic.global.document.getElementById("playground")) {
+      js.Dynamic.global.document.getElementById("playground")) {
       sayHelloFromDOM()
       sayHelloFromTypedDOM()
       sayHelloFromJQuery()

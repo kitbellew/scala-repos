@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * WebEngine Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class WebEngineSpec

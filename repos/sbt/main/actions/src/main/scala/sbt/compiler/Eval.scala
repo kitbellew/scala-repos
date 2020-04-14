@@ -322,7 +322,7 @@ final class Eval(
       }
   }
 
-  /** Tree traverser that obtains the names of vals in a top-level module whose type is a subtype of one of `types`.*/
+  /** Tree traverser that obtains the names of vals in a top-level module whose type is a subtype of one of `types`. */
   private[this] final class ValExtractor(tpes: Set[String]) extends Traverser {
     private[this] var vals = List[String]()
     def getVals(t: Tree): List[String] = { vals = Nil; traverse(t); vals }
@@ -465,13 +465,13 @@ final class Eval(
 
   private[this] trait EvalType[T] {
 
-    /** Extracts additional information after the compilation unit is evaluated.*/
+    /** Extracts additional information after the compilation unit is evaluated. */
     def extra(run: Run, unit: CompilationUnit): T
 
-    /** Deserializes the extra information for unchanged inputs from a cache file.*/
+    /** Deserializes the extra information for unchanged inputs from a cache file. */
     def read(file: File): T
 
-    /** Serializes the extra information to a cache file, where it can be `read` back if inputs haven't changed.*/
+    /** Serializes the extra information to a cache file, where it can be `read` back if inputs haven't changed. */
     def write(value: T, file: File): Unit
 
     /**
@@ -481,7 +481,7 @@ final class Eval(
       */
     def makeUnit: CompilationUnit
 
-    /** If true, all top-level symbols from this evaluation will be unlinked.*/
+    /** If true, all top-level symbols from this evaluation will be unlinked. */
     def unlink: Boolean
 
     /**
@@ -608,7 +608,7 @@ private[sbt] object Eval {
     value.asInstanceOf[T]
   }
 
-  /** Gets the top-level module `moduleName` from the provided class `loader`.  The module name should not include the trailing `$`.*/
+  /** Gets the top-level module `moduleName` from the provided class `loader`.  The module name should not include the trailing `$`. */
   def getModule(moduleName: String, loader: ClassLoader): Any = {
     val clazz = Class.forName(moduleName + "$", true, loader)
     clazz.getField("MODULE$").get(null)

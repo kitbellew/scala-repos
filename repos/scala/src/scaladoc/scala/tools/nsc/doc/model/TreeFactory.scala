@@ -11,7 +11,6 @@ import scala.reflect.internal.util.{RangePosition, SourceFile}
   * 2- fill references to create hyperLinks later in html.pageTemplate
   *
   * It is applied in ModelFactory => makeTree
-  *
   */
 
 trait TreeFactory { thisTreeFactory: ModelFactory with TreeFactory =>

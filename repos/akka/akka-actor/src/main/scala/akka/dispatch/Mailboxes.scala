@@ -167,7 +167,7 @@ private[akka] class Mailboxes(
 
     // TODO remove in 2.3
     if (!hasMailboxType && !mailboxSizeWarningIssued && dispatcherConfig
-          .hasPath("mailbox-size")) {
+        .hasPath("mailbox-size")) {
       eventStream.publish(
         Warning(
           "mailboxes",
@@ -183,7 +183,7 @@ private[akka] class Mailboxes(
           s"produced message queue type [$mqType] does not fulfill requirement for dispatcher [$id]. " +
             s"Must be a subclass of [$mailboxRequirement].")
       if (hasRequiredType(actorClass) && !actorRequirement.isAssignableFrom(
-            mqType))
+          mqType))
         throw new IllegalArgumentException(
           s"produced message queue type [$mqType] does not fulfill requirement for actor class [$actorClass]. " +
             s"Must be a subclass of [$actorRequirement].")

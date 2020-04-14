@@ -48,7 +48,7 @@ class EmptyParenMethodAccessedAsParameterlessInspection
           }
         case _: ScMethodCall | _: ScInfixExpr | _: ScPrefixExpr |
             _: ScUnderscoreSection => // okay
-        case _                     => check(e, holder, e.getType(TypingContext.empty))
+        case _ => check(e, holder, e.getType(TypingContext.empty))
       }
   }
 

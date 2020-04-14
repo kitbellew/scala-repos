@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * WorkerStateEvent Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class WorkerStateEventSpec

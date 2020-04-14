@@ -264,7 +264,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
       }
 
     if (this.isOpaque || uri.isOpaque ||
-        this._scheme != uri._scheme || !authoritiesEqual) uri
+      this._scheme != uri._scheme || !authoritiesEqual) uri
     else {
       val thisN = this.normalize()
       val uriN = uri.normalize()
@@ -289,7 +289,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
   def resolve(uri: URI): URI = {
     if (uri.isAbsolute() || this.isOpaque()) uri
     else if (uri._scheme.isEmpty && uri._authority.isEmpty &&
-             uri._path.get == "" && uri._query.isEmpty)
+      uri._path.get == "" && uri._query.isEmpty)
       // This is a special case for URIs like: "#foo". This allows to
       // just change the fragment in the current document.
       new URI(

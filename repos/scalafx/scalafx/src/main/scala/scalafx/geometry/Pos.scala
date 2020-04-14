@@ -119,6 +119,6 @@ sealed case class Pos(override val delegate: jfxg.Pos)
   /** Returns the horizontal positioning/alignment. */
   def hpos: HPos = delegate.getHpos
 
-  /** Returns the vertical positioning/alignment. **/
+  /** Returns the vertical positioning/alignment. * */
   def vpos: VPos = delegate.getVpos
 }

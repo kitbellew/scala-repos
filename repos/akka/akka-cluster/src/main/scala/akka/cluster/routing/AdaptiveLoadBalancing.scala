@@ -72,8 +72,8 @@ final case class AdaptiveLoadBalancingRoutingLogic(
         metricsSelector.weights(event.nodeMetrics)))
     // retry when CAS failure
     if (!weightedRouteesRef.compareAndSet(
-          oldValue,
-          (routees, event.nodeMetrics, weightedRoutees)))
+        oldValue,
+        (routees, event.nodeMetrics, weightedRoutees)))
       metricsChanged(event)
   }
 

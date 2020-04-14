@@ -42,7 +42,6 @@ import org.apache.spark.streaming.{Seconds, StreamingContext}
   *
   * As you add text files to `trainingDir` the model will continuously update.
   * Anytime you add text files to `testDir`, you'll see predictions from the current model.
-  *
   */
 object StreamingLogisticRegression {
 

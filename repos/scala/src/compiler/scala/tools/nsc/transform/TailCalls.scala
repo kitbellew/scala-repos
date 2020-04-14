@@ -326,7 +326,7 @@ abstract class TailCalls extends Transform {
                */
               if (newCtx.isMandatory) {
                 for (t @ Apply(fn, _) <- newRHS;
-                     if fn.symbol == newCtx.method) {
+                  if fn.symbol == newCtx.method) {
                   failPositions(newCtx) = t.pos
                   tailrecFailure(newCtx)
                 }
@@ -528,7 +528,7 @@ abstract class TailCalls extends Transform {
 
         case Apply(_, _) | EmptyTree | Super(_, _) | This(_) | Select(_, _) |
             Ident(_) | Literal(_) | Function(_, _) | TypeTree() =>
-        case _                                                  => super.traverse(tree)
+        case _ => super.traverse(tree)
       }
   }
 }

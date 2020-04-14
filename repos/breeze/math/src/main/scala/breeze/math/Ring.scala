@@ -18,7 +18,6 @@ import breeze.linalg
  limitations under the License.
  */
 /**
-  *
   * @author dlwh
   */
 

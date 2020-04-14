@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TabPane Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TabPaneSpec

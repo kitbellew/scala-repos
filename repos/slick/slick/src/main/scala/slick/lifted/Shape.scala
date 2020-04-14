@@ -410,7 +410,7 @@ object ShapedValue {
     }.toIndexedSeq
     val (f, g) =
       if (uTag.tpe <:< c
-            .typeOf[slick.collection.heterogeneous.HList]) { // Map from HList
+          .typeOf[slick.collection.heterogeneous.HList]) { // Map from HList
         val rTypeAsHList = fields.foldRight[Tree](
           tq"_root_.slick.collection.heterogeneous.HNil.type") {
           case ((_, t, _), z) =>
@@ -443,7 +443,7 @@ object ShapedValue {
       "Fast Path of (" + fields
         .map(_._2)
         .mkString(", ") + ").mapTo[" + rTag.tpe + "]")
-    val fpChildren = fields.map { case (_, t, n)     => q"val $n = next[$t]" }
+    val fpChildren = fields.map { case (_, t, n) => q"val $n = next[$t]" }
     val fpReadChildren = fields.map { case (_, _, n) => q"$n.read(r)" }
     val fpSetChildren = fields.map {
       case (fn, _, n) => q"$n.set(value.$fn, pp)"

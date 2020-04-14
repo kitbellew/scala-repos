@@ -248,7 +248,7 @@ private[akka] object BalancingDispatcherConfigurator {
       "mailbox-requirement = akka.dispatch.MultipleConsumerSemantics")
   def amendConfig(config: Config): Config =
     if (config.getString(
-          "mailbox-requirement") != Mailboxes.NoMailboxRequirement) config
+        "mailbox-requirement") != Mailboxes.NoMailboxRequirement) config
     else defaultRequirement.withFallback(config)
 }
 
@@ -276,14 +276,14 @@ class BalancingDispatcherConfigurator(
       if (config.hasPath("mailbox")) {
         val mt = mailboxes.lookup(config.getString("mailbox"))
         if (!requirement.isAssignableFrom(
-              mailboxes.getProducedMessageQueueType(mt)))
+            mailboxes.getProducedMessageQueueType(mt)))
           throw new IllegalArgumentException(
             s"BalancingDispatcher [$id] has 'mailbox' [${mt.getClass}] which is incompatible with 'mailbox-requirement' [$requirement]")
         mt
       } else if (config.hasPath("mailbox-type")) {
         val mt = mailboxes.lookup(id)
         if (!requirement.isAssignableFrom(
-              mailboxes.getProducedMessageQueueType(mt)))
+            mailboxes.getProducedMessageQueueType(mt)))
           throw new IllegalArgumentException(
             s"BalancingDispatcher [$id] has 'mailbox-type' [${mt.getClass}] which is incompatible with 'mailbox-requirement' [$requirement]")
         mt

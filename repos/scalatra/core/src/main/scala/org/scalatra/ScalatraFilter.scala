@@ -15,7 +15,6 @@ import scala.util.DynamicVariable
   *     delegate unmatched requests.  This is very useful when migrating
   *     legacy applications one page or resource at a time.
   *
-  *
   * Unlike a ScalatraServlet, does not send 404 or 405 errors on non-matching
   * routes.  Instead, it delegates to the filter chain.
   *

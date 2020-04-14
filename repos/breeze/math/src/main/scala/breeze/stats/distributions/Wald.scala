@@ -9,7 +9,7 @@ import breeze.numerics.log
   * http://en.wikipedia.org/wiki/Inverse_Gaussian_distribution
   *
   * @author dlwh
- **/
+  */
 case class Wald(mean: Double, shape: Double)(implicit rand: RandBasis = Rand)
     extends ContinuousDistr[Double]
     with Moments[Double, Double] {

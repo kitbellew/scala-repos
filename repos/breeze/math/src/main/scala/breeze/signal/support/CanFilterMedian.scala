@@ -8,7 +8,7 @@ import breeze.macros.expand
 import scala.collection.mutable
 import breeze.numerics.isOdd
 
-/**A relatively optimized median filter, using TreeSet
+/** A relatively optimized median filter, using TreeSet
   * @author ktakagaki
   * @date 2/28/14.
   */
@@ -82,7 +82,7 @@ object CanFilterMedian {
                 halfWindow)
               //if the new value and old value lie on different sides of the current Median,
               if ((nowObsoleteWindowValue >= currentMedian || newWindowValue >= currentMedian)
-                  && (nowObsoleteWindowValue <= currentMedian || newWindowValue <= currentMedian)) {
+                && (nowObsoleteWindowValue <= currentMedian || newWindowValue <= currentMedian)) {
                 //then the median needs to be recalculated
                 currentMedian = quickSelectImpl(tempDataExtract, halfWindow)
               }

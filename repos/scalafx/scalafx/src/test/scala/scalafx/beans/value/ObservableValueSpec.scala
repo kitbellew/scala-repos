@@ -42,8 +42,6 @@ import scalafx.beans.property.DoubleProperty
 
 /**
   * ObservableValue Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ObservableValueSpec extends FlatSpec with BeforeAndAfterEach {

@@ -136,7 +136,7 @@ object Semigroup {
       F.lift2[M, M, M]((m1, m2) => M.append(m1, m2))(x, y)
   }
 
-  /**A semigroup for sequencing Apply effects. */
+  /** A semigroup for sequencing Apply effects. */
   def liftSemigroup[F[_], M](implicit
       F0: Apply[F],
       M0: Semigroup[M]): Semigroup[F[M]] =

@@ -8,7 +8,6 @@ package templates
 /**
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
-  * Time: 9:24:12
-  */
+  * Time: 9:24:12 */
 
 trait ScTraitParents extends ScTemplateParents {}

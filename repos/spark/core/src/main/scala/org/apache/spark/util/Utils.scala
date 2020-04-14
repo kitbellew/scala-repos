@@ -275,7 +275,7 @@ private[spark] object Utils extends Logging {
     var count = 0L
     tryWithSafeFinally {
       if (in.isInstanceOf[FileInputStream] && out.isInstanceOf[FileOutputStream]
-          && transferToEnabled) {
+        && transferToEnabled) {
         // When both streams are File stream, use transferTo to improve copy performance.
         val inChannel = in.asInstanceOf[FileInputStream].getChannel()
         val outChannel = out.asInstanceOf[FileOutputStream].getChannel()
@@ -759,7 +759,7 @@ private[spark] object Utils extends Logging {
     } else if (conf.getenv("SPARK_LOCAL_DIRS") != null) {
       conf.getenv("SPARK_LOCAL_DIRS").split(",")
     } else if (conf.getenv(
-                 "MESOS_DIRECTORY") != null && !shuffleServiceEnabled) {
+        "MESOS_DIRECTORY") != null && !shuffleServiceEnabled) {
       // Mesos already creates a directory per Mesos task. Spark should use that directory
       // instead so all temporary files are automatically cleaned up when the Mesos task ends.
       // Note that we don't want this if the shuffle service is enabled because we want to
@@ -1429,7 +1429,7 @@ private[spark] object Utils extends Logging {
       // frames. This is intended to ensure that we don't crash in these situations by
       // ignoring any frames that we can't examine.
       if (ste != null && ste.getMethodName != null
-          && !ste.getMethodName.contains("getStackTrace")) {
+        && !ste.getMethodName.contains("getStackTrace")) {
         if (insideSpark) {
           if (skipClass(ste.getClassName)) {
             lastSparkMethod = if (ste.getMethodName == "<init>") {
@@ -2299,12 +2299,12 @@ private[spark] object Utils extends Logging {
       val host = uri.getHost
       val port = uri.getPort
       if (uri.getScheme != "spark" ||
-          host == null ||
-          port < 0 ||
-          (uri.getPath != null && !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
-          uri.getFragment != null ||
-          uri.getQuery != null ||
-          uri.getUserInfo != null) {
+        host == null ||
+        port < 0 ||
+        (uri.getPath != null && !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
+        uri.getFragment != null ||
+        uri.getQuery != null ||
+        uri.getUserInfo != null) {
         throw new SparkException("Invalid master URL: " + sparkUrl)
       }
       (host, port)
@@ -2375,7 +2375,6 @@ private[spark] object Utils extends Logging {
   }
 
   /**
-    *
     * @return whether it is local mode
     */
   def isLocalMaster(conf: SparkConf): Boolean = {

@@ -3,8 +3,7 @@ package lang
 package parser
 
 /**
-  * @author ilyas
-  */
+  * @author ilyas */
 
 object ErrMsg {
   def apply(msg: String) = {

@@ -104,7 +104,7 @@ class ScalaBlock(
         var i = getSubBlocks().size() - newChildIndex
         val elem = b.lastExpr.get.getNode.getTreePrev
         if (elem.getElementType != TokenType.WHITE_SPACE || !elem.getText
-              .contains("\n")) i = 0
+            .contains("\n")) i = 0
         val indent = i + (if (!braceShifted) 1 else 0)
         new ChildAttributes(Indent.getSpaceIndent(indent * indentSize), null)
       case _: ScBlockExpr | _: ScEarlyDefinitions | _: ScTemplateBody |
@@ -113,14 +113,12 @@ class ScalaBlock(
         new ChildAttributes(
           if (braceShifted) Indent.getNoneIndent
           else if (mySubBlocks != null && mySubBlocks.size >= newChildIndex &&
-                   mySubBlocks
-                     .get(newChildIndex - 1)
-                     .isInstanceOf[ScalaBlock] &&
-                   mySubBlocks
-                     .get(newChildIndex - 1)
-                     .asInstanceOf[ScalaBlock]
-                     .getNode
-                     .getElementType == ScalaElementTypes.CASE_CLAUSES)
+            mySubBlocks.get(newChildIndex - 1).isInstanceOf[ScalaBlock] &&
+            mySubBlocks
+              .get(newChildIndex - 1)
+              .asInstanceOf[ScalaBlock]
+              .getNode
+              .getElementType == ScalaElementTypes.CASE_CLAUSES)
             Indent.getSpaceIndent(2 * indentSize)
           else
             Indent.getNormalIndent,
@@ -137,8 +135,8 @@ class ScalaBlock(
         val grandParent = parent.getParent
         new ChildAttributes(
           if (grandParent != null && (grandParent
-                .isInstanceOf[ScCaseClause] || grandParent
-                .isInstanceOf[ScFunctionExpr])) Indent.getNormalIndent
+              .isInstanceOf[ScCaseClause] || grandParent
+              .isInstanceOf[ScFunctionExpr])) Indent.getNormalIndent
           else Indent.getNoneIndent,
           null)
       case _: ScIfStmt =>
@@ -226,8 +224,8 @@ class ScalaBlock(
       return true
     var lastChild = node.getLastChildNode
     while (lastChild != null &&
-           (lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild.getPsi
-             .isInstanceOf[PsiComment])) {
+      (lastChild.getPsi.isInstanceOf[PsiWhiteSpace] || lastChild.getPsi
+        .isInstanceOf[PsiComment])) {
       lastChild = lastChild.getTreePrev
     }
     if (lastChild == null) {

@@ -36,12 +36,12 @@ class PageRank(args: Args) extends Job(args) {
   //initial rank (default to 1.0 if you are starting from nothing)
   initialize('src, 'dst, 'rank)
   /*
-     * This algorithm works by having two types of rows that have the same column structure.
-     * the node -> list(neighbors), and node -> individual neighbor.
-     * We distinguish these two types with an id which nodes if this is a NODESET or an EDGE.
-     * The first step is to append that value.  We also need to have a column for the degree.
-     * It doesn't matter what the initial degree is, we recompute below
-     */
+   * This algorithm works by having two types of rows that have the same column structure.
+   * the node -> list(neighbors), and node -> individual neighbor.
+   * We distinguish these two types with an id which nodes if this is a NODESET or an EDGE.
+   * The first step is to append that value.  We also need to have a column for the degree.
+   * It doesn't matter what the initial degree is, we recompute below
+   */
     .map(() -> ('rowtype, 'd_src)) { (u: Unit) => (NODESET, -1) }
     .thenDo(doPageRank(STEPS) _)
     .thenDo(computeError _)

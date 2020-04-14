@@ -29,7 +29,6 @@ import org.apache.spark.internal.Logging
   * Extra functions available on RDDs of (key, value) pairs to create a Hadoop SequenceFile,
   * through an implicit conversion. Note that this can't be part of PairRDDFunctions because
   * we need more implicit parameters to convert our keys and values to Writable.
-  *
   */
 class SequenceFileRDDFunctions[
     K <% Writable: ClassTag,

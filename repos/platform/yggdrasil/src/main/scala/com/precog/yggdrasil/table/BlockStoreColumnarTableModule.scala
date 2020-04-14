@@ -174,7 +174,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
           val comparatorMatrix = Array.ofDim[RowComparator](size, size)
 
           for (Cell(i, _, s) <- initialCells; Cell(i0, _, s0) <- initialCells
-               if i != i0) {
+            if i != i0) {
             comparatorMatrix(i)(i0) = Slice.rowComparatorFor(s, s0)(keyf)
           }
 
@@ -210,8 +210,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
         if (queue.isEmpty) {
           cells
         } else if (cells.isEmpty || cellMatrix.compare(
-                     queue.head,
-                     cells.head) == EQ) {
+            queue.head,
+            cells.head) == EQ) {
           dequeueEqual(queue, cellMatrix, queue.dequeue() :: cells)
         } else {
           cells

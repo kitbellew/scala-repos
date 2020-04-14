@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * TreeItem Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TreeItemSpec[T <: AnyRef]

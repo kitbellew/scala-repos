@@ -967,16 +967,16 @@ object Conformance {
           val args = p2.typeArgs
           val des = p2.designator
           if (args.length == 1 && (ScType.extractClass(des) match {
-                case Some(q) => q.qualifiedName == "scala.Array"
-                case _       => false
-              })) {
+              case Some(q) => q.qualifiedName == "scala.Array"
+              case _       => false
+            })) {
             val arg = a1.arg
             val argsPair = (arg, args(0))
             argsPair match {
               case (ScAbstractType(tpt, lower, upper), r) =>
                 val right =
                   if (tpt.args.length > 0 && !r
-                        .isInstanceOf[ScParameterizedType])
+                      .isInstanceOf[ScParameterizedType])
                     ScParameterizedType(r, tpt.args)
                   else r
                 if (!upper.equiv(Any)) {
@@ -1008,7 +1008,7 @@ object Conformance {
               case (l, ScAbstractType(tpt, lower, upper)) =>
                 val left =
                   if (tpt.args.length > 0 && !l
-                        .isInstanceOf[ScParameterizedType])
+                      .isInstanceOf[ScParameterizedType])
                     ScParameterizedType(l, tpt.args)
                   else l
                 if (!upper.equiv(Any)) {
@@ -1273,16 +1273,16 @@ object Conformance {
           val args = p.typeArgs
           val des = p.designator
           if (args.length == 1 && (ScType.extractClass(des) match {
-                case Some(q) => q.qualifiedName == "scala.Array"
-                case _       => false
-              })) {
+              case Some(q) => q.qualifiedName == "scala.Array"
+              case _       => false
+            })) {
             val arg = r.asInstanceOf[JavaArrayType].arg
             val argsPair = (arg, args(0))
             argsPair match {
               case (ScAbstractType(tpt, lower, upper), r) =>
                 val right =
                   if (tpt.args.length > 0 && !r
-                        .isInstanceOf[ScParameterizedType])
+                      .isInstanceOf[ScParameterizedType])
                     ScParameterizedType(r, tpt.args)
                   else r
                 if (!upper.equiv(Any)) {
@@ -1314,7 +1314,7 @@ object Conformance {
               case (l, ScAbstractType(tpt, lower, upper)) =>
                 val left =
                   if (tpt.args.length > 0 && !l
-                        .isInstanceOf[ScParameterizedType])
+                      .isInstanceOf[ScParameterizedType])
                     ScParameterizedType(l, tpt.args)
                   else l
                 if (!upper.equiv(Any)) {

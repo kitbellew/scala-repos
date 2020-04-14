@@ -83,7 +83,7 @@ class SparkILoop(in0: Option[BufferedReader], out: JPrintWriter)
   private val blockedCommands =
     Set("implicits", "javap", "power", "type", "kind")
 
-  /** Standard commands **/
+  /** Standard commands * */
   lazy val sparkStandardCommands: List[SparkILoop.this.LoopCommand] =
     standardCommands.filter(cmd => !blockedCommands(cmd.name))
 

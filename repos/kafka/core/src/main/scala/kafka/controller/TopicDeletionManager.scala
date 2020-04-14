@@ -238,7 +238,7 @@ class TopicDeletionManager(
   private def awaitTopicDeletionNotification() {
     inLock(deleteLock) {
       while (deleteTopicsThread.isRunning.get() && !deleteTopicStateChanged
-               .compareAndSet(true, false)) {
+          .compareAndSet(true, false)) {
         debug("Waiting for signal to start or continue topic deletion")
         deleteTopicsCond.await()
       }
@@ -289,7 +289,7 @@ class TopicDeletionManager(
   /**
     * If the topic is queued for deletion but deletion is not currently under progress, then deletion is retried for that topic
     * To ensure a successful retry, reset states for respective replicas from ReplicaDeletionIneligible to OfflineReplica state
-    *@param topic Topic for which deletion should be retried
+    * @param topic Topic for which deletion should be retried
     */
   private def markTopicForDeletionRetry(topic: String) {
     // reset replica states from ReplicaDeletionIneligible to OfflineReplica
@@ -366,7 +366,7 @@ class TopicDeletionManager(
     * 1. Move all dead replicas directly to ReplicaDeletionIneligible state. Also mark the respective topics ineligible
     *    for deletion if some replicas are dead since it won't complete successfully anyway
     * 2. Move all alive replicas to ReplicaDeletionStarted state so they can be deleted successfully
-    *@param replicasForTopicsToBeDeleted
+    * @param replicasForTopicsToBeDeleted
     */
   private def startReplicaDeletion(
       replicasForTopicsToBeDeleted: Set[PartitionAndReplica]) {
@@ -475,13 +475,13 @@ class TopicDeletionManager(
         topicsQueuedForDeletion.foreach { topic =>
           // if all replicas are marked as deleted successfully, then topic deletion is done
           if (controller.replicaStateMachine.areAllReplicasForTopicDeleted(
-                topic)) {
+              topic)) {
             // clear up all state for this topic from controller cache and zookeeper
             completeDeleteTopic(topic)
             info("Deletion of topic %s successfully completed".format(topic))
           } else {
             if (controller.replicaStateMachine
-                  .isAtLeastOneReplicaInDeletionStartedState(topic)) {
+                .isAtLeastOneReplicaInDeletionStartedState(topic)) {
               // ignore since topic deletion is in progress
               val replicasInDeletionStartedState =
                 controller.replicaStateMachine
@@ -500,8 +500,8 @@ class TopicDeletionManager(
               // TopicDeletionSuccessful. That means, that either given topic haven't initiated deletion
               // or there is at least one failed replica (which means topic deletion should be retried).
               if (controller.replicaStateMachine.isAnyReplicaInState(
-                    topic,
-                    ReplicaDeletionIneligible)) {
+                  topic,
+                  ReplicaDeletionIneligible)) {
                 // mark topic for deletion retry
                 markTopicForDeletionRetry(topic)
               }

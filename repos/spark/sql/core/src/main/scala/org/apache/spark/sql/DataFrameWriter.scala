@@ -344,9 +344,9 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
 
       // partitionBy columns cannot be used in bucketBy
       if (normalizedParCols.nonEmpty &&
-          normalizedBucketColNames.get.toSet
-            .intersect(normalizedParCols.get.toSet)
-            .nonEmpty) {
+        normalizedBucketColNames.get.toSet
+          .intersect(normalizedParCols.get.toSet)
+          .nonEmpty) {
         throw new AnalysisException(
           s"bucketBy columns '${bucketColumnNames.get.mkString(", ")}' should not be part of " +
             s"partitionBy columns '${partitioningColumns.get.mkString(", ")}'")

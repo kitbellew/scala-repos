@@ -113,7 +113,7 @@ class ScUnderscoreSectionImpl(node: ASTNode)
             var forEqualsParamLength: Boolean =
               false //this is for working completion
             for (tp <- expr.expectedTypes(fromUnderscore = false)
-                 if result != None) {
+              if result != None) {
 
               def processFunctionType(params: Seq[ScType]) {
                 if (result != null) {

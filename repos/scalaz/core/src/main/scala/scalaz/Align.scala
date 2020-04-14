@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /**
-  *
   */
 ////
 trait Align[F[_]] extends Functor[F] { self =>

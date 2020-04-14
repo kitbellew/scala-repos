@@ -52,7 +52,6 @@ object EventHandler {}
 trait EventHandlerDelegate {
 
   /**
-    *
     */
   type EventHandled = {
     // Registers an event handler to this type.

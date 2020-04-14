@@ -276,18 +276,18 @@ class ScImportStmtImpl private (
                   case (cl: PsiClass, processor: BaseProcessor)
                       if !cl.isInstanceOf[ScTemplateDefinition] =>
                     if (!processor.processType(
-                          new ScDesignatorType(cl, true),
-                          place,
-                          newState)) return false
+                        new ScDesignatorType(cl, true),
+                        place,
+                        newState)) return false
                   case (_, processor: BaseProcessor) if refType.isDefined =>
                     if (!processor.processType(refType.get, place, newState))
                       return false
                   case _ =>
                     if (!elem.processDeclarations(
-                          processor,
-                          newState,
-                          this,
-                          place)) return false
+                        processor,
+                        newState,
+                        this,
+                        place)) return false
                 }
               } else if (!processor.execute(elem, newState)) return false
             case Some(set) =>
@@ -351,8 +351,8 @@ class ScImportStmtImpl private (
                           element: PsiElement,
                           state: ResolveState): Boolean = {
                         if (shadowed.exists(p =>
-                              ScEquivalenceUtil
-                                .smartEquivalence(element, p._2))) return true
+                            ScEquivalenceUtil.smartEquivalence(element, p._2)))
+                          return true
 
                         var newState = state.put(ScSubstitutor.key, subst)
 
@@ -389,16 +389,16 @@ class ScImportStmtImpl private (
                             newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
                         }
                         if (!processor.processType(
-                              new ScDesignatorType(cl, true),
-                              place,
-                              newState)) return false
+                            new ScDesignatorType(cl, true),
+                            place,
+                            newState)) return false
                       case _ =>
                         if (!elem.processDeclarations(
-                              p1,
-                              // In this case import optimizer should check for used selectors
-                              newState,
-                              this,
-                              place)) return false
+                            p1,
+                            // In this case import optimizer should check for used selectors
+                            newState,
+                            this,
+                            place)) return false
                     }
                   case _ => true
                 }

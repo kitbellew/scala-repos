@@ -12,7 +12,7 @@ import Liskov.<~<
   * val x: Option[String \/ Int] = Some(\/-(1))
   * EitherT(x).map(1+).run // Some(\/-(2))
   * }}}
-  * */
+  */
 final case class EitherT[F[_], A, B](run: F[A \/ B]) {
   import OptionT._
 

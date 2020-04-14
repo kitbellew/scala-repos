@@ -45,8 +45,8 @@ class ScalaEvaluatorCompileHelper(project: Project)
       clearTempFiles()
 
       if (!ScalaCompileServerSettings
-            .getInstance()
-            .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper.needCompileServer) {
+          .getInstance()
+          .COMPILE_SERVER_ENABLED && EvaluatorCompileHelper.needCompileServer) {
         CompileServerLauncher.ensureNotRunning(project)
       }
     }

@@ -24,7 +24,7 @@ import org.scalatest.FunSuite
   * TODO
   *
   * @author dlwh
- **/
+  */
 class ImplicitsTest extends FunSuite {
 
   import Implicits._

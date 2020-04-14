@@ -96,18 +96,18 @@ object ConsoleConsumer extends Logging {
 
   def checkZk(config: ConsumerConfig) {
     if (!checkZkPathExists(
-          config.options.valueOf(config.zkConnectOpt),
-          "/brokers/ids")) {
+        config.options.valueOf(config.zkConnectOpt),
+        "/brokers/ids")) {
       System.err.println("No brokers found in ZK.")
       System.exit(1)
     }
 
     if (!config.options.has(config.deleteConsumerOffsetsOpt) && config.options
-          .has(config.resetBeginningOpt) &&
-        checkZkPathExists(
-          config.options.valueOf(config.zkConnectOpt),
-          "/consumers/" + config.consumerProps.getProperty(
-            "group.id") + "/offsets")) {
+        .has(config.resetBeginningOpt) &&
+      checkZkPathExists(
+        config.options.valueOf(config.zkConnectOpt),
+        "/consumers/" + config.consumerProps.getProperty(
+          "group.id") + "/offsets")) {
       System.err.println(
         "Found previous offset information for this group " + config.consumerProps
           .getProperty("group.id")
@@ -202,10 +202,10 @@ object ConsoleConsumer extends Logging {
     props.put("zookeeper.connect", config.zkConnectionStr)
 
     if (!config.options.has(config.deleteConsumerOffsetsOpt) && config.options
-          .has(config.resetBeginningOpt) &&
-        checkZkPathExists(
-          config.options.valueOf(config.zkConnectOpt),
-          "/consumers/" + props.getProperty("group.id") + "/offsets")) {
+        .has(config.resetBeginningOpt) &&
+      checkZkPathExists(
+        config.options.valueOf(config.zkConnectOpt),
+        "/consumers/" + props.getProperty("group.id") + "/offsets")) {
       System.err.println(
         "Found previous offset information for this group " + props.getProperty(
           "group.id")

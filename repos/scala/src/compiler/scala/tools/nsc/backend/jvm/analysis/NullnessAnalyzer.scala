@@ -42,7 +42,7 @@ sealed abstract class NullnessValue(final val isSize2: Boolean) extends Value {
   /**
     * The size of the slot described by this value. Cannot be 0 because no values are allocated
     * for void-typed slots, see NullnessInterpreter.newValue.
-   **/
+    */
   def getSize: Int = if (isSize2) 2 else 1
 
   def merge(other: NullnessValue) = {

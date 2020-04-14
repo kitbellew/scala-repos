@@ -109,7 +109,7 @@ object StateChangeLogMerger extends Logging {
 
     val options = parser.parse(args: _*)
     if ((!options.has(filesOpt) && !options.has(regexOpt)) || (options.has(
-          filesOpt) && options.has(regexOpt))) {
+        filesOpt) && options.has(regexOpt))) {
       System.err.println(
         "Provide arguments to exactly one of the two options \"" + filesOpt + "\" or \"" + regexOpt + "\"")
       parser.printHelpOn(System.err)
@@ -197,12 +197,12 @@ object StateChangeLogMerger extends Logging {
         case Some(d) =>
           val date = dateFormat.parse(d)
           if ((date.equals(startDate) || date.after(startDate)) && (date.equals(
-                endDate) || date.before(endDate))) {
+              endDate) || date.before(endDate))) {
             topicPartitionRegex.findFirstMatchIn(nextLine) match {
               case Some(matcher) =>
                 if ((topic == null || topic == matcher.group(
-                      1)) && (partitions.isEmpty || partitions.contains(
-                      matcher.group(3).toInt)))
+                    1)) && (partitions.isEmpty || partitions.contains(
+                    matcher.group(3).toInt)))
                   return new LineIterator(nextLine, itr)
               case None =>
             }

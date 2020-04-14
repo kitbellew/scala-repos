@@ -46,7 +46,6 @@ import org.json4s.JObject
   *   "anotherPropertyA"="4.567", // optional
   *   "anotherPropertyB"="false", // optional
   *   "timestamp"="2015-01-15T04:20:23.567Z"
-  *
   */
 private[prediction] object ExampleFormConnector extends FormConnector {
 

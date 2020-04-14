@@ -7,7 +7,6 @@ package scala.tools.nsc.interactive
 
 /** A presentation compiler thread. This is a lightweight class, delegating most
   *  of its functionality to the compiler instance.
-  *
   */
 final class PresentationCompilerThread(var compiler: Global, name: String = "")
     extends Thread("Scala Presentation Compiler [" + name + "]") {

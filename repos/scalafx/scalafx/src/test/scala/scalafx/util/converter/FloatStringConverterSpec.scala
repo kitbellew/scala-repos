@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * FloatStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class FloatStringConverterSpec

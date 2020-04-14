@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ColorAdjust Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ColorAdjustSpec

@@ -6,7 +6,7 @@ import breeze.linalg.support._
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait Broadcasted[+T, B] extends NumericOps[Broadcasted[T, B]] {
   def underlying: T
 }

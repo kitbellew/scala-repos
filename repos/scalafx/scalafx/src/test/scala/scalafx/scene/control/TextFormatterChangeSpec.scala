@@ -43,7 +43,6 @@ import scalafx.testutil.{
 }
 
 /**
-  *
   * Test for [[scalafx.scene.control.TextFormatter.Change]].
   */
 @RunWith(classOf[JUnitRunner])

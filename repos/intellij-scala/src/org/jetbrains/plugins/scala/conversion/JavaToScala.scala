@@ -249,8 +249,8 @@ object JavaToScala {
             case f: PsiMember if f.hasModifierProperty("static") =>
               val clazz = f.containingClass
               if (clazz != null && context
-                    .get()
-                    .contains((false, clazz.qualifiedName))) {
+                  .get()
+                  .contains((false, clazz.qualifiedName))) {
                 return JavaCodeReferenceStatement(
                   Some(LiteralExpression(clazz.getName)),
                   args,
@@ -986,7 +986,7 @@ object JavaToScala {
 
           var statement: Option[PsiExpressionStatement] =
             if (field.isDefined && parent.isDefined && parent.get.getParent
-                  .isInstanceOf[PsiExpressionStatement]) {
+                .isInstanceOf[PsiExpressionStatement]) {
               Some(parent.get.getParent.asInstanceOf[PsiExpressionStatement])
             } else None
 
@@ -1131,7 +1131,7 @@ object JavaToScala {
           }
 
           if (method.findSuperMethods.exists(
-                !_.hasModifierProperty("abstract")))
+              !_.hasModifierProperty("abstract")))
             modifiers.append(SimpleModifier(ModifierType.OVERRIDE))
 
         case c: PsiClass =>
@@ -1151,9 +1151,9 @@ object JavaToScala {
       }
 
       if (!owner.hasModifierProperty(PsiModifier.PUBLIC) &&
-          !owner.hasModifierProperty(PsiModifier.PRIVATE) &&
-          !owner.hasModifierProperty(PsiModifier.PROTECTED) &&
-          owner.getParent != null && owner.getParent.isInstanceOf[PsiClass]) {
+        !owner.hasModifierProperty(PsiModifier.PRIVATE) &&
+        !owner.hasModifierProperty(PsiModifier.PROTECTED) &&
+        owner.getParent != null && owner.getParent.isInstanceOf[PsiClass]) {
         val packageName: String =
           owner.getContainingFile.asInstanceOf[PsiClassOwner].getPackageName
         if (packageName != "")
@@ -1165,7 +1165,7 @@ object JavaToScala {
       }
 
       if (owner.hasModifierProperty(
-            PsiModifier.FINAL) && context.get.nonEmpty && !context.get.top._1) {
+          PsiModifier.FINAL) && context.get.nonEmpty && !context.get.top._1) {
         owner match {
           case _: PsiLocalVariable =>
           case _: PsiParameter     =>
@@ -1204,10 +1204,10 @@ object JavaToScala {
   private def serialVersion(c: PsiClass): Option[PsiField] = {
     val serialField = c.findFieldByName("serialVersionUID", false)
     if (serialField != null && serialField.getType.isAssignableFrom(
-          PsiType.LONG) &&
-        serialField.hasModifierProperty("static") && serialField
-          .hasModifierProperty("final") &&
-        serialField.hasInitializer) {
+        PsiType.LONG) &&
+      serialField.hasModifierProperty("static") && serialField
+        .hasModifierProperty("final") &&
+      serialField.hasInitializer) {
       Some(serialField)
     } else None
   }

@@ -108,10 +108,10 @@ trait EventIncludes {
     *
     * Enables following use:
     * <pre>
-       button.onAction = handle {
-         println("Handling button action")
-         doSomething()
-       }
+    *       button.onAction = handle {
+    *         println("Handling button action")
+    *         doSomething()
+    *       }
     * </pre>
     *
     * @tparam J JavaFX Event subclass.
@@ -130,10 +130,10 @@ trait EventIncludes {
     *
     * Enables following use:
     * <pre>
-       button.onAction = () => {
-         println("Handling button action")
-         doSomething()
-       }
+    *       button.onAction = () => {
+    *         println("Handling button action")
+    *         doSomething()
+    *       }
     * </pre>
     *
     * @tparam T JavaFX Event subclass.
@@ -153,10 +153,10 @@ trait EventIncludes {
     *
     * Enables following use:
     * <pre>
-      button.onAction = (e:ActionEvent) => {
-        println("Handling button action: " + e)
-        doSomething(e)
-      }
+    *      button.onAction = (e:ActionEvent) => {
+    *        println("Handling button action: " + e)
+    *        doSomething(e)
+    *      }
     * </pre>
     *
     * @tparam J JavaFX Event subclass.

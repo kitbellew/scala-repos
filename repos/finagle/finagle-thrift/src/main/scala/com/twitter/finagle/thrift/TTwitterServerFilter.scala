@@ -93,7 +93,7 @@ private[finagle] class TTwitterServerFilter(
 
       // TODO: only try once?
       if (msg.`type` == TMessageType.CALL &&
-          msg.name == ThriftTracing.CanTraceMethodName) {
+        msg.name == ThriftTracing.CanTraceMethodName) {
 
         val connectionOptions = new thrift.ConnectionOptions
         connectionOptions.read(buffer())

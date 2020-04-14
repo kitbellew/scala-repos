@@ -44,10 +44,10 @@ final case class AtomicWrite(payload: immutable.Seq[PersistentRepr])
 
   // only check that all persistenceIds are equal when there's more than one in the Seq
   if (payload match {
-        case l: List[PersistentRepr] ⇒ l.tail.nonEmpty // avoids calling .size
-        case v: Vector[PersistentRepr] ⇒ v.size > 1
-        case _ ⇒ true // some other collection type, let's just check
-      })
+      case l: List[PersistentRepr] ⇒ l.tail.nonEmpty // avoids calling .size
+      case v: Vector[PersistentRepr] ⇒ v.size > 1
+      case _ ⇒ true // some other collection type, let's just check
+    })
     require(
       payload.forall(_.persistenceId == payload.head.persistenceId),
       "AtomicWrite must contain messages for the same persistenceId, " +

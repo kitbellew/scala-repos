@@ -31,6 +31,6 @@ object Test extends SessionTest {
         |f: Int
         |
         |XXX> :quit"""
- */
+   */
 
 }

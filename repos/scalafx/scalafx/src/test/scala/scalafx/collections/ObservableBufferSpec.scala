@@ -41,8 +41,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ObservableBuffer Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ObservableBufferSpec[T]

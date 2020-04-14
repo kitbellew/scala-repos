@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * PieChart Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PieChartSpec

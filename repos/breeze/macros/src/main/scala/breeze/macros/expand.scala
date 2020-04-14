@@ -41,12 +41,10 @@ import scala.annotation.{Annotation, StaticAnnotation}
   *   def foo_T_Double(x: Double, y: Double) = x * y
   * }}}
   *
-  *
   * See [[breeze.linalg.DenseVectorOps]] for a more complete example.
   *
-  *
-  *@author dlwh
- **/
+  * @author dlwh
+  */
 class expand extends Annotation with StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro expand.expandImpl
 }

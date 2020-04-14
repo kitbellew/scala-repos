@@ -29,7 +29,6 @@ private[this] case object ReducedQR
   * @return (Q, R)
   *         Q - A matrix with orthonormal columns
   *         R - The upper-triangular matrix
-  *
   */
 object qr extends UFunc {
 

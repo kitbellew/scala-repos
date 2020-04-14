@@ -4,7 +4,6 @@ import java.util.{Date, Calendar}
 import scala.annotation.tailrec
 
 /**
-  *
   */
 object CalendarOps {
   def truncate(date: Calendar, field: Int): Calendar = {

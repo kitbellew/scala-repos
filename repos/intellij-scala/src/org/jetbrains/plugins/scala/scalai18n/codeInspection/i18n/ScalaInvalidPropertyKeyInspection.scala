@@ -93,7 +93,7 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
       import scala.collection.JavaConversions._
       for (file <- propertiesFiles) {
         if (!fileIndex.isInLibraryClasses(file.getVirtualFile) && !fileIndex
-              .isInLibrarySource(file.getVirtualFile)) {
+            .isInLibrarySource(file.getVirtualFile)) {
           result.add(file)
         }
       }
@@ -103,7 +103,7 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
     def isComputablePropertyExpression(myExpression: ScExpression): Boolean = {
       var expression = myExpression
       while (expression != null && expression.getParent
-               .isInstanceOf[ScParenthesisedExpr]) {
+          .isInstanceOf[ScParenthesisedExpr]) {
         expression = expression.getParent.asInstanceOf[ScExpression]
       }
       expression != null && expression.getParent.isInstanceOf[ScExpression]
@@ -123,10 +123,10 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
         return
       val resourceBundleName: Ref[String] = new Ref[String]
       if (!ScalaI18nUtil.isValidPropertyReference(
-            myManager.getProject,
-            expression,
-            key,
-            resourceBundleName)) {
+          myManager.getProject,
+          expression,
+          key,
+          resourceBundleName)) {
         UnresolvedPropertyVisitor.appendPropertyKeyNotFoundProblem(
           resourceBundleName.get,
           key,
@@ -138,8 +138,8 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
         expression.getParent match {
           case nvp: ScNameValuePair =>
             if (Comparing.equal(
-                  nvp.getName,
-                  AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER)) {
+                nvp.getName,
+                AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER)) {
               val manager: PropertiesReferenceManager =
                 PropertiesReferenceManager.getInstance(expression.getProject)
               val module: Module =
@@ -169,9 +169,9 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
               AnnotationUtil.PROPERTY_KEY_RESOURCE_BUNDLE_PARAMETER,
               null)
             if (!ScalaI18nUtil.mustBePropertyKey(
-                  myManager.getProject,
-                  expression,
-                  annotationParams)) return
+                myManager.getProject,
+                expression,
+                annotationParams)) return
             val paramsCount: java.lang.Integer =
               ScalaI18nUtil.getPropertyValueParamsMaxCount(expression)
             if (paramsCount == -1) return
@@ -189,8 +189,8 @@ class ScalaInvalidPropertyKeyInspection extends LocalInspectionTool {
                         val param: java.lang.Integer = args.length - i - 1
                         val parameters = method.getParameterList.getParameters
                         if (i + paramsCount >= args.length && method != null &&
-                            method.getParameterList.getParametersCount == i + 2 &&
-                            parameters(i + 1).isVarArgs) {
+                          method.getParameterList.getParametersCount == i + 2 &&
+                          parameters(i + 1).isVarArgs) {
                           myProblems.add(
                             myManager.createProblemDescriptor(
                               methodCall,

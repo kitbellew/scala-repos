@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * AreaChart Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class AreaChartSpec

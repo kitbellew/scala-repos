@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * IntStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class IntStringConverterSpec

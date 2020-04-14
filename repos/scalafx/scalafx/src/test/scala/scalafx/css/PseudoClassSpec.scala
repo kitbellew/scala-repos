@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PseudoClass Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PseudoClassSpec

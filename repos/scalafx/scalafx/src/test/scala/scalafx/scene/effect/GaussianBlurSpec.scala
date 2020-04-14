@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * GaussianBlur Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class GaussianBlurSpec

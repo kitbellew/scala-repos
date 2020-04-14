@@ -37,7 +37,7 @@ class TreeGenTest {
       case sel @ Select(
             Select(Ident(TermName("scala")), TermName("runtime")),
             TermName("ScalaRunTime")) =>
-      case _                          => fail(showRaw(ref))
+      case _ => fail(showRaw(ref))
     }
   }
   @Test

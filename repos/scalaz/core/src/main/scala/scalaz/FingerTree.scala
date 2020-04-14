@@ -4,7 +4,7 @@ import collection.Iterator
 import syntax.Ops
 import std.option._
 
-/**View of the left end of a sequence.*/
+/** View of the left end of a sequence. */
 sealed abstract class ViewL[S[_], A] {
   def fold[B](b: => B, f: (=> A, => S[A]) => B): B
   def headOption: Option[A] = fold(None, (a, sa) => Some(a))
@@ -13,7 +13,7 @@ sealed abstract class ViewL[S[_], A] {
   def tail: S[A] = tailOption.getOrElse(sys.error("Tail on empty view"))
 }
 
-/**View of the right end of a sequence.*/
+/** View of the right end of a sequence. */
 sealed abstract class ViewR[S[_], A] {
   def fold[B](b: => B, f: (=> S[A], => A) => B): B
   def lastOption: Option[A] = fold(None, (sa, a) => Some(a))
@@ -1482,7 +1482,7 @@ sealed abstract class OrdSeq[A] extends Ops[FingerTree[LastOption[A], A]] {
       case (l, r) => OrdSeq.ordSeq(l <++> (a +: r))
     }
 
-  /** Append `xs` to this sequence, reordering elements to  */
+  /** Append `xs` to this sequence, reordering elements to */
   def ++(xs: OrdSeq[A]): OrdSeq[A] = xs.self.toList.foldLeft(this)(_ insert _)
 }
 

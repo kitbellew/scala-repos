@@ -223,7 +223,7 @@ private[repl] trait SparkMemberHandlers {
     /** Whether this import includes a wildcard import */
     val importsWildcard = selectorWild.nonEmpty
 
-    /** Whether anything imported is implicit .*/
+    /** Whether anything imported is implicit . */
     def importsImplicit = implicitSymbols.nonEmpty
 
     def implicitSymbols = importedSymbols filter (_.isImplicit)

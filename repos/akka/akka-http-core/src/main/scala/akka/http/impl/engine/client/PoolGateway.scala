@@ -91,8 +91,8 @@ private[http] class PoolGateway(
     state.get match {
       case x @ Running(ref, shutdownStartedPromise, shutdownCompletedPromise) ⇒
         if (state.compareAndSet(
-              x,
-              IsShutdown(shutdownCompletedPromise.future))) {
+            x,
+            IsShutdown(shutdownCompletedPromise.future))) {
           shutdownStartedPromise.success(Done) // trigger cache removal
           ref ! PoolInterfaceActor.Shutdown
           shutdownCompletedPromise.future

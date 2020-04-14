@@ -167,7 +167,7 @@ object Markdown {
 
     private def fixUrl(url: String, isImage: Boolean = false): String = {
       if (url.startsWith("http://") || url.startsWith("https://") || url
-            .startsWith("/")) {
+          .startsWith("/")) {
         url
       } else if (url.startsWith("#")) {
         ("#" + generateAnchorName(url.substring(1)))

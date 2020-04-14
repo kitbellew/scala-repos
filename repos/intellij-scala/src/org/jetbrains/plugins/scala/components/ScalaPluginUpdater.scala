@@ -157,7 +157,7 @@ object ScalaPluginUpdater {
       val pluginIdString: String = pluginId.getIdString
       import scala.collection.JavaConversions._
       while (installedPlugins.exists(
-               _.getPluginId.getIdString == pluginIdString)) {
+          _.getPluginId.getIdString == pluginIdString)) {
         installedPlugins.remove(pluginIdString)
       }
     } catch {
@@ -298,7 +298,7 @@ object ScalaPluginUpdater {
       .getEventMulticaster
       .removeDocumentListener(updateListener)
     if (lastUpdateTime == 0L || System
-          .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
+        .currentTimeMillis() - lastUpdateTime > TimeUnit.DAYS.toMillis(1)) {
       ApplicationManager.getApplication.executeOnPooledThread(new Runnable {
         override def run() = {
           val buildNumber = ApplicationInfo.getInstance().getBuild.asString()
@@ -386,8 +386,8 @@ object ScalaPluginUpdater {
       ApplicationInfo.getInstance().asInstanceOf[ApplicationInfoImpl]
     val applicationSettings = ScalaApplicationSettings.getInstance()
     if ((infoImpl.isEAP || infoImpl.isBetaOrRC)
-        && applicationSettings.ASK_USE_LATEST_PLUGIN_BUILDS
-        && ScalaPluginUpdater.pluginIsRelease) {
+      && applicationSettings.ASK_USE_LATEST_PLUGIN_BUILDS
+      && ScalaPluginUpdater.pluginIsRelease) {
       val message = "Please select Scala plugin update channel:" +
         s"""<p/><a href="EAP">EAP</a>\n""" +
         s"""<p/><a href="Release">Release</a>"""

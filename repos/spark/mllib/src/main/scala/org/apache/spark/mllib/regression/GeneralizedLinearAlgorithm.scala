@@ -35,7 +35,6 @@ import org.apache.spark.storage.StorageLevel
   *
   * @param weights Weights computed for every feature.
   * @param intercept Intercept computed for this model.
-  *
   */
 @Since("0.8.0")
 @DeveloperApi
@@ -61,7 +60,6 @@ abstract class GeneralizedLinearModel @Since("1.0.0") (
     *
     * @param testData RDD representing data points to be predicted
     * @return RDD[Double] where each entry contains the corresponding prediction
-    *
     */
   @Since("1.0.0")
   def predict(testData: RDD[Vector]): RDD[Double] = {
@@ -81,7 +79,6 @@ abstract class GeneralizedLinearModel @Since("1.0.0") (
     *
     * @param testData array representing a single data point
     * @return Double prediction from the trained model
-    *
     */
   @Since("1.0.0")
   def predict(testData: Vector): Double = {
@@ -100,7 +97,6 @@ abstract class GeneralizedLinearModel @Since("1.0.0") (
   * :: DeveloperApi ::
   * GeneralizedLinearAlgorithm implements methods to train a Generalized Linear Model (GLM).
   * This class should be extended with an Optimizer to create a new GLM.
-  *
   */
 @Since("0.8.0")
 @DeveloperApi
@@ -112,7 +108,6 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
 
   /**
     * The optimizer to solve the problem.
-    *
     */
   @Since("0.8.0")
   def optimizer: Optimizer
@@ -149,7 +144,6 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
 
   /**
     * The dimension of training features.
-    *
     */
   @Since("1.4.0")
   def getNumFeatures: Int = this.numFeatures
@@ -175,7 +169,6 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
 
   /**
     * Get if the algorithm uses addIntercept
-    *
     */
   @Since("1.4.0")
   def isAddIntercept: Boolean = this.addIntercept
@@ -183,7 +176,6 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
   /**
     * Set if the algorithm should add an intercept. Default false.
     * We set the default to false because adding the intercept will cause memory allocation.
-    *
     */
   @Since("0.8.0")
   def setIntercept(addIntercept: Boolean): this.type = {
@@ -193,7 +185,6 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
 
   /**
     * Set if the algorithm should validate data before training. Default true.
-    *
     */
   @Since("0.8.0")
   def setValidateData(validateData: Boolean): this.type = {
@@ -232,7 +223,6 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
   /**
     * Run the algorithm with the configured parameters on an input
     * RDD of LabeledPoint entries.
-    *
     */
   @Since("0.8.0")
   def run(input: RDD[LabeledPoint]): M = {
@@ -242,7 +232,6 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
   /**
     * Run the algorithm with the configured parameters on an input RDD
     * of LabeledPoint entries starting from the initial weights provided.
-    *
     */
   @Since("1.0.0")
   def run(input: RDD[LabeledPoint], initialWeights: Vector): M = {

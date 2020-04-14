@@ -137,7 +137,7 @@ sealed abstract class StateSpec[KeyType, ValueType, StateType, MappedType]
   *
   *    JavaMapWithStateDStream<String, Integer, Integer, String> mapWithStateDStream =
   *        keyValueDStream.mapWithState(StateSpec.function(mappingFunc));
-  *}}}
+  * }}}
   */
 @Experimental
 object StateSpec {

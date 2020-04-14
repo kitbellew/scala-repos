@@ -998,7 +998,7 @@ object JGitUtil {
       using(git.getRepository.getObjectDatabase) { db =>
         val loader = db.open(id)
         if (loader.isLarge || (fetchLargeFile == false && FileUtil.isLarge(
-              loader.getSize))) {
+            loader.getSize))) {
           None
         } else {
           Some(loader.getBytes)

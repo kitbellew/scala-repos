@@ -10,7 +10,6 @@
 package scala
 
 /** A function of 3 parameters.
-  *
   */
 trait Function3[-T1, -T2, -T3, +R] extends AnyRef { self =>
 

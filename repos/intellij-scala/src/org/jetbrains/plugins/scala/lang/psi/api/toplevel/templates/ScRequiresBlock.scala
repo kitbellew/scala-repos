@@ -7,7 +7,6 @@ package templates
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 20.02.2008
-  */
+  * Date: 20.02.2008 */
 
 trait ScRequiresBlock extends ScalaPsiElement {}

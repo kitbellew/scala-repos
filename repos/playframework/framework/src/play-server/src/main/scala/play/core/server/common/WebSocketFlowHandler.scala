@@ -72,7 +72,7 @@ object WebSocketFlowHandler {
                   push(remoteOut, close)
                   // If appOut is closed, then we may need to do our own pull so that we can get the ack
                   if (isClosed(appOut) && !isClosed(remoteIn) && !hasBeenPulled(
-                        remoteIn)) {
+                      remoteIn)) {
                     pull(remoteIn)
                   }
                 } else {

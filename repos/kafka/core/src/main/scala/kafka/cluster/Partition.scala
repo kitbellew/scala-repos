@@ -304,8 +304,8 @@ class Partition(
           val replica = getReplica(replicaId).get
           val leaderHW = leaderReplica.highWatermark
           if (!inSyncReplicas.contains(replica) &&
-              assignedReplicas.map(_.brokerId).contains(replicaId) &&
-              replica.logEndOffset.offsetDiff(leaderHW) >= 0) {
+            assignedReplicas.map(_.brokerId).contains(replicaId) &&
+            replica.logEndOffset.offsetDiff(leaderHW) >= 0) {
             val newInSyncReplicas = inSyncReplicas + replica
             info(
               "Expanding ISR for partition [%s,%d] from %s to %s"
@@ -396,7 +396,7 @@ class Partition(
       allLogEndOffsets.min(new LogOffsetMetadata.OffsetOrdering)
     val oldHighWatermark = leaderReplica.highWatermark
     if (oldHighWatermark.messageOffset < newHighWatermark.messageOffset || oldHighWatermark
-          .onOlderSegment(newHighWatermark)) {
+        .onOlderSegment(newHighWatermark)) {
       leaderReplica.highWatermark = newHighWatermark
       debug(
         "High watermark for partition [%s,%d] updated to %s"
@@ -472,8 +472,7 @@ class Partition(
       * Both these cases are handled by checking the lastCaughtUpTimeMs which represents
       * the last time when the replica was fully caught up. If either of the above conditions
       * is violated, that replica is considered to be out of sync
-      *
-     **/
+      */
     val leaderLogEndOffset = leaderReplica.logEndOffset
     val candidateReplicas = inSyncReplicas - leaderReplica
 

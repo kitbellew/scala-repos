@@ -46,7 +46,7 @@ trait TreeDSL {
 
     class TreeMethods(target: Tree) {
 
-      /** logical/comparison ops **/
+      /** logical/comparison ops * */
       def OR(other: Tree) =
         if (target == EmptyTree) other
         else if (other == EmptyTree) target
@@ -89,7 +89,7 @@ trait TreeDSL {
       def GEN_!=(other: Tree, kind: ClassSymbol) =
         fn(target, getMember(kind, nme.NE), other)
 
-      /** Apply, Select, Match **/
+      /** Apply, Select, Match * */
       def APPLY(params: Tree*) = Apply(target, params.toList)
       def APPLY(params: List[Tree]) = Apply(target, params)
 
@@ -153,7 +153,7 @@ trait TreeDSL {
     def REF(sym: Symbol) = gen.mkAttributedRef(sym)
     def REF(pre: Type, sym: Symbol) = gen.mkAttributedRef(pre, sym)
 
-    /** Implicits - some of these should probably disappear **/
+    /** Implicits - some of these should probably disappear * */
     implicit def mkTreeMethods(target: Tree): TreeMethods =
       new TreeMethods(target)
     implicit def mkTreeMethodsFromSymbol(target: Symbol): TreeMethods =

@@ -269,7 +269,7 @@ trait Scanners extends ScannersCommon {
     /** Allow an otherwise deprecated ident here */
     private var allowIdent: Name = nme.EMPTY
 
-    /** Get next token, and allow the otherwise deprecated ident `name`  */
+    /** Get next token, and allow the otherwise deprecated ident `name` */
     def nextTokenAllow(name: Name) = {
       val prev = allowIdent
       allowIdent = name
@@ -321,7 +321,7 @@ trait Scanners extends ScannersCommon {
       if (next.token == EMPTY) {
         lastOffset = charOffset - 1
         if (lastOffset > 0 && buf(lastOffset) == '\n' && buf(
-              lastOffset - 1) == '\r') {
+            lastOffset - 1) == '\r') {
           lastOffset -= 1
         }
         if (inStringInterpolation) fetchStringPart() else fetchToken()
@@ -343,8 +343,8 @@ trait Scanners extends ScannersCommon {
        * insert NEWLINES if we are past a blank line, NEWLINE otherwise
        */
       if (!applyBracePatch() && afterLineEnd() && inLastOfStat(
-            lastToken) && inFirstOfStat(token) &&
-          (sepRegions.isEmpty || sepRegions.head == RBRACE)) {
+          lastToken) && inFirstOfStat(token) &&
+        (sepRegions.isEmpty || sepRegions.head == RBRACE)) {
         next copyFrom this
         offset =
           if (lineStartOffset <= offset) lineStartOffset
@@ -944,9 +944,9 @@ trait Scanners extends ScannersCommon {
               if (d < 0)
                 malformed
               else if (value < 0 ||
-                       limit / (base / divider) < value ||
-                       limit - (d / divider) < value * (base / divider) &&
-                       !(negated && limit == value * base - 1 + d))
+                limit / (base / divider) < value ||
+                limit - (d / divider) < value * (base / divider) &&
+                !(negated && limit == value * base - 1 + d))
                 tooBig
               else
                 convert(value * base + d, i + 1)
@@ -1328,8 +1328,8 @@ trait Scanners extends ScannersCommon {
             // braces since last ident line and at the same time there
             // are no new braces.
             if (balance(RPAREN) >= oldBalance(RPAREN) &&
-                balance(RBRACKET) >= oldBalance(RBRACKET) ||
-                balance(RBRACE) != oldBalance(RBRACE)) {
+              balance(RBRACKET) >= oldBalance(RBRACKET) ||
+              balance(RBRACE) != oldBalance(RBRACE)) {
               indent = column(offset)
               markBalance()
             }
@@ -1445,7 +1445,7 @@ trait Scanners extends ScannersCommon {
               else {
                 var lin = line(loff) + 1
                 while (lin < lineStart.length && column(
-                         lineStart(lin)) > lindent)
+                    lineStart(lin)) > lindent)
                   lin += 1
                 if (lin < lineStart.length) {
                   val patches1 = insertPatch(

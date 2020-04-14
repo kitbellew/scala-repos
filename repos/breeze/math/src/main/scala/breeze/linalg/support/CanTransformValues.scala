@@ -27,10 +27,10 @@ import breeze.math.Complex
   */
 trait CanTransformValues[From, @specialized(Double, Int, Float) A] {
 
-  /**Transforms all key-value pairs from the given collection. */
+  /** Transforms all key-value pairs from the given collection. */
   def transform(from: From, fn: (A => A))
 
-  /**Transforms all active key-value pairs from the given collection. */
+  /** Transforms all active key-value pairs from the given collection. */
   def transformActive(from: From, fn: (A => A))
 }
 
@@ -44,7 +44,7 @@ object CanTransformValues {
   class OpArray[@specialized(Double, Int, Float, Long) A]
       extends Op[Array[A], A] {
 
-    /**Transforms all values from the given collection. */
+    /** Transforms all values from the given collection. */
     def transform(from: Array[A], fn: (A) => A) {
       import spire.syntax.cfor._
       cforRange(0 until from.length) { i =>
@@ -52,7 +52,7 @@ object CanTransformValues {
       }
     }
 
-    /**Transforms all active key-value pairs from the given collection. */
+    /** Transforms all active key-value pairs from the given collection. */
     def transformActive(from: Array[A], fn: (A) => A) { transform(from, fn) }
   }
 

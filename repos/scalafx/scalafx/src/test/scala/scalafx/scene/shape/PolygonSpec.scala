@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Polygon Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PolygonSpec

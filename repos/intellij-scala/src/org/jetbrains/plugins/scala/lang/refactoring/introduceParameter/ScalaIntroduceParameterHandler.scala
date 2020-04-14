@@ -435,7 +435,7 @@ class ScalaIntroduceParameterHandler
       ret @ (r: ScReturnStmt) <- elem.depthFirst
     } {
       if (ret.returnFunction.isEmpty || !elem.isAncestorOf(
-            ret.returnFunction.get))
+          ret.returnFunction.get))
         return true
     }
     false

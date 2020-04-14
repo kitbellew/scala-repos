@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * ByteStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ByteStringConverterSpec

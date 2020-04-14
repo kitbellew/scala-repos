@@ -242,8 +242,8 @@ trait CompletionControl {
       if (sym.isPublic) score += 10
       if (viaView == NoSymbol) score += 10
       if (sym.owner != definitions.AnyClass &&
-          sym.owner != definitions.AnyRefClass &&
-          sym.owner != definitions.ObjectClass) score += 30
+        sym.owner != definitions.AnyRefClass &&
+        sym.owner != definitions.ObjectClass) score += 30
 
       val infos = List(CompletionInfo.fromSymbolAndType(sym, tpe, score))
 

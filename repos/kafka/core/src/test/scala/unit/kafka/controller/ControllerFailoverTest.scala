@@ -150,7 +150,7 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
         }
 
         if (server.kafkaController.isActive
-            && (previousEpoch) < server.kafkaController.epoch) {
+          && (previousEpoch) < server.kafkaController.epoch) {
           controller = server
           found = true
         }

@@ -1384,7 +1384,7 @@ trait SparseVectorOps { this: SparseVector.type =>
       extends CanZipMapValues[SparseVector[V], V, RV, SparseVector[RV]] {
     def create(length: Int): SparseVector[RV] = zeros(length)
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(
         from: SparseVector[V],
         from2: SparseVector[V],
@@ -1406,14 +1406,14 @@ trait SparseVectorOps { this: SparseVector.type =>
         var off1, off2 = 0
         while (off1 < from.activeSize) {
           while (off2 < from2.activeSize && from2.indexAt(off2) < from.indexAt(
-                   off1)) {
+              off1)) {
             val index = from2.indexAt(off2)
             vb.add(index, fn(from.default, from2.valueAt(off2)))
             off2 += 1
           }
 
           if (off2 < from2.activeSize && from.indexAt(off1) == from2.indexAt(
-                off2)) {
+              off2)) {
             val index = from2.indexAt(off2)
             vb.add(index, fn(from.valueAt(off1), from2.valueAt(off2)))
             off2 += 1
@@ -1456,7 +1456,7 @@ trait SparseVectorOps { this: SparseVector.type =>
         SparseVector[RV]] {
     def create(length: Int): SparseVector[RV] = zeros(length)
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(
         from: SparseVector[V],
         from2: SparseVector[V],
@@ -1480,14 +1480,14 @@ trait SparseVectorOps { this: SparseVector.type =>
       var off1, off2 = 0
       while (off1 < from.activeSize) {
         while (off2 < from2.activeSize && from2.indexAt(off2) < from.indexAt(
-                 off1)) {
+            off1)) {
           val index = from2.indexAt(off2)
           vb.add(index, fn(index, from.default, from2.valueAt(off2)))
           off2 += 1
         }
 
         if (off2 < from2.activeSize && from.indexAt(off1) == from2.indexAt(
-              off2)) {
+            off2)) {
           val index = from2.indexAt(off2)
           vb.add(index, fn(index, from.valueAt(off1), from2.valueAt(off2)))
           off2 += 1

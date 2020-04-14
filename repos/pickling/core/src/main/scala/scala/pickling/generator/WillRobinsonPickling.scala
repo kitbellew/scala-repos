@@ -3,7 +3,6 @@ package generator
 
 /** This algorithm attempts to be able to pickle ANY class just be grabbing all its fields.
   *
-  *
   * Notes:
   * - https://en.wikipedia.org/wiki/Danger,_Will_Robinson
   * - https://www.youtube.com/watch?v=RG0ochx16Dg

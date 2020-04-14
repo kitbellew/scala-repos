@@ -36,7 +36,7 @@ class RunSettings private (
     if (t == null) "null"
     else {
       if (!logExceptionClass || (!logAssert && t
-            .isInstanceOf[AssertionError])) {
+          .isInstanceOf[AssertionError])) {
         t.getMessage
       } else {
         val b = new StringBuilder()

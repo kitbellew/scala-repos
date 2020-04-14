@@ -197,7 +197,8 @@ trait ContextErrors {
         }
         issueNormalTypeError(
           tree,
-          "stable identifier required, but " + tree + " found." + (if (treeInfo.hasVolatileType(
+          "stable identifier required, but " + tree + " found." + (if (treeInfo
+                                                                       .hasVolatileType(
                                                                          tree))
                                                                      addendum
                                                                    else ""))
@@ -1024,8 +1025,7 @@ trait ContextErrors {
               var threshold =
                 relevantElements.reverse.indexWhere(isMacroInvoker) + 1
               while (threshold != relevantElements.length && isMacroInvoker(
-                       relevantElements(
-                         relevantElements.length - threshold - 1)))
+                  relevantElements(relevantElements.length - threshold - 1)))
                 threshold += 1
               relevantElements = relevantElements dropRight threshold
 

@@ -63,8 +63,8 @@ class NewScalaTypeDefinitionAction
     builder.setValidator(new InputValidatorEx {
       def getErrorText(inputString: String): String = {
         if (inputString.length > 0 && !PsiNameHelper
-              .getInstance(project)
-              .isQualifiedName(inputString)) {
+            .getInstance(project)
+            .isQualifiedName(inputString)) {
           return "This is not a valid Scala qualified name"
         }
         null
@@ -129,7 +129,7 @@ class NewScalaTypeDefinitionAction
       for (dir <- dirs) {
         val aPackage = JavaDirectoryService.getInstance.getPackage(dir)
         if (projectFileIndex.isInSourceContent(
-              dir.getVirtualFile) && aPackage != null) {
+            dir.getVirtualFile) && aPackage != null) {
           return true
         }
       }

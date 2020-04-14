@@ -5,7 +5,6 @@ import java.lang.reflect.{Method, Field}
 
 /**
   * Helper method to aid in retrieving [[java.lang.reflect.Field]]s and [[java.lang.reflect.Method]]s at runtime.
-  *
   */
 object Reflect {
 
@@ -24,7 +23,7 @@ object Reflect {
       catch {
         case nsf: NoSuchFieldException =>
           if ((cls.getSuperclass != null) && (cls.getSuperclass != classOf[
-                Object]) && cls.getSuperclass != cls)
+              Object]) && cls.getSuperclass != cls)
             getFieldHelper(cls.getSuperclass)
           else
             throw new PicklingException(
@@ -40,7 +39,7 @@ object Reflect {
       catch {
         case nsf: NoSuchMethodException =>
           if ((cls.getSuperclass != null) && cls.getSuperclass != classOf[
-                Object] && cls.getSuperclass != cls)
+              Object] && cls.getSuperclass != cls)
             getMethodHelper(cls.getSuperclass)
           else
             throw new PicklingException(

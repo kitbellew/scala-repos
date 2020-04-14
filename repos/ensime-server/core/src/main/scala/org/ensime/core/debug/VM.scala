@@ -179,7 +179,7 @@ class VM(
   def clearBreakpoints(bps: Iterable[Breakpoint]): Unit = {
     for (bp <- bps) {
       for (req <- erm.breakpointRequests();
-           pos <- sourceMap.locToPos(req.location())) {
+        pos <- sourceMap.locToPos(req.location())) {
         if (pos.file == bp.file && pos.line == bp.line) {
           req.disable()
         }
@@ -491,7 +491,7 @@ class VM(
       objectId: DebugObjectId,
       name: String): Option[Value] = {
     for (obj <- savedObjects.get(objectId);
-         f <- fieldByName(obj, name)) yield {
+      f <- fieldByName(obj, name)) yield {
       remember(obj.getValue(f))
     }
   }
@@ -510,7 +510,7 @@ class VM(
       frame: Int,
       offset: Int): Option[Value] = {
     if (thread.frameCount > frame &&
-        thread.frame(frame).visibleVariables.length > offset) {
+      thread.frame(frame).visibleVariables.length > offset) {
       val stackFrame = thread.frame(frame)
       val value = stackFrame.getValue(stackFrame.visibleVariables.get(offset))
       Some(remember(value))
@@ -624,7 +624,7 @@ class VM(
       offset: Int,
       newValue: String): Boolean = {
     if (thread.frameCount > frame &&
-        thread.frame(frame).visibleVariables.length > offset) {
+      thread.frame(frame).visibleVariables.length > offset) {
       val stackFrame = thread.frame(frame)
       val localVar: LocalVariable = stackFrame.visibleVariables.get(offset)
       mirrorFromString(localVar.`type`(), newValue) match {

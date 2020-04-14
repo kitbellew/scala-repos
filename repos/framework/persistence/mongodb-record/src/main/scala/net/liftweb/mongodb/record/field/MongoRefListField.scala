@@ -41,7 +41,7 @@ abstract class MongoRefListField[
     MyType](rec: OwnerType)(implicit mf: Manifest[MyType])
     extends MongoListField[OwnerType, MyType](rec) {
 
-  /** The MongoMetaRecord of the referenced object **/
+  /** The MongoMetaRecord of the referenced object * */
   def refMeta: MongoMetaRecord[RefType]
 
   /**

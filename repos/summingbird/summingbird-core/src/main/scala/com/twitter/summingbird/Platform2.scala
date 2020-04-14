@@ -23,7 +23,6 @@ package com.twitter.summingbird
   * [error] /Users/sritchie/code/twitter/summingbird/summingbird-core/src/main/scala/com/twitter/summingbird/PairedPlatform.scala:38: constructor of type com.twitter.summingbird.IdentityKeyedProducer[P,K,V] cannot be uniquely instantiated to expected type com.twitter.summingbird.Producer[com.twitter.summingbird.Platform2[P1,P2],T]
   * [error]  --- because ---
   * [error] undetermined type
-  *
   */
 case class Unzip2[P1 <: Platform[P1], P2 <: Platform[P2]]() {
 

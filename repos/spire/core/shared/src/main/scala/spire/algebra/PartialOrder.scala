@@ -19,7 +19,6 @@ package algebra
   * false     false       = NaN     (x and y cannot be compared)
   * true      false       = -1.0    (corresponds to x < y)
   * false     true        = 1.0     (corresponds to x > y)
-  *
   */
 trait PartialOrder[@sp A] extends Any with Eq[A] {
   self =>

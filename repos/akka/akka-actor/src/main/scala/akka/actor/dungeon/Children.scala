@@ -97,10 +97,10 @@ private[akka] trait Children { this: ActorCell ⇒
       val old = functionRefs
       val added = old.updated(childPath.name, ref)
       if (!Unsafe.instance.compareAndSwapObject(
-            this,
-            AbstractActorCell.functionRefsOffset,
-            old,
-            added)) rec()
+          this,
+          AbstractActorCell.functionRefsOffset,
+          old,
+          added)) rec()
     }
     rec()
 
@@ -118,10 +118,10 @@ private[akka] trait Children { this: ActorCell ⇒
       else {
         val removed = old - name
         if (!Unsafe.instance.compareAndSwapObject(
-              this,
-              AbstractActorCell.functionRefsOffset,
-              old,
-              removed)) rec()
+            this,
+            AbstractActorCell.functionRefsOffset,
+            old,
+            removed)) rec()
         else {
           ref.stop()
           true
@@ -158,9 +158,9 @@ private[akka] trait Children { this: ActorCell ⇒
       }
 
       if (actor match {
-            case r: RepointableRef ⇒ r.isStarted
-            case _ ⇒ true
-          }) shallDie(actor)
+          case r: RepointableRef ⇒ r.isStarted
+          case _ ⇒ true
+        }) shallDie(actor)
     }
     actor.asInstanceOf[InternalActorRef].stop()
   }

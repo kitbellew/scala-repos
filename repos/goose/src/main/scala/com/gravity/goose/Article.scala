@@ -26,8 +26,7 @@ import scala.collection._
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 8/14/11
-  */
+  * Date: 8/14/11 */
 
 class Article {
 

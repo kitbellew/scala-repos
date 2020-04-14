@@ -175,7 +175,6 @@ trait NatProductArgs extends Dynamic {
   * ie. the arguments are rewritten as HList elements and the application is
   * rewritten to an application of an implementing method (identified by the
   * "Product" suffix) which accepts a single HList argument.
-  *
   */
 trait ProductArgs extends Dynamic {
   def applyDynamic(method: String)(args: Any*): Any =
@@ -234,7 +233,7 @@ class ProductMacros(val c: whitebox.Context)
     val meth = lhsTpe.member(methodName).asMethod
 
     if (!meth.paramLists.isEmpty && (meth.paramLists(
-          0) forall (_.isImplicit))) {
+        0) forall (_.isImplicit))) {
       val typeParamsTree = mkProductNatTypeParamsImpl(args)
       q""" $lhs.$methodName[${typeParamsTree}] """
     } else {

@@ -28,8 +28,7 @@ import org.slf4j.Logger
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 8/17/11
-  */
+  * Date: 8/17/11 */
 
 trait OutputFormatter {
   val logPrefix = "outformat: "
@@ -193,8 +192,8 @@ trait OutputFormatter {
         try {
           val stopWords = StopWords.getStopWordCount(el.text)
           if (stopWords.getStopWordCount < 3 && el
-                .getElementsByTag("object")
-                .size == 0 && el.getElementsByTag("embed").size == 0) {
+              .getElementsByTag("object")
+              .size == 0 && el.getElementsByTag("embed").size == 0) {
             logger.debug(
               "removeParagraphsWithFewWords - swcnt: %d removing text: %s"
                 .format(stopWords.getStopWordCount, el.text()))

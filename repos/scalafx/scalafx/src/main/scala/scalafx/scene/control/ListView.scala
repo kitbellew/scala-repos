@@ -121,7 +121,6 @@ class ListView[T](
   /**
     * Creates a default ListView which will stack the contents retrieved from the provided
     * [[scalafx.collections.ObservableBuffer]] vertically.
-    *
     */
   def this(items: ObservableBuffer[T]) = this(new jfxsc.ListView[T](items))
 

@@ -13,8 +13,7 @@ import scala.collection.Seq
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008
-  */
+  * Date: 06.03.2008 */
 
 class ScPrefixExprImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

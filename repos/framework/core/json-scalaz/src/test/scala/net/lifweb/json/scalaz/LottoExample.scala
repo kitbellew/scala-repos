@@ -39,5 +39,5 @@ object LottoExample extends Specification {
   val lotto = Lotto(5, List(2, 45, 34, 23, 7, 5), winners, None)
 
   fromJSON[Lotto](json) mustEqual Success(lotto)
- */
+   */
 }

@@ -51,16 +51,16 @@ trait ArbitraryTreesAndNames {
 
   def genConstant =
     for (value <- oneOf(
-           arbitrary[Byte],
-           arbitrary[Short],
-           arbitrary[Char],
-           arbitrary[Int],
-           arbitrary[Long],
-           arbitrary[Float],
-           arbitrary[Double],
-           arbitrary[Boolean],
-           arbitrary[String]
-         ))
+        arbitrary[Byte],
+        arbitrary[Short],
+        arbitrary[Char],
+        arbitrary[Int],
+        arbitrary[Long],
+        arbitrary[Float],
+        arbitrary[Double],
+        arbitrary[Boolean],
+        arbitrary[String]
+      ))
       yield Constant(value)
 
   def genAnnotated(size: Int, argGen: Int => Gen[Tree]) =
@@ -73,12 +73,12 @@ trait ArbitraryTreesAndNames {
 
   def genAppliedTypeTree(size: Int) =
     for (tpt <- genTree(size - 1) if tpt.isType;
-         args <- smallList(size, genTree(size - 1)))
+      args <- smallList(size, genTree(size - 1)))
       yield AppliedTypeTree(tpt, args)
 
   def genApply(size: Int) =
     for (fun <- genTree(size - 1);
-         args <- smallList(size, genTree(size - 1)))
+      args <- smallList(size, genTree(size - 1)))
       yield Apply(fun, args)
 
   def genAssign(size: Int) =
@@ -99,13 +99,13 @@ trait ArbitraryTreesAndNames {
 
   def genCaseDef(size: Int) =
     for (pat <- genTree(size - 1); guard <- genTree(size - 1);
-         body <- genTree(size - 1))
+      body <- genTree(size - 1))
       yield CaseDef(pat, guard, body)
 
   def genClassDef(size: Int) =
     for (mods <- genModifiers; name <- genTypeName;
-         tparams <- smallList(size, genTypeDef(size - 1));
-         impl <- genTemplate(size - 1))
+      tparams <- smallList(size, genTypeDef(size - 1));
+      impl <- genTemplate(size - 1))
       yield ClassDef(mods, name, tparams, impl)
 
   def genCompoundTypeTree(size: Int) =
@@ -114,20 +114,20 @@ trait ArbitraryTreesAndNames {
 
   def genDefDef(size: Int) =
     for (mods <- genModifiers; name <- genTermName;
-         tpt <- genTree(size - 1); rhs <- genTree(size - 1);
-         tparams <- smallList(size, genTypeDef(size - 1));
-         vparamss <- smallList(size, smallList(size, genValDef(size - 1))))
+      tpt <- genTree(size - 1); rhs <- genTree(size - 1);
+      tparams <- smallList(size, genTypeDef(size - 1));
+      vparamss <- smallList(size, smallList(size, genValDef(size - 1))))
       yield DefDef(mods, name, tparams, vparamss, tpt, rhs)
 
   def genExistentialTypeTree(size: Int) =
     for (tpt <- genTree(size - 1);
-         where <-
-           smallList(size, oneOf(genValDef(size - 1), genTypeDef(size - 1))))
+      where <-
+        smallList(size, oneOf(genValDef(size - 1), genTypeDef(size - 1))))
       yield ExistentialTypeTree(tpt, where)
 
   def genFunction(size: Int) =
     for (vparams <- smallList(size, genValDef(size - 1));
-         body <- genTree(size - 1))
+      body <- genTree(size - 1))
       yield Function(vparams, body)
 
   def genIdent(nameGen: Gen[Name] = genName) =
@@ -135,28 +135,28 @@ trait ArbitraryTreesAndNames {
 
   def genIf(size: Int) =
     for (cond <- genTree(size - 1); thenp <- genTree(size - 1);
-         elsep <- genTree(size - 1))
+      elsep <- genTree(size - 1))
       yield If(cond, thenp, elsep)
 
   def genImport(size: Int) =
     for (expr <- genTree(size - 1);
-         selectors <- smallList(size, genImportSelector(size - 1)))
+      selectors <- smallList(size, genImportSelector(size - 1)))
       yield Import(expr, selectors)
 
   def genImportSelector(size: Int) =
     for (name <- genName; namePos <- arbitrary[Int]; rename <- genName;
-         renamePos <- arbitrary[Int])
+      renamePos <- arbitrary[Int])
       yield ImportSelector(name, namePos, rename, renamePos)
 
   def genTemplate(size: Int) =
     for (parents <- smallList(size, genTree(size - 1));
-         self <- genValDef(size - 1);
-         body <- smallList(size, genTree(size - 1)))
+      self <- genValDef(size - 1);
+      body <- smallList(size, genTree(size - 1)))
       yield Template(parents, self, body)
 
   def genLabelDef(size: Int) =
     for (name <- genTermName; params <- smallList(size, genIdent());
-         rhs <- genTree(size - 1))
+      rhs <- genTree(size - 1))
       yield LabelDef(name, params, rhs)
 
   def genLiteral =
@@ -164,12 +164,12 @@ trait ArbitraryTreesAndNames {
 
   def genMatch(size: Int) =
     for (selector <- genTree(size - 1);
-         cases <- smallList(size, genCaseDef(size - 1)))
+      cases <- smallList(size, genCaseDef(size - 1)))
       yield Match(selector, cases)
 
   def genModuleDef(size: Int) =
     for (mods <- genModifiers; name <- genTermName;
-         impl <- genTemplate(size - 1))
+      impl <- genTemplate(size - 1))
       yield ModuleDef(mods, name, impl)
 
   def genNew(size: Int) =
@@ -181,7 +181,7 @@ trait ArbitraryTreesAndNames {
 
   def genPackageDef(size: Int) =
     for (reftree <- genRefTree(size - 1);
-         stats <- smallList(size, genTree(size - 1)))
+      stats <- smallList(size, genTree(size - 1)))
       yield PackageDef(reftree, stats)
 
   def genTypeSelect(size: Int) =
@@ -226,13 +226,13 @@ trait ArbitraryTreesAndNames {
 
   def genTry(size: Int) =
     for (block <- genTree(size - 1);
-         catches <- smallList(size, genCaseDef(size - 1));
-         finalizer <- genTree(size - 1))
+      catches <- smallList(size, genCaseDef(size - 1));
+      finalizer <- genTree(size - 1))
       yield Try(block, catches, finalizer)
 
   def genTypeApply(size: Int) =
     for (fun <- genTreeIsTerm(size - 1);
-         args <- smallList(size, genTree(size - 1)))
+      args <- smallList(size, genTree(size - 1)))
       yield TypeApply(fun, args)
 
   def genTypeBoundsTree(size: Int) =
@@ -241,8 +241,8 @@ trait ArbitraryTreesAndNames {
 
   def genTypeDef(size: Int): Gen[TypeDef] =
     for (mods <- genModifiers; name <- genTypeName;
-         tparams <- smallList(size, genTypeDef(size - 1));
-         rhs <- genTree(size - 1))
+      tparams <- smallList(size, genTypeDef(size - 1));
+      rhs <- genTree(size - 1))
       yield TypeDef(mods, name, tparams, rhs)
 
   def genTypeTree: Gen[TypeTree] = TypeTree()
@@ -257,7 +257,7 @@ trait ArbitraryTreesAndNames {
 
   def genValDef(size: Int) =
     for (mods <- genModifiers; name <- genTermName;
-         tpt <- genTree(size - 1); rhs <- genTree(size - 1))
+      tpt <- genTree(size - 1); rhs <- genTree(size - 1))
       yield ValDef(mods, name, tpt, rhs)
 
   def genTree(size: Int): Gen[Tree] =

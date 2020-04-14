@@ -432,8 +432,8 @@ object ZipperTest extends SpecLite {
       val p = (i: Int) => i < n && i > m
 
       if (z.lefts.find(p).isDefined || p(z.focus) || z.rights
-            .find(p)
-            .isDefined) {
+          .find(p)
+          .isDefined) {
         p(z.findZor(p, alt).focus) must_== (true)
       } else {
         z.findZor(p, alt) must_=== (alt)

@@ -170,7 +170,7 @@ private[sql] object StatFunctions extends Logging {
         val currentSample = sorted(opsIdx)
         // Add all the samples before the next observation.
         while (sampleIdx < sampled.size && sampled(
-                 sampleIdx).value <= currentSample) {
+            sampleIdx).value <= currentSample) {
           newSamples.append(sampled(sampleIdx))
           sampleIdx += 1
         }

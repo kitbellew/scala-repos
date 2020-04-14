@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TextArea Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TextAreaSpec

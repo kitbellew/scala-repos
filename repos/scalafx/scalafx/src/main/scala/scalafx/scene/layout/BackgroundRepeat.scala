@@ -35,13 +35,13 @@ import scalafx.delegate.{SFXEnumDelegate, SFXEnumDelegateCompanion}
 object BackgroundRepeat
     extends SFXEnumDelegateCompanion[jfxsl.BackgroundRepeat, BackgroundRepeat] {
 
-  /** The image is placed once and not repeated.     */
+  /** The image is placed once and not repeated. */
   val NoRepeat = new BackgroundRepeat(jfxsl.BackgroundRepeat.NO_REPEAT)
 
-  /** The image is repeated as often as needed to cover the area.   */
+  /** The image is repeated as often as needed to cover the area. */
   val Repeat = new BackgroundRepeat(jfxsl.BackgroundRepeat.REPEAT)
 
-  /** The image is repeated as often as will fit within the area.     */
+  /** The image is repeated as often as will fit within the area. */
   val Round = new BackgroundRepeat(jfxsl.BackgroundRepeat.ROUND)
 
   /** The image is repeated as often as will fit within the area without being clipped and then

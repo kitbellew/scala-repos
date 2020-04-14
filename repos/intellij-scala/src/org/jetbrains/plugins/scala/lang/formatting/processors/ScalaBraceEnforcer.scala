@@ -155,8 +155,8 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
       case b: ScBlockExpr =>
       case _ =>
         if (option == CommonCodeStyleSettings.FORCE_BRACES_ALWAYS ||
-            (option == CommonCodeStyleSettings.FORCE_BRACES_IF_MULTILINE &&
-            PostFormatProcessorHelper.isMultiline(stmt))) {
+          (option == CommonCodeStyleSettings.FORCE_BRACES_IF_MULTILINE &&
+          PostFormatProcessorHelper.isMultiline(stmt))) {
           replaceExprWithBlock(expr)
         }
     }
@@ -175,7 +175,7 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
         expr.getManager)
       val prev = expr.getPrevSibling
       if (ScalaPsiUtil.isLineTerminator(prev) || prev
-            .isInstanceOf[PsiWhiteSpace]) {
+          .isInstanceOf[PsiWhiteSpace]) {
         CodeEditUtil.removeChild(
           SourceTreeToPsiMap.psiElementToTree(parent),
           SourceTreeToPsiMap.psiElementToTree(prev))

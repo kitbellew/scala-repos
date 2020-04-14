@@ -2,8 +2,8 @@
   * Demonstration of issue with Extractors. If lines 15/16 are not present, get at runtime:
   *
   * Exception in thread "main" java.lang.VerifyError: (class: ExtractorIssue$$, method: convert signature: (LTopProperty;)LMyProp;) Accessing value from uninitialized register 5
-  *	at ExtractorIssue.main(ExtractorIssue.scala)
-  *	at com.intellij.rt.execution.application.AppMain.main(AppMain.java:115)]
+  * at ExtractorIssue.main(ExtractorIssue.scala)
+  * at com.intellij.rt.execution.application.AppMain.main(AppMain.java:115)]
   *
   * If lines 15/16 are present, the compiler crashes:
   *

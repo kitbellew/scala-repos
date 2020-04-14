@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * PasswordField Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PasswordFieldSpec

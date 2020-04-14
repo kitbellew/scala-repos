@@ -36,8 +36,6 @@ import scalafx.Includes._
 
 /**
   * CurrencyStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class CurrencyStringConverterSpec

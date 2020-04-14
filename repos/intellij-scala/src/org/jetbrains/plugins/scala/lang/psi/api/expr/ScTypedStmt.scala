@@ -11,8 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types.{
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008
-  */
+  * Date: 06.03.2008 */
 
 trait ScTypedStmt extends ScExpression {
   def expr: ScExpression = findChildByClassScala(classOf[ScExpression])

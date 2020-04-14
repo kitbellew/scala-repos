@@ -25,7 +25,6 @@ import generic.CanBuildFrom
   *  This map is not intended to contain more than 2^29^ entries (approximately
   *  500 million).  The maximum capacity is 2^30^, but performance will degrade
   *  rapidly as 2^30^ is approached.
-  *
   */
 @SerialVersionUID(1L)
 final class AnyRefMap[K <: AnyRef, V] private[collection] (
@@ -108,8 +107,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var g = 0
     while ({ g = _hashes(e); g != 0 }) {
       if (g == h && {
-            val q = _keys(e); (q eq k) || ((q ne null) && (q equals k))
-          }) return e
+          val q = _keys(e); (q eq k) || ((q ne null) && (q equals k))
+        }) return e
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
     }
@@ -123,8 +122,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var o = -1
     while ({ g = _hashes(e); g != 0 }) {
       if (g == h && {
-            val q = _keys(e); (q eq k) || ((q ne null) && (q equals k))
-          }) return e
+          val q = _keys(e); (q eq k) || ((q ne null) && (q equals k))
+        }) return e
       else if (o == -1 && g + g == 0) o = e
       x += 1
       e = (e + 2 * (x + 1) * x - 3) & mask
@@ -333,8 +332,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     var e = _size
     while (e > 0) {
       while (i < _hashes.length && {
-               val h = _hashes(i); h + h == 0 && i < _hashes.length
-             }) i += 1
+          val h = _hashes(i); h + h == 0 && i < _hashes.length
+        }) i += 1
       if (i < _hashes.length) {
         f((_keys(i).asInstanceOf[K], _values(i).asInstanceOf[V]))
         i += 1

@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * DisplacementMap Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class DisplacementMapSpec

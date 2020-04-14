@@ -16,8 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 
 /**
   * User: Alexander Podkhalyuzin
-  * Date: 11.07.2008
-  */
+  * Date: 11.07.2008 */
 
 trait ScalaNamedMember {
   def name: String

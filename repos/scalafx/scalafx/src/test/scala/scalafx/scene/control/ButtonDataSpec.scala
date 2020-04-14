@@ -36,7 +36,6 @@ import scalafx.Includes._
 import scalafx.testutil.SFXEnumDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.scene.control.ButtonData]].
   */
 @RunWith(classOf[JUnitRunner])

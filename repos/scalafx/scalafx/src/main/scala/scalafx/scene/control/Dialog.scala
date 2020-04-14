@@ -120,7 +120,6 @@ class Dialog[R](override val delegate: jfxsc.Dialog[R] = new jfxsc.Dialog[R]())
     *
     * @throws IllegalStateException if this property is set after the dialog
     *                               has ever been made visible.
-    *
     */
   def initStyle(style: StageStyle) {
     delegate.initStyle(style)

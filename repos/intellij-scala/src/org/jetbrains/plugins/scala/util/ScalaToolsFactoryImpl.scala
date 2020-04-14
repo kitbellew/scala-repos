@@ -15,7 +15,6 @@ import org.jetbrains.plugins.scala.lang.surroundWith.descriptors.ScalaSurroundDe
 /**
   * @author ilyas
   * Date: 09.10.2006
-  *
   */
 class ScalaToolsFactoryImpl extends ScalaToolsFactory {
   def createScalaParserDefinition: ParserDefinition =

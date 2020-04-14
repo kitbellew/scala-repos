@@ -502,7 +502,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     *
     *    JavaMapWithStateDStream<String, Integer, Integer, String> mapWithStateDStream =
     *        keyValueDStream.mapWithState(StateSpec.function(mappingFunc));
-    *}}}
+    * }}}
     *
     * @param spec          Specification of this transformation
     * @tparam StateType    Class type of the state data

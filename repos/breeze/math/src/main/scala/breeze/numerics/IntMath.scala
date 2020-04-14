@@ -17,7 +17,6 @@ package breeze.numerics
  */
 
 /**
-  *
   * @author dlwh
   */
 object IntMath {

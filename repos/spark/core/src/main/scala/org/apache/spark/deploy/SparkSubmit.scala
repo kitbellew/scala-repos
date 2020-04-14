@@ -300,7 +300,7 @@ object SparkSubmit {
 
       // Make sure YARN is included in our build if we're trying to use it
       if (!Utils.classIsLoadable(
-            "org.apache.spark.deploy.yarn.Client") && !Utils.isTesting) {
+          "org.apache.spark.deploy.yarn.Client") && !Utils.isTesting) {
         printErrorAndExit(
           "Could not load YARN classes. " +
             "This copy of Spark may not have been compiled with YARN support.")
@@ -652,8 +652,8 @@ object SparkSubmit {
     // Map all arguments to command-line options or system properties for our chosen mode
     for (opt <- options) {
       if (opt.value != null &&
-          (deployMode & opt.deployMode) != 0 &&
-          (clusterManager & opt.clusterManager) != 0) {
+        (deployMode & opt.deployMode) != 0 &&
+        (clusterManager & opt.clusterManager) != 0) {
         if (opt.clOption != null) { childArgs += (opt.clOption, opt.value) }
         if (opt.sysProp != null) { sysProps.put(opt.sysProp, opt.value) }
       }
@@ -826,8 +826,8 @@ object SparkSubmit {
 
     val loader =
       if (sysProps
-            .getOrElse("spark.driver.userClassPathFirst", "false")
-            .toBoolean) {
+          .getOrElse("spark.driver.userClassPathFirst", "false")
+          .toBoolean) {
         new ChildFirstURLClassLoader(
           new Array[URL](0),
           Thread.currentThread.getContextClassLoader)

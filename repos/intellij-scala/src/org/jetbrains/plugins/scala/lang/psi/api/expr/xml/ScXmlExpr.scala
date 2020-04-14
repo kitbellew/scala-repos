@@ -9,8 +9,7 @@ import com.intellij.psi.PsiElement
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 21.04.2008
-  */
+  * Date: 21.04.2008 */
 
 trait ScXmlExpr extends ScExpression {
   def getElements: Seq[PsiElement] =

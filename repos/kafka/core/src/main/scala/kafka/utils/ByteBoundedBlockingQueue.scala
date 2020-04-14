@@ -137,8 +137,8 @@ class ByteBoundedBlockingQueue[E](
     val e = queue.poll(timeout, unit)
     // only wake up waiting threads if the queue size drop under queueByteCapacity
     if (e != null &&
-        currentByteSize.getAndAdd(-sizeFunction.get(e)) > queueByteCapacity &&
-        currentByteSize.get() < queueByteCapacity)
+      currentByteSize.getAndAdd(-sizeFunction.get(e)) > queueByteCapacity &&
+      currentByteSize.get() < queueByteCapacity)
       putLock.synchronized(putLock.notify())
     e
   }
@@ -152,8 +152,8 @@ class ByteBoundedBlockingQueue[E](
     val e = queue.poll()
     // only wake up waiting threads if the queue size drop under queueByteCapacity
     if (e != null &&
-        currentByteSize.getAndAdd(-sizeFunction.get(e)) > queueByteCapacity &&
-        currentByteSize.get() < queueByteCapacity)
+      currentByteSize.getAndAdd(-sizeFunction.get(e)) > queueByteCapacity &&
+      currentByteSize.get() < queueByteCapacity)
       putLock.synchronized(putLock.notify())
     e
   }
@@ -167,7 +167,7 @@ class ByteBoundedBlockingQueue[E](
     val e = queue.take()
     // only wake up waiting threads if the queue size drop under queueByteCapacity
     if (currentByteSize.getAndAdd(-sizeFunction.get(e)) > queueByteCapacity &&
-        currentByteSize.get() < queueByteCapacity)
+      currentByteSize.get() < queueByteCapacity)
       putLock.synchronized(putLock.notify())
     e
   }
@@ -194,7 +194,7 @@ class ByteBoundedBlockingQueue[E](
             "Iterator does not have a current element.")
         iter.remove()
         if (currentByteSize.addAndGet(
-              -sizeFunction.get(curr)) < queueByteCapacity)
+            -sizeFunction.get(curr)) < queueByteCapacity)
           putLock.synchronized(putLock.notify())
       }
     }

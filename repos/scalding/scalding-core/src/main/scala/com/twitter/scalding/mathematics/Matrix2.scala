@@ -289,7 +289,7 @@ class DefaultMatrixJoiner(sizeRatioThreshold: Long) extends MatrixJoiner2 {
       left: Matrix2[R, C, V],
       right: Matrix2[C, C2, V2]): TypedPipe[(C, ((R, V), (C2, V2)))] = {
     implicit val cOrd: Ordering[C] = left.colOrd
-    val one = left.toTypedPipe.map { case (r, c, v)    => (c, (r, v)) }.group
+    val one = left.toTypedPipe.map { case (r, c, v) => (c, (r, v)) }.group
     val two = right.toTypedPipe.map { case (c, c2, v2) => (c, (c2, v2)) }.group
     val sizeOne = left.sizeHint.total.getOrElse(BigInt(1L))
     val sizeTwo = right.sizeHint.total.getOrElse(BigInt(1L))
@@ -460,7 +460,7 @@ case class Product[R, C, C2, V](
     Product(right.transpose, left.transpose, ring)
   override def negate(implicit g: Group[V]): Product[R, C, C2, V] = {
     if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
-          .getOrElse(BigInt(0L))) {
+        .getOrElse(BigInt(0L))) {
       Product(left, right.negate, ring, expressions)
     } else {
       Product(left.negate, right, ring, expressions)
@@ -610,7 +610,7 @@ case class HadamardProduct[R, C, V](
   override val sizeHint = left.sizeHint #*# right.sizeHint
   override def negate(implicit g: Group[V]): HadamardProduct[R, C, V] =
     if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
-          .getOrElse(BigInt(0L)))
+        .getOrElse(BigInt(0L)))
       HadamardProduct(left, right.negate, ring)
     else
       HadamardProduct(left.negate, right, ring)
@@ -668,13 +668,13 @@ trait Scalar2[V] extends Serializable {
     that match {
       case p @ Product(left, right, _, expressions) =>
         if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
-              .getOrElse(BigInt(0L)))
+            .getOrElse(BigInt(0L)))
           Product(left, (this * right), ring, expressions)(p.joiner)
         else
           Product(this * left, right, ring, expressions)(p.joiner)
       case HadamardProduct(left, right, _) =>
         if (left.sizeHint.total.getOrElse(BigInt(0L)) > right.sizeHint.total
-              .getOrElse(BigInt(0L)))
+            .getOrElse(BigInt(0L)))
           HadamardProduct(left, (this * right), ring)
         else
           HadamardProduct(this * left, right, ring)

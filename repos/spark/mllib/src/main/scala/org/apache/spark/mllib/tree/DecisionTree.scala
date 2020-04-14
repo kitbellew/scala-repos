@@ -429,7 +429,7 @@ object DecisionTree extends Serializable with Logging {
         var splitIndex = 0
         while (splitIndex < numSplits) {
           if (splits(featureIndex)(splitIndex).categories.contains(
-                featureValue)) {
+              featureValue)) {
             agg.featureUpdate(
               leftNodeFeatureOffset,
               splitIndex,
@@ -843,7 +843,7 @@ object DecisionTree extends Serializable with Logging {
     // If left child or right child doesn't satisfy minimum instances per node,
     // then this split is invalid, return invalid information gain stats.
     if ((leftCount < metadata.minInstancesPerNode) ||
-        (rightCount < metadata.minInstancesPerNode)) {
+      (rightCount < metadata.minInstancesPerNode)) {
       return InformationGainStats.invalidInformationGainStats
     }
 

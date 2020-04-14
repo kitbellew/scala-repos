@@ -20,7 +20,6 @@ import scala.Predef._
 /**
   * Nikolay.Tropin
   * 4/23/13
-  *
   */
 class SimplifyBooleanInspection
     extends AbstractInspection(

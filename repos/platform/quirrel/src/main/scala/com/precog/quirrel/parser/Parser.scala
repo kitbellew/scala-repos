@@ -42,7 +42,7 @@ trait Parser extends RegexParsers with Filters with AST {
   def parse(input: LineStream): Set[Expr] = {
     val results = expr(input)
     val successes = results collect { case Success(tree, _) => tree }
-    val failures = results collect { case f: Failure        => f }
+    val failures = results collect { case f: Failure => f }
 
     if (successes.isEmpty)
       handleFailures(failures)

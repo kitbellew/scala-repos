@@ -11,8 +11,7 @@ import org.jetbrains.plugins.scala.lang.parser.ScalaElementTypes._
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
-  * @author Alexander Podkhalyuzin
-  */
+  * @author Alexander Podkhalyuzin */
 
 /*
  * Path ::= StableId
@@ -40,8 +39,8 @@ object Path extends ParserNode with ScalaTokenTypes {
       }
       true
     } else if (lookAhead(builder, kTHIS, tDOT, kTYPE) ||
-               builder.getTokenType == kTHIS &&
-               !lookAhead(builder, kTHIS, tDOT)) {
+      builder.getTokenType == kTHIS &&
+      !lookAhead(builder, kTHIS, tDOT)) {
       val thisMarker = builder.mark
       builder.advanceLexer()
       thisMarker.done(THIS_REFERENCE)

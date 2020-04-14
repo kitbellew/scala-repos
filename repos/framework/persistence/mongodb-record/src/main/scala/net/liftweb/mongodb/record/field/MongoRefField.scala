@@ -40,7 +40,7 @@ import net.liftweb.record.field._
 trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
     extends TypedField[MyType] {
 
-  /** The MongoMetaRecord of the referenced object **/
+  /** The MongoMetaRecord of the referenced object * */
   def refMeta: MongoMetaRecord[RefType]
 
   /**
@@ -77,7 +77,7 @@ trait MongoRefField[RefType <: MongoRecord[RefType], MyType]
       super.setBox(in)
     }
 
-  /** Options for select list **/
+  /** Options for select list * */
   def options: List[(Box[MyType], String)] = Nil
 
   /** Label for the selection item representing Empty, show when this field is optional. Defaults to the empty string. */

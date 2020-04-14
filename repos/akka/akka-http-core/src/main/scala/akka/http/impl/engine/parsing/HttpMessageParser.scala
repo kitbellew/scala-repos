@@ -124,7 +124,7 @@ private[http] abstract class HttpMessageParser[
   def parseProtocol(input: ByteString, cursor: Int): Int = {
     def c(ix: Int) = byteChar(input, cursor + ix)
     if (c(0) == 'H' && c(1) == 'T' && c(2) == 'T' && c(3) == 'P' && c(
-          4) == '/' && c(5) == '1' && c(6) == '.') {
+        4) == '/' && c(5) == '1' && c(6) == '.') {
       protocol = c(7) match {
         case '0' ⇒ `HTTP/1.0`
         case '1' ⇒ `HTTP/1.1`

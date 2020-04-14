@@ -129,5 +129,5 @@ package object scala {
   type throws  = annotation.throws
   type unchecked = annotation.unchecked.unchecked
   type volatile = annotation.volatile
- */
+   */
 }

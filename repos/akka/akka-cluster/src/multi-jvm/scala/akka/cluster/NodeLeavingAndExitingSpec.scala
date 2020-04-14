@@ -49,7 +49,7 @@ abstract class NodeLeavingAndExitingSpec
             def receive = {
               case state: CurrentClusterState ⇒
                 if (state.members.exists(m ⇒
-                      m.address == secondAddess && m.status == Exiting))
+                    m.address == secondAddess && m.status == Exiting))
                   exitingLatch.countDown()
               case MemberExited(m) if m.address == secondAddess ⇒
                 exitingLatch.countDown()

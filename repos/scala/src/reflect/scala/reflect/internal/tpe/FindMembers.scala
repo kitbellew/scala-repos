@@ -105,11 +105,11 @@ trait FindMembers {
             val excl: Long = flags & excluded
             val isExcluded: Boolean = excl != 0L
             if (!isExcluded && isPotentialMember(
-                  sym,
-                  flags,
-                  currentBaseClass,
-                  seenFirstNonRefinementClass,
-                  refinementParents)) {
+                sym,
+                flags,
+                currentBaseClass,
+                seenFirstNonRefinementClass,
+                refinementParents)) {
               if (shortCircuit(sym)) return false
               else addMemberIfNew(sym)
             } else if (excl == DEFERRED) {

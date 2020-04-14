@@ -53,11 +53,11 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
             "generate.equals.and.hashcode.already.defined.warning",
             aClass.qualifiedName)
       if (Messages.showYesNoDialog(
-            project,
-            text,
-            CodeInsightBundle.message(
-              "generate.equals.and.hashcode.already.defined.title"),
-            Messages.getQuestionIcon) == DialogWrapper.OK_EXIT_CODE) {
+          project,
+          text,
+          CodeInsightBundle.message(
+            "generate.equals.and.hashcode.already.defined.title"),
+          Messages.getQuestionIcon) == DialogWrapper.OK_EXIT_CODE) {
         val deletedOk = ApplicationManager.getApplication.runWriteAction(
           new Computable[Boolean] {
             def compute: Boolean = {
@@ -183,8 +183,8 @@ class ScalaGenerateEqualsHandler extends LanguageCodeInsightActionHandler {
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return
     if (!FileDocumentManager.getInstance.requestWriting(
-          editor.getDocument,
-          project)) return
+        editor.getDocument,
+        project)) return
 
     try {
       val aClass = GenerationUtil

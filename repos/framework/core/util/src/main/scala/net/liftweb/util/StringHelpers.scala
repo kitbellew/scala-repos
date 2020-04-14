@@ -42,7 +42,7 @@ trait StringHelpers {
     */
   def unquote(str: String) = {
     if (str != null && str.length >= 2 && str.charAt(0) == '\"' && str.charAt(
-          str.length - 1) == '\"')
+        str.length - 1) == '\"')
       str.substring(1, str.length - 1)
     else
       str

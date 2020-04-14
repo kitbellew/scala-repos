@@ -46,7 +46,6 @@ import java.util.{List => JList}
 import org.slf4j.{LoggerFactory, Logger}
 
 /**
-  *
   * @author Oscar Boykin
   * @author Ian O Connell
   * @author Sam Ritchie

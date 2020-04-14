@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TableRowSpec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TableRowSpec[T]

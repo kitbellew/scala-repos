@@ -461,8 +461,8 @@ class IMain(
         req.defines contains s.companionSymbol) foreach { newSym =>
         val oldSym = replScope lookup newSym.name.companionName
         if (Seq(oldSym, newSym).permutations exists {
-              case Seq(s1, s2) => s1.isClass && s2.isModule
-            }) {
+            case Seq(s1, s2) => s1.isClass && s2.isModule
+          }) {
           replwarn(
             s"warning: previously defined $oldSym is not a companion to $newSym.")
           replwarn(

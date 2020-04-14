@@ -101,7 +101,7 @@ abstract class Pickler extends SubComponent {
       */
     private def localizedOwner(sym: Symbol) =
       if (isLocalToPickle(sym) && !isRootSym(sym) && !isLocalToPickle(
-            sym.owner))
+          sym.owner))
         // don't use a class as the localized owner for type parameters that are not owned by a class: those are not instantiated by asSeenFrom
         // however, they would suddenly be considered by asSeenFrom if their localized owner became a class (causing the crashes of #4079, #2741)
         (if ((sym.isTypeParameter || sym.isValueParameter) && !sym.owner.isClass)
@@ -211,7 +211,7 @@ abstract class Pickler extends SubComponent {
             putChildren(sym, children.toList sortBy (_.sealedSortName))
           }
           for (annot <- (sym.annotations filter (ann =>
-                   ann.isStatic && !ann.isErroneous)).reverse)
+                ann.isStatic && !ann.isErroneous)).reverse)
             putAnnotation(sym, annot)
         } else if (sym != NoSymbol) {
           putEntry(if (sym.isModuleClass) sym.name.toTermName else sym.name)

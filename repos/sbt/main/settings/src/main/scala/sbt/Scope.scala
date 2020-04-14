@@ -337,5 +337,5 @@ object Scope {
       GlobalScope :: Nil
     else
       for (c <- withGlobalAxis(scope.config); t <- withGlobalAxis(scope.task);
-           e <- withGlobalAxis(scope.extra)) yield Scope(Global, c, t, e)
+        e <- withGlobalAxis(scope.extra)) yield Scope(Global, c, t, e)
 }

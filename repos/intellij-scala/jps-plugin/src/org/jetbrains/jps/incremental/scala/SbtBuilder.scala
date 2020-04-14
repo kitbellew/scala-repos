@@ -136,7 +136,7 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
         new Processor[File] {
           def process(file: File) = {
             if (file.isFile && filter.accept(file) && !excludeIndex.isExcluded(
-                  file)) {
+                file)) {
               ResourceUpdater.updateResource(context, root, file, outputRoot)
             }
             true
@@ -213,7 +213,7 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
     }
 
     for (target <- chunk.getTargets.asScala ++ sourceTargets;
-         root <- rootIndex.getTargetRoots(target, context).asScala) {
+      root <- rootIndex.getTargetRoots(target, context).asScala) {
       FileUtil.processFilesRecursively(
         root.getRootFile,
         new Processor[File] {

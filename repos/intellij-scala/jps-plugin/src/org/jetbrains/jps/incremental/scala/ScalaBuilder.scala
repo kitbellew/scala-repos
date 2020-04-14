@@ -123,7 +123,7 @@ object ScalaBuilder {
       case Some(`incrType`) => //same incremental type, nothing to be done
       case Some(_) if isMakeProject(context) =>
         if (ScalaBuilder.isScalaProject(
-              context.getProjectDescriptor.getProject)) {
+            context.getProjectDescriptor.getProject)) {
           cleanCaches()
           setPreviousIncrementalType(incrType)
           context.processMessage(
@@ -134,7 +134,7 @@ object ScalaBuilder {
         }
       case Some(_) =>
         if (ScalaBuilder.isScalaProject(
-              context.getProjectDescriptor.getProject)) {
+            context.getProjectDescriptor.getProject)) {
           throw new ProjectBuildException(
             "scala: type of incremental compiler has been changed, full rebuild is required")
         }
@@ -225,7 +225,7 @@ object ScalaBuilder {
       context.getProjectDescriptor.getModel.getGlobal)
 
     if (settings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
-          .get(context) != null) {
+        .get(context) != null) {
       cleanLocalServerCache()
       new RemoteServer(
         InetAddress.getByName(null),

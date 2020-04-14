@@ -396,7 +396,7 @@ object ClusterEvent {
       val newConvergence = newGossip.convergence(selfUniqueAddress)
       val newSeenBy = newGossip.seenBy
       if (newConvergence != oldGossip.convergence(
-            selfUniqueAddress) || newSeenBy != oldGossip.seenBy)
+          selfUniqueAddress) || newSeenBy != oldGossip.seenBy)
         List(SeenChanged(newConvergence, newSeenBy.map(_.address)))
       else Nil
     }

@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TextFieldTableCell Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TextFieldTableCellSpec[S, T]

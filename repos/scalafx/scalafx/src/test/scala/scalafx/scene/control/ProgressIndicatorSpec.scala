@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ProgressIndicator Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ProgressIndicatorSpec

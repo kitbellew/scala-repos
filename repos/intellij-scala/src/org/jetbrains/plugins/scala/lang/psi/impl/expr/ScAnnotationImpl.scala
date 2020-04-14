@@ -22,8 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008
-  */
+  * Date: 07.03.2008 */
 
 class ScAnnotationImpl private (
     stub: StubElement[ScAnnotation],
@@ -131,7 +130,7 @@ class ScAnnotationImpl private (
           case arg: ScArgumentExprList =>
             var prev = elem.getPrevSibling
             while (prev != null && (ScalaPsiUtil.isLineTerminator(prev) || prev
-                     .isInstanceOf[PsiWhiteSpace]))
+                .isInstanceOf[PsiWhiteSpace]))
               prev = prev.getPrevSibling
             if (prev != null && prev.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
               elem.delete()
@@ -139,7 +138,7 @@ class ScAnnotationImpl private (
             } else {
               var next = elem.getNextSibling
               while (next != null && (ScalaPsiUtil.isLineTerminator(
-                       next) || next.isInstanceOf[PsiWhiteSpace]))
+                  next) || next.isInstanceOf[PsiWhiteSpace]))
                 next = next.getNextSibling
               if (next != null && next.getNode.getElementType == ScalaTokenTypes.tCOMMA) {
                 elem.delete()

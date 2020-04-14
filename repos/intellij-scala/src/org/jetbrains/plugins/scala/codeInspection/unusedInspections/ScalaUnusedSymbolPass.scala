@@ -197,7 +197,7 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
           }
           holder.retrieveUnusedReferencesInfo(runnable)
           if (!used && state.config.checkLocalUnused && !isUnusedSymbolSuppressed(
-                decElem)) {
+              decElem)) {
             hasAtLeastOneUnusedHighlight = true
             val elementTypeDesc = findUsageProvider.getType(declElementHolder)
             val severity = state.config.localUnusedSeverity
@@ -216,7 +216,7 @@ class ScalaUnusedSymbolPass(file: PsiFile, editor: Editor)
       }
     }
     if (isVar && !hasAtLeastOneAssign && !hasAtLeastOneUnusedHighlight && !isVarCouldBeValSuppressed(
-          declElementHolder)) {
+        declElementHolder)) {
       val (message, nameOpt) = declElementHolder.declaredElements match {
         case Seq(n: ScNamedElement) =>
           ("var '%s' could be a val".format(n.name), Some(n.name))

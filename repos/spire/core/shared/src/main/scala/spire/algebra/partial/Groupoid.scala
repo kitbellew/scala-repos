@@ -13,7 +13,6 @@ import spire.syntax.eq._
   * (iii) `a.inverse |+|? a` and `a |+|? a.inverse` are always defined
   *  (iv) if `a |+|? b`, then `((a |+|? b).get |+|? b.inverse).get === a` and
   *       `((a.inverse |+|? a).get |+|? b) === b`
-  *
   */
 trait Groupoid[A] extends Any with Semigroupoid[A] {
 

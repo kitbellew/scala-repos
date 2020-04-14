@@ -40,9 +40,9 @@ class GammaTest
   implicit def arbParameter =
     Arbitrary {
       for (shape <- arbitrary[Double].map {
-             _.abs % 200.0 + 0.2
-           }; // Gamma pdf at 0 not defined when shape == 1
-           scale <- arbitrary[Double].map { _.abs % 8.0 + 1.0 })
+          _.abs % 200.0 + 0.2
+        }; // Gamma pdf at 0 not defined when shape == 1
+        scale <- arbitrary[Double].map { _.abs % 8.0 + 1.0 })
         yield (shape, scale);
     }
 
@@ -59,9 +59,9 @@ class GammaTest
   implicit def arbDistr =
     Arbitrary {
       for (shape <- arbitrary[Double].map { x =>
-             math.abs(x) % 1000.0 + 1.1
-           }; // Gamma pdf at 0 not defined when shape == 1
-           scale <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.0 })
+          math.abs(x) % 1000.0 + 1.1
+        }; // Gamma pdf at 0 not defined when shape == 1
+        scale <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.0 })
         yield new Gamma(shape, scale)(RandBasis.mt0)
     }
 

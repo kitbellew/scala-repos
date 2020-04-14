@@ -393,7 +393,6 @@ private[sql] class JDBCRDD(
 
   /**
     * Runs the SQL query against the JDBC driver.
-    *
     */
   override def compute(
       thePart: Partition,

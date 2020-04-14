@@ -131,8 +131,8 @@ trait Parsers { self: Quasiquotes =>
           implicitmod: Int,
           caseParam: Boolean): ValDef =
         if (isHole && lookingAhead {
-              in.token == COMMA || in.token == RPAREN
-            }) {
+            in.token == COMMA || in.token == RPAREN
+          }) {
           ParamPlaceholder(implicitmod, ident())
         } else super.param(owner, implicitmod, caseParam)
 
@@ -146,8 +146,8 @@ trait Parsers { self: Quasiquotes =>
       // q"foo match { case $x }"
       override def caseClause(): CaseDef =
         if (isHole && lookingAhead {
-              in.token == CASE || in.token == RBRACE || in.token == SEMI
-            }) {
+            in.token == CASE || in.token == RBRACE || in.token == SEMI
+          }) {
           val c = CasePlaceholder(ident())
           while (in.token == SEMI) in.nextToken()
           c
@@ -232,8 +232,8 @@ trait Parsers { self: Quasiquotes =>
 
       override def enumerator(isFirst: Boolean, allowNestedIf: Boolean = true) =
         if (isHole && lookingAhead {
-              in.token == EOF || in.token == RPAREN || isStatSep
-            }) {
+            in.token == EOF || in.token == RPAREN || isStatSep
+          }) {
           val res = ForEnumPlaceholder(in.name) :: Nil
           in.nextToken()
           res

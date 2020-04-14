@@ -417,10 +417,8 @@ abstract class GraphStageLogic private[stream] (
     val connection = conn(in)
     // Fast path
     if ((interpreter.portStates(
-          connection) & (InReady | InFailed)) == InReady &&
-        (interpreter
-          .connectionSlots(connection)
-          .asInstanceOf[AnyRef] ne Empty)) {
+        connection) & (InReady | InFailed)) == InReady &&
+      (interpreter.connectionSlots(connection).asInstanceOf[AnyRef] ne Empty)) {
       val elem = interpreter.connectionSlots(connection)
       interpreter.connectionSlots(connection) = Empty
       elem.asInstanceOf[T]
@@ -461,7 +459,7 @@ abstract class GraphStageLogic private[stream] (
     else {
       // Slow path on failure
       if ((interpreter.portStates(
-            conn(in)) & (InReady | InFailed)) == (InReady | InFailed)) {
+          conn(in)) & (InReady | InFailed)) == (InReady | InFailed)) {
         interpreter.connectionSlots(connection) match {
           case Failed(_, elem) ⇒ elem.asInstanceOf[AnyRef] ne Empty
           case _ ⇒
@@ -484,7 +482,7 @@ abstract class GraphStageLogic private[stream] (
     */
   final protected def push[T](out: Outlet[T], elem: T): Unit = {
     if ((interpreter.portStates(
-          conn(out)) & (OutReady | OutClosed)) == OutReady && (elem != null)) {
+        conn(out)) & (OutReady | OutClosed)) == OutReady && (elem != null)) {
       interpreter.push(conn(out), elem)
     } else {
       // Detailed error information should not add overhead to the hot path
@@ -681,7 +679,9 @@ abstract class GraphStageLogic private[stream] (
   private final class Reading[T](
       in: Inlet[T],
       private var n: Int,
-      val previous: InHandler)(andThen: T ⇒ Unit, onComplete: () ⇒ Unit)
+      val previous: InHandler)(
+      andThen: T ⇒ Unit,
+      onComplete: () ⇒ Unit)
       extends InHandler {
     require(n > 0, "number of elements to read must be positive!")
 

@@ -42,7 +42,7 @@ sealed abstract class MarkdownLine(val prefix: String, val payload: String) {
   def fullLine = prefix + payload
 }
 
-/**Represents lines of verbatim xml.
+/** Represents lines of verbatim xml.
   * Actually this class is a little cheat, as it represents multiple lines.
   * But it is a token that is created when "parsing with a line scope", so it is not too bad.
   */

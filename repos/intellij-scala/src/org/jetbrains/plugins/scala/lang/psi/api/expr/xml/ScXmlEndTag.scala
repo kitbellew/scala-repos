@@ -7,13 +7,12 @@ package xml
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 21.04.2008
-  */
+  * Date: 21.04.2008 */
 
 trait ScXmlEndTag extends ScXmlPairedTag {
   def getOpeningTag: ScXmlStartTag = {
     if (getParent != null && getParent.getFirstChild
-          .isInstanceOf[ScXmlStartTag]) {
+        .isInstanceOf[ScXmlStartTag]) {
       return getParent.getFirstChild.asInstanceOf[ScXmlStartTag]
     }
     null

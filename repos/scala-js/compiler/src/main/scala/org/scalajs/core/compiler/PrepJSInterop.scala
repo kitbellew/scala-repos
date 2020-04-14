@@ -504,7 +504,7 @@ abstract class PrepJSInterop
           "Package objects inheriting from js.Any are deprecated. " +
             "Use a normal object instead.")
       } else if (isJSNative && !isJSAnonFun &&
-                 !sym.hasAnnotation(JSNativeAnnotation)) {
+        !sym.hasAnnotation(JSNativeAnnotation)) {
         reporter.warning(
           implDef.pos,
           "Classes, traits and objects inheriting from js.Any should be " +
@@ -616,7 +616,7 @@ abstract class PrepJSInterop
 
       // Check that only native objects extend js.GlobalScope
       if (isJSGlobalScope(implDef) && implDef.symbol != JSGlobalScopeClass &&
-          (!sym.isModuleClass || !isJSNative)) {
+        (!sym.isModuleClass || !isJSNative)) {
         reporter.error(
           implDef.pos,
           "Only native objects may extend js.GlobalScope")
@@ -811,7 +811,7 @@ abstract class PrepJSInterop
 
         // private[Scope] methods must be final
         if (sym.isMethod && (sym.hasAccessBoundary && !sym.isProtected) &&
-            !sym.isFinal && !sym.isClassConstructor) {
+          !sym.isFinal && !sym.isClassConstructor) {
           reporter.error(
             tree.pos,
             "Qualified private members in Scala.js-defined JS classes " +
@@ -833,17 +833,17 @@ abstract class PrepJSInterop
       }
 
       if (sym.isPrimaryConstructor || sym.isValueParameter ||
-          sym.isParamWithDefault || sym.isAccessor ||
-          sym.isParamAccessor || sym.isDeferred || sym.isSynthetic ||
-          AllJSFunctionClasses.contains(sym.owner) ||
-          (enclosingOwner is OwnerKind.JSNonNative)) {
+        sym.isParamWithDefault || sym.isAccessor ||
+        sym.isParamAccessor || sym.isDeferred || sym.isSynthetic ||
+        AllJSFunctionClasses.contains(sym.owner) ||
+        (enclosingOwner is OwnerKind.JSNonNative)) {
         /* Ignore (i.e. allow) primary ctor, parameters, default parameter
-       * getters, accessors, param accessors, abstract members, synthetic
-       * methods (to avoid double errors with case classes, e.g. generated
-       * copy method), js.Functions and js.ThisFunctions (they need abstract
-       * methods for SAM treatment), and any member of a Scala.js-defined
-       * JS class/trait.
-       */
+         * getters, accessors, param accessors, abstract members, synthetic
+         * methods (to avoid double errors with case classes, e.g. generated
+         * copy method), js.Functions and js.ThisFunctions (they need abstract
+         * methods for SAM treatment), and any member of a Scala.js-defined
+         * JS class/trait.
+         */
       } else if (jsPrimitives.isJavaScriptPrimitive(sym)) {
         // Force rhs of a primitive to be `sys.error("stub")` except for the
         // js.native primitive which displays an elaborate error message
@@ -884,7 +884,7 @@ abstract class PrepJSInterop
         }
 
         if (sym.tpe.resultType.typeSymbol == NothingClass &&
-            tree.tpt.asInstanceOf[TypeTree].original == null) {
+          tree.tpt.asInstanceOf[TypeTree].original == null) {
           // Warn if resultType is Nothing and not ascribed
           val name = sym.name.decoded.trim
           reporter.warning(

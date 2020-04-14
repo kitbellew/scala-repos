@@ -200,7 +200,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       methodDesc: Symbol => String): Option[EnclosingMethodEntry] = {
     // trait impl classes are always top-level, see comment in BTypes
     if (isAnonymousOrLocalClass(
-          classSym) && !considerAsTopLevelImplementationArtifact(classSym)) {
+        classSym) && !considerAsTopLevelImplementationArtifact(classSym)) {
       val enclosingClass = enclosingClassForEnclosingMethodAttribute(classSym)
       val methodOpt = enclosingMethodForEnclosingMethodAttribute(
         classSym) match {
@@ -500,7 +500,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
    */
   def fieldSymbols(cls: Symbol): List[Symbol] = {
     for (f <- cls.info.decls.toList;
-         if !f.isMethod && f.isTerm && !f.isModule) yield f
+      if !f.isMethod && f.isTerm && !f.isModule) yield f
   }
 
   /*
@@ -911,7 +911,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       val annotationss = pannotss map (_ filter shouldEmitAnnotation)
       if (annotationss forall (_.isEmpty)) return
       for ((annots, idx) <- annotationss.zipWithIndex;
-           annot <- annots) {
+        annot <- annots) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
         val pannVisitor: asm.AnnotationVisitor =
@@ -1011,7 +1011,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         val normalizedTpe = enteringErasure(erasure.prepareSigMap(memberTpe))
         val bytecodeTpe = owner.thisType.memberInfo(sym)
         if (!sym.isType && !sym.isConstructor && !(erasure.erasure(sym)(
-              normalizedTpe) =:= bytecodeTpe)) {
+            normalizedTpe) =:= bytecodeTpe)) {
           reporter.warning(
             sym.pos,
             """|compiler bug: created generic signature for %s in %s that does not conform to its erasure
@@ -1185,8 +1185,8 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         s"Potentially conflicting names for forwarders: $conflictingNames")
 
       for (m <- moduleClass.info.membersBasedOnFlags(
-             BCodeHelpers.ExcludedForwarderFlags,
-             symtab.Flags.METHOD)) {
+          BCodeHelpers.ExcludedForwarderFlags,
+          symtab.Flags.METHOD)) {
         if (m.isType || m.isDeferred || (m.owner eq definitions.ObjectClass) || m.isConstructor)
           debuglog(
             s"No forwarder for '$m' from $jclassName to '$moduleClass': ${m.isType} || ${m.isDeferred} || ${m.owner eq definitions.ObjectClass} || ${m.isConstructor}")
@@ -1347,9 +1347,9 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       var fieldList = List[String]()
 
       for (f <- fieldSymbols if f.hasGetter;
-           g = f.getterIn(cls);
-           s = f.setterIn(cls);
-           if g.isPublic && !(f.name startsWith "$")) {
+        g = f.getterIn(cls);
+        s = f.setterIn(cls);
+        if g.isPublic && !(f.name startsWith "$")) {
         // inserting $outer breaks the bean
         fieldList =
           javaSimpleName(f) :: javaSimpleName(g) :: (if (s != NoSymbol)
@@ -1359,11 +1359,11 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
 
       val methodList: List[String] =
         for (m <- methodSymbols
-             if !m.isConstructor &&
-               m.isPublic &&
-               !(m.name startsWith "$") &&
-               !m.isGetter &&
-               !m.isSetter)
+          if !m.isConstructor &&
+            m.isPublic &&
+            !(m.name startsWith "$") &&
+            !m.isGetter &&
+            !m.isSetter)
           yield javaSimpleName(m)
 
       val constructor = beanInfoClass.visitMethod(

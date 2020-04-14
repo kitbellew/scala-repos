@@ -14,7 +14,7 @@ class ScalatraAtmosphereFramework(
   def setupTomcat7() {
     if (!getAsyncSupport.supportWebSocket) {
       if (!isCometSupportSpecified && !isCometSupportConfigured.getAndSet(
-            true)) {
+          true)) {
         asyncSupport.synchronized {
           asyncSupport = new Tomcat7CometSupport(config)
         }
@@ -25,7 +25,7 @@ class ScalatraAtmosphereFramework(
   def setupTomcat() {
     if (!getAsyncSupport.supportWebSocket) {
       if (!isCometSupportSpecified && !isCometSupportConfigured.getAndSet(
-            true)) {
+          true)) {
         asyncSupport.synchronized {
           asyncSupport = new TomcatCometSupport(config)
         }

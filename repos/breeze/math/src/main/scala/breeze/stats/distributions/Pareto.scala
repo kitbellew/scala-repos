@@ -6,7 +6,7 @@ import breeze.numerics.{pow, exp, log}
   * http://en.wikipedia.org/wiki/Laplace_distribution
   *
   * @author dlwh
- **/
+  */
 case class Pareto(scale: Double, shape: Double)(implicit rand: RandBasis = Rand)
     extends ContinuousDistr[Double]
     with Moments[Double, Double]

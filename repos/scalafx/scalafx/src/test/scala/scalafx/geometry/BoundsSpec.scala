@@ -37,7 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Bounds Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BoundsSpec

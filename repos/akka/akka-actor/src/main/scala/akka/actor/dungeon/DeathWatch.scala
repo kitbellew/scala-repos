@@ -105,8 +105,8 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
         // Don't need to send to parent parent since it receives a DWN by default
         def sendTerminated(ifLocal: Boolean)(watcher: ActorRef): Unit =
           if (watcher
-                .asInstanceOf[ActorRefScope]
-                .isLocal == ifLocal && watcher != parent)
+              .asInstanceOf[ActorRefScope]
+              .isLocal == ifLocal && watcher != parent)
             watcher
               .asInstanceOf[InternalActorRef]
               .sendSystemMessage(

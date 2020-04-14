@@ -84,7 +84,7 @@ trait Holes { self: Quasiquotes =>
       if (isBottomType(strippedTpe)) cantSplice()
       else if (isNativeType(strippedTpe)) {
         if (strippedRank != NoDot && !(strippedTpe <:< treeType) && !isLiftableType(
-              strippedTpe)) cantSplice()
+            strippedTpe)) cantSplice()
         else (strippedTpe, iterableTypeFromRank(annotatedRank, strippedTpe))
       } else if (isLiftableType(strippedTpe))
         (strippedTpe, iterableTypeFromRank(annotatedRank, treeType))

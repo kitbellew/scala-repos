@@ -164,8 +164,8 @@ trait ScReferenceElement
             }
 
             if (!break && td.isInstanceOf[ScClass] && td
-                  .asInstanceOf[ScClass]
-                  .isCase && method.isSynthetic) {
+                .asInstanceOf[ScClass]
+                .isCase && method.isSynthetic) {
               ScalaPsiUtil.getCompanionModule(td) match {
                 case Some(typeDef) => return isReferenceTo(typeDef)
                 case _             =>
@@ -300,8 +300,8 @@ trait ScReferenceElement
       if (qualName.contains(".")) {
         var index =
           if (ScalaCodeStyleSettings
-                .getInstance(getProject)
-                .isImportShortestPathForAmbiguousReferences) parts.length - 2
+              .getInstance(getProject)
+              .isImportShortestPathForAmbiguousReferences) parts.length - 2
           else 0
         while (index >= 0) {
           val packagePart = parts.take(index + 1).mkString(".")

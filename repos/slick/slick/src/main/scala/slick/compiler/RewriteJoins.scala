@@ -208,7 +208,7 @@ class RewriteJoins extends Phase {
         }
         logger.debug("New references for predicate: " + newDefs.mkString(", "))
         val allRefs = foundRefs.collect {
-          case (p, (_, Some(s)))            => (p, s)
+          case (p, (_, Some(s))) => (p, s)
         } ++ newDefs.map { case (p, (_, s)) => (p, s) }
         logger.debug(
           "All reference mappings for predicate: " + allRefs.mkString(", "))
@@ -340,7 +340,7 @@ class RewriteJoins extends Phase {
         "Eliminated illegal refs [" + illegal.mkString(", ") + "] in:",
         j2)
       val m = l1m.map { case (p, n) => (ElementSymbol(1) :: p, n) } ++
-        r1m.map { case (p, n)       => (ElementSymbol(2) :: p, n) }
+        r1m.map { case (p, n) => (ElementSymbol(2) :: p, n) }
       val m2 = m.mapValues(
         _.replace(
           {

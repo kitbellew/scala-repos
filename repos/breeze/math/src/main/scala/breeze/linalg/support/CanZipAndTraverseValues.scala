@@ -26,7 +26,7 @@ import breeze.linalg.support.CanZipAndTraverseValues.PairValuesVisitor
   */
 trait CanZipAndTraverseValues[From, From2, A, B] {
 
-  /**Traverses all values from the given collection. */
+  /** Traverses all values from the given collection. */
   def traverse(from1: From, from2: From2, fn: PairValuesVisitor[A, B]): Unit
 }
 

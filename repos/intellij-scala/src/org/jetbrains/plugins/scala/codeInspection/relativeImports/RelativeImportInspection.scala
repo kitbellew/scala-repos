@@ -38,8 +38,8 @@ class RelativeImportInspection
         def applyProblem(qualifiedName: String) {
           val fixes = new ArrayBuffer[LocalQuickFix]()
           if (!ScalaCodeStyleSettings
-                .getInstance(q.getProject)
-                .isAddFullQualifiedImports) {
+              .getInstance(q.getProject)
+              .isAddFullQualifiedImports) {
             fixes += new EnableFullQualifiedImports()
           }
           fixes += new MakeFullQualifiedImportFix(q, qualifiedName)

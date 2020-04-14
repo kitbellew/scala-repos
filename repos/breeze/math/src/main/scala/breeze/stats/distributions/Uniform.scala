@@ -3,7 +3,6 @@ package breeze.stats.distributions
 import breeze.numerics._
 
 /**
-  *
   * @author dlwh
   */
 

@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * SepiaTone Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SepiaToneSpec

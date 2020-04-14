@@ -38,7 +38,7 @@ class HBPEvents(
 
   def checkTableExists(appId: Int, channelId: Option[Int]): Unit = {
     if (!client.admin.tableExists(
-          HBEventsUtil.tableName(namespace, appId, channelId))) {
+        HBEventsUtil.tableName(namespace, appId, channelId))) {
       if (channelId.nonEmpty) {
         logger.error(
           s"The appId $appId with channelId $channelId does not exist." +

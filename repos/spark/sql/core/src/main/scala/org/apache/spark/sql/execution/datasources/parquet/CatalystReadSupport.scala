@@ -174,7 +174,7 @@ private[parquet] object CatalystReadSupport {
     // Unannotated repeated group should be interpreted as required list of required element, so
     // list element type is just the group itself.  Clip it.
     if (parquetList.getOriginalType == null && parquetList.isRepetition(
-          Repetition.REPEATED)) {
+        Repetition.REPEATED)) {
       clipParquetType(parquetList, elementType)
     } else {
       assert(
@@ -204,8 +204,8 @@ private[parquet] object CatalystReadSupport {
       // Build a new LIST-annotated group with clipped `repeatedGroup` as element type and the
       // only field.
       if (repeatedGroup.getFieldCount > 1 ||
-          repeatedGroup.getName == "array" ||
-          repeatedGroup.getName == parquetList.getName + "_tuple") {
+        repeatedGroup.getName == "array" ||
+        repeatedGroup.getName == parquetList.getName + "_tuple") {
         Types
           .buildGroup(parquetList.getRepetition)
           .as(OriginalType.LIST)

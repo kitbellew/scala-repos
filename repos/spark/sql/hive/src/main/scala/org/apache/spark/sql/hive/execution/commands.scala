@@ -122,7 +122,7 @@ private[hive] case class CreateMetastoreDataSource(
           s"metastore. Metastore only accepts table name containing characters, numbers and _.")
     }
     if (tableIdent.database.isDefined && !MetaStoreUtils.validateName(
-          tableIdent.database.get)) {
+        tableIdent.database.get)) {
       throw new AnalysisException(
         s"Database name ${tableIdent.database.get} is not a valid name " +
           s"for metastore. Metastore only accepts database name containing " +
@@ -192,7 +192,7 @@ private[hive] case class CreateMetastoreDataSourceAsSelect(
           s"metastore. Metastore only accepts table name containing characters, numbers and _.")
     }
     if (tableIdent.database.isDefined && !MetaStoreUtils.validateName(
-          tableIdent.database.get)) {
+        tableIdent.database.get)) {
       throw new AnalysisException(
         s"Database name ${tableIdent.database.get} is not a valid name " +
           s"for metastore. Metastore only accepts database name containing " +

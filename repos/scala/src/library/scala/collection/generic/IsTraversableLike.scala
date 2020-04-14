@@ -52,7 +52,7 @@ package generic
   *  // See it in action!
   *  List(1, 2, 3).mapReduce(_ * 2)(_ + _) // res0: Int = 12
   *  "Yeah, well, you know, that's just, like, your opinion, man.".mapReduce(x => 1)(_ + _) // res1: Int = 59
-  *}}}
+  * }}}
   *
   * Here, we begin by creating a class `ExtensionMethods` which contains our
   * `mapReduce` extension method. Note that `ExtensionMethods` takes a constructor
@@ -94,13 +94,13 @@ package generic
   * Below is an example of an implementation of the `IsTraversableLike` trait
   * where the `Repr` type is `String`.
   *
-  *{{{
+  * {{{
   * implicit val stringRepr: IsTraversableLike[String] { type A = Char } =
   *   new IsTraversableLike[String] {
   *     type A = Char
   *     val conversion = implicitly[String => GenTraversableLike[Char, String]]
   *   }
-  *}}}
+  * }}}
   *
   * @author Miles Sabin
   * @author J. Suereth

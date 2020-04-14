@@ -259,7 +259,6 @@ class SubFlow[-In, +Out, +Mat](
     * '''Completes when''' upstream completes
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def filter(p: function.Predicate[Out]): SubFlow[In, Out, Mat] =
     new SubFlow(delegate.filter(p.test))
@@ -635,7 +634,6 @@ class SubFlow[-In, +Out, +Mat](
     * '''Completes when''' upstream completes or upstream failed with exception pf can handle
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def recover[T >: Out](
       pf: PartialFunction[Throwable, T]): SubFlow[In, T, Mat] =
@@ -657,7 +655,6 @@ class SubFlow[-In, +Out, +Mat](
     * '''Completes when''' upstream completes or upstream failed with exception pf can handle
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
@@ -727,7 +724,6 @@ class SubFlow[-In, +Out, +Mat](
     *
     * @param seed Provides the first state for a conflated value using the first unconsumed element as a start
     * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-    *
     */
   def conflateWithSeed[S](
       seed: function.Function[Out, S],
@@ -756,7 +752,6 @@ class SubFlow[-In, +Out, +Mat](
     * see also [[SubFlow.conflateWithSeed]] [[SubFlow.batch]] [[SubFlow.batchWeighted]]
     *
     * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-    *
     */
   def conflate[O2 >: Out](
       aggregate: function.Function2[O2, O2, O2]): SubFlow[In, O2, Mat] =
@@ -931,7 +926,6 @@ class SubFlow[-In, +Out, +Mat](
     * '''Completes when''' upstream completes and all consumed substreams complete
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def flatMapConcat[T, M](
       f: function.Function[Out, _ <: Graph[SourceShape[T], M]])

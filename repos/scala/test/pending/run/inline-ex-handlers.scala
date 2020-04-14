@@ -245,24 +245,22 @@ object TestInlineHandlersSynchronizedWithStack {
 }
 
 /** This test should trigger a bug in the dead code elimination phase - it actually crashes ICodeCheckers
-object TestInlineHandlersSynchronizedWithStackDoubleThrow {
-
-  def main(args: Array[String]): Unit = {
-    println("TestInlineHandlersSynchronizedWithStackDoubleThrow")
-    var result = "a"
-
-    // any exception thrown here will be caught by a default handler that does MONTIOR_EXIT on result :)
-    result += result.synchronized { throw MyException(result) }
-    result += result.synchronized { throw MyException(result) }
-
-    result.length
-  }
-}
-  */
+  * object TestInlineHandlersSynchronizedWithStackDoubleThrow {
+  *
+  *  def main(args: Array[String]): Unit = {
+  *    println("TestInlineHandlersSynchronizedWithStackDoubleThrow")
+  *    var result = "a"
+  *
+  *    // any exception thrown here will be caught by a default handler that does MONTIOR_EXIT on result :)
+  *    result += result.synchronized { throw MyException(result) }
+  *    result += result.synchronized { throw MyException(result) }
+  *
+  *    result.length
+  *  }
+  * } */
 
 /** This test should check the preciseness of the inliner: it should not do any inlining here
-  * as it is not able to discern between the different exceptions
-  */
+  * as it is not able to discern between the different exceptions */
 object TestInlineHandlersPreciseness {
 
   def main(args: Array[String]): Unit = {

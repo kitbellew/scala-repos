@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * RadialGradient Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class RadialGradientSpec

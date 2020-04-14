@@ -12,7 +12,7 @@ import breeze.linalg.support.CanTraverseKeyValuePairs.KeyValuePairsVisitor
   * `where(cond, a, b)` returns the value from a if cond is non-zero, and the value from b otherwise
   *
   * @author dlwh
- **/
+  */
 object where extends UFunc {
 
   implicit def whereFromTraverseKeyValuePairs[T, K, V](implicit

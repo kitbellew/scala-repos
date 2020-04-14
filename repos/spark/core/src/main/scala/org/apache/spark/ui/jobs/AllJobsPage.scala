@@ -106,7 +106,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
            |     'Submitted: ${UIUtils.formatDate(new Date(submissionTime))}' +
            |     '${if (status != JobExecutionStatus.RUNNING) {
             s"""<br>Completed: ${UIUtils.formatDate(
-              new Date(completionTime))}"""
+                 new Date(completionTime))}"""
           } else {
             ""
           }}">' +

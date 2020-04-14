@@ -93,7 +93,7 @@ class ScalaExplicitlyImportedWeigher extends ProximityWeigher {
       }
     }
     if (qualNoPoint != null && qualNoPoint == "scala" ||
-        qualNoPoint == "java.lang" || qualNoPoint == "scala.Predef") {
+      qualNoPoint == "java.lang" || qualNoPoint == "scala.Predef") {
       if (qualNoPoint == "java.lang") return Some(1)
       else return Some(2)
     }

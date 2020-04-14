@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Label Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class LabelSpec

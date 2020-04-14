@@ -17,7 +17,7 @@ object Test {
   // `EngineTools1` are undetermined, and are now treated as type variables
   // in the expected type of the closure argument to `withFilter`.
   for (path: List[Any] <-
-         (null: Engine1).asRequirement.pathsIncludingSelf.toList) {
+      (null: Engine1).asRequirement.pathsIncludingSelf.toList) {
     ???
   }
 }

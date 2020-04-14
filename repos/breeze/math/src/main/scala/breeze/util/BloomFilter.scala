@@ -57,7 +57,6 @@ class BloomFilter[@specialized(Int, Long) T](
   def contains(o: T) = apply(o)
 
   /**
-    *
     * Calculates the load of the bloom filter. If this is near 1, there will be lots of false positives.
     *
     * @return the fraction of bits that are set

@@ -119,7 +119,7 @@ abstract class ExplicitOuter
     * }}}
     *
     * See SI-7242.
-   }}
+    *   }}
     */
   private def skipMixinOuterAccessor(clazz: Symbol, mixin: Symbol) = {
     // Reliant on the current scheme for name expansion, the expanded name
@@ -226,7 +226,7 @@ abstract class ExplicitOuter
         // class needs to have a common naming scheme, independently of whether
         // the field was accessed from an inner class or not. See #2946
         if (sym.owner.isTrait && sym.isLocalToThis &&
-            (sym.getterIn(sym.owner) == NoSymbol))
+          (sym.getterIn(sym.owner) == NoSymbol))
           sym.makeNotPrivate(sym.owner)
         tp
     }
@@ -282,9 +282,9 @@ abstract class ExplicitOuter
         // otherwise it is NoSymbol
         val outerFld =
           if (outerAcc.owner == currentClass &&
-              !outerAcc.owner.isTrait &&
-              base.tpe =:= currentClass.thisType &&
-              outerAcc.owner.isEffectivelyFinal)
+            !outerAcc.owner.isTrait &&
+            base.tpe =:= currentClass.thisType &&
+            outerAcc.owner.isEffectivelyFinal)
             outerField(currentClass) suchThat (_.owner == currentClass)
           else
             NoSymbol
@@ -451,8 +451,8 @@ abstract class ExplicitOuter
               if (!currentClass.isTrait)
                 for (mc <- currentClass.mixinClasses)
                   if (outerAccessor(mc) != NoSymbol && !skipMixinOuterAccessor(
-                        currentClass,
-                        mc))
+                      currentClass,
+                      mc))
                     newDefs += mixinOuterAccessorDef(mc)
             }
           }
@@ -509,8 +509,8 @@ abstract class ExplicitOuter
 
           val qsym = qual.tpe.widen.typeSymbol
           if (sym.isProtected && //(4)
-              (qsym.isTrait || !(qual
-                .isInstanceOf[Super] || (qsym isSubClass currentClass))))
+            (qsym.isTrait || !(qual
+              .isInstanceOf[Super] || (qsym isSubClass currentClass))))
             sym setFlag notPROTECTED
           super.transform(tree)
 
@@ -541,9 +541,9 @@ abstract class ExplicitOuter
           val acc = outerAccessor(outerFor)
 
           if (acc == NoSymbol ||
-              // since we can't fix SI-4440 properly (we must drop the outer accessors of final classes when there's no immediate reference to them in sight)
-              // at least don't crash... this duplicates maybeOmittable from constructors
-              (acc.owner.isEffectivelyFinal && !acc.isOverridingSymbol)) {
+            // since we can't fix SI-4440 properly (we must drop the outer accessors of final classes when there's no immediate reference to them in sight)
+            // at least don't crash... this duplicates maybeOmittable from constructors
+            (acc.owner.isEffectivelyFinal && !acc.isOverridingSymbol)) {
             if (!base.tpe.hasAnnotation(UncheckedClass))
               currentRun.reporting.uncheckedWarning(
                 tree.pos,

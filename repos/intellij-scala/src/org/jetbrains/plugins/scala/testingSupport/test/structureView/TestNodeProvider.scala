@@ -147,7 +147,7 @@ object TestNodeProvider {
       project: Project): Option[TestStructureViewElement] = {
     import org.jetbrains.plugins.scala.testingSupport.test.TestConfigurationUtil.isInheritor
     if (isInheritor(clazz, "utest.framework.TestSuite") && pDef.getLastChild
-          .isInstanceOf[ScMethodCall]) {
+        .isInstanceOf[ScMethodCall]) {
       val methodCall = pDef.getLastChild.asInstanceOf[ScMethodCall]
       checkScMethodCall(methodCall, "apply")
       None
@@ -166,8 +166,8 @@ object TestNodeProvider {
     } else if (getFeatureSpecBases.exists(isInheritor(clazz, _))) {
       extractFeatureSpec(expr, project)
     } else if (getFunSpecBasesPost2_0.exists(
-                 isInheritor(clazz, _)) || getFunSpecBasesPre2_0.exists(
-                 isInheritor(clazz, _))) {
+        isInheritor(clazz, _)) || getFunSpecBasesPre2_0.exists(
+        isInheritor(clazz, _))) {
       extractFunSpec(expr, project)
     } else if (getPropSpecBases.exists(isInheritor(clazz, _))) {
       extractPropSpec(expr, project)
@@ -364,19 +364,18 @@ object TestNodeProvider {
       entry: ExtractEntry,
       project: Project): Option[TestStructureViewElement] = {
     if (entry.canIgnore && (checkScInfixExpr(
-          expr,
-          "ignore",
-          List("void")) || checkIgnoreExpr(expr))) {
+        expr,
+        "ignore",
+        List("void")) || checkIgnoreExpr(expr))) {
       Some(
         ignoredScalaTestElement(
           expr,
           getInfixExprTestName(expr),
           entry.children(())))
     } else if (checkScInfixExpr(
-                 expr,
-                 "is",
-                 List("org.scalatest.PendingNothing")) || checkPendingInfixExpr(
-                 expr)) {
+        expr,
+        "is",
+        List("org.scalatest.PendingNothing")) || checkPendingInfixExpr(expr)) {
       Some(
         pendingScalaTestElement(
           expr,
@@ -511,9 +510,9 @@ object TestNodeProvider {
       entry: ExtractEntry,
       project: Project): Option[TestStructureViewElement] = {
     if (entry.canIgnore && checkScMethodCall(
-          expr,
-          "ignore",
-          scMethodCallDefaultArg: _*)) {
+        expr,
+        "ignore",
+        scMethodCallDefaultArg: _*)) {
       Some(
         ignoredScalaTestElement(
           expr,
@@ -526,12 +525,12 @@ object TestNodeProvider {
           getMethodCallTestName(expr),
           entry.children(())))
     } else if (checkScMethodCall(
-                 expr,
-                 entry.funName,
-                 entry.args: _*) || checkScMethodCallApply(
-                 expr,
-                 entry.funName,
-                 scMethodCallDefaultArg: _*)) {
+        expr,
+        entry.funName,
+        entry.args: _*) || checkScMethodCallApply(
+        expr,
+        entry.funName,
+        scMethodCallDefaultArg: _*)) {
       Some(
         new TestStructureViewElement(
           expr,
@@ -733,8 +732,8 @@ object TestNodeProvider {
       expr.args.findFirstChildByType(ScalaElementTypes.BLOCK_EXPR) match {
         case blockExpr: ScBlockExpr =>
           (for (methodExpr <- blockExpr.children
-                if methodExpr.isInstanceOf[ScInfixExpr] || methodExpr
-                  .isInstanceOf[ScMethodCall])
+            if methodExpr.isInstanceOf[ScInfixExpr] || methodExpr
+              .isInstanceOf[ScMethodCall])
             yield extractUTestInner(methodExpr, project))
             .filter(_.isDefined)
             .map(_.get)

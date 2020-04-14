@@ -6,8 +6,7 @@ import org.junit.Assert._
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 8/14/11
-  */
+  * Date: 8/14/11 */
 
 class URLHelperTest {
 

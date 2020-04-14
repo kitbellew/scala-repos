@@ -34,7 +34,6 @@ object Resource {
 }
 
 /**
-  *
   * @param resourceType type of resource.
   * @param name name of the resource, for topic this will be topic name , for group it will be group name. For cluster type
   *             it will be a constant string kafka-cluster.

@@ -631,7 +631,6 @@ class RichPipe(val pipe: Pipe)
   /**
     * Sample a fraction of elements. fraction should be between 0.00 (0%) and 1.00 (100%)
     * you can provide a seed to get reproducible results
-    *
     */
   def sample(fraction: Double): Pipe = new Each(pipe, new Sample(fraction))
   def sample(fraction: Double, seed: Long): Pipe =
@@ -640,7 +639,6 @@ class RichPipe(val pipe: Pipe)
   /**
     * Sample fraction of elements with return. fraction should be between 0.00 (0%) and 1.00 (100%)
     * you can provide a seed to get reproducible results
-    *
     */
   def sampleWithReplacement(fraction: Double): Pipe =
     new Each(pipe, new SampleWithReplacement(fraction), Fields.ALL)
@@ -723,7 +721,6 @@ class RichPipe(val pipe: Pipe)
     *
     * will pack fields 'field1 and 'field2 to field 'field3, as long as 'field1 and 'field2
     * can be cast into integers. The output field 'field3 will be of tupel `(Int, Int)`
-    *
     */
   def pack[T](fs: (Fields, Fields))(implicit
       packer: TuplePacker[T],

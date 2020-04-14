@@ -36,7 +36,6 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.event.EventDispatcherSpec]].
   */
 @RunWith(classOf[JUnitRunner])

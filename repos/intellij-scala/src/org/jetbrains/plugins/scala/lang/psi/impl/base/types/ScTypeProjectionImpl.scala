@@ -31,8 +31,7 @@ import org.jetbrains.plugins.scala.lang.resolve.processor.{
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 13.03.2008
-  */
+  * Date: 13.03.2008 */
 class ScTypeProjectionImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScTypeProjection {

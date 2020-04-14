@@ -4,8 +4,7 @@ import scala.util.Properties.propOrElse
 
 /**
   * filter out absolute path to java
-  * filter: java
-  */
+  * filter: java */
 object Test extends ReplTest {
   def java = propOrElse("javacmd", "java")
   def code = s""":sh $java -classpath $testOutput hello.Hello

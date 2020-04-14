@@ -16,7 +16,7 @@ import scala.collection.mutable
   *
   * Note: This is an _experimental API_, which will likely be changed in future to support
   * streaming HTTP requests.
- **/
+  */
 case class Multipart(
     attributes: Map[String, Seq[String]],
     files: Map[String, Seq[Multipart.FileUpload]])

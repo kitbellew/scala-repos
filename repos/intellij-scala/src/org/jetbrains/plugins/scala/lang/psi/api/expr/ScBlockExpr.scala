@@ -13,8 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.controlFlow.{
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008
-  */
+  * Date: 06.03.2008 */
 
 trait ScBlockExpr extends ScExpression with ScBlock with ScControlFlowOwner {
   def caseClauses: Option[ScCaseClauses] = findChild(classOf[ScCaseClauses])

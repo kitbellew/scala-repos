@@ -231,8 +231,8 @@ object MergeService {
       Option(repository.resolve(mergedBranchName))
         .flatMap { merged =>
           if (parseCommit(merged).getParents().toSet == Set(
-                mergeBaseTip,
-                mergeTip)) {
+              mergeBaseTip,
+              mergeTip)) {
             // merged branch exists
             Some(false)
           } else {
@@ -242,8 +242,8 @@ object MergeService {
         .orElse(Option(repository.resolve(conflictedBranchName)).flatMap {
           conflicted =>
             if (parseCommit(conflicted).getParents().toSet == Set(
-                  mergeBaseTip,
-                  mergeTip)) {
+                mergeBaseTip,
+                mergeTip)) {
               // conflict branch exists
               Some(true)
             } else {

@@ -38,7 +38,7 @@ import scala.collection.parallel.immutable.ParRange
   *                    ranges, e.g. `Range.inclusive(0,3)` or `(0 to 3)`,
   *                    it may be in the range if it is not skipped by the step size.
   *                    To find the last element inside a non-empty range,
-                      use `last` instead.
+  *                      use `last` instead.
   *  @param step       the step for the range.
   *
   *  @author Martin Odersky
@@ -163,7 +163,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     val terminal = terminalElement
     val step = this.step
     while (if (isCommonCase) { i != terminal }
-           else { count < numRangeElements }) {
+      else { count < numRangeElements }) {
       f(i)
       count += 1
       i += step

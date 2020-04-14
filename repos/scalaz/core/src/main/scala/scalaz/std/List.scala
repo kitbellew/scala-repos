@@ -314,7 +314,7 @@ trait ListFunctions {
         }
     }
 
-  /** As with the standard library `groupBy` but preserving the fact that the values in the Map must be non-empty  */
+  /** As with the standard library `groupBy` but preserving the fact that the values in the Map must be non-empty */
   final def groupBy1[A, B](as: List[A])(f: A => B): Map[B, NonEmptyList[A]] =
     (Map.empty[B, NonEmptyList[A]] /: as) { (nels, a) =>
       val b = f(a)

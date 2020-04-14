@@ -60,7 +60,6 @@ import scala.collection.JavaConverters._
   * 4. Consumer offset tracking:
   * /consumers/[group_id]/offsets/[topic]/[broker_id-partition_id] --> offset_counter_value
   * Each consumer tracks the offset of the latest message consumed for each partition.
-  *
   */
 
 private[kafka] class ZookeeperConsumerConnector(

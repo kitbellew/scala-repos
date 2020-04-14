@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * GraphicsContext Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class GraphicsContextSpec

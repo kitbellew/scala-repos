@@ -2,7 +2,7 @@ package scalaz
 
 import std.tuple._
 
-/**An efficient, asymptotically optimal, implementation of priority queues
+/** An efficient, asymptotically optimal, implementation of priority queues
   * extended with support for efficient size.
   *
   * The implementation of 'Heap' is based on bootstrapped skew binomial heaps
@@ -22,16 +22,16 @@ sealed abstract class Heap[A] {
       empty: => B,
       nonempty: (Int, (A, A) => Boolean, Tree[Ranked[A]]) => B): B
 
-  /**Is the heap empty? O(1)*/
+  /** Is the heap empty? O(1) */
   def isEmpty = fold(true, (_, _, _) => false)
 
-  /**Is the heap populated? O(1)*/
+  /** Is the heap populated? O(1) */
   final def nonEmpty = !isEmpty
 
-  /**The number of elements in the heap. O(1)*/
+  /** The number of elements in the heap. O(1) */
   def size = fold(0, (s, _, _) => s)
 
-  /**Insert a new value into the heap. O(1)*/
+  /** Insert a new value into the heap. O(1) */
   def insert(a: A)(implicit o: Order[A]) = insertWith(o.lessThanOrEqual, a)
 
   /** Alias for insert */
@@ -44,7 +44,7 @@ sealed abstract class Heap[A] {
       as: F[A])(implicit F: Foldable[F], o: Order[A]): Heap[A] =
     F.foldLeft(as, this)((h, a) => h insert a)
 
-  /**Meld the values from two heaps into one heap. O(1)*/
+  /** Meld the values from two heaps into one heap. O(1) */
   def union(as: Heap[A]) =
     (this, as) match {
       case (Empty(), q) => q
@@ -58,18 +58,18 @@ sealed abstract class Heap[A] {
           Heap(s1 + s2, leq, Node(Ranked(0, x2), skewInsert(leq, t1, f2)))
     }
 
-  /**Split the heap into the minimum element and the remainder. O(log n)*/
+  /** Split the heap into the minimum element and the remainder. O(log n) */
   def uncons: Option[(A, Heap[A])] =
     fold(None, (_, _, t) => Some((t.rootLabel.value, deleteMin)))
 
-  /**Get the minimum key on the (nonempty) heap. O(1) */
+  /** Get the minimum key on the (nonempty) heap. O(1) */
   def minimum: A =
     fold(sys.error("Heap.minimum: empty heap"), (_, _, t) => t.rootLabel.value)
 
-  /**Get the minimum key on the (nonempty) heap. O(1) */
+  /** Get the minimum key on the (nonempty) heap. O(1) */
   def minimumO: Option[A] = fold(None, (_, _, t) => Some(t.rootLabel.value))
 
-  /**Delete the minimum key from the heap and return the resulting heap. O(log n) */
+  /** Delete the minimum key from the heap and return the resulting heap. O(log n) */
   def deleteMin: Heap[A] = {
     fold(
       Empty[A],
@@ -103,7 +103,7 @@ sealed abstract class Heap[A] {
 
   def toList: List[A] = toStream.toList
 
-  /**Map a function over the heap, returning a new heap ordered appropriately. O(n)*/
+  /** Map a function over the heap, returning a new heap ordered appropriately. O(n) */
   def map[B: Order](f: A => B) =
     fold(Empty[B], (_, _, t) => t.foldMap(x => singleton(f(x.value))))
 
@@ -113,7 +113,7 @@ sealed abstract class Heap[A] {
 
   def foreach(f: A => Unit) = toStream.foreach(f)
 
-  /**Filter the heap, retaining only values that satisfy the predicate. O(n)*/
+  /** Filter the heap, retaining only values that satisfy the predicate. O(n) */
   def filter(p: A => Boolean): Heap[A] =
     fold(
       Empty[A],
@@ -121,8 +121,8 @@ sealed abstract class Heap[A] {
         t foldMap (x =>
           if (p(x.value)) singletonWith(leq, x.value) else Empty[A]))
 
-  /**Partition the heap according to a predicate. The first heap contains all elements that
-    * satisfy the predicate. The second contains all elements that fail the predicate. O(n)*/
+  /** Partition the heap according to a predicate. The first heap contains all elements that
+    * satisfy the predicate. The second contains all elements that fail the predicate. O(n) */
   def partition(p: A => Boolean): (Heap[A], Heap[A]) =
     fold(
       (Empty[A], Empty[A]),
@@ -132,7 +132,7 @@ sealed abstract class Heap[A] {
           else
             (Empty[A], singletonWith(leq, x.value))))
 
-  /**Partition the heap of the elements that are less than, equal to, and greater than a given value. O(n)*/
+  /** Partition the heap of the elements that are less than, equal to, and greater than a given value. O(n) */
   def split(a: A): (Heap[A], Heap[A], Heap[A]) = {
     fold(
       (Empty[A], Empty[A], Empty[A]),
@@ -149,39 +149,39 @@ sealed abstract class Heap[A] {
     )
   }
 
-  /**Return a heap consisting of the least n elements of this heap. O(n log n) */
+  /** Return a heap consisting of the least n elements of this heap. O(n log n) */
   def take(n: Int) = withList(_.take(n))
 
-  /**Return a heap consisting of all the members of this heap except for the least n. O(n log n) */
+  /** Return a heap consisting of all the members of this heap except for the least n. O(n log n) */
   def drop(n: Int) = withList(_.drop(n))
 
-  /**Split into two heaps, the first containing the n least elements, the second containing the n
+  /** Split into two heaps, the first containing the n least elements, the second containing the n
     * greatest elements. O(n log n) */
   def splitAt(n: Int) = splitWithList(_.splitAt(n))
 
-  /**Returns a tuple where the first element is a heap consisting of the longest prefix of least elements
+  /** Returns a tuple where the first element is a heap consisting of the longest prefix of least elements
     * in this heap that do not satisfy the given predicate, and the second element is the remainder
     * of the elements. O(n log n) */
   def break(p: A => Boolean): (Heap[A], Heap[A]) =
     span(x => !p(x))
 
-  /**Returns a tuple where the first element is a heap consisting of the longest prefix of least elements
+  /** Returns a tuple where the first element is a heap consisting of the longest prefix of least elements
     * in this heap that satisfy the given predicate and the second element is the remainder of the elements.
-    * O(n log n)*/
+    * O(n log n) */
   def span(p: A => Boolean): (Heap[A], Heap[A]) =
     splitWithList(_.span(p))
 
-  /**Returns a heap consisting of the longest prefix of least elements of this heap that satisfy the predicate.
+  /** Returns a heap consisting of the longest prefix of least elements of this heap that satisfy the predicate.
     * O(n log n) */
   def takeWhile(p: A => Boolean) =
     withList(_.takeWhile(p))
 
-  /**Returns a heap consisting of the longest prefix of least elements of this heap that do not
+  /** Returns a heap consisting of the longest prefix of least elements of this heap that do not
     * satisfy the predicate. O(n log n) */
   def dropWhile(p: A => Boolean) =
     withList(_.dropWhile(p))
 
-  /**Remove duplicate entries from the heap. O(n log n)*/
+  /** Remove duplicate entries from the heap. O(n log n) */
   def nub: Heap[A] =
     fold(
       Empty[A],
@@ -192,12 +192,12 @@ sealed abstract class Heap[A] {
         zs.nub.insertWith(leq, x)
       })
 
-  /**Construct heaps from each element in this heap and union them together into a new heap. O(n)*/
+  /** Construct heaps from each element in this heap and union them together into a new heap. O(n) */
   def flatMap[B: Order](f: A => Heap[B]): Heap[B] =
     fold(Empty[B], (_, _, t) => t foldMap (x => f(x.value)))
 
-  /**Traverse the elements of the heap in sorted order and produce a new heap with applicative effects.
-    * O(n log n)*/
+  /** Traverse the elements of the heap in sorted order and produce a new heap with applicative effects.
+    * O(n log n) */
   def traverse[F[_]: Applicative, B: Order](f: A => F[B]): F[Heap[B]] = {
     val F = Applicative[F]
     import std.stream._
@@ -251,7 +251,7 @@ object Heap extends HeapInstances {
   type Forest[A] = Stream[Tree[Ranked[A]]]
   type ForestZipper[A] = (Forest[A], Forest[A])
 
-  /**The empty heap */
+  /** The empty heap */
   object Empty {
     def apply[A]: Heap[A] =
       new Heap[A] {
@@ -274,18 +274,18 @@ object Heap extends HeapInstances {
   def fromDataWith[F[_]: Foldable, A](f: (A, A) => Boolean, as: F[A]): Heap[A] =
     Foldable[F].foldLeft(as, Empty[A])((x, y) => x.insertWith(f, y))
 
-  /**Heap sort */
+  /** Heap sort */
   def sort[F[_]: Foldable, A: Order](xs: F[A]): List[A] = fromData(xs).toList
 
-  /**Heap sort */
+  /** Heap sort */
   def sortWith[F[_]: Foldable, A](f: (A, A) => Boolean, xs: F[A]): List[A] =
     fromDataWith(f, xs).toList
 
-  /**A heap with one element. */
+  /** A heap with one element. */
   def singleton[A: Order](a: A): Heap[A] =
     singletonWith[A](Order[A].lessThanOrEqual, a)
 
-  /**Create a heap consisting of multiple copies of the same value. O(log n) */
+  /** Create a heap consisting of multiple copies of the same value. O(log n) */
   def replicate[A: Order](a: A, i: Int): Heap[A] = {
     def f(x: Heap[A], y: Int): Heap[A] =
       if (y % 2 == 0) f(x union x, y / 2)

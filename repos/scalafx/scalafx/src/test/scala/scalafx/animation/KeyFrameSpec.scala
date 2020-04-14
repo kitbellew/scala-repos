@@ -41,8 +41,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * KeyFrame Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class KeyFrameSpec

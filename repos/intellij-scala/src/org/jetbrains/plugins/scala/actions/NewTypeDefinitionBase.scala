@@ -92,7 +92,7 @@ abstract class NewTypeDefinitionBase[T <: ScTemplateDefinition](
 
         for (dir <- dirs) {
           if (projectFileIndex.isInSourceContent(dir.getVirtualFile) &&
-              JavaDirectoryService.getInstance.getPackage(dir) != null)
+            JavaDirectoryService.getInstance.getPackage(dir) != null)
             return true
         }
 

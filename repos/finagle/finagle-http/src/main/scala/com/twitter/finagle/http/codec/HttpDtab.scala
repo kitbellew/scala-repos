@@ -10,7 +10,7 @@ import scala.collection.mutable.ArrayBuffer
 /**
   * Dtab serialization for Http. Dtabs are encoded into Http
   * headers with keys
-  *	x-dtab-$idx-(a|b)
+  * x-dtab-$idx-(a|b)
   * where $idx is a two-digit integer. These headers are encoded in
   * pairs: 'a' and 'b' headers must exist for each index. Thus when
   * header names are lexically sorted, Dtab entries are decoded

@@ -251,7 +251,7 @@ class Serialization(val system: ExtendedActorSystem) extends Extension {
   private[akka] val bindings: immutable.Seq[ClassSerializer] =
     sort(
       for ((k: String, v: String) ← settings.SerializationBindings
-           if v != "none" && checkGoogleProtobuf(k))
+        if v != "none" && checkGoogleProtobuf(k))
         yield (system.dynamicAccess.getClassFor[Any](k).get, serializers(v)))
       .to[immutable.Seq]
 

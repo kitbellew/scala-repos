@@ -265,7 +265,7 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
 
     private def addToClassesForSelfType(cl: PsiClass) {
       if (!classesForSelfType.contains(cl) && !classesForSelfType.exists(
-            _.isInheritor(cl, true))) {
+          _.isInheritor(cl, true))) {
         classesForSelfType --= classesForSelfType.filter(
           cl.isInheritor(_, true))
         classesForSelfType += cl

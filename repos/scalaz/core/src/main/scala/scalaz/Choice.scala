@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /**
-  *
   */
 ////
 trait Choice[=>:[_, _]] extends Category[=>:] { self =>

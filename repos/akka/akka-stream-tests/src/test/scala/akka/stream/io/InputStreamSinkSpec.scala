@@ -271,7 +271,7 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
        itself throws an exception when being materialized. If
        Source.empty is used, the same exception is thrown by
        Materializer.
-     */
+       */
     }
   }
 }

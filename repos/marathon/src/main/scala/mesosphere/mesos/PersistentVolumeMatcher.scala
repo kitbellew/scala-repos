@@ -23,8 +23,8 @@ object PersistentVolumeMatcher {
     def resourcesForTask(
         task: Task.Reserved): Option[Iterable[Mesos.Resource]] = {
       if (task.reservation.volumeIds
-            .map(_.idString)
-            .forall(availableVolumes.contains))
+          .map(_.idString)
+          .forall(availableVolumes.contains))
         Some(task.reservation.volumeIds.flatMap(id =>
           availableVolumes.get(id.idString)))
       else

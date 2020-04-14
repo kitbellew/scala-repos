@@ -133,17 +133,17 @@ trait RichCompilerControl
     val x = new Response[List[Member]]()
     askScopeCompletion(p, x)
     (for (members <- x.get.left.toOption;
-          infos <- askOption {
-            val roots = filterMembersByPrefix(
-              members,
-              firstName,
-              matchEntire = true,
-              caseSens = true
-            ).map { _.sym }
-            val restOfPath = nameSegs.drop(1).mkString(".")
-            val syms = roots.flatMap { symbolByName(restOfPath, _) }
-            syms.find(_.tpe != NoType).map { sym => TypeInfo(sym.tpe) }
-          }) yield infos).flatten
+      infos <- askOption {
+        val roots = filterMembersByPrefix(
+          members,
+          firstName,
+          matchEntire = true,
+          caseSens = true
+        ).map { _.sym }
+        val restOfPath = nameSegs.drop(1).mkString(".")
+        val syms = roots.flatMap { symbolByName(restOfPath, _) }
+        syms.find(_.tpe != NoType).map { sym => TypeInfo(sym.tpe) }
+      }) yield infos).flatten
   }
 
   def askPackageByPath(path: String): Option[PackageInfo] =
@@ -306,7 +306,7 @@ class RichPresentationCompiler(
     unitOfFile.filter { kv => !invalidSet.contains(kv._1) }.values.toList
   }
 
-  /** Called from typechecker every time a top-level class or object is entered.*/
+  /** Called from typechecker every time a top-level class or object is entered. */
   override def registerTopLevelSym(sym: Symbol): Unit = {
     super.registerTopLevelSym(sym)
     symsByFile(sym.sourceFile) += sym

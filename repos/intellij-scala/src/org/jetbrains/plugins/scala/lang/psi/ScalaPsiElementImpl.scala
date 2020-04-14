@@ -16,7 +16,7 @@ import org.jetbrains.plugins.scala.extensions.inReadAction
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 
 /**
-@author ven
+  * @author ven
   */
 abstract class ScalaPsiElementImpl(node: ASTNode)
     extends ASTWrapperPsiElement(node)

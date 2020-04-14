@@ -132,8 +132,8 @@ private[spark] class YarnClientSchedulerBackend(
     val (state, _) =
       client.monitorApplication(appId.get, returnOnRunning = true) // blocking
     if (state == YarnApplicationState.FINISHED ||
-        state == YarnApplicationState.FAILED ||
-        state == YarnApplicationState.KILLED) {
+      state == YarnApplicationState.FAILED ||
+      state == YarnApplicationState.KILLED) {
       throw new SparkException(
         "Yarn application has already ended! " +
           "It might have been killed or unable to launch application master.")

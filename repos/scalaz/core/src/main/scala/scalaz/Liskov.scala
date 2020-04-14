@@ -26,7 +26,7 @@ sealed abstract class Liskov[-A, +B] {
 sealed abstract class LiskovInstances {
   import Liskov._
 
-  /**Subtyping forms a category */
+  /** Subtyping forms a category */
   implicit val liskov: Category[<~<] = new Category[<~<] {
     def id[A]: (A <~< A) = refl[A]
 
@@ -36,35 +36,35 @@ sealed abstract class LiskovInstances {
 
 object Liskov extends LiskovInstances {
 
-  /**A convenient type alias for Liskov */
+  /** A convenient type alias for Liskov */
   type <~<[-A, +B] = Liskov[A, B]
 
-  /**A flipped alias, for those used to their arrows running left to right */
+  /** A flipped alias, for those used to their arrows running left to right */
   type >~>[+B, -A] = Liskov[A, B]
 
-  /**Lift Scala's subtyping relationship */
+  /** Lift Scala's subtyping relationship */
   implicit def isa[A, B >: A]: A <~< B =
     new (A <~< B) {
       def subst[F[-_]](p: F[B]): F[A] = p
     }
 
-  /**We can witness equality by using it to convert between types */
+  /** We can witness equality by using it to convert between types */
   implicit def witness[A, B](lt: A <~< B): A => B = {
     type f[-X] = X => B
     lt.subst[f](identity)
   }
 
-  /**Subtyping is reflexive */
+  /** Subtyping is reflexive */
   implicit def refl[A]: (A <~< A) =
     new (A <~< A) {
       def subst[F[-_]](p: F[A]): F[A] = p
     }
 
-  /**Subtyping is transitive */
+  /** Subtyping is transitive */
   def trans[A, B, C](f: B <~< C, g: A <~< B): A <~< C =
     g.subst[λ[`-α` => α <~< C]](f)
 
-  /**We can lift subtyping into any covariant type constructor */
+  /** We can lift subtyping into any covariant type constructor */
   def co[T[+_], A, A2](a: A <~< A2): (T[A] <~< T[A2]) =
     a.subst[λ[`-α` => T[α] <~< T[A2]]](refl)
 
@@ -81,7 +81,7 @@ object Liskov extends LiskovInstances {
       a: A <~< Z): T[A, B, C, D] <~< T[Z, B, C, D] =
     a.subst[λ[`-α` => T[α, B, C, D] <~< T[Z, B, C, D]]](refl)
 
-  /**lift2(a,b) = co1_2(a) compose co2_2(b) */
+  /** lift2(a,b) = co1_2(a) compose co2_2(b) */
   def lift2[T[+_, +_], A, A2, B, B2](
       a: A <~< A2,
       b: B <~< B2
@@ -91,7 +91,7 @@ object Liskov extends LiskovInstances {
     b.subst[b](a.subst[a](refl))
   }
 
-  /**lift3(a,b,c) = co1_3(a) compose co2_3(b) compose co3_3(c) */
+  /** lift3(a,b,c) = co1_3(a) compose co2_3(b) compose co3_3(c) */
   def lift3[T[+_, +_, +_], A, A2, B, B2, C, C2](
       a: A <~< A2,
       b: B <~< B2,
@@ -103,7 +103,7 @@ object Liskov extends LiskovInstances {
     c.subst[c](b.subst[b](a.subst[a](refl)))
   }
 
-  /**lift4(a,b,c,d) = co1_3(a) compose co2_3(b) compose co3_3(c) compose co4_4(d) */
+  /** lift4(a,b,c,d) = co1_3(a) compose co2_3(b) compose co3_3(c) compose co4_4(d) */
   def lift4[T[+_, +_, +_, +_], A, A2, B, B2, C, C2, D, D2](
       a: A <~< A2,
       b: B <~< B2,
@@ -117,7 +117,7 @@ object Liskov extends LiskovInstances {
     d.subst[d](c.subst[c](b.subst[b](a.subst[a](refl))))
   }
 
-  /**We can lift subtyping into any contravariant type constructor */
+  /** We can lift subtyping into any contravariant type constructor */
   def contra[T[-_], A, A2](a: A <~< A2): (T[A2] <~< T[A]) =
     a.subst[λ[`-α` => T[A2] <~< T[α]]](refl)
 
@@ -157,7 +157,7 @@ object Liskov extends LiskovInstances {
       a: D <~< Z): (T[A, B, C, Z] <~< T[A, B, C, D]) =
     a.subst[λ[`-α` => T[A, B, C, Z] <~< T[A, B, C, α]]](refl)
 
-  /**Lift subtyping into a Function1-like type
+  /** Lift subtyping into a Function1-like type
     * liftF1(a,r) = contra1_2(a) compose co2_2(b)
     */
   def liftF1[F[-_, +_], A, A2, R, R2](
@@ -169,7 +169,7 @@ object Liskov extends LiskovInstances {
     r.subst[r](a.subst[a](refl))
   }
 
-  /**Lift subtyping into a function
+  /** Lift subtyping into a function
     * liftF2(a,b,r) = contra1_3(a) compose contra2_3(b) compose co3_3(c)
     */
   def liftF2[F[-_, -_, +_], A, A2, B, B2, R, R2](
@@ -183,7 +183,7 @@ object Liskov extends LiskovInstances {
     r.subst[r](b.subst[b](a.subst[a](refl)))
   }
 
-  /**Lift subtyping into a function
+  /** Lift subtyping into a function
     * liftF3(a,b,c,r) = contra1_4(a) compose contra2_4(b) compose contra3_4(c) compose co3_4(d)
     */
   def liftF3[F[-_, -_, -_, +_], A, A2, B, B2, C, C2, R, R2](
@@ -199,7 +199,7 @@ object Liskov extends LiskovInstances {
     r.subst[r](c.subst[c](b.subst[b](a.subst[a](refl))))
   }
 
-  /**Lift subtyping into a function */
+  /** Lift subtyping into a function */
   def liftF4[F[-_, -_, -_, -_, +_], A, A2, B, B2, C, C2, D, D2, R, R2](
       a: A <~< A2,
       b: B <~< B2,
@@ -215,16 +215,15 @@ object Liskov extends LiskovInstances {
     r.subst[r](d.subst[d](c.subst[c](b.subst[b](a.subst[a](refl)))))
   }
 
-  /**If A <: B and B :> A then A = B
-
-  def bracket[A,B](
-    ab : A <~< B,
-    ba : A >~> B
-  ): Leibniz[A,B] = Leibniz.force[A,B]
-
+  /** If A <: B and B :> A then A = B
+    *
+    *  def bracket[A,B](
+    *    ab : A <~< B,
+    *    ba : A >~> B
+    *  ): Leibniz[A,B] = Leibniz.force[A,B]
     */
 
-  /**Unsafely force a claim that A is a subtype of B */
+  /** Unsafely force a claim that A is a subtype of B */
   def force[A, B]: A <~< B =
     new (A <~< B) {
       def subst[F[-_]](p: F[B]): F[A] = p.asInstanceOf[F[A]]

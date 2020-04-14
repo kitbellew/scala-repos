@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Hyperlink Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class HyperlinkSpec

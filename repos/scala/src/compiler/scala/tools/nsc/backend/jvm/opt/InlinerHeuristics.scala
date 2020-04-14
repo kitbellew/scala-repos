@@ -70,7 +70,7 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
               case Some(Right(req)) => requests += req
               case Some(Left(w)) =>
                 if ((calleeAnnotatedInline && bTypes.compilerSettings.YoptWarningEmitAtInlineFailed) || w
-                      .emitWarning(compilerSettings)) {
+                    .emitWarning(compilerSettings)) {
                   val annotWarn =
                     if (calleeAnnotatedInline) " is annotated @inline but"
                     else ""
@@ -99,7 +99,7 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                   else
                     backendReporting.inlinerWarning(pos, s"$initMsg." + warnMsg)
                 } else if (callsiteWarning.isDefined && callsiteWarning.get
-                             .emitWarning(compilerSettings)) {
+                    .emitWarning(compilerSettings)) {
                   // when annotatedInline is false, and there is some warning, the callsite metadata is possibly incomplete.
                   backendReporting.inlinerWarning(
                     pos,

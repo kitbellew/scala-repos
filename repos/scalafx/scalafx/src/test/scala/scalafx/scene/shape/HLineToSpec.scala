@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * HLineTo Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class HLineToSpec

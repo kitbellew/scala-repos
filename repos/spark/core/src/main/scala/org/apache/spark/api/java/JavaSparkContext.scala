@@ -328,7 +328,7 @@ class JavaSparkContext(val sc: SparkContext)
     * record, directly caching the returned RDD will create many references to the same object.
     * If you plan to directly cache Hadoop writable objects, you should first copy them using
     * a `map` function.
-    * */
+    */
   def sequenceFile[K, V](
       path: String,
       keyClass: Class[K],

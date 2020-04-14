@@ -773,7 +773,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
     def create(length: Int) = zeros(length)
 
-    /**Maps all corresponding values from the two collections. */
+    /** Maps all corresponding values from the two collections. */
     def map(from: HashVector[V], from2: HashVector[V], fn: (V, V) => RV) = {
       require(from.length == from2.length, "Vector lengths must match!")
       val result = create(from.length)
@@ -808,7 +808,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
     def create(length: Int) = zeros(length)
 
-    /**Maps all corresponding values from the two collections. */
+    /** Maps all corresponding values from the two collections. */
     def map(
         from: HashVector[V],
         from2: HashVector[V],
@@ -1017,7 +1017,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
     }
   }
 
-  /**Returns the k-norm of this HashVector. */
+  /** Returns the k-norm of this HashVector. */
   implicit def canNorm[T](implicit canNormS: norm.Impl[T, Double])
       : norm.Impl2[HashVector[T], Double, Double] = {
 

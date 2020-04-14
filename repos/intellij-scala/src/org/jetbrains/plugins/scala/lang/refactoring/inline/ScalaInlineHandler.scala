@@ -211,11 +211,11 @@ class ScalaInlineHandler extends InlineHandler {
           ScalaBundle.message("cannot.inline.never.used"),
           inlineTitleSuffix)
       else if (!psiNamedElement
-                 .isInstanceOf[ScTypeAliasDefinition] && refs.exists(ref =>
-                 ScalaPsiUtil.getParentOfType(
-                   ref.getElement,
-                   classOf[ScStableCodeReferenceElement],
-                   classOf[ScStableReferenceElementPattern]) != null))
+          .isInstanceOf[ScTypeAliasDefinition] && refs.exists(ref =>
+          ScalaPsiUtil.getParentOfType(
+            ref.getElement,
+            classOf[ScStableCodeReferenceElement],
+            classOf[ScStableReferenceElementPattern]) != null))
         showErrorHint(
           ScalaBundle.message("cannot.inline.stable.reference"),
           inlineTitleSuffix)

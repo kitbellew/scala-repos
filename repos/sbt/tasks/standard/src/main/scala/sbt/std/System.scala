@@ -33,7 +33,7 @@ object Transform {
     pmap
   }
 
-  /** Applies `map`, returning the result if defined or returning the input unchanged otherwise.*/
+  /** Applies `map`, returning the result if defined or returning the input unchanged otherwise. */
   implicit def getOrId(map: Task ~>| Task): Task ~> Task =
     new (Task ~> Task) {
       def apply[T](in: Task[T]): Task[T] = map(in).getOrElse(in)

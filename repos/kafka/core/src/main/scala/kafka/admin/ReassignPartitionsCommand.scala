@@ -100,7 +100,7 @@ object ReassignPartitionsCommand extends Logging {
       zkUtils: ZkUtils,
       opts: ReassignPartitionsCommandOptions) {
     if (!(opts.options.has(opts.topicsToMoveJsonFileOpt) && opts.options.has(
-          opts.brokerListOpt)))
+        opts.brokerListOpt)))
       CommandLineUtils.printUsageAndDie(
         opts.parser,
         "If --generate option is used, command must include both --topics-to-move-json-file and --broker-list options")

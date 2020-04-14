@@ -37,8 +37,8 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
           val tagToDelete = element.getParent.getLastChild
 
           if (ScaladocSyntaxElementType.canClose(
-                element.getNode.getElementType,
-                tagToDelete.getNode.getElementType)) {
+              element.getNode.getElementType,
+              tagToDelete.getNode.getElementType)) {
             val textLength =
               if (tagToDelete.getNode.getElementType != ScalaDocTokenType.DOC_BOLD_TAG)
                 tagToDelete.getTextLength
@@ -59,14 +59,14 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
           .commitDocument(editor.getDocument)
       }
     } else if (element.getNode.getElementType == ScalaXmlTokenTypes.XML_NAME && element.getParent != null && element.getParent
-                 .isInstanceOf[ScXmlStartTag]) {
+        .isInstanceOf[ScXmlStartTag]) {
       val openingTag = element.getParent.asInstanceOf[ScXmlStartTag]
       val closingTag = openingTag.getClosingTag
 
       if (closingTag != null && closingTag.getTextLength > 3 && closingTag.getText
-            .substring(
-              2,
-              closingTag.getTextLength - 1) == openingTag.getTagName) {
+          .substring(
+            2,
+            closingTag.getTextLength - 1) == openingTag.getTagName) {
         extensions.inWriteAction {
           val offsetInName =
             editor.getCaretModel.getOffset - element.getTextOffset + 1
@@ -81,7 +81,7 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
     } else if (element.getNode.getElementType == ScalaTokenTypes.tMULTILINE_STRING && offset - element.getTextOffset == 3) {
       correctMultilineString(element.getTextOffset + element.getTextLength - 3)
     } else if (element.getNode.getElementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_START_DELIMITER && element.getNextSibling != null &&
-               element.getNextSibling.getNode.getElementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_END_DELIMITER) {
+      element.getNextSibling.getNode.getElementType == ScalaXmlTokenTypes.XML_ATTRIBUTE_VALUE_END_DELIMITER) {
       extensions.inWriteAction {
         editor.getDocument
           .deleteString(element.getTextOffset + 1, element.getTextOffset + 2)
@@ -90,11 +90,11 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
           .commitDocument(editor.getDocument)
       }
     } else if (offset - element.getTextOffset == 3 &&
-               element.getNode.getElementType == ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING &&
-               element.getParent.getLastChild.getNode.getElementType == ScalaTokenTypes.tINTERPOLATED_STRING_END &&
-               element.getPrevSibling != null &&
-               isMultilineInterpolatedStringPrefix(
-                 element.getPrevSibling.getNode.getElementType)) {
+      element.getNode.getElementType == ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING &&
+      element.getParent.getLastChild.getNode.getElementType == ScalaTokenTypes.tINTERPOLATED_STRING_END &&
+      element.getPrevSibling != null &&
+      isMultilineInterpolatedStringPrefix(
+        element.getPrevSibling.getNode.getElementType)) {
       correctMultilineString(element.getParent.getLastChild.getTextOffset)
     }
 
@@ -158,8 +158,8 @@ class ScalaBackspaceHandler extends BackspaceHandlerDelegate {
           stack push iterator.getTokenType
         else if (matcher.isLBraceToken(iterator, txt, fileType)) {
           if (stack.isEmpty || !matcher.isPairBraces(
-                iterator.getTokenType,
-                stack.pop())) return Some(false)
+              iterator.getTokenType,
+              stack.pop())) return Some(false)
         }
 
         iterator.retreat()

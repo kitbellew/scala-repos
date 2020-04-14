@@ -108,8 +108,8 @@ class SummarizingStatsReceiver extends StatsReceiverWithCumulativeGauges {
       }).toSeq
 
       val sortedCounters = counterLines.sortBy { case (k, _) => k }
-      val sortedGauges = gaugeValues.sortBy { case (k, _)    => k }
-      val sortedStats = statLines.sortBy { case (k, _)       => k }
+      val sortedGauges = gaugeValues.sortBy { case (k, _) => k }
+      val sortedStats = statLines.sortBy { case (k, _) => k }
       lazy val sortedTails = tailValues.sortBy { case (k, _) => k }
 
       val fmt = Function.tupled { (k: String, v: String) =>

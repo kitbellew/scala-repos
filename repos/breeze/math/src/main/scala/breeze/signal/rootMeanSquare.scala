@@ -7,7 +7,7 @@ import breeze.macros.expand
 import breeze.math.Complex
 import breeze.stats.mean
 
-/**Root mean square of a vector.
+/** Root mean square of a vector.
   * @author ktakagaki
   * @date 2/17/14.
   */

@@ -120,7 +120,6 @@ class CategorizingExceptionStatsHandler(
   * @param mkFlags  extracting flags if the Throwable is a Failure
   * @param mkSource extracting source when configured
   * @param rollup whether to report chained exceptions like RollupStatsReceiver
-  *
   */
 private[finagle] class MultiCategorizingExceptionStatsHandler(
     mkLabel: Throwable => String = _ => ExceptionStatsHandler.Failures,

@@ -81,12 +81,12 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       tp match {
         case Some(tp1) =>
           (for (te <- tp1.allTypeElements;
-                t = te.getType(TypingContext.empty).getOrAny;
-                asPsi = ScType.toPsi(
-                  t,
-                  getProject,
-                  GlobalSearchScope.allScope(getProject))
-                if asPsi.isInstanceOf[PsiClassType])
+            t = te.getType(TypingContext.empty).getOrAny;
+            asPsi = ScType.toPsi(
+              t,
+              getProject,
+              GlobalSearchScope.allScope(getProject))
+            if asPsi.isInstanceOf[PsiClassType])
             yield asPsi.asInstanceOf[PsiClassType]).toArray[PsiClassType]
         case _ => PsiClassType.EMPTY_ARRAY
       }
@@ -385,10 +385,10 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
         false)
     }
     if (extendsBlock.templateBody.isDefined &&
-        PsiTreeUtil.isContextAncestor(
-          extendsBlock.templateBody.get,
-          place,
-          false) && lastParent != null) return true
+      PsiTreeUtil.isContextAncestor(
+        extendsBlock.templateBody.get,
+        place,
+        false) && lastParent != null) return true
     processDeclarationsForTemplateBody(processor, oldState, lastParent, place)
   }
 
@@ -450,12 +450,12 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
             extendsBlock match {
               case e: ScExtendsBlock if e != null =>
                 if (PsiTreeUtil.isContextAncestor(
-                      e,
-                      place,
-                      true) || !PsiTreeUtil.isContextAncestor(
-                      this,
-                      place,
-                      true)) {
+                    e,
+                    place,
+                    true) || !PsiTreeUtil.isContextAncestor(
+                    this,
+                    place,
+                    true)) {
                   this match {
                     case t: ScTypeDefinition
                         if selfTypeElement != None &&
@@ -476,21 +476,21 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
                             .processType(ScThisType(t), place, state)
                         case _ =>
                           if (!TypeDefinitionMembers.processDeclarations(
-                                this,
-                                processor,
-                                state,
-                                lastParent,
-                                place)) {
+                              this,
+                              processor,
+                              state,
+                              lastParent,
+                              place)) {
                             return false
                           }
                       }
                     case _ =>
                       if (!TypeDefinitionMembers.processDeclarations(
-                            this,
-                            processor,
-                            state,
-                            lastParent,
-                            place)) return false
+                          this,
+                          processor,
+                          state,
+                          lastParent,
+                          place)) return false
                   }
                 }
               case _ =>
@@ -545,7 +545,7 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
 
   def functionsByName(name: String): Seq[PsiMethod] = {
     (for ((p: PhysicalSignature, _) <-
-            TypeDefinitionMembers.getSignatures(this).forName(name)._1)
+        TypeDefinitionMembers.getSignatures(this).forName(name)._1)
       yield p.method).++(syntheticMethodsNoOverride.filter(_.name == name))
   }
 
@@ -595,8 +595,8 @@ trait ScTemplateDefinition extends ScNamedElement with PsiClass {
       false
     }
     if (baseClass == null || DumbService
-          .getInstance(baseClass.getProject)
-          .isDumb) return false //to prevent failing during indexes
+        .getInstance(baseClass.getProject)
+        .isDumb) return false //to prevent failing during indexes
 
     // This doesn't appear in the superTypes at the moment, so special case required.
     if (baseQualifiedName == "java.lang.Object") return true

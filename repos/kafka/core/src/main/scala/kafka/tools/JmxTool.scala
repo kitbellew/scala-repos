@@ -160,7 +160,7 @@ object JmxTool extends Logging {
     for (name <- names) {
       val mbean = mbsc.getMBeanInfo(name)
       for (attrObj <-
-             mbsc.getAttributes(name, mbean.getAttributes.map(_.getName))) {
+          mbsc.getAttributes(name, mbean.getAttributes.map(_.getName))) {
         val attr = attrObj.asInstanceOf[Attribute]
         attributesWhitelist match {
           case Some(allowedAttributes) =>

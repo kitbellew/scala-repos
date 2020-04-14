@@ -44,7 +44,7 @@ class PlatformSpec extends FlatSpec with Matchers with RunOnApplicationThread {
     val javaMethods = classOf[jfxa.Platform].getMethods
     val scalaMethods = Platform.getClass.getMethods
     for (jm <- javaMethods if Modifier.isPublic(jm.getModifiers) && Modifier
-           .isStatic(jm.getModifiers)) {
+        .isStatic(jm.getModifiers)) {
       val found = scalaMethods.exists(sm => {
         def firstToUpper(s: String) = s.head.toUpper + s.tail
 

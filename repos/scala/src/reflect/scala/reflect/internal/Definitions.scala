@@ -1104,8 +1104,8 @@ trait Definitions extends api.StandardDefinitions {
 
         // if there is only one, it's monomorphic and has a single argument list
         if (deferredMembers.size == 1 &&
-            deferredMembers.head.typeParams.isEmpty &&
-            deferredMembers.head.info.paramSectionCount == 1)
+          deferredMembers.head.typeParams.isEmpty &&
+          deferredMembers.head.info.paramSectionCount == 1)
           deferredMembers.head
         else NoSymbol
       } else NoSymbol
@@ -1340,7 +1340,7 @@ trait Definitions extends api.StandardDefinitions {
       */
     def normalizedParents(parents: List[Type]): List[Type] = {
       if (parents exists (t =>
-            (t.typeSymbol ne ObjectClass) && t.typeSymbol.isClass))
+          (t.typeSymbol ne ObjectClass) && t.typeSymbol.isClass))
         parents filterNot (_.typeSymbol eq ObjectClass)
       else
         removeRedundantObjects(parents)

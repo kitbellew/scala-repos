@@ -118,7 +118,7 @@ object SampleTag extends SampleTag with LongKeyedMetaMapper[SampleTag] {
     val samp = SampleModel.findAll()
     val tags = List("Hello", "Moose", "Frog", "WooHoo", "Sloth", "Meow", "Moof")
     for (t <- tags;
-         m <- samp) SampleTag.create.tag(t).model(m).save
+      m <- samp) SampleTag.create.tag(t).model(m).save
   }
 }
 
@@ -185,7 +185,7 @@ object SampleTagSnake
     val samp = SampleModelSnake.findAll()
     val tags = List("Hello", "Moose", "Frog", "WooHoo", "Sloth", "Meow", "Moof")
     for (t <- tags;
-         m <- samp) SampleTagSnake.create.tag(t).model(m).save
+      m <- samp) SampleTagSnake.create.tag(t).model(m).save
   }
 
   override def dbDefaultConnectionIdentifier =

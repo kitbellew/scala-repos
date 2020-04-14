@@ -297,7 +297,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         }
 
         if (customRebalanceListener.exists(
-              !_.isInstanceOf[ConsumerRebalanceListener]))
+            !_.isInstanceOf[ConsumerRebalanceListener]))
           throw new IllegalArgumentException(
             "The rebalance listener should be an instance of kafka.consumer.ConsumerRebalanceListener")
         createOldConsumers(
@@ -330,7 +330,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
           }
         }
         if (customRebalanceListener.exists(!_.isInstanceOf[
-              org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
+            org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
           throw new IllegalArgumentException(
             "The rebalance listener should be an instance of" +
               "org.apache.kafka.clients.consumer.ConsumerRebalanceListner")
@@ -557,7 +557,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
 
     def maybeFlushAndCommitOffsets() {
       if (System
-            .currentTimeMillis() - lastOffsetCommitMs > offsetCommitIntervalMs) {
+          .currentTimeMillis() - lastOffsetCommitMs > offsetCommitIntervalMs) {
         debug("Committing MirrorMaker state automatically.")
         producer.flush()
         commitOffsets(mirrorMakerConsumer)

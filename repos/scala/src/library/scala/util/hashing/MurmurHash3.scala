@@ -261,27 +261,27 @@ object MurmurHash3 extends MurmurHash3 {
     *  Leaving in place in case someone would like to investigate further.
     */
   /**
-  def linearSeqHash(xs: scala.collection.LinearSeq[_], seed: Int): Int = {
-    var n = 0
-    var h = seed
-    var elems = xs
-    while (elems.nonEmpty) {
-      h = mix(h, elems.head.##)
-      n += 1
-      elems = elems.tail
-    }
-    finalizeHash(h, n)
-  }
-
-  def indexedSeqHash(xs: scala.collection.IndexedSeq[_], seed: Int): Int = {
-    var n = 0
-    var h = seed
-    val len = xs.length
-    while (n < len) {
-      h = mix(h, xs(n).##)
-      n += 1
-    }
-    finalizeHash(h, n)
-  }
-  */
+    *  def linearSeqHash(xs: scala.collection.LinearSeq[_], seed: Int): Int = {
+    *    var n = 0
+    *    var h = seed
+    *    var elems = xs
+    *    while (elems.nonEmpty) {
+    *      h = mix(h, elems.head.##)
+    *      n += 1
+    *      elems = elems.tail
+    *    }
+    *    finalizeHash(h, n)
+    *  }
+    *
+    *  def indexedSeqHash(xs: scala.collection.IndexedSeq[_], seed: Int): Int = {
+    *    var n = 0
+    *    var h = seed
+    *    val len = xs.length
+    *    while (n < len) {
+    *      h = mix(h, xs(n).##)
+    *      n += 1
+    *    }
+    *    finalizeHash(h, n)
+    *  }
+    */
 }

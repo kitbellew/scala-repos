@@ -123,7 +123,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       cnode.visitAttribute(classBType.inlineInfoAttribute.get)
 
       if (AsmUtils.traceClassEnabled && cnode.name.contains(
-            AsmUtils.traceClassPattern))
+          AsmUtils.traceClassPattern))
         AsmUtils.traceClass(cnode)
 
       assert(
@@ -641,7 +641,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
        * because no LabelDef ends up nested within itself after such duplication.
        */
       for (ld <- labelDefsAtOrUnder(dd.rhs); ldp <- ld.params;
-           if !locals.contains(ldp.symbol)) {
+        if !locals.contains(ldp.symbol)) {
         // the tail-calls xform results in symbols shared btw method-params and labelDef-params, thus the guard above.
         locals.makeLocal(ldp.symbol)
       }
@@ -700,7 +700,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
       }
 
       if (AsmUtils.traceMethodEnabled && mnode.name.contains(
-            AsmUtils.traceMethodPattern))
+          AsmUtils.traceMethodPattern))
         AsmUtils.traceMethod(mnode)
 
       mnode = null

@@ -59,16 +59,16 @@ class ScalaDocNewlinedPreFormatProcessor
       (isTag(prevElement), isTag(element)) match {
         case (true, true) =>
           //process newlines between tags
-          val newlinesNew =
-            if (isParamTag(prevElement) && !isParamTag(element) &&
-                scalaSettings.SD_BLANK_LINE_AFTER_PARAMETERS_COMMENTS || isReturnTag(
-                  prevElement) && !isReturnTag(element) &&
-                scalaSettings.SD_BLANK_LINE_AFTER_RETURN_COMMENTS || isParamTag(
-                  prevElement) && isParamTag(element) &&
-                scalaSettings.SD_BLANK_LINE_BETWEEN_PARAMETERS || !isParamTag(
-                  prevElement) && isParamTag(element) &&
-                scalaSettings.SD_BLANK_LINE_BEFORE_PARAMETERS) 2
-            else 1
+          val newlinesNew = if (isParamTag(prevElement) && !isParamTag(
+              element) &&
+            scalaSettings.SD_BLANK_LINE_AFTER_PARAMETERS_COMMENTS || isReturnTag(
+              prevElement) && !isReturnTag(element) &&
+            scalaSettings.SD_BLANK_LINE_AFTER_RETURN_COMMENTS || isParamTag(
+              prevElement) && isParamTag(element) &&
+            scalaSettings.SD_BLANK_LINE_BETWEEN_PARAMETERS || !isParamTag(
+              prevElement) && isParamTag(element) &&
+            scalaSettings.SD_BLANK_LINE_BEFORE_PARAMETERS) 2
+          else 1
           fixNewlinesBetweenElements(
             prevElement.getLastChild,
             newlinesNew,
@@ -77,7 +77,7 @@ class ScalaDocNewlinedPreFormatProcessor
           var current = prevElement
           //do not insert newlines when there is no description
           while (current != null && (current.getNode.getElementType == ScalaDocTokenType.DOC_WHITESPACE ||
-                 current.getNode.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)) {
+            current.getNode.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS)) {
             current = current.getPrevSibling
           }
           if (current != null && current.getNode.getElementType != ScalaDocTokenType.DOC_COMMENT_START) {
@@ -97,7 +97,7 @@ class ScalaDocNewlinedPreFormatProcessor
     val parent = element.getParent
     //add asterisks inside multi-line newLines (e.g. "\n\n\n" -> "\n*\n*\n")
     if (nextElement != null && ScalaDocNewlinedPreFormatProcessor.isNewLine(
-          element)) {
+        element)) {
       val manager = PsiManager.getInstance(element.getProject)
       for (_ <- 2 to element.getText.count(_ == '\n')) {
         parent.addAfter(
@@ -113,9 +113,9 @@ class ScalaDocNewlinedPreFormatProcessor
           element.replace(ScalaPsiElementFactory.createDocWhiteSpace(manager))
         else element
       if (!Set(
-            ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS,
-            ScalaDocTokenType.DOC_COMMENT_END).contains(
-            nextElement.getNode.getElementType))
+          ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS,
+          ScalaDocTokenType.DOC_COMMENT_END).contains(
+          nextElement.getNode.getElementType))
         parent.addAfter(
           ScalaPsiElementFactory.createLeadingAsterisk(manager),
           newElement)

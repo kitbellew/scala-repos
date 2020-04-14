@@ -63,7 +63,7 @@ object SafeDeleteProcessorUtil {
               case inheritor: PsiClass =>
                 if (justPrivates) {
                   if (parent.equals(inheritor.getExtendsList) || parent.equals(
-                        inheritor.getImplementsList)) {
+                      inheritor.getImplementsList)) {
                     usages.add(
                       new SafeDeleteExtendsClassUsageInfo(
                         element.asInstanceOf[PsiJavaCodeReferenceElement],
@@ -168,8 +168,8 @@ object SafeDeleteProcessorUtil {
     for (reference <- references) {
       val element: PsiElement = reference.getElement
       if (!isInside(element, allElementsToDelete) && !isInside(
-            element,
-            overridingMethods.map(x => x: PsiElement))) {
+          element,
+          overridingMethods.map(x => x: PsiElement))) {
         val isReferenceInImport =
           PsiTreeUtil.getParentOfType(element, classOf[ScImportStmt]) != null
         usages.add(
@@ -249,7 +249,7 @@ object SafeDeleteProcessorUtil {
           val overridingConstructor: PsiMethod =
             getOverridingConstructorOfSuperCall(reference.getElement)
           if (overridingConstructor != null && !constructorsToRefs.containsKey(
-                overridingConstructor)) {
+              overridingConstructor)) {
             val overridingConstructorReferences: util.Collection[PsiReference] =
               referenceSearch(overridingConstructor).findAll
             constructorsToRefs.put(
@@ -310,17 +310,17 @@ object SafeDeleteProcessorUtil {
             for (overridingReference <- overridingReferences) {
               val element: PsiElement = overridingReference.getElement
               if (!isInside(element, allElementsToDelete) && !isInside(
-                    element,
-                    validOverriding)) {
+                  element,
+                  validOverriding)) {
                 anyOverridingRefs = true
                 break()
               }
             }
           }
           if (!anyOverridingRefs && isMultipleInterfacesImplementation(
-                overridingMethod,
-                originalMethod,
-                allElementsToDelete)) {
+              overridingMethod,
+              originalMethod,
+              allElementsToDelete)) {
             anyOverridingRefs = true
             multipleInterfaceImplementations.add(overridingMethod)
           }
@@ -330,8 +330,8 @@ object SafeDeleteProcessorUtil {
             for (reference <- originalReferences) {
               val element: PsiElement = reference.getElement
               if (!isInside(element, allElementsToDelete) && !isInside(
-                    element,
-                    overridingMethods)) {
+                  element,
+                  overridingMethods)) {
                 usages.add(
                   new SafeDeleteReferenceJavaDeleteUsageInfo(
                     element,
@@ -352,7 +352,7 @@ object SafeDeleteProcessorUtil {
     }
     for (method <- overridingMethods) {
       if (!validOverriding.contains(method) && !multipleInterfaceImplementations
-            .contains(method)) {
+          .contains(method)) {
         val methodCanBePrivate: Boolean = canBePrivate(
           method,
           methodToReferences.get(method),
@@ -373,10 +373,10 @@ object SafeDeleteProcessorUtil {
     val methods: Array[PsiMethod] = method.findSuperMethods
     for (superMethod <- methods) {
       if (ArrayUtilRt.find(
-            allElementsToDelete,
-            superMethod) < 0 && !MethodSignatureUtil.isSuperMethod(
-            originalMethod,
-            superMethod)) {
+          allElementsToDelete,
+          superMethod) < 0 && !MethodSignatureUtil.isSuperMethod(
+          originalMethod,
+          superMethod)) {
         return true
       }
     }
@@ -386,7 +386,7 @@ object SafeDeleteProcessorUtil {
   @Nullable def getOverridingConstructorOfSuperCall(
       element: PsiElement): PsiMethod = {
     if (element.isInstanceOf[PsiReferenceExpression] && "super".equals(
-          element.getText)) {
+        element.getText)) {
       var parent: PsiElement = element.getParent
       if (parent.isInstanceOf[PsiMethodCallExpression]) {
         parent = parent.getParent
@@ -432,13 +432,13 @@ object SafeDeleteProcessorUtil {
     for (reference <- references) {
       val element: PsiElement = reference.getElement
       if (!isInside(element, allElementsToDelete) && !isInside(
-            element,
-            deleted) && !facade.getResolveHelper.isAccessible(
-            method,
-            privateModifierList,
-            element,
-            null,
-            null)) {
+          element,
+          deleted) && !facade.getResolveHelper.isAccessible(
+          method,
+          privateModifierList,
+          element,
+          null,
+          null)) {
         return false
       }
     }
@@ -581,10 +581,10 @@ object SafeDeleteProcessorUtil {
             if (methodExpression.getText.equals(PsiKeyword.SUPER)) {
               isSafeDelete = true
             } else if (methodExpression.getQualifierExpression
-                         .isInstanceOf[PsiSuperExpression]) {
+                .isInstanceOf[PsiSuperExpression]) {
               val superMethod: PsiMethod = call.resolveMethod
               if (superMethod != null && MethodSignatureUtil
-                    .isSuperMethod(superMethod, method)) {
+                  .isSuperMethod(superMethod, method)) {
                 isSafeDelete = true
               }
             }

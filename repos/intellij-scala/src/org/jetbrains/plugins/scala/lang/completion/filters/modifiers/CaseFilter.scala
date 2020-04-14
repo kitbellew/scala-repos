@@ -17,8 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.05.2008
-  */
+  * Date: 22.05.2008 */
 
 class CaseFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
@@ -31,8 +30,8 @@ class CaseFilter extends ElementFilter {
       parent match {
         case _: ScalaFile =>
           if (leaf.getNextSibling != null && leaf.getNextSibling.getNextSibling
-                .isInstanceOf[ScPackaging] &&
-              leaf.getNextSibling.getNextSibling.getText.indexOf('{') == -1)
+              .isInstanceOf[ScPackaging] &&
+            leaf.getNextSibling.getNextSibling.getText.indexOf('{') == -1)
             return false
         case _ =>
       }
@@ -61,7 +60,7 @@ class CaseFilter extends ElementFilter {
         parent.getParent.getParent match {
           case _: ScCaseClause =>
             if (parent.getParent.getParent.getNode.findChildByType(
-                  ScalaTokenTypes.tFUNTYPE) != null) return true
+                ScalaTokenTypes.tFUNTYPE) != null) return true
             else return false
           case _ =>
         }
@@ -73,34 +72,34 @@ class CaseFilter extends ElementFilter {
             case _                        => return false
           }
           if (leaf.getPrevSibling == null || leaf.getPrevSibling.getPrevSibling == null ||
-              leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF)
+            leaf.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaTokenTypes.kDEF)
             return true
         case _: ScCaseClause =>
           if (parent.getParent.getNode.findChildByType(
-                ScalaTokenTypes.tFUNTYPE) != null) return true
+              ScalaTokenTypes.tFUNTYPE) != null) return true
           else return false
         case _ =>
       }
       if (leaf.getPrevSibling != null &&
-          leaf.getPrevSibling.getPrevSibling != null &&
-          ((leaf.getPrevSibling.getPrevSibling.getNode.getElementType == ScalaElementTypes.MATCH_STMT &&
-          leaf.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[PsiErrorElement]) ||
-          (leaf.getPrevSibling.getPrevSibling.getNode.getElementType == ScalaElementTypes.TRY_STMT &&
-          leaf.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[ScCatchBlock] &&
-          leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
-            .isInstanceOf[PsiErrorElement])))
+        leaf.getPrevSibling.getPrevSibling != null &&
+        ((leaf.getPrevSibling.getPrevSibling.getNode.getElementType == ScalaElementTypes.MATCH_STMT &&
+        leaf.getPrevSibling.getPrevSibling.getLastChild
+          .isInstanceOf[PsiErrorElement]) ||
+        (leaf.getPrevSibling.getPrevSibling.getNode.getElementType == ScalaElementTypes.TRY_STMT &&
+        leaf.getPrevSibling.getPrevSibling.getLastChild
+          .isInstanceOf[ScCatchBlock] &&
+        leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
+          .isInstanceOf[PsiErrorElement])))
         return true
       if (parent.isInstanceOf[ScTemplateBody]) {
         if (leaf.getPrevSibling != null &&
-            leaf.getPrevSibling.getPrevSibling != null &&
-            leaf.getPrevSibling.getPrevSibling.getLastChild != null &&
-            leaf.getPrevSibling.getPrevSibling.getLastChild.getNode.getElementType == ScalaElementTypes.MATCH_STMT &&
-            leaf.getPrevSibling.getPrevSibling.getLastChild.getText
-              .indexOf('{') != -1 &&
-            leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
-              .isInstanceOf[PsiErrorElement])
+          leaf.getPrevSibling.getPrevSibling != null &&
+          leaf.getPrevSibling.getPrevSibling.getLastChild != null &&
+          leaf.getPrevSibling.getPrevSibling.getLastChild.getNode.getElementType == ScalaElementTypes.MATCH_STMT &&
+          leaf.getPrevSibling.getPrevSibling.getLastChild.getText
+            .indexOf('{') != -1 &&
+          leaf.getPrevSibling.getPrevSibling.getLastChild.getLastChild
+            .isInstanceOf[PsiErrorElement])
           return true
       }
     }

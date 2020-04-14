@@ -8,7 +8,6 @@ import org.scalacheck.Arbitrary
 import breeze.stats.mean
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])
@@ -376,7 +375,6 @@ class SparseVectorTest extends FunSuite {
 }
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])
@@ -409,7 +407,6 @@ class SparseVectorOps_DoubleTest
 }
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])
@@ -447,7 +444,6 @@ class SparseVectorOps_FloatTest
 }
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])

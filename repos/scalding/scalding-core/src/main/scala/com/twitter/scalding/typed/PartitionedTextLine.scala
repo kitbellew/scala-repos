@@ -101,7 +101,7 @@ case class PartitionedTextLine[P](
   override def sinkFields: Fields =
     PartitionUtil.toFields(0, valueSetter.arity + partitionSetter.arity)
 
-  /** Creates the taps for local and hdfs mode.*/
+  /** Creates the taps for local and hdfs mode. */
   override def createTap(readOrWrite: AccessMode)(implicit
       mode: Mode): Tap[_, _, _] =
     mode match {
@@ -144,7 +144,7 @@ case class PartitionedTextLine[P](
       valueConverter,
       partitionConverter)
 
-  /** Flatten a pair of `P` and `line` into a cascading tuple.*/
+  /** Flatten a pair of `P` and `line` into a cascading tuple. */
   override def setter[U <: (P, String)] =
     PartitionUtil.setter[P, String, U](valueSetter, partitionSetter)
 }

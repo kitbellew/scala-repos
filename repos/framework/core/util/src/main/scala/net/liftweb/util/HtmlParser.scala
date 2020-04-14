@@ -140,13 +140,13 @@ trait Html5Writer {
               }
               case _ =>
                 if (c >= ' ' &&
-                    c != '\u0085' &&
-                    !(c >= '\u007f' && c <= '\u0095')) sb.append(c)
+                  c != '\u0085' &&
+                  !(c >= '\u007f' && c <= '\u0095')) sb.append(c)
             }
           } else {
             if (c >= ' ' &&
-                c != '\u0085' &&
-                !(c >= '\u007f' && c <= '\u0095')) sb.append(c)
+              c != '\u0085' &&
+              !(c >= '\u007f' && c <= '\u0095')) sb.append(c)
           }
       }
 
@@ -425,10 +425,10 @@ trait Html5Parser {
       n match {
         case e: Elem => {
           if (e.label == "html" && e.prefix == null &&
-              e.attributes == Null &&
-              e.child.length == 2 &&
-              checkHead(e.child(0)) &&
-              checkBody(e.child(1))) {
+            e.attributes == Null &&
+            e.child.length == 2 &&
+            checkHead(e.child(0)) &&
+            checkBody(e.child(1))) {
             Some(e.child(1).asInstanceOf[Elem].child(0).asInstanceOf[Elem])
           } else {
             None

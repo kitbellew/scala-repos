@@ -438,8 +438,8 @@ abstract class GenJSCode
               constructorTrees += dd
             } else if (exposed && sym.isAccessor) {
               /* Exposed accessors must not be emitted, since the field they
-             * access is enough.
-             */
+               * access is enough.
+               */
             } else {
               generatedMethods ++= genMethod(dd)
 
@@ -1127,12 +1127,12 @@ abstract class GenJSCode
           else rhs == EmptyTree
 
         if (scalaPrimitives.isPrimitive(sym) &&
-            !jsPrimitives.shouldEmitPrimitiveBody(sym)) {
+          !jsPrimitives.shouldEmitPrimitiveBody(sym)) {
           None
         } else if (isAbstractMethod) {
           val body =
             if (scalaUsesImplClasses &&
-                sym.hasAnnotation(JavaDefaultMethodAnnotation)) {
+              sym.hasAnnotation(JavaDefaultMethodAnnotation)) {
               /* For an interface method with @JavaDefaultMethod, make it a
                * default method calling the impl class method.
                */
@@ -1165,7 +1165,7 @@ abstract class GenJSCode
         } else if (sym.isClassConstructor && isHijackedBoxedClass(sym.owner)) {
           None
         } else if (scalaUsesImplClasses && !sym.owner.isImplClass &&
-                   sym.hasAnnotation(JavaDefaultMethodAnnotation)) {
+          sym.hasAnnotation(JavaDefaultMethodAnnotation)) {
           // Do not emit trait impl forwarders with @JavaDefaultMethod
           None
         } else {
@@ -1233,7 +1233,7 @@ abstract class GenJSCode
               val mutatedImmutableLocalVals =
                 (mutatedLocalVars -- mutableLocalVars).toList
               if (unmutatedMutableLocalVars.isEmpty &&
-                  mutatedImmutableLocalVals.isEmpty) {
+                mutatedImmutableLocalVals.isEmpty) {
                 // OK, we're good (common case)
                 methodDef
               } else {
@@ -2063,7 +2063,7 @@ abstract class GenJSCode
 
         // Initialize the module instance just after the super constructor call.
         if (isStaticModule(currentClassSym) && !isModuleInitialized &&
-            currentMethodSym.isClassConstructor) {
+          currentMethodSym.isClassConstructor) {
           isModuleInitialized = true
           val thisType = jstpe.ClassType(encodeClassFullName(currentClassSym))
           val initModule = js.StoreModule(thisType, js.This()(thisType))
@@ -2934,11 +2934,11 @@ abstract class GenJSCode
                   rsrc)
               case _ =>
                 if (eqeq &&
-                    // don't call equals if we have a literal null at either side
-                    !lsrc.isInstanceOf[js.Null] &&
-                    !rsrc.isInstanceOf[js.Null] &&
-                    // Arrays, Null, Nothing do not have an equals() method
-                    leftKind.isInstanceOf[REFERENCE]) {
+                  // don't call equals if we have a literal null at either side
+                  !lsrc.isInstanceOf[js.Null] &&
+                  !rsrc.isInstanceOf[js.Null] &&
+                  // Arrays, Null, Nothing do not have an equals() method
+                  leftKind.isInstanceOf[REFERENCE]) {
                   val body =
                     genEqEqPrimitive(args(0).tpe, args(1).tpe, lsrc, rsrc)
                   if (not) js.UnaryOp(js.UnaryOp.Boolean_!, body) else body
@@ -3432,9 +3432,8 @@ abstract class GenJSCode
                         case _             => false
                       }
                     if (rtClass == BoxedDoubleClass &&
-                        toTypeKind(
-                          implMethodSym.tpe.resultType) == DoubleKind &&
-                        isIntOrLongKind(toTypeKind(sym.tpe.resultType))) {
+                      toTypeKind(implMethodSym.tpe.resultType) == DoubleKind &&
+                      isIntOrLongKind(toTypeKind(sym.tpe.resultType))) {
                       // This must be an Int, and not a Double
                       IntegerReflectiveCallClass
                     } else {
@@ -4564,7 +4563,7 @@ abstract class GenJSCode
             } else {
               val name = dd.name.toString
               if (name == "apply" || (ddsym.isSpecialized && name.startsWith(
-                    "apply$"))) {
+                  "apply$"))) {
                 if ((applyDef eq null) || ddsym.isSpecialized)
                   applyDef = dd
               } else {
@@ -4589,8 +4588,8 @@ abstract class GenJSCode
         val ctorParams = sym.primaryConstructor.tpe.params
 
         if (paramAccessors.size != ctorParams.size &&
-            !(paramAccessors.size == ctorParams.size - 1 &&
-              ctorParams.head.unexpandedName == jsnme.arg_outer)) {
+          !(paramAccessors.size == ctorParams.size - 1 &&
+            ctorParams.head.unexpandedName == jsnme.arg_outer)) {
           fail(
             s"Have param accessors $paramAccessors but " +
               s"ctor params $ctorParams in anon function $cd")

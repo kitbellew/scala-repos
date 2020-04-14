@@ -306,7 +306,7 @@ trait Contexts { self: Analyzer =>
       if (inTypeConstructorAllowed) Mode.NOmode else Mode.EXPRmode
 
     /** To enrich error messages involving default arguments.
-        When extending the notion, group diagnostics in an object. */
+      *        When extending the notion, group diagnostics in an object. */
     var diagUsedDefaults: Boolean = false
 
     /** Saved type bounds for type parameters which are narrowed in a GADT. */
@@ -550,7 +550,7 @@ trait Contexts { self: Analyzer =>
       c
     }
 
-    /** Use reporter (possibly buffered) for errors/warnings and enable implicit conversion **/
+    /** Use reporter (possibly buffered) for errors/warnings and enable implicit conversion * */
     def initRootContext(
         throwing: Boolean = false,
         checking: Boolean = false): Unit = {
@@ -948,7 +948,7 @@ trait Contexts { self: Analyzer =>
         pre: Type,
         imported: Boolean = false): List[ImplicitInfo] =
       for (sym <- syms.toList
-           if isQualifyingImplicit(sym.name, sym, pre, imported))
+        if isQualifyingImplicit(sym.name, sym, pre, imported))
         yield new ImplicitInfo(sym.name, pre, sym)
 
     private def collectImplicitImports(imp: ImportInfo): List[ImplicitInfo] = {

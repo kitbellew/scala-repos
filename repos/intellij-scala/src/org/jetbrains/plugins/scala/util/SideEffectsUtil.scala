@@ -176,8 +176,8 @@ object SideEffectsUtil {
       case Some(fqn) =>
         val name = fqn + "." + m.name
         if (ScalaCodeStyleSettings.nameFitToPatterns(
-              name,
-              methodsFromObjectWithSideEffects))
+            name,
+            methodsFromObjectWithSideEffects))
           return false
       case _ =>
     }

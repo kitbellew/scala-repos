@@ -7,7 +7,6 @@ import scala.collection.mutable
 import java.util.BitSet
 
 /**
-  *
   * @author dlwh
   */
 package object util {

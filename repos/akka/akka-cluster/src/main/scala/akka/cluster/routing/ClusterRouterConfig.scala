@@ -438,7 +438,7 @@ private[akka] trait ClusterRouterActor { this: RouterActor ⇒
   def settings: ClusterRouterSettingsBase
 
   if (!cell.routerConfig.isInstanceOf[Pool] && !cell.routerConfig
-        .isInstanceOf[Group])
+      .isInstanceOf[Group])
     throw ActorInitializationException(
       "Cluster router actor can only be used with Pool or Group, not with " +
         cell.routerConfig.getClass)
@@ -472,7 +472,7 @@ private[akka] trait ClusterRouterActor { this: RouterActor ⇒
   def availableNodes: immutable.SortedSet[Address] = {
     import akka.cluster.Member.addressOrdering
     if (nodes.isEmpty && settings.allowLocalRoutees && satisfiesRole(
-          cluster.selfRoles))
+        cluster.selfRoles))
       // use my own node, cluster information not updated yet
       immutable.SortedSet(cluster.selfAddress)
     else

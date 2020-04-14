@@ -30,7 +30,7 @@ private[streaming] object HdfsUtils {
     val stream: FSDataOutputStream = {
       if (dfs.isFile(dfsPath)) {
         if (conf.getBoolean("hdfs.append.support", false) || dfs
-              .isInstanceOf[RawLocalFileSystem]) {
+            .isInstanceOf[RawLocalFileSystem]) {
           dfs.append(dfsPath)
         } else {
           throw new IllegalStateException(

@@ -933,7 +933,7 @@ class ZkUtils(
         this,
         excludeInternalTopics)
       for ((topic, consumerThreadIdSet) <-
-             topicCount.getConsumerThreadIdsPerTopic) {
+          topicCount.getConsumerThreadIdsPerTopic) {
         for (consumerThreadId <- consumerThreadIdSet)
           consumersPerTopicMap.get(topic) match {
             case Some(curConsumers) =>

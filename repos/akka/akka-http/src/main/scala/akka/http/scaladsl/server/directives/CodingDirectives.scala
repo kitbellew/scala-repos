@@ -152,7 +152,7 @@ object CodingDirectives extends CodingDirectives {
         case Some(encoder) ⇒ mapResponse(encoder.encode(_))
         case _ ⇒
           if (encoders.contains(NoCoding) && !negotiator.hasMatchingFor(
-                HttpEncodings.identity)) pass
+              HttpEncodings.identity)) pass
           else reject(UnacceptedResponseEncodingRejection(encodings.toSet))
       }
     }

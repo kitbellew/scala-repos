@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * StrokeTransition Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class StrokeTransitionSpec

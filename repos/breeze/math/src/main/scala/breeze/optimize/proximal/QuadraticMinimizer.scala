@@ -19,7 +19,6 @@ import spire.syntax.cfor._
   *
   * Reference: http://www.stanford.edu/~boyd/papers/admm/quadprog/quadprog.html
   *
-  *
   * It solves problem that has the following structure
   *
   * 1/2 x'Hx + f'x + g(x)

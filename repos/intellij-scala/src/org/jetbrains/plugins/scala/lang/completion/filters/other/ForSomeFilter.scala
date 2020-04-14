@@ -11,8 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScInfixTypeElement
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.05.2008
-  */
+  * Date: 28.05.2008 */
 
 class ForSomeFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {

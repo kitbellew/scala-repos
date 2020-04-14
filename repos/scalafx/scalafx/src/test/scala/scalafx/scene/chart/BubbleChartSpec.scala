@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * BubbleChart Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BubbleChartSpec

@@ -18,7 +18,7 @@ import scala.collection._
   * @author Gilles Dubochet */
 abstract class Comment {
 
-  /** The main body of the comment that describes what the entity does and is.  */
+  /** The main body of the comment that describes what the entity does and is. */
   def body: Body
 
   private def closeHtmlTags(inline: Inline): Inline = {

@@ -40,7 +40,6 @@ private case class ClientSensors(
   * @param quotaBytesPerSecondDefault The default bytes per second quota allocated to any client
   * @param numQuotaSamples The number of samples to retain in memory
   * @param quotaWindowSizeSeconds The time span of each sample
-  *
   */
 case class ClientQuotaManagerConfig(
     quotaBytesPerSecondDefault: Long =

@@ -11,8 +11,6 @@ import org.apache.lucene.document.Document
 /**
   * User: Dmitry.Naydanov
   * Date: 20.01.15.
-  *
-  *
   */
 object ActivatorRepoProcessor {
   val REPO_URI = "http://downloads.typesafe.com/typesafe-activator"

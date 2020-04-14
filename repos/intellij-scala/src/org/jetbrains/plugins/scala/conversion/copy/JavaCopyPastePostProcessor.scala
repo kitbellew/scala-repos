@@ -57,9 +57,9 @@ class JavaCopyPastePostProcessor
       endOffsets: Array[Int]): TextBlockTransferableData = {
     if (DumbService.getInstance(file.getProject).isDumb) return null
     if (!ScalaProjectSettings
-          .getInstance(file.getProject)
-          .isEnableJavaToScalaConversion ||
-        !file.isInstanceOf[PsiJavaFile]) return null
+        .getInstance(file.getProject)
+        .isEnableJavaToScalaConversion ||
+      !file.isInstanceOf[PsiJavaFile]) return null
 
     sealed trait Part
     case class ElementPart(elem: PsiElement) extends Part
@@ -75,16 +75,16 @@ class JavaCopyPastePostProcessor
             val elem = file.findElementAt(offset)
             if (elem == null) return null
             if (elem.getParent.getTextRange.getEndOffset > endOffset ||
-                elem.getParent.getTextRange.getStartOffset < startOffset)
+              elem.getParent.getTextRange.getStartOffset < startOffset)
               findElem(elem.getTextRange.getEndOffset + 1)
             else elem
           }
           var elem: PsiElement = findElem(startOffset)
           if (elem != null) {
             while (elem.getParent != null && !elem.getParent
-                     .isInstanceOf[PsiFile] &&
-                   elem.getParent.getTextRange.getEndOffset <= endOffset &&
-                   elem.getParent.getTextRange.getStartOffset >= startOffset) {
+                .isInstanceOf[PsiFile] &&
+              elem.getParent.getTextRange.getEndOffset <= endOffset &&
+              elem.getParent.getTextRange.getStartOffset >= startOffset) {
               elem = elem.getParent
             }
             if (startOffset < elem.getTextRange.getStartOffset) {
@@ -199,8 +199,8 @@ class JavaCopyPastePostProcessor
       ref: Ref[Boolean],
       value: TextBlockTransferableData) {
     if (!ScalaProjectSettings
-          .getInstance(project)
-          .isEnableJavaToScalaConversion) return
+        .getInstance(project)
+        .isEnableJavaToScalaConversion) return
     if (value == null) return
     val file =
       PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
@@ -214,8 +214,8 @@ class JavaCopyPastePostProcessor
     if (!ScalaProjectSettings.getInstance(project).isDontShowConversionDialog)
       dialog.show()
     if (ScalaProjectSettings
-          .getInstance(project)
-          .isDontShowConversionDialog || dialog.isOK) {
+        .getInstance(project)
+        .isDontShowConversionDialog || dialog.isOK) {
       val shiftedAssociations = inWriteAction {
         replaceByConvertedCode(editor, bounds, text)
         editor.getCaretModel.moveToOffset(bounds.getStartOffset + text.length)

@@ -25,7 +25,7 @@ import scala.tools.nsc.util.InterruptReq
   *  Each background compiler pass has its own typer run.
   *  The background compiler thread can be interrupted each time an AST node is
   *  completely typechecked in the following ways:
-
+  *
   *  1. by a new call to reloadSources. This starts a new background compiler pass with a new typer run.
   *  2. by a call to askTypeTree. This starts a new typer run if the forceReload parameter = true
   *  3. by a call to askTypeAt, askTypeCompletion, askScopeCompletion, askToDoFirst, askLinkPos, askLastType.
@@ -213,7 +213,7 @@ trait CompilerControl { self: Global =>
     * Waits until source is fully type checked and returns body in response.
     * @param source     The source file that needs to be fully typed.
     * @param keepLoaded Whether to keep that file in the PC if it was not loaded before. If
-                       the file is already loaded, this flag is ignored.
+    *                       the file is already loaded, this flag is ignored.
     * @param response   The response, which is set to the fully attributed tree of `source`.
     *                   If the unit corresponding to `source` has been removed in the meantime
     *                   the a NoSuchUnitError is raised in the response.

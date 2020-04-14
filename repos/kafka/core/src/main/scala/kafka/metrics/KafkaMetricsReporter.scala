@@ -1,7 +1,4 @@
 /**
-  *
-  *
-  *
   * Licensed to the Apache Software Foundation (ASF) under one or more
   * contributor license agreements.  See the NOTICE file distributed with
   * this work for additional information regarding copyright ownership.
@@ -35,7 +32,6 @@ trait KafkaMetricsReporterMBean {
   def stopReporter()
 
   /**
-    *
     * @return The name with which the MBean will be registered.
     */
   def getMBeanName: String

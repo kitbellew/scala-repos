@@ -421,8 +421,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           }
 
           if ((expectedPrefix eq NoPrefix)
-              || definedInStaticLocation(expectedTp)
-              || testedPrefix =:= expectedPrefix) orig
+            || definedInStaticLocation(expectedTp)
+            || testedPrefix =:= expectedPrefix) orig
           else
             gen.mkAttributedQualifierIfPossible(expectedPrefix) match {
               case None                   => orig
@@ -474,27 +474,27 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
     /** implements the run-time aspects of (§8.2) (typedPattern has already done the necessary type transformations)
       *
       * Type patterns consist of types, type variables, and wildcards. A type pattern T is of one of the following forms:
-        - A reference to a class C, p.C, or T#C.
-          This type pattern matches any non-null instance of the given class.
-          Note that the prefix of the class, if it is given, is relevant for determining class instances.
-          For instance, the pattern p.C matches only instances of classes C which were created with the path p as prefix.
-          The bottom types scala.Nothing and scala.Null cannot be used as type patterns, because they would match nothing in any case.
-
-        - A singleton type p.type.
-          This type pattern matches only the value denoted by the path p
-          (that is, a pattern match involved a comparison of the matched value with p using method eq in class AnyRef). // TODO: the actual pattern matcher uses ==, so that's what I'm using for now
-          // https://issues.scala-lang.org/browse/SI-4577 "pattern matcher, still disappointing us at equality time"
-
-        - A compound type pattern T1 with ... with Tn where each Ti is a type pat- tern.
-          This type pattern matches all values that are matched by each of the type patterns Ti.
-
-        - A parameterized type pattern T[a1,...,an], where the ai are type variable patterns or wildcards _.
-          This type pattern matches all values which match T for some arbitrary instantiation of the type variables and wildcards.
-          The bounds or alias type of these type variable are determined as described in (§8.3).
-
-        - A parameterized type pattern scala.Array[T1], where T1 is a type pattern. // TODO
-          This type pattern matches any non-null instance of type scala.Array[U1], where U1 is a type matched by T1.
-    **/
+      *        - A reference to a class C, p.C, or T#C.
+      *          This type pattern matches any non-null instance of the given class.
+      *          Note that the prefix of the class, if it is given, is relevant for determining class instances.
+      *          For instance, the pattern p.C matches only instances of classes C which were created with the path p as prefix.
+      *          The bottom types scala.Nothing and scala.Null cannot be used as type patterns, because they would match nothing in any case.
+      *
+      *        - A singleton type p.type.
+      *          This type pattern matches only the value denoted by the path p
+      *          (that is, a pattern match involved a comparison of the matched value with p using method eq in class AnyRef). // TODO: the actual pattern matcher uses ==, so that's what I'm using for now
+      *          // https://issues.scala-lang.org/browse/SI-4577 "pattern matcher, still disappointing us at equality time"
+      *
+      *        - A compound type pattern T1 with ... with Tn where each Ti is a type pat- tern.
+      *          This type pattern matches all values that are matched by each of the type patterns Ti.
+      *
+      *        - A parameterized type pattern T[a1,...,an], where the ai are type variable patterns or wildcards _.
+      *          This type pattern matches all values which match T for some arbitrary instantiation of the type variables and wildcards.
+      *          The bounds or alias type of these type variable are determined as described in (§8.3).
+      *
+      *        - A parameterized type pattern scala.Array[T1], where T1 is a type pattern. // TODO
+      *          This type pattern matches any non-null instance of type scala.Array[U1], where U1 is a type matched by T1.
+      */
     case class TypeTestTreeMaker(
         prevBinder: Symbol,
         testedBinder: Symbol,
@@ -769,10 +769,10 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             //   irrefutability checking should use the approximation framework also used for CSE, unreachability and exhaustivity checking
             val synthCatchAll =
               if (casesNoSubstOnly.nonEmpty && {
-                    val nonTrivLast = casesNoSubstOnly.last
-                    nonTrivLast.nonEmpty && nonTrivLast.head
-                      .isInstanceOf[BodyTreeMaker]
-                  }) None
+                  val nonTrivLast = casesNoSubstOnly.last
+                  nonTrivLast.nonEmpty && nonTrivLast.head
+                    .isInstanceOf[BodyTreeMaker]
+                }) None
               else matchFailGen
 
             analyzeCases(scrutSym, casesNoSubstOnly, pt, suppression)

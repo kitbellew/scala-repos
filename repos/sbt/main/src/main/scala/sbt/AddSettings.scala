@@ -54,7 +54,7 @@ object AddSettings {
   /** Includes the settings from the .sbt files given by `files`. */
   def sbtFiles(files: File*): AddSettings = new SbtFiles(files)
 
-  /** Includes settings automatically*/
+  /** Includes settings automatically */
   def seq(autos: AddSettings*): AddSettings = new Sequence(autos)
 
   /** The default inclusion of settings. */

@@ -8,7 +8,7 @@ import scala.runtime.ScalaRunTime
   * Chi-Squared distribution with k degrees of freedom.
   *
   * @author dlwh
- **/
+  */
 case class ChiSquared(k: Double)(implicit rand: RandBasis = Rand)
     extends ContinuousDistr[Double]
     with Moments[Double, Double]

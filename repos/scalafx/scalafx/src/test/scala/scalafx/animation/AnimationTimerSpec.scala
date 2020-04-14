@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * AnimationTimer Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class AnimationTimerSpec

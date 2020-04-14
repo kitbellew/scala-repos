@@ -238,9 +238,9 @@ object ScalaOIUtil {
       case method =>
         var flag = false
         if (method match {
-              case x: ScFunction => x.parameters.length == 0
-              case _             => method.getParameterList.getParametersCount == 0
-            }) {
+            case x: ScFunction => x.parameters.length == 0
+            case _             => method.getParameterList.getParametersCount == 0
+          }) {
           for (pair <- clazz.allVals; v = pair._1) if (v.name == method.name) {
             ScalaPsiUtil.nameContext(v) match {
               case x: ScValue if x.containingClass == clazz    => flag = true
@@ -305,12 +305,12 @@ object ScalaOIUtil {
         }
         var flag = false
         for (signe <- clazz.allMethods
-             if signe.method.containingClass == clazz) {
+          if signe.method.containingClass == clazz) {
           //containingClass == clazz so we sure that this is ScFunction (it is safe cast)
           signe.method match {
             case fun: ScFunction =>
               if (fun.parameters.length == 0 && declaredElements.exists(
-                    _.name == fun.name)) flag = true
+                  _.name == fun.name)) flag = true
             case _ => //todo: ScPrimaryConstructor?
           }
         }

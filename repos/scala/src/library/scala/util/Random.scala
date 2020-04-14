@@ -16,7 +16,6 @@ import scala.language.{implicitConversions, higherKinds}
 
 /**
   *  @author Stephane Micheloud
-  *
   */
 class Random(val self: java.util.Random) extends AnyRef with Serializable {
 

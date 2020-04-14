@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle.index
 
@@ -56,7 +56,6 @@ import org.saddle._
   *
   * }}}
   *
-  *
   * For this to work, the maximum value M in the co-domain of g must be <= A.length.
   * We also augment the mapping f to send -1 to the corresponding NA value of type T.
   *
@@ -85,13 +84,11 @@ trait ReIndexer[T] {
 
   /**
     * Offsets into left index corresponding to new index
-    *
     */
   def lTake: Option[Array[Int]]
 
   /**
     * Offsets into right index corresponding to new index
-    *
     */
   def rTake: Option[Array[Int]]
 

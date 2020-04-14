@@ -5,7 +5,6 @@ package akka.http.javadsl.model
 
 /**
   * Represents an Http media-type. A media-type consists of a main-type and a sub-type.
-  *
   */
 // Has to be defined in Scala even though it's JavaDSL because of:
 // https://issues.scala-lang.org/browse/SI-9621

@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TreeCell Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TreeCellSpec[T <: AnyRef]

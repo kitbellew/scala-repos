@@ -292,7 +292,7 @@ trait ItemsListEditor[T <: Mapper[T]] {
     val noPrompt = "onclick" -> "safeToContinue=true"
     val optScript =
       if ((items.added.length + items.removed.length == 0) &&
-          items.current.forall(!_.dirty_?)) {
+        items.current.forall(!_.dirty_?)) {
         NodeSeq.Empty
       } else {
         unsavedScript

@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * XYChart.Data Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class XYChartDataSpec

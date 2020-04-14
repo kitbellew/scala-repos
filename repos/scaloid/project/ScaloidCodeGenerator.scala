@@ -58,7 +58,7 @@ class ScaloidCodeGenerator(
   def prefixedClassDef = {
     val name = cls.name
     if (cls.hasBlankConstructor || CustomClassBodies.toMap.isDefinedAt(
-          name) || companionObjectBodies.toMap.isDefinedAt(name))
+        name) || companionObjectBodies.toMap.isDefinedAt(name))
       s"""$prefixedClassScalaDoc
          |${deprecated}class S$name$customClassGenerics($customClassExplicitArgs)$classImplicitArgs
          |    extends $baseClassInstance with $helperTraitName[S$name$customSimpleClassGenerics] {

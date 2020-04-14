@@ -30,7 +30,6 @@ object BlockingChannel {
 
 /**
   *  A simple blocking channel with timeouts correctly enabled.
-  *
   */
 @nonthreadsafe
 class BlockingChannel(

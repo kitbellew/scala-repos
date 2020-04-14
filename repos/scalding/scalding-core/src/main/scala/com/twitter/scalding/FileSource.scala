@@ -451,7 +451,6 @@ trait SequenceFileScheme extends SchemedSource {
   * <pre>
   *   dir1/_SUCCESS
   * </pre>
-  *
   */
 trait SuccessFileSource extends FileSource {
   override protected def pathIsGood(p: String, conf: Configuration) =

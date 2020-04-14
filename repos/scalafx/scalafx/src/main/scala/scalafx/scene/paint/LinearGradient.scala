@@ -100,7 +100,6 @@ object LinearGradient {
 }
 
 /**
-  *
   */
 class LinearGradient(override val delegate: jfxsp.LinearGradient)
     extends Paint(delegate)

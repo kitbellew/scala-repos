@@ -634,7 +634,7 @@ class TaskMetricsSuite extends SparkFunSuite {
       assert(!Accumulators.originals.contains(a.id))
     }
     // set some values in these accums
-    registeredAccums.zipWithIndex.foreach { case (a, i)   => a.setValue(i) }
+    registeredAccums.zipWithIndex.foreach { case (a, i) => a.setValue(i) }
     unregisteredAccums.zipWithIndex.foreach { case (a, i) => a.setValue(i) }
     val registeredAccumInfos = registeredAccums.map(makeInfo)
     val unregisteredAccumInfos = unregisteredAccums.map(makeInfo)

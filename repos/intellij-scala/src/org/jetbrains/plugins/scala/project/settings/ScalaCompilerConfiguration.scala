@@ -43,7 +43,7 @@ class ScalaCompilerConfiguration(project: Project)
     customProfiles.foreach { profile =>
       profile.removeModuleName(module.getName)
       if (profile.getName.startsWith(
-            source) && profile.getModuleNames.isEmpty) {
+          source) && profile.getModuleNames.isEmpty) {
         customProfiles = customProfiles.filterNot(_ == profile)
       }
     }

@@ -250,7 +250,7 @@ trait ParSeqLike[
       bf: CanBuildFrom[Repr, U, That]): That = {
     val realreplaced = replaced min (length - from)
     if (patch.isParSeq && bf(
-          repr).isCombiner && (size - realreplaced + patch.size) > MIN_FOR_COPY) {
+        repr).isCombiner && (size - realreplaced + patch.size) > MIN_FOR_COPY) {
       val that = patch.asParSeq
       val pits = splitter.psplitWithSignalling(
         from,
@@ -542,8 +542,8 @@ trait ParSeqLike[
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
       for ((p, op) <- pit.psplitWithSignalling(
-             fp,
-             sp) zip otherpit.psplitWithSignalling(fp, sp))
+          fp,
+          sp) zip otherpit.psplitWithSignalling(fp, sp))
         yield new SameElements(p, op)
     }
     override def merge(that: SameElements[U]) = result = result && that.result
@@ -613,8 +613,8 @@ trait ParSeqLike[
       val fp = pit.remaining / 2
       val sp = pit.remaining - fp
       for ((p, op) <- pit.psplitWithSignalling(
-             fp,
-             sp) zip otherpit.psplitWithSignalling(fp, sp))
+          fp,
+          sp) zip otherpit.psplitWithSignalling(fp, sp))
         yield new Corresponds(corr, p, op)
     }
     override def merge(that: Corresponds[S]) = result = result && that.result

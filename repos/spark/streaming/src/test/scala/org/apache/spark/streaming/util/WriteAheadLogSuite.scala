@@ -794,7 +794,7 @@ object WriteAheadLogSuite {
       HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
 
     if (fileSystem.exists(logDirectoryPath) &&
-        fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
+      fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
       fileSystem
         .listStatus(logDirectoryPath)
         .map { _.getPath() }

@@ -317,7 +317,7 @@ abstract class DStream[T: ClassTag](
     if (!isInitialized) {
       throw new SparkException(this + " has not been initialized")
     } else if (time <= zeroTime || !(time - zeroTime).isMultipleOf(
-                 slideDuration)) {
+        slideDuration)) {
       logInfo(s"Time $time is invalid as zeroTime is $zeroTime" +
         s" , slideDuration is $slideDuration and difference is ${time - zeroTime}")
       false
@@ -359,7 +359,7 @@ abstract class DStream[T: ClassTag](
                 s"Persisting RDD ${newRDD.id} for time $time to $storageLevel")
             }
             if (checkpointDuration != null && (time - zeroTime).isMultipleOf(
-                  checkpointDuration)) {
+                checkpointDuration)) {
               newRDD.checkpoint()
               logInfo(
                 s"Marking RDD ${newRDD.id} for time $time for checkpointing")

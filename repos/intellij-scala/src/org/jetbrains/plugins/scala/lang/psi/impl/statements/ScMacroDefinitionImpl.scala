@@ -44,10 +44,10 @@ class ScMacroDefinitionImpl private (
       place: PsiElement): Boolean = {
     //process function's parameters for dependent method types, and process type parameters
     if (!super[ScFunctionImpl].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+        processor,
+        state,
+        lastParent,
+        place)) return false
 
     //do not process parameters for default parameters, only for function body
     //processing parameters for default parameters in ScParameters

@@ -51,7 +51,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
       case Some((action, _)) =>
         PsiDocumentManager.getInstance(project).commitAllDocuments()
         if (!FileModificationService.getInstance.prepareFileForWrite(
-              element.getContainingFile)) return
+            element.getContainingFile)) return
         IdeDocumentHistory
           .getInstance(project)
           .includeCurrentPlaceAsChangePlace()

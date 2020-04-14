@@ -36,8 +36,6 @@ import scalafx.testutil.{DimensionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * Shadow Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ShadowSpec

@@ -16,8 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 }
 
 /**
-  * @author Alexander Podkhalyuzin
-  */
+  * @author Alexander Podkhalyuzin */
 
 class ScXmlExprImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

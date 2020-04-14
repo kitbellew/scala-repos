@@ -394,7 +394,7 @@ private[scala] trait JavaMirrors
       .map(_.asMethod)
     private def isBytecodelessMethod(meth: MethodSymbol): Boolean = {
       if (isGetClass(meth) || isStringConcat(
-            meth) || meth.owner.isPrimitiveValueClass || meth == runDefinitions.Predef_classOf || meth.isMacro)
+          meth) || meth.owner.isPrimitiveValueClass || meth == runDefinitions.Predef_classOf || meth.isMacro)
         return true
       bytecodelessMethodOwners(meth.owner) && !bytecodefulObjectMethods(meth)
     }
@@ -623,8 +623,8 @@ private[scala] trait JavaMirrors
           args1(i) =
             (
               if (i >= paramCount) arg // don't transform varargs
-              else if (isByName(i))() =>
-                arg // don't transform by-name value class params
+              else if (isByName(i))
+                () => arg // don't transform by-name value class params
               else if (isDerivedValueClass(i))
                 paramUnboxers(i).invoke(arg) // do get the underlying value
               else arg // don't molest anything else

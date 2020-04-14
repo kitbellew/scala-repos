@@ -44,7 +44,6 @@ import scalafx.scene.chart.XYChart
   * @see scalafx.scene.chart.Axis
   * @see scalafx.scene.chart.CategoryAxis
   * @see scalafx.scene.chart.NumberAxis
-  *
   */
 class EnsembleBarChart extends EnsembleExample {
   def getContent = {

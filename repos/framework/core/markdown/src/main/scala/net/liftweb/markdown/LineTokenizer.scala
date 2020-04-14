@@ -32,7 +32,7 @@ import scala.xml
 case class LineReader private (val lines: Seq[String], val lineCount: Int)
     extends Reader[String] {
 
-  /**should never be used anywhere, just a string that should stick out for better debugging*/
+  /** should never be used anywhere, just a string that should stick out for better debugging */
   private def eofLine = "EOF"
   def this(ls: Seq[String]) = this(ls, 1)
   def first = if (lines.isEmpty) eofLine else lines.head
@@ -54,7 +54,7 @@ case class LineReader private (val lines: Seq[String], val lineCount: Int)
 class LineTokenizer() extends Parsers {
   object lineParsers extends LineParsers
 
-  /**we munch whole lines (OM NOM NOM)
+  /** we munch whole lines (OM NOM NOM)
     */
   type Elem = String
 
@@ -87,7 +87,7 @@ class LineTokenizer() extends Parsers {
     if (line.length == 0) '\n' else line.charAt(0)
   }
 
-  /**Finds the char in the given line that is the best indication of what kind of markdown line this is.
+  /** Finds the char in the given line that is the best indication of what kind of markdown line this is.
     * The “special” Markdown lines all start with up to three spaces. Those are skipped if present.
     * The first char after those (up to)three spaces or a newline is returned.
     */

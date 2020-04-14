@@ -2,7 +2,7 @@ package breeze.numerics.units
 
 import breeze.generic.{MappingUFunc, UFunc}
 
-/**Package for common unit conversions.
+/** Package for common unit conversions.
   * @author ktakagaki
   * @date 1/31/14.
   */

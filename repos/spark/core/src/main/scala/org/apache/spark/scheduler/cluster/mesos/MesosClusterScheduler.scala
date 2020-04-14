@@ -212,7 +212,7 @@ private[spark] class MesosClusterScheduler(
         k.success = true
         k.message = "Removed driver while it's being retried"
       } else if (finishedDrivers.exists(
-                   _.driverDescription.submissionId.equals(submissionId))) {
+          _.driverDescription.submissionId.equals(submissionId))) {
         k.success = false
         k.message = "Driver already terminated"
       } else {
@@ -241,7 +241,7 @@ private[spark] class MesosClusterScheduler(
         launchedDrivers(submissionId).mesosTaskStatus.foreach(state =>
           s.message = state.toString)
       } else if (finishedDrivers.exists(
-                   _.driverDescription.submissionId.equals(submissionId))) {
+          _.driverDescription.submissionId.equals(submissionId))) {
         s.success = true
         s.driverState = "FINISHED"
         finishedDrivers
@@ -250,7 +250,7 @@ private[spark] class MesosClusterScheduler(
           .mesosTaskStatus
           .foreach(state => s.message = state.toString)
       } else if (pendingRetryDrivers.exists(
-                   _.submissionId.equals(submissionId))) {
+          _.submissionId.equals(submissionId))) {
         val status = pendingRetryDrivers
           .find(_.submissionId.equals(submissionId))
           .get
@@ -688,14 +688,14 @@ private[spark] class MesosClusterScheduler(
     stateLock.synchronized {
       if (launchedDrivers.contains(taskId)) {
         if (status.getReason == Reason.REASON_RECONCILIATION &&
-            !pendingRecover.contains(taskId)) {
+          !pendingRecover.contains(taskId)) {
           // Task has already received update and no longer requires reconciliation.
           return
         }
         val state = launchedDrivers(taskId)
         // Check if the driver is supervise enabled and can be relaunched.
         if (state.driverDescription.supervise && shouldRelaunch(
-              status.getState)) {
+            status.getState)) {
           removeFromLaunchedDrivers(taskId)
           state.finishDate = Some(new Date())
           val retryState: Option[MesosClusterRetryState] =

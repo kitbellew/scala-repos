@@ -334,7 +334,7 @@ object WorkflowUtils extends Logging {
       jv match {
         case JObject(fields) =>
           for ((namePrefix, childJV) <- fields;
-               (name, value) <- flatten(childJV))
+            (name, value) <- flatten(childJV))
             yield (namePrefix :: name) -> value
         case JArray(_) => {
           error("Arrays are not allowed in the sparkConf section of engine.js.")

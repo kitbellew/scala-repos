@@ -66,7 +66,7 @@ sealed abstract class LensFamily[A1, A2, B1, B2] {
   def =>>=[X[_]](f: B1 => X[B2])(implicit XF: Functor[X]): A1 => X[A2] =
     modf(f, _)
 
-  /** Modify the value viewed through the lens, returning a `C` on the side.  */
+  /** Modify the value viewed through the lens, returning a `C` on the side. */
   def modp[C](f: B1 => (B2, C), a: A1): (A2, C) = {
     val (b, c) = f(get(a))
     (set(a, b), c)
@@ -395,7 +395,7 @@ trait LensFunctions extends LensFamilyFunctions {
     lens(l =>
       Store(ll => NonEmptyList.nel(l.head, IList.fromList(ll)), l.tail.toList))
 
-  /** Access the value at a particular key of a Map **/
+  /** Access the value at a particular key of a Map * */
   def mapVLens[K, V](k: K): Map[K, V] @> Option[V] =
     lensg(
       m =>

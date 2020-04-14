@@ -90,7 +90,7 @@ class ConsumerFetcherManager(
           tmd.partitionsMetadata.foreach { pmd =>
             val topicAndPartition = TopicAndPartition(topic, pmd.partitionId)
             if (pmd.leader.isDefined && noLeaderPartitionSet.contains(
-                  topicAndPartition)) {
+                topicAndPartition)) {
               val leaderBroker = pmd.leader.get
               leaderForPartitionsMap.put(topicAndPartition, leaderBroker)
               noLeaderPartitionSet -= topicAndPartition

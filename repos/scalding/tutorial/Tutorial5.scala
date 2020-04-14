@@ -16,44 +16,43 @@ limitations under the License.
 import com.twitter.scalding._
 
 /**
-Scalding tutorial part 5.
-
-This example is a little bit contrived so that we can play with joins.
-
-Let's define a metric for a line of text which is the sum of the rank
-of each of its words in the words input file - the word "hello" comes
-first (rank 0) whereas the second word is "world", with a rank of 1.
-
-So, the line "hello world" would have a total score of 0+1 = 1
-
-We'll read in an input file, split it into words, join those words
-with the words input file to get their individual ranks, then
-group by line to get a total score and output each line/score pair.
-
-Run:
-  scripts/scald.rb \
-    --local tutorial/Tutorial5.scala \
-    --input tutorial/data/hello.txt \
-    --output tutorial/data/output5.txt \
-    --words tutorial/data/words.txt
-
-Check the output:
-  cat tutorial/data/output5.txt
-
-Note that the line order may no longer be the same as the input file.
-That's parallelism, man.
-
-**/
+  * Scalding tutorial part 5.
+  *
+  * This example is a little bit contrived so that we can play with joins.
+  *
+  * Let's define a metric for a line of text which is the sum of the rank
+  * of each of its words in the words input file - the word "hello" comes
+  * first (rank 0) whereas the second word is "world", with a rank of 1.
+  *
+  * So, the line "hello world" would have a total score of 0+1 = 1
+  *
+  * We'll read in an input file, split it into words, join those words
+  * with the words input file to get their individual ranks, then
+  * group by line to get a total score and output each line/score pair.
+  *
+  * Run:
+  *  scripts/scald.rb \
+  *    --local tutorial/Tutorial5.scala \
+  *    --input tutorial/data/hello.txt \
+  *    --output tutorial/data/output5.txt \
+  *    --words tutorial/data/words.txt
+  *
+  * Check the output:
+  *  cat tutorial/data/output5.txt
+  *
+  * Note that the line order may no longer be the same as the input file.
+  * That's parallelism, man.
+  */
 
 class Tutorial5(args: Args) extends Job(args) {
 
   /**
-  We'll start with the dict data source.
-
-  When we join, we'll need unique field names, so we'll rename
-  the 'num field to be 'score. Also, we want to normalize
-  the words to be lowercase.
-  **/
+    *  We'll start with the dict data source.
+    *
+    *  When we join, we'll need unique field names, so we'll rename
+    *  the 'num field to be 'score. Also, we want to normalize
+    *  the words to be lowercase.
+    */
 
   val scores = TextLine(args("words")).read
     .rename('offset, 'score)
@@ -66,16 +65,16 @@ class Tutorial5(args: Args) extends Job(args) {
       line.split("\\s").map { _.toLowerCase }
     }
     /**
-    When we join, we need to specify which fields from each side of the join should match.
-    This is like a SQL inner join: we end up with a new row that combines each possible
-    matching pair, with all of the fields of both the left and right side.
-    **/
+      *    When we join, we need to specify which fields from each side of the join should match.
+      *    This is like a SQL inner join: we end up with a new row that combines each possible
+      *    matching pair, with all of the fields of both the left and right side.
+      */
     .joinWithLarger('word -> 'dictWord, scores)
     /**
-    Now that we have a score for each word, we can group back to the original lines
-    and sum up the word scores. Sum is another common aggregation that GroupBuilder
-    provides; we just need to specify which field to sum by.
-    **/
+      *    Now that we have a score for each word, we can group back to the original lines
+      *    and sum up the word scores. Sum is another common aggregation that GroupBuilder
+      *    provides; we just need to specify which field to sum by.
+      */
     .groupBy('line) { group => group.sum[Double]('score) }
     .write(Tsv(args("output")))
 }

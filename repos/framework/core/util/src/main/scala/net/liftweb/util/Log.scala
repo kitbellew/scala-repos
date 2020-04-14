@@ -42,7 +42,6 @@ import common._
   * 'test', 'staging', 'production', 'pilot', 'profile', or 'default.
   * Thus, if you name your log4j config file 'default.log4j.xml' or
   * 'default.log4j.props' it will be picked up correctly.
-  *
   */
 object LoggingAutoConfigurer {
   import ClassHelpers._

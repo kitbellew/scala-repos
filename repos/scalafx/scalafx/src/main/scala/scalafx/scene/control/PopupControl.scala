@@ -133,7 +133,6 @@ class PopupControl(
 
   /**
     * Property for overriding the control's computed preferred height.
-    *
     */
   def prefHeight: DoubleProperty = delegate.prefHeightProperty
   def prefHeight_=(v: Double) {

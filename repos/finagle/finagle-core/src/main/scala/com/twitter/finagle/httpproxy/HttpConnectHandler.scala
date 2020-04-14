@@ -23,7 +23,6 @@ import org.jboss.netty.handler.codec.http._
   * Handle SSL connections through a proxy that accepts HTTP CONNECT.
   *
   * See http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html#9.9
-  *
   */
 object HttpConnectHandler {
   def addHandler(

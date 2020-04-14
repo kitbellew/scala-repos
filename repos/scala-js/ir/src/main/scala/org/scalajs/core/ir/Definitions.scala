@@ -83,7 +83,7 @@ object Definitions {
         }
       })
     if (Trees.isKeyword(encoded) || encoded.charAt(0).isDigit ||
-        encoded.charAt(0) == '$') {
+      encoded.charAt(0) == '$') {
       "$" + encoded
     } else encoded
   }

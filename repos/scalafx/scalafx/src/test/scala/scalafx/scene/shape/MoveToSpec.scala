@@ -37,8 +37,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * MoveTo Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class MoveToSpec

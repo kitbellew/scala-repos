@@ -42,7 +42,7 @@ object ComparisonFailure {
         actual.length() - prefix.length()) - 1
       while (suffixLength <= maxSuffixLength) {
         if (expected.charAt(expected.length() - 1 - suffixLength)
-              != actual.charAt(actual.length() - 1 - suffixLength)) {
+            != actual.charAt(actual.length() - 1 - suffixLength)) {
           maxSuffixLength = suffixLength - 1 // break
         }
         suffixLength += 1

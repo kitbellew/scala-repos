@@ -36,7 +36,6 @@ import org.apache.spark.util.Utils
   *
   * We use the name of the shuffle data's shuffleBlockId with reduce ID set to 0 and add ".data"
   * as the filename postfix for data file, and ".index" as the filename postfix for index file.
-  *
   */
 // Note: Changes to the format in this file should be kept in sync with
 // org.apache.spark.network.shuffle.ExternalShuffleBlockResolver#getSortBasedShuffleBlockData().
@@ -63,7 +62,7 @@ private[spark] class IndexShuffleBlockResolver(
 
   /**
     * Remove data file and index file that contain the output data from one map.
-    * */
+    */
   def removeDataByMap(shuffleId: Int, mapId: Int): Unit = {
     var file = getDataFile(shuffleId, mapId)
     if (file.exists()) {
@@ -138,7 +137,7 @@ private[spark] class IndexShuffleBlockResolver(
     * replace them with new ones.
     *
     * Note: the `lengths` will be updated to match the existing index file if use the existing ones.
-    * */
+    */
   def writeIndexFileAndCommit(
       shuffleId: Int,
       mapId: Int,
@@ -188,7 +187,7 @@ private[spark] class IndexShuffleBlockResolver(
             "fail to rename file " + indexTmp + " to " + indexFile)
         }
         if (dataTmp != null && dataTmp.exists() && !dataTmp.renameTo(
-              dataFile)) {
+            dataFile)) {
           throw new IOException(
             "fail to rename file " + dataTmp + " to " + dataFile)
         }

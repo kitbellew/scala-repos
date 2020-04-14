@@ -108,7 +108,7 @@ abstract class CreateTypeDefinitionQuickFix(
       anchorAfter: Option[PsiElement]): Unit = {
     try {
       if (!FileModificationService.getInstance.preparePsiElementForWrite(
-            parent)) return
+          parent)) return
 
       val text = s"${kind.keyword} $name"
       val newTd = ScalaPsiElementFactory.createTemplateDefinitionFromText(

@@ -381,7 +381,7 @@ class Eval(target: Option[File]) {
 
     // if there's just one thing in the classpath, and it's a jar, assume an executable jar.
     currentClassPath ::: (if (currentClassPath.size == 1 && currentClassPath(0)
-                                .endsWith(".jar")) {
+                              .endsWith(".jar")) {
                             val jarFile = currentClassPath(0)
                             val relativeRoot = new File(jarFile).getParentFile()
                             val nestedClassPath =
@@ -569,7 +569,7 @@ class Eval(target: Option[File]) {
         case Some(t) => {
           target.foreach { abstractFile =>
             if (abstractFile.file == null || abstractFile.file.getName.endsWith(
-                  ".class")) {
+                ".class")) {
               abstractFile.delete()
             }
           }

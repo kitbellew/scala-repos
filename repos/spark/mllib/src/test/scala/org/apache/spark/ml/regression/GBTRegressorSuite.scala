@@ -160,7 +160,7 @@ class GBTRegressorSuite extends SparkFunSuite with MLlibTestSparkContext {
       Utils.deleteRecursively(tempDir)
     }
   }
- */
+   */
 }
 
 private object GBTRegressorSuite extends SparkFunSuite {

@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Bloom Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BloomSpec

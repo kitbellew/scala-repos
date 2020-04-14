@@ -743,7 +743,7 @@ abstract class ShardCoordinator(
     case t @ Terminated(ref) ⇒
       if (state.regions.contains(ref)) {
         if (removalMargin != Duration.Zero && t.addressTerminated && aliveRegions(
-              ref)) {
+            ref)) {
           context.system.scheduler.scheduleOnce(
             removalMargin,
             self,
@@ -843,7 +843,7 @@ abstract class ShardCoordinator(
         case Some(ref) ⇒ getShardHomeSender ! ShardHome(shard, ref)
         case None ⇒
           if (state.regions.contains(region) && !gracefulShutdownInProgress
-                .contains(region)) {
+              .contains(region)) {
             update(ShardHomeAllocated(shard, region)) { evt ⇒
               state = state.updated(evt)
               log.debug("Shard [{}] allocated at [{}]", evt.shard, evt.region)

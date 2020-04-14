@@ -66,7 +66,6 @@ class Text(override val delegate: jfxst.Text = new jfxst.Text)
 
   /**
     * The 'alphabetic' (or roman) baseline offset from the Text node's layoutBounds.minY location.
-    *
     */
   // NOTE IMPLEMENTATION: Added "Property" suffix to not conflict with Node.baselineOffset() method.
   def baselineOffsetProperty: ReadOnlyDoubleProperty =

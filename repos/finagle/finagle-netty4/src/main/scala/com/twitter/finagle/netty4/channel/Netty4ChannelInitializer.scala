@@ -15,7 +15,6 @@ import io.netty.handler.ssl.SslHandler
 import io.netty.handler.timeout._
 
 /**
-  *
   * @param pipelineInit Initializes a pipeline for encoding input
   *                     messages and decoding output messages on
   *                     accepted channels.

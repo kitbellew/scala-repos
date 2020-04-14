@@ -33,12 +33,12 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       parent.getSettings.getCustomSettings(classOf[ScalaCodeStyleSettings])
     val node = parent.getNode
     if (child.getElementType == ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS ||
-        child.getElementType == ScalaDocTokenType.DOC_COMMENT_END) {
+      child.getElementType == ScalaDocTokenType.DOC_COMMENT_END) {
       return Indent.getSpaceIndent(
         if (scalaSettings.USE_SCALADOC2_FORMATTING) 2 else 1)
     }
     if ((node.getElementType == ScalaTokenTypes.kIF || node.getElementType == ScalaTokenTypes.kELSE) &&
-        parent.myLastNode != null) {
+      parent.myLastNode != null) {
       child.getPsi match {
         case _: ScBlockExpr
             if settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
@@ -77,7 +77,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       child.getPsi match {
         case arg: ScArgumentExprList if arg.isBraceArgs =>
           if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-              settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
+            settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
             Indent.getNormalIndent
           else Indent.getNoneIndent
         case _ => Indent.getContinuationWithoutFirstIndent
@@ -101,14 +101,13 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       }
 
     if (node.getElementType == ScalaTokenTypes.tLBRACE &&
-        Option(node.getTreeParent)
-          .map(_.getElementType)
-          .exists(Set[IElementType](
-            ScalaElementTypes.TRY_BLOCK,
-            ScalaElementTypes.PACKAGING).contains)) {
+      Option(node.getTreeParent)
+        .map(_.getElementType)
+        .exists(Set[IElementType](
+          ScalaElementTypes.TRY_BLOCK,
+          ScalaElementTypes.PACKAGING).contains)) {
       return if (child.getElementType == ScalaTokenTypes.tLBRACE ||
-                 child.getElementType == ScalaTokenTypes.tRBRACE)
-        Indent.getNoneIndent
+        child.getElementType == ScalaTokenTypes.tRBRACE) Indent.getNoneIndent
       else if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED)
         Indent.getNoneIndent
       else Indent.getNormalIndent()
@@ -127,7 +126,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         if (p.isExplicit) child.getElementType match {
           case ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tRBRACE =>
             if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
+              settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
               Indent.getNormalIndent
             else
               Indent.getNoneIndent
@@ -147,7 +146,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
               if parent.myLastNode == null =>
             //getting indent for braces from tryBlock
             if (settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED ||
-                settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
+              settings.BRACE_STYLE == CommonCodeStyleSettings.NEXT_LINE_SHIFTED2)
               Indent.getNormalIndent
             else
               Indent.getNoneIndent
@@ -203,11 +202,11 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
       case _: ScMethodCall => processMethodCall
       case arg: ScArgumentExprList if arg.isBraceArgs =>
         if (scalaSettings.INDENT_BRACED_FUNCTION_ARGS &&
-            arg.children.exists(child =>
-              Set(ScalaTokenTypes.tLPARENTHESIS, ScalaTokenTypes.tRPARENTHESIS)
-                .contains(child.getNode.getElementType)) &&
-            child.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
-            child.getElementType != ScalaTokenTypes.tLPARENTHESIS)
+          arg.children.exists(child =>
+            Set(ScalaTokenTypes.tLPARENTHESIS, ScalaTokenTypes.tRPARENTHESIS)
+              .contains(child.getNode.getElementType)) &&
+          child.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
+          child.getElementType != ScalaTokenTypes.tLPARENTHESIS)
           Indent.getNormalIndent
         else Indent.getNoneIndent
       case _: ScIfStmt | _: ScWhileStmt | _: ScDoStmt | _: ScForStatement |
@@ -286,7 +285,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
           if scalaSettings.NOT_CONTINUATION_INDENT_FOR_PARAMS =>
         val parent = node.getTreeParent
         if (parent != null && parent.getPsi
-              .isInstanceOf[ScParameters] && parent.getTreeParent != null) {
+            .isInstanceOf[ScParameters] && parent.getTreeParent != null) {
           if (parent.getTreeParent.getPsi.isInstanceOf[ScFunctionExpr]) {
             return Indent.getNoneIndent
           }
@@ -302,7 +301,7 @@ object ScalaIndentProcessor extends ScalaTokenTypes {
         Indent.getContinuationWithoutFirstIndent
       case _: ScArgumentExprList =>
         if (child.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
-            child.getElementType != ScalaTokenTypes.tLPARENTHESIS)
+          child.getElementType != ScalaTokenTypes.tLPARENTHESIS)
           Indent.getNormalIndent(settings.ALIGN_MULTILINE_METHOD_BRACKETS)
         else Indent.getNoneIndent
       case _: ScDocComment => Indent.getNoneIndent

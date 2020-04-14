@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * BigIntegerStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BigIntStringConverterSpec

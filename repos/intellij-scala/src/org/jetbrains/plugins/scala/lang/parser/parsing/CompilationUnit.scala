@@ -64,10 +64,10 @@ object CompilationUnit {
               builder.error(ErrMsg("semi.expected"))
             }
             if (ScalaTokenTypes.kPACKAGE == askType &&
-                !ParserUtils.lookAhead(
-                  builder,
-                  ScalaTokenTypes.kPACKAGE,
-                  ScalaTokenTypes.kOBJECT)) {
+              !ParserUtils.lookAhead(
+                builder,
+                ScalaTokenTypes.kPACKAGE,
+                ScalaTokenTypes.kOBJECT)) {
               // Parse package statement
               val newMarker = builder.mark
               builder.advanceLexer //package
@@ -76,7 +76,7 @@ object CompilationUnit {
                   Qual_Id parse builder
                   // Detect explicit packaging with curly braces
                   if (ParserUtils.lookAhead(builder, ScalaTokenTypes.tLBRACE) &&
-                      !builder.getTokenText.matches(".*\n.*\n.*")) {
+                    !builder.getTokenText.matches(".*\n.*\n.*")) {
                     newMarker.rollbackTo
                     parsePackagingBody(true)
                     k

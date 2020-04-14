@@ -147,10 +147,10 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     def treeWalkUp(place: PsiElement, lastParent: PsiElement) {
       if (place == null) return
       if (!place.processDeclarations(
-            processor,
-            ResolveState.initial(),
-            lastParent,
-            ref)) return
+          processor,
+          ResolveState.initial(),
+          lastParent,
+          ref)) return
       place match {
         case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
         case _                                       => if (!processor.changedLevel) return
@@ -265,8 +265,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                     .put(ScSubstitutor.key, subst)
                     .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
                   if (!ScalaPsiUtil.memberNamesEquals(
-                        param.name,
-                        ref.refName)) {
+                      param.name,
+                      ref.refName)) {
                     state =
                       state.put(ResolverEnv.nameKey, param.deprecatedName.get)
                   }
@@ -411,8 +411,8 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                         .put(ScSubstitutor.key, subst)
                         .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
                       if (!ScalaPsiUtil.memberNamesEquals(
-                            param.name,
-                            ref.refName)) {
+                          param.name,
+                          ref.refName)) {
                         state = state.put(
                           ResolverEnv.nameKey,
                           param.deprecatedName.get)
@@ -604,9 +604,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
     }
 
     if (candidates.isEmpty || (!shape && candidates.forall(
-          !_.isApplicable())) ||
-        (processor.isInstanceOf[CompletionProcessor] &&
-        processor.asInstanceOf[CompletionProcessor].collectImplicits)) {
+        !_.isApplicable())) ||
+      (processor.isInstanceOf[CompletionProcessor] &&
+      processor.asInstanceOf[CompletionProcessor].collectImplicits)) {
       processor match {
         case rp: ResolveProcessor =>
           rp.resetPrecedence() //do not clear candidate set, we want wrong resolve, if don't found anything

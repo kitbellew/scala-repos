@@ -212,7 +212,7 @@ trait PReader extends Hintable {
     */
   def readLength(): Int
 
-  /** Returns a new Reader that can be used to read the next element in a collection.  */
+  /** Returns a new Reader that can be used to read the next element in a collection. */
   def readElement(): PReader
 
   /** Denote that we are done reading a collection. */

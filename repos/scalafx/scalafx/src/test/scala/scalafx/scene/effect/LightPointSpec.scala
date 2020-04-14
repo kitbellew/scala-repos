@@ -36,8 +36,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * Light.Point Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class LightPointSpec

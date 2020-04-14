@@ -33,7 +33,7 @@ object SelfInvocation {
       return true
     }
     while (!builder.newlineBeforeCurrentToken && ArgumentExprs.parse(
-             builder)) {}
+        builder)) {}
     selfMarker.done(ScalaElementTypes.SELF_INVOCATION)
     true
   }

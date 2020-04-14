@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * DataFormat Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class DataFormatSpec

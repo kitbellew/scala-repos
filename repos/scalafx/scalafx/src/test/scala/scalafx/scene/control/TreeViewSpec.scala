@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * TreeView Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TreeViewSpec[T]

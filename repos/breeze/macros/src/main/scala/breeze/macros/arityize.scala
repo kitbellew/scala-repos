@@ -7,7 +7,7 @@ import scala.reflect.macros.Context
   * TODO
   *
   * @author dlwh
- **/
+  */
 class arityize extends Annotation with StaticAnnotation {
   def macroTransform(annottees: Any*): Any = macro arityize.arityizeImpl
 
@@ -150,7 +150,7 @@ object arityize {
       case t @ Literal(x) => Seq(t)
       case Apply(who, args) =>
         for (w2 <- expandArity(c, order, bindings)(who);
-             args2 = args.flatMap(arg => expandArity(c, order, bindings)(arg)))
+          args2 = args.flatMap(arg => expandArity(c, order, bindings)(arg)))
           yield {
             Apply(w2, args2)
           }

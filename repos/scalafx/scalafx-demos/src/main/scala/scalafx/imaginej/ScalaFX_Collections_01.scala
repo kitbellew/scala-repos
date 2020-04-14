@@ -48,7 +48,6 @@ import scalafx.collections.ObservableBuffer.{Add, Remove, Reorder}
   *         based upon: Example 4 Using an ObservableList & Example 7 Querying a ListChangeListener.Change Object
   *
   *         http://docs.oracle.com/javafx/2.0/collections/jfxpub-collections.htm
-  *
   */
 
 object ScalaFX_Collections_01 {

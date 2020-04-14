@@ -1,6 +1,6 @@
 package scalaz.example
 
-/**Examples showing the use of Unapply to reduce the need for type annotations */
+/** Examples showing the use of Unapply to reduce the need for type annotations */
 object UnapplyInference extends App {
   eitherTBifunctor()
 

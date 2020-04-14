@@ -292,13 +292,13 @@ case class Summer[P <: Platform[P], K, V](
   */
 sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
 
-  /** Builds a new KeyedProvider by applying a partial function to keys of elements of this one on which the function is defined.*/
+  /** Builds a new KeyedProvider by applying a partial function to keys of elements of this one on which the function is defined. */
   def collectKeys[K2](pf: PartialFunction[K, K2]): KeyedProducer[P, K2, V] =
     IdentityKeyedProducer(collect {
       case (k, v) if pf.isDefinedAt(k) => (pf(k), v)
     })
 
-  /** Builds a new KeyedProvider by applying a partial function to values of elements of this one on which the function is defined.*/
+  /** Builds a new KeyedProvider by applying a partial function to values of elements of this one on which the function is defined. */
   def collectValues[V2](pf: PartialFunction[V, V2]): KeyedProducer[P, K, V2] =
     flatMapValues { v =>
       if (pf.isDefinedAt(v)) Iterator(pf(v)) else Iterator.empty
@@ -374,7 +374,6 @@ sealed trait KeyedProducer[P <: Platform[P], K, V] extends Producer[P, (K, V)] {
     *
     * so, the sequence out of this has the property that:
     * (v0, vdelta1), (v0 + vdelta1, vdelta2), (v0 + vdelta1 + vdelta2, vdelta3), ...
-    *
     */
   def sumByKey(store: P#Store[K, V])(implicit
       semigroup: Semigroup[V]): Summer[P, K, V] =

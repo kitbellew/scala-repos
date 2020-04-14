@@ -266,7 +266,7 @@ case class GetArrayItem(child: Expression, ordinal: Expression)
     val baseValue = value.asInstanceOf[ArrayData]
     val index = ordinal.asInstanceOf[Number].intValue()
     if (index >= baseValue.numElements() || index < 0 || baseValue.isNullAt(
-          index)) {
+        index)) {
       null
     } else {
       baseValue.get(index, dataType)

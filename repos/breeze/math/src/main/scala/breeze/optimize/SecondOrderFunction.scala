@@ -73,7 +73,6 @@ object SecondOrderFunction {
   *
   * H * d = \lim_e -> 0 (f'(x + e * d) - f'(x))/e
   *
-  *
   * @param df
   * @param x the point we compute the hessian for
   * @param grad the gradient at x

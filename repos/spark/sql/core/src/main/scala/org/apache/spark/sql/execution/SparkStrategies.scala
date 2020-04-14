@@ -402,9 +402,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
           val (functionsWithDistinct, functionsWithoutDistinct) =
             aggregateExpressions.partition(_.isDistinct)
           if (functionsWithDistinct
-                .map(_.aggregateFunction.children)
-                .distinct
-                .length > 1) {
+              .map(_.aggregateFunction.children)
+              .distinct
+              .length > 1) {
             // This is a sanity check. We should not reach here when we have multiple distinct
             // column sets. Our MultipleDistinctRewriter should take care this case.
             sys.error(
@@ -453,8 +453,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
 
           val aggregateOperator =
             if (aggregateExpressions
-                  .map(_.aggregateFunction)
-                  .exists(!_.supportsPartial)) {
+                .map(_.aggregateFunction)
+                .exists(!_.supportsPartial)) {
               if (functionsWithDistinct.nonEmpty) {
                 sys.error("Distinct columns cannot exist in Aggregate operator containing " +
                   "aggregate functions which don't support partial aggregation.")

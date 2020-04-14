@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ScrollBar Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ScrollBarSpec

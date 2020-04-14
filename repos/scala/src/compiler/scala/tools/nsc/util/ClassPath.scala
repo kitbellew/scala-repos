@@ -115,7 +115,7 @@ object ClassPath {
 
     def sourcesInPath(path: String): List[ClassPath[T]] =
       for (file <- expandPath(path, expandStar = false);
-           dir <- Option(AbstractFile getDirectory file))
+        dir <- Option(AbstractFile getDirectory file))
         yield new SourcePath[T](dir, this)
   }
 

@@ -60,16 +60,15 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     * &lt;lift:field_msg name="firstName"/&gt; - the <lift:msg> will be rendered here having the id given by
     *                                             uniqueFieldId of the firstName field.
     *
-    *
     * Example.
     *
     * Having:
     *
     * class MyRecord extends Record[MyRecord] {
     *
-    * 	def meta = MyRecordMeta
+    *  def meta = MyRecordMeta
     *
-    * 	object firstName extends StringField(this, "John")
+    *  object firstName extends StringField(this, "John")
     *
     * }
     *
@@ -83,18 +82,17 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     *
     * val template =
     * &lt;div&gt;
-    * 	&lt;div&gt;
-    * 		&lt;div&gt;&lt;lift:field_label name="firstName"/&gt;&lt;/div&gt;
-    * 		&lt;div&gt;&lt;lift:field name="firstName"/&gt;&lt;/div&gt;
-    * 		&lt;div&gt;&lt;lift:field_msg name="firstName"/&gt;&lt;/div&gt;
-    * 	&lt;/div&gt;
+    *  &lt;div&gt;
+    *   &lt;div&gt;&lt;lift:field_label name="firstName"/&gt;&lt;/div&gt;
+    *   &lt;div&gt;&lt;lift:field name="firstName"/&gt;&lt;/div&gt;
+    *   &lt;div&gt;&lt;lift:field_msg name="firstName"/&gt;&lt;/div&gt;
+    *  &lt;/div&gt;
     * &lt;/div&gt;
     *
     * MyRecordMeta.formTemplate = Full(template)
     * rec.toForm((r:MyRecord) => println(r));
     *
     * </pre>
-    *
     */
   var formTemplate: Box[NodeSeq] = Empty
 
@@ -147,8 +145,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     val methods = rootClass.getMethods
 
     lifecycleCallbacks = (for (v <- methods
-                               if v.getName != "meta" && isLifecycle(v))
-      yield (v.getName, v)).toList
+      if v.getName != "meta" && isLifecycle(v)) yield (v.getName, v)).toList
 
     introspect(this, methods) {
       case (v, mf) => tArray += FieldHolder(mf.name, v, mf)

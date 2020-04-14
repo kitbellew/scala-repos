@@ -38,8 +38,6 @@ import scalafx.Includes._
 
 /**
   * ReadOnlyBooleanProperty Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ReadOnlyBooleanPropertySpec extends FlatSpec with BeforeAndAfterEach {

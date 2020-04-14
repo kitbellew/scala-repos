@@ -519,8 +519,8 @@ trait Infer extends Checkable {
 
       val tvars = tparams map freshVar
       if (isConservativelyCompatible(
-            restpe.instantiateTypeParams(tparams, tvars),
-            pt))
+          restpe.instantiateTypeParams(tparams, tvars),
+          pt))
         map2(tparams, tvars)((tparam, tvar) =>
           try instantiateToBound(tvar, varianceInTypes(formals)(tparam))
           catch { case ex: NoInstance => WildcardType })
@@ -1128,9 +1128,9 @@ trait Infer extends Checkable {
       ftpe1.isError || {
         val specificCount = (if (isAsSpecific(ftpe1, ftpe2)) 1 else 0) -
           (if (isAsSpecific(ftpe2, ftpe1) &&
-               // todo: move to isAsSpecific test
+             // todo: move to isAsSpecific test
 //                                 (!ftpe2.isInstanceOf[OverloadedType] || ftpe1.isInstanceOf[OverloadedType]) &&
-               (!phase.erasedTypes || covariantReturnOverride(ftpe1, ftpe2))) 1
+             (!phase.erasedTypes || covariantReturnOverride(ftpe1, ftpe2))) 1
            else 0)
         val subClassCount =
           (if (isInProperSubClassOrObject(sym1, sym2)) 1 else 0) -
@@ -1320,12 +1320,12 @@ trait Infer extends Checkable {
               methTypeArgs(undetparams, formals, restpe, argtpes, pt)
 
             if (checkBounds(
-                  fn,
-                  NoPrefix,
-                  NoSymbol,
-                  undetparams,
-                  allargs,
-                  "inferred ")) {
+                fn,
+                NoPrefix,
+                NoSymbol,
+                undetparams,
+                allargs,
+                "inferred ")) {
               val treeSubst = new TreeTypeSubstituter(okparams, okargs)
               treeSubst traverseTrees fn :: args
               notifyUndetparamsInferred(okparams, okargs)
@@ -1560,7 +1560,7 @@ trait Infer extends Checkable {
           // See ticket #2486 for an example of code which would incorrectly
           // fail if we didn't allow for pattpMatchesPt.
           if (isPopulated(tp, pt1) && isInstantiatable(
-                tvars ++ ptvars) || pattpMatchesPt)
+              tvars ++ ptvars) || pattpMatchesPt)
             ptvars foreach instantiateTypeVar
           else {
             PatternTypeIncompatibleWithPtError1(tree0, pattp, pt)

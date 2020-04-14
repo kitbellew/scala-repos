@@ -130,7 +130,6 @@ private[scala] trait StdIn {
     *  @throws java.io.EOFException if the end of the
     *  input stream has been reached.
     *  @throws java.lang.NumberFormatException if the value couldn't be converted to a Float
-    *
     */
   def readFloat(): Float = {
     val s = readLine()

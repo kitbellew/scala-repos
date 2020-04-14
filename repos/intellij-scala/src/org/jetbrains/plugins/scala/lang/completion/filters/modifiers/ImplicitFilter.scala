@@ -27,7 +27,7 @@ class ImplicitFilter extends ElementFilter {
         case _: ScParameter =>
           val prev = parent.getPrevSibling
           if (prev != null && prev.getNode != null &&
-              prev.getNode.getElementType == ScalaTokenTypes.tLPARENTHESIS)
+            prev.getNode.getElementType == ScalaTokenTypes.tLPARENTHESIS)
             return true
         case _ =>
       }

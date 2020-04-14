@@ -840,7 +840,6 @@ object Http extends ExtensionId[HttpExt] with ExtensionIdProvider {
     * Represents a prospective HTTP server binding.
     *
     * @param localAddress  The local address of the endpoint bound by the materialization of the `connections` [[akka.stream.scaladsl.Source]]
-    *
     */
   final case class ServerBinding(localAddress: InetSocketAddress)(
       private val unbindAction: () ⇒ Future[Unit]) {

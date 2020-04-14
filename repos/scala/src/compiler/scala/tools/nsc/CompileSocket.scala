@@ -43,7 +43,7 @@ trait HasCompileSocket {
   }
 }
 
-/** This class manages sockets for the fsc offline compiler.  */
+/** This class manages sockets for the fsc offline compiler. */
 class CompileSocket extends CompileOutputCommon {
   protected lazy val compileClient: StandardCompileClient = CompileClient
   def verbose = compileClient.verbose
@@ -216,8 +216,8 @@ class CompileSocket extends CompileOutputCommon {
   def getSocket(serverAdr: String): Option[Socket] =
     (
       for ((name, portStr) <-
-             splitWhere(serverAdr, _ == ':', doDropIndex = true);
-           port <- parseInt(portStr)) yield getSocket(name, port)
+          splitWhere(serverAdr, _ == ':', doDropIndex = true);
+        port <- parseInt(portStr)) yield getSocket(name, port)
     ) getOrElse fatal("Malformed server address: %s; exiting" format serverAdr)
 
   def getSocket(hostName: String, port: Int): Option[Socket] = {

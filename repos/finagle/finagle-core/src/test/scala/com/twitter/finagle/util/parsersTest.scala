@@ -60,7 +60,7 @@ class parsersTest extends FunSuite {
     "10.seconds:abc:123.32:999" match {
       case list(duration(d), "abc", double(123.32), int(999))
           if d == 10.seconds =>
-      case _                 => fail()
+      case _ => fail()
     }
 
     "foo:bar:baz" match {

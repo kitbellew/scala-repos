@@ -910,8 +910,8 @@ object Console extends Logging {
   def compile(ca: ConsoleArgs): Unit = {
     // only add pioVersion to sbt if project/pio.sbt exists
     if (new File(
-          "project",
-          "pio-build.sbt").exists || ca.build.forceGeneratePIOSbt) {
+        "project",
+        "pio-build.sbt").exists || ca.build.forceGeneratePIOSbt) {
       FileUtils.writeLines(
         new File("pio.sbt"),
         Seq(

@@ -12,7 +12,6 @@ import breeze.stats.mean
 import java.util
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])
@@ -543,7 +542,6 @@ class DenseVectorTest extends FunSuite with Checkers {
 }
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])

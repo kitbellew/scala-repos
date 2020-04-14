@@ -227,7 +227,6 @@ abstract class UnCurry
       *      def apply(x_1: T_1, ..., x_N: T_n): R = body
       *    }
       *    new $anon()
-      *
       */
     def transformFunction(fun: Function): Tree = {
       fun.tpe match {
@@ -379,8 +378,8 @@ abstract class UnCurry
 
         exitingUncurry {
           if (isJava && !isReferenceArray(suffix.tpe) && isArrayOfSymbol(
-                fun.tpe.params.last.tpe,
-                ObjectClass)) {
+              fun.tpe.params.last.tpe,
+              ObjectClass)) {
             // The array isn't statically known to be a reference array, so call ScalaRuntime.toObjectArray.
             suffix = localTyper.typedPos(pos) {
               gen.mkRuntimeCall(nme.toObjectArray, List(suffix))
@@ -501,7 +500,7 @@ abstract class UnCurry
       val result =
         (
           if ((sym ne null) && sym.elisionLevel.exists(
-                _ < settings.elidebelow.value))
+              _ < settings.elidebelow.value))
             replaceElidableTree(tree)
           else
             translateSynchronized(tree) match {
@@ -887,9 +886,8 @@ abstract class UnCurry
      * varargs forwarder.
      */
     private def addJavaVarargsForwarders(dd: DefDef, flatdd: DefDef): DefDef = {
-      if (!dd.symbol.hasAnnotation(VarargsClass) || !enteringUncurry(
-            mexists(dd.symbol.paramss)(sym =>
-              definitions.isRepeatedParamType(sym.tpe))))
+      if (!dd.symbol.hasAnnotation(VarargsClass) || !enteringUncurry(mexists(
+          dd.symbol.paramss)(sym => definitions.isRepeatedParamType(sym.tpe))))
         return flatdd
 
       def toArrayType(tp: Type): Type = {

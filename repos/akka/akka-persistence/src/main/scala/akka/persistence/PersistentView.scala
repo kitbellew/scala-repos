@@ -79,7 +79,6 @@ private[akka] object PersistentView {
   *
   *  - [[PersistentView#autoUpdate]] for turning automated updates on or off
   *  - [[PersistentView#autoUpdateReplayMax]] for limiting the number of replayed messages per view update cycle
-  *
   */
 @deprecated("use Persistence Query instead", "2.4")
 trait PersistentView
@@ -111,7 +110,6 @@ trait PersistentView
   /**
     * View id is used as identifier for snapshots performed by this [[PersistentView]].
     * This allows the View to keep separate snapshots of data than the [[PersistentActor]] originating the message stream.
-    *
     *
     * The usual case is to have a *different* id set as `viewId` than `persistenceId`,
     * although it is possible to share the same id with an [[PersistentActor]] - for example to decide about snapshots

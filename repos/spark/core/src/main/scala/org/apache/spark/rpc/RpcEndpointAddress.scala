@@ -58,12 +58,12 @@ private[spark] object RpcEndpointAddress {
       val port = uri.getPort
       val name = uri.getUserInfo
       if (uri.getScheme != "spark" ||
-          host == null ||
-          port < 0 ||
-          name == null ||
-          (uri.getPath != null && !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
-          uri.getFragment != null ||
-          uri.getQuery != null) {
+        host == null ||
+        port < 0 ||
+        name == null ||
+        (uri.getPath != null && !uri.getPath.isEmpty) || // uri.getPath returns "" instead of null
+        uri.getFragment != null ||
+        uri.getQuery != null) {
         throw new SparkException("Invalid Spark URL: " + sparkUrl)
       }
       new RpcEndpointAddress(host, port, name)

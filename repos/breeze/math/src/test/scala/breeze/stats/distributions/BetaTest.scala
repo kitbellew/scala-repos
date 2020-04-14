@@ -38,7 +38,7 @@ class BetaTest
   def arbParameter =
     Arbitrary {
       for (mean <- arbitrary[Double].map { x => math.abs(x) % 100.0 + 1e-4 };
-           std <- arbitrary[Double].map { x => math.abs(x) % 100 + 1e-4 })
+        std <- arbitrary[Double].map { x => math.abs(x) % 100 + 1e-4 })
         yield (mean, std)
     }
 
@@ -57,7 +57,7 @@ class BetaTest
   implicit def arbDistr =
     Arbitrary {
       for (a <- arbitrary[Double].map { x => math.abs(x) % 10000.0 + 1.1 };
-           b <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.1 })
+        b <- arbitrary[Double].map { x => math.abs(x) % 8.0 + 1.1 })
         yield new Beta(a, b);
     }
 

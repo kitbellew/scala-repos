@@ -5,7 +5,6 @@ import collection.immutable.IndexedSeq
 /** Given Injective[Foo]: If type Foo[A] = Foo[B] then A ~ B
   *
   * This represents an assertion that is used by other code that requires this condition.
-  *
   */
 case class Injective[T[_]]()
 case class Injective2[T[_, _]]()

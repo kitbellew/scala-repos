@@ -119,7 +119,7 @@ class TlsEndpointVerificationSpec
       val name =
         req.header[`Tls-Session-Info`].flatMap(_.localPrincipal).map(_.getName)
       if (name.exists(
-            _ == "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"))
+          _ == "CN=akka.example.org,O=Internet Widgits Pty Ltd,ST=Some-State,C=AU"))
         HttpResponse()
       else
         HttpResponse(

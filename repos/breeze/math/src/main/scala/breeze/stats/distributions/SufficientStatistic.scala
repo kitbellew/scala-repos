@@ -1,7 +1,6 @@
 package breeze.stats.distributions
 
 /**
-  *
   * @author dlwh
   */
 

@@ -38,8 +38,6 @@ import scalafx.Includes._
 
 /**
   * FloatProperty Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class FloatPropertySpec extends FlatSpec with BeforeAndAfterEach {

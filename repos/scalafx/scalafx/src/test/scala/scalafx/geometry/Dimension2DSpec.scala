@@ -37,7 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Dimension2D Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class Dimension2DSpec

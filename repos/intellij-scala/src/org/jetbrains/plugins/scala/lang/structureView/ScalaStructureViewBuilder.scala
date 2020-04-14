@@ -13,8 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 
 /**
   * @author Alexander.Podkhalyuz
-  * Date: 04.05.2008
-  */
+  * Date: 04.05.2008 */
 
 class ScalaStructureViewBuilder(
     private val myPsiFile: ScalaFile,

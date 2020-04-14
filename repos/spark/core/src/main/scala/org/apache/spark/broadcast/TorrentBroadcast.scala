@@ -104,10 +104,10 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
     // do not create a duplicate copy of the broadcast variable's value.
     val blockManager = SparkEnv.get.blockManager
     if (!blockManager.putSingle(
-          broadcastId,
-          value,
-          MEMORY_AND_DISK,
-          tellMaster = false)) {
+        broadcastId,
+        value,
+        MEMORY_AND_DISK,
+        tellMaster = false)) {
       throw new SparkException(s"Failed to store $broadcastId in BlockManager")
     }
     val blocks =
@@ -121,10 +121,10 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
         val pieceId = BroadcastBlockId(id, "piece" + i)
         val bytes = new ChunkedByteBuffer(block.duplicate())
         if (!blockManager.putBytes(
-              pieceId,
-              bytes,
-              MEMORY_AND_DISK_SER,
-              tellMaster = true)) {
+            pieceId,
+            bytes,
+            MEMORY_AND_DISK_SER,
+            tellMaster = true)) {
           throw new SparkException(
             s"Failed to store $pieceId of $broadcastId in local BlockManager")
         }
@@ -155,10 +155,10 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
               // We found the block from remote executors/driver's BlockManager, so put the block
               // in this executor's BlockManager.
               if (!bm.putBytes(
-                    pieceId,
-                    b,
-                    StorageLevel.MEMORY_AND_DISK_SER,
-                    tellMaster = true)) {
+                  pieceId,
+                  b,
+                  StorageLevel.MEMORY_AND_DISK_SER,
+                  tellMaster = true)) {
                 throw new SparkException(
                   s"Failed to store $pieceId of $broadcastId in local BlockManager")
               }
@@ -220,10 +220,10 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
             // need to re-fetch it.
             val storageLevel = StorageLevel.MEMORY_AND_DISK
             if (!blockManager.putSingle(
-                  broadcastId,
-                  obj,
-                  storageLevel,
-                  tellMaster = false)) {
+                broadcastId,
+                obj,
+                storageLevel,
+                tellMaster = false)) {
               throw new SparkException(
                 s"Failed to store $broadcastId in BlockManager")
             }

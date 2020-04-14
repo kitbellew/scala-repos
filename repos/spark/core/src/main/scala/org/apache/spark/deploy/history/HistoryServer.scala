@@ -95,8 +95,8 @@ class HistoryServer(
       // single attempt, we need to try both. Try the single-attempt route first, and if an
       // error is raised, then try the multiple attempt route.
       if (!loadAppUi(appId, None) && (!attemptId.isDefined || !loadAppUi(
-            appId,
-            attemptId))) {
+          appId,
+          attemptId))) {
         val msg = <div class="row-fluid">Application {appId} not found.</div>
         res.setStatus(HttpServletResponse.SC_NOT_FOUND)
         UIUtils.basicSparkPage(msg, "Not Found").foreach { n =>

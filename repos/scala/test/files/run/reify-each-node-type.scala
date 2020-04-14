@@ -67,9 +67,9 @@ object s {
     act(reify { def f: Int = return 0 /* Return */ })
     act(reify { object x /* ModuleDef */ })
     act(reify { throw new java.lang.Exception /* Throw */ })
-    act(reify { 0 match { case _            => 0 } /* Match CaseDef */ })
-    act(reify { 0 match { case 1 | 2        => 0 } /* Alternative */ })
-    act(reify { q match { case x @ List     => 0 } /* Bind */ })
+    act(reify { 0 match { case _ => 0 } /* Match CaseDef */ })
+    act(reify { 0 match { case 1 | 2 => 0 } /* Alternative */ })
+    act(reify { q match { case x @ List => 0 } /* Bind */ })
     act(reify { q match { case UnSeq(1, _*) => 0 } /* Star */ })
 
     // ``unexpected: bound type that doesn't have a tpe: Ident(newTypeName("Int"))''

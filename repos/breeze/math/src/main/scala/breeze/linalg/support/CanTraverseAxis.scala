@@ -16,7 +16,6 @@ package breeze.linalg.support
  limitations under the License.
  */
 /**
-  *
   * This trait is for multi-dimensional tensors that can logically have one of their
   * dimensions "collapsed", e.g. summing out all columns of a matrix to give a column
   * vector.

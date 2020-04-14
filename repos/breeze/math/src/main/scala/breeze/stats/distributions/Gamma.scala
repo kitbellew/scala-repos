@@ -141,7 +141,7 @@ case class Gamma(shape: Double, scale: Double)(implicit rand: RandBasis = Rand)
         val x2 = x * x
         val u = rand.uniform.draw()
         if (u < 1.0 - 0.0331 * (x2 * x2)
-            || log(u) < 0.5 * x2 + d * (1.0 - v + log(v))) {
+          || log(u) < 0.5 * x2 + d * (1.0 - v + log(v))) {
           r = (scale * d * v)
           ok = true
         }

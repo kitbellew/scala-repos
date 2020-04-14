@@ -34,8 +34,7 @@ import scala.collection.Seq
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 class ScSelfInvocationImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScSelfInvocation {
@@ -72,7 +71,7 @@ class ScSelfInvocationImpl(node: ASTNode)
       enableTupling = true,
       selfConstructorResolve = true)
     for (constr <- clazz.secondaryConstructors.filter(_ != method)
-         if constr != method) {
+      if constr != method) {
       proc.execute(constr, ResolveState.initial)
     }
     clazz.constructor match {

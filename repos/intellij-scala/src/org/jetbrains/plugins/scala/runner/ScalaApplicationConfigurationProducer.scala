@@ -117,8 +117,8 @@ abstract class BaseScalaApplicationConfigurationProducer[
     if (location == null) return false
     //use fast psi location check to filter off obvious candidates
     if (context.getPsiLocation == null || !hasClassAncestorWithName(
-          context.getPsiLocation,
-          configuration.MAIN_CLASS_NAME)) return false
+        context.getPsiLocation,
+        configuration.MAIN_CLASS_NAME)) return false
     val aClass: PsiClass = getMainClass(context.getPsiLocation)
     if (aClass == null) return false
     val predefinedModule: Module = RunManagerEx

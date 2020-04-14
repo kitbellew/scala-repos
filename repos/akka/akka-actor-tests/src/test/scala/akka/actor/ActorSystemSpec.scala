@@ -178,14 +178,14 @@ class ActorSystemSpec
 
     "reject invalid names" in {
       for (n ← Seq(
-             "-hallowelt",
-             "_hallowelt",
-             "hallo*welt",
-             "hallo@welt",
-             "hallo#welt",
-             "hallo$welt",
-             "hallo%welt",
-             "hallo/welt")) intercept[IllegalArgumentException] {
+          "-hallowelt",
+          "_hallowelt",
+          "hallo*welt",
+          "hallo@welt",
+          "hallo#welt",
+          "hallo$welt",
+          "hallo%welt",
+          "hallo/welt")) intercept[IllegalArgumentException] {
         ActorSystem(n)
       }
     }

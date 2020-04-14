@@ -63,7 +63,6 @@ trait GenTraversableOnce[+A] extends Any {
     *
     *    Note: this method underlies the implementation of most other bulk operations.
     *    It's important to implement this method in an efficient way.
-    *
     */
   def foreach[U](f: A => U): Unit
 
@@ -176,7 +175,7 @@ trait GenTraversableOnce[+A] extends Any {
     *      scala> val c = (5 /: a)((x,y) => x + y)
     *      c: Int = 15
     *  }}}
-
+    *
     *  $willNotTerminateInf
     *  $orderDependentFold
     *
@@ -356,7 +355,6 @@ trait GenTraversableOnce[+A] extends Any {
     *     Instead of `Int`, any other type `T` with an implicit `Numeric[T]` implementation
     *     can be used as element type of the $coll and as result type of `sum`.
     *     Examples of such types are: `Long`, `Float`, `Double`, `BigInt`.
-    *
     */
   def sum[A1 >: A](implicit num: Numeric[A1]): A1
 

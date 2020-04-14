@@ -436,7 +436,7 @@ class SparkContext(config: SparkConf)
 
     // System property spark.yarn.app.id must be set if user code ran by AM on a YARN cluster
     if (master == "yarn" && deployMode == "cluster" && !_conf.contains(
-          "spark.yarn.app.id")) {
+        "spark.yarn.app.id")) {
       throw new SparkException(
         "Detected yarn cluster mode, but isn't running on a cluster. " +
           "Deployment to YARN is not supported directly by SparkContext. Please use spark-submit.")
@@ -507,8 +507,8 @@ class SparkContext(config: SparkConf)
 
     _progressBar =
       if (_conf.getBoolean(
-            "spark.ui.showConsoleProgress",
-            true) && !log.isInfoEnabled) {
+          "spark.ui.showConsoleProgress",
+          true) && !log.isInfoEnabled) {
         Some(new ConsoleProgressBar(this))
       } else {
         None
@@ -1269,7 +1269,7 @@ class SparkContext(config: SparkConf)
     * operation will create many references to the same object.
     * If you plan to directly cache, sort, or aggregate Hadoop writable objects, you should first
     * copy them using a `map` function.
-    * */
+    */
   def sequenceFile[K, V](
       path: String,
       keyClass: Class[K],
@@ -2112,7 +2112,7 @@ class SparkContext(config: SparkConf)
     dagScheduler.cancelJobGroup(groupId)
   }
 
-  /** Cancel all jobs that have been scheduled or are running.  */
+  /** Cancel all jobs that have been scheduled or are running. */
   def cancelAllJobs() {
     assertNotStopped()
     dagScheduler.cancelAllJobs()

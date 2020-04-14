@@ -11,7 +11,7 @@ object properties {
     /** The setter function, defaults to identity. */
     private var getter: T => T = identity[T]
 
-    /** Retrive the value held in this property.   */
+    /** Retrive the value held in this property. */
     def apply(): T = getter(value)
 
     /** Update the value held in this property, through the setter. */

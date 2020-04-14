@@ -86,7 +86,7 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
     * SELECT MAX(value) FROM src GROUP BY k1, k2 UNION SELECT MAX(value) FROM src GROUP BY k2
     * Check the following link for details.
     *
-https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C+Grouping+and+Rollup
+    * https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C+Grouping+and+Rollup
     *
     * The bitmask denotes the grouping expressions validity for a grouping set,
     * the bitmask also be called as grouping id (`GROUPING__ID`, the virtual column in Hive)
@@ -643,12 +643,12 @@ https://cwiki.apache.org/confluence/display/Hive/Enhanced+Aggregation%2C+Cube%2C
     val collected = ArrayBuffer[ASTNode]()
     var rest = node
     while (rest match {
-             case Token(pattern(), l :: r :: Nil) =>
-               collected += r
-               rest = l
-               true
-             case _ => false
-           }) {
+        case Token(pattern(), l :: r :: Nil) =>
+          collected += r
+          rest = l
+          true
+        case _ => false
+      }) {
       // do nothing
     }
     collected += rest

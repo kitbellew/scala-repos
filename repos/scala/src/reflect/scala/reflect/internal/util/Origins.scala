@@ -21,18 +21,17 @@ import scala.collection.mutable
   *  }}}
   *
   *  And that's it.  When the JVM exits it would issue a report something like this:
- {{{
- >> Origins tag 'arbitraryTag' logged 145585 calls from 51 distinguished sources.
-
-   71114   scala.tools.nsc.symtab.Symbols$Symbol.unsafeTypeParams(Symbols.scala:862)
-   16584   scala.tools.nsc.symtab.Symbols$Symbol.rawInfo(Symbols.scala:757)
-   15411   scala.tools.nsc.symtab.Symbols$Symbol.unsafeTypeParams(Symbols.scala:869)
-   11507   scala.tools.nsc.symtab.Symbols$Symbol.rawInfo(Symbols.scala:770)
-   10285   scala.tools.nsc.symtab.Symbols$Symbol.unsafeTypeParams(Symbols.scala:864)
-    6860   scala.tools.nsc.transform.SpecializeTypes.specializedTypeVars(SpecializeTypes.scala:304)
-    ...
- }}}
+  * {{{
+  * >> Origins tag 'arbitraryTag' logged 145585 calls from 51 distinguished sources.
   *
+  *   71114   scala.tools.nsc.symtab.Symbols$Symbol.unsafeTypeParams(Symbols.scala:862)
+  *   16584   scala.tools.nsc.symtab.Symbols$Symbol.rawInfo(Symbols.scala:757)
+  *   15411   scala.tools.nsc.symtab.Symbols$Symbol.unsafeTypeParams(Symbols.scala:869)
+  *   11507   scala.tools.nsc.symtab.Symbols$Symbol.rawInfo(Symbols.scala:770)
+  *   10285   scala.tools.nsc.symtab.Symbols$Symbol.unsafeTypeParams(Symbols.scala:864)
+  *    6860   scala.tools.nsc.transform.SpecializeTypes.specializedTypeVars(SpecializeTypes.scala:304)
+  *    ...
+  * }}}
   */
 abstract class Origins {
   type Rep

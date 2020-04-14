@@ -61,7 +61,6 @@ case class ImportExprUsed(expr: ScImportExpr) extends ImportUsed(expr) {
   *   class F;
   * }
   *
-  *
   * import aaa.bbb.{C => D, E => _, _};
   *
   * new <ref>F<p>
@@ -69,7 +68,6 @@ case class ImportExprUsed(expr: ScImportExpr) extends ImportUsed(expr) {
   * </code><p>
   * In the example above after removing selector <code>E => _</code> cancels appropriate shadowing and
   * reference to E may clash with some other in that place.
-  *
   */
 case class ImportSelectorUsed(sel: ScImportSelector) extends ImportUsed(sel) {
   override def qualName: Option[String] = {

@@ -22,7 +22,7 @@ package breeze.linalg.support
   * Marker trait indicating that S is the scalar of V. useful for wrangling type inference
   *
   * @author dlwh
- **/
+  */
 trait ScalarOf[V, S] {}
 
 object ScalarOf {

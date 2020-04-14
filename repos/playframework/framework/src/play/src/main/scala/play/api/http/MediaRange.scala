@@ -26,9 +26,9 @@ case class MediaType(
         "; " + param._1 + param._2
           .map { value =>
             if (MediaRangeParser
-                  .token(new CharSequenceReader(value))
-                  .next
-                  .atEnd) {
+                .token(new CharSequenceReader(value))
+                .next
+                .atEnd) {
               "=" + value
             } else {
               "=\"" + value

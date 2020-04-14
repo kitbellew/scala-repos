@@ -310,9 +310,9 @@ trait EntityPage extends HtmlPage {
             <ol>
               {
           if (!universe.settings.docGroups.value || (tpl.members
-                .map(_.group)
-                .distinct
-                .length == 1))
+              .map(_.group)
+              .distinct
+              .length == 1))
             NodeSeq.Empty
           else
             <li class="group out"><span>Grouped</span></li>
@@ -449,7 +449,7 @@ trait EntityPage extends HtmlPage {
         {
       // linearization
       NodeSeq fromSeq (for ((superTpl, superType) <-
-                              (tpl.linearizationTemplates zip tpl.linearizationTypes))
+          (tpl.linearizationTemplates zip tpl.linearizationTypes))
         yield <div class="parent" name={superTpl.qualifiedName}>
               <h3>Inherited from {
           typeToHtmlWithStupidTypes(tpl, superTpl, superType)
@@ -602,8 +602,7 @@ trait EntityPage extends HtmlPage {
 
     val authorComment =
       if (!s.docAuthor || mbr.comment.isEmpty ||
-          mbr.comment.isDefined && mbr.comment.get.authors.isEmpty)
-        NodeSeq.Empty
+        mbr.comment.isDefined && mbr.comment.get.authors.isEmpty) NodeSeq.Empty
       else
         <div class="comment cmt">
         {
@@ -1231,7 +1230,8 @@ trait EntityPage extends HtmlPage {
 
   }
 
-  /** */
+  /**
+    */
   def treeToHtml(tree: TreeEntity): NodeSeq = {
 
     /** Makes text good looking in the html page : newlines and basic indentation,

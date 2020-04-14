@@ -15,7 +15,7 @@ object Conneg {
 
   // - Header parsing --------------------------------------------------------------------------------------------------
   // -------------------------------------------------------------------------------------------------------------------
-  /** Used to parse a specific type of content negotiation header.*/
+  /** Used to parse a specific type of content negotiation header. */
   trait Format[T] extends RegexParsers {
 
     def entry: Parser[Option[T]]

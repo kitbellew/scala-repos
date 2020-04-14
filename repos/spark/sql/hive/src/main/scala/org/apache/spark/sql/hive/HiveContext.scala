@@ -740,8 +740,8 @@ private[hive] object HiveContext {
     // as we used a local metastore here.
     HiveConf.ConfVars.values().foreach { confvar =>
       if (confvar.varname.contains("datanucleus") || confvar.varname.contains(
-            "jdo")
-          || confvar.varname.contains("hive.metastore.rawstore.impl")) {
+          "jdo")
+        || confvar.varname.contains("hive.metastore.rawstore.impl")) {
         propMap.put(confvar.varname, confvar.getDefaultExpr())
       }
     }

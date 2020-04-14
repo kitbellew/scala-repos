@@ -12,7 +12,7 @@ import xsbti.compile.Inputs
 
 final class Console(compiler: AnalyzingCompiler) {
 
-  /** Starts an interactive scala interpreter session with the given classpath.*/
+  /** Starts an interactive scala interpreter session with the given classpath. */
   def apply(classpath: Seq[File], log: Logger): Option[String] =
     apply(classpath, Nil, "", "", log)
 

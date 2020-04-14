@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle
 
@@ -68,32 +68,27 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
 
   /**
     * Returns number of rows in the matrix shape
-    *
     */
   def numRows: Int
 
   /**
     * Returns number of columns in the matrix shape
-    *
     */
   def numCols: Int
 
   /**
     * Returns total number of entries in the matrix
-    *
     */
 
   def length: Int = numRows * numCols
 
   /**
     * Returns true if rows == cols
-    *
     */
   def isSquare: Boolean = numCols == numRows
 
   /**
     * Returns true if the matrix is empty
-    *
     */
   def isEmpty: Boolean = length == 0
 
@@ -168,7 +163,6 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
   /**
     * Returns (a copy of) the contents of matrix as a single array in
     * row-major order
-    *
     */
   def contents: Array[A] = toVec.toArray
 
@@ -361,7 +355,6 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
 
   /**
     * Multiplies this matrix against another
-    *
     */
   def mult[B](m: Mat[B])(implicit evA: NUM[A], evB: NUM[B]): Mat[Double] = {
     if (numCols != m.numRows) {

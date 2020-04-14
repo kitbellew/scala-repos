@@ -137,7 +137,7 @@ class KindProjectorSimplifyTypeProjectionInspection
                                 //should be handled by AppliedTypeLambdaCanBeSimplifiedInspection
                                 case _ if aliasParam.nonEmpty =>
                                   if (alias.typeParameters.forall(
-                                        canConvertBounds)) {
+                                      canConvertBounds)) {
                                     def simplified(): String = {
                                       tryConvertToInlineSyntax(alias) match {
                                         case Some(inline) => inline
@@ -155,7 +155,7 @@ class KindProjectorSimplifyTypeProjectionInspection
                                           val parameters = aliasParam.map {
                                             param: ScTypeParam =>
                                               if (param.isCovariant || param.isContravariant || boundsDefined(
-                                                    param)) {
+                                                  param)) {
                                                 s"`${param.getText}`"
                                               } else param.getText
                                           }

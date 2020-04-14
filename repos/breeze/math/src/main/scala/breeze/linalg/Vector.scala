@@ -79,7 +79,7 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
     DenseVector(toArray)
   }
 
-  /**Returns copy of this [[breeze.linalg.Vector]] as a [[scala.Array]]*/
+  /** Returns copy of this [[breeze.linalg.Vector]] as a [[scala.Array]] */
   def toArray(implicit cm: ClassTag[V]) = {
     val result = new Array[V](length)
     var i = 0
@@ -91,7 +91,7 @@ trait Vector[@spec(Int, Double, Float) V] extends VectorLike[V, Vector[V]] {
   }
 
   //ToDo 2: Should this be deprecated and changed to `toScalaVector`?
-  /**Returns copy of this [[breeze.linalg.Vector]] as a [[scala.Vector]]*/
+  /** Returns copy of this [[breeze.linalg.Vector]] as a [[scala.Vector]] */
   def toVector(implicit cm: ClassTag[V]) = Vector[V](toArray)
 
   //ToDo 2: implement fold/scan/reduce to operate along one axis of a matrix/tensor
@@ -191,7 +191,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
       extends CanZipMapValues[Vector[V], V, RV, Vector[RV]] {
     def create(length: Int) = DenseVector(new Array[RV](length))
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(from: Vector[V], from2: Vector[V], fn: (V, V) => RV) = {
       require(from.length == from2.length, "Vector lengths must match!")
       val result = create(from.length)
@@ -208,7 +208,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
       man: ClassTag[V2]): CanMapValues[Vector[V], V, V2, Vector[V2]] = {
     new CanMapValues[Vector[V], V, V2, Vector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       def apply(from: Vector[V], fn: (V) => V2) = {
         DenseVector.tabulate(from.length)(i => fn(from(i)))
       }
@@ -219,7 +219,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
       man: ClassTag[V2]): CanMapActiveValues[Vector[V], V, V2, Vector[V2]] = {
     new CanMapActiveValues[Vector[V], V, V2, Vector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       def apply(from: Vector[V], fn: (V) => V2) = {
         DenseVector.tabulate(from.length)(i => fn(from(i)))
       }
@@ -248,7 +248,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
       extends CanZipMapKeyValues[Vector[V], Int, V, RV, Vector[RV]] {
     def create(length: Int) = DenseVector(new Array[RV](length))
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(
         from: Vector[V],
         from2: Vector[V],
@@ -274,7 +274,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
   implicit def zipMapKV[V, R: ClassTag]: CanZipMapKeyValuesVector[V, R] =
     new CanZipMapKeyValuesVector[V, R]
 
-  /**Returns the k-norm of this Vector. */
+  /** Returns the k-norm of this Vector. */
   implicit def canNorm[T](implicit
       canNormS: norm.Impl[T, Double]): norm.Impl2[Vector[T], Double, Double] = {
 

@@ -33,7 +33,7 @@ trait Process {
   /** Returns this process alive status */
   def isAlive(): Boolean
 
-  /** Blocks until this process exits and returns the exit code.*/
+  /** Blocks until this process exits and returns the exit code. */
   def exitValue(): Int
 
   /** Destroys this process. */

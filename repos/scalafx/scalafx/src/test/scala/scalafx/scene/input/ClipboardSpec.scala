@@ -37,8 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * KeyCharacterCombination Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ClipboardSpec

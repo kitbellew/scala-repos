@@ -331,7 +331,6 @@ abstract class AbstractStage[
     * failure, because it is not always possible to recover from that state.
     * In concrete stages it is of course possible to use ordinary try-catch-recover inside
     * `onPull` when it is know how to recover from such exceptions.
-    *
     */
   def decide(t: Throwable): Supervision.Directive = Supervision.Stop
 

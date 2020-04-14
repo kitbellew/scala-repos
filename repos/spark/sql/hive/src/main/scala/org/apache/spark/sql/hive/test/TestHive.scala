@@ -176,8 +176,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
 
   val inRepoTests =
     if (System
-          .getProperty("user.dir")
-          .endsWith("sql" + File.separator + "hive")) {
+        .getProperty("user.dir")
+        .endsWith("sql" + File.separator + "hive")) {
       new File(
         "src" + File.separator + "test" + File.separator + "resources" + File.separator)
     } else {

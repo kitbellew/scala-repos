@@ -89,7 +89,7 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
 
     val packageObjectsData = PackageObjectsData.getFor(context)
     if (JavaBuilderUtil
-          .isForcedRecompilationAllJavaModules(context)) { //rebuild
+        .isForcedRecompilationAllJavaModules(context)) { //rebuild
       packageObjectsData.clear()
     } else {
       val additionalFiles =
@@ -130,12 +130,12 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
       case _ if client.hasReportedErrors || client.isCanceled => ExitCode.ABORT
       case Right(code) =>
         if (delta != null && JavaBuilderUtil.updateMappings(
-              context,
-              delta,
-              dirtyFilesHolder,
-              chunk,
-              scalaSources,
-              successfullyCompiled.asJava))
+            context,
+            delta,
+            dirtyFilesHolder,
+            chunk,
+            scalaSources,
+            successfullyCompiled.asJava))
           ExitCode.ADDITIONAL_PASS_REQUIRED
         else {
           if (ScalaReflectMacroExpansionParser.expansions.nonEmpty)

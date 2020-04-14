@@ -451,8 +451,7 @@ trait UpdatedTrait {
 }
 
 /**
-  * Mix this trait into your Mapper instance to get createdAt and updatedAt fields.
-  */
+  * Mix this trait into your Mapper instance to get createdAt and updatedAt fields. */
 trait CreatedUpdated extends CreatedTrait with UpdatedTrait {
   self: BaseMapper =>
 
@@ -494,8 +493,7 @@ trait KeyedMapper[KeyType, OwnerType <: KeyedMapper[KeyType, OwnerType]]
 
 /**
   * If this trait is mixed into a validation function, the validation for a field
-  * will stop if this validation function returns an error
-  */
+  * will stop if this validation function returns an error */
 trait StopValidationOnError[T] extends Function1[T, List[FieldError]]
 
 object StopValidationOnError {

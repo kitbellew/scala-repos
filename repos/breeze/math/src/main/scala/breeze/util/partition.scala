@@ -22,7 +22,6 @@ import breeze.generic.UFunc
 import breeze.linalg.support.CanCopy
 
 /**
-  *
   * Creates a copy of the array with its elements rearranged in such a way that the value of the element
   * in kth position is in the position it would be in a sorted array. All elements smaller than the kth element
   * are moved before this element and all equal or greater are moved behind it.
@@ -31,7 +30,7 @@ import breeze.linalg.support.CanCopy
   * Based on the numpy method of the same name. Docs lifted from numpy
   *
   * @author dlwh
- **/
+  */
 object partition extends UFunc {
 
   implicit def inPlaceFromQSelectImplImpl[Arr, T](implicit

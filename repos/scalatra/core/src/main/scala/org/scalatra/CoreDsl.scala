@@ -82,7 +82,6 @@ trait CoreDsl
     * {{{
     *   get("/", request.getRemoteHost == "127.0.0.1") { "Hello localhost!" }
     * }}}
-    *
     */
   def get(transformers: RouteTransformer*)(block: => Any): Route
 

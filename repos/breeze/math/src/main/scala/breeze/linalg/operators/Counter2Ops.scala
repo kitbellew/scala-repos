@@ -287,30 +287,30 @@ trait Counter2Ops {
   }
 
   /** Returns the k-norm of this Vector.
-  implicit def canNorm[K1, K2, V:Ring]:CanNorm[Counter2[K1, K2, V]] = new CanNorm[Counter2[K1, K2, V]] {
-    val field = implicitly[Ring[V]]
-    def apply(c: Counter2[K1, K2, V], n: Double): Double = {
-      import c._
-
-      if (n == 1) {
-        var sum = 0.0
-        activeValuesIterator foreach (v => sum += field.norm(v))
-        sum
-      } else if (n == 2) {
-        var sum = 0.0
-        activeValuesIterator foreach (v => { val nn = field.norm(v); sum += nn * nn })
-        math.sqrt(sum)
-      } else if (n == Double.PositiveInfinity) {
-        var max = Double.NegativeInfinity
-        activeValuesIterator foreach (v => { val nn = field.norm(v); if (nn > max) max = nn })
-        max
-      } else {
-        var sum = 0.0
-        activeValuesIterator foreach (v => { val nn = field.norm(v); sum += math.pow(nn,n) })
-        math.pow(sum, 1.0 / n)
-      }
-    }
-  }*/
+    *  implicit def canNorm[K1, K2, V:Ring]:CanNorm[Counter2[K1, K2, V]] = new CanNorm[Counter2[K1, K2, V]] {
+    *    val field = implicitly[Ring[V]]
+    *    def apply(c: Counter2[K1, K2, V], n: Double): Double = {
+    *      import c._
+    *
+    *      if (n == 1) {
+    *        var sum = 0.0
+    *        activeValuesIterator foreach (v => sum += field.norm(v))
+    *        sum
+    *      } else if (n == 2) {
+    *        var sum = 0.0
+    *        activeValuesIterator foreach (v => { val nn = field.norm(v); sum += nn * nn })
+    *        math.sqrt(sum)
+    *      } else if (n == Double.PositiveInfinity) {
+    *        var max = Double.NegativeInfinity
+    *        activeValuesIterator foreach (v => { val nn = field.norm(v); if (nn > max) max = nn })
+    *        max
+    *      } else {
+    *        var sum = 0.0
+    *        activeValuesIterator foreach (v => { val nn = field.norm(v); sum += math.pow(nn,n) })
+    *        math.pow(sum, 1.0 / n)
+    *      }
+    *    }
+    *  } */
 
   implicit def canMultiplyC2C1[K1, K2, V](implicit
       semiring: Semiring[V]): OpMulMatrix.Impl2[
@@ -340,7 +340,7 @@ trait Counter2Ops {
       override def apply(a: Counter2[K1, K2, V], b: Counter2[K2, K3, V]) = {
         val r = Counter2[K1, K3, V]()
         for ((row, ctr) <- a.data.iterator; (k2, v) <- ctr.activeIterator;
-             (k3, v2) <- b(k2, ::).data) {
+          (k3, v2) <- b(k2, ::).data) {
           r(row, k3) = semiring.+(r(row, k3), semiring.*(v, v2))
         }
         r
@@ -355,7 +355,7 @@ trait Counter2Ops {
         RV,
         Counter2[K1, K2, RV]] {
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(
         from: Counter2[K1, K2, V],
         from2: Counter2[K1, K2, V],

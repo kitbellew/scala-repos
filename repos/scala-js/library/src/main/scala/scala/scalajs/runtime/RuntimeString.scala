@@ -87,7 +87,7 @@ private[runtime] object RuntimeString {
   def compareTo(thiz: String, anotherString: String): Int = {
     if (thiz.equals(anotherString)) 0
     else if ((thiz.asInstanceOf[js.Dynamic] <
-               anotherString.asInstanceOf[js.Dynamic]).asInstanceOf[Boolean]) -1
+        anotherString.asInstanceOf[js.Dynamic]).asInstanceOf[Boolean]) -1
     else 1
   }
 
@@ -129,9 +129,9 @@ private[runtime] object RuntimeString {
       dst: Array[Char],
       dstBegin: Int): Unit = {
     if (srcEnd > thiz.length || // first test uses thiz
-        srcBegin < 0 ||
-        srcEnd < 0 ||
-        srcBegin > srcEnd) {
+      srcBegin < 0 ||
+      srcEnd < 0 ||
+      srcBegin > srcEnd) {
       throw new StringIndexOutOfBoundsException("Index out of Bound")
     }
 

@@ -42,7 +42,7 @@ object Previous {
   /** The stream where the task value is persisted. */
   private final val StreamName = "previous"
 
-  /** Represents a reference task.previous*/
+  /** Represents a reference task.previous */
   private[sbt] final class Referenced[T](
       val task: ScopedKey[Task[T]],
       val format: Format[T]) {

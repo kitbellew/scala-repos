@@ -225,7 +225,7 @@ object OrmToSlick extends App {
         case class Address( … )
         case class Person( …, address: Address )
         //#relationshipNavigation2
-       */
+         */
       };
       {
         //#slickRelationships2

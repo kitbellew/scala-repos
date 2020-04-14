@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle
 
@@ -685,13 +685,11 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
 
   /**
     * Return empty series of type equivalent to a row of frame
-    *
     */
   def emptyRow: Series[CX, T] = Series.empty[CX, T]
 
   /**
     * Return empty series of type equivalent to a column of frame
-    *
     */
   def emptyCol: Series[RX, T] = Series.empty[RX, T]
 
@@ -1243,7 +1241,6 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     *    2 => 4
     * }}}
     *
-    *
     * @param melter Implicit evidence for a Melter for the two indexes
     * @tparam W Output type (tuple of arity N + M)
     */
@@ -1641,8 +1638,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
           val fmt = "%" + clen(c) + "s "
           val res =
             if (l == labs.length - 1 || currLab != prevColLabel || prevColMask
-                  .get(c)
-                  .getOrElse(false)) {
+                .get(c)
+                .getOrElse(false)) {
               prevColMask = prevColMask.updated(c, true)
               currLab.formatted(fmt)
             } else {

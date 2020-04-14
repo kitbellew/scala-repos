@@ -28,7 +28,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
   def handleCoeffs(obj: Map[String, SValue]) = {
     obj.keys mustEqual Set("estimate", "standardError")
 
-    obj("estimate") must beLike { case SDecimal(_)      => ok }
+    obj("estimate") must beLike { case SDecimal(_) => ok }
     obj("standardError") must beLike { case SDecimal(_) => ok }
   }
 
@@ -54,12 +54,12 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     resStdErr must beLike {
       case SObject(obj) =>
         obj.keySet mustEqual Set("estimate", "degreesOfFreedom")
-        obj("estimate") must beLike { case SDecimal(_)         => ok }
+        obj("estimate") must beLike { case SDecimal(_) => ok }
         obj("degreesOfFreedom") must beLike { case SDecimal(_) => ok }
     }
 
     rSquared must beLike { case SDecimal(_) => ok }
-    varCovar must beLike { case SArray(_)   => ok }
+    varCovar must beLike { case SArray(_) => ok }
   }
 
   "linear regression" should {

@@ -26,7 +26,6 @@
  */
 
 /**
-  *
   */
 package scalafx.util
 
@@ -44,7 +43,6 @@ import scalafx.util.StringConverter._
 
 /**
   * StringConverter Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class StringConverterSpec extends FlatSpec {

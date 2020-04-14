@@ -14,8 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates.ScTemplateBod
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.05.2008
-  */
+  * Date: 22.05.2008 */
 
 class StatementFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
@@ -24,13 +23,13 @@ class StatementFilter extends ElementFilter {
     if (leaf != null) {
       val parent = leaf.getParent
       if (parent.isInstanceOf[ScReferenceExpression] &&
-          !parent.getParent.isInstanceOf[ScStableReferenceElementPattern] &&
-          (!parent.getParent
-            .isInstanceOf[ScInfixExpr]) && (parent.getPrevSibling == null ||
-          parent.getPrevSibling.getPrevSibling == null ||
-          (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
-          !parent.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[PsiErrorElement]))) {
+        !parent.getParent.isInstanceOf[ScStableReferenceElementPattern] &&
+        (!parent.getParent
+          .isInstanceOf[ScInfixExpr]) && (parent.getPrevSibling == null ||
+        parent.getPrevSibling.getPrevSibling == null ||
+        (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT ||
+        !parent.getPrevSibling.getPrevSibling.getLastChild
+          .isInstanceOf[PsiErrorElement]))) {
         parent.getParent match {
           case _: ScBlockExpr | _: ScBlock | _: ScTemplateBody => return true
           case x: ScExpression =>

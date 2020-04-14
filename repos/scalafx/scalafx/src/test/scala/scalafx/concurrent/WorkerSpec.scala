@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Worker Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class WorkerSpec[T]

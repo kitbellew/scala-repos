@@ -31,7 +31,6 @@ import scala.reflect.macros.whitebox
   *
   *   @First(3) trait Something
   *
-  *
   *   val somethingFirst = Annotation[First, Something].apply()
   *   assert(somethingFirst == First(3))
   * }}}
@@ -82,7 +81,6 @@ object Annotation {
   *   sealed trait Base
   *   @First("b") case class BaseI(i: Int) extends Base
   *   case class BaseS(s: String) extends Base
-  *
   *
   *   val ccFirsts = Annotations[First, CC]
   *   val baseFirsts = Annotations[First, Base]

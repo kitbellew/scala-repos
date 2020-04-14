@@ -520,7 +520,7 @@ private[scalajs] final class ScalaJSClassEmitter(
     implicit val pos = tree.pos
 
     if (tree.kind.isClass || tree.kind == ClassKind.Interface ||
-        tree.name.name == Definitions.StringClass) {
+      tree.name.name == Definitions.StringClass) {
       val className = tree.name.name
       val displayName = decodeClassName(className)
 

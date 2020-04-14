@@ -1,6 +1,6 @@
 package scalaz
 
-/**An algebraic data type representing the digits 0 - 9 */
+/** An algebraic data type representing the digits 0 - 9 */
 sealed abstract class Digit extends Product with Serializable {
   val toInt: Int
 

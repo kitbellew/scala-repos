@@ -30,14 +30,14 @@ object PersistencePluginProxy {
   def setTargetLocation(system: ActorSystem, address: Address): Unit = {
     Persistence(system).journalFor(null) ! TargetLocation(address)
     if (system.settings.config.getString(
-          "akka.persistence.snapshot-store.plugin") != "")
+        "akka.persistence.snapshot-store.plugin") != "")
       Persistence(system).snapshotStoreFor(null) ! TargetLocation(address)
   }
 
   def start(system: ActorSystem): Unit = {
     Persistence(system).journalFor(null)
     if (system.settings.config.getString(
-          "akka.persistence.snapshot-store.plugin") != "")
+        "akka.persistence.snapshot-store.plugin") != "")
       Persistence(system).snapshotStoreFor(null)
 
   }

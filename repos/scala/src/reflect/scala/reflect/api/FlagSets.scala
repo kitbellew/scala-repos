@@ -52,7 +52,6 @@ import scala.language.implicitConversions
   * [[http://docs.scala-lang.org/overviews/reflection/overview.html Reflection Guide]]
   *
   * @group ReflectionAPI
-  *
   */
 trait FlagSets { self: Universe =>
 
@@ -173,7 +172,7 @@ trait FlagSets { self: Universe =>
       *  It can only appear at
       *  - the enum's class
       *  - enum constants
-     **/
+      */
     @deprecated(
       "Use `isJavaEnum` on the corresponding symbol instead.",
       since = "2.11.8")

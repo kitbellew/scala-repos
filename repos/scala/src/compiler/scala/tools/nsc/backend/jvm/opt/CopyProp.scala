@@ -462,7 +462,7 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
                 numArgs + 1
               ) // removes the producers of args and receiver
             } else if (receiverProd.getOpcode == DUP && toRemove.contains(
-                         receiverProd)) {
+                receiverProd)) {
               val dupProds = producersIfSingleConsumer(
                 receiverProd,
                 prodCons.frameAt(receiverProd).stackTop)

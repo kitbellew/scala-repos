@@ -308,7 +308,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     */
   def survivingArgs(sym: Symbol, args: List[Type]): List[Type] =
     for ((tvar, tpe) <- sym.info.typeParams.zip(args)
-         if !tvar.isSpecialized || !isPrimitiveValueType(tpe))
+      if !tvar.isSpecialized || !isPrimitiveValueType(tpe))
       yield tpe
 
   val specializedType = new TypeMap {
@@ -775,7 +775,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       }
 
       for (m <- normMembers;
-           if needsSpecialization(outerEnv ++ env, m) && satisfiable(fullEnv)) {
+        if needsSpecialization(outerEnv ++ env, m) && satisfiable(fullEnv)) {
         if (!m.isDeferred)
           addConcreteSpecMethod(m)
         // specialized members have to be overridable.
@@ -818,7 +818,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           forwardToOverload(m)
 
         } else if (m.isValue && !m.isMethod && !m
-                     .hasFlag(LAZY)) { // concrete value definition
+            .hasFlag(LAZY)) { // concrete value definition
           def mkAccessor(field: Symbol, name: Name) = {
             val newFlags = (SPECIALIZED | m
               .getterIn(clazz)
@@ -971,7 +971,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         // their type parameters are used in non-specializable positions.  Why is
         // unusedStvars.nonEmpty for these classes???
         if (unusedStvars.nonEmpty && currentRun.compiles(
-              sym) && !sym.isSynthetic) {
+            sym) && !sym.isSynthetic) {
           reporter.warning(
             sym.pos,
             "%s %s unused or used in non-specializable positions.".format(
@@ -981,7 +981,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           specializingOn = specializingOn filterNot (unusedStvars contains)
         }
         for (env0 <- specializations(specializingOn)
-             if needsSpecialization(env0, sym)) yield {
+          if needsSpecialization(env0, sym)) yield {
           // !!! Can't this logic be structured so that the new symbol's name is
           // known when the symbol is cloned? It is much cleaner not to be mutating
           // names after the fact.  And it adds about a billion lines of
@@ -1164,8 +1164,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
                   overridden.owner.info.decl(specializedName(overridden, env)))
 
               if (TypeEnv.restrict(env, stvars).nonEmpty && TypeEnv.isValid(
-                    env,
-                    overridden) && atNext != NoSymbol) {
+                  env,
+                  overridden) && atNext != NoSymbol) {
                 debuglog("  " + pp(env) + " found " + atNext)
                 return (overridden, env)
               }
@@ -1264,8 +1264,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       case (TypeRef(_, sym1, _), _) if sym1.isSpecialized =>
         debuglog("Unify " + tp1 + ", " + tp2)
         if (isPrimitiveValueClass(tp2.typeSymbol) || isSpecializedAnyRefSubtype(
-              tp2,
-              sym1))
+            tp2,
+            sym1))
           env + ((sym1, tp2))
         else if (isSpecializedAnyRefSubtype(tp2, sym1))
           env + ((sym1, tp2))
@@ -1643,7 +1643,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           tree match {
             case DefDef(_, _, _, vparams :: Nil, _, rhs) =>
               if (concreteSpecMethods(
-                    tree.symbol) || tree.symbol.isConstructor) {
+                  tree.symbol) || tree.symbol.isConstructor) {
                 // debuglog("!!! adding body of a defdef %s, symbol %s: %s".format(tree, tree.symbol, rhs))
                 body(tree.symbol) = rhs
                 //          body(tree.symbol) = tree // whole method
@@ -2194,9 +2194,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         var hasSpecializedFields = false
 
         for (m <- sClass.info.decls
-             if m.hasFlag(SPECIALIZED)
-               && (m.sourceFile ne null)
-               && satisfiable(typeEnv(m), !sClass.hasFlag(SPECIALIZED))) {
+          if m.hasFlag(SPECIALIZED)
+            && (m.sourceFile ne null)
+            && satisfiable(typeEnv(m), !sClass.hasFlag(SPECIALIZED))) {
           debuglog("creating tree for " + m.fullName)
           if (m.isMethod) {
             if (info(m).target.hasAccessorFlag) hasSpecializedFields = true
@@ -2210,7 +2210,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
               // param accessors for private members (the others are inherited from the generic class)
               if (m.isPrimaryConstructor) {
                 for (param <- vparams;
-                     if sClass.info.nonPrivateMember(param.name) == NoSymbol) {
+                  if sClass.info.nonPrivateMember(param.name) == NoSymbol) {
                   val acc = param.cloneSymbol(
                     sClass,
                     param.flags | PARAMACCESSOR | PRIVATE)
@@ -2258,7 +2258,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           case tree @ ClassDef(_, _, _, impl) =>
             tree.symbol.info // force specialization
             for (((sym1, env), specCls) <- specializedClass
-                 if sym1 == tree.symbol) yield {
+              if sym1 == tree.symbol) yield {
               debuglog(
                 "created synthetic class: " + specCls + " of " + sym1 + " in " + pp(
                   env))

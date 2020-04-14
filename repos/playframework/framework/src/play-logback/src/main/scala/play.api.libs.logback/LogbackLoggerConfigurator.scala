@@ -46,9 +46,9 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
     // application-logger.xml and logger.xml are no longer supported methods for supplying the configuration
     // Support removed in Play 2.5. This notice can be removed in future versions of Play
     if (!env
-          .resource("application-logger.xml")
-          .orElse(env.resource("logger.xml"))
-          .isEmpty) {
+        .resource("application-logger.xml")
+        .orElse(env.resource("logger.xml"))
+        .isEmpty) {
       System.err.println(
         "application-logger.xml and logger.xml are no longer supported. Please name your file logback.xml");
     }

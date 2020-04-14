@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * SeparatorMenuItem Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SeparatorMenuItemSpec

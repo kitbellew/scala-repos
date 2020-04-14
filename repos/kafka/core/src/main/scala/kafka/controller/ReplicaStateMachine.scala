@@ -12,8 +12,7 @@
   * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+  * limitations under the License. */
 package kafka.controller
 
 import collection._
@@ -159,8 +158,7 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     *
     * ReplicaDeletionSuccessful -> NonExistentReplica
     * -- remove the replica from the in memory partition replica assignment cache
-
-
+    *
     * @param partitionAndReplica The replica for which the state transition is invoked
     * @param targetState The end state that the replica should be moved to
     */
@@ -377,7 +375,7 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                       controllerContext.partitionReplicaAssignment(
                         topicAndPartition)
                     if (!controller.deleteTopicManager.isPartitionToBeDeleted(
-                          topicAndPartition)) {
+                        topicAndPartition)) {
                       brokerRequestBatch.addLeaderAndIsrRequestForBrokers(
                         currentAssignedReplicas.filterNot(_ == replicaId),
                         topic,
@@ -403,7 +401,7 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                 true
             }
           if (leaderAndIsrIsEmpty && !controller.deleteTopicManager
-                .isPartitionToBeDeleted(topicAndPartition))
+              .isPartitionToBeDeleted(topicAndPartition))
             throw new StateChangeFailedException(
               "Failed to change state of replica %d for partition %s since the leader and isr path in zookeeper is empty"
                 .format(replicaId, topicAndPartition))
@@ -491,7 +489,7 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
     */
   private def initializeReplicaState() {
     for ((topicPartition, assignedReplicas) <-
-           controllerContext.partitionReplicaAssignment) {
+        controllerContext.partitionReplicaAssignment) {
       val topic = topicPartition.topic
       val partition = topicPartition.partition
       assignedReplicas.foreach { replicaId =>

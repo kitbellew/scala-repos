@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Animation Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class AnimationSpec

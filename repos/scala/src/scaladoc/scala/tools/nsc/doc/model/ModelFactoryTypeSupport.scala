@@ -24,7 +24,8 @@ trait ModelFactoryTypeSupport {
 
   protected val typeCache = new mutable.LinkedHashMap[Type, TypeEntity]
 
-  /** */
+  /**
+    */
   def makeType(aType: Type, inTpl: TemplateImpl): TypeEntity = {
     def createTypeEntity =
       new TypeEntity {
@@ -75,8 +76,8 @@ trait ModelFactoryTypeSupport {
               val bSym = normalizeTemplate(aSym)
               val owner =
                 if ((preSym != NoSymbol) && /* it needs a prefix */
-                    (preSym != bSym.owner) && /* prefix is different from owner */
-                    (aSym == bSym))
+                  (preSym != bSym.owner) && /* prefix is different from owner */
+                  (aSym == bSym))
                   /* normalization doesn't play tricks on us */
                   preSym
                 else
@@ -115,7 +116,7 @@ trait ModelFactoryTypeSupport {
               // the prefix only for ambiguous references, not for overloaded ones.
               def needsPrefix: Boolean = {
                 if ((owner != bSym.owner || preSym.isRefinementClass) && (normalizeTemplate(
-                      owner) != inTpl.sym))
+                    owner) != inTpl.sym))
                   return true
                 // don't get tricked into prefixing method type params and existentials:
                 // I tried several tricks BUT adding the method for which I'm creating the type => that simply won't scale,

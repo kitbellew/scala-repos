@@ -29,7 +29,7 @@ trait Bifoldable[F[_, _]] { self =>
         Dual(Endo.endo(g.flip.curried(b))))(dualMonoid[Endo[C]])) apply z
   }
 
-  /**The composition of Bifoldables `F` and `G`, `[x,y]F[G[x,y],G[x,y]]`, is a Bifoldable */
+  /** The composition of Bifoldables `F` and `G`, `[x,y]F[G[x,y],G[x,y]]`, is a Bifoldable */
   def compose[G[_, _]](implicit
       G0: Bifoldable[G]): Bifoldable[λ[(α, β) => F[G[α, β], G[α, β]]]] =
     new CompositionBifoldable[F, G] {
@@ -37,7 +37,7 @@ trait Bifoldable[F[_, _]] { self =>
       implicit def G = G0
     }
 
-  /**The product of Bifoldables `F` and `G`, `[x,y](F[x,y], G[x,y])`, is a Bifoldable */
+  /** The product of Bifoldables `F` and `G`, `[x,y](F[x,y], G[x,y])`, is a Bifoldable */
   def product[G[_, _]](implicit
       G0: Bifoldable[G]): Bifoldable[λ[(α, β) => (F[α, β], G[α, β])]] =
     new ProductBifoldable[F, G] {
@@ -52,12 +52,12 @@ trait Bifoldable[F[_, _]] { self =>
     bifoldMap(fa)(a => some(f(a)))(b => some(g(b)))
   }
 
-  /**Curried version of `bifoldRight` */
+  /** Curried version of `bifoldRight` */
   final def bifoldR[A, B, C](fa: F[A, B], z: => C)(f: A => (=> C) => C)(
       g: B => (=> C) => C): C =
     bifoldRight(fa, z)(Function.uncurried(f))(Function.uncurried(g))
 
-  /**Curried version of `bifoldLeft` */
+  /** Curried version of `bifoldLeft` */
   final def bifoldL[A, B, C](fa: F[A, B], z: C)(f: C => A => C)(
       g: C => B => C): C =
     bifoldLeft(fa, z)(Function.uncurried(f))(Function.uncurried(g))
@@ -84,12 +84,12 @@ trait Bifoldable[F[_, _]] { self =>
       def H = H0
     }
 
-  /** Embed one Foldable to the left of this Bifoldable .*/
+  /** Embed one Foldable to the left of this Bifoldable . */
   def embedLeft[G[_]](implicit
       G0: Foldable[G]): Bifoldable[λ[(α, β) => F[G[α], β]]] =
     embed[G, Id.Id]
 
-  /** Embed one Foldable to the right of this Bifoldable .*/
+  /** Embed one Foldable to the right of this Bifoldable . */
   def embedRight[H[_]](implicit
       H0: Foldable[H]): Bifoldable[λ[(α, β) => F[α, H[β]]]] =
     embed[Id.Id, H]

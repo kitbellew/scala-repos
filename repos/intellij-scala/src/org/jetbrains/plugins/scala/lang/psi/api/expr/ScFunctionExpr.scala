@@ -7,8 +7,7 @@ package expr
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params._
 
 /**
-  * @author Alexander Podkhalyuzin, ilyas
-  */
+  * @author Alexander Podkhalyuzin, ilyas */
 
 trait ScFunctionExpr extends ScExpression with ScControlFlowOwner {
 

@@ -7,7 +7,7 @@ import breeze.linalg.{QuasiTensor, argtopk}
   * TODO
   *
   * @author dlwh
- **/
+  */
 private[linalg] trait LowPriorityArgTopK {
   implicit def argtopkWithQT[Q, I, V](implicit
       qt: Q <:< QuasiTensor[I, V],

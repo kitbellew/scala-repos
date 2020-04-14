@@ -527,7 +527,7 @@ object SlickBuild extends Build {
       cachedFun(inFiles).toSeq
     }
 
-  /** Slick type provider code gen  */
+  /** Slick type provider code gen */
   lazy val typeProviders = taskKey[Seq[File]]("Type provider code generation")
   lazy val typeProvidersConfig = config("codegen").hide
   lazy val typeProvidersSettings = {

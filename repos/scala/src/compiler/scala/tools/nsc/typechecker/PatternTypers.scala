@@ -13,7 +13,6 @@ import symtab.Flags
 import Mode._
 
 /**
-  *
   *  A pattern match such as
   *
   *    x match { case Foo(a, b) => ...}

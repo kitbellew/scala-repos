@@ -131,7 +131,6 @@ trait AnyVarTrait[T, MyType <: AnyVarTrait[T, MyType]]
   /**
     * The function takes a `Box[T]` (Full if the Var is being set, Empty if it's being cleared) and
     * a Boolean indicating that the set function is setting to the default value.
-    *
     */
   type FuncType = (Box[T], Boolean) => Unit
 

@@ -18,7 +18,6 @@ import java.util.Arrays
 import scala.reflect.ClassTag
 
 /**
-  *
   * @author dlwh
   */
 @SerialVersionUID(1L)

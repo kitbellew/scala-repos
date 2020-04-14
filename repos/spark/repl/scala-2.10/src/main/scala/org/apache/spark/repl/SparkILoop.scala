@@ -327,7 +327,7 @@ class SparkILoop(
     val offset = history.index - history.size + 1
 
     for ((line, index) <- history.asStrings.zipWithIndex;
-         if line.toLowerCase contains cmdline)
+      if line.toLowerCase contains cmdline)
       echo("%d %s".format(index + offset, line))
   }
 
@@ -984,7 +984,7 @@ class SparkILoop(
       paste.transcript(code)
       None
     } else if (Completion.looksLikeInvocation(
-                 code) && intp.mostRecentVar != "") {
+        code) && intp.mostRecentVar != "") {
       interpretStartingWith(intp.mostRecentVar + code)
     } else if (code.trim startsWith "//") {
       // line comment, do nothing

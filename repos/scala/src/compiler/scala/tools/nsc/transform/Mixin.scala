@@ -274,12 +274,12 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
     /* Mix in members of implementation class mixinClass into class clazz */
     def mixinTraitForwarders(mixinClass: Symbol) {
       for (member <- mixinClass.info.decls;
-           if isImplementedStatically(member)) {
+        if isImplementedStatically(member)) {
         member overridingSymbol clazz match {
           case NoSymbol =>
             if (clazz.info
-                  .findMember(member.name, 0, 0L, stableOnly = false)
-                  .alternatives contains member)
+                .findMember(member.name, 0, 0L, stableOnly = false)
+                .alternatives contains member)
               cloneAndAddMixinMember(mixinClass, member)
                 .asInstanceOf[TermSymbol] setAlias member
           case _ =>
@@ -357,7 +357,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
               superAccessor.asInstanceOf[TermSymbol] setAlias alias1
           }
         } else if (mixinMember.isMethod && mixinMember.isModule && mixinMember
-                     .hasNoFlags(LIFTED | BRIDGE)) {
+            .hasNoFlags(LIFTED | BRIDGE)) {
           // mixin objects: todo what happens with abstract objects?
           addMember(
             clazz,
@@ -406,13 +406,13 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             if (tree.hasSymbolField && tree.symbol != NoSymbol) {
               val sym = tree.symbol
               if ((sym.hasAccessorFlag || (sym.isTerm && !sym.isMethod))
-                  && sym.isPrivate
-                  && !(currentOwner.isGetter && currentOwner.accessed == sym) // getter
-                  && !definitions.isPrimitiveValueClass(
-                    sym.tpe.resultType.typeSymbol)
-                  && sym.owner == templ.symbol.owner
-                  && !sym.isLazy
-                  && !tree.isDef) {
+                && sym.isPrivate
+                && !(currentOwner.isGetter && currentOwner.accessed == sym) // getter
+                && !definitions.isPrimitiveValueClass(
+                  sym.tpe.resultType.typeSymbol)
+                && sym.owner == templ.symbol.owner
+                && !sym.isLazy
+                && !tree.isDef) {
                 debuglog("added use in: " + currentOwner + " -- " + tree)
                 usedIn(sym) ::= currentOwner
 
@@ -490,7 +490,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
 
         case _ =>
           if (currentOwner.isTrait && sym.isSetter && !enteringPickler(
-                sym.isDeferred)) {
+              sym.isDeferred)) {
             sym.addAnnotation(TraitSetterAnnotationClass)
           }
           tree
@@ -1112,7 +1112,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         val map = mutable.Map[Symbol, Set[Symbol]]() withDefaultValue Set()
         // check what fields can be nulled for
         for ((field, users) <- singleUseFields(templ); lazyFld <- users
-             if !lazyFld.accessed.hasAnnotation(TransientAttr))
+          if !lazyFld.accessed.hasAnnotation(TransientAttr))
           map(lazyFld) += field
 
         map.toMap

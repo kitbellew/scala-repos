@@ -74,7 +74,6 @@ private[testutil] trait AbstractComparator extends Assertions {
       (scalaMethod.getParameterTypes.length == argTypes.size) && (scalaMethod.getParameterTypes.toList == argTypes)
 
     /**
-      *
       */
     private def findMethodWithManyArgsVarargs(
         argTypesExceptLast: List[Class[_]])(method: Method): Boolean =
@@ -208,7 +207,7 @@ private[testutil] trait AbstractComparator extends Assertions {
     */
   private def groupMethods(cls: Class[_], useStatic: Boolean) = {
     val staticIndicator: Boolean => Boolean =
-      if (useStatic)(b => b) else (b => !b)
+      if (useStatic) (b => b) else (b => !b)
     val isAcceptable: Method => Boolean =
       (m =>
         isPublicMethod(m) && staticIndicator(
@@ -221,8 +220,6 @@ private[testutil] trait AbstractComparator extends Assertions {
   }
 
   /**
-    *
-    *
     * @param javaMethods Relation of methods from a Java class
     * @param scalaMethods Relation of methods from a Scala class.
     * @param javaMethodsNotMirrored Relation of javaMethods that are not reflected in the scalaMethods. Default value:
@@ -307,7 +304,6 @@ private[testutil] trait AbstractComparator extends Assertions {
   protected def isSpecialMethodName(methodName: String): Boolean
 
   /**
-    *
     */
   protected def getDesirableMethodName(javaMethod: Method): String
 

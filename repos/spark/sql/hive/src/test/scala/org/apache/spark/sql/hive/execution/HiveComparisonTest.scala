@@ -372,8 +372,8 @@ abstract class HiveComparisonTest
                     // Hooks often break the harness and don't really affect our test anyway, don't
                     // even try running them.
                     if (installHooksCommand
-                          .findAllMatchIn(queryString)
-                          .nonEmpty) {
+                        .findAllMatchIn(queryString)
+                        .nonEmpty) {
                       sys.error("hive exec hooks not supported for tests.")
                     }
 
@@ -503,9 +503,9 @@ abstract class HiveComparisonTest
 
             // We will ignore the ExplainCommand, ShowFunctions, DescribeFunction
             if ((!hiveQuery.logical.isInstanceOf[ExplainCommand]) &&
-                (!hiveQuery.logical.isInstanceOf[ShowFunctions]) &&
-                (!hiveQuery.logical.isInstanceOf[DescribeFunction]) &&
-                preparedHive != catalyst) {
+              (!hiveQuery.logical.isInstanceOf[ShowFunctions]) &&
+              (!hiveQuery.logical.isInstanceOf[DescribeFunction]) &&
+              preparedHive != catalyst) {
 
               val hivePrintOut =
                 s"== HIVE - ${preparedHive.size} row(s) ==" +: preparedHive

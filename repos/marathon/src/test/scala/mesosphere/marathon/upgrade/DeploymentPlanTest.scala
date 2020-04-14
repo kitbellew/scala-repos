@@ -119,7 +119,7 @@ class DeploymentPlanTest
     plan.toRestart should have size 1
     plan.toScale should have size 1
     plan.toStop should have size 1
-   */
+     */
   }
 
   test("can compute affected app ids") {

@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * BooleanStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BooleanStringConverterSpec

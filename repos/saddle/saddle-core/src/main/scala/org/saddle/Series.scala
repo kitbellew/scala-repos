@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle
 
@@ -298,7 +298,6 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
 
   /**
     * Additive inverse of Series with numeric elements
-    *
     */
   def unary_-(): Series[X, T] = Series(-values, index)
 
@@ -373,7 +372,6 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     *   Series(1, 2, NA, 3, NA).pad == Series(1, 2, 2, 3, 3)
     *   Series(NA, 1, 2, NA).pad == Series(NA, 1, 2, 2)
     * }}}
-    *
     */
   def pad: Series[X, T] = Series(values.pad, index)
 
@@ -383,7 +381,6 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * {{{
     *   Series(1, 2, NA, NA, 3).padAtMost(1) == Series(1, 2, 2, NA, 3)
     * }}}
-    *
     */
   def padAtMost(n: Int): Series[X, T] = Series(values.padAtMost(n), index)
 

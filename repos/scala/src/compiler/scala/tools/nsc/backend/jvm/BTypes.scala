@@ -715,7 +715,6 @@ abstract class BTypes {
     *  - flags:       access property flags, details in JVMS, table in 4.7.6. Static flag: see
     *                 discussion below.
     *
-    *
     * Note 1: when a nested class is present in the InnerClass attribute, all of its enclosing
     * classes have to be present as well (by the rules above). Example:
     *
@@ -733,7 +732,6 @@ abstract class BTypes {
     * attribute, all of its enclosing classes will be added as well. Javac seems to do the same,
     * see (*).
     *
-    *
     * Note 2: If a class name is mentioned only in a CONSTANT_Utf8_info, but not in a
     * CONSTANT_Class_info, the JVMS does not require an entry in the InnerClass attribute. However,
     * the Java compiler seems to add such classes anyway. For example, when using an annotation, the
@@ -745,8 +743,6 @@ abstract class BTypes {
     * attribute refers to that constant pool entry. Even though there is no other reference to
     * `O.Ann`, the java compiler adds an entry for that class to the InnerClass attribute (which
     * entails adding a CONSTANT_Class_info for the class).
-    *
-    *
     *
     * EnclosingMethod
     * ---------------
@@ -774,7 +770,6 @@ abstract class BTypes {
     *            For local and anonymous classes in initializer blocks or field initializers, and
     *            class-level anonymous classes, the scala compiler sets the "method" field to null.
     *
-    *
     * (*)
     *   public class Test {
     *     void foo() {
@@ -794,7 +789,6 @@ abstract class BTypes {
     * Maybe this is just because the Java compiler follows the JVMS comment ("InnerClasses
     * information for each enclosing class").
     *
-    *
     * (**)
     *   void foo() {
     *     // anonymous class defined in local variable initializer expression.
@@ -804,7 +798,6 @@ abstract class BTypes {
     *   }
     *
     * The EnclosingMethod attribute of the anonymous class mentions "foo" in the "method" field.
-    *
     *
     * Java Compatibility
     * ------------------
@@ -829,7 +822,6 @@ abstract class BTypes {
     * describes a nested class, the Java compiler hides it from the classpath and will report
     * "cannot find symbol T$C1". This means that the class T.N.C2 cannot be referenced from a
     * Java source file in any way.
-    *
     *
     * STATIC flag
     * -----------
@@ -865,7 +857,6 @@ abstract class BTypes {
     *     }
     *   }
     *
-    *
     * Traits Members
     * --------------
     *
@@ -874,7 +865,6 @@ abstract class BTypes {
     * but the source-level enclosing method doesn't exist in the classfile, we the enclosing method
     * is null (the enclosing class is still emitted).
     * See BCodeAsmCommon.considerAsTopLevelImplementationArtifact
-    *
     *
     * Implementation Classes, Specialized Classes, Delambdafy:method closure classes
     * ------------------------------------------------------------------------------
@@ -885,7 +875,6 @@ abstract class BTypes {
     *
     * The same is true for delambdafy:method closure classes. These classes are generated at
     * top-level in the delambdafy phase, no special support is required in the backend.
-    *
     *
     * Mirror Classes
     * --------------

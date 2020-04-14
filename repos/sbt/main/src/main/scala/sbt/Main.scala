@@ -33,7 +33,7 @@ import java.net.URI
 import java.util.Locale
 import scala.util.control.NonFatal
 
-/** This class is the entry point for sbt.*/
+/** This class is the entry point for sbt. */
 final class xMain extends xsbti.AppMain {
   def run(configuration: xsbti.AppConfiguration): xsbti.MainResult = {
     import BasicCommands.early

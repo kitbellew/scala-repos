@@ -46,8 +46,8 @@ class ScalaMethodCallFixer extends ScalaFixer {
                   editor.getCaretModel.getOffset)
 
                 while (currentPsi != null && methodCall.getTextRange.contains(
-                         currentPsi.getTextRange) &&
-                       !currentPsi.isInstanceOf[ScArgumentExprList]) {
+                    currentPsi.getTextRange) &&
+                  !currentPsi.isInstanceOf[ScArgumentExprList]) {
                   currentPsi = currentPsi.getParent
                 }
 
@@ -107,8 +107,8 @@ class ScalaMethodCallFixer extends ScalaFixer {
 
     val params = args.exprs
     if (params.nonEmpty && startLine(editor, args) != startLine(
-          editor,
-          params.head))
+        editor,
+        params.head))
       endOffset = args.getTextRange.getStartOffset + 1
 
     endOffset = CharArrayUtil.shiftBackward(

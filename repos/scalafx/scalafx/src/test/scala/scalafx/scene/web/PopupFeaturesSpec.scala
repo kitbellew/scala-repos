@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PopupFeatures Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PopupFeaturesSpec

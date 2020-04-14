@@ -434,7 +434,6 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * '''Completes when''' upstream completes
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def filter(p: function.Predicate[Out]): javadsl.Flow[In, Out, Mat] =
     new Flow(delegate.filter(p.test))
@@ -839,7 +838,6 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * '''Completes when''' upstream completes or upstream failed with exception pf can handle
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
@@ -913,7 +911,6 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     *
     * @param seed Provides the first state for a conflated value using the first unconsumed element as a start
     * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-    *
     */
   def conflateWithSeed[S](
       seed: function.Function[Out, S],
@@ -942,7 +939,6 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * see also [[Flow.conflateWithSeed]] [[Flow.batch]] [[Flow.batchWeighted]]
     *
     * @param aggregate Takes the currently aggregated value and the current pending element to produce a new aggregate
-    *
     */
   def conflate[O2 >: Out](
       aggregate: function.Function2[O2, O2, O2]): javadsl.Flow[In, O2, Mat] =

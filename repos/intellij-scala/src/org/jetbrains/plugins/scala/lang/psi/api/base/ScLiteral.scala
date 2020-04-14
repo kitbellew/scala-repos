@@ -18,8 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 
 trait ScLiteral
     extends ScExpression

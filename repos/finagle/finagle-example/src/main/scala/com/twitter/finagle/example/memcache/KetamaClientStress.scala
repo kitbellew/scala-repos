@@ -306,7 +306,7 @@ object KetamaClientStress extends App {
 
       // quit the loop when all load is drained
       if (howmuch_load >= config.cap() && (config
-            .loadrate() == 0 || howmuch_throughput >= howmuch_load)) {
+          .loadrate() == 0 || howmuch_throughput >= howmuch_load)) {
         sys.exit()
       }
     }

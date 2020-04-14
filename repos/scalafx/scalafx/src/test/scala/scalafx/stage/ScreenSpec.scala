@@ -37,8 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Screen Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ScreenSpec

@@ -144,7 +144,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
   /** The boot class path to use for this compilation. */
   protected var bootclasspath: Option[Path] = None
 
-  /** The path to use when finding scalac - *only used for forking!*  */
+  /** The path to use when finding scalac - *only used for forking!* */
   protected var compilerPath: Option[Path] = None
 
   /** The external extensions path to use for this compilation. */

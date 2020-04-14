@@ -52,7 +52,6 @@ package com.twitter.summingbird
   * Storm's local mode, plus some advice on how to test that Storm is
   * populating the Memcache store with good counts.
   *
-  *
   * # Have Fun!
   *
   * Please send any questions on the code you see here to

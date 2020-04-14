@@ -111,7 +111,7 @@ object Statistics {
 
   def allQuantities: Iterable[Quantity] =
     for ((_, q) <- qs if q.underlying == q;
-         r <- q :: q.children.toList if r.prefix.nonEmpty) yield r
+      r <- q :: q.children.toList if r.prefix.nonEmpty) yield r
 
   private def showPercent(x: Long, base: Long) =
     if (base == 0) "" else f" (${x.toDouble / base.toDouble * 100}%2.1f%%)"

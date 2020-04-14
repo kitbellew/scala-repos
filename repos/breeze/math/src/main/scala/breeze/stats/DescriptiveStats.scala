@@ -447,7 +447,6 @@ trait DescriptiveStats {
       * The internal implementation of this could probably be significantly sped
       * up by avoiding the use of counter. Then again, in sparse situations it's
       * still a lot faster than using bincount.
-      *
       */
     object sparse extends UFunc {
       import breeze.linalg._

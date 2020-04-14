@@ -29,12 +29,12 @@ object SizeHintProps extends Properties("SizeHint") {
 
   val finiteHintGen =
     for (rows <- choose(-1L, 1000000L);
-         cols <- choose(-1L, 1000000L)) yield FiniteHint(rows, cols)
+      cols <- choose(-1L, 1000000L)) yield FiniteHint(rows, cols)
 
   val sparseHintGen =
     for (rows <- choose(-1L, 1000000L);
-         cols <- choose(-1L, 1000000L);
-         sparsity <- choose(0.0, 1.0)) yield SparseHint(sparsity, rows, cols)
+      cols <- choose(-1L, 1000000L);
+      sparsity <- choose(0.0, 1.0)) yield SparseHint(sparsity, rows, cols)
 
   implicit val finiteArb: Arbitrary[FiniteHint] = Arbitrary { finiteHintGen }
   implicit val sparseArb: Arbitrary[SparseHint] = Arbitrary { sparseHintGen }
@@ -93,7 +93,7 @@ object SizeHintProps extends Properties("SizeHint") {
   property("adding a sparse matrix to itself doesn't decrease size") = forAll {
     (a: SparseHint) =>
       (for (doubleSize <- (a + a).total;
-            asize <- a.total) yield (doubleSize >= asize)).getOrElse(true)
+        asize <- a.total) yield (doubleSize >= asize)).getOrElse(true)
   }
 
   property("diagonals are smaller") = forAll { (a: FiniteHint) =>

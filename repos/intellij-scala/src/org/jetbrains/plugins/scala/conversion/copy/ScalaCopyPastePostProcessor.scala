@@ -56,13 +56,13 @@ class ScalaCopyPastePostProcessor
             override def run(): Unit = {
               breakable {
                 for ((startOffset, endOffset) <- startOffsets.zip(endOffsets);
-                     element <-
-                       getElementsStrictlyInRange(file, startOffset, endOffset);
-                     reference <- element.asOptionOf[ScReferenceElement];
-                     dependency <- Dependency.dependencyFor(reference)
-                     if dependency.isExternal;
-                     range = dependency.source.getTextRange.shiftRight(
-                       -startOffset)) {
+                  element <-
+                    getElementsStrictlyInRange(file, startOffset, endOffset);
+                  reference <- element.asOptionOf[ScReferenceElement];
+                  dependency <- Dependency.dependencyFor(reference)
+                  if dependency.isExternal;
+                  range =
+                    dependency.source.getTextRange.shiftRight(-startOffset)) {
                   if (System.currentTimeMillis > timeBound) {
                     Log.warn(
                       "Time-out while collecting dependencies in %s:\n%s"
@@ -123,8 +123,8 @@ class ScalaCopyPastePostProcessor
     if (DumbService.getInstance(project).isDumb) return
 
     if (ScalaApplicationSettings
-          .getInstance()
-          .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.NO) return
+        .getInstance()
+        .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.NO) return
 
     val file =
       PsiDocumentManager.getInstance(project).getPsiFile(editor.getDocument)
@@ -137,8 +137,8 @@ class ScalaCopyPastePostProcessor
 
     doRestoreAssociations(value, file, offset, project) { bindingsToRestore =>
       if (ScalaApplicationSettings
-            .getInstance()
-            .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.ASK) {
+          .getInstance()
+          .ADD_IMPORTS_ON_PASTE == CodeInsightSettings.ASK) {
         val dialog = new RestoreReferencesDialog(
           project,
           bindingsToRestore.map(_.path.toOption.getOrElse("")).sorted.toArray)
@@ -192,7 +192,7 @@ class ScalaCopyPastePostProcessor
 
     inWriteAction {
       for (Binding(ref, path) <- bindingsToRestore;
-           holder = ScalaImportTypeFix.getImportHolder(ref, file.getProject))
+        holder = ScalaImportTypeFix.getImportHolder(ref, file.getProject))
         holder.addImportForPath(path, ref)
     }
   }
@@ -204,7 +204,7 @@ class ScalaCopyPastePostProcessor
     val range = dependency.range.shiftRight(offset)
 
     for (ref <- Option(file.findElementAt(range.getStartOffset));
-         parent <- ref.parent if parent.getTextRange == range) yield parent
+      parent <- ref.parent if parent.getTextRange == range) yield parent
   }
 
   private def getElementsStrictlyInRange(

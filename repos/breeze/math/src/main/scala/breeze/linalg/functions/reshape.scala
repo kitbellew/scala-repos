@@ -21,7 +21,6 @@ import scala.reflect.ClassTag
   * ncP = < 0 3 6 >
   *
   * csc.data < 1, 4, 7, 2, 5, 8, 3, 6, 9 >
-  *
   */
 object reshape extends UFunc {
   implicit def svReshape[T: ClassTag: Semiring: Zero]

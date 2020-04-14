@@ -189,7 +189,7 @@ trait ScalacPatternExpanders {
       val normalizedExtractor = if (requiresTupling) {
         val tupled = extractor.asSinglePattern
         if (effectivePatternArity(args) == 1 && isTupleType(
-              extractor.typeOfSinglePattern)) {
+            extractor.typeOfSinglePattern)) {
           val sym = sel.symbol.owner
           currentRun.reporting.deprecationWarning(
             sel.pos,

@@ -71,7 +71,7 @@ object CABRunLengthEncoder {
 
   /**
     * the configuration of our encoder, this will be used in the
-    * Reader part of our RWST    */
+    * Reader part of our RWST */
   case class RunLengthConfig(
       /**
         * if we are emitting less than minRun tokens, just emit them as
@@ -125,7 +125,7 @@ object CABRunLengthEncoder {
     } yield nextTok // return the token
 
   /**
-    have we exhausted the input?
+    *    have we exhausted the input?
     */
   def done: RunLength[Boolean] =
     get flatMap { state =>
@@ -147,7 +147,7 @@ object CABRunLengthEncoder {
       tell(length.show ++ token.show)
 
   /**
-    emit the lastToken
+    *    emit the lastToken
     */
   def emit: RunLength[Unit] =
     for {
@@ -159,7 +159,7 @@ object CABRunLengthEncoder {
     } yield ()
 
   /**
-    emit tokens if the next input token is different than the last
+    *    emit tokens if the next input token is different than the last
     */
   def maybeEmit: RunLength[Unit] =
     for {

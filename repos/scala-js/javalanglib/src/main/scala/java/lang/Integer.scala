@@ -79,8 +79,8 @@ object Integer {
     def fail = throw new NumberFormatException(s"""For input string: "$s"""")
 
     if (s == null || s.size == 0 ||
-        radix < Character.MIN_RADIX ||
-        radix > Character.MAX_RADIX)
+      radix < Character.MIN_RADIX ||
+      radix > Character.MAX_RADIX)
       fail
     else {
       var i = if ((signed && s(0) == '-') || s(0) == '+') 1 else 0

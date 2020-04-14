@@ -37,7 +37,6 @@ import scalafx.scene.shape.{StrokeLineCap, StrokeLineJoin, StrokeType}
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.scene.layout.BorderStrokeStyleSpec]].
   */
 @RunWith(classOf[JUnitRunner])

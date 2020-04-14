@@ -120,7 +120,7 @@ trait StateRules {
   def cond(f: S => Boolean) = get filter f
 
   /** Create a rule that succeeds if all of the given rules succeed.
-      @param rules the rules to apply in sequence.
+    *      @param rules the rules to apply in sequence.
     */
   def allOf[A, X](rules: Seq[Rule[A, X]]) = {
     def rep(
@@ -141,7 +141,7 @@ trait StateRules {
   }
 
   /** Create a rule that succeeds with a list of all the provided rules that succeed.
-      @param rules the rules to apply in sequence.
+    *      @param rules the rules to apply in sequence.
     */
   def anyOf[A, X](rules: Seq[Rule[A, X]]) =
     allOf(rules.map(_ ?)) ^^ { opts => opts.flatMap(x => x) }

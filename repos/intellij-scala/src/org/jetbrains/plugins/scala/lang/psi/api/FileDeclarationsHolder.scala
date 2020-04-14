@@ -57,14 +57,13 @@ trait FileDeclarationsHolder
     }
 
     if (isScriptProcessed && !super[ScDeclarationSequenceHolder]
-          .processDeclarations(processor, state, lastParent, place))
-      return false
+        .processDeclarations(processor, state, lastParent, place)) return false
 
     if (!super[ScImportsHolder].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+        processor,
+        state,
+        lastParent,
+        place)) return false
 
     if (context != null) {
       return true
@@ -87,8 +86,8 @@ trait FileDeclarationsHolder
         val top = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (top != null && !processor.execute(
-              top,
-              state.put(ResolverEnv.nameKey, "_root_"))) return false
+            top,
+            state.put(ResolverEnv.nameKey, "_root_"))) return false
         state.put(ResolverEnv.nameKey, null)
       }
       case ref: ScReferenceExpressionImpl
@@ -96,25 +95,25 @@ trait FileDeclarationsHolder
         val top = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (top != null && !processor.execute(
-              top,
-              state.put(ResolverEnv.nameKey, "_root_"))) return false
+            top,
+            state.put(ResolverEnv.nameKey, "_root_"))) return false
         state.put(ResolverEnv.nameKey, null)
       }
       case _ => {
         val defaultPackage = ScPackageImpl(
           ScalaPsiManager.instance(getProject).getCachedPackage("").orNull)
         if (place != null && PsiTreeUtil.getParentOfType(
-              place,
-              classOf[ScPackaging]) == null) {
+            place,
+            classOf[ScPackaging]) == null) {
           if (defaultPackage != null &&
-              !ResolveUtils.packageProcessDeclarations(
-                defaultPackage,
-                processor,
-                state,
-                null,
-                place)) return false
+            !ResolveUtils.packageProcessDeclarations(
+              defaultPackage,
+              processor,
+              state,
+              null,
+              place)) return false
         } else if (defaultPackage != null && !BaseProcessor.isImplicitProcessor(
-                     processor)) {
+            processor)) {
           //we will add only packages
           //only packages resolve, no classes from default package
           val name = processor match {
@@ -193,10 +192,10 @@ trait FileDeclarationsHolder
                     newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
                 }
                 if (!clazz.processDeclarations(
-                      processor,
-                      newState,
-                      null,
-                      place)) return false
+                    processor,
+                    newState,
+                    null,
+                    place)) return false
               case _ =>
             }
           }
@@ -213,19 +212,19 @@ trait FileDeclarationsHolder
         val pack: PsiPackage =
           ScalaPsiManager.instance(getProject).getCachedPackage(implP).orNull
         if (pack != null && !ResolveUtils.packageProcessDeclarations(
-              pack,
-              processor,
-              state,
-              null,
-              place)) return false
+            pack,
+            processor,
+            state,
+            null,
+            place)) return false
       }
       true
     }
 
     if (checkWildcardImports) {
       if (!checkObjects(
-            implicitlyImportedObjects,
-            PrecedenceTypes.WILDCARD_IMPORT)) return false
+          implicitlyImportedObjects,
+          PrecedenceTypes.WILDCARD_IMPORT)) return false
       if (!checkPackages(implicitlyImportedPackages)) return false
     }
 
@@ -263,11 +262,11 @@ trait FileDeclarationsHolder
     }
 
     if (ScalaFileImpl.isProcessLocalClasses(lastParent) &&
-        !super[ScDeclarationSequenceHolder].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+      !super[ScDeclarationSequenceHolder].processDeclarations(
+        processor,
+        state,
+        lastParent,
+        place)) return false
 
     true
   }

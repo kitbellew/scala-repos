@@ -51,7 +51,7 @@ trait JavaTestBase extends TestSuiteBase {
   /**
     * Attach a provided stream to it's associated StreamingContext as a
     * [[org.apache.spark.streaming.TestOutputStream]].
-   **/
+    */
   def attachTestOutputStream[
       T,
       This <: JavaDStreamLike[T, This, R],

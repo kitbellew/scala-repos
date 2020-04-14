@@ -491,5 +491,5 @@ class FlagTest extends FunSuite {
     assert(flag.parseArgs(Array()) == Flags.Ok(Nil))
     assert(fooFlag() == 123)
   }
- */
+   */
 }

@@ -156,10 +156,10 @@ private[html] object SyntaxHigh {
       }
       if (j < l) -1
       else if (i < buf.length &&
-               ('A' <= buf(i) && buf(i) <= 'Z' ||
-               'a' <= buf(i) && buf(i) <= 'z' ||
-               '0' <= buf(i) && buf(i) <= '9' ||
-               buf(i) == '_')) 1
+        ('A' <= buf(i) && buf(i) <= 'Z' ||
+        'a' <= buf(i) && buf(i) <= 'z' ||
+        '0' <= buf(i) && buf(i) <= '9' ||
+        buf(i) == '_')) 1
       else 0
     }
 
@@ -350,10 +350,10 @@ private[html] object SyntaxHigh {
             parse(buf(i).toString, i + 1)
         case _ =>
           if (i == 0 || (i >= 1 && !Character.isJavaIdentifierPart(
-                buf(i - 1)))) {
+              buf(i - 1)))) {
             if (Character.isDigit(buf(i).toInt) ||
-                (buf(i) == '.' && i + 1 < buf.length && Character.isDigit(
-                  buf(i + 1).toInt))) {
+              (buf(i) == '.' && i + 1 < buf.length && Character.isDigit(
+                buf(i + 1).toInt))) {
               val s = numlit(i)
               parse("<span class=\"num\">" + s + "</span>", i + s.length)
             } else {

@@ -68,7 +68,7 @@ final case class ListT[M[_], A](run: M[List[A]]) {
   def map[B](f: A => B)(implicit M: Functor[M]): ListT[M, B] =
     new ListT(M.map(run)(_.map(f)))
 
-  /**Don't use iteratively! */
+  /** Don't use iteratively! */
   def tail(implicit M: Functor[M]): ListT[M, A] = new ListT(M.map(run)(_.tail))
 
   def foldLeft[B](z: => B)(f: (=> B, => A) => B)(implicit M: Functor[M]): M[B] =

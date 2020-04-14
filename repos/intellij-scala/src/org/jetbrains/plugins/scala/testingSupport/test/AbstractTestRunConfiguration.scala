@@ -273,8 +273,8 @@ abstract class AbstractTestRunConfiguration(
               buffer += getModule
               for (module <- ModuleManager.getInstance(getProject).getModules) {
                 if (ModuleManager
-                      .getInstance(getProject)
-                      .isModuleDependent(getModule, module)) {
+                    .getInstance(getProject)
+                    .isModuleDependent(getModule, module)) {
                   buffer += module
                 }
               }
@@ -411,8 +411,8 @@ abstract class AbstractTestRunConfiguration(
       }
       for (cl <- getClasses(pack)) {
         if (!isInvalidSuite(cl) && ScalaPsiUtil.cachedDeepIsInheritor(
-              cl,
-              suiteClass))
+            cl,
+            suiteClass))
           classes += cl
       }
     }
@@ -469,7 +469,7 @@ abstract class AbstractTestRunConfiguration(
           case SearchForTest.IN_WHOLE_PROJECT =>
             var jdk: Sdk = null
             for (module <- ModuleManager.getInstance(project).getModules
-                 if jdk == null) {
+              if jdk == null) {
               jdk = JavaParameters.getModuleJdk(module)
             }
             params.configureByProject(
@@ -576,7 +576,7 @@ abstract class AbstractTestRunConfiguration(
         }
 
         for (ext <-
-               Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
+            Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
           ext.updateJavaParameters(
             currentConfiguration,
             params,

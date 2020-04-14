@@ -28,7 +28,6 @@ import play.twirl.api._
   *     Ok.chunked(source via Comet.flow("parent.clockChanged"))
   *   }
   * }}}
-  *
   */
 object Comet {
 

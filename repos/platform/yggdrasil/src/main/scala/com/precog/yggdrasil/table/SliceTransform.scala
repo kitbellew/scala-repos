@@ -985,13 +985,13 @@ trait SliceTransforms[M[+_]]
           val st = SliceTransform1SMS(sta, stb, Identity)
           st.mapState(
             { case (a, b, _) => (a, b) },
-            { case (a, b)    => (a, b, ()) })
+            { case (a, b) => (a, b, ()) })
 
         case (sta: SliceTransform1M[_], stb: SliceTransform1S[_]) =>
           val st = SliceTransform1SMS(Identity, sta, stb)
           st.mapState(
             { case (_, a, b) => (a, b) },
-            { case (a, b)    => ((), a, b) })
+            { case (a, b) => ((), a, b) })
 
         case (sta: SliceTransform1S[_], SliceTransform1SMS(stb, stc, std)) =>
           val st = SliceTransform1SMS(chainS(sta, stb), stc, std)
@@ -1010,14 +1010,14 @@ trait SliceTransforms[M[+_]]
             SliceTransform1SMS(Identity, sta andThen stb andThen stc, std)
           st.mapState(
             { case (_, ((a, b), c), d) => (a, (b, c, d)) },
-            { case (a, (b, c, d))      => ((), ((a, b), c), d) })
+            { case (a, (b, c, d)) => ((), ((a, b), c), d) })
 
         case (SliceTransform1SMS(sta, stb, stc), std: SliceTransform1M[_]) =>
           val st =
             SliceTransform1SMS(sta, stb andThen stc andThen std, Identity)
           st.mapState(
             { case (a, ((b, c), d), _) => ((a, b, c), d) },
-            { case ((a, b, c), d)      => (a, ((b, c), d), ()) })
+            { case ((a, b, c), d) => (a, ((b, c), d), ()) })
 
         case (
               SliceTransform1SMS(sta, stb, stc),
@@ -1028,7 +1028,7 @@ trait SliceTransforms[M[+_]]
             stf)
           st.mapState(
             { case (a, (((b, c), d), e), f) => ((a, b, c), (d, e, f)) },
-            { case ((a, b, c), (d, e, f))   => (a, (((b, c), d), e), f) })
+            { case ((a, b, c), (d, e, f)) => (a, (((b, c), d), e), f) })
 
         case (MappedState1(sta, f, g), stb) =>
           (sta andThen stb).mapState(f <-: _, g <-: _)

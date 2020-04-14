@@ -40,7 +40,7 @@ object ThreadPoolRules {
   */
 object LAPinger {
 
-  /**The underlying <code>java.util.concurrent.ScheduledExecutor</code> */
+  /** The underlying <code>java.util.concurrent.ScheduledExecutor</code> */
   private var service = Executors.newSingleThreadScheduledExecutor(TF)
 
   /**

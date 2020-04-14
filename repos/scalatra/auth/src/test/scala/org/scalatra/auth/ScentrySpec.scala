@@ -42,7 +42,7 @@ object ScentrySpec extends Specification with Mockito {
 
     val theScentry = new Scentry[User](
       context,
-      { case User(id)  => id },
+      { case User(id) => id },
       { case s: String => User(s) },
       new SessionAuthStore(context))
     var beforeFetchCalled = false

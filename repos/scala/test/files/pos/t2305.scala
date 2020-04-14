@@ -23,5 +23,5 @@ object breaks {
 		at scala.Predef$.assert(Predef.scala:107)
 		at scala.tools.nsc.symtab.Types$TypeRef.transform(Types.scala:1417)
 		at scala.tools.nsc.symtab.Types$TypeRef.baseType(Types.scala:1559)
-	*/
+   */
 }

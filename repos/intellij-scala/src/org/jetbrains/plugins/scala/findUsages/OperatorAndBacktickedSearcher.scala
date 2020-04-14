@@ -57,7 +57,7 @@ class OperatorAndBacktickedSearcher
           def execute(element: PsiElement, offsetInElement: Int): Boolean = {
             val references = inReadAction(element.getReferences)
             for (ref <- references
-                 if ref.getRangeInElement.contains(offsetInElement)) {
+              if ref.getRangeInElement.contains(offsetInElement)) {
               inReadAction {
                 if (ref.isReferenceTo(elem) || ref.resolve() == elem) {
                   if (!consumer.process(ref)) return false

@@ -136,7 +136,6 @@ object ConsistentHashingRoutingLogic {
   *   use for the consistent hash key
   *
   * @param system the actor system hosting this router
-  *
   */
 @SerialVersionUID(1L)
 final case class ConsistentHashingRoutingLogic(

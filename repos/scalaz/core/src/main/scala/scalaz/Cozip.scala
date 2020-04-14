@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /**
-  *
   */
 ////
 trait Cozip[F[_]] { self =>

@@ -19,8 +19,7 @@ import org.jetbrains.plugins.scala.actions.ScalaFileTemplateUtil
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 
 /**
-  * Pavel Fatin
-  */
+  * Pavel Fatin */
 object ScalaDirectoryService {
   private final val LOG: Logger = Logger.getInstance(
     "#org.jetbrains.plugins.scala.lang.refactoring.move.ScalaDirectoryService")

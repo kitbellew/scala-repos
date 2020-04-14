@@ -6,8 +6,7 @@ package base
 package patterns
 
 /**
-  * @author Alexander Podkhalyuzin
-  */
+  * @author Alexander Podkhalyuzin */
 
 trait ScNamingPattern extends ScBindingPattern {
   def named = findChildByClassScala(classOf[ScPattern])

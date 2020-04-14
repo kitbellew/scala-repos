@@ -82,7 +82,7 @@ trait Decorator {
         "<img src=\"" + src + "\" alt=\"" + alt + "\" title=\"" + t + "\" />"
     }
 
-  /**used to print a horizontal ruler defaults to "<hr />\n" */
+  /** used to print a horizontal ruler defaults to "<hr />\n" */
   def decorateRuler(): String = "<hr />\n"
 
   /** used to print the beginning of a header, defaults to "<h[headerNo]>" */
@@ -91,7 +91,7 @@ trait Decorator {
   /** used to print the end of a header, defaults to "</h[headerNo]\n>" */
   def decorateHeaderClose(headerNo: Int): String = "</h" + headerNo + ">\n"
 
-  /** used to print the beginning of a code block, defaults to "<pre><code>"*/
+  /** used to print the beginning of a code block, defaults to "<pre><code>" */
   def decorateCodeBlockOpen(): String = "<pre><code>"
 
   /** used to print the end of a code block, defaults to "</code></pre>\n" */

@@ -10,7 +10,6 @@
 package scala
 
 /** A function of 5 parameters.
-  *
   */
 trait Function5[-T1, -T2, -T3, -T4, -T5, +R] extends AnyRef { self =>
 

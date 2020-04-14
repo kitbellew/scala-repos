@@ -244,7 +244,7 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
   def count(fn: T => Boolean): This[K, Long] =
     mapValues { t => if (fn(t)) 1L else 0L }.sum
 
-  /** For each key, check to see if a predicate is true for all Values*/
+  /** For each key, check to see if a predicate is true for all Values */
   def forall(fn: T => Boolean): This[K, Boolean] =
     mapValues { fn(_) }.product
 
@@ -347,19 +347,19 @@ trait KeyedListLike[K, +T, +This[K, +T] <: KeyedListLike[K, T, This]]
     */
   def toSet[U >: T]: This[K, Set[U]] = mapValues { Set[U](_) }.sum
 
-  /** For each key, give the maximum value*/
+  /** For each key, give the maximum value */
   def max[B >: T](implicit cmp: Ordering[B]): This[K, T] =
     reduce(cmp.max).asInstanceOf[This[K, T]]
 
-  /** For each key, give the maximum value by some function*/
+  /** For each key, give the maximum value by some function */
   def maxBy[B](fn: T => B)(implicit cmp: Ordering[B]): This[K, T] =
     reduce(Ordering.by(fn).max)
 
-  /** For each key, give the minimum value*/
+  /** For each key, give the minimum value */
   def min[B >: T](implicit cmp: Ordering[B]): This[K, T] =
     reduce(cmp.min).asInstanceOf[This[K, T]]
 
-  /** For each key, give the minimum value by some function*/
+  /** For each key, give the minimum value by some function */
   def minBy[B](fn: T => B)(implicit cmp: Ordering[B]): This[K, T] =
     reduce(Ordering.by(fn).min)
 

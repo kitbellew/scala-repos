@@ -56,14 +56,14 @@ object BlockContext {
 
   /**
     * @return the `BlockContext` that will be used if no other is found.
-   **/
+    */
   def defaultBlockContext: BlockContext = DefaultBlockContext
 
   private val contextLocal = new ThreadLocal[BlockContext]()
 
   /**
-    @return the `BlockContext` that would be used for the current `java.lang.Thread` at this point
-   **/
+    *    @return the `BlockContext` that would be used for the current `java.lang.Thread` at this point
+    */
   def current: BlockContext =
     contextLocal.get match {
       case null =>
@@ -76,7 +76,7 @@ object BlockContext {
 
   /**
     * Installs a current `BlockContext` around executing `body`.
-   **/
+    */
   def withBlockContext[T](blockContext: BlockContext)(body: => T): T = {
     val old = contextLocal.get // can be null
     try {

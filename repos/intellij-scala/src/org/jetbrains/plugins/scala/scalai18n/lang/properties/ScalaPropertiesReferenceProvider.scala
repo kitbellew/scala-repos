@@ -25,7 +25,7 @@ class ScalaPropertiesReferenceProvider extends PsiReferenceProvider {
     object PossibleKey {
       def unapply(lit: ScLiteral): Option[String] = {
         if (!lit.isString || lit.isMultiLineString || lit
-              .isInstanceOf[ScInterpolatedStringLiteral])
+            .isInstanceOf[ScInterpolatedStringLiteral])
           return None
 
         lit.getValue match {

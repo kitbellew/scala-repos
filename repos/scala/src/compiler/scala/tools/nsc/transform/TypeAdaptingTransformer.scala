@@ -116,7 +116,7 @@ trait TypeAdaptingTransformer {
             case ErasedValueType(clazz, underlying) =>
               val tree0 =
                 if (tree.tpe.typeSymbol == NullClass &&
-                    isPrimitiveValueClass(underlying.typeSymbol)) {
+                  isPrimitiveValueClass(underlying.typeSymbol)) {
                   // convert `null` directly to underlying type, as going
                   // via the unboxed type would yield a NPE (see SI-5866)
                   unbox1(tree, underlying)

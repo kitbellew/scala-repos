@@ -100,7 +100,6 @@ private[akka] object GraphInterpreter {
     *
     * In addition, it is also assumed by the infrastructure that the order of exposed inputs and outputs in the
     * corresponding segments of these arrays matches the exact same order of the ports in the [[Shape]].
-    *
     */
   final class GraphAssembly(
       val stages: Array[GraphStageWithMaterializedValue[Shape, Any]],

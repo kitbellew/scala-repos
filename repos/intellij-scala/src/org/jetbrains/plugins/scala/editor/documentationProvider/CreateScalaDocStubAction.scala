@@ -133,7 +133,7 @@ class CreateScalaDocStubAction
             case (currentAnchor, param) =>
               val newTagText =
                 if (psiDocument.getText(
-                      new TextRange(currentAnchor - 1, currentAnchor)) == "*")
+                    new TextRange(currentAnchor - 1, currentAnchor)) == "*")
                   s"$name ${param._2.getName} \n"
                 else s"* $name ${param._2.getName} \n"
               psiDocument.insertString(currentAnchor, newTagText)

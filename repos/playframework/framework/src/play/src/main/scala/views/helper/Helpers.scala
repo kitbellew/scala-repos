@@ -19,9 +19,9 @@ package views.html.helper {
     def infos: Seq[String] = {
       args.get('_help).map(m => Seq(m.toString)).getOrElse {
         (if (args.get('_showConstraints) match {
-               case Some(false) => false
-               case _           => true
-             }) {
+             case Some(false) => false
+             case _           => true
+           }) {
            field.constraints.map(c =>
              messages(c._1, c._2.map(a => translateMsgArg(a)): _*)) ++
              field.format.map(f =>
@@ -37,9 +37,9 @@ package views.html.helper {
         case _ => None
       }).getOrElse {
         (if (args.get('_showErrors) match {
-               case Some(false) => false
-               case _           => true
-             }) {
+             case Some(false) => false
+             case _           => true
+           }) {
            field.errors.map(e =>
              messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
          } else Nil)

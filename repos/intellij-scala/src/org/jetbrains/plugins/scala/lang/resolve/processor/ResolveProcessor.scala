@@ -41,7 +41,7 @@ object ResolveProcessor {
       place: PsiElement): String = {
     def defaultForTypeAlias(t: ScTypeAlias): String = {
       if (t.getParent
-            .isInstanceOf[ScTemplateBody] && t.containingClass != null) {
+          .isInstanceOf[ScTemplateBody] && t.containingClass != null) {
         "TypeAlias:" + t.containingClass.qualifiedName + "#" + t.name
       } else null
     }
@@ -286,7 +286,7 @@ class ResolveProcessor(
       val stateName = state.get(ResolverEnv.nameKey)
       val result = if (stateName == null) name else stateName
       if (result != null && result.startsWith("`") && result.endsWith(
-            "`") && result.length > 1) result.substring(1, result.length - 1)
+          "`") && result.length > 1) result.substring(1, result.length - 1)
       else result
     }
   }

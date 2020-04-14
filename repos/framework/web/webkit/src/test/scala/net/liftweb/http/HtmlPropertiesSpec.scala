@@ -24,8 +24,7 @@ import common.{Box, Empty, Full}
 
 /**
   * This only exists to keep the WebSpecSpec clean. Normally,
-  * you could just use "() => bootstrap.Boot.boot".
-  */
+  * you could just use "() => bootstrap.Boot.boot". */
 object HtmlPropertiesSpecBoot {
   def boot() {
     LiftRules.htmlProperties.default.set((_: Req) match {

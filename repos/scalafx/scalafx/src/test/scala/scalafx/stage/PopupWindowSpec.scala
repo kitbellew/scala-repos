@@ -37,8 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * PopupWindow Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PopupWindowSpec

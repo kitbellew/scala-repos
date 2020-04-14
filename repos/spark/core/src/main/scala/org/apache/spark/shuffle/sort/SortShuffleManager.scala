@@ -93,8 +93,8 @@ private[spark] class SortShuffleManager(conf: SparkConf)
       numMaps: Int,
       dependency: ShuffleDependency[K, V, C]): ShuffleHandle = {
     if (SortShuffleWriter.shouldBypassMergeSort(
-          SparkEnv.get.conf,
-          dependency)) {
+        SparkEnv.get.conf,
+        dependency)) {
       // If there are fewer than spark.shuffle.sort.bypassMergeThreshold partitions and we don't
       // need map-side aggregation, then write numPartitions files directly and just concatenate
       // them at the end. This avoids doing serialization and deserialization twice to merge
@@ -190,7 +190,7 @@ private[spark] object SortShuffleManager extends Logging {
     * The maximum number of shuffle output partitions that SortShuffleManager supports when
     * buffering map outputs in a serialized form. This is an extreme defensive programming measure,
     * since it's extremely unlikely that a single shuffle produces over 16 million output partitions.
-    * */
+    */
   val MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE =
     PackedRecordPointer.MAXIMUM_PARTITION_ID + 1
 

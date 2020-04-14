@@ -108,7 +108,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               val position = dummyPosition.getContext
               if (!position.isInstanceOf[ScInterpolated]) return
               if (!parameters.getPosition.getParent
-                    .isInstanceOf[ScInterpolated]) return
+                  .isInstanceOf[ScInterpolated]) return
 
               val interpolated = position.asInstanceOf[ScInterpolated]
               val dummyInterpolated =
@@ -153,8 +153,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
           result.getPrefixMatcher)
         val insertedElement: PsiElement = position
         if (!inString && !inInterpolatedString && !ScalaPsiUtil
-              .fileContext(insertedElement)
-              .isInstanceOf[ScalaFile]) return
+            .fileContext(insertedElement)
+            .isInstanceOf[ScalaFile]) return
         val lookingForAnnotations: Boolean =
           Option(
             insertedElement.getContainingFile findElementAt (insertedElement.getTextOffset - 1)) exists {
@@ -212,7 +212,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                     case f: FakePsiMethod
                         if f.name.endsWith(
                           "_=") && parameters.getInvocationCount < 2 => //don't show _= methods for vars in basic completion
-                    case fun: ScFun                                  => addElement(el)
+                    case fun: ScFun => addElement(el)
                     case param: ScClassParameter =>
                       addElement(el)
                     case param: ScParameter if !el.isNamedParameter =>
@@ -232,15 +232,15 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                           addElement(el)
                         case memb: PsiMember =>
                           if (parameters.getInvocationCount > 1 ||
-                              ResolveUtils.isAccessible(
-                                memb,
-                                position,
-                                forCompletion = true)) addElement(el)
+                            ResolveUtils.isAccessible(
+                              memb,
+                              position,
+                              forCompletion = true)) addElement(el)
                         case _ => addElement(el)
                       }
                     case memb: PsiMember =>
                       if (parameters.getInvocationCount > 1 || ResolveUtils
-                            .isAccessible(memb, position, forCompletion = true))
+                          .isAccessible(memb, position, forCompletion = true))
                         addElement(el)
                     case _ =>
                       addElement(el)
@@ -306,12 +306,12 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                 }
             }
             if (!elementAdded && !classNameCompletion && ScalaCompletionUtil
-                  .shouldRunClassNameCompletion(
-                    positionFromParameters(parameters),
-                    parameters,
-                    result.getPrefixMatcher,
-                    checkInvocationCount = false,
-                    lookingForAnnotations = lookingForAnnotations)) {
+                .shouldRunClassNameCompletion(
+                  positionFromParameters(parameters),
+                  parameters,
+                  result.getPrefixMatcher,
+                  checkInvocationCount = false,
+                  lookingForAnnotations = lookingForAnnotations)) {
               ScalaClassNameCompletionContributor
                 .completeClassName(dummyPosition, parameters, context, result)
             }

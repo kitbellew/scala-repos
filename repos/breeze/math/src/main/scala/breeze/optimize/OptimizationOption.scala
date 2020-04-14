@@ -3,7 +3,6 @@ package breeze.optimize
 import breeze.optimize.FirstOrderMinimizer.OptParams
 
 /**
-  *
   * @author dlwh
   */
 sealed trait OptimizationOption extends (OptParams => OptParams)

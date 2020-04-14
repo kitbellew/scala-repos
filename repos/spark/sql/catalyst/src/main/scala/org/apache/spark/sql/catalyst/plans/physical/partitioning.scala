@@ -113,7 +113,6 @@ case class BroadcastDistribution(mode: BroadcastMode) extends Distribution
   *       |     compatibleWith
   *       |            |
   *       +------------+
-  *
   */
 sealed trait Partitioning {
 

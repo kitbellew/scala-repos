@@ -75,7 +75,6 @@ object Spinner {
   * @constructor Constructs a default Spinner instance, with the default 'spinner' style class and a non-editable editor.
   * @param delegate A JavaFX Spinner to be wrapped. Its default value is a new JavaFX Spinner.
   * @tparam T  The type of all values that can be iterated through in the Spinner. Common types include Integer and String.
-  *
   */
 class Spinner[T](override val delegate: jfxsc.Spinner[T] = new jfxsc.Spinner[T])
     extends Control(delegate)
@@ -192,7 +191,6 @@ class Spinner[T](override val delegate: jfxsc.Spinner[T] = new jfxsc.Spinner[T])
     * The value factory is the model behind the JavaFX Spinner control - without
     * a value factory installed a Spinner is unusable. It is the role of the
     * value factory to handle almost all aspects of the Spinner.
-    *
     */
   def valueFactory: ObjectProperty[jfxsc.SpinnerValueFactory[T]] =
     delegate.valueFactoryProperty()

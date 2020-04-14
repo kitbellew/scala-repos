@@ -181,7 +181,7 @@ trait SHtml extends Loggable {
   /**
     * A wrapper around parseOpt for use in the jsonCall variants that will notify the developer on the console when
     * parseOpt is unsuccessful at parsing the JSON.
-  **/
+    */
   private def parseOptOrLog(rawJsonText: String) = {
     parseOpt(rawJsonText) match {
       case None =>
@@ -415,7 +415,6 @@ trait SHtml extends Loggable {
     * @param attrs -- the list of node attributes
     *
     * @return a button to put on your page
-    *
     */
   def jsonButton(
       text: NodeSeq,
@@ -461,7 +460,6 @@ trait SHtml extends Loggable {
     * @param attrs -- the list of node attributes
     *
     * @return a button to put on your page
-    *
     */
   def jsonButton(
       text: NodeSeq,
@@ -485,7 +483,7 @@ trait SHtml extends Loggable {
     * @param text -- the name/text of the button
     * @param jsFunc -- the user function that will be executed. This function will receive as last parameter
     *                  the function that will actually do the ajax call. Hence the user function can decide when
-    * 				  to make the ajax request.
+    *       to make the ajax request.
     * @param func -- the function to execute when the button is pushed.  Return Noop if nothing changes on the browser.
     *
     * @return a button to put on your pagejsFunc.params ++ List(AnonFunc(makeAjaxCall(Str(name+"=true"))))
@@ -507,7 +505,7 @@ trait SHtml extends Loggable {
     * @param text -- the name/text of the button
     * @param jsFunc -- the user function that will be executed. This function will receive as last parameter
     *                  the function that will actually do the ajax call. Hence the user function can decide when
-    * 				  to make the ajax request.
+    *       to make the ajax request.
     * @param func -- the function to execute when the button is pushed.  Return Noop if nothing changes on the browser.
     *
     * @return a button to put on your page
@@ -624,7 +622,7 @@ trait SHtml extends Loggable {
     *
     * @param jsFunc -- the user function that will be executed. This function will receive as last parameter
     *                  the function that will actually do the ajax call. Hence the user function can decide when
-    * 				  to make the ajax request.
+    *       to make the ajax request.
     * @param func - the function to invoke when the link is clicked
     * @param body - the NodeSeq to wrap in the anchor tag
     * @param attrs - the anchor node attributes
@@ -664,7 +662,7 @@ trait SHtml extends Loggable {
     * Create an anchor with a body and the function to be executed when the anchor is clicked
     * @param jsFunc -- the user function that will be executed. This function will receive as last parameter
     *                  the function that will actually do the ajax call. Hence the user function can decide when
-    * 				  to make the ajax request.
+    *       to make the ajax request.
     * @param body - the NodeSeq to wrap in the anchor tag
     * @param attrs - the anchor node attributes
     */
@@ -1954,7 +1952,6 @@ trait SHtml extends Loggable {
     * @param value - the button text
     * @param func - the ajax function to be called
     * @param attrs - button attributes
-    *
     */
   def ajaxSubmit(value: String, func: () => JsCmd, attrs: ElemAttr*): Elem = {
     val funcName = "z" + Helpers.nextFuncName

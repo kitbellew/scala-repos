@@ -105,7 +105,6 @@ final class WebEvent[T](override val delegate: jfxsw.WebEvent[T])
 
   /**
     * Creates a new event object.
-    *
     */
   def this(source: Any, eventType: EventType[jfxsw.WebEvent[_]], data: T) =
     this(new jfxsw.WebEvent(source, eventType, data))

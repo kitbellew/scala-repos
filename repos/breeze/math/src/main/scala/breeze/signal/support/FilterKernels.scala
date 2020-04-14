@@ -32,8 +32,8 @@ object FIRKernel1D {
 
 }
 
-/**This immutable class encapsulates 1D FIR filter kernels. It also internally stores the kernel Fourier transform for
-  * multiple applications of fft convolution.*/
+/** This immutable class encapsulates 1D FIR filter kernels. It also internally stores the kernel Fourier transform for
+  * multiple applications of fft convolution. */
 class FIRKernel1D[T](
     val kernel: DenseVector[T],
     override val multiplier: Double,
@@ -42,10 +42,10 @@ class FIRKernel1D[T](
   //lazy val kernelFourier: DenseVector[Complex] = fourierTr( kernel )
   lazy val length = kernel.length
 
-  /**Amount of overhang to prepend for convolution, to conserve output length.*/
+  /** Amount of overhang to prepend for convolution, to conserve output length. */
   lazy val overhangPre = (length - 1) / 2
 
-  /**Amount of overhang to append for convolution, to conserve output length.*/
+  /** Amount of overhang to append for convolution, to conserve output length. */
   lazy val overhangPost = length - 1 - overhangPre
 
 //  override def toLong(): FIRKernel1D[Long] = FIRKernel1D[Long]( kernel.map(_.toLong), designText )
@@ -57,7 +57,7 @@ class FIRKernel1D[T](
     this.getClass.toString + " multiplier: " + multiplier + ": " + designText
 }
 
-/**This immutable class will encapsulate 1D IIR kernels. Not implemented yet.*/
+/** This immutable class will encapsulate 1D IIR kernels. Not implemented yet. */
 class IIRKernel1D[T](
     val kernelA: DenseVector[T],
     val kernelB: DenseVector[T],

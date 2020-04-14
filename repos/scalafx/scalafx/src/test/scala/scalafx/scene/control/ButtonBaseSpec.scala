@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ButtonBase Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ButtonBaseSpec

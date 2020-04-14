@@ -80,7 +80,6 @@ trait Rand[@specialized(Int, Double) +T] { outer =>
     * Equivalently, for(x &lt;- randInt(10); y &lt;- randInt(30 *x)) yield y
     *
     * @param f the transform to apply to the sampled value.
-    *
     */
   def flatMap[E](f: T => Rand[E]): Rand[E] = FlatMappedRand(outer, f)
 
@@ -91,7 +90,6 @@ trait Rand[@specialized(Int, Double) +T] { outer =>
     * Equivalently, for(x &lt;- uniform) yield 2*x
     *
     * @param f the transform to apply to the sampled value.
-    *
     */
   def map[E](f: T => E): Rand[E] = MappedRand(outer, f)
 
@@ -194,8 +192,7 @@ private final case class MultiplePredicatesRand[@specialized(Int, Double) T](
 
 /**
   * Provides standard combinators and such to use
-  * to compose new Rands.
-  */
+  * to compose new Rands. */
 class RandBasis(val generator: RandomGenerator) {
 
   /**

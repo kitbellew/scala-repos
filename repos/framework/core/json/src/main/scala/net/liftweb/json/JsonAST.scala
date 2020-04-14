@@ -60,7 +60,6 @@ object JsonAST {
     * {{{
     * concat(JInt(1), JInt(2)) == JArray(List(JInt(1), JInt(2)))
     * }}}
-    *
     */
   def concat(values: JValue*) = values.foldLeft(JNothing: JValue)(_ ++ _)
 
@@ -989,7 +988,6 @@ object JsonAST {
   def render(value: JValue) = RenderIntermediaryDocument(value)
 
   /**
-    *
     * @param value the JSON to render
     * @param buf the buffer to render the JSON into. may not be empty
     */

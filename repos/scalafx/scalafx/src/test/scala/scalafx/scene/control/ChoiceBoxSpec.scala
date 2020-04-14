@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ChoiceBox Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ChoiceBoxSpec[J <: AnyRef]

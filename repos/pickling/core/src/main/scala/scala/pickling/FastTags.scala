@@ -19,7 +19,6 @@ import scala.reflect.ClassTag
   *    fully reify the Type (tpe).
   * 2. Calling `mirror` or `tpe` may cause runtime reflection to be used.
   *
-  *
   * @tparam T
   */
 trait FastTypeTag[T] extends Equals {
@@ -281,8 +280,8 @@ object FastTypeTag {
               val clazzName0 = clazz.getName()
               val clazzName =
                 if (clazzName0.contains("anonfun$") || clazzName0.contains(
-                      "$colon$colon") || clazzName0.endsWith("$") || clazzName0
-                      .endsWith("$sp")) clazzName0
+                    "$colon$colon") || clazzName0.endsWith("$") || clazzName0
+                    .endsWith("$sp")) clazzName0
                 else clazzName0.replace('$', '.')
               apply(mirror, clazzName)
             }

@@ -21,7 +21,7 @@ import scala.tools.scalap.scalax.rules.scalasig.ClassFileParser.{
 import scala.tools.scalap.scalax.rules.scalasig._
 import scala.tools.util.PathResolver
 
-/**The main object used to execute scalap on the command-line.
+/** The main object used to execute scalap on the command-line.
   *
   * @author Matthias Zenger, Stephane Micheloud, Burak Emir, Ilya Sergey
   */
@@ -34,12 +34,12 @@ object Main {
     Properties.versionString + " -- " +
     Properties.copyrightString + "\n"
 
-  /**Verbose program run?
+  /** Verbose program run?
     */
   var verbose = false
   var printPrivates = false
 
-  /**Prints usage information for scalap.
+  /** Prints usage information for scalap.
     */
   def usage {
     Console.println("usage: scalap {<option>} <name>")
@@ -63,7 +63,7 @@ object Main {
     classFile.attribute("ScalaSig").isDefined
   }
 
-  /**Processes the given Java class file.
+  /** Processes the given Java class file.
     *
     * @param clazz the class file to be processed.
     */
@@ -145,7 +145,7 @@ object Main {
     }
   }
 
-  /**Executes scalap with the given arguments and classpath for the
+  /** Executes scalap with the given arguments and classpath for the
     *  class denoted by <code>classname</code>.
     *
     * @param args...
@@ -308,7 +308,7 @@ object Main {
     new PathResolver(s, context).result
   }
 
-  /**The main method of this object.
+  /** The main method of this object.
     */
   def main(args: Array[String]) {
     // print usage information if there is no command-line argument

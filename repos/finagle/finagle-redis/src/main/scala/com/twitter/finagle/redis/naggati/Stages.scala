@@ -151,7 +151,7 @@ object Stages {
     ensureDelimiter('\n'.toByte) { (n, buffer) =>
       val end =
         if ((n > 1) && (buffer.getByte(
-              buffer.readerIndex + n - 2) == '\r'.toByte)) {
+            buffer.readerIndex + n - 2) == '\r'.toByte)) {
           n - 2
         } else {
           n - 1

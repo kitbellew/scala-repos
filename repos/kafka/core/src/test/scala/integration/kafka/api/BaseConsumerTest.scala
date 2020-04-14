@@ -421,7 +421,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
     val startCount = commitCallback.count
     val started = System.currentTimeMillis()
     while (commitCallback.count == startCount && System
-             .currentTimeMillis() - started < 10000)
+        .currentTimeMillis() - started < 10000)
       consumer.poll(50)
     assertEquals(startCount + 1, commitCallback.count)
   }

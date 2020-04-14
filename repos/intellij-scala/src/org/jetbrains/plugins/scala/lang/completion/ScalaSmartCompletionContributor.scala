@@ -192,13 +192,13 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                   second)
               case typed: ScTypedDefinition =>
                 if (!PsiTreeUtil.isContextAncestor(
-                      typed.nameContext,
-                      place,
-                      false) &&
-                    (originalPlace == null || !PsiTreeUtil.isContextAncestor(
-                      typed.nameContext,
-                      originalPlace,
-                      false)))
+                    typed.nameContext,
+                    place,
+                    false) &&
+                  (originalPlace == null || !PsiTreeUtil.isContextAncestor(
+                    typed.nameContext,
+                    originalPlace,
+                    false)))
                   for (tt <- typed.getType(TypingContext.empty))
                     checkType(tt, ScSubstitutor.empty, checkForSecondCompletion)
               case f: PsiField =>
@@ -319,7 +319,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                     forCompletion = true) =>
                 p.getAllMethods.foreach(method => {
                   if (method.hasModifierProperty("static") && ResolveUtils
-                        .isAccessible(method, place, forCompletion = true)) {
+                      .isAccessible(method, place, forCompletion = true)) {
                     val lookup = LookupElementManager
                       .getLookupElement(
                         new ScalaResolveResult(method),
@@ -334,7 +334,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                 })
                 p.getFields.foreach(field => {
                   if (field.hasModifierProperty("static") && ResolveUtils
-                        .isAccessible(field, place, forCompletion = true)) {
+                      .isAccessible(field, place, forCompletion = true)) {
                     val lookup = LookupElementManager
                       .getLookupElement(
                         new ScalaResolveResult(field),
@@ -375,7 +375,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                       (if (foundClazz) t.name + "." else "") + "this"
                     val el = new ScalaLookupItem(t, lookupString)
                     if (!scType.equiv(Nothing) && typez.exists(
-                          scType conforms _)) {
+                        scType conforms _)) {
                       if (!foundClazz) el.bold = true
                       result.addElement(el)
                     } else {
@@ -389,7 +389,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                             case Some(clazz)
                                 if clazz.qualifiedName == "scala.Option" || clazz.qualifiedName == "scala.Some" =>
                               if (!scType.equiv(Nothing) && scType.conforms(
-                                    arg)) {
+                                  arg)) {
                                 el.someSmartCompletion = true
                                 result.addElement(el)
                                 elementAdded = true
@@ -554,8 +554,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                         withoutEnd = true,
                         arrowText = arrowText)
                     if (realPresentation.hasEnoughSpaceFor(
-                          prefix + suffix,
-                          false)) {
+                        prefix + suffix,
+                        false)) {
                       presentation.setItemText(prefix + suffix)
                       end = true
                     } else prefixIndex -= 1

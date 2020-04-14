@@ -7,7 +7,6 @@ package types
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 
 trait ScRefineStat extends ScalaPsiElement {}

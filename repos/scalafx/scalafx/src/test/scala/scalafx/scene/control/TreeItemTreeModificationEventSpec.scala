@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * TreeItem.TreeModificationEvent Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TreeItemTreeModificationEventSpec[T]

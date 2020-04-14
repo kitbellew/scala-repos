@@ -7,7 +7,6 @@ import CanTraverseValues._
 
 /**
   * This package contains hypothesis tests.
-  *
   */
 package object hypothesis {
 

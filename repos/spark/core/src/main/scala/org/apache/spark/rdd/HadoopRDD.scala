@@ -311,7 +311,7 @@ class HadoopRDD[K, V](
           if (getBytesReadCallback.isDefined) {
             updateBytesRead()
           } else if (split.inputSplit.value.isInstanceOf[FileSplit] ||
-                     split.inputSplit.value.isInstanceOf[CombineFileSplit]) {
+            split.inputSplit.value.isInstanceOf[CombineFileSplit]) {
             // If we can't get the bytes read from the FS stats, fall back to the split size,
             // which may be inaccurate.
             try {
@@ -478,8 +478,8 @@ private[spark] object HadoopRDD extends Logging {
           .asInstanceOf[String]
         if (locationStr != "localhost") {
           if (HadoopRDD.SPLIT_INFO_REFLECTIONS.get.isInMemory
-                .invoke(loc)
-                .asInstanceOf[Boolean]) {
+              .invoke(loc)
+              .asInstanceOf[Boolean]) {
             logDebug("Partition " + locationStr + " is cached by Hadoop.")
             out += new HDFSCacheTaskLocation(locationStr).toString
           } else {

@@ -43,12 +43,12 @@ import JavaConverters._
 
 object Defaults {
 
-  /** ********* Zookeeper Configuration ***********/
+  /** ******* Zookeeper Configuration ********** */
   val ZkSessionTimeoutMs = 6000
   val ZkSyncTimeMs = 2000
   val ZkEnableSecureAcls = false
 
-  /** ********* General Configuration ***********/
+  /** ******* General Configuration ********** */
   val BrokerIdGenerationEnable = true
   val MaxReservedBrokerId = 1000
   val BrokerId = -1
@@ -58,10 +58,10 @@ object Defaults {
   val BackgroundThreads = 10
   val QueuedMaxRequests = 500
 
-  /************* Authorizer Configuration ***********/
+  /** ********* Authorizer Configuration ********** */
   val AuthorizerClassName = ""
 
-  /** ********* Socket Server Configuration ***********/
+  /** ******* Socket Server Configuration ********** */
   val Port = 9092
   val HostName: String = new String("")
   val SocketSendBufferBytes: Int = 100 * 1024
@@ -72,7 +72,7 @@ object Defaults {
   val ConnectionsMaxIdleMs = 10 * 60 * 1000L
   val RequestTimeoutMs = 30000
 
-  /** ********* Log Configuration ***********/
+  /** ******* Log Configuration ********** */
   val NumPartitions = 1
   val LogDir = "/tmp/kafka-logs"
   val LogSegmentBytes = 1 * 1024 * 1024 * 1024
@@ -109,7 +109,7 @@ object Defaults {
   val AutoCreateTopicsEnable = true
   val MinInSyncReplicas = 1
 
-  /** ********* Replication configuration ***********/
+  /** ******* Replication configuration ********** */
   val ControllerSocketTimeoutMs = RequestTimeoutMs
   val ControllerMessageQueueSize = Int.MaxValue
   val DefaultReplicationFactor = 1
@@ -131,16 +131,16 @@ object Defaults {
   val InterBrokerSecurityProtocol = SecurityProtocol.PLAINTEXT.toString
   val InterBrokerProtocolVersion = ApiVersion.latestVersion.toString
 
-  /** ********* Controlled shutdown configuration ***********/
+  /** ******* Controlled shutdown configuration ********** */
   val ControlledShutdownMaxRetries = 3
   val ControlledShutdownRetryBackoffMs = 5000
   val ControlledShutdownEnable = true
 
-  /** ********* Consumer coordinator configuration ***********/
+  /** ******* Consumer coordinator configuration ********** */
   val ConsumerMinSessionTimeoutMs = 6000
   val ConsumerMaxSessionTimeoutMs = 30000
 
-  /** ********* Offset management configuration ***********/
+  /** ******* Offset management configuration ********** */
   val OffsetMetadataMaxSize = OffsetConfig.DefaultMaxMetadataSize
   val OffsetsLoadBufferSize = OffsetConfig.DefaultLoadBufferSize
   val OffsetsTopicReplicationFactor =
@@ -157,7 +157,7 @@ object Defaults {
   val OffsetCommitTimeoutMs = OffsetConfig.DefaultOffsetCommitTimeoutMs
   val OffsetCommitRequiredAcks = OffsetConfig.DefaultOffsetCommitRequiredAcks
 
-  /** ********* Quota Configuration ***********/
+  /** ******* Quota Configuration ********** */
   val ProducerQuotaBytesPerSecondDefault =
     ClientQuotaManagerConfig.QuotaBytesPerSecondDefault
   val ConsumerQuotaBytesPerSecondDefault =
@@ -170,12 +170,12 @@ object Defaults {
 
   val CompressionType = "producer"
 
-  /** ********* Kafka Metrics Configuration ***********/
+  /** ******* Kafka Metrics Configuration ********** */
   val MetricNumSamples = 2
   val MetricSampleWindowMs = 30000
   val MetricReporterClasses = ""
 
-  /** ********* SSL configuration ***********/
+  /** ******* SSL configuration ********** */
   val PrincipalBuilderClass = SslConfigs.DEFAULT_PRINCIPAL_BUILDER_CLASS
   val SslProtocol = SslConfigs.DEFAULT_SSL_PROTOCOL
   val SslEnabledProtocols = SslConfigs.DEFAULT_SSL_ENABLED_PROTOCOLS
@@ -188,7 +188,7 @@ object Defaults {
   val SslClientAuthNone = "none"
   val SslClientAuth = SslClientAuthNone
 
-  /** ********* Sasl configuration ***********/
+  /** ******* Sasl configuration ********** */
   val SaslKerberosKinitCmd = SaslConfigs.DEFAULT_KERBEROS_KINIT_CMD
   val SaslKerberosTicketRenewWindowFactor =
     SaslConfigs.DEFAULT_KERBEROS_TICKET_RENEW_WINDOW_FACTOR
@@ -209,14 +209,14 @@ object KafkaConfig {
     System.out.println(configDef.toHtmlTable)
   }
 
-  /** ********* Zookeeper Configuration ***********/
+  /** ******* Zookeeper Configuration ********** */
   val ZkConnectProp = "zookeeper.connect"
   val ZkSessionTimeoutMsProp = "zookeeper.session.timeout.ms"
   val ZkConnectionTimeoutMsProp = "zookeeper.connection.timeout.ms"
   val ZkSyncTimeMsProp = "zookeeper.sync.time.ms"
   val ZkEnableSecureAclsProp = "zookeeper.set.acl"
 
-  /** ********* General Configuration ***********/
+  /** ******* General Configuration ********** */
   val BrokerIdGenerationEnableProp = "broker.id.generation.enable"
   val MaxReservedBrokerIdProp = "reserved.broker.max.id"
   val BrokerIdProp = "broker.id"
@@ -227,10 +227,10 @@ object KafkaConfig {
   val QueuedMaxRequestsProp = "queued.max.requests"
   val RequestTimeoutMsProp = CommonClientConfigs.REQUEST_TIMEOUT_MS_CONFIG
 
-  /************* Authorizer Configuration ***********/
+  /** ********* Authorizer Configuration ********** */
   val AuthorizerClassNameProp = "authorizer.class.name"
 
-  /** ********* Socket Server Configuration ***********/
+  /** ******* Socket Server Configuration ********** */
   val PortProp = "port"
   val HostNameProp = "host.name"
   val ListenersProp = "listeners"
@@ -244,10 +244,10 @@ object KafkaConfig {
   val MaxConnectionsPerIpOverridesProp = "max.connections.per.ip.overrides"
   val ConnectionsMaxIdleMsProp = "connections.max.idle.ms"
 
-  /***************** rack configuration *************/
+  /** ************* rack configuration ************ */
   val RackProp = "broker.rack"
 
-  /** ********* Log Configuration ***********/
+  /** ******* Log Configuration ********** */
   val NumPartitionsProp = "num.partitions"
   val LogDirsProp = "log.dirs"
   val LogDirProp = "log.dir"
@@ -294,7 +294,7 @@ object KafkaConfig {
   val AutoCreateTopicsEnableProp = "auto.create.topics.enable"
   val MinInSyncReplicasProp = "min.insync.replicas"
 
-  /** ********* Replication configuration ***********/
+  /** ******* Replication configuration ********** */
   val ControllerSocketTimeoutMsProp = "controller.socket.timeout.ms"
   val DefaultReplicationFactorProp = "default.replication.factor"
   val ReplicaLagTimeMaxMsProp = "replica.lag.time.max.ms"
@@ -321,17 +321,17 @@ object KafkaConfig {
   val InterBrokerSecurityProtocolProp = "security.inter.broker.protocol"
   val InterBrokerProtocolVersionProp = "inter.broker.protocol.version"
 
-  /** ********* Controlled shutdown configuration ***********/
+  /** ******* Controlled shutdown configuration ********** */
   val ControlledShutdownMaxRetriesProp = "controlled.shutdown.max.retries"
   val ControlledShutdownRetryBackoffMsProp =
     "controlled.shutdown.retry.backoff.ms"
   val ControlledShutdownEnableProp = "controlled.shutdown.enable"
 
-  /** ********* Group coordinator configuration ***********/
+  /** ******* Group coordinator configuration ********** */
   val GroupMinSessionTimeoutMsProp = "group.min.session.timeout.ms"
   val GroupMaxSessionTimeoutMsProp = "group.max.session.timeout.ms"
 
-  /** ********* Offset management configuration ***********/
+  /** ******* Offset management configuration ********** */
   val OffsetMetadataMaxSizeProp = "offset.metadata.max.bytes"
   val OffsetsLoadBufferSizeProp = "offsets.load.buffer.size"
   val OffsetsTopicReplicationFactorProp = "offsets.topic.replication.factor"
@@ -344,7 +344,7 @@ object KafkaConfig {
   val OffsetCommitTimeoutMsProp = "offsets.commit.timeout.ms"
   val OffsetCommitRequiredAcksProp = "offsets.commit.required.acks"
 
-  /** ********* Quota Configuration ***********/
+  /** ******* Quota Configuration ********** */
   val ProducerQuotaBytesPerSecondDefaultProp = "quota.producer.default"
   val ConsumerQuotaBytesPerSecondDefaultProp = "quota.consumer.default"
   val NumQuotaSamplesProp = "quota.window.num"
@@ -353,7 +353,7 @@ object KafkaConfig {
   val DeleteTopicEnableProp = "delete.topic.enable"
   val CompressionTypeProp = "compression.type"
 
-  /** ********* Kafka Metrics Configuration ***********/
+  /** ******* Kafka Metrics Configuration ********** */
   val MetricSampleWindowMsProp =
     CommonClientConfigs.METRICS_SAMPLE_WINDOW_MS_CONFIG
   val MetricNumSamplesProp: String =
@@ -361,7 +361,7 @@ object KafkaConfig {
   val MetricReporterClassesProp: String =
     CommonClientConfigs.METRIC_REPORTER_CLASSES_CONFIG
 
-  /** ********* SSL Configuration ****************/
+  /** ******* SSL Configuration *************** */
   val PrincipalBuilderClassProp = SslConfigs.PRINCIPAL_BUILDER_CLASS_CONFIG
   val SslProtocolProp = SslConfigs.SSL_PROTOCOL_CONFIG
   val SslProviderProp = SslConfigs.SSL_PROVIDER_CONFIG
@@ -381,7 +381,7 @@ object KafkaConfig {
     SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_CONFIG
   val SslClientAuthProp = SslConfigs.SSL_CLIENT_AUTH_CONFIG
 
-  /** ********* SASL Configuration ****************/
+  /** ******* SASL Configuration *************** */
   val SaslKerberosServiceNameProp = SaslConfigs.SASL_KERBEROS_SERVICE_NAME
   val SaslKerberosKinitCmdProp = SaslConfigs.SASL_KERBEROS_KINIT_CMD
   val SaslKerberosTicketRenewWindowFactorProp =
@@ -394,7 +394,7 @@ object KafkaConfig {
     SaslConfigs.SASL_KERBEROS_PRINCIPAL_TO_LOCAL_RULES
 
   /* Documentation */
-  /** ********* Zookeeper Configuration ***********/
+  /** ******* Zookeeper Configuration ********** */
   val ZkConnectDoc = "Zookeeper host string"
   val ZkSessionTimeoutMsDoc = "Zookeeper session timeout"
   val ZkConnectionTimeoutMsDoc =
@@ -402,7 +402,7 @@ object KafkaConfig {
   val ZkSyncTimeMsDoc = "How far a ZK follower can be behind a ZK leader"
   val ZkEnableSecureAclsDoc = "Set client to use secure ACLs"
 
-  /** ********* General Configuration ***********/
+  /** ******* General Configuration ********** */
   val BrokerIdGenerationEnableDoc =
     s"Enable automatic broker id generation on the server? When enabled the value configured for $MaxReservedBrokerIdProp should be reviewed."
   val MaxReservedBrokerIdDoc = "Max number that can be used for a broker.id"
@@ -422,11 +422,11 @@ object KafkaConfig {
     "The number of queued requests allowed before blocking the network threads"
   val RequestTimeoutMsDoc = CommonClientConfigs.REQUEST_TIMEOUT_MS_DOC
 
-  /************* Authorizer Configuration ***********/
+  /** ********* Authorizer Configuration ********** */
   val AuthorizerClassNameDoc =
     "The authorizer class that should be used for authorization"
 
-  /** ********* Socket Server Configuration ***********/
+  /** ******* Socket Server Configuration ********** */
   val PortDoc = "the port to listen and accept connections on"
   val HostNameDoc =
     "hostname of broker. If this is set, it will only bind to this address. If this is not set, it will bind to all interfaces"
@@ -463,11 +463,11 @@ object KafkaConfig {
   val ConnectionsMaxIdleMsDoc =
     "Idle connections timeout: the server socket processor threads close the connections that idle more than this"
 
-  /************* Rack Configuration **************/
+  /** ********* Rack Configuration ************* */
   val RackDoc =
     "Rack of the broker. This will be used in rack aware replication assignment for fault tolerance. Examples: `RACK1`, `us-east-1d`"
 
-  /** ********* Log Configuration ***********/
+  /** ******* Log Configuration ********** */
   val NumPartitionsDoc = "The default number of log partitions per topic"
   val LogDirDoc =
     "The directory in which the log data is kept (supplemental for " + LogDirsProp + " property)"
@@ -547,7 +547,7 @@ object KafkaConfig {
   val MinInSyncReplicasDoc =
     "define the minimum number of replicas in ISR needed to satisfy a produce request with acks=all (or -1)"
 
-  /** ********* Replication configuration ***********/
+  /** ******* Replication configuration ********** */
   val ControllerSocketTimeoutMsDoc =
     "The socket timeout for controller-to-broker channels"
   val ControllerMessageQueueSizeDoc =
@@ -595,20 +595,20 @@ object KafkaConfig {
       " This is typically bumped after all brokers were upgraded to a new version.\n" +
       " Example of some valid values are: 0.8.0, 0.8.1, 0.8.1.1, 0.8.2, 0.8.2.0, 0.8.2.1, 0.9.0.0, 0.9.0.1 Check ApiVersion for the full list."
 
-  /** ********* Controlled shutdown configuration ***********/
+  /** ******* Controlled shutdown configuration ********** */
   val ControlledShutdownMaxRetriesDoc =
     "Controlled shutdown can fail for multiple reasons. This determines the number of retries when such failure happens"
   val ControlledShutdownRetryBackoffMsDoc =
     "Before each retry, the system needs time to recover from the state that caused the previous failure (Controller fail over, replica lag etc). This config determines the amount of time to wait before retrying."
   val ControlledShutdownEnableDoc = "Enable controlled shutdown of the server"
 
-  /** ********* Consumer coordinator configuration ***********/
+  /** ******* Consumer coordinator configuration ********** */
   val ConsumerMinSessionTimeoutMsDoc =
     "The minimum allowed session timeout for registered consumers"
   val ConsumerMaxSessionTimeoutMsDoc =
     "The maximum allowed session timeout for registered consumers"
 
-  /** ********* Offset management configuration ***********/
+  /** ******* Offset management configuration ********** */
   val OffsetMetadataMaxSizeDoc =
     "The maximum size for a metadata entry associated with an offset commit"
   val OffsetsLoadBufferSizeDoc =
@@ -635,7 +635,7 @@ object KafkaConfig {
   val OffsetCommitRequiredAcksDoc =
     "The required acks before the commit can be accepted. In general, the default (-1) should not be overridden"
 
-  /** ********* Quota Configuration ***********/
+  /** ******* Quota Configuration ********** */
   val ProducerQuotaBytesPerSecondDefaultDoc =
     "Any producer distinguished by clientId will get throttled if it produces more bytes than this value per-second"
   val ConsumerQuotaBytesPerSecondDefaultDoc =
@@ -650,12 +650,12 @@ object KafkaConfig {
       "('gzip', 'snappy', 'lz4'). It additionally accepts 'uncompressed' which is equivalent to no compression; and " +
       "'producer' which means retain the original compression codec set by the producer."
 
-  /** ********* Kafka Metrics Configuration ***********/
+  /** ******* Kafka Metrics Configuration ********** */
   val MetricSampleWindowMsDoc = CommonClientConfigs.METRICS_SAMPLE_WINDOW_MS_DOC
   val MetricNumSamplesDoc = CommonClientConfigs.METRICS_NUM_SAMPLES_DOC
   val MetricReporterClassesDoc = CommonClientConfigs.METRIC_REPORTER_CLASSES_DOC
 
-  /** ********* SSL Configuration ****************/
+  /** ******* SSL Configuration *************** */
   val PrincipalBuilderClassDoc = SslConfigs.PRINCIPAL_BUILDER_CLASS_DOC
   val SslProtocolDoc = SslConfigs.SSL_PROTOCOL_DOC
   val SslProviderDoc = SslConfigs.SSL_PROVIDER_DOC
@@ -674,7 +674,7 @@ object KafkaConfig {
     SslConfigs.SSL_ENDPOINT_IDENTIFICATION_ALGORITHM_DOC
   val SslClientAuthDoc = SslConfigs.SSL_CLIENT_AUTH_DOC
 
-  /** ********* Sasl Configuration ****************/
+  /** ******* Sasl Configuration *************** */
   val SaslKerberosServiceNameDoc = SaslConfigs.SASL_KERBEROS_SERVICE_NAME_DOC
   val SaslKerberosKinitCmdDoc = SaslConfigs.SASL_KERBEROS_KINIT_CMD_DOC
   val SaslKerberosTicketRenewWindowFactorDoc =
@@ -693,7 +693,7 @@ object KafkaConfig {
     import ConfigDef.ValidString._
 
     new ConfigDef()
-    /** ********* Zookeeper Configuration ***********/
+    /** ******* Zookeeper Configuration ********** */
       .define(ZkConnectProp, STRING, HIGH, ZkConnectDoc)
       .define(
         ZkSessionTimeoutMsProp,
@@ -719,7 +719,7 @@ object KafkaConfig {
         Defaults.ZkEnableSecureAcls,
         HIGH,
         ZkEnableSecureAclsDoc)
-      /** ********* General Configuration ***********/
+      /** ******* General Configuration ********** */
       .define(
         BrokerIdGenerationEnableProp,
         BOOLEAN,
@@ -775,14 +775,14 @@ object KafkaConfig {
         Defaults.RequestTimeoutMs,
         HIGH,
         RequestTimeoutMsDoc)
-      /************* Authorizer Configuration ***********/
+      /** ********* Authorizer Configuration ********** */
       .define(
         AuthorizerClassNameProp,
         STRING,
         Defaults.AuthorizerClassName,
         LOW,
         AuthorizerClassNameDoc)
-      /** ********* Socket Server Configuration ***********/
+      /** ******* Socket Server Configuration ********** */
       .define(PortProp, INT, Defaults.Port, HIGH, PortDoc)
       .define(HostNameProp, STRING, Defaults.HostName, HIGH, HostNameDoc)
       .define(ListenersProp, STRING, null, HIGH, ListenersDoc)
@@ -832,9 +832,9 @@ object KafkaConfig {
         Defaults.ConnectionsMaxIdleMs,
         MEDIUM,
         ConnectionsMaxIdleMsDoc)
-      /************ Rack Configuration ******************/
+      /** ******** Rack Configuration ***************** */
       .define(RackProp, STRING, null, MEDIUM, RackDoc)
-      /** ********* Log Configuration ***********/
+      /** ******* Log Configuration ********** */
       .define(
         NumPartitionsProp,
         INT,
@@ -1055,7 +1055,7 @@ object KafkaConfig {
         atLeast(0),
         MEDIUM,
         LogMessageTimestampDifferenceMaxMsDoc)
-      /** ********* Replication configuration ***********/
+      /** ******* Replication configuration ********** */
       .define(
         ControllerSocketTimeoutMsProp,
         INT,
@@ -1171,7 +1171,7 @@ object KafkaConfig {
         Defaults.InterBrokerProtocolVersion,
         MEDIUM,
         InterBrokerProtocolVersionDoc)
-      /** ********* Controlled shutdown configuration ***********/
+      /** ******* Controlled shutdown configuration ********** */
       .define(
         ControlledShutdownMaxRetriesProp,
         INT,
@@ -1190,7 +1190,7 @@ object KafkaConfig {
         Defaults.ControlledShutdownEnable,
         MEDIUM,
         ControlledShutdownEnableDoc)
-      /** ********* Consumer coordinator configuration ***********/
+      /** ******* Consumer coordinator configuration ********** */
       .define(
         GroupMinSessionTimeoutMsProp,
         INT,
@@ -1203,7 +1203,7 @@ object KafkaConfig {
         Defaults.ConsumerMaxSessionTimeoutMs,
         MEDIUM,
         ConsumerMaxSessionTimeoutMsDoc)
-      /** ********* Offset management configuration ***********/
+      /** ******* Offset management configuration ********** */
       .define(
         OffsetMetadataMaxSizeProp,
         INT,
@@ -1283,7 +1283,7 @@ object KafkaConfig {
         Defaults.CompressionType,
         HIGH,
         CompressionTypeDoc)
-      /** ********* Kafka Metrics Configuration ***********/
+      /** ******* Kafka Metrics Configuration ********** */
       .define(
         MetricNumSamplesProp,
         INT,
@@ -1304,7 +1304,7 @@ object KafkaConfig {
         Defaults.MetricReporterClasses,
         LOW,
         MetricReporterClassesDoc)
-      /** ********* Quota configuration ***********/
+      /** ******* Quota configuration ********** */
       .define(
         ProducerQuotaBytesPerSecondDefaultProp,
         LONG,
@@ -1333,7 +1333,7 @@ object KafkaConfig {
         atLeast(1),
         LOW,
         QuotaWindowSizeSecondsDoc)
-      /** ********* SSL Configuration ****************/
+      /** ******* SSL Configuration *************** */
       .define(
         PrincipalBuilderClassProp,
         CLASS,
@@ -1420,7 +1420,7 @@ object KafkaConfig {
         SslClientAuthDoc
       )
       .define(SslCipherSuitesProp, LIST, null, MEDIUM, SslCipherSuitesDoc)
-      /** ********* Sasl Configuration ****************/
+      /** ******* Sasl Configuration *************** */
       .define(
         SaslKerberosServiceNameProp,
         STRING,
@@ -1504,7 +1504,7 @@ object KafkaConfig {
 class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     extends AbstractConfig(KafkaConfig.configDef, props, doLog) {
 
-  /** ********* Zookeeper Configuration ***********/
+  /** ******* Zookeeper Configuration ********** */
   val zkConnect: String = getString(KafkaConfig.ZkConnectProp)
   val zkSessionTimeoutMs: Int = getInt(KafkaConfig.ZkSessionTimeoutMsProp)
   val zkConnectionTimeoutMs: Int =
@@ -1515,7 +1515,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val zkEnableSecureAcls: Boolean = getBoolean(
     KafkaConfig.ZkEnableSecureAclsProp)
 
-  /** ********* General Configuration ***********/
+  /** ******* General Configuration ********** */
   val brokerIdGenerationEnable: Boolean = getBoolean(
     KafkaConfig.BrokerIdGenerationEnableProp)
   val maxReservedBrokerId: Int = getInt(KafkaConfig.MaxReservedBrokerIdProp)
@@ -1527,11 +1527,11 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val messageMaxBytes = getInt(KafkaConfig.MessageMaxBytesProp)
   val requestTimeoutMs = getInt(KafkaConfig.RequestTimeoutMsProp)
 
-  /************* Authorizer Configuration ***********/
+  /** ********* Authorizer Configuration ********** */
   val authorizerClassName: String = getString(
     KafkaConfig.AuthorizerClassNameProp)
 
-  /** ********* Socket Server Configuration ***********/
+  /** ******* Socket Server Configuration ********** */
   val hostName = getString(KafkaConfig.HostNameProp)
   val port = getInt(KafkaConfig.PortProp)
   val advertisedHostName =
@@ -1552,10 +1552,10 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     }
   val connectionsMaxIdleMs = getLong(KafkaConfig.ConnectionsMaxIdleMsProp)
 
-  /***************** rack configuration **************/
+  /** ************* rack configuration ************* */
   val rack = Option(getString(KafkaConfig.RackProp))
 
-  /** ********* Log Configuration ***********/
+  /** ******* Log Configuration ********** */
   val autoCreateTopicsEnable = getBoolean(
     KafkaConfig.AutoCreateTopicsEnableProp)
   val numPartitions = getInt(KafkaConfig.NumPartitionsProp)
@@ -1617,7 +1617,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val logMessageTimestampDifferenceMaxMs = getLong(
     KafkaConfig.LogMessageTimestampDifferenceMaxMsProp)
 
-  /** ********* Replication configuration ***********/
+  /** ******* Replication configuration ********** */
   val controllerSocketTimeoutMs: Int = getInt(
     KafkaConfig.ControllerSocketTimeoutMsProp)
   val defaultReplicationFactor: Int = getInt(
@@ -1653,7 +1653,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     KafkaConfig.InterBrokerProtocolVersionProp)
   val interBrokerProtocolVersion = ApiVersion(interBrokerProtocolVersionString)
 
-  /** ********* Controlled shutdown configuration ***********/
+  /** ******* Controlled shutdown configuration ********** */
   val controlledShutdownMaxRetries = getInt(
     KafkaConfig.ControlledShutdownMaxRetriesProp)
   val controlledShutdownRetryBackoffMs = getLong(
@@ -1661,13 +1661,13 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val controlledShutdownEnable = getBoolean(
     KafkaConfig.ControlledShutdownEnableProp)
 
-  /** ********* Group coordinator configuration ***********/
+  /** ******* Group coordinator configuration ********** */
   val groupMinSessionTimeoutMs = getInt(
     KafkaConfig.GroupMinSessionTimeoutMsProp)
   val groupMaxSessionTimeoutMs = getInt(
     KafkaConfig.GroupMaxSessionTimeoutMsProp)
 
-  /** ********* Offset management configuration ***********/
+  /** ******* Offset management configuration ********** */
   val offsetMetadataMaxSize = getInt(KafkaConfig.OffsetMetadataMaxSizeProp)
   val offsetsLoadBufferSize = getInt(KafkaConfig.OffsetsLoadBufferSizeProp)
   val offsetsTopicReplicationFactor = getShort(
@@ -1683,7 +1683,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
       .map(value => CompressionCodec.getCompressionCodec(value))
       .orNull
 
-  /** ********* Metric Configuration **************/
+  /** ******* Metric Configuration ************* */
   val metricNumSamples = getInt(KafkaConfig.MetricNumSamplesProp)
   val metricSampleWindowMs = getLong(KafkaConfig.MetricSampleWindowMsProp)
   val metricReporterClasses: java.util.List[MetricsReporter] =
@@ -1691,7 +1691,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
       KafkaConfig.MetricReporterClassesProp,
       classOf[MetricsReporter])
 
-  /** ********* SSL Configuration **************/
+  /** ******* SSL Configuration ************* */
   val principalBuilderClass = getClass(KafkaConfig.PrincipalBuilderClassProp)
   val sslProtocol = getString(KafkaConfig.SslProtocolProp)
   val sslProvider = getString(KafkaConfig.SslProviderProp)
@@ -1709,7 +1709,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val sslClientAuth = getString(KafkaConfig.SslClientAuthProp)
   val sslCipher = getList(KafkaConfig.SslCipherSuitesProp)
 
-  /** ********* Sasl Configuration **************/
+  /** ******* Sasl Configuration ************* */
   val saslKerberosServiceName = getString(
     KafkaConfig.SaslKerberosServiceNameProp)
   val saslKerberosKinitCmd = getString(KafkaConfig.SaslKerberosKinitCmdProp)
@@ -1722,7 +1722,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val saslKerberosPrincipalToLocalRules = getList(
     KafkaConfig.SaslKerberosPrincipalToLocalRulesProp)
 
-  /** ********* Quota Configuration **************/
+  /** ******* Quota Configuration ************* */
   val producerQuotaBytesPerSecondDefault = getLong(
     KafkaConfig.ProducerQuotaBytesPerSecondDefaultProp)
   val consumerQuotaBytesPerSecondDefault = getLong(
@@ -1812,7 +1812,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
       CoreUtils.listenerListToEndPoints(
         getString(KafkaConfig.AdvertisedListenersProp))
     } else if (getString(KafkaConfig.AdvertisedHostNameProp) != null || getInt(
-                 KafkaConfig.AdvertisedPortProp) != null) {
+        KafkaConfig.AdvertisedPortProp) != null) {
       CoreUtils.listenerListToEndPoints(
         "PLAINTEXT://" + advertisedHostName + ":" + advertisedPort)
     } else {

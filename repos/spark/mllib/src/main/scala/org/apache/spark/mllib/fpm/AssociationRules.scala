@@ -32,7 +32,6 @@ import org.apache.spark.rdd.RDD
   *
   * Generates association rules from a [[RDD[FreqItemset[Item]]]. This method only generates
   * association rules which have a single item as the consequent.
-  *
   */
 @Since("1.5.0")
 @Experimental
@@ -60,7 +59,6 @@ class AssociationRules private[fpm] (private var minConfidence: Double)
     * Computes the association rules with confidence above [[minConfidence]].
     * @param freqItemsets frequent itemset model obtained from [[FPGrowth]]
     * @return a [[Set[Rule[Item]]] containing the association rules.
-    *
     */
   @Since("1.5.0")
   def run[Item: ClassTag](
@@ -112,7 +110,6 @@ object AssociationRules {
     * @param consequent conclusion of the rule. Java users should call [[Rule#javaConsequent]]
     *                   instead.
     * @tparam Item item type
-    *
     */
   @Since("1.5.0")
   @Experimental
@@ -125,7 +122,6 @@ object AssociationRules {
 
     /**
       * Returns the confidence of the rule.
-      *
       */
     @Since("1.5.0")
     def confidence: Double = freqUnion.toDouble / freqAntecedent
@@ -140,7 +136,6 @@ object AssociationRules {
 
     /**
       * Returns antecedent in a Java List.
-      *
       */
     @Since("1.5.0")
     def javaAntecedent: java.util.List[Item] = {
@@ -149,7 +144,6 @@ object AssociationRules {
 
     /**
       * Returns consequent in a Java List.
-      *
       */
     @Since("1.5.0")
     def javaConsequent: java.util.List[Item] = {

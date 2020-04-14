@@ -59,10 +59,10 @@ abstract class ScFunctionImpl protected (
       place: PsiElement): Boolean = {
     // process function's process type parameters
     if (!super[ScTypeParametersOwner].processDeclarations(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+        processor,
+        state,
+        lastParent,
+        place)) return false
 
     lazy val parameterIncludingSynthetic: Seq[ScParameter] =
       effectiveParameterClauses.flatMap(_.effectiveParameters)

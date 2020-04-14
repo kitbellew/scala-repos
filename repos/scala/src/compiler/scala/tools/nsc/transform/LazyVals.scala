@@ -180,7 +180,7 @@ abstract class LazyVals
 
             val innerClassBitmaps =
               if (!added && currentOwner.isClass && bitmaps.contains(
-                    currentOwner)) {
+                  currentOwner)) {
                 // add bitmap to inner class if necessary
                 val toAdd0 =
                   bitmaps(currentOwner).map(s => typed(ValDef(s, ZERO)))

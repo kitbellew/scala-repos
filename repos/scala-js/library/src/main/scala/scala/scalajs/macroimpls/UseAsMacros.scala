@@ -62,7 +62,7 @@ private[scalajs] object UseAsMacros {
 
       // Nothing and Null have everything
       if (srcSym != definitions.NothingClass &&
-          srcSym != definitions.NullClass) {
+        srcSym != definitions.NullClass) {
         check(srcTpe, trgTpe)
       }
 

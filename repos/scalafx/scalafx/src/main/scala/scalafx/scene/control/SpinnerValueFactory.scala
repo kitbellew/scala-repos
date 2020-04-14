@@ -59,7 +59,6 @@ object SpinnerValueFactory {
     * A SpinnerValueFactory implementation designed to iterate through
     * a list of values.
     *
-    *
     * @tparam T The type of the elements in the List.
     */
   class ListSpinnerValueFactory[T](
@@ -183,7 +182,6 @@ object SpinnerValueFactory {
   /**
     * A `SpinnerValueFactory` implementation designed to iterate through
     * double values.
-    *
     */
   class DoubleSpinnerValueFactory(
       override val delegate: jfxsc.SpinnerValueFactory.DoubleSpinnerValueFactory)

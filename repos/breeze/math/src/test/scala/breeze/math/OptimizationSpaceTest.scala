@@ -8,8 +8,6 @@ import org.scalacheck.{Gen, Prop, Arbitrary}
   * breeze
   * 8/5/14
   * @author Gabriel Schubiner <gabeos@cs.washington.edu>
-  *
-  *
   */
 trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
   override implicit val space: MutableOptimizationSpace[M, V, S]

@@ -7,7 +7,7 @@ import breeze.linalg.{norm, DenseVector}
   * TODO
   *
   * @author dlwh
- **/
+  */
 class LinearProgramTest extends FunSuite {
 
   /*
@@ -78,6 +78,6 @@ class LinearProgramTest extends FunSuite {
     assert(result.valueOf(x1) === 1)
     assert(result.valueOf(x2) === 1)
   }
- */
+   */
 
 }

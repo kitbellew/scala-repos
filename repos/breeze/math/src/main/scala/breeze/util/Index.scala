@@ -198,8 +198,7 @@ class HashIndex[T] extends MutableIndex[T] with Serializable {
   * For use when we need an index, but we already have (densely packed) positive
   * ints and don't want hash overhead.
   *
-  * @author dlwh, dramage
-  */
+  * @author dlwh, dramage */
 class DenseIntIndex(beg: Int, end: Int) extends Index[Int] {
   def this(end: Int) = this(0, end)
 
@@ -299,7 +298,7 @@ class EitherIndex[L, R](left: Index[L], right: Index[R])
 
   def pairs =
     left.pairs.map { case (l, i) => Left(l) -> i } ++ right.pairs.map {
-      case (r, i)                => Right(r) -> (i + left.size)
+      case (r, i) => Right(r) -> (i + left.size)
     }
 
   def iterator = left.iterator.map { Left(_) } ++ right.map { Right(_) }

@@ -101,7 +101,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
       val returnOther = ibr.fields.length > 1 || !ibr.fields.head.options
         .contains(ColumnOption.AutoInc)
       if (!capabilities.contains(
-            JdbcCapabilities.returnInsertOther) && returnOther)
+          JdbcCapabilities.returnInsertOther) && returnOther)
         throw new SlickException(
           "This DBMS allows only a single AutoInc column to be returned from an INSERT")
       (

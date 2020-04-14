@@ -57,7 +57,6 @@ object Iteratee {
     * M stands for Monadic which in this case means returning a [[scala.concurrent.Future]] for the function argument f,
     * so that promises are combined in a complete reactive flow of logic.
     *
-    *
     * @param state initial state
     * @param f a function folding the previous state and an input to a new promise of state
     * $paramEcSingle
@@ -110,7 +109,6 @@ object Iteratee {
     *
     * It also gives the opportunity to return a [[scala.concurrent.Future]] so that promises are combined in a complete reactive flow of logic.
     *
-    *
     * @param state initial state
     * @param f a function folding the previous state and an input to a new promise of state
     * $paramEcSingle
@@ -140,7 +138,6 @@ object Iteratee {
     * }}}
     *
     * Chunks type should be viewable as TraversableOnce
-    *
     */
   def consume[E] =
     new Consume[E] {
@@ -286,7 +283,6 @@ object Iteratee {
     fold[E, Unit](())((_, e) => f(e))(ec)
 
   /**
-    *
     * @return an [[play.api.libs.iteratee.Iteratee]] which pushes the input into the provided [[play.api.libs.iteratee.Iteratee]], starting over again each time it terminates until an EOF is received, collecting a sequence of results of the different use of the iteratee
     *
     * @param i an iteratee used repeatedly to compute a sequence of results
@@ -464,7 +460,6 @@ trait Iteratee[E, +A] {
   def unflatten: Future[Step[E, A]] = pureFold(identity)(dec)
 
   /**
-    *
     * This method provides the means to check on the state of the Iteratee and eventually extract a value in a Promise
     * @param done a function that will be called if the Iteratee is a Done
     * @param cont a function that will be called if the Iteratee is a Cont
@@ -569,7 +564,6 @@ trait Iteratee[E, +A] {
     Iteratee.flatten(fold1(done, cont, error)(ec))
 
   /**
-    *
     * Uses the provided function to transform the Iteratee's computed result when the Iteratee is done.
     *
     * @param f a function for transforming the computed result

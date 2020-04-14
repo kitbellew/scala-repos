@@ -310,7 +310,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
           if (bean == null) null else SubItem3(bean.name, getByteArray(bean))
 
         if (AsmUtils.traceSerializedClassEnabled && plain.name.contains(
-              AsmUtils.traceSerializedClassPattern)) {
+            AsmUtils.traceSerializedClassPattern)) {
           if (mirrorC != null) AsmUtils.traceClass(mirrorC.jclassBytes)
           AsmUtils.traceClass(plainC.jclassBytes)
           if (beanC != null) AsmUtils.traceClass(beanC.jclassBytes)
@@ -338,7 +338,6 @@ abstract class GenBCode extends BCodeSyncAndTry {
       *    (b) building of ASM ClassNodes, their optimization and serialization.
       *
       *    (c) tear down (closing the classfile-writer and clearing maps)
-      *
       */
     override def run() {
       val bcodeStart = Statistics.startTimer(BackendStats.bcodeTimer)
@@ -367,17 +366,17 @@ abstract class GenBCode extends BCodeSyncAndTry {
       Statistics.stopTimer(BackendStats.bcodeTimer, bcodeStart)
 
       /* TODO Bytecode can be verified (now that all classfiles have been written to disk)
-     *
-     * (1) asm.util.CheckAdapter.verify()
-     *       public static void verify(ClassReader cr, ClassLoader loader, boolean dump, PrintWriter pw)
-     *     passing a custom ClassLoader to verify inter-dependent classes.
-     *     Alternatively,
-     *       - an offline-bytecode verifier could be used (e.g. Maxine brings one as separate tool).
-     *       - -Xverify:all
-     *
-     * (2) if requested, check-java-signatures, over and beyond the syntactic checks in `getGenericSignature()`
-     *
-     */
+       *
+       * (1) asm.util.CheckAdapter.verify()
+       *       public static void verify(ClassReader cr, ClassLoader loader, boolean dump, PrintWriter pw)
+       *     passing a custom ClassLoader to verify inter-dependent classes.
+       *     Alternatively,
+       *       - an offline-bytecode verifier could be used (e.g. Maxine brings one as separate tool).
+       *       - -Xverify:all
+       *
+       * (2) if requested, check-java-signatures, over and beyond the syntactic checks in `getGenericSignature()`
+       *
+       */
     }
 
     /*

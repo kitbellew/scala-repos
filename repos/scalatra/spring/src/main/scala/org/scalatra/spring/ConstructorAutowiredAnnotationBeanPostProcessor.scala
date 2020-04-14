@@ -20,7 +20,7 @@ class ConstructorAutowiredAnnotationBeanPostProcessor
       beanClass: Class[_],
       beanName: String): Array[Constructor[_]] = {
     if (isAutowiredClass(
-          beanClass) && beanClass.getDeclaredConstructors.size == 1) {
+        beanClass) && beanClass.getDeclaredConstructors.size == 1) {
       Array(beanClass.getDeclaredConstructors()(0))
     } else {
       null

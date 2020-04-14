@@ -12,8 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.05.2008
-  */
+  * Date: 28.05.2008 */
 
 class YieldFilter extends ElementFilter {
   private def leafText(i: Int, context: PsiElement): String = {
@@ -28,18 +27,18 @@ class YieldFilter extends ElementFilter {
     if (leaf != null) {
       val parent = leaf.getParent
       if (parent.isInstanceOf[ScExpression] && parent.getParent
-            .isInstanceOf[ScForStatement]) {
+          .isInstanceOf[ScForStatement]) {
         var i = context.getTextRange.getStartOffset - 1
         while (i > 0 && (context.getContainingFile.getText.charAt(i) == ' ' ||
-               context.getContainingFile.getText.charAt(i) == '\n')) i = i - 1
+          context.getContainingFile.getText.charAt(i) == '\n')) i = i - 1
         if (leafText(i, context) == "yield") return false
         i = context.getTextRange.getEndOffset
         while (i < context.getContainingFile.getText.length - 1 && (context.getContainingFile.getText
-                 .charAt(i) == ' ' ||
-               context.getContainingFile.getText.charAt(i) == '\n')) i = i + 1
+            .charAt(i) == ' ' ||
+          context.getContainingFile.getText.charAt(i) == '\n')) i = i + 1
         if (leafText(i, context) == "yield") return false
         for (child <- parent.getParent.getNode.getChildren(null)
-             if child.getElementType == ScalaTokenTypes.kYIELD) return false
+          if child.getElementType == ScalaTokenTypes.kYIELD) return false
         return ScalaCompletionUtil.checkAnyWith(
           parent.getParent,
           "yield true",

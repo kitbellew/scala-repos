@@ -28,8 +28,7 @@ import scala.xml.NodeSeq
 
 /**
   * Allows for the creation of JSON-based JavaScript widgets with very little
-  * code
-  */
+  * code */
 /*
 trait JsonComet {
   self: CometActor =>

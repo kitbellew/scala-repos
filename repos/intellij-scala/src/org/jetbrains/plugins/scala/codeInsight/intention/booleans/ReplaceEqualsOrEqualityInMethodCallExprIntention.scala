@@ -57,8 +57,8 @@ class ReplaceEqualsOrEqualityInMethodCallExprIntention
     setText("Replace '" + oper + "' with '" + replaceOper(oper) + "'")
 
     if (methodCallExpr.getInvokedExpr
-          .asInstanceOf[ScReferenceExpression]
-          .isQualified) return true
+        .asInstanceOf[ScReferenceExpression]
+        .isQualified) return true
 
     false
   }

@@ -503,7 +503,7 @@ class ScReferenceExpressionImpl(node: ASTNode)
         s.subst(ScType.create(field.getType, field.getProject, getResolveScope))
       case Some(ScalaResolveResult(method: PsiMethod, s)) =>
         if (method.getName == "getClass" && method.containingClass != null &&
-            method.containingClass.getQualifiedName == "java.lang.Object") {
+          method.containingClass.getQualifiedName == "java.lang.Object") {
           val jlClass = ScalaPsiManager
             .instance(getProject)
             .getCachedClass(

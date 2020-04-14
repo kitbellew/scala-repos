@@ -155,7 +155,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       *  if not, the AST will be supplemented.
       */
     def parseStartRule =
-      if (source.isSelfContained)() => compilationUnit()
+      if (source.isSelfContained) () => compilationUnit()
       else () => scriptBody()
 
     def newScanner(): Scanner = new SourceFileScanner(source)
@@ -2859,8 +2859,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         if (tp.isEmpty || in.token == EQUALS) {
           accept(EQUALS)
           if (!tp.isEmpty && newmods.isMutable &&
-              (lhs.toList forall (_.isInstanceOf[
-                Ident])) && in.token == USCORE) {
+            (lhs.toList forall (_.isInstanceOf[Ident])) && in.token == USCORE) {
             in.nextToken()
             newmods = newmods | Flags.DEFAULTINIT
             EmptyTree
@@ -2909,27 +2908,27 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       *           | Id {`,' Id} `:' Type `=' `_'
       *  VarDcl ::= Id {`,' Id} `:' Type
       *  }}}
-    def varDefOrDcl(mods: Modifiers): List[Tree] = {
-      var newmods = mods | Flags.MUTABLE
-      val lhs = new ListBuffer[(Int, Name)]
-      do {
-        in.nextToken()
-        lhs += (in.offset, ident())
-      } while (in.token == COMMA)
-      val tp = typedOpt()
-      val rhs = if (tp.isEmpty || in.token == EQUALS) {
-        accept(EQUALS)
-        if (!tp.isEmpty && in.token == USCORE) {
-          in.nextToken()
-          EmptyTree
-        } else {
-          expr()
-        }
-      } else {
-        newmods = newmods | Flags.DEFERRED
-        EmptyTree
-      }
-    }
+      *    def varDefOrDcl(mods: Modifiers): List[Tree] = {
+      *      var newmods = mods | Flags.MUTABLE
+      *      val lhs = new ListBuffer[(Int, Name)]
+      *      do {
+      *        in.nextToken()
+      *        lhs += (in.offset, ident())
+      *      } while (in.token == COMMA)
+      *      val tp = typedOpt()
+      *      val rhs = if (tp.isEmpty || in.token == EQUALS) {
+      *        accept(EQUALS)
+      *        if (!tp.isEmpty && in.token == USCORE) {
+      *          in.nextToken()
+      *          EmptyTree
+      *        } else {
+      *          expr()
+      *        }
+      *      } else {
+      *        newmods = newmods | Flags.DEFERRED
+      *        EmptyTree
+      *      }
+      *    }
       */
 
     /** {{{
@@ -3554,16 +3553,16 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
 
     /** overridable IDE hook for local definitions of blockStatSeq
       *  Here's an idea how to fill in start and end positions.
-    def localDef : List[Tree] = {
-      atEndPos {
-        atStartPos(in.offset) {
-          val annots = annotations(skipNewLines = true)
-          val mods = localModifiers() withAnnotations annots
-          if (!(mods hasFlag ~(Flags.IMPLICIT | Flags.LAZY))) defOrDcl(mods)
-          else List(tmplDef(mods))
-        }
-      } (in.offset)
-    }
+      *    def localDef : List[Tree] = {
+      *      atEndPos {
+      *        atStartPos(in.offset) {
+      *          val annots = annotations(skipNewLines = true)
+      *          val mods = localModifiers() withAnnotations annots
+      *          if (!(mods hasFlag ~(Flags.IMPLICIT | Flags.LAZY))) defOrDcl(mods)
+      *          else List(tmplDef(mods))
+      *        }
+      *      } (in.offset)
+      *    }
       */
 
     def localDef(implicitMod: Int): List[Tree] = {

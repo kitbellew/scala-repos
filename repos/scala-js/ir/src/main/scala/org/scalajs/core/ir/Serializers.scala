@@ -546,7 +546,7 @@ object Serializers {
       if (pos == Position.NoPosition) {
         writeByte(FormatNoPositionValue)
       } else if (lastPosition == Position.NoPosition ||
-                 pos.source != lastPosition.source) {
+        pos.source != lastPosition.source) {
         writeFull()
         lastPosition = pos
       } else {
@@ -661,7 +661,7 @@ object Serializers {
               readIdent(),
               readTrees())(readType())
           if (useHacks065 && result1.tpe != NoType && isConstructorName(
-                result1.method.name))
+              result1.method.name))
             result1.copy()(NoType)
           else
             result1
@@ -787,7 +787,7 @@ object Serializers {
             result1
           }
           if (useHacks065 && result2.resultType != NoType &&
-              isConstructorName(result2.name.name)) {
+            isConstructorName(result2.name.name)) {
             result2.copy(resultType = NoType, body = result2.body)(
               result2.optimizerHints,
               result2.hash)(result2.pos)

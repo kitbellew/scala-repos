@@ -188,7 +188,7 @@ object TestBuild {
   implicit lazy val arbKeys: Arbitrary[Keys] = Arbitrary(keysGen)
   lazy val keysGen: Gen[Keys] =
     for (env <- mkEnv; keyCount <- chooseShrinkable(1, KeysPerEnv);
-         keys <- listOfN(keyCount, scope(env))) yield new Keys(env, keys)
+      keys <- listOfN(keyCount, scope(env))) yield new Keys(env, keys)
 
   def scope(env: Env): Gen[Scope] =
     for {

@@ -131,7 +131,7 @@ class ThreadingSuite extends SparkFunSuite with LocalSparkContext with Logging {
                 running.getAndIncrement()
                 val time = System.currentTimeMillis()
                 while (running.get() != 4 && System
-                         .currentTimeMillis() < time + 1000) {
+                    .currentTimeMillis() < time + 1000) {
                   Thread.sleep(100)
                 }
                 if (running.get() != 4) {

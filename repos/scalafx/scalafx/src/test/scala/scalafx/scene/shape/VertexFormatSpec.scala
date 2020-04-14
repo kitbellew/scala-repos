@@ -37,7 +37,6 @@ import scalafx.Includes._
 import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.scene.shape.VertexFormat]].
   */
 @RunWith(classOf[JUnitRunner])

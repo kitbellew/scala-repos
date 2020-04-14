@@ -286,7 +286,7 @@ class MergeToComprehensions extends Phase {
             Some((l2, lmap))
           } else {
             val mappings =
-              lmap.map { case (key, ss)   => (key, ElementSymbol(1) :: ss) } ++
+              lmap.map { case (key, ss) => (key, ElementSymbol(1) :: ss) } ++
                 rmap.map { case (key, ss) => (key, ElementSymbol(2) :: ss) }
             val mappingsM = mappings.iterator.toMap
             logger.debug(

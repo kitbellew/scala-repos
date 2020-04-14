@@ -20,7 +20,7 @@ import slick.util.ConstArray
   * }}}
   * All result expressions have to be of compatible type (modulo nullability).
   * If at least one of them is an `Option` type or the `Else` branch is
-  * missing, the result is also an `Option`.  */
+  * missing, the result is also an `Option`. */
 object Case {
 
   def If[C <: Rep[_]: CanBeQueryCondition](cond: C) =

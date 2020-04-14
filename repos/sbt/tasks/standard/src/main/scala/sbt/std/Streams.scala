@@ -68,14 +68,14 @@ sealed trait TaskStreams[Key] {
   /** Provides an output stream for writing to the stream with the given ID. */
   def binary(sid: String = default): BufferedOutputStream
 
-  /** A cache directory that is unique to the context of this streams instance.*/
+  /** A cache directory that is unique to the context of this streams instance. */
   def cacheDirectory: File
 
   // default logger
   /** Obtains the default logger. */
   final lazy val log: Logger = log(default)
 
-  /** Creates a Logger that logs to stream with ID `sid`.*/
+  /** Creates a Logger that logs to stream with ID `sid`. */
   def log(sid: String): Logger
 
   private[this] def getID(s: Option[String]) = s getOrElse default

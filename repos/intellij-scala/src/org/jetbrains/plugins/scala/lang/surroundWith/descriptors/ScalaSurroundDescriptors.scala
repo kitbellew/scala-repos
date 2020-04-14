@@ -6,7 +6,6 @@ package descriptors
 /**
   * User: Dmitry.Krasilschikov
   * Date: 09.01.2007
-  *
   */
 import com.intellij.lang.surroundWith.SurroundDescriptor
 

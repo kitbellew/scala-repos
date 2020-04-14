@@ -149,7 +149,7 @@ object ScalaWrapManager {
     val parentPsi = parentNode.getPsi
     val childPsi = child.getPsi
     if (childPsi.isInstanceOf[ScExtendsBlock] &&
-        childPsi.getFirstChild != null && childPsi.getFirstChild.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
+      childPsi.getFirstChild != null && childPsi.getFirstChild.getNode.getElementType == ScalaTokenTypes.kEXTENDS)
       return Wrap.createWrap(settings.EXTENDS_KEYWORD_WRAP, true)
 
     def arrageBinary(
@@ -211,8 +211,8 @@ object ScalaWrapManager {
         if (childPsi.isInstanceOf[ScParameter]) return suggestedWrap
         else return null
       case params: ScParameters =>
-        if (childPsi.isInstanceOf[
-              ScParameterClause] && params.clauses.head != childPsi)
+        if (childPsi
+            .isInstanceOf[ScParameterClause] && params.clauses.head != childPsi)
           return suggestedWrap
         else return null
       case annot: ScAnnotations =>

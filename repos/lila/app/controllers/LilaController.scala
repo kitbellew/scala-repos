@@ -353,7 +353,7 @@ private[controllers] trait LilaController
           import makeTimeout.short
           (Env.hub.actor.relation ? GetOnlineFriends(me.id) map {
             case OnlineFriends(users) => users
-          } recover { case _          => Nil }) zip
+          } recover { case _ => Nil }) zip
             Env.team.api.nbRequests(me.id) zip
             Env.message.api.unreadIds(me.id) zip
             Env.challenge.api.countInFor(me.id)

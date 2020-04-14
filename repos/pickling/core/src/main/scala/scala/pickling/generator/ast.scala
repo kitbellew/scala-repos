@@ -13,8 +13,6 @@ package generator
 
 /**
   * An AST representing simple pickling behavior.  We generate this before we generate the implementing code.
-  *
-  *
   */
 private[pickling] sealed trait IrAst {
 

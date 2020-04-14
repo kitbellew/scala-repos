@@ -718,7 +718,7 @@ trait DenseVectorOps extends DenseVector_GenericOps { this: DenseVector.type =>
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
 
   implicit val canAddIntoF
@@ -848,7 +848,7 @@ trait DenseVector_SpecialOps extends DenseVectorOps { this: DenseVector.type =>
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
 
   @expand
@@ -949,7 +949,7 @@ trait DenseVector_OrderingOps extends DenseVectorOps { this: DenseVector.type =>
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait DenseVector_GenericOps { this: DenseVector.type =>
 
   def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit

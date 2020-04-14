@@ -1626,7 +1626,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           val newReceiver = transformExpr(receiver)
           val newArgs = args map transformExpr
           if (isMaybeHijackedClass(receiver.tpe) &&
-              !Definitions.isReflProxyName(method.name)) {
+            !Definitions.isReflProxyName(method.name)) {
             val helperName = hijackedClassMethodToHelperName(method.name)
             genCallHelper(helperName, newReceiver :: newArgs: _*)
           } else {

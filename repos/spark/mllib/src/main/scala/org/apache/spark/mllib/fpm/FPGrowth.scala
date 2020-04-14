@@ -174,7 +174,6 @@ object FPGrowthModel extends Loader[FPGrowthModel[_]] {
   *
   * @see [[http://en.wikipedia.org/wiki/Association_rule_learning Association rule learning
   *       (Wikipedia)]]
-  *
   */
 @Since("1.3.0")
 class FPGrowth private (
@@ -186,14 +185,12 @@ class FPGrowth private (
   /**
     * Constructs a default instance with default parameters {minSupport: `0.3`, numPartitions: same
     * as the input data}.
-    *
     */
   @Since("1.3.0")
   def this() = this(0.3, -1)
 
   /**
     * Sets the minimal support level (default: `0.3`).
-    *
     */
   @Since("1.3.0")
   def setMinSupport(minSupport: Double): this.type = {
@@ -203,7 +200,6 @@ class FPGrowth private (
 
   /**
     * Sets the number of partitions used by parallel FP-growth (default: same as input data).
-    *
     */
   @Since("1.3.0")
   def setNumPartitions(numPartitions: Int): this.type = {
@@ -215,7 +211,6 @@ class FPGrowth private (
     * Computes an FP-Growth model that contains frequent itemsets.
     * @param data input data set, each element contains a transaction
     * @return an [[FPGrowthModel]]
-    *
     */
   @Since("1.3.0")
   def run[Item: ClassTag](data: RDD[Array[Item]]): FPGrowthModel[Item] = {
@@ -335,7 +330,6 @@ object FPGrowth {
     * @param items items in this itemset. Java users should call [[FreqItemset#javaItems]] instead.
     * @param freq frequency
     * @tparam Item item type
-    *
     */
   @Since("1.3.0")
   class FreqItemset[Item] @Since("1.3.0") (
@@ -345,7 +339,6 @@ object FPGrowth {
 
     /**
       * Returns items in a Java List.
-      *
       */
     @Since("1.3.0")
     def javaItems: java.util.List[Item] = {

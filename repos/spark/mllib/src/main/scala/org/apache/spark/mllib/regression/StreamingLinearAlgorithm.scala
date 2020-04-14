@@ -52,8 +52,6 @@ import org.apache.spark.streaming.dstream.DStream
   * will generate predictions for each one all using the current model.
   * It is also ok to call trainOn on different streams; this will update
   * the model using each of the different sources, in sequence.
-  *
-  *
   */
 @Since("1.1.0")
 @DeveloperApi
@@ -69,7 +67,6 @@ abstract class StreamingLinearAlgorithm[
 
   /**
     * Return the latest model.
-    *
     */
   @Since("1.1.0")
   def latestModel(): M = {
@@ -115,7 +112,6 @@ abstract class StreamingLinearAlgorithm[
     *
     * @param data DStream containing feature vectors
     * @return DStream containing predictions
-    *
     */
   @Since("1.1.0")
   def predictOn(data: DStream[Vector]): DStream[Double] = {
@@ -128,7 +124,6 @@ abstract class StreamingLinearAlgorithm[
 
   /**
     * Java-friendly version of `predictOn`.
-    *
     */
   @Since("1.3.0")
   def predictOn(data: JavaDStream[Vector]): JavaDStream[java.lang.Double] = {
@@ -141,7 +136,6 @@ abstract class StreamingLinearAlgorithm[
     * @param data DStream containing feature vectors
     * @tparam K key type
     * @return DStream containing the input keys and the predictions as values
-    *
     */
   @Since("1.1.0")
   def predictOnValues[K: ClassTag](
@@ -155,7 +149,6 @@ abstract class StreamingLinearAlgorithm[
 
   /**
     * Java-friendly version of `predictOnValues`.
-    *
     */
   @Since("1.3.0")
   def predictOnValues[K](data: JavaPairDStream[K, Vector])

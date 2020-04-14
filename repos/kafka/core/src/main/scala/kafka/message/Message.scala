@@ -348,7 +348,7 @@ class Message(
       Message.NoTimestamp
     // Case 2
     else if (wrapperMessageTimestampType.exists(
-               _ == TimestampType.LOG_APPEND_TIME) && wrapperMessageTimestamp.isDefined)
+        _ == TimestampType.LOG_APPEND_TIME) && wrapperMessageTimestamp.isDefined)
       wrapperMessageTimestamp.get
     else // case 1, 3
       buffer.getLong(Message.TimestampOffset)

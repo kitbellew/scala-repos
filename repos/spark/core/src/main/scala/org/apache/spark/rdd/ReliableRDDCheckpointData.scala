@@ -65,8 +65,8 @@ private[spark] class ReliableRDDCheckpointData[T: ClassTag](
 
     // Optionally clean our checkpoint files if the reference is out of scope
     if (rdd.conf.getBoolean(
-          "spark.cleaner.referenceTracking.cleanCheckpoints",
-          false)) {
+        "spark.cleaner.referenceTracking.cleanCheckpoints",
+        false)) {
       rdd.context.cleaner.foreach { cleaner =>
         cleaner.registerRDDCheckpointDataForCleanup(newRDD, rdd.id)
       }

@@ -104,7 +104,7 @@ object SbtProjectDataService {
 
     private def updateIncrementalityType(project: Project): Unit = {
       if (getModules.exists(it =>
-            ModuleUtil.getModuleType(it) == SharedSourcesModuleType.instance))
+          ModuleUtil.getModuleType(it) == SharedSourcesModuleType.instance))
         ScalaCompilerConfiguration.instanceIn(project).incrementalityType =
           IncrementalityType.SBT
     }

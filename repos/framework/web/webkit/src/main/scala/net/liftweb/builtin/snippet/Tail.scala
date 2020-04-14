@@ -62,7 +62,7 @@ object Head extends DispatchSnippet {
 
     <head>{
       if ((S.attr("withResourceId") or S
-            .attr("withresourceid")).filter(Helpers.toBoolean).isDefined) {
+          .attr("withresourceid")).filter(Helpers.toBoolean).isDefined) {
         WithResourceId.render(xhtml)
       } else {
         xhtml

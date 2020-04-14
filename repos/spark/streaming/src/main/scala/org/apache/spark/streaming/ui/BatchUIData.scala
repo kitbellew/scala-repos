@@ -56,7 +56,7 @@ private[ui] case class BatchUIData(
     */
   def processingDelay: Option[Long] = {
     for (start <- processingStartTime;
-         end <- processingEndTime)
+      end <- processingEndTime)
       yield end - start
   }
 

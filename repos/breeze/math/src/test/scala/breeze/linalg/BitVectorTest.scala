@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
   * TODO
   *
   * @author dlwh
- **/
+  */
 class BitVectorTest extends FunSuite {
   test("Ones") {
     val as = BitVector.ones(5)

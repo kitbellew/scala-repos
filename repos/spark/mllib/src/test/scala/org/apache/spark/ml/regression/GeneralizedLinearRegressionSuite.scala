@@ -386,9 +386,9 @@ class GeneralizedLinearRegressionSuite
 
     var idx = 0
     for ((link, dataset) <- Seq(
-           ("identity", datasetGaussianIdentity),
-           ("log", datasetGaussianLog),
-           ("inverse", datasetGaussianInverse))) {
+        ("identity", datasetGaussianIdentity),
+        ("log", datasetGaussianLog),
+        ("inverse", datasetGaussianInverse))) {
       for (fitIntercept <- Seq(false, true)) {
         val trainer = new GeneralizedLinearRegression()
           .setFamily("gaussian")
@@ -458,7 +458,7 @@ class GeneralizedLinearRegressionSuite
 
     var idx = 0
     for (fitIntercept <- Seq(false, true);
-         regParam <- Seq(0.0, 0.1, 1.0)) {
+      regParam <- Seq(0.0, 0.1, 1.0)) {
       val trainer = new GeneralizedLinearRegression()
         .setFamily("gaussian")
         .setFitIntercept(fitIntercept)
@@ -521,9 +521,9 @@ class GeneralizedLinearRegressionSuite
 
     var idx = 0
     for ((link, dataset) <- Seq(
-           ("logit", datasetBinomial),
-           ("probit", datasetBinomial),
-           ("cloglog", datasetBinomial))) {
+        ("logit", datasetBinomial),
+        ("probit", datasetBinomial),
+        ("cloglog", datasetBinomial))) {
       for (fitIntercept <- Seq(false, true)) {
         val trainer = new GeneralizedLinearRegression()
           .setFamily("binomial")
@@ -607,9 +607,9 @@ class GeneralizedLinearRegressionSuite
 
     var idx = 0
     for ((link, dataset) <- Seq(
-           ("log", datasetPoissonLog),
-           ("identity", datasetPoissonIdentity),
-           ("sqrt", datasetPoissonSqrt))) {
+        ("log", datasetPoissonLog),
+        ("identity", datasetPoissonIdentity),
+        ("sqrt", datasetPoissonSqrt))) {
       for (fitIntercept <- Seq(false, true)) {
         val trainer = new GeneralizedLinearRegression()
           .setFamily("poisson")
@@ -691,9 +691,9 @@ class GeneralizedLinearRegressionSuite
 
     var idx = 0
     for ((link, dataset) <- Seq(
-           ("inverse", datasetGammaInverse),
-           ("identity", datasetGammaIdentity),
-           ("log", datasetGammaLog))) {
+        ("inverse", datasetGammaInverse),
+        ("identity", datasetGammaIdentity),
+        ("log", datasetGammaLog))) {
       for (fitIntercept <- Seq(false, true)) {
         val trainer = new GeneralizedLinearRegression()
           .setFamily("gamma")

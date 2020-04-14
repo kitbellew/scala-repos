@@ -100,6 +100,6 @@ object FontWeight
 sealed case class FontWeight(override val delegate: jfxst.FontWeight)
     extends SFXEnumDelegate[jfxst.FontWeight] {
 
-  /** Return the visual weight (degree of blackness or thickness) specified by this FontWeight.  */
+  /** Return the visual weight (degree of blackness or thickness) specified by this FontWeight. */
   def weight = delegate.getWeight
 }

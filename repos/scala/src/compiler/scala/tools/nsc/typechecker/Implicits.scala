@@ -1648,9 +1648,9 @@ trait Implicits {
                   |to proceed put scala-reflect.jar on your compilation classpath and recompile.""")
           }
           if (resolveClassTag(
-                pos,
-                tp,
-                allowMaterialization = true) == EmptyTree) {
+              pos,
+              tp,
+              allowMaterialization = true) == EmptyTree) {
             throw new TypeError(
               pos,
               sm"""to create a manifest here, it is necessary to interoperate with the type tag `$tagInScope` in scope.
@@ -1787,7 +1787,7 @@ trait Implicits {
                 true
               }
             if (prohibit(AnyRefClass) || (settings.isScala211 && prohibit(
-                  AnyValClass)))
+                AnyValClass)))
               result = SearchFailure
           case _ => false
         }

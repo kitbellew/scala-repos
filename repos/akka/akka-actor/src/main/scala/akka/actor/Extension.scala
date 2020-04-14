@@ -86,7 +86,6 @@ trait ExtensionId[T <: Extension] {
     * {{{
     * override def get(system: ActorSystem): TheExtension = super.get(system)
     * }}}
-    *
     */
   def get(system: ActorSystem): T = apply(system)
 
@@ -146,7 +145,6 @@ trait ExtensionIdProvider {
   * Note: Don't use this class if the extension is written in Scala and consumed in
   * Eclipse Java projects. JDT has problems resolving correct type for the
   * `get` method.
-  *
   */
 abstract class ExtensionKey[T <: Extension](implicit m: ClassTag[T])
     extends ExtensionId[T]

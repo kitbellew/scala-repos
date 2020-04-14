@@ -593,9 +593,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
 
       def addBackquotes(s: String) =
         if (decoded && (decName.exists(ch =>
-              brackets.contains(ch) || isWhitespace(ch) || isDot(ch)) ||
-            (name.isOperatorName && decName.exists(isOperatorPart) && decName
-              .exists(isScalaLetter) && !decName.contains(bslash))))
+            brackets.contains(ch) || isWhitespace(ch) || isDot(ch)) ||
+          (name.isOperatorName && decName.exists(isOperatorPart) && decName
+            .exists(isScalaLetter) && !decName.contains(bslash))))
           s"`$s`"
         else s
 
@@ -870,7 +870,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
             vparamss match {
               case Nil | List(Nil)
                   if (!mods.isCase && !ctorMods.hasFlag(AccessFlags)) =>
-              case _                                                  => vparamss foreach printConstrParams
+              case _ => vparamss foreach printConstrParams
             }
             parents
           }
@@ -1030,7 +1030,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
            */
           def insertBraces(body: => Unit): Unit =
             if (parentsStack.nonEmpty && parentsStack.tail.exists(
-                  _.isInstanceOf[Match])) {
+                _.isInstanceOf[Match])) {
               print("(")
               body
               print(")")
@@ -1336,7 +1336,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
     def print(args: Any*): Unit = {
       // don't print type footnotes if the argument is a mere type
       if (depth == 0 && args.length == 1 && args(0) != null && args(0)
-            .isInstanceOf[Type])
+          .isInstanceOf[Type])
         printTypesInFootnotes = false
 
       depth += 1

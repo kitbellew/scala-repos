@@ -23,7 +23,6 @@ import org.scalatest.FunSuite
 import breeze.linalg._
 
 /**
-  *
   * @author stucchio
   */
 @RunWith(classOf[JUnitRunner])

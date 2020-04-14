@@ -90,27 +90,27 @@ abstract class RemoteServerConnectorBase(
 
   /**
     *     Seq(
-      fileToPath(sbtData.interfaceJar),
-      fileToPath(sbtData.sourceJar),
-      fileToPath(sbtData.interfacesHome),
-      sbtData.javaClassVersion,
-      optionToString(compilerJarPaths),
-      optionToString(javaHomePath),
-      filesToPaths(compilationData.sources),
-      filesToPaths(compilationData.classpath),
-      fileToPath(compilationData.output),
-      sequenceToString(compilationData.scalaOptions),
-      sequenceToString(compilationData.javaOptions),
-      compilationData.order.toString,
-      fileToPath(compilationData.cacheFile),
-      filesToPaths(outputs),
-      filesToPaths(caches),
-      incrementalType.name,
-      filesToPaths(sourceRoots),
-      filesToPaths(outputDirs),
-      sequenceToString(worksheetFiles),
-      nameHashing.name
-    )
+    *      fileToPath(sbtData.interfaceJar),
+    *      fileToPath(sbtData.sourceJar),
+    *      fileToPath(sbtData.interfacesHome),
+    *      sbtData.javaClassVersion,
+    *      optionToString(compilerJarPaths),
+    *      optionToString(javaHomePath),
+    *      filesToPaths(compilationData.sources),
+    *      filesToPaths(compilationData.classpath),
+    *      fileToPath(compilationData.output),
+    *      sequenceToString(compilationData.scalaOptions),
+    *      sequenceToString(compilationData.javaOptions),
+    *      compilationData.order.toString,
+    *      fileToPath(compilationData.cacheFile),
+    *      filesToPaths(outputs),
+    *      filesToPaths(caches),
+    *      incrementalType.name,
+    *      filesToPaths(sourceRoots),
+    *      filesToPaths(outputDirs),
+    *      sequenceToString(worksheetFiles),
+    *      nameHashing.name
+    *    )
     */
   def arguments =
     Seq[String](

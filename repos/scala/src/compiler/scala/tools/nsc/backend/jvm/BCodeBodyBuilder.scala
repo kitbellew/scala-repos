@@ -133,7 +133,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case rarg :: Nil =>
           resKind = tpeTK(larg).maxType(tpeTK(rarg))
           if (scalaPrimitives.isShiftOp(code) || scalaPrimitives.isBitwiseOp(
-                code)) {
+              code)) {
             assert(
               resKind.isIntegralType || (resKind == BOOL),
               s"$resKind incompatible with arithmetic modulo operation.")
@@ -1207,7 +1207,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       val jowner = internalName(receiver)
 
       if (style.isSuper && (isTraitCallToObjectMethod || receiver.isTraitOrInterface) && !cnode.interfaces
-            .contains(jowner))
+          .contains(jowner))
         cnode.interfaces.add(jowner)
 
       val jname = method.javaSimpleName.toString
@@ -1217,9 +1217,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       def initModule() {
         // we initialize the MODULE$ field immediately after the super ctor
         if (!isModuleInitialized &&
-            jMethodName == INSTANCE_CONSTRUCTOR_NAME &&
-            jname == INSTANCE_CONSTRUCTOR_NAME &&
-            isStaticModuleClass(siteSymbol)) {
+          jMethodName == INSTANCE_CONSTRUCTOR_NAME &&
+          jname == INSTANCE_CONSTRUCTOR_NAME &&
+          isStaticModuleClass(siteSymbol)) {
           isModuleInitialized = true
           mnode.visitVarInsn(asm.Opcodes.ALOAD, 0)
           mnode.visitFieldInsn(
@@ -1263,8 +1263,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       tree match {
         case Apply(fun @ Select(larg, method), rarg) =>
           if (isPrimitive(fun.symbol) &&
-              scalaPrimitives.getPrimitive(
-                fun.symbol) == scalaPrimitives.CONCAT)
+            scalaPrimitives.getPrimitive(fun.symbol) == scalaPrimitives.CONCAT)
             liftStringConcat(larg) ::: rarg
           else
             tree :: Nil
@@ -1353,7 +1352,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
 
     /** Some useful equality helpers. */
     def isNull(t: Tree) =
-      PartialFunction.cond(t) { case Literal(Constant(null))           => true }
+      PartialFunction.cond(t) { case Literal(Constant(null)) => true }
     def isLiteral(t: Tree) = PartialFunction.cond(t) { case Literal(_) => true }
     def isNonNullExpr(t: Tree) =
       isLiteral(t) || ((t.symbol ne null) && t.symbol.isModule)
@@ -1424,7 +1423,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             case ZOR  => genZandOrZor(and = false)
             case code =>
               if (scalaPrimitives.isUniversalEqualityOp(code) && tpeTK(
-                    lhs).isClass) {
+                  lhs).isClass) {
                 // rewrite `==` to null tests and `equals`. not needed for arrays (`equals` is reference equality).
                 if (code == EQ)
                   genEqEqPrimitive(

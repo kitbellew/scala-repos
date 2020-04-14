@@ -196,10 +196,12 @@ abstract class BasicDirectives extends BasicDirectivesBase {
 
       /** Makes sure both RouteResult and Future[RouteResult] are acceptable result types. */
       def adaptResult(method: Method): (RequestContext, AnyRef) ⇒ RouteResult =
-        if (returnsFuture(method))(ctx, v) ⇒
-          ctx.completeWith(v.asInstanceOf[Future[RouteResult]].toJava)
-        else if (returnsCompletionStage(method))(ctx, v) =>
-          ctx.completeWith(v.asInstanceOf[CompletionStage[RouteResult]])
+        if (returnsFuture(method))
+          (ctx, v) ⇒
+            ctx.completeWith(v.asInstanceOf[Future[RouteResult]].toJava)
+        else if (returnsCompletionStage(method))
+          (ctx, v) =>
+            ctx.completeWith(v.asInstanceOf[CompletionStage[RouteResult]])
         else (_, v) ⇒ v.asInstanceOf[RouteResult]
 
       val IdentityAdaptor: (RequestContext, Seq[Any]) ⇒ Seq[Any] = (_, ps) ⇒ ps
@@ -209,11 +211,13 @@ abstract class BasicDirectives extends BasicDirectivesBase {
           : (RequestContext, Seq[Any]) ⇒ RouteResult = {
         val resultAdaptor = adaptResult(method)
         if (!method.isAccessible) method.setAccessible(true)
-        if (adaptParams == IdentityAdaptor)(ctx, params) ⇒
-          resultAdaptor(
-            ctx,
-            method
-              .invoke(instance, params.toArray.asInstanceOf[Array[AnyRef]]: _*))
+        if (adaptParams == IdentityAdaptor)
+          (ctx, params) ⇒
+            resultAdaptor(
+              ctx,
+              method.invoke(
+                instance,
+                params.toArray.asInstanceOf[Array[AnyRef]]: _*))
         else
           (ctx, params) ⇒
             resultAdaptor(

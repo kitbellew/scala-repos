@@ -37,9 +37,9 @@ class whereTest extends FunSuite {
       where(
         DenseVector(1, 2, 0, 4, 5, 0) :!= 0,
         DenseVector(1, 2, 3, 4, 5, 6),
-        DenseVector(-1, -2, -3, -4, -5,
-          -6))(where.where3ArgFromTraverseKeyValuePairs) === DenseVector(1, 2,
-        -3, 4, 5, -6))
+        DenseVector(-1, -2, -3, -4, -5, -6))(
+        where.where3ArgFromTraverseKeyValuePairs) === DenseVector(1, 2, -3, 4,
+        5, -6))
   }
 
 }

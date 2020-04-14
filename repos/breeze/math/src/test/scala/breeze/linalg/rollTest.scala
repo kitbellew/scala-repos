@@ -4,8 +4,6 @@ import org.scalatest._
 import spire.implicits._
 
 /**
-  *
-  *
   * @author stucchio
   */
 class rollTest extends FunSuite {

@@ -52,8 +52,8 @@ object Test extends App {
   new Val(101, "Parent$mcI$sp")
 
   /**
-  * NOTE: The the same check, only modified to affect constructors, won't
-  * work since the class X definition will always be lifted to become a
-  * member of the class, making it impossible to force its duplication.
-  */
+    * NOTE: The the same check, only modified to affect constructors, won't
+    * work since the class X definition will always be lifted to become a
+    * member of the class, making it impossible to force its duplication.
+    */
 }

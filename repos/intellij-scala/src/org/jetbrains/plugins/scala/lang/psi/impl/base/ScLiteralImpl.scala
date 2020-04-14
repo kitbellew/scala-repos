@@ -34,8 +34,7 @@ import scala.StringContext.InvalidEscapeException
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 
 class ScLiteralImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
@@ -131,8 +130,8 @@ class ScLiteralImpl(node: ASTNode)
         var value = 0L
         for (d <- number.map(_.asDigit)) {
           if (value < 0 ||
-              limit / (base / divider) < value / divider ||
-              limit - (d / divider) < value * (base / divider)) {
+            limit / (base / divider) < value / divider ||
+            limit - (d / divider) < value * (base / divider)) {
             return null
           }
           value = value * base + d
@@ -282,7 +281,7 @@ class ScLiteralImpl(node: ASTNode)
     if (!isString) return None
 
     if (System.currentTimeMillis() > expirationTime || myAnnotationOwner.exists(
-          !_.isValid)) {
+        !_.isValid)) {
       myAnnotationOwner = annotationOwnerLookUp(this)
       expirationTime = System
         .currentTimeMillis() + (2 + expTimeLengthGenerator.nextInt(8)) * 1000

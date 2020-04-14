@@ -23,7 +23,6 @@ import akka.stream.javadsl.Source
   * Configuration settings can be defined in the configuration section with the
   * absolute path corresponding to the identifier, which is `"akka.persistence.query.journal.leveldb"`
   * for the default [[LeveldbReadJournal#Identifier]]. See `reference.conf`.
-  *
   */
 class LeveldbReadJournal(
     scaladslReadJournal: akka.persistence.query.journal.leveldb.scaladsl.LeveldbReadJournal)

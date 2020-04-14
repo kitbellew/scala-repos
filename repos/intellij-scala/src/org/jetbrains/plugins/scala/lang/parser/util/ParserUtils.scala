@@ -47,7 +47,7 @@ object ParserUtils extends ParserUtilsBase {
     if (builder.getTokenType == ScalaTokenTypes.tUNDER) {
       builder.advanceLexer()
       if (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER &&
-          builder.getTokenText == "*") {
+        builder.getTokenText == "*") {
         builder.advanceLexer()
         marker.done(ScalaElementTypes.SEQ_WILDCARD)
         true

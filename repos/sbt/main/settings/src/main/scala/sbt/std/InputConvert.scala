@@ -22,7 +22,7 @@ object InputInitConvert extends Convert {
       Converted.NotApplicable
 }
 
-/** Converts an input `Tree` of type `Parser[T]` or `State => Parser[T]` into a `Tree` of type `State => Parser[T]`.*/
+/** Converts an input `Tree` of type `Parser[T]` or `State => Parser[T]` into a `Tree` of type `State => Parser[T]`. */
 object ParserConvert extends Convert {
   def apply[T: c.WeakTypeTag](
       c: Context)(nme: String, in: c.Tree): Converted[c.type] = {
@@ -47,7 +47,7 @@ object TaskConvert extends Convert {
       Converted.NotApplicable
 }
 
-/** Converts an input `Tree` of type `Initialize[T]`, `Initialize[Task[T]]`, or `Task[T]` into a `Tree` of type `Initialize[Task[T]]`.*/
+/** Converts an input `Tree` of type `Initialize[T]`, `Initialize[Task[T]]`, or `Task[T]` into a `Tree` of type `Initialize[Task[T]]`. */
 object FullConvert extends Convert {
   import InputWrapper._
   def apply[T: c.WeakTypeTag](

@@ -149,8 +149,8 @@ abstract class LambdaLift extends InfoTransform {
         debuglog(
           "%s != %s".format(enclosure, sym.owner.logicallyEnclosingMember))
         if (enclosure.isPackageClass || !markFree(
-              sym,
-              enclosure.skipConstructor.owner.logicallyEnclosingMember)) false
+            sym,
+            enclosure.skipConstructor.owner.logicallyEnclosingMember)) false
         else {
           val ss = symSet(free, enclosure)
           if (!ss(sym)) {
@@ -223,7 +223,7 @@ abstract class LambdaLift extends InfoTransform {
       do {
         changedFreeVars = false
         for ((caller, callees) <- called; callee <- callees;
-             fvs <- free get callee; fv <- fvs)
+          fvs <- free get callee; fv <- fvs)
           markFree(fv, caller)
       } while (changedFreeVars)
 

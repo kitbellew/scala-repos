@@ -380,5 +380,5 @@ object Assert {
   trait ThrowingRunnable {
     def run(): Unit
   }
- */
+   */
 }

@@ -5,7 +5,6 @@ package distributions
 import optimize.DiffFunction
 
 /**
-  *
   * @author dlwh
   */
 

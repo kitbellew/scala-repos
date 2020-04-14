@@ -92,7 +92,7 @@ class RenameScalaVariableProcessor
     addBeanMethods(element, newName)
 
     for (elem <-
-           ScalaOverridingMemberSearcher.search(namedElement, deep = true)) {
+        ScalaOverridingMemberSearcher.search(namedElement, deep = true)) {
       val overriderName = elem.name
       val baseName = namedElement.name
       val newOverriderName = RefactoringUtil.suggestNewOverriderName(

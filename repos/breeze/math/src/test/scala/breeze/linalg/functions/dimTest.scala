@@ -7,8 +7,6 @@ import org.scalatest.FunSuite
   * breeze
   * 7/19/14
   * @author Gabriel Schubiner <gabeos@cs.washington.edu>
-  *
-  *
   */
 class dimTest extends FunSuite {
 

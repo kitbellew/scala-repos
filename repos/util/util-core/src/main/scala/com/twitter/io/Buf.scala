@@ -8,8 +8,7 @@ import java.nio.charset.Charset
   * sliced and concatenated, and thus be used to implement
   * bytestreams.
   *
-  * Note: There is a Java-friendly API for this trait: [[com.twitter.io.AbstractBuf]].
-  */
+  * Note: There is a Java-friendly API for this trait: [[com.twitter.io.AbstractBuf]]. */
 trait Buf { outer =>
 
   /**

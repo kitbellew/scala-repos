@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Group Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class GroupSpec

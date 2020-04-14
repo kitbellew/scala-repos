@@ -37,7 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * BoundingBox Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BoundingBoxSpec

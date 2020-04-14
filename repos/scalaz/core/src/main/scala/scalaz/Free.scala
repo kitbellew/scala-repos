@@ -111,7 +111,7 @@ sealed abstract class Free[S[_], A] {
       S: Functor[S]): B =
     resume.fold(s, r)
 
-  /** Evaluates a single layer of the free monad **/
+  /** Evaluates a single layer of the free monad * */
   @tailrec final def resume(implicit S: Functor[S]): (S[Free[S, A]] \/ A) =
     this match {
       case Return(a)  => \/-(a)

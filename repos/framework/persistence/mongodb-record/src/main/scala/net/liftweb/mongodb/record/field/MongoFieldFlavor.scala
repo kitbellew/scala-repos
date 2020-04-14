@@ -27,8 +27,7 @@ import net.liftweb.json.JsonAST._
 import com.mongodb.DBObject
 
 /**
-  * Describes common aspects related to Mongo fields
-  */
+  * Describes common aspects related to Mongo fields */
 trait MongoFieldFlavor[MyType] {
 
   /*

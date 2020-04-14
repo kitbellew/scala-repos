@@ -49,7 +49,7 @@ final case class ForkOptions(
   def scalaJars: Iterable[File] = bootJars
 }
 
-/** Configures where the standard output and error streams from a forked process go.*/
+/** Configures where the standard output and error streams from a forked process go. */
 sealed abstract class OutputStrategy
 
 /**

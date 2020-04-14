@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Pane Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PaneSpec

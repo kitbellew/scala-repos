@@ -38,8 +38,6 @@ import scalafx.Includes._
 
 /**
   * IntegerProperty Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class IntegerPropertySpec extends FlatSpec with BeforeAndAfterEach {

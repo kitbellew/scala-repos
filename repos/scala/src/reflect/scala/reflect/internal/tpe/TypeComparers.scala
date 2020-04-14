@@ -476,7 +476,7 @@ trait TypeComparers {
       ((lhs ne tp1) || (rhs ne tp2)) && isSubType(lhs, rhs, depth)
 
     if (isSingleType(tp1) && isSingleType(tp2) || isConstantType(
-          tp1) && isConstantType(tp2))
+        tp1) && isConstantType(tp2))
       return (tp1 =:= tp2) || isThisAndSuperSubtype(tp1, tp2) || retry(
         tp1.underlying,
         tp2)

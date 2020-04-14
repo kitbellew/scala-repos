@@ -187,7 +187,7 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
       }
 
       if (options.contains(File) || options.contains(Offset) || options
-            .contains(Line)) {
+          .contains(Line)) {
         val actual =
           target.getContainingFile.getVirtualFile.getNameWithoutExtension
         val expected = if (!options.contains(File) || options(File) == "this") {

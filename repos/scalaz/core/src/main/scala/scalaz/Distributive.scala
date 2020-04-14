@@ -8,7 +8,7 @@ package scalaz
 trait Distributive[F[_]] extends Functor[F] { self =>
   def distributeImpl[G[_]: Functor, A, B](fa: G[A])(f: A => F[B]): F[G[B]]
 
-  /**The composition of Distributives `F` and `G`, `[x]F[G[x]]`, is a Distributive */
+  /** The composition of Distributives `F` and `G`, `[x]F[G[x]]`, is a Distributive */
   def compose[G[_]](implicit
       G0: Distributive[G]): Distributive[λ[α => F[G[α]]]] =
     new CompositionDistributive[F, G] {
@@ -16,7 +16,7 @@ trait Distributive[F[_]] extends Functor[F] { self =>
       implicit def G = G0
     }
 
-  /**The product of Distributives `F` and `G`, `[x](F[x], G[x]])`, is a Distributive */
+  /** The product of Distributives `F` and `G`, `[x](F[x], G[x]])`, is a Distributive */
   def product[G[_]](implicit
       G0: Distributive[G]): Distributive[λ[α => (F[α], G[α])]] =
     new ProductDistributive[F, G] {

@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * CategoryAxis Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ChartSpec

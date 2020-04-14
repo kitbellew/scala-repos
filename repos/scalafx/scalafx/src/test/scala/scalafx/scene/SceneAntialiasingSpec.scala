@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Scene Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SceneAntialiasingSpec

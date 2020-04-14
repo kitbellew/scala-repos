@@ -75,7 +75,6 @@ object Combinators {
   }
 
   /**
-    *
     */
   case class NoCut[T](p: Parser[T]) extends Parser[T] {
     def parseRec(cfg: ParseCtx, index: Int) = {
@@ -294,7 +293,6 @@ object Combinators {
     /**
       * The types here are all lies. It's ok, just trust the
       * code to do the right thing!
-      *
       *
       * A ~ B ~ C ~ D
       * ((A ~ B) ~ C) ~ D

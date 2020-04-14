@@ -8,7 +8,6 @@ import scala.concurrent.SyncVar
 import scalaz.\/._
 
 /**
-  *
   * User: pach
   * Date: 7/9/13
   * Time: 6:53 PM

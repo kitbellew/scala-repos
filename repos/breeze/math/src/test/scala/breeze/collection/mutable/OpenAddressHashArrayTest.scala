@@ -22,7 +22,6 @@ import org.junit.runner.RunWith
 import org.scalacheck.{Arbitrary, Prop}
 
 /**
-  *
   * @author dlwh
   */
 

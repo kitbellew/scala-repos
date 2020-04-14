@@ -139,11 +139,11 @@ object IntentionUtils {
       buf: scala.StringBuilder) = {
     val parent =
       if (expr.getParent != null && expr.getParent
-            .isInstanceOf[ScParenthesisedExpr]) expr.getParent.getParent
+          .isInstanceOf[ScParenthesisedExpr]) expr.getParent.getParent
       else expr.getParent
 
     if (parent != null && parent.isInstanceOf[ScPrefixExpr] &&
-        parent.asInstanceOf[ScPrefixExpr].operation.getText == "!") {
+      parent.asInstanceOf[ScPrefixExpr].operation.getText == "!") {
 
       val newExpr =
         ScalaPsiElementFactory.createExpressionFromText(buf.toString(), manager)
@@ -199,7 +199,7 @@ object IntentionUtils {
       case _ =>
         val exprText = expression.getText
         if (ScalaNamesUtil.isOpCharacter(exprText(0)) || expression
-              .isInstanceOf[ScInfixExpr]) "!(" + exprText + ")"
+            .isInstanceOf[ScInfixExpr]) "!(" + exprText + ")"
         else "!" + expression.getText
     }
   }

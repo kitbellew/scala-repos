@@ -69,7 +69,7 @@ object Scaladoc extends AutoPlugin {
         val hasDiagram = files exists { f =>
           val name = f.getName
           if (name.endsWith(".html") && !name.startsWith("index-") &&
-              !name.equals("index.html") && !name.equals("package.html")) {
+            !name.equals("index.html") && !name.equals("package.html")) {
             val source = scala.io.Source.fromFile(f)(scala.io.Codec.UTF8)
             val hd =
               try source

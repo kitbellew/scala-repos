@@ -296,9 +296,9 @@ object CachesUtil {
     element.getContainingFile match {
       case file: ScalaFile if file.isCompiled =>
         if (!ProjectRootManager
-              .getInstance(element.getProject)
-              .getFileIndex
-              .isInContent(file.getVirtualFile)) {
+            .getInstance(element.getProject)
+            .getFileIndex
+            .isInContent(file.getVirtualFile)) {
           return dep_item
         }
         var dir = file.getParent

@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * CubicCurve Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class CubicCurveSpec

@@ -36,8 +36,8 @@ class FlipComparisonInInfixExprIntention extends PsiElementBaseIntentionAction {
     val oper = infixExpr.operation.nameId.getText
 
     if (oper != "equals" && oper != "==" && oper != "!=" && oper != "eq" && oper != "ne" &&
-        oper != ">" && oper != "<" && oper != ">=" && oper != "<=" &&
-        oper != "&&" && oper != "||")
+      oper != ">" && oper != "<" && oper != ">=" && oper != "<=" &&
+      oper != "&&" && oper != "||")
       return false
 
     val range: TextRange = infixExpr.operation.nameId.getTextRange

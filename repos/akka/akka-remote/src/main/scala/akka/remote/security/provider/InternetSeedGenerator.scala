@@ -38,10 +38,10 @@ object InternetSeedGenerator {
     */
   def getInstance: InternetSeedGenerator = Instance
 
-  /**Singleton instance. */
+  /** Singleton instance. */
   private final val Instance: InternetSeedGenerator = new InternetSeedGenerator
 
-  /**Delegate generators. */
+  /** Delegate generators. */
   private final val Generators: immutable.Seq[SeedGenerator] =
     List(
       new RandomDotOrgSeedGenerator, // first try the Internet seed generator

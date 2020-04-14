@@ -237,7 +237,6 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     * val graph = rawGraph.joinVertices[Int](outDeg)
     *   ((_, _, outDeg) => outDeg)
     * }}}
-    *
     */
   def joinVertices[U: ClassTag](table: RDD[(VertexId, U)])(
       mapFunc: (VertexId, VD, U) => VD): Graph[VD, ED] = {
@@ -275,7 +274,6 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     *   vpred = (vid: VertexId, deg:Int) => deg > 0
     * )
     * }}}
-    *
     */
   def filter[VD2: ClassTag, ED2: ClassTag](
       preprocess: Graph[VD, ED] => Graph[VD2, ED2],
@@ -378,7 +376,6 @@ class GraphOps[VD: ClassTag, ED: ClassTag](graph: Graph[VD, ED])
     * ideally the size of A should not increase.''
     *
     * @return the resulting graph at the end of the computation
-    *
     */
   def pregel[A: ClassTag](
       initialMsg: A,

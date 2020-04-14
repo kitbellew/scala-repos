@@ -28,7 +28,6 @@ import com.twitter.storehaus.{Store, StoreProxy}
 import com.twitter.util.{Promise, Future}
 
 /**
-  *
   * @author Ian O Connell
   */
 

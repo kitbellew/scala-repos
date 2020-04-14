@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /**
-  *
   */
 ////
 trait MonadReader[F[_], S] extends Monad[F] { self =>

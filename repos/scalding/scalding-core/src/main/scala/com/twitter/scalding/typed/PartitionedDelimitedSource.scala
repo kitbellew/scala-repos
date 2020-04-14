@@ -145,22 +145,22 @@ trait PartitionedDelimited extends Serializable {
     PartitionedDelimitedSource(path, template, separator, fields)
 }
 
-/** Partitioned typed tab separated source.*/
+/** Partitioned typed tab separated source. */
 object PartitionedTsv extends PartitionedDelimited {
   val separator = "\t"
 }
 
-/** Partitioned typed commma separated source.*/
+/** Partitioned typed commma separated source. */
 object PartitionedCsv extends PartitionedDelimited {
   val separator = ","
 }
 
-/** Partitioned typed pipe separated source.*/
+/** Partitioned typed pipe separated source. */
 object PartitionedPsv extends PartitionedDelimited {
   val separator = "|"
 }
 
-/** Partitioned typed `\1` separated source (commonly used by Pig).*/
+/** Partitioned typed `\1` separated source (commonly used by Pig). */
 object PartitionedOsv extends PartitionedDelimited {
   val separator = "\u0001"
 }

@@ -274,7 +274,7 @@ trait BaseParsers extends RegexParsers {
       '\u0300' -> '\u0369',
       '\u203F' -> '\u2040')
 
-  /**Parser for one char that starts an XML name.
+  /** Parser for one char that starts an XML name.
     * According to W3C specs except that range #x10000 to #xEFFFF
     * is excluded (cannot be expressed by char literals)
     */

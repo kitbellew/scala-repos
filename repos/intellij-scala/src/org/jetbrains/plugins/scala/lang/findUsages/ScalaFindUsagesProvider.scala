@@ -55,9 +55,9 @@ class ScalaFindUsagesProvider extends FindUsagesProvider {
       case _: ScBindingPattern =>
         var parent = element
         while (parent match {
-                 case null | _: ScValue | _: ScVariable => false
-                 case _                                 => true
-               }) parent = parent.getParent
+            case null | _: ScValue | _: ScVariable => false
+            case _                                 => true
+          }) parent = parent.getParent
         parent match {
           case null => "pattern"
           case _    => "variable"

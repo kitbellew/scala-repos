@@ -93,8 +93,8 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 
     try {
       if (!ScalaCollectionRenderer.hasDefiniteSize(
-            objectRef,
-            context) || isStreamView(objectRef.referenceType()))
+          objectRef,
+          context) || isStreamView(objectRef.referenceType()))
         return Success[String]("?")
     } catch {
       case e: EvaluateException => return Fail(e)

@@ -417,11 +417,11 @@ case class JsPath(path: List[PathNode] = List()) {
   /** Reads/Writes a T at JsPath using provided implicit Format[T] */
   def format[T](implicit f: Format[T]): OFormat[T] = Format.at[T](this)(f)
 
-  /** Reads/Writes a T at JsPath using provided explicit Reads[T] and implicit Writes[T]*/
+  /** Reads/Writes a T at JsPath using provided explicit Reads[T] and implicit Writes[T] */
   def format[T](r: Reads[T])(implicit w: Writes[T]): OFormat[T] =
     Format.at[T](this)(Format(r, w))
 
-  /** Reads/Writes a T at JsPath using provided explicit Writes[T] and implicit Reads[T]*/
+  /** Reads/Writes a T at JsPath using provided explicit Writes[T] and implicit Reads[T] */
   def format[T](w: Writes[T])(implicit r: Reads[T]): OFormat[T] =
     Format.at[T](this)(Format(r, w))
 

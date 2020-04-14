@@ -498,8 +498,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
       LockUtil.lock(s"${accountName}/${repository.name}") {
         if (getRepository(accountName, repository.name).isDefined ||
-            (accountName != loginUserName && !getGroupsByUserName(loginUserName)
-              .contains(accountName))) {
+          (accountName != loginUserName && !getGroupsByUserName(loginUserName)
+            .contains(accountName))) {
           // redirect to the repository if repository already exists
           redirect(s"/${accountName}/${repository.name}")
         } else {
@@ -585,10 +585,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
           value: String,
           messages: Messages): Option[String] = {
         if (value.split(",").exists {
-              _.split(":") match {
-                case Array(userName, isManager) => isManager.toBoolean
-              }
-            }) None
+            _.split(":") match {
+              case Array(userName, isManager) => isManager.toBoolean
+            }
+          }) None
         else Some("Must select one manager at least.")
       }
     }

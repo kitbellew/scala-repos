@@ -51,7 +51,6 @@ object PageView extends Serializable {
   * To process the generated stream
   * `$ bin/run-example \
   *    org.apache.spark.examples.streaming.clickstream.PageViewStream errorRatePerZipCode localhost 44444`
-  *
   */
 // scalastyle:on
 object PageViewGenerator {

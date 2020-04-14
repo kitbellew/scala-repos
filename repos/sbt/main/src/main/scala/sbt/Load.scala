@@ -959,7 +959,7 @@ object Load {
             val defaultID = autoID(buildBase, context, existingIds)
             val root0 =
               if (discovered.isEmpty || java.lang.Boolean.getBoolean(
-                    "sbt.root.ivyplugin"))
+                  "sbt.root.ivyplugin"))
                 Build.defaultAggregatedProject(defaultID, buildBase, refs)
               else
                 Build.generatedRootWithoutIvyPlugin(defaultID, buildBase, refs)
@@ -1005,7 +1005,6 @@ object Load {
     * 1. Apply any manipulations defined in .sbt files.
     * 2. Detecting which autoPlugins are enabled for the project.
     * 3. Ordering all Setting[_]s for the project
-    *
     *
     * @param rawProject  The original project, with nothing manipulated since it was evaluated/discovered.
     * @param configFiles All configuration files loaded for this project.  Used to discover project manipulations

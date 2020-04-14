@@ -669,7 +669,7 @@ case class NextDay(startDate: Expression, dayOfWeek: Expression)
         if (dayOfWeek.foldable) {
           val input = dayOfWeek.eval().asInstanceOf[UTF8String]
           if ((input eq null) || DateTimeUtils.getDayOfWeekFromString(
-                input) == -1) {
+              input) == -1) {
             s"""
              |${ev.isNull} = true;
            """.stripMargin

@@ -136,8 +136,8 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
 
   def checkOrAddAllSourceFiles() = {
     if (sourceFiles.exists {
-          case (path, text) => !fileWithTextExists(new File(path), text)
-        }) {}
+        case (path, text) => !fileWithTextExists(new File(path), text)
+      }) {}
     sourceFiles.foreach {
       case (path, text) => addFileToProject(path, text)
     }

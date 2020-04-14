@@ -39,8 +39,6 @@ import scalafx.Includes._
 
 /**
   * ReadOnlyObjectProperty Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ReadOnlyObjectPropertySpec extends FlatSpec with BeforeAndAfterEach {

@@ -44,7 +44,6 @@ import scala.collection.JavaConverters._
   *
   * In Vector's case this Seq[Vector] will always be of length 1.
   *
-  *
   * The cache is an EvictingCache, which evicts failed Futures. It's based on a LoadingFutureCache,
   * based on a LoadingCache, backed by a ConcurrentMap. This is the recommended FutureCache to use
   * in util-cache.
@@ -93,7 +92,7 @@ private[serverset2] abstract class ZkNodeDataCache[Entity](
 
   protected def parseNode(path: String, data: String): Seq[Entity]
 
-  /** Get the nodes we have cached as an immutable scala set.  */
+  /** Get the nodes we have cached as an immutable scala set. */
   def keys: Set[String] = asMap.keySet.asScala.toSet
 
   /**

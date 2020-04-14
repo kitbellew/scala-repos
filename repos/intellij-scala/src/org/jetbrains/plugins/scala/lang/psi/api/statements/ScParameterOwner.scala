@@ -7,8 +7,7 @@ package statements
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params._
 
 /**
-  * @author ilyas
-  */
+  * @author ilyas */
 
 trait ScParameterOwner extends ScalaPsiElement {
   def parameters: Seq[ScParameter]

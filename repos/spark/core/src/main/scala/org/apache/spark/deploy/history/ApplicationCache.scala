@@ -590,7 +590,7 @@ private[history] class ApplicationCacheCheckFilter()
     // if the request is for an attempt, check to see if it is in need of delete/refresh
     // and have the cache update the UI if so
     if (operation == "HEAD" || operation == "GET"
-        && checkForUpdates(requestURI, appId, attemptId)) {
+      && checkForUpdates(requestURI, appId, attemptId)) {
       // send a redirect back to the same location. This will be routed
       // to the *new* UI
       logInfo(s"Application Attempt $appId/$attemptId updated; refreshing")
@@ -628,7 +628,6 @@ private[history] class ApplicationCacheCheckFilter()
   *
   * *Important* In test runs, if there is more than one [[ApplicationCache]], the relay logic
   * will break: filters may not find instances. Tests must not do that.
-  *
   */
 private[history] object ApplicationCacheCheckFilterRelay extends Logging {
   // name of the app ID entry in the filter configuration. Mandatory.

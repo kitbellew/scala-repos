@@ -158,7 +158,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     try {
       val drid: ModuleRevisionId =
         if (MakePom.isDependencyVersionRange(
-              dd.getDependencyRevisionId.getRevision)) {
+            dd.getDependencyRevisionId.getRevision)) {
           Message.debug(
             s"Got a dynamic revision, attempting to convert to real revision: ${dd.getDependencyRevisionId}")
           val revision = MakePom.makeDependencyVersion(

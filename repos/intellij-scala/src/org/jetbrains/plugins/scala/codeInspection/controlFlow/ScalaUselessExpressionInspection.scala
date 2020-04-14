@@ -39,7 +39,7 @@ class ScalaUselessExpressionInspection
     case expr: ScExpression
         if IntentionAvailabilityChecker.checkInspection(this, expr.getParent) =>
       if (canResultInSideEffectsOnly(expr) && SideEffectsUtil.hasNoSideEffects(
-            expr)) {
+          expr)) {
         val message = "Useless expression"
         val removeElemFix = new RemoveElementQuickFix("Remove expression", expr)
         val addReturnKeywordFix = PsiTreeUtil.getParentOfType(

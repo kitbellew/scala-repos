@@ -584,8 +584,7 @@ private[scala] trait DeprecatedPredef {
   *  `Predef`.
   *
   *  @author  Martin Odersky
-  *  @since 2.8
-  */
+  *  @since 2.8 */
 // SI-7335 Parents of Predef are defined in the same compilation unit to avoid
 // cyclic reference errors compiling the standard library *without* a previously
 // compiled copy on the classpath.

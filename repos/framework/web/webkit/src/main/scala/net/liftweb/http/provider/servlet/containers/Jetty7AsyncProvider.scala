@@ -89,7 +89,6 @@ object Jetty7AsyncProvider extends AsyncProviderMeta {
   * Jetty7AsyncProvider
   *
   * Implemented by using Jetty 7 Continuation API
-  *
   */
 class Jetty7AsyncProvider(req: HTTPRequest) extends ServletAsyncProvider {
 

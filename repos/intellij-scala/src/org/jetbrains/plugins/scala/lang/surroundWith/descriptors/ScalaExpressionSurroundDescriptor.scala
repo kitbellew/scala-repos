@@ -6,7 +6,6 @@ package descriptors;
 /**
   * User: Dmitry.Krasilschikov
   * Date: 09.01.2007
-  *
   */
 import com.intellij.lang.surroundWith.{SurroundDescriptor, Surrounder}
 import com.intellij.psi.{PsiElement, PsiFile, PsiWhiteSpace}
@@ -122,21 +121,21 @@ class ScalaExpressionSurroundDescriptor extends SurroundDescriptor {
         endOffset: Int): Array[PsiElement] = {
       var element = file.findElementAt(startOffset)
       while (element != null && !element.isInstanceOf[ScExpression] && !element
-               .isInstanceOf[ScValue] &&
-             !element.isInstanceOf[ScFunction] && !element
-               .isInstanceOf[ScTypeAlias] &&
-             !element.isInstanceOf[ScVariable] && !element
-               .isInstanceOf[PsiWhiteSpace] &&
-             element.getNode.getElementType != ScalaTokenTypes.tSEMICOLON &&
-             !ScalaTokenTypes.COMMENTS_TOKEN_SET.contains(
-               element.getNode.getElementType) ||
-             (element.getParent.getTextRange.getStartOffset == startOffset &&
-             (element.getParent.isInstanceOf[ScExpression] ||
-             element.getParent.isInstanceOf[ScValue] ||
-             element.getParent.isInstanceOf[ScVariable] ||
-             element.getParent.isInstanceOf[ScFunction] ||
-             element.getParent.isInstanceOf[ScTypeAlias]) &&
-             element.getParent.getTextRange.getEndOffset <= endOffset)) {
+          .isInstanceOf[ScValue] &&
+        !element.isInstanceOf[ScFunction] && !element
+          .isInstanceOf[ScTypeAlias] &&
+        !element.isInstanceOf[ScVariable] && !element
+          .isInstanceOf[PsiWhiteSpace] &&
+        element.getNode.getElementType != ScalaTokenTypes.tSEMICOLON &&
+        !ScalaTokenTypes.COMMENTS_TOKEN_SET.contains(
+          element.getNode.getElementType) ||
+        (element.getParent.getTextRange.getStartOffset == startOffset &&
+        (element.getParent.isInstanceOf[ScExpression] ||
+        element.getParent.isInstanceOf[ScValue] ||
+        element.getParent.isInstanceOf[ScVariable] ||
+        element.getParent.isInstanceOf[ScFunction] ||
+        element.getParent.isInstanceOf[ScTypeAlias]) &&
+        element.getParent.getTextRange.getEndOffset <= endOffset)) {
         element = element.getParent
         if (element == null || element.getTextRange == null || element.getTextRange.getStartOffset != startOffset)
           return null

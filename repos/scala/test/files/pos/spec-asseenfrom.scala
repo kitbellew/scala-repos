@@ -18,7 +18,7 @@ class Automaton[@specialized(Double) W, State] {
       finalWeight(it.next);
     }
   }
- */
+   */
 
 }
 

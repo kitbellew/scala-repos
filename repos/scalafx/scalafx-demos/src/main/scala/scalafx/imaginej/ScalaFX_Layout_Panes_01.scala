@@ -52,7 +52,6 @@ import scalafx.scene.shape.Rectangle
   * based upon: Example 1-1 Create a Border Pane
   *
   * http://docs.oracle.com/javafx/2.0/layout/builtin_layouts.htm
-  *
   */
 
 object ScalaFX_Layout_Panes_01 extends JFXApp {

@@ -152,9 +152,9 @@ class LiftServlet extends Loggable {
     try {
       def doIt: Boolean = {
         if (LiftRules.lockedSecurityRules.logInDevMode &&
-            Props.devMode &&
-            LiftRules.lockedSecurityRules.https.isDefined &&
-            !req.hostAndPath.startsWith("https")) {
+          Props.devMode &&
+          LiftRules.lockedSecurityRules.https.isDefined &&
+          !req.hostAndPath.startsWith("https")) {
           logger.warn(s"""
             |Security rules require HTTPS, but request was for ${req.hostAndPath};
             |in non-dev mode, this will result in the browser forcing
@@ -244,7 +244,7 @@ class LiftServlet extends Loggable {
     def processFunc: (Req) => Box[LiftResponse] = process _
   }
 
-  /** To save memory these are only created once and should just be holders for functions **/
+  /** To save memory these are only created once and should just be holders for functions * */
 
   object ShuttingDown extends ProcessingStep {
 
@@ -307,7 +307,7 @@ class LiftServlet extends Loggable {
       val sessionIdCalc = new SessionIdCalc(req)
 
       if (LiftRules.redirectAsyncOnSessionLoss && !sessionExists_?(
-            sessionIdCalc.id) && (isComet || isAjax)) {
+          sessionIdCalc.id) && (isComet || isAjax)) {
         val theId = sessionIdCalc.id
 
         // okay after 2 attempts to redirect, just ignore calls to the
@@ -379,17 +379,17 @@ class LiftServlet extends Loggable {
       var tmpStatelessHolder: Box[Box[LiftResponse]] = Empty
 
       if (S.statelessInit(req) {
-            // if the request is matched is defined in the stateless table, dispatch
-            tmpStatelessHolder = NamedPF
-              .applyBox(req, LiftRules.statelessDispatch.toList)
-              .map(_.apply() match {
-                case Full(a) =>
-                  Full(
-                    LiftRules.convertResponse((a, Nil, S.responseCookies, req)))
-                case r => r
-              })
-            tmpStatelessHolder.isDefined
-          }) {
+          // if the request is matched is defined in the stateless table, dispatch
+          tmpStatelessHolder = NamedPF
+            .applyBox(req, LiftRules.statelessDispatch.toList)
+            .map(_.apply() match {
+              case Full(a) =>
+                Full(
+                  LiftRules.convertResponse((a, Nil, S.responseCookies, req)))
+              case r => r
+            })
+          tmpStatelessHolder.isDefined
+        }) {
         val f = tmpStatelessHolder.openOrThrowException(
           "This is a full box here, checked on previous line")
         f match {
@@ -441,7 +441,6 @@ class LiftServlet extends Loggable {
     * Full(Response) - in which case  return
     * Empty - Go to the next handler
     * Failure - short circuit and return
-    *
     */
   val processingPipeline: Seq[ProcessingStep] =
     Seq(
@@ -1080,11 +1079,10 @@ class LiftServlet extends Loggable {
               v._1,
               (
                 (for (updated <- Full(
-                        (if (!LiftRules.excludePathFromContextPathRewriting
-                               .vend(uri)) u.contextPath
-                         else "") + uri).filter(ignore => uri.startsWith("/"));
-                      rwf <- URLRewriter.rewriteFunc)
-                  yield rwf(updated)) openOr uri
+                    (if (!LiftRules.excludePathFromContextPathRewriting.vend(
+                         uri)) u.contextPath
+                     else "") + uri).filter(ignore => uri.startsWith("/"));
+                  rwf <- URLRewriter.rewriteFunc) yield rwf(updated)) openOr uri
               ))
           case _ => v
         })
@@ -1092,7 +1090,7 @@ class LiftServlet extends Loggable {
     def pairFromRequest(req: Req): (Box[Req], Box[String]) = {
       val acceptHeader =
         for (innerReq <- Box.legacyNullTest(req.request);
-             accept <- innerReq.header("Accept")) yield accept
+          accept <- innerReq.header("Accept")) yield accept
 
       (Full(req), acceptHeader)
     }

@@ -31,7 +31,7 @@ trait StringFunctions {
   def plural(s: String, n: Long): String =
     if (n == 1L) s
     else if ((s endsWith "y") && (List("ay", "ey", "iy", "oy", "uy") forall (!s
-               .endsWith(_)))) s.take(s.length - 1) + "ies"
+        .endsWith(_)))) s.take(s.length - 1) + "ies"
     else s + "s"
 
   /**

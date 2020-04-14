@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * WritableImage Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class WritableImageSpec

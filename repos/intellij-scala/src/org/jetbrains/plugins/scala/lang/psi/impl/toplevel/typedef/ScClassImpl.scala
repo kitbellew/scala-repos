@@ -114,10 +114,10 @@ class ScClassImpl private (
       place: PsiElement): Boolean = {
     if (DumbService.getInstance(getProject).isDumb) return true
     if (!super[ScTemplateDefinition].processDeclarationsForTemplateBody(
-          processor,
-          state,
-          lastParent,
-          place)) return false
+        processor,
+        state,
+        lastParent,
+        place)) return false
 
     constructor match {
       case Some(constr)
@@ -129,7 +129,8 @@ class ScClassImpl private (
       case _ =>
         for (p <- parameters) {
           ProgressManager.checkCanceled()
-          if (processor.isInstanceOf[BaseProcessor]) { // don't expose class parameters to Java.
+          if (processor
+              .isInstanceOf[BaseProcessor]) { // don't expose class parameters to Java.
             if (!processor.execute(p, state)) return false
           }
         }
@@ -278,7 +279,7 @@ class ScClassImpl private (
   private def copyMethodText: String = {
     val x = constructor.getOrElse(return "")
     val paramString = (if (x.parameterList.clauses.length == 1 &&
-                           x.parameterList.clauses.head.isImplicit) "()"
+                         x.parameterList.clauses.head.isImplicit) "()"
                        else "") + x.parameterList.clauses
       .map { c =>
         val start = if (c.isImplicit) "(implicit " else "("

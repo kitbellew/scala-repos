@@ -36,7 +36,6 @@ object InetSocketAddressUtil {
     *
     * @param hosts a comma or space-delimited string of hostname and port pairs.
     * @throws IllegalArgumentException if host and port are not both present
-    *
     */
   def parseHostPorts(hosts: String): Seq[HostPort] =
     hosts split Array(' ', ',') filter (_.nonEmpty) map (_.split(":")) map {

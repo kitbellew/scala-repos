@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * RotateTransition Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class RotateTransitionSpec

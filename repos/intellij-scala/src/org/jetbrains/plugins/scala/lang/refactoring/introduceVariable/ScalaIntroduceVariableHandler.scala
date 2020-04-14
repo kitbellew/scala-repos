@@ -112,8 +112,8 @@ class ScalaIntroduceVariableHandler
 
     if (typeElement.isDefined) {
       if (editor
-            .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
-            .isData) {
+          .getUserData(IntroduceTypeAlias.REVERT_TYPE_ALIAS_INFO)
+          .isData) {
         invokeTypeElement(project, editor, file, typeElement.get)
       } else {
         ScalaRefactoringUtil.afterTypeElementChoosing(

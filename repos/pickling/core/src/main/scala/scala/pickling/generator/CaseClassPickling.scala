@@ -5,7 +5,6 @@ package generator
   * pickling code for it.
   *
   * This ONLY handles case-class types, it will not handle ADTS, but can generate code for non-final case classes.
-  *
   */
 class CaseClassPickling(
     val allowReflection: Boolean,

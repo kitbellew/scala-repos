@@ -15,29 +15,28 @@ import scala.reflect.runtime.{universe => ru}
 import scala.reflect.ClassTag
 
 /** Collecting some power mode examples.
-
-scala> trait F[@specialized(Int) T] { def f: T = ??? }
-defined trait F
-
-scala> trait G[@specialized(Long, Int) T] extends F[T] { override def f: T = super.f }
-defined trait G
-
-scala> changesAfterEachPhase(intp("G").info.members filter (_.name.toString contains "super")) >
-Gained after  1/parser {
-  method super$f
-}
-
-Gained after 12/specialize {
-  method super$f$mcJ$sp
-  method super$f$mcI$sp
-}
-
-Lost after 18/flatten {
-  method super$f$mcJ$sp
-  method super$f$mcI$sp
-  method super$f
-}
-  */
+  *
+  * scala> trait F[@specialized(Int) T] { def f: T = ??? }
+  * defined trait F
+  *
+  * scala> trait G[@specialized(Long, Int) T] extends F[T] { override def f: T = super.f }
+  * defined trait G
+  *
+  * scala> changesAfterEachPhase(intp("G").info.members filter (_.name.toString contains "super")) >
+  * Gained after  1/parser {
+  *  method super$f
+  * }
+  *
+  * Gained after 12/specialize {
+  *  method super$f$mcJ$sp
+  *  method super$f$mcI$sp
+  * }
+  *
+  * Lost after 18/flatten {
+  *  method super$f$mcJ$sp
+  *  method super$f$mcI$sp
+  *  method super$f
+  * } */
 
 /** A class for methods to be injected into the intp in power mode.
   */

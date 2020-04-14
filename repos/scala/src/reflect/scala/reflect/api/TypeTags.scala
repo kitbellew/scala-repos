@@ -90,7 +90,7 @@ import java.io.ObjectStreamException
   *
   * === `WeakTypeTag`s ===
   *
-  *`WeakTypeTag[T]` generalizes `TypeTag[T]`. Unlike a regular `TypeTag`, components of
+  * `WeakTypeTag[T]` generalizes `TypeTag[T]`. Unlike a regular `TypeTag`, components of
   * its type representation can be references to type parameters or abstract types.
   * However, `WeakTypeTag[T]` tries to be as concrete as possible, i.e. if type tags
   * are available for the referenced type arguments or abstract types, they are used to
@@ -135,7 +135,7 @@ import java.io.ObjectStreamException
   * <li>'''Certain manifest operations(i.e., <:<, >:> and typeArguments) are not
   * supported.''' <br/>Instead, one could use the reflection APIs provided by Java (for
   * classes) and Scala (for types).</li>
-  *</ul>
+  * </ul>
   *
   * In Scala 2.10, [[scala.reflect.ClassManifest]]s are deprecated, and it is planned
   * to deprecate [[scala.reflect.Manifest]] in favor of `TypeTag`s and `ClassTag`s in

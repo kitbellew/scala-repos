@@ -458,7 +458,7 @@ object Codec {
         case Left(a) => writeInit(a, sink)
         case Right((source, encoder)) =>
           if ((encoder.encode(source, sink, true) == CoderResult.OVERFLOW) ||
-              (encoder.flush(sink) == CoderResult.OVERFLOW)) {
+            (encoder.flush(sink) == CoderResult.OVERFLOW)) {
             Some(Right((source, encoder)))
           } else {
             None

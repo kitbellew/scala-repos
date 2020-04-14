@@ -8,7 +8,7 @@ import spire.syntax.cfor._
   * Computes the squared distance between two vectors.
   *
   * @author dlwh
- **/
+  */
 object squaredDistance extends UFunc with squaredDistanceLowPrio {
 
   implicit def squaredDistanceFromZippedValues[T, U](implicit

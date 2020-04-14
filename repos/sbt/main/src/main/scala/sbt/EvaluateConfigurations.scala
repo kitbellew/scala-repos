@@ -32,8 +32,6 @@ import sbt.io.IO
   *  1. Parsing high-level constructs (definitions, settings, imports)
   *  2. Compiling scala code into local .class files
   *  3. Evaluating the expressions and obtaining in-memory objects of the results (Setting[_] instances, or val references).
-  *
-  *
   */
 object EvaluateConfigurations {
 
@@ -397,7 +395,7 @@ object Index {
     //  (scalac couldn't determine that 'key' is of type AttributeKey[Task[_]] on its own and a type match still required the cast)
     val pairs =
       for (scope <- data.scopes;
-           AttributeEntry(key, value: Task[_]) <- data.data(scope).entries)
+        AttributeEntry(key, value: Task[_]) <- data.data(scope).entries)
         yield (
           value,
           ScopedKey(scope, key.asInstanceOf[AttributeKey[Task[_]]])
@@ -419,7 +417,7 @@ object Index {
       label: AttributeKey[_] => String): Map[String, AttributeKey[_]] = {
     val multiMap = settings.groupBy(label)
     val duplicates = multiMap collect {
-      case (k, xs) if xs.size > 1           => (k, xs.map(_.manifest))
+      case (k, xs) if xs.size > 1 => (k, xs.map(_.manifest))
     } collect { case (k, xs) if xs.size > 1 => (k, xs) }
     if (duplicates.isEmpty)
       multiMap.collect { case (k, v) if validID(k) => (k, v.head) } toMap
@@ -434,7 +432,7 @@ object Index {
     val runBefore = new TriggerMap
     val triggeredBy = new TriggerMap
     for ((_, amap) <- ss.data;
-         AttributeEntry(_, value: Task[_]) <- amap.entries) {
+      AttributeEntry(_, value: Task[_]) <- amap.entries) {
       val as = value.info.attributes
       update(runBefore, value, as get Keys.runBefore)
       update(triggeredBy, value, as get Keys.triggeredBy)

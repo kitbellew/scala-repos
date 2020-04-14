@@ -68,7 +68,7 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
       val fileName = Context.toString(elem.get("fileName", elem))
 
       if (fileName.endsWith(PseudoFileSuffix) &&
-          providers.contains(fileName.stripSuffix(PseudoFileSuffix))) {
+        providers.contains(fileName.stripSuffix(PseudoFileSuffix))) {
 
         val curMaxLine = neededMaps.getOrElse(fileName, -1)
         val reqLine = Context.toNumber(elem.get("lineNumber", elem)).toInt - 1

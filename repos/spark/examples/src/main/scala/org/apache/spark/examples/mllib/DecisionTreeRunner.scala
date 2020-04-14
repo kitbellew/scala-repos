@@ -146,7 +146,7 @@ object DecisionTreeRunner {
             s"fracTest ${params.fracTest} value incorrect; should be in [0,1].")
         } else {
           if (params.algo == Classification &&
-              (params.impurity == Gini || params.impurity == Entropy)) {
+            (params.impurity == Gini || params.impurity == Entropy)) {
             success
           } else if (params.algo == Regression && params.impurity == Variance) {
             success

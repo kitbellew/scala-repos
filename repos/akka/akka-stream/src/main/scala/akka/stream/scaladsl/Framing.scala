@@ -211,8 +211,8 @@ object Framing {
           tryPull(ctx)
         } else {
           if (buffer.slice(
-                possibleMatchPos,
-                possibleMatchPos + separatorBytes.size) == separatorBytes) {
+              possibleMatchPos,
+              possibleMatchPos + separatorBytes.size) == separatorBytes) {
             // Found a match
             val parsedFrame = buffer.slice(0, possibleMatchPos).compact
             buffer = buffer.drop(possibleMatchPos + separatorBytes.size)

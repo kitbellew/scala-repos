@@ -416,7 +416,6 @@ trait DB extends Loggable {
 
   /**
     * Append function to be invoked after the current transaction on DefaultConnectionIdentifier has ended
-    *
     */
   def appendPostTransaction(func: Boolean => Unit): Unit =
     appendPostTransaction(DefaultConnectionIdentifier, func)

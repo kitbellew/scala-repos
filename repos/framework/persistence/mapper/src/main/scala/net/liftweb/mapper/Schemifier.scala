@@ -41,7 +41,6 @@ object Schemifier extends Loggable {
   /**
     * Convenience function to be passed to schemify. Will log executed statements at the info level
     * using Schemifier's logger
-    *
     */
   def infoF(msg: => AnyRef) = logger.info(msg)
 
@@ -114,7 +113,7 @@ object Schemifier extends Loggable {
     DB.use(dbId) { con =>
       // Some databases (Sybase) don't like doing transactional DDL, so we disable transactions
       if (con.driverType.schemifierMustAutoCommit_? && !con.connection
-            .getAutoCommit()) {
+          .getAutoCommit()) {
         con.connection.commit
         con.connection.setAutoCommit(true)
       }
@@ -363,9 +362,9 @@ object Schemifier extends Loggable {
           val columnName = rs.getString(4).toLowerCase
 
           if (tableName == table._dbTableNameLC.toLowerCase && field
-                .dbColumnNames(field.name)
-                .map(_.toLowerCase)
-                .contains(columnName)) {
+              .dbColumnNames(field.name)
+              .map(_.toLowerCase)
+              .contains(columnName)) {
             cols = columnName :: cols
             hasColumn = hasColumn + 1
             logger.trace(
@@ -500,7 +499,7 @@ object Schemifier extends Loggable {
     val cmds = new ListBuffer[String]()
     val ret =
       if (connection.supportsForeignKeys_? && MapperRules.createForeignKeys_?(
-            dbId)) {
+          dbId)) {
         table.mappedFields
           .flatMap { f =>
             f match {

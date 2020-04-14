@@ -276,15 +276,15 @@ object GenTypeClass {
     import TypeClass._
     val classifiedTypeIdent =
       if (Set(
-            arrow,
-            associative,
-            category,
-            choice,
-            split,
-            compose,
-            profunctor,
-            strong,
-            proChoice)(tc)) "=>:"
+          arrow,
+          associative,
+          category,
+          choice,
+          split,
+          compose,
+          profunctor,
+          strong,
+          proChoice)(tc)) "=>:"
       else "F"
 
     val typeShape: String = kind match {

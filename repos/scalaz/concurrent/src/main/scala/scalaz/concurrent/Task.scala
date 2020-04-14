@@ -350,7 +350,7 @@ object Task {
         fa.handleWith { case t => f(t) }
     }
 
-  /** signals task was interrupted **/
+  /** signals task was interrupted * */
   case object TaskInterrupted extends InterruptedException {
     override def fillInStackTrace = this
   }

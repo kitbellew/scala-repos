@@ -95,7 +95,7 @@ trait IssuesControllerBase extends ControllerBase {
             getComments(owner, name, issueId.toInt),
             getIssueLabels(owner, name, issueId.toInt),
             (getCollaborators(owner, name) ::: (if (getAccountByUserName(
-                                                      owner).get.isGroupAccount)
+                                                    owner).get.isGroupAccount)
                                                   Nil
                                                 else List(owner))).sorted,
             getMilestonesWithIssueCount(owner, name),
@@ -112,8 +112,7 @@ trait IssuesControllerBase extends ControllerBase {
       case (owner, name) =>
         html.create(
           (getCollaborators(owner, name) ::: (if (getAccountByUserName(
-                                                    owner).get.isGroupAccount)
-                                                Nil
+                                                  owner).get.isGroupAccount) Nil
                                               else List(owner))).sorted,
           getMilestones(owner, name),
           getLabels(owner, name),

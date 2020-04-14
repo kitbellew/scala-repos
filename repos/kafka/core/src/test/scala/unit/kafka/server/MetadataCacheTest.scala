@@ -101,7 +101,7 @@ class MetadataCacheTest {
     cache.updateCache(15, updateMetadataRequest)
 
     for (securityProtocol <-
-           Seq(SecurityProtocol.PLAINTEXT, SecurityProtocol.SSL)) {
+        Seq(SecurityProtocol.PLAINTEXT, SecurityProtocol.SSL)) {
       val topicMetadatas = cache.getTopicMetadata(Set(topic), securityProtocol)
       assertEquals(1, topicMetadatas.size)
 

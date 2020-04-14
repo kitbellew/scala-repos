@@ -3319,7 +3319,7 @@ trait EvaluatorSpecs[M[+_]]
         {
           testEval(input1) { result1 =>
             result0.map({ case (ids, v) => (ids.toSeq, v) }) must_== result1
-              .map({ case (ids, v)      => (ids.toSeq, v) })
+              .map({ case (ids, v) => (ids.toSeq, v) })
           }
         }
       }
@@ -3346,7 +3346,7 @@ trait EvaluatorSpecs[M[+_]]
         {
           testEval(input1) { result1 =>
             result0.map({ case (ids, v) => (ids.toSeq, v) }) must_== result1
-              .map({ case (ids, v)      => (ids.toSeq, v) })
+              .map({ case (ids, v) => (ids.toSeq, v) })
           }
         }
       }

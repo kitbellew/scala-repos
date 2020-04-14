@@ -404,7 +404,7 @@ trait ScPattern extends ScalaPsiElement {
             tuple.expectedType.flatMap {
               case ScTupleType(comps) =>
                 for ((t, p) <-
-                       comps.iterator.zip(patternList.patterns.iterator)) {
+                    comps.iterator.zip(patternList.patterns.iterator)) {
                   if (p == this) return Some(t)
                 }
                 None

@@ -23,9 +23,9 @@ object Utils {
     val trgt = trgt0.normalize
 
     if (base.isOpaque || !base.isAbsolute || base.getRawPath == null ||
-        trgt.isOpaque || !trgt.isAbsolute || trgt.getRawPath == null ||
-        base.getScheme != trgt.getScheme ||
-        base.getRawAuthority != trgt.getRawAuthority)
+      trgt.isOpaque || !trgt.isAbsolute || trgt.getRawPath == null ||
+      base.getScheme != trgt.getScheme ||
+      base.getRawAuthority != trgt.getRawAuthority)
       trgt
     else {
       val trgtCmps = trgt.getRawPath.split('/')

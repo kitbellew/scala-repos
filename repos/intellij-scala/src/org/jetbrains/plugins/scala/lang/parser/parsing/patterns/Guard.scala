@@ -10,8 +10,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions.PostfixExpr
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.02.2008
-  */
+  * Date: 28.02.2008 */
 
 object Guard {
   def parse(builder: ScalaPsiBuilder): Boolean =

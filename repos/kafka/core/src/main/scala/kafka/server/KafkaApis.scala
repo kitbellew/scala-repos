@@ -200,9 +200,9 @@ class KafkaApis(
       val responseHeader = new ResponseHeader(correlationId)
       val leaderAndIsrResponse =
         if (authorize(
-              request.session,
-              ClusterAction,
-              Resource.ClusterResource)) {
+            request.session,
+            ClusterAction,
+            Resource.ClusterResource)) {
           val result = replicaManager.becomeLeaderOrFollower(
             correlationId,
             leaderAndIsrRequest,
@@ -320,9 +320,9 @@ class KafkaApis(
 
     // reject the request if not authorized to the group
     if (!authorize(
-          request.session,
-          Read,
-          new Resource(Group, offsetCommitRequest.groupId))) {
+        request.session,
+        Read,
+        new Resource(Group, offsetCommitRequest.groupId))) {
       val errorCode = new JShort(Errors.GROUP_AUTHORIZATION_FAILED.code)
       val results = offsetCommitRequest.offsetData.keySet.asScala.map {
         topicPartition =>
@@ -410,7 +410,7 @@ class KafkaApis(
         // if it is v1 or not specified by user, we can use the default retention
         val offsetRetention =
           if (header.apiVersion <= 1 ||
-              offsetCommitRequest.retentionTime == OffsetCommitRequest.DEFAULT_RETENTION_TIME)
+            offsetCommitRequest.retentionTime == OffsetCommitRequest.DEFAULT_RETENTION_TIME)
             coordinator.offsetConfig.offsetsRetentionMs
           else
             offsetCommitRequest.retentionTime
@@ -624,10 +624,10 @@ class KafkaApis(
               // without format down conversion.
               val convertedData =
                 if (replicaManager
-                      .getMessageFormatVersion(tp)
-                      .exists(_ > Message.MagicValue_V0) &&
-                    !data.messages.isMagicValueInAllWrapperMessages(
-                      Message.MagicValue_V0)) {
+                    .getMessageFormatVersion(tp)
+                    .exists(_ > Message.MagicValue_V0) &&
+                  !data.messages.isMagicValueInAllWrapperMessages(
+                    Message.MagicValue_V0)) {
                   trace(
                     s"Down converting message to V0 for fetch request from ${fetchRequest.clientId}")
                   new FetchResponsePartitionData(
@@ -980,9 +980,9 @@ class KafkaApis(
       if (config.autoCreateTopicsEnable && nonExistingTopics.nonEmpty) {
         authorizer.foreach { az =>
           if (!az.authorize(
-                request.session,
-                Create,
-                Resource.ClusterResource)) {
+              request.session,
+              Create,
+              Resource.ClusterResource)) {
             authorizedTopics --= nonExistingTopics
             unauthorizedTopics ++= nonExistingTopics
           }
@@ -1034,9 +1034,9 @@ class KafkaApis(
     val offsetFetchResponse =
       // reject the request if not authorized to the group
       if (!authorize(
-            request.session,
-            Read,
-            new Resource(Group, offsetFetchRequest.groupId))) {
+          request.session,
+          Read,
+          new Resource(Group, offsetFetchRequest.groupId))) {
         val unauthorizedGroupResponse = new OffsetFetchResponse.PartitionData(
           OffsetFetchResponse.INVALID_OFFSET,
           "",
@@ -1135,9 +1135,9 @@ class KafkaApis(
     val responseHeader = new ResponseHeader(request.header.correlationId)
 
     if (!authorize(
-          request.session,
-          Describe,
-          new Resource(Group, groupCoordinatorRequest.groupId))) {
+        request.session,
+        Describe,
+        new Resource(Group, groupCoordinatorRequest.groupId))) {
       val responseBody = new GroupCoordinatorResponse(
         Errors.GROUP_AUTHORIZATION_FAILED.code,
         Node.noNode)
@@ -1196,9 +1196,9 @@ class KafkaApis(
       .map {
         case groupId =>
           if (!authorize(
-                request.session,
-                Describe,
-                new Resource(Group, groupId))) {
+              request.session,
+              Describe,
+              new Resource(Group, groupId))) {
             groupId -> DescribeGroupsResponse.GroupMetadata.forError(
               Errors.GROUP_AUTHORIZATION_FAILED)
           } else {
@@ -1281,9 +1281,9 @@ class KafkaApis(
     }
 
     if (!authorize(
-          request.session,
-          Read,
-          new Resource(Group, joinGroupRequest.groupId()))) {
+        request.session,
+        Read,
+        new Resource(Group, joinGroupRequest.groupId()))) {
       val responseBody = new JoinGroupResponse(
         Errors.GROUP_AUTHORIZATION_FAILED.code,
         JoinGroupResponse.UNKNOWN_GENERATION_ID,
@@ -1330,9 +1330,9 @@ class KafkaApis(
     }
 
     if (!authorize(
-          request.session,
-          Read,
-          new Resource(Group, syncGroupRequest.groupId()))) {
+        request.session,
+        Read,
+        new Resource(Group, syncGroupRequest.groupId()))) {
       sendResponseCallback(
         Array[Byte](),
         Errors.GROUP_AUTHORIZATION_FAILED.code)
@@ -1367,9 +1367,9 @@ class KafkaApis(
     }
 
     if (!authorize(
-          request.session,
-          Read,
-          new Resource(Group, heartbeatRequest.groupId))) {
+        request.session,
+        Read,
+        new Resource(Group, heartbeatRequest.groupId))) {
       val heartbeatResponse = new HeartbeatResponse(
         Errors.GROUP_AUTHORIZATION_FAILED.code)
       requestChannel.sendResponse(new Response(
@@ -1439,9 +1439,9 @@ class KafkaApis(
     }
 
     if (!authorize(
-          request.session,
-          Read,
-          new Resource(Group, leaveGroupRequest.groupId))) {
+        request.session,
+        Read,
+        new Resource(Group, leaveGroupRequest.groupId))) {
       val leaveGroupResponse = new LeaveGroupResponse(
         Errors.GROUP_AUTHORIZATION_FAILED.code)
       requestChannel.sendResponse(new Response(

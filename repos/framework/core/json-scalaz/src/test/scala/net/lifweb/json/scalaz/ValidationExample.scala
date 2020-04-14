@@ -69,5 +69,5 @@ object ValidationExample extends Specification {
       ranges mustEqual Success(List(Range(10, 17), Range(12, 13)))
     }
   }
- */
+   */
 }

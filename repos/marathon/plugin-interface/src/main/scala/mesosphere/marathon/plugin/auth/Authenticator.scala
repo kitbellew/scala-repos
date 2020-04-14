@@ -15,7 +15,6 @@ import scala.concurrent.Future
   *
   * The Resources will make sure, that the [[Authenticator#authenticate]]
   * will call this method only once per request.
-  *
   */
 trait Authenticator extends Plugin {
 

@@ -6,7 +6,7 @@ import org.apache.commons.math3.random.RandomGenerator
   * TODO
   *
   * @author dlwh
- **/
+  */
 class ThreadLocalRandomGenerator(genThunk: => RandomGenerator)
     extends RandomGenerator {
   private val genTL = new ThreadLocal[RandomGenerator] {

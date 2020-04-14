@@ -15,9 +15,8 @@ import breeze.util.SerializableLogging
   *
   * The only difference is that they square the regularization factor.
   *
-  *
   * @author dlwh
- **/
+  */
 object LSMR extends SerializableLogging {
 
   /**

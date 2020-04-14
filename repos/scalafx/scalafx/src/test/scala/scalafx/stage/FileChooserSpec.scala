@@ -37,8 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * FileChooser Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class FileChooserSpec

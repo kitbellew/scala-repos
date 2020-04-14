@@ -138,7 +138,7 @@ object Iterator {
     }
 
   /** Creates an infinite-length iterator which returns successive values from some start value.
-
+    *
     *  @param start the start value of the iterator
     *  @return      the iterator producing the infinite sequence of values `start, start + 1, start + 2, ...`
     */
@@ -1149,31 +1149,31 @@ trait Iterator[+A] extends TraversableOnce[A] {
       None // what to pad short sequences with
 
     /** Public functions which can be used to configure the iterator before use.
-	 *
-	 *  Pads the last segment if necessary so that all segments will
-	 *  have the same size.
-	 *
-	 *  @param x The element that will be appended to the last segment, if necessary.
-	 *  @return  The same iterator, and ''not'' a new iterator.
-	 *  @note    This method mutates the iterator it is called on, which can be safely used afterwards.
-	 *  @note    This method is mutually exclusive with `withPartial(true)`.
- 	 */
+      *
+      *  Pads the last segment if necessary so that all segments will
+      *  have the same size.
+      *
+      *  @param x The element that will be appended to the last segment, if necessary.
+      *  @return  The same iterator, and ''not'' a new iterator.
+      *  @note    This method mutates the iterator it is called on, which can be safely used afterwards.
+      *  @note    This method is mutually exclusive with `withPartial(true)`.
+      */
     def withPadding(x: => B): this.type = {
       pad = Some(() => x)
       this
     }
 
     /** Public functions which can be used to configure the iterator before use.
-  	 *
-	 *  Select whether the last segment may be returned with less than `size`
-	 *  elements. If not, some elements of the original iterator may not be
-	 *  returned at all.
-	 *
-	 *  @param x `true` if partial segments may be returned, `false` otherwise.
-	 *  @return  The same iterator, and ''not'' a new iterator.
-	 *  @note    This method mutates the iterator it is called on, which can be safely used afterwards.
-	 *  @note    This method is mutually exclusive with `withPadding`.
-	 */
+      *
+      *  Select whether the last segment may be returned with less than `size`
+      *  elements. If not, some elements of the original iterator may not be
+      *  returned at all.
+      *
+      *  @param x `true` if partial segments may be returned, `false` otherwise.
+      *  @return  The same iterator, and ''not'' a new iterator.
+      *  @note    This method mutates the iterator it is called on, which can be safely used afterwards.
+      *  @note    This method is mutually exclusive with `withPadding`.
+      */
     def withPartial(x: Boolean): this.type = {
       _partial = x
       if (_partial == true) // reset pad since otherwise it will take precedence

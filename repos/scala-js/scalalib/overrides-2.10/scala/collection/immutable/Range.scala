@@ -140,7 +140,7 @@ class Range(val start: Int, val end: Int, val step: Int)
     val terminal = terminalElement
     val step = this.step
     while (if (isCommonCase) { i != terminal }
-           else { count < numRangeElements }) {
+      else { count < numRangeElements }) {
       f(i)
       count += 1
       i += step

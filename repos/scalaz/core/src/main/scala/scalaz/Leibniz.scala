@@ -178,7 +178,6 @@ object Leibniz extends LeibnizInstances {
     * <a href="http://osdir.com/ml/haskell-cafe@haskell.org/2010-05/msg00114.html">Leibniz equality can be injective</a> (Oleg Kiselyov, Haskell Cafe Mailing List 2010)
     * but we instead turn to force.
     * </p>
-    *
     */
   def lower[
       LA,

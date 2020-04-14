@@ -173,7 +173,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
                 .nonEmpty
 
             if (setters.isEmpty && (getter.isEmpty || getter.get.name
-                  .startsWith("is"))) None
+                .startsWith("is"))) None
             else {
               val nameClashes = allMethodNames(name) || superGetterExists
               val tpe =
@@ -250,7 +250,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
           val generalName = "^on".r.replaceAllIn(am.name, "")
 
           if (specificName.length > am.name.length && specificName.contains(
-                generalName))
+              generalName))
             specificName
           else
             am.name
@@ -279,9 +279,9 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     def resolveListenerDuplication(listeners: List[AndroidListener]) =
       listeners map { l =>
         if (listeners
-              .filter(l2 =>
-                l.name == l2.name && l.setterArgTypes == l2.setterArgTypes)
-              .length > 1) {
+            .filter(l2 =>
+              l.name == l2.name && l.setterArgTypes == l2.setterArgTypes)
+            .length > 1) {
           val t = "(^set|^add|Listener$)".r.replaceAllIn(l.setter, "")
           l.copy(name = t.head.toLower + t.tail)
         } else l

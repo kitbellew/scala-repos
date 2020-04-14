@@ -31,9 +31,9 @@ class ScalaDocUnclosedTagWithoutParserInspection extends LocalInspectionTool {
       override def visitWikiSyntax(s: ScDocSyntaxElement) {
         val firstElementType = s.getFirstChild.getNode.getElementType
         if (!ScaladocSyntaxElementType.canClose(
-              firstElementType,
-              s.getLastChild.getNode.getElementType) &&
-            firstElementType != ScalaDocTokenType.DOC_HEADER && firstElementType != ScalaDocTokenType.VALID_DOC_HEADER) {
+            firstElementType,
+            s.getLastChild.getNode.getElementType) &&
+          firstElementType != ScalaDocTokenType.DOC_HEADER && firstElementType != ScalaDocTokenType.VALID_DOC_HEADER) {
 
           holder.registerProblem(
             holder.getManager.createProblemDescriptor(

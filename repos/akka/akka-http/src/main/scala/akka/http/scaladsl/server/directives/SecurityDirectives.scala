@@ -176,7 +176,6 @@ trait SecurityDirectives {
     * [[Authorization]] header of the request. If the function returns `Right(user)` the user object is provided
     * to the inner route. If the function returns `Left(challenge)` the request is rejected with an
     * [[AuthenticationFailedRejection]] that contains this challenge to be added to the response.
-    *
     */
   def authenticateOrRejectWithChallenge[T](
       authenticator: Option[HttpCredentials] ⇒ Future[AuthenticationResult[T]])

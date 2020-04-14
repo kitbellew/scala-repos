@@ -695,7 +695,6 @@ sealed abstract class Interval[A](implicit order: Order[A]) { lhs =>
     * set of all the translated points. I.e.
     *
     *     result = { p(x) | x ∈ interval }
-    *
     */
   def translate(p: Polynomial[A])(implicit ev: Field[A]): Interval[A] = {
     val terms2 = p.terms.map { case Term(c, e) => Term(Interval.point(c), e) }

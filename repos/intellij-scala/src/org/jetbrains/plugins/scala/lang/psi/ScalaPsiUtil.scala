@@ -109,9 +109,8 @@ object ScalaPsiUtil {
   def nameWithPrefixIfNeeded(c: PsiClass): String = {
     val qName = c.qualifiedName
     if (ScalaCodeStyleSettings
-          .getInstance(c.getProject)
-          .hasImportWithPrefix(qName))
-      qName.split('.').takeRight(2).mkString(".")
+        .getInstance(c.getProject)
+        .hasImportWithPrefix(qName)) qName.split('.').takeRight(2).mkString(".")
     else c.name
   }
 
@@ -333,7 +332,7 @@ object ScalaPsiUtil {
   }
 
   /**
-    *Pick all type parameters by method maps them to the appropriate type arguments, if they are
+    * Pick all type parameters by method maps them to the appropriate type arguments, if they are
     */
   def inferMethodTypesArgs(
       fun: PsiMethod,
@@ -457,7 +456,7 @@ object ScalaPsiUtil {
                 newProc.processType(tp, e, ResolveState.initial)
                 val res = newProc.candidatesS.nonEmpty
                 if (!noApplicability && res && processor
-                      .isInstanceOf[MethodResolveProcessor]) {
+                    .isInstanceOf[MethodResolveProcessor]) {
                   val mrp = processor.asInstanceOf[MethodResolveProcessor]
                   val newProc = new MethodResolveProcessor(
                     ref,
@@ -642,9 +641,9 @@ object ScalaPsiUtil {
             !internal.isInstanceOf[ScMethodType] && !internal
             .isInstanceOf[ScUndefinedType] =>
         if (!isDynamic || approveDynamic(
-              internal,
-              call.getProject,
-              call.getResolveScope)) {
+            internal,
+            call.getProject,
+            call.getResolveScope)) {
           val state: ResolveState =
             ResolveState.initial().put(BaseProcessor.FROM_TYPE_KEY, internal)
           processor.processType(internal, call.getEffectiveInvokedExpr, state)
@@ -653,9 +652,9 @@ object ScalaPsiUtil {
       case _ =>
     }
     if (candidates.isEmpty && (!isDynamic || approveDynamic(
-          exprTp.inferValueType,
-          call.getProject,
-          call.getResolveScope))) {
+        exprTp.inferValueType,
+        call.getProject,
+        call.getResolveScope))) {
       val state: ResolveState = ResolveState.initial
         .put(BaseProcessor.FROM_TYPE_KEY, exprTp.inferValueType)
       processor.processType(
@@ -787,11 +786,11 @@ object ScalaPsiUtil {
             tp match {
               case t: ScTypeParameterType =>
                 if (typeParameters.exists {
-                      case TypeParameter(_, _, _, _, ptp)
-                          if ptp == t.param && ptp.getOwner != ownerPtp.getOwner =>
-                        true
-                      case _ => false
-                    }) res = None
+                    case TypeParameter(_, _, _, _, ptp)
+                        if ptp == t.param && ptp.getOwner != ownerPtp.getOwner =>
+                      true
+                    case _ => false
+                  }) res = None
               case _ =>
             }
             (false, tp)
@@ -1123,7 +1122,7 @@ object ScalaPsiUtil {
             super.visitExpression(expr)
           case ref: ScReferenceExpression =>
             for (rr <- ref.multiResolve(false)
-                 if rr.isInstanceOf[ScalaResolveResult]) {
+              if rr.isInstanceOf[ScalaResolveResult]) {
               res = res ++ rr.asInstanceOf[ScalaResolveResult].importsUsed
             }
             super.visitExpression(expr)
@@ -1168,13 +1167,13 @@ object ScalaPsiUtil {
     val startOffset = start.getTextRange.getStartOffset
     val endOffset = end.getTextRange.getEndOffset
     if (commonParent.getTextRange.getStartOffset == startOffset &&
-        commonParent.getTextRange.getEndOffset == endOffset) {
+      commonParent.getTextRange.getEndOffset == endOffset) {
       var parent = commonParent.getParent
       var prev = commonParent
       if (parent == null || parent.getTextRange == null) return Seq(prev)
       while (parent.getTextRange.equalsToRange(
-               prev.getTextRange.getStartOffset,
-               prev.getTextRange.getEndOffset)) {
+          prev.getTextRange.getStartOffset,
+          prev.getTextRange.getEndOffset)) {
         prev = parent
         parent = parent.getParent
         if (parent == null || parent.getTextRange == null) return Seq(prev)
@@ -1491,7 +1490,7 @@ object ScalaPsiUtil {
           buffer.append(modifier + " ")
       case _ =>
         for (modifier <- modifiers.getNode.getChildren(null)
-             if !isLineTerminator(modifier.getPsi))
+          if !isLineTerminator(modifier.getPsi))
           buffer.append(modifier.getText + " ")
     }
     buffer.toString()
@@ -1517,9 +1516,9 @@ object ScalaPsiUtil {
       clazz: PsiClass,
       name: String): Seq[PhysicalSignature] = {
     for ((n: PhysicalSignature, _) <-
-           TypeDefinitionMembers.getSignatures(clazz).forName(name)._1
-         if clazz
-           .isInstanceOf[ScObject] || !n.method.hasModifierProperty("static"))
+        TypeDefinitionMembers.getSignatures(clazz).forName(name)._1
+      if clazz
+        .isInstanceOf[ScObject] || !n.method.hasModifierProperty("static"))
       yield n
   }
 
@@ -1808,7 +1807,7 @@ object ScalaPsiUtil {
    *   ScPostfixExpr	              0                   0	                        0	                0             0	              1        |    1
    *   ScTypedStmt	                0                   0	                        0	                0             0	              0        |    1
    *   ScMatchStmt	                0                   0	                        0	                0             0	              0        |    1
-	*		-----------------------------------------------------------------------------------------------------------------------------------
+   *		-----------------------------------------------------------------------------------------------------------------------------------
    *	  Other                       0                   0	                        0	                0             0	              0             0
    * */
   def needParentheses(from: ScExpression, expr: ScExpression): Boolean = {
@@ -2058,8 +2057,8 @@ object ScalaPsiUtil {
     val parent = e.getParent
 
     if (parent.isInstanceOf[ScGenerator] ||
-        parent.isInstanceOf[ScEnumerator] ||
-        parent.isInstanceOf[ScCaseClause]) {
+      parent.isInstanceOf[ScEnumerator] ||
+      parent.isInstanceOf[ScCaseClause]) {
       return true
     }
 
@@ -2088,11 +2087,11 @@ object ScalaPsiUtil {
   object MethodValue {
     def unapply(expr: ScExpression): Option[PsiMethod] = {
       if (!expr.expectedType(fromUnderscore = false).exists {
-            case ScFunctionType(_, _) => true
-            case expected if isSAMEnabled(expr) =>
-              toSAMType(expected, expr.getResolveScope).isDefined
-            case _ => false
-          }) {
+          case ScFunctionType(_, _) => true
+          case expected if isSAMEnabled(expr) =>
+            toSAMType(expected, expr.getResolveScope).isDefined
+          case _ => false
+        }) {
         return None
       }
       expr match {
@@ -2352,8 +2351,8 @@ object ScalaPsiUtil {
     else {
       for (bind <- bindings) {
         if (bind.getType(TypingContext.empty).toOption == instance
-              .getType(TypingContext.empty)
-              .toOption) return Option(bind)
+            .getType(TypingContext.empty)
+            .toOption) return Option(bind)
       }
       None
     }

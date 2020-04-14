@@ -470,7 +470,6 @@ object KleeneDemo {
     }
 
   /**
-    *
     */
   trait Compact[+A] {
     def map[B: Field](f: A => B): Compact[B] =
@@ -521,7 +520,6 @@ object KleeneDemo {
     }
 
   /**
-    *
     */
   def graphExample(): Unit = {
     // our example graph will be 5x5

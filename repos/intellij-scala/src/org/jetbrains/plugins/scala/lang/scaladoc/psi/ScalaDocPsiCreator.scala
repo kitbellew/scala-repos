@@ -15,8 +15,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.impl._
 
 /**
   * User: Alexander Podkhalyuzin
-  * Date: 22.07.2008
-  */
+  * Date: 22.07.2008 */
 
 object ScalaDocPsiCreator {
   import org.jetbrains.plugins.scala.lang.scaladoc.parser.ScalaDocElementTypes._
@@ -51,14 +50,14 @@ object ScalaDocPsiCreator {
         var parent = node.getTreeParent
 
         while (parent != null && parent.getPsi != null && !parent.getPsi
-                 .isInstanceOf[ScDocTag]) {
+            .isInstanceOf[ScDocTag]) {
           parent = parent.getTreeParent
         }
 
         if (parent != null && parent.getPsi != null &&
-            parent.getPsi
-              .asInstanceOf[ScDocTag]
-              .name == MyScaladocParsing.THROWS_TAG) {
+          parent.getPsi
+            .asInstanceOf[ScDocTag]
+            .name == MyScaladocParsing.THROWS_TAG) {
           new ScDocThrowTagValueImpl(node)
         } else {
           new ScDocTagValueImpl(node)

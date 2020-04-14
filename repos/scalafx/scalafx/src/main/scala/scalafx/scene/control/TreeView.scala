@@ -249,7 +249,6 @@ class TreeView[T](
   }
 
   /**
-    *
     */
   def selectionModel
       : ObjectProperty[jfxsc.MultipleSelectionModel[jfxsc.TreeItem[T]]] =

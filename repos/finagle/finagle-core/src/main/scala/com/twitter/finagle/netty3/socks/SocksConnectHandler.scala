@@ -180,8 +180,8 @@ class SocksConnectHandler(
     checkReadableBytes(4)
     buf.readBytes(bytes, 0, 4)
     if (bytes(0) == Version5 &&
-        bytes(1) == SuccessResponse &&
-        bytes(2) == Reserved) {
+      bytes(1) == SuccessResponse &&
+      bytes(2) == Reserved) {
       bytes(3) match {
         case IpV4Indicator =>
           discardBytes(4)

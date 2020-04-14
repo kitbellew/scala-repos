@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle
 
@@ -48,7 +48,6 @@ import java.io.OutputStream
   *   Vec[Int](1,2,3,na).at(0) == Scalar(1)
   *   Vec[Int](1,2,3,na).at(3) == NA
   * }}}
-  *
   *
   * The method `raw` accesses the underlying value directly.
   *
@@ -245,7 +244,6 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
 
   /**
     * Additive inverse of Vec with numeric elements
-    *
     */
   def unary_-(): Vec[T]
 
@@ -441,7 +439,6 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
     *   Vec(1, 2, NA, 3, NA).pad == Vec(1, 2, 2, 3, 3)
     *   Vec(NA, 1, 2, NA).pad == Vec(NA, 1, 2, 2)
     * }}}
-    *
     */
   def pad: Vec[T] = VecImpl.pad(this)(scalarTag)
 
@@ -455,7 +452,6 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
     *   Vec(NA, 1, 2, NA).padAtMost(1) == Vec(NA, 1, 2, 2)
     *   Vec(1, NA, NA, 3, NA).padAtMost(1) == Vec(1, 1, NA, 3, 3)
     * }}}
-    *
     */
   def padAtMost(n: Int): Vec[T] = VecImpl.pad(this, n)(scalarTag)
 
@@ -469,7 +465,6 @@ trait Vec[@spec(Boolean, Int, Long, Double) T]
 
   /**
     * Converts Vec to an indexed sequence (default implementation is immutable.Vector)
-    *
     */
   def toSeq: IndexedSeq[T] = toArray.toIndexedSeq
 

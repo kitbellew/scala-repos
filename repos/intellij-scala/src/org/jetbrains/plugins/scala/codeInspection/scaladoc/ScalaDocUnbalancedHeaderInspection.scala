@@ -30,7 +30,7 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
         }
 
         if (firstChildElementType == VALID_DOC_HEADER && (lastChildElementType == VALID_DOC_HEADER ||
-            lastChildElementType == DOC_HEADER)) {
+          lastChildElementType == DOC_HEADER)) {
           if (s.getFirstChild.getTextLength != s.getLastChild.getTextLength) {
             holder.registerProblem(
               holder.getManager.createProblemDescriptor(
@@ -47,7 +47,7 @@ class ScalaDocUnbalancedHeaderInspection extends LocalInspectionTool {
           var sibl = s.getNextSibling
           val firstSibl = sibl
           while (sibl != null && sibl.getNode.getElementType != DOC_COMMENT_END &&
-                 sibl.getNode.getElementType != DOC_WHITESPACE) {
+            sibl.getNode.getElementType != DOC_WHITESPACE) {
             val highlightedElement =
               if (s.getNextSibling != null) s.getNextSibling else s
             holder.registerProblem(
@@ -80,8 +80,8 @@ class ScalaDocHeaderBalanceQuickFix(opening: PsiElement, closing: PsiElement)
     val cl = getSecondElement
     if (!op.isValid || !cl.isValid) return
     if (op.getNode.getElementType != ScalaDocTokenType.VALID_DOC_HEADER ||
-        cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER &&
-        cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER) {
+      cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER &&
+      cl.getNode.getElementType != ScalaDocTokenType.DOC_HEADER) {
       return
     }
 

@@ -83,7 +83,7 @@ class ScalaInjectedStringLiteralManipulator
     val tripleQuote = "\"\"\""
 
     if (text.length >= 6 && text.startsWith(tripleQuote) && text.endsWith(
-          tripleQuote))
+        tripleQuote))
       new TextRange(3, text.length - 3)
     else new TextRange(1, Math.max(1, text.length - 1))
   }

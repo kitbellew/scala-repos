@@ -240,7 +240,7 @@ object ConfigCommand {
       }
       val entityTypeVal = options.valueOf(entityType)
       if (!entityTypeVal.equals(ConfigType.Topic) && !entityTypeVal.equals(
-            ConfigType.Client)) {
+          ConfigType.Client)) {
         throw new IllegalArgumentException(
           "--entity-type must be '%s' or '%s'"
             .format(ConfigType.Topic, ConfigType.Client))

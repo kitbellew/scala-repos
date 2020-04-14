@@ -218,7 +218,7 @@ class PoissonSampler[T: ClassTag](
     if (fraction <= 0.0) {
       Iterator.empty
     } else if (useGapSamplingIfPossible &&
-               fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
+      fraction <= RandomSampler.defaultMaxGapSamplingFraction) {
       new GapSamplingReplacementIterator(
         items,
         fraction,

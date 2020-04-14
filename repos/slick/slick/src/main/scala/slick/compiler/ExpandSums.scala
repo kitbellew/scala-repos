@@ -14,9 +14,9 @@ class ExpandSums extends Phase {
 
   def apply(state: CompilerState) =
     if (state
-          .get(Phase.assignUniqueSymbols)
-          .map(_.nonPrimitiveOption)
-          .getOrElse(true)) state.map(expandSums)
+        .get(Phase.assignUniqueSymbols)
+        .map(_.nonPrimitiveOption)
+        .getOrElse(true)) state.map(expandSums)
     else state
 
   val Disc1 = LiteralNode(ScalaBaseType.optionDiscType.optionType, Option(1))

@@ -45,7 +45,7 @@ final case class EvaluateConfig(
   */
 trait RunningTaskEngine {
 
-  /** Attempts to kill and shutdown the running task engine.*/
+  /** Attempts to kill and shutdown the running task engine. */
   def cancelAndShutdown(): Unit
 }
 
@@ -580,7 +580,7 @@ object EvaluateTask {
       state: State,
       streams: Streams): Unit =
     for (referenced <-
-           Previous.references in Global get Project.structure(state).data)
+        Previous.references in Global get Project.structure(state).data)
       Previous.complete(referenced, results, streams)
 
   def applyResults[T](

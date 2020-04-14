@@ -189,8 +189,8 @@ class YarnSparkHadoopUtilSuite
 
   test("test getClassPathSeparator result") {
     if (classOf[ApplicationConstants]
-          .getFields()
-          .exists(_.getName == "CLASS_PATH_SEPARATOR")) {
+        .getFields()
+        .exists(_.getName == "CLASS_PATH_SEPARATOR")) {
       YarnSparkHadoopUtil.getClassPathSeparator() should be("<CPS>")
     } else if (Utils.isWindows) {
       YarnSparkHadoopUtil.getClassPathSeparator() should be(";")

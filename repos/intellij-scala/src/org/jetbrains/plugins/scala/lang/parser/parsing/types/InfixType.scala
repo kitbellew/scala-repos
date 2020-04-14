@@ -10,8 +10,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.02.2008
-  */
+  * Date: 28.02.2008 */
 
 /*
  * InfixType ::= CompoundType {id [nl] CompoundType}
@@ -51,7 +50,7 @@ object InfixType {
     }
     var assoc: Int = 0 //this mark associativity: left - 1, right - -1
     while (builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && (!builder.newlineBeforeCurrentToken) &&
-           (!star || builder.getTokenText != "*") && (!isPattern || builder.getTokenText != "|")) {
+      (!star || builder.getTokenText != "*") && (!isPattern || builder.getTokenText != "|")) {
       count = count + 1
       //need to know associativity
       val s = builder.getTokenText

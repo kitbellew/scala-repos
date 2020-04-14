@@ -136,7 +136,7 @@ package x.y {
   }
 }
 
-/** Test successful compilation of lazy values of type Unit.  */
+/** Test successful compilation of lazy values of type Unit. */
 class UnitLazy extends A {
   lazy val lz = Console.println("UnitLazy.lz forced")
 }

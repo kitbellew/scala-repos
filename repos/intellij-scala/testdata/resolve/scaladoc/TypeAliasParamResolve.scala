@@ -8,7 +8,6 @@ class a {
     * @tparam <testref>U
     * @tparam <testref>Z
     * @tparam Q
-    *
     */
   type aaa[T, U, P, Q >: U, Z <: U]
 

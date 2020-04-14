@@ -38,7 +38,6 @@ import scalafx.scene.control.Alert.AlertType
 import scalafx.testutil.SFXEnumDelegateSpec
 
 /**
-  *
   * Test for [[scalafx.scene.control.Alert.AlertType]].
   */
 @RunWith(classOf[JUnitRunner])

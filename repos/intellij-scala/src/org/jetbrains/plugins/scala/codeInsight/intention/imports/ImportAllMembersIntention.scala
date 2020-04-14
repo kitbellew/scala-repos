@@ -17,8 +17,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 
 /**
   * Nikolay.Tropin
-  * 2014-03-19
-  */
+  * 2014-03-19 */
 class ImportAllMembersIntention extends PsiElementBaseIntentionAction {
   override def isAvailable(
       project: Project,

@@ -17,7 +17,6 @@ import breeze.linalg.axpy
 trait Scaling {
 
   /**
-    *
     * the largest (log) power of two we want to deal with
     */
   val scaleConstant: Int

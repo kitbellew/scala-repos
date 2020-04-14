@@ -160,7 +160,7 @@ sealed trait List[@specialized +A]
 
   /** Returns the <code>n</code> first elements of this list, or else the whole
     *  list, if it has less than <code>n</code> elements.
-
+    *
     *  @param n the number of elements to take.
     *  @return the <code>n</code> first elements of this list.
     */
@@ -855,23 +855,23 @@ object List extends SeqFactory[List] {
   }
 
   /** Lists with ordered elements are ordered
-  implicit def list2ordered[a <% Ordered[a]](x: List[a]): Ordered[List[a]] = new Ordered[List[a]] {
-    def compare [b >: List[a] <% Ordered[b]](y: b): Int = y match {
-      case y1: List[a] => compareLists(x, y1);
-      case _ => -(y compare x)
-    }
-    private def compareLists(xs: List[a], ys: List[a]): Int = {
-      if (xs.isEmpty && ys.isEmpty) 0
-      else if (xs.isEmpty) -1
-      else if (ys.isEmpty) 1
-      else {
-        val s = xs.head compare ys.head;
-        if (s != 0) s
-        else compareLists(xs.tail, ys.tail)
-      }
-    }
-  }
-  */
+    *  implicit def list2ordered[a <% Ordered[a]](x: List[a]): Ordered[List[a]] = new Ordered[List[a]] {
+    *    def compare [b >: List[a] <% Ordered[b]](y: b): Int = y match {
+    *      case y1: List[a] => compareLists(x, y1);
+    *      case _ => -(y compare x)
+    *    }
+    *    private def compareLists(xs: List[a], ys: List[a]): Int = {
+    *      if (xs.isEmpty && ys.isEmpty) 0
+    *      else if (xs.isEmpty) -1
+    *      else if (ys.isEmpty) 1
+    *      else {
+    *        val s = xs.head compare ys.head;
+    *        if (s != 0) s
+    *        else compareLists(xs.tail, ys.tail)
+    *      }
+    *    }
+    *  }
+    */
 }
 
 /** Only used for list serialization */

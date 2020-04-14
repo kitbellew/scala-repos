@@ -19,7 +19,6 @@ package com.twitter.summingbird.option
 import scala.util.Random
 
 /**
-  *
   * Accepts a lower bound and a percentage of fuzz. The internal
   * "size" function returns a random integer between the lower bound
   * and the fuzz percentage above that bound.

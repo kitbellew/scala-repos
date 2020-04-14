@@ -147,7 +147,7 @@ class ScalaLineBreakpointType
     if (method == null) return false
 
     if (!breakpoint.isInstanceOf[RunToCursorBreakpoint] && lambdaOrdinal(
-          breakpoint) == null) return true
+        breakpoint) == null) return true
 
     DebuggerUtil.inTheMethod(position, method)
   }

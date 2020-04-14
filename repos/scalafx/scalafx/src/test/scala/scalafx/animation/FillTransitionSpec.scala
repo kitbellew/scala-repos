@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * FillTransition Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class FillTransitionSpec

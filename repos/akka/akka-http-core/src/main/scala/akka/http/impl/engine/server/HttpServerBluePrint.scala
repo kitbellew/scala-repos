@@ -40,7 +40,6 @@ import akka.http.scaladsl.model.ws.Message
 /**
   * INTERNAL API
   *
-  *
   * HTTP pipeline setup (without the underlying SSL/TLS (un)wrapping and the websocket switch):
   *
   *                 +----------+          +-------------+          +-------------+             +-----------+
@@ -491,7 +490,7 @@ private[http] object HttpServerBluePrint {
 
     import akka.http.impl.util.JavaMapping.Implicits._
 
-    /** JAVA API **/
+    /** JAVA API * */
     def update(
         timeout: Duration,
         handler: Function[model.HttpRequest, model.HttpResponse]): Unit =

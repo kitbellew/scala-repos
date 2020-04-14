@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Chart Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class XYChartSpec

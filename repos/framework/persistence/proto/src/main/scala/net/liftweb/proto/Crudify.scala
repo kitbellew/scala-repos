@@ -32,7 +32,6 @@ import scala.xml._
   * Various methods can be overridden to
   * customize which operations are available to a user and how things are displayed.
   * For example, you can disable deletion of entities by overriding deleteMenuLoc to Empty.
-  *
   */
 trait Crudify {
 

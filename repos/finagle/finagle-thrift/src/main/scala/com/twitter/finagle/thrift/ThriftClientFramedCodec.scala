@@ -209,7 +209,7 @@ private[finagle] case class ThriftClientPreparer(
 
       val seqIdFilter =
         if (protocolFactory
-              .isInstanceOf[TBinaryProtocol.Factory] && !useCallerSeqIds)
+            .isInstanceOf[TBinaryProtocol.Factory] && !useCallerSeqIds)
           new SeqIdFilter
         else
           Filter.identity[ThriftClientRequest, Array[Byte]]

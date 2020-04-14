@@ -57,9 +57,9 @@ trait SQLServerProfile extends JdbcProfile {
 
   override protected[this] def loadProfileConfig: Config = {
     if (!GlobalConfig
-          .profileConfig("slick.driver.SQLServer")
-          .entrySet()
-          .isEmpty)
+        .profileConfig("slick.driver.SQLServer")
+        .entrySet()
+        .isEmpty)
       SlickLogger[SQLServerProfile].warn(
         "The config key 'slick.driver.SQLServer' is deprecated and not used anymore. Use 'slick.jdbc.SQLServerProfile' instead.")
     super.loadProfileConfig
@@ -151,8 +151,8 @@ trait SQLServerProfile extends JdbcProfile {
               case Some(s) => s
               case None =>
                 if (sym
-                      .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
-                      .isDefined)
+                    .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])
+                    .isDefined)
                   "VARCHAR(254)"
                 else "VARCHAR(MAX)"
             }

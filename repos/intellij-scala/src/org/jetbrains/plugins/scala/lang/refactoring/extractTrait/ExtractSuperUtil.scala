@@ -140,8 +140,8 @@ object ExtractSuperUtil {
       if (sourceRoot != null) {
         for (dir <- directories) {
           if (Comparing.equal(
-                fileIndex.getSourceRootForFile(dir.getVirtualFile),
-                sourceRoot)) {
+              fileIndex.getSourceRootForFile(dir.getVirtualFile),
+              sourceRoot)) {
             return dir
           }
         }

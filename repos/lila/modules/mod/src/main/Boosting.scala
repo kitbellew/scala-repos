@@ -53,13 +53,13 @@ final class BoostingApi(
 
   def check(game: Game, whiteUser: User, blackUser: User): Funit = {
     if (game.rated
-        && game.accountable
-        && game.playedTurns <= 10
-        && !game.isTournament
-        && game.winnerColor.isDefined
-        && variants.contains(game.variant)
-        && !game.isCorrespondence
-        && game.clock.fold(false) { _.limitInMinutes >= 1 }) {
+      && game.accountable
+      && game.playedTurns <= 10
+      && !game.isTournament
+      && game.winnerColor.isDefined
+      && variants.contains(game.variant)
+      && !game.isCorrespondence
+      && game.clock.fold(false) { _.limitInMinutes >= 1 }) {
       game.winnerColor match {
         case Some(a) => {
           val result: GameResult = a match {

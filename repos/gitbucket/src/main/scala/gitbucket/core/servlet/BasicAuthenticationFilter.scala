@@ -100,10 +100,10 @@ class BasicAuthenticationFilter
     }
 
     if (filter.filter(
-          request.gitRepositoryPath,
-          account.map(_.userName),
-          settings,
-          isUpdating)) {
+        request.gitRepositoryPath,
+        account.map(_.userName),
+        settings,
+        isUpdating)) {
       chain.doFilter(request, response)
     } else {
       requireAuth(response)
@@ -134,9 +134,9 @@ class BasicAuthenticationFilter
               } yield
                 if (isUpdating || repository.repository.isPrivate) {
                   if (hasWritePermission(
-                        repository.owner,
-                        repository.name,
-                        Some(account))) {
+                      repository.owner,
+                      repository.name,
+                      Some(account))) {
                     request.setAttribute(
                       Keys.Request.UserName,
                       account.userName)

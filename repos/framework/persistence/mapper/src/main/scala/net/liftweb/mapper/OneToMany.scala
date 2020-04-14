@@ -62,11 +62,11 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
   override def delete_! =
     DB.use(connectionIdentifier) { _ =>
       if (oneToManyFields.forall {
-            (_: MappedOneToManyBase[_ <: Mapper[_]]) match {
-              case f: Cascade[_] => f.delete_!
-              case _             => true
-            }
-          })
+          (_: MappedOneToManyBase[_ <: Mapper[_]]) match {
+            case f: Cascade[_] => f.delete_!
+            case _             => true
+          }
+        })
         super.delete_!
       else {
         DB.rollback(connectionIdentifier)
@@ -298,7 +298,7 @@ trait OneToMany[K, T <: KeyedMapper[K, T]] extends KeyedMapper[K, T] {
     def delete_! = {
       delegate.forall { e =>
         if (foreign(e).get ==
-              OneToMany.this.primaryKeyField.get) {
+            OneToMany.this.primaryKeyField.get) {
           e.delete_!
         } else
           true // doesn't constitute a failure

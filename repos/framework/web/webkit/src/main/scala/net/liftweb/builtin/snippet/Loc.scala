@@ -48,7 +48,6 @@ import net.liftweb.common._
   * If the locid is not found, it will just render
   *
   * <h2>Some header</h2>
-  *
   */
 object Loc extends DispatchSnippet {
   def dispatch: DispatchIt = {

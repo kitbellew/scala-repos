@@ -526,7 +526,7 @@ object ScalaDocumentationProvider {
       owner.getDocComment match {
         case scalaComment: ScDocComment =>
           for (docTag <- scalaComment.findTagsByName(
-                 Set(PARAM_TAG, TYPE_PARAM_TAG).contains _)) {
+              Set(PARAM_TAG, TYPE_PARAM_TAG).contains _)) {
             docTag.name match {
               case PARAM_TAG => registerInheritedParam(inheritedParams, docTag)
               case TYPE_PARAM_TAG =>
@@ -631,7 +631,7 @@ object ScalaDocumentationProvider {
         processTypeParams(function)
 
         for (annotation <- function.annotations
-             if annotation.annotationExpr.getText.startsWith("throws")) {
+          if annotation.annotationExpr.getText.startsWith("throws")) {
           buffer
             .append(leadingAsterisks)
             .append(MyScaladocParsing.THROWS_TAG)

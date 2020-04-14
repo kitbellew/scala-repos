@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Region Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class RegionSpec

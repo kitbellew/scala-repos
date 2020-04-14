@@ -1,7 +1,6 @@
 /**
   * Scala Compiler Will Crash On this File
   * ... Or Will It?
-  *
   */
 
 object Crash {

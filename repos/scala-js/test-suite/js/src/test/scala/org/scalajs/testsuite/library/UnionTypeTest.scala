@@ -112,8 +112,8 @@ class UnionTypeTest {
     assertEquals("hello", x2)
 
     /* Note: the *total* upper bound does not work without an explicit
-   * `merge`, because the expected type is not an | type.
-   */
+     * `merge`, because the expected type is not an | type.
+     */
   }
 
   @Test def merge(): Unit = {

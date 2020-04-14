@@ -6,7 +6,6 @@ import runtime.ScalaRunTime
 import breeze.optimize.DiffFunction
 
 /**
-  *
   * @author dlwh
   */
 

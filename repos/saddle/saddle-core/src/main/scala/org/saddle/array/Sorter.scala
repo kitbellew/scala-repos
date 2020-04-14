@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
-**/
+  */
 
 package org.saddle.array
 
@@ -29,8 +29,7 @@ import org.joda.time.DateTime
 import org.saddle.scalar.ScalarTagTime
 
 /**
-  * Typeclass interface for sorting implementations
-  */
+  * Typeclass interface for sorting implementations */
 trait Sorter[T] {
   def argSorted(arr: Array[T]): Array[Int]
   def sorted(arr: Array[T]): Array[T]

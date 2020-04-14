@@ -39,7 +39,6 @@ object RadioMenuItem {
 
 /**
   * Wrapper class for [[scalafx.scene.control.RadioMenuItem]]
-  *
   */
 class RadioMenuItem(override val delegate: jfxsc.RadioMenuItem)
     extends MenuItem(delegate)

@@ -65,7 +65,6 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     *         - does not support re-writing writes to (mutable) boxes (see E2)
     *         - does not support re-writing reads of boxes that also escape (see E3)
     *
-    *
     * E1: M1 only works if there's a single boxing operation.
     *   def e1(b: Boolean) = {
     *     val i: Integer = box(10) // 10 is stored into a new local, box operation and i removed
@@ -89,7 +88,6 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     *     (r1.elem, r2.elem)
     *   }
     *
-    *
     * E3: escaping boxes with multiple boxing operations cannot be rewritten.
     *   M1: see E1.
     *   M2: at *, instead of an Integer, an Int is on the stack, but the escape method expects an
@@ -104,14 +102,12 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     *     unbox(if (b) i else j)
     *  }
     *
-    *
     * E4: M1 supports rewriting unbox operations of immutable boxes that escape
     *   def e4 = {
     *     val i: Integer = box(10) // 10 is stored into a new local, loaded as argument for the box call
     *     escape(i)                // not changed, still loads the local i holding the box
     *     unbox(i)                 // rewritten to a pop (of the box) and a load of the local variable
     *   }
-    *
     *
     * E4 seems to be a bit of a corner case, but it's necessary to unblock box eliminations with
     * mutual dependencies. Example:
@@ -155,12 +151,10 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     * removes the `throw new MatchError(local1)`. After eliminating the allocation of the outer tuple,
     * the inner tuple (stored in newLocal1) can also be eliminated.
     *
-    *
     * Special case for tuples wrt specialization: a tuple getter may box or unbox the value stored
     * in the tuple: calling `_1` on a `Tuple2$mcII$sp` boxes the primitive Int stored in the tuple.
     * Similarly, calling `_1$mcI$sp` on a non-specialized `Tuple2` unboxes the Integer in the tuple.
     * When eliminating such getters, we have to introduce appropriate box / unbox calls.
-    *
     *
     * TODO: add new calls (box / unbox) to the call graph (not urgent)
     * TODO: update the call graph because stack heights change (not urgent).
@@ -696,8 +690,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
               val initializedInstanceCons =
                 prodCons.consumersOfValueAt(afterInit, stackTopAfterInit)
               if (initializedInstanceCons == dupConsWithoutInit && prodCons
-                    .producersForValueAt(afterInit, stackTopAfterInit) == Set(
-                    dupOp)) {
+                  .producersForValueAt(afterInit, stackTopAfterInit) == Set(
+                  dupOp)) {
                 return Some((dupOp, initCall))
               }
             }
@@ -721,7 +715,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       if (receiverProds.size == 1) {
         val prod = receiverProds.head
         if (isPredefLoad(prod) && prodCons.consumersOfOutputsFrom(prod) == Set(
-              mi)) return Some(prod)
+            mi)) return Some(prod)
       }
       None
     }
@@ -770,14 +764,13 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             checkKind(mi).map((StaticFactory(mi, loadInitialValues = None), _))
           else if (isPredefAutoBox(mi))
             for (predefLoad <- BoxKind.checkReceiverPredefLoad(mi, prodCons);
-                 kind <- checkKind(mi))
+              kind <- checkKind(mi))
               yield (ModuleFactory(predefLoad, mi), kind)
           else None
 
         case ti: TypeInsnNode if ti.getOpcode == NEW =>
           for ((dupOp, initCall) <- BoxKind.checkInstanceCreation(ti, prodCons)
-               if isPrimitiveBoxConstructor(initCall);
-               kind <- checkKind(initCall))
+            if isPrimitiveBoxConstructor(initCall); kind <- checkKind(initCall))
             yield (InstanceCreation(ti, dupOp, initCall), kind)
 
         case _ => None
@@ -854,8 +847,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
 
         case ti: TypeInsnNode if ti.getOpcode == NEW =>
           for ((dupOp, initCall) <- BoxKind.checkInstanceCreation(ti, prodCons)
-               if isRuntimeRefConstructor(initCall);
-               kind <- checkKind(initCall))
+            if isRuntimeRefConstructor(initCall); kind <- checkKind(initCall))
             yield (InstanceCreation(ti, dupOp, initCall), kind)
 
         case _ => None
@@ -921,7 +913,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         // no need to check for TupleN.apply: the compiler transforms case companion apply calls to constructor invocations
         case ti: TypeInsnNode if ti.getOpcode == NEW =>
           for ((dupOp, initCall) <- BoxKind.checkInstanceCreation(ti, prodCons)
-               if isTupleConstructor(initCall); kind <- checkKind(initCall))
+            if isTupleConstructor(initCall); kind <- checkKind(initCall))
             yield (InstanceCreation(ti, dupOp, initCall), kind)
 
         case _ => None

@@ -14,7 +14,6 @@ import java.util.concurrent.locks.{ReentrantLock, Lock}
   *
   * @param detectorFactory
   *   By-name parameter that returns the failure detector instance to be used by a newly registered resource
-  *
   */
 class DefaultFailureDetectorRegistry[A](detectorFactory: () ⇒ FailureDetector)
     extends FailureDetectorRegistry[A] {
@@ -77,8 +76,8 @@ class DefaultFailureDetectorRegistry[A](detectorFactory: () ⇒ FailureDetector)
     val oldTable = resourceToFailureDetector.get
     // if we won the race then update else try again
     if (!resourceToFailureDetector.compareAndSet(
-          oldTable,
-          Map.empty[A, FailureDetector])) reset() // recur
+        oldTable,
+        Map.empty[A, FailureDetector])) reset() // recur
 
   }
 

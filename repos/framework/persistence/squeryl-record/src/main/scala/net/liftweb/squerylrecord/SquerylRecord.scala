@@ -58,9 +58,8 @@ object SquerylRecord extends Loggable {
     }
 
   /**
-    *
     * NOTE: Remove this along with the deprecated method below
     * Keep track of the current Squeryl Session we've created using DB
-    * */
+    */
   private object currentSession extends DynoVar[Session]
 }

@@ -66,7 +66,7 @@ object ArrayBuilder {
       val elemRuntimeClass =
         if (classOf[Unit] == elementClass) classOf[BoxedUnit]
         else if (classOf[Null] == elementClass || classOf[
-                   Nothing] == elementClass) classOf[Object]
+            Nothing] == elementClass) classOf[Object]
         else elementClass
       genericArrayBuilderResult(elemRuntimeClass, elems)
     }

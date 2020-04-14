@@ -108,7 +108,7 @@ trait FunctionAnnotator {
       } else if (unitFunction && explicitReturn && !emptyReturn) {
         redundantReturnExpression()
       } else if (!unitFunction && !anyReturn && !underCatchBlock && !usageType
-                   .conforms(functionType)) {
+          .conforms(functionType)) {
         typeMismatch()
       }
 

@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * LinearGradient Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class LinearGradientSpec

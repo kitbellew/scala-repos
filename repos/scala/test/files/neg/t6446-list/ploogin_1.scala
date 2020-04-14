@@ -5,7 +5,7 @@ import scala.tools.nsc.plugins.{Plugin, PluginComponent}
 import scala.reflect.io.Path
 import scala.reflect.io.File
 
-/** A test plugin.  */
+/** A test plugin. */
 class Ploogin(val global: Global) extends Plugin {
   import global._
 

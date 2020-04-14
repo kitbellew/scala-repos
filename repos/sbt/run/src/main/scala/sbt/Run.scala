@@ -69,7 +69,7 @@ class ForkRun(config: ForkOptions) extends ScalaRun {
 class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
     extends ScalaRun {
 
-  /** Runs the class 'mainClass' using the given classpath and options using the scala runner.*/
+  /** Runs the class 'mainClass' using the given classpath and options using the scala runner. */
   def run(
       mainClass: String,
       classpath: Seq[File],
@@ -123,7 +123,7 @@ class Run(instance: ScalaInstance, trapExit: Boolean, nativeTmp: File)
   }
 }
 
-/** This module is an interface to starting the scala interpreter or runner.*/
+/** This module is an interface to starting the scala interpreter or runner. */
 object Run {
   def run(
       mainClass: String,

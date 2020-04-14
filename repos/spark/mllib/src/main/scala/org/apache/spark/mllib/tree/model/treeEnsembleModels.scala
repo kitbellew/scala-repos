@@ -59,7 +59,6 @@ class RandomForestModel @Since("1.2.0") (
   require(trees.forall(_.algo == algo))
 
   /**
-    *
     * @param sc  Spark context used to save model data.
     * @param path  Path specifying the directory in which to save this model.
     *              If the directory already exists, this method throws an exception.
@@ -83,7 +82,6 @@ object RandomForestModel extends Loader[RandomForestModel] {
     TreeEnsembleModel.SaveLoadV1_0.thisFormatVersion
 
   /**
-    *
     * @param sc  Spark context used for loading model files.
     * @param path  Path specifying the directory to which the model was saved.
     * @return  Model instance

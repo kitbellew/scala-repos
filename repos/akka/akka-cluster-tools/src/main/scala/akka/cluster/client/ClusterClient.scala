@@ -686,7 +686,6 @@ object ClusterReceptionist {
   * since the client should normally send subsequent messages via the `ClusterClient`.
   * It is possible to pass the original sender inside the reply messages if
   * the client is supposed to communicate directly to the actor in the cluster.
-  *
   */
 final class ClusterReceptionist(
     pubSubMediator: ActorRef,

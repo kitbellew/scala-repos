@@ -12,8 +12,7 @@
   * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+  * limitations under the License. */
 
 package kafka.integration
 
@@ -315,7 +314,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
         "Topic metadata is not correctly updated for broker " + x + ".\n" +
           "Expected ISR: " + expectedIsr + "\n" +
           "Actual ISR  : " + (if (metadata.topicsMetadata.nonEmpty &&
-                                  metadata.topicsMetadata.head.partitionsMetadata.nonEmpty)
+                                metadata.topicsMetadata.head.partitionsMetadata.nonEmpty)
                                 metadata.topicsMetadata.head.partitionsMetadata.head.isr
                               else
                                 ""),

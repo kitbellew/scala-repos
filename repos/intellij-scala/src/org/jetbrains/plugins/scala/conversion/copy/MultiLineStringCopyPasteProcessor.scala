@@ -25,7 +25,7 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
       text: String): String = {
     val settings = ScalaCodeStyleSettings.getInstance(file.getProject)
     if (!file.isInstanceOf[
-          ScalaFile] || !settings.PROCESS_MARGIN_ON_COPY_PASTE || startOffsets.length != 1 || endOffsets.length != 1)
+        ScalaFile] || !settings.PROCESS_MARGIN_ON_COPY_PASTE || startOffsets.length != 1 || endOffsets.length != 1)
       return null
     findOuterString(file.findElementAt(startOffsets(0))) match {
       case Some(element)
@@ -51,7 +51,7 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
     val element = file.findElementAt(offset)
 
     if (checkElement(element) ||
-        offset < element.getTextOffset + 3) return text
+      offset < element.getTextOffset + 3) return text
 
     val marginChar = getMarginChar(element)
     val textRange = new TextRange(
@@ -59,8 +59,8 @@ class MultiLineStringCopyPasteProcessor extends CopyPastePreProcessor {
       offset)
 
     (if (document.getText(textRange).trim.length == 0 && (text
-           .trim()
-           .length == 0 || text.trim.charAt(0) != marginChar))
+         .trim()
+         .length == 0 || text.trim.charAt(0) != marginChar))
        marginChar
      else "") + text.replace("\n", "\n " + marginChar)
   }

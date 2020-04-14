@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ChoiceBoxListCell Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ChoiceBoxListCellSpec[T]

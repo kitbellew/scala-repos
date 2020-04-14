@@ -47,7 +47,6 @@ trait JoinAlgorithms {
     *
     * If you are only joining two pipes, then you are better off
     * using joinWithSmaller/joinWithLarger/joinWithTiny/leftJoinWithTiny.
-    *
     */
   def coGroupBy(f: Fields, j: JoinMode = InnerJoinMode)(
       builder: CoGroupBuilder => GroupBuilder): Pipe = {
@@ -240,7 +239,6 @@ trait JoinAlgorithms {
     * joins the first set of keys in the first pipe to the second set of keys in the second pipe.
     * Duplicated join keys are allowed, but
     * the second copy is deleted (as cascading does not allow duplicated field names).
-    *
     *
     * == Warning ==
     * This does not work with outer joins, or right joins, only inner and

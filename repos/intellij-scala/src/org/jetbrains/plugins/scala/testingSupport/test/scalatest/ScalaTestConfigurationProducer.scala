@@ -67,7 +67,7 @@ class ScalaTestConfigurationProducer extends {
     if (element == null) return None
 
     if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+        .isInstanceOf[PsiDirectory]) {
       val name = element match {
         case p: PsiPackage   => p.getName
         case d: PsiDirectory => d.getName
@@ -118,7 +118,7 @@ class ScalaTestConfigurationProducer extends {
     val element = location.getPsiElement
     if (element == null) return false
     if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+        .isInstanceOf[PsiDirectory]) {
       if (!configuration.isInstanceOf[ScalaTestRunConfiguration]) return false
       return TestConfigurationUtil.isPackageConfiguration(
         element,
@@ -148,9 +148,9 @@ class ScalaTestConfigurationProducer extends {
     if (clazz == null) return (null, null)
     val tb = clazz.extendsBlock.templateBody.orNull
     while (PsiTreeUtil.getParentOfType(
-             clazz,
-             classOf[ScTypeDefinition],
-             true) != null) {
+        clazz,
+        classOf[ScTypeDefinition],
+        true) != null) {
       clazz =
         PsiTreeUtil.getParentOfType(clazz, classOf[ScTypeDefinition], true)
     }
@@ -222,10 +222,10 @@ class ScalaTestConfigurationProducer extends {
               }
             }
             if (containingClass != null &&
-                fqns.exists(fqn =>
-                  fqn == containingClass.qualifiedName || isInheritor(
-                    containingClass,
-                    fqn))) {
+              fqns.exists(fqn =>
+                fqn == containingClass.qualifiedName || isInheritor(
+                  containingClass,
+                  fqn))) {
               if (!failedToCheck) {
                 val res = inv(call)
                 if (res.isDefined)
@@ -545,7 +545,7 @@ class ScalaTestConfigurationProducer extends {
       var elem: PsiElement = it
       var parent = it.getParent
       while (parent != null && (!parent
-               .isInstanceOf[ScTemplateBody] || parent != tb)) {
+          .isInstanceOf[ScTemplateBody] || parent != tb)) {
         elem = parent
         parent = parent.getParent
       }
@@ -770,7 +770,7 @@ class ScalaTestConfigurationProducer extends {
         false)
       while (fun != null) {
         if (fun.getParent
-              .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
+            .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
           if (fun.name.startsWith("test")) {
             return Some(fun.name)
           }
@@ -789,7 +789,7 @@ class ScalaTestConfigurationProducer extends {
         false)
       while (fun != null) {
         if (fun.getParent
-              .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
+            .isInstanceOf[ScTemplateBody] && fun.containingClass == clazz) {
           if (fun.hasAnnotation(annot) != None) {
             return Some(fun.name)
           }
@@ -845,11 +845,11 @@ class ScalaTestConfigurationProducer extends {
           .find(_.isDefined)
           .getOrElse(None) ++
         /**
-              //TODO: actually implement checkSpec for scalatest 2.0 Spec
-        checkSpec("org.scalatest.Spec") ++
-        checkSpec("org.scalatest.SpecLike") ++
-        checkSpec("org.scalatest.fixture.Spec") ++
-        checkSpec("org.scalatest.fixture.SpecLike") ++
+          *              //TODO: actually implement checkSpec for scalatest 2.0 Spec
+          *        checkSpec("org.scalatest.Spec") ++
+          *        checkSpec("org.scalatest.SpecLike") ++
+          *        checkSpec("org.scalatest.fixture.Spec") ++
+          *        checkSpec("org.scalatest.fixture.SpecLike") ++
           */
         //this is intended for scalatest versions < 2.0
         getFunSpecBasesPre2_0.toStream

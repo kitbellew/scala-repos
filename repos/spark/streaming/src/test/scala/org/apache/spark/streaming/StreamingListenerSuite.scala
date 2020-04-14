@@ -261,8 +261,8 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     _ssc.start()
     // Make sure running at least one batch
     if (!batchCounter.waitUntilBatchesCompleted(
-          expectedNumCompletedBatches = 1,
-          timeout = 10000)) {
+        expectedNumCompletedBatches = 1,
+        timeout = 10000)) {
       fail("The first batch cannot complete in 10 seconds")
     }
     // When reaching here, we can make sure `StreamingContextStoppingCollector` won't call

@@ -20,8 +20,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScTypeAliasStub
 /**
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
-  * Time: 9:55:13
-  */
+  * Time: 9:55:13 */
 class ScTypeAliasDefinitionImpl private (
     stub: StubElement[ScTypeAlias],
     nodeType: IElementType,

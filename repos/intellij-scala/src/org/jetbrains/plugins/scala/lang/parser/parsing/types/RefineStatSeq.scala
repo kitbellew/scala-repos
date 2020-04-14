@@ -9,8 +9,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.02.2008
-  */
+  * Date: 28.02.2008 */
 
 object RefineStatSeq {
   def parse(builder: ScalaPsiBuilder) {

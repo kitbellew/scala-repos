@@ -9,10 +9,10 @@ trait SI_5287_B extends SI_5287_A {
 trait SI_5287 extends SI_5287_B {
 
   /**
-	 * Some explanation
-	 *
-	 * @usecase def method(): Int
-	 * The usecase explanation
-	 */
+    * Some explanation
+    *
+    * @usecase def method(): Int
+    * The usecase explanation
+    */
   override def method(implicit a: Int): Int = a + 3
 }

@@ -160,7 +160,7 @@ private[util] class NavigableView[E](
     val boxed = Box(toElement)
 
     val headSetFun =
-      if (inclusive)() => innerNow.to(boxed)
+      if (inclusive) () => innerNow.to(boxed)
       else () => innerNow.until(boxed)
 
     new NavigableView(this, headSetFun, None, true, Some(toElement), inclusive)
@@ -171,7 +171,7 @@ private[util] class NavigableView[E](
     val boxed = Box(fromElement)
 
     val tailSetFun =
-      if (inclusive)() => innerNow.from(boxed)
+      if (inclusive) () => innerNow.from(boxed)
       else () => innerNow.from(boxed) - boxed
 
     new NavigableView(

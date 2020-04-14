@@ -16,7 +16,6 @@ import java.util.Arrays
   *
   * Note that toString of the ring nodes are used for the node
   * hash, i.e. make sure it is different for different nodes.
-  *
   */
 class ConsistentHash[T: ClassTag] private (
     nodes: immutable.SortedMap[Int, T],

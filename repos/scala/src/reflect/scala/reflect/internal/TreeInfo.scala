@@ -91,7 +91,6 @@ abstract class TreeInfo {
     * NOTE: Trees with errors are (mostly) excluded.
     *
     * Path ::= StableId | [id ‘.’] this
-    *
     */
   def isPath(tree: Tree, allowVolatile: Boolean): Boolean =
     tree match {
@@ -428,7 +427,6 @@ abstract class TreeInfo {
     * }}}
     *
     * Background: [[https://groups.google.com/d/msg/scala-internals/qwa_XOw_7Ks/IktkeTBYqg0J]]
-    *
     */
   def isVarPatternDeep(tree: Tree): Boolean = {
     def isVarPatternDeep0(tree: Tree): Boolean = {

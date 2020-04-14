@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * FileChooser.ExtensionFilter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class FileChooserExtensionFilterSpec

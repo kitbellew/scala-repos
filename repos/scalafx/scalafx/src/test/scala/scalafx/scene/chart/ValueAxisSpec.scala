@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ValueAxis Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ValueAxisSpec[T <: Number]

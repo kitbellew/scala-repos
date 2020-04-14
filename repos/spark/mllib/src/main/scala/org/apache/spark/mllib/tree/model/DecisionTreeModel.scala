@@ -367,7 +367,6 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
   }
 
   /**
-    *
     * @param sc  Spark context used for loading model files.
     * @param path  Path specifying the directory to which the model was saved.
     * @return  Model instance

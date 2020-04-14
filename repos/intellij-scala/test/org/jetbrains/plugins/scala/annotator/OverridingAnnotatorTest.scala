@@ -249,7 +249,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
       override def visitVariable(varr: ScVariable): Unit = {
         if (varr.getParent.isInstanceOf[ScTemplateBody] ||
-            varr.getParent.isInstanceOf[ScEarlyDefinitions]) {
+          varr.getParent.isInstanceOf[ScEarlyDefinitions]) {
           annotator.checkOverrideVars(varr, mock, isInSources = false)
         }
         super.visitVariable(varr)
@@ -257,7 +257,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
 
       override def visitValue(v: ScValue): Unit = {
         if (v.getParent.isInstanceOf[ScTemplateBody] ||
-            v.getParent.isInstanceOf[ScEarlyDefinitions]) {
+          v.getParent.isInstanceOf[ScEarlyDefinitions]) {
           annotator.checkOverrideVals(v, mock, isInSources = false)
         }
         super.visitValue(v)

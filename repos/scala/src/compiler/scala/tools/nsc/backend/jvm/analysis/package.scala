@@ -58,7 +58,6 @@ package scala.tools.nsc.backend.jvm
   *   - the analyzer also tracks active exception handlers at each instruction
   *   - the empty method `newControlFlowEdge` can be overridden to track control flow if required
   *
-  *
   * MaxLocals and MaxStack
   * ----------------------
   *
@@ -97,11 +96,9 @@ package scala.tools.nsc.backend.jvm
   *   addFrame.getStackSize // 2: the two long values only take one slot each
   *   addFrame.getLocals    // 5: this takes one slot, the two long parameters take 2 slots each
   *
-  *
   * While running the optimizer, we need to make sure that the `maxStack` value of a method is
   * large enough for running an ASM analyzer. We don't need to worry if the value is incorrect in
   * the JVM perspective: the value will be re-computed and overwritten in the ClassWriter.
-  *
   *
   * Lessons learnt while benchmarking the alias tracking analysis
   * -------------------------------------------------------------
@@ -139,7 +136,6 @@ package scala.tools.nsc.backend.jvm
   * backend, one can easily run it from a separate program (or the repl). The bytecode to analyze
   * can simply be parsed from a classfile. See example at the end of this comment.
   *
-  *
   * Nullness Analysis in Miguel's Optimizer
   * ---------------------------------------
   *
@@ -160,7 +156,6 @@ package scala.tools.nsc.backend.jvm
   * makes alias set merging more efficient.
   *
   * [1] https://github.com/scala-opt/scala/blob/opt/rebase/src/compiler/scala/tools/nsc/backend/bcode/NullnessPropagator.java
-  *
   *
   * Complexity and scaling of analysis
   * ----------------------------------
@@ -220,10 +215,8 @@ package scala.tools.nsc.backend.jvm
   *   12236      621         5520         0.637
   *   13238      621         6170         0.638
   *
-  *
   * When running a BasicValue analysis, the complexity observation is the same (time is proportional
   * to #ins * #loc^2).
-  *
   *
   * Measuring analysis execution time
   * ---------------------------------

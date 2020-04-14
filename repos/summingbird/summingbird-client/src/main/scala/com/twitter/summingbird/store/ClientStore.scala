@@ -111,7 +111,6 @@ object ClientStore {
   *
   * At a high level, the computation performed by the multiGet is the following:
   *
-  *
   * - Look up the set of requested keys in the offlineStore. The
   *   offlineStore holds K -> (BatchID, V).
   *

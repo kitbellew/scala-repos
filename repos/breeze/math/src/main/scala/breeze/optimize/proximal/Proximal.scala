@@ -50,7 +50,7 @@ case class ProjectProbabilitySimplex(s: Double) extends Proximal {
 
 /**
   * Projection formula from Duchi et al's paper Efficient Projections onto the l1-Ball for Learning in High Dimensions
-  * */
+  */
 case class ProjectL1(s: Double) extends Proximal {
   val projectSimplex = ProjectProbabilitySimplex(s)
 

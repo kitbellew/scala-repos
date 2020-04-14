@@ -5,7 +5,7 @@ import breeze.linalg.{DenseMatrix, DenseVector}
 import breeze.math.Complex
 import breeze.signal.support.JTransformsSupport._
 
-/**Returns the inverse fast fourier transform of a DenseVector or DenseMatrix. Currently,
+/** Returns the inverse fast fourier transform of a DenseVector or DenseMatrix. Currently,
   * DenseVector/DenseMatrix types of Double and Complex are supported. Scaling
   * follows the common signal processing convention, i.e. no scaling on forward DFT,
   * and <b>1/n scaling for the inverse DFT</b>. Of note, ifft(x: DenseMatrix[Double]) will
@@ -13,12 +13,10 @@ import breeze.signal.support.JTransformsSupport._
   * toolbox syntax, which performs column-wise 1D ifft.</p>
   * Implementation is via the implicit trait CanIFFT[ InputType,  OutputType ],
   * which is found in breeze.signal.support.CanIFFT.scala.
-  *
   */
 object iFourierTr extends UFunc {
 
   /** Use via implicit delegate syntax ifft(x: DenseVector)
-    *
     */
   implicit val dvDoubleIFFT
       : iFourierTr.Impl[DenseVector[Double], DenseVector[Complex]] = {
@@ -38,7 +36,6 @@ object iFourierTr extends UFunc {
   }
 
   /** Use via implicit delegate syntax ifft(x: DenseVector)
-    *
     */
   implicit val dvComplexIFFT
       : iFourierTr.Impl[DenseVector[Complex], DenseVector[Complex]] = {
@@ -58,7 +55,6 @@ object iFourierTr extends UFunc {
   }
 
   /** Use via implicit delegate syntax ifft(x: DenseMatrix)
-    *
     */
   implicit val dmComplex2DIFFT
       : iFourierTr.Impl[DenseMatrix[Complex], DenseMatrix[Complex]] = {
@@ -78,7 +74,6 @@ object iFourierTr extends UFunc {
   }
 
   /** Use via implicit delegate syntax ifft(x: DenseMatrix)
-    *
     */
   implicit val dmDouble2DIFFT
       : iFourierTr.Impl[DenseMatrix[Double], DenseMatrix[Complex]] = {

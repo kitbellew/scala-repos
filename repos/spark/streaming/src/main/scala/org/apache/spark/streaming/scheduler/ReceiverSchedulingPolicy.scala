@@ -125,7 +125,7 @@ private[streaming] class ReceiverSchedulingPolicy {
     // For those receivers that don't have preferredLocation, make sure we assign at least one
     // executor to them.
     for (scheduledLocationsForOneReceiver <-
-           scheduledLocations.filter(_.isEmpty)) {
+        scheduledLocations.filter(_.isEmpty)) {
       // Select the executor that has the least receivers
       val (leastScheduledExecutor, numReceivers) =
         numReceiversOnExecutor.minBy(_._2)

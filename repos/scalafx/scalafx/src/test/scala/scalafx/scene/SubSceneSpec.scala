@@ -37,8 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Shape Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SubSceneSpec

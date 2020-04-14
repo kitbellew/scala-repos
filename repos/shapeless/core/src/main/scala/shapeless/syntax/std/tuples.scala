@@ -520,7 +520,6 @@ final class TupleOps[T](t: T) extends Serializable {
       scanR: RightScanner[T, Z, op.type]): scanR.Out = scanR(t, z)
 
   /**
-    *
     * Produces a new tuple where a slice of this tuple is replaced by another. Available only if there are at least
     * ``n`` plus ``m`` elements.
     */

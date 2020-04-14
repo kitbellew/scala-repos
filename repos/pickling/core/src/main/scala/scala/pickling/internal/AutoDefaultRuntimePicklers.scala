@@ -7,7 +7,6 @@ import scala.pickling.spi.PicklerRegistry
 
 /** Helper method to help register picklers which can handle special/crazy classes for runtime generration.
   *
-  *
   * Note: Currently this only handles Tuple2s
   */
 trait RuntimePicklerRegistryHelper extends PicklerRegistry {

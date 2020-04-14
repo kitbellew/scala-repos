@@ -88,7 +88,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
     * For example, the method symbol for `Byte.unbox()`) is mapped to the PrimitiveBType BYTE. */
   lazy val unboxResultType: Map[Symbol, PrimitiveBType] = {
     for ((valueClassSym, unboxMethodSym) <-
-           currentRun.runDefinitions.unboxMethod)
+        currentRun.runDefinitions.unboxMethod)
       yield unboxMethodSym -> primitiveTypeToBType(valueClassSym)
   }
 

@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /**
-  *
   */
 ////
 trait Zip[F[_]] { self =>
@@ -11,7 +10,7 @@ trait Zip[F[_]] { self =>
 
   // derived functions
 
-  /**The composition of Zip `F` and `G`, `[x]F[G[x]]`, is a Zip (if F is a Functor) */
+  /** The composition of Zip `F` and `G`, `[x]F[G[x]]`, is a Zip (if F is a Functor) */
   def compose[G[_]](implicit T0: Functor[F], G0: Zip[G]): Zip[λ[α => F[G[α]]]] =
     new CompositionZip[F, G] {
       implicit def T = T0
@@ -19,7 +18,7 @@ trait Zip[F[_]] { self =>
       implicit def G = G0
     }
 
-  /**The product of Zips `F` and `G`, `[x](F[x], G[x]])`, is a Zip */
+  /** The product of Zips `F` and `G`, `[x](F[x], G[x]])`, is a Zip */
   def product[G[_]](implicit G0: Zip[G]): Zip[λ[α => (F[α], G[α])]] =
     new ProductZip[F, G] {
       implicit def F = self

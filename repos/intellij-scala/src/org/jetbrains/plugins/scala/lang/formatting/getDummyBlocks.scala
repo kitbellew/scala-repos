@@ -3,8 +3,7 @@ package lang
 package formatting
 
 /**
-  * @author ilyas
-  */
+  * @author ilyas */
 
 import _root_.java.util
 
@@ -73,9 +72,9 @@ object getDummyBlocks {
       case _: ScValue | _: ScVariable
           if settings.ALIGN_GROUP_FIELD_DECLARATIONS =>
         if (node.getTreeParent.getPsi match {
-              case _: ScEarlyDefinitions | _: ScTemplateBody => true;
-              case _                                         => false
-            }) {
+            case _: ScEarlyDefinitions | _: ScTemplateBody => true;
+            case _                                         => false
+          }) {
           subBlocks.addAll(getFieldGroupSubBlocks(node, block))
           return subBlocks
         }
@@ -232,7 +231,7 @@ object getDummyBlocks {
           if (firstNode == null) {
             acc.reverse
           } else if (ScalaDocNewlinedPreFormatProcessor.isWhiteSpace(
-                       firstNode)) {
+              firstNode)) {
             getNonWsSiblings(firstNode.getTreeNext, acc)
           } else {
             getNonWsSiblings(firstNode.getTreeNext, firstNode :: acc)
@@ -340,11 +339,11 @@ object getDummyBlocks {
             }
           case _: ScMethodCall | _: ScReferenceExpression =>
             if (child.getElementType == ScalaTokenTypes.tIDENTIFIER &&
-                child.getPsi.getParent.isInstanceOf[ScReferenceExpression] &&
-                child.getPsi.getParent
-                  .asInstanceOf[ScReferenceExpression]
-                  .qualifier
-                  .isEmpty) null
+              child.getPsi.getParent.isInstanceOf[ScReferenceExpression] &&
+              child.getPsi.getParent
+                .asInstanceOf[ScReferenceExpression]
+                .qualifier
+                .isEmpty) null
             else if (child.getPsi.isInstanceOf[ScExpression]) null
             else alignment
           case _: ScXmlStartTag | _: ScXmlEmptyTag =>
@@ -368,7 +367,7 @@ object getDummyBlocks {
         scalaSettings,
         block.suggestedWrap)
       if (child.getFirstChildNode == null && child.getElementType == ScalaTokenTypes.tINTERPOLATED_MULTILINE_STRING &&
-          scalaSettings.MULTILINE_STRING_SUPORT != ScalaCodeStyleSettings.MULTILINE_STRING_NONE) {
+        scalaSettings.MULTILINE_STRING_SUPORT != ScalaCodeStyleSettings.MULTILINE_STRING_NONE) {
         //flatten interpolated strings
         subBlocks.addAll(getMultilineStringBlocks(child, block))
       } else {
@@ -400,7 +399,7 @@ object getDummyBlocks {
     def flattenChildren(multilineNode: ASTNode, buffer: ArrayBuffer[ASTNode]) {
       for (nodeChild <- multilineNode.getChildren(null)) {
         if (nodeChild.getText.contains(
-              "\n") && nodeChild.getFirstChildNode != null) {
+            "\n") && nodeChild.getFirstChildNode != null) {
           flattenChildren(nodeChild, buffer)
         } else {
           buffer += nodeChild
@@ -409,8 +408,8 @@ object getDummyBlocks {
     }
 
     if (ScalaDocTokenType.ALL_SCALADOC_TOKENS.contains(node.getElementType) ||
-        (node.getTreeParent != null && node.getTreeParent.getElementType == ScalaDocElementTypes.DOC_TAG &&
-        node.getPsi.isInstanceOf[PsiErrorElement])) {
+      (node.getTreeParent != null && node.getTreeParent.getElementType == ScalaDocElementTypes.DOC_TAG &&
+      node.getPsi.isInstanceOf[PsiErrorElement])) {
       val children = ArrayBuffer[ASTNode]()
       var scaladocNode = node.getElementType match {
         case ScalaDocTokenType.DOC_TAG_VALUE_TOKEN =>
@@ -453,11 +452,11 @@ object getDummyBlocks {
           val firstSibling = node.getTreeParent.getFirstChildNode
           val (childAlignment, childWrap) =
             if (node.getTreeParent.getElementType == ScalaDocElementTypes.DOC_TAG &&
-                child.getElementType != ScalaDocTokenType.DOC_WHITESPACE &&
-                child.getElementType != ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS &&
-                child != firstSibling &&
-                firstSibling.getElementType == ScalaDocTokenType.DOC_TAG_NAME &&
-                child.getText.trim().length() > 0) {
+              child.getElementType != ScalaDocTokenType.DOC_WHITESPACE &&
+              child.getElementType != ScalaDocTokenType.DOC_COMMENT_LEADING_ASTERISKS &&
+              child != firstSibling &&
+              firstSibling.getElementType == ScalaDocTokenType.DOC_TAG_NAME &&
+              child.getText.trim().length() > 0) {
               val wrap = Wrap.createWrap(WrapType.NONE, false)
               (
                 firstSibling.getText match {
@@ -504,7 +503,7 @@ object getDummyBlocks {
       do {
         val indent = ScalaIndentProcessor.getChildIndent(block, child)
         if (isCorrectBlock(child) && !child.getPsi
-              .isInstanceOf[ScTemplateParents]) {
+            .isInstanceOf[ScTemplateParents]) {
           val (childAlignment, childWrap) = (
             block.getCustomAlignment(child).orNull,
             arrangeSuggestedWrapForChild(
@@ -571,7 +570,7 @@ object getDummyBlocks {
         var breaks = 0
         def isOk(psi: PsiElement): Boolean = {
           if (psi.isInstanceOf[PsiWhiteSpace] || ScalaPsiUtil.isLineTerminator(
-                psi)) {
+              psi)) {
             psi.getText.foreach(c => if (c == '\n') breaks += 1)
             return false
           }
@@ -607,7 +606,7 @@ object getDummyBlocks {
           newAlignment
         }
         if (child.getElementType == ScalaTokenTypes.tFUNTYPE ||
-            child.getElementType == ScalaTokenTypes.tFUNTYPE_ASCII) {
+          child.getElementType == ScalaTokenTypes.tFUNTYPE_ASCII) {
           if (prev == null) return createNewAlignment
           val prevChild =
             prev.findChildByType(TokenSet
@@ -654,7 +653,7 @@ object getDummyBlocks {
         var breaks = 0
         def isOk(psi: PsiElement): Boolean = {
           if (psi.isInstanceOf[PsiWhiteSpace] || ScalaPsiUtil.isLineTerminator(
-                psi)) {
+              psi)) {
             psi.getText.foreach(c => if (c == '\n') breaks += 1)
             return false
           }
@@ -730,7 +729,7 @@ object getDummyBlocks {
             return getChildAlignment(prev, child)
           } else return getAlignment(prevChild)
         } else if (child.getElementType == ScalaTokenTypes.kVAL ||
-                   child.getElementType == ScalaTokenTypes.kVAR) {
+          child.getElementType == ScalaTokenTypes.kVAR) {
           if (prev == null) return createNewAlignment
           val prevChild = prev.findChildByType(
             TokenSet.create(ScalaTokenTypes.kVAL, ScalaTokenTypes.kVAR))
@@ -1055,9 +1054,9 @@ object getDummyBlocks {
             null,
             settings))
         if (line.length > linePrefixLength + 2 && line.charAt(
-              linePrefixLength + 1) == ' ' ||
-            line.length > linePrefixLength + 1 && line.charAt(
-              linePrefixLength + 1) != ' ') {
+            linePrefixLength + 1) == ' ' ||
+          line.length > linePrefixLength + 1 && line.charAt(
+            linePrefixLength + 1) != ' ') {
           val suffixOffset =
             if (line.charAt(linePrefixLength + 1) == ' ') 2 else 1
 
@@ -1083,8 +1082,8 @@ object getDummyBlocks {
               alignment)
           else if (trimmedLine.startsWith("\"\"\"") && acc == 0) {
             if (Option(node.getTreePrev).exists(
-                  _.getElementType == ScalaElementTypes.INTERPOLATED_PREFIX_LITERAL_REFERENCE) &&
-                line.length > 3) {
+                _.getElementType == ScalaElementTypes.INTERPOLATED_PREFIX_LITERAL_REFERENCE) &&
+              line.length > 3) {
               //split beginning of interpolated string (s"""|<string>) to facilitate alignment in difficult cases
               // first, add block for opening quotes
               subBlocks.add(

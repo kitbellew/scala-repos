@@ -9,7 +9,7 @@ import breeze.numerics._
   * [[http://en.wikipedia.org/wiki/Student's_t-distribution]]
   *
   * @author dlwh
- **/
+  */
 case class StudentsT(degreesOfFreedom: Double)(implicit
     randBasis: RandBasis = Rand)
     extends ContinuousDistr[Double]

@@ -39,7 +39,7 @@ private[akka] case class ActorMaterializerImpl(
   override def logger = _logger
 
   if (settings.fuzzingMode && !system.settings.config.hasPath(
-        "akka.stream.secret-test-fuzzing-warning-disable")) {
+      "akka.stream.secret-test-fuzzing-warning-disable")) {
     _logger.warning(
       "Fuzzing mode is enabled on this system. If you see this warning on your production system then " +
         "set akka.stream.materializer.debug.fuzzing-mode to off.")
@@ -212,7 +212,7 @@ private[akka] case class ActorMaterializerImpl(
 
           val impl =
             if (subflowFuser != null && !effectiveAttributes.contains(
-                  Attributes.AsyncBoundary)) {
+                Attributes.AsyncBoundary)) {
               subflowFuser(shell)
             } else {
               val props = ActorGraphInterpreter.props(shell)

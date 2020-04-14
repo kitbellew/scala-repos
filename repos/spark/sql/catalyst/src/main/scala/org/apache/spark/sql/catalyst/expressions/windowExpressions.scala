@@ -68,7 +68,7 @@ case class WindowSpecDefinition(
               Some(
                 "This Range Window Frame only accepts at most one ORDER BY expression.")
             } else if (orderSpec.nonEmpty && !orderSpec.head.dataType
-                         .isInstanceOf[NumericType]) {
+                .isInstanceOf[NumericType]) {
               Some(
                 "The data type of the expression in the ORDER BY clause should be a numeric type.")
             } else {
@@ -247,7 +247,7 @@ case object UnboundedFollowing extends FrameBoundary {
   */
 sealed trait WindowFrame
 
-/** Used as a place holder when a frame specification is not defined.  */
+/** Used as a place holder when a frame specification is not defined. */
 case object UnspecifiedFrame extends WindowFrame
 
 /** A specified Window Frame. */
@@ -289,7 +289,6 @@ case class SpecifiedWindowFrame(
 object SpecifiedWindowFrame {
 
   /**
-    *
     * @param hasOrderSpecification If the window spec has order by expressions.
     * @param acceptWindowFrame If the window function accepts user-specified frame.
     * @return

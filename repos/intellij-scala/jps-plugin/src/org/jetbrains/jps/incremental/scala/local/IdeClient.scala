@@ -43,7 +43,7 @@ abstract class IdeClient(
 
     context.getProjectDescriptor.getProject.getName
     if (kind == Kind.WARNING && ScalaReflectMacroExpansionParser.isMacroMessage(
-          text)) {
+        text)) {
       ScalaReflectMacroExpansionParser.processMessage(text)
     } else {
       val withoutPointer =

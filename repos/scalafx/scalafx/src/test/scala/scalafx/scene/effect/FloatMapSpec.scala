@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * FloatMap Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class FloatMapSpec

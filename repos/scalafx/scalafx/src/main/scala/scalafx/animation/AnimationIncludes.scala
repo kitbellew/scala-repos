@@ -48,7 +48,6 @@ object AnimationIncludes extends AnimationIncludes
 trait AnimationIncludes {
 
   /**
-    *
     * @param time Duration time
     * @param v Function which returns a [[scalafx.animation.KeyValue]] [[scala.collection.immutable.Set]]
     * @return new KeyFrame

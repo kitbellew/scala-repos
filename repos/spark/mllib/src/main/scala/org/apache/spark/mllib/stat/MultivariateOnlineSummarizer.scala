@@ -180,7 +180,6 @@ class MultivariateOnlineSummarizer
 
   /**
     * Sample mean of each dimension.
-    *
     */
   @Since("1.1.0")
   override def mean: Vector = {
@@ -197,7 +196,6 @@ class MultivariateOnlineSummarizer
 
   /**
     * Unbiased estimate of sample variance of each dimension.
-    *
     */
   @Since("1.1.0")
   override def variance: Vector = {
@@ -223,14 +221,12 @@ class MultivariateOnlineSummarizer
 
   /**
     * Sample size.
-    *
     */
   @Since("1.1.0")
   override def count: Long = totalCnt
 
   /**
     * Number of nonzero elements in each dimension.
-    *
     */
   @Since("1.1.0")
   override def numNonzeros: Vector = {
@@ -241,7 +237,6 @@ class MultivariateOnlineSummarizer
 
   /**
     * Maximum value of each dimension.
-    *
     */
   @Since("1.1.0")
   override def max: Vector = {
@@ -257,7 +252,6 @@ class MultivariateOnlineSummarizer
 
   /**
     * Minimum value of each dimension.
-    *
     */
   @Since("1.1.0")
   override def min: Vector = {
@@ -273,7 +267,6 @@ class MultivariateOnlineSummarizer
 
   /**
     * L2 (Euclidian) norm of each dimension.
-    *
     */
   @Since("1.2.0")
   override def normL2: Vector = {
@@ -292,7 +285,6 @@ class MultivariateOnlineSummarizer
 
   /**
     * L1 norm of each dimension.
-    *
     */
   @Since("1.2.0")
   override def normL1: Vector = {

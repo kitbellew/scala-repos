@@ -36,47 +36,46 @@ import scala.xml.{NodeSeq, Text, Elem, UnprefixedAttribute, Null, Node}
   * For example, the following code implements a simple API that takes a comma-
   * separated string of integers and reduces them with various operations.
   *
-<pre name="code" class="scala">
-object CalculatorApi extends XmlApiHelper {
-  // Define our root tag
-  def createTag(contents : NodeSeq) : Elem = &lt;api>{contents}&lt;/api>
-
-  // The LiftResponses here will be converted to Box[LiftResponse]
-  // via the putResponseInBox implicit conversion
-  def calculator : LiftRules.DispatchPF = {
-    case r @ Req(List("api","sum"), _, GetRequest) => () => doSum(r)
-    case r @ Req(List("api","product"), _, GetRequest) => () => doProduct(r)
-    case r @ Req(List("api","max"), _, GetRequest) => () => doMax(r)
-    case r @ Req(List("api","min"), _, GetRequest) => () => doMin(r)
-    case Req("api" :: _, _, _) => () => BadResponse()
-  }
-
-  // Define a common handler
-  def reduceOp (operation : (Int,Int) => Int)(r : Req) : Box[Elem] = tryo {
-    (r.param("args").map {
-      args => &lt;result>{args.split(",").map(_.toInt).reduceLeft(operation)}&lt;/result>
-     }) ?~ "Missing args"
-  } match {
-    case Full(x) => x
-    case f : Failure => f
-    case Empty => Empty
-  }
-
-  // Using a return type of LiftResponse causes the canNodeToResponse
-  // implicit to be invoked
-  def doSum (r : Req) : LiftResponse = reduceOp(_ + _)(r)
-  def doProduct (r : Req) : LiftResponse = reduceOp(_ * _)(r)
-  def doMax (r : Req) : LiftResponse = reduceOp(_ max _)(r)
-  def doMin (r : Req) : LiftResponse = reduceOp(_ min _)(r)
-}
-</pre>
+  * <pre name="code" class="scala">
+  * object CalculatorApi extends XmlApiHelper {
+  *  // Define our root tag
+  *  def createTag(contents : NodeSeq) : Elem = &lt;api>{contents}&lt;/api>
+  *
+  *  // The LiftResponses here will be converted to Box[LiftResponse]
+  *  // via the putResponseInBox implicit conversion
+  *  def calculator : LiftRules.DispatchPF = {
+  *    case r @ Req(List("api","sum"), _, GetRequest) => () => doSum(r)
+  *    case r @ Req(List("api","product"), _, GetRequest) => () => doProduct(r)
+  *    case r @ Req(List("api","max"), _, GetRequest) => () => doMax(r)
+  *    case r @ Req(List("api","min"), _, GetRequest) => () => doMin(r)
+  *    case Req("api" :: _, _, _) => () => BadResponse()
+  *  }
+  *
+  *  // Define a common handler
+  *  def reduceOp (operation : (Int,Int) => Int)(r : Req) : Box[Elem] = tryo {
+  *    (r.param("args").map {
+  *      args => &lt;result>{args.split(",").map(_.toInt).reduceLeft(operation)}&lt;/result>
+  *     }) ?~ "Missing args"
+  *  } match {
+  *    case Full(x) => x
+  *    case f : Failure => f
+  *    case Empty => Empty
+  *  }
+  *
+  *  // Using a return type of LiftResponse causes the canNodeToResponse
+  *  // implicit to be invoked
+  *  def doSum (r : Req) : LiftResponse = reduceOp(_ + _)(r)
+  *  def doProduct (r : Req) : LiftResponse = reduceOp(_ * _)(r)
+  *  def doMax (r : Req) : LiftResponse = reduceOp(_ max _)(r)
+  *  def doMin (r : Req) : LiftResponse = reduceOp(_ min _)(r)
+  * }
+  * </pre>
   *
   * With this API, the URL <pre>http://foo.com/api/sum?args=1,2,3,4,5</pre> would
   * return
-<pre name="code" class="xml">
-&lt;api operation="sum" success="true">&lt;result>15&lt;/result>&lt;/api>
-</pre>
-  *
+  * <pre name="code" class="xml">
+  * &lt;api operation="sum" success="true">&lt;result>15&lt;/result>&lt;/api>
+  * </pre>
   */
 trait XMLApiHelper {
 

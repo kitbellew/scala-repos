@@ -110,11 +110,11 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
       else {
         val frameMethodName = frameProxy.location().method().name()
         if ((myMethodName == null) || frameMethodName.startsWith(
-              myMethodName)) {
+            myMethodName)) {
           try {
             val values = frameProxy.getArgumentValues
             if (values != null && !values.isEmpty && myParameterIndex >= 0 && myParameterIndex < values
-                  .size()) {
+                .size()) {
               Some(values.get(myParameterIndex))
             } else {
               None
@@ -154,7 +154,7 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
           val frameProxy: StackFrameProxyImpl = myContext.getFrameProxy
           try {
             if (DebuggerUtil.isScalaRuntimeRef(
-                  myEvaluatedVariable.getType.name())) {
+                myEvaluatedVariable.getType.name())) {
               frameProxy.getValue(myEvaluatedVariable) match {
                 case objRef: ObjectReference =>
                   val field = objRef.referenceType().fieldByName("elem")

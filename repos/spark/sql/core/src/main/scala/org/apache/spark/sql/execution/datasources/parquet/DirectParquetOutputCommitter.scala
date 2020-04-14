@@ -64,8 +64,8 @@ private[datasources] class DirectParquetOutputCommitter(
     val fileSystem = outputPath.getFileSystem(configuration)
 
     if (configuration.getBoolean(
-          ParquetOutputFormat.ENABLE_JOB_SUMMARY,
-          true)) {
+        ParquetOutputFormat.ENABLE_JOB_SUMMARY,
+        true)) {
       try {
         val outputStatus = fileSystem.getFileStatus(outputPath)
         val footers = ParquetFileReader.readAllFootersInParallel(
@@ -92,8 +92,8 @@ private[datasources] class DirectParquetOutputCommitter(
     }
 
     if (configuration.getBoolean(
-          "mapreduce.fileoutputcommitter.marksuccessfuljobs",
-          true)) {
+        "mapreduce.fileoutputcommitter.marksuccessfuljobs",
+        true)) {
       try {
         val successPath =
           new Path(outputPath, FileOutputCommitter.SUCCEEDED_FILE_NAME)

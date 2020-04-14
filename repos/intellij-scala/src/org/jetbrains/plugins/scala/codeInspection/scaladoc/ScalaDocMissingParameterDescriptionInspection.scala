@@ -29,7 +29,7 @@ class ScalaDocMissingParameterDescriptionInspection
     new ScalaElementVisitor {
       override def visitTag(s: ScDocTag) {
         if (!ScalaDocMissingParameterDescriptionInspection.OurTags.contains(
-              s.name) || s.getValueElement == null) {
+            s.name) || s.getValueElement == null) {
           return
         }
 

@@ -279,9 +279,9 @@ private[round] final class Round(
     op.addEffect { events =>
       if (events.nonEmpty) socketHub ! Tell(gameId, EventList(events))
       if (events exists {
-            case e: Event.Move => e.threefold
-            case _             => false
-          }) self ! Threefold
+          case e: Event.Move => e.threefold
+          case _             => false
+        }) self ! Threefold
     }.void recover errorHandler("publish")
 
   private def errorHandler(name: String): PartialFunction[Throwable, Unit] = {

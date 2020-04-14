@@ -59,8 +59,8 @@ private final class Analyzer(
 
     if (errors.nonEmpty) {
       /* If we have errors after linkClasses(), we're in deep trouble, and
-     * we cannot continue.
-     */
+       * we cannot continue.
+       */
     } else {
       /* Hijacked classes are always instantiated, because values of primitive
        * types are their instances.
@@ -351,7 +351,7 @@ private final class Analyzer(
           existing
         } { defaultTarget =>
           if (existing.exists(
-                _.defaultBridgeTarget == defaultTarget.owner.encodedName)) {
+              _.defaultBridgeTarget == defaultTarget.owner.encodedName)) {
             /* If we found an existing bridge targeting the right method, we
              * can reuse it.
              * We also get here with None when there is no target whatsoever.

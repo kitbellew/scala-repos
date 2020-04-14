@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Shape Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ShapeSpec

@@ -25,7 +25,6 @@
   *   without recomputing the match.
   * * [[scala.util.matching.Regex.Match]] converts a [[scala.util.matching.Regex.Match]]
   *   into a [[java.lang.String]].
-  *
   */
 package scala.util.matching
 
@@ -726,7 +725,6 @@ object Regex {
     *  import scala.util.matching.Regex.Match
     *  """\w+""".r replaceAllIn ("A simple example.", _ match { case Match(s) => s.toUpperCase })
     *  }}}
-    *
     */
   object Match {
     def unapply(m: Match): Some[String] = Some(m.matched)

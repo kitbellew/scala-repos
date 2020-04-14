@@ -40,8 +40,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ObservableSet[T] Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ObservableSetSpec[T]

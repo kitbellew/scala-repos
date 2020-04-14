@@ -161,12 +161,12 @@ trait WikiControllerBase extends ControllerBase {
       val Array(from, to) = params("commitId").split("\\.\\.\\.")
 
       if (revertWikiPage(
-            repository.owner,
-            repository.name,
-            from,
-            to,
-            context.loginAccount.get,
-            Some(pageName))) {
+          repository.owner,
+          repository.name,
+          from,
+          to,
+          context.loginAccount.get,
+          Some(pageName))) {
         redirect(
           s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}")
       } else {
@@ -180,12 +180,12 @@ trait WikiControllerBase extends ControllerBase {
     val Array(from, to) = params("commitId").split("\\.\\.\\.")
 
     if (revertWikiPage(
-          repository.owner,
-          repository.name,
-          from,
-          to,
-          context.loginAccount.get,
-          None)) {
+        repository.owner,
+        repository.name,
+        from,
+        to,
+        context.loginAccount.get,
+        None)) {
       redirect(s"/${repository.owner}/${repository.name}/wiki/")
     } else {
       flash += "info" -> "This patch was not able to be reversed."
@@ -332,7 +332,7 @@ trait WikiControllerBase extends ControllerBase {
         if (value.exists("\\/:*?\"<>|".contains(_))) {
           Some(s"${name} contains invalid character.")
         } else if (notReservedPageName(value) && (value.startsWith("_") || value
-                     .startsWith("-"))) {
+            .startsWith("-"))) {
           Some(s"${name} starts with invalid character.")
         } else {
           None

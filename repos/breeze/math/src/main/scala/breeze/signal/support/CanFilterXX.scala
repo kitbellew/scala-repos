@@ -1,8 +1,7 @@
 package breeze.signal.support
 
-/**Implementation for BP, BS, LP and HP filters (CanFilterBPBS, CanFilterLPHP)
-  * @author ktakagaki
-  */
+/** Implementation for BP, BS, LP and HP filters (CanFilterBPBS, CanFilterLPHP)
+  * @author ktakagaki */
 import breeze.linalg.{DenseVector, DenseMatrix}
 import breeze.signal._
 
@@ -12,8 +11,7 @@ import breeze.signal._
   * option arguments) may be added in the future, so it is recommended not
   * to call these implicit delegates directly. Instead, use filterBP(x: DenseVector) or filterBS(x: DenseVector).
   *
-  * @author ktakagaki
-  */
+  * @author ktakagaki */
 trait CanFilterBPBS[Input, Output] {
   def apply(
       data: Input,
@@ -49,7 +47,6 @@ trait CanFilterLPHP[Input, Output] {
 object CanFilterBPBS {
 
   /** Use via implicit delegate syntax filterBP(x: DenseVector) and filterBS(x: DenseVector)
-    *
     */
   implicit val dvDouble1DFilterBPBS
       : CanFilterBPBS[DenseVector[Double], DenseVector[Double]] = {
@@ -90,7 +87,6 @@ object CanFilterBPBS {
 object CanFilterLPHP {
 
   /** Use via implicit delegate syntax filterLP(x: DenseVector) and filterHP(x: DenseVector)
-    *
     */
   implicit val dvDouble1DFilterLPHP
       : CanFilterLPHP[DenseVector[Double], DenseVector[Double]] = {

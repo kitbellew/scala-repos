@@ -207,7 +207,7 @@ object SessionSettings {
     withSettings(s) { session =>
       val newSettings =
         for ((ref, settings) <- session.append
-             if settings.nonEmpty && include(ref)) yield {
+          if settings.nonEmpty && include(ref)) yield {
           val (news, olds) = writeSettings(
             ref,
             settings.toList,

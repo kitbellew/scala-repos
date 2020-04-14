@@ -33,7 +33,7 @@ object Test {
     ){(v: si.instance.Out)si.instance.Out}(
       23{<error>}
     ){<error>};
-   */
+     */
 
   }
 }

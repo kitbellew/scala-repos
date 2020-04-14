@@ -190,7 +190,7 @@ import scala.language.implicitConversions
   *  @since   2.8
   *  @see [[http://docs.scala-lang.org/overviews/collections/concrete-immutable-collection-classes.html#streams "Scala's Collection Library overview"]]
   *  section on `Streams` for more information.
-
+  *
   *  @define naturalsEx def naturalsFrom(i: Int): Stream[Int] = i #:: naturalsFrom(i + 1)
   *  @define Coll `Stream`
   *  @define coll stream
@@ -600,7 +600,6 @@ abstract class Stream[+A]
     * parts._2 take 10 mkString ", "
     * // produces: "1, 3, 5, 7, 9, 11, 13, 15, 17, 19"
     * }}}
-    *
     */
   override def partition(p: A => Boolean): (Stream[A], Stream[A]) =
     (filter(p(_)), filterNot(p(_)))
@@ -900,7 +899,7 @@ abstract class Stream[+A]
     * `p`.
     *
     * @example {{{
-   + naturalsFrom(0) takeWhile { _ < 5 } mkString ", "
+    *   + naturalsFrom(0) takeWhile { _ < 5 } mkString ", "
     * produces: "0, 1, 2, 3, 4"
     * }}}
     */

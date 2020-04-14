@@ -88,15 +88,15 @@ class AbstractTestRerunFailedTestsAction(
             }
           }
           if (extensionConfiguration != this && extensionConfiguration
-                .isInstanceOf[MyRunProfileAdapter] &&
-              extensionConfiguration
-                .asInstanceOf[MyRunProfileAdapter]
-                .previoslyFailed != null) {
+              .isInstanceOf[MyRunProfileAdapter] &&
+            extensionConfiguration
+              .asInstanceOf[MyRunProfileAdapter]
+              .previoslyFailed != null) {
             var added = false
             for (f <-
-                   extensionConfiguration
-                     .asInstanceOf[MyRunProfileAdapter]
-                     .previoslyFailed if !added) {
+                extensionConfiguration
+                  .asInstanceOf[MyRunProfileAdapter]
+                  .previoslyFailed if !added) {
               if (f._2 == getTestName(failed)) {
                 buffer += f
                 added = true

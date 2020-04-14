@@ -189,7 +189,7 @@ class OutputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
          itself throws an exception when being materialized. If
          Sink.ignore is used, the same exception is thrown by
          Materializer.
-       */
+         */
       }
     }
 

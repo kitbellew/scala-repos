@@ -11,8 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.05.2008
-  */
+  * Date: 28.05.2008 */
 
 class MatchFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {
@@ -21,8 +20,8 @@ class MatchFilter extends ElementFilter {
     if (leaf != null) {
       val parent = leaf.getParent
       if (parent.isInstanceOf[ScExpression] && (parent.getParent
-            .isInstanceOf[ScInfixExpr] ||
-          parent.getParent.isInstanceOf[ScPostfixExpr])) {
+          .isInstanceOf[ScInfixExpr] ||
+        parent.getParent.isInstanceOf[ScPostfixExpr])) {
         return true
       }
     }

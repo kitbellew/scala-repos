@@ -31,7 +31,7 @@ import scala.language.implicitConversions
   *  For example, create a simple class that implements `Ordered` and then sort it with [[scala.util.Sorting]]:
   *  {{{
   *  case class OrderedClass(n:Int) extends Ordered[OrderedClass] {
-  *  	def compare(that: OrderedClass) =  this.n - that.n
+  *   def compare(that: OrderedClass) =  this.n - that.n
   *  }
   *
   *  val x = Array(OrderedClass(1), OrderedClass(5), OrderedClass(3))
@@ -67,7 +67,6 @@ trait Ordered[A] extends Any with java.lang.Comparable[A] {
     *   - `x == 0` when `this == that`
     *
     *   - `x > 0` when  `this > that`
-    *
     */
   def compare(that: A): Int
 

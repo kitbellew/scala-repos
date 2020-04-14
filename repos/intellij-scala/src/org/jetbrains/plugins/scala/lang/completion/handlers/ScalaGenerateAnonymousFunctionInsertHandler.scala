@@ -54,7 +54,7 @@ class ScalaGenerateAnonymousFunctionInsertHandler(
       file.findElementAt(startOffset),
       file.findElementAt(endOffset - 1))
     if (commonParent.getTextRange.getStartOffset != startOffset ||
-        commonParent.getTextRange.getEndOffset != endOffset) {
+      commonParent.getTextRange.getEndOffset != endOffset) {
       document.insertString(endOffset, " ")
       editor.getCaretModel.moveToOffset(endOffset + 1)
       return

@@ -663,7 +663,7 @@ final class FiniteDuration(val length: Long, val unit: TimeUnit)
   // see https://www.securecoding.cert.org/confluence/display/java/NUM00-J.+Detect+or+prevent+integer+overflow
   private[this] def safeAdd(a: Long, b: Long): Long = {
     if ((b > 0) && (a > Long.MaxValue - b) ||
-        (b < 0) && (a < Long.MinValue - b))
+      (b < 0) && (a < Long.MinValue - b))
       throw new IllegalArgumentException("integer overflow")
     a + b
   }

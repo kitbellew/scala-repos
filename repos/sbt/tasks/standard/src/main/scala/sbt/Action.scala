@@ -11,7 +11,7 @@ import ConcurrentRestrictions.{Tag, TagMap, tagsKey}
 // Action, Task, and Info are intentionally invariant in their type parameter.
 //  Various natural transformations used, such as PMap, require invariant type constructors for correctness
 
-/** Defines a task compuation*/
+/** Defines a task compuation */
 sealed trait Action[T] {
   // TODO: remove after deprecated InputTask constructors are removed
   private[sbt] def mapTask(f: Task ~> Task): Action[T]
@@ -26,7 +26,7 @@ final case class Pure[T](f: () => T, inline: Boolean) extends Action[T] {
   private[sbt] def mapTask(f: Task ~> Task) = this
 }
 
-/** Applies a function to the result of evaluating a heterogeneous list of other tasks.*/
+/** Applies a function to the result of evaluating a heterogeneous list of other tasks. */
 final case class Mapped[T, K[L[x]]](
     in: K[Task],
     f: K[Result] => T,
@@ -36,7 +36,7 @@ final case class Mapped[T, K[L[x]]](
     Mapped[T, K](alist.transform(in, g), f, alist)
 }
 
-/** Computes another task to evaluate based on results from evaluating other tasks.*/
+/** Computes another task to evaluate based on results from evaluating other tasks. */
 final case class FlatMapped[T, K[L[x]]](
     in: K[Task],
     f: K[Result] => Task[T],
@@ -46,7 +46,7 @@ final case class FlatMapped[T, K[L[x]]](
     FlatMapped[T, K](alist.transform(in, g), g.fn[T] compose f, alist)
 }
 
-/** A computation `in` that requires other tasks `deps` to be evaluated first.*/
+/** A computation `in` that requires other tasks `deps` to be evaluated first. */
 final case class DependsOn[T](in: Task[T], deps: Seq[Task[_]])
     extends Action[T] {
   private[sbt] def mapTask(g: Task ~> Task) =

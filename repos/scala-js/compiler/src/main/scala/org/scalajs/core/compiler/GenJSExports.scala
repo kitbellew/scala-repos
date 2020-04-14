@@ -453,7 +453,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       if (alts.size == 1)
         alts.head.genBody(minArgc, hasRestParam)
       else if (maxArgc.exists(_ <= paramIndex) ||
-               !alts.exists(_.params.size > paramIndex)) {
+        !alts.exists(_.params.size > paramIndex)) {
         // We reach here in three cases:
         // 1. The parameter list has been exhausted
         // 2. The optional argument count restriction has triggered
@@ -564,7 +564,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         if (!alt.isClassConstructor) {
           // get parameter type while resolving repeated params
           if (paramsTypesUncurry.size <= paramIndex || isRepeatedUncurry(
-                paramIndex)) {
+              paramIndex)) {
             assert(isRepeatedUncurry.last)
             repeatedToSingle(paramsTypesUncurry.last)
           } else {
@@ -584,7 +584,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
           } else {
             val paramIndexNoCaptures = paramIndex - numCapturesFront
             if (paramsTypesUncurry.size <= paramIndexNoCaptures ||
-                isRepeatedUncurry(paramIndexNoCaptures)) {
+              isRepeatedUncurry(paramIndexNoCaptures)) {
               assert(isRepeatedUncurry.last)
               repeatedToSingle(paramsTypesUncurry.last)
             } else {
@@ -605,7 +605,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
         hasRestParam: Boolean,
         sym: Symbol): js.Tree = {
       if (isScalaJSDefinedJSClass(currentClassSym) &&
-          sym.owner != currentClassSym.get) {
+        sym.owner != currentClassSym.get) {
         genApplyForSymJSSuperCall(minArgc, hasRestParam, sym)
       } else {
         genApplyForSymNonJSSuperCall(minArgc, sym)

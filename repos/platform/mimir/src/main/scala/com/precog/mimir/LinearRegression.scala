@@ -92,20 +92,20 @@ trait LinearRegressionLibModule[M[+_]]
         * The following code will necessary when we have online models and users want to weight
         * the most recent data with a higher (or lower) weight than the data already seen.
         * But since we don't have this capability yet, all data is weighted equally.
-
-      val alpha = 0.5
-
-      implicit def monoid = new Monoid[CoeffAcc] {
-        def zero = Array.empty[Double]
-        def append(r1: CoeffAcc, r2: => CoeffAcc) = {
-          lazy val newr1 = r1 map { _ * alpha }
-          lazy val newr2 = r2 map { _ * (1.0 - alpha) }
-
-          if (r1.isEmpty) r2
-          else if (r2.isEmpty) r1
-          else arraySum(newr1, newr2)
-        }
-      }
+        *
+        *      val alpha = 0.5
+        *
+        *      implicit def monoid = new Monoid[CoeffAcc] {
+        *        def zero = Array.empty[Double]
+        *        def append(r1: CoeffAcc, r2: => CoeffAcc) = {
+        *          lazy val newr1 = r1 map { _ * alpha }
+        *          lazy val newr2 = r2 map { _ * (1.0 - alpha) }
+        *
+        *          if (r1.isEmpty) r2
+        *          else if (r2.isEmpty) r1
+        *          else arraySum(newr1, newr2)
+        *        }
+        *      }
         */
 
       implicit def coeffMonoid =

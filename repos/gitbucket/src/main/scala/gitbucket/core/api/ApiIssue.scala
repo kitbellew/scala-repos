@@ -16,7 +16,9 @@ case class ApiIssue(
     state: String,
     created_at: Date,
     updated_at: Date,
-    body: String)(repositoryName: RepositoryName, isPullRequest: Boolean) {
+    body: String)(
+    repositoryName: RepositoryName,
+    isPullRequest: Boolean) {
   val comments_url = ApiPath(
     s"/api/v3/repos/${repositoryName.fullName}/issues/${number}/comments")
   val html_url = ApiPath(

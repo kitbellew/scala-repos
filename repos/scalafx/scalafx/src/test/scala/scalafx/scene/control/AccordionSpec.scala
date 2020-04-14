@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Accordion Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class AccordionSpec

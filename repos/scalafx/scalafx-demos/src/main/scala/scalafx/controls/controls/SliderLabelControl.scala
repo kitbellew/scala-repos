@@ -26,7 +26,6 @@
  */
 
 /**
-  *
   */
 package scalafx.controls.controls
 
@@ -40,7 +39,6 @@ import scalafx.util.converter.DoubleStringConverter
 
 /**
   * @author rafael
-  *
   */
 class SliderLabelControl(property: DoubleProperty) extends FlowPane {
 

@@ -66,10 +66,10 @@ case object IndexerReadyEvent extends GeneralSwankEvent
 /** The presentation compiler was restarted. Existing `:type-id`s are invalid. */
 case object CompilerRestartedEvent extends GeneralSwankEvent
 
-/** The presentation compiler has invalidated all existing notes.  */
+/** The presentation compiler has invalidated all existing notes. */
 case object ClearAllScalaNotesEvent extends GeneralSwankEvent
 
-/** The presentation compiler has invalidated all existing notes.  */
+/** The presentation compiler has invalidated all existing notes. */
 case object ClearAllJavaNotesEvent extends GeneralSwankEvent
 
 case class Note(

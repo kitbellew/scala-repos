@@ -63,8 +63,8 @@ class ScalaEnableOptimizeImportsOnTheFlyFix extends IntentionAction {
   def invoke(project: Project, editor: Editor, file: PsiFile) {
     ScalaApplicationSettings.getInstance().OPTIMIZE_IMPORTS_ON_THE_FLY = true
     if (file.getManager.isInProject(file) && (file
-          .isInstanceOf[ScalaFile] || ScalaLanguageDerivative
-          .hasDerivativeOnFile(file))) {
+        .isInstanceOf[ScalaFile] || ScalaLanguageDerivative.hasDerivativeOnFile(
+        file))) {
       if (!FileModificationService.getInstance.prepareFileForWrite(file)) return
 
       file match {

@@ -99,13 +99,13 @@ class WorksheetAutoRunner(project: Project, woof: WolfTheProblemSolver)
       myAlarm.cancelAllRequests()
 
       if (woof.hasSyntaxErrors(virtualFile) || WorksheetProcessManager.running(
-            virtualFile)) return
+          virtualFile)) return
 
       myAlarm.addRequest(
         new Runnable {
           override def run() {
             if (!woof.hasSyntaxErrors(virtualFile) && !WorksheetProcessManager
-                  .running(virtualFile))
+                .running(virtualFile))
               RunWorksheetAction.runCompiler(project, auto = true)
           }
         },

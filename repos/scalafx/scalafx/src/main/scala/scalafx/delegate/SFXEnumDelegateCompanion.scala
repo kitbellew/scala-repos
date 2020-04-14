@@ -58,7 +58,7 @@ trait SFXEnumDelegateCompanion[
     if (e != null) values.find(_.delegate == e).get
     else null.asInstanceOf[S]
 
-  /** Contain constants which will be source for `values` List  */
+  /** Contain constants which will be source for `values` List */
   protected def unsortedValues: Array[S]
 
   /** Returns a List containing the constants of this `enum` type, in the order they are declared. */

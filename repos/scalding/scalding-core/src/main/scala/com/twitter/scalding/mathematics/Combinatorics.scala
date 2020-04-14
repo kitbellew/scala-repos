@@ -23,7 +23,6 @@ object Combinatorics {
     * Given an int k, and an input of size n,
     * return a pipe with nCk combinations, with k columns per row
     *
-    *
     * Computes nCk = n choose k, for large values of nCk
     *
     * Use-case: Say you have 100 hashtags sitting in an array
@@ -171,7 +170,6 @@ object Combinatorics {
     * weightedSum( IndexedSeq(2.0,12.0,2.5,34.7),3490.0,3.0)
     *
     * This is at the heart of portfolio mgmt( Markowitz optimization), subset-sum, operations-research LP problems.
-    *
     */
 
   def weightedSum(weights: IndexedSeq[Double], result: Double, error: Double)(

@@ -83,7 +83,7 @@ trait StreamingListener {
   /** Called when a batch of jobs has been submitted for processing. */
   def onBatchSubmitted(batchSubmitted: StreamingListenerBatchSubmitted) {}
 
-  /** Called when processing of a batch of jobs has started.  */
+  /** Called when processing of a batch of jobs has started. */
   def onBatchStarted(batchStarted: StreamingListenerBatchStarted) {}
 
   /** Called when processing of a batch of jobs has completed. */

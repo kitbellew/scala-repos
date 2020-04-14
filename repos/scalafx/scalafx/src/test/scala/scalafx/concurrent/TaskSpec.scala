@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Task Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TaskSpec[T]

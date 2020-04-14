@@ -74,7 +74,7 @@ trait Helpers extends UnsafeHelpers with SLF4JLogging {
     if (kind == ElementKind.LOCAL_VARIABLE || kind == ElementKind.PARAMETER) {
       Some(JavaFqn(None, None, Some(el.getSimpleName.toString)))
     } else if (kind == ElementKind.CONSTRUCTOR || kind == ElementKind.ENUM_CONSTANT ||
-               kind == ElementKind.METHOD || kind == ElementKind.FIELD) {
+      kind == ElementKind.METHOD || kind == ElementKind.FIELD) {
       Option(el.getEnclosingElement)
         .flatMap(fqn(info, _))
         .map(_.copy(fieldOrMethod = Some(el.toString)))

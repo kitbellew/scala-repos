@@ -27,7 +27,6 @@ trait CanDesignFilterDecimation[Output] {
 object CanDesignFilterDecimation {
 
   /** Use via implicit delegate syntax firwin(xxxx)
-    *
     */
   implicit def decimationFilterDouble
       : CanDesignFilterDecimation[FIRKernel1D[Double]] = {
@@ -65,7 +64,6 @@ object CanDesignFilterDecimation {
   }
 
   /** Use via implicit delegate syntax firwin(xxxx)
-    *
     */
   implicit def decimationFilterLong
       : CanDesignFilterDecimation[FIRKernel1D[Long]] = {

@@ -982,7 +982,7 @@ object JsCmds {
   case class RedirectTo(where: String) extends JsCmd {
     private val where2 = // issue 176
       if (where.startsWith("/") &&
-          !LiftRules.excludePathFromContextPathRewriting.vend(where))
+        !LiftRules.excludePathFromContextPathRewriting.vend(where))
         (S.contextPath + where)
       else where
 
@@ -1092,8 +1092,7 @@ object JsCmds {
 }
 
 /**
-  * A collection of defaults for JavaScript related stuff
-  */
+  * A collection of defaults for JavaScript related stuff */
 object JsRules {
 
   /**

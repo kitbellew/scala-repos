@@ -62,7 +62,7 @@ object ScopeSuggester {
         val pparent =
           PsiTreeUtil.getParentOfType(parent, classOf[ScTemplateDefinition])
         if (pparent != null && (!elementOwner.isAncestorOf(
-              pparent) || !elementOwner.isInstanceOf[ScTemplateDefinition])) {
+            pparent) || !elementOwner.isInstanceOf[ScTemplateDefinition])) {
           result = false
         }
       }
@@ -330,7 +330,7 @@ object ScopeSuggester {
 
     def handleOneFile(file: ScalaFile) {
       if (packageObject.exists((x: ScTypeDefinition) =>
-            x.getContainingFile == file)) {} else {
+          x.getContainingFile == file)) {} else {
         val occurrences =
           ScalaRefactoringUtil.getTypeElementOccurrences(typeElement, file)
         allOcurrences += occurrences

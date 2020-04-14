@@ -139,7 +139,7 @@ object PluginDiscovery {
     }
   }
 
-  /** Returns `true` if `url` is an entry in `classpath`.*/
+  /** Returns `true` if `url` is an entry in `classpath`. */
   def onClasspath(classpath: Seq[File])(url: URL): Boolean =
     IO.urlAsFile(url) exists (classpath.contains _)
 

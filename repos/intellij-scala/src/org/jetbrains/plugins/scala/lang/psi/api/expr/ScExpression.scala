@@ -753,9 +753,9 @@ trait ScExpression
       }
     }
     if (cand.length == 0 && ScalaPsiUtil.approveDynamic(
-          tp,
-          getProject,
-          getResolveScope) && call.isDefined) {
+        tp,
+        getProject,
+        getResolveScope) && call.isDefined) {
       cand = ScalaPsiUtil.processTypeForUpdateOrApplyCandidates(
         call.get,
         tp,

@@ -288,7 +288,7 @@ trait FutureCombinators extends TestBase {
       val f = Future { 4 }
       val g = f filter { _ % 2 == 0 }
       g onSuccess { case x: Int => done(x == 4) }
-      g onFailure { case _      => done(false) }
+      g onFailure { case _ => done(false) }
     }
 
   def testFilterFailure(): Unit =
@@ -307,7 +307,7 @@ trait FutureCombinators extends TestBase {
       val f = Future { -5 }
       val g = f collect { case x if x < 0 => -x }
       g onSuccess { case x: Int => done(x == 5) }
-      g onFailure { case _      => done(false) }
+      g onFailure { case _ => done(false) }
     }
 
   def testCollectFailure(): Unit =
@@ -332,7 +332,7 @@ trait FutureCombinators extends TestBase {
       val g = p.future
 
       g.onSuccess { case res: Int => done(res == 10) }
-      g.onFailure { case _        => done(false) }
+      g.onFailure { case _ => done(false) }
     }
 
   def testForeachFailure(): Unit =
@@ -356,7 +356,7 @@ trait FutureCombinators extends TestBase {
         case re: RuntimeException =>
           "recovered"
       }
-      f onSuccess { case x   => done(x == "recovered") }
+      f onSuccess { case x => done(x == "recovered") }
       f onFailure { case any => done(false) }
     }
 
@@ -368,7 +368,7 @@ trait FutureCombinators extends TestBase {
       } recover {
         case te: TimeoutException => "timeout"
       }
-      f onSuccess { case _   => done(false) }
+      f onSuccess { case _ => done(false) }
       f onFailure { case any => done(any == cause) }
     }
 
@@ -381,7 +381,7 @@ trait FutureCombinators extends TestBase {
         case re: RuntimeException =>
           Future { "recovered" }
       }
-      f onSuccess { case x   => done(x == "recovered") }
+      f onSuccess { case x => done(x == "recovered") }
       f onFailure { case any => done(false) }
     }
 
@@ -394,7 +394,7 @@ trait FutureCombinators extends TestBase {
         case te: TimeoutException =>
           Future { "timeout" }
       }
-      f onSuccess { case x   => done(false) }
+      f onSuccess { case x => done(false) }
       f onFailure { case any => done(any == cause) }
     }
 
@@ -404,7 +404,7 @@ trait FutureCombinators extends TestBase {
       val g = Future { 6 }
       val h = f zip g
       h onSuccess { case (l: Int, r: Int) => done(l + r == 11) }
-      h onFailure { case _                => done(false) }
+      h onFailure { case _ => done(false) }
     }
 
   def testZipFailureLeft(): Unit =
@@ -413,7 +413,7 @@ trait FutureCombinators extends TestBase {
       val f = Future { throw cause }
       val g = Future { 6 }
       val h = f zip g
-      h onSuccess { case _            => done(false) }
+      h onSuccess { case _ => done(false) }
       h onFailure { case e: Exception => done(e.getMessage == "expected") }
     }
 
@@ -423,7 +423,7 @@ trait FutureCombinators extends TestBase {
       val f = Future { 5 }
       val g = Future { throw cause }
       val h = f zip g
-      h onSuccess { case _            => done(false) }
+      h onSuccess { case _ => done(false) }
       h onFailure { case e: Exception => done(e.getMessage == "expected") }
     }
 
@@ -433,7 +433,7 @@ trait FutureCombinators extends TestBase {
       val g = Future { 5 }
       val h = f fallbackTo g
       h onSuccess { case x: Int => done(x == 5) }
-      h onFailure { case _      => done(false) }
+      h onFailure { case _ => done(false) }
     }
 
   def testFallbackToFailure(): Unit =
@@ -683,7 +683,7 @@ trait Promises extends TestBase {
       val p = Promise[Int]()
       val f = p.future
 
-      f onSuccess { case x   => done(x == 5) }
+      f onSuccess { case x => done(x == 5) }
       f onFailure { case any => done(false) }
 
       p.success(5)
@@ -695,7 +695,7 @@ trait Promises extends TestBase {
       val p = Promise[Int]()
       val f = p.future
 
-      f onSuccess { case x   => done(false) }
+      f onSuccess { case x => done(false) }
       f onFailure { case any => done(any eq e) }
 
       p.failure(e)

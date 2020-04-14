@@ -541,7 +541,7 @@ trait TypeDiagnostics {
           // definition of the class being referenced.
           if (t.tpe ne null) {
             for (tp <- t.tpe; if !treeTypes(tp) && !currentOwner.ownerChain
-                   .contains(tp.typeSymbol)) {
+                .contains(tp.typeSymbol)) {
               tp match {
                 case NoType | NoPrefix    =>
                 case NullaryMethodType(_) =>
@@ -663,7 +663,7 @@ trait TypeDiagnostics {
         // It is presumed if you are using a -Y option you would really like to hear
         // the warnings you've requested; thus, use reporter.warning.
         if (settings.warnDeadCode && context.unit.exists && treeOK(
-              tree) && exprOK)
+            tree) && exprOK)
           reporter.warning(tree.pos, "dead code following this construct")
         tree
       }

@@ -49,7 +49,7 @@ class ScalaInheritedMembersNodeProvider
                   case x if x.name == "$tag" || x.name == "$init$" =>
                   case x
                       if x.containingClass.qualifiedName == "java.lang.Object" =>
-                  case x if x.containingClass == clazz                         =>
+                  case x if x.containingClass == clazz =>
                   case x: ScFunction =>
                     children.add(new ScalaFunctionStructureViewElement(x, true))
                   case x: PsiMethod =>

@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Stop Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class StopSpec

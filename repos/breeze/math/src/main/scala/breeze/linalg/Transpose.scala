@@ -9,7 +9,7 @@ import breeze.generic.UFunc
   * TODO
   *
   * @author dlwh
- **/
+  */
 final case class Transpose[+T](val inner: T) extends NumericOps[Transpose[T]] {
 
   def repr = this

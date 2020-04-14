@@ -199,7 +199,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
     val offset = history.index - history.size + 1
 
     for ((line, index) <- history.asStrings.zipWithIndex;
-         if line.toLowerCase contains cmdline)
+      if line.toLowerCase contains cmdline)
       echo("%d %s".format(index + offset, line))
   }
 
@@ -208,7 +208,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
 
   import LoopCommand.{cmd, nullary}
 
-  /** Standard commands **/
+  /** Standard commands * */
   lazy val standardCommands = List(
     cmd("edit", "<id>|<line>", "edit history", editCommand),
     cmd(
@@ -508,7 +508,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       case null => EOF
       case line =>
         if (try processLine(line)
-            catch crashRecovery) loop()
+          catch crashRecovery) loop()
         else ERR
     }
   }

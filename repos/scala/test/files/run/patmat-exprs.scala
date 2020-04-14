@@ -312,7 +312,7 @@ trait Pattern {
         a match { case x: Expr[T] => x.optimizeWith(f) })))
     }
 
-    /** Simplifies this expression to make evaluation faster and more accurate.*/
+    /** Simplifies this expression to make evaluation faster and more accurate. */
     def simplify(implicit num: NumericOps[T]): Expr[T] = {
       val a1 = optimizeWith(_.generalize)
       val a2 = a1.optimizeWith(_.generalize)

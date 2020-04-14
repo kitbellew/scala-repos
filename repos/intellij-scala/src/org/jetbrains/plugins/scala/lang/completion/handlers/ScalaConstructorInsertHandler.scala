@@ -104,7 +104,7 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
         }
 
         if (clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
-            clazz.hasModifierPropertyScala("abstract")) {
+          clazz.hasModifierPropertyScala("abstract")) {
           document.insertString(endOffset, " {}")
           endOffset += 3
           if (!item.typeParametersProblem)
@@ -155,8 +155,8 @@ class ScalaConstructorInsertHandler extends InsertHandler[LookupElement] {
         }
 
         if ((clazz.isInterface || clazz.isInstanceOf[ScTrait] ||
-            clazz.hasModifierPropertyScala(
-              "abstract")) && !item.typeParametersProblem) {
+          clazz.hasModifierPropertyScala(
+            "abstract")) && !item.typeParametersProblem) {
           context.setLaterRunnable(new Runnable {
             def run() {
               val file = context.getFile

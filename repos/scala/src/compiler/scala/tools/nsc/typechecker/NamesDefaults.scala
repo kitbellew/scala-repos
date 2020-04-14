@@ -228,8 +228,8 @@ trait NamesDefaults { self: Analyzer =>
           else {
             val ref = atPos(pos.focus)(gen.mkAttributedRef(pre, module))
             if (treeInfo.admitsTypeSelection(
-                  ref
-                )) // fixes #4524. the type checker does the same for
+                ref
+              )) // fixes #4524. the type checker does the same for
               ref.setType(
                 singleType(pre, module)
               ) // typedSelect, it calls "stabilize" on the result.

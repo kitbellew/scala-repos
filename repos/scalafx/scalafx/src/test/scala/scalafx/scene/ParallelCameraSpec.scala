@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ParallelCamera Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ParallelCameraSpec

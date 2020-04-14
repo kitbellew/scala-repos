@@ -92,7 +92,7 @@ class CookieMap(message: Message)
     *
     * @param name the cookie name
     * @return a first ''Cookie'' with the given ''name''
-   **/
+    */
   def get(name: String): Option[Cookie] = getAll(name).headOption
 
   /**

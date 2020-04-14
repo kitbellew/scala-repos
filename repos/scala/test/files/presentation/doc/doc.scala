@@ -94,7 +94,7 @@ object Test extends InteractiveTest {
 
     val className = names.head
     for (name <- names;
-         i <- 1 to tags.length) {
+      i <- 1 to tags.length) {
       val newText = text(name, i)
       val source = findSource("Class.scala")
       val batch = new BatchSourceFile(source.file, newText.toCharArray)

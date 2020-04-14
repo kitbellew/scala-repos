@@ -506,7 +506,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           // in the value class.
           val valueClassCompanionMembers = {
             if (linkedClass != NoSymbol && exitingPickler(
-                  classSym.isDerivedValueClass)) {
+                classSym.isDerivedValueClass)) {
               val moduleMemberClasses =
                 exitingPhase(currentRun.lambdaliftPhase)(
                   memberClassesForInnerClassTable(linkedClass))
@@ -593,8 +593,8 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
 
         // (2) Java compatibility. See the big comment in BTypes that summarizes the InnerClass spec.
         if ((innerClassSym.isJavaDefined && innerClassSym.rawowner.isModuleClass) || // (1)
-            (!isAnonymousOrLocalClass(innerClassSym) && isTopLevelModuleClass(
-              innerClassSym.rawowner))) { // (2)
+          (!isAnonymousOrLocalClass(innerClassSym) && isTopLevelModuleClass(
+            innerClassSym.rawowner))) { // (2)
           // phase travel for linkedCoC - does not always work in late phases
           exitingPickler(innerClassSym.rawowner.linkedClassOfClass) match {
             case NoSymbol =>
@@ -618,7 +618,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         // phase travel necessary: after flatten, the name includes the name of outer classes.
         // if some outer name contains $anon, a non-anon class is considered anon.
         if (exitingPickler(
-              innerClassSym.isAnonymousClass || innerClassSym.isAnonymousFunction))
+            innerClassSym.isAnonymousClass || innerClassSym.isAnonymousFunction))
           None
         else
           Some(
@@ -823,8 +823,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
     GenBCode.mkFlags(
       if (privateFlag) ACC_PRIVATE else ACC_PUBLIC,
       if ((sym.isDeferred && !sym.hasFlag(
-            symtab.Flags.JAVA_DEFAULTMETHOD)) || sym.hasAbstractFlag)
-        ACC_ABSTRACT
+          symtab.Flags.JAVA_DEFAULTMETHOD)) || sym.hasAbstractFlag) ACC_ABSTRACT
       else 0,
       if (sym.isTraitOrInterface) ACC_INTERFACE else 0,
       if (finalFlag && !sym.hasAbstractFlag) ACC_FINAL else 0,

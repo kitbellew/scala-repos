@@ -393,7 +393,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
       dep: ShuffleDependency[_, _, _],
       partitionId: Int): Seq[String] = {
     if (shuffleLocalityEnabled && dep.rdd.partitions.length < SHUFFLE_PREF_MAP_THRESHOLD &&
-        dep.partitioner.numPartitions < SHUFFLE_PREF_REDUCE_THRESHOLD) {
+      dep.partitioner.numPartitions < SHUFFLE_PREF_REDUCE_THRESHOLD) {
       val blockManagerIds = getLocationsWithLargestOutputs(
         dep.shuffleId,
         partitionId,

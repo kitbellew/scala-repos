@@ -26,7 +26,7 @@ import breeze.math.Complex
   */
 trait CanTraverseValues[From, A] {
 
-  /**Traverses all values from the given collection. */
+  /** Traverses all values from the given collection. */
   def traverse(from: From, fn: ValuesVisitor[A]): Unit
   def isTraversableAgain(from: From): Boolean
 

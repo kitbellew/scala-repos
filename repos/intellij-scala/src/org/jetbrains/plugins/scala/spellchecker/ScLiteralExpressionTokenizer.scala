@@ -41,10 +41,10 @@ class ScLiteralExpressionTokenizer extends Tokenizer[ScLiteral] {
     val listOwner: PsiModifierListOwner =
       PsiTreeUtil.getParentOfType(element, classOf[PsiModifierListOwner])
     if (listOwner != null && AnnotationUtil.isAnnotated(
-          listOwner,
-          Collections.singleton(AnnotationUtil.NON_NLS),
-          false,
-          false)) {
+        listOwner,
+        Collections.singleton(AnnotationUtil.NON_NLS),
+        false,
+        false)) {
       return
     }
     val text: String = element.getText

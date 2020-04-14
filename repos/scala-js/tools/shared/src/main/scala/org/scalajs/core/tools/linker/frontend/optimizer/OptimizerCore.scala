@@ -811,7 +811,7 @@ private[optimizer] abstract class OptimizerCore(
                               elseCancelFun)) =>
                         val commonType =
                           if (thenTree.tpe == elseTree.tpe &&
-                              thenOrigType == elseOrigType) thenTree.tpe
+                            thenOrigType == elseOrigType) thenTree.tpe
                           else cancelFun()
                         val refinedOrigType =
                           constrainedLub(thenOrigType, elseOrigType, tree.tpe)
@@ -1304,7 +1304,7 @@ private[optimizer] abstract class OptimizerCore(
             val allocationSites =
               (treceiver :: targs).map(_.tpe.allocationSite)
             if (impls.isEmpty || impls.exists(impl =>
-                  scope.implsBeingInlined((allocationSites, impl)))) {
+                scope.implsBeingInlined((allocationSites, impl)))) {
               // isEmpty could happen, have to leave it as is for the TypeError
               treeNotInlined
             } else if (impls.size == 1) {
@@ -1318,9 +1318,7 @@ private[optimizer] abstract class OptimizerCore(
                   isStat,
                   usePreTransform)(cont)
               } else if (target.inlineable && (target.shouldInline ||
-                         shouldInlineBecauseOfArgs(
-                           target,
-                           treceiver :: targs))) {
+                shouldInlineBecauseOfArgs(target, treceiver :: targs))) {
                 inline(
                   allocationSites,
                   Some(treceiver),
@@ -2438,7 +2436,7 @@ private[optimizer] abstract class OptimizerCore(
           pretransformExprs(lhs, rhs) { (tlhs, trhs) =>
             TailCalls.done {
               if (isLiteralOrOptimizableLong(tlhs) &&
-                  isLiteralOrOptimizableLong(trhs)) {
+                isLiteralOrOptimizableLong(trhs)) {
                 foldBinaryOp(
                   op,
                   finishTransformOptLongExpr(tlhs),
@@ -3540,13 +3538,13 @@ private[optimizer] abstract class OptimizerCore(
                       refinedOrigType))
                 } { recordType =>
                   if (actualTypes.exists(t =>
-                        t != recordType && t != NothingType))
+                      t != recordType && t != NothingType))
                     cancelFun()
 
                   val resultTree = doMakeTree(newBody, actualTypes)
 
                   if (origTypes.exists(t =>
-                        t != refinedOrigType && !t.isNothingType))
+                      t != refinedOrigType && !t.isNothingType))
                     cancelFun()
 
                   cont(

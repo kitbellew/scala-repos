@@ -49,7 +49,6 @@ import scalafx.beans.property.IntegerProperty
   *         based upon: Example 4 Using the Bindings Class
   *
   *         http://docs.oracle.com/javafx/2.0/binding/jfxpub-binding.htm
-  *
   */
 
 object ScalaFX_Properties_And_Binding_03 {

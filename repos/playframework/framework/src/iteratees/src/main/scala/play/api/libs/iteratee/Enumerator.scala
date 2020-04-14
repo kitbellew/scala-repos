@@ -286,8 +286,8 @@ object Enumerator {
                 Iteratee.flatten(nextI)
               case Input.EOF => {
                 if (attending.single
-                      .transformAndGet { _.map(f) }
-                      .forall(_.forall(_ == false))) {
+                    .transformAndGet { _.map(f) }
+                    .forall(_.forall(_ == false))) {
                   p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
                 } else {
                   p.success(i)
@@ -368,7 +368,7 @@ object Enumerator {
                 Iteratee.flatten(nextI)
               case Input.EOF => {
                 if (attending.single.transformAndGet { _.map(f) } == Some(
-                      (false, false))) {
+                    (false, false))) {
                   p.complete(Try(Iteratee.flatten(i.feed(Input.EOF))))
                 } else {
                   p.success(i)

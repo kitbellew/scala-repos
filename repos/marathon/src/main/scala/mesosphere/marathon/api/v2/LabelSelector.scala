@@ -40,7 +40,6 @@ case class LabelSelectors(selectors: Seq[LabelSelector]) extends AppSelector {
   * partition
   * \!\!\! in (\-\-\-, \&\&\&, \+\+\+)
   * a in (t1, t2, t3), b notin (t1), c, d
-  *
   */
 class LabelSelectorParsers extends RegexParsers {
 

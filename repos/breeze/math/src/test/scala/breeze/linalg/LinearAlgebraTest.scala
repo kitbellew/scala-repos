@@ -33,7 +33,6 @@ import breeze.stats.{mean, median, meanAndVariance}
 import breeze.{math => bmath}
 
 /**
-  *
   * @author dlwh
   */
 

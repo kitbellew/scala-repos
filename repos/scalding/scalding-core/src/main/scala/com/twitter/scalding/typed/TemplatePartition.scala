@@ -33,7 +33,7 @@ case class TemplatePartition(partitionFields: Fields, template: String)
       .format(partitionFields, template)
   )
 
-  /** Regex pattern created from the template to extract the partition values from a path.*/
+  /** Regex pattern created from the template to extract the partition values from a path. */
   lazy val pattern = template.replaceAll("%s", "(.*)").r.pattern
 
   /** Returns the path depth. In this case the number of partition fields. */

@@ -120,7 +120,6 @@ private[akka] object RemoteActorRefProvider {
   * Depending on this class is not supported, only the [[akka.actor.ActorRefProvider]] interface is supported.
   *
   * Remote ActorRefProvider. Starts up actor on remote node and creates a RemoteActorRef representing it.
-  *
   */
 private[akka] class RemoteActorRefProvider(
     val systemName: String,

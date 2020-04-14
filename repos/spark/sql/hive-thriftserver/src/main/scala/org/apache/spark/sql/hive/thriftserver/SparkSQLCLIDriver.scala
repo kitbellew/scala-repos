@@ -302,14 +302,14 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
     val tokens: Array[String] = cmd_trimmed.split("\\s+")
     val cmd_1: String = cmd_trimmed.substring(tokens(0).length()).trim()
     if (cmd_lower.equals("quit") ||
-        cmd_lower.equals("exit")) {
+      cmd_lower.equals("exit")) {
       sessionState.close()
       System.exit(0)
     }
     if (tokens(0).toLowerCase(Locale.ENGLISH).equals("source") ||
-        cmd_trimmed.startsWith("!") ||
-        tokens(0).toLowerCase.equals("list") ||
-        isRemoteMode) {
+      cmd_trimmed.startsWith("!") ||
+      tokens(0).toLowerCase.equals("list") ||
+      isRemoteMode) {
       val start = System.currentTimeMillis()
       super.processCmd(cmd)
       val end = System.currentTimeMillis()
@@ -324,7 +324,7 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
       if (proc != null) {
         // scalastyle:off println
         if (proc.isInstanceOf[Driver] || proc.isInstanceOf[SetProcessor] ||
-            proc.isInstanceOf[AddResourceProcessor]) {
+          proc.isInstanceOf[AddResourceProcessor]) {
           val driver = new SparkSQLDriver
 
           driver.init()
@@ -353,8 +353,8 @@ private[hive] class SparkSQLCLIDriver extends CliDriver with Logging {
           val res = new JArrayList[String]()
 
           if (HiveConf.getBoolVar(
-                conf,
-                HiveConf.ConfVars.HIVE_CLI_PRINT_HEADER)) {
+              conf,
+              HiveConf.ConfVars.HIVE_CLI_PRINT_HEADER)) {
             // Print the column names.
             Option(driver.getSchema.getFieldSchemas).foreach { fields =>
               out.println(fields.asScala.map(_.getName).mkString("\t"))

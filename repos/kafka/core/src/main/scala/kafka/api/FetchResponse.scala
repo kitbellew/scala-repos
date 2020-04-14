@@ -67,7 +67,7 @@ class PartitionDataSend(
   private var messagesSentSize = 0
   private var pending = false
   private val buffer = ByteBuffer.allocate(
-    4 /** partitionId **/ + FetchResponsePartitionData.headerSize)
+    4 /** partitionId * */ + FetchResponsePartitionData.headerSize)
   buffer.putInt(partitionId)
   buffer.putShort(partitionData.error)
   buffer.putLong(partitionData.hw)

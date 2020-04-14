@@ -41,7 +41,7 @@ sealed abstract class Tree[A] {
   /** A histomorphic transform. Each element in the resulting tree
     * is a function of the corresponding element in this tree
     * and the histomorphic transform of its children.
-   **/
+    */
   def scanr[B](g: (A, Stream[Tree[B]]) => B): Tree[B] = {
     lazy val c = subForest.map(_.scanr(g))
     Node(g(rootLabel, c), c)
@@ -50,7 +50,7 @@ sealed abstract class Tree[A] {
   /** A 2D String representation of this Tree, separated into lines.
     * Uses reversed StringBuilders for performance, because they are
     * prepended to.
-    **/
+    */
   private def draw(implicit sh: Show[A]): Trampoline[Vector[StringBuilder]] = {
     import Trampoline._
     val branch = " -+" // "+- ".reverse
@@ -225,7 +225,7 @@ sealed abstract class TreeInstances {
 
   /* TODO
   def applic[A, B](f: Tree[A => B]) = a => Tree.node((f.rootLabel)(a.rootLabel), implicitly[Applic[newtypes.ZipStream]].applic(f.subForest.map(applic[A, B](_)).ʐ)(a.subForest ʐ).value)
- */
+   */
 }
 
 object Tree extends TreeInstances {

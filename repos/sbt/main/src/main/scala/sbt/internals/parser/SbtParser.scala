@@ -166,7 +166,7 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
     val importsLineRange = importsToLineRanges(content, imports)
     (
       importsLineRange,
-      stmtTreeLineRange.map { case (stmt, _, lr)   => (stmt, lr) },
+      stmtTreeLineRange.map { case (stmt, _, lr) => (stmt, lr) },
       stmtTreeLineRange.map { case (stmt, tree, _) => (stmt, tree) })
   }
 
@@ -190,7 +190,6 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
   }
 
   /**
-    *
     * @param modifiedContent - modifiedContent
     * @param t - tree
     * @return ((start,end),lineNumber)
@@ -228,7 +227,6 @@ private[sbt] case class SbtParser(file: File, lines: Seq[String])
 private[sbt] object MissingBracketHandler {
 
   /**
-    *
     * @param content - parsed file
     * @param positionEnd - from index
     * @param positionLine - number of start position line
@@ -265,7 +263,6 @@ private[sbt] object MissingBracketHandler {
   }
 
   /**
-    *
     * @param content - parsed file
     * @param from - start index
     * @return first not commented index or None

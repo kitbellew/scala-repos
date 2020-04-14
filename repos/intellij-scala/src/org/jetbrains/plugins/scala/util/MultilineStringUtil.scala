@@ -67,10 +67,9 @@ object MultilineStringUtil {
           if (i.operation.getText == methodName) return false
         case call: ScMethodCall =>
           if (Option(call.getEffectiveInvokedExpr).forall {
-                case expr: ScExpression =>
-                  expr.getText endsWith "." + methodName
-                case _ => false
-              }) return false
+              case expr: ScExpression => expr.getText endsWith "." + methodName
+              case _                  => false
+            }) return false
         case _: ScParenthesisedExpr =>
         case _                      => return true
       }
@@ -214,7 +213,7 @@ object MultilineStringUtil {
       val argsString = arg.map(_.getText).sorted
 
       if (myArgs.sameElements(argsString) || myArgs.reverse.sameElements(
-            argsString)) return true
+          argsString)) return true
     }
 
     false

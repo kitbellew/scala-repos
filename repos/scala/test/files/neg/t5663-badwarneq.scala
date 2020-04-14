@@ -100,6 +100,6 @@ object Test {
     println(some == mine)
     println(mine == other) // OK, two Anything?
     println(mine == t1) // false
-   */
+     */
   }
 }

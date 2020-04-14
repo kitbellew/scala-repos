@@ -6,7 +6,6 @@ package base
 package patterns
 
 /**
-  * @author ilyas
-  */
+  * @author ilyas */
 
 trait ScSeqWildcard extends ScalaPsiElement {}

@@ -37,7 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * SpinnerValueFactory Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SpinnerValueFactorySpec[Integer]

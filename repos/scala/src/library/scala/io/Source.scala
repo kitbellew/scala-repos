@@ -166,8 +166,8 @@ object Source {
   )(implicit codec: Codec): BufferedSource = {
     // workaround for default arguments being unable to refer to other parameters
     val resetFn =
-      if (reset == null)() =>
-        createBufferedSource(inputStream, bufferSize, reset, close)(codec)
+      if (reset == null)
+        () => createBufferedSource(inputStream, bufferSize, reset, close)(codec)
       else reset
 
     new BufferedSource(inputStream, bufferSize)(
@@ -212,7 +212,6 @@ object Source {
   *  The default positioner encodes line and column numbers in the position passed to [[report]].
   *  This behavior can be changed by supplying a
   *  [[scala.io.Source.withPositioning(pos:* custom positioner]].
-  *
   */
 abstract class Source extends Iterator[Char] with Closeable {
 

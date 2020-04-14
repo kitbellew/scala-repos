@@ -588,7 +588,7 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
 
     for (m <- sortModifiers) {
       if (!modifiersConstruction.withoutList.contains(
-            m.asInstanceOf[Modifier].modificator)) {
+          m.asInstanceOf[Modifier].modificator)) {
         visit(m)
         printer.space()
       }

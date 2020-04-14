@@ -148,8 +148,8 @@ class ScDocTagValueImpl(node: ASTNode)
         params: Seq[ScNamedElement]): Array[ScNamedElement] = {
       val paramsSet =
         (for (tag <- parent.asInstanceOf[ScDocComment].findTagsByName(tagName)
-              if tag.getValueElement != null &&
-                tag != getParent)
+          if tag.getValueElement != null &&
+            tag != getParent)
           yield tag.getValueElement.getText).toSet
 
       val result = ArrayBuilder.make[ScNamedElement]()

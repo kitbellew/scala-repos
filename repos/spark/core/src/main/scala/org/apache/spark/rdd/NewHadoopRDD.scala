@@ -229,9 +229,9 @@ class NewHadoopRDD[K, V](
           if (getBytesReadCallback.isDefined) {
             updateBytesRead()
           } else if (split.serializableHadoopSplit.value
-                       .isInstanceOf[FileSplit] ||
-                     split.serializableHadoopSplit.value
-                       .isInstanceOf[CombineFileSplit]) {
+              .isInstanceOf[FileSplit] ||
+            split.serializableHadoopSplit.value
+              .isInstanceOf[CombineFileSplit]) {
             // If we can't get the bytes read from the FS stats, fall back to the split size,
             // which may be inaccurate.
             try {

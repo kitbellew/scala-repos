@@ -509,7 +509,7 @@ abstract class Erasure
           } else {
             val overMembers = overriddenBy(member)
             if (!overMembers.exists(overMember =>
-                  exitingPostErasure(overMember.tpe =:= overBridge.tpe))) {
+                exitingPostErasure(overMember.tpe =:= overBridge.tpe))) {
               clashError(fulldef(overBridge))
             }
           }
@@ -533,7 +533,7 @@ abstract class Erasure
           !(deconstMap(other.tpe) =:= deconstMap(member.tpe)) && {
           var e = bridgesScope.lookupEntry(member.name)
           while ((e ne null) && !((e.sym.tpe =:= otpe) && (bridgeTarget(
-                   e.sym) == member)))
+              e.sym) == member)))
             e = bridgesScope.lookupNextEntry(e)
           (e eq null)
         }
@@ -720,17 +720,17 @@ abstract class Erasure
           else {
             var qual1 = typedQualifier(qual)
             if ((isPrimitiveValueType(qual1.tpe) && !isPrimitiveValueMember(
-                  tree.symbol)) ||
-                isErasedValueType(qual1.tpe))
+                tree.symbol)) ||
+              isErasedValueType(qual1.tpe))
               qual1 = box(qual1, "owner " + tree.symbol.owner)
             else if (!isPrimitiveValueType(qual1.tpe) && isPrimitiveValueMember(
-                       tree.symbol))
+                tree.symbol))
               qual1 = unbox(qual1, tree.symbol.owner.tpe)
 
             def selectFrom(qual: Tree) = treeCopy.Select(tree, qual, name)
 
             if (isPrimitiveValueMember(tree.symbol) && !isPrimitiveValueType(
-                  qual1.tpe)) {
+                qual1.tpe)) {
               tree.symbol = NoSymbol
               selectFrom(qual1)
             } else if (isMethodTypeWithEmptyParams(qual1.tpe)) {
@@ -740,7 +740,7 @@ abstract class Erasure
                 List()) setPos qual1.pos setType qual1.tpe.resultType
               adaptMember(selectFrom(applied))
             } else if (!(qual1.isInstanceOf[
-                         Super] || (qual1.tpe.typeSymbol isSubClass tree.symbol.owner))) {
+                Super] || (qual1.tpe.typeSymbol isSubClass tree.symbol.owner))) {
               assert(tree.symbol.owner != ArrayClass)
               selectFrom(cast(qual1, tree.symbol.owner.tpe.resultType))
             } else {
@@ -994,8 +994,8 @@ abstract class Erasure
               if (qual.tpe <:< targ.tpe)
                 atPos(tree.pos) { Typed(qual, TypeTree(targ.tpe)) }
               else if (isNumericValueClass(
-                         qual.tpe.typeSymbol) && isNumericValueClass(
-                         targ.tpe.typeSymbol))
+                  qual.tpe.typeSymbol) && isNumericValueClass(
+                  targ.tpe.typeSymbol))
                 atPos(tree.pos)(numericConversion(qual, targ.tpe.typeSymbol))
               else
                 tree
@@ -1007,7 +1007,7 @@ abstract class Erasure
           fn match {
             case TypeApply(sel @ Select(qual, name), List(targ)) =>
               if (qual.tpe != null && isPrimitiveValueClass(
-                    qual.tpe.typeSymbol) && targ.tpe != null && targ.tpe <:< AnyRefTpe)
+                  qual.tpe.typeSymbol) && targ.tpe != null && targ.tpe <:< AnyRefTpe)
                 reporter.error(
                   sel.pos,
                   "isInstanceOf cannot test if value types are references.")
@@ -1099,7 +1099,7 @@ abstract class Erasure
             if (fn.symbol.owner == ArrayClass) {
               // Have to also catch calls to abstract types which are bounded by Array.
               if (unboundedGenericArrayLevel(
-                    qual.tpe.widen) == 1 || qual.tpe.typeSymbol.isAbstractType) {
+                  qual.tpe.widen) == 1 || qual.tpe.typeSymbol.isAbstractType) {
                 // convert calls to apply/update/length on generic arrays to
                 // calls of ScalaRunTime.array_xxx method calls
                 global.typer.typedPos(tree.pos) {
@@ -1245,7 +1245,7 @@ abstract class Erasure
                   // has a null type).
                   val qualSym = qual.tpe.widen.typeSymbol
                   if (isJvmAccessible(
-                        qualSym) && !qualSym.isPackageClass && !qualSym.isPackageObjectClass) {
+                      qualSym) && !qualSym.isPackageClass && !qualSym.isPackageObjectClass) {
                     // insert cast to prevent illegal access error (see #4283)
                     // util.trace("insert erasure cast ") (*/
                     treeCopy.Select(

@@ -37,8 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Scene Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SceneSpec

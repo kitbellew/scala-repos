@@ -123,7 +123,7 @@ trait IntroduceTypeAlias {
               classOf[ScTypeElement]) match {
               case simpleType: ScSimpleTypeElement =>
                 if (simpleType.getNextSiblingNotWhitespace
-                      .isInstanceOf[ScTypeArgs]) {
+                    .isInstanceOf[ScTypeArgs]) {
                   PsiTreeUtil.getParentOfType(
                     simpleType,
                     classOf[ScParameterizedTypeElement])
@@ -265,7 +265,7 @@ trait IntroduceTypeAlias {
 
         //need open modal dialog in inplace mode
         if ((StartMarkAction.canStart(
-              project) != null) && (currentScope != null)) {
+            project) != null) && (currentScope != null)) {
           currentDataObject.isCallModalDialogInProgress = true
           val templateState: TemplateState =
             TemplateManagerImpl.getTemplateState(

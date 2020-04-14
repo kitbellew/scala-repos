@@ -148,7 +148,6 @@ abstract class PixelFormat[B <: Buffer](
     delegate.getArgb(buf, x, y, scanlineStride)
 
   /**
-    *
     */
   def getType: PixelFormat.Type = delegate.getType
 

@@ -798,7 +798,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             mods |= Flags.STATIC
           val decls = memberDecl(mods, parentToken)
           (if (mods.hasStaticFlag || inInterface && !(decls exists (_.isInstanceOf[
-                 DefDef])))
+               DefDef])))
              statics
            else
              members) ++= decls

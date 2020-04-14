@@ -405,9 +405,9 @@ private[log] class Cleaner(
       "Cleaning log %s (discarding tombstones prior to %s)..."
         .format(log.name, new Date(deleteHorizonMs)))
     for (group <- groupSegmentsBySize(
-           log.logSegments(0, endOffset),
-           log.config.segmentSize,
-           log.config.maxIndexSize))
+        log.logSegments(0, endOffset),
+        log.config.segmentSize,
+        log.config.maxIndexSize))
       cleanSegments(log, group, offsetMap, deleteHorizonMs)
 
     // record buffer utilization
@@ -551,10 +551,10 @@ private[log] class Cleaner(
           messages.foreach { messageAndOffset =>
             messagesRead += 1
             if (shouldRetainMessage(
-                  source,
-                  map,
-                  retainDeletes,
-                  messageAndOffset)) {
+                source,
+                map,
+                retainDeletes,
+                messageAndOffset)) {
               retainedMessages += {
                 if (messageAndOffset.message.magic != messageFormatVersion) {
                   writeOriginalMessageSet = false
@@ -724,9 +724,9 @@ private[log] class Cleaner(
       var indexSize = segs.head.index.sizeInBytes
       segs = segs.tail
       while (!segs.isEmpty &&
-             logSize + segs.head.size <= maxSize &&
-             indexSize + segs.head.index.sizeInBytes <= maxIndexSize &&
-             segs.head.index.lastOffset - group.last.index.baseOffset <= Int.MaxValue) {
+        logSize + segs.head.size <= maxSize &&
+        indexSize + segs.head.index.sizeInBytes <= maxIndexSize &&
+        segs.head.index.lastOffset - group.last.index.baseOffset <= Int.MaxValue) {
         group = segs.head :: group
         logSize += segs.head.size
         indexSize += segs.head.index.sizeInBytes

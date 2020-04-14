@@ -32,7 +32,7 @@ class A[T] {
   def foo(a: T, b: AnyRef): T
 }
 
-/** Companion object with implicit transformations  */
+/** Companion object with implicit transformations */
 object A {
   import language.implicitConversions // according to SIP18
 
@@ -97,7 +97,7 @@ object C extends A
   */
 class D extends A[String]
 
-/** Companion object with implicit transformations  */
+/** Companion object with implicit transformations */
 object D extends A
 
 /** EnrichedA class <br/>

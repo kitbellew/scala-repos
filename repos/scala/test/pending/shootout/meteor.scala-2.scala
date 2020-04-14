@@ -113,7 +113,7 @@ final class Solver(n: Int) {
   /*
    def printPieces() =
       for (i <- Iterator.range(0,Board.pieces)) pieces(i).print
- */
+   */
 
 }
 
@@ -219,7 +219,7 @@ final class Board {
       }
       Console.println("")
    }
- */
+   */
 
 }
 
@@ -399,7 +399,7 @@ final class Piece(_number: Int) {
       }
       Console.println("")
    }
- */
+   */
 
 }
 

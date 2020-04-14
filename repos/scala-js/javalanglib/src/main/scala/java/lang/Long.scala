@@ -231,7 +231,7 @@ object Long {
     val length = s.length
 
     if (start >= length || radix < Character.MIN_RADIX ||
-        radix > Character.MAX_RADIX) {
+      radix > Character.MAX_RADIX) {
       parseLongError(s)
     } else {
       val radixInfo = StringRadixInfos(radix)

@@ -246,10 +246,10 @@ object Character {
     else if (c >= 'a' && c <= 'z' && c - 'a' < radix - 10)
       c - 'a' + 10
     else if (c >= '\uFF21' && c <= '\uFF3A' &&
-             c - '\uFF21' < radix - 10)
+      c - '\uFF21' < radix - 10)
       c - '\uFF21' + 10
     else if (c >= '\uFF41' && c <= '\uFF5A' &&
-             c - '\uFF41' < radix - 10)
+      c - '\uFF41' < radix - 10)
       c - '\uFF21' + 10
     else -1
   }

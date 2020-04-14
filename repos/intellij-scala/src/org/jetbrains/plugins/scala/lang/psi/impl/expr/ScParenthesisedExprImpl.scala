@@ -16,8 +16,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 /**
   * @author Alexander Podkhalyuzin
   * Date: 07.03.2008
-  * Time: 9:24:19
-  */
+  * Time: 9:24:19 */
 
 class ScParenthesisedExprImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

@@ -99,7 +99,7 @@ trait JSGlobalAddons extends JSDefinitions with Compat210Component {
 
     @inline private def enteringUncurryIfAtPhaseAfter[A](op: => A): A = {
       if (currentRun.uncurryPhase != NoPhase &&
-          isAtPhaseAfter(currentRun.uncurryPhase)) {
+        isAtPhaseAfter(currentRun.uncurryPhase)) {
         enteringPhase(currentRun.uncurryPhase)(op)
       } else {
         op

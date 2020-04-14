@@ -3,7 +3,6 @@ package effect
 
 ////
 /**
-  *
   */
 ////
 trait LiftControlIO[F[_]] { self =>

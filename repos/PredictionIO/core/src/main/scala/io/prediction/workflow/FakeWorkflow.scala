@@ -88,7 +88,6 @@ private[prediction] case class FakeEvalResult() extends BaseEvaluatorResult {
   *   }
   * }
   * }}}
-  *
   */
 @Experimental
 trait FakeRun extends Evaluation with EngineParamsGenerator {

@@ -178,7 +178,7 @@ class SparkConfSuite
       executor.shutdownNow()
       val sysProps = System.getProperties
       for (key <- sysProps.stringPropertyNames().asScala
-           if key.startsWith("spark.5425."))
+        if key.startsWith("spark.5425."))
         sysProps.remove(key)
     }
   }

@@ -971,24 +971,24 @@ class RandomAccessFile(file: File, arg0: String = "r")(implicit
 abstract class ByteConverter {
 
   ///// bytesToXXX /////
-  /**Takes 1 Byte and returns a UInt8 (as Short)*/
+  /** Takes 1 Byte and returns a UInt8 (as Short) */
   def byteToUInt8(b0: Byte): Short = {
     if (b0 < 0) (b0 + 256).toShort else b0.toShort
   }
 
-  /**Takes 2 Bytes and returns an Int16 (Short)*/
+  /** Takes 2 Bytes and returns an Int16 (Short) */
   def bytesToInt16(b0: Byte, b1: Byte): Short
 
-  /**Takes 2 Bytes and returns a UInt16 (as Char)*/
+  /** Takes 2 Bytes and returns a UInt16 (as Char) */
   def bytesToUInt16(b0: Byte, b1: Byte): Char
 
-  /**Takes 4 Bytes and returns a UInt32 (Int)*/
+  /** Takes 4 Bytes and returns a UInt32 (Int) */
   def bytesToInt32(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Int
 
-  /**Takes 4 Bytes and returns a UInt32 (as Long)*/
+  /** Takes 4 Bytes and returns a UInt32 (as Long) */
   def bytesToUInt32(b0: Byte, b1: Byte, b2: Byte, b3: Byte): Long
 
-  /**Takes 8 Bytes and returns a UInt64 (as ULong), throwing an error if it overflows Long, which is Int64*/
+  /** Takes 8 Bytes and returns a UInt64 (as ULong), throwing an error if it overflows Long, which is Int64 */
   final def bytesToUInt64(
       b0: Byte,
       b1: Byte,
@@ -1001,7 +1001,7 @@ abstract class ByteConverter {
     ULong(bytesToInt64(b0, b1, b2, b3, b4, b5, b6, b7))
   }
 
-  /**Takes 8 Bytes and returns a Int64 (Long)*/
+  /** Takes 8 Bytes and returns a Int64 (Long) */
   def bytesToInt64(
       b0: Byte,
       b1: Byte,
@@ -1012,9 +1012,9 @@ abstract class ByteConverter {
       b6: Byte,
       b7: Byte): Long
 
-  /**Takes 8 Bytes and returns a UInt64 shifted down to the range of Int64 (Long). The shifted number range runs from
+  /** Takes 8 Bytes and returns a UInt64 shifted down to the range of Int64 (Long). The shifted number range runs from
     * -2^63 to 2^63-1, so that UInt64 can be represented in the JVM long (Int64). Addition and subtraction
-    * are valid with these long representations, multiplication and division, naturally, are not.*/
+    * are valid with these long representations, multiplication and division, naturally, are not. */
   def bytesToUInt64Shifted(
       b0: Byte,
       b1: Byte,
@@ -1026,7 +1026,7 @@ abstract class ByteConverter {
       b7: Byte): Long
 
   ///// XXXToByte /////
-  /**Takes an UInt8 (as Sort), and returns a bytes*/
+  /** Takes an UInt8 (as Sort), and returns a bytes */
   def uInt8ToByte(value: Short): Byte = {
     require(
       value <= 255 && value >= 0,
@@ -1034,26 +1034,26 @@ abstract class ByteConverter {
     if (value >= 128) (value - 256.toShort).toByte else value.toByte
   }
 
-  /**Takes an Int16 (Short), and returns an array of 2 bytes*/
+  /** Takes an Int16 (Short), and returns an array of 2 bytes */
   def int16ToBytes(value: Short): Array[Byte]
 
-  /**Takes a UInt16 (Char), and returns an array of 2 bytes*/
+  /** Takes a UInt16 (Char), and returns an array of 2 bytes */
   def uInt16ToBytes(value: Char): Array[Byte]
 
-  /**Takes an Int32 (Int), and returns an array of 4 bytes*/
+  /** Takes an Int32 (Int), and returns an array of 4 bytes */
   def int32ToBytes(value: Int): Array[Byte]
 
-  /**Takes a UInt32 (as Long), and returns an array of 4 bytes*/
+  /** Takes a UInt32 (as Long), and returns an array of 4 bytes */
   def uInt32ToBytes(value: Long): Array[Byte]
 
-  /**Takes an Int64 (Long), and returns an array of 8 bytes*/
+  /** Takes an Int64 (Long), and returns an array of 8 bytes */
   def int64ToBytes(value: Long): Array[Byte]
 
-  /**Takes a UInt64 (as ULong), and returns an array of 8 bytes*/
+  /** Takes a UInt64 (as ULong), and returns an array of 8 bytes */
   def uInt64ToBytes(value: ULong): Array[Byte]
 
-  /**Takes an Int64 (Long), and returns an array of 8 bytes, shifted up to a UInt64.
-    * See [[breeze.io.ByteConverter.bytesToUInt64Shifted()]]*/
+  /** Takes an Int64 (Long), and returns an array of 8 bytes, shifted up to a UInt64.
+    * See [[breeze.io.ByteConverter.bytesToUInt64Shifted()]] */
   def uInt64ShiftedToBytes(value: Long): Array[Byte]
 
 }

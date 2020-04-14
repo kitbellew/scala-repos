@@ -141,7 +141,7 @@ class ConsumerConfig private (val props: VerifiableProperties)
   val autoCommitIntervalMs =
     props.getInt("auto.commit.interval.ms", AutoCommitInterval)
 
-  /** max number of message chunks buffered for consumption, each chunk can be up to fetch.message.max.bytes*/
+  /** max number of message chunks buffered for consumption, each chunk can be up to fetch.message.max.bytes */
   val queuedMaxMessages =
     props.getInt("queued.max.message.chunks", MaxQueuedChunks)
 

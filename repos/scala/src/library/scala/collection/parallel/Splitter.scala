@@ -38,16 +38,16 @@ trait Splitter[+T] extends Iterator[T] {
     */
   def split: Seq[Splitter[T]]
   /*
- *  '''Note:''' splitters in this sequence may actually be empty and it can contain a splitter
- *  which iterates over the same elements as the original splitter AS LONG AS calling `split`
- *  a finite number of times on the resulting splitters eventually returns a nontrivial partition.
- *
- *  Note that the docs contract above yields implementations which are a subset of implementations
- *  defined by this fineprint.
- *
- *  The rationale behind this is best given by the following example:
- *  try splitting an iterator over a linear hash table.
- */
+   *  '''Note:''' splitters in this sequence may actually be empty and it can contain a splitter
+   *  which iterates over the same elements as the original splitter AS LONG AS calling `split`
+   *  a finite number of times on the resulting splitters eventually returns a nontrivial partition.
+   *
+   *  Note that the docs contract above yields implementations which are a subset of implementations
+   *  defined by this fineprint.
+   *
+   *  The rationale behind this is best given by the following example:
+   *  try splitting an iterator over a linear hash table.
+   */
 }
 
 object Splitter {

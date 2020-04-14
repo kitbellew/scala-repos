@@ -115,7 +115,7 @@ class ScalaGlobalMembersCompletionContributor
         val qualifiedName = containingClass.qualifiedName + "." + member.name
         for (excluded <- CodeInsightSettings.getInstance.EXCLUDED_PACKAGES) {
           if (qualifiedName == excluded || qualifiedName.startsWith(
-                excluded + ".")) {
+              excluded + ".")) {
             return false
           }
         }
@@ -338,8 +338,8 @@ class ScalaGlobalMembersCompletionContributor
             } {
               assert(containingClass != null)
               if (classes.add(containingClass) && isAccessible(
-                    method,
-                    containingClass)) {
+                  method,
+                  containingClass)) {
                 val shouldImport = !elemsSetContains(method)
                 showHint(shouldImport)
 

@@ -85,9 +85,9 @@ class ExpandTables extends Phase {
               case r: Ref => r.untyped
               case d: Distinct =>
                 if (d.nodeType.existsType {
-                      case NominalType(_: TableIdentitySymbol, _) => true;
-                      case _                                      => false
-                    })
+                    case NominalType(_: TableIdentitySymbol, _) => true;
+                    case _                                      => false
+                  })
                   expandDistinct = true
                 d.mapChildren(tr)
             }
@@ -112,9 +112,9 @@ class ExpandTables extends Phase {
 
           // Perform star expansion in query result
           if (!tree.nodeType.existsType {
-                case NominalType(_: TableIdentitySymbol, _) => true;
-                case _                                      => false
-              }) tree3
+              case NominalType(_: TableIdentitySymbol, _) => true;
+              case _                                      => false
+            }) tree3
           else {
             logger.debug("Expanding tables in result type")
             // Create a mapping that expands the tables

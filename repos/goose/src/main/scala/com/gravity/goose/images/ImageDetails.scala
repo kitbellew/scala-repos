@@ -26,7 +26,6 @@ package com.gravity.goose.images
 /**
   * holds the details of the result of inspecting an image
   * @author Jim Plush
-  *
   */
 class ImageDetails {
   def getWidth: Int = width

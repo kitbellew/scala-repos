@@ -151,14 +151,14 @@ class ScalaImportTypeFix(
         if (ref.resolve != null) return
 
         if (HintManagerImpl.getInstanceImpl
-              .hasShownHintsThatWillHideByOtherHint(true)) return
+            .hasShownHintsThatWillHideByOtherHint(true)) return
         val action =
           new ScalaAddImportAction(editor, classes, ref: ScReferenceElement)
 
         val offset = ref.getTextRange.getStartOffset
         if (classes.nonEmpty && offset >= startOffset(
-              editor) && offset <= endOffset(editor) && editor != null &&
-            offset <= editor.getDocument.getTextLength) {
+            editor) && offset <= endOffset(editor) && editor != null &&
+          offset <= editor.getDocument.getTextLength) {
           HintManager
             .getInstance()
             .showQuestionHint(
@@ -187,7 +187,7 @@ class ScalaImportTypeFix(
       ApplicationManager.getApplication.invokeLater(new Runnable() {
         def run() {
           if (!ref.isValid || !FileModificationService.getInstance
-                .prepareFileForWrite(ref.getContainingFile)) return
+              .prepareFileForWrite(ref.getContainingFile)) return
           ScalaUtils.runWriteAction(
             new Runnable {
               def run() {
@@ -341,8 +341,8 @@ object ScalaImportTypeFix {
 
   def getImportHolder(ref: PsiElement, project: Project): ScImportsHolder = {
     if (ScalaCodeStyleSettings
-          .getInstance(project)
-          .isAddImportMostCloseToReference)
+        .getInstance(project)
+        .isAddImportMostCloseToReference)
       PsiTreeUtil.getParentOfType(ref, classOf[ScImportsHolder])
     else {
       PsiTreeUtil.getParentOfType(ref, classOf[ScPackaging]) match {
@@ -399,11 +399,11 @@ object ScalaImportTypeFix {
     for (clazz <- classes) {
       def addClazz(clazz: PsiClass) {
         if (clazz != null && clazz.qualifiedName != null && clazz.qualifiedName
-              .indexOf(".") > 0 &&
-            ResolveUtils.kindMatches(clazz, kinds) && notInner(
-              clazz,
-              ref) && ResolveUtils.isAccessible(clazz, ref) &&
-            !JavaCompletionUtil.isInExcludedPackage(clazz, false)) {
+            .indexOf(".") > 0 &&
+          ResolveUtils.kindMatches(clazz, kinds) && notInner(
+            clazz,
+            ref) && ResolveUtils.isAccessible(clazz, ref) &&
+          !JavaCompletionUtil.isInExcludedPackage(clazz, false)) {
           buffer += ClassTypeToImport(clazz)
         }
       }
@@ -425,10 +425,9 @@ object ScalaImportTypeFix {
     for (alias <- typeAliases) {
       val containingClass = alias.containingClass
       if (containingClass != null && ScalaPsiUtil.hasStablePath(alias) &&
-          ResolveUtils.kindMatches(alias, kinds) && ResolveUtils.isAccessible(
-            alias,
-            ref) &&
-          !JavaCompletionUtil.isInExcludedPackage(containingClass, false)) {
+        ResolveUtils
+          .kindMatches(alias, kinds) && ResolveUtils.isAccessible(alias, ref) &&
+        !JavaCompletionUtil.isInExcludedPackage(containingClass, false)) {
         buffer += TypeAliasToImport(alias)
       }
     }
@@ -450,10 +449,10 @@ object ScalaImportTypeFix {
     for (packageQualifier <- packagesList) {
       val pack = ScPackageImpl.findPackage(myProject, packageQualifier)
       if (pack != null && pack.getQualifiedName.indexOf(
-            '.') != -1 && ResolveUtils.kindMatches(pack, kinds) &&
-          !JavaProjectCodeInsightSettings
-            .getSettings(myProject)
-            .isExcluded(pack.getQualifiedName)) {
+          '.') != -1 && ResolveUtils.kindMatches(pack, kinds) &&
+        !JavaProjectCodeInsightSettings
+          .getSettings(myProject)
+          .isExcluded(pack.getQualifiedName)) {
         buffer += PrefixPackageToImport(pack)
       }
     }

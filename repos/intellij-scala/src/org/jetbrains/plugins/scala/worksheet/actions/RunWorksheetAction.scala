@@ -236,7 +236,7 @@ object RunWorksheetAction {
       override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
         val text = event.getText
         if (ConsoleViewContentType.NORMAL_OUTPUT == ConsoleViewContentType
-              .getConsoleViewType(outputType)) {
+            .getConsoleViewType(outputType)) {
           worksheetPrinter processLine text
         }
       }

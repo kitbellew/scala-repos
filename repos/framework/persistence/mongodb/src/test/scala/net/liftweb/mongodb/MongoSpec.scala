@@ -90,6 +90,6 @@ class MongoSpec extends Specification {
       // remove defined db
       MongoDB.closeAll()
     }
-   */
+     */
   }
 }

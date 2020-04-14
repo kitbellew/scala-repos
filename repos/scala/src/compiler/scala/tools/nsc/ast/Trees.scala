@@ -391,6 +391,6 @@ trait Trees extends scala.reflect.internal.Trees { self: Global =>
    case SelectFromArray(_, _, _) =>                                (created and eliminated by erasure)
    case InjectDerivedValue(_) =>                                   (created and eliminated by erasure)
 
- */
+   */
 
 }

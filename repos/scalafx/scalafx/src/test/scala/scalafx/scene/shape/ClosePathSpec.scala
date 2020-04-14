@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ClosePath Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ClosePathSpec

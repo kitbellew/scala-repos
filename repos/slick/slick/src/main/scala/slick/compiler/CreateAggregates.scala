@@ -116,9 +116,9 @@ class CreateAggregates extends Phase {
     n match {
       case a @ Aggregate(s1, f1, sel1) =>
         if (a.findNode {
-              case n: PathElement => n.sym == outer
-              case _              => false
-            }.isDefined) (a, Map.empty)
+            case n: PathElement => n.sym == outer
+            case _              => false
+          }.isDefined) (a, Map.empty)
         else {
           val s, f = new AnonSymbol
           val a2 = Aggregate(s1, f1, StructNode(ConstArray(f -> sel1))).infer()

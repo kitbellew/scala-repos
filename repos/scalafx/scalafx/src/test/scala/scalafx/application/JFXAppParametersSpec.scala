@@ -40,8 +40,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * JFXApp.Parameters Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class JFXAppParametersSpec

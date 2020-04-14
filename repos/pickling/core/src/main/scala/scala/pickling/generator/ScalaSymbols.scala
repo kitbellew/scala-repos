@@ -12,7 +12,6 @@ private[pickling] class UnclosedSubclassesException(errors: Seq[String])
 
 /** An implementation of a symbol lookup table based on scala reflection.
   *
-  *
   * Note:  Scala reflection/compiler have known inaccuracies in some lookups.  For example, the compiler may
   *        remove all knowledge of private symbols from Java classes, because generally it doesn't care about
   *        Java's privates.

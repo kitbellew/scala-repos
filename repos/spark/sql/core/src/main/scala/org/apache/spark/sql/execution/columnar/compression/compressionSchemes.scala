@@ -140,8 +140,8 @@ private[columnar] case object RunLengthEncoding extends CompressionScheme {
           columnType.extract(from, value, 0)
 
           if (value.get(0, columnType.dataType) == currentValue.get(
-                0,
-                columnType.dataType)) {
+              0,
+              columnType.dataType)) {
             currentRun += 1
           } else {
             // Writes current run

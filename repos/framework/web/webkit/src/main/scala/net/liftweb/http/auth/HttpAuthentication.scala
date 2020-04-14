@@ -31,7 +31,6 @@ import scala.collection.mutable.{HashMap}
   * The most important method to note here is the verified_? partial function
   * as this is what is used to then determine if the response specified in
   * the boot dispatcher is used or its a 401 response.
-  *
   */
 trait HttpAuthentication {
   def header(r: Req): Box[String] = r.request.header("Authorization")
@@ -152,7 +151,6 @@ case class HttpDigestAuthentication(realmName: String)(
     *
     * A useful usability would be to return something like "5 seconds" where seconds function is defined in TimeHelpers.
     * The default value returned is 30 seconds.
-    *
     */
   def nonceValidityPeriod: Long = 30.seconds
 

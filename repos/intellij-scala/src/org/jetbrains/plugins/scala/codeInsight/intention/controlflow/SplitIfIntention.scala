@@ -62,12 +62,12 @@ class SplitIfIntention extends PsiElementBaseIntentionAction {
 
     val firstCond =
       if (cond.getBaseExpr.getText.trim.startsWith(
-            "(") && cond.getBaseExpr.getText.trim.endsWith(")"))
+          "(") && cond.getBaseExpr.getText.trim.endsWith(")"))
         cond.getBaseExpr.getText.trim
       else "(" + cond.getBaseExpr.getText.trim + ")"
     val secondCond =
       if (cond.getArgExpr.getText.trim.startsWith(
-            "(") && cond.getArgExpr.getText.trim.endsWith(")"))
+          "(") && cond.getArgExpr.getText.trim.endsWith(")"))
         cond.getArgExpr.getText.trim
       else "(" + cond.getArgExpr.getText.trim + ")"
 

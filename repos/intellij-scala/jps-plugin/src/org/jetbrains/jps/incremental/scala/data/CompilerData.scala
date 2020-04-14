@@ -70,7 +70,7 @@ object CompilerData {
 
         val jvmSdk =
           if (globalSettings.isCompileServerEnabled && JavaBuilderUtil.CONSTANT_SEARCH_SERVICE
-                .get(context) != null) {
+              .get(context) != null) {
             Option(globalSettings.getCompileServerSdk).flatMap { sdkName =>
               val libraries = model.getGlobal.getLibraryCollection
                 .getLibraries(JpsJavaSdkType.INSTANCE)

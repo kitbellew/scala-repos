@@ -38,8 +38,7 @@ import scala.collection.JavaConversions._
 
 /**
   * Nikolay.Tropin
-  * 2014-03-21
-  */
+  * 2014-03-21 */
 class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
 
   type ClassMember = overrideImplement.ClassMember
@@ -53,8 +52,8 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
       @NotNull file: PsiFile) {
     if (!CodeInsightUtilBase.prepareEditorForWrite(editor)) return
     if (!FileDocumentManager.getInstance.requestWriting(
-          editor.getDocument,
-          project)) return
+        editor.getDocument,
+        project)) return
     PsiDocumentManager.getInstance(project).commitAllDocuments()
 
     val target = chooseTarget(file, editor, project)

@@ -7,7 +7,6 @@ import javax.swing.JCheckBox
 import org.jetbrains.plugins.scala.ScalaBundle
 
 /**
-  *
   * @author Rado Buransky (buransky.com)
   */
 class ScalaToStringMemberSelectionPanel(

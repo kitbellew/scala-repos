@@ -288,8 +288,8 @@ case class DataSource(
   /** Writes the give [[DataFrame]] out to this [[DataSource]]. */
   def write(mode: SaveMode, data: DataFrame): BaseRelation = {
     if (data.schema
-          .map(_.dataType)
-          .exists(_.isInstanceOf[CalendarIntervalType])) {
+        .map(_.dataType)
+        .exists(_.isInstanceOf[CalendarIntervalType])) {
       throw new AnalysisException(
         "Cannot save interval data type into external storage.")
     }
@@ -350,8 +350,8 @@ case class DataSource(
 
           existingPartitionColumnSet.foreach { ex =>
             if (ex.map(_.toLowerCase) != partitionColumns
-                  .map(_.toLowerCase())
-                  .toSet) {
+                .map(_.toLowerCase())
+                .toSet) {
               throw new AnalysisException(
                 s"Requested partitioning does not equal existing partitioning: " +
                   s"$ex != ${partitionColumns.toSet}.")

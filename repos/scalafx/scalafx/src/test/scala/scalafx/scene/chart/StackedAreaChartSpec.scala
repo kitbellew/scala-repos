@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * StackedAreaChart Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class StackedAreaChartSpec

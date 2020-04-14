@@ -77,7 +77,6 @@ import scala.collection.JavaConversions._
   * 4. Consumer offset tracking:
   * /consumers/[group_id]/offsets/[topic]/[broker_id-partition_id] --> offset_counter_value
   * Each consumer tracks the offset of the latest message consumed for each partition.
-  *
   */
 private[kafka] object ZookeeperConsumerConnector {
   val shutdownCommand: FetchedDataChunk = new FetchedDataChunk(null, null, -1L)
@@ -353,8 +352,7 @@ private[kafka] class ZookeeperConsumerConnector(
 
   private def sendShutdownToAllQueues() = {
     for (queue <-
-           topicThreadIdAndQueues.values
-             .toSet[BlockingQueue[FetchedDataChunk]]) {
+        topicThreadIdAndQueues.values.toSet[BlockingQueue[FetchedDataChunk]]) {
       debug("Clearing up queue")
       queue.clear()
       queue.put(ZookeeperConsumerConnector.shutdownCommand)
@@ -789,7 +787,7 @@ private[kafka] class ZookeeperConsumerConnector(
                 /** occasionally, we may hit a ZK exception because the ZK state is changing while we are iterating.
                   * For example, a ZK node can disappear between the time we get all children and the time we try to get
                   * the value of a child. Just let this go since another rebalance will be triggered.
-                  **/
+                  */
                 info("exception during rebalance ", e)
             }
             info("end rebalancing consumer " + consumerIdString + " try #" + i)
@@ -979,7 +977,7 @@ private[kafka] class ZookeeperConsumerConnector(
             * for the current data chunk. Since the fetchers are already shutdown and this is the last chunk to be iterated
             * by the consumer, there will be no more messages returned by this iterator until the rebalancing finishes
             * successfully and the fetchers restart to fetch more data chunks
-          **/
+            */
           if (config.autoCommitEnable) {
             info("Committing all offsets after clearing the fetcher queues")
             commitOffsets(true)

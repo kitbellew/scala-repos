@@ -427,8 +427,8 @@ private[spark] class ExternalSorter[K, V, C](
           combiners += firstPair._2
           val key = firstPair._1
           while (sorted.hasNext && comparator.compare(
-                   sorted.head._1,
-                   key) == 0) {
+              sorted.head._1,
+              key) == 0) {
             val pair = sorted.next()
             var i = 0
             var foundKey = false
@@ -543,7 +543,7 @@ private[spark] class ExternalSorter[K, V, C](
       */
     private def skipToNextPartition() {
       while (partitionId < numPartitions &&
-             indexInPartition == spill.elementsPerPartition(partitionId)) {
+        indexInPartition == spill.elementsPerPartition(partitionId)) {
         partitionId += 1
         indexInPartition = 0L
       }

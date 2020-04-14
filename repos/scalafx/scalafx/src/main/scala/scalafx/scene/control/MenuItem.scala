@@ -68,7 +68,6 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
     this(new jfxsc.MenuItem(text, graphic))
 
   /**
-    *
     */
   def accelerator: ObjectProperty[jfxsi.KeyCombination] =
     delegate.acceleratorProperty
@@ -77,7 +76,6 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
   }
 
   /**
-    *
     */
   def disable: BooleanProperty = delegate.disableProperty
   def disable_=(v: Boolean) {
@@ -85,7 +83,6 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
   }
 
   /**
-    *
     */
   def graphic: ObjectProperty[jfxs.Node] = delegate.graphicProperty
   def graphic_=(v: Node) {
@@ -93,7 +90,6 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
   }
 
   /**
-    *
     */
   def id: StringProperty = delegate.idProperty
   def id_=(v: String) {
@@ -109,7 +105,6 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
   }
 
   /**
-    *
     */
   def onAction = delegate.onActionProperty
   def onAction_=(v: jfxe.EventHandler[jfxe.ActionEvent]) {
@@ -117,19 +112,16 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
   }
 
   /**
-    *
     */
   def parentMenu: ReadOnlyObjectProperty[jfxsc.Menu] =
     delegate.parentMenuProperty
 
   /**
-    *
     */
   def parentPopup: ReadOnlyObjectProperty[jfxsc.ContextMenu] =
     delegate.parentPopupProperty
 
   /**
-    *
     */
   def style: StringProperty = delegate.styleProperty
   def style_=(v: String) {
@@ -137,7 +129,6 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
   }
 
   /**
-    *
     */
   def text: StringProperty = delegate.textProperty
   def text_=(v: String) {
@@ -145,7 +136,6 @@ class MenuItem(override val delegate: jfxsc.MenuItem = new jfxsc.MenuItem)
   }
 
   /**
-    *
     */
   def visible: BooleanProperty = delegate.visibleProperty
   def visible_=(v: Boolean) {

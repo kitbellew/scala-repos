@@ -77,7 +77,7 @@ trait Chars {
   def isIdentifierPart(c: Char) =
     (c == '$') || Character.isUnicodeIdentifierPart(c)
 
-  /** Is character a math or other symbol in Unicode?  */
+  /** Is character a math or other symbol in Unicode? */
   def isSpecial(c: Char) = {
     val chtp = Character.getType(c)
     chtp == Character.MATH_SYMBOL.toInt || chtp == Character.OTHER_SYMBOL.toInt

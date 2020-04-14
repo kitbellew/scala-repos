@@ -40,7 +40,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       val warnings = inline(request)
       for (warning <- warnings) {
         if ((callee.annotatedInline && btypes.compilerSettings.YoptWarningEmitAtInlineFailed) || warning
-              .emitWarning(compilerSettings)) {
+            .emitWarning(compilerSettings)) {
           val annotWarn =
             if (callee.annotatedInline) " is annotated @inline but" else ""
           val msg = s"${BackendReporting.methodSignature(
@@ -85,7 +85,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // `callsties` map while iterating it.
     val toRewrite = mutable.ArrayBuffer.empty[Callsite]
     for (css <- callsites.valuesIterator; cs <- css.valuesIterator
-         if doRewriteTraitCallsite(cs)) toRewrite += cs
+      if doRewriteTraitCallsite(cs)) toRewrite += cs
     toRewrite foreach rewriteFinalTraitMethodInvocation
   }
 
@@ -274,8 +274,8 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       for (r <- requests) {
         // is there a chain of inlining requests that would inline the callsite method into the callee?
         if (isReachable(
-              r.callsite.callee.get.callee,
-              r.callsite.callsiteMethod))
+            r.callsite.callee.get.callee,
+            r.callsite.callsiteMethod))
           elided += r
         else
           result += r
@@ -497,7 +497,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     val analyzer = new AsmAnalyzer(callee, calleeDeclarationClass.internalName)
 
     for (originalReturn <- callee.instructions.iterator().asScala if isReturn(
-           originalReturn)) {
+        originalReturn)) {
       val frame = analyzer.frameAt(originalReturn)
       var stackHeight = frame.getStackSize
 
@@ -559,7 +559,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       // and stored into locals before the null check, so in that case the maxStack doesn't grow.
       val stackSlotForNullCheck =
         if (!isStaticMethod(
-              callee) && !receiverKnownNotNull && calleeParamTypes.isEmpty) 1
+            callee) && !receiverKnownNotNull && calleeParamTypes.isEmpty) 1
         else 0
       callsiteStackHeight + stackSlotForNullCheck
     }
@@ -569,7 +569,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       math.max(stackHeightAtNullCheck, maxStackOfInlinedCode))
 
     if (hasSerializableClosureInstantiation && !indyLambdaHosts(
-          callsiteClass.internalName)) {
+        callsiteClass.internalName)) {
       indyLambdaHosts += callsiteClass.internalName
       addLambdaDeserialize(
         byteCodeRepository.classNode(callsiteClass.internalName).get)

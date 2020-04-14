@@ -318,11 +318,11 @@ private[akka] trait FaultHandling { this: ActorCell ⇒
        */
       case Some(stats) if stats.uid == f.uid ⇒
         if (!actor.supervisorStrategy.handleFailure(
-              this,
-              f.child,
-              f.cause,
-              stats,
-              getAllChildStats)) throw f.cause
+            this,
+            f.child,
+            f.cause,
+            stats,
+            getAllChildStats)) throw f.cause
       case Some(stats) ⇒
         publish(Debug(
           self.path.toString,

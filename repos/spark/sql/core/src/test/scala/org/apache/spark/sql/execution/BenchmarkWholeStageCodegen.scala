@@ -69,7 +69,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     -------------------------------------------------------------------------------------------
     rang/filter/sum codegen=false          14332 / 16646         36.0          27.8       1.0X
     rang/filter/sum codegen=true              897 / 1022        584.6           1.7      16.4X
-   */
+     */
   }
 
   ignore("range/limit/sum") {
@@ -83,7 +83,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     -------------------------------------------------------------------------------------------
     range/limit/sum codegen=false             609 /  672        861.6           1.2       1.0X
     range/limit/sum codegen=true              561 /  621        935.3           1.1       1.1X
-   */
+     */
   }
 
   ignore("stat functions") {
@@ -98,30 +98,30 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-      Using ImperativeAggregate (as implemented in Spark 1.6):
-
-      Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-      stddev:                            Avg Time(ms)    Avg Rate(M/s)  Relative Rate
-      -------------------------------------------------------------------------------
-      stddev w/o codegen                      2019.04            10.39         1.00 X
-      stddev w codegen                        2097.29            10.00         0.96 X
-      kurtosis w/o codegen                    2108.99             9.94         0.96 X
-      kurtosis w codegen                      2090.69            10.03         0.97 X
-
-      Using DeclarativeAggregate:
-
-      Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-      stddev:                             Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-      -------------------------------------------------------------------------------------------
-      stddev codegen=false                     5630 / 5776         18.0          55.6       1.0X
-      stddev codegen=true                      1259 / 1314         83.0          12.0       4.5X
-
-      Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-      kurtosis:                           Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-      -------------------------------------------------------------------------------------------
-      kurtosis codegen=false                 14847 / 15084          7.0         142.9       1.0X
-      kurtosis codegen=true                    1652 / 2124         63.0          15.9       9.0X
-    */
+      *      Using ImperativeAggregate (as implemented in Spark 1.6):
+      *
+      *      Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *      stddev:                            Avg Time(ms)    Avg Rate(M/s)  Relative Rate
+      *      -------------------------------------------------------------------------------
+      *      stddev w/o codegen                      2019.04            10.39         1.00 X
+      *      stddev w codegen                        2097.29            10.00         0.96 X
+      *      kurtosis w/o codegen                    2108.99             9.94         0.96 X
+      *      kurtosis w codegen                      2090.69            10.03         0.97 X
+      *
+      *      Using DeclarativeAggregate:
+      *
+      *      Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *      stddev:                             Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *      -------------------------------------------------------------------------------------------
+      *      stddev codegen=false                     5630 / 5776         18.0          55.6       1.0X
+      *      stddev codegen=true                      1259 / 1314         83.0          12.0       4.5X
+      *
+      *      Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *      kurtosis:                           Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *      -------------------------------------------------------------------------------------------
+      *      kurtosis codegen=false                 14847 / 15084          7.0         142.9       1.0X
+      *      kurtosis codegen=true                    1652 / 2124         63.0          15.9       9.0X
+      */
   }
 
   ignore("aggregate with keys") {
@@ -142,7 +142,7 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
       -------------------------------------------------------------------------------------------
       Aggregate w keys codegen=false           2429 / 2644          8.6         115.8       1.0X
       Aggregate w keys codegen=true            1535 / 1571         13.7          73.2       1.6X
-   */
+     */
   }
 
   ignore("broadcast hash join") {
@@ -185,11 +185,11 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    Join w 2 ints:                      Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    Join w 2 ints codegen=false              7159 / 7224         14.6          68.3       1.0X
-    Join w 2 ints codegen=true               1135 / 1197         92.4          10.8       6.3X
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    Join w 2 ints:                      Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    Join w 2 ints codegen=false              7159 / 7224         14.6          68.3       1.0X
+      *    Join w 2 ints codegen=true               1135 / 1197         92.4          10.8       6.3X
       */
 
     val dim3 = broadcast(
@@ -208,11 +208,11 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    Join w 2 longs:                      Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    Join w 2 longs codegen=false              7877 / 8358         13.3          75.1       1.0X
-    Join w 2 longs codegen=true               3877 / 3937         27.0          37.0       2.0X
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    Join w 2 longs:                      Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    Join w 2 longs codegen=false              7877 / 8358         13.3          75.1       1.0X
+      *    Join w 2 longs codegen=true               3877 / 3937         27.0          37.0       2.0X
       */
     runBenchmark("outer join w long", N) {
       sqlContext
@@ -222,11 +222,11 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    outer join w long:                  Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    outer join w long codegen=false        15280 / 16497          6.9         145.7       1.0X
-    outer join w long codegen=true            769 /  796        136.3           7.3      19.9X
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    outer join w long:                  Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    outer join w long codegen=false        15280 / 16497          6.9         145.7       1.0X
+      *    outer join w long codegen=true            769 /  796        136.3           7.3      19.9X
       */
 
     runBenchmark("semi join w long", N) {
@@ -237,12 +237,12 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    semi join w long:                   Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    semi join w long codegen=false           5804 / 5969         18.1          55.3       1.0X
-    semi join w long codegen=true             814 /  934        128.8           7.8       7.1X
-    */
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    semi join w long:                   Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    semi join w long codegen=false           5804 / 5969         18.1          55.3       1.0X
+      *    semi join w long codegen=true             814 /  934        128.8           7.8       7.1X
+      */
   }
 
   ignore("sort merge join") {
@@ -254,11 +254,11 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    merge join:                         Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    merge join codegen=false                 1588 / 1880          1.3         757.1       1.0X
-    merge join codegen=true                  1477 / 1531          1.4         704.2       1.1X
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    merge join:                         Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    merge join codegen=false                 1588 / 1880          1.3         757.1       1.0X
+      *    merge join codegen=true                  1477 / 1531          1.4         704.2       1.1X
       */
 
     runBenchmark("sort merge join", N) {
@@ -272,12 +272,12 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    sort merge join:                    Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    sort merge join codegen=false            3626 / 3667          0.6        1728.9       1.0X
-    sort merge join codegen=true             3405 / 3438          0.6        1623.8       1.1X
-    */
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    sort merge join:                    Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    sort merge join codegen=false            3626 / 3667          0.6        1728.9       1.0X
+      *    sort merge join codegen=true             3405 / 3438          0.6        1623.8       1.1X
+      */
   }
 
   ignore("shuffle hash join") {
@@ -292,12 +292,12 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    shuffle hash join:                  Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    shuffle hash join codegen=false          1168 / 1902          3.6         278.6       1.0X
-    shuffle hash join codegen=true            850 / 1196          4.9         202.8       1.4X
-    */
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    shuffle hash join:                  Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    shuffle hash join codegen=false          1168 / 1902          3.6         278.6       1.0X
+      *    shuffle hash join codegen=true            850 / 1196          4.9         202.8       1.4X
+      */
   }
 
   ignore("cube") {
@@ -313,12 +313,12 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-      Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-      cube:                               Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-      -------------------------------------------------------------------------------------------
-      cube codegen=false                       3188 / 3392          1.6         608.2       1.0X
-      cube codegen=true                        1239 / 1394          4.2         236.3       2.6X
-    */
+      *      Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *      cube:                               Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *      -------------------------------------------------------------------------------------------
+      *      cube codegen=false                       3188 / 3392          1.6         608.2       1.0X
+      *      cube codegen=true                        1239 / 1394          4.2         236.3       2.6X
+      */
   }
 
   ignore("hash and BytesToBytesMap") {
@@ -499,17 +499,17 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     }
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    BytesToBytesMap:                    Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    hash                                      651 /  678         80.0          12.5       1.0X
-    fast hash                                 336 /  343        155.9           6.4       1.9X
-    arrayEqual                                417 /  428        125.0           8.0       1.6X
-    Java HashMap (Long)                       145 /  168         72.2          13.8       0.8X
-    Java HashMap (two ints)                   157 /  164         66.8          15.0       0.8X
-    Java HashMap (UnsafeRow)                  538 /  573         19.5          51.3       0.2X
-    BytesToBytesMap (off Heap)               2594 / 2664         20.2          49.5       0.2X
-    BytesToBytesMap (on Heap)                2693 / 2989         19.5          51.4       0.2X
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    BytesToBytesMap:                    Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    hash                                      651 /  678         80.0          12.5       1.0X
+      *    fast hash                                 336 /  343        155.9           6.4       1.9X
+      *    arrayEqual                                417 /  428        125.0           8.0       1.6X
+      *    Java HashMap (Long)                       145 /  168         72.2          13.8       0.8X
+      *    Java HashMap (two ints)                   157 /  164         66.8          15.0       0.8X
+      *    Java HashMap (UnsafeRow)                  538 /  573         19.5          51.3       0.2X
+      *    BytesToBytesMap (off Heap)               2594 / 2664         20.2          49.5       0.2X
+      *    BytesToBytesMap (on Heap)                2693 / 2989         19.5          51.4       0.2X
       */
     benchmark.run()
   }
@@ -530,13 +530,13 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     benchmark.run()
 
     /**
-    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
-    collect:                            Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    collect 1 million                         439 /  654          2.4         418.7       1.0X
-    collect 2 millions                        961 / 1907          1.1         916.4       0.5X
-    collect 4 millions                       3193 / 3895          0.3        3044.7       0.1X
-    */
+      *    Intel(R) Core(TM) i7-4558U CPU @ 2.80GHz
+      *    collect:                            Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    collect 1 million                         439 /  654          2.4         418.7       1.0X
+      *    collect 2 millions                        961 / 1907          1.1         916.4       0.5X
+      *    collect 4 millions                       3193 / 3895          0.3        3044.7       0.1X
+      */
   }
 
   ignore("collect limit") {
@@ -552,11 +552,11 @@ class BenchmarkWholeStageCodegen extends SparkFunSuite {
     benchmark.run()
 
     /**
-    model name      : Westmere E56xx/L56xx/X56xx (Nehalem-C)
-    collect limit:                      Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
-    -------------------------------------------------------------------------------------------
-    collect limit 1 million                   833 / 1284          1.3         794.4       1.0X
-    collect limit 2 millions                 3348 / 4005          0.3        3193.3       0.2X
-    */
+      *    model name      : Westmere E56xx/L56xx/X56xx (Nehalem-C)
+      *    collect limit:                      Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
+      *    -------------------------------------------------------------------------------------------
+      *    collect limit 1 million                   833 / 1284          1.3         794.4       1.0X
+      *    collect limit 2 millions                 3348 / 4005          0.3        3193.3       0.2X
+      */
   }
 }

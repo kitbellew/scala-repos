@@ -39,7 +39,7 @@ case class Label(
     val b = color.substring(4, 6)
 
     if (Integer.parseInt(r, 16) + Integer
-          .parseInt(g, 16) + Integer.parseInt(b, 16) > 408) {
+        .parseInt(g, 16) + Integer.parseInt(b, 16) > 408) {
       "000000"
     } else {
       "ffffff"

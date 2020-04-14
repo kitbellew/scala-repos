@@ -54,7 +54,6 @@ trait AsyncJSRunner {
     *  {{{
     *  Await.result(future, atMost)
     *  }}}
-    *
     */
   final def await(atMost: Duration): Unit = Await.result(future, atMost)
 

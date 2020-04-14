@@ -352,11 +352,11 @@ object SerializationBenchmark
     }
 
     /**
-    * TODO:
-    * 1) simple case class
-    * 2) case class with some nesting and collections
-    * 3) sorting of an Array[Array[Byte]] using OrderedSerialization vs Array[T]
-    * 4) fastest binary sorting for strings (byte-by-byte, longs, etc...)
-    */
+      * TODO:
+      * 1) simple case class
+      * 2) case class with some nesting and collections
+      * 3) sorting of an Array[Array[Byte]] using OrderedSerialization vs Array[T]
+      * 4) fastest binary sorting for strings (byte-by-byte, longs, etc...)
+      */
   }
 }

@@ -23,8 +23,8 @@ class ToggleTypeAnnotation extends PsiElementBaseIntentionAction {
 
   def isAvailable(project: Project, editor: Editor, element: PsiElement) = {
     if (element == null || !IntentionAvailabilityChecker.checkIntention(
-          this,
-          element)) {
+        this,
+        element)) {
       false
     } else {
       def message(key: String) {
@@ -118,7 +118,7 @@ object ToggleTypeAnnotation {
     }
 
     for (pattern <-
-           element.parentsInFile.findByType(classOf[ScBindingPattern])) {
+        element.parentsInFile.findByType(classOf[ScBindingPattern])) {
       pattern match {
         case p: ScTypedPattern if p.typePattern.isDefined =>
           strategy.removeFromPattern(p)
@@ -130,7 +130,7 @@ object ToggleTypeAnnotation {
       }
     }
     for (pattern <-
-           element.parentsInFile.findByType(classOf[ScWildcardPattern])) {
+        element.parentsInFile.findByType(classOf[ScWildcardPattern])) {
       strategy.addToWildcardPattern(pattern)
       return true
     }

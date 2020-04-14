@@ -38,8 +38,6 @@ import scalafx.Includes._
 
 /**
   * DoubleProperty Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class DoublePropertySpec extends FlatSpec with BeforeAndAfterEach {

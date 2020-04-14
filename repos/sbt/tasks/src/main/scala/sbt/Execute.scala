@@ -229,7 +229,7 @@ private[sbt] final class Execute[A[_] <: AnyRef](
     }
   }
 
-  /** Called when a pending 'node' becomes runnable.  All of its dependencies must be done.  This schedules the node's computation with 'strategy'.*/
+  /** Called when a pending 'node' becomes runnable.  All of its dependencies must be done.  This schedules the node's computation with 'strategy'. */
   def ready[T](node: A[T])(implicit strategy: Strategy): Unit = {
     pre {
       assert(pending(node))

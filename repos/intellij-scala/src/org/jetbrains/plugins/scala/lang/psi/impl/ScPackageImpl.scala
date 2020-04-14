@@ -82,11 +82,11 @@ class ScPackageImpl private (val pack: PsiPackage)
       }
     } else {
       if (!ResolveUtils.packageProcessDeclarations(
-            pack,
-            processor,
-            state,
-            lastParent,
-            place)) return false
+          pack,
+          processor,
+          state,
+          lastParent,
+          place)) return false
     }
 
     //for Scala
@@ -107,10 +107,10 @@ class ScPackageImpl private (val pack: PsiPackage)
                 newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
             }
             if (!obj.processDeclarations(
-                  processor,
-                  newState,
-                  lastParent,
-                  place)) return false
+                processor,
+                newState,
+                lastParent,
+                place)) return false
           case _ =>
         }
       } else {
@@ -122,10 +122,10 @@ class ScPackageImpl private (val pack: PsiPackage)
                 newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
             }
             if (!obj.processDeclarations(
-                  processor,
-                  newState,
-                  lastParent,
-                  place)) return false
+                processor,
+                newState,
+                lastParent,
+                place)) return false
           case _ =>
         }
       }

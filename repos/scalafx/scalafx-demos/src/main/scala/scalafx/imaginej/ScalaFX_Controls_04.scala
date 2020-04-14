@@ -55,7 +55,6 @@ import scalafx.scene.shape.Rectangle
   *         based upon:
   *
   *         http://docs.oracle.com/javafx/2.0/ui_controls/toggle-button.htm
-  *
   */
 
 object ScalaFX_Controls_04 extends JFXApp {

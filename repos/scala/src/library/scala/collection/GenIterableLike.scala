@@ -108,7 +108,6 @@ trait GenIterableLike[+A, +Repr] extends Any with GenTraversableLike[A, Repr] {
     *                   $coll paired with their index. Indices start at `0`.
     *    @example
     *      `List("a", "b", "c").zipWithIndex = List(("a", 0), ("b", 1), ("c", 2))`
-    *
     */
   def zipWithIndex[A1 >: A, That](implicit bf: CBF[Repr, (A1, Int), That]): That
 

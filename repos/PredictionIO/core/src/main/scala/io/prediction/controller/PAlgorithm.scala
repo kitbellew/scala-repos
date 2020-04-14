@@ -113,8 +113,9 @@ abstract class PAlgorithm[PD, M, Q, P] extends BaseAlgorithm[PD, M, Q, P] {
       bm: Any): Any = {
     val m = bm.asInstanceOf[M]
     if (m.isInstanceOf[PersistentModel[_]]) {
-      if (m.asInstanceOf[PersistentModel[Params]]
-            .save(modelId, algoParams, sc)) {
+      if (m
+          .asInstanceOf[PersistentModel[Params]]
+          .save(modelId, algoParams, sc)) {
         PersistentModelManifest(className = m.getClass.getName)
       } else {
         Unit

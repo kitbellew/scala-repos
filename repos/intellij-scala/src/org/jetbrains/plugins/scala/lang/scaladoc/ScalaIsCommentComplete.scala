@@ -64,13 +64,13 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
         return false
       }
       if (javaLikeQuoteHandler != null && javaLikeQuoteHandler.getStringTokenTypes != null &&
-          javaLikeQuoteHandler.getStringTokenTypes.contains(tokenType)) {
+        javaLikeQuoteHandler.getStringTokenTypes.contains(tokenType)) {
         val text: String =
           commentText.substring(lexer.getTokenStart, lexer.getTokenEnd)
         val endOffset: Int = comment.getTextRange.getEndOffset
         if (text.endsWith(
-              expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText
-              .charAt(endOffset) == '\n') {
+            expectedCommentEnd) && endOffset < containingFile.getTextLength && containingFile.getText
+            .charAt(endOffset) == '\n') {
           return true
         }
       }
@@ -90,7 +90,7 @@ class ScalaIsCommentComplete extends CommentCompleteHandler {
         }
       }
       if (!continue && (tokenType == commenter.getDocumentationCommentTokenType ||
-          tokenType == commenter.getBlockCommentTokenType)) {
+        tokenType == commenter.getBlockCommentTokenType)) {
         return false
       } else if (!continue) {
         lexer.advance()

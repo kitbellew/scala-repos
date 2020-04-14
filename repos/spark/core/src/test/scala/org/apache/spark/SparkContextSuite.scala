@@ -191,18 +191,18 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
         .map(x => {
           val sep = File.separator
           if (!new File(SparkFiles.get(neptune.getName + sep + alien1.getName))
-                .exists()) {
+              .exists()) {
             throw new SparkException(
               "can't access file under root added directory")
           }
           if (!new File(SparkFiles.get(
-                neptune.getName + sep + saturn.getName + sep + alien2.getName))
-                .exists()) {
+              neptune.getName + sep + saturn.getName + sep + alien2.getName))
+              .exists()) {
             throw new SparkException("can't access file in nested directory")
           }
           if (new File(SparkFiles.get(
-                pluto.getName + sep + neptune.getName + sep + alien1.getName))
-                .exists()) {
+              pluto.getName + sep + neptune.getName + sep + alien1.getName))
+              .exists()) {
             throw new SparkException("file exists that shouldn't")
           }
           x

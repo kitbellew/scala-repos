@@ -219,7 +219,7 @@ class GroupMetadataManager(
         responseStatus: Map[TopicPartition, PartitionResponse]) {
       // the append response should only contain the topics partition
       if (responseStatus.size != 1 || !responseStatus.contains(
-            groupMetadataPartition))
+          groupMetadataPartition))
         throw new IllegalStateException(
           "Append status %s should only have one partition %s"
             .format(responseStatus, groupMetadataPartition))
@@ -246,8 +246,8 @@ class GroupMetadataManager(
           } else if (status.errorCode == Errors.REQUEST_TIMED_OUT.code) {
             Errors.REBALANCE_IN_PROGRESS.code
           } else if (status.errorCode == Errors.MESSAGE_TOO_LARGE.code
-                     || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
-                     || status.errorCode == Errors.INVALID_FETCH_SIZE.code) {
+            || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
+            || status.errorCode == Errors.INVALID_FETCH_SIZE.code) {
 
             error(
               "Appending metadata message for group %s generation %d failed due to %s, returning UNKNOWN error code to the client"
@@ -330,7 +330,7 @@ class GroupMetadataManager(
         responseStatus: Map[TopicPartition, PartitionResponse]) {
       // the append response should only contain the topics partition
       if (responseStatus.size != 1 || !responseStatus.contains(
-            offsetTopicPartition))
+          offsetTopicPartition))
         throw new IllegalStateException(
           "Append status %s should only have one partition %s"
             .format(responseStatus, offsetTopicPartition))
@@ -364,8 +364,8 @@ class GroupMetadataManager(
           else if (status.errorCode == Errors.NOT_LEADER_FOR_PARTITION.code)
             Errors.NOT_COORDINATOR_FOR_GROUP.code
           else if (status.errorCode == Errors.MESSAGE_TOO_LARGE.code
-                   || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
-                   || status.errorCode == Errors.INVALID_FETCH_SIZE.code)
+            || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
+            || status.errorCode == Errors.INVALID_FETCH_SIZE.code)
             Errors.INVALID_COMMIT_OFFSET_SIZE.code
           else
             status.errorCode
@@ -468,7 +468,7 @@ class GroupMetadataManager(
               val removedGroups = mutable.Set[String]()
 
               while (currOffset < getHighWatermark(
-                       offsetsPartition) && !shuttingDown.get()) {
+                  offsetsPartition) && !shuttingDown.get()) {
                 buffer.clear()
                 val messages = log
                   .read(currOffset, config.loadBufferSize)

@@ -18,21 +18,21 @@ import scala.tools.nsc.reporters.ConsoleReporter
   *   - you need to override the testModel method to test the model
   *   - you may specify extra parameters to send to scaladoc in `scaladocSettings`
   * {{{
-      import scala.tools.nsc.doc.model._
-      import scala.tools.partest.ScaladocModelTest
-
-      object Test extends ScaladocModelTest {
-
-        override def code = """ ... """ // or override def resourceFile = "<file>.scala" (from test/scaladoc/resources)
-        def scaladocSettings = " ... "
-        def testModel(rootPackage: Package) = {
-          // get the quick access implicit defs in scope (_package(s), _class(es), _trait(s), object(s) _method(s), _value(s))
-          import access._
-
-          // just need to check the member exists, access methods will throw an error if there's a problem
-          rootPackage._package("scala")._package("test")._class("C")._method("foo")
-        }
-      }
+  *      import scala.tools.nsc.doc.model._
+  *      import scala.tools.partest.ScaladocModelTest
+  *
+  *      object Test extends ScaladocModelTest {
+  *
+  *        override def code = """ ... """ // or override def resourceFile = "<file>.scala" (from test/scaladoc/resources)
+  *        def scaladocSettings = " ... "
+  *        def testModel(rootPackage: Package) = {
+  *          // get the quick access implicit defs in scope (_package(s), _class(es), _trait(s), object(s) _method(s), _value(s))
+  *          import access._
+  *
+  *          // just need to check the member exists, access methods will throw an error if there's a problem
+  *          rootPackage._package("scala")._package("test")._class("C")._method("foo")
+  *        }
+  *      }
   * }}}
   */
 abstract class ScaladocModelTest extends DirectTest {
@@ -43,7 +43,7 @@ abstract class ScaladocModelTest extends DirectTest {
   /** Override this to test the model */
   def testModel(root: Package): Unit
 
-  /** Override to feed a file in resources to scaladoc*/
+  /** Override to feed a file in resources to scaladoc */
   def resourceFile: String = null
 
   /** Override to feed code into scaladoc */

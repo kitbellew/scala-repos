@@ -41,7 +41,6 @@ import akka.io.Udp._
   * message that the service is available. UDP datagrams can be sent by sending [[akka.io.Udp.Send]] messages to the
   * sender of SimpleSenderReady. All the datagrams will contain an ephemeral local port as sender and answers will be
   * discarded.
-  *
   */
 private[io] class UdpManager(udp: UdpExt)
     extends SelectionHandler.SelectorBasedManager(

@@ -289,9 +289,9 @@ trait ApiControllerBase extends ControllerBase {
           getLabel(repository.owner, repository.name, params("labelName")).map {
             label =>
               if (getLabel(
-                    repository.owner,
-                    repository.name,
-                    data.name).isEmpty) {
+                  repository.owner,
+                  repository.name,
+                  data.name).isEmpty) {
                 updateLabel(
                   repository.owner,
                   repository.name,

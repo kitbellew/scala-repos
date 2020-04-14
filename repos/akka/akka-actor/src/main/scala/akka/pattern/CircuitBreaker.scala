@@ -74,7 +74,6 @@ object CircuitBreaker {
   * closed state.  If it fails, the circuit breaker will re-open to open state.  All calls beyond the first that
   * execute while the first is running will fail-fast with an exception.
   *
-  *
   * @param scheduler Reference to Akka scheduler
   * @param maxFailures Maximum number of failures before opening the circuit
   * @param callTimeout [[scala.concurrent.duration.FiniteDuration]] of time after which to consider a call a failure
@@ -135,7 +134,6 @@ class CircuitBreaker(
     * @param body Call needing protected
     * @return [[scala.concurrent.Future]] containing the call result or a
     *   `scala.concurrent.TimeoutException` if the call timed out
-    *
     */
   def withCircuitBreaker[T](body: ⇒ Future[T]): Future[T] =
     currentState.invoke(body)
@@ -272,13 +270,11 @@ class CircuitBreaker(
 
   /**
     * Resets breaker to a closed state.  This is valid from an Half-Open state only.
-    *
     */
   private def resetBreaker(): Unit = transition(HalfOpen, Closed)
 
   /**
     * Attempts to reset breaker by transitioning to a half-open state.  This is valid from an Open state only.
-    *
     */
   private def attemptReset(): Unit = transition(Open, HalfOpen)
 
@@ -366,20 +362,17 @@ class CircuitBreaker(
 
     /**
       * Invoked when call succeeds
-      *
       */
     def callSucceeds(): Unit
 
     /**
       * Invoked when call fails
-      *
       */
     def callFails(): Unit
 
     /**
       * Invoked on the transitioned-to state during transition.  Notifies listeners after invoking subclass template
       * method _enter
-      *
       */
     final def enter(): Unit = {
       _enter()
@@ -388,7 +381,6 @@ class CircuitBreaker(
 
     /**
       * Template method for concrete traits
-      *
       */
     def _enter(): Unit
   }

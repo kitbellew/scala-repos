@@ -190,7 +190,7 @@ object QuantileDiscretizer
   private[feature] def getSplits(candidates: Array[Double]): Array[Double] = {
     val effectiveValues = if (candidates.nonEmpty) {
       if (candidates.head == Double.NegativeInfinity
-          && candidates.last == Double.PositiveInfinity) {
+        && candidates.last == Double.PositiveInfinity) {
         candidates.drop(1).dropRight(1)
       } else if (candidates.head == Double.NegativeInfinity) {
         candidates.drop(1)

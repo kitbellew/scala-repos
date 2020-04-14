@@ -81,7 +81,7 @@ import scala.reflect.ClassTag
   *
   * @define callbackInContext
   * The provided callback always runs in the provided implicit
-  *`ExecutionContext`, though there is no guarantee that the
+  * `ExecutionContext`, though there is no guarantee that the
   * `execute()` method on the `ExecutionContext` will be called once
   * per callback or that `execute()` will be called in the current
   * thread. That is, the implementation may run multiple callbacks
@@ -274,7 +274,6 @@ trait Future[+T] extends Awaitable[T] {
     *  may expand to include a call to `map` and or `flatMap`
     *  and `withFilter`.  See [[scala.concurrent.Future#flatMap]] for an example of such a comprehension.
     *
-    *
     *  @tparam S  the type of the returned `Future`
     *  @param f   the function which will be applied to the successful result of this `Future`
     *  @return    a `Future` which will be completed with the result of the application of the function
@@ -362,7 +361,7 @@ trait Future[+T] extends Awaitable[T] {
     *  }}}
     *
     *  @tparam S    the type of the returned `Future`
-    *  @param pf    the `PartialFunction` to apply to the successful result of this `Future`
+    *  @param pf    the `PartialFunction` to apply to the successful result of this `Future`
     *  @return      a `Future` holding the result of application of the `PartialFunction` or a `NoSuchElementException`
     */
   def collect[S](pf: PartialFunction[T, S])(implicit

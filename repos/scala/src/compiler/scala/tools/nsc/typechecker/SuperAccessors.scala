@@ -152,7 +152,7 @@ abstract class SuperAccessors
       if (sym.isDeferred) {
         val member = sym.overridingSymbol(clazz)
         if (mix != tpnme.EMPTY || member == NoSymbol ||
-            !(member.isAbstractOverride && member.isIncompleteIn(clazz)))
+          !(member.isAbstractOverride && member.isIncompleteIn(clazz)))
           reporter.error(
             sel.pos,
             "" + sym.fullLocationString + " is accessed from super. It may not be abstract " +
@@ -229,7 +229,7 @@ abstract class SuperAccessors
             val decls = sym.info.decls
             for (s <- decls) {
               if (s.privateWithin.isClass && !s.isProtected && !s.privateWithin.isModuleClass &&
-                  !s.hasFlag(EXPANDEDNAME) && !s.isConstructor) {
+                !s.hasFlag(EXPANDEDNAME) && !s.isConstructor) {
                 val savedName = s.name
                 decls.unlink(s)
                 s.expandName(s.privateWithin)
@@ -287,7 +287,7 @@ abstract class SuperAccessors
             // [1] https://groups.google.com/forum/#!topic/scala-internals/iPkMCygzws4
             //
             if (closestEnclMethod(
-                  currentOwner) hasAnnotation definitions.ScalaInlineClass)
+                currentOwner) hasAnnotation definitions.ScalaInlineClass)
               sym.makeNotPrivate(sym.owner)
 
             qual match {
@@ -323,7 +323,7 @@ abstract class SuperAccessors
                 // duplicating fields.
                 // ... but, only if accessible (SI-6793)
                 if (sym.isParamAccessor && sym.alias != NoSymbol && isAccessibleFromSuper(
-                      sym.alias)) {
+                    sym.alias)) {
                   val result = (localTyper
                     .typedPos(tree.pos) {
                       Select(
@@ -404,8 +404,8 @@ abstract class SuperAccessors
         case Assign(lhs @ Select(qual, name), rhs) =>
           def transformAssign = {
             if (lhs.symbol.isVariable &&
-                lhs.symbol.isJavaDefined &&
-                needsProtectedAccessor(lhs.symbol, tree.pos)) {
+              lhs.symbol.isJavaDefined &&
+              needsProtectedAccessor(lhs.symbol, tree.pos)) {
               debuglog("Adding protected setter for " + tree)
               val setter = makeSetter(lhs)
               debuglog("Replaced " + tree + " with " + setter)
@@ -654,8 +654,8 @@ abstract class SuperAccessors
         sym: Symbol,
         referencingClass: Symbol): Symbol = {
       if (referencingClass.isSubClass(sym.owner.enclClass)
-          || referencingClass.thisSym.isSubClass(sym.owner.enclClass)
-          || referencingClass.enclosingPackageClass == sym.owner.enclosingPackageClass) {
+        || referencingClass.thisSym.isSubClass(sym.owner.enclClass)
+        || referencingClass.enclosingPackageClass == sym.owner.enclosingPackageClass) {
         assert(referencingClass.isClass, referencingClass)
         referencingClass
       } else if (referencingClass.owner.enclClass != NoSymbol)

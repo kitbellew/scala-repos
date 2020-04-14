@@ -29,21 +29,21 @@ object MetricsSupportExtensions extends ServletApiImplicits {
       context.mount(classOf[InstrumentedFilter], path)
 
     if (context.getAttribute(
-          "com.codahale.metrics.servlets.HealthCheckServlet.registry") == null) {
+        "com.codahale.metrics.servlets.HealthCheckServlet.registry") == null) {
       context.setAttribute(
         "com.codahale.metrics.servlets.HealthCheckServlet.registry",
         healthCheckRegistry)
     }
 
     if (context.getAttribute(
-          "com.codahale.metrics.servlets.MetricsServlet.registry") == null) {
+        "com.codahale.metrics.servlets.MetricsServlet.registry") == null) {
       context.setAttribute(
         "com.codahale.metrics.servlets.MetricsServlet.registry",
         metricRegistry)
     }
 
     if (context.getAttribute(
-          "com.codahale.metrics.servlet.InstrumentedFilter.registry") == null) {
+        "com.codahale.metrics.servlet.InstrumentedFilter.registry") == null) {
       context.setAttribute(
         "com.codahale.metrics.servlet.InstrumentedFilter.registry",
         metricRegistry)

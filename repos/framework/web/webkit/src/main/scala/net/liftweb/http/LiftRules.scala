@@ -373,7 +373,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * file changes. Users can define other rules as well. Inside user's
     * function it is safe to use S context as attachResourceId is called
     * from inside the &lt;lift:with-resource-id&gt; snippet
-    *
     */
   @volatile var attachResourceId: (String) => String = (name) => {
     name + (if (name contains ("?")) "&" else "?") + instanceResourceId + "=_"
@@ -1062,7 +1061,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
             pairsToMetaData(encodedArguments.flatMap(_.roboSplit("[;&]")))
 
           if (decodedMetaData.get("parallel").headOption == Some(
-                Text("true"))) {
+              Text("true"))) {
             DataAttributeProcessorAnswerFuture(
               LAFuture(() =>
                 new Elem(
@@ -1100,7 +1099,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * returns true *only* when you're going to return a modified node.
     *
     * An example might be:
-    *
     *
     *    case ("script", e, session) if e.getAttribute("data-serverscript").isDefined => ...
     */
@@ -1207,8 +1205,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           val sm = smf()
           _sitemap = Full(sm)
           for (menu <- sm.menus;
-               loc = menu.loc;
-               rewrite <- loc.rewritePF)
+            loc = menu.loc;
+            rewrite <- loc.rewritePF)
             LiftRules.statefulRewrite.append(PerRequestPF(rewrite))
 
           _sitemap
@@ -1378,7 +1376,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * (by default returning Empty)
     *
     * If this function returns an Empty, the contextPath provided by the container will be used.
-    *
     */
   @volatile var calculateContextPath: () => Box[String] = () => Empty
 
@@ -1705,7 +1702,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * By default it returns an XhtmlResponse containing a predefined markup. You can overwrite this by calling
     * LiftRules.exceptionHandler.prepend(...). If you are calling append then your code will not be called since
     * a default implementation is already appended.
-    *
     */
   val exceptionHandler = RulesSeq[ExceptionHandlerPF].append {
     case (Props.RunModes.Development, r, e) =>
@@ -1742,7 +1738,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * The list of partial function for defining the behavior of what happens when
     * URI is invalid and you're not using a site map
-    *
     */
   val uriNotFound = RulesSeq[URINotFoundPF].prepend(NamedPF("default") {
     case (r, _) => DefaultNotFound
@@ -1787,7 +1782,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     *
     * @param path - the path of the css resource
     * @prefix - the prefix to be added on the root relative paths. If this is Empty
-    * 	       the prefix will be the application context path.
+    *         the prefix will be the application context path.
     */
   def fixCSS(path: List[String], prefix: Box[String]) {
 
@@ -2007,7 +2002,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
             val suffix = last.substring(firstDot + 1)
             // if the suffix isn't in the list of suffixes we care about, don't split it
             if (!LiftRules.explicitlyParsedSuffixes.contains(
-                  suffix.toLowerCase)) -1
+                suffix.toLowerCase)) -1
             else firstDot
           }
         }
@@ -2179,7 +2174,6 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
   /**
     * Generic container used mainly for adding functions
-    *
     */
   class RulesSeq[T] {
     @volatile private var rules: List[T] = Nil

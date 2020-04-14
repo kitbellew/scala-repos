@@ -2,7 +2,6 @@ package scalaz
 
 ////
 /**
-  *
   */
 ////
 trait Cobind[F[_]] extends Functor[F] { self =>

@@ -37,7 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * MultipleSelectionModel Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class MultipleSelectionModelSpec[T]

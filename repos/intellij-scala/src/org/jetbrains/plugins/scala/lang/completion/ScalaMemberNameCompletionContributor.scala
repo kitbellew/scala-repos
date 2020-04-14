@@ -48,7 +48,7 @@ class ScalaMemberNameCompletionContributor extends ScalaCompletionContributor {
           case _              => false
         }
         if (shouldCompleteFileName && !classesNames.contains(
-              fileName) && !objectNames.contains(fileName)) {
+            fileName) && !objectNames.contains(fileName)) {
           result.addElement(LookupElementBuilder.create(fileName))
         }
         position.getContext match {

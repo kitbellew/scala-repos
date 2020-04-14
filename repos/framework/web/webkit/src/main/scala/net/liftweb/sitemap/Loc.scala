@@ -144,8 +144,8 @@ trait Loc[T] {
         menu._parent match {
           case Full(parentMenu: Menu) =>
             if (!params.collect {
-                  case i: Loc.UseParentParams => true
-                }.isEmpty) {
+                case i: Loc.UseParentParams => true
+              }.isEmpty) {
               parentMenu.loc.allParams.asInstanceOf[List[Loc.LocParam[Any]]]
             } else {
               Nil

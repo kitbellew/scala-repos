@@ -35,7 +35,6 @@ import scalafx.scene.layout.VBox
 /** A sample that shows styling of text through CSS.
   *
   * @resource /scalafx/ensemble/css/InsetText.css
-  *
   */
 class EnsembleInsetText extends EnsembleExample {
 

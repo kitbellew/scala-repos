@@ -37,7 +37,6 @@ import scalafx.scene.control.{TableCell, TableColumn}
   * Companion Object for [[scalafx.scene.control.cell.ProgressBarTableCell]].
   *
   * @define PBTC `ProgressBarTableCell`
-  *
   */
 object ProgressBarTableCell {
 

@@ -51,11 +51,11 @@ import org.apache.spark.sql.execution.streaming._
   *
   * {{{
   *  val inputData = MemoryStream[Int]
-    val mapped = inputData.toDS().map(_ + 1)
-
-    testStream(mapped)(
-      AddData(inputData, 1, 2, 3),
-      CheckAnswer(2, 3, 4))
+  *    val mapped = inputData.toDS().map(_ + 1)
+  *
+  *    testStream(mapped)(
+  *      AddData(inputData, 1, 2, 3),
+  *      CheckAnswer(2, 3, 4))
   * }}}
   *
   * Note that while we do sleep to allow the other thread to progress without spinning,

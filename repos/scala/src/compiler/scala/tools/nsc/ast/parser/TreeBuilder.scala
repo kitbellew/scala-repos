@@ -77,7 +77,7 @@ abstract class TreeBuilder {
     LabelDef(lname, Nil, rhs)
   }
 
-  /** Create block of statements `stats`  */
+  /** Create block of statements `stats` */
   def makeBlock(stats: List[Tree]): Tree = gen.mkBlock(stats)
 
   def makeParam(pname: TermName, tpe: Tree) =

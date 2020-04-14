@@ -18,7 +18,7 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
 
   // derived functions
 
-  /**The composition of Traverses `F` and `G`, `[x]F[G[x]]`, is a Traverse */
+  /** The composition of Traverses `F` and `G`, `[x]F[G[x]]`, is a Traverse */
   def compose[G[_]](implicit G0: Traverse[G]): Traverse[λ[α => F[G[α]]]] =
     new CompositionTraverse[F, G] {
       implicit def F = self
@@ -32,14 +32,14 @@ trait Traverse[F[_]] extends Functor[F] with Foldable[F] { self =>
       def G = implicitly
     }
 
-  /**The product of Traverses `F` and `G`, `[x](F[x], G[x]])`, is a Traverse */
+  /** The product of Traverses `F` and `G`, `[x](F[x], G[x]])`, is a Traverse */
   def product[G[_]](implicit G0: Traverse[G]): Traverse[λ[α => (F[α], G[α])]] =
     new ProductTraverse[F, G] {
       implicit def F = self
       implicit def G = G0
     }
 
-  /**The product of Traverse `F` and Traverse1 `G`, `[x](F[x], G[x]])`, is a Traverse1 */
+  /** The product of Traverse `F` and Traverse1 `G`, `[x](F[x], G[x]])`, is a Traverse1 */
   def product0[G[_]](implicit
       G0: Traverse1[G]): Traverse1[λ[α => (F[α], G[α])]] =
     new ProductTraverse1R[F, G] {

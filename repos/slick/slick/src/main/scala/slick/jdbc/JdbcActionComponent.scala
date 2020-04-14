@@ -717,9 +717,9 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       def run(ctx: Backend#Context, sql: Vector[String]) = {
         val sql1 = sql.head
         if (!useBatchUpdates(ctx.session) || (values
-              .isInstanceOf[IndexedSeq[_]] && values
-              .asInstanceOf[IndexedSeq[_]]
-              .length < 2))
+            .isInstanceOf[IndexedSeq[_]] && values
+            .asInstanceOf[IndexedSeq[_]]
+            .length < 2))
           retMany(
             values,
             values.map { v =>

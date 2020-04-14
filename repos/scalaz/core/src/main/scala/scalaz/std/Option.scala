@@ -230,7 +230,7 @@ trait OptionFunctions {
       case Some(a) => some(a)
     }
 
-  /**Alias for `cata` */
+  /** Alias for `cata` */
   final def fold[A, X](oa: Option[A])(some: A => X, none: => X): X =
     cata(oa)(some, none)
 

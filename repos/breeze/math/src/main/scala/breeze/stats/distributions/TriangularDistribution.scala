@@ -23,8 +23,7 @@ import org.apache.commons.math3.distribution.{
 /**
   * The Triangular-distribution - ratio of two scaled chi^2 variables
   *
-  * @author stucchio
-  */
+  * @author stucchio */
 
 class TriangularDistribution(a: Double, c: Double, b: Double)
     extends ApacheContinuousDistribution

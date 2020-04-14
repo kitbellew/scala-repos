@@ -138,7 +138,6 @@ trait MetricsCollectorFactory { this: AkkaSpec ⇒
 }
 
 /**
-  *
   */
 class MockitoSigarMetricsCollector(system: ActorSystem)
     extends SigarMetricsCollector(

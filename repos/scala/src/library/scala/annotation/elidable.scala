@@ -33,29 +33,29 @@ package scala.annotation
   *  }}}
   *
   *  Complete example:
- {{{
-   import scala.annotation._, elidable._
-   object Test extends App {
-     def expensiveComputation(): Int = { Thread.sleep(1000) ; 172 }
-
-     @elidable(WARNING) def warning(msg: String) = println(msg)
-     @elidable(FINE) def debug(msg: String)      = println(msg)
-     @elidable(FINE) def computedValue           = expensiveComputation()
-
-     warning("Warning! Danger! Warning!")
-     debug("Debug! Danger! Debug!")
-     println("I computed a value: " + computedValue)
-   }
-   % scalac example.scala && scala Test
-   Warning! Danger! Warning!
-   Debug! Danger! Debug!
-   I computed a value: 172
-
-   // INFO lies between WARNING and FINE
-   % scalac -Xelide-below INFO example.scala && scala Test
-   Warning! Danger! Warning!
-   I computed a value: 0
- }}}
+  * {{{
+  *   import scala.annotation._, elidable._
+  *   object Test extends App {
+  *     def expensiveComputation(): Int = { Thread.sleep(1000) ; 172 }
+  *
+  *     @elidable(WARNING) def warning(msg: String) = println(msg)
+  *     @elidable(FINE) def debug(msg: String)      = println(msg)
+  *     @elidable(FINE) def computedValue           = expensiveComputation()
+  *
+  *     warning("Warning! Danger! Warning!")
+  *     debug("Debug! Danger! Debug!")
+  *     println("I computed a value: " + computedValue)
+  *   }
+  *   % scalac example.scala && scala Test
+  *   Warning! Danger! Warning!
+  *   Debug! Danger! Debug!
+  *   I computed a value: 172
+  *
+  *   // INFO lies between WARNING and FINE
+  *   % scalac -Xelide-below INFO example.scala && scala Test
+  *   Warning! Danger! Warning!
+  *   I computed a value: 0
+  * }}}
   *
   *  @author   Paul Phillips
   *  @since    2.8

@@ -366,14 +366,14 @@ trait SpecializedLiftActor[T] extends SimpleActor[T] {
   * the actor received the message, not what the actor does with that message. If an actor
   * implementing this trait is injected into the component you're testing (in place of the
   * real actor) you gain the ability to run these kinds of tests.
-**/
+  */
 class MockSpecializedLiftActor[T] extends SpecializedLiftActor[T] {
   private[this] var messagesReceived: List[T] = Nil
 
   /**
     * Send a message to the mock actor, which will be recorded and not processed by the
     * message handler.
-  **/
+    */
   override def !(msg: T): Unit = {
     messagesReceived.synchronized {
       messagesReceived ::= msg
@@ -388,17 +388,17 @@ class MockSpecializedLiftActor[T] extends SpecializedLiftActor[T] {
 
   /**
     * Test to see if this actor has received a particular message.
-  **/
+    */
   def hasReceivedMessage_?(msg: T): Boolean = messagesReceived.contains(msg)
 
   /**
     * Returns the list of messages the mock actor has received.
-  **/
+    */
   def messages: List[T] = messagesReceived
 
   /**
     * Return the number of messages this mock actor has received.
-  **/
+    */
   def messageCount: Int = messagesReceived.size
 }
 
@@ -533,7 +533,7 @@ trait LiftActor
   * talk to a real actor that would process their message, this mock actor simply
   * records them and exposes methods the unit test can use to investigate what messages
   * have been received by the actor.
-**/
+  */
 class MockLiftActor extends MockSpecializedLiftActor[Any] with LiftActor
 
 import java.lang.reflect._

@@ -140,7 +140,7 @@ object testClasses {
   val c1 = new pkg1.C1
   println(getType(c1))
   println
- */
+   */
 }
 
 /**
@@ -574,5 +574,5 @@ object TypeRep {
   case class ObjectRep[A](c: Class) extends TypeRep[A] {
     override def toString = c.getName
   }
- */
+   */
 }

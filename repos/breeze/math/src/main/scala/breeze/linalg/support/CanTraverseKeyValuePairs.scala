@@ -27,7 +27,7 @@ import breeze.linalg.support.CanTraverseKeyValuePairs.KeyValuePairsVisitor
   */
 trait CanTraverseKeyValuePairs[From, K, A] {
 
-  /**Traverses all values from the given collection. */
+  /** Traverses all values from the given collection. */
   def traverse(from: From, fn: KeyValuePairsVisitor[K, A]): Unit
   def isTraversableAgain(from: From): Boolean
 }

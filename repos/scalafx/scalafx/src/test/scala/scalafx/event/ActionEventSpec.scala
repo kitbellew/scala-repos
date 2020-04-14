@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ActionEvent Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ActionEventSpec

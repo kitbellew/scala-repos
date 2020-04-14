@@ -548,7 +548,7 @@ private[io] abstract class TcpConnection(
         } else {
           release()
           val andThen =
-            if (!ack.isInstanceOf[NoAck])() ⇒ commander ! ack else doNothing
+            if (!ack.isInstanceOf[NoAck]) () ⇒ commander ! ack else doNothing
           self ! UpdatePendingWriteAndThen(
             PendingWrite(commander, tail),
             andThen)

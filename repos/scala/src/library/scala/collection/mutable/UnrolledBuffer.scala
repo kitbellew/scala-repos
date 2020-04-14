@@ -40,7 +40,6 @@ import scala.reflect.ClassTag
   *  @define coll unrolled buffer
   *  @define Coll `UnrolledBuffer`
   *  @author Aleksandar Prokopec
-  *
   */
 @SerialVersionUID(1L)
 @deprecatedInheritance(

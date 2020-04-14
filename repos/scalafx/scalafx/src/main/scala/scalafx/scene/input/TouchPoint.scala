@@ -163,7 +163,6 @@ class TouchPoint(override val delegate: jfxsi.TouchPoint)
   def y = delegate.getY
 
   /**
-    *
     */
   def ungrab() {
     delegate.ungrab()

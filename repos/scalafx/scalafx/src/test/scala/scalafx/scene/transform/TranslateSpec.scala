@@ -36,8 +36,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * Translate Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TranslateSpec

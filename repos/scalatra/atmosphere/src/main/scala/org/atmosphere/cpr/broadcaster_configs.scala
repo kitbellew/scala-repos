@@ -12,7 +12,6 @@ trait BroadcasterConf {
 }
 
 /**
-  *
   * Basic Configuration-holder for Scalatra Atmosphere Broadcaster configuration
   * @param broadcasterClass Class[_<:ScalatraBroadcaster]
   * @param uri [[URI]] defaults to http://127.0.0.1

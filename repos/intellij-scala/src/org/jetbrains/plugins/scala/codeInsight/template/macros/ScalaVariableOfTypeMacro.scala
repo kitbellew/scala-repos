@@ -217,9 +217,9 @@ class ScalaVariableOfTypeMacro extends Macro {
       case _ =>
         for (expr <- exprs) {
           if ((ScType.extractClass(scType) match {
-                case Some(x) => x.qualifiedName
-                case None    => ""
-              }) == expr)
+              case Some(x) => x.qualifiedName
+              case None    => ""
+            }) == expr)
             array += LookupElementBuilder.create(
               variant.getElement,
               variant.getElement.name)

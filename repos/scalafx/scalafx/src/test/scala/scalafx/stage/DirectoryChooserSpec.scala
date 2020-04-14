@@ -37,8 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * DirectoryChooser Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class DirectoryChooserSpec

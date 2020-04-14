@@ -81,7 +81,7 @@ trait ScDeclarationSequenceHolder extends ScalaPsiElement {
             run match {
               case po: ScObject
                   if po.isPackageObject && id.qualName == po.qualifiedName => // do nothing
-              case _                                                       => if (!processElement(run, state)) return false
+              case _ => if (!processElement(run, state)) return false
             }
           case _ => if (!processElement(run, state)) return false
         }

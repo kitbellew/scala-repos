@@ -134,7 +134,7 @@ class LeaderProxyFilter @Inject() (
             buildUrl(myHostPort).toString)
           chain.doFilter(request, response)
         } else if (leaderDataOpt
-                     .forall(_ == myHostPort)) { // either not leader or ourselves
+            .forall(_ == myHostPort)) { // either not leader or ourselves
           log.info(
             s"Do not proxy to myself. Waiting for consistent leadership state. " +
               s"Are we leader?: false, leader: $leaderDataOpt")
@@ -367,7 +367,7 @@ class JavaUrlConnectionRequestForwarder @Inject() (
 object JavaUrlConnectionRequestForwarder {
   private val log = LoggerFactory.getLogger(getClass)
 
-  /** Header for proxy loop detection. Simply "Via" is ignored by the URL connection.*/
+  /** Header for proxy loop detection. Simply "Via" is ignored by the URL connection. */
   val HEADER_VIA: String = "X-Marathon-Via"
   val ERROR_STATUS_LOOP: String = "Detected proxying loop."
   val ERROR_STATUS_CONNECTION_REFUSED: String = "Connection to leader refused."

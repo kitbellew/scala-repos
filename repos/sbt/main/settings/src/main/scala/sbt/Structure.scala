@@ -22,7 +22,7 @@ import reflect.internal.annotations.compileTimeOnly
 
 sealed trait Scoped { def scope: Scope; val key: AttributeKey[_] }
 
-/** A common type for SettingKey and TaskKey so that both can be used as inputs to tasks.*/
+/** A common type for SettingKey and TaskKey so that both can be used as inputs to tasks. */
 sealed trait ScopedTaskable[T] extends Scoped {
   def toTask: Initialize[Task[T]]
 }
@@ -175,7 +175,6 @@ object Scoped {
     *
     *  name.in(Compile).:=("hello ugly syntax")
     *  }}}
-    *
     */
   sealed trait ScopingSetting[Result] {
     def in(s: Scope): Result
@@ -966,7 +965,7 @@ object Scoped {
 
 import Scoped.extendScoped
 
-/** Constructs InputKeys, which are associated with input tasks to define a setting.*/
+/** Constructs InputKeys, which are associated with input tasks to define a setting. */
 object InputKey {
   def apply[T: Manifest](
       label: String,
@@ -998,7 +997,7 @@ object InputKey {
     new InputKey[T] { val key = akey; def scope = Scope.ThisScope }
 }
 
-/** Constructs TaskKeys, which are associated with tasks to define a setting.*/
+/** Constructs TaskKeys, which are associated with tasks to define a setting. */
 object TaskKey {
   def apply[T: Manifest](
       label: String,
@@ -1033,7 +1032,7 @@ object TaskKey {
   def local[T: Manifest]: TaskKey[T] = apply[T](AttributeKey.local[Task[T]])
 }
 
-/** Constructs SettingKeys, which are associated with a value to define a basic setting.*/
+/** Constructs SettingKeys, which are associated with a value to define a basic setting. */
 object SettingKey {
   def apply[T: Manifest](
       label: String,

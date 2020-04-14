@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PerspectiveCamera Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PerspectiveCameraSpec

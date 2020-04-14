@@ -288,9 +288,9 @@ object PlayRun {
           extracted.get(stagingDirectory in Universal) / "bin" / extracted.get(
             executableScriptName)).map { f =>
           if (System
-                .getProperty("os.name")
-                .toLowerCase(java.util.Locale.ENGLISH)
-                .contains("win")) f.getAbsolutePath + ".bat"
+              .getProperty("os.name")
+              .toLowerCase(java.util.Locale.ENGLISH)
+              .contains("win")) f.getAbsolutePath + ".bat"
           else f.getAbsolutePath
         }.get
         val javaProductionOptions = Project

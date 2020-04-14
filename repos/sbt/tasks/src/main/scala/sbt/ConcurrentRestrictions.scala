@@ -12,13 +12,13 @@ trait ConcurrentRestrictions[A] {
   /** Internal state type used to describe a set of tasks. */
   type G
 
-  /** Representation of zero tasks.*/
+  /** Representation of zero tasks. */
   def empty: G
 
-  /** Updates the description `g` to include a new task `a`.*/
+  /** Updates the description `g` to include a new task `a`. */
   def add(g: G, a: A): G
 
-  /** Updates the description `g` to remove a previously added task `a`.*/
+  /** Updates the description `g` to remove a previously added task `a`. */
   def remove(g: G, a: A): G
 
   /**
@@ -64,14 +64,14 @@ object ConcurrentRestrictions {
     }
   }
 
-  /** A key object used for associating information with a task.*/
+  /** A key object used for associating information with a task. */
   final case class Tag(name: String)
 
   val tagsKey = AttributeKey[TagMap](
     "tags",
     "Attributes restricting concurrent execution of tasks.")
 
-  /** A standard tag describing the number of tasks that do not otherwise have any tags.*/
+  /** A standard tag describing the number of tasks that do not otherwise have any tags. */
   val Untagged = Tag("untagged")
 
   /** A standard tag describing the total number of tasks. */
@@ -140,7 +140,7 @@ object ConcurrentRestrictions {
       tags: ConcurrentRestrictions[A],
       warn: String => Unit): CompletionService[A, R] = {
 
-    /** Represents submitted work for a task.*/
+    /** Represents submitted work for a task. */
     final class Enqueue(val node: A, val work: () => R)
 
     new CompletionService[A, R] {
@@ -148,13 +148,13 @@ object ConcurrentRestrictions {
       /** Backing service used to manage execution on threads once all constraints are satisfied. */
       private[this] val jservice = new ExecutorCompletionService[R](backing)
 
-      /** The description of the currently running tasks, used by `tags` to manage restrictions.*/
+      /** The description of the currently running tasks, used by `tags` to manage restrictions. */
       private[this] var tagState = tags.empty
 
       /** The number of running tasks. */
       private[this] var running = 0
 
-      /** Tasks that cannot be run yet because they cannot execute concurrently with the currently running tasks.*/
+      /** Tasks that cannot be run yet because they cannot execute concurrently with the currently running tasks. */
       private[this] val pending = new LinkedList[Enqueue]
 
       def submit(node: A, work: () => R): Unit =

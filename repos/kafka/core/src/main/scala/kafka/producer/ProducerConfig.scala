@@ -12,8 +12,7 @@
   * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+  * limitations under the License. */
 
 package kafka.producer
 
@@ -83,7 +82,7 @@ class ProducerConfig private (val props: VerifiableProperties)
 
   /** this parameter specifies whether the messages are sent asynchronously *
     * or not. Valid values are - async for asynchronous send                 *
-    *                            sync for synchronous send                   */
+    *                            sync for synchronous send */
   val producerType = props.getString("producer.type", "sync")
 
   /**

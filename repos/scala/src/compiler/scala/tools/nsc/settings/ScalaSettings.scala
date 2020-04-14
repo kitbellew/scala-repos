@@ -36,7 +36,7 @@ trait ScalaSettings
   /** Enabled under -Xfuture. */
   protected def futureSettings = List[BooleanSetting]()
 
-  /** If any of these settings is enabled, the compiler should print a message and exit.  */
+  /** If any of these settings is enabled, the compiler should print a message and exit. */
   def infoSettings =
     List[Setting](
       version,

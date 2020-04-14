@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ComboBoxListCell Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ComboBoxListCellSpec[T]

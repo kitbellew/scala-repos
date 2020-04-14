@@ -104,7 +104,7 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
   def addMethod(methodNode: MethodNode, definingClass: ClassBType): Unit = {
     if (!BytecodeUtils.isAbstractMethod(methodNode) && !BytecodeUtils
-          .isNativeMethod(methodNode)) {
+        .isNativeMethod(methodNode)) {
       // TODO: run dataflow analyses to make the call graph more precise
       //  - producers to get forwarded parameters (ForwardedParam)
       //  - typeAnalysis for more precise argument types, more precise callee
@@ -115,7 +115,7 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
 
       val analyzer = {
         if (compilerSettings.YoptNullnessTracking && AsmAnalyzer
-              .sizeOKForNullness(methodNode)) {
+            .sizeOKForNullness(methodNode)) {
           Some(
             new AsmAnalyzer(
               methodNode,

@@ -143,19 +143,19 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
       var elem = element
       var parent = elem.getParent
       while (parent match {
-               case _: ScStableCodeReferenceElement =>
-                 parent.getParent match {
-                   case _: ScThisReference | _: ScSuperReference => true
-                   case _                                        => false
-                 }
-               case _: ScReferenceExpression                        => true
-               case _: ScThisReference                              => true
-               case _: ScSuperReference                             => true
-               case inf: ScInfixExpr if elem == inf.operation       => true
-               case pref: ScPrefixExpr if elem == pref.operation    => true
-               case postf: ScPostfixExpr if elem == postf.operation => true
-               case _                                               => false
-             }) {
+          case _: ScStableCodeReferenceElement =>
+            parent.getParent match {
+              case _: ScThisReference | _: ScSuperReference => true
+              case _                                        => false
+            }
+          case _: ScReferenceExpression                        => true
+          case _: ScThisReference                              => true
+          case _: ScSuperReference                             => true
+          case inf: ScInfixExpr if elem == inf.operation       => true
+          case pref: ScPrefixExpr if elem == pref.operation    => true
+          case postf: ScPostfixExpr if elem == postf.operation => true
+          case _                                               => false
+        }) {
         elem = parent
         parent = parent.getParent
       }
@@ -222,7 +222,7 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
           }
         }
       } else if (withSpace && (nextChar != ' ' || documentText.charAt(
-                   endOffset + 1) != openChar)) {
+          endOffset + 1) != openChar)) {
         document.insertString(endOffset, " ")
         shiftEndOffset(1, withSomeNum = false)
         insertIfNeeded(
@@ -347,13 +347,13 @@ class ScalaInsertHandler extends InsertHandler[LookupElement] {
                   endOffset += 1
                   editor.getCaretModel.moveToOffset(endOffset + someNum)
                 } else if (endOffset == document.getTextLength || document.getCharsSequence
-                             .charAt(endOffset) != '(') {
+                    .charAt(endOffset) != '(') {
                   disableParenthesesCompletionChar()
                   if (!item.etaExpanded) {
                     if (context.getCompletionChar == '{') {
                       if (ScalaPsiUtil
-                            .getSettings(context.getProject)
-                            .SPACE_BEFORE_BRACE_METHOD_CALL) {
+                          .getSettings(context.getProject)
+                          .SPACE_BEFORE_BRACE_METHOD_CALL) {
                         insertIfNeeded(
                           placeInto = true,
                           openChar = '{',

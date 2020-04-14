@@ -837,9 +837,9 @@ private[hive] class HiveMetastoreCatalog(
           p.overwrite,
           p.ifNotExists)
       } else if (childOutputDataTypes.size == tableOutputDataTypes.size &&
-                 childOutputDataTypes
-                   .zip(tableOutputDataTypes)
-                   .forall { case (left, right) => left.sameType(right) }) {
+        childOutputDataTypes
+          .zip(tableOutputDataTypes)
+          .forall { case (left, right) => left.sameType(right) }) {
         // If both types ignoring nullability of ArrayType, MapType, StructType are the same,
         // use InsertIntoHiveTable instead of InsertIntoTable.
         InsertIntoHiveTable(

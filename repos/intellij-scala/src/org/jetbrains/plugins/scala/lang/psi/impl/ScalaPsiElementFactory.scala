@@ -571,7 +571,7 @@ object ScalaPsiElementFactory {
     child match {
       case expr: ScExpression =>
         if (expr.getNextSibling == null && !PsiTreeUtil.hasErrorElements(
-              dummyFile)) Some(expr)
+            dummyFile)) Some(expr)
         else None
       case _ => None
     }
@@ -669,7 +669,7 @@ object ScalaPsiElementFactory {
       case _ =>
         var element: PsiElement = holder
         while (element != null && !element.isInstanceOf[ScalaFile] && !element
-                 .isInstanceOf[ScPackaging])
+            .isInstanceOf[ScPackaging])
           element = element.getParent
         element match {
           case packaging: ScPackaging => packaging.getPackageName
@@ -706,11 +706,11 @@ object ScalaPsiElementFactory {
     for (expr <- exprs) names ++= expr.getNames
     val arrow = ScalaPsiUtil.functionArrow(manager.getProject)
     if ((names("_") ||
-        ScalaCodeStyleSettings
-          .getInstance(manager.getProject)
-          .getClassCountToUseImportOnDemand <=
-          names.size) &&
-        names.filter(_.indexOf(arrow) != -1).toSeq.size == 0) text = text + "._"
+      ScalaCodeStyleSettings
+        .getInstance(manager.getProject)
+        .getClassCountToUseImportOnDemand <=
+        names.size) &&
+      names.filter(_.indexOf(arrow) != -1).toSeq.size == 0) text = text + "._"
     else {
       text = text + ".{"
       for (string <- names) {
@@ -1097,7 +1097,7 @@ object ScalaPsiElementFactory {
         var hasOverride = false
         if (m.getModifierList.getNode != null)
           for (modifier <- m.getModifierList.getNode.getChildren(null);
-               modText = modifier.getText) {
+            modText = modifier.getText) {
             modText match {
               case "override" =>
                 hasOverride = true;
@@ -1309,7 +1309,7 @@ object ScalaPsiElementFactory {
       }
     val overrideText =
       if (needsOverride && (modOwner == null || !modOwner.hasModifierProperty(
-            "override"))) "override "
+          "override"))) "override "
       else ""
     val modifiersText =
       if (modOwner != null) modOwner.getModifierList.getText + " " else ""

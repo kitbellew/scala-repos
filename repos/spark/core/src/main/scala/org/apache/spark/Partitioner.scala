@@ -58,7 +58,7 @@ object Partitioner {
   def defaultPartitioner(rdd: RDD[_], others: RDD[_]*): Partitioner = {
     val bySize = (Seq(rdd) ++ others).sortBy(_.partitions.length).reverse
     for (r <- bySize
-         if r.partitioner.isDefined && r.partitioner.get.numPartitions > 0) {
+      if r.partitioner.isDefined && r.partitioner.get.numPartitions > 0) {
       return r.partitioner.get
     }
     if (rdd.context.conf.contains("spark.default.parallelism")) {
@@ -181,8 +181,8 @@ class RangePartitioner[K: Ordering: ClassTag, V](
     if (rangeBounds.length <= 128) {
       // If we have less than 128 partitions naive search
       while (partition < rangeBounds.length && ordering.gt(
-               k,
-               rangeBounds(partition))) {
+          k,
+          rangeBounds(partition))) {
         partition += 1
       }
     } else {

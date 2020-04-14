@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ScatterChart Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ScatterChartSpec

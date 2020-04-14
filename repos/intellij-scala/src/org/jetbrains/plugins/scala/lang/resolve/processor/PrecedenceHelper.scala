@@ -55,8 +55,8 @@ trait PrecedenceHelper[T] {
     ignoredSet.forall { result =>
       set.forall { otherResult =>
         if (!ScEquivalenceUtil.smartEquivalence(
-              result.getActualElement,
-              otherResult.getActualElement)) {
+            result.getActualElement,
+            otherResult.getActualElement)) {
           (result.getActualElement, otherResult.getActualElement) match {
             case (ta: ScTypeAliasDefinition, cls: PsiClass) =>
               ta.isExactAliasFor(cls)
@@ -88,7 +88,7 @@ trait PrecedenceHelper[T] {
 
   protected def addChangedLevelToHistory(): Unit = {
     if (isUpdateHistory && !fromHistory && history.lastOption != Some(
-          ChangedLevel)) history += ChangedLevel
+        ChangedLevel)) history += ChangedLevel
   }
 
   protected def getQualifiedName(result: ScalaResolveResult): T
@@ -169,11 +169,11 @@ trait PrecedenceHelper[T] {
       return false
     else if (currentPrecedence == topPrecedence) {
       if (isCheckForEqualPrecedence && qualifiedName != null &&
-          (levelQualifiedNamesSet.contains(qualifiedName) ||
-          qualifiedNamesSet.contains(qualifiedName))) {
+        (levelQualifiedNamesSet.contains(qualifiedName) ||
+        qualifiedNamesSet.contains(qualifiedName))) {
         return false
       } else if (qualifiedName != null && qualifiedNamesSet.contains(
-                   qualifiedName)) return false
+          qualifiedName)) return false
       if (!fromHistory && isUpdateHistory && isSpecialResult(result)) {
         results.foreach(ignoredSet.add)
       } else addResults()

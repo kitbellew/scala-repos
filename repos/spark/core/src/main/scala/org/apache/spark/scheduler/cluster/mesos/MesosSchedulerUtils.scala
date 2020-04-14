@@ -202,9 +202,9 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
     val remainingResources = resources.asScala.map {
       case r => {
         if (remain > 0 &&
-            r.getType == Value.Type.SCALAR &&
-            r.getScalar.getValue > 0.0 &&
-            r.getName == resourceName) {
+          r.getType == Value.Type.SCALAR &&
+          r.getScalar.getValue > 0.0 &&
+          r.getName == resourceName) {
           val usage = Math.min(remain, r.getScalar.getValue)
           requestedResources += createResource(
             resourceName,

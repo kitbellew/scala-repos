@@ -155,7 +155,7 @@ class GBTClassifierSuite extends SparkFunSuite with MLlibTestSparkContext {
       Utils.deleteRecursively(tempDir)
     }
   }
- */
+   */
 }
 
 private object GBTClassifierSuite extends SparkFunSuite {

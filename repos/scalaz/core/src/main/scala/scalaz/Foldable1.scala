@@ -9,7 +9,7 @@ package scalaz
 trait Foldable1[F[_]] extends Foldable[F] { self =>
   ////
 
-  /**The product of Foldable1 `F` and `G`, `[x](F[x], G[x]])`, is a Foldable1 */
+  /** The product of Foldable1 `F` and `G`, `[x](F[x], G[x]])`, is a Foldable1 */
   def product[G[_]](implicit
       G0: Foldable1[G]): Foldable1[λ[α => (F[α], G[α])]] =
     new ProductFoldable1[F, G] {
@@ -17,7 +17,7 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
       implicit def G = G0
     }
 
-  /**The composition of Foldable1 `F` and `G`, `[x]F[G[x]]`, is a Foldable1 */
+  /** The composition of Foldable1 `F` and `G`, `[x]F[G[x]]`, is a Foldable1 */
   def compose[G[_]: Foldable1]: Foldable1[λ[α => F[G[α]]]] =
     new CompositionFoldable1[F, G] {
       def F = self
@@ -29,21 +29,21 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
   override def foldMap1Opt[A, B](fa: F[A])(f: A => B)(implicit
       F: Semigroup[B]): Option[B] = Some(foldMap1(fa)(f))
 
-  /**Right-associative fold of a structure. */
+  /** Right-associative fold of a structure. */
   def foldMapRight1[A, B](fa: F[A])(z: A => B)(f: (A, => B) => B): B
 
   // derived functions
   override def foldMap[A, B](fa: F[A])(f: A => B)(implicit F: Monoid[B]): B =
     foldMap1(fa)(f)
 
-  /**Right-associative fold of a structure. */
+  /** Right-associative fold of a structure. */
   def foldRight1[A](fa: F[A])(f: (A, => A) => A): A =
     foldMapRight1(fa)(identity)(f)
 
   override def foldRight[A, B](fa: F[A], z: => B)(f: (A, => B) => B): B =
     foldMapRight1(fa)(f(_, z))(f)
 
-  /**Left-associative fold of a structure. */
+  /** Left-associative fold of a structure. */
   def foldMapLeft1[A, B](fa: F[A])(z: A => B)(f: (B, A) => B): B = {
     import std.option._
     foldLeft(fa, none[B]) {
@@ -52,7 +52,7 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
     }.getOrElse(sys.error("foldMapLeft1"))
   }
 
-  /**Left-associative fold of a structure. */
+  /** Left-associative fold of a structure. */
   def foldLeft1[A](fa: F[A])(f: (A, A) => A): A =
     foldMapLeft1(fa)(identity)(f)
 
@@ -162,7 +162,7 @@ trait Foldable1[F[_]] extends Foldable[F] { self =>
   /** always return `false` */
   final override def empty[A](fa: F[A]): Boolean = false
 
-  /**The product of Foldable1 `F` and Foldable `G`, `[x](F[x], G[x]])`, is a Foldable1 */
+  /** The product of Foldable1 `F` and Foldable `G`, `[x](F[x], G[x]])`, is a Foldable1 */
   def product0[G[_]](implicit
       G0: Foldable[G]): Foldable1[λ[α => (F[α], G[α])]] =
     new ProductFoldable1L[F, G] {

@@ -467,18 +467,18 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     val q6a =
       (for (o <- orders if o.orderID === (for {
-              o2 <- orders if o.userID === o2.userID
-            } yield o2.orderID).max) yield o.orderID).sorted
+          o2 <- orders if o.userID === o2.userID
+        } yield o2.orderID).max) yield o.orderID).sorted
 
     val q6b =
       (for (o <- orders if o.orderID === (for {
-              o2 <- orders if o.userID === o2.userID
-            } yield o2.orderID).max) yield o.orderID ~ o.userID).sortBy(_._1)
+          o2 <- orders if o.userID === o2.userID
+        } yield o2.orderID).max) yield o.orderID ~ o.userID).sortBy(_._1)
 
     val q6c =
       (for (o <- orders if o.orderID === (for {
-              o2 <- orders if o.userID === o2.userID
-            } yield o2.orderID).max)
+          o2 <- orders if o.userID === o2.userID
+        } yield o2.orderID).max)
         yield o).sortBy(_.orderID).map(o => o.orderID ~ o.userID)
 
     seq(

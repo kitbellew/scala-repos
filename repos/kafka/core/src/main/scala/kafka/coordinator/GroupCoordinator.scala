@@ -132,7 +132,7 @@ class GroupCoordinator(
     } else if (isCoordinatorLoadingInProgress(groupId)) {
       responseCallback(joinError(memberId, Errors.GROUP_LOAD_IN_PROGRESS.code))
     } else if (sessionTimeoutMs < groupConfig.groupMinSessionTimeoutMs ||
-               sessionTimeoutMs > groupConfig.groupMaxSessionTimeoutMs) {
+      sessionTimeoutMs > groupConfig.groupMaxSessionTimeoutMs) {
       responseCallback(joinError(memberId, Errors.INVALID_SESSION_TIMEOUT.code))
     } else {
       // only try to create the group if the group is not unknown AND
@@ -180,12 +180,12 @@ class GroupCoordinator(
       responseCallback: JoinCallback) {
     group synchronized {
       if (group.protocolType != protocolType || !group.supportsProtocols(
-            protocols.map(_._1).toSet)) {
+          protocols.map(_._1).toSet)) {
         // if the new member does not support the group protocol, reject it
         responseCallback(
           joinError(memberId, Errors.INCONSISTENT_GROUP_PROTOCOL.code))
       } else if (memberId != JoinGroupRequest.UNKNOWN_MEMBER_ID && !group.has(
-                   memberId)) {
+          memberId)) {
         // if the member trying to register with a un-recognized id, send the response to let
         // it reset its member id and retry
         responseCallback(joinError(memberId, Errors.UNKNOWN_MEMBER_ID.code))
@@ -367,7 +367,7 @@ class GroupCoordinator(
                       // so we must ensure we are still in the AwaitingSync state and the same generation
                       // when it gets invoked. if we have transitioned to another state, then do nothing
                       if (group.is(
-                            AwaitingSync) && generationId == group.generationId) {
+                          AwaitingSync) && generationId == group.generationId) {
                         if (errorCode != Errors.NONE.code) {
                           resetAndPropagateAssignmentError(group, errorCode)
                           maybePrepareRebalance(group)

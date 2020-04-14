@@ -317,7 +317,6 @@ trait TraitContext[This <: android.content.Context] {
   * Refer the URL below for more details.
   *
   * [[https://github.com/pocorall/scaloid/?134#trait-scontext]]
-  *
   */
 trait SContext extends Context with TraitContext[SContext] with TagUtil {
   def basis: SContext = this
@@ -409,7 +408,6 @@ trait UnregisterReceiver extends ContextWrapper with Destroyable {
   * {{{
   *   SIntent[MyActivity]
   * }}}
-  *
   */
 object SIntent {
   @inline def apply[T](implicit context: Context, mt: ClassTag[T]) =

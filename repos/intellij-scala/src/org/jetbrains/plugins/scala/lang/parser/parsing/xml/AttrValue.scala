@@ -11,8 +11,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserPatcher
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 18.04.2008
-  */
+  * Date: 18.04.2008 */
 
 /*
  * AttrValue ::= " {CharQ | CharRef} "
@@ -34,8 +33,8 @@ object AttrValue {
         builder.advanceLexer()
         var patched = false
         while (VALID_ATTRIBUTE_TOKENS.contains(builder.getTokenType) || {
-                 patched = patcher parse builder; patched
-               }) {
+            patched = patcher parse builder; patched
+          }) {
           if (!patched) builder.advanceLexer() else patched = false
         }
         builder.getTokenType match {

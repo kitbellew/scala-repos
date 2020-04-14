@@ -13,7 +13,7 @@ import scala.reflect.internal.util.SourceFile
 /**
   * A trait for defining commands that can be queried to the
   * presentation compiler.
-  * */
+  */
 trait AskCommand {
 
   /** presentation compiler's instance. */
@@ -24,7 +24,7 @@ trait AskCommand {
     * on a `Response` instance passed as an argument during the `askXXX`
     * call.
     * The defined method `ask` is meant to encapsulate this behavior.
-    * */
+    */
   protected def ask[T](op: Response[T] => Unit): Response[T] = {
     val r = new Response[T]
     op(r)

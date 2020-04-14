@@ -35,5 +35,5 @@ object Test {
 
   val fn    = f.normalize.asInstanceOf[ExistentialType]
   val fn2   = fn.underlying.asInstanceOf[TypeRef]
- */
+   */
 }

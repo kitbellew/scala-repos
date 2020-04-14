@@ -219,13 +219,13 @@ class ReplicaFetcherThread(
       // This situation could only happen if the unclean election configuration for a topic changes while a replica is down. Otherwise,
       // we should never encounter this situation since a non-ISR leader cannot be elected if disallowed by the broker configuration.
       if (!LogConfig
-            .fromProps(
-              brokerConfig.originals,
-              AdminUtils.fetchEntityConfig(
-                replicaMgr.zkUtils,
-                ConfigType.Topic,
-                topicAndPartition.topic))
-            .uncleanLeaderElectionEnable) {
+          .fromProps(
+            brokerConfig.originals,
+            AdminUtils.fetchEntityConfig(
+              replicaMgr.zkUtils,
+              ConfigType.Topic,
+              topicAndPartition.topic))
+          .uncleanLeaderElectionEnable) {
         // Log a fatal error and shutdown the broker to ensure that data loss does not unexpectedly occur.
         fatal(
           "Halting because log truncation is not allowed for topic %s,".format(
@@ -272,7 +272,6 @@ class ReplicaFetcherThread(
         *
         * Putting the two cases together, the follower should fetch from the higher one of its replica log end offset
         * and the current leader's log start offset.
-        *
         */
       val leaderStartOffset: Long = earliestOrLatestOffset(
         topicAndPartition,

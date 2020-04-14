@@ -36,12 +36,11 @@ object MethodCallTrace {
   * def main(args: Array[String]): Unit = {
   *   startProfiling()
   *   // should box the boolean
-    println(true)
-    stopProfiling()
-    printStatistics()
+  *    println(true)
+  *    stopProfiling()
+  *    printStatistics()
   * }
   * }}}
-  *
   *
   * should print:
   *

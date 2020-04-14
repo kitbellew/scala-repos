@@ -21,7 +21,7 @@ import scala.tools.nsc.util.JavaClassPath
 import scala.tools.util.PathResolverFactory
 import scalax.rules.scalasig._
 
-/**The main object used to execute scalap on the command-line.
+/** The main object used to execute scalap on the command-line.
   *
   * @author Matthias Zenger, Stephane Micheloud, Burak Emir, Ilya Sergey
   */
@@ -35,7 +35,7 @@ class Main {
     Properties.versionString,
     Properties.copyrightString)
 
-  /**Verbose program run?
+  /** Verbose program run?
     */
   var verbose = false
   var printPrivates = false
@@ -46,7 +46,7 @@ class Main {
     classFile.attribute("ScalaSig").isDefined
   }
 
-  /**Processes the given Java class file.
+  /** Processes the given Java class file.
     *
     * @param clazz the class file to be processed.
     */

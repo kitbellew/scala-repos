@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle.util
 
@@ -154,7 +154,6 @@ object Xor64 {
   *  10  RandomWalk1 J                   0.9997
   *  ----------------------------------------------
   *  All other tests were passed
-  *
   *
   * ========= Summary results of Crush =========
   *  Version:          TestU01 1.2.3

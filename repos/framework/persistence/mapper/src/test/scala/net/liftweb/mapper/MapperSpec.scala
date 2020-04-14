@@ -236,7 +236,7 @@ class MapperSpec extends Specification with BeforeExample {
 
         "Precache works with OrderBy" in {
           if ((provider ne DbProviders.DerbyProvider)
-              && (provider ne DbProviders.MySqlProvider)) {
+            && (provider ne DbProviders.MySqlProvider)) {
             // this doesn't work for Derby, but it's a derby bug
             // nor does it work in MySQL, but it's a MySQL limitation
             //  try { provider.setupDB } catch { case e => skip(e.getMessage) }
@@ -359,7 +359,7 @@ class MapperSpec extends Specification with BeforeExample {
 
         "Precache works with OrderBy with Mixed Case" in {
           if ((provider ne DbProviders.DerbyProvider)
-              && (provider ne DbProviders.MySqlProvider)) {
+            && (provider ne DbProviders.MySqlProvider)) {
             // this doesn't work for Derby, but it's a derby bug
             // nor does it work in MySQL, but it's a MySQL limitation
             //  try { provider.setupDB } catch { case e => skip(e.getMessage) }

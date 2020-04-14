@@ -12,7 +12,7 @@ trait ReplStrings {
 
   /** Convert a string into code that can recreate the string.
     *  This requires replacing all special characters by escape
-    *  codes. It does not add the surrounding " marks.  */
+    *  codes. It does not add the surrounding " marks. */
   def string2code(str: String): String = {
     val res = new StringBuilder
     for (c <- str) c match {

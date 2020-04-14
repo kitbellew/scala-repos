@@ -253,13 +253,13 @@ class BlockMatrix @Since("1.3.0") (
     blockInfo.foreach {
       case ((blockRowIndex, blockColIndex), (m, n)) =>
         if ((blockRowIndex < numRowBlocks - 1 && m != rowsPerBlock) ||
-            (blockRowIndex == numRowBlocks - 1 && (m <= 0 || m > rowsPerBlock))) {
+          (blockRowIndex == numRowBlocks - 1 && (m <= 0 || m > rowsPerBlock))) {
           throw new SparkException(
             s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
               dimensionMsg)
         }
         if ((blockColIndex < numColBlocks - 1 && n != colsPerBlock) ||
-            (blockColIndex == numColBlocks - 1 && (n <= 0 || n > colsPerBlock))) {
+          (blockColIndex == numColBlocks - 1 && (n <= 0 || n > colsPerBlock))) {
           throw new SparkException(
             s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
               dimensionMsg)

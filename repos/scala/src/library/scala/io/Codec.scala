@@ -31,7 +31,6 @@ import scala.language.implicitConversions
 // -Dfile.encoding: see http://bugs.java.com/bugdatabase/view_bug.do?bug_id=4375816
 
 /** A class for character encoding/decoding preferences.
-  *
   */
 class Codec(val charSet: Charset) {
   type Configure[T] = (T => T, Boolean)

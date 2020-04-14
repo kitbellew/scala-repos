@@ -691,7 +691,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
                 case constr => Some(Right(constr))
               }
 
-              val constrErrors = mapped collect { case Left(error)   => error }
+              val constrErrors = mapped collect { case Left(error) => error }
               val constraints3 = mapped collect { case Right(constr) => constr }
 
               expr.provenance =

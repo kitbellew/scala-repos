@@ -603,8 +603,8 @@ object InferUtil {
                     val substedLowerType = unSubst.subst(lower)
                     val addLower =
                       if (tp.typeParams.nonEmpty && !_addLower
-                            .isInstanceOf[ScParameterizedType] &&
-                          !tp.typeParams.exists(_.name == "_"))
+                          .isInstanceOf[ScParameterizedType] &&
+                        !tp.typeParams.exists(_.name == "_"))
                         ScParameterizedType(
                           _addLower,
                           tp.typeParams.map(
@@ -622,8 +622,8 @@ object InferUtil {
                     val substedUpperType = unSubst.subst(upper)
                     val addUpper =
                       if (tp.typeParams.nonEmpty && !_addUpper
-                            .isInstanceOf[ScParameterizedType] &&
-                          !tp.typeParams.exists(_.name == "_"))
+                          .isInstanceOf[ScParameterizedType] &&
+                        !tp.typeParams.exists(_.name == "_"))
                         ScParameterizedType(
                           _addUpper,
                           tp.typeParams.map(
@@ -637,10 +637,10 @@ object InferUtil {
                 }
 
                 if (safeCheck && !undefiningSubstitutor
-                      .subst(lower)
-                      .conforms(
-                        undefiningSubstitutor.subst(upper),
-                        checkWeak = true))
+                    .subst(lower)
+                    .conforms(
+                      undefiningSubstitutor.subst(upper),
+                      checkWeak = true))
                   throw new SafeCheckException
                 TypeParameter(
                   tp.name,
@@ -753,10 +753,10 @@ object InferUtil {
                         tp.ptp match {
                           case typeParam: ScTypeParam =>
                             if (!checkTypeParam(
-                                  typeParam,
-                                  sub.subst(new ScTypeParameterType(
-                                    tp.ptp,
-                                    ScSubstitutor.empty))))
+                                typeParam,
+                                sub.subst(new ScTypeParameterType(
+                                  tp.ptp,
+                                  ScSubstitutor.empty))))
                               throw new SafeCheckException
                           case _ =>
                         }

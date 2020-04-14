@@ -8,8 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 
 class ScTypeArgsImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
@@ -25,7 +24,7 @@ class ScTypeArgsImpl(node: ASTNode)
     while (i < size) {
       val child = children(i)
       if (TokenSets.TYPE_ELEMENTS_TOKEN_SET.contains(
-            child.getNode.getElementType)) {
+          child.getNode.getElementType)) {
         count += 1
       }
       i += 1
@@ -38,7 +37,7 @@ class ScTypeArgsImpl(node: ASTNode)
       while (i < size) {
         val child = children(i)
         if (TokenSets.TYPE_ELEMENTS_TOKEN_SET.contains(
-              child.getNode.getElementType)) {
+            child.getNode.getElementType)) {
           result(count) = child.asInstanceOf[ScTypeElement]
           count += 1
         }

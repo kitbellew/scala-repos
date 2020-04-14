@@ -30,8 +30,8 @@ trait IntOperators extends Operators[Int] {
     List(-_, math.abs(_), _ % 2, _ % 3, _ % 4, _ % 150, _ % 500)
   def partialMapFunctions =
     List(
-      { case x               => -x },
-      { case 0               => -1; case x if x > 0 => x + 1 },
+      { case x => -x },
+      { case 0 => -1; case x if x > 0 => x + 1 },
       { case x if x % 3 == 0 => x / 3 })
   def flatMapFunctions =
     List(

@@ -974,7 +974,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
             // if we have only one child, which is not a HashTrieSet but a self-contained set like
             // HashSet1 or HashSetCollision1, return the child instead
             if (elemsNew.length == 1 && !elemsNew(0)
-                  .isInstanceOf[HashTrieSet[_]])
+                .isInstanceOf[HashTrieSet[_]])
               elemsNew(0)
             else
               new HashTrieSet(bitmapNew, elemsNew, sizeNew)
@@ -1073,7 +1073,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         // unchanged
         this
       } else if (offset == offset0 + 1 && !buffer(offset0)
-                   .isInstanceOf[HashTrieSet[A]]) {
+          .isInstanceOf[HashTrieSet[A]]) {
         // leaf
         buffer(offset0)
       } else {

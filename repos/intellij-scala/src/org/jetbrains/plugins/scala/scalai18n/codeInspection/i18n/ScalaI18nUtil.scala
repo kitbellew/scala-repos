@@ -153,12 +153,12 @@ object ScalaI18nUtil {
             method match {
               case psiMethod: PsiMethod =>
                 if (method != null && isMethodParameterAnnotatedWith(
-                      psiMethod,
-                      idx,
-                      null,
-                      annFqn,
-                      annotationAttributeValues,
-                      nonNlsTargets)) {
+                    psiMethod,
+                    idx,
+                    null,
+                    annFqn,
+                    annotationAttributeValues,
+                    nonNlsTargets)) {
                   return true
                 }
               case _ =>
@@ -174,7 +174,7 @@ object ScalaI18nUtil {
       @NotNull project: Project,
       @NotNull expression: ScExpression): ScExpression = {
     if (expression.isInstanceOf[PsiBinaryExpression] || expression.getParent
-          .isInstanceOf[PsiBinaryExpression]) {
+        .isInstanceOf[PsiBinaryExpression]) {
       return CachedValuesManager
         .getManager(project)
         .getParameterizedCachedValue(
@@ -267,12 +267,12 @@ object ScalaI18nUtil {
     val superMethods: Array[PsiMethod] = method.findSuperMethods
     for (superMethod <- superMethods) {
       if (isMethodParameterAnnotatedWith(
-            superMethod,
-            idx,
-            processed,
-            annFqn,
-            annotationAttributeValues,
-            null)) return true
+          superMethod,
+          idx,
+          processed,
+          annFqn,
+          annotationAttributeValues,
+          null)) return true
     }
     false
   }
@@ -390,7 +390,7 @@ object ScalaI18nUtil {
           for (result <- polyVarRef.multiResolve(false)) {
             var flag = true
             if (result.isValidResult && result.getElement
-                  .isInstanceOf[IProperty]) {
+                .isInstanceOf[IProperty]) {
               val value: String =
                 result.getElement.asInstanceOf[IProperty].getValue
               var format: MessageFormat = null
@@ -422,7 +422,7 @@ object ScalaI18nUtil {
       methodCallExpression: ScMethodCall): String = {
     val args: Array[ScExpression] = methodCallExpression.args.exprsArray
     if (args.length > 0 && args(0).isInstanceOf[ScLiteral] && args(0).isValid &&
-        isI18nProperty(project, args(0).asInstanceOf[ScLiteral])) {
+      isI18nProperty(project, args(0).asInstanceOf[ScLiteral])) {
       val count: Int = getPropertyValueParamsMaxCount(
         args(0).asInstanceOf[ScLiteral])
       if (args.length == 1 + count) {

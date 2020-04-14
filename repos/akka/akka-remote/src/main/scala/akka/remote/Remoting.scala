@@ -857,8 +857,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
             }
           case None ⇒
             if (endpoints.isQuarantined(
-                  handle.remoteAddress,
-                  handle.handshakeInfo.uid))
+                handle.remoteAddress,
+                handle.handshakeInfo.uid))
               handle.disassociate(AssociationHandle.Quarantined)
             else
               endpoints.writableEndpointWithPolicyFor(
@@ -1024,8 +1024,8 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       takingOverFrom: ActorRef,
       withHandle: AkkaProtocolHandle): Unit = {
     if (pendingReadHandoffs
-          .get(takingOverFrom)
-          .exists(handle ⇒ handle == withHandle))
+        .get(takingOverFrom)
+        .exists(handle ⇒ handle == withHandle))
       pendingReadHandoffs -= takingOverFrom
   }
 

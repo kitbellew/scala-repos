@@ -27,7 +27,7 @@ class OpenHashMapTest {
       .head.asTerm
 
     val fieldMirror = mirror.reflect(m).reflectField(termSym)
-		*/
+     */
     // Use Java reflection instead for now.
     val field = m.getClass.getDeclaredField("deleted")
     field.setAccessible(true)

@@ -60,7 +60,7 @@ private[internal] trait GlbLubs {
       val sym = ts.head.typeSymbol
       require(ts.tail forall (_.typeSymbol == sym), ts)
       for (p <- sym.typeParams; in <- sym.typeParams;
-           if in.info.bounds contains p) yield p -> in
+        if in.info.bounds contains p) yield p -> in
     }
   }
 
@@ -569,8 +569,8 @@ private[internal] trait GlbLubs {
               val prototp = glbThisType.memberInfo(proto)
               val syms =
                 for (t <- ts;
-                     alt <- (t.nonPrivateMember(proto.name).alternatives)
-                     if glbThisType.memberInfo(alt) matches prototp) yield alt
+                  alt <- (t.nonPrivateMember(proto.name).alternatives)
+                  if glbThisType.memberInfo(alt) matches prototp) yield alt
               val symtypes = syms map glbThisType.memberInfo
               assert(!symtypes.isEmpty)
               proto
@@ -606,9 +606,9 @@ private[internal] trait GlbLubs {
                 val dss = ts flatMap refinedToDecls
                 for (ds <- dss; sym <- ds.iterator)
                   if (globalGlbDepth < globalGlbLimit && !specializesSym(
-                        glbThisType,
-                        sym,
-                        depth))
+                      glbThisType,
+                      sym,
+                      depth))
                     try {
                       addMember(glbThisType, glbRefined, glbsym(sym), depth)
                     } catch {

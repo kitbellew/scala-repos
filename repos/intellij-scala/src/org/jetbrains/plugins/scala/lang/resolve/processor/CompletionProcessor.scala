@@ -128,10 +128,8 @@ class CompletionProcessor(
                 while (iterator.hasNext) {
                   val next = iterator.next()
                   if (getQualifiedName(next) == getQualifiedName(
-                        result) && next.element != result.element &&
-                      signature == getSignature(
-                        next.element,
-                        next.substitutor)) {
+                      result) && next.element != result.element &&
+                    signature == getSignature(next.element, next.substitutor)) {
                     iterator.remove()
                   }
                 }

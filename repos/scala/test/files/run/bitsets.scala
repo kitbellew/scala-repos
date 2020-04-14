@@ -119,23 +119,23 @@ object TestMutable3 {
   println(s"b0:$b0")
 }
 
-/***
-The memory requirements here are way beyond
-what a test should exercise.
-
-object TestMutable4 {
-  import scala.collection.mutable.BitSet
-
-  val bMax = BitSet(Int.MaxValue)
-  println(s"bMax:$bMax")
-  bMax.foreach(println)
-
-  val bLarge = BitSet(2000000001)
-  println(s"bLarge:$bLarge")
-
-  println(bMax == bLarge)
-}
-***/
+/**
+  * The memory requirements here are way beyond
+  * what a test should exercise.
+  *
+  * object TestMutable4 {
+  *  import scala.collection.mutable.BitSet
+  *
+  *  val bMax = BitSet(Int.MaxValue)
+  *  println(s"bMax:$bMax")
+  *  bMax.foreach(println)
+  *
+  *  val bLarge = BitSet(2000000001)
+  *  println(s"bLarge:$bLarge")
+  *
+  *  println(bMax == bLarge)
+  * }
+  * * */
 
 object TestImmutable {
   import scala.collection.immutable.BitSet

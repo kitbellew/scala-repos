@@ -439,7 +439,7 @@ private[spark] class BlockManagerMasterEndpoint(
   private def getExecutorEndpointRef(
       executorId: String): Option[RpcEndpointRef] = {
     for (blockManagerId <- blockManagerIdByExecutor.get(executorId);
-         info <- blockManagerInfo.get(blockManagerId)) yield {
+      info <- blockManagerInfo.get(blockManagerId)) yield {
       info.slaveEndpoint
     }
   }

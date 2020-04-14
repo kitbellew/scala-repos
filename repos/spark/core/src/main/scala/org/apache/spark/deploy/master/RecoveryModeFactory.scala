@@ -27,7 +27,6 @@ import org.apache.spark.serializer.Serializer
   *
   * Implementation of this class can be plugged in as recovery mode alternative for Spark's
   * Standalone mode.
-  *
   */
 @DeveloperApi
 abstract class StandaloneRecoveryModeFactory(
@@ -37,7 +36,6 @@ abstract class StandaloneRecoveryModeFactory(
   /**
     * PersistenceEngine defines how the persistent data(Information about worker, driver etc..)
     * is handled for recovery.
-    *
     */
   def createPersistenceEngine(): PersistenceEngine
 

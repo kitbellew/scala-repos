@@ -126,7 +126,7 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
     if (viewElement != null) {
       val viewTypeElements = viewElement.get
       if (viewTypeElements != null && viewTypeElements.forall(
-            _.getContext.eq(getPsi))) return viewTypeElements
+          _.getContext.eq(getPsi))) return viewTypeElements
     }
     val res: Seq[ScTypeElement] = getViewText.map(
       ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))
@@ -138,7 +138,7 @@ class ScTypeParamStubImpl[ParentPsi <: PsiElement](
     if (contextBoundElement != null) {
       val contextTypeElements = contextBoundElement.get
       if (contextTypeElements != null && contextTypeElements.forall(
-            _.getContext.eq(getPsi))) return contextTypeElements
+          _.getContext.eq(getPsi))) return contextTypeElements
     }
     val res: Seq[ScTypeElement] = getContextBoundText.map(
       ScalaPsiElementFactory.createTypeElementFromText(_, getPsi, null))

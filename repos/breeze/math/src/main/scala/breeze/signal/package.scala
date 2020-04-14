@@ -20,7 +20,7 @@ import breeze.linalg.DenseVector
 import breeze.numerics.isEven
 import scalaxy.debug._
 
-/**This package provides digital signal processing functions.
+/** This package provides digital signal processing functions.
   *
   * @author ktakagaki
   */
@@ -37,7 +37,7 @@ package object signal {
 
   // <editor-fold desc="fourierFreq">
 
-  /**Returns the frequencies for each tap in a discrete Fourier transform, useful for plotting.
+  /** Returns the frequencies for each tap in a discrete Fourier transform, useful for plotting.
     * You must specify either an fs or a dt argument. If you specify both, which is redundant,
     * fs == 1.0/dt must be true.
     *
@@ -84,7 +84,7 @@ package object signal {
   // </editor-fold>
 
   // <editor-fold desc="convolve, correlate">
-  /**Convolves DenseVectors.</p>
+  /** Convolves DenseVectors.</p>
     * Implementation is via the implicit trait CanConvolve[ InputType,  OutputType ],
     * which is found in breeze.signal.support.CanConvolve.scala.
     *
@@ -109,7 +109,7 @@ package object signal {
       padding,
       method)
 
-  /**Correlates DenseVectors.</p>
+  /** Correlates DenseVectors.</p>
     * Implementation is via the implicit trait CanConvolve[ InputType,  OutputType ],
     * which is found in breeze.signal.support.CanConvolve.scala.
     * See [[breeze.signal.convolve]] for options and other information.
@@ -364,7 +364,7 @@ package object signal {
 
   // </editor-fold>
 
-  /**Return the padded fast haar transformation of a DenseVector or DenseMatrix. Note that
+  /** Return the padded fast haar transformation of a DenseVector or DenseMatrix. Note that
     * the output will always be padded to a power of 2.</p>
     * A matrix will cause a 2D fht. The 2D haar transformation is defined for squared power of 2
     * matrices. A new matrix will thus be created and the old matrix will be placed in the upper-left
@@ -385,8 +385,7 @@ package object signal {
       canHaarTransform: CanHaarTr[Input, Output]): Output =
     canHaarTransform(v)
 
-  /**Returns the inverse fast haar transform for a DenseVector or DenseMatrix.
-    *
+  /** Returns the inverse fast haar transform for a DenseVector or DenseMatrix.
     */
   def iHaarTr[Input, Output](v: Input)(implicit
       canInverseHaarTransform: CanIHaarTr[Input, Output]): Output =

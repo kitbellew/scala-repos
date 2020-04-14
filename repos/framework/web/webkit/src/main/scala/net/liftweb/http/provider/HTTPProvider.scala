@@ -72,7 +72,7 @@ trait HTTPProvider {
             .applyBox(resp.encodeUrl(url), LiftRules.urlDecorate.toList) openOr
             resp.encodeUrl(url)) {
           if (!(isLiftRequest_?(newReq) &&
-                actualServlet.service(newReq, resp))) {
+              actualServlet.service(newReq, resp))) {
             chain
           }
         }

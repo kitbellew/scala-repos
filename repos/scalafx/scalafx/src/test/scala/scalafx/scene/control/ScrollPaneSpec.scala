@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ScrollPane Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ScrollPaneSpec

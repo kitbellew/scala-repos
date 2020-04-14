@@ -29,8 +29,7 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
   * User: Alexander Podkhalyuzin
-  * Date: 21.05.2008.
-  */
+  * Date: 21.05.2008. */
 
 object ScalaCompletionUtil {
   val PREFIX_COMPLETION_KEY: Key[Boolean] = Key.create("prefix.completion.key")
@@ -133,8 +132,8 @@ object ScalaCompletionUtil {
     parent match {
       case _: ScalaFile =>
         if (leaf.getNextSibling != null && leaf.getNextSibling.getNextSibling
-              .isInstanceOf[ScPackaging] &&
-            leaf.getNextSibling.getNextSibling.getText.indexOf('{') == -1)
+            .isInstanceOf[ScPackaging] &&
+          leaf.getNextSibling.getNextSibling.getText.indexOf('{') == -1)
           return (true, false)
       case _ =>
     }
@@ -375,8 +374,8 @@ object ScalaCompletionUtil {
       }
 
       if (ref.getElement != null &&
-          ref.getElement.getPrevSibling != null &&
-          ref.getElement.getPrevSibling.getNode.getElementType == ScalaTokenTypes.tSTUB)
+        ref.getElement.getPrevSibling != null &&
+        ref.getElement.getPrevSibling.getNode.getElementType == ScalaTokenTypes.tSTUB)
         id + "`"
       else id
     } else {
@@ -385,7 +384,7 @@ object ScalaCompletionUtil {
       } else {
         val actualElement = file.findElementAt(offset + 1)
         if (actualElement != null && ScalaNamesUtil.isKeyword(
-              actualElement.getText)) {
+            actualElement.getText)) {
           CompletionUtil.DUMMY_IDENTIFIER
         } else {
           CompletionUtil.DUMMY_IDENTIFIER_TRIMMED

@@ -13,7 +13,7 @@ import sbt.util.{AbstractLogger, Logger}
 
 object MainLoop {
 
-  /** Entry point to run the remaining commands in State with managed global logging.*/
+  /** Entry point to run the remaining commands in State with managed global logging. */
   def runLogged(state: State): xsbti.MainResult = {
     // We've disabled jline shutdown hooks to prevent classloader leaks, and have been careful to always restore
     // the jline terminal in finally blocks, but hitting ctrl+c prevents finally blocks from being executed, in that
@@ -30,7 +30,7 @@ object MainLoop {
     }
   }
 
-  /** Run loop that evaluates remaining commands and manages changes to global logging configuration.*/
+  /** Run loop that evaluates remaining commands and manages changes to global logging configuration. */
   @tailrec def runLoggedLoop(
       state: State,
       logBacking: GlobalLogBacking): xsbti.MainResult =
@@ -94,7 +94,7 @@ object MainLoop {
   final class KeepGlobalLog(val state: State) extends RunNext
   final class Return(val result: xsbti.MainResult) extends RunNext
 
-  /** Runs the next sequence of commands that doesn't require global logging changes.*/
+  /** Runs the next sequence of commands that doesn't require global logging changes. */
   @tailrec def run(state: State): RunNext =
     state.next match {
       case State.Continue       => run(next(state))

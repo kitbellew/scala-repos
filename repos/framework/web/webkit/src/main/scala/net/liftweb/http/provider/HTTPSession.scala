@@ -47,7 +47,6 @@ trait HTTPSession {
   /**
     * @return - the maximim interval in seconds between client request and the time when
     *            the session will be terminated
-    *
     */
   def maxInactiveInterval: Long
 
@@ -56,7 +55,6 @@ trait HTTPSession {
     * the session will be terminated
     *
     * @param interval - the value in seconds
-    *
     */
   def setMaxInactiveInterval(interval: Long)
 

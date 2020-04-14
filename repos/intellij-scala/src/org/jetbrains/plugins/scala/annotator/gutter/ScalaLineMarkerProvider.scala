@@ -283,8 +283,8 @@ private object GutterUtil {
       members: ArrayBuffer[PsiElement],
       result: util.Collection[LineMarkerInfo[_ <: PsiElement]]) {
     for (member <- members if !member.isInstanceOf[PsiMethod] || !member
-           .asInstanceOf[PsiMethod]
-           .isConstructor) {
+        .asInstanceOf[PsiMethod]
+        .isConstructor) {
       ProgressManager.checkCanceled()
       val offset = member.getTextOffset
       val members = member match {

@@ -16,7 +16,7 @@ object BasicCommandStrings {
   val Exit = "exit"
   val Quit = "quit"
 
-  /** The command name to terminate the program.*/
+  /** The command name to terminate the program. */
   val TerminateAction: String = Exit
 
   def helpBrief =

@@ -366,7 +366,7 @@ object StackTrace {
       if (!stacktrace) {
         extractOpera9(e) // use e.message
       } else if ((message.indexOf(
-                   "\n") > -1) && messageIsLongerThanStacktrace) {
+          "\n") > -1) && messageIsLongerThanStacktrace) {
         // e.message may have more stack entries than e.stacktrace
         extractOpera9(e) // use e.message
       } else {
@@ -420,8 +420,8 @@ object StackTrace {
       .jsSlice(0, -1)
 
     /* Note: there was a $ next to the \n here in the original code, but it
-   * chokes with method names with $'s, which are generated often by Scala.js.
-   */
+     * chokes with method names with $'s, which are generated often by Scala.js.
+     */
   }
 
   private def extractFirefox(e: js.Dynamic): js.Array[String] = {

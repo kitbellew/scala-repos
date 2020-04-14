@@ -102,7 +102,7 @@ object ResolveUtils {
           }
         case patt: ScFieldId =>
           if (patt.getParent /*list of ids*/ .getParent
-                .isInstanceOf[ScVariable])
+              .isInstanceOf[ScVariable])
             kinds contains VAR
           else kinds contains VAL
         case classParam: ScClassParameter =>
@@ -243,7 +243,7 @@ object ResolveUtils {
       var placeTd: ScTemplateDefinition = getPlaceTd(place, isConstr)
       if (isConstr) {
         if (placeTd != null && !placeTd.isInstanceOf[
-              ScTypeDefinition] && placeTd.extendsBlock.templateBody == None) {
+            ScTypeDefinition] && placeTd.extendsBlock.templateBody == None) {
           placeTd = getPlaceTd(placeTd)
         } else if (placeTd != null) {
           if (td != null && isInheritorOrSelfOrSame(placeTd, td)) return true
@@ -264,7 +264,7 @@ object ResolveUtils {
           .getCompanionModule(placeTd)
           .getOrElse(null: ScTemplateDefinition)
         if (withCompanion && companion != null && td != null &&
-            ScalaPsiUtil.cachedDeepIsInheritor(companion, td)) return true
+          ScalaPsiUtil.cachedDeepIsInheritor(companion, td)) return true
         placeTd = getPlaceTd(placeTd)
       }
       false
@@ -317,7 +317,7 @@ object ResolveUtils {
                         if (enclosing == null) return false
                         val resolve = ref.resolve()
                         if (enclosing.extendsBlock.selfTypeElement == Some(
-                              resolve)) return true
+                            resolve)) return true
                         else return false
                       case _ => return false
                     }
@@ -347,8 +347,8 @@ object ResolveUtils {
                       classOf[ScalaFile])
                   var placeEnclosing: PsiElement = context(place)
                   while (placeEnclosing != null && placeEnclosing
-                           .isInstanceOf[ScObject] &&
-                         !placeEnclosing.asInstanceOf[ScObject].isPackageObject)
+                      .isInstanceOf[ScObject] &&
+                    !placeEnclosing.asInstanceOf[ScObject].isPackageObject)
                     placeEnclosing = context(placeEnclosing)
                   if (placeEnclosing == null) return false //not Scala
                   val placePackageName = placeEnclosing match {
@@ -436,8 +436,8 @@ object ResolveUtils {
                       classOf[ScalaFile])
                   var placeEnclosing: PsiElement = context(place)
                   while (placeEnclosing != null && placeEnclosing
-                           .isInstanceOf[ScObject] &&
-                         !placeEnclosing.asInstanceOf[ScObject].isPackageObject)
+                      .isInstanceOf[ScObject] &&
+                    !placeEnclosing.asInstanceOf[ScObject].isPackageObject)
                     placeEnclosing = context(placeEnclosing)
                   if (placeEnclosing == null) return Some(false) //not Scala
                   val placePackageName = placeEnclosing match {
@@ -452,14 +452,14 @@ object ResolveUtils {
                 bind match {
                   case td: ScTemplateDefinition =>
                     if (PsiTreeUtil.isContextAncestor(
-                          td,
-                          place,
-                          false) || PsiTreeUtil.isContextAncestor(
-                          ScalaPsiUtil
-                            .getCompanionModule(td)
-                            .getOrElse(null: PsiElement),
-                          place,
-                          false)) return true
+                        td,
+                        place,
+                        false) || PsiTreeUtil.isContextAncestor(
+                        ScalaPsiUtil
+                          .getCompanionModule(td)
+                          .getOrElse(null: PsiElement),
+                        place,
+                        false)) return true
                     td match {
                       case o: ScObject if o.isPackageObject =>
                         processPackage(o.qualifiedName) match {
@@ -501,7 +501,7 @@ object ResolveUtils {
                         if (enclosing == null) return false
                         val resolve = ref.resolve()
                         if (enclosing.extendsBlock.selfTypeElement != Some(
-                              resolve)) return false
+                            resolve)) return false
                       case _ => return false
                     }
                   case _ =>
@@ -510,12 +510,12 @@ object ResolveUtils {
               enclosing match {
                 case td: ScTypeDefinition =>
                   if (PsiTreeUtil.isContextAncestor(td, place, false) ||
-                      (withCompanion && PsiTreeUtil.isContextAncestor(
-                        ScalaPsiUtil
-                          .getCompanionModule(td)
-                          .getOrElse(null: PsiElement),
-                        place,
-                        false))) return true
+                    (withCompanion && PsiTreeUtil.isContextAncestor(
+                      ScalaPsiUtil
+                        .getCompanionModule(td)
+                        .getOrElse(null: PsiElement),
+                      place,
+                      false))) return true
                   checkProtected(td, withCompanion)
                 case td: ScTemplateDefinition =>
                   //it'd anonymous class, has access only inside
@@ -545,8 +545,7 @@ object ResolveUtils {
         if (member.hasModifierProperty("public")) true
         else if (member.hasModifierProperty("private")) false
         else if (member.hasModifierProperty("protected") &&
-                 checkProtected(member.containingClass, withCompanion = true))
-          true
+          checkProtected(member.containingClass, withCompanion = true)) true
         else {
           val packageName = member.getContainingFile match {
             case s: ScalaFile     => ""
@@ -744,8 +743,8 @@ object ResolveUtils {
               while (iterator.hasNext) {
                 val clazz = iterator.next()
                 if (clazz.containingClass == null && !processor.execute(
-                      clazz,
-                      state)) return false
+                    clazz,
+                    state)) return false
               }
             }
 

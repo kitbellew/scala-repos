@@ -36,8 +36,6 @@ import scalafx.testutil.{DimensionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * BoxBlur Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BoxBlurSpec

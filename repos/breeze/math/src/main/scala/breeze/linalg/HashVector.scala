@@ -207,12 +207,12 @@ object HashVector
       : CanMapKeyValuePairs[HashVector[V], Int, V, V2, HashVector[V2]] = {
     new CanMapKeyValuePairs[HashVector[V], Int, V, V2, HashVector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       def map(from: HashVector[V], fn: (Int, V) => V2) = {
         HashVector.tabulate(from.length)(i => fn(i, from(i)))
       }
 
-      /**Maps all active key-value pairs from the given collection. */
+      /** Maps all active key-value pairs from the given collection. */
       def mapActive(from: HashVector[V], fn: (Int, V) => V2) = {
         val out = new OpenAddressHashArray[V2](from.length)
         var i = 0

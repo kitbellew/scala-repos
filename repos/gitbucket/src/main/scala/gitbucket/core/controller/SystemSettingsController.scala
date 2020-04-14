@@ -355,10 +355,10 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           value: String,
           messages: Messages): Option[String] = {
         if (value.split(",").exists {
-              _.split(":") match {
-                case Array(userName, isManager) => isManager.toBoolean
-              }
-            }) None
+            _.split(":") match {
+              case Array(userName, isManager) => isManager.toBoolean
+            }
+          }) None
         else Some("Must select one manager at least.")
       }
     }
@@ -371,7 +371,7 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
           messages: Messages): Option[String] = {
         params.get(paramName).flatMap { userName =>
           if (userName == context.loginAccount.get.userName && params.get(
-                "removed") == Some("true"))
+              "removed") == Some("true"))
             Some("You can't disable your account yourself")
           else
             None

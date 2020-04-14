@@ -108,8 +108,8 @@ class IRs[U <: Universe with Singleton](val uni: U) {
         case sym: MethodSymbol if sym.name.toString.startsWith("set") =>
           val shortName = sym.name.toString.substring(3)
           if (candidates
-                .find(_ == shortName)
-                .nonEmpty && shortName.length > 0) {
+              .find(_ == shortName)
+              .nonEmpty && shortName.length > 0) {
             val rawSymTpe = sym.typeSignatureIn(rawTpeOfOwner) match {
               case MethodType(List(param), _) => param.typeSignature
               case _ =>
@@ -358,7 +358,7 @@ class IRs[U <: Universe with Singleton](val uni: U) {
     val ctorParams =
       if (ctor != NoSymbol) ctor.asMethod.paramss.flatten.flatMap { sym =>
         if (transientAccessors.exists(acc =>
-              acc.name.toString == sym.name.toString)) List()
+            acc.name.toString == sym.name.toString)) List()
         else List(sym.asTerm)
       }
       else Nil

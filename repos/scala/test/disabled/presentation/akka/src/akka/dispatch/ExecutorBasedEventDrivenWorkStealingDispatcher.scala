@@ -131,8 +131,8 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
   override private[akka] def dispatch(invocation: MessageInvocation) = {
     val mbox = getMailbox(invocation.receiver)
     if (donationInProgress.value == false && (!mbox.isEmpty || mbox.dispatcherLock.locked) && attemptDonationOf(
-          invocation,
-          mbox)) {
+        invocation,
+        mbox)) {
       //We were busy and we got to donate the message to some other lucky guy, we're done here
     } else {
       mbox enqueue invocation
@@ -145,7 +145,7 @@ class ExecutorBasedEventDrivenWorkStealingDispatcher(
     try {
       donationInProgress.value = true
       while (donateFrom(
-               mbox)) {} //When we reregister, first donate messages to another actor
+          mbox)) {} //When we reregister, first donate messages to another actor
     } finally { donationInProgress.value = false }
 
     if (!mbox.isEmpty) //If we still have messages left to process, reschedule for execution

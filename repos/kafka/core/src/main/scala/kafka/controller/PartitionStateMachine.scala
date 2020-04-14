@@ -12,8 +12,7 @@
   * distributed under the License is distributed on an "AS IS" BASIS,
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
-  * limitations under the License.
-  */
+  * limitations under the License. */
 package kafka.controller
 
 import collection._
@@ -126,10 +125,10 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       // try to move all partitions in NewPartition or OfflinePartition state to OnlinePartition state except partitions
       // that belong to topics to be deleted
       for ((topicAndPartition, partitionState) <- partitionState
-           if (!controller.deleteTopicManager.isTopicQueuedUpForDeletion(
-             topicAndPartition.topic))) {
+        if (!controller.deleteTopicManager.isTopicQueuedUpForDeletion(
+          topicAndPartition.topic))) {
         if (partitionState.equals(OfflinePartition) || partitionState.equals(
-              NewPartition))
+            NewPartition))
           handleStateChange(
             topicAndPartition.topic,
             topicAndPartition.partition,
@@ -330,7 +329,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     */
   private def initializePartitionState() {
     for ((topicPartition, replicaAssignment) <-
-           controllerContext.partitionReplicaAssignment) {
+        controllerContext.partitionReplicaAssignment) {
       // check if leader and isr path exists for partition. If not, then it is in NEW state
       controllerContext.partitionLeadershipInfo.get(topicPartition) match {
         case Some(currentLeaderIsrAndEpoch) =>
@@ -698,7 +697,6 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
     }
 
     /**
-      *
       * @throws Exception
       *             On any error.
       */

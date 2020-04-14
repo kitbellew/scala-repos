@@ -119,7 +119,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
           } else if (decl == DeclaredAs.Field) {
             fields += info
           } else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
-                     decl == DeclaredAs.Interface || decl == DeclaredAs.Object) {
+            decl == DeclaredAs.Interface || decl == DeclaredAs.Object) {
             nestedTypes += info
           }
         }
@@ -167,9 +167,9 @@ trait ModelBuilders { self: RichPresentationCompiler =>
         } else if (sym.hasPackageFlag) {
           Some(fromSymbol(sym))
         } else if (!sym.nameString.contains(
-                     "$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
+            "$") && (sym != NoSymbol) && (sym.tpe != NoType)) {
           if (sym.isClass || sym.isTrait || sym.isModule ||
-              sym.isModuleClass || sym.isPackageClass) {
+            sym.isModuleClass || sym.isPackageClass) {
             Some(TypeInfo(sym.tpe, PosNeededAvail))
           } else {
             None
@@ -249,7 +249,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       val nameString = sym.nameString
       val (name, localName) =
         if (sym.isClass || sym.isTrait || sym.isModule ||
-            sym.isModuleClass || sym.isPackageClass) {
+          sym.isModuleClass || sym.isPackageClass) {
           (typeFullName(tpe), nameString)
         } else {
           (nameString, nameString)

@@ -57,7 +57,6 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     * @see [[Edge]] for the edge type.
     * @see [[Graph#triplets]] to get an RDD which contains all the edges
     * along with their vertex data.
-    *
     */
   val edges: EdgeRDD[ED]
 
@@ -166,7 +165,6 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     * val root = 42
     * var bfsGraph = rawGraph.mapVertices[Int]((vid, data) => if (vid == root) 0 else Math.MaxValue)
     * }}}
-    *
     */
   def mapVertices[VD2: ClassTag](map: (VertexId, VD) => VD2)(implicit
       eq: VD =:= VD2 = null): Graph[VD2, ED]
@@ -186,7 +184,6 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     *
     * @example This function might be used to initialize edge
     * attributes.
-    *
     */
   def mapEdges[ED2: ClassTag](map: Edge[ED] => ED2): Graph[VD, ED2] = {
     mapEdges((pid, iter) => iter.map(map))
@@ -208,7 +205,6 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     * the new values for each edge in the order of the input iterator
     *
     * @tparam ED2 the new edge data type
-    *
     */
   def mapEdges[ED2: ClassTag](
       map: (PartitionID, Iterator[Edge[ED]]) => Iterator[ED2]): Graph[VD, ED2]
@@ -233,7 +229,6 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     * val graph = rawGraph.mapTriplets[Int]( edge =>
     *   edge.src.data - edge.dst.data)
     * }}}
-    *
     */
   def mapTriplets[ED2: ClassTag](
       map: EdgeTriplet[VD, ED] => ED2): Graph[VD, ED2] = {
@@ -262,7 +257,6 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     * val graph = rawGraph.mapTriplets[Int]( edge =>
     *   edge.src.data - edge.dst.data)
     * }}}
-    *
     */
   def mapTriplets[ED2: ClassTag](
       map: EdgeTriplet[VD, ED] => ED2,
@@ -286,7 +280,6 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     *   function. If not all fields are needed, specifying this can improve performance.
     *
     * @tparam ED2 the new edge data type
-    *
     */
   def mapTriplets[ED2: ClassTag](
       map: (PartitionID, Iterator[EdgeTriplet[VD, ED]]) => Iterator[ED2],
@@ -370,7 +363,6 @@ abstract class Graph[VD: ClassTag, ED: ClassTag] protected ()
     * Graph API in that enables neighborhood level computation. For
     * example this function can be used to count neighbors satisfying a
     * predicate or implement PageRank.
-    *
     */
   def aggregateMessages[A: ClassTag](
       sendMsg: EdgeContext[VD, ED, A] => Unit,

@@ -443,7 +443,7 @@ class ScalaBaseType[T](implicit
     new scala.math.Ordering[T] {
       def compare(x: T, y: T): Int = {
         if ((x.asInstanceOf[AnyRef] eq null) && (y
-              .asInstanceOf[AnyRef] eq null)) 0
+            .asInstanceOf[AnyRef] eq null)) 0
         else if (x.asInstanceOf[AnyRef] eq null) nullsFirst
         else if (y.asInstanceOf[AnyRef] eq null) -nullsFirst
         else base.compare(x, y)

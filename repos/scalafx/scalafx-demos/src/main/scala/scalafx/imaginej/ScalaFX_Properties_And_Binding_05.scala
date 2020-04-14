@@ -49,7 +49,6 @@ import scalafx.beans.property.DoubleProperty
   *         based upon: Example 6 Using an InvalidationListener
   *
   *         http://docs.oracle.com/javafx/2.0/binding/jfxpub-binding.htm
-  *
   */
 
 object ScalaFX_Properties_And_Binding_05 {

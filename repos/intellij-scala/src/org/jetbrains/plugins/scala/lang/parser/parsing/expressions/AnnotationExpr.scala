@@ -11,8 +11,7 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008
-  */
+  * Date: 06.03.2008 */
 
 /*
  * AnnotationExpr ::= Constr [[nl] '{' {NameValuePair} '}']

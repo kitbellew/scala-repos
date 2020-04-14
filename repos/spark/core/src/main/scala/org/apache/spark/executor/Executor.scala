@@ -261,8 +261,8 @@ private[spark] class Executor(
               val errMsg =
                 s"Managed memory leak detected; size = $freedMemory bytes, TID = $taskId"
               if (conf.getBoolean(
-                    "spark.unsafe.exceptionOnMemoryLeak",
-                    false) && !threwException) {
+                  "spark.unsafe.exceptionOnMemoryLeak",
+                  false) && !threwException) {
                 throw new SparkException(errMsg)
               } else {
                 logError(errMsg)
@@ -274,8 +274,8 @@ private[spark] class Executor(
                 s"${releasedLocks.size} block locks were not released by TID = $taskId:\n" +
                   releasedLocks.mkString("[", ", ", "]")
               if (conf.getBoolean(
-                    "spark.storage.exceptionOnPinLeak",
-                    false) && !threwException) {
+                  "spark.storage.exceptionOnPinLeak",
+                  false) && !threwException) {
                 throw new SparkException(errMsg)
               } else {
                 logError(errMsg)
@@ -485,7 +485,7 @@ private[spark] class Executor(
     synchronized {
       // Fetch missing dependencies
       for ((name, timestamp) <- newFiles
-           if currentFiles.getOrElse(name, -1L) < timestamp) {
+        if currentFiles.getOrElse(name, -1L) < timestamp) {
         logInfo("Fetching " + name + " with timestamp " + timestamp)
         // Fetch file with useCache mode, close cache for local mode.
         Utils.fetchFile(

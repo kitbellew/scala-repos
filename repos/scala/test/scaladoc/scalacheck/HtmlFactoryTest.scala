@@ -489,7 +489,7 @@ object Test extends Properties("HtmlFactory") {
     )
 
   for (useCaseFile <-
-         List("UseCaseInheritance", "UseCaseOverrideInheritance")) {
+      List("UseCaseInheritance", "UseCaseOverrideInheritance")) {
     property("Comment inheritance: Correct comment inheritance for usecases") =
       checkText("implicit-inheritance-usecase.scala")(
         (

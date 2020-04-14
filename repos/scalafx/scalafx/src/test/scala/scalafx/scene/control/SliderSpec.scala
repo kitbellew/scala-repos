@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Slider Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SliderSpec

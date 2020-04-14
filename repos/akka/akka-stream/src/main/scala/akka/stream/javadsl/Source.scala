@@ -847,7 +847,6 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     * '''Completes when''' upstream completes or upstream failed with exception pf can handle
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def recoverWith[T >: Out](
       pf: PartialFunction[Throwable, _ <: Graph[SourceShape[T], NotUsed]])
@@ -988,7 +987,6 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     * '''Completes when''' upstream completes
     *
     * '''Cancels when''' downstream cancels
-    *
     */
   def filter(p: function.Predicate[Out]): javadsl.Source[Out, Mat] =
     new Source(delegate.filter(p.test))

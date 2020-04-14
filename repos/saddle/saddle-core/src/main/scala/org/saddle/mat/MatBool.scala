@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle.mat
 
@@ -22,7 +22,7 @@ import org.saddle.scalar._
 
 /**
   * A Mat instance containing elements of type Boolean
-  * */
+  */
 class MatBool(r: Int, c: Int, values: Array[Boolean]) extends Mat[Boolean] {
   def repr = this
 

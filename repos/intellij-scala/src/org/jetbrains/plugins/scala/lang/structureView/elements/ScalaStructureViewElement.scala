@@ -14,8 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.{
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 04.05.2008
-  */
+  * Date: 04.05.2008 */
 
 abstract class ScalaStructureViewElement(
     protected val myElement: PsiElement,
@@ -35,8 +34,8 @@ abstract class ScalaStructureViewElement(
         if (myElement.textMatches(v.declaredElements.apply(0))) v
         else myElement
       } else if (PsiTreeUtil.getParentOfType(
-                   myElement,
-                   classOf[ScVariable]) != null) {
+          myElement,
+          classOf[ScVariable]) != null) {
         val v = PsiTreeUtil.getParentOfType(myElement, classOf[ScVariable])
         if (myElement.textMatches(v.declaredElements.apply(0))) v
         else myElement

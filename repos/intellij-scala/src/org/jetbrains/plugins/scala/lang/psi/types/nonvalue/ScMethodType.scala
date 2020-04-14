@@ -195,7 +195,9 @@ object TypeParameter {
 case class ScMethodType(
     returnType: ScType,
     params: Seq[Parameter],
-    isImplicit: Boolean)(val project: Project, val scope: GlobalSearchScope)
+    isImplicit: Boolean)(
+    val project: Project,
+    val scope: GlobalSearchScope)
     extends NonValueType {
 
   def visitType(visitor: ScalaTypeVisitor) {
@@ -335,7 +337,7 @@ case class ScTypePolymorphicType(
             if (pair != null) {
               val (tpName, id) = pair
               if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
-                    tp.ptp)) {
+                  tp.ptp)) {
                 if (i == -1) contraVariant += 1
                 else coOrInVariant += 1
               }

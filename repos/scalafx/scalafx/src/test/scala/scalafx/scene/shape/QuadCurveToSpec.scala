@@ -37,8 +37,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * QuadCurveTo Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class QuadCurveToSpec

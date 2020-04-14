@@ -37,7 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * SelectionModel[T] Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SelectionModelSpec[T]

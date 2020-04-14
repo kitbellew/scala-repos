@@ -35,10 +35,10 @@ class ScalaLiteralSelectioner extends ExtendWordSelectionHandlerBase {
     val r = e.getTextRange
     val text = e.getText
     if (text.startsWith("\"\"\"") && text.endsWith(
-          "\"\"\"") && text.length > 6) {
+        "\"\"\"") && text.length > 6) {
       list.add(new TextRange(r.getStartOffset + 3, r.getEndOffset - 3))
     } else if (text.startsWith("\"") && text.endsWith(
-                 "\"") && text.length > 2) {
+        "\"") && text.length > 2) {
       list.add(new TextRange(r.getStartOffset + 1, r.getEndOffset - 1))
     }
     list

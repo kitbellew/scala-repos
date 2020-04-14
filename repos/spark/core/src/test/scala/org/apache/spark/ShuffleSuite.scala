@@ -277,7 +277,7 @@ abstract class ShuffleSuite
 
   test("shuffle with different compression settings (SPARK-3426)") {
     for (shuffleSpillCompress <- Set(true, false);
-         shuffleCompress <- Set(true, false)) {
+      shuffleCompress <- Set(true, false)) {
       val myConf = conf
         .clone()
         .setAppName("test")

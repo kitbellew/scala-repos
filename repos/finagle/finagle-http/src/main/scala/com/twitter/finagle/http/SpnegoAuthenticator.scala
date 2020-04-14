@@ -34,7 +34,7 @@ object SpnegoAuthenticator {
     def unapply(header: String): Option[Token] =
       // must be a valid Negotiate header, and have a token
       if (header.length <= SchemePrefixLength || !header.startsWith(
-            AuthScheme)) {
+          AuthScheme)) {
         None
       } else {
         val tokenStr = header.substring(SchemePrefixLength)
@@ -60,7 +60,7 @@ object SpnegoAuthenticator {
   object Credentials {
     trait ServerSource {
 
-      /** Loads a GSSContext (for previously specified identifiers).  */
+      /** Loads a GSSContext (for previously specified identifiers). */
       def load(): Future[GSSContext]
 
       /**
@@ -72,7 +72,7 @@ object SpnegoAuthenticator {
 
     trait ClientSource {
 
-      /** Loads a GSSContext (for previously specified identifiers).  */
+      /** Loads a GSSContext (for previously specified identifiers). */
       def load(): Future[GSSContext]
 
       /**
@@ -97,7 +97,6 @@ object SpnegoAuthenticator {
       /**
         * Oid for the KRB5 mechanism  These come from
         * http://www.oid-info.com/get/1.2.840.113554.1.2.2
-        *
         */
       val Krb5Mechanism = new Oid("1.2.840.113554.1.2.2")
       val Krb5PrincipalType = new Oid("1.2.840.113554.1.2.2.1")
@@ -105,7 +104,6 @@ object SpnegoAuthenticator {
       /**
         * Oid for the Spnego mechanism  These come from
         * http://www.oid-info.com/get/1.3.6.1.5.5.2
-        *
         */
       val SpnegoMechanism = new Oid("1.3.6.1.5.5.2")
     }
@@ -127,7 +125,7 @@ object SpnegoAuthenticator {
           def run(): GSSContext = createGSSContext()
         }
 
-      /** Called while running with the privileges of the given loginContext.  */
+      /** Called while running with the privileges of the given loginContext. */
       protected def createGSSContext(): GSSContext
 
       /** A processes' own principal is usually specified via {{sun.security.krb5.principal}}. */

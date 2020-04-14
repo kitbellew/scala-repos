@@ -19,7 +19,6 @@ package com.twitter.summingbird.storm.option
 import java.io.Serializable
 
 /**
-  *
   * If true, the topology will anchor tuples in all flatMap bolts and
   * ack in the final sink bolt.
   *

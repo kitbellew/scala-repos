@@ -42,11 +42,11 @@ object Act {
       defaultConfigs: Option[ResolvedReference] => Seq[String],
       structure: BuildStructure): KeysParser =
     for (selected <- scopedKeySelected(
-           structure.index.aggregateKeyIndex,
-           current,
-           defaultConfigs,
-           structure.index.keyMap,
-           structure.data))
+        structure.index.aggregateKeyIndex,
+        current,
+        defaultConfigs,
+        structure.index.keyMap,
+        structure.data))
       yield Aggregation.aggregate(selected.key, selected.mask, structure.extra)
 
   def scopedKeySelected(

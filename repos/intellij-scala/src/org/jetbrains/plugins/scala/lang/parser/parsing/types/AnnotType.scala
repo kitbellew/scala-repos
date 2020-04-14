@@ -9,8 +9,7 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.02.2008
-  */
+  * Date: 06.02.2008 */
 
 /*
  * AnnotType ::= {Annotation} SimpleType
@@ -27,8 +26,8 @@ object AnnotType {
     if (SimpleType.parse(builder, isPattern, multipleSQBrackets)) {
       val annotationsMarker = builder.mark
       while (!builder.newlineBeforeCurrentToken && Annotation.parse(
-               builder,
-               countLinesAfterAnnotation = false)) { isAnnotation = true }
+          builder,
+          countLinesAfterAnnotation = false)) { isAnnotation = true }
 
       if (isAnnotation) annotationsMarker.done(ScalaElementTypes.ANNOTATIONS)
       else annotationsMarker.drop()

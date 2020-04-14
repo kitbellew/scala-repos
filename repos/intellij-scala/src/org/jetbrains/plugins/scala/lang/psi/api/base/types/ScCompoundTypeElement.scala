@@ -7,8 +7,7 @@ package types
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 
 trait ScCompoundTypeElement extends ScTypeElement {
   def components: Seq[ScTypeElement] =

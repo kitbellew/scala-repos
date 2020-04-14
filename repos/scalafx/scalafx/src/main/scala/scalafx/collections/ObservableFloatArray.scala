@@ -49,7 +49,7 @@ object ObservableFloatArray
   * Wrapper class to JavaFX's `ObservableFloatArray`.
   *
   * @param delegate Wrapped JavaFX $OFA providing implementation.
-
+  *
   * @define OFA `ObservableFloatArray`
   * @define ARY `Array`
   */

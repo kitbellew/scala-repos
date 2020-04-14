@@ -17,8 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScParamClausesStub
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 
 class ScParametersImpl private (
     stub: StubElement[ScParameters],

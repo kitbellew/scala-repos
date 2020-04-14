@@ -66,7 +66,7 @@ trait ProducerSupport extends Actor with CamelSupport {
           context.actorOf(Props(new ProducerChild(endpoint, processor))))
         messages = {
           for (child ← producerChild;
-               (snd, msg) ← messages)
+            (snd, msg) ← messages)
             child.tell(transformOutgoingMessage(msg), snd)
           Vector.empty
         }
@@ -197,8 +197,6 @@ private final case class FailureResult(
 
 /**
   * A one-way producer.
-  *
-  *
   */
 trait Oneway extends Producer { this: Actor ⇒
   override def oneway: Boolean = true

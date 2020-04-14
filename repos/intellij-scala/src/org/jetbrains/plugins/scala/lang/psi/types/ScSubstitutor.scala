@@ -25,8 +25,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 import scala.collection.immutable.{HashMap, HashSet, Map}
 
 /**
-  * @author ven
-  */
+  * @author ven */
 object ScSubstitutor {
   val empty: ScSubstitutor = new ScSubstitutor() {
     override def toString: String = "Empty substitutor"
@@ -290,8 +289,8 @@ class ScSubstitutor(
                           case Some((cl: PsiClass, _)) =>
                             if (cl == clazz) tp
                             else if (ScalaPsiUtil.cachedDeepIsInheritor(
-                                       cl,
-                                       clazz)) tp
+                                cl,
+                                clazz)) tp
                             else null
                           case _ =>
                             selfType match {
@@ -338,8 +337,8 @@ class ScSubstitutor(
                           case Some(cl) =>
                             if (cl == clazz) return tp
                             else if (ScalaPsiUtil.cachedDeepIsInheritor(
-                                       cl,
-                                       clazz)) return tp
+                                cl,
+                                clazz)) return tp
                           case _ =>
                         }
                       }
@@ -474,7 +473,7 @@ class ScSubstitutor(
           case res: ScProjectionType if !s =>
             val actualElement = p.actualElement
             if (actualElement.isInstanceOf[ScTypeDefinition] &&
-                actualElement != res.actualElement)
+              actualElement != res.actualElement)
               res.copy(superReference = true)
             else res
           case _ => res

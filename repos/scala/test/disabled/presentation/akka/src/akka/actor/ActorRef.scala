@@ -1269,7 +1269,7 @@ class LocalActorRef private[akka] (
   protected[akka] def checkReceiveTimeout = {
     cancelReceiveTimeout
     if (receiveTimeout.isDefined && dispatcher
-          .mailboxSize(this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
+        .mailboxSize(this) <= 0) { //Only reschedule if desired and there are currently no more messages to be processed
       _futureTimeout = Some(
         Scheduler.scheduleOnce(
           this,

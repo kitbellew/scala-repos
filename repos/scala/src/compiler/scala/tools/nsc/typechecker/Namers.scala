@@ -37,9 +37,9 @@ trait Namers extends MethodSynthesis {
     def apply(tree: Tree) = {
       val r = transform(tree)
       if (r exists {
-            case tt: TypeTree => tt.isEmpty
-            case _            => false
-          })
+          case tt: TypeTree => tt.isEmpty
+          case _            => false
+        })
         TypeTree()
       else r
     }
@@ -499,7 +499,7 @@ trait Namers extends MethodSynthesis {
       var m: Symbol = context.scope lookupModule tree.name
       val moduleFlags = tree.mods.flags | MODULE
       if (m.isModule && !m.hasPackageFlag && inCurrentScope(m) && (currentRun
-            .canRedefine(m) || m.isSynthetic)) {
+          .canRedefine(m) || m.isSynthetic)) {
         // This code accounts for the way the package objects found in the classpath are opened up
         // early by the completer of the package itself. If the `packageobjects` phase then finds
         // the same package object in sources, we have to clean the slate and remove package object
@@ -1255,7 +1255,7 @@ trait Namers extends MethodSynthesis {
         if (tpt.isEmpty) WildcardType else typer.typedType(tpt).tpe
       val resTpFromOverride =
         if (methOwner.isClass && (tpt.isEmpty || mexists(vparamss)(
-              _.tpt.isEmpty))) {
+            _.tpt.isEmpty))) {
           typesFromOverridden(methResTp)
         } else {
           methResTp
@@ -1263,8 +1263,8 @@ trait Namers extends MethodSynthesis {
 
       // Add a () parameter section if this overrides some method with () parameters
       if (methOwner.isClass && vparamss.isEmpty &&
-          overriddenSymbol(methResTp).alternatives.exists(
-            _.info.isInstanceOf[MethodType])) {
+        overriddenSymbol(methResTp).alternatives.exists(
+          _.info.isInstanceOf[MethodType])) {
         vparamSymss = ListOfNil
       }
 
@@ -1766,7 +1766,7 @@ trait Namers extends MethodSynthesis {
       if (sym.isLazy && sym.hasFlag(PRESUPER))
         fail(LazyAndEarlyInit)
       if (sym.info.typeSymbol == FunctionClass(
-            0) && sym.isValueParameter && sym.owner.isCaseClass)
+          0) && sym.isValueParameter && sym.owner.isCaseClass)
         fail(ByNameParameter)
       if (sym.isTrait && sym.isFinal && !sym.isSubClass(AnyValClass))
         checkNoConflict(ABSTRACT, FINAL)

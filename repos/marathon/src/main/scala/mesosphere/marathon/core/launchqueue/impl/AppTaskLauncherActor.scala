@@ -324,7 +324,7 @@ private class AppTaskLauncherActor(
     case AppTaskLauncherActor.AddTasks(newApp, addCount) =>
       val configChange = app.isUpgrade(newApp)
       if (configChange || app.needsRestart(newApp) || app.isOnlyScaleChange(
-            newApp)) {
+          newApp)) {
         app = newApp
         tasksToLaunch = addCount
 

@@ -4,7 +4,6 @@ import breeze.linalg.support.CanCopy
 import breeze.linalg.copy
 
 /**
-  *
   * @author dlwh
   */
 class CachedDiffFunction[T: CanCopy](obj: DiffFunction[T])

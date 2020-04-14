@@ -12,7 +12,7 @@
   * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   * See the License for the specific language governing permissions and
   * limitations under the License.
- **/
+  */
 
 package org.saddle.scalar
 
@@ -46,7 +46,7 @@ object Scalar {
     *
     *  @param  x the value
     *  @return Value(value) if value not null or NA primitive; otherwise NA
-    *  */
+    */
   def apply[T: ST](x: T): Scalar[T] =
     if (x == null || implicitly[ST[T]].isMissing(x)) NA else Value(x)
 

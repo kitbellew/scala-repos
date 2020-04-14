@@ -280,7 +280,7 @@ abstract class KleisliInstances extends KleisliInstances0 {
 
 object Kleisli extends KleisliInstances {
 
-  /**Construct a Kleisli from a Function1 */
+  /** Construct a Kleisli from a Function1 */
   def kleisli[M[_], A, B](f: A => M[B]): Kleisli[M, A, B] =
     Kleisli(f)
 
@@ -294,11 +294,11 @@ object Kleisli extends KleisliInstances {
       MB: Unapply[Bind, MB]): Kleisli[MB.M, A, MB.A] =
     Kleisli(MB.leibniz.onF(f))
 
-  /**Implicitly unwrap the Function1 represented by the Kleisli */
+  /** Implicitly unwrap the Function1 represented by the Kleisli */
   implicit def kleisliFn[M[_], A, B](k: Kleisli[M, A, B]): A => M[B] =
     k.run
 
-  /**Pure Kleisli arrow */
+  /** Pure Kleisli arrow */
   def ask[M[_]: Applicative, A]: Kleisli[M, A, A] =
     kleisli(a => Applicative[M].point(a))
 

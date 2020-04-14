@@ -52,7 +52,6 @@ package api
   *  @define SYMACCESSORS Class [[Symbol]] defines `isXXX` test methods such as `isPublic` or `isFinal`, `params` and
   *  `returnType` methods for method symbols, `baseClasses` for class symbols and so on. Some of these methods don't
   *  make sense for certain subclasses of `Symbol` and return `NoSymbol`, `Nil` or other empty values.
-  *
   */
 trait Symbols { self: Universe =>
 
@@ -357,7 +356,7 @@ trait Symbols { self: Universe =>
       */
     def alternatives: List[Symbol]
 
-    /******************* tests *******************/
+    /** *************** tests ****************** */
 
     /** Does this symbol represent a synthetic (i.e. a compiler-generated) entity?
       *  Examples of synthetic entities are accessors for vals and vars
@@ -522,7 +521,7 @@ trait Symbols { self: Universe =>
       */
     def isJavaAnnotation: Boolean
 
-    /******************* helpers *******************/
+    /** *************** helpers ****************** */
 
     /** Provides an alternate if symbol is a NoSymbol.
       *

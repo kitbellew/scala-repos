@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * BorderPane Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BorderPaneSpec

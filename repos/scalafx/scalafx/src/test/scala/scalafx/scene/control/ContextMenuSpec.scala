@@ -37,8 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ContextMenu Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ContextMenuSpec

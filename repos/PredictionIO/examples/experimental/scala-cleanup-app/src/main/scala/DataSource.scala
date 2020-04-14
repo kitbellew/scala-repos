@@ -88,7 +88,6 @@ class DataSource(val dsp: DataSourceParams)
 }
 
 class TrainingData(
-    )
-    extends Serializable {
+) extends Serializable {
   override def toString = ""
 }

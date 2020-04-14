@@ -45,7 +45,7 @@ private[akka] trait WriteJournalBase {
     // journal for testing purposes we want to preserve the original manifest instead of
     // letting IdentityEventAdapter clearing it out.
     if (adapter == IdentityEventAdapter || adapter
-          .isInstanceOf[NoopWriteEventAdapter])
+        .isInstanceOf[NoopWriteEventAdapter])
       repr
     else {
       repr

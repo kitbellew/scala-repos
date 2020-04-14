@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * Separator Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SeparatorSpec

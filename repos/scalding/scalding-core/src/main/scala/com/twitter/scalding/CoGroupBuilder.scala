@@ -22,7 +22,6 @@ import cascading.tuple.Fields
 /**
   * Builder classes used internally to implement coGroups (joins).
   * Can also be used for more generalized joins, e.g., star joins.
-  *
   */
 class CoGroupBuilder(groupFields: Fields, joinMode: JoinMode)
     extends GroupBuilder(groupFields) {

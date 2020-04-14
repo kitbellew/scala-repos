@@ -57,7 +57,7 @@ class PartitionwiseSampledRDDSuite
     // We want to make sure there are no concurrency issues.
     val rdd = sc.parallelize(0 until 111, 10)
     for (sampler <-
-           Seq(new BernoulliSampler[Int](0.5), new PoissonSampler[Int](0.5))) {
+        Seq(new BernoulliSampler[Int](0.5), new PoissonSampler[Int](0.5))) {
       val sampled = new PartitionwiseSampledRDD[Int, Int](rdd, sampler, true)
       sampled.zip(sampled).count()
     }

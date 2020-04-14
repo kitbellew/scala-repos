@@ -1028,7 +1028,7 @@ private[spark] class DAGScheduler(
     if (jobId.isDefined) {
       logDebug("submitStage(" + stage + ")")
       if (!waitingStages(stage) && !runningStages(stage) && !failedStages(
-            stage)) {
+          stage)) {
         val missing = getMissingParentStages(stage).sortBy(_.id)
         logDebug("missing: " + missing)
         if (missing.isEmpty) {
@@ -1368,7 +1368,7 @@ private[spark] class DAGScheduler(
             val execId = status.location.executorId
             logDebug("ShuffleMapTask finished on " + execId)
             if (failedEpoch.contains(execId) && smt.epoch <= failedEpoch(
-                  execId)) {
+                execId)) {
               logInfo(
                 s"Ignoring possibly bogus $smt completion from executor $execId")
             } else {
@@ -1376,7 +1376,7 @@ private[spark] class DAGScheduler(
             }
 
             if (runningStages.contains(
-                  shuffleStage) && shuffleStage.pendingPartitions.isEmpty) {
+                shuffleStage) && shuffleStage.pendingPartitions.isEmpty) {
               markStageAsFinished(shuffleStage)
               logInfo("looking for newly runnable stages")
               logInfo("running: " + runningStages)
@@ -1453,7 +1453,7 @@ private[spark] class DAGScheduler(
               "Fetch failure will not retry stage due to testing config",
               None)
           } else if (failedStage.failedOnFetchAndShouldAbort(
-                       task.stageAttemptId)) {
+              task.stageAttemptId)) {
             abortStage(
               failedStage,
               s"$failedStage (${failedStage.name}) " +

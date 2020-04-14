@@ -77,7 +77,6 @@ trait Bindings {
       values: jfxbv.ObservableNumberValue*) = (v1 /: values)(jfxbb.Bindings.add)
 
   /**
-    *
     * @param condition Function that returns a $JFX
     *                  [[http://docs.oracle.com/javase/8/javafx/api/javafx/beans/value/ObservableBooleanValue.html `ObservableBooleanValue`]]
     * @return A ConditionBuilder wrapping `condition`.

@@ -322,7 +322,6 @@ object Either {
       * Left(12).left.getOrElse(17)  // 12
       * Right(12).left.getOrElse(17) // 17
       * }}}
-      *
       */
     def getOrElse[AA >: A](or: => AA) =
       e match {
@@ -339,7 +338,6 @@ object Either {
       * Left(7).left.forall(_ > 10)   // false
       * Right(12).left.forall(_ > 10) // true
       * }}}
-      *
       */
     def forall(@deprecatedName('f) p: A => Boolean) =
       e match {
@@ -356,7 +354,6 @@ object Either {
       * Left(7).left.exists(_ > 10)   // false
       * Right(12).left.exists(_ > 10) // false
       * }}}
-      *
       */
     def exists(@deprecatedName('f) p: A => Boolean) =
       e match {

@@ -183,11 +183,11 @@ object CheckBoxTreeTableCell {
   }
 
   /*
- * $SATISFY
- *
+   * $SATISFY
+   *
   @deprecated(message = "Use forTreeTableColumn[S](column: jfxsc.TreeTableColumn[S, java.lang.Boolean])", since = "8.0")
   def forTreeTableColumn[S](column: jfxsc.TreeTableColumn[S, JBoolean]) = jfxscc.CheckBoxTreeTableCell.forTreeTableColumn[S](column)
- */
+   */
 
 }
 

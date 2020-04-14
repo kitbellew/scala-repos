@@ -246,7 +246,7 @@ trait MultiNodeClusterSpec
       {
         clusterView.refreshCurrentState()
         if (memberInState(joinNode, List(MemberStatus.up)) &&
-            memberInState(myself, List(MemberStatus.Joining, MemberStatus.Up)))
+          memberInState(myself, List(MemberStatus.Joining, MemberStatus.Up)))
           true
         else {
           cluster join joinNode

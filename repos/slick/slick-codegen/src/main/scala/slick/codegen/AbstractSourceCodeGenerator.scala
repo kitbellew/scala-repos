@@ -13,7 +13,7 @@ abstract class AbstractSourceCodeGenerator(model: m.Model)
     with StringGeneratorHelpers {
 
   /** Generates code for the complete model (not wrapped in a package yet)
-      @group Basic customization overrides */
+    *      @group Basic customization overrides */
   def code = {
     "import slick.model.ForeignKeyAction\n" +
       (if (tables.exists(_.hlistEnabled)) {

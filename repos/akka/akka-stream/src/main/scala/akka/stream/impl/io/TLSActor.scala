@@ -326,7 +326,7 @@ private[akka] class TLSActor(
       isOutboundClosed: Boolean,
       inboundState: TransferState): Boolean =
     if (inputBunch.isDepleted(
-          TransportIn) && transportInChoppingBlock.isEmpty) {
+        TransportIn) && transportInChoppingBlock.isEmpty) {
       if (tracing) log.debug("closing inbound")
       try engine.closeInbound()
       catch {
@@ -335,7 +335,7 @@ private[akka] class TLSActor(
       completeOrFlush()
       false
     } else if (inboundState != inboundHalfClosed && outputBunch.isCancelled(
-                 UserOut)) {
+        UserOut)) {
       if (!isOutboundClosed && closing.ignoreCancel) {
         if (tracing) log.debug("ignoring UserIn cancellation")
         nextPhase(inboundClosed)

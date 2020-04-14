@@ -55,7 +55,6 @@ import scalafx.scene.shape.Rectangle
   *         based upon: Example 1-2 Create an HBox Pane
   *
   *         http://docs.oracle.com/javafx/2.0/layout/builtin_layouts.htm
-  *
   */
 
 object ScalaFX_Layout_Panes_02 extends JFXApp {

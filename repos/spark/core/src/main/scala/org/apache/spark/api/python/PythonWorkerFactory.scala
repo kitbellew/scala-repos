@@ -244,7 +244,7 @@ private[spark] class PythonWorkerFactory(
       while (true) {
         synchronized {
           if (lastActivity + IDLE_WORKER_TIMEOUT_MS < System
-                .currentTimeMillis()) {
+              .currentTimeMillis()) {
             cleanupIdleWorkers()
             lastActivity = System.currentTimeMillis()
           }

@@ -108,7 +108,7 @@ case class ScalaFieldEvaluator(
       case objRef: ObjectReference =>
         val refType: ReferenceType = objRef.referenceType
         if (!(refType.isInstanceOf[ClassType] || refType
-              .isInstanceOf[ArrayType])) {
+            .isInstanceOf[ArrayType])) {
           throw EvaluationException(
             DebuggerBundle
               .message("evaluation.error.class.or.array.expected", fieldName))
@@ -144,8 +144,8 @@ case class ScalaFieldEvaluator(
   def getModifier: Modifier = {
     var modifier: Modifier = null
     if (myEvaluatedField != null &&
-        (myEvaluatedQualifier.isInstanceOf[ClassType] ||
-        myEvaluatedQualifier.isInstanceOf[ObjectReference])) {
+      (myEvaluatedQualifier.isInstanceOf[ClassType] ||
+      myEvaluatedQualifier.isInstanceOf[ObjectReference])) {
       modifier = new Modifier {
         def canInspect: Boolean = {
           myEvaluatedQualifier.isInstanceOf[ObjectReference]

@@ -20,7 +20,6 @@ import scala.collection.mutable.{RedBlackTree => RB}
   *   Companion object of TreeSet providing factory related utilities.
   *
   * @author Lucien Pereira
-  *
   */
 object TreeSet extends MutableSortedSetFactory[TreeSet] {
 

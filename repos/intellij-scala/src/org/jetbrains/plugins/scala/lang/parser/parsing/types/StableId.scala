@@ -41,14 +41,14 @@ object StableId extends ParserNode {
           marker.done(element)
           return true
         } else if (builder.getTokenType == tDOT && !lookAhead(
-                     builder,
-                     tDOT,
-                     kTYPE)) {
+            builder,
+            tDOT,
+            kTYPE)) {
           val nm = marker.precede
           if (lookAhead(builder, tDOT, kTHIS) || lookAhead(
-                builder,
-                tDOT,
-                kSUPER))
+              builder,
+              tDOT,
+              kSUPER))
             marker.done(REFERENCE)
           else
             marker.done(element)
@@ -152,9 +152,9 @@ object StableId extends ParserNode {
       nm.done(element)
       true
     } else if (builder.getTokenType == tDOT && !lookAhead(
-                 builder,
-                 tDOT,
-                 kTYPE)) {
+        builder,
+        tDOT,
+        kTYPE)) {
       val nm1 = nm.precede()
       nm.done(element)
       builder.advanceLexer()
@@ -182,9 +182,9 @@ object StableId extends ParserNode {
       marker.done(element)
       true
     } else if (builder.getTokenType == tDOT && !lookAhead(
-                 builder,
-                 tDOT,
-                 kTYPE)) {
+        builder,
+        tDOT,
+        kTYPE)) {
       val nm = marker.precede
       marker.done(element)
       builder.advanceLexer() // ate dot

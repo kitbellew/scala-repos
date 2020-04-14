@@ -23,8 +23,7 @@ import org.apache.commons.math3.random.{
 /**
   * The Weibull-distribution - ratio of two scaled chi^2 variables
   *
-  * @author stucchio
-  */
+  * @author stucchio */
 
 class VariableKernelEmpiricalDistribution(
     data: Array[Double],

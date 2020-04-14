@@ -37,9 +37,9 @@ class ScalaDocUnknownTagInspection extends LocalInspectionTool {
               isOnTheFly,
               new ScalaDocDeleteUnknownTagInspection(s)))
         } else if (MyScaladocParsing.tagsWithParameters.contains(
-                     tagNameElement.getText) &&
-                   (tagNameElement.getNextSibling.getNextSibling == null ||
-                   tagNameElement.getNextSibling.getNextSibling.getNode.getElementType != ScalaDocTokenType.DOC_TAG_VALUE_TOKEN)) {
+            tagNameElement.getText) &&
+          (tagNameElement.getNextSibling.getNextSibling == null ||
+          tagNameElement.getNextSibling.getNextSibling.getNode.getElementType != ScalaDocTokenType.DOC_TAG_VALUE_TOKEN)) {
           holder.registerProblem(
             holder.getManager.createProblemDescriptor(
               tagNameElement,

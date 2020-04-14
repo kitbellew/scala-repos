@@ -39,7 +39,7 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
           if (token.getElementType == HoconTokenType.HashComment) {
             val offset = CharArrayUtil.shiftForward(text, caretOffset, " \t")
             if (offset < document.getTextLength && text.charAt(
-                  offset) != '\n') {
+                offset) != '\n') {
               var prefix = "#"
               if (!StringUtil.startsWith(text, offset, prefix)) {
                 if (text.charAt(caretOffset) != ' ' && !prefix.endsWith(" ")) {
@@ -49,7 +49,7 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
               } else {
                 val afterPrefix = offset + prefix.length
                 if (afterPrefix < document.getTextLength && text.charAt(
-                      afterPrefix) != ' ') {
+                    afterPrefix) != ' ') {
                   document.insertString(afterPrefix, " ")
                 }
                 caretOffsetRef.set(offset)
@@ -78,8 +78,8 @@ class EnterInHashCommentHandler extends EnterHandlerDelegateAdapter {
           psi != null && psi.getNode.getElementType == HoconTokenType.HashComment
 
         if (isHashComment(psiAtOffset) && isHashComment(prevPsi) &&
-            lineNumber(psiAtOffset) == lineNumber(prevPsi) + 1 &&
-            caretOffset == psiAtOffset.getTextRange.getStartOffset) {
+          lineNumber(psiAtOffset) == lineNumber(prevPsi) + 1 &&
+          caretOffset == psiAtOffset.getTextRange.getStartOffset) {
 
           caretModel.moveToOffset(caretOffset + 2)
           Result.Default

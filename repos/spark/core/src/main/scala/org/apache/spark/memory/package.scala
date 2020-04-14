@@ -60,7 +60,6 @@ package org.apache.spark
   *                               +-------------------+          +------------------------+
   * }}}
   *
-  *
   * There are two implementations of [[org.apache.spark.memory.MemoryManager]] which vary in how
   * they handle the sizing of their memory pools:
   *

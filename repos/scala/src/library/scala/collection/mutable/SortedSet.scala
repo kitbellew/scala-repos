@@ -19,7 +19,6 @@ import generic._
   * @define coll mutable sorted set
   *
   * @author Lucien Pereira
-  *
   */
 trait SortedSet[A]
     extends scala.collection.SortedSet[A]
@@ -43,7 +42,6 @@ trait SortedSet[A]
   *   Standard `CanBuildFrom` instance for sorted sets.
   *
   * @author Lucien Pereira
-  *
   */
 object SortedSet extends MutableSortedSetFactory[SortedSet] {
   def canBuildFrom[A](implicit

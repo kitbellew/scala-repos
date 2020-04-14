@@ -15,8 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.ScReferenceElement
 
 /**
   * Nikolay.Tropin
-  * 2014-03-17
-  */
+  * 2014-03-17 */
 class ImportStableMemberIntention extends PsiElementBaseIntentionAction {
   override def isAvailable(
       project: Project,

@@ -488,7 +488,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
     } else if (val2.signum() == 0) {
       val1
     } else if (((val1.numberLength == 1) && (val1.digits(0) > 0)) &&
-               ((val2.numberLength == 1) && (val2.digits(0) > 0))) {
+      ((val2.numberLength == 1) && (val2.digits(0) > 0))) {
       // Optimization for small operands
       // (op2.bitLength() < 32) and (op1.bitLength() < 32)
       BigInteger.valueOf(Division.gcdBinary(val1.intValue(), val2.intValue()))

@@ -51,7 +51,6 @@ trait WireFormat {
   * A protocol format that is just plain and simple json. This protocol doesn't support acking.
   * It looks at the first character in the message and if it thinks it's JSON it will try to parse it as JSON
   * otherwise it creates a text message
-  *
   */
 abstract class SimpleJsonWireFormat extends WireFormat {
   self: org.json4s.JsonMethods[_] =>

@@ -50,7 +50,6 @@ object AccessibleAction
   /**
     * Request that the node be decremented by a large value.
     * A smaller decrement is requested using {@link #DECREMENT}.
-    *
     */
   val BlockDecrement = new AccessibleAction(
     jfxs.AccessibleAction.BLOCK_DECREMENT)
@@ -58,7 +57,7 @@ object AccessibleAction
   /**
     * Request that the node be incremented by a large value.
     * A smaller increment is requested using {@link #INCREMENT}.
-
+    *
     * Used by Slider, ScrollBar, and others
     */
   val BlockIncrement = new AccessibleAction(
@@ -76,7 +75,6 @@ object AccessibleAction
     * A larger decrement is requested using {@link #BLOCK_DECREMENT}.
     *
     * Used by Slider, ScrollBar, and others
-    *
     */
   val Decrement = new AccessibleAction(jfxs.AccessibleAction.DECREMENT)
 
@@ -84,7 +82,6 @@ object AccessibleAction
     * Request that the node should become expanded.
     *
     * Used by TreeItem, TitledPane, and others
-    *
     */
   val Expand = new AccessibleAction(jfxs.AccessibleAction.EXPAND)
 
@@ -94,7 +91,6 @@ object AccessibleAction
     * that is has been activated.
     *
     * Used by Button, Hyperlink, and others
-    *
     */
   val Fire = new AccessibleAction(jfxs.AccessibleAction.FIRE)
 
@@ -103,7 +99,6 @@ object AccessibleAction
     * A larger increment is requested using {@link #BLOCK_INCREMENT}.
     *
     * Used by Slider, ScrollBar, and others
-    *
     */
   val Increment = new AccessibleAction(jfxs.AccessibleAction.INCREMENT)
 

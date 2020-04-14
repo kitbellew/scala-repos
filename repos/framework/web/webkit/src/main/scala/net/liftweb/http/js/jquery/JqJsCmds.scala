@@ -531,7 +531,6 @@ object JqJsCmds {
     def apply(uid: String) = new Show(uid, Empty)
 
     /**
-      *
       * Show an element identified by uid
       *
       * @param uid the element id

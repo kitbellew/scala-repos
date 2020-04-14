@@ -6,7 +6,6 @@ import org.scalatest._
 import org.scalatest.junit._
 
 /**
-  *
   * @author dlwh
   */
 @RunWith(classOf[JUnitRunner])

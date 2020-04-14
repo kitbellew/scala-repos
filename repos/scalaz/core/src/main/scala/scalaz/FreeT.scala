@@ -121,7 +121,7 @@ sealed abstract class FreeT[S[_], M[_], A] {
   def interpretT[T[_]](st: S ~> T)(implicit M: Functor[M]): FreeT[T, M, A] =
     interpret(st)
 
-  /** Evaluates a single layer of the free monad **/
+  /** Evaluates a single layer of the free monad * */
   def resume(implicit
       S: Functor[S],
       M0: BindRec[M],

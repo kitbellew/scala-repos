@@ -167,13 +167,13 @@ class ScImplicitlyConvertible(
         case None => typez
       }
       for (obj <- ScalaPsiUtil.collectImplicitObjects(
-             expandedType,
-             place.getProject,
-             place.getResolveScope)) {
+          expandedType,
+          place.getProject,
+          place.getResolveScope)) {
         processor.processType(obj, place, ResolveState.initial())
       }
       for (res <- processor.candidatesS.map(forMap(_, typez))
-           if res.condition) {
+        if res.condition) {
         buffer += res
       }
     }
@@ -263,10 +263,10 @@ class ScImplicitlyConvertible(
     def treeWalkUp(p: PsiElement, lastParent: PsiElement) {
       if (p == null) return
       if (!p.processDeclarations(
-            processor,
-            ResolveState.initial,
-            lastParent,
-            place)) return
+          processor,
+          ResolveState.initial,
+          lastParent,
+          place)) return
       p match {
         case (_: ScTemplateBody | _: ScExtendsBlock) => //template body and inherited members are at the same level
         case _                                       => if (!processor.changedLevel) return
@@ -294,9 +294,9 @@ class ScImplicitlyConvertible(
     val default =
       ImplicitMapResult(condition = false, r, null, null, null, null, null)
     if (!PsiTreeUtil.isContextAncestor(
-          ScalaPsiUtil.nameContext(r.element),
-          place,
-          false)) { //to prevent infinite recursion
+        ScalaPsiUtil.nameContext(r.element),
+        place,
+        false)) { //to prevent infinite recursion
       ProgressManager.checkCanceled()
 
       lazy val funType = Option(
@@ -601,7 +601,7 @@ class ScImplicitlyConvertible(
             case f: ScFunction
                 if f.hasModifierProperty("implicit") && !isConformsMethod(f) =>
               if (!ScImplicitlyConvertible.checkFucntionIsEligible(f, place) ||
-                  !ResolveUtils.isAccessible(f, getPlace)) return true
+                !ResolveUtils.isAccessible(f, getPlace)) return true
               val clauses = f.paramClauses.clauses
               //filtered cases
               if (clauses.length > 2) return true
@@ -643,8 +643,8 @@ class ScImplicitlyConvertible(
                       d.asInstanceOf[ScModifierListOwner]
                         .hasModifierProperty("implicit") =>
                   if (!ResolveUtils.isAccessible(
-                        d.asInstanceOf[ScMember],
-                        getPlace)) return true
+                      d.asInstanceOf[ScMember],
+                      getPlace)) return true
                   val tp = subst.subst(
                     b.getType(TypingContext.empty).getOrElse(return true))
                   if (funType == null || !tp.conforms(funType)) return true
@@ -724,9 +724,9 @@ object ScImplicitlyConvertible {
       place: PsiElement): Boolean = {
     if (!function.hasExplicitType) {
       if (PsiTreeUtil.isContextAncestor(
-            function.getContainingFile,
-            place,
-            false)) {
+          function.getContainingFile,
+          place,
+          false)) {
         val commonContext = PsiTreeUtil.findCommonContext(function, place)
         if (place == commonContext)
           return true //weird case, it covers situation, when function comes from object, not treeWalkUp

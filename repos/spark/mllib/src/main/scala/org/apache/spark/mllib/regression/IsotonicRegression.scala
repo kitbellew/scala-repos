@@ -44,7 +44,6 @@ import org.apache.spark.sql.SQLContext
   * @param predictions Array of predictions associated to the boundaries at the same index.
   *                    Results of isotonic regression and therefore monotone.
   * @param isotonic indicates whether this is isotonic or antitonic.
-  *
   */
 @Since("1.3.0")
 class IsotonicRegressionModel @Since("1.3.0") (
@@ -91,7 +90,6 @@ class IsotonicRegressionModel @Since("1.3.0") (
     *
     * @param testData Features to be labeled.
     * @return Predicted labels.
-    *
     */
   @Since("1.3.0")
   def predict(testData: RDD[Double]): RDD[Double] = {
@@ -104,7 +102,6 @@ class IsotonicRegressionModel @Since("1.3.0") (
     *
     * @param testData Features to be labeled.
     * @return Predicted labels.
-    *
     */
   @Since("1.3.0")
   def predict(testData: JavaDoubleRDD): JavaDoubleRDD = {
@@ -126,7 +123,6 @@ class IsotonicRegressionModel @Since("1.3.0") (
     *         3) If testData falls between two values in boundary array then prediction is treated
     *           as piecewise linear function and interpolated value is returned. In case there are
     *           multiple values with the same boundary then the same rules as in 2) are used.
-    *
     */
   @Since("1.3.0")
   def predict(testData: Double): Double = {

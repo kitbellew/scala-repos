@@ -354,9 +354,9 @@ object ConsumerGroupCommand {
       groups.asScala.foreach { group =>
         try {
           if (AdminUtils.deleteConsumerGroupInfoForTopicInZK(
-                zkUtils,
-                group,
-                topic))
+              zkUtils,
+              group,
+              topic))
             println(
               "Deleted consumer group information for group %s topic %s in zookeeper."
                 .format(group, topic))
@@ -614,7 +614,7 @@ object ConsumerGroupCommand {
       if (options.has(describeOpt))
         CommandLineUtils.checkRequiredArgs(parser, options, groupOpt)
       if (options.has(deleteOpt) && !options.has(groupOpt) && !options.has(
-            topicOpt))
+          topicOpt))
         CommandLineUtils.printUsageAndDie(
           parser,
           "Option %s either takes %s, %s, or both"

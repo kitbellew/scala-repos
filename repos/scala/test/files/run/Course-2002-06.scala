@@ -30,33 +30,33 @@ class Frame(_origin: Vector, _edgeX: Vector, _edgeY: Vector) {
 /** Space on which we can draw lines. */
 abstract class Graphics(_width: Double, _height: Double) {
 
-  /** Width of the picture.*/
+  /** Width of the picture. */
   def width: Double = _width;
 
-  /** Height of the picture.*/
+  /** Height of the picture. */
   def height: Double = _height;
 
-  /** Frame that represents the drawable area of the output device*/
+  /** Frame that represents the drawable area of the output device */
   val frame: Frame;
 
-  /** Draw a line in device coordinates*/
+  /** Draw a line in device coordinates */
   def plotLine(x1: Double, y1: Double, x2: Double, y2: Double): Unit;
 
-  /** Draw a line in logical coordinates*/
+  /** Draw a line in logical coordinates */
   def drawLine(v1: Vector, v2: Vector): Unit = {
     val _v1 = frame.coordMap(v1);
     val _v2 = frame.coordMap(v2);
     plotLine(_v1.x, _v1.y, _v2.x, _v2.y);
   }
 
-  /** Draw a segment of the picture.*/
+  /** Draw a segment of the picture. */
   def drawSegment(frm: Frame)(v1: Vector, v2: Vector): Unit = {
     val _v1 = frm.coordMap(v1);
     val _v2 = frm.coordMap(v2);
     drawLine(_v1, _v2);
   }
 
-  /** Draw a list of segments on the picture.*/
+  /** Draw a list of segments on the picture. */
   def drawSegments(frm: Frame)(segments: List[Tuple2[Vector, Vector]]): Unit =
     if (segments.isEmpty) ()
     else {
@@ -64,17 +64,17 @@ abstract class Graphics(_width: Double, _height: Double) {
       drawSegments(frm)(segments.tail)
     }
 
-  /** Draw a list of continuous segments on the picture.*/
+  /** Draw a list of continuous segments on the picture. */
   def drawPolySegment(frm: Frame)(points: List[Vector]): Unit =
     if (!points.tail.isEmpty) {
       drawSegment(frm)(points.head, points.tail.head);
       drawPolySegment(frm)(points.tail);
     }
 
-  /** updates the contents of the output device*/
+  /** updates the contents of the output device */
   def repaint = ();
 
-  /** Add the last touch to the picture.*/
+  /** Add the last touch to the picture. */
   def close: Unit;
 }
 
@@ -86,7 +86,7 @@ abstract class Graphics(_width: Double, _height: Double) {
 class PostScript(filename: String, _width: Double, _height: Double)
     extends Graphics(_width, _height) {
 
-  /** Convert mm into 72th of inch.*/
+  /** Convert mm into 72th of inch. */
   def mm2ps(x: Double): Double = round(x * 72.0 / 25.4);
 
   def round(x: Double): Double =
@@ -107,10 +107,10 @@ class PostScript(filename: String, _width: Double, _height: Double)
     }
   }
 
-  /** Line thickness in millimeters.*/
+  /** Line thickness in millimeters. */
   val line_thickness: Double = 0.05;
 
-  /** Width, height, left and right margins in mm.*/
+  /** Width, height, left and right margins in mm. */
   val psWidth: Double = 210.0;
   val psHeight: Double = 297.0;
   val psWidthMargin: Double = 15.0;
@@ -129,7 +129,7 @@ class PostScript(filename: String, _width: Double, _height: Double)
         round(x2) + " " + round(y2) + " l");
   }
 
-  /** Print the PS header.*/
+  /** Print the PS header. */
   Console.println("%!PS-Adobe-3.0 EPSF-3.0\n%%Title: ProgrammationIV");
   Console.println("%%Creator: LAMP");
   Console.println(

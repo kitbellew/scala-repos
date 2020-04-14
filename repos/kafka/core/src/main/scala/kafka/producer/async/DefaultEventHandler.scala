@@ -83,7 +83,7 @@ class DefaultEventHandler[K, V](
     while (remainingRetries > 0 && outstandingProduceRequests.size > 0) {
       topicMetadataToRefresh ++= outstandingProduceRequests.map(_.topic)
       if (topicMetadataRefreshInterval >= 0 &&
-          SystemTime.milliseconds - lastTopicMetadataRefreshTime > topicMetadataRefreshInterval) {
+        SystemTime.milliseconds - lastTopicMetadataRefreshTime > topicMetadataRefreshInterval) {
         CoreUtils.swallowError(
           brokerPartitionInfo.updateInfo(
             topicMetadataToRefresh.toSet,
@@ -462,7 +462,7 @@ class DefaultEventHandler[K, V](
                       rawMessages: _*)
                   case _ =>
                     if (config.compressedTopics.contains(
-                          topicAndPartition.topic)) {
+                        topicAndPartition.topic)) {
                       debug(
                         "Sending %d messages with compression codec %d to %s"
                           .format(

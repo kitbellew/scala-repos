@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ColorPicker Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ColorPickerSpec

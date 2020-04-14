@@ -72,8 +72,8 @@ object CascadingBinaryComparator {
              * If OrderedSerialization is enabled, this must be a CascadingBinaryComparator
              */
             if (fields
-                  .getComparators()(0)
-                  .isInstanceOf[CascadingBinaryComparator[_]])
+                .getComparators()(0)
+                .isInstanceOf[CascadingBinaryComparator[_]])
               Success(())
             else
               error(
@@ -86,10 +86,10 @@ object CascadingBinaryComparator {
         bfs: BaseFlowStep[U]): Option[String] =
       // does this job have any Splices without OrderedSerialization:
       if (bfs.getGraph.vertexSet.asScala.exists {
-            case gb: GroupBy => check(gb).isFailure
-            case cg: CoGroup => check(cg).isFailure
-            case _           => false // only do sorting in groupBy/cogroupBy
-          }) {
+          case gb: GroupBy => check(gb).isFailure
+          case cg: CoGroup => check(cg).isFailure
+          case _           => false // only do sorting in groupBy/cogroupBy
+        }) {
         Some(getDesc(bfs).mkString(", "))
       } else None
 

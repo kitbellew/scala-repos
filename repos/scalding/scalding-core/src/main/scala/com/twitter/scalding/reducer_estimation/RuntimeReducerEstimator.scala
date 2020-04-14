@@ -193,7 +193,7 @@ trait RuntimeReducerEstimator extends HistoryReducerEstimator {
 
     val combinedEstimator =
       if (RuntimeReducerEstimator.getRuntimeIgnoreInputSize(
-            info.step.getConfig)) {
+          info.step.getConfig)) {
         basicEstimator
       } else {
         val inputScaledEstimator = new InputScaledRuntimeReducerEstimator {

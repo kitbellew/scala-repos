@@ -112,7 +112,7 @@ class MongoListField[OwnerType <: BsonRecord[OwnerType], ListType: Manifest](
       case other            => setBox(Failure("Error parsing String into a JValue: " + in))
     }
 
-  /** Options for select list **/
+  /** Options for select list * */
   def options: List[(ListType, String)] = Nil
 
   private def elem = {

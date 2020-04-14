@@ -3,7 +3,6 @@ package breeze.util
 import breeze.macros.expand
 
 /**
-  *
   * @author dlwh
   */
 object Sorting {

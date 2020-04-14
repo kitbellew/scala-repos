@@ -53,7 +53,7 @@ object LogRoleReplace extends ClipboardOwner {
       val clipboard = Toolkit.getDefaultToolkit.getSystemClipboard
       val contents = clipboard.getContents(null)
       if (contents != null && contents.isDataFlavorSupported(
-            DataFlavor.stringFlavor)) {
+          DataFlavor.stringFlavor)) {
         val text =
           contents.getTransferData(DataFlavor.stringFlavor).asInstanceOf[String]
         val result = new StringWriter

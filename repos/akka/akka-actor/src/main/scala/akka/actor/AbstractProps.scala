@@ -13,7 +13,6 @@ import scala.annotation.varargs
 import scala.language.existentials
 
 /**
-  *
   * Java API: Factory for Props instances.
   */
 private[akka] trait AbstractProps {

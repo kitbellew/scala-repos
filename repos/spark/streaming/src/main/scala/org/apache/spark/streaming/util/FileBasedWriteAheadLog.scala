@@ -250,7 +250,7 @@ private[streaming] class FileBasedWriteAheadLog(
         HdfsUtils.getFileSystemForPath(logDirectoryPath, hadoopConf)
 
       if (fileSystem.exists(logDirectoryPath) &&
-          fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
+        fileSystem.getFileStatus(logDirectoryPath).isDirectory) {
         val logFileInfo = logFilesTologInfo(
           fileSystem.listStatus(logDirectoryPath).map { _.getPath })
         pastLogs.clear()

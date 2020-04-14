@@ -22,7 +22,6 @@ import org.scalatest.Matchers
 import org.apache.spark.SparkFunSuite
 
 /**
-  *
   */
 
 class DistributionSuite extends SparkFunSuite with Matchers {

@@ -45,7 +45,6 @@ import scalafx.delegate.SFXDelegate
   *                it has to be resolved automatically by the compiler.
   * @param sfx2jfx Implicit conversion from ScalaFX to JavaFX, it should not be assigned,
   *                it has to be resolved automatically by the compiler.
-  *
   */
 abstract class SimpleSFXDelegateSpec[
     J <: Object,

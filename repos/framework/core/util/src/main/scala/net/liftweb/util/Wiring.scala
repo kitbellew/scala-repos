@@ -263,8 +263,7 @@ final class ValueCell[A](initialValue: A) extends Cell[A] with LiftValue[A] {
 }
 
 /**
-  * A collection of Cells og a given type
-  */
+  * A collection of Cells og a given type */
 final case class SeqCell[T](cells: Cell[T]*) extends Cell[Seq[T]] {
 
   cells.foreach(_.addDependent(this))
@@ -284,8 +283,7 @@ final case class SeqCell[T](cells: Cell[T]*) extends Cell[Seq[T]] {
 }
 
 /**
-  * The companion object for FuncCell (function cells)
-  */
+  * The companion object for FuncCell (function cells) */
 object FuncCell {
 
   /**

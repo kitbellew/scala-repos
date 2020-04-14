@@ -8,8 +8,7 @@ import com.intellij.lang.ASTNode
 import org.jetbrains.plugins.scala.lang.psi.api.expr._
 
 /**
-  * @author ilyas
-  */
+  * @author ilyas */
 class ScBlockImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScBlock {

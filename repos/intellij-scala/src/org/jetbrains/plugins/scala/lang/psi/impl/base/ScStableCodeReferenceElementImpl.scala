@@ -127,8 +127,8 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
       case _: ScStableCodeReferenceElement => stableQualRef
       case e: ScImportExpr =>
         if (e.selectorSet != None
-            //import Class._ is not allowed
-            || qualifier == None || e.singleWildcard) stableQualRef
+          //import Class._ is not allowed
+          || qualifier == None || e.singleWildcard) stableQualRef
         else stableImportSelector
       case ste: ScSimpleTypeElement =>
         if (incomplete)

@@ -15,7 +15,7 @@ import scala.reflect.ClassTag
   *                      operations with vectors longer than it.
   * @author dlwh
   * @author Martin Senne
- **/
+  */
 class BitVector(
     val data: java.util.BitSet,
     val length: Int,
@@ -136,7 +136,7 @@ object BitVector extends BitVectorOps {
       : CanMapValues[BitVector, Boolean, V2, DenseVector[V2]] = {
     new CanMapValues[BitVector, Boolean, V2, DenseVector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       def apply(from: BitVector, fn: (Boolean) => V2): DenseVector[V2] = {
         DenseVector.tabulate(from.length)(i => fn(from(i)))
       }
@@ -194,12 +194,12 @@ object BitVector extends BitVectorOps {
       : CanMapKeyValuePairs[BitVector, Int, Boolean, V2, DenseVector[V2]] =
     new CanMapKeyValuePairs[BitVector, Int, Boolean, V2, DenseVector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       def map(from: BitVector, fn: (Int, Boolean) => V2): DenseVector[V2] = {
         DenseVector.tabulate(from.length)(i => fn(i, from(i)))
       }
 
-      /**Maps all active key-value pairs from the given collection. */
+      /** Maps all active key-value pairs from the given collection. */
       def mapActive(
           from: BitVector,
           fn: (Int, Boolean) => V2): DenseVector[V2] = {

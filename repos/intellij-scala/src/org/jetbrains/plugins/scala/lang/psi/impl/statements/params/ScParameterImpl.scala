@@ -181,14 +181,14 @@ class ScParameterImpl protected (
           if (index != length) {
             var n = node.getTreeNext
             while (n != null && n.getElementType != ScalaTokenTypes.tRPARENTHESIS &&
-                   !n.getPsi.isInstanceOf[ScParameter]) {
+              !n.getPsi.isInstanceOf[ScParameter]) {
               toRemove += n
               n = n.getTreeNext
             }
           } else {
             var n = node.getTreePrev
             while (n != null && n.getElementType != ScalaTokenTypes.tLPARENTHESIS &&
-                   !n.getPsi.isInstanceOf[ScParameter]) {
+              !n.getPsi.isInstanceOf[ScParameter]) {
               toRemove += n
               n = n.getTreePrev
             }

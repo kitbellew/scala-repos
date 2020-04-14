@@ -25,7 +25,7 @@ trait Watched {
     */
   def pollInterval: Int = Watched.PollDelayMillis
 
-  /** The message to show when triggered execution waits for sources to change.*/
+  /** The message to show when triggered execution waits for sources to change. */
   def watchingMessage(s: WatchState): String = Watched.defaultWatchingMessage(s)
 
   /** The message to show before an action is run. */

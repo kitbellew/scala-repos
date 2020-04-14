@@ -11,9 +11,8 @@ import scala.util.control.ControlThrowable
   * any(t) true if any element of t is non-zero
   * any(f, t) returns true if any element of t satisfies f
   *
-  *
   * @author dlwh
-  **/
+  */
 object any extends UFunc {
   private case object Found extends ControlThrowable
 

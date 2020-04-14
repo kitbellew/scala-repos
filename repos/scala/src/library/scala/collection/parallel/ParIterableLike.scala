@@ -1490,7 +1490,7 @@ trait ParIterableLike[
       val pits = pit.splitWithSignalling
       val sizes = pits.scanLeft(0)(_ + _.remaining)
       for ((p, untilp) <- pits zip sizes;
-           if untilp + p.remaining >= from || untilp <= until) yield {
+        if untilp + p.remaining >= from || untilp <= until) yield {
         val f = (from max untilp) - untilp
         val u = (until min (untilp + p.remaining)) - untilp
         new Slice(f, u, cbf, p)
@@ -1688,7 +1688,7 @@ trait ParIterableLike[
     override def split = {
       val pits = pit.splitWithSignalling
       for ((p, untilp) <- pits zip pits.scanLeft(0)(_ + _.remaining);
-           if untilp < len) yield {
+        if untilp < len) yield {
         val plen = p.remaining min (len - untilp)
         new CopyToArray[U, This](from + untilp, plen, array, p)
       }

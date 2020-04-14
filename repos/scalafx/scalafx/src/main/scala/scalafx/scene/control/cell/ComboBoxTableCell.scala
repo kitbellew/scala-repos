@@ -155,7 +155,6 @@ object ComboBoxTableCell {
 /**
   * Wraps [[http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/cell/ComboBoxListCell.html $CBTC]]
   *
-  *
   * @tparam T Type used in this cell
   * @constructor Creates a new $CBTC from a JavaFX $CBTC
   * @param delegate JavaFX $CBTC

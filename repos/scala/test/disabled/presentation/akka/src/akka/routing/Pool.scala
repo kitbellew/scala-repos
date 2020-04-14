@@ -296,7 +296,7 @@ trait RunningMeanBackoff {
     _capacity += capacity
 
     if (capacity > 0 && pressure / capacity < backoffThreshold
-        && _capacity > 0 && _pressure / _capacity < backoffThreshold) //Why does the entire clause need to be true?
+      && _capacity > 0 && _pressure / _capacity < backoffThreshold) //Why does the entire clause need to be true?
       math.floor(-1.0 * backoffRate * (capacity - pressure)).toInt
     else 0
   }

@@ -222,7 +222,7 @@ object HtmlFetcher extends AbstractHtmlFetcher with Logging {
           return Some(htmlResult)
         } else {
           if (htmlResult.contains("<title>") == true && htmlResult.contains(
-                "<p>") == true) {
+              "<p>") == true) {
             return Some(htmlResult)
           }
           trace("GRVBIGFAIL: " + mimeType + " - " + cleanUrl)

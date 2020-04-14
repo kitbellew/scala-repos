@@ -21,17 +21,17 @@ import testing.{
   */
 class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
 
-  /**Current hostname so we know which machine executed the tests*/
+  /** Current hostname so we know which machine executed the tests */
   val hostname =
     try InetAddress.getLocalHost.getHostName
     catch {
       case x: IOException => "localhost"
     }
 
-  /**The dir in which we put all result files. Is equal to the given dir + "/test-reports"*/
+  /** The dir in which we put all result files. Is equal to the given dir + "/test-reports" */
   val targetDir = new File(outputDir + "/test-reports/")
 
-  /**all system properties as XML*/
+  /** all system properties as XML */
   val properties =
     <properties>
       {
@@ -57,7 +57,7 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
   class TestSuite(val name: String) {
     val events: ListBuffer[TEvent] = new ListBuffer()
 
-    /**Adds one test result to this suite.*/
+    /** Adds one test result to this suite. */
     def addEvent(e: TEvent) = events += e
 
     /** Returns the number of tests of each state for the specified. */
@@ -124,10 +124,10 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
     }
   }
 
-  /**The currently running test suite*/
+  /** The currently running test suite */
   val testSuite = new DynamicVariable(null: TestSuite)
 
-  /**Creates the output Dir*/
+  /** Creates the output Dir */
   override def doInit() = { targetDir.mkdirs() }
 
   /**
@@ -200,9 +200,9 @@ class JUnitXmlTestsListener(val outputDir: String) extends TestsListener {
     XML.save(file, testSuite.value.stop(), "UTF-8", true, null)
   }
 
-  /**Does nothing, as we write each file after a suite is done.*/
+  /** Does nothing, as we write each file after a suite is done. */
   override def doComplete(finalResult: TestResult.Value): Unit = {}
 
-  /**Returns None*/
+  /** Returns None */
   override def contentLogger(test: TestDefinition): Option[ContentLogger] = None
 }

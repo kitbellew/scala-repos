@@ -94,6 +94,6 @@ object AhcWSResponseSpec extends Specification with Mockito {
   getBodyAsStream
   asByteArray
   getUri
- */
+   */
 
 }

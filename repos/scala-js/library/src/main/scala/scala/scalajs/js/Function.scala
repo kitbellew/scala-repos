@@ -80,7 +80,6 @@ class Function(args: String*) extends Object {
     * {{{
     * someFun.call(thisArg, argSeq: _*)
     * }}}
-    *
     */
   def call(thisArg: Any, argArray: Any*): Dynamic = native
 

@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ProgressBarTableCell Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ProgressBarTableCellSpec[S]

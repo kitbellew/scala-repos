@@ -5,8 +5,6 @@ import scala.reflect.api.Universe
 
 /** This is the portion of code which can actually generate a pickler/unpickler object instance
   * from the IR AST.
-  *
-  *
   */
 private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
   import c.universe._

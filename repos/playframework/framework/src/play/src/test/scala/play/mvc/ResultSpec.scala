@@ -9,7 +9,6 @@ import scala.concurrent.Future
 import play.api.mvc.{Cookie, Results, Result => ScalaResult}
 
 /**
-  *
   */
 object ResultSpec extends Specification {
 

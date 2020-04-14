@@ -29,7 +29,7 @@ import ops.{hlist, coproduct}
   * For example:
   * {{{
   * scala> sealed trait Animal
-
+  *
   * defined trait Animal
   * scala> case class Cat(name: String, livesLeft: Int) extends Animal
   * defined class Cat
@@ -102,7 +102,7 @@ import ops.{hlist, coproduct}
   */
 trait Generic[T] extends Serializable {
 
-  /** The generic representation type for {T}, which will be composed of {Coproduct} and {HList} types  */
+  /** The generic representation type for {T}, which will be composed of {Coproduct} and {HList} types */
   type Repr
 
   /** Convert an instance of the concrete type to the generic value representation */
@@ -151,7 +151,6 @@ object Generic {
   /** Provides an instance of Generic. Prefer this over finding one with `implicitly`, or else use `the`.
     *
     * Either of these approaches preserves the Repr type refinement, which `implicitly` will lose.
-    *
     */
   def apply[T](implicit gen: Generic[T]): Aux[T, gen.Repr] = gen
 
@@ -195,7 +194,7 @@ object Generic {
   */
 trait LabelledGeneric[T] extends Serializable {
 
-  /** The generic representation type for {T}, which will be composed of {Coproduct} and {HList} types  */
+  /** The generic representation type for {T}, which will be composed of {Coproduct} and {HList} types */
   type Repr
 
   /** Convert an instance of the concrete type to the generic value representation */
@@ -877,7 +876,7 @@ trait CaseClassMacros extends ReprTypes {
       val companionTpe = sym.companion.info
       val applySym = companionTpe.member(TermName("apply"))
       if (applySym.isTerm && !applySym.asTerm.isOverloaded && applySym.isMethod && !isNonGeneric(
-            applySym) && isAccessible(companionTpe, applySym)) {
+          applySym) && isAccessible(companionTpe, applySym)) {
         val applyParamss = applySym.asMethod.paramLists
         if (applyParamss.length == 1)
           alignFields(
@@ -894,7 +893,7 @@ trait CaseClassMacros extends ReprTypes {
       val companionTpe = sym.companion.info
       val unapplySym = companionTpe.member(TermName("unapply"))
       if (unapplySym.isTerm && !unapplySym.asTerm.isOverloaded && unapplySym.isMethod && !isNonGeneric(
-            unapplySym) && isAccessible(companionTpe, unapplySym))
+          unapplySym) && isAccessible(companionTpe, unapplySym))
         unapplySym.asMethod
           .infoIn(companionTpe)
           .finalResultType

@@ -494,7 +494,7 @@ object StreamLayout {
          |    ${subModules.iterator
         .map(m ⇒
           s"(${m.attributes.nameLifted
-            .getOrElse("unnamed")}) ${m.toString.replaceAll("\n", "\n    ")}")
+             .getOrElse("unnamed")}) ${m.toString.replaceAll("\n", "\n    ")}")
         .mkString("\n    ")}
          |  Downstreams: ${downstreams.iterator
         .map { case (in, out) ⇒ s"\n    $in -> $out" }
@@ -713,8 +713,8 @@ private[stream] final class VirtualProcessor[T]
       get() match {
         case null =>
           if (!compareAndSet(
-                null,
-                ErrorPublisher(ex, "failed-VirtualProcessor"))) rec(ex)
+              null,
+              ErrorPublisher(ex, "failed-VirtualProcessor"))) rec(ex)
           else if (t == null) throw ex
         case s: Subscription =>
           if (!compareAndSet(s, ErrorPublisher(ex, "failed-VirtualProcessor")))
@@ -757,8 +757,8 @@ private[stream] final class VirtualProcessor[T]
         get() match {
           case x @ (null | _: Subscription) =>
             if (!compareAndSet(
-                  x,
-                  ErrorPublisher(ex, "failed-VirtualProcessor"))) rec()
+                x,
+                ErrorPublisher(ex, "failed-VirtualProcessor"))) rec()
           case s: Subscriber[_] =>
             try s.onError(ex)
             catch { case NonFatal(_) => }

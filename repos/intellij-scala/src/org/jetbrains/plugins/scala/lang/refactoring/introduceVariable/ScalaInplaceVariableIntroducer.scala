@@ -101,8 +101,8 @@ class ScalaInplaceVariableIntroducer(
           myCaretRangeMarker.getStartOffset,
           myCaretRangeMarker.getEndOffset)
         if (range.getLength == 0 && UndoManager
-              .getInstance(myProject)
-              .isUndoInProgress) {} else {
+            .getInstance(myProject)
+            .isUndoInProgress) {} else {
           val input = myCaretRangeMarker.getDocument.getText(range)
           val numberOfSpaces = input.lastIndexOf(' ') + 1
           val declaration = findDeclaration(
@@ -111,8 +111,8 @@ class ScalaInplaceVariableIntroducer(
           if (named.isDefined) {
             setDeclaration(declaration)
             if (nameIsValid != (named.isDefined && isIdentifier(
-                  input.trim,
-                  myFile.getLanguage))) {
+                input.trim,
+                myFile.getLanguage))) {
               nameIsValid = !nameIsValid
             }
             resetBalloonPanel(nameIsValid)
@@ -220,16 +220,16 @@ class ScalaInplaceVariableIntroducer(
             val highlighters: Array[RangeHighlighter] =
               myEditor.getMarkupModel.getAllHighlighters
             for (highlighter <- highlighters; if checkRange(
-                   highlighter.getStartOffset,
-                   highlighter.getEndOffset))
+                highlighter.getStartOffset,
+                highlighter.getEndOffset))
               greedyToRight += (highlighter -> highlighter.isGreedyToRight)
           }
           def resetGreedyToRightBack(): Unit = {
             val highlighters: Array[RangeHighlighter] =
               myEditor.getMarkupModel.getAllHighlighters
             for (highlighter <- highlighters; if checkRange(
-                   highlighter.getStartOffset,
-                   highlighter.getEndOffset))
+                highlighter.getStartOffset,
+                highlighter.getEndOffset))
               highlighter.setGreedyToRight(greedyToRight(highlighter))
           }
           def checkRange(start: Int, end: Int): Boolean = {
@@ -381,8 +381,8 @@ class ScalaInplaceVariableIntroducer(
             declaration.getTextRange.getEndOffset)
         }
       } else if (getDeclaration != null && !UndoManager
-                   .getInstance(myProject)
-                   .isUndoInProgress) {
+          .getInstance(myProject)
+          .isUndoInProgress) {
         val revertInfo =
           myEditor.getUserData(ScalaIntroduceVariableHandler.REVERT_INFO)
         if (revertInfo != null) {

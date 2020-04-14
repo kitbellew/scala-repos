@@ -12,8 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScBlockExpr
 import _root_.scala.collection.mutable._
 
 /**
-  * @author ilyas
-  */
+  * @author ilyas */
 
 class ScPatternArgumentListImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

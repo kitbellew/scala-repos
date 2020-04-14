@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Circle Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class CircleSpec

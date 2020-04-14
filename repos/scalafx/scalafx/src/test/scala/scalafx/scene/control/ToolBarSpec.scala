@@ -37,7 +37,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ToolBar Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ToolBarSpec

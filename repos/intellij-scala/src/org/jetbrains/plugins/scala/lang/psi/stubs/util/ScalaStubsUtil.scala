@@ -57,8 +57,8 @@ object ScalaStubsUtil {
       val stub = extendsBlock.asInstanceOf[ScExtendsBlockImpl].getStub
       if (stub != null) {
         if (stub.getParentStub.getStubType
-              .isInstanceOf[ScTemplateDefinitionElementType[
-                _ <: ScTemplateDefinition]]) {
+            .isInstanceOf[ScTemplateDefinitionElementType[
+              _ <: ScTemplateDefinition]]) {
           inheritors += stub.getParentStub.getPsi
             .asInstanceOf[ScTemplateDefinition]
         }

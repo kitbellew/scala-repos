@@ -170,13 +170,12 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                         mongo.getDB(dbName)).flatMap {
                         d =>
                           if (!d.isAuthenticated && dbAuthParams.contains(
-                                dbName)) {
+                              dbName)) {
                             logger.trace("Running auth setup for " + dbName)
                             dbAuthParams.get(dbName).map(_.split(':')) flatMap {
                               case Array(user, password) =>
-                                if (d.authenticate(
-                                      user,
-                                      password.toCharArray)) {
+                                if (d
+                                    .authenticate(user, password.toCharArray)) {
                                   Some(d)
                                 } else {
                                   logger.error(

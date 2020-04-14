@@ -165,7 +165,6 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
   /**
     * Re-creates a JavaStreamingContext from a checkpoint file.
     * @param path Path to the directory that was specified as the checkpoint directory
-    *
     */
   def this(path: String, hadoopConf: Configuration) =
     this(new StreamingContext(path, hadoopConf))

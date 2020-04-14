@@ -203,7 +203,6 @@ import java.io.File
   *
   *  <h4>DO</h4>
   *  Implement your own subclass (sub-object) of [[CrossType]].
-  *
   */
 final class CrossProject private (
     crossType: CrossType,

@@ -48,8 +48,6 @@ import scalafx.testutil.RunOnApplicationThread
 
 /**
   * ObjectProperty Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ReadOnlyObjectWrapperSpec

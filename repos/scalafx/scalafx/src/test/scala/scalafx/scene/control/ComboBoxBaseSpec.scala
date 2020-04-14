@@ -36,7 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * ComboBoxBase Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ComboBoxBaseSpec[J]

@@ -20,7 +20,9 @@ case class ApiPullRequestReviewComment(
     body: String, // "Maybe you should use more emojji on this line.",
     created_at: Date, // "2015-05-05T23:40:27Z",
     updated_at: Date // "2015-05-05T23:40:27Z",
-)(repositoryName: RepositoryName, issueId: Int)
+)(
+    repositoryName: RepositoryName,
+    issueId: Int)
     extends FieldSerializable {
   // "url": "https://api.github.com/repos/baxterthehacker/public-repo/pulls/comments/29724692",
   val url = ApiPath(

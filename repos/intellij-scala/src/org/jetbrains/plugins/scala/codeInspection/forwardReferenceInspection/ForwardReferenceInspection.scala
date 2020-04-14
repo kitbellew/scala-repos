@@ -30,11 +30,11 @@ class ForwardReferenceInspection extends AbstractInspection {
                       if resolved.isInstanceOf[ScValue] || resolved
                         .isInstanceOf[ScVariable] =>
                     if (resolved.getParent == tb && !member.hasModifierProperty(
-                          "lazy") &&
-                        !resolved
-                          .asInstanceOf[ScMember]
-                          .hasModifierProperty("lazy") &&
-                        resolved.getTextOffset > member.getTextOffset) {
+                        "lazy") &&
+                      !resolved
+                        .asInstanceOf[ScMember]
+                        .hasModifierProperty("lazy") &&
+                      resolved.getTextOffset > member.getTextOffset) {
                       holder.registerProblem(
                         ref,
                         ScalaBundle.message(

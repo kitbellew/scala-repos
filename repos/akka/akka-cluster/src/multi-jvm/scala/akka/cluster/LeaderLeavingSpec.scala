@@ -68,7 +68,7 @@ abstract class LeaderLeavingSpec
               def receive = {
                 case state: CurrentClusterState ⇒
                   if (state.members.exists(m ⇒
-                        m.address == oldLeaderAddress && m.status == Exiting))
+                      m.address == oldLeaderAddress && m.status == Exiting))
                     exitingLatch.countDown()
                 case MemberExited(m) if m.address == oldLeaderAddress ⇒
                   exitingLatch.countDown()

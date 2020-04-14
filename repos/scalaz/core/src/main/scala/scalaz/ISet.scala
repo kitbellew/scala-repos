@@ -408,12 +408,12 @@ sealed abstract class ISet[A] {
     *
     * Documentation as copied from the Haskell source:
     *  {{{
-    -- | /O(n*log n)/.
-    -- @'map' f s@ is the set obtained by applying @f@ to each element of @s@.
-    --
-    -- It's worth noting that the size of the result may be smaller if,
-    -- for some @(x,y)@, @x \/= y && f x == f y@
-    }}}
+    *    -- | /O(n*log n)/.
+    *    -- @'map' f s@ is the set obtained by applying @f@ to each element of @s@.
+    *    --
+    *    -- It's worth noting that the size of the result may be smaller if,
+    *    -- for some @(x,y)@, @x \/= y && f x == f y@
+    *    }}}
     */
   def map[B: Order](f: A => B) =
     fromList(toList.map(f))

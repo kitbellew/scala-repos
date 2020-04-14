@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Window Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class WindowEventSpec

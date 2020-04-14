@@ -30,8 +30,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScTemplateBodyStub
 /**
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
-  * Time: 9:38:04
-  */
+  * Time: 9:38:04 */
 
 class ScTemplateBodyImpl private (
     stub: StubElement[ScTemplateBody],
@@ -106,10 +105,10 @@ class ScTemplateBodyImpl private (
     val td = PsiTreeUtil.getContextOfType(this, classOf[ScTemplateDefinition])
     if (td != null) {
       if (!td.processDeclarationsForTemplateBody(
-            processor,
-            state,
-            td.extendsBlock,
-            place)) return false
+          processor,
+          state,
+          td.extendsBlock,
+          place)) return false
     }
     super.processDeclarations(processor, state, lastParent, place)
   }

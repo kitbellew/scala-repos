@@ -456,8 +456,8 @@ object DependencyOverrides {
 }
 
 /**
-  This excludes library dependencies in sbt, which are specified in maven but are
-  not needed by sbt build.
+  *  This excludes library dependencies in sbt, which are specified in maven but are
+  *  not needed by sbt build.
   */
 object ExcludedDependencies {
   lazy val settings = Seq(
@@ -631,7 +631,7 @@ object Assembly {
     jarName in assembly <<= (version, moduleName, hadoopVersion) map {
       (v, mName, hv) =>
         if (mName.contains("streaming-kafka-assembly") || mName.contains(
-              "streaming-kinesis-asl-assembly")) {
+            "streaming-kinesis-asl-assembly")) {
           // This must match the same name used in maven (see external/kafka-assembly/pom.xml)
           s"${mName}-${v}.jar"
         } else {

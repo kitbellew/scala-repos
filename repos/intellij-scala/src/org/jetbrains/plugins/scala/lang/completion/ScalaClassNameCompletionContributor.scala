@@ -68,9 +68,9 @@ class ScalaClassNameCompletionContributor extends ScalaCompletionContributor {
           context: ProcessingContext,
           result: CompletionResultSet) {
         if (shouldRunClassNameCompletion(
-              positionFromParameters(parameters),
-              parameters,
-              result.getPrefixMatcher)) {
+            positionFromParameters(parameters),
+            parameters,
+            result.getPrefixMatcher)) {
           completeClassName(
             positionFromParameters(parameters),
             parameters,
@@ -93,9 +93,9 @@ class ScalaClassNameCompletionContributor extends ScalaCompletionContributor {
         parameters.getPosition.getNode.getElementType match {
           case ScalaTokenTypes.tSTRING | ScalaTokenTypes.tMULTILINE_STRING =>
             if (shouldRunClassNameCompletion(
-                  positionFromParameters(parameters),
-                  parameters,
-                  result.getPrefixMatcher)) {
+                positionFromParameters(parameters),
+                parameters,
+                result.getPrefixMatcher)) {
               completeClassName(
                 positionFromParameters(parameters),
                 parameters,
@@ -142,8 +142,8 @@ object ScalaClassNameCompletionContributor {
     }
     val invocationCount = parameters.getInvocationCount
     if (!inString && !ScalaPsiUtil
-          .fileContext(position)
-          .isInstanceOf[ScalaFile]) return true
+        .fileContext(position)
+        .isInstanceOf[ScalaFile]) return true
     val lookingForAnnotations: Boolean =
       psiElement.afterLeaf("@").accepts(position)
     val isInImport = ScalaPsiUtil.getContextOfType(

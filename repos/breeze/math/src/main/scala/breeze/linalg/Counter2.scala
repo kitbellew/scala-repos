@@ -27,7 +27,6 @@ import scala.reflect.ClassTag
 import CanTraverseValues.ValuesVisitor
 
 /**
-  *
   * @author dlwh
   */
 /**

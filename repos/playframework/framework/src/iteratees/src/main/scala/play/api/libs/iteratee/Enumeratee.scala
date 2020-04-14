@@ -157,7 +157,7 @@ object Enumeratee {
     def getNext(it1: Iteratee[E, A], it2: Iteratee[E, B]): Iteratee[E, C] = {
       val eventuallyIter =
         for ((a1, it1_) <- getInside(it1);
-             (a2, it2_) <- getInside(it2)) yield checkDone(a1, a2) match {
+          (a2, it2_) <- getInside(it2)) yield checkDone(a1, a2) match {
           case Left((msg, in))             => Error(msg, in)
           case Right(None)                 => Cont(step(it1_, it2_))
           case Right(Some(Left(Left(a))))  => it2_.map(b => zipper(a, b))(pec)
@@ -172,7 +172,7 @@ object Enumeratee {
     def step(it1: Iteratee[E, A], it2: Iteratee[E, B])(in: Input[E]) = {
       Iteratee.flatten(
         for (it1_ <- it1.feed(in);
-             it2_ <- it2.feed(in)) yield getNext(it1_, it2_))
+          it2_ <- it2.feed(in)) yield getNext(it1_, it2_))
 
     }
 

@@ -1533,7 +1533,7 @@ object Test {
   )
 
   def main(args: Array[String]) {
-    sshow("Direct Calls", fcalls collect { case (false, n)    => n })
+    sshow("Direct Calls", fcalls collect { case (false, n) => n })
     sshow("Reflective Calls", fcalls collect { case (true, n) => n })
     // For a good time try printing this - have to fix bugs in
     // reflection before that's going to be a good idea

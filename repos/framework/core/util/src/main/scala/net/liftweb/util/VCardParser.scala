@@ -34,7 +34,6 @@ import scala.util.parsing.combinator._
   * TEL;HOME;VOICE:(404) 555-1212
   * ADR;WORK:;;100 Waters Edge;Baytown;LA;30314;United States of America
   * END:VCARD
-  *
   */
 object VCardParser extends Parsers {
   import scala.language.implicitConversions
@@ -59,7 +58,7 @@ object VCardParser extends Parsers {
       case list => list.mkString
     }
   lazy val props = ((((elem(';') ~> key <~ elem('=')) ~ key) ^^ {
-    case a ~ b                         => (a, b)
+    case a ~ b => (a, b)
   }) | ((elem(';') ~> key) ^^ { case a => (a, "") })) *
   lazy val left = (key ~ props) ^^ { case k ~ l => VCardKey(k, l) }
   lazy val expr = (((spaces ~> left ~! elem(':')) ~ repsep(value, ';')) ^^ {

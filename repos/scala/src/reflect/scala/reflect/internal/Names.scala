@@ -110,10 +110,10 @@ trait Names extends api.Names {
       val h = hashValue(cs, offset, len) & HASH_MASK
       var n = termHashtable(h)
       while ((n ne null) && (n.length != len || !equals(
-               n.start,
-               cs,
-               offset,
-               len)))
+          n.start,
+          cs,
+          offset,
+          len)))
         n = n.next
 
       if (n ne null) n
@@ -195,10 +195,10 @@ trait Names extends api.Names {
     var typeName = typeHashtable(hash)
 
     while ((typeName ne null) && (typeName.length != cs.length || !equals(
-             typeName.start,
-             cs,
-             0,
-             cs.length))) {
+        typeName.start,
+        cs,
+        0,
+        cs.length))) {
       typeName = typeName.next
     }
     assert(typeName != null, s"TypeName ${new String(cs)} not yet created.")
@@ -271,32 +271,32 @@ trait Names extends api.Names {
       (that ne null) && (toString == that.toString)
     def string_==(that: String): Boolean = (that ne null) && (toString == that)
 
-    /****
+    /**
       *  This has been quite useful to find places where people are comparing
       *  a TermName and a TypeName, or a Name and a String.
-
-    override def equals(other: Any) = paranoidEquals(other)
-    private def paranoidEquals(other: Any): Boolean = {
-      val cmp = this eq other.asInstanceOf[AnyRef]
-      if (cmp || !nameDebug)
-        return cmp
-
-      other match {
-        case x: String  =>
-          Console.println(s"Compared $debugString and String '$x'")
-        case x: Name    =>
-          if (this.isTermName != x.isTermName) {
-            val panic = this.toTermName == x.toTermName
-            Console.println("Compared '%s' and '%s', one term, one type.%s".format(this, x,
-              if (panic) "  And they contain the same name string!"
-              else ""
-            ))
-          }
-        case _ =>
-      }
-      false
-    }
-    ****/
+      *
+      *    override def equals(other: Any) = paranoidEquals(other)
+      *    private def paranoidEquals(other: Any): Boolean = {
+      *      val cmp = this eq other.asInstanceOf[AnyRef]
+      *      if (cmp || !nameDebug)
+      *        return cmp
+      *
+      *      other match {
+      *        case x: String  =>
+      *          Console.println(s"Compared $debugString and String '$x'")
+      *        case x: Name    =>
+      *          if (this.isTermName != x.isTermName) {
+      *            val panic = this.toTermName == x.toTermName
+      *            Console.println("Compared '%s' and '%s', one term, one type.%s".format(this, x,
+      *              if (panic) "  And they contain the same name string!"
+      *              else ""
+      *            ))
+      *          }
+      *        case _ =>
+      *      }
+      *      false
+      *    }
+      * ** */
 
     /** @return the i'th Char of this name */
     final def charAt(i: Int): Char = chrs(index + i)
@@ -368,14 +368,14 @@ trait Names extends api.Names {
     final def startsWith(prefix: Name, start: Int): Boolean = {
       var i = 0
       while (i < prefix.length && start + i < len &&
-             chrs(index + start + i) == chrs(prefix.start + i))
+        chrs(index + start + i) == chrs(prefix.start + i))
         i += 1
       i == prefix.length
     }
     final def startsWith(prefix: String, start: Int): Boolean = {
       var i = 0
       while (i < prefix.length && start + i < len &&
-             chrs(index + start + i) == prefix.charAt(i))
+        chrs(index + start + i) == prefix.charAt(i))
         i += 1
       i == prefix.length
     }
@@ -387,14 +387,14 @@ trait Names extends api.Names {
     final def endsWith(suffix: Name, end: Int): Boolean = {
       var i = 1
       while (i <= suffix.length && i <= end &&
-             chrs(index + end - i) == chrs(suffix.start + suffix.length - i))
+        chrs(index + end - i) == chrs(suffix.start + suffix.length - i))
         i += 1
       i > suffix.length
     }
     final def endsWith(suffix: String, end: Int): Boolean = {
       var i = 1
       while (i <= suffix.length && i <= end &&
-             chrs(index + end - i) == suffix.charAt(suffix.length - i))
+        chrs(index + end - i) == suffix.charAt(suffix.length - i))
         i += 1
       i > suffix.length
     }

@@ -171,7 +171,7 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
         fqn: String): Option[PsiClass] = {
       val clazz = JavaPsiFacade.getInstance(project).findClass(fqn, scope)
       if (clazz == null || clazz.isInstanceOf[ScTemplateDefinition] || clazz
-            .isInstanceOf[PsiClassWrapper]) None
+          .isInstanceOf[PsiClassWrapper]) None
       else Option(clazz)
     }
 

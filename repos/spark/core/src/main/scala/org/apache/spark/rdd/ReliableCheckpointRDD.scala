@@ -80,7 +80,7 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
     inputFiles.zipWithIndex.foreach {
       case (path, i) =>
         if (!path.toString.endsWith(
-              ReliableCheckpointRDD.checkpointFileName(i))) {
+            ReliableCheckpointRDD.checkpointFileName(i))) {
           throw new SparkException(s"Invalid checkpoint file: $path")
         }
     }

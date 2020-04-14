@@ -12,7 +12,6 @@ package algebra
   * 3. `(g <-> h) +> i === (i <-> h) +> g` for all `g`, `h` in `G`.
   *
   * 4. `(g <-> h) === -(h <-> g)` for all `g`, `h` in `G`.
-  *
   */
 trait Torsor[V, @sp(Int, Long, Float, Double) R] extends Any with Action[V, R] {
   self =>

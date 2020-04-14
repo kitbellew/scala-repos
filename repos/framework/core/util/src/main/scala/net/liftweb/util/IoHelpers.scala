@@ -138,8 +138,7 @@ trait AutoResourceManager[ResourceType] {
     *
     * @param f the function that takes the resource and returns a value
     * @tparam T the type of the value returned by the function
-    *@return the value returned from the function
-    *
+    * @return the value returned from the function
     */
   def exec[T](f: ResourceType => T): T
 }

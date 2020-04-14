@@ -17,7 +17,6 @@ package breeze.util
  */
 
 /**
-  *
   * @author dlwh, dramage
   */
 object Terminal {

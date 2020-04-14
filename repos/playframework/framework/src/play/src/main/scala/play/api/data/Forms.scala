@@ -23,7 +23,6 @@ import scala.annotation._
   *   )
   * )
   * }}}
-  *
   */
 object Forms {
 

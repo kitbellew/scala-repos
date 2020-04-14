@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Polyline Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PolylineSpec

@@ -355,8 +355,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     )
     if (canObserveTree) {
       if (context.unit.exists &&
-          result.pos.isOpaqueRange &&
-          (result.pos includes context.unit.targetPos)) {
+        result.pos.isOpaqueRange &&
+        (result.pos includes context.unit.targetPos)) {
         var located = new TypedLocator(context.unit.targetPos) locateIn result
         if (located == EmptyTree) {
           println(
@@ -434,7 +434,6 @@ with ContextTrees with RichCompilationUnits with Picklers {
     *  Then, poll for exceptions and execute them.
     *  Then, poll for work reload/typedTreeAt/doFirst commands during background checking.
     *  @param pos   The position of the tree if polling while typechecking, NoPosition otherwise
-    *
     */
   private[interactive] def pollForWork(pos: Position) {
     var loop: Boolean = true
@@ -868,7 +867,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
         }
     }
 
-  /** A fully attributed tree corresponding to the entire compilation unit  */
+  /** A fully attributed tree corresponding to the entire compilation unit */
   private[interactive] def typedTree(
       source: SourceFile,
       forceReload: Boolean): Tree = {
@@ -880,7 +879,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     unit.body
   }
 
-  /** Set sync var `response` to a fully attributed tree located at position `pos`  */
+  /** Set sync var `response` to a fully attributed tree located at position `pos` */
   private[interactive] def getTypedTreeAt(
       pos: Position,
       response: Response[Tree]) {
@@ -888,7 +887,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
   }
 
   /** Set sync var `response` to a fully attributed tree corresponding to the
-    *  entire compilation unit  */
+    *  entire compilation unit */
   private[interactive] def getTypedTree(
       source: SourceFile,
       forceReload: Boolean,
@@ -1077,7 +1076,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
       if ((sym.isGetter || sym.isSetter) && sym.accessed != NoSymbol) {
         add(sym.accessed, pre, implicitlyAdded)(toMember)
       } else if (!sym.name.decodedName.containsName(
-                   "$") && !sym.isError && !sym.isArtifact && sym.hasRawInfo) {
+          "$") && !sym.isError && !sym.isArtifact && sym.hasRawInfo) {
         val symtpe = pre.memberType(sym) onTypeError ErrorType
         matching(sym, symtpe, this(sym.name)) match {
           case Some(m) =>

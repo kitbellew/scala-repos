@@ -40,7 +40,6 @@ import scalafx.stage.FileChooser
 /**
   * Demo for Issue #178: FileChooser does not handle a the value returned when the user cancels file selection.
   * If FileChooser.showOpenMultipleDialog was used and user cancelled selection an NPE was thrown.
-  *
   */
 object MultipleFileChooserDemo extends JFXApp {
 

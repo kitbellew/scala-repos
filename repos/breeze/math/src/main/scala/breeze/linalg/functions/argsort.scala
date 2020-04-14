@@ -9,7 +9,7 @@ import breeze.util.{quickSelect, Sorting}
   * Returns a sequence of keys sorted by value
   *
   * @author dlwh
- **/
+  */
 object argsort extends UFunc with LowPriorityArgSort {
   @expand
   implicit def argsortDenseVector[@expand.args(Int, Double, Float, Long) T]
@@ -29,7 +29,7 @@ object argsort extends UFunc with LowPriorityArgSort {
   * Returns a sequence of keys sorted by value
   *
   * @author dlwh
- **/
+  */
 object argtopk extends UFunc with LowPriorityArgTopK {
 
   implicit def argtopkDenseVector[T: Ordering]

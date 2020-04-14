@@ -232,8 +232,7 @@ trait TypedField[FieldType] {
 }
 
 /**
-  * A Mapped field that is Nullable in the database.  Will return Empty box for NULL values and Full for non-null values
-  */
+  * A Mapped field that is Nullable in the database.  Will return Empty box for NULL values and Full for non-null values */
 trait MappedNullableField[
     NullableFieldType <: Any, OwnerType <: Mapper[OwnerType]]
     extends MappedField[Box[NullableFieldType], OwnerType] {

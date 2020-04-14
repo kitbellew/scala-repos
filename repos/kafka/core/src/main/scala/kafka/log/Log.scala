@@ -84,7 +84,6 @@ case class LogAppendInfo(
   * @param recoveryPoint The offset at which to begin recovery--i.e. the first offset which has not been flushed to disk
   * @param scheduler The thread pool scheduler used for background actions
   * @param time The time instance used for checking the clock
-  *
   */
 @threadsafe
 class Log(
@@ -176,7 +175,7 @@ class Log(
         throw new IOException("Could not read file " + file)
       val filename = file.getName
       if (filename.endsWith(DeletedFileSuffix) || filename.endsWith(
-            CleanedFileSuffix)) {
+          CleanedFileSuffix)) {
         // if the file ends in .deleted or .cleaned, delete it
         file.delete()
       } else if (filename.endsWith(SwapFileSuffix)) {
@@ -434,7 +433,7 @@ class Log(
           if (messageSizesMaybeChanged) {
             for (messageAndOffset <- validMessages.shallowIterator) {
               if (MessageSet.entrySize(
-                    messageAndOffset.message) > config.maxMessageSize) {
+                  messageAndOffset.message) > config.maxMessageSize) {
                 // we record the original message set size instead of the trimmed size
                 // to be consistent with pre-compression bytesRejectedRate recording
                 BrokerTopicStats
@@ -739,8 +738,8 @@ class Log(
   private def maybeRoll(messagesSize: Int): LogSegment = {
     val segment = activeSegment
     if (segment.size > config.segmentSize - messagesSize ||
-        segment.size > 0 && time.milliseconds - segment.created > config.segmentMs - segment.rollJitterMs ||
-        segment.index.isFull) {
+      segment.size > 0 && time.milliseconds - segment.created > config.segmentMs - segment.rollJitterMs ||
+      segment.index.isFull) {
       debug(
         "Rolling new log segment in %s (log_size = %d/%d, index_size = %d/%d, age_ms = %d/%d)."
           .format(

@@ -151,8 +151,8 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
     new java.lang.Double(value)
 
   /**
-	* Get the JDBC SQL Type for this field
-	*/
+    * Get the JDBC SQL Type for this field
+    */
   def targetSQLType = Types.DOUBLE
   def jdbcFriendly(field: String) = new java.lang.Double(i_is_!)
   def buildSetBooleanValue(

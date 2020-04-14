@@ -150,8 +150,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       conf: Configuration,
       credentials: Credentials) {
     if (shouldGetTokens(
-          sparkConf,
-          "hive") && UserGroupInformation.isSecurityEnabled) {
+        sparkConf,
+        "hive") && UserGroupInformation.isSecurityEnabled) {
       YarnSparkHadoopUtil.get.obtainTokenForHiveMetastore(conf).foreach {
         credentials.addToken(new Text("hive.server2.delegation.token"), _)
       }
@@ -166,8 +166,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       conf: Configuration,
       credentials: Credentials): Unit = {
     if (shouldGetTokens(
-          sparkConf,
-          "hbase") && UserGroupInformation.isSecurityEnabled) {
+        sparkConf,
+        "hbase") && UserGroupInformation.isSecurityEnabled) {
       YarnSparkHadoopUtil.get.obtainTokenForHBase(conf).foreach { token =>
         credentials.addToken(token.getService, token)
         logInfo("Added HBase security token to credentials.")

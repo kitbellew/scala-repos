@@ -301,7 +301,7 @@ object ScalaCollectionRenderer {
       var renderer: NodeRenderer =
         ExpressionChildrenRenderer.getLastChildrenRenderer(parentDescriptor)
       if (renderer == null || childrenValue == null || !renderer.isApplicable(
-            childrenValue.`type`)) {
+          childrenValue.`type`)) {
         renderer = DebugProcessImpl.getDefaultRenderer(
           if (childrenValue != null) childrenValue.`type` else null)
         ExpressionChildrenRenderer.setPreferableChildrenRenderer(

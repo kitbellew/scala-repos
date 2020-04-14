@@ -38,8 +38,6 @@ import scalafx.Includes._
 
 /**
   * ReadOnlyFloatProperty Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ReadOnlyFloatPropertySpec extends FlatSpec with BeforeAndAfterEach {

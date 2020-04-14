@@ -200,7 +200,6 @@ trait WSAPI {
 }
 
 /**
-  *
   */
 trait WSResponse {
 
@@ -632,7 +631,6 @@ trait WSRequest {
 }
 
 /**
-  *
   */
 trait WSAuthScheme {
   // Purposely not sealed in case clients want to add their own auth schemes.

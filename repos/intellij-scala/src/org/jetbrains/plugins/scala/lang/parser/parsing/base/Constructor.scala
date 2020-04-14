@@ -33,10 +33,10 @@ object Constructor {
         latestDoneMarker.getTokenType != ScalaElementTypes.TYPE_PARAM_CLAUSE)
 
     if ((!isAnnotation && !AnnotType.parse(
-          builder,
-          isPattern = false,
-          multipleSQBrackets = false)) ||
-        (isAnnotation && !SimpleType.parse(builder, isPattern = false))) {
+        builder,
+        isPattern = false,
+        multipleSQBrackets = false)) ||
+      (isAnnotation && !SimpleType.parse(builder, isPattern = false))) {
       constrMarker.drop()
       return false
     }

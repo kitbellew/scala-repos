@@ -47,7 +47,6 @@ import scalafx.beans.property.DoubleProperty
   * based upon: Example 1 Defining a Property & Example 2 Using a ChangeListener
   *
   * http://docs.oracle.com/javafx/2.0/binding/jfxpub-binding.htm
-  *
   */
 
 object ScalaFX_Properties_And_Binding_01 {

@@ -44,10 +44,10 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
       classDef.kind match {
         case ClassKind.RawJSType =>
           if (classDef.fields.nonEmpty ||
-              classDef.memberMethods.nonEmpty ||
-              classDef.abstractMethods.nonEmpty ||
-              classDef.exportedMembers.nonEmpty ||
-              classDef.classExports.nonEmpty) {
+            classDef.memberMethods.nonEmpty ||
+            classDef.abstractMethods.nonEmpty ||
+            classDef.exportedMembers.nonEmpty ||
+            classDef.classExports.nonEmpty) {
             reportError(
               s"Raw JS type ${classDef.name} cannot " +
                 "have instance members")
@@ -78,7 +78,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
 
     // Is this a normal class?
     if (classDef.kind != ClassKind.HijackedClass &&
-        classDef.kind != ClassKind.Interface) {
+      classDef.kind != ClassKind.Interface) {
       // Check fields
       for (field <- classDef.fields) {
         implicit val ctx = ErrorContext(field)
@@ -884,7 +884,7 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
               s"${captureParams.size} params vs ${captureValues.size} values")
 
         for ((ParamDef(name, ctpe, mutable, rest), value) <-
-               captureParams zip captureValues) {
+            captureParams zip captureValues) {
           if (mutable)
             reportError(s"Capture parameter $name cannot be mutable")
           if (rest)

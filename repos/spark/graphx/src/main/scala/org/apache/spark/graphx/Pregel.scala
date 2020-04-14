@@ -51,7 +51,6 @@ import org.apache.spark.internal.Logging
   * Pregel(pagerankGraph, initialMessage, numIter)(
   *   vertexProgram, sendMessage, messageCombiner)
   * }}}
-  *
   */
 object Pregel extends Logging {
 
@@ -107,7 +106,6 @@ object Pregel extends Logging {
     * ideally the size of A should not increase.''
     *
     * @return the resulting graph at the end of the computation
-    *
     */
   def apply[VD: ClassTag, ED: ClassTag, A: ClassTag](
       graph: Graph[VD, ED],

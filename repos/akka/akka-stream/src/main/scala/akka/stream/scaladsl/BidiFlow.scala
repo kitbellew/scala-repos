@@ -205,7 +205,6 @@ object BidiFlow {
     *     |  +----------------------+  |
     *     +----------------------------+
     * }}}
-    *
     */
   def fromFlowsMat[I1, O1, I2, O2, M1, M2, M](
       flow1: Graph[FlowShape[I1, O1], M1],
@@ -231,7 +230,6 @@ object BidiFlow {
     *     |  +----------------------+  |
     *     +----------------------------+
     * }}}
-    *
     */
   def fromFlows[I1, O1, I2, O2, M1, M2](
       flow1: Graph[FlowShape[I1, O1], M1],

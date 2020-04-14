@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Reflection Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ReflectionSpec

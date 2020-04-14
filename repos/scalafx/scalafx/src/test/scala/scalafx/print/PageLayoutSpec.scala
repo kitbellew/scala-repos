@@ -52,7 +52,7 @@ class PageLayoutSpec
 
   val skipingMessage: String =
     if (jfxp.Printer.getDefaultPrinter == null
-        || jfxp.Printer.getDefaultPrinter.getDefaultPageLayout == null) {
+      || jfxp.Printer.getDefaultPrinter.getDefaultPageLayout == null) {
       "Neither Default Printer nor Page Layout defined."
     } else {
       ""

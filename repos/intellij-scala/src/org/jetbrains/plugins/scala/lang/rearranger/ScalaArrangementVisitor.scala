@@ -61,7 +61,7 @@ class ScalaArrangementVisitor(
 
   /**
     * Traverses method body to build inter-method dependencies.
-   **/
+    */
   override def visitTypeAlias(alias: ScTypeAlias) {
     processEntry(
       createNewEntry(
@@ -350,10 +350,10 @@ class ScalaArrangementVisitor(
     var currentNode: PsiElement = node
     var range =
       if (first != null && first
-            .isInstanceOf[PsiComment] && prev != null && (!prev
-            .isInstanceOf[PsiWhiteSpace] ||
-          prev.isInstanceOf[PsiWhiteSpace] && !prev.getText.contains(
-            "\n") && prev.getPrevSibling != null)) {
+          .isInstanceOf[PsiComment] && prev != null && (!prev
+          .isInstanceOf[PsiWhiteSpace] ||
+        prev.isInstanceOf[PsiWhiteSpace] && !prev.getText.contains(
+          "\n") && prev.getPrevSibling != null)) {
         new TextRange(
           node.getTextRange.getStartOffset + first.getTextRange.getLength + 1,
           node.getTextRange.getEndOffset)
@@ -415,8 +415,8 @@ class ScalaArrangementVisitor(
       method: ScFunction,
       entry: ScalaArrangementEntry) {
     if (!(groupingRules.contains(JAVA_GETTERS_AND_SETTERS) || groupingRules
-          .contains(SCALA_GETTERS_AND_SETTERS)) ||
-        entry == null) {
+        .contains(SCALA_GETTERS_AND_SETTERS)) ||
+      entry == null) {
       return
     }
     val methodName = method.getName
@@ -487,8 +487,8 @@ object ScalaArrangementVisitor {
   private def hasJavaGetterName(method: ScFunction) = {
     val name = method.getName
     if (nameStartsWith(name, "get") && !(nameStartsWith(name, "getAnd") && name
-          .charAt("getAnd".length)
-          .isUpper)) {
+        .charAt("getAnd".length)
+        .isUpper)) {
       method.returnType.getOrAny != Unit
     } else if (nameStartsWith(name, "is")) {
       method.returnType.getOrAny == Boolean

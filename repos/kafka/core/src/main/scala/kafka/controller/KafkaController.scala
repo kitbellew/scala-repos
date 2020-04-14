@@ -1401,8 +1401,8 @@ class KafkaController(
   def removePartitionFromReassignedPartitions(
       topicAndPartition: TopicAndPartition) {
     if (controllerContext.partitionsBeingReassigned
-          .get(topicAndPartition)
-          .isDefined) {
+        .get(topicAndPartition)
+        .isDefined) {
       // stop watching the ISR changes for this partition
       zkUtils.zkClient.unsubscribeDataChanges(
         getTopicPartitionLeaderAndIsrPath(
@@ -1547,13 +1547,13 @@ class KafkaController(
             // is disallowed for the corresponding topic, then we must preserve the ISR membership so that the replica can
             // eventually be restored as the leader.
             if (newIsr.isEmpty && !LogConfig
-                  .fromProps(
-                    config.originals,
-                    AdminUtils.fetchEntityConfig(
-                      zkUtils,
-                      ConfigType.Topic,
-                      topicAndPartition.topic))
-                  .uncleanLeaderElectionEnable) {
+                .fromProps(
+                  config.originals,
+                  AdminUtils.fetchEntityConfig(
+                    zkUtils,
+                    ConfigType.Topic,
+                    topicAndPartition.topic))
+                .uncleanLeaderElectionEnable) {
               info(
                 "Retaining last ISR %d of partition %s since unclean leader election is disabled"
                   .format(replicaId, topicAndPartition))
@@ -1758,12 +1758,12 @@ class KafkaController(
                   // do this check only if the broker is live and there are no partitions being reassigned currently
                   // and preferred replica election is not in progress
                   if (controllerContext.liveBrokerIds.contains(leaderBroker) &&
-                      controllerContext.partitionsBeingReassigned.size == 0 &&
-                      controllerContext.partitionsUndergoingPreferredReplicaElection.size == 0 &&
-                      !deleteTopicManager.isTopicQueuedUpForDeletion(
-                        topicPartition.topic) &&
-                      controllerContext.allTopics.contains(
-                        topicPartition.topic)) {
+                    controllerContext.partitionsBeingReassigned.size == 0 &&
+                    controllerContext.partitionsUndergoingPreferredReplicaElection.size == 0 &&
+                    !deleteTopicManager.isTopicQueuedUpForDeletion(
+                      topicPartition.topic) &&
+                    controllerContext.allTopics.contains(
+                      topicPartition.topic)) {
                     onPreferredReplicaElection(Set(topicPartition), true)
                   }
                 }
@@ -1810,7 +1810,7 @@ class PartitionsReassignedListener(controller: KafkaController)
     partitionsToBeReassigned.foreach { partitionToBeReassigned =>
       inLock(controllerContext.controllerLock) {
         if (controller.deleteTopicManager.isTopicQueuedUpForDeletion(
-              partitionToBeReassigned._1.topic)) {
+            partitionToBeReassigned._1.topic)) {
           error(
             "Skipping reassignment of partition %s for topic %s since it is currently being deleted"
               .format(

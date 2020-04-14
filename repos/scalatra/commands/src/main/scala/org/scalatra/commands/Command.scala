@@ -34,10 +34,8 @@ import org.scalatra.util.conversion._
   * val registrationDate = form.registeredOn.value.getOrElse(new Date())
   * }}}
   *
-  *
   * @author mmazzarolo
   * @version 0.1
-  *
   */
 
 trait Command extends BindingSyntax with ParamsValueReaderProperties {

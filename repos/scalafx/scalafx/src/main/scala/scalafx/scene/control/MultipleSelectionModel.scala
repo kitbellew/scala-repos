@@ -86,7 +86,6 @@ abstract class MultipleSelectionModel[T](
     * first call clearSelection.
     *
     * The last valid value given will become the selected index / selected item.
-    *
     */
   // To convert Scala varargs to Java varargs, see http://stackoverflow.com/questions/2334200/transforming-scala-varargs-into-java-object-varargs
   def selectIndices(index: Int, indices: Int*): Unit = {

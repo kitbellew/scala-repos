@@ -35,7 +35,6 @@ import scalafx.collections.ObservableBuffer
 /**
   * Example of `Update` notification. Based on example for Issue #169:
   * [[https://github.com/scalafx/scalafx/issues/169#issuecomment-67577800]]
-  *
   */
 object Example3App extends App {
 

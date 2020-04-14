@@ -54,7 +54,6 @@ import scalafx.scene.shape.Rectangle
   * based upon: Example 3 Animating the Scene
   *
   * http://docs.oracle.com/javafx/2.0/scenegraph/jfxpub-scenegraph.htm
-  *
   */
 
 object ScalaFX_Scene_Graph_App_03 extends JFXApp {

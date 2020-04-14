@@ -239,9 +239,9 @@ class FlowBufferSpec extends AkkaSpec {
     }
 
     for (strategy ← List(
-           OverflowStrategy.dropHead,
-           OverflowStrategy.dropTail,
-           OverflowStrategy.dropBuffer)) {
+        OverflowStrategy.dropHead,
+        OverflowStrategy.dropTail,
+        OverflowStrategy.dropBuffer)) {
 
       s"work with $strategy if buffer size of one" in {
 

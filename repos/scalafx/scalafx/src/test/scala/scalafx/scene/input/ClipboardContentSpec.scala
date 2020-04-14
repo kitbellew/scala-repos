@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ClipboardContent Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ClipboardContentSpec

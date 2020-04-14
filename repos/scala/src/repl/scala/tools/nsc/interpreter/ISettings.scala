@@ -10,7 +10,7 @@ package interpreter
   *
   * @version 1.0
   * @author Lex Spoon, 2007/3/24
- **/
+  */
 class ISettings(intp: IMain) {
 
   /** The maximum length of toString to use when printing the result

@@ -24,7 +24,7 @@ import org.scalatest.FunSuite
   * TODO
   *
   * @author dlwh
- **/
+  */
 class partitionTest extends FunSuite {
 
   test("partition array in place") {

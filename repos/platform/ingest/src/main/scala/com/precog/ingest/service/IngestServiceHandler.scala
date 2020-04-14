@@ -226,8 +226,8 @@ class IngestServiceHandler(
 
               val errorHandling =
                 if (request.parameters
-                      .get('mode)
-                      .exists(_ equalsIgnoreCase "batch")) IngestAllPossible
+                    .get('mode)
+                    .exists(_ equalsIgnoreCase "batch")) IngestAllPossible
                 else StopOnFirstError
 
               val durabilityM = request.method match {

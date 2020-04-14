@@ -63,9 +63,9 @@ object AutoUpdate {
             val originalRepoName = rs.getString("ORIGIN_REPOSITORY_NAME")
             if (originalUserName != null && originalRepoName != null) {
               if (conn.selectInt(
-                    "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
-                    originalUserName,
-                    originalRepoName) == 0) {
+                  "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
+                  originalUserName,
+                  originalRepoName) == 0) {
                 conn.update(
                   "UPDATE REPOSITORY SET ORIGIN_USER_NAME = NULL, ORIGIN_REPOSITORY_NAME = NULL " +
                     "WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
@@ -78,9 +78,9 @@ object AutoUpdate {
             val parentRepoName = rs.getString("PARENT_REPOSITORY_NAME")
             if (parentUserName != null && parentRepoName != null) {
               if (conn.selectInt(
-                    "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
-                    parentUserName,
-                    parentRepoName) == 0) {
+                  "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
+                  parentUserName,
+                  parentRepoName) == 0) {
                 conn.update(
                   "UPDATE REPOSITORY SET PARENT_USER_NAME = NULL, PARENT_REPOSITORY_NAME = NULL " +
                     "WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",

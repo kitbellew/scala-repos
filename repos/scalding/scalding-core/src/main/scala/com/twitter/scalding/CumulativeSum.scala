@@ -35,7 +35,7 @@ object CumulativeSum {
 
   class CumulativeSumExtension[K, U, V](val pipe: TypedPipe[(K, (U, V))]) {
 
-    /** Takes a sortable field and a monoid and returns the cumulative sum of that monoid **/
+    /** Takes a sortable field and a monoid and returns the cumulative sum of that monoid * */
     def cumulativeSum(implicit
         sg: Semigroup[V],
         ordU: Ordering[U],
@@ -84,7 +84,7 @@ object CumulativeSum {
         .flatMap {
           case (k, maybeAcc) =>
             for (acc <- maybeAcc;
-                 previousSum <- acc._1) yield {
+              previousSum <- acc._1) yield {
               (k, acc._3) -> (None, previousSum)
             }
         }

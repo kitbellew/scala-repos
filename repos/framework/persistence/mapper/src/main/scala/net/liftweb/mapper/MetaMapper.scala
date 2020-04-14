@@ -1413,9 +1413,9 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
           mf.setName_!(v.getName)
           tArray += FieldHolder(mf.name, v, mf)
           for (colName <-
-                 mf.dbColumnNames(v.getName)
-                   .map(MapperRules.quoteColumnName.vend)
-                   .map(_.toLowerCase)) {
+              mf.dbColumnNames(v.getName)
+                .map(MapperRules.quoteColumnName.vend)
+                .map(_.toLowerCase)) {
             mappedColumnInfo += colName -> mf
             mappedColumns += colName -> v
           }
@@ -2525,9 +2525,9 @@ trait KeyedMetaMapper[Type, A <: KeyedMapper[Type, A]]
   def objFromIndexedParam: Box[A] = {
     val found =
       for (req <- S.request.toList;
-           (param, value :: _) <- req.params;
-           fh <- mappedFieldList
-           if fh.field.dbIndexed_? == true && fh.name.equals(param))
+        (param, value :: _) <- req.params;
+        fh <- mappedFieldList
+        if fh.field.dbIndexed_? == true && fh.name.equals(param))
         yield find(value)
 
     found.filter(obj =>

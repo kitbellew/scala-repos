@@ -101,7 +101,7 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
 
   private def checkIfSpecialized(): Unit = {
     if (data.isInstanceOf[Array[Double]] && getClass
-          .getName() == "breeze.linalg.DenseVector") throw new Exception("...")
+        .getName() == "breeze.linalg.DenseVector") throw new Exception("...")
   }
   // uncomment to debug places where specialization fails
   //  checkIfSpecialized()
@@ -255,7 +255,7 @@ class DenseVector[@spec(Double, Int, Float, Long) V](
       arr
     }
 
-  /**Returns copy of this [[breeze.linalg.DenseVector]] as a [[scala.Vector]]*/
+  /** Returns copy of this [[breeze.linalg.DenseVector]] as a [[scala.Vector]] */
   def toScalaVector()(implicit cm: ClassTag[V]): scala.Vector[V] =
     this.toArray.toVector
   // </editor-fold>
@@ -295,7 +295,6 @@ object DenseVector
   }
 
   /**
-    *
     * Creates a new DenseVector using the provided array (not making a copy!). In generic contexts, prefer to
     * use this (or apply) instead of `new DenseVector[V](data, offset, stride, length)`, which in general
     * won't give specialized implementations.
@@ -406,7 +405,7 @@ object DenseVector
       : CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] = {
     new CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       def apply(from: DenseVector[V], fn: (V) => V2): DenseVector[V2] = {
         val out = new Array[V2](from.length)
 
@@ -552,7 +551,7 @@ object DenseVector
       : CanMapKeyValuePairs[DenseVector[V], Int, V, V2, DenseVector[V2]] =
     new CanMapKeyValuePairs[DenseVector[V], Int, V, V2, DenseVector[V2]] {
 
-      /**Maps all key-value pairs from the given collection. */
+      /** Maps all key-value pairs from the given collection. */
       def map(from: DenseVector[V], fn: (Int, V) => V2): DenseVector[V2] = {
         // slow: DenseVector.tabulate(from.length)(i => fn(i, from(i)))
         val arr = new Array[V2](from.length)
@@ -570,7 +569,7 @@ object DenseVector
         DenseVector[V2](arr)
       }
 
-      /**Maps all active key-value pairs from the given collection. */
+      /** Maps all active key-value pairs from the given collection. */
       def mapActive(
           from: DenseVector[V],
           fn: (Int, V) => V2): DenseVector[V2] = {
@@ -616,7 +615,7 @@ object DenseVector
       extends CanZipMapValues[DenseVector[V], V, RV, DenseVector[RV]] {
     def create(length: Int) = DenseVector(new Array[RV](length))
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(
         from: DenseVector[V],
         from2: DenseVector[V],
@@ -646,7 +645,7 @@ object DenseVector
       extends CanZipMapKeyValues[DenseVector[V], Int, V, RV, DenseVector[RV]] {
     def create(length: Int) = DenseVector(new Array[RV](length))
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(
         from: DenseVector[V],
         from2: DenseVector[V],

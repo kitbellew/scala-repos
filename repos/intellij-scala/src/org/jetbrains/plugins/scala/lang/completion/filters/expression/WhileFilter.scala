@@ -20,7 +20,7 @@ class WhileFilter extends ElementFilter {
     if (leaf != null) {
       var parent = leaf.getParent
       if (parent.isInstanceOf[ScExpression] && parent.getPrevSibling != null &&
-          parent.getPrevSibling.getPrevSibling != null) {
+        parent.getPrevSibling.getPrevSibling != null) {
         val doStmt = parent.getPrevSibling match {
           case x: ScDoStmt => x
           case x

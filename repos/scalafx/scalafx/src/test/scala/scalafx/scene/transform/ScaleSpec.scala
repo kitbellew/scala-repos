@@ -36,8 +36,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * Scale Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ScaleSpec

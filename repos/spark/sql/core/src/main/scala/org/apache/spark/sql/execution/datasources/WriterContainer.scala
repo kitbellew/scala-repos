@@ -155,7 +155,7 @@ private[sql] abstract class BaseWriterContainer(
     } catch {
       case e: org.apache.hadoop.fs.FileAlreadyExistsException =>
         if (outputCommitter
-              .isInstanceOf[parquet.DirectParquetOutputCommitter]) {
+            .isInstanceOf[parquet.DirectParquetOutputCommitter]) {
           // Spark-11382: DirectParquetOutputCommitter is not idempotent, meaning on retry
           // attempts, the task will fail because the output file is created from a prior attempt.
           // This often means the most visible error to the user is misleading. Augment the error

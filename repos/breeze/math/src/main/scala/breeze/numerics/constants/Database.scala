@@ -3,7 +3,7 @@ package breeze.numerics.constants
 import scala.collection.immutable.HashMap
 import scala.util.matching.Regex
 
-/**Object encapsulating CODATA2010 constants.
+/** Object encapsulating CODATA2010 constants.
   *
   * @author ktakagaki
   * @date 3/12/14.

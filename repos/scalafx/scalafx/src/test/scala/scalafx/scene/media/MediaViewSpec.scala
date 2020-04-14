@@ -36,8 +36,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * MediaView Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class MediaViewSpec

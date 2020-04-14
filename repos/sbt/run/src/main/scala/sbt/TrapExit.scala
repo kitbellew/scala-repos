@@ -72,7 +72,7 @@ object TrapExit {
 
   private type ThreadID = String
 
-  /** `true` if the thread `t` is in the TERMINATED state.x*/
+  /** `true` if the thread `t` is in the TERMINATED state.x */
   private def isDone(t: Thread): Boolean = t.getState == Thread.State.TERMINATED
 
   private def computeID(g: ThreadGroup): ThreadID =
@@ -148,7 +148,7 @@ object TrapExit {
 private final class TrapExit(delegateManager: SecurityManager)
     extends SecurityManager {
 
-  /** Tracks the number of running applications in order to short-cut SecurityManager checks when no applications are active.*/
+  /** Tracks the number of running applications in order to short-cut SecurityManager checks when no applications are active. */
   private[this] val running = new java.util.concurrent.atomic.AtomicInteger
 
   /** Maps a thread or thread group to its originating application.  The thread is represented by a unique identifier to avoid leaks. */
@@ -269,7 +269,7 @@ private final class TrapExit(delegateManager: SecurityManager)
       }
     }
 
-    /** Records a new group both in the global [[TrapExit]] manager and for this [[App]].*/
+    /** Records a new group both in the global [[TrapExit]] manager and for this [[App]]. */
     def register(g: ThreadGroup): Unit =
       if (g != null && g != creatorGroup && !isSystemGroup(g)) {
         val groupID = computeID(g)
@@ -426,7 +426,7 @@ private final class TrapExit(delegateManager: SecurityManager)
         stopAllThreads(a)
     }
 
-  /** SecurityManager hook to trap calls to `System.exit` to avoid shutting down the whole JVM.*/
+  /** SecurityManager hook to trap calls to `System.exit` to avoid shutting down the whole JVM. */
   override def checkExit(status: Int): Unit =
     if (active) {
       val t = currentThread
@@ -437,7 +437,7 @@ private final class TrapExit(delegateManager: SecurityManager)
       }
     }
 
-  /** This ensures that only actual calls to exit are trapped and not just calls to check if exit is allowed.*/
+  /** This ensures that only actual calls to exit are trapped and not just calls to check if exit is allowed. */
   private def isRealExit(element: StackTraceElement): Boolean =
     element.getClassName == "java.lang.Runtime" && element.getMethodName == "exit"
 
@@ -517,7 +517,7 @@ private final class TrapExit(delegateManager: SecurityManager)
     }
   }
 
-  /** Returns true if the given thread is in the 'system' thread group or is an AWT thread other than AWT-EventQueue.*/
+  /** Returns true if the given thread is in the 'system' thread group or is an AWT thread other than AWT-EventQueue. */
   private def isSystemThread(t: Thread) =
     if (t.getName.startsWith("AWT-"))
       !isEventQueue(t)
@@ -532,7 +532,7 @@ private final class TrapExit(delegateManager: SecurityManager)
     t.getName.startsWith("AWT-EventQueue")
 }
 
-/** A thread-safe, write-once, optional cell for tracking an application's exit code.*/
+/** A thread-safe, write-once, optional cell for tracking an application's exit code. */
 private final class ExitCode {
   private var code: Option[Int] = None
   def set(c: Int): Unit = synchronized { code = code orElse Some(c) }

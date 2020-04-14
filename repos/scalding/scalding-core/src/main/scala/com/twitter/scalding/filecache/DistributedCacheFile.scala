@@ -60,7 +60,6 @@ object URIHasher {
   *   }
   * }
   * }}}
-  *
   */
 object DistributedCacheFile {
 

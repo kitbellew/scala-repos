@@ -106,7 +106,6 @@ object AdminUtils extends Logging {
     * @return a Map from partition id to replica ids
     * @throws AdminOperationException If rack information is supplied but it is incomplete, or if it is not possible to
     *                                 assign each replica to a unique rack.
-    *
     */
   def assignReplicasToBrokers(
       brokerMetadatas: Seq[BrokerMetadata],
@@ -223,9 +222,9 @@ object AdminUtils extends Logging {
           //    that do not have any replica, or
           // 2. the broker has already assigned a replica AND there is one or more brokers that do not have replica assigned
           if ((!racksWithReplicas.contains(
-                rack) || racksWithReplicas.size == numRacks)
-              && (!brokersWithReplicas.contains(
-                broker) || brokersWithReplicas.size == numBrokers)) {
+              rack) || racksWithReplicas.size == numRacks)
+            && (!brokersWithReplicas.contains(
+              broker) || brokersWithReplicas.size == numBrokers)) {
             replicaBuffer += broker
             racksWithReplicas += rack
             brokersWithReplicas += broker
@@ -378,7 +377,7 @@ object AdminUtils extends Logging {
         throw new AdminOperationException(
           "duplicate brokers in replica assignment: " + brokerList)
       if (checkBrokerAvailable && !brokerList.toSet.subsetOf(
-            availableBrokerList))
+          availableBrokerList))
         throw new AdminOperationException(
           "some specified brokers not available. specified brokers: " + brokerList.toString +
             "available broker:" + availableBrokerList.toString)
@@ -587,7 +586,6 @@ object AdminUtils extends Logging {
     * @param clientId: The clientId for which configs are being changed
     * @param configs: The final set of configs that will be applied to the topic. If any new configs need to be added or
     *                 existing configs need to be deleted, it should be done prior to invoking this API
-    *
     */
   def changeClientIdConfig(
       zkUtils: ZkUtils,
@@ -603,7 +601,6 @@ object AdminUtils extends Logging {
     * @param topic: The topic for which configs are being changed
     * @param configs: The final set of configs that will be applied to the topic. If any new configs need to be added or
     *                 existing configs need to be deleted, it should be done prior to invoking this API
-    *
     */
   def changeTopicConfig(zkUtils: ZkUtils, topic: String, configs: Properties) {
     if (!topicExists(zkUtils, topic))

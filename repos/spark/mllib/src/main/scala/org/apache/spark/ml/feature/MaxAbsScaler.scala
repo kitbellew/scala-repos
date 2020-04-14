@@ -106,7 +106,6 @@ object MaxAbsScaler extends DefaultParamsReadable[MaxAbsScaler] {
 /**
   * :: Experimental ::
   * Model fitted by [[MaxAbsScaler]].
-  *
   */
 @Experimental
 class MaxAbsScalerModel private[ml] (

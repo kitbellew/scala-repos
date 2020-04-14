@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * BigDecimalStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class BigDecimalStringConverterSpec

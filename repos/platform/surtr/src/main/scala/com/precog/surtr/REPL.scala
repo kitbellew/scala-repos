@@ -217,7 +217,7 @@ trait REPL
       def loop() {
         val results = prompt(readNext(reader, color))
         val successes = results collect { case Success(tree, _) => tree }
-        val failures = results collect { case f: Failure        => f }
+        val failures = results collect { case f: Failure => f }
 
         if (successes.isEmpty) {
           try {

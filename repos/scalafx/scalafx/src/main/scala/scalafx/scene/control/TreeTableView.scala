@@ -306,7 +306,6 @@ object TreeTableView {
     * @constructor Creates a new TreeTableViewSelectionModel from a JavaFX one.
     * @param delegate A JavaFX TreeTableViewSelectionModel to be wrapped. Its default value is a new JavaFX TreeTableViewSelectionModel.
     * @since 8.0
-    *
     */
   abstract class TreeTableViewSelectionModel[S](
       override val delegate: jfxsc.TreeTableView.TreeTableViewSelectionModel[S])
@@ -608,7 +607,6 @@ object TreeTableView {
   * @param delegate A JavaFX TreeTableView to be wrapped. Its default value is a new JavaFX TreeTableView.
   * @tparam S The type of the TreeItem instances used in this TreeTableView.
   * @since 8.0
-  *
   */
 class TreeTableView[S](
     override val delegate: jfxsc.TreeTableView[S] = new jfxsc.TreeTableView[S])
@@ -958,7 +956,6 @@ class TreeTableView[S](
 
   /**
     * Applies the currently installed resize policy against the given column, resizing it based on the delta value provided.
-    *
     */
   def resizeColumn(column: TreeTableColumn[S, _], delta: Double): Boolean = {
     delegate.resizeColumn(column, delta)

@@ -249,7 +249,7 @@ object Templates {
                     else rawElems
                   ret = (cache(key) = possiblySurrounded)
                 } else if (xmlb.isInstanceOf[Failure] &&
-                           (Props.devMode | Props.testMode)) {
+                  (Props.devMode | Props.testMode)) {
                   val msg = xmlb.asInstanceOf[Failure].msg
                   val e = xmlb.asInstanceOf[Failure].exception
                   return Helpers.errorDiv(<div>Error locating template: <b>{

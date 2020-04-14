@@ -70,7 +70,6 @@ object ConfigType {
   *
   * On restart the config manager re-processes all notifications. This will usually be wasted work, but avoids any race conditions
   * on startup where a change might be missed between the initial config load and registering for change notifications.
-  *
   */
 class DynamicConfigManager(
     private val zkUtils: ZkUtils,

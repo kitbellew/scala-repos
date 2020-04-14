@@ -107,7 +107,7 @@ trait MetaProtoExtendedSession[T <: ProtoExtendedSession[T]]
   /**
     * This does the cookie to User lookup.  In Boot.scala:
     * <code>
-    LiftRules.earlyInStateful.append(ExtendedSession.testCookieEarlyInStateful)
+    *    LiftRules.earlyInStateful.append(ExtendedSession.testCookieEarlyInStateful)
     * </code>
     */
   def testCookieEarlyInStateful: Box[Req] => Unit = { ignoredReq =>

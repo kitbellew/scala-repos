@@ -295,7 +295,7 @@ private[spark] object ClosureCleaner extends Logging {
       field.setAccessible(true)
       // If the starting closure doesn't actually need our enclosing object, then just null it out
       if (accessedFields.contains(func.getClass) &&
-          !accessedFields(func.getClass).contains("$outer")) {
+        !accessedFields(func.getClass).contains("$outer")) {
         logDebug(
           s" + the starting closure doesn't actually need $parent, so we null it out")
         field.set(func, null)
@@ -399,7 +399,7 @@ private[util] class FieldAccessFinder(
 
     // If we are told to visit only a certain method and this is not the one, ignore it
     if (specificMethod.isDefined &&
-        (specificMethod.get.name != name || specificMethod.get.desc != desc)) {
+      (specificMethod.get.name != name || specificMethod.get.desc != desc)) {
       return null
     }
 
@@ -426,7 +426,7 @@ private[util] class FieldAccessFinder(
           // Check for calls a getter method for a variable in an interpreter wrapper object.
           // This means that the corresponding field will be accessed, so we should save it.
           if (op == INVOKEVIRTUAL && owner.endsWith("$iwC") && !name.endsWith(
-                "$outer")) {
+              "$outer")) {
             fields(cl) += name
           }
           // Optionally visit other methods to find fields that are transitively referenced
@@ -486,8 +486,8 @@ private class InnerClosureFinder(output: Set[Class[_]])
           itf: Boolean) {
         val argTypes = Type.getArgumentTypes(desc)
         if (op == INVOKESPECIAL && name == "<init>" && argTypes.length > 0
-            && argTypes(0).toString.startsWith("L") // is it an object?
-            && argTypes(0).getInternalName == myName) {
+          && argTypes(0).toString.startsWith("L") // is it an object?
+          && argTypes(0).getInternalName == myName) {
           // scalastyle:off classforname
           output += Class.forName(
             owner.replace('/', '.'),

@@ -106,7 +106,7 @@ class ScalaControlFlowBuilder(
         for (i <- myPending.size - 1 to (0, -1)) {
           val (inst, scope) = myPending(i)
           if (scope != null &&
-              !PsiTreeUtil.isAncestor(scope, elem, false)) {
+            !PsiTreeUtil.isAncestor(scope, elem, false)) {
             addEdge(inst, instruction)
             ab += i
           }
@@ -152,9 +152,9 @@ class ScalaControlFlowBuilder(
     myHead = instr
   }
 
-  /**************************************
+  /** **********************************
     * VISITOR METHODS
-   **************************************/
+    * ************************************ */
 
   override def visitPatternDefinition(pattern: ScPatternDefinition) {
     pattern.expr.foreach(_.accept(this))
@@ -577,7 +577,7 @@ class ScalaControlFlowBuilder(
       } else {
         startNode(Some(fBlock)) { finInstr =>
           for (p @ (instr, info) <- myTransitionInstructions;
-               if info.elem eq fBlock) {
+            if info.elem eq fBlock) {
             addEdge(instr, finInstr)
             myTransitionInstructions -= p
           }

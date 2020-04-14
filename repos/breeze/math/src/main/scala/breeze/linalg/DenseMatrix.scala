@@ -413,7 +413,7 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
 
   private def checkIsSpecialized(): Unit = {
     if (data.isInstanceOf[Array[Double]] && getClass
-          .getName() == "breeze.linalg.DenseMatrix") throw new Exception("...")
+        .getName() == "breeze.linalg.DenseMatrix") throw new Exception("...")
   }
   // uncomment to debug places where specialization fails
 //  checkIsSpecialized()
@@ -437,13 +437,12 @@ object DenseMatrix
       cols: Int): DenseMatrix[V] = {
     val data = new Array[V](rows * cols)
     if (implicitly[Zero[V]] != null && rows * cols != 0 && data(
-          0) != implicitly[Zero[V]].zero)
+        0) != implicitly[Zero[V]].zero)
       ArrayUtil.fill(data, 0, data.length, implicitly[Zero[V]].zero)
     DenseMatrix.create(rows, cols, data)
   }
 
   /**
-    *
     * Creates a new DenseMatrix using the provided array (not making a copy!). In generic contexts, prefer to
     * use this (or the other create methd) instead of `new DenseMatrix[V](rows, cols, data)`, which in general
     * won't give specialized implementations.
@@ -461,7 +460,6 @@ object DenseMatrix
   }
 
   /**
-    *
     * Creates a new DenseMatrix using the provided array (not making a copy!). In generic contexts, prefer to
     * use this (or the other create methd) instead of `new DenseMatrix[V](rows, cols, data)`, which in general
     * won't give specialized implementations.
@@ -1270,7 +1268,7 @@ object DenseMatrix
     def create(rows: Int, cols: Int) =
       DenseMatrix.create(rows, cols, new Array[RV](rows * cols), 0, rows)
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(from: DenseMatrix[V], from2: DenseMatrix[V], fn: (V, V) => RV) = {
       require(from.rows == from2.rows, "Vector row dimensions must match!")
       require(from.cols == from2.cols, "Vector col dimensions must match!")
@@ -1316,7 +1314,7 @@ object DenseMatrix
       map(from, from2, fn)
     }
 
-    /**Maps all corresponding values from the two collection. */
+    /** Maps all corresponding values from the two collection. */
     def map(
         from: DenseMatrix[V],
         from2: DenseMatrix[V],

@@ -46,7 +46,7 @@ sealed trait ProjectDefinition[PR <: ProjectReference] {
     */
   def id: String
 
-  /** The base directory for the project.*/
+  /** The base directory for the project. */
   def base: File
 
   /**
@@ -80,7 +80,7 @@ sealed trait ProjectDefinition[PR <: ProjectReference] {
   def uses: Seq[PR] = aggregate ++ dependencies.map(_.project)
   def referenced: Seq[PR] = delegates ++ uses
 
-  /** Configures the sources of automatically appended settings.*/
+  /** Configures the sources of automatically appended settings. */
   def auto: AddSettings
 
   /**
@@ -183,10 +183,10 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
   def configure(transforms: (Project => Project)*): Project =
     Function.chain(transforms)(this)
 
-  /** Sets the base directory for this project.*/
+  /** Sets the base directory for this project. */
   def in(dir: File): Project = copy(base = dir)
 
-  /** Adds configurations to this project.  Added configurations replace existing configurations with the same name.*/
+  /** Adds configurations to this project.  Added configurations replace existing configurations with the same name. */
   def overrideConfigs(cs: Configuration*): Project =
     copy(configurations = Defaults.overrideConfigs(cs: _*)(configurations))
 
@@ -290,7 +290,7 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
 }
 sealed trait ResolvedProject extends ProjectDefinition[ProjectRef] {
 
-  /** The [[AutoPlugin]]s enabled for this project as computed from [[plugins]].*/
+  /** The [[AutoPlugin]]s enabled for this project as computed from [[plugins]]. */
   def autoPlugins: Seq[AutoPlugin]
 }
 
@@ -412,13 +412,13 @@ object Project extends ProjectExtra {
       Nil) with Project with GeneratedRootProject
   }
 
-  /** Returns None if `id` is a valid Project ID or Some containing the parser error message if it is not.*/
+  /** Returns None if `id` is a valid Project ID or Some containing the parser error message if it is not. */
   def validProjectID(id: String): Option[String] =
     DefaultParsers.parse(id, DefaultParsers.ID).left.toOption
   private[this] def validProjectIDStart(id: String): Boolean =
     DefaultParsers.parse(id, DefaultParsers.IDStart).isRight
 
-  /** Constructs a valid Project ID based on `id` and returns it in Right or returns the error message in Left if one cannot be constructed.*/
+  /** Constructs a valid Project ID based on `id` and returns it in Right or returns the error message in Left if one cannot be constructed. */
   def normalizeProjectID(id: String): Either[String, String] = {
     val attempt = normalizeBase(id)
     val refined =

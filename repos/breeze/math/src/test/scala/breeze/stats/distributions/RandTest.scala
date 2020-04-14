@@ -24,7 +24,7 @@ import org.scalatest.FunSuite
   * TODO
   *
   * @author dlwh
- **/
+  */
 class RandTest extends FunSuite {
   test("randInt is always non-negative") {
     assert(RandBasis.mt0.randInt.sample(10000).forall(_ >= 0))

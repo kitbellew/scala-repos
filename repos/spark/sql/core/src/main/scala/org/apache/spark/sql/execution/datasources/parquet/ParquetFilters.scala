@@ -70,7 +70,7 @@ private[sql] object ParquetFilters {
       (n: String, v: Any) => FilterApi.eq(
         binaryColumn(n),
         Option(v).map(b => Binary.fromByteArray(v.asInstanceOf[Array[Byte]])).orNull)
-   */
+     */
   }
 
   private val makeNotEq
@@ -101,7 +101,7 @@ private[sql] object ParquetFilters {
       (n: String, v: Any) => FilterApi.notEq(
         binaryColumn(n),
         Option(v).map(b => Binary.fromByteArray(v.asInstanceOf[Array[Byte]])).orNull)
-   */
+     */
   }
 
   private val makeLt
@@ -127,7 +127,7 @@ private[sql] object ParquetFilters {
     case BinaryType =>
       (n: String, v: Any) =>
         FilterApi.lt(binaryColumn(n), Binary.fromByteArray(v.asInstanceOf[Array[Byte]]))
-   */
+     */
   }
 
   private val makeLtEq
@@ -154,7 +154,7 @@ private[sql] object ParquetFilters {
     case BinaryType =>
       (n: String, v: Any) =>
         FilterApi.ltEq(binaryColumn(n), Binary.fromByteArray(v.asInstanceOf[Array[Byte]]))
-   */
+     */
   }
 
   private val makeGt
@@ -181,7 +181,7 @@ private[sql] object ParquetFilters {
     case BinaryType =>
       (n: String, v: Any) =>
         FilterApi.gt(binaryColumn(n), Binary.fromByteArray(v.asInstanceOf[Array[Byte]]))
-   */
+     */
   }
 
   private val makeGtEq
@@ -208,7 +208,7 @@ private[sql] object ParquetFilters {
     case BinaryType =>
       (n: String, v: Any) =>
         FilterApi.gtEq(binaryColumn(n), Binary.fromByteArray(v.asInstanceOf[Array[Byte]]))
-   */
+     */
   }
 
   private val makeInSet
@@ -244,7 +244,7 @@ private[sql] object ParquetFilters {
       (n: String, v: Set[Any]) =>
         FilterApi.userDefined(binaryColumn(n),
           SetInFilter(v.map(e => Binary.fromByteArray(e.asInstanceOf[Array[Byte]]))))
-   */
+     */
   }
 
   /**

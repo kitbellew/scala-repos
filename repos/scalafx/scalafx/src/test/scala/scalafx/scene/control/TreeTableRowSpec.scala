@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * TreeTableRow Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class TreeTableRowSpec[T]

@@ -3,7 +3,7 @@ package breeze.signal
 import breeze.linalg.DenseVector
 import breeze.util.Opt
 
-/**Specifies all possible option objects for the breeze.signal package
+/** Specifies all possible option objects for the breeze.signal package
   *
   * @author ktakagaki
   */
@@ -29,7 +29,7 @@ import breeze.util.Opt
 
 ///Individual Options
 
-/**Option values: window function for filter design.*/
+/** Option values: window function for filter design. */
 abstract class OptWindowFunction extends Opt
 object OptWindowFunction {
   case class Hamming(alpha: Double = 0.54, beta: Double = 0.46)
@@ -52,7 +52,7 @@ object OptWindowFunction {
   }
 }
 
-/**Option values: how to deal with convolution overhangs.*/
+/** Option values: how to deal with convolution overhangs. */
 abstract class OptOverhang extends Opt
 object OptOverhang {
 //  /** THIS OPTION REMOVED FOR NOW, DUE TO AMBIGUITY WITH KERNEL DIRECTION (IE CONVOLVE VS CORRELATE)
@@ -66,52 +66,52 @@ object OptOverhang {
 //    * {1, -1}: maximal overhangs at both ends.
 //    */
 //  case class Sequence(k0: Int, k1: Int) extends OptOverhang
-  /**Option value: Default, no overhangs, equivalent to Sequence(-1, 1).*/
+  /** Option value: Default, no overhangs, equivalent to Sequence(-1, 1). */
   case object None extends OptOverhang
 
-  /**Option value: maximal overhangs, equivalent to MatLab conv default ('full'), equivalent to Sequence(1, -1).*/
+  /** Option value: maximal overhangs, equivalent to MatLab conv default ('full'), equivalent to Sequence(1, -1). */
   case object Full extends OptOverhang
 
-  /**Option value: maximal overhangs, equivalent to MatLab conv default ('full'), equivalent to Sequence(1, -1).*/
+  /** Option value: maximal overhangs, equivalent to MatLab conv default ('full'), equivalent to Sequence(1, -1). */
   case object PreserveLength extends OptOverhang
 //  /**Option value: Forms the cyclic convolution where the kth kernel element is aligned with each data element.*/
 //  case class OptInteger(k: Int) extends OptOverhang
 }
 
-/**Option values: how to deal with convolution and filter padding.*/
+/** Option values: how to deal with convolution and filter padding. */
 abstract class OptPadding extends Opt
 object OptPadding {
 
-  /**Option value: Performs cyclical convolutions (ie no padding)*/
+  /** Option value: Performs cyclical convolutions (ie no padding) */
   case object Cyclical extends OptPadding
 
-  /**Option value: Pads with the first and last components of the data*/
+  /** Option value: Pads with the first and last components of the data */
   case object Boundary extends OptPadding
 
-  /**Option value: Pads with a specific value, eg 0.*/
+  /** Option value: Pads with a specific value, eg 0. */
   case class ValueOpt[T](value: T) extends OptPadding
 
-  /**Option value: Pads with 0.*/
+  /** Option value: Pads with 0. */
   case object Zero extends OptPadding
 }
 
-/**Option values: how to deal with convolution and filter padding.*/
+/** Option values: how to deal with convolution and filter padding. */
 abstract class OptMethod extends Opt
 object OptMethod {
 
-  /**Option value: Decides on the fastest convolve method based on data size and type.*/
+  /** Option value: Decides on the fastest convolve method based on data size and type. */
   case object Automatic extends OptMethod
 
-  /**Option value: Convolve using FFT.*/
+  /** Option value: Convolve using FFT. */
   case object FFT extends OptMethod
 
-  /**Option value: Convolve using for loop.*/
+  /** Option value: Convolve using for loop. */
 }
 
 abstract class OptDesignMethod extends Opt
 object OptDesignMethod {
 
-  /**Option value: use firwin() to design FIR kernel using window method.*/
+  /** Option value: use firwin() to design FIR kernel using window method. */
   case object Firwin extends OptDesignMethod
   case object Cheby1 extends OptDesignMethod
 }
@@ -122,7 +122,7 @@ object OptFilterTaps {
   case class IntOpt(n: Int) extends OptFilterTaps
 }
 
-/**slices specific result ranges out of results for convolve, etc*/
+/** slices specific result ranges out of results for convolve, etc */
 abstract class OptRange extends Opt
 object OptRange {
   case object All extends OptRange {

@@ -381,7 +381,7 @@ private[spark] class MesosSchedulerBackend(
       // Decline offers that weren't used
       // NOTE: This logic assumes that we only get a single offer for each host in a given batch
       for (o <- usableOffers
-           if !slavesIdsOfAcceptedOffers.contains(o.getSlaveId.getValue)) {
+        if !slavesIdsOfAcceptedOffers.contains(o.getSlaveId.getValue)) {
         d.declineOffer(o.getId)
       }
     }
@@ -422,7 +422,7 @@ private[spark] class MesosSchedulerBackend(
       val state = TaskState.fromMesos(status.getState)
       synchronized {
         if (TaskState.isFailed(TaskState.fromMesos(status.getState))
-            && taskIdToSlaveId.contains(tid)) {
+          && taskIdToSlaveId.contains(tid)) {
           // We lost the executor on this slave, so remember that it's gone
           removeExecutor(taskIdToSlaveId(tid), "Lost executor")
         }

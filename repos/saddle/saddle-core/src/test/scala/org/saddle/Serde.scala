@@ -12,7 +12,7 @@ import java.io.{
   */
 object Serde {
 
-  /** provides a deep copy of this input object by serializing and deserializing it*/
+  /** provides a deep copy of this input object by serializing and deserializing it */
   def serializedCopy[T](input: T): T = {
 
     val baos = new ByteArrayOutputStream()

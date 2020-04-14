@@ -79,8 +79,6 @@ package play.api.mvc {
       *
       * retrieves the last untrusted proxy
       * from the Forwarded-Headers or the X-Forwarded-*-Headers.
-      *
-      *
       */
     def remoteAddress: String
 

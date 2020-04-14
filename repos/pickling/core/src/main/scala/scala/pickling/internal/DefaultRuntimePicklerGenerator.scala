@@ -16,14 +16,13 @@ import scala.reflect.runtime.{universe => ru}
   *
   * TODO - There is still something off here compared to the hardcoded versions.
   *
-  *
-[error] 	scala.pickling.array.json.ArrayJsonTest
-[error] 	scala.pickling.externalizable.mapstatus.MapStatusTest
-[error] 	scala.pickling.runtimenulltest.NullRuntimeTest
-[error] 	scala.pickling.runtime.RuntimeArrayTests
-[error] 	scala.pickling.test.collection.WrappedArrayTest
-[error] 	scala.pickling.array.binary.ArrayBinaryTest
-[error] 	scala.pickling.test.runtime.array.RuntimeArrayTest
+  * [error] 	scala.pickling.array.json.ArrayJsonTest
+  * [error] 	scala.pickling.externalizable.mapstatus.MapStatusTest
+  * [error] 	scala.pickling.runtimenulltest.NullRuntimeTest
+  * [error] 	scala.pickling.runtime.RuntimeArrayTests
+  * [error] 	scala.pickling.test.collection.WrappedArrayTest
+  * [error] 	scala.pickling.array.binary.ArrayBinaryTest
+  * [error] 	scala.pickling.test.runtime.array.RuntimeArrayTest
   */
 class DefaultRuntimePicklerGenerator(reflectionLock: ReentrantLock)
     extends spi.RuntimePicklerGenerator {

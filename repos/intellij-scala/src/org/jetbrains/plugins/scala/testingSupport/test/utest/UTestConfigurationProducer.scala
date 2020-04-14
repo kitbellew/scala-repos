@@ -43,7 +43,7 @@ with AbstractTestConfigurationProducer {
     val element = location.getPsiElement
     if (element == null) return false
     if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+        .isInstanceOf[PsiDirectory]) {
       if (!configuration.isInstanceOf[UTestRunConfiguration]) return false
       return TestConfigurationUtil.isPackageConfiguration(
         element,
@@ -72,7 +72,7 @@ with AbstractTestConfigurationProducer {
     if (element == null) return None
 
     if (element.isInstanceOf[PsiPackage] || element
-          .isInstanceOf[PsiDirectory]) {
+        .isInstanceOf[PsiDirectory]) {
       val name = element match {
         case p: PsiPackage   => p.getName
         case d: PsiDirectory => d.getName
@@ -133,7 +133,7 @@ with AbstractTestConfigurationProducer {
           case patternDef: ScPatternDefinition =>
             val patterns = patternDef.pList.patterns
             if (patterns.size == 1 && patterns.head
-                  .isInstanceOf[ScTuplePattern]) {
+                .isInstanceOf[ScTuplePattern]) {
               val index = tuple.exprs.zipWithIndex
                 .find { case (expr, _) => expr == testSuite }
                 .map(_._2)
@@ -196,10 +196,10 @@ with AbstractTestConfigurationProducer {
       PsiTreeUtil.getParentOfType(element, classOf[ScTypeDefinition], false)
     if (containingObject == null) return fail
     while (!containingObject
-             .isInstanceOf[ScObject] && PsiTreeUtil.getParentOfType(
-             containingObject,
-             classOf[ScTypeDefinition],
-             true) != null) {
+        .isInstanceOf[ScObject] && PsiTreeUtil.getParentOfType(
+        containingObject,
+        classOf[ScTypeDefinition],
+        true) != null) {
       containingObject = PsiTreeUtil.getParentOfType(
         containingObject,
         classOf[ScTypeDefinition],
@@ -207,7 +207,7 @@ with AbstractTestConfigurationProducer {
     }
     if (!containingObject.isInstanceOf[ScObject]) return fail
     if (!suitePaths.exists(suitePath =>
-          TestConfigurationUtil.isInheritor(containingObject, suitePath)))
+        TestConfigurationUtil.isInheritor(containingObject, suitePath)))
       return (null, null)
     val testClassPath = containingObject.qualifiedName
 

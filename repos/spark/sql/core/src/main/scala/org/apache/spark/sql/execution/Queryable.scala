@@ -66,7 +66,6 @@ private[sql] trait Queryable {
     * @param numRows Number of rows to show
     * @param hasMoreData Whether some rows are not shown due to the limit
     * @param truncate Whether truncate long strings and align cells right
-    *
     */
   private[sql] def formatString(
       rows: Seq[Seq[String]],

@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PathTransition Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PathTransitionSpec

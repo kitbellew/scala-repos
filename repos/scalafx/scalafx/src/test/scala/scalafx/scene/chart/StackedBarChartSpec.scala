@@ -36,8 +36,6 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
 
 /**
   * StackedBarChart Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class StackedBarChartSpec

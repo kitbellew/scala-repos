@@ -22,7 +22,7 @@ import scala.collection.JavaConverters._
   * assert(isr.counters(Seq("a", "b", "foo") == 0)) // ok
   * assert(isr.counters(Seq("a", "b", "bar") == 0)) // fail
   * }}}
- **/
+  */
 class InMemoryStatsReceiver extends StatsReceiver {
   val repr = this
 

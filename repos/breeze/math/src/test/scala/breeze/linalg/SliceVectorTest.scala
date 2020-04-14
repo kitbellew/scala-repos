@@ -3,7 +3,6 @@ package breeze.linalg
 import org.scalatest.FunSuite
 
 /**
-  *
   * @author dlwh
   */
 class SliceVectorTest extends FunSuite {

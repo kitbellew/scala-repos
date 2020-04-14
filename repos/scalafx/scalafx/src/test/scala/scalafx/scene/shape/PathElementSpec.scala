@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PathElement Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PathElementSpec

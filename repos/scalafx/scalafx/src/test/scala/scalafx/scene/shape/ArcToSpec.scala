@@ -37,8 +37,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * ArcTo Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ArcToSpec

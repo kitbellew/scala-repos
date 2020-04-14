@@ -48,7 +48,6 @@ object EventDispatchChain {
   * parent - child hierarchy from the root to the event target and appending
   * all `EventDispatcher` objects encountered to the chain.
   *
-  *
   * Wraps a $JFX $URL0 $FC]].
   *
   * @define FC EventDispatchChain

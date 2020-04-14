@@ -355,7 +355,7 @@ trait MarkupParsers {
       buf.toString
     }
 
-    /** Some try/catch/finally logic used by xLiteral and xLiteralPattern.  */
+    /** Some try/catch/finally logic used by xLiteral and xLiteralPattern. */
     private def xLiteralCommon(
         f: () => Tree,
         ifTruncated: String => Unit): Tree = {

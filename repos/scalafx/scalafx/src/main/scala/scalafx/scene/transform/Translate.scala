@@ -39,7 +39,6 @@ object Translate {
 }
 
 /**
-  *
   */
 class Translate(override val delegate: jfxst.Translate = new jfxst.Translate)
     extends Transform(delegate)

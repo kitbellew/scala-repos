@@ -21,7 +21,7 @@ import OptimizerOptions._
 final class OptimizerOptions private (
     /** Whether to only warn if the linker has errors */
     val bypassLinkingErrors: Boolean = false,
-    /** Whether to parallelize the optimizer (currently fastOptJS only) **/
+    /** Whether to parallelize the optimizer (currently fastOptJS only) * */
     val parallel: Boolean = true,
     /** Whether to run the optimizer in batch (i.e. non-incremental) mode */
     val batchMode: Boolean = false,

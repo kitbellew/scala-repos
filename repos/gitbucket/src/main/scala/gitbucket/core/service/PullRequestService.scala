@@ -155,9 +155,9 @@ trait PullRequestService { self: IssuesService =>
     getPullRequestsByRequest(owner, repository, branch, false).foreach {
       pullreq =>
         if (Repositories
-              .filter(_.byRepository(pullreq.userName, pullreq.repositoryName))
-              .exists
-              .run) {
+            .filter(_.byRepository(pullreq.userName, pullreq.repositoryName))
+            .exists
+            .run) {
           val (commitIdTo, commitIdFrom) = JGitUtil.updatePullRequest(
             pullreq.userName,
             pullreq.repositoryName,

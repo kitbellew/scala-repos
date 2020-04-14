@@ -1,8 +1,7 @@
 package net.liftweb.util
 
 /**
-  * This trait adds functionality to Scala standard types
-  */
+  * This trait adds functionality to Scala standard types */
 trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
 
   /**

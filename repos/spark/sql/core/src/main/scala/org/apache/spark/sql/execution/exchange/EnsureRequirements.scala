@@ -184,8 +184,8 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
         case _                        => true
       }
     if (children.length > 1
-        && requiredChildDistributions.exists(requireCompatiblePartitioning)
-        && !Partitioning.allCompatible(children.map(_.outputPartitioning))) {
+      && requiredChildDistributions.exists(requireCompatiblePartitioning)
+      && !Partitioning.allCompatible(children.map(_.outputPartitioning))) {
 
       // First check if the existing partitions of the children all match. This means they are
       // partitioned by the same partitioning into the same number of partitions. In that case,
@@ -255,7 +255,7 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
         if (requiredOrdering.nonEmpty) {
           // If child.outputOrdering is [a, b] and requiredOrdering is [a], we do not need to sort.
           if (requiredOrdering != child.outputOrdering.take(
-                requiredOrdering.length)) {
+              requiredOrdering.length)) {
             Sort(requiredOrdering, global = false, child = child)
           } else {
             child

@@ -30,7 +30,7 @@ object CanHaarTr {
 
   private val nFactor = 1d / Math.sqrt(2d)
 
-  /**Copy or pad a given vector.
+  /** Copy or pad a given vector.
     */
   private def padOrCopy(v: DenseVector[Double]) = {
     if ((v.length & -v.length) == v.length) {

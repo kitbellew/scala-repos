@@ -271,12 +271,12 @@ private[spark] class ApplicationMaster(
         finalMsg = msg
         finished = true
         if (!inShutdown && Thread
-              .currentThread() != reporterThread && reporterThread != null) {
+            .currentThread() != reporterThread && reporterThread != null) {
           logDebug("shutting down reporter thread")
           reporterThread.interrupt()
         }
         if (!inShutdown && Thread
-              .currentThread() != userClassThread && userClassThread != null) {
+            .currentThread() != userClassThread && userClassThread != null) {
           logDebug("shutting down user thread")
           userClassThread.interrupt()
         }
@@ -431,7 +431,7 @@ private[spark] class ApplicationMaster(
               // this exception was introduced in hadoop 2.4 and this code would not compile
               // with earlier versions if we refer it directly.
               if ("org.apache.hadoop.yarn.exceptions.ApplicationAttemptNotFoundException" ==
-                    e.getClass().getName()) {
+                  e.getClass().getName()) {
                 logError("Exception from Reporter thread.", e)
                 finish(
                   FinalApplicationStatus.FAILED,
@@ -514,7 +514,7 @@ private[spark] class ApplicationMaster(
       val deadline = System.currentTimeMillis() + totalWaitTime
 
       while (sparkContextRef
-               .get() == null && System.currentTimeMillis < deadline && !finished) {
+          .get() == null && System.currentTimeMillis < deadline && !finished) {
         logInfo("Waiting for spark context initialization ... ")
         sparkContextRef.wait(10000L)
       }
@@ -684,9 +684,9 @@ private[spark] class ApplicationMaster(
         Option(allocator) match {
           case Some(a) =>
             if (a.requestTotalExecutorsWithPreferredLocalities(
-                  requestedTotal,
-                  localityAwareTasks,
-                  hostToLocalTaskCount)) {
+                requestedTotal,
+                localityAwareTasks,
+                hostToLocalTaskCount)) {
               resetAllocatorInterval()
             }
             context.reply(true)

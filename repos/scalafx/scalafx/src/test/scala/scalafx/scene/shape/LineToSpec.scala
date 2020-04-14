@@ -37,8 +37,6 @@ import scalafx.testutil.{PositionDelegateSpec, SimpleSFXDelegateSpec}
 
 /**
   * LineTo Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class LineToSpec

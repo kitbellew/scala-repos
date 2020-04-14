@@ -19,8 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.elements.wrappers.DummyASTNode
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008
-  */
+  * Date: 22.02.2008 */
 
 class ScClassParameterImpl private (
     stub: StubElement[ScParameter],

@@ -50,10 +50,10 @@ class MethodImplementationsSearch
     sourceElement match {
       case namedElement: ScNamedElement =>
         for (implementation <-
-               ScalaOverridingMemberSearcher.getOverridingMethods(namedElement)
-             //to avoid duplicates with ScalaOverridingMemberSearcher
-             if !namedElement.isInstanceOf[PsiMethod] || !implementation
-               .isInstanceOf[PsiMethod]) {
+            ScalaOverridingMemberSearcher.getOverridingMethods(namedElement)
+          //to avoid duplicates with ScalaOverridingMemberSearcher
+          if !namedElement.isInstanceOf[PsiMethod] || !implementation
+            .isInstanceOf[PsiMethod]) {
           if (!consumer.process(implementation)) {
             return false
           }
@@ -77,8 +77,8 @@ class ScalaOverridingMemberSearcher
     method match {
       case namedElement: ScNamedElement =>
         for (implementation <-
-               ScalaOverridingMemberSearcher.getOverridingMethods(namedElement)
-             if implementation.isInstanceOf[PsiMethod]) {
+            ScalaOverridingMemberSearcher.getOverridingMethods(namedElement)
+          if implementation.isInstanceOf[PsiMethod]) {
           if (!consumer.process(implementation.asInstanceOf[PsiMethod])) {
             return false
           }
@@ -94,7 +94,7 @@ object ScalaOverridingMemberSearcher {
     val result = new ArrayBuffer[PsiNamedElement]
     inReadAction {
       for (psiMethod <-
-             ScalaOverridingMemberSearcher.search(method, deep = true)) {
+          ScalaOverridingMemberSearcher.search(method, deep = true)) {
         result += psiMethod
       }
     }
@@ -141,7 +141,7 @@ object ScalaOverridingMemberSearcher {
               if (!deep) return false
             }
             for (td <- inheritor.typeDefinitions
-                 if !td.isObject && name == td.name) {
+              if !td.isObject && name == td.name) {
               buffer += td
               if (!deep) return false
             }
@@ -170,8 +170,8 @@ object ScalaOverridingMemberSearcher {
                 node: TypeDefinitionMembers.SignatureNodes.Node) =
                 signsIterator.next()
               if (PsiTreeUtil.getParentOfType(
-                    t.namedElement,
-                    classOf[PsiClass]) == inheritor) {
+                  t.namedElement,
+                  classOf[PsiClass]) == inheritor) {
                 val supersIterator = node.supers.iterator
                 while (supersIterator.hasNext) {
                   val s = supersIterator.next()

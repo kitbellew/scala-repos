@@ -54,7 +54,6 @@ import scalafx.scene.layout.{HBox, VBox}
   *         based upon:
   *
   *         http://docs.oracle.com/javafx/2.0/ui_controls/radio-button.htm
-  *
   */
 
 object ScalaFX_Controls_03 extends JFXApp {

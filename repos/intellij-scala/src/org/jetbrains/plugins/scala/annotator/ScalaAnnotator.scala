@@ -331,7 +331,7 @@ class ScalaAnnotator
 
       override def visitFunction(fun: ScFunction) {
         if (typeAware && !compiled && fun.getParent
-              .isInstanceOf[ScTemplateBody]) {
+            .isInstanceOf[ScTemplateBody]) {
           checkOverrideMethods(fun, holder, isInSources)
         }
         if (!fun.isConstructor) checkFunctionForVariance(fun, holder)
@@ -402,7 +402,7 @@ class ScalaAnnotator
 
       override def visitTypeAlias(alias: ScTypeAlias) {
         if (typeAware && !compiled && alias.getParent
-              .isInstanceOf[ScTemplateBody]) {
+            .isInstanceOf[ScTemplateBody]) {
           checkOverrideTypes(alias, holder)
         }
         if (!compoundType(alias))
@@ -417,8 +417,8 @@ class ScalaAnnotator
 
       override def visitVariable(varr: ScVariable) {
         if (typeAware && !compiled && (varr.getParent
-              .isInstanceOf[ScTemplateBody] ||
-            varr.getParent.isInstanceOf[ScEarlyDefinitions])) {
+            .isInstanceOf[ScTemplateBody] ||
+          varr.getParent.isInstanceOf[ScEarlyDefinitions])) {
           checkOverrideVars(varr, holder, isInSources)
         }
         varr.typeElement match {
@@ -456,8 +456,8 @@ class ScalaAnnotator
 
       override def visitValue(v: ScValue) {
         if (typeAware && !compiled && (v.getParent
-              .isInstanceOf[ScTemplateBody] ||
-            v.getParent.isInstanceOf[ScEarlyDefinitions])) {
+            .isInstanceOf[ScTemplateBody] ||
+          v.getParent.isInstanceOf[ScEarlyDefinitions])) {
           checkOverrideVals(v, holder, isInSources)
         }
         v.typeElement match {
@@ -546,8 +546,8 @@ class ScalaAnnotator
         if (file.isCompiled) return false
         val vFile = file.getVirtualFile
         if (vFile != null && ProjectFileIndex.SERVICE
-              .getInstance(element.getProject)
-              .isInLibrarySource(vFile)) return false
+            .getInstance(element.getProject)
+            .isInLibrarySource(vFile)) return false
       case _ =>
     }
     val containingFile = element.getContainingFile
@@ -618,8 +618,8 @@ class ScalaAnnotator
             candidates(0) match {
               case ScalaResolveResult(fun: ScFunction, subst) =>
                 if (fun.returnType.isEmpty || !Equivalence.equiv(
-                      subst.subst(fun.returnType.get),
-                      psi.types.Boolean)) {
+                    subst.subst(fun.returnType.get),
+                    psi.types.Boolean)) {
                   error()
                 }
               case _ => error()
@@ -711,8 +711,8 @@ class ScalaAnnotator
     }
     val file = element.getContainingFile
     if (named.isValid && named.getContainingFile == file &&
-        !PsiTreeUtil
-          .isAncestor(named, element, true)) { //to filter recursive usages
+      !PsiTreeUtil
+        .isAncestor(named, element, true)) { //to filter recursive usages
       val value: ValueUsed = element match {
         case ref: ScReferenceExpression
             if checkWrite &&
@@ -799,8 +799,8 @@ class ScalaAnnotator
     def processError(countError: Boolean, fixes: => Seq[IntentionAction]) {
       //todo remove when resolve of unqualified expression will be fully implemented
       if (refElement.getManager.isInProject(
-            refElement) && resolve.length == 0 &&
-          (fixes.nonEmpty || countError)) {
+          refElement) && resolve.length == 0 &&
+        (fixes.nonEmpty || countError)) {
         val error = ScalaBundle.message("cannot.resolve", refElement.refName)
         val annotation = holder.createErrorAnnotation(refElement.nameId, error)
         annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
@@ -920,7 +920,7 @@ class ScalaAnnotator
     }
 
     if (isAdvancedHighlightingEnabled(
-          refElement) && resolve.length != 1 && !goodDoc) {
+        refElement) && resolve.length != 1 && !goodDoc) {
       val parent = refElement.getParent
       def addCreateApplyOrUnapplyFix(
           messageKey: String,
@@ -930,8 +930,8 @@ class ScalaAnnotator
           parent.getContext,
           parent)
         if (refWithoutArgs != null && refWithoutArgs
-              .multiResolve(false)
-              .exists(!_.getElement.isInstanceOf[PsiPackage])) {
+            .multiResolve(false)
+            .exists(!_.getElement.isInstanceOf[PsiPackage])) {
           // We can't resolve the method call A(arg1, arg2), but we can resolve A. Highlight this differently.
           val error = ScalaBundle.message(messageKey, refElement.refName)
           val annotation =
@@ -953,15 +953,15 @@ class ScalaAnnotator
         case mc: ScMethodCall =>
           val messageKey = "cannot.resolve.apply.method"
           if (addCreateApplyOrUnapplyFix(
-                messageKey,
-                td => new CreateApplyQuickFix(td, mc))) return
+              messageKey,
+              td => new CreateApplyQuickFix(td, mc))) return
         case Both(
               p: ScPattern,
               (_: ScConstructorPattern | _: ScInfixPattern)) =>
           val messageKey = "cannot.resolve.unapply.method"
           if (addCreateApplyOrUnapplyFix(
-                messageKey,
-                td => new CreateUnapplyQuickFix(td, p))) return
+              messageKey,
+              td => new CreateUnapplyQuickFix(td, p))) return
         case scalaDocTag: ScDocTag
             if scalaDocTag.getName == MyScaladocParsing.THROWS_TAG =>
           return //see SCL-9490
@@ -1023,13 +1023,13 @@ class ScalaAnnotator
     var resolve: Array[ResolveResult] = null
     resolve = refElement.multiResolve(false)
     for (result <- resolve if result.isInstanceOf[ScalaResolveResult];
-         scalaResult = result.asInstanceOf[ScalaResolveResult]) {
+      scalaResult = result.asInstanceOf[ScalaResolveResult]) {
       registerUsedImports(refElement, scalaResult)
       registerUsedElement(refElement, scalaResult, checkWrite = true)
     }
     checkAccessForReference(resolve, refElement, holder)
     if (refElement.isInstanceOf[ScExpression] &&
-        resolve.length == 1) {
+      resolve.length == 1) {
       val resolveResult = resolve(0).asInstanceOf[ScalaResolveResult]
       resolveResult.implicitFunction match {
         case Some(fun) =>
@@ -1041,7 +1041,7 @@ class ScalaAnnotator
     }
 
     if (refElement.isInstanceOf[
-          ScDocResolvableCodeReference] && resolve.length > 0 || refElement.isSoft)
+        ScDocResolvableCodeReference] && resolve.length > 0 || refElement.isSoft)
       return
     if (isAdvancedHighlightingEnabled(refElement) && resolve.length != 1) {
       refElement.getParent match {
@@ -1069,7 +1069,7 @@ class ScalaAnnotator
       refElement: ScReferenceElement,
       holder: AnnotationHolder) {
     if (resolve.length != 1 || refElement.isSoft || refElement
-          .isInstanceOf[ScDocResolvableCodeReferenceImpl]) return
+        .isInstanceOf[ScDocResolvableCodeReferenceImpl]) return
     resolve(0) match {
       case r: ScalaResolveResult if !r.isAccessible =>
         val error =
@@ -1272,9 +1272,9 @@ class ScalaAnnotator
                   annotation.setHighlightType(
                     ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
                   if (WrapInOptionQuickFix.isAvailable(
-                        expr,
-                        expectedType,
-                        exprType)) {
+                      expr,
+                      expectedType,
+                      exprType)) {
                     val wrapInOptionFix =
                       new WrapInOptionQuickFix(expr, expectedType, exprType)
                     annotation.registerFix(wrapInOptionFix)
@@ -1579,12 +1579,12 @@ class ScalaAnnotator
                   def findVariance: Int = {
                     if (!checkIfTypeIsInSameBrackets) return i
                     if (PsiTreeUtil.isAncestor(
-                          scTypeParam.getParent,
-                          toHighlight,
-                          false))
+                        scTypeParam.getParent,
+                        toHighlight,
+                        false))
                       //we do not highlight element if it was declared inside parameterized type.
                       if (!scTypeParam.getParent.getParent
-                            .isInstanceOf[ScTemplateDefinition])
+                          .isInstanceOf[ScTemplateDefinition])
                         return scTypeParam.variance
                       else return i * -1
                     if (toHighlight.getParent == scTypeParam.getParent.getParent)
@@ -1667,18 +1667,18 @@ class ScalaAnnotator
       var i = 0
       for (d <- number.map(_.asDigit)) {
         if (value > intLimit ||
-            intLimit / (base / divider) < value ||
-            intLimit - (d / divider) < value * (base / divider) &&
-            // This checks for -2147483648, value is 214748364, base is 10, d is 8. This check returns false.
-            // base 8 and 16 won't have this check because the divider is 2        .
-            !(isNegative && intLimit == value * base - 1 + d)) {
+          intLimit / (base / divider) < value ||
+          intLimit - (d / divider) < value * (base / divider) &&
+          // This checks for -2147483648, value is 214748364, base is 10, d is 8. This check returns false.
+          // base 8 and 16 won't have this check because the divider is 2        .
+          !(isNegative && intLimit == value * base - 1 + d)) {
           statusCode = 1
         }
         if (value < 0 ||
-            limit / (base / divider) < value ||
-            limit - (d / divider) < value * (base / divider) &&
-            // This checks for Long.MinValue, same as the the previous Int.MinValue check.
-            !(isNegative && limit == value * base - 1 + d)) {
+          limit / (base / divider) < value ||
+          limit - (d / divider) < value * (base / divider) &&
+          // This checks for Long.MinValue, same as the the previous Int.MinValue check.
+          !(isNegative && limit == value * base - 1 + d)) {
           return (None, 2)
         }
         value = value * base + d

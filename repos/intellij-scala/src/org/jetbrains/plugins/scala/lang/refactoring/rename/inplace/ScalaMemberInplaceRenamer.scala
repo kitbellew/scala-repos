@@ -154,7 +154,7 @@ class ScalaMemberInplaceRenamer(
   override def getVariable: PsiNamedElement = {
     Option(super.getVariable).getOrElse {
       if (myElementToRename != null && myElementToRename.isValid && oldName == ScalaNamesUtil
-            .scalaName(myElementToRename))
+          .scalaName(myElementToRename))
         myElementToRename
       else null
     }

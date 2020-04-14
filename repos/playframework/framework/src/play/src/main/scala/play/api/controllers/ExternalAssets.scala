@@ -25,7 +25,6 @@ import java.io._
   * GET     /assets/\uFEFF*file               controllers.ExternalAssets.at(path="C:\external", file)
   * GET     /assets/\uFEFF*file               controllers.ExternalAssets.at(path="relativeToYourApp", file)
   * }}}
-  *
   */
 class ExternalAssets @Inject() (environment: Environment) extends Controller {
 

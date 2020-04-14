@@ -46,7 +46,6 @@ object TreeTableColumn {
     * @tparam S The TreeTableView type
     * @tparam T The TreeTableColumn type
     * @since 8.0
-    *
     */
   class CellDataFeatures[S, T](
       override val delegate: jfxsc.TreeTableColumn.CellDataFeatures[S, T])
@@ -108,7 +107,6 @@ object TreeTableColumn {
     * @tparam S The TreeTableView type
     * @tparam T The TreeTableColumn type
     * @since 8.0
-    *
     */
   class CellEditEvent[S, T](
       override val delegate: jfxsc.TreeTableColumn.CellEditEvent[S, T])
@@ -235,7 +233,6 @@ object TreeTableColumn {
   * @tparam S The type of the TreeTableView generic type (i.e. S == TreeTableView<S>)
   * @tparam T The type of the content in all cells in this TreeTableColumn.
   * @since 8.0
-  *
   */
 class TreeTableColumn[S, T](
     override val delegate: jfxsc.TreeTableColumn[S, T] =

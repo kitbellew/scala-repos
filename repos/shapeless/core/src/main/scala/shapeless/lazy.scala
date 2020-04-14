@@ -105,7 +105,6 @@ import scala.reflect.macros.whitebox
   *     }
   *   )
   * }}}
-  *
   */
 @implicitNotFound("could not find Lazy implicit value of type ${T}")
 trait Lazy[+T] extends Serializable {

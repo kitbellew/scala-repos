@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * PieChart.Data Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class PieChartDataSpec

@@ -33,7 +33,7 @@ private[prediction] object SegmentIOConnector extends JsonConnector {
           s"Supported segment.io API versions: [2]. got [$version]"
         )
       }
-     */
+       */
     } catch {
       case _: Throwable ⇒
         throw new ConnectorException(s"Failed to get segment.io API version.")

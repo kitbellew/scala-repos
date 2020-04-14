@@ -21,20 +21,20 @@ import scala.util.{Failure, Success}
 import com.twitter.scalding._
 
 /**
-Tutorial of using Execution
-
-This tutorial gives an example of use Execution to do MapReduce word count.
-Instead of writing the results in reducers, it writes the data at submitter node.
-
-To test it, first build the assembly jar from root directory:
- ./sbt execution-tutorial/assembly
-
-Run:
-  scala -classpath  tutorial/execution-tutorial/target/execution-tutorial-assembly-0.15.0.jar \
-    com.twitter.scalding.tutorial.MyExecJob --local \
-    --input tutorial/data/hello.txt \
-    --output tutorial/data/execution_output.txt
-**/
+  * Tutorial of using Execution
+  *
+  * This tutorial gives an example of use Execution to do MapReduce word count.
+  * Instead of writing the results in reducers, it writes the data at submitter node.
+  *
+  * To test it, first build the assembly jar from root directory:
+  * ./sbt execution-tutorial/assembly
+  *
+  * Run:
+  *  scala -classpath  tutorial/execution-tutorial/target/execution-tutorial-assembly-0.15.0.jar \
+  *    com.twitter.scalding.tutorial.MyExecJob --local \
+  *    --input tutorial/data/hello.txt \
+  *    --output tutorial/data/execution_output.txt
+  */
 
 object MyExecJob extends ExecutionApp {
 

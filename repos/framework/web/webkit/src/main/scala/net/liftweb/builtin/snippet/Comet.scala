@@ -74,7 +74,6 @@ object Comet extends DispatchSnippet with LazyLoggable {
   }
 
   /**
-    *
     * A typical comet tag could look like:
     *
     * {{{

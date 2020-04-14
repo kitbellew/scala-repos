@@ -28,7 +28,7 @@ object PartitionUtil {
   def toFields(start: Int, end: Int): Fields =
     Dsl.strFields((start until end).map(_.toString))
 
-  /** A tuple converter that splits a cascading tuple into a pair of types.*/
+  /** A tuple converter that splits a cascading tuple into a pair of types. */
   def converter[P, T, U >: (P, T)](
       valueConverter: TupleConverter[T],
       partitionConverter: TupleConverter[P]) = {
@@ -54,7 +54,7 @@ object PartitionUtil {
     })
   }
 
-  /** A tuple setter for a pair of types which are flattened into a cascading tuple.*/
+  /** A tuple setter for a pair of types which are flattened into a cascading tuple. */
   def setter[P, T, U <: (P, T)](
       valueSetter: TupleSetter[T],
       partitionSetter: TupleSetter[P]): TupleSetter[U] =

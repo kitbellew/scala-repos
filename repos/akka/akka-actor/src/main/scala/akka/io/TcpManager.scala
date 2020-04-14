@@ -42,7 +42,6 @@ import akka.actor.{ActorLogging, Props}
   * If the connect request is rejected because the Tcp system is not able to register more channels (see the nr-of-selectors
   * and max-channels configuration options in the akka.io.tcp section of the configuration) the sender will be notified
   * with a [[akka.io.Tcp.CommandFailed]] message. This message contains the original command for reference.
-  *
   */
 private[io] class TcpManager(tcp: TcpExt)
     extends SelectionHandler.SelectorBasedManager(

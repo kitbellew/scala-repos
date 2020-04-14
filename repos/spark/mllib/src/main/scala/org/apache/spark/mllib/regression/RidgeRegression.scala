@@ -31,7 +31,6 @@ import org.apache.spark.rdd.RDD
   *
   * @param weights Weights computed for every feature.
   * @param intercept Intercept computed for this model.
-  *
   */
 @Since("0.8.0")
 class RidgeRegressionModel @Since("1.1.0") (
@@ -129,7 +128,6 @@ class RidgeRegressionWithSGD private (
 
 /**
   * Top-level methods for calling RidgeRegression.
-  *
   */
 @Since("0.8.0")
 object RidgeRegressionWithSGD {
@@ -147,7 +145,6 @@ object RidgeRegressionWithSGD {
     * @param miniBatchFraction Fraction of data to be used per iteration.
     * @param initialWeights Initial set of weights to be used. Array should be equal in size to
     *        the number of features in the data.
-    *
     */
   @Since("1.0.0")
   def train(
@@ -174,7 +171,6 @@ object RidgeRegressionWithSGD {
     * @param stepSize Step size to be used for each iteration of gradient descent.
     * @param regParam Regularization parameter.
     * @param miniBatchFraction Fraction of data to be used per iteration.
-    *
     */
   @Since("0.8.0")
   def train(
@@ -200,7 +196,6 @@ object RidgeRegressionWithSGD {
     * @param regParam Regularization parameter.
     * @param numIterations Number of iterations of gradient descent to run.
     * @return a RidgeRegressionModel which has the weights and offset from training.
-    *
     */
   @Since("0.8.0")
   def train(
@@ -219,7 +214,6 @@ object RidgeRegressionWithSGD {
     * @param input RDD of (label, array of features) pairs.
     * @param numIterations Number of iterations of gradient descent to run.
     * @return a RidgeRegressionModel which has the weights and offset from training.
-    *
     */
   @Since("0.8.0")
   def train(

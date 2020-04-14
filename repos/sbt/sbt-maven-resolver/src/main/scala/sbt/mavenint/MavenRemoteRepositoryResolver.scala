@@ -25,7 +25,6 @@ import scala.collection.JavaConverters._
   * A resolver instance which can resolve from a REMOTE maven repository.
   *
   * Note: This creates its *own* local cache directory for cache metadata. using its name.
-  *
   */
 class MavenRemoteRepositoryResolver(
     val repo: MavenRepository,

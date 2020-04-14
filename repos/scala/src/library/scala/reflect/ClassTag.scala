@@ -5,7 +5,6 @@ import java.lang.{Class => jClass}
 import scala.runtime.ScalaRunTime.arrayElementClass
 
 /**
-  *
   * A `ClassTag[T]` stores the erased class of a given type `T`, accessible via the `runtimeClass`
   * field. This is particularly useful for instantiating `Array`s whose element types are unknown
   * at compile time.
@@ -31,7 +30,6 @@ import scala.runtime.ScalaRunTime.arrayElementClass
   * See [[scala.reflect.api.TypeTags]] for more examples, or the
   * [[http://docs.scala-lang.org/overviews/reflection/typetags-manifests.html Reflection Guide: TypeTags]]
   * for more details.
-  *
   */
 @scala.annotation.implicitNotFound(msg = "No ClassTag available for ${T}")
 trait ClassTag[T]
@@ -80,23 +78,20 @@ trait ClassTag[T]
     */
   def unapply(x: Any): Option[T] =
     if (null != x && ((runtimeClass.isInstance(x))
-        || (x.isInstanceOf[Byte] && runtimeClass.isAssignableFrom(
-          classOf[Byte]))
-        || (x.isInstanceOf[Short] && runtimeClass.isAssignableFrom(
-          classOf[Short]))
-        || (x.isInstanceOf[Char] && runtimeClass.isAssignableFrom(
-          classOf[Char]))
-        || (x.isInstanceOf[Int] && runtimeClass.isAssignableFrom(classOf[Int]))
-        || (x.isInstanceOf[Long] && runtimeClass.isAssignableFrom(
-          classOf[Long]))
-        || (x.isInstanceOf[Float] && runtimeClass.isAssignableFrom(
-          classOf[Float]))
-        || (x.isInstanceOf[Double] && runtimeClass.isAssignableFrom(
-          classOf[Double]))
-        || (x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(
-          classOf[Boolean]))
-        || (x.isInstanceOf[Unit] && runtimeClass.isAssignableFrom(
-          classOf[Unit])))) Some(x.asInstanceOf[T])
+      || (x.isInstanceOf[Byte] && runtimeClass.isAssignableFrom(classOf[Byte]))
+      || (x.isInstanceOf[Short] && runtimeClass.isAssignableFrom(
+        classOf[Short]))
+      || (x.isInstanceOf[Char] && runtimeClass.isAssignableFrom(classOf[Char]))
+      || (x.isInstanceOf[Int] && runtimeClass.isAssignableFrom(classOf[Int]))
+      || (x.isInstanceOf[Long] && runtimeClass.isAssignableFrom(classOf[Long]))
+      || (x.isInstanceOf[Float] && runtimeClass.isAssignableFrom(
+        classOf[Float]))
+      || (x.isInstanceOf[Double] && runtimeClass.isAssignableFrom(
+        classOf[Double]))
+      || (x.isInstanceOf[Boolean] && runtimeClass.isAssignableFrom(
+        classOf[Boolean]))
+      || (x.isInstanceOf[Unit] && runtimeClass.isAssignableFrom(
+        classOf[Unit])))) Some(x.asInstanceOf[T])
     else None
 
   // TODO: deprecate overloads in 2.12.0, remove in 2.13.0
@@ -114,7 +109,7 @@ trait ClassTag[T]
       x: Any,
       primitiveCls: java.lang.Class[_]): Option[T] =
     if (runtimeClass.isInstance(x) || runtimeClass.isAssignableFrom(
-          primitiveCls)) Some(x.asInstanceOf[T])
+        primitiveCls)) Some(x.asInstanceOf[T])
     else None
 
   // case class accessories

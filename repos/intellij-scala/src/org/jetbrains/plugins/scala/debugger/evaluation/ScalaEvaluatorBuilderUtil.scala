@@ -59,8 +59,7 @@ import scala.reflect.NameTransformer
 
 /**
   * Nikolay.Tropin
-  * 2014-09-28
-  */
+  * 2014-09-28 */
 private[evaluation] trait ScalaEvaluatorBuilderUtil {
   this: ScalaEvaluatorBuilder =>
 

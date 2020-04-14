@@ -14,7 +14,7 @@ package scalabip
   *    Function with 1 parameters.
   *  </p>
   *  <p>
-      In the following example the definition of
+  *      In the following example the definition of
   *    <code>succ</code> is a shorthand for the anonymous class definition
   *    <code>anonfun1</code>:
   *  </p>

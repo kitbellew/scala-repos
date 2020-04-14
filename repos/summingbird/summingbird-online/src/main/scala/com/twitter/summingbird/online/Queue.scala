@@ -29,7 +29,6 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
-  *
   * @author Oscar Boykin
   */
 

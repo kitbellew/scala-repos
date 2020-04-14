@@ -19,7 +19,7 @@ import scala.collection.mutable.LinkedHashMap
   * Under GenASM
   *
   * 1) a new top level class that
-      a) has fields and a constructor taking the captured environment (including possibly the "this"
+  *      a) has fields and a constructor taking the captured environment (including possibly the "this"
   *       reference)
   *    b) an apply method that calls the target method
   *    c) if needed a bridge method for the apply method
@@ -212,7 +212,7 @@ abstract class Delambdafy
                 val functionParam = functionParamTypes(i - numCaptures)
                 val targetParam = targetParams(i)
                 if (enteringErasure(
-                      functionParam.typeSymbol.isDerivedValueClass)) {
+                    functionParam.typeSymbol.isDerivedValueClass)) {
                   val casted = cast(gen.mkAttributedRef(param), functionParam)
                   val unboxed = unbox(
                     casted,
@@ -226,7 +226,7 @@ abstract class Delambdafy
           }
           val body1 =
             if (enteringErasure(
-                  functionResultType.typeSymbol.isDerivedValueClass))
+                functionResultType.typeSymbol.isDerivedValueClass))
               adaptToType(
                 box(
                   body.setType(
@@ -621,7 +621,7 @@ abstract class Delambdafy
         case Ident(_) =>
           val sym = tree.symbol
           if ((sym != NoSymbol) && sym.isLocalToBlock && sym.isTerm && !sym.isMethod && !declared
-                .contains(sym)) freeVars += sym
+              .contains(sym)) freeVars += sym
         case _ =>
       }
       super.traverse(tree)

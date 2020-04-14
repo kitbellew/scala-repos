@@ -141,8 +141,8 @@ class MacroExpandAction extends AnAction {
         if (element.getNode.getElementType == ScalaTokenTypes.tSEMICOLON) {
           val file = element.getContainingFile
           val nextLeaf = file.findElementAt(element.getTextRange.getEndOffset)
-          if (nextLeaf.isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains(
-                "\n")) {
+          if (nextLeaf
+              .isInstanceOf[PsiWhiteSpace] && nextLeaf.getText.contains("\n")) {
             tobeDeleted += element
           }
         }

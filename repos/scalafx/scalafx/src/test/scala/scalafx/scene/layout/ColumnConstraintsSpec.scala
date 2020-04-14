@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * ColumnConstraints Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ColumnConstraintsSpec

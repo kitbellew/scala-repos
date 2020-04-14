@@ -316,8 +316,8 @@ trait MatchTranslation {
           }
 
           for (cases <- emitTypeSwitch(bindersAndCases, pt).toList
-               if cases forall treeInfo.isCatchCase; // must check again, since it's not guaranteed -- TODO: can we eliminate this? e.g., a type test could test for a trait or a non-trivial prefix, which are not handled by the back-end
-               cse <- cases)
+            if cases forall treeInfo.isCatchCase; // must check again, since it's not guaranteed -- TODO: can we eliminate this? e.g., a type test could test for a trait or a non-trivial prefix, which are not handled by the back-end
+            cse <- cases)
             yield fixerUpper(matchOwner, pos)(cse).asInstanceOf[CaseDef]
         }
 
@@ -380,7 +380,6 @@ trait MatchTranslation {
       *    Operationally, phase 1) is a foldLeft, since we must consider the depth-first-flattening of
       *    the transformed patterns from left to right. For every pattern ast node, it produces a transformed ast and
       *    a function that will take care of binding and substitution of the next ast (to the right).
-      *
       */
     def translateCase(scrutSym: Symbol, pt: Type)(caseDef: CaseDef) = {
       val CaseDef(pattern, guard, body) = caseDef
@@ -629,14 +628,14 @@ trait MatchTranslation {
         val mutableBinders =
           (
             if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
-                (paramAccessors exists (x =>
-                  x.isMutable || definitions.isRepeated(x)))) {
+              (paramAccessors exists (x =>
+                x.isMutable || definitions.isRepeated(x)))) {
 
               subPatBinders.zipWithIndex.flatMap {
                 case (binder, idx) =>
                   val param = paramAccessorAt(idx)
                   if (param.isMutable || (definitions.isRepeated(
-                        param) && !aligner.isStar)) binder :: Nil
+                      param) && !aligner.isStar)) binder :: Nil
                   else Nil
               }
             } else Nil
@@ -693,7 +692,7 @@ trait MatchTranslation {
         val binder = freshSym(pos, pureType(resultInMonad))
         val potentiallyMutableBinders: Set[Symbol] =
           if (extractorApply.tpe.typeSymbol.isNonBottomSubClass(
-                OptionClass) && !aligner.isSeq)
+              OptionClass) && !aligner.isSeq)
             Set.empty
           else
             // Ensures we capture unstable bound variables eagerly. These can arise under name based patmat or by indexing into mutable Seqs. See run t9003.scala

@@ -89,7 +89,7 @@ class MyRDD(
     if (locations.isDefinedAt(partition.index)) {
       locations(partition.index)
     } else if (tracker != null && dependencies.size == 1 &&
-               dependencies(0).isInstanceOf[ShuffleDependency[_, _, _]]) {
+      dependencies(0).isInstanceOf[ShuffleDependency[_, _, _]]) {
       // If we have only one shuffle dependency, use the same code path as ShuffledRDD for locality
       val dep = dependencies(0).asInstanceOf[ShuffleDependency[_, _, _]]
       tracker.getPreferredLocationsForShuffle(dep, partition.index)
@@ -2334,7 +2334,7 @@ class DAGSchedulerSuite
   private def assertLocations(taskSet: TaskSet, hosts: Seq[Seq[String]]) {
     assert(hosts.size === taskSet.tasks.size)
     for ((taskLocs, expectedLocs) <-
-           taskSet.tasks.map(_.preferredLocations).zip(hosts)) {
+        taskSet.tasks.map(_.preferredLocations).zip(hosts)) {
       assert(taskLocs.map(_.host).toSet === expectedLocs.toSet)
     }
   }

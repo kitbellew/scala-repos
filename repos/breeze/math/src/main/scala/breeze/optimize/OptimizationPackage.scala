@@ -7,7 +7,6 @@ import breeze.optimize.FirstOrderMinimizer.OptParams
 import breeze.util.Implicits._
 
 /**
-  *
   * @author dlwh
   */
 trait OptimizationPackage[Function, Vector] {

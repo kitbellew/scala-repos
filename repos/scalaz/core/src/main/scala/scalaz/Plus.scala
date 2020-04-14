@@ -8,13 +8,13 @@ package scalaz
 trait Plus[F[_]] { self =>
   ////
 
-  /**The composition of Plus `F` and `G`, `[x]F[G[x]]`, is a Plus */
+  /** The composition of Plus `F` and `G`, `[x]F[G[x]]`, is a Plus */
   def compose[G[_]]: Plus[λ[α => F[G[α]]]] =
     new CompositionPlus[F, G] {
       implicit def F = self
     }
 
-  /**The product of Plus `F` and `G`, `[x](F[x], G[x]])`, is a Plus */
+  /** The product of Plus `F` and `G`, `[x](F[x], G[x]])`, is a Plus */
   def product[G[_]](implicit G0: Plus[G]): Plus[λ[α => (F[α], G[α])]] =
     new ProductPlus[F, G] {
       implicit def F = self

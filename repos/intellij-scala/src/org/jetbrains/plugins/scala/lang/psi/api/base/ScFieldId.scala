@@ -11,8 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
 import scala.annotation.tailrec
 
 /**
-  * @author ilyas
-  */
+  * @author ilyas */
 
 //wrapper over an identifier for variable declarations 'var v : T'
 trait ScFieldId extends ScTypedDefinition {}

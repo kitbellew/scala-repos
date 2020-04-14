@@ -24,8 +24,7 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008
-  */
+  * Date: 07.03.2008 */
 
 class ScAccessModifierImpl private (
     stub: StubElement[ScAccessModifier],

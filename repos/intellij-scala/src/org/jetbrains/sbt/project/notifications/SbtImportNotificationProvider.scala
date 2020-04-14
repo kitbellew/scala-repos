@@ -48,8 +48,8 @@ abstract class SbtImportNotificationProvider(
       file: VirtualFile,
       fileEditor: FileEditor): EditorNotificationPanel =
     if (!isIgnored(file) && isSbtFile(file) && shouldShowPanel(
-          file,
-          fileEditor)) createPanel(file)
+        file,
+        fileEditor)) createPanel(file)
     else null
 
   protected def refreshProject(): Unit = {

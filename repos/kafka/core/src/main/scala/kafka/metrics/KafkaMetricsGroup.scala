@@ -292,8 +292,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
         .asScalaSet(Metrics.defaultRegistry().allMetrics().keySet())
       for (registeredMetric <- registeredMetrics) {
         if (registeredMetric.getGroup == metric.getGroup &&
-            registeredMetric.getName == metric.getName &&
-            registeredMetric.getType == metric.getType) {
+          registeredMetric.getName == metric.getName &&
+          registeredMetric.getType == metric.getType) {
           pattern.findFirstIn(registeredMetric.getMBeanName) match {
             case Some(_) => {
               val beforeRemovalSize =

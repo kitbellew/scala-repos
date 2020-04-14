@@ -298,7 +298,7 @@ class EventServiceActor(
                 entity(as[Event]) { event =>
                   complete {
                     if (events.isEmpty || authData.events.contains(
-                          event.event)) {
+                        event.event)) {
                       pluginContext.inputBlockers.values.foreach(
                         _.process(
                           EventInfo(
@@ -445,7 +445,7 @@ class EventServiceActor(
                     : PartialFunction[Try[Event], Future[Map[String, Any]]] = {
                   case Success(event) => {
                     if (allowedEvents.isEmpty || allowedEvents.contains(
-                          event.event)) {
+                        event.event)) {
                       pluginContext.inputBlockers.values.foreach(
                         _.process(
                           EventInfo(

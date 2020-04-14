@@ -3,8 +3,6 @@ package breeze.linalg
 import org.scalatest._
 
 /**
-  *
-  *
   * @author dlwh
   */
 class rot90Test extends FunSuite {

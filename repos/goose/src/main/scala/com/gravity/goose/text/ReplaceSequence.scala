@@ -56,8 +56,7 @@ import java.util.regex.Pattern
   * Internally, an ordered list of {@link Matcher}s and its associated replacement is built as the {@link #append} method is called.<br/>
   * Each matcher is {@link Matcher#reset(CharSequence) reset} with the input specified in the {@link #replaceAll(String)} method.</p>
   * Use of this class can improve performance if the sequence of replacements is intended to be used repeatedly throughout the life of an application.<br/>
-  * This is due to the fact that each {@link Pattern} is only compiled once and each {@link Matcher} is only generated once.
-  */
+  * This is due to the fact that each {@link Pattern} is only compiled once and each {@link Matcher} is only generated once. */
 object ReplaceSequence {
 
   /**

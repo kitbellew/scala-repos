@@ -134,7 +134,6 @@ import akka.dispatch.Dispatchers
   * then supposed to stop itself. Incoming messages will be buffered by the `ShardRegion`
   * between reception of `Passivate` and termination of the entity. Such buffered messages
   * are thereafter delivered to a new incarnation of the entity.
-  *
   */
 object ClusterSharding
     extends ExtensionId[ClusterSharding]

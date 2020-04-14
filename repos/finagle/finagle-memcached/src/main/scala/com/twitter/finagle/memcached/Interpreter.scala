@@ -121,8 +121,8 @@ class Interpreter(map: AtomicMap[Buf, Entry]) {
             case Some(entry) if entry.valid =>
               val Buf.Utf8(existingString) = entry.value
               if (!existingString.isEmpty && !DigitsPattern
-                    .matcher(existingString)
-                    .matches())
+                  .matcher(existingString)
+                  .matches())
                 throw new ClientError(
                   "cannot increment or decrement non-numeric value")
 

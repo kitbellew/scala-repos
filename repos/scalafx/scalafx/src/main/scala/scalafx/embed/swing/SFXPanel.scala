@@ -64,7 +64,6 @@ class SFXPanel(override val delegate: jfxes.JFXPanel = new jfxes.JFXPanel)
     extends SFXDelegate[jfxes.JFXPanel] {
 
   /**
-    *
     */
   def inputMethodRequests: InputMethodRequests = delegate.getInputMethodRequests
 

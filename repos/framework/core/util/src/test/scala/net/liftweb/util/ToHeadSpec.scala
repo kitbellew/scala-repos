@@ -147,5 +147,5 @@ object ToHeadSpec extends Specification with XmlMatchers {
        HeadHelper.cleanHead(actual) must beEqualToIgnoringSpace(expected)
      }
    }
- */
+   */
 }

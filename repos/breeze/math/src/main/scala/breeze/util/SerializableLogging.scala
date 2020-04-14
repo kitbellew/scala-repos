@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory
   * Stupid Typesafe logging lib trait isn't serializable. This is just a better version.
   *
   * @author dlwh
- **/
+  */
 trait SerializableLogging extends Serializable {
   @transient @volatile
   private var _the_logger: LazyLogger = null

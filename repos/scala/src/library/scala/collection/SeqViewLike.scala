@@ -210,7 +210,7 @@ trait SeqViewLike[
   protected override def newPrepended[B >: A](
       that: GenTraversable[B]): Transformed[B] =
     new { protected[this] val fst = that } with AbstractTransformed[B]
-      with Prepended[B]
+    with Prepended[B]
   protected override def newMapped[B](f: A => B): Transformed[B] =
     new { val mapping = f } with AbstractTransformed[B] with Mapped[B]
   protected override def newFlatMapped[B](

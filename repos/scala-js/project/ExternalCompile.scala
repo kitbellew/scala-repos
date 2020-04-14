@@ -64,7 +64,7 @@ object ExternalCompile {
             def log(level: Level.Value, message: => String) = {
               val msg = message
               if (level != Level.Info ||
-                  !msg.startsWith("Running scala.tools.nsc.Main"))
+                !msg.startsWith("Running scala.tools.nsc.Main"))
                 logger.log(level, msg)
             }
             def success(message: => String) = logger.success(message)
@@ -87,7 +87,7 @@ object ExternalCompile {
            * length.
            */
           if ((fork in compile).value && isWindows &&
-              (sourcesArgs.map(_.length).sum > 1536)) {
+            (sourcesArgs.map(_.length).sum > 1536)) {
             IO.withTemporaryFile("sourcesargs", ".txt") { sourceListFile =>
               IO.writeLines(sourceListFile, sourcesArgs)
               doCompile(List("@" + sourceListFile.getAbsolutePath()))

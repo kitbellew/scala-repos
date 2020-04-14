@@ -732,9 +732,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
             return 0
           }
           if (value < 0 ||
-              limit / (base / divider) < value ||
-              limit - (d / divider) < value * (base / divider) &&
-              !(negated && limit == value * base - 1 + d)) {
+            limit / (base / divider) < value ||
+            limit - (d / divider) < value * (base / divider) &&
+            !(negated && limit == value * base - 1 + d)) {
             syntaxError("integer number too large")
             return 0
           }
@@ -789,9 +789,9 @@ trait JavaScanners extends ast.parser.ScannersCommon {
         }
       }
       if (base <= 10 &&
-          (in.ch == 'e' || in.ch == 'E' ||
-          in.ch == 'f' || in.ch == 'F' ||
-          in.ch == 'd' || in.ch == 'D')) {
+        (in.ch == 'e' || in.ch == 'E' ||
+        in.ch == 'f' || in.ch == 'F' ||
+        in.ch == 'd' || in.ch == 'D')) {
         return getFraction()
       }
       setName()

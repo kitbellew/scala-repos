@@ -3238,7 +3238,7 @@ trait BuildCommon {
   }
   final class RichAttributed private[sbt] (s: Seq[Attributed[File]]) {
 
-    /** Extracts the plain `Seq[File]` from a Classpath (which is a `Seq[Attributed[File]]`).*/
+    /** Extracts the plain `Seq[File]` from a Classpath (which is a `Seq[Attributed[File]]`). */
     def files: Seq[File] = Attributed.data(s)
   }
   final class RichFiles private[sbt] (s: Seq[File]) {

@@ -38,7 +38,6 @@ class SessionPoolingParams[A <: Stack.Parameterized[A]](
     self.configured(self.params[DefaultPool.Param].copy(low = sessionsPerHost))
 
   /**
-    *
     * Configures the maximum number of per-host sessions requests that are queued
     * when the connections concurrency exceeds the maximum size of this pool
     * (default: unbounded).

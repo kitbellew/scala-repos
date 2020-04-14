@@ -24,7 +24,7 @@ import org.scalatest.FunSuite
   * TODO
   *
   * @author dlwh
- **/
+  */
 class softmaxTest extends FunSuite {
   test("softmax on negative infinities works") {
     assert(

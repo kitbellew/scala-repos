@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Skinnable Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class SkinnableSpec

@@ -163,7 +163,7 @@ final class JUnitExecuteTest(
       timeInSeconds: Double,
       ex: Throwable) = {
     if (classOf[AssumptionViolatedException].isInstance(ex) ||
-        classOf[internal.AssumptionViolatedException].isInstance(ex)) {
+      classOf[internal.AssumptionViolatedException].isInstance(ex)) {
       logFormattedInfo(methodName, "started")
       logAssertionWarning(methodName, ex, timeInSeconds)
       taskSkipped()

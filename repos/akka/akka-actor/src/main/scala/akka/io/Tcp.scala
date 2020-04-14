@@ -609,7 +609,6 @@ class TcpExt(system: ExtendedActorSystem) extends IO.Extension {
   }
 
   /**
-    *
     */
   val manager: ActorRef = {
     system.systemActorOf(

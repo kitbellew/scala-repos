@@ -202,7 +202,7 @@ trait GenTrees {
       // why? because then typechecking of a scrutinee doesn't depend on the environment external to the quasiquote
       // otherwise we need to reify the corresponding type
       if (sym.isLocalToReifee || tpe.isLocalToReifee || treeInfo
-            .isWildcardStarType(tree))
+          .isWildcardStarType(tree))
         reifyProduct(tree)
       else {
         if (reifyDebug)

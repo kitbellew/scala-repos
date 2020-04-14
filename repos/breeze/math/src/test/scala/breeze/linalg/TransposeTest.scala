@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
   * TODO
   *
   * @author dlwh
- **/
+  */
 class TransposeTest extends FunSuite {
   test("Counter1 inner product") {
 

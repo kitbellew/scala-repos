@@ -79,7 +79,7 @@ object CanZipMapKeyValues {
       @spec(Double, Int, Float, Long) RV: ClassTag]
       extends CanZipMapKeyValues[Array[V], Int, V, RV, Array[RV]] {
 
-    /**Maps all values from the given collection. */
+    /** Maps all values from the given collection. */
     def map(from: Array[V], from2: Array[V], fn: (Int, V, V) => RV) = {
       require(from.length == from2.length, "Array lengths don't match!")
       val arr = new Array[RV](from.length)

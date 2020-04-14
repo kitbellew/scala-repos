@@ -8,8 +8,7 @@ import com.intellij.psi.PsiElement
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008
-  */
+  * Date: 06.03.2008 */
 
 trait ScPrefixExpr extends ScExpression with ScSugarCallExpr {
   def operand = findChildrenByClassScala(classOf[ScExpression]).apply(1)

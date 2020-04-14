@@ -22,12 +22,12 @@ class ExpressionFilter extends ElementFilter {
     if (leaf != null) {
       val parent = leaf.getParent
       if (parent.isInstanceOf[ScReferenceExpression] && !parent.getParent
-            .isInstanceOf[ScPostfixExpr] &&
-          !parent.getParent.isInstanceOf[ScStableReferenceElementPattern] &&
-          (parent.getPrevSibling == null ||
-          parent.getPrevSibling.getPrevSibling == null ||
-          (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT || !parent.getPrevSibling.getPrevSibling.getLastChild
-            .isInstanceOf[PsiErrorElement]))) {
+          .isInstanceOf[ScPostfixExpr] &&
+        !parent.getParent.isInstanceOf[ScStableReferenceElementPattern] &&
+        (parent.getPrevSibling == null ||
+        parent.getPrevSibling.getPrevSibling == null ||
+        (parent.getPrevSibling.getPrevSibling.getNode.getElementType != ScalaElementTypes.MATCH_STMT || !parent.getPrevSibling.getPrevSibling.getLastChild
+          .isInstanceOf[PsiErrorElement]))) {
         return true
       }
     }

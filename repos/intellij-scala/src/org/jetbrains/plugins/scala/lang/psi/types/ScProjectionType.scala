@@ -101,15 +101,15 @@ class ScProjectionType private (
                     case ScParameterizedType(des, typeArgs) =>
                       val taArgs = ta.typeParameters
                       if (taArgs.length == typeArgs.length && taArgs
-                            .zip(typeArgs)
-                            .forall {
-                              case (
-                                    tParam: ScTypeParam,
-                                    ScTypeParameterType(_, _, _, _, param))
-                                  if tParam == param =>
-                                true
-                              case _ => false
-                            })
+                          .zip(typeArgs)
+                          .forall {
+                            case (
+                                  tParam: ScTypeParam,
+                                  ScTypeParameterType(_, _, _, _, param))
+                                if tParam == param =>
+                              true
+                            case _ => false
+                          })
                         return Some(
                           AliasType(
                             ta,
@@ -238,7 +238,7 @@ class ScProjectionType private (
       proc.processType(projected, resolvePlace, ResolveState.initial)
       val candidates = proc.candidates
       if (candidates.length == 1 && candidates(0).element
-            .isInstanceOf[PsiNamedElement]) {
+          .isInstanceOf[PsiNamedElement]) {
         val defaultSubstitutor = emptySubst followed candidates(0).substitutor
         if (superReference) {
           ScalaPsiUtil
@@ -263,7 +263,7 @@ class ScProjectionType private (
         proc.processType(projected, resolvePlace, ResolveState.initial)
         val candidates = proc.candidates
         if (candidates.length == 1 && candidates(0).element
-              .isInstanceOf[PsiNamedElement]) {
+            .isInstanceOf[PsiNamedElement]) {
           //todo: superMemberSubstitutor? However I don't know working example for this case
           Some(
             candidates(0).element,
@@ -529,15 +529,15 @@ case class ScDesignatorType(element: PsiNamedElement) extends ValueType {
                   case ScParameterizedType(des, typeArgs) =>
                     val taArgs = ta.typeParameters
                     if (taArgs.length == typeArgs.length && taArgs
-                          .zip(typeArgs)
-                          .forall {
-                            case (
-                                  tParam: ScTypeParam,
-                                  ScTypeParameterType(_, _, _, _, param))
-                                if tParam == param =>
-                              true
-                            case _ => false
-                          })
+                        .zip(typeArgs)
+                        .forall {
+                          case (
+                                tParam: ScTypeParam,
+                                ScTypeParameterType(_, _, _, _, param))
+                              if tParam == param =>
+                            true
+                          case _ => false
+                        })
                       return Some(
                         AliasType(
                           ta,

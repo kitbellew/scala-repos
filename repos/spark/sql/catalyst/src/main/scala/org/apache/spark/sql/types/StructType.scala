@@ -120,7 +120,7 @@ case class StructType(fields: Array[StructField])
     *   .add(StructField("a", IntegerType, true))
     *   .add(StructField("b", LongType, false))
     *   .add(StructField("c", StringType, true))
-    *}}}
+    * }}}
     */
   def add(field: StructField): StructType = {
     StructType(fields :+ field)

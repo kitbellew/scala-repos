@@ -78,6 +78,6 @@ trait App extends DelayedInit {
       val total = currentTime - executionStart
       Console.println("[total " + total + "ms]")
     }
-   */
+     */
   }
 }

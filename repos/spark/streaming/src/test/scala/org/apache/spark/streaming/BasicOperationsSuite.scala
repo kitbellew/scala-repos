@@ -733,8 +733,8 @@ class BasicOperationsSuite extends TestSuiteBase {
           val numCompletedBatches = batchCounter.getNumCompletedBatches
           clock.advance(batchDuration.milliseconds)
           if (!batchCounter.waitUntilBatchesCompleted(
-                numCompletedBatches + 1,
-                5000)) {
+              numCompletedBatches + 1,
+              5000)) {
             fail("Batch took more than 5 seconds to complete")
           }
           collectRddInfo()

@@ -50,7 +50,6 @@ class LBFGSB(
   protected val EPS = 2.2e-16
 
   /**
-    *
     * @param theta
     * @param W [Yk theta * Sk]
     * @param M
@@ -223,7 +222,6 @@ class LBFGSB(
   }
 
   /**
-    *
     * @param xCauchy generalize cauchy point
     * @param du gradient directiong
     * @param freeVarIndex

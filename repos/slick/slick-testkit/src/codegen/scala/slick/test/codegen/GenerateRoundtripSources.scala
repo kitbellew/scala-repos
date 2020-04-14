@@ -57,7 +57,7 @@ object GenerateRoundtripSources {
 class Tables(val profile: JdbcProfile) {
   import profile.api._
 
-  /** Tests single column table, scala keyword type name, non-dentifier column name and all nullable columns table*/
+  /** Tests single column table, scala keyword type name, non-dentifier column name and all nullable columns table */
   class `null`(tag: Tag) extends Table[Option[String]](tag, "null") {
     def name = column[Option[String]]("na me")
     def * = name
@@ -73,7 +73,7 @@ class Tables(val profile: JdbcProfile) {
   }
   val SelfRef = TableQuery[SelfRef]
 
-  /** Tests single column table, scala keyword type name and all nullable columns table*/
+  /** Tests single column table, scala keyword type name and all nullable columns table */
   class SingleNonOptionColumn(tag: Tag)
       extends Table[String](tag, "SingleNonOptionColumn") {
     def name = column[String]("name")

@@ -392,7 +392,7 @@ private[spark] class TaskSetManager(
       maxLocality: TaskLocality.Value)
       : Option[(Int, TaskLocality.Value, Boolean)] = {
     for (index <-
-           dequeueTaskFromList(execId, getPendingTasksForExecutor(execId))) {
+        dequeueTaskFromList(execId, getPendingTasksForExecutor(execId))) {
       return Some((index, TaskLocality.PROCESS_LOCAL, false))
     }
 
@@ -504,7 +504,7 @@ private[spark] class TaskSetManager(
                 throw new TaskNotSerializableException(e)
             }
           if (serializedTask.limit > TaskSetManager.TASK_SIZE_TO_WARN_KB * 1024 &&
-              !emittedTaskSizeWarning) {
+            !emittedTaskSizeWarning) {
             emittedTaskSizeWarning = true
             logWarning(
               s"Stage ${task.stageId} contains a task of very large size " +
@@ -601,7 +601,7 @@ private[spark] class TaskSetManager(
             s"so moving to locality level ${myLocalityLevels(currentLocalityIndex + 1)}")
         currentLocalityIndex += 1
       } else if (curTime - lastLaunchTime >= localityWaits(
-                   currentLocalityIndex)) {
+          currentLocalityIndex)) {
         // Jump to the next locality level, and reset lastLaunchTime so that the next locality
         // wait timer doesn't immediately expire
         lastLaunchTime += localityWaits(currentLocalityIndex)
@@ -792,8 +792,8 @@ private[spark] class TaskSetManager(
     sched.dagScheduler.taskEnded(tasks(index), reason, null, accumUpdates, info)
     addPendingTask(index)
     if (!isZombie && state != TaskState.KILLED
-        && reason.isInstanceOf[TaskFailedReason]
-        && reason.asInstanceOf[TaskFailedReason].countTowardsTaskFailures) {
+      && reason.isInstanceOf[TaskFailedReason]
+      && reason.asInstanceOf[TaskFailedReason].countTowardsTaskFailures) {
       assert(null != failureReason)
       numFailures(index) += 1
       if (numFailures(index) >= maxTaskFailures) {
@@ -860,7 +860,7 @@ private[spark] class TaskSetManager(
     // The reason is the next stage wouldn't be able to fetch the data from this dead executor
     // so we would need to rerun these tasks on other executors.
     if (tasks(0).isInstanceOf[
-          ShuffleMapTask] && !env.blockManager.externalShuffleServiceEnabled) {
+        ShuffleMapTask] && !env.blockManager.externalShuffleServiceEnabled) {
       for ((tid, info) <- taskInfos if info.executorId == execId) {
         val index = taskInfos(tid).index
         if (successful(index)) {
@@ -880,7 +880,7 @@ private[spark] class TaskSetManager(
       }
     }
     for ((tid, info) <- taskInfos
-         if info.running && info.executorId == execId) {
+      if info.running && info.executorId == execId) {
       val exitCausedByApp: Boolean = reason match {
         case exited: ExecutorExited => exited.exitCausedByApp
         case ExecutorKilled         => false
@@ -930,8 +930,8 @@ private[spark] class TaskSetManager(
       for ((tid, info) <- taskInfos) {
         val index = info.index
         if (!successful(index) && copiesRunning(index) == 1 && info.timeRunning(
-              time) > threshold &&
-            !speculatableTasks.contains(index)) {
+            time) > threshold &&
+          !speculatableTasks.contains(index)) {
           logInfo(
             "Marking task %d in stage %s (on %s) as speculatable because it ran more than %.0f ms"
               .format(index, taskSet.id, info.host, threshold))
@@ -962,25 +962,24 @@ private[spark] class TaskSetManager(
   /**
     * Compute the locality levels used in this TaskSet. Assumes that all tasks have already been
     * added to queues using addPendingTask.
-    *
     */
   private def computeValidLocalityLevels(): Array[TaskLocality.TaskLocality] = {
     import TaskLocality.{PROCESS_LOCAL, NODE_LOCAL, NO_PREF, RACK_LOCAL, ANY}
     val levels = new ArrayBuffer[TaskLocality.TaskLocality]
     if (!pendingTasksForExecutor.isEmpty && getLocalityWait(
-          PROCESS_LOCAL) != 0 &&
-        pendingTasksForExecutor.keySet.exists(sched.isExecutorAlive(_))) {
+        PROCESS_LOCAL) != 0 &&
+      pendingTasksForExecutor.keySet.exists(sched.isExecutorAlive(_))) {
       levels += PROCESS_LOCAL
     }
     if (!pendingTasksForHost.isEmpty && getLocalityWait(NODE_LOCAL) != 0 &&
-        pendingTasksForHost.keySet.exists(sched.hasExecutorsAliveOnHost(_))) {
+      pendingTasksForHost.keySet.exists(sched.hasExecutorsAliveOnHost(_))) {
       levels += NODE_LOCAL
     }
     if (!pendingTasksWithNoPrefs.isEmpty) {
       levels += NO_PREF
     }
     if (!pendingTasksForRack.isEmpty && getLocalityWait(RACK_LOCAL) != 0 &&
-        pendingTasksForRack.keySet.exists(sched.hasHostAliveOnRack(_))) {
+      pendingTasksForRack.keySet.exists(sched.hasHostAliveOnRack(_))) {
       levels += RACK_LOCAL
     }
     levels += ANY

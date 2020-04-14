@@ -187,7 +187,6 @@ abstract class PopupWindow(override val delegate: jfxs.PopupWindow)
 
   /**
     * The window which is the parent of this popup.
-    *
     */
   def ownerWindow: ReadOnlyObjectProperty[jfxs.Window] =
     delegate.ownerWindowProperty

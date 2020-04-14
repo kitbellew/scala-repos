@@ -26,7 +26,6 @@ import spire.algebra._
 import spire.implicits._
 
 /**
-  *
   * @author dlw
   */
 @RunWith(classOf[JUnitRunner])

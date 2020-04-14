@@ -87,9 +87,9 @@ private[remote] class DefaultMessageDispatcher(
         payload match {
           case sel: ActorSelectionMessage ⇒
             if (UntrustedMode && (!TrustedSelectionPaths.contains(
-                  sel.elements.mkString("/", "/", "")) ||
-                sel.msg
-                  .isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
+                sel.elements.mkString("/", "/", "")) ||
+              sel.msg
+                .isInstanceOf[PossiblyHarmful] || l != provider.rootGuardian))
               log.debug(
                 "operating in UntrustedMode, dropping inbound actor selection to [{}], " +
                   "allow it by adding the path to 'akka.remote.trusted-selection-paths' configuration",
@@ -1153,13 +1153,13 @@ private[remote] class EndpointReader(
     def updateSavedState(key: Link, expectedState: ResendState): Unit = {
       if (expectedState eq null) {
         if (receiveBuffers.putIfAbsent(
-              key,
-              ResendState(uid, ackedReceiveBuffer)) ne null)
+            key,
+            ResendState(uid, ackedReceiveBuffer)) ne null)
           updateSavedState(key, receiveBuffers.get(key))
       } else if (!receiveBuffers.replace(
-                   key,
-                   expectedState,
-                   merge(ResendState(uid, ackedReceiveBuffer), expectedState)))
+          key,
+          expectedState,
+          merge(ResendState(uid, ackedReceiveBuffer), expectedState)))
         updateSavedState(key, receiveBuffers.get(key))
     }
 

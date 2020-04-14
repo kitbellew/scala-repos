@@ -26,7 +26,7 @@ import breeze.linalg.operators.OpSub
   * TODO
   *
   * @author dlwh
- **/
+  */
 trait NormBasedDistance extends UFunc {
 
   implicit def distanceFromNormAndSub[T, U, V](implicit

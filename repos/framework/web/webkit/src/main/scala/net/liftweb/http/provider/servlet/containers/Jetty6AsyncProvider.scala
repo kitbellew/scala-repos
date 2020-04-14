@@ -75,7 +75,6 @@ object Jetty6AsyncProvider extends AsyncProviderMeta {
   * Jetty6AsyncProvider
   *
   * Implemented by using Jetty 6 Continuation API
-  *
   */
 class Jetty6AsyncProvider(req: HTTPRequest)
     extends ServletAsyncProvider

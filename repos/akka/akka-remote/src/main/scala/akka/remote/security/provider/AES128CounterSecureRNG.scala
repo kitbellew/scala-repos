@@ -14,7 +14,7 @@ import SeedSize.Seed128
   */
 class AES128CounterSecureRNG extends java.security.SecureRandomSpi {
 
-  /**Singleton instance. */
+  /** Singleton instance. */
   private final val Instance: SecureRandomSeedGenerator =
     new SecureRandomSeedGenerator
 

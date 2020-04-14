@@ -218,8 +218,8 @@ object DocStrings {
   def extractSectionText(str: String, section: (Int, Int)): (Int, Int) = {
     val (beg, end) = section
     if (str.startsWith("@param", beg) ||
-        str.startsWith("@tparam", beg) ||
-        str.startsWith("@throws", beg))
+      str.startsWith("@tparam", beg) ||
+      str.startsWith("@throws", beg))
       (
         skipWhitespace(
           str,

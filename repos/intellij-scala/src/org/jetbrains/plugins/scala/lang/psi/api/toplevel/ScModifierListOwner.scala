@@ -14,8 +14,7 @@ import org.jetbrains.plugins.scala.lang.parser.ScalaElementTypes
 import org.jetbrains.plugins.scala.lang.psi.api.base._
 
 /**
-  * @author ilyas
-  */
+  * @author ilyas */
 
 trait ScModifierListOwner extends ScalaPsiElement with PsiModifierListOwner {
   override def getModifierList: ScModifierList = {

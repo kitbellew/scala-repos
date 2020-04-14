@@ -183,7 +183,7 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
   def beginEntry: String = {
     val res: Any = withHints { hints =>
       if (hints.isElidedType && nullablePrimitives.contains(
-            hints.elidedType.get.key)) {
+          hints.elidedType.get.key)) {
         val lookahead = in.getByte()
         lookahead match {
           case UNIT_TAG => FastTypeTag.Unit
@@ -192,7 +192,7 @@ class BinaryPickleReader(in: BinaryInput, format: BinaryPickleFormat)
           case _        => in.setLookahead(lookahead); hints.elidedType.get
         }
       } else if (hints.isElidedType && primitives.contains(
-                   hints.elidedType.get.key)) {
+          hints.elidedType.get.key)) {
         hints.elidedType.get
       } else {
         val lookahead = in.getByte()

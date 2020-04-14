@@ -140,9 +140,9 @@ trait Config[T] extends (() => T) {
           val name = method.getName
           val rt = method.getReturnType
           if (name != "required" &&
-              name != "optional" &&
-              !name.endsWith("$outer") && // no loops!
-              interestingReturnTypes.exists(_.isAssignableFrom(rt))) {
+            name != "optional" &&
+            !name.endsWith("$outer") && // no loops!
+            interestingReturnTypes.exists(_.isAssignableFrom(rt))) {
             method.invoke(config) match {
               case Unspecified =>
                 buf += (prefix + name)

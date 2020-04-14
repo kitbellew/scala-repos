@@ -66,7 +66,6 @@ trait AsyncSupport extends ServletBase with ScalatraAsyncSupport {
     * {{{
     *   asyncGet("/", request.getRemoteHost == "127.0.0.1") { "Hello localhost!" }
     * }}}
-    *
     */
   def asyncGet(transformers: RouteTransformer*)(block: => Any): Route = {
     get(transformers: _*)(asynchronously(block)())

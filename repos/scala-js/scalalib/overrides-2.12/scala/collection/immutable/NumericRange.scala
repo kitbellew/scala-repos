@@ -190,10 +190,10 @@ abstract class NumericRange[T](
   final override def sum[B >: T](implicit num: Numeric[B]): B = {
     // arithmetic series formula  can be used for regular addition
     if ((num eq scala.math.Numeric.IntIsIntegral) ||
-        (num eq scala.math.Numeric.ShortIsIntegral) ||
-        (num eq scala.math.Numeric.ByteIsIntegral) ||
-        (num eq scala.math.Numeric.CharIsIntegral) ||
-        (num eq scala.math.Numeric.LongIsIntegral)) {
+      (num eq scala.math.Numeric.ShortIsIntegral) ||
+      (num eq scala.math.Numeric.ByteIsIntegral) ||
+      (num eq scala.math.Numeric.CharIsIntegral) ||
+      (num eq scala.math.Numeric.LongIsIntegral)) {
       val numAsIntegral = num.asInstanceOf[Integral[B]]
       import numAsIntegral._
       if (isEmpty) num fromInt 0

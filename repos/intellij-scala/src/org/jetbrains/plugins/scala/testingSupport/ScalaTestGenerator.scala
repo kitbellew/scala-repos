@@ -137,7 +137,7 @@ class ScalaTestGenerator extends TestGenerator {
       case Some(body) =>
         val methodsList = methods.toList
         if (isInheritor(typeDef, "org.scalatest.FeatureSpecLike") ||
-            isInheritor(typeDef, "org.scalatest.fixture.FeatureSpecLike")) {
+          isInheritor(typeDef, "org.scalatest.fixture.FeatureSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -148,7 +148,7 @@ class ScalaTestGenerator extends TestGenerator {
             psiManager,
             body)
         } else if (isInheritor(typeDef, "org.scalatest.FlatSpecLike") ||
-                   isInheritor(typeDef, "org.scalatest.fixture.FlatSpecLike")) {
+          isInheritor(typeDef, "org.scalatest.fixture.FlatSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -160,8 +160,8 @@ class ScalaTestGenerator extends TestGenerator {
             body,
             className)
         } else if (isInheritor(typeDef, "org.scalatest.FreeSpecLike") ||
-                   isInheritor(typeDef, "org.scalatest.fixture.FreeSpecLike") ||
-                   isInheritor(typeDef, "org.scalatest.path.FreeSpecLike")) {
+          isInheritor(typeDef, "org.scalatest.fixture.FreeSpecLike") ||
+          isInheritor(typeDef, "org.scalatest.path.FreeSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -172,7 +172,7 @@ class ScalaTestGenerator extends TestGenerator {
             psiManager,
             body)
         } else if (isInheritor(typeDef, "org.scalatest.FunSpecLike") ||
-                   isInheritor(typeDef, "org.scalatest.fixture.FunSpecLike")) {
+          isInheritor(typeDef, "org.scalatest.fixture.FunSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -184,7 +184,7 @@ class ScalaTestGenerator extends TestGenerator {
             body,
             className)
         } else if (isInheritor(typeDef, "org.scalatest.FunSuiteLike") ||
-                   isInheritor(typeDef, "org.scalatest.fixture.FunSuiteLike")) {
+          isInheritor(typeDef, "org.scalatest.fixture.FunSuiteLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -195,7 +195,7 @@ class ScalaTestGenerator extends TestGenerator {
             psiManager,
             body)
         } else if (isInheritor(typeDef, "org.scalatest.PropSpecLike") ||
-                   isInheritor(typeDef, "org.scalatest.fixture.PropSpecLike")) {
+          isInheritor(typeDef, "org.scalatest.fixture.PropSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -206,7 +206,7 @@ class ScalaTestGenerator extends TestGenerator {
             psiManager,
             body)
         } else if (isInheritor(typeDef, "org.scalatest.WordSpecLike") ||
-                   isInheritor(typeDef, "org.scalatest.fixture.WordSpecLike")) {
+          isInheritor(typeDef, "org.scalatest.fixture.WordSpecLike")) {
           ScalaTestGenerator.generateScalaTestBeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -218,8 +218,8 @@ class ScalaTestGenerator extends TestGenerator {
             body,
             className)
         } else if (isInheritor(
-                     typeDef,
-                     "org.specs2.specification.script.SpecificationLike")) {
+            typeDef,
+            "org.specs2.specification.script.SpecificationLike")) {
           ScalaTestGenerator.generateSpecs2BeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -245,8 +245,8 @@ class ScalaTestGenerator extends TestGenerator {
             className,
             editor.getProject)
         } else if (isInheritor(
-                     typeDef,
-                     "org.specs2.mutable.SpecificationLike")) {
+            typeDef,
+            "org.specs2.mutable.SpecificationLike")) {
           ScalaTestGenerator.generateSpecs2BeforeAndAfter(
             generateBefore,
             generateAfter,

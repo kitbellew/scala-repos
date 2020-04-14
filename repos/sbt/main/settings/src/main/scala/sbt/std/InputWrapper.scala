@@ -13,8 +13,8 @@ import sbt.internal.util.complete.Parser
 /** Implementation detail.  The wrap methods temporarily hold inputs (as a Tree, at compile time) until a task or setting macro processes it. */
 object InputWrapper {
   /* The names of the wrapper methods should be obscure.
-	* Wrapper checking is based solely on this name, so it must not conflict with a user method name.
-	* The user should never see this method because it is compile-time only and only used internally by the task macro system.*/
+   * Wrapper checking is based solely on this name, so it must not conflict with a user method name.
+   * The user should never see this method because it is compile-time only and only used internally by the task macro system.*/
 
   private[std] final val WrapTaskName = "wrapTask_\u2603\u2603"
   private[std] final val WrapInitName = "wrapInit_\u2603\u2603"
@@ -137,7 +137,7 @@ object InputWrapper {
         c.abort(pos, s"Internal sbt error. Unexpected type ${tpe.widen}")
     }
 
-  /** Translates <task: TaskKey[T]>.previous(format) to Previous.runtime(<task>)(format).value*/
+  /** Translates <task: TaskKey[T]>.previous(format) to Previous.runtime(<task>)(format).value */
   def previousMacroImpl[T: c.WeakTypeTag](c: Context)(
       format: c.Expr[sbinary.Format[T]]): c.Expr[Option[T]] = {
     import c.universe._
@@ -191,8 +191,8 @@ sealed abstract class MacroPrevious[T] {
 /** Implementation detail.  The wrap method temporarily holds the input parser (as a Tree, at compile time) until the input task macro processes it. */
 object ParserInput {
   /* The name of the wrapper method should be obscure.
-	* Wrapper checking is based solely on this name, so it must not conflict with a user method name.
-	* The user should never see this method because it is compile-time only and only used internally by the task macros.*/
+   * Wrapper checking is based solely on this name, so it must not conflict with a user method name.
+   * The user should never see this method because it is compile-time only and only used internally by the task macros.*/
   private[std] val WrapName = "parser_\u2603\u2603"
   private[std] val WrapInitName = "initParser_\u2603\u2603"
 
@@ -237,7 +237,7 @@ object ParserInput {
           s"Internal sbt error. Unexpected type ${tpe.normalize} in parsedInputMacroImpl.")
     }
 
-  /** Implements `Parser[T].parsed` by wrapping the Parser with the ParserInput wrapper.*/
+  /** Implements `Parser[T].parsed` by wrapping the Parser with the ParserInput wrapper. */
   def parsedMacroImpl[T: c.WeakTypeTag](c: Context): c.Expr[T] =
     ContextUtil.selectMacroImpl[T](c) { (p, pos) =>
       import c.universe.reify

@@ -19,8 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.ScType
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 20.02.2008
-  */
+  * Date: 20.02.2008 */
 
 trait ScExtendsBlock extends ScalaPsiElement {
 

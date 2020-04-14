@@ -112,7 +112,7 @@ private[streaming] class ReliableKafkaReceiver[
     blockGenerator = supervisor.createBlockGenerator(new GeneratedBlockHandler)
 
     if (kafkaParams.contains(AUTO_OFFSET_COMMIT) && kafkaParams(
-          AUTO_OFFSET_COMMIT) == "true") {
+        AUTO_OFFSET_COMMIT) == "true") {
       logWarning(
         s"$AUTO_OFFSET_COMMIT should be set to false in ReliableKafkaReceiver, " +
           "otherwise we will manually set it to false to turn off auto offset commit in Kafka")

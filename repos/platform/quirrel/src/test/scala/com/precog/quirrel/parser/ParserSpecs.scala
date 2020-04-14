@@ -550,19 +550,19 @@ object ParserSpecs
 
     "resolve all escape sequences in string literals" in {
       parseSingle("\"\\\"\"") must beLike { case StrLit(_, "\"") => ok }
-      parseSingle("\"\\n\"") must beLike { case StrLit(_, "\n")  => ok }
-      parseSingle("\"\\r\"") must beLike { case StrLit(_, "\r")  => ok }
-      parseSingle("\"\\f\"") must beLike { case StrLit(_, "\f")  => ok }
-      parseSingle("\"\\t\"") must beLike { case StrLit(_, "\t")  => ok }
-      parseSingle("\"\\0\"") must beLike { case StrLit(_, "\0")  => ok }
+      parseSingle("\"\\n\"") must beLike { case StrLit(_, "\n") => ok }
+      parseSingle("\"\\r\"") must beLike { case StrLit(_, "\r") => ok }
+      parseSingle("\"\\f\"") must beLike { case StrLit(_, "\f") => ok }
+      parseSingle("\"\\t\"") must beLike { case StrLit(_, "\t") => ok }
+      parseSingle("\"\\0\"") must beLike { case StrLit(_, "\0") => ok }
       parseSingle("\"\\\\\"") must beLike { case StrLit(_, "\\") => ok }
     }
 
     "accept a number literal" in {
-      parseSingle("1") must beLike { case NumLit(_, "1")                 => ok }
-      parseSingle("256") must beLike { case NumLit(_, "256")             => ok }
-      parseSingle("256.715") must beLike { case NumLit(_, "256.715")     => ok }
-      parseSingle("3.1415") must beLike { case NumLit(_, "3.1415")       => ok }
+      parseSingle("1") must beLike { case NumLit(_, "1") => ok }
+      parseSingle("256") must beLike { case NumLit(_, "256") => ok }
+      parseSingle("256.715") must beLike { case NumLit(_, "256.715") => ok }
+      parseSingle("3.1415") must beLike { case NumLit(_, "3.1415") => ok }
       parseSingle("2.7183e26") must beLike { case NumLit(_, "2.7183e26") => ok }
       parseSingle("2.7183E26") must beLike { case NumLit(_, "2.7183E26") => ok }
     }
@@ -572,7 +572,7 @@ object ParserSpecs
     }
 
     "accept a boolean literal" in {
-      parseSingle("true") must beLike { case BoolLit(_, true)   => ok }
+      parseSingle("true") must beLike { case BoolLit(_, true) => ok }
       parseSingle("false") must beLike { case BoolLit(_, false) => ok }
     }
 
@@ -2408,8 +2408,8 @@ object ParserSpecs
 
   "whitespace processing" should {
     "skip any amount of leading space characters" in {
-      parseSingle(" 1") must beLike { case NumLit(_, "1")       => ok }
-      parseSingle("     1") must beLike { case NumLit(_, "1")   => ok }
+      parseSingle(" 1") must beLike { case NumLit(_, "1") => ok }
+      parseSingle("     1") must beLike { case NumLit(_, "1") => ok }
       parseSingle("\t  \t 1") must beLike { case NumLit(_, "1") => ok }
       parseSingle("\n\r  ;\r\t  \t\n ;;1") must beLike {
         case NumLit(_, "1") => ok
@@ -2417,8 +2417,8 @@ object ParserSpecs
     }
 
     "skip any amount of trailing space characters" in {
-      parseSingle("1 ") must beLike { case NumLit(_, "1")       => ok }
-      parseSingle("1     ") must beLike { case NumLit(_, "1")   => ok }
+      parseSingle("1 ") must beLike { case NumLit(_, "1") => ok }
+      parseSingle("1     ") must beLike { case NumLit(_, "1") => ok }
       parseSingle("1\t  \t ") must beLike { case NumLit(_, "1") => ok }
       parseSingle("1\n\r  ;\r\t  \t\n ;;") must beLike {
         case NumLit(_, "1") => ok

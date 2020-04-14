@@ -144,7 +144,7 @@ private[cluster] final class ClusterHeartbeatSender
 
   def addMember(m: Member): Unit =
     if (m.uniqueAddress != selfUniqueAddress && !state.contains(
-          m.uniqueAddress))
+        m.uniqueAddress))
       state = state.addMember(m.uniqueAddress)
 
   def removeMember(m: Member): Unit =
@@ -199,7 +199,7 @@ private[cluster] final class ClusterHeartbeatSender
 
   def triggerFirstHeartbeat(from: UniqueAddress): Unit =
     if (state.activeReceivers(from) && !failureDetector.isMonitoring(
-          from.address)) {
+        from.address)) {
       if (verboseHeartbeat)
         log.debug(
           "Cluster Node [{}] - Trigger extra expected heartbeat from [{}]",

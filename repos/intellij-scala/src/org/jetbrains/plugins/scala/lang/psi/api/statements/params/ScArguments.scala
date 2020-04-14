@@ -7,7 +7,6 @@ package params
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 21.03.2008
-  */
+  * Date: 21.03.2008 */
 
 trait ScArguments extends ScalaPsiElement {}

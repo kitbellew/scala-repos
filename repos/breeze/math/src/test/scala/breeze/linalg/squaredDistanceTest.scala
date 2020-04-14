@@ -6,7 +6,7 @@ import org.scalatest.FunSuite
   * TODO
   *
   * @author dlwh
- **/
+  */
 class squaredDistanceTest extends FunSuite {
   test("simple squared distance test") {
     assert(

@@ -851,7 +851,7 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                  |Launch Time: ${UIUtils.formatDate(new Date(launchTime))}
                  |${if (!taskInfo.running) {
               s"""<br>Finish Time: ${UIUtils.formatDate(
-                new Date(finishTime))}"""
+                   new Date(finishTime))}"""
             } else {
               ""
             }}

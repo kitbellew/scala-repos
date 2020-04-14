@@ -87,8 +87,8 @@ private[http] class HttpResponseParser(
               maxResponseReasonLength + " characters")
       skipReason(startIdx)
     } else if (byteChar(input, cursor + 3) == '\r' && byteChar(
-                 input,
-                 cursor + 4) == '\n') {
+        input,
+        cursor + 4) == '\n') {
       throw new ParsingException("Status code misses trailing space")
     } else badStatusCode
   }

@@ -11,7 +11,7 @@ import scalaz.Id.Id
 trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] { self =>
   ////
 
-  /**The product of Traverse1 `F` and `G`, `[x](F[x], G[x]])`, is a Traverse1 */
+  /** The product of Traverse1 `F` and `G`, `[x](F[x], G[x]])`, is a Traverse1 */
   def product[G[_]](implicit
       G0: Traverse1[G]): Traverse1[λ[α => (F[α], G[α])]] =
     new ProductTraverse1[F, G] {
@@ -19,7 +19,7 @@ trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] { self =>
       implicit def G = G0
     }
 
-  /**The product of Traverse1 `F` and Traverse `G`, `[x](F[x], G[x]])`, is a Traverse1 */
+  /** The product of Traverse1 `F` and Traverse `G`, `[x](F[x], G[x]])`, is a Traverse1 */
   def product0[G[_]](implicit
       G0: Traverse[G]): Traverse1[λ[α => (F[α], G[α])]] =
     new ProductTraverse1L[F, G] {
@@ -27,7 +27,7 @@ trait Traverse1[F[_]] extends Traverse[F] with Foldable1[F] { self =>
       def G = G0
     }
 
-  /**The composition of Traverse1 `F` and `G`, `[x]F[G[x]]`, is a Traverse1 */
+  /** The composition of Traverse1 `F` and `G`, `[x]F[G[x]]`, is a Traverse1 */
   def compose[G[_]: Traverse1]: Traverse1[λ[α => F[G[α]]]] =
     new CompositionTraverse1[F, G] {
       def F = self

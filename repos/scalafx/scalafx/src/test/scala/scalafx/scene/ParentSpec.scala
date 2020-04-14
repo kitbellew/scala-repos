@@ -37,8 +37,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Parent Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class ParentSpec

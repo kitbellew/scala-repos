@@ -251,12 +251,12 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
           connection.rollback()
 
           val humanScript =
-            "# --- Rev:" + lastScript.evolution.revision + "," + (if (lastScript
-                                                                        .isInstanceOf[UpScript])
+            "# --- Rev:" + lastScript.evolution.revision + "," + (if (lastScript.isInstanceOf[
+                                                                      UpScript])
                                                                     "Ups"
                                                                   else
                                                                     "Downs") + " - " + lastScript.evolution.hash + "\n\n" + (if (lastScript
-                                                                                                                                   .isInstanceOf[UpScript])
+                                                                                                                                 .isInstanceOf[UpScript])
                                                                                                                                lastScript.evolution.sql_up
                                                                                                                              else
                                                                                                                                lastScript.evolution.sql_down)

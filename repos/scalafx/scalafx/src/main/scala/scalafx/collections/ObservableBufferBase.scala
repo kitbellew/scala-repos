@@ -54,7 +54,6 @@ object ObservableBufferBase {
   * On JavaFX side this is an abstract class that serves as a base class for ObservableList implementations that wa added in JavFX 8.
   * In ScalaFX 8 the implementation is actually in ObservableBuffer.
   *
-  *
   * Wraps a $JFX $URL0 $TC]].
   *
   * @tparam E - the type of the elements contained in the List

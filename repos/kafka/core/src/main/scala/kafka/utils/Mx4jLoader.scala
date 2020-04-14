@@ -28,7 +28,7 @@ import javax.management.ObjectName
   * This feature must be enabled with -Dmx4jenable=true
   *
   * This is a Scala port of org.apache.cassandra.utils.Mx4jTool written by Ran Tavory for CASSANDRA-1068
-  * */
+  */
 object Mx4jLoader extends Logging {
 
   def maybeLoad(): Boolean = {

@@ -6,7 +6,7 @@ import breeze.generic.UFunc
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
-/**Quickselect for linear-time medians, etc.
+/** Quickselect for linear-time medians, etc.
   * See [[scala.util.Sorting]] and [[breeze.util.Sorting]]
   * @author ktakagaki, dlwh
   */
@@ -155,7 +155,7 @@ object quickSelect extends UFunc {
 
 }
 
-/**quickSelectImpl does not clone the input array before doing a quickSelect-sort but instead
+/** quickSelectImpl does not clone the input array before doing a quickSelect-sort but instead
   * swaps in place, and therefore,
   * allows other functions to access the intermediate results of the sorting procedure.
   *
@@ -167,7 +167,6 @@ object quickSelect extends UFunc {
   * For example, appending an element or updating an element to an array which has already
   * been through `quickSelectImpl` and then re-calculating `quickSelectImpl`
   * will be faster than applying quickSelectImpl de-novo to the original unsorted array.
-  *
   */
 @deprecated("use quickSelect.inPlace instead", "0.12")
 object quickSelectImpl extends UFunc {

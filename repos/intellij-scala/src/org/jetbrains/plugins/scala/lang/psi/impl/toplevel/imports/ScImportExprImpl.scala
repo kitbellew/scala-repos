@@ -93,8 +93,8 @@ class ScImportExprImpl private (
       if (next != null) {
         def removeWhitespaceAfterComma(comma: ASTNode) {
           if (comma.getTreeNext != null && !comma.getTreeNext.getText.contains(
-                "\n") &&
-              comma.getTreeNext.getText.trim.isEmpty) {
+              "\n") &&
+            comma.getTreeNext.getText.trim.isEmpty) {
             remove(comma.getTreeNext)
           }
         }

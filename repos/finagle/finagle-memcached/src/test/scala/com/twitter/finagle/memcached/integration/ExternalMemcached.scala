@@ -52,7 +52,7 @@ private[memcached] object ExternalMemcached { self =>
     while (address == None && tries >= 0) {
       address = Some(RandomSocket.nextAddress())
       if (forbiddenPorts.contains(address.get.getPort) ||
-          takenPorts.contains(address.get.getPort)) {
+        takenPorts.contains(address.get.getPort)) {
         address = None
         tries -= 1
         Thread.sleep(5)

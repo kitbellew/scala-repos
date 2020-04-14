@@ -36,7 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * Rectangle2D Spec tests.
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class Rectangle2DSpec

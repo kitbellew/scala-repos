@@ -87,7 +87,7 @@ object StringUtil {
   /**
     * Extract issue id like ```#issueId``` from the given message.
     *
-    *@param message the message which may contains issue id
+    * @param message the message which may contains issue id
     * @return the iterator of issue id
     */
   def extractIssueId(message: String): Iterator[String] =

@@ -1207,7 +1207,7 @@ object Build extends sbt.Build {
          * modified in require-sam
          */
         if (isJSTest && scalaBinaryVersion.value != "2.10" &&
-            scalacOptions.value.contains("-Xexperimental")) {
+          scalacOptions.value.contains("-Xexperimental")) {
           val sourceDir = (sourceDirectory in Test).value / "require-sam"
           (sourceDir ** "*.scala").get
         } else {

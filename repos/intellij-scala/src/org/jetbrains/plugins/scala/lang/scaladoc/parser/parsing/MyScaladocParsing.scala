@@ -117,8 +117,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
 
     while (!isEndOfComment) {
       if (!(builder.getTokenType == DOC_WHITESPACE && builder.getTokenText
-            .contains("\n")) &&
-          builder.getTokenType != DOC_COMMENT_LEADING_ASTERISKS) {
+          .contains("\n")) &&
+        builder.getTokenType != DOC_COMMENT_LEADING_ASTERISKS) {
         hasClosingElementsInWikiSyntax = false
       }
       builder.getTokenType match {
@@ -186,8 +186,8 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
             return true
           }
           if (!hasClosingElementsInWikiSyntax &&
-              (builder.getTokenText.indexOf("\n") == builder.getTokenText
-                .lastIndexOf("\n"))) { //check is it single nl
+            (builder.getTokenText.indexOf("\n") == builder.getTokenText
+              .lastIndexOf("\n"))) { //check is it single nl
             hasClosingElementsInWikiSyntax = true
             builder.advanceLexer()
           } else {
@@ -260,9 +260,9 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
             DOC_TAG_VALUE_TOKEN)
         case PARAM_TAG | TYPE_PARAM_TAG | DEFINE_TAG =>
           if (!ParserUtils.lookAhead(
-                builder,
-                builder.getTokenType,
-                DOC_TAG_VALUE_TOKEN)) builder.error("Missing tag param")
+              builder,
+              builder.getTokenType,
+              DOC_TAG_VALUE_TOKEN)) builder.error("Missing tag param")
         case SEE_TAG | AUTHOR_TAG | NOTE_TAG | RETURN_TAG | SINCE_TAG |
             VERSION_TAG | USECASE_TAG | EXAMPLE_TAG | TODO_TAG |
             INHERITDOC_TAG | CONSTRUCTOR_TAG =>

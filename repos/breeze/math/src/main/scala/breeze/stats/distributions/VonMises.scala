@@ -150,9 +150,9 @@ object VonMises extends ExponentialFamily[VonMises, Double] {
   /*
 
   /**
- * Returns the maximum likelihood estimate of this distribution
- * For the given observations with (possibly pseudo-)counts
- */
+   * Returns the maximum likelihood estimate of this distribution
+   * For the given observations with (possibly pseudo-)counts
+   */
 
   def mle(obs: Counter[Double,Double]) = {
     val sufStats = for {
@@ -180,5 +180,5 @@ object VonMises extends ExponentialFamily[VonMises, Double] {
     } */
     VonMises(mu,k)
   }
- */
+   */
 }

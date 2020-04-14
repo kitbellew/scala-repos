@@ -105,12 +105,12 @@ object AclCommand {
       for ((resource, acls) <- resourceToAcl) {
         if (acls.isEmpty) {
           if (confirmAction(
-                s"Are you sure you want to delete all ACLs for resource `${resource}`? (y/n)"))
+              s"Are you sure you want to delete all ACLs for resource `${resource}`? (y/n)"))
             authorizer.removeAcls(resource)
         } else {
           if (confirmAction(s"Are you sure you want to remove ACLs: $Newline ${acls
-                .map("\t" + _)
-                .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
+              .map("\t" + _)
+              .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
             authorizer.removeAcls(acls, resource)
         }
       }
@@ -140,7 +140,7 @@ object AclCommand {
 
     //if none of the --producer or --consumer options are specified , just construct ACLs from CLI options.
     if (!opts.options.has(opts.producerOpt) && !opts.options.has(
-          opts.consumerOpt)) {
+        opts.consumerOpt)) {
       resourceToAcls ++= getCliResourceToAcls(opts)
     }
 
@@ -467,8 +467,7 @@ object AclCommand {
           "With --producer you must specify a --topic")
 
       if (options.has(consumerOpt) && (!options.has(topicOpt) || !options.has(
-            groupOpt) || (!options.has(producerOpt) && options.has(
-            clusterOpt))))
+          groupOpt) || (!options.has(producerOpt) && options.has(clusterOpt))))
         CommandLineUtils.printUsageAndDie(
           parser,
           "With --consumer you must specify a --topic and a --group and no --cluster option should be specified.")

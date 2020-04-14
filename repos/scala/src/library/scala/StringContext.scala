@@ -233,7 +233,7 @@ object StringContext {
                 oct = oct * 8 + str(idx) - '0'
                 idx += 1
                 if (idx < len && leadch <= '3' && '0' <= str(idx) && str(
-                      idx) <= '7') {
+                    idx) <= '7') {
                   oct = oct * 8 + str(idx) - '0'
                   idx += 1
                 }

@@ -36,8 +36,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
 
 /**
   * MenuItem Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class MenuItemSpec

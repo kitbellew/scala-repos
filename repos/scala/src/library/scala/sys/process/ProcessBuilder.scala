@@ -239,7 +239,7 @@ trait ProcessBuilder extends Source with Sink {
   def !<(log: ProcessLogger): Int
 
   /** Starts the process represented by this builder.  Standard output and error
-    * are sent to the console.*/
+    * are sent to the console. */
   def run(): Process
 
   /** Starts the process represented by this builder.  Standard output and error
@@ -285,7 +285,7 @@ trait ProcessBuilder extends Source with Sink {
     */
   def ###(other: ProcessBuilder): ProcessBuilder
 
-  /** True if this command can be the target of a pipe.  */
+  /** True if this command can be the target of a pipe. */
   def canPipeTo: Boolean
 
   /** True if this command has an exit code which should be propagated to the

@@ -309,12 +309,12 @@ object Compatibility {
               Seq(param.expectedType))
 
             for (exprType <-
-                   expr
-                     .getTypeAfterImplicitConversion(
-                       checkWithImplicits,
-                       isShapesResolve,
-                       Some(expectedType))
-                     .tr) yield {
+                expr
+                  .getTypeAfterImplicitConversion(
+                    checkWithImplicits,
+                    isShapesResolve,
+                    Some(expectedType))
+                  .tr) yield {
               val conforms =
                 Conformance.conforms(tp, exprType, checkWeak = true)
               if (!conforms) {
@@ -364,12 +364,12 @@ object Compatibility {
                 val paramType = param.paramType
                 val expectedType = param.expectedType
                 for (exprType <-
-                       expr
-                         .getTypeAfterImplicitConversion(
-                           checkWithImplicits,
-                           isShapesResolve,
-                           Some(expectedType))
-                         .tr) {
+                    expr
+                      .getTypeAfterImplicitConversion(
+                        checkWithImplicits,
+                        isShapesResolve,
+                        Some(expectedType))
+                      .tr) {
                   val conforms =
                     Conformance.conforms(paramType, exprType, checkWeak = true)
                   if (!conforms) {
@@ -432,11 +432,11 @@ object Compatibility {
       val expectedType: ScType = parameters.last.expectedType
       while (k < exprs.length) {
         for (exprType <- exprs(k)
-               .getTypeAfterImplicitConversion(
-                 checkWithImplicits,
-                 isShapesResolve,
-                 Some(expectedType))
-               ._1) {
+            .getTypeAfterImplicitConversion(
+              checkWithImplicits,
+              isShapesResolve,
+              Some(expectedType))
+            ._1) {
           val conforms =
             Conformance.conforms(paramType, exprType, checkWeak = true)
           if (!conforms) {
@@ -472,8 +472,7 @@ object Compatibility {
 
       val missed =
         for ((parameter: Parameter, b) <- parameters.zip(used)
-             if !b && !parameter.isDefault)
-          yield MissedValueParameter(parameter)
+          if !b && !parameter.isDefault) yield MissedValueParameter(parameter)
       defaultParameterUsed = parameters.zip(used).exists {
         case (param, bool) => !bool && param.isDefault
       }

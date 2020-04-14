@@ -87,8 +87,8 @@ case class ASTNode(
     if (other == null) {
       false
     } else if (!check(_.token.getType)
-               || !check(_.token.getText)
-               || !check(_.numChildren)) {
+      || !check(_.token.getText)
+      || !check(_.numChildren)) {
       false
     } else {
       children.zip(other.children).forall {

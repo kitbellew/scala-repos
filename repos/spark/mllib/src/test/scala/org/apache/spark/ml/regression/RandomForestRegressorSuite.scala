@@ -124,7 +124,7 @@ class RandomForestRegressorSuite
       Utils.deleteRecursively(tempDir)
     }
   }
- */
+   */
 }
 
 private object RandomForestRegressorSuite extends SparkFunSuite {

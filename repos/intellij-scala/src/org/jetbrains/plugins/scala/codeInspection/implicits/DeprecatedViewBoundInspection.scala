@@ -13,8 +13,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScTypeBoundsOwner
 
 /**
   * Nikolay.Tropin
-  * 2014-11-18
-  */
+  * 2014-11-18 */
 class DeprecatedViewBoundInspection
     extends AbstractInspection(id, description) {
   override def actionFor(

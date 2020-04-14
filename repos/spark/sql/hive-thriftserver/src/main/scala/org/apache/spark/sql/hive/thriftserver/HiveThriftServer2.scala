@@ -71,7 +71,7 @@ object HiveThriftServer2 extends Logging {
     sqlContext.sparkContext.addSparkListener(listener)
     uiTab =
       if (sqlContext.sparkContext.getConf
-            .getBoolean("spark.ui.enabled", true)) {
+          .getBoolean("spark.ui.enabled", true)) {
         Some(new ThriftServerTab(sqlContext.sparkContext))
       } else {
         None
@@ -104,7 +104,7 @@ object HiveThriftServer2 extends Logging {
       SparkSQLEnv.sparkContext.addSparkListener(listener)
       uiTab =
         if (SparkSQLEnv.sparkContext.getConf
-              .getBoolean("spark.ui.enabled", true)) {
+            .getBoolean("spark.ui.enabled", true)) {
           Some(new ThriftServerTab(SparkSQLEnv.sparkContext))
         } else {
           None

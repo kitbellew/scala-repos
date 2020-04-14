@@ -35,8 +35,6 @@ import scalafx.Includes._
 
 /**
   * LongStringConverter Spec tests.
-  *
-  *
   */
 @RunWith(classOf[JUnitRunner])
 class LongStringConverterSpec
