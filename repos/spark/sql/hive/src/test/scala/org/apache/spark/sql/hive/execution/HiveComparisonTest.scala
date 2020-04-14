@@ -565,8 +565,8 @@ abstract class HiveComparisonTest
                 s"""
                   |Results do not match for $testCaseName:
                   |$hiveQuery\n${hiveQuery.analyzed.output
-                     .map(_.name)
-                     .mkString("\t")}
+                  .map(_.name)
+                  .mkString("\t")}
                   |$resultComparison
                   |$computedTablesMessages
                 """.stripMargin

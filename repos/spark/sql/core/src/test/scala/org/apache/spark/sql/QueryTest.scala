@@ -309,7 +309,7 @@ abstract class QueryTest extends PlanTest {
       fail(s"""
            |== FAIL: the logical plan parsed from json does not match the original one ===
            |${sideBySide(logicalPlan.treeString, normalized2.treeString)
-                .mkString("\n")}
+        .mkString("\n")}
           """.stripMargin)
     }
   }
@@ -401,11 +401,11 @@ object QueryTest {
         s"""
          |== Results ==
          |${sideBySide(
-             s"== Correct Answer - ${expectedAnswer.size} ==" +:
-               prepareAnswer(expectedAnswer, isSorted).map(_.toString()),
-             s"== Spark Answer - ${sparkAnswer.size} ==" +:
-               prepareAnswer(sparkAnswer, isSorted).map(_.toString())
-           ).mkString("\n")}
+          s"== Correct Answer - ${expectedAnswer.size} ==" +:
+            prepareAnswer(expectedAnswer, isSorted).map(_.toString()),
+          s"== Spark Answer - ${sparkAnswer.size} ==" +:
+            prepareAnswer(sparkAnswer, isSorted).map(_.toString())
+        ).mkString("\n")}
         """.stripMargin
       return Some(errorMessage)
     }

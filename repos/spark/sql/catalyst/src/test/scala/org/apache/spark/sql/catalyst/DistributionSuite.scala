@@ -36,7 +36,7 @@ class DistributionSuite extends SparkFunSuite {
         |$requiredDistribution
         |== Does input partitioning satisfy required distribution? ==
         |Expected $satisfied got ${inputPartitioning.satisfies(
-                requiredDistribution)}
+        requiredDistribution)}
         """.stripMargin)
     }
   }

@@ -850,24 +850,24 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
                  |Status: ${taskInfo.status}<br>
                  |Launch Time: ${UIUtils.formatDate(new Date(launchTime))}
                  |${if (!taskInfo.running) {
-                 s"""<br>Finish Time: ${UIUtils.formatDate(
-                   new Date(finishTime))}"""
-               } else {
-                 ""
-               }}
+              s"""<br>Finish Time: ${UIUtils.formatDate(
+                new Date(finishTime))}"""
+            } else {
+              ""
+            }}
                  |<br>Scheduler Delay: $schedulerDelay ms
                  |<br>Task Deserialization Time: ${UIUtils.formatDuration(
-                 deserializationTime)}
+              deserializationTime)}
                  |<br>Shuffle Read Time: ${UIUtils.formatDuration(
-                 shuffleReadTime)}
+              shuffleReadTime)}
                  |<br>Executor Computing Time: ${UIUtils.formatDuration(
-                 executorComputingTime)}
+              executorComputingTime)}
                  |<br>Shuffle Write Time: ${UIUtils.formatDuration(
-                 shuffleWriteTime)}
+              shuffleWriteTime)}
                  |<br>Result Serialization Time: ${UIUtils.formatDuration(
-                 serializationTime)}
+              serializationTime)}
                  |<br>Getting Result Time: ${UIUtils.formatDuration(
-                 gettingResultTime)}">
+              gettingResultTime)}">
                  |$svgTag',
                |'start': new Date($launchTime),
                |'end': new Date($finishTime)

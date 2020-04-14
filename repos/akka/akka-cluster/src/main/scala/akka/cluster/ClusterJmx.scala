@@ -167,8 +167,8 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
               |      "node": "${subject.address}",
               |      "observed-by": [
               |        ${observers.toSeq.sorted
-                     .map(_.address)
-                     .mkString("\"", "\",\n        \"", "\"")}
+                  .map(_.address)
+                  .mkString("\"", "\",\n        \"", "\"")}
               |      ]
               |    }""".stripMargin
             } mkString (",\n")

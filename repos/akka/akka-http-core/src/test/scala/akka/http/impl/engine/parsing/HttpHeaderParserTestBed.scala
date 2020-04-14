@@ -30,9 +30,9 @@ object HttpHeaderParserTestBed extends App {
        |
        |formatSizes: ${parser.formatSizes}
        |contentHistogram: ${parser.contentHistogram.mkString(
-         "\n  ",
-         "\n  ",
-         "\n")}
+      "\n  ",
+      "\n  ",
+      "\n")}
      """.stripMargin.replace("%TRIE%", parser.formatTrie)
   }
 

@@ -311,10 +311,10 @@ object BackendReporting {
               callsiteName,
               callsiteDesc) =>
           s"""The operand stack at the callsite in ${BackendReporting
-               .methodSignature(
-                 callsiteClass,
-                 callsiteName,
-                 callsiteDesc)} contains more values than the
+            .methodSignature(
+              callsiteClass,
+              callsiteName,
+              callsiteDesc)} contains more values than the
            |arguments expected by the callee $calleeMethodSig. These values would be discarded
            |when entering an exception handler declared in the inlined method.""".stripMargin
 
@@ -329,9 +329,9 @@ object BackendReporting {
               callsiteName,
               callsiteDesc) =>
           s"""The callsite method ${BackendReporting.methodSignature(
-               callsiteClass,
-               callsiteName,
-               callsiteDesc)}
+            callsiteClass,
+            callsiteName,
+            callsiteDesc)}
            |does not have the same strictfp mode as the callee $calleeMethodSig.
          """.stripMargin
 
@@ -343,7 +343,7 @@ object BackendReporting {
               callsiteName,
               callsiteDesc) =>
           s"""The size of the callsite method ${BackendReporting
-               .methodSignature(callsiteClass, callsiteName, callsiteDesc)}
+            .methodSignature(callsiteClass, callsiteName, callsiteDesc)}
            |would exceed the JVM method size limit after inlining $calleeMethodSig.
          """.stripMargin
       }

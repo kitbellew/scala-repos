@@ -243,7 +243,7 @@ trait StreamTest extends QueryTest with Timeouts {
          |Stream state: $currentOffsets
          |Thread state: $threadState
          |${if (streamDeathCause != null) stackTraceToString(streamDeathCause)
-         else ""}
+      else ""}
          |
          |== Sink ==
          |${sink.toDebugString}

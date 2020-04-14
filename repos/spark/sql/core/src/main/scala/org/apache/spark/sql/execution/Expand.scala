@@ -169,7 +169,7 @@ case class Expand(
         val code = s"""
           |boolean $isNull = true;
           |${ctx.javaType(firstExpr.dataType)} $value = ${ctx.defaultValue(
-                        firstExpr.dataType)};
+          firstExpr.dataType)};
          """.stripMargin
         ExprCode(code, isNull, value)
       }

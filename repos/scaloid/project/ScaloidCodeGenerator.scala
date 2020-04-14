@@ -23,13 +23,13 @@ class ScaloidCodeGenerator(
   def richClassDef =
     s"""$richClassScalaDoc
        |${deprecated}class Rich${cls.name}[This <: ${genType(
-         cls.tpe,
-         erased = true)}](val basis: This) extends $helperTraitName[This]
+      cls.tpe,
+      erased = true)}](val basis: This) extends $helperTraitName[This]
        |
        |$helperTraitScalaDoc
        |${deprecated}trait $helperTraitName[This <: ${genType(
-         cls.tpe,
-         erased = true)}]$extendClause {
+      cls.tpe,
+      erased = true)}]$extendClause {
        |
        |  ${if (cls.parentType.isEmpty) "def basis: This" else ""}
        |
@@ -244,8 +244,8 @@ class ScaloidCodeGenerator(
   def unitListener(l: AndroidListener) =
     s"""${commonListener(l)}
        |    ${l.callbackMethods
-         .map(callbackMethod(_, isUnit = true))
-         .mkString("\n")}
+      .map(callbackMethod(_, isUnit = true))
+      .mkString("\n")}
        |  })
        |  basis
        |}""".stripMargin
@@ -360,7 +360,7 @@ class ScaloidCodeGenerator(
   def prefixedClassScalaDoc =
     s"""/**
        | * Automatically generated concrete helper class of ${androidReference(
-         cls)}.
+      cls)}.
        | */
        |""".stripMargin.trim
 

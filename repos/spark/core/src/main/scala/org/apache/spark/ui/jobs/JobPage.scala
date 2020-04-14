@@ -76,14 +76,14 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
          |  'content': '<div class="job-timeline-content" data-toggle="tooltip"' +
          |   'data-placement="top" data-html="true"' +
          |   'data-title="${Utility
-           .escape(escapedName)} (Stage ${stageId}.${attemptId})<br>' +
+        .escape(escapedName)} (Stage ${stageId}.${attemptId})<br>' +
          |   'Status: ${status.toUpperCase}<br>' +
          |   'Submitted: ${UIUtils.formatDate(new Date(submissionTime))}' +
          |   '${if (status != "running") {
-           s"""<br>Completed: ${UIUtils.formatDate(new Date(completionTime))}"""
-         } else {
-           ""
-         }}">' +
+        s"""<br>Completed: ${UIUtils.formatDate(new Date(completionTime))}"""
+      } else {
+        ""
+      }}">' +
          |    '${escapedName} (Stage ${stageId}.${attemptId})</div>',
          |}
        """.stripMargin
@@ -121,12 +121,12 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
                |    'data-toggle="tooltip" data-placement="bottom"' +
                |    'data-title="Executor ${executorId}<br>' +
                |    'Removed at ${UIUtils.formatDate(
-                 new Date(event.finishTime.get))}' +
+              new Date(event.finishTime.get))}' +
                |    '${if (event.finishReason.isDefined) {
-                 s"""<br>Reason: ${event.finishReason.get}"""
-               } else {
-                 ""
-               }}"' +
+              s"""<br>Reason: ${event.finishReason.get}"""
+            } else {
+              ""
+            }}"' +
                |    'data-html="true">Executor ${executorId} removed</div>'
                |}
              """.stripMargin

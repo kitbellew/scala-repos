@@ -94,8 +94,8 @@ object ParserUtils {
 
     if (remainingNodes.nonEmpty) {
       sys.error(s"""Unhandled clauses: ${remainingNodes
-                     .map(_.treeString)
-                     .mkString("\n")}.
+        .map(_.treeString)
+        .mkString("\n")}.
             |You are likely trying to use an unsupported Hive feature."""".stripMargin)
     }
     clauses

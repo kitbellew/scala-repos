@@ -69,9 +69,9 @@ case class Project(projectList: Seq[NamedExpression], child: SparkPlan)
       projectList.filterNot(_.deterministic).map(_.toAttribute)
     s"""
        |${evaluateRequiredVariables(
-         output,
-         resultVars,
-         AttributeSet(nonDeterministicAttrs))}
+      output,
+      resultVars,
+      AttributeSet(nonDeterministicAttrs))}
        |${consume(ctx, resultVars)}
      """.stripMargin
   }
