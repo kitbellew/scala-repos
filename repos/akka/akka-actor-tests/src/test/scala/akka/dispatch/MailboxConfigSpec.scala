@@ -299,8 +299,7 @@ class SingleConsumerOnlyMailboxSpec extends MailboxSpec {
 
 object SingleConsumerOnlyMailboxVerificationSpec {
   case object Ping
-  val mailboxConf = ConfigFactory.parseString(
-    """
+  val mailboxConf = ConfigFactory.parseString("""
       akka.actor.serialize-messages = off
       test-unbounded-dispatcher {
       mailbox-type = "akka.dispatch.SingleConsumerOnlyUnboundedMailbox"

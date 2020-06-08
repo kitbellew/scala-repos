@@ -205,8 +205,7 @@ class ConvertibleToMethodValueInspectionTest
   }
 
   def testImplicits(): Unit = {
-    checkTextHasNoErrors(
-      """
+    checkTextHasNoErrors("""
         |import scala.language.implicitConversions
         |
         |object TupleMethod extends App {

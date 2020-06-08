@@ -6,8 +6,7 @@ import com.typesafe.config.{ConfigFactory, Config}
 
 object HttpHeaderParserTestBed extends App {
 
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory.parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = ERROR
     akka.http.parsing.max-header-name-length = 20

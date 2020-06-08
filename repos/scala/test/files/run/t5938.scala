@@ -5,8 +5,7 @@ object Test extends DirectTest {
   override def extraSettings: String =
     s"-usejavacp -d ${testOutput.path}"
 
-  override def code =
-    """
+  override def code = """
 object O extends C {
   def main(args: Array[String]): Unit = {
   }

@@ -105,8 +105,7 @@ class PlannerSuite extends SharedSQLContext {
           .createDataFrame(rowRDD, schema)
           .registerTempTable("testLimit")
 
-        val planned = sql(
-          """
+        val planned = sql("""
             |SELECT l.a, l.b
             |FROM testData2 l JOIN (SELECT * FROM testLimit LIMIT 1) r ON (l.a = r.key)
           """.stripMargin).queryExecution.sparkPlan

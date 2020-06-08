@@ -204,9 +204,7 @@ object PersistenceTCKDoc {
 
     //#snapshot-store-tck-scala
     class MySnapshotStoreSpec
-        extends SnapshotStoreSpec(
-          config = ConfigFactory.parseString(
-            """
+        extends SnapshotStoreSpec(config = ConfigFactory.parseString("""
         akka.persistence.snapshot-store.plugin = "my.snapshot-store.plugin"
         """))
     //#snapshot-store-tck-scala
@@ -219,9 +217,7 @@ object PersistenceTCKDoc {
 
     //#journal-tck-before-after-scala
     class MyJournalSpec
-        extends JournalSpec(
-          config = ConfigFactory.parseString(
-            """
+        extends JournalSpec(config = ConfigFactory.parseString("""
         akka.persistence.journal.plugin = "my.journal.plugin"
         """)) {
 

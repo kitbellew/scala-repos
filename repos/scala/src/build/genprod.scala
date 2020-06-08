@@ -63,8 +63,7 @@ object genprod extends App {
     def packageDef = "scala"
     def imports = ""
 
-    def header =
-      """
+    def header = """
 /*                     __                                               *\
 **     ________ ___   / /  ___     Scala API                            **
 **    / __/ __// _ | / /  / _ |    (c) 2002-2013, LAMP/EPFL             **
@@ -143,8 +142,7 @@ object FunctionOne extends Function(1) {
  *  Note that the difference between `Function1` and [[scala.PartialFunction]]
  *  is that the latter can specify inputs which it will not handle."""
 
-  override def moreMethods =
-    """
+  override def moreMethods = """
   /** Composes two instances of Function1 in a new Function1, with this function applied last.
    *
    *  @tparam   A   the type to which function `g` can be applied
@@ -303,8 +301,7 @@ object TupleTwo extends Tuple(2) {
   override def imports = Tuple.zipImports
   override def covariantSpecs =
     "@specialized(Int, Long, Double, Char, Boolean/*, AnyRef*/) "
-  override def moreMethods =
-    """
+  override def moreMethods = """
   /** Swaps the elements of this `Tuple`.
    * @return a new Tuple where the first element is the second element of this Tuple and the
    * second element is the first element of this Tuple.
@@ -386,8 +383,7 @@ object ProductTwo extends Product(2) {
 }
 
 class Product(val i: Int) extends Group("Product") with Arity {
-  val productElementComment =
-    """
+  val productElementComment = """
   /** Returns the n-th projection of this product if 0 <= n < productArity,
    *  otherwise throws an `IndexOutOfBoundsException`.
    *

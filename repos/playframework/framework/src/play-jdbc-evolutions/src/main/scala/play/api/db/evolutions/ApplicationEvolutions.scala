@@ -482,8 +482,7 @@ case class InvalidDatabaseRevision(db: String, script: String)
   def subTitle = "This SQL script must be run:"
   def content = script
 
-  private val javascript =
-    """
+  private val javascript = """
         window.location = window.location.href.replace(/\/@evolutions.*$|\/$/, '') + '/@evolutions/apply/%s?redirect=' + encodeURIComponent(location)
     """.format(db).trim
 

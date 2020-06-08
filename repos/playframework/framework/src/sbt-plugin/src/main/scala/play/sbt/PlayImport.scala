@@ -30,9 +30,7 @@ object PlayImport {
 
   val jdbc = component("play-jdbc")
 
-  def anorm =
-    movedExternal(
-      """Anorm has been moved to an external module.
+  def anorm = movedExternal("""Anorm has been moved to an external module.
       |See https://playframework.com/documentation/2.4.x/Migration24 for details.""".stripMargin)
 
   val javaCore = component("play-java")

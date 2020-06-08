@@ -13,8 +13,7 @@ import akka.testkit.EventFilter
 import akka.remote.EndpointException
 
 object ThrottlerTransportAdapterSpec {
-  val configA: Config =
-    ConfigFactory parseString ("""
+  val configA: Config = ConfigFactory parseString ("""
     akka {
       actor.provider = "akka.remote.RemoteActorRefProvider"
 

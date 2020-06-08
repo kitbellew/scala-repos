@@ -1,8 +1,7 @@
 import scala.tools.partest.ReplTest
 
 object Test extends ReplTest {
-  def code =
-    """
+  def code = """
     |class X {
     |   def methodIntIntInt(x: Int, y: Int) = x+y
     |}

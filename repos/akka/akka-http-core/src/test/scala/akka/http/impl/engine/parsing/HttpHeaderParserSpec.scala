@@ -22,8 +22,7 @@ class HttpHeaderParserSpec
     with Matchers
     with BeforeAndAfterAll {
 
-  val testConf: Config = ConfigFactory.parseString(
-    """
+  val testConf: Config = ConfigFactory.parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = ERROR
     akka.http.parsing.max-header-name-length = 60

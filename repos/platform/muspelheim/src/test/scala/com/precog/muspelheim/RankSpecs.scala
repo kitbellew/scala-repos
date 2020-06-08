@@ -216,8 +216,7 @@ trait RankSpecs extends EvalStackSpecs {
 
     "evaluate rank" >> {
       "of the product of two sets" >> {
-        val input =
-          """
+        val input = """
           | campaigns := //campaigns 
           | campaigns where std::stats::rank(campaigns.cpm * campaigns.cpm) = 36""".stripMargin
 
@@ -255,8 +254,7 @@ trait RankSpecs extends EvalStackSpecs {
       }
 
       "using where and with" >> {
-        val input =
-          """
+        val input = """
           | campaigns := //campaigns
           | cpmRanked := campaigns with {rank: std::stats::rank(campaigns.cpm)}
           |   count(cpmRanked where cpmRanked.rank <= 37)""".stripMargin
@@ -267,8 +265,7 @@ trait RankSpecs extends EvalStackSpecs {
       }
 
       "using a solve" >> {
-        val input =
-          """
+        val input = """
           | import std::stats::denseRank
           |
           | campaigns := //campaigns
@@ -321,8 +318,7 @@ trait RankSpecs extends EvalStackSpecs {
 
     "evaluate denseRank" >> {
       "using where" >> {
-        val input =
-          """
+        val input = """
           | campaigns := //campaigns 
           | campaigns where std::stats::denseRank(campaigns.cpm) = 3""".stripMargin
 
@@ -341,8 +337,7 @@ trait RankSpecs extends EvalStackSpecs {
       }
 
       "using where and with" >> {
-        val input =
-          """
+        val input = """
           | campaigns := //campaigns
           | cpmRanked := campaigns with {rank: std::stats::denseRank(campaigns.cpm)}
           |   count(cpmRanked where cpmRanked.rank <= 4)""".stripMargin
@@ -370,8 +365,7 @@ trait RankSpecs extends EvalStackSpecs {
     }
 
     "handle another case of solving on an object with denseRank" in {
-      val input =
-        """
+      val input = """
         | import std::stats::*
         | 
         | upperBound := 1354122459346

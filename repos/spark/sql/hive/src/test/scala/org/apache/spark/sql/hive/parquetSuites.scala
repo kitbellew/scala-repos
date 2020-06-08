@@ -148,8 +148,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       LOCATION '${partitionedTableDirWithKeyAndComplexTypes.getCanonicalPath}'
     """)
 
-    sql(
-      """
+    sql("""
         |create table test_parquet
         |(
         |  intField INT,
@@ -223,8 +222,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
   test("insert into an empty parquet table") {
     dropTables("test_insert_parquet")
-    sql(
-      """
+    sql("""
         |create table test_insert_parquet
         |(
         |  intField INT,
@@ -255,8 +253,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     dropTables("test_insert_parquet")
 
     // Create it again.
-    sql(
-      """
+    sql("""
         |create table test_insert_parquet
         |(
         |  intField INT,
@@ -470,8 +467,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
     dropTables("test_insert_parquet", "test_parquet_partitioned_cache_test")
 
-    sql(
-      """
+    sql("""
         |create table test_insert_parquet
         |(
         |  intField INT,
@@ -515,8 +511,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
         .getIfPresent(tableIdentifier) === null)
 
     // Create a partitioned table.
-    sql(
-      """
+    sql("""
         |create table test_parquet_partitioned_cache_test
         |(
         |  intField INT,

@@ -51,8 +51,7 @@ class TightRequestTimeoutSpec
     with Matchers
     with BeforeAndAfterAll
     with ScalaFutures {
-  val testConf: Config =
-    ConfigFactory.parseString("""
+  val testConf: Config = ConfigFactory.parseString("""
     akka.loggers = ["akka.testkit.TestEventListener"]
     akka.loglevel = ERROR
     akka.stdout-loglevel = ERROR

@@ -96,8 +96,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   test("SPARK-11694 Parquet logical types are not being tested properly") {
-    val parquetSchema = MessageTypeParser.parseMessageType(
-      """message root {
+    val parquetSchema = MessageTypeParser.parseMessageType("""message root {
         |  required int32 a(INT_8);
         |  required int32 b(INT_16);
         |  required int32 c(DATE);
@@ -267,8 +266,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
   }
 
   test("SPARK-10113 Support for unsigned Parquet logical types") {
-    val parquetSchema =
-      MessageTypeParser.parseMessageType("""message root {
+    val parquetSchema = MessageTypeParser.parseMessageType("""message root {
         |  required int32 c(UINT_32);
         |}
       """.stripMargin)
@@ -286,8 +284,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
 
   test(
     "SPARK-11692 Support for Parquet logical types, JSON and BSON (embedded types)") {
-    val parquetSchema =
-      MessageTypeParser.parseMessageType("""message root {
+    val parquetSchema = MessageTypeParser.parseMessageType("""message root {
         |  required binary a(JSON);
         |  required binary b(BSON);
         |}

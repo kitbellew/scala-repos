@@ -242,9 +242,7 @@ class SystemMessageDeliveryRetryGate
       "passive connections on",
       "akka.remote.retry-gate-closed-for = 0.5 s")
 class SystemMessageDeliveryNoPassiveRetryGate
-    extends SystemMessageDeliveryStressTest(
-      "passive connections off",
-      """
+    extends SystemMessageDeliveryStressTest("passive connections off", """
     akka.remote.use-passive-connections = off
     akka.remote.retry-gate-closed-for = 0.5 s
   """)

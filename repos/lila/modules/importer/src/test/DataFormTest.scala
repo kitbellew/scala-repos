@@ -10,8 +10,7 @@ class DataFormTest extends Specification with ScalazValidationMatchers {
 
   "Import from position" should {
     "preserve initial FEN" in {
-      val pgn =
-        """[Event "Casual game"]
+      val pgn = """[Event "Casual game"]
 [Result "1-0"]
 [PlyCount "9"]
 [Variant "From Position"]

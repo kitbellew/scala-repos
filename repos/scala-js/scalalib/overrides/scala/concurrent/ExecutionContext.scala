@@ -54,8 +54,7 @@ import scala.util.Try
   * knowing that only that library's network operations will be affected.
   * Application callback execution can be configured separately.
   */
-@implicitNotFound(
-  """Cannot find an implicit ExecutionContext. You might pass
+@implicitNotFound("""Cannot find an implicit ExecutionContext. You might pass
 an (implicit ec: ExecutionContext) parameter to your method
 or import scala.concurrent.ExecutionContext.Implicits.global.""")
 trait ExecutionContext {

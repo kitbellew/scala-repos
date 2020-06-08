@@ -46,8 +46,7 @@ object SampledRDDs {
         .text(
           s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
         .action((x, c) => c.copy(input = x))
-      note(
-        """
+      note("""
         |For example, the following command runs this app:
         |
         | bin/spark-submit --class org.apache.spark.examples.mllib.SampledRDDs \

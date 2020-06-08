@@ -19,8 +19,7 @@ import org.intellij.lang.annotations.Language
 
 object DesktopUtils {
   @Language("HTML")
-  private val MessageFormat =
-    """
+  private val MessageFormat = """
   <html>
   <body>
   Unable to launch web browser, please manually open:<br>

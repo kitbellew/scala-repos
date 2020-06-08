@@ -133,8 +133,7 @@ class Power[ReplValsImpl <: ReplVals: ru.TypeTag: ClassTag](
     |** Try  :help, :vals, power.<tab>           **
   """.stripMargin.trim
 
-  def banner =
-    customBanner getOrElse """
+  def banner = customBanner getOrElse """
     |Power mode enabled. :phase is at typer.
     |import scala.tools.nsc._, intp.global._, definitions._
     |Try :help or completions for vals._ and power._

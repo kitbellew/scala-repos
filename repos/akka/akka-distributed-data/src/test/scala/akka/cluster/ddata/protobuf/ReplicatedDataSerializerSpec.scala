@@ -29,8 +29,7 @@ class ReplicatedDataSerializerSpec
     extends TestKit(
       ActorSystem(
         "ReplicatedDataSerializerSpec",
-        ConfigFactory.parseString(
-          """
+        ConfigFactory.parseString("""
     akka.actor.provider=akka.cluster.ClusterActorRefProvider
     akka.remote.netty.tcp.port=0
     """)

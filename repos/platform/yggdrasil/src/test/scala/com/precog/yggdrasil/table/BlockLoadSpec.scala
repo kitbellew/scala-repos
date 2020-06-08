@@ -259,8 +259,7 @@ trait BlockLoadSpec[M[+_]]
 
   def testLoadSample5 = {
     val sampleData = SampleData(
-      (JParser.parseUnsafe(
-        """[
+      (JParser.parseUnsafe("""[
         {
           "value":{
             "cfnYTg92dg":"gu",

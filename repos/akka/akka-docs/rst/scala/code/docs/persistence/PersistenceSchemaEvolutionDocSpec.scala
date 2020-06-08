@@ -115,8 +115,7 @@ class ProtobufReadOptional {
 }
 
 class ProtoBufRename {
-  val protoIDL =
-    """
+  val protoIDL = """
     //#protobuf-rename-proto
     // protobuf message definition, BEFORE:
     message SeatReserved {
@@ -223,8 +222,7 @@ object SimplestCustomSerializer {
 }
 
 class PersonSerializerSettingsBox {
-  val PersonSerializerSettings =
-    """
+  val PersonSerializerSettings = """
   //#simplest-custom-serializer-config
   # application.conf
   akka {

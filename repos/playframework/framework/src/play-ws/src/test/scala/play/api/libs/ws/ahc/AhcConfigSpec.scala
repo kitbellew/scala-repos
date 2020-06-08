@@ -46,8 +46,7 @@ object AhcConfigSpec extends Specification with Mockito {
     }
 
     "parse ws ahc section" in new WithApplication {
-      val actual =
-        parseThis("""
+      val actual = parseThis("""
                                |play.ws.ahc.maxConnectionsPerHost = 3
                                |play.ws.ahc.maxConnectionsTotal = 6
                                |play.ws.ahc.maxConnectionLifetime = 1 minute

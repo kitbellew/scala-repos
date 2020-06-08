@@ -444,8 +444,7 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
 
         queries.foreach(statement.execute)
 
-        statement.executeQuery(
-          """
+        statement.executeQuery("""
               |INSERT INTO TABLE addJar SELECT 'k1' as key FROM smallKV limit 1
             """.stripMargin)
 

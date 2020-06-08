@@ -26,8 +26,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
   import stack._
   "logistic regression" should {
     "return correctly structured results in simple case of logistic regression" in {
-      val input =
-        """
+      val input = """
           medals := //summer_games/london_medals
           gender := (1 where medals.Sex = "F") union (0 where medals.Sex = "M")
           
@@ -68,8 +67,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
     }
 
     "predict logistic regression" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
         
         gender := (1 where medals.Sex = "F") union (0 where medals.Sex = "M")
@@ -152,8 +150,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
     //}
 
     "join predicted results with original dataset when model is `new`ed" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
         
         gender := (1 where medals.Sex = "F") union (0 where medals.Sex = "M")
@@ -176,8 +173,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
     }
 
     "join predicted results with model when model is `new`ed" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
         
         gender := (1 where medals.Sex = "F") union (0 where medals.Sex = "M")
@@ -228,8 +224,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
     }
 
     "predict logistic regression when no field names in model are present in data" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
         
         gender := (1 where medals.Sex = "F") union (0 where medals.Sex = "M")
@@ -272,8 +267,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
     }
 
     "return empty set when the classification variable is not at the root path" in {
-      val input =
-        """
+      val input = """
                medals := //summer_games/london_medals
                medals' := medals with { gender: (1 where medals.Sex = "F") union (0 where medals.Sex = "M") }
                
@@ -284,8 +278,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
     }
 
     "return empty set when none of the classification values are 0 or 1" in {
-      val input =
-        """
+      val input = """
                medals := //summer_games/london_medals
                medals' := medals with { gender: (1 where medals.Sex = "F") union (0 where medals.Sex = "M") }
                
@@ -296,8 +289,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
     }
 
     "return empty set when given feature values of wrong type" in {
-      val input =
-        """
+      val input = """
           medals := //summer_games/london_medals
           
           std::stats::logisticRegression(medals.WeightIncm, medals.Country)
@@ -307,8 +299,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
     }
 
     "return empty set when given classication values of wrong type" in {
-      val input =
-        """
+      val input = """
           medals := //summer_games/london_medals
           
           std::stats::logisticRegression(medals.Country, medals.WeightIncm)

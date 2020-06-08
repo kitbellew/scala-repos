@@ -1,8 +1,7 @@
 import scala.tools.partest.ReplTest
 
 object Test extends ReplTest {
-  def code =
-    """
+  def code = """
     |import scala.language.experimental.macros
     |def pos_impl(c: scala.reflect.macros.blackbox.Context): c.Expr[String] = {
     |  import c.universe._

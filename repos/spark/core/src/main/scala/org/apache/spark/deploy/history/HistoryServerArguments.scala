@@ -70,8 +70,7 @@ private[history] class HistoryServerArguments(
 
   private def printUsageAndExit(exitCode: Int) {
     // scalastyle:off println
-    System.err.println(
-      """
+    System.err.println("""
       |Usage: HistoryServer [options]
       |
       |Options:

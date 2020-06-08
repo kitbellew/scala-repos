@@ -723,8 +723,7 @@ class ExportsTest {
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
     val funs = js
-      .eval(
-        """
+      .eval("""
         var funs = {
           testIsChar: function(foo) { return JSUtils().isChar(foo.bar(65)); },
           testCharValue: function(foo) { return JSUtils().charToString(foo.bar(65)); }
@@ -744,8 +743,7 @@ class ExportsTest {
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
     val f = js
-      .eval(
-        """
+      .eval("""
         var f = function(foo) { return foo.bar(JSUtils().stringToChar('e')); };
         f;
         """)
@@ -764,8 +762,7 @@ class ExportsTest {
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
     val funs = js
-      .eval(
-        """
+      .eval("""
         var funs = {
           testChar: function(foo) { return foo.bar(JSUtils().stringToChar('S')); },
           testInt: function(foo) { return foo.bar(68); }

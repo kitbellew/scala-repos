@@ -35,8 +35,7 @@ object SurviveNetworkInstabilityMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(
-        ConfigFactory.parseString("""
+      .withFallback(ConfigFactory.parseString("""
       akka.remote.system-message-buffer-size=100
       akka.remote.netty.tcp.connection-timeout = 10s
       """))

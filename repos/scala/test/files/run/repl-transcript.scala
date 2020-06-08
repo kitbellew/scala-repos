@@ -1,8 +1,7 @@
 import scala.tools.partest.ReplTest
 
 object Test extends ReplTest {
-  def code =
-    """
+  def code = """
 scala> class Bippity
 defined class Bippity
 

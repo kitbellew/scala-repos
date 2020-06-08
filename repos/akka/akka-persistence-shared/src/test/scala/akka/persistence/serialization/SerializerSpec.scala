@@ -21,8 +21,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 object SerializerSpecConfigs {
-  val customSerializers = ConfigFactory.parseString(
-    """
+  val customSerializers = ConfigFactory.parseString("""
       akka.actor {
         serializers {
           my-payload = "akka.persistence.serialization.MyPayloadSerializer"
@@ -43,8 +42,7 @@ object SerializerSpecConfigs {
       }
     """)
 
-  val remote =
-    ConfigFactory.parseString("""
+  val remote = ConfigFactory.parseString("""
       akka {
         actor {
           provider = "akka.remote.RemoteActorRefProvider"

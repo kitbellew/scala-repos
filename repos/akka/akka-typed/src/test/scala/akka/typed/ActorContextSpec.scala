@@ -181,8 +181,7 @@ object ActorContextSpec {
     }
 }
 
-class ActorContextSpec
-    extends TypedSpec(ConfigFactory.parseString("""|akka {
+class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
      |  loglevel = WARNING
      |  actor.debug {
      |    lifecycle = off

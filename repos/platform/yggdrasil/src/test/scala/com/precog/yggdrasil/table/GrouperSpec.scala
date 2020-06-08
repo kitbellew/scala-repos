@@ -287,8 +287,7 @@ trait GrouperSpec[M[+_]]
   }
 
   def simpleMultiKeyData = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser.parseUnsafe("""[
       { "key": [0], "value": {"a": 12, "b": 7} },
       { "key": [1], "value": {"a": 42} },
       { "key": [2], "value": {"a": 11, "c": true} },

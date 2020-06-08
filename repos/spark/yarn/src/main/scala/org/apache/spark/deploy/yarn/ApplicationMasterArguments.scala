@@ -97,8 +97,7 @@ class ApplicationMasterArguments(val args: Array[String]) {
     if (unknownParam != null) {
       System.err.println("Unknown/unsupported param " + unknownParam)
     }
-    System.err.println(
-      """
+    System.err.println("""
       |Usage: org.apache.spark.deploy.yarn.ApplicationMaster [options]
       |Options:
       |  --jar JAR_PATH       Path to your application's JAR file

@@ -15,8 +15,7 @@ object Test extends ReplTest {
     lines.map(l => r.replaceAllIn(l, "<function0>"))
   }
 
-  def code =
-    """
+  def code = """
     |var x = 10
     |var y = 11
     |x = 12

@@ -34,14 +34,11 @@ object MinMembersBeforeUpWithWeaklyUpMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
   val third = role("third")
 
-  commonConfig(
-    debugConfig(on = false)
-      .withFallback(
-        ConfigFactory.parseString("""
+  commonConfig(debugConfig(on = false)
+    .withFallback(ConfigFactory.parseString("""
       akka.cluster.min-nr-of-members = 3
       akka.cluster.allow-weakly-up-members = on"""))
-      .withFallback(
-        MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+    .withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 object MinMembersOfRoleBeforeUpMultiJvmSpec extends MultiNodeConfig {

@@ -11,8 +11,7 @@ import akka.remote.transport.FailureInjectorTransportAdapter.{One, Drop}
 import scala.concurrent.Await
 
 object AkkaProtocolStressTest {
-  val configA: Config =
-    ConfigFactory parseString ("""
+  val configA: Config = ConfigFactory parseString ("""
     akka {
       #loglevel = DEBUG
       actor.serialize-messages = off

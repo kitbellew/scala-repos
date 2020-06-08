@@ -10,8 +10,7 @@ object Test extends DirectTest {
   override def extraSettings: String =
     "-usejavacp -Xprint:parser -Yrangepos -Ystop-after:parser -d " + testOutput.path
 
-  override def code =
-    """
+  override def code = """
     // SI-5527
     object UselessComments {
 

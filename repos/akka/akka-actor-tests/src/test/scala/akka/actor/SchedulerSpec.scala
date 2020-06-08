@@ -21,8 +21,7 @@ import scala.util.control.NoStackTrace
 
 object SchedulerSpec {
   val testConfRevolver = ConfigFactory
-    .parseString(
-      """
+    .parseString("""
     akka.scheduler.implementation = akka.actor.LightArrayRevolverScheduler
     akka.scheduler.ticks-per-wheel = 32
     akka.actor.serialize-messages = off

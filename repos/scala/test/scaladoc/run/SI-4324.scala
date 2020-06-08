@@ -3,8 +3,7 @@ import scala.tools.partest.ScaladocModelTest
 
 object Test extends ScaladocModelTest {
 
-  override def code =
-    """
+  override def code = """
         case class Test4324(arg11: String, arg12: Int)(arg21: String, arg22: Int)(arg31: Int, arg32: String)
     """
 

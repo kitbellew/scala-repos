@@ -27,8 +27,7 @@ class HighlightingAdvisor(project: Project)
     extends ProjectComponent
     with PersistentStateComponent[HighlightingSettings] {
   @Language("HTML")
-  private val AdviceMessage =
-    """
+  private val AdviceMessage = """
   <html>
    <body>
    <p><a href="http://confluence.jetbrains.net/display/SCA/Type-aware+highlighting">Type-aware highlighting</a>
@@ -41,8 +40,7 @@ class HighlightingAdvisor(project: Project)
   </html>"""
 
   @Language("HTML")
-  private val EnabledMessage =
-    """
+  private val EnabledMessage = """
   <html>
    <body>
    <p><a href="http://confluence.jetbrains.net/display/SCA/Type-aware+highlighting">Type-aware highlighting</a> has been enabled.</p>
@@ -52,8 +50,7 @@ class HighlightingAdvisor(project: Project)
   </html>"""
 
   @Language("HTML")
-  private val DisabledMessage =
-    """
+  private val DisabledMessage = """
   <html>
    <body>
    <p><a href="http://confluence.jetbrains.net/display/SCA/Type-aware+highlighting">Type-aware highlighting</a> has been disabled.</p>

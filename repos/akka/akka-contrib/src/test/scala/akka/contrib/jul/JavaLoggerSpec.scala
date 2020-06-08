@@ -10,8 +10,7 @@ import java.util.logging
 
 object JavaLoggerSpec {
 
-  val config =
-    ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString("""
     akka {
       loglevel = INFO
       loggers = ["akka.contrib.jul.JavaLogger"]

@@ -29,9 +29,7 @@ import akka.http.scaladsl.model.headers._
 import akka.http.scaladsl.model._
 import akka.testkit.AkkaSpec
 
-class ConnectionPoolSpec
-    extends AkkaSpec(
-      """
+class ConnectionPoolSpec extends AkkaSpec("""
     akka.loggers = []
     akka.loglevel = OFF
     akka.io.tcp.windows-connection-abort-workaround-enabled = auto

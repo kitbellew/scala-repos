@@ -32,8 +32,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
   "the full stack" should {
     "accept if-then-else inside user defined function" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         |
         | foo(data) :=
@@ -93,16 +92,14 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "join arrays after a relate" in {
-      val input =
-        """
+      val input = """
         medals' := //summer_games/london_medals
         medals'' := new medals'
   
         medals'' ~ medals'
         [medals'.Name, medals''.Name] where medals'.Name = medals''.Name"""
 
-      val input2 =
-        """
+      val input2 = """
         medals' := //summer_games/london_medals
         medals'' := new medals'
   
@@ -125,16 +122,14 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "join arrays with a nested operate, after a relate" in {
-      val input =
-        """
+      val input = """
         medals' := //summer_games/london_medals
         medals'' := new medals'
   
         medals'' ~ medals'
         [std::math::sqrt(medals''.Age), std::math::sqrt(medals'.Age)] where medals'.Age = medals''.Age"""
 
-      val input2 =
-        """
+      val input2 = """
         medals' := //summer_games/london_medals
         medals'' := new medals'
   
@@ -268,8 +263,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "ensure that two array elements are not switched in a solve" in {
-      val input =
-        """
+      val input = """
         | orders := //orders
         | orders' := orders with { rank: std::stats::rank(orders.total) }
         |  
@@ -300,8 +294,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "ensure that more than two array elements are not scrambled in a solve" in {
-      val input =
-        """
+      val input = """
         | orders := //orders
         | orders' := orders with { rank: std::stats::rank(orders.total) }
         |  
@@ -341,8 +334,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "filter set based on DateTime comparison using minTimeOf" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | clicks' := clicks with { ISODateTime: std::time::parseDateTimeFuzzy(clicks.timeString) } 
         | 
@@ -362,8 +354,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "filter set based on DateTime comparison using reduction" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | clicks' := clicks with { ISODateTime: std::time::parseDateTimeFuzzy(clicks.timeString) } 
         | 
@@ -422,8 +413,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
         | std::time::range(input)
         | """.stripMargin
 
-      val expectedInput =
-        """
+      val expectedInput = """
         | clicks := //clicks
         |
         | start := std::time::parseDateTimeFuzzy(clicks.timeString)
@@ -450,8 +440,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "reduce sets" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         |   sum(medals.HeightIncm) + mean(medals.Weight) - count(medals.Age) + stdDev(medals.S)
       """.stripMargin
@@ -469,8 +458,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "recognize the datetime parse function" in {
-      val input =
-        """
+      val input = """
         | std::time::parseDateTime("2011-02-21 01:09:59", "yyyy-MM-dd HH:mm:ss")
       """.stripMargin
 
@@ -559,8 +547,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "accept division inside an object" in {
-      val input =
-        """
+      val input = """
         | data := //conversions
         | 
         | x := solve 'productID
@@ -606,8 +593,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "call the same function multiple times with different input" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | stats(variable) := {max: max(variable), min: min(variable), sum: sum(variable)}
@@ -639,8 +625,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "perform various reductions on transspecable sets" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | { sum: sum(std::math::floor(std::math::cbrt(medals.HeightIncm))),
@@ -690,8 +675,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "solve on a union with a `with` clause" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | athletes := //summer_games/athletes
         | 
@@ -715,8 +699,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "solve with a generic where inside a function" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | athletes := //summer_games/athletes
         | 
@@ -742,8 +725,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "solve the results of a set and a stdlib op1 function" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | clicks' := clicks with { foo: std::time::getMillis("2012-10-29") }
         | solve 'a clicks' where clicks'.time = 'a
@@ -754,8 +736,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "solve involving extras with a stdlib op1 function" in {
-      val input =
-        """
+      val input = """
         | import std::time::*
         | 
         | agents := //clicks
@@ -772,8 +753,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "perform a simple join by value sorting" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | views := //views
         |
@@ -817,8 +797,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "union sets coming out of a solve" >> {
-      val input =
-        """
+      val input = """
         clicks := //clicks
         foobar := solve 'a {userId: 'a, size: count(clicks where clicks.userId = 'a)}
         foobaz := solve 'b {pageId: 'b, size: count(clicks where clicks.pageId = 'b)}
@@ -931,8 +910,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
     // Regression test for #39652091
     "call union on two dispatches of the same function" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         |
         | f(x) :=
@@ -961,8 +939,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "return result for nested filters" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         |
         | medals' := medals where medals.Country = "India"
@@ -1620,8 +1597,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "determine a histogram of genders on campaigns" in {
-      val input =
-        """
+      val input = """
         | campaigns := //campaigns
         | solve 'gender 
         |   { gender: 'gender, num: count(campaigns.gender where campaigns.gender = 'gender) }""".stripMargin
@@ -1760,8 +1736,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "evaluate nathan's query, once and for all" in {
-      val input =
-        """
+      val input = """
         | import std::time::*
         | 
         | lastHour := //election/tweets 
@@ -1914,8 +1889,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
       }
 
       "Timelib" >> {
-        val input =
-          """
+        val input = """
           | time := (//clicks).timeString
           | std::time::yearsBetween(time, "2012-02-09T19:31:13.616+10:00")""".stripMargin
 
@@ -2062,8 +2036,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "evaluate a function of two parameters" in {
-      val input =
-        """
+      val input = """
         | fun(a, b) := 
         |   //campaigns where (//campaigns).ageRange = a & (//campaigns).gender = b
         | fun([25,36], "female")""".stripMargin
@@ -2096,8 +2069,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "determine a histogram of a composite key of revenue and campaign" in {
-      val input =
-        """
+      val input = """
         | campaigns := //campaigns
         | organizations := //organizations
         | 
@@ -2234,8 +2206,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "evaluate a function of multiple counts" in {
-      val input =
-        """
+      val input = """
         | import std::math::floor
         | clicks := //clicks
         | 
@@ -2311,8 +2282,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "evaluate reductions inside and outside of solves" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         |
         | countsForTimezone := solve 'timeZone
@@ -2938,8 +2908,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "determine most isolated clicks in time" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | 
         | spacings := solve 'time
@@ -3130,8 +3099,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
     // Regression test for #39590007
     "give empty results when relation body uses non-existant field" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | newClicks := new clicks
         |
@@ -3142,8 +3110,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "not explode on a large query" in {
-      val input =
-        """
+      val input = """
         | import std::stats::*
         | import std::time::*
         | 
@@ -3199,8 +3166,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "solve a chaining of user-defined functions involving repeated where clauses" in {
-      val input =
-        """
+      val input = """
         | import std::time::*
         | import std::stats::*
         | 
@@ -3242,8 +3208,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "handle a non-trivial solve on an object concat" in {
-      val input =
-        """
+      val input = """
         | agents := //se/widget
         | 
         | solve 'rank
@@ -3348,8 +3313,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
         | sum(std::math::pow(counts, 2))
       """.stripMargin
 
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | clicks' := new clicks
         |
@@ -3379,8 +3343,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
         | sum(std::math::pow(counts, 2))
       """.stripMargin
 
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | clicks' := new clicks
         |
@@ -3403,8 +3366,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "not produce out-of-order identities for simple cartesian and join with a reduction" in {
-      val input =
-        """
+      val input = """
         athletes := load("/summer_games/athletes")
         medals := load("/summer_games/london_medals")
 
@@ -3499,8 +3461,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "correctly filter the results of a non-trivial solve" in {
-      val input =
-        """
+      val input = """
         | import std::time::*
         | import std::stats::*
         | import std::string::*
@@ -3556,8 +3517,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "successfully complete a query with a lot of unions" in {
-      val input =
-        """
+      val input = """
         | import std::time::*
         | import std::stats::*
         | import std::string::*
@@ -3622,8 +3582,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
     // regression test for PLATFORM-986
     "not explode on mysterious error" in {
-      val input =
-        """
+      val input = """
         | import std::random::*
         | 
         | buckets := //benchmark/buckets/1361210162753
@@ -3721,8 +3680,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     //}
 
     "produce something other than the empty set for join of conditional results" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | 
         | predicted := clicks with { female : 0 }
@@ -3735,8 +3693,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "produce non-empty results when defining a solve with a conditional in a constraint" in {
-      val input =
-        """
+      val input = """
         | data := //clicks
         | 
         | import std::string::*
@@ -3914,8 +3871,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
     }
 
     "evaluate the union of two group functions of different provenance without exploding" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks
         | conversions := //conversions
         | 

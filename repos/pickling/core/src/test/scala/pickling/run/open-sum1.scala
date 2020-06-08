@@ -29,8 +29,7 @@ class OpenSum1Test extends FunSuite {
     )
 
     val pickle = f.pickle
-    assert(
-      pickle.value.toString === """
+    assert(pickle.value.toString === """
       |{
       |  "$type": "scala.pickling.open.sum1.outer.Firefighter",
       |  "name": "Jeff",

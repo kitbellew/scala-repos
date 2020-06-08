@@ -480,8 +480,7 @@ object NullProvenanceSpecs
 
     "propagate constraints through a nested relation" in {
       {
-        val Relate(_, from1, to1, Relate(_, from2, to2, in)) =
-          compileSingle("""
+        val Relate(_, from1, to1, Relate(_, from2, to2, in)) = compileSingle("""
           | //foo ~ //bar
           |   //foo ~ //baz
           |     //foo""".stripMargin)
@@ -490,8 +489,7 @@ object NullProvenanceSpecs
       }
 
       {
-        val Relate(_, from1, to1, Relate(_, from2, to2, in)) =
-          compileSingle("""
+        val Relate(_, from1, to1, Relate(_, from2, to2, in)) = compileSingle("""
           | //foo ~ //bar
           |   //foo ~ //baz
           |     //bar""".stripMargin)
@@ -500,8 +498,7 @@ object NullProvenanceSpecs
       }
 
       {
-        val Relate(_, from1, to1, Relate(_, from2, to2, in)) =
-          compileSingle("""
+        val Relate(_, from1, to1, Relate(_, from2, to2, in)) = compileSingle("""
           | //foo ~ //bar
           |   //foo ~ //baz
           |     //baz""".stripMargin)

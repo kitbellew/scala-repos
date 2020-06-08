@@ -113,8 +113,7 @@ trait Benchmark {
     } else {
       println("Usage: scala benchmarks.program <runs> ")
       println("   or: scala benchmarks.program <runs> <multiplier>")
-      println(
-        """
+      println("""
     The benchmark is run <runs> times, forcing a garbage collection between runs. The optional
     <multiplier> causes the benchmark to be repeated <multiplier> times, each time for <runs>
     executions.

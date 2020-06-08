@@ -3,8 +3,7 @@ import scala.tools.partest.ScaladocModelTest
 
 object Test extends ScaladocModelTest {
 
-  override def code =
-    """
+  override def code = """
         abstract class Param
         class Test
         object Test {

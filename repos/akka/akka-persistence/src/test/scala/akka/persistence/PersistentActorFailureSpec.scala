@@ -167,8 +167,7 @@ class PersistentActorFailureSpec
       PersistenceSpec.config(
         "inmem",
         "SnapshotFailureRobustnessSpec",
-        extraConfig = Some(
-          """
+        extraConfig = Some("""
   akka.persistence.journal.inmem.class = "akka.persistence.PersistentActorFailureSpec$FailingInmemJournal"
   """)
       ))

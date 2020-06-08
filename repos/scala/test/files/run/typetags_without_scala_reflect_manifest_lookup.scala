@@ -5,8 +5,7 @@ object Test extends DirectTest {
   override def extraSettings =
     "-cp " + sys.props("partest.lib") + " -d \"" + testOutput.path + "\""
 
-  def code =
-    """
+  def code = """
     object Test extends App {
       // manifest lookup also involves type tag lookup
       // because we support manifest <-> typetag convertability

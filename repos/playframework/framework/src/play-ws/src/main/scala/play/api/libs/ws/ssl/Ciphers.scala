@@ -54,8 +54,7 @@ object Ciphers {
                                      |TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256
                                    """.stripMargin.split("\n")
 
-  val suiteBTransitionalCiphers: Seq[String] =
-    """TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
+  val suiteBTransitionalCiphers: Seq[String] = """TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384
                                                  |TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA384
                                                  |TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
                                                  |TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA256

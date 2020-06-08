@@ -16,8 +16,7 @@ class DeploymentFormatsTest extends MarathonSpec {
   import Formats._
 
   test("Can read GroupUpdate json") {
-    val json =
-      """
+    val json = """
       |{
       |  "id": "a",
       |  "apps": [{ "id": "b", "version": "2015-06-03T13:00:52.883Z" }],

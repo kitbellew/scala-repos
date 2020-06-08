@@ -140,8 +140,7 @@ case class BenchmarkResults[T](
       timings :+ timing,
       results :+ result)
 
-  private val reportTemplate =
-    """
+  private val reportTemplate = """
 Performance Measurement Results [%s]
 ====================================================
 Results for %d test runs of %d reps each

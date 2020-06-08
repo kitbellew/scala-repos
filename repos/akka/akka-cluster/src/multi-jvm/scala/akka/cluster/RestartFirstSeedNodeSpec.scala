@@ -26,8 +26,7 @@ object RestartFirstSeedNodeMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+      .withFallback(ConfigFactory.parseString("""
       akka.cluster.auto-down-unreachable-after = off
       akka.cluster.retry-unsuccessful-join-after = 3s
       """))

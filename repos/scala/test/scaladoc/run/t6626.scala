@@ -5,8 +5,7 @@ import scala.tools.partest.ScaladocModelTest
 
 object Test extends ScaladocModelTest {
 
-  override def code =
-    """
+  override def code = """
 
 package org.foo
 

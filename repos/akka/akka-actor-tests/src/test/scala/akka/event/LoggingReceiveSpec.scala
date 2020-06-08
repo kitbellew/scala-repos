@@ -27,8 +27,7 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
 
   import LoggingReceiveSpec._
   val config = ConfigFactory
-    .parseString(
-      """
+    .parseString("""
     akka.loglevel=DEBUG
     akka.actor.serialize-messages = off # debug noise from serialization
     """)

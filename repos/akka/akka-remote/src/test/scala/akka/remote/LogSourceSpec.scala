@@ -23,8 +23,7 @@ object LogSourceSpec {
 }
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class LogSourceSpec
-    extends AkkaSpec("""
+class LogSourceSpec extends AkkaSpec("""
     akka.loglevel = INFO
     akka.actor.provider = "akka.remote.RemoteActorRefProvider"
     akka.remote.netty.tcp.port = 0

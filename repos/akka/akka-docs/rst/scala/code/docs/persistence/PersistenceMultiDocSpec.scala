@@ -6,8 +6,7 @@ import akka.persistence.PersistentActor
 
 object PersistenceMultiDocSpec {
 
-  val DefaultConfig =
-    """
+  val DefaultConfig = """
   //#default-config
   # Absolute path to the default journal plugin configuration entry.
   akka.persistence.journal.plugin = "akka.persistence.journal.inmem"

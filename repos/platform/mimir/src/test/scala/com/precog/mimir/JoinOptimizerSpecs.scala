@@ -96,8 +96,7 @@ trait JoinOptimizerSpecs[M[+_]]
 
     "eliminate naive cartesian products in trivial object join cases" in {
 
-      val rawInput =
-        """
+      val rawInput = """
         | a := //users
         | b := //heightWeight
         | a ~ b
@@ -196,8 +195,7 @@ trait JoinOptimizerSpecs[M[+_]]
 
     "eliminate naive cartesian products in trivial object join case with non order-preserving op in equal" in {
 
-      val rawInput =
-        """
+      val rawInput = """
         | a := //users
         | b := //heightWeight
         | a ~ b
@@ -302,8 +300,7 @@ trait JoinOptimizerSpecs[M[+_]]
 
     "eliminate naive cartesian products in trivial op2 join cases" in {
 
-      val rawInput =
-        """
+      val rawInput = """
         | a := //users
         | b := //heightWeight
         | a ~ b
@@ -384,8 +381,7 @@ trait JoinOptimizerSpecs[M[+_]]
 
     "eliminate naive cartesian products in object join followed by object deref" in {
 
-      val rawInput =
-        """
+      val rawInput = """
         | a := //users
         | b := //heightWeight
         | a ~ b
@@ -533,8 +529,7 @@ trait JoinOptimizerSpecs[M[+_]]
 
     "fail to eliminate cartesian products wrapped in non row-level transformation" in {
 
-      val rawInput =
-        """
+      val rawInput = """
         | a := //users
         | b := //heightWeight
         | a ~ b
@@ -593,8 +588,7 @@ trait JoinOptimizerSpecs[M[+_]]
 
     "eliminate naive cartesian products in less trivial object join cases" in {
 
-      val rawInput =
-        """
+      val rawInput = """
         | clicks := //clicks
         | conversions := //conversions
         | 
@@ -804,8 +798,7 @@ trait JoinOptimizerSpecs[M[+_]]
 
     "eliminate naive cartesian products in slightly less trivial cases (1)" in {
 
-      val rawInput =
-        """
+      val rawInput = """
         | a := //users
         | b := //heightWeight
         | a ~ b
@@ -1003,8 +996,7 @@ trait JoinOptimizerSpecs[M[+_]]
     }
 
     "eliminate cartesian with a new inside an array join" in {
-      val query =
-        """
+      val query = """
         | medals' := //summer_games/london_medals
         | medals'' := new medals'
         | 
@@ -1102,8 +1094,7 @@ trait JoinOptimizerSpecs[M[+_]]
     }
 
     "eliminate cartesian with a new and a filter inside an array join" in {
-      val query =
-        """
+      val query = """
         | medals := //summer_games/london_medals
         | medals' := medals where medals.Country = "India"
         | medals'' := new medals''

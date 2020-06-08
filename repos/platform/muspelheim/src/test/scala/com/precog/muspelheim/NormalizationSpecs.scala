@@ -81,8 +81,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "find summary and another reduction on the same dataset" in {
-    val input =
-      """
+    val input = """
       | medals := //summer_games/london_medals
       | height := medals.HeightIncm
       | summary(height).model1 with { sqVariance: variance(height) ^ 2 }
@@ -182,8 +181,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "find summary with object" in {
-    val input =
-      """
+    val input = """
       | medals := //summer_games/london_medals
       | data := {height: [medals.HeightIncm], weight: medals.Weight, age: medals.Age}
       | summary(data)
@@ -198,8 +196,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(result)
     """.stripMargin
 
-    val schema2 =
-      """
+    val schema2 = """
       | medals := //summer_games/london_medals
       | result :=
       |   {
@@ -209,8 +206,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(result)
     """.stripMargin
 
-    val schema3 =
-      """
+    val schema3 = """
       | medals := //summer_games/london_medals
       | result :=
       |   {
@@ -220,8 +216,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(result)
     """.stripMargin
 
-    val schema4 =
-      """
+    val schema4 = """
       | medals := //summer_games/london_medals
       | result :=
       |   {
@@ -280,8 +275,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "find summary with object (2)" in {
-    val input =
-      """
+    val input = """
       | medals := //summer_games/london_medals
       | fields := { 
       |   HeightIncm: medals.HeightIncm where std::type::isNumber(medals.HeightIncm),
@@ -291,8 +285,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | summary(fields)
     """.stripMargin
 
-    val expectedInput =
-      """
+    val expectedInput = """
       | medals := //summer_games/london_medals
       | fields := { 
       |   HeightIncm: medals.HeightIncm where std::type::isNumber(medals.HeightIncm),
@@ -335,8 +328,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::normalize(medals, summary.model1)
     """.stripMargin
 
-    val expectedInput =
-      """
+    val expectedInput = """
       | medals := //summer_games/london_medals
       |
       | meanHeight := mean(medals.HeightIncm)
@@ -360,8 +352,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "return empty set when there exists fields in summary not present in data" in {
-    val input =
-      """
+    val input = """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       | summary := summary(height).model1 with { foobar: { mean: 12, stdDev: 18 }}
@@ -372,8 +363,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "normalize data with multiple fields" in {
-    val input =
-      """
+    val input = """
       | medals := //summer_games/london_medals
       | fields := { 
       |   HeightIncm: medals.HeightIncm where std::type::isNumber(medals.HeightIncm),
@@ -384,8 +374,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::normalize(medals, summary.model1)
     """.stripMargin
 
-    val expectedInput =
-      """
+    val expectedInput = """
       | medals := //summer_games/london_medals
       |
       | fields := { 
@@ -435,8 +424,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | { norm: normalized } with medals
     """.stripMargin
 
-    val expectedInput =
-      """
+    val expectedInput = """
       | medals := //summer_games/london_medals
       |
       | meanHeight := mean(medals.HeightIncm)
@@ -466,8 +454,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::normalize(medals, {HeightIncm: {stdDev: 18}})
     """.stripMargin
 
-    val inputDenorm =
-      """
+    val inputDenorm = """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       | std::stats::denormalize(medals, {HeightIncm: {mean: 23}})
@@ -481,15 +468,13 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "return empty set when normalizing and denormalizing with non-present schema" in {
-    val inputNorm =
-      """
+    val inputNorm = """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       | std::stats::normalize(medals, {foobar: {mean: 23, stdDev: 18}})
     """.stripMargin
 
-    val inputDenorm =
-      """
+    val inputDenorm = """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       | std::stats::denormalize(medals, {foobar: {mean: 23, stdDev: 18}})
@@ -513,8 +498,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
       | std::stats::denormalize(normalized, summary.model1)
     """.stripMargin
 
-    val expectedInput =
-      """
+    val expectedInput = """
       | medals := //summer_games/london_medals
       | { HeightIncm: medals.HeightIncm where std::type::isNumber(medals.HeightIncm) }
     """.stripMargin
@@ -534,8 +518,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "denormalize normalized data and join with original data" in {
-    val input =
-      """
+    val input = """
       | medals := //summer_games/london_medals
       | height := { HeightIncm: medals.HeightIncm }
       |
@@ -562,8 +545,7 @@ trait NormalizationSpecs extends EvalStackSpecs {
   }
 
   "denormalize normalized data after clustering" in {
-    val input =
-      """
+    val input = """
       | conversions := //conversions
       |
       | ageNum := conversions.customer.age where std::type::isNumber(conversions.customer.age)

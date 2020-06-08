@@ -25,8 +25,7 @@ class LoadJournalSpec
       PersistenceSpec.config(
         "inmem",
         "LoadJournalSpec",
-        extraConfig = Some(
-          """
+        extraConfig = Some("""
   akka.persistence.journal.inmem.class = "akka.persistence.LoadJournalSpec$JournalWithConfig"
   akka.persistence.journal.inmem.extra-property = 17
   """)

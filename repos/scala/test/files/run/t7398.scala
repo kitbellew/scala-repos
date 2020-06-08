@@ -8,8 +8,7 @@ object Test extends CompilerTest {
     javaCompilationUnits(global)(defaultMethodSource)
   }
 
-  private def defaultMethodSource =
-    """
+  private def defaultMethodSource = """
 public interface Iterator<E> {
     boolean hasNext();
     E next();

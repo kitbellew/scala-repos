@@ -39,8 +39,7 @@ class EnsembleHtmlEditor extends EnsembleExample {
 
   def getContent = {
     // Initial Text in the html editor
-    val initialText =
-      """<html><body>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    val initialText = """<html><body>Lorem ipsum dolor sit amet, consectetur adipiscing elit.
             Nam tortor felis, pulvinar in scelerisque cursus, pulvinar at ante. Nulla consequat
             congue lectus in sodales. Nullam eu est a felis ornare bibendum et nec tellus.
             Vivamus non metus tempus augue auctor ornare. Duis pulvinar justo ac purus adipiscing

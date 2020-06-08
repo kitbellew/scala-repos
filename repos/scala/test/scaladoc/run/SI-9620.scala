@@ -2,8 +2,7 @@ import scala.tools.nsc.doc.model._
 import scala.tools.partest.ScaladocModelTest
 
 object Test extends ScaladocModelTest {
-  override def code =
-    """
+  override def code = """
     package a
 
     trait Foo[S] {

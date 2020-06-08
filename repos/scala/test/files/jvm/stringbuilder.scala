@@ -20,8 +20,7 @@ object Test1 {
     println(
       "s0.toString equals j0.toString = " + (s0.toString equals j0.toString))
 
-    val str =
-      """
+    val str = """
 Scala is a general purpose programming language designed to express common programming patterns in a concise, elegant, and type-safe way. It smoothly integrates features of object-oriented and functional languages. It is also fully interoperable with Java."""
     val j1 = new java.lang.StringBuilder(100) append str
     val s1 = new java.lang.StringBuilder(100) append str

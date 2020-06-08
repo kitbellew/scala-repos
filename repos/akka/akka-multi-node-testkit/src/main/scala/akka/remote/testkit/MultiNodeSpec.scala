@@ -99,9 +99,7 @@ abstract class MultiNodeConfig {
 
   private[testkit] def config: Config = {
     val transportConfig =
-      if (_testTransport)
-        ConfigFactory.parseString(
-          """
+      if (_testTransport) ConfigFactory.parseString("""
            akka.remote.netty.tcp.applied-adapters = [trttl, gremlin]
         """)
       else ConfigFactory.empty
@@ -219,8 +217,7 @@ object MultiNodeSpec {
       "akka.remote.netty.tcp.hostname" -> selfName,
       "akka.remote.netty.tcp.port" -> selfPort))
 
-  private[testkit] val baseConfig: Config =
-    ConfigFactory.parseString("""
+  private[testkit] val baseConfig: Config = ConfigFactory.parseString("""
       akka {
         loggers = ["akka.testkit.TestEventListener"]
         loglevel = "WARNING"

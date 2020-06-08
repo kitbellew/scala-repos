@@ -53,8 +53,7 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
 
   override def newYarnConfig(): YarnConfiguration = new YarnConfiguration()
 
-  private val TEST_PYFILE =
-    """
+  private val TEST_PYFILE = """
     |import mod1, mod2
     |import sys
     |from operator import add

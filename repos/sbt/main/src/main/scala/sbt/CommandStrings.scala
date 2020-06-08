@@ -176,9 +176,7 @@ $ShowCommand <task>
       "Manipulates session settings.  For details, run 'help " + SessionCommand + "'.")
 
   def settingsPreamble = commonPreamble("settings")
-  def tasksPreamble =
-    commonPreamble(
-      "tasks") + """
+  def tasksPreamble = commonPreamble("tasks") + """
 Tasks produce values.  Use the 'show' command to run the task and print the resulting value."""
 
   def commonPreamble(label: String) =

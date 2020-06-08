@@ -5,8 +5,7 @@ object Test extends DirectTest {
 
   override def extraSettings: String = "-usejavacp"
 
-  def code =
-    """
+  def code = """
     class testAnn extends annotation.TypeConstraint
 
     class A(param: Double) extends { val x: Int = 1; val y = "two" } with AnyRef {

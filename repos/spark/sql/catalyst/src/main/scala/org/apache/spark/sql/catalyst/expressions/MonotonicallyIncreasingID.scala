@@ -36,8 +36,7 @@ import org.apache.spark.sql.types.{DataType, LongType}
   * Since this expression is stateful, it cannot be a case object.
   */
 @ExpressionDescription(
-  usage =
-    """_FUNC_() - Returns monotonically increasing 64-bit integers.
+  usage = """_FUNC_() - Returns monotonically increasing 64-bit integers.
       The generated ID is guaranteed to be monotonically increasing and unique, but not consecutive.
       The current implementation puts the partition ID in the upper 31 bits, and the lower 33 bits
       represent the record number within each partition. The assumption is that the data frame has

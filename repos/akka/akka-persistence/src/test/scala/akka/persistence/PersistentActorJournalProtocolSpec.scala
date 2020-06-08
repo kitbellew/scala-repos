@@ -11,8 +11,7 @@ import akka.persistence.JournalProtocol._
 
 object PersistentActorJournalProtocolSpec {
 
-  val config = ConfigFactory.parseString(
-    """
+  val config = ConfigFactory.parseString("""
 puppet {
   class = "akka.persistence.JournalPuppet"
   max-message-batch-size = 10

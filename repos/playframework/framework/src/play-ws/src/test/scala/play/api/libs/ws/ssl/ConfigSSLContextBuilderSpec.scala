@@ -263,8 +263,7 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
 
     "fail the keystore with a weak certificate " in {
       // RSA 1024 public key
-      val data =
-        """-----BEGIN CERTIFICATE-----
+      val data = """-----BEGIN CERTIFICATE-----
                    |MIICcjCCAdugAwIBAgIEKdPHODANBgkqhkiG9w0BAQsFADBsMRAwDgYDVQQGEwdV
                    |bmtub3duMRAwDgYDVQQIEwdVbmtub3duMRAwDgYDVQQHEwdVbmtub3duMRAwDgYD
                    |VQQKEwdVbmtub3duMRAwDgYDVQQLEwdVbmtub3duMRAwDgYDVQQDEwdVbmtub3du
@@ -384,8 +383,7 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
 
     "validate the keystore with a weak certificate " in {
       // RSA 1024 public key
-      val data =
-        """-----BEGIN CERTIFICATE-----
+      val data = """-----BEGIN CERTIFICATE-----
                    |MIICcjCCAdugAwIBAgIEKdPHODANBgkqhkiG9w0BAQsFADBsMRAwDgYDVQQGEwdV
                    |bmtub3duMRAwDgYDVQQIEwdVbmtub3duMRAwDgYDVQQHEwdVbmtub3duMRAwDgYD
                    |VQQKEwdVbmtub3duMRAwDgYDVQQLEwdVbmtub3duMRAwDgYDVQQDEwdVbmtub3du

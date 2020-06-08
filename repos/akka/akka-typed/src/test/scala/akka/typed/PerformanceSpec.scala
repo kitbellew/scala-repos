@@ -7,9 +7,7 @@ import ScalaDSL._
 import scala.concurrent.duration._
 import com.typesafe.config.ConfigFactory
 
-class PerformanceSpec
-    extends TypedSpec(
-      ConfigFactory.parseString("""
+class PerformanceSpec extends TypedSpec(ConfigFactory.parseString("""
       # increase this if you do real benchmarking
       akka.typed.PerformanceSpec.iterations=100000
       """)) {

@@ -12,8 +12,7 @@ import akka.testkit.{TestProbe, AkkaSpec}
 
 object EventStreamSpec {
 
-  val config = ConfigFactory.parseString(
-    """
+  val config = ConfigFactory.parseString("""
       akka {
         actor.serialize-messages = off
         stdout-loglevel = WARNING

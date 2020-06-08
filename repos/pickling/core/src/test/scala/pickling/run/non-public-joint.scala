@@ -22,8 +22,7 @@ class NonPublicJointTest extends FunSuite {
       25,
       new Hobby("hacking", "mostly Scala", "loving it"))
     val pickle = e.pickle
-    assert(
-      pickle.toString === """
+    assert(pickle.toString === """
       |JSONPickle({
       |  "$type": "scala.pickling.non.public.joint.Person",
       |  "hobby": {

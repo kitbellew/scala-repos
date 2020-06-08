@@ -156,8 +156,7 @@ final class ClosureLinkerBackend(
 private object ClosureLinkerBackend {
 
   /** Minimal set of externs to compile Scala.js-emitted code with Closure. */
-  private val ScalaJSExterns =
-    """
+  private val ScalaJSExterns = """
     /** @constructor */
     function Object() {}
     Object.protoype.toString = function() {};

@@ -368,8 +368,7 @@ package scala
 
 """
 
-  def classDocTemplate =
-    ("""
+  def classDocTemplate = ("""
 /** `@name@`@representation@ (equivalent to Java's `@javaequiv@` primitive type) is a
  *  subtype of [[scala.AnyVal]]. Instances of `@name@` are not
  *  represented by an object in the underlying runtime system.
@@ -379,8 +378,7 @@ package scala
  */
 """.trim + "\n")
 
-  def allCompanions =
-    """
+  def allCompanions = """
 /** Transform a value type into a boxed reference type.
  *@boxRunTimeDoc@
  *  @param  x   the @name@ to be boxed
@@ -412,8 +410,7 @@ final val MinValue = @boxed@.MIN_VALUE
 final val MaxValue = @boxed@.MAX_VALUE
 """
 
-  def floatingCompanion =
-    """
+  def floatingCompanion = """
 /** The smallest positive value greater than @zero@ which is
  *  representable as a @name@.
  */
@@ -451,8 +448,7 @@ class AnyVals extends AnyValReps with AnyValTemplates {
         Some("64-bit IEEE-754 floating point number"),
         "double")
   object Z extends AnyValRep("Boolean", None, "boolean") {
-    def classLines =
-      """
+    def classLines = """
 /** Negates a Boolean expression.
   *
   * - `!a` results in `false` if and only if `a` evaluates to `true` and
@@ -542,8 +538,7 @@ override def getClass(): Class[Boolean] = null
       interpolate(allCompanions + "\n" + nonUnitCompanions).lines.toList
   }
   object U extends AnyValRep("Unit", None, "void") {
-    override def classDoc =
-      """
+    override def classDoc = """
 /** `Unit` is a subtype of [[scala.AnyVal]]. There is only one value of type
  *  `Unit`, `()`, and it is not represented by any object in the underlying
  *  runtime system. A method with return type `Unit` is analogous to a Java

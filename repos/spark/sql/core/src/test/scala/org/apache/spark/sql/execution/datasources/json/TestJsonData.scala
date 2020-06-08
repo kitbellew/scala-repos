@@ -78,8 +78,7 @@ private[json] trait TestJsonData {
         """{"e":"str"}""" :: Nil)
 
   def complexFieldAndType1: RDD[String] =
-    sqlContext.sparkContext.parallelize(
-      """{"struct":{"field1": true, "field2": 92233720368547758070},
+    sqlContext.sparkContext.parallelize("""{"struct":{"field1": true, "field2": 92233720368547758070},
           "structWithArrayFields":{"field1":[4, 5, 6], "field2":["str1", "str2"]},
           "arrayOfString":["str1", "str2"],
           "arrayOfInteger":[1, 2147483647, -2147483648],

@@ -20,8 +20,7 @@ public interface Interface {
 
   """
 
-  private def scalaClient =
-    """
+  private def scalaClient = """
 object Test {
   val x: Int = Interface.staticMethod()
 }

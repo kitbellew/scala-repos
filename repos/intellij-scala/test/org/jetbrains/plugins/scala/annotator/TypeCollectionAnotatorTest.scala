@@ -185,8 +185,7 @@ class TypeCollectionAnotatorTest
   }
 
   def testAnnotateMutableQualifiedNameWithApply() {
-    val text =
-      """
+    val text = """
       class A {
         val sb = scala.collection.mutable.HashMap.apply("aaa" -> 2, "3" -> 4)
       }

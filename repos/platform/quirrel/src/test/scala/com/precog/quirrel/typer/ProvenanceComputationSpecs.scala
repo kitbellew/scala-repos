@@ -540,8 +540,7 @@ object ProvenanceComputationSpecs
         tree.errors must beEmpty
       }
       {
-        val tree =
-          compileSingle("""
+        val tree = compileSingle("""
           | foo := //foo
           | obj := solve 'a {bar: sum(foo where foo.a = 'a)}
           | obj
@@ -560,8 +559,7 @@ object ProvenanceComputationSpecs
         tree.errors must beEmpty
       }
       {
-        val tree =
-          compileSingle("""
+        val tree = compileSingle("""
           | foo := //foo
           | solve 'a = foo.a
           |   {count: count(foo where foo.a < 'a), value: 'a}
@@ -1265,8 +1263,7 @@ object ProvenanceComputationSpecs
 
       "Solve" >> {
         {
-          val tree = compileSingle(
-            """
+          val tree = compileSingle("""
             | foo := //foo
             | foobar := solve 'a {a: 'a, bar: count(foo where foo.a = 'a)}
             | foobaz := solve 'b {b: 'b, baz: count(foo where foo.b = 'b)}
@@ -1755,8 +1752,7 @@ object ProvenanceComputationSpecs
           tree.errors must beEmpty
         }
         {
-          val tree =
-            compileSingle("""
+          val tree = compileSingle("""
             //foo ~ //bar ~ //baz 
             ({a: //baz - //foo} where true) union //foo + //bar""")
           tree.provenance must beLike {
@@ -1938,8 +1934,7 @@ object ProvenanceComputationSpecs
           tree.errors mustEqual Set(UnionProvenanceDifferentLength)
         }
         {
-          val tree = compileSingle(
-            """
+          val tree = compileSingle("""
             | foo := //foo
             | foobar := solve 'a {a: 'a, bar: count(foo where foo.a = 'a)}
             | foobar union 5
@@ -1967,8 +1962,7 @@ object ProvenanceComputationSpecs
         }
         // Regression test for Pivotal #37558157
         {
-          val tree = compileSingle(
-            """
+          val tree = compileSingle("""
             | athletes := //summer_games/athletes
             | 
             | firstHalf := athletes.Name where athletes.Population < 1000
@@ -2725,8 +2719,7 @@ object ProvenanceComputationSpecs
     }
 
     "identify correct provenance of if-then-else inside user defined function (DynamicDerivedProvenance) " in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks2
         |
         | foo(data) :=

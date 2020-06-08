@@ -7,8 +7,7 @@ package lila.shutup
   */
 private object Dictionary {
 
-  def en: List[String] =
-    dict("""
+  def en: List[String] = dict("""
 (c|k)oc?k(y|suc?ker|)
 (c|k)um(shot|)
 (c|k)unt(ing|)

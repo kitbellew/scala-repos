@@ -64,8 +64,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
 
   "linear regression" should {
     "not produce an exception in a corner case" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks20k
         | std::stats::linearRegression(clicks.customer.age, clicks.product.price)
       """.stripMargin
@@ -120,8 +119,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "handle multiple indep vars, one of which is a constant" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | medals' := medals where std::type::isNumber(medals.HeightIncm) & std::type::isNumber(medals.Weight)
         | medals'' := medals' with { const: 3 }
@@ -131,8 +129,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
         | std::stats::linearRegression(medals''.Weight, data)
       """.stripMargin
 
-      val input2 =
-        """
+      val input2 = """
         | medals := //summer_games/london_medals
         | medals' := medals where std::type::isNumber(medals.HeightIncm) & std::type::isNumber(medals.Weight)
         |
@@ -243,8 +240,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "predict when nulls are present in the regression model" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | medals' := medals where std::type::isNumber(medals.HeightIncm) & std::type::isNumber(medals.Weight)
         | medals'' := medals' with { const: 3 }
@@ -309,8 +305,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "accept a previous problematic case regarding slice boundaries" in {
-      val input =
-        """
+      val input = """
         | conversions := //conversions
         | conversions' := conversions with
         | 
@@ -386,8 +381,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "accept linearly dependent variables in case with three columns" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks2
         |
         | vars := {
@@ -434,8 +428,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "accept linearly dependent variables in case with two dependent columns" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks2
         |
         | vars := {
@@ -486,8 +479,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "return correctly structured results in a simple case of linear regression" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | std::stats::linearRegression(medals.Weight, { height: medals.HeightIncm })
@@ -521,8 +513,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "predict linear regression" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | model := std::stats::linearRegression(medals.Weight, { height: medals.HeightIncm })
@@ -594,8 +585,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "join predicted results with original dataset" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | model := std::stats::linearRegression(medals.Weight, { HeightIncm: medals.HeightIncm })
@@ -615,8 +605,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "join predicted results with original dataset when model is `new`ed" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | model := new std::stats::linearRegression(medals.Weight, { HeightIncm: medals.HeightIncm })
@@ -638,8 +627,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "join predicted results with model when model is `new`ed" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | model := new std::stats::linearRegression(medals.Weight, { HeightIncm: medals.HeightIncm })
@@ -683,8 +671,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "predict linear regression when no field names in model are present in data" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | model := std::stats::linearRegression(medals.Weight, { height: medals.HeightIncm })
@@ -723,8 +710,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "return empty set when the dependent variable is not at the root path" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | std::stats::linearRegression({weight: medals.Weight}, {height: medals.HeightIncm})
@@ -734,8 +720,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "return empty set when given feature values of wrong type" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | std::stats::linearRegression(medals.WeightIncm, medals.Country)
@@ -745,8 +730,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     }
 
     "return empty set when given dependent values of wrong type" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | 
         | std::stats::linearRegression(medals.Country, medals.WeightIncm)
@@ -762,8 +746,7 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
         | std::stats::linearRegression(data[1], data[0])
       """.stripMargin
 
-      val inputPrediction =
-        """
+      val inputPrediction = """
         | data := //small
         | 
         | model := std::stats::linearRegression(data[1], data[0])

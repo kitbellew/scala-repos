@@ -122,8 +122,7 @@ object GenProductTypes {
     "%s\n%s" format (traits, implicitsTrait(start, end)(defn))
   }
 
-  private val disclaimer =
-    """
+  private val disclaimer = """
     |
     |/**************************************************************************
     | * WARNING: This is an auto-generated file. Any changes will most likely  *

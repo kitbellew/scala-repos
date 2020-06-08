@@ -44,8 +44,7 @@ class WebSocketServerSpec
             val response = upgrade.get.handleMessages(handler)
             responses.sendNext(response)
 
-            expectResponseWithWipedDate(
-              """HTTP/1.1 101 Switching Protocols
+            expectResponseWithWipedDate("""HTTP/1.1 101 Switching Protocols
               |Upgrade: websocket
               |Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
               |Server: akka-http/test
@@ -102,8 +101,7 @@ class WebSocketServerSpec
             upgrade.get.handleMessages(Flow[Message]) // simple echoing
           responses.sendNext(response)
 
-          expectResponseWithWipedDate(
-            """HTTP/1.1 101 Switching Protocols
+          expectResponseWithWipedDate("""HTTP/1.1 101 Switching Protocols
               |Upgrade: websocket
               |Sec-WebSocket-Accept: s3pPLMBiTxaQ9kYGzzhZRbK+xOo=
               |Server: akka-http/test

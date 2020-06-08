@@ -388,8 +388,7 @@ abstract class AggregationQuerySuite
     )
 
     checkAnswer(
-      sqlContext.sql(
-        """
+      sqlContext.sql("""
           |SELECT sum(distinct value1), kEY - 100, count(distinct value1)
           |FROM agg2
           |GROUP BY Key - 100

@@ -60,8 +60,7 @@ object Boilerplate {
       tgtFile
     }
 
-  val header =
-    """
+  val header = """
     |/*
     | * Copyright (c) 2011-14 Miles Sabin
     | *

@@ -17,8 +17,7 @@ import akka.http.scaladsl.model.headers.{Host, `Tls-Session-Info`}
 import org.scalatest.time.{Span, Seconds}
 import scala.concurrent.Future
 
-class TlsEndpointVerificationSpec
-    extends AkkaSpec("""
+class TlsEndpointVerificationSpec extends AkkaSpec("""
     akka.loglevel = INFO
     akka.io.tcp.trace-logging = off
     akka.http.parsing.tls-session-info-header = on

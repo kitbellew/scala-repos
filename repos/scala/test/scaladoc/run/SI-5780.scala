@@ -4,8 +4,7 @@ import scala.tools.partest.ScaladocModelTest
 
 object Test extends ScaladocModelTest {
 
-  override def code =
-    """
+  override def code = """
       package scala.test.scaladoc.SI5780
 
       object `package` { def foo: AnyRef = "hello"; class T /* so the package is not dropped */ }

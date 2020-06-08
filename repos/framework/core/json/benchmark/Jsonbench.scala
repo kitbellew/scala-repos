@@ -19,8 +19,7 @@ object Jsonbench extends Benchmark {
 
   def benchmark(name: String)(f: => Any) = run(name, 50000, 50000)(f)
 
-  val json =
-    """
+  val json = """
 {
   "glossary": {
     "title": "example glossary",

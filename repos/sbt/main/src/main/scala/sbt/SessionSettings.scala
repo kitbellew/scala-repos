@@ -317,8 +317,7 @@ object SessionSettings {
     for (((_, stringRep), index) <- settings.zipWithIndex)
       println("  " + (index + 1) + ". " + stringRep.mkString("\n"))
 
-  def Help =
-    """session <command>
+  def Help = """session <command>
 
 Manipulates session settings, which are temporary settings that do not persist past the current sbt execution (that is, the current session).
 Valid commands are:

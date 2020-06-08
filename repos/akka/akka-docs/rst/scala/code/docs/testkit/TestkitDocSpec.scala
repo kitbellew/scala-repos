@@ -278,8 +278,7 @@ class TestkitDocSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
     implicit val system = ActorSystem(
       "testsystem",
-      ConfigFactory.parseString(
-        """
+      ConfigFactory.parseString("""
       akka.loggers = ["akka.testkit.TestEventListener"]
       """))
     try {

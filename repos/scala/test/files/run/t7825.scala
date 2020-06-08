@@ -9,8 +9,7 @@ object Test extends CompilerTest {
       global)(scalaExtendsDefault)
   }
 
-  private def defaultMethodSource =
-    """
+  private def defaultMethodSource = """
 public interface Iterator<E> {
     boolean hasNext();
     E next();

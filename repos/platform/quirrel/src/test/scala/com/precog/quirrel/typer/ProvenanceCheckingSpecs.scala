@@ -510,8 +510,7 @@ object ProvenanceCheckingSpecs
     }
 
     "reject operations on different loads through where" in {
-      val rawInput =
-        """
+      val rawInput = """
         | a := //users
         | b := //heightWeight
         | { name: a.name, height: b.height } where a.userId = b.userId """.stripMargin
@@ -528,8 +527,7 @@ object ProvenanceCheckingSpecs
     }
 
     "reject operations on different relative loads through where" in {
-      val rawInput =
-        """
+      val rawInput = """
         | a := ./users
         | b := ./heightWeight
         | { name: a.name, height: b.height } where a.userId = b.userId """.stripMargin

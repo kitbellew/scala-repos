@@ -126,8 +126,7 @@ package docs.serialization {
     }
 
     "demonstrate configuration of serializers" in {
-      val config = ConfigFactory.parseString(
-        """
+      val config = ConfigFactory.parseString("""
       #//#serialize-serializers-config
       akka {
         actor {
@@ -145,8 +144,7 @@ package docs.serialization {
     }
 
     "demonstrate configuration of serialization-bindings" in {
-      val config = ConfigFactory.parseString(
-        """
+      val config = ConfigFactory.parseString("""
       #//#serialization-bindings-config
       akka {
         actor {

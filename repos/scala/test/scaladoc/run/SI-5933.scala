@@ -4,8 +4,7 @@ import scala.tools.partest.ScaladocModelTest
 object Test extends ScaladocModelTest {
 
   // Test code
-  override def code =
-    """
+  override def code = """
       // This example should compile without errors, and the pattern match should be correctly displayed
 
       import language.higherKinds

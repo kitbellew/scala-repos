@@ -182,8 +182,7 @@ object ExampleTests extends TestSuite {
         val numberPlate =
           P(twice(digit) ~ "-" ~ twice(letter) ~ "-" ~ twice(digit))
 
-        assert(
-          errorMessage(numberPlate, "11-A1-22") == """
+        assert(errorMessage(numberPlate, "11-A1-22") == """
           |found "1-22", expected CharIn("ABCDEFGHIJKLMNOPQRSTUVWXYZ") at index 4
           |11-A1-22
           |    ^""".stripMargin.trim)
@@ -191,8 +190,7 @@ object ExampleTests extends TestSuite {
         // Suppress implementation details from the error message
         val opaqueNumberPlate = numberPlate.opaque("<number-plate>")
 
-        assert(
-          errorMessage(opaqueNumberPlate, "11-A1-22") == """
+        assert(errorMessage(opaqueNumberPlate, "11-A1-22") == """
           |found "11-A1-22", expected <number-plate> at index 0
           |11-A1-22
           |^""".stripMargin.trim)
@@ -388,8 +386,7 @@ object ExampleTests extends TestSuite {
 
         Foo.expr.parse("(1+(2+3x))+4")
 
-        val expected =
-          """
+        val expected = """
           +expr:0
             +side:0
               +expr:1

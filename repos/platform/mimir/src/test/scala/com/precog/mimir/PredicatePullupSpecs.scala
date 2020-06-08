@@ -45,8 +45,7 @@ trait PredicatePullupSpecs[M[+_]]
 
   "Predicate pullups optimization" should {
     "pull a predicate out of a solve with a single ticvar" in {
-      val rawInput =
-        """
+      val rawInput = """
         | clicks := //clicks
         |
         | upperBound := 1329643873628
@@ -191,8 +190,7 @@ trait PredicatePullupSpecs[M[+_]]
     }
 
     "pull a predicate out of a solve with more than one ticvar" in {
-      val rawInput =
-        """
+      val rawInput = """
         | clicks := //clicks
         |
         | upperBound := 1329643873628
@@ -356,8 +354,7 @@ trait PredicatePullupSpecs[M[+_]]
     }
 
     "pull a predicate out of the top level of a nested solve" in {
-      val rawInput =
-        """
+      val rawInput = """
         | medals := //summer_games/london_medals
         | 
         | solve 'gender
@@ -474,8 +471,7 @@ trait PredicatePullupSpecs[M[+_]]
     }
 
     "pull a predicate out of a solve where both the filtered and the unfiltered set occur in the body" in {
-      val rawInput =
-        """
+      val rawInput = """
         | medals := //summer_games/london_medals
         | 
         | solve 'gender

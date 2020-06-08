@@ -16,8 +16,7 @@ import java.util.concurrent.ConcurrentLinkedQueue
 import java.util.concurrent.atomic.AtomicBoolean
 
 object DispatchersSpec {
-  val config =
-    """
+  val config = """
     myapp {
       mydispatcher {
         throughput = 17

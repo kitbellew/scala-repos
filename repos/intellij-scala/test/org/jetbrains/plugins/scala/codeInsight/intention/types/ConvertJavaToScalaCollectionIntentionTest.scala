@@ -6,8 +6,7 @@ class ConvertJavaToScalaCollectionIntentionTest extends ScalaIntentionTestBase {
   def familyName: String = ConvertJavaToScalaCollectionIntention.getFamilyName
 
   def testIntentionIsAvailable() {
-    checkIntentionIsAvailable(
-      """
+    checkIntentionIsAvailable("""
         |class UsesJavaCollections {
         |  val list = new java.util.ArrayList<caret>[String]()
         |}
@@ -47,8 +46,7 @@ class ConvertJavaToScalaCollectionIntentionTest extends ScalaIntentionTestBase {
   }
 
   def testIntentionIsNotAvailable() {
-    checkIntentionIsNotAvailable(
-      """
+    checkIntentionIsNotAvailable("""
         |import scala.collection.JavaConverters._
         |
         |class UsesJavaCollections {

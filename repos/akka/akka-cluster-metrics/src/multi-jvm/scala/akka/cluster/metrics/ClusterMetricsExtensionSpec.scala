@@ -37,15 +37,13 @@ trait ClusterMetricsCommonConfig extends MultiNodeConfig {
   def disableMetricsLegacy = parseString("""akka.cluster.metrics.enabled=off""")
 
   // Enable metrics extension in akka-cluster-metrics.
-  def enableMetricsExtension =
-    parseString("""
+  def enableMetricsExtension = parseString("""
     akka.extensions=["akka.cluster.metrics.ClusterMetricsExtension"]
     akka.cluster.metrics.collector.enabled = on
     """)
 
   // Disable metrics extension in akka-cluster-metrics.
-  def disableMetricsExtension =
-    parseString("""
+  def disableMetricsExtension = parseString("""
     akka.extensions=["akka.cluster.metrics.ClusterMetricsExtension"]
     akka.cluster.metrics.collector.enabled = off
     """)

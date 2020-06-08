@@ -27,8 +27,7 @@ trait RandomForestSpecs extends EvalStackSpecs {
 
   "random forest" should {
     "return correctly structured classification results" in {
-      val input =
-        """
+      val input = """
         data := //iris
         trainingData := {predictors: data.features, dependent: data.species}
 
@@ -56,8 +55,7 @@ trait RandomForestSpecs extends EvalStackSpecs {
     }
 
     "return correctly structured regression results" in {
-      val input =
-        """
+      val input = """
         data := //auto-mpg
         features0 := data.features
 
@@ -92,8 +90,7 @@ trait RandomForestSpecs extends EvalStackSpecs {
     }
 
     "return correctly structured classification results given dependent object" in {
-      val input =
-        """
+      val input = """
         data := //iris
         trainingData := {predictors: data.features, dependent: {species: data.species}}
 
@@ -167,8 +164,7 @@ trait RandomForestSpecs extends EvalStackSpecs {
     }
 
     "return well-predicted classification results" in {
-      val input =
-        """
+      val input = """
         data0 := //iris
         data := data0 with { rand: observe(data0, std::random::uniform(42)) }
 
@@ -204,8 +200,7 @@ trait RandomForestSpecs extends EvalStackSpecs {
     }
 
     "return well-predicted regression results" in {
-      val input =
-        """
+      val input = """
         data0 := //auto-mpg
         features0 := data0.features
 

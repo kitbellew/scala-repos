@@ -111,8 +111,7 @@ object GroupSolverSpecs
     }
 
     "accept a solve on a union with a `with`" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | athletes := //summer_games/athletes
         | 
@@ -152,8 +151,7 @@ object GroupSolverSpecs
     }
 
     "accept acceptable case when one solve contains a dispatch which contains tic variable from another solve" in {
-      val input =
-        """
+      val input = """
        |  medals := //summer_games/london_medals
        |  
        |  medals' := solve 'gender
@@ -248,8 +246,7 @@ object GroupSolverSpecs
     }
 
     "identify and fail to solve more complicated problematic case of nested solves" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
         
         solve 'gender
@@ -605,8 +602,7 @@ object GroupSolverSpecs
     }
 
     "accept a solve when one of two reductions cannot be solved in the absence of an outer definition" in {
-      val input =
-        """
+      val input = """
         | foo := //foo
         |
         | solve 'a
@@ -617,8 +613,7 @@ object GroupSolverSpecs
     }
 
     "accept a function when a reduction cannot be solved in the presence of an outer definition" in {
-      val input =
-        """
+      val input = """
         | foo := //foo
         |
         | solve 'a
@@ -655,8 +650,7 @@ object GroupSolverSpecs
     }
 
     "reject shared buckets for dependent tic variables on the same set" in {
-      val input =
-        """
+      val input = """
         | organizations := load(//organizations)
         | 
         | solve 'revenue, 'campaign
@@ -684,8 +678,7 @@ object GroupSolverSpecs
     }
 
     "accept shared buckets for dependent tic variables on the same set when at least one can be solved" in {
-      val input =
-        """
+      val input = """
         | campaigns := load(//campaigns)
         | organizations := load(//organizations)
         | 
@@ -790,8 +783,7 @@ object GroupSolverSpecs
     }
 
     "accept a reduced sessionize" in {
-      val input =
-        """
+      val input = """
         | rawInteractions := //interactions
         | 
         | solve 'userId
@@ -1020,8 +1012,7 @@ object GroupSolverSpecs
     }
 
     "accept another solve with a generic where inside a function" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | athletes := //summer_games/athletes
         | 
@@ -1193,8 +1184,7 @@ object GroupSolverSpecs
     }
 
     "accept a solve defined by a constraint clause and inequalities in the body" in {
-      val input =
-        """
+      val input = """
         | import std::time::*
         | import std::stats::*
         | import std::math::*
@@ -1291,8 +1281,7 @@ object GroupSolverSpecs
     }
 
     "accept interaction-totals.qrl" in {
-      val input =
-        """
+      val input = """
         | interactions := //interactions
         | 
         | hourOfDay(time) := time / 3600000           -- timezones, anyone?
@@ -1307,8 +1296,7 @@ object GroupSolverSpecs
     }
 
     "accept a solve grouping on the results of an object concat with a stdlib op1" in {
-      val input =
-        """
+      val input = """
         | import std::time::*
         | 
         | agents := //clicks
@@ -1333,8 +1321,7 @@ object GroupSolverSpecs
     }
 
     "reject a solve where the extras involve reductions" in {
-      val input =
-        """
+      val input = """
         | sales := //sales
         | solve 'state
         |   sales where sales.state = 'state &

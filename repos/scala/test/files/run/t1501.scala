@@ -6,8 +6,7 @@ object Test {
     *  ...
     */
 
-  val testCode =
-    """
+  val testCode = """
   
     class xyz[A] extends annotation.TypeConstraint
     

@@ -25,8 +25,7 @@ import akka.testkit.TestActors.EchoActor
 import org.apache.commons.io.FileUtils
 
 object RemoveInternalClusterShardingDataSpec {
-  val config =
-    """
+  val config = """
     akka.loglevel = INFO
     akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
     akka.remote.netty.tcp.port = 0

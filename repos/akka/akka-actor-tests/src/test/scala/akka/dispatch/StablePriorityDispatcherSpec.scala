@@ -12,8 +12,7 @@ import akka.testkit.{DefaultTimeout, AkkaSpec}
 import scala.concurrent.duration._
 
 object StablePriorityDispatcherSpec {
-  val config =
-    """
+  val config = """
     unbounded-stable-prio-dispatcher {
       mailbox-type = "akka.dispatch.StablePriorityDispatcherSpec$Unbounded"
     }

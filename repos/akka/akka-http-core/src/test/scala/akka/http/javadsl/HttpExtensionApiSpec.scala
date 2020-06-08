@@ -40,8 +40,7 @@ class HttpExtensionApiSpec
   type Port = Int
 
   implicit val system = {
-    val testConf = ConfigFactory.parseString(
-      """
+    val testConf = ConfigFactory.parseString("""
     akka.loggers = ["akka.testkit.TestEventListener"]
     akka.loglevel = ERROR
     akka.stdout-loglevel = ERROR

@@ -15,8 +15,7 @@ import docs.dispatcher.DispatcherDocSpec.MyBoundedActor
 import akka.dispatch.RequiresMessageQueue
 
 object DispatcherDocSpec {
-  val javaConfig =
-    """
+  val javaConfig = """
      //#prio-dispatcher-config-java
      prio-dispatcher {
        mailbox-type = "docs.dispatcher.DispatcherDocTest$MyPrioMailbox"

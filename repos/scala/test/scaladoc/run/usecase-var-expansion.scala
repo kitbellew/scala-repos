@@ -4,8 +4,7 @@ import language._
 
 object Test extends ScaladocModelTest {
 
-  override def code =
-    """
+  override def code = """
     /**
      * @define Coll `Test`
      */

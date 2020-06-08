@@ -509,8 +509,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test("CTAS with serde") {
     sql("CREATE TABLE ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
       .collect()
-    sql(
-      """CREATE TABLE ctas2
+    sql("""CREATE TABLE ctas2
         | ROW FORMAT SERDE "org.apache.hadoop.hive.serde2.columnar.ColumnarSerDe"
         | WITH SERDEPROPERTIES("serde_p1"="p1","serde_p2"="p2")
         | STORED AS RCFile
@@ -519,8 +518,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         |   SELECT key, value
         |   FROM src
         |   ORDER BY key, value""".stripMargin).collect()
-    sql(
-      """CREATE TABLE ctas3
+    sql("""CREATE TABLE ctas3
         | ROW FORMAT DELIMITED FIELDS TERMINATED BY ',' LINES TERMINATED BY '\012'
         | STORED AS textfile AS
         |   SELECT key, value
@@ -1303,8 +1301,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
         Row(1, 9, 45, 55, 25, 125) ::
         Row(0, 10, 55, 55, 30, 140) :: Nil
 
-    val actual = sql(
-      """
+    val actual = sql("""
         |SELECT
         |  y,
         |  x,
@@ -1608,8 +1605,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       .registerTempTable("test")
 
     checkAnswer(
-      sql(
-        """FROM(
+      sql("""FROM(
           |  FROM test SELECT TRANSFORM(a, b)
           |  USING 'python src/test/resources/data/scripts/test_transform.py "\t"'
           |  AS (c STRING, d STRING)
@@ -1626,8 +1622,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       .selectExpr("id AS a", "id AS b")
       .registerTempTable("test")
 
-    val df =
-      sql("""FROM test
+    val df = sql("""FROM test
         |SELECT TRANSFORM(a, b)
         |ROW FORMAT SERDE 'org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe'
         |WITH SERDEPROPERTIES('field.delim' = '|')
@@ -1913,8 +1908,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-8976 Wrong Result for Rollup #2") {
     checkAnswer(
-      sql(
-        """
+      sql("""
         |SELECT count(*) AS cnt, key % 5 AS k1, key-5 AS k2, grouping_id() AS k3
         |FROM src GROUP BY key%5, key-5
         |WITH ROLLUP ORDER BY cnt, k1, k2, k3 LIMIT 10
@@ -1936,8 +1930,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-8976 Wrong Result for Rollup #3") {
     checkAnswer(
-      sql(
-        """
+      sql("""
         |SELECT count(*) AS cnt, key % 5 AS k1, key-5 AS k2, grouping_id() AS k3
         |FROM (SELECT key, key%2, key - 5 FROM src) t GROUP BY key%5, key-5
         |WITH ROLLUP ORDER BY cnt, k1, k2, k3 LIMIT 10
@@ -1974,8 +1967,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-8976 Wrong Result for CUBE #2") {
     checkAnswer(
-      sql(
-        """
+      sql("""
         |SELECT count(*) AS cnt, key % 5 AS k1, key-5 AS k2, grouping_id() AS k3
         |FROM (SELECT key, key%2, key - 5 FROM src) t GROUP BY key%5, key-5
         |WITH CUBE ORDER BY cnt, k1, k2, k3 LIMIT 10
@@ -1997,8 +1989,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-8976 Wrong Result for GroupingSet") {
     checkAnswer(
-      sql(
-        """
+      sql("""
         |SELECT count(*) AS cnt, key % 5 AS k1, key-5 AS k2, grouping_id() AS k3
         |FROM (SELECT key, key%2, key - 5 FROM src) t GROUP BY key%5, key-5
         |GROUPING SETS (key%5, key-5) ORDER BY cnt, k1, k2, k3 LIMIT 10

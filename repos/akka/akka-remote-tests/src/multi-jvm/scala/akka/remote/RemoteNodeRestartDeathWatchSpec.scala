@@ -28,8 +28,7 @@ object RemoteNodeRestartDeathWatchMultiJvmSpec extends MultiNodeConfig {
   val second = role("second")
 
   commonConfig(
-    debugConfig(on = false).withFallback(ConfigFactory.parseString(
-      """
+    debugConfig(on = false).withFallback(ConfigFactory.parseString("""
       akka.loglevel = INFO
       akka.remote.log-remote-lifecycle-events = off
       akka.remote.transport-failure-detector.heartbeat-interval = 1 s

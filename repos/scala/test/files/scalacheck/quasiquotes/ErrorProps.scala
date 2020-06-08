@@ -33,9 +33,8 @@ object ErrorProps extends QuasiquoteProperties("errors") {
       q"@...$annots def foo"
     """)
 
-  property("only literal string arguments") = fails(
-    "Quasiquotes can only be used with literal strings",
-    """
+  property("only literal string arguments") =
+    fails("Quasiquotes can only be used with literal strings", """
       val s: String = "foo"
       StringContext(s).q()
     """)
@@ -91,9 +90,8 @@ object ErrorProps extends QuasiquoteProperties("errors") {
     """
   )
 
-  property("can't unquote with ... rank here") = fails(
-    "Can't unquote with ... here",
-    """
+  property("can't unquote with ... rank here") =
+    fails("Can't unquote with ... here", """
       val lst: List[List[Tree]] = Nil; val t = EmptyTree
       q"f(...$lst, $t)"
     """)
@@ -212,18 +210,14 @@ object ErrorProps extends QuasiquoteProperties("errors") {
 
   property(
     "SI-8451 construction: disallow everything except for constructor calls in secondary constructor bodies") =
-    fails(
-      "'this' expected but unquotee found",
-      """
+    fails("'this' expected but unquotee found", """
       val rhs1 = q"this(0)"
       val ctor1 = q"def this(x: Int) = $rhs1"
     """)
 
   property(
     "SI-8451 deconstruction: disallow everything except for constructor calls in secondary constructor bodies") =
-    fails(
-      "'this' expected but unquotee found",
-      """
+    fails("'this' expected but unquotee found", """
       val q"def this(..$params) = $rhs2" = q"def this(x: Int) = this(0)"
     """)
 

@@ -50,8 +50,7 @@ object LoggerSpec {
     .withFallback(AkkaSpec.testConf)
 
   val multipleConfig = ConfigFactory
-    .parseString(
-      """
+    .parseString("""
       akka {
         stdout-loglevel = "OFF"
         loglevel = "WARNING"

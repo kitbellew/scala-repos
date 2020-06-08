@@ -1,8 +1,7 @@
 import scala.tools.partest.ReplTest
 
 object Test extends ReplTest {
-  def code =
-    """
+  def code = """
   import scala.reflect.macros.blackbox.Context
 import language.experimental.macros
 

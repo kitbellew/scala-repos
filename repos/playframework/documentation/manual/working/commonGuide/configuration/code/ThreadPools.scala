@@ -29,8 +29,7 @@ object ThreadPoolsSpec extends PlaySpecification {
     }
 
     "have a global configuration" in {
-      val config =
-        """#default-config
+      val config = """#default-config
         akka {
           actor {
             default-dispatcher {
@@ -59,8 +58,7 @@ object ThreadPoolsSpec extends PlaySpecification {
     }
 
     "use akka default thread pool configuration" in {
-      val config =
-        """#akka-default-config
+      val config = """#akka-default-config
         akka {
           actor {
             default-dispatcher {
@@ -136,8 +134,7 @@ object ThreadPoolsSpec extends PlaySpecification {
     }
 
     "allow a synchronous thread pool" in {
-      val config = ConfigFactory.parseString(
-        """#highly-synchronous
+      val config = ConfigFactory.parseString("""#highly-synchronous
       akka {
         actor {
           default-dispatcher {

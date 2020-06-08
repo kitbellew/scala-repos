@@ -38,8 +38,7 @@ class SerializationSpecs extends Specification {
 
   "APIKeyRecord deserialization" should {
     "Handle V0 formats" in {
-      val inputs =
-        """[
+      val inputs = """[
         { "tid" : "A594581E", "cid" : "A594581E", "gids" : ["4068", "f147"] },
         { "tid" : "58340C36", "cid" : "A594581E", "gids" : ["da22", "0388"] },
         { "tid" : "9038411C", "cid" : "A594581E", "gids" : ["5d63", "6088"] },
@@ -97,8 +96,7 @@ class SerializationSpecs extends Specification {
     }
 
     "Handle V1 formats" in {
-      val inputs =
-        """[
+      val inputs = """[
         {"isRoot" : true, "name" : "root-apiKey", "description" : "The root API key", "apiKey" : "17D42117-EF8E-4F43-B833-005F4EBB262C", "grants" : ["6f89110c953940cbbccc397f68c4cc9293af764c4d034719bf35b4736ee702daaef154314d5441ba8a69ed65e4ffa581"] },
         {"isRoot" : true, "name" : "root-apiKey", "description" : "The root API key", "apiKey" : "01D60F6D-E8B6-480C-8D55-2986853D67A6", "grants" : ["e5fa39314ca748818e52c50d2d445a6f4d9f9a224ddb4e55bf7c03e2a21fb36ff2bbff861aec43a18cccf2ee7f38841e"] },
         {"isRoot" : false, "issuerKey" : "17D42117-EF8E-4F43-B833-005F4EBB262C",      "apiKey" : "F2440B9B-D8CA-42AD-BF83-C693F0A5F018", "grants" : ["75826da768b64748b8423cdd047d7e8f6361e5bb50d8428080feaf1c0c6269600982be9e1c9f4299bf521aac95065ace"] },
@@ -159,8 +157,7 @@ class SerializationSpecs extends Specification {
 
   "Grant deserialization" should {
     "Handle V0 formats" in {
-      val inputs =
-        """[
+      val inputs = """[
 { "gid" : "4068840", "cid": "(undefined)", "permission" : { "type" : "owner", "path" : "/", "expirationDate" : null } },
 { "gid" : "0d736d3", "cid": "(undefined)", "permission" : { "type" : "read", "path" : "/", "ownerAccountId" : "12345678", "expirationDate" : null } },
 { "gid" : "91cb868", "cid": "(undefined)", "permission" : { "type" : "write", "path" : "/", "expirationDate" : null } },
@@ -223,8 +220,7 @@ class SerializationSpecs extends Specification {
     }
 
     "Handle V1 formats" in {
-      val inputs =
-        """[
+      val inputs = """[
         {
           "name" : "root-grant", "description" : "The root grant",
           "permissions" : [

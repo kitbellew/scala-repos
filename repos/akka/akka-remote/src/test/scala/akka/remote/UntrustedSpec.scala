@@ -61,8 +61,7 @@ object UntrustedSpec {
 }
 
 class UntrustedSpec
-    extends AkkaSpec(
-      """
+    extends AkkaSpec("""
 akka.actor.provider = akka.remote.RemoteActorRefProvider
 akka.remote.untrusted-mode = on
 akka.remote.trusted-selection-paths = ["/user/receptionist", ]    
@@ -75,8 +74,7 @@ akka.loglevel = DEBUG
 
   val client = ActorSystem(
     "UntrustedSpec-client",
-    ConfigFactory.parseString(
-      """
+    ConfigFactory.parseString("""
       akka.actor.provider = akka.remote.RemoteActorRefProvider
       akka.remote.netty.tcp.port = 0
   """)

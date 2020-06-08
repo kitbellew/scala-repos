@@ -618,8 +618,7 @@ class RemotingSpec
 
     "be able to serialize a local actor ref from another actor system" in {
       val config = ConfigFactory
-        .parseString(
-          """
+        .parseString("""
             # Additional internal serialization verification need so be off, otherwise it triggers two error messages
             # instead of one: one for the internal check, and one for the actual remote send -- tripping off this test
             akka.actor.serialize-messages = off

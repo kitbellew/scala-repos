@@ -3,8 +3,7 @@ import scala.tools.partest._
 object Test extends DirectTest {
   def code = ???
 
-  def macros_1 =
-    """
+  def macros_1 = """
     import scala.reflect.macros.blackbox.Context
 
     object Impls {

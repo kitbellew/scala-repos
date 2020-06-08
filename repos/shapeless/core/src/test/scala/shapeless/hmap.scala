@@ -72,12 +72,10 @@ class HMapTests {
       Set("foo") -> Option("bar"),
       Set(23) -> Option(13))
 
-    illTyped(
-      """
+    illTyped("""
       val nt2 = HMap[(Set ~?> Option)#λ](Set("foo") -> Option(13), Set(23) -> Option(13))
     """)
-    illTyped(
-      """
+    illTyped("""
       val nt3 = HMap[(Set ~?> Option)#λ](Set("foo") -> Option("bar"), "foo" -> 23)
     """)
 
@@ -125,12 +123,10 @@ class HMapTests {
   def testIdKeyNatTrans {
     val nt = HMap[(Id ~?> Option)#λ]("foo" -> Option("bar"), 23 -> Option(13))
 
-    illTyped(
-      """
+    illTyped("""
       val nt2 = HMap[(Id ~?> Option)#λ]("foo" -> Option(13), 23 -> Option(13))
     """)
-    illTyped(
-      """
+    illTyped("""
       val nt3 = HMap[(Id ~?> Option)#λ]("foo" -> Option("bar"), Set(23) -> Option(13))
     """)
 
@@ -152,12 +148,10 @@ class HMapTests {
   def testIdValueNatTrans {
     val nt = HMap[(Option ~?> Id)#λ](Option("foo") -> "bar", Option(23) -> 13)
 
-    illTyped(
-      """
+    illTyped("""
       val nt2 = HMap[(Option ~?> Id)#λ](Option("foo") -> 13, Option(23) -> 13)
     """)
-    illTyped(
-      """
+    illTyped("""
       val nt3 = HMap[(Option ~?> Id)#λ](Option("foo") -> "bar", Option(23) -> Set(13))
     """)
 

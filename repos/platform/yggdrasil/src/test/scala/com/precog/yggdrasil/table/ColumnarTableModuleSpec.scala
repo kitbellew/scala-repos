@@ -461,8 +461,7 @@ trait ColumnarTableModuleSpec[M[+_]]
 
       "delete elements according to a JType" in checkObjectDelete
       "delete only field in object without removing from array" in {
-        val JArray(elements) =
-          JParser.parseUnsafe("""[
+        val JArray(elements) = JParser.parseUnsafe("""[
           {"foo": 4, "bar": 12},
           {"foo": 5},
           {"bar": 45},
@@ -660,8 +659,7 @@ trait ColumnarTableModuleSpec[M[+_]]
     }
 
     "render to CSV in a simple case" in {
-      val events =
-        """
+      val events = """
 {"a": 1, "b": {"bc": 999, "bd": "foooooo", "be": true, "bf": null, "bg": false}, "c": [1.999], "d": "dog"}
 {"a": 2, "b": {"bc": 998, "bd": "fooooo", "be": null, "bf": false, "bg": true}, "c": [2.999], "d": "dogg"}
 {"a": 3, "b": {"bc": 997, "bd": "foooo", "be": false, "bf": true, "bg": null}, "c": [3.999], "d": "doggg"}

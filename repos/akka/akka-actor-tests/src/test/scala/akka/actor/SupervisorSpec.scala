@@ -97,8 +97,7 @@ object SupervisorSpec {
       throw failure
   }
 
-  val config =
-    ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString("""
 akka.actor.serialize-messages = off
 error-mailbox {
   mailbox-type = "akka.actor.SupervisorSpec$Mailbox"

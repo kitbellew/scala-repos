@@ -347,8 +347,7 @@ object EmitterSpecs
     }
 
     "emit match and cross after a cross in a join-object" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | five := new 5 
         |
@@ -540,8 +539,7 @@ object EmitterSpecs
     }
 
     "solve with a generic where inside a function" in {
-      val input =
-        """
+      val input = """
         | medals := //summer_games/london_medals
         | athletes := //summer_games/athletes
         | 
@@ -946,8 +944,7 @@ object EmitterSpecs
     }
 
     "emit body of a fully applied characteristic function with two variables" in {
-      testEmit(
-        """
+      testEmit("""
         | fun(a, b) := 
         |   //campaigns where (//campaigns).ageRange = a & (//campaigns).gender = b
         | fun([25,36],
@@ -1203,8 +1200,7 @@ object EmitterSpecs
     }
 
     "emit split and merge for cf example with consecutively-constrained paired tic variables on a single set" in {
-      testEmit(
-        """
+      testEmit("""
         | organizations := //organizations
         | 
         | hist := solve 'revenue, 'campaign 
@@ -1377,8 +1373,7 @@ object EmitterSpecs
     }
 
     "emit split and merge for rr cf example" in {
-      testEmit(
-        """
+      testEmit("""
         | clicks := //clicks
         | 
         | totalPairs(sessionId) :=
@@ -1389,8 +1384,7 @@ object EmitterSpecs
     }.pendingUntilFixed // TODO this *really* should be working
 
     "emit split and merge for ctr example" in {
-      testEmit(
-        """
+      testEmit("""
         | clicks := //clicks
         | imps := //impressions
         | solve 'day
@@ -1503,8 +1497,7 @@ object EmitterSpecs
     }
 
     "determine a histogram of a composite key of revenue and campaign" >> {
-      testEmit(
-        """
+      testEmit("""
         | campaigns := //campaigns
         | organizations := //organizations
         | 
@@ -1622,8 +1615,7 @@ object EmitterSpecs
 
     "emit code for examples" in {
       "deviant-durations.qrl" >> {
-        testEmit(
-          """
+        testEmit("""
           | interactions := //interactions
           | 
           | solve 'userId
@@ -1697,8 +1689,7 @@ object EmitterSpecs
       }
 
       "first-conversion.qrl" >> {
-        testEmit(
-          """
+        testEmit("""
           | solve 'userId
           |   conversions' := //conversions
           |   impressions' := //impressions
@@ -1842,8 +1833,7 @@ object EmitterSpecs
 
     // Regression test for #PLATFORM-503 (Pivotal #39652091)
     "not emit dups inside functions (might have let bindings with formals)" in {
-      val input =
-        """
+      val input = """
         |
         | f(x) :=
         |   medals := //summer_games/london_medals
@@ -1962,8 +1952,7 @@ object EmitterSpecs
 
     // Regression test for #PLATFORM-652
     "if/then/else compiles into match instead of cross" in {
-      val input =
-        """
+      val input = """
         | conversions := //conversions
         | conversions with
         |   {female: if conversions.customer.gender = "female" then 1 else 0}
@@ -2156,8 +2145,7 @@ object EmitterSpecs
     }
 
     "emit match in join of if-then-else inside user defined function" in {
-      val input =
-        """
+      val input = """
         | clicks := //clicks2
         |
         | foo(data) :=

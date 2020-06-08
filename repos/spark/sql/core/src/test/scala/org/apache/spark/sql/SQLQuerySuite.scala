@@ -767,8 +767,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("full outer join") {
     checkAnswer(
-      sql(
-        """
+      sql("""
           |SELECT * FROM
           |  (SELECT * FROM upperCaseData WHERE N <= 4) leftTable FULL OUTER JOIN
           |  (SELECT * FROM upperCaseData WHERE N >= 3) rightTable
@@ -819,8 +818,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("mixed-case keywords") {
     checkAnswer(
-      sql(
-        """
+      sql("""
           |SeleCT * from
           |  (select * from upperCaseData WherE N <= 4) leftTable fuLL OUtER joiN
           |  (sElEcT * FROM upperCaseData whERe N >= 3) rightTable
@@ -2011,8 +2009,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
 
     // Create a data set that contains nested structs.
-    val nestedStructData =
-      sql("""
+    val nestedStructData = sql("""
         | SELECT struct(r1, r2) as record FROM
         |   (SELECT struct(a, b) as r1, struct(b, a) as r2 FROM testData2) tmp
       """.stripMargin)
@@ -2057,8 +2054,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     }
 
     // Create paths with unusual characters
-    val specialCharacterPath = sql(
-      """
+    val specialCharacterPath = sql("""
         | SELECT struct(`col$.a_`, `a.b.c.`) as `r&&b.c` FROM
         |   (SELECT struct(a, b) as `col$.a_`, struct(b, a) as `a.b.c.` FROM testData2) tmp
       """.stripMargin)

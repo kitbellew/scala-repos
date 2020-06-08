@@ -140,8 +140,7 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
     "correctly read log files" in new cleanup(tmp2) {
       val h1 = RawHandler.empty(blockid, tmp2)
 
-      val js =
-        """
+      val js = """
 {"a": 123, "b": true, "c": false, "d": null, "e": "cat", "f": {"aa": 11.0, "bb": 22.0}}
 {"a": 9999.0, "b": "xyz", "arr": [1,2,3]}
 {"a": 0, "b": false, "c": 0.0, "y": [], "z": {}}

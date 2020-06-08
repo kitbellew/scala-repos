@@ -13,9 +13,7 @@ import akka.event.Logging.Warning
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
 class RemoteDeathWatchSpec
-    extends AkkaSpec(
-      ConfigFactory.parseString(
-        """
+    extends AkkaSpec(ConfigFactory.parseString("""
 akka {
     actor {
         provider = "akka.remote.RemoteActorRefProvider"

@@ -73,8 +73,7 @@ class InmemEventAdaptersSpec extends AkkaSpec {
     }
 
     "fail with useful message when binding to not defined adapter" in {
-      val badConfig =
-        ConfigFactory.parseString("""
+      val badConfig = ConfigFactory.parseString("""
           |akka.persistence.journal.inmem {
           |  event-adapter-bindings {
           |    "java.lang.Integer" = undefined-adapter

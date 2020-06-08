@@ -32,8 +32,7 @@ object ArrayObjectSuite extends PerfTestSuite {
   }
 
   "object joining" := {
-    query(
-      """
+    query("""
       medals' := //summer_games/london_medals
       medals'' := new medals'
       

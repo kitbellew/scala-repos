@@ -73,22 +73,19 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   // Testing the Broadcast based join for cartesian join (cross join)
   // We assume that the Broadcast Join Threshold will works since the src is a small table
-  private val spark_10484_1 =
-    """
+  private val spark_10484_1 = """
                                 | SELECT a.key, b.key
                                 | FROM src a LEFT JOIN src b WHERE a.key > b.key + 300
                                 | ORDER BY b.key, a.key
                                 | LIMIT 20
                               """.stripMargin
-  private val spark_10484_2 =
-    """
+  private val spark_10484_2 = """
                                 | SELECT a.key, b.key
                                 | FROM src a RIGHT JOIN src b WHERE a.key > b.key + 300
                                 | ORDER BY a.key, b.key
                                 | LIMIT 20
                               """.stripMargin
-  private val spark_10484_3 =
-    """
+  private val spark_10484_3 = """
                                 | SELECT a.key, b.key
                                 | FROM src a FULL OUTER JOIN src b WHERE a.key > b.key + 300
                                 | ORDER BY a.key, b.key
@@ -429,8 +426,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       s"CREATE TABLE test_partition (a STRING) PARTITIONED BY (b BIGINT, c STRING)")
     sql(s"CREATE TABLE ptest (a STRING, b BIGINT, c STRING)")
 
-    val analyzedPlan =
-      sql("""
+    val analyzedPlan = sql("""
         |INSERT OVERWRITE table test_partition PARTITION (b=1, c)
         |SELECT 'a', 'c' from ptest
       """.stripMargin).queryExecution.analyzed
@@ -499,8 +495,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     sql("INSERT OVERWRITE TABLE small_src SELECT key, value FROM src LIMIT 10")
 
     val expected = sql("SELECT key FROM small_src").collect().head
-    val res = sql(
-      """
+    val res = sql("""
         |SELECT TRANSFORM (key) ROW FORMAT SERDE
         |'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
         |WITH SERDEPROPERTIES ('avro.schema.literal'='{"namespace":
@@ -1156,8 +1151,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test(
     "SPARK-5592: get java.net.URISyntaxException when dynamic partitioning") {
-    sql(
-      """
+    sql("""
       |create table sc as select *
       |from (select '2011-01-11', '2011-01-11+14:18:26' from src tablesample (1 rows)
       |union all

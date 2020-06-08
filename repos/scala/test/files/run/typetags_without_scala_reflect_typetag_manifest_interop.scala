@@ -19,8 +19,7 @@ object Test extends StoreReporterDirectTest {
     compileString(newCompiler("-cp", classpath, "-d", testOutput.path))(library)
   }
 
-  def app =
-    """
+  def app = """
     trait App extends Library {
       // tries to create a manifest from a type tag without having scala-reflect.jar on the classpath
       // even though it's possible to convert a type tag into a manifest, this will fail

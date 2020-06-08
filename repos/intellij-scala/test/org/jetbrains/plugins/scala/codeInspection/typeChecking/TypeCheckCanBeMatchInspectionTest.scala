@@ -277,8 +277,7 @@ class TypeCheckCanBeMatchInspectionTest
                       |if (${START}x.isInstanceOf[Int]$END) x else if (x.isInstanceOf[Long]) x else 0"""
     check(selected)
 
-    val text =
-      """val x = 0
+    val text = """val x = 0
                  |if (x.isInstance<caret>Of[Int]) x else if (x.isInstanceOf[Long]) x else 0"""
     val result = """val x = 0
                    |x match {

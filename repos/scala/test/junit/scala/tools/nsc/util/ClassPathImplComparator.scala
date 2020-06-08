@@ -149,8 +149,7 @@ object ClassPathImplComparator {
     * Prints usage information
     */
   private def usage(): Unit =
-    println(
-      """Use classpath and sourcepath options like in the case of e.g. 'scala' command.
+    println("""Use classpath and sourcepath options like in the case of e.g. 'scala' command.
               | There are also two additional options:
               | -checkClasses <semicolon separated class names> Specify names of classes which should be found
               | -requiredIterations <int value>                 Repeat tests specified count of times (to check e.g. impact of caches)

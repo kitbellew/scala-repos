@@ -45,8 +45,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
 
   "clustering" should {
     "return correctly structured results in simple case" in {
-      val input =
-        """
+      val input = """
           medals := //summer_games/london_medals
           h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
           w := medals.Weight where std::type::isNumber(medals.Weight)
@@ -71,8 +70,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "assign values to a cluster" in {
-      val input =
-        """
+      val input = """
           medals := //summer_games/london_medals
 
           h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -83,8 +81,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
           std::stats::assignClusters(medals, clustering)
         """.stripMargin
 
-      val input2 =
-        """ 
+      val input2 = """ 
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -145,8 +142,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "join cluster information to original data" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -159,8 +155,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
         --assignments with { points: medals }
       """.stripMargin
 
-      val input2 =
-        """ 
+      val input2 = """ 
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -173,8 +168,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "join cluster information to original data when clustering is `new`ed" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -188,8 +182,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
         medals with { cluster: assignments }
       """.stripMargin
 
-      val input2 =
-        """ 
+      val input2 = """ 
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -202,8 +195,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "join cluster information to clustering when clustering is `new`ed" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -217,8 +209,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
         clustering with { cluster: assignments }
       """.stripMargin
 
-      val input2 =
-        """ 
+      val input2 = """ 
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -262,8 +253,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "make a histogram of clusters" in {
-      val input =
-        """
+      val input = """
         medals := //summer_games/london_medals
 
         h := medals.HeightIncm where std::type::isNumber(medals.HeightIncm)
@@ -298,8 +288,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "assign values to a cluster when field names of cluster aren't present in data" in {
-      val input =
-        """
+      val input = """
           medals := //summer_games/london_medals
           clustering := std::stats::kMedians({ foo: medals.HeightIncm, bar: medals.Weight }, 4)
 
@@ -410,8 +399,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "evaluate an invalid clustering query without exploding" in {
-      val input =
-        """
+      val input = """
         | locations := //devices
         | 
         | model := std::stats::kMedians({x: locations.x, y: locations.y }, 5)
@@ -422,8 +410,7 @@ trait ClusteringSpecs extends EvalStackSpecs {
     }
 
     "evaluate an valid clustering query without exploding" in {
-      val input =
-        """
+      val input = """
         | locations := //devices
         | 
         | model := std::stats::kMedians({x: locations.x, y: locations.y }, 5)

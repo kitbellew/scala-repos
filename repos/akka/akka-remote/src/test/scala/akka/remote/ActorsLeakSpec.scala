@@ -18,8 +18,7 @@ import scala.concurrent.duration._
 
 object ActorsLeakSpec {
 
-  val config = ConfigFactory.parseString(
-    """
+  val config = ConfigFactory.parseString("""
       | akka.actor.provider = "akka.remote.RemoteActorRefProvider"
       | #akka.loglevel = DEBUG
       | akka.remote.netty.tcp.applied-adapters = ["trttl"]

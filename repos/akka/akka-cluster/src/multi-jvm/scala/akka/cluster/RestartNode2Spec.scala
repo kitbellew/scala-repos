@@ -26,8 +26,7 @@ object RestartNode2SpecMultiJvmSpec extends MultiNodeConfig {
 
   commonConfig(
     debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString(
-        """
+      .withFallback(ConfigFactory.parseString("""
       akka.cluster.auto-down-unreachable-after = 2s
       akka.cluster.retry-unsuccessful-join-after = 3s
       akka.remote.retry-gate-closed-for = 45s

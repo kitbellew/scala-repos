@@ -47,8 +47,7 @@ trait Errors {
   }
 
   def CannotReifyRuntimeSplice(tree: Tree) = {
-    val msg =
-      """
+    val msg = """
       |the splice cannot be resolved statically, which means there is a cross-stage evaluation involved.
       |cross-stage evaluations need to be invoked explicitly, so we're showing you this error.
       |if you're sure this is not an oversight, add scala-compiler.jar to the classpath,

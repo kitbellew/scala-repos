@@ -88,8 +88,7 @@ object BinaryClassification {
         .required()
         .text("input paths to labeled examples in LIBSVM format")
         .action((x, c) => c.copy(input = x))
-      note(
-        """
+      note("""
           |For example, the following command runs this app on a synthetic dataset:
           |
           | bin/spark-submit --class org.apache.spark.examples.mllib.BinaryClassification \

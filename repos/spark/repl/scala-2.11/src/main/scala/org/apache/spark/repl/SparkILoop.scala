@@ -44,8 +44,7 @@ class SparkILoop(in0: Option[BufferedReader], out: JPrintWriter)
           _sc
         }
         """)
-      processLine(
-        """
+      processLine("""
         @transient val sqlContext = {
           val _sqlContext = org.apache.spark.repl.Main.createSQLContext()
           println("SQL context available as sqlContext.")

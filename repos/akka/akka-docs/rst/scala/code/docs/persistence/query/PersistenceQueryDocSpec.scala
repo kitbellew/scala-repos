@@ -194,8 +194,7 @@ class PersistenceQueryDocSpec(s: String) extends AkkaSpec(s) {
   import PersistenceQueryDocSpec._
 
   def this() {
-    this(
-      """
+    this("""
         akka.persistence.query.my-read-journal {
           class = "docs.persistence.query.PersistenceQueryDocSpec$MyReadJournalProvider"
           refresh-interval = 3s

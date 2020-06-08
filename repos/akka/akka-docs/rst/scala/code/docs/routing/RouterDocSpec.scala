@@ -26,8 +26,7 @@ import akka.routing.TailChoppingPool
 
 object RouterDocSpec {
 
-  val config =
-    """
+  val config = """
 #//#config-round-robin-pool
 akka.actor.deployment {
   /parent/router1 {

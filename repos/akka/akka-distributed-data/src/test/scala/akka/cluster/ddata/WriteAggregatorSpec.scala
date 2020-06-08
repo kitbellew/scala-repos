@@ -64,8 +64,7 @@ object WriteAggregatorSpec {
 }
 
 class WriteAggregatorSpec
-    extends AkkaSpec(
-      """
+    extends AkkaSpec("""
       akka.actor.provider = "akka.cluster.ClusterActorRefProvider"
       akka.remote.netty.tcp.port=0
       """)

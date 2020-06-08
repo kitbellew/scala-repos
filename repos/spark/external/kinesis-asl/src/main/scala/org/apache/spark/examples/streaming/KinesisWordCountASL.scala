@@ -79,8 +79,7 @@ object KinesisWordCountASL extends Logging {
   def main(args: Array[String]) {
     // Check that all required args were passed in.
     if (args.length != 3) {
-      System.err.println(
-        """
+      System.err.println("""
           |Usage: KinesisWordCountASL <app-name> <stream-name> <endpoint-url> <region-name>
           |
           |    <app-name> is the name of the consumer app, used to track the read data in DynamoDB
@@ -187,8 +186,7 @@ object KinesisWordCountASL extends Logging {
 object KinesisWordProducerASL {
   def main(args: Array[String]) {
     if (args.length != 4) {
-      System.err.println(
-        """
+      System.err.println("""
           |Usage: KinesisWordProducerASL <stream-name> <endpoint-url> <records-per-sec>
                                          <words-per-record>
           |

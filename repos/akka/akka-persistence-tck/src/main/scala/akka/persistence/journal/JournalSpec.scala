@@ -16,8 +16,7 @@ import akka.testkit._
 import com.typesafe.config._
 
 object JournalSpec {
-  val config =
-    ConfigFactory.parseString("""
+  val config = ConfigFactory.parseString("""
     akka.persistence.publish-plugin-commands = on
     """)
 }

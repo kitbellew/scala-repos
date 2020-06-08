@@ -23,8 +23,7 @@ import scala.concurrent.duration._
 class FlowMapBenchmark {
 
   val config = ConfigFactory
-    .parseString(
-      """
+    .parseString("""
       akka {
         log-config-on-start = off
         log-dead-letters-during-shutdown = off

@@ -5,8 +5,7 @@ import scala.tools.partest.ScaladocModelTest
 
 object Test extends ScaladocModelTest {
 
-  override def code =
-    """
+  override def code = """
         package scala.test.scaladoc.SI5235 {
           trait Builder[From, To]
 

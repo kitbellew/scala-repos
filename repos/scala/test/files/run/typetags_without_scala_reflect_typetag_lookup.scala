@@ -17,8 +17,7 @@ object Test extends StoreReporterDirectTest {
     compileString(newCompiler("-cp", classpath, "-d", testOutput.path))(library)
   }
 
-  def app =
-    """
+  def app = """
     object Test extends App {
       // tries to materialize a type tag not having scala-reflect.jar on the classpath
       // even though it's easy to materialize a type tag of Int, this line will fail

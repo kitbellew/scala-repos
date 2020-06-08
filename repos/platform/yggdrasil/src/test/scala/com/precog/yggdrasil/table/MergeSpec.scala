@@ -95,8 +95,7 @@ trait MergeSpec[M[+_]]
       val foo =
         fromJson(JParser.parseManyFromString(fooJson).valueOr(throw _).toStream)
 
-      val barJson =
-        """
+      val barJson = """
         | {"key":[5908438637678328576],"value":{"a":-1,"c":8,"b":-1}}
         | {"key":[5908438637678328577],"value":{"a":1,"c":9,"b":-1}}
         | {"key":[5908438637678328578],"value":{"a":-1,"c":10,"b":6}}
@@ -107,8 +106,7 @@ trait MergeSpec[M[+_]]
       val bar =
         fromJson(JParser.parseManyFromString(barJson).valueOr(throw _).toStream)
 
-      val resultJson0 =
-        """
+      val resultJson0 = """
         | {"key":[5908438637678328470,5908438637678328580],"value":{"b":4,"c":12,"a":0,"fa":{"b":4,"a":0}}}
         | {"key":[5908438637678328470,5908438637678328581],"value":{"b":4,"c":13,"a":0,"fa":{"b":4,"a":0}}}
         | {"key":[5908438637678328471,5908438637678328577],"value":{"b":5,"c":9,"a":1,"fa":{"b":5,"a":1}}}
@@ -186,21 +184,17 @@ trait MergeSpec[M[+_]]
         val K2 = RValue.fromJValue(JParser.parseUnsafe("""{"1":2,"2":6}"""))
         val K3 = RValue.fromJValue(JParser.parseUnsafe("""{"1":3,"2":7}"""))
 
-        val r0Json =
-          """
+        val r0Json = """
           | {"key":[5908438637678328470,5908438637678328580],"value":{"b":4,"c":12,"a":0,"fa":{"b":4,"a":0}}}
           | {"key":[5908438637678328470,5908438637678328581],"value":{"b":4,"c":13,"a":0,"fa":{"b":4,"a":0}}}
           | """.stripMargin
-        val r1Json =
-          """
+        val r1Json = """
           | {"key":[5908438637678328471,5908438637678328577],"value":{"b":5,"c":9,"a":1,"fa":{"b":5,"a":1}}}
           """.stripMargin
-        val r2Json =
-          """
+        val r2Json = """
           | {"key":[5908438637678328472,5908438637678328578],"value":{"b":6,"c":10,"a":2,"fa":{"b":6,"a":2}}}
           | """.stripMargin
-        val r3Json =
-          """
+        val r3Json = """
           | {"key":[5908438637678328473,5908438637678328579],"value":{"b":7,"c":11,"a":3,"fa":{"b":7,"a":3}}}
           | """.stripMargin
 
@@ -251,8 +245,7 @@ trait MergeSpec[M[+_]]
     }
 
     "execute the medals query without a cross" in {
-      val medalsJson =
-        """
+      val medalsJson = """
         | {"key":[5908438637678314371],"value":{"Edition":"2000","Gender":"Men"}}
         | {"key":[5908438637678314372],"value":{"Edition":"1996","Gender":"Men"}}
         | {"key":[5908438637678314373],"value":{"Edition":"2008","Gender":"Men"}}

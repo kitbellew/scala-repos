@@ -107,8 +107,7 @@ object SerializationTests {
     ActorSystem("SerializationSystem", mostlyReferenceConf)
   }
 
-  val systemMessageMultiSerializerConf =
-    """
+  val systemMessageMultiSerializerConf = """
     akka {
       actor {
         serializers {

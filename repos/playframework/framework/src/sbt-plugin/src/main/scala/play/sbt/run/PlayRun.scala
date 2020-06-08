@@ -322,9 +322,7 @@ object PlayRun {
           }
         }.start()
 
-        println(
-          Colors.green(
-            """|
+        println(Colors.green("""|
             |(Starting server. Type Ctrl+D to exit logs, the server will remain in background)
             | """.stripMargin))
 

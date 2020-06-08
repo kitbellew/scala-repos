@@ -12,8 +12,7 @@ import scala.concurrent.Await
 import scala.concurrent.duration.Duration
 
 object NettyTransportSpec {
-  val commonConfig = ConfigFactory.parseString(
-    """
+  val commonConfig = ConfigFactory.parseString("""
     akka.actor.provider = "akka.remote.RemoteActorRefProvider"
   """)
 

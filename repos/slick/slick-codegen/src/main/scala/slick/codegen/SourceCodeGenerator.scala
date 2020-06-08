@@ -145,8 +145,7 @@ object SourceCodeGenerator {
           Some(password),
           ignoreInvalidDefaults.toBoolean)
       case _ => {
-        println(
-          """
+        println("""
             |Usage:
             |  SourceCodeGenerator configURI [outputDir]
             |  SourceCodeGenerator profile jdbcDriver url outputDir pkg [user password]

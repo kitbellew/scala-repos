@@ -39,8 +39,7 @@ object PluginsTest extends Specification {
   - conflict: sbt.AI\$R is enabled by sbt.AI\$Q; excluded by sbt.AI\$S""")
     }
     "generates a detailed report on conflicting requirements" in {
-      deducePlugin(T && U, log) must throwAn[AutoPluginException](message =
-        """Contradiction in enabled plugins:
+      deducePlugin(T && U, log) must throwAn[AutoPluginException](message = """Contradiction in enabled plugins:
   - requested: sbt.AI\$T && sbt.AI\$U
   - enabled: sbt.AI\$U, sbt.AI\$T, sbt.AI\$A, sbt.AI\$Q, sbt.AI\$R, sbt.AI\$B
   - conflict: sbt.AI\$Q is enabled by sbt.AI\$A && sbt.AI\$B; required by sbt.AI\$T, sbt.AI\$R; excluded by sbt.AI\$U

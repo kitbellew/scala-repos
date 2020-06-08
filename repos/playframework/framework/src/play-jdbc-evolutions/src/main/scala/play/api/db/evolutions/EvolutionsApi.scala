@@ -149,9 +149,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
     try {
 
-      Collections.unfoldLeft(
-        executeQuery(
-          """
+      Collections.unfoldLeft(executeQuery("""
             select id, hash, apply_script, revert_script from ${schema}play_evolutions order by id
         """)) { rs =>
         rs.next match {

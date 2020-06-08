@@ -781,8 +781,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testEqual1 = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {
         "value":{
           "value1":-1503074360046022108,
@@ -977,8 +976,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testInnerObjectConcatEmptyObject = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"foo": {}, "bar": {"ack": 12}},
       {"foo": {}, "bar": {"ack": 12, "bak": 13}},
       {"foo": {"ook": 99}, "bar": {}},
@@ -1027,8 +1025,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testOuterObjectConcatEmptyObject = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"foo": {}, "bar": {"ack": 12}},
       {"foo": {}, "bar": {"ack": 12, "bak": 13}},
       {"foo": {"ook": 99}, "bar": {}},
@@ -1081,8 +1078,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testInnerObjectConcatUndefined = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"foo": {"baz": 4}, "bar": {"ack": 12}},
       {"foo": {"baz": 5}},
       {"bar": {"ack": 45}},
@@ -1106,8 +1102,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testOuterObjectConcatUndefined = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"foo": {"baz": 4}, "bar": {"ack": 12}},
       {"foo": {"baz": 5}},
       {"bar": {"ack": 45}},
@@ -1432,8 +1427,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testInnerArrayConcatEmptyArray = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"foo": [], "bar": [12]},
       {"foo": [], "bar": [12, 13]},
       {"foo": [99], "bar": []},
@@ -1479,8 +1473,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testOuterArrayConcatEmptyArray = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"foo": [], "bar": [12]},
       {"foo": [], "bar": [12, 13]},
       {"foo": [99], "bar": []},
@@ -1831,8 +1824,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testIsTypeUnion = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"key":[1], "value": 23},
       {"key":[1, "bax"], "value": {"foo":4, "bar":{}}},
       {"key":[null, "bax", 4], "value": {"foo":4.4, "bar":{"a": false}}},
@@ -1875,8 +1867,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testIsTypeUnfixed = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"key":[1], "value": 23},
       {"key":[1, "bax"], "value": {"foo":4, "bar":{}}},
       {"key":[null, "bax", 4], "value": {"foo":4.4, "bar":{"a": false}}},
@@ -1919,8 +1910,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testIsTypeObject = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"key":[1], "value": 23},
       {"key":[1, "bax"], "value": 24},
       {"key":[2], "value": "foo"},
@@ -2053,8 +2043,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testIsTypeTrivial = {
-    val JArray(elements) = JParser.parseUnsafe(
-      """[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"key":[2,1,1],"value":[]},
       {"key":[2,2,2],"value":{"dx":[8.342062585288287E+307]}}]
     """)
@@ -2183,8 +2172,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testTypedAtSliceBoundary = {
-    val JArray(data) = JParser.parseUnsafe(
-      """[
+    val JArray(data) = JParser.parseUnsafe("""[
         { "value":{ "n":{ } }, "key":[1,1,1] },
         { "value":{ "lvf":2123699568254154891, "vbeu":false, "dAc":4611686018427387903 }, "key":[1,1,3] },
         { "value":{ "lvf":1, "vbeu":true, "dAc":0 }, "key":[2,1,1] },
@@ -2227,8 +2215,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testTypedObject = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe("""[
       {"key":[1, 3], "value": {"foo": 23}},
       {"key":[2, 4], "value": {}}
     ]""")
@@ -2245,8 +2232,7 @@ trait TransformSpec[M[+_]]
             "key" -> JArrayUnfixedT)))
     })
 
-    val JArray(expected) =
-      JParser.parseUnsafe("""[
+    val JArray(expected) = JParser.parseUnsafe("""[
       {"key":[1, 3], "value": {"foo": 23}},
       {"key":[2, 4]}
     ]""")
@@ -2317,8 +2303,7 @@ trait TransformSpec[M[+_]]
             "key" -> JArrayUnfixedT)))
     })
 
-    val JArray(expected) =
-      JParser.parseUnsafe("""[
+    val JArray(expected) = JParser.parseUnsafe("""[
       {"key": [1, 2], "value": [2, true] },
       {"key": [3, 4] }
     ]""")

@@ -14,8 +14,7 @@ import akka.util.ByteString
 import com.typesafe.config.{Config, ConfigFactory}
 
 object TcpLeakApp extends App {
-  val testConf: Config =
-    ConfigFactory.parseString("""
+  val testConf: Config = ConfigFactory.parseString("""
     akka.loglevel = DEBUG
     akka.log-dead-letters = on
     akka.io.tcp.trace-logging = on""")

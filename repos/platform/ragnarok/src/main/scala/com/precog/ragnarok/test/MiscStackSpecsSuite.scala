@@ -52,8 +52,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "join arrays with a nested operate, after a relate" := {
-      query(
-        """
+      query("""
         medals' := //summer_games/london_medals
         medals'' := new medals'
   
@@ -129,8 +128,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "filter set based on DateTime comparison using minTimeOf" := {
-      query(
-        """
+      query("""
         | clicks := //clicks
         | clicks' := clicks with { ISODateTime: std::time::parseDateTimeFuzzy(clicks.timeString) } 
         | 
@@ -141,8 +139,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "filter set based on DateTime comparison using reduction" := {
-      query(
-        """
+      query("""
         | clicks := //clicks
         | clicks' := clicks with { ISODateTime: std::time::parseDateTimeFuzzy(clicks.timeString) } 
         | 
@@ -174,16 +171,14 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "reduce sets" := {
-      query(
-        """
+      query("""
         | medals := //summer_games/london_medals
         |   sum(medals.HeightIncm) + mean(medals.Weight) - count(medals.Age) + stdDev(medals.S)
       """.stripMargin)
     }
 
     "recognize the datetime parse function" := {
-      query(
-        """
+      query("""
         | std::time::parseDateTime("2011-02-21 01:09:59", "yyyy-MM-dd HH:mm:ss")
       """.stripMargin)
     }
@@ -215,8 +210,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "accept division inside an object" := {
-      query(
-        """
+      query("""
         | data := //conversions
         | 
         | x := solve 'productID
@@ -233,8 +227,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "call the same function multiple times with different input" := {
-      query(
-        """
+      query("""
         | medals := //summer_games/london_medals
         | 
         | stats(variable) := {max: max(variable), min: min(variable), sum: sum(variable)}
@@ -261,8 +254,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "solve on a union with a `with` clause" := {
-      query(
-        """
+      query("""
         | medals := //summer_games/london_medals
         | athletes := //summer_games/athletes
         | 
@@ -274,8 +266,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "solve with a generic where inside a function" := {
-      query(
-        """
+      query("""
         | medals := //summer_games/london_medals
         | athletes := //summer_games/athletes
         | 
@@ -297,8 +288,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "solve involving extras with a stdlib op1 function" := {
-      query(
-        """
+      query("""
         | import std::time::*
         | 
         | agents := //clicks
@@ -312,8 +302,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "perform a simple join by value sorting" := {
-      query(
-        """
+      query("""
         | clicks := //clicks
         | views := //views
         |
@@ -323,8 +312,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "union sets coming out of a solve" := {
-      query(
-        """
+      query("""
         clicks := //clicks
         foobar := solve 'a {userId: 'a, size: count(clicks where clicks.userId = 'a)}
         foobaz := solve 'b {pageId: 'b, size: count(clicks where clicks.pageId = 'b)}
@@ -360,8 +348,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
 
     // Regression test for #39652091
     "call union on two dispatches of the same function" := {
-      query(
-        """
+      query("""
         | medals := //summer_games/london_medals
         |
         | f(x) :=
@@ -376,8 +363,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "return result for nested filters" := {
-      query(
-        """
+      query("""
         | medals := //summer_games/london_medals
         |
         | medals' := medals where medals.Country = "India"
@@ -667,8 +653,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "determine a histogram of genders on campaigns" := {
-      query(
-        """
+      query("""
         | campaigns := //campaigns
         | solve 'gender 
         |   { gender: 'gender, num: count(campaigns.gender where campaigns.gender = 'gender) }""".stripMargin)
@@ -690,8 +675,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "evaluate nathan's query, once and for all" := {
-      query(
-        """
+      query("""
         | import std::time::*
         | 
         | lastHour := //election/tweets 
@@ -774,8 +758,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
       }
 
       "Timelib" := {
-        query(
-          """
+        query("""
           | time := (//clicks).timeString
           | std::time::yearsBetween(time, "2012-02-09T19:31:13.616+10:00")""".stripMargin)
       }
@@ -848,8 +831,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "evaluate a function of two parameters" := {
-      query(
-        """
+      query("""
         | fun(a, b) := 
         |   //campaigns where (//campaigns).ageRange = a & (//campaigns).gender = b
         | fun([25,36], "female")""".stripMargin)
@@ -867,8 +849,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "determine a histogram of a composite key of revenue and campaign" := {
-      query(
-        """
+      query("""
         | campaigns := //campaigns
         | organizations := //organizations
         | 
@@ -878,8 +859,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "evaluate a function of multiple counts" := {
-      query(
-        """
+      query("""
         | import std::math::floor
         | clicks := //clicks
         | 
@@ -922,8 +902,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "determine most isolated clicks in time" := {
-      query(
-        """
+      query("""
         | clicks := //clicks
         | 
         | spacings := solve 'time
@@ -945,8 +924,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
 
     // Regression test for #39590007
     "give empty results when relation body uses non-existant field" := {
-      query(
-        """
+      query("""
         | clicks := //clicks
         | newClicks := new clicks
         |
@@ -955,8 +933,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "not explode on a large query" := {
-      query(
-        """
+      query("""
         | import std::stats::*
         | import std::time::*
         | 
@@ -1008,8 +985,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "solve a chaining of user-defined functions involving repeated where clauses" := {
-      query(
-        """
+      query("""
         | import std::time::*
         | import std::stats::*
         | 
@@ -1047,8 +1023,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "handle a non-trivial solve on an object concat" := {
-      query(
-        """
+      query("""
         | agents := //se/widget
         | 
         | solve 'rank
@@ -1126,8 +1101,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "produce a non-empty set for a dereferenced join-optimized cartesian" := {
-      query(
-        """
+      query("""
         | clicks := //clicks
         | clicks' := new clicks
         |
@@ -1137,8 +1111,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "produce a non-empty set for a ternary join-optimized cartesian" := {
-      query(
-        """
+      query("""
         | clicks := //clicks
         | clicks' := new clicks
         |
@@ -1148,8 +1121,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "not produce out-of-order identities for simple cartesian and join with a reduction" := {
-      query(
-        """
+      query("""
         athletes := load("/summer_games/athletes")
         medals := load("/summer_games/london_medals")
 
@@ -1177,8 +1149,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
 
     // Regression test for PLATFORM-951
     "evaluate SnapEngage query with code caught by predicate pullups" := {
-      query(
-        """
+      query("""
         | import std::stats::*
         | import std::time::*
         | data := //se/anon_status
@@ -1214,8 +1185,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "correctly filter the results of a non-trivial solve" := {
-      query(
-        """
+      query("""
         | import std::time::*
         | import std::stats::*
         | import std::string::*
@@ -1269,8 +1239,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "successfully complete a query with a lot of unions" := {
-      query(
-        """
+      query("""
         | import std::time::*
         | import std::stats::*
         | import std::string::*
@@ -1333,8 +1302,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
 
     // regression test for PLATFORM-986
     "not explode on mysterious error" := {
-      query(
-        """
+      query("""
         | import std::random::*
         | 
         | buckets := //benchmark/buckets/1361210162753
@@ -1428,8 +1396,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     //}
 
     "produce something other than the empty set for join of conditional results" := {
-      query(
-        """
+      query("""
         | clicks := //clicks
         | 
         | predicted := clicks with { female : 0 }
@@ -1440,8 +1407,7 @@ object MiscStackSpecsSuite extends PerfTestSuite {
     }
 
     "produce non-empty results when defining a solve with a conditional in a constraint" := {
-      query(
-        """
+      query("""
         | data := //clicks
         | 
         | import std::string::*

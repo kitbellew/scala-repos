@@ -146,8 +146,7 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
         |)
       """.stripMargin)
 
-    sql(
-      """
+    sql("""
         |CREATE TEMPORARY TABLE tableWithSchema (
         |`string$%Field` stRIng,
         |binaryField binary,
@@ -372,8 +371,7 @@ class TableScanSuite extends DataSourceTest with SharedSQLContext {
   }
 
   test("SPARK-5196 schema field with comment") {
-    sql(
-      """
+    sql("""
        |CREATE TEMPORARY TABLE student(name string comment "SN", age int comment "SA", grade int)
        |USING org.apache.spark.sql.sources.AllDataTypesScanSource
        |OPTIONS (

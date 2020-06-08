@@ -28,8 +28,7 @@ class InheritancePrivateTest extends FunSuite {
     f.setSalary(30000)
 
     val pickleF = (f: Firefighter).pickle
-    assert(
-      pickleF.value === """
+    assert(pickleF.value === """
       |{
       |  "$type": "scala.pickling.inheritance.private.Firefighter",
       |  "name": "Jeff",
@@ -48,8 +47,7 @@ class InheritancePrivateTest extends FunSuite {
     f.setSalary(30000)
 
     val pickleE = (f: Employee).pickle
-    assert(
-      pickleE.value === """
+    assert(pickleE.value === """
       |{
       |  "$type": "scala.pickling.inheritance.private.Firefighter",
       |  "name": "Jeff",
@@ -68,8 +66,7 @@ class InheritancePrivateTest extends FunSuite {
     f.setSalary(30000)
 
     val pickleP = (f: Person).pickle
-    assert(
-      pickleP.value === """
+    assert(pickleP.value === """
       |{
       |  "$type": "scala.pickling.inheritance.private.Firefighter",
       |  "name": "Jeff",

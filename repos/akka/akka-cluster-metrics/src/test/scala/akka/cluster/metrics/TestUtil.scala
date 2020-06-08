@@ -153,8 +153,7 @@ object MetricsConfig {
   val defaultDecayFactor = 2.0 / (1 + 10)
 
   /** Test w/o cluster, with collection enabled. */
-  val defaultEnabled =
-    """
+  val defaultEnabled = """
     akka.cluster.metrics {
       collector {
         enabled = on
@@ -166,8 +165,7 @@ object MetricsConfig {
   """
 
   /** Test w/o cluster, with collection disabled. */
-  val defaultDisabled =
-    """
+  val defaultDisabled = """
     akka.cluster.metrics {
       collector {
         enabled = off
@@ -177,8 +175,7 @@ object MetricsConfig {
   """
 
   /** Test in cluster, with manual collection activation, collector mock, fast. */
-  val clusterSigarMock =
-    """
+  val clusterSigarMock = """
     akka.cluster.metrics {
       periodic-tasks-initial-delay = 100ms
       collector {
