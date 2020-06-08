@@ -4229,8 +4229,9 @@ trait Typers
                   debuglog(
                     "infer method inst " + fun + ", tparams = " + tparams + ", args = " + args1
                       .map(_.tpe) + ", pt = " + pt + ", lobounds = " + tparams
-                      .map(_.tpe.bounds.lo) + ", parambounds = " + tparams
-                      .map(_.info)
+                      .map(_.tpe.bounds.lo) + ", parambounds = " + tparams.map(
+                      _.info
+                    )
                   ) //debug
                   // define the undetparams which have been fixed by this param list, replace the corresponding symbols in "fun"
                   // returns those undetparams which have not been instantiated.
