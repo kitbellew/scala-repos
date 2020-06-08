@@ -345,8 +345,10 @@ abstract protected[kestrel] class CommandExecutorFactory[U] extends Closable {
   * @tparam ItemId the type used by {{CommandExecutor}} to identify returned
   *                items
   */
-abstract protected[kestrel] class ClientBase[CommandExecutor <: Closable, Reply,
-ItemId](underlying: CommandExecutorFactory[CommandExecutor])
+abstract protected[kestrel] class ClientBase[
+    CommandExecutor <: Closable,
+    Reply,
+    ItemId](underlying: CommandExecutorFactory[CommandExecutor])
     extends Client {
 
   /**

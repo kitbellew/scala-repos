@@ -5,7 +5,9 @@ package immutable
 import generic._
 
 trait StreamViewLike[
-    +A, +Coll, +This <: StreamView[A, Coll] with StreamViewLike[A, Coll, This]]
+    +A,
+    +Coll,
+    +This <: StreamView[A, Coll] with StreamViewLike[A, Coll, This]]
     extends SeqView[A, Coll]
     with SeqViewLike[A, Coll, This] { self =>
 

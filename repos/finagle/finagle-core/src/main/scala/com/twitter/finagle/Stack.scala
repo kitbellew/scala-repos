@@ -533,7 +533,12 @@ object Stack {
 
   /** A module of 5 parameters. */
   abstract class Module5[
-      P1: Param, P2: Param, P3: Param, P4: Param, P5: Param, T]
+      P1: Param,
+      P2: Param,
+      P3: Param,
+      P4: Param,
+      P5: Param,
+      T]
       extends Stackable[T] {
     final val parameters: Seq[Stack.Param[_]] = Seq(
       implicitly[Param[P1]],
@@ -560,7 +565,13 @@ object Stack {
 
   /** A module of 6 parameters. */
   abstract class Module6[
-      P1: Param, P2: Param, P3: Param, P4: Param, P5: Param, P6: Param, T]
+      P1: Param,
+      P2: Param,
+      P3: Param,
+      P4: Param,
+      P5: Param,
+      P6: Param,
+      T]
       extends Stackable[T] {
     final val parameters: Seq[Stack.Param[_]] = Seq(
       implicitly[Param[P1]],

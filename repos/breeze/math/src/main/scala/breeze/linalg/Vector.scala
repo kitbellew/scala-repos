@@ -187,7 +187,8 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
 
   // There's a bizarre error specializing float's here.
   class CanZipMapValuesVector[
-      @spec(Int, Double) V, @spec(Int, Double) RV: ClassTag]
+      @spec(Int, Double) V,
+      @spec(Int, Double) RV: ClassTag]
       extends CanZipMapValues[Vector[V], V, RV, Vector[RV]] {
     def create(length: Int) = DenseVector(new Array[RV](length))
 
@@ -244,7 +245,8 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
   implicit val zipMap_i = new CanZipMapValuesVector[Int, Int]
 
   class CanZipMapKeyValuesVector[
-      @spec(Double, Int, Float, Long) V, @spec(Int, Double) RV: ClassTag]
+      @spec(Double, Int, Float, Long) V,
+      @spec(Int, Double) RV: ClassTag]
       extends CanZipMapKeyValues[Vector[V], Int, V, RV, Vector[RV]] {
     def create(length: Int) = DenseVector(new Array[RV](length))
 

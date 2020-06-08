@@ -56,7 +56,8 @@ import org.apache.spark.streaming.dstream.DStream
 @Since("1.1.0")
 @DeveloperApi
 abstract class StreamingLinearAlgorithm[
-    M <: GeneralizedLinearModel, A <: GeneralizedLinearAlgorithm[M]]
+    M <: GeneralizedLinearModel,
+    A <: GeneralizedLinearAlgorithm[M]]
     extends Logging {
 
   /** The model to be updated and used for prediction. */

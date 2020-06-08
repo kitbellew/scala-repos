@@ -211,8 +211,11 @@ private final class ArrayEq[@sp(Int, Float, Long, Double) A: Eq]
 }
 
 @SerialVersionUID(0L)
-private final class ArrayInnerProductSpace[
-    @sp(Int, Float, Long, Double) A: ClassTag: Field]
+private final class ArrayInnerProductSpace[@sp(
+  Int,
+  Float,
+  Long,
+  Double) A: ClassTag: Field]
     extends InnerProductSpace[Array[A], A]
     with Serializable {
   def scalar: Field[A] = Field[A]

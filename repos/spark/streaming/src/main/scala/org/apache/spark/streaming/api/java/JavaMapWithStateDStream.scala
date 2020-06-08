@@ -34,7 +34,10 @@ import org.apache.spark.streaming.dstream.MapWithStateDStream
   */
 @Experimental
 class JavaMapWithStateDStream[
-    KeyType, ValueType, StateType, MappedType] private[streaming] (
+    KeyType,
+    ValueType,
+    StateType,
+    MappedType] private[streaming] (
     dstream: MapWithStateDStream[KeyType, ValueType, StateType, MappedType])
     extends JavaDStream[MappedType](dstream)(JavaSparkContext.fakeClassTag) {
 

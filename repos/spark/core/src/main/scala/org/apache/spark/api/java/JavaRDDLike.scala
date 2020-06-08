@@ -47,7 +47,8 @@ import org.apache.spark.util.Utils
   * from the trait. See SPARK-3266 for additional details.
   */
 private[spark] abstract class AbstractJavaRDDLike[
-    T, This <: JavaRDDLike[T, This]]
+    T,
+    This <: JavaRDDLike[T, This]]
     extends JavaRDDLike[T, This]
 
 /**

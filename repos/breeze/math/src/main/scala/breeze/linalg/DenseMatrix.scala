@@ -1262,7 +1262,8 @@ object DenseMatrix
 
   // There's a bizarre error specializing float's here.
   class CanZipMapValuesDenseMatrix[
-      @spec(Double, Int, Float, Long) V, @specialized(Int, Double) RV: ClassTag]
+      @spec(Double, Int, Float, Long) V,
+      @specialized(Int, Double) RV: ClassTag]
       extends CanZipMapValues[DenseMatrix[V], V, RV, DenseMatrix[RV]] {
 
     def create(rows: Int, cols: Int) =
@@ -1296,7 +1297,8 @@ object DenseMatrix
     new CanZipMapValuesDenseMatrix[Int, Int]
 
   class CanZipMapKeyValuesDenseMatrix[
-      @spec(Double, Int, Float, Long) V, @specialized(Int, Double) RV: ClassTag]
+      @spec(Double, Int, Float, Long) V,
+      @specialized(Int, Double) RV: ClassTag]
       extends CanZipMapKeyValues[
         DenseMatrix[V],
         (Int, Int),

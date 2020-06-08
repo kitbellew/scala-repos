@@ -99,7 +99,9 @@ trait QuasiTensor[@spec(Int) K, @spec(Double, Int, Float, Long) V] {
 }
 
 trait TensorLike[
-    @spec(Int) K, @spec(Double, Int, Float, Long) V, +This <: Tensor[K, V]]
+    @spec(Int) K,
+    @spec(Double, Int, Float, Long) V,
+    +This <: Tensor[K, V]]
     extends QuasiTensor[K, V]
     with NumericOps[This] {
 

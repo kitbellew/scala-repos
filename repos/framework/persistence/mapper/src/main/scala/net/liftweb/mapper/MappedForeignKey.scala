@@ -72,7 +72,9 @@ object MappedForeignKey {
   * The Trait that defines a field that is mapped to a foreign key
   */
 trait MappedForeignKey[
-    KeyType, MyOwner <: Mapper[MyOwner], Other <: KeyedMapper[KeyType, Other]]
+    KeyType,
+    MyOwner <: Mapper[MyOwner],
+    Other <: KeyedMapper[KeyType, Other]]
     extends MappedField[KeyType, MyOwner]
     with LifecycleCallbacks {
   type FieldType <: KeyType

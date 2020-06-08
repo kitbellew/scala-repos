@@ -1,7 +1,9 @@
 import scala.collection._
 
 trait SeqViewLike[
-    +A, +Coll, +This <: SeqView[A, Coll] with SeqViewLike[A, Coll, Nothing]]
+    +A,
+    +Coll,
+    +This <: SeqView[A, Coll] with SeqViewLike[A, Coll, Nothing]]
     extends Seq[A]
     with GenSeqViewLike[A, Coll, Nothing] {
 

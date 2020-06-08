@@ -214,7 +214,19 @@ trait Function11[-T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, -T11, +R]
 
 @native
 trait Function12[
-    -T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, -T11, -T12, +R]
+    -T1,
+    -T2,
+    -T3,
+    -T4,
+    -T5,
+    -T6,
+    -T7,
+    -T8,
+    -T9,
+    -T10,
+    -T11,
+    -T12,
+    +R]
     extends Function {
   def apply(
       arg1: T1,
@@ -233,7 +245,20 @@ trait Function12[
 
 @native
 trait Function13[
-    -T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, -T11, -T12, -T13, +R]
+    -T1,
+    -T2,
+    -T3,
+    -T4,
+    -T5,
+    -T6,
+    -T7,
+    -T8,
+    -T9,
+    -T10,
+    -T11,
+    -T12,
+    -T13,
+    +R]
     extends Function {
   def apply(
       arg1: T1,

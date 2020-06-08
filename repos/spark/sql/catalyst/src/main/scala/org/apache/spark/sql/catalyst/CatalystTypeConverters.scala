@@ -83,7 +83,9 @@ object CatalystTypeConverters {
     * @tparam CatalystType The internal Catalyst type used to represent values of this Scala type.
     */
   private abstract class CatalystTypeConverter[
-      ScalaInputType, ScalaOutputType, CatalystType]
+      ScalaInputType,
+      ScalaOutputType,
+      CatalystType]
       extends Serializable {
 
     /**

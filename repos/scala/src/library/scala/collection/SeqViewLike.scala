@@ -28,7 +28,9 @@ import Seq.fill
   *  @tparam This the type of the view itself
   */
 trait SeqViewLike[
-    +A, +Coll, +This <: SeqView[A, Coll] with SeqViewLike[A, Coll, This]]
+    +A,
+    +Coll,
+    +This <: SeqView[A, Coll] with SeqViewLike[A, Coll, This]]
     extends Seq[A]
     with SeqLike[A, This]
     with IterableView[A, Coll]

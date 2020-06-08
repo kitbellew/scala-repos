@@ -52,7 +52,8 @@ trait DeltaTrait {
 }
 
 trait CometState[
-    DeltaType <: DeltaTrait, MyType <: CometState[DeltaType, MyType]] {
+    DeltaType <: DeltaTrait,
+    MyType <: CometState[DeltaType, MyType]] {
   self: MyType =>
 
   def -(other: MyType): Seq[DeltaType]

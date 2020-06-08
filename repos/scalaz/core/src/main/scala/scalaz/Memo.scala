@@ -6,7 +6,8 @@ import reflect.ClassTag
   * instances employing various strategies.
   */
 sealed abstract class Memo[
-    @specialized(Int) K, @specialized(Int, Long, Double) V] {
+    @specialized(Int) K,
+    @specialized(Int, Long, Double) V] {
   def apply(z: K => V): K => V
 }
 

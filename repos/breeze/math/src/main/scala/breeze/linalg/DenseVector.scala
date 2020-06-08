@@ -611,7 +611,8 @@ object DenseVector
   }
 
   class CanZipMapValuesDenseVector[
-      @spec(Double, Int, Float, Long) V, @spec(Int, Double) RV: ClassTag]
+      @spec(Double, Int, Float, Long) V,
+      @spec(Int, Double) RV: ClassTag]
       extends CanZipMapValues[DenseVector[V], V, RV, DenseVector[RV]] {
     def create(length: Int) = DenseVector(new Array[RV](length))
 
@@ -641,7 +642,8 @@ object DenseVector
     new CanZipMapValuesDenseVector[Int, Int]
 
   class CanZipMapKeyValuesDenseVector[
-      @spec(Double, Int, Float, Long) V, @spec(Int, Double) RV: ClassTag]
+      @spec(Double, Int, Float, Long) V,
+      @spec(Int, Double) RV: ClassTag]
       extends CanZipMapKeyValues[DenseVector[V], Int, V, RV, DenseVector[RV]] {
     def create(length: Int) = DenseVector(new Array[RV](length))
 

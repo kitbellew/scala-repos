@@ -30,8 +30,14 @@ object Lattice {
     new GcdLcmLattice[A]
 }
 
-class MinMaxLattice[
-    @sp(Boolean, Byte, Short, Int, Long, Float, Double) A: Order]
+class MinMaxLattice[@sp(
+  Boolean,
+  Byte,
+  Short,
+  Int,
+  Long,
+  Float,
+  Double) A: Order]
     extends Lattice[A] {
   def meet(lhs: A, rhs: A): A = lhs min rhs
   def join(lhs: A, rhs: A): A = lhs max rhs
@@ -43,16 +49,28 @@ class GcdLcmLattice[@sp(Byte, Short, Int, Long) A: EuclideanRing]
   def join(lhs: A, rhs: A): A = lhs lcm rhs
 }
 
-trait BoundedJoinSemilattice[
-    @sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
+trait BoundedJoinSemilattice[@sp(
+  Boolean,
+  Byte,
+  Short,
+  Int,
+  Long,
+  Float,
+  Double) A]
     extends Any
     with JoinSemilattice[A] {
   def zero: A
   def isZero(a: A)(implicit ev: Eq[A]): Boolean = ev.eqv(a, zero)
 }
 
-trait BoundedMeetSemilattice[
-    @sp(Boolean, Byte, Short, Int, Long, Float, Double) A]
+trait BoundedMeetSemilattice[@sp(
+  Boolean,
+  Byte,
+  Short,
+  Int,
+  Long,
+  Float,
+  Double) A]
     extends Any
     with MeetSemilattice[A] {
   def one: A

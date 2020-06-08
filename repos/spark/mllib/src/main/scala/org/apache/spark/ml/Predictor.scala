@@ -146,7 +146,8 @@ abstract class Predictor[
   */
 @DeveloperApi
 abstract class PredictionModel[
-    FeaturesType, M <: PredictionModel[FeaturesType, M]]
+    FeaturesType,
+    M <: PredictionModel[FeaturesType, M]]
     extends Model[M]
     with PredictorParams {
 

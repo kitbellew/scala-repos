@@ -221,8 +221,11 @@ package parallel {
     *  They can be overridden in subclasses to provide custom behaviour by modifying
     *  the receiver (which will be the return value).
     */
-  private[parallel] abstract class BucketCombiner[-Elem, +To, Buck,
-  +CombinerType <: BucketCombiner[Elem, To, Buck, CombinerType]](
+  private[parallel] abstract class BucketCombiner[
+      -Elem,
+      +To,
+      Buck,
+      +CombinerType <: BucketCombiner[Elem, To, Buck, CombinerType]](
       private val bucketnumber: Int)
       extends Combiner[Elem, To] {
     //self: EnvironmentPassingCombiner[Elem, To] =>

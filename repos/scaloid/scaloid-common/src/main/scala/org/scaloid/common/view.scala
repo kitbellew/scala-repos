@@ -2581,7 +2581,8 @@ trait ViewGroupLayoutParams[+This <: ViewGroupLayoutParams[_, _], V <: View]
 }
 
 trait ViewGroupMarginLayoutParams[
-    +This <: ViewGroupMarginLayoutParams[_, _], V <: View]
+    +This <: ViewGroupMarginLayoutParams[_, _],
+    V <: View]
     extends ViewGroup.MarginLayoutParams
     with ViewGroupLayoutParams[This, V] {
 

@@ -84,7 +84,27 @@ trait LzoTypedTsv20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
     with Mappable20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
 
 trait LzoTypedTsv21[
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U]
     extends LzoTypedTsv[
       Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]]
     with Mappable21[
@@ -111,7 +131,28 @@ trait LzoTypedTsv21[
       U]
 
 trait LzoTypedTsv22[
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+    H,
+    I,
+    J,
+    K,
+    L,
+    M,
+    N,
+    O,
+    P,
+    Q,
+    R,
+    S,
+    T,
+    U,
+    V]
     extends LzoTypedTsv[
       Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]]
     with Mappable22[

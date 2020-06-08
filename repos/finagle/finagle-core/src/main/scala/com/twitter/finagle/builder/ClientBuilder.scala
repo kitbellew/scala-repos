@@ -165,7 +165,9 @@ object ClientConfig {
 @implicitNotFound(
   "Builder is not fully configured: Cluster: ${HasCluster}, Codec: ${HasCodec}, HostConnectionLimit: ${HasHostConnectionLimit}")
 private[builder] trait ClientConfigEvidence[
-    HasCluster, HasCodec, HasHostConnectionLimit]
+    HasCluster,
+    HasCodec,
+    HasHostConnectionLimit]
 
 private[builder] object ClientConfigEvidence {
   implicit object FullyConfigured
@@ -183,7 +185,11 @@ private[builder] object ClientConfigEvidence {
   * are accessed by the end-user.
   */
 private[builder] final class ClientConfig[
-    Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit]
+    Req,
+    Rep,
+    HasCluster,
+    HasCodec,
+    HasHostConnectionLimit]
 
 /**
   * A builder of Finagle [[com.twitter.finagle.Client Clients]].
@@ -271,7 +277,11 @@ private[builder] final class ClientConfig[
   *      for information on the preferred `with`-style APIs insead.
   */
 class ClientBuilder[
-    Req, Rep, HasCluster, HasCodec, HasHostConnectionLimit] private[finagle] (
+    Req,
+    Rep,
+    HasCluster,
+    HasCodec,
+    HasHostConnectionLimit] private[finagle] (
     client: StackBasedClient[Req, Rep]
 ) {
   import ClientConfig._

@@ -135,7 +135,11 @@ private[builder] object ServerConfigEvidence {
   * A configuration object that represents what shall be built.
   */
 private[builder] final class ServerConfig[
-    Req, Rep, HasCodec, HasBindTo, HasName]
+    Req,
+    Rep,
+    HasCodec,
+    HasBindTo,
+    HasName]
 
 /**
   * A handy Builder for constructing Servers (i.e., binding Services to

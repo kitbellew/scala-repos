@@ -42,7 +42,9 @@ import scala.collection.parallel.ParallelCollectionImplicits._
   *  @since 2.9
   */
 trait ParSeqLike[
-    +T, +Repr <: ParSeq[T], +Sequential <: Seq[T] with SeqLike[T, Sequential]]
+    +T,
+    +Repr <: ParSeq[T],
+    +Sequential <: Seq[T] with SeqLike[T, Sequential]]
     extends scala.collection.GenSeqLike[T, Repr]
     with ParIterableLike[T, Repr, Sequential] {
   self =>

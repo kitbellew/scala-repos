@@ -294,7 +294,9 @@ private[collection] trait Wrappers {
   }
 
   trait JMapWrapperLike[
-      A, B, +Repr <: mutable.MapLike[A, B, Repr] with mutable.Map[A, B]]
+      A,
+      B,
+      +Repr <: mutable.MapLike[A, B, Repr] with mutable.Map[A, B]]
       extends mutable.Map[A, B]
       with mutable.MapLike[A, B, Repr] {
     def underlying: ju.Map[A, B]

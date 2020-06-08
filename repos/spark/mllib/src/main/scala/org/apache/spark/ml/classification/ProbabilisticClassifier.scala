@@ -79,7 +79,8 @@ abstract class ProbabilisticClassifier[
   */
 @DeveloperApi
 abstract class ProbabilisticClassificationModel[
-    FeaturesType, M <: ProbabilisticClassificationModel[FeaturesType, M]]
+    FeaturesType,
+    M <: ProbabilisticClassificationModel[FeaturesType, M]]
     extends ClassificationModel[FeaturesType, M]
     with ProbabilisticClassifierParams {
 

@@ -2049,7 +2049,19 @@ trait ThisFunction10[-T0, -T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, +R]
 
 @native
 trait ThisFunction11[
-    -T0, -T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, -T11, +R]
+    -T0,
+    -T1,
+    -T2,
+    -T3,
+    -T4,
+    -T5,
+    -T6,
+    -T7,
+    -T8,
+    -T9,
+    -T10,
+    -T11,
+    +R]
     extends ThisFunction {
   def apply(
       thisArg: T0,
@@ -2068,7 +2080,20 @@ trait ThisFunction11[
 
 @native
 trait ThisFunction12[
-    -T0, -T1, -T2, -T3, -T4, -T5, -T6, -T7, -T8, -T9, -T10, -T11, -T12, +R]
+    -T0,
+    -T1,
+    -T2,
+    -T3,
+    -T4,
+    -T5,
+    -T6,
+    -T7,
+    -T8,
+    -T9,
+    -T10,
+    -T11,
+    -T12,
+    +R]
     extends ThisFunction {
   def apply(
       thisArg: T0,

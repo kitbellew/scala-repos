@@ -79,7 +79,8 @@ abstract class Classifier[
   */
 @DeveloperApi
 abstract class ClassificationModel[
-    FeaturesType, M <: ClassificationModel[FeaturesType, M]]
+    FeaturesType,
+    M <: ClassificationModel[FeaturesType, M]]
     extends PredictionModel[FeaturesType, M]
     with ClassifierParams {
 

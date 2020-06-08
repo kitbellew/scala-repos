@@ -23,8 +23,15 @@ import scala.util.hashing.MurmurHash3
   * The specialization *should* mean that there is no boxing and if the JIT
   * does its work, Hasher should compose well (via collections, Tuple2, Option, Either)
   */
-trait Hasher[
-    @specialized(Boolean, Byte, Char, Short, Int, Long, Float, Double) -T] {
+trait Hasher[@specialized(
+  Boolean,
+  Byte,
+  Char,
+  Short,
+  Int,
+  Long,
+  Float,
+  Double) -T] {
   @inline
   def hash(i: T): Int
 }

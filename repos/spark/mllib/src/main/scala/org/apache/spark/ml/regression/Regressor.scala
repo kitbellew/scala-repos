@@ -50,7 +50,8 @@ private[spark] abstract class Regressor[
   */
 @DeveloperApi
 abstract class RegressionModel[
-    FeaturesType, M <: RegressionModel[FeaturesType, M]]
+    FeaturesType,
+    M <: RegressionModel[FeaturesType, M]]
     extends PredictionModel[FeaturesType, M]
     with PredictorParams {
 

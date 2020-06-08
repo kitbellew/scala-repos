@@ -32,7 +32,10 @@ import scala.collection.Set
   */
 @SerialVersionUID(1)
 trait CounterLike[
-    K, V, +M <: scala.collection.mutable.Map[K, V], +This <: Counter[K, V]]
+    K,
+    V,
+    +M <: scala.collection.mutable.Map[K, V],
+    +This <: Counter[K, V]]
     extends TensorLike[K, V, This]
     with Serializable {
   def data: M

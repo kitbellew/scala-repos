@@ -7,11 +7,15 @@ import slick.SlickException
 import slick.ast.ScalaBaseType
 
 /** Specialized JDBC ResultConverter for non-`Option` values. */
-class BaseResultConverter[
-    @specialized(Byte, Short, Int, Long, Char, Float, Double, Boolean) T](
-    val ti: JdbcType[T],
-    val name: String,
-    val idx: Int)
+class BaseResultConverter[@specialized(
+  Byte,
+  Short,
+  Int,
+  Long,
+  Char,
+  Float,
+  Double,
+  Boolean) T](val ti: JdbcType[T], val name: String, val idx: Int)
     extends ResultConverter[JdbcResultConverterDomain, T] {
   def read(pr: ResultSet) = {
     val v = ti.getValue(pr, idx)
@@ -30,10 +34,15 @@ class BaseResultConverter[
 
 /** Specialized JDBC ResultConverter for handling values of type `Option[T]`.
   * Boxing is avoided when the result is `None`. */
-class OptionResultConverter[
-    @specialized(Byte, Short, Int, Long, Char, Float, Double, Boolean) T](
-    val ti: JdbcType[T],
-    val idx: Int)
+class OptionResultConverter[@specialized(
+  Byte,
+  Short,
+  Int,
+  Long,
+  Char,
+  Float,
+  Double,
+  Boolean) T](val ti: JdbcType[T], val idx: Int)
     extends ResultConverter[JdbcResultConverterDomain, Option[T]] {
   def read(pr: ResultSet) = {
     val v = ti.getValue(pr, idx)
@@ -67,11 +76,15 @@ class OptionResultConverter[
 
 /** Specialized JDBC ResultConverter for handling non-`Option` values with a default.
   * A (possibly specialized) function for the default value is used to translate SQL `NULL` values. */
-class DefaultingResultConverter[
-    @specialized(Byte, Short, Int, Long, Char, Float, Double, Boolean) T](
-    val ti: JdbcType[T],
-    val default: () => T,
-    val idx: Int)
+class DefaultingResultConverter[@specialized(
+  Byte,
+  Short,
+  Int,
+  Long,
+  Char,
+  Float,
+  Double,
+  Boolean) T](val ti: JdbcType[T], val default: () => T, val idx: Int)
     extends ResultConverter[JdbcResultConverterDomain, T] {
   def read(pr: ResultSet) = {
     val v = ti.getValue(pr, idx)
@@ -90,10 +103,15 @@ class DefaultingResultConverter[
 }
 
 /** Specialized JDBC ResultConverter for handling `isDefined` checks for `Option` values. */
-class IsDefinedResultConverter[
-    @specialized(Byte, Short, Int, Long, Char, Float, Double, Boolean) T](
-    val ti: JdbcType[T],
-    val idx: Int)
+class IsDefinedResultConverter[@specialized(
+  Byte,
+  Short,
+  Int,
+  Long,
+  Char,
+  Float,
+  Double,
+  Boolean) T](val ti: JdbcType[T], val idx: Int)
     extends ResultConverter[JdbcResultConverterDomain, Boolean] {
   def read(pr: ResultSet) = {
     ti.getValue(pr, idx)

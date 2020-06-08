@@ -21,7 +21,9 @@ import generic._
   *  @since   2.8
   */
 trait SortedMapLike[
-    A, +B, +This <: SortedMapLike[A, B, This] with SortedMap[A, B]]
+    A,
+    +B,
+    +This <: SortedMapLike[A, B, This] with SortedMap[A, B]]
     extends Sorted[A, This]
     with MapLike[A, B, This] {
   self =>

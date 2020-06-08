@@ -509,7 +509,8 @@ trait DisplayWithLabel[OwnerType <: Record[OwnerType]]
 }
 
 trait KeyField[
-    MyType, OwnerType <: Record[OwnerType] with KeyedRecord[OwnerType, MyType]]
+    MyType,
+    OwnerType <: Record[OwnerType] with KeyedRecord[OwnerType, MyType]]
     extends Field[MyType, OwnerType] {
   def ===(other: KeyField[MyType, OwnerType]): Boolean =
     this.valueBox == other.valueBox

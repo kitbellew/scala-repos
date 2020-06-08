@@ -2166,7 +2166,12 @@ object hlist {
       }
 
     trait SplitRight0[
-        Rev <: HList, AccP <: HList, AccS <: HList, U, P <: HList, S <: HList]
+        Rev <: HList,
+        AccP <: HList,
+        AccS <: HList,
+        U,
+        P <: HList,
+        S <: HList]
         extends Serializable {
       def apply(rev: Rev, accP: AccP, accS: AccS): P :: S :: HNil
     }
@@ -2255,7 +2260,12 @@ object hlist {
       }
 
     trait ReverseSplitRight0[
-        Rev <: HList, AccP <: HList, AccS <: HList, U, P, S]
+        Rev <: HList,
+        AccP <: HList,
+        AccS <: HList,
+        U,
+        P,
+        S]
         extends Serializable {
       def apply(rev: Rev, accP: AccP, accS: AccS): P :: S :: HNil
     }

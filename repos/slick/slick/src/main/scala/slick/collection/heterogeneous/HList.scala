@@ -155,8 +155,11 @@ sealed abstract class HList extends Product {
 final object HList {
   import syntax._
 
-  final class HListShape[Level <: ShapeLevel, M <: HList, U <: HList: ClassTag,
-  P <: HList](val shapes: Seq[Shape[_, _, _, _]])
+  final class HListShape[
+      Level <: ShapeLevel,
+      M <: HList,
+      U <: HList: ClassTag,
+      P <: HList](val shapes: Seq[Shape[_, _, _, _]])
       extends MappedScalaProductShape[Level, HList, M, U, P] {
     def buildValue(elems: IndexedSeq[Any]) =
       elems.foldRight(HNil: HList)(_ :: _)

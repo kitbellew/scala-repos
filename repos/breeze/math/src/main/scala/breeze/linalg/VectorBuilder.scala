@@ -356,16 +356,22 @@ object VectorBuilder extends VectorBuilderOps {
   }
 
   // implicits
-  class CanCopyBuilder[
-      @spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
+  class CanCopyBuilder[@spec(
+    Double,
+    Int,
+    Float,
+    Long) V: ClassTag: Semiring: Zero]
       extends CanCopy[VectorBuilder[V]] {
     def apply(v1: VectorBuilder[V]) = {
       v1.copy
     }
   }
 
-  class CanZerosBuilder[
-      @spec(Double, Int, Float, Long) V: ClassTag: Semiring: Zero]
+  class CanZerosBuilder[@spec(
+    Double,
+    Int,
+    Float,
+    Long) V: ClassTag: Semiring: Zero]
       extends CanCreateZerosLike[VectorBuilder[V], VectorBuilder[V]] {
     def apply(v1: VectorBuilder[V]) = {
       v1.zerosLike

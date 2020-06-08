@@ -78,7 +78,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
   type TableCompanion <: BlockStoreColumnarTableCompanion
 
   protected class MergeEngine[
-      KeyType, BlockData <: BlockProjectionData[KeyType, Slice]] {
+      KeyType,
+      BlockData <: BlockProjectionData[KeyType, Slice]] {
     case class CellState(
         index: Int,
         maxKey: KeyType,

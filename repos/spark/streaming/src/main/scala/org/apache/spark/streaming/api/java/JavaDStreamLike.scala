@@ -46,11 +46,15 @@ import org.apache.spark.streaming.dstream.DStream
   * from the trait. See SPARK-3266 for additional details.
   */
 private[streaming] abstract class AbstractJavaDStreamLike[
-    T, This <: JavaDStreamLike[T, This, R], R <: JavaRDDLike[T, R]]
+    T,
+    This <: JavaDStreamLike[T, This, R],
+    R <: JavaRDDLike[T, R]]
     extends JavaDStreamLike[T, This, R]
 
 trait JavaDStreamLike[
-    T, This <: JavaDStreamLike[T, This, R], R <: JavaRDDLike[T, R]]
+    T,
+    This <: JavaDStreamLike[T, This, R],
+    R <: JavaRDDLike[T, R]]
     extends Serializable {
   implicit val classTag: ClassTag[T]
 

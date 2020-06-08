@@ -5,7 +5,9 @@ trait KeyedMapper[KeyType, T <: KeyedMapper[KeyType, T]] extends Mapper[T]
 trait KeyedMetaMapper[KeyType, T <: KeyedMapper[KeyType, T]]
 
 trait MappedForeignKey[
-    KeyType, Owner <: Mapper[Owner], Other <: KeyedMapper[KeyType, Other]]
+    KeyType,
+    Owner <: Mapper[Owner],
+    Other <: KeyedMapper[KeyType, Other]]
 
 trait IdPK
 

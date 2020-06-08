@@ -868,8 +868,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     *
     * @see [[LocalIndexEncoder]]
     */
-  private[recommendation] case class InBlock[
-      @specialized(Int, Long) ID: ClassTag](
+  private[recommendation] case class InBlock[@specialized(
+    Int,
+    Long) ID: ClassTag](
       srcIds: Array[ID],
       dstPtrs: Array[Int],
       dstEncodedIndices: Array[Int],
@@ -913,8 +914,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
   /**
     * A rating block that contains src IDs, dst IDs, and ratings, stored in primitive arrays.
     */
-  private[recommendation] case class RatingBlock[
-      @specialized(Int, Long) ID: ClassTag](
+  private[recommendation] case class RatingBlock[@specialized(
+    Int,
+    Long) ID: ClassTag](
       srcIds: Array[ID],
       dstIds: Array[ID],
       ratings: Array[Float]) {
@@ -928,8 +930,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
   /**
     * Builder for [[RatingBlock]]. [[mutable.ArrayBuilder]] is used to avoid boxing/unboxing.
     */
-  private[recommendation] class RatingBlockBuilder[
-      @specialized(Int, Long) ID: ClassTag]
+  private[recommendation] class RatingBlockBuilder[@specialized(
+    Int,
+    Long) ID: ClassTag]
       extends Serializable {
 
     private val srcIds = mutable.ArrayBuilder.make[ID]
@@ -1023,8 +1026,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
     * Builder for uncompressed in-blocks of (srcId, dstEncodedIndex, rating) tuples.
     * @param encoder encoder for dst indices
     */
-  private[recommendation] class UncompressedInBlockBuilder[
-      @specialized(Int, Long) ID: ClassTag](encoder: LocalIndexEncoder)(implicit
+  private[recommendation] class UncompressedInBlockBuilder[@specialized(
+    Int,
+    Long) ID: ClassTag](encoder: LocalIndexEncoder)(implicit
       ord: Ordering[ID]) {
 
     private val srcIds = mutable.ArrayBuilder.make[ID]
@@ -1069,8 +1073,9 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
   /**
     * A block of (srcId, dstEncodedIndex, rating) tuples stored in primitive arrays.
     */
-  private[recommendation] class UncompressedInBlock[
-      @specialized(Int, Long) ID: ClassTag](
+  private[recommendation] class UncompressedInBlock[@specialized(
+    Int,
+    Long) ID: ClassTag](
       val srcIds: Array[ID],
       val dstEncodedIndices: Array[Int],
       val ratings: Array[Float])(implicit ord: Ordering[ID]) {
