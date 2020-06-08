@@ -39,7 +39,8 @@ object BalancingSpec {
 }
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-class BalancingSpec extends AkkaSpec("""
+class BalancingSpec
+    extends AkkaSpec("""
     akka.actor.deployment {
       /balancingPool-2 {
         router = balancing-pool
@@ -56,7 +57,9 @@ class BalancingSpec extends AkkaSpec("""
         }
       }
     }
-    """) with ImplicitSender with BeforeAndAfterEach {
+    """)
+    with ImplicitSender
+    with BeforeAndAfterEach {
   import BalancingSpec._
 
   val poolSize =

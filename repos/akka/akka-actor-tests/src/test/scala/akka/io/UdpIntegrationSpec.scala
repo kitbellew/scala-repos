@@ -12,9 +12,11 @@ import akka.io.Inet._
 import akka.testkit.SocketUtil._
 import java.net.DatagramSocket
 
-class UdpIntegrationSpec extends AkkaSpec("""
+class UdpIntegrationSpec
+    extends AkkaSpec("""
     akka.loglevel = INFO
-    akka.actor.serialize-creators = on""") with ImplicitSender {
+    akka.actor.serialize-creators = on""")
+    with ImplicitSender {
 
   val addresses = temporaryServerAddresses(6, udp = true)
 

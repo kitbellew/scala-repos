@@ -15,10 +15,13 @@ import scala.concurrent.duration._
 
 import scala.language.postfixOps
 
-class TcpIntegrationSpec extends AkkaSpec("""
+class TcpIntegrationSpec
+    extends AkkaSpec("""
     akka.loglevel = INFO
     akka.actor.serialize-creators = on
-    """) with TcpIntegrationSpecSupport with Timeouts {
+    """)
+    with TcpIntegrationSpecSupport
+    with Timeouts {
 
   def verifyActorTermination(actor: ActorRef): Unit = {
     watch(actor)
