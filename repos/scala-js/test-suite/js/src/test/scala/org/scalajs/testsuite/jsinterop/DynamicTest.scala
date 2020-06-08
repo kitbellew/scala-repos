@@ -66,27 +66,30 @@ class DynamicTest {
 
   @Test def should_allow_instanciating_JS_classes_dynamically_issue_10()
       : Unit = {
-    val DynamicTestClass = js.eval("""
+    val DynamicTestClass = js
+      .eval("""
         var DynamicTestClass = function(x) {
           this.x = x;
         };
         DynamicTestClass;
-        """).asInstanceOf[js.Dynamic]
+        """)
+      .asInstanceOf[js.Dynamic]
     val obj = js.Dynamic.newInstance(DynamicTestClass)("Scala.js")
     assertEquals("Scala.js", obj.x)
   }
 
   @Test def should_allow_instantiating_JS_classes_dynamically_with_varargs_issue_708()
       : Unit = {
-    val DynamicTestClassVarArgs =
-      js.eval("""
+    val DynamicTestClassVarArgs = js
+      .eval("""
         var DynamicTestClassVarArgs = function() {
           this.count = arguments.length;
           for (var i = 0; i < arguments.length; i++)
             this['elem'+i] = arguments[i];
         };
         DynamicTestClassVarArgs;
-        """).asInstanceOf[js.Dynamic]
+        """)
+      .asInstanceOf[js.Dynamic]
 
     val obj1 = js.Dynamic.newInstance(DynamicTestClassVarArgs)("Scala.js")
     val obj1_count = obj1.count
@@ -202,25 +205,27 @@ class DynamicTest {
     val obj0Dict = obj0.asInstanceOf[js.Dictionary[js.Any]]
     assertEquals(42, obj0Dict("3-"))
 
-    val checkEvilProperties =
-      js.eval("""
+    val checkEvilProperties = js
+      .eval("""
       function dynamicLiteralNameEncoding_checkEvilProperties(x) {
         return x['.o[3√!|-pr()per7:3$];'] === ' such eval ';
       }
       dynamicLiteralNameEncoding_checkEvilProperties
-    """).asInstanceOf[js.Function1[js.Any, Boolean]]
+    """)
+      .asInstanceOf[js.Function1[js.Any, Boolean]]
     val obj1 = obj(".o[3√!|-pr()per7:3$];" -> " such eval ")
       .asInstanceOf[js.Dictionary[js.Any]]
     assertEquals(" such eval ", obj1(".o[3√!|-pr()per7:3$];"))
     assertTrue(checkEvilProperties(obj1))
 
-    val checkQuotesProperty =
-      js.eval("""
+    val checkQuotesProperty = js
+      .eval("""
       function dynamicLiteralNameEncoding_quote(x) {
         return x["'" + '"'] === 7357;
       }
       dynamicLiteralNameEncoding_quote
-    """).asInstanceOf[js.Function1[js.Any, Boolean]]
+    """)
+      .asInstanceOf[js.Function1[js.Any, Boolean]]
 
     val quote = '"'
 

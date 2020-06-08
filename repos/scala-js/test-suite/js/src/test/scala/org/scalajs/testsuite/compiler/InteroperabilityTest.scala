@@ -39,13 +39,15 @@ class InteroperabilityTest {
   }
 
   @Test def should_support_backquotes_to_escape_Scala_fields(): Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var interoperabilityTestFieldEscape = {
         def: 0,
         val: function(x) { if (x) this.def = x; return this.def; }
       };
       interoperabilityTestFieldEscape;
-    """).asInstanceOf[InteroperabilityTestFieldEscape]
+    """)
+      .asInstanceOf[InteroperabilityTestFieldEscape]
 
     obj.`def` = 7357
     assertEquals(7357, obj.`def`)
@@ -55,13 +57,15 @@ class InteroperabilityTest {
 
   @Test def should_support_atJSName_to_specify_the_JavaScript_name_for_fields()
       : Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var interoperabilityTestJSName = {
         def: 42,
         val: function(x) { if (x) this.def = x; return this.def; }
       };
       interoperabilityTestJSName;
-    """).asInstanceOf[InteroperabilityTestJSName]
+    """)
+      .asInstanceOf[InteroperabilityTestJSName]
 
     assertEquals(42, obj.value())
     assertEquals(7357, obj.value(7357))
@@ -69,10 +73,12 @@ class InteroperabilityTest {
 
   @Test def should_translate_explicit_getter_and_setter_names_to_field_access()
       : Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var interoperabilityTestProperty = { a: 1 };
       interoperabilityTestProperty;
-      """).asInstanceOf[InteroperabilityTestProperty]
+      """)
+      .asInstanceOf[InteroperabilityTestProperty]
 
     assertEquals(1, obj.a)
     obj.a = 100
@@ -80,10 +86,12 @@ class InteroperabilityTest {
   }
 
   @Test def should_support_atJSName_together_with_field_access(): Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var interoperabilityTestProperty = { b: 1 };
       interoperabilityTestProperty;
-      """).asInstanceOf[InteroperabilityTestPropertyNamed]
+      """)
+      .asInstanceOf[InteroperabilityTestPropertyNamed]
 
     assertEquals(1, obj.a)
     obj.a = 100
@@ -93,10 +101,12 @@ class InteroperabilityTest {
 
   @Test def should_support_atJSBracketAccess_to_specify_access_using_square_bracket_subscription()
       : Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var interoperabilityTestJSBracketAccess = [ 0, 1, 7357 ];
       interoperabilityTestJSBracketAccess;
-    """).asInstanceOf[InteroperabilityTestJSBracketAccess]
+    """)
+      .asInstanceOf[InteroperabilityTestJSBracketAccess]
 
     assertEquals(7357, obj(2))
     obj(2) = 42
@@ -311,14 +321,15 @@ class InteroperabilityTest {
 
   @Test def should_protect_receiver_of_raw_JS_apply_if_its_a_select_issue_804()
       : Unit = {
-    val rawReceiver =
-      js.eval("""
+    val rawReceiver = js
+      .eval("""
       var interoperabilityTestRawReceiver = {
         member: 0xbad,
         check: function(raw) { return this.member ? this.member : raw; }
       };
       interoperabilityTestRawReceiver;
-    """).asInstanceOf[InteroperabilityTestRawReceiver]
+    """)
+      .asInstanceOf[InteroperabilityTestRawReceiver]
 
     assertEquals(7357, rawReceiver.check(7357))
 
@@ -334,12 +345,14 @@ class InteroperabilityTest {
   }
 
   @Test def should_properly_handle_default_parameters(): Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var interoperabilityTestDefaultParam = {
         fun: function() { return arguments; }
       };
       interoperabilityTestDefaultParam;
-    """).asInstanceOf[InteroperabilityTestDefaultParam]
+    """)
+      .asInstanceOf[InteroperabilityTestDefaultParam]
 
     // Helpers
     val keys = js.Dynamic.global.Object.keys
@@ -430,48 +443,55 @@ class InteroperabilityTest {
 
   @Test def should_unbox_Chars_received_from_calling_a_JS_interop_method()
       : Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         get: function() { return JSUtils().stringToChar('e'); }
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestCharResult]
+    """)
+      .asInstanceOf[InteroperabilityTestCharResult]
 
     assertEquals('e'.toInt, obj.get().toInt)
   }
 
   @Test def should_box_Chars_given_to_a_JS_interop_method(): Unit = {
-    val obj =
-      js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         twice: function(c) { c = JSUtils().charToString(c); return c+c; }
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestCharParam]
+    """)
+      .asInstanceOf[InteroperabilityTestCharParam]
 
     assertEquals("xx", obj.twice('x'))
   }
 
   @Test def should_unbox_value_classes_received_from_calling_a_JS_interop_method()
       : Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         test: function(vc) { return vc; }
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestValueClassResult]
+    """)
+      .asInstanceOf[InteroperabilityTestValueClassResult]
 
     val r = obj.test(new SomeValueClass(5))
     assertEquals(5, r.i)
   }
 
   @Test def should_box_value_classes_given_to_a_JS_interop_method(): Unit = {
-    val obj = js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         stringOf: function(vc) { return vc.toString(); }
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestValueClassParam]
+    """)
+      .asInstanceOf[InteroperabilityTestValueClassParam]
 
     val vc = new SomeValueClass(7)
     assertEquals("SomeValueClass(7)", obj.stringOf(vc))
@@ -482,13 +502,14 @@ class InteroperabilityTest {
     /* To test this, we verify that a purposefully ill-typed facade does not
      * throw a ClassCastException when called in statement position.
      */
-    val obj =
-      js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         test: function() { return 4; } // typed as String in the trait
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestNoUnboxResultInStatement]
+    """)
+      .asInstanceOf[InteroperabilityTestNoUnboxResultInStatement]
     obj.test() // in statement position, should not throw
     if (hasCompliantAsInstanceOfs)
       assertThrows(
@@ -500,8 +521,8 @@ class InteroperabilityTest {
   @Test def should_asInstanceOf_values_received_from_calling_a_JS_interop_method()
       : Unit = {
     assumeTrue("Requires compliant asInstanceOf", hasCompliantAsInstanceOfs)
-    val obj =
-      js.eval("""
+    val obj = js
+      .eval("""
       var obj = {
         testChar: function() { return 5; },
         testInt: function() { return 6.4; },
@@ -513,7 +534,8 @@ class InteroperabilityTest {
         testAny: function() { return {}; }
       };
       obj;
-    """).asInstanceOf[InteroperabilityTestAsInstanceOfResult]
+    """)
+      .asInstanceOf[InteroperabilityTestAsInstanceOfResult]
 
     assertThrows(classOf[Exception], obj.testChar())
     assertThrows(classOf[Exception], obj.testInt())

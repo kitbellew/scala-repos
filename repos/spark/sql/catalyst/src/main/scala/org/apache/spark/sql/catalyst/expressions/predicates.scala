@@ -163,7 +163,8 @@ case class In(value: Expression, list: Seq[Expression])
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val valueGen = value.gen(ctx)
     val listGen = list.map(_.gen(ctx))
-    val listCode = listGen.map(x => s"""
+    val listCode = listGen
+      .map(x => s"""
         if (!${ev.value}) {
           ${x.code}
           if (${x.isNull}) {
@@ -173,7 +174,8 @@ case class In(value: Expression, list: Seq[Expression])
             ${ev.value} = true;
           }
         }
-       """).mkString("\n")
+       """)
+      .mkString("\n")
     s"""
       ${valueGen.code}
       boolean ${ev.value} = false;

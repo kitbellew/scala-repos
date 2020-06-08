@@ -57,10 +57,12 @@ abstract class RestartNode2SpecSpec
   // this is the node that will attempt to re-join, keep gate times low so it can retry quickly
   lazy val restartedSeed1System = ActorSystem(
     system.name,
-    ConfigFactory.parseString(s"""
+    ConfigFactory
+      .parseString(s"""
       akka.remote.netty.tcp.port= ${seedNodes.head.port.get}
       #akka.remote.retry-gate-closed-for = 1s
-    """).withFallback(system.settings.config)
+    """)
+      .withFallback(system.settings.config)
   )
 
   override def afterAll(): Unit = {

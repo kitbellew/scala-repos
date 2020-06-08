@@ -722,13 +722,15 @@ class ExportsTest {
     }
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
-    val funs =
-      js.eval("""
+    val funs = js
+      .eval(
+        """
         var funs = {
           testIsChar: function(foo) { return JSUtils().isChar(foo.bar(65)); },
           testCharValue: function(foo) { return JSUtils().charToString(foo.bar(65)); }
         }; funs;
-        """).asInstanceOf[js.Dynamic]
+        """)
+      .asInstanceOf[js.Dynamic]
 
     assertTrue(funs.testIsChar(foo).asInstanceOf[Boolean])
     assertEquals("A", funs.testCharValue(foo))
@@ -761,13 +763,15 @@ class ExportsTest {
     }
     val foo = (new Foo).asInstanceOf[js.Dynamic]
 
-    val funs =
-      js.eval("""
+    val funs = js
+      .eval(
+        """
         var funs = {
           testChar: function(foo) { return foo.bar(JSUtils().stringToChar('S')); },
           testInt: function(foo) { return foo.bar(68); }
         }; funs;
-        """).asInstanceOf[js.Dynamic]
+        """)
+      .asInstanceOf[js.Dynamic]
 
     assertEquals("char: S", funs.testChar(foo))
     assertEquals("int: 68", funs.testInt(foo))

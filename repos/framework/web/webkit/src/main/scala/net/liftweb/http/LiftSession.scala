@@ -2823,9 +2823,11 @@ class LiftSession(
           <b>
             {in.msg}
           </b> <br/>{
-        in.exception.map(e => <pre>
+        in.exception
+          .map(e => <pre>
           {e.toString}{e.getStackTrace.map(_.toString).mkString("\n")}
-        </pre>).openOr(NodeSeq.Empty)
+        </pre>)
+          .openOr(NodeSeq.Empty)
       }
         </div>) openOr NodeSeq.Empty
     }
@@ -3071,13 +3073,16 @@ class LiftSession(
 
       lazy val build: (String, JsExp) = "_call_server" -> theFunc
 
-      JsObj(build :: info.map(info => info.name -> JsRaw(s"""
+      JsObj(
+        build :: info
+          .map(info => info.name -> JsRaw(s"""
           |function(param) {
           |  var promise = lift.createPromise();
           |  this._call_server({guid: promise.guid, name: ${info.name.encJs}, payload: param});
           |  return promise;
           |}
-          |""".stripMargin)).toList: _*)
+          |""".stripMargin))
+          .toList: _*)
     }
   }
 

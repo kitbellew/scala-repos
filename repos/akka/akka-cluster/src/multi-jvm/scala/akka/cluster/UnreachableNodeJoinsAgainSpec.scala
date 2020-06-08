@@ -180,12 +180,14 @@ abstract class UnreachableNodeJoinsAgainSpec
         // create new ActorSystem with same host:port
         val freshSystem = ActorSystem(
           system.name,
-          ConfigFactory.parseString(s"""
+          ConfigFactory
+            .parseString(s"""
             akka.remote.netty.tcp {
               hostname = ${victimAddress.host.get}
               port = ${victimAddress.port.get}
             }
-            """).withFallback(system.settings.config)
+            """)
+            .withFallback(system.settings.config)
         )
 
         try {

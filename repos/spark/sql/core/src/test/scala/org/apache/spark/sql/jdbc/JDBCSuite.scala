@@ -185,11 +185,13 @@ class JDBCSuite
         |OPTIONS (url '$url', dbtable 'TEST.FLTTYPES', user 'testUser', password 'testPass')
       """.stripMargin.replaceAll("\n", " "))
 
-    conn.prepareStatement(s"""
+    conn
+      .prepareStatement(s"""
         |create table test.nulltypes (a INT, b BOOLEAN, c TINYINT, d BINARY(20), e VARCHAR(20),
         |f VARCHAR_IGNORECASE(20), g CHAR(20), h BLOB, i CLOB, j TIME, k DATE, l TIMESTAMP,
         |m DOUBLE, n REAL, o DECIMAL(38, 18))
-      """.stripMargin.replaceAll("\n", " ")).executeUpdate()
+      """.stripMargin.replaceAll("\n", " "))
+      .executeUpdate()
     conn
       .prepareStatement(
         "insert into test.nulltypes values ("

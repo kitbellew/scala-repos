@@ -2915,10 +2915,12 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
 
       val onErrorFunc: String =
         onError.map(f =>
-          JsCmds.Run("function onError_" + key + "() {" + f.toJsCmd + """
+          JsCmds
+            .Run("function onError_" + key + "() {" + f.toJsCmd + """
   }
 
-   """).toJsCmd) openOr ""
+   """)
+            .toJsCmd) openOr ""
 
       val onErrorParam = onError.map(f => "onError_" + key) openOr "null"
 

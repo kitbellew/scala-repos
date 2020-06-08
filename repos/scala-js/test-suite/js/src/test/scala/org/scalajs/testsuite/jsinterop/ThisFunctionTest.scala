@@ -75,9 +75,11 @@ class ThisFunctionTest {
 
   @Test def should_bind_the_first_argument_to_this_when_applying_js_ThisFunctionN()
       : Unit = {
-    val g = js.eval("""
+    val g = js
+      .eval("""
         var g = function(x) { return this.foo + ":" + x; }; g;
-    """).asInstanceOf[js.ThisFunction1[js.Dynamic, Int, String]]
+    """)
+      .asInstanceOf[js.ThisFunction1[js.Dynamic, Int, String]]
     val obj = js.Object().asInstanceOf[js.Dynamic]
     obj.foo = "foo"
     assertEquals("foo:42", g(obj, 42))
@@ -85,9 +87,11 @@ class ThisFunctionTest {
 
   @Test def should_provide_an_implicit_conversion_from_js_ThisFunction_to_Scala_function()
       : Unit = {
-    val g = js.eval("""
+    val g = js
+      .eval("""
         var g = function(x) { return this.foo + ":" + x; }; g;
-    """).asInstanceOf[js.ThisFunction1[js.Dynamic, Int, String]]
+    """)
+      .asInstanceOf[js.ThisFunction1[js.Dynamic, Int, String]]
     val f: scala.Function2[js.Dynamic, Int, String] = g
     val obj = js.Object().asInstanceOf[js.Dynamic]
     obj.foo = "foo"

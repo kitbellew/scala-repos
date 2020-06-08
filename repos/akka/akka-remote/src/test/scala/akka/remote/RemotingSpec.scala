@@ -664,7 +664,8 @@ class RemotingSpec
       val rawLocalAddress = localAddress.copy(protocol = "test")
       val remoteAddress = Address("akka.test", "system2", "localhost", 2)
 
-      val config = ConfigFactory.parseString(s"""
+      val config = ConfigFactory
+        .parseString(s"""
             akka.remote.enabled-transports = ["akka.remote.test"]
             akka.remote.retry-gate-closed-for = 5s
 
@@ -672,7 +673,8 @@ class RemotingSpec
               registry-key = tFdVxq
               local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
             }
-            """).withFallback(remoteSystem.settings.config)
+            """)
+        .withFallback(remoteSystem.settings.config)
 
       val thisSystem = ActorSystem("this-system", config)
 
@@ -724,7 +726,8 @@ class RemotingSpec
       val remoteAddress = Address("akka.test", "system2", "localhost", 2)
       val rawRemoteAddress = remoteAddress.copy(protocol = "test")
 
-      val config = ConfigFactory.parseString(s"""
+      val config = ConfigFactory
+        .parseString(s"""
         akka.remote.enabled-transports = ["akka.remote.test"]
         akka.remote.retry-gate-closed-for = 5s
         akka.remote.log-remote-lifecycle-events = on
@@ -734,7 +737,8 @@ class RemotingSpec
           registry-key = TRKAzR
           local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
         }
-        """).withFallback(remoteSystem.settings.config)
+        """)
+        .withFallback(remoteSystem.settings.config)
       val thisSystem = ActorSystem("this-system", config)
       muteSystem(thisSystem)
 
@@ -824,7 +828,8 @@ class RemotingSpec
       val rawRemoteAddress = remoteAddress.copy(protocol = "test")
       val remoteUID = 16
 
-      val config = ConfigFactory.parseString(s"""
+      val config = ConfigFactory
+        .parseString(s"""
         akka.remote.enabled-transports = ["akka.remote.test"]
         akka.remote.retry-gate-closed-for = 5s
         akka.remote.log-remote-lifecycle-events = on
@@ -833,7 +838,8 @@ class RemotingSpec
           registry-key = JMeMndLLsw
           local-address = "test://${localAddress.system}@${localAddress.host.get}:${localAddress.port.get}"
         }
-        """).withFallback(remoteSystem.settings.config)
+        """)
+        .withFallback(remoteSystem.settings.config)
       val thisSystem = ActorSystem("this-system", config)
       muteSystem(thisSystem)
 
@@ -918,20 +924,24 @@ class RemotingSpec
     }
 
     "be able to connect to system even if it's not there at first" in {
-      val config = ConfigFactory.parseString(s"""
+      val config = ConfigFactory
+        .parseString(s"""
             akka.remote.enabled-transports = ["akka.remote.netty.tcp"]
             akka.remote.netty.tcp.port = 0
             akka.remote.retry-gate-closed-for = 5s
-            """).withFallback(remoteSystem.settings.config)
+            """)
+        .withFallback(remoteSystem.settings.config)
       val thisSystem = ActorSystem("this-system", config)
       try {
         muteSystem(thisSystem)
         val probe = new TestProbe(thisSystem)
         val probeSender = probe.ref
         val otherAddress = temporaryServerAddress()
-        val otherConfig = ConfigFactory.parseString(s"""
+        val otherConfig = ConfigFactory
+          .parseString(s"""
               akka.remote.netty.tcp.port = ${otherAddress.getPort}
-              """).withFallback(config)
+              """)
+          .withFallback(config)
         val otherSelection = thisSystem.actorSelection(
           s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
         otherSelection.tell("ping", probeSender)
@@ -959,11 +969,13 @@ class RemotingSpec
     }
 
     "allow other system to connect even if it's not there at first" in {
-      val config = ConfigFactory.parseString(s"""
+      val config = ConfigFactory
+        .parseString(s"""
             akka.remote.enabled-transports = ["akka.remote.netty.tcp"]
             akka.remote.netty.tcp.port = 0
             akka.remote.retry-gate-closed-for = 5s
-            """).withFallback(remoteSystem.settings.config)
+            """)
+        .withFallback(remoteSystem.settings.config)
       val thisSystem = ActorSystem("this-system", config)
       try {
         muteSystem(thisSystem)
@@ -971,9 +983,11 @@ class RemotingSpec
         val thisSender = thisProbe.ref
         thisSystem.actorOf(Props[Echo2], "echo")
         val otherAddress = temporaryServerAddress()
-        val otherConfig = ConfigFactory.parseString(s"""
+        val otherConfig = ConfigFactory
+          .parseString(s"""
               akka.remote.netty.tcp.port = ${otherAddress.getPort}
-              """).withFallback(config)
+              """)
+          .withFallback(config)
         val otherSelection = thisSystem.actorSelection(
           s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
         otherSelection.tell("ping", thisSender)

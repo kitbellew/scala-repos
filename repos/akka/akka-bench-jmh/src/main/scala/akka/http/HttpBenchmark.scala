@@ -24,10 +24,12 @@ import com.typesafe.config.ConfigFactory
 @BenchmarkMode(Array(Mode.Throughput))
 class HttpBenchmark {
 
-  val config = ConfigFactory.parseString("""
+  val config = ConfigFactory
+    .parseString("""
       akka {
         loglevel = "ERROR"
-      }""".stripMargin).withFallback(ConfigFactory.load())
+      }""".stripMargin)
+    .withFallback(ConfigFactory.load())
 
   implicit val system = ActorSystem("HttpBenchmark", config)
   implicit val materializer = ActorMaterializer()

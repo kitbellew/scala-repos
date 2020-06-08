@@ -193,11 +193,13 @@ object Test extends Properties("CommentFactory") {
   property("Empty parameter text should be empty") = {
     // used to fail with
     // body == Body(List(Paragraph(Chain(List(Summary(Text('\n')))))))
-    factory.getComment("""
+    factory
+      .getComment("""
 /**
   * @deprecated
   */
-      """).deprecated match {
+      """)
+      .deprecated match {
       case Some(Body(l)) if l.isEmpty => true
       case other =>
         println(other)

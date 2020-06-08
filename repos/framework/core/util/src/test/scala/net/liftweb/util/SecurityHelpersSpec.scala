@@ -39,9 +39,11 @@ object SecurityHelpersSpec extends Specification {
     }
 
     "parse XML without a DOCTYPE" in {
-      secureXML.loadString("""<?xml version="1.0" encoding="ISO-8859-1"?>
+      secureXML
+        .loadString("""<?xml version="1.0" encoding="ISO-8859-1"?>
         <foo>&amp;</foo>
-      """).toString must_== "<foo>&amp;</foo>"
+      """)
+        .toString must_== "<foo>&amp;</foo>"
     }
 
     "provide a randomLong method returning a random Long modulo a number" in {

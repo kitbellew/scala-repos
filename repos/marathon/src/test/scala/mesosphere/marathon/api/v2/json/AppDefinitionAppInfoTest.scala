@@ -95,8 +95,8 @@ class AppDefinitionAppInfoTest extends MarathonSpec with GivenWhenThen {
     val extended = AppInfo(app, maybeLastTaskFailure = Some(lastTaskFailure))
 
     Then("the result contains all fields of the app plus the deployments")
-    val lastTaskFailureJson =
-      Json.parse("""
+    val lastTaskFailureJson = Json
+      .parse("""
        | {
        |   "lastTaskFailure": {
        |     "appId": "/myapp",
@@ -109,7 +109,8 @@ class AppDefinitionAppInfoTest extends MarathonSpec with GivenWhenThen {
        |     "version": "2015-08-27T14:13:05.942Z"
        |   }
        | }
-       |""".stripMargin('|')).as[JsObject]
+       |""".stripMargin('|'))
+      .as[JsObject]
     val expectedJson = Json.toJson(app).as[JsObject] ++ lastTaskFailureJson
     JsonTestHelper.assertThatJsonOf(extended).correspondsToJsonOf(expectedJson)
   }

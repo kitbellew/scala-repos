@@ -128,14 +128,16 @@ class AppDefinitionFormatsTest
   }
 
   test("FromJSON should ignore VersionInfo") {
-    val app = Json.parse("""{
+    val app = Json
+      .parse("""{
         |  "id": "test",
         |  "version": "1970-01-01T00:00:00.002Z",
         |  "versionInfo": {
         |     "lastScalingAt": "1970-01-01T00:00:00.002Z",
         |     "lastConfigChangeAt": "1970-01-01T00:00:00.001Z"
         |  }
-        |}""".stripMargin).as[AppDefinition]
+        |}""".stripMargin)
+      .as[AppDefinition]
 
     app.versionInfo shouldBe a[OnlyVersion]
   }
@@ -224,13 +226,15 @@ class AppDefinitionFormatsTest
   }
 
   test("""FromJSON should parse "residency" """) {
-    val appDef = Json.parse("""{
+    val appDef = Json
+      .parse("""{
         |  "id": "test",
         |  "residency": {
         |     "relaunchEscalationTimeoutSeconds": 300,
         |     "taskLostBehavior": "RELAUNCH_AFTER_TIMEOUT"
         |  }
-        |}""".stripMargin).as[AppDefinition]
+        |}""".stripMargin)
+      .as[AppDefinition]
 
     appDef.residency should equal(
       Some(

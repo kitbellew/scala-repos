@@ -37,7 +37,8 @@ class RemoteRouterSpec
   val port =
     system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress.port.get
   val sysName = system.name
-  val conf = ConfigFactory.parseString(s"""
+  val conf = ConfigFactory
+    .parseString(s"""
     akka {
       actor.deployment {
         /blub {
@@ -70,7 +71,8 @@ class RemoteRouterSpec
           target.nodes = ["akka.tcp://${sysName}@localhost:${port}"]
         }
       }
-    }""").withFallback(system.settings.config)
+    }""")
+    .withFallback(system.settings.config)
   val masterSystem = ActorSystem("Master" + sysName, conf)
 
   override def afterTermination() {

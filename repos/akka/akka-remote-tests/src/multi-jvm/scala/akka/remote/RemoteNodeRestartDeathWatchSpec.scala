@@ -111,12 +111,14 @@ abstract class RemoteNodeRestartDeathWatchSpec
 
         val freshSystem = ActorSystem(
           system.name,
-          ConfigFactory.parseString(s"""
+          ConfigFactory
+            .parseString(s"""
                     akka.remote.netty.tcp {
                       hostname = ${addr.host.get}
                       port = ${addr.port.get}
                     }
-                    """).withFallback(system.settings.config)
+                    """)
+            .withFallback(system.settings.config)
         )
         freshSystem.actorOf(Props[Subject], "subject")
 

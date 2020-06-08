@@ -37,7 +37,8 @@ object ClusterConsistentHashingRouterMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(
-    debugConfig(on = false).withFallback(ConfigFactory.parseString(s"""
+    debugConfig(on = false)
+      .withFallback(ConfigFactory.parseString(s"""
       common-router-settings = {
         router = consistent-hashing-pool
         cluster {
@@ -52,7 +53,8 @@ object ClusterConsistentHashingRouterMultiJvmSpec extends MultiNodeConfig {
         /router3 = $${common-router-settings}
         /router4 = $${common-router-settings}
       }
-      """)).withFallback(MultiNodeClusterSpec.clusterConfig))
+      """))
+      .withFallback(MultiNodeClusterSpec.clusterConfig))
 
 }
 
