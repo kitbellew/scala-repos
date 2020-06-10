@@ -24,9 +24,8 @@ object MarkdownParser {
       case Nil => in
       case xs =>
         xs.collect {
-            case e: Elem => e
-          }
-          .flatMap(_.child)
+          case e: Elem => e
+        }.flatMap(_.child)
     }
   }
 

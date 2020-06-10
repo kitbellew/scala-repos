@@ -360,11 +360,11 @@ object CustomSerializerExamples extends Specification {
             val t = ptype.getOrElse(
               throw new MappingException("parameterized type not known"))
             xs.map(x =>
-                Extraction.extract(
-                  x,
-                  TypeInfo(
-                    t.getActualTypeArguments()(0).asInstanceOf[Class[_]],
-                    None)))
+              Extraction.extract(
+                x,
+                TypeInfo(
+                  t.getActualTypeArguments()(0).asInstanceOf[Class[_]],
+                  None)))
               .toIndexedSeq
           case x =>
             throw new MappingException("Can't convert " + x + " to IndexedSeq")

@@ -210,7 +210,7 @@ object FilesystemIngestFailureLog {
           message <- msgType match {
             case "ingest" =>
               jv.validated[EventMessage.EventMessageExtraction]("message")(
-                  IngestMessage.Extractor)
+                IngestMessage.Extractor)
                 .flatMap {
                   _.map(Success(_))
                     .getOrElse(Failure(Invalid("Incomplete ingest message")))

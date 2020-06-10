@@ -214,11 +214,11 @@ trait JsExp extends HtmlFixer with ToJsCmd {
     val ran = "v" + Helpers.nextFuncName
     JsCmds.JsCrVar(ran, this) &
       JE.JsRaw(
-          "if (" + ran + ".parentNode) " + ran + " = " + ran + ".cloneNode(true)")
+        "if (" + ran + ".parentNode) " + ran + " = " + ran + ".cloneNode(true)")
         .cmd &
       JE.JsRaw(
-          "if (" + ran + ".nodeType) {" + parentName + ".appendChild(" + ran + ");} else {" +
-            parentName + ".appendChild(document.createTextNode(" + ran + "));}")
+        "if (" + ran + ".nodeType) {" + parentName + ".appendChild(" + ran + ");} else {" +
+          parentName + ".appendChild(document.createTextNode(" + ran + "));}")
         .cmd
   }
 

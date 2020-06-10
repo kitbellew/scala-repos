@@ -150,9 +150,8 @@ object WriteInputFormatTestDataGenerator {
     sc.parallelize(intKeys.map { case (k, v) => (k.toString, v) })
       .saveAsSequenceFile(textPath)
     sc.parallelize(intKeys.map {
-        case (k, v) => (k, v.getBytes(StandardCharsets.UTF_8))
-      })
-      .saveAsSequenceFile(bytesPath)
+      case (k, v) => (k, v.getBytes(StandardCharsets.UTF_8))
+    }).saveAsSequenceFile(bytesPath)
     val bools =
       Seq((1, true), (2, true), (2, false), (3, true), (2, false), (1, false))
     sc.parallelize(bools).saveAsSequenceFile(boolPath)

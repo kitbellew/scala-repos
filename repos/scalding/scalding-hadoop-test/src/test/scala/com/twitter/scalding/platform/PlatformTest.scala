@@ -157,8 +157,8 @@ class TypedPipeJoinWithDescriptionJob(args: Args) extends Job(args) {
   val z = TypedPipe.from[(Int, Boolean)](List((2, true))).group
 
   x.hashJoin(
-      y
-    ) // this triggers an implicit that somehow pushes the line number to the next one
+    y
+  ) // this triggers an implicit that somehow pushes the line number to the next one
     .withDescription("hashJoin")
     .leftJoin(z)
     .withDescription("leftJoin")

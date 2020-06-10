@@ -260,18 +260,17 @@ object TournamentRepo {
       _.flatMap { tour =>
         tour.schedule map (tour -> _)
       }.foldLeft(List[Tournament]() -> none[Freq]) {
-          case ((tours, skip), (_, sched)) if skip.contains(sched.freq) =>
-            (tours, skip)
-          case ((tours, skip), (tour, sched)) =>
-            (
-              tour :: tours,
-              sched.freq match {
-                case Freq.Daily   => Freq.Eastern.some
-                case Freq.Eastern => Freq.Daily.some
-                case _            => skip
-              })
-        }
-        ._1
+        case ((tours, skip), (_, sched)) if skip.contains(sched.freq) =>
+          (tours, skip)
+        case ((tours, skip), (tour, sched)) =>
+          (
+            tour :: tours,
+            sched.freq match {
+              case Freq.Daily   => Freq.Eastern.some
+              case Freq.Eastern => Freq.Daily.some
+              case _            => skip
+            })
+      }._1
         .reverse
     }
 

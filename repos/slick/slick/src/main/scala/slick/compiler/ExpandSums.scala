@@ -357,12 +357,11 @@ class ExpandSums extends Phase {
   def collectDiscriminatorCandidates(
       n: Node): Set[(TypeSymbol, List[TermSymbol])] =
     n.collectAll[(TypeSymbol, List[TermSymbol])] {
-        case OptionApply(ch) =>
-          ch.collect[(TypeSymbol, List[TermSymbol])] {
-            case PathOnTypeSymbol(ts, ss) => (ts, ss)
-          }
-      }
-      .toSet
+      case OptionApply(ch) =>
+        ch.collect[(TypeSymbol, List[TermSymbol])] {
+          case PathOnTypeSymbol(ts, ss) => (ts, ss)
+        }
+    }.toSet
 
   object PathOnTypeSymbol {
     def unapply(n: Node): Option[(TypeSymbol, List[TermSymbol])] =
@@ -457,10 +456,10 @@ class ExpandSums extends Phase {
     val n2 = tr(n)
     logger.debug("Invalidated TypeSymbols: " + invalid.mkString(", "))
     n2.replace(
-        {
-          case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
-        },
-        bottomUp = true)
+      {
+        case n: PathElement if n.nodeType.containsSymbol(invalid) => n.untyped
+      },
+      bottomUp = true)
       .infer()
   }
 }

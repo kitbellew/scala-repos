@@ -2849,9 +2849,8 @@ class LiftSession(
           case Nil => s
           case xs =>
             xs.map {
-                case (id, replacement) => (("#" + id) #> replacement)
-              }
-              .reduceLeft(_ & _)(s)
+              case (id, replacement) => (("#" + id) #> replacement)
+            }.reduceLeft(_ & _)(s)
         }
       case _ => atWhat.valuesIterator.toSeq.flatMap(_.toSeq).toList
     }

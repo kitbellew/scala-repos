@@ -50,11 +50,10 @@ object LazyMacrosRef {
         if (lm == LazyMacrosRef) forward
         else {
           lm.asInstanceOf[
-              {
-                def mkLazyImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Lazy[I]]
-              }
-            ]
-            .mkLazyImpl(c)(weakTypeTag[I])
+            {
+              def mkLazyImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Lazy[I]]
+            }
+          ].mkLazyImpl(c)(weakTypeTag[I])
         }
       case None =>
         lmSym.updateAttachment[LazyMacrosRef.type](this)
@@ -81,12 +80,11 @@ object LazyMacrosRef {
         if (lm == LazyMacrosRef) forward
         else {
           lm.asInstanceOf[
-              {
-                def mkStrictImpl(c: Context)(
-                    i: c.WeakTypeTag[I]): c.Expr[Strict[I]]
-              }
-            ]
-            .mkStrictImpl(c)(weakTypeTag[I])
+            {
+              def mkStrictImpl(c: Context)(
+                  i: c.WeakTypeTag[I]): c.Expr[Strict[I]]
+            }
+          ].mkStrictImpl(c)(weakTypeTag[I])
         }
       case None =>
         lmSym.updateAttachment[LazyMacrosRef.type](this)

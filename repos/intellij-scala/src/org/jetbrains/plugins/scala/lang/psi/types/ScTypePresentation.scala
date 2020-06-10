@@ -116,7 +116,7 @@ trait ScTypePresentation {
         end: String,
         checkWildcard: Boolean = false): String = {
       ts.map(
-          innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
+        innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
         .mkString(start, sep, end)
     }
 

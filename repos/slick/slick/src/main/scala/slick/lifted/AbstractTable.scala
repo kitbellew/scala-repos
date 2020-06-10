@@ -58,9 +58,8 @@ abstract class AbstractTable[T](
 
   protected[this] def collectFieldSymbols(n: Node): Iterable[FieldSymbol] =
     n.collect {
-        case Select(in, f: FieldSymbol) if in == tableNode => f
-      }
-      .toSeq
+      case Select(in, f: FieldSymbol) if in == tableNode => f
+    }.toSeq
       .distinct
 
   /** Define a foreign key relationship.

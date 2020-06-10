@@ -263,12 +263,12 @@ class QuotasTest extends KafkaServerTestHarness {
       val payload = i.toString.getBytes
       numBytesProduced += payload.length
       p.send(
-          new ProducerRecord[Array[Byte], Array[Byte]](
-            topic1,
-            null,
-            null,
-            payload),
-          new ErrorLoggingCallback(topic1, null, null, true))
+        new ProducerRecord[Array[Byte], Array[Byte]](
+          topic1,
+          null,
+          null,
+          payload),
+        new ErrorLoggingCallback(topic1, null, null, true))
         .get()
       Thread.sleep(1)
     }

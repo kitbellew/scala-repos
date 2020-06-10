@@ -71,9 +71,8 @@ trait DAG extends Instructions {
           : Trampoline[Either[StackError, DepGraph]] = {
         Free.suspend(
           M.sequence(f(roots).right map { roots2 =>
-              loop(loc, roots2, splits, stream.tail)
-            })
-            .map(_.joinRight))
+            loop(loc, roots2, splits, stream.tail)
+          }).map(_.joinRight))
       }
 
       def processJoinInstr(instr: JoinInstr) = {
@@ -295,9 +294,8 @@ trait DAG extends Instructions {
             }
 
             M.sequence(eitherRoots.right map { roots2 =>
-                loop(loc, roots2, splits2, stream.tail)
-              })
-              .map(_.joinRight)
+              loop(loc, roots2, splits2, stream.tail)
+            }).map(_.joinRight)
           }
 
           case instr @ FilterMatch => processFilter(instr, IdentitySort)
@@ -466,9 +464,8 @@ trait DAG extends Instructions {
       Left(EmptyStream)
     } else {
       M.sequence(findFirstRoot(None, stream).right map {
-          case (root, tail) => loop(root.loc, Right(root) :: Nil, Nil, tail)
-        })
-        .map(_.joinRight)
+        case (root, tail) => loop(root.loc, Right(root) :: Nil, Nil, tail)
+      }).map(_.joinRight)
         .run
     }
   }

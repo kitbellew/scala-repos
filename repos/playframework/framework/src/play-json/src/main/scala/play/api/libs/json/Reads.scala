@@ -1067,15 +1067,14 @@ trait DefaultReads extends LowPriorityDefaultReads {
               e.map { case (p, valerr) => (JsPath \ key) ++ p -> valerr }
 
             m.foldLeft(Right(Map.empty): Either[Errors, Map[String, V]]) {
-                case (acc, (key, value)) =>
-                  (acc, fromJson[V](value)(fmtv)) match {
-                    case (Right(vs), JsSuccess(v, _)) => Right(vs + (key -> v))
-                    case (Right(_), JsError(e))       => Left(locate(e, key))
-                    case (Left(e), _: JsSuccess[_])   => Left(e)
-                    case (Left(e1), JsError(e2))      => Left(e1 ++ locate(e2, key))
-                  }
-              }
-              .fold(JsError.apply, res => JsSuccess(res.toMap))
+              case (acc, (key, value)) =>
+                (acc, fromJson[V](value)(fmtv)) match {
+                  case (Right(vs), JsSuccess(v, _)) => Right(vs + (key -> v))
+                  case (Right(_), JsError(e))       => Left(locate(e, key))
+                  case (Left(e), _: JsSuccess[_])   => Left(e)
+                  case (Left(e1), JsError(e2))      => Left(e1 ++ locate(e2, key))
+                }
+            }.fold(JsError.apply, res => JsSuccess(res.toMap))
           }
           case _ =>
             JsError(

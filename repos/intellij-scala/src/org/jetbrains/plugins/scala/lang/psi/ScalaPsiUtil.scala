@@ -272,10 +272,10 @@ object ScalaPsiUtil {
       case _ =>
         val exprTypes: Seq[ScType] =
           s.map(
-              _.getTypeAfterImplicitConversion(
-                checkImplicits = true,
-                isShape = false,
-                None))
+            _.getTypeAfterImplicitConversion(
+              checkImplicits = true,
+              isShape = false,
+              None))
             .map {
               case (res, _) => res.getOrAny
             }

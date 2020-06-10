@@ -78,9 +78,8 @@ object Combinatorics {
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
       a.map(myname -> newname) { inpc: Int =>
-          input(inpc - 1)
-        }
-        .discard(myname)
+        input(inpc - 1)
+      }.discard(myname)
     })
 
   }
@@ -120,9 +119,8 @@ object Combinatorics {
       val myname = Symbol("n" + b)
       val newname = Symbol("k" + b)
       a.map(myname -> newname) { inpc: Int =>
-          input(inpc - 1)
-        }
-        .discard(myname)
+        input(inpc - 1)
+      }.discard(myname)
     })
 
   }

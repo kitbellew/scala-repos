@@ -325,7 +325,8 @@ trait RecordTypeMode extends PrimitiveTypeMode {
               ] /*crashes scala 2.9.1 without explicit type */
             }
           outMapperOption.orNull
-        }) with EnumExpression[Enumeration#Value]
+        })
+          with EnumExpression[Enumeration#Value]
           with SquerylRecordNonNumericalExpression[Enumeration#Value]
     }
 

@@ -116,8 +116,8 @@ class PostgresIntegrationSuite extends DockerJDBCIntegrationSuite {
         ArrayType(DecimalType(2, 2), true))
     // Test write null values.
     df.select(df.queryExecution.analyzed.output.map { a =>
-        Column(Literal.create(null, a.dataType)).as(a.name)
-      }: _*)
+      Column(Literal.create(null, a.dataType)).as(a.name)
+    }: _*)
       .write
       .jdbc(jdbcUrl, "public.barcopy2", new Properties)
   }

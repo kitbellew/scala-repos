@@ -250,12 +250,11 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
         if (!inert) s
         else
           s.keep {
-              case (subj, child) ⇒
-                child ! BecomeInert(self)
-            }
-            .expectMessageKeep(500.millis) { (msg, _) ⇒
-              msg should ===(BecameInert)
-            }
+            case (subj, child) ⇒
+              child ! BecomeInert(self)
+          }.expectMessageKeep(500.millis) { (msg, _) ⇒
+            msg should ===(BecameInert)
+          }
       }
     }
 
@@ -305,24 +304,21 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           subj ! Throw(ex)
           (subj, log)
         }.expectFailureKeep(500.millis) {
-            case (f, (subj, _)) ⇒
-              f.cause should ===(ex)
-              f.child should ===(subj)
-              Failed.Restart
-          }
-          .expectMessage(500.millis) {
-            case (msg, (subj, log)) ⇒
-              msg should ===(GotSignal(PreRestart(ex)))
-              log.assertDone(500.millis)
-              subj
-          }
-          .expectMessage(500.millis) { (msg, subj) ⇒
-            msg should ===(GotSignal(PostRestart(ex)))
-            ctx.stop(subj)
-          }
-          .expectMessage(500.millis) { (msg, _) ⇒
-            msg should ===(GotSignal(PostStop))
-          }
+          case (f, (subj, _)) ⇒
+            f.cause should ===(ex)
+            f.child should ===(subj)
+            Failed.Restart
+        }.expectMessage(500.millis) {
+          case (msg, (subj, log)) ⇒
+            msg should ===(GotSignal(PreRestart(ex)))
+            log.assertDone(500.millis)
+            subj
+        }.expectMessage(500.millis) { (msg, subj) ⇒
+          msg should ===(GotSignal(PostRestart(ex)))
+          ctx.stop(subj)
+        }.expectMessage(500.millis) { (msg, _) ⇒
+          msg should ===(GotSignal(PostStop))
+        }
       })
 
     def `02 must not signal PostStop after voluntary termination`(): Unit =

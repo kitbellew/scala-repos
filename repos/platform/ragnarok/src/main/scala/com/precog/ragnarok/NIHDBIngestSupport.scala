@@ -80,23 +80,21 @@ trait NIHDBIngestSupport
         def next() = enum.nextElement()
         def hasNext = enum.hasMoreElements()
       }.map { zipEntry =>
-          new InputStreamReader(zippedData.getInputStream(zipEntry))
+        new InputStreamReader(zippedData.getInputStream(zipEntry))
+      }.flatMap { reader =>
+        val sb = new StringBuilder
+        val buf = new BufferedReader(reader)
+        var line = buf.readLine
+        while (line != null) {
+          sb.append(line)
+          line = buf.readLine
         }
-        .flatMap { reader =>
-          val sb = new StringBuilder
-          val buf = new BufferedReader(reader)
-          var line = buf.readLine
-          while (line != null) {
-            sb.append(line)
-            line = buf.readLine
-          }
-          val str = sb.toString
-          val rows =
-            JParser.parseManyFromString(str).valueOr(throw _).toIterator
-          reader.close()
-          rows
-        }
-        .toList
+        val str = sb.toString
+        val rows =
+          JParser.parseManyFromString(str).valueOr(throw _).toIterator
+        reader.close()
+        rows
+      }.toList
     } getOrElse {
       JParser.parseManyFromFile(data).valueOr(throw _)
     }

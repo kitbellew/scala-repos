@@ -1101,9 +1101,8 @@ trait AbstractScreen extends Factory with Loggable {
       in: Seq[FilterOrValidate[_]]): List[SHtml.ElemAttr] = {
     val sl = in.toList
     in.collect {
-        case FormFieldId(id) => ("id" -> id): SHtml.ElemAttr
-      }
-      .headOption
+      case FormFieldId(id) => ("id" -> id): SHtml.ElemAttr
+    }.headOption
       .toList :::
       sl.collect {
         case FormParam(fp) => fp

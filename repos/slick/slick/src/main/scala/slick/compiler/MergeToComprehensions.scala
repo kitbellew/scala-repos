@@ -345,8 +345,8 @@ class MergeToComprehensions extends Phase {
           val c2 = c.select match {
             // Ensure that the select clause is non-empty
             case Pure(StructNode(ConstArray.empty), _) =>
-              c.copy(select = Pure(
-                  StructNode(ConstArray((new AnonSymbol, LiteralNode(1))))))
+              c.copy(select =
+                Pure(StructNode(ConstArray((new AnonSymbol, LiteralNode(1))))))
                 .infer()
             case _ => c
           }

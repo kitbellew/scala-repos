@@ -348,11 +348,11 @@ class WindowOperationsSuite extends TestSuiteBase {
       val filterFunc = (p: (String, Int)) => p._2 != 0
       val operation = (s: DStream[(String, Int)]) => {
         s.reduceByKeyAndWindow(
-            _ + _,
-            _ - _,
-            windowDuration,
-            slideDuration,
-            filterFunc = filterFunc)
+          _ + _,
+          _ - _,
+          windowDuration,
+          slideDuration,
+          filterFunc = filterFunc)
           .persist()
           .checkpoint(
             Seconds(100)

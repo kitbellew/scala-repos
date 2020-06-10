@@ -441,12 +441,11 @@ object Extraction {
       import java.lang.reflect.Array.{newInstance => newArray}
 
       a.foldLeft((newArray(c.getComponentType, a.length), 0)) { (tuple, e) =>
-          {
-            java.lang.reflect.Array.set(tuple._1, tuple._2, e);
-            (tuple._1, tuple._2 + 1)
-          }
+        {
+          java.lang.reflect.Array.set(tuple._1, tuple._2, e);
+          (tuple._1, tuple._2 + 1)
         }
-        ._1
+      }._1
     }
 
     def mkList(root: JValue, m: Mapping) =

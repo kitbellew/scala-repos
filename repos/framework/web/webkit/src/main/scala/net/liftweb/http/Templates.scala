@@ -117,42 +117,37 @@ object Templates {
       }
 
     in.flatMap {
-        case e: Elem if e.label == "html" => df(e.attributes)
-        case _                            => None
-      }
-      .flatMap { md =>
-        Helpers.findId(in, md.value.text)
-      }
-      .headOption orElse
+      case e: Elem if e.label == "html" => df(e.attributes)
+      case _                            => None
+    }.flatMap { md =>
+      Helpers.findId(in, md.value.text)
+    }.headOption orElse
       in.flatMap {
-          case e: Elem if e.label == "html" =>
-            e.child.flatMap {
-              case e: Elem if e.label == "body" => {
-                e.attribute("data-lift-content-id")
-                  .headOption
-                  .map(_.text) orElse
-                  e.attribute("class").flatMap { ns =>
-                    {
-                      val clz = ns.text.charSplit(' ')
-                      clz.flatMap {
-                        case s if s.startsWith("lift:content_id=") =>
-                          Some(
-                            urlDecode(s.substring("lift:content_id=".length)))
-                        case _ => None
-                      }.headOption
+        case e: Elem if e.label == "html" =>
+          e.child.flatMap {
+            case e: Elem if e.label == "body" => {
+              e.attribute("data-lift-content-id")
+                .headOption
+                .map(_.text) orElse
+                e.attribute("class").flatMap { ns =>
+                  {
+                    val clz = ns.text.charSplit(' ')
+                    clz.flatMap {
+                      case s if s.startsWith("lift:content_id=") =>
+                        Some(urlDecode(s.substring("lift:content_id=".length)))
+                      case _ => None
+                    }.headOption
 
-                    }
                   }
-              }
-
-              case _ => None
+                }
             }
-          case _ => None
-        }
-        .flatMap { id =>
-          Helpers.findId(in, id)
-        }
-        .headOption getOrElse in
+
+            case _ => None
+          }
+        case _ => None
+      }.flatMap { id =>
+        Helpers.findId(in, id)
+      }.headOption getOrElse in
   }
 
   /**

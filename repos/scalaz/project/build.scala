@@ -292,19 +292,17 @@ object build extends Build {
     "rootJS",
     file("rootJS")
   ).settings(
-      standardSettings,
-      notPublish
-    )
-    .aggregate(jsProjects: _*)
+    standardSettings,
+    notPublish
+  ).aggregate(jsProjects: _*)
 
   lazy val rootJVM = Project(
     "rootJVM",
     file("rootJVM")
   ).settings(
-      standardSettings,
-      notPublish
-    )
-    .aggregate(jvmProjects: _*)
+    standardSettings,
+    notPublish
+  ).aggregate(jvmProjects: _*)
 
   lazy val core = crossProject
     .crossType(ScalazCrossType)

@@ -573,9 +573,8 @@ object Execution {
   def failFastSequence[T](t: Iterable[Future[T]])(implicit
       cec: ConcurrentExecutionContext): Future[List[T]] = {
     t.foldLeft(Future.successful(Nil: List[T])) { (f, i) =>
-        failFastZip(f, i).map { case (tail, h) => h :: tail }
-      }
-      .map(_.reverse)
+      failFastZip(f, i).map { case (tail, h) => h :: tail }
+    }.map(_.reverse)
   }
 
   /**

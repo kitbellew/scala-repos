@@ -23,7 +23,7 @@ object Macros {
     c.universe.reify {
       println(
         c.Expr[String](
-            Literal(Constant(normalizePaths(c.enclosingMacros.toString))))
+          Literal(Constant(normalizePaths(c.enclosingMacros.toString))))
           .splice)
       next.splice
     }

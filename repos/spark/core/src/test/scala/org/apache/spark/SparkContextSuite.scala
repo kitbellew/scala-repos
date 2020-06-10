@@ -298,17 +298,17 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
       assert(sc.textFile(filepath1 + "," + filepath2).count() == 5L)
       assert(
         sc.hadoopFile(
-            filepath1 + "," + filepath2,
-            classOf[TextInputFormat],
-            classOf[LongWritable],
-            classOf[Text])
+          filepath1 + "," + filepath2,
+          classOf[TextInputFormat],
+          classOf[LongWritable],
+          classOf[Text])
           .count() == 5L)
       assert(
         sc.newAPIHadoopFile(
-            filepath1 + "," + filepath2,
-            classOf[NewTextInputFormat],
-            classOf[LongWritable],
-            classOf[Text])
+          filepath1 + "," + filepath2,
+          classOf[NewTextInputFormat],
+          classOf[LongWritable],
+          classOf[Text])
           .count() == 5L)
 
       // Test textFile, hadoopFile, and newAPIHadoopFile for file3, file4, and file5
@@ -317,17 +317,17 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
           .count() == 5L)
       assert(
         sc.hadoopFile(
-            filepath3 + "," + filepath4 + "," + filepath5,
-            classOf[TextInputFormat],
-            classOf[LongWritable],
-            classOf[Text])
+          filepath3 + "," + filepath4 + "," + filepath5,
+          classOf[TextInputFormat],
+          classOf[LongWritable],
+          classOf[Text])
           .count() == 5L)
       assert(
         sc.newAPIHadoopFile(
-            filepath3 + "," + filepath4 + "," + filepath5,
-            classOf[NewTextInputFormat],
-            classOf[LongWritable],
-            classOf[Text])
+          filepath3 + "," + filepath4 + "," + filepath5,
+          classOf[NewTextInputFormat],
+          classOf[LongWritable],
+          classOf[Text])
           .count() == 5L)
 
       // Test wholeTextFiles, and binaryFiles for dir1 and dir2

@@ -107,12 +107,11 @@ class DatabaseService(dir: File) extends SLF4JLogging {
       ec: ExecutionContext): Future[List[FqnSymbol]] = {
     val restrict = fqns.map(_.fqn)
     db.run(
-        fqnSymbols.filter(_.fqn inSet restrict).result
-      )
-      .map { results =>
-        val grouped = results.groupBy(_.fqn)
-        restrict.flatMap(grouped.get(_).map(_.head))
-      }
+      fqnSymbols.filter(_.fqn inSet restrict).result
+    ).map { results =>
+      val grouped = results.groupBy(_.fqn)
+      restrict.flatMap(grouped.get(_).map(_.head))
+    }
   }
 }
 

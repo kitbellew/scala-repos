@@ -117,17 +117,17 @@ object Concurrent {
       val ready = interested.map {
         case (it, p) =>
           it.fold {
-              case Step.Done(a, e) => Future.successful(Left(Done(a, e)))
-              case Step.Cont(k) => {
-                val next = k(in)
-                next.pureFold {
-                  case Step.Done(a, e)    => Left(Done(a, e))
-                  case Step.Cont(k)       => Right((Cont(k), p))
-                  case Step.Error(msg, e) => Left(Error(msg, e))
-                }(dec)
-              }
-              case Step.Error(msg, e) => Future.successful(Left(Error(msg, e)))
-            }(dec)
+            case Step.Done(a, e) => Future.successful(Left(Done(a, e)))
+            case Step.Cont(k) => {
+              val next = k(in)
+              next.pureFold {
+                case Step.Done(a, e)    => Left(Done(a, e))
+                case Step.Cont(k)       => Right((Cont(k), p))
+                case Step.Error(msg, e) => Left(Error(msg, e))
+              }(dec)
+            }
+            case Step.Error(msg, e) => Future.successful(Left(Error(msg, e)))
+          }(dec)
             .map {
               case Left(s) =>
                 p.success(s)

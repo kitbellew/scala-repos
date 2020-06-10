@@ -453,11 +453,10 @@ trait RepositoryService { self: AccountService =>
       // for Guests
       case None => Repositories filter (_.isPrivate === false.bind)
     }).filter { t =>
-        repositoryUserName.map { userName =>
-          t.userName === userName.bind
-        } getOrElse LiteralColumn(true)
-      }
-      .sortBy(_.lastActivityDate desc)
+      repositoryUserName.map { userName =>
+        t.userName === userName.bind
+      } getOrElse LiteralColumn(true)
+    }.sortBy(_.lastActivityDate desc)
       .list
       .map { repository =>
         new RepositoryInfo(

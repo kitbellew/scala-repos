@@ -768,17 +768,17 @@ object SynchronousDatabaseAction {
                   try {
                     val a2 = f(Some(ex))
                     a2.asInstanceOf[SynchronousDatabaseAction[
-                        Any,
-                        NoStream,
-                        BasicBackend,
-                        Effect]]
+                      Any,
+                      NoStream,
+                      BasicBackend,
+                      Effect]]
                       .run(context)
                   } catch { case NonFatal(_) if keepFailure => () }
                   throw ex
               }
             val a2 = f(None)
             a2.asInstanceOf[
-                SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
+              SynchronousDatabaseAction[Any, NoStream, BasicBackend, Effect]]
               .run(context)
             res
           }

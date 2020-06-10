@@ -216,19 +216,18 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
         }
       case m: Map[_, _] =>
         m.mapValues {
-            case arg: TreeNode[_] if containsChild(arg) =>
-              val newChild = remainingNewChildren.remove(0)
-              val oldChild = remainingOldChildren.remove(0)
-              if (newChild fastEquals oldChild) {
-                oldChild
-              } else {
-                changed = true
-                newChild
-              }
-            case nonChild: AnyRef => nonChild
-            case null             => null
-          }
-          .view
+          case arg: TreeNode[_] if containsChild(arg) =>
+            val newChild = remainingNewChildren.remove(0)
+            val oldChild = remainingOldChildren.remove(0)
+            if (newChild fastEquals oldChild) {
+              oldChild
+            } else {
+              changed = true
+              newChild
+            }
+          case nonChild: AnyRef => nonChild
+          case null             => null
+        }.view
           .force // `mapValues` is lazy and we need to force it to materialize
       case arg: TreeNode[_] if containsChild(arg) =>
         val newChild = remainingNewChildren.remove(0)
@@ -328,17 +327,16 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
         }
       case m: Map[_, _] =>
         m.mapValues {
-            case arg: TreeNode[_] if containsChild(arg) =>
-              val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
-              if (!(newChild fastEquals arg)) {
-                changed = true
-                newChild
-              } else {
-                arg
-              }
-            case other => other
-          }
-          .view
+          case arg: TreeNode[_] if containsChild(arg) =>
+            val newChild = nextOperation(arg.asInstanceOf[BaseType], rule)
+            if (!(newChild fastEquals arg)) {
+              changed = true
+              newChild
+            } else {
+              arg
+            }
+          case other => other
+        }.view
           .force // `mapValues` is lazy and we need to force it to materialize
       case d: DataType => d // Avoid unpacking Structs
       case args: Traversable[_] =>

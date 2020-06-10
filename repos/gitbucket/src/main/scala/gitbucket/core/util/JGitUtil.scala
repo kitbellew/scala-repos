@@ -837,10 +837,9 @@ object JGitUtil {
       Some(if (revstr.isEmpty) repository.repository.defaultBranch else revstr),
       repository.branchList.headOption
     ).flatMap {
-        case Some(rev) => Some((git.getRepository.resolve(rev), rev))
-        case None      => None
-      }
-      .find(_._1 != null)
+      case Some(rev) => Some((git.getRepository.resolve(rev), rev))
+      case None      => None
+    }.find(_._1 != null)
   }
 
   def createBranch(git: Git, fromBranch: String, newBranch: String) = {

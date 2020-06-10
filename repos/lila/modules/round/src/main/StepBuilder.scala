@@ -46,15 +46,14 @@ object StepBuilder {
         }
         JsArray(
           a.fold[Seq[Step]](steps) {
-              case (pgn, analysis) =>
-                applyAnalysisAdvices(
-                  id,
-                  applyAnalysisEvals(steps, analysis),
-                  pgn,
-                  analysis,
-                  variant)
-            }
-            .map(_.toJson))
+            case (pgn, analysis) =>
+              applyAnalysisAdvices(
+                id,
+                applyAnalysisEvals(steps, analysis),
+                pgn,
+                analysis,
+                variant)
+          }.map(_.toJson))
     }
   }
 

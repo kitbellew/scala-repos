@@ -47,12 +47,11 @@ private final class Cleaner(
         _.filter { ana =>
           ana.acquiredAt.??(_ isBefore durationAgo(analysisTimeout(ana.nbPly)))
         }.map { ana =>
-            repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
-              clientTimeout(ana)
-              logger.warn(s"Timeout analysis ${ana.game.id}")
-            }
+          repo.updateOrGiveUpAnalysis(ana.timeout) >>- {
+            clientTimeout(ana)
+            logger.warn(s"Timeout analysis ${ana.game.id}")
           }
-          .sequenceFu
+        }.sequenceFu
           .void
       } andThenAnyway scheduleAnalysis
 

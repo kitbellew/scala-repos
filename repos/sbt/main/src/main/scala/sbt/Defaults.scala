@@ -1422,8 +1422,8 @@ object Defaults extends BuildCommon {
 
   def sbtPluginExtra(m: ModuleID, sbtV: String, scalaV: String): ModuleID =
     m.extra(
-        PomExtraDependencyAttributes.SbtVersionKey -> sbtV,
-        PomExtraDependencyAttributes.ScalaVersionKey -> scalaV)
+      PomExtraDependencyAttributes.SbtVersionKey -> sbtV,
+      PomExtraDependencyAttributes.ScalaVersionKey -> scalaV)
       .copy(crossVersion = CrossVersion.Disabled)
 
   @deprecated("Use PluginDiscovery.writeDescriptor.", "0.13.2")
@@ -2833,7 +2833,7 @@ object Classpaths {
       jarTypes: Set[String],
       up: UpdateReport): Classpath =
     up.filter(
-        configurationFilter(config.name) && artifactFilter(`type` = jarTypes))
+      configurationFilter(config.name) && artifactFilter(`type` = jarTypes))
       .toSeq
       .map {
         case (conf, module, art, file) =>
