@@ -28,7 +28,8 @@ class CompilerCommand(arguments: List[String], val settings: Settings) {
   /** A descriptive alias for version and help messages. */
   def cmdDesc = "compiler"
 
-  private def explainAdvanced = "\n" + """
+  private def explainAdvanced =
+    "\n" + """
     |-- Notes on option parsing --
     |Boolean settings are always false unless set.
     |Where multiple values are accepted, they should be comma-separated.

@@ -256,8 +256,7 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   test("json_tuple - hive key 3") {
     checkJsonTuple(
       JsonTuple(
-        Literal(
-          """{"f1": "value13", "f4": "value44", "f3": "value33", "f2": 2, "f5": 5.01}""") ::
+        Literal("""{"f1": "value13", "f4": "value44", "f3": "value33", "f2": 2, "f5": 5.01}""") ::
           jsonTupleQuery),
       InternalRow.fromSeq(
         Seq("value13", "2", "value33", "value44", "5.01").map(

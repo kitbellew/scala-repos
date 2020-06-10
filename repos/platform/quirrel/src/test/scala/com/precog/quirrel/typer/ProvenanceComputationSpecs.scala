@@ -1653,8 +1653,8 @@ object ProvenanceComputationSpecs
           tree.errors must beEmpty
         }
         {
-          val tree = compileSingle(
-            "f(a) := ((//foobar).a union (//barfoo).a) where (//foobar).a = a f(10)")
+          val tree =
+            compileSingle("f(a) := ((//foobar).a union (//barfoo).a) where (//foobar).a = a f(10)")
           tree.provenance mustEqual StaticProvenance("/foobar")
           tree.errors must beEmpty
         }
@@ -1962,7 +1962,8 @@ object ProvenanceComputationSpecs
         }
         // Regression test for Pivotal #37558157
         {
-          val tree = compileSingle("""
+          val tree =
+            compileSingle("""
             | athletes := //summer_games/athletes
             | 
             | firstHalf := athletes.Name where athletes.Population < 1000

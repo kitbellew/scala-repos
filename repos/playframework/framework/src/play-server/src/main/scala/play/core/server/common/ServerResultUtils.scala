@@ -61,8 +61,7 @@ object ServerResultUtils {
       cancelEntity(result.body)
       Results
         .Status(Status.HTTP_VERSION_NOT_SUPPORTED)
-        .apply(
-          "The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
+        .apply("The response to this request is chunked and hence requires HTTP 1.1 to be sent, but this is a HTTP 1.0 request.")
         .withHeaders(CONNECTION -> CLOSE)
     } else if (!mayHaveEntity(
         result.header.status) && !result.body.isKnownEmpty) {

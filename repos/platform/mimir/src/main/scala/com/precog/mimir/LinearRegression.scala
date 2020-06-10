@@ -234,8 +234,8 @@ trait LinearRegressionLibModule[M[+_]]
             }
             Some(mapped)
           case other =>
-            logger.warn(
-              "Features were not correctly put into a homogeneous array of doubles; returning empty.")
+            logger
+              .warn("Features were not correctly put into a homogeneous array of doubles; returning empty.")
             None
         }
 
@@ -329,8 +329,7 @@ trait LinearRegressionLibModule[M[+_]]
                       "Matrix cannot have rank larger than number of columns.")
                   }
                 } else {
-                  sys.error(
-                    "Failed to find dependent columns. Should never reach this case.")
+                  sys.error("Failed to find dependent columns. Should never reach this case.")
                 }
               }
 

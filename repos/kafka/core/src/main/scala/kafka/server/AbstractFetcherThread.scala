@@ -93,9 +93,8 @@ abstract class AbstractFetcherThread(
     val fetchRequest = inLock(partitionMapLock) {
       val fetchRequest = buildFetchRequest(partitionMap)
       if (fetchRequest.isEmpty) {
-        trace(
-          "There are no active partitions. Back off for %d ms before sending a fetch request"
-            .format(fetchBackOffMs))
+        trace("There are no active partitions. Back off for %d ms before sending a fetch request"
+          .format(fetchBackOffMs))
         partitionMapCond.await(fetchBackOffMs, TimeUnit.MILLISECONDS)
       }
       fetchRequest

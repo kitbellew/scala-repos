@@ -111,9 +111,8 @@ private[log] class LogCleanerManager(
               val offset =
                 lastClean.getOrElse(topicAndPartition, logStartOffset)
               if (offset < logStartOffset) {
-                error(
-                  "Resetting first dirty offset to log start offset %d since the checkpointed offset %d is invalid."
-                    .format(logStartOffset, offset))
+                error("Resetting first dirty offset to log start offset %d since the checkpointed offset %d is invalid."
+                  .format(logStartOffset, offset))
                 logStartOffset
               } else {
                 offset

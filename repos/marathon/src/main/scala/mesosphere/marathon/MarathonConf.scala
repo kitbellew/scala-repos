@@ -70,20 +70,17 @@ trait MarathonConf
 
   lazy val localPortMin = opt[Int](
     "local_port_min",
-    descr =
-      "Min port number to use when assigning globally unique service ports to apps.",
+    descr = "Min port number to use when assigning globally unique service ports to apps.",
     default = Some(10000))
 
   lazy val localPortMax = opt[Int](
     "local_port_max",
-    descr =
-      "Max port number to use when assigning globally unique service ports to apps.",
+    descr = "Max port number to use when assigning globally unique service ports to apps.",
     default = Some(20000))
 
   lazy val defaultExecutor = opt[String](
     "executor",
-    descr =
-      "Executor to use when none is specified. If not defined the Mesos command executor is used by default.",
+    descr = "Executor to use when none is specified. If not defined the Mesos command executor is used by default.",
     default = Some("//cmd"))
 
   lazy val hostname = opt[String](
@@ -103,8 +100,7 @@ trait MarathonConf
 
   lazy val maxConcurrentHttpConnections = opt[Int](
     "http_max_concurrent_requests",
-    descr =
-      "The number of concurrent HTTP requests that are allowed before rejecting.",
+    descr = "The number of concurrent HTTP requests that are allowed before rejecting.",
     noshort = true,
     default = None)
 
@@ -263,8 +259,7 @@ trait MarathonConf
 
   lazy val envVarsPrefix = opt[String](
     "env_vars_prefix",
-    descr =
-      "Prefix to use for environment variables injected automatically into all started tasks.",
+    descr = "Prefix to use for environment variables injected automatically into all started tasks.",
     noshort = true)
 
   //Internal settings, that are not intended for external use

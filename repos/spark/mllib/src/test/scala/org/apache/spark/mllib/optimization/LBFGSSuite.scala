@@ -106,8 +106,7 @@ class LBFGSSuite
       "LBFGS should match GD result within 2% difference.")
   }
 
-  test(
-    "LBFGS and Gradient Descent with L2 regularization should get the same result.") {
+  test("LBFGS and Gradient Descent with L2 regularization should get the same result.") {
     val regParam = 0.2
 
     // Prepare another non-zero weights to compare the loss in the first iteration.

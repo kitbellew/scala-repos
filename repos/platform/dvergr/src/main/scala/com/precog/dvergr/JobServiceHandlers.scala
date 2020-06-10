@@ -127,10 +127,11 @@ class CreateJobHandler(
                 content = Some(JString("Missing `name` of job."))))
 
           case (name, tpe, _) =>
-            Future(HttpResponse[JValue](
-              BadRequest,
-              content = Some(JString(
-                "Expected `name` and `type` to be strings, but found '%s' and '%s'." format (name, tpe)))))
+            Future(
+              HttpResponse[JValue](
+                BadRequest,
+                content = Some(JString(
+                  "Expected `name` and `type` to be strings, but found '%s' and '%s'." format (name, tpe)))))
         }
       })
     } getOrElse {

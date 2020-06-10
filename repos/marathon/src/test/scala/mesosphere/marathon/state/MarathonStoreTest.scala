@@ -297,8 +297,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
   }
 
   // regression test for #1507
-  test(
-    "state.names() throwing exception is treated as empty iterator (ExecutionException without cause)") {
+  test("state.names() throwing exception is treated as empty iterator (ExecutionException without cause)") {
     val state = new InMemoryStore() {
       override def allIds(): Future[scala.Seq[ID]] = super.allIds()
     }
@@ -320,8 +319,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
       extends ExecutionException("weird without cause")
 
   // regression test for #1507
-  test(
-    "state.names() throwing exception is treated as empty iterator (ExecutionException with itself as cause)") {
+  test("state.names() throwing exception is treated as empty iterator (ExecutionException with itself as cause)") {
     val state = new InMemoryStore() {
       override def allIds(): Future[scala.Seq[ID]] = super.allIds()
     }
@@ -358,8 +356,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
     }
   }
 
-  test(
-    "state.names() throwing exception is treated as empty iterator (RuntimeException in ExecutionException)") {
+  test("state.names() throwing exception is treated as empty iterator (RuntimeException in ExecutionException)") {
     val state = new InMemoryStore() {
       override def allIds(): Future[scala.Seq[ID]] = super.allIds()
     }

@@ -516,8 +516,7 @@ object ScalaTestGenerator {
       if (methods.nonEmpty)
         testNames
           .map(testName => doubleIndent + testName + " $" + testName)
-          .fold(
-            "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
+          .fold("\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
             _ + "\n" + _)
       else ""
     val closingBrace = templateBody.getLastChild

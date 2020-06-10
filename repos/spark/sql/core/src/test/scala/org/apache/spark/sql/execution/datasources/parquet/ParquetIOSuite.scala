@@ -282,8 +282,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     }
   }
 
-  test(
-    "SPARK-11692 Support for Parquet logical types, JSON and BSON (embedded types)") {
+  test("SPARK-11692 Support for Parquet logical types, JSON and BSON (embedded types)") {
     val parquetSchema = MessageTypeParser.parseMessageType("""message root {
         |  required binary a(JSON);
         |  required binary b(BSON);
@@ -511,8 +510,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     }
   }
 
-  test(
-    "SPARK-9849 DirectParquetOutputCommitter qualified name should be backward compatible") {
+  test("SPARK-9849 DirectParquetOutputCommitter qualified name should be backward compatible") {
     val clonedConf = new Configuration(hadoopConfiguration)
 
     // Write to a parquet file and let it fail.
@@ -541,8 +539,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     }
   }
 
-  test(
-    "SPARK-8121: spark.sql.parquet.output.committer.class shouldn't be overridden") {
+  test("SPARK-8121: spark.sql.parquet.output.committer.class shouldn't be overridden") {
     withTempPath { dir =>
       val clonedConf = new Configuration(hadoopConfiguration)
 

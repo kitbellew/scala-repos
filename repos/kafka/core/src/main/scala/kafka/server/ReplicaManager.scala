@@ -300,12 +300,12 @@ class ReplicaManager(
             logManager.deleteLog(topicAndPartition)
           }
         }
-        stateChangeLogger.trace(
-          "Broker %d ignoring stop replica (delete=%s) for partition [%s,%d] as replica doesn't exist on broker"
+        stateChangeLogger
+          .trace("Broker %d ignoring stop replica (delete=%s) for partition [%s,%d] as replica doesn't exist on broker"
             .format(localBrokerId, deletePartition, topic, partitionId))
     }
-    stateChangeLogger.trace(
-      "Broker %d finished handling stop replica (delete=%s) for partition [%s,%d]"
+    stateChangeLogger
+      .trace("Broker %d finished handling stop replica (delete=%s) for partition [%s,%d]"
         .format(localBrokerId, deletePartition, topic, partitionId))
     errorCode
   }
@@ -689,9 +689,8 @@ class ReplicaManager(
 
         val partitionDataAndOffsetInfo =
           try {
-            trace(
-              "Fetching log segment for topic %s, partition %d, offset %d, size %d"
-                .format(topic, partition, offset, fetchSize))
+            trace("Fetching log segment for topic %s, partition %d, offset %d, size %d"
+              .format(topic, partition, offset, fetchSize))
 
             // decide whether to only fetch from leader
             val localReplica =
@@ -838,8 +837,8 @@ class ReplicaManager(
       : BecomeLeaderOrFollowerResult = {
     leaderAndISRRequest.partitionStates.asScala.foreach {
       case (topicPartition, stateInfo) =>
-        stateChangeLogger.trace(
-          "Broker %d received LeaderAndIsr request %s correlation id %d from controller %d epoch %d for partition [%s,%d]"
+        stateChangeLogger
+          .trace("Broker %d received LeaderAndIsr request %s correlation id %d from controller %d epoch %d for partition [%s,%d]"
             .format(
               localBrokerId,
               stateInfo,
@@ -1273,8 +1272,7 @@ class ReplicaManager(
   }
 
   private def maybeShrinkIsr(): Unit = {
-    trace(
-      "Evaluating ISR list of partitions to see which replicas can be removed from the ISR")
+    trace("Evaluating ISR list of partitions to see which replicas can be removed from the ISR")
     allPartitions.values.foreach(partition =>
       partition.maybeShrinkIsr(config.replicaLagTimeMaxMs))
   }
@@ -1298,9 +1296,8 @@ class ReplicaManager(
             tryCompleteDelayedProduce(
               new TopicPartitionOperationKey(topicAndPartition))
           case None =>
-            warn(
-              "While recording the replica LEO, the partition %s hasn't been created."
-                .format(topicAndPartition))
+            warn("While recording the replica LEO, the partition %s hasn't been created."
+              .format(topicAndPartition))
         }
     }
   }

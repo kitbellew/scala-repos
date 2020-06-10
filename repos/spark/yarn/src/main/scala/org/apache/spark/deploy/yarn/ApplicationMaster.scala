@@ -714,8 +714,7 @@ private[spark] class ApplicationMaster(
             a.enqueueGetLossReasonRequest(eid, context)
             resetAllocatorInterval()
           case None =>
-            logWarning(
-              "Container allocator is not ready to find executor loss reasons yet.")
+            logWarning("Container allocator is not ready to find executor loss reasons yet.")
         }
     }
 

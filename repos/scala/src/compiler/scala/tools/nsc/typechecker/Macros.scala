@@ -401,8 +401,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           macroDdef.pos,
           currentRun.runDefinitions.MacrosFeature,
           immediate = true)) {
-        macroLogVerbose(
-          "typecheck terminated unexpectedly: language.experimental.macros feature is not enabled")
+        macroLogVerbose("typecheck terminated unexpectedly: language.experimental.macros feature is not enabled")
         fail()
       } else {
         val macroDdef1: macroDdef.type = macroDdef

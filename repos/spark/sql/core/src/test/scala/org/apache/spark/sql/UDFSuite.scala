@@ -226,8 +226,7 @@ class UDFSuite extends QueryTest with SharedSQLContext {
       (m: Map[String, Int], a: Seq[Int], b: Boolean) => { (m, a, b) })
 
     checkAnswer(
-      sql(
-        "SELECT tmp.t.* FROM (SELECT testDataFunc(key, value) AS t from testData) tmp")
+      sql("SELECT tmp.t.* FROM (SELECT testDataFunc(key, value) AS t from testData) tmp")
         .toDF(),
       testData)
     checkAnswer(
@@ -265,8 +264,7 @@ class UDFSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test(
-    "SPARK-11716 UDFRegistration does not include the input data type in returned UDF") {
+  test("SPARK-11716 UDFRegistration does not include the input data type in returned UDF") {
     val myUDF = sqlContext.udf
       .register("testDataFunc", (n: Int, s: String) => { (n, s.toInt) })
 
@@ -278,8 +276,7 @@ class UDFSuite extends QueryTest with SharedSQLContext {
       testData2.selectExpr("struct(a, b)"))
 
     checkAnswer(
-      sql(
-        "SELECT tmp.t.* FROM (SELECT testDataFunc(a, b) AS t from testData2) tmp")
+      sql("SELECT tmp.t.* FROM (SELECT testDataFunc(a, b) AS t from testData2) tmp")
         .toDF(),
       testData2)
   }

@@ -48,8 +48,8 @@ object StreamingLogisticRegression {
   def main(args: Array[String]) {
 
     if (args.length != 4) {
-      System.err.println(
-        "Usage: StreamingLogisticRegression <trainingDir> <testDir> <batchDuration> <numFeatures>")
+      System.err
+        .println("Usage: StreamingLogisticRegression <trainingDir> <testDir> <batchDuration> <numFeatures>")
       System.exit(1)
     }
 

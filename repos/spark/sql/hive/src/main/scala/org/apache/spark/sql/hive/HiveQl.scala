@@ -520,14 +520,14 @@ private[hive] class HiveQl(conf: ParserConf)
 
               case "parquet" =>
                 tableDesc = tableDesc.withNewStorage(
-                  inputFormat = Option(
-                    "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"),
-                  outputFormat = Option(
-                    "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat")
+                  inputFormat =
+                    Option("org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"),
+                  outputFormat =
+                    Option("org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat")
                 )
                 if (tableDesc.storage.serde.isEmpty) {
-                  tableDesc = tableDesc.withNewStorage(serde = Option(
-                    "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"))
+                  tableDesc = tableDesc.withNewStorage(serde =
+                    Option("org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe"))
                 }
 
               case "rcfile" =>
@@ -537,8 +537,8 @@ private[hive] class HiveQl(conf: ParserConf)
                   outputFormat =
                     Option("org.apache.hadoop.hive.ql.io.RCFileOutputFormat"))
                 if (tableDesc.storage.serde.isEmpty) {
-                  tableDesc = tableDesc.withNewStorage(serde = Option(
-                    "org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe"))
+                  tableDesc = tableDesc.withNewStorage(serde =
+                    Option("org.apache.hadoop.hive.serde2.columnar.LazyBinaryColumnarSerDe"))
                 }
 
               case "textfile" =>
@@ -559,8 +559,8 @@ private[hive] class HiveQl(conf: ParserConf)
                 tableDesc = tableDesc.withNewStorage(
                   inputFormat = Option(
                     "org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat"),
-                  outputFormat = Option(
-                    "org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat")
+                  outputFormat =
+                    Option("org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat")
                 )
                 if (tableDesc.storage.serde.isEmpty) {
                   tableDesc = tableDesc.withNewStorage(

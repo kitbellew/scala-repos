@@ -186,9 +186,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
         timeout.duration)
     } catch {
       case NonFatal(e) ⇒
-        log.error(
-          e,
-          "Failed to startup Cluster. You can try to increase 'akka.actor.creation-timeout'.")
+        log.error(e, "Failed to startup Cluster. You can try to increase 'akka.actor.creation-timeout'.")
         shutdown()
         // don't re-throw, that would cause the extension to be re-recreated
         // from shutdown() or other places, which may result in

@@ -16,8 +16,7 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     whenLeader2Probe.expectNoMsg(0.seconds)
   }
 
-  test(
-    "in preparingForStart, Stop is send to all whenLeaderActors and preparation is aborted") {
+  test("in preparingForStart, Stop is send to all whenLeaderActors and preparation is aborted") {
     val probe = TestProbe()
 
     coordinatorRef.underlying.become(
@@ -108,8 +107,7 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     probe.expectMsg(PreparationMessages.Prepared(coordinatorRef))
   }
 
-  test(
-    "when preparingForStart with one requester, add another interested actorRef if necessary") {
+  test("when preparingForStart with one requester, add another interested actorRef if necessary") {
     val requester1 = TestProbe()
     val requester2 = TestProbe()
 

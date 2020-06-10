@@ -329,8 +329,7 @@ class FileBasedWriteAheadLogSuite
     assert(writtenData === dataToWrite)
   }
 
-  test(
-    "FileBasedWriteAheadLogWriter - syncing of data by writing and reading immediately") {
+  test("FileBasedWriteAheadLogWriter - syncing of data by writing and reading immediately") {
     val dataToWrite = generateRandomData()
     val writer = new FileBasedWriteAheadLogWriter(testFile, hadoopConf)
     dataToWrite.foreach { data =>
@@ -354,16 +353,14 @@ class FileBasedWriteAheadLogSuite
     reader.close()
   }
 
-  test(
-    "FileBasedWriteAheadLogReader - sequentially reading data written with writer") {
+  test("FileBasedWriteAheadLogReader - sequentially reading data written with writer") {
     val dataToWrite = generateRandomData()
     writeDataUsingWriter(testFile, dataToWrite)
     val readData = readDataUsingReader(testFile)
     assert(readData === dataToWrite)
   }
 
-  test(
-    "FileBasedWriteAheadLogReader - reading data written with writer after corrupted write") {
+  test("FileBasedWriteAheadLogReader - reading data written with writer after corrupted write") {
     // Write data manually for testing the sequential reader
     val dataToWrite = generateRandomData()
     writeDataUsingWriter(testFile, dataToWrite)
@@ -425,8 +422,7 @@ class FileBasedWriteAheadLogSuite
     reader.close()
   }
 
-  test(
-    "FileBasedWriteAheadLogRandomReader- reading data using random reader written with writer") {
+  test("FileBasedWriteAheadLogRandomReader- reading data using random reader written with writer") {
     // Write data using writer for testing the random reader
     val data = generateRandomData()
     val segments = writeDataUsingWriter(testFile, data)
@@ -560,8 +556,7 @@ class BatchedWriteAheadLogSuite
     p
   }
 
-  test(
-    "BatchedWriteAheadLog - name log with the highest timestamp of aggregated entries") {
+  test("BatchedWriteAheadLog - name log with the highest timestamp of aggregated entries") {
     val blockingWal = new BlockingWriteAheadLog(wal, walHandle)
     val batchedWal = new BatchedWriteAheadLog(blockingWal, sparkConf)
 

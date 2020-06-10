@@ -42,9 +42,7 @@ object GetOffsetShell {
       .describedAs("topic")
       .ofType(classOf[String])
     val partitionOpt = parser
-      .accepts(
-        "partitions",
-        "comma separated list of partition ids. If not specified, it will find offsets for all partitions")
+      .accepts("partitions", "comma separated list of partition ids. If not specified, it will find offsets for all partitions")
       .withRequiredArg
       .describedAs("partition ids")
       .ofType(classOf[String])
@@ -141,8 +139,8 @@ object GetOffsetShell {
               println(
                 "%s:%d:%s".format(topic, partitionId, offsets.mkString(",")))
             case None =>
-              System.err.println(
-                "Error: partition %d does not have a leader. Skip getting offsets"
+              System.err
+                .println("Error: partition %d does not have a leader. Skip getting offsets"
                   .format(partitionId))
           }
         case None =>

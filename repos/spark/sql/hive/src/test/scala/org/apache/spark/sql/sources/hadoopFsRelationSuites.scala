@@ -490,8 +490,7 @@ abstract class HadoopFsRelationTest
     }
   }
 
-  test(
-    "saveAsTable()/load() - partitioned table - Append - mismatched partition columns") {
+  test("saveAsTable()/load() - partitioned table - Append - mismatched partition columns") {
     partitionedTestDF1.write
       .format(dataSourceName)
       .mode(SaveMode.Overwrite)
@@ -620,8 +619,7 @@ abstract class HadoopFsRelationTest
     }
   }
 
-  test(
-    "SPARK-7616: adjust column name order accordingly when saving partitioned table") {
+  test("SPARK-7616: adjust column name order accordingly when saving partitioned table") {
     val df = (1 to 3).map(i => (i, s"val_$i", i * 2)).toDF("a", "b", "c")
 
     df.write
@@ -665,8 +663,7 @@ abstract class HadoopFsRelationTest
     }
   }
 
-  test(
-    "SPARK-8578 specified custom output committer will not be used to append data") {
+  test("SPARK-8578 specified custom output committer will not be used to append data") {
     val clonedConf = new Configuration(hadoopConfiguration)
     try {
       val df = sqlContext.range(1, 10).toDF("i")
@@ -732,8 +729,7 @@ abstract class HadoopFsRelationTest
     }
   }
 
-  test(
-    "SPARK-8887: Explicitly define which data types can be used as dynamic partition columns") {
+  test("SPARK-8887: Explicitly define which data types can be used as dynamic partition columns") {
     val df = Seq(
       (1, "v1", Array(1, 2, 3), Map("k1" -> "v1"), Tuple2(1, "4")),
       (2, "v2", Array(4, 5, 6), Map("k2" -> "v2"), Tuple2(2, "5")),

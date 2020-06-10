@@ -85,9 +85,10 @@ private[ui] class GraphUIData(
     jsCollector.addPreparedStatement(
       s"registerHistogram($histogramData, $minY, $maxY);")
     if (batchInterval.isDefined) {
-      jsCollector.addStatement("drawHistogram(" +
-        s"'#$histogramDivId', $histogramData, $minY, $maxY, '$unitY', ${batchInterval.get}" +
-        ");")
+      jsCollector.addStatement(
+        "drawHistogram(" +
+          s"'#$histogramDivId', $histogramData, $minY, $maxY, '$unitY', ${batchInterval.get}" +
+          ");")
     } else {
       jsCollector.addStatement(
         s"drawHistogram('#$histogramDivId', $histogramData, $minY, $maxY, '$unitY');")

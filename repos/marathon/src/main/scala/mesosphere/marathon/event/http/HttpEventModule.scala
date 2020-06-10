@@ -31,8 +31,7 @@ trait HttpEventConfiguration extends ScallopConf {
 
   lazy val httpEventCallbackSlowConsumerTimeout = opt[Long](
     "http_event_callback_slow_consumer_timeout",
-    descr =
-      "A http event callback consumer is considered slow, if the delivery takes longer than this timeout (ms)",
+    descr = "A http event callback consumer is considered slow, if the delivery takes longer than this timeout (ms)",
     required = false,
     noshort = true,
     default = Some(10.seconds.toMillis)

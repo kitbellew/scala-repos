@@ -47,10 +47,9 @@ class AppUpdateFormatTest extends MarathonSpec with Matchers {
   }
 
   // Regression test for #3140
-  test(
-    "FromJSON should set healthCheck portIndex to 0 when neither port nor portIndex are set") {
-    val json = Json.parse(
-      """ { "id": "test", "healthChecks": [{ "path": "/", "protocol": "HTTP" }] } """)
+  test("FromJSON should set healthCheck portIndex to 0 when neither port nor portIndex are set") {
+    val json = Json
+      .parse(""" { "id": "test", "healthChecks": [{ "path": "/", "protocol": "HTTP" }] } """)
     val appUpdate = json.as[AppUpdate]
     appUpdate.healthChecks.get.head.portIndex should equal(Some(0))
   }

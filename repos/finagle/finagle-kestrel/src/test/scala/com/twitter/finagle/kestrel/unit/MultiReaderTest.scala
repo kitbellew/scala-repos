@@ -285,8 +285,7 @@ class MultiReaderTest
     }
   }
 
-  test(
-    "static ReadHandle cluster should round robin from multiple available queues") {
+  test("static ReadHandle cluster should round robin from multiple available queues") {
     // We use frozen time for deterministic randomness.
     new MultiReaderHelper {
       Time.withTimeAt(Time.epoch + 1.seconds) { _ =>
@@ -318,8 +317,7 @@ class MultiReaderTest
     }
   }
 
-  test(
-    "static ReadHandle cluster should propagate errors when everything's errored out") {
+  test("static ReadHandle cluster should propagate errors when everything's errored out") {
     new MultiReaderHelper {
       val handle = MultiReaderHelper.merge(va)
       val e = handle.error.sync()
@@ -438,8 +436,7 @@ class MultiReaderTest
     }
   }
 
-  test(
-    "Var[Addr]-based cluster should wait for cluster to become ready before snapping initial hosts") {
+  test("Var[Addr]-based cluster should wait for cluster to become ready before snapping initial hosts") {
     new AddrClusterHelper {
       val va = Var(Addr.Bound())
       val handle =
@@ -519,8 +516,7 @@ class MultiReaderTest
     }
   }
 
-  test(
-    "dynamic SocketAddress cluster should read messages as cluster hosts are added") {
+  test("dynamic SocketAddress cluster should read messages as cluster hosts are added") {
     new DynamicClusterHelper {
       val (host, rest) = (hosts.head, hosts.tail)
       val cluster = new DynamicCluster[SocketAddress](List(host))
@@ -553,8 +549,7 @@ class MultiReaderTest
     }
   }
 
-  test(
-    "dynamic SocketAddress cluster should read messages as cluster hosts are removed") {
+  test("dynamic SocketAddress cluster should read messages as cluster hosts are removed") {
     new DynamicClusterHelper {
       val cluster = new DynamicCluster[SocketAddress](hosts)
       val rest = hosts.tail
@@ -635,8 +630,7 @@ class MultiReaderTest
     }
   }
 
-  test(
-    "dynamic SocketAddress cluster should report an error if all hosts are removed") {
+  test("dynamic SocketAddress cluster should report an error if all hosts are removed") {
     new DynamicClusterHelper {
       val cluster = new DynamicCluster[SocketAddress](hosts)
       val handle = MultiReader(cluster, "the_queue")

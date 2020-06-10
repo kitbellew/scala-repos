@@ -449,9 +449,7 @@ object TaskMacro {
     // original is the Tree being replaced.  It is needed for preserving attributes.
     def subWrapper(tpe: Type, qual: Tree, original: Tree): Tree =
       if (result.isDefined) {
-        c.error(
-          qual.pos,
-          "Implementation restriction: a dynamic InputTask can only have a single input parser.")
+        c.error(qual.pos, "Implementation restriction: a dynamic InputTask can only have a single input parser.")
         EmptyTree
       } else {
         qual.foreach(checkQual)

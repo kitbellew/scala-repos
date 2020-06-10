@@ -198,8 +198,7 @@ trait CollectionTypeConstructor {
   //TODO We should have a better substitute for (isUnique && isSequential)
 }
 
-@implicitNotFound(
-  "Cannot use collection in a query\n            collection type: ${C}[_]\n  requires implicit of type: slick.ast.TypedCollectionTypeConstructor[${C}]")
+@implicitNotFound("Cannot use collection in a query\n            collection type: ${C}[_]\n  requires implicit of type: slick.ast.TypedCollectionTypeConstructor[${C}]")
 abstract class TypedCollectionTypeConstructor[C[_]](
     val classTag: ClassTag[C[_]])
     extends CollectionTypeConstructor {

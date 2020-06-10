@@ -46,8 +46,7 @@ class TimeoutFilterTest extends FunSuite with MockitoSugar {
     assert(Await.result(res) == "1")
   }
 
-  test(
-    "TimeoutFilter should times out a request that is not successful, cancels underlying") {
+  test("TimeoutFilter should times out a request that is not successful, cancels underlying") {
     val h = new TimeoutFilterHelper
     import h._
 

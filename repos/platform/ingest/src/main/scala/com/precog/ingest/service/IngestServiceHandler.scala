@@ -170,8 +170,9 @@ class IngestServiceHandler(
         }
 
       case None =>
-        right(Promise successful NotIngested(
-          "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
+        right(
+          Promise successful NotIngested(
+            "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
     }
 
   def notifyJob(
@@ -340,9 +341,8 @@ class IngestServiceHandler(
                     "Errors were encountered processing your ingest request: " + errors)))
               }
             } getOrElse {
-              logger.warn(
-                "No event data found for ingest request from %s owner %s at path %s"
-                  .format(apiKey, authorities, path))
+              logger.warn("No event data found for ingest request from %s owner %s at path %s"
+                .format(apiKey, authorities, path))
               M.point(
                 HttpResponse[JValue](
                   BadRequest,
@@ -361,11 +361,9 @@ class IngestServiceHandler(
         or(
           requestHeader(`Content-Type`(application / json)),
           requestHeader(`Content-Type`(text / csv))),
-        description(
-          "The content type of the ingested data should be specified. The service will attempt to infer structure if no content type is specified, but this may yield degraded or incorrect results under some circumstances.")
+        description("The content type of the ingested data should be specified. The service will attempt to infer structure if no content type is specified, but this may yield degraded or incorrect results under some circumstances.")
       ),
-      description(
-        """This service can be used to store one or more records, supplied as either whitespace-delimited JSON or CSV.""")
+      description("""This service can be used to store one or more records, supplied as either whitespace-delimited JSON or CSV.""")
     )
   }
 }

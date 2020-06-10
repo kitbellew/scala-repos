@@ -68,8 +68,8 @@ object AsyncExecutor extends Logging {
         if (state.getAndSet(3) == 2) {
           executor.shutdownNow()
           if (!executor.awaitTermination(30, TimeUnit.SECONDS))
-            logger.warn(
-              "Abandoning ThreadPoolExecutor (not yet destroyed after 30 seconds)")
+            logger
+              .warn("Abandoning ThreadPoolExecutor (not yet destroyed after 30 seconds)")
         }
     }
   }

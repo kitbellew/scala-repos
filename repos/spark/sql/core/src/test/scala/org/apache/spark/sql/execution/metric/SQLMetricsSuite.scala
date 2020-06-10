@@ -119,8 +119,7 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       // TODO Remove this "else" once we fix the race condition that missing the JobStarted event.
       // Since we cannot track all jobs, the metric values could be wrong and we should not check
       // them.
-      logWarning(
-        "Due to a race condition, we miss some jobs and cannot verify the metric values")
+      logWarning("Due to a race condition, we miss some jobs and cannot verify the metric values")
     }
   }
 
@@ -180,8 +179,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
       // ... -> SortMergeJoin(nodeId = 1) -> TungstenProject(nodeId = 0)
-      val df = sqlContext.sql(
-        "SELECT * FROM testData2 JOIN testDataForJoin ON testData2.a = testDataForJoin.a")
+      val df = sqlContext
+        .sql("SELECT * FROM testData2 JOIN testDataForJoin ON testData2.a = testDataForJoin.a")
       testSparkPlanMetrics(
         df,
         1,
@@ -202,8 +201,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
     withTempTable("testDataForJoin") {
       // Assume the execution plan is
       // ... -> SortMergeJoin(nodeId = 1) -> TungstenProject(nodeId = 0)
-      val df = sqlContext.sql(
-        "SELECT * FROM testData2 left JOIN testDataForJoin ON testData2.a = testDataForJoin.a")
+      val df = sqlContext
+        .sql("SELECT * FROM testData2 left JOIN testDataForJoin ON testData2.a = testDataForJoin.a")
       testSparkPlanMetrics(
         df,
         1,
@@ -213,8 +212,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
             "number of output rows" -> 8L)))
       )
 
-      val df2 = sqlContext.sql(
-        "SELECT * FROM testDataForJoin right JOIN testData2 ON testData2.a = testDataForJoin.a")
+      val df2 = sqlContext
+        .sql("SELECT * FROM testDataForJoin right JOIN testData2 ON testData2.a = testDataForJoin.a")
       testSparkPlanMetrics(
         df2,
         1,

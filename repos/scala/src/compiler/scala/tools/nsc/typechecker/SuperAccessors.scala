@@ -270,8 +270,7 @@ abstract class SuperAccessors
         case typeDef: TypeDef
             if typeDef.symbol.deSkolemize.hasAnnotation(
               definitions.SpecializedClass) =>
-          debuglog(
-            "setting SPECIALIZED flag on typeDef.symbol.deSkolemize where typeDef = " + typeDef)
+          debuglog("setting SPECIALIZED flag on typeDef.symbol.deSkolemize where typeDef = " + typeDef)
           // we need to deSkolemize symbol so we get the same symbol as others would get when
           // inspecting type parameter from "outside"; see the discussion of skolems here:
           // https://groups.google.com/d/topic/scala-internals/0j8laVNTQsI/discussion

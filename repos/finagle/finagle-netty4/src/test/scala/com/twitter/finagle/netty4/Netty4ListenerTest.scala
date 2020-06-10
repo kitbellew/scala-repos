@@ -70,8 +70,7 @@ class Netty4ListenerTest
     )
   }
 
-  test(
-    "frames pipeline messages and bridges transports and service dispatchers (aka it works end-to-end)") {
+  test("frames pipeline messages and bridges transports and service dispatchers (aka it works end-to-end)") {
     val ctx = new StatsCtx {}
     import ctx._
 

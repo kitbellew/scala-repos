@@ -130,8 +130,7 @@ class KinesisCheckpointerSuite
     verify(checkpointerMock, times(1)).checkpoint(anyString())
   }
 
-  test(
-    "if checkpointing is going on, wait until finished before removing and checkpointing") {
+  test("if checkpointing is going on, wait until finished before removing and checkpointing") {
     when(receiverMock.getLatestSeqNumToCheckpoint(shardId))
       .thenReturn(someSeqNum)
       .thenReturn(someOtherSeqNum)

@@ -326,8 +326,7 @@ class EndToEndTest
       thrown.getMessage == "Internal error processing query: 'java.lang.Exception: sad panda'")
   }
 
-  test(
-    "thriftmux server + Finagle thrift client: traceId should be passed from client to server") {
+  test("thriftmux server + Finagle thrift client: traceId should be passed from client to server") {
     @volatile var cltTraceId: Option[TraceId] = None
     @volatile var srvTraceId: Option[TraceId] = None
     val tracer = new Tracer {
@@ -367,8 +366,7 @@ class EndToEndTest
     }
   }
 
-  test(
-    "thriftmux server + Finagle thrift client: clientId should be passed from client to server") {
+  test("thriftmux server + Finagle thrift client: clientId should be passed from client to server") {
     val server = ThriftMux.serveIface(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
@@ -390,8 +388,7 @@ class EndToEndTest
     }
   }
 
-  test(
-    "thriftmux server + Finagle thrift client: ClientId should not be overridable externally") {
+  test("thriftmux server + Finagle thrift client: ClientId should not be overridable externally") {
     val server = ThriftMux.serveIface(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
@@ -441,8 +438,7 @@ class EndToEndTest
     }
   }
 
-  test(
-    "thriftmux server + thriftmux client: ClientId should not be overridable externally") {
+  test("thriftmux server + thriftmux client: ClientId should not be overridable externally") {
     val server = ThriftMux.serveIface(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 0),
       new TestService.FutureIface {
@@ -483,8 +479,7 @@ class EndToEndTest
     }
   }
 
-  test(
-    "thriftmux server + Finagle thrift client w/o protocol upgrade: server.close()") {
+  test("thriftmux server + Finagle thrift client w/o protocol upgrade: server.close()") {
     new ThriftMuxTestServer {
       val client = OldPlainThriftClient.newIface[TestService.FutureIface](
         Name.bound(
@@ -702,8 +697,7 @@ class EndToEndTest
     server.close()
   }
 
-  test(
-    "thriftmux server + thrift client w/o protocol upgrade but w/ pipelined dispatch") {
+  test("thriftmux server + thrift client w/o protocol upgrade but w/ pipelined dispatch") {
     val nreqs = 5
     val servicePromises = Array.fill(nreqs)(new Promise[String])
     val requestReceived = Array.fill(nreqs)(new Promise[String])

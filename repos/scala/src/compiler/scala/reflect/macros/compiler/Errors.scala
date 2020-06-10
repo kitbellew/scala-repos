@@ -38,8 +38,7 @@ trait Errors extends Traces {
     bundleRefError("macro bundles must be static")
 
   def MacroBundleWrongShapeError() =
-    bundleRefError(
-      "macro bundles must be concrete monomorphic classes having a single constructor with a `val c: Context` parameter")
+    bundleRefError("macro bundles must be concrete monomorphic classes having a single constructor with a `val c: Context` parameter")
 
   trait Error {
     self: MacroImplRefCompiler =>

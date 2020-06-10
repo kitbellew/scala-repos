@@ -184,11 +184,10 @@ class ReplicaFetcherThread(
 
   def warnIfMessageOversized(messageSet: ByteBufferMessageSet): Unit = {
     if (messageSet.sizeInBytes > 0 && messageSet.validBytes <= 0)
-      error(
-        "Replication is failing due to a message that is greater than replica.fetch.max.bytes. This " +
-          "generally occurs when the max.message.bytes has been overridden to exceed this value and a suitably large " +
-          "message has also been sent. To fix this problem increase replica.fetch.max.bytes in your broker config to be " +
-          "equal or larger than your settings for max.message.bytes, both at a broker and topic level.")
+      error("Replication is failing due to a message that is greater than replica.fetch.max.bytes. This " +
+        "generally occurs when the max.message.bytes has been overridden to exceed this value and a suitably large " +
+        "message has also been sent. To fix this problem increase replica.fetch.max.bytes in your broker config to be " +
+        "equal or larger than your settings for max.message.bytes, both at a broker and topic level.")
   }
 
   /**

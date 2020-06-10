@@ -33,8 +33,7 @@ class OptionallyServableFilterTest extends FunSuite with MockitoSugar {
     verify(fn).apply(request)
   }
 
-  test(
-    "OptionallyServableFilter should throws NotServableException when fn returns false") {
+  test("OptionallyServableFilter should throws NotServableException when fn returns false") {
     val h = new OptionnallyServableFilterHelper
     import h._
 

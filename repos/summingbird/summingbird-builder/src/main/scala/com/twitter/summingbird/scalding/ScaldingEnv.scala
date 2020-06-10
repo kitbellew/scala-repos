@@ -161,8 +161,7 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
       case f @ FlowPlanException(errs) =>
         /* This is generally due to data not being ready, don't give a failed error code */
         if (!args.boolean("scalding.nothrowplan")) {
-          println(
-            "use: --scalding.nothrowplan to not give a failing error code in this case")
+          println("use: --scalding.nothrowplan to not give a failing error code in this case")
           throw f
         } else {
           println("[ERROR]: ========== FlowPlanException =========")

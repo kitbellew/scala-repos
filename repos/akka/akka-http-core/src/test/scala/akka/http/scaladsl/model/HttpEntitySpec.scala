@@ -123,8 +123,7 @@ class HttpEntitySpec extends FreeSpec with MustMatchers with BeforeAndAfterAll {
             Default(tpe, 42, Source.fromFuture(neverCompleted.future))
               .toStrict(100.millis),
             150.millis)
-        }.getMessage must be(
-          "HttpEntity.toStrict timed out after 100 milliseconds while still waiting for outstanding data")
+        }.getMessage must be("HttpEntity.toStrict timed out after 100 milliseconds while still waiting for outstanding data")
       }
     }
     "support transformDataBytes" - {

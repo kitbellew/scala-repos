@@ -115,11 +115,9 @@ class NettyServer(
           logger.warn("Ignoring unknown Netty channel option: " + option.getKey)
           transport match {
             case Native =>
-              logger.warn(
-                "Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html and http://netty.io/4.0/api/io/netty/channel/epoll/EpollChannelOption.html")
+              logger.warn("Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html and http://netty.io/4.0/api/io/netty/channel/epoll/EpollChannelOption.html")
             case Jdk =>
-              logger.warn(
-                "Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html")
+              logger.warn("Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html")
           }
         }
     }

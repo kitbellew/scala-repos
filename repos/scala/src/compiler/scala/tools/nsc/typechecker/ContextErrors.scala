@@ -907,8 +907,7 @@ trait ContextErrors {
                 sym1.associatedFile.canonicalPath))
           else None,
           if (isBug)
-            Some(
-              "Note: this may be due to a bug in the compiler involving wildcards in package objects")
+            Some("Note: this may be due to a bug in the compiler involving wildcards in package objects")
           else None
         )
         val addendum = addendums.flatten match {

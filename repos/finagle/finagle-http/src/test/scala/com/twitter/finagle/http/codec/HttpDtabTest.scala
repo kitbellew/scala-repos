@@ -63,8 +63,8 @@ class HttpDtabTest extends FunSuite with AssertionsForJUnit {
 
   // some base64 encoders insert newlines to enforce max line length.  ensure we aren't doing that
   test("X-Dtab: long dest round-trips") {
-    val expectedDtab = Dtab.read(
-      "/s/a => /s/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")
+    val expectedDtab = Dtab
+      .read("/s/a => /s/abcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyzabcdefghijklmnopqrstuvwxyz")
     val m = newMsg()
     HttpDtab.write(expectedDtab, m)
     val observedDtab = HttpDtab.read(m).get()

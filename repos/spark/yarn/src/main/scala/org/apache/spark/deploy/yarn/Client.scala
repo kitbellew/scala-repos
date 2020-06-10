@@ -468,9 +468,8 @@ private[spark] class Client(
     // If we passed in a keytab, make sure we copy the keytab to the staging directory on
     // HDFS, and setup the relevant environment vars, so the AM can login again.
     if (loginFromKeytab) {
-      logInfo(
-        "To enable the AM to login from keytab, credentials are being copied over to the AM" +
-          " via the YARN Secure Distributed Cache.")
+      logInfo("To enable the AM to login from keytab, credentials are being copied over to the AM" +
+        " via the YARN Secure Distributed Cache.")
       val (_, localizedPath) = distribute(
         keytab,
         destName = sparkConf.get(KEYTAB),
@@ -1033,8 +1032,7 @@ private[spark] class Client(
       commands.map(s => if (s == null) "null" else s).toList
     amContainer.setCommands(printableCommands.asJava)
 
-    logDebug(
-      "===============================================================================")
+    logDebug("===============================================================================")
     logDebug("YARN AM launch context:")
     logDebug(s"    user class: ${Option(args.userClass).getOrElse("N/A")}")
     logDebug("    env:")
@@ -1043,8 +1041,7 @@ private[spark] class Client(
     localResources.foreach { case (k, v) => logDebug(s"        $k -> $v") }
     logDebug("    command:")
     logDebug(s"        ${printableCommands.mkString(" ")}")
-    logDebug(
-      "===============================================================================")
+    logDebug("===============================================================================")
 
     // send the acl settings into YARN to control who has access via YARN interfaces
     val securityManager = new SecurityManager(sparkConf)

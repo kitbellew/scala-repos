@@ -132,13 +132,11 @@ class VectorIndexerSuite
     model.transform(sparsePoints1) // should work
     intercept[SparkException] {
       model.transform(densePoints2).collect()
-      logInfo(
-        "Did not throw error when fit, transform were called on vectors of different lengths")
+      logInfo("Did not throw error when fit, transform were called on vectors of different lengths")
     }
     intercept[SparkException] {
       vectorIndexer.fit(badPoints)
-      logInfo(
-        "Did not throw error when fitting vectors of different lengths in same RDD.")
+      logInfo("Did not throw error when fitting vectors of different lengths in same RDD.")
     }
   }
 
@@ -163,8 +161,7 @@ class VectorIndexerSuite
     testDenseSparse(densePoints2, sparsePoints2)
   }
 
-  test(
-    "Builds valid categorical feature value index, transform correctly, check metadata") {
+  test("Builds valid categorical feature value index, transform correctly, check metadata") {
     def checkCategoryMaps(
         data: DataFrame,
         maxCategories: Int,

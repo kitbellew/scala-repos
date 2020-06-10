@@ -419,9 +419,8 @@ sealed abstract class LDAModel private[ml] (
         oldLocalModel.getTopicDistributionMethod(sqlContext.sparkContext))
       dataset.withColumn($(topicDistributionCol), t(col($(featuresCol))))
     } else {
-      logWarning(
-        "LDAModel.transform was called without any output columns. Set an output column" +
-          " such as topicDistributionCol to produce results.")
+      logWarning("LDAModel.transform was called without any output columns. Set an output column" +
+        " such as topicDistributionCol to produce results.")
       dataset
     }
   }

@@ -67,8 +67,7 @@ class ClientDispatcherTest extends FunSuite with MockitoSugar {
     assert(p1.poll == Some(Return("ok: two")))
   }
 
-  test(
-    "ClientDispatcher should interrupt when close transport and cancel pending requests") {
+  test("ClientDispatcher should interrupt when close transport and cancel pending requests") {
     val h = new DispatchHelper
     import h._
 

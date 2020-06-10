@@ -157,8 +157,7 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
     assert(tempDir.list().size === 1)
   }
 
-  test(
-    "If commit fails, if task is retried it should not be locked, and will succeed.") {
+  test("If commit fails, if task is retried it should not be locked, and will succeed.") {
     val rdd = sc.parallelize(Seq(1), 1)
     sc.runJob(
       rdd,
@@ -191,8 +190,7 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
     assert(tempDir.list().size === 0)
   }
 
-  test(
-    "Only authorized committer failures can clear the authorized committer lock (SPARK-6614)") {
+  test("Only authorized committer failures can clear the authorized committer lock (SPARK-6614)") {
     val stage: Int = 1
     val partition: Int = 2
     val authorizedCommitter: Int = 3

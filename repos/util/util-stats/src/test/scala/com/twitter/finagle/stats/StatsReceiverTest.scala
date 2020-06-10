@@ -175,9 +175,8 @@ class StatsReceiverTest extends FunSuite {
       "Broadcast(InMemoryStatsReceiver, InMemoryStatsReceiver)" ==
         BroadcastStatsReceiver(Seq(inMem, inMem)).toString)
 
-    assert(
-      "Broadcast(InMemoryStatsReceiver, InMemoryStatsReceiver, InMemoryStatsReceiver)" ==
-        BroadcastStatsReceiver(Seq(inMem, inMem, inMem)).toString)
+    assert("Broadcast(InMemoryStatsReceiver, InMemoryStatsReceiver, InMemoryStatsReceiver)" ==
+      BroadcastStatsReceiver(Seq(inMem, inMem, inMem)).toString)
 
   }
 

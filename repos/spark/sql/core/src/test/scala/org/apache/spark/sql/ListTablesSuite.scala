@@ -63,8 +63,7 @@ class ListTablesSuite
         .count() === 0)
   }
 
-  test(
-    "getting all Tables with a database name has no impact on returned table names") {
+  test("getting all Tables with a database name has no impact on returned table names") {
     checkAnswer(
       sqlContext.tables("DB").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
@@ -93,8 +92,7 @@ class ListTablesSuite
 
         tableDF.registerTempTable("tables")
         checkAnswer(
-          sql(
-            "SELECT isTemporary, tableName from tables WHERE tableName = 'ListTablesSuiteTable'"),
+          sql("SELECT isTemporary, tableName from tables WHERE tableName = 'ListTablesSuiteTable'"),
           Row(true, "ListTablesSuiteTable")
         )
         checkAnswer(

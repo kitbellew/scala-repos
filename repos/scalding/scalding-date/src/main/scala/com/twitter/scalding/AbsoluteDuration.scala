@@ -99,8 +99,7 @@ object AbsoluteDuration extends java.io.Serializable {
         }
         case Nil => {
           // These are left over millisecs, but should be unreachable
-          sys.error(
-            "this is only reachable if units is passed with a length == 0, which should never happen")
+          sys.error("this is only reachable if units is passed with a length == 0, which should never happen")
         }
       }
     }

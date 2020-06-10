@@ -782,8 +782,7 @@ class DAGSchedulerSuite
     * the second stage fails due to a fetch failure. Multiple successive fetch failures of a stage
     * trigger an overall job abort to avoid endless retries.
     */
-  test(
-    "Multiple consecutive stage fetch failures should lead to job being aborted.") {
+  test("Multiple consecutive stage fetch failures should lead to job being aborted.") {
     setupStageAbortTest(sc)
 
     val shuffleMapRdd = new MyRDD(sc, 2, Nil)
@@ -1000,8 +999,7 @@ class DAGSchedulerSuite
     * This tests the case where another FetchFailed comes in while the map stage is getting
     * re-run.
     */
-  test(
-    "late fetch failures don't cause multiple concurrent attempts for the same map stage") {
+  test("late fetch failures don't cause multiple concurrent attempts for the same map stage") {
     val shuffleMapRdd = new MyRDD(sc, 2, Nil)
     val shuffleDep =
       new ShuffleDependency(shuffleMapRdd, new HashPartitioner(2))
@@ -1076,9 +1074,8 @@ class DAGSchedulerSuite
     * This tests the case where a late FetchFailed comes in after the map stage has finished getting
     * retried and a new reduce stage starts running.
     */
-  test(
-    "extremely late fetch failures don't cause multiple concurrent attempts for " +
-      "the same stage") {
+  test("extremely late fetch failures don't cause multiple concurrent attempts for " +
+    "the same stage") {
     val shuffleMapRdd = new MyRDD(sc, 2, Nil)
     val shuffleDep =
       new ShuffleDependency(shuffleMapRdd, new HashPartitioner(2))
@@ -1346,8 +1343,7 @@ class DAGSchedulerSuite
     * available before we finish any task set for stage 1.  We want to make sure that we don't
     * submit stage 2 until the map output for stage 1 is registered
     */
-  test(
-    "don't submit stage until its dependencies map outputs are registered (SPARK-5259)") {
+  test("don't submit stage until its dependencies map outputs are registered (SPARK-5259)") {
     val firstRDD = new MyRDD(sc, 3, Nil)
     val firstShuffleDep =
       new ShuffleDependency(firstRDD, new HashPartitioner(2))
@@ -1655,9 +1651,8 @@ class DAGSchedulerSuite
     * later, active job if they were previously run under a job that is no longer active, even when
     * there are fetch failures
     */
-  test(
-    "stage used by two jobs, some fetch failures, and the first job no longer active " +
-      "(SPARK-6880)") {
+  test("stage used by two jobs, some fetch failures, and the first job no longer active " +
+    "(SPARK-6880)") {
     val shuffleDep1 = launchJobsThatShareStageAndCancelFirst()
     val job2Id =
       1 // TaskSet priority for Stages run with "job2" as the ActiveJob
@@ -1862,8 +1857,7 @@ class DAGSchedulerSuite
     assert(sc.parallelize(1 to 10, 2).count() === 10)
   }
 
-  test(
-    "getPartitions exceptions should not crash DAGScheduler and SparkContext (SPARK-8606)") {
+  test("getPartitions exceptions should not crash DAGScheduler and SparkContext (SPARK-8606)") {
     val e1 = intercept[DAGSchedulerSuiteDummyException] {
       val rdd = new MyRDD(sc, 2, Nil) {
         override def getPartitions: Array[Partition] = {
@@ -1877,8 +1871,7 @@ class DAGSchedulerSuite
     assert(sc.parallelize(1 to 10, 2).count() === 10)
   }
 
-  test(
-    "getPreferredLocations errors should not crash DAGScheduler and SparkContext (SPARK-8606)") {
+  test("getPreferredLocations errors should not crash DAGScheduler and SparkContext (SPARK-8606)") {
     val e1 = intercept[SparkException] {
       val rdd = new MyRDD(sc, 2, Nil) {
         override def getPreferredLocations(split: Partition): Seq[String] = {
@@ -1953,8 +1946,7 @@ class DAGSchedulerSuite
     assertDataStructuresEmpty()
   }
 
-  test(
-    "reduce task locality preferences should only include machines with largest map outputs") {
+  test("reduce task locality preferences should only include machines with largest map outputs") {
     val numMapTasks = 4
     // Create an shuffleMapRdd with more partitions
     val shuffleMapRdd = new MyRDD(sc, numMapTasks, Nil)
@@ -1981,8 +1973,7 @@ class DAGSchedulerSuite
     assertDataStructuresEmpty()
   }
 
-  test(
-    "stages with both narrow and shuffle dependencies use narrow ones for locality") {
+  test("stages with both narrow and shuffle dependencies use narrow ones for locality") {
     // Create an RDD that has both a shuffle dependency and a narrow dependency (e.g. for a join)
     val rdd1 = new MyRDD(sc, 1, Nil)
     val rdd2 = new MyRDD(sc, 1, Nil, locations = Seq(Seq("hostB")))

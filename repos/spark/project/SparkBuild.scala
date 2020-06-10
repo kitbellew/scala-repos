@@ -128,19 +128,16 @@ object SparkBuild extends PomBuild {
     var profiles: mutable.Seq[String] = mutable.Seq("sbt")
     // scalastyle:off println
     if (Properties.envOrNone("SPARK_GANGLIA_LGPL").isDefined) {
-      println(
-        "NOTE: SPARK_GANGLIA_LGPL is deprecated, please use -Pspark-ganglia-lgpl flag.")
+      println("NOTE: SPARK_GANGLIA_LGPL is deprecated, please use -Pspark-ganglia-lgpl flag.")
       profiles ++= Seq("spark-ganglia-lgpl")
     }
     if (Properties.envOrNone("SPARK_HIVE").isDefined) {
-      println(
-        "NOTE: SPARK_HIVE is deprecated, please use -Phive and -Phive-thriftserver flags.")
+      println("NOTE: SPARK_HIVE is deprecated, please use -Phive and -Phive-thriftserver flags.")
       profiles ++= Seq("hive", "hive-thriftserver")
     }
     Properties.envOrNone("SPARK_HADOOP_VERSION") match {
       case Some(v) =>
-        println(
-          "NOTE: SPARK_HADOOP_VERSION is deprecated, please use -Dhadoop.version=" + v)
+        println("NOTE: SPARK_HADOOP_VERSION is deprecated, please use -Dhadoop.version=" + v)
         System.setProperty("hadoop.version", v)
       case None =>
     }
@@ -158,9 +155,8 @@ object SparkBuild extends PomBuild {
       case Some(v) =>
         if (backwardCompatibility.nonEmpty)
           // scalastyle:off println
-          println(
-            "Note: We ignore environment variables, when use of profile is detected in " +
-              "conjunction with environment variable.")
+          println("Note: We ignore environment variables, when use of profile is detected in " +
+            "conjunction with environment variable.")
         // scalastyle:on println
         v.split("(\\s+|,)")
           .filterNot(_.isEmpty)

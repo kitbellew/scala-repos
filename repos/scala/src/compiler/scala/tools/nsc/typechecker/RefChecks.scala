@@ -537,8 +537,7 @@ abstract class RefChecks
               "must be declared lazy to override a concrete lazy value")
           } else if (other.isDeferred && member.isTermMacro && member.extendedOverriddenSymbols
               .forall(_.isDeferred)) { // (1.9)
-            overrideError(
-              "cannot be used here - term macros cannot override abstract methods")
+            overrideError("cannot be used here - term macros cannot override abstract methods")
           } else if (other.isTermMacro && !member.isTermMacro) { // (1.10)
             overrideError(
               "cannot be used here - only term macros can override term macros")
@@ -612,8 +611,7 @@ abstract class RefChecks
                 )
             }
           } else if (low.isAbstractType && lowType.isVolatile && !highInfo.bounds.hi.isVolatile)
-            overrideError(
-              "is a volatile type; cannot override a type with non-volatile upper bound")
+            overrideError("is a volatile type; cannot override a type with non-volatile upper bound")
         }
         def checkOverrideTerm() {
           other.cookJavaRawInfo() // #2454
@@ -627,8 +625,7 @@ abstract class RefChecks
           }
           if (low.isStable && !highType.isVolatile) {
             if (lowType.isVolatile)
-              overrideError(
-                "has a volatile type; cannot override a member with non-volatile type")
+              overrideError("has a volatile type; cannot override a member with non-volatile type")
             else
               lowType.normalize.resultType match {
                 case rt: RefinedType
@@ -2008,8 +2005,7 @@ abstract class RefChecks
             else tree
 
           case dc @ TypeTreeWithDeferredRefCheck() =>
-            abort(
-              "adapt should have turned dc: TypeTreeWithDeferredRefCheck into tpt: TypeTree, with tpt.original == dc")
+            abort("adapt should have turned dc: TypeTreeWithDeferredRefCheck into tpt: TypeTree, with tpt.original == dc")
           case tpt @ TypeTree() =>
             if (tpt.original != null) {
               tpt.original foreach {

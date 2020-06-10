@@ -78,9 +78,8 @@ $ShowCommand <task>
 	<pattern> is a regular expression interpreted by java.util.Pattern.  Matching text is highlighted (when highlighting is supported and enabled).
 	See also '""" + LastCommand + "'."
 
-  val lastBrief = (
-    LastCommand,
-    "Displays output from a previous command or the output from a specific task.")
+  val lastBrief =
+    (LastCommand, "Displays output from a previous command or the output from a specific task.")
   val lastDetailed =
     LastCommand + """
 	Prints the logging for the previous command, typically at a more verbose level.
@@ -176,7 +175,9 @@ $ShowCommand <task>
       "Manipulates session settings.  For details, run 'help " + SessionCommand + "'.")
 
   def settingsPreamble = commonPreamble("settings")
-  def tasksPreamble = commonPreamble("tasks") + """
+  def tasksPreamble =
+    commonPreamble(
+      "tasks") + """
 Tasks produce values.  Use the 'show' command to run the task and print the resulting value."""
 
   def commonPreamble(label: String) =
@@ -284,9 +285,7 @@ Syntax summary
   def LoadProjectImpl = "loadp"
   def LoadProject = "reload"
   def LoadProjectBrief =
-    (
-      LoadProject,
-      "(Re)loads the current project or changes to plugins project or returns from it.")
+    (LoadProject, "(Re)loads the current project or changes to plugins project or returns from it.")
   def LoadProjectDetailed =
     LoadProject +
       s"""

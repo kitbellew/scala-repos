@@ -65,8 +65,7 @@ class CompletionTest {
     assertEquals(
       List("prefix_aaa", "prefix_nnn", "prefix_zzz"),
       completer
-        .complete(
-          """class C { def prefix_nnn = 0; def prefix_zzz = 0; def prefix_aaa = 0; prefix_""")
+        .complete("""class C { def prefix_nnn = 0; def prefix_zzz = 0; def prefix_aaa = 0; prefix_""")
         .candidates
     )
   }

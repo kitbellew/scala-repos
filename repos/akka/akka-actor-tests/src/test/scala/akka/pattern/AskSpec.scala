@@ -54,8 +54,7 @@ class AskSpec extends AkkaSpec {
       f.isCompleted should ===(true)
       intercept[IllegalArgumentException] {
         Await.result(f, timeout.duration)
-      }.getMessage should ===(
-        "Unsupported recipient ActorRef type, question not sent to [null]. Sender[null] sent the message of type \"java.lang.Double\".")
+      }.getMessage should ===("Unsupported recipient ActorRef type, question not sent to [null]. Sender[null] sent the message of type \"java.lang.Double\".")
     }
 
     "return broken promises on 0 timeout" in {

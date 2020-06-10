@@ -21,8 +21,8 @@ object FixInternalDebugLogging {
   class MonkeyPatchInternalSslDebugAction(val newOptions: String)
       extends FixLoggingAction {
 
-    val logger = org.slf4j.LoggerFactory.getLogger(
-      "play.api.libs.ws.ssl.debug.FixInternalDebugLogging.MonkeyPatchInternalSslDebugAction")
+    val logger = org.slf4j.LoggerFactory
+      .getLogger("play.api.libs.ws.ssl.debug.FixInternalDebugLogging.MonkeyPatchInternalSslDebugAction")
 
     val initialResource = foldRuntime(
       older =

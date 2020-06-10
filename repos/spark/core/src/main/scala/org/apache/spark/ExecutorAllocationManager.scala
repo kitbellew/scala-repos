@@ -536,8 +536,7 @@ private[spark] class ExecutorAllocationManager(
     */
   private def onSchedulerQueueEmpty(): Unit =
     synchronized {
-      logDebug(
-        "Clearing timer to add executors because there are no more pending tasks")
+      logDebug("Clearing timer to add executors because there are no more pending tasks")
       addTime = NOT_SET
       numExecutorsToAdd = 1
     }

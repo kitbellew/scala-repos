@@ -106,10 +106,8 @@ class MigrationTo0_11Test
   private[this] def onlyVersion(ts: Long) =
     AppDefinition.VersionInfo.OnlyVersion(Timestamp(ts))
 
-  test(
-    "if an app has (different) revisions in the appRepo and the groupRepo, they are combined") {
-    Given(
-      "one app with multiple versions in appRepo and the newest version in groupRepo")
+  test("if an app has (different) revisions in the appRepo and the groupRepo, they are combined") {
+    Given("one app with multiple versions in appRepo and the newest version in groupRepo")
     val f = new Fixture
 
     val appV1 = AppDefinition(
@@ -166,10 +164,8 @@ class MigrationTo0_11Test
       .futureValue should be(Some(correctedAppV3))
   }
 
-  test(
-    "if an app has revisions in the appRepo and the latest in the groupRepo, they are combined correctly") {
-    Given(
-      "one app with multiple versions in appRepo and the newest version in groupRepo")
+  test("if an app has revisions in the appRepo and the latest in the groupRepo, they are combined correctly") {
+    Given("one app with multiple versions in appRepo and the newest version in groupRepo")
     val f = new Fixture
 
     val appV1 = AppDefinition(

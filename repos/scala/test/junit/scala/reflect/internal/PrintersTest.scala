@@ -358,25 +358,21 @@ trait BasePrintTests {
 
   @Test def testFunc2 =
     assertResultCode(code = "val sum: Seq[Int] => Int = _ reduceLeft (_+_)")(
-      parsedCode =
-        "val sum: _root_.scala.Function1[Seq[Int], Int] = ((x$1) => x$1.reduceLeft(((x$2, x$3) => x$2.+(x$3))))",
-      typedCode =
-        "val sum: _root_.scala.Function1[scala.`package`.Seq[scala.Int], scala.Int] = ((x$1: Seq[Int]) => x$1.reduceLeft[Int](((x$2: Int, x$3: Int) => x$2.+(x$3))))"
+      parsedCode = "val sum: _root_.scala.Function1[Seq[Int], Int] = ((x$1) => x$1.reduceLeft(((x$2, x$3) => x$2.+(x$3))))",
+      typedCode = "val sum: _root_.scala.Function1[scala.`package`.Seq[scala.Int], scala.Int] = ((x$1: Seq[Int]) => x$1.reduceLeft[Int](((x$2: Int, x$3: Int) => x$2.+(x$3))))"
     )
 
   @Test def testFunc3 =
     assertResultCode(code = "List(1, 2, 3) map (_ - 1)")(
       parsedCode = "List(1, 2, 3).map(((x$1) => x$1.-(1))) ",
-      typedCode =
-        "scala.collection.immutable.List.apply[Int](1, 2, 3).map[Int, List[Int]](((x$1: Int) => x$1.-(1)))(scala.collection.immutable.List.canBuildFrom[Int])"
+      typedCode = "scala.collection.immutable.List.apply[Int](1, 2, 3).map[Int, List[Int]](((x$1: Int) => x$1.-(1)))(scala.collection.immutable.List.canBuildFrom[Int])"
     )
 
   @Test def testFunc4 =
     assertResultCode(code = "val x: String => Int = ((str: String) => 1)")(
       parsedCode =
         "val x: _root_.scala.Function1[String, Int] = ((str: String) => 1)",
-      typedCode =
-        " val x: _root_.scala.Function1[_root_.scala.Predef.String, _root_.scala.Int] = ((str: _root_.scala.Predef.String) => 1)",
+      typedCode = " val x: _root_.scala.Function1[_root_.scala.Predef.String, _root_.scala.Int] = ((str: _root_.scala.Predef.String) => 1)",
       printRoot = true
     )
 

@@ -147,8 +147,7 @@ class TaskContextSuite
     assert(e.getMessage.contains("exception in task"))
   }
 
-  test(
-    "TaskContext.attemptNumber should return attempt number, not task id (SPARK-4014)") {
+  test("TaskContext.attemptNumber should return attempt number, not task id (SPARK-4014)") {
     sc = new SparkContext(
       "local[1,2]",
       "test"

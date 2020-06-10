@@ -106,8 +106,7 @@ trait TypeInferencer extends DAG {
             inner(Some(red.tpe.arg), typing, splits, parent)
 
           case MegaReduce(_, _) =>
-            sys.error(
-              "Cannot infer type of MegaReduce. MegaReduce optimization must come after inferTypes.")
+            sys.error("Cannot infer type of MegaReduce. MegaReduce optimization must come after inferTypes.")
 
           case Morph1(m, parent) =>
             inner(Some(m.tpe.arg), typing, splits, parent)

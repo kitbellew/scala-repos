@@ -66,9 +66,7 @@ object SimpleConsumerShell extends Logging {
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(UseLeaderReplica)
     val offsetOpt = parser
-      .accepts(
-        "offset",
-        "The offset id to consume from, default to -2 which means from beginning; while value -1 means from end")
+      .accepts("offset", "The offset id to consume from, default to -2 which means from beginning; while value -1 means from end")
       .withRequiredArg
       .describedAs("consume offset")
       .ofType(classOf[java.lang.Long])
@@ -197,8 +195,8 @@ object SimpleConsumerShell extends Logging {
     if (replicaId == UseLeaderReplica) {
       replicaOpt = partitionMetadataOpt.get.leader
       if (!replicaOpt.isDefined) {
-        System.err.println(
-          "Error: user specifies to fetch from leader for partition (%s, %d) which has not been elected yet"
+        System.err
+          .println("Error: user specifies to fetch from leader for partition (%s, %d) which has not been elected yet"
             .format(topic, partitionId))
         System.exit(1)
       }
@@ -279,9 +277,8 @@ object SimpleConsumerShell extends Logging {
               val fetchResponse = simpleConsumer.fetch(fetchRequest)
               val messageSet = fetchResponse.messageSet(topic, partitionId)
               if (messageSet.validBytes <= 0 && noWaitAtEndOfLog) {
-                println(
-                  "Terminating. Reached the end of partition (%s, %d) at offset %d"
-                    .format(topic, partitionId, offset))
+                println("Terminating. Reached the end of partition (%s, %d) at offset %d"
+                  .format(topic, partitionId, offset))
                 return
               }
               debug(

@@ -50,8 +50,8 @@ object JsonCommandSpec extends Specification {
     }
 
     "Parse the whole thing" in {
-      JsonCommand.unapply(parse(
-        """{"command": "frog", "target": "spud", "foo": "bar", "params": 982, "baz": false} """)) must_==
+      JsonCommand.unapply(
+        parse("""{"command": "frog", "target": "spud", "foo": "bar", "params": 982, "baz": false} """)) must_==
         Some(("frog", Some("spud"), JInt(982)))
     }
   }

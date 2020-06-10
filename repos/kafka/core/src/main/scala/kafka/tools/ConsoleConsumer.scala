@@ -137,13 +137,11 @@ object ConsoleConsumer extends Logging {
           consumer.receive()
         } catch {
           case nse: StreamEndException =>
-            trace(
-              "Caught StreamEndException because consumer is shutdown, ignore and terminate.")
+            trace("Caught StreamEndException because consumer is shutdown, ignore and terminate.")
             // Consumer is already closed
             return
           case nse: WakeupException =>
-            trace(
-              "Caught WakeupException because consumer is shutdown, ignore and terminate.")
+            trace("Caught WakeupException because consumer is shutdown, ignore and terminate.")
             // Consumer will be closed
             return
           case e: Throwable =>
@@ -300,16 +298,12 @@ object ConsoleConsumer extends Logging {
         "start with the earliest message present in the log rather than the latest message."
     )
     val maxMessagesOpt = parser
-      .accepts(
-        "max-messages",
-        "The maximum number of messages to consume before exiting. If not set, consumption is continual.")
+      .accepts("max-messages", "The maximum number of messages to consume before exiting. If not set, consumption is continual.")
       .withRequiredArg
       .describedAs("num_messages")
       .ofType(classOf[java.lang.Integer])
     val timeoutMsOpt = parser
-      .accepts(
-        "timeout-ms",
-        "If specified, exit if no message is available for consumption for the specified interval.")
+      .accepts("timeout-ms", "If specified, exit if no message is available for consumption for the specified interval.")
       .withRequiredArg
       .describedAs("timeout_ms")
       .ofType(classOf[java.lang.Integer])

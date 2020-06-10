@@ -56,21 +56,18 @@ case class WindowSpecDefinition(
   def validate: Option[String] =
     frameSpecification match {
       case UnspecifiedFrame =>
-        Some(
-          "Found a UnspecifiedFrame. It should be converted to a SpecifiedWindowFrame " +
-            "during analysis. Please file a bug report.")
+        Some("Found a UnspecifiedFrame. It should be converted to a SpecifiedWindowFrame " +
+          "during analysis. Please file a bug report.")
       case frame: SpecifiedWindowFrame =>
         frame.validate.orElse {
           def checkValueBasedBoundaryForRangeFrame(): Option[String] = {
             if (orderSpec.length > 1) {
               // It is not allowed to have a value-based PRECEDING and FOLLOWING
               // as the boundary of a Range Window Frame.
-              Some(
-                "This Range Window Frame only accepts at most one ORDER BY expression.")
+              Some("This Range Window Frame only accepts at most one ORDER BY expression.")
             } else if (orderSpec.nonEmpty && !orderSpec.head.dataType
                 .isInstanceOf[NumericType]) {
-              Some(
-                "The data type of the expression in the ORDER BY clause should be a numeric type.")
+              Some("The data type of the expression in the ORDER BY clause should be a numeric type.")
             } else {
               None
             }
@@ -431,8 +428,7 @@ abstract class OffsetWindowFunction
   * @param default to use when the input value is null or when the offset is larger than the window.
   */
 @ExpressionDescription(
-  usage =
-    """_FUNC_(input, offset, default) - LEAD returns the value of 'x' at 'offset' rows
+  usage = """_FUNC_(input, offset, default) - LEAD returns the value of 'x' at 'offset' rows
      after the current row in the window""")
 case class Lead(input: Expression, offset: Expression, default: Expression)
     extends OffsetWindowFunction {
@@ -460,8 +456,7 @@ case class Lead(input: Expression, offset: Expression, default: Expression)
   * @param default to use when the input value is null or when the offset is smaller than the window.
   */
 @ExpressionDescription(
-  usage =
-    """_FUNC_(input, offset, default) - LAG returns the value of 'x' at 'offset' rows
+  usage = """_FUNC_(input, offset, default) - LAG returns the value of 'x' at 'offset' rows
      before the current row in the window""")
 case class Lag(input: Expression, offset: Expression, default: Expression)
     extends OffsetWindowFunction {
@@ -540,8 +535,7 @@ case class RowNumber() extends RowNumberLike {
   * This documentation has been based upon similar documentation for the Hive and Presto projects.
   */
 @ExpressionDescription(
-  usage =
-    """_FUNC_() - The CUME_DIST() function computes the position of a value relative to
+  usage = """_FUNC_() - The CUME_DIST() function computes the position of a value relative to
      a all values in the partition.""")
 case class CumeDist() extends RowNumberLike with SizeBasedWindowFunction {
   override def dataType: DataType = DoubleType
@@ -576,8 +570,7 @@ case class CumeDist() extends RowNumberLike with SizeBasedWindowFunction {
   * @param buckets number of buckets to divide the rows in. Default value is 1.
   */
 @ExpressionDescription(
-  usage =
-    """_FUNC_(x) - The NTILE(n) function divides the rows for each window partition
+  usage = """_FUNC_(x) - The NTILE(n) function divides the rows for each window partition
      into 'n' buckets ranging from 1 to at most 'n'.""")
 case class NTile(buckets: Expression)
     extends RowNumberLike
@@ -712,8 +705,7 @@ abstract class RankLike extends AggregateWindowFunction {
   *                 Analyser.
   */
 @ExpressionDescription(
-  usage =
-    """_FUNC_() -  RANK() computes the rank of a value in a group of values. The result
+  usage = """_FUNC_() -  RANK() computes the rank of a value in a group of values. The result
      is one plus the number of rows preceding or equal to the current row in the
      ordering of the partition. Tie values will produce gaps in the sequence.""")
 case class Rank(children: Seq[Expression]) extends RankLike {
@@ -734,8 +726,7 @@ case class Rank(children: Seq[Expression]) extends RankLike {
   *                 Analyser.
   */
 @ExpressionDescription(
-  usage =
-    """_FUNC_() - The DENSE_RANK() function computes the rank of a value in a group of
+  usage = """_FUNC_() - The DENSE_RANK() function computes the rank of a value in a group of
      values. The result is one plus the previously assigned rank value. Unlike Rank,
      DenseRank will not produce gaps in the ranking sequence.""")
 case class DenseRank(children: Seq[Expression]) extends RankLike {

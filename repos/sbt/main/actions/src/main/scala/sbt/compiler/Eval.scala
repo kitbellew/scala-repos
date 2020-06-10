@@ -397,8 +397,7 @@ final class Eval(
       base = "Error parsing expression.",
       extraBlank = "  Ensure that there are no blank lines within a setting.",
       missingBlank = "  Ensure that settings are separated by blank lines.",
-      extraSemi =
-        "  Note that settings are expressions and do not end with semicolons.  (Semicolons are fine within {} blocks, however.)"
+      extraSemi = "  Note that settings are expressions and do not end with semicolons.  (Semicolons are fine within {} blocks, however.)"
     )
 
   /**

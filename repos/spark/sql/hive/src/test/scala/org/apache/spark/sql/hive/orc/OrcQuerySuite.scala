@@ -306,8 +306,7 @@ class OrcQuerySuite extends QueryTest with BeforeAndAfterAll with OrcTest {
         (0 until 10).map(i => Row("same", "run_" + i, 100)))
 
       checkAnswer(
-        sql(
-          "SELECT `_1`, `_2`, SUM(`_3`) FROM t WHERE `_2` = 'run_5' GROUP BY `_1`, `_2`"),
+        sql("SELECT `_1`, `_2`, SUM(`_3`) FROM t WHERE `_2` = 'run_5' GROUP BY `_1`, `_2`"),
         List(Row("same", "run_5", 100)))
     }
   }

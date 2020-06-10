@@ -530,16 +530,14 @@ class KafkaServer(
             } catch {
               case ioe: IOException =>
                 ioException = true
-                warn(
-                  "Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s"
-                    .format(ioe.getMessage))
+                warn("Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s"
+                  .format(ioe.getMessage))
               // ignore and try again
             }
           }
           if (!shutdownSucceeded) {
             Thread.sleep(config.controlledShutdownRetryBackoffMs)
-            warn(
-              "Retrying controlled shutdown after the previous attempt failed...")
+            warn("Retrying controlled shutdown after the previous attempt failed...")
           }
         }
       } finally networkClient.close()
@@ -617,16 +615,14 @@ class KafkaServer(
               case ioe: java.io.IOException =>
                 channel.disconnect()
                 channel = null
-                warn(
-                  "Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s"
-                    .format(ioe.getMessage))
+                warn("Error during controlled shutdown, possibly because leader movement took longer than the configured socket.timeout.ms: %s"
+                  .format(ioe.getMessage))
               // ignore and try again
             }
           }
           if (!shutdownSucceeded) {
             Thread.sleep(config.controlledShutdownRetryBackoffMs)
-            warn(
-              "Retrying controlled shutdown after the previous attempt failed...")
+            warn("Retrying controlled shutdown after the previous attempt failed...")
           }
         }
       } finally {
@@ -657,8 +653,7 @@ class KafkaServer(
             config.controlledShutdownMaxRetries.intValue)
 
       if (!shutdownSucceeded)
-        warn(
-          "Proceeding to do an unclean shutdown as all the controlled shutdown attempts failed")
+        warn("Proceeding to do an unclean shutdown as all the controlled shutdown attempts failed")
 
     }
   }

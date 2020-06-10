@@ -237,9 +237,8 @@ class DelayedFactoryTest extends FunSuite {
         assert(!underlying.isAvailable)
       }
 
-      test(
-        "%s: a factory that's closed prematurely should close the underlying on satisfaction"
-          .format(name)) {
+      test("%s: a factory that's closed prematurely should close the underlying on satisfaction"
+        .format(name)) {
         val ctx = helpFn()
         import ctx._
 

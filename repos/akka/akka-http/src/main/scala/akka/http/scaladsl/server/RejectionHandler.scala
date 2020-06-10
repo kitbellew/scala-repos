@@ -144,9 +144,7 @@ object RejectionHandler {
       }
       .handle {
         case AuthorizationFailedRejection ⇒
-          complete((
-            Forbidden,
-            "The supplied authentication is not authorized to access this resource"))
+          complete((Forbidden, "The supplied authentication is not authorized to access this resource"))
       }
       .handle {
         case MalformedFormFieldRejection(name, msg, _) ⇒

@@ -134,7 +134,8 @@ object ThreadPoolsSpec extends PlaySpecification {
     }
 
     "allow a synchronous thread pool" in {
-      val config = ConfigFactory.parseString("""#highly-synchronous
+      val config = ConfigFactory
+        .parseString("""#highly-synchronous
       akka {
         actor {
           default-dispatcher {

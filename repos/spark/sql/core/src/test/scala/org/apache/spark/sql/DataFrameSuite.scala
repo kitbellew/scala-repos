@@ -187,8 +187,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test(
-    "SPARK-8930: explode should fail with a meaningful message if it takes a star") {
+  test("SPARK-8930: explode should fail with a meaningful message if it takes a star") {
     val df = Seq(("1", "1,2"), ("2", "4"), ("3", "7,8,9")).toDF("prefix", "csv")
     val e = intercept[AnalysisException] {
       df.explode($"*") {
@@ -1020,8 +1019,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     }
   }
 
-  test(
-    "SPARK-8608: call `show` on local DataFrame with random columns should return same value") {
+  test("SPARK-8608: call `show` on local DataFrame with random columns should return same value") {
     val df = testData.select(rand(33))
     assert(df.showString(5) == df.showString(5))
 
@@ -1030,8 +1028,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     assert(df1.showString(5) == df1.showString(5))
   }
 
-  test(
-    "SPARK-8609: local DataFrame with random columns should return same value after sort") {
+  test("SPARK-8609: local DataFrame with random columns should return same value after sort") {
     checkAnswer(testData.sort(rand(33)), testData.sort(rand(33)))
 
     // We will reuse the same Expression object for LocalRelation.
@@ -1079,8 +1076,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       .collect()
   }
 
-  test(
-    "SPARK-10185: Read multiple Hadoop Filesystem paths and paths with a comma in it") {
+  test("SPARK-10185: Read multiple Hadoop Filesystem paths and paths with a comma in it") {
     withTempDir { dir =>
       val df1 = Seq((1, 22)).toDF("a", "b")
       val dir1 = new File(dir, "dir,1").getCanonicalPath
@@ -1141,8 +1137,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     assert(except.count() === 70)
   }
 
-  test(
-    "SPARK-10740: handle nondeterministic expressions correctly for set operations") {
+  test("SPARK-10740: handle nondeterministic expressions correctly for set operations") {
     val df1 = (1 to 20).map(Tuple1.apply).toDF("i")
     val df2 = (1 to 10).map(Tuple1.apply).toDF("i")
 

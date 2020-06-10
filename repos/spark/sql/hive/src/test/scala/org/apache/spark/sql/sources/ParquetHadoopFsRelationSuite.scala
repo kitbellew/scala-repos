@@ -40,8 +40,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
       case _                       => true
     }
 
-  test(
-    "save()/load() - partitioned table - simple queries - partition columns in data") {
+  test("save()/load() - partitioned table - simple queries - partition columns in data") {
     withTempDir { file =>
       val basePath = new Path(file.getCanonicalPath)
       val fs = basePath.getFileSystem(SparkHadoopUtil.get.conf)
@@ -86,8 +85,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
     }
   }
 
-  test(
-    "SPARK-8014: Avoid scanning output directory when SaveMode isn't SaveMode.Append") {
+  test("SPARK-8014: Avoid scanning output directory when SaveMode isn't SaveMode.Append") {
     withTempDir { dir =>
       val path = dir.getCanonicalPath
       val df = Seq(1 -> "a").toDF()
@@ -131,8 +129,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
     }
   }
 
-  test(
-    "SPARK-8604: Parquet data source should write summary file while doing appending") {
+  test("SPARK-8604: Parquet data source should write summary file while doing appending") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       val df = sqlContext.range(0, 5).toDF()
@@ -175,8 +172,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
     }
   }
 
-  test(
-    "SPARK-11500: Not deterministic order of columns when using merging schemas.") {
+  test("SPARK-11500: Not deterministic order of columns when using merging schemas.") {
     import testImplicits._
     withSQLConf(SQLConf.PARQUET_SCHEMA_MERGING_ENABLED.key -> "true") {
       withTempPath { dir =>
@@ -238,8 +234,7 @@ class ParquetHadoopFsRelationSuite extends HadoopFsRelationTest {
     }
   }
 
-  test(
-    "SPARK-13543: Support for specifying compression codec for Parquet via option()") {
+  test("SPARK-13543: Support for specifying compression codec for Parquet via option()") {
     withSQLConf(SQLConf.PARQUET_COMPRESSION.key -> "UNCOMPRESSED") {
       withTempPath { dir =>
         val path = s"${dir.getCanonicalPath}/table1"

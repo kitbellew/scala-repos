@@ -44,8 +44,7 @@ class TaskStatusUpdateProcessorImplTest
     with ScalaFutures
     with GivenWhenThen
     with Matchers {
-  test(
-    "process update for unknown task that's not lost will result in a kill and ack") {
+  test("process update for unknown task that's not lost will result in a kill and ack") {
     fOpt = Some(new Fixture)
     val origUpdate =
       TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way
@@ -74,8 +73,7 @@ class TaskStatusUpdateProcessorImplTest
     f.verifyNoMoreInteractions()
   }
 
-  test(
-    "process update for known task without launchedTask that's not lost will result in a kill and ack") {
+  test("process update for known task without launchedTask that's not lost will result in a kill and ack") {
     fOpt = Some(new Fixture)
     val origUpdate =
       TaskStatusUpdateTestHelper.finished // everything != lost is handled in the same way

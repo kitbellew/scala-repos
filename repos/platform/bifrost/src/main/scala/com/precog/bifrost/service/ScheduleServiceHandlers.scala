@@ -124,9 +124,8 @@ class AddScheduledQueryServiceHandler(
                   contentFuture map { jv =>
                     jv.validated[AddScheduledQueryRequest].disjunction leftMap {
                       err =>
-                        badRequest(
-                          "Request body %s is not a valid scheduling query request: %s"
-                            .format(jv.renderCompact, err.message))
+                        badRequest("Request body %s is not a valid scheduling query request: %s"
+                          .format(jv.renderCompact, err.message))
                     }
                   }
                 }

@@ -663,8 +663,9 @@ class KafkaApis(
       }
 
       def fetchResponseCallback(delayTimeMs: Int) {
-        trace(s"Sending fetch response to client ${fetchRequest.clientId} of " +
-          s"${convertedPartitionData.values.map(_.messages.sizeInBytes).sum} bytes")
+        trace(
+          s"Sending fetch response to client ${fetchRequest.clientId} of " +
+            s"${convertedPartitionData.values.map(_.messages.sizeInBytes).sum} bytes")
         val response = FetchResponse(
           fetchRequest.correlationId,
           mergedPartitionData,
@@ -765,18 +766,16 @@ class KafkaApis(
         // NOTE: UnknownTopicOrPartitionException and NotLeaderForPartitionException are special cased since these error messages
         // are typically transient and there is no value in logging the entire stack trace for the same
         case utpe: UnknownTopicOrPartitionException =>
-          debug(
-            "Offset request with correlation id %d from client %s on partition %s failed due to %s"
-              .format(correlationId, clientId, topicPartition, utpe.getMessage))
+          debug("Offset request with correlation id %d from client %s on partition %s failed due to %s"
+            .format(correlationId, clientId, topicPartition, utpe.getMessage))
           (
             topicPartition,
             new ListOffsetResponse.PartitionData(
               Errors.forException(utpe).code,
               List[JLong]().asJava))
         case nle: NotLeaderForPartitionException =>
-          debug(
-            "Offset request with correlation id %d from client %s on partition %s failed due to %s"
-              .format(correlationId, clientId, topicPartition, nle.getMessage))
+          debug("Offset request with correlation id %d from client %s on partition %s failed due to %s"
+            .format(correlationId, clientId, topicPartition, nle.getMessage))
           (
             topicPartition,
             new ListOffsetResponse.PartitionData(
@@ -880,9 +879,8 @@ class KafkaApis(
         replicationFactor,
         properties,
         RackAwareMode.Safe)
-      info(
-        "Auto creation of topic %s with %d partitions and replication factor %d is successful"
-          .format(topic, numPartitions, replicationFactor))
+      info("Auto creation of topic %s with %d partitions and replication factor %d is successful"
+        .format(topic, numPartitions, replicationFactor))
       new MetadataResponse.TopicMetadata(
         Errors.LEADER_NOT_AVAILABLE,
         topic,

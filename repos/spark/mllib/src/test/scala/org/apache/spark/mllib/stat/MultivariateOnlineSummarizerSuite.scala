@@ -63,15 +63,13 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
       .add(Vectors.dense(-1.0, 2.0, 6.0))
       .add(Vectors.sparse(3, Seq((0, -2.0), (1, 6.0))))
 
-    withClue(
-      "Adding a new dense sample with different array size should throw exception.") {
+    withClue("Adding a new dense sample with different array size should throw exception.") {
       intercept[IllegalArgumentException] {
         summarizer.add(Vectors.dense(3.0, 1.0))
       }
     }
 
-    withClue(
-      "Adding a new sparse sample with different array size should throw exception.") {
+    withClue("Adding a new sparse sample with different array size should throw exception.") {
       intercept[IllegalArgumentException] {
         summarizer.add(Vectors.sparse(5, Seq((0, -2.0), (1, 6.0))))
       }
@@ -79,8 +77,7 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
 
     val summarizer2 =
       (new MultivariateOnlineSummarizer).add(Vectors.dense(1.0, -2.0, 0.0, 4.0))
-    withClue(
-      "Merging a new summarizer with different dimensions should throw exception.") {
+    withClue("Merging a new summarizer with different dimensions should throw exception.") {
       intercept[IllegalArgumentException] {
         summarizer.merge(summarizer2)
       }

@@ -508,6 +508,5 @@ private[sbt] object PluginsDebug {
     s"There is no way to enable plugin ${plugin.label}.  It (or its dependencies) requires plugin ${contradiction.label} to both be present and absent.  Please report the problem to the plugin's author."
   private[this] def pluginImpossibleN(plugin: AutoPlugin)(
       contradictions: List[AutoPlugin]): String =
-    s"There is no way to enable plugin ${plugin.label}.  It (or its dependencies) requires these plugins to be both present and absent:\n\t${labels(
-      contradictions).mkString("\n\t")}\nPlease report the problem to the plugin's author."
+    s"There is no way to enable plugin ${plugin.label}.  It (or its dependencies) requires these plugins to be both present and absent:\n\t${labels(contradictions).mkString("\n\t")}\nPlease report the problem to the plugin's author."
 }

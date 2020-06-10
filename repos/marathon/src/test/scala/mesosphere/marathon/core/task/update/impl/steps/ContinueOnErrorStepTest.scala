@@ -87,8 +87,7 @@ class ContinueOnErrorStepTest
     processUpdate(verify(nested, times(1)))
     And("produce an error message in the log")
     logEvents.map(_.toString) should be(
-      Vector(
-        "[ERROR] while executing step nested for [task], continue with other steps")
+      Vector("[ERROR] while executing step nested for [task], continue with other steps")
     )
   }
 }

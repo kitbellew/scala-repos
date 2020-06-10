@@ -573,27 +573,28 @@ private[sql] object ParquetRelation extends Logging {
 
         // Don't throw even if we failed to parse the serialized Spark schema. Just fallback to
         // whatever is available.
-        Some(Try(DataType.fromJson(serializedSchema.get))
-          .recover {
-            case _: Throwable =>
-              logInfo(
-                s"Serialized Spark schema in Parquet key-value metadata is not in JSON format, " +
-                  "falling back to the deprecated DataType.fromCaseClassString parser.")
-              LegacyTypeStringParser.parse(serializedSchema.get)
-          }
-          .recover {
-            case cause: Throwable =>
-              logWarning(
-                s"""Failed to parse serialized Spark schema in Parquet key-value metadata:
+        Some(
+          Try(DataType.fromJson(serializedSchema.get))
+            .recover {
+              case _: Throwable =>
+                logInfo(
+                  s"Serialized Spark schema in Parquet key-value metadata is not in JSON format, " +
+                    "falling back to the deprecated DataType.fromCaseClassString parser.")
+                LegacyTypeStringParser.parse(serializedSchema.get)
+            }
+            .recover {
+              case cause: Throwable =>
+                logWarning(
+                  s"""Failed to parse serialized Spark schema in Parquet key-value metadata:
                  |\t$serializedSchema
                """.stripMargin,
-                cause)
-          }
-          .map(_.asInstanceOf[StructType])
-          .getOrElse {
-            // Falls back to Parquet schema if Spark SQL schema can't be parsed.
-            parseParquetSchema(metadata.getSchema)
-          })
+                  cause)
+            }
+            .map(_.asInstanceOf[StructType])
+            .getOrElse {
+              // Falls back to Parquet schema if Spark SQL schema can't be parsed.
+              parseParquetSchema(metadata.getSchema)
+            })
       } else {
         None
       }

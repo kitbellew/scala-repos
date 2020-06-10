@@ -65,9 +65,8 @@ object ClientUtils extends Logging {
     while (i < shuffledBrokers.size && !fetchMetaDataSucceeded) {
       val producer: SyncProducer =
         ProducerPool.createSyncProducer(producerConfig, shuffledBrokers(i))
-      info(
-        "Fetching metadata from broker %s with correlation id %d for %d topic(s) %s"
-          .format(shuffledBrokers(i), correlationId, topics.size, topics))
+      info("Fetching metadata from broker %s with correlation id %d for %d topic(s) %s"
+        .format(shuffledBrokers(i), correlationId, topics.size, topics))
       try {
         topicMetadataResponse = producer.send(topicMetadataRequest)
         fetchMetaDataSucceeded = true

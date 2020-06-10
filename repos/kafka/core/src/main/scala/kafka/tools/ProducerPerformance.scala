@@ -44,8 +44,8 @@ object ProducerPerformance extends Logging {
     val logger = Logger.getLogger(getClass)
     val config = new ProducerPerfConfig(args)
     if (!config.isFixedSize)
-      logger.info(
-        "WARN: Throughput will be slower due to changing message size per request")
+      logger
+        .info("WARN: Throughput will be slower due to changing message size per request")
 
     val totalBytesSent = new AtomicLong(0)
     val totalMessagesSent = new AtomicLong(0)
@@ -55,9 +55,8 @@ object ProducerPerformance extends Logging {
     val rand = new java.util.Random
 
     if (!config.hideHeader)
-      println(
-        "start.time, end.time, compression, message.size, batch.size, total.data.sent.in.MB, MB.sec, " +
-          "total.data.sent.in.nMsg, nMsg.sec")
+      println("start.time, end.time, compression, message.size, batch.size, total.data.sent.in.MB, MB.sec, " +
+        "total.data.sent.in.nMsg, nMsg.sec")
 
     for (i <- 0 until config.numThreads) {
       executor.execute(

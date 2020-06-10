@@ -21,8 +21,7 @@ class DetectTest extends Specification {
     "find no bad words" in {
       find("") must_== Nil
       find("hello there") must_== Nil
-      find(
-        "A sonnet is a poetic form which originated in Italy; Giacomo Da Lentini is credited with its invention.") must_== Nil
+      find("A sonnet is a poetic form which originated in Italy; Giacomo Da Lentini is credited with its invention.") must_== Nil
       find("computer analysis") must_== Nil
     }
     "find badly spelled words" in {

@@ -155,8 +155,7 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
       }
     }
 
-    it(
-      "should track connections with channelStatsHandler on different connections") {
+    it("should track connections with channelStatsHandler on different connections") {
       val sr = new InMemoryStatsReceiver
       def hasConnections(scope: String, num: Int) {
         assert(sr.gauges(Seq(scope, "connections"))() == num)

@@ -232,8 +232,7 @@ object NNLS {
   def main(args: Array[String]) {
     if (args.length < 2) {
       println("Usage: NNLS n s")
-      println(
-        "Test NNLS with quadratic function of dimension n for s consecutive solves")
+      println("Test NNLS with quadratic function of dimension n for s consecutive solves")
       sys.exit(1)
     }
 

@@ -221,8 +221,7 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
 //    assertCached(sql("SELECT * FROM jsonTable"), 0)
   }
 
-  test(
-    "it's not allowed to insert into a relation that is not an InsertableRelation") {
+  test("it's not allowed to insert into a relation that is not an InsertableRelation") {
     sql("""
         |CREATE TEMPORARY TABLE oneToTen
         |USING org.apache.spark.sql.sources.SimpleScanSource

@@ -164,8 +164,7 @@ abstract class Parser(
       val phase1 = new EstablishingPrincipalErrorIndex()
       phase = phase1
       if (runRule())
-        sys.error(
-          "Parsing unexpectedly succeeded while trying to establish the principal error location")
+        sys.error("Parsing unexpectedly succeeded while trying to establish the principal error location")
       phase1.maxCursor
     }
 
@@ -173,8 +172,7 @@ abstract class Parser(
       val phase2 = new EstablishingReportedErrorIndex(principalErrorIndex)
       phase = phase2
       if (runRule())
-        sys.error(
-          "Parsing unexpectedly succeeded while trying to establish the reported error location")
+        sys.error("Parsing unexpectedly succeeded while trying to establish the reported error location")
       phase2
     }
 
@@ -182,8 +180,7 @@ abstract class Parser(
       phase = new DetermineReportQuiet(reportedErrorIndex)
       try {
         if (runRule())
-          sys.error(
-            "Parsing unexpectedly succeeded while trying to determine quiet reporting")
+          sys.error("Parsing unexpectedly succeeded while trying to determine quiet reporting")
         true // if we got here we can only reach the reportedErrorIndex via quiet rules
       } catch {
         case UnquietMismatch ⇒

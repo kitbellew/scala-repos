@@ -144,8 +144,7 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
         new SerializableClassWithWriteObject(new SerializableClass1)).isEmpty)
   }
 
-  test(
-    "object of serializable subclass with more fields than superclass (SPARK-7180)") {
+  test("object of serializable subclass with more fields than superclass (SPARK-7180)") {
     // This should not throw ArrayOutOfBoundsException
     find(new SerializableSubclass(new SerializableClass1))
   }

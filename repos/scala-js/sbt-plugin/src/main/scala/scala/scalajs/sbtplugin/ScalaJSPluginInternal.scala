@@ -456,8 +456,7 @@ object ScalaJSPluginInternal {
               // Attach the name of the main class used, (ab?)using the name key
               Attributed(file)(AttributeMap.empty.put(name.key, mainCl))
           } getOrElse {
-            sys.error(
-              "Cannot write launcher file, since there is no or multiple mainClasses")
+            sys.error("Cannot write launcher file, since there is no or multiple mainClasses")
           }
         }
     },

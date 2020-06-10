@@ -147,8 +147,8 @@ class BindingFactoryTest
       TestNamer.f = { _ => Activity(v) }
       val f =
         Dtab.unwind {
-          Dtab.local = Dtab.read(
-            "/foo/bar=>/$/com.twitter.finagle.factory.BindingFactoryTest$TestNamer")
+          Dtab.local =
+            Dtab.read("/foo/bar=>/$/com.twitter.finagle.factory.BindingFactoryTest$TestNamer")
           factory()
         }
       tc.advance(5678.microseconds)
@@ -192,8 +192,7 @@ class BindingFactoryTest
     assert(noBrokers.localDtab == Dtab.empty)
   })
 
-  test(
-    "Includes path and Dtab.local in NoBrokersAvailableException from name resolution")(
+  test("Includes path and Dtab.local in NoBrokersAvailableException from name resolution")(
     new Ctx {
       val localDtab = Dtab.read("/baz=>/quux")
 
@@ -205,8 +204,7 @@ class BindingFactoryTest
       assert(noBrokers.localDtab == localDtab)
     })
 
-  test(
-    "Includes path and Dtab.local in NoBrokersAvailableException from service creation") {
+  test("Includes path and Dtab.local in NoBrokersAvailableException from service creation") {
     val localDtab = Dtab.read("/foo/bar=>/test1010")
 
     val factory = new BindingFactory(

@@ -547,8 +547,7 @@ object Scalding {
             }
             go(left, store)
           case ljp @ LeftJoinedProducer(left, StoreService(store)) =>
-            sys.error(
-              "Unsupported Join against store: not a valid loop join. If the store depends on join output, only the values can change (filterValues, mapValues, flatMapValues).")
+            sys.error("Unsupported Join against store: not a valid loop join. If the store depends on join output, only the values can change (filterValues, mapValues, flatMapValues).")
           case WrittenProducer(producer, sink) =>
             val (pf, m) = recurse(producer)
             (sink.write(pf), m)
@@ -599,8 +598,8 @@ object Scalding {
                       logger.info("enabling flatMapKeys mapside caching")
                       s.store.partialMerge(fmp, s.semigroup, Commutative)
                     case NonCommutative =>
-                      logger.info(
-                        "not enabling flatMapKeys mapside caching, due to non-commutativity")
+                      logger
+                        .info("not enabling flatMapKeys mapside caching, due to non-commutativity")
                       fmp
                   }
                 } else
@@ -907,8 +906,8 @@ class Scalding(
             try {
               flowOpt match {
                 case None =>
-                  Scalding.logger.warn(
-                    "No Sinks were planned into flows. Waiting state is probably out of sync with stores. Proceeding with NO-OP.")
+                  Scalding.logger
+                    .warn("No Sinks were planned into flows. Waiting state is probably out of sync with stores. Proceeding with NO-OP.")
                   runningState.succeed
                 case Some(flow) =>
                   options.get(jobName).foreach { jopt =>

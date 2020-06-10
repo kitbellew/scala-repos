@@ -214,10 +214,9 @@ object ReassignPartitionsCommand extends Logging {
     val currentPartitionReplicaAssignment =
       zkUtils.getReplicaAssignmentForTopics(
         partitionsToBeReassigned.map(_._1.topic))
-    println(
-      "Current partition replica assignment\n\n%s\n\nSave this to use as the --reassignment-json-file option during rollback"
-        .format(zkUtils.getPartitionReassignmentZkData(
-          currentPartitionReplicaAssignment)))
+    println("Current partition replica assignment\n\n%s\n\nSave this to use as the --reassignment-json-file option during rollback"
+      .format(zkUtils.getPartitionReassignmentZkData(
+        currentPartitionReplicaAssignment)))
     // start the reassignment
     if (reassignPartitionsCommand.reassignPartitions())
       println("Successfully started reassignment of partitions %s".format(

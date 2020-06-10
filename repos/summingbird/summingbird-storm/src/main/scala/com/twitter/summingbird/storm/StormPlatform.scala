@@ -288,9 +288,8 @@ abstract class Storm(
       summer.store match {
         case m: MergeableStoreFactory[ExecutorKeyType, V] => m
         case _ =>
-          sys.error(
-            "Should never be able to get here, looking for a MergeableStoreFactory from %s"
-              .format(summer.store))
+          sys.error("Should never be able to get here, looking for a MergeableStoreFactory from %s"
+            .format(summer.store))
       }
 
     val wrappedStore

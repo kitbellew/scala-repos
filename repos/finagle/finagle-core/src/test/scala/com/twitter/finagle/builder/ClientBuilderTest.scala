@@ -250,8 +250,7 @@ class ClientBuilderTest
     }
   }
 
-  test(
-    "ClientBuilder with stack should collect stats on 'tries' with no retrypolicy") {
+  test("ClientBuilder with stack should collect stats on 'tries' with no retrypolicy") {
     new ClientBuilderHelper {
       val inMemory = new InMemoryStatsReceiver
       val numFailures = 21 // There will be 20 requeues by default

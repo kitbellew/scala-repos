@@ -174,8 +174,7 @@ object WSClientAutobahnTest extends App {
   }
   def updateReportsAndShutdown(): Unit =
     updateReports().onComplete { res ⇒
-      println(
-        "Reports should now be accessible at http://localhost:8080/cwd/reports/clients/index.html")
+      println("Reports should now be accessible at http://localhost:8080/cwd/reports/clients/index.html")
       system.terminate()
     }
 

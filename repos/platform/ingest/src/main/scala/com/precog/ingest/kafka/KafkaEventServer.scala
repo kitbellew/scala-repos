@@ -95,9 +95,8 @@ object KafkaEventServer
 
     val serviceConfig =
       EventService.ServiceConfig.fromConfiguration(config) valueOr { errors =>
-        sys.error(
-          "Unable to obtain self-referential service locator for event service: %s"
-            .format(errors.list.mkString("; ")))
+        sys.error("Unable to obtain self-referential service locator for event service: %s"
+          .format(errors.list.mkString("; ")))
       }
 
     buildServiceState(

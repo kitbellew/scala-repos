@@ -38,8 +38,7 @@ class ClusterTest extends FunSuite {
     assert(set.size == 0)
   }
 
-  test(
-    "Cluster map should remove mapped objects in the same order they were received (for each key)") {
+  test("Cluster map should remove mapped objects in the same order they were received (for each key)") {
     val h = new ClusterHelper
     import h._
 

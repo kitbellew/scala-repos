@@ -120,8 +120,7 @@ class FilterPushdownSuite extends PlanTest {
     comparePlans(optimized, correctAnswer)
   }
 
-  test(
-    "nondeterministic: can't push down filter with nondeterministic condition through project") {
+  test("nondeterministic: can't push down filter with nondeterministic condition through project") {
     val originalQuery = testRelation
       .select(Rand(10).as('rand), 'a)
       .where('rand > 5 || 'a > 5)
@@ -132,8 +131,7 @@ class FilterPushdownSuite extends PlanTest {
     comparePlans(optimized, originalQuery)
   }
 
-  test(
-    "nondeterministic: can't push down filter through project with nondeterministic field") {
+  test("nondeterministic: can't push down filter through project with nondeterministic field") {
     val originalQuery = testRelation
       .select(Rand(10).as('rand), 'a)
       .where('a > 5)
@@ -655,8 +653,7 @@ class FilterPushdownSuite extends PlanTest {
     comparePlans(optimized, originalQuery.analyze)
   }
 
-  test(
-    "aggregate: push down filters partially which are subset of group by expressions") {
+  test("aggregate: push down filters partially which are subset of group by expressions") {
     val originalQuery = testRelation
       .select('a, 'b)
       .groupBy('a)('a, count('b) as 'c)

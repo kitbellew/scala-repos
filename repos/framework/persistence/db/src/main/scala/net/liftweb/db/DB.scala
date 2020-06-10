@@ -1334,9 +1334,8 @@ trait ProtoDBVendor extends ConnectionManager {
           } catch {
             case e: Exception =>
               try {
-                logger.debug(
-                  "Test connection failed, removing connection from pool, name=%s"
-                    .format(name))
+                logger.debug("Test connection failed, removing connection from pool, name=%s"
+                  .format(name))
                 poolSize = poolSize - 1
                 tryo(x.close)
                 newConnection(name)

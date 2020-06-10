@@ -228,8 +228,7 @@ class OrcPartitionDiscoverySuite
     }
   }
 
-  test(
-    "read partitioned table - with nulls and partition keys are included in Orc file") {
+  test("read partitioned table - with nulls and partition keys are included in Orc file") {
     withTempDir { base =>
       for {
         pi <- Seq(1, 2)

@@ -162,8 +162,7 @@ object DataT extends DataT1 {
     new DataT[P, CNil] {
       type Out = CNil
       def gmapT(t: CNil) =
-        sys.error(
-          "CNil is equivelant to Nothing: there should be no values of this type")
+        sys.error("CNil is equivelant to Nothing: there should be no values of this type")
     }
 
   implicit def deriveCCons[P, H, T <: Coproduct, OutH, OutT <: Coproduct](

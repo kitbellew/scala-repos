@@ -48,9 +48,7 @@ object DumpLogSegments {
         "This is the same check that is executed on broker startup to determine if an index needs rebuilding or not."
     )
     val filesOpt = parser
-      .accepts(
-        "files",
-        "REQUIRED: The comma separated list of data and index log files to be dumped")
+      .accepts("files", "REQUIRED: The comma separated list of data and index log files to be dumped")
       .withRequiredArg
       .describedAs("file1, file2, ...")
       .ofType(classOf[String])

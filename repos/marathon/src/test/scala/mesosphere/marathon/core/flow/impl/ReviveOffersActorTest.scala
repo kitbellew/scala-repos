@@ -223,8 +223,7 @@ class ReviveOffersActorTest
     f.verifyNoMoreInteractions()
   }
 
-  test(
-    "Check does not revives if last offersWanted == false and more than 5.seconds ago") {
+  test("Check does not revives if last offersWanted == false and more than 5.seconds ago") {
     val f = new Fixture()
     Given("that we received various flipping offers wanted requests")
     f.actorRef.start()
@@ -282,8 +281,7 @@ class ReviveOffersActorTest
       f.actorRef.underlyingActor.revivesNeeded should be(f.repetitions - i)
     }
 
-    When(
-      "the min_revive_offers_interval has passed and we receive our last TimedCheck")
+    When("the min_revive_offers_interval has passed and we receive our last TimedCheck")
     f.clock += f.conf.minReviveOffersInterval().millis
     f.actorRef ! ReviveOffersActor.TimedCheck
 
@@ -320,8 +318,7 @@ class ReviveOffersActorTest
       val conf = new ReviveOffersConfig {
         override lazy val reviveOffersRepetitions = opt[Int](
           "revive_offers_repetitions",
-          descr =
-            "Repeat every reviveOffer request this many times, delayed by the --min_revive_offers_interval.",
+          descr = "Repeat every reviveOffer request this many times, delayed by the --min_revive_offers_interval.",
           default = Some(repetitions)
         )
       }

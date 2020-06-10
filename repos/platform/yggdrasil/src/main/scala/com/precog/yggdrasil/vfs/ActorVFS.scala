@@ -912,9 +912,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           streamRef match {
             case StreamRef.Create(streamId, terminal) =>
               if (!terminal) {
-                logger.warn(
-                  "Non-terminal BLOB for %s will not currently behave correctly!"
-                    .format(path))
+                logger.warn("Non-terminal BLOB for %s will not currently behave correctly!"
+                  .format(path))
               }
               persistFile(
                 versionLog.current.isEmpty && !versionLog.isCompleted(streamId),
@@ -925,9 +924,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
             case StreamRef.Replace(streamId, terminal) =>
               if (!terminal) {
-                logger.warn(
-                  "Non-terminal BLOB for %s will not currently behave correctly!"
-                    .format(path))
+                logger.warn("Non-terminal BLOB for %s will not currently behave correctly!"
+                  .format(path))
               }
               persistFile(
                 !versionLog.isCompleted(streamId),

@@ -540,17 +540,15 @@ private[transport] class ProtocolStateActor(
       sendDisassociate(wrappedHandle, Unknown)
       stop(
         FSM.Failure(
-          TimeoutReason(
-            "No response from remote for outbound association. Handshake timed out after " +
-              s"[${settings.HandshakeTimeout.toMillis} ms].")))
+          TimeoutReason("No response from remote for outbound association. Handshake timed out after " +
+            s"[${settings.HandshakeTimeout.toMillis} ms].")))
 
     case Event(HandshakeTimer, InboundUnassociated(_, wrappedHandle)) ⇒
       sendDisassociate(wrappedHandle, Unknown)
       stop(
         FSM.Failure(
-          TimeoutReason(
-            "No response from remote for inbound association. Handshake timed out after " +
-              s"[${settings.HandshakeTimeout.toMillis} ms].")))
+          TimeoutReason("No response from remote for inbound association. Handshake timed out after " +
+            s"[${settings.HandshakeTimeout.toMillis} ms].")))
 
   }
 

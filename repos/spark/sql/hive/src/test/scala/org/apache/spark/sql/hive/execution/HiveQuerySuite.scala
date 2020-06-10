@@ -165,8 +165,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
 
     intercept[AnalysisException] {
-      sql(
-        "SELECT explode(array(key, key)) as k1, explode(array(key, key)) FROM src")
+      sql("SELECT explode(array(key, key)) as k1, explode(array(key, key)) FROM src")
         .collect()
     }
   }
@@ -495,7 +494,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     sql("INSERT OVERWRITE TABLE small_src SELECT key, value FROM src LIMIT 10")
 
     val expected = sql("SELECT key FROM small_src").collect().head
-    val res = sql("""
+    val res =
+      sql("""
         |SELECT TRANSFORM (key) ROW FORMAT SERDE
         |'org.apache.hadoop.hive.serde2.avro.AvroSerDe'
         |WITH SERDEPROPERTIES ('avro.schema.literal'='{"namespace":
@@ -837,8 +837,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       .toDF()
       .registerTempTable("having_test")
     val results =
-      sql(
-        "SELECT value, max(attr) AS attr FROM having_test GROUP BY value HAVING attr > 3")
+      sql("SELECT value, max(attr) AS attr FROM having_test GROUP BY value HAVING attr > 3")
         .collect()
         .map(x => (x.getString(0), x.getInt(1)))
 
@@ -930,8 +929,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     sql(
       s"CREATE TABLE test_describe_commands1 (key INT, value STRING) PARTITIONED BY (dt STRING)")
 
-    sql(
-      """FROM src INSERT OVERWRITE TABLE test_describe_commands1 PARTITION (dt='2008-06-08')
+    sql("""FROM src INSERT OVERWRITE TABLE test_describe_commands1 PARTITION (dt='2008-06-08')
         |SELECT key, value
       """.stripMargin)
 
@@ -1109,8 +1107,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   ignore("Dynamic partition folder layout") {
     sql("DROP TABLE IF EXISTS dynamic_part_table")
-    sql(
-      "CREATE TABLE dynamic_part_table(intcol INT) PARTITIONED BY (partcol1 INT, partcol2 INT)")
+    sql("CREATE TABLE dynamic_part_table(intcol INT) PARTITIONED BY (partcol1 INT, partcol2 INT)")
     sql("SET hive.exec.dynamic.partition.mode=nonstrict")
 
     val data = Map(
@@ -1159,8 +1156,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       |union all
       |select '2011-01-11', '2011-01-11+16:18:26' from src tablesample (1 rows) ) s
     """.stripMargin)
-    sql(
-      "create table sc_part (key string) partitioned by (ts string) stored as rcfile")
+    sql("create table sc_part (key string) partitioned by (ts string) stored as rcfile")
     sql("set hive.exec.dynamic.partition=true")
     sql("set hive.exec.dynamic.partition.mode=nonstrict")
     sql("insert overwrite table sc_part partition(ts) select * from sc")
@@ -1169,8 +1165,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
   test("Partition spec validation") {
     sql("DROP TABLE IF EXISTS dp_test")
-    sql(
-      "CREATE TABLE dp_test(key INT, value STRING) PARTITIONED BY (dp INT, sp INT)")
+    sql("CREATE TABLE dp_test(key INT, value STRING) PARTITIONED BY (dp INT, sp INT)")
     sql("SET hive.exec.dynamic.partition.mode=strict")
 
     // Should throw when using strict dynamic partition mode without any static partition
@@ -1190,8 +1185,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     }
   }
 
-  test(
-    "SPARK-3414 regression: should store analyzed logical plan when registering a temp table") {
+  test("SPARK-3414 regression: should store analyzed logical plan when registering a temp table") {
     sparkContext
       .makeRDD(Seq.empty[LogEntry])
       .toDF()
@@ -1220,8 +1214,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       loadTestTable("srcpart")
       sql("DROP TABLE IF EXISTS withparts")
       sql("CREATE TABLE withparts LIKE srcpart")
-      sql(
-        "INSERT INTO TABLE withparts PARTITION(ds='1', hr='2') SELECT key, value FROM src").queryExecution.analyzed
+      sql("INSERT INTO TABLE withparts PARTITION(ds='1', hr='2') SELECT key, value FROM src").queryExecution.analyzed
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {
@@ -1239,8 +1232,7 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       sql("SET hive.exec.dynamic.partition.mode=nonstrict")
 
       sql("CREATE TABLE IF NOT EXISTS withparts LIKE srcpart")
-      sql(
-        "INSERT INTO TABLE withparts PARTITION(ds, hr) SELECT key, value FROM src").queryExecution.analyzed
+      sql("INSERT INTO TABLE withparts PARTITION(ds, hr) SELECT key, value FROM src").queryExecution.analyzed
     }
 
     assertResult(1, "Duplicated project detected\n" + analyzedPlan) {

@@ -68,8 +68,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
 
   override protected[this] def loadProfileConfig: Config = {
     if (!GlobalConfig.profileConfig("slick.driver.MySQL").entrySet().isEmpty)
-      SlickLogger[MySQLProfile].warn(
-        "The config key 'slick.driver.MySQL' is deprecated and not used anymore. Use 'slick.jdbc.MySQLProfile' instead.")
+      SlickLogger[MySQLProfile]
+        .warn("The config key 'slick.driver.MySQL' is deprecated and not used anymore. Use 'slick.jdbc.MySQLProfile' instead.")
     super.loadProfileConfig
   }
 

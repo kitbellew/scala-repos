@@ -2172,7 +2172,8 @@ trait TransformSpec[M[+_]]
   }
 
   def testTypedAtSliceBoundary = {
-    val JArray(data) = JParser.parseUnsafe("""[
+    val JArray(data) =
+      JParser.parseUnsafe("""[
         { "value":{ "n":{ } }, "key":[1,1,1] },
         { "value":{ "lvf":2123699568254154891, "vbeu":false, "dAc":4611686018427387903 }, "key":[1,1,3] },
         { "value":{ "lvf":1, "vbeu":true, "dAc":0 }, "key":[2,1,1] },

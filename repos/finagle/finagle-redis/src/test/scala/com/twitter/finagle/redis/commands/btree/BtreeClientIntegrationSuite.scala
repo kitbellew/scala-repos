@@ -55,8 +55,7 @@ final class BtreeClientIntegrationSuite
     testBrange(client, dict)
   }
 
-  test(
-    "Correctly return BRANGE from a start key that exists to the end for outerkey") {
+  test("Correctly return BRANGE from a start key that exists to the end for outerkey") {
     testBrangeInclusiveStart(client, dict)
   }
 
@@ -65,28 +64,23 @@ final class BtreeClientIntegrationSuite
     testBrangeInclusiveEnd(client, dict)
   }
 
-  test(
-    "Correctly return BRANGE from start key to end key where both exist for outerkey") {
+  test("Correctly return BRANGE from start key to end key where both exist for outerkey") {
     testBrangeInclusiveStartEnd(client, dict)
   }
 
-  test(
-    "Correctly return BRANGE from start key that doesn't exist to end for outerkey") {
+  test("Correctly return BRANGE from start key that doesn't exist to end for outerkey") {
     testBrangeExclusiveStart(client, dict)
   }
 
-  test(
-    "Correctly return BRANGE from start to end key that doesn't exist for outerkey") {
+  test("Correctly return BRANGE from start to end key that doesn't exist for outerkey") {
     testBrangeExclusiveEnd(client, dict)
   }
 
-  test(
-    "Correctly return BRANGE from start key to end key where both don't exist for outerkey") {
+  test("Correctly return BRANGE from start key to end key where both don't exist for outerkey") {
     testBrangeExclusiveStartEnd(client, dict)
   }
 
-  test(
-    "Correctly return removal of innerkey value pairs for outerkey using BREM command") {
+  test("Correctly return removal of innerkey value pairs for outerkey using BREM command") {
     testBrem(client, dict)
   }
 

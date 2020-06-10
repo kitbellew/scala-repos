@@ -78,9 +78,8 @@ private[spark] class ExecutorDelegationTokenUpdater(
             logInfo("Tokens updated from credentials file.")
           } else {
             // Check every hour to see if new credentials arrived.
-            logInfo(
-              "Updated delegation tokens were expected, but the driver has not updated the " +
-                "tokens yet, will check again in an hour.")
+            logInfo("Updated delegation tokens were expected, but the driver has not updated the " +
+              "tokens yet, will check again in an hour.")
             delegationTokenRenewer.schedule(
               executorUpdaterRunnable,
               1,

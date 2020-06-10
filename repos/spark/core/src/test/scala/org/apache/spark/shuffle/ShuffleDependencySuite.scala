@@ -28,8 +28,7 @@ class ShuffleDependencySuite extends SparkFunSuite with LocalSparkContext {
 
   val conf = new SparkConf(loadDefaults = false)
 
-  test(
-    "key, value, and combiner classes correct in shuffle dependency without aggregation") {
+  test("key, value, and combiner classes correct in shuffle dependency without aggregation") {
     sc = new SparkContext("local", "test", conf.clone())
     val rdd = sc
       .parallelize(1 to 5, 4)
@@ -43,8 +42,7 @@ class ShuffleDependencySuite extends SparkFunSuite with LocalSparkContext {
     assert(dep.valueClassName == classOf[ValueClass].getName)
   }
 
-  test(
-    "key, value, and combiner classes available in shuffle dependency with aggregation") {
+  test("key, value, and combiner classes available in shuffle dependency with aggregation") {
     sc = new SparkContext("local", "test", conf.clone())
     val rdd = sc
       .parallelize(1 to 5, 4)

@@ -341,8 +341,7 @@ class SparkListenerSuite
     assert(listener.endedTasks.contains(TASK_INDEX))
   }
 
-  test(
-    "onTaskEnd() should be called for all started tasks, even after job has been killed") {
+  test("onTaskEnd() should be called for all started tasks, even after job has been killed") {
     sc = new SparkContext("local", "SparkListenerSuite")
     val WAIT_TIMEOUT_MILLIS = 10000
     val listener = new SaveTaskEvents

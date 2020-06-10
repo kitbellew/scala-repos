@@ -70,8 +70,7 @@ class CacheTest extends FunSuite with MockitoSugar {
       assert(timer.tasks.isEmpty)
   }
 
-  test(
-    "Cache(5, 5.seconds) should not expire any items if none of them have expired yet") {
+  test("Cache(5, 5.seconds) should not expire any items if none of them have expired yet") {
     val h = new CacheHelper
     import h._
 

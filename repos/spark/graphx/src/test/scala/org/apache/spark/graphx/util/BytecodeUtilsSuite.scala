@@ -68,8 +68,7 @@ class BytecodeUtilsSuite extends SparkFunSuite {
     assert(BytecodeUtils.invokedMethod(c1, classOf[TestClass], "baz"))
   }
 
-  test(
-    "closure calling a function that invokes a method which uses another closure") {
+  test("closure calling a function that invokes a method which uses another closure") {
     val c2 = { e: TestClass => println(e.baz) }
     def zoo(e: TestClass) {
       c2(e)

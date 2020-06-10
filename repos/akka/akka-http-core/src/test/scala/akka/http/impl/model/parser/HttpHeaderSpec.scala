@@ -517,8 +517,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           Uri("http://example.com/TheBook/chapter2"),
           LinkParams.rel("previous"),
           LinkParams.title("previous chapter"))
-          .renderedTo(
-            """<http://example.com/TheBook/chapter2>; rel=previous; title="previous chapter"""")
+          .renderedTo("""<http://example.com/TheBook/chapter2>; rel=previous; title="previous chapter"""")
 
       """Link: </>; rel="http://example.net/foo"""" =!= Link(
         Uri("/"),
@@ -695,8 +694,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             "bar",
             domain = Some("example.com"),
             path = Some("/this is a path with blanks"),
-            extension = Some("extension with blanks"))).renderedTo(
-          "foo=bar; Domain=example.com; Path=/this is a path with blanks; extension with blanks")
+            extension = Some("extension with blanks")))
+          .renderedTo("foo=bar; Domain=example.com; Path=/this is a path with blanks; extension with blanks")
 
       // test all weekdays
       "Set-Cookie: lang=; Expires=Sun, 07 Dec 2014 00:42:55 GMT; Max-Age=12345" =!=
@@ -845,8 +844,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             expires = Some(DateTime(2014, 12, 7, 22, 48, 47)),
             path = Some("/"),
             httpOnly = true))
-          .renderedTo(
-            "PLAY_FLASH=; Expires=Sun, 07 Dec 2014 22:48:47 GMT; Path=/; HttpOnly")
+          .renderedTo("PLAY_FLASH=; Expires=Sun, 07 Dec 2014 22:48:47 GMT; Path=/; HttpOnly")
     }
 
     "Upgrade" in {
@@ -890,8 +888,8 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
             Map(
               "qop" -> "auth,auth-int",
               "nonce" -> "dcd98b7102dd2f0e8b11d0f600bfb0c093",
-              "opaque" -> "5ccc069c403ebaf9f0171e9517f40e41"))).renderedTo(
-          "Digest realm=\"testrealm@host.com\",qop=\"auth,auth-int\",nonce=dcd98b7102dd2f0e8b11d0f600bfb0c093,opaque=5ccc069c403ebaf9f0171e9517f40e41")
+              "opaque" -> "5ccc069c403ebaf9f0171e9517f40e41")))
+          .renderedTo("Digest realm=\"testrealm@host.com\",qop=\"auth,auth-int\",nonce=dcd98b7102dd2f0e8b11d0f600bfb0c093,opaque=5ccc069c403ebaf9f0171e9517f40e41")
       "WWW-Authenticate: Basic realm=\"WallyWorld\",attr=\"val>ue\", Fancy realm=\"yeah\"" =!=
         `WWW-Authenticate`(
           HttpChallenge("Basic", "WallyWorld", Map("attr" -> "val>ue")),

@@ -290,8 +290,7 @@ class AnalysisSuite extends AnalysisTest {
     assertAnalysisSuccess(plan)
   }
 
-  test(
-    "SPARK-8654: different types in inlist but can be converted to a common type") {
+  test("SPARK-8654: different types in inlist but can be converted to a common type") {
     val plan = Project(
       Alias(In(Literal(null), Seq(Literal(1), Literal(1.2345))), "a")() :: Nil,
       LocalRelation())
@@ -349,8 +348,7 @@ class AnalysisSuite extends AnalysisTest {
     // checkUDF(udf4, expected4)
   }
 
-  test(
-    "SPARK-11863 mixture of aliases and real columns in order by clause - tpcds 19,55,71") {
+  test("SPARK-11863 mixture of aliases and real columns in order by clause - tpcds 19,55,71") {
     val a = testRelation2.output(0)
     val c = testRelation2.output(2)
     val alias1 = a.as("a1")

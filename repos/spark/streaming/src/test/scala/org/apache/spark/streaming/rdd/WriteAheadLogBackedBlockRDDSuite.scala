@@ -92,8 +92,7 @@ class WriteAheadLogBackedBlockRDDSuite
     testRDD(numPartitions = 5, numPartitionsInBM = 0, numPartitionsInWAL = 5)
   }
 
-  test(
-    "Read data with partially available in block manager, and rest in write ahead log") {
+  test("Read data with partially available in block manager, and rest in write ahead log") {
     testRDD(numPartitions = 5, numPartitionsInBM = 3, numPartitionsInWAL = 2)
   }
 
@@ -113,8 +112,7 @@ class WriteAheadLogBackedBlockRDDSuite
       testBlockRemove = true)
   }
 
-  test(
-    "Test storing of blocks recovered from write ahead log back into block manager") {
+  test("Test storing of blocks recovered from write ahead log back into block manager") {
     testRDD(
       numPartitions = 5,
       numPartitionsInBM = 0,

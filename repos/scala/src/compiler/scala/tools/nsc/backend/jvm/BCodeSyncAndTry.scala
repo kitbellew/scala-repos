@@ -376,9 +376,7 @@ abstract class BCodeSyncAndTry extends BCodeBodyBuilder {
       val excInternalName: String =
         if (excType == null) null
         else excType.internalName
-      assert(
-        start != end,
-        "protecting a range of zero instructions leads to illegal class format. Solution: add a NOP to that range.")
+      assert(start != end, "protecting a range of zero instructions leads to illegal class format. Solution: add a NOP to that range.")
       mnode.visitTryCatchBlock(start, end, handler, excInternalName)
     }
 

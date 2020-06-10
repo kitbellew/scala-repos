@@ -436,8 +436,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             failNoForwarder("companion contains its own main method")
           else if (companion.tpe.member(nme.main) != NoSymbol)
             // this is only because forwarders aren't smart enough yet
-            failNoForwarder(
-              "companion contains its own main method (implementation restriction: no main is allowed, regardless of signature)")
+            failNoForwarder("companion contains its own main method (implementation restriction: no main is allowed, regardless of signature)")
           else if (companion.isTrait)
             failNoForwarder("companion is a trait")
           // Now either succeeed, or issue some additional warnings for things which look like

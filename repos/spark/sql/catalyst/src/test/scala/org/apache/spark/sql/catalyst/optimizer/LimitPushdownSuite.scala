@@ -137,8 +137,7 @@ class LimitPushdownSuite extends PlanTest {
     comparePlans(optimized, correctAnswer)
   }
 
-  test(
-    "full outer join where neither side is limited and both sides have same statistics") {
+  test("full outer join where neither side is limited and both sides have same statistics") {
     assert(x.statistics.sizeInBytes === y.statistics.sizeInBytes)
     val originalQuery = x.join(y, FullOuter).limit(1)
     val optimized = Optimize.execute(originalQuery.analyze)
@@ -146,8 +145,7 @@ class LimitPushdownSuite extends PlanTest {
     comparePlans(optimized, correctAnswer)
   }
 
-  test(
-    "full outer join where neither side is limited and left side has larger statistics") {
+  test("full outer join where neither side is limited and left side has larger statistics") {
     val xBig = testRelation.copy(data = Seq.fill(2)(null)).subquery('x)
     assert(xBig.statistics.sizeInBytes > y.statistics.sizeInBytes)
     val originalQuery = xBig.join(y, FullOuter).limit(1)
@@ -156,8 +154,7 @@ class LimitPushdownSuite extends PlanTest {
     comparePlans(optimized, correctAnswer)
   }
 
-  test(
-    "full outer join where neither side is limited and right side has larger statistics") {
+  test("full outer join where neither side is limited and right side has larger statistics") {
     val yBig = testRelation.copy(data = Seq.fill(2)(null)).subquery('y)
     assert(x.statistics.sizeInBytes < yBig.statistics.sizeInBytes)
     val originalQuery = x.join(yBig, FullOuter).limit(1)

@@ -71,8 +71,8 @@ class LabelSelectorParsersTest extends MarathonSpec with Matchers {
 
   test("A valid combined label query can be parsed") {
     val parser = new LabelSelectorParsers
-    val combined = parser.parsed(
-      "foo==one, bla!=one, foo in (one, two, three), bla notin (one, two, three), existence")
+    val combined = parser
+      .parsed("foo==one, bla!=one, foo in (one, two, three), bla notin (one, two, three), existence")
     combined.selectors should have size 5
     combined.matches(
       AppDefinition(labels =
@@ -87,8 +87,8 @@ class LabelSelectorParsersTest extends MarathonSpec with Matchers {
   test(
     "A valid combined label query without alphanumeric characters can be parsed") {
     val parser = new LabelSelectorParsers
-    val combined = parser.parsed(
-      """\{\{\{ in (\*\*\*, \&\&\&, \$\$\$), \^\^\^ notin (\-\-\-, \!\!\!, \@\@\@), \#\#\#""")
+    val combined = parser
+      .parsed("""\{\{\{ in (\*\*\*, \&\&\&, \$\$\$), \^\^\^ notin (\-\-\-, \!\!\!, \@\@\@), \#\#\#""")
     combined.selectors should have size 3
     combined.matches(
       AppDefinition(labels =

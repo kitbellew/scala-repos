@@ -47,8 +47,7 @@ class FilterTest extends FunSuite {
     verify(spied).apply(any[Int])
   }
 
-  test(
-    "Filter.andThen(Service): lifts synchronous exceptions into Future.exception") {
+  test("Filter.andThen(Service): lifts synchronous exceptions into Future.exception") {
     val svc = (new PassThruFilter).andThen(NilService)
     val result = Await.result(svc(4).liftToTry)
     assert(result.isThrow)

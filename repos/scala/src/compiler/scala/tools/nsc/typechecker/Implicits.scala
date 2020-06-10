@@ -165,8 +165,7 @@ trait Implicits {
       val errPos = err.map(_.errPos).getOrElse(pos)
       val errMsg = err
         .map(_.errMsg)
-        .getOrElse(
-          "implicit search has failed. to find out the reason, turn on -Xlog-implicits")
+        .getOrElse("implicit search has failed. to find out the reason, turn on -Xlog-implicits")
       onError(errPos, errMsg)
     }
     result.tree

@@ -100,8 +100,7 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
       case Some(endpointRef) =>
         endpointRef.askWithRetry[Boolean](msg)
       case None =>
-        logError(
-          "canCommit called after coordinator was stopped (is SparkEnv shutdown in progress)?")
+        logError("canCommit called after coordinator was stopped (is SparkEnv shutdown in progress)?")
         false
     }
   }
@@ -183,9 +182,8 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
               authorizedCommitters(partition) = attemptNumber
               true
             case existingCommitter =>
-              logDebug(
-                s"Denying attemptNumber=$attemptNumber to commit for stage=$stage, " +
-                  s"partition=$partition; existingCommitter = $existingCommitter")
+              logDebug(s"Denying attemptNumber=$attemptNumber to commit for stage=$stage, " +
+                s"partition=$partition; existingCommitter = $existingCommitter")
               false
           }
         case None =>

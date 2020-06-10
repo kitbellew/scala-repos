@@ -243,8 +243,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       Row(6, "str6") :: Row(7, "str7") :: Nil
     )
     // Insert overwrite.
-    sql(
-      "insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
+    sql("insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
     checkAnswer(
       sql(
         s"SELECT intField, stringField FROM test_insert_parquet WHERE intField > 2"),
@@ -265,8 +264,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
         |  OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
       """.stripMargin)
     // Insert overwrite an empty table.
-    sql(
-      "insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
+    sql("insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
     checkAnswer(
       sql(
         s"SELECT intField, stringField FROM test_insert_parquet WHERE intField > 2"),
@@ -333,8 +331,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       }
 
       checkAnswer(
-        sql(
-          "SELECT intField FROM test_insert_parquet WHERE test_insert_parquet.intField > 5"),
+        sql("SELECT intField FROM test_insert_parquet WHERE test_insert_parquet.intField > 5"),
         sql("SELECT a FROM jt WHERE jt.a > 5").collect()
       )
     }
@@ -406,8 +403,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       }
   }
 
-  test(
-    "SPARK-7749: non-partitioned metastore Parquet table lookup should use cached relation") {
+  test("SPARK-7749: non-partitioned metastore Parquet table lookup should use cached relation") {
     withTable("nonPartitioned") {
       sql(s"""CREATE TABLE nonPartitioned (
            |  key INT,
@@ -425,8 +421,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     }
   }
 
-  test(
-    "SPARK-7749: partitioned metastore Parquet table lookup should use cached relation") {
+  test("SPARK-7749: partitioned metastore Parquet table lookup should use cached relation") {
     withTable("partitioned") {
       sql(s"""CREATE TABLE partitioned (
            | key INT,
@@ -554,8 +549,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     checkCached(tableIdentifier)
     // Make sure we can read the data.
     checkAnswer(
-      sql(
-        "select STRINGField, `date`, intField from test_parquet_partitioned_cache_test"),
+      sql("select STRINGField, `date`, intField from test_parquet_partitioned_cache_test"),
       sql("""
           |select b, '2015-04-01', a FROM jt
           |UNION ALL

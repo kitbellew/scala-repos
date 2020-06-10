@@ -144,8 +144,7 @@ class LeaderProxyFilterTest extends MarathonSpec {
       .forward(new URL("https://otherhost:9999/test"), request, response)
   }
 
-  test(
-    "successfully wait for consistent leadership info, then someone else is the leader") {
+  test("successfully wait for consistent leadership info, then someone else is the leader") {
     // When we have inconsistent leadership info
     init()
     when(leaderInfo.elected).thenReturn(false)

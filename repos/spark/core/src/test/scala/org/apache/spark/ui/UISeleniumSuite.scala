@@ -222,8 +222,7 @@ class UISeleniumSuite
     }
   }
 
-  test(
-    "jobs page should not display job group name unless some job was submitted in a job group") {
+  test("jobs page should not display job group name unless some job was submitted in a job group") {
     withSpark(newSparkContext()) { sc =>
       // If no job has been run in a job group, then "(Job Group)" should not appear in the header
       sc.parallelize(Seq(1, 2, 3)).count()
@@ -331,8 +330,7 @@ class UISeleniumSuite
     }
   }
 
-  test(
-    "job details page should display useful information for stages that haven't started") {
+  test("job details page should display useful information for stages that haven't started") {
     withSpark(newSparkContext()) { sc =>
       // Create a multi-stage job with a long delay in the first stage:
       val rdd = sc
@@ -428,8 +426,7 @@ class UISeleniumSuite
     }
   }
 
-  test(
-    "jobs with stages that are skipped should show correct link descriptions on all jobs page") {
+  test("jobs with stages that are skipped should show correct link descriptions on all jobs page") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
       val rdd =

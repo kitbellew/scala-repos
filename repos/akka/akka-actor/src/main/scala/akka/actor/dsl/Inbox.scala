@@ -82,8 +82,7 @@ trait Inbox { this: ActorDSL.type ⇒
       if (messages.size < size) messages enqueue msg
       else {
         if (!printedWarning) {
-          log.warning(
-            "dropping message: either your program is buggy or you might want to increase akka.actor.dsl.inbox-size, current value is " + size)
+          log.warning("dropping message: either your program is buggy or you might want to increase akka.actor.dsl.inbox-size, current value is " + size)
           printedWarning = true
         }
       }

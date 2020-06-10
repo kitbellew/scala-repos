@@ -76,9 +76,7 @@ private[kafka] class KafkaTestUtils extends Logging {
   private var brokerReady = false
 
   def zkAddress: String = {
-    assert(
-      zkReady,
-      "Zookeeper not setup yet or already torn down, cannot get zookeeper address")
+    assert(zkReady, "Zookeeper not setup yet or already torn down, cannot get zookeeper address")
     s"$zkHost:$zkPort"
   }
 
@@ -90,9 +88,7 @@ private[kafka] class KafkaTestUtils extends Logging {
   }
 
   def zookeeperClient: ZkClient = {
-    assert(
-      zkReady,
-      "Zookeeper not setup yet or already torn down, cannot get zookeeper client")
+    assert(zkReady, "Zookeeper not setup yet or already torn down, cannot get zookeeper client")
     Option(zkClient).getOrElse(
       throw new IllegalStateException(
         "Zookeeper client is not yet initialized"))

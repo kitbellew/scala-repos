@@ -96,9 +96,10 @@ object LDAExample {
           s" default: ${defaultParams.algorithm}")
         .action((x, c) => c.copy(algorithm = x))
       opt[String]("checkpointDir")
-        .text(s"Directory for checkpointing intermediate results." +
-          s"  Checkpointing helps with recovery and eliminates temporary shuffle files on disk." +
-          s"  default: ${defaultParams.checkpointDir}")
+        .text(
+          s"Directory for checkpointing intermediate results." +
+            s"  Checkpointing helps with recovery and eliminates temporary shuffle files on disk." +
+            s"  default: ${defaultParams.checkpointDir}")
         .action((x, c) => c.copy(checkpointDir = Some(x)))
       opt[Int]("checkpointInterval")
         .text(

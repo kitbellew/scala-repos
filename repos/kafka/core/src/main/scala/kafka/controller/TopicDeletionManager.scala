@@ -295,9 +295,8 @@ class TopicDeletionManager(
     // reset replica states from ReplicaDeletionIneligible to OfflineReplica
     val failedReplicas = controller.replicaStateMachine
       .replicasInState(topic, ReplicaDeletionIneligible)
-    info(
-      "Retrying delete topic for topic %s since replicas %s were not successfully deleted"
-        .format(topic, failedReplicas.mkString(",")))
+    info("Retrying delete topic for topic %s since replicas %s were not successfully deleted"
+      .format(topic, failedReplicas.mkString(",")))
     controller.replicaStateMachine
       .handleStateChanges(failedReplicas, OfflineReplica)
   }
@@ -513,9 +512,8 @@ class TopicDeletionManager(
             // topic deletion will be kicked off
             onTopicDeletion(Set(topic))
           } else if (isTopicIneligibleForDeletion(topic)) {
-            info(
-              "Not retrying deletion of topic %s at this time since it is marked ineligible for deletion"
-                .format(topic))
+            info("Not retrying deletion of topic %s at this time since it is marked ineligible for deletion"
+              .format(topic))
           }
         }
       }

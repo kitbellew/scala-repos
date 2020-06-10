@@ -69,8 +69,7 @@ class CreateTableAsSelectSuite
     caseInsensitiveContext.dropTempTable("jsonTable")
   }
 
-  test(
-    "CREATE TEMPORARY TABLE AS SELECT based on the file without write permission") {
+  test("CREATE TEMPORARY TABLE AS SELECT based on the file without write permission") {
     val childPath = new File(path.toString, "child")
     path.mkdir()
     childPath.createNewFile()

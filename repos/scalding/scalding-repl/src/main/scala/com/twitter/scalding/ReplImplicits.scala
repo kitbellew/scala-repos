@@ -62,8 +62,7 @@ trait BaseReplState {
     storedHdfsMode match {
       case Some(hdfsMode) => mode = hdfsMode
       case None =>
-        println(
-          "To use HDFS/Hadoop mode, you must *start* the repl in hadoop mode to get the hadoop configuration from the hadoop command.")
+        println("To use HDFS/Hadoop mode, you must *start* the repl in hadoop mode to get the hadoop configuration from the hadoop command.")
     }
   }
 

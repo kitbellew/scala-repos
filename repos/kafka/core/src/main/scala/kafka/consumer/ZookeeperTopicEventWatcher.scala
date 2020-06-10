@@ -54,8 +54,7 @@ class ZookeeperTopicEventWatcher(
       if (zkUtils != null) {
         stopWatchingTopicEvents()
       } else {
-        warn(
-          "Cannot shutdown since the embedded zookeeper client has already closed.")
+        warn("Cannot shutdown since the embedded zookeeper client has already closed.")
       }
     }
   }

@@ -172,8 +172,8 @@ class MergeToComprehensions extends Phase {
               }.isDefined) >= 0
             })
             if (isParam) {
-              logger.debug(
-                "Pushing GroupBy source into subquery to avoid repeated parameter")
+              logger
+                .debug("Pushing GroupBy source into subquery to avoid repeated parameter")
               val (c1a, replacements1a) = toSubquery(c1, replacements1)
               val b2a = applyReplacements(b1, replacements1a, c1a)
               (c1a, replacements1a, b2a)

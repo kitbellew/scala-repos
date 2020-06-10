@@ -753,8 +753,8 @@ object ScalaDocumentationProvider {
           buffer append " with " + ScType.urlText(
             seq(i).getType(TypingContext.empty).getOrAny)
       case None =>
-        buffer.append(
-          "<a href=\"psi_element://scala.ScalaObject\"><code>ScalaObject</code></a>")
+        buffer
+          .append("<a href=\"psi_element://scala.ScalaObject\"><code>ScalaObject</code></a>")
         if (elem.isUnderCaseClass) {
           buffer.append(
             "<a href=\"psi_element://scala.Product\"><code>Product</code></a>")

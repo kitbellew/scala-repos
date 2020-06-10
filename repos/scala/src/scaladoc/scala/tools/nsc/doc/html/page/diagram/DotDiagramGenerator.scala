@@ -389,8 +389,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       } catch {
         case exc: Exception =>
           if (settings.docDiagramsDebug) {
-            settings.printMsg(
-              "\n\n**********************************************************************")
+            settings
+              .printMsg("\n\n**********************************************************************")
             settings.printMsg(
               "Encountered an error while generating page for " + template.qualifiedName)
             settings.printMsg(
@@ -406,8 +406,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                 "\nException: " + exc.toString + ":\n\tat ",
                 "\n\tat ",
                 ""))
-            settings.printMsg(
-              "\n\n**********************************************************************")
+            settings
+              .printMsg("\n\n**********************************************************************")
           } else {
             settings.printMsg(
               "\nThe diagram for " + template.qualifiedName + " could not be created due to an internal error.")

@@ -82,9 +82,8 @@ class ConsumerIterator[K, V](
         val cdcFetchOffset = currentDataChunk.fetchOffset
         val ctiConsumeOffset = currentTopicInfo.getConsumeOffset
         if (ctiConsumeOffset < cdcFetchOffset) {
-          error(
-            "consumed offset: %d doesn't match fetch offset: %d for %s;\n Consumer may lose data"
-              .format(ctiConsumeOffset, cdcFetchOffset, currentTopicInfo))
+          error("consumed offset: %d doesn't match fetch offset: %d for %s;\n Consumer may lose data"
+            .format(ctiConsumeOffset, cdcFetchOffset, currentTopicInfo))
           currentTopicInfo.resetConsumeOffset(cdcFetchOffset)
         }
         localCurrent = currentDataChunk.messages.iterator

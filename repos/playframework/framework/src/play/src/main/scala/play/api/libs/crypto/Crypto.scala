@@ -530,10 +530,10 @@ class CryptoConfigParser @Inject() (
       "application.secret") match {
       case (Some("changeme") | Some(Blank()) | None)
           if environment.mode == Mode.Prod =>
-        logger.error(
-          "The application secret has not been set, and we are in prod mode. Your application is not secure.")
-        logger.error(
-          "To set the application secret, please read http://playframework.com/documentation/latest/ApplicationSecret")
+        logger
+          .error("The application secret has not been set, and we are in prod mode. Your application is not secure.")
+        logger
+          .error("To set the application secret, please read http://playframework.com/documentation/latest/ApplicationSecret")
         throw new PlayException(
           "Configuration error",
           "Application secret not set")

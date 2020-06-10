@@ -92,8 +92,7 @@ class InsertIntoHiveTableSuite
 
   test("Double create does not fail when allowExisting = true") {
     sql("CREATE TABLE doubleCreateAndInsertTest (key int, value string)")
-    sql(
-      "CREATE TABLE IF NOT EXISTS doubleCreateAndInsertTest (key int, value string)")
+    sql("CREATE TABLE IF NOT EXISTS doubleCreateAndInsertTest (key int, value string)")
   }
 
   test("SPARK-4052: scala.collection.Map as value type of MapType") {
@@ -104,8 +103,7 @@ class InsertIntoHiveTableSuite
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithMapValue")
     sql("CREATE TABLE hiveTableWithMapValue(m MAP <STRING, STRING>)")
-    sql(
-      "INSERT OVERWRITE TABLE hiveTableWithMapValue SELECT m FROM tableWithMapValue")
+    sql("INSERT OVERWRITE TABLE hiveTableWithMapValue SELECT m FROM tableWithMapValue")
 
     checkAnswer(
       sql("SELECT * FROM hiveTableWithMapValue"),
@@ -177,8 +175,7 @@ class InsertIntoHiveTableSuite
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithArrayValue")
     sql("CREATE TABLE hiveTableWithArrayValue(a Array <STRING>)")
-    sql(
-      "INSERT OVERWRITE TABLE hiveTableWithArrayValue SELECT a FROM tableWithArrayValue")
+    sql("INSERT OVERWRITE TABLE hiveTableWithArrayValue SELECT a FROM tableWithArrayValue")
 
     checkAnswer(
       sql("SELECT * FROM hiveTableWithArrayValue"),
@@ -198,8 +195,7 @@ class InsertIntoHiveTableSuite
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithMapValue")
     sql("CREATE TABLE hiveTableWithMapValue(m Map <STRING, STRING>)")
-    sql(
-      "INSERT OVERWRITE TABLE hiveTableWithMapValue SELECT m FROM tableWithMapValue")
+    sql("INSERT OVERWRITE TABLE hiveTableWithMapValue SELECT m FROM tableWithMapValue")
 
     checkAnswer(
       sql("SELECT * FROM hiveTableWithMapValue"),
@@ -219,8 +215,7 @@ class InsertIntoHiveTableSuite
     val df = hiveContext.createDataFrame(rowRDD, schema)
     df.registerTempTable("tableWithStructValue")
     sql("CREATE TABLE hiveTableWithStructValue(s Struct <f: STRING>)")
-    sql(
-      "INSERT OVERWRITE TABLE hiveTableWithStructValue SELECT s FROM tableWithStructValue")
+    sql("INSERT OVERWRITE TABLE hiveTableWithStructValue SELECT s FROM tableWithStructValue")
 
     checkAnswer(
       sql("SELECT * FROM hiveTableWithStructValue"),

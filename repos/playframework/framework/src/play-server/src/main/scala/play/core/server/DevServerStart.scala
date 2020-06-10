@@ -96,8 +96,8 @@ object DevServerStart {
           case Some(loggerConfigurator) =>
             loggerConfigurator.init(path, Mode.Dev)
           case None =>
-            System.out.println(
-              "No play.logger.configurator found: logging must be configured entirely by the application.")
+            System.out
+              .println("No play.logger.configurator found: logging must be configured entirely by the application.")
         }
 
         println(

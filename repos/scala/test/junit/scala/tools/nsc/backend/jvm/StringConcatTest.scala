@@ -152,8 +152,6 @@ class StringConcatTest extends ClearAfterClass {
       chsq,
       Array('a', 'b'))
     val r = s.replaceAll("""\[C@\w+""", "<ARRAY>")
-    assertEquals(
-      r,
-      "meTTT()trued312312.3-32-4.2sbufchsq<ARRAY>//TTTme()trued312312.3-32-4.2sbufchsq<ARRAY>")
+    assertEquals(r, "meTTT()trued312312.3-32-4.2sbufchsq<ARRAY>//TTTme()trued312312.3-32-4.2sbufchsq<ARRAY>")
   }
 }

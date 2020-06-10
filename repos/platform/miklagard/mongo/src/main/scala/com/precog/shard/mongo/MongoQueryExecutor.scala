@@ -176,8 +176,7 @@ class MongoQueryExecutor(
             Success(JArray(Nil))
 
           case _ =>
-            Failure(
-              "MongoDB paths have the form /databaseName/collectionName; longer paths are not supported.")
+            Failure("MongoDB paths have the form /databaseName/collectionName; longer paths are not supported.")
         }
       }.onFailure {
         case t => logger.error("Failure during browse", t)

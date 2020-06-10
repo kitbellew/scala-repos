@@ -147,24 +147,12 @@ import scala.language.implicitConversions"""
 
     def comparisonOps =
       List(
-        Op(
-          "==",
-          "/** Returns `true` if this value is equal to x, `false` otherwise. */"),
-        Op(
-          "!=",
-          "/** Returns `true` if this value is not equal to x, `false` otherwise. */"),
-        Op(
-          "<",
-          "/** Returns `true` if this value is less than x, `false` otherwise. */"),
-        Op(
-          "<=",
-          "/** Returns `true` if this value is less than or equal to x, `false` otherwise. */"),
-        Op(
-          ">",
-          "/** Returns `true` if this value is greater than x, `false` otherwise. */"),
-        Op(
-          ">=",
-          "/** Returns `true` if this value is greater than or equal to x, `false` otherwise. */")
+        Op("==", "/** Returns `true` if this value is equal to x, `false` otherwise. */"),
+        Op("!=", "/** Returns `true` if this value is not equal to x, `false` otherwise. */"),
+        Op("<", "/** Returns `true` if this value is less than x, `false` otherwise. */"),
+        Op("<=", "/** Returns `true` if this value is less than or equal to x, `false` otherwise. */"),
+        Op(">", "/** Returns `true` if this value is greater than x, `false` otherwise. */"),
+        Op(">=", "/** Returns `true` if this value is greater than or equal to x, `false` otherwise. */")
       )
 
     def otherOps =
@@ -368,7 +356,8 @@ package scala
 
 """
 
-  def classDocTemplate = ("""
+  def classDocTemplate =
+    ("""
 /** `@name@`@representation@ (equivalent to Java's `@javaequiv@` primitive type) is a
  *  subtype of [[scala.AnyVal]]. Instances of `@name@` are not
  *  represented by an object in the underlying runtime system.

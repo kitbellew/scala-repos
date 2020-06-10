@@ -881,9 +881,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           } else { // if there are no accessors, specialized methods will need to access this field in specialized subclasses
             m.resetFlag(PRIVATE)
             specVal.resetFlag(PRIVATE)
-            debuglog(
-              "no accessors for %s/%s, specialized methods must access field in subclass"
-                .format(m.name.decode, specVal.name.decode))
+            debuglog("no accessors for %s/%s, specialized methods must access field in subclass"
+              .format(m.name.decode, specVal.name.decode))
           }
         } else if (m.isClass) {
           val specClass: Symbol = cloneInSpecializedClass(m, x => x)
@@ -1575,8 +1574,7 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     private def isAccessible(sym: Symbol): Boolean =
       if (currentOwner.isAnonymousFunction) {
         if (inlineFunctionExpansion)
-          devWarning(
-            "anonymous function made it to specialization even though inline expansion is set.")
+          devWarning("anonymous function made it to specialization even though inline expansion is set.")
         false
       } else
         (currentClass == sym.owner.enclClass) && (currentClass != targetClass)

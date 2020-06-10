@@ -329,8 +329,7 @@ class ReplSuite extends SparkFunSuite {
     assertDoesNotContain("Exception", output)
   }
 
-  test(
-    "SPARK-2632 importing a method from non serializable class and not using it.") {
+  test("SPARK-2632 importing a method from non serializable class and not using it.") {
     val output = runInterpreter(
       "local",
       """

@@ -72,9 +72,8 @@ private[spark] class Benchmark(
       "Rate(M/s)",
       "Per Row(ns)",
       "Relative")
-    println(
-      "-----------------------------------------------------------------------------------" +
-        "--------")
+    println("-----------------------------------------------------------------------------------" +
+      "--------")
     results.zip(benchmarks).foreach {
       case (result, benchmark) =>
         printf(

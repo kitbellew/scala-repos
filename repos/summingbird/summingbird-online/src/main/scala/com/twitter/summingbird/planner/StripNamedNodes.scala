@@ -51,8 +51,7 @@ object StripNamedNode {
       case IdentityKeyedProducer(producer) => None
       case MergedProducer(l, r)            => None
       case _ =>
-        sys.error(
-          "Unreachable. Here to warn us if we add Producer subclasses but forget to update this")
+        sys.error("Unreachable. Here to warn us if we add Producer subclasses but forget to update this")
     }
 
   def apply[P <: Platform[P], T](tail: TailProducer[P, T])

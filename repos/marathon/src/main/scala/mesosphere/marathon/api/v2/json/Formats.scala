@@ -614,8 +614,7 @@ trait AppAndGroupFormats {
                   .mkString(", ")}]")
             }
           case _ =>
-            JsError(
-              "Constraint definition must be an array of strings in format: <key>, <operator>[, value]")
+            JsError("Constraint definition must be an array of strings in format: <key>, <operator>[, value]")
         }
       }
     },

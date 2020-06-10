@@ -101,8 +101,7 @@ class ReceiverInputDStreamSuite extends TestSuiteBase with BeforeAndAfterAll {
       assert(rdd.isEmpty())
   }
 
-  testWithWAL(
-    "createBlockRDD creates correct WALBackedBlockRDD with all block info having WAL info") {
+  testWithWAL("createBlockRDD creates correct WALBackedBlockRDD with all block info having WAL info") {
     receiverStream =>
       val blockInfos = Seq.fill(5) { createBlockInfo(withWALInfo = true) }
       val blockIds = blockInfos.map(_.blockId)

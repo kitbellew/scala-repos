@@ -111,8 +111,7 @@ class TaskOpProcessorImplTest
     f.verifyNoMoreInteractions()
   }
 
-  test(
-    "process update with failing taskRepository.store but successful load of existing task") {
+  test("process update with failing taskRepository.store but successful load of existing task") {
     val f = new Fixture
     val appId = PathId("/app")
 
@@ -163,8 +162,7 @@ class TaskOpProcessorImplTest
     f.verifyNoMoreInteractions()
   }
 
-  test(
-    "process update with failing taskRepository.store but successful load of non-existing task") {
+  test("process update with failing taskRepository.store but successful load of non-existing task") {
     val f = new Fixture
     val appId = PathId("/app")
 
@@ -206,8 +204,7 @@ class TaskOpProcessorImplTest
     And("it replies with unit immediately because the task is as expected")
     result should be(Success(()))
 
-    And(
-      "the taskTracker gets a task removed and the ack contains the original failure")
+    And("the taskTracker gets a task removed and the ack contains the original failure")
     f.taskTrackerProbe.expectMsg(
       TaskTrackerActor.TaskRemoved(
         taskState.taskId,
@@ -337,8 +334,7 @@ class TaskOpProcessorImplTest
     f.verifyNoMoreInteractions()
   }
 
-  test(
-    "process expunge, expunge fails but and task reload suggests that task is still there") {
+  test("process expunge, expunge fails but and task reload suggests that task is still there") {
     val f = new Fixture
     val appId = PathId("/app")
 

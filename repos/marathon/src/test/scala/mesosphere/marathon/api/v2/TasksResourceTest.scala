@@ -136,8 +136,7 @@ class TasksResourceTest
     killTasks.getStatus should be(auth.NotAuthenticatedStatus)
   }
 
-  test(
-    "killTask without authentication is not allowed when the affected app does not exist") {
+  test("killTask without authentication is not allowed when the affected app does not exist") {
     Given("An unauthenticated request")
     auth.authenticated = false
     val req = auth.request

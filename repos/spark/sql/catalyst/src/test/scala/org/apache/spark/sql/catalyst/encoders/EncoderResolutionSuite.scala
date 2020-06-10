@@ -49,8 +49,7 @@ class EncoderResolutionSuite extends PlanTest {
     encoder.resolve(attrs2, null).bind(attrs2).fromRow(InternalRow(1, 2L))
   }
 
-  test(
-    "real type doesn't match encoder schema but they are compatible: nested product") {
+  test("real type doesn't match encoder schema but they are compatible: nested product") {
     val encoder = ExpressionEncoder[ComplexClass]
     val attrs = Seq('a.int, 'b.struct('a.int, 'b.long))
     encoder
@@ -59,8 +58,7 @@ class EncoderResolutionSuite extends PlanTest {
       .fromRow(InternalRow(1, InternalRow(2, 3L)))
   }
 
-  test(
-    "real type doesn't match encoder schema but they are compatible: tupled encoder") {
+  test("real type doesn't match encoder schema but they are compatible: tupled encoder") {
     val encoder = ExpressionEncoder.tuple(
       ExpressionEncoder[StringLongClass],
       ExpressionEncoder[Long])
@@ -113,8 +111,7 @@ class EncoderResolutionSuite extends PlanTest {
     }
   }
 
-  test(
-    "the real number of fields doesn't match encoder schema: nested tuple encoder") {
+  test("the real number of fields doesn't match encoder schema: nested tuple encoder") {
     val encoder = ExpressionEncoder[(String, (Long, String))]
 
     {

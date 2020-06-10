@@ -148,8 +148,7 @@ object Executable {
   * collection-valued (`Query[_, _, _[_] ]`) types. This is used
   * as a phantom type for computing the required types. The actual value is
   * always `null`. */
-@implicitNotFound(
-  "Computation of type ${T} cannot be executed (with sequence result type ${TU} and base result type ${EU})")
+@implicitNotFound("Computation of type ${T} cannot be executed (with sequence result type ${TU} and base result type ${EU})")
 trait StreamingExecutable[T, TU, EU] extends Executable[T, TU]
 
 /** A prototype `StreamingExecutable` instance for `Rep` types. */

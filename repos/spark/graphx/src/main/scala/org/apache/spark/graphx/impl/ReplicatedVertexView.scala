@@ -67,9 +67,8 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
       val shippedVerts: RDD[(Int, VertexAttributeBlock[VD])] =
         vertices
           .shipVertexAttributes(shipSrc, shipDst)
-          .setName(
-            "ReplicatedVertexView.upgrade(%s, %s) - shippedVerts %s %s (broadcast)"
-              .format(includeSrc, includeDst, shipSrc, shipDst))
+          .setName("ReplicatedVertexView.upgrade(%s, %s) - shippedVerts %s %s (broadcast)"
+            .format(includeSrc, includeDst, shipSrc, shipDst))
           .partitionBy(edges.partitioner.get)
       val newEdges = edges.withPartitionsRDD(
         edges.partitionsRDD.zipPartitions(shippedVerts) {

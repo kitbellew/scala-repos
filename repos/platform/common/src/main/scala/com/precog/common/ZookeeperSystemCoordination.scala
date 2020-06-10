@@ -188,8 +188,8 @@ class ZookeeperSystemCoordination(
         Success(())
       } else {
         Thread.sleep(delay)
-        logger.debug(
-          "Active path [%s] already registered, retrying in case of stale registration.(%d remain)"
+        logger
+          .debug("Active path [%s] already registered, retrying in case of stale registration.(%d remain)"
             .format(base, retries))
         acquireActivePath(base, retries - 1, delay)
       }

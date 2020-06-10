@@ -49,8 +49,7 @@ class OfferMatcherManagerActorTest
   }
 
   test("The list of OfferMatchers is sorted by precedence") {
-    Given(
-      "OfferMatcher with num precedence and num normal matchers, registered in mixed order")
+    Given("OfferMatcher with num precedence and num normal matchers, registered in mixed order")
     val num = 5
     val f = new Fixture
     val appId = PathId("/some/app")

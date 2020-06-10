@@ -61,8 +61,8 @@ class VectorTest extends FunSuite {
   }
 
   test("Vector.parseJson") {
-    val Some(Vector(vec)) = Vector.parseJson(
-      """{"vector":[{"select":"member=1","weight":1.2,"priority":1},{"select":"inet=10.0.0.3:%d","weight":1.3,"priority":2}]}"""
+    val Some(Vector(vec)) = Vector
+      .parseJson("""{"vector":[{"select":"member=1","weight":1.2,"priority":1},{"select":"inet=10.0.0.3:%d","weight":1.3,"priority":2}]}"""
         .format(port))
     assert(
       vec == Seq(

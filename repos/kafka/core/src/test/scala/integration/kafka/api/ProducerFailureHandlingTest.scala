@@ -286,13 +286,11 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
       "value".getBytes)
     try {
       producer3.send(record).get
-      fail(
-        "Expected exception when producing to topic with fewer brokers than min.insync.replicas")
+      fail("Expected exception when producing to topic with fewer brokers than min.insync.replicas")
     } catch {
       case e: ExecutionException =>
         if (!e.getCause.isInstanceOf[NotEnoughReplicasException]) {
-          fail(
-            "Expected NotEnoughReplicasException when producing to topic with fewer brokers than min.insync.replicas")
+          fail("Expected NotEnoughReplicasException when producing to topic with fewer brokers than min.insync.replicas")
         }
     }
   }
@@ -324,8 +322,7 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
     servers.head.awaitShutdown()
     try {
       producer3.send(record).get
-      fail(
-        "Expected exception when producing to topic with fewer brokers than min.insync.replicas")
+      fail("Expected exception when producing to topic with fewer brokers than min.insync.replicas")
     } catch {
       case e: ExecutionException =>
         if (!e.getCause.isInstanceOf[NotEnoughReplicasException] &&

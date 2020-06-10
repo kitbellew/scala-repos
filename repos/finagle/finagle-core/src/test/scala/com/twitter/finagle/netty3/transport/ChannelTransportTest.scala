@@ -65,8 +65,7 @@ class ChannelTransportTest
       assert(dsme.getMessage == "one")
     }
 
-  test(
-    "write to the underlying channel, proxying the underlying ChannelFuture (ok)") {
+  test("write to the underlying channel, proxying the underlying ChannelFuture (ok)") {
     val ctx = newProxyCtx()
     import ctx._
 
@@ -74,8 +73,7 @@ class ChannelTransportTest
     assert(Await.result(f.liftToTry) == Return.Unit)
   }
 
-  test(
-    "write to the underlying channel, proxying the underlying ChannelFuture (err)") {
+  test("write to the underlying channel, proxying the underlying ChannelFuture (err)") {
     val ctx = newProxyCtx()
     import ctx._
 

@@ -187,8 +187,7 @@ object DeserializeModuleNoConstructor {
       c.a.P -> c.a
     )
 
-    println(
-      "no object konstruktors called when serializing / deserializing objects (starting at the outer or the object itself)")
+    println("no object konstruktors called when serializing / deserializing objects (starting at the outer or the object itself)")
 
     for ((obj, outer) <- os) {
       assert(obj.outer eq outer, s"${obj.outer} of $obj -- $outer")
@@ -205,8 +204,7 @@ object DeserializeModuleNoConstructor {
     aNotInit.N.O
     aNotInit.N.P
 
-    println(
-      "deserializing creates a new object graph, including new scala 'object' instances, no matter where serialization starts")
+    println("deserializing creates a new object graph, including new scala 'object' instances, no matter where serialization starts")
     val deserializedAs: List[A] = List(
       serializeDeserialize(a),
       serializeDeserialize(a.O).outer.asInstanceOf[A],
@@ -267,8 +265,7 @@ object SerializingStaticModules {
     println("serDeser nested static module")
     assert(serializeDeserialize(M.O) eq M.O)
 
-    println(
-      "objects declared in field decls are not static modules, so they deserialize to new instances")
+    println("objects declared in field decls are not static modules, so they deserialize to new instances")
     assert(serializeDeserialize(M.v) ne M.v)
 
     println("init lazy val M.w")

@@ -76,8 +76,7 @@ object TimePathSourceLaws extends Properties("Time path source") {
   def rangeLength(dr: DateRange): Long =
     dr.end.timestamp - dr.start.timestamp + 1
 
-  property(
-    "if the reqRange + embiggen is inside the avail range, return should == requested") =
+  property("if the reqRange + embiggen is inside the avail range, return should == requested") =
     forAll { (data: TestData) =>
       val retData = BTimePathedSource.minify(
         genEmbiggen(data.embiggen),

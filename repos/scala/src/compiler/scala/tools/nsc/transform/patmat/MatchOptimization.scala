@@ -71,8 +71,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             // is there an earlier test that checks our condition and whose dependencies are implied by ours?
             dependencies find {
               case (priorTest, deps) =>
-                ((simplify(
-                  priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
+                ((simplify(priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
                   (nonTrivial subsetOf deps) // or if it depends on a superset of our conditions
                 ) && (deps subsetOf tested) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
             } foreach {

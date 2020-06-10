@@ -176,22 +176,19 @@ class DocFindingSpec
           case "29" =>
             sig.scala shouldBe DocSig(
               DocFqn("scala", "Some"),
-              Some(
-                "++[B>:A,That](that:scala.collection.GenTraversableOnce[B])(implicitbf:scala.collection.generic.CanBuildFrom[Repr,B,That]):That")
+              Some("++[B>:A,That](that:scala.collection.GenTraversableOnce[B])(implicitbf:scala.collection.generic.CanBuildFrom[Repr,B,That]):That")
             )
           case "30" =>
             val expected =
               if (scala210)
                 DocSig(
                   DocFqn("scala.collection.immutable", "List"),
-                  Some(
-                    "flatMap[B,That](f:A=>scala.collection.GenTraversableOnce[B])(implicitbf:scala.collection.generic.CanBuildFrom[Repr,B,That]):That")
+                  Some("flatMap[B,That](f:A=>scala.collection.GenTraversableOnce[B])(implicitbf:scala.collection.generic.CanBuildFrom[Repr,B,That]):That")
                 )
               else
                 DocSig(
                   DocFqn("scala.collection.immutable", "List"),
-                  Some(
-                    "flatMap[B,That](f:A=>scala.collection.GenTraversableOnce[B])(implicitbf:scala.collection.generic.CanBuildFrom[List[A],B,That]):That")
+                  Some("flatMap[B,That](f:A=>scala.collection.GenTraversableOnce[B])(implicitbf:scala.collection.generic.CanBuildFrom[List[A],B,That]):That")
                 )
 
             sig.scala shouldBe expected
@@ -200,14 +197,12 @@ class DocFindingSpec
               if (scala210)
                 DocSig(
                   DocFqn("scala.collection.immutable", "List"),
-                  Some(
-                    "collect[B,That](pf:PartialFunction[A,B])(implicitbf:scala.collection.generic.CanBuildFrom[Repr,B,That]):That")
+                  Some("collect[B,That](pf:PartialFunction[A,B])(implicitbf:scala.collection.generic.CanBuildFrom[Repr,B,That]):That")
                 )
               else
                 DocSig(
                   DocFqn("scala.collection.immutable", "List"),
-                  Some(
-                    "collect[B,That](pf:PartialFunction[A,B])(implicitbf:scala.collection.generic.CanBuildFrom[List[A],B,That]):That")
+                  Some("collect[B,That](pf:PartialFunction[A,B])(implicitbf:scala.collection.generic.CanBuildFrom[List[A],B,That]):That")
                 )
             sig.scala shouldBe expected
         }

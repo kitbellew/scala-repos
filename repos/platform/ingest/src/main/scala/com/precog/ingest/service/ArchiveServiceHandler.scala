@@ -72,6 +72,6 @@ class ArchiveServiceHandler[A](
     }
   }
 
-  val metadata = DescriptionMetadata(
-    """This service can be used to delete all data at the given path. Note: This does not imply recursive deletion by default.""")
+  val metadata =
+    DescriptionMetadata("""This service can be used to delete all data at the given path. Note: This does not imply recursive deletion by default.""")
 }

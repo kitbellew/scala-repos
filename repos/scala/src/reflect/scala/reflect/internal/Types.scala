@@ -969,8 +969,7 @@ trait Types
         else if (sym isLess btssym) hi = mid - 1
         else if (btssym isLess sym) lo = mid + 1
         else
-          abort(
-            "sym is neither `sym == btssym`, `sym isLess btssym` nor `btssym isLess sym`")
+          abort("sym is neither `sym == btssym`, `sym isLess btssym` nor `btssym isLess sym`")
       }
       -1
     }

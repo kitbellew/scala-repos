@@ -66,10 +66,8 @@ object HelpersSpec extends Specification {
       // Append [] to the name for the form binding
       body must contain("name=\"hobbies[]\"")
 
-      body must contain(
-        """<input type="checkbox" id="hobbies_S" name="hobbies[]" value="S" checked="checked" />""")
-      body must contain(
-        """<input type="checkbox" id="hobbies_B" name="hobbies[]" value="B" checked="checked" />""")
+      body must contain("""<input type="checkbox" id="hobbies_S" name="hobbies[]" value="S" checked="checked" />""")
+      body must contain("""<input type="checkbox" id="hobbies_B" name="hobbies[]" value="B" checked="checked" />""")
     }
   }
 

@@ -346,8 +346,7 @@ class MapWithStateSuite
       stateData)
   }
 
-  test(
-    "mapWithState - initial states, with nothing returned as from mapping function") {
+  test("mapWithState - initial states, with nothing returned as from mapping function") {
 
     val initialState = Seq(("a", 5), ("b", 10), ("c", -20), ("d", 0))
 

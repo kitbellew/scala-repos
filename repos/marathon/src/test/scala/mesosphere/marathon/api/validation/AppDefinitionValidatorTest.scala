@@ -125,18 +125,15 @@ class AppDefinitionValidatorTest
     testInvalid("/asd asd")
   }
 
-  test(
-    "id '/app-' is invalid because hyphens and dots are only allowed inside of path fragments") {
+  test("id '/app-' is invalid because hyphens and dots are only allowed inside of path fragments") {
     testInvalid("/app-")
   }
 
-  test(
-    "id '/nest./ted' is invalid because hyphens and dots are only allowed inside of path fragments") {
+  test("id '/nest./ted' is invalid because hyphens and dots are only allowed inside of path fragments") {
     testInvalid("/nest./ted")
   }
 
-  test(
-    "id '/nest/-ted' is invalid because hyphens and dots are only allowed inside of path fragments") {
+  test("id '/nest/-ted' is invalid because hyphens and dots are only allowed inside of path fragments") {
     testInvalid("/nest/-ted")
   }
 

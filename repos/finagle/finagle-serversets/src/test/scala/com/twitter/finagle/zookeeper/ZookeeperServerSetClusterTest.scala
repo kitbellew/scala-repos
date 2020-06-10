@@ -143,8 +143,7 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
       }
     }
 
-    test(
-      "ZookeeperServerSetCluster ignores a server which does not specify the additional endpoint") {
+    test("ZookeeperServerSetCluster ignores a server which does not specify the additional endpoint") {
       forClient(Some("this-endpoint")) { (cluster, registerHost) =>
         val remoteAddress = new InetSocketAddress("host", port1)
         registerHost(remoteAddress, EmptyEndpointMap)

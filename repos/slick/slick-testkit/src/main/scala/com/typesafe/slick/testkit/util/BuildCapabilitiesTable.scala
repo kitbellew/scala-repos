@@ -17,8 +17,7 @@ import slick.sql.SqlCapabilities
 object BuildCapabilitiesTable extends App {
   // testkit/runMain com.typesafe.slick.testkit.util.BuildCapabilitiesTable ../src/sphinx/capabilities.csv
   if (args.length < 1 || args.length > 2) {
-    println(
-      "Syntax: com.typesafe.slick.testkit.util.BuildCapabilitiesTable OUTPUTFILE [PROFILELIST]")
+    println("Syntax: com.typesafe.slick.testkit.util.BuildCapabilitiesTable OUTPUTFILE [PROFILELIST]")
     System.exit(1)
   }
 

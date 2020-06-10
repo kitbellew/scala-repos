@@ -137,8 +137,7 @@ object ValueConstraint {
 /**
   * Type class witnessing that `L` doesn't contain elements of type `U`
   */
-@implicitNotFound(
-  "Implicit not found: shapeless.NotContainsConstraint[${L}, ${U}]. This HList already contains element of type ${U}.")
+@implicitNotFound("Implicit not found: shapeless.NotContainsConstraint[${L}, ${U}]. This HList already contains element of type ${U}.")
 trait NotContainsConstraint[L <: HList, U] extends Serializable
 
 object NotContainsConstraint {

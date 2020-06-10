@@ -139,9 +139,8 @@ private[spark] class NodeIdCache(
             fs.delete(new Path(old.getCheckpointFile.get), true)
           } catch {
             case e: IOException =>
-              logError(
-                "Decision Tree learning using cacheNodeIds failed to remove checkpoint" +
-                  s" file: ${old.getCheckpointFile.get}")
+              logError("Decision Tree learning using cacheNodeIds failed to remove checkpoint" +
+                s" file: ${old.getCheckpointFile.get}")
           }
         } else {
           canDelete = false
@@ -164,9 +163,8 @@ private[spark] class NodeIdCache(
           fs.delete(new Path(old.getCheckpointFile.get), true)
         } catch {
           case e: IOException =>
-            logError(
-              "Decision Tree learning using cacheNodeIds failed to remove checkpoint" +
-                s" file: ${old.getCheckpointFile.get}")
+            logError("Decision Tree learning using cacheNodeIds failed to remove checkpoint" +
+              s" file: ${old.getCheckpointFile.get}")
         }
       }
     }

@@ -1722,8 +1722,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       (
         // Avoiding a third override in NoSymbol to preserve bimorphism
         if (this eq NoSymbol)
-          abort(
-            "no-symbol does not have a type constructor (this may indicate scalac cannot find fundamental classes)")
+          abort("no-symbol does not have a type constructor (this may indicate scalac cannot find fundamental classes)")
         else
           abort("typeConstructor inapplicable for " + this)
       )

@@ -81,8 +81,7 @@ class InferFiltersFromConstraintsSuite extends PlanTest {
     comparePlans(optimized, correctAnswer)
   }
 
-  test(
-    "single inner join with pre-existing filters: filter out values on either side") {
+  test("single inner join with pre-existing filters: filter out values on either side") {
     val x = testRelation.subquery('x)
     val y = testRelation.subquery('y)
     val originalQuery = x

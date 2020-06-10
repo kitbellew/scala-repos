@@ -290,8 +290,7 @@ class TaskSerializerTest
                     .newBuilder()
                     .setInitiated(now.toDateTime.getMillis)
                     .setDeadline((now + 1.minute).toDateTime.getMillis)
-                    .setReason(
-                      MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
+                    .setReason(MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
           .build()
 
       def reservedState =

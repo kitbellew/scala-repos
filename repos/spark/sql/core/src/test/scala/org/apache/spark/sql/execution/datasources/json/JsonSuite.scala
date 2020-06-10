@@ -383,8 +383,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access elements of a primitive array.
     checkAnswer(
-      sql(
-        "select arrayOfString[0], arrayOfString[1], arrayOfString[2] from jsonTable"),
+      sql("select arrayOfString[0], arrayOfString[1], arrayOfString[2] from jsonTable"),
       Row("str1", "str2", null)
     )
 
@@ -396,8 +395,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access elements of a BigInteger array (we use DecimalType internally).
     checkAnswer(
-      sql(
-        "select arrayOfBigInteger[0], arrayOfBigInteger[1], arrayOfBigInteger[2] from jsonTable"),
+      sql("select arrayOfBigInteger[0], arrayOfBigInteger[1], arrayOfBigInteger[2] from jsonTable"),
       Row(
         new java.math.BigDecimal("922337203685477580700"),
         new java.math.BigDecimal("-922337203685477580800"),
@@ -424,9 +422,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access elements of an array of structs.
     checkAnswer(
-      sql(
-        "select arrayOfStruct[0], arrayOfStruct[1], arrayOfStruct[2], arrayOfStruct[3] " +
-          "from jsonTable"),
+      sql("select arrayOfStruct[0], arrayOfStruct[1], arrayOfStruct[2], arrayOfStruct[3] " +
+        "from jsonTable"),
       Row(
         Row(true, "str1", null),
         Row(false, null, null),
@@ -445,15 +442,13 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access an array field of a struct.
     checkAnswer(
-      sql(
-        "select structWithArrayFields.field1, structWithArrayFields.field2 from jsonTable"),
+      sql("select structWithArrayFields.field1, structWithArrayFields.field2 from jsonTable"),
       Row(Seq(4, 5, 6), Seq("str1", "str2"))
     )
 
     // Access elements of an array field of a struct.
     checkAnswer(
-      sql(
-        "select structWithArrayFields.field1[1], structWithArrayFields.field2[3] from jsonTable"),
+      sql("select structWithArrayFields.field1[1], structWithArrayFields.field2[3] from jsonTable"),
       Row(5, null)
     )
   }
@@ -548,8 +543,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Number and String conflict: resolve the type as number in this query.
     checkAnswer(
-      sql(
-        "select num_str + 1.2 from jsonTable where num_str >= 92233720368547758060"),
+      sql("select num_str + 1.2 from jsonTable where num_str >= 92233720368547758060"),
       Row(new java.math.BigDecimal("92233720368547758071.2"))
     )
 
@@ -740,8 +734,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     )
   }
 
-  test(
-    "Loading a JSON dataset primitivesAsString returns schema with primitive types as strings") {
+  test("Loading a JSON dataset primitivesAsString returns schema with primitive types as strings") {
     val dir = Utils.createTempDir()
     dir.delete()
     val path = dir.getCanonicalPath
@@ -776,8 +769,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     )
   }
 
-  test(
-    "Loading a JSON dataset primitivesAsString returns complex fields as strings") {
+  test("Loading a JSON dataset primitivesAsString returns complex fields as strings") {
     val jsonDF = sqlContext.read
       .option("primitivesAsString", "true")
       .json(complexFieldAndType1)
@@ -825,8 +817,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access elements of a primitive array.
     checkAnswer(
-      sql(
-        "select arrayOfString[0], arrayOfString[1], arrayOfString[2] from jsonTable"),
+      sql("select arrayOfString[0], arrayOfString[1], arrayOfString[2] from jsonTable"),
       Row("str1", "str2", null)
     )
 
@@ -838,8 +829,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access elements of a BigInteger array (we use DecimalType internally).
     checkAnswer(
-      sql(
-        "select arrayOfBigInteger[0], arrayOfBigInteger[1], arrayOfBigInteger[2] from jsonTable"),
+      sql("select arrayOfBigInteger[0], arrayOfBigInteger[1], arrayOfBigInteger[2] from jsonTable"),
       Row("922337203685477580700", "-922337203685477580800", null)
     )
 
@@ -863,9 +853,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access elements of an array of structs.
     checkAnswer(
-      sql(
-        "select arrayOfStruct[0], arrayOfStruct[1], arrayOfStruct[2], arrayOfStruct[3] " +
-          "from jsonTable"),
+      sql("select arrayOfStruct[0], arrayOfStruct[1], arrayOfStruct[2], arrayOfStruct[3] " +
+        "from jsonTable"),
       Row(
         Row("true", "str1", null),
         Row("false", null, null),
@@ -884,21 +873,18 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access an array field of a struct.
     checkAnswer(
-      sql(
-        "select structWithArrayFields.field1, structWithArrayFields.field2 from jsonTable"),
+      sql("select structWithArrayFields.field1, structWithArrayFields.field2 from jsonTable"),
       Row(Seq("4", "5", "6"), Seq("str1", "str2"))
     )
 
     // Access elements of an array field of a struct.
     checkAnswer(
-      sql(
-        "select structWithArrayFields.field1[1], structWithArrayFields.field2[3] from jsonTable"),
+      sql("select structWithArrayFields.field1[1], structWithArrayFields.field2[3] from jsonTable"),
       Row("5", null)
     )
   }
 
-  test(
-    "Loading a JSON dataset floatAsBigDecimal returns schema with float types as BigDecimal") {
+  test("Loading a JSON dataset floatAsBigDecimal returns schema with float types as BigDecimal") {
     val jsonDF = sqlContext.read
       .option("floatAsBigDecimal", "true")
       .json(primitiveFieldAndType)
@@ -1354,8 +1340,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     compTable.registerTempTable("complexTable")
     // Access elements of a primitive array.
     checkAnswer(
-      sql(
-        "select arrayOfString[0], arrayOfString[1], arrayOfString[2] from complexTable"),
+      sql("select arrayOfString[0], arrayOfString[1], arrayOfString[2] from complexTable"),
       Row("str1", "str2", null)
     )
 
@@ -1367,9 +1352,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access elements of a BigInteger array (we use DecimalType internally).
     checkAnswer(
-      sql(
-        "select arrayOfBigInteger[0], arrayOfBigInteger[1], arrayOfBigInteger[2] " +
-          " from complexTable"),
+      sql("select arrayOfBigInteger[0], arrayOfBigInteger[1], arrayOfBigInteger[2] " +
+        " from complexTable"),
       Row(
         new java.math.BigDecimal("922337203685477580700"),
         new java.math.BigDecimal("-922337203685477580800"),
@@ -1405,16 +1389,14 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     // Access an array field of a struct.
     checkAnswer(
-      sql(
-        "select structWithArrayFields.field1, structWithArrayFields.field2 from complexTable"),
+      sql("select structWithArrayFields.field1, structWithArrayFields.field2 from complexTable"),
       Row(Seq(4, 5, 6), Seq("str1", "str2"))
     )
 
     // Access elements of an array field of a struct.
     checkAnswer(
-      sql(
-        "select structWithArrayFields.field1[1], structWithArrayFields.field2[3] " +
-          "from complexTable"),
+      sql("select structWithArrayFields.field1[1], structWithArrayFields.field2[3] " +
+        "from complexTable"),
       Row(5, null)
     )
   }
@@ -1517,12 +1499,10 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         .json(root.getAbsolutePath)
         .registerTempTable("test_myjson_with_part")
       checkAnswer(
-        sql(
-          "SELECT count(a) FROM test_myjson_with_part where d1 = 1 and col1='abc'"),
+        sql("SELECT count(a) FROM test_myjson_with_part where d1 = 1 and col1='abc'"),
         Row(4))
       checkAnswer(
-        sql(
-          "SELECT count(a) FROM test_myjson_with_part where d1 = 1 and col1='abd'"),
+        sql("SELECT count(a) FROM test_myjson_with_part where d1 = 1 and col1='abd'"),
         Row(5))
       checkAnswer(
         sql("SELECT count(a) FROM test_myjson_with_part where d1 = 1"),

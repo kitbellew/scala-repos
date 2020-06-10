@@ -1138,8 +1138,8 @@ class LiftSession(
                   request.createNotFound {
                     processTemplate(Empty, request, _, 404)
                   } or
-                    Full(ForbiddenResponse(
-                      "The requested page was not defined in your SiteMap, so access was blocked.  (This message is displayed in development mode only)"))
+                    Full(
+                      ForbiddenResponse("The requested page was not defined in your SiteMap, so access was blocked.  (This message is displayed in development mode only)"))
                 case _ =>
                   request.createNotFound {
                     processTemplate(Empty, request, _, 404)

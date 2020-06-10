@@ -369,9 +369,8 @@ private[deploy] class Worker(
             TimeUnit.SECONDS
           ))
       case Some(_) =>
-        logInfo(
-          "Not spawning another attempt to register with the master, since there is an" +
-            " attempt scheduled already.")
+        logInfo("Not spawning another attempt to register with the master, since there is an" +
+          " attempt scheduled already.")
     }
   }
 

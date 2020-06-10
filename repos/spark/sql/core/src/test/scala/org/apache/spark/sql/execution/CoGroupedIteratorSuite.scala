@@ -51,8 +51,7 @@ class CoGroupedIteratorSuite extends SparkFunSuite with ExpressionEvalHelper {
           Nil)
   }
 
-  test(
-    "SPARK-11393: respect the fact that GroupedIterator.hasNext is not idempotent") {
+  test("SPARK-11393: respect the fact that GroupedIterator.hasNext is not idempotent") {
     val leftInput = Seq(create_row(2, "a")).iterator
     val rightInput = Seq(create_row(1, 2L)).iterator
     val leftGrouped =

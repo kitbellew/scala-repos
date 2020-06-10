@@ -62,8 +62,7 @@ class PerfConfig(args: Array[String]) {
   val compressionCodecOpt = parser
     .accepts("compression-codec", "If set, messages are sent compressed")
     .withRequiredArg
-    .describedAs(
-      "supported codec: NoCompressionCodec as 0, GZIPCompressionCodec as 1, SnappyCompressionCodec as 2, LZ4CompressionCodec as 3")
+    .describedAs("supported codec: NoCompressionCodec as 0, GZIPCompressionCodec as 1, SnappyCompressionCodec as 2, LZ4CompressionCodec as 3")
     .ofType(classOf[java.lang.Integer])
     .defaultsTo(0)
   val helpOpt = parser.accepts("help", "Print usage.")

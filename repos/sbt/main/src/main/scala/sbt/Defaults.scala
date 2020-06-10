@@ -1106,8 +1106,8 @@ object Defaults extends BuildCommon {
       logger: Logger): Option[String] = {
     classes match {
       case multiple if multiple.size > 1 =>
-        logger.warn(
-          "Multiple main classes detected.  Run 'show discoveredMainClasses' to see the list")
+        logger
+          .warn("Multiple main classes detected.  Run 'show discoveredMainClasses' to see the list")
       case _ =>
     }
     pickMainClass(classes)
@@ -1680,8 +1680,7 @@ object Classpaths {
       Compile,
       Configurations.Default))
     def notFound =
-      sys.error(
-        "Configuration to use for managed classpath must be explicitly defined when default configurations are not present.")
+      sys.error("Configuration to use for managed classpath must be explicitly defined when default configurations are not present.")
     search find { defined contains _.name } getOrElse notFound
   }
 
@@ -2395,8 +2394,7 @@ object Classpaths {
       Tracked.lastOutput[In, UpdateReport](outCacheFile) {
         case (_, Some(out)) => out
         case _ =>
-          sys.error(
-            "Skipping update requested, but update has not previously run successfully.")
+          sys.error("Skipping update requested, but update has not previously run successfully.")
       }
     def doWork: In => UpdateReport =
       Tracked.inputChanged(cacheFile / "inputs") {
@@ -2418,8 +2416,7 @@ object Classpaths {
               r
             case e: OutOfMemoryError =>
               val r = work(in)
-              log.warn(
-                "Update task has failed to cache the report due to OutOfMemoryError.")
+              log.warn("Update task has failed to cache the report due to OutOfMemoryError.")
               log.trace(e)
               r
           }

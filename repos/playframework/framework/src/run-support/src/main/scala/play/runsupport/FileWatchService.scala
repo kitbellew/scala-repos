@@ -326,12 +326,12 @@ private[play] class JDK7FileWatchService(logger: LoggerProxy)
         true
       } else if (file.isFile) {
         // JDK7 WatchService can't watch files
-        logger.warn(
-          "JDK7 WatchService only supports watching directories, but an attempt has been made to watch the file: " + file.getCanonicalPath)
-        logger.warn(
-          "This file will not be watched. Either remove the file from playMonitoredFiles, or configure a different WatchService, eg:")
-        logger.warn(
-          "PlayKeys.fileWatchService := play.runsupport.FileWatchService.jnotify(target.value)")
+        logger
+          .warn("JDK7 WatchService only supports watching directories, but an attempt has been made to watch the file: " + file.getCanonicalPath)
+        logger
+          .warn("This file will not be watched. Either remove the file from playMonitoredFiles, or configure a different WatchService, eg:")
+        logger
+          .warn("PlayKeys.fileWatchService := play.runsupport.FileWatchService.jnotify(target.value)")
         false
       } else false
     }

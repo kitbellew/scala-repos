@@ -81,8 +81,7 @@ abstract class DockerJDBCIntegrationSuite
         docker.ping()
       } catch {
         case NonFatal(e) =>
-          log.error(
-            "Exception while connecting to Docker. Check whether Docker is running.")
+          log.error("Exception while connecting to Docker. Check whether Docker is running.")
           throw e
       }
       // Ensure that the Docker image is installed:

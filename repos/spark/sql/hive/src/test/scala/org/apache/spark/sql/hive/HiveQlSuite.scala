@@ -262,7 +262,8 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("use backticks in output of Script Transform") {
-    val plan = parser.parsePlan("""SELECT `t`.`thing1`
+    val plan =
+      parser.parsePlan("""SELECT `t`.`thing1`
         |FROM (SELECT TRANSFORM (`parquet_t1`.`key`, `parquet_t1`.`value`)
         |USING 'cat' AS (`thing1` int, `thing2` string) FROM `default`.`parquet_t1`) AS t
       """.stripMargin)
@@ -278,7 +279,8 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
   }
 
   test("use escaped backticks in output of Generator") {
-    val plan = parser.parsePlan("""
+    val plan =
+      parser.parsePlan("""
         |SELECT `gen``tab2`.`gen``col2`
         |FROM `default`.`src`
         |LATERAL VIEW explode(array(array(1, 2,  3))) `gen``tab1` AS `gen``col1`

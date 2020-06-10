@@ -142,8 +142,8 @@ object ShardServiceCombinators extends Logging {
           case JString(path) =>
             Validation.success(CPath(path) :: Nil)
           case badJVal =>
-            Validation.failure(Invalid(
-              "The sortOn query parameter was expected to be JSON string or array, but found " + badJVal))
+            Validation.failure(
+              Invalid("The sortOn query parameter was expected to be JSON string or array, but found " + badJVal))
         }
 
       onError <-: parsed
@@ -288,9 +288,10 @@ trait ShardServiceCombinators
                   val result: Future[HttpResponse[B]] = query map { q =>
                     q flatMap { f(apiKey, account, path, _: String, opts) }
                   } getOrElse {
-                    Promise.successful(HttpResponse(HttpStatus(
-                      BadRequest,
-                      "Neither the query string nor request body contained an identifiable quirrel query.")))
+                    Promise.successful(
+                      HttpResponse(HttpStatus(
+                        BadRequest,
+                        "Neither the query string nor request body contained an identifiable quirrel query.")))
                   }
                   result
               }

@@ -85,8 +85,7 @@ abstract class OrcSuite
       (6 to 10).map(i => Row(i, s"part-$i")))
 
     checkAnswer(
-      sql(
-        "SELECT COUNT(intField), stringField FROM normal_orc_source GROUP BY stringField"),
+      sql("SELECT COUNT(intField), stringField FROM normal_orc_source GROUP BY stringField"),
       (1 to 10).map(i => Row(1, s"part-$i")))
   }
 
@@ -102,14 +101,12 @@ abstract class OrcSuite
       (6 to 10).map(i => Row(i, s"part-$i")))
 
     checkAnswer(
-      sql(
-        "SELECT COUNT(intField), stringField FROM normal_orc_source GROUP BY stringField"),
+      sql("SELECT COUNT(intField), stringField FROM normal_orc_source GROUP BY stringField"),
       (1 to 10).map(i => Row(1, s"part-$i")))
   }
 
   test("appending insert") {
-    sql(
-      "INSERT INTO TABLE normal_orc_source SELECT * FROM orc_temp_table WHERE intField > 5")
+    sql("INSERT INTO TABLE normal_orc_source SELECT * FROM orc_temp_table WHERE intField > 5")
 
     checkAnswer(
       sql("SELECT * FROM normal_orc_source"),

@@ -379,8 +379,7 @@ class CachedTableSuite
     }
   }
 
-  test(
-    "SPARK-10327 Cache Table is not working while subquery has alias in its project list") {
+  test("SPARK-10327 Cache Table is not working while subquery has alias in its project list") {
     sparkContext
       .parallelize((1, 1) :: (2, 2) :: Nil)
       .toDF("key", "value")
@@ -407,8 +406,7 @@ class CachedTableSuite
     }.size == expected)
   }
 
-  test(
-    "A cached table preserves the partitioning and ordering of its cached SparkPlan") {
+  test("A cached table preserves the partitioning and ordering of its cached SparkPlan") {
     val table3x = testData.unionAll(testData).unionAll(testData)
     table3x.registerTempTable("testData3x")
 
@@ -564,8 +562,7 @@ class CachedTableSuite
       sqlContext.cacheTable("t2")
 
       val query =
-        sql(
-          "SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a and t1.value = t2.b")
+        sql("SELECT key, value, a, b FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a and t1.value = t2.b")
       verifyNumExchanges(query, 1)
       assert(
         query.queryExecution.executedPlan.outputPartitioning.numPartitions === 6)

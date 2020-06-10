@@ -149,8 +149,8 @@ object TestLinearWriteSpeed {
           scheduler,
           messageSet)
       } else {
-        System.err.println(
-          "Must specify what to write to with one of --log, --channel, or --mmap")
+        System.err
+          .println("Must specify what to write to with one of --log, --channel, or --mmap")
         System.exit(1)
       }
     }

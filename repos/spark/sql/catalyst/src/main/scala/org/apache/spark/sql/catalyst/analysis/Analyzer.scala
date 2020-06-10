@@ -1076,8 +1076,7 @@ class Analyzer(
       plan resolveOperators {
         case g: Generate
             if ResolveReferences.containsStar(g.generator.children) =>
-          failAnalysis(
-            "Cannot explode *, explode can only be applied on a specific column.")
+          failAnalysis("Cannot explode *, explode can only be applied on a specific column.")
         case p: Generate if !p.child.resolved || !p.generator.resolved => p
         case g: Generate if !g.resolved =>
           g.copy(generatorOutput =

@@ -636,8 +636,7 @@ object QuadraticMinimizer {
   def main(args: Array[String]) {
     if (args.length < 4) {
       println("Usage: QpSolver n m lambda beta")
-      println(
-        "Test QpSolver with a simple quadratic function of dimension n and m equalities lambda beta for elasticNet")
+      println("Test QpSolver with a simple quadratic function of dimension n and m equalities lambda beta for elasticNet")
       sys.exit(1)
     }
 

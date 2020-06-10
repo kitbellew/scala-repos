@@ -287,8 +287,7 @@ class LogManager(
       }
     } catch {
       case e: ExecutionException => {
-        error(
-          "There was an error in one of the threads during LogManager shutdown: " + e.getCause)
+        error("There was an error in one of the threads during LogManager shutdown: " + e.getCause)
         throw e.getCause
       }
     } finally {

@@ -210,8 +210,7 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
     def numWaited() = statsRecv.counter("pool_num_waited")()
     def numTooManyWaiters() = statsRecv.counter("pool_num_too_many_waiters")()
 
-    it(
-      "should throw TooManyWaitersException when the number of waiters exceeds 2") {
+    it("should throw TooManyWaitersException when the number of waiters exceeds 2") {
       assert(0 == numWaited())
       assert(0 == numTooManyWaiters())
       val f0 = pool()

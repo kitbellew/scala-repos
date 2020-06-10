@@ -243,8 +243,7 @@ class ReceivedBlockTrackerSuite
     tracker1.isWriteAheadLogEnabled should be(false)
   }
 
-  test(
-    "parallel file deletion in FileBasedWriteAheadLog is robust to deletion error") {
+  test("parallel file deletion in FileBasedWriteAheadLog is robust to deletion error") {
     conf.set("spark.streaming.driver.writeAheadLog.rollingIntervalSecs", "1")
     require(
       WriteAheadLogUtils.getRollingIntervalSecs(conf, isDriver = true) === 1)

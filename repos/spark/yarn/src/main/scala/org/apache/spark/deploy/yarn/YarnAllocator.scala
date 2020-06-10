@@ -265,9 +265,8 @@ private[yarn] class YarnAllocator(
       if (completedContainers.size > 0) {
         logDebug("Completed %d containers".format(completedContainers.size))
         processCompletedContainers(completedContainers.asScala)
-        logDebug(
-          "Finished processing %d completed containers. Current running executor count: %d."
-            .format(completedContainers.size, numExecutorsRunning))
+        logDebug("Finished processing %d completed containers. Current running executor count: %d."
+          .format(completedContainers.size, numExecutorsRunning))
       }
     }
 

@@ -669,8 +669,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       } catch {
         case _: NumberFormatException =>
           echo(s"Bad range '$what'")
-          echo(
-            "Use line 123, 120+3, -3, 120-123, 120-, note -3 is not 0-3 but (cur-3,cur)")
+          echo("Use line 123, 120+3, -3, 120-123, 120-, note -3 is not 0-3 but (cur-3,cur)")
       }
   }
 

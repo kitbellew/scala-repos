@@ -1509,8 +1509,9 @@ trait Definitions extends api.StandardDefinitions {
         // Trying to allow for deprecated locations
         sym.isAliasType && isMetaAnnotation(sym.info.typeSymbol)
       )
-    lazy val metaAnnotations: Set[Symbol] = getPackage(TermName(
-      "scala.annotation.meta")).info.members filter (_ isSubClass StaticAnnotationClass) toSet
+    lazy val metaAnnotations: Set[Symbol] = getPackage(
+      TermName(
+        "scala.annotation.meta")).info.members filter (_ isSubClass StaticAnnotationClass) toSet
 
     // According to the scala.annotation.meta package object:
     // * By default, annotations on (`val`-, `var`- or plain) constructor parameters

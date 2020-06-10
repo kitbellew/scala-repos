@@ -266,8 +266,7 @@ class AppsResourceTest
     response.getEntity.toString should include("must not be empty")
   }
 
-  test(
-    "Creating an app with broken volume definition fails with readable error message") {
+  test("Creating an app with broken volume definition fails with readable error message") {
     Given("An app update with an invalid volume (wrong field name)")
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))

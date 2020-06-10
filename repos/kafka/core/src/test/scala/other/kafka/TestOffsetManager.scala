@@ -44,8 +44,7 @@ object TestOffsetManager {
       extends ShutdownableThread("stats-thread") {
 
     def printStats() {
-      println(
-        "--------------------------------------------------------------------------------")
+      println("--------------------------------------------------------------------------------")
       println("Aggregate stats for commits:")
       println(
         "Error count: %d; Max:%f; Min: %f; Mean: %f; Commit count: %d".format(
@@ -55,8 +54,7 @@ object TestOffsetManager {
           commitThreads.map(_.timer.mean()).sum / commitThreads.size,
           commitThreads.map(_.numCommits.get).sum
         ))
-      println(
-        "--------------------------------------------------------------------------------")
+      println("--------------------------------------------------------------------------------")
       commitThreads.foreach(t => println(t.stats))
       println(fetchThread.stats)
     }

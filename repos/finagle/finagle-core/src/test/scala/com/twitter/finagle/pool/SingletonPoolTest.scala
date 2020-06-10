@@ -78,8 +78,7 @@ class SingletonPoolTest extends FunSuite with MockitoSugar {
     assert(g.poll == Some(Return(service)))
   }
 
-  test(
-    "reestablish connections when the service becomes unavailable, releasing dead service") {
+  test("reestablish connections when the service becomes unavailable, releasing dead service") {
     val ctx = new Ctx
     import ctx._
 

@@ -40,8 +40,8 @@ private[akka] case class ActorMaterializerImpl(
 
   if (settings.fuzzingMode && !system.settings.config.hasPath(
       "akka.stream.secret-test-fuzzing-warning-disable")) {
-    _logger.warning(
-      "Fuzzing mode is enabled on this system. If you see this warning on your production system then " +
+    _logger
+      .warning("Fuzzing mode is enabled on this system. If you see this warning on your production system then " +
         "set akka.stream.materializer.debug.fuzzing-mode to off.")
   }
 

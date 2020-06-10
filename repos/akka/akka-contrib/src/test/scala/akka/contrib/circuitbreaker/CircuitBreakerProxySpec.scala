@@ -132,8 +132,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       val sender1 = TestProbe()
       val sender2 = TestProbe()
 
-      When(
-        "The two actors are sending messages to the target actor through the proxy")
+      When("The two actors are sending messages to the target actor through the proxy")
       sender1.send(circuitBreaker, "test message1")
       sender2.send(circuitBreaker, "test message2")
 
@@ -171,16 +170,14 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       Given("A circuit breaker proxy pointing to a target actor")
       val circuitBreaker = defaultCircuitBreaker
 
-      When(
-        "A number of consecutive request equal to the maxFailures configuration of the circuit breaker is failing")
+      When("A number of consecutive request equal to the maxFailures configuration of the circuit breaker is failing")
       (1 to baseCircuitBreakerPropsBuilder.maxFailures) foreach { index ⇒
         receiverRespondsWithFailureToRequest(s"request$index")
       }
 
       circuitBreakerReceivesSelfNotificationMessage()
 
-      Then(
-        "The circuit is in Open stage: If a further message is sent it is not forwarded")
+      Then("The circuit is in Open stage: If a further message is sent it is not forwarded")
       sender.send(circuitBreaker, "request in open state")
       receiver.expectNoMsg
     }
@@ -189,23 +186,20 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       Given("A circuit breaker proxy pointing to a target actor")
       val circuitBreaker = defaultCircuitBreaker
 
-      When(
-        "A number of consecutive request equal to the maxFailures configuration of the circuit breaker is failing")
+      When("A number of consecutive request equal to the maxFailures configuration of the circuit breaker is failing")
       (1 to baseCircuitBreakerPropsBuilder.maxFailures) foreach { index ⇒
         receiverRespondsWithFailureToRequest(s"request$index")
       }
 
       circuitBreakerReceivesSelfNotificationMessage()
 
-      Then(
-        "The circuit is in Open stage: any further request is replied-to with a CircuitOpenFailure response")
+      Then("The circuit is in Open stage: any further request is replied-to with a CircuitOpenFailure response")
       sender.send(circuitBreaker, "request in open state")
       sender.expectMsg(CircuitOpenFailure("request in open state"))
     }
 
     "respond with the converted CircuitOpenFailure if a converter is provided" in new CircuitBreakerScenario {
-      Given(
-        "A circuit breaker proxy pointing to a target actor built with a function to convert CircuitOpenFailure response into a String response")
+      Given("A circuit breaker proxy pointing to a target actor built with a function to convert CircuitOpenFailure response into a String response")
       val circuitBreaker = system.actorOf(
         baseCircuitBreakerPropsBuilder
           .copy(openCircuitFailureConverter = { failureMsg ⇒
@@ -213,16 +207,14 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
           })
           .props(receiver.ref))
 
-      When(
-        "A number of consecutive request equal to the maxFailures configuration of the circuit breaker is failing")
+      When("A number of consecutive request equal to the maxFailures configuration of the circuit breaker is failing")
       (1 to baseCircuitBreakerPropsBuilder.maxFailures) foreach { index ⇒
         receiverRespondsWithFailureToRequest(s"request$index")
       }
 
       circuitBreakerReceivesSelfNotificationMessage()
 
-      Then(
-        "Any further request receives instead of the CircuitOpenFailure response the converted one")
+      Then("Any further request receives instead of the CircuitOpenFailure response the converted one")
       sender.send(circuitBreaker, "request in open state")
       sender.expectMsg("NOT SENT: request in open state")
     }
@@ -231,8 +223,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       Given("A circuit breaker actor proxying a test probe")
       val circuitBreaker = defaultCircuitBreaker
 
-      When(
-        "A number of request equal to the timed-out responses threashold is done without receiving response within the configured timeout")
+      When("A number of request equal to the timed-out responses threashold is done without receiving response within the configured timeout")
       sender.send(circuitBreaker, "request1")
       sender.send(circuitBreaker, "request2")
 
@@ -246,8 +237,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
 
       circuitBreakerReceivesSelfNotificationMessage()
 
-      Then(
-        "The circuit is in Open stage: any further request is replied-to with a CircuitOpenFailure response")
+      Then("The circuit is in Open stage: any further request is replied-to with a CircuitOpenFailure response")
       sender.send(circuitBreaker, "request in open state")
       receiver.expectNoMsg
     }
@@ -271,8 +261,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       When("ENTERING HALF OPEN STATE")
       resetTimeoutExpires()
 
-      Then(
-        "First message should be forwarded, following ones ignored if the failure persist")
+      Then("First message should be forwarded, following ones ignored if the failure persist")
       sender.send(
         circuitBreaker,
         "First message in half-open state, should be forwarded")
@@ -422,8 +411,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       Given("A circuit breaker actor proxying a test probe")
       val circuitBreaker = defaultCircuitBreaker
 
-      When(
-        "A number of request equal to the timed-out responses wrapped in a TellOnly threashold is done without receiving response within the configured timeout")
+      When("A number of request equal to the timed-out responses wrapped in a TellOnly threashold is done without receiving response within the configured timeout")
       sender.send(circuitBreaker, TellOnly("Fire and forget 1"))
       sender.send(circuitBreaker, TellOnly("Fire and forget 2"))
       receiver.expectMsg("Fire and forget 1")
@@ -493,8 +481,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       When("Then target actor replies")
       receiver.reply("response")
 
-      Then(
-        "The response is available as result of the future returned by the askWithCircuitBreaker method")
+      Then("The response is available as result of the future returned by the askWithCircuitBreaker method")
       whenReady(responseFuture) { response ⇒
         response should be("response")
       }
@@ -543,8 +530,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       When("Then target actor replies")
       receiver.reply("response")
 
-      Then(
-        "The response is available as result of the future returned by the askWithCircuitBreaker method")
+      Then("The response is available as result of the future returned by the askWithCircuitBreaker method")
       whenReady(responseFuture) { response ⇒
         response should be("response")
       }

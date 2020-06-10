@@ -100,8 +100,8 @@ trait DispatcherBuilder {
 }
 
 object ThreadPoolConfigDispatcherBuilder {
-  def conf_?[T](opt: Option[T])(fun: (
-      T) => ThreadPoolConfigDispatcherBuilder => ThreadPoolConfigDispatcherBuilder)
+  def conf_?[T](opt: Option[T])(
+      fun: (T) => ThreadPoolConfigDispatcherBuilder => ThreadPoolConfigDispatcherBuilder)
       : Option[
         (ThreadPoolConfigDispatcherBuilder) => ThreadPoolConfigDispatcherBuilder] =
     opt map fun

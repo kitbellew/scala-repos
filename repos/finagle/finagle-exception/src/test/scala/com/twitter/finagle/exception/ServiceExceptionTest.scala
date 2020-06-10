@@ -207,8 +207,7 @@ class ServiceExceptionTest extends FunSuite {
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
-  test(
-    "with no endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
+  test("with no endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
     val tse = new TestServiceException(
       "service16",
       "my cool message",
@@ -229,8 +228,7 @@ class ServiceExceptionTest extends FunSuite {
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
-  test(
-    "with client endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
+  test("with client endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
     val tse = new TestServiceException(
       "service16",
       "my cool message",
@@ -252,8 +250,7 @@ class ServiceExceptionTest extends FunSuite {
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
-  test(
-    "with source endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
+  test("with source endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
     val tse = new TestServiceException(
       "service16",
       "my cool message",
@@ -264,8 +261,7 @@ class ServiceExceptionTest extends FunSuite {
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
-  test(
-    "with both client and source endpoint reporting serialize to JSON in the proper format") {
+  test("with both client and source endpoint reporting serialize to JSON in the proper format") {
     val tse = new TestServiceException(
       "service16",
       "my cool message",
@@ -276,8 +272,7 @@ class ServiceExceptionTest extends FunSuite {
     assert(tse.verifyJSON(tse.serviceException.toJson))
   }
 
-  test(
-    "with both client and source endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
+  test("with both client and source endpoint reporting with >1 cardinality serialize to JSON in the proper format") {
     val tse = new TestServiceException(
       "service16",
       "my cool message",

@@ -97,8 +97,7 @@ object AutoUpdate {
     new Version(2, 3) {
       override def update(conn: Connection, cl: ClassLoader): Unit = {
         super.update(conn, cl)
-        conn.select(
-          "SELECT ACTIVITY_ID, ADDITIONAL_INFO FROM ACTIVITY WHERE ACTIVITY_TYPE='push'") {
+        conn.select("SELECT ACTIVITY_ID, ADDITIONAL_INFO FROM ACTIVITY WHERE ACTIVITY_TYPE='push'") {
           rs =>
             val curInfo = rs.getString("ADDITIONAL_INFO")
             val newInfo = curInfo

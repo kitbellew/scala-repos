@@ -223,8 +223,7 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
       // Groups are created implicitly by creating apps and are not visible as separate entities
       // at the time of the creation of this test/issue. They are only visible in the GUI if they contain apps.
 
-      Given(
-        "an existing group /some/nested which does not directly or indirectly contain apps")
+      Given("an existing group /some/nested which does not directly or indirectly contain apps")
       val current =
         Group.empty
           .makeGroup("/some/nested/path".toPath)
@@ -249,8 +248,7 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
       changed.transitiveGroups.map(_.id.toString) should be(Set("/", "/some"))
       changed.transitiveApps.map(_.id.toString) should be(Set("/some/nested"))
 
-      Then(
-        "the resulting group should be valid when represented in the V2 API model")
+      Then("the resulting group should be valid when represented in the V2 API model")
       validate(changed) should be(Success)
     }
 
@@ -282,8 +280,7 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
         _ => AppDefinition("/some/nested".toPath, cmd = Some("true")),
         Timestamp.now())
 
-      Then(
-        "the group with same path has NOT been replaced by the new app definition")
+      Then("the group with same path has NOT been replaced by the new app definition")
       current.transitiveGroups.map(_.id.toString) should be(
         Set(
           "/",

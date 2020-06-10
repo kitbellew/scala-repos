@@ -27,8 +27,8 @@ private[finagle] object HttpNackFilter {
   private val NackResponse: Response = {
     val rep = Response(ResponseStatus)
     rep.headers.set(Header, "true")
-    rep.content = Buf.Utf8(
-      "Request was not processed by the server due to an error and is safe to retry")
+    rep.content = Buf
+      .Utf8("Request was not processed by the server due to an error and is safe to retry")
     rep
   }
 

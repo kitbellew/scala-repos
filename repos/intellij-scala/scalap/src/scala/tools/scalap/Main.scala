@@ -43,8 +43,8 @@ object Main {
     */
   def usage {
     Console.println("usage: scalap {<option>} <name>")
-    Console.println(
-      "where <name> is fully-qualified class name or <package_name>.package for package objects")
+    Console
+      .println("where <name> is fully-qualified class name or <package_name>.package for package objects")
     Console.println("and <option> is")
     Console.println("  -private           print private definitions")
     Console.println("  -verbose           print out additional information")

@@ -415,8 +415,7 @@ class KryoSerializerSuite extends SparkFunSuite with SharedSparkContext {
     Utils.deleteRecursively(dir)
   }
 
-  test(
-    "KryoOutputObjectOutputBridge.writeObject and KryoInputObjectInputBridge.readObject") {
+  test("KryoOutputObjectOutputBridge.writeObject and KryoInputObjectInputBridge.readObject") {
     val kryo = new KryoSerializer(conf).newKryo()
 
     val bytesOutput = new ByteArrayOutputStream()

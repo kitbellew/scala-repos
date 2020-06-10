@@ -208,8 +208,7 @@ class StateMapSuite extends SparkFunSuite {
     assert(deser_map.shouldCompact === false)
   }
 
-  test(
-    "OpenHashMapBasedStateMap - all possible sequences of operations with copies ") {
+  test("OpenHashMapBasedStateMap - all possible sequences of operations with copies ") {
     /*
      * This tests the map using all permutations of sequences operations, across multiple map
      * copies as well as between copies. It is to ensure complete coverage, though it is
@@ -399,8 +398,7 @@ class StateMapSuite extends SparkFunSuite {
     }
   }
 
-  test(
-    "OpenHashMapBasedStateMap - serializing and deserializing with KryoSerializable states") {
+  test("OpenHashMapBasedStateMap - serializing and deserializing with KryoSerializable states") {
     val map = new OpenHashMapBasedStateMap[KryoState, KryoState]()
     map.put(new KryoState("a"), new KryoState("b"), 1)
     testSerialization(
@@ -420,8 +418,7 @@ class StateMapSuite extends SparkFunSuite {
         .isInstanceOf[EmptyStateMap[KryoState, KryoState]])
   }
 
-  test(
-    "MapWithStateRDDRecord - serializing and deserializing with KryoSerializable states") {
+  test("MapWithStateRDDRecord - serializing and deserializing with KryoSerializable states") {
     val map = new OpenHashMapBasedStateMap[KryoState, KryoState]()
     map.put(new KryoState("a"), new KryoState("b"), 1)
 

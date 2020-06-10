@@ -11,7 +11,8 @@ import akka.testkit.{TestProbe, AkkaSpec}
 import com.typesafe.config.ConfigFactory
 
 object PersistencePluginProxySpec {
-  lazy val config = ConfigFactory.parseString("""
+  lazy val config = ConfigFactory
+    .parseString("""
       akka {
         actor {
           provider = "akka.remote.RemoteActorRefProvider"
@@ -41,7 +42,8 @@ object PersistencePluginProxySpec {
       }
     """)
 
-  lazy val startTargetConfig = ConfigFactory.parseString("""
+  lazy val startTargetConfig = ConfigFactory
+    .parseString("""
       |akka.extensions = ["akka.persistence.journal.PersistencePluginProxyExtension"]
       |akka.persistence {
       |  journal.proxy.start-target-journal = on
