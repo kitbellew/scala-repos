@@ -298,8 +298,8 @@ private[stream] object Fusing {
       case _ ⇒ m.attributes.contains(AsyncBoundary)
     }
     if (Debug)
-      log(
-        s"entering ${m.getClass} (hash=${struct.hash(m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
+      log(s"entering ${m.getClass} (hash=${struct.hash(
+        m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
     val localGroup =
       if (async) struct.newGroup(indent)
       else openGroup

@@ -399,7 +399,8 @@ class SecurityServiceHandlers(
       }
 
     val metadata =
-      DescriptionMetadata("Creates a new grant as a child of the grant resource specified in the request URL, and deriving its permissions therefrom.")
+      DescriptionMetadata(
+        "Creates a new grant as a child of the grant resource specified in the request URL, and deriving its permissions therefrom.")
   }
 
   object DeleteGrantHandler

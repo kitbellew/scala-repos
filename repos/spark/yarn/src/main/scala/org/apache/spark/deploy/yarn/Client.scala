@@ -468,8 +468,9 @@ private[spark] class Client(
     // If we passed in a keytab, make sure we copy the keytab to the staging directory on
     // HDFS, and setup the relevant environment vars, so the AM can login again.
     if (loginFromKeytab) {
-      logInfo("To enable the AM to login from keytab, credentials are being copied over to the AM" +
-        " via the YARN Secure Distributed Cache.")
+      logInfo(
+        "To enable the AM to login from keytab, credentials are being copied over to the AM" +
+          " via the YARN Secure Distributed Cache.")
       val (_, localizedPath) = distribute(
         keytab,
         destName = sparkConf.get(KEYTAB),

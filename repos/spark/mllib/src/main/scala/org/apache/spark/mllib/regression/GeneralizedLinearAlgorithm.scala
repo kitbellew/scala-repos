@@ -241,8 +241,9 @@ abstract class GeneralizedLinearAlgorithm[M <: GeneralizedLinearModel]
     }
 
     if (input.getStorageLevel == StorageLevel.NONE) {
-      logWarning("The input data is not directly cached, which may hurt performance if its"
-        + " parent RDDs are also uncached.")
+      logWarning(
+        "The input data is not directly cached, which may hurt performance if its"
+          + " parent RDDs are also uncached.")
     }
 
     // Check the data properties before running the optimizer

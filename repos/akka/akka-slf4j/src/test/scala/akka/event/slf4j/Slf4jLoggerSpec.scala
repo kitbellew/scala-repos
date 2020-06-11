@@ -134,8 +134,10 @@ class Slf4jLoggerSpec
       log.info("test")
       awaitCond(outputString.contains("----"), 5 seconds)
       val s = outputString
-      s should include("akkaSource=[akka.event.slf4j.Slf4jLoggerSpec.MyLogSource(akka://Slf4jLoggerSpec)]")
-      s should include("logger=[akka.event.slf4j.Slf4jLoggerSpec.MyLogSource(akka://Slf4jLoggerSpec)]")
+      s should include(
+        "akkaSource=[akka.event.slf4j.Slf4jLoggerSpec.MyLogSource(akka://Slf4jLoggerSpec)]")
+      s should include(
+        "logger=[akka.event.slf4j.Slf4jLoggerSpec.MyLogSource(akka://Slf4jLoggerSpec)]")
     }
 
     "not include system info in akkaSource when creating Logging with system.eventStream" in {

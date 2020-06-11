@@ -84,14 +84,16 @@ case class FileElement(
   * Factory for [[com.twitter.finagle.http.RequestBuilder]] instances
   */
 object RequestBuilder {
-  @implicitNotFound("Http RequestBuilder is not correctly configured: HasUrl (exp: Yes): ${HasUrl}, HasForm (exp: Nothing) ${HasForm}.")
+  @implicitNotFound(
+    "Http RequestBuilder is not correctly configured: HasUrl (exp: Yes): ${HasUrl}, HasForm (exp: Nothing) ${HasForm}.")
   private trait RequestEvidence[HasUrl, HasForm]
   private object RequestEvidence {
     implicit object FullyConfigured
         extends RequestEvidence[RequestConfig.Yes, Nothing]
   }
 
-  @implicitNotFound("Http RequestBuilder is not correctly configured for form post: HasUrl (exp: Yes): ${HasUrl}, HasForm (exp: Yes): ${HasForm}.")
+  @implicitNotFound(
+    "Http RequestBuilder is not correctly configured for form post: HasUrl (exp: Yes): ${HasUrl}, HasForm (exp: Yes): ${HasForm}.")
   private trait PostRequestEvidence[HasUrl, HasForm]
   private object PostRequestEvidence {
     implicit object FullyConfigured

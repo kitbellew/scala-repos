@@ -74,8 +74,8 @@ object Scaladoc extends AutoPlugin {
             val hd =
               try source
                 .getLines()
-                .exists(
-                  _.contains("<div class=\"toggleContainer block diagram-container\" id=\"inheritance-diagram-container\">"))
+                .exists(_.contains(
+                  "<div class=\"toggleContainer block diagram-container\" id=\"inheritance-diagram-container\">"))
               catch {
                 case e: Exception =>
                   throw new IllegalStateException(

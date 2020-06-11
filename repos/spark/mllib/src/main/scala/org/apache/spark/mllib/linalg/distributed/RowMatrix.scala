@@ -73,8 +73,9 @@ class RowMatrix @Since("1.0.0") (
         nCols = rows.first().size
       } catch {
         case err: UnsupportedOperationException =>
-          sys.error("Cannot determine the number of cols because it is not specified in the " +
-            "constructor and the rows RDD is empty.")
+          sys.error(
+            "Cannot determine the number of cols because it is not specified in the " +
+              "constructor and the rows RDD is empty.")
       }
     }
     nCols
@@ -86,8 +87,9 @@ class RowMatrix @Since("1.0.0") (
     if (nRows <= 0L) {
       nRows = rows.count()
       if (nRows == 0L) {
-        sys.error("Cannot determine the number of rows because it is not specified in the " +
-          "constructor and the rows RDD is empty.")
+        sys.error(
+          "Cannot determine the number of rows because it is not specified in the " +
+            "constructor and the rows RDD is empty.")
       }
     }
     nRows
@@ -285,8 +287,9 @@ class RowMatrix @Since("1.0.0") (
         (sigmaSquaresFull, uFull)
       case SVDMode.DistARPACK =>
         if (rows.getStorageLevel == StorageLevel.NONE) {
-          logWarning("The input data is not directly cached, which may hurt performance if its"
-            + " parent RDDs are also uncached.")
+          logWarning(
+            "The input data is not directly cached, which may hurt performance if its"
+              + " parent RDDs are also uncached.")
         }
         require(
           k < n,

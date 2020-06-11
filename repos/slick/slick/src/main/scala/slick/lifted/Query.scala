@@ -351,7 +351,8 @@ object Query {
 }
 
 /** A typeclass for types that can be used as predicates in `filter` calls. */
-@implicitNotFound("Type ${T} cannot be a query condition (only Boolean, Rep[Boolean] and Rep[Option[Boolean]] are allowed")
+@implicitNotFound(
+  "Type ${T} cannot be a query condition (only Boolean, Rep[Boolean] and Rep[Option[Boolean]] are allowed")
 trait CanBeQueryCondition[-T] extends (T => Rep[_])
 
 object CanBeQueryCondition {

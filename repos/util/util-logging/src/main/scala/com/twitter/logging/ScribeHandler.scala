@@ -250,7 +250,8 @@ class ScribeHandler(
             readResponseExpecting(s, OLD_SCRIBE_REPLY)
 
             // Didn't get exception, so the server must be archaic.
-            log.debug("Scribe server is archaic; changing to old protocol for future requests.")
+            log.debug(
+              "Scribe server is archaic; changing to old protocol for future requests.")
             Archaic
           } catch {
             case NonFatal(_) => Modern

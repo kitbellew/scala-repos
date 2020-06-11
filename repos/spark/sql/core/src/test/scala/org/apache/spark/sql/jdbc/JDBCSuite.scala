@@ -71,7 +71,8 @@ class JDBCSuite
     conn = DriverManager.getConnection(url, properties)
     conn.prepareStatement("create schema test").executeUpdate()
     conn
-      .prepareStatement("create table test.people (name TEXT(32) NOT NULL, theid INTEGER NOT NULL)")
+      .prepareStatement(
+        "create table test.people (name TEXT(32) NOT NULL, theid INTEGER NOT NULL)")
       .executeUpdate()
     conn
       .prepareStatement("insert into test.people values ('fred', 1)")

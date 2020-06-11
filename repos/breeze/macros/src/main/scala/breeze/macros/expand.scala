@@ -249,7 +249,9 @@ object expand {
         case t @ q"new expand.exclude(...$args)" =>
           for (aa <- args)
             if (aa.length != targs.length)
-              c.error(t.pos, "arguments to @exclude does not have the same arity as the type symbols!")
+              c.error(
+                t.pos,
+                "arguments to @exclude does not have the same arity as the type symbols!")
           args.map(aa =>
             (targs zip aa
               .map(c.typeCheck(_))

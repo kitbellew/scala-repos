@@ -28,7 +28,8 @@ object MultiNodeClusterSpec {
 
   def clusterConfigWithFailureDetectorPuppet: Config =
     ConfigFactory
-      .parseString("akka.cluster.failure-detector.implementation-class = akka.cluster.FailureDetectorPuppet")
+      .parseString(
+        "akka.cluster.failure-detector.implementation-class = akka.cluster.FailureDetectorPuppet")
       .withFallback(clusterConfig)
 
   def clusterConfig(failureDetectorPuppet: Boolean): Config =

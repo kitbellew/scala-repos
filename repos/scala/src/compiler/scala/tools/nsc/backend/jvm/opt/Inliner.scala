@@ -44,7 +44,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           val annotWarn =
             if (callee.annotatedInline) " is annotated @inline but" else ""
           val msg =
-            s"${BackendReporting.methodSignature(callee.calleeDeclarationClass.internalName, callee.callee)}$annotWarn could not be inlined:\n$warning"
+            s"${BackendReporting.methodSignature(
+              callee.calleeDeclarationClass.internalName,
+              callee.callee)}$annotWarn could not be inlined:\n$warning"
           backendReporting.inlinerWarning(
             request.callsite.callsitePosition,
             msg)

@@ -62,7 +62,8 @@ class ExtractionsTest {
     val article = TestUtils.getArticle(url, html)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "Get ready, America, because by Christmas 2012 you will have an Apple TV in your living room",
+      expectedStart =
+        "Get ready, America, because by Christmas 2012 you will have an Apple TV in your living room",
       expectedImage = null)
     TestUtils.printReport()
   }

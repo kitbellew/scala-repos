@@ -329,7 +329,8 @@ trait LinearRegressionLibModule[M[+_]]
                       "Matrix cannot have rank larger than number of columns.")
                   }
                 } else {
-                  sys.error("Failed to find dependent columns. Should never reach this case.")
+                  sys.error(
+                    "Failed to find dependent columns. Should never reach this case.")
                 }
               }
 

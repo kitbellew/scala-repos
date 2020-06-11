@@ -24,8 +24,9 @@ import java.util.logging.Logger
   * on the classpath that define a Resolver for the given scheme.
   */
 class ResolverNotFoundException(scheme: String)
-    extends Exception("Resolver not found for scheme \"%s\". Please add the jar containing this resolver to your classpath"
-      .format(scheme))
+    extends Exception(
+      "Resolver not found for scheme \"%s\". Please add the jar containing this resolver to your classpath"
+        .format(scheme))
 
 /**
   * Indicates that multiple [[com.twitter.finagle.Resolver Resolvers]] were

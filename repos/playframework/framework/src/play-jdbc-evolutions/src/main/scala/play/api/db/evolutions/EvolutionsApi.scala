@@ -348,8 +348,10 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
   def resolve(revision: Int): Unit = {
     implicit val connection = database.getConnection(autocommit = true)
     try {
-      execute("update ${schema}play_evolutions set state = 'applied' where state = 'applying_up' and id = " + revision)
-      execute("delete from ${schema}play_evolutions where state = 'applying_down' and id = " + revision);
+      execute(
+        "update ${schema}play_evolutions set state = 'applied' where state = 'applying_up' and id = " + revision)
+      execute(
+        "delete from ${schema}play_evolutions where state = 'applying_down' and id = " + revision);
     } finally {
       connection.close()
     }

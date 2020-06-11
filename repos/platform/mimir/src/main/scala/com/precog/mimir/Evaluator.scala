@@ -251,7 +251,8 @@ trait EvaluatorModule[M[+_]]
                 }
 
               case None =>
-                sys.error("Attempted to evaluate bucket spec without transspecable commonality.")
+                sys.error(
+                  "Attempted to evaluate bucket spec without transspecable commonality.")
             }
 
           case UnfixedSolution(_, _) | dag.Extra(_) =>

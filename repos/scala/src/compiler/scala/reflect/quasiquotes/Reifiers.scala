@@ -605,11 +605,15 @@ trait Reifiers { self: Quasiquotes =>
                 flags(0).pos,
                 "Can't unquote flags together with modifiers, consider merging flags into modifiers")
             if (annots.nonEmpty)
-              c.abort(hole.pos, "Can't unquote modifiers together with annotations, consider merging annotations into modifiers")
+              c.abort(
+                hole.pos,
+                "Can't unquote modifiers together with annotations, consider merging annotations into modifiers")
             ensureNoExplicitFlags(m, hole.pos)
             hole.tree
           case _ :: hole :: Nil =>
-            c.abort(hole.pos, "Can't unquote multiple modifiers, consider merging them into a single modifiers instance")
+            c.abort(
+              hole.pos,
+              "Can't unquote multiple modifiers, consider merging them into a single modifiers instance")
           case _ =>
             val baseFlags = reifyFlags(m.flags)
             val reifiedFlags = flags.foldLeft[Tree](baseFlags) {
@@ -668,11 +672,15 @@ trait Reifiers { self: Quasiquotes =>
         mods match {
           case hole :: Nil =>
             if (m.annotations.length != 1)
-              c.abort(hole.pos, "Can't extract modifiers together with annotations, consider extracting just modifiers")
+              c.abort(
+                hole.pos,
+                "Can't extract modifiers together with annotations, consider extracting just modifiers")
             ensureNoExplicitFlags(m, hole.pos)
             hole.treeNoUnlift
           case _ :: hole :: _ =>
-            c.abort(hole.pos, "Can't extract multiple modifiers together, consider extracting a single modifiers instance")
+            c.abort(
+              hole.pos,
+              "Can't extract multiple modifiers together, consider extracting a single modifiers instance")
           case Nil =>
             mirrorFactoryCall(
               nme.Modifiers,

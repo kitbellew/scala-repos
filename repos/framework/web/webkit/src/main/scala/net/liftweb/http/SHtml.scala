@@ -444,8 +444,8 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): Elem = {
     attrs.foldLeft(fmapFunc((SFuncHolder(func)))(name =>
       <button onclick={
-        makeAjaxCall(
-          JsRaw(name.encJs + "+'='+encodeURIComponent(" + jsExp.toJsCmd + ")")).toJsCmd +
+        makeAjaxCall(JsRaw(
+          name.encJs + "+'='+encodeURIComponent(" + jsExp.toJsCmd + ")")).toJsCmd +
           "; return false;"
       }>{text}</button>))((e, f) => f(e))
   }

@@ -197,9 +197,8 @@ package util {
         )
 
         override def onTimer(key: Any): Unit =
-          failStage(
-            new java.util.concurrent.TimeoutException(
-              s"HttpEntity.toStrict timed out after $timeout while still waiting for outstanding data"))
+          failStage(new java.util.concurrent.TimeoutException(
+            s"HttpEntity.toStrict timed out after $timeout while still waiting for outstanding data"))
       }
 
     override def toString = "ToStrict"

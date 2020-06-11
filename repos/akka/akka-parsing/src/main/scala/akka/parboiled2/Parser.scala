@@ -180,7 +180,8 @@ abstract class Parser(
       phase = new DetermineReportQuiet(reportedErrorIndex)
       try {
         if (runRule())
-          sys.error("Parsing unexpectedly succeeded while trying to determine quiet reporting")
+          sys.error(
+            "Parsing unexpectedly succeeded while trying to determine quiet reporting")
         true // if we got here we can only reach the reportedErrorIndex via quiet rules
       } catch {
         case UnquietMismatch ⇒

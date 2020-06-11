@@ -243,10 +243,9 @@ private[spark] class CoarseGrainedSchedulerBackend(
         .foreach(
           removeExecutor(
             _,
-            SlaveLost(
-              "Remote RPC client disassociated. Likely due to " +
-                "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
-                "messages.")
+            SlaveLost("Remote RPC client disassociated. Likely due to " +
+              "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
+              "messages.")
           ))
     }
 

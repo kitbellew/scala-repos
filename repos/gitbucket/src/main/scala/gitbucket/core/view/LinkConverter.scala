@@ -46,7 +46,8 @@ trait LinkConverter { self: RequestCache =>
 
     escaped
     // convert username/project@SHA to link
-      .replaceBy("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)@([a-f0-9]{40})(?=(\\W|$))".r) {
+      .replaceBy(
+        "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)@([a-f0-9]{40})(?=(\\W|$))".r) {
         m =>
           getAccountByUserName(m.group(2)).map { _ =>
             s"""<a href="${context.path}/${m.group(2)}/${m.group(3)}/commit/${m

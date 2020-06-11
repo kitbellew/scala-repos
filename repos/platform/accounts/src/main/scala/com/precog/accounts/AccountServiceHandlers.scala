@@ -175,7 +175,8 @@ class AccountServiceHandlers(
         ParameterMetadata('email, None),
         DescriptionMetadata(
           "The email address associated with the account ID you want to retrieve.")),
-      DescriptionMetadata("This endpoint provides capabilities for account search, returning a list of matching account identifiers.")
+      DescriptionMetadata(
+        "This endpoint provides capabilities for account search, returning a list of matching account identifiers.")
     )
   }
 
@@ -461,8 +462,8 @@ class AccountServiceHandlers(
                                     params)
                                   HttpResponse[JValue](
                                     HttpStatus(OK),
-                                    content = Some(
-                                      JString("A reset token has been sent to the account email on file")))
+                                    content = Some(JString(
+                                      "A reset token has been sent to the account email on file")))
                                 } catch {
                                   case t =>
                                     logger.error(
@@ -477,11 +478,10 @@ class AccountServiceHandlers(
                           } else {
                             logger.warn("Password reset request for account %s did not match email on file (%s provided)"
                               .format(accountId, requestEmail))
-                            Future(
-                              HttpResponse[JValue](
-                                HttpStatus(Forbidden),
-                                content = Some(JString(
-                                  "Provided email does not match account for " + accountId))))
+                            Future(HttpResponse[JValue](
+                              HttpStatus(Forbidden),
+                              content = Some(JString(
+                                "Provided email does not match account for " + accountId))))
                           }
 
                         case None =>
@@ -582,7 +582,8 @@ class AccountServiceHandlers(
     val metadata = AndMetadata(
       AboutMetadata(
         ParameterMetadata('resetToken, None),
-        DescriptionMetadata("The account reset token sent to the email address of the account whose password is being reset.")
+        DescriptionMetadata(
+          "The account reset token sent to the email address of the account whose password is being reset.")
       ),
       DescriptionMetadata(
         """The request body must be of the form: {"password": "my new password"}"""),
@@ -634,8 +635,8 @@ class AccountServiceHandlers(
                     Future(
                       HttpResponse[JValue](
                         HttpStatus(BadRequest, "Invalid request body."),
-                        content = Some(
-                          JString("Could not determine replacement password from request body."))))
+                        content = Some(JString(
+                          "Could not determine replacement password from request body."))))
                 }
               }
             } getOrElse {
@@ -695,8 +696,8 @@ class AccountServiceHandlers(
                     Future(
                       HttpResponse[JValue](
                         HttpStatus(BadRequest, "Invalid request body."),
-                        content = Some(
-                          JString("Could not determine new account type from request body."))))
+                        content = Some(JString(
+                          "Could not determine new account type from request body."))))
                 }
               }
             } getOrElse {

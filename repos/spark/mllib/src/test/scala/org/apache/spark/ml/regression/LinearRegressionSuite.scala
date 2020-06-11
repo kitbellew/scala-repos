@@ -161,7 +161,8 @@ class LinearRegressionSuite
           label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
-      .saveAsTextFile("target/tmp/LinearRegressionSuite/datasetWithDenseFeatureWithoutIntercept")
+      .saveAsTextFile(
+        "target/tmp/LinearRegressionSuite/datasetWithDenseFeatureWithoutIntercept")
 
     datasetWithSparseFeature.rdd
       .map {

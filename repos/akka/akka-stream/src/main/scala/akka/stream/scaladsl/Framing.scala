@@ -186,9 +186,8 @@ object Framing {
       if (ctx.isFinishing) {
         if (allowTruncation) ctx.pushAndFinish(buffer)
         else
-          ctx.fail(
-            new FramingException(
-              "Stream finished but there was a truncated final frame in the buffer"))
+          ctx.fail(new FramingException(
+            "Stream finished but there was a truncated final frame in the buffer"))
       } else ctx.pull()
     }
 

@@ -875,7 +875,8 @@ object SparkSubmit {
 
     // SPARK-4170
     if (classOf[scala.App].isAssignableFrom(mainClass)) {
-      printWarning("Subclasses of scala.App may not work correctly. Use a main() method instead.")
+      printWarning(
+        "Subclasses of scala.App may not work correctly. Use a main() method instead.")
     }
 
     val mainMethod = mainClass.getMethod("main", new Array[String](0).getClass)

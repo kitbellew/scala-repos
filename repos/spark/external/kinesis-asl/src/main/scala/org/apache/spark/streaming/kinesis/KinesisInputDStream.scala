@@ -71,8 +71,9 @@ private[kinesis] class KinesisInputDStream[T: ClassTag](
         messageHandler = messageHandler,
         awsCredentialsOption = awsCredentialsOption)
     } else {
-      logWarning("Kinesis sequence number information was not present with some block metadata," +
-        " it may not be possible to recover from failures")
+      logWarning(
+        "Kinesis sequence number information was not present with some block metadata," +
+          " it may not be possible to recover from failures")
       super.createBlockRDD(time, blockInfos)
     }
   }

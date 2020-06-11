@@ -42,7 +42,9 @@ object GetOffsetShell {
       .describedAs("topic")
       .ofType(classOf[String])
     val partitionOpt = parser
-      .accepts("partitions", "comma separated list of partition ids. If not specified, it will find offsets for all partitions")
+      .accepts(
+        "partitions",
+        "comma separated list of partition ids. If not specified, it will find offsets for all partitions")
       .withRequiredArg
       .describedAs("partition ids")
       .ofType(classOf[String])

@@ -86,7 +86,8 @@ class CompositeX509TrustManager(
       // always run through the trust manager before making any decisions
       trustManager.checkServerTrusted(chain, authType)
       logger.debug(
-        s"checkServerTrusted: trustManager $trustManager using authType $authType found a match for ${debugChain(chain).toSeq}")
+        s"checkServerTrusted: trustManager $trustManager using authType $authType found a match for ${debugChain(
+          chain).toSeq}")
       trusted = true
     }
 

@@ -133,15 +133,13 @@ object ColumnDefinitionProviderImpl {
             annotationInfo,
             nullable)
         case tpe if tpe.erasure =:= typeOf[Option[Any]] && nullable == true =>
-          Failure(
-            new Exception(
-              s"Case class ${T.tpe} has field ${fieldName} which contains a nested option. This is not supported by this macro."))
+          Failure(new Exception(
+            s"Case class ${T.tpe} has field ${fieldName} which contains a nested option. This is not supported by this macro."))
 
         case tpe if tpe.erasure =:= typeOf[Option[Any]] && nullable == false =>
           if (defaultValOpt.isDefined)
-            Failure(
-              new Exception(
-                s"Case class ${T.tpe} has field ${fieldName}: ${oTpe.toString}, with a default value. Options cannot have default values"))
+            Failure(new Exception(
+              s"Case class ${T.tpe} has field ${fieldName}: ${oTpe.toString}, with a default value. Options cannot have default values"))
           else {
             matchField(
               accessorTree,
@@ -156,9 +154,8 @@ object ColumnDefinitionProviderImpl {
 
         // default
         case _ =>
-          Failure(
-            new Exception(
-              s"Case class ${T.tpe} has field ${fieldName}: ${oTpe.toString}, which is not supported for talking to JDBC"))
+          Failure(new Exception(
+            s"Case class ${T.tpe} has field ${fieldName}: ${oTpe.toString}, which is not supported for talking to JDBC"))
       }
     }
 
@@ -202,7 +199,9 @@ object ColumnDefinitionProviderImpl {
                 (tpe, Some(siz))
               case (tpe, _)
                   if tpe =:= typeOf[com.twitter.scalding.db.macros.size] =>
-                c.abort(c.enclosingPosition, "Hit a size macro where we couldn't parse the value. Probably not a literal constant. Only literal constants are supported.")
+                c.abort(
+                  c.enclosingPosition,
+                  "Hit a size macro where we couldn't parse the value. Probably not a literal constant. Only literal constants are supported.")
               case (tpe, _)
                   if tpe <:< typeOf[
                     com.twitter.scalding.db.macros.ScaldingDBAnnotation] =>

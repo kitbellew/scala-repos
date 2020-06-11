@@ -84,7 +84,8 @@ class BlockGeneratorSuite extends SparkFunSuite with BeforeAndAfter {
     // Verify whether addData() adds data that is present in generated blocks
     val data1 = 1 to 10
     data1.foreach { blockGenerator.addData _ }
-    withClue("callbacks called on adding data without metadata and without block generation") {
+    withClue(
+      "callbacks called on adding data without metadata and without block generation") {
       assert(
         listener.onAddDataCalled === false
       ) // should be called only with addDataWithCallback()

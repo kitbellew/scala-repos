@@ -105,10 +105,9 @@ object GameRepo {
   def goBerserk(pov: Pov): Funit =
     $update(
       $select(pov.gameId),
-      BSONDocument(
-        "$set" -> BSONDocument(
-          s"${pov.color.fold(F.whitePlayer, F.blackPlayer)}.${Player.BSONFields.berserk}" -> true
-        )))
+      BSONDocument("$set" -> BSONDocument(
+        s"${pov.color.fold(F.whitePlayer, F.blackPlayer)}.${Player.BSONFields.berserk}" -> true
+      )))
 
   def save(progress: Progress): Funit =
     GameDiff(progress.origin, progress.game) match {

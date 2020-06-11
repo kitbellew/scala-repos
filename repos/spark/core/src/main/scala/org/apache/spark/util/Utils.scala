@@ -767,8 +767,9 @@ private[spark] object Utils extends Logging {
       Array(conf.getenv("MESOS_DIRECTORY"))
     } else {
       if (conf.getenv("MESOS_DIRECTORY") != null && shuffleServiceEnabled) {
-        logInfo("MESOS_DIRECTORY available but not using provided Mesos sandbox because " +
-          "spark.shuffle.service.enabled is enabled.")
+        logInfo(
+          "MESOS_DIRECTORY available but not using provided Mesos sandbox because " +
+            "spark.shuffle.service.enabled is enabled.")
       }
       // In non-Yarn mode (or for the driver in yarn-client mode), we cannot trust the user
       // configuration to point to a secure directory. So create a subdirectory with restricted
@@ -2392,7 +2393,8 @@ private[spark] object Utils extends Logging {
     val dynamicAllocationEnabled =
       conf.getBoolean("spark.dynamicAllocation.enabled", false)
     if (numExecutor != 0 && dynamicAllocationEnabled) {
-      logWarning("Dynamic Allocation and num executors both set, thus dynamic allocation disabled.")
+      logWarning(
+        "Dynamic Allocation and num executors both set, thus dynamic allocation disabled.")
     }
     numExecutor == 0 && dynamicAllocationEnabled &&
     (!isLocalMaster(conf) || conf.getBoolean(

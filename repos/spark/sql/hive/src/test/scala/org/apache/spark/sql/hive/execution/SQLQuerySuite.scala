@@ -97,9 +97,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     withTempTable("src") {
       Seq(("id1", "value1")).toDF("key", "value").registerTempTable("src")
       val query =
-        sql(
-          "SELECT genoutput.* FROM src " +
-            "LATERAL VIEW explode(map('key1', 100, 'key2', 200)) genoutput AS key, value")
+        sql("SELECT genoutput.* FROM src " +
+          "LATERAL VIEW explode(map('key1', 100, 'key2', 200)) genoutput AS key, value")
       checkAnswer(query, Row("key1", 100) :: Row("key2", 200) :: Nil)
     }
   }
@@ -927,10 +926,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test("test script transform for stderr") {
     val data = (1 to 100000).map { i => (i, i, i) }
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
-    assert(
-      0 ===
-        sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans").queryExecution.toRdd
-          .count())
+    assert(0 ===
+      sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans").queryExecution.toRdd
+        .count())
   }
 
   test("test script transform data type") {
@@ -1576,9 +1574,8 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     checkAnswer(df, Row("text inside layer 2") :: Nil)
   }
 
-  test(
-    "SPARK-10310: " +
-      "script transformation using default input/output SerDe and record reader/writer") {
+  test("SPARK-10310: " +
+    "script transformation using default input/output SerDe and record reader/writer") {
     sqlContext
       .range(5)
       .selectExpr("id AS a", "id AS b")

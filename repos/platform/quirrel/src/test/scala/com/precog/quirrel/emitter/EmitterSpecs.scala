@@ -1061,7 +1061,8 @@ object EmitterSpecs
     }
 
     "emit split and merge for trivial cf example" in {
-      testEmit("clicks := //clicks onDay := solve 'day clicks where clicks.day = 'day onDay")(
+      testEmit(
+        "clicks := //clicks onDay := solve 'day clicks where clicks.day = 'day onDay")(
         Vector(
           PushString("/clicks"),
           Morph1(BuiltInMorphism1(expandGlob)),

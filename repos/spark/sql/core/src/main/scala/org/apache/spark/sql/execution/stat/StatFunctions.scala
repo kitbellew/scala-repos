@@ -468,8 +468,9 @@ private[sql] object StatFunctions extends Logging {
     val tableName = s"${col1}_$col2"
     val counts = df.groupBy(col1, col2).agg(count("*")).take(1e6.toInt)
     if (counts.length == 1e6.toInt) {
-      logWarning("The maximum limit of 1e6 pairs have been collected, which may not be all of " +
-        "the pairs. Please try reducing the amount of distinct items in your columns.")
+      logWarning(
+        "The maximum limit of 1e6 pairs have been collected, which may not be all of " +
+          "the pairs. Please try reducing the amount of distinct items in your columns.")
     }
     def cleanElement(element: Any): String = {
       if (element == null) "null" else element.toString

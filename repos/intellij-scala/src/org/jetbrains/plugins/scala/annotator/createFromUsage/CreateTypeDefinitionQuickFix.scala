@@ -41,7 +41,8 @@ abstract class CreateTypeDefinitionQuickFix(
     kind: ClassKind)
     extends CreateFromUsageQuickFixBase(ref, description) {
   private final val LOG: Logger = Logger
-    .getInstance("#org.jetbrains.plugins.scala.annotator.createFromUsage.CreateTemplateDefinitionQuickFix")
+    .getInstance(
+      "#org.jetbrains.plugins.scala.annotator.createFromUsage.CreateTemplateDefinitionQuickFix")
   private val name = ref.refName
 
   override def isAvailable(project: Project, editor: Editor, file: PsiFile) = {

@@ -1654,7 +1654,8 @@ object ProvenanceComputationSpecs
         }
         {
           val tree =
-            compileSingle("f(a) := ((//foobar).a union (//barfoo).a) where (//foobar).a = a f(10)")
+            compileSingle(
+              "f(a) := ((//foobar).a union (//barfoo).a) where (//foobar).a = a f(10)")
           tree.provenance mustEqual StaticProvenance("/foobar")
           tree.errors must beEmpty
         }

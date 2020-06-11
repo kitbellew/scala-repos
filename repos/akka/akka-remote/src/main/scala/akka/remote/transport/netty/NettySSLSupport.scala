@@ -50,7 +50,8 @@ private[akka] class SSLSettings(config: Config) {
     throw new ConfigurationException(
       "Configuration option 'akka.remote.netty.ssl.enable-ssl is turned on but no protocol is defined in 'akka.remote.netty.ssl.security.protocol'.")
   if (SSLKeyStore.isEmpty && SSLTrustStore.isEmpty)
-    throw new ConfigurationException("Configuration option 'akka.remote.netty.ssl.enable-ssl is turned on but no key/trust store is defined in 'akka.remote.netty.ssl.security.key-store' / 'akka.remote.netty.ssl.security.trust-store'.")
+    throw new ConfigurationException(
+      "Configuration option 'akka.remote.netty.ssl.enable-ssl is turned on but no key/trust store is defined in 'akka.remote.netty.ssl.security.key-store' / 'akka.remote.netty.ssl.security.trust-store'.")
   if (SSLKeyStore.isDefined && SSLKeyStorePassword.isEmpty)
     throw new ConfigurationException(
       "Configuration option 'akka.remote.netty.ssl.security.key-store' is defined but no key-store password is defined in 'akka.remote.netty.ssl.security.key-store-password'.")

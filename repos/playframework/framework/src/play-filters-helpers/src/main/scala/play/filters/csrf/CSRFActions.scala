@@ -169,7 +169,8 @@ class CSRFAction(
                 filterLogger.trace("[CSRF] Valid token found in body")
                 true
               } else {
-                filterLogger.trace("[CSRF] Check failed because no or invalid token found in body")
+                filterLogger.trace(
+                  "[CSRF] Check failed because no or invalid token found in body")
                 false
               }
             }))

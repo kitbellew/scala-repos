@@ -66,7 +66,9 @@ object SimpleConsumerShell extends Logging {
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(UseLeaderReplica)
     val offsetOpt = parser
-      .accepts("offset", "The offset id to consume from, default to -2 which means from beginning; while value -1 means from end")
+      .accepts(
+        "offset",
+        "The offset id to consume from, default to -2 which means from beginning; while value -1 means from end")
       .withRequiredArg
       .describedAs("consume offset")
       .ofType(classOf[java.lang.Long])

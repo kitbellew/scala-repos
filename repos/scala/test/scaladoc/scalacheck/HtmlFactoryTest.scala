@@ -398,7 +398,8 @@ object Test extends Properties("HtmlFactory") {
     "SI-5054: Use cases should keep their flags - implicit should not be lost") =
     checkText("SI_5054_q3.scala")((None, """implicit def test(): Int""", true))
 
-  property("SI-5054: Use cases should keep their flags - real abstract should not be lost") =
+  property(
+    "SI-5054: Use cases should keep their flags - real abstract should not be lost") =
     checkText("SI_5054_q4.scala")((None, """abstract def test(): Int""", true))
 
   property(
@@ -689,7 +690,8 @@ object Test extends Properties("HtmlFactory") {
         s.contains("<pre>one liner</pre>") &&
         s.contains("<pre>two lines, one useful</pre>") &&
         s.contains("<pre>line1\nline2\nline3\nline4</pre>") &&
-        s.contains("<pre>a ragged example\na (condition)\n  the t h e n branch\nan alternative\n  the e l s e branch</pre>") &&
+        s.contains(
+          "<pre>a ragged example\na (condition)\n  the t h e n branch\nan alternative\n  the e l s e branch</pre>") &&
         s.contains("<pre>Trait example {\n  Val x = a\n  Val y = b\n}</pre>") &&
         s.contains("<pre>l1\n\nl2\n\nl3\n\nl4\n\nl5</pre>")
       }

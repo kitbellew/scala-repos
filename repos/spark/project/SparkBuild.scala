@@ -137,7 +137,8 @@ object SparkBuild extends PomBuild {
     }
     Properties.envOrNone("SPARK_HADOOP_VERSION") match {
       case Some(v) =>
-        println("NOTE: SPARK_HADOOP_VERSION is deprecated, please use -Dhadoop.version=" + v)
+        println(
+          "NOTE: SPARK_HADOOP_VERSION is deprecated, please use -Dhadoop.version=" + v)
         System.setProperty("hadoop.version", v)
       case None =>
     }
@@ -155,8 +156,9 @@ object SparkBuild extends PomBuild {
       case Some(v) =>
         if (backwardCompatibility.nonEmpty)
           // scalastyle:off println
-          println("Note: We ignore environment variables, when use of profile is detected in " +
-            "conjunction with environment variable.")
+          println(
+            "Note: We ignore environment variables, when use of profile is detected in " +
+              "conjunction with environment variable.")
         // scalastyle:on println
         v.split("(\\s+|,)")
           .filterNot(_.isEmpty)

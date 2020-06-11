@@ -184,6 +184,7 @@ class ModelView[T <: Mapper[T]](var entity: T, val snippet: ModelSnippet[T]) {
       .map { (field: net.liftweb.mapper.MappedField[_, _]) =>
         s".$name *" #> field.toForm.openOr(field.asHtml)
       }
-      .openOrThrowException("If nobody has complained about this giving a NPE, I'll assume it is safe")
+      .openOrThrowException(
+        "If nobody has complained about this giving a NPE, I'll assume it is safe")
   }
 }

@@ -96,7 +96,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
       Gen.oneOf(Seq(Commutative, NonCommutative))
     }
 
-  property("readAfterLastBatch should return interval starting from the last batch written") = {
+  property(
+    "readAfterLastBatch should return interval starting from the last batch written") = {
     forAll {
       (
           diskPipeFactory: PipeFactory[Nothing],
@@ -201,7 +202,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
     }
   }
 
-  property("should not merge if the time interval on disk(from diskPipeFactory) is smaller than one batch") = {
+  property(
+    "should not merge if the time interval on disk(from diskPipeFactory) is smaller than one batch") = {
     //To test this property, it requires the length of the batcher is at least 2 millis, since we want
     //to create data that fits a batch partially
     def atLeast2MsBatcher(batcher: Batcher): Boolean = {
@@ -273,7 +275,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
                 .label("fail with right reason")
             }
             case Right(_) =>
-              false.label("should fail when readTimespan is not covering at least one batch")
+              false.label(
+                "should fail when readTimespan is not covering at least one batch")
           }
         }
     }

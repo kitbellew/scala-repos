@@ -176,7 +176,9 @@ object ConsoleProducer {
       .describedAs("compression-codec")
       .ofType(classOf[String])
     val batchSizeOpt = parser
-      .accepts("batch-size", "Number of messages to send in a single batch if they are not being sent synchronously.")
+      .accepts(
+        "batch-size",
+        "Number of messages to send in a single batch if they are not being sent synchronously.")
       .withRequiredArg
       .describedAs("size")
       .ofType(classOf[java.lang.Integer])
@@ -240,7 +242,9 @@ object ConsoleProducer {
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(1500)
     val metadataExpiryMsOpt = parser
-      .accepts("metadata-expiry-ms", "The period of time in milliseconds after which we force a refresh of metadata even if we haven't seen any leadership changes.")
+      .accepts(
+        "metadata-expiry-ms",
+        "The period of time in milliseconds after which we force a refresh of metadata even if we haven't seen any leadership changes.")
       .withRequiredArg
       .describedAs("metadata expiration interval")
       .ofType(classOf[java.lang.Long])

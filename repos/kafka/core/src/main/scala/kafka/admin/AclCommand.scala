@@ -310,7 +310,9 @@ object AclCommand {
   class AclCommandOptions(args: Array[String]) {
     val parser = new OptionParser
     val authorizerOpt = parser
-      .accepts("authorizer", "Fully qualified class name of the authorizer, defaults to kafka.security.auth.SimpleAclAuthorizer.")
+      .accepts(
+        "authorizer",
+        "Fully qualified class name of the authorizer, defaults to kafka.security.auth.SimpleAclAuthorizer.")
       .withRequiredArg
       .describedAs("authorizer")
       .ofType(classOf[String])

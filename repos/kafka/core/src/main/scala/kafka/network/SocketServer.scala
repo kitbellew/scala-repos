@@ -569,7 +569,8 @@ private[kafka] class Processor(
             // There is no response to send to the client, we need to read more pipelined requests
             // that are sitting in the server's socket buffer
             curr.request.updateRequestMetrics
-            trace("Socket server received empty response to send, registering for read: " + curr)
+            trace(
+              "Socket server received empty response to send, registering for read: " + curr)
             selector.unmute(curr.request.connectionId)
           case RequestChannel.SendAction =>
             trace("Socket server received response to send, registering for write and sending data: " + curr)

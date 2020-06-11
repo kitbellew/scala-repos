@@ -331,7 +331,8 @@ class EventServiceSpec
                 case JObject(fields) =>
                   fields("reason") must beLike {
                     case JString(s) =>
-                      s must startWith("Cannot ingest values with more than 1024 primitive fields.")
+                      s must startWith(
+                        "Cannot ingest values with more than 1024 primitive fields.")
                   }
                 case _ => ko
               }

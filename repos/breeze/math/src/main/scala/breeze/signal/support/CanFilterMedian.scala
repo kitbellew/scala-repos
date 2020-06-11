@@ -137,7 +137,9 @@ object CanFilterMedian {
           }
         }
 
-        require(found, "The fromValue was not found within the given array, something is wrong!")
+        require(
+          found,
+          "The fromValue was not found within the given array, something is wrong!")
       }
 
     }

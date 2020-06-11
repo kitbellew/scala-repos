@@ -474,7 +474,8 @@ object FailureTests extends TestSuite {
         | @mog
         |}
       """.stripMargin,
-      expected = """ "@" | LocalMod | AccessMod | `override` | Dcl | TraitDef | ClsDef | ObjDef """,
+      expected =
+        """ "@" | LocalMod | AccessMod | `override` | Dcl | TraitDef | ClsDef | ObjDef """,
       found = "}"
     )
     * - checkNeg(
@@ -502,7 +503,8 @@ object FailureTests extends TestSuite {
         |  { a: L = }
         |}
       """.stripMargin,
-      expected = """BacktickId | PlainId | "with" | ";" | Newline.rep(1) | "}" | `case`""",
+      expected =
+        """BacktickId | PlainId | "with" | ";" | Newline.rep(1) | "}" | `case`""",
       found = "= }"
     )
     * - checkNeg(
@@ -658,7 +660,8 @@ object FailureTests extends TestSuite {
           |}
           |
         """.stripMargin,
-      expected = """ "\"" | StringChars | Interp | LiteralSlash | Escape | NonStringEnd """,
+      expected =
+        """ "\"" | StringChars | Interp | LiteralSlash | Escape | NonStringEnd """,
       found = "\n"
     )
     val tq = "\"\"\""

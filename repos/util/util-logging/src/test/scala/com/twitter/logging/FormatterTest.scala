@@ -135,9 +135,8 @@ class FormatterTest extends WordSpec {
     }
 
     "truncate line" in {
-      assert(
-        truncateFormatter.format(record3) ==
-          "CRI [20080329-05:53:16.722] whiskey: Something terrible happened th...\n")
+      assert(truncateFormatter.format(record3) ==
+        "CRI [20080329-05:53:16.722] whiskey: Something terrible happened th...\n")
     }
 
     "write stack traces" should {

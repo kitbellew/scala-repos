@@ -76,7 +76,8 @@ object IncompleteClickHandler extends JFXApp {
         children = new VBox {
           spacing = 10
           children = Seq(
-            new Label("If Issue 102 is not fixed, some buttons below may not respond correctly."),
+            new Label(
+              "If Issue 102 is not fixed, some buttons below may not respond correctly."),
             new Button {
               text = "Button 1: Buggy event handler: should print two messages, but prints one."
               // Disable as old buggy handler no longer compiles

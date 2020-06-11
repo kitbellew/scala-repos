@@ -1806,10 +1806,11 @@ class PartitionsReassignedListener(controller: KafkaController)
       inLock(controllerContext.controllerLock) {
         if (controller.deleteTopicManager.isTopicQueuedUpForDeletion(
             partitionToBeReassigned._1.topic)) {
-          error("Skipping reassignment of partition %s for topic %s since it is currently being deleted"
-            .format(
-              partitionToBeReassigned._1,
-              partitionToBeReassigned._1.topic))
+          error(
+            "Skipping reassignment of partition %s for topic %s since it is currently being deleted"
+              .format(
+                partitionToBeReassigned._1,
+                partitionToBeReassigned._1.topic))
           controller.removePartitionFromReassignedPartitions(
             partitionToBeReassigned._1)
         } else {

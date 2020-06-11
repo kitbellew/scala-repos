@@ -176,8 +176,9 @@ object TopicCommand extends Logging {
           throw new IllegalArgumentException(
             "The number of partitions for the offsets topic cannot be changed.")
         }
-        println("WARNING: If partitions are increased for a topic that has a key, the partition " +
-          "logic or ordering of the messages will be affected")
+        println(
+          "WARNING: If partitions are increased for a topic that has a key, the partition " +
+            "logic or ordering of the messages will be affected")
         val nPartitions = opts.options.valueOf(opts.partitionsOpt).intValue
         val replicaAssignmentStr =
           opts.options.valueOf(opts.replicaAssignmentOpt)
@@ -382,7 +383,9 @@ object TopicCommand extends Logging {
       .describedAs("name=value")
       .ofType(classOf[String])
     val deleteConfigOpt = parser
-      .accepts("delete-config", "A topic configuration override to be removed for an existing topic (see the list of configurations under the --config option).")
+      .accepts(
+        "delete-config",
+        "A topic configuration override to be removed for an existing topic (see the list of configurations under the --config option).")
       .withRequiredArg
       .describedAs("name")
       .ofType(classOf[String])

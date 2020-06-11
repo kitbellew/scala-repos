@@ -84,7 +84,8 @@ object CheckBoxTableCell {
     * Added to satisfy Spec tests.
     */
   @deprecated(
-    message = "Use forTableView[S, T](Int => ObservableValue[Boolean, java.lang.Boolean])",
+    message =
+      "Use forTableView[S, T](Int => ObservableValue[Boolean, java.lang.Boolean])",
     since = "1.0")
   def forTableColumn[S, T](
       getSelectedProperty: jfxu.Callback[

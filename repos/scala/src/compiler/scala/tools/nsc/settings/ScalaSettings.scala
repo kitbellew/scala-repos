@@ -456,7 +456,9 @@ trait ScalaSettings
       "redundant-casts",
       "Eliminate redundant casts using a type propagation analysis.")
     val boxUnbox =
-      Choice("box-unbox", "Eliminate box-unbox pairs within the same method (also tuples, xRefs, value class instances). Enables unreachable-code.")
+      Choice(
+        "box-unbox",
+        "Eliminate box-unbox pairs within the same method (also tuples, xRefs, value class instances). Enables unreachable-code.")
     val nullnessTracking = Choice(
       "nullness-tracking",
       "Track nullness / non-nullness of local variables and apply optimizations.")
@@ -472,7 +474,9 @@ trait ScalaSettings
 
     // note: unlike the other optimizer levels, "l:none" appears up in the `Yopt.value` set because it's not an expanding option (expandsTo is empty)
     val lNone =
-      Choice("l:none", "Disable optimizations. Takes precedence: `-Yopt:l:none,+box-unbox` / `-Yopt:l:none -Yopt:box-unbox` don't enable box-unbox.")
+      Choice(
+        "l:none",
+        "Disable optimizations. Takes precedence: `-Yopt:l:none,+box-unbox` / `-Yopt:l:none -Yopt:box-unbox` don't enable box-unbox.")
 
     private val defaultChoices = List(unreachableCode)
     val lDefault = Choice(
@@ -667,7 +671,8 @@ trait ScalaSettings
   val optimise =
     BooleanSetting("-optimise", "Compiler flag for the optimizer in Scala 2.11")
       .withAbbreviation("-optimize")
-      .withDeprecationMessage("In 2.12, -optimise enables -Yopt:l:classpath. Check -Yopt:help for using the Scala 2.12 optimizer.")
+      .withDeprecationMessage(
+        "In 2.12, -optimise enables -Yopt:l:classpath. Check -Yopt:help for using the Scala 2.12 optimizer.")
       .withPostSetHook(_ => Yopt.tryToSet(List(YoptChoices.lClasspath.name)))
   val Xexperimental = BooleanSetting(
     "-Xexperimental",

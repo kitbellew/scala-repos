@@ -150,7 +150,8 @@ private[spark] class TaskResultGetter(
               case cnd: ClassNotFoundException =>
                 // Log an error but keep going here -- the task failed, so not catastrophic
                 // if we can't deserialize the reason.
-                logError("Could not deserialize TaskEndReason: ClassNotFound with classloader " + loader)
+                logError(
+                  "Could not deserialize TaskEndReason: ClassNotFound with classloader " + loader)
               case ex: Exception => {}
             }
             scheduler.handleFailedTask(taskSetManager, tid, taskState, reason)

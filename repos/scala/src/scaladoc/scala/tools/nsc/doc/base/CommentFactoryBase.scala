@@ -183,7 +183,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
   /** A Scaladoc tag linked to a symbol. Returns the name of the tag, the name
     * of the symbol, and the rest of the line. */
   private val SymbolTagRegex =
-    new Regex("""\s*@(param|tparam|throws|groupdesc|groupname|groupprio)\s+(\S*)\s*(.*)""")
+    new Regex(
+      """\s*@(param|tparam|throws|groupdesc|groupname|groupprio)\s+(\S*)\s*(.*)""")
 
   /** The start of a Scaladoc code block */
   private val CodeBlockStartRegex =

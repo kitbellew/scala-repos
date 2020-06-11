@@ -93,8 +93,8 @@ trait AuthenticationCombinators extends HttpRequestHandlerCombinators {
                 case Failure(error) =>
                   logger.warn("Authentication failure from %s for %s: %s"
                     .format(NetUtils.remoteIpFrom(request), email, error))
-                  Future(
-                    err(AuthMismatch("Credentials provided were formatted correctly, but did not match a known account.")))
+                  Future(err(AuthMismatch(
+                    "Credentials provided were formatted correctly, but did not match a known account.")))
               }
           }
         } getOrElse {

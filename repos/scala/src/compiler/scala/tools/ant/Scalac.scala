@@ -713,7 +713,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
           case cl: AntClassLoader =>
             path add new Path(getProject, cl.getClasspath)
           case _ =>
-            buildError("Cannot determine default classpath for scalac, please specify one!")
+            buildError(
+              "Cannot determine default classpath for scalac, please specify one!")
         }
       path
     }

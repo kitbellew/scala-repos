@@ -75,7 +75,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "Washington (CNN) -- Wall Street should have seen it coming. After all, market forces were at work.",
+      expectedStart =
+        "Washington (CNN) -- Wall Street should have seen it coming. After all, market forces were at work.",
       expectedImage = "http://i.cdn.turner.com/cnn/2011/POLITICS/10/06/tea.party.left/t1larg.occupydc2.jpg"
     )
     TestUtils.printReport()
@@ -414,7 +415,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "When I heard that Steve Jobs had passed away, I was boarding a train from New York to Philadelphia to visit my son.",
+      expectedStart =
+        "When I heard that Steve Jobs had passed away, I was boarding a train from New York to Philadelphia to visit my son.",
       expectedImage = "http://www.wired.com/images_blogs/business/2011/10/Apple-Siri-Blind-660x375.jpg"
     )
   }
@@ -443,7 +445,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "(AP) — The number of athletic children going to hospitals with concussions is up 60 percent in the past decade",
+      expectedStart =
+        "(AP) — The number of athletic children going to hospitals with concussions is up 60 percent in the past decade",
       expectedImage = null
     )
     TestUtils.printReport()
@@ -471,7 +474,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "Steve Jobs was just 30 years old, wildly successful, fabulously wealthy and a global celebrity. And then it all came crashing down.",
+      expectedStart =
+        "Steve Jobs was just 30 years old, wildly successful, fabulously wealthy and a global celebrity. And then it all came crashing down.",
       expectedImage = "http://a.abcnews.com/images/Technology/gty_steve_jobs_port_4_dm_111006_wg.jpg"
     )
   }
@@ -539,7 +543,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "WASHINGTON (Reuters) - The government is continuing an aggressive drive to hold accountable",
+      expectedStart =
+        "WASHINGTON (Reuters) - The government is continuing an aggressive drive to hold accountable",
       expectedImage = null)
     TestUtils.printReport()
   }
@@ -553,7 +558,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "Please. Someone, everyone, do something to save the American Folk Art Museum from dissolution and dispersa",
+      expectedStart =
+        "Please. Someone, everyone, do something to save the American Folk Art Museum from dissolution and dispersa",
       expectedImage = "http://graphics8.nytimes.com/images/2011/09/20/arts/20folkart-web/20folkart-web-articleLarge.jpg"
     )
     TestUtils.printReport()
@@ -568,7 +574,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "Healthy men should no longer receive a P.S.A. blood test to screen for prostate cancer because the test does not save lives",
+      expectedStart =
+        "Healthy men should no longer receive a P.S.A. blood test to screen for prostate cancer because the test does not save lives",
       expectedImage = null
     )
     TestUtils.printReport()
@@ -732,7 +739,8 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "It was a scene fit for a front-runner: an overflow crowd spilling out the doors of a Rockwellian",
+      expectedStart =
+        "It was a scene fit for a front-runner: an overflow crowd spilling out the doors of a Rockwellian",
       expectedImage = "http://timeswampland.files.wordpress.com/2012/01/sl_santprotest_0109_blog.jpg?w=600&h=400&crop=1"
     )
   }

@@ -114,8 +114,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
             case true => \/.right(resource)
             case false =>
               \/.left(
-                permissionsError("API key %s does not provide %s permission to resource at path %s."
-                  .format(apiKey, readMode.name, path.path)))
+                permissionsError(
+                  "API key %s does not provide %s permission to resource at path %s."
+                    .format(apiKey, readMode.name, path.path)))
           }
         }
     }
@@ -281,8 +282,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           }
 
         case Some(VersionEntry(_, _, timestamp)) =>
-          logger.debug("Cached entry (%s) found for %s, but is not applicable to max-age %s"
-            .format(timestamp, path, maxAge))
+          logger.debug(
+            "Cached entry (%s) found for %s, but is not applicable to max-age %s"
+              .format(timestamp, path, maxAge))
           fallBack
 
         case None =>
@@ -331,8 +333,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
                   else
                     \/.left(
                       storageError(
-                        PermissionsError("API key %s has no permission to write to the caching path %s."
-                          .format(ctx.apiKey, cachePath)))
+                        PermissionsError(
+                          "API key %s has no permission to write to the caching path %s."
+                            .format(ctx.apiKey, cachePath)))
                     )
                 }
               }
@@ -365,8 +368,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
             }
 
           case None =>
-            logger.debug("No caching to be performed for query results of query at path  %s"
-              .format(path.path))
+            logger.debug(
+              "No caching to be performed for query results of query at path  %s"
+                .format(path.path))
             EitherT.right(StoredQueryResult(raw, None, None).point[M])
         }
       } yield result

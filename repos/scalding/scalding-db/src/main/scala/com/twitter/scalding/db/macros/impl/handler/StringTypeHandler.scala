@@ -36,9 +36,8 @@ object StringTypeHandler {
           Failure(new Exception(
             s"String field $fieldName, has mutually exclusive annotations @text and @varchar"))
         case (WithoutSize, WithVarchar, WithoutText) =>
-          Failure(
-            new Exception(
-              s"String field $fieldName, is forced varchar but has no size annotation. size is required in the presence of varchar."))
+          Failure(new Exception(
+            s"String field $fieldName, is forced varchar but has no size annotation. size is required in the presence of varchar."))
         case (WithoutSize, WithoutVarchar, WithoutText) =>
           Failure(new Exception(
             s"String field $fieldName, at least one of size, varchar, text must be present."))

@@ -81,7 +81,8 @@ object ValidatePullRequest extends AutoPlugin {
   val githubEnforcedBuildAll = taskKey[Option[BuildMode]](
     "Checks via GitHub API if comments included the PLS BUILD ALL keyword")
   val buildAllKeyword =
-    taskKey[Regex]("Magic phrase to be used to trigger building of the entire project instead of analysing dependencies")
+    taskKey[Regex](
+      "Magic phrase to be used to trigger building of the entire project instead of analysing dependencies")
 
   // determining touched dirs and projects
   val changedDirectories =
@@ -200,8 +201,9 @@ object ValidatePullRequest extends AutoPlugin {
             .map(_.takeWhile(_ != '/'))
             .filter(dir => dir.startsWith("akka-") || dir == "project")
             .toSet
-          log.info("Detected uncomitted changes in directories (including in dependency analysis): " + dirtyDirectories
-            .mkString("[", ",", "]"))
+          log.info(
+            "Detected uncomitted changes in directories (including in dependency analysis): " + dirtyDirectories
+              .mkString("[", ",", "]"))
           dirtyDirectories
         }
 

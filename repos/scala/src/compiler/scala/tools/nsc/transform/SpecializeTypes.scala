@@ -1574,7 +1574,8 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     private def isAccessible(sym: Symbol): Boolean =
       if (currentOwner.isAnonymousFunction) {
         if (inlineFunctionExpansion)
-          devWarning("anonymous function made it to specialization even though inline expansion is set.")
+          devWarning(
+            "anonymous function made it to specialization even though inline expansion is set.")
         false
       } else
         (currentClass == sym.owner.enclClass) && (currentClass != targetClass)

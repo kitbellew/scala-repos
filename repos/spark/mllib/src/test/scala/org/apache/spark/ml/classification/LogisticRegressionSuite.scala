@@ -153,7 +153,8 @@ class LogisticRegressionSuite
       }
     }
     // thresholds and threshold must be consistent: values
-    withClue("fit with ParamMap should throw error if threshold, thresholds do not match.") {
+    withClue(
+      "fit with ParamMap should throw error if threshold, thresholds do not match.") {
       intercept[IllegalArgumentException] {
         val lr2model = lr2.fit(
           dataset,

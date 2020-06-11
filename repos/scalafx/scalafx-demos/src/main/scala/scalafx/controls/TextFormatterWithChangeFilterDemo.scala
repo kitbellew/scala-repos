@@ -105,7 +105,8 @@ object TextFormatterWithChangeFilterDemo extends JFXApp {
         spacing = 6
         padding = Insets(10)
         children = Seq(
-          new Label("Example of using `TextFormatter` to ensure that the input field includes prompt text \"> \".") {
+          new Label(
+            "Example of using `TextFormatter` to ensure that the input field includes prompt text \"> \".") {
             wrapText = true
           },
           new Label("Type message at the prompt. Press \"Enter\" to send."),

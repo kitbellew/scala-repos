@@ -147,10 +147,16 @@ import scala.language.implicitConversions"""
 
     def comparisonOps =
       List(
-        Op("==", "/** Returns `true` if this value is equal to x, `false` otherwise. */"),
-        Op("!=", "/** Returns `true` if this value is not equal to x, `false` otherwise. */"),
+        Op(
+          "==",
+          "/** Returns `true` if this value is equal to x, `false` otherwise. */"),
+        Op(
+          "!=",
+          "/** Returns `true` if this value is not equal to x, `false` otherwise. */"),
         Op("<", "/** Returns `true` if this value is less than x, `false` otherwise. */"),
-        Op("<=", "/** Returns `true` if this value is less than or equal to x, `false` otherwise. */"),
+        Op(
+          "<=",
+          "/** Returns `true` if this value is less than or equal to x, `false` otherwise. */"),
         Op(">", "/** Returns `true` if this value is greater than x, `false` otherwise. */"),
         Op(">=", "/** Returns `true` if this value is greater than or equal to x, `false` otherwise. */")
       )

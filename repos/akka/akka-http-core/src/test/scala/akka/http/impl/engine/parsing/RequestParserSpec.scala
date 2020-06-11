@@ -468,7 +468,8 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         """GET / HTTP/1.2
           |""" should parseToError(
           HTTPVersionNotSupported,
-          ErrorInfo("The server does not support the HTTP protocol version used in the request."))
+          ErrorInfo(
+            "The server does not support the HTTP protocol version used in the request."))
       }
 
       "with an illegal char in a header name" in new Test {

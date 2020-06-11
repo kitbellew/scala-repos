@@ -98,7 +98,8 @@ private[remote] class FailureInjectorTransportAdapter(
       listenAddress: Address,
       listenerFuture: Future[AssociationEventListener])
       : Future[AssociationEventListener] = {
-    log.warning("FailureInjectorTransport is active on this system. Gremlins might munch your packets.")
+    log.warning(
+      "FailureInjectorTransport is active on this system. Gremlins might munch your packets.")
     listenerFuture.onSuccess {
       // Side effecting: As this class is not an actor, the only way to safely modify state is through volatile vars.
       // Listen is called only during the initialization of the stack, and upstreamListener is not read before this

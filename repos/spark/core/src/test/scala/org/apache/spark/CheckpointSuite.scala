@@ -163,9 +163,8 @@ trait RDDCheckpointTester { self: SparkFunSuite =>
     assert(collectFunc(operatedRDD) === result)
 
     // Test whether serialized size of the partitions has reduced
-    logInfo(
-      "Size of partitions of " + rddType +
-        " [" + partitionSizeBeforeCheckpoint + " --> " + partitionSizeAfterCheckpoint + "]")
+    logInfo("Size of partitions of " + rddType +
+      " [" + partitionSizeBeforeCheckpoint + " --> " + partitionSizeAfterCheckpoint + "]")
     assert(
       partitionSizeAfterCheckpoint < partitionSizeBeforeCheckpoint,
       "Size of " + rddType + " partitions did not reduce after checkpointing parent RDDs" +

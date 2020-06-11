@@ -764,7 +764,8 @@ trait Scanners extends ScannersCommon {
             next.token = kwArray(idx)
           }
         } else {
-          syntaxError("invalid string interpolation: `$$', `$'ident or `$'BlockExpr expected")
+          syntaxError(
+            "invalid string interpolation: `$$', `$'ident or `$'BlockExpr expected")
         }
       } else {
         val isUnclosedLiteral =
@@ -918,7 +919,8 @@ trait Scanners extends ScannersCommon {
     def intVal(negated: Boolean): Long = {
       def malformed: Long = {
         if (base == 8)
-          syntaxError("Decimal integer literals may not have a leading zero. (Octal syntax is obsolete.)")
+          syntaxError(
+            "Decimal integer literals may not have a leading zero. (Octal syntax is obsolete.)")
         else syntaxError("malformed integer number")
         0
       }

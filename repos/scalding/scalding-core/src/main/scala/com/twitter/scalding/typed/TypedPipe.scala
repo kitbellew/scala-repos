@@ -1068,7 +1068,8 @@ class TypedPipeInst[T] private[scalding] (
       if (srcs.containsKey(inpipe.getName)) {
         Some((srcs.get(inpipe.getName), fields, flatMapFn))
       } else {
-        sys.error("Invalid head: pipe has no previous, but there is no registered source.")
+        sys.error(
+          "Invalid head: pipe has no previous, but there is no registered source.")
       }
     } else None
 

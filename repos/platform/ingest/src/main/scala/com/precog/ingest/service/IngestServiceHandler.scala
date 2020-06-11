@@ -170,9 +170,8 @@ class IngestServiceHandler(
         }
 
       case None =>
-        right(
-          Promise successful NotIngested(
-            "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
+        right(Promise successful NotIngested(
+          "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
     }
 
   def notifyJob(

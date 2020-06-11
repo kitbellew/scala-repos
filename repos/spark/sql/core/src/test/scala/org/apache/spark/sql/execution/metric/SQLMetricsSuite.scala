@@ -119,7 +119,8 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       // TODO Remove this "else" once we fix the race condition that missing the JobStarted event.
       // Since we cannot track all jobs, the metric values could be wrong and we should not check
       // them.
-      logWarning("Due to a race condition, we miss some jobs and cannot verify the metric values")
+      logWarning(
+        "Due to a race condition, we miss some jobs and cannot verify the metric values")
     }
   }
 

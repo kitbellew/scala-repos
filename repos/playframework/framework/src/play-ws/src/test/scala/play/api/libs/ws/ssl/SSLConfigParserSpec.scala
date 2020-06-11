@@ -170,7 +170,8 @@ object SSLConfigParserSpec extends Specification {
     }
 
     "parse ws.ssl.keyManager section" in new WithApplication() {
-      val info = parseThis("""
+      val info =
+        parseThis("""
                               |keyManager = {
                               |  password = "changeit"
                               |  algorithm = "keyStore"

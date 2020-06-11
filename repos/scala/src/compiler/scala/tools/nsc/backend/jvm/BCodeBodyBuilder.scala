@@ -562,7 +562,9 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case nextCleanup :: rest =>
           if (saveReturnValue) {
             if (insideCleanupBlock) {
-              reporter.warning(r.pos, "Return statement found in finally-clause, discarding its return-value in favor of that of a more deeply nested return.")
+              reporter.warning(
+                r.pos,
+                "Return statement found in finally-clause, discarding its return-value in favor of that of a more deeply nested return.")
               bc drop returnType
             } else {
               // regarding return value, the protocol is: in place of a `return-stmt`, a sequence of `adapt, store, jump` are inserted.

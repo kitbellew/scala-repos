@@ -162,7 +162,8 @@ object ClientConfig {
     Daemonize(false)
 }
 
-@implicitNotFound("Builder is not fully configured: Cluster: ${HasCluster}, Codec: ${HasCodec}, HostConnectionLimit: ${HasHostConnectionLimit}")
+@implicitNotFound(
+  "Builder is not fully configured: Cluster: ${HasCluster}, Codec: ${HasCodec}, HostConnectionLimit: ${HasHostConnectionLimit}")
 private[builder] trait ClientConfigEvidence[
     HasCluster,
     HasCodec,

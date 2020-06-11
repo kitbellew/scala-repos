@@ -249,11 +249,12 @@ class GroupMetadataManager(
             || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
             || status.errorCode == Errors.INVALID_FETCH_SIZE.code) {
 
-            error("Appending metadata message for group %s generation %d failed due to %s, returning UNKNOWN error code to the client"
-              .format(
-                group.groupId,
-                generationId,
-                Errors.forCode(status.errorCode).exceptionName))
+            error(
+              "Appending metadata message for group %s generation %d failed due to %s, returning UNKNOWN error code to the client"
+                .format(
+                  group.groupId,
+                  generationId,
+                  Errors.forCode(status.errorCode).exceptionName))
 
             Errors.UNKNOWN.code
           } else {

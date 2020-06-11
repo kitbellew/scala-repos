@@ -47,7 +47,8 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
     conn1.prepareStatement("create schema test").executeUpdate()
     conn1.prepareStatement("drop table if exists test.people").executeUpdate()
     conn1
-      .prepareStatement("create table test.people (name TEXT(32) NOT NULL, theid INTEGER NOT NULL)")
+      .prepareStatement(
+        "create table test.people (name TEXT(32) NOT NULL, theid INTEGER NOT NULL)")
       .executeUpdate()
     conn1
       .prepareStatement("insert into test.people values ('fred', 1)")
@@ -57,7 +58,8 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
       .executeUpdate()
     conn1.prepareStatement("drop table if exists test.people1").executeUpdate()
     conn1
-      .prepareStatement("create table test.people1 (name TEXT(32) NOT NULL, theid INTEGER NOT NULL)")
+      .prepareStatement(
+        "create table test.people1 (name TEXT(32) NOT NULL, theid INTEGER NOT NULL)")
       .executeUpdate()
     conn1.commit()
 
