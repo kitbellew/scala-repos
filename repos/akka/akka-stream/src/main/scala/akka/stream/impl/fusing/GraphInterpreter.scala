@@ -649,9 +649,8 @@ private[stream] final class GraphInterpreter(
 
       // PULL
     } else if ((code & (Pulling | OutClosed | InClosed)) == Pulling) {
-      if (Debug)
-        println(s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(
-          connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
+      if (Debug) println(s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(
+        connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
       portStates(connection) ^= PullEndFlip
       activeStage = safeLogics(assembly.outOwners(connection))
       outHandlers(connection).onPull()

@@ -89,8 +89,9 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
 
   import NonEmptyList._
   implicit def NonEmptyListArbitrary[A: Arbitrary]: Arbitrary[NonEmptyList[A]] =
-    Apply[Arbitrary]
-      .apply2[A, IList[A], NonEmptyList[A]](arb[A], ilistArbitrary)(nel(_, _))
+    Apply[Arbitrary].apply2[A, IList[A], NonEmptyList[A]](
+      arb[A],
+      ilistArbitrary)(nel(_, _))
 
   /** @since 7.0.3 */
   implicit def OneAndArbitrary[F[_], A](implicit

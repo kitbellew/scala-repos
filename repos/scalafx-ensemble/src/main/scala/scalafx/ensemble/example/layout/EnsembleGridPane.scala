@@ -56,7 +56,8 @@ class EnsembleGridPane extends EnsembleExample {
   def getContent = {
     // grid1 places the children by specifying the rows and columns in GridPane.setConstraints()
     val grid1Caption = new Label {
-      text = "The example below shows GridPane content placement by specifying rows and columns:"
+      text =
+        "The example below shows GridPane content placement by specifying rows and columns:"
       wrapText = true
     }
 
@@ -93,7 +94,8 @@ class EnsembleGridPane extends EnsembleExample {
     // via GridRowInfo and GridColumnInfo. This grid uses the preferred
     // width/height and max/min width/height.
     val grid2Caption = new Label {
-      text = "The example below shows GridPane content placement by influencing the rows and columns themselves."
+      text =
+        "The example below shows GridPane content placement by influencing the rows and columns themselves."
       wrapText = true
     }
 
@@ -138,8 +140,8 @@ class EnsembleGridPane extends EnsembleExample {
 
     val imageView = new ImageView {
       image = new Image(
-        this.getClass
-          .getResourceAsStream("/scalafx/ensemble/images/icon-48x48.png"))
+        this.getClass.getResourceAsStream(
+          "/scalafx/ensemble/images/icon-48x48.png"))
       alignmentInParent = Pos.Center
     }
     GridPane.setConstraints(imageView, 2, 1)

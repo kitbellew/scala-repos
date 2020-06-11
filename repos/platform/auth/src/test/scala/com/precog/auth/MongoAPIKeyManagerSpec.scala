@@ -74,8 +74,9 @@ class MongoAPIKeyManagerSpec
 
     "return current root API key" in new TestAPIKeyManager {
       val result = Await.result(
-        MongoAPIKeyManager
-          .findRootAPIKey(testDB, MongoAPIKeyManagerSettings.defaults.apiKeys),
+        MongoAPIKeyManager.findRootAPIKey(
+          testDB,
+          MongoAPIKeyManagerSettings.defaults.apiKeys),
         timeout)
 
       result.apiKey mustEqual rootAPIKey
@@ -211,8 +212,8 @@ class MongoAPIKeyManagerSpec
     val apiKeyManager = new MongoAPIKeyManager(
       mongo,
       testDB,
-      MongoAPIKeyManagerSettings.defaults
-        .copy(rootKeyId = rootAPIKeyOrig.apiKey))
+      MongoAPIKeyManagerSettings.defaults.copy(rootKeyId =
+        rootAPIKeyOrig.apiKey))
 
     val notFoundAPIKeyID = "NOT-GOING-TO-FIND"
 
@@ -224,8 +225,11 @@ class MongoAPIKeyManagerSpec
       apiKeyManager.createAPIKey(Some("child2"), None, rootAPIKey, Set.empty),
       to)
     val grantChild1 = Await.result(
-      apiKeyManager
-        .createAPIKey(Some("grantChild1"), None, child1.apiKey, Set.empty),
+      apiKeyManager.createAPIKey(
+        Some("grantChild1"),
+        None,
+        child1.apiKey,
+        Set.empty),
       to)
 
     // wait until the keys appear in the DB (some delay between insert request and actor insert)

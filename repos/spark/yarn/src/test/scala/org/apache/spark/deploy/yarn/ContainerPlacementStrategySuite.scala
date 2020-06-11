@@ -45,8 +45,9 @@ class ContainerPlacementStrategySuite
     yarnAllocatorSuite.afterEach()
   }
 
-  test("allocate locality preferred containers with enough resource and no matched existed " +
-    "containers") {
+  test(
+    "allocate locality preferred containers with enough resource and no matched existed " +
+      "containers") {
     // 1. All the locations of current containers cannot satisfy the new requirements
     // 2. Current requested container number can fully satisfy the pending tasks.
 
@@ -70,8 +71,9 @@ class ContainerPlacementStrategySuite
         Array("host3", "host4")))
   }
 
-  test("allocate locality preferred containers with enough resource and partially matched " +
-    "containers") {
+  test(
+    "allocate locality preferred containers with enough resource and partially matched " +
+      "containers") {
     // 1. Parts of current containers' locations can satisfy the new requirements
     // 2. Current requested container number can fully satisfy the pending tasks.
 
@@ -97,8 +99,9 @@ class ContainerPlacementStrategySuite
         Array(null, Array("host2", "host3"), Array("host2", "host3")))
   }
 
-  test("allocate locality preferred containers with limited resource and partially matched " +
-    "containers") {
+  test(
+    "allocate locality preferred containers with limited resource and partially matched " +
+      "containers") {
     // 1. Parts of current containers' locations can satisfy the new requirements
     // 2. Current requested container number cannot fully satisfy the pending tasks.
 
@@ -166,7 +169,8 @@ class ContainerPlacementStrategySuite
     assert(localities.map(_.nodes) === Array(null))
   }
 
-  test("allocate locality preferred containers by considering the localities of pending requests") {
+  test(
+    "allocate locality preferred containers by considering the localities of pending requests") {
     val handler = createAllocator(3)
     handler.updateResourceRequests()
     handler.handleAllocatedContainers(

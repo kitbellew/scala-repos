@@ -165,7 +165,8 @@ class GroupsResourceTest
     delete.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test("authenticated delete without authorization leads to a 404 if the resource doesn't exist") {
+  test(
+    "authenticated delete without authorization leads to a 404 if the resource doesn't exist") {
     Given("A real group manager with no apps")
     useRealGroupManager()
     groupRepository.group("/") returns Future.successful(None)
@@ -186,7 +187,8 @@ class GroupsResourceTest
     }
   }
 
-  test("Group Versions for root are transferred as simple json string array (Fix #2329)") {
+  test(
+    "Group Versions for root are transferred as simple json string array (Fix #2329)") {
     Given("Specific Group versions")
     val groupVersions = Seq(Timestamp.now(), Timestamp.now())
     groupManager.versions(PathId.empty) returns Future.successful(
@@ -204,7 +206,8 @@ class GroupsResourceTest
       Json.toJson(groupVersions).toString())
   }
 
-  test("Group Versions for path are transferred as simple json string array (Fix #2329)") {
+  test(
+    "Group Versions for path are transferred as simple json string array (Fix #2329)") {
     Given("Specific group versions")
     val groupVersions = Seq(Timestamp.now(), Timestamp.now())
     groupManager.versions(any) returns Future.successful(
@@ -224,7 +227,8 @@ class GroupsResourceTest
       Json.toJson(groupVersions).toString())
   }
 
-  test("Creation of a group with same path as an existing app should be prohibited (fixes #3385)") {
+  test(
+    "Creation of a group with same path as an existing app should be prohibited (fixes #3385)") {
     Given("A real group manager with one app")
     useRealGroupManager()
     val group = Group(
@@ -244,7 +248,8 @@ class GroupsResourceTest
     }
   }
 
-  test("Creation of a group with same path as an existing group should be prohibited") {
+  test(
+    "Creation of a group with same path as an existing group should be prohibited") {
     Given("A real group manager with one app")
     useRealGroupManager()
     val group = Group("/group".toRootPath)

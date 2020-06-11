@@ -334,19 +334,22 @@ final class StringCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Throw a ClientError if the new SET syntax is called with two strings and an integer") {
+  test(
+    "Throw a ClientError if the new SET syntax is called with two strings and an integer") {
     intercept[ClientError] {
       codec(wrap("SET foo bar 100\r\n"))
     }
   }
 
-  test("Throw a ClientError if the new SET syntax is called with two strings and EX NX") {
+  test(
+    "Throw a ClientError if the new SET syntax is called with two strings and EX NX") {
     intercept[ClientError] {
       codec(wrap("SET foo bar EX NX\r\n"))
     }
   }
 
-  test("Throw a ClientError if the new SET syntax is called with two strings and PX NX") {
+  test(
+    "Throw a ClientError if the new SET syntax is called with two strings and PX NX") {
     intercept[ClientError] {
       codec(wrap("SET foo bar PX NX\r\n"))
     }

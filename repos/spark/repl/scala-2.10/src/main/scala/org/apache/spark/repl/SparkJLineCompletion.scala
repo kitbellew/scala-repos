@@ -413,8 +413,9 @@ class SparkJLineCompletion(val intp: SparkIMain)
             val advance = commonPrefix(winners)
             lastCursor = p.position + advance.length
             lastBuf = (buf take p.position) + advance
-            logDebug("tryCompletion(%s, _) lastBuf = %s, lastCursor = %s, p.position = %s"
-              .format(p, lastBuf, lastCursor, p.position))
+            logDebug(
+              "tryCompletion(%s, _) lastBuf = %s, lastCursor = %s, p.position = %s"
+                .format(p, lastBuf, lastCursor, p.position))
             p.position
           }
 

@@ -59,8 +59,11 @@ object $update {
       update: B,
       upsert: Boolean = false,
       multi: Boolean = false) {
-    implicitly[InColl[A]].coll
-      .uncheckedUpdate(selector, update, upsert = upsert, multi = multi)
+    implicitly[InColl[A]].coll.uncheckedUpdate(
+      selector,
+      update,
+      upsert = upsert,
+      multi = multi)
   }
 
   def fieldUnchecked[ID: Writes, A: InColl, B: Writes](

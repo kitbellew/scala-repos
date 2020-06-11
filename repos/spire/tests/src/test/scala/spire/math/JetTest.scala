@@ -54,7 +54,8 @@ class JetTest extends FunSuite with Matchers {
     jk.isInfinitesimal should be(true)
     jk.infinitesimal.toArray should equal(Array(0.0, 1.0, 0.0))
   }
-  test("Jet(x, k) yields a jet for evaluating a function and its k-th partial derivative") {
+  test(
+    "Jet(x, k) yields a jet for evaluating a function and its k-th partial derivative") {
     val jk = Jet(2.3, k = 2)
     jk.real should equal(2.3)
     jk.isReal should be(false)

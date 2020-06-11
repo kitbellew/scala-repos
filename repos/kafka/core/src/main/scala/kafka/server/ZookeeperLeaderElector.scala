@@ -74,8 +74,9 @@ class ZookeeperLeaderElector(
      * createEphemeralPath method from getting into an infinite loop if this broker is already the controller.
      */
     if (leaderId != -1) {
-      debug("Broker %d has been elected as leader, so stopping the election process."
-        .format(leaderId))
+      debug(
+        "Broker %d has been elected as leader, so stopping the election process."
+          .format(leaderId))
       return amILeader
     }
 
@@ -99,7 +100,8 @@ class ZookeeperLeaderElector(
             "Broker %d was elected as leader instead of broker %d"
               .format(leaderId, brokerId))
         else
-          warn("A leader has been elected but just resigned, this will result in another round of election")
+          warn(
+            "A leader has been elected but just resigned, this will result in another round of election")
 
       case e2: Throwable =>
         error(
@@ -152,8 +154,9 @@ class ZookeeperLeaderElector(
     @throws(classOf[Exception])
     def handleDataDeleted(dataPath: String) {
       inLock(controllerContext.controllerLock) {
-        debug("%s leader change listener fired for path %s to handle data deleted: trying to elect as a leader"
-          .format(brokerId, dataPath))
+        debug(
+          "%s leader change listener fired for path %s to handle data deleted: trying to elect as a leader"
+            .format(brokerId, dataPath))
         if (amILeader)
           onResigningAsLeader()
         elect

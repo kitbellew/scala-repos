@@ -580,8 +580,9 @@ object Replicator {
       def initRemovedNodePruning(
           removed: UniqueAddress,
           owner: UniqueAddress): DataEnvelope = {
-        copy(pruning = pruning
-          .updated(removed, PruningState(owner, PruningInitialized(Set.empty))))
+        copy(pruning = pruning.updated(
+          removed,
+          PruningState(owner, PruningInitialized(Set.empty))))
       }
 
       def prune(from: UniqueAddress): DataEnvelope = {

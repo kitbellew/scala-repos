@@ -51,8 +51,9 @@ object TestConfigurationUtil {
     configuration.setGeneratedName(displayName)
     configuration.setModule(location.getModule)
     configuration.initWorkingDir()
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(configuration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      configuration,
+      location)
     settings
   }
 

@@ -481,8 +481,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(YearsPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -522,8 +522,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(YearsPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(-5))(line))(line)
 
       val result = testEval(input)
@@ -563,8 +563,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(YearsPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(0))(line))(line)
 
       val result = testEval(input)
@@ -605,8 +605,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MonthsPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -647,8 +647,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(WeeksPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -688,8 +688,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(DaysPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -729,8 +729,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(HoursPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -770,8 +770,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MinutesPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -811,8 +811,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(SecondsPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -852,8 +852,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MillisPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -896,8 +896,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(YearsPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -926,8 +926,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MonthsPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -956,8 +956,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(WeeksPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -985,8 +985,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(DaysPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -1014,8 +1014,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(HoursPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -1043,8 +1043,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MinutesPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -1072,8 +1072,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(SecondsPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)
@@ -1101,8 +1101,8 @@ trait TimePlusSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MillisPlus),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
+          line),
         Const(CLong(5))(line))(line)
 
       val result = testEval(input)

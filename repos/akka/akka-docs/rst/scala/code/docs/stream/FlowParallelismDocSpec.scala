@@ -15,13 +15,13 @@ class FlowParallelismDocSpec extends AkkaSpec {
 
   //format: OFF
   //#pipelining
-  // Takes a scoop of batter and creates a pancake with one side cooked
-  val fryingPan1: Flow[ScoopOfBatter, HalfCookedPancake, NotUsed] =
-    Flow[ScoopOfBatter].map { batter => HalfCookedPancake() }
+    // Takes a scoop of batter and creates a pancake with one side cooked
+    val fryingPan1: Flow[ScoopOfBatter, HalfCookedPancake, NotUsed] =
+      Flow[ScoopOfBatter].map { batter => HalfCookedPancake() }
 
-  // Finishes a half-cooked pancake
-  val fryingPan2: Flow[HalfCookedPancake, Pancake, NotUsed] =
-    Flow[HalfCookedPancake].map { halfCooked => Pancake() }
+    // Finishes a half-cooked pancake
+    val fryingPan2: Flow[HalfCookedPancake, Pancake, NotUsed] =
+      Flow[HalfCookedPancake].map { halfCooked => Pancake() }
   //#pipelining
   //format: ON
 

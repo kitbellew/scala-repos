@@ -268,8 +268,9 @@ object IListTest extends SpecLite {
         a.index(index) == Some(y)
     } must_=== true
 
-    xs.interleave(ys).toStream must_=== std.stream
-      .interleave(xs.toStream, ys.toStream)
+    xs.interleave(ys).toStream must_=== std.stream.interleave(
+      xs.toStream,
+      ys.toStream)
   }
 
   // intersperse is tested above

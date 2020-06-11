@@ -1057,8 +1057,8 @@ trait FlowOps[+Out, +Mat] {
     */
   def conflateWithSeed[S](seed: Out ⇒ S)(aggregate: (S, Out) ⇒ S): Repr[S] =
     via(
-      Batch(1L, ConstantFun.zeroLong, seed, aggregate)
-        .withAttributes(DefaultAttributes.conflate))
+      Batch(1L, ConstantFun.zeroLong, seed, aggregate).withAttributes(
+        DefaultAttributes.conflate))
 
   /**
     * Allows a faster upstream to progress independently of a slower subscriber by conflating elements into a summary
@@ -1110,8 +1110,8 @@ trait FlowOps[+Out, +Mat] {
     */
   def batch[S](max: Long, seed: Out ⇒ S)(aggregate: (S, Out) ⇒ S): Repr[S] =
     via(
-      Batch(max, ConstantFun.oneLong, seed, aggregate)
-        .withAttributes(DefaultAttributes.batch))
+      Batch(max, ConstantFun.oneLong, seed, aggregate).withAttributes(
+        DefaultAttributes.batch))
 
   /**
     * Allows a faster upstream to progress independently of a slower subscriber by aggregating elements into batches

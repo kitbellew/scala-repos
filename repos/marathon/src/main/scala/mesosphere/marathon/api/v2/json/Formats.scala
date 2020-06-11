@@ -614,7 +614,8 @@ trait AppAndGroupFormats {
                   .mkString(", ")}]")
             }
           case _ =>
-            JsError("Constraint definition must be an array of strings in format: <key>, <operator>[, value]")
+            JsError(
+              "Constraint definition must be an array of strings in format: <key>, <operator>[, value]")
         }
       }
     },
@@ -938,8 +939,10 @@ trait AppAndGroupFormats {
 
   implicit lazy val VersionInfoWrites: Writes[AppDefinition.VersionInfo] =
     Writes[AppDefinition.VersionInfo] {
-      case AppDefinition.VersionInfo
-            .FullVersionInfo(_, lastScalingAt, lastConfigChangeAt) =>
+      case AppDefinition.VersionInfo.FullVersionInfo(
+            _,
+            lastScalingAt,
+            lastConfigChangeAt) =>
         Json.obj(
           "lastScalingAt" -> lastScalingAt,
           "lastConfigChangeAt" -> lastConfigChangeAt

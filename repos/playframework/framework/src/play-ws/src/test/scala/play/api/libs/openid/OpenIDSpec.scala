@@ -143,8 +143,8 @@ object OpenIDSpec extends Specification with Mockito {
 
       val argument = ArgumentCaptor.forClass(classOf[Params])
       "direct verification using a POST request was used" in {
-        there was one(ws.request)
-          .post(argument.capture())(any[Writeable[Params]])
+        there was one(ws.request).post(argument.capture())(
+          any[Writeable[Params]])
 
         val verificationQuery = argument.getValue
 
@@ -204,8 +204,8 @@ object OpenIDSpec extends Specification with Mockito {
       ws.response.status returns OK thenReturns OK
       ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml") thenReturns Some("text/plain")
-      ws.response.xml returns scala.xml.XML
-        .loadString(readFixture("discovery/xrds/simple-op.xml"))
+      ws.response.xml returns scala.xml.XML.loadString(
+        readFixture("discovery/xrds/simple-op.xml"))
       ws.response.body returns "is_valid:false\n"
 
       val openId = new WsOpenIdClient(ws, new WsDiscovery(ws))
@@ -222,8 +222,8 @@ object OpenIDSpec extends Specification with Mockito {
       ws.response.status returns OK thenReturns OK
       ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
         "application/xrds+xml") thenReturns Some("text/plain")
-      ws.response.xml returns scala.xml.XML
-        .loadString(readFixture("discovery/xrds/simple-op.xml"))
+      ws.response.xml returns scala.xml.XML.loadString(
+        readFixture("discovery/xrds/simple-op.xml"))
       ws.response.body returns "is_valid:false\n"
 
       val openId = new WsOpenIdClient(ws, new WsDiscovery(ws))
@@ -267,8 +267,8 @@ object OpenIDSpec extends Specification with Mockito {
     ws.response.status returns OK thenReturns OK
     ws.response.header(HeaderNames.CONTENT_TYPE) returns Some(
       "application/xrds+xml") thenReturns Some("text/plain")
-    ws.response.xml returns scala.xml.XML
-      .loadString(readFixture("discovery/xrds/simple-op.xml"))
+    ws.response.xml returns scala.xml.XML.loadString(
+      readFixture("discovery/xrds/simple-op.xml"))
     ws.response.body returns "is_valid:true\n" // http://openid.net/specs/openid-authentication-2_0.html#kvform
     ws
   }

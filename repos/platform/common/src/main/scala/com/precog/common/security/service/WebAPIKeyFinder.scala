@@ -219,7 +219,8 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
           case res =>
             logger.error(
               "Unexpected response from api provisioning service: " + res)
-            left("Unexpected response from api key provisioning service; unable to proceed." + res)
+            left(
+              "Unexpected response from api key provisioning service; unable to proceed." + res)
         })
     }
   }

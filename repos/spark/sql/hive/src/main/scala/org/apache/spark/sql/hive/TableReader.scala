@@ -249,9 +249,9 @@ private[hive] class HadoopTableReader(
           partitionKeyAttrs.foreach {
             case (attr, ordinal) =>
               val partOrdinal = relation.partitionKeys.indexOf(attr)
-              row(ordinal) =
-                Cast(Literal(rawPartValues(partOrdinal)), attr.dataType)
-                  .eval(null)
+              row(ordinal) = Cast(
+                Literal(rawPartValues(partOrdinal)),
+                attr.dataType).eval(null)
           }
         }
 

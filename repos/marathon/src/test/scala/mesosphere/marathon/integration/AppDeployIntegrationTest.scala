@@ -222,7 +222,8 @@ class AppDeployIntegrationTest
     ) //make sure, the app has really started
   }
 
-  test("create a simple app with http health checks using port instead of portIndex") {
+  test(
+    "create a simple app with http health checks using port instead of portIndex") {
     Given("a new app")
     val app = appProxy(
       testBasePath / "http-app",

@@ -127,8 +127,8 @@ class AttributeSuite extends SparkFunSuite {
     val name = "size"
     val index = 1
     val values = Array("small", "medium", "large")
-    val metadata = Metadata
-      .fromJson("""{"type":"nominal","name":"size","idx":1,"vals":["small","medium","large"]}""")
+    val metadata = Metadata.fromJson(
+      """{"type":"nominal","name":"size","idx":1,"vals":["small","medium","large"]}""")
     val metadataWithoutType = Metadata.fromJson(
       """{"name":"size","idx":1,"vals":["small","medium","large"]}""")
     val attr: NominalAttribute = NominalAttribute.defaultAttr

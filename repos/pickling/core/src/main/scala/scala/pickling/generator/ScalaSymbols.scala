@@ -231,10 +231,10 @@ private[pickling] class IrScalaSymbols[
 
     override def isMarkedTransient: Boolean = {
       val tr = scala.util.Try {
-        ((field.accessed != NoSymbol) && field.accessed.annotations
-          .exists(_.tpe =:= typeOf[scala.transient])) ||
-        ((field.getter != NoSymbol) && field.getter.annotations
-          .exists(_.tpe =:= typeOf[scala.transient])) ||
+        ((field.accessed != NoSymbol) && field.accessed.annotations.exists(
+          _.tpe =:= typeOf[scala.transient])) ||
+        ((field.getter != NoSymbol) && field.getter.annotations.exists(
+          _.tpe =:= typeOf[scala.transient])) ||
         (field.annotations.exists(_.tpe =:= typeOf[scala.transient]))
       }
       // TODO - Here we wrokaround a scala symbol issue where the field is never annotated with transient.
@@ -292,10 +292,10 @@ private[pickling] class IrScalaSymbols[
     override def isMarkedTransient: Boolean = {
       // TODO - is this correct?
       val tr = scala.util.Try {
-        ((mthd.accessed != NoSymbol) && mthd.accessed.annotations
-          .exists(_.tpe =:= typeOf[scala.transient])) ||
-        ((mthd.getter != NoSymbol) && mthd.getter.annotations
-          .exists(_.tpe =:= typeOf[scala.transient])) ||
+        ((mthd.accessed != NoSymbol) && mthd.accessed.annotations.exists(
+          _.tpe =:= typeOf[scala.transient])) ||
+        ((mthd.getter != NoSymbol) && mthd.getter.annotations.exists(
+          _.tpe =:= typeOf[scala.transient])) ||
         (mthd.annotations.exists(_.tpe =:= typeOf[scala.transient]))
       }
       tr.getOrElse(false)

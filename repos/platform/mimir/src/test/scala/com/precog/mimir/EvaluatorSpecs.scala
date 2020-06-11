@@ -3953,9 +3953,11 @@ trait EvaluatorSpecs[M[+_]]
         AddSortKey(clicks2, "time", "time", 0))(line)
 
       testEval(
-        dag
-          .Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
-            line)) { expected =>
+        dag.Join(
+          DerefObject,
+          Cross(None),
+          clicks,
+          Const(CString("time"))(line))(line)) { expected =>
         val decimalValues = expected.toList collect {
           case (_, SDecimal(d)) => d
         }
@@ -4040,9 +4042,11 @@ trait EvaluatorSpecs[M[+_]]
           Const(CLong(500))(line))(line))(line)
 
       testEval(
-        dag
-          .Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
-            line)) { expected =>
+        dag.Join(
+          DerefObject,
+          Cross(None),
+          clicks,
+          Const(CString("time"))(line))(line)) { expected =>
         val decimalValues = expected.toList collect {
           case (_, SDecimal(d)) => d
         }

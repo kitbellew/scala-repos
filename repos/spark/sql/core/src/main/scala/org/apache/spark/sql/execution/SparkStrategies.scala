@@ -74,8 +74,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               execution.CollectLimit(limit, planLater(child)) :: Nil
             case other => planLater(other) :: Nil
           }
-        case logical
-              .Limit(IntegerLiteral(limit), logical.Sort(order, true, child)) =>
+        case logical.Limit(
+              IntegerLiteral(limit),
+              logical.Sort(order, true, child)) =>
           execution.TakeOrderedAndProject(
             limit,
             order,
@@ -523,8 +524,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
     def apply(plan: LogicalPlan): Seq[SparkPlan] =
       plan match {
         case logical.Join(left, right, Inner, None) =>
-          execution.joins
-            .CartesianProduct(planLater(left), planLater(right)) :: Nil
+          execution.joins.CartesianProduct(
+            planLater(left),
+            planLater(right)) :: Nil
         case logical.Join(left, right, Inner, Some(condition)) =>
           execution.Filter(
             condition,
@@ -714,7 +716,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               provider,
               opts)) :: Nil
         case c: CreateTableUsing if !c.temporary =>
-          sys.error("Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")
+          sys.error(
+            "Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")
         case c: CreateTableUsing if c.temporary && c.allowExisting =>
           sys.error(
             "allowExisting should be set to false when creating a temporary table.")
@@ -733,7 +736,8 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             c.child)
           ExecutedCommand(cmd) :: Nil
         case c: CreateTableUsingAsSelect if !c.temporary =>
-          sys.error("Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")
+          sys.error(
+            "Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")
 
         case describe @ LogicalDescribeCommand(table, isExtended) =>
           ExecutedCommand(

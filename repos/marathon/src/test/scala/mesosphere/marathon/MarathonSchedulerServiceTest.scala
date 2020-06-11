@@ -45,19 +45,19 @@ object MarathonSchedulerServiceTest {
   def mockConfig = {
     val config = mock(classOf[MarathonConf])
 
-    when(config.reconciliationInitialDelay)
-      .thenReturn(scallopOption(Some(ReconciliationDelay)))
-    when(config.reconciliationInterval)
-      .thenReturn(scallopOption(Some(ReconciliationInterval)))
-    when(config.scaleAppsInitialDelay)
-      .thenReturn(scallopOption(Some(ScaleAppsDelay)))
-    when(config.scaleAppsInterval)
-      .thenReturn(scallopOption(Some(ScaleAppsInterval)))
+    when(config.reconciliationInitialDelay).thenReturn(
+      scallopOption(Some(ReconciliationDelay)))
+    when(config.reconciliationInterval).thenReturn(
+      scallopOption(Some(ReconciliationInterval)))
+    when(config.scaleAppsInitialDelay).thenReturn(
+      scallopOption(Some(ScaleAppsDelay)))
+    when(config.scaleAppsInterval).thenReturn(
+      scallopOption(Some(ScaleAppsInterval)))
     when(config.zkTimeoutDuration).thenReturn(1.second)
-    when(config.maxActorStartupTime)
-      .thenReturn(scallopOption(Some(MaxActorStartupTime)))
-    when(config.onElectedPrepareTimeout)
-      .thenReturn(scallopOption(Some(OnElectedPrepareTimeout)))
+    when(config.maxActorStartupTime).thenReturn(
+      scallopOption(Some(MaxActorStartupTime)))
+    when(config.onElectedPrepareTimeout).thenReturn(
+      scallopOption(Some(OnElectedPrepareTimeout)))
 
     config
   }
@@ -220,8 +220,10 @@ class MarathonSchedulerServiceTest
 
     schedulerService.onElected(mock[ExceptionalCommand[Group.JoinException]])
 
-    verify(mockTimer, times(2))
-      .schedule(any(), mockEq(ScaleAppsDelay), mockEq(ScaleAppsInterval))
+    verify(mockTimer, times(2)).schedule(
+      any(),
+      mockEq(ScaleAppsDelay),
+      mockEq(ScaleAppsInterval))
     verify(mockTimer, times(2)).schedule(
       any[TimerTask](),
       mockEq(ReconciliationDelay),

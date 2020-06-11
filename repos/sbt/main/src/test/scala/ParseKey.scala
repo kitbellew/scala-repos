@@ -62,7 +62,8 @@ object ParseKey extends Properties("Key parser test") {
         }
     }
 
-  property("An unspecified configuration axis resolves to the first configuration directly defining the key or else Global") =
+  property(
+    "An unspecified configuration axis resolves to the first configuration directly defining the key or else Global") =
     forAllNoShrink(structureDefinedKey) { (skm: StructureKeyMask) =>
       import skm.{structure, key}
       val mask = ScopeMask(config = false)

@@ -671,8 +671,8 @@ private[scala] trait JavaMirrors
           abort(msg + ", it cannot be invoked with mirrors")
 
         def invokePrimitiveMethod = {
-          val jmeths = classOf[BoxesRunTime].getDeclaredMethods
-            .filter(_.getName == nme.primitiveMethodName(symbol.name).toString)
+          val jmeths = classOf[BoxesRunTime].getDeclaredMethods.filter(
+            _.getName == nme.primitiveMethodName(symbol.name).toString)
           assert(jmeths.length == 1, jmeths.toList)
           val jmeth = jmeths.head
           val result = jmeth.invoke(

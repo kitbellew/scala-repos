@@ -237,8 +237,9 @@ private[hive] class SparkExecuteStatementOperation(
             s"Setting spark.scheduler.pool=$value for future statements in this session.")
         case _ =>
       }
-      HiveThriftServer2.listener
-        .onStatementParsed(statementId, result.queryExecution.toString())
+      HiveThriftServer2.listener.onStatementParsed(
+        statementId,
+        result.queryExecution.toString())
       iter = {
         val useIncrementalCollect =
           hiveContext

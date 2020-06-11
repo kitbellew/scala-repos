@@ -21,8 +21,9 @@ private[akka] final case class WildcardTree[T](
       copy(data = Some(d))
     } else {
       val e = elems.next()
-      copy(children = children
-        .updated(e, children.get(e).getOrElse(WildcardTree()).insert(elems, d)))
+      copy(children = children.updated(
+        e,
+        children.get(e).getOrElse(WildcardTree()).insert(elems, d)))
     }
 
   @tailrec final def find(elems: Iterator[String]): WildcardTree[T] =

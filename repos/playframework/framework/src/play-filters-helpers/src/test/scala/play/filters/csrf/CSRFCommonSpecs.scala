@@ -374,8 +374,8 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
   }
 
   implicit def simpleFormWriteable: Writeable[Map[String, String]] =
-    Writeable.writeableOf_urlEncodedForm
-      .map[Map[String, String]](_.mapValues(v => Seq(v)))
+    Writeable.writeableOf_urlEncodedForm.map[Map[String, String]](
+      _.mapValues(v => Seq(v)))
   implicit def simpleFormContentType: ContentTypeOf[Map[String, String]] =
     ContentTypeOf[Map[String, String]](Some(ContentTypes.FORM))
 

@@ -285,7 +285,8 @@ object NonlinearMinimizer {
   def main(args: Array[String]) {
     if (args.length < 3) {
       println("Usage: ProjectedQuasiNewton n lambda beta")
-      println("Test NonlinearMinimizer with a quadratic function of dimenion n and m equalities with lambda beta for elasticNet")
+      println(
+        "Test NonlinearMinimizer with a quadratic function of dimenion n and m equalities with lambda beta for elasticNet")
       sys.exit(1)
     }
 

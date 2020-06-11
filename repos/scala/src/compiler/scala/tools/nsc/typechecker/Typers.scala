@@ -1461,8 +1461,10 @@ trait Typers
             if (settings.logImplicitConv)
               context.echo(
                 qual.pos,
-                "applied implicit conversion from %s to %s = %s"
-                  .format(qual.tpe, searchTemplate, coercion.symbol.defString))
+                "applied implicit conversion from %s to %s = %s".format(
+                  qual.tpe,
+                  searchTemplate,
+                  coercion.symbol.defString))
 
             typedQualifier(
               atPos(qual.pos)(new ApplyImplicitView(coercion, List(qual))))
@@ -4984,8 +4986,9 @@ trait Typers
                 if (isFullyDefined(pt))
                   context.owner.newAliasType(name, tree.pos) setInfo pt
                 else
-                  context.owner
-                    .newAbstractType(name, tree.pos) setInfo TypeBounds.empty
+                  context.owner.newAbstractType(
+                    name,
+                    tree.pos) setInfo TypeBounds.empty
               }
 
             if (name != tpnme.WILDCARD) namer.enterInScope(sym)

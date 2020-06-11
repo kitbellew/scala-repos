@@ -34,8 +34,9 @@ trait LocationLineManager {
 
   import self.caches._
 
-  private val syntheticProvider = SyntheticTypeComponentProvider.EP_NAME
-    .findExtension(classOf[ScalaSyntheticProvider])
+  private val syntheticProvider =
+    SyntheticTypeComponentProvider.EP_NAME.findExtension(
+      classOf[ScalaSyntheticProvider])
 
   def clearLocationLineCaches(): Unit = {
     customizedLocationsCache.clear()

@@ -136,7 +136,8 @@ class KryoTest extends WordSpec with Matchers {
         hllmon.apply(42),
         Monoid.sum(List(1, 2, 3, 4).map { hllmon(_) }),
         'hai
-      ).asInstanceOf[List[AnyRef]]
+      )
+        .asInstanceOf[List[AnyRef]]
       serializationRT(test) shouldBe test
       // HyperLogLogMonoid doesn't have a good equals. :(
       singleRT(new HyperLogLogMonoid(5)).bits shouldBe 5

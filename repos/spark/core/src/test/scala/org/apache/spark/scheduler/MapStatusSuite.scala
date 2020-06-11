@@ -78,7 +78,8 @@ class MapStatusSuite extends SparkFunSuite {
     assert(status.getSizeForBlock(2000) === 150L)
   }
 
-  test("HighlyCompressedMapStatus: estimated size should be the average non-empty block size") {
+  test(
+    "HighlyCompressedMapStatus: estimated size should be the average non-empty block size") {
     val sizes = Array.tabulate[Long](3000) { i => i.toLong }
     val avg = sizes.sum / sizes.count(_ != 0)
     val loc = BlockManagerId("a", "b", 10)

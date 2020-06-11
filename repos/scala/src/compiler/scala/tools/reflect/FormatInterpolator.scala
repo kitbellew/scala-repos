@@ -130,8 +130,9 @@ abstract class FormatInterpolator {
               c.error(errPoint, msg("unsupported"))
               s0
             } else {
-              currentRun.reporting
-                .deprecationWarning(errPoint, msg("deprecated"))
+              currentRun.reporting.deprecationWarning(
+                errPoint,
+                msg("deprecated"))
               try StringContext.treatEscapes(s0)
               catch escapeHatch
             }

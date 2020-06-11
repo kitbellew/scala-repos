@@ -614,7 +614,8 @@ private[akka] class ActorSystemImpl(
                 import System.err
                 err.print("Uncaught error from thread [")
                 err.print(thread.getName)
-                err.print("] shutting down JVM since 'akka.jvm-exit-on-fatal-error' is enabled for ActorSystem[")
+                err.print(
+                  "] shutting down JVM since 'akka.jvm-exit-on-fatal-error' is enabled for ActorSystem[")
                 err.print(name)
                 err.println("]")
                 cause.printStackTrace(System.err)

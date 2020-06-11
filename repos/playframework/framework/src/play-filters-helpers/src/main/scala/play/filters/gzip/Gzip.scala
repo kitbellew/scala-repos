@@ -385,8 +385,9 @@ object Gzip {
           _ <-
             if (crc != state.crc.getValue.asInstanceOf[Int])
               Error(
-                "CRC failed, was %X, expected %X"
-                  .format(state.crc.getValue.asInstanceOf[Int], crc),
+                "CRC failed, was %X, expected %X".format(
+                  state.crc.getValue.asInstanceOf[Int],
+                  crc),
                 Input.El(intToLittleEndian(crc)))
             else done()
           length <- readInt("Premature EOF before gzip total length", dummy)

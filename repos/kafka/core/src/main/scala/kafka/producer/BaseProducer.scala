@@ -73,8 +73,8 @@ class OldProducer(producerProps: Properties) extends BaseProducer {
     new ProducerConfig(producerProps))
 
   override def send(topic: String, key: Array[Byte], value: Array[Byte]) {
-    this.producer
-      .send(new KeyedMessage[Array[Byte], Array[Byte]](topic, key, value))
+    this.producer.send(
+      new KeyedMessage[Array[Byte], Array[Byte]](topic, key, value))
   }
 
   override def close() {

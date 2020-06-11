@@ -54,8 +54,8 @@ private[upgrade] object DeploymentPlanReverter {
 
     // We need to revert app changes first so that apps have already been deleted when we check
     // a group is empty and can be removed.
-    (revertAppChanges(newVersion, appChanges) _)
-      .andThen(revertGroupChanges(newVersion, groupChanges))
+    (revertAppChanges(newVersion, appChanges) _).andThen(
+      revertGroupChanges(newVersion, groupChanges))
   }
 
   /**

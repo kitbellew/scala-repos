@@ -308,8 +308,9 @@ abstract class ScalaTestingTestCase(
       executionEnvironmentBuilder.build,
       new ProgramRunner.Callback {
         def processStarted(descriptor: RunContentDescriptor) {
-          System
-            .setProperty("idea.dynamic.classpath", useDynamicClassPath.toString)
+          System.setProperty(
+            "idea.dynamic.classpath",
+            useDynamicClassPath.toString)
           disposeOnTearDown(new Disposable {
             def dispose() {
               descriptor.dispose()

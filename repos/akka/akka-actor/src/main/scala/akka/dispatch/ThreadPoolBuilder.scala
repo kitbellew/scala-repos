@@ -138,8 +138,8 @@ final case class ThreadPoolConfigBuilder(config: ThreadPoolConfig) {
 
   def withNewThreadPoolWithLinkedBlockingQueueWithCapacity(
       capacity: Int): ThreadPoolConfigBuilder =
-    this
-      .copy(config = config.copy(queueFactory = linkedBlockingQueue(capacity)))
+    this.copy(config =
+      config.copy(queueFactory = linkedBlockingQueue(capacity)))
 
   def withNewThreadPoolWithSynchronousQueueWithFairness(
       fair: Boolean): ThreadPoolConfigBuilder =

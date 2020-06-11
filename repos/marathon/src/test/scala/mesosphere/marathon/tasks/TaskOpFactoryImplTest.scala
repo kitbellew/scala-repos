@@ -101,7 +101,8 @@ class TaskOpFactoryImplTest
     taskOp shouldBe empty
   }
 
-  test("Resident app -> ReserveAndCreateVolumes fails because of insufficient disk resources") {
+  test(
+    "Resident app -> ReserveAndCreateVolumes fails because of insufficient disk resources") {
     Given("A resident app, an insufficient offer and no tasks")
     val f = new Fixture
     val app = f.residentApp
@@ -176,7 +177,8 @@ class TaskOpFactoryImplTest
   }
 
   test("Resident app -> None (enough launched tasks)") {
-    Given("A resident app, a matching offer with persistent volumes but already enough launched tasks")
+    Given(
+      "A resident app, a matching offer with persistent volumes but already enough launched tasks")
     val f = new Fixture
     val app = f.residentApp
     val usedVolumeId =

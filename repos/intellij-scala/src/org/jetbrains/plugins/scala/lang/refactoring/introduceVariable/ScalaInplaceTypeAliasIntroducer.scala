@@ -48,8 +48,10 @@ object ScalaInplaceTypeAliasIntroducer {
           val document = myEditor.getDocument
           if (revertInfo != null) {
             extensions.inWriteAction {
-              document
-                .replaceString(0, document.getTextLength, revertInfo.fileText)
+              document.replaceString(
+                0,
+                document.getTextLength,
+                revertInfo.fileText)
               PsiDocumentManager.getInstance(myProject).commitDocument(document)
             }
             val offset = revertInfo.caretOffset

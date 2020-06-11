@@ -270,8 +270,9 @@ class DefaultClientTest
         failureAccrual = { factory: ServiceFactory[Int, Int] =>
           FailureAccrualFactory.wrapper(
             statsReceiver,
-            FailureAccrualPolicy
-              .consecutiveFailures(6, Backoff.const(3.seconds)),
+            FailureAccrualPolicy.consecutiveFailures(
+              6,
+              Backoff.const(3.seconds)),
             name,
             DefaultLogger,
             failing,

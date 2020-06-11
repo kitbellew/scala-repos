@@ -298,8 +298,8 @@ private class ScriptTransformationWriterThread(
             if (scriptInputWriter != null) {
               scriptInputWriter.write(writable)
             } else {
-              prepareWritable(writable, ioschema.outputSerdeProps)
-                .write(dataOutputStream)
+              prepareWritable(writable, ioschema.outputSerdeProps).write(
+                dataOutputStream)
             }
           }
         }

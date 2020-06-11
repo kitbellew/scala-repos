@@ -32,7 +32,8 @@ class FormatterTest extends FunSuite {
     )
   }
 
-  test("add should handle putting recursive entries in an existing map if nothing's there") {
+  test(
+    "add should handle putting recursive entries in an existing map if nothing's there") {
     val actual = Formatter.add(Map.empty, Seq("it's", "very"), "big")
     val expected = Map("it's" -> Map("very" -> "big"))
     assert(actual == expected)

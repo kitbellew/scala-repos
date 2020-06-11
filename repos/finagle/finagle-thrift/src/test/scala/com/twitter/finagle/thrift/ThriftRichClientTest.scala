@@ -37,7 +37,8 @@ class ThriftRichClientTest
       mock[ServiceFactory[ThriftClientRequest, Array[Byte]]]
   }
 
-  test("ThriftRichClientTest newServiceIface takes dest String and stats scoping label arguments") {
+  test(
+    "ThriftRichClientTest newServiceIface takes dest String and stats scoping label arguments") {
     val captor = ArgumentCaptor.forClass(classOf[StatsReceiver])
     val mockBuilder = mock[ServiceIfaceBuilder[String]]
     doReturn("mockServiceIface")
@@ -54,7 +55,8 @@ class ThriftRichClientTest
     verify(client).newService("/s/tweetypie/tweetypie", "tweetypie_client")
   }
 
-  test("ThriftRichClientTest newServiceIface takes dest Name and stats scoping label arguments") {
+  test(
+    "ThriftRichClientTest newServiceIface takes dest Name and stats scoping label arguments") {
     val captor = ArgumentCaptor.forClass(classOf[StatsReceiver])
     val mockBuilder = mock[ServiceIfaceBuilder[String]]
     doReturn("mockServiceIface")

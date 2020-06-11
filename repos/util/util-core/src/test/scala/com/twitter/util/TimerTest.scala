@@ -60,7 +60,8 @@ class TimerTest
     verify(factory).apply()
   }
 
-  test("ReferenceCountingTimer stops the underlying timer when acquire count reaches 0") {
+  test(
+    "ReferenceCountingTimer stops the underlying timer when acquire count reaches 0") {
 
     val underlying = mock[Timer]
     val factory = mock[() => Timer]

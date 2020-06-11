@@ -98,8 +98,10 @@ class LeaderProxyFilterTest extends MarathonSpec {
     verify(leaderInfo, times(1)).currentLeaderHostPort()
     verify(request, atLeastOnce()).getRequestURI
     verify(request, atLeastOnce()).getQueryString
-    verify(forwarder, times(1))
-      .forward(new URL("http://otherhost:9999/test"), request, response)
+    verify(forwarder, times(1)).forward(
+      new URL("http://otherhost:9999/test"),
+      request,
+      response)
   }
 
   test("forward to leader with query string") {
@@ -140,11 +142,14 @@ class LeaderProxyFilterTest extends MarathonSpec {
     verify(leaderInfo, times(1)).currentLeaderHostPort()
     verify(request, atLeastOnce()).getRequestURI
     verify(request, atLeastOnce()).getQueryString
-    verify(forwarder, times(1))
-      .forward(new URL("https://otherhost:9999/test"), request, response)
+    verify(forwarder, times(1)).forward(
+      new URL("https://otherhost:9999/test"),
+      request,
+      response)
   }
 
-  test("successfully wait for consistent leadership info, then someone else is the leader") {
+  test(
+    "successfully wait for consistent leadership info, then someone else is the leader") {
     // When we have inconsistent leadership info
     init()
     when(leaderInfo.elected).thenReturn(false)
@@ -161,8 +166,10 @@ class LeaderProxyFilterTest extends MarathonSpec {
     // we pass that request down the chain
     verify(leaderInfo, times(4)).elected
     verify(leaderInfo, times(4)).currentLeaderHostPort()
-    verify(forwarder, times(1))
-      .forward(new URL("http://otherhost:9999/test"), request, response)
+    verify(forwarder, times(1)).forward(
+      new URL("http://otherhost:9999/test"),
+      request,
+      response)
     verify(request, atLeastOnce()).getRequestURI
     verify(request, atLeastOnce()).getQueryString
   }

@@ -54,8 +54,8 @@ private[persistence] class LocalSnapshotStore
     // This may help in situations where saving of a snapshot could not be completed because of a JVM crash.
     // Hence, an attempt to load that snapshot will fail but loading an older snapshot may succeed.
     //
-    val metadata = snapshotMetadatas(persistenceId, criteria).sorted
-      .takeRight(maxLoadAttempts)
+    val metadata = snapshotMetadatas(persistenceId, criteria).sorted.takeRight(
+      maxLoadAttempts)
     Future(load(metadata))(streamDispatcher)
   }
 

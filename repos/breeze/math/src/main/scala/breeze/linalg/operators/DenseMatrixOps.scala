@@ -305,8 +305,9 @@ trait DenseMatrixMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math
-                .max(math.min(A.rows, A.cols), nrhs))
+              math.min(A.rows, A.cols) + math.max(
+                math.min(A.rows, A.cols),
+                nrhs))
           else
             math.max(queryWork(0).toInt, 1)
         }
@@ -605,8 +606,9 @@ trait DenseMatrixFloatMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math
-                .max(math.min(A.rows, A.cols), nrhs))
+              math.min(A.rows, A.cols) + math.max(
+                math.min(A.rows, A.cols),
+                nrhs))
           else
             math.max(queryWork(0).toInt, 1)
         }

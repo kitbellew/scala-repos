@@ -200,8 +200,9 @@ trait RuntimeReducerEstimator extends HistoryReducerEstimator {
           def runtimeEstimationScheme = estimationScheme
           def historyService = history
         }
-        ReducerEstimatorStepStrategy.estimatorMonoid
-          .plus(inputScaledEstimator, basicEstimator)
+        ReducerEstimatorStepStrategy.estimatorMonoid.plus(
+          inputScaledEstimator,
+          basicEstimator)
       }
 
     combinedEstimator.estimateReducers(info)

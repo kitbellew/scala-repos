@@ -262,20 +262,20 @@ object Dag {
     }
 
     //start with the true tail
-    val (nodeToName, _) = (dag.tailN :: allTails(dag))
-      .foldLeft((Map[Node[P], String](), Set[String]())) {
-        case ((nodeToName, usedNames), curTail) =>
-          if (!nodeToName.contains(curTail)) {
-            val tailN = tryGetName("Tail", usedNames)
-            genNames(
-              curTail,
-              dag,
-              nodeToName + (curTail -> tailN),
-              usedNames + tailN)
-          } else {
-            (nodeToName, usedNames)
-          }
-      }
+    val (nodeToName, _) = (dag.tailN :: allTails(dag)).foldLeft(
+      (Map[Node[P], String](), Set[String]())) {
+      case ((nodeToName, usedNames), curTail) =>
+        if (!nodeToName.contains(curTail)) {
+          val tailN = tryGetName("Tail", usedNames)
+          genNames(
+            curTail,
+            dag,
+            nodeToName + (curTail -> tailN),
+            usedNames + tailN)
+        } else {
+          (nodeToName, usedNames)
+        }
+    }
 
     val nameToNode = nodeToName.map((t) => (t._2, t._1))
     dag.copy(nodeToName = nodeToName, nameToNode = nameToNode)

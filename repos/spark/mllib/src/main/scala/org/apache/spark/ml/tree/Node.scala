@@ -404,8 +404,8 @@ private[tree] object LearningNode {
     if (nodeIndex == 0) {
       throw new IllegalArgumentException(s"0 is not a valid node index.")
     } else {
-      java.lang.Integer
-        .numberOfTrailingZeros(java.lang.Integer.highestOneBit(nodeIndex))
+      java.lang.Integer.numberOfTrailingZeros(
+        java.lang.Integer.highestOneBit(nodeIndex))
     }
 
   /**

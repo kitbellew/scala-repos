@@ -35,6 +35,6 @@ abstract class AsyncRecovery extends SAsyncReplay with AsyncRecoveryPlugin {
   final def asyncReadHighestSequenceNr(
       persistenceId: String,
       fromSequenceNr: Long): Future[Long] =
-    doAsyncReadHighestSequenceNr(persistenceId, fromSequenceNr: Long)
-      .map(_.longValue)
+    doAsyncReadHighestSequenceNr(persistenceId, fromSequenceNr: Long).map(
+      _.longValue)
 }

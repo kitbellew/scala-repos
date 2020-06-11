@@ -119,8 +119,10 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
                 .toInterval(inBatches)
                 .get // by construction this is an interval, so this can't throw
             val toRead =
-              batchOps
-                .intersect(bInt, timeSpan) // No need to read more than this
+              batchOps.intersect(
+                bInt,
+                timeSpan
+              ) // No need to read more than this
             getKeys((toRead, mode)).right
               .map {
                 case ((available, outM), getFlow) =>

@@ -220,11 +220,12 @@ package scala.collection.immutable.redblacktree {
       for {
         from <- choose(0, iterator(tree).size)
         to <- choose(0, iterator(tree).size) suchThat (from <=)
-        optionalFrom <- oneOf(
-          Some(from),
-          None,
-          Some(from)
-        ) // Double Some(n) to get around a bug
+        optionalFrom <-
+          oneOf(
+            Some(from),
+            None,
+            Some(from)
+          ) // Double Some(n) to get around a bug
         optionalTo <-
           oneOf(Some(to), None, Some(to)) // Double Some(n) to get around a bug
       } yield (optionalFrom, optionalTo)

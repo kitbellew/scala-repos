@@ -109,8 +109,8 @@ object TimePathedSource extends java.io.Serializable {
       val valid = Option(path.getFileSystem(mode.conf).globStatus(path))
         .map(_.length > 0)
         .getOrElse(false)
-      logger
-        .debug("Tested input %s, Valid: %s. Conditions: Any files present, DateRange: %s"
+      logger.debug(
+        "Tested input %s, Valid: %s. Conditions: Any files present, DateRange: %s"
           .format(p, valid, desired))
       valid
     }

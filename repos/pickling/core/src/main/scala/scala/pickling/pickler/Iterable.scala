@@ -49,8 +49,9 @@ trait IterablePicklers {
         identity[Iterable[Any]]) { tpe =>
         TravPickler.oneArgumentTagExtractor(tpe)
       } _
-    currentRuntime.picklers
-      .registerPicklerUnpicklerGenerator("scala.collection.Iterable", generator)
+    currentRuntime.picklers.registerPicklerUnpicklerGenerator(
+      "scala.collection.Iterable",
+      generator)
   }
 }
 

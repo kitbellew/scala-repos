@@ -104,8 +104,9 @@ class TaskOpFactoryImpl @Inject() (config: MarathonConf, clock: Clock)
               ResourceSelector(
                 config.mesosRole.get.toSet,
                 reserved = true,
-                requiredLabels = TaskLabels
-                  .labelsForTask(request.frameworkId, volumeMatch.task)
+                requiredLabels = TaskLabels.labelsForTask(
+                  request.frameworkId,
+                  volumeMatch.task)
               )
             )
 

@@ -91,7 +91,8 @@ class StackRegistryTest extends FunSuite {
     }
   }
 
-  test("StackRegistry keeps track of the number of GlobalRegistry entries it enters") {
+  test(
+    "StackRegistry keeps track of the number of GlobalRegistry entries it enters") {
     val reg = new StackRegistry { def registryName: String = "test" }
     val stk = newStack()
     val params =

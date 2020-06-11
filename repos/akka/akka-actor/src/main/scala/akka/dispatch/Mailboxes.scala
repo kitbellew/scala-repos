@@ -48,8 +48,9 @@ private[akka] class Mailboxes(
       envelope.message match {
         case _: DeadLetter ⇒ // actor subscribing to DeadLetter, drop it
         case msg ⇒
-          deadLetters
-            .tell(DeadLetter(msg, envelope.sender, receiver), envelope.sender)
+          deadLetters.tell(
+            DeadLetter(msg, envelope.sender, receiver),
+            envelope.sender)
       }
     def dequeue() = null
     def hasMessages = false

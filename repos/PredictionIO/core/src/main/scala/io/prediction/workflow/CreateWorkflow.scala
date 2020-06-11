@@ -241,14 +241,18 @@ object CreateWorkflow extends Logging {
         batch = wfc.batch,
         env = pioEnvVars,
         sparkConf = workflowParams.sparkEnv,
-        dataSourceParams = JsonExtractor
-          .paramToJson(wfc.jsonExtractor, engineParams.dataSourceParams),
-        preparatorParams = JsonExtractor
-          .paramToJson(wfc.jsonExtractor, engineParams.preparatorParams),
-        algorithmsParams = JsonExtractor
-          .paramsToJson(wfc.jsonExtractor, engineParams.algorithmParamsList),
-        servingParams = JsonExtractor
-          .paramToJson(wfc.jsonExtractor, engineParams.servingParams)
+        dataSourceParams = JsonExtractor.paramToJson(
+          wfc.jsonExtractor,
+          engineParams.dataSourceParams),
+        preparatorParams = JsonExtractor.paramToJson(
+          wfc.jsonExtractor,
+          engineParams.preparatorParams),
+        algorithmsParams = JsonExtractor.paramsToJson(
+          wfc.jsonExtractor,
+          engineParams.algorithmParamsList),
+        servingParams = JsonExtractor.paramToJson(
+          wfc.jsonExtractor,
+          engineParams.servingParams)
       )
 
       val engineInstanceId =

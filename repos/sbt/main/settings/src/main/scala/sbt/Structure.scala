@@ -832,8 +832,8 @@ object Scoped {
   final class Apply4[A, B, C, D](
       t4: (Initialize[A], Initialize[B], Initialize[C], Initialize[D])) {
     def apply[T](z: (A, B, C, D) => T) =
-      Def
-        .app[AList.T4K[A, B, C, D]#l, T](t4)(z.tupled)(AList.tuple4[A, B, C, D])
+      Def.app[AList.T4K[A, B, C, D]#l, T](t4)(z.tupled)(
+        AList.tuple4[A, B, C, D])
     def identity = apply(mkTuple4)
   }
   final class Apply5[A, B, C, D, E](

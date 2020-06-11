@@ -186,8 +186,9 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
       WorksheetFileHook.this.initTopComponent(file, run = true)
       loadEvaluationResult(source, file)
 
-      WorksheetAutoRunner
-        .getInstance(source.getProject) addListener doc(source, file)
+      WorksheetAutoRunner.getInstance(source.getProject) addListener doc(
+        source,
+        file)
     }
 
     private def loadEvaluationResult(

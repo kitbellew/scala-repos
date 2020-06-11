@@ -476,8 +476,9 @@ private[ml] object RandomForest extends Logging {
         baggedPoint: BaggedPoint[TreePoint]): Array[DTStatsAggregator] = {
       treeToNodeToIndexInfo.foreach {
         case (treeIndex, nodeIndexToInfo) =>
-          val nodeIndex = topNodes(treeIndex)
-            .predictImpl(baggedPoint.datum.binnedFeatures, splits)
+          val nodeIndex = topNodes(treeIndex).predictImpl(
+            baggedPoint.datum.binnedFeatures,
+            splits)
           nodeBinSeqOp(
             treeIndex,
             nodeIndexToInfo.getOrElse(nodeIndex, null),

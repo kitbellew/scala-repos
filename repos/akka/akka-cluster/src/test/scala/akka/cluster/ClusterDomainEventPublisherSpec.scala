@@ -77,8 +77,9 @@ class ClusterDomainEventPublisherSpec
     memberSubscriber = TestProbe()
     system.eventStream.subscribe(memberSubscriber.ref, classOf[MemberEvent])
     system.eventStream.subscribe(memberSubscriber.ref, classOf[LeaderChanged])
-    system.eventStream
-      .subscribe(memberSubscriber.ref, ClusterShuttingDown.getClass)
+    system.eventStream.subscribe(
+      memberSubscriber.ref,
+      ClusterShuttingDown.getClass)
 
     publisher = system.actorOf(Props[ClusterDomainEventPublisher])
     publisher ! PublishChanges(g0)

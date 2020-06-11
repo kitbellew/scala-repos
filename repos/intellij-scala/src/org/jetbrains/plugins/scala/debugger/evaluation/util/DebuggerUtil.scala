@@ -377,8 +377,9 @@ object DebuggerUtil {
     def getDisplayName(debugProcess: DebugProcessImpl): String = {
       ApplicationManager.getApplication.runReadAction(new Computable[String] {
         def compute: String = {
-          JVMNameUtil
-            .getSourcePositionClassDisplayName(debugProcess, sourcePosition)
+          JVMNameUtil.getSourcePositionClassDisplayName(
+            debugProcess,
+            sourcePosition)
         }
       })
     }

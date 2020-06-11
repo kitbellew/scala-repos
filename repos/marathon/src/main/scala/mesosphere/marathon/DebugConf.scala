@@ -80,8 +80,9 @@ class DebugModule(conf: DebugConf) extends AbstractModule {
     override def invoke(in: MethodInvocation): AnyRef = {
       val className = metrics.get.className(in.getThis.getClass)
       val logger = LoggerFactory.getLogger(className)
-      val method = s"""$className.${in.getMethod.getName}(${in.getArguments
-        .mkString(", ")})"""
+      val method =
+        s"""$className.${in.getMethod.getName}(${in.getArguments.mkString(
+          ", ")})"""
       logger.trace(s">>> $method")
       val result = in.proceed()
       logger.trace(s"<<< $method")

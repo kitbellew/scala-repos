@@ -438,8 +438,9 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
           reducer.append(
             reducer.append(
               reducer.append(
-                reducer
-                  .append(reducer.append(reducer.unit(a1: A), a2: A), a3: A),
+                reducer.append(
+                  reducer.append(reducer.unit(a1: A), a2: A),
+                  a3: A),
                 a4: A),
               a5: A),
             a6: A),
@@ -2749,8 +2750,9 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                                 reducer.append(
                                   reducer.append(
                                     reducer.append(
-                                      reducer
-                                        .append(reducer.unit(a1: A), a2: A),
+                                      reducer.append(
+                                        reducer.unit(a1: A),
+                                        a2: A),
                                       a3: A),
                                     a4: A),
                                   a5: A),
@@ -3328,8 +3330,9 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                                   reducer.append(
                                     reducer.append(
                                       reducer.append(
-                                        reducer
-                                          .append(reducer.unit(a1: A), a2: A),
+                                        reducer.append(
+                                          reducer.unit(a1: A),
+                                          a2: A),
                                         a3: A),
                                       a4: A),
                                     a5: A),
@@ -3956,8 +3959,9 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                                     reducer.append(
                                       reducer.append(
                                         reducer.append(
-                                          reducer
-                                            .append(reducer.unit(a1: A), a2: A),
+                                          reducer.append(
+                                            reducer.unit(a1: A),
+                                            a2: A),
                                           a3: A),
                                         a4: A),
                                       a5: A),

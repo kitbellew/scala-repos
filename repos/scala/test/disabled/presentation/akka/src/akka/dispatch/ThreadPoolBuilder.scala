@@ -126,8 +126,9 @@ case class ThreadPoolConfigDispatcherBuilder(
 
   def withNewThreadPoolWithCustomBlockingQueue(
       newQueueFactory: QueueFactory): ThreadPoolConfigDispatcherBuilder =
-    this.copy(config = config
-      .copy(flowHandler = defaultFlowHandler, queueFactory = newQueueFactory))
+    this.copy(config = config.copy(
+      flowHandler = defaultFlowHandler,
+      queueFactory = newQueueFactory))
 
   def withNewThreadPoolWithCustomBlockingQueue(
       queue: BlockingQueue[Runnable]): ThreadPoolConfigDispatcherBuilder =

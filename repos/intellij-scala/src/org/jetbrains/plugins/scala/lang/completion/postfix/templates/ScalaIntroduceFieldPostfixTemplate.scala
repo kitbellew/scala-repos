@@ -23,8 +23,9 @@ class ScalaIntroduceFieldPostfixTemplate
       expression: PsiElement,
       editor: Editor): Unit = {
     val range = expression.getTextRange
-    editor.getSelectionModel
-      .setSelection(range.getStartOffset, range.getEndOffset)
+    editor.getSelectionModel.setSelection(
+      range.getStartOffset,
+      range.getEndOffset)
     new ScalaIntroduceFieldFromExpressionHandler().invoke(
       expression.getProject,
       editor,

@@ -143,7 +143,8 @@ object ContentFactory {
           new Button {
             thisButton =>
             text = "Save SBT Project..."
-            tooltip = "Save sample code in a new project that can be build and run with SBT"
+            tooltip =
+              "Save sample code in a new project that can be build and run with SBT"
             onAction = (ae: ActionEvent) =>
               try {
                 val initialDir = SBTProjectBuilder.parentDir
@@ -155,8 +156,9 @@ object ContentFactory {
                   Option(fileChooser.showDialog(thisButton.scene.window()))
                 result match {
                   case Some(projectDir) =>
-                    SBTProjectBuilder
-                      .createSampleProject(projectDir, exampleInfo)
+                    SBTProjectBuilder.createSampleProject(
+                      projectDir,
+                      exampleInfo)
                     SBTProjectBuilder.parentDir =
                       projectDir.getCanonicalFile.getParentFile
                   case _ =>

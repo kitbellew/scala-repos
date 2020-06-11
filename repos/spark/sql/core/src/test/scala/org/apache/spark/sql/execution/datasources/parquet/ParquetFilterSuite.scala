@@ -400,7 +400,8 @@ class ParquetFilterSuite
     }
   }
 
-  test("SPARK-10829: Filter combine partition key and attribute doesn't work in DataSource scan") {
+  test(
+    "SPARK-10829: Filter combine partition key and attribute doesn't work in DataSource scan") {
     import testImplicits._
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
@@ -419,7 +420,8 @@ class ParquetFilterSuite
     }
   }
 
-  test("SPARK-12231: test the filter and empty project in partitioned DataSource scan") {
+  test(
+    "SPARK-12231: test the filter and empty project in partitioned DataSource scan") {
     import testImplicits._
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
@@ -529,11 +531,11 @@ class ParquetFilterSuite
         // The fields "s.a" and "s.c" only exist in one Parquet file.
         val field = dfStruct3.schema("s").dataType.asInstanceOf[StructType]
         assert(
-          field("a").metadata
-            .getBoolean(StructType.metadataKeyForOptionalField))
+          field("a").metadata.getBoolean(
+            StructType.metadataKeyForOptionalField))
         assert(
-          field("c").metadata
-            .getBoolean(StructType.metadataKeyForOptionalField))
+          field("c").metadata.getBoolean(
+            StructType.metadataKeyForOptionalField))
 
         val pathSix = s"${dir.getCanonicalPath}/table6"
         dfStruct3.write.parquet(pathSix)

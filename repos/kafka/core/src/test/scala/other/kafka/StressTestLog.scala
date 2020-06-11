@@ -116,8 +116,9 @@ object StressTestLog {
               "We should either read nothing or the message we asked for.")
             require(
               MessageSet.entrySize(first.message) == read.sizeInBytes,
-              "Expected %d but got %d."
-                .format(MessageSet.entrySize(first.message), read.sizeInBytes))
+              "Expected %d but got %d.".format(
+                MessageSet.entrySize(first.message),
+                read.sizeInBytes))
             offset += 1
           }
           case _ =>

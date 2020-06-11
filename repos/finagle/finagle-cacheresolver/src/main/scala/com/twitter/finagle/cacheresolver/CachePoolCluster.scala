@@ -205,8 +205,10 @@ object CachePoolCluster {
       zkClient: ZooKeeperClient
   ) =
     new ZookeeperServerSetCluster(
-      ServerSets
-        .create(zkClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)
+      ServerSets.create(
+        zkClient,
+        ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
+        zkPath)
     ) map {
       case addr: InetSocketAddress =>
         CacheNode(addr.getHostName, addr.getPort, 1)

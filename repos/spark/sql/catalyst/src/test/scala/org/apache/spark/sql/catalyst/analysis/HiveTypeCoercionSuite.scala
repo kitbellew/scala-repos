@@ -33,8 +33,9 @@ class HiveTypeCoercionSuite extends PlanTest {
         from: DataType,
         to: AbstractDataType,
         expected: DataType): Unit = {
-      val got = HiveTypeCoercion.ImplicitTypeCasts
-        .implicitCast(Literal.create(null, from), to)
+      val got = HiveTypeCoercion.ImplicitTypeCasts.implicitCast(
+        Literal.create(null, from),
+        to)
       assert(
         got.map(_.dataType) == Option(expected),
         s"Failed to cast $from to $to")
@@ -130,8 +131,9 @@ class HiveTypeCoercionSuite extends PlanTest {
 
   test("ineligible implicit type cast") {
     def shouldNotCast(from: DataType, to: AbstractDataType): Unit = {
-      val got = HiveTypeCoercion.ImplicitTypeCasts
-        .implicitCast(Literal.create(null, from), to)
+      val got = HiveTypeCoercion.ImplicitTypeCasts.implicitCast(
+        Literal.create(null, from),
+        to)
       assert(
         got.isEmpty,
         s"Should not be able to cast $from to $to, but got $got")

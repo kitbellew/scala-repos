@@ -28,7 +28,8 @@ import org.apache.spark.sql.catalyst.plans.physical.{
 }
 
 class PartitioningSuite extends SparkFunSuite {
-  test("HashPartitioning compatibility should be sensitive to expression ordering (SPARK-9785)") {
+  test(
+    "HashPartitioning compatibility should be sensitive to expression ordering (SPARK-9785)") {
     val expressions = Seq(Literal(2), Literal(3))
     // Consider two HashPartitionings that have the same _set_ of hash expressions but which are
     // created with different orderings of those expressions:

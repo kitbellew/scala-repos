@@ -969,7 +969,8 @@ trait Types
         else if (sym isLess btssym) hi = mid - 1
         else if (btssym isLess sym) lo = mid + 1
         else
-          abort("sym is neither `sym == btssym`, `sym isLess btssym` nor `btssym isLess sym`")
+          abort(
+            "sym is neither `sym == btssym`, `sym isLess btssym` nor `btssym isLess sym`")
       }
       -1
     }
@@ -3974,7 +3975,7 @@ trait Types
       case _         => refinedType(tps, commonOwner(tps))
     }
 
-  /** This implementation to merge parents was checked in in commented-out
+  /** ** This implementation to merge parents was checked in in commented-out
     *      form and has languished unaltered for five years.  I think we should
     *      use it or lose it.
     *
@@ -4541,7 +4542,7 @@ trait Types
     *  types which are used internally in type applications and
     *  types which are not.
     */
-  /** Not used right now, but kept around to document which Types
+  /** ** Not used right now, but kept around to document which Types
     *    land in which bucket.
     *  private def isInternalTypeNotUsedAsTypeArg(tp: Type): Boolean = tp match {
     *    case AntiPolyType(pre, targs)            => true

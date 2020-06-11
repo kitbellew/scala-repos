@@ -30,13 +30,17 @@ class ScalaTestTestFramework extends AbstractTestFramework {
       scalaVersion: Option[String]): Seq[String] =
     scalaVersion match {
       case Some(v) if v.startsWith("2.11") =>
-        Seq("\"org.scalatest\" % \"scalatest_2.11\" % \"latest.integration\" % \"test\"")
+        Seq(
+          "\"org.scalatest\" % \"scalatest_2.11\" % \"latest.integration\" % \"test\"")
       case Some(v) if v.startsWith("2.10") =>
-        Seq("\"org.scalatest\" % \"scalatest_2.10\" % \"latest.integration\" % \"test\"")
+        Seq(
+          "\"org.scalatest\" % \"scalatest_2.10\" % \"latest.integration\" % \"test\"")
       case Some(v) if v.startsWith("2.9") =>
-        Seq("\"org.scalatest\" % \"scalatest_2.9\" % \"latest.integration\" % \"test\"")
+        Seq(
+          "\"org.scalatest\" % \"scalatest_2.9\" % \"latest.integration\" % \"test\"")
       case _ =>
-        Seq("\"org.scalatest\" %% \"scalatest\" % \"latest.integration\" % \"test\"")
+        Seq(
+          "\"org.scalatest\" %% \"scalatest\" % \"latest.integration\" % \"test\"")
     }
 
   override protected def getLibraryResolvers(

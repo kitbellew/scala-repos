@@ -124,8 +124,8 @@ private[deploy] object RPackageUtils extends Logging {
       env.put("SPARKR_PACKAGE_DIR", rPackageDir.mkString(","))
       env.put(
         "R_PROFILE_USER",
-        Seq(rPackageDir(0), "SparkR", "profile", "general.R")
-          .mkString(File.separator))
+        Seq(rPackageDir(0), "SparkR", "profile", "general.R").mkString(
+          File.separator))
 
       val process = builder.start()
       new RedirectThread(

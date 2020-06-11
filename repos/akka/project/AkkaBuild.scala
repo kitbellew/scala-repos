@@ -330,7 +330,8 @@ object AkkaBuild extends Build {
   lazy val httpMarshallersScala = Project(
     id = "akka-http-marshallers-scala-experimental",
     base = file("akka-http-marshallers-scala")
-  ).settings(parentSettings: _*)
+  )
+    .settings(parentSettings: _*)
     .aggregate(httpSprayJson, httpXml)
 
   lazy val httpXml =
@@ -342,7 +343,8 @@ object AkkaBuild extends Build {
   lazy val httpMarshallersJava = Project(
     id = "akka-http-marshallers-java-experimental",
     base = file("akka-http-marshallers-java")
-  ).settings(parentSettings: _*)
+  )
+    .settings(parentSettings: _*)
     .aggregate(httpJackson)
 
   lazy val httpJackson =
@@ -478,7 +480,8 @@ object AkkaBuild extends Build {
           sampleDistributedDataScala,
           sampleDistributedDataJava
         )
-  ).settings(samplesSettings: _*)
+  )
+    .settings(samplesSettings: _*)
     .disablePlugins(MimaPlugin)
 
   lazy val sampleCamelJava = Sample.project("akka-sample-camel-java")
@@ -517,41 +520,43 @@ object AkkaBuild extends Build {
   lazy val osgiDiningHakkersSampleMavenTest = Project(
     id = "akka-sample-osgi-dining-hakkers-maven-test",
     base = file("akka-samples/akka-sample-osgi-dining-hakkers-maven-test")
-  ).settings(
-    publishArtifact := false,
-    // force publication of artifacts to local maven repo, so latest versions can be used when running maven tests
-    compile in Compile <<=
-      (
-        publishM2 in actor,
-        publishM2 in testkit,
-        publishM2 in remote,
-        publishM2 in cluster,
-        publishM2 in osgi,
-        publishM2 in slf4j,
-        publishM2 in persistence,
-        compile in Compile) map
-        ((_, _, _, _, _, _, _, c) => c),
-    test in Test ~= { x =>
-      {
-        def executeMvnCommands(failureMessage: String, commands: String*) = {
-          if ({
-            List(
-              "sh",
-              "-c",
-              commands.mkString(
-                "cd akka-samples/akka-sample-osgi-dining-hakkers; mvn ",
-                " ",
-                "")) !
-          } != 0)
-            throw new Exception(failureMessage)
+  )
+    .settings(
+      publishArtifact := false,
+      // force publication of artifacts to local maven repo, so latest versions can be used when running maven tests
+      compile in Compile <<=
+        (
+          publishM2 in actor,
+          publishM2 in testkit,
+          publishM2 in remote,
+          publishM2 in cluster,
+          publishM2 in osgi,
+          publishM2 in slf4j,
+          publishM2 in persistence,
+          compile in Compile) map
+          ((_, _, _, _, _, _, _, c) => c),
+      test in Test ~= { x =>
+        {
+          def executeMvnCommands(failureMessage: String, commands: String*) = {
+            if ({
+              List(
+                "sh",
+                "-c",
+                commands.mkString(
+                  "cd akka-samples/akka-sample-osgi-dining-hakkers; mvn ",
+                  " ",
+                  "")) !
+            } != 0)
+              throw new Exception(failureMessage)
+          }
+          executeMvnCommands(
+            "Osgi sample Dining hakkers test failed",
+            "clean",
+            "install")
         }
-        executeMvnCommands(
-          "Osgi sample Dining hakkers test failed",
-          "clean",
-          "install")
       }
-    }
-  ).settings(dontPublishSettings: _*)
+    )
+    .settings(dontPublishSettings: _*)
 
   val dontPublishSettings = Seq(
     publishSigned := (),

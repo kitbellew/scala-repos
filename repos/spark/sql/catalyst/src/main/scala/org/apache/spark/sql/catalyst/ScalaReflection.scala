@@ -929,8 +929,9 @@ trait ScalaReflection {
     val formalTypeArgs = tpe.typeSymbol.asClass.typeParams
     val TypeRef(_, _, actualTypeArgs) = tpe
     constructParams(tpe).map { p =>
-      p.name.toString -> p.typeSignature
-        .substituteTypes(formalTypeArgs, actualTypeArgs)
+      p.name.toString -> p.typeSignature.substituteTypes(
+        formalTypeArgs,
+        actualTypeArgs)
     }
   }
 

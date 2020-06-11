@@ -326,8 +326,9 @@ class RowMatrix @Since("1.0.0") (
 
     // Warn at the end of the run as well, for increased visibility.
     if (computeMode == SVDMode.DistARPACK && rows.getStorageLevel == StorageLevel.NONE) {
-      logWarning("The input data was not directly cached, which may hurt performance if its"
-        + " parent RDDs are also uncached.")
+      logWarning(
+        "The input data was not directly cached, which may hurt performance if its"
+          + " parent RDDs are also uncached.")
     }
 
     val s = Vectors.dense(Arrays.copyOfRange(sigmas.data, 0, sk))

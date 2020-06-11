@@ -51,7 +51,8 @@ class ModelValidationTest
     successfulResult.isSuccess should be(true)
   }
 
-  test("Model validation should catch new apps that conflict with service ports in existing apps") {
+  test(
+    "Model validation should catch new apps that conflict with service ports in existing apps") {
     val existingApp = createServicePortApp("/app1".toPath, 3200)
     val conflictingApp = createServicePortApp("/app2".toPath, 3200)
 
@@ -66,7 +67,8 @@ class ModelValidationTest
       true)
   }
 
-  test("Model validation should allow new apps that do not conflict with service ports in existing apps") {
+  test(
+    "Model validation should allow new apps that do not conflict with service ports in existing apps") {
 
     val existingApp = createServicePortApp("/app1".toPath, 3200)
     val conflictingApp = createServicePortApp("/app2".toPath, 3201)
@@ -93,7 +95,8 @@ class ModelValidationTest
       true)
   }
 
-  test("Multiple errors within one field of a validator should be grouped into one array") {
+  test(
+    "Multiple errors within one field of a validator should be grouped into one array") {
     val empty = ImportantTitle("")
 
     validate(empty) match {

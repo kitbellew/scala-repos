@@ -114,8 +114,8 @@ object JavaToScala {
         )
       case e: PsiExpressionListStatement =>
         ExpressionListStatement(
-          e.getExpressionList.getExpressions
-            .map(convertPsiToIntermdeiate(_, externalProperties)))
+          e.getExpressionList.getExpressions.map(
+            convertPsiToIntermdeiate(_, externalProperties)))
       case d: PsiDeclarationStatement =>
         ExpressionListStatement(
           d.getDeclaredElements.map(
@@ -123,8 +123,8 @@ object JavaToScala {
       case b: PsiBlockStatement =>
         convertPsiToIntermdeiate(b.getCodeBlock, externalProperties)
       case s: PsiSynchronizedStatement =>
-        val lock = Option(s.getLockExpression)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val lock = Option(s.getLockExpression).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         val body =
           Option(s.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
         SynchronizedStatement(lock, body)
@@ -134,27 +134,27 @@ object JavaToScala {
       case t: PsiTypeParameter =>
         TypeParameterConstruction(
           t.getName,
-          t.getExtendsList.getReferenceElements
-            .map(convertPsiToIntermdeiate(_, externalProperties)))
+          t.getExtendsList.getReferenceElements.map(
+            convertPsiToIntermdeiate(_, externalProperties)))
       case i: PsiIfStatement =>
-        val condition = Option(i.getCondition)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
-        val thenBranch = Option(i.getThenBranch)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
-        val elseBranch = Option(i.getElseBranch)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val condition = Option(i.getCondition).map(
+          convertPsiToIntermdeiate(_, externalProperties))
+        val thenBranch = Option(i.getThenBranch).map(
+          convertPsiToIntermdeiate(_, externalProperties))
+        val elseBranch = Option(i.getElseBranch).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         IfStatement(condition, thenBranch, elseBranch)
       case c: PsiConditionalExpression =>
-        val condition = Option(c.getCondition)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
-        val thenBranch = Option(c.getThenExpression)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
-        val elseBranch = Option(c.getElseExpression)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val condition = Option(c.getCondition).map(
+          convertPsiToIntermdeiate(_, externalProperties))
+        val thenBranch = Option(c.getThenExpression).map(
+          convertPsiToIntermdeiate(_, externalProperties))
+        val elseBranch = Option(c.getElseExpression).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         IfStatement(condition, thenBranch, elseBranch)
       case w: PsiWhileStatement =>
-        val condition = Option(w.getCondition)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val condition = Option(w.getCondition).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         val body =
           Option(w.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
         WhileStatement(
@@ -164,8 +164,8 @@ object JavaToScala {
           None,
           WhileStatement.PRE_TEST_LOOP)
       case w: PsiDoWhileStatement =>
-        val condition = Option(w.getCondition)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val condition = Option(w.getCondition).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         val body =
           Option(w.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
         WhileStatement(
@@ -175,8 +175,8 @@ object JavaToScala {
           None,
           WhileStatement.POST_TEST_LOOP)
       case f: PsiForStatement =>
-        val initialization = Option(f.getInitialization)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val initialization = Option(f.getInitialization).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         val condition = Some(f.getCondition match {
           case empty: PsiEmptyStatement => LiteralExpression("true")
           case null                     => LiteralExpression("true")
@@ -184,8 +184,8 @@ object JavaToScala {
         })
         val body =
           Option(f.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
-        val update = Option(f.getUpdate)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val update = Option(f.getUpdate).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         WhileStatement(
           initialization,
           condition,
@@ -193,24 +193,24 @@ object JavaToScala {
           update,
           WhileStatement.PRE_TEST_LOOP)
       case a: PsiAssertStatement =>
-        val condition = Option(a.getAssertCondition)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
-        val description = Option(a.getAssertDescription)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val condition = Option(a.getAssertCondition).map(
+          convertPsiToIntermdeiate(_, externalProperties))
+        val description = Option(a.getAssertDescription).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         AssertStatement(condition, description)
       case s: PsiSwitchLabelStatement =>
         val caseValue =
           if (s.isDefaultCase)
             Some(LiteralExpression("_"))
           else
-            Option(s.getCaseValue)
-              .map(convertPsiToIntermdeiate(_, externalProperties))
+            Option(s.getCaseValue).map(
+              convertPsiToIntermdeiate(_, externalProperties))
         SwitchLabelStatement(
           caseValue,
           ScalaPsiUtil.functionArrow(s.getProject))
       case s: PsiSwitchStatement =>
-        val expr = Option(s.getExpression)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val expr = Option(s.getExpression).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         val body =
           Option(s.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
         SwitchStatemtnt(expr, body)
@@ -223,8 +223,8 @@ object JavaToScala {
         val isJavaCollection =
           if (tp.isEmpty) true else !tp.get.isInstanceOf[PsiArrayType]
 
-        val iteratedValue = Option(f.getIteratedValue)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val iteratedValue = Option(f.getIteratedValue).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         val body =
           Option(f.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
         ForeachStatement(
@@ -233,16 +233,16 @@ object JavaToScala {
           body,
           isJavaCollection)
       case r: PsiReferenceExpression =>
-        val args = Option(r.getParameterList)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val args = Option(r.getParameterList).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         val refName =
           if (externalProperties.isInstanceOf[WithReferenceExpression]) {
             fieldParamaterMap.getOrElse(r.getReferenceName, r.getReferenceName)
           } else r.getReferenceName
 
         if (r.getQualifierExpression != null) {
-          val t = Option(r.getQualifierExpression)
-            .map(convertPsiToIntermdeiate(_, externalProperties))
+          val t = Option(r.getQualifierExpression).map(
+            convertPsiToIntermdeiate(_, externalProperties))
           return JavaCodeReferenceStatement(t, args, refName)
         } else {
           r.resolve() match {
@@ -263,10 +263,10 @@ object JavaToScala {
 
         JavaCodeReferenceStatement(None, args, refName)
       case p: PsiJavaCodeReferenceElement =>
-        val qualifier = Option(p.getQualifier)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
-        val args = Option(p.getParameterList)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val qualifier = Option(p.getQualifier).map(
+          convertPsiToIntermdeiate(_, externalProperties))
+        val args = Option(p.getParameterList).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         JavaCodeReferenceStatement(qualifier, args, p.getReferenceName)
       case be: PsiBinaryExpression =>
         def isOk: Boolean = {
@@ -364,12 +364,12 @@ object JavaToScala {
         }
       case t: PsiThisExpression =>
         ThisExpression(
-          Option(t.getQualifier)
-            .map(convertPsiToIntermdeiate(_, externalProperties)))
+          Option(t.getQualifier).map(
+            convertPsiToIntermdeiate(_, externalProperties)))
       case s: PsiSuperExpression =>
         SuperExpression(
-          Option(s.getQualifier)
-            .map(convertPsiToIntermdeiate(_, externalProperties)))
+          Option(s.getQualifier).map(
+            convertPsiToIntermdeiate(_, externalProperties)))
       case e: PsiExpressionList =>
         ExpressionList(
           e.getExpressions.map(convertPsiToIntermdeiate(_, externalProperties)))
@@ -379,8 +379,8 @@ object JavaToScala {
           classOf[PsiCodeBlock],
           classOf[PsiBlockStatement])
         val needVar = if (parent == null) false else isVar(l, parent)
-        val initalizer = Option(l.getInitializer)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val initalizer = Option(l.getInitializer).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         LocalVariable(
           handleModifierList(l),
           l.getName,
@@ -390,8 +390,8 @@ object JavaToScala {
       case f: PsiField =>
         val modifiers = handleModifierList(f)
         val needVar = isVar(f, f.getContainingClass)
-        val initalizer = Option(f.getInitializer)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val initalizer = Option(f.getInitializer).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         FieldConstruction(
           modifiers,
           f.getName,
@@ -416,8 +416,8 @@ object JavaToScala {
                         convertPsiToIntermdeiate(_, externalProperties))))
             }
           } else {
-            Option(m.getBody)
-              .map(convertPsiToIntermdeiate(_, externalProperties))
+            Option(m.getBody).map(
+              convertPsiToIntermdeiate(_, externalProperties))
           }
         }
 
@@ -446,8 +446,8 @@ object JavaToScala {
         }
       case c: PsiClass => createClass(c, externalProperties)
       case p: PsiParenthesizedExpression =>
-        val expr = Option(p.getExpression)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val expr = Option(p.getExpression).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         ParenthesizedExpression(expr)
       case v: PsiArrayInitializerMemberValue =>
         ArrayInitializer(
@@ -483,8 +483,8 @@ object JavaToScala {
         val inAnnotation =
           PsiTreeUtil.getParentOfType(annot, classOf[PsiAnnotation]) != null
 
-        val name = Option(annot.getNameReferenceElement)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val name = Option(annot.getNameReferenceElement).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         AnnotaionConstruction(inAnnotation, attrResult.toSeq, name)
       case p: PsiParameter =>
         val modifiers = handleModifierList(p)
@@ -522,8 +522,8 @@ object JavaToScala {
         if (n.getArrayInitializer != null) {
           NewExpression(
             mtype,
-            n.getArrayInitializer.getInitializers
-              .map(convertPsiToIntermdeiate(_, externalProperties)),
+            n.getArrayInitializer.getInitializers.map(
+              convertPsiToIntermdeiate(_, externalProperties)),
             withArrayInitalizer = true)
         } else if (n.getArrayDimensions.nonEmpty) {
           NewExpression(
@@ -613,8 +613,8 @@ object JavaToScala {
             "continue " + c.getLabelIdentifier.getText + " //todo: continue is not supported")
         else NotSupported(None, "continue //todo: continue is not supported")
       case s: PsiLabeledStatement =>
-        val statements = Option(s.getStatement)
-          .map(convertPsiToIntermdeiate(_, externalProperties))
+        val statements = Option(s.getStatement).map(
+          convertPsiToIntermdeiate(_, externalProperties))
         NotSupported(
           statements,
           s.getLabelIdentifier.getText + " //todo: labels is not supported")

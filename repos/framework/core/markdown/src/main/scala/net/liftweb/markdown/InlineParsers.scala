@@ -247,7 +247,8 @@ trait InlineParsers extends BaseParsers {
 
   /** Inline markdown in a link. Like normal inline stuff but stops when it reaches a closing square bracket.
     */
-  def linkInline(ctx: InlineContext): Parser[
+  def linkInline(
+      ctx: InlineContext): Parser[
     String
   ] = //( (not(']') ~> oneInline(ctx.addTag("a")))* ) ^^ {_.mkString}
     ((markdownText(specialLinkInlineChars, true) | elementParsers(ctx) | ((not(

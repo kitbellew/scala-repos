@@ -95,8 +95,9 @@ package scalaguide.http.scalaactions {
           Action {
             Result(
               header = ResponseHeader(200, Map.empty),
-              body = HttpEntity
-                .Strict(ByteString("Hello world!"), Some("text/plain"))
+              body = HttpEntity.Strict(
+                ByteString("Hello world!"),
+                Some("text/plain"))
             )
           }
         //#simple-result-action

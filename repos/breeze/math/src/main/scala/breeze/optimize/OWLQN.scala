@@ -41,8 +41,9 @@ class OWLQN[K, T](maxIter: Int, m: Int, l1reg: K => Double, tolerance: Double)(
   override protected def chooseDescentDirection(
       state: State,
       fn: DiffFunction[T]) = {
-    val descentDir = super
-      .chooseDescentDirection(state.copy(grad = state.adjustedGradient), fn)
+    val descentDir = super.chooseDescentDirection(
+      state.copy(grad = state.adjustedGradient),
+      fn)
 
     // The original paper requires that the descent direction be corrected to be
     // in the same directional (within the same hypercube) as the adjusted gradient for proof.

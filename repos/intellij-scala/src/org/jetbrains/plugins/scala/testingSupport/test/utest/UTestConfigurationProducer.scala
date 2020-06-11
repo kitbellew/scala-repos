@@ -111,8 +111,9 @@ with AbstractTestConfigurationProducer {
     } catch {
       case e: Exception =>
     }
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(runConfiguration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      runConfiguration,
+      location)
     Some((testClass, settings))
   }
 

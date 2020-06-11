@@ -81,7 +81,8 @@ object Watched {
       } catch {
         case e: Exception =>
           val log = s.log
-          log.error("Error occurred obtaining files to watch.  Terminating continuous execution...")
+          log.error(
+            "Error occurred obtaining files to watch.  Terminating continuous execution...")
           State.handleException(e, s, log)
           (false, watchState, s.fail)
       }

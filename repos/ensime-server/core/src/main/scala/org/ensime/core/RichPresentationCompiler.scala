@@ -495,9 +495,8 @@ class RichPresentationCompiler(
     }
 
   private def noDefinitionFound(tree: Tree) = {
-    logger
-      .warn(
-        "No definition found. Please report to https://github.com/ensime/ensime-server/issues/492 with description of what did you expected. symbolAt for " + tree.getClass + ": " + tree)
+    logger.warn(
+      "No definition found. Please report to https://github.com/ensime/ensime-server/issues/492 with description of what did you expected. symbolAt for " + tree.getClass + ": " + tree)
     Nil
   }
 

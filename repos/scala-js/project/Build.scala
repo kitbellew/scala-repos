@@ -105,8 +105,8 @@ object Build extends sbt.Build {
             .cross(previousCrossVersion)
             .extra(prevExtraAttributes.toSeq: _*)
         Some(
-          CrossVersion(scalaV, scalaBinaryV)(prevProjectID)
-            .cross(CrossVersion.Disabled))
+          CrossVersion(scalaV, scalaBinaryV)(prevProjectID).cross(
+            CrossVersion.Disabled))
       }
     }
   }

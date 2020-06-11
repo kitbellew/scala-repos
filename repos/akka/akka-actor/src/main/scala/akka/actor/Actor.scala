@@ -638,8 +638,8 @@ trait Actor {
     message match {
       case Terminated(dead) ⇒ throw new DeathPactException(dead)
       case _ ⇒
-        context.system.eventStream
-          .publish(UnhandledMessage(message, sender(), self))
+        context.system.eventStream.publish(
+          UnhandledMessage(message, sender(), self))
     }
   }
 }

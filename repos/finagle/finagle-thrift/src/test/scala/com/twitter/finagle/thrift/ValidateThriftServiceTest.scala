@@ -56,7 +56,8 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
     assert(validate.isAvailable)
   }
 
-  test("ValidateThriftService should invalidate connection on bad TApplicationException") {
+  test(
+    "ValidateThriftService should invalidate connection on bad TApplicationException") {
     val c = ValidateThriftServiceContext()
     import c._
 
@@ -94,7 +95,8 @@ class ValidateThriftServiceTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("ValidateThriftService should not invalidate connection on OK TApplicationException") {
+  test(
+    "ValidateThriftService should not invalidate connection on OK TApplicationException") {
     val c = ValidateThriftServiceContext()
     import c._
 

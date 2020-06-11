@@ -279,8 +279,9 @@ trait PersistentView
             sso.foreach {
               case SelectedSnapshot(metadata, snapshot) ⇒
                 setLastSequenceNr(metadata.sequenceNr)
-                PersistentView.super
-                  .aroundReceive(receive, SnapshotOffer(metadata, snapshot))
+                PersistentView.super.aroundReceive(
+                  receive,
+                  SnapshotOffer(metadata, snapshot))
             }
             changeState(replayStarted(await = true))
             journal ! ReplayMessages(

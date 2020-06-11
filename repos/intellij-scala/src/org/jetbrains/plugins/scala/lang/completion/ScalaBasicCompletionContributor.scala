@@ -171,8 +171,10 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
 
         position.getContext match {
           case ref: ScReferenceElement =>
-            val isInImport = ScalaPsiUtil
-              .getContextOfType(ref, true, classOf[ScImportStmt]) != null
+            val isInImport = ScalaPsiUtil.getContextOfType(
+              ref,
+              true,
+              classOf[ScImportStmt]) != null
             def applyVariant(
                 variant: Object,
                 addElement: LookupElement => Unit = addElement) {
@@ -192,8 +194,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                         ApplicationManager.getApplication.runReadAction(
                           new Computable[Boolean] {
                             def compute: Boolean = {
-                              JavaCompletionUtil
-                                .isInExcludedPackage(clazz, false)
+                              JavaCompletionUtil.isInExcludedPackage(
+                                clazz,
+                                false)
                             }
                           })
 
@@ -312,8 +315,11 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                   result.getPrefixMatcher,
                   checkInvocationCount = false,
                   lookingForAnnotations = lookingForAnnotations)) {
-              ScalaClassNameCompletionContributor
-                .completeClassName(dummyPosition, parameters, context, result)
+              ScalaClassNameCompletionContributor.completeClassName(
+                dummyPosition,
+                parameters,
+                context,
+                result)
             }
 
             //adds runtime completions for evaluate expression in debugger
@@ -444,8 +450,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               PsiDocumentManager
                 .getInstance(file.getProject)
                 .doPostponedOperationsAndUnblockDocument(document)
-              context.getEditor.getCaretModel
-                .moveToOffset(context.getTailOffset)
+              context.getEditor.getCaretModel.moveToOffset(
+                context.getTailOffset)
           }
         }
         item.getDelegate.handleInsert(context)

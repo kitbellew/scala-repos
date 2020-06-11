@@ -68,7 +68,8 @@ class RowTest extends FunSpec with Matchers {
       }
     }
 
-    it("getValuesMap() retrieves values of multiple fields as a Map(field -> value)") {
+    it(
+      "getValuesMap() retrieves values of multiple fields as a Map(field -> value)") {
       val expected = Map(
         "col1" -> "value1",
         "col2" -> "value2"
@@ -85,13 +86,15 @@ class RowTest extends FunSpec with Matchers {
         List("col1", "col2")) shouldBe expected
     }
 
-    it("getAs() on type extending AnyVal throws an exception when accessing field that is null") {
+    it(
+      "getAs() on type extending AnyVal throws an exception when accessing field that is null") {
       intercept[NullPointerException] {
         sampleRowWithoutCol3.getInt(sampleRowWithoutCol3.fieldIndex("col3"))
       }
     }
 
-    it("getAs() on type extending AnyVal does not throw exception when value is null") {
+    it(
+      "getAs() on type extending AnyVal does not throw exception when value is null") {
       sampleRowWithoutCol3.getAs[String](
         sampleRowWithoutCol3.fieldIndex("col1")) shouldBe null
     }

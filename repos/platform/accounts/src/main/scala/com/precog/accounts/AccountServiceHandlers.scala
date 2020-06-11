@@ -262,7 +262,8 @@ class AccountServiceHandlers(
       ParameterMetadata(
         'apiKey,
         Some("<api key associated with authorizing account>")),
-      DescriptionMetadata("Returns the list of accounts associated with the authorized account's API key, or the API key specified by the apiKey request parameter if the authorized account has elevated account management privileges.")
+      DescriptionMetadata(
+        "Returns the list of accounts associated with the authorized account's API key, or the API key specified by the apiKey request parameter if the authorized account has elevated account management privileges.")
     )
   }
 
@@ -398,8 +399,8 @@ class AccountServiceHandlers(
         }
       }
 
-    val metadata =
-      DescriptionMetadata("Adds the grant specified by the grantId property of the request body to the account resource specified in the URL path. The account requesting this change (as determined by HTTP Basic authentication) will be recorded.")
+    val metadata = DescriptionMetadata(
+      "Adds the grant specified by the grantId property of the request body to the account resource specified in the URL path. The account requesting this change (as determined by HTTP Basic authentication) will be recorded.")
   }
 
   //returns plan for account
@@ -476,8 +477,9 @@ class AccountServiceHandlers(
                                 }
                             }
                           } else {
-                            logger.warn("Password reset request for account %s did not match email on file (%s provided)"
-                              .format(accountId, requestEmail))
+                            logger.warn(
+                              "Password reset request for account %s did not match email on file (%s provided)"
+                                .format(accountId, requestEmail))
                             Future(HttpResponse[JValue](
                               HttpStatus(Forbidden),
                               content = Some(JString(
@@ -565,8 +567,9 @@ class AccountServiceHandlers(
                       }
 
                   case Failure(error) =>
-                    logger.warn("Password reset request for account %s without new password"
-                      .format(accountId))
+                    logger.warn(
+                      "Password reset request for account %s without new password"
+                        .format(accountId))
                     Future(
                       Responses.failure(
                         BadRequest,

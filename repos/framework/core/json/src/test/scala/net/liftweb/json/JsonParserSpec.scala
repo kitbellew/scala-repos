@@ -29,7 +29,8 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
 
   private def parseBadThing(): String =
     try {
-      parse("""{"user":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"<}""")
+      parse(
+        """{"user":"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"<}""")
       "x" * 1000
     } catch {
       case e: Throwable => e.getMessage
@@ -69,7 +70,8 @@ object JsonParserSpec extends Specification with JValueGen with ScalaCheck {
   }
 
   "Parser does not bleed prior results" in {
-    parse("""{"a": "now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things.now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things"}""")
+    parse(
+      """{"a": "now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things. now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things.now is the time for all good men to come to the aid of their dog and eat dog food with other dogs and bark and woof and do dog things"}""")
 
     val msg = parseBadThing()
 

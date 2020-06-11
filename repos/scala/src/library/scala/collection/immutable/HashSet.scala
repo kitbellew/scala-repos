@@ -553,12 +553,14 @@ object HashSet extends ImmutableSetFactory[HashSet] {
       // hash codes and remove the collision. however this is never called
       // because no references to this class are ever handed out to client code
       // and HashTrieSet serialization takes care of the situation
-      sys.error("cannot serialize an immutable.HashSet where all items have the same 32-bit hash code")
+      sys.error(
+        "cannot serialize an immutable.HashSet where all items have the same 32-bit hash code")
       //out.writeObject(kvs)
     }
 
     private def readObject(in: java.io.ObjectInputStream) {
-      sys.error("cannot deserialize an immutable.HashSet where all items have the same 32-bit hash code")
+      sys.error(
+        "cannot deserialize an immutable.HashSet where all items have the same 32-bit hash code")
       //kvs = in.readObject().asInstanceOf[ListSet[A]]
       //hash = computeHash(kvs.)
     }

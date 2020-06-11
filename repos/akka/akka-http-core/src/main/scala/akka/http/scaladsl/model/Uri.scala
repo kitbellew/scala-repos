@@ -953,7 +953,8 @@ object Uri {
         fail(
           """The path of an URI without authority must not begin with "//"""")
     } else if (path.startsWithSegment)
-      fail("The path of an URI containing an authority must either be empty or start with a '/' (slash) character")
+      fail(
+        "The path of an URI containing an authority must either be empty or start with a '/' (slash) character")
     path
   }
 

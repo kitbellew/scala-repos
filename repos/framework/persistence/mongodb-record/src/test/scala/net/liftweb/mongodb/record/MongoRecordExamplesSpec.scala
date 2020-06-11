@@ -259,8 +259,8 @@ class MongoRecordExamplesSpec extends Specification with MongoTestKit {
       for (t <- fromDb) {
         t.id.value must_== tr.id.value
         t.booleanfield.value must_== tr.booleanfield.value
-        TstRecord.formats.dateFormat
-          .format(t.datetimefield.value.getTime) must_==
+        TstRecord.formats.dateFormat.format(
+          t.datetimefield.value.getTime) must_==
           TstRecord.formats.dateFormat.format(tr.datetimefield.value.getTime)
         t.doublefield.value must_== tr.doublefield.value
         t.intfield.value must_== tr.intfield.value

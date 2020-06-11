@@ -375,8 +375,10 @@ private[io] abstract class TcpConnection(
     }
 
   def abort(): Unit = {
-    try channel.socket
-      .setSoLinger(true, 0) // causes the following close() to send TCP RST
+    try channel.socket.setSoLinger(
+      true,
+      0
+    ) // causes the following close() to send TCP RST
     catch {
       case NonFatal(e) ⇒
         // setSoLinger can fail due to http://bugs.sun.com/view_bug.do?bug_id=6799574

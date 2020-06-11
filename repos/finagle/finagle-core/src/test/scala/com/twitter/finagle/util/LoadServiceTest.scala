@@ -55,7 +55,8 @@ class LoadServiceTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("LoadService should only load 1 instance of T, even when there's multiple occurence of T") {
+  test(
+    "LoadService should only load 1 instance of T, even when there's multiple occurence of T") {
     val randomIfaces = LoadService[LoadServiceRandomInterface]()
     assert(randomIfaces.size == 1)
   }

@@ -51,7 +51,8 @@ abstract class ScaladocModelTest extends DirectTest {
     if (resourceFile ne null)
       io.File(resourcePath + "/" + resourceFile).slurp()
     else
-      sys.error("Scaladoc Model Test: You need to give a file or some code to feed to scaladoc!")
+      sys.error(
+        "Scaladoc Model Test: You need to give a file or some code to feed to scaladoc!")
 
   def resourcePath = io.Directory(sys.props("partest.cwd") + "/../resources")
 

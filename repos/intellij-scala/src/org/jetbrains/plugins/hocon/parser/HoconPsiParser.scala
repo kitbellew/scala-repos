@@ -52,8 +52,8 @@ class HoconPsiParser extends PsiParser {
                                           i - 1) == LineBreakingWhitespace
                                       else atStreamEdge)
           def noBlankLineWhitespace =
-            Whitespace
-              .contains(token) && text.charIterator.count(_ == '\n') <= 1
+            Whitespace.contains(token) && text.charIterator.count(
+              _ == '\n') <= 1
 
           if (i < 0) resultSoFar
           else if (noBlankLineWhitespace)

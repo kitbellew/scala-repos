@@ -186,7 +186,8 @@ object PlayRun {
       } catch {
         case e: Exception =>
           val log = state.log
-          log.error("Error occurred obtaining files to watch.  Terminating continuous execution...")
+          log.error(
+            "Error occurred obtaining files to watch.  Terminating continuous execution...")
           (false, watchState, state.fail)
       }
 
@@ -235,8 +236,8 @@ object PlayRun {
 
   val playTestProdCommand = Command.args("testProd", "<port>") {
     (state: State, args: Seq[String]) =>
-      state.log
-        .warn("The testProd command is deprecated, and will be removed in a future version of Play.")
+      state.log.warn(
+        "The testProd command is deprecated, and will be removed in a future version of Play.")
       state.log.warn(
         "To test your application using production mode, run 'runProd' instead.")
       testProd(state, args)
@@ -244,12 +245,12 @@ object PlayRun {
 
   val playStartCommand = Command.args("start", "<port>") {
     (state: State, args: Seq[String]) =>
-      state.log
-        .warn("The start command is deprecated, and will be removed in a future version of Play.")
-      state.log
-        .warn("To run Play in production mode, run 'stage' instead, and then execute the generated start script in target/universal/stage/bin.")
-      state.log
-        .warn("To test your application using production mode, run 'testProd' instead.")
+      state.log.warn(
+        "The start command is deprecated, and will be removed in a future version of Play.")
+      state.log.warn(
+        "To run Play in production mode, run 'stage' instead, and then execute the generated start script in target/universal/stage/bin.")
+      state.log.warn(
+        "To test your application using production mode, run 'testProd' instead.")
 
       testProd(state, args)
   }
@@ -321,8 +322,7 @@ object PlayRun {
           }
         }.start()
 
-        println(
-          Colors.green("""|
+        println(Colors.green("""|
             |(Starting server. Type Ctrl+D to exit logs, the server will remain in background)
             | """.stripMargin))
 

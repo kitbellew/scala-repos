@@ -192,7 +192,8 @@ class BindingFactoryTest
     assert(noBrokers.localDtab == Dtab.empty)
   })
 
-  test("Includes path and Dtab.local in NoBrokersAvailableException from name resolution")(
+  test(
+    "Includes path and Dtab.local in NoBrokersAvailableException from name resolution")(
     new Ctx {
       val localDtab = Dtab.read("/baz=>/quux")
 
@@ -204,7 +205,8 @@ class BindingFactoryTest
       assert(noBrokers.localDtab == localDtab)
     })
 
-  test("Includes path and Dtab.local in NoBrokersAvailableException from service creation") {
+  test(
+    "Includes path and Dtab.local in NoBrokersAvailableException from service creation") {
     val localDtab = Dtab.read("/foo/bar=>/test1010")
 
     val factory = new BindingFactory(
@@ -239,8 +241,9 @@ class BindingFactoryTest
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+        Annotation.BinaryAnnotation(
+          "namer.dtab.base",
+          "/test1010=>/$/inet/0/1010"),
         Annotation.Message("namer.success"),
         Annotation.BinaryAnnotation("namer.tree", "/$/inet/0/1010"),
         Annotation.BinaryAnnotation("namer.name", "/$/inet/0/1010")
@@ -262,10 +265,12 @@ class BindingFactoryTest
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
-        Annotation
-          .BinaryAnnotation("namer.failure", "java.lang.RuntimeException")
+        Annotation.BinaryAnnotation(
+          "namer.dtab.base",
+          "/test1010=>/$/inet/0/1010"),
+        Annotation.BinaryAnnotation(
+          "namer.failure",
+          "java.lang.RuntimeException")
       )
     )
   })
@@ -279,8 +284,9 @@ class BindingFactoryTest
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+        Annotation.BinaryAnnotation(
+          "namer.dtab.base",
+          "/test1010=>/$/inet/0/1010"),
         Annotation.Message("namer.success"),
         Annotation.BinaryAnnotation("namer.tree", "~")
       )
@@ -312,8 +318,9 @@ class BindingFactoryTest
       },
       Seq(
         Annotation.BinaryAnnotation("namer.path", "/foo/bar"),
-        Annotation
-          .BinaryAnnotation("namer.dtab.base", "/test1010=>/$/inet/0/1010"),
+        Annotation.BinaryAnnotation(
+          "namer.dtab.base",
+          "/test1010=>/$/inet/0/1010"),
         Annotation.Message("namer.success"),
         Annotation.BinaryAnnotation("namer.tree", "/$/inet/0/1010"),
         Annotation.BinaryAnnotation("namer.name", "/$/inet/0/1010")

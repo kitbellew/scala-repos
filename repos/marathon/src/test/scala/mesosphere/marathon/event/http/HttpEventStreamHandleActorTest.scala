@@ -26,7 +26,8 @@ class HttpEventStreamHandleActorTest
     with BeforeAndAfter
     with Mockito {
 
-  test("A message send to the handle actor will be transferred to the stream handle") {
+  test(
+    "A message send to the handle actor will be transferred to the stream handle") {
     Given("A handler that will postpone sending until latch is hit")
     val latch = new CountDownLatch(1)
     handle.sendEvent(any[String], any[String]) answers (_ => latch.countDown())
@@ -39,7 +40,8 @@ class HttpEventStreamHandleActorTest
     verify(handle, times(1)).sendEvent(any[String], any[String])
   }
 
-  test("If the consumer is slow and maxOutstanding limit is reached, messages get dropped") {
+  test(
+    "If the consumer is slow and maxOutstanding limit is reached, messages get dropped") {
     Given("A handler that will postpone the sending")
     val latch = new CountDownLatch(1)
     handle.sendEvent(any[String], any[String]) answers (_ => latch.await())

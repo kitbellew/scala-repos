@@ -39,8 +39,9 @@ object ParquetReadBenchmark {
   val sqlContext = new SQLContext(sc)
 
   // Set default configs. Individual cases will change them if necessary.
-  sqlContext.conf
-    .setConfString(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key, "true")
+  sqlContext.conf.setConfString(
+    SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key,
+    "true")
   sqlContext.conf.setConfString(SQLConf.WHOLESTAGE_CODEGEN_ENABLED.key, "true")
 
   def withTempPath(f: File => Unit): Unit = {

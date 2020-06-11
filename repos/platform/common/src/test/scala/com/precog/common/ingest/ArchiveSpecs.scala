@@ -49,8 +49,7 @@ class ArchiveSpecs
     }
 
     "read legacy archives" in {
-      val Success(JArray(input)) = JParser
-        .parseFromString("""[
+      val Success(JArray(input)) = JParser.parseFromString("""[
 {"path":"/test/test/php/query/T10170960455069fb56d061c690884208/","tokenId":"test1"},
 {"path":"/test/test/php/query/T9345418045069fd119e9ed256256425/","tokenId": "test1"},
 {"path":"/test/test/php/query/T1373621163506a00891eb60240629876/","tokenId":"test1"},

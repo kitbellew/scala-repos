@@ -206,8 +206,8 @@ class HistoryServer(
   }
 
   def getApplicationInfoList: Iterator[ApplicationInfo] = {
-    getApplicationList().iterator
-      .map(ApplicationsListResource.appHistoryInfoToPublicAppInfo)
+    getApplicationList().iterator.map(
+      ApplicationsListResource.appHistoryInfoToPublicAppInfo)
   }
 
   override def writeEventLogs(

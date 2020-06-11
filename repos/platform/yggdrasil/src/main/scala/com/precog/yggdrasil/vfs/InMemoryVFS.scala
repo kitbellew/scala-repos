@@ -98,8 +98,9 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
     def asByteStream(mimeType: MimeType)(implicit M: Monad[M]) =
       OptionT {
         M.point {
-          table.ColumnarTableModule
-            .byteStream(proj.getBlockStream(None), Some(mimeType))
+          table.ColumnarTableModule.byteStream(
+            proj.getBlockStream(None),
+            Some(mimeType))
         }
       }
   }

@@ -266,8 +266,8 @@ class ALSModel private[ml] (
       .join(itemFactors, dataset($(itemCol)) === itemFactors("id"), "left")
       .select(
         dataset("*"),
-        predict(userFactors("features"), itemFactors("features"))
-          .as($(predictionCol)))
+        predict(userFactors("features"), itemFactors("features")).as(
+          $(predictionCol)))
   }
 
   @Since("1.3.0")

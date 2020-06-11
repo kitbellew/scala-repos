@@ -242,16 +242,17 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
           new ScalaPositionManager.MyClassPrepareRequestor(position, requestor))
       }
 
-      debugProcess.getRequestsManager
-        .createClassPrepareRequest(waitRequestor.get, qName.get)
+      debugProcess.getRequestsManager.createClassPrepareRequest(
+        waitRequestor.get,
+        qName.get)
     }
 
     val file = position.getFile
     throwIfNotScalaFile(file)
 
     val possiblePositions = inReadAction {
-      positionsOnLine(file, position.getLine)
-        .map(SourcePosition.createFromElement)
+      positionsOnLine(file, position.getLine).map(
+        SourcePosition.createFromElement)
     }
     possiblePositions.map(createPrepareRequest).asJava
   }

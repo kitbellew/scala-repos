@@ -122,8 +122,8 @@ private[netty] class NettyRpcEnv(
   def startServer(port: Int): Unit = {
     val bootstraps: java.util.List[TransportServerBootstrap] =
       if (securityManager.isAuthenticationEnabled()) {
-        java.util.Arrays
-          .asList(new SaslServerBootstrap(transportConf, securityManager))
+        java.util.Arrays.asList(
+          new SaslServerBootstrap(transportConf, securityManager))
       } else {
         java.util.Collections.emptyList()
       }

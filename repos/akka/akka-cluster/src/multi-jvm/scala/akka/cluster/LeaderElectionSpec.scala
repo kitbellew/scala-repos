@@ -21,8 +21,8 @@ final case class LeaderElectionMultiNodeConfig(failureDetectorPuppet: Boolean)
   val fourth = role("fourth")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
+    debugConfig(on = false).withFallback(
+      MultiNodeClusterSpec.clusterConfig(failureDetectorPuppet)))
 }
 
 class LeaderElectionWithFailureDetectorPuppetMultiJvmNode1

@@ -690,8 +690,9 @@ private[joins] object LongHashedRelation {
         while (i < length) {
           val rows = hashTable.get(i + minKey)
           if (rows != null) {
-            rows(0)
-              .writeToMemory(bytes, Platform.BYTE_ARRAY_OFFSET + offsets(i))
+            rows(0).writeToMemory(
+              bytes,
+              Platform.BYTE_ARRAY_OFFSET + offsets(i))
           }
           i += 1
         }

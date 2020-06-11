@@ -128,8 +128,8 @@ object NameSuggester {
           val camelNames = getCamelNames(e.name)
           camelNames.foreach(addPlural)
         case _ =>
-          namesByType(arg, withPlurals = false, shortVersion = false)
-            .foreach(addPlural)
+          namesByType(arg, withPlurals = false, shortVersion = false).foreach(
+            addPlural)
       }
     }
 

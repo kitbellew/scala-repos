@@ -47,7 +47,8 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
   }
 
-  test("When the deadline is not exceeded, DeadlineFilter should service the request") {
+  test(
+    "When the deadline is not exceeded, DeadlineFilter should service the request") {
     val h = new DeadlineFilterHelper
     import h._
 

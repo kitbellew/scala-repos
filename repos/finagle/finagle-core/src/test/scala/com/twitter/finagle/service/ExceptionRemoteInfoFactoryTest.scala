@@ -15,7 +15,8 @@ import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
 class ExceptionRemoteInfoFactoryTest extends FunSuite with MockitoSugar {
-  test("ExceptionRemoteInfoFactory should add remote info to HasRemoteInfo service acquisition exceptions") {
+  test(
+    "ExceptionRemoteInfoFactory should add remote info to HasRemoteInfo service acquisition exceptions") {
     val serviceFactory =
       ServiceFactory.const(new FailedService(new HasRemoteInfo {}))
 

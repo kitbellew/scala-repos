@@ -125,8 +125,8 @@ class ScalaVariableOfTypeMacro extends Macro {
           variant.getElement match {
             case typed: ScTypedDefinition =>
               for (t <- typed.getType(TypingContext.empty))
-                getResult(exprs, context, variant, t, file.getProject)
-                  .map(return _)
+                getResult(exprs, context, variant, t, file.getProject).map(
+                  return _)
             case _ =>
           }
         }

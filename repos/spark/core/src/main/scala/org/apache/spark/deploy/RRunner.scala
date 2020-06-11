@@ -91,8 +91,8 @@ object RRunner {
           env.put("SPARKR_PACKAGE_DIR", rPackageDir.mkString(","))
           env.put(
             "R_PROFILE_USER",
-            Seq(rPackageDir(0), "SparkR", "profile", "general.R")
-              .mkString(File.separator))
+            Seq(rPackageDir(0), "SparkR", "profile", "general.R").mkString(
+              File.separator))
           builder.redirectErrorStream(
             true
           ) // Ugly but needed for stdout and stderr to synchronize

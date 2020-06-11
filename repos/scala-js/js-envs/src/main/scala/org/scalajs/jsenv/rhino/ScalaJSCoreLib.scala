@@ -107,8 +107,8 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
     val linked = providers(fileName.stripSuffix(PseudoFileSuffix))
     val mapper = new Printers.ReverseSourceMapPrinter(untilLine)
     val desugared =
-      new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit)
-        .genClassDef(linked)
+      new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit).genClassDef(
+        linked)
     mapper.reverseSourceMap(desugared)
     mapper
   }
@@ -168,8 +168,8 @@ private[rhino] class ScalaJSCoreLib(linkingUnit: LinkingUnit) {
       throw new RhinoJSEnv.ClassNotFoundException(encodedName))
 
     val desugared =
-      new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit)
-        .genClassDef(linkedClass)
+      new ScalaJSClassEmitter(ECMAScript51Global, linkingUnit).genClassDef(
+        linkedClass)
 
     // Write tree
     val codeWriter = new java.io.StringWriter

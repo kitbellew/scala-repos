@@ -113,8 +113,9 @@ object DatabaseConfig {
     val root = config
     new DatabaseConfig[P] {
       lazy val db: P#Backend#Database =
-        profile.backend
-          .createDatabase(root, (if (path.isEmpty) "" else path + ".") + "db")
+        profile.backend.createDatabase(
+          root,
+          (if (path.isEmpty) "" else path + ".") + "db")
       val profile: P = untypedP.asInstanceOf[P]
       val driver: P = untypedP.asInstanceOf[P]
       lazy val config: Config = if (path.isEmpty) root else root.getConfig(path)
@@ -206,7 +207,7 @@ object StaticDatabaseConfigMacros {
     import c.universe._
     val uri = c.Expr[String](Literal(Constant(getURI(c))))
     reify(
-      DatabaseConfig
-        .forURI[P](new URI(uri.splice), classLoader.splice)(ct.splice))
+      DatabaseConfig.forURI[P](new URI(uri.splice), classLoader.splice)(
+        ct.splice))
   }
 }

@@ -82,8 +82,9 @@ class NewScalaTypeDefinitionAction
   }
 
   private def isScalaTemplate(template: FileTemplate): Boolean = {
-    val fileType: FileType = FileTypeManagerEx.getInstanceEx
-      .getFileTypeByExtension(template.getExtension)
+    val fileType: FileType =
+      FileTypeManagerEx.getInstanceEx.getFileTypeByExtension(
+        template.getExtension)
     fileType == ScalaFileType.SCALA_FILE_TYPE
   }
 

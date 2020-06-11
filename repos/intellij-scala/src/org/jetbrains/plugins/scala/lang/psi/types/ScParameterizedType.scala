@@ -237,8 +237,10 @@ class ScParameterizedType private (
             case _ => Seq.empty
           }
         ScParameterizedType(
-          designator
-            .recursiveVarianceUpdateModifiable(newData, update, variance),
+          designator.recursiveVarianceUpdateModifiable(
+            newData,
+            update,
+            variance),
           typeArgs.zipWithIndex.map {
             case (ta, i) =>
               val v = if (i < des.length) des(i) else 0

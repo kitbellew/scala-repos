@@ -189,8 +189,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
   }
 
   test("Read obsolete ports from proto") {
-    val cmd = mesos.CommandInfo.newBuilder
-      .setValue("bash foo-*/start -Dhttp.port=$PORT")
+    val cmd = mesos.CommandInfo.newBuilder.setValue(
+      "bash foo-*/start -Dhttp.port=$PORT")
 
     val proto1 = ServiceDefinition.newBuilder
       .setId("/app")

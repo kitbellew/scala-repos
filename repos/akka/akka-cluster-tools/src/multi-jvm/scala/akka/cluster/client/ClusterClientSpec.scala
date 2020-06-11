@@ -288,8 +288,10 @@ class ClusterClientSpec
         awaitAssert {
           val probe = TestProbe()
           c.tell(
-            ClusterClient
-              .Send("/user/service2", "bonjour3", localAffinity = true),
+            ClusterClient.Send(
+              "/user/service2",
+              "bonjour3",
+              localAffinity = true),
             probe.ref)
           val reply = probe.expectMsgType[Reply](1 second)
           reply.msg should be("bonjour3-ack")

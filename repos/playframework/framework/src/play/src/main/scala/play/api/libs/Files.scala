@@ -138,8 +138,8 @@ object Files {
       * is currently running.
       */
     private def currentCreator: TemporaryFileCreator =
-      Play.privateMaybeApplication
-        .fold[TemporaryFileCreator](SingletonTemporaryFileCreator)(creatorCache)
+      Play.privateMaybeApplication.fold[TemporaryFileCreator](
+        SingletonTemporaryFileCreator)(creatorCache)
 
     /**
       * Create a new temporary file.

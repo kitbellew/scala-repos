@@ -413,8 +413,9 @@ private[spark] object SerializationDebugger extends Logging {
 
     /** ObjectStreamClass.invokeWriteReplace */
     val InvokeWriteReplace: Method = {
-      val f = classOf[ObjectStreamClass]
-        .getDeclaredMethod("invokeWriteReplace", classOf[Object])
+      val f = classOf[ObjectStreamClass].getDeclaredMethod(
+        "invokeWriteReplace",
+        classOf[Object])
       f.setAccessible(true)
       f
     }

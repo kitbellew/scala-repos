@@ -68,7 +68,8 @@ class SubquerySuite extends QueryTest with SharedSQLContext {
     df.registerTempTable("subqueryData")
 
     assertResult(Array(Row(4))) {
-      sql("select (select key from subqueryData where key > 2 order by key limit 1) + 1")
+      sql(
+        "select (select key from subqueryData where key > 2 order by key limit 1) + 1")
         .collect()
     }
 

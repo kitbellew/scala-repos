@@ -666,8 +666,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
         // log("new tparams " + newClassTParams.zip(newClassTParams map {s => (s.tpe, s.tpe.bounds.hi)}) + ", in env: " + env)
 
         def applyContext(tpe: Type) =
-          subst(env, tpe)
-            .instantiateTypeParams(oldClassTParams, newClassTParams map (_.tpe))
+          subst(env, tpe).instantiateTypeParams(
+            oldClassTParams,
+            newClassTParams map (_.tpe))
 
         /* Return a list of specialized parents to be re-mixed in a specialized subclass.
          * Assuming env = [T -> Int] and
@@ -881,8 +882,9 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
           } else { // if there are no accessors, specialized methods will need to access this field in specialized subclasses
             m.resetFlag(PRIVATE)
             specVal.resetFlag(PRIVATE)
-            debuglog("no accessors for %s/%s, specialized methods must access field in subclass"
-              .format(m.name.decode, specVal.name.decode))
+            debuglog(
+              "no accessors for %s/%s, specialized methods must access field in subclass"
+                .format(m.name.decode, specVal.name.decode))
           }
         } else if (m.isClass) {
           val specClass: Symbol = cloneInSpecializedClass(m, x => x)
@@ -1200,9 +1202,10 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
             clazz.info.decls.enter(om)
             foreachWithIndex(om.paramss) { (params, i) =>
               foreachWithIndex(params) { (param, j) =>
-                param.name = overriding
-                  .paramss(i)(j)
-                  .name // SI-6555 Retain the parameter names from the subclass.
+                param.name =
+                  overriding
+                    .paramss(i)(j)
+                    .name // SI-6555 Retain the parameter names from the subclass.
               }
             }
             debuglog(

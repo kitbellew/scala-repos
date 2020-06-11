@@ -153,12 +153,18 @@ import scala.language.implicitConversions"""
         Op(
           "!=",
           "/** Returns `true` if this value is not equal to x, `false` otherwise. */"),
-        Op("<", "/** Returns `true` if this value is less than x, `false` otherwise. */"),
+        Op(
+          "<",
+          "/** Returns `true` if this value is less than x, `false` otherwise. */"),
         Op(
           "<=",
           "/** Returns `true` if this value is less than or equal to x, `false` otherwise. */"),
-        Op(">", "/** Returns `true` if this value is greater than x, `false` otherwise. */"),
-        Op(">=", "/** Returns `true` if this value is greater than or equal to x, `false` otherwise. */")
+        Op(
+          ">",
+          "/** Returns `true` if this value is greater than x, `false` otherwise. */"),
+        Op(
+          ">=",
+          "/** Returns `true` if this value is greater than or equal to x, `false` otherwise. */")
       )
 
     def otherOps =
@@ -294,10 +300,12 @@ import scala.language.implicitConversions"""
         "@unboxRunTimeDoc@" -> """
  *  Runtime implementation determined by `scala.runtime.BoxesRunTime.unboxTo%s`. See [[https://github.com/scala/scala src/library/scala/runtime/BoxesRunTime.java]].
  *""".format(name),
-        "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()"
-          .format(boxedName, lcname),
-        "@unboxDoc@" -> "the %s resulting from calling %sValue() on `x`"
-          .format(name, lcname)
+        "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()".format(
+          boxedName,
+          lcname),
+        "@unboxDoc@" -> "the %s resulting from calling %sValue() on `x`".format(
+          name,
+          lcname)
       )
     def interpolations =
       Map(
@@ -362,8 +370,7 @@ package scala
 
 """
 
-  def classDocTemplate =
-    ("""
+  def classDocTemplate = ("""
 /** `@name@`@representation@ (equivalent to Java's `@javaequiv@` primitive type) is a
  *  subtype of [[scala.AnyVal]]. Instances of `@name@` are not
  *  represented by an object in the underlying runtime system.

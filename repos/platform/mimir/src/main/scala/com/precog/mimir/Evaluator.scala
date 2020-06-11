@@ -702,8 +702,8 @@ trait EvaluatorModule[M[+_]]
               for {
                 pendingTable <- prepareEval(parent, splits)
                 Path(prefixStr) = ctx.basePath
-                f1 = concatString(MorphContext(ctx, graph))
-                  .applyl(CString(prefixStr.replaceAll("([^/])$", "$1/")))
+                f1 = concatString(MorphContext(ctx, graph)).applyl(
+                  CString(prefixStr.replaceAll("([^/])$", "$1/")))
                 trans2 = trans.Map1(
                   trans.DerefObjectStatic(pendingTable.trans, paths.Value),
                   f1)
@@ -744,8 +744,8 @@ trait EvaluatorModule[M[+_]]
                   "([^/])$",
                   "$1/") + midStr.replaceAll("([^/])$", "$1/")
 
-                f1 = concatString(MorphContext(ctx, graph))
-                  .applyl(CString(fullPrefix))
+                f1 = concatString(MorphContext(ctx, graph)).applyl(
+                  CString(fullPrefix))
                 trans2 = trans.Map1(
                   trans.DerefObjectStatic(pendingTable.trans, paths.Value),
                   f1)

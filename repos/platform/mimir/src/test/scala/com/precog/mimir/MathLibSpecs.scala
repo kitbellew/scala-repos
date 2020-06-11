@@ -1889,8 +1889,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(min),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -1907,8 +1907,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(hypot),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -1928,8 +1928,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(pow),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -1948,8 +1948,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(maxOf),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -1966,8 +1966,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(atan2),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -1988,8 +1988,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(copySign),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -2006,8 +2006,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(IEEEremainder),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -2501,8 +2501,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(min),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -2519,8 +2519,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(hypot),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -2538,8 +2538,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(pow),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -2556,8 +2556,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(maxOf),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -2574,8 +2574,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(atan2),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -2594,8 +2594,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(copySign),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)
@@ -2612,8 +2612,8 @@ trait MathLibSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(IEEEremainder),
         Cross(None),
-        dag
-          .AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
+          line),
         Const(CLong(7))(line))(line)
 
       val result = testEval(input)

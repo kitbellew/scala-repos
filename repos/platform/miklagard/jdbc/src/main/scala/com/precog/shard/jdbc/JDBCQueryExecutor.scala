@@ -210,7 +210,8 @@ class JDBCQueryExecutor(
             Success(JArray(Nil))
 
           case _ =>
-            Failure("JDBC paths have the form /databaseName/tableName; longer paths are not supported.")
+            Failure(
+              "JDBC paths have the form /databaseName/tableName; longer paths are not supported.")
         }
       }.onFailure {
         case t => logger.error("Failure during size", t)

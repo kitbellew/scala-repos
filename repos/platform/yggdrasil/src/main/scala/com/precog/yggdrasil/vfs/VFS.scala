@@ -125,8 +125,9 @@ trait VFSModule[M[+_], Block] extends Logging {
         M: Monad[M]): Resource => EitherT[M, ResourceError, String] = {
       resource =>
         def notAQuery =
-          notFound("Requested resource at %s version %s cannot be interpreted as a Quirrel query."
-            .format(path.path, version))
+          notFound(
+            "Requested resource at %s version %s cannot be interpreted as a Quirrel query."
+              .format(path.path, version))
         EitherT {
           resource.fold(
             br => br.asString.run.map(_.toRightDisjunction(notAQuery)),
@@ -139,8 +140,9 @@ trait VFSModule[M[+_], Block] extends Logging {
         M: Monad[M]): Resource => EitherT[M, ResourceError, Projection] = {
       resource =>
         def notAProjection =
-          notFound("Requested resource at %s version %s cannot be interpreted as a Quirrel projection."
-            .format(path.path, version))
+          notFound(
+            "Requested resource at %s version %s cannot be interpreted as a Quirrel projection."
+              .format(path.path, version))
         resource.fold(
           _ => EitherT.left(notAProjection.point[M]),
           pr => EitherT.right(pr.projection)

@@ -725,7 +725,8 @@ private[hive] object HiveContext {
   val HIVE_THRIFT_SERVER_ASYNC = booleanConf(
     "spark.sql.hive.thriftServer.async",
     defaultValue = Some(true),
-    doc = "When set to true, Hive Thrift server executes SQL queries in an asynchronous way.")
+    doc =
+      "When set to true, Hive Thrift server executes SQL queries in an asynchronous way.")
 
   /** Constructs a configuration for hive, where the metastore is located in a temp directory. */
   def newTemporaryConfiguration(

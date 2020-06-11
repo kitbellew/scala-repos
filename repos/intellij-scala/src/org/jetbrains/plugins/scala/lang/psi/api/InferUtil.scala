@@ -427,8 +427,9 @@ object InferUtil {
           dummyExpr
             .asInstanceOf[ScLiteral]
             .setTypeWithoutImplicits(Some(mt.returnType))
-          val updatedResultType = dummyExpr
-            .getTypeAfterImplicitConversion(expectedOption = Some(expectedRet))
+          val updatedResultType =
+            dummyExpr.getTypeAfterImplicitConversion(expectedOption =
+              Some(expectedRet))
 
           expr
             .asInstanceOf[ScExpression]

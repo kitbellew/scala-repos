@@ -15,7 +15,8 @@ class SubPathSwaggerSpec extends ScalatraSpec with JsonMatchers {
   """
   val apiInfo = ApiInfo(
     title = "Swagger Hackers Sample App",
-    description = "This is a sample hackers app.  You can find out more about Swagger \n    at <a href=\"http://swagger.wordnik.com\">http://swagger.wordnik.com</a> or on irc.freenode.net, #swagger.",
+    description =
+      "This is a sample hackers app.  You can find out more about Swagger \n    at <a href=\"http://swagger.wordnik.com\">http://swagger.wordnik.com</a> or on irc.freenode.net, #swagger.",
     termsOfServiceUrl = "http://helloreverb.com/terms/",
     contact = "apiteam@wordnik.com",
     license = "Apache 2.0",

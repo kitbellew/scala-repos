@@ -67,7 +67,8 @@ class ScalaControlFlowBuilder(
   }
 
   def emptyNode() {
-    startNode(None) { _ => }
+    startNode(None) { _ =>
+    }
   }
 
   def startNode(element: Option[ScalaPsiElement])(
@@ -152,7 +153,7 @@ class ScalaControlFlowBuilder(
     myHead = instr
   }
 
-  /** **********************************
+  /** ************************************
     * VISITOR METHODS
     * ************************************ */
 

@@ -780,8 +780,10 @@ final class TrieMap[K, V] private (
   def this(hashf: Hashing[K], ef: Equiv[K]) =
     this(
       INode.newRootNode,
-      AtomicReferenceFieldUpdater
-        .newUpdater(classOf[TrieMap[K, V]], classOf[AnyRef], "root"),
+      AtomicReferenceFieldUpdater.newUpdater(
+        classOf[TrieMap[K, V]],
+        classOf[AnyRef],
+        "root"),
       hashf,
       ef
     )

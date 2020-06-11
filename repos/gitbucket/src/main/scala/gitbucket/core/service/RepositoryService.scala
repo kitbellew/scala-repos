@@ -349,8 +349,9 @@ trait RepositoryService { self: AccountService =>
         .list
 
       new RepositoryInfo(
-        JGitUtil
-          .getRepositoryInfo(repository.userName, repository.repositoryName),
+        JGitUtil.getRepositoryInfo(
+          repository.userName,
+          repository.repositoryName),
         repository,
         issues.count(_ == false),
         issues.count(_ == true),

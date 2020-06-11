@@ -77,12 +77,10 @@ abstract class XMapTest[
     x.filter(_._2.isThat).keySet must_=== (keysB -- keysA)
     x.filter(_._2.isBoth).keySet must_=== (keysA & keysB)
 
-    x.filter(_._2.isThis) must_=== F.map(a.filter {
-      case (k, _) => !keysB(k)
-    })(This(_))
-    x.filter(_._2.isThat) must_=== F.map(b.filter {
-      case (k, _) => !keysA(k)
-    })(That(_))
+    x.filter(_._2.isThis) must_=== F
+      .map(a.filter { case (k, _) => !keysB(k) })(This(_))
+    x.filter(_._2.isThat) must_=== F
+      .map(b.filter { case (k, _) => !keysA(k) })(That(_))
   }
 
   "getOrAdd" ! forAll { (m0: Map[Int, Long], k: Int, vOld: Long, vNew: Long) =>
@@ -101,8 +99,8 @@ abstract class XMapTest[
     // lazy
     var evaluated = false
     getOrAdd[Id.Id, Int, Long](mWithOld, k)({
-      evaluated = true; vNew
-    }) must_=== (mWithOld, vOld)
+        evaluated = true; vNew
+      }) must_=== (mWithOld, vOld)
     evaluated must_=== false
   }
 }

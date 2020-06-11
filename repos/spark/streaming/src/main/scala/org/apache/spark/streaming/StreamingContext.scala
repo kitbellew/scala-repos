@@ -99,8 +99,12 @@ class StreamingContext private[streaming] (
       jars: Seq[String] = Nil,
       environment: Map[String, String] = Map()) = {
     this(
-      StreamingContext
-        .createNewSparkContext(master, appName, sparkHome, jars, environment),
+      StreamingContext.createNewSparkContext(
+        master,
+        appName,
+        sparkHome,
+        jars,
+        environment),
       null,
       batchDuration)
   }
@@ -447,8 +451,8 @@ class StreamingContext private[streaming] (
     */
   def textFileStream(directory: String): DStream[String] =
     withNamedScope("text file stream") {
-      fileStream[LongWritable, Text, TextInputFormat](directory)
-        .map(_._2.toString)
+      fileStream[LongWritable, Text, TextInputFormat](directory).map(
+        _._2.toString)
     }
 
   /**

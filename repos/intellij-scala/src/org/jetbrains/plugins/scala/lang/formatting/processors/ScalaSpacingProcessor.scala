@@ -531,9 +531,9 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
       else return WITHOUT_SPACING
     }
     if (leftElementType == tIDENTIFIER &&
-      rightPsi
-        .isInstanceOf[ScArgumentExprList] && !getText(rightNode, fileText).trim
-        .startsWith("{")) {
+      rightPsi.isInstanceOf[ScArgumentExprList] && !getText(
+        rightNode,
+        fileText).trim.startsWith("{")) {
       if (settings.SPACE_BEFORE_METHOD_CALL_PARENTHESES) return WITH_SPACING
       else return WITHOUT_SPACING
     }
@@ -829,8 +829,8 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
             _: ScPackaging | _: ScBlockExpr | _: ScMatchStmt | _: ScTryBlock |
             _: ScCatchBlock) =>
           val oneLineNonEmpty =
-            leftString != "{" && !getText(block.getNode, fileText)
-              .contains('\n')
+            leftString != "{" && !getText(block.getNode, fileText).contains(
+              '\n')
           val spaceInsideOneLineMethod =
             scalaSettings.SPACES_IN_ONE_LINE_BLOCKS &&
               rightNode.getTreeParent.getTreeParent != null && rightNode.getTreeParent.getTreeParent.getPsi

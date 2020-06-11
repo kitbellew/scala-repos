@@ -509,8 +509,8 @@ class ClusterSingletonManager(
   when(Start) {
     case Event(StartOldestChangedBuffer, _) ⇒
       oldestChangedBuffer = context.actorOf(
-        Props(classOf[OldestChangedBuffer], role)
-          .withDispatcher(context.props.dispatcher))
+        Props(classOf[OldestChangedBuffer], role).withDispatcher(
+          context.props.dispatcher))
       getNextOldestChanged()
       stay
 
@@ -628,7 +628,8 @@ class ClusterSingletonManager(
       } else if (previousOldestOption forall removed.contains) {
         // can't send HandOverToMe, previousOldest unknown for new node (or restart)
         // previous oldest might be down or removed, so no TakeOverFromMe message is received
-        logInfo("Timeout in BecomingOldest. Previous oldest unknown, removed and no TakeOver request.")
+        logInfo(
+          "Timeout in BecomingOldest. Previous oldest unknown, removed and no TakeOver request.")
         gotoOldest()
       } else if (cluster.isTerminated)
         stop()

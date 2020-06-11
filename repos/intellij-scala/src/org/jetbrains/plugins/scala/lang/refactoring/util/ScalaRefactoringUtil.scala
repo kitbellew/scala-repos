@@ -1031,8 +1031,9 @@ object ScalaRefactoringUtil {
   def enclosingContainer(parent: PsiElement): PsiElement = {
     Option(parent)
       .map(elem =>
-        elem.firstChild
-          .getOrElse(elem)) //to make enclosing container non-strict
+        elem.firstChild.getOrElse(
+          elem
+        )) //to make enclosing container non-strict
       .flatMap(_.scopes.toStream.headOption)
       .orNull
   }
@@ -1211,8 +1212,9 @@ object ScalaRefactoringUtil {
         val replaceAsInjection = Seq("s", "raw").contains(prefix)
 
         if (replaceAsInjection) {
-          val withNextChar = file.getText
-            .substring(newRange.getStartOffset, newRange.getEndOffset + 1)
+          val withNextChar = file.getText.substring(
+            newRange.getStartOffset,
+            newRange.getEndOffset + 1)
           val needBraces = ScalaNamesUtil.isIdentifier(
             withNextChar) && withNextChar.last != '$'
           val text = if (needBraces) s"$${$newString}" else s"$$$newString"

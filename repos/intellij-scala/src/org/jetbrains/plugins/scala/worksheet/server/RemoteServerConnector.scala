@@ -174,10 +174,10 @@ object RemoteServerConnector {
 
           val lines1 = lines(linesLength - 1)
 
-          buffer append lines(linesLength - 2)
-            .substring(differ) append "\n" append (if (lines1.length > differ)
-                                                     lines1.substring(differ)
-                                                   else lines1) append "\n"
+          buffer append lines(linesLength - 2).substring(
+            differ) append "\n" append (if (lines1.length > differ)
+                                          lines1.substring(differ)
+                                        else lines1) append "\n"
           buffer.toString()
         }
 

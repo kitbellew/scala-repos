@@ -28,8 +28,7 @@ object SSLConfigParserSpec extends Specification {
     }
 
     "parse ws.ssl base section" in new WithApplication() {
-      val actual =
-        parseThis("""
+      val actual = parseThis("""
                                 |default = true
                                 |protocol = TLSv1.1
                                 |checkRevocation = true
@@ -170,8 +169,7 @@ object SSLConfigParserSpec extends Specification {
     }
 
     "parse ws.ssl.keyManager section" in new WithApplication() {
-      val info =
-        parseThis("""
+      val info = parseThis("""
                               |keyManager = {
                               |  password = "changeit"
                               |  algorithm = "keyStore"

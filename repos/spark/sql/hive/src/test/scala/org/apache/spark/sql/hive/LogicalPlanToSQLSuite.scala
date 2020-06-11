@@ -428,7 +428,8 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       """.stripMargin)
   }
 
-  test("script transformation - row format delimited clause with only one format property") {
+  test(
+    "script transformation - row format delimited clause with only one format property") {
     checkHiveQl(
       """SELECT TRANSFORM (key) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
         |USING 'cat' AS (tKey) ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t'
@@ -436,7 +437,8 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       """.stripMargin)
   }
 
-  test("script transformation - row format delimited clause with multiple format properties") {
+  test(
+    "script transformation - row format delimited clause with multiple format properties") {
     checkHiveQl("""SELECT TRANSFORM (key)
         |ROW FORMAT DELIMITED FIELDS TERMINATED BY '\t' LINES TERMINATED BY '\t'
         |USING 'cat' AS (tKey)

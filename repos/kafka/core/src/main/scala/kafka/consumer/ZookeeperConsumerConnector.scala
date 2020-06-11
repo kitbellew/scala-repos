@@ -468,7 +468,8 @@ private[kafka] class ZookeeperConsumerConnector(
               debug(errorCount + " errors in offset commit response.")
 
               if (shouldRefreshCoordinator) {
-                debug("Could not commit offsets (because offset coordinator has moved or is unavailable).")
+                debug(
+                  "Could not commit offsets (because offset coordinator has moved or is unavailable).")
                 offsetsChannel.disconnect()
               }
 
@@ -552,7 +553,8 @@ private[kafka] class ZookeeperConsumerConnector(
                 "Could not fetch offsets (because offset manager has moved).")
               None // retry
             } else if (loadInProgress) {
-              debug("Could not fetch offsets (because offset cache is being loaded).")
+              debug(
+                "Could not fetch offsets (because offset cache is being loaded).")
               None // retry
             } else {
               if (config.dualCommitEnabled) {
@@ -622,7 +624,8 @@ private[kafka] class ZookeeperConsumerConnector(
         *  connection for us. We need to release the ownership of the current consumer and re-register this
         *  consumer in the consumer registry and trigger a rebalance.
         */
-      info("ZK expired; release old broker parition ownership; re-register consumer " + consumerIdString)
+      info(
+        "ZK expired; release old broker parition ownership; re-register consumer " + consumerIdString)
       loadBalancerListener.resetState()
       registerConsumerInZK(dirs, consumerIdString, topicCount)
       // explicitly trigger load balancing for this consumer
@@ -793,7 +796,8 @@ private[kafka] class ZookeeperConsumerConnector(
             } else {
               /* Here the cache is at a risk of being stale. To take future rebalancing decisions correctly, we should
                * clear the cache */
-              info("Rebalancing attempt failed. Clearing the cache before the next rebalancing operation is triggered")
+              info(
+                "Rebalancing attempt failed. Clearing the cache before the next rebalancing operation is triggered")
             }
             // stop all fetchers and clear all the queues to avoid data duplication
             closeFetchersForQueues(
@@ -823,8 +827,9 @@ private[kafka] class ZookeeperConsumerConnector(
         // We log an warning and register for child changes on brokers/id so that rebalance can be triggered when the brokers
         // are up.
         warn("no brokers found when trying to rebalance.")
-        zkUtils.zkClient
-          .subscribeChildChanges(BrokerIdsPath, loadBalancerListener)
+        zkUtils.zkClient.subscribeChildChanges(
+          BrokerIdsPath,
+          loadBalancerListener)
         true
       } else {
 
@@ -1164,8 +1169,9 @@ private[kafka] class ZookeeperConsumerConnector(
       val topicThreadId = e._1
       val q = e._2._1
       topicThreadIdAndQueues.put(topicThreadId, q)
-      debug("Adding topicThreadId %s and queue %s to topicThreadIdAndQueues data structure"
-        .format(topicThreadId, q.toString))
+      debug(
+        "Adding topicThreadId %s and queue %s to topicThreadIdAndQueues data structure"
+          .format(topicThreadId, q.toString))
       newGauge(
         "FetchQueueSize",
         new Gauge[Int] {
@@ -1190,14 +1196,16 @@ private[kafka] class ZookeeperConsumerConnector(
     // listener to consumer and partition changes
     zkUtils.zkClient.subscribeStateChanges(sessionExpirationListener)
 
-    zkUtils.zkClient
-      .subscribeChildChanges(dirs.consumerRegistryDir, loadBalancerListener)
+    zkUtils.zkClient.subscribeChildChanges(
+      dirs.consumerRegistryDir,
+      loadBalancerListener)
 
     topicStreamsMap.foreach { topicAndStreams =>
       // register on broker partition path changes
       val topicPath = BrokerTopicsPath + "/" + topicAndStreams._1
-      zkUtils.zkClient
-        .subscribeDataChanges(topicPath, topicPartitionChangeListener)
+      zkUtils.zkClient.subscribeDataChanges(
+        topicPath,
+        topicPartitionChangeListener)
     }
 
     // explicitly trigger load balancing for this consumer

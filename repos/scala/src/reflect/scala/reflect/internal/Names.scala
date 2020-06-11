@@ -271,7 +271,7 @@ trait Names extends api.Names {
       (that ne null) && (toString == that.toString)
     def string_==(that: String): Boolean = (that ne null) && (toString == that)
 
-    /**
+    /** **
       *  This has been quite useful to find places where people are comparing
       *  a TermName and a TypeName, or a Name and a String.
       *

@@ -293,8 +293,9 @@ private[deploy] class Worker(
                 override def run(): Unit = {
                   try {
                     logInfo("Connecting to master " + masterAddress + "...")
-                    val masterEndpoint = rpcEnv
-                      .setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
+                    val masterEndpoint = rpcEnv.setupEndpointRef(
+                      masterAddress,
+                      Master.ENDPOINT_NAME)
                     registerWithMaster(masterEndpoint)
                   } catch {
                     case ie: InterruptedException => // Cancelled

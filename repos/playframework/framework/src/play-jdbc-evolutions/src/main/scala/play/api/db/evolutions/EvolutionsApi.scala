@@ -149,8 +149,7 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
 
     try {
 
-      Collections.unfoldLeft(
-        executeQuery("""
+      Collections.unfoldLeft(executeQuery("""
             select id, hash, apply_script, revert_script from ${schema}play_evolutions order by id
         """)) { rs =>
         rs.next match {
@@ -176,8 +175,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
     def logBefore(script: Script)(implicit conn: Connection): Unit = {
       script match {
         case UpScript(e) => {
-          val ps =
-            prepare("insert into ${schema}play_evolutions (id, hash, applied_at, apply_script, revert_script, state, last_problem) values(?, ?, ?, ?, ?, ?, ?)")
+          val ps = prepare(
+            "insert into ${schema}play_evolutions (id, hash, applied_at, apply_script, revert_script, state, last_problem) values(?, ?, ?, ?, ?, ?, ?)")
           ps.setInt(1, e.revision)
           ps.setString(2, e.hash)
           ps.setDate(3, new Date(System.currentTimeMillis()))
@@ -304,8 +303,8 @@ class DatabaseEvolutions(database: Database, schema: String = "") {
     implicit val connection = database.getConnection(autocommit = autocommit)
 
     try {
-      val problem =
-        executeQuery("select id, hash, apply_script, revert_script, state, last_problem from ${schema}play_evolutions where state like 'applying_%'")
+      val problem = executeQuery(
+        "select id, hash, apply_script, revert_script, state, last_problem from ${schema}play_evolutions where state like 'applying_%'")
 
       if (problem.next) {
         val revision = problem.getInt("id")

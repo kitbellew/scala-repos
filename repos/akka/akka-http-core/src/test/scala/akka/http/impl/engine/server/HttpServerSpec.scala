@@ -1021,8 +1021,9 @@ class HttpServerSpec
         // entities that would be strict but have a Content-Length > the configured maximum are delivered
         // as single element Default entities!
         sendStrictRequestWithLength(11)
-        expectRequest()
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
 
       "the config setting (default entity)" in new LengthVerificationTest(
@@ -1031,8 +1032,9 @@ class HttpServerSpec
         expectRequest().expectEntity[HttpEntity.Default](10)
 
         sendDefaultRequestWithLength(11)
-        expectRequest()
-          .expectDefaultEntityWithSizeError(limit = 10, actualSize = 11)
+        expectRequest().expectDefaultEntityWithSizeError(
+          limit = 10,
+          actualSize = 11)
       }
 
       "the config setting (chunked entity)" in new LengthVerificationTest(

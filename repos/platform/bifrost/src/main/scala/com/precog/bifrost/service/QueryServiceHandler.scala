@@ -274,8 +274,8 @@ class SyncQueryServiceHandler(
 
       case (Right(Detailed), None, data0) =>
         val data = ensureTermination(data0)
-        val prefix = CharBuffer
-          .wrap("""{"errors":[],"warnings":[],"serverWarnings":[{"message":"Job service is down; errors/warnings are disabled."}],"data":""")
+        val prefix = CharBuffer.wrap(
+          """{"errors":[],"warnings":[],"serverWarnings":[{"message":"Job service is down; errors/warnings are disabled."}],"data":""")
         val result: StreamT[Future, CharBuffer] =
           (prefix :: data) ++ (CharBuffer.wrap("}") :: StreamT
             .empty[Future, CharBuffer])

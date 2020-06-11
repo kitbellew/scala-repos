@@ -105,8 +105,8 @@ class ActorConfigurationVerificationSpec
     "fail verification if the dispatcher cannot be found for the head of a router" in {
       intercept[ConfigurationException] {
         system.actorOf(
-          RoundRobinPool(1, routerDispatcher = "does not exist")
-            .props(Props[TestActor]))
+          RoundRobinPool(1, routerDispatcher = "does not exist").props(
+            Props[TestActor]))
       }
     }
 

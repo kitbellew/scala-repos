@@ -48,8 +48,8 @@ object MarathonSchedulerDriver {
     }
 
     // set the authentication principal, if provided
-    config.mesosAuthenticationPrincipal.get
-      .foreach(frameworkInfoBuilder.setPrincipal)
+    config.mesosAuthenticationPrincipal.get.foreach(
+      frameworkInfoBuilder.setPrincipal)
 
     val credential: Option[Credential] =
       config.mesosAuthenticationPrincipal.get.map { principal =>

@@ -397,8 +397,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
           from(companies)(c =>
             where(c.name === "First Company USA")
               select (&(toChar(c.created, "EEE, d MMM yyyy"))))
-        created.head must_== new SimpleDateFormat("EEE, d MMM yyyy")
-          .format(Calendar.getInstance().getTime())
+        created.head must_== new SimpleDateFormat("EEE, d MMM yyyy").format(
+          Calendar.getInstance().getTime())
       }
     }
 
@@ -406,8 +406,10 @@ class SquerylRecordSpec extends Specification with AroundExample {
       val posoMetaData = companies.posoMetaData
       val fieldMetaData =
         posoMetaData.findFieldMetaDataForProperty("employeeSatisfaction").get
-      val columnDefinition = new PostgreSqlAdapter()
-        .writeColumnDeclaration(fieldMetaData, false, MySchema)
+      val columnDefinition = new PostgreSqlAdapter().writeColumnDeclaration(
+        fieldMetaData,
+        false,
+        MySchema)
       columnDefinition.endsWith(
         "numeric(" + Company.employeeSatisfaction.context
           .getPrecision() + "," + Company.employeeSatisfaction.scale + ")") must_== true

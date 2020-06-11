@@ -26,7 +26,8 @@ class AsyncLatchTest extends FunSuite {
     assert(didCall)
   }
 
-  test("when count>0, AsyncLatch should not re-execute waiters when the count increases again") {
+  test(
+    "when count>0, AsyncLatch should not re-execute waiters when the count increases again") {
     val latch = new AsyncLatch(1)
     var count0 = 0
     var count1 = 0

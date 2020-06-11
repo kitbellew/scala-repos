@@ -51,8 +51,9 @@ class ScaladocAction
           new ScaladocRunConfiguration(project, configurationDialog, config)
 
         val runner: ProgramRunner[_ <: RunnerSettings] =
-          RunnerRegistry.getInstance
-            .getRunner(DefaultRunExecutor.EXECUTOR_ID, config)
+          RunnerRegistry.getInstance.getRunner(
+            DefaultRunExecutor.EXECUTOR_ID,
+            config)
         val builder: ExecutionEnvironmentBuilder =
           new ExecutionEnvironmentBuilder(
             project,
@@ -83,8 +84,8 @@ class ScaladocAction
       project: Project,
       dialog: BaseAnalysisActionDialog): JComponent = {
     configurationDialog = new ScaladocConsoleRunConfigurationForm(project)
-    configurationDialog.getOutputDirChooser.getDocument
-      .addDocumentListener(new DocumentAdapter() {
+    configurationDialog.getOutputDirChooser.getDocument.addDocumentListener(
+      new DocumentAdapter() {
         def textChanged(e: DocumentEvent) {
           updateAvailability(dialog)
         }

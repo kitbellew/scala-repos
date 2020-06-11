@@ -169,8 +169,9 @@ object SimplifyBooleanUtil {
               .createExpressionFromText("!a", manager)
               .asInstanceOf[ScPrefixExpr]
             val copyExpr = expr.copy.asInstanceOf[ScExpression]
-            negated.operand
-              .replaceExpression(copyExpr, removeParenthesis = true)
+            negated.operand.replaceExpression(
+              copyExpr,
+              removeParenthesis = true)
             negated.getText
           case (true, "||") | (true, "|") =>
             ScalaKeyword.TRUE

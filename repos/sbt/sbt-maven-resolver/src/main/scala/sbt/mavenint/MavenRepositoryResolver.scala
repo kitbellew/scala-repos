@@ -424,8 +424,9 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     for (d <- result.getManagedDependencies.asScala) {
       // TODO - Figure out what to do about exclusions on managed dependencies.
       md.addDependencyDescriptorMediator(
-        ModuleId
-          .newInstance(d.getArtifact.getGroupId, d.getArtifact.getArtifactId),
+        ModuleId.newInstance(
+          d.getArtifact.getGroupId,
+          d.getArtifact.getArtifactId),
         ExactPatternMatcher.INSTANCE,
         new OverrideDependencyDescriptorMediator(
           null,

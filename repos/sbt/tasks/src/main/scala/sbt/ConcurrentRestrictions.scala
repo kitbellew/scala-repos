@@ -182,11 +182,13 @@ object ConcurrentRestrictions {
           running -= 1
           tagState = tags.remove(tagState, node)
           if (!tags.valid(tagState))
-            warn("Invalid restriction: removing a completed node from a valid system must result in a valid system.")
+            warn(
+              "Invalid restriction: removing a completed node from a valid system must result in a valid system.")
           submitValid(new LinkedList)
         }
       private[this] def errorAddingToIdle() =
-        warn("Invalid restriction: adding a node to an idle system must be allowed.")
+        warn(
+          "Invalid restriction: adding a node to an idle system must be allowed.")
 
       /** Submits pending tasks that are now allowed to executed. */
       @tailrec private[this] def submitValid(tried: Queue[Enqueue]): Unit =

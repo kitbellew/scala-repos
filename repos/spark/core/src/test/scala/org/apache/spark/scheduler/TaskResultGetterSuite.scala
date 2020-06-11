@@ -250,8 +250,10 @@ class TaskResultGetterSuite
     // Just run 1 task and capture the corresponding DirectTaskResult
     sc.parallelize(1 to 1, 1).count()
     val captor = ArgumentCaptor.forClass(classOf[DirectTaskResult[_]])
-    verify(spyScheduler, times(1))
-      .handleSuccessfulTask(any(), anyLong(), captor.capture())
+    verify(spyScheduler, times(1)).handleSuccessfulTask(
+      any(),
+      anyLong(),
+      captor.capture())
 
     // When a task finishes, the executor sends a serialized DirectTaskResult to the driver
     // without setting the result size so as to avoid serializing the result again. Instead,

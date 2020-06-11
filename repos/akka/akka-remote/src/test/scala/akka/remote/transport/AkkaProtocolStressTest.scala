@@ -54,8 +54,10 @@ object AkkaProtocolStressTest {
           remote ! nextSeq
           nextSeq += 1
           if (nextSeq % 2000 == 0)
-            context.system.scheduler
-              .scheduleOnce(500.milliseconds, self, "sendNext")
+            context.system.scheduler.scheduleOnce(
+              500.milliseconds,
+              self,
+              "sendNext")
           else self ! "sendNext"
         }
       case seq: Int ⇒

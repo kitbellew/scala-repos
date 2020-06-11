@@ -50,9 +50,7 @@ object LazyMacrosRef {
         if (lm == LazyMacrosRef) forward
         else {
           lm.asInstanceOf[
-            {
-              def mkLazyImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Lazy[I]]
-            }
+            { def mkLazyImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Lazy[I]] }
           ].mkLazyImpl(c)(weakTypeTag[I])
         }
       case None =>

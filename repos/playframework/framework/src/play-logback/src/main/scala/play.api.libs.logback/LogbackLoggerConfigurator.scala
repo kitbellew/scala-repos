@@ -49,8 +49,8 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
         .resource("application-logger.xml")
         .orElse(env.resource("logger.xml"))
         .isEmpty) {
-      System.err
-        .println("application-logger.xml and logger.xml are no longer supported. Please name your file logback.xml");
+      System.err.println(
+        "application-logger.xml and logger.xml are no longer supported. Please name your file logback.xml");
     }
 
     // logback.xml is the documented method, logback-play-default.xml is the fallback that Play uses
@@ -116,8 +116,8 @@ class LogbackLoggerConfigurator extends LoggerConfigurator {
             config match {
               case Some(url) => configurator.doConfigure(url)
               case None =>
-                System.err
-                  .println("Could not detect a logback configuration file, not configuring logback")
+                System.err.println(
+                  "Could not detect a logback configuration file, not configuring logback")
             }
           } catch {
             case NonFatal(e) =>

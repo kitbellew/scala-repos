@@ -621,8 +621,9 @@ object ScalaDocumentationProvider {
               case _ =>
             }
             if (inherRetTag != null) {
-              returnTag = inherRetTag.getText
-                .substring(0, inherRetTag.getText.lastIndexOf("\n") + 1)
+              returnTag = inherRetTag.getText.substring(
+                0,
+                inherRetTag.getText.lastIndexOf("\n") + 1)
             }
           }
         }
@@ -753,8 +754,8 @@ object ScalaDocumentationProvider {
           buffer append " with " + ScType.urlText(
             seq(i).getType(TypingContext.empty).getOrAny)
       case None =>
-        buffer
-          .append("<a href=\"psi_element://scala.ScalaObject\"><code>ScalaObject</code></a>")
+        buffer.append(
+          "<a href=\"psi_element://scala.ScalaObject\"><code>ScalaObject</code></a>")
         if (elem.isUnderCaseClass) {
           buffer.append(
             "<a href=\"psi_element://scala.Product\"><code>Product</code></a>")

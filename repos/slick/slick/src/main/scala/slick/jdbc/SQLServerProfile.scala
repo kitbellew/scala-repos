@@ -60,8 +60,8 @@ trait SQLServerProfile extends JdbcProfile {
         .profileConfig("slick.driver.SQLServer")
         .entrySet()
         .isEmpty)
-      SlickLogger[SQLServerProfile]
-        .warn("The config key 'slick.driver.SQLServer' is deprecated and not used anymore. Use 'slick.jdbc.SQLServerProfile' instead.")
+      SlickLogger[SQLServerProfile].warn(
+        "The config key 'slick.driver.SQLServer' is deprecated and not used anymore. Use 'slick.jdbc.SQLServerProfile' instead.")
     super.loadProfileConfig
   }
 

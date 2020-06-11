@@ -201,7 +201,8 @@ object Test extends Properties("HtmlFactory") {
           "<span title=\"gt4s: $plus$colon\" class=\"name\">+:</span>") &&
         html.contains(
           "<span title=\"gt4s: $minus$colon\" class=\"name\">-:</span>") &&
-        html.contains("""<span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>""")
+        html.contains(
+          """<span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>""")
       }
       case _ => false
     }

@@ -47,7 +47,8 @@ private[finagle] object FinagleScheduler {
         .asInstanceOf[BlockingQueue[Runnable]]
       catch {
         case _: ClassNotFoundException => {
-          log.info("bridged scheduler is not available on pre java 7, using local instead")
+          log.info(
+            "bridged scheduler is not available on pre java 7, using local instead")
           return
         }
       }

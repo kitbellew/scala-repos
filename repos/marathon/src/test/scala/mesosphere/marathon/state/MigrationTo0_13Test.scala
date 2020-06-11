@@ -61,7 +61,8 @@ class MigrationTo0_13Test
     result.getMessage.contains("invalid stream header")
   }
 
-  test("Already migrated tasks will be excluded from a subsequent migration attempt") {
+  test(
+    "Already migrated tasks will be excluded from a subsequent migration attempt") {
     val f = new Fixture
     Given("some tasks that are stored in old path style")
     val appId = "/test/app1".toRootPath
@@ -88,7 +89,8 @@ class MigrationTo0_13Test
     And("we run the migration again")
     f.migration.migrateTasks().futureValue
 
-    Then("Only the second task is considered and the first one does not crash the migration")
+    Then(
+      "Only the second task is considered and the first one does not crash the migration")
     val taskKeys2 = f.taskRepo.tasksKeys(appId).futureValue
     taskKeys2 should have size 2
     taskKeys2 should contain(task1.getId)

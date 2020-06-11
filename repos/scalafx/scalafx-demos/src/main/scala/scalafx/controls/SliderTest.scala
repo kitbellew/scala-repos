@@ -102,8 +102,8 @@ class SliderControls(target: Slider)
   val txfBlockIncrement = new TextField {
     text = originalBlockIncrement.get.toString
   }
-  target.blockIncrement
-    .onChange(txfBlockIncrement.text = target.blockIncrement.get.toString)
+  target.blockIncrement.onChange(txfBlockIncrement.text =
+    target.blockIncrement.get.toString)
   txfBlockIncrement.onAction = handle {
     fillDoublePropertyFromText(target.blockIncrement, txfBlockIncrement, false)
   }
@@ -119,8 +119,8 @@ class SliderControls(target: Slider)
   val txfMajorTickUnit = new TextField {
     text = originalMajorTickUnit.toString
   }
-  target.majorTickUnit
-    .onChange(txfMajorTickUnit.text = target.majorTickUnit.get.toString)
+  target.majorTickUnit.onChange(txfMajorTickUnit.text =
+    target.majorTickUnit.get.toString)
   txfMajorTickUnit.onAction = handle {
     fillDoublePropertyFromText(target.majorTickUnit, txfMajorTickUnit, false)
   }
@@ -138,8 +138,8 @@ class SliderControls(target: Slider)
   val txfMinorTickCount = new TextField {
     text = originalMinorTickCount.toString
   }
-  target.minorTickCount
-    .onChange(txfMinorTickCount.text = target.minorTickCount.get.toString)
+  target.minorTickCount.onChange(txfMinorTickCount.text =
+    target.minorTickCount.get.toString)
   txfMinorTickCount.onAction = handle {
     fillIntPropertyFromText(target.minorTickCount, txfMinorTickCount, false)
   }

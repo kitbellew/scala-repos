@@ -364,7 +364,7 @@ private[internal] trait TypeMaps {
         }
     }
 
-  /**
+  /** *
     * @M: I think this is more desirable, but Martin prefers to leave raw-types as-is as much as possible
     *    object rawToExistentialInJava extends TypeMap {
     *      def apply(tp: Type): Type = tp match {
@@ -691,8 +691,9 @@ private[internal] trait TypeMaps {
       private def newThis(): Tree = {
         wroteAnnotation = true
         val presym = seenFromPrefix.widen.typeSymbol
-        val thisSym = presym.owner
-          .newValue(presym.name.toTermName, presym.pos) setInfo seenFromPrefix
+        val thisSym = presym.owner.newValue(
+          presym.name.toTermName,
+          presym.pos) setInfo seenFromPrefix
         gen.mkAttributedQualifier(seenFromPrefix, thisSym)
       }
 

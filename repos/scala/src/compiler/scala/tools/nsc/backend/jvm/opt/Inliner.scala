@@ -43,10 +43,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
             .emitWarning(compilerSettings)) {
           val annotWarn =
             if (callee.annotatedInline) " is annotated @inline but" else ""
-          val msg =
-            s"${BackendReporting.methodSignature(
-              callee.calleeDeclarationClass.internalName,
-              callee.callee)}$annotWarn could not be inlined:\n$warning"
+          val msg = s"${BackendReporting.methodSignature(
+            callee.calleeDeclarationClass.internalName,
+            callee.callee)}$annotWarn could not be inlined:\n$warning"
           backendReporting.inlinerWarning(
             request.callsite.callsitePosition,
             msg)
@@ -544,8 +543,9 @@ class Inliner[BT <: BTypes](val btypes: BT) {
     // at some instruction, the first handler guarding that instruction and having a matching exception
     // type is executed. prepending the callee's handlers makes sure to test those handlers first if
     // an exception is thrown in the inlined code.
-    callsiteMethod.tryCatchBlocks
-      .addAll(0, cloneTryCatchBlockNodes(callee, labelsMap).asJava)
+    callsiteMethod.tryCatchBlocks.addAll(
+      0,
+      cloneTryCatchBlockNodes(callee, labelsMap).asJava)
 
     callsiteMethod.maxLocals += returnType.getSize + callee.maxLocals
     val maxStackOfInlinedCode = {

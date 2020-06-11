@@ -529,8 +529,9 @@ object ScalaTestGenerator {
       closingBrace)
     testNames.map(testName =>
       templateBody.addBefore(
-        ScalaPsiElementFactory
-          .createMethodFromText("def " + testName + " = ok", psiManager),
+        ScalaPsiElementFactory.createMethodFromText(
+          "def " + testName + " = ok",
+          psiManager),
         closingBrace))
   }
 
@@ -610,8 +611,10 @@ object ScalaTestGenerator {
       project: Project) {
     val normalIndentString = FormatterUtil.getNormalIndentString(project)
     templateBody.addBefore(
-      ScalaPsiElementFactory
-        .createElement("val tests = TestSuite{}", psiManager, Def.parse(_)),
+      ScalaPsiElementFactory.createElement(
+        "val tests = TestSuite{}",
+        psiManager,
+        Def.parse(_)),
       templateBody.getLastChild)
     if (methods.nonEmpty) {
       templateBody.addBefore(

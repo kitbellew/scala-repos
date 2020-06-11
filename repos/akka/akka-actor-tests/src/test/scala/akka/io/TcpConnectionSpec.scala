@@ -316,8 +316,9 @@ class TcpConnectionSpec extends AkkaSpec("""
         override lazy val connectionActor = createConnectionActor(options =
           List(Inet.SO.ReceiveBufferSize(1000000)))
         run {
-          info("Currently ignored as SO_SNDBUF is usually a lower bound on the send buffer so the test fails as no real " +
-            "backpressure present.")
+          info(
+            "Currently ignored as SO_SNDBUF is usually a lower bound on the send buffer so the test fails as no real " +
+              "backpressure present.")
           pending
           ignoreIfWindows()
           object Ack1 extends Event
@@ -943,8 +944,9 @@ class TcpConnectionSpec extends AkkaSpec("""
 
     def register(channel: SelectableChannel, initialOps: Int)(implicit
         channelActor: ActorRef): Unit =
-      registerCallReceiver.ref
-        .tell(Registration(channel, initialOps), channelActor)
+      registerCallReceiver.ref.tell(
+        Registration(channel, initialOps),
+        channelActor)
 
     def setServerSocketOptions() = ()
 
@@ -1191,8 +1193,10 @@ class TcpConnectionSpec extends AkkaSpec("""
         .mkString(", ")
 
     def abortClose(channel: SocketChannel): Unit = {
-      try channel.socket
-        .setSoLinger(true, 0) // causes the following close() to send TCP RST
+      try channel.socket.setSoLinger(
+        true,
+        0
+      ) // causes the following close() to send TCP RST
       catch {
         case NonFatal(e) ⇒
           // setSoLinger can fail due to http://bugs.sun.com/view_bug.do?bug_id=6799574

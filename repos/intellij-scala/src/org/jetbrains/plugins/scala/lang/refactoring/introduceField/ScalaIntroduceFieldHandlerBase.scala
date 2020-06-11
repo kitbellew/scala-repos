@@ -138,9 +138,8 @@ object ScalaIntroduceFieldHandlerBase {
     val container = ScalaRefactoringUtil.container(parExpr, ifc.file)
     val stmtsAndMmbrs =
       ScalaRefactoringUtil.statementsAndMembersInClass(ifc.aClass)
-    val containerIsLocal =
-      (Iterator(container) ++ new ParentsIterator(container))
-        .exists(stmtsAndMmbrs.contains(_))
+    val containerIsLocal = (Iterator(container) ++ new ParentsIterator(
+      container)).exists(stmtsAndMmbrs.contains(_))
     if (!containerIsLocal) false
     else {
       ifc.element match {

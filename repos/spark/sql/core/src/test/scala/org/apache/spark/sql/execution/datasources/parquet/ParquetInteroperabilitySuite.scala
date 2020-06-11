@@ -25,7 +25,8 @@ import org.apache.spark.sql.test.SharedSQLContext
 class ParquetInteroperabilitySuite
     extends ParquetCompatibilityTest
     with SharedSQLContext {
-  test("parquet files with different physical schemas but share the same logical schema") {
+  test(
+    "parquet files with different physical schemas but share the same logical schema") {
     import ParquetCompatibilityTest._
 
     // This test case writes two Parquet files, both representing the following Catalyst schema

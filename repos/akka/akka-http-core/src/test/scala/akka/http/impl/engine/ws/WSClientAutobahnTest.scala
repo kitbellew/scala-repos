@@ -81,8 +81,8 @@ object WSClientAutobahnTest extends App {
     runToSingleText(getCaseCountUri).map(_.toInt)
 
   def getCaseInfo(caseId: Int): Future[IndexedCaseInfo] =
-    runToSingleJsonValue[CaseInfo](getCaseInfoUri(caseId))
-      .map(IndexedCaseInfo(caseId, _))
+    runToSingleJsonValue[CaseInfo](getCaseInfoUri(caseId)).map(
+      IndexedCaseInfo(caseId, _))
 
   def getCaseStatus(caseId: Int, agent: String = Agent): Future[CaseStatus] =
     runToSingleJsonValue[CaseStatus](getCaseStatusUri(caseId, agent))
@@ -174,7 +174,8 @@ object WSClientAutobahnTest extends App {
   }
   def updateReportsAndShutdown(): Unit =
     updateReports().onComplete { res ⇒
-      println("Reports should now be accessible at http://localhost:8080/cwd/reports/clients/index.html")
+      println(
+        "Reports should now be accessible at http://localhost:8080/cwd/reports/clients/index.html")
       system.terminate()
     }
 

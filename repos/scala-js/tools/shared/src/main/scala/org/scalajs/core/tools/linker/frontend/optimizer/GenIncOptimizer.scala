@@ -991,8 +991,9 @@ abstract class GenIncOptimizer private[optimizer] (
           .fold {
             // If it's not a class, it must be a call to a default intf method
             val defaultsNS = defaults(className)
-            MethodImpl.this
-              .registerStaticCall(defaultsNS.myInterface, methodName)
+            MethodImpl.this.registerStaticCall(
+              defaultsNS.myInterface,
+              methodName)
             defaultsNS.methods.get(methodName)
           } { clazz =>
             MethodImpl.this.registerStaticCall(clazz.myInterface, methodName)

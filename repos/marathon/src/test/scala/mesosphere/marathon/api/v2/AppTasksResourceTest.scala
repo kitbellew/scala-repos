@@ -145,7 +145,8 @@ class AppTasksResourceTest
     deleteMany.getStatus should be(auth.NotAuthenticatedStatus)
   }
 
-  test("access to indexJson without authorization leads to a 404 if the app does not exist") {
+  test(
+    "access to indexJson without authorization leads to a 404 if the app does not exist") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false
@@ -177,7 +178,8 @@ class AppTasksResourceTest
     indexJson.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test("access to indexJson without authorization leads to a 404 if the group does not exist") {
+  test(
+    "access to indexJson without authorization leads to a 404 if the group does not exist") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false
@@ -192,7 +194,8 @@ class AppTasksResourceTest
     indexJson.getStatus should be(404)
   }
 
-  test("access to indexJson without authorization is not allowed if the group exists") {
+  test(
+    "access to indexJson without authorization is not allowed if the group exists") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false
@@ -226,7 +229,8 @@ class AppTasksResourceTest
     indexTxt.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test("access to indexTxt without authorization leads to a 404 if the the app does not exist") {
+  test(
+    "access to indexTxt without authorization leads to a 404 if the the app does not exist") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false
@@ -260,7 +264,8 @@ class AppTasksResourceTest
     deleteOne.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test("access to deleteOne without authorization leads to a 404 if the the app does not exist") {
+  test(
+    "access to deleteOne without authorization leads to a 404 if the the app does not exist") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false
@@ -277,7 +282,8 @@ class AppTasksResourceTest
     deleteOne.getStatus should be(404)
   }
 
-  test("access to deleteMany without authorization is not allowed if the app exists") {
+  test(
+    "access to deleteMany without authorization is not allowed if the app exists") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false
@@ -295,7 +301,8 @@ class AppTasksResourceTest
     deleteMany.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test("access to deleteMany without authorization leads to a 404 if the the app does not exist") {
+  test(
+    "access to deleteMany without authorization leads to a 404 if the the app does not exist") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false

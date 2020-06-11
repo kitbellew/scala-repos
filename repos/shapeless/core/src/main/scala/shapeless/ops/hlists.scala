@@ -1071,7 +1071,8 @@ object hlist {
     *
     * @author Andreas Koestler
     */
-  @implicitNotFound("Implicit not found: shapeless.Ops.SelectRange[${L}, ${A}, ${B}]. You requested the elements in range [${A},${B}[, but HList ${L} does not contain all of them.")
+  @implicitNotFound(
+    "Implicit not found: shapeless.Ops.SelectRange[${L}, ${A}, ${B}]. You requested the elements in range [${A},${B}[, but HList ${L} does not contain all of them.")
   trait SelectRange[L <: HList, A <: Nat, B <: Nat] extends DepFn1[L] {
     type Out <: HList
   }

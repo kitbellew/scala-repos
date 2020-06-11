@@ -223,8 +223,8 @@ case class SourceBuilder[T: Manifest] private (
               .evToKeyed(p.name(id))
               .sumByKey(batchSetStore)
           }
-          .getOrElse(sys
-            .error("Scalding mode specified alongside some online-only Source, Service or Sink."))
+          .getOrElse(sys.error(
+            "Scalding mode specified alongside some online-only Source, Service or Sink."))
         CompletedBuilder(
           newNode,
           registrar,
@@ -245,8 +245,8 @@ case class SourceBuilder[T: Manifest] private (
               .evToKeyed(p.name(id))
               .sumByKey(givenStore)
           }
-          .getOrElse(sys
-            .error("Storm mode specified alongside some offline-only Source, Service or Sink."))
+          .getOrElse(sys.error(
+            "Storm mode specified alongside some offline-only Source, Service or Sink."))
         CompletedBuilder(
           newNode,
           registrar,

@@ -181,11 +181,13 @@ abstract class Delambdafy
           targetParams.splitAt(numCaptures)
         val bridgeParams: List[Symbol] =
           targetCaptureParams.map(param =>
-            methSym
-              .newSyntheticValueParam(param.tpe, param.name.toTermName)) :::
+            methSym.newSyntheticValueParam(
+              param.tpe,
+              param.name.toTermName)) :::
             map2(targetFunctionParams, functionParamTypes)((param, tp) =>
-              methSym
-                .newSyntheticValueParam(boxedType(tp), param.name.toTermName))
+              methSym.newSyntheticValueParam(
+                boxedType(tp),
+                param.name.toTermName))
 
         val bridgeResultType: Type = {
           if (target.info.resultType == UnitTpe && functionResultType != UnitTpe) {

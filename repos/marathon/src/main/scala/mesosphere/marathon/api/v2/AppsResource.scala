@@ -268,8 +268,11 @@ class AppsResource @Inject() (
 
       val newVersion = clock.now()
       val restartDeployment = result(
-        groupManager
-          .updateApp(id.toRootPath, markForRestartingOrThrow, newVersion, force)
+        groupManager.updateApp(
+          id.toRootPath,
+          markForRestartingOrThrow,
+          newVersion,
+          force)
       )
 
       deploymentResult(restartDeployment)

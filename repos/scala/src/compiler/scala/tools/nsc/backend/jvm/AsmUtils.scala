@@ -57,8 +57,10 @@ object AsmUtils {
 
   def readClass(bytes: Array[Byte]): ClassNode = {
     val node = new ClassNode()
-    new ClassReader(bytes)
-      .accept(node, Array[Attribute](InlineInfoAttributePrototype), 0)
+    new ClassReader(bytes).accept(
+      node,
+      Array[Attribute](InlineInfoAttributePrototype),
+      0)
     node
   }
 

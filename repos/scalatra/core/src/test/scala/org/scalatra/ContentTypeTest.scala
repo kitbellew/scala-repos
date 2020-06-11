@@ -118,7 +118,8 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
     }
   }
 
-  test("contentType of a byte array with text content detects text/plain; charset=iso-8859-5") {
+  test(
+    "contentType of a byte array with text content detects text/plain; charset=iso-8859-5") {
     get("/implicit/byte-array-text") {
       response.charset should equal(Some("ISO-8859-5"))
       response.mediaType should equal(Some("text/plain"))

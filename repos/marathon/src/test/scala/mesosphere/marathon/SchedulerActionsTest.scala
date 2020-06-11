@@ -106,7 +106,8 @@ class SchedulerActionsTest
     verify(driver).reconcileTasks(java.util.Arrays.asList())
   }
 
-  test("Task reconciliation only one empty list, when no tasks are present in Marathon") {
+  test(
+    "Task reconciliation only one empty list, when no tasks are present in Marathon") {
     val queue = mock[LaunchQueue]
     val repo = mock[AppRepository]
     val taskTracker = mock[TaskTracker]

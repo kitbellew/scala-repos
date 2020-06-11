@@ -50,8 +50,8 @@ object ScalatraAtmosphereHandler {
       //      if (!event.getResource.isResumed) {
       //        event.getResource.session.invalidate()
       //      } else {
-      event.getResource.session
-        .removeAttribute(org.scalatra.atmosphere.AtmosphereClientKey)
+      event.getResource.session.removeAttribute(
+        org.scalatra.atmosphere.AtmosphereClientKey)
       //      }
     }
 

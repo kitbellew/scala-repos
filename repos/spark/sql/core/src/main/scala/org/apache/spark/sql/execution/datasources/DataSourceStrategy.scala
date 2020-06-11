@@ -219,8 +219,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         // broadcast HadoopConf.
         val sharedHadoopConf = SparkHadoopUtil.get.conf
         val confBroadcast =
-          t.sqlContext.sparkContext
-            .broadcast(new SerializableConfiguration(sharedHadoopConf))
+          t.sqlContext.sparkContext.broadcast(
+            new SerializableConfiguration(sharedHadoopConf))
 
         t.bucketSpec match {
           case Some(spec) if t.sqlContext.conf.bucketingEnabled =>
@@ -315,8 +315,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     // Otherwise, the cost of broadcasting HadoopConf in every RDD will be high.
     val sharedHadoopConf = SparkHadoopUtil.get.conf
     val confBroadcast =
-      relation.sqlContext.sparkContext
-        .broadcast(new SerializableConfiguration(sharedHadoopConf))
+      relation.sqlContext.sparkContext.broadcast(
+        new SerializableConfiguration(sharedHadoopConf))
     val partitionColumnNames = partitionColumns.fieldNames.toSet
 
     // Now, we create a scan builder, which will be used by pruneFilterProject. This scan builder
@@ -813,8 +813,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
         Some(sources.IsNotNull(a.name))
 
       case expressions.And(left, right) =>
-        (translateFilter(left) ++ translateFilter(right))
-          .reduceOption(sources.And)
+        (translateFilter(left) ++ translateFilter(right)).reduceOption(
+          sources.And)
 
       case expressions.Or(left, right) =>
         for {
@@ -825,16 +825,19 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       case expressions.Not(child) =>
         translateFilter(child).map(sources.Not)
 
-      case expressions
-            .StartsWith(a: Attribute, Literal(v: UTF8String, StringType)) =>
+      case expressions.StartsWith(
+            a: Attribute,
+            Literal(v: UTF8String, StringType)) =>
         Some(sources.StringStartsWith(a.name, v.toString))
 
-      case expressions
-            .EndsWith(a: Attribute, Literal(v: UTF8String, StringType)) =>
+      case expressions.EndsWith(
+            a: Attribute,
+            Literal(v: UTF8String, StringType)) =>
         Some(sources.StringEndsWith(a.name, v.toString))
 
-      case expressions
-            .Contains(a: Attribute, Literal(v: UTF8String, StringType)) =>
+      case expressions.Contains(
+            a: Attribute,
+            Literal(v: UTF8String, StringType)) =>
         Some(sources.StringContains(a.name, v.toString))
 
       case _ => None

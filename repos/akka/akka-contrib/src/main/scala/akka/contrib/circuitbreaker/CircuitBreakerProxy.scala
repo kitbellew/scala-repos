@@ -214,7 +214,8 @@ final class CircuitBreakerProxy(
         goto(HalfOpen) using state.copy(firstHalfOpenMessageSent = false)
 
       case Event(CallFailed, state) ⇒
-        log.debug("Open: Call received a further call failed notification, probably from a previous timed out event, ignoring")
+        log.debug(
+          "Open: Call received a further call failed notification, probably from a previous timed out event, ignoring")
         stay
 
       case Event(openNotification @ CircuitOpenFailure(_), _) ⇒
@@ -248,7 +249,8 @@ final class CircuitBreakerProxy(
         goto(Open)
 
       case Event(CallFailed, CircuitBreakerStateData(_, false)) ⇒
-        log.debug("HalfOpen: Call received a further call failed notification, probably from a previous timed out event, ignoring")
+        log.debug(
+          "HalfOpen: Call received a further call failed notification, probably from a previous timed out event, ignoring")
         stay
 
       case Event(message, state @ CircuitBreakerStateData(_, false)) ⇒

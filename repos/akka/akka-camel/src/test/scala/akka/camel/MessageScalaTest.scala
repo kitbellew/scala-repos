@@ -49,9 +49,8 @@ class MessageScalaTest extends FunSuite with Matchers with SharedCamelSystem {
   }
 
   test("mustSetHeadersAndPreserveBody") {
-    CamelMessage("test1", Map("A" -> "1"))
-      .copy(headers = Map("C" -> "3")) should ===(
-      CamelMessage("test1", Map("C" -> "3")))
+    CamelMessage("test1", Map("A" -> "1")).copy(headers =
+      Map("C" -> "3")) should ===(CamelMessage("test1", Map("C" -> "3")))
   }
 
   test("mustBeAbleToReReadStreamCacheBody") {

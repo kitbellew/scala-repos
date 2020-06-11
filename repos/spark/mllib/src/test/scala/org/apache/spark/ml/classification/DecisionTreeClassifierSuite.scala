@@ -108,7 +108,8 @@ class DecisionTreeClassifierSuite
       }
   }
 
-  test("Multiclass classification stump with 3-ary (unordered) categorical features") {
+  test(
+    "Multiclass classification stump with 3-ary (unordered) categorical features") {
     val rdd = categoricalDataPointsForMulticlassRDD
     val dt = new DecisionTreeClassifier()
       .setImpurity("Gini")
@@ -118,7 +119,8 @@ class DecisionTreeClassifierSuite
     compareAPIs(rdd, dt, categoricalFeatures, numClasses)
   }
 
-  test("Binary classification stump with 1 continuous feature, to check off-by-1 error") {
+  test(
+    "Binary classification stump with 1 continuous feature, to check off-by-1 error") {
     val arr = Array(
       LabeledPoint(0.0, Vectors.dense(0.0)),
       LabeledPoint(1.0, Vectors.dense(1.0)),
@@ -173,7 +175,8 @@ class DecisionTreeClassifierSuite
     compareAPIs(rdd, dt, categoricalFeatures = Map.empty[Int, Int], numClasses)
   }
 
-  test("Multiclass classification stump with continuous + unordered categorical features") {
+  test(
+    "Multiclass classification stump with continuous + unordered categorical features") {
     val rdd = continuousDataPointsForMulticlassRDD
     val dt = new DecisionTreeClassifier()
       .setImpurity("Gini")
@@ -223,7 +226,8 @@ class DecisionTreeClassifierSuite
     compareAPIs(rdd, dt, categoricalFeatures = Map.empty[Int, Int], numClasses)
   }
 
-  test("do not choose split that does not satisfy min instance per node requirements") {
+  test(
+    "do not choose split that does not satisfy min instance per node requirements") {
     // if a split does not satisfy min instances per node requirements,
     // this split is invalid, even though the information gain of split is large.
     val arr = Array(
@@ -308,7 +312,8 @@ class DecisionTreeClassifierSuite
     val model = dt.fit(df)
   }
 
-  test("Use soft prediction for binary classification with ordered categorical features") {
+  test(
+    "Use soft prediction for binary classification with ordered categorical features") {
     // The following dataset is set up such that the best split is {1} vs. {0, 2}.
     // If the hard prediction is used to order the categories, then {0} vs. {1, 2} is chosen.
     val arr = Array(

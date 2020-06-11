@@ -110,7 +110,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
       }
     }
 
-  property("0 or more merge producers at the start of every online bolts, followed by 1+ non-merge producers and no other merge producers following those.") =
+  property(
+    "0 or more merge producers at the start of every online bolts, followed by 1+ non-merge producers and no other merge producers following those.") =
     forAll { (dag: MemoryDag) =>
       dag.nodes.forall { n =>
         val (_, inError) = n.members.foldLeft((false, false)) {

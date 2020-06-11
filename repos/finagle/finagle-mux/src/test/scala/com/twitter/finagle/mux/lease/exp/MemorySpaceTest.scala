@@ -10,7 +10,8 @@ import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
 class MemorySpaceTest extends FunSuite with MockitoSugar {
-  test("MemorySpace#left should find the number of bytes left before we hit minDiscount") {
+  test(
+    "MemorySpace#left should find the number of bytes left before we hit minDiscount") {
     val nfo = mock[JvmInfo]
     when(nfo.remaining()).thenReturn(10.megabytes)
     val range = StorageUnit.zero

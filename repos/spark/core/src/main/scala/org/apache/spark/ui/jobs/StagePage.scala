@@ -1284,8 +1284,9 @@ private[ui] class TaskDataSource(
       case "Task Deserialization Time" =>
         new Ordering[TaskTableRowData] {
           override def compare(x: TaskTableRowData, y: TaskTableRowData): Int =
-            Ordering.Long
-              .compare(x.taskDeserializationTime, y.taskDeserializationTime)
+            Ordering.Long.compare(
+              x.taskDeserializationTime,
+              y.taskDeserializationTime)
         }
       case "GC Time" =>
         new Ordering[TaskTableRowData] {
@@ -1305,8 +1306,9 @@ private[ui] class TaskDataSource(
       case "Peak Execution Memory" =>
         new Ordering[TaskTableRowData] {
           override def compare(x: TaskTableRowData, y: TaskTableRowData): Int =
-            Ordering.Long
-              .compare(x.peakExecutionMemoryUsed, y.peakExecutionMemoryUsed)
+            Ordering.Long.compare(
+              x.peakExecutionMemoryUsed,
+              y.peakExecutionMemoryUsed)
         }
       case "Accumulators" =>
         if (hasAccumulators) {
@@ -1326,8 +1328,9 @@ private[ui] class TaskDataSource(
             override def compare(
                 x: TaskTableRowData,
                 y: TaskTableRowData): Int =
-              Ordering.Long
-                .compare(x.input.get.inputSortable, y.input.get.inputSortable)
+              Ordering.Long.compare(
+                x.input.get.inputSortable,
+                y.input.get.inputSortable)
           }
         } else {
           throw new IllegalArgumentException(

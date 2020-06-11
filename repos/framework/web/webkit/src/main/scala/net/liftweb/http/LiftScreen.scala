@@ -1242,8 +1242,9 @@ trait ScreenWizardRendered extends Loggable {
 
     def fieldsWithStyle(style: BindingStyle, includeMissing: Boolean) =
       logger.trace(
-        "Looking for fields with style %s, includeMissing = %s"
-          .format(style, includeMissing),
+        "Looking for fields with style %s, includeMissing = %s".format(
+          style,
+          includeMissing),
         fields filter (field =>
           field.binding map (_.bindingStyle == style) openOr (includeMissing))
       )
@@ -1271,8 +1272,9 @@ trait ScreenWizardRendered extends Loggable {
     def defaultFields: List[CssBindFunc] =
       for ((bindingInfo, field) <- bindingInfoWithFields(Default))
         yield traceInline(
-          "Binding default field %s to %s"
-            .format(bindingInfo.selector(formName), defaultFieldNodeSeq),
+          "Binding default field %s to %s".format(
+            bindingInfo.selector(formName),
+            defaultFieldNodeSeq),
           bindingInfo.selector(formName) #> bindField(field)(
             defaultFieldNodeSeq)
         )
@@ -1283,8 +1285,9 @@ trait ScreenWizardRendered extends Loggable {
         bindingInfo <- field.binding
         custom <- Some(bindingInfo.bindingStyle) collect { case c: Custom => c }
       } yield traceInline(
-        "Binding custom field %s to %s"
-          .format(bindingInfo.selector(formName), custom.template),
+        "Binding custom field %s to %s".format(
+          bindingInfo.selector(formName),
+          custom.template),
         bindingInfo.selector(formName) #> bindField(field)(custom.template)
       )
 
@@ -1298,8 +1301,9 @@ trait ScreenWizardRendered extends Loggable {
       } yield {
         val template = dynamic.func()
         traceInline(
-          "Binding dynamic field %s to %s"
-            .format(bindingInfo.selector(formName), template),
+          "Binding dynamic field %s to %s".format(
+            bindingInfo.selector(formName),
+            template),
           bindingInfo.selector(formName) #> bindField(field)(template))
       }
 
@@ -1449,8 +1453,7 @@ trait ScreenWizardRendered extends Loggable {
             SHtml.hidden(() => {
               snapshot.restore();
               val res =
-                cancelId
-                  ._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
+                cancelId._2() // WizardRules.deregisterWizardSession(CurrentSession.is)
               if (!ajax_?) {
                 S.seeOther(Referer.get)
               }

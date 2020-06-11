@@ -130,8 +130,8 @@ final class AssessApi(
       createPlayerAssessment(assessible playerAssessment chess.White) >>
         createPlayerAssessment(assessible playerAssessment chess.Black)
     } >> ((shouldAssess && thenAssessUser) ?? {
-      game.whitePlayer.userId.??(assessUser) >> game.blackPlayer.userId
-        .??(assessUser)
+      game.whitePlayer.userId.??(assessUser) >> game.blackPlayer.userId.??(
+        assessUser)
     })
   }
 

@@ -48,8 +48,10 @@ class RuntimeRefRenderer extends NodeRendererImpl {
       builder: ChildrenBuilder,
       context: EvaluationContext): Unit = {
     val descr = unwrappedDescriptor(value, context.getProject)
-    autoRenderer(context.getDebugProcess, descr)
-      .buildChildren(descr.getValue, builder, context)
+    autoRenderer(context.getDebugProcess, descr).buildChildren(
+      descr.getValue,
+      builder,
+      context)
   }
 
   override def isExpandable(

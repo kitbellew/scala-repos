@@ -220,7 +220,8 @@ class TaskSchedulerImplSuite
     assert(mgr.taskSet.stageAttemptId === 1)
   }
 
-  test("if a zombie attempt finishes, continue scheduling tasks for non-zombie attempts") {
+  test(
+    "if a zombie attempt finishes, continue scheduling tasks for non-zombie attempts") {
     sc = new SparkContext("local", "TaskSchedulerImplSuite")
     val taskScheduler = new TaskSchedulerImpl(sc)
     taskScheduler.initialize(new FakeSchedulerBackend)

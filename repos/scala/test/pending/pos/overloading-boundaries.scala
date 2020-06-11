@@ -15,7 +15,8 @@ object Test {
   }
 }
 
-/**
+/** **
+  *
   * % scalac3 a.scala
   * a.scala:13: error: not enough arguments for method bippy: (x: Int, y: Int, z: Int)String.
   * Unspecified value parameters y, z.

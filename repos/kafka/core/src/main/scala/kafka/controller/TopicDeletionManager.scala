@@ -293,12 +293,15 @@ class TopicDeletionManager(
     */
   private def markTopicForDeletionRetry(topic: String) {
     // reset replica states from ReplicaDeletionIneligible to OfflineReplica
-    val failedReplicas = controller.replicaStateMachine
-      .replicasInState(topic, ReplicaDeletionIneligible)
-    info("Retrying delete topic for topic %s since replicas %s were not successfully deleted"
-      .format(topic, failedReplicas.mkString(",")))
-    controller.replicaStateMachine
-      .handleStateChanges(failedReplicas, OfflineReplica)
+    val failedReplicas = controller.replicaStateMachine.replicasInState(
+      topic,
+      ReplicaDeletionIneligible)
+    info(
+      "Retrying delete topic for topic %s since replicas %s were not successfully deleted"
+        .format(topic, failedReplicas.mkString(",")))
+    controller.replicaStateMachine.handleStateChanges(
+      failedReplicas,
+      OfflineReplica)
   }
 
   private def completeDeleteTopic(topic: String) {
@@ -483,8 +486,9 @@ class TopicDeletionManager(
                 .isAtLeastOneReplicaInDeletionStartedState(topic)) {
               // ignore since topic deletion is in progress
               val replicasInDeletionStartedState =
-                controller.replicaStateMachine
-                  .replicasInState(topic, ReplicaDeletionStarted)
+                controller.replicaStateMachine.replicasInState(
+                  topic,
+                  ReplicaDeletionStarted)
               val replicaIds = replicasInDeletionStartedState.map(_.replica)
               val partitions = replicasInDeletionStartedState.map(r =>
                 TopicAndPartition(r.topic, r.partition))
@@ -512,8 +516,9 @@ class TopicDeletionManager(
             // topic deletion will be kicked off
             onTopicDeletion(Set(topic))
           } else if (isTopicIneligibleForDeletion(topic)) {
-            info("Not retrying deletion of topic %s at this time since it is marked ineligible for deletion"
-              .format(topic))
+            info(
+              "Not retrying deletion of topic %s at this time since it is marked ineligible for deletion"
+                .format(topic))
           }
         }
       }

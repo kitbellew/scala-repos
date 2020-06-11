@@ -70,8 +70,9 @@ object IntegrationTestConfig {
     * @return the detected location of the native mesos library.
     */
   private[this] def defaultMesosLibConfig: String = {
-    val javaLibraryPath = sys.props
-      .getOrElse("java.library.path", "/usr/local/lib:/usr/lib:/usr/lib64")
+    val javaLibraryPath = sys.props.getOrElse(
+      "java.library.path",
+      "/usr/local/lib:/usr/lib:/usr/lib64")
     val mesos_dir = sys.env.get("MESOS_DIR").map(_ + "/lib").toStream
     val dirs =
       javaLibraryPath.split(':').toStream #::: Stream(

@@ -342,8 +342,9 @@ trait MapLike[A, +B, +This <: MapLike[A, B, This] with Map[A, B]]
     var res: This = repr
     for (kv <- this)
       if (p(kv))
-        res = (res - kv._1)
-          .asInstanceOf[This] // !!! concrete overrides abstract problem
+        res =
+          (res - kv._1)
+            .asInstanceOf[This] // !!! concrete overrides abstract problem
     res
   }
 

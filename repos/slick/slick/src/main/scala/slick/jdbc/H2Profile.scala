@@ -91,8 +91,8 @@ trait H2Profile extends JdbcProfile {
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler
-      .replace(Phase.resolveZipJoinsRownumStyle) - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(
+      Phase.resolveZipJoinsRownumStyle) - Phase.fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =

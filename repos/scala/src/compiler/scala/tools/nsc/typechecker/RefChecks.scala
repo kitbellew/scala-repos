@@ -150,8 +150,9 @@ abstract class RefChecks
       // those with the DEFAULTPARAM flag, and infer the methods. Looking for the methods
       // directly requires inspecting the parameter list of every one. That modification
       // shaved 95% off the time spent in this method.
-      val defaultGetters = defaultClass.info
-        .findMembers(excludedFlags = PARAM, requiredFlags = DEFAULTPARAM)
+      val defaultGetters = defaultClass.info.findMembers(
+        excludedFlags = PARAM,
+        requiredFlags = DEFAULTPARAM)
       val defaultMethodNames =
         defaultGetters map (sym => nme.defaultGetterToMethod(sym.name))
 
@@ -1648,8 +1649,10 @@ abstract class RefChecks
           comparison,
           accessFlagsToString(otherSym),
           otherSym
-        ) + "\nClasses which cannot access %s %s %s."
-          .format(otherSym.decodedName, cannot, memberSym.decodedName)
+        ) + "\nClasses which cannot access %s %s %s.".format(
+          otherSym.decodedName,
+          cannot,
+          memberSym.decodedName)
       )
     }
 
@@ -2008,7 +2011,8 @@ abstract class RefChecks
             else tree
 
           case dc @ TypeTreeWithDeferredRefCheck() =>
-            abort("adapt should have turned dc: TypeTreeWithDeferredRefCheck into tpt: TypeTree, with tpt.original == dc")
+            abort(
+              "adapt should have turned dc: TypeTreeWithDeferredRefCheck into tpt: TypeTree, with tpt.original == dc")
           case tpt @ TypeTree() =>
             if (tpt.original != null) {
               tpt.original foreach {

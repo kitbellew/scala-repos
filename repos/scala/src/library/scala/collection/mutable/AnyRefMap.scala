@@ -66,8 +66,8 @@ final class AnyRefMap[K <: AnyRef, V] private[collection] (
     mask =
       if (n < 0) 0x7
       else
-        (((1 << (32 - java.lang.Integer
-          .numberOfLeadingZeros(n - 1))) - 1) & 0x3fffffff) | 0x7
+        (((1 << (32 - java.lang.Integer.numberOfLeadingZeros(
+          n - 1))) - 1) & 0x3fffffff) | 0x7
     _hashes = new Array[Int](mask + 1)
     _keys = new Array[AnyRef](mask + 1)
     _values = new Array[AnyRef](mask + 1)

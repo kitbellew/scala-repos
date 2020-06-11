@@ -95,7 +95,7 @@ trait Mirrors extends api.Mirrors {
 
     // todo: get rid of most the methods here and keep just staticClass/Module/Package
 
-    /** ******************** loaders of class symbols *********************** */
+    /** ********************** loaders of class symbols *********************** */
 
     private def ensureClassSymbol(
         fullname: String,
@@ -139,7 +139,7 @@ trait Mirrors extends api.Mirrors {
           throw new ScalaReflectionException(mre.msg)
       }
 
-    /** ******************** loaders of module symbols *********************** */
+    /** ********************** loaders of module symbols *********************** */
 
     private def ensureModuleSymbol(
         fullname: String,
@@ -190,7 +190,7 @@ trait Mirrors extends api.Mirrors {
           throw new ScalaReflectionException(mre.msg)
       }
 
-    /** ******************** loaders of package symbols *********************** */
+    /** ********************** loaders of package symbols *********************** */
 
     private def ensurePackageSymbol(
         fullname: String,
@@ -238,7 +238,7 @@ trait Mirrors extends api.Mirrors {
           throw new ScalaReflectionException(mre.msg)
       }
 
-    /** ******************** helpers *********************** */
+    /** ********************** helpers *********************** */
 
     def erasureName[T: ClassTag]: String = {
       /* We'd like the String representation to be a valid

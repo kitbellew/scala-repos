@@ -38,7 +38,8 @@ object PreferredReplicaLeaderElectionCommand extends Logging {
           "Defaults to all existing partitions"
       )
       .withRequiredArg
-      .describedAs("list of partitions for which preferred replica leader election needs to be triggered")
+      .describedAs(
+        "list of partitions for which preferred replica leader election needs to be triggered")
       .ofType(classOf[String])
     val zkConnectOpt = parser
       .accepts(

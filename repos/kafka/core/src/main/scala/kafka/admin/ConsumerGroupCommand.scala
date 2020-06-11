@@ -54,8 +54,8 @@ object ConsumerGroupCommand {
         "List all consumer groups, describe a consumer group, or delete consumer group info.")
 
     // should have exactly one action
-    val actions = Seq(opts.listOpt, opts.describeOpt, opts.deleteOpt)
-      .count(opts.options.has _)
+    val actions = Seq(opts.listOpt, opts.describeOpt, opts.deleteOpt).count(
+      opts.options.has _)
     if (actions != 1)
       CommandLineUtils.printUsageAndDie(
         opts.parser,
@@ -308,8 +308,9 @@ object ConsumerGroupCommand {
               offsetMap.put(topicAndPartition, offset)
             } catch {
               case z: ZkNoNodeException =>
-                println("Could not fetch offset from zookeeper for group %s partition %s due to missing offset data in zookeeper."
-                  .format(group, topicAndPartition))
+                println(
+                  "Could not fetch offset from zookeeper for group %s partition %s due to missing offset data in zookeeper."
+                    .format(group, topicAndPartition))
             }
           } else if (offsetAndMetadata.error == Errors.NONE.code)
             offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
@@ -330,11 +331,13 @@ object ConsumerGroupCommand {
       groups.asScala.foreach { group =>
         try {
           if (AdminUtils.deleteConsumerGroupInZK(zkUtils, group))
-            println("Deleted all consumer group information for group %s in zookeeper."
-              .format(group))
+            println(
+              "Deleted all consumer group information for group %s in zookeeper."
+                .format(group))
           else
-            println("Delete for group %s failed because its consumers are still active."
-              .format(group))
+            println(
+              "Delete for group %s failed because its consumers are still active."
+                .format(group))
         } catch {
           case e: ZkNoNodeException =>
             println(
@@ -354,15 +357,18 @@ object ConsumerGroupCommand {
               zkUtils,
               group,
               topic))
-            println("Deleted consumer group information for group %s topic %s in zookeeper."
-              .format(group, topic))
+            println(
+              "Deleted consumer group information for group %s topic %s in zookeeper."
+                .format(group, topic))
           else
-            println("Delete for group %s topic %s failed because its consumers are still active."
-              .format(group, topic))
+            println(
+              "Delete for group %s topic %s failed because its consumers are still active."
+                .format(group, topic))
         } catch {
           case e: ZkNoNodeException =>
-            println("Delete for group %s topic %s failed because group does not exist."
-              .format(group, topic))
+            println(
+              "Delete for group %s topic %s failed because group does not exist."
+                .format(group, topic))
         }
       }
     }
@@ -371,8 +377,9 @@ object ConsumerGroupCommand {
       val topic = opts.options.valueOf(opts.topicOpt)
       Topic.validate(topic)
       AdminUtils.deleteAllConsumerGroupInfoForTopicInZK(zkUtils, topic)
-      println("Deleted consumer group information for all inactive consumer groups for topic %s in zookeeper."
-        .format(topic))
+      println(
+        "Deleted consumer group information for all inactive consumer groups for topic %s in zookeeper."
+          .format(topic))
     }
 
     private def getZkConsumer(brokerId: Int): Option[SimpleConsumer] = {
@@ -610,8 +617,10 @@ object ConsumerGroupCommand {
           topicOpt))
         CommandLineUtils.printUsageAndDie(
           parser,
-          "Option %s either takes %s, %s, or both"
-            .format(deleteOpt, groupOpt, topicOpt))
+          "Option %s either takes %s, %s, or both".format(
+            deleteOpt,
+            groupOpt,
+            topicOpt))
 
       // check invalid args
       CommandLineUtils.checkInvalidArgs(

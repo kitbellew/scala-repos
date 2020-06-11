@@ -308,8 +308,8 @@ private[deploy] class Master(
             appInfo.resetRetryCount()
           }
 
-          exec.application.driver
-            .send(ExecutorUpdated(execId, state, message, exitStatus))
+          exec.application.driver.send(
+            ExecutorUpdated(execId, state, message, exitStatus))
 
           if (ExecutorState.isFinished(state)) {
             // Remove this executor from the worker and app
@@ -1109,8 +1109,8 @@ private[deploy] class Master(
     */
   private def killExecutor(exec: ExecutorDesc): Unit = {
     exec.worker.removeExecutor(exec)
-    exec.worker.endpoint
-      .send(KillExecutor(masterUrl, exec.application.id, exec.id))
+    exec.worker.endpoint.send(
+      KillExecutor(masterUrl, exec.application.id, exec.id))
     exec.state = ExecutorState.KILLED
   }
 

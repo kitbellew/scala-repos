@@ -34,7 +34,8 @@ class PowerMethodTest extends FunSuite {
     assert(abs(eigenGold - eigenApprox) < 1e-3)
   }
 
-  test("min eigen value from inverse power method approximately equal to eigSym min") {
+  test(
+    "min eigen value from inverse power method approximately equal to eigSym min") {
     val eigenGold = min(eigs.eigenvalues)
     val pmInv = PowerMethod.inverse(10, 1e-5)
     val R = cholesky(gram).t

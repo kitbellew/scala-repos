@@ -66,8 +66,8 @@ class InlinerTest extends ClearAfterClass {
 
   def checkCallsite(callsite: callGraph.Callsite, callee: MethodNode) = {
     assert(
-      callsite.callsiteMethod.instructions
-        .contains(callsite.callsiteInstruction),
+      callsite.callsiteMethod.instructions.contains(
+        callsite.callsiteInstruction),
       instructionsFromMethod(callsite.callsiteMethod))
 
     val callsiteClassNode =

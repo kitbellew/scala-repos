@@ -142,7 +142,8 @@ object Util extends Build {
     base = file("util-benchmark"),
     settings = Defaults.coreDefaultSettings ++
       sharedSettings ++ JmhPlugin.projectSettings
-  ).enablePlugins(JmhPlugin)
+  )
+    .enablePlugins(JmhPlugin)
     .settings(
       name := "util-benchmark"
     )

@@ -108,8 +108,8 @@ object Account extends LilaController {
           FormFuResult(Env.security.forms.changeEmail(me)) { err =>
             fuccess(html.account.email(me, err))
           } { data =>
-            val email = Env.security.emailAddress
-              .validate(data.email) err s"Invalid email ${data.email}"
+            val email = Env.security.emailAddress.validate(
+              data.email) err s"Invalid email ${data.email}"
             for {
               ok ← UserRepo.checkPasswordById(me.id, data.passwd)
               _ ← ok ?? UserRepo.email(me.id, email)

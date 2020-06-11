@@ -80,7 +80,8 @@ class StandardImageExtractor(
 
   var sb: StringBuilder = new StringBuilder
   // create negative elements
-  sb.append(".html|.gif|.ico|button|twitter.jpg|facebook.jpg|ap_buy_photo|digg.jpg|digg.png|delicious.png|facebook.png|reddit.jpg|doubleclick|diggthis|diggThis|adserver|/ads/|ec.atdmt.com")
+  sb.append(
+    ".html|.gif|.ico|button|twitter.jpg|facebook.jpg|ap_buy_photo|digg.jpg|digg.png|delicious.png|facebook.png|reddit.jpg|doubleclick|diggthis|diggThis|adserver|/ads/|ec.atdmt.com")
   sb.append("|mediaplex.com|adsatt|view.atdmt")
   matchBadImageNames = Pattern.compile(sb.toString()).matcher(string.empty)
 

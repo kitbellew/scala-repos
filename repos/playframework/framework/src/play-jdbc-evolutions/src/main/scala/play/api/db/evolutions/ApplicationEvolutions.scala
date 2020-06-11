@@ -163,8 +163,8 @@ class ApplicationEvolutions @Inject() (
       case e: SQLException =>
         if (attempts == 0) throw e
         else {
-          logger
-            .warn("Exception while attempting to lock evolutions (other node probably has lock), sleeping for 1 sec")
+          logger.warn(
+            "Exception while attempting to lock evolutions (other node probably has lock), sleeping for 1 sec")
           c.rollback()
           Thread.sleep(1000)
           lock(url, c, s, dbConfig, attempts - 1)
@@ -437,8 +437,9 @@ class EvolutionsWebCommands @Inject() (
       .getOrElse("/")
 
     // Regex removes all parent directories from request path
-    request.path
-      .replaceFirst("^((?!/@evolutions).)*(/@evolutions.*$)", "$2") match {
+    request.path.replaceFirst(
+      "^((?!/@evolutions).)*(/@evolutions.*$)",
+      "$2") match {
 
       case applyEvolutions(db) => {
         Some {

@@ -52,8 +52,8 @@ private[reflect] object ScalaSigReader {
       if (current == null)
         fail("Can't find field " + name + " from " + clazz)
       else
-        findField(findClass(current), name)
-          .getOrElse(read(current.getSuperclass))
+        findField(findClass(current), name).getOrElse(
+          read(current.getSuperclass))
     }
     findArgTypeForField(read(clazz), typeArgIndex)
   }

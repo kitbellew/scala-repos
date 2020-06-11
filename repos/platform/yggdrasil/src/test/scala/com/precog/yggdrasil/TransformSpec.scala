@@ -1309,7 +1309,7 @@ trait TransformSpec[M[+_]]
     implicit val gen =
       sample(_ => Seq(JPath("[0]") -> CLong, JPath("[1]") -> CLong))
     check { (sample0: SampleData) =>
-      /**
+      /** *
         *      important note:
         *      `sample` is excluding the cases when we have JArrays of size 1
         *      this is because then the concat array would return
@@ -2172,8 +2172,7 @@ trait TransformSpec[M[+_]]
   }
 
   def testTypedAtSliceBoundary = {
-    val JArray(data) =
-      JParser.parseUnsafe("""[
+    val JArray(data) = JParser.parseUnsafe("""[
         { "value":{ "n":{ } }, "key":[1,1,1] },
         { "value":{ "lvf":2123699568254154891, "vbeu":false, "dAc":4611686018427387903 }, "key":[1,1,3] },
         { "value":{ "lvf":1, "vbeu":true, "dAc":0 }, "key":[2,1,1] },
@@ -2607,7 +2606,7 @@ trait TransformSpec[M[+_]]
   def checkArraySwap = {
     implicit val gen = sample(arraySchema(_, 3))
     check { (sample0: SampleData) =>
-      /**
+      /** *
         *      important note:
         *      `sample` is excluding the cases when we have JArrays of sizes 1 and 2
         *      this is because then the array swap would go out of bounds of the index

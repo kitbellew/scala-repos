@@ -57,8 +57,8 @@ class EventsByTagSpec
 
   implicit val mat = ActorMaterializer()(system)
 
-  val queries = PersistenceQuery(system)
-    .readJournalFor[LeveldbReadJournal](LeveldbReadJournal.Identifier)
+  val queries = PersistenceQuery(system).readJournalFor[LeveldbReadJournal](
+    LeveldbReadJournal.Identifier)
 
   "Leveldb query EventsByTag" must {
     "implement standard EventsByTagQuery" in {

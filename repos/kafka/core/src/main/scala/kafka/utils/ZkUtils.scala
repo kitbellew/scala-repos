@@ -556,8 +556,9 @@ class ZkUtils(
         None): (Boolean, Int) = {
     try {
       val stat = zkClient.writeDataReturnStat(path, data, expectVersion)
-      debug("Conditional update of path %s with value %s and expected version %d succeeded, returning the new version: %d"
-        .format(path, data, expectVersion, stat.getVersion))
+      debug(
+        "Conditional update of path %s with value %s and expected version %d succeeded, returning the new version: %d"
+          .format(path, data, expectVersion, stat.getVersion))
       (true, stat.getVersion)
     } catch {
       case e1: ZkBadVersionException =>
@@ -565,12 +566,14 @@ class ZkUtils(
           case Some(checker) => return checker(this, path, data)
           case _             => debug("Checker method is not passed skipping zkData match")
         }
-        warn("Conditional update of path %s with data %s and expected version %d failed due to %s"
-          .format(path, data, expectVersion, e1.getMessage))
+        warn(
+          "Conditional update of path %s with data %s and expected version %d failed due to %s"
+            .format(path, data, expectVersion, e1.getMessage))
         (false, -1)
       case e2: Exception =>
-        warn("Conditional update of path %s with data %s and expected version %d failed due to %s"
-          .format(path, data, expectVersion, e2.getMessage))
+        warn(
+          "Conditional update of path %s with data %s and expected version %d failed due to %s"
+            .format(path, data, expectVersion, e2.getMessage))
         (false, -1)
     }
   }
@@ -585,14 +588,16 @@ class ZkUtils(
       expectVersion: Int): (Boolean, Int) = {
     try {
       val stat = zkClient.writeDataReturnStat(path, data, expectVersion)
-      debug("Conditional update of path %s with value %s and expected version %d succeeded, returning the new version: %d"
-        .format(path, data, expectVersion, stat.getVersion))
+      debug(
+        "Conditional update of path %s with value %s and expected version %d succeeded, returning the new version: %d"
+          .format(path, data, expectVersion, stat.getVersion))
       (true, stat.getVersion)
     } catch {
       case nne: ZkNoNodeException => throw nne
       case e: Exception =>
-        error("Conditional update of path %s with data %s and expected version %d failed due to %s"
-          .format(path, data, expectVersion, e.getMessage))
+        error(
+          "Conditional update of path %s with data %s and expected version %d failed due to %s"
+            .format(path, data, expectVersion, e.getMessage))
         (false, -1)
     }
   }

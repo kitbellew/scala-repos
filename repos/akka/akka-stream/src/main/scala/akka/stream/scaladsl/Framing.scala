@@ -103,8 +103,8 @@ object Framing {
     */
   def simpleFramingProtocolDecoder(
       maximumMessageLength: Int): Flow[ByteString, ByteString, NotUsed] =
-    lengthField(4, 0, maximumMessageLength + 4, ByteOrder.BIG_ENDIAN)
-      .map(_.drop(4))
+    lengthField(4, 0, maximumMessageLength + 4, ByteOrder.BIG_ENDIAN).map(
+      _.drop(4))
 
   /**
     * Protocol encoder that is used by [[Framing#simpleFramingProtocol]]

@@ -247,7 +247,8 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
       strategy)
   }
 
-  test("Binary classification with continuous features and node Id cache: subsampling features") {
+  test(
+    "Binary classification with continuous features and node Id cache: subsampling features") {
     val categoricalFeaturesInfo = Map.empty[Int, Int]
     val strategy = new Strategy(
       algo = Classification,
@@ -260,7 +261,8 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
       strategy)
   }
 
-  test("alternating categorical and continuous features with multiclass labels to test indexing") {
+  test(
+    "alternating categorical and continuous features with multiclass labels to test indexing") {
     val arr = new Array[LabeledPoint](4)
     arr(0) = new LabeledPoint(0.0, Vectors.dense(1.0, 0.0, 0.0, 3.0, 1.0))
     arr(1) = new LabeledPoint(1.0, Vectors.dense(0.0, 1.0, 1.0, 1.0, 2.0))

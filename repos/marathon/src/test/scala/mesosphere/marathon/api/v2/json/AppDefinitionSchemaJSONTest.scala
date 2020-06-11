@@ -11,7 +11,8 @@ import org.scalatest.GivenWhenThen
   */
 class AppDefinitionSchemaJSONTest extends MarathonSpec with GivenWhenThen {
   test("command health checks WITHOUT a nested value should be rejected") {
-    Given("an app definition WITHOUT a nested value in command section of a health check")
+    Given(
+      "an app definition WITHOUT a nested value in command section of a health check")
     val json =
       """
         |{
@@ -31,7 +32,8 @@ class AppDefinitionSchemaJSONTest extends MarathonSpec with GivenWhenThen {
   }
 
   test("command health checks WITH a nested value should be accepted") {
-    Given("an app definition WITH a nested value in command section of a health check")
+    Given(
+      "an app definition WITH a nested value in command section of a health check")
     val json =
       """
         |{

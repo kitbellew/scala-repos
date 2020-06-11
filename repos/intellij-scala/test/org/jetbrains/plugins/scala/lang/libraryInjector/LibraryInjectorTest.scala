@@ -79,8 +79,8 @@ class LibraryInjectorTest extends ModuleTestCase with ScalaVersion {
 
     scalaLibraryLoader.loadScala(scalaSdkVersion)
     addLibrary(
-      testData(getTestName(false))
-        .zip(ScalaUtil.createTmpDir("injectorTestLib", "")))
+      testData(getTestName(false)).zip(
+        ScalaUtil.createTmpDir("injectorTestLib", "")))
   }
 
   protected override def tearDown() {

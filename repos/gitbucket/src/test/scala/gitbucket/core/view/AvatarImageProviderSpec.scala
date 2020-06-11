@@ -15,13 +15,14 @@ import org.mockito.Mockito._
 class AvatarImageProviderSpec extends FunSpec with MockitoSugar {
 
   val request = mock[HttpServletRequest]
-  when(request.getRequestURL)
-    .thenReturn(new StringBuffer("http://localhost:8080/path.html"))
+  when(request.getRequestURL).thenReturn(
+    new StringBuffer("http://localhost:8080/path.html"))
   when(request.getRequestURI).thenReturn("/path.html")
   when(request.getContextPath).thenReturn("")
 
   describe("getAvatarImageHtml") {
-    it("should show Gravatar image for no image account if gravatar integration is enabled") {
+    it(
+      "should show Gravatar image for no image account if gravatar integration is enabled") {
       implicit val context = Context(createSystemSettings(true), None, request)
       val provider = new AvatarImageProviderImpl(Some(createAccount(None)))
 
@@ -38,7 +39,8 @@ class AvatarImageProviderSpec extends FunSpec with MockitoSugar {
         "<img src=\"/user/_avatar\" class=\"avatar\" style=\"width: 32px; height: 32px;\" />")
     }
 
-    it("should show local image for no image account if gravatar integration is disabled") {
+    it(
+      "should show local image for no image account if gravatar integration is disabled") {
       implicit val context = Context(createSystemSettings(false), None, request)
       val provider = new AvatarImageProviderImpl(Some(createAccount(None)))
 
@@ -46,7 +48,8 @@ class AvatarImageProviderSpec extends FunSpec with MockitoSugar {
         "<img src=\"/user/_avatar\" class=\"avatar\" style=\"width: 32px; height: 32px;\" />")
     }
 
-    it("should show Gravatar image for specified mail address if gravatar integration is enabled") {
+    it(
+      "should show Gravatar image for specified mail address if gravatar integration is enabled") {
       implicit val context = Context(createSystemSettings(true), None, request)
       val provider = new AvatarImageProviderImpl(None)
 
@@ -54,7 +57,8 @@ class AvatarImageProviderSpec extends FunSpec with MockitoSugar {
         "<img src=\"https://www.gravatar.com/avatar/4712f9b0e63f56ad952ad387eaa23b9c?s=20&d=retro&r=g\" class=\"avatar-mini\" style=\"width: 20px; height: 20px;\" />")
     }
 
-    it("should show unknown image for unknown user if gravatar integration is enabled") {
+    it(
+      "should show unknown image for unknown user if gravatar integration is enabled") {
       implicit val context = Context(createSystemSettings(true), None, request)
       val provider = new AvatarImageProviderImpl(None)
 
@@ -62,7 +66,8 @@ class AvatarImageProviderSpec extends FunSpec with MockitoSugar {
         "<img src=\"/_unknown/_avatar\" class=\"avatar-mini\" style=\"width: 20px; height: 20px;\" />")
     }
 
-    it("should show unknown image for specified mail address if gravatar integration is disabled") {
+    it(
+      "should show unknown image for specified mail address if gravatar integration is disabled") {
       implicit val context = Context(createSystemSettings(false), None, request)
       val provider = new AvatarImageProviderImpl(None)
 

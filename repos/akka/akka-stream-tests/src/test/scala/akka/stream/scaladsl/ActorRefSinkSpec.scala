@@ -27,8 +27,8 @@ class ActorRefSinkSpec extends AkkaSpec {
   "A ActorRefSink" must {
 
     "send the elements to the ActorRef" in assertAllStagesStopped {
-      Source(List(1, 2, 3))
-        .runWith(Sink.actorRef(testActor, onCompleteMessage = "done"))
+      Source(List(1, 2, 3)).runWith(
+        Sink.actorRef(testActor, onCompleteMessage = "done"))
       expectMsg(1)
       expectMsg(2)
       expectMsg(3)
@@ -37,8 +37,8 @@ class ActorRefSinkSpec extends AkkaSpec {
 
     "cancel stream when actor terminates" in assertAllStagesStopped {
       val fw = system.actorOf(
-        Props(classOf[Fw], testActor)
-          .withDispatcher("akka.test.stream-dispatcher"))
+        Props(classOf[Fw], testActor).withDispatcher(
+          "akka.test.stream-dispatcher"))
       val publisher = TestSource
         .probe[Int]
         .to(Sink.actorRef(fw, onCompleteMessage = "done"))

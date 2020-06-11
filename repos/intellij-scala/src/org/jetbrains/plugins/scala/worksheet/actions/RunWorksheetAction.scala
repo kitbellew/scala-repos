@@ -55,8 +55,8 @@ class RunWorksheetAction extends AnAction with TopComponentAction {
   override def update(e: AnActionEvent) {
     val presentation = e.getPresentation
     presentation.setIcon(AllIcons.Actions.Execute)
-    val shortcuts = KeymapManager.getInstance.getActiveKeymap
-      .getShortcuts("Scala.RunWorksheet")
+    val shortcuts = KeymapManager.getInstance.getActiveKeymap.getShortcuts(
+      "Scala.RunWorksheet")
     if (shortcuts.nonEmpty) {
       val shortcutText = " (" + KeymapUtil.getShortcutText(shortcuts(0)) + ")"
       presentation.setText(
@@ -111,8 +111,11 @@ object RunWorksheetAction {
                 scala.extensions.inWriteAction {
                   CleanWorksheetAction.resetScrollModel(viewer)
                   if (!auto)
-                    CleanWorksheetAction
-                      .cleanWorksheet(file.getNode, editor, viewer, project)
+                    CleanWorksheetAction.cleanWorksheet(
+                      file.getNode,
+                      editor,
+                      viewer,
+                      project)
                 }
               }
             },

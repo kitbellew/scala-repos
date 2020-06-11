@@ -593,8 +593,11 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
         val xs = includedFiles filter (_ endsWith ".scala")
         if (force) xs
         else
-          new SourceFileScanner(this)
-            .restrict(xs, originDir, destination.get, mapper)
+          new SourceFileScanner(this).restrict(
+            xs,
+            originDir,
+            destination.get,
+            mapper)
       }
 
       javaOnly = javaOnly && (scalaFiles.length == 0)
@@ -769,7 +772,8 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
           .format(reporter.ERROR.count, plural(reporter.ERROR.count))
       if (failonerror) buildError(msg) else log(msg)
     } else if (reporter.WARNING.count > 0)
-      log("Compile succeeded with %d warning%s; see the compiler output for details."
-        .format(reporter.WARNING.count, plural(reporter.WARNING.count)))
+      log(
+        "Compile succeeded with %d warning%s; see the compiler output for details."
+          .format(reporter.WARNING.count, plural(reporter.WARNING.count)))
   }
 }

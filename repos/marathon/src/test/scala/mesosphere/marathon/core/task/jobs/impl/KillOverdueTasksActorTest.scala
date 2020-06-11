@@ -159,7 +159,8 @@ class KillOverdueTasksActorTest
     )
     taskTracker.tasksByAppSync returns TasksByApp.of(app)
 
-    When("We check which tasks should be killed because they're not yet staged or unconfirmed")
+    When(
+      "We check which tasks should be killed because they're not yet staged or unconfirmed")
     val testProbe = TestProbe()
     testProbe.send(
       checkActor,

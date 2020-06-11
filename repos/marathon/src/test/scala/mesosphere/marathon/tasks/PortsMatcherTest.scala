@@ -296,7 +296,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
     assert(matcher.portsMatch.get.hostPorts == Seq(31200))
   }
 
-  test("do not satisfy fixed mapped port from container with resource offer of incorrect role") {
+  test(
+    "do not satisfy fixed mapped port from container with resource offer of incorrect role") {
     val app = AppDefinition(container = Some(
       Container(
         docker = Some(
@@ -324,7 +325,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
     assert(matcher.portsMatch.isEmpty)
   }
 
-  test("satisfy fixed and dynamic mapped port from container from one offered range") {
+  test(
+    "satisfy fixed and dynamic mapped port from container from one offered range") {
     val app = AppDefinition(container = Some(
       Container(
         docker = Some(
@@ -347,7 +349,8 @@ class PortsMatcherTest extends MarathonSpec with Matchers {
     assert(matcher.portsMatch.get.hostPorts == Seq(31001, 31000))
   }
 
-  test("satisfy fixed and dynamic mapped port from container from ranges with different roles") {
+  test(
+    "satisfy fixed and dynamic mapped port from container from ranges with different roles") {
     val app = AppDefinition(container = Some(
       Container(
         docker = Some(

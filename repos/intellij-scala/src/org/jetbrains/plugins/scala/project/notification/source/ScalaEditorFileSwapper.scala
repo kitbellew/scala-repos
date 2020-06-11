@@ -54,8 +54,9 @@ class ScalaEditorFileSwapper extends EditorFileSwapper {
       editorWithProviderComposite: EditorWithProviderComposite)
       : Pair[VirtualFile, Integer] = {
     Pair.create(
-      ScalaEditorFileSwapper
-        .findSourceFile(project, editorWithProviderComposite.getFile),
+      ScalaEditorFileSwapper.findSourceFile(
+        project,
+        editorWithProviderComposite.getFile),
       null)
   }
 }

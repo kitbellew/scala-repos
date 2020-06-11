@@ -615,7 +615,8 @@ class ParquetPartitionDiscoverySuite
     }
   }
 
-  test("read partitioned table - with nulls and partition keys are included in Parquet file") {
+  test(
+    "read partitioned table - with nulls and partition keys are included in Parquet file") {
     withTempDir { base =>
       for {
         pi <- Seq(1, 2)

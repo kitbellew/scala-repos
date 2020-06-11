@@ -228,8 +228,8 @@ object SVMWithSGD {
       stepSize: Double,
       regParam: Double,
       miniBatchFraction: Double): SVMModel = {
-    new SVMWithSGD(stepSize, numIterations, regParam, miniBatchFraction)
-      .run(input)
+    new SVMWithSGD(stepSize, numIterations, regParam, miniBatchFraction).run(
+      input)
   }
 
   /**

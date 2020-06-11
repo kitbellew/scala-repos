@@ -223,8 +223,9 @@ private[spark] object CoarseGrainedExecutorBackend extends Logging {
           userClassPath,
           env))
       workerUrl.foreach { url =>
-        env.rpcEnv
-          .setupEndpoint("WorkerWatcher", new WorkerWatcher(env.rpcEnv, url))
+        env.rpcEnv.setupEndpoint(
+          "WorkerWatcher",
+          new WorkerWatcher(env.rpcEnv, url))
       }
       env.rpcEnv.awaitTermination()
       SparkHadoopUtil.get.stopExecutorDelegationTokenRenewer()

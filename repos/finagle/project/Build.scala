@@ -574,7 +574,8 @@ object Finagle extends Build {
     base = file("finagle-benchmark"),
     settings = Defaults.coreDefaultSettings ++
       sharedSettings ++ JmhPlugin.projectSettings
-  ).enablePlugins(JmhPlugin)
+  )
+    .enablePlugins(JmhPlugin)
     .settings(
       name := "finagle-benchmark",
       libraryDependencies ++= Seq(

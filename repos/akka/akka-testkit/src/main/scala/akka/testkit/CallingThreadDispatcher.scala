@@ -375,8 +375,9 @@ class CallingThreadMailbox(
   private val q = new ThreadLocal[MessageQueue]() {
     override def initialValue = {
       val queue = mailboxType.create(Some(self), Some(system))
-      CallingThreadDispatcherQueues(system)
-        .registerQueue(CallingThreadMailbox.this, queue)
+      CallingThreadDispatcherQueues(system).registerQueue(
+        CallingThreadMailbox.this,
+        queue)
       queue
     }
   }

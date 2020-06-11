@@ -53,7 +53,8 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     verify(underlying)()
   }
 
-  test("fail immediately after consecutive failures, revive after markDeadFor duration") {
+  test(
+    "fail immediately after consecutive failures, revive after markDeadFor duration") {
     val h = new Helper(false)
     import h._
 
@@ -105,7 +106,8 @@ class KetamaFailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("busy state of the underlying serviceFactory does not trigger FailureAccrualException") {
+  test(
+    "busy state of the underlying serviceFactory does not trigger FailureAccrualException") {
     val h = new Helper(false, Future.exception(new Exception), Status.Busy)
     import h._
 

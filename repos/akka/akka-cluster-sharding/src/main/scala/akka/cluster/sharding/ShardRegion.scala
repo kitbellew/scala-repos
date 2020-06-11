@@ -600,8 +600,8 @@ class ShardRegion(
         replyToRegionStatsQuery(sender())
 
       case msg: GetClusterShardingStats ⇒
-        coordinator
-          .fold(sender ! ClusterShardingStats(Map.empty))(_ forward msg)
+        coordinator.fold(sender ! ClusterShardingStats(Map.empty))(
+          _ forward msg)
 
       case _ ⇒ unhandled(query)
     }
@@ -631,8 +631,10 @@ class ShardRegion(
         // if persist fails it will stop
         log.debug("Shard [{}]  terminated while not being handed off", shardId)
         if (rememberEntities) {
-          context.system.scheduler
-            .scheduleOnce(shardFailureBackoff, self, RestartShard(shardId))
+          context.system.scheduler.scheduleOnce(
+            shardFailureBackoff,
+            self,
+            RestartShard(shardId))
         }
       }
 

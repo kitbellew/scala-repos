@@ -138,8 +138,9 @@ class ScalaInlineHandler extends InlineHandler {
                   replacementValue
               }
               expression.replaceExpression(
-                ScalaPsiElementFactory
-                  .createExpressionFromText(oldValue, replacement.getManager),
+                ScalaPsiElementFactory.createExpressionFromText(
+                  oldValue,
+                  replacement.getManager),
                 removeParenthesis = true)
             case typeElement: ScTypeElement =>
               replacement.replace(

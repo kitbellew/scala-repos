@@ -455,10 +455,9 @@ trait ScalaSettings
     val redundantCasts = Choice(
       "redundant-casts",
       "Eliminate redundant casts using a type propagation analysis.")
-    val boxUnbox =
-      Choice(
-        "box-unbox",
-        "Eliminate box-unbox pairs within the same method (also tuples, xRefs, value class instances). Enables unreachable-code.")
+    val boxUnbox = Choice(
+      "box-unbox",
+      "Eliminate box-unbox pairs within the same method (also tuples, xRefs, value class instances). Enables unreachable-code.")
     val nullnessTracking = Choice(
       "nullness-tracking",
       "Track nullness / non-nullness of local variables and apply optimizations.")
@@ -473,10 +472,9 @@ trait ScalaSettings
       "Inline methods from any source, including classfiles on the compile classpath. Enables unreachable-code.")
 
     // note: unlike the other optimizer levels, "l:none" appears up in the `Yopt.value` set because it's not an expanding option (expandsTo is empty)
-    val lNone =
-      Choice(
-        "l:none",
-        "Disable optimizations. Takes precedence: `-Yopt:l:none,+box-unbox` / `-Yopt:l:none -Yopt:box-unbox` don't enable box-unbox.")
+    val lNone = Choice(
+      "l:none",
+      "Disable optimizations. Takes precedence: `-Yopt:l:none,+box-unbox` / `-Yopt:l:none -Yopt:box-unbox` don't enable box-unbox.")
 
     private val defaultChoices = List(unreachableCode)
     val lDefault = Choice(
@@ -495,8 +493,10 @@ trait ScalaSettings
       closureInvocations)
     val lMethod = Choice(
       "l:method",
-      "Enable intra-method optimizations: " + methodChoices
-        .mkString("", ",", "."),
+      "Enable intra-method optimizations: " + methodChoices.mkString(
+        "",
+        ",",
+        "."),
       expandsTo = methodChoices)
 
     private val projectChoices = List(lMethod, inlineProject)

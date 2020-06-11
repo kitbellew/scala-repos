@@ -1722,7 +1722,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       (
         // Avoiding a third override in NoSymbol to preserve bimorphism
         if (this eq NoSymbol)
-          abort("no-symbol does not have a type constructor (this may indicate scalac cannot find fundamental classes)")
+          abort(
+            "no-symbol does not have a type constructor (this may indicate scalac cannot find fundamental classes)")
         else
           abort("typeConstructor inapplicable for " + this)
       )
@@ -3117,7 +3118,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     override def isModule = this hasFlag MODULE
     override def isOverloaded = this hasFlag OVERLOADED
 
-    /** !!! TODO: shouldn't we do something like the following:
+    /** * !!! TODO: shouldn't we do something like the following:
       *    override def isOverloaded       = (
       *      if (this.isInitialized)
       *        this hasFlag OVERLOADED
@@ -3510,7 +3511,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       this
     }
 
-    /** example:
+    /** * example:
       * public class Test3<T> {}
       * public class Test1<T extends Test3> {}
       * info for T in Test1 should be >: Nothing <: Test3[_]

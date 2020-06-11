@@ -49,7 +49,8 @@ class AppVersionsResourceTest
     index.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test("access to index without authorization leads to 404 when the app does not exist") {
+  test(
+    "access to index without authorization leads to 404 when the app does not exist") {
     Given("An unauthenticated request")
     auth.authenticated = true
     auth.authorized = false
@@ -77,7 +78,8 @@ class AppVersionsResourceTest
     show.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test("access to show without authorization leads to a 404 when the app version does not exist") {
+  test(
+    "access to show without authorization leads to a 404 when the app version does not exist") {
     Given("An unauthenticated request")
     auth.authenticated = true
     auth.authorized = false

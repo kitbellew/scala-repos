@@ -35,8 +35,8 @@ import org.apache.spark.util.Utils
 
 object SQLConf {
 
-  private val sqlConfEntries = java.util.Collections
-    .synchronizedMap(new java.util.HashMap[String, SQLConfEntry[_]]())
+  private val sqlConfEntries = java.util.Collections.synchronizedMap(
+    new java.util.HashMap[String, SQLConfEntry[_]]())
 
   /**
     * An entry contains all meta information for a configuration.
@@ -333,7 +333,8 @@ object SQLConf {
   val SHUFFLE_PARTITIONS = intConf(
     "spark.sql.shuffle.partitions",
     defaultValue = Some(200),
-    doc = "The default number of partitions to use when shuffling data for joins or aggregations.")
+    doc =
+      "The default number of partitions to use when shuffling data for joins or aggregations.")
 
   val SHUFFLE_TARGET_POSTSHUFFLE_INPUT_SIZE =
     longMemConf(
@@ -409,7 +410,8 @@ object SQLConf {
   val PARQUET_CACHE_METADATA = booleanConf(
     "spark.sql.parquet.cacheMetadata",
     defaultValue = Some(true),
-    doc = "Turns on caching of Parquet schema metadata. Can speed up querying of static data.")
+    doc =
+      "Turns on caching of Parquet schema metadata. Can speed up querying of static data.")
 
   val PARQUET_COMPRESSION = enumConf(
     "spark.sql.parquet.compression.codec",
@@ -494,7 +496,8 @@ object SQLConf {
   val COLUMN_NAME_OF_CORRUPT_RECORD = stringConf(
     "spark.sql.columnNameOfCorruptRecord",
     defaultValue = Some("_corrupt_record"),
-    doc = "The name of internal column for storing raw/un-parsed JSON records that fail to parse."
+    doc =
+      "The name of internal column for storing raw/un-parsed JSON records that fail to parse."
   )
 
   val BROADCAST_TIMEOUT = intConf(
@@ -638,7 +641,8 @@ object SQLConf {
     "spark.sql.parser.supportSQL11ReservedKeywords",
     defaultValue = Some(false),
     isPublic = false,
-    doc = "This flag should be set to true to enable support for SQL2011 reserved keywords."
+    doc =
+      "This flag should be set to true to enable support for SQL2011 reserved keywords."
   )
 
   val WHOLESTAGE_CODEGEN_ENABLED = booleanConf(
@@ -653,14 +657,16 @@ object SQLConf {
   val FILES_MAX_PARTITION_BYTES = longConf(
     "spark.sql.files.maxPartitionBytes",
     defaultValue = Some(128 * 1024 * 1024), // parquet.block.size
-    doc = "The maximum number of bytes to pack into a single partition when reading files.",
+    doc =
+      "The maximum number of bytes to pack into a single partition when reading files.",
     isPublic = true
   )
 
   val EXCHANGE_REUSE_ENABLED = booleanConf(
     "spark.sql.exchange.reuse",
     defaultValue = Some(true),
-    doc = "When true, the planner will try to find out duplicated exchanges and re-use them.",
+    doc =
+      "When true, the planner will try to find out duplicated exchanges and re-use them.",
     isPublic = false
   )
 
@@ -697,7 +703,7 @@ class SQLConf
   @transient protected[spark] val settings = java.util.Collections
     .synchronizedMap(new java.util.HashMap[String, String]())
 
-  /** ********************** Spark SQL Params/Hints ******************* */
+  /** ************************ Spark SQL Params/Hints ******************* */
 
   def filesMaxPartitionBytes: Long = getConf(FILES_MAX_PARTITION_BYTES)
 
@@ -794,7 +800,7 @@ class SQLConf
 
   override def orderByOrdinal: Boolean = getConf(ORDER_BY_ORDINAL)
 
-  /** ******************** SQLConf functionality methods ************ */
+  /** ********************** SQLConf functionality methods ************ */
 
   /** Set Spark SQL configuration properties. */
   def setConf(props: Properties): Unit =

@@ -165,8 +165,10 @@ class ResponseRendererSpec
           requestMethod = HttpMethods.HEAD,
           response = HttpResponse(
             headers = List(Age(30)),
-            entity = HttpEntity
-              .Default(ContentTypes.`text/plain(UTF-8)`, 100, Source.empty))
+            entity = HttpEntity.Default(
+              ContentTypes.`text/plain(UTF-8)`,
+              100,
+              Source.empty))
         ) should renderTo(
           """HTTP/1.1 200 OK
               |Age: 30

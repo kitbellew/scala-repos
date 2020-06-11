@@ -89,7 +89,8 @@ class HiveTableScanSuite extends HiveComparisonTest {
     TestHive.sql("DROP TABLE timestamp_query_null")
   }
 
-  test("Spark-4959 Attributes are case sensitive when using a select query from a projection") {
+  test(
+    "Spark-4959 Attributes are case sensitive when using a select query from a projection") {
     sql("create table spark_4959 (col1 string)")
     sql("""insert into table spark_4959 select "hi" from src limit 1""")
     table("spark_4959")

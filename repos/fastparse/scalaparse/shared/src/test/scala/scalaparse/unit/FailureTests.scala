@@ -44,7 +44,8 @@ object FailureTests extends TestSuite {
         |  if (n == 1) c + 1 else
         |}
       """.stripMargin,
-      expected = """If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda""",
+      expected =
+        """If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda""",
       found = ""
     )
     * - checkNeg(
@@ -227,7 +228,8 @@ object FailureTests extends TestSuite {
         |  a.b =
         |}
       """.stripMargin,
-      expected = "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
+      expected =
+        "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
       found = "}"
     )
     * - checkNeg(
@@ -267,7 +269,8 @@ object FailureTests extends TestSuite {
         |  }
         |}
       """.stripMargin,
-      expected = "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
+      expected =
+        "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
       found = "}"
     )
     * - checkNeg(
@@ -276,7 +279,8 @@ object FailureTests extends TestSuite {
         |  val jarFile = catch { case _: F => G }
         |}
       """.stripMargin,
-      expected = "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
+      expected =
+        "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
       found = "catch {"
     )
     * - checkNeg(
@@ -457,7 +461,8 @@ object FailureTests extends TestSuite {
         |}
         |
       """.stripMargin,
-      expected = """ If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda | ")" """,
+      expected =
+        """ If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda | ")" """,
       found = "=> }"
     )
     * - checkNeg(
@@ -609,7 +614,8 @@ object FailureTests extends TestSuite {
           |  } yield
           |}
         """.stripMargin,
-      expected = "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
+      expected =
+        "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
       found = "}"
     )
     * - checkNeg(
@@ -629,7 +635,8 @@ object FailureTests extends TestSuite {
           |}
           |
         """.stripMargin,
-      expected = "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
+      expected =
+        "If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda",
       found = ")\n"
     )
     * - checkNeg(
@@ -765,7 +772,8 @@ object FailureTests extends TestSuite {
       s"""
          |object X{val x = (1, 2,)}
         """.stripMargin,
-      expected = """If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda""",
+      expected =
+        """If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda""",
       found = ")"
     )
     * - checkNeg(
@@ -801,7 +809,8 @@ object FailureTests extends TestSuite {
       s"""
          |object X{def f(x: Int =) = 1}
         """.stripMargin,
-      expected = """If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda""",
+      expected =
+        """If | While | Try | DoWhile | For | Throw | Return | ImplicitLambda | SmallerExprOrLambda""",
       found = ") = 1"
     )
     * - checkNeg(

@@ -613,7 +613,8 @@ trait CogroupSpec[M[+_]]
           """{ "value":{ "fzqJh5csbfsZqgkoi":[4.611686018427387903E+50018] }, "key":[17.0] }"""),
         parseUnsafe(
           """{ "value":{ "fzqJh5csbfsZqgkoi":[0E+48881] }, "key":[18.0] }"""),
-        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[2.326724524858976798E-10633] }, "key":[22.0] }""")
+        parseUnsafe(
+          """{ "value":{ "fzqJh5csbfsZqgkoi":[2.326724524858976798E-10633] }, "key":[22.0] }""")
       ))
 
     testCogroup(s1, s2)

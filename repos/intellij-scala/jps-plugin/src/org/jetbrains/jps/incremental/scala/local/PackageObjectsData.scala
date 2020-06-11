@@ -23,12 +23,14 @@ class PackageObjectsData extends Serializable {
     synchronized {
       baseSourceToPackageObjects.update(
         baseSource,
-        baseSourceToPackageObjects
-          .getOrElse(baseSource, HashSet.empty) + packageObject)
+        baseSourceToPackageObjects.getOrElse(
+          baseSource,
+          HashSet.empty) + packageObject)
       packageObjectToBaseSources.update(
         packageObject,
-        packageObjectToBaseSources
-          .getOrElse(packageObject, HashSet.empty) + baseSource)
+        packageObjectToBaseSources.getOrElse(
+          packageObject,
+          HashSet.empty) + baseSource)
     }
 
   def invalidatedPackageObjects(sources: Seq[File]): Set[File] =

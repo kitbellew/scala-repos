@@ -103,7 +103,7 @@ class ZKEphemeralTest(val secure: Boolean) extends ZooKeeperTestHarness {
     Assert.assertFalse(nodeExists)
   }
 
-  /** *
+  /** ***
     * **** Tests for ZkWatchedEphemeral
     * *** */
 

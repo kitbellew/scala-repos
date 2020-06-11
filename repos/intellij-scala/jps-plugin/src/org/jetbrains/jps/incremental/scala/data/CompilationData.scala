@@ -193,8 +193,8 @@ object CompilationData {
     }
 
     val buildTargetIndex = context.getProjectDescriptor.getBuildTargetIndex
-    val targets = JavaModuleBuildTargetType.ALL_TYPES.asScala
-      .flatMap(buildTargetIndex.getAllTargets(_).asScala)
+    val targets = JavaModuleBuildTargetType.ALL_TYPES.asScala.flatMap(
+      buildTargetIndex.getAllTargets(_).asScala)
 
     targets.distinct.filterNot { target =>
       buildTargetIndex.isDummy(target) || isExcluded(target)

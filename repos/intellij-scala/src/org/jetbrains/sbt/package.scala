@@ -61,8 +61,8 @@ package object sbt {
     private def endsWith0(file: File, parts: Seq[String]): Boolean =
       if (parts.isEmpty) true
       else
-        parts.head == file.getName && Option(file.getParentFile)
-          .exists(endsWith0(_, parts.tail))
+        parts.head == file.getName && Option(file.getParentFile).exists(
+          endsWith0(_, parts.tail))
 
     def url: String = VfsUtil.getUrlForLibraryRoot(file)
 

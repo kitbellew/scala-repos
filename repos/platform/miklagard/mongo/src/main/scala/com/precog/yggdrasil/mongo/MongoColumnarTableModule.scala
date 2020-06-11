@@ -200,10 +200,10 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                       }
                       slice <- safeOp("Invalid result in query") {
                         logger.trace("Getting data from " + coll)
-                        val selector = jTypeToProperties(tpe, Set())
-                          .foldLeft(new BasicDBObject()) {
-                            case (obj, path) => obj.append(path, 1)
-                          }
+                        val selector = jTypeToProperties(tpe, Set()).foldLeft(
+                          new BasicDBObject()) {
+                          case (obj, path) => obj.append(path, 1)
+                        }
 
                         val cursorGen =
                           () => coll.find(new BasicDBObject(), selector)

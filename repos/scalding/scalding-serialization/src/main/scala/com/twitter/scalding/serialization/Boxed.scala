@@ -848,7 +848,8 @@ object Boxed {
         h.asInstanceOf[(K => Boxed[K], Class[Boxed[K]])]
       case (h :: tail) => next[K]() // Try again
       case Nil =>
-        sys.error("""|Scalding's ordered serialization logic exhausted the finite supply of boxed classes.
+        sys.error(
+          """|Scalding's ordered serialization logic exhausted the finite supply of boxed classes.
          |
          |Explanation: Scalding's ordered serialization logic internally uses
          |a large, but fixed, supply of unique wrapper types to box values in

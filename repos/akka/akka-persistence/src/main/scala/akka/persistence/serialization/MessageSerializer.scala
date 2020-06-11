@@ -108,8 +108,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
 
   private[persistence] def stateChangeBuilder(
       stateChange: StateChangeEvent): mf.PersistentStateChangeEvent.Builder = {
-    val builder = mf.PersistentStateChangeEvent.newBuilder
-      .setStateIdentifier(stateChange.stateIdentifier)
+    val builder = mf.PersistentStateChangeEvent.newBuilder.setStateIdentifier(
+      stateChange.stateIdentifier)
     stateChange.timeout match {
       case None ⇒ builder
       case Some(timeout) ⇒ builder.setTimeout(timeout.toString())

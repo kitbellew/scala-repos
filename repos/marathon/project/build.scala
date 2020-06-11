@@ -52,7 +52,8 @@ object MarathonBuild extends Build {
         buildInfoPackage := "mesosphere.marathon",
         fork in Test := true
       )
-  ).configs(IntegrationTest)
+  )
+    .configs(IntegrationTest)
     .dependsOn(pluginInterface)
     // run mesos-simulation/test:test when running test
     .settings(

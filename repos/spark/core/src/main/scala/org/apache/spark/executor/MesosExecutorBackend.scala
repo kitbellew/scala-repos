@@ -76,8 +76,8 @@ private[spark] class MesosExecutorBackend
     // See SPARK-10986.
     Thread.currentThread().setContextClassLoader(this.getClass.getClassLoader)
 
-    val properties = Utils
-      .deserialize[Array[(String, String)]](executorInfo.getData.toByteArray) ++
+    val properties = Utils.deserialize[Array[(String, String)]](
+      executorInfo.getData.toByteArray) ++
       Seq[(String, String)](("spark.app.id", frameworkInfo.getId.getValue))
     val conf = new SparkConf(loadDefaults = true).setAll(properties)
     val port = conf.getInt("spark.executor.port", 0)

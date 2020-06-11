@@ -362,7 +362,8 @@ class LogisticRegressionSuite
       validationData)
   }
 
-  test("logistic regression with initial weights and non-default regularization parameter") {
+  test(
+    "logistic regression with initial weights and non-default regularization parameter") {
     val nPoints = 10000
     val A = 2.0
     val B = -1.5
@@ -440,7 +441,8 @@ class LogisticRegressionSuite
       validationData)
   }
 
-  test("numerical stability of scaling features using logistic regression with LBFGS") {
+  test(
+    "numerical stability of scaling features using logistic regression with LBFGS") {
 
     /**
       * If we rescale the features, the condition number will be changed so the convergence rate
@@ -1013,7 +1015,8 @@ class LogisticRegressionClusterSuite
     extends SparkFunSuite
     with LocalClusterSparkContext {
 
-  test("task size should be small in both training and prediction using SGD optimizer") {
+  test(
+    "task size should be small in both training and prediction using SGD optimizer") {
     val m = 4
     val n = 200000
     val points = sc
@@ -1034,7 +1037,8 @@ class LogisticRegressionClusterSuite
     predictions.count()
   }
 
-  test("task size should be small in both training and prediction using LBFGS optimizer") {
+  test(
+    "task size should be small in both training and prediction using LBFGS optimizer") {
     val m = 4
     val n = 200000
     val points = sc

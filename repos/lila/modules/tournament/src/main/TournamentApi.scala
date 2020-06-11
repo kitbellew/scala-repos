@@ -307,8 +307,8 @@ private[tournament] final class TournamentApi(
         tour.isStarted.?? {
           PairingRepo.opponentsOf(tour.id, userId).flatMap { uids =>
             PairingRepo.removeByTourAndUserId(tour.id, userId) >>
-              lila.common.Future
-                .applySequentially(uids.toList)(updatePlayer(tour))
+              lila.common.Future.applySequentially(uids.toList)(
+                updatePlayer(tour))
           }
         } >>
         updateNbPlayers(tour.id) >>-

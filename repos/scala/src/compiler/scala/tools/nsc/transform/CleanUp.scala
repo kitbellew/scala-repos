@@ -132,8 +132,9 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
           val methodCache = reflMethodSym.newVariable(
             mkTerm("methodCache"),
             ad.pos) setInfo StructuralCallSite.tpe
-          val methodSym = reflMethodSym
-            .newVariable(mkTerm("method"), ad.pos) setInfo MethodClass.tpe
+          val methodSym = reflMethodSym.newVariable(
+            mkTerm("method"),
+            ad.pos) setInfo MethodClass.tpe
 
           val dummyMethodType =
             MethodType(NoSymbol.newSyntheticValueParams(paramTypes), AnyTpe)

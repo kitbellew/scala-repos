@@ -324,8 +324,9 @@ class BasicOperationsSuite extends TestSuiteBase {
       s.context.transform(
         Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
         (rdds: Seq[RDD[_]], time: Time) =>
-          rdds.head.context
-            .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
+          rdds.head.context.union(
+            rdds.map(_.asInstanceOf[RDD[Int]])
+          ) // union of RDDs
       )
     }
 
@@ -341,8 +342,9 @@ class BasicOperationsSuite extends TestSuiteBase {
       s.context.transform(
         Seq(s, s.map(_ + 4), s.map(_ + 8)), // 3 DStreams
         (rdds: Seq[RDD[_]], time: Time) =>
-          rdds.head.context
-            .union(rdds.map(_.asInstanceOf[RDD[Int]])) // union of RDDs
+          rdds.head.context.union(
+            rdds.map(_.asInstanceOf[RDD[Int]])
+          ) // union of RDDs
       )
     }
 

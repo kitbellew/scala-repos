@@ -323,8 +323,8 @@ trait ShardServiceCombinators
         val path =
           request.parameters.get('prefixPath).filter(_ != null).getOrElse("")
         delegate.service(
-          request
-            .copy(parameters = request.parameters + ('sync -> "async"))) map {
+          request.copy(parameters =
+            request.parameters + ('sync -> "async"))) map {
           f =>
             { (cred: (APIKey, AccountDetails)) => f(cred, Path(path)) }
         }

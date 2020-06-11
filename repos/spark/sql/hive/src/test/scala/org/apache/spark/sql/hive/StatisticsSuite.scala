@@ -120,8 +120,8 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
     intercept[UnsupportedOperationException] {
       hiveContext.analyze("tempTable")
     }
-    hiveContext.sessionState.catalog
-      .unregisterTable(TableIdentifier("tempTable"))
+    hiveContext.sessionState.catalog.unregisterTable(
+      TableIdentifier("tempTable"))
   }
 
   test("estimates the size of a test MetastoreRelation") {

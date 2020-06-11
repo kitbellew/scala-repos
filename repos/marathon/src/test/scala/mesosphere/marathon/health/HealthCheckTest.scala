@@ -240,7 +240,8 @@ class HealthCheckTest extends MarathonSpec {
     assert(readResult == expected)
   }
 
-  test("Read COMMAND health check (portIndex may be provided for backwards-compatibility)") {
+  test(
+    "Read COMMAND health check (portIndex may be provided for backwards-compatibility)") {
     val json =
       """
         {
@@ -328,7 +329,8 @@ class HealthCheckTest extends MarathonSpec {
       ))
   }
 
-  test("both port and portIndex are not accepted at the same time for a HTTP HealthCheck") {
+  test(
+    "both port and portIndex are not accepted at the same time for a HTTP HealthCheck") {
     shouldBeInvalid(
       HealthCheck(
         protocol = Protocol.HTTP,
@@ -337,7 +339,8 @@ class HealthCheckTest extends MarathonSpec {
       ))
   }
 
-  test("both port and portIndex are not accepted at the same time for a TCP HealthCheck") {
+  test(
+    "both port and portIndex are not accepted at the same time for a TCP HealthCheck") {
     shouldBeInvalid(
       HealthCheck(
         protocol = Protocol.TCP,

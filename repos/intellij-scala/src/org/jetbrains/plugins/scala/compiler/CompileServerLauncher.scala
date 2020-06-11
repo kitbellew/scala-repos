@@ -43,8 +43,10 @@ class CompileServerLauncher extends ApplicationComponent {
     if (!running) {
       val started = start(project)
       if (started) {
-        try new RemoteServerRunner(project)
-          .send("addDisconnectListener", Seq.empty, null)
+        try new RemoteServerRunner(project).send(
+          "addDisconnectListener",
+          Seq.empty,
+          null)
         catch {
           case e: Exception =>
         }

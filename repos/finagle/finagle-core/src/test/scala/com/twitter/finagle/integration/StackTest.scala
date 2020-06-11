@@ -27,7 +27,8 @@ class StackTest extends FunSuite {
             sf.map(identity[Service[String, String]]))
   }
 
-  test("Client/Server: Status.busy propagates from failAccrual to the top of the stack") {
+  test(
+    "Client/Server: Status.busy propagates from failAccrual to the top of the stack") {
     new TestCtx {
       val server = stringServer.serve(new InetSocketAddress(0), failService)
       val client =
@@ -47,7 +48,8 @@ class StackTest extends FunSuite {
     }
   }
 
-  test("ClientBuilder: Status.busy propagates from failAccrual to the top of the stack") {
+  test(
+    "ClientBuilder: Status.busy propagates from failAccrual to the top of the stack") {
     new TestCtx {
       val server = ServerBuilder()
         .codec(StringCodec)
@@ -70,7 +72,8 @@ class StackTest extends FunSuite {
     }
   }
 
-  test("Client/Server: Status.busy propagates from failFast to the top of the stack") {
+  test(
+    "Client/Server: Status.busy propagates from failFast to the top of the stack") {
     new TestCtx {
       val client =
         stringClient

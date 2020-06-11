@@ -655,8 +655,9 @@ object ScalaPsiUtil {
         exprTp.inferValueType,
         call.getProject,
         call.getResolveScope))) {
-      val state: ResolveState = ResolveState.initial
-        .put(BaseProcessor.FROM_TYPE_KEY, exprTp.inferValueType)
+      val state: ResolveState = ResolveState.initial.put(
+        BaseProcessor.FROM_TYPE_KEY,
+        exprTp.inferValueType)
       processor.processType(
         exprTp.inferValueType,
         call.getEffectiveInvokedExpr,
@@ -761,8 +762,8 @@ object ScalaPsiUtil {
       }
     }
 
-    checkCandidates(withDynamic = false)
-      .orElse(checkCandidates(withDynamic = true))
+    checkCandidates(withDynamic = false).orElse(
+      checkCandidates(withDynamic = true))
   }
 
   /**
@@ -1517,9 +1518,8 @@ object ScalaPsiUtil {
       name: String): Seq[PhysicalSignature] = {
     for ((n: PhysicalSignature, _) <-
         TypeDefinitionMembers.getSignatures(clazz).forName(name)._1
-      if clazz
-        .isInstanceOf[ScObject] || !n.method.hasModifierProperty("static"))
-      yield n
+      if clazz.isInstanceOf[ScObject] || !n.method.hasModifierProperty(
+        "static")) yield n
   }
 
   def getApplyMethods(clazz: PsiClass): Seq[PhysicalSignature] = {
@@ -2460,8 +2460,8 @@ object ScalaPsiUtil {
     val modules = ModuleUtil.getModulesOfType(p, JavaModuleType.getModuleType)
     import collection.JavaConversions._
     modules.exists { mod =>
-      mod.hasScala && mod.scalaCompilerSettings.plugins
-        .exists(_.contains("kind-projector"))
+      mod.hasScala && mod.scalaCompilerSettings.plugins.exists(
+        _.contains("kind-projector"))
     }
   }
 

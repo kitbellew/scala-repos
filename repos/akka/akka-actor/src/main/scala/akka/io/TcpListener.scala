@@ -102,7 +102,8 @@ private[io] class TcpListener(
       registration.enableInterest(SelectionKey.OP_ACCEPT)
 
     case FailedRegisterIncoming(socketChannel) ⇒
-      log.warning("Could not register incoming connection since selector capacity limit is reached, closing connection")
+      log.warning(
+        "Could not register incoming connection since selector capacity limit is reached, closing connection")
       try socketChannel.close()
       catch {
         case NonFatal(e) ⇒ log.debug("Error closing socket channel: {}", e)

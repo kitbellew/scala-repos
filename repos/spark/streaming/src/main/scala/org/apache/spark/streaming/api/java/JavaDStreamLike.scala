@@ -439,8 +439,9 @@ trait JavaDStreamLike[
         inThat: RDD[(K2, V2)],
         time: Time): RDD[(K3, V3)] =
       transformFunc.call(wrapRDD(inThis), other.wrapRDD(inThat), time).rdd
-    dstream
-      .transformWith[(K2, V2), (K3, V3)](other.dstream, scalaTransform(_, _, _))
+    dstream.transformWith[(K2, V2), (K3, V3)](
+      other.dstream,
+      scalaTransform(_, _, _))
   }
 
   /**

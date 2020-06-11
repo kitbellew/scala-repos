@@ -217,7 +217,8 @@ abstract class AggregationQuerySuite
     Seq((1, 2)).toDF("a", "b").registerTempTable("data")
 
     checkAnswer(
-      sql("SELECT floor(a) AS a, collect_set(b) FROM data GROUP BY floor(a) ORDER BY a"),
+      sql(
+        "SELECT floor(a) AS a, collect_set(b) FROM data GROUP BY floor(a) ORDER BY a"),
       Row(1, Array(2)) :: Nil)
   }
 
@@ -971,8 +972,9 @@ abstract class AggregationQuerySuite
 
   test("udaf without specifying inputSchema") {
     withTempTable("noInputSchemaUDAF") {
-      sqlContext.udf
-        .register("noInputSchema", new ScalaAggregateFunctionWithoutInputSchema)
+      sqlContext.udf.register(
+        "noInputSchema",
+        new ScalaAggregateFunctionWithoutInputSchema)
 
       val data =
         Row(1, Seq(Row(1), Row(2), Row(3))) ::

@@ -43,16 +43,17 @@ object Lobby extends LilaController {
       negotiate(
         html = fuccess(NotFound),
         api = _ =>
-          ctx.me
-            .fold(Env.lobby.seekApi.forAnon)(Env.lobby.seekApi.forUser) map {
-            seeks =>
-              Ok(JsArray(seeks.map(_.render)))
+          ctx.me.fold(Env.lobby.seekApi.forAnon)(
+            Env.lobby.seekApi.forUser) map { seeks =>
+            Ok(JsArray(seeks.map(_.render)))
           }
       )
     }
 
-  private val socketConsumer = lila.api.TokenBucket
-    .create(system = lila.common.PlayApp.system, size = 10, rate = 6)
+  private val socketConsumer = lila.api.TokenBucket.create(
+    system = lila.common.PlayApp.system,
+    size = 10,
+    rate = 6)
 
   def socket(apiVersion: Int) =
     SocketOptionLimited[JsValue](socketConsumer, "lobby") { implicit ctx =>

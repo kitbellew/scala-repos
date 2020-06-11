@@ -110,9 +110,10 @@ trait SegmentFormatSupport {
       blockId <- arbitrary[Long]
       cpath <- genCPath
       defined <- genBitSet(length, 0.5)
-      values <- genArray(length, g)(
-        ctype.manifest
-      ) // map (toCTypeArray(ctype)) // (_.toArray(ctype.manifest))
+      values <-
+        genArray(length, g)(
+          ctype.manifest
+        ) // map (toCTypeArray(ctype)) // (_.toArray(ctype.manifest))
     } yield ArraySegment(blockId, cpath, ctype, defined, values)
   }
 

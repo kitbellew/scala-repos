@@ -54,7 +54,8 @@ object GridFSFileStorage {
       case x :: Nil => new com.mongodb.Mongo(x)
       case x :: xs  => new com.mongodb.Mongo(servers.asJava)
       case Nil =>
-        sys.error("""MongoServers are not configured. Configure the value 'servers'. Format is '["host1:port1", "host2:port2", ...]'""")
+        sys.error(
+          """MongoServers are not configured. Configure the value 'servers'. Format is '["host1:port1", "host2:port2", ...]'""")
     }
 
     apply(mongo.getDB(config[String]("database")))

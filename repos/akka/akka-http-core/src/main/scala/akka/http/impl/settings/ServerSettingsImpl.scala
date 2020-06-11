@@ -89,8 +89,8 @@ object ServerSettingsImpl
         HttpHeader.parse("Host", c getString "default-host-header") match {
           case HttpHeader.ParsingResult.Ok(x: Host, Nil) ⇒ x
           case result ⇒
-            val info = result.errors.head
-              .withSummary("Configured `default-host-header` is illegal")
+            val info = result.errors.head.withSummary(
+              "Configured `default-host-header` is illegal")
             throw new ConfigurationException(info.formatPretty)
         },
       Randoms.SecureRandomInstances, // can currently only be overridden from code

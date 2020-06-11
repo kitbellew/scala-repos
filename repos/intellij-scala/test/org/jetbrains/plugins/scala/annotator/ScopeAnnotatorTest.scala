@@ -464,7 +464,8 @@ class ScopeAnnotatorTest extends SimpleTestCase {
       "class Array[T]; def f(a: Array[Foo]) {}; def f(a: Array[Bar]) {}")
     assertFine(
       "class Array[T]; def f(a: Array[Array[Foo]]) {}; def f(a: Array[Array[Bar]]) {}")
-    assertFine("class Array[T]; def f(a: Array[Foo], b: Array[Bar]) {}; def f(a: Array[Bar], b: Array[Foo]) {}")
+    assertFine(
+      "class Array[T]; def f(a: Array[Foo], b: Array[Bar]) {}; def f(a: Array[Bar], b: Array[Foo]) {}")
     assertFine(
       "class Array[A, B]; def f(a: Array[Foo, Bar]) {}; def f(a: Array[Bar, Foo]) {}")
 

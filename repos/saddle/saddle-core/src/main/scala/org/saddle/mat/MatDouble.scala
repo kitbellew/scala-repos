@@ -82,8 +82,8 @@ class MatDouble(r: Int, c: Int, values: Array[Double]) extends Mat[Double] {
           var i = 0
           var eq = true
           while (eq && i < length) {
-            eq &&= (apply(i) == rv(i) || this.scalarTag
-              .isMissing(apply(i)) && rv.scalarTag.isMissing(rv(i)))
+            eq &&= (apply(i) == rv(i) || this.scalarTag.isMissing(
+              apply(i)) && rv.scalarTag.isMissing(rv(i)))
             i += 1
           }
           eq

@@ -30,8 +30,9 @@ import org.scalatest.Matchers
 
 class JsonExtractorSuite extends FunSuite with Matchers {
 
-  test("Extract Scala object using option Json4sNative works with optional and default value " +
-    "provided") {
+  test(
+    "Extract Scala object using option Json4sNative works with optional and default value " +
+      "provided") {
 
     val json =
       """{"string": "query string", "optional": "optional string", "default": "d"}"""
@@ -44,8 +45,9 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     query should be(ScalaQuery("query string", Some("optional string"), "d"))
   }
 
-  test("Extract Scala object using option Json4sNative works with no optional and no default " +
-    "value provided") {
+  test(
+    "Extract Scala object using option Json4sNative works with no optional and no default " +
+      "value provided") {
 
     val json = """{"string": "query string"}"""
 
@@ -57,8 +59,9 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     query should be(ScalaQuery("query string", None, "default"))
   }
 
-  test("Extract Scala object using option Json4sNative works with null optional and null default" +
-    " value") {
+  test(
+    "Extract Scala object using option Json4sNative works with null optional and null default" +
+      " value") {
 
     val json =
       """{"string": "query string", "optional": null, "default": null}"""
@@ -71,7 +74,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     query should be(ScalaQuery("query string", None, "default"))
   }
 
-  test("Extract Scala object using option Both works with optional and default value provided") {
+  test(
+    "Extract Scala object using option Both works with optional and default value provided") {
 
     val json =
       """{"string": "query string", "optional": "optional string", "default": "d"}"""
@@ -84,8 +88,9 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     query should be(ScalaQuery("query string", Some("optional string"), "d"))
   }
 
-  test("Extract Scala object using option Both works with no optional and no default value " +
-    "provided") {
+  test(
+    "Extract Scala object using option Both works with no optional and no default value " +
+      "provided") {
 
     val json = """{"string": "query string"}"""
 
@@ -97,7 +102,8 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     query should be(ScalaQuery("query string", None, "default"))
   }
 
-  test("Extract Scala object using option Both works with null optional and null default value") {
+  test(
+    "Extract Scala object using option Both works with null optional and null default value") {
 
     val json =
       """{"string": "query string", "optional": null, "default": null}"""
@@ -110,8 +116,9 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     query should be(ScalaQuery("query string", None, "default"))
   }
 
-  test("Extract Scala object using option Gson should not get default value and optional none" +
-    " value") {
+  test(
+    "Extract Scala object using option Gson should not get default value and optional none" +
+      " value") {
 
     val json = """{"string": "query string"}"""
     val query =
@@ -120,8 +127,9 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     query should be(ScalaQuery("query string", null, null))
   }
 
-  test("Extract Scala object using option Gson should throw an exception with optional " +
-    "value provided") {
+  test(
+    "Extract Scala object using option Gson should throw an exception with optional " +
+      "value provided") {
 
     val json = """{"string": "query string", "optional": "o", "default": "d"}"""
     intercept[RuntimeException] {

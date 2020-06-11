@@ -582,7 +582,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
     Await.ready(ss.close())
   }
 
-  test("clientId is not sent and prep stats are not recorded when TTwitter upgrading is disabled") {
+  test(
+    "clientId is not sent and prep stats are not recorded when TTwitter upgrading is disabled") {
     val pf = Protocols.binaryFactory()
     val iface = new BServiceImpl {
       override def someway(): Future[Void] = {

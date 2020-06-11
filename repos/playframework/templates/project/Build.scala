@@ -158,8 +158,8 @@ object Templates {
           })
           if (rc != 0) {
             out.reverse.foreach(println)
-            streams.value.log
-              .error("Template " + template.getName + " failed to build")
+            streams.value.log.error(
+              "Template " + template.getName + " failed to build")
             throw new TemplateBuildFailed(template.getName)
           }
       }

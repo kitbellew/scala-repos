@@ -977,8 +977,10 @@ object JsonValidSpec extends Specification {
 
       val js = Json.obj(
         "field1" -> "alpha",
-        "field2" -> Json
-          .obj("field21" -> 123, "field22" -> true, "field23" -> "blabla"),
+        "field2" -> Json.obj(
+          "field21" -> 123,
+          "field22" -> true,
+          "field23" -> "blabla"),
         "field3" -> "beta"
       )
 

@@ -237,7 +237,8 @@ class LogManagerTest {
   def testTwoLogManagersUsingSameDirFails() {
     try {
       createLogManager()
-      fail("Should not be able to create a second log manager instance with the same data directory")
+      fail(
+        "Should not be able to create a second log manager instance with the same data directory")
     } catch {
       case e: KafkaException => // this is good
     }

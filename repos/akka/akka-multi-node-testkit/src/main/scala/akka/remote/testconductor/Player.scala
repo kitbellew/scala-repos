@@ -286,8 +286,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
                 nanoTimeOfLastSend = 0,
                 availableTokens = 0)
 
-          val cmdFuture = TestConductor().transport
-            .managementCommand(SetThrottle(t.target, t.direction, mode))
+          val cmdFuture = TestConductor().transport.managementCommand(
+            SetThrottle(t.target, t.direction, mode))
 
           cmdFuture onSuccess {
             case true ⇒ self ! ToServer(Done)

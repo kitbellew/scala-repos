@@ -143,8 +143,8 @@ trait ApiControllerBase extends ControllerBase {
       branch <- params.get("branch")
       if repository.branchList.find(_ == branch).isDefined
       protection <-
-        extractFromJsonBody[ApiBranchProtection.EnablingAndDisabling]
-          .map(_.protection)
+        extractFromJsonBody[ApiBranchProtection.EnablingAndDisabling].map(
+          _.protection)
     } yield {
       if (protection.enabled) {
         enableBranchProtection(

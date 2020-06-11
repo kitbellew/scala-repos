@@ -261,8 +261,10 @@ class DriverActor(schedulerProps: Props) extends Actor {
       .setState(toState)
       .build()
     import context.dispatcher
-    context.system.scheduler
-      .scheduleOnce(afterDuration, self, ChangeTaskStatus(newStatus, create))
+    context.system.scheduler.scheduleOnce(
+      afterDuration,
+      self,
+      ChangeTaskStatus(newStatus, create))
   }
 
 }

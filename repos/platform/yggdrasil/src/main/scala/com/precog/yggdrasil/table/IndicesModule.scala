@@ -473,16 +473,16 @@ trait IndicesModule[M[+_]]
         k += 1
       }
 
-      val back = (0 until keys.length)
-        .foldLeft(M.point(Vector.fill[Array[RValue]](numKeys)(null))) {
-          case (accM, i) => {
-            val arrM = keys(i)
+      val back = (0 until keys.length).foldLeft(
+        M.point(Vector.fill[Array[RValue]](numKeys)(null))) {
+        case (accM, i) => {
+          val arrM = keys(i)
 
-            M.apply2(accM, arrM) { (acc, arr) =>
-              acc.updated(i, arr)
-            }
+          M.apply2(accM, arrM) { (acc, arr) =>
+            acc.updated(i, arr)
           }
         }
+      }
 
       back map { _.toArray }
     }

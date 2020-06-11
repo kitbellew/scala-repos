@@ -13,7 +13,8 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class FilterTest extends FunSuite {
 
-  test("BP filtering tested against output from scipy.signal.firwin/ifilter (0.13.2-1)") {
+  test(
+    "BP filtering tested against output from scipy.signal.firwin/ifilter (0.13.2-1)") {
 
     val testNormThreshold = 1.0e-6
     val spFirwin1 = DenseVector(1.40718797e-02, -7.94274374e-18,

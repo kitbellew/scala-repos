@@ -100,7 +100,8 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
       case Some(endpointRef) =>
         endpointRef.askWithRetry[Boolean](msg)
       case None =>
-        logError("canCommit called after coordinator was stopped (is SparkEnv shutdown in progress)?")
+        logError(
+          "canCommit called after coordinator was stopped (is SparkEnv shutdown in progress)?")
         false
     }
   }

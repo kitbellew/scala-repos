@@ -149,14 +149,16 @@ object ScalaGenerationInfo {
             statements(0).getTextRange.getStartOffset,
             statements(statements.length - 1).getTextRange.getEndOffset)
           editor.getCaretModel.moveToOffset(range.getStartOffset)
-          editor.getSelectionModel
-            .setSelection(range.getStartOffset, range.getEndOffset)
+          editor.getSelectionModel.setSelection(
+            range.getStartOffset,
+            range.getEndOffset)
         }
       case _ =>
         val range = body.getTextRange
         editor.getCaretModel.moveToOffset(range.getStartOffset)
-        editor.getSelectionModel
-          .setSelection(range.getStartOffset, range.getEndOffset)
+        editor.getSelectionModel.setSelection(
+          range.getStartOffset,
+          range.getEndOffset)
     }
   }
 

@@ -220,8 +220,9 @@ object SessionSettings {
         append = newAppend.toMap,
         original = newOriginal.flatten.toSeq)
       reapply(
-        newSession
-          .copy(original = newSession.mergeSettings, append = Map.empty),
+        newSession.copy(
+          original = newSession.mergeSettings,
+          append = Map.empty),
         s)
     }
 

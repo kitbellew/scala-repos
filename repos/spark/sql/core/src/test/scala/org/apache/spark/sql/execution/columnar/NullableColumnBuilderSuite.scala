@@ -57,9 +57,10 @@ class NullableColumnBuilderSuite extends SparkFunSuite {
     STRUCT(StructType(StructField("a", StringType) :: Nil)),
     ARRAY(ArrayType(IntegerType)),
     MAP(MapType(IntegerType, StringType))
-  ).foreach {
-    testNullableColumnBuilder(_)
-  }
+  )
+    .foreach {
+      testNullableColumnBuilder(_)
+    }
 
   def testNullableColumnBuilder[JvmType](
       columnType: ColumnType[JvmType]): Unit = {
@@ -105,8 +106,8 @@ class NullableColumnBuilderSuite extends SparkFunSuite {
       assertResult(4, "Wrong null count")(buffer.getInt())
 
       // For null positions
-      (1 to 7 by 2)
-        .foreach(assertResult(_, "Wrong null position")(buffer.getInt()))
+      (1 to 7 by 2).foreach(
+        assertResult(_, "Wrong null position")(buffer.getInt()))
 
       // For non-null values
       val actual = new GenericMutableRow(new Array[Any](1))

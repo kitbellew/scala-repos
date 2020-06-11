@@ -262,8 +262,8 @@ class TlsSpec
 
     object EmptyBytesInTheMiddle extends PayloadScenario {
       def inputs =
-        List(ByteString("hello"), ByteString.empty, ByteString(" world"))
-          .map(SendBytes)
+        List(ByteString("hello"), ByteString.empty, ByteString(" world")).map(
+          SendBytes)
       def output = ByteString("hello world")
     }
 

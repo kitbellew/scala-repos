@@ -53,8 +53,8 @@ private[hive] class SparkSQLSessionManager(
       this,
       "backgroundOperationPool",
       Executors.newFixedThreadPool(backgroundPoolSize))
-    getAncestorField[Log](this, 3, "LOG")
-      .info(s"HiveServer2: Async execution pool size $backgroundPoolSize")
+    getAncestorField[Log](this, 3, "LOG").info(
+      s"HiveServer2: Async execution pool size $backgroundPoolSize")
 
     setSuperField(this, "operationManager", sparkSqlOperationManager)
     addService(sparkSqlOperationManager)

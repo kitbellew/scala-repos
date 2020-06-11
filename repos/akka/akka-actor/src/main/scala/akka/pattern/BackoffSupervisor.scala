@@ -279,8 +279,10 @@ private[akka] trait HandleBackoff { this: Actor ⇒
       startChild()
       reset match {
         case AutoReset(resetBackoff) ⇒
-          val _ = context.system.scheduler
-            .scheduleOnce(resetBackoff, self, ResetRestartCount(restartCount))
+          val _ = context.system.scheduler.scheduleOnce(
+            resetBackoff,
+            self,
+            ResetRestartCount(restartCount))
         case _ ⇒ // ignore
       }
 

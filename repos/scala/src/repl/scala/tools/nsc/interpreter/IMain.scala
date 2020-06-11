@@ -465,7 +465,8 @@ class IMain(
           }) {
           replwarn(
             s"warning: previously defined $oldSym is not a companion to $newSym.")
-          replwarn("Companions must be defined together; you may wish to use :paste mode for this.")
+          replwarn(
+            "Companions must be defined together; you may wish to use :paste mode for this.")
         }
       }
     }
@@ -1194,7 +1195,8 @@ class IMain(
 
   @throws[ScriptException]
   def compile(script: String): CompiledScript =
-    eval("new javax.script.CompiledScript { def eval(context: javax.script.ScriptContext): Object = { " + script + " }.asInstanceOf[Object]; def getEngine: javax.script.ScriptEngine = engine }")
+    eval(
+      "new javax.script.CompiledScript { def eval(context: javax.script.ScriptContext): Object = { " + script + " }.asInstanceOf[Object]; def getEngine: javax.script.ScriptEngine = engine }")
       .asInstanceOf[CompiledScript]
 
   @throws[ScriptException]

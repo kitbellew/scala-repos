@@ -269,8 +269,8 @@ object TaskTest extends SpecLite {
         Executors.newFixedThreadPool(6)
       val barrier = new CyclicBarrier(6);
 
-      val seenThreadNames = scala.collection.JavaConversions
-        .asScalaSet(ju.Collections.synchronizedSet(new ju.HashSet[String]()))
+      val seenThreadNames = scala.collection.JavaConversions.asScalaSet(
+        ju.Collections.synchronizedSet(new ju.HashSet[String]()))
       val t =
         for (i <- 0 to 5) yield fork {
           seenThreadNames += currentThread().getName()

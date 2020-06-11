@@ -171,9 +171,11 @@ trait ArrayInstances extends ArrayInstances3 {
 }
 
 @SerialVersionUID(0L)
-private final class ArrayModule[
-    @sp(Int, Long, Float, Double) A: ClassTag: Ring](implicit
-    nvs: NoImplicit[VectorSpace[Array[A], A]])
+private final class ArrayModule[@sp(
+  Int,
+  Long,
+  Float,
+  Double) A: ClassTag: Ring](implicit nvs: NoImplicit[VectorSpace[Array[A], A]])
     extends Module[Array[A], A]
     with Serializable {
   def scalar: Ring[A] = Ring[A]

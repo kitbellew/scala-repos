@@ -234,8 +234,8 @@ trait LinearRegressionLibModule[M[+_]]
             }
             Some(mapped)
           case other =>
-            logger
-              .warn("Features were not correctly put into a homogeneous array of doubles; returning empty.")
+            logger.warn(
+              "Features were not correctly put into a homogeneous array of doubles; returning empty.")
             None
         }
 

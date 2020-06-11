@@ -334,7 +334,8 @@ trait StreamTest extends QueryTest with Timeouts {
             } catch {
               case _: InterruptedException =>
               case _: org.scalatest.exceptions.TestFailedDueToTimeoutException =>
-                failTest("Timed out while stopping and waiting for microbatchthread to terminate.")
+                failTest(
+                  "Timed out while stopping and waiting for microbatchthread to terminate.")
               case t: Throwable =>
                 failTest("Error while stopping stream", t)
             } finally {

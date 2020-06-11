@@ -766,7 +766,8 @@ class LogisticRegressionSuite
     assert(model2.coefficients ~= coefficientsR2 absTol 1e-3)
   }
 
-  test("binary logistic regression without intercept with ElasticNet regularization") {
+  test(
+    "binary logistic regression without intercept with ElasticNet regularization") {
     val trainer1 = (new LogisticRegression)
       .setFitIntercept(false)
       .setElasticNetParam(0.38)

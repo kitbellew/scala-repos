@@ -28,7 +28,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
       end
   val apiInfo = ApiInfo(
     title = "Swagger Sample App",
-    description = "This is a sample server Petstore server.  You can find out more about Swagger \n    at <a href=\"http://swagger.wordnik.com\">http://swagger.wordnik.com</a> or on irc.freenode.net, #swagger.",
+    description =
+      "This is a sample server Petstore server.  You can find out more about Swagger \n    at <a href=\"http://swagger.wordnik.com\">http://swagger.wordnik.com</a> or on irc.freenode.net, #swagger.",
     termsOfServiceUrl = "http://helloreverb.com/terms/",
     contact = "apiteam@wordnik.com",
     license = "Apache 2.0",
@@ -241,8 +242,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
   def verifyOperation(actual: JValue, expected: JValue, name: String) = {
     val op = findOperation(actual, name)
     val exp = findOperation(expected, name)
-    (op must beSome[JValue])
-      .setMessage("Couldn't find operation: " + name) and {
+    (op must beSome[JValue]).setMessage(
+      "Couldn't find operation: " + name) and {
       val m = verifyFields(
         op.get,
         exp.get,
@@ -319,8 +320,8 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
             mm setMessage (mm.message + " in response messages collection")
           }
           def countsmatch =
-            (af.size must_== ef.size)
-              .setMessage("The count for the responseMessages is different")
+            (af.size must_== ef.size).setMessage(
+              "The count for the responseMessages is different")
           if (r.nonEmpty) { countsmatch and (r reduce (_ and _)) }
           else countsmatch
         case "parameters" =>
@@ -406,8 +407,8 @@ class SwaggerTestServlet(protected val swagger: Swagger)
       responseMessages (StringResponseMessage(
         400,
         "Invalid ID supplied"), StringResponseMessage(404, "Pet not found"))
-      parameter pathParam[String]("petId")
-        .description("ID of pet that needs to be fetched")
+      parameter pathParam[String]("petId").description(
+        "ID of pet that needs to be fetched")
       produces ("application/json", "application/xml")
       authorizations ("oauth2"))
 

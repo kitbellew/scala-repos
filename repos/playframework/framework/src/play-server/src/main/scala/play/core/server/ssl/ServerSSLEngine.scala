@@ -23,8 +23,8 @@ object ServerSSLEngine {
   def createSSLEngineProvider(
       serverConfig: ServerConfig,
       applicationProvider: ApplicationProvider): JavaSSLEngineProvider = {
-    val providerClassName = serverConfig.configuration.underlying
-      .getString("play.server.https.engineProvider")
+    val providerClassName = serverConfig.configuration.underlying.getString(
+      "play.server.https.engineProvider")
 
     val classLoader = applicationProvider.get
       .map(_.classloader)

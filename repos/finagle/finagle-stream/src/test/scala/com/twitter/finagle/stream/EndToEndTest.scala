@@ -346,8 +346,10 @@ class EndToEndTest extends FunSuite {
       val errors = new Broker[Throwable]
       errors ! EOF
       Future.value(new StreamResponse {
-        val info = StreamResponse
-          .Info(req.version, StreamResponse.Status(200), req.headers)
+        val info = StreamResponse.Info(
+          req.version,
+          StreamResponse.Status(200),
+          req.headers)
         def messages = new Broker[Buf].recv
         def error = errors.recv
         def release() = errors !! EOF

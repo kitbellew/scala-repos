@@ -111,8 +111,9 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     * until the real RPC issue (referred to in the comment above `blockOnCleanupTasks`) is
     * resolved.
     */
-  private val blockOnShuffleCleanupTasks = sc.conf
-    .getBoolean("spark.cleaner.referenceTracking.blocking.shuffle", false)
+  private val blockOnShuffleCleanupTasks = sc.conf.getBoolean(
+    "spark.cleaner.referenceTracking.blocking.shuffle",
+    false)
 
   @volatile private var stopped = false
 

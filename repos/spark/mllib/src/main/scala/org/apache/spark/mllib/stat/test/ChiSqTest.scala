@@ -181,8 +181,9 @@ private[stat] object ChiSqTest extends Logging {
     }
     val size = observed.size
     if (size > 1000) {
-      logWarning("Chi-squared approximation may not be accurate due to low expected frequencies "
-        + s" as a result of a large number of categories: $size.")
+      logWarning(
+        "Chi-squared approximation may not be accurate due to low expected frequencies "
+          + s" as a result of a large number of categories: $size.")
     }
     val obsArr = observed.toArray
     val expArr =

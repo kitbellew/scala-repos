@@ -85,7 +85,8 @@ class InterpreterTest extends FunSuite {
         assert(data.contains(key) == false)
       }
 
-      info("but the value without an expiry should still be accessible (even minutes later)")
+      info(
+        "but the value without an expiry should still be accessible (even minutes later)")
       control.advance(1.hour)
       assert(
         interpreter(Get(Seq(noExpiry))) == Values(Seq(Value(noExpiry, value))))

@@ -52,8 +52,9 @@ case class TungstenAggregate(
       aggregateExpressions.flatMap(_.aggregateFunction.inputAggBufferAttributes)
 
   override private[sql] lazy val metrics = Map(
-    "numOutputRows" -> SQLMetrics
-      .createLongMetric(sparkContext, "number of output rows"),
+    "numOutputRows" -> SQLMetrics.createLongMetric(
+      sparkContext,
+      "number of output rows"),
     "dataSize" -> SQLMetrics.createSizeMetric(sparkContext, "data size"),
     "spillSize" -> SQLMetrics.createSizeMetric(sparkContext, "spill size")
   )

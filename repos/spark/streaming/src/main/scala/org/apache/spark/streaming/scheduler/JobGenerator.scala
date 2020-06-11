@@ -279,8 +279,9 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
 
     // Checkpoint all RDDs marked for checkpointing to ensure their lineages are
     // truncated periodically. Otherwise, we may run into stack overflows (SPARK-6847).
-    ssc.sparkContext
-      .setLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS, "true")
+    ssc.sparkContext.setLocalProperty(
+      RDD.CHECKPOINT_ALL_MARKED_ANCESTORS,
+      "true")
     Try {
       jobScheduler.receiverTracker.allocateBlocksToBatch(
         time

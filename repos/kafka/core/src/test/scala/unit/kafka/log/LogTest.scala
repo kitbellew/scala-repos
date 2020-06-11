@@ -371,8 +371,8 @@ class LogTest extends JUnitSuite {
       assertEquals(
         "Messages not equal at offset " + offset,
         messageSets(i).head.message,
-        messages.head.message
-          .toFormatVersion(messageSets(i).head.message.magic))
+        messages.head.message.toFormatVersion(
+          messageSets(i).head.message.magic))
       offset = messages.head.offset + 1
     }
     val lastRead = log

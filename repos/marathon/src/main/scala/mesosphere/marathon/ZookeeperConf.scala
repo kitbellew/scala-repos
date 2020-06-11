@@ -30,7 +30,8 @@ trait ZookeeperConf extends ScallopConf {
 
   lazy val zooKeeperUrl = opt[String](
     "zk",
-    descr = "ZooKeeper URL for storing state. Format: zk://host1:port1,host2:port2,.../path",
+    descr =
+      "ZooKeeper URL for storing state. Format: zk://host1:port1,host2:port2,.../path",
     validate = (in) => zkURLPattern.pattern.matcher(in).matches(),
     default = Some("zk://localhost:2181/marathon")
   )
@@ -42,7 +43,8 @@ trait ZookeeperConf extends ScallopConf {
 
   lazy val zooKeeperCompressionEnabled = toggle(
     "zk_compression",
-    descrYes = "(Default) Enable compression of zk nodes, if the size of the node is bigger than the configured threshold.",
+    descrYes =
+      "(Default) Enable compression of zk nodes, if the size of the node is bigger than the configured threshold.",
     descrNo = "Disable compression of zk nodes",
     noshort = true,
     prefix = "disable_",
@@ -51,7 +53,8 @@ trait ZookeeperConf extends ScallopConf {
 
   lazy val zooKeeperCompressionThreshold = opt[Long](
     "zk_compression_threshold",
-    descr = "(Default: 64 KB) Threshold in bytes, when compression is applied to the ZooKeeper node.",
+    descr =
+      "(Default: 64 KB) Threshold in bytes, when compression is applied to the ZooKeeper node.",
     noshort = true,
     validate = _ >= 0,
     default = Some(64 * 1024)

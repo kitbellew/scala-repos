@@ -49,7 +49,8 @@ class UpgradedImageIExtractor(
   val matchBadImageNames: Matcher = {
     val sb = new StringBuilder
     // create negative elements
-    sb.append(".html|.gif|.ico|button|twitter.jpg|facebook.jpg|ap_buy_photo|digg.jpg|digg.png|delicious.png|facebook.png|reddit.jpg|doubleclick|diggthis|diggThis|adserver|/ads/|ec.atdmt.com")
+    sb.append(
+      ".html|.gif|.ico|button|twitter.jpg|facebook.jpg|ap_buy_photo|digg.jpg|digg.png|delicious.png|facebook.png|reddit.jpg|doubleclick|diggthis|diggThis|adserver|/ads/|ec.atdmt.com")
     sb.append("|mediaplex.com|adsatt|view.atdmt")
     Pattern.compile(sb.toString()).matcher(string.empty)
   }
@@ -87,7 +88,8 @@ class UpgradedImageIExtractor(
     // This DOM path may be too restrictive but it's performing quite well at time of writing.
     val dataConfig: String =
       article.rawDoc
-        .select("div#maincontent div#main div.primary-playback-region div.wcvideoplayer[data-metadata]")
+        .select(
+          "div#maincontent div#main div.primary-playback-region div.wcvideoplayer[data-metadata]")
         .attr("data-metadata")
 
     JSON.parseRaw(dataConfig) match {

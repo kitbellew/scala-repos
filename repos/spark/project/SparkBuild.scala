@@ -128,11 +128,13 @@ object SparkBuild extends PomBuild {
     var profiles: mutable.Seq[String] = mutable.Seq("sbt")
     // scalastyle:off println
     if (Properties.envOrNone("SPARK_GANGLIA_LGPL").isDefined) {
-      println("NOTE: SPARK_GANGLIA_LGPL is deprecated, please use -Pspark-ganglia-lgpl flag.")
+      println(
+        "NOTE: SPARK_GANGLIA_LGPL is deprecated, please use -Pspark-ganglia-lgpl flag.")
       profiles ++= Seq("spark-ganglia-lgpl")
     }
     if (Properties.envOrNone("SPARK_HIVE").isDefined) {
-      println("NOTE: SPARK_HIVE is deprecated, please use -Phive and -Phive-thriftserver flags.")
+      println(
+        "NOTE: SPARK_HIVE is deprecated, please use -Phive and -Phive-thriftserver flags.")
       profiles ++= Seq("hive", "hive-thriftserver")
     }
     Properties.envOrNone("SPARK_HADOOP_VERSION") match {
@@ -265,8 +267,8 @@ object SparkBuild extends PomBuild {
 
       def logProblem(l: (=> String) => Unit, f: File, p: xsbti.Problem) = {
         l(
-          f.toString + ":" + p.position.line
-            .fold("")(_ + ":") + " " + p.message)
+          f.toString + ":" + p.position.line.fold("")(
+            _ + ":") + " " + p.message)
         l(p.position.lineContent)
         l("")
       }

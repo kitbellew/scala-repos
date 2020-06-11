@@ -19,7 +19,8 @@ trait LeaderProxyConf extends ScallopConf {
 
   lazy val leaderProxyReadTimeout = opt[Int](
     "leader_proxy_read_timeout",
-    descr = "Maximum time, in milliseconds, for reading from the current Marathon leader.",
+    descr =
+      "Maximum time, in milliseconds, for reading from the current Marathon leader.",
     default = Some(10000)
   ) // 10 seconds
 

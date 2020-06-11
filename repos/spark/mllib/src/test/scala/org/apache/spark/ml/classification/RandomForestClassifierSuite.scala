@@ -105,7 +105,8 @@ class RandomForestClassifierSuite
     binaryClassificationTestWithContinuousFeatures(rf)
   }
 
-  test("alternating categorical and continuous features with multiclass labels to test indexing") {
+  test(
+    "alternating categorical and continuous features with multiclass labels to test indexing") {
     val arr = Array(
       LabeledPoint(0.0, Vectors.dense(1.0, 0.0, 0.0, 3.0, 1.0)),
       LabeledPoint(1.0, Vectors.dense(0.0, 1.0, 1.0, 1.0, 2.0)),

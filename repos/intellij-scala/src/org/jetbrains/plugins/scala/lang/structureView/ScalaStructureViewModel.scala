@@ -137,6 +137,7 @@ class ScalaStructureViewModel(
 
 object ScalaStructureViewModel {
   private val NODE_PROVIDERS: util.Collection[NodeProvider[_ <: TreeElement]] =
-    util.Arrays
-      .asList(new ScalaInheritedMembersNodeProvider, new TestNodeProvider)
+    util.Arrays.asList(
+      new ScalaInheritedMembersNodeProvider,
+      new TestNodeProvider)
 }

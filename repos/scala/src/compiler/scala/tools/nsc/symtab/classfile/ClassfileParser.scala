@@ -282,8 +282,9 @@ abstract class ClassfileParser {
           val start = firstExpecting(index, CONSTANT_NAMEANDTYPE)
           val name = getName(in.getChar(start).toInt)
           // create a dummy symbol for method types
-          val dummy = ownerTpe.typeSymbol
-            .newMethod(name.toTermName, ownerTpe.typeSymbol.pos)
+          val dummy = ownerTpe.typeSymbol.newMethod(
+            name.toTermName,
+            ownerTpe.typeSymbol.pos)
           val tpe = getType(dummy, in.getChar(start + 2).toInt)
           // fix the return type, which is blindly set to the class currently parsed
           val restpe = tpe match {

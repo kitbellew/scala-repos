@@ -240,8 +240,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                 .initial()
                 .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
               processor.execute(
-                ScalaPsiElementFactory
-                  .createParameterFromText(ref.refName + ": Any", getManager),
+                ScalaPsiElementFactory.createParameterFromText(
+                  ref.refName + ": Any",
+                  getManager),
                 state)
             }
           case ScalaResolveResult(named, subst)
@@ -253,8 +254,9 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
                 .initial()
                 .put(CachesUtil.NAMED_PARAM_KEY, java.lang.Boolean.TRUE)
               processor.execute(
-                ScalaPsiElementFactory
-                  .createParameterFromText(ref.refName + ": Any", getManager),
+                ScalaPsiElementFactory.createParameterFromText(
+                  ref.refName + ": Any",
+                  getManager),
                 state)
             }
           case ScalaResolveResult(fun: ScFunction, subst: ScSubstitutor) =>

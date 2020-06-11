@@ -121,8 +121,9 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
 
     // If running a new enough Yarn, use the HA-aware API for retrieving the RM addresses.
     try {
-      val method = classOf[WebAppUtils]
-        .getMethod("getProxyHostsAndPortsForAmFilter", classOf[Configuration])
+      val method = classOf[WebAppUtils].getMethod(
+        "getProxyHostsAndPortsForAmFilter",
+        classOf[Configuration])
       val proxies = method.invoke(null, conf).asInstanceOf[JList[String]]
       val hosts = proxies.asScala.map { proxy => proxy.split(":")(0) }
       val uriBases = proxies.asScala.map { proxy => prefix + proxy + proxyBase }

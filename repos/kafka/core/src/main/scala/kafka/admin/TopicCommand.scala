@@ -105,7 +105,8 @@ object TopicCommand extends Logging {
     val configs = parseTopicConfigsToBeAdded(opts)
     val ifNotExists = if (opts.options.has(opts.ifNotExistsOpt)) true else false
     if (Topic.hasCollisionChars(topic))
-      println("WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.")
+      println(
+        "WARNING: Due to limitations in metric names, topics with a period ('.') or underscore ('_') could collide. To avoid issues it is best to use either, but not both.")
     try {
       if (opts.options.has(opts.replicaAssignmentOpt)) {
         val assignment = parseReplicaAssignment(
@@ -159,8 +160,10 @@ object TopicCommand extends Logging {
         AdminUtils.fetchEntityConfig(zkUtils, ConfigType.Topic, topic)
       if (opts.options.has(opts.configOpt) || opts.options.has(
           opts.deleteConfigOpt)) {
-        println("WARNING: Altering topic configuration from this script has been deprecated and may be removed in future releases.")
-        println("         Going forward, please use kafka-configs.sh for this functionality")
+        println(
+          "WARNING: Altering topic configuration from this script has been deprecated and may be removed in future releases.")
+        println(
+          "         Going forward, please use kafka-configs.sh for this functionality")
 
         val configsToBeAdded = parseTopicConfigsToBeAdded(opts)
         val configsToBeDeleted = parseTopicConfigsToBeDeleted(opts)
@@ -221,7 +224,8 @@ object TopicCommand extends Logging {
         } else {
           zkUtils.createPersistentPath(getDeleteTopicPath(topic))
           println("Topic %s is marked for deletion.".format(topic))
-          println("Note: This will have no impact if delete.topic.enable is not set to true.")
+          println(
+            "Note: This will have no impact if delete.topic.enable is not set to true.")
         }
       } catch {
         case e: ZkNodeExistsException =>

@@ -41,8 +41,9 @@ class WebSocketIntegrationSpec
                 case u: UpgradeToWebSocket ⇒ u
               }.get
               upgrade.handleMessages(
-                Flow
-                  .fromSinkAndSource(Sink.ignore, Source.fromPublisher(source)),
+                Flow.fromSinkAndSource(
+                  Sink.ignore,
+                  Source.fromPublisher(source)),
                 None)
           },
           interface = "localhost",
@@ -81,8 +82,9 @@ class WebSocketIntegrationSpec
                 case u: UpgradeToWebSocket ⇒ u
               }.get
               upgrade.handleMessages(
-                Flow
-                  .fromSinkAndSource(Sink.ignore, Source.fromPublisher(source)),
+                Flow.fromSinkAndSource(
+                  Sink.ignore,
+                  Source.fromPublisher(source)),
                 None)
           },
           interface = "localhost",

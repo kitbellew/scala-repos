@@ -253,8 +253,9 @@ private[spark] class Client(
           amRequest.setPriority(Priority.newInstance(0))
           amRequest.setCapability(capability)
           amRequest.setNumContainers(1)
-          val method = amRequest.getClass
-            .getMethod("setNodeLabelExpression", classOf[String])
+          val method = amRequest.getClass.getMethod(
+            "setNodeLabelExpression",
+            classOf[String])
           method.invoke(amRequest, expr)
 
           val setResourceRequestMethod =
@@ -1033,7 +1034,8 @@ private[spark] class Client(
       commands.map(s => if (s == null) "null" else s).toList
     amContainer.setCommands(printableCommands.asJava)
 
-    logDebug("===============================================================================")
+    logDebug(
+      "===============================================================================")
     logDebug("YARN AM launch context:")
     logDebug(s"    user class: ${Option(args.userClass).getOrElse("N/A")}")
     logDebug("    env:")
@@ -1042,7 +1044,8 @@ private[spark] class Client(
     localResources.foreach { case (k, v) => logDebug(s"        $k -> $v") }
     logDebug("    command:")
     logDebug(s"        ${printableCommands.mkString(" ")}")
-    logDebug("===============================================================================")
+    logDebug(
+      "===============================================================================")
 
     // send the acl settings into YARN to control who has access via YARN interfaces
     val securityManager = new SecurityManager(sparkConf)

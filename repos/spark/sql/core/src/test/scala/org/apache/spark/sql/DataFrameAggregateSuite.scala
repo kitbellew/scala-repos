@@ -316,8 +316,11 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
     )
 
     checkAnswer(
-      testData3
-        .agg(count('b), countDistinct('b), sumDistinct('b)), // non-partial
+      testData3.agg(
+        count('b),
+        countDistinct('b),
+        sumDistinct('b)
+      ), // non-partial
       Row(1, 1, 2)
     )
   }

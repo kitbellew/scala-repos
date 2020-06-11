@@ -28,8 +28,8 @@ object DeltaExamples extends App {
   assert(6 == 2.delta(8))
   assert(("foo", "bar") == "foo".delta("bar"))
   assert(
-    6 :: ("foo", "bar") :: HNil == (2 :: "foo" :: HNil)
-      .delta(8 :: "bar" :: HNil))
+    6 :: ("foo", "bar") :: HNil == (2 :: "foo" :: HNil).delta(
+      8 :: "bar" :: HNil))
   assert(6 :: ("foo", "bar") :: HNil == Foo(2, "foo").delta(Foo(8, "bar")))
   assert(
     Bar(true, "foo", Some(Bar(true, "bar", None)))

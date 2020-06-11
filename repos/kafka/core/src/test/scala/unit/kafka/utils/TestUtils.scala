@@ -828,8 +828,9 @@ object TestUtils extends Logging {
         } catch {
           case oe: Throwable =>
             error(
-              "Error while electing leader for partition [%s,%d]"
-                .format(topic, partition),
+              "Error while electing leader for partition [%s,%d]".format(
+                topic,
+                partition),
               oe)
         }
       }
@@ -856,8 +857,9 @@ object TestUtils extends Logging {
     val startTime = System.currentTimeMillis()
     var isLeaderElectedOrChanged = false
 
-    trace("Waiting for leader to be elected or changed for partition [%s,%d], older leader is %s, new leader is %s"
-      .format(topic, partition, oldLeaderOpt, newLeaderOpt))
+    trace(
+      "Waiting for leader to be elected or changed for partition [%s,%d], older leader is %s, new leader is %s"
+        .format(topic, partition, oldLeaderOpt, newLeaderOpt))
 
     var leader: Option[Int] = None
     while (!isLeaderElectedOrChanged && System
@@ -894,8 +896,9 @@ object TestUtils extends Logging {
       Thread.sleep(timeoutMs.min(100L))
     }
     if (!isLeaderElectedOrChanged)
-      fail("Timing out after %d ms since leader is not elected or changed for partition [%s,%d]"
-        .format(timeoutMs, topic, partition))
+      fail(
+        "Timing out after %d ms since leader is not elected or changed for partition [%s,%d]"
+          .format(timeoutMs, topic, partition))
 
     leader
   }
@@ -998,8 +1001,10 @@ object TestUtils extends Logging {
               result && Request.isValidBrokerId(leader)
           }
         },
-      "Partition [%s,%d] metadata not propagated after %d ms"
-        .format(topic, partition, timeout),
+      "Partition [%s,%d] metadata not propagated after %d ms".format(
+        topic,
+        partition,
+        timeout),
       waitTime = timeout
     )
 
@@ -1018,8 +1023,10 @@ object TestUtils extends Logging {
             .getPartition(topic, partition)
             .exists(_.leaderReplicaIfLocal().isDefined)
         },
-      "Partition [%s,%d] leaders not made yet after %d ms"
-        .format(topic, partition, timeout),
+      "Partition [%s,%d] leaders not made yet after %d ms".format(
+        topic,
+        partition,
+        timeout),
       waitTime = timeout
     )
   }
@@ -1049,8 +1056,9 @@ object TestUtils extends Logging {
     // in sync replicas should not have any replica that is not in the new assigned replicas
     val phantomInSyncReplicas = inSyncReplicas.toSet -- assignedReplicas.toSet
     assertTrue(
-      "All in sync replicas %s must be in the assigned replica list %s"
-        .format(inSyncReplicas, assignedReplicas),
+      "All in sync replicas %s must be in the assigned replica list %s".format(
+        inSyncReplicas,
+        assignedReplicas),
       phantomInSyncReplicas.size == 0)
   }
 
@@ -1066,8 +1074,9 @@ object TestUtils extends Logging {
           zkUtils.getInSyncReplicasForPartition(topic, partitionToBeReassigned)
         inSyncReplicas.size == assignedReplicas.size
       },
-      "Reassigned partition [%s,%d] is under replicated"
-        .format(topic, partitionToBeReassigned)
+      "Reassigned partition [%s,%d] is under replicated".format(
+        topic,
+        partitionToBeReassigned)
     )
     var leader: Option[Int] = None
     TestUtils.waitUntilTrue(
@@ -1075,8 +1084,9 @@ object TestUtils extends Logging {
         leader = zkUtils.getLeaderForPartition(topic, partitionToBeReassigned)
         leader.isDefined
       },
-      "Reassigned partition [%s,%d] is unavailable"
-        .format(topic, partitionToBeReassigned)
+      "Reassigned partition [%s,%d] is unavailable".format(
+        topic,
+        partitionToBeReassigned)
     )
     TestUtils.waitUntilTrue(
       () => {

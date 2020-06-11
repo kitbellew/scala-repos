@@ -250,8 +250,9 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
       def createModel(
           tables: Option[Seq[MTable]] = None,
           ignoreInvalidDefaults: Boolean = true) =
-        tdb.profile
-          .createModel(tables.map(DBIO.successful), ignoreInvalidDefaults)
+        tdb.profile.createModel(
+          tables.map(DBIO.successful),
+          ignoreInvalidDefaults)
 
       // postgres uses lower case and things like int4
       // seen in jtds: int identity
@@ -263,8 +264,8 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
           (posts.schema ++ categories.schema ++ defaultTest.schema ++ noDefaultTest.schema ++ typeTest.schema).create
         _ <- createModel(ignoreInvalidDefaults = false).map(_.assertConsistency)
         tables <- tdb.profile.defaultTables
-        _ <- createModel(Some(tables), ignoreInvalidDefaults = false)
-          .map(_.assertConsistency)
+        _ <- createModel(Some(tables), ignoreInvalidDefaults = false).map(
+          _.assertConsistency)
         // checks that createModel filters out foreign keys pointing out
         _ <- createModel(
           Some(tables.filter(_.name.name.toUpperCase == "POSTS")),

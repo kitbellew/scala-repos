@@ -7,7 +7,8 @@ trait TaskTrackerConfig extends ScallopConf {
 
   lazy val internalTaskTrackerRequestTimeout = opt[Int](
     "task_tracker_request_timeout",
-    descr = "INTERNAL TUNING PARAMETER: Timeout (in ms) for requests to the taskTracker.",
+    descr =
+      "INTERNAL TUNING PARAMETER: Timeout (in ms) for requests to the taskTracker.",
     hidden = true,
     default = Some(10000))
 

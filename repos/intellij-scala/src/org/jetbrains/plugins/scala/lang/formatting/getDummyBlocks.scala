@@ -609,8 +609,10 @@ object getDummyBlocks {
           child.getElementType == ScalaTokenTypes.tFUNTYPE_ASCII) {
           if (prev == null) return createNewAlignment
           val prevChild =
-            prev.findChildByType(TokenSet
-              .create(ScalaTokenTypes.tFUNTYPE, ScalaTokenTypes.tFUNTYPE_ASCII))
+            prev.findChildByType(
+              TokenSet.create(
+                ScalaTokenTypes.tFUNTYPE,
+                ScalaTokenTypes.tFUNTYPE_ASCII))
           if (prevChild == null) {
             return getChildAlignment(prev, child)
           } else return getAlignment(prevChild)

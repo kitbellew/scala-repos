@@ -162,8 +162,8 @@ class ClusterSharding(system: ExtendedActorSystem) extends Extension {
   private lazy val guardian = {
     val guardianName: String =
       system.settings.config.getString("akka.cluster.sharding.guardian-name")
-    val dispatcher = system.settings.config
-      .getString("akka.cluster.sharding.use-dispatcher") match {
+    val dispatcher = system.settings.config.getString(
+      "akka.cluster.sharding.use-dispatcher") match {
       case "" ⇒ Dispatchers.DefaultDispatcherId
       case id ⇒ id
     }

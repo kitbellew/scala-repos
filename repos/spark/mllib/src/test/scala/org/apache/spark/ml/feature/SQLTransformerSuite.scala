@@ -35,8 +35,8 @@ class SQLTransformerSuite
     val original = sqlContext
       .createDataFrame(Seq((0, 1.0, 3.0), (2, 2.0, 5.0)))
       .toDF("id", "v1", "v2")
-    val sqlTrans = new SQLTransformer()
-      .setStatement("SELECT *, (v1 + v2) AS v3, (v1 * v2) AS v4 FROM __THIS__")
+    val sqlTrans = new SQLTransformer().setStatement(
+      "SELECT *, (v1 + v2) AS v3, (v1 * v2) AS v4 FROM __THIS__")
     val result = sqlTrans.transform(original)
     val resultSchema = sqlTrans.transformSchema(original.schema)
     val expected = sqlContext

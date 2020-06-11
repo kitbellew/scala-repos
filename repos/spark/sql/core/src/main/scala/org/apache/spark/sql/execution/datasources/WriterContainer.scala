@@ -104,8 +104,9 @@ private[sql] abstract class BaseWriterContainer(
     // This UUID is sent to executor side together with the serialized `Configuration` object within
     // the `Job` instance.  `OutputWriters` on the executor side should use this UUID to generate
     // unique task output files.
-    job.getConfiguration
-      .set("spark.sql.sources.writeJobUUID", uniqueWriteJobId.toString)
+    job.getConfiguration.set(
+      "spark.sql.sources.writeJobUUID",
+      uniqueWriteJobId.toString)
 
     // Order of the following two lines is important.  For Hadoop 1, TaskAttemptContext constructor
     // clones the Configuration object passed in.  If we initialize the TaskAttemptContext first,
@@ -243,8 +244,9 @@ private[sql] abstract class BaseWriterContainer(
 
   private def setupConf(): Unit = {
     serializableConf.value.set("mapred.job.id", jobId.toString)
-    serializableConf.value
-      .set("mapred.tip.id", taskAttemptId.getTaskID.toString)
+    serializableConf.value.set(
+      "mapred.tip.id",
+      taskAttemptId.getTaskID.toString)
     serializableConf.value.set("mapred.task.id", taskAttemptId.toString)
     serializableConf.value.setBoolean("mapred.task.is.map", true)
     serializableConf.value.setInt("mapred.task.partition", 0)

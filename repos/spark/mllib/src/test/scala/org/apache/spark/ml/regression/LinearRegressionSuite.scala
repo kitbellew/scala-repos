@@ -1095,7 +1095,8 @@ class LinearRegressionSuite
         .forall(x => x(0) >= x(1)))
   }
 
-  test("linear regression summary with weighted samples and intercept by normal solver") {
+  test(
+    "linear regression summary with weighted samples and intercept by normal solver") {
     /*
        R code:
 
@@ -1151,7 +1152,8 @@ class LinearRegressionSuite
     }
   }
 
-  test("linear regression summary with weighted samples and w/o intercept by normal solver") {
+  test(
+    "linear regression summary with weighted samples and w/o intercept by normal solver") {
     /*
        R code:
 

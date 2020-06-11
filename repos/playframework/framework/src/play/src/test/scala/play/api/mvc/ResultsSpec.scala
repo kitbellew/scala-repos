@@ -72,8 +72,8 @@ object ResultsSpec extends Specification {
           .as("text/html")
           .withDateHeaders(
             DATE ->
-              new DateTime(2015, 4, 1, 0, 0)
-                .withZoneRetainFields(DateTimeZone.UTC))
+              new DateTime(2015, 4, 1, 0, 0).withZoneRetainFields(
+                DateTimeZone.UTC))
       headers must havePair(DATE -> "Wed, 01 Apr 2015 00:00:00 GMT")
     }
 

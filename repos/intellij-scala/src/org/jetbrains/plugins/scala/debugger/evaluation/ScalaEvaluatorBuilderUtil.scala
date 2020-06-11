@@ -824,8 +824,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
             else if (p.isDefault) {
               val paramIndex = parameters.indexOf(p) + 1
               val methodName = defaultParameterMethodName(fun, paramIndex)
-              val localParams = p.paramInCode.toSeq
-                .flatMap(DebuggerUtil.localParamsForDefaultParam(_))
+              val localParams = p.paramInCode.toSeq.flatMap(
+                DebuggerUtil.localParamsForDefaultParam(_))
               val localParamRefs =
                 localParams.map(td =>
                   ScalaPsiElementFactory.createExpressionWithContextFromText(
@@ -1254,8 +1254,10 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         case fun: ScFunctionDefinition =>
           val elem = ref.bind().get.getActualElement //object or case class
           val qual = ref.qualifier.map(q =>
-            ScalaPsiElementFactory
-              .createExpressionWithContextFromText(q.getText, q.getContext, q))
+            ScalaPsiElementFactory.createExpressionWithContextFromText(
+              q.getText,
+              q.getContext,
+              q))
           val refExpr =
             ScalaPsiElementFactory.createExpressionWithContextFromText(
               ref.getText,
@@ -1352,8 +1354,10 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
           ) //todo: xml patterns
         case _ =>
           throw EvaluationException(
-            ScalaBundle
-              .message("kind.of.patterns.not.supported", pattern.getText)
+            ScalaBundle.message(
+              "kind.of.patterns.not.supported",
+              pattern.getText
+            )
           ) //todo: xml patterns
       }
     }
@@ -1957,8 +1961,8 @@ object ScalaEvaluatorBuilderUtil {
 
   def isPrimitiveScType(tp: ScType) = {
     import org.jetbrains.plugins.scala.lang.psi.types._
-    Set[ScType](Boolean, Int, Char, Double, Float, Long, Byte, Short)
-      .contains(tp)
+    Set[ScType](Boolean, Int, Char, Double, Float, Long, Byte, Short).contains(
+      tp)
   }
 
   object implicitlyConvertedTo {

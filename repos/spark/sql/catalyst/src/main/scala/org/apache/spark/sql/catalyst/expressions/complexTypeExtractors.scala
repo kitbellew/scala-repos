@@ -224,8 +224,10 @@ case class GetArrayStructFields(
             if ($row.isNullAt($ordinal)) {
               $values[$j] = null;
             } else {
-              $values[$j] = ${ctx
-          .getValue(row, field.dataType, ordinal.toString)};
+              $values[$j] = ${ctx.getValue(
+          row,
+          field.dataType,
+          ordinal.toString)};
             }
           }
         }

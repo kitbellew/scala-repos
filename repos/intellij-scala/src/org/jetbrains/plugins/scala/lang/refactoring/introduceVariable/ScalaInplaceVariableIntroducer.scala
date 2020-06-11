@@ -184,11 +184,13 @@ class ScalaInplaceVariableIntroducer(
               val replacement =
                 declaration match {
                   case value: ScValue if asVar =>
-                    ScalaPsiElementFactory
-                      .createVarFromValDeclaration(value, value.getManager)
+                    ScalaPsiElementFactory.createVarFromValDeclaration(
+                      value,
+                      value.getManager)
                   case variable: ScVariableDefinition if !asVar =>
-                    ScalaPsiElementFactory
-                      .createValFromVarDefinition(variable, variable.getManager)
+                    ScalaPsiElementFactory.createValFromVarDefinition(
+                      variable,
+                      variable.getManager)
                   case _ => declaration
                 }
               if (replacement != declaration)

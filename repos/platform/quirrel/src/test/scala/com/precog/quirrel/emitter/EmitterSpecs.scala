@@ -927,7 +927,8 @@ object EmitterSpecs
     }
 
     "emit body of fully applied characteristic function" in {
-      testEmit("clicks := //clicks clicksFor(userId) := clicks where clicks.userId = userId clicksFor(\"foo\")")(
+      testEmit(
+        "clicks := //clicks clicksFor(userId) := clicks where clicks.userId = userId clicksFor(\"foo\")")(
         Vector(
           PushString("/clicks"),
           Morph1(BuiltInMorphism1(expandGlob)),
@@ -1120,7 +1121,8 @@ object EmitterSpecs
     }
 
     "emit merge_buckets & for trivial cf example with conjunction" in {
-      testEmit("clicks := //clicks onDay := solve 'day clicks where clicks.day = 'day & clicks.din = 'day onDay")(
+      testEmit(
+        "clicks := //clicks onDay := solve 'day clicks where clicks.day = 'day & clicks.din = 'day onDay")(
         Vector(
           PushString("/clicks"),
           Morph1(BuiltInMorphism1(expandGlob)),
@@ -1144,7 +1146,8 @@ object EmitterSpecs
     }
 
     "emit merge_buckets | for trivial cf example with disjunction" in {
-      testEmit("clicks := //clicks onDay := solve 'day clicks where clicks.day = 'day | clicks.din = 'day onDay")(
+      testEmit(
+        "clicks := //clicks onDay := solve 'day clicks where clicks.day = 'day | clicks.din = 'day onDay")(
         Vector(
           PushString("/clicks"),
           Morph1(BuiltInMorphism1(expandGlob)),

@@ -823,8 +823,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
                     val b = Codec[Double].read(bbuf)
                     NumericComparisons.approxCompare(a, b) match {
                       case 0 =>
-                        super.BigDecimalCodec
-                          .read(abuf) compare super.BigDecimalCodec.read(bbuf)
+                        super.BigDecimalCodec.read(
+                          abuf) compare super.BigDecimalCodec.read(bbuf)
                       case cmp =>
                         super.BigDecimalCodec.skip(abuf)
                         super.BigDecimalCodec.skip(bbuf)

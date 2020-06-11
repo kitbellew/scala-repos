@@ -243,7 +243,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       Row(6, "str6") :: Row(7, "str7") :: Nil
     )
     // Insert overwrite.
-    sql("insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
+    sql(
+      "insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
     checkAnswer(
       sql(
         s"SELECT intField, stringField FROM test_insert_parquet WHERE intField > 2"),
@@ -264,7 +265,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
         |  OUTPUTFORMAT 'org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat'
       """.stripMargin)
     // Insert overwrite an empty table.
-    sql("insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
+    sql(
+      "insert overwrite table test_insert_parquet select a, b from jt where jt.a < 5")
     checkAnswer(
       sql(
         s"SELECT intField, stringField FROM test_insert_parquet WHERE intField > 2"),
@@ -331,7 +333,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       }
 
       checkAnswer(
-        sql("SELECT intField FROM test_insert_parquet WHERE test_insert_parquet.intField > 5"),
+        sql(
+          "SELECT intField FROM test_insert_parquet WHERE test_insert_parquet.intField > 5"),
         sql("SELECT a FROM jt WHERE jt.a > 5").collect()
       )
     }
@@ -403,7 +406,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       }
   }
 
-  test("SPARK-7749: non-partitioned metastore Parquet table lookup should use cached relation") {
+  test(
+    "SPARK-7749: non-partitioned metastore Parquet table lookup should use cached relation") {
     withTable("nonPartitioned") {
       sql(s"""CREATE TABLE nonPartitioned (
            |  key INT,
@@ -421,7 +425,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     }
   }
 
-  test("SPARK-7749: partitioned metastore Parquet table lookup should use cached relation") {
+  test(
+    "SPARK-7749: partitioned metastore Parquet table lookup should use cached relation") {
     withTable("partitioned") {
       sql(s"""CREATE TABLE partitioned (
            | key INT,
@@ -444,8 +449,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     val _catalog = sessionState.catalog
     def checkCached(tableIdentifier: _catalog.QualifiedTableName): Unit = {
       // Converted test_parquet should be cached.
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) match {
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) match {
         case null =>
           fail("Converted test_parquet should be cached in the cache.")
         case logical @ LogicalRelation(
@@ -479,8 +484,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
     // First, make sure the converted test_parquet is not cached.
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
     // Table lookup will make the table cached.
     table("test_insert_parquet")
     checkCached(tableIdentifier)
@@ -488,8 +493,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     // so the converted test_insert_parquet should be cached.
     invalidateTable("test_insert_parquet")
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
     sql("""
         |INSERT INTO TABLE test_insert_parquet
         |select a, b from jt
@@ -502,8 +507,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     // Invalidate the cache.
     invalidateTable("test_insert_parquet")
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
 
     // Create a partitioned table.
     sql("""
@@ -523,8 +528,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       "default",
       "test_parquet_partitioned_cache_test")
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
     sql("""
         |INSERT INTO TABLE test_parquet_partitioned_cache_test
         |PARTITION (`date`='2015-04-01')
@@ -533,23 +538,24 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     // Right now, insert into a partitioned Parquet is not supported in data source Parquet.
     // So, we expect it is not cached.
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
     sql("""
         |INSERT INTO TABLE test_parquet_partitioned_cache_test
         |PARTITION (`date`='2015-04-02')
         |select a, b from jt
       """.stripMargin)
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
 
     // Make sure we can cache the partitioned table.
     table("test_parquet_partitioned_cache_test")
     checkCached(tableIdentifier)
     // Make sure we can read the data.
     checkAnswer(
-      sql("select STRINGField, `date`, intField from test_parquet_partitioned_cache_test"),
+      sql(
+        "select STRINGField, `date`, intField from test_parquet_partitioned_cache_test"),
       sql("""
           |select b, '2015-04-01', a FROM jt
           |UNION ALL
@@ -559,8 +565,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
 
     invalidateTable("test_parquet_partitioned_cache_test")
     assert(
-      sessionState.catalog.cachedDataSourceTables
-        .getIfPresent(tableIdentifier) === null)
+      sessionState.catalog.cachedDataSourceTables.getIfPresent(
+        tableIdentifier) === null)
 
     dropTables("test_insert_parquet", "test_parquet_partitioned_cache_test")
   }

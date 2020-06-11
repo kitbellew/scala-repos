@@ -73,11 +73,13 @@ object ScalaMarkerType {
             assert(optionClazz.isDefined)
             val clazz = optionClazz.get
             if (!GutterUtil.isOverrides(element, signatures))
-              ScalaBundle
-                .message("implements.method.from.super", clazz.qualifiedName)
+              ScalaBundle.message(
+                "implements.method.from.super",
+                clazz.qualifiedName)
             else
-              ScalaBundle
-                .message("overrides.method.from.super", clazz.qualifiedName)
+              ScalaBundle.message(
+                "overrides.method.from.super",
+                clazz.qualifiedName)
           case _: ScValue | _: ScVariable =>
             val signatures = new ArrayBuffer[Signature]
             val bindings = elem match {
@@ -85,8 +87,9 @@ object ScalaMarkerType {
               case _                           => return null
             }
             for (z <- bindings)
-              signatures ++= ScalaPsiUtil
-                .superValsSignatures(z, withSelfType = true)
+              signatures ++= ScalaPsiUtil.superValsSignatures(
+                z,
+                withSelfType = true)
             assert(signatures.nonEmpty)
             val optionClazz =
               ScalaPsiUtil.nameContext(signatures(0).namedElement) match {
@@ -96,11 +99,13 @@ object ScalaMarkerType {
             assert(optionClazz.isDefined)
             val clazz = optionClazz.get
             if (!GutterUtil.isOverrides(element, signatures))
-              ScalaBundle
-                .message("implements.val.from.super", clazz.qualifiedName)
+              ScalaBundle.message(
+                "implements.val.from.super",
+                clazz.qualifiedName)
             else
-              ScalaBundle
-                .message("overrides.val.from.super", clazz.qualifiedName)
+              ScalaBundle.message(
+                "overrides.val.from.super",
+                clazz.qualifiedName)
           case x @ (_: ScTypeDefinition | _: ScTypeAlias) =>
             val superMembers = ScalaPsiUtil.superTypeMembers(
               x.asInstanceOf[PsiNamedElement],
@@ -145,8 +150,9 @@ object ScalaMarkerType {
               case _                           => return
             }
             for (z <- bindings)
-              signatures ++= ScalaPsiUtil
-                .superValsSignatures(z, withSelfType = true)
+              signatures ++= ScalaPsiUtil.superValsSignatures(
+                z,
+                withSelfType = true)
             val elems = new mutable.HashSet[NavigatablePsiElement]
             signatures.foreach {
               case sig =>
@@ -224,8 +230,9 @@ object ScalaMarkerType {
         }
         val overrides = new ArrayBuffer[PsiNamedElement]
         for (member <- members)
-          overrides ++= ScalaOverridingMemberSearcher
-            .search(member, withSelfType = true)
+          overrides ++= ScalaOverridingMemberSearcher.search(
+            member,
+            withSelfType = true)
         if (overrides.isEmpty) return
         val title =
           if (GutterUtil.isAbstract(element))

@@ -15,7 +15,8 @@ import com.twitter.util.{Await, Future, Time}
 class TransactionTest extends FunSuite with MockitoSugar with MustMatchers {
   private val sqlQuery = "SELECT * FROM FOO"
 
-  test("transaction test uses a single service repeatedly and closes it upon completion") {
+  test(
+    "transaction test uses a single service repeatedly and closes it upon completion") {
     val service = new MockService()
     val factory = spy(new MockServiceFactory(service))
     val client = Client(factory)

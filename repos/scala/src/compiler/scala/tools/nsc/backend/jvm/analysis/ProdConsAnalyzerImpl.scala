@@ -478,8 +478,9 @@ trait ProdConsAnalyzerImpl {
       val outputIndex = producedSlots.indexOf(i)
       res = res.updated(
         producer,
-        currentConsumers
-          .updated(outputIndex, currentConsumers(outputIndex) + insn))
+        currentConsumers.updated(
+          outputIndex,
+          currentConsumers(outputIndex) + insn))
     }
     res
   }

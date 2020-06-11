@@ -218,8 +218,9 @@ object DuplicatesUtil {
       duplicate: DuplicateMatch,
       highlighters: util.Collection[RangeHighlighter]) {
     val colorsManager: EditorColorsManager = EditorColorsManager.getInstance
-    val attributes: TextAttributes = colorsManager.getGlobalScheme
-      .getAttributes(EditorColors.SEARCH_RESULT_ATTRIBUTES)
+    val attributes: TextAttributes =
+      colorsManager.getGlobalScheme.getAttributes(
+        EditorColors.SEARCH_RESULT_ATTRIBUTES)
     val range = duplicate.textRange
     HighlightManager
       .getInstance(project)

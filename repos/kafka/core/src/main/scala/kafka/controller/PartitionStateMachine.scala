@@ -411,8 +411,9 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
           // NOTE: the above write can fail only if the current controller lost its zk session and the new controller
           // took over and initialized this partition. This can happen if the current controller went into a long
           // GC pause
-          controllerContext.partitionLeadershipInfo
-            .put(topicAndPartition, leaderIsrAndControllerEpoch)
+          controllerContext.partitionLeadershipInfo.put(
+            topicAndPartition,
+            leaderIsrAndControllerEpoch)
           brokerRequestBatch.addLeaderAndIsrRequestForBrokers(
             liveAssignedReplicas,
             topicAndPartition.topic,
@@ -533,13 +534,15 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
   }
 
   private def registerTopicChangeListener() = {
-    zkUtils.zkClient
-      .subscribeChildChanges(BrokerTopicsPath, topicChangeListener)
+    zkUtils.zkClient.subscribeChildChanges(
+      BrokerTopicsPath,
+      topicChangeListener)
   }
 
   private def deregisterTopicChangeListener() = {
-    zkUtils.zkClient
-      .unsubscribeChildChanges(BrokerTopicsPath, topicChangeListener)
+    zkUtils.zkClient.unsubscribeChildChanges(
+      BrokerTopicsPath,
+      topicChangeListener)
   }
 
   def registerPartitionChangeListener(topic: String) = {
@@ -559,13 +562,15 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
   }
 
   private def registerDeleteTopicListener() = {
-    zkUtils.zkClient
-      .subscribeChildChanges(DeleteTopicsPath, deleteTopicsListener)
+    zkUtils.zkClient.subscribeChildChanges(
+      DeleteTopicsPath,
+      deleteTopicsListener)
   }
 
   private def deregisterDeleteTopicListener() = {
-    zkUtils.zkClient
-      .unsubscribeChildChanges(DeleteTopicsPath, deleteTopicsListener)
+    zkUtils.zkClient.unsubscribeChildChanges(
+      DeleteTopicsPath,
+      deleteTopicsListener)
   }
 
   private def getLeaderIsrAndEpochOrThrowException(

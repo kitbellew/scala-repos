@@ -255,8 +255,8 @@ object BatchedStoreProperties extends Properties("BatchedStore's Properties") {
 
               val flowToPipe: FlowToPipe[(Int, Int)] = Reader {
                 (fdM: (FlowDef, Mode)) =>
-                  TypedPipe
-                    .from[(Timestamp, (Int, Int))](Seq((Timestamp(10), (2, 3))))
+                  TypedPipe.from[(Timestamp, (Int, Int))](
+                    Seq((Timestamp(10), (2, 3))))
               }
               Right(((readTime, mode), flowToPipe))
             }

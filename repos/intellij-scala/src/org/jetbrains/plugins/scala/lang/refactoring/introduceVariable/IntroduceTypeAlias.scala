@@ -212,8 +212,9 @@ trait IntroduceTypeAlias {
             project,
             new Runnable {
               def run() {
-                val computable = ApplicationManager.getApplication
-                  .runWriteAction(introduceRunnable)
+                val computable =
+                  ApplicationManager.getApplication.runWriteAction(
+                    introduceRunnable)
 
                 val namedElement: ScNamedElement =
                   computable._1.getElement match {

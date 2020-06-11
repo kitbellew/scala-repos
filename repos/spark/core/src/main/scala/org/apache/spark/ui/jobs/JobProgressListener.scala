@@ -357,8 +357,9 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
             new StageUIData
           })
         stageData.numActiveTasks += 1
-        stageData.taskData
-          .put(taskInfo.taskId, new TaskUIData(taskInfo, Some(metrics)))
+        stageData.taskData.put(
+          taskInfo.taskId,
+          new TaskUIData(taskInfo, Some(metrics)))
       }
       for (activeJobsDependentOnStage <-
           stageIdToActiveJobIds.get(taskStart.stageId);

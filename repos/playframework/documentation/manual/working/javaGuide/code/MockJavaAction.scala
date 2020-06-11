@@ -87,8 +87,8 @@ package javaguide.testhelpers {
     }
 
     def setContext(request: play.mvc.Http.RequestBuilder): Unit = {
-      Http.Context.current
-        .set(JavaHelpers.createJavaContext(request.build()._underlyingRequest))
+      Http.Context.current.set(
+        JavaHelpers.createJavaContext(request.build()._underlyingRequest))
     }
 
     def removeContext: Unit = Http.Context.current.remove()

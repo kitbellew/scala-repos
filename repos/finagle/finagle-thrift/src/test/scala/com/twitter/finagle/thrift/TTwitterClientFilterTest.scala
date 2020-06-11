@@ -115,7 +115,8 @@ class TTwitterClientFilterTest extends FunSuite with MockitoSugar {
     assert(clientIdContextWasSet == true)
   }
 
-  test("TTwitterClientFilter should not be overrideable with externally-set ClientIds") {
+  test(
+    "TTwitterClientFilter should not be overrideable with externally-set ClientIds") {
     val clientId = ClientId("foo.bar")
     val otherClientId = ClientId("other.bar")
     val filter =

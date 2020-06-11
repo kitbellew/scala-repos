@@ -278,8 +278,9 @@ object Load {
         def apply[T](key: ScopedKey[T]) =
           if (key.key == streams.key)
             ScopedKey(
-              Scope
-                .fillTaskAxis(Scope.replaceThis(to.scope)(key.scope), to.key),
+              Scope.fillTaskAxis(
+                Scope.replaceThis(to.scope)(key.scope),
+                to.key),
               key.key)
           else key
       }
@@ -671,8 +672,8 @@ object Load {
     val resolveBuild =
       (_: Project).resolveBuild(ref => Scope.resolveProjectBuild(unit.uri, ref))
     // although the default loader will resolve the project base directory, other loaders may not, so run resolveBase here as well
-    unit.definitions.projects
-      .map(resolveBuild compose resolveBase(unit.localBase))
+    unit.definitions.projects.map(
+      resolveBuild compose resolveBase(unit.localBase))
   }
   def getRootProject(map: Map[URI, sbt.BuildUnitBase]): URI => String =
     uri => getBuild(map, uri).rootProjects.headOption getOrElse emptyBuild(uri)
@@ -1029,8 +1030,9 @@ object Load {
       }
     // 2. Discover all the autoplugins and contributed configurations.
     val autoPlugins =
-      try loadedPlugins.detected
-        .deducePluginsFromProject(transformedProject, log)
+      try loadedPlugins.detected.deducePluginsFromProject(
+        transformedProject,
+        log)
       catch {
         case e: AutoPluginException =>
           throw translateAutoPluginException(e, transformedProject)

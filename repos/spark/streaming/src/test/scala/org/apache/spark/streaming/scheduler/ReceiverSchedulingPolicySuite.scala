@@ -53,7 +53,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
       scheduledLocations.toSet === Set(HostTaskLocation("host1"), executors(0)))
   }
 
-  test("rescheduleReceiver: return all idle executors if there are any idle executors") {
+  test(
+    "rescheduleReceiver: return all idle executors if there are any idle executors") {
     val executors =
       (1 to 5).map(i => ExecutorCacheTaskLocation(s"host$i", s"$i"))
     // executor 1 is busy, others are idle.
@@ -71,7 +72,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     assert(scheduledLocations.toSet === executors.tail.toSet)
   }
 
-  test("rescheduleReceiver: return all executors that have minimum weight if no idle executors") {
+  test(
+    "rescheduleReceiver: return all executors that have minimum weight if no idle executors") {
     val executors = Seq(
       ExecutorCacheTaskLocation("host1", "1"),
       ExecutorCacheTaskLocation("host2", "2"),
@@ -163,7 +165,8 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
     assert(numReceiversOnExecutor === executors.map(_ -> 1).toMap)
   }
 
-  test("scheduleReceivers: schedule receivers evenly when the preferredLocations are even") {
+  test(
+    "scheduleReceivers: schedule receivers evenly when the preferredLocations are even") {
     val receivers = (0 until 3).map(new RateTestReceiver(_)) ++
       (3 until 6).map(new RateTestReceiver(_, Some("localhost")))
     val executors = (0 until 3).map(executorId =>

@@ -349,8 +349,9 @@ private[akka] class RemoteActorRefProvider(
               try {
                 // for consistency we check configuration of dispatcher and mailbox locally
                 val dispatcher = system.dispatchers.lookup(props.dispatcher)
-                system.mailboxes
-                  .getMailboxType(props, dispatcher.configurator.config)
+                system.mailboxes.getMailboxType(
+                  props,
+                  dispatcher.configurator.config)
               } catch {
                 case NonFatal(e) ⇒
                   throw new ConfigurationException(

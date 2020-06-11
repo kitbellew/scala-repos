@@ -21,7 +21,8 @@ class RefcountedServiceTest extends FunSuite with MockitoSugar {
     val wrapper = Mockito.spy(new RefcountedService[Any, Any](service))
   }
 
-  test("PoolServiceWrapper should call release() immediately when no requests have been made") {
+  test(
+    "PoolServiceWrapper should call release() immediately when no requests have been made") {
     val h = new PoolServiceWrapperHelper
     import h._
 

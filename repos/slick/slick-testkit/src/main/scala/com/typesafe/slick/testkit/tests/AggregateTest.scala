@@ -160,10 +160,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
             (3, Some(10), Some(1), Some(9), Some(5))))
     }.flatMap { _ =>
       val q8 = us.map(_ => "test").groupBy(x => x).map(_._2.max)
-      val q8a = us
-        .map(_.id.asColumnOf[String] ++ "test")
-        .groupBy(x => x)
-        .map(_._2.max)
+      val q8a =
+        us.map(_.id.asColumnOf[String] ++ "test").groupBy(x => x).map(_._2.max)
       val q8b =
         for ((key, group) <- us.map(_ => "x").groupBy(co => co))
           yield (key, group.map(co => co).max)
@@ -462,8 +460,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       as.map(a => (a.id, a.a, a.b)) ++= data,
       mark("q1a", q1a.result).map(_.sortBy(identity) shouldBe Seq("a", "c")),
       mark("q1b", q1b.result).map(_.sortBy(identity) shouldBe Seq("a", "c")),
-      mark("q2", q2.result)
-        .map(_.sortBy(identity) shouldBe Seq(("a", 5), ("c", 5))),
+      mark("q2", q2.result).map(
+        _.sortBy(identity) shouldBe Seq(("a", 5), ("c", 5))),
       mark("q3a", q3a.result).map(_ should (r => r == Seq(1) || r == Seq(2))),
       mark("q4", q4.result).map(_.sortBy(identity) shouldBe Seq("a", "a", "c")),
       mark("q5a", q5a.result).map(_.sortBy(identity) shouldBe Seq(1, 3)),

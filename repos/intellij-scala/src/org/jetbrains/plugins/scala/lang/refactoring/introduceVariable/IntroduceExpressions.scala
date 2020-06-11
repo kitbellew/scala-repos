@@ -391,8 +391,8 @@ trait IntroduceExpressions {
 
     def createEnumeratorIn(forStmt: ScForStatement): ScEnumerator = {
       val parent: ScEnumerators = forStmt.enumerators.orNull
-      val inParentheses = parent.prevSiblings.toList
-        .exists(_.getNode.getElementType == ScalaTokenTypes.tLPARENTHESIS)
+      val inParentheses = parent.prevSiblings.toList.exists(
+        _.getNode.getElementType == ScalaTokenTypes.tLPARENTHESIS)
       val created = ScalaPsiElementFactory.createEnumerator(
         varName,
         ScalaRefactoringUtil.unparExpr(expression),

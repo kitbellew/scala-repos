@@ -94,8 +94,8 @@ private[scalding] object InternalService {
      * 2) After the join, there are only flatMapValues (later we can handle merges as well)
      */
     val summerToStore =
-      getSummer[K, V](dag, store)
-        .getOrElse(sys.error("Could not find the Summer for store."))
+      getSummer[K, V](dag, store).getOrElse(
+        sys.error("Could not find the Summer for store."))
 
     val depsOfSummer: List[Producer[Scalding, Any]] =
       Producer.transitiveDependenciesOf(summerToStore)
@@ -168,8 +168,8 @@ private[scalding] object InternalService {
       (((U, Option[V])) => TraversableOnce[V]),
       Option[Producer[Scalding, (K, V)]]) = {
 
-    val Summer(summerProd, _, _) = getSummer[K, V](dag, store)
-      .getOrElse(sys.error("Could not find the Summer for store."))
+    val Summer(summerProd, _, _) = getSummer[K, V](dag, store).getOrElse(
+      sys.error("Could not find the Summer for store."))
 
     type ValueFlatMapFn = ((U, Option[V])) => TraversableOnce[V]
 

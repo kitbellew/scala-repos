@@ -284,8 +284,9 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
       outputStream.writeLong(updateTime)
 
       if (doCompaction) {
-        newParentSessionStore.deltaMap
-          .update(key, StateInfo(state, updateTime, deleted = false))
+        newParentSessionStore.deltaMap.update(
+          key,
+          StateInfo(state, updateTime, deleted = false))
       }
     }
 
@@ -336,8 +337,9 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
         val key = obj.asInstanceOf[K]
         val state = inputStream.readObject().asInstanceOf[S]
         val updateTime = inputStream.readLong()
-        newParentSessionStore.deltaMap
-          .update(key, StateInfo(state, updateTime, deleted = false))
+        newParentSessionStore.deltaMap.update(
+          key,
+          StateInfo(state, updateTime, deleted = false))
       }
     }
     parentStateMap = newParentSessionStore

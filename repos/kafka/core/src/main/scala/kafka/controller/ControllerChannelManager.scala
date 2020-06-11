@@ -295,8 +295,9 @@ class RequestSendThread(
     } catch {
       case e: Throwable =>
         error(
-          "Controller %d fails to send a request to broker %s"
-            .format(controllerId, brokerNode.toString()),
+          "Controller %d fails to send a request to broker %s".format(
+            controllerId,
+            brokerNode.toString()),
           e)
         // If there is any socket error (eg, socket timeout), the connection is no longer usable and needs to be recreated.
         networkClient.close(brokerNode.idString)
@@ -325,8 +326,9 @@ class RequestSendThread(
     } catch {
       case e: Throwable =>
         warn(
-          "Controller %d's connection to broker %s was unsuccessful"
-            .format(controllerId, brokerNode.toString()),
+          "Controller %d's connection to broker %s was unsuccessful".format(
+            controllerId,
+            brokerNode.toString()),
           e)
         networkClient.close(brokerNode.idString)
         false
@@ -452,8 +454,9 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
               partitionStateInfo)
           }
         case None =>
-          info("Leader not yet assigned for partition %s. Skip sending UpdateMetadataRequest."
-            .format(partition))
+          info(
+            "Leader not yet assigned for partition %s. Skip sending UpdateMetadataRequest."
+              .format(partition))
       }
     }
 
@@ -653,12 +656,14 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
     } catch {
       case e: Throwable => {
         if (leaderAndIsrRequestMap.size > 0) {
-          error("Haven't been able to send leader and isr requests, current state of " +
-            s"the map is $leaderAndIsrRequestMap")
+          error(
+            "Haven't been able to send leader and isr requests, current state of " +
+              s"the map is $leaderAndIsrRequestMap")
         }
         if (updateMetadataRequestMap.size > 0) {
-          error("Haven't been able to send metadata update requests, current state of " +
-            s"the map is $updateMetadataRequestMap")
+          error(
+            "Haven't been able to send metadata update requests, current state of " +
+              s"the map is $updateMetadataRequestMap")
         }
         if (stopReplicaRequestMap.size > 0) {
           error(

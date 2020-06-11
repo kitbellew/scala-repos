@@ -87,7 +87,8 @@ class DeploymentPlanRevertTest
       groups = Set(unrelatedGroup)
     )
 
-    When("we add an unrelated app and try to revert that without concurrent changes")
+    When(
+      "we add an unrelated app and try to revert that without concurrent changes")
     val target = original.updateApp(
       "test".toPath,
       _ => AppDefinition("test".toPath),
@@ -562,7 +563,8 @@ class DeploymentPlanRevertTest
         }
       }
 
-      Then("the result should be the same as if we had only applied all the other deployments")
+      Then(
+        "the result should be the same as if we had only applied all the other deployments")
       val targetWithoutFirstDeployment =
         performDeployments(original, deployments.tail)
       withClue("while comparing reverted with targetWithoutFirstDeployment: ") {

@@ -267,9 +267,9 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             case extraction =>
               val (slot, tp) =
                 localSlots(boxKind.extractedValueIndex(extraction))
-              val loadOps =
-                new VarInsnNode(tp.getOpcode(ILOAD), slot) :: extraction
-                  .postExtractionAdaptationOps(tp)
+              val loadOps = new VarInsnNode(
+                tp.getOpcode(ILOAD),
+                slot) :: extraction.postExtractionAdaptationOps(tp)
               if (keepBox) toReplace(extraction.consumer) = getPop(1) :: loadOps
               else toReplace(extraction.consumer) = loadOps
               toDelete ++= extraction.allInsns - extraction.consumer

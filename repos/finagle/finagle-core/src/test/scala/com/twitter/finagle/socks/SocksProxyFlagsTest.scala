@@ -20,7 +20,8 @@ class SocksProxyFlagsTest extends FunSuite with BeforeAndAfter {
     }
   }
 
-  test("SocksProxyFlags should respect missing -socksProxyHost / -socksProxyPort flags") {
+  test(
+    "SocksProxyFlags should respect missing -socksProxyHost / -socksProxyPort flags") {
     assert(SocksProxyFlags.socksProxy == None)
   }
 }

@@ -852,8 +852,9 @@ private[akka] class LocalActorRefProvider private[akka] (
 
         try {
           val dispatcher = system.dispatchers.lookup(props2.dispatcher)
-          val mailboxType = system.mailboxes
-            .getMailboxType(props2, dispatcher.configurator.config)
+          val mailboxType = system.mailboxes.getMailboxType(
+            props2,
+            dispatcher.configurator.config)
 
           if (async)
             new RepointableActorRef(
@@ -901,14 +902,16 @@ private[akka] class LocalActorRefProvider private[akka] (
         try {
           val routerDispatcher =
             system.dispatchers.lookup(p.routerConfig.routerDispatcher)
-          val routerMailbox = system.mailboxes
-            .getMailboxType(routerProps, routerDispatcher.configurator.config)
+          val routerMailbox = system.mailboxes.getMailboxType(
+            routerProps,
+            routerDispatcher.configurator.config)
 
           // routers use context.actorOf() to create the routees, which does not allow us to pass
           // these through, but obtain them here for early verification
           val routeeDispatcher = system.dispatchers.lookup(p.dispatcher)
-          val routeeMailbox = system.mailboxes
-            .getMailboxType(routeeProps, routeeDispatcher.configurator.config)
+          val routeeMailbox = system.mailboxes.getMailboxType(
+            routeeProps,
+            routeeDispatcher.configurator.config)
 
           new RoutedActorRef(
             system,

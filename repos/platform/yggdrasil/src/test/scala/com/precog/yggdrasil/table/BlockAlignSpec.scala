@@ -98,8 +98,7 @@ trait BlockAlignSpec[M[+_]]
   }
 
   def alignSimple = {
-    val JArray(elements) =
-      JParser.parseUnsafe("""[
+    val JArray(elements) = JParser.parseUnsafe("""[
         {
           "value":{ "fr8y":-2.761198250953116839E+14037, "hw":[], "q":2.429467767811669098E+50018 },
           "key":[1.0,2.0]

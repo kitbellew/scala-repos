@@ -22,7 +22,8 @@ class MetricsStatsReceiverTest
 
   private[this] def readInRoot(name: String) = read(rootReceiver, name)
 
-  test("MetricsStatsReceiver should store and read gauge into the root StatsReceiver") {
+  test(
+    "MetricsStatsReceiver should store and read gauge into the root StatsReceiver") {
     val x = 1.5f
     // gauges are weakly referenced by the registry so we need to keep a strong reference
     val g = rootReceiver.addGauge("my_gauge")(x)
@@ -39,7 +40,8 @@ class MetricsStatsReceiverTest
     assert(readInRoot("my_cumulative_gauge") == x + y + z)
   }
 
-  test("Ensure that we throw an exception with a counter and a gauge when rollup collides") {
+  test(
+    "Ensure that we throw an exception with a counter and a gauge when rollup collides") {
     val sr = new RollupStatsReceiver(rootReceiver)
     sr.counter("a", "b", "c").incr()
     intercept[MetricCollisionException] {

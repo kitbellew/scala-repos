@@ -68,8 +68,9 @@ trait HTTPProvider {
 
       CurrentReq.doWith(newReq) {
         URLRewriter.doWith(url =>
-          NamedPF
-            .applyBox(resp.encodeUrl(url), LiftRules.urlDecorate.toList) openOr
+          NamedPF.applyBox(
+            resp.encodeUrl(url),
+            LiftRules.urlDecorate.toList) openOr
             resp.encodeUrl(url)) {
           if (!(isLiftRequest_?(newReq) &&
               actualServlet.service(newReq, resp))) {

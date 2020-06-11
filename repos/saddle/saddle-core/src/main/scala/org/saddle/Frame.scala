@@ -1698,8 +1698,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       // for building frame entries
       def createVals(r: Int) = {
         val elem = (col: Int) =>
-          "%" + clen(col) + "s " format values(col).scalarTag
-            .show(values(r, col))
+          "%" + clen(col) + "s " format values(col).scalarTag.show(
+            values(r, col))
         util.buildStr(ncols, numCols, elem) + "\n"
       }
 

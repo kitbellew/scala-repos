@@ -115,8 +115,8 @@ private[spark] class BlockManagerMaster(
 
   /** Remove all blocks belonging to the given shuffle. */
   def removeShuffle(shuffleId: Int, blocking: Boolean) {
-    val future = driverEndpoint
-      .askWithRetry[Future[Seq[Boolean]]](RemoveShuffle(shuffleId))
+    val future = driverEndpoint.askWithRetry[Future[Seq[Boolean]]](
+      RemoveShuffle(shuffleId))
     future.onFailure {
       case e: Exception =>
         logWarning(s"Failed to remove shuffle $shuffleId - ${e.getMessage}", e)
@@ -152,8 +152,8 @@ private[spark] class BlockManagerMaster(
     * amount of remaining memory.
     */
   def getMemoryStatus: Map[BlockManagerId, (Long, Long)] = {
-    driverEndpoint
-      .askWithRetry[Map[BlockManagerId, (Long, Long)]](GetMemoryStatus)
+    driverEndpoint.askWithRetry[Map[BlockManagerId, (Long, Long)]](
+      GetMemoryStatus)
   }
 
   def getStorageStatus: Array[StorageStatus] = {

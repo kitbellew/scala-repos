@@ -114,7 +114,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     assert(stats.counter("removals")() == 1)
   }
 
-  test("a failing service should enter the probing state after the markDeadFor duration") {
+  test(
+    "a failing service should enter the probing state after the markDeadFor duration") {
     val h = new Helper(consecutiveFailures)
     import h._
 
@@ -448,7 +449,8 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("a failing service should reset failure counters after an individual success") {
+  test(
+    "a failing service should reset failure counters after an individual success") {
     val h = new Helper(consecutiveFailures)
     import h._
 
@@ -565,8 +567,9 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
     val factory = new FailureAccrualFactory[Int, Int](
       underlying,
-      FailureAccrualPolicy
-        .consecutiveFailures(3, FailureAccrualFactory.jitteredBackoff),
+      FailureAccrualPolicy.consecutiveFailures(
+        3,
+        FailureAccrualFactory.jitteredBackoff),
       new MockTimer,
       statsReceiver,
       "test")
@@ -611,8 +614,9 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     when(underlying()) thenReturn Future.exception(exc)
     val factory = new FailureAccrualFactory[Int, Int](
       underlying,
-      FailureAccrualPolicy
-        .consecutiveFailures(3, FailureAccrualFactory.jitteredBackoff),
+      FailureAccrualPolicy.consecutiveFailures(
+        3,
+        FailureAccrualFactory.jitteredBackoff),
       new MockTimer,
       statsReceiver,
       "test")

@@ -163,8 +163,8 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
                   }
                   if (hasAnnotationInClass) true
                   else
-                    sym.parentSymbols.headOption
-                      .fold(false)(isClassWithJUnitAnnotation)
+                    sym.parentSymbols.headOption.fold(false)(
+                      isClassWithJUnitAnnotation)
 
                 case _ => false
               }

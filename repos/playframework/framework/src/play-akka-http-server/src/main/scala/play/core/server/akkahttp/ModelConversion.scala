@@ -70,8 +70,8 @@ private[akkahttp] class ModelConversion(
       // This will only work properly if
       override def uri =
         request.header[`Raw-Request-URI`].map(_.value) getOrElse {
-          logger
-            .warn("Can't get raw request URI. Please set akka.http.server.raw-request-uri-header = true")
+          logger.warn(
+            "Can't get raw request URI. Please set akka.http.server.raw-request-uri-header = true")
           request.uri.toString
         }
       override def path = request.uri.path.toString
@@ -203,8 +203,9 @@ private[akkahttp] class ModelConversion(
       .map {
         case (name, value) =>
           HttpHeader.parse(name, value) match {
-            case HttpHeader.ParsingResult
-                  .Ok(header, errors /* errors are ignored if Ok */ ) =>
+            case HttpHeader.ParsingResult.Ok(
+                  header,
+                  errors /* errors are ignored if Ok */ ) =>
               header
             case HttpHeader.ParsingResult.Error(error) =>
               sys.error(s"Error parsing header: $error")

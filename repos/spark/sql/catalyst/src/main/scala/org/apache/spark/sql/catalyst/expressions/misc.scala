@@ -38,7 +38,8 @@ import org.apache.spark.unsafe.Platform
   * For input of type [[BinaryType]]
   */
 @ExpressionDescription(
-  usage = "_FUNC_(input) - Returns an MD5 128-bit checksum as a hex string of the input",
+  usage =
+    "_FUNC_(input) - Returns an MD5 128-bit checksum as a hex string of the input",
   extended = "> SELECT _FUNC_('Spark');\n '8cde774d6f7333752ed72cacddb05126'")
 case class Md5(child: Expression)
     extends UnaryExpression
@@ -176,7 +177,8 @@ case class Sha1(child: Expression)
   * For input of type [[BinaryType]]
   */
 @ExpressionDescription(
-  usage = "_FUNC_(input) - Returns a cyclic redundancy check value as a bigint of the input",
+  usage =
+    "_FUNC_(input) - Returns a cyclic redundancy check value as a bigint of the input",
   extended = "> SELECT _FUNC_('Spark');\n '1557323817'")
 case class Crc32(child: Expression)
     extends UnaryExpression

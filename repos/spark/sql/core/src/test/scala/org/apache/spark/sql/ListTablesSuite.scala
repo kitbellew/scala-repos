@@ -41,8 +41,8 @@ class ListTablesSuite
   }
 
   after {
-    sqlContext.sessionState.catalog
-      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog.unregisterTable(
+      TableIdentifier("ListTablesSuiteTable"))
   }
 
   test("get all tables") {
@@ -54,8 +54,8 @@ class ListTablesSuite
       sql("SHOW tables").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
 
-    sqlContext.sessionState.catalog
-      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog.unregisterTable(
+      TableIdentifier("ListTablesSuiteTable"))
     assert(
       sqlContext
         .tables()
@@ -63,7 +63,8 @@ class ListTablesSuite
         .count() === 0)
   }
 
-  test("getting all Tables with a database name has no impact on returned table names") {
+  test(
+    "getting all Tables with a database name has no impact on returned table names") {
     checkAnswer(
       sqlContext.tables("DB").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
@@ -72,8 +73,8 @@ class ListTablesSuite
       sql("show TABLES in DB").filter("tableName = 'ListTablesSuiteTable'"),
       Row("ListTablesSuiteTable", true))
 
-    sqlContext.sessionState.catalog
-      .unregisterTable(TableIdentifier("ListTablesSuiteTable"))
+    sqlContext.sessionState.catalog.unregisterTable(
+      TableIdentifier("ListTablesSuiteTable"))
     assert(
       sqlContext
         .tables()
@@ -92,7 +93,8 @@ class ListTablesSuite
 
         tableDF.registerTempTable("tables")
         checkAnswer(
-          sql("SELECT isTemporary, tableName from tables WHERE tableName = 'ListTablesSuiteTable'"),
+          sql(
+            "SELECT isTemporary, tableName from tables WHERE tableName = 'ListTablesSuiteTable'"),
           Row(true, "ListTablesSuiteTable")
         )
         checkAnswer(

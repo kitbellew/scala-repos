@@ -115,7 +115,8 @@ class DiskBlockObjectWriterSuite extends SparkFunSuite with BeforeAndAfterEach {
     }
   }
 
-  test("calling revertPartialWritesAndClose() on a closed block writer should have no effect") {
+  test(
+    "calling revertPartialWritesAndClose() on a closed block writer should have no effect") {
     val file = new File(tempDir, "somefile")
     val writeMetrics = new ShuffleWriteMetrics()
     val writer = new DiskBlockObjectWriter(

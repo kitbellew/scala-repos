@@ -868,9 +868,9 @@ trait Definitions extends api.StandardDefinitions {
       ctor.paramss match {
         case List(List(c)) =>
           val sym = c.info.typeSymbol
-          val isContextCompatible =
-            sym.isNonBottomSubClass(BlackboxContextClass) || sym
-              .isNonBottomSubClass(WhiteboxContextClass)
+          val isContextCompatible = sym.isNonBottomSubClass(
+            BlackboxContextClass) || sym.isNonBottomSubClass(
+            WhiteboxContextClass)
           if (isContextCompatible) c.info else NoType
         case _ =>
           NoType

@@ -138,8 +138,8 @@ abstract class AbstractTestRunConfiguration(
 
   private def provideDefaultWorkingDir = {
     val module = getModule
-    ScalaTestDefaultWorkingDirectoryProvider.EP_NAME.getExtensions
-      .find(_.getWorkingDirectory(module) != null) match {
+    ScalaTestDefaultWorkingDirectoryProvider.EP_NAME.getExtensions.find(
+      _.getWorkingDirectory(module) != null) match {
       case Some(provider) => provider.getWorkingDirectory(module)
       case _              => Option(getProject.getBaseDir).map(_.getPath).getOrElse("")
     }
@@ -641,8 +641,9 @@ abstract class AbstractTestRunConfiguration(
 
   override def writeExternal(element: Element) {
     super.writeExternal(element)
-    JavaRunConfigurationExtensionManager.getInstance
-      .writeExternal(this, element)
+    JavaRunConfigurationExtensionManager.getInstance.writeExternal(
+      this,
+      element)
     writeModule(element)
     JDOMExternalizer.write(element, "path", getTestClassPath)
     JDOMExternalizer.write(element, "package", getTestPackagePath)

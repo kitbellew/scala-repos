@@ -176,7 +176,8 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
   }
 
-  test("1 sample Kolmogorov-Smirnov test: apache commons math3 implementation equivalence") {
+  test(
+    "1 sample Kolmogorov-Smirnov test: apache commons math3 implementation equivalence") {
     // Create theoretical distributions
     val stdNormalDist = new NormalDistribution(0, 1)
     val expDist = new ExponentialDistribution(0.6)

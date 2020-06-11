@@ -155,7 +155,8 @@ class GroupManagerTest
   }
 
   // Regression test for #1365
-  test("Export non-dynamic service ports specified in the container to the ports field") {
+  test(
+    "Export non-dynamic service ports specified in the container to the ports field") {
     import Container.Docker
     import Docker.PortMapping
     import org.apache.mesos.Protos.ContainerInfo.DockerInfo.Network
@@ -221,7 +222,8 @@ class GroupManagerTest
     assignedPorts should have size 2
   }
 
-  test("Assign unique service ports also when adding a dynamic service port to an app") {
+  test(
+    "Assign unique service ports also when adding a dynamic service port to an app") {
     val originalGroup = Group(
       PathId.empty,
       Set(

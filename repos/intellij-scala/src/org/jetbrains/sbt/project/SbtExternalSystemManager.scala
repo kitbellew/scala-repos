@@ -59,8 +59,9 @@ class SbtExternalSystemManager
       ExternalSystemConstants.EXTERNAL_SYSTEM_ID_KEY,
       SbtProjectSystem.Id.getId)
 
-    parameters.getVMParametersList
-      .addProperty(PathManager.PROPERTY_LOG_PATH, PathManager.getLogPath)
+    parameters.getVMParametersList.addProperty(
+      PathManager.PROPERTY_LOG_PATH,
+      PathManager.getLogPath)
   }
 
   def getSystemId = SbtProjectSystem.Id

@@ -228,11 +228,14 @@ class ScStableCodeReferenceElementImpl(node: ASTNode)
                     qname,
                     {
                       case (qual, true) =>
-                        ScalaPsiElementFactory
-                          .createReferenceFromText(qual, getContext, this)
+                        ScalaPsiElementFactory.createReferenceFromText(
+                          qual,
+                          getContext,
+                          this)
                       case (qual, false) =>
-                        ScalaPsiElementFactory
-                          .createReferenceFromText(qual, getManager)
+                        ScalaPsiElementFactory.createReferenceFromText(
+                          qual,
+                          getManager)
                     }
                   ) {
                     c match {

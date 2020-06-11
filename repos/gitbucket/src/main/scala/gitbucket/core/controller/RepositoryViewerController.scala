@@ -329,40 +329,41 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     * Displays the file content of the specified branch or commit.
     */
   val blobRoute =
-    get("/:owner/:repository/blob/*")(referrersOnly { repository =>
-      val (id, path) = splitPath(repository, multiParams("splat").head)
-      val raw = params.get("raw").getOrElse("false").toBoolean
-      using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
-        git =>
-          val revCommit =
-            JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))
-          getPathObjectId(git, path, revCommit).map {
-            objectId =>
-              if (raw) {
-                // Download (This route is left for backword compatibility)
-                JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
-                  contentType = FileUtil.getMimeType(path)
-                  response.setContentLength(loader.getSize.toInt)
-                  loader.copyTo(response.outputStream)
-                  ()
-                } getOrElse NotFound
-              } else {
-                html.blob(
-                  id,
-                  repository,
-                  path.split("/").toList,
-                  JGitUtil.getContentInfo(git, path, objectId),
-                  new JGitUtil.CommitInfo(
-                    JGitUtil.getLastModifiedCommit(git, revCommit, path)),
-                  hasWritePermission(
-                    repository.owner,
-                    repository.name,
-                    context.loginAccount),
-                  request.paths(2) == "blame"
-                )
-              }
-          } getOrElse NotFound
-      }
+    get("/:owner/:repository/blob/*")(referrersOnly {
+      repository =>
+        val (id, path) = splitPath(repository, multiParams("splat").head)
+        val raw = params.get("raw").getOrElse("false").toBoolean
+        using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
+          git =>
+            val revCommit =
+              JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))
+            getPathObjectId(git, path, revCommit).map {
+              objectId =>
+                if (raw) {
+                  // Download (This route is left for backword compatibility)
+                  JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
+                    contentType = FileUtil.getMimeType(path)
+                    response.setContentLength(loader.getSize.toInt)
+                    loader.copyTo(response.outputStream)
+                    ()
+                  } getOrElse NotFound
+                } else {
+                  html.blob(
+                    id,
+                    repository,
+                    path.split("/").toList,
+                    JGitUtil.getContentInfo(git, path, objectId),
+                    new JGitUtil.CommitInfo(
+                      JGitUtil.getLastModifiedCommit(git, revCommit, path)),
+                    hasWritePermission(
+                      repository.owner,
+                      repository.name,
+                      context.loginAccount),
+                    request.paths(2) == "blame"
+                  )
+                }
+            } getOrElse NotFound
+        }
     })
 
   get("/:owner/:repository/blame/*") {

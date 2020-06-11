@@ -115,8 +115,8 @@ object GetOffsetShell {
         partitionList.split(",").map(_.toInt).toSeq
       }
     partitions.foreach { partitionId =>
-      val partitionMetadataOpt = topicsMetadata.head.partitionsMetadata
-        .find(_.partitionId == partitionId)
+      val partitionMetadataOpt = topicsMetadata.head.partitionsMetadata.find(
+        _.partitionId == partitionId)
       partitionMetadataOpt match {
         case Some(metadata) =>
           metadata.leader match {
@@ -141,8 +141,8 @@ object GetOffsetShell {
               println(
                 "%s:%d:%s".format(topic, partitionId, offsets.mkString(",")))
             case None =>
-              System.err
-                .println("Error: partition %d does not have a leader. Skip getting offsets"
+              System.err.println(
+                "Error: partition %d does not have a leader. Skip getting offsets"
                   .format(partitionId))
           }
         case None =>

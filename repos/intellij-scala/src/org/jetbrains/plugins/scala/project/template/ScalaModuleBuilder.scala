@@ -54,8 +54,9 @@ class ScalaModuleBuilder(
 
   private class ScalaStep(settingsStep: SettingsStep)
       extends ModuleWizardStep() {
-    private val javaStep = JavaModuleType.getModuleType
-      .modifyProjectTypeStep(settingsStep, ScalaModuleBuilder.this)
+    private val javaStep = JavaModuleType.getModuleType.modifyProjectTypeStep(
+      settingsStep,
+      ScalaModuleBuilder.this)
 
     private val libraryPanel = new LibraryOptionsPanel(
       libraryDescription,

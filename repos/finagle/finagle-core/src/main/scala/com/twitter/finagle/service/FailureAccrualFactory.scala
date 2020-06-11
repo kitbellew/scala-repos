@@ -115,8 +115,9 @@ object FailureAccrualFactory {
     */
   def Param(numFailures: Int, markDeadFor: () => Duration): Param =
     Param.Configured(() =>
-      FailureAccrualPolicy
-        .consecutiveFailures(numFailures, Backoff.fromFunction(markDeadFor)))
+      FailureAccrualPolicy.consecutiveFailures(
+        numFailures,
+        Backoff.fromFunction(markDeadFor)))
 
   /**
     * Configures the [[FailureAccrualFactory]].
@@ -129,8 +130,9 @@ object FailureAccrualFactory {
     */
   def Param(numFailures: Int, markDeadFor: Duration): Param =
     Param.Configured(() =>
-      FailureAccrualPolicy
-        .consecutiveFailures(numFailures, Backoff.const(markDeadFor)))
+      FailureAccrualPolicy.consecutiveFailures(
+        numFailures,
+        Backoff.const(markDeadFor)))
 
   /**
     * Configures the [[FailureAccrualFactory]].
@@ -270,8 +272,9 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
   ) =
     this(
       underlying,
-      FailureAccrualPolicy
-        .consecutiveFailures(numFailures, Backoff.const(markDeadFor)),
+      FailureAccrualPolicy.consecutiveFailures(
+        numFailures,
+        Backoff.const(markDeadFor)),
       timer,
       statsReceiver,
       label,
@@ -291,8 +294,9 @@ class FailureAccrualFactory[Req, Rep] private[finagle] (
   ) =
     this(
       underlying,
-      FailureAccrualPolicy
-        .consecutiveFailures(numFailures, Backoff.const(markDeadFor)),
+      FailureAccrualPolicy.consecutiveFailures(
+        numFailures,
+        Backoff.const(markDeadFor)),
       timer,
       statsReceiver,
       label,

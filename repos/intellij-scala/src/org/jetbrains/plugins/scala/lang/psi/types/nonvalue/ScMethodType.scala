@@ -262,8 +262,10 @@ case class ScMethodType(
       case (true, res, _) => res
       case (_, _, newData) =>
         new ScMethodType(
-          returnType
-            .recursiveVarianceUpdateModifiable(newData, update, variance),
+          returnType.recursiveVarianceUpdateModifiable(
+            newData,
+            update,
+            variance),
           params.map(p =>
             p.copy(paramType = p.paramType
               .recursiveVarianceUpdateModifiable(newData, update, -variance))),
@@ -503,8 +505,10 @@ case class ScTypePolymorphicType(
       case (true, res, _) => res
       case (_, _, newData) =>
         ScTypePolymorphicType(
-          internalType
-            .recursiveVarianceUpdateModifiable(newData, update, variance),
+          internalType.recursiveVarianceUpdateModifiable(
+            newData,
+            update,
+            variance),
           typeParameters.map(tp => {
             TypeParameter(
               tp.name,

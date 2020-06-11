@@ -140,8 +140,8 @@ object S extends S {
       extends AFuncHolder
       with Serializable {
     def apply(in: List[String]) {
-      logger
-        .info("You attempted to call a 'File Upload' function with a normal parameter.  Did you forget to 'enctype' to 'multipart/form-data'?")
+      logger.info(
+        "You attempted to call a 'File Upload' function with a normal parameter.  Did you forget to 'enctype' to 'multipart/form-data'?")
     }
 
     override def apply(in: FileParamHolder) = func(in)
@@ -1136,8 +1136,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
             tryo {
               if (Props.devMode) {
                 tryo {
-                  val clz = this.getClass.getClassLoader
-                    .loadClass("java.util.ResourceBundle")
+                  val clz = this.getClass.getClassLoader.loadClass(
+                    "java.util.ResourceBundle")
                   val meth = clz.getDeclaredMethods
                     .filter { m =>
                       m.getName == "clearCache" && m.getParameterTypes.length == 0
@@ -3173,22 +3173,22 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * Returns only ERROR notices
     */
   def errors: List[(NodeSeq, Box[String])] =
-    List(oldNotices.is, p_notice.is)
-      .flatMap(_.filter(_._1 == NoticeType.Error).map(n => (n._2, n._3)))
+    List(oldNotices.is, p_notice.is).flatMap(
+      _.filter(_._1 == NoticeType.Error).map(n => (n._2, n._3)))
 
   /**
     * Returns only NOTICE notices
     */
   def notices: List[(NodeSeq, Box[String])] =
-    List(oldNotices.is, p_notice.is)
-      .flatMap(_.filter(_._1 == NoticeType.Notice).map(n => (n._2, n._3)))
+    List(oldNotices.is, p_notice.is).flatMap(
+      _.filter(_._1 == NoticeType.Notice).map(n => (n._2, n._3)))
 
   /**
     * Returns only WARNING notices
     */
   def warnings: List[(NodeSeq, Box[String])] =
-    List(oldNotices.is, p_notice.is)
-      .flatMap(_.filter(_._1 == NoticeType.Warning).map(n => (n._2, n._3)))
+    List(oldNotices.is, p_notice.is).flatMap(
+      _.filter(_._1 == NoticeType.Warning).map(n => (n._2, n._3)))
 
   /**
     * Clears up the notices

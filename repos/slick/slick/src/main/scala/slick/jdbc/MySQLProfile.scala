@@ -68,8 +68,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
 
   override protected[this] def loadProfileConfig: Config = {
     if (!GlobalConfig.profileConfig("slick.driver.MySQL").entrySet().isEmpty)
-      SlickLogger[MySQLProfile]
-        .warn("The config key 'slick.driver.MySQL' is deprecated and not used anymore. Use 'slick.jdbc.MySQLProfile' instead.")
+      SlickLogger[MySQLProfile].warn(
+        "The config key 'slick.driver.MySQL' is deprecated and not used anymore. Use 'slick.jdbc.MySQLProfile' instead.")
     super.loadProfileConfig
   }
 
@@ -117,8 +117,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
 
   override val columnTypes = new JdbcTypes
   override protected def computeQueryCompiler =
-    super.computeQueryCompiler
-      .replace(new MySQLResolveZipJoins) - Phase.fixRowNumberOrdering
+    super.computeQueryCompiler.replace(
+      new MySQLResolveZipJoins) - Phase.fixRowNumberOrdering
   override def createQueryBuilder(n: Node, state: CompilerState): QueryBuilder =
     new QueryBuilder(n, state)
   override def createUpsertBuilder(node: Insert): InsertBuilder =

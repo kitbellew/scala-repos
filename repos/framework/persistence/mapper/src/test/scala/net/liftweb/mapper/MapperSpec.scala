@@ -226,8 +226,9 @@ class MapperSpec extends Specification with BeforeExample {
         }
 
         "Precache works" in {
-          val oo = SampleTag
-            .findAll(By(SampleTag.tag, "Meow"), PreCache(SampleTag.model))
+          val oo = SampleTag.findAll(
+            By(SampleTag.tag, "Meow"),
+            PreCache(SampleTag.model))
 
           for (t <- oo) yield t.model.cached_? must beTrue
 

@@ -87,7 +87,8 @@ object Mode {
     val strictSources = args.boolean("tool.partialok") == false
     if (!strictSources) {
       // TODO we should do smarter logging here
-      println("[Scalding:INFO] using --tool.partialok. Missing log data won't cause errors.")
+      println(
+        "[Scalding:INFO] using --tool.partialok. Missing log data won't cause errors.")
     }
 
     if (args.boolean("local"))

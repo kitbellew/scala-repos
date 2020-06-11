@@ -295,8 +295,9 @@ object LoadService {
           }
         }
 
-      GlobalRegistry.get
-        .put(Seq("loadservice", ifaceName), buffer.mkString(","))
+      GlobalRegistry.get.put(
+        Seq("loadservice", ifaceName),
+        buffer.mkString(","))
       result
     }
 }

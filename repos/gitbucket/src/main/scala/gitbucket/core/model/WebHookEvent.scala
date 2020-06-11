@@ -6,8 +6,9 @@ trait WebHookEventComponent extends TemplateComponent { self: Profile =>
 
   lazy val WebHookEvents = TableQuery[WebHookEvents]
 
-  implicit val typedType = MappedColumnType
-    .base[WebHook.Event, String](_.name, WebHook.Event.valueOf(_))
+  implicit val typedType = MappedColumnType.base[WebHook.Event, String](
+    _.name,
+    WebHook.Event.valueOf(_))
 
   class WebHookEvents(tag: Tag)
       extends Table[WebHookEvent](tag, "WEB_HOOK_EVENT")

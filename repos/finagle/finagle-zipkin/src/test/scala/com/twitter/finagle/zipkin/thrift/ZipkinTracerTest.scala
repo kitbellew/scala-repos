@@ -30,7 +30,8 @@ class ZipkinTracerTest
     assert(tracer.sampleTrace(traceId) == Some(true))
   }
 
-  test("ZipkinTracer should pass through trace id with sampled true despite of sample rate") {
+  test(
+    "ZipkinTracer should pass through trace id with sampled true despite of sample rate") {
     val traceId =
       TraceId(Some(SpanId(123)), Some(SpanId(123)), SpanId(123), None)
 

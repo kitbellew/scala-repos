@@ -78,8 +78,8 @@ sealed abstract class HoconPsiElement(ast: ASTNode)
 
   def nonWhitespaceOrCommentChildren =
     allChildren.filterNot(ch =>
-      (HoconTokenSets.Comment | TokenType.WHITE_SPACE)
-        .contains(ch.getNode.getElementType))
+      (HoconTokenSets.Comment | TokenType.WHITE_SPACE).contains(
+        ch.getNode.getElementType))
 
   def findChildren[T <: HoconPsiElement: ClassTag] =
     allChildren.collect {

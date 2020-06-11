@@ -180,8 +180,9 @@ class HiveSparkSubmitSuite
   // NOTE: This is an expensive operation in terms of time (10 seconds+). Use sparingly.
   // This is copied from org.apache.spark.deploy.SparkSubmitSuite
   private def runSparkSubmit(args: Seq[String]): Unit = {
-    val sparkHome = sys.props
-      .getOrElse("spark.test.home", fail("spark.test.home is not set!"))
+    val sparkHome = sys.props.getOrElse(
+      "spark.test.home",
+      fail("spark.test.home is not set!"))
     val history = ArrayBuffer.empty[String]
     val commands = Seq("./bin/spark-submit") ++ args
     val commandLine = commands.mkString("'", "' '", "'")
@@ -302,8 +303,8 @@ object SparkSubmitClassLoaderTest extends Logging {
       """.stripMargin)
     // Actually use the loaded UDF and SerDe.
     logInfo("Writing data into the table.")
-    hiveContext
-      .sql("INSERT INTO TABLE t1 SELECT example_max(key) as key, val FROM sourceTable GROUP BY val")
+    hiveContext.sql(
+      "INSERT INTO TABLE t1 SELECT example_max(key) as key, val FROM sourceTable GROUP BY val")
     logInfo("Running a simple query on the table.")
     val count = hiveContext.table("t1").orderBy("key", "val").count()
     if (count != 10) {

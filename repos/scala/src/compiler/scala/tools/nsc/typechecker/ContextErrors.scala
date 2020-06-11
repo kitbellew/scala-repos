@@ -907,7 +907,8 @@ trait ContextErrors {
                 sym1.associatedFile.canonicalPath))
           else None,
           if (isBug)
-            Some("Note: this may be due to a bug in the compiler involving wildcards in package objects")
+            Some(
+              "Note: this may be due to a bug in the compiler involving wildcards in package objects")
           else None
         )
         val addendum = addendums.flatten match {
@@ -1314,11 +1315,15 @@ trait ContextErrors {
           kindErrors: List[String]) = {
         issueNormalTypeError(
           tree,
-          prefix + "kinds of the type arguments " + targs
-            .mkString("(", ",", ")") +
+          prefix + "kinds of the type arguments " + targs.mkString(
+            "(",
+            ",",
+            ")") +
             " do not conform to the expected kinds of the type parameters " +
-            tparams
-              .mkString("(", ",", ")") + tparams.head.locationString + "." +
+            tparams.mkString(
+              "(",
+              ",",
+              ")") + tparams.head.locationString + "." +
             kindErrors.toList.mkString("\n", ", ", "")
         )
       }
@@ -1461,8 +1466,9 @@ trait ContextErrors {
           case c @ CyclicReference(sym, info: TypeCompleter) =>
             val error = new NormalTypeErrorFromCyclicReference(
               tree,
-              typer
-                .cyclicReferenceMessage(sym, info.tree) getOrElse ex.getMessage)
+              typer.cyclicReferenceMessage(
+                sym,
+                info.tree) getOrElse ex.getMessage)
             issueTypeError(error)
           case _ =>
             contextNamerErrorGen.issue(TypeErrorWithUnderlyingTree(tree, ex))

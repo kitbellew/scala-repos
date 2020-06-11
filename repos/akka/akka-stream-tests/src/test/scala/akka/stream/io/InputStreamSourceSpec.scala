@@ -32,7 +32,8 @@ class InputStreamSourceSpec extends AkkaSpec(UnboundedMailboxConfig) {
         })
 
       Await.result(
-        f.takeWithin(5.seconds)
+        f
+          .takeWithin(5.seconds)
           .runForeach(it ⇒ ()),
         10.seconds)
     }

@@ -232,11 +232,13 @@ class MasterSuite
     schedulingWithExecutorLimitAndCoresPerExecutor(spreadOut = false)
   }
 
-  test("scheduling with executor limit AND cores per executor AND max cores - spread out") {
+  test(
+    "scheduling with executor limit AND cores per executor AND max cores - spread out") {
     schedulingWithEverything(spreadOut = true)
   }
 
-  test("scheduling with executor limit AND cores per executor AND max cores - no spread out") {
+  test(
+    "scheduling with executor limit AND cores per executor AND max cores - no spread out") {
     schedulingWithEverything(spreadOut = false)
   }
 

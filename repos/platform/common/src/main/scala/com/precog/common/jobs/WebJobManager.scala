@@ -237,8 +237,8 @@ trait WebJobManager
       value: JValue): Response[Message] =
     withJsonClient { client =>
       eitherT(
-        client
-          .post[JValue]("/jobs/" + jobId + "/messages/" + channel)(value) map {
+        client.post[JValue]("/jobs/" + jobId + "/messages/" + channel)(
+          value) map {
           case HttpResponse(HttpStatus(Created, _), _, Some(obj), _) =>
             obj.validated[Message] map (right(_)) getOrElse left(
               "Invalid message returned from server:\n" + obj)

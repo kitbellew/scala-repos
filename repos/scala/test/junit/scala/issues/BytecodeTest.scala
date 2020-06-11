@@ -42,11 +42,11 @@ class BytecodeTest extends ClearAfterClass {
     val List(c) = compileClasses(compiler)(code)
 
     assertTrue(
-      getSingleMethod(c, "f").instructions
-        .count(_.isInstanceOf[TableSwitch]) == 1)
+      getSingleMethod(c, "f").instructions.count(
+        _.isInstanceOf[TableSwitch]) == 1)
     assertTrue(
-      getSingleMethod(c, "g").instructions
-        .count(_.isInstanceOf[LookupSwitch]) == 1)
+      getSingleMethod(c, "g").instructions.count(
+        _.isInstanceOf[LookupSwitch]) == 1)
   }
 
   @Test

@@ -76,7 +76,8 @@ class EntityStoreCacheTest
     verify(store, never).fetch(any)
   }
 
-  test("Fetching an unversioned entry will succeed with querying store in direct mode") {
+  test(
+    "Fetching an unversioned entry will succeed with querying store in direct mode") {
     Given("A UNfilled entityCache")
     val store = mock[EntityStore[TestApp]]
     store.fetch("a") returns Future.successful(Some(TestApp("a")))
@@ -91,7 +92,8 @@ class EntityStoreCacheTest
     noMoreInteractions(store)
   }
 
-  test("Fetching an unknown unversioned entry will succeed with querying store in direct mode") {
+  test(
+    "Fetching an unknown unversioned entry will succeed with querying store in direct mode") {
     Given("A UNfilled entityCache")
     val store = mock[EntityStore[TestApp]]
     store.fetch("notExisting") returns Future.successful(None)

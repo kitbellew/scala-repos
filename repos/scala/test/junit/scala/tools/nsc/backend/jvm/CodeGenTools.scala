@@ -52,8 +52,8 @@ object CodeGenTools {
   }
 
   private def resetOutput(compiler: Global): Unit = {
-    compiler.settings.outputDirs
-      .setSingleOutput(new VirtualDirectory("(memory)", None))
+    compiler.settings.outputDirs.setSingleOutput(
+      new VirtualDirectory("(memory)", None))
   }
 
   def newCompiler(

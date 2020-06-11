@@ -164,8 +164,9 @@ class Signature(
           ps2.method.getResolveScope)
         val psiSig1 = ps1.method.getSignature(psiSub1)
         val psiSig2 = ps2.method.getSignature(psiSub2)
-        MethodSignatureUtil.METHOD_PARAMETERS_ERASURE_EQUALITY
-          .equals(psiSig1, psiSig2)
+        MethodSignatureUtil.METHOD_PARAMETERS_ERASURE_EQUALITY.equals(
+          psiSig1,
+          psiSig2)
       case _ => false
     }
   }

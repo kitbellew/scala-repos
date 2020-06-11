@@ -89,8 +89,9 @@ class SendSelectionToConsoleAction extends AnAction {
 
       extensions.inWriteAction {
         val range: TextRange = new TextRange(0, document.getTextLength)
-        consoleEditor.getSelectionModel
-          .setSelection(range.getStartOffset, range.getEndOffset)
+        consoleEditor.getSelectionModel.setSelection(
+          range.getStartOffset,
+          range.getEndOffset)
         console.addToHistory(range, console.getConsoleEditor, true)
         controller.addToHistory(text)
 

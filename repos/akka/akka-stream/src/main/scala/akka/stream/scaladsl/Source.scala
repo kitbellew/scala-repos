@@ -502,7 +502,7 @@ object Source {
   def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
       : Source[T, SourceQueueWithComplete[T]] =
     Source.fromGraph(
-      new QueueSource(bufferSize, overflowStrategy)
-        .withAttributes(DefaultAttributes.queueSource))
+      new QueueSource(bufferSize, overflowStrategy).withAttributes(
+        DefaultAttributes.queueSource))
 
 }

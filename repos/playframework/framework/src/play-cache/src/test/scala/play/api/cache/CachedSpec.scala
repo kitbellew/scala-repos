@@ -67,8 +67,8 @@ class CachedSpec extends PlaySpecification {
           .timeToLiveSeconds(60)
           .timeToIdleSeconds(30)
           .diskExpiryThreadIntervalSeconds(0)
-          .persistence(new PersistenceConfiguration()
-            .strategy(PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
+          .persistence(new PersistenceConfiguration().strategy(
+            PersistenceConfiguration.Strategy.LOCALTEMPSWAP)))
       cacheManager.addCache(diskEhcache)
       val diskEhcache2 = cacheManager.getCache("disk")
       assert(diskEhcache2 != null)

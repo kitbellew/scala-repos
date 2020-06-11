@@ -308,8 +308,9 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
               val currentAssignedReplicas =
                 controllerContext.partitionReplicaAssignment(topicAndPartition)
               if (!currentAssignedReplicas.contains(replicaId))
-                controllerContext.partitionReplicaAssignment
-                  .put(topicAndPartition, currentAssignedReplicas :+ replicaId)
+                controllerContext.partitionReplicaAssignment.put(
+                  topicAndPartition,
+                  currentAssignedReplicas :+ replicaId)
               stateChangeLogger.trace(
                 "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
                   .format(
@@ -474,13 +475,15 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
   }
 
   private def registerBrokerChangeListener() = {
-    zkUtils.zkClient
-      .subscribeChildChanges(ZkUtils.BrokerIdsPath, brokerChangeListener)
+    zkUtils.zkClient.subscribeChildChanges(
+      ZkUtils.BrokerIdsPath,
+      brokerChangeListener)
   }
 
   private def deregisterBrokerChangeListener() = {
-    zkUtils.zkClient
-      .unsubscribeChildChanges(ZkUtils.BrokerIdsPath, brokerChangeListener)
+    zkUtils.zkClient.unsubscribeChildChanges(
+      ZkUtils.BrokerIdsPath,
+      brokerChangeListener)
   }
 
   /**

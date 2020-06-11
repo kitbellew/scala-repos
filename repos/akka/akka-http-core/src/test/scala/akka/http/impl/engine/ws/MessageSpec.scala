@@ -642,7 +642,8 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           closeFrame(
             Protocol.CloseCodes.UnexpectedCondition,
             mask = true,
-            msg = "This alien landing came quite unexpected. Communication has been garbled."))
+            msg =
+              "This alien landing came quite unexpected. Communication has been garbled."))
         val error =
           expectError(messageIn).asInstanceOf[PeerClosedConnectionException]
         error.closeCode shouldEqual Protocol.CloseCodes.UnexpectedCondition

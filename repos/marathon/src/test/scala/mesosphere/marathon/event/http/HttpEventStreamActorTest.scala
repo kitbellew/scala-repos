@@ -43,7 +43,8 @@ class HttpEventStreamActorTest
   }
 
   test("Unregister handlers when switching to standby mode") {
-    Given("A handler that wants to connect and we have an active streamActor with one connection")
+    Given(
+      "A handler that wants to connect and we have an active streamActor with one connection")
     val handle = mock[HttpEventStreamHandle]
     call(handle.id).thenReturn("1")
     streamActor ! LocalLeadershipEvent.ElectedAsLeader

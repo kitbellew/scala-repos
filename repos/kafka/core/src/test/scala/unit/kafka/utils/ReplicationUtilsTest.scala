@@ -145,8 +145,10 @@ class ReplicationUtilsTest extends ZooKeeperTestHarness {
       leaderIsrAndControllerEpoch.get)
     assertEquals(
       None,
-      ReplicationUtils
-        .getLeaderIsrAndEpochForPartition(zkUtils, topic, partitionId + 1))
+      ReplicationUtils.getLeaderIsrAndEpochForPartition(
+        zkUtils,
+        topic,
+        partitionId + 1))
   }
 
 }

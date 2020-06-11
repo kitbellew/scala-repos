@@ -76,8 +76,9 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                     else ""
                   val msg =
                     s"${BackendReporting.methodSignature(calleeDeclClass.internalName, callee)}$annotWarn could not be inlined:\n$w"
-                  backendReporting
-                    .inlinerWarning(callsite.callsitePosition, msg)
+                  backendReporting.inlinerWarning(
+                    callsite.callsitePosition,
+                    msg)
                 }
 
               case None =>

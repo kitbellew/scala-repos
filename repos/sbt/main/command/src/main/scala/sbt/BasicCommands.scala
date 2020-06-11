@@ -279,8 +279,8 @@ object BasicCommands {
         val previousSuccess = portAndSuccess >= 0
         readMessage(port, previousSuccess) match {
           case Some(message) =>
-            (message :: (ReadCommand + " " + port) :: s)
-              .copy(onFailure = Some(ReadCommand + " " + (-port)))
+            (message :: (ReadCommand + " " + port) :: s).copy(onFailure =
+              Some(ReadCommand + " " + (-port)))
           case None =>
             System.err.println("Connection closed.")
             s.fail

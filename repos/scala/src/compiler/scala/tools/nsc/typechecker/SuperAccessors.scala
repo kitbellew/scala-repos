@@ -628,8 +628,10 @@ abstract class SuperAccessors
             restrictionError(
               pos,
               unit,
-              "%s accesses protected %s from self type %s."
-                .format(clazz, sym, host.typeOfThis))
+              "%s accesses protected %s from self type %s.".format(
+                clazz,
+                sym,
+                host.typeOfThis))
           true
         }
       def isJavaProtected =

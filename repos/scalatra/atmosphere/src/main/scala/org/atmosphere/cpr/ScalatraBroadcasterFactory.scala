@@ -72,8 +72,8 @@ class ScalatraBroadcasterFactory(
   def destroy() {
     val s = cfg.getInitParameter(ApplicationConfig.SHARED)
     if (s != null && s.equalsIgnoreCase("TRUE")) {
-      logger
-        .warn("Factory shared, will not be destroyed. That can possibly cause memory leaks if" +
+      logger.warn(
+        "Factory shared, will not be destroyed. That can possibly cause memory leaks if" +
           "Broadcaster where created. Make sure you destroy them manually.")
     }
 

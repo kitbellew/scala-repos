@@ -341,7 +341,8 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
         pollSubmissionStatus(submissionId)
       } else {
         // should never happen
-        logError("Application successfully submitted, but submission ID was not provided!")
+        logError(
+          "Application successfully submitted, but submission ID was not provided!")
       }
     } else {
       val failMessage =

@@ -183,8 +183,9 @@ class GroupMetadataManager(
         } catch {
           case t: Throwable =>
             error(
-              "Failed to mark group %s as deleted in %s."
-                .format(group.groupId, appendPartition),
+              "Failed to mark group %s as deleted in %s.".format(
+                group.groupId,
+                appendPartition),
               t)
           // ignore and continue
         }
@@ -258,8 +259,9 @@ class GroupMetadataManager(
 
             Errors.UNKNOWN.code
           } else {
-            error("Appending metadata message for group %s generation %d failed due to unexpected error: %s"
-              .format(group.groupId, generationId, status.errorCode))
+            error(
+              "Appending metadata message for group %s generation %d failed due to unexpected error: %s"
+                .format(group.groupId, generationId, status.errorCode))
 
             status.errorCode
           }

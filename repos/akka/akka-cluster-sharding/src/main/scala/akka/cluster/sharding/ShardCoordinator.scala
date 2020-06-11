@@ -116,8 +116,8 @@ object ShardCoordinator {
         rebalanceInProgress: Set[ShardId]): Future[Set[ShardId]] = {
       import scala.collection.JavaConverters._
       implicit val ec = ExecutionContexts.sameThreadExecutionContext
-      rebalance(currentShardAllocations.asJava, rebalanceInProgress.asJava)
-        .map(_.asScala.toSet)
+      rebalance(currentShardAllocations.asJava, rebalanceInProgress.asJava).map(
+        _.asScala.toSet)
     }
 
     /**
@@ -824,8 +824,10 @@ abstract class ShardCoordinator(
 
   def sendHostShardMsg(shard: ShardId, region: ActorRef): Unit = {
     region ! HostShard(shard)
-    val cancel = context.system.scheduler
-      .scheduleOnce(shardStartTimeout, self, ResendShardHost(shard, region))
+    val cancel = context.system.scheduler.scheduleOnce(
+      shardStartTimeout,
+      self,
+      ResendShardHost(shard, region))
     unAckedHostShards = unAckedHostShards.updated(shard, cancel)
   }
 

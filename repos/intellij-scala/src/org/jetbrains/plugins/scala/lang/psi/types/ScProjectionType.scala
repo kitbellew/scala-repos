@@ -154,8 +154,10 @@ class ScProjectionType private (
 
   override def hashCode: Int = {
     if (hash == -1) {
-      hash = projected
-        .hashCode() + element.hashCode() * 31 + (if (superReference) 239 else 0)
+      hash =
+        projected.hashCode() + element.hashCode() * 31 + (if (superReference)
+                                                            239
+                                                          else 0)
     }
     hash
   }
@@ -276,8 +278,9 @@ class ScProjectionType private (
   }
 
   private def actual: (PsiNamedElement, ScSubstitutor) = {
-    actualImpl(projected, superReference)
-      .getOrElse(element, ScSubstitutor.empty)
+    actualImpl(projected, superReference).getOrElse(
+      element,
+      ScSubstitutor.empty)
   }
 
   def actualElement: PsiNamedElement = actual._1

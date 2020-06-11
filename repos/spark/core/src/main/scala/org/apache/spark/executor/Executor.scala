@@ -464,7 +464,8 @@ private[spark] class Executor(
           _userClassPathFirst)
       } catch {
         case _: ClassNotFoundException =>
-          logError("Could not find org.apache.spark.repl.ExecutorClassLoader on classpath!")
+          logError(
+            "Could not find org.apache.spark.repl.ExecutorClassLoader on classpath!")
           System.exit(1)
           null
       }

@@ -11,7 +11,8 @@ import mesosphere.mesos.protos.Resource
 import org.scalatest.Matchers
 
 class ResourceMatcherTest extends MarathonSpec with Matchers {
-  test("match with app.disk == 0, even if no disk resource is contained in the offer") {
+  test(
+    "match with app.disk == 0, even if no disk resource is contained in the offer") {
     import scala.collection.JavaConverters._
     val offerBuilder = MarathonTestHelper.makeBasicOffer()
     val diskResourceIndex =
@@ -137,10 +138,14 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
     res.scalarMatches should have size (3)
     res.scalarMatch(Resource.CPUS).get.consumed.toSet should be(
       Set(
-        ScalarMatch
-          .Consumption(1.0, "marathon", reservation = Some(cpuReservation)),
-        ScalarMatch
-          .Consumption(1.0, "marathon", reservation = Some(cpuReservation2))
+        ScalarMatch.Consumption(
+          1.0,
+          "marathon",
+          reservation = Some(cpuReservation)),
+        ScalarMatch.Consumption(
+          1.0,
+          "marathon",
+          reservation = Some(cpuReservation2))
       )
     )
 

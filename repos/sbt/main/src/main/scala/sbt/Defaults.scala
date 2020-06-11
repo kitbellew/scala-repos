@@ -277,8 +277,9 @@ object Defaults extends BuildCommon {
   def projectCore: Seq[Setting[_]] =
     Seq(
       name := thisProject.value.id,
-      logManager := LogManager
-        .defaults(extraLoggers.value, StandardMain.console),
+      logManager := LogManager.defaults(
+        extraLoggers.value,
+        StandardMain.console),
       onLoadMessage <<= onLoadMessage or (name, thisProjectRef)(
         "Set current project to " + _ + " (in build " + _.build + ")")
     )
@@ -313,8 +314,9 @@ object Defaults extends BuildCommon {
     managedSourceDirectories := Seq(sourceManaged.value),
     managedSources <<= generate(sourceGenerators),
     sourceGenerators :== Nil,
-    sourceDirectories <<= Classpaths
-      .concatSettings(unmanagedSourceDirectories, managedSourceDirectories),
+    sourceDirectories <<= Classpaths.concatSettings(
+      unmanagedSourceDirectories,
+      managedSourceDirectories),
     sources <<= Classpaths.concat(unmanagedSources, managedSources)
   )
   lazy val resourceConfigPaths = Seq(
@@ -322,8 +324,9 @@ object Defaults extends BuildCommon {
     resourceManaged <<= configSrcSub(resourceManaged),
     unmanagedResourceDirectories := Seq(resourceDirectory.value),
     managedResourceDirectories := Seq(resourceManaged.value),
-    resourceDirectories <<= Classpaths
-      .concatSettings(unmanagedResourceDirectories, managedResourceDirectories),
+    resourceDirectories <<= Classpaths.concatSettings(
+      unmanagedResourceDirectories,
+      managedResourceDirectories),
     unmanagedResources <<= collectFiles(
       unmanagedResourceDirectories,
       includeFilter in unmanagedResources,
@@ -373,8 +376,9 @@ object Defaults extends BuildCommon {
         crossPaths.value),
       clean := {
         val _ = clean.value
-        IvyActions
-          .cleanCachedResolutionCache(ivyModule.value, streams.value.log)
+        IvyActions.cleanCachedResolutionCache(
+          ivyModule.value,
+          streams.value.log)
       },
       scalaCompilerBridgeSource := Compiler.defaultCompilerBridgeSource(
         scalaVersion.value)
@@ -1106,8 +1110,8 @@ object Defaults extends BuildCommon {
       logger: Logger): Option[String] = {
     classes match {
       case multiple if multiple.size > 1 =>
-        logger
-          .warn("Multiple main classes detected.  Run 'show discoveredMainClasses' to see the list")
+        logger.warn(
+          "Multiple main classes detected.  Run 'show discoveredMainClasses' to see the list")
       case _ =>
     }
     pickMainClass(classes)
@@ -1680,7 +1684,8 @@ object Classpaths {
       Compile,
       Configurations.Default))
     def notFound =
-      sys.error("Configuration to use for managed classpath must be explicitly defined when default configurations are not present.")
+      sys.error(
+        "Configuration to use for managed classpath must be explicitly defined when default configurations are not present.")
     search find { defined contains _.name } getOrElse notFound
   }
 
@@ -2394,7 +2399,8 @@ object Classpaths {
       Tracked.lastOutput[In, UpdateReport](outCacheFile) {
         case (_, Some(out)) => out
         case _ =>
-          sys.error("Skipping update requested, but update has not previously run successfully.")
+          sys.error(
+            "Skipping update requested, but update has not previously run successfully.")
       }
     def doWork: In => UpdateReport =
       Tracked.inputChanged(cacheFile / "inputs") {
@@ -2416,7 +2422,8 @@ object Classpaths {
               r
             case e: OutOfMemoryError =>
               val r = work(in)
-              log.warn("Update task has failed to cache the report due to OutOfMemoryError.")
+              log.warn(
+                "Update task has failed to cache the report due to OutOfMemoryError.")
               log.trace(e)
               r
           }
@@ -2846,8 +2853,9 @@ object Classpaths {
       base: File,
       filter: FileFilter,
       excl: FileFilter): Classpath =
-    (base * (filter -- excl) +++ (base / config.name)
-      .descendantsExcept(filter, excl)).classpath
+    (base * (filter -- excl) +++ (base / config.name).descendantsExcept(
+      filter,
+      excl)).classpath
 
   @deprecated(
     "Specify the classpath that includes internal dependencies",

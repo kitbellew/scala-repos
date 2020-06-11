@@ -475,8 +475,10 @@ class CheckpointSuite
 
     testRDD(
       rdd => {
-        CheckpointSuite
-          .cogroup(longLineageRDD1, rdd.map(x => (x % 2, 1)), partitioner)
+        CheckpointSuite.cogroup(
+          longLineageRDD1,
+          rdd.map(x => (x % 2, 1)),
+          partitioner)
       },
       reliableCheckpoint,
       seqCollectFunc)

@@ -105,7 +105,8 @@ object CheckBoxTreeCell {
     * Added to satisfy Spec tests.
     */
   @deprecated(
-    message = "Use forTreeView[T](TreeItem[T] => ObservableValue[Boolean, java.lang.Boolean]])",
+    message =
+      "Use forTreeView[T](TreeItem[T] => ObservableValue[Boolean, java.lang.Boolean]])",
     since = "1.0")
   def forTreeView[T](
       getSelectedProperty: jfxu.Callback[
@@ -134,7 +135,8 @@ object CheckBoxTreeCell {
     * Added to satisfy Spec tests.
     */
   @deprecated(
-    message = "Use forTreeView[T](TreeItem[T] => ObservableValue[Boolean, java.lang.Boolean], StringConverter[TreeItem[T]])",
+    message =
+      "Use forTreeView[T](TreeItem[T] => ObservableValue[Boolean, java.lang.Boolean], StringConverter[TreeItem[T]])",
     since = "1.0")
   def forTreeView[T](
       getSelectedProperty: jfxu.Callback[

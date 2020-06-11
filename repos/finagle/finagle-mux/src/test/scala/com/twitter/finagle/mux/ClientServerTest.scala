@@ -179,8 +179,8 @@ private[mux] class ClientServerTest(canDispatch: Boolean)
 
     val req1 = Request(Path.empty, buf(1))
     val p1 = new Promise[Response]
-    when(service(req1))
-      .thenReturn(Future.exception(Failure.rejected("come back tomorrow")))
+    when(service(req1)).thenReturn(
+      Future.exception(Failure.rejected("come back tomorrow")))
 
     client(req1).poll match {
       case Some(Throw(f: Failure)) => assert(f.isFlagged(Failure.Restartable))

@@ -307,8 +307,9 @@ private[kinesis] class KinesisReceiver[T](
       arrayBuffer: mutable.ArrayBuffer[T]): Unit = {
     val rangesToReportOption = Option(blockIdToSeqNumRanges.remove(blockId))
     if (rangesToReportOption.isEmpty) {
-      stop("Error while storing block into Spark, could not find sequence number ranges " +
-        s"for block $blockId")
+      stop(
+        "Error while storing block into Spark, could not find sequence number ranges " +
+          s"for block $blockId")
       return
     }
 

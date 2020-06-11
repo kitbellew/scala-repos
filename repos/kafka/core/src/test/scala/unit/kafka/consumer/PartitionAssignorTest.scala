@@ -46,8 +46,9 @@ class PartitionAssignorTest extends Logging {
           .map(topic => {
             (
               "topic-" + topic,
-              PartitionAssignorTest.MinPartitionCount.max(TestUtils.random
-                .nextInt(PartitionAssignorTest.MaxPartitionCount)))
+              PartitionAssignorTest.MinPartitionCount.max(
+                TestUtils.random.nextInt(
+                  PartitionAssignorTest.MaxPartitionCount)))
           })
           .toSeq: _*)
 
@@ -86,8 +87,9 @@ class PartitionAssignorTest extends Logging {
           .map(topic => {
             (
               "topic-" + topic,
-              PartitionAssignorTest.MinPartitionCount.max(TestUtils.random
-                .nextInt(PartitionAssignorTest.MaxPartitionCount)))
+              PartitionAssignorTest.MinPartitionCount.max(
+                TestUtils.random.nextInt(
+                  PartitionAssignorTest.MaxPartitionCount)))
           })
           .toSeq: _*)
 
@@ -243,8 +245,9 @@ private object PartitionAssignorTest extends Logging {
         case (topicPartition, owner) =>
           val previousOwnerOpt = globalAssignment.put(topicPartition, owner)
           assertTrue(
-            "Scenario %s: %s is assigned to two owners."
-              .format(scenario, topicPartition),
+            "Scenario %s: %s is assigned to two owners.".format(
+              scenario,
+              topicPartition),
             previousOwnerOpt.isEmpty)
       }
     })

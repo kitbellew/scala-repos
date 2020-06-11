@@ -603,7 +603,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     assert(FakeOutputCommitter.ran, "OutputCommitter was never called")
   }
 
-  test("failure callbacks should be called before calling writer.close() in saveNewAPIHadoopFile") {
+  test(
+    "failure callbacks should be called before calling writer.close() in saveNewAPIHadoopFile") {
     val pairs = sc.parallelize(Array((new Integer(1), new Integer(2))), 1)
 
     FakeWriterWithCallback.calledBy = ""
@@ -621,7 +622,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       FakeWriterWithCallback.exception.getMessage contains "failed to write")
   }
 
-  test("failure callbacks should be called before calling writer.close() in saveAsHadoopFile") {
+  test(
+    "failure callbacks should be called before calling writer.close() in saveAsHadoopFile") {
     val pairs = sc.parallelize(Array((new Integer(1), new Integer(2))), 1)
     val conf = new JobConf()
 

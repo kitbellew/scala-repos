@@ -397,8 +397,9 @@ private[spark] class SecurityManager(sparkConf: SparkConf)
         rnd.nextBytes(secret)
 
         val cookie = HashCodes.fromBytes(secret).toString()
-        SparkHadoopUtil.get
-          .addSecretKeyToUserCredentials(SECRET_LOOKUP_KEY, cookie)
+        SparkHadoopUtil.get.addSecretKeyToUserCredentials(
+          SECRET_LOOKUP_KEY,
+          cookie)
         cookie
       } else {
         new Text(secretKey).toString

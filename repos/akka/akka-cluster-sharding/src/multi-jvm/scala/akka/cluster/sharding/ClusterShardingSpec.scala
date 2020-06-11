@@ -675,8 +675,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
       expectMsg(1)
       //#counter-usage
 
-      ClusterSharding(system)
-        .shardRegion("AnotherCounter") ! EntityEnvelope(123, Decrement)
+      ClusterSharding(system).shardRegion("AnotherCounter") ! EntityEnvelope(
+        123,
+        Decrement)
       ClusterSharding(system).shardRegion("AnotherCounter") ! Get(123)
       expectMsg(-1)
     }
@@ -686,8 +687,9 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
     // sixth is a frontend node, i.e. proxy only
     runOn(sixth) {
       for (n ← 1000 to 1010) {
-        ClusterSharding(system)
-          .shardRegion("Counter") ! EntityEnvelope(n, Increment)
+        ClusterSharding(system).shardRegion("Counter") ! EntityEnvelope(
+          n,
+          Increment)
         ClusterSharding(system).shardRegion("Counter") ! Get(n)
         expectMsg(1)
         lastSender.path.address should not be (Cluster(system).selfAddress)

@@ -303,8 +303,9 @@ object MapTest extends SpecLite {
         _ + _,
         7,
         "xxx") must_=== (fromList(List(3 -> "b", 5 -> "a", 7 -> "xxx")))
-      empty[Int, String]
-        .insertWith(_ + _, 5, "xxx") must_=== (singleton(5, "xxx"))
+      empty[Int, String].insertWith(_ + _, 5, "xxx") must_=== (singleton(
+        5,
+        "xxx"))
     }
 
     "insertWithKey" in {

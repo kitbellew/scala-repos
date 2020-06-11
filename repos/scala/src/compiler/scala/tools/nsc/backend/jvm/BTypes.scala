@@ -200,8 +200,8 @@ abstract class BTypes {
         Some(classBTypeFromParsedClassfile(superName))
     }
 
-    val interfaces: List[ClassBType] = classNode.interfaces.asScala
-      .map(classBTypeFromParsedClassfile)(collection.breakOut)
+    val interfaces: List[ClassBType] = classNode.interfaces.asScala.map(
+      classBTypeFromParsedClassfile)(collection.breakOut)
 
     val flags = classNode.access
 

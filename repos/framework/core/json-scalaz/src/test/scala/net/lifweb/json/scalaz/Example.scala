@@ -42,8 +42,8 @@ object Example extends Specification {
           Address.applyJSON(field("street"), field("zip"))(json)
       }
 
-    val p =
-      parse(""" {"name":"joe","age":34,"address":{"street": "Manhattan 2", "zip": "00223" }} """)
+    val p = parse(
+      """ {"name":"joe","age":34,"address":{"street": "Manhattan 2", "zip": "00223" }} """)
     val person =
       Person.applyJSON(field("name"), field("age"), field("address"))(p)
     person mustEqual Success(Person("joe", 34, Address("Manhattan 2", "00223")))

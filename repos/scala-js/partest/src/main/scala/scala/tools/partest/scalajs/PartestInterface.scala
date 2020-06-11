@@ -121,7 +121,8 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
       catch {
         case ex: ClassNotFoundException =>
           loggers foreach { l =>
-            l.error("Please make sure partest is running in a forked VM by including the following line in build.sbt:\nfork in Test := true")
+            l.error(
+              "Please make sure partest is running in a forked VM by including the following line in build.sbt:\nfork in Test := true")
           }
           throw ex
       }

@@ -164,7 +164,8 @@ abstract class Parser(
       val phase1 = new EstablishingPrincipalErrorIndex()
       phase = phase1
       if (runRule())
-        sys.error("Parsing unexpectedly succeeded while trying to establish the principal error location")
+        sys.error(
+          "Parsing unexpectedly succeeded while trying to establish the principal error location")
       phase1.maxCursor
     }
 
@@ -172,7 +173,8 @@ abstract class Parser(
       val phase2 = new EstablishingReportedErrorIndex(principalErrorIndex)
       phase = phase2
       if (runRule())
-        sys.error("Parsing unexpectedly succeeded while trying to establish the reported error location")
+        sys.error(
+          "Parsing unexpectedly succeeded while trying to establish the reported error location")
       phase2
     }
 

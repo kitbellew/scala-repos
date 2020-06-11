@@ -494,8 +494,9 @@ trait TypeDiagnostics {
     def permanentlyHiddenWarning(pos: Position, hidden: Name, defn: Symbol) =
       context.warning(
         pos,
-        "imported `%s' is permanently hidden by definition of %s"
-          .format(hidden, defn.fullLocationString))
+        "imported `%s' is permanently hidden by definition of %s".format(
+          hidden,
+          defn.fullLocationString))
 
     object checkUnused {
       val ignoreNames: Set[TermName] = Set(

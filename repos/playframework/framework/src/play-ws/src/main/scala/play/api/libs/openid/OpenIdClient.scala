@@ -313,8 +313,8 @@ class WsDiscovery @Inject() (ws: WSClient) extends Discovery {
     ws.url(discoveryUrl)
       .get()
       .map(response => {
-        val maybeOpenIdServer = new XrdsResolver()
-          .resolve(response) orElse new HtmlResolver().resolve(response)
+        val maybeOpenIdServer = new XrdsResolver().resolve(
+          response) orElse new HtmlResolver().resolve(response)
         maybeOpenIdServer.getOrElse(throw Errors.NETWORK_ERROR)
       })
   }

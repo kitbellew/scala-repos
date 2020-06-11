@@ -101,7 +101,8 @@ class HiveResolutionSuite extends HiveComparisonTest {
       .toDF()
       .registerTempTable("caseSensitivityTest")
 
-    sql("SELECT * FROM casesensitivitytest a JOIN casesensitivitytest b ON a.a = b.a")
+    sql(
+      "SELECT * FROM casesensitivitytest a JOIN casesensitivitytest b ON a.a = b.a")
       .collect()
   }
 

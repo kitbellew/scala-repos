@@ -538,8 +538,9 @@ private[spark] class DAGScheduler(
           case (stageId, stage) =>
             val jobSet = stage.jobIds
             if (!jobSet.contains(job.jobId)) {
-              logError("Job %d not registered for stage %d even though that stage was registered for the job"
-                .format(job.jobId, stageId))
+              logError(
+                "Job %d not registered for stage %d even though that stage was registered for the job"
+                  .format(job.jobId, stageId))
             } else {
               def removeStage(stageId: Int) {
                 // data structures based on Stage
@@ -1670,8 +1671,9 @@ private[spark] class DAGScheduler(
       val jobsForStage: Option[HashSet[Int]] =
         stageIdToStage.get(stageId).map(_.jobIds)
       if (jobsForStage.isEmpty || !jobsForStage.get.contains(job.jobId)) {
-        logError("Job %d not registered for stage %d even though that stage was registered for the job"
-          .format(job.jobId, stageId))
+        logError(
+          "Job %d not registered for stage %d even though that stage was registered for the job"
+            .format(job.jobId, stageId))
       } else if (jobsForStage.get.size == 1) {
         if (!stageIdToStage.contains(stageId)) {
           logError(s"Missing Stage for stage with id $stageId")

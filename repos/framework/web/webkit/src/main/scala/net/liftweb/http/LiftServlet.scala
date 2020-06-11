@@ -627,8 +627,9 @@ class LiftServlet extends Loggable {
             java.lang.Long.parseLong(
               ajaxPathPart.substring(separator + 1, ajaxPathPart.length - 1),
               36),
-            Integer
-              .parseInt(ajaxPathPart.substring(ajaxPathPart.length - 1), 36)
+            Integer.parseInt(
+              ajaxPathPart.substring(ajaxPathPart.length - 1),
+              36)
           )
         )
       else

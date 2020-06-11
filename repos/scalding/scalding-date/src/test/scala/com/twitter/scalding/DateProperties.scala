@@ -130,7 +130,8 @@ object DateProperties extends Properties("Date Properties") {
     (glob.flatMap { c => if (c == '*') ".*" else c.toString }).r
 
   def matches(l: List[String], arg: String): Int =
-    l.map { toRegex _ }
+    l
+      .map { toRegex _ }
       .map { _.findFirstMatchIn(arg).map { _ => 1 }.getOrElse(0) }
       .sum
 

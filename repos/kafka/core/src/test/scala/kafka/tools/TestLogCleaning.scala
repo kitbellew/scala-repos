@@ -98,7 +98,9 @@ object TestLogCleaning {
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(0)
     val dumpOpt = parser
-      .accepts("dump", "Dump the message contents of a topic partition that contains test data from this test to standard out.")
+      .accepts(
+        "dump",
+        "Dump the message contents of a topic partition that contains test data from this test to standard out.")
       .withRequiredArg
       .describedAs("directory")
       .ofType(classOf[String])

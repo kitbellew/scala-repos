@@ -81,8 +81,8 @@ class ScalaGenerateToStringWizard(
       settings.isGenerateToStringWithFieldNames)
   }
 
-  toStringPanel.getTable.getModel
-    .addTableModelListener(new ToStringTableModelListener)
+  toStringPanel.getTable.getModel.addTableModelListener(
+    new ToStringTableModelListener)
   addStep(new ToStringStep(toStringPanel))
   init()
   updateButtons()

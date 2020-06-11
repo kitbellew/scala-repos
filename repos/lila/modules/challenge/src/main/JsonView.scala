@@ -46,8 +46,9 @@ final class JsonView(getLightUser: String => Option[lila.common.LightUser]) {
         case TimeControl.Unlimited => Json.obj("type" -> "unlimited")
       }),
       "color" -> c.colorChoice.toString.toLowerCase,
-      "perf" -> Json
-        .obj("icon" -> iconChar(c).toString, "name" -> c.perfType.name)
+      "perf" -> Json.obj(
+        "icon" -> iconChar(c).toString,
+        "name" -> c.perfType.name)
     )
 
   private def iconChar(c: Challenge) =

@@ -303,8 +303,8 @@ object DBIOAction {
         def run(context: BasicBackend#Context) = {
           g.foreach(
             _.asInstanceOf[
-              SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]]
-              .run(context))
+              SynchronousDatabaseAction[Any, NoStream, BasicBackend, E]].run(
+              context))
         }
         override def nonFusedEquivalentAction =
           AndThenAction[Unit, NoStream, E](g)

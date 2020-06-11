@@ -35,8 +35,10 @@ sealed trait Parsed[+T] {
 
 case class ParseError(failure: Parsed.Failure)
     extends Exception(
-      ParseError
-        .msg0(failure.extra.input, failure.extra.traced.expected, failure.index)
+      ParseError.msg0(
+        failure.extra.input,
+        failure.extra.traced.expected,
+        failure.index)
     )
 
 object ParseError {

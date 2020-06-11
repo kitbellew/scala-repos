@@ -132,8 +132,10 @@ object CachesUtil {
                       } finally set.foreach(_.setProbablyRecursive(false))
                     case t @ ProbablyRecursionException(ee, data, k, set)
                         if k == key =>
-                      val fun = PsiTreeUtil
-                        .getContextOfType(e, true, classOf[ScFunction])
+                      val fun = PsiTreeUtil.getContextOfType(
+                        e,
+                        true,
+                        classOf[ScFunction])
                       if (fun == null || fun.isProbablyRecursive) throw t
                       else {
                         fun.setProbablyRecursive(true)

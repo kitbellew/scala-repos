@@ -140,8 +140,10 @@ class ConsumerFetcherManager(
       fetcherId: Int,
       sourceBroker: BrokerEndPoint): AbstractFetcherThread = {
     new ConsumerFetcherThread(
-      "ConsumerFetcherThread-%s-%d-%d"
-        .format(consumerIdString, fetcherId, sourceBroker.id),
+      "ConsumerFetcherThread-%s-%d-%d".format(
+        consumerIdString,
+        fetcherId,
+        sourceBroker.id),
       config,
       sourceBroker,
       partitionMap,

@@ -64,7 +64,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       """.stripMargin).head() === Row(1, 2, 3, 4, 5))
   }
 
-  test("SPARK-4785 When called with arguments referring column fields, PMOD throws NPE") {
+  test(
+    "SPARK-4785 When called with arguments referring column fields, PMOD throws NPE") {
     checkAnswer(
       sql("SELECT PMOD(CAST(key as INT), 10) FROM src LIMIT 1"),
       Row(8)
@@ -305,7 +306,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       Seq(Row("hello world"), Row("hello goodbye")))
 
     checkAnswer(
-      sql("SELECT testStringStringUDF(\"\", testStringStringUDF(\"hello\", s)) FROM stringTable"),
+      sql(
+        "SELECT testStringStringUDF(\"\", testStringStringUDF(\"hello\", s)) FROM stringTable"),
       Seq(Row(" hello world"), Row(" hello goodbye")))
 
     sql("DROP TEMPORARY FUNCTION IF EXISTS testStringStringUDF")
@@ -333,7 +335,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
     hiveContext.reset()
   }
 
-  test("Hive UDFs with insufficient number of input arguments should trigger an analysis error") {
+  test(
+    "Hive UDFs with insufficient number of input arguments should trigger an analysis error") {
     Seq((1, 2)).toDF("a", "b").registerTempTable("testUDF")
 
     {

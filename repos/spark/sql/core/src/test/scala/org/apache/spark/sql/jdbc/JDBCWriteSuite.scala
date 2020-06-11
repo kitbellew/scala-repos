@@ -63,15 +63,13 @@ class JDBCWriteSuite extends SharedSQLContext with BeforeAndAfter {
       .executeUpdate()
     conn1.commit()
 
-    sql(
-      s"""
+    sql(s"""
         |CREATE TEMPORARY TABLE PEOPLE
         |USING org.apache.spark.sql.jdbc
         |OPTIONS (url '$url1', dbtable 'TEST.PEOPLE', user 'testUser', password 'testPass')
       """.stripMargin.replaceAll("\n", " "))
 
-    sql(
-      s"""
+    sql(s"""
         |CREATE TEMPORARY TABLE PEOPLE1
         |USING org.apache.spark.sql.jdbc
         |OPTIONS (url '$url1', dbtable 'TEST.PEOPLE1', user 'testUser', password 'testPass')

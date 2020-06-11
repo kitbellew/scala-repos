@@ -324,8 +324,8 @@ trait ScTypePsiTypeBridge {
           noPrimitives,
           skolemToWildcard)
       case ScDesignatorType(valType: ScClass) if isValueType(valType) =>
-        valType.parameters.head
-          .getRealParameterType(TypingContext.empty) match {
+        valType.parameters.head.getRealParameterType(
+          TypingContext.empty) match {
           case Success(tp, _)
               if !(noPrimitives && ScalaEvaluatorBuilderUtil.isPrimitiveScType(
                 tp)) =>

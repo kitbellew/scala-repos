@@ -42,11 +42,11 @@ class ForwardToLeaderIntegrationTest
     assert(result.originalResponse.status.intValue == 200)
     assert(result.entityString == "pong\n")
     assert(
-      !result.originalResponse.headers
-        .exists(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA))
+      !result.originalResponse.headers.exists(
+        _.name == JavaUrlConnectionRequestForwarder.HEADER_VIA))
     assert(
-      result.originalResponse.headers
-        .count(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER) == 1)
+      result.originalResponse.headers.count(
+        _.name == LeaderProxyFilter.HEADER_MARATHON_LEADER) == 1)
     assert(
       result.originalResponse.headers
         .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER)
@@ -68,8 +68,8 @@ class ForwardToLeaderIntegrationTest
     assert(result.originalResponse.status.intValue == 200)
     assert(result.entityString == "pong\n")
     assert(
-      result.originalResponse.headers
-        .count(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA) == 1)
+      result.originalResponse.headers.count(
+        _.name == JavaUrlConnectionRequestForwarder.HEADER_VIA) == 1)
     assert(
       result.originalResponse.headers
         .find(_.name == JavaUrlConnectionRequestForwarder.HEADER_VIA)
@@ -77,8 +77,8 @@ class ForwardToLeaderIntegrationTest
         .value
         == s"1.1 localhost:${ports(1)}")
     assert(
-      result.originalResponse.headers
-        .count(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER) == 1)
+      result.originalResponse.headers.count(
+        _.name == LeaderProxyFilter.HEADER_MARATHON_LEADER) == 1)
     assert(
       result.originalResponse.headers
         .find(_.name == LeaderProxyFilter.HEADER_MARATHON_LEADER)

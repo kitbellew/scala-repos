@@ -212,7 +212,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys and aggregate sum") {
+  test(
+    "Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys and aggregate sum") {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2 aggregate sum\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
@@ -225,7 +226,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys, weights, and aggregate min") {
+  test(
+    "Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys, weights, and aggregate min") {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2 weights 2 3 aggregate min\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
@@ -238,7 +240,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys, weights, and aggregate max") {
+  test(
+    "Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys, weights, and aggregate max") {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2 aggregate max weights 2 3\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
@@ -318,7 +321,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     assert(key.toSeq == bytesBack.toSeq)
   }
 
-  test("Ensure that, after encoding ZRANGE, the bytes we threw in are the bytes we get back") {
+  test(
+    "Ensure that, after encoding ZRANGE, the bytes we threw in are the bytes we get back") {
     val goodKey = Array[Byte](58, 49, 127)
     val nonAsciiKey = Array[Byte](58, 49, -128)
     testZRangeBytes(goodKey)
@@ -396,7 +400,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE from 1 (exclusive) to 2") {
+  test(
+    "Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE from 1 (exclusive) to 2") {
     List("ZRANGEBYSCORE", "ZREVRANGEBYSCORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s myzset (1 2\r\n")) {
         verifyRangeByScore(
@@ -411,7 +416,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE from 1 (excl.) to 2 (excl.)") {
+  test(
+    "Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE from 1 (excl.) to 2 (excl.)") {
     List("ZRANGEBYSCORE", "ZREVRANGEBYSCORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s myzset (1 (2\r\n")) {
         verifyRangeByScore(

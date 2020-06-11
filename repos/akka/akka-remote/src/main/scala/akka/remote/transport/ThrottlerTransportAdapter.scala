@@ -567,8 +567,10 @@ private[transport] class ThrottledAssociation(
           .tryConsumeTokens(System.nanoTime(), payload.length)
           ._1
         if (throttledMessages.nonEmpty)
-          scheduleDequeue(inboundThrottleMode
-            .timeToAvailable(System.nanoTime(), throttledMessages.head.length))
+          scheduleDequeue(
+            inboundThrottleMode.timeToAvailable(
+              System.nanoTime(),
+              throttledMessages.head.length))
       }
       stay()
 

@@ -24,8 +24,8 @@ object RemoteDeliveryMultiJvmSpec extends MultiNodeConfig {
   val third = role("third")
 
   commonConfig(
-    debugConfig(on = false)
-      .withFallback(ConfigFactory.parseString("akka.loglevel=INFO")))
+    debugConfig(on = false).withFallback(
+      ConfigFactory.parseString("akka.loglevel=INFO")))
 
   final case class Letter(n: Int, route: List[ActorRef])
 

@@ -739,9 +739,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             mname,
             methodType.descriptor,
             app.pos)
-          generatedType = boxResultType(
-            fun.symbol
-          ) // was typeToBType(fun.symbol.tpe.resultType)
+          generatedType =
+            boxResultType(
+              fun.symbol
+            ) // was typeToBType(fun.symbol.tpe.resultType)
 
         case Apply(fun @ _, List(expr))
             if currentRun.runDefinitions.isUnbox(fun.symbol) =>
@@ -1563,8 +1564,8 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           lambdaTarget.name.toString,
           methodBTypeFromSymbol(lambdaTarget).descriptor)
       val receiver = if (isStaticMethod) Nil else lambdaTarget.owner :: Nil
-      val (capturedParams, lambdaParams) = lambdaTarget.paramss.head
-        .splitAt(lambdaTarget.paramss.head.length - arity)
+      val (capturedParams, lambdaParams) = lambdaTarget.paramss.head.splitAt(
+        lambdaTarget.paramss.head.length - arity)
       // Requires https://github.com/scala/scala-java8-compat on the runtime classpath
       val invokedType = asm.Type.getMethodDescriptor(
         asmType(functionalInterface),

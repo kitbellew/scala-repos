@@ -100,8 +100,8 @@ object PathData {
             case ("nihdb", FileContent.XQuirrelData) => success(NIHDB)
             case (unknownType, mimeType) =>
               failure(
-                Extractor.Error
-                  .invalid("Data type %s (mimetype %s) is not a recognized PathData datatype"
+                Extractor.Error.invalid(
+                  "Data type %s (mimetype %s) is not a recognized PathData datatype"
                     .format(unknownType, mimeType.toString)))
           }
         }

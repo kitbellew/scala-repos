@@ -40,8 +40,9 @@ abstract class RehighlightingPerformanceTypingTestBase
 
       override def tearDown(): Unit = ()
     }
-    myCodeInsightTestFixture = IdeaTestFixtureFactory.getFixtureFactory
-      .createCodeInsightFixture(fakeFixture)
+    myCodeInsightTestFixture =
+      IdeaTestFixtureFactory.getFixtureFactory.createCodeInsightFixture(
+        fakeFixture)
     myCodeInsightTestFixture.setUp()
 
     libLoader = ScalaLibraryLoader.withMockJdk(

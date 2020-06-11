@@ -80,9 +80,8 @@ object ValidatePullRequest extends AutoPlugin {
   // asking github comments if this PR should be PLS BUILD ALL
   val githubEnforcedBuildAll = taskKey[Option[BuildMode]](
     "Checks via GitHub API if comments included the PLS BUILD ALL keyword")
-  val buildAllKeyword =
-    taskKey[Regex](
-      "Magic phrase to be used to trigger building of the entire project instead of analysing dependencies")
+  val buildAllKeyword = taskKey[Regex](
+    "Magic phrase to be used to trigger building of the entire project instead of analysing dependencies")
 
   // determining touched dirs and projects
   val changedDirectories =
@@ -217,12 +216,18 @@ object ValidatePullRequest extends AutoPlugin {
 
   override lazy val projectSettings =
     inConfig(ValidatePR)(Defaults.testTasks) ++ Seq(
-      testOptions in ValidatePR += Tests
-        .Argument(TestFrameworks.ScalaTest, "-l", "performance"),
-      testOptions in ValidatePR += Tests
-        .Argument(TestFrameworks.ScalaTest, "-l", "long-running"),
-      testOptions in ValidatePR += Tests
-        .Argument(TestFrameworks.ScalaTest, "-l", "timing"),
+      testOptions in ValidatePR += Tests.Argument(
+        TestFrameworks.ScalaTest,
+        "-l",
+        "performance"),
+      testOptions in ValidatePR += Tests.Argument(
+        TestFrameworks.ScalaTest,
+        "-l",
+        "long-running"),
+      testOptions in ValidatePR += Tests.Argument(
+        TestFrameworks.ScalaTest,
+        "-l",
+        "timing"),
       projectBuildMode in ValidatePR := {
         val log = streams.value.log
         log.debug(

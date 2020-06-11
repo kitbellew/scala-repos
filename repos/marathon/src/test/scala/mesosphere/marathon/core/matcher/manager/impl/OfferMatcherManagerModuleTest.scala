@@ -148,7 +148,8 @@ class OfferMatcherManagerModuleTest
       ))
   }
 
-  test("ports of an offer should be displayed in a short notation if they exceed a certain quantity") {
+  test(
+    "ports of an offer should be displayed in a short notation if they exceed a certain quantity") {
     //scalastyle:off magic.number
     val offer: Offer =
       MarathonTestHelper.makeBasicOfferWithManyPortRanges(100).build()

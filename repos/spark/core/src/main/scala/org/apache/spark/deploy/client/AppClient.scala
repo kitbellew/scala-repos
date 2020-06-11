@@ -333,8 +333,8 @@ private[spark] class AppClient(
     */
   def requestTotalExecutors(requestedTotal: Int): Boolean = {
     if (endpoint.get != null && appId.get != null) {
-      endpoint.get
-        .askWithRetry[Boolean](RequestExecutors(appId.get, requestedTotal))
+      endpoint.get.askWithRetry[Boolean](
+        RequestExecutors(appId.get, requestedTotal))
     } else {
       logWarning(
         "Attempted to request executors before driver fully initialized.")

@@ -98,8 +98,8 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     AccountPlan.Free)
 
   def dropStreamToFuture =
-    implicitly[Hoist[StreamT]]
-      .hoist[TestFuture, Future](new (TestFuture ~> Future) {
+    implicitly[Hoist[StreamT]].hoist[TestFuture, Future](
+      new (TestFuture ~> Future) {
         def apply[A](fa: TestFuture[A]): Future[A] = fa.value
       })
 

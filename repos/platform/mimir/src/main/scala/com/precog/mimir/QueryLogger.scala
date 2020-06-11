@@ -202,8 +202,12 @@ trait TimingQueryLogger[M[+_], P] extends QueryLogger[M, P] {
       case (pos, stats) =>
         log(
           pos,
-          """{"count":%d,"sum":%d,"sumSq":%d,"min":%d,"max":%d}"""
-            .format(stats.count, stats.sum, stats.sumSq, stats.min, stats.max))
+          """{"count":%d,"sum":%d,"sumSq":%d,"min":%d,"max":%d}""".format(
+            stats.count,
+            stats.sum,
+            stats.sumSq,
+            stats.min,
+            stats.max))
     }
 
     logging reduceOption { _ >> _ } getOrElse (M point ())

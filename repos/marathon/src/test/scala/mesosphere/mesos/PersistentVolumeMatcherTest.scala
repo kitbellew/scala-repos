@@ -18,7 +18,8 @@ class PersistentVolumeMatcherTest
   test("Missing volumes result in NO match") {
     val f = new Fixture
 
-    Given("a resident app with persistent volumes and an offer without persistent volumes")
+    Given(
+      "a resident app with persistent volumes and an offer without persistent volumes")
     val app = f.appWithPersistentVolume()
     val offer = MarathonTestHelper.makeBasicOffer().build()
     val tasks = Seq(
@@ -38,7 +39,8 @@ class PersistentVolumeMatcherTest
   test("Correct available volumes result in a match") {
     val f = new Fixture
 
-    Given("a resident app with persistent volumes and an offer with matching persistent volumes")
+    Given(
+      "a resident app with persistent volumes and an offer with matching persistent volumes")
     val app = f.appWithPersistentVolume()
     val localVolumeId = Task.LocalVolumeId(app.id, "persistent-volume", "uuid")
     val tasks = Seq(
@@ -58,7 +60,8 @@ class PersistentVolumeMatcherTest
       0)
   }
 
-  test("Multiple correct available volumes for multiple tasks result in the correct task as a match") {
+  test(
+    "Multiple correct available volumes for multiple tasks result in the correct task as a match") {
     val f = new Fixture
 
     Given("a resident app with 2 tasks and an offer with 3 persistent volumes")
@@ -105,7 +108,8 @@ class PersistentVolumeMatcherTest
   test("Unwanted available volumes result in NO match") {
     val f = new Fixture
 
-    Given("a resident app with persistent volumes and an offer with matching persistent volumes")
+    Given(
+      "a resident app with persistent volumes and an offer with matching persistent volumes")
     val app = f.appWithPersistentVolume()
     val localVolumeId = Task.LocalVolumeId(app.id, "persistent-volume", "uuid")
     val tasks = Seq(

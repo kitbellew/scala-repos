@@ -99,8 +99,9 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit
           val divulgedIssuers = rootKey
             .map { rk => ancestorKeys.reverse.dropWhile(_ != rk).reverse }
             .getOrElse(Nil)
-          logger.debug("Divulging issuers %s for key %s based on root key %s and ancestors %s"
-            .format(divulgedIssuers, apiKey, rootKey, ancestorKeys))
+          logger.debug(
+            "Divulging issuers %s for key %s based on root key %s and ancestors %s"
+              .format(divulgedIssuers, apiKey, rootKey, ancestorKeys))
           v1.APIKeyDetails(
             apiKey,
             name,

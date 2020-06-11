@@ -27,8 +27,8 @@ class FieldFinder[T: ClassTag](
   logger.debug("Created FieldFinder for " + classTag[T].runtimeClass)
 
   def isMagicObject(m: Method) =
-    m.getReturnType.getName
-      .endsWith("$" + m.getName + "$") && m.getParameterTypes.length == 0
+    m.getReturnType.getName.endsWith(
+      "$" + m.getName + "$") && m.getParameterTypes.length == 0
 
   def typeFilter: Class[_] => Boolean =
     classTag[T].runtimeClass.isAssignableFrom

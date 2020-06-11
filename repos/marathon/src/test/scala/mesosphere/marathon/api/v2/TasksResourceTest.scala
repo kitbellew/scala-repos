@@ -38,8 +38,9 @@ class TasksResourceTest
     val task2 = MarathonTestHelper.runningTask(taskId2)
 
     config.zkTimeoutDuration returns 5.seconds
-    taskTracker.tasksByAppSync returns TaskTracker.TasksByApp
-      .forTasks(task1, task2)
+    taskTracker.tasksByAppSync returns TaskTracker.TasksByApp.forTasks(
+      task1,
+      task2)
     taskKiller.kill(any, any)(any) returns Future.successful(
       Iterable.empty[Task])
     groupManager.app(app1) returns Future.successful(Some(AppDefinition(app1)))
@@ -85,8 +86,9 @@ class TasksResourceTest
     val task2 = MarathonTestHelper.stagedTask(taskId2)
 
     config.zkTimeoutDuration returns 5.seconds
-    taskTracker.tasksByAppSync returns TaskTracker.TasksByApp
-      .forTasks(task1, task2)
+    taskTracker.tasksByAppSync returns TaskTracker.TasksByApp.forTasks(
+      task1,
+      task2)
     taskKiller.killAndScale(any, any)(any) returns Future.successful(
       deploymentPlan)
     groupManager.app(app1) returns Future.successful(Some(AppDefinition(app1)))
@@ -136,7 +138,8 @@ class TasksResourceTest
     killTasks.getStatus should be(auth.NotAuthenticatedStatus)
   }
 
-  test("killTask without authentication is not allowed when the affected app does not exist") {
+  test(
+    "killTask without authentication is not allowed when the affected app does not exist") {
     Given("An unauthenticated request")
     auth.authenticated = false
     val req = auth.request

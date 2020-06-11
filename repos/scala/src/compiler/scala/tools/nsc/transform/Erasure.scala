@@ -691,8 +691,10 @@ abstract class Erasure
           } else
             treeCopy.Apply(
               tree,
-              treeCopy
-                .TypeApply(ta, treeCopy.Select(sel, qual1, name), List(targ)),
+              treeCopy.TypeApply(
+                ta,
+                treeCopy.Select(sel, qual1, name),
+                List(targ)),
               List())
 
         case Apply(TypeApply(sel @ Select(qual, name), List(targ)), List())

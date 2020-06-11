@@ -105,7 +105,8 @@ class PIDRateEstimatorSuite extends SparkFunSuite with Matchers {
     res.tail should equal(List.fill(49)(Some(minRate)))
   }
 
-  test("with no accumulated or positive error, |I| > 0, follow the processing speed") {
+  test(
+    "with no accumulated or positive error, |I| > 0, follow the processing speed") {
     val p = new PIDRateEstimator(20, 1d, 1d, 0d, 10)
     // prepare a series of batch updates, one every 20ms with an increasing number of processed
     // elements in each batch, but constant processing time, and no accumulated error. Even though
@@ -121,7 +122,8 @@ class PIDRateEstimatorSuite extends SparkFunSuite with Matchers {
     res.tail should equal(List.tabulate(50)(x => Some((x + 1) * 1000d)).tail)
   }
 
-  test("with no accumulated but some positive error, |I| > 0, follow the processing speed") {
+  test(
+    "with no accumulated but some positive error, |I| > 0, follow the processing speed") {
     val p = new PIDRateEstimator(20, 1d, 1d, 0d, 10)
     // prepare a series of batch updates, one every 20ms with an decreasing number of processed
     // elements in each batch, but constant processing time, and no accumulated error. Even though
@@ -138,7 +140,8 @@ class PIDRateEstimatorSuite extends SparkFunSuite with Matchers {
     res.tail should equal(List.tabulate(50)(x => Some((50 - x) * 1000d)).tail)
   }
 
-  test("with some accumulated and some positive error, |I| > 0, stay below the processing speed") {
+  test(
+    "with some accumulated and some positive error, |I| > 0, stay below the processing speed") {
     val minRate = 10d
     val p = new PIDRateEstimator(20, 1d, .01d, 0d, minRate)
     val times = List.tabulate(50)(x => x * 20) // every 20ms

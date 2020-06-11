@@ -19,7 +19,8 @@ class CommonsStatsReceiverTest
     Stats.flush
   }
 
-  test("counter should return a new counter object with the given name and reflect incr operations") {
+  test(
+    "counter should return a new counter object with the given name and reflect incr operations") {
     val counter = (new CommonsStatsReceiver()).counter("foo")
     assert(Stats.getVariable("foo").read.asInstanceOf[Long] == 0)
     counter.incr(7)

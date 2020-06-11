@@ -44,8 +44,9 @@ abstract class ScalaUnnecessaryParenthesesInspectionBase
         ProblemHighlightType.GENERIC_ERROR_OR_WARNING,
         new UnnecessaryParenthesesQuickFix(
           parenthesized,
-          UnnecessaryParenthesesUtil
-            .getTextOfStripped(parenthesized, getIgnoreClarifying))
+          UnnecessaryParenthesesUtil.getTextOfStripped(
+            parenthesized,
+            getIgnoreClarifying))
       )
   }
 

@@ -32,7 +32,7 @@ import scalafx.geometry.Insets
 import scalafx.scene.control.CheckBox
 import scalafx.scene.layout.{Priority, VBox}
 
-/** An example of checkboxes in various states.
+/** * An example of checkboxes in various states.
   *
   * @see scalafx.scene.control.CheckBox
   * @related controls/buttons/GraphicButton

@@ -332,8 +332,9 @@ class YarnSparkHadoopUtilSuite
     } finally {
       // removeSecretKey() was only added in Hadoop 2.6, so instead we just set the secret
       // to an empty string.
-      SparkHadoopUtil.get
-        .addSecretKeyToUserCredentials(SecurityManager.SECRET_LOOKUP_KEY, "")
+      SparkHadoopUtil.get.addSecretKeyToUserCredentials(
+        SecurityManager.SECRET_LOOKUP_KEY,
+        "")
       System.clearProperty("SPARK_YARN_MODE")
     }
   }

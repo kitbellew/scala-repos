@@ -354,8 +354,10 @@ private[kafka] class Acceptor(
     } catch {
       case e: SocketException =>
         throw new KafkaException(
-          "Socket server failed to bind to %s:%d: %s."
-            .format(socketAddress.getHostString, port, e.getMessage),
+          "Socket server failed to bind to %s:%d: %s.".format(
+            socketAddress.getHostString,
+            port,
+            e.getMessage),
           e)
     }
     serverChannel
@@ -374,21 +376,23 @@ private[kafka] class Acceptor(
       socketChannel.socket().setKeepAlive(true)
       socketChannel.socket().setSendBufferSize(sendBufferSize)
 
-      debug("Accepted connection from %s on %s. sendBufferSize [actual|requested]: [%d|%d] recvBufferSize [actual|requested]: [%d|%d]"
-        .format(
-          socketChannel.socket.getInetAddress,
-          socketChannel.socket.getLocalSocketAddress,
-          socketChannel.socket.getSendBufferSize,
-          sendBufferSize,
-          socketChannel.socket.getReceiveBufferSize,
-          recvBufferSize
-        ))
+      debug(
+        "Accepted connection from %s on %s. sendBufferSize [actual|requested]: [%d|%d] recvBufferSize [actual|requested]: [%d|%d]"
+          .format(
+            socketChannel.socket.getInetAddress,
+            socketChannel.socket.getLocalSocketAddress,
+            socketChannel.socket.getSendBufferSize,
+            sendBufferSize,
+            socketChannel.socket.getReceiveBufferSize,
+            recvBufferSize
+          ))
 
       processor.accept(socketChannel)
     } catch {
       case e: TooManyConnectionsException =>
-        info("Rejected connection from %s, address already has the configured maximum of %d connections."
-          .format(e.ip, e.count))
+        info(
+          "Rejected connection from %s, address already has the configured maximum of %d connections."
+            .format(e.ip, e.count))
         close(socketChannel)
     }
   }
@@ -573,12 +577,14 @@ private[kafka] class Processor(
               "Socket server received empty response to send, registering for read: " + curr)
             selector.unmute(curr.request.connectionId)
           case RequestChannel.SendAction =>
-            trace("Socket server received response to send, registering for write and sending data: " + curr)
+            trace(
+              "Socket server received response to send, registering for write and sending data: " + curr)
             selector.send(curr.responseSend)
             inflightResponses += (curr.request.connectionId -> curr)
           case RequestChannel.CloseConnectionAction =>
             curr.request.updateRequestMetrics
-            trace("Closing socket connection actively according to the response code.")
+            trace(
+              "Closing socket connection actively according to the response code.")
             close(selector, curr.request.connectionId)
         }
       } finally {

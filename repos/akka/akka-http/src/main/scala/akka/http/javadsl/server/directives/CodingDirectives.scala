@@ -48,8 +48,9 @@ abstract class CodingDirectives extends CacheConditionDirectives {
       decoder: Coder,
       innerRoute: Route,
       moreInnerRoutes: Route*): Route =
-    RouteStructure
-      .DecodeRequest(decoder :: Nil)(innerRoute, moreInnerRoutes.toList)
+    RouteStructure.DecodeRequest(decoder :: Nil)(
+      innerRoute,
+      moreInnerRoutes.toList)
 
   /**
     * Decodes the incoming request if it is encoded with one of the given

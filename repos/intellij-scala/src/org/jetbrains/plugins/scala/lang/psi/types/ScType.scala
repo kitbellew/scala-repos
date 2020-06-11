@@ -533,8 +533,9 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def designator(element: PsiNamedElement): ScType = {
     element match {
       case td: ScClass =>
-        StdType.QualNameToType
-          .getOrElse(td.qualifiedName, new ScDesignatorType(element))
+        StdType.QualNameToType.getOrElse(
+          td.qualifiedName,
+          new ScDesignatorType(element))
       case _ =>
         val clazzOpt = element match {
           case p: ScClassParameter => Option(p.containingClass)

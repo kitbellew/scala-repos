@@ -358,7 +358,8 @@ class ActorSystemSpec
       implicit val system = ActorSystem(
         "Stop",
         ConfigFactory
-          .parseString("akka.actor.guardian-supervisor-strategy=akka.actor.StoppingSupervisorStrategy")
+          .parseString(
+            "akka.actor.guardian-supervisor-strategy=akka.actor.StoppingSupervisorStrategy")
           .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
         def receive = {
@@ -381,7 +382,8 @@ class ActorSystemSpec
       implicit val system = ActorSystem(
         "Stop",
         ConfigFactory
-          .parseString("akka.actor.guardian-supervisor-strategy=\"akka.actor.ActorSystemSpec$Strategy\"")
+          .parseString(
+            "akka.actor.guardian-supervisor-strategy=\"akka.actor.ActorSystemSpec$Strategy\"")
           .withFallback(AkkaSpec.testConf))
       val a = system.actorOf(Props(new Actor {
         def receive = {

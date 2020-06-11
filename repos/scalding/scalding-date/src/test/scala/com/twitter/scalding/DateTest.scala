@@ -230,8 +230,8 @@ class DateTest extends WordSpec {
         val dl = d.each(dur)
         assert(dl.zip(dl.tail).forall {
           case (da, db) =>
-            da.isBefore(db.start) && db
-              .isAfter(da.end) && ((da.end + Millisecs(1)) == db.start)
+            da.isBefore(db.start) && db.isAfter(da.end) && ((da.end + Millisecs(
+              1)) == db.start)
         })
       }
       eachIsDisjoint(DateRange("2010-10-01", "2010-10-03"), Days(1))

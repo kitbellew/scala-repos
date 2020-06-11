@@ -242,8 +242,9 @@ sealed trait Project extends ProjectDefinition[ProjectReference] {
     * Any configured .sbt files are removed from this project's list.
     */
   def setSbtFiles(files: File*): Project =
-    copy(auto = AddSettings
-      .append(AddSettings.clearSbtFiles(auto), AddSettings.sbtFiles(files: _*)))
+    copy(auto = AddSettings.append(
+      AddSettings.clearSbtFiles(auto),
+      AddSettings.sbtFiles(files: _*)))
 
   /**
     * Sets the [[AutoPlugin]]s of this project.

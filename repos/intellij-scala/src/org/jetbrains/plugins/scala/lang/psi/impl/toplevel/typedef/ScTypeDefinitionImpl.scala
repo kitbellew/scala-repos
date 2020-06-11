@@ -393,8 +393,9 @@ abstract class ScTypeDefinitionImpl protected (
   override def findMethodsAndTheirSubstitutorsByName(
       name: String,
       checkBases: Boolean): JList[IPair[PsiMethod, PsiSubstitutor]] = {
-    super[ScTypeDefinition]
-      .findMethodsAndTheirSubstitutorsByName(name, checkBases)
+    super[ScTypeDefinition].findMethodsAndTheirSubstitutorsByName(
+      name,
+      checkBases)
   }
 
   override def getAllMethodsAndTheirSubstitutors

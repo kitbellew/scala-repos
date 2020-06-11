@@ -59,8 +59,8 @@ private[spark] class GroupedCountEvaluator[T: ClassTag](
       new HashMap[T, BoundedDouble]
     } else {
       val p = outputsMerged.toDouble / totalOutputs
-      val confFactor = new NormalDistribution()
-        .inverseCumulativeProbability(1 - (1 - confidence) / 2)
+      val confFactor = new NormalDistribution().inverseCumulativeProbability(
+        1 - (1 - confidence) / 2)
       val result = new JHashMap[T, BoundedDouble](sums.size)
       sums.foreach {
         case (key, sum) =>

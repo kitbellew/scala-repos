@@ -15,7 +15,7 @@ class ABC extends A with B with C {
   lazy val y: PQ = new PQ(reflected)
 }
 
-/** The source used to generate the second file
+/** * The source used to generate the second file
   *     Not otherwise used in the test except that compiling
   *     it helps make sure it still compiles.
   *

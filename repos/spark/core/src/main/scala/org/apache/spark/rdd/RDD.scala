@@ -1731,7 +1731,8 @@ abstract class RDD[T: ClassTag](
         // Lineage is not truncated yet, so just override any existing checkpoint data with ours
         checkpointData match {
           case Some(_: ReliableRDDCheckpointData[_]) =>
-            logWarning("RDD was already marked for reliable checkpointing: overriding with local checkpoint.")
+            logWarning(
+              "RDD was already marked for reliable checkpointing: overriding with local checkpoint.")
           case _ =>
         }
         checkpointData = Some(new LocalRDDCheckpointData(this))

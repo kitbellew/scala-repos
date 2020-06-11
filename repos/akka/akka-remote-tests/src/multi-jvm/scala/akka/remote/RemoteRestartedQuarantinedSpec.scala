@@ -28,9 +28,7 @@ object RemoteRestartedQuarantinedSpec extends MultiNodeConfig {
   val first = role("first")
   val second = role("second")
 
-  commonConfig(
-    debugConfig(on = false).withFallback(
-      ConfigFactory.parseString("""
+  commonConfig(debugConfig(on = false).withFallback(ConfigFactory.parseString("""
       akka.loglevel = WARNING
       akka.remote.log-remote-lifecycle-events = WARNING
 
@@ -114,8 +112,9 @@ abstract class RemoteRestartedQuarantinedSpec
         val addr =
           system.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
         val firstAddress = node(first).address
-        system.eventStream
-          .subscribe(testActor, classOf[ThisActorSystemQuarantinedEvent])
+        system.eventStream.subscribe(
+          testActor,
+          classOf[ThisActorSystemQuarantinedEvent])
 
         val (_, ref) = identifyWithUid(first, "subject")
 

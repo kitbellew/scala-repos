@@ -195,7 +195,8 @@ class CompileSocket extends CompileOutputCommon {
               Some(socket)
             case Left(err) =>
               info(err.toString)
-              info("[Connecting to compilation daemon at port %d failed; re-trying...]" format port)
+              info(
+                "[Connecting to compilation daemon at port %d failed; re-trying...]" format port)
 
               if (attempts % 2 == 0)
                 deletePort(port) // 50% chance to stop trying on this port

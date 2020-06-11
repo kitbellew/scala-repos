@@ -185,7 +185,7 @@ class ClusterClientTest
 
       var additionalServers = List[EndpointStatus]()
 
-      /** * start 5 more memcached servers and join the cluster ***** */
+      /** *** start 5 more memcached servers and join the cluster ***** */
       // cache pool should remain the same size at this moment
       intercept[com.twitter.util.TimeoutException] {
         expectPoolStatus(
@@ -211,7 +211,7 @@ class ClusterClientTest
         }.get(10.seconds)()
       } catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      /** * remove 2 servers from the zk serverset ***** */
+      /** *** remove 2 servers from the zk serverset ***** */
       // cache pool should remain the same size at this moment
       intercept[com.twitter.util.TimeoutException] {
         expectPoolStatus(
@@ -238,7 +238,7 @@ class ClusterClientTest
         }.get(10.seconds)()
       } catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      /** * remove 2 more then add 3 ***** */
+      /** *** remove 2 more then add 3 ***** */
       // cache pool should remain the same size at this moment
       intercept[com.twitter.util.TimeoutException] {
         expectPoolStatus(
@@ -272,7 +272,7 @@ class ClusterClientTest
       // the cluster initially must have 5 members
       val myPool = initializePool(5)
 
-      /** * fail the server here to verify the pool manager will re-establish ***** */
+      /** *** fail the server here to verify the pool manager will re-establish ***** */
       // cache pool cluster should remain the same
       intercept[com.twitter.util.TimeoutException] {
         expectPoolStatus(
@@ -286,7 +286,7 @@ class ClusterClientTest
         }.get(2.seconds)()
       }
 
-      /** * start the server now ***** */
+      /** *** start the server now ***** */
       // cache pool cluster should remain the same
       intercept[com.twitter.util.TimeoutException] {
         expectPoolStatus(
@@ -300,7 +300,7 @@ class ClusterClientTest
         }.get(2.seconds)()
       }
 
-      /** * start 5 more memcached servers and join the cluster ***** */
+      /** *** start 5 more memcached servers and join the cluster ***** */
       // update config data node, which triggers the pool update
       // cache pool cluster should still be able to see underlying pool changes
       try {
@@ -343,7 +343,7 @@ class ClusterClientTest
         }.get(10.seconds)()
       } catch { case _: Exception => fail("it shouldn't trown an exception") }
 
-      /** * start 5 more memcached servers and join the cluster ***** */
+      /** *** start 5 more memcached servers and join the cluster ***** */
       // update config data node, which triggers the pool update
       // cache pool cluster should still be able to see underlying pool changes
       try {
@@ -558,7 +558,8 @@ class ClusterClientTest
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
-    test("Ketama ClusterClient using a distributor - unmanaged cache pool is changing") {
+    test(
+      "Ketama ClusterClient using a distributor - unmanaged cache pool is changing") {
       // create my cluster client solely based on a zk client and a path
       val mycluster = initializePool(5, ignoreConfigData = true)
 

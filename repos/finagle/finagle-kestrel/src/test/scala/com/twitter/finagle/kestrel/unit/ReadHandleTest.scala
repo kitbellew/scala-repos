@@ -114,7 +114,8 @@ class ReadHandleTest extends FunSuite {
     }
   }
 
-  test("ReadHandle.buffered should when closed wait for outstanding acks before closing underlying") {
+  test(
+    "ReadHandle.buffered should when closed wait for outstanding acks before closing underlying") {
     new BufferedReadHandle {
       val closed = (close ?)
       assert(closed.isDefined == false)
@@ -147,7 +148,8 @@ class ReadHandleTest extends FunSuite {
     }
   }
 
-  test("ReadHandle.merged should provide a merged stream of errors provide a merged stream of messages") {
+  test(
+    "ReadHandle.merged should provide a merged stream of errors provide a merged stream of messages") {
     new MergedReadHandle {
       var count = 0
       merged.error.foreach { _ => count += 1 }

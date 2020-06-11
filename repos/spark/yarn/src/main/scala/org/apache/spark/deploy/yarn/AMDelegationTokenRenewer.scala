@@ -188,8 +188,10 @@ private[yarn] class AMDelegationTokenRenewer(
       override def run(): Void = {
         val nns = YarnSparkHadoopUtil.get.getNameNodesToAccess(sparkConf) + dst
         hadoopUtil.obtainTokensForNamenodes(nns, freshHadoopConf, tempCreds)
-        hadoopUtil
-          .obtainTokenForHiveMetastore(sparkConf, freshHadoopConf, tempCreds)
+        hadoopUtil.obtainTokenForHiveMetastore(
+          sparkConf,
+          freshHadoopConf,
+          tempCreds)
         hadoopUtil.obtainTokenForHBase(sparkConf, freshHadoopConf, tempCreds)
         null
       }

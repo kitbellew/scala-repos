@@ -456,7 +456,8 @@ object ScalaJSPluginInternal {
               // Attach the name of the main class used, (ab?)using the name key
               Attributed(file)(AttributeMap.empty.put(name.key, mainCl))
           } getOrElse {
-            sys.error("Cannot write launcher file, since there is no or multiple mainClasses")
+            sys.error(
+              "Cannot write launcher file, since there is no or multiple mainClasses")
           }
         }
     },
@@ -580,8 +581,10 @@ object ScalaJSPluginInternal {
       }
 
       // Actually resolve the dependencies
-      val resolved = DependencyResolver
-        .resolveDependencies(attManifests.data, availableLibs, dependencyFilter)
+      val resolved = DependencyResolver.resolveDependencies(
+        attManifests.data,
+        availableLibs,
+        dependencyFilter)
 
       Attributed
         .blank[Seq[ResolvedJSDependency]](resolved)
@@ -595,8 +598,8 @@ object ScalaJSPluginInternal {
         true
     },
     scalaJSRequestsDOM := {
-      requiresDOM.?.value
-        .getOrElse(jsDependencyManifests.value.data.exists(_.requiresDOM))
+      requiresDOM.?.value.getOrElse(
+        jsDependencyManifests.value.data.exists(_.requiresDOM))
     },
     resolvedJSEnv := jsEnv.?.value.getOrElse {
       if (scalaJSUseRhino.value) {

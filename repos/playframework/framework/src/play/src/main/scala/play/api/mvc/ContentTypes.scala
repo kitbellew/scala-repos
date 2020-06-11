@@ -711,8 +711,8 @@ trait BodyParsers {
 
           case _ =>
             logger.trace("Parsing AnyContent as raw")
-            raw(DefaultMaxTextLength, maxLengthOrDefaultLarge)(request)
-              .map(_.right.map(r => AnyContentAsRaw(r)))
+            raw(DefaultMaxTextLength, maxLengthOrDefaultLarge)(request).map(
+              _.right.map(r => AnyContentAsRaw(r)))
         }
       }
 

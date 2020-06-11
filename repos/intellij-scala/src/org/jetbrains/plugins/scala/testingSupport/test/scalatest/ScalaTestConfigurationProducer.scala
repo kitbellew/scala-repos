@@ -107,8 +107,9 @@ class ScalaTestConfigurationProducer extends {
     } catch {
       case e: Exception =>
     }
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(runConfiguration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      runConfiguration,
+      location)
     Some((testClass, settings))
   }
 
@@ -425,8 +426,10 @@ class ScalaTestConfigurationProducer extends {
           var call = _call
           while (call != null) {
             checkCall(
-              PsiTreeUtil
-                .getParentOfType(call, classOf[MethodInvocation], true),
+              PsiTreeUtil.getParentOfType(
+                call,
+                classOf[MethodInvocation],
+                true),
               Map("describe" -> fqn)) match {
               case SuccessResult(invoc, featureName, _) =>
                 testName = featureName + " " + testName
@@ -446,16 +449,20 @@ class ScalaTestConfigurationProducer extends {
       def checkFreeSpecInner(innerClassName: String): Option[String] = {
         val ifqn = fqn + innerClassName
         checkInfix(
-          PsiTreeUtil
-            .getParentOfType(element, classOf[MethodInvocation], false),
+          PsiTreeUtil.getParentOfType(
+            element,
+            classOf[MethodInvocation],
+            false),
           Map("in" -> ifqn, "is" -> ifqn, "ignore" -> ifqn)) match {
           case SuccessResult(_call, _testName, _) =>
             var testName = _testName
             var call = _call
             while (call != null) {
               checkInfix(
-                PsiTreeUtil
-                  .getParentOfType(call, classOf[MethodInvocation], true),
+                PsiTreeUtil.getParentOfType(
+                  call,
+                  classOf[MethodInvocation],
+                  true),
                 Map("-" -> (fqn + ".FreeSpecStringWrapper"))) match {
                 case SuccessResult(invoc, tName, _) =>
                   call = invoc
@@ -487,8 +494,10 @@ class ScalaTestConfigurationProducer extends {
         val ifqn = fqn + innerClassName
         val wfqn = fqn + ".WordSpecStringWrapper"
         checkInfixTagged(
-          PsiTreeUtil
-            .getParentOfType(element, classOf[MethodInvocation], false),
+          PsiTreeUtil.getParentOfType(
+            element,
+            classOf[MethodInvocation],
+            false),
           Map("in" -> ifqn, "is" -> ifqn, "ignore" -> ifqn),
           wfqn) match {
           case SuccessResult(_call, _testName, _) =>
@@ -496,8 +505,10 @@ class ScalaTestConfigurationProducer extends {
             var call = _call
             while (call != null) {
               val checkInfixResult2 = checkInfix(
-                PsiTreeUtil
-                  .getParentOfType(call, classOf[MethodInvocation], true),
+                PsiTreeUtil.getParentOfType(
+                  call,
+                  classOf[MethodInvocation],
+                  true),
                 Map(
                   "when" -> wfqn,
                   "that" -> ifqn,
@@ -507,8 +518,10 @@ class ScalaTestConfigurationProducer extends {
                 checkFirstArgIsUnitOrString = true
               )
               lazy val checkInfixResult = checkInfix(
-                PsiTreeUtil
-                  .getParentOfType(call, classOf[MethodInvocation], true),
+                PsiTreeUtil.getParentOfType(
+                  call,
+                  classOf[MethodInvocation],
+                  true),
                 Map(
                   "when" -> wfqn,
                   "that" -> ifqn,

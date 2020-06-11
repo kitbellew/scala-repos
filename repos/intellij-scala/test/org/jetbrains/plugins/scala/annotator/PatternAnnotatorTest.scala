@@ -507,8 +507,10 @@ class PatternAnnotatorTest
     checkError(
       code,
       "foo appliedTo \"\"",
-      ScalaBundle
-        .message("wrong.number.arguments.extractor.unapplySeq", "2", "3"))
+      ScalaBundle.message(
+        "wrong.number.arguments.extractor.unapplySeq",
+        "2",
+        "3"))
   }
 
   def testNumberOfArgumentsCons(): Unit = {

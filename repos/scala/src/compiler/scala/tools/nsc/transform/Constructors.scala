@@ -792,8 +792,9 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         if (conflict ne NoSymbol)
           reporter.error(
             acc.pos,
-            "parameter '%s' requires field but conflicts with %s"
-              .format(acc.name, conflict.fullLocationString))
+            "parameter '%s' requires field but conflicts with %s".format(
+              acc.name,
+              conflict.fullLocationString))
 
         copyParam(acc, parameter(acc))
       }

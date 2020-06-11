@@ -93,8 +93,8 @@ sealed trait HttpEntity extends jm.HttpEntity {
 
   /** Java API */
   override def getDataBytes: stream.javadsl.Source[ByteString, AnyRef] =
-    stream.javadsl.Source
-      .fromGraph(dataBytes.asInstanceOf[Source[ByteString, AnyRef]])
+    stream.javadsl.Source.fromGraph(
+      dataBytes.asInstanceOf[Source[ByteString, AnyRef]])
 
   /** Java API */
   override def getContentLengthOption: OptionalLong =
@@ -278,8 +278,9 @@ object HttpEntity {
 
     override def transformDataBytes(
         transformer: Flow[ByteString, ByteString, Any]): MessageEntity =
-      HttpEntity.Chunked
-        .fromData(contentType, Source.single(data).via(transformer))
+      HttpEntity.Chunked.fromData(
+        contentType,
+        Source.single(data).via(transformer))
 
     override def transformDataBytes(
         newContentLength: Long,

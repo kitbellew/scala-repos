@@ -334,8 +334,9 @@ sealed abstract class OneAndInstances extends OneAndInstances0 {
       def OA = A
       def OFA = FA
       def order(a1: OneAnd[F, A], a2: OneAnd[F, A]) =
-        Monoid[Ordering]
-          .append(A.order(a1.head, a2.head), FA.order(a1.tail, a2.tail))
+        Monoid[Ordering].append(
+          A.order(a1.head, a2.head),
+          FA.order(a1.tail, a2.tail))
     }
 
   implicit def oneAndSemigroup[F[_]: Applicative: Plus, A]

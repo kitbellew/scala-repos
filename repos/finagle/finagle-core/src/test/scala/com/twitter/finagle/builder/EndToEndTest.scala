@@ -20,7 +20,8 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class EndToEndTest extends FunSuite with StringClient with StringServer {
 
-  test("A -> B: Exception returned to A from B should include downstream address of B") {
+  test(
+    "A -> B: Exception returned to A from B should include downstream address of B") {
     val hre = new Service[String, String] {
       def apply(request: String) = Future.exception(new HasRemoteInfo {})
     }
@@ -48,7 +49,8 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     Await.ready(server.close(), 1.second)
   }
 
-  test("A -> B -> C: Exception returned to B from C should include upstream address of A and downstream address of C") {
+  test(
+    "A -> B -> C: Exception returned to B from C should include upstream address of A and downstream address of C") {
 
     val traceId = Trace.id
 
@@ -117,7 +119,8 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
   }
 
-  test("A -> B -> C: Exception returned from B to A should include downstream address of B") {
+  test(
+    "A -> B -> C: Exception returned from B to A should include downstream address of B") {
 
     val traceId = Trace.id
 
@@ -158,7 +161,8 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
 
   }
 
-  test("Finagle client should handle pending request after a host is deleted from cluster") {
+  test(
+    "Finagle client should handle pending request after a host is deleted from cluster") {
     val constRes = new Promise[String]
     val arrivalLatch = new CountDownLatch(1)
     val service = new Service[String, String] {
@@ -192,7 +196,8 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     assert(Await.result(response, 1.second) == "foo")
   }
 
-  test("Finagle client should queue requests while waiting for cluster to initialize") {
+  test(
+    "Finagle client should queue requests while waiting for cluster to initialize") {
     val echo = new Service[String, String] {
       def apply(request: String) = Future.value(request)
     }
@@ -233,7 +238,8 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     thread.join()
   }
 
-  test("ClientBuilder should be properly instrumented on service application failure") {
+  test(
+    "ClientBuilder should be properly instrumented on service application failure") {
     val never = new Service[String, String] {
       def apply(request: String) = new Promise[String]
     }
@@ -269,7 +275,8 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     assert(requeues == None)
   }
 
-  test("ClientBuilder should be properly instrumented on service acquisition failure") {
+  test(
+    "ClientBuilder should be properly instrumented on service acquisition failure") {
     val mem = new InMemoryStatsReceiver
     val client = ClientBuilder()
       .name("client")

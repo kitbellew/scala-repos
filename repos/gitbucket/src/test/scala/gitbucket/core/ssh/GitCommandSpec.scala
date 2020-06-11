@@ -28,7 +28,8 @@ class GitCommandFactorySpec extends FunSpec {
           .createCommand("git-upload-pack '/owner/repo.wiki.git'")
           .isInstanceOf[DefaultGitUploadPack] == true)
     }
-    it("should return UnknownCommand when command is not git-(upload|receive)-pack") {
+    it(
+      "should return UnknownCommand when command is not git-(upload|receive)-pack") {
       assert(
         factory
           .createCommand("git- '/owner/repo.git'")

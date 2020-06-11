@@ -146,8 +146,10 @@ case class ScExistentialType(
       case (_, _, newData) =>
         try {
           ScExistentialType(
-            quantified
-              .recursiveVarianceUpdateModifiable(newData, update, variance),
+            quantified.recursiveVarianceUpdateModifiable(
+              newData,
+              update,
+              variance),
             wildcards.map(
               _.recursiveVarianceUpdateModifiable(newData, update, variance)))
         } catch {

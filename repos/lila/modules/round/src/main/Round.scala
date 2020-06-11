@@ -256,8 +256,8 @@ private[round] final class Round(
 
   protected def handle(playerId: String)(op: Pov => Fu[Events]): Funit =
     handlePov(
-      (GameRepo pov PlayerRef(gameId, playerId))
-        .mon(_.round.move.segment.fetch))(op)
+      (GameRepo pov PlayerRef(gameId, playerId)).mon(
+        _.round.move.segment.fetch))(op)
 
   protected def handle(color: Color)(op: Pov => Fu[Events]): Funit =
     handlePov(GameRepo pov PovRef(gameId, color))(op)

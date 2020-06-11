@@ -98,9 +98,9 @@ object Task {
     override def update(update: TaskStateOp): TaskStateChange =
       update match {
         // case 1: now running
-        case TaskStateOp
-              .MesosUpdate(MarathonTaskStatus.Running(mesosStatus), now)
-            if !hasStartedRunning =>
+        case TaskStateOp.MesosUpdate(
+              MarathonTaskStatus.Running(mesosStatus),
+              now) if !hasStartedRunning =>
           val updated = copy(
             status =
               status.copy(startedAt = Some(now), mesosStatus = mesosStatus))
@@ -202,9 +202,9 @@ object Task {
     override def update(update: TaskStateOp): TaskStateChange =
       update match {
         // case 1: now running
-        case TaskStateOp
-              .MesosUpdate(MarathonTaskStatus.Running(mesosStatus), now)
-            if !hasStartedRunning =>
+        case TaskStateOp.MesosUpdate(
+              MarathonTaskStatus.Running(mesosStatus),
+              now) if !hasStartedRunning =>
           val updated = copy(
             status =
               status.copy(startedAt = Some(now), mesosStatus = mesosStatus))

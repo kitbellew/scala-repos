@@ -29,8 +29,9 @@ trait Calculate {
       if (localSymbols contains sym)
         assert(
           localSymbols(sym) == metalevel,
-          "metalevel mismatch: expected %s, actual %s"
-            .format(localSymbols(sym), metalevel))
+          "metalevel mismatch: expected %s, actual %s".format(
+            localSymbols(sym),
+            metalevel))
       else
         localSymbols += (sym -> metalevel)
     }

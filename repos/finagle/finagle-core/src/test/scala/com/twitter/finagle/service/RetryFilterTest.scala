@@ -246,14 +246,16 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
     describe("with RetryPolicy.backoffJava: Exception cases") {
       describe("using RetryPolicy[(Req, Try[Rep])]") {
         testExceptionPolicy(
-          RetryPolicy
-            .backoffJava(Backoff.toJava(backoffs), shouldRetryResponse),
+          RetryPolicy.backoffJava(
+            Backoff.toJava(backoffs),
+            shouldRetryResponse),
           retryExceptionsOnly = false)
       }
       describe("using RetryPolicy[Try[Nothing]]") {
         testExceptionPolicy(
-          RetryPolicy
-            .backoffJava(Backoff.toJava(backoffs), shouldRetryException),
+          RetryPolicy.backoffJava(
+            Backoff.toJava(backoffs),
+            shouldRetryException),
           retryExceptionsOnly = true)
       }
     }

@@ -37,24 +37,27 @@ class HistoryActorTest
     val message = statusMessage(TASK_FAILED)
     historyActor ! message
 
-    verify(failureRepo)
-      .store(message.appId, TaskFailure.FromMesosStatusUpdateEvent(message).get)
+    verify(failureRepo).store(
+      message.appId,
+      TaskFailure.FromMesosStatusUpdateEvent(message).get)
   }
 
   test("Store TASK_ERROR") {
     val message = statusMessage(TASK_ERROR)
     historyActor ! message
 
-    verify(failureRepo)
-      .store(message.appId, TaskFailure.FromMesosStatusUpdateEvent(message).get)
+    verify(failureRepo).store(
+      message.appId,
+      TaskFailure.FromMesosStatusUpdateEvent(message).get)
   }
 
   test("Store TASK_LOST") {
     val message = statusMessage(TASK_LOST)
     historyActor ! message
 
-    verify(failureRepo)
-      .store(message.appId, TaskFailure.FromMesosStatusUpdateEvent(message).get)
+    verify(failureRepo).store(
+      message.appId,
+      TaskFailure.FromMesosStatusUpdateEvent(message).get)
   }
 
   test("Ignore TASK_RUNNING") {

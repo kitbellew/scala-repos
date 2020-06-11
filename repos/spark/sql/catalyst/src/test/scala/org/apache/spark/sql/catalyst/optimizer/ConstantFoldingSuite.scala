@@ -93,8 +93,9 @@ class ConstantFoldingSuite extends PlanTest {
     comparePlans(optimized, correctAnswer)
   }
 
-  test("Constant folding test: expressions have attribute references and literals in " +
-    "arithmetic operations") {
+  test(
+    "Constant folding test: expressions have attribute references and literals in " +
+      "arithmetic operations") {
     val originalQuery =
       testRelation
         .select(
@@ -118,8 +119,9 @@ class ConstantFoldingSuite extends PlanTest {
     comparePlans(optimized, correctAnswer)
   }
 
-  test("Constant folding test: expressions have attribute references and literals in " +
-    "predicates") {
+  test(
+    "Constant folding test: expressions have attribute references and literals in " +
+      "predicates") {
     val originalQuery =
       testRelation
         .where(
@@ -188,8 +190,9 @@ class ConstantFoldingSuite extends PlanTest {
         Literal.create(Seq(1), ArrayType(IntegerType)),
         Literal.create(null, IntegerType)) as 'c4,
       UnresolvedExtractValue(
-        Literal
-          .create(null, StructType(Seq(StructField("a", IntegerType, true)))),
+        Literal.create(
+          null,
+          StructType(Seq(StructField("a", IntegerType, true)))),
         "a") as 'c5,
       UnaryMinus(Literal.create(null, IntegerType)) as 'c6,
       Cast(Literal(null), IntegerType) as 'c7,

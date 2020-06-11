@@ -519,7 +519,8 @@ abstract class BCodeIdiomatic extends SubComponent {
       i = 1
       while (i < keys.length) {
         if (keys(i - 1) == keys(i)) {
-          abort("duplicate keys in SWITCH, can't pick arbitrarily one of them to evict, see SI-6011.")
+          abort(
+            "duplicate keys in SWITCH, can't pick arbitrarily one of them to evict, see SI-6011.")
         }
         i += 1
       }

@@ -145,8 +145,9 @@ private[akka] class InputStreamAdapter(
         detachedChunk match {
           case None ⇒
             try {
-              sharedBuffer
-                .poll(readTimeout.toMillis, TimeUnit.MILLISECONDS) match {
+              sharedBuffer.poll(
+                readTimeout.toMillis,
+                TimeUnit.MILLISECONDS) match {
                 case Data(data) ⇒
                   detachedChunk = Some(data)
                   readBytes(a, begin, length)

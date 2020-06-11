@@ -81,7 +81,8 @@ trait AssetHelper { self: I18nHelper =>
     local = staticUrl("vendor/tagmanager/tagmanager.js"))
 
   val typeaheadTag = cdnOrLocal(
-    cdn = "http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js",
+    cdn =
+      "http://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.11.1/typeahead.bundle.min.js",
     test = "$.typeahead",
     local = staticUrl("javascripts/vendor/typeahead.bundle.min.js")
   )

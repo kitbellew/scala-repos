@@ -31,8 +31,8 @@ package object config {
     ConfigBuilder(SparkLauncher.DRIVER_EXTRA_LIBRARY_PATH).stringConf.optional
 
   private[spark] val DRIVER_USER_CLASS_PATH_FIRST =
-    ConfigBuilder("spark.driver.userClassPathFirst").booleanConf
-      .withDefault(false)
+    ConfigBuilder("spark.driver.userClassPathFirst").booleanConf.withDefault(
+      false)
 
   private[spark] val EXECUTOR_CLASS_PATH =
     ConfigBuilder(SparkLauncher.EXECUTOR_EXTRA_CLASSPATH).stringConf.optional
@@ -44,8 +44,8 @@ package object config {
     ConfigBuilder(SparkLauncher.EXECUTOR_EXTRA_LIBRARY_PATH).stringConf.optional
 
   private[spark] val EXECUTOR_USER_CLASS_PATH_FIRST =
-    ConfigBuilder("spark.executor.userClassPathFirst").booleanConf
-      .withDefault(false)
+    ConfigBuilder("spark.executor.userClassPathFirst").booleanConf.withDefault(
+      false)
 
   private[spark] val IS_PYTHON_APP =
     ConfigBuilder("spark.yarn.isPython").internal.booleanConf.withDefault(false)
@@ -61,12 +61,12 @@ package object config {
       .fallbackConf(DYN_ALLOCATION_MIN_EXECUTORS)
 
   private[spark] val DYN_ALLOCATION_MAX_EXECUTORS =
-    ConfigBuilder("spark.dynamicAllocation.maxExecutors").intConf
-      .withDefault(Int.MaxValue)
+    ConfigBuilder("spark.dynamicAllocation.maxExecutors").intConf.withDefault(
+      Int.MaxValue)
 
   private[spark] val SHUFFLE_SERVICE_ENABLED =
-    ConfigBuilder("spark.shuffle.service.enabled").booleanConf
-      .withDefault(false)
+    ConfigBuilder("spark.shuffle.service.enabled").booleanConf.withDefault(
+      false)
 
   private[spark] val KEYTAB = ConfigBuilder("spark.yarn.keytab")
     .doc("Location of user's keytab.")

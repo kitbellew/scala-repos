@@ -244,12 +244,18 @@ class SecurityServiceSpec
     to)
 
   val user5 = Await.result(
-    apiKeyManager
-      .createAPIKey(Some("user5-key"), None, user1.apiKey, Set.empty),
+    apiKeyManager.createAPIKey(
+      Some("user5-key"),
+      None,
+      user1.apiKey,
+      Set.empty),
     to)
   val user6 = Await.result(
-    apiKeyManager
-      .createAPIKey(Some("user6-key"), None, user1.apiKey, Set.empty),
+    apiKeyManager.createAPIKey(
+      Some("user6-key"),
+      None,
+      user1.apiKey,
+      Set.empty),
     to)
 
   val expiredGrant = Await.result(
@@ -262,8 +268,11 @@ class SecurityServiceSpec
       Some(new DateTime().minusYears(1000))),
     to)
   val expired = Await.result(
-    apiKeyManager
-      .createAPIKey(None, None, user1.apiKey, Set(expiredGrant.grantId)),
+    apiKeyManager.createAPIKey(
+      None,
+      None,
+      user1.apiKey,
+      Set(expiredGrant.grantId)),
     to)
 
   val allAPIKeys = Await.result(apiKeyManager.listAPIKeys(), to)

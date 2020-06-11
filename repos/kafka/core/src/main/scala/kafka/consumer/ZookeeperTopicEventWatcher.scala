@@ -54,7 +54,8 @@ class ZookeeperTopicEventWatcher(
       if (zkUtils != null) {
         stopWatchingTopicEvents()
       } else {
-        warn("Cannot shutdown since the embedded zookeeper client has already closed.")
+        warn(
+          "Cannot shutdown since the embedded zookeeper client has already closed.")
       }
     }
   }
@@ -92,8 +93,9 @@ class ZookeeperTopicEventWatcher(
         if (zkUtils != null) {
           info(
             "ZK expired: resubscribing topic event listener to topic registry")
-          zkUtils.zkClient
-            .subscribeChildChanges(ZkUtils.BrokerTopicsPath, topicEventListener)
+          zkUtils.zkClient.subscribeChildChanges(
+            ZkUtils.BrokerTopicsPath,
+            topicEventListener)
         }
       }
     }

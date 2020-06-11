@@ -136,8 +136,9 @@ object Serializers {
           key,
           { b =>
             b.hintTag(intOptPickler.tag)
-            intOptPickler
-              .pickle(if (value == null) None else Some(value.intValue), b)
+            intOptPickler.pickle(
+              if (value == null) None else Some(value.intValue),
+              b)
           })
       }
       def writeStringField(key: String, value: String): Unit = {
@@ -272,11 +273,14 @@ object Serializers {
   }
 
   val serializers: Seq[LocalRegisteredSerializer] = List(
-    LocalRegisteredSerializer
-      .fromSbtSerializer(forkConfigPickler, forkConfigUnpickler),
-    LocalRegisteredSerializer
-      .fromSbtSerializer(compileResultPickler, compileResultUnpickler),
-    LocalRegisteredSerializer
-      .fromSbtSerializer(playServerStartedPickler, playServerStartedUnpickler)
+    LocalRegisteredSerializer.fromSbtSerializer(
+      forkConfigPickler,
+      forkConfigUnpickler),
+    LocalRegisteredSerializer.fromSbtSerializer(
+      compileResultPickler,
+      compileResultUnpickler),
+    LocalRegisteredSerializer.fromSbtSerializer(
+      playServerStartedPickler,
+      playServerStartedUnpickler)
   )
 }

@@ -110,8 +110,10 @@ object RouterSpec extends PlaySpecification {
         queryEncoded: String) = {
       val expected =
         s"/urlcoding/$dynamicEncoded/$staticEncoded?q=$queryEncoded"
-      val call = controllers.routes.Application
-        .urlcoding(dynamicDecoded, staticDecoded, queryDecoded)
+      val call = controllers.routes.Application.urlcoding(
+        dynamicDecoded,
+        staticDecoded,
+        queryDecoded)
       call.url must equalTo(expected)
     }
     checkDecoding("a", "a", "a", "a", "a", "a")

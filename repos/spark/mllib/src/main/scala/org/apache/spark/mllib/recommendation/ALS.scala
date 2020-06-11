@@ -306,8 +306,8 @@ object ALS {
       blocks: Int,
       seed: Long
   ): MatrixFactorizationModel = {
-    new ALS(blocks, blocks, rank, iterations, lambda, false, 1.0, seed)
-      .run(ratings)
+    new ALS(blocks, blocks, rank, iterations, lambda, false, 1.0, seed).run(
+      ratings)
   }
 
   /**
@@ -396,8 +396,8 @@ object ALS {
       alpha: Double,
       seed: Long
   ): MatrixFactorizationModel = {
-    new ALS(blocks, blocks, rank, iterations, lambda, true, alpha, seed)
-      .run(ratings)
+    new ALS(blocks, blocks, rank, iterations, lambda, true, alpha, seed).run(
+      ratings)
   }
 
   /**

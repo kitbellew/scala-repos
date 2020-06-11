@@ -487,8 +487,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 (Success(parameterized, Some(this)), ss)
               case _ =>
                 (
-                  ScSimpleTypeElementImpl
-                    .calculateReferenceType(ref, shapesOnly = false),
+                  ScSimpleTypeElementImpl.calculateReferenceType(
+                    ref,
+                    shapesOnly = false),
                   ScSubstitutor.empty)
             }
             updateImplicitsWithoutLocalTypeInference(tp, ss)
@@ -509,8 +510,9 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 (Success(parameterized, Some(this)), ss)
               case _ =>
                 (
-                  ScSimpleTypeElementImpl
-                    .calculateReferenceType(ref, shapesOnly = false),
+                  ScSimpleTypeElementImpl.calculateReferenceType(
+                    ref,
+                    shapesOnly = false),
                   ScSubstitutor.empty)
             }
             updateImplicitsWithoutLocalTypeInference(result, ss)

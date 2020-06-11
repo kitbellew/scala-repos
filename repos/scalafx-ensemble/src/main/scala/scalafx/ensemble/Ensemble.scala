@@ -108,8 +108,8 @@ object Ensemble extends JFXApp {
             content = List(
               new ImageView {
                 image = new Image(
-                  this.getClass
-                    .getResourceAsStream("/scalafx/ensemble/images/logo.png"))
+                  this.getClass.getResourceAsStream(
+                    "/scalafx/ensemble/images/logo.png"))
                 margin = Insets(0, 0, 0, 10)
               },
               new Region {

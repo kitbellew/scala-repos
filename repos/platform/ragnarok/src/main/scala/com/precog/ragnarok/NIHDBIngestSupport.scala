@@ -90,8 +90,7 @@ trait NIHDBIngestSupport
           line = buf.readLine
         }
         val str = sb.toString
-        val rows =
-          JParser.parseManyFromString(str).valueOr(throw _).toIterator
+        val rows = JParser.parseManyFromString(str).valueOr(throw _).toIterator
         reader.close()
         rows
       }.toList
@@ -145,8 +144,9 @@ trait NIHDBIngestSupport
               .run
         } yield {
           (projection valueOr { err =>
-            sys.error("An error was encountered attempting to read projection at path %s: %s"
-              .format(path, err.toString))
+            sys.error(
+              "An error was encountered attempting to read projection at path %s: %s"
+                .format(path, err.toString))
           }).asInstanceOf[NIHDBResource]
         }
       }.copoint

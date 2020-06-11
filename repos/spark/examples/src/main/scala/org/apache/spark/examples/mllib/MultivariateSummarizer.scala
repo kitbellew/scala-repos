@@ -44,7 +44,8 @@ object MultivariateSummarizer {
     val defaultParams = Params()
 
     val parser = new OptionParser[Params]("MultivariateSummarizer") {
-      head("MultivariateSummarizer: an example app for MultivariateOnlineSummarizer")
+      head(
+        "MultivariateSummarizer: an example app for MultivariateOnlineSummarizer")
       opt[String]("input")
         .text(
           s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")

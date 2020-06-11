@@ -148,14 +148,14 @@ trait MemoryQueryingProfile extends BasicProfile {
         n: ProductNode): Option[(TermSymbol, Vector[List[TermSymbol]])] =
       if (n.children.isEmpty) None
       else
-        n.children.iterator
-          .foldLeft(null: Option[(TermSymbol, Vector[List[TermSymbol]])]) {
-            case (None, _)                    => None
-            case (null, FwdPath(sym :: rest)) => Some((sym, Vector(rest)))
-            case (Some((sym0, v)), FwdPath(sym :: rest)) if sym == sym0 =>
-              Some((sym, v :+ rest))
-            case _ => None
-          }
+        n.children.iterator.foldLeft(
+          null: Option[(TermSymbol, Vector[List[TermSymbol]])]) {
+          case (None, _)                    => None
+          case (null, FwdPath(sym :: rest)) => Some((sym, Vector(rest)))
+          case (Some((sym0, v)), FwdPath(sym :: rest)) if sym == sym0 =>
+            Some((sym, v :+ rest))
+          case _ => None
+        }
   }
 }
 

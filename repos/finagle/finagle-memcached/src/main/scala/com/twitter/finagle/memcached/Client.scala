@@ -918,8 +918,9 @@ private[finagle] class KetamaFailureAccrualFactory[Req, Rep](
   ) =
     this(
       underlying,
-      FailureAccrualPolicy
-        .consecutiveFailures(numFailures, Backoff.fromFunction(markDeadFor)),
+      FailureAccrualPolicy.consecutiveFailures(
+        numFailures,
+        Backoff.fromFunction(markDeadFor)),
       timer,
       key,
       healthBroker,

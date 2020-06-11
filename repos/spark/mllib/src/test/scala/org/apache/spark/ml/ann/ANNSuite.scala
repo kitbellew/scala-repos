@@ -60,7 +60,8 @@ class ANNSuite extends SparkFunSuite with MLlibTestSparkContext {
     }
   }
 
-  test("ANN with SoftMax learns XOR function with 2-bit output and batch GD optimizer") {
+  test(
+    "ANN with SoftMax learns XOR function with 2-bit output and batch GD optimizer") {
     val inputs = Array(
       Array(0.0, 0.0),
       Array(0.0, 1.0),

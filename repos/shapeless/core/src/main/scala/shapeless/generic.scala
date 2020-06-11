@@ -455,8 +455,8 @@ trait CaseClassMacros extends ReprTypes {
                 val (valPre, valSym) = mkDependentRef(basePre, path)
                 c.internal.singleType(valPre, valSym)
               } else {
-                val path = suffix.tail.init
-                  .map(_.name.toTermName) :+ suffix.last.name.toTypeName
+                val path = suffix.tail.init.map(
+                  _.name.toTermName) :+ suffix.last.name.toTypeName
                 val (subTpePre, subTpeSym) = mkDependentRef(basePre, path)
                 c.internal.typeRef(subTpePre, subTpeSym, substituteArgs)
               }

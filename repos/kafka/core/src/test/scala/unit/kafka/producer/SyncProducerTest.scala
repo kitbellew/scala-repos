@@ -299,7 +299,8 @@ class SyncProducerTest extends KafkaServerTestHarness {
     val t1 = SystemTime.milliseconds
     try {
       producer.send(request)
-      fail("Should have received timeout exception since request handling is stopped.")
+      fail(
+        "Should have received timeout exception since request handling is stopped.")
     } catch {
       case e: SocketTimeoutException => /* success */
       case e: Throwable =>

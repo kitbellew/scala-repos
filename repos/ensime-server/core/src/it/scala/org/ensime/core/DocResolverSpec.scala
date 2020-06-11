@@ -309,7 +309,8 @@ class DocResolverSpec
           DocSigPair(
             DocSig(
               DocFqn("com.google.common.io", "Files$"),
-              Some("map(x$1:java.io.File,x$2:java.nio.channels.FileChannel.MapMode):java.nio.MappedByteBuffer")),
+              Some(
+                "map(x$1:java.io.File,x$2:java.nio.channels.FileChannel.MapMode):java.nio.MappedByteBuffer")),
             DocSig(
               DocFqn("com.google.common.io", "Files"),
               Some("map(java.io.File, java.nio.channels.FileChannel.MapMode)"))
@@ -331,7 +332,8 @@ class DocResolverSpec
           DocSigPair(
             DocSig(
               DocFqn("com.google.common.io", "Files$"),
-              Some("map(x$1:java.io.File,x$2:java.nio.channels.FileChannel.MapMode,x$3:Long):java.nio.MappedByteBuffer")),
+              Some(
+                "map(x$1:java.io.File,x$2:java.nio.channels.FileChannel.MapMode,x$3:Long):java.nio.MappedByteBuffer")),
             DocSig(
               DocFqn("com.google.common.io", "Files"),
               Some(
@@ -644,7 +646,8 @@ class DocResolverSpec
         DocSig(
           DocFqn("com.github.dvdme.ForecastIOLib", "ForecastIO"),
           Some("getForecast(com.eclipsesource.json.JsonObject)"))
-      ) shouldBe Some("docs/ForecastIOLib-1.5.1-javadoc.jar/com/github/dvdme/ForecastIOLib/ForecastIO.html#getForecast-com.eclipsesource.json.JsonObject-")
+      ) shouldBe Some(
+        "docs/ForecastIOLib-1.5.1-javadoc.jar/com/github/dvdme/ForecastIOLib/ForecastIO.html#getForecast-com.eclipsesource.json.JsonObject-")
 
       serv.resolve(
         DocSig(DocFqn("java.io", "File"), Some("delete()"))

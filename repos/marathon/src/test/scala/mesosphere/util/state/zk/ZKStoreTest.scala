@@ -111,8 +111,8 @@ class ZKStoreTest
     implicit val timer = com.twitter.util.Timer.Nil
     val timeout =
       com.twitter.util.TimeConversions.intToTimeableNumber(10).minutes
-    val client = ZkClient(config.zkHostAndPort, timeout)
-      .withAcl(Ids.OPEN_ACL_UNSAFE.asScala)
+    val client = ZkClient(config.zkHostAndPort, timeout).withAcl(
+      Ids.OPEN_ACL_UNSAFE.asScala)
     new ZKStore(client, client(config.zkPath), conf)
   }
 

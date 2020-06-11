@@ -103,8 +103,9 @@ abstract class JavaAction(components: JavaHandlerComponents)
       }
     }
 
-    val baseAction = components.actionCreator
-      .createAction(javaContext.request, annotations.method)
+    val baseAction = components.actionCreator.createAction(
+      javaContext.request,
+      annotations.method)
 
     val endOfChainAction = if (config.executeActionCreatorActionFirst) {
       rootAction

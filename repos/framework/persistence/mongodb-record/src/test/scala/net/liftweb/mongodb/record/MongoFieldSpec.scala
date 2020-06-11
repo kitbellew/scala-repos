@@ -72,8 +72,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
 
       "which have the correct initial value" in {
         field.value must be_==(field.defaultValue).when(canCheckDefaultValues)
-        field.valueBox must be_==(field.defaultValueBox)
-          .when(canCheckDefaultValues)
+        field.valueBox must be_==(field.defaultValueBox).when(
+          canCheckDefaultValues)
       }
 
       "which are readable and writable" in {
@@ -89,8 +89,8 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       }
 
       "which correctly clear back to the default" in {
-        { field.clear; field.valueBox } must be_==(field.defaultValueBox)
-          .when(canCheckDefaultValues)
+        { field.clear; field.valueBox } must be_==(field.defaultValueBox).when(
+          canCheckDefaultValues)
       }
 
       "which capture error conditions set in" in {

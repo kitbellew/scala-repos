@@ -45,7 +45,8 @@ object ExecutionTestJobs {
       .writeExecution(TypedTsv(out))
 
   def wordCount2(in: TypedPipe[String]) =
-    in.flatMap(_.split("\\s+"))
+    in
+      .flatMap(_.split("\\s+"))
       .map((_, 1L))
       .sumByKey
       .toIterableExecution
@@ -339,7 +340,8 @@ class ExecutionTest extends WordSpec with Matchers {
         case mos: MacroEqualityOrderedSerialization[_] =>
           assert(mos.uniqueId == "com.twitter.scalding.typed.MyCustomType")
         case _ =>
-          sys.error("Ordered serialization should have been the MacroEqualityOrderedSerialization for this test")
+          sys.error(
+            "Ordered serialization should have been the MacroEqualityOrderedSerialization for this test")
       }
       def executionLoop(idx: Int): Execution[Unit] = {
         if (idx > 0)

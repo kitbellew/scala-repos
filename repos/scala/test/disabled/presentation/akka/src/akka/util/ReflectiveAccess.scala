@@ -33,8 +33,9 @@ object ReflectiveAccess {
     * @author <a href="http://jonasboner.com">Jonas Bon&#233;r</a>
     */
   object Remote {
-    val TRANSPORT = Config.config
-      .getString("akka.remote.layer", "akka.remote.netty.NettyRemoteSupport")
+    val TRANSPORT = Config.config.getString(
+      "akka.remote.layer",
+      "akka.remote.netty.NettyRemoteSupport")
 
     private[akka] val configDefaultAddress =
       new InetSocketAddress(

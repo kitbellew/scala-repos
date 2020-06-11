@@ -155,8 +155,8 @@ trait IntegrationTest {
     import scala.collection.JavaConversions._
     if (root.isLeaf && !names.contains(root.getName)) true
     else
-      !names.contains(root.getName) && root.getChildren.toList
-        .forall(checkResultTreeDoesNotHaveNodes(_, names))
+      !names.contains(root.getName) && root.getChildren.toList.forall(
+        checkResultTreeDoesNotHaveNodes(_, names))
   }
 
   protected def getExactNamePathFromResultTree(

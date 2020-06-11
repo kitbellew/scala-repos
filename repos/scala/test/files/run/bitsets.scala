@@ -119,7 +119,7 @@ object TestMutable3 {
   println(s"b0:$b0")
 }
 
-/**
+/** *
   * The memory requirements here are way beyond
   * what a test should exercise.
   *

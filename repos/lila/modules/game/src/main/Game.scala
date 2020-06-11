@@ -182,8 +182,9 @@ case class Game(
       player.copy(
         blurs = math.min(
           playerMoves(player.color),
-          player.blurs + (blur && moveOrDrop
-            .fold(_.color, _.color) == player.color).fold(1, 0))
+          player.blurs + (blur && moveOrDrop.fold(
+            _.color,
+            _.color) == player.color).fold(1, 0))
       )
 
     val updated = copy(

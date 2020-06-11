@@ -753,8 +753,9 @@ object AdminUtils extends Logging {
               } catch {
                 case e: Throwable =>
                   throw new LeaderNotAvailableException(
-                    "Leader not available for partition [%s,%d]"
-                      .format(topic, partition),
+                    "Leader not available for partition [%s,%d]".format(
+                      topic,
+                      partition),
                     e)
               }
             case None =>
@@ -792,8 +793,9 @@ object AdminUtils extends Logging {
         } catch {
           case e: Throwable =>
             debug(
-              "Error while fetching metadata for partition [%s,%d]"
-                .format(topic, partition),
+              "Error while fetching metadata for partition [%s,%d]".format(
+                topic,
+                partition),
               e)
             new MetadataResponse.PartitionMetadata(
               Errors.forException(e),

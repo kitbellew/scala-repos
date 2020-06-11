@@ -147,11 +147,13 @@ class TaskContextSuite
     assert(e.getMessage.contains("exception in task"))
   }
 
-  test("TaskContext.attemptNumber should return attempt number, not task id (SPARK-4014)") {
-    sc = new SparkContext(
-      "local[1,2]",
-      "test"
-    ) // use maxRetries = 2 because we test failed tasks
+  test(
+    "TaskContext.attemptNumber should return attempt number, not task id (SPARK-4014)") {
+    sc =
+      new SparkContext(
+        "local[1,2]",
+        "test"
+      ) // use maxRetries = 2 because we test failed tasks
     // Check that attemptIds are 0 for all tasks' initial attempts
     val attemptIds = sc
       .parallelize(Seq(1, 2), 2)

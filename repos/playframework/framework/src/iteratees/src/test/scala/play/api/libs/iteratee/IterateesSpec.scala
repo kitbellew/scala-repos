@@ -259,8 +259,9 @@ object IterateesSpec
 
       import ExecutionContext.Implicits.global
       val unitDone: Iteratee[Unit, Unit] = Done(())
-      val flatMapped: Iteratee[Unit, Unit] = (0 until overflowDepth)
-        .foldLeft[Iteratee[Unit, Unit]](Cont(_ => unitDone)) {
+      val flatMapped: Iteratee[Unit, Unit] =
+        (0 until overflowDepth).foldLeft[Iteratee[Unit, Unit]](Cont(_ =>
+          unitDone)) {
           case (it, _) => it.flatMap(_ => unitDone)
         }
       await(await(flatMapped.feed(Input.EOF)).unflatten) must equalTo(

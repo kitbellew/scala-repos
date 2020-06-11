@@ -60,8 +60,9 @@ class ConvertToInfixIntention extends PsiElementBaseIntentionAction {
         } catch {
           case npe: NullPointerException =>
             throw new RuntimeException(
-              "Unable to replace: %s with %s"
-                .format(paramTypeElement, newTypeText),
+              "Unable to replace: %s with %s".format(
+                paramTypeElement,
+                newTypeText),
               npe)
         }
       UndoUtil.markPsiFileForUndo(replaced.getContainingFile)

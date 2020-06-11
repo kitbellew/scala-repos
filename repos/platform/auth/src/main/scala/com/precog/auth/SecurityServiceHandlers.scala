@@ -122,7 +122,8 @@ class SecurityServiceHandlers(
               } else {
                 Promise successful badRequest(
                   "Error creating new API key.",
-                  Some("Requestor lacks permission to assign given grants to API key"))
+                  Some(
+                    "Requestor lacks permission to assign given grants to API key"))
               }
             }
           }
@@ -398,9 +399,8 @@ class SecurityServiceHandlers(
         } yield response.toEither.merge
       }
 
-    val metadata =
-      DescriptionMetadata(
-        "Creates a new grant as a child of the grant resource specified in the request URL, and deriving its permissions therefrom.")
+    val metadata = DescriptionMetadata(
+      "Creates a new grant as a child of the grant resource specified in the request URL, and deriving its permissions therefrom.")
   }
 
   object DeleteGrantHandler

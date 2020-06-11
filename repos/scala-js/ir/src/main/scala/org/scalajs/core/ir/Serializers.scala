@@ -805,8 +805,8 @@ object Serializers {
             ConstructorExportDef(readString(), readParamDefs(), readTree())
           if (foundArguments) {
             foundArguments = false
-            new RewriteArgumentsTransformer()
-              .transformConstructorExportDef(result)
+            new RewriteArgumentsTransformer().transformConstructorExportDef(
+              result)
           } else {
             result
           }

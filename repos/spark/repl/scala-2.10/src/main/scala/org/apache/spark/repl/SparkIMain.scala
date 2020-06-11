@@ -667,7 +667,8 @@ class SparkIMain(
     } {
       afterTyper(replwarn(
         s"warning: previously defined $oldSym is not a companion to $newSym."))
-      replwarn("Companions must be defined together; you may wish to use :paste mode for this.")
+      replwarn(
+        "Companions must be defined together; you may wish to use :paste mode for this.")
     }
 
     // Updating the defined name map
@@ -1306,8 +1307,10 @@ class SparkIMain(
           List(
             "def $line  = " + tquoted(originalLine),
             "def $req = %s.requestForReqId(%s).orNull".format(path, reqId),
-            "def $trees = if ($req eq null) Nil else $req.trees"
-              .format(lineRep.readName, path, reqId)
+            "def $trees = if ($req eq null) Nil else $req.trees".format(
+              lineRep.readName,
+              path,
+              reqId)
           )
       }
 
@@ -1557,13 +1560,13 @@ class SparkIMain(
     */
   @DeveloperApi
   def symbolOfTerm(id: String): Symbol =
-    requestForIdent(newTermName(id))
-      .fold(NoSymbol: Symbol)(_ definedTermSymbol id)
+    requestForIdent(newTermName(id)).fold(NoSymbol: Symbol)(
+      _ definedTermSymbol id)
 
   // TODO: No use yet, but could be exposed as a DeveloperApi
   private def symbolOfType(id: String): Symbol =
-    requestForName(newTypeName(id))
-      .fold(NoSymbol: Symbol)(_ definedTypeSymbol id)
+    requestForName(newTypeName(id)).fold(NoSymbol: Symbol)(
+      _ definedTypeSymbol id)
 
   /**
     * Retrieves the runtime class and type representing the id (variable name,

@@ -128,7 +128,8 @@ class AppInfoBaseDataTest
     f.verifyNoMoreInteractions()
   }
 
-  test("requesting task counts only retrieves tasks from taskTracker and health stats") {
+  test(
+    "requesting task counts only retrieves tasks from taskTracker and health stats") {
     val f = new Fixture
     Given("one staged and two running tasks in the taskTracker")
     val staged = MarathonTestHelper.stagedTaskProto("task1")
@@ -204,7 +205,8 @@ class AppInfoBaseDataTest
           Seq(Identifiable(relatedDeployment.id))
         )))
 
-    And("the marathonSchedulerService should have been called to retrieve the deployments")
+    And(
+      "the marathonSchedulerService should have been called to retrieve the deployments")
     verify(f.marathonSchedulerService, times(1)).listRunningDeployments()
 
     And("we have no more interactions")
@@ -231,7 +233,8 @@ class AppInfoBaseDataTest
           Seq.empty
         )))
 
-    And("the marathonSchedulerService should have been called to retrieve the deployments")
+    And(
+      "the marathonSchedulerService should have been called to retrieve the deployments")
     verify(f.marathonSchedulerService, times(1)).listRunningDeployments()
 
     And("we have no more interactions")
@@ -257,7 +260,8 @@ class AppInfoBaseDataTest
           TaskFailureTestHelper.taskFailure
         )))
 
-    And("the taskFailureRepository should have been called to retrieve the failure")
+    And(
+      "the taskFailureRepository should have been called to retrieve the failure")
     verify(f.taskFailureRepository, times(1)).current(app.id)
 
     And("we have no more interactions")
@@ -277,7 +281,8 @@ class AppInfoBaseDataTest
     Then("we get no failure in the app info")
     appInfo should be(AppInfo(app))
 
-    And("the taskFailureRepository should have been called to retrieve the failure")
+    And(
+      "the taskFailureRepository should have been called to retrieve the failure")
     verify(f.taskFailureRepository, times(1)).current(app.id)
 
     And("we have no more interactions")
@@ -371,10 +376,12 @@ class AppInfoBaseDataTest
         maybeDeployments = Some(Seq.empty)
       ))
 
-    And("the taskFailureRepository should have been called to retrieve the failure")
+    And(
+      "the taskFailureRepository should have been called to retrieve the failure")
     verify(f.taskFailureRepository, times(1)).current(app.id)
 
-    And("the marathonSchedulerService should have been called to retrieve the deployments")
+    And(
+      "the marathonSchedulerService should have been called to retrieve the deployments")
     verify(f.marathonSchedulerService, times(1)).listRunningDeployments()
 
     And("we have no more interactions")

@@ -111,7 +111,8 @@ class TryTest extends FunSuite {
     assert(t.exists(_ > 0) == true)
   }
 
-  test("Try.exists: should return false when predicate doesn't pass for a Return value") {
+  test(
+    "Try.exists: should return false when predicate doesn't pass for a Return value") {
     val t = Return(4)
     assert(t.exists(_ < 0) == false)
   }

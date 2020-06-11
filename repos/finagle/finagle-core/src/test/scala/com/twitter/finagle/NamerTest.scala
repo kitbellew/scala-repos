@@ -249,7 +249,8 @@ class NamerTest extends FunSuite with AssertionsForJUnit {
     }
   }
 
-  test("Namer.global: /$/{className} ServiceNamer of incompatible type raises ClassCastException") {
+  test(
+    "Namer.global: /$/{className} ServiceNamer of incompatible type raises ClassCastException") {
     val dst = Path.read("/$/com.twitter.finagle.PathServiceNamer/foo")
     Namer.global.lookup(dst).sample() match {
       case NameTree.Leaf(bound: Name.Bound) =>

@@ -432,8 +432,8 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
   }
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
-    sqlContext.sessionState.functionRegistry
-      .lookupFunction(functionName) match {
+    sqlContext.sessionState.functionRegistry.lookupFunction(
+      functionName) match {
       case Some(info) =>
         val result =
           Row(s"Function: ${info.getName}") ::

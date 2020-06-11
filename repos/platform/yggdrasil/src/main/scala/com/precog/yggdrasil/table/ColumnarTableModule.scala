@@ -368,8 +368,8 @@ object ColumnarTableModule extends Logging {
         ColumnarTableModule.renderCsv(slices)
 
       case other =>
-        logger
-          .warn("Unrecognized output type requested for conversion of slice stream to char buffers: %s"
+        logger.warn(
+          "Unrecognized output type requested for conversion of slice stream to char buffers: %s"
             .format(output))
         StreamT.empty[N, CharBuffer]
     }
@@ -1091,8 +1091,10 @@ trait ColumnarTableModule[M[+_]]
         override def toString = {
           "left: " + lbuf.toArray.mkString("[", ",", "]") + "\n" +
             "right: " + rbuf.toArray.mkString("[", ",", "]") + "\n" +
-            "both: " + (leqbuf.toArray zip reqbuf.toArray)
-            .mkString("[", ",", "]")
+            "both: " + (leqbuf.toArray zip reqbuf.toArray).mkString(
+            "[",
+            ",",
+            "]")
         }
       }
 
@@ -1237,8 +1239,9 @@ trait ColumnarTableModule[M[+_]]
                           case None =>
                             //println("lhead\n" + lkey.toJsonString())
                             //println("rhead\n" + rkey.toJsonString())
-                            sys.error("Inputs are not sorted; value on the left exceeded value on the right at the end of equal span. lpos = %d, rpos = %d"
-                              .format(lpos, rpos))
+                            sys.error(
+                              "Inputs are not sorted; value on the left exceeded value on the right at the end of equal span. lpos = %d, rpos = %d"
+                                .format(lpos, rpos))
 
                           case Some(
                                 SlicePosition(
@@ -1294,7 +1297,8 @@ trait ColumnarTableModule[M[+_]]
                       rightStart,
                       rightEnd)
                   } else {
-                    sys.error("This state should be unreachable, since we only increment one side at a time.")
+                    sys.error(
+                      "This state should be unreachable, since we only increment one side at a time.")
                   }
 
                 case None =>
@@ -1323,7 +1327,8 @@ trait ColumnarTableModule[M[+_]]
                     // left side is exhausted, so we should just split the right and emit
                     SplitRight(rpos)
                   } else {
-                    sys.error("This state should be unreachable, since we only increment one side at a time.")
+                    sys.error(
+                      "This state should be unreachable, since we only increment one side at a time.")
                   }
               }
             }

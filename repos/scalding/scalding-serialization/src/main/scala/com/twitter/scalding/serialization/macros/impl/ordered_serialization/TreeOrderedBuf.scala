@@ -243,8 +243,7 @@ object TreeOrderedBuf {
     val lenA = freshT("lenA")
     val lenB = freshT("lenB")
 
-    t.ctx.Expr[OrderedSerialization[T]](
-      q"""
+    t.ctx.Expr[OrderedSerialization[T]](q"""
       new _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.MacroEqualityOrderedSerialization[$T] {
         // Ensure macro hygene for Option/Some/None
         import _root_.scala.{Option, Some, None}

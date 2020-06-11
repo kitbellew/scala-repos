@@ -80,8 +80,9 @@ abstract class BaseScalaApplicationConfigurationProducer[
       JavaExecutionUtil.getRuntimeQualifiedName(aClass)
     configuration.setName(configuration.suggestedName())
     setupConfigurationModule(context, configuration)
-    JavaRunConfigurationExtensionManager.getInstance
-      .extendCreatedConfiguration(configuration, location)
+    JavaRunConfigurationExtensionManager.getInstance.extendCreatedConfiguration(
+      configuration,
+      location)
   }
 
   private var myPsiElement: PsiElement = null

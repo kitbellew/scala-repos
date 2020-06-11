@@ -224,8 +224,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         new java.io.File(getUserUploadDir(userName), image))
     } getOrElse {
       contentType = "image/png"
-      Thread.currentThread.getContextClassLoader
-        .getResourceAsStream("noimage.png")
+      Thread.currentThread.getContextClassLoader.getResourceAsStream(
+        "noimage.png")
     }
   }
 

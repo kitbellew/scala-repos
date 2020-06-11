@@ -86,7 +86,8 @@ class MetastoreDataSourcesSuite
         read.json(jsonFilePath).registerTempTable("expectedJsonTable")
         checkAnswer(
           sql("SELECT a, b, `c_!@(3)`, `<d>`.`d!`, `<d>`.`=` FROM jsonTable"),
-          sql("SELECT a, b, `c_!@(3)`, `<d>`.`d!`, `<d>`.`=` FROM expectedJsonTable"))
+          sql(
+            "SELECT a, b, `c_!@(3)`, `<d>`.`d!`, `<d>`.`=` FROM expectedJsonTable"))
       }
     }
   }
@@ -407,7 +408,8 @@ class MetastoreDataSourcesSuite
     }
   }
 
-  test("SPARK-5839 HiveMetastoreCatalog does not recognize table aliases of data source tables.") {
+  test(
+    "SPARK-5839 HiveMetastoreCatalog does not recognize table aliases of data source tables.") {
     withTable("savedJsonTable") {
       // Save the df as a managed table (by not specifying the path).
       (1 to 10)

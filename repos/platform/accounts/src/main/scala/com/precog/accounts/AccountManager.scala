@@ -105,8 +105,8 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
               .format(tokenId, accountId)))
         } else {
           logger.debug("Located reset token " + token)
-          findAccountById(token.accountId)
-            .map(_.\/>("Could not find account by id " + token.accountId))
+          findAccountById(token.accountId).map(
+            _.\/>("Could not find account by id " + token.accountId))
         }
 
       case None =>

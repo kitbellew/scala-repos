@@ -57,7 +57,8 @@ object ConsumerPerformance {
 
     if (!config.hideHeader) {
       if (!config.showDetailedStats)
-        println("start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
+        println(
+          "start.time, end.time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
       else
         println(
           "time, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")

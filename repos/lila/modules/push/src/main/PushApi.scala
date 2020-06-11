@@ -103,8 +103,9 @@ private final class PushApi(
               body = describeChallenge(c),
               payload = Json.obj(
                 "userId" -> dest.id,
-                "userData" -> Json
-                  .obj("type" -> "challengeCreate", "challengeId" -> c.id))
+                "userData" -> Json.obj(
+                  "type" -> "challengeCreate",
+                  "challengeId" -> c.id))
             )
           )
         }

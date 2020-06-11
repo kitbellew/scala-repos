@@ -244,8 +244,11 @@ final class DenseMatrix[@spec(Double, Int, Float, Long) V](
     val _cols = cols //if(cols < 0) size / rows else cols
     require(
       rows * _cols == size,
-      "Cannot reshape a (%d,%d) matrix to a (%d,%d) matrix!"
-        .format(this.rows, this.cols, rows, _cols))
+      "Cannot reshape a (%d,%d) matrix to a (%d,%d) matrix!".format(
+        this.rows,
+        this.cols,
+        rows,
+        _cols))
 
     view match {
       case View.Require =>

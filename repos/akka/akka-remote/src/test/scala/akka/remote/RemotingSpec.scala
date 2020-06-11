@@ -200,10 +200,12 @@ class RemotingSpec
       afterSend
       expectNoMsg(500.millis.dilated)
     } finally {
-      system.eventStream
-        .unsubscribe(eventForwarder, classOf[AssociationErrorEvent])
-      system.eventStream
-        .unsubscribe(eventForwarder, classOf[DisassociatedEvent])
+      system.eventStream.unsubscribe(
+        eventForwarder,
+        classOf[AssociationErrorEvent])
+      system.eventStream.unsubscribe(
+        eventForwarder,
+        classOf[DisassociatedEvent])
       eventForwarder ! PoisonPill
       bigBounceOther ! PoisonPill
     }
@@ -776,8 +778,8 @@ class RemotingSpec
 
         val remoteHandle =
           remoteTransportProbe.expectMsgType[Transport.InboundAssociation]
-        remoteHandle.association.readHandlerPromise
-          .success(new HandleEventListener {
+        remoteHandle.association.readHandlerPromise.success(
+          new HandleEventListener {
             override def notify(ev: HandleEvent): Unit = ()
           })
 
@@ -877,8 +879,8 @@ class RemotingSpec
 
         val remoteHandle =
           remoteTransportProbe.expectMsgType[Transport.InboundAssociation]
-        remoteHandle.association.readHandlerPromise
-          .success(new HandleEventListener {
+        remoteHandle.association.readHandlerPromise.success(
+          new HandleEventListener {
             override def notify(ev: HandleEvent): Unit = ()
           })
 

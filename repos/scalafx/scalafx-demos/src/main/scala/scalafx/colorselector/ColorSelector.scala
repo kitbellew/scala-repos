@@ -189,8 +189,9 @@ object ColorSelector extends JFXApp {
   }
   controlBlue.value.onChange({
     changeColor()
-    controlBlue
-      .changeColor(Color.rgb(0, 0, controlBlue.value.value.toInt), Color.White)
+    controlBlue.changeColor(
+      Color.rgb(0, 0, controlBlue.value.value.toInt),
+      Color.White)
   })
   controlBlue.selectedControl.onChange(controlSelected(controlBlue))
   controlBlue.changeColor(

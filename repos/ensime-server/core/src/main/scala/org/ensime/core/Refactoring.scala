@@ -130,8 +130,8 @@ trait RefactoringHandler { self: Analyzer =>
       .map { f =>
         FileUtils.readFile(f, cs) match {
           case Right(contents) =>
-            Try(ScalaFormatter.format(contents, config.formattingPrefs))
-              .map((f, contents, _))
+            Try(ScalaFormatter.format(contents, config.formattingPrefs)).map(
+              (f, contents, _))
           case Left(e) => throw e
         }
       }
@@ -156,8 +156,8 @@ trait RefactoringControl { self: RichCompilerControl with RefactoringImpl =>
       procId: Int,
       refactor: RefactorDesc
   ): Either[RefactorFailure, RefactorEffect] = {
-    askOption(prepareRefactor(procId, refactor))
-      .getOrElse(Left(RefactorFailure(procId, "Refactor call failed")))
+    askOption(prepareRefactor(procId, refactor)).getOrElse(
+      Left(RefactorFailure(procId, "Refactor call failed")))
   }
 
   def askExecRefactor(

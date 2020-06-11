@@ -74,7 +74,8 @@ class UIUtilsSuite extends SparkFunSuite {
       s"\nRunning progress bar should round down\n\nExpected:\n$expected\nGenerated:\n$generated")
   }
 
-  test("decodeURLParameter (SPARK-12708: Sorting task error in Stages Page when yarn mode.)") {
+  test(
+    "decodeURLParameter (SPARK-12708: Sorting task error in Stages Page when yarn mode.)") {
     val encoded1 = "%252F"
     val decoded1 = "/"
     val encoded2 = "%253Cdriver%253E"

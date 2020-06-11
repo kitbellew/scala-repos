@@ -74,8 +74,9 @@ object EphemeralStreamTest extends SpecLite {
   "index infinite stream" in {
     val i = util.Random.nextInt(1000)
     val xs = Stream from 0
-    Foldable[EphemeralStream]
-      .index(EphemeralStream.fromStream(xs), i) must_=== (xs.lift.apply(i))
+    Foldable[EphemeralStream].index(
+      EphemeralStream.fromStream(xs),
+      i) must_=== (xs.lift.apply(i))
   }
 
   "inits" ! forAll { xs: EphemeralStream[Int] =>

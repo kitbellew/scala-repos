@@ -42,8 +42,11 @@ class ResourceMatchTest extends FunSuite with GivenWhenThen with Matchers {
           128,
           "role1",
           reservation = Some(memReservation)),
-        MarathonTestHelper
-          .portsResource(80, 80, "role2", reservation = Some(portReservation))
+        MarathonTestHelper.portsResource(
+          80,
+          80,
+          "role2",
+          reservation = Some(portReservation))
       )
     )
   }

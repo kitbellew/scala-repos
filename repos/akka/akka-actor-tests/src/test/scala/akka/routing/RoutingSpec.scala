@@ -150,8 +150,8 @@ class RoutingSpec
         //#custom-strategy
       }
       val router = system.actorOf(
-        RoundRobinPool(1, supervisorStrategy = escalator)
-          .props(routeeProps = Props[TestActor]))
+        RoundRobinPool(1, supervisorStrategy = escalator).props(
+          routeeProps = Props[TestActor]))
       //#supervision
       router ! GetRoutees
       EventFilter[ActorKilledException](occurrences = 1) intercept {

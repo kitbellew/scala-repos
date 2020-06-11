@@ -288,8 +288,8 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
       clientId: String) {
     metricNameList.foreach(metric => {
       val pattern = (".*clientId=" + clientId + ".*").r
-      val registeredMetrics = scala.collection.JavaConversions
-        .asScalaSet(Metrics.defaultRegistry().allMetrics().keySet())
+      val registeredMetrics = scala.collection.JavaConversions.asScalaSet(
+        Metrics.defaultRegistry().allMetrics().keySet())
       for (registeredMetric <- registeredMetrics) {
         if (registeredMetric.getGroup == metric.getGroup &&
           registeredMetric.getName == metric.getName &&

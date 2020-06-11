@@ -237,8 +237,8 @@ object PlayDocsValidation {
       val astRoot = processor.parseMarkdown(IO.read(markdownFile).toCharArray)
       new ToHtmlSerializer(
         linkRenderer,
-        java.util.Arrays
-          .asList[ToHtmlSerializerPlugin](codeReferenceSerializer))
+        java.util.Arrays.asList[ToHtmlSerializerPlugin](
+          codeReferenceSerializer))
         .toHtml(astRoot)
     }
 
@@ -494,7 +494,8 @@ object PlayDocsValidation {
       link match {
         case badScalaApi
             if badScalaApi.link.startsWith("api/scala/index.html#") =>
-          println("Don't use segment links from the index.html page to scaladocs, use path links, ie:")
+          println(
+            "Don't use segment links from the index.html page to scaladocs, use path links, ie:")
           println("  api/scala/index.html#play.api.Application@requestHandler")
           println("should become:")
           println("  api/scala/play/api/Application.html#requestHandler")

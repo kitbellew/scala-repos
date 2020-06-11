@@ -171,8 +171,10 @@ class GroupDeployIntegrationTest
     val v1Checks = appProxyCheck(appId, "v1", state = true)
 
     When("The group is updated")
-    waitForChange(marathon
-      .updateGroup(gid, group.copy(apps = Some(Set(appProxy(appId, "v2", 2))))))
+    waitForChange(
+      marathon.updateGroup(
+        gid,
+        group.copy(apps = Some(Set(appProxy(appId, "v2", 2))))))
 
     Then("The new version is deployed")
     val v2Checks = appProxyCheck(appId, "v2", state = true)
@@ -244,7 +246,8 @@ class GroupDeployIntegrationTest
     result.code should be(HttpStatus.SC_CONFLICT)
     waitForEvent("group_change_failed")
 
-    When("Another upgrade is triggered with force, while the old one is not completed")
+    When(
+      "Another upgrade is triggered with force, while the old one is not completed")
     val force = marathon.updateGroup(
       id,
       group.copy(apps = Some(Set(appProxy(appId, "v4", 2)))),
@@ -298,7 +301,8 @@ class GroupDeployIntegrationTest
     When("The group gets posted")
     val result = marathon.createGroup(group)
 
-    Then("An unsuccessful response has been posted, with an error indicating cyclic dependencies")
+    Then(
+      "An unsuccessful response has been posted, with an error indicating cyclic dependencies")
     val errors =
       (result.entityJson \ "details" \\ "errors").flatMap(_.as[Seq[String]])
     errors.find(_.contains("cyclic dependencies")) shouldBe defined
@@ -371,7 +375,8 @@ class GroupDeployIntegrationTest
     ping(service.id) should be < ping(frontend.id)
   }
 
-  ignore("Groups with dependant Applications get upgraded in the correct order with maintained upgrade strategy") {
+  ignore(
+    "Groups with dependant Applications get upgraded in the correct order with maintained upgrade strategy") {
     var ping = Map.empty[String, DateTime]
     def key(health: IntegrationHealthCheck) =
       s"${health.appId}_${health.versionId}"
@@ -392,8 +397,8 @@ class GroupDeployIntegrationTest
         dependencies = Set(service.id))
       (
         GroupUpdate("/test".toTestPath, Set(db, service, frontend)),
-        appProxyCheck(db.id, version, state = initialState)
-          .withHealthAction(storeFirst),
+        appProxyCheck(db.id, version, state = initialState).withHealthAction(
+          storeFirst),
         appProxyCheck(service.id, version, state = initialState)
           .withHealthAction(storeFirst),
         appProxyCheck(frontend.id, version, state = initialState)
@@ -460,7 +465,8 @@ class GroupDeployIntegrationTest
     When("The v2 frontend becomes healthy")
     frontendV2.state = true
 
-    Then("The deployment can be finished. All v1 apps are destroyed and all v2 apps are healthy.")
+    Then(
+      "The deployment can be finished. All v1 apps are destroyed and all v2 apps are healthy.")
     waitForChange(upgrade)
     List(dbV1, serviceV1, frontendV1).foreach(_.pinged = false)
     WaitTestSupport.validFor("all v2 apps are alive", 15.seconds) {

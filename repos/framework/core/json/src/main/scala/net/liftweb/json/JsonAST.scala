@@ -911,10 +911,11 @@ object JsonAST {
         ('\u2060', '\u206f'),
         ('\ufeff', '\ufeff'),
         ('\ufff0', '\uffff')
-      ).foldLeft(Set[Char]()) {
-        case (set, (start, end)) =>
-          set ++ (start to end).toSet
-      }
+      )
+        .foldLeft(Set[Char]()) {
+          case (set, (start, end)) =>
+            set ++ (start to end).toSet
+        }
 
     /**
       * Pretty-print JSON with 2-space indentation and escape all JS-sensitive

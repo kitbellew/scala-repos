@@ -441,7 +441,8 @@ class ExtractionsTest {
     val article = TestUtils.getArticle(url, html)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart = "UK INSTITUTES have thrown their weight behind rapid adoption of international financial reporting standards in the US."
+      expectedStart =
+        "UK INSTITUTES have thrown their weight behind rapid adoption of international financial reporting standards in the US."
     )
   }
 

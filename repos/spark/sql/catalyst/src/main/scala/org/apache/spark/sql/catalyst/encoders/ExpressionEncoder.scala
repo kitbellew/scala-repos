@@ -351,8 +351,9 @@ case class ExpressionEncoder[T](
   def resolve(
       schema: Seq[Attribute],
       outerScopes: ConcurrentMap[String, AnyRef]): ExpressionEncoder[T] = {
-    val deserializer = SimpleAnalyzer.ResolveReferences
-      .resolveDeserializer(fromRowExpression, schema)
+    val deserializer = SimpleAnalyzer.ResolveReferences.resolveDeserializer(
+      fromRowExpression,
+      schema)
 
     // Make a fake plan to wrap the deserializer, so that we can go though the whole analyzer, check
     // analysis, go through optimizer, etc.

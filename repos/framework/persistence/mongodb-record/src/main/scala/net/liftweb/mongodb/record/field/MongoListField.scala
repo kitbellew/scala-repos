@@ -181,8 +181,8 @@ class MongoJsonObjectListField[
     val dbl = new BasicDBList
     value.foreach { v =>
       dbl.add(
-        JObjectParser
-          .parse(v.asJObject()(owner.meta.formats))(owner.meta.formats))
+        JObjectParser.parse(v.asJObject()(owner.meta.formats))(
+          owner.meta.formats))
     }
     dbl
   }

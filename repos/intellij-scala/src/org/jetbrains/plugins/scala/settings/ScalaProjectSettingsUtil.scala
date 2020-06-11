@@ -93,8 +93,9 @@ object ScalaProjectSettingsUtil {
       JListCompatibility.add(listModel, index, pattern)
       patternJBList.getList.setSelectedValue(pattern, true)
       ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, index, 0)
-      IdeFocusManager.getGlobalInstance
-        .requestFocus(patternJBList.getList, false)
+      IdeFocusManager.getGlobalInstance.requestFocus(
+        patternJBList.getList,
+        false)
     }
 
     ToolbarDecorator
@@ -135,8 +136,9 @@ object ScalaProjectSettingsUtil {
       JListCompatibility.add(listModel, index + 1, pattern)
       patternJBList.getList.setSelectedValue(pattern, true)
       ScrollingUtil.ensureIndexIsVisible(patternJBList.getList, index, 0)
-      IdeFocusManager.getGlobalInstance
-        .requestFocus(patternJBList.getList, false)
+      IdeFocusManager.getGlobalInstance.requestFocus(
+        patternJBList.getList,
+        false)
     }
 
     ToolbarDecorator

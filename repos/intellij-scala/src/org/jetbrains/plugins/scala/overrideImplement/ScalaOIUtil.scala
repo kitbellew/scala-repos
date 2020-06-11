@@ -139,8 +139,10 @@ object ScalaOIUtil {
           val sortedMembers = ScalaMemberChooser.sorted(selectedMembers, clazz)
           val genInfos = sortedMembers.map(new ScalaGenerationInfo(_))
           val anchor = getAnchor(editor.getCaretModel.getOffset, clazz)
-          val inserted = GenerateMembersUtil
-            .insertMembersBeforeAnchor(clazz, anchor.orNull, genInfos.reverse)
+          val inserted = GenerateMembersUtil.insertMembersBeforeAnchor(
+            clazz,
+            anchor.orNull,
+            genInfos.reverse)
           inserted.headOption.foreach(
             _.positionCaret(editor, toEditMethodBody = true))
         }

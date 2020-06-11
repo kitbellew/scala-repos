@@ -124,8 +124,8 @@ object SessionMaster extends LiftActor with Loggable {
 
       if (dead)(Failure("Dead session", Empty, Empty))
       else {
-        otherId
-          .flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions.get(id))
+        otherId.flatMap(a => Box !! nsessions.get(a)) or (Box !! nsessions.get(
+          id))
       }
     }
 

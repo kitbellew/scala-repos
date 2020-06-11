@@ -348,8 +348,8 @@ object TestNodeProvider {
           case otherExpr =>
             Option(
               otherExpr.findFirstChildByType(
-                ScalaElementTypes.REFERENCE_EXPRESSION))
-              .map(_.asInstanceOf[ScReferenceExpression])
+                ScalaElementTypes.REFERENCE_EXPRESSION)).map(
+              _.asInstanceOf[ScReferenceExpression])
         }
       case _ => None
     }).exists(refExpr =>

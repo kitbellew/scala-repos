@@ -127,8 +127,10 @@ object PlaySettings {
       (dirs * "routes").get ++ (dirs * "*.routes").get
     },
     playMonitoredFiles <<= PlayCommands.playMonitoredFilesTask,
-    fileWatchService := FileWatchService
-      .defaultWatchService(target.value, pollInterval.value, sLog.value),
+    fileWatchService := FileWatchService.defaultWatchService(
+      target.value,
+      pollInterval.value,
+      sLog.value),
     playDefaultPort := 9000,
     playDefaultAddress := "0.0.0.0",
     // Default hooks

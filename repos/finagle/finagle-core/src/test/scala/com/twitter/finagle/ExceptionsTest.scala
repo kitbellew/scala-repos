@@ -29,21 +29,24 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("ChannelException should generate message with address info when address is provided") {
+  test(
+    "ChannelException should generate message with address info when address is provided") {
     new ExceptionsHelper {
       val ex = new ChannelException(null, address)
       assert(ex.getMessage.contains("foo"))
     }
   }
 
-  test("ChannelException should generate message with underlying exception info when exception is provided") {
+  test(
+    "ChannelException should generate message with underlying exception info when exception is provided") {
     new ExceptionsHelper {
       val ex = new ChannelException(underlying, null)
       assert(!(ex.getMessage == null))
     }
   }
 
-  test("ChannelException should generate message with correct info when all parameters are provided") {
+  test(
+    "ChannelException should generate message with correct info when all parameters are provided") {
     new ExceptionsHelper {
       val ex = new ChannelException(underlying, address)
       assert(ex.getMessage.contains("foo"))
@@ -51,7 +54,8 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("ChannelException should generate message with service name when it's available") {
+  test(
+    "ChannelException should generate message with service name when it's available") {
     new ExceptionsHelper {
       val ex = new ChannelException(null, null)
       ex.serviceName = "foo"

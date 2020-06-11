@@ -89,8 +89,9 @@ object SafeDeleteProcessorUtil {
           }
 
           val usagesToAdd = if (shouldDelete) {
-            val isInImport = PsiTreeUtil
-              .getParentOfType(element, classOf[ScImportStmt]) != null
+            val isInImport = PsiTreeUtil.getParentOfType(
+              element,
+              classOf[ScImportStmt]) != null
             if (isInImport)
               Seq(
                 new SafeDeleteReferenceJavaDeleteUsageInfo(
@@ -552,8 +553,9 @@ object SafeDeleteProcessorUtil {
                         element.getReference
                           .asInstanceOf[PsiDocMethodOrFieldRef#MyReference]
                       if (javadocMethodReference != null) {
-                        javadocMethodReference
-                          .bindToText(method.containingClass, newText)
+                        javadocMethodReference.bindToText(
+                          method.containingClass,
+                          newText)
                       }
                     }
                   })

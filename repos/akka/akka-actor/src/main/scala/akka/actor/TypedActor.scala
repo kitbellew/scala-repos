@@ -724,8 +724,8 @@ final case class TypedProps[T <: AnyRef] protected[TypedProps] (
     * appended in the sequence of interfaces.
     */
   def withInterface(interface: Class[_ >: T]): TypedProps[T] =
-    this
-      .copy(interfaces = interfaces ++ TypedProps.extractInterfaces(interface))
+    this.copy(interfaces =
+      interfaces ++ TypedProps.extractInterfaces(interface))
 
   /**
     * Returns a new TypedProps without the specified interface,

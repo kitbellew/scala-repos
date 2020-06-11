@@ -92,8 +92,9 @@ class OfflinePartitionLeaderSelector(
                     currentLeaderAndIsr.isr.mkString(",")))
             }
 
-            debug("No broker in ISR is alive for %s. Pick the leader from the alive assigned replicas: %s"
-              .format(topicAndPartition, liveAssignedReplicas.mkString(",")))
+            debug(
+              "No broker in ISR is alive for %s. Pick the leader from the alive assigned replicas: %s"
+                .format(topicAndPartition, liveAssignedReplicas.mkString(",")))
             liveAssignedReplicas.isEmpty match {
               case true =>
                 throw new NoReplicaOnlineException(
@@ -312,7 +313,8 @@ class NoOpLeaderSelector(controllerContext: ControllerContext)
   def selectLeader(
       topicAndPartition: TopicAndPartition,
       currentLeaderAndIsr: LeaderAndIsr): (LeaderAndIsr, Seq[Int]) = {
-    warn("I should never have been asked to perform leader election, returning the current LeaderAndIsr and replica assignment.")
+    warn(
+      "I should never have been asked to perform leader election, returning the current LeaderAndIsr and replica assignment.")
     (
       currentLeaderAndIsr,
       controllerContext.partitionReplicaAssignment(topicAndPartition))

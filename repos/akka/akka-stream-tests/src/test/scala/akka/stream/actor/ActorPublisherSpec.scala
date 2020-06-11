@@ -100,8 +100,8 @@ object ActorPublisherSpec {
   }
 
   def timeoutingProps(probe: ActorRef, timeout: FiniteDuration): Props =
-    Props(classOf[TimeoutingPublisher], probe, timeout)
-      .withDispatcher("akka.test.stream-dispatcher")
+    Props(classOf[TimeoutingPublisher], probe, timeout).withDispatcher(
+      "akka.test.stream-dispatcher")
 
   class TimeoutingPublisher(probe: ActorRef, timeout: FiniteDuration)
       extends ActorPublisher[Int] {

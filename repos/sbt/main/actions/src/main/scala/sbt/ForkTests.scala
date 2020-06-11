@@ -35,8 +35,8 @@ private[sbt] object ForkTests {
             Map.empty[String, SuiteResult],
             Iterable.empty))
       else
-        mainTestTask(runners, opts, classpath, fork, log, config.parallel)
-          .tagw(config.tags: _*)
+        mainTestTask(runners, opts, classpath, fork, log, config.parallel).tagw(
+          config.tags: _*)
     main.dependsOn(all(opts.setup): _*) flatMap { results =>
       all(opts.cleanup).join.map(_ => results)
     }

@@ -66,10 +66,11 @@ object RemoveInternalClusterShardingData {
       val remove2dot3Data = (args(0) == "-2.3")
       val typeNames = if (remove2dot3Data) args.tail.toSet else args.toSet
       if (typeNames.isEmpty)
-        println("Specify the Cluster Sharding type names to remove in program arguments")
+        println(
+          "Specify the Cluster Sharding type names to remove in program arguments")
       else {
-        val journalPluginId = system.settings.config
-          .getString("akka.cluster.sharding.journal-plugin-id")
+        val journalPluginId = system.settings.config.getString(
+          "akka.cluster.sharding.journal-plugin-id")
         import system.dispatcher
         remove(
           system,

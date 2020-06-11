@@ -94,7 +94,7 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       assert(waitForMemberSize(myPool, 0, 5))
       var currentMembers = myPool.members
 
-      /** * start 5 more memcached servers and join the cluster ***** */
+      /** *** start 5 more memcached servers and join the cluster ***** */
       // cache pool should remain the same size at this moment
       addShards(List(5, 6, 7, 8, 9))
       assert(waitForMemberSize(myPool, 5, 5))
@@ -107,7 +107,7 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       assert(myPool.members != currentMembers)
       currentMembers = myPool.members
 
-      /** * remove 2 servers from the zk serverset ***** */
+      /** *** remove 2 servers from the zk serverset ***** */
       // cache pool should remain the same size at this moment
       testServers(0)._2.leave()
       testServers(1)._2.leave()
@@ -121,7 +121,7 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       assert(myPool.members != currentMembers)
       currentMembers = myPool.members
 
-      /** * remove 2 more then add 3 ***** */
+      /** *** remove 2 more then add 3 ***** */
       // cache pool should remain the same size at this moment
       testServers(2)._2.leave()
       testServers(3)._2.leave()
@@ -141,8 +141,9 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
     test("node key remap") {
       // turn on detecting key remapping
       val output: ByteArrayOutputStream = new ByteArrayOutputStream
-      CachePoolConfig.jsonCodec
-        .serialize(CachePoolConfig(5, detectKeyRemapping = true), output)
+      CachePoolConfig.jsonCodec.serialize(
+        CachePoolConfig(5, detectKeyRemapping = true),
+        output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
 
       // the cluster initially must have 5 members
@@ -150,7 +151,7 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       assert(waitForMemberSize(myPool, 0, 5))
       var currentMembers = myPool.members
 
-      /** * only remap shard key should immediately take effect ***** */
+      /** *** only remap shard key should immediately take effect ***** */
       testServers(2)._2.leave()
       testServers(3)._2.leave()
       addShards(List(2, 3))
@@ -161,8 +162,9 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       currentMembers = myPool.members
 
       // turn off detecting key remapping
-      CachePoolConfig.jsonCodec
-        .serialize(CachePoolConfig(5, detectKeyRemapping = false), output)
+      CachePoolConfig.jsonCodec.serialize(
+        CachePoolConfig(5, detectKeyRemapping = false),
+        output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
       assert(waitForMemberSize(myPool, 5, 5))
       assert(
@@ -175,9 +177,10 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
         myPool.members == currentMembers,
         myPool.members + " should equal to " + currentMembers)
 
-      /** * remap shard key while adding keys should not take effect ***** */
-      CachePoolConfig.jsonCodec
-        .serialize(CachePoolConfig(5, detectKeyRemapping = true), output)
+      /** *** remap shard key while adding keys should not take effect ***** */
+      CachePoolConfig.jsonCodec.serialize(
+        CachePoolConfig(5, detectKeyRemapping = true),
+        output)
       zookeeperClient.get().setData(zkPath, output.toByteArray, -1)
       assert(waitForMemberSize(myPool, 5, 5))
       testServers(0)._2.leave()
@@ -196,20 +199,20 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       assert(waitForMemberSize(myPool, 0, 5))
       var currentMembers = myPool.members
 
-      /** * fail the server here to verify the pool manager will re-establish ***** */
+      /** *** fail the server here to verify the pool manager will re-establish ***** */
       // cache pool cluster should remain the same
       zookeeperServer.expireClientSession(zookeeperClient)
       zookeeperServer.shutdownNetwork()
       assert(waitForMemberSize(myPool, 5, 5))
       assert(myPool.members == currentMembers)
 
-      /** * start the server now ***** */
+      /** *** start the server now ***** */
       // cache pool cluster should remain the same
       zookeeperServer.startNetwork
       assert(waitForMemberSize(myPool, 5, 5, 15.seconds))
       assert(myPool.members == currentMembers)
 
-      /** * start 5 more memcached servers and join the cluster ***** */
+      /** *** start 5 more memcached servers and join the cluster ***** */
       // update config data node, which triggers the pool update
       // cache pool cluster should still be able to see underlying pool changes
       addShards(List(5, 6, 7, 8, 9))

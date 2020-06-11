@@ -85,20 +85,23 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
           Task.NetworkInfoList(networkWithOneIp1, networkWithOneIp2))
   }
 
-  test("effectiveIpAddress returns the agent address for MarathonTask instances without their own IP addresses") {
+  test(
+    "effectiveIpAddress returns the agent address for MarathonTask instances without their own IP addresses") {
     val f = new Fixture
     f.taskWithoutIp.effectiveIpAddress(f.appWithIpAddress) should equal(f.host)
     f.taskWithoutIp.effectiveIpAddress(f.appWithoutIpAddress) should equal(
       f.host)
   }
 
-  test("effectiveIpAddress returns the container ip for MarathonTask instances with one NetworkInfo (if the app requests an IP)") {
+  test(
+    "effectiveIpAddress returns the container ip for MarathonTask instances with one NetworkInfo (if the app requests an IP)") {
     val f = new Fixture
     f.taskWithOneIp.effectiveIpAddress(f.appWithIpAddress) should equal(
       f.ipString1)
   }
 
-  test("effectiveIpAddress returns the first container ip for for MarathonTask instances with multiple NetworkInfos (if the app requests an IP)") {
+  test(
+    "effectiveIpAddress returns the first container ip for for MarathonTask instances with multiple NetworkInfos (if the app requests an IP)") {
     val f = new Fixture
     f.taskWithMultipleNetworksAndOneIp.effectiveIpAddress(
       f.appWithIpAddress) should equal(f.ipString1)
@@ -110,7 +113,8 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
       f.appWithIpAddress) should equal(f.host)
   }
 
-  test("effectiveIpAddress returns the agent ip for MarathonTask instances with one NetworkInfo (if the app does NOT request an IP)") {
+  test(
+    "effectiveIpAddress returns the agent ip for MarathonTask instances with one NetworkInfo (if the app does NOT request an IP)") {
     val f = new Fixture
     f.taskWithOneIp.effectiveIpAddress(f.appWithoutIpAddress) should equal(
       f.host)
@@ -122,7 +126,8 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
     f.taskWithoutIp.ipAddresses should be(empty)
   }
 
-  test("ipAddresses returns an empty list for MarathonTask instances with no IPs and multiple NetworkInfos") {
+  test(
+    "ipAddresses returns an empty list for MarathonTask instances with no IPs and multiple NetworkInfos") {
     val f = new Fixture
     f.taskWithMultipleNetworkAndNoIp.ipAddresses should be(empty)
   }
@@ -134,18 +139,21 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
       Seq(f.ipAddress1, f.ipAddress2))
   }
 
-  test("ipAddresses returns all IPs for MarathonTask instances with multiple IPs and multiple NetworkInfos") {
+  test(
+    "ipAddresses returns all IPs for MarathonTask instances with multiple IPs and multiple NetworkInfos") {
     val f = new Fixture
     f.taskWithMultipleNetworkAndMultipleIPs.ipAddresses should equal(
       Seq(f.ipAddress1, f.ipAddress2))
   }
 
-  test("ipAddresses returns one IP for MarathonTask instances with one IP and one NetworkInfo") {
+  test(
+    "ipAddresses returns one IP for MarathonTask instances with one IP and one NetworkInfo") {
     val f = new Fixture
     f.taskWithOneIp.ipAddresses should equal(Seq(f.ipAddress1))
   }
 
-  test("ipAddresses returns one IP for MarathonTask instances with one IP and multiple NetworkInfo") {
+  test(
+    "ipAddresses returns one IP for MarathonTask instances with one IP and multiple NetworkInfo") {
     val f = new Fixture
     f.taskWithMultipleNetworksAndOneIp.ipAddresses should equal(
       Seq(f.ipAddress1))

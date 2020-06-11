@@ -24,8 +24,8 @@ final case class Insert(
                                                      else nodeType)
   }
   override def getDumpInfo =
-    super.getDumpInfo
-      .copy(mainInfo = allFields.mkString("allFields=[", ", ", "]"))
+    super.getDumpInfo.copy(mainInfo =
+      allFields.mkString("allFields=[", ", ", "]"))
 }
 
 /** A column in an Insert operation. */

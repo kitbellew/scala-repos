@@ -17,8 +17,9 @@ class RewriteDistinct extends Phase {
           {
 
             case n @ Bind(s1, dist1: Distinct, Pure(sel1, ts1)) =>
-              logger
-                .debug("Rewriting Distinct in Bind:", Ellipsis(n, List(0, 0)))
+              logger.debug(
+                "Rewriting Distinct in Bind:",
+                Ellipsis(n, List(0, 0)))
               val (inner, sel2) = rewrite(s1, dist1, sel1)
               Bind(s1, inner, Pure(sel2, ts1)).infer()
 

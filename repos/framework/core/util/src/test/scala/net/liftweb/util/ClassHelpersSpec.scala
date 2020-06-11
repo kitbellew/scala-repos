@@ -231,10 +231,11 @@ object ClassHelpersSpec extends Specification {
         .apply() must_== Full(0)
     }
     "The invoker function will throw the cause exception if the method can't be called" in {
-      (() =>
-        createInvoker("get", "")
-          .openOrThrowException("Test")
-          .apply)() must throwA[Exception]
+      (
+          () =>
+            createInvoker("get", "")
+              .openOrThrowException("Test")
+              .apply)() must throwA[Exception]
     }
   }
 

@@ -86,23 +86,20 @@ class JDBCSuite
       .executeUpdate()
     conn.commit()
 
-    sql(
-      s"""
+    sql(s"""
         |CREATE TEMPORARY TABLE foobar
         |USING org.apache.spark.sql.jdbc
         |OPTIONS (url '$url', dbtable 'TEST.PEOPLE', user 'testUser', password 'testPass')
       """.stripMargin.replaceAll("\n", " "))
 
-    sql(
-      s"""
+    sql(s"""
         |CREATE TEMPORARY TABLE fetchtwo
         |USING org.apache.spark.sql.jdbc
         |OPTIONS (url '$url', dbtable 'TEST.PEOPLE', user 'testUser', password 'testPass',
         |         fetchSize '2')
       """.stripMargin.replaceAll("\n", " "))
 
-    sql(
-      s"""
+    sql(s"""
         |CREATE TEMPORARY TABLE parts
         |USING org.apache.spark.sql.jdbc
         |OPTIONS (url '$url', dbtable 'TEST.PEOPLE', user 'testUser', password 'testPass',
@@ -123,8 +120,7 @@ class JDBCSuite
         "insert into test.inttypes values (null, null, null, null, null)")
       .executeUpdate()
     conn.commit()
-    sql(
-      s"""
+    sql(s"""
         |CREATE TEMPORARY TABLE inttypes
         |USING org.apache.spark.sql.jdbc
         |OPTIONS (url '$url', dbtable 'TEST.INTTYPES', user 'testUser', password 'testPass')
@@ -144,8 +140,7 @@ class JDBCSuite
     stmt.setBytes(5, testBytes)
     stmt.setString(6, "I am a clob!")
     stmt.executeUpdate()
-    sql(
-      s"""
+    sql(s"""
         |CREATE TEMPORARY TABLE strtypes
         |USING org.apache.spark.sql.jdbc
         |OPTIONS (url '$url', dbtable 'TEST.STRTYPES', user 'testUser', password 'testPass')
@@ -184,8 +179,7 @@ class JDBCSuite
           + "123456789012345.543215432154321)")
       .executeUpdate()
     conn.commit()
-    sql(
-      s"""
+    sql(s"""
         |CREATE TEMPORARY TABLE flttypes
         |USING org.apache.spark.sql.jdbc
         |OPTIONS (url '$url', dbtable 'TEST.FLTTYPES', user 'testUser', password 'testPass')
@@ -205,8 +199,7 @@ class JDBCSuite
           + "null, null, null, null, null, null)")
       .executeUpdate()
     conn.commit()
-    sql(
-      s"""
+    sql(s"""
          |CREATE TEMPORARY TABLE nulltypes
          |USING org.apache.spark.sql.jdbc
          |OPTIONS (url '$url', dbtable 'TEST.NULLTYPES', user 'testUser', password 'testPass')
@@ -592,8 +585,8 @@ class JDBCSuite
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
     assert(rows(1).getAs[java.sql.Date](1) === null)
     assert(
-      cachedRows(0).getAs[java.sql.Date](1) === java.sql.Date
-        .valueOf("1996-01-01"))
+      cachedRows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf(
+        "1996-01-01"))
   }
 
   test("test DATE types in cache") {
@@ -608,8 +601,8 @@ class JDBCSuite
     assert(
       rows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf("1996-01-01"))
     assert(
-      cachedRows(0).getAs[java.sql.Date](1) === java.sql.Date
-        .valueOf("1996-01-01"))
+      cachedRows(0).getAs[java.sql.Date](1) === java.sql.Date.valueOf(
+        "1996-01-01"))
   }
 
   test("test types for null value") {

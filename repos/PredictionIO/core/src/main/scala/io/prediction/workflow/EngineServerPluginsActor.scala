@@ -28,8 +28,8 @@ class PluginsActor(engineVariant: String) extends Actor {
 
   def receive: PartialFunction[Any, Unit] = {
     case (ei: EngineInstance, q: JValue, p: JValue) =>
-      pluginContext.outputSniffers.values
-        .foreach(_.process(ei, q, p, pluginContext))
+      pluginContext.outputSniffers.values.foreach(
+        _.process(ei, q, p, pluginContext))
     case h: PluginsActor.HandleREST =>
       try {
         sender() ! pluginContext

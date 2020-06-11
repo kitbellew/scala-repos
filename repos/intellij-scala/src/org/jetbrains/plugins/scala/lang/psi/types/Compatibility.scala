@@ -327,8 +327,10 @@ object Compatibility {
               } else {
                 matched ::= (param, expr)
                 matchedTypes ::= (param, exprType)
-                undefSubst += Conformance
-                  .undefinedSubst(tp, exprType, checkWeak = true)
+                undefSubst += Conformance.undefinedSubst(
+                  tp,
+                  exprType,
+                  checkWeak = true)
               }
             }
           } else {

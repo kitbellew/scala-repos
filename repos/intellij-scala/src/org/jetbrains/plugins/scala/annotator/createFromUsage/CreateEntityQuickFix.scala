@@ -144,8 +144,9 @@ abstract class CreateEntityQuickFix(
       if (!isScalaConsole) {
         val newEditor = positionCursor(entity.getLastChild)
         val range = entity.getTextRange
-        newEditor.getDocument
-          .deleteString(range.getStartOffset, range.getEndOffset)
+        newEditor.getDocument.deleteString(
+          range.getStartOffset,
+          range.getEndOffset)
         TemplateManager.getInstance(project).startTemplate(newEditor, template)
       }
     }

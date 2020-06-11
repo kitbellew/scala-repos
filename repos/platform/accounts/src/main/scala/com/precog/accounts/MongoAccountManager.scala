@@ -205,8 +205,8 @@ abstract class MongoAccountManager(
     findOneMatching[ResetToken]("tokenId", tokenId, settings.resetTokens)
 
   def findAccountByAPIKey(apiKey: String) =
-    findOneMatching[Account]("apiKey", apiKey, settings.accounts)
-      .map(_.map(_.accountId))
+    findOneMatching[Account]("apiKey", apiKey, settings.accounts).map(
+      _.map(_.accountId))
 
   def findAccountById(accountId: String) =
     findOneMatching[Account]("accountId", accountId, settings.accounts)

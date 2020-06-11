@@ -42,9 +42,11 @@ object SimpleConsumerPerformance {
 
     if (!config.hideHeader) {
       if (!config.showDetailedStats)
-        println("start.time, end.time, fetch.size, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
+        println(
+          "start.time, end.time, fetch.size, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
       else
-        println("time, fetch.size, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
+        println(
+          "time, fetch.size, data.consumed.in.MB, MB.sec, data.consumed.in.nMsg, nMsg.sec")
     }
 
     val consumer = new SimpleConsumer(

@@ -178,8 +178,8 @@ object LassoWithSGD {
       stepSize: Double,
       regParam: Double,
       miniBatchFraction: Double): LassoModel = {
-    new LassoWithSGD(stepSize, numIterations, regParam, miniBatchFraction)
-      .run(input)
+    new LassoWithSGD(stepSize, numIterations, regParam, miniBatchFraction).run(
+      input)
   }
 
   /**

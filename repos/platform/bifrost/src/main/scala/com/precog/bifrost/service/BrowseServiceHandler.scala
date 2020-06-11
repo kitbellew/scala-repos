@@ -204,8 +204,9 @@ class BrowseServiceHandler[A](
               )
 
             case unexpected =>
-              logger.error("An unexpected error was encountered handling browse request %s: %s"
-                .format(request.shows, unexpected))
+              logger.error(
+                "An unexpected error was encountered handling browse request %s: %s"
+                  .format(request.shows, unexpected))
               HttpResponse[JValue](
                 InternalServerError,
                 content = Some(

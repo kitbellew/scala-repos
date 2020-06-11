@@ -93,19 +93,19 @@ trait BlockLoadSpec[M[+_]]
     val module = new BlockStoreLoadTestModule(sample)
 
     val expected = sample.data flatMap { jv =>
-      val back = module.schema
-        .foldLeft[JValue](JObject(JField("key", jv \ "key") :: Nil)) {
-          case (obj, (jpath, ctype)) => {
-            val vpath = JPath(JPathField("value") :: jpath.nodes)
-            val valueAtPath = jv.get(vpath)
+      val back = module.schema.foldLeft[JValue](
+        JObject(JField("key", jv \ "key") :: Nil)) {
+        case (obj, (jpath, ctype)) => {
+          val vpath = JPath(JPathField("value") :: jpath.nodes)
+          val valueAtPath = jv.get(vpath)
 
-            if (module.compliesWithSchema(valueAtPath, ctype)) {
-              obj.set(vpath, valueAtPath)
-            } else {
-              obj
-            }
+          if (module.compliesWithSchema(valueAtPath, ctype)) {
+            obj.set(vpath, valueAtPath)
+          } else {
+            obj
           }
         }
+      }
 
       (back \ "value" != JUndefined).option(back)
     }

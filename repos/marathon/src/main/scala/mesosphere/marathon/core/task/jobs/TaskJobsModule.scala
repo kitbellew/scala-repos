@@ -17,8 +17,11 @@ class TaskJobsModule(
       taskTracker: TaskTracker,
       marathonSchedulerDriverHolder: MarathonSchedulerDriverHolder): Unit = {
     leadershipModule.startWhenLeader(
-      KillOverdueTasksActor
-        .props(config, taskTracker, marathonSchedulerDriverHolder, clock),
+      KillOverdueTasksActor.props(
+        config,
+        taskTracker,
+        marathonSchedulerDriverHolder,
+        clock),
       "killOverdueStagedTasks")
   }
 }

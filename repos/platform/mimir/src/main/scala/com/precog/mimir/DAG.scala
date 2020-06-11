@@ -798,8 +798,9 @@ trait DAG extends Instructions {
                       newParent)(graph.loc)
 
                   case graph @ dag.Morph1(m, parent) =>
-                    for { newParent <- memoized(parent) } yield dag
-                      .Morph1(m, newParent)(graph.loc)
+                    for { newParent <- memoized(parent) } yield dag.Morph1(
+                      m,
+                      newParent)(graph.loc)
 
                   case graph @ dag.Morph2(m, left, right) =>
                     for {
@@ -816,16 +817,19 @@ trait DAG extends Instructions {
                       .AbsoluteLoad(newParent, jtpe)(graph.loc)
 
                   case graph @ dag.Operate(op, parent) =>
-                    for { newParent <- memoized(parent) } yield dag
-                      .Operate(op, newParent)(graph.loc)
+                    for { newParent <- memoized(parent) } yield dag.Operate(
+                      op,
+                      newParent)(graph.loc)
 
                   case graph @ dag.Reduce(red, parent) =>
-                    for { newParent <- memoized(parent) } yield dag
-                      .Reduce(red, newParent)(graph.loc)
+                    for { newParent <- memoized(parent) } yield dag.Reduce(
+                      red,
+                      newParent)(graph.loc)
 
                   case dag.MegaReduce(reds, parent) =>
-                    for { newParent <- memoized(parent) } yield dag
-                      .MegaReduce(reds, newParent)
+                    for { newParent <- memoized(parent) } yield dag.MegaReduce(
+                      reds,
+                      newParent)
 
                   case s @ dag.Split(spec, child, id) => {
                     for {
@@ -872,12 +876,16 @@ trait DAG extends Instructions {
                       graph.loc)
 
                   case dag.AddSortKey(parent, sortField, valueField, id) =>
-                    for { newParent <- memoized(parent) } yield dag
-                      .AddSortKey(newParent, sortField, valueField, id)
+                    for { newParent <- memoized(parent) } yield dag.AddSortKey(
+                      newParent,
+                      sortField,
+                      valueField,
+                      id)
 
                   case dag.Memoize(parent, priority) =>
-                    for { newParent <- memoized(parent) } yield dag
-                      .Memoize(newParent, priority)
+                    for { newParent <- memoized(parent) } yield dag.Memoize(
+                      newParent,
+                      priority)
                 }
               )
             }

@@ -697,8 +697,8 @@ trait EntityPage extends HtmlPage {
                 var index = 0
                 constraints map { constraint =>
                   scala.xml.Text({
-                    index += 1; index
-                  } + ". ") ++ constraintToHtml(constraint) ++ <br/>
+                      index += 1; index
+                    } + ". ") ++ constraintToHtml(constraint) ++ <br/>
                 }
               }
           }
@@ -733,8 +733,8 @@ trait EntityPage extends HtmlPage {
 
             val shadowingWarning: NodeSeq =
               if (mbr.isShadowedImplicit)
-                scala.xml
-                  .Text("This implicitly inherited member is shadowed by one or more members in this " +
+                scala.xml.Text(
+                  "This implicitly inherited member is shadowed by one or more members in this " +
                     "class.") ++ shadowingSuggestion
               else if (mbr.isAmbiguousImplicit)
                 scala.xml.Text("This implicitly inherited member is ambiguous. One or more implicitly " +

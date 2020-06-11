@@ -94,7 +94,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("SocksConnectHandler should with no authentication upon connect wrap the downstream connect request") {
+  test(
+    "SocksConnectHandler should with no authentication upon connect wrap the downstream connect request") {
     val h = new SocksConnectHandlerHelper
     import h._
 
@@ -111,7 +112,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
 
   }
 
-  test("SocksConnectHandler should with no authentication upon connect propagate cancellation") {
+  test(
+    "SocksConnectHandler should with no authentication upon connect propagate cancellation") {
     val h = new SocksConnectHandlerHelper
     import h._
 
@@ -126,7 +128,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(e.getFuture.isCancelled)
   }
 
-  test("SocksConnectHandler should with no authentication when connect is successful not propagate success") {
+  test(
+    "SocksConnectHandler should with no authentication when connect is successful not propagate success") {
     val h = new SocksConnectHandlerHelper
     import h._
 
@@ -144,7 +147,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     verify(ctx, times(0)).sendUpstream(any[ChannelEvent])
   }
 
-  test("SocksConnectHandler should with no authentication when connect is successful propagate connection cancellation") {
+  test(
+    "SocksConnectHandler should with no authentication when connect is successful propagate connection cancellation") {
     val h = new SocksConnectHandlerHelper
     import h._
 
@@ -163,7 +167,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     checkDidClose()
   }
 
-  test("SocksConnectHandler should with no authentication when connect is successful do SOCKS negotiation") {
+  test(
+    "SocksConnectHandler should with no authentication when connect is successful do SOCKS negotiation") {
     val h = new SocksConnectHandlerHelper
     import h._
 
@@ -220,7 +225,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("SocksConnectHandler should with no authentication propagate connection failure") {
+  test(
+    "SocksConnectHandler should with no authentication propagate connection failure") {
     val h = new SocksConnectHandlerHelper
     import h._
 
@@ -238,7 +244,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(connectFuture.getCause == exc)
   }
 
-  test("SocksConnectHandler should with username and password authentication when connect is successful do SOCKS negotiation") {
+  test(
+    "SocksConnectHandler should with username and password authentication when connect is successful do SOCKS negotiation") {
     val h = new SocksConnectHandlerHelper
     import h._
 
@@ -308,7 +315,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("SocksConnectHandler should with username and password authentication when connect is successful fail SOCKS negotiation when not authenticated") {
+  test(
+    "SocksConnectHandler should with username and password authentication when connect is successful fail SOCKS negotiation when not authenticated") {
     val h = new SocksConnectHandlerHelper
     import h._
 
@@ -351,7 +359,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("SocksConnectHandler should not add socket address resolve handler when proxy address is resolved") {
+  test(
+    "SocksConnectHandler should not add socket address resolve handler when proxy address is resolved") {
     val pipeline = new DefaultChannelPipeline
     SocksConnectHandler.addHandler(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 2222),
@@ -363,7 +372,8 @@ class SocksConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(pipeline.get("socketAddressResolver") == null)
   }
 
-  test("SocksConnectHandler should add socket address resolve handler when proxy address is unresolved") {
+  test(
+    "SocksConnectHandler should add socket address resolve handler when proxy address is unresolved") {
     val pipeline = new DefaultChannelPipeline
     SocksConnectHandler.addHandler(
       InetSocketAddress.createUnresolved("meow.meow", 2222),

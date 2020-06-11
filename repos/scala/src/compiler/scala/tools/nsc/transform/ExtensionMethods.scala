@@ -273,8 +273,8 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
               .substituteSymbols(origParams, extensionParams)
               .substituteThis(origThis, extensionThis)
               .changeOwner(origMeth -> extensionMeth)
-            new SubstututeRecursion(origMeth, extensionMeth, unit)
-              .transform(tree)
+            new SubstututeRecursion(origMeth, extensionMeth, unit).transform(
+              tree)
           }
           val castBody =
             if (extensionBody.tpe <:< extensionMono.finalResultType)

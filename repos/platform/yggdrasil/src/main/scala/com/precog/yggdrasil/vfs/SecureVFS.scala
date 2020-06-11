@@ -231,8 +231,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
           } yield caching
         }
 
-      logger
-        .debug("Checking on cached result for %s with maxAge = %s and recacheAfter = %s and cacheable = %s"
+      logger.debug(
+        "Checking on cached result for %s with maxAge = %s and recacheAfter = %s and cacheable = %s"
           .format(path, maxAge, recacheAfter, cacheable))
       EitherT.right(vfs.currentVersion(cachePath)) flatMap {
         case Some(VersionEntry(id, _, timestamp))
@@ -420,8 +420,9 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
               } yield {
                 par.fold(
                   errors => {
-                    logger.error("Unable to complete persistence of result stream by %s to %s as %s: %s"
-                      .format(apiKey, path.path, writeAs, errors.shows))
+                    logger.error(
+                      "Unable to complete persistence of result stream by %s to %s as %s: %s"
+                        .format(apiKey, path.path, writeAs, errors.shows))
                     None
                   },
                   _ => Some((x, (pseudoOffset + 1, xs)))

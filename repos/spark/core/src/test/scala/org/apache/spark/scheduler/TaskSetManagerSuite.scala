@@ -275,7 +275,8 @@ class TaskSetManagerSuite
     assert(manager.resourceOffer("exec2", "host2", NO_PREF).get.index == 3)
   }
 
-  test("we do not need to delay scheduling when we only have noPref tasks in the queue") {
+  test(
+    "we do not need to delay scheduling when we only have noPref tasks in the queue") {
     sc = new SparkContext("local", "test")
     val sched =
       new FakeTaskScheduler(sc, ("exec1", "host1"), ("exec3", "host2"))
@@ -423,7 +424,8 @@ class TaskSetManagerSuite
     }
   }
 
-  test("executors should be blacklisted after task failure, in spite of locality preferences") {
+  test(
+    "executors should be blacklisted after task failure, in spite of locality preferences") {
     val rescheduleDelay = 300L
     val conf = new SparkConf()
       .set(
@@ -771,7 +773,8 @@ class TaskSetManagerSuite
     assert(manager.resourceOffer("execA", "host3", NO_PREF).get.index === 2)
   }
 
-  test("SPARK-4939: node-local tasks should be scheduled right after process-local tasks finished") {
+  test(
+    "SPARK-4939: node-local tasks should be scheduled right after process-local tasks finished") {
     sc = new SparkContext("local", "test")
     val sched =
       new FakeTaskScheduler(sc, ("execA", "host1"), ("execB", "host2"))
@@ -795,7 +798,8 @@ class TaskSetManagerSuite
     assert(manager.resourceOffer("execB", "host2", NODE_LOCAL) == None)
   }
 
-  test("SPARK-4939: no-pref tasks should be scheduled after process-local tasks finished") {
+  test(
+    "SPARK-4939: no-pref tasks should be scheduled after process-local tasks finished") {
     sc = new SparkContext("local", "test")
     val sched =
       new FakeTaskScheduler(sc, ("execA", "host1"), ("execB", "host2"))
@@ -854,7 +858,8 @@ class TaskSetManagerSuite
     assert(manager.resourceOffer("execC", "host3", ANY) !== None)
   }
 
-  test("Test that locations with HDFSCacheTaskLocation are treated as PROCESS_LOCAL.") {
+  test(
+    "Test that locations with HDFSCacheTaskLocation are treated as PROCESS_LOCAL.") {
     // Regression test for SPARK-2931
     sc = new SparkContext("local", "test")
     val sched = new FakeTaskScheduler(

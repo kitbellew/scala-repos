@@ -644,7 +644,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     checkDataset(cogrouped, "a13", "b24")
   }
 
-  test("give nice error message when the real number of fields doesn't match encoder schema") {
+  test(
+    "give nice error message when the real number of fields doesn't match encoder schema") {
     val ds = Seq(ClassData("a", 1), ClassData("b", 2)).toDS()
 
     val message = intercept[AnalysisException] {

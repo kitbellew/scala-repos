@@ -65,7 +65,8 @@ class ScalingPropositionTest extends FunSuite with Matchers {
     proposition.tasksToStart shouldBe Some(42)
   }
 
-  test("Determine tasks to kill and start when none are sentenced and need to scale") {
+  test(
+    "Determine tasks to kill and start when none are sentenced and need to scale") {
     val proposition = ScalingProposition.propose(
       runningTasks = Iterable(createTask(1), createTask(2), createTask(3)),
       toKill = Some(noTasks),

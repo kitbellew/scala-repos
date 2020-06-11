@@ -165,7 +165,8 @@ trait Implicits {
       val errPos = err.map(_.errPos).getOrElse(pos)
       val errMsg = err
         .map(_.errMsg)
-        .getOrElse("implicit search has failed. to find out the reason, turn on -Xlog-implicits")
+        .getOrElse(
+          "implicit search has failed. to find out the reason, turn on -Xlog-implicits")
       onError(errPos, errMsg)
     }
     result.tree
@@ -530,11 +531,13 @@ trait Implicits {
             intersectionType(parents map core, tp.typeSymbol.owner)
           case AnnotatedType(annots, tp) => core(tp)
           case ExistentialType(tparams, result) =>
-            core(result)
-              .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
+            core(result).subst(
+              tparams,
+              tparams map (t => core(t.info.bounds.hi)))
           case PolyType(tparams, result) =>
-            core(result)
-              .subst(tparams, tparams map (t => core(t.info.bounds.hi)))
+            core(result).subst(
+              tparams,
+              tparams map (t => core(t.info.bounds.hi)))
           case _ => tp
         }
       def stripped(tp: Type): Type = {
@@ -1494,8 +1497,11 @@ trait Implicits {
       if (settings.XlogImplicits)
         reporter.echo(
           pos,
-          "materializing requested %s.%s[%s] using %s"
-            .format(pre, tagClass.name, tp, materializer))
+          "materializing requested %s.%s[%s] using %s".format(
+            pre,
+            tagClass.name,
+            tp,
+            materializer))
       if (context.macrosEnabled) success(materializer)
       // don't call `failure` here. if macros are disabled, we just fail silently
       // otherwise -Xlog-implicits will spam the long with zillions of "macros are disabled"

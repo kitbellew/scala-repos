@@ -548,7 +548,8 @@ object AppDefinition {
     }
 
   private val containsCmdArgsOrContainer: Validator[AppDefinition] =
-    isTrue("AppDefinition must either contain one of 'cmd' or 'args', and/or a 'container'.") {
+    isTrue(
+      "AppDefinition must either contain one of 'cmd' or 'args', and/or a 'container'.") {
       app =>
         val cmd = app.cmd.nonEmpty
         val args = app.args.nonEmpty
@@ -558,7 +559,8 @@ object AppDefinition {
 
   private def portIndexIsValid(
       hostPortsIndices: Range): Validator[HealthCheck] =
-    isTrue("Health check port indices must address an element of the ports array or container port mappings.") {
+    isTrue(
+      "Health check port indices must address an element of the ports array or container port mappings.") {
       hc =>
         hc.protocol == Protocol.COMMAND || (hc.portIndex match {
           case Some(idx) => hostPortsIndices contains idx

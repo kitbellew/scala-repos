@@ -139,9 +139,8 @@ object EnumerateesSpec
 
     "ignore chunks while predicate is valid" in {
       mustExecute(4) { dropWhileEC =>
-        val drop3AndConsume =
-          Enumeratee.dropWhile[String](_ != "4")(dropWhileEC) &>> Iteratee
-            .consume[String]()
+        val drop3AndConsume = Enumeratee.dropWhile[String](_ != "4")(
+          dropWhileEC) &>> Iteratee.consume[String]()
         val enumerator = Enumerator(Range(1, 20).map(_.toString): _*)
         Await.result(
           enumerator |>>> drop3AndConsume,
@@ -195,9 +194,8 @@ object EnumerateesSpec
 
     "pass chunks until condition is not met" in {
       mustExecute(4) { takeWhileEC =>
-        val take3AndConsume =
-          Enumeratee.takeWhile[String](_ != "4")(takeWhileEC) &>> Iteratee
-            .consume()
+        val take3AndConsume = Enumeratee.takeWhile[String](_ != "4")(
+          takeWhileEC) &>> Iteratee.consume()
         val enumerator = Enumerator(Range(1, 20).map(_.toString): _*)
         Await.result(
           enumerator |>>> take3AndConsume,

@@ -101,8 +101,9 @@ class ScalaCollectionRendererTest
       name: String) = {
     try {
       val frameProxy = evaluationContext.getFrameProxy
-      val local = frameTree.getNodeFactory
-        .getLocalVariableDescriptor(null, frameProxy visibleVariableByName name)
+      val local = frameTree.getNodeFactory.getLocalVariableDescriptor(
+        null,
+        frameProxy visibleVariableByName name)
       local setContext evaluationContext
       local
     } catch {

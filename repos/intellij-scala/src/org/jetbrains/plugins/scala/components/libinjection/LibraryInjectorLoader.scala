@@ -426,8 +426,9 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       candidates: ManifestToDescriptors): ManifestToDescriptors = {
     val (accepted, rejected) = ackProvider.showReviewDialogAndFilter(candidates)
     for ((manifest, _) <- rejected) {
-      jarCache.cache
-        .put(manifest.jarPath, manifest.copy()(isBlackListed = true))
+      jarCache.cache.put(
+        manifest.jarPath,
+        manifest.copy()(isBlackListed = true))
     }
     accepted
   }

@@ -99,8 +99,9 @@ class LogCleaner(
     new Gauge[Int] {
       def value: Int = {
         val stats = cleaners.map(_.lastStats)
-        val recopyRate = stats.map(_.bytesWritten).sum.toDouble / math
-          .max(stats.map(_.bytesRead).sum, 1)
+        val recopyRate = stats.map(_.bytesWritten).sum.toDouble / math.max(
+          stats.map(_.bytesRead).sum,
+          1)
         (100 * recopyRate).toInt
       }
     }
@@ -209,7 +210,8 @@ class LogCleaner(
     override val loggerName = classOf[LogCleaner].getName
 
     if (config.dedupeBufferSize / config.numThreads > Int.MaxValue)
-      warn("Cannot use more than 2G of cleaner buffer space per cleaner thread, ignoring excess buffer space...")
+      warn(
+        "Cannot use more than 2G of cleaner buffer space per cleaner thread, ignoring excess buffer space...")
 
     val cleaner = new Cleaner(
       id = threadId,

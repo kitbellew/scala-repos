@@ -192,19 +192,19 @@ private[cluster] final class ClusterDaemon(settings: ClusterSettings)
       coreSupervisor.foreach(_ forward msg)
     case AddOnMemberUpListener(code) ⇒
       context.actorOf(
-        Props(classOf[OnMemberStatusChangedListener], code, Up)
-          .withDeploy(Deploy.local))
+        Props(classOf[OnMemberStatusChangedListener], code, Up).withDeploy(
+          Deploy.local))
     case AddOnMemberRemovedListener(code) ⇒
       context.actorOf(
-        Props(classOf[OnMemberStatusChangedListener], code, Removed)
-          .withDeploy(Deploy.local))
+        Props(classOf[OnMemberStatusChangedListener], code, Removed).withDeploy(
+          Deploy.local))
     case PublisherCreated(publisher) ⇒
       if (settings.MetricsEnabled) {
         // metrics must be started after core/publisher to be able
         // to inject the publisher ref to the ClusterMetricsCollector
         context.actorOf(
-          Props(classOf[ClusterMetricsCollector], publisher)
-            .withDispatcher(context.props.dispatcher),
+          Props(classOf[ClusterMetricsCollector], publisher).withDispatcher(
+            context.props.dispatcher),
           name = "metrics")
       }
   }
@@ -238,8 +238,8 @@ private[cluster] final class ClusterCoreSupervisor
     coreDaemon = Some(
       context.watch(
         context.actorOf(
-          Props(classOf[ClusterCoreDaemon], publisher)
-            .withDispatcher(context.props.dispatcher),
+          Props(classOf[ClusterCoreDaemon], publisher).withDispatcher(
+            context.props.dispatcher),
           name = "daemon")))
     context.parent ! PublisherCreated(publisher)
   }
@@ -470,14 +470,14 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         if (newSeedNodes.head == selfAddress) {
           Some(
             context.actorOf(
-              Props(classOf[FirstSeedNodeProcess], newSeedNodes)
-                .withDispatcher(UseDispatcher),
+              Props(classOf[FirstSeedNodeProcess], newSeedNodes).withDispatcher(
+                UseDispatcher),
               name = "firstSeedNodeProcess-" + seedNodeProcessCounter))
         } else {
           Some(
             context.actorOf(
-              Props(classOf[JoinSeedNodeProcess], newSeedNodes)
-                .withDispatcher(UseDispatcher),
+              Props(classOf[JoinSeedNodeProcess], newSeedNodes).withDispatcher(
+                UseDispatcher),
               name = "joinSeedNodeProcess-" + seedNodeProcessCounter))
         }
       }
@@ -1179,13 +1179,14 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         failureDetector.isAvailable(member.address)
       }
 
-      val newlyDetectedReachableMembers = localOverview.reachability
-        .allUnreachableFrom(selfUniqueAddress) collect {
-        case node
-            if node != selfUniqueAddress && failureDetector.isAvailable(
-              node.address) ⇒
-          localGossip.member(node)
-      }
+      val newlyDetectedReachableMembers =
+        localOverview.reachability.allUnreachableFrom(
+          selfUniqueAddress) collect {
+          case node
+              if node != selfUniqueAddress && failureDetector.isAvailable(
+                node.address) ⇒
+            localGossip.member(node)
+        }
 
       if (newlyDetectedUnreachableMembers.nonEmpty || newlyDetectedReachableMembers.nonEmpty) {
 

@@ -1169,8 +1169,8 @@ trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
           a: CSCMatrix[S],
           b: CSCMatrix[S],
           fn: (S, S) => R): CSCMatrix[R] = {
-        logger
-          .warn("Using CSCMatrix.zipMapVals. Note that this implementation currently ZipMaps over active values only, ignoring zeros.")
+        logger.warn(
+          "Using CSCMatrix.zipMapVals. Note that this implementation currently ZipMaps over active values only, ignoring zeros.")
         val rows = a.rows
         val cols = a.cols
         require(rows == b.rows, "Matrices must have same number of rows!")

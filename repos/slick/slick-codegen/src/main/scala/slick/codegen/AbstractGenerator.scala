@@ -505,8 +505,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
       /** Adds one or more X to the end of the given string to avoid collisions with column names. */
       def disambiguateTerm(name: String, postfix: String = "X"): String =
-        if ((columns.map(_.rawName) ++ slickTableTermMembersNoArgs)
-            .contains(name)) disambiguateTerm(name + postfix)
+        if ((columns.map(_.rawName) ++ slickTableTermMembersNoArgs).contains(
+            name)) disambiguateTerm(name + postfix)
         else name
     }
 

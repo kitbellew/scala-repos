@@ -228,8 +228,8 @@ private[expr] object ExpectedTypes {
                   case f: ScFunction if f.paramClauses.clauses.isEmpty =>
                     a.mirrorMethodCall match {
                       case Some(call) =>
-                        call.args.exprs.head
-                          .expectedTypesEx(fromUnderscore = fromUnderscore)
+                        call.args.exprs.head.expectedTypesEx(fromUnderscore =
+                          fromUnderscore)
                       case None => Array.empty
                     }
                   case p: ScParameter =>
@@ -239,10 +239,14 @@ private[expr] object ExpectedTypes {
                         subst.subst(p.getType(TypingContext.empty).getOrAny),
                         p.typeElement))
                   case f: PsiField =>
-                    Array((
-                      subst.subst(ScType
-                        .create(f.getType, f.getProject, expr.getResolveScope)),
-                      None))
+                    Array(
+                      (
+                        subst.subst(
+                          ScType.create(
+                            f.getType,
+                            f.getProject,
+                            expr.getResolveScope)),
+                        None))
                   case _ => Array.empty
                 }
               case _ => Array.empty
@@ -251,8 +255,8 @@ private[expr] object ExpectedTypes {
           case call: ScMethodCall =>
             a.mirrorMethodCall match {
               case Some(mirrorCall) =>
-                mirrorCall.args.exprs.last
-                  .expectedTypesEx(fromUnderscore = fromUnderscore)
+                mirrorCall.args.exprs.last.expectedTypesEx(fromUnderscore =
+                  fromUnderscore)
               case _ => Array.empty
             }
           case _ => Array.empty

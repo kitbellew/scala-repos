@@ -162,8 +162,9 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
     }
     // Give it a shot to make sure that sending isn't blocking
     try {
-      controller.kafkaController
-        .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
+      controller.kafkaController.sendUpdateMetadataRequest(
+        Seq(0),
+        Set(topicPartition))
     } catch {
       case e: Throwable => {
         fail(e)

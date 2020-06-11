@@ -169,7 +169,8 @@ class UnifiedMemoryManagerSuite
     assertEvictBlocksToFreeSpaceNotCalled(ms)
   }
 
-  test("execution memory requests smaller than free memory should evict storage (SPARK-12165)") {
+  test(
+    "execution memory requests smaller than free memory should evict storage (SPARK-12165)") {
     val maxMemory = 1000L
     val taskAttemptId = 0L
     val (mm, ms) = makeThings(maxMemory)
@@ -271,7 +272,8 @@ class UnifiedMemoryManagerSuite
     assert(exception.getMessage.contains("increase executor memory"))
   }
 
-  test("execution can evict cached blocks when there are multiple active tasks (SPARK-12155)") {
+  test(
+    "execution can evict cached blocks when there are multiple active tasks (SPARK-12155)") {
     val conf = new SparkConf()
       .set("spark.memory.fraction", "1")
       .set("spark.memory.storageFraction", "0")

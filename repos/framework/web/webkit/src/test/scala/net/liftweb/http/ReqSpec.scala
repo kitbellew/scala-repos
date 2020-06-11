@@ -67,7 +67,8 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
     "recognize safari 5" in {
       val uac = new UserAgentCalculator {
         def userAgent =
-          Full("Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-HK) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5")
+          Full(
+            "Mozilla/5.0 (Windows; U; Windows NT 6.1; zh-HK) AppleWebKit/533.18.1 (KHTML, like Gecko) Version/5.0.2 Safari/533.18.5")
       }
       uac.safariVersion.openOrThrowException("legacy code") must_== 5
     }

@@ -236,8 +236,9 @@ private[internal] trait TypeConstraints {
                 case TypeRef(_, `tparam`, _) =>
                   debuglog(
                     s"$tvar addHiBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
-                  tvar addHiBound tparam2.tpeHK
-                    .instantiateTypeParams(tparams, tvars)
+                  tvar addHiBound tparam2.tpeHK.instantiateTypeParams(
+                    tparams,
+                    tvars)
                 case _ =>
               }
           } else {
@@ -251,8 +252,9 @@ private[internal] trait TypeConstraints {
                 case TypeRef(_, `tparam`, _) =>
                   debuglog(
                     s"$tvar addLoBound $tparam2.tpeHK.instantiateTypeParams($tparams, $tvars)")
-                  tvar addLoBound tparam2.tpeHK
-                    .instantiateTypeParams(tparams, tvars)
+                  tvar addLoBound tparam2.tpeHK.instantiateTypeParams(
+                    tparams,
+                    tvars)
                 case _ =>
               }
           }

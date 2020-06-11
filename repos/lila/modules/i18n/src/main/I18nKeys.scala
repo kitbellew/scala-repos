@@ -206,7 +206,8 @@ final class I18nKeys(translator: Translator) {
   val `backToTournament` = new Key("backToTournament")
   val `backToGame` = new Key("backToGame")
   val `freeOnlineChessGamePlayChessNowInACleanInterfaceNoRegistrationNoAdsNoPluginRequiredPlayChessWithComputerFriendsOrRandomOpponents` =
-    new Key("freeOnlineChessGamePlayChessNowInACleanInterfaceNoRegistrationNoAdsNoPluginRequiredPlayChessWithComputerFriendsOrRandomOpponents")
+    new Key(
+      "freeOnlineChessGamePlayChessNowInACleanInterfaceNoRegistrationNoAdsNoPluginRequiredPlayChessWithComputerFriendsOrRandomOpponents")
   val `teams` = new Key("teams")
   val `nbMembers` = new Key("nbMembers")
   val `allTeams` = new Key("allTeams")

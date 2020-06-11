@@ -128,8 +128,10 @@ class DataFrameStatSuite extends QueryTest with SharedSQLContext {
     val results = df.stat.cov("singles", "doubles")
     assert(math.abs(results - 55.0 / 3) < 1e-12)
     intercept[IllegalArgumentException] {
-      df.stat
-        .cov("singles", "letters") // doesn't accept non-numerical dataTypes
+      df.stat.cov(
+        "singles",
+        "letters"
+      ) // doesn't accept non-numerical dataTypes
     }
     val decimalData = Seq
       .tabulate(6)(i => (BigDecimal(i % 3), BigDecimal(i % 2)))

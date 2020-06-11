@@ -1243,8 +1243,9 @@ class StandardDBVendor(
       case (Full(user), Full(pwd)) =>
         tryo { t: Throwable =>
           logger.error(
-            "Unable to get database connection. url=%s, user=%s"
-              .format(dbUrl, user),
+            "Unable to get database connection. url=%s, user=%s".format(
+              dbUrl,
+              user),
             t)
         }(DriverManager.getConnection(dbUrl, user, pwd))
       case _ =>

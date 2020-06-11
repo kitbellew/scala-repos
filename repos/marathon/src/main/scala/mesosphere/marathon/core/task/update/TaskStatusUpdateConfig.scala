@@ -7,7 +7,8 @@ trait TaskStatusUpdateConfig extends ScallopConf {
 
   lazy val internalMaxParallelStatusUpdates = opt[Int](
     "max_parallel_status_updates",
-    descr = "INTERNAL TUNING PARAMETER: The maximum number of status updates that get processed in parallel.",
+    descr =
+      "INTERNAL TUNING PARAMETER: The maximum number of status updates that get processed in parallel.",
     noshort = true,
     hidden = true,
     default = Some(20)

@@ -1357,8 +1357,8 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     */
   lazy val fieldMatcher: PartialFunction[(A, String), MappedField[Any, A]] = {
     case (actual, fieldName) if _mappedFields.contains(fieldName) =>
-      fieldByName[Any](fieldName, actual)
-        .openOrThrowException("we know this is defined")
+      fieldByName[Any](fieldName, actual).openOrThrowException(
+        "we know this is defined")
   }
 
   def createInstance: A = rootClass.newInstance.asInstanceOf[A]

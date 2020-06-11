@@ -887,10 +887,10 @@ object IngestTools extends Command {
   val relayAgentPath = "/test/com/precog/ingest/v1/relay_agent/qclus-demo01"
 
   def process(conn: ZkConnection, client: ZkClient, config: Config) {
-    val relayRaw = getJsonAt(config.relayZkPath, client)
-      .getOrElse(sys.error("Error reading relay agent state"))
-    val shardRaw = getJsonAt(config.shardZkPath, client)
-      .getOrElse(sys.error("Error reading bifrost state"))
+    val relayRaw = getJsonAt(config.relayZkPath, client).getOrElse(
+      sys.error("Error reading relay agent state"))
+    val shardRaw = getJsonAt(config.shardZkPath, client).getOrElse(
+      sys.error("Error reading bifrost state"))
 
     val relayState = relayRaw.deserialize[EventRelayState]
     val shardState = shardRaw.deserialize[YggCheckpoint]

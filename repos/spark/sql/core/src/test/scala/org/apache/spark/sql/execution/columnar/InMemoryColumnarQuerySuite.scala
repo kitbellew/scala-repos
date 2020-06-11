@@ -74,7 +74,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
         .map(Row.fromTuple))
   }
 
-  test("SPARK-1436 regression: in-memory columns must be able to be accessed multiple times") {
+  test(
+    "SPARK-1436 regression: in-memory columns must be able to be accessed multiple times") {
     val plan = sqlContext.executePlan(testData.logicalPlan).sparkPlan
     val scan =
       InMemoryRelation(useCompression = true, 5, MEMORY_ONLY, plan, None)
@@ -118,7 +119,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(sql("SELECT time FROM timestamps"), timestamps.collect().toSeq)
   }
 
-  test("SPARK-3320 regression: batched column buffer building should work with empty partitions") {
+  test(
+    "SPARK-3320 regression: batched column buffer building should work with empty partitions") {
     checkAnswer(
       sql("SELECT * FROM withEmptyParts"),
       withEmptyParts.collect().toSeq.map(Row.fromTuple))
@@ -229,7 +231,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
     sqlContext.dropTempTable("InMemoryCache_different_data_types")
   }
 
-  test("SPARK-10422: String column in InMemoryColumnarCache needs to override clone method") {
+  test(
+    "SPARK-10422: String column in InMemoryColumnarCache needs to override clone method") {
     val df = sqlContext
       .range(1, 100)
       .selectExpr("id % 10 as id")
@@ -258,7 +261,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
     cached.unpersist()
   }
 
-  test("SPARK-10859: Predicates pushed to InMemoryColumnarTableScan are not evaluated correctly") {
+  test(
+    "SPARK-10859: Predicates pushed to InMemoryColumnarTableScan are not evaluated correctly") {
     val data = sqlContext.range(10).selectExpr("id", "cast(id as string) as s")
     data.cache()
     assert(data.count() === 10)

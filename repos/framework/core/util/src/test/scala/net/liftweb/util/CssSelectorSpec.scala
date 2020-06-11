@@ -326,8 +326,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "Compound selector" in {
       val res =
-        (".foo [href]" #> "http://dog.com" & ".bar [id]" #> "moo")
-          .apply(<a class="foo bar" href="#"/>)
+        (".foo [href]" #> "http://dog.com" & ".bar [id]" #> "moo").apply(
+          <a class="foo bar" href="#"/>)
       (res \ "@href").text must_== "http://dog.com"
       (res \ "@id").text must_== "moo"
     }
@@ -721,8 +721,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "substitute by name" in {
-      val answer = ("name=moose" #> <input name="goof"/>)
-        .apply(<div><input name="moose" value="start" id="79"/></div>)
+      val answer = ("name=moose" #> <input name="goof"/>).apply(
+        <div><input name="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(<input name="goof" value="start" id="79"/>)
     }
@@ -738,8 +738,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
     }
 
     "substitute by name" in {
-      val answer = ("name=moose" replaceWith <input name="goof"/>)
-        .apply(<div><input name="moose" value="start" id="79"/></div>)
+      val answer = ("name=moose" replaceWith <input name="goof"/>).apply(
+        <div><input name="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(<input name="goof" value="start" id="79"/>)
     }
@@ -753,8 +753,8 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
 
     "substitute by name with attrs" in {
       val answer =
-        ("name=moose" replaceWith <input name="goof" value="8" id="88"/>)
-          .apply(<div><input name="moose" value="start" id="79"/></div>)
+        ("name=moose" replaceWith <input name="goof" value="8" id="88"/>).apply(
+          <div><input name="moose" value="start" id="79"/></div>)
 
       (answer \ "input")(0) must ==/(<input name="goof" value="8" id="88"/>)
     }

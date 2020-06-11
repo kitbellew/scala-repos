@@ -13,7 +13,7 @@ package pickling
   */
 object PickleFormat {
 
-  /** ***********************************************
+  /** *************************************************
     * Symbol table attribute format:
     *   Symtab         = nentries_Nat {Entry}
     *   Entry          = 1 TERMNAME len_Nat NameInfo

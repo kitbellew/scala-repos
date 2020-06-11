@@ -89,8 +89,9 @@ object MacroUtil {
 
   def getPrimaryConbstructorParams(context: ExpressionContext) =
     Option(
-      PsiTreeUtil
-        .getParentOfType(context.getPsiElementAtStartOffset, classOf[PsiClass]))
+      PsiTreeUtil.getParentOfType(
+        context.getPsiElementAtStartOffset,
+        classOf[PsiClass]))
       .map {
         case obj: ScObject => obj.fakeCompanionClassOrCompanionClass
         case other         => other

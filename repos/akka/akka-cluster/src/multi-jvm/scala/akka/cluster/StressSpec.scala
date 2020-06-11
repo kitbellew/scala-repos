@@ -592,8 +592,10 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         if (outstanding.size == settings.workBatchSize / 2)
           if (batchInterval == Duration.Zero) self ! SendBatch
           else
-            context.system.scheduler
-              .scheduleOnce(batchInterval, self, SendBatch)
+            context.system.scheduler.scheduleOnce(
+              batchInterval,
+              self,
+              SendBatch)
       case SendBatch ⇒ sendJobs()
       case RetryTick ⇒ resend()
       case End ⇒
@@ -1222,8 +1224,8 @@ abstract class StressSpec
       runOn(masterRoles: _*) {
         reportResult {
           val m = system.actorOf(
-            Props(classOf[Master], settings, batchInterval, tree)
-              .withDeploy(Deploy.local),
+            Props(classOf[Master], settings, batchInterval, tree).withDeploy(
+              Deploy.local),
             name = masterName)
           m ! Begin
           import system.dispatcher

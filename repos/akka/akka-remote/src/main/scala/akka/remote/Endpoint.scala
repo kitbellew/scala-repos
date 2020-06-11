@@ -400,8 +400,10 @@ private[remote] class ReliableDeliverySupervisor(
       if (earlyUngateRequested)
         self ! Ungate
       else
-        context.system.scheduler
-          .scheduleOnce(settings.RetryGateClosedFor, self, Ungate)
+        context.system.scheduler.scheduleOnce(
+          settings.RetryGateClosedFor,
+          self,
+          Ungate)
       context.become(gated(writerTerminated = true, earlyUngateRequested))
     case IsIdle ⇒ sender() ! Idle
     case Ungate ⇒
@@ -771,8 +773,10 @@ private[remote] class EndpointWriter(
     case FlushAndStop ⇒
       // Flushing is postponed after the pending writes
       buffer offer FlushAndStop
-      context.system.scheduler
-        .scheduleOnce(settings.FlushWait, self, FlushAndStopTimeout)
+      context.system.scheduler.scheduleOnce(
+        settings.FlushWait,
+        self,
+        FlushAndStopTimeout)
     case FlushAndStopTimeout ⇒
       // enough
       flushAndStop()
@@ -887,8 +891,10 @@ private[remote] class EndpointWriter(
     if (fullBackoff) {
       fullBackoffCount += 1
       fullBackoff = false
-      context.system.scheduler
-        .scheduleOnce(settings.BackoffPeriod, self, BackoffTimer)
+      context.system.scheduler.scheduleOnce(
+        settings.BackoffPeriod,
+        self,
+        BackoffTimer)
     } else {
       smallBackoffCount += 1
       val s = self

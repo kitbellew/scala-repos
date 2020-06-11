@@ -55,9 +55,8 @@ class ScalaXmlSupportSpec
                      |   <!ELEMENT foo ANY >
                      |   <!ENTITY xxe SYSTEM "${f.toURI}">]><foo>hello&xxe;</foo>""".stripMargin
 
-          shouldHaveFailedWithSAXParseException(
-            Unmarshal(HttpEntity(ContentTypes.`text/xml(UTF-8)`, xml))
-              .to[NodeSeq])
+          shouldHaveFailedWithSAXParseException(Unmarshal(
+            HttpEntity(ContentTypes.`text/xml(UTF-8)`, xml)).to[NodeSeq])
         }
       }
       "parse XML bodies without loading in a related schema from a parameter" in {

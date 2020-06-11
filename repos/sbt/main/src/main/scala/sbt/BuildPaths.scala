@@ -44,8 +44,8 @@ object BuildPaths {
     val unversioned = defaultGlobalBase
     def globalDefined(base: File): Boolean =
       getGlobalPluginsDirectory(state, base).exists ||
-        configurationSources(getGlobalSettingsDirectory(state, base))
-          .exists(_.exists)
+        configurationSources(getGlobalSettingsDirectory(state, base)).exists(
+          _.exists)
     val warnTransition = !globalDefined(versioned) && globalDefined(unversioned)
     if (warnTransition)
       state.log.warn(globalDirTransitionWarning(unversioned, versioned))

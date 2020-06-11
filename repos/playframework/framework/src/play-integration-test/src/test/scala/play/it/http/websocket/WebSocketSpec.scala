@@ -372,8 +372,8 @@ trait WebSocketSpec
         WebSocket.using[String] { req =>
           val tick = Enumerator.unfoldM(()) { _ =>
             val p = Promise[Option[(Unit, String)]]()
-            app.actorSystem.scheduler
-              .scheduleOnce(100.millis)(p.success(Some(() -> "foo")))
+            app.actorSystem.scheduler.scheduleOnce(100.millis)(
+              p.success(Some(() -> "foo")))
             p.future
           }
           (

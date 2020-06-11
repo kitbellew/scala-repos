@@ -118,8 +118,8 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
           logger.error("Failure! Resetting history: " + x)
           state.copy(history = initialHistory(adjustedFun, state.x))
         case x: FirstOrderException =>
-          logger
-            .error("Failure again! Giving up and returning. Maybe the objective is just poorly behaved?")
+          logger.error(
+            "Failure again! Giving up and returning. Maybe the objective is just poorly behaved?")
           state.copy(searchFailed = true)
       }
     }

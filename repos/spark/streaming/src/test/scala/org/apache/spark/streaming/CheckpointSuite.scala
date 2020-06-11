@@ -948,7 +948,8 @@ class CheckpointSuite
     checkpointWriter.stop()
   }
 
-  test("SPARK-6847: stack overflow when updateStateByKey is followed by a checkpointed dstream") {
+  test(
+    "SPARK-6847: stack overflow when updateStateByKey is followed by a checkpointed dstream") {
     // In this test, there are two updateStateByKey operators. The RDD DAG is as follows:
     //
     //     batch 1            batch 2            batch 3     ...

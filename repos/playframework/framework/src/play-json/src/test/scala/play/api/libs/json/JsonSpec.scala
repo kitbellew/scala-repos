@@ -20,8 +20,9 @@ object JsonSpec extends org.specs2.mutable.Specification {
   implicit val UserFormat: Format[User] = (
     (__ \ 'id).format[Long] and
       (__ \ 'name).format[String] and
-      (__ \ 'friends)
-        .lazyFormat(Reads.list(UserFormat), Writes.list(UserFormat))
+      (__ \ 'friends).lazyFormat(
+        Reads.list(UserFormat),
+        Writes.list(UserFormat))
   )(User, unlift(User.unapply))
 
   case class Car(id: Long, models: Map[String, String])
@@ -318,8 +319,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
         .put("bar", "two")
       val json = Json.obj("foo" -> 1, "bar" -> "two")
 
-      toJson(on) must_== json and (fromJson[JsonNode](json)
-        .map(_.toString) must_== JsSuccess(on.toString))
+      toJson(on) must_== json and (fromJson[JsonNode](json).map(
+        _.toString) must_== JsSuccess(on.toString))
     }
 
     "Serialize and deserialize Jackson ArrayNodes" in {
@@ -328,8 +329,8 @@ object JsonSpec extends org.specs2.mutable.Specification {
         .add("one")
         .add(2)
       val json = Json.arr("one", 2)
-      toJson(an) must equalTo(json) and (fromJson[JsonNode](json)
-        .map(_.toString) must_== JsSuccess(an.toString))
+      toJson(an) must equalTo(json) and (fromJson[JsonNode](json).map(
+        _.toString) must_== JsSuccess(an.toString))
     }
 
     "Deserialize integer JsNumber as Jackson number node" in {

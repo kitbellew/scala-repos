@@ -90,16 +90,16 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       val result = decorate(
         Vector(Line(1, 1, ""), PushString("/foo"), instructions.AbsoluteLoad))
       result mustEqual Right(
-        dag
-          .AbsoluteLoad(Const(CString("/foo"))(Line(1, 1, "")))(Line(1, 1, "")))
+        dag.AbsoluteLoad(Const(CString("/foo"))(Line(1, 1, "")))(
+          Line(1, 1, "")))
     }
 
     "parse out relative_load" in {
       val result = decorate(
         Vector(Line(1, 1, ""), PushString("/foo"), instructions.RelativeLoad))
       result mustEqual Right(
-        dag
-          .RelativeLoad(Const(CString("/foo"))(Line(1, 1, "")))(Line(1, 1, "")))
+        dag.RelativeLoad(Const(CString("/foo"))(Line(1, 1, "")))(
+          Line(1, 1, "")))
     }
 
     "parse out map1" in {

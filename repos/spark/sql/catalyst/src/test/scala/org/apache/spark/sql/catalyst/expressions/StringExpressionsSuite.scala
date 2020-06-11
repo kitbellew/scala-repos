@@ -439,12 +439,14 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       "abdef" rlike NonFoldableLiteral.create(null, StringType),
       null)
     checkEvaluation(
-      Literal.create(null, StringType) rlike NonFoldableLiteral
-        .create("abdef", StringType),
+      Literal.create(null, StringType) rlike NonFoldableLiteral.create(
+        "abdef",
+        StringType),
       null)
     checkEvaluation(
-      Literal.create(null, StringType) rlike NonFoldableLiteral
-        .create(null, StringType),
+      Literal.create(null, StringType) rlike NonFoldableLiteral.create(
+        null,
+        StringType),
       null)
 
     checkEvaluation("abdef" rlike "abdef", true)
