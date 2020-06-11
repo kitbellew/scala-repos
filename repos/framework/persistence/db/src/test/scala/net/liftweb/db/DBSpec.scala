@@ -90,8 +90,7 @@ class DBSpec extends Specification with Mockito {
       DB.buildLoanWrapper(false) {
         DB.use(DefaultConnectionIdentifier) { c =>
           DB.appendPostTransaction(DefaultConnectionIdentifier, m.f _)
-          DB.exec(c, "stuff") { dummy =>
-          }
+          DB.exec(c, "stuff") { dummy => }
         }
         DB.use(DefaultConnectionIdentifier) { c =>
           DB.exec(c, "more stuff") { dummy => }

@@ -99,8 +99,8 @@ abstract class XMapTest[
     // lazy
     var evaluated = false
     getOrAdd[Id.Id, Int, Long](mWithOld, k)({
-        evaluated = true; vNew
-      }) must_=== (mWithOld, vOld)
+      evaluated = true; vNew
+    }) must_=== (mWithOld, vOld)
     evaluated must_=== false
   }
 }

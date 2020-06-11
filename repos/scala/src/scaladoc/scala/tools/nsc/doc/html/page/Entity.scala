@@ -697,8 +697,8 @@ trait EntityPage extends HtmlPage {
                 var index = 0
                 constraints map { constraint =>
                   scala.xml.Text({
-                      index += 1; index
-                    } + ". ") ++ constraintToHtml(constraint) ++ <br/>
+                    index += 1; index
+                  } + ". ") ++ constraintToHtml(constraint) ++ <br/>
                 }
               }
           }
