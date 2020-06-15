@@ -75,8 +75,7 @@ class ApproxQuantileSuite extends SparkFunSuite {
         s"Did not return the max: max=${data.max}, got $max_approx")
     }
 
-    test(
-      s"Some quantile values with epsi=$epsi and seq=$seq_name, compression=$compression") {
+    test(s"Some quantile values with epsi=$epsi and seq=$seq_name, compression=$compression") {
       val s = buildSummary(data, epsi, compression)
       assert(
         s.count == data.size,
@@ -101,8 +100,7 @@ class ApproxQuantileSuite extends SparkFunSuite {
       data.take(l / 2) -> data.drop(l / 2)
     }
 
-    test(
-      s"Merging ordered lists with epsi=$epsi and seq=$seq_name, compression=$compression") {
+    test(s"Merging ordered lists with epsi=$epsi and seq=$seq_name, compression=$compression") {
       val s1 = buildSummary(data1, epsi, compression)
       val s2 = buildSummary(data2, epsi, compression)
       val s = s1.merge(s2)
@@ -125,8 +123,7 @@ class ApproxQuantileSuite extends SparkFunSuite {
       data.sliding(2).map(_.head).toSeq -> data.sliding(2).map(_.last).toSeq
     }
 
-    test(
-      s"Merging interleaved lists with epsi=$epsi and seq=$seq_name, compression=$compression") {
+    test(s"Merging interleaved lists with epsi=$epsi and seq=$seq_name, compression=$compression") {
       val s1 = buildSummary(data11, epsi, compression)
       val s2 = buildSummary(data12, epsi, compression)
       val s = s1.merge(s2)

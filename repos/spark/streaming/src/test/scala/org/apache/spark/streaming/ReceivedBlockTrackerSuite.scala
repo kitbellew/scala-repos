@@ -130,8 +130,7 @@ class ReceivedBlockTrackerSuite
           (s"\n>>>>> $file: <<<<<\n${getWrittenLogData(file).mkString("\n")}")
         }
         .mkString("\n")
-      logInfo(
-        s"\n\n=====================\n$message\n$fileContents\n=====================\n")
+      logInfo(s"\n\n=====================\n$message\n$fileContents\n=====================\n")
     }
 
     // Set WAL configuration
@@ -243,8 +242,7 @@ class ReceivedBlockTrackerSuite
     tracker1.isWriteAheadLogEnabled should be(false)
   }
 
-  test(
-    "parallel file deletion in FileBasedWriteAheadLog is robust to deletion error") {
+  test("parallel file deletion in FileBasedWriteAheadLog is robust to deletion error") {
     conf.set("spark.streaming.driver.writeAheadLog.rollingIntervalSecs", "1")
     require(
       WriteAheadLogUtils.getRollingIntervalSecs(conf, isDriver = true) === 1)

@@ -146,8 +146,7 @@ private[impl] class ReviveOffersActor(
           s"Received reviveOffers notification: ${msg.getClass.getSimpleName}")
         initiateNewSeriesOfRevives()
       } else {
-        log.info(
-          s"Ignoring ${msg.getClass.getSimpleName} because no one is currently interested in offers")
+        log.info(s"Ignoring ${msg.getClass.getSimpleName} because no one is currently interested in offers")
       }
 
     case ReviveOffersActor.TimedCheck =>

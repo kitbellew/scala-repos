@@ -217,8 +217,7 @@ abstract class AggregationQuerySuite
     Seq((1, 2)).toDF("a", "b").registerTempTable("data")
 
     checkAnswer(
-      sql(
-        "SELECT floor(a) AS a, collect_set(b) FROM data GROUP BY floor(a) ORDER BY a"),
+      sql("SELECT floor(a) AS a, collect_set(b) FROM data GROUP BY floor(a) ORDER BY a"),
       Row(1, Array(2)) :: Nil)
   }
 
@@ -939,8 +938,8 @@ abstract class AggregationQuerySuite
             new Random(System.nanoTime()))
         val dataGenerator =
           maybeDataGenerator
-            .getOrElse(fail(
-              s"Failed to create data generator for schema $schemaForGenerator"))
+            .getOrElse(
+              fail(s"Failed to create data generator for schema $schemaForGenerator"))
         val data = (1 to 50).map { i =>
           dataGenerator.apply() match {
             case row: Row => Row.fromSeq(i +: row.toSeq)

@@ -38,8 +38,7 @@ object ScaldingILoop {
 
       children: Array[File] = Option(new File(ancestor).listFiles)
         .getOrElse {
-          println(
-            s"The directory '$ancestor' could not be accessed while looking for '$filename'")
+          println(s"The directory '$ancestor' could not be accessed while looking for '$filename'")
           Array.empty
         }
 

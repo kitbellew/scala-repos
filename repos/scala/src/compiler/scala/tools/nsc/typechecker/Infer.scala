@@ -814,8 +814,7 @@ trait Infer extends Checkable {
           if (pos == -1) {
             if (positionalAllowed) { // treat assignment as positional argument
               argPos(index) = index
-              res =
-                UnitTpe // TODO: this is a bit optimistic, the name may not refer to a mutable variable...
+              res = UnitTpe // TODO: this is a bit optimistic, the name may not refer to a mutable variable...
             } else // unknown parameter name
               namesOK = false
           } else if (argPos.contains(pos)) { // parameter specified twice
@@ -1437,8 +1436,7 @@ trait Infer extends Checkable {
           notifyUndetparamsInferred(undetparams, targs)
         case _ =>
           def not = if (isFullyDefined(pt)) "" else "not "
-          devWarning(
-            s"failed inferConstructorInstance for $tree: ${tree.tpe} undet=$undetparams, pt=$pt (${not}fully defined)")
+          devWarning(s"failed inferConstructorInstance for $tree: ${tree.tpe} undet=$undetparams, pt=$pt (${not}fully defined)")
           ConstrInstantiationError(tree, resTp, pt)
       }
     }
@@ -1488,11 +1486,9 @@ trait Infer extends Checkable {
 
       if (lo1 <:< hi1) {
         if (lo1 <:< lo0 && hi0 <:< hi1) // bounds unimproved
-          log(
-            s"redundant bounds: discarding TypeBounds($lo1, $hi1) for $tparam, no improvement on TypeBounds($lo0, $hi0)")
+          log(s"redundant bounds: discarding TypeBounds($lo1, $hi1) for $tparam, no improvement on TypeBounds($lo0, $hi0)")
         else if (tparam == lo1.typeSymbolDirect || tparam == hi1.typeSymbolDirect)
-          log(
-            s"cyclical bounds: discarding TypeBounds($lo1, $hi1) for $tparam because $tparam appears as bounds")
+          log(s"cyclical bounds: discarding TypeBounds($lo1, $hi1) for $tparam because $tparam appears as bounds")
         else {
           enclCase pushTypeBounds tparam
           tparam setInfo logResult(

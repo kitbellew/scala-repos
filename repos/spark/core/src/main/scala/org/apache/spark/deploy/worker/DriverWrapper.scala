@@ -73,8 +73,7 @@ object DriverWrapper {
 
       case _ =>
         // scalastyle:off println
-        System.err.println(
-          "Usage: DriverWrapper <workerUrl> <userJar> <driverMainClass> [options]")
+        System.err.println("Usage: DriverWrapper <workerUrl> <userJar> <driverMainClass> [options]")
         // scalastyle:on println
         System.exit(-1)
     }

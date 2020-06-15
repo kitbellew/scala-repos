@@ -340,7 +340,9 @@ class SetMapConsistencyTest {
         throw new Exception(
           s"Disagreement after ${what.result} between ${map1.title} and ${map2.title} because ${map1.keys
             .map(map2 has _)
-            .mkString(",")} ${map2.keys.map(map1 has _).mkString(",")} at step $i:\n$map1\n$map2\n$temp")
+            .mkString(",")} ${map2.keys
+            .map(map1 has _)
+            .mkString(",")} at step $i:\n$map1\n$map2\n$temp")
       }
       what ++= " (%d) ".format(i)
       if (rn.nextInt(10) == 0) {

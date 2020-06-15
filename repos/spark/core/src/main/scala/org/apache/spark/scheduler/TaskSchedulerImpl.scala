@@ -290,8 +290,7 @@ private[spark] class TaskSchedulerImpl(
           }
         } catch {
           case e: TaskNotSerializableException =>
-            logError(
-              s"Resource offer failed, task set ${taskSet.name} was not serializable")
+            logError(s"Resource offer failed, task set ${taskSet.name} was not serializable")
             // Do not offer resources for this task, but don't throw an error to allow other
             // task sets to be submitted.
             return launchedTask
@@ -372,8 +371,7 @@ private[spark] class TaskSchedulerImpl(
           if (executorIdToTaskCount.contains(execId)) {
             removeExecutor(
               execId,
-              SlaveLost(
-                s"Task $tid was lost, so marking the executor as lost as well."))
+              SlaveLost(s"Task $tid was lost, so marking the executor as lost as well."))
             failedExecutor = Some(execId)
           }
         }

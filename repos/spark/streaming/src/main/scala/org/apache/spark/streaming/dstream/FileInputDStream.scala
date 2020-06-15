@@ -266,14 +266,12 @@ private[streaming] class FileInputDStream[K, V, F <: NewInputFormat[K, V]](
     val modTime = getFileModTime(path)
     if (modTime <= modTimeIgnoreThreshold) {
       // Use <= instead of < to avoid SPARK-4518
-      logDebug(
-        s"$pathStr ignored as mod time $modTime <= ignore time $modTimeIgnoreThreshold")
+      logDebug(s"$pathStr ignored as mod time $modTime <= ignore time $modTimeIgnoreThreshold")
       return false
     }
     // Reject file if mod time > current batch time
     if (modTime > currentTime) {
-      logDebug(
-        s"$pathStr not selected as mod time $modTime > current time $currentTime")
+      logDebug(s"$pathStr not selected as mod time $modTime > current time $currentTime")
       return false
     }
     // Reject file if it was considered earlier

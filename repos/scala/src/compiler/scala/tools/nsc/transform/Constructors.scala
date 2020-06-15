@@ -613,8 +613,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
             // references to parameter accessor field of own class become references to parameters
             gen.mkAttributedIdent(parameter(tree.symbol)) setPos tree.pos
 
-          case Select(_, _)
-              if guardSpecializedFieldInit => // reasoning behind this guard in the docu of `usesSpecializedField`
+          case Select(_, _) if guardSpecializedFieldInit => // reasoning behind this guard in the docu of `usesSpecializedField`
             if (possiblySpecialized(tree.symbol)) {
               usesSpecializedField = true
             }

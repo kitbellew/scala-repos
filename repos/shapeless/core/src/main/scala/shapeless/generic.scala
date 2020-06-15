@@ -762,8 +762,7 @@ trait CaseClassMacros extends ReprTypes {
                     case Nil          => NoSymbol
                     case List(unique) => unique
                     case _ =>
-                      aabort(
-                        s"unexpected multiple results for a companion symbol lookup for $original#{$original.id}")
+                      aabort(s"unexpected multiple results for a companion symbol lookup for $original#{$original.id}")
                   }
                 }
                 if (s != NoSymbol && s.owner == expectedOwner)

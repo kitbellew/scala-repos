@@ -73,8 +73,7 @@ private[ml] class WeightedLeastSquares(
 
   require(regParam >= 0.0, s"regParam cannot be negative: $regParam")
   if (regParam == 0.0) {
-    logWarning(
-      "regParam is zero, which might cause numerical instability and overfitting.")
+    logWarning("regParam is zero, which might cause numerical instability and overfitting.")
   }
 
   /**

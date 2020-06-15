@@ -88,8 +88,7 @@ object DatabaseConfig {
         case n                              => n
       }
       if (nOld.isDefined)
-        logger.warn(
-          s"Use `${basePath}profile` instead of `${basePath}driver`. The latter is deprecated since Slick 3.2 and will be removed.")
+        logger.warn(s"Use `${basePath}profile` instead of `${basePath}driver`. The latter is deprecated since Slick 3.2 and will be removed.")
       nOld.getOrElse(
         config.getString(basePath + "profile")
       ) // trigger the correct error

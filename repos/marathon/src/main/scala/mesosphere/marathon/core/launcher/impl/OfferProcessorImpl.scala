@@ -71,8 +71,7 @@ private[launcher] class OfferProcessorImpl(
       .recover {
         case e: AskTimeoutException =>
           matchErrorsMeter.mark()
-          log.warn(
-            s"Could not process offer '${offer.getId.getValue}' in time. (See --max_offer_matching_timeout)")
+          log.warn(s"Could not process offer '${offer.getId.getValue}' in time. (See --max_offer_matching_timeout)")
           MatchedTaskOps(offer.getId, Seq.empty, resendThisOffer = true)
         case NonFatal(e) =>
           matchErrorsMeter.mark()
@@ -160,8 +159,7 @@ private[launcher] class OfferProcessorImpl(
           )
           taskCreationHandler.created(newTask)
         case None =>
-          log.info(
-            s"Remove ${taskOpWithSource.taskId} because of ${taskOpWithSource.op.getClass.getSimpleName}")
+          log.info(s"Remove ${taskOpWithSource.taskId} because of ${taskOpWithSource.op.getClass.getSimpleName}")
           taskCreationHandler.terminated(taskId)
       }
 
@@ -188,9 +186,8 @@ private[launcher] class OfferProcessorImpl(
           if (clock.now() > savingDeadline) {
             savingTasksTimeoutMeter.mark(savedTasks.size.toLong)
             nextTask.reject("saving timeout reached")
-            log.info(
-              s"Timeout reached, skipping launch and save for ${nextTask.op.taskId}. " +
-                s"You can reconfigure this with --${conf.saveTasksToLaunchTimeout.name}.")
+            log.info(s"Timeout reached, skipping launch and save for ${nextTask.op.taskId}. " +
+              s"You can reconfigure this with --${conf.saveTasksToLaunchTimeout.name}.")
             Future.successful(savedTasks)
           } else {
             val saveTaskFuture = saveTask(nextTask)

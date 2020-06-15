@@ -315,8 +315,7 @@ abstract class TailCalls extends Transform {
               tree.pos,
               "@tailrec annotated method contains no recursive calls")
 
-          debuglog(
-            s"Considering $name for tailcalls, with labels in tailpos: ${newCtx.tailLabels}")
+          debuglog(s"Considering $name for tailcalls, with labels in tailpos: ${newCtx.tailLabels}")
           val newRHS = transform(rhs0, newCtx)
 
           deriveDefDef(tree) { rhs =>

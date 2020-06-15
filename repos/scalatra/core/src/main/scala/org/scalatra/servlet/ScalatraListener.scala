@@ -73,8 +73,7 @@ class ScalatraListener extends ServletContextListener {
     logger debug "Loaded lifecycle class: %s".format(cycleClass)
 
     if (cycleClass.getName == OldDefaultLifeCycle)
-      logger.warn(
-        "The Scalatra name for a boot class will be removed eventually. Please use ScalatraBootstrap instead as class name.")
+      logger.warn("The Scalatra name for a boot class will be removed eventually. Please use ScalatraBootstrap instead as class name.")
     (cycleClass.getSimpleName, cycleClass.newInstance.asInstanceOf[LifeCycle])
   }
 

@@ -500,8 +500,7 @@ abstract class TreeCheckers extends Analyzer {
               case None =>
                 errorFn(s"Return node ($tree) must be enclosed in a DefDef")
               case Some(dd) if tree.symbol != dd.symbol =>
-                errorFn(
-                  s"Return symbol (${tree.symbol}} does not reference directly enclosing DefDef (${dd.symbol})")
+                errorFn(s"Return symbol (${tree.symbol}} does not reference directly enclosing DefDef (${dd.symbol})")
               case _ =>
             }
           case _ =>

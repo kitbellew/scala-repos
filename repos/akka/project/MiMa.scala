@@ -93,8 +93,7 @@ object MiMa extends AutoPlugin {
       FilterAnyProblem("akka.remote.testconductor.TerminateMsg"),
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.remote.testconductor.Conductor.shutdown"),
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.remote.testkit.MultiNodeSpec.akka$remote$testkit$MultiNodeSpec$$deployer"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.remote.testkit.MultiNodeSpec.akka$remote$testkit$MultiNodeSpec$$deployer"),
       FilterAnyProblem("akka.remote.EndpointManager$Pass"),
       FilterAnyProblem("akka.remote.EndpointManager$EndpointRegistry"),
       FilterAnyProblem("akka.remote.EndpointWriter"),
@@ -111,8 +110,7 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.remote.ReliableDeliverySupervisor#GotUid.apply"),
       // Change of private method to protected by #15212
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.persistence.snapshot.local.LocalSnapshotStore.akka$persistence$snapshot$local$LocalSnapshotStore$$save"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.persistence.snapshot.local.LocalSnapshotStore.akka$persistence$snapshot$local$LocalSnapshotStore$$save"),
       // Changes in akka-stream-experimental are not binary compatible - still source compatible (2.3.3 -> 2.3.4)
       // Adding `PersistentActor.persistAsync`
       // Adding `PersistentActor.defer`
@@ -123,10 +121,8 @@ object MiMa extends AutoPlugin {
       // Adding wildcardFanOut to internal message ActorSelectionMessage by #13992
       FilterAnyProblem("akka.actor.ActorSelectionMessage$"),
       FilterAnyProblem("akka.actor.ActorSelectionMessage"),
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.remote.ContainerFormats#SelectionEnvelopeOrBuilder.hasWildcardFanOut"),
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.remote.ContainerFormats#SelectionEnvelopeOrBuilder.getWildcardFanOut"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.remote.ContainerFormats#SelectionEnvelopeOrBuilder.hasWildcardFanOut"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.remote.ContainerFormats#SelectionEnvelopeOrBuilder.getWildcardFanOut"),
       // Adding expectMsg overload to testkit #15425
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.testkit.TestKitBase.expectMsg"),
@@ -176,8 +172,7 @@ object MiMa extends AutoPlugin {
         "akka.dispatch.BatchingExecutor#Batch.blockOn"),
       ProblemFilters.exclude[FinalMethodProblem](
         "akka.dispatch.BatchingExecutor#Batch.run"),
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.dispatch.BatchingExecutor#Batch.akka$dispatch$BatchingExecutor$Batch$$parentBlockContext_="),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.dispatch.BatchingExecutor#Batch.akka$dispatch$BatchingExecutor$Batch$$parentBlockContext_="),
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.dispatch.BatchingExecutor#Batch.this"),
       // Exclude observations from downed, #13875
@@ -473,12 +468,10 @@ object MiMa extends AutoPlugin {
         "akka.remote.transport.TestTransport$DisassociateAttempt"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.transport.ProtocolStateActor$HandleListenerRegistered"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.remote.transport.ProtocolStateActor$OutboundUnderlyingAssociated"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.remote.transport.ProtocolStateActor$OutboundUnderlyingAssociated"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.transport.ProtocolStateActor$InboundUnassociated"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.remote.transport.AkkaProtocolTransport$AssociateUnderlyingRefuseUid"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.remote.transport.AkkaProtocolTransport$AssociateUnderlyingRefuseUid"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.transport.TestTransport$AssociateAttempt"),
       ProblemFilters.exclude[FinalClassProblem](
@@ -537,8 +530,7 @@ object MiMa extends AutoPlugin {
         "akka.remote.transport.ActorTransportAdapter$ListenerRegistered"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.transport.AkkaPduCodec$Associate"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.remote.transport.ThrottlerTransportAdapter$ForceDisassociateExplicitly"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.remote.transport.ThrottlerTransportAdapter$ForceDisassociateExplicitly"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.transport.AssociationHandle$ActorHandleEventListener"),
       ProblemFilters.exclude[FinalClassProblem]("akka.camel.FailureResult"),
@@ -712,8 +704,7 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.testkit.TestKitBase.remainingOrDefault"),
       // synthetic method akka$remote$testkit$MultiNodeSpec$Replacement$$$outer()akka.remote.testkit.MultiNodeSpec in class akka.remote.testkit.MultiNodeSpec#Replacement does not have a correspondent in new version
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.remote.testkit.MultiNodeSpec#Replacement.akka$remote$testkit$MultiNodeSpec$Replacement$$$outer"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.remote.testkit.MultiNodeSpec#Replacement.akka$remote$testkit$MultiNodeSpec$Replacement$$$outer"),
       // method nrOfInstances(akka.actor.ActorSystem) in trait akka.routing.Pool does not have a correspondent in old version
       // ok to exclude, since we don't call nrOfInstances(sys) for old implementations
       ProblemFilters.exclude[MissingMethodProblem](
@@ -860,21 +851,16 @@ object MiMa extends AutoPlugin {
         "akka.cluster.InternalClusterAction$PublishCurrentClusterState"),
       // issue #16327 compared to 2.3.10
       // synthetic method akka$dispatch$BatchingExecutor$BlockableBatch$$parentBlockContext_=(scala.concurrent.BlockContext)Unit in class akka.dispatch.BatchingExecutor#BlockableBatch does not have a correspondent in new version
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.dispatch.BatchingExecutor#BlockableBatch.akka$dispatch$BatchingExecutor$BlockableBatch$$parentBlockContext_="),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.dispatch.BatchingExecutor#BlockableBatch.akka$dispatch$BatchingExecutor$BlockableBatch$$parentBlockContext_="),
       // synthetic method akka$dispatch$BatchingExecutor$_setter_$akka$dispatch$BatchingExecutor$$_blockContext_=(java.lang.ThreadLocal)Unit in trait akka.dispatch.BatchingExecutor does not have a correspondent in old version
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.dispatch.BatchingExecutor.akka$dispatch$BatchingExecutor$_setter_$akka$dispatch$BatchingExecutor$$_blockContext_="),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.dispatch.BatchingExecutor.akka$dispatch$BatchingExecutor$_setter_$akka$dispatch$BatchingExecutor$$_blockContext_="),
       // synthetic method akka$dispatch$BatchingExecutor$$_blockContext()java.lang.ThreadLocal in trait akka.dispatch.BatchingExecutor does not have a correspondent in old version
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.dispatch.BatchingExecutor.akka$dispatch$BatchingExecutor$$_blockContext"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.dispatch.BatchingExecutor.akka$dispatch$BatchingExecutor$$_blockContext"),
       // issue #16327 compared to 2.3.11
       // synthetic method akka$dispatch$BatchingExecutor$_setter_$akka$dispatch$BatchingExecutor$$_blockContext_=(java.lang.ThreadLocal)Unit in class akka.dispatch.MessageDispatcher does not have a correspondent in new version
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.dispatch.MessageDispatcher.akka$dispatch$BatchingExecutor$_setter_$akka$dispatch$BatchingExecutor$$_blockContext_="),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.dispatch.MessageDispatcher.akka$dispatch$BatchingExecutor$_setter_$akka$dispatch$BatchingExecutor$$_blockContext_="),
       // synthetic method akka$dispatch$BatchingExecutor$$_blockContext()java.lang.ThreadLocal in class akka.dispatch.MessageDispatcher does not have a correspondent in new version
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.dispatch.MessageDispatcher.akka$dispatch$BatchingExecutor$$_blockContext"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.dispatch.MessageDispatcher.akka$dispatch$BatchingExecutor$$_blockContext"),
       // issue #16736
       ProblemFilters.exclude[MissingClassProblem](
         "akka.cluster.OnMemberUpListener"),
@@ -910,8 +896,7 @@ object MiMa extends AutoPlugin {
       FilterAnyProblemStartingWith(
         "akka.cluster.protobuf.ClusterMessageSerializer"),
       // #13584 change in internal actor
-      ProblemFilters.exclude[IncompatibleMethTypeProblem](
-        "akka.cluster.ClusterCoreDaemon.akka$cluster$ClusterCoreDaemon$$isJoiningToUp$1")
+      ProblemFilters.exclude[IncompatibleMethTypeProblem]("akka.cluster.ClusterCoreDaemon.akka$cluster$ClusterCoreDaemon$$isJoiningToUp$1")
     )
 
     Map(
@@ -950,14 +935,10 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[MissingMethodProblem](
           "akka.remote.InvalidAssociation.this"),
         // #19281 BackoffSupervisor updates
-        ProblemFilters.exclude[MissingMethodProblem](
-          "akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$child_="),
-        ProblemFilters.exclude[MissingMethodProblem](
-          "akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$restartCount"),
-        ProblemFilters.exclude[MissingMethodProblem](
-          "akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$restartCount_="),
-        ProblemFilters.exclude[MissingMethodProblem](
-          "akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$child"),
+        ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$child_="),
+        ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$restartCount"),
+        ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$restartCount_="),
+        ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$child"),
         // #19487
         FilterAnyProblem("akka.actor.dungeon.Children"),
         // #19440
@@ -999,8 +980,7 @@ object MiMa extends AutoPlugin {
           "akka.http.scaladsl.model.headers.CacheDirectives#private.apply"),
         ProblemFilters.exclude[IncompatibleMethTypeProblem](
           "akka.http.scaladsl.model.headers.CacheDirectives#no-cache.apply"),
-        ProblemFilters.exclude[ReversedMissingMethodProblem](
-          "akka.http.impl.model.parser.SimpleHeaders.strict-transport-security"),
+        ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.http.impl.model.parser.SimpleHeaders.strict-transport-security"),
         ProblemFilters.exclude[DirectMissingMethodProblem](
           "akka.http.impl.engine.rendering.RequestRenderingContext.copy"),
         ProblemFilters.exclude[DirectMissingMethodProblem](
@@ -1009,8 +989,7 @@ object MiMa extends AutoPlugin {
           "akka.http.impl.engine.rendering.RequestRenderingContext$"),
         ProblemFilters.exclude[DirectMissingMethodProblem](
           "akka.http.impl.engine.rendering.RequestRenderingContext.apply"),
-        ProblemFilters.exclude[DirectMissingMethodProblem](
-          "akka.http.impl.engine.parsing.HttpResponseParser.setRequestMethodForNextResponse"),
+        ProblemFilters.exclude[DirectMissingMethodProblem]("akka.http.impl.engine.parsing.HttpResponseParser.setRequestMethodForNextResponse"),
         ProblemFilters.exclude[DirectMissingMethodProblem](
           "akka.http.impl.util.package.errorHandling"),
         // #19983 withoutSizeLimit overrides for Scala API
@@ -1078,8 +1057,7 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[FinalClassProblem](
           "akka.http.scaladsl.model.EntityStreamSizeException"),
         // #19849 content negotiation fixes
-        ProblemFilters.exclude[FinalClassProblem](
-          "akka.http.scaladsl.marshalling.Marshal$UnacceptableResponseContentTypeException"),
+        ProblemFilters.exclude[FinalClassProblem]("akka.http.scaladsl.marshalling.Marshal$UnacceptableResponseContentTypeException"),
         // #20009 internal and shouldn't have been public
         ProblemFilters.exclude[DirectMissingMethodProblem](
           "akka.stream.impl.QueueSource.completion"),
@@ -1117,10 +1095,8 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[IncompatibleMethTypeProblem](
           "akka.stream.impl.SourceQueueAdapter.this"),
         // #19828
-        ProblemFilters.exclude[DirectAbstractMethodProblem](
-          "akka.persistence.Eventsourced#ProcessingState.onWriteMessageComplete"),
-        ProblemFilters.exclude[ReversedAbstractMethodProblem](
-          "akka.persistence.Eventsourced#ProcessingState.onWriteMessageComplete")
+        ProblemFilters.exclude[DirectAbstractMethodProblem]("akka.persistence.Eventsourced#ProcessingState.onWriteMessageComplete"),
+        ProblemFilters.exclude[ReversedAbstractMethodProblem]("akka.persistence.Eventsourced#ProcessingState.onWriteMessageComplete")
       )
     )
   }

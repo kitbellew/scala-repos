@@ -127,11 +127,10 @@ private[spark] object TreePoint {
     } else {
       // Categorical feature bins are indexed by feature values.
       if (featureValue < 0 || featureValue >= featureArity) {
-        throw new IllegalArgumentException(
-          s"DecisionTree given invalid data:" +
-            s" Feature $featureIndex is categorical with values in {0,...,${featureArity - 1}," +
-            s" but a data point gives it value $featureValue.\n" +
-            "  Bad data point: " + labeledPoint.toString)
+        throw new IllegalArgumentException(s"DecisionTree given invalid data:" +
+          s" Feature $featureIndex is categorical with values in {0,...,${featureArity - 1}," +
+          s" but a data point gives it value $featureValue.\n" +
+          "  Bad data point: " + labeledPoint.toString)
       }
       featureValue.toInt
     }

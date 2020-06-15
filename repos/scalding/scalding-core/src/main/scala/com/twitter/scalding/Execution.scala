@@ -592,8 +592,7 @@ object Execution {
           middleState.future.foreach {
             case Right((_, pt)) => pt.complete(f)
             case Left((t1, _)) => // This should never happen
-              sys.error(
-                s"Logic error: tried to set Failure($err) but Left($t1) already set")
+              sys.error(s"Logic error: tried to set Failure($err) but Left($t1) already set")
           }
         }
       case Success(t) =>
@@ -616,8 +615,7 @@ object Execution {
           middleState.future.foreach {
             case Left((_, pu)) => pu.complete(f)
             case Right((u1, _)) => // This should never happen
-              sys.error(
-                s"Logic error: tried to set Failure($err) but Right($u1) already set")
+              sys.error(s"Logic error: tried to set Failure($err) but Right($u1) already set")
           }
         }
       case Success(u) =>
@@ -628,8 +626,7 @@ object Execution {
           middleState.future.foreach {
             case Left((_, pu)) => pu.success(u)
             case Right((u1, _)) => // This should never happen
-              sys.error(
-                s"Logic error: tried to set Right($u) but Right($u1) already set")
+              sys.error(s"Logic error: tried to set Right($u) but Right($u1) already set")
           }
         }
     }

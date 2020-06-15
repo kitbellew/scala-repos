@@ -110,8 +110,7 @@ object Runner extends Logging {
         error("--scratch-uri cannot be set when deploy mode is client")
         return 1
       case (_, "cluster", m) if m.startsWith("spark://") =>
-        error(
-          "Using cluster deploy mode with Spark standalone cluster is not supported")
+        error("Using cluster deploy mode with Spark standalone cluster is not supported")
         return 1
       case _ => Unit
     }

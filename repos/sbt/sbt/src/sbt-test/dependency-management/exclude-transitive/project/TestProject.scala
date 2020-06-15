@@ -20,13 +20,11 @@ object TestProject extends Build {
       val jars = downloaded.size
       if (transitive) {
         if (jars <= 2)
-          sys.error(
-            s"Transitive dependencies not downloaded, found:\n * ${downloaded.mkString("\n * ")}")
+          sys.error(s"Transitive dependencies not downloaded, found:\n * ${downloaded.mkString("\n * ")}")
         else ()
       } else {
         if (jars > 2)
-          sys.error(
-            s"Transitive dependencies not downloaded, found:\n * ${downloaded.mkString("\n * ")}")
+          sys.error(s"Transitive dependencies not downloaded, found:\n * ${downloaded.mkString("\n * ")}")
         else ()
       }
     }

@@ -16,8 +16,7 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     whenLeader2Probe.expectNoMsg(0.seconds)
   }
 
-  test(
-    "in preparingForStart, Stop is send to all whenLeaderActors and preparation is aborted") {
+  test("in preparingForStart, Stop is send to all whenLeaderActors and preparation is aborted") {
     val probe = TestProbe()
 
     coordinatorRef.underlying.become(
@@ -32,8 +31,7 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     probe.expectMsgAnyClassOf(classOf[Status.Failure])
   }
 
-  test(
-    "in active, Stop is send to all whenLeaderActors and preparation is aborted") {
+  test("in active, Stop is send to all whenLeaderActors and preparation is aborted") {
     val probe = TestProbe()
 
     coordinatorRef.underlying.become(coordinatorRef.underlyingActor.active)
@@ -88,8 +86,7 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
         whenLeader2Probe.ref))
   }
 
-  test(
-    "switch to prepareForStart and wait for all actors to prepare until started") {
+  test("switch to prepareForStart and wait for all actors to prepare until started") {
     val probe = TestProbe()
 
     probe.send(coordinatorRef, PreparationMessages.PrepareForStart)
@@ -108,8 +105,7 @@ class LeadershipCoordinatorActorTest extends MarathonSpec {
     probe.expectMsg(PreparationMessages.Prepared(coordinatorRef))
   }
 
-  test(
-    "when preparingForStart with one requester, add another interested actorRef if necessary") {
+  test("when preparingForStart with one requester, add another interested actorRef if necessary") {
     val requester1 = TestProbe()
     val requester2 = TestProbe()
 

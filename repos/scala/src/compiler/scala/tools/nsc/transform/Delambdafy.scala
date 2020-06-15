@@ -686,8 +686,7 @@ abstract class Delambdafy
         case DefDef(_, _, _, _, _, _) =>
           // we don't expect defs within defs. At this phase trees should be very flat
           if (currentMethod.exists)
-            devWarning(
-              "Found a def within a def at a phase where defs are expected to be flattened out.")
+            devWarning("Found a def within a def at a phase where defs are expected to be flattened out.")
           currentMethod = tree.symbol
           super.traverse(tree)
           currentMethod = NoSymbol

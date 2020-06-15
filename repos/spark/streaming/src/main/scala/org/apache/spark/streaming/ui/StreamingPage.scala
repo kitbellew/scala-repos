@@ -73,9 +73,8 @@ private[ui] class GraphUIData(
         s" ${batchInterval.get}" +
         ");")
     } else {
-      jsCollector.addStatement(
-        s"drawTimeline('#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY," +
-          s" '$unitY');")
+      jsCollector.addStatement(s"drawTimeline('#$timelineDivId', $dataJavaScriptName, $minX, $maxX, $minY, $maxY," +
+        s" '$unitY');")
     }
     <div id={timelineDivId}></div>
   }
@@ -89,8 +88,7 @@ private[ui] class GraphUIData(
         s"'#$histogramDivId', $histogramData, $minY, $maxY, '$unitY', ${batchInterval.get}" +
         ");")
     } else {
-      jsCollector.addStatement(
-        s"drawHistogram('#$histogramDivId', $histogramData, $minY, $maxY, '$unitY');")
+      jsCollector.addStatement(s"drawHistogram('#$histogramDivId', $histogramData, $minY, $maxY, '$unitY');")
     }
     <div id={histogramDivId}></div>
   }

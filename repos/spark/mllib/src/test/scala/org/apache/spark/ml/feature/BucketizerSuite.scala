@@ -130,8 +130,7 @@ class BucketizerSuite
       Array(Double.NegativeInfinity, 0.0, 1.0, Double.PositiveInfinity))
   }
 
-  test(
-    "Binary search correctness in contrast with linear search, on random data") {
+  test("Binary search correctness in contrast with linear search, on random data") {
     val data = Array.fill(100)(Random.nextDouble())
     val splits: Array[Double] = Double.NegativeInfinity +:
       Array.fill(10)(Random.nextDouble()).sorted :+ Double.PositiveInfinity

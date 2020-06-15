@@ -187,8 +187,7 @@ private[http] final class BodyPartParser(
         parseHeaderLines(input, lineEnd, headers += h, headerCount + 1, cth)
 
       case _ ⇒
-        fail(
-          s"multipart part contains more than the configured limit of $maxHeaderCount headers")
+        fail(s"multipart part contains more than the configured limit of $maxHeaderCount headers")
     }
   }
 

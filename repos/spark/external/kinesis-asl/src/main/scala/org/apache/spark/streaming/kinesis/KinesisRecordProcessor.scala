@@ -83,8 +83,7 @@ private[kinesis] class KinesisRecordProcessor[T](
     if (!receiver.isStopped()) {
       try {
         receiver.addRecords(shardId, batch)
-        logDebug(
-          s"Stored: Worker $workerId stored ${batch.size} records for shardId $shardId")
+        logDebug(s"Stored: Worker $workerId stored ${batch.size} records for shardId $shardId")
         receiver.setCheckpointer(shardId, checkpointer)
       } catch {
         case NonFatal(e) => {
@@ -187,9 +186,7 @@ private[kinesis] object KinesisRecordProcessor extends Logging {
           }
           /* Throw:  Shutdown has been requested by the Kinesis Client Library. */
           case _: ShutdownException => {
-            logError(
-              s"ShutdownException:  Caught shutdown exception, skipping checkpoint.",
-              e)
+            logError(s"ShutdownException:  Caught shutdown exception, skipping checkpoint.", e)
             throw e
           }
           /* Throw:  Non-retryable exception has occurred with the Kinesis Client Library */

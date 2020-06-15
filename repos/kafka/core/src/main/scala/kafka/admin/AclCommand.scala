@@ -89,8 +89,9 @@ object AclCommand {
 
       for ((resource, acls) <- resourceToAcl) {
         val acls = resourceToAcl(resource)
-        println(
-          s"Adding ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
+        println(s"Adding ACLs for resource `${resource}`: $Newline ${acls
+          .map("\t" + _)
+          .mkString(Newline)} $Newline")
         authorizer.addAcls(acls, resource)
       }
 
@@ -129,8 +130,9 @@ object AclCommand {
           resources.map(resource => (resource -> authorizer.getAcls(resource)))
 
       for ((resource, acls) <- resourceToAcls)
-        println(
-          s"Current ACLs for resource `${resource}`: $Newline ${acls.map("\t" + _).mkString(Newline)} $Newline")
+        println(s"Current ACLs for resource `${resource}`: $Newline ${acls
+          .map("\t" + _)
+          .mkString(Newline)} $Newline")
     }
   }
 

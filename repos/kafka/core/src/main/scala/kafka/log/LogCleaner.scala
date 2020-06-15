@@ -210,8 +210,7 @@ class LogCleaner(
     override val loggerName = classOf[LogCleaner].getName
 
     if (config.dedupeBufferSize / config.numThreads > Int.MaxValue)
-      warn(
-        "Cannot use more than 2G of cleaner buffer space per cleaner thread, ignoring excess buffer space...")
+      warn("Cannot use more than 2G of cleaner buffer space per cleaner thread, ignoring excess buffer space...")
 
     val cleaner = new Cleaner(
       id = threadId,
@@ -460,14 +459,13 @@ private[log] class Cleaner(
       // clean segments into the new destination segment
       for (old <- segments) {
         val retainDeletes = old.lastModified > deleteHorizonMs
-        info(
-          "Cleaning segment %s in log %s (last modified %s) into %s, %s deletes."
-            .format(
-              old.baseOffset,
-              log.name,
-              new Date(old.lastModified),
-              cleaned.baseOffset,
-              if (retainDeletes) "retaining" else "discarding"))
+        info("Cleaning segment %s in log %s (last modified %s) into %s, %s deletes."
+          .format(
+            old.baseOffset,
+            log.name,
+            new Date(old.lastModified),
+            cleaned.baseOffset,
+            if (retainDeletes) "retaining" else "discarding"))
         cleanInto(
           log.topicAndPartition,
           old,

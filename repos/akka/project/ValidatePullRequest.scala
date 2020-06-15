@@ -28,27 +28,23 @@ object ValidatePullRequest extends AutoPlugin {
   case object BuildSkip extends BuildMode {
     override def task = None
     def log(projectName: String, l: Logger) =
-      l.info(
-        s"Skipping validation of [$projectName], as PR does NOT affect this project...")
+      l.info(s"Skipping validation of [$projectName], as PR does NOT affect this project...")
   }
   case object BuildQuick extends BuildMode {
     override def task = Some(test in ValidatePR)
     def log(projectName: String, l: Logger) =
-      l.info(
-        s"Building [$projectName] in quick mode, as it's dependencies were affected by PR.")
+      l.info(s"Building [$projectName] in quick mode, as it's dependencies were affected by PR.")
   }
   case object BuildProjectChangedQuick extends BuildMode {
     override def task = Some(test in ValidatePR)
     def log(projectName: String, l: Logger) =
-      l.info(
-        s"Building [$projectName] as the root `project/` directory was affected by this PR.")
+      l.info(s"Building [$projectName] as the root `project/` directory was affected by this PR.")
   }
   final case class BuildCommentForcedAll(phrase: String, c: GHIssueComment)
       extends BuildMode {
     override def task = Some(test in Test)
     def log(projectName: String, l: Logger) =
-      l.info(
-        s"GitHub PR comment [ ${c.getUrl} ] contains [$phrase], forcing BUILD ALL mode!")
+      l.info(s"GitHub PR comment [ ${c.getUrl} ] contains [$phrase], forcing BUILD ALL mode!")
   }
 
   val ValidatePR = config("pr-validation") extend Test
@@ -80,14 +76,14 @@ object ValidatePullRequest extends AutoPlugin {
   // asking github comments if this PR should be PLS BUILD ALL
   val githubEnforcedBuildAll = taskKey[Option[BuildMode]](
     "Checks via GitHub API if comments included the PLS BUILD ALL keyword")
-  val buildAllKeyword = taskKey[Regex](
-    "Magic phrase to be used to trigger building of the entire project instead of analysing dependencies")
+  val buildAllKeyword =
+    taskKey[Regex]("Magic phrase to be used to trigger building of the entire project instead of analysing dependencies")
 
   // determining touched dirs and projects
   val changedDirectories =
     taskKey[immutable.Set[String]]("List of touched modules in this PR branch")
-  val projectBuildMode = taskKey[BuildMode](
-    "Determines what will run when this project is affected by the PR and should be rebuilt")
+  val projectBuildMode =
+    taskKey[BuildMode]("Determines what will run when this project is affected by the PR and should be rebuilt")
 
   // running validation
   val validatePullRequest = taskKey[Unit]("Validate pull request")
@@ -112,8 +108,7 @@ object ValidatePullRequest extends AutoPlugin {
           val dependsOnModule = dirsOrExperimental.find(m.id.name contains _)
           val depends = dependsOnModule.isDefined
           if (depends)
-            log.info(
-              s"Project [$name] must be verified, because depends on [${dependsOnModule.get}]")
+            log.info(s"Project [$name] must be verified, because depends on [${dependsOnModule.get}]")
           depends
         }
     }
@@ -230,8 +225,7 @@ object ValidatePullRequest extends AutoPlugin {
         "timing"),
       projectBuildMode in ValidatePR := {
         val log = streams.value.log
-        log.debug(
-          s"Analysing project (for inclusion in PR validation): [${name.value}]")
+        log.debug(s"Analysing project (for inclusion in PR validation): [${name.value}]")
         val changedDirs = (changedDirectories in ValidatePR).value
         val githubCommandEnforcedBuildAll =
           (githubEnforcedBuildAll in ValidatePR).value

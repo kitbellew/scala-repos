@@ -25,8 +25,7 @@ trait MetropolisHastings[T] extends Rand[T] {
   def logLikelihood(x: T): Double
   def logTransitionProbability(start: T, end: T): Double
 
-  def proposalDraw(
-      x: T): T // This is a random function, which returns a random y given a deterministic x
+  def proposalDraw(x: T): T // This is a random function, which returns a random y given a deterministic x
 
   def likelihood(x: T): Double = math.exp(logLikelihood(x))
   def likelihoodRatio(start: T, end: T): Double =

@@ -133,7 +133,8 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
       i += 1
     }
     Assert.assertTrue(
-      s"Too long compilation of test data for ${getClass.getSimpleName}.test${getTestName(false)}",
+      s"Too long compilation of test data for ${getClass.getSimpleName}.test${getTestName(
+        false)}",
       i < maxCompileTime)
     if (callback.hasError) {
       deleteProjectAtTearDown = true

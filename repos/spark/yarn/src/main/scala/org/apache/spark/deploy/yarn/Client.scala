@@ -346,8 +346,7 @@ private[spark] class Client(
       destFs.setReplication(destPath, replication)
       destFs.setPermission(destPath, new FsPermission(APP_FILE_PERMISSION))
     } else {
-      logInfo(
-        s"Source and destination file systems are the same. Not copying $srcPath")
+      logInfo(s"Source and destination file systems are the same. Not copying $srcPath")
     }
     // Resolve any symlinks in the URI path so using a "current" symlink to point to a specific
     // version shows the specific version in the distributed cache configuration
@@ -399,10 +398,9 @@ private[spark] class Client(
 
     val oldLog4jConf = Option(System.getenv("SPARK_LOG4J_CONF"))
     if (oldLog4jConf.isDefined) {
-      logWarning(
-        "SPARK_LOG4J_CONF detected in the system environment. This variable has been " +
-          "deprecated. Please refer to the \"Launching Spark on YARN\" documentation " +
-          "for alternatives.")
+      logWarning("SPARK_LOG4J_CONF detected in the system environment. This variable has been " +
+        "deprecated. Please refer to the \"Launching Spark on YARN\" documentation " +
+        "for alternatives.")
     }
 
     def addDistributedUri(uri: URI): Boolean = {
@@ -469,9 +467,8 @@ private[spark] class Client(
     // If we passed in a keytab, make sure we copy the keytab to the staging directory on
     // HDFS, and setup the relevant environment vars, so the AM can login again.
     if (loginFromKeytab) {
-      logInfo(
-        "To enable the AM to login from keytab, credentials are being copied over to the AM" +
-          " via the YARN Secure Distributed Cache.")
+      logInfo("To enable the AM to login from keytab, credentials are being copied over to the AM" +
+        " via the YARN Secure Distributed Cache.")
       val (_, localizedPath) = distribute(
         keytab,
         destName = sparkConf.get(KEYTAB),
@@ -527,9 +524,8 @@ private[spark] class Client(
 
         case None =>
           // No configuration, so fall back to uploading local jar files.
-          logWarning(
-            s"Neither ${SPARK_JARS.key} nor ${SPARK_ARCHIVE.key} is set, falling back " +
-              "to uploading libraries under SPARK_HOME.")
+          logWarning(s"Neither ${SPARK_JARS.key} nor ${SPARK_ARCHIVE.key} is set, falling back " +
+            "to uploading libraries under SPARK_HOME.")
           val jarsDir = new File(sparkConf.getenv("SPARK_HOME"), "lib")
           if (jarsDir.isDirectory()) {
             jarsDir.listFiles().foreach { f =>
@@ -1034,8 +1030,7 @@ private[spark] class Client(
       commands.map(s => if (s == null) "null" else s).toList
     amContainer.setCommands(printableCommands.asJava)
 
-    logDebug(
-      "===============================================================================")
+    logDebug("===============================================================================")
     logDebug("YARN AM launch context:")
     logDebug(s"    user class: ${Option(args.userClass).getOrElse("N/A")}")
     logDebug("    env:")
@@ -1044,8 +1039,7 @@ private[spark] class Client(
     localResources.foreach { case (k, v) => logDebug(s"        $k -> $v") }
     logDebug("    command:")
     logDebug(s"        ${printableCommands.mkString(" ")}")
-    logDebug(
-      "===============================================================================")
+    logDebug("===============================================================================")
 
     // send the acl settings into YARN to control who has access via YARN interfaces
     val securityManager = new SecurityManager(sparkConf)
@@ -1244,9 +1238,8 @@ object Client extends Logging {
 
   def main(argStrings: Array[String]) {
     if (!sys.props.contains("SPARK_SUBMIT")) {
-      logWarning(
-        "WARNING: This client is deprecated and will be removed in a " +
-          "future version of Spark. Use ./bin/spark-submit with \"--master yarn\"")
+      logWarning("WARNING: This client is deprecated and will be removed in a " +
+        "future version of Spark. Use ./bin/spark-submit with \"--master yarn\"")
     }
 
     // Set an env variable indicating we are running in YARN mode.
@@ -1347,8 +1340,7 @@ object Client extends Logging {
           "Unable to obtain the default YARN Application classpath.",
           f.exception)
       case s: Success[Seq[String]] =>
-        logDebug(
-          s"Using the default YARN application classpath: ${s.get.mkString(",")}")
+        logDebug(s"Using the default YARN application classpath: ${s.get.mkString(",")}")
     }
 
     triedDefault.toOption

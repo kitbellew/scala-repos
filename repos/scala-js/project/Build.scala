@@ -48,8 +48,8 @@ object Build extends sbt.Build {
 
   val fetchScalaSource =
     taskKey[File]("Fetches the scala source for the current scala version")
-  val shouldPartest = settingKey[Boolean](
-    "Whether we should partest the current scala version (and fail if we can't)")
+  val shouldPartest =
+    settingKey[Boolean]("Whether we should partest the current scala version (and fail if we can't)")
 
   val previousVersion = "0.6.8"
   val previousSJSBinaryVersion =

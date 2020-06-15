@@ -151,9 +151,7 @@ class SparkHadoopUtil extends Logging {
       Some(() => f() - baselineBytesRead)
     } catch {
       case e @ (_: NoSuchMethodException | _: ClassNotFoundException) => {
-        logDebug(
-          "Couldn't find method for retrieving thread-level FileSystem input data",
-          e)
+        logDebug("Couldn't find method for retrieving thread-level FileSystem input data", e)
         None
       }
     }
@@ -177,9 +175,7 @@ class SparkHadoopUtil extends Logging {
       Some(() => f() - baselineBytesWritten)
     } catch {
       case e @ (_: NoSuchMethodException | _: ClassNotFoundException) => {
-        logDebug(
-          "Couldn't find method for retrieving thread-level FileSystem output data",
-          e)
+        logDebug("Couldn't find method for retrieving thread-level FileSystem output data", e)
         None
       }
     }

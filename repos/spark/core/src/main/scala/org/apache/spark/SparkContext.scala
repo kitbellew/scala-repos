@@ -402,9 +402,8 @@ class SparkContext(config: SparkConf)
    * ------------------------------------------------------------------------------------- */
 
   private def warnSparkMem(value: String): String = {
-    logWarning(
-      "Using SPARK_MEM to set amount of memory to use per executor process is " +
-        "deprecated, please use spark.executor.memory instead.")
+    logWarning("Using SPARK_MEM to set amount of memory to use per executor process is " +
+      "deprecated, please use spark.executor.memory instead.")
     value
   }
 
@@ -417,7 +416,8 @@ class SparkContext(config: SparkConf)
       Seq("ALL", "DEBUG", "ERROR", "FATAL", "INFO", "OFF", "TRACE", "WARN")
     if (!validLevels.contains(logLevel)) {
       throw new IllegalArgumentException(
-        s"Supplied level $logLevel did not match one of: ${validLevels.mkString(",")}")
+        s"Supplied level $logLevel did not match one of: ${validLevels.mkString(
+          ",")}")
     }
     Utils.setLogLevel(org.apache.log4j.Level.toLevel(logLevel))
   }
@@ -2158,10 +2158,9 @@ class SparkContext(config: SparkConf)
     // its own local file system, which is incorrect because the checkpoint files
     // are actually on the executor machines.
     if (!isLocal && Utils.nonLocalPaths(directory).isEmpty) {
-      logWarning(
-        "Spark is not running in local mode, therefore the checkpoint directory " +
-          s"must not be on the local filesystem. Directory '$directory' " +
-          "appears to be on the local filesystem.")
+      logWarning("Spark is not running in local mode, therefore the checkpoint directory " +
+        s"must not be on the local filesystem. Directory '$directory' " +
+        "appears to be on the local filesystem.")
     }
 
     checkpointDir = Option(directory).map { dir =>
@@ -2638,8 +2637,7 @@ object SparkContext extends Logging {
         val backend =
           try {
             val clazz =
-              Utils.classForName(
-                "org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
+              Utils.classForName("org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
             val cons = clazz.getConstructor(
               classOf[TaskSchedulerImpl],
               classOf[SparkContext])
@@ -2706,9 +2704,8 @@ object SparkContext extends Logging {
         (backend, scheduler)
 
       case zkUrl if zkUrl.startsWith("zk://") =>
-        logWarning(
-          "Master URL for a multi-master Mesos cluster managed by ZooKeeper should be " +
-            "in the form mesos://zk://host:port. Current Master URL will stop working in Spark 2.0.")
+        logWarning("Master URL for a multi-master Mesos cluster managed by ZooKeeper should be " +
+          "in the form mesos://zk://host:port. Current Master URL will stop working in Spark 2.0.")
         createTaskScheduler(sc, "mesos://" + zkUrl, deployMode)
 
       case _ =>

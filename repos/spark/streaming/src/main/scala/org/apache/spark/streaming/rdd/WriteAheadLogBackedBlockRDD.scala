@@ -170,8 +170,7 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
           blockId,
           new ChunkedByteBuffer(dataRead.duplicate()),
           storageLevel)
-        logDebug(
-          s"Stored partition data of $this into block manager with level $storageLevel")
+        logDebug(s"Stored partition data of $this into block manager with level $storageLevel")
         dataRead.rewind()
       }
       blockManager.dataDeserialize(blockId, dataRead).asInstanceOf[Iterator[T]]

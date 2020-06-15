@@ -115,11 +115,9 @@ class NettyServer(
           logger.warn("Ignoring unknown Netty channel option: " + option.getKey)
           transport match {
             case Native =>
-              logger.warn(
-                "Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html and http://netty.io/4.0/api/io/netty/channel/epoll/EpollChannelOption.html")
+              logger.warn("Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html and http://netty.io/4.0/api/io/netty/channel/epoll/EpollChannelOption.html")
             case Jdk =>
-              logger.warn(
-                "Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html")
+              logger.warn("Valid values can be found at http://netty.io/4.0/api/io/netty/channel/ChannelOption.html")
           }
         }
     }
@@ -322,8 +320,7 @@ object NettyServer {
   implicit val provider = new NettyServerProvider
 
   def main(args: Array[String]) {
-    System.err.println(
-      s"NettyServer.main is deprecated. Please start your Play server with the ${ProdServerStart.getClass.getName}.main.")
+    System.err.println(s"NettyServer.main is deprecated. Please start your Play server with the ${ProdServerStart.getClass.getName}.main.")
     ProdServerStart.main(args)
   }
 

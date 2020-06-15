@@ -316,9 +316,8 @@ class TcpConnectionSpec extends AkkaSpec("""
         override lazy val connectionActor = createConnectionActor(options =
           List(Inet.SO.ReceiveBufferSize(1000000)))
         run {
-          info(
-            "Currently ignored as SO_SNDBUF is usually a lower bound on the send buffer so the test fails as no real " +
-              "backpressure present.")
+          info("Currently ignored as SO_SNDBUF is usually a lower bound on the send buffer so the test fails as no real " +
+            "backpressure present.")
           pending
           ignoreIfWindows()
           object Ack1 extends Event

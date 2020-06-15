@@ -64,9 +64,8 @@ private[mllib] object LocalKMeans extends Logging {
         j += 1
       }
       if (j == 0) {
-        logWarning(
-          "kMeansPlusPlus initialization ran out of distinct points for centers." +
-            s" Using duplicate point for center k = $i.")
+        logWarning("kMeansPlusPlus initialization ran out of distinct points for centers." +
+          s" Using duplicate point for center k = $i.")
         centers(i) = points(0).toDense
       } else {
         centers(i) = points(j - 1).toDense

@@ -89,8 +89,7 @@ class SetOperationSuite extends PlanTest {
     comparePlans(unionOptimized, unionCorrectAnswer)
   }
 
-  test(
-    "SPARK-10539: Project should not be pushed down through Intersect or Except") {
+  test("SPARK-10539: Project should not be pushed down through Intersect or Except") {
     val exceptQuery = testExcept.select('a, 'b, 'c)
     val exceptOptimized = Optimize.execute(exceptQuery.analyze)
     comparePlans(exceptOptimized, exceptQuery.analyze)

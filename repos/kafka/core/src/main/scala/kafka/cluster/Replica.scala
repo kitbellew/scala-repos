@@ -87,9 +87,8 @@ class Replica(
   def highWatermark_=(newHighWatermark: LogOffsetMetadata) {
     if (isLocal) {
       highWatermarkMetadata = newHighWatermark
-      trace(
-        "Setting high watermark for replica %d partition [%s,%d] on broker %d to [%s]"
-          .format(brokerId, topic, partitionId, brokerId, newHighWatermark))
+      trace("Setting high watermark for replica %d partition [%s,%d] on broker %d to [%s]"
+        .format(brokerId, topic, partitionId, brokerId, newHighWatermark))
     } else {
       throw new KafkaException(
         "Should not set high watermark on partition [%s,%d]'s non-local replica %d"

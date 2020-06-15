@@ -412,8 +412,7 @@ trait BasicBackend { self =>
                                                                                else
                                                                                  "completely delivered"))
                     else
-                      streamLogger.debug(
-                        s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")
+                      streamLogger.debug(s"Sent ${str(realDemand)} elements, more available - Performing atomic state transition")
                   }
                   demand = ctx.delivered(demand)
                   realDemand =
@@ -421,8 +420,7 @@ trait BasicBackend { self =>
                 } while ((state ne null) && realDemand > 0)
                 if (debug) {
                   if (state ne null)
-                    streamLogger.debug(
-                      "Suspending streaming action with continuation (more data available)")
+                    streamLogger.debug("Suspending streaming action with continuation (more data available)")
                   else streamLogger.debug("Finished streaming action")
                 }
               } catch {
@@ -600,8 +598,7 @@ trait BasicBackend { self =>
           highPrio = true)(s.asInstanceOf[a.StreamState])
       } else {
         if (streamLogger.isDebugEnabled)
-          streamLogger.debug(
-            "Saw transition from demand = 0, but no stream continuation available")
+          streamLogger.debug("Saw transition from demand = 0, but no stream continuation available")
       }
     }
 

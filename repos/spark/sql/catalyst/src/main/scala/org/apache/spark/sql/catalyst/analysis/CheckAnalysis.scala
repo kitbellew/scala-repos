@@ -66,13 +66,11 @@ trait CheckAnalysis {
           case e: Expression if e.checkInputDataTypes().isFailure =>
             e.checkInputDataTypes() match {
               case TypeCheckResult.TypeCheckFailure(message) =>
-                e.failAnalysis(
-                  s"cannot resolve '${e.sql}' due to data type mismatch: $message")
+                e.failAnalysis(s"cannot resolve '${e.sql}' due to data type mismatch: $message")
             }
 
           case c: Cast if !c.resolved =>
-            failAnalysis(
-              s"invalid cast from ${c.child.dataType.simpleString} to ${c.dataType.simpleString}")
+            failAnalysis(s"invalid cast from ${c.child.dataType.simpleString} to ${c.dataType.simpleString}")
 
           case g: Grouping =>
             failAnalysis(
@@ -161,10 +159,9 @@ trait CheckAnalysis {
                   aggExpr.aggregateFunction.children.foreach { child =>
                     child.foreach {
                       case agg: AggregateExpression =>
-                        failAnalysis(
-                          s"It is not allowed to use an aggregate function in the argument of " +
-                            s"another aggregate function. Please use the inner aggregate function " +
-                            s"in a sub-query.")
+                        failAnalysis(s"It is not allowed to use an aggregate function in the argument of " +
+                          s"another aggregate function. Please use the inner aggregate function " +
+                          s"in a sub-query.")
                       case other => // OK
                     }
 
@@ -176,11 +173,10 @@ trait CheckAnalysis {
                   }
                 case e: Attribute
                     if !groupingExprs.exists(_.semanticEquals(e)) =>
-                  failAnalysis(
-                    s"expression '${e.sql}' is neither present in the group by, " +
-                      s"nor is it an aggregate function. " +
-                      "Add to group by or wrap in first() (or first_value) if you don't care " +
-                      "which value you get.")
+                  failAnalysis(s"expression '${e.sql}' is neither present in the group by, " +
+                    s"nor is it an aggregate function. " +
+                    "Add to group by or wrap in first() (or first_value) if you don't care " +
+                    "which value you get.")
                 case e if groupingExprs.exists(_.semanticEquals(e)) => // OK
                 case e if e.references.isEmpty                      => // OK
                 case e                                              => e.children.foreach(checkValidAggregateExpression)
@@ -189,10 +185,9 @@ trait CheckAnalysis {
             def checkValidGroupingExprs(expr: Expression): Unit = {
               // Check if the data type of expr is orderable.
               if (!RowOrdering.isOrderable(expr.dataType)) {
-                failAnalysis(
-                  s"expression ${expr.sql} cannot be used as a grouping expression " +
-                    s"because its data type ${expr.dataType.simpleString} is not a orderable " +
-                    s"data type.")
+                failAnalysis(s"expression ${expr.sql} cannot be used as a grouping expression " +
+                  s"because its data type ${expr.dataType.simpleString} is not a orderable " +
+                  s"data type.")
               }
 
               if (!expr.deterministic) {
@@ -211,17 +206,15 @@ trait CheckAnalysis {
           case Sort(orders, _, _) =>
             orders.foreach { order =>
               if (!RowOrdering.isOrderable(order.dataType)) {
-                failAnalysis(
-                  s"sorting is not supported for columns of type ${order.dataType.simpleString}")
+                failAnalysis(s"sorting is not supported for columns of type ${order.dataType.simpleString}")
               }
             }
 
           case s @ SetOperation(left, right)
               if left.output.length != right.output.length =>
-            failAnalysis(
-              s"${s.nodeName} can only be performed on tables with the same number of columns, " +
-                s"but the left table has ${left.output.length} columns and the right has " +
-                s"${right.output.length}")
+            failAnalysis(s"${s.nodeName} can only be performed on tables with the same number of columns, " +
+              s"but the left table has ${left.output.length} columns and the right has " +
+              s"${right.output.length}")
 
           case s: Union
               if s.children.exists(

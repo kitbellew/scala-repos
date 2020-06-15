@@ -173,8 +173,7 @@ abstract class ClassfileParser {
 
     val minor, major = u2
     if (major < JAVA_MAJOR_VERSION || major == JAVA_MAJOR_VERSION && minor < JAVA_MINOR_VERSION)
-      abort(
-        s"class file ${in.file} has unknown version $major.$minor, should be at least $JAVA_MAJOR_VERSION.$JAVA_MINOR_VERSION")
+      abort(s"class file ${in.file} has unknown version $major.$minor, should be at least $JAVA_MAJOR_VERSION.$JAVA_MINOR_VERSION")
   }
 
   /**
@@ -594,8 +593,7 @@ abstract class ClassfileParser {
         val enumClass = sym.owner.linkedClassOfClass
         enumClass match {
           case NoSymbol =>
-            devWarning(
-              s"no linked class for java enum $sym in ${sym.owner}. A referencing class file might be missing an InnerClasses entry.")
+            devWarning(s"no linked class for java enum $sym in ${sym.owner}. A referencing class file might be missing an InnerClasses entry.")
           case linked =>
             if (!linked.isSealed)
               // Marking the enum class SEALED | ABSTRACT enables exhaustiveness checking. See also JavaParsers.
@@ -1010,8 +1008,7 @@ abstract class ClassfileParser {
           val s = module.info.decls.lookup(n)
           if (s != NoSymbol) Some(LiteralAnnotArg(Constant(s)))
           else {
-            warning(
-              s"""While parsing annotations in ${in.file}, could not find $n in enum $module.\nThis is likely due to an implementation restriction: an annotation argument cannot refer to a member of the annotated class (SI-7014).""")
+            warning(s"""While parsing annotations in ${in.file}, could not find $n in enum $module.\nThis is likely due to an implementation restriction: an annotation argument cannot refer to a member of the annotated class (SI-7014).""")
             None
           }
 

@@ -264,8 +264,7 @@ object FileAndResourceDirectives extends FileAndResourceDirectives {
           else Some(ResourceFile(url, file.length(), file.lastModified()))
         case "jar" ⇒
           val path =
-            new URI(
-              url.getPath).getPath // remove "file:" prefix and normalize whitespace
+            new URI(url.getPath).getPath // remove "file:" prefix and normalize whitespace
           val bangIndex = path.indexOf('!')
           val filePath = path.substring(0, bangIndex)
           val resourcePath = path.substring(bangIndex + 2)

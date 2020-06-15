@@ -127,8 +127,7 @@ object HRavenHistoryService extends HistoryService {
       }
       .recoverWith {
         case e: IOException =>
-          LOG.error(
-            "Error making API request to hRaven. HRavenHistoryService will be disabled.")
+          LOG.error("Error making API request to hRaven. HRavenHistoryService will be disabled.")
           Failure(e)
       }
 

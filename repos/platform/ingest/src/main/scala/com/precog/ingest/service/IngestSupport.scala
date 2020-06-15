@@ -90,8 +90,8 @@ trait IngestSupport extends Logging {
         M.point(
           HttpResponse[JValue](
             Forbidden,
-            content = Some(JString(
-              "Either the ownerAccountId parameter you specified could not be resolved to a set of permitted accounts, or the API key specified was invalid."))
+            content =
+              Some(JString("Either the ownerAccountId parameter you specified could not be resolved to a set of permitted accounts, or the API key specified was invalid."))
           ))
     }
   }

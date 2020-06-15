@@ -127,8 +127,7 @@ object CoreWorkflow {
       params)
 
     if (evaluatorResult.noSave) {
-      logger.info(
-        s"This evaluation result is not inserted into database: $evaluatorResult")
+      logger.info(s"This evaluation result is not inserted into database: $evaluatorResult")
     } else {
       val evaluatedEvaluationInstance = evaluationInstance.copy(
         status = "EVALCOMPLETED",

@@ -117,10 +117,9 @@ private[spark] class HiveCatalog(client: HiveClient)
     withClient {
       val existingDb = getDatabase(dbDefinition.name)
       if (existingDb.properties == dbDefinition.properties) {
-        logWarning(
-          s"Request to alter database ${dbDefinition.name} is a no-op because " +
-            s"the provided database properties are the same as the old ones. Hive does not " +
-            s"currently support altering other database fields.")
+        logWarning(s"Request to alter database ${dbDefinition.name} is a no-op because " +
+          s"the provided database properties are the same as the old ones. Hive does not " +
+          s"currently support altering other database fields.")
       }
       client.alterDatabase(dbDefinition)
     }

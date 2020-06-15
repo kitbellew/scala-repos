@@ -733,9 +733,8 @@ trait EntityPage extends HtmlPage {
 
             val shadowingWarning: NodeSeq =
               if (mbr.isShadowedImplicit)
-                scala.xml.Text(
-                  "This implicitly inherited member is shadowed by one or more members in this " +
-                    "class.") ++ shadowingSuggestion
+                scala.xml.Text("This implicitly inherited member is shadowed by one or more members in this " +
+                  "class.") ++ shadowingSuggestion
               else if (mbr.isAmbiguousImplicit)
                 scala.xml.Text("This implicitly inherited member is ambiguous. One or more implicitly " +
                   "inherited members have similar signatures, so calling this member may produce an ambiguous " +

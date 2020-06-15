@@ -456,8 +456,10 @@ private[remote] class ReliableDeliverySupervisor(
         localAddress,
         remoteAddress,
         uid,
-        new TimeoutException("Remote system has been silent for too long. " +
-          s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(TimeUnit.HOURS)} hours)"))
+        new TimeoutException(
+          "Remote system has been silent for too long. " +
+            s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(
+              TimeUnit.HOURS)} hours)"))
     case EndpointWriter.FlushAndStop ⇒ context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) ⇒
       replyTo ! EndpointWriter.StoppedReading(w)
@@ -852,10 +854,9 @@ private[remote] class EndpointWriter(
     if (buffer.isEmpty && prioBuffer.isEmpty) {
       // FIXME remove this when testing/tuning is completed
       if (log.isDebugEnabled)
-        log.debug(
-          s"Drained buffer with maxWriteCount: $maxWriteCount, fullBackoffCount: $fullBackoffCount" +
-            s", smallBackoffCount: $smallBackoffCount, noBackoffCount: $noBackoffCount " +
-            s", adaptiveBackoff: ${adaptiveBackoffNanos / 1000}")
+        log.debug(s"Drained buffer with maxWriteCount: $maxWriteCount, fullBackoffCount: $fullBackoffCount" +
+          s", smallBackoffCount: $smallBackoffCount, noBackoffCount: $noBackoffCount " +
+          s", adaptiveBackoff: ${adaptiveBackoffNanos / 1000}")
       fullBackoffCount = 1
       smallBackoffCount = 0
       noBackoffCount = 0
@@ -1234,8 +1235,7 @@ private[remote] class EndpointReader(
         throw ShutDownAssociation(
           localAddress,
           remoteAddress,
-          InvalidAssociationException(
-            "The remote system terminated the association because it is shutting down."))
+          InvalidAssociationException("The remote system terminated the association because it is shutting down."))
       case AssociationHandle.Quarantined ⇒
         throw InvalidAssociation(
           localAddress,

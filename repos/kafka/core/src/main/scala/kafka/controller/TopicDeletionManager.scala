@@ -296,9 +296,8 @@ class TopicDeletionManager(
     val failedReplicas = controller.replicaStateMachine.replicasInState(
       topic,
       ReplicaDeletionIneligible)
-    info(
-      "Retrying delete topic for topic %s since replicas %s were not successfully deleted"
-        .format(topic, failedReplicas.mkString(",")))
+    info("Retrying delete topic for topic %s since replicas %s were not successfully deleted"
+      .format(topic, failedReplicas.mkString(",")))
     controller.replicaStateMachine.handleStateChanges(
       failedReplicas,
       OfflineReplica)
@@ -492,12 +491,11 @@ class TopicDeletionManager(
               val replicaIds = replicasInDeletionStartedState.map(_.replica)
               val partitions = replicasInDeletionStartedState.map(r =>
                 TopicAndPartition(r.topic, r.partition))
-              info(
-                "Deletion for replicas %s for partition %s of topic %s in progress"
-                  .format(
-                    replicaIds.mkString(","),
-                    partitions.mkString(","),
-                    topic))
+              info("Deletion for replicas %s for partition %s of topic %s in progress"
+                .format(
+                  replicaIds.mkString(","),
+                  partitions.mkString(","),
+                  topic))
             } else {
               // if you come here, then no replica is in TopicDeletionStarted and all replicas are not in
               // TopicDeletionSuccessful. That means, that either given topic haven't initiated deletion
@@ -516,9 +514,8 @@ class TopicDeletionManager(
             // topic deletion will be kicked off
             onTopicDeletion(Set(topic))
           } else if (isTopicIneligibleForDeletion(topic)) {
-            info(
-              "Not retrying deletion of topic %s at this time since it is marked ineligible for deletion"
-                .format(topic))
+            info("Not retrying deletion of topic %s at this time since it is marked ineligible for deletion"
+              .format(topic))
           }
         }
       }

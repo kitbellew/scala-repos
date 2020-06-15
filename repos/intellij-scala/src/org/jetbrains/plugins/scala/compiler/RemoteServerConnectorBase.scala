@@ -156,8 +156,7 @@ abstract class RemoteServerConnectorBase(
     scala.compiler.findJdkByName(settings.COMPILE_SERVER_SDK) match {
       case Right(jdk) => jdk.executable
       case Left(msg) =>
-        configurationError(
-          s"Cannot find jdk ${settings.COMPILE_SERVER_SDK} for compile server, underlying message: $msg")
+        configurationError(s"Cannot find jdk ${settings.COMPILE_SERVER_SDK} for compile server, underlying message: $msg")
     }
 
   private def checkFilesToCompile(files: Seq[File]) = {

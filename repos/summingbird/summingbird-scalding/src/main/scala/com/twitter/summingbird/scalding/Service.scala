@@ -206,8 +206,7 @@ private[scalding] object InternalService {
       fn.map { f => (f.asInstanceOf[ValueFlatMapFn], None) }
     }
 
-    res.getOrElse(sys.error(
-      "Could not find correct loop inputs for leftJoin-store loop. Check the job DAG for validity."))
+    res.getOrElse(sys.error("Could not find correct loop inputs for leftJoin-store loop. Check the job DAG for validity."))
   }
 
   /**

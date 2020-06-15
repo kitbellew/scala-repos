@@ -35,8 +35,7 @@ class DeploymentPlanRevertTest
       val unexpectedGroupIds = actualGroupIds -- expectedGroupIds
       val missingGroupIds = expectedGroupIds -- actualGroupIds
 
-      withClue(
-        s"unexpected groups $unexpectedGroupIds, missing groups $missingGroupIds: ") {
+      withClue(s"unexpected groups $unexpectedGroupIds, missing groups $missingGroupIds: ") {
         actualGroupIds should equal(expectedGroupIds)
       }
 
@@ -87,8 +86,7 @@ class DeploymentPlanRevertTest
       groups = Set(unrelatedGroup)
     )
 
-    When(
-      "we add an unrelated app and try to revert that without concurrent changes")
+    When("we add an unrelated app and try to revert that without concurrent changes")
     val target = original.updateApp(
       "test".toPath,
       _ => AppDefinition("test".toPath),
@@ -334,8 +332,7 @@ class DeploymentPlanRevertTest
           Group(
             id,
             groups = Set(Group(id / "some")),
-            dependencies =
-              Set() // dependencies were introduce with first deployment, should be gone now
+            dependencies = Set() // dependencies were introduce with first deployment, should be gone now
           )
         }, {
           val id = "changeme".toRootPath
@@ -529,14 +526,12 @@ class DeploymentPlanRevertTest
       }
     }
 
-    test(
-      s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(_.name).mkString(", ")}") {
+    test(s"Reverting ${firstDeployment.name} after deploying ${deployments.tail.map(_.name).mkString(", ")}") {
       Given("an existing group with apps")
       val original =
         performDeployments(originalBeforeChanges, changesBeforeTest)
 
-      When(
-        s"performing a series of deployments (${deployments.map(_.name).mkString(", ")})")
+      When(s"performing a series of deployments (${deployments.map(_.name).mkString(", ")})")
 
       val targetWithAllDeployments = performDeployments(original, deployments)
 
@@ -549,8 +544,7 @@ class DeploymentPlanRevertTest
       val reverted =
         deploymentReverterForFirst(normalizeVersions(targetWithAllDeployments))
 
-      Then(
-        "The result should only contain items with the prior or the new version")
+      Then("The result should only contain items with the prior or the new version")
       for (app <- reverted.transitiveApps) {
         withClue(s"version for app ${app.id} ") {
           app.version.toDateTime.getMillis should be <= (1L)
@@ -563,8 +557,7 @@ class DeploymentPlanRevertTest
         }
       }
 
-      Then(
-        "the result should be the same as if we had only applied all the other deployments")
+      Then("the result should be the same as if we had only applied all the other deployments")
       val targetWithoutFirstDeployment =
         performDeployments(original, deployments.tail)
       withClue("while comparing reverted with targetWithoutFirstDeployment: ") {

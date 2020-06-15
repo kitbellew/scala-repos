@@ -47,8 +47,7 @@ class HiveDataFrameAnalyticsSuite
   test("rollup") {
     checkAnswer(
       testData.rollup($"a" + $"b", $"b").agg(sum($"a" - $"b")),
-      sql(
-        "select a + b, b, sum(a - b) from mytable group by a + b, b with rollup")
+      sql("select a + b, b, sum(a - b) from mytable group by a + b, b with rollup")
         .collect()
     )
 

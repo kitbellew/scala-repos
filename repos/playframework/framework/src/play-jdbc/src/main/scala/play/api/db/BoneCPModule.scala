@@ -84,8 +84,7 @@ class BoneConnectionPool @Inject() (environment: Environment)
 
       override def onCheckIn(connection: ConnectionHandle) {
         if (logger.isTraceEnabled) {
-          logger.trace(
-            s"Check in connection $connection [${datasource.getTotalLeased} leased]")
+          logger.trace(s"Check in connection $connection [${datasource.getTotalLeased} leased]")
         }
       }
 
@@ -95,8 +94,7 @@ class BoneConnectionPool @Inject() (environment: Environment)
         connection.setReadOnly(readOnly)
         catalog.foreach(connection.setCatalog)
         if (logger.isTraceEnabled) {
-          logger.trace(
-            s"Check out connection $connection [${datasource.getTotalLeased} leased]")
+          logger.trace(s"Check out connection $connection [${datasource.getTotalLeased} leased]")
         }
       }
 

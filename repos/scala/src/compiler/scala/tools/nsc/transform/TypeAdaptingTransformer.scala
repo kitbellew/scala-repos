@@ -44,8 +44,7 @@ trait TypeAdaptingTransformer {
       val result = box1(tree)
       if (tree.tpe =:= UnitTpe) ()
       else
-        log(
-          s"boxing ${tree.summaryString}: ${tree.tpe} into $target: ${result.tpe}")
+        log(s"boxing ${tree.summaryString}: ${tree.tpe} into $target: ${result.tpe}")
       result
     }
 

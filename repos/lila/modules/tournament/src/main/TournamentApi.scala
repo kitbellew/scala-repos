@@ -86,8 +86,7 @@ private[tournament] final class TournamentApi(
           val time = nowMillis - startAt
           lila.mon.tournament.pairing.createTime(time.toInt)
           if (time > 100)
-            pairingLogger.debug(
-              s"Done making http://lichess.org/tournament/${tour.id} in ${time}ms")
+            pairingLogger.debug(s"Done making http://lichess.org/tournament/${tour.id} in ${time}ms")
         }
       }
     }

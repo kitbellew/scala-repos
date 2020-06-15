@@ -215,8 +215,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       with Attachable {
     // makes sure that all symbols that runtime reflection deals with are synchronized
     private def isSynchronized =
-      this.isInstanceOf[
-        scala.reflect.runtime.SynchronizedSymbols#SynchronizedSymbol]
+      this.isInstanceOf[scala.reflect.runtime.SynchronizedSymbols#SynchronizedSymbol]
     private def isAprioriThreadsafe = isThreadsafe(AllOps)
     assert(
       isCompilerUniverse || isSynchronized || isAprioriThreadsafe,
@@ -1278,8 +1277,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
             // parent LowPriorityImplicits. See comment in c5441dc for more elaboration.
             // Since the fix for SI-7335 Predef parents must be defined in Predef.scala, and we should not
             // get here anymore.
-            devWarning(
-              s"calling Symbol#exists with sourcefile based symbol loader may give incorrect results.");
+            devWarning(s"calling Symbol#exists with sourcefile based symbol loader may give incorrect results.");
         }
 
         rawInfo load this
@@ -1722,8 +1720,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       (
         // Avoiding a third override in NoSymbol to preserve bimorphism
         if (this eq NoSymbol)
-          abort(
-            "no-symbol does not have a type constructor (this may indicate scalac cannot find fundamental classes)")
+          abort("no-symbol does not have a type constructor (this may indicate scalac cannot find fundamental classes)")
         else
           abort("typeConstructor inapplicable for " + this)
       )

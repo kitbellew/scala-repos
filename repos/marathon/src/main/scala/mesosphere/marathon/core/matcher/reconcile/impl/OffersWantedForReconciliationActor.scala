@@ -54,8 +54,7 @@ private[reconcile] class OffersWantedForReconciliationActor(
 
     eventStream.subscribe(self, classOf[DeploymentStepSuccess])
 
-    log.info(
-      s"Started. Will remain interested in offer reconciliation for $interestDuration when needed.")
+    log.info(s"Started. Will remain interested in offer reconciliation for $interestDuration when needed.")
     self ! OffersWantedForReconciliationActor.RequestOffers("becoming leader")
   }
 
@@ -87,8 +86,7 @@ private[reconcile] class OffersWantedForReconciliationActor(
     val nextCheck = scheduleNextCheck
     offersWanted.onNext(true)
     val until: Timestamp = clock.now() + interestDuration
-    log.info(
-      s"interested in offers for reservation reconciliation because of $reason (until $until)")
+    log.info(s"interested in offers for reservation reconciliation because of $reason (until $until)")
     subscribedToOffers(until, nextCheck)
   }
 

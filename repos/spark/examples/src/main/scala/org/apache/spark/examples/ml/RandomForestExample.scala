@@ -99,9 +99,11 @@ object RandomForestExample {
           s"number of trees in ensemble, default: ${defaultParams.numTrees}")
         .action((x, c) => c.copy(numTrees = x))
       opt[String]("featureSubsetStrategy")
-        .text(s"number of features to use per node (supported:" +
-          s" ${RandomForestClassifier.supportedFeatureSubsetStrategies.mkString(",")})," +
-          s" default: ${defaultParams.numTrees}")
+        .text(
+          s"number of features to use per node (supported:" +
+            s" ${RandomForestClassifier.supportedFeatureSubsetStrategies
+              .mkString(",")})," +
+            s" default: ${defaultParams.numTrees}")
         .action((x, c) => c.copy(featureSubsetStrategy = x))
       opt[Double]("fracTest")
         .text(

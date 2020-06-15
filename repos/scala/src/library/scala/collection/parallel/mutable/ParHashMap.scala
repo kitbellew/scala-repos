@@ -354,6 +354,5 @@ private[parallel] object ParHashMapCombiner {
   private[mutable] val nonmasklength = 32 - discriminantbits
 
   def apply[K, V] =
-    new ParHashMapCombiner[K, V](
-      HashTable.defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
+    new ParHashMapCombiner[K, V](HashTable.defaultLoadFactor) {} // was: with EnvironmentPassingCombiner[(K, V), ParHashMap[K, V]]
 }

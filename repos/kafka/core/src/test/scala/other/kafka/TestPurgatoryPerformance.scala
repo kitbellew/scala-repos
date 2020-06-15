@@ -167,9 +167,8 @@ object TestPurgatoryPerformance {
       println("# enqueue rate (%d requests):".format(numRequests))
       val gcCountHeader = gcNames.map("<" + _ + " count>").mkString(" ")
       val gcTimeHeader = gcNames.map("<" + _ + " time ms>").mkString(" ")
-      println(
-        "# <elapsed time ms>\t<target rate>\t<actual rate>\t<process cpu time ms>\t%s\t%s"
-          .format(gcCountHeader, gcTimeHeader))
+      println("# <elapsed time ms>\t<target rate>\t<actual rate>\t<process cpu time ms>\t%s\t%s"
+        .format(gcCountHeader, gcTimeHeader))
     }
 
     val targetRate =
@@ -245,8 +244,7 @@ object TestPurgatoryPerformance {
     private[this] val rand = new Random
     private[this] val samples = {
       val normalMean = math.log(pct50)
-      val normalStDev = (math.log(
-        pct75) - normalMean) / 0.674490d // 0.674490 is 75th percentile point in N(0,1)
+      val normalStDev = (math.log(pct75) - normalMean) / 0.674490d // 0.674490 is 75th percentile point in N(0,1)
       val dist = new LogNormalDistribution(normalMean, normalStDev)
       (0 until sampleSize).map { _ => dist.next().toLong }.toArray
     }

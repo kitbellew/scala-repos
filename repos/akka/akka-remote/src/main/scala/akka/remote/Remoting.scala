@@ -179,9 +179,8 @@ private[remote] class Remoting(
         (manager ? ShutdownAndFlush).mapTo[Boolean].andThen {
           case Success(flushSuccessful) ⇒
             if (!flushSuccessful)
-              log.warning(
-                "Shutdown finished, but flushing might not have been successful and some messages might have been dropped. " +
-                  "Increase akka.remote.flush-wait-on-shutdown to a larger value to avoid this.")
+              log.warning("Shutdown finished, but flushing might not have been successful and some messages might have been dropped. " +
+                "Increase akka.remote.flush-wait-on-shutdown to a larger value to avoid this.")
             finalize()
 
           case Failure(e) ⇒
@@ -236,9 +235,7 @@ private[remote] class Remoting(
 
         } catch {
           case e: TimeoutException ⇒
-            notifyError(
-              "Startup timed out. This is usually related to actor system host setting or host name resolution misconfiguration.",
-              e)
+            notifyError("Startup timed out. This is usually related to actor system host setting or host name resolution misconfiguration.", e)
             throw e
           case NonFatal(e) ⇒
             notifyError("Startup failed", e)
@@ -1094,8 +1091,7 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       // We still need to clean up any remaining transports because handles might be in mailboxes, and for example
       // Netty is not part of the actor hierarchy, so its handles will not be cleaned up if no actor is taking
       // responsibility of them (because they are sitting in a mailbox).
-      log.error(
-        "Remoting system has been terminated abrubtly. Attempting to shut down transports")
+      log.error("Remoting system has been terminated abrubtly. Attempting to shut down transports")
       // The result of this shutdown is async, should we try to Await for a short duration?
       transportMapping.values map (_.shutdown())
     }

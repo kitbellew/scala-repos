@@ -64,13 +64,11 @@ private[mesos] class MesosExternalShuffleBlockHandler(
       case RegisterDriverParam(appId, appState) =>
         val address = client.getSocketAddress
         val timeout = appState.heartbeatTimeout
-        logInfo(
-          s"Received registration request from app $appId (remote address $address, " +
-            s"heartbeat timeout $timeout ms).")
+        logInfo(s"Received registration request from app $appId (remote address $address, " +
+          s"heartbeat timeout $timeout ms).")
         if (connectedApps.containsKey(appId)) {
-          logWarning(
-            s"Received a registration request from app $appId, but it was already " +
-              s"registered")
+          logWarning(s"Received a registration request from app $appId, but it was already " +
+            s"registered")
         }
         connectedApps.put(appId, appState)
         callback.onSuccess(ByteBuffer.allocate(0))

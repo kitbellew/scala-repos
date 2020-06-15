@@ -70,9 +70,7 @@ class LogCleanerIntegrationTest(compressionCodec: String) {
     val lastCleaned = cleaner.cleanerManager.allCleanerCheckpoints
       .get(TopicAndPartition("log", 0))
       .get
-    assertTrue(
-      s"log cleaner should have processed up to offset $firstDirty, but lastCleaned=$lastCleaned",
-      lastCleaned >= firstDirty)
+    assertTrue(s"log cleaner should have processed up to offset $firstDirty, but lastCleaned=$lastCleaned", lastCleaned >= firstDirty)
     assertTrue(
       s"log should have been compacted:  startSize=$startSize compactedSize=$compactedSize",
       startSize > compactedSize)

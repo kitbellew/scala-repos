@@ -31,8 +31,7 @@ trait HttpEventConfiguration extends ScallopConf {
 
   lazy val httpEventCallbackSlowConsumerTimeout = opt[Long](
     "http_event_callback_slow_consumer_timeout",
-    descr =
-      "A http event callback consumer is considered slow, if the delivery takes longer than this timeout (ms)",
+    descr = "A http event callback consumer is considered slow, if the delivery takes longer than this timeout (ms)",
     required = false,
     noshort = true,
     default = Some(10.seconds.toMillis)
@@ -86,15 +85,13 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
 
     val actor = system.actorOf(Props(new SubscribersKeeperActor(store)))
     conf.httpEventEndpoints.get foreach { urls =>
-      log.info(
-        s"http_endpoints($urls) are specified at startup. Those will be added to subscribers list.")
+      log.info(s"http_endpoints($urls) are specified at startup. Those will be added to subscribers list.")
       urls foreach { url =>
         val f =
           (actor ? Subscribe(local_ip, url)).mapTo[MarathonSubscriptionEvent]
         f.onFailure {
           case th: Throwable =>
-            log.warn(
-              s"Failed to add $url to event subscribers. exception message => ${th.getMessage}")
+            log.warn(s"Failed to add $url to event subscribers. exception message => ${th.getMessage}")
         }(ExecutionContext.global)
       }
     }

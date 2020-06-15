@@ -209,8 +209,7 @@ private[akka] trait MultiStreamOutputProcessorLike
       substreamOutputs.get(key) match {
         case Some(sub) ⇒
           if (demand < 1) // According to Reactive Streams Spec 3.9, with non-positive demand must yield onError
-            sub.error(
-              ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
+            sub.error(ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
           else
             sub.enqueueOutputDemand(demand)
         case _ ⇒ // ignore...

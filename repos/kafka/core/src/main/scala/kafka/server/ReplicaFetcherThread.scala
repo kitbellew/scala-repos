@@ -144,23 +144,21 @@ class ReplicaFetcherThread(
           "Offset mismatch: fetched offset = %d, log end offset = %d."
             .format(fetchOffset, replica.logEndOffset.messageOffset))
       if (logger.isTraceEnabled)
-        trace(
-          "Follower %d has replica log end offset %d for partition %s. Received %d messages and leader hw %d"
-            .format(
-              replica.brokerId,
-              replica.logEndOffset.messageOffset,
-              topicAndPartition,
-              messageSet.sizeInBytes,
-              partitionData.highWatermark))
+        trace("Follower %d has replica log end offset %d for partition %s. Received %d messages and leader hw %d"
+          .format(
+            replica.brokerId,
+            replica.logEndOffset.messageOffset,
+            topicAndPartition,
+            messageSet.sizeInBytes,
+            partitionData.highWatermark))
       replica.log.get.append(messageSet, assignOffsets = false)
       if (logger.isTraceEnabled)
-        trace(
-          "Follower %d has replica log end offset %d after appending %d bytes of messages for partition %s"
-            .format(
-              replica.brokerId,
-              replica.logEndOffset.messageOffset,
-              messageSet.sizeInBytes,
-              topicAndPartition))
+        trace("Follower %d has replica log end offset %d after appending %d bytes of messages for partition %s"
+          .format(
+            replica.brokerId,
+            replica.logEndOffset.messageOffset,
+            messageSet.sizeInBytes,
+            topicAndPartition))
       val followerHighWatermark =
         replica.logEndOffset.messageOffset.min(partitionData.highWatermark)
       // for the follower replica, we do not need to keep
@@ -184,11 +182,10 @@ class ReplicaFetcherThread(
 
   def warnIfMessageOversized(messageSet: ByteBufferMessageSet): Unit = {
     if (messageSet.sizeInBytes > 0 && messageSet.validBytes <= 0)
-      error(
-        "Replication is failing due to a message that is greater than replica.fetch.max.bytes. This " +
-          "generally occurs when the max.message.bytes has been overridden to exceed this value and a suitably large " +
-          "message has also been sent. To fix this problem increase replica.fetch.max.bytes in your broker config to be " +
-          "equal or larger than your settings for max.message.bytes, both at a broker and topic level.")
+      error("Replication is failing due to a message that is greater than replica.fetch.max.bytes. This " +
+        "generally occurs when the max.message.bytes has been overridden to exceed this value and a suitably large " +
+        "message has also been sent. To fix this problem increase replica.fetch.max.bytes in your broker config to be " +
+        "equal or larger than your settings for max.message.bytes, both at a broker and topic level.")
   }
 
   /**
@@ -239,14 +236,13 @@ class ReplicaFetcherThread(
         Runtime.getRuntime.halt(1)
       }
 
-      warn(
-        "Replica %d for partition %s reset its fetch offset from %d to current leader %d's latest offset %d"
-          .format(
-            brokerConfig.brokerId,
-            topicAndPartition,
-            replica.logEndOffset.messageOffset,
-            sourceBroker.id,
-            leaderEndOffset))
+      warn("Replica %d for partition %s reset its fetch offset from %d to current leader %d's latest offset %d"
+        .format(
+          brokerConfig.brokerId,
+          topicAndPartition,
+          replica.logEndOffset.messageOffset,
+          sourceBroker.id,
+          leaderEndOffset))
       replicaMgr.logManager.truncateTo(
         Map(topicAndPartition -> leaderEndOffset))
       leaderEndOffset
@@ -277,14 +273,13 @@ class ReplicaFetcherThread(
         topicAndPartition,
         ListOffsetRequest.EARLIEST_TIMESTAMP,
         brokerConfig.brokerId)
-      warn(
-        "Replica %d for partition %s reset its fetch offset from %d to current leader %d's start offset %d"
-          .format(
-            brokerConfig.brokerId,
-            topicAndPartition,
-            replica.logEndOffset.messageOffset,
-            sourceBroker.id,
-            leaderStartOffset))
+      warn("Replica %d for partition %s reset its fetch offset from %d to current leader %d's start offset %d"
+        .format(
+          brokerConfig.brokerId,
+          topicAndPartition,
+          replica.logEndOffset.messageOffset,
+          sourceBroker.id,
+          leaderStartOffset))
       val offsetToFetch =
         Math.max(leaderStartOffset, replica.logEndOffset.messageOffset)
       // Only truncate log when current leader's log start offset is greater than follower's log end offset.

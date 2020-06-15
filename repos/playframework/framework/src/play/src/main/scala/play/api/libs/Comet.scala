@@ -133,8 +133,7 @@ object Comet {
         throw new IllegalStateException(
           "Illegal type found: only String or JsValue elements are valid")
     }
-    Html(
-      s"""<script type="text/javascript">${callbackName}(${javascriptMessage});</script>""")
+    Html(s"""<script type="text/javascript">${callbackName}(${javascriptMessage});</script>""")
   }
 
 }

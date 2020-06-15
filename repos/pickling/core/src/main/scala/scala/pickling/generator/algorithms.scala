@@ -58,8 +58,7 @@ private[pickling] object PicklingAlgorithm {
       case AlgorithmSucccess(success) => Some(success)
       case AlgorithmFailure(failures) =>
         val fString = failures.mkString("\n - ", "\n - ", "\n")
-        logger.error(
-          s"Unable to generate pickling/unpickling implementation for $tpe.\n$fString")
+        logger.error(s"Unable to generate pickling/unpickling implementation for $tpe.\n$fString")
         None
     }
   }

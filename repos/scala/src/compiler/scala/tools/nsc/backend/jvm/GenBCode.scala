@@ -141,8 +141,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
             catch {
               case ex: Throwable =>
                 ex.printStackTrace()
-                error(
-                  s"Error while emitting ${item.cunit.source}\n${ex.getMessage}")
+                error(s"Error while emitting ${item.cunit.source}\n${ex.getMessage}")
             }
           }
         }
@@ -182,8 +181,7 @@ abstract class GenBCode extends BCodeSyncAndTry {
             if (claszSymbol.companionClass == NoSymbol) {
               mirrorCodeGen.genMirrorClass(claszSymbol, cunit)
             } else {
-              log(
-                s"No mirror class for module with linked class: ${claszSymbol.fullName}")
+              log(s"No mirror class for module with linked class: ${claszSymbol.fullName}")
               null
             }
           } else null

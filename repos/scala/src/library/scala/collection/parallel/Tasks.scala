@@ -51,8 +51,7 @@ trait Task[R, +Tp] {
     try {
       tryBreakable {
         leaf(lastres)
-        result =
-          result // ensure that effects of `leaf` are visible to readers of `result`
+        result = result // ensure that effects of `leaf` are visible to readers of `result`
       } catchBreak {
         signalAbort()
       }

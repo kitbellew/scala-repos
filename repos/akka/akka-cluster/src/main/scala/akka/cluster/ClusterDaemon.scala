@@ -981,7 +981,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
             latestGossip.reachabilityExcludingDownedObservers,
             latestGossip.members
               .map(m ⇒
-                s"${m.address} ${m.status} seen=${latestGossip.seenByNode(m.uniqueAddress)}")
+                s"${m.address} ${m.status} seen=${latestGossip.seenByNode(
+                  m.uniqueAddress)}")
               .mkString(", ")
           )
       }

@@ -88,13 +88,12 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test("SPARK-6835: udtf in lateral view") {
     val df = Seq((1, 1)).toDF("c1", "c2")
     df.registerTempTable("table1")
-    val query = sql(
-      "SELECT c1, v FROM table1 LATERAL VIEW stack(3, 1, c1 + 1, c1 + 2) d AS v")
+    val query =
+      sql("SELECT c1, v FROM table1 LATERAL VIEW stack(3, 1, c1 + 1, c1 + 2) d AS v")
     checkAnswer(query, Row(1, 1) :: Row(1, 2) :: Row(1, 3) :: Nil)
   }
 
-  test(
-    "SPARK-13651: generator outputs shouldn't be resolved from its child's output") {
+  test("SPARK-13651: generator outputs shouldn't be resolved from its child's output") {
     withTempTable("src") {
       Seq(("id1", "value1")).toDF("key", "value").registerTempTable("src")
       val query =
@@ -270,8 +269,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     sql("set hive.exec.dynamic.partition.mode=nonstrict")
     sql(
       "INSERT INTO TABLE orders PARTITION(state, month) SELECT * FROM orders1")
-    sql(
-      "INSERT INTO TABLE orderupdates PARTITION(state, month) SELECT * FROM orderupdates1")
+    sql("INSERT INTO TABLE orderupdates PARTITION(state, month) SELECT * FROM orderupdates1")
 
     checkAnswer(
       sql("""
@@ -396,13 +394,11 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       Row(1) :: Row(2) :: Row(3) :: Nil)
 
     checkAnswer(
-      sql(
-        "SELECT `ints` FROM nestedArray LATERAL VIEW explode(a.b) `a` AS `ints`"),
+      sql("SELECT `ints` FROM nestedArray LATERAL VIEW explode(a.b) `a` AS `ints`"),
       Row(1) :: Row(2) :: Row(3) :: Nil)
 
     checkAnswer(
-      sql(
-        "SELECT `a`.`ints` FROM nestedArray LATERAL VIEW explode(a.b) `a` AS `ints`"),
+      sql("SELECT `a`.`ints` FROM nestedArray LATERAL VIEW explode(a.b) `a` AS `ints`"),
       Row(1) :: Row(2) :: Row(3) :: Nil)
 
     checkAnswer(
@@ -418,8 +414,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test(
     "SPARK-4512 Fix attribute reference resolution error when using SORT BY") {
     checkAnswer(
-      sql(
-        "SELECT * FROM (SELECT key + key AS a FROM src SORT BY value) t ORDER BY t.a"),
+      sql("SELECT * FROM (SELECT key + key AS a FROM src SORT BY value) t ORDER BY t.a"),
       sql("SELECT key + key as a FROM src ORDER BY a").collect().toSeq
     )
   }
@@ -431,16 +426,14 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       relation match {
         case LogicalRelation(r: HadoopFsRelation, _, _) =>
           if (!isDataSourceParquet) {
-            fail(
-              s"${classOf[MetastoreRelation].getCanonicalName} is expected, but found " +
-                s"${HadoopFsRelation.getClass.getCanonicalName}.")
+            fail(s"${classOf[MetastoreRelation].getCanonicalName} is expected, but found " +
+              s"${HadoopFsRelation.getClass.getCanonicalName}.")
           }
 
         case r: MetastoreRelation =>
           if (isDataSourceParquet) {
-            fail(
-              s"${HadoopFsRelation.getClass.getCanonicalName} is expected, but found " +
-                s"${classOf[MetastoreRelation].getCanonicalName}.")
+            fail(s"${HadoopFsRelation.getClass.getCanonicalName} is expected, but found " +
+              s"${classOf[MetastoreRelation].getCanonicalName}.")
           }
       }
     }
@@ -452,11 +445,9 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     try {
       sql(
         "CREATE TABLE ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
-      sql(
-        "CREATE TABLE IF NOT EXISTS ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
+      sql("CREATE TABLE IF NOT EXISTS ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
       var message = intercept[AnalysisException] {
-        sql(
-          "CREATE TABLE ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
+        sql("CREATE TABLE ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
       }.getMessage
       assert(message.contains("ctas1 already exists"))
       checkRelation("ctas1", true)
@@ -465,8 +456,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       // Specifying database name for query can be converted to data source write path
       // is not allowed right now.
       message = intercept[AnalysisException] {
-        sql(
-          "CREATE TABLE default.ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
+        sql("CREATE TABLE default.ctas1 AS SELECT key k, value FROM src ORDER BY k, value")
       }.getMessage
       assert(
         message.contains("Cannot specify database name in a CTAS statement"),
@@ -486,18 +476,15 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       checkRelation("ctas1", true)
       sql("DROP TABLE ctas1")
 
-      sql(
-        "CREATE TABLE ctas1 stored as rcfile AS SELECT key k, value FROM src ORDER BY k, value")
+      sql("CREATE TABLE ctas1 stored as rcfile AS SELECT key k, value FROM src ORDER BY k, value")
       checkRelation("ctas1", false)
       sql("DROP TABLE ctas1")
 
-      sql(
-        "CREATE TABLE ctas1 stored as orc AS SELECT key k, value FROM src ORDER BY k, value")
+      sql("CREATE TABLE ctas1 stored as orc AS SELECT key k, value FROM src ORDER BY k, value")
       checkRelation("ctas1", false)
       sql("DROP TABLE ctas1")
 
-      sql(
-        "CREATE TABLE ctas1 stored as parquet AS SELECT key k, value FROM src ORDER BY k, value")
+      sql("CREATE TABLE ctas1 stored as parquet AS SELECT key k, value FROM src ORDER BY k, value")
       checkRelation("ctas1", false)
       sql("DROP TABLE ctas1")
     } finally {
@@ -610,15 +597,13 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       .toDF("key", "value")
       .registerTempTable("mytable1")
 
-    sql(
-      "create table gen__tmp(a int, b string) as select key, value from mytable1")
+    sql("create table gen__tmp(a int, b string) as select key, value from mytable1")
     checkAnswer(
       sql("SELECT a, b from gen__tmp"),
       sql("select key, value from mytable1").collect())
     sql("DROP TABLE gen__tmp")
 
-    sql(
-      "create table gen__tmp(a double, b double) as select key, value from mytable1")
+    sql("create table gen__tmp(a double, b double) as select key, value from mytable1")
     checkAnswer(
       sql("SELECT a, b from gen__tmp"),
       sql("select cast(key as double), cast(value as double) from mytable1")
@@ -700,8 +685,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     sql("CREATE TABLE test2 (key INT, value STRING)")
     testData.write.mode(SaveMode.Append).insertInto("test2")
     testData.write.mode(SaveMode.Append).insertInto("test2")
-    sql(
-      "CREATE TABLE test AS SELECT COUNT(a.value) FROM test1 a JOIN test2 b ON a.key = b.key")
+    sql("CREATE TABLE test AS SELECT COUNT(a.value) FROM test1 a JOIN test2 b ON a.key = b.key")
     checkAnswer(
       table("test"),
       sql("SELECT COUNT(a.value) FROM test1 a JOIN test2 b ON a.key = b.key")
@@ -745,8 +729,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       sql("SELECT 1 FROM src").collect().toSeq)
   }
 
-  test(
-    "SPARK-4154 Query does not work if it has 'not between' in Spark SQL and HQL") {
+  test("SPARK-4154 Query does not work if it has 'not between' in Spark SQL and HQL") {
     checkAnswer(
       sql("SELECT key FROM src WHERE key not between 0 and 10 order by key"),
       sql("SELECT key FROM src WHERE key between 11 and 500 order by key")
@@ -778,8 +761,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       sql("SELECT key FROM src ORDER BY value").collect().toSeq)
   }
 
-  test(
-    "SPARK-5284 Insert into Hive throws NPE when a inner complex type field has a null value") {
+  test("SPARK-5284 Insert into Hive throws NPE when a inner complex type field has a null value") {
     val schema = StructType(
       StructField(
         "s",
@@ -822,8 +804,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       """{"a": "str", "b":"1", "c":"1970-01-01 00:00:00"}""" :: Nil)
     read.json(rdd).registerTempTable("data")
     checkAnswer(
-      sql(
-        "SELECT concat(a, '-', b), year(c) FROM data GROUP BY concat(a, '-', b), year(c)"),
+      sql("SELECT concat(a, '-', b), year(c) FROM data GROUP BY concat(a, '-', b), year(c)"),
       Row("str-1", 1970))
 
     dropTempTable("data")
@@ -872,8 +853,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       Row("1", "1", "1", "1") :: Nil)
   }
 
-  test(
-    "logical.Project should not be resolved if it contains aggregates or generators") {
+  test("logical.Project should not be resolved if it contains aggregates or generators") {
     // This test is used to test the fix of SPARK-5875.
     // The original issue was that Project's resolved will be true when it contains
     // AggregateExpressions or Generators. However, in this case, the Project
@@ -891,12 +871,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       table("explodeTest").queryExecution.analyzed match {
         case metastoreRelation: MetastoreRelation => // OK
         case _ =>
-          fail(
-            "To correctly test the fix of SPARK-5875, explodeTest should be a MetastoreRelation")
+          fail("To correctly test the fix of SPARK-5875, explodeTest should be a MetastoreRelation")
       }
 
-      sql(
-        s"INSERT OVERWRITE TABLE explodeTest SELECT explode(a) AS val FROM data")
+      sql(s"INSERT OVERWRITE TABLE explodeTest SELECT explode(a) AS val FROM data")
       checkAnswer(
         sql("SELECT key from explodeTest"),
         (1 to 5).flatMap(i => Row(i) :: Row(i + 1) :: Nil)
@@ -934,10 +912,10 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
   test("test script transform for stdout") {
     val data = (1 to 100000).map { i => (i, i, i) }
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
-    assert(100000 ===
-      sql(
-        "SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans").queryExecution.toRdd
-        .count())
+    assert(
+      100000 ===
+        sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat' AS (a,b,c) FROM script_trans").queryExecution.toRdd
+          .count())
   }
 
   test("test script transform for stderr") {
@@ -945,8 +923,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     data.toDF("d1", "d2", "d3").registerTempTable("script_trans")
     assert(
       0 ===
-        sql(
-          "SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans").queryExecution.toRdd
+        sql("SELECT TRANSFORM (d1, d2, d3) USING 'cat 1>&2' AS (a,b,c) FROM script_trans").queryExecution.toRdd
           .count())
   }
 
@@ -1196,8 +1173,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     sparkContext.parallelize(data).toDF().registerTempTable("windowData")
 
     checkAnswer(
-      sql(
-        "select month, product, sum(product + 1) over() from windowData order by area"),
+      sql("select month, product, sum(product + 1) over() from windowData order by area"),
       Seq(
         (2, 6, 57),
         (3, 7, 57),
@@ -1353,8 +1329,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     sql("SELECT kEy from df_analysis group by key").collect()
     sql("SELECT kEy+3 from df_analysis group by key+3").collect()
     sql("SELECT kEy+3, a.kEy, A.kEy from df_analysis A group by key").collect()
-    sql(
-      "SELECT cast(kEy+1 as Int) from df_analysis A group by cast(key+1 as int)")
+    sql("SELECT cast(kEy+1 as Int) from df_analysis A group by cast(key+1 as int)")
       .collect()
     sql("SELECT cast(kEy+1 as Int) from df_analysis A group by key+1").collect()
     sql("SELECT 2 from df_analysis A group by key+1").collect()
@@ -1362,8 +1337,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       sql("SELECT kEy+1 from df_analysis group by key+3")
     }
     intercept[AnalysisException] {
-      sql(
-        "SELECT cast(key+2 as Int) from df_analysis A group by cast(key+1 as int)")
+      sql("SELECT cast(key+2 as Int) from df_analysis A group by cast(key+1 as int)")
     }
   }
 
@@ -1414,8 +1388,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
       // decimal
       sql("drop table if exists dynparttest2")
-      sql(
-        "create table dynparttest2 (value int) partitioned by (pdec decimal(5, 1))")
+      sql("create table dynparttest2 (value int) partitioned by (pdec decimal(5, 1))")
       sql("""
           |insert into table dynparttest2 partition(pdec)
           | select count(*), cast('100.12' as decimal(5, 1)) as pdec from src
@@ -1435,8 +1408,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     val thread = new Thread {
       override def run() {
         // To make sure this test works, this jar should not be loaded in another place.
-        sql(
-          s"ADD JAR ${hiveContext.getHiveFile("hive-contrib-0.13.1.jar").getCanonicalPath()}")
+        sql(s"ADD JAR ${hiveContext.getHiveFile("hive-contrib-0.13.1.jar").getCanonicalPath()}")
         try {
           sql("""
               |CREATE TEMPORARY FUNCTION example_max
@@ -1459,8 +1431,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-6785: HiveQuerySuite - Date comparison test 2") {
     checkAnswer(
-      sql(
-        "SELECT CAST(CAST(0 AS timestamp) AS date) > CAST(0 AS timestamp) FROM src LIMIT 1"),
+      sql("SELECT CAST(CAST(0 AS timestamp) AS date) > CAST(0 AS timestamp) FROM src LIMIT 1"),
       Row(false))
   }
 
@@ -1502,8 +1473,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     dropTempTable("test_SPARK8588")
   }
 
-  test(
-    "SPARK-9371: fix the support for special chars in column names for hive context") {
+  test("SPARK-9371: fix the support for special chars in column names for hive context") {
     read
       .json(sparkContext.makeRDD(
         """{"a": {"c.b": 1}, "b.$q": [{"a@!.q": 1}], "q.w": {"w.i&": [1]}}""" :: Nil))
@@ -1639,8 +1609,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
     withTable("test10741") {
       withTempTable("src") {
         Seq("a" -> 5, "a" -> 9, "b" -> 6).toDF().registerTempTable("src")
-        sql(
-          "CREATE TABLE test10741(c1 STRING, c2 INT) STORED AS PARQUET AS SELECT * FROM src")
+        sql("CREATE TABLE test10741(c1 STRING, c2 INT) STORED AS PARQUET AS SELECT * FROM src")
       }
 
       checkAnswer(
@@ -1671,8 +1640,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
       df.write.parquet(f.getCanonicalPath)
       checkAnswer(sql(s"select id from parquet.`${f.getCanonicalPath}`"), df)
       checkAnswer(
-        sql(
-          s"select id from `org.apache.spark.sql.parquet`.`${f.getCanonicalPath}`"),
+        sql(s"select id from `org.apache.spark.sql.parquet`.`${f.getCanonicalPath}`"),
         df)
       checkAnswer(
         sql(s"select a.id from parquet.`${f.getCanonicalPath}` as a"),
@@ -1893,8 +1861,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-8976 Wrong Result for Rollup #1") {
     checkAnswer(
-      sql(
-        "SELECT count(*) AS cnt, key % 5, grouping_id() FROM src GROUP BY key%5 WITH ROLLUP"),
+      sql("SELECT count(*) AS cnt, key % 5, grouping_id() FROM src GROUP BY key%5 WITH ROLLUP"),
       Seq(
         (113, 3, 0),
         (91, 0, 0),
@@ -1952,8 +1919,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
 
   test("SPARK-8976 Wrong Result for CUBE #1") {
     checkAnswer(
-      sql(
-        "SELECT count(*) AS cnt, key % 5, grouping_id() FROM src GROUP BY key%5 WITH CUBE"),
+      sql("SELECT count(*) AS cnt, key % 5, grouping_id() FROM src GROUP BY key%5 WITH CUBE"),
       Seq(
         (113, 3, 0),
         (91, 0, 0),
@@ -2116,8 +2082,7 @@ class SQLQuerySuite extends QueryTest with SQLTestUtils with TestHiveSingleton {
           sql("SELECT id FROM source WHERE id > 3"))
         checkAnswer(
           sqlContext.table("dest2"),
-          sql(
-            "SELECT col FROM source LATERAL VIEW EXPLODE(arr) exp AS col WHERE col > 3"))
+          sql("SELECT col FROM source LATERAL VIEW EXPLODE(arr) exp AS col WHERE col > 3"))
       }
     }
   }

@@ -11,8 +11,7 @@ import breeze.linalg.support.CanTraverseValues.ValuesVisitor
 import breeze.macros.expand
 import spire.syntax.cfor._
 
-object max
-    extends UFunc /*with VectorizedReduceUFunc <-- doesn't work with 2.10, because god knows */ {
+object max extends UFunc /*with VectorizedReduceUFunc <-- doesn't work with 2.10, because god knows */ {
   type Op = this.type
 
   @expand

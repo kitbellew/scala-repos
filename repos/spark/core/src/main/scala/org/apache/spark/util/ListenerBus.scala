@@ -63,9 +63,7 @@ private[spark] trait ListenerBus[L <: AnyRef, E] extends Logging {
         doPostEvent(listener, event)
       } catch {
         case NonFatal(e) =>
-          logError(
-            s"Listener ${Utils.getFormattedClassName(listener)} threw an exception",
-            e)
+          logError(s"Listener ${Utils.getFormattedClassName(listener)} threw an exception", e)
       }
     }
   }

@@ -1130,8 +1130,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       val sz = length
       // Since there might be interleaved log messages, we insert a unique id for easy pairing.
       val sortId = Utils.random.nextInt()
-      logDebug(
-        s"Start sorting an uncompressed in-block of size $sz. (sortId = $sortId)")
+      logDebug(s"Start sorting an uncompressed in-block of size $sz. (sortId = $sortId)")
       val start = System.nanoTime()
       val sorter = new Sorter(new UncompressedInBlockSort[ID])
       sorter.sort(this, 0, length, Ordering[KeyWrapper[ID]])

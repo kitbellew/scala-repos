@@ -569,8 +569,7 @@ private[internal] trait TypeMaps {
             clazz freshExistential nme.SINGLETON_SUFFIX setInfo singletonBounds(
               pre)
           _capturedParams ::= qvar
-          debuglog(
-            s"Captured This(${clazz.fullNameString}) seen from $seenFromPrefix: ${qvar.defString}")
+          debuglog(s"Captured This(${clazz.fullNameString}) seen from $seenFromPrefix: ${qvar.defString}")
           qvar.tpe
       }
     }
@@ -626,8 +625,7 @@ private[internal] trait TypeMaps {
             s"Created $result, though could not find ${own_s(
               lhsSym)} among tparams of ${own_s(rhsSym)}"
           if (!rhsSym.typeParams.contains(lhsSym))
-            devWarning(
-              s"Inconsistent tparam/owner views: had to fall back on names\n$msg\n$explain")
+            devWarning(s"Inconsistent tparam/owner views: had to fall back on names\n$msg\n$explain")
 
           result
         }
@@ -666,8 +664,7 @@ private[internal] trait TypeMaps {
             case ExistentialType(eparams, qtpe) =>
               captureSkolems(eparams); loop(qtpe, clazz)
             case t =>
-              abort(
-                s"$tparam in ${tparam.owner} cannot be instantiated from ${seenFromPrefix.widen}")
+              abort(s"$tparam in ${tparam.owner} cannot be instantiated from ${seenFromPrefix.widen}")
           }
       }
       loop(seenFromPrefix, seenFromClass)

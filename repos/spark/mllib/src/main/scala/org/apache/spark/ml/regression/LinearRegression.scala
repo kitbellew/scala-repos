@@ -262,14 +262,12 @@ class LinearRegression @Since("1.3.0") (
         // Also, if yMean==0 and rawYStd==0, all the coefficients are zero regardless of
         // the fitIntercept
         if (yMean == 0.0) {
-          logWarning(
-            s"Mean and standard deviation of the label are zero, so the coefficients " +
-              s"and the intercept will all be zero; as a result, training is not needed.")
+          logWarning(s"Mean and standard deviation of the label are zero, so the coefficients " +
+            s"and the intercept will all be zero; as a result, training is not needed.")
         } else {
-          logWarning(
-            s"The standard deviation of the label is zero, so the coefficients will be " +
-              s"zeros and the intercept will be the mean of the label; as a result, " +
-              s"training is not needed.")
+          logWarning(s"The standard deviation of the label is zero, so the coefficients will be " +
+            s"zeros and the intercept will be the mean of the label; as a result, " +
+            s"training is not needed.")
         }
         if (handlePersistence) instances.unpersist()
         val coefficients = Vectors.sparse(numFeatures, Seq())

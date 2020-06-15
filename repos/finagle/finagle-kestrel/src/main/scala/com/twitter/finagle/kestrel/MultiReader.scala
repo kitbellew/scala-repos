@@ -115,9 +115,8 @@ private[finagle] object MultiReaderHelper {
             loop(handles)
           },
           Offer.choose(errors: _*) { h =>
-            logger.info(
-              s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due to " +
-                s"it encountered error")
+            logger.info(s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due to " +
+              s"it encountered error")
             h.close()
             val newHandles = handles - h
             exposeNumReadHandles(newHandles)
@@ -126,9 +125,8 @@ private[finagle] object MultiReaderHelper {
           clusterUpdate.recv { newHandles =>
             // Close any handles that exist in old set but not the new one.
             (handles &~ newHandles) foreach { h =>
-              logger.info(
-                s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due " +
-                  s"to its host disappeared")
+              logger.info(s"Closed read handle ${_root_.java.lang.System.identityHashCode(h)} due " +
+                s"to its host disappeared")
               h.close()
             }
             exposeNumReadHandles(newHandles)

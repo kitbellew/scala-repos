@@ -132,8 +132,7 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
       }
       val unequal = unequalSettings(newSettings, compiler.settings)
       if (unequal.nonEmpty) {
-        info(
-          "[Replacing compiler with new instance because settings are unequal.]")
+        info("[Replacing compiler with new instance because settings are unequal.]")
         info("[Asymmetric settings: " + unequal.mkString(", ") + "]")
       }
       unequal.isEmpty

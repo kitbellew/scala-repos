@@ -210,9 +210,8 @@ private[sql] class SQLListener(conf: SparkConf)
         if (stageAttemptID < stageMetrics.stageAttemptId) {
           // A task of an old stage attempt. Because a new stage is submitted, we can ignore it.
         } else if (stageAttemptID > stageMetrics.stageAttemptId) {
-          logWarning(
-            s"A task should not have a higher stageAttemptID ($stageAttemptID) then " +
-              s"what we have seen (${stageMetrics.stageAttemptId})")
+          logWarning(s"A task should not have a higher stageAttemptID ($stageAttemptID) then " +
+            s"what we have seen (${stageMetrics.stageAttemptId})")
         } else {
           // TODO We don't know the attemptId. Currently, what we can do is overriding the
           // accumulator updates. However, if there are two same task are running, such as

@@ -257,8 +257,7 @@ class ConfigSSLContextBuilder(
       }
 
     if (!validateStoreContainsPrivateKeys(ksc, keyStore)) {
-      logger.warn(
-        s"Client authentication is not possible as there are no private keys found in ${ksc.filePath}")
+      logger.warn(s"Client authentication is not possible as there are no private keys found in ${ksc.filePath}")
     }
 
     validateStore(keyStore, algorithmChecker)
@@ -393,8 +392,7 @@ class ConfigSSLContextBuilder(
       val key = keyStore.getKey(keyAlias, password)
       key match {
         case privateKey: PrivateKey =>
-          logger.debug(
-            s"validateStoreContainsPrivateKeys: private key found for alias $keyAlias")
+          logger.debug(s"validateStoreContainsPrivateKeys: private key found for alias $keyAlias")
           containsPrivateKeys = true
 
         case otherKey =>

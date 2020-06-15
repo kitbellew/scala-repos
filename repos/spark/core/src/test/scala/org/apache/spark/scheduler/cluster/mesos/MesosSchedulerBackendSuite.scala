@@ -168,8 +168,10 @@ class MesosSchedulerBackendSuite
     conf.set("spark.executor.uri", "hdfs:///test-app-1.0.0.tgz")
     val (executorInfo1, _) =
       mesosSchedulerBackend.createExecutorInfo(resources, "test-id")
-    assert(executorInfo1.getCommand.getValue ===
-      s"cd test-app-1*;  ./bin/spark-class ${classOf[MesosExecutorBackend].getName}")
+    assert(
+      executorInfo1.getCommand.getValue ===
+        s"cd test-app-1*;  ./bin/spark-class ${classOf[
+          MesosExecutorBackend].getName}")
   }
 
   test("spark docker properties correctly populate the DockerInfo message") {

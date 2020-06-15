@@ -64,8 +64,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       """.stripMargin).head() === Row(1, 2, 3, 4, 5))
   }
 
-  test(
-    "SPARK-4785 When called with arguments referring column fields, PMOD throws NPE") {
+  test("SPARK-4785 When called with arguments referring column fields, PMOD throws NPE") {
     checkAnswer(
       sql("SELECT PMOD(CAST(key as INT), 10) FROM src LIMIT 1"),
       Row(8)
@@ -136,8 +135,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   }
 
   test("SPARK-6409 UDAF Average test") {
-    sql(
-      s"CREATE TEMPORARY FUNCTION test_avg AS '${classOf[GenericUDAFAverage].getName}'")
+    sql(s"CREATE TEMPORARY FUNCTION test_avg AS '${classOf[GenericUDAFAverage].getName}'")
     checkAnswer(
       sql("SELECT test_avg(1), test_avg(substr(value,5)) FROM src"),
       Seq(Row(1.0, 260.182)))
@@ -187,8 +185,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
     testData.registerTempTable("inputTable")
 
-    sql(
-      s"CREATE TEMPORARY FUNCTION testUDFToListString AS '${classOf[UDFToListString].getName}'")
+    sql(s"CREATE TEMPORARY FUNCTION testUDFToListString AS '${classOf[UDFToListString].getName}'")
     val errMsg = intercept[AnalysisException] {
       sql("SELECT testUDFToListString(s) FROM inputTable")
     }
@@ -205,8 +202,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       hiveContext.sparkContext.parallelize(StringCaseClass("") :: Nil).toDF()
     testData.registerTempTable("inputTable")
 
-    sql(
-      s"CREATE TEMPORARY FUNCTION testUDFToListInt AS '${classOf[UDFToListInt].getName}'")
+    sql(s"CREATE TEMPORARY FUNCTION testUDFToListInt AS '${classOf[UDFToListInt].getName}'")
     val errMsg = intercept[AnalysisException] {
       sql("SELECT testUDFToListInt(s) FROM inputTable")
     }
@@ -265,8 +261,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       .toDF()
     testData.registerTempTable("listListIntTable")
 
-    sql(
-      s"CREATE TEMPORARY FUNCTION testUDFListListInt AS '${classOf[UDFListListInt].getName}'")
+    sql(s"CREATE TEMPORARY FUNCTION testUDFListListInt AS '${classOf[UDFListListInt].getName}'")
     checkAnswer(
       sql("SELECT testUDFListListInt(lli) FROM listListIntTable"),
       Seq(Row(0), Row(2), Row(13)))
@@ -282,8 +277,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       .toDF()
     testData.registerTempTable("listStringTable")
 
-    sql(
-      s"CREATE TEMPORARY FUNCTION testUDFListString AS '${classOf[UDFListString].getName}'")
+    sql(s"CREATE TEMPORARY FUNCTION testUDFListString AS '${classOf[UDFListString].getName}'")
     checkAnswer(
       sql("SELECT testUDFListString(l) FROM listStringTable"),
       Seq(Row("a,b,c"), Row("d,e")))
@@ -299,15 +293,13 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       .toDF()
     testData.registerTempTable("stringTable")
 
-    sql(
-      s"CREATE TEMPORARY FUNCTION testStringStringUDF AS '${classOf[UDFStringString].getName}'")
+    sql(s"CREATE TEMPORARY FUNCTION testStringStringUDF AS '${classOf[UDFStringString].getName}'")
     checkAnswer(
       sql("SELECT testStringStringUDF(\"hello\", s) FROM stringTable"),
       Seq(Row("hello world"), Row("hello goodbye")))
 
     checkAnswer(
-      sql(
-        "SELECT testStringStringUDF(\"\", testStringStringUDF(\"hello\", s)) FROM stringTable"),
+      sql("SELECT testStringStringUDF(\"\", testStringStringUDF(\"hello\", s)) FROM stringTable"),
       Seq(Row(" hello world"), Row(" hello goodbye")))
 
     sql("DROP TEMPORARY FUNCTION IF EXISTS testStringStringUDF")
@@ -325,8 +317,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       .toDF()
     testData.registerTempTable("TwoListTable")
 
-    sql(
-      s"CREATE TEMPORARY FUNCTION testUDFTwoListList AS '${classOf[UDFTwoListList].getName}'")
+    sql(s"CREATE TEMPORARY FUNCTION testUDFTwoListList AS '${classOf[UDFTwoListList].getName}'")
     checkAnswer(
       sql("SELECT testUDFTwoListList(lli, lli) FROM TwoListTable"),
       Seq(Row("0, 0"), Row("2, 2"), Row("13, 13")))
@@ -335,14 +326,12 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
     hiveContext.reset()
   }
 
-  test(
-    "Hive UDFs with insufficient number of input arguments should trigger an analysis error") {
+  test("Hive UDFs with insufficient number of input arguments should trigger an analysis error") {
     Seq((1, 2)).toDF("a", "b").registerTempTable("testUDF")
 
     {
       // HiveSimpleUDF
-      sql(
-        s"CREATE TEMPORARY FUNCTION testUDFTwoListList AS '${classOf[UDFTwoListList].getName}'")
+      sql(s"CREATE TEMPORARY FUNCTION testUDFTwoListList AS '${classOf[UDFTwoListList].getName}'")
       val message = intercept[AnalysisException] {
         sql("SELECT testUDFTwoListList() FROM testUDF")
       }.getMessage
@@ -352,8 +341,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
     {
       // HiveGenericUDF
-      sql(
-        s"CREATE TEMPORARY FUNCTION testUDFAnd AS '${classOf[GenericUDFOPAnd].getName}'")
+      sql(s"CREATE TEMPORARY FUNCTION testUDFAnd AS '${classOf[GenericUDFOPAnd].getName}'")
       val message = intercept[AnalysisException] {
         sql("SELECT testUDFAnd() FROM testUDF")
       }.getMessage
@@ -363,8 +351,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
     {
       // Hive UDAF
-      sql(
-        s"CREATE TEMPORARY FUNCTION testUDAFPercentile AS '${classOf[UDAFPercentile].getName}'")
+      sql(s"CREATE TEMPORARY FUNCTION testUDAFPercentile AS '${classOf[UDAFPercentile].getName}'")
       val message = intercept[AnalysisException] {
         sql("SELECT testUDAFPercentile(a) FROM testUDF GROUP BY b")
       }.getMessage
@@ -374,8 +361,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
     {
       // AbstractGenericUDAFResolver
-      sql(
-        s"CREATE TEMPORARY FUNCTION testUDAFAverage AS '${classOf[GenericUDAFAverage].getName}'")
+      sql(s"CREATE TEMPORARY FUNCTION testUDAFAverage AS '${classOf[GenericUDAFAverage].getName}'")
       val message = intercept[AnalysisException] {
         sql("SELECT testUDAFAverage() FROM testUDF GROUP BY b")
       }.getMessage
@@ -385,8 +371,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
     {
       // Hive UDTF
-      sql(
-        s"CREATE TEMPORARY FUNCTION testUDTFExplode AS '${classOf[GenericUDTFExplode].getName}'")
+      sql(s"CREATE TEMPORARY FUNCTION testUDTFExplode AS '${classOf[GenericUDTFExplode].getName}'")
       val message = intercept[AnalysisException] {
         sql("SELECT testUDTFExplode() FROM testUDF")
       }.getMessage
@@ -400,8 +385,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
   test("Hive UDF in group by") {
     withTempTable("tab1") {
       Seq(Tuple1(1451400761)).toDF("test_date").registerTempTable("tab1")
-      sql(
-        s"CREATE TEMPORARY FUNCTION testUDFToDate AS '${classOf[GenericUDFToDate].getName}'")
+      sql(s"CREATE TEMPORARY FUNCTION testUDFToDate AS '${classOf[GenericUDFToDate].getName}'")
       val count = sql(
         "select testUDFToDate(cast(test_date as timestamp))" +
           " from tab1 group by testUDFToDate(cast(test_date as timestamp))")

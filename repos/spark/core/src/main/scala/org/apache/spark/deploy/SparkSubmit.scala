@@ -429,8 +429,7 @@ object SparkSubmit {
       val sparkRPackageFile =
         new File(sparkRPackagePath.get, SPARKR_PACKAGE_ARCHIVE)
       if (!sparkRPackageFile.exists()) {
-        printErrorAndExit(
-          s"$SPARKR_PACKAGE_ARCHIVE does not exist for R application in YARN mode.")
+        printErrorAndExit(s"$SPARKR_PACKAGE_ARCHIVE does not exist for R application in YARN mode.")
       }
       val sparkRPackageURI =
         Utils.resolveURI(sparkRPackageFile.getAbsolutePath).toString
@@ -875,8 +874,7 @@ object SparkSubmit {
 
     // SPARK-4170
     if (classOf[scala.App].isAssignableFrom(mainClass)) {
-      printWarning(
-        "Subclasses of scala.App may not work correctly. Use a main() method instead.")
+      printWarning("Subclasses of scala.App may not work correctly. Use a main() method instead.")
     }
 
     val mainMethod = mainClass.getMethod("main", new Array[String](0).getClass)
@@ -1231,8 +1229,7 @@ private[spark] object SparkSubmitUtils {
             new File(alternateIvyCache, "jars")
           }
         // scalastyle:off println
-        printStream.println(
-          s"Ivy Default Cache set to: ${ivySettings.getDefaultCache.getAbsolutePath}")
+        printStream.println(s"Ivy Default Cache set to: ${ivySettings.getDefaultCache.getAbsolutePath}")
         printStream.println(
           s"The jars for the packages stored in: $packagesDirectory")
         // scalastyle:on println

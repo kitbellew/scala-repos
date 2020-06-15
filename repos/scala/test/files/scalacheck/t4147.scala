@@ -47,8 +47,7 @@ object Test extends Properties("Mutable TreeSet") {
     }
   }
 
-  property(
-    "Implicit CanBuildFrom resolution succeeds as well as the \"same-result-type\" principle.") =
+  property("Implicit CanBuildFrom resolution succeeds as well as the \"same-result-type\" principle.") =
     forAll(generator) { (s: List[Int]) =>
       {
         val t = mutable.TreeSet[Int](s: _*)

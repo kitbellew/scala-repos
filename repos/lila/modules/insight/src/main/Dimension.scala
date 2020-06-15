@@ -80,8 +80,7 @@ object Dimension {
         F.eco,
         Game,
         _.ecoName,
-        Html(
-          "ECO identification of the initial moves, like \"A58 Benko Gambit\"."))
+        Html("ECO identification of the initial moves, like \"A58 Benko Gambit\"."))
 
   case object OpponentStrength
       extends Dimension[RelativeStrength](
@@ -90,8 +89,7 @@ object Dimension {
         F.opponentStrength,
         Game,
         _.name,
-        Html(
-          "Rating of your opponent compared to yours. Much weaker:-200, Weaker:-100, Stronger:+100, Much stronger:+200."))
+        Html("Rating of your opponent compared to yours. Much weaker:-200, Weaker:-100, Stronger:+100, Much stronger:+200."))
 
   case object PieceRole
       extends Dimension[Role](
@@ -118,8 +116,7 @@ object Dimension {
         F.myCastling,
         Game,
         _.name,
-        Html(
-          "The side you castled on during the game: kingside, queenside, or none."))
+        Html("The side you castled on during the game: kingside, queenside, or none."))
 
   case object OpCastling
       extends Dimension[Castling](
@@ -128,8 +125,7 @@ object Dimension {
         F.opponentCastling,
         Game,
         _.name,
-        Html(
-          "The side your opponent castled on during the game: kingside, queenside, or none."))
+        Html("The side your opponent castled on during the game: kingside, queenside, or none."))
 
   case object QueenTrade
       extends Dimension[QueenTrade](
@@ -147,8 +143,7 @@ object Dimension {
         F.moves("i"),
         Move,
         _.name,
-        Html(
-          "Value of your pieces compared to your opponent's. Pawn=1, Bishop/Knight=3, Rook=5, Queen=9."))
+        Html("Value of your pieces compared to your opponent's. Pawn=1, Bishop/Knight=3, Rook=5, Queen=9."))
 
   val all = List(
     Perf,

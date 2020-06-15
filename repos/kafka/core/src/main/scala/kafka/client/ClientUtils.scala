@@ -65,9 +65,8 @@ object ClientUtils extends Logging {
     while (i < shuffledBrokers.size && !fetchMetaDataSucceeded) {
       val producer: SyncProducer =
         ProducerPool.createSyncProducer(producerConfig, shuffledBrokers(i))
-      info(
-        "Fetching metadata from broker %s with correlation id %d for %d topic(s) %s"
-          .format(shuffledBrokers(i), correlationId, topics.size, topics))
+      info("Fetching metadata from broker %s with correlation id %d for %d topic(s) %s"
+        .format(shuffledBrokers(i), correlationId, topics.size, topics))
       try {
         topicMetadataResponse = producer.send(topicMetadataRequest)
         fetchMetaDataSucceeded = true
@@ -204,13 +203,12 @@ object ClientUtils extends Logging {
           if (consumerMetadataResponse.errorCode == Errors.NONE.code)
             coordinatorOpt = consumerMetadataResponse.coordinatorOpt
           else {
-            debug(
-              "Query to %s:%d to locate offset manager for %s failed - will retry in %d milliseconds."
-                .format(
-                  queryChannel.host,
-                  queryChannel.port,
-                  group,
-                  retryBackOffMs))
+            debug("Query to %s:%d to locate offset manager for %s failed - will retry in %d milliseconds."
+              .format(
+                queryChannel.host,
+                queryChannel.port,
+                group,
+                retryBackOffMs))
             Thread.sleep(retryBackOffMs)
           }
         } catch {
@@ -244,8 +242,7 @@ object ClientUtils extends Logging {
             info("Error while connecting to %s.".format(connectString))
             if (offsetManagerChannel != null) offsetManagerChannel.disconnect()
             Thread.sleep(retryBackOffMs)
-            offsetManagerChannelOpt =
-              None // just in case someone decides to change shutdownChannel to not swallow exceptions
+            offsetManagerChannelOpt = None // just in case someone decides to change shutdownChannel to not swallow exceptions
         }
       }
     }

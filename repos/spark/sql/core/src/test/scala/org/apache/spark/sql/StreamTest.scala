@@ -334,8 +334,7 @@ trait StreamTest extends QueryTest with Timeouts {
             } catch {
               case _: InterruptedException =>
               case _: org.scalatest.exceptions.TestFailedDueToTimeoutException =>
-                failTest(
-                  "Timed out while stopping and waiting for microbatchthread to terminate.")
+                failTest("Timed out while stopping and waiting for microbatchthread to terminate.")
               case t: Throwable =>
                 failTest("Error while stopping stream", t)
             } finally {
@@ -357,8 +356,7 @@ trait StreamTest extends QueryTest with Timeouts {
               val thrownException = intercept[ContinuousQueryException] {
                 currentStream.awaitTermination()
               }
-              eventually(
-                "microbatch thread not stopped after termination with failure") {
+              eventually("microbatch thread not stopped after termination with failure") {
                 assert(!currentStream.microBatchThread.isAlive)
               }
               verify(
@@ -535,8 +533,7 @@ trait StreamTest extends QueryTest with Timeouts {
 
         case e: ExpectException[_] =>
           val thrownException =
-            withClue(
-              s"Did not throw ${e.t.runtimeClass.getSimpleName} when expected.") {
+            withClue(s"Did not throw ${e.t.runtimeClass.getSimpleName} when expected.") {
               intercept[ContinuousQueryException] {
                 failAfter(testTimeout) {
                   awaitTermFunc()

@@ -176,8 +176,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     val r = nextEnclosingClass(nextEnclosing(classSym))
     // this should be an assertion, but we are more cautious for now as it was introduced before the 2.11.6 minor release
     if (considerAsTopLevelImplementationArtifact(r))
-      devWarning(
-        s"enclosing class of $classSym should not be an implementation artifact class: $r")
+      devWarning(s"enclosing class of $classSym should not be an implementation artifact class: $r")
     r
   }
 
@@ -209,8 +208,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             // This should never happen. In case it does, it prevents emitting an invalid
             // EnclosingMethod attribute: if the attribute specifies an enclosing method,
             // it needs to exist in the specified enclosing class.
-            devWarning(
-              s"the owner of the enclosing method ${m.locationString} should be the same as the enclosing class $enclosingClass")
+            devWarning(s"the owner of the enclosing method ${m.locationString} should be the same as the enclosing class $enclosingClass")
             None
           } else some
         case none => none
@@ -436,8 +434,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
             failNoForwarder("companion contains its own main method")
           else if (companion.tpe.member(nme.main) != NoSymbol)
             // this is only because forwarders aren't smart enough yet
-            failNoForwarder(
-              "companion contains its own main method (implementation restriction: no main is allowed, regardless of signature)")
+            failNoForwarder("companion contains its own main method (implementation restriction: no main is allowed, regardless of signature)")
           else if (companion.isTrait)
             failNoForwarder("companion is a trait")
           // Now either succeeed, or issue some additional warnings for things which look like
@@ -484,8 +481,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
               log(s"Unique entry point: setting Main-Class to $name")
               settings.mainClass.value = name
             case names =>
-              log(
-                s"No Main-Class due to multiple entry points:\n  ${names.mkString("\n  ")}")
+              log(s"No Main-Class due to multiple entry points:\n  ${names.mkString("\n  ")}")
           }
         } else log(s"Main-Class was specified: ${settings.mainClass.value}")
 
@@ -1196,8 +1192,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
         else if (m.hasAccessBoundary)
           log(s"No forwarder for non-public member $m")
         else {
-          log(
-            s"Adding static forwarder for '$m' from $jclassName to '$moduleClass'")
+          log(s"Adding static forwarder for '$m' from $jclassName to '$moduleClass'")
           addForwarder(isRemoteClass, jclass, moduleClass, m)
         }
       }

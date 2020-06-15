@@ -172,8 +172,7 @@ class GroupUpdateTest extends FunSuite with Matchers with GivenWhenThen {
     }
   }
 
-  test(
-    "Relative path of a dependency, should be relative to group and not to the app") {
+  test("Relative path of a dependency, should be relative to group and not to the app") {
     Given("A group with two apps. Second app is dependend of first.")
     val update = GroupUpdate(
       PathId.empty,

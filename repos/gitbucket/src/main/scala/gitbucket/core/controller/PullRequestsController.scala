@@ -477,8 +477,7 @@ trait PullRequestsControllerBase extends ControllerBase {
                   .getOrElse(
                     JGitUtil.getDefaultBranch(oldGit, originRepository).get._2)
 
-                redirect(
-                  s"/${forkedRepository.owner}/${forkedRepository.name}/compare/${originUserName}:${oldBranch}...${newBranch}")
+                redirect(s"/${forkedRepository.owner}/${forkedRepository.name}/compare/${originUserName}:${oldBranch}...${newBranch}")
             }
         } getOrElse NotFound
       }
@@ -622,10 +621,13 @@ trait PullRequestsControllerBase extends ControllerBase {
                 )
               }
               case (oldId, newId) =>
-                redirect(
-                  s"/${forkedRepository.owner}/${forkedRepository.name}/compare/" +
-                    s"${originOwner}:${oldId.map(_ => originId).getOrElse(originRepository.repository.defaultBranch)}..." +
-                    s"${forkedOwner}:${newId.map(_ => forkedId).getOrElse(forkedRepository.repository.defaultBranch)}")
+                redirect(s"/${forkedRepository.owner}/${forkedRepository.name}/compare/" +
+                  s"${originOwner}:${oldId
+                    .map(_ => originId)
+                    .getOrElse(originRepository.repository.defaultBranch)}..." +
+                  s"${forkedOwner}:${newId
+                    .map(_ => forkedId)
+                    .getOrElse(forkedRepository.repository.defaultBranch)}")
             }
         }
       }) getOrElse NotFound

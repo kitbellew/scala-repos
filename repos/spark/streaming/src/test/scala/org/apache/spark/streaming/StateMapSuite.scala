@@ -72,8 +72,7 @@ class StateMapSuite extends SparkFunSuite {
     assert(map.getAll().toSet === Set((2, 200, 20)))
   }
 
-  test(
-    "OpenHashMapBasedStateMap - put, get, getByTime, getAll, remove with copy") {
+  test("OpenHashMapBasedStateMap - put, get, getByTime, getAll, remove with copy") {
     val parentMap = new OpenHashMapBasedStateMap[Int, Int]()
     parentMap.put(1, 100, 1)
     parentMap.put(2, 200, 2)
@@ -185,8 +184,7 @@ class StateMapSuite extends SparkFunSuite {
       "error deserializing and serialized map with 2 delta + new data")
   }
 
-  test(
-    "OpenHashMapBasedStateMap - serializing and deserializing with compaction") {
+  test("OpenHashMapBasedStateMap - serializing and deserializing with compaction") {
     val targetDeltaLength = 10
     val deltaChainThreshold = 5
 
@@ -208,8 +206,7 @@ class StateMapSuite extends SparkFunSuite {
     assert(deser_map.shouldCompact === false)
   }
 
-  test(
-    "OpenHashMapBasedStateMap - all possible sequences of operations with copies ") {
+  test("OpenHashMapBasedStateMap - all possible sequences of operations with copies ") {
     /*
      * This tests the map using all permutations of sequences operations, across multiple map
      * copies as well as between copies. It is to ensure complete coverage, though it is
@@ -399,8 +396,7 @@ class StateMapSuite extends SparkFunSuite {
     }
   }
 
-  test(
-    "OpenHashMapBasedStateMap - serializing and deserializing with KryoSerializable states") {
+  test("OpenHashMapBasedStateMap - serializing and deserializing with KryoSerializable states") {
     val map = new OpenHashMapBasedStateMap[KryoState, KryoState]()
     map.put(new KryoState("a"), new KryoState("b"), 1)
     testSerialization(
@@ -420,8 +416,7 @@ class StateMapSuite extends SparkFunSuite {
         .isInstanceOf[EmptyStateMap[KryoState, KryoState]])
   }
 
-  test(
-    "MapWithStateRDDRecord - serializing and deserializing with KryoSerializable states") {
+  test("MapWithStateRDDRecord - serializing and deserializing with KryoSerializable states") {
     val map = new OpenHashMapBasedStateMap[KryoState, KryoState]()
     map.put(new KryoState("a"), new KryoState("b"), 1)
 

@@ -212,8 +212,7 @@ object PathResolver {
         case cp: JavaClassPath =>
           cp.show()
         case cp: AggregateFlatClassPath =>
-          println(
-            s"ClassPath has ${cp.aggregates.size} entries and results in:\n${cp.asClassPathStrings}")
+          println(s"ClassPath has ${cp.aggregates.size} entries and results in:\n${cp.asClassPathStrings}")
       }
     }
 }

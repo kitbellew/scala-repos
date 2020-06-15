@@ -49,8 +49,7 @@ object ClassPathImplComparator {
 
     def printResults(): Unit = {
       val avg = if (iterations == 0) 0 else sum.toDouble / iterations
-      println(
-        s"$name - total duration: $sum ms; iterations: $iterations; avg: $avg ms")
+      println(s"$name - total duration: $sum ms; iterations: $iterations; avg: $avg ms")
     }
   }
 

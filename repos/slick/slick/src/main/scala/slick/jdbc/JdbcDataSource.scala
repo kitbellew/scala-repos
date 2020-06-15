@@ -42,8 +42,7 @@ object JdbcDataSource extends Logging {
         case "HikariCP" =>
           loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
         case "slick.jdbc.HikariCPJdbcDataSource" =>
-          logger.warn(
-            "connectionPool class 'slick.jdbc.HikariCPJdbcDataSource$' has been renamed to 'slick.jdbc.hikaricp.HikariCPJdbcDataSource$'")
+          logger.warn("connectionPool class 'slick.jdbc.HikariCPJdbcDataSource$' has been renamed to 'slick.jdbc.hikaricp.HikariCPJdbcDataSource$'")
           loadFactory("slick.jdbc.hikaricp.HikariCPJdbcDataSource$")
         case name => loadFactory(name)
       }

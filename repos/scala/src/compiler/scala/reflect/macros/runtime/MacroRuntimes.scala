@@ -66,8 +66,7 @@ trait MacroRuntimes extends JavaReflectionRuntimes {
             "macro implementation is missing")
       } else {
         try {
-          macroLogVerbose(
-            s"resolving macro implementation as $className.$methName (isBundle = $isBundle)")
+          macroLogVerbose(s"resolving macro implementation as $className.$methName (isBundle = $isBundle)")
           macroLogVerbose(
             s"classloader is: ${ReflectionUtils.show(defaultMacroClassloader)}")
           resolveJavaReflectionRuntime(defaultMacroClassloader)

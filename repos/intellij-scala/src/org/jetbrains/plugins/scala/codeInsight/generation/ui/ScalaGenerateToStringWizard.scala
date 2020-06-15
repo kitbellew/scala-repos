@@ -53,8 +53,7 @@ class ScalaGenerateToStringWizard(
   private lazy val toStringPanel = {
     val allFields = classMembers.map(new ScalaMemberInfo(_))
     val panel = new ScalaToStringMemberSelectionPanel(
-      ScalaBundle.message(
-        "org.jetbrains.plugins.scala.codeInsight.generation.ui.toString.fields"),
+      ScalaBundle.message("org.jetbrains.plugins.scala.codeInsight.generation.ui.toString.fields"),
       allFields,
       null)
     panel.getTable.setMemberInfoModel(new ScalaToStringMemberInfoModel)

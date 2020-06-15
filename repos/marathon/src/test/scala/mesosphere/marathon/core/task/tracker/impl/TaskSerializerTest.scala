@@ -286,12 +286,13 @@ class TaskSerializerTest
                 MarathonTask.Reservation.State
                   .newBuilder()
                   .setType(MarathonTask.Reservation.State.Type.New)
-                  .setTimeout(MarathonTask.Reservation.State.Timeout
-                    .newBuilder()
-                    .setInitiated(now.toDateTime.getMillis)
-                    .setDeadline((now + 1.minute).toDateTime.getMillis)
-                    .setReason(
-                      MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
+                  .setTimeout(
+                    MarathonTask.Reservation.State.Timeout
+                      .newBuilder()
+                      .setInitiated(now.toDateTime.getMillis)
+                      .setDeadline((now + 1.minute).toDateTime.getMillis)
+                      .setReason(
+                        MarathonTask.Reservation.State.Timeout.Reason.ReservationTimeout))))
           .build()
 
       def reservedState =

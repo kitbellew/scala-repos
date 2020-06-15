@@ -917,8 +917,7 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
             case Some(oldEntry) =>
               List(oldEntry -> cp.context.newClassPath(dir))
             case None =>
-              error(
-                s"Error adding entry to classpath. During invalidation, no entry named $path in classpath $classPath")
+              error(s"Error adding entry to classpath. During invalidation, no entry named $path in classpath $classPath")
               List()
           }
         }

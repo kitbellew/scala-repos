@@ -72,14 +72,12 @@ class AlgorithmChecker(
     val sigAlgName = x509Cert.getSigAlgName
     val sigAlgorithms = Algorithms.decomposes(sigAlgName)
 
-    logger.debug(
-      s"checkSignatureAlgorithms: sigAlgName = $sigAlgName, sigAlgName = $sigAlgName, sigAlgorithms = $sigAlgorithms")
+    logger.debug(s"checkSignatureAlgorithms: sigAlgName = $sigAlgName, sigAlgName = $sigAlgName, sigAlgorithms = $sigAlgorithms")
 
     for (a <- sigAlgorithms) {
       findSignatureConstraint(a).map { constraint =>
         if (constraint.matches(a)) {
-          logger.debug(
-            s"checkSignatureAlgorithms: x509Cert = $x509Cert failed on constraint $constraint")
+          logger.debug(s"checkSignatureAlgorithms: x509Cert = $x509Cert failed on constraint $constraint")
           val msg = s"Certificate failed: $a matched constraint $constraint"
           throw new CertPathValidatorException(msg)
         }
@@ -99,15 +97,13 @@ class AlgorithmChecker(
       .getOrElse(throw new IllegalStateException(s"No keySize found for $key"))
 
     val keyAlgorithms = Algorithms.decomposes(keyAlgorithmName)
-    logger.debug(
-      s"checkKeyAlgorithms: keyAlgorithmName = $keyAlgorithmName, keySize = $keySize, keyAlgorithms = $keyAlgorithms")
+    logger.debug(s"checkKeyAlgorithms: keyAlgorithmName = $keyAlgorithmName, keySize = $keySize, keyAlgorithms = $keyAlgorithms")
 
     for (a <- keyAlgorithms) {
       findKeyConstraint(a).map { constraint =>
         if (constraint.matches(a, keySize)) {
           val certName = x509Cert.getSubjectX500Principal.getName
-          logger.debug(
-            s"""checkKeyAlgorithms: cert = "$certName" failed on constraint $constraint, algorithm = $a, keySize = $keySize""")
+          logger.debug(s"""checkKeyAlgorithms: cert = "$certName" failed on constraint $constraint, algorithm = $a, keySize = $keySize""")
 
           val msg =
             s"""Certificate failed: cert = "$certName" failed on constraint $constraint, algorithm = $a, keySize = $keySize"""
@@ -130,8 +126,7 @@ class AlgorithmChecker(
         val subAltNames = x509Cert.getSubjectAlternativeNames
         val certName = x509Cert.getSubjectX500Principal.getName
         val expirationDate = new DateTime(x509Cert.getNotAfter.getTime)
-        logger.debug(
-          s"check: checking certificate commonName = $commonName, subjAltName = $subAltNames, certName = $certName, expirationDate = $expirationDate")
+        logger.debug(s"check: checking certificate commonName = $commonName, subjAltName = $subAltNames, certName = $certName, expirationDate = $expirationDate")
 
         sunsetSHA1SignatureAlgorithm(x509Cert)
         checkSignatureAlgorithms(x509Cert)
@@ -182,16 +177,14 @@ class AlgorithmChecker(
       x509Cert: X509Certificate,
       expirationDate: DateTime): Unit = {
     val certName = x509Cert.getSubjectX500Principal.getName
-    logger.info(
-      s"Certificate $certName uses SHA-1 and expires $expirationDate: this certificate expires soon, but SHA-1 is being sunsetted.")
+    logger.info(s"Certificate $certName uses SHA-1 and expires $expirationDate: this certificate expires soon, but SHA-1 is being sunsetted.")
   }
 
   def warnOnSunset(
       x509Cert: X509Certificate,
       expirationDate: DateTime): Unit = {
     val certName = x509Cert.getSubjectX500Principal.getName
-    logger.warn(
-      s"Certificate $certName uses SHA-1 and expires $expirationDate: SHA-1 cannot be considered secure and this certificate should be replaced.")
+    logger.warn(s"Certificate $certName uses SHA-1 and expires $expirationDate: SHA-1 cannot be considered secure and this certificate should be replaced.")
   }
 
   /**

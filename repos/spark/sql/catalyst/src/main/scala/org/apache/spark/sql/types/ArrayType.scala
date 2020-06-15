@@ -64,8 +64,7 @@ case class ArrayType(elementType: DataType, containsNull: Boolean)
   private[sql] def buildFormattedString(
       prefix: String,
       builder: StringBuilder): Unit = {
-    builder.append(
-      s"$prefix-- element: ${elementType.typeName} (containsNull = $containsNull)\n")
+    builder.append(s"$prefix-- element: ${elementType.typeName} (containsNull = $containsNull)\n")
     DataType.buildFormattedString(elementType, s"$prefix    |", builder)
   }
 

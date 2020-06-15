@@ -164,8 +164,7 @@ abstract class Parser(
       val phase1 = new EstablishingPrincipalErrorIndex()
       phase = phase1
       if (runRule())
-        sys.error(
-          "Parsing unexpectedly succeeded while trying to establish the principal error location")
+        sys.error("Parsing unexpectedly succeeded while trying to establish the principal error location")
       phase1.maxCursor
     }
 
@@ -173,8 +172,7 @@ abstract class Parser(
       val phase2 = new EstablishingReportedErrorIndex(principalErrorIndex)
       phase = phase2
       if (runRule())
-        sys.error(
-          "Parsing unexpectedly succeeded while trying to establish the reported error location")
+        sys.error("Parsing unexpectedly succeeded while trying to establish the reported error location")
       phase2
     }
 
@@ -182,8 +180,7 @@ abstract class Parser(
       phase = new DetermineReportQuiet(reportedErrorIndex)
       try {
         if (runRule())
-          sys.error(
-            "Parsing unexpectedly succeeded while trying to determine quiet reporting")
+          sys.error("Parsing unexpectedly succeeded while trying to determine quiet reporting")
         true // if we got here we can only reach the reportedErrorIndex via quiet rules
       } catch {
         case UnquietMismatch ⇒
@@ -354,8 +351,7 @@ abstract class Parser(
         }
       case x: CollectingRuleTraces if !x.reportQuiet ⇒
         val saved = x.minErrorIndex
-        x.minErrorIndex =
-          Int.MaxValue // disables triggering of StartTracingException in __registerMismatch
+        x.minErrorIndex = Int.MaxValue // disables triggering of StartTracingException in __registerMismatch
         saved
       case _ ⇒ -1
     }
@@ -693,8 +689,7 @@ object Parser {
       val reportQuiet: Boolean, // do we need to trace mismatches from quiet rules?
       val traceNr: Int =
         0, // the zero-based index number of the RuleTrace we are currently building
-      var errorMismatches: Int =
-        0 // the number of times we have already seen a mismatch at >= minErrorIndex
+      var errorMismatches: Int = 0 // the number of times we have already seen a mismatch at >= minErrorIndex
   ) extends ErrorAnalysisPhase {
     def applyOffset(offset: Int) = minErrorIndex -= offset
   }

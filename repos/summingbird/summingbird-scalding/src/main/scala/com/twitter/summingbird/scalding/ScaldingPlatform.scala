@@ -337,12 +337,10 @@ object Scalding {
       default: => T): T =
     Options.getFirst[T](options, names) match {
       case None =>
-        logger.debug(
-          s"Producer (${producer.getClass.getName}): Using default setting $default")
+        logger.debug(s"Producer (${producer.getClass.getName}): Using default setting $default")
         default
       case Some((id, opt)) =>
-        logger.info(
-          s"Producer (${producer.getClass.getName}) Using $opt found via NamedProducer ${'"'}$id${'"'}")
+        logger.info(s"Producer (${producer.getClass.getName}) Using $opt found via NamedProducer ${'"'}$id${'"'}")
         opt
     }
 
@@ -547,8 +545,7 @@ object Scalding {
             }
             go(left, store)
           case ljp @ LeftJoinedProducer(left, StoreService(store)) =>
-            sys.error(
-              "Unsupported Join against store: not a valid loop join. If the store depends on join output, only the values can change (filterValues, mapValues, flatMapValues).")
+            sys.error("Unsupported Join against store: not a valid loop join. If the store depends on join output, only the values can change (filterValues, mapValues, flatMapValues).")
           case WrittenProducer(producer, sink) =>
             val (pf, m) = recurse(producer)
             (sink.write(pf), m)
@@ -599,8 +596,7 @@ object Scalding {
                       logger.info("enabling flatMapKeys mapside caching")
                       s.store.partialMerge(fmp, s.semigroup, Commutative)
                     case NonCommutative =>
-                      logger.info(
-                        "not enabling flatMapKeys mapside caching, due to non-commutativity")
+                      logger.info("not enabling flatMapKeys mapside caching, due to non-commutativity")
                       fmp
                   }
                 } else
@@ -646,8 +642,7 @@ object Scalding {
             val merged = for {
               leftAndRight <- pfl.join(pfr)
               merged = Scalding.merge(leftAndRight._1, leftAndRight._2)
-              maxAvailable <-
-                StateWithError.getState // read the latest state, which is the time
+              maxAvailable <- StateWithError.getState // read the latest state, which is the time
             } yield Scalding.limitTimes(maxAvailable._1, merged)
             (merged, mr)
           }
@@ -663,8 +658,7 @@ object Scalding {
             val onlyRight = for {
               leftAndRight <- pfl.join(pfr)
               justRight = Scalding.also(leftAndRight._1, leftAndRight._2)
-              maxAvailable <-
-                StateWithError.getState // read the latest state, which is the time
+              maxAvailable <- StateWithError.getState // read the latest state, which is the time
             } yield Scalding.limitTimes(maxAvailable._1, justRight)
             (onlyRight, mr)
           }
@@ -907,8 +901,7 @@ class Scalding(
             try {
               flowOpt match {
                 case None =>
-                  Scalding.logger.warn(
-                    "No Sinks were planned into flows. Waiting state is probably out of sync with stores. Proceeding with NO-OP.")
+                  Scalding.logger.warn("No Sinks were planned into flows. Waiting state is probably out of sync with stores. Proceeding with NO-OP.")
                   runningState.succeed
                 case Some(flow) =>
                   options.get(jobName).foreach { jopt =>

@@ -196,9 +196,8 @@ private[kafka] class KafkaRDD[
         val err = resp.errorCode(part.topic, part.partition)
         if (err == ErrorMapping.LeaderNotAvailableCode ||
           err == ErrorMapping.NotLeaderForPartitionCode) {
-          log.error(
-            s"Lost leader for topic ${part.topic} partition ${part.partition}, " +
-              s" sleeping for ${kc.config.refreshLeaderBackoffMs}ms")
+          log.error(s"Lost leader for topic ${part.topic} partition ${part.partition}, " +
+            s" sleeping for ${kc.config.refreshLeaderBackoffMs}ms")
           Thread.sleep(kc.config.refreshLeaderBackoffMs)
         }
         // Let normal rdd retry sort out reconnect attempts

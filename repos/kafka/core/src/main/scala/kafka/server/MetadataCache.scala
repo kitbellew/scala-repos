@@ -103,13 +103,12 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
               val isrInfo = getAliveEndpoints(isr, protocol)
 
               if (replicaInfo.size < replicas.size) {
-                debug(
-                  "Error while fetching metadata for %s: replica information not available for following brokers %s"
-                    .format(
-                      topicPartition,
-                      replicas
-                        .filterNot(replicaInfo.map(_.id).contains)
-                        .mkString(",")))
+                debug("Error while fetching metadata for %s: replica information not available for following brokers %s"
+                  .format(
+                    topicPartition,
+                    replicas
+                      .filterNot(replicaInfo.map(_.id).contains)
+                      .mkString(",")))
 
                 new MetadataResponse.PartitionMetadata(
                   Errors.REPLICA_NOT_AVAILABLE,
@@ -118,11 +117,10 @@ private[server] class MetadataCache(brokerId: Int) extends Logging {
                   replicaInfo.asJava,
                   isrInfo.asJava)
               } else if (isrInfo.size < isr.size) {
-                debug(
-                  "Error while fetching metadata for %s: in sync replica information not available for following brokers %s"
-                    .format(
-                      topicPartition,
-                      isr.filterNot(isrInfo.map(_.id).contains).mkString(",")))
+                debug("Error while fetching metadata for %s: in sync replica information not available for following brokers %s"
+                  .format(
+                    topicPartition,
+                    isr.filterNot(isrInfo.map(_.id).contains).mkString(",")))
                 new MetadataResponse.PartitionMetadata(
                   Errors.REPLICA_NOT_AVAILABLE,
                   partitionId,

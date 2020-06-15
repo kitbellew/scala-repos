@@ -146,9 +146,8 @@ private[spark] class UnifiedMemoryManager private[memory] (
       assert(numBytes >= 0)
       if (numBytes > maxStorageMemory) {
         // Fail fast if the block simply won't fit
-        logInfo(
-          s"Will not store $blockId as the required space ($numBytes bytes) exceeds our " +
-            s"memory limit ($maxStorageMemory bytes)")
+        logInfo(s"Will not store $blockId as the required space ($numBytes bytes) exceeds our " +
+          s"memory limit ($maxStorageMemory bytes)")
         return false
       }
       if (numBytes > storageMemoryPool.memoryFree) {

@@ -78,8 +78,7 @@ object Test {
                                                                                                                         a() match {
                                                                                                                           case Some(
                                                                                                                                 b30) =>
-                                                                                                                            println(
-                                                                                                                              "yay")
+                                                                                                                            println("yay")
                                                                                                                           case None =>
                                                                                                                             None
                                                                                                                         }

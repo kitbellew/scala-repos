@@ -18,8 +18,7 @@ class splitTest extends FunSuite {
     assert(split(start, 3) == expectedResult)
   }
 
-  test(
-    "throws exception when vector.size is not divisible by number of elements in split") {
+  test("throws exception when vector.size is not divisible by number of elements in split") {
     intercept[IllegalArgumentException] {
       split(DenseVector[Double](1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11), 3)
     }

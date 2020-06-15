@@ -26,8 +26,7 @@ abstract class Quasiquotes
                 method0),
               _),
             args0) =>
-        debug(
-          s"parse prefix:\nuniverse=$universe0\nparts=$parts0\ninterpolator=$interpolator0\nmethod=$method0\nargs=$args0\n")
+        debug(s"parse prefix:\nuniverse=$universe0\nparts=$parts0\ninterpolator=$interpolator0\nmethod=$method0\nargs=$args0\n")
         val parts1 = parts0.map {
           case lit @ Literal(Constant(s: String)) => s -> lit.pos
           case part =>

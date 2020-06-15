@@ -334,12 +334,10 @@ abstract class Duplicators extends Analyzer {
                       (alt.paramss corresponds tree.symbol.paramss)(
                         _.size == _.size)) match {
                       case alt :: Nil =>
-                        log(
-                          s"Resorted to parameter list arity to disambiguate to $alt\n  Overload was: $memberString")
+                        log(s"Resorted to parameter list arity to disambiguate to $alt\n  Overload was: $memberString")
                         Select(This(newClassOwner), alt)
                       case _ =>
-                        log(
-                          s"Could not disambiguate $memberTypes. Attempting name-based selection, but we may crash later.")
+                        log(s"Could not disambiguate $memberTypes. Attempting name-based selection, but we may crash later.")
                         nameSelection
                     }
                 }
@@ -401,8 +399,7 @@ abstract class Duplicators extends Analyzer {
           debuglog("Duplicators default case: " + tree.summaryString)
           debuglog(" ---> " + tree)
           if (tree.hasSymbolField && tree.symbol.safeOwner == AnyClass)
-            tree.symbol =
-              NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
+            tree.symbol = NoSymbol // maybe we can find a more specific member in a subclass of Any (see AnyVal members, like ==)
 
           val ntree = castType(tree, pt)
           super.typed(ntree, mode, pt)

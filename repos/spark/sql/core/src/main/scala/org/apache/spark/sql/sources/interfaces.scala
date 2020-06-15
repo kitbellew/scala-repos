@@ -806,8 +806,7 @@ private[sql] object HadoopFsRelation extends Logging {
       paths: Seq[Path],
       hadoopConf: Configuration,
       sparkContext: SparkContext): mutable.LinkedHashSet[FileStatus] = {
-    logInfo(
-      s"Listing leaf files and directories in parallel under: ${paths.mkString(", ")}")
+    logInfo(s"Listing leaf files and directories in parallel under: ${paths.mkString(", ")}")
 
     val serializableConfiguration = new SerializableConfiguration(hadoopConf)
     val serializedPaths = paths.map(_.toString)

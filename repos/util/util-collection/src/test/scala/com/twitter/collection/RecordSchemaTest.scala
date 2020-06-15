@@ -19,8 +19,7 @@ class RecordSchemaTest extends FunSuite {
     }
   }
 
-  test(
-    "apply should compute, store and return default when field is initialized with default") {
+  test("apply should compute, store and return default when field is initialized with default") {
     val record = schema.newRecord()
     assert(record(fieldWithDefault) eq record(fieldWithDefault))
   }
@@ -42,8 +41,7 @@ class RecordSchemaTest extends FunSuite {
     }
   }
 
-  test(
-    "lock should compute and store default when field is initialized with default") {
+  test("lock should compute and store default when field is initialized with default") {
     val record = schema.newRecord()
     record.lock(fieldWithDefault)
     assert(record(fieldWithDefault) ne null)

@@ -145,8 +145,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
   def requestSubmissionStatus(
       submissionId: String,
       quiet: Boolean = false): SubmitRestProtocolResponse = {
-    logInfo(
-      s"Submitting a request for the status of submission $submissionId in $master.")
+    logInfo(s"Submitting a request for the status of submission $submissionId in $master.")
 
     var handled: Boolean = false
     var response: SubmitRestProtocolResponse = null
@@ -336,13 +335,11 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
     if (submitResponse.success) {
       val submissionId = submitResponse.submissionId
       if (submissionId != null) {
-        logInfo(
-          s"Submission successfully created as $submissionId. Polling submission state...")
+        logInfo(s"Submission successfully created as $submissionId. Polling submission state...")
         pollSubmissionStatus(submissionId)
       } else {
         // should never happen
-        logError(
-          "Application successfully submitted, but submission ID was not provided!")
+        logError("Application successfully submitted, but submission ID was not provided!")
       }
     } else {
       val failMessage =
@@ -397,8 +394,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
   /** Log an appropriate error if the response sent by the server is not of the expected type. */
   private def handleUnexpectedRestResponse(
       unexpected: SubmitRestProtocolResponse): Unit = {
-    logError(
-      s"Error: Server responded with message of unexpected type ${unexpected.messageType}.")
+    logError(s"Error: Server responded with message of unexpected type ${unexpected.messageType}.")
   }
 
   /**

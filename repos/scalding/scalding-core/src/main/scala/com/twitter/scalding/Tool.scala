@@ -74,8 +74,7 @@ class Tool extends Configured with HTool {
     val onlyPrintGraph = job.args.boolean("tool.graph")
     if (onlyPrintGraph) {
       // TODO use proper logging
-      println(
-        "Only printing the job graph, NOT executing. Run without --tool.graph to execute the job")
+      println("Only printing the job graph, NOT executing. Run without --tool.graph to execute the job")
     }
 
     /*

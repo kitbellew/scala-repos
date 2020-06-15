@@ -146,9 +146,7 @@ class ZkNodeChangeNotificationListener(
           processNotifications(notifications.asScala.sorted)
       } catch {
         case e: Exception =>
-          error(
-            s"Error processing notification change for path = $path and notification= $notifications :",
-            e)
+          error(s"Error processing notification change for path = $path and notification= $notifications :", e)
       }
     }
   }

@@ -221,8 +221,7 @@ class Atom[A] extends Source[A] with Sink[A] {
             populate()
 
             if (!isSet) {
-              sys.error(
-                "Unable to self-populate atom (value not set following attempted population)")
+              sys.error("Unable to self-populate atom (value not set following attempted population)")
             }
           } finally {
             lock.lock()

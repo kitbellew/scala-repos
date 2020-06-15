@@ -126,8 +126,7 @@ class ThriftResponseClassifierTest extends FunSuite {
     testApplyOrElse("yep", Success)
   }
 
-  test(
-    "DeserializeCtxOnly only deserializes and sees Thrift exceptions as success") {
+  test("DeserializeCtxOnly only deserializes and sees Thrift exceptions as success") {
     val in = "fail"
     val ctx = new DeserializeCtx(Echo.Echo.Args(in), deserializer)
     Contexts.local.let(DeserializeCtx.Key, ctx) {

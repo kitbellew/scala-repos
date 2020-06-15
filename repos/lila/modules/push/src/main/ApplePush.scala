@@ -71,8 +71,7 @@ private final class ApnsActor(certificate: InputStream, password: String)
             logger.error(s"Can't connect because $cause")
             cause match {
               case ssl: javax.net.ssl.SSLHandshakeException =>
-                logger.error(
-                  s"This is probably a permanent failure, and we should shut down the manager")
+                logger.error(s"This is probably a permanent failure, and we should shut down the manager")
               case _ =>
             }
           }

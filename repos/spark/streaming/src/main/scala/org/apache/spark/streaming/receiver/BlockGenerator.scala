@@ -151,8 +151,7 @@ private[streaming] class BlockGenerator(
       if (state == Active) {
         state = StoppedAddingData
       } else {
-        logWarning(
-          s"Cannot stop BlockGenerator as its not in the Active state [state = $state]")
+        logWarning(s"Cannot stop BlockGenerator as its not in the Active state [state = $state]")
         return
       }
     }

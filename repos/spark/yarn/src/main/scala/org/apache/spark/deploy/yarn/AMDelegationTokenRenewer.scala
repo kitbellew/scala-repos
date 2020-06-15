@@ -224,8 +224,7 @@ private[yarn] class AMDelegationTokenRenewer(
     logInfo("Writing out delegation tokens to " + tempTokenPath.toString)
     val credentials = UserGroupInformation.getCurrentUser.getCredentials
     credentials.writeTokenStorageFile(tempTokenPath, freshHadoopConf)
-    logInfo(
-      s"Delegation Tokens written out successfully. Renaming file to $tokenPathStr")
+    logInfo(s"Delegation Tokens written out successfully. Renaming file to $tokenPathStr")
     remoteFs.rename(tempTokenPath, tokenPath)
     logInfo("Delegation token file rename complete.")
     lastCredentialsFileSuffix = nextSuffix

@@ -41,13 +41,11 @@ class SameElementsToEqualsTest extends OperationsOnCollectionInspectionTest {
   }
 
   def testSortedSets(): Unit = {
-    checkTextHasNoErrors(
-      "scala.collection.immutable.BitSet(1) sameElements scala.collection.mutable.SortedSet(1)")
+    checkTextHasNoErrors("scala.collection.immutable.BitSet(1) sameElements scala.collection.mutable.SortedSet(1)")
   }
 
   def testSortedMaps(): Unit = {
-    checkTextHasNoErrors(
-      "scala.collection.immutable.TreeMap(1 -> 1) sameElements scala.collection.immutable.TreeMap(1 -> 1)")
+    checkTextHasNoErrors("scala.collection.immutable.TreeMap(1 -> 1) sameElements scala.collection.immutable.TreeMap(1 -> 1)")
   }
 
 }

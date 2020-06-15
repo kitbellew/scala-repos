@@ -170,8 +170,7 @@ private[serverset2] class ServiceDiscoverer(
               }
               .ensure {
                 if (seenFailures) {
-                  log.warning(
-                    s"Failed to read all data for $parentPath. Retrying in $retryJitter")
+                  log.warning(s"Failed to read all data for $parentPath. Retrying in $retryJitter")
                   timer.doLater(retryJitter) { loop() }
                 }
               }

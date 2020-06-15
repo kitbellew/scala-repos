@@ -51,16 +51,14 @@ object Versions {
         logger.debug("No update")
       } else if (currentVersion.versionString != "0.0" && !versions.contains(
           currentVersion)) {
-        logger.warn(
-          s"Skip migration because ${currentVersion.versionString} is illegal version.")
+        logger.warn(s"Skip migration because ${currentVersion.versionString} is illegal version.")
       } else {
         versions
           .takeWhile(_ != currentVersion)
           .reverse
           .foreach(_.update(conn, cl))
         save(conn)
-        logger.debug(
-          s"Updated from ${currentVersion.versionString} to ${headVersion.versionString}")
+        logger.debug(s"Updated from ${currentVersion.versionString} to ${headVersion.versionString}")
       }
     } catch {
       case ex: Throwable => {

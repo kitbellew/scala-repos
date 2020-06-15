@@ -47,9 +47,7 @@ class OptimizeScalar extends Phase {
             n
 
           case n @ Library.<(Library.-(r: RowNumber, LiteralNode(1L)), v) =>
-            logger.debug(
-              "Optimizing: Rownum comparison with offset 1, arising from zipWithIndex",
-              n)
+            logger.debug("Optimizing: Rownum comparison with offset 1, arising from zipWithIndex", n)
             Library.<=.typed(n.nodeType, r, v).infer()
 
           case n @ Library.IfNull(OptionApply(ch), _) =>

@@ -178,7 +178,8 @@ object LowPriorityDerivationTests {
       ): MkStdTC[M[T]] =
         new MkStdTC[M[T]] {
           lazy val tc = instance[M[T]](n =>
-            s"${cbf().result().toString.stripSuffix("()")}[${underlying.msg(n - 1)}]")
+            s"${cbf().result().toString.stripSuffix("()")}[${underlying.msg(
+              n - 1)}]")
         }
     }
 

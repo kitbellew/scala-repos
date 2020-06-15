@@ -355,13 +355,11 @@ private[stream] object ActorGraphInterpreter {
     def requestMore(elements: Long): Unit = {
       if (elements < 1) {
         cancel(in)
-        fail(
-          ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
+        fail(ReactiveStreamsCompliance.numberOfElementsInRequestMustBePositiveException)
       } else {
         downstreamDemand += elements
         if (downstreamDemand < 0)
-          downstreamDemand =
-            Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
+          downstreamDemand = Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
         if (!hasBeenPulled(in) && !isClosed(in)) pull(in)
       }
     }
@@ -638,8 +636,8 @@ private[stream] class ActorGraphInterpreter(_initial: GraphInterpreterShell)
         enqueueToShortCircuit(_),
         currentLimit)
       if (GraphInterpreter.Debug)
-        println(
-          s"registering new shell in ${_initial}\n  ${shell.toString.replace("\n", "\n  ")}")
+        println(s"registering new shell in ${_initial}\n  ${shell.toString
+          .replace("\n", "\n  ")}")
       if (shell.isTerminated) false
       else {
         activeInterpreters += shell

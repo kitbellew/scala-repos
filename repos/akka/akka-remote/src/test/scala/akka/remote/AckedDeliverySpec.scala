@@ -323,8 +323,7 @@ class AckedDeliverySpec extends AkkaSpec {
       }
 
       // Dropping phase
-      info(
-        s"Starting unreliable delivery for $MsgCount messages, with delivery probability P = $DeliveryProbability")
+      info(s"Starting unreliable delivery for $MsgCount messages, with delivery probability P = $DeliveryProbability")
       var steps = MsgCount * 2
       while (steps > 0) {
         val s = geom(0.3, limit = 5)

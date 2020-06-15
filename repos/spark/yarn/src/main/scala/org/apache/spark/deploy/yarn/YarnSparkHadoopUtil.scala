@@ -248,9 +248,8 @@ class YarnSparkHadoopUtil extends SparkHadoopUtil {
       val principal = hiveConf.getTrimmed(principalKey, "")
       require(principal.nonEmpty, "Hive principal $principalKey undefined")
       val currentUser = UserGroupInformation.getCurrentUser()
-      logDebug(
-        s"Getting Hive delegation token for ${currentUser.getUserName()} against " +
-          s"$principal at $metastoreUri")
+      logDebug(s"Getting Hive delegation token for ${currentUser.getUserName()} against " +
+        s"$principal at $metastoreUri")
       val hiveClass =
         mirror.classLoader.loadClass("org.apache.hadoop.hive.ql.metadata.Hive")
       val closeCurrent = hiveClass.getMethod("closeCurrent")

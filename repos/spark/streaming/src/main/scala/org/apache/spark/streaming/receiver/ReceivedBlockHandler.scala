@@ -152,14 +152,12 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
 
   private val effectiveStorageLevel = {
     if (storageLevel.deserialized) {
-      logWarning(
-        s"Storage level serialization ${storageLevel.deserialized} is not supported when" +
-          s" write ahead log is enabled, change to serialization false")
+      logWarning(s"Storage level serialization ${storageLevel.deserialized} is not supported when" +
+        s" write ahead log is enabled, change to serialization false")
     }
     if (storageLevel.replication > 1) {
-      logWarning(
-        s"Storage level replication ${storageLevel.replication} is unnecessary when " +
-          s"write ahead log is enabled, change to replication 1")
+      logWarning(s"Storage level replication ${storageLevel.replication} is unnecessary when " +
+        s"write ahead log is enabled, change to replication 1")
     }
 
     StorageLevel(
@@ -171,9 +169,8 @@ private[streaming] class WriteAheadLogBasedBlockHandler(
   }
 
   if (storageLevel != effectiveStorageLevel) {
-    logWarning(
-      s"User defined storage level $storageLevel is changed to effective storage level " +
-        s"$effectiveStorageLevel when write ahead log is enabled")
+    logWarning(s"User defined storage level $storageLevel is changed to effective storage level " +
+      s"$effectiveStorageLevel when write ahead log is enabled")
   }
 
   // Write ahead log manages

@@ -239,8 +239,7 @@ abstract class RefChecks
         val bridges = new ListBuffer[Tree]
 
         def varargBridge(member: Symbol, bridgetpe: Type): Tree = {
-          log(
-            s"Generating varargs bridge for ${member.fullLocationString} of type $bridgetpe")
+          log(s"Generating varargs bridge for ${member.fullLocationString} of type $bridgetpe")
 
           val newFlags = (member.flags | VBRIDGE | ARTIFACT) & ~PRIVATE
           val bridge = member.cloneSymbolImpl(clazz, newFlags) setPos clazz.pos
@@ -286,8 +285,7 @@ abstract class RefChecks
         }
 
         if (bridges.size > 0)
-          log(
-            s"Adding ${bridges.size} bridges for methods extending java varargs.")
+          log(s"Adding ${bridges.size} bridges for methods extending java varargs.")
 
         bridges.toList
       } else Nil
@@ -524,9 +522,8 @@ abstract class RefChecks
             intersectionIsEmpty(
               member.extendedOverriddenSymbols,
               other.extendedOverriddenSymbols)) {
-            overrideError(
-              "cannot override a concrete member without a third member that's overridden by both " +
-                "(this rule is designed to prevent ``accidental overrides'')")
+            overrideError("cannot override a concrete member without a third member that's overridden by both " +
+              "(this rule is designed to prevent ``accidental overrides'')")
           } else if (other.isStable && !member.isStable) { // (1.4)
             overrideError("needs to be a stable, immutable value")
           } else if (member.isValue && member.isLazy &&
@@ -538,8 +535,7 @@ abstract class RefChecks
               "must be declared lazy to override a concrete lazy value")
           } else if (other.isDeferred && member.isTermMacro && member.extendedOverriddenSymbols
               .forall(_.isDeferred)) { // (1.9)
-            overrideError(
-              "cannot be used here - term macros cannot override abstract methods")
+            overrideError("cannot be used here - term macros cannot override abstract methods")
           } else if (other.isTermMacro && !member.isTermMacro) { // (1.10)
             overrideError(
               "cannot be used here - only term macros can override term macros")
@@ -613,8 +609,7 @@ abstract class RefChecks
                 )
             }
           } else if (low.isAbstractType && lowType.isVolatile && !highInfo.bounds.hi.isVolatile)
-            overrideError(
-              "is a volatile type; cannot override a type with non-volatile upper bound")
+            overrideError("is a volatile type; cannot override a type with non-volatile upper bound")
         }
         def checkOverrideTerm() {
           other.cookJavaRawInfo() // #2454
@@ -628,8 +623,7 @@ abstract class RefChecks
           }
           if (low.isStable && !highType.isVolatile) {
             if (lowType.isVolatile)
-              overrideError(
-                "has a volatile type; cannot override a member with non-volatile type")
+              overrideError("has a volatile type; cannot override a member with non-volatile type")
             else
               lowType.normalize.resultType match {
                 case rt: RefinedType
@@ -990,8 +984,7 @@ abstract class RefChecks
               val superSigs = ms
                 .map(m => m.defStringSeenAs(clazz.tpe memberType m))
                 .mkString("\n")
-              issueError(
-                s".\nNote: the super classes of ${member.owner} contain the following, non final members named ${member.name}:\n${superSigs}")
+              issueError(s".\nNote: the super classes of ${member.owner} contain the following, non final members named ${member.name}:\n${superSigs}")
           }
           member resetFlag (OVERRIDE | ABSOVERRIDE) // Any Override
         }
@@ -1034,8 +1027,7 @@ abstract class RefChecks
         val baseClass = clazz.info.baseTypeSeq(i).typeSymbol
         seenTypes(i) match {
           case Nil =>
-            devWarning(
-              s"base $baseClass not found in basetypes of $clazz. This might indicate incorrect caching of TypeRef#parents.")
+            devWarning(s"base $baseClass not found in basetypes of $clazz. This might indicate incorrect caching of TypeRef#parents.")
           case _ :: Nil =>
             ; // OK
           case tp1 :: tp2 :: _ =>
@@ -1571,7 +1563,8 @@ abstract class RefChecks
             case e: NumberFormatException =>
               reporter.warning(
                 pos,
-                s"${sym.fullLocationString} has an unparsable version number: ${e.getMessage()}")
+                s"${sym.fullLocationString} has an unparsable version number: ${e
+                  .getMessage()}")
               // if we can't parse the format on the migration annotation just conservatively assume it changed
               true
           }
@@ -2011,8 +2004,7 @@ abstract class RefChecks
             else tree
 
           case dc @ TypeTreeWithDeferredRefCheck() =>
-            abort(
-              "adapt should have turned dc: TypeTreeWithDeferredRefCheck into tpt: TypeTree, with tpt.original == dc")
+            abort("adapt should have turned dc: TypeTreeWithDeferredRefCheck into tpt: TypeTree, with tpt.original == dc")
           case tpt @ TypeTree() =>
             if (tpt.original != null) {
               tpt.original foreach {

@@ -49,8 +49,7 @@ class TestProbeSpec extends AkkaSpec with DefaultTimeout {
       } match {
         case scala.util.Failure(e: AssertionError) ⇒
           if (!(e.getMessage contains expectedHint))
-            fail(
-              s"failure message did not contain hint! Was: ${e.getMessage}, expected to contain $expectedHint")
+            fail(s"failure message did not contain hint! Was: ${e.getMessage}, expected to contain $expectedHint")
         case scala.util.Failure(oth) ⇒
           fail(s"expected AssertionError but got: $oth")
         case scala.util.Success(result) ⇒

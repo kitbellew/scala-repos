@@ -71,10 +71,8 @@ object VersionLog {
               JParser.parseFromFile(currentFile).leftMap(ioError).disjunction
             version <- jv match {
               case JString(`unsetSentinel`) =>
-                \/.left(
-                  NotFound(
-                    "No current data for the path %s exists; it has been archived."
-                      .format(dir)))
+                \/.left(NotFound("No current data for the path %s exists; it has been archived."
+                  .format(dir)))
               case other =>
                 other.validated[VersionEntry].disjunction leftMap { err =>
                   Corrupt(err.message)

@@ -342,8 +342,7 @@ object ActorSystemProvider {
           } catch {
             case te: TimeoutException =>
               // oh well.  We tried to be nice.
-              logger.info(
-                s"Could not shutdown the Akka system in $timeout milliseconds.  Giving up.")
+              logger.info(s"Could not shutdown the Akka system in $timeout milliseconds.  Giving up.")
           }
         case _ =>
           // wait until it is shutdown

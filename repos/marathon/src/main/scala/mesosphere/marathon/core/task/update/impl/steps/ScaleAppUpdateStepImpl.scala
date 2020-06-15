@@ -33,8 +33,7 @@ class ScaleAppUpdateStepImpl @Inject() (
     status.getState match {
       case Terminated(_) =>
         // Remove from our internal list
-        log.info(
-          s"initiating a scale check for app [${taskId.appId}] after $taskId terminated")
+        log.info(s"initiating a scale check for app [${taskId.appId}] after $taskId terminated")
         schedulerActor ! ScaleApp(taskId.appId)
 
       case _ =>

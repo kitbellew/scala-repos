@@ -2569,9 +2569,8 @@ abstract class GenJSCode
               alts map {
                 case lit: Literal => genLiteral(lit)
                 case _ =>
-                  abort(
-                    "Invalid case in alternative in switch-like pattern match: " +
-                      tree + " at: " + tree.pos)
+                  abort("Invalid case in alternative in switch-like pattern match: " +
+                    tree + " at: " + tree.pos)
               }
             }
             clauses = (genAlts, genBody(body)) :: clauses
@@ -4546,8 +4545,7 @@ abstract class GenJSCode
           case vd @ ValDef(mods, name, tpt, rhs) =>
             val fsym = vd.symbol
             if (!fsym.isParamAccessor)
-              fail(
-                s"Found field $fsym which is not a param accessor in anon function $cd")
+              fail(s"Found field $fsym which is not a param accessor in anon function $cd")
 
             if (fsym.isPrivate) {
               paramAccessors ::= fsym

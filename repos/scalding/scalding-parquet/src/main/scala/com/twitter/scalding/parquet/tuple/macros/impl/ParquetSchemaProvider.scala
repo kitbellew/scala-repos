@@ -38,25 +38,19 @@ object ParquetSchemaProvider {
 
       fieldType match {
         case tpe if tpe =:= typeOf[String] =>
-          createPrimitiveTypeField(
-            q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BINARY")
+          createPrimitiveTypeField(q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BINARY")
         case tpe if tpe =:= typeOf[Boolean] =>
-          createPrimitiveTypeField(
-            q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BOOLEAN")
+          createPrimitiveTypeField(q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.BOOLEAN")
         case tpe
             if tpe =:= typeOf[Short] || tpe =:= typeOf[Int] || tpe =:= typeOf[
               Byte] =>
-          createPrimitiveTypeField(
-            q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT32")
+          createPrimitiveTypeField(q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT32")
         case tpe if tpe =:= typeOf[Long] =>
-          createPrimitiveTypeField(
-            q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT64")
+          createPrimitiveTypeField(q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.INT64")
         case tpe if tpe =:= typeOf[Float] =>
-          createPrimitiveTypeField(
-            q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.FLOAT")
+          createPrimitiveTypeField(q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.FLOAT")
         case tpe if tpe =:= typeOf[Double] =>
-          createPrimitiveTypeField(
-            q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.DOUBLE")
+          createPrimitiveTypeField(q"_root_.org.apache.parquet.schema.PrimitiveType.PrimitiveTypeName.DOUBLE")
         case tpe if tpe.erasure =:= typeOf[Option[Any]] =>
           val innerType = tpe.asInstanceOf[TypeRefApi].args.head
           matchField(innerType, fieldName, isOption = true)

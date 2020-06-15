@@ -131,8 +131,7 @@ trait ScalacPatternExpanders {
       def err(msg: String) = context.error(tree.pos, msg)
       def warn(msg: String) = context.warning(tree.pos, msg)
       def arityError(what: String) =
-        err(
-          s"$what patterns for $owner$offerString: expected $arityExpected, found $totalArity")
+        err(s"$what patterns for $owner$offerString: expected $arityExpected, found $totalArity")
 
       if (isStar && !isSeq)
         err("Star pattern must correspond with varargs or unapplySeq")

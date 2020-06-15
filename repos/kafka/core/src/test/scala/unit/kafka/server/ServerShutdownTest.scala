@@ -165,9 +165,8 @@ class ServerShutdownTest extends ZooKeeperTestHarness {
       case e: org.I0Itec.zkclient.exception.ZkException =>
         assertEquals(NotRunning.state, server.brokerState.currentState)
       case e: Throwable =>
-        fail(
-          "Expected ZkException during Kafka server starting up but caught a different exception %s"
-            .format(e.toString))
+        fail("Expected ZkException during Kafka server starting up but caught a different exception %s"
+          .format(e.toString))
     } finally {
       if (server.brokerState.currentState != NotRunning.state)
         server.shutdown()

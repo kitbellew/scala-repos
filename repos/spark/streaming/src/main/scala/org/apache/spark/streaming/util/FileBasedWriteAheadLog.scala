@@ -174,9 +174,8 @@ private[streaming] class FileBasedWriteAheadLog(
       pastLogs --= expiredLogs
       expiredLogs
     }
-    logInfo(
-      s"Attempting to clear ${oldLogFiles.size} old log files in $logDirectory " +
-        s"older than $threshTime: ${oldLogFiles.map { _.path }.mkString("\n")}")
+    logInfo(s"Attempting to clear ${oldLogFiles.size} old log files in $logDirectory " +
+      s"older than $threshTime: ${oldLogFiles.map { _.path }.mkString("\n")}")
 
     def deleteFile(walInfo: LogInfo): Unit = {
       try {
@@ -255,8 +254,7 @@ private[streaming] class FileBasedWriteAheadLog(
           fileSystem.listStatus(logDirectoryPath).map { _.getPath })
         pastLogs.clear()
         pastLogs ++= logFileInfo
-        logInfo(
-          s"Recovered ${logFileInfo.size} write ahead log files from $logDirectory")
+        logInfo(s"Recovered ${logFileInfo.size} write ahead log files from $logDirectory")
         logDebug(
           s"Recovered files are:\n${logFileInfo.map(_.path).mkString("\n")}")
       }

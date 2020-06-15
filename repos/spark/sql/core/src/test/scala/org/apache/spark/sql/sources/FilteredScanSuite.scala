@@ -441,10 +441,9 @@ class FilteredScanSuite
             .toSet === expectedUnhandledFilters)
 
         if (rawCount != expectedCount) {
-          fail(
-            s"Wrong # of results for pushed filter. Got $rawCount, Expected $expectedCount\n" +
-              s"Filters pushed: ${FiltersPushed.list.mkString(",")}\n" +
-              queryExecution)
+          fail(s"Wrong # of results for pushed filter. Got $rawCount, Expected $expectedCount\n" +
+            s"Filters pushed: ${FiltersPushed.list.mkString(",")}\n" +
+            queryExecution)
         }
       } finally {
         caseInsensitiveContext.conf.setConf(

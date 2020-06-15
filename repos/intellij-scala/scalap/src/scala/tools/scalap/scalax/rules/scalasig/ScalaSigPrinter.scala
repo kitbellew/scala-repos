@@ -443,8 +443,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         printMethodType(m.infoType, printResult = true)(
           {
             if (printBody)
-              print(
-                " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
+              print(" = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
           }
         )
     }

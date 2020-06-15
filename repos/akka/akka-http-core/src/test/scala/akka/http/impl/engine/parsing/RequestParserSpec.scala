@@ -393,8 +393,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       "too-long chunk extension" in new Test {
         Seq(start, "3;" + ("x" * 257)) should generalMultiParseTo(
           Right(baseRequest),
-          Left(EntityStreamError(ErrorInfo(
-            "HTTP chunk extension length exceeds configured limit of 256 characters"))))
+          Left(EntityStreamError(ErrorInfo("HTTP chunk extension length exceeds configured limit of 256 characters"))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -454,8 +453,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           |
           |foo""" should parseToError(
           BadRequest,
-          ErrorInfo(
-            "HTTP message must not contain more than one Content-Length header"))
+          ErrorInfo("HTTP message must not contain more than one Content-Length header"))
       }
 
       "a too-long URI" in new Test {
@@ -468,8 +466,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         """GET / HTTP/1.2
           |""" should parseToError(
           HTTPVersionNotSupported,
-          ErrorInfo(
-            "The server does not support the HTTP protocol version used in the request."))
+          ErrorInfo("The server does not support the HTTP protocol version used in the request."))
       }
 
       "with an illegal char in a header name" in new Test {
@@ -512,8 +509,7 @@ class RequestParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           |
           |""" should parseToError(
           400: StatusCode,
-          ErrorInfo(
-            "`Content-Length` header value must not exceed 63-bit integer range"))
+          ErrorInfo("`Content-Length` header value must not exceed 63-bit integer range"))
       }
 
       "with an illegal entity using CONNECT" in new Test {

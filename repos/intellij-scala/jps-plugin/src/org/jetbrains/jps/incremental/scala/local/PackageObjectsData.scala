@@ -90,8 +90,7 @@ object PackageObjectsData {
           }
         } catch {
           case e: Exception =>
-            warning(
-              s"Could not read data about package objects dependencies: \n${e.getMessage}")
+            warning(s"Could not read data about package objects dependencies: \n${e.getMessage}")
             file.delete()
             new PackageObjectsData()
         }

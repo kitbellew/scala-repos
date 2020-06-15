@@ -18,11 +18,9 @@ private[pickling] object AdtPickling extends PicklingAlgorithm {
       tpe.closedSubclasses match {
         case scala.util.Failure(msgs) =>
           // TODO - SHould we warn here, or collect errors for later?
-          AlgorithmFailure(
-            s"Could not determine if $tpe is closed for ADT generation:\n\t\t$msgs")
+          AlgorithmFailure(s"Could not determine if $tpe is closed for ADT generation:\n\t\t$msgs")
         case scala.util.Success(Seq()) =>
-          AlgorithmFailure(
-            s"Failed to create ADT pickler for $tpe.  Type is closed, but could not find subclasses.\n  You can use @directSubclasses to annotate known subclasses.")
+          AlgorithmFailure(s"Failed to create ADT pickler for $tpe.  Type is closed, but could not find subclasses.\n  You can use @directSubclasses to annotate known subclasses.")
         case scala.util.Success(subclasses) =>
           // TODO - Should we check if we need to also serialize our own state, or delegate that to a different algorithm?
           // TODO - Should we allow dynamic dispatch here (reflection)?

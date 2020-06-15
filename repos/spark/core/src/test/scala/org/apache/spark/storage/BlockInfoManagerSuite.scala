@@ -105,8 +105,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     assert(blockInfoManager.getNumberOfMapEntries === initialNumMapEntries + 1)
   }
 
-  test(
-    "lockNewBlockForWriting blocks while write lock is held, then returns false after release") {
+  test("lockNewBlockForWriting blocks while write lock is held, then returns false after release") {
     withTaskId(0) {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
     }
@@ -133,8 +132,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     assert(blockInfoManager.get("block").get.readerCount === 3)
   }
 
-  test(
-    "lockNewBlockForWriting blocks while write lock is held, then returns true after removal") {
+  test("lockNewBlockForWriting blocks while write lock is held, then returns true after removal") {
     withTaskId(0) {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
     }
@@ -336,8 +334,7 @@ class BlockInfoManagerSuite extends SparkFunSuite with BeforeAndAfterEach {
     }
   }
 
-  test(
-    "removing a block while holding only a read lock throws IllegalStateException") {
+  test("removing a block while holding only a read lock throws IllegalStateException") {
     withTaskId(0) {
       assert(blockInfoManager.lockNewBlockForWriting("block", newBlockInfo()))
       blockInfoManager.unlock("block")

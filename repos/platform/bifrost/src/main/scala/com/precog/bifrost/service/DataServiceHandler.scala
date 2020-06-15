@@ -70,9 +70,8 @@ class DataServiceHandler[A](
               M point {
                 resourceError match {
                   case Corrupt(message) =>
-                    logger.error(
-                      "Corrupt resource found for current version of path %s: %s"
-                        .format(path.path, message))
+                    logger.error("Corrupt resource found for current version of path %s: %s"
+                      .format(path.path, message))
                     HttpResponse(InternalServerError)
 
                   case IOError(throwable) =>
@@ -89,9 +88,8 @@ class DataServiceHandler[A](
                     HttpResponse(InternalServerError)
 
                   case PermissionsError(message) =>
-                    logger.warn(
-                      "Access denied after auth combinator check to path %s for %s: %s"
-                        .format(path.path, apiKey, message))
+                    logger.warn("Access denied after auth combinator check to path %s for %s: %s"
+                      .format(path.path, apiKey, message))
                     HttpResponse(HttpStatus(Forbidden, message))
 
                   case NotFound(message) =>
@@ -100,11 +98,10 @@ class DataServiceHandler[A](
                   case multiple: ResourceErrors =>
                     multiple.fold(
                       fatal => {
-                        logger.error(
-                          "Multiple errors encountered serving readResource of path %s: %s"
-                            .format(
-                              path.path,
-                              fatal.messages.list.mkString("[\n", ",\n", "]")))
+                        logger.error("Multiple errors encountered serving readResource of path %s: %s"
+                          .format(
+                            path.path,
+                            fatal.messages.list.mkString("[\n", ",\n", "]")))
                         HttpResponse(InternalServerError)
                       },
                       userError =>

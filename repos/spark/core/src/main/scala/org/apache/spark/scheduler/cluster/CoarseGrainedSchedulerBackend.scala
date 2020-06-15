@@ -149,8 +149,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
               KillTask(taskId, executorId, interruptThread))
           case None =>
             // Ignoring the task kill since the executor is not registered.
-            logWarning(
-              s"Attempted to kill task $taskId for unknown executor $executorId.")
+            logWarning(s"Attempted to kill task $taskId for unknown executor $executorId.")
         }
     }
 
@@ -169,8 +168,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
           } else {
             context.senderAddress
           }
-          logInfo(
-            s"Registered executor $executorRef ($executorAddress) with ID $executorId")
+          logInfo(s"Registered executor $executorRef ($executorAddress) with ID $executorId")
           addressToExecutorId(executorAddress) = executorId
           totalCoreCount.addAndGet(cores)
           totalRegisteredExecutors.addAndGet(1)
@@ -187,8 +185,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
             executorDataMap.put(executorId, data)
             if (numPendingExecutors > 0) {
               numPendingExecutors -= 1
-              logDebug(
-                s"Decremented number of pending executors ($numPendingExecutors left)")
+              logDebug(s"Decremented number of pending executors ($numPendingExecutors left)")
             }
           }
           // Note: some tests expect the reply to come after we put the executor in the map
@@ -294,9 +291,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
           val executorData = executorDataMap(task.executorId)
           executorData.freeCores -= scheduler.CPUS_PER_TASK
 
-          logInfo(
-            s"Launching task ${task.taskId} on executor id: ${task.executorId} hostname: " +
-              s"${executorData.executorHost}.")
+          logInfo(s"Launching task ${task.taskId} on executor id: ${task.executorId} hostname: " +
+            s"${executorData.executorHost}.")
 
           executorData.executorEndpoint.send(
             LaunchTask(new SerializableBuffer(serializedTask)))
@@ -499,8 +495,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
           "Attempted to request a negative number of additional executor(s) " +
             s"$numAdditionalExecutors from the cluster manager. Please specify a positive number!")
       }
-      logInfo(
-        s"Requesting $numAdditionalExecutors additional executor(s) from the cluster manager")
+      logInfo(s"Requesting $numAdditionalExecutors additional executor(s) from the cluster manager")
       logDebug(s"Number of pending executors is now $numPendingExecutors")
 
       numPendingExecutors += numAdditionalExecutors

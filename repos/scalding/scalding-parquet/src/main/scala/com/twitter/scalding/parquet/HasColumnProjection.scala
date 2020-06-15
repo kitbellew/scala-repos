@@ -55,8 +55,7 @@ trait HasColumnProjection {
     strict.foreach(requireNoSemiColon)
 
     if (deprecated.nonEmpty) {
-      LOG.warn(
-        "withColumns is deprecated. Please use withColumnProjections, which uses a different glob syntax")
+      LOG.warn("withColumns is deprecated. Please use withColumnProjections, which uses a different glob syntax")
       Some(DeprecatedColumnProjectionString(deprecated))
     } else if (strict.nonEmpty) {
       Some(StrictColumnProjectionString(strict))

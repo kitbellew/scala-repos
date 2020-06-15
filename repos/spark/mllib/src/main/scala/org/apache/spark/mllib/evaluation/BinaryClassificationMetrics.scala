@@ -175,8 +175,7 @@ class BinaryClassificationMetrics @Since("1.3.0") (
           counts
         } else {
           if (grouping >= Int.MaxValue) {
-            logWarning(
-              s"Curve too large ($countsSize) for $numBins bins; capping at ${Int.MaxValue}")
+            logWarning(s"Curve too large ($countsSize) for $numBins bins; capping at ${Int.MaxValue}")
             grouping = Int.MaxValue
           }
           counts.mapPartitions(_.grouped(grouping.toInt).map { pairs =>

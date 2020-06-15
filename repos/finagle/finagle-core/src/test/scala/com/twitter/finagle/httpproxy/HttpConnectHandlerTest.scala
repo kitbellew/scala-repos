@@ -50,8 +50,7 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test(
-    "HttpConnectHandler should upon connect wrap the downstream connect request") {
+  test("HttpConnectHandler should upon connect wrap the downstream connect request") {
     val h = new HttpConnectHandlerHelper
     import h._
 
@@ -78,8 +77,7 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(e.getFuture.isCancelled)
   }
 
-  test(
-    "HttpConnectHandler should when connect is successful not propagate success") {
+  test("HttpConnectHandler should when connect is successful not propagate success") {
     val h = new HttpConnectHandlerHelper
     import h._
 
@@ -93,8 +91,7 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
     verify(ctx, times(0)).sendUpstream(any[ChannelEvent])
   }
 
-  test(
-    "HttpConnectHandler should when connect is successful propagate connection cancellation") {
+  test("HttpConnectHandler should when connect is successful propagate connection cancellation") {
     val h = new HttpConnectHandlerHelper
     import h._
 
@@ -158,8 +155,7 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test(
-    "HttpConnectHandler should add ProxyAuthorization header when proxy credentials are supplied") {
+  test("HttpConnectHandler should add ProxyAuthorization header when proxy credentials are supplied") {
     val h = new HttpConnectHandlerHelper
     import h._
 
@@ -205,8 +201,7 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(connectFuture.getCause == exc)
   }
 
-  test(
-    "HttpConnectHandler should not add socket address resolve handler when proxy address is resolved") {
+  test("HttpConnectHandler should not add socket address resolve handler when proxy address is resolved") {
     val pipeline = new DefaultChannelPipeline
     HttpConnectHandler.addHandler(
       new InetSocketAddress(InetAddress.getLoopbackAddress, 2222),
@@ -218,8 +213,7 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(pipeline.get("socketAddressResolver") == null)
   }
 
-  test(
-    "HttpConnectHandler should add socket address resolve handler when proxy address is unresolved") {
+  test("HttpConnectHandler should add socket address resolve handler when proxy address is unresolved") {
     val pipeline = new DefaultChannelPipeline
     HttpConnectHandler.addHandler(
       InetSocketAddress.createUnresolved("meow.meow", 2222),

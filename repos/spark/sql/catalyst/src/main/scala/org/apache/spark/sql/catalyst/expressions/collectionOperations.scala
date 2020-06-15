@@ -69,8 +69,7 @@ case class SortArray(base: Expression, ascendingOrder: Expression)
       case ArrayType(dt, _) if RowOrdering.isOrderable(dt) =>
         TypeCheckResult.TypeCheckSuccess
       case ArrayType(dt, _) =>
-        TypeCheckResult.TypeCheckFailure(
-          s"$prettyName does not support sorting array of type ${dt.simpleString}")
+        TypeCheckResult.TypeCheckFailure(s"$prettyName does not support sorting array of type ${dt.simpleString}")
       case _ =>
         TypeCheckResult.TypeCheckFailure(
           s"$prettyName only supports array input.")
@@ -166,8 +165,7 @@ case class ArrayContains(left: Expression, right: Expression)
         "Null typed values cannot be used as arguments")
     } else if (!left.dataType.isInstanceOf[ArrayType]
       || left.dataType.asInstanceOf[ArrayType].elementType != right.dataType) {
-      TypeCheckResult.TypeCheckFailure(
-        "Arguments must be an array followed by a value of same type as the array members")
+      TypeCheckResult.TypeCheckFailure("Arguments must be an array followed by a value of same type as the array members")
     } else {
       TypeCheckResult.TypeCheckSuccess
     }

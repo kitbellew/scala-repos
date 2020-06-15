@@ -81,8 +81,7 @@ class FiltersSuite extends SparkFunSuite with Logging {
     test(name) {
       val converted = shim.convertFilters(testTable, filters)
       if (converted != result) {
-        fail(
-          s"Expected filters ${filters.mkString(",")} to convert to '$result' but got '$converted'")
+        fail(s"Expected filters ${filters.mkString(",")} to convert to '$result' but got '$converted'")
       }
     }
   }

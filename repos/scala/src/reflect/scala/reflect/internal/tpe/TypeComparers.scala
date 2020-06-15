@@ -455,9 +455,7 @@ trait TypeComparers {
         case _ => // @assume !(both .isHigherKinded) thus cannot be subtypes
           def tp_s(tp: Type): String =
             f"$tp%-20s ${util.shortClassOfInstance(tp)}%s"
-          devWarning(
-            s"HK subtype check on $tp1 and $tp2, but both don't normalize to polytypes:\n  tp1=${tp_s(
-              ntp1)}\n  tp2=${tp_s(ntp2)}")
+          devWarning(s"HK subtype check on $tp1 and $tp2, but both don't normalize to polytypes:\n  tp1=${tp_s(ntp1)}\n  tp2=${tp_s(ntp2)}")
           false
       }
 

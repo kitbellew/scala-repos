@@ -142,8 +142,7 @@ object ProtectedBranchService {
               case s if s.size == 1 =>
                 Some(s"""Required status check "${s.toSeq(0)}" is expected""")
               case s if s.size >= 1 =>
-                Some(
-                  s"${s.size} of ${contexts.size} required status checks are expected")
+                Some(s"${s.size} of ${contexts.size} required status checks are expected")
               case _ => None
             }
           case ReceiveCommand.Type.DELETE =>

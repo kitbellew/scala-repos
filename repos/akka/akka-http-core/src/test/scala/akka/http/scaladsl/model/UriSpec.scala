@@ -567,8 +567,7 @@ class UriSpec extends WordSpec with Matchers {
       normalize("http://:80/foo") shouldEqual "http:///foo"
       normalize("http://:8080/foo") shouldEqual "http://:8080/foo"
       normalize("ftp://example.com:21") shouldEqual "ftp://example.com"
-      normalize(
-        "example.com:21") shouldEqual "example.com:21" // example.com is parsed as the SCHEME (which is correct)
+      normalize("example.com:21") shouldEqual "example.com:21" // example.com is parsed as the SCHEME (which is correct)
       normalize("//example.com:21") shouldEqual "//example.com:21"
       normalize("ftp://example.com:22") shouldEqual "ftp://example.com:22"
 

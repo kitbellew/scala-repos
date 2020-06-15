@@ -70,8 +70,7 @@ class MetricsReporterService @Inject() (
     val reporter = builder.build(graphite)
     val interval = params.get("interval").map(_.toLong).getOrElse(10L)
 
-    log.info(
-      s"Graphite reporter configured $reporter with $interval seconds interval (url: $graphUrl)")
+    log.info(s"Graphite reporter configured $reporter with $interval seconds interval (url: $graphUrl)")
     reporter.start(interval, TimeUnit.SECONDS)
     reporter
   }
@@ -158,8 +157,7 @@ class MetricsReporterService @Inject() (
       .withTags(tags.asJava)
       .build()
 
-    log.info(
-      s"Datadog reporter configured $reporter with $interval seconds interval (url: $dataDog)")
+    log.info(s"Datadog reporter configured $reporter with $interval seconds interval (url: $dataDog)")
     reporter.start(interval, TimeUnit.SECONDS)
     reporter
   }

@@ -107,13 +107,10 @@ object Test {
   def showClass(name: String) = {
     val c = Class.forName(name)
 
-    println(
-      s"${c.getName} / ${tr(c.getCanonicalName)} (canon) / ${tr(c.getSimpleName)} (simple)")
+    println(s"${c.getName} / ${tr(c.getCanonicalName)} (canon) / ${tr(c.getSimpleName)} (simple)")
     println("- declared cls: " + c.getDeclaredClasses.toList.sortBy(_.getName))
-    println(
-      s"- enclosing   : ${c.getDeclaringClass} (declaring cls) / ${c.getEnclosingClass} (cls) / ${c.getEnclosingConstructor} (constr) / ${c.getEnclosingMethod} (meth)")
-    println(
-      s"- properties  : ${tr(c.isLocalClass)} (local) / ${c.isMemberClass} (member)")
+    println(s"- enclosing   : ${c.getDeclaringClass} (declaring cls) / ${c.getEnclosingClass} (cls) / ${c.getEnclosingConstructor} (constr) / ${c.getEnclosingMethod} (meth)")
+    println(s"- properties  : ${tr(c.isLocalClass)} (local) / ${c.isMemberClass} (member)")
 
     assertNotAnonymous(c)
     assert(!c.isSynthetic, c)

@@ -557,20 +557,17 @@ class SchedulerActions(
     val targetCount = app.instances
 
     if (targetCount > launchedCount) {
-      log.info(
-        s"Need to scale ${app.id} from $launchedCount up to $targetCount instances")
+      log.info(s"Need to scale ${app.id} from $launchedCount up to $targetCount instances")
 
       val queuedOrRunning =
         taskQueue.get(app.id).map(_.finalTaskCount).getOrElse(launchedCount)
       val toQueue = targetCount - queuedOrRunning
 
       if (toQueue > 0) {
-        log.info(
-          s"Queueing $toQueue new tasks for ${app.id} ($queuedOrRunning queued or running)")
+        log.info(s"Queueing $toQueue new tasks for ${app.id} ($queuedOrRunning queued or running)")
         taskQueue.add(app, toQueue)
       } else {
-        log.info(
-          s"Already queued or started $queuedOrRunning tasks for ${app.id}. Not scaling.")
+        log.info(s"Already queued or started $queuedOrRunning tasks for ${app.id}. Not scaling.")
       }
     } else if (targetCount < launchedCount) {
       log.info(
@@ -586,8 +583,7 @@ class SchedulerActions(
         driver.killTask(taskId)
       }
     } else {
-      log.info(
-        s"Already running ${app.instances} instances of ${app.id}. Not scaling.")
+      log.info(s"Already running ${app.instances} instances of ${app.id}. Not scaling.")
     }
   }
 

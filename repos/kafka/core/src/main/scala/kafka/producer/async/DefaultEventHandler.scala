@@ -351,23 +351,21 @@ class DefaultEventHandler[K, V](
       var failedTopicPartitions = Seq.empty[TopicAndPartition]
       try {
         val syncProducer = producerPool.getProducer(brokerId)
-        debug(
-          "Producer sending messages with correlation id %d for topics %s to broker %d on %s:%d"
-            .format(
-              currentCorrelationId,
-              messagesPerTopic.keySet.mkString(","),
-              brokerId,
-              syncProducer.config.host,
-              syncProducer.config.port))
+        debug("Producer sending messages with correlation id %d for topics %s to broker %d on %s:%d"
+          .format(
+            currentCorrelationId,
+            messagesPerTopic.keySet.mkString(","),
+            brokerId,
+            syncProducer.config.host,
+            syncProducer.config.port))
         val response = syncProducer.send(producerRequest)
-        debug(
-          "Producer sent messages with correlation id %d for topics %s to broker %d on %s:%d"
-            .format(
-              currentCorrelationId,
-              messagesPerTopic.keySet.mkString(","),
-              brokerId,
-              syncProducer.config.host,
-              syncProducer.config.port))
+        debug("Producer sent messages with correlation id %d for topics %s to broker %d on %s:%d"
+          .format(
+            currentCorrelationId,
+            messagesPerTopic.keySet.mkString(","),
+            brokerId,
+            syncProducer.config.host,
+            syncProducer.config.port))
         if (response != null) {
           if (response.status.size != producerRequest.data.size)
             throw new KafkaException(
@@ -473,12 +471,11 @@ class DefaultEventHandler[K, V](
                         config.compressionCodec,
                         rawMessages: _*)
                     } else {
-                      debug(
-                        "Sending %d messages to %s with no compression as it is not in compressed.topics - %s"
-                          .format(
-                            messages.size,
-                            topicAndPartition,
-                            config.compressedTopics.toString))
+                      debug("Sending %d messages to %s with no compression as it is not in compressed.topics - %s"
+                        .format(
+                          messages.size,
+                          topicAndPartition,
+                          config.compressedTopics.toString))
                       new ByteBufferMessageSet(
                         NoCompressionCodec,
                         rawMessages: _*)

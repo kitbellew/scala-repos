@@ -83,8 +83,7 @@ class DirectKafkaStreamSuite
     }
   }
 
-  test(
-    "basic stream receiving with multiple topics and smallest starting offset") {
+  test("basic stream receiving with multiple topics and smallest starting offset") {
     val topics = Set("basic1", "basic2", "basic3")
     val data = Map("a" -> 7, "b" -> 9)
     topics.foreach { t =>

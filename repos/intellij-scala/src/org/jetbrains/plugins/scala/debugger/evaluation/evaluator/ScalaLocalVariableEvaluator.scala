@@ -189,6 +189,6 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
 }
 
 object ScalaLocalVariableEvaluator {
-  private val LOG: Logger = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.debugger.evaluation.evaluator.ScalaLocalVariableEvaluator")
+  private val LOG: Logger =
+    Logger.getInstance("#org.jetbrains.plugins.scala.debugger.evaluation.evaluator.ScalaLocalVariableEvaluator")
 }

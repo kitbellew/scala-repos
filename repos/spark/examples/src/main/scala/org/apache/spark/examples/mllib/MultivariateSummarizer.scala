@@ -44,8 +44,7 @@ object MultivariateSummarizer {
     val defaultParams = Params()
 
     val parser = new OptionParser[Params]("MultivariateSummarizer") {
-      head(
-        "MultivariateSummarizer: an example app for MultivariateOnlineSummarizer")
+      head("MultivariateSummarizer: an example app for MultivariateOnlineSummarizer")
       opt[String]("input")
         .text(
           s"Input path to labeled examples in LIBSVM format, default: ${defaultParams.input}")
@@ -89,16 +88,11 @@ object MultivariateSummarizer {
     println()
     println(s"Summary statistics")
     println(s"\tLabel\tFeatures")
-    println(
-      s"mean\t${labelSummary.mean(0)}\t${featureSummary.mean.toArray.mkString("\t")}")
-    println(
-      s"var\t${labelSummary.variance(0)}\t${featureSummary.variance.toArray.mkString("\t")}")
-    println(s"nnz\t${labelSummary.numNonzeros(
-      0)}\t${featureSummary.numNonzeros.toArray.mkString("\t")}")
-    println(
-      s"max\t${labelSummary.max(0)}\t${featureSummary.max.toArray.mkString("\t")}")
-    println(
-      s"min\t${labelSummary.min(0)}\t${featureSummary.min.toArray.mkString("\t")}")
+    println(s"mean\t${labelSummary.mean(0)}\t${featureSummary.mean.toArray.mkString("\t")}")
+    println(s"var\t${labelSummary.variance(0)}\t${featureSummary.variance.toArray.mkString("\t")}")
+    println(s"nnz\t${labelSummary.numNonzeros(0)}\t${featureSummary.numNonzeros.toArray.mkString("\t")}")
+    println(s"max\t${labelSummary.max(0)}\t${featureSummary.max.toArray.mkString("\t")}")
+    println(s"min\t${labelSummary.min(0)}\t${featureSummary.min.toArray.mkString("\t")}")
     println()
 
     sc.stop()

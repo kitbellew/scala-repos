@@ -150,8 +150,7 @@ abstract class QueryServiceHandler[A](implicit M: Monad[Future])
   }
 
   def metadata =
-    DescriptionMetadata(
-      """Takes a quirrel query and returns the result of evaluating the query.""")
+    DescriptionMetadata("""Takes a quirrel query and returns the result of evaluating the query.""")
 }
 
 class AnalysisServiceHandler(
@@ -274,8 +273,8 @@ class SyncQueryServiceHandler(
 
       case (Right(Detailed), None, data0) =>
         val data = ensureTermination(data0)
-        val prefix = CharBuffer.wrap(
-          """{"errors":[],"warnings":[],"serverWarnings":[{"message":"Job service is down; errors/warnings are disabled."}],"data":""")
+        val prefix =
+          CharBuffer.wrap("""{"errors":[],"warnings":[],"serverWarnings":[{"message":"Job service is down; errors/warnings are disabled."}],"data":""")
         val result: StreamT[Future, CharBuffer] =
           (prefix :: data) ++ (CharBuffer.wrap("}") :: StreamT
             .empty[Future, CharBuffer])

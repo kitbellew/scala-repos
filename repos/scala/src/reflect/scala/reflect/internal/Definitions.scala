@@ -103,9 +103,8 @@ trait Definitions extends api.StandardDefinitions {
     )
 
     private[Definitions] def catastrophicFailure() =
-      abort(
-        "Could not find value classes! This is a catastrophic failure.  scala " +
-          scala.util.Properties.versionString)
+      abort("Could not find value classes! This is a catastrophic failure.  scala " +
+        scala.util.Properties.versionString)
 
     private def valueClassSymbol(name: TypeName): ClassSymbol = {
       getMember(ScalaPackageClass, name) match {

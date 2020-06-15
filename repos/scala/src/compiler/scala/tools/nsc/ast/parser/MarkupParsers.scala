@@ -483,8 +483,7 @@ trait MarkupParsers {
                 if (ch != '/') ts append xPattern // child
                 else return false // terminate
 
-              case '{'
-                  if xCheckEmbeddedBlock => // embedded Scala patterns, if not double brace
+              case '{' if xCheckEmbeddedBlock => // embedded Scala patterns, if not double brace
                 do {
                   ts ++= xScalaPatterns
                 } while (xCheckEmbeddedBlock)

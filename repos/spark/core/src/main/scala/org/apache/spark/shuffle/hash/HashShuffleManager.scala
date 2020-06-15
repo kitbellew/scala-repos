@@ -30,9 +30,8 @@ private[spark] class HashShuffleManager(conf: SparkConf)
     with Logging {
 
   if (!conf.getBoolean("spark.shuffle.spill", true)) {
-    logWarning(
-      "spark.shuffle.spill was set to false, but this configuration is ignored as of Spark 1.6+." +
-        " Shuffle will continue to spill to disk when necessary.")
+    logWarning("spark.shuffle.spill was set to false, but this configuration is ignored as of Spark 1.6+." +
+      " Shuffle will continue to spill to disk when necessary.")
   }
 
   private val fileShuffleBlockResolver = new FileShuffleBlockResolver(conf)

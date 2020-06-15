@@ -999,8 +999,7 @@ trait BaseCometActor
     case AnswerQuestion(what, otherListeners) =>
       askingWho.foreach { ah =>
         {
-          reply(
-            "A null message to release the actor from its send and await reply... do not delete this message")
+          reply("A null message to release the actor from its send and await reply... do not delete this message")
           // askingWho.unlink(self)
           ah ! ShutDown
           this.listeners = this.listeners ::: otherListeners

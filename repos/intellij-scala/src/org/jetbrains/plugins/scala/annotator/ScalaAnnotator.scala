@@ -238,8 +238,7 @@ class ScalaAnnotator
           case interpolated: ScInterpolatedStringLiteral
               if l.getFirstChild != null =>
             highlightWrongInterpolatedString(interpolated, holder)
-          case _
-              if l.getFirstChild.getNode.getElementType == ScalaTokenTypes.tINTEGER => // the literal is a tINTEGER
+          case _ if l.getFirstChild.getNode.getElementType == ScalaTokenTypes.tINTEGER => // the literal is a tINTEGER
             checkIntegerLiteral(l, holder)
           case _ =>
         }

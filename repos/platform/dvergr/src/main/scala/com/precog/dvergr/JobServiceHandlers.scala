@@ -235,10 +235,11 @@ class UpdateJobStatusHandler(jobs: JobManager[Future])(implicit
             }
 
           case (_, _, _) =>
-            Future(HttpResponse[JValue](
-              BadRequest,
-              content = Some(JString(
-                "Status update requires fields 'message', 'progress', 'unit'."))))
+            Future(
+              HttpResponse[JValue](
+                BadRequest,
+                content =
+                  Some(JString("Status update requires fields 'message', 'progress', 'unit'."))))
         }
       })
     }) getOrElse {

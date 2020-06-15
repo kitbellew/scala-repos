@@ -68,18 +68,14 @@ class ApplicationEvolutions @Inject() (
                 if hasDown && dbConfig.autoApply && dbConfig.autoApplyDowns =>
               evolutions.evolve(db, scripts, autocommit, schema)
             case Mode.Prod if hasDown =>
-              logger.warn(
-                s"Your production database [$db] needs evolutions, including downs! \n\n${toHumanReadableScript(scripts)}")
-              logger.warn(
-                s"Run with -Dplay.evolutions.db.$db.autoApply=true and -Dplay.evolutions.db.$db.autoApplyDowns=true if you want to run them automatically, including downs (be careful, especially if your down evolutions drop existing data)")
+              logger.warn(s"Your production database [$db] needs evolutions, including downs! \n\n${toHumanReadableScript(scripts)}")
+              logger.warn(s"Run with -Dplay.evolutions.db.$db.autoApply=true and -Dplay.evolutions.db.$db.autoApplyDowns=true if you want to run them automatically, including downs (be careful, especially if your down evolutions drop existing data)")
 
               throw InvalidDatabaseRevision(db, toHumanReadableScript(scripts))
 
             case Mode.Prod =>
-              logger.warn(
-                s"Your production database [$db] needs evolutions! \n\n${toHumanReadableScript(scripts)}")
-              logger.warn(
-                s"Run with -Dplay.evolutions.db.$db.autoApply=true if you want to run them automatically (be careful)")
+              logger.warn(s"Your production database [$db] needs evolutions! \n\n${toHumanReadableScript(scripts)}")
+              logger.warn(s"Run with -Dplay.evolutions.db.$db.autoApply=true if you want to run them automatically (be careful)")
 
               throw InvalidDatabaseRevision(db, toHumanReadableScript(scripts))
 
@@ -163,8 +159,7 @@ class ApplicationEvolutions @Inject() (
       case e: SQLException =>
         if (attempts == 0) throw e
         else {
-          logger.warn(
-            "Exception while attempting to lock evolutions (other node probably has lock), sleeping for 1 sec")
+          logger.warn("Exception while attempting to lock evolutions (other node probably has lock), sleeping for 1 sec")
           c.rollback()
           Thread.sleep(1000)
           lock(url, c, s, dbConfig, attempts - 1)

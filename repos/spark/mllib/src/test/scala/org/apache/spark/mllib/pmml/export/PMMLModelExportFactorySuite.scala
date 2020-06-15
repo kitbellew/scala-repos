@@ -30,8 +30,7 @@ import org.apache.spark.mllib.util.LinearDataGenerator
 
 class PMMLModelExportFactorySuite extends SparkFunSuite {
 
-  test(
-    "PMMLModelExportFactory create KMeansPMMLModelExport when passing a KMeansModel") {
+  test("PMMLModelExportFactory create KMeansPMMLModelExport when passing a KMeansModel") {
     val clusterCenters = Array(
       Vectors.dense(1.0, 2.0, 6.0),
       Vectors.dense(1.0, 3.0, 0.0),
@@ -43,9 +42,8 @@ class PMMLModelExportFactorySuite extends SparkFunSuite {
     assert(modelExport.isInstanceOf[KMeansPMMLModelExport])
   }
 
-  test(
-    "PMMLModelExportFactory create GeneralizedLinearPMMLModelExport when passing a "
-      + "LinearRegressionModel, RidgeRegressionModel or LassoModel") {
+  test("PMMLModelExportFactory create GeneralizedLinearPMMLModelExport when passing a "
+    + "LinearRegressionModel, RidgeRegressionModel or LassoModel") {
     val linearInput =
       LinearDataGenerator.generateLinearInput(3.0, Array(10.0, 10.0), 1, 17)
 
@@ -104,8 +102,7 @@ class PMMLModelExportFactorySuite extends SparkFunSuite {
     }
   }
 
-  test(
-    "PMMLModelExportFactory throw IllegalArgumentException when passing an unsupported model") {
+  test("PMMLModelExportFactory throw IllegalArgumentException when passing an unsupported model") {
     val invalidModel = new Object
 
     intercept[IllegalArgumentException] {

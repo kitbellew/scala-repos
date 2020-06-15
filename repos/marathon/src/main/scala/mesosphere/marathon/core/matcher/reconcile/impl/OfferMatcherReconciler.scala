@@ -101,8 +101,7 @@ private[reconcile] class OfferMatcherReconciler(
   private[this] def source(offerId: OfferID) =
     new TaskOpSource {
       override def taskOpAccepted(taskOp: TaskOp): Unit =
-        log.info(
-          s"accepted unreserveAndDestroy for ${taskOp.taskId} in offer [${offerId.getValue}]")
+        log.info(s"accepted unreserveAndDestroy for ${taskOp.taskId} in offer [${offerId.getValue}]")
       override def taskOpRejected(taskOp: TaskOp, reason: String): Unit =
         log.info(
           "rejected unreserveAndDestroy for {} in offer [{}]: {}",

@@ -179,9 +179,8 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
       val invalidNames =
         nameExprs.filterNot(e => e.foldable && e.dataType == StringType)
       if (invalidNames.nonEmpty) {
-        TypeCheckResult.TypeCheckFailure(
-          s"Only foldable StringType expressions are allowed to appear at odd position , got :" +
-            s" ${invalidNames.mkString(",")}")
+        TypeCheckResult.TypeCheckFailure(s"Only foldable StringType expressions are allowed to appear at odd position , got :" +
+          s" ${invalidNames.mkString(",")}")
       } else if (!names.contains(null)) {
         TypeCheckResult.TypeCheckSuccess
       } else {

@@ -503,7 +503,8 @@ class BlockMatrix @Since("1.3.0") (
     require(
       numCols() == other.numRows(),
       "The number of columns of A and the number of rows " +
-        s"of B must be equal. A.numCols: ${numCols()}, B.numRows: ${other.numRows()}. If you " +
+        s"of B must be equal. A.numCols: ${numCols()}, B.numRows: ${other
+          .numRows()}. If you " +
         "think they should be equal, try setting the dimensions of A and B explicitly while " +
         "initializing them."
     )

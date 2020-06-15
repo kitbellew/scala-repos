@@ -361,13 +361,11 @@ class LogisticRegression @Since("1.2.0") (
           Array.empty[Double])
       } else {
         if (! $(fitIntercept) && numClasses == 2 && histogram(0) == 0.0) {
-          logWarning(
-            s"All labels are one and fitIntercept=false. It's a dangerous ground, " +
-              s"so the algorithm may not converge.")
+          logWarning(s"All labels are one and fitIntercept=false. It's a dangerous ground, " +
+            s"so the algorithm may not converge.")
         } else if (! $(fitIntercept) && numClasses == 1) {
-          logWarning(
-            s"All labels are zero and fitIntercept=false. It's a dangerous ground, " +
-              s"so the algorithm may not converge.")
+          logWarning(s"All labels are zero and fitIntercept=false. It's a dangerous ground, " +
+            s"so the algorithm may not converge.")
         }
 
         val featuresMean = summarizer.mean.toArray
@@ -420,8 +418,7 @@ class LogisticRegression @Since("1.2.0") (
 
         if (optInitialModel.isDefined && optInitialModel.get.coefficients.size != numFeatures) {
           val vec = optInitialModel.get.coefficients
-          logWarning(
-            s"Initial coefficients provided ${vec} did not match the expected size ${numFeatures}")
+          logWarning(s"Initial coefficients provided ${vec} did not match the expected size ${numFeatures}")
         }
 
         if (optInitialModel.isDefined && optInitialModel.get.coefficients.size == numFeatures) {

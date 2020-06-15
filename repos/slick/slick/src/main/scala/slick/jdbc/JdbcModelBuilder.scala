@@ -156,12 +156,10 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       // case SQLXML => classTag[java.sql.SQLXML]
       case NULL => classTag[Null]
       case DISTINCT =>
-        logger.warn(
-          s"Found jdbc type DISTINCT. Assuming Blob. This may be wrong. You can override ModelBuilder#Table#Column#tpe to fix this.");
+        logger.warn(s"Found jdbc type DISTINCT. Assuming Blob. This may be wrong. You can override ModelBuilder#Table#Column#tpe to fix this.");
         classTag[java.sql.Blob] // FIXME
       case t =>
-        logger.warn(
-          s"Found unknown jdbc type $t. Assuming String. This may be wrong. You can override ModelBuilder#Table#Column#tpe to fix this.");
+        logger.warn(s"Found unknown jdbc type $t. Assuming String. This may be wrong. You can override ModelBuilder#Table#Column#tpe to fix this.");
         classTag[String] // FIXME
     }
   }

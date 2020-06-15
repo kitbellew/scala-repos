@@ -288,8 +288,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
           "90123456789012\r\n") should generalMultiParseTo(
           Left(MessageStartError(
             400: StatusCode,
-            ErrorInfo(
-              "Response reason phrase exceeds the configured limit of 21 characters"))))
+            ErrorInfo("Response reason phrase exceeds the configured limit of 21 characters"))))
       }
 
       "with a missing reason phrase and no trailing space" in new Test {

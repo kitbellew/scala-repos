@@ -94,7 +94,8 @@ trait WikiControllerBase extends ControllerBase {
           getWikiPage(repository.owner, repository.name, "_Footer")
         )
     } getOrElse redirect(
-      s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}/_edit")
+      s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(
+        pageName)}/_edit")
   })
 
   get("/:owner/:repository/wiki/:page/_history")(referrersOnly { repository =>
@@ -167,8 +168,7 @@ trait WikiControllerBase extends ControllerBase {
           to,
           context.loginAccount.get,
           Some(pageName))) {
-        redirect(
-          s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}")
+        redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}")
       } else {
         flash += "info" -> "This patch was not able to be reversed."
         redirect(s"/${repository.owner}/${repository.name}/wiki/${StringUtil
@@ -176,22 +176,22 @@ trait WikiControllerBase extends ControllerBase {
       }
   })
 
-  get("/:owner/:repository/wiki/_revert/:commitId")(collaboratorsOnly { repository =>
-    val Array(from, to) = params("commitId").split("\\.\\.\\.")
+  get("/:owner/:repository/wiki/_revert/:commitId")(collaboratorsOnly {
+    repository =>
+      val Array(from, to) = params("commitId").split("\\.\\.\\.")
 
-    if (revertWikiPage(
-        repository.owner,
-        repository.name,
-        from,
-        to,
-        context.loginAccount.get,
-        None)) {
-      redirect(s"/${repository.owner}/${repository.name}/wiki/")
-    } else {
-      flash += "info" -> "This patch was not able to be reversed."
-      redirect(
-        s"/${repository.owner}/${repository.name}/wiki/_compare/${from}...${to}")
-    }
+      if (revertWikiPage(
+          repository.owner,
+          repository.name,
+          from,
+          to,
+          context.loginAccount.get,
+          None)) {
+        redirect(s"/${repository.owner}/${repository.name}/wiki/")
+      } else {
+        flash += "info" -> "This patch was not able to be reversed."
+        redirect(s"/${repository.owner}/${repository.name}/wiki/_compare/${from}...${to}")
+      }
   })
 
   get("/:owner/:repository/wiki/:page/_edit")(collaboratorsOnly { repository =>

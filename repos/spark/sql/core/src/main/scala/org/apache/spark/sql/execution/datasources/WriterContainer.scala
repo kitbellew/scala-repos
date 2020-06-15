@@ -182,18 +182,16 @@ private[sql] abstract class BaseWriterContainer(
       // leave partial data in the destination dir when the appending job fails.
       //
       // See SPARK-8578 for more details
-      logInfo(
-        s"Using default output committer ${defaultOutputCommitter.getClass.getCanonicalName} " +
-          "for appending.")
+      logInfo(s"Using default output committer ${defaultOutputCommitter.getClass.getCanonicalName} " +
+        "for appending.")
       defaultOutputCommitter
     } else if (speculationEnabled) {
       // When speculation is enabled, it's not safe to use customized output committer classes,
       // especially direct output committers (e.g. `DirectParquetOutputCommitter`).
       //
       // See SPARK-9899 for more details.
-      logInfo(
-        s"Using default output committer ${defaultOutputCommitter.getClass.getCanonicalName} " +
-          "because spark.speculation is configured to be true.")
+      logInfo(s"Using default output committer ${defaultOutputCommitter.getClass.getCanonicalName} " +
+        "because spark.speculation is configured to be true.")
       defaultOutputCommitter
     } else {
       val configuration = context.getConfiguration
@@ -204,8 +202,7 @@ private[sql] abstract class BaseWriterContainer(
 
       Option(committerClass)
         .map { clazz =>
-          logInfo(
-            s"Using user defined output committer class ${clazz.getCanonicalName}")
+          logInfo(s"Using user defined output committer class ${clazz.getCanonicalName}")
 
           // Every output format based on org.apache.hadoop.mapreduce.lib.output.OutputFormat
           // has an associated output committer. To override this output committer,
@@ -229,8 +226,7 @@ private[sql] abstract class BaseWriterContainer(
         .getOrElse {
           // If output committer class is not set, we will use the one associated with the
           // file output format.
-          logInfo(
-            s"Using output committer class ${defaultOutputCommitter.getClass.getCanonicalName}")
+          logInfo(s"Using output committer class ${defaultOutputCommitter.getClass.getCanonicalName}")
           defaultOutputCommitter
         }
     }

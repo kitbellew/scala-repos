@@ -146,30 +146,23 @@ private[scala] trait JavaMirrors
     private def abort(msg: String) = throw new ScalaReflectionException(msg)
 
     private def ErrorInnerClass(sym: Symbol) =
-      abort(
-        s"$sym is an inner class, use reflectClass on an InstanceMirror to obtain its ClassMirror")
+      abort(s"$sym is an inner class, use reflectClass on an InstanceMirror to obtain its ClassMirror")
     private def ErrorInnerModule(sym: Symbol) =
-      abort(
-        s"$sym is an inner module, use reflectModule on an InstanceMirror to obtain its ModuleMirror")
+      abort(s"$sym is an inner module, use reflectModule on an InstanceMirror to obtain its ModuleMirror")
     private def ErrorStaticClass(sym: Symbol) =
-      abort(
-        s"$sym is a static class, use reflectClass on a RuntimeMirror to obtain its ClassMirror")
+      abort(s"$sym is a static class, use reflectClass on a RuntimeMirror to obtain its ClassMirror")
     private def ErrorStaticModule(sym: Symbol) =
-      abort(
-        s"$sym is a static module, use reflectModule on a RuntimeMirror to obtain its ModuleMirror")
+      abort(s"$sym is a static module, use reflectModule on a RuntimeMirror to obtain its ModuleMirror")
     private def ErrorNotMember(sym: Symbol, owner: Symbol) =
-      abort(
-        s"expected a member of $owner, you provided ${sym.kindString} ${sym.fullName}")
+      abort(s"expected a member of $owner, you provided ${sym.kindString} ${sym.fullName}")
     private def ErrorNotField(sym: Symbol) =
       abort(s"expected a field or an accessor method symbol, you provided $sym")
     private def ErrorNotConstructor(sym: Symbol, owner: Symbol) =
       abort(s"expected a constructor of $owner, you provided $sym")
     private def ErrorArrayConstructor(sym: Symbol, owner: Symbol) =
-      abort(
-        s"Cannot instantiate arrays with mirrors. Consider using `scala.reflect.ClassTag(<class of element>).newArray(<length>)` instead")
+      abort(s"Cannot instantiate arrays with mirrors. Consider using `scala.reflect.ClassTag(<class of element>).newArray(<length>)` instead")
     private def ErrorFree(member: Symbol, freeType: Symbol) =
-      abort(
-        s"cannot reflect ${member.kindString} ${member.name}, because it's a member of a weak type ${freeType.name}")
+      abort(s"cannot reflect ${member.kindString} ${member.name}, because it's a member of a weak type ${freeType.name}")
     private def ErrorNonExistentField(sym: Symbol) =
       abort(
         sm"""Scala field ${sym.name} of ${sym.owner} isn't represented as a Java field, nor does it have a
@@ -854,8 +847,7 @@ private[scala] trait JavaMirrors
           case None =>
             loadBytes[Array[String]]("scala.reflect.ScalaLongSignature") match {
               case Some(slsig) =>
-                info(
-                  s"unpickling Scala $clazz and $module with long Scala signature")
+                info(s"unpickling Scala $clazz and $module with long Scala signature")
                 val encoded = slsig flatMap (_.getBytes)
                 val len = ByteCodecs.decode(encoded)
                 val decoded = encoded.take(len)
@@ -1660,8 +1652,7 @@ private[scala] trait JavaMirrors
     sym.enclosingRootClass match {
       case root: RootSymbol => root.mirror
       case _ =>
-        abort(
-          s"${sym}.enclosingRootClass = ${sym.enclosingRootClass}, which is not a RootSymbol")
+        abort(s"${sym}.enclosingRootClass = ${sym.enclosingRootClass}, which is not a RootSymbol")
     }
 
   /** 1. If `owner` is a package class (but not the empty package) and `name` is a term name, make a new package

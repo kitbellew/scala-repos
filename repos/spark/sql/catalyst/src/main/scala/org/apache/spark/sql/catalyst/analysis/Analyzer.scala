@@ -281,8 +281,7 @@ class Analyzer(
         case g: GroupingSets
             if g.expressions.exists(!_.resolved) && hasGroupingId(
               g.expressions) =>
-          failAnalysis(
-            s"${VirtualColumn.groupingIdName} is deprecated; use grouping_id() instead")
+          failAnalysis(s"${VirtualColumn.groupingIdName} is deprecated; use grouping_id() instead")
         // Ensure all the expressions have been resolved.
         case x: GroupingSets if x.expressions.forall(_.resolved) =>
           val gid = AttributeReference(
@@ -1076,8 +1075,7 @@ class Analyzer(
       plan resolveOperators {
         case g: Generate
             if ResolveReferences.containsStar(g.generator.children) =>
-          failAnalysis(
-            "Cannot explode *, explode can only be applied on a specific column.")
+          failAnalysis("Cannot explode *, explode can only be applied on a specific column.")
         case p: Generate if !p.child.resolved || !p.generator.resolved => p
         case g: Generate if !g.resolved =>
           g.copy(generatorOutput =
@@ -1091,9 +1089,8 @@ class Analyzer(
             case AliasedGenerator(generator, names)
                 if generator.childrenResolved =>
               if (resolvedGenerator != null) {
-                failAnalysis(
-                  s"Only one generator allowed per select but ${resolvedGenerator.nodeName} and " +
-                    s"and ${generator.nodeName} found.")
+                failAnalysis(s"Only one generator allowed per select but ${resolvedGenerator.nodeName} and " +
+                  s"and ${generator.nodeName} found.")
               }
 
               resolvedGenerator = Generate(

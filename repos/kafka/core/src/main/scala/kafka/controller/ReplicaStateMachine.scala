@@ -211,15 +211,14 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
             case None => // new leader request will be sent to this replica when one gets elected
           }
           replicaState.put(partitionAndReplica, NewReplica)
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                replicaId,
-                topicAndPartition,
-                currState,
-                targetState))
+          stateChangeLogger.trace("Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              replicaId,
+              topicAndPartition,
+              currState,
+              targetState))
         case ReplicaDeletionStarted =>
           assertValidPreviousStates(
             partitionAndReplica,
@@ -233,45 +232,42 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
             partition,
             deletePartition = true,
             callbacks.stopReplicaResponseCallback)
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                replicaId,
-                topicAndPartition,
-                currState,
-                targetState))
+          stateChangeLogger.trace("Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              replicaId,
+              topicAndPartition,
+              currState,
+              targetState))
         case ReplicaDeletionIneligible =>
           assertValidPreviousStates(
             partitionAndReplica,
             List(ReplicaDeletionStarted),
             targetState)
           replicaState.put(partitionAndReplica, ReplicaDeletionIneligible)
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                replicaId,
-                topicAndPartition,
-                currState,
-                targetState))
+          stateChangeLogger.trace("Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              replicaId,
+              topicAndPartition,
+              currState,
+              targetState))
         case ReplicaDeletionSuccessful =>
           assertValidPreviousStates(
             partitionAndReplica,
             List(ReplicaDeletionStarted),
             targetState)
           replicaState.put(partitionAndReplica, ReplicaDeletionSuccessful)
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                replicaId,
-                topicAndPartition,
-                currState,
-                targetState))
+          stateChangeLogger.trace("Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              replicaId,
+              topicAndPartition,
+              currState,
+              targetState))
         case NonExistentReplica =>
           assertValidPreviousStates(
             partitionAndReplica,
@@ -284,15 +280,14 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
             topicAndPartition,
             currentAssignedReplicas.filterNot(_ == replicaId))
           replicaState.remove(partitionAndReplica)
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                replicaId,
-                topicAndPartition,
-                currState,
-                targetState))
+          stateChangeLogger.trace("Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              replicaId,
+              topicAndPartition,
+              currState,
+              targetState))
         case OnlineReplica =>
           assertValidPreviousStates(
             partitionAndReplica,
@@ -311,15 +306,14 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                 controllerContext.partitionReplicaAssignment.put(
                   topicAndPartition,
                   currentAssignedReplicas :+ replicaId)
-              stateChangeLogger.trace(
-                "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
-                  .format(
-                    controllerId,
-                    controller.epoch,
-                    replicaId,
-                    topicAndPartition,
-                    currState,
-                    targetState))
+              stateChangeLogger.trace("Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
+                .format(
+                  controllerId,
+                  controller.epoch,
+                  replicaId,
+                  topicAndPartition,
+                  currState,
+                  targetState))
             case _ =>
               // check if the leader for this partition ever existed
               controllerContext.partitionLeadershipInfo.get(
@@ -332,15 +326,14 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                     leaderIsrAndControllerEpoch,
                     replicaAssignment)
                   replicaState.put(partitionAndReplica, OnlineReplica)
-                  stateChangeLogger.trace(
-                    "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
-                      .format(
-                        controllerId,
-                        controller.epoch,
-                        replicaId,
-                        topicAndPartition,
-                        currState,
-                        targetState))
+                  stateChangeLogger.trace("Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
+                    .format(
+                      controllerId,
+                      controller.epoch,
+                      replicaId,
+                      topicAndPartition,
+                      currState,
+                      targetState))
                 case None => // that means the partition was never in OnlinePartition state, this means the broker never
                 // started a log for that partition and does not have a high watermark value for this partition
               }
@@ -385,15 +378,14 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
                         replicaAssignment)
                     }
                     replicaState.put(partitionAndReplica, OfflineReplica)
-                    stateChangeLogger.trace(
-                      "Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
-                        .format(
-                          controllerId,
-                          controller.epoch,
-                          replicaId,
-                          topicAndPartition,
-                          currState,
-                          targetState))
+                    stateChangeLogger.trace("Controller %d epoch %d changed state of replica %d for partition %s from %s to %s"
+                      .format(
+                        controllerId,
+                        controller.epoch,
+                        replicaId,
+                        topicAndPartition,
+                        currState,
+                        targetState))
                     false
                   case None =>
                     true
@@ -550,12 +542,11 @@ class ReplicaStateMachine(controller: KafkaController) extends Logging {
               val newBrokerIdsSorted = newBrokerIds.toSeq.sorted
               val deadBrokerIdsSorted = deadBrokerIds.toSeq.sorted
               val liveBrokerIdsSorted = curBrokerIds.toSeq.sorted
-              info(
-                "Newly added brokers: %s, deleted brokers: %s, all live brokers: %s"
-                  .format(
-                    newBrokerIdsSorted.mkString(","),
-                    deadBrokerIdsSorted.mkString(","),
-                    liveBrokerIdsSorted.mkString(",")))
+              info("Newly added brokers: %s, deleted brokers: %s, all live brokers: %s"
+                .format(
+                  newBrokerIdsSorted.mkString(","),
+                  deadBrokerIdsSorted.mkString(","),
+                  liveBrokerIdsSorted.mkString(",")))
               newBrokers.foreach(
                 controllerContext.controllerChannelManager.addBroker)
               deadBrokerIds.foreach(

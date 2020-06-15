@@ -75,8 +75,7 @@ class ReceiverSpec extends TypedSpec {
         "ctx",
         Props(ScalaDSL.ContextAware(behv)),
         system)
-      withClue(
-        s"[running for starting point '$description' (${ctx.currentBehavior})]: ") {
+      withClue(s"[running for starting point '$description' (${ctx.currentBehavior})]: ") {
         dummyInbox.receiveAll() should have size messages
         ctx.getAllEffects() should have size effects
         proc(

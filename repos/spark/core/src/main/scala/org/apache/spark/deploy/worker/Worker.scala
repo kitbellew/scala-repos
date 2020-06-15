@@ -370,9 +370,8 @@ private[deploy] class Worker(
             TimeUnit.SECONDS
           ))
       case Some(_) =>
-        logInfo(
-          "Not spawning another attempt to register with the master, since there is an" +
-            " attempt scheduled already.")
+        logInfo("Not spawning another attempt to register with the master, since there is an" +
+          " attempt scheduled already.")
     }
   }
 
@@ -418,8 +417,7 @@ private[deploy] class Worker(
             HEARTBEAT_MILLIS,
             TimeUnit.MILLISECONDS)
           if (CLEANUP_ENABLED) {
-            logInfo(
-              s"Worker cleanup enabled; old application directories will be deleted in: $workDir")
+            logInfo(s"Worker cleanup enabled; old application directories will be deleted in: $workDir")
             forwordMessageScheduler.scheduleAtFixedRate(
               new Runnable {
                 override def run(): Unit =
@@ -563,9 +561,7 @@ private[deploy] class Worker(
               ExecutorStateChanged(appId, execId, manager.state, None, None))
           } catch {
             case e: Exception => {
-              logError(
-                s"Failed to launch executor $appId/$execId for ${appDesc.name}.",
-                e)
+              logError(s"Failed to launch executor $appId/$execId for ${appDesc.name}.", e)
               if (executors.contains(appId + "/" + execId)) {
                 executors(appId + "/" + execId).kill()
                 executors -= appId + "/" + execId
@@ -705,8 +701,7 @@ private[deploy] class Worker(
     master match {
       case Some(masterRef) => masterRef.send(message)
       case None =>
-        logWarning(
-          s"Dropping $message because the connection to master has not yet been established")
+        logWarning(s"Dropping $message because the connection to master has not yet been established")
     }
   }
 
@@ -754,8 +749,7 @@ private[deploy] class Worker(
     val state = driverStateChanged.state
     state match {
       case DriverState.ERROR =>
-        logWarning(
-          s"Driver $driverId failed with unrecoverable exception: ${exception.get}")
+        logWarning(s"Driver $driverId failed with unrecoverable exception: ${exception.get}")
       case DriverState.FAILED =>
         logWarning(s"Driver $driverId exited with failure")
       case DriverState.FINISHED =>

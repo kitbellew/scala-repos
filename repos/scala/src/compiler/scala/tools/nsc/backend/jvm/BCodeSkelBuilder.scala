@@ -192,8 +192,7 @@ abstract class BCodeSkelBuilder extends BCodeHelpers {
               }
             }
             if (isCandidateForForwarders) {
-              log(
-                s"Adding static forwarders from '$claszSymbol' to implementations in '$lmoc'")
+              log(s"Adding static forwarders from '$claszSymbol' to implementations in '$lmoc'")
               addForwarders(
                 isRemote(claszSymbol),
                 cnode,

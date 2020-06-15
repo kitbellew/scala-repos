@@ -137,8 +137,7 @@ object ValueConstraint {
 /**
   * Type class witnessing that `L` doesn't contain elements of type `U`
   */
-@implicitNotFound(
-  "Implicit not found: shapeless.NotContainsConstraint[${L}, ${U}]. This HList already contains element of type ${U}.")
+@implicitNotFound("Implicit not found: shapeless.NotContainsConstraint[${L}, ${U}]. This HList already contains element of type ${U}.")
 trait NotContainsConstraint[L <: HList, U] extends Serializable
 
 object NotContainsConstraint {
@@ -160,8 +159,7 @@ object NotContainsConstraint {
 /**
   * Type class witnessing that all elements of `L` have distinct types
   */
-@implicitNotFound(
-  "Implicit not found: shapeless.IsDistinctConstraint[${L}]. Some elements have the same type.")
+@implicitNotFound("Implicit not found: shapeless.IsDistinctConstraint[${L}]. Some elements have the same type.")
 trait IsDistinctConstraint[L <: HList] extends Serializable
 
 object IsDistinctConstraint {

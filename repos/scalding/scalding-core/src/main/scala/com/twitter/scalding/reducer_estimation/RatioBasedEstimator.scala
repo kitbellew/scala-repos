@@ -71,8 +71,7 @@ abstract class RatioBasedEstimator extends ReducerEstimator {
           } yield h.reduceFileBytesRead / h.hdfsBytesRead.toDouble
 
           if (ratios.isEmpty) {
-            LOG.warn(
-              s"No matching history found within input ratio threshold: $threshold")
+            LOG.warn(s"No matching history found within input ratio threshold: $threshold")
             None
           } else {
             val reducerRatio = ratios.sum / ratios.length

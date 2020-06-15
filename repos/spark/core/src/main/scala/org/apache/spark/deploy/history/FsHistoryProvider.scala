@@ -330,8 +330,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
         }
 
       if (logInfos.nonEmpty) {
-        logDebug(
-          s"New/updated attempts found: ${logInfos.size} ${logInfos.map(_.getPath)}")
+        logDebug(s"New/updated attempts found: ${logInfos.size} ${logInfos.map(_.getPath)}")
       }
       logInfos
         .grouped(20)
@@ -448,9 +447,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
         res
       } catch {
         case e: Exception =>
-          logError(
-            s"Exception encountered when attempting to load application log ${fileStatus.getPath}",
-            e)
+          logError(s"Exception encountered when attempting to load application log ${fileStatus.getPath}", e)
           None
       }
     }

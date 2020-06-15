@@ -98,8 +98,7 @@ class ReplSuite extends SparkFunSuite {
 
     // Make sure the value we set in the caller to interpret is propagated in the thread that
     // interprets the command.
-    interp.interpret(
-      "org.apache.spark.repl.Main.interp.sparkContext.getLocalProperty(\"someKey\")")
+    interp.interpret("org.apache.spark.repl.Main.interp.sparkContext.getLocalProperty(\"someKey\")")
     assert(out.toString.contains("someValue"))
 
     interp.sparkContext.stop()
@@ -329,8 +328,7 @@ class ReplSuite extends SparkFunSuite {
     assertDoesNotContain("Exception", output)
   }
 
-  test(
-    "SPARK-2632 importing a method from non serializable class and not using it.") {
+  test("SPARK-2632 importing a method from non serializable class and not using it.") {
     val output = runInterpreter(
       "local",
       """

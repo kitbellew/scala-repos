@@ -104,8 +104,7 @@ private[spark] class SchedulerExtensionServices
     val sparkContext = binding.sparkContext
     val appId = binding.applicationId
     val attemptId = binding.attemptId
-    logInfo(
-      s"Starting Yarn extension services with app $appId and attemptId $attemptId")
+    logInfo(s"Starting Yarn extension services with app $appId and attemptId $attemptId")
 
     services = sparkContext.conf
       .get(SCHEDULER_SERVICES)

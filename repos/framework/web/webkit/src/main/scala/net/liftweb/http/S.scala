@@ -140,8 +140,7 @@ object S extends S {
       extends AFuncHolder
       with Serializable {
     def apply(in: List[String]) {
-      logger.info(
-        "You attempted to call a 'File Upload' function with a normal parameter.  Did you forget to 'enctype' to 'multipart/form-data'?")
+      logger.info("You attempted to call a 'File Upload' function with a normal parameter.  Did you forget to 'enctype' to 'multipart/form-data'?")
     }
 
     override def apply(in: FileParamHolder) = func(in)

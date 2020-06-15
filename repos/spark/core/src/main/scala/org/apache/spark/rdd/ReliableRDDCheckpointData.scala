@@ -72,8 +72,7 @@ private[spark] class ReliableRDDCheckpointData[T: ClassTag](
       }
     }
 
-    logInfo(
-      s"Done checkpointing RDD ${rdd.id} to $cpDir, new parent is RDD ${newRDD.id}")
+    logInfo(s"Done checkpointing RDD ${rdd.id} to $cpDir, new parent is RDD ${newRDD.id}")
     newRDD
   }
 

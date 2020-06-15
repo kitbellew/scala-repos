@@ -538,9 +538,8 @@ private[spark] class DAGScheduler(
           case (stageId, stage) =>
             val jobSet = stage.jobIds
             if (!jobSet.contains(job.jobId)) {
-              logError(
-                "Job %d not registered for stage %d even though that stage was registered for the job"
-                  .format(job.jobId, stageId))
+              logError("Job %d not registered for stage %d even though that stage was registered for the job"
+                .format(job.jobId, stageId))
             } else {
               def removeStage(stageId: Int) {
                 // data structures based on Stage
@@ -1369,8 +1368,7 @@ private[spark] class DAGScheduler(
             logDebug("ShuffleMapTask finished on " + execId)
             if (failedEpoch.contains(execId) && smt.epoch <= failedEpoch(
                 execId)) {
-              logInfo(
-                s"Ignoring possibly bogus $smt completion from executor $execId")
+              logInfo(s"Ignoring possibly bogus $smt completion from executor $execId")
             } else {
               shuffleStage.addOutputLoc(smt.partitionId, status)
             }
@@ -1428,10 +1426,9 @@ private[spark] class DAGScheduler(
         val mapStage = shuffleToMapStage(shuffleId)
 
         if (failedStage.latestInfo.attemptId != task.stageAttemptId) {
-          logInfo(
-            s"Ignoring fetch failure from $task as it's from $failedStage attempt" +
-              s" ${task.stageAttemptId} and there is a more recent attempt for that stage " +
-              s"(attempt ID ${failedStage.latestInfo.attemptId}) running")
+          logInfo(s"Ignoring fetch failure from $task as it's from $failedStage attempt" +
+            s" ${task.stageAttemptId} and there is a more recent attempt for that stage " +
+            s"(attempt ID ${failedStage.latestInfo.attemptId}) running")
         } else {
           // It is likely that we receive multiple FetchFailed for a single stage (because we have
           // multiple tasks running concurrently on different executors). In that case, it is
@@ -1442,9 +1439,8 @@ private[spark] class DAGScheduler(
                 s"due to a fetch failure from $mapStage (${mapStage.name})")
             markStageAsFinished(failedStage, Some(failureMessage))
           } else {
-            logDebug(
-              s"Received fetch failure from $task, but its from $failedStage which is no " +
-                s"longer running")
+            logDebug(s"Received fetch failure from $task, but its from $failedStage which is no " +
+              s"longer running")
           }
 
           if (disallowStageRetryForTest) {
@@ -1671,9 +1667,8 @@ private[spark] class DAGScheduler(
       val jobsForStage: Option[HashSet[Int]] =
         stageIdToStage.get(stageId).map(_.jobIds)
       if (jobsForStage.isEmpty || !jobsForStage.get.contains(job.jobId)) {
-        logError(
-          "Job %d not registered for stage %d even though that stage was registered for the job"
-            .format(job.jobId, stageId))
+        logError("Job %d not registered for stage %d even though that stage was registered for the job"
+          .format(job.jobId, stageId))
       } else if (jobsForStage.get.size == 1) {
         if (!stageIdToStage.contains(stageId)) {
           logError(s"Missing Stage for stage with id $stageId")

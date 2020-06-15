@@ -69,8 +69,7 @@ class CreateTableAsSelectSuite
     caseInsensitiveContext.dropTempTable("jsonTable")
   }
 
-  test(
-    "CREATE TEMPORARY TABLE AS SELECT based on the file without write permission") {
+  test("CREATE TEMPORARY TABLE AS SELECT based on the file without write permission") {
     val childPath = new File(path.toString, "child")
     path.mkdir()
     childPath.createNewFile()
@@ -117,8 +116,7 @@ class CreateTableAsSelectSuite
       """.stripMargin)
     }.getMessage
     assert(
-      message.contains(
-        s"a CREATE TEMPORARY TABLE statement does not allow IF NOT EXISTS clause."),
+      message.contains(s"a CREATE TEMPORARY TABLE statement does not allow IF NOT EXISTS clause."),
       "CREATE TEMPORARY TABLE IF NOT EXISTS should not be allowed."
     )
 
@@ -167,8 +165,7 @@ class CreateTableAsSelectSuite
       """.stripMargin)
     }.getMessage
     assert(
-      message.contains(
-        "a CREATE TEMPORARY TABLE statement does not allow IF NOT EXISTS clause."),
+      message.contains("a CREATE TEMPORARY TABLE statement does not allow IF NOT EXISTS clause."),
       "CREATE TEMPORARY TABLE IF NOT EXISTS should not be allowed."
     )
   }

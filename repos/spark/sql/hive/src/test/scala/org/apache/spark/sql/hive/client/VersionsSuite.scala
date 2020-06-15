@@ -178,10 +178,9 @@ class VersionsSuite extends SparkFunSuite with Logging {
             inputFormat =
               Some(classOf[org.apache.hadoop.mapred.TextInputFormat].getName),
             outputFormat = Some(
-              classOf[
-                org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat[
-                  _,
-                  _]].getName),
+              classOf[org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat[
+                _,
+                _]].getName),
             serde = Some(
               classOf[org.apache.hadoop.hive.serde2.`lazy`.LazySimpleSerDe]
                 .getName()),

@@ -217,8 +217,7 @@ class BackupRequestFilterTest extends FunSuite with MockitoSugar with Matchers {
     }
   }
 
-  test(
-    "return backup request response when original fails after backup is issued") {
+  test("return backup request response when original fails after backup is issued") {
     Time.withCurrentTimeFrozen { tc =>
       val ctx = newCtx()
       import ctx._

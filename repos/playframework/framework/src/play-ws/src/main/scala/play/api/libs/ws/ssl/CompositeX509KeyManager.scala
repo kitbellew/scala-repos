@@ -53,14 +53,12 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       keyType: Array[String],
       issuers: Array[Principal],
       socket: Socket): String = {
-    logger.debug(
-      s"chooseClientAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, socket = $socket")
+    logger.debug(s"chooseClientAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, socket = $socket")
 
     withKeyManagers { keyManager =>
       val clientAlias = keyManager.chooseClientAlias(keyType, issuers, socket)
       if (clientAlias != null) {
-        logger.debug(
-          s"chooseClientAlias: using clientAlias $clientAlias with keyManager $keyManager")
+        logger.debug(s"chooseClientAlias: using clientAlias $clientAlias with keyManager $keyManager")
         return clientAlias
       }
     }
@@ -71,16 +69,14 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       keyType: Array[String],
       issuers: Array[Principal],
       engine: SSLEngine): String = {
-    logger.debug(
-      s"chooseEngineClientAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
+    logger.debug(s"chooseEngineClientAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
     withKeyManagers { keyManager: X509KeyManager =>
       keyManager match {
         case extendedKeyManager: X509ExtendedKeyManager =>
           val clientAlias =
             extendedKeyManager.chooseEngineClientAlias(keyType, issuers, engine)
           if (clientAlias != null) {
-            logger.debug(
-              s"chooseEngineClientAlias: using clientAlias $clientAlias with keyManager $extendedKeyManager")
+            logger.debug(s"chooseEngineClientAlias: using clientAlias $clientAlias with keyManager $extendedKeyManager")
             return clientAlias
           }
         case _ =>
@@ -94,8 +90,7 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       keyType: String,
       issuers: Array[Principal],
       engine: SSLEngine): String = {
-    logger.debug(
-      s"chooseEngineServerAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
+    logger.debug(s"chooseEngineServerAlias: keyType = ${keyType.toSeq}, issuers = ${issuers.toSeq}, engine = $engine")
 
     withKeyManagers { keyManager: X509KeyManager =>
       keyManager match {
@@ -103,8 +98,7 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
           val clientAlias =
             extendedKeyManager.chooseEngineServerAlias(keyType, issuers, engine)
           if (clientAlias != null) {
-            logger.debug(
-              s"chooseEngineServerAlias: using clientAlias $clientAlias with keyManager $extendedKeyManager")
+            logger.debug(s"chooseEngineServerAlias: using clientAlias $clientAlias with keyManager $extendedKeyManager")
             return clientAlias
           }
         case _ =>
@@ -136,13 +130,11 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
       keyType: String,
       issuers: Array[Principal],
       socket: Socket): String = {
-    logger.debug(
-      s"chooseServerAlias: keyType = $keyType, issuers = ${issuers.toSeq}, socket = $socket")
+    logger.debug(s"chooseServerAlias: keyType = $keyType, issuers = ${issuers.toSeq}, socket = $socket")
     withKeyManagers { keyManager =>
       val serverAlias = keyManager.chooseServerAlias(keyType, issuers, socket)
       if (serverAlias != null) {
-        logger.debug(
-          s"chooseServerAlias: using serverAlias $serverAlias with keyManager $keyManager")
+        logger.debug(s"chooseServerAlias: using serverAlias $serverAlias with keyManager $keyManager")
         return serverAlias
       }
     }
@@ -154,8 +146,7 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
     withKeyManagers { keyManager =>
       val chain = keyManager.getCertificateChain(alias)
       if (chain != null && chain.length > 0) {
-        logger.debug(
-          s"getCertificateChain: chain ${debugChain(chain)} with keyManager $keyManager")
+        logger.debug(s"getCertificateChain: chain ${debugChain(chain)} with keyManager $keyManager")
         return chain
       }
     }

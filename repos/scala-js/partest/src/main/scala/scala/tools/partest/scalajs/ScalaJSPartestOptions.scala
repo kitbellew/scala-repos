@@ -76,8 +76,7 @@ object ScalaJSPartestOptions {
           // Merge test names
           filter = Some(SomeTests(oldNames ++ newNames))
         case (Some(fil), newFilter) =>
-          error(
-            s"You cannot specify twice what tests to use (already specified: $fil, new: $newFilter)")
+          error(s"You cannot specify twice what tests to use (already specified: $fil, new: $newFilter)")
         case (None, newFilter) =>
           filter = Some(newFilter)
       }

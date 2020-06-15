@@ -392,8 +392,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       Row(java.sql.Timestamp.valueOf("1969-12-31 16:00:00")))
 
     checkAnswer(
-      sql(
-        "SELECT time FROM timestamps WHERE time=CAST('1969-12-31 16:00:00.001' AS TIMESTAMP)"),
+      sql("SELECT time FROM timestamps WHERE time=CAST('1969-12-31 16:00:00.001' AS TIMESTAMP)"),
       Row(java.sql.Timestamp.valueOf("1969-12-31 16:00:00.001")))
 
     checkAnswer(
@@ -435,30 +434,26 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("left semi greater than predicate") {
     checkAnswer(
-      sql(
-        "SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.a >= y.a + 2"),
+      sql("SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.a >= y.a + 2"),
       Seq(Row(3, 1), Row(3, 2))
     )
   }
 
   test("left semi greater than predicate and equal operator") {
     checkAnswer(
-      sql(
-        "SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.b = y.b and x.a >= y.a + 2"),
+      sql("SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.b = y.b and x.a >= y.a + 2"),
       Seq(Row(3, 1), Row(3, 2))
     )
 
     checkAnswer(
-      sql(
-        "SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.b = y.a and x.a >= y.b + 1"),
+      sql("SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.b = y.a and x.a >= y.b + 1"),
       Seq(Row(2, 1), Row(2, 2), Row(3, 1), Row(3, 2))
     )
   }
 
   test("index into array of arrays") {
     checkAnswer(
-      sql(
-        "SELECT nestedData, nestedData[0][0], nestedData[0][0] + nestedData[0][1] FROM arrayData"),
+      sql("SELECT nestedData, nestedData[0][0], nestedData[0][0] + nestedData[0][1] FROM arrayData"),
       arrayData
         .map(d =>
           Row(
@@ -587,8 +582,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("Allow only a single WITH clause per query") {
     intercept[AnalysisException] {
-      sql(
-        "with q1 as (select * from testData) with q2 as (select * from q1) select * from q2")
+      sql("with q1 as (select * from testData) with q2 as (select * from q1) select * from q2")
     }
   }
 
@@ -654,8 +648,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       Seq(Row(1, 0), Row(2, 1)))
 
     checkAnswer(
-      sql(
-        "SELECT COUNT(a), COUNT(b), COUNT(1), COUNT(DISTINCT a), COUNT(DISTINCT b) FROM testData3"),
+      sql("SELECT COUNT(a), COUNT(b), COUNT(1), COUNT(DISTINCT a), COUNT(DISTINCT b) FROM testData3"),
       Row(2, 1, 2, 2, 1))
   }
 
@@ -805,13 +798,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       .limit(2)
       .registerTempTable("subset2")
     checkAnswer(
-      sql(
-        "SELECT * FROM lowerCaseData INNER JOIN subset1 ON subset1.n = lowerCaseData.n"),
+      sql("SELECT * FROM lowerCaseData INNER JOIN subset1 ON subset1.n = lowerCaseData.n"),
       Row(3, "c", 3) ::
         Row(4, "d", 4) :: Nil)
     checkAnswer(
-      sql(
-        "SELECT * FROM lowerCaseData INNER JOIN subset2 ON subset2.n = lowerCaseData.n"),
+      sql("SELECT * FROM lowerCaseData INNER JOIN subset2 ON subset2.n = lowerCaseData.n"),
       Row(1, "a", 1) ::
         Row(2, "b", 2) :: Nil)
   }
@@ -841,8 +832,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("inner join ON with table name as qualifier") {
     checkAnswer(
-      sql(
-        "SELECT * FROM upperCaseData JOIN lowerCaseData ON lowerCaseData.n = upperCaseData.N"),
+      sql("SELECT * FROM upperCaseData JOIN lowerCaseData ON lowerCaseData.n = upperCaseData.N"),
       Seq(
         Row(1, "A", 1, "a"),
         Row(2, "B", 2, "b"),
@@ -853,9 +843,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("qualified select with inner join ON with table name as qualifier") {
     checkAnswer(
-      sql(
-        "SELECT upperCaseData.N, upperCaseData.L FROM upperCaseData JOIN lowerCaseData " +
-          "ON lowerCaseData.n = upperCaseData.N"),
+      sql("SELECT upperCaseData.N, upperCaseData.L FROM upperCaseData JOIN lowerCaseData " +
+        "ON lowerCaseData.n = upperCaseData.N"),
       Seq(Row(1, "A"), Row(2, "B"), Row(3, "C"), Row(4, "D"))
     )
   }
@@ -909,8 +898,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("UNION with column mismatches") {
     // Column name mismatches are allowed.
     checkAnswer(
-      sql(
-        "SELECT n,l FROM lowerCaseData UNION SELECT N as x1, L as x2 FROM upperCaseData"),
+      sql("SELECT n,l FROM lowerCaseData UNION SELECT N as x1, L as x2 FROM upperCaseData"),
       Row(1, "A") :: Row(1, "a") :: Row(2, "B") :: Row(2, "b") :: Row(
         3,
         "C") :: Row(3, "c") ::
@@ -971,7 +959,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         s"$key should exist in SQLConf.")
       assert(
         TestSQLContext.overrideConfs(key) === value,
-        s"The value of $key should be ${TestSQLContext.overrideConfs(key)} instead of $value.")
+        s"The value of $key should be ${TestSQLContext.overrideConfs(
+          key)} instead of $value.")
     }
     val overrideConfs = sql("SET").collect()
 
@@ -1124,8 +1113,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("cast boolean to string") {
     // TODO Ensure true/false string letter casing is consistent with Hive in all cases.
     checkAnswer(
-      sql(
-        "SELECT CAST(TRUE AS STRING), CAST(FALSE AS STRING) FROM testData LIMIT 1"),
+      sql("SELECT CAST(TRUE AS STRING), CAST(FALSE AS STRING) FROM testData LIMIT 1"),
       Row("true", "false"))
   }
 
@@ -1162,22 +1150,19 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-3371 Renaming a function expression with group by gives error") {
     sqlContext.udf.register("len", (s: String) => s.length)
     checkAnswer(
-      sql(
-        "SELECT len(value) as temp FROM testData WHERE key = 1 group by len(value)"),
+      sql("SELECT len(value) as temp FROM testData WHERE key = 1 group by len(value)"),
       Row(1))
   }
 
   test("SPARK-3813 CASE a WHEN b THEN c [WHEN d THEN e]* [ELSE f] END") {
     checkAnswer(
-      sql(
-        "SELECT CASE key WHEN 1 THEN 1 ELSE 0 END FROM testData WHERE key = 1 group by key"),
+      sql("SELECT CASE key WHEN 1 THEN 1 ELSE 0 END FROM testData WHERE key = 1 group by key"),
       Row(1))
   }
 
   test("SPARK-3813 CASE WHEN a THEN b [WHEN c THEN d]* [ELSE e] END") {
     checkAnswer(
-      sql(
-        "SELECT CASE WHEN key = 1 THEN 1 ELSE 2 END FROM testData WHERE key = 1 group by key"),
+      sql("SELECT CASE WHEN key = 1 THEN 1 ELSE 2 END FROM testData WHERE key = 1 group by key"),
       Row(1))
   }
 
@@ -1411,16 +1396,14 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test(
-    "SPARK-4154 Query does not work if it has 'not between' in Spark SQL and HQL") {
+  test("SPARK-4154 Query does not work if it has 'not between' in Spark SQL and HQL") {
     checkAnswer(
       sql(
         "SELECT key FROM testData WHERE key not between 0 and 10 order by key"),
       (11 to 100).map(i => Row(i)))
   }
 
-  test(
-    "SPARK-4207 Query which has syntax like 'not like' is not working in Spark SQL") {
+  test("SPARK-4207 Query which has syntax like 'not like' is not working in Spark SQL") {
     checkAnswer(
       sql("SELECT key FROM testData WHERE value not like '100%' order by key"),
       (1 to 99).map(i => Row(i)))
@@ -1850,8 +1833,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       df.write.json(f.getCanonicalPath)
       checkAnswer(sql(s"select id from json.`${f.getCanonicalPath}`"), df)
       checkAnswer(
-        sql(
-          s"select id from `org.apache.spark.sql.json`.`${f.getCanonicalPath}`"),
+        sql(s"select id from `org.apache.spark.sql.json`.`${f.getCanonicalPath}`"),
         df)
       checkAnswer(
         sql(s"select a.id from json.`${f.getCanonicalPath}` as a"),
@@ -1901,8 +1883,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     withTempTable("src") {
       Seq(1 -> "a").toDF("i", "j").registerTempTable("src")
       checkAnswer(
-        sql(
-          "SELECT MIN(t.i) FROM (SELECT * FROM src WHERE i > 0) t HAVING(COUNT(1) > 0)"),
+        sql("SELECT MIN(t.i) FROM (SELECT * FROM src WHERE i > 0) t HAVING(COUNT(1) > 0)"),
         Row(1))
     }
   }
@@ -2179,8 +2160,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     }
   }
 
-  test(
-    "SPARK-10707: nullability should be correctly propagated through set operations (1)") {
+  test("SPARK-10707: nullability should be correctly propagated through set operations (1)") {
     // This test produced an incorrect result of 1 before the SPARK-10707 fix because of the
     // NullPropagation rule: COUNT(v) got replaced with COUNT(1) because the output column of
     // UNION was incorrectly considered non-nullable:
@@ -2195,8 +2175,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test(
-    "SPARK-10707: nullability should be correctly propagated through set operations (2)") {
+  test("SPARK-10707: nullability should be correctly propagated through set operations (2)") {
     // This test uses RAND() to stop column pruning for Union and checks the resulting isnull
     // value. This would produce an incorrect result before the fix in SPARK-10707 because the "v"
     // column of the union was considered non-nullable.
@@ -2214,9 +2193,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("rollup") {
     checkAnswer(
-      sql(
-        "select course, year, sum(earnings) from courseSales group by rollup(course, year)" +
-          " order by course, year"),
+      sql("select course, year, sum(earnings) from courseSales group by rollup(course, year)" +
+        " order by course, year"),
       Row(null, null, 113000.0) ::
         Row("Java", null, 50000.0) ::
         Row("Java", 2012, 20000.0) ::
@@ -2229,10 +2207,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("grouping sets when aggregate functions containing groupBy columns") {
     checkAnswer(
-      sql(
-        "select course, sum(earnings) as sum from courseSales group by course, earnings " +
-          "grouping sets((), (course), (course, earnings)) " +
-          "order by course, sum"),
+      sql("select course, sum(earnings) as sum from courseSales group by course, earnings " +
+        "grouping sets((), (course), (course, earnings)) " +
+        "order by course, sum"),
       Row(null, 113000.0) ::
         Row("Java", 20000.0) ::
         Row("Java", 30000.0) ::
@@ -2244,10 +2221,9 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
 
     checkAnswer(
-      sql(
-        "select course, sum(earnings) as sum, grouping_id(course, earnings) from courseSales " +
-          "group by course, earnings grouping sets((), (course), (course, earnings)) " +
-          "order by course, sum"),
+      sql("select course, sum(earnings) as sum, grouping_id(course, earnings) from courseSales " +
+        "group by course, earnings grouping sets((), (course), (course, earnings)) " +
+        "order by course, sum"),
       Row(null, 113000.0, 3) ::
         Row("Java", 20000.0, 0) ::
         Row("Java", 30000.0, 0) ::
@@ -2261,8 +2237,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("cube") {
     checkAnswer(
-      sql(
-        "select course, year, sum(earnings) from courseSales group by cube(course, year)"),
+      sql("select course, year, sum(earnings) from courseSales group by cube(course, year)"),
       Row("Java", 2012, 20000.0) ::
         Row("Java", 2013, 30000.0) ::
         Row("Java", null, 50000.0) ::
@@ -2277,9 +2252,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("grouping sets") {
     checkAnswer(
-      sql(
-        "select course, year, sum(earnings) from courseSales group by course, year " +
-          "grouping sets(course, year)"),
+      sql("select course, year, sum(earnings) from courseSales group by course, year " +
+        "grouping sets(course, year)"),
       Row("Java", null, 50000.0) ::
         Row("dotNET", null, 63000.0) ::
         Row(null, 2012, 35000.0) ::
@@ -2287,17 +2261,15 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
 
     checkAnswer(
-      sql(
-        "select course, year, sum(earnings) from courseSales group by course, year " +
-          "grouping sets(course)"),
+      sql("select course, year, sum(earnings) from courseSales group by course, year " +
+        "grouping sets(course)"),
       Row("Java", null, 50000.0) ::
         Row("dotNET", null, 63000.0) :: Nil
     )
 
     checkAnswer(
-      sql(
-        "select course, year, sum(earnings) from courseSales group by course, year " +
-          "grouping sets(year)"),
+      sql("select course, year, sum(earnings) from courseSales group by course, year " +
+        "grouping sets(year)"),
       Row(null, 2012, 35000.0) ::
         Row(null, 2013, 78000.0) :: Nil
     )
@@ -2305,9 +2277,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("grouping and grouping_id") {
     checkAnswer(
-      sql(
-        "select course, year, grouping(course), grouping(year), grouping_id(course, year)" +
-          " from courseSales group by cube(course, year)"),
+      sql("select course, year, grouping(course), grouping(year), grouping_id(course, year)" +
+        " from courseSales group by cube(course, year)"),
       Row("Java", 2012, 0, 0, 0) ::
         Row("Java", 2013, 0, 0, 0) ::
         Row("Java", null, 0, 1, 1) ::
@@ -2320,20 +2291,17 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     )
 
     var error = intercept[AnalysisException] {
-      sql(
-        "select course, year, grouping(course) from courseSales group by course, year")
+      sql("select course, year, grouping(course) from courseSales group by course, year")
     }
     assert(
       error.getMessage contains "grouping() can only be used with GroupingSets/Cube/Rollup")
     error = intercept[AnalysisException] {
-      sql(
-        "select course, year, grouping_id(course, year) from courseSales group by course, year")
+      sql("select course, year, grouping_id(course, year) from courseSales group by course, year")
     }
     assert(
       error.getMessage contains "grouping_id() can only be used with GroupingSets/Cube/Rollup")
     error = intercept[AnalysisException] {
-      sql(
-        "select course, year, grouping__id from courseSales group by cube(course, year)")
+      sql("select course, year, grouping__id from courseSales group by cube(course, year)")
     }
     assert(
       error.getMessage contains "grouping__id is deprecated; use grouping_id() instead")

@@ -146,9 +146,8 @@ class BisectingKMeans private (
   @Since("1.6.0")
   def run(input: RDD[Vector]): BisectingKMeansModel = {
     if (input.getStorageLevel == StorageLevel.NONE) {
-      logWarning(
-        s"The input RDD ${input.id} is not directly cached, which may hurt performance if"
-          + " its parent RDDs are also not cached.")
+      logWarning(s"The input RDD ${input.id} is not directly cached, which may hurt performance if"
+        + " its parent RDDs are also not cached.")
     }
     val d = input.map(_.size).first()
     logInfo(s"Feature dimension: $d.")
@@ -226,8 +225,7 @@ class BisectingKMeans private (
         activeClusters = newClusters
         numLeafClustersNeeded -= divisibleClusters.size
       } else {
-        logInfo(
-          s"None active and divisible clusters left on level $level. Stop iterations.")
+        logInfo(s"None active and divisible clusters left on level $level. Stop iterations.")
         inactiveClusters ++= activeClusters
         activeClusters = Map.empty
       }

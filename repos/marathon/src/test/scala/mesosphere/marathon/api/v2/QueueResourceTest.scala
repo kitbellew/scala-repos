@@ -147,8 +147,7 @@ class QueueResourceTest
     resetDelay.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test(
-    "access without authorization leads to a 404 if the app is not in the queue") {
+  test("access without authorization leads to a 404 if the app is not in the queue") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false

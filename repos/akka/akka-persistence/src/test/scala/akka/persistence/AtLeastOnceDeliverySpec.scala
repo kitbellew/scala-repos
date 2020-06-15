@@ -29,8 +29,7 @@ object AtLeastOnceDeliverySpec {
   case class ActionAck(id: Long)
   case object Boom
   case object SaveSnap
-  case class Snap(
-      deliverySnapshot: AtLeastOnceDeliverySnapshot) // typically includes some user data as well
+  case class Snap(deliverySnapshot: AtLeastOnceDeliverySnapshot) // typically includes some user data as well
 
   def senderProps(
       testActor: ActorRef,

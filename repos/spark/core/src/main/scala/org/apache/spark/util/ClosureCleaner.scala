@@ -248,13 +248,11 @@ private[spark] object ClosureCleaner extends Logging {
       // class without cloning it since we don't want to clone the user's objects.
       // Note that we still need to keep around the outermost object itself because
       // we need it to clone its child closure later (see below).
-      logDebug(
-        s" + outermost object is not a closure, so do not clone it: ${outerPairs.head}")
+      logDebug(s" + outermost object is not a closure, so do not clone it: ${outerPairs.head}")
       parent = outerPairs.head._2 // e.g. SparkContext
       outerPairs = outerPairs.tail
     } else if (outerPairs.size > 0) {
-      logDebug(
-        s" + outermost object is a closure, so we just keep it: ${outerPairs.head}")
+      logDebug(s" + outermost object is a closure, so we just keep it: ${outerPairs.head}")
     } else {
       logDebug(" + there are no enclosing objects!")
     }
@@ -297,8 +295,7 @@ private[spark] object ClosureCleaner extends Logging {
       // If the starting closure doesn't actually need our enclosing object, then just null it out
       if (accessedFields.contains(func.getClass) &&
         !accessedFields(func.getClass).contains("$outer")) {
-        logDebug(
-          s" + the starting closure doesn't actually need $parent, so we null it out")
+        logDebug(s" + the starting closure doesn't actually need $parent, so we null it out")
         field.set(func, null)
       } else {
         // Update this closure's parent pointer to point to our enclosing object,

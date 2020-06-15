@@ -907,8 +907,7 @@ trait ContextErrors {
                 sym1.associatedFile.canonicalPath))
           else None,
           if (isBug)
-            Some(
-              "Note: this may be due to a bug in the compiler involving wildcards in package objects")
+            Some("Note: this may be due to a bug in the compiler involving wildcards in package objects")
           else None
         )
         val addendum = addendums.flatten match {
@@ -1038,10 +1037,9 @@ trait ContextErrors {
             case NonFatal(
                   ex
                 ) => // currently giving a spurious warning, see SI-6994
-              macroLogVerbose(
-                "got an exception when processing a macro generated exception\n" +
-                  "offender = " + stackTraceString(realex) + "\n" +
-                  "error = " + stackTraceString(ex))
+              macroLogVerbose("got an exception when processing a macro generated exception\n" +
+                "offender = " + stackTraceString(realex) + "\n" +
+                "error = " + stackTraceString(ex))
               None
           }
         } getOrElse {
@@ -1165,8 +1163,10 @@ trait ContextErrors {
               AmbiguousTypeError(
                 pos,
                 "ambiguous reference to overloaded definition,\n" +
-                  s"both ${sym1.fullLocationString} of type ${pre.memberType(sym1)}\n" +
-                  s"and  ${sym2.fullLocationString} of type ${pre.memberType(sym2)}\n" +
+                  s"both ${sym1.fullLocationString} of type ${pre.memberType(
+                    sym1)}\n" +
+                  s"and  ${sym2.fullLocationString} of type ${pre.memberType(
+                    sym2)}\n" +
                   s"match $rest"
               )
             })

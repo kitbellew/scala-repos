@@ -58,8 +58,7 @@ private[spark] object ExtractPythonUDFs extends Rule[LogicalPlan] {
                   evaluation = EvaluatePython(udf, child)
                   evaluation
                 } else if (udf.references.intersect(child.outputSet).nonEmpty) {
-                  sys.error(
-                    s"Invalid PythonUDF $udf, requires attributes from more than one child.")
+                  sys.error(s"Invalid PythonUDF $udf, requires attributes from more than one child.")
                 } else {
                   child
                 }

@@ -258,8 +258,7 @@ abstract class HiveComparisonTest
         .map(new File(_, testCaseName))
         .filter(_.exists)
     if (runOnlyDirectories.nonEmpty && runIndicators.isEmpty) {
-      logDebug(
-        s"Skipping test '$testCaseName' not found in ${runOnlyDirectories.map(_.getCanonicalPath)}")
+      logDebug(s"Skipping test '$testCaseName' not found in ${runOnlyDirectories.map(_.getCanonicalPath)}")
       return
     }
 
@@ -288,8 +287,7 @@ abstract class HiveComparisonTest
           .filterNot(_ contains "hive.exec.post.hooks")
 
       if (allQueries != queryList) {
-        logWarning(
-          s"Simplifications made on unsupported operations for test $testCaseName")
+        logWarning(s"Simplifications made on unsupported operations for test $testCaseName")
       }
 
       lazy val consoleTestCase = {

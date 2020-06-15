@@ -126,8 +126,7 @@ trait MultiNodeClusterSpec
         classOf[akka.dispatch.sysmsg.DeathWatchNotification],
         classOf[akka.remote.transport.AssociationHandle.Disassociated],
         //        akka.remote.transport.AssociationHandle.Disassociated.getClass,
-        classOf[
-          akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying],
+        classOf[akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying],
         //        akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying.getClass,
         classOf[akka.remote.transport.AssociationHandle.InboundPayload]
       )(sys)

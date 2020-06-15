@@ -11,8 +11,7 @@ import mesosphere.mesos.protos.Resource
 import org.scalatest.Matchers
 
 class ResourceMatcherTest extends MarathonSpec with Matchers {
-  test(
-    "match with app.disk == 0, even if no disk resource is contained in the offer") {
+  test("match with app.disk == 0, even if no disk resource is contained in the offer") {
     import scala.collection.JavaConverters._
     val offerBuilder = MarathonTestHelper.makeBasicOffer()
     val diskResourceIndex =

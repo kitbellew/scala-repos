@@ -106,8 +106,7 @@ class TypedPipeDiffTest extends FunSuite {
     }.sorted)
   }
 
-  test(
-    "diffArrayPipesWithoutOrdering works for arrays of objects with no ordering") {
+  test("diffArrayPipesWithoutOrdering works for arrays of objects with no ordering") {
     val pipe1 = TypedPipe.from(leftArr.map { arr =>
       arr.map { b => new NoOrdering(b.toString) }
     })

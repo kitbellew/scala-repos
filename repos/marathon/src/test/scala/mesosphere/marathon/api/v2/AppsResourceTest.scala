@@ -240,8 +240,7 @@ class AppsResourceTest
     response.getStatus should be(200)
   }
 
-  test(
-    "Replace an existing application fails due to docker container validation") {
+  test("Replace an existing application fails due to docker container validation") {
     Given("An app update with an invalid container (missing docker field)")
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))
@@ -266,8 +265,7 @@ class AppsResourceTest
     response.getEntity.toString should include("must not be empty")
   }
 
-  test(
-    "Creating an app with broken volume definition fails with readable error message") {
+  test("Creating an app with broken volume definition fails with readable error message") {
     Given("An app update with an invalid volume (wrong field name)")
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))

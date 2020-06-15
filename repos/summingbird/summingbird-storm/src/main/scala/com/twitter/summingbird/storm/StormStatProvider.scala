@@ -60,8 +60,7 @@ private[summingbird] object StormStatProvider extends PlatformStatProvider {
       StormCounterIncrementor(
         m.asScala.getOrElse(
           group.getString + "/" + name.getString,
-          sys.error(
-            s"It is only valid to create counter objects during job submission, tried to find $jobID -> $group/$name ")
+          sys.error(s"It is only valid to create counter objects during job submission, tried to find $jobID -> $group/$name ")
         ))
     }
 }

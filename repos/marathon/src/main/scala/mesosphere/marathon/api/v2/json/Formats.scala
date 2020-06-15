@@ -92,8 +92,7 @@ trait Formats
         Option(mesos.NetworkInfo.Protocol.valueOf(protocolString)) match {
           case Some(protocol) => JsSuccess(protocol)
           case None =>
-            JsError(
-              s"'$protocolString' is not a valid protocol. Allowed values: $allowedProtocolString")
+            JsError(s"'$protocolString' is not a valid protocol. Allowed values: $allowedProtocolString")
         }
 
       }
@@ -322,8 +321,8 @@ trait IpAddressFormats {
 
     implicitly[Reads[Seq[DiscoveryInfo.Port]]]
       .filter(ValidationError("Port names are not unique."))(hasUniquePortNames)
-      .filter(ValidationError(
-        "There may be only one port with a particular port number/protocol combination."))(
+      .filter(
+        ValidationError("There may be only one port with a particular port number/protocol combination."))(
         hasUniquePortNumberProtocol
       )
   }
@@ -614,8 +613,7 @@ trait AppAndGroupFormats {
                   .mkString(", ")}]")
             }
           case _ =>
-            JsError(
-              "Constraint definition must be an array of strings in format: <key>, <operator>[, value]")
+            JsError("Constraint definition must be an array of strings in format: <key>, <operator>[, value]")
         }
       }
     },
@@ -871,8 +869,7 @@ trait AppAndGroupFormats {
               .map(_.getDescriptorForType.getName)
               .mkString(", ")
 
-          JsError(
-            s"'$behaviorString' is not a valid taskLostBehavior. Allowed values: $allowedTaskLostBehaviorString")
+          JsError(s"'$behaviorString' is not a valid taskLostBehavior. Allowed values: $allowedTaskLostBehaviorString")
         }
       }
 

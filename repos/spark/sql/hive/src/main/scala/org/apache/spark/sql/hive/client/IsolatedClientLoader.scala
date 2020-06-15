@@ -71,12 +71,11 @@ private[hive] object IsolatedClientLoader extends Logging {
                 // 2.0.0-cdh4.1.1). If it is the case, we will try just
                 // "org.apache.hadoop:hadoop-client:2.4.0". "org.apache.hadoop:hadoop-client:2.4.0"
                 // is used just because we used to hard code it as the hadoop artifact to download.
-                logWarning(
-                  s"Failed to resolve Hadoop artifacts for the version ${hadoopVersion}. " +
-                    s"We will change the hadoop version from ${hadoopVersion} to 2.4.0 and try again. " +
-                    "Hadoop classes will not be shared between Spark and Hive metastore client. " +
-                    "It is recommended to set jars used by Hive metastore client through " +
-                    "spark.sql.hive.metastore.jars in the production environment.")
+                logWarning(s"Failed to resolve Hadoop artifacts for the version ${hadoopVersion}. " +
+                  s"We will change the hadoop version from ${hadoopVersion} to 2.4.0 and try again. " +
+                  "Hadoop classes will not be shared between Spark and Hive metastore client. " +
+                  "It is recommended to set jars used by Hive metastore client through " +
+                  "spark.sql.hive.metastore.jars in the production environment.")
                 sharesHadoopClasses = false
                 (downloadVersion(resolvedVersion, "2.4.0", ivyPath), "2.4.0")
             }
@@ -292,7 +291,8 @@ private[hive] class IsolatedClientLoader(
         if (e.getCause().isInstanceOf[NoClassDefFoundError]) {
           val cnf = e.getCause().asInstanceOf[NoClassDefFoundError]
           throw new ClassNotFoundException(
-            s"$cnf when creating Hive client using classpath: ${execJars.mkString(", ")}\n" +
+            s"$cnf when creating Hive client using classpath: ${execJars
+              .mkString(", ")}\n" +
               "Please make sure that jars for your version of hive and hadoop are included in the " +
               s"paths passed to ${HiveContext.HIVE_METASTORE_JARS}.")
         } else {

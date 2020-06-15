@@ -89,8 +89,7 @@ class FlashMapSupportTest extends ScalatraFunSuite {
     }
   }
 
-  test(
-    "messages should be available in outer filter when flash map supports are nested") {
+  test("messages should be available in outer filter when flash map supports are nested") {
     session {
       post("/message") {}
       get("/filter") {

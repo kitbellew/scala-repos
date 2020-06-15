@@ -660,8 +660,9 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     } match {
       case Right(message) =>
         flash += "info" -> message
-        redirect(
-          s"/${repository.owner}/${repository.name}/tree/${StringUtil.urlEncode(newBranchName).replace("%2F", "/")}")
+        redirect(s"/${repository.owner}/${repository.name}/tree/${StringUtil
+          .urlEncode(newBranchName)
+          .replace("%2F", "/")}")
       case Left(message) =>
         flash += "error" -> message
         redirect(

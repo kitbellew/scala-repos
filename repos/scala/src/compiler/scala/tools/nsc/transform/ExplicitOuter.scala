@@ -201,8 +201,7 @@ abstract class ExplicitOuter
             val mixinOuterAcc: Symbol = exitingExplicitOuter(outerAccessor(mc))
             if (mixinOuterAcc != NoSymbol) {
               if (skipMixinOuterAccessor(clazz, mc))
-                debuglog(
-                  s"Reusing outer accessor symbol of $clazz for the mixin outer accessor of $mc")
+                debuglog(s"Reusing outer accessor symbol of $clazz for the mixin outer accessor of $mc")
               else {
                 if (decls1 eq decls) decls1 = decls.cloneScope
                 val newAcc = mixinOuterAcc.cloneSymbol(

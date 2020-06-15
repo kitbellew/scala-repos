@@ -114,9 +114,8 @@ class RoundRobinAssignor() extends PartitionAssignor with Logging {
       val allTopicPartitions = ctx.partitionsForTopic
         .flatMap {
           case (topic, partitions) =>
-            info(
-              "Consumer %s rebalancing the following partitions for topic %s: %s"
-                .format(ctx.consumerId, topic, partitions))
+            info("Consumer %s rebalancing the following partitions for topic %s: %s"
+              .format(ctx.consumerId, topic, partitions))
             partitions.map(partition => {
               TopicAndPartition(topic, partition)
             })

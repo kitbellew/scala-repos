@@ -325,9 +325,8 @@ private[hive] class HiveMetastoreCatalog(
       // when we load the table. So, we are not expecting partition columns and we will discover
       // partitions when we load the table. However, if there are specified partition columns,
       // we simply ignore them and provide a warning message.
-      logWarning(
-        s"The schema and partitions of table $tableIdent will be inferred when it is loaded. " +
-          s"Specified partition columns (${partitionColumns.mkString(",")}) will be ignored.")
+      logWarning(s"The schema and partitions of table $tableIdent will be inferred when it is loaded. " +
+        s"Specified partition columns (${partitionColumns.mkString(",")}) will be ignored.")
     }
 
     val tableType = if (isExternal) {
@@ -567,10 +566,9 @@ private[hive] class HiveMetastoreCatalog(
             None
           }
         case other =>
-          logWarning(
-            s"${metastoreRelation.databaseName}.${metastoreRelation.tableName} should be stored " +
-              s"as Parquet. However, we are getting a $other from the metastore cache. " +
-              s"This cached entry will be invalidated.")
+          logWarning(s"${metastoreRelation.databaseName}.${metastoreRelation.tableName} should be stored " +
+            s"as Parquet. However, we are getting a $other from the metastore cache. " +
+            s"This cached entry will be invalidated.")
           cachedDataSourceTables.invalidate(tableIdentifier)
           None
       }

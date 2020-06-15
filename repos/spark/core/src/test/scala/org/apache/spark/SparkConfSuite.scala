@@ -211,8 +211,7 @@ class SparkConfSuite
     serializer.newInstance().serialize(new Class3())
   }
 
-  test(
-    "register kryo classes through registerKryoClasses and custom registrator") {
+  test("register kryo classes through registerKryoClasses and custom registrator") {
     val conf = new SparkConf().set("spark.kryo.registrationRequired", "true")
 
     conf.registerKryoClasses(Array(classOf[Class1]))

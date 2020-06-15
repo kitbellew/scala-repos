@@ -139,8 +139,7 @@ class AllProjectHighlightingTest
             elt: PsiElement,
             message: String): Annotation = {
           errorCount += 1
-          println(
-            s"Error in ${file.getName}. Range: ${elt.getTextRange}. Message: $message.")
+          println(s"Error in ${file.getName}. Range: ${elt.getTextRange}. Message: $message.")
           super.createErrorAnnotation(elt, message)
         }
       }

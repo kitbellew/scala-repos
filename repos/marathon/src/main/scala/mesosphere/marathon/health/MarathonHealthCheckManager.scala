@@ -77,11 +77,9 @@ class MarathonHealthCheckManager @Inject() (
       val healthChecksForApp = listActive(appId, appVersion)
 
       if (healthChecksForApp.exists(_.healthCheck == healthCheck))
-        log.debug(
-          s"Not adding duplicate health check for app [$appId] and version [$appVersion]: [$healthCheck]")
+        log.debug(s"Not adding duplicate health check for app [$appId] and version [$appVersion]: [$healthCheck]")
       else {
-        log.info(
-          s"Adding health check for app [$appId] and version [$appVersion]: [$healthCheck]")
+        log.info(s"Adding health check for app [$appId] and version [$appVersion]: [$healthCheck]")
         Await.result(
           appRepository.app(appId, appVersion),
           zkConf.zkTimeoutDuration) match {
@@ -103,8 +101,7 @@ class MarathonHealthCheckManager @Inject() (
 
             eventBus.publish(AddHealthCheck(appId, appVersion, healthCheck))
           case None =>
-            log.warn(
-              s"Couldn't add health check for app [$appId] and version [$appVersion] - app definition not found")
+            log.warn(s"Couldn't add health check for app [$appId] and version [$appVersion] - app definition not found")
         }
       }
     }
@@ -124,8 +121,7 @@ class MarathonHealthCheckManager @Inject() (
       val toRemove: Set[ActiveHealthCheck] =
         healthChecksForVersion.filter(_.healthCheck == healthCheck)
       for (ahc <- toRemove) {
-        log.info(
-          s"Removing health check for app [$appId] and version [$appVersion]: [$healthCheck]")
+        log.info(s"Removing health check for app [$appId] and version [$appVersion]: [$healthCheck]")
         deactivate(ahc)
         eventBus.publish(RemoveHealthCheck(appId))
       }
@@ -189,9 +185,8 @@ class MarathonHealthCheckManager @Inject() (
                 // FIXME: If the app version of the task is not available anymore, no health check is started.
                 // We generated a new app version for every scale change. If maxVersions is configured, we
                 // throw away old versions such that we may not have the app configuration of all tasks available anymore.
-                log.warn(
-                  s"Cannot find health check configuration for [$appId] and version [$version], " +
-                    "using most recent one.")
+                log.warn(s"Cannot find health check configuration for [$appId] and version [$version], " +
+                  "using most recent one.")
 
               case Some(appVersion) =>
                 log.info(s"addAllFor [$appId] version [$version]")
@@ -208,8 +203,7 @@ class MarathonHealthCheckManager @Inject() (
       val maybeResult: Option[HealthResult] =
         if (taskStatus.hasHealthy) {
           val healthy = taskStatus.getHealthy
-          log.info(
-            s"Received status for $taskId with version [$version] and healthy [$healthy]")
+          log.info(s"Received status for $taskId with version [$version] and healthy [$healthy]")
           Some(
             if (healthy) Healthy(taskId, version)
             else Unhealthy(taskId, version, ""))

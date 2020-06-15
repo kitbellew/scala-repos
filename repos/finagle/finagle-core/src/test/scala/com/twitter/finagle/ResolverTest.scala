@@ -80,8 +80,7 @@ class ResolverTest extends FunSuite {
     assert(binding._2 == label)
   }
 
-  test(
-    "Resolver.evalLabeled: Resolve empty string as label for unlabeled addresses") {
+  test("Resolver.evalLabeled: Resolve empty string as label for unlabeled addresses") {
     val binding = Resolver.evalLabeled("test!xyz")
     assert(binding._2.isEmpty)
   }

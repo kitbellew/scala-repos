@@ -260,8 +260,7 @@ private[twitter] class ServerDispatcher(
           //
           // In both cases, we forfeit the ability to track (and thus drain or interrupt)
           // the request, but we can still service it.
-          log.fine(
-            s"Received duplicate tag ${m.tag} from client ${trans.remoteAddress}")
+          log.fine(s"Received duplicate tag ${m.tag} from client ${trans.remoteAddress}")
           statsReceiver.counter("duplicate_tag").incr()
           service(m).transform(reply)
         }

@@ -920,8 +920,7 @@ object Load {
         log.debug(s"[Loading] Scanning directory ${buildBase}")
         discover(AddSettings.defaultSbtFiles, buildBase) match {
           case DiscoveredProjects(Some(root), discovered, files, generated) =>
-            log.debug(
-              s"[Loading] Found root project ${root.id} w/ remaining ${discovered.map(_.id).mkString(",")}")
+            log.debug(s"[Loading] Found root project ${root.id} w/ remaining ${discovered.map(_.id).mkString(",")}")
             val finalRoot = finalizeProject(root, files)
             loadTransitive(
               discovered,
@@ -938,8 +937,7 @@ object Load {
               generated ++ generatedConfigClassFiles)
           // Here we need to create a root project...
           case DiscoveredProjects(None, discovered, files, generated) =>
-            log.debug(
-              s"[Loading] Found non-root projects ${discovered.map(_.id).mkString(",")}")
+            log.debug(s"[Loading] Found non-root projects ${discovered.map(_.id).mkString(",")}")
             // Here we do something interesting... We need to create an aggregate root project
             val otherProjects = loadTransitive(
               discovered,
@@ -966,15 +964,17 @@ object Load {
                 Build.generatedRootWithoutIvyPlugin(defaultID, buildBase, refs)
             val root = finalizeProject(root0, files)
             val result = root +: (acc ++ otherProjects.projects)
-            log.debug(
-              s"[Loading] Done in ${buildBase}, returning: ${result.map(_.id).mkString("(", ", ", ")")}")
+            log.debug(s"[Loading] Done in ${buildBase}, returning: ${result
+              .map(_.id)
+              .mkString("(", ", ", ")")}")
             LoadedProjects(
               result,
               generated ++ otherGenerated ++ generatedConfigClassFiles)
         }
       case Nil =>
-        log.debug(
-          s"[Loading] Done in ${buildBase}, returning: ${acc.map(_.id).mkString("(", ", ", ")")}")
+        log.debug(s"[Loading] Done in ${buildBase}, returning: ${acc
+          .map(_.id)
+          .mkString("(", ", ", ")")}")
         LoadedProjects(acc, generatedConfigClassFiles)
     }
   }
@@ -982,8 +982,7 @@ object Load {
   private[this] def translateAutoPluginException(
       e: AutoPluginException,
       project: Project): AutoPluginException =
-    e.withPrefix(
-      s"Error determining plugins for project '${project.id}' in ${project.base}:\n")
+    e.withPrefix(s"Error determining plugins for project '${project.id}' in ${project.base}:\n")
 
   /**
     * Represents the results of flushing out a directory and discovering all the projects underneath it.

@@ -222,8 +222,7 @@ private[impl] class OfferMatcherManagerActor private (
                   addedOps.size,
                   conf.maxTasksPerOffer() - data.ops.size).min)
 
-            rejectedOps.foreach(_.reject(
-              "not enough launch tokens OR already scheduled sufficient tasks on offer"))
+            rejectedOps.foreach(_.reject("not enough launch tokens OR already scheduled sufficient tasks on offer"))
 
             val newData: OfferData = data.addTasks(acceptedOps)
             launchTokens -= acceptedOps.size
@@ -231,9 +230,7 @@ private[impl] class OfferMatcherManagerActor private (
             newData
           } catch {
             case NonFatal(e) =>
-              log.error(
-                s"unexpected error processing ops for ${offerId.getValue} from ${sender()}",
-                e)
+              log.error(s"unexpected error processing ops for ${offerId.getValue} from ${sender()}", e)
               data
           }
 
@@ -275,13 +272,11 @@ private[impl] class OfferMatcherManagerActor private (
 
   private[this] def scheduleNextMatcherOrFinish(data: OfferData): Unit = {
     val nextMatcherOpt = if (data.deadline < clock.now()) {
-      log.warning(
-        s"Deadline for ${data.offer.getId.getValue} overdue. Scheduled ${data.ops.size} ops so far.")
+      log.warning(s"Deadline for ${data.offer.getId.getValue} overdue. Scheduled ${data.ops.size} ops so far.")
       None
     } else if (data.ops.size >= conf.maxTasksPerOffer()) {
-      log.info(
-        s"Already scheduled the maximum number of ${data.ops.size} tasks on this offer. " +
-          s"Increase with --${conf.maxTasksPerOffer.name}.")
+      log.info(s"Already scheduled the maximum number of ${data.ops.size} tasks on this offer. " +
+        s"Increase with --${conf.maxTasksPerOffer.name}.")
       None
     } else if (launchTokens <= 0) {
       log.info(
@@ -328,6 +323,7 @@ private[impl] class OfferMatcherManagerActor private (
     //scalastyle:on magic.number
     log.info(s"Finished processing ${data.offer.getId.getValue}. " +
       s"Matched ${data.ops.size} ops after ${data.matchPasses} passes. " +
-      s"${ResourceUtil.displayResources(data.offer.getResourcesList.asScala, maxRanges)} left.")
+      s"${ResourceUtil
+        .displayResources(data.offer.getResourcesList.asScala, maxRanges)} left.")
   }
 }

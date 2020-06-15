@@ -41,13 +41,11 @@ object BuildSummer {
 
   def apply(storm: Storm, dag: Dag[Storm], node: StormNode, jobID: JobId) = {
     val opSummerConstructor = storm.get[SummerConstructor](dag, node).map(_._2)
-    logger.debug(
-      s"Node (${dag.getNodeName(node)}): Queried for SummerConstructor, got $opSummerConstructor")
+    logger.debug(s"Node (${dag.getNodeName(node)}): Queried for SummerConstructor, got $opSummerConstructor")
 
     opSummerConstructor match {
       case Some(cons) =>
-        logger.debug(
-          s"Node (${dag.getNodeName(node)}): Using user supplied SummerConstructor: $cons")
+        logger.debug(s"Node (${dag.getNodeName(node)}): Using user supplied SummerConstructor: $cons")
         cons.get
       case None => legacyBuilder(storm, dag, node, jobID)
     }

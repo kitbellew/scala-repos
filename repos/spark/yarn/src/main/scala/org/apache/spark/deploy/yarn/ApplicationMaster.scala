@@ -479,9 +479,8 @@ private[spark] class ApplicationMaster(
     t.setDaemon(true)
     t.setName("Reporter")
     t.start()
-    logInfo(
-      s"Started progress reporter thread with (heartbeat : $heartbeatInterval, " +
-        s"initial allocation : $initialAllocationInterval) intervals")
+    logInfo(s"Started progress reporter thread with (heartbeat : $heartbeatInterval, " +
+      s"initial allocation : $initialAllocationInterval) intervals")
     t
   }
 
@@ -698,8 +697,7 @@ private[spark] class ApplicationMaster(
         }
 
       case KillExecutors(executorIds) =>
-        logInfo(
-          s"Driver requested to kill executor(s) ${executorIds.mkString(", ")}.")
+        logInfo(s"Driver requested to kill executor(s) ${executorIds.mkString(", ")}.")
         Option(allocator) match {
           case Some(a) => executorIds.foreach(a.killExecutor)
           case None =>
@@ -714,8 +712,7 @@ private[spark] class ApplicationMaster(
             a.enqueueGetLossReasonRequest(eid, context)
             resetAllocatorInterval()
           case None =>
-            logWarning(
-              "Container allocator is not ready to find executor loss reasons yet.")
+            logWarning("Container allocator is not ready to find executor loss reasons yet.")
         }
     }
 

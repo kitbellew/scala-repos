@@ -531,8 +531,7 @@ trait Contexts { self: Analyzer =>
       c.variance = variance
       c.diagUsedDefaults = diagUsedDefaults
       c.openImplicits = openImplicits
-      c.contextMode =
-        contextMode // note: ConstructorSuffix, a bit within `mode`, is conditionally overwritten below.
+      c.contextMode = contextMode // note: ConstructorSuffix, a bit within `mode`, is conditionally overwritten below.
 
       // Fields that may take on a different value in the child
       c.prefix = prefixInChild
@@ -853,8 +852,7 @@ trait Contexts { self: Analyzer =>
         case tb: TypeBounds =>
           if (!tb.isEmptyBounds) log(s"Saving $sym info=$tb")
         case info =>
-          devWarning(
-            s"Something other than a TypeBounds seen in pushTypeBounds: $info is a ${shortClassOfInstance(info)}")
+          devWarning(s"Something other than a TypeBounds seen in pushTypeBounds: $info is a ${shortClassOfInstance(info)}")
       }
       savedTypeBounds ::= ((sym, sym.info))
     }
@@ -874,17 +872,14 @@ trait Contexts { self: Analyzer =>
             def current_s = bounds_s(sym.info.bounds)
 
             if (isUnique && isPresent)
-              devWarningResult(
-                s"Preserving inference: ${sym.nameString}=$hi in $current (based on $current_s) before restoring $sym to saved $saved_s")(
+              devWarningResult(s"Preserving inference: ${sym.nameString}=$hi in $current (based on $current_s) before restoring $sym to saved $saved_s")(
                 current.instantiateTypeParams(List(sym), List(hi))
               )
             else if (isPresent)
-              devWarningResult(
-                s"Discarding inferred $current_s because it does not uniquely determine $sym in")(
+              devWarningResult(s"Discarding inferred $current_s because it does not uniquely determine $sym in")(
                 current)
             else
-              logResult(
-                s"Discarding inferred $current_s because $sym does not appear in")(
+              logResult(s"Discarding inferred $current_s because $sym does not appear in")(
                 current)
         }
       try restore()
@@ -996,8 +991,7 @@ trait Contexts { self: Analyzer =>
 
       val CycleMarker = NoRunId - 1
       if (implicitsRunId == CycleMarker) {
-        debuglog(
-          s"cycle while collecting implicits at owner ${owner}, probably due to an implicit without an explicit return type. Continuing with implicits from enclosing contexts.")
+        debuglog(s"cycle while collecting implicits at owner ${owner}, probably due to an implicit without an explicit return type. Continuing with implicits from enclosing contexts.")
         withOuter(Nil)
       } else if (implicitsRunId != currentRunId) {
         implicitsRunId = CycleMarker
@@ -1089,16 +1083,14 @@ trait Contexts { self: Analyzer =>
         // So foo.member("x") != foo.member("x") if x is overloaded.  This seems
         // likely to be the cause of other bugs too...
         if (t1 =:= t2 && imp1Symbol.name == imp2Symbol.name) {
-          log(
-            s"Suppressing ambiguous import: $t1 =:= $t2 && $imp1Symbol == $imp2Symbol")
+          log(s"Suppressing ambiguous import: $t1 =:= $t2 && $imp1Symbol == $imp2Symbol")
           Some(imp1)
         }
         // Monomorphism restriction on types is in part because type aliases could have the
         // same target type but attach different variance to the parameters. Maybe it can be
         // relaxed, but doesn't seem worth it at present.
         else if (mt1 =:= mt2 && name.isTypeName && imp1Symbol.isMonomorphicType && imp2Symbol.isMonomorphicType) {
-          log(
-            s"Suppressing ambiguous import: $mt1 =:= $mt2 && $imp1Symbol and $imp2Symbol are equivalent")
+          log(s"Suppressing ambiguous import: $mt1 =:= $mt2 && $imp1Symbol and $imp2Symbol are equivalent")
           Some(imp1)
         } else {
           log(s"Import is genuinely ambiguous:\n  " + characterize)

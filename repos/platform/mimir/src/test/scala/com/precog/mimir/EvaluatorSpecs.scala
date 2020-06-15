@@ -160,8 +160,7 @@ trait EvaluatorTestSupport[M[+_]]
               }
 
             case x =>
-              failure(ResourceError.corrupt(
-                "Attempted to load JSON as a table from something that wasn't a string: " + x))
+              failure(ResourceError.corrupt("Attempted to load JSON as a table from something that wasn't a string: " + x))
           }
 
           eventsV.disjunction.map(ss => fromJson(ss.flatten))

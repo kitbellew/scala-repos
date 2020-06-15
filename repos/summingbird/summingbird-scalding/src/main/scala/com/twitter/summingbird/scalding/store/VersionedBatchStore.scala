@@ -168,14 +168,12 @@ class VersionedBatchStore[K, V, K2, V2](
       versionsToKeep = versionsToKeep)
 
     if (!target.sinkExists(mode)) {
-      logger.info(
-        s"Versioned batched store version for $this @ $newVersion doesn't exist. Will write out.")
+      logger.info(s"Versioned batched store version for $this @ $newVersion doesn't exist. Will write out.")
       lastVals
         .map(pack(batchID, _))
         .write(target)
     } else {
-      logger.warn(
-        s"Versioned batched store version for $this @ $newVersion already exists! Will skip adding to plan.")
+      logger.warn(s"Versioned batched store version for $this @ $newVersion already exists! Will skip adding to plan.")
     }
   }
 

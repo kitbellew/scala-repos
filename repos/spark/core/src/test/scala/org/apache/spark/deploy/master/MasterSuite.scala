@@ -232,13 +232,11 @@ class MasterSuite
     schedulingWithExecutorLimitAndCoresPerExecutor(spreadOut = false)
   }
 
-  test(
-    "scheduling with executor limit AND cores per executor AND max cores - spread out") {
+  test("scheduling with executor limit AND cores per executor AND max cores - spread out") {
     schedulingWithEverything(spreadOut = true)
   }
 
-  test(
-    "scheduling with executor limit AND cores per executor AND max cores - no spread out") {
+  test("scheduling with executor limit AND cores per executor AND max cores - no spread out") {
     schedulingWithEverything(spreadOut = false)
   }
 
@@ -460,8 +458,7 @@ class MasterSuite
       _scheduleExecutorsOnWorkers(appInfo, workerInfos, spreadOut))
   }
 
-  test(
-    "SPARK-13604: Master should ask Worker kill unknown executors and drivers") {
+  test("SPARK-13604: Master should ask Worker kill unknown executors and drivers") {
     val master = makeMaster()
     master.rpcEnv.setupEndpoint(Master.ENDPOINT_NAME, master)
     eventually(timeout(10.seconds)) {

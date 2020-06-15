@@ -227,8 +227,7 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
 
-  test(
-    "test estimatePartitionStartIndices and enforce minimal number of reducers") {
+  test("test estimatePartitionStartIndices and enforce minimal number of reducers") {
     val coordinator = new ExchangeCoordinator(2, 100L, Some(2))
 
     {

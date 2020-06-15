@@ -304,8 +304,7 @@ private[engine] final class HttpHeaderParser private (
                   endIx,
                   valueIx,
                   colonIx)
-                branchData(branchIndex) =
-                  newNodeIx // make the previously implicit "equals" sub node explicit
+                branchData(branchIndex) = newNodeIx // make the previously implicit "equals" sub node explicit
               case subNodeIx ⇒ // descend, but advance only on match
                 insert(input, value)(
                   cursor + 1 - math.abs(signum),

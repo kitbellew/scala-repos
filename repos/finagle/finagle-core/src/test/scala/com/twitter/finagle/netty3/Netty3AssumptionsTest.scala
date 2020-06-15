@@ -37,8 +37,7 @@ class Netty3AssumptionsTest extends FunSuite {
     bootstrap.bind(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))
   }
 
-  test(
-    "Channel.close() should leave the channel in a closed state [immediately]") {
+  test("Channel.close() should leave the channel in a closed state [immediately]") {
 
     val ch = makeServer()
     val addr = ch.getLocalAddress

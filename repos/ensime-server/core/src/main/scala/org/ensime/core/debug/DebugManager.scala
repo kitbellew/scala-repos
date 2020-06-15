@@ -214,8 +214,7 @@ class DebugManager(
           pos.line)
       }) getOrElse {
         val loc = e.location()
-        log.warning(
-          s"Break position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
+        log.warning(s"Break position not found: ${loc.sourceName()} : ${loc.lineNumber()}")
       }
     case e: ExceptionEvent =>
       withVM { vm => vm.remember(e.exception) }

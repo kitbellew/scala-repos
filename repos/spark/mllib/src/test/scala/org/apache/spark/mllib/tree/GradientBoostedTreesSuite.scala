@@ -64,9 +64,8 @@ class GradientBoostedTreesSuite
             0.06)
         } catch {
           case e: java.lang.AssertionError =>
-            logError(
-              s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
-                s" subsamplingRate=$subsamplingRate")
+            logError(s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
+              s" subsamplingRate=$subsamplingRate")
             throw e
         }
 
@@ -108,9 +107,8 @@ class GradientBoostedTreesSuite
             "mae")
         } catch {
           case e: java.lang.AssertionError =>
-            logError(
-              s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
-                s" subsamplingRate=$subsamplingRate")
+            logError(s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
+              s" subsamplingRate=$subsamplingRate")
             throw e
         }
 
@@ -152,9 +150,8 @@ class GradientBoostedTreesSuite
             0.9)
         } catch {
           case e: java.lang.AssertionError =>
-            logError(
-              s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
-                s" subsamplingRate=$subsamplingRate")
+            logError(s"FAILED for numIterations=$numIterations, learningRate=$learningRate," +
+              s" subsamplingRate=$subsamplingRate")
             throw e
         }
 
@@ -170,8 +167,7 @@ class GradientBoostedTreesSuite
     }
   }
 
-  test(
-    "SPARK-5496: BoostingStrategy.defaultParams should recognize Classification") {
+  test("SPARK-5496: BoostingStrategy.defaultParams should recognize Classification") {
     for (algo <-
         Seq("classification", "Classification", "regression", "Regression")) {
       BoostingStrategy.defaultParams(algo)
@@ -205,8 +201,7 @@ class GradientBoostedTreesSuite
     }
   }
 
-  test(
-    "runWithValidation stops early and performs better on a validation dataset") {
+  test("runWithValidation stops early and performs better on a validation dataset") {
     // Set numIterations large enough so that it stops early.
     val numIterations = 20
     val trainRdd = sc.parallelize(GradientBoostedTreesSuite.trainData, 2)

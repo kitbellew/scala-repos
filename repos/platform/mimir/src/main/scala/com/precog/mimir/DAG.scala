@@ -533,8 +533,7 @@ trait DAG extends Instructions {
     /** The set of available value-sorted keys. */
     def valueKeys: Set[Int]
 
-    def isSingleton
-        : Boolean //true implies that the node is a singleton; false doesn't imply anything
+    def isSingleton: Boolean //true implies that the node is a singleton; false doesn't imply anything
 
     def containsSplitArg: Boolean
 

@@ -221,8 +221,7 @@ private[deploy] class DriverRunner(
       }
 
       if (supervise && exitCode != 0 && !killed) {
-        logInfo(
-          s"Command exited with status $exitCode, re-launching after $waitSeconds s.")
+        logInfo(s"Command exited with status $exitCode, re-launching after $waitSeconds s.")
         sleeper.sleep(waitSeconds)
         waitSeconds = waitSeconds * 2 // exponential back-off
       }

@@ -185,8 +185,7 @@ class BucketedWriteSuite
     }
   }
 
-  test(
-    "write bucketed data with the overlapping bucketBy and partitionBy columns") {
+  test("write bucketed data with the overlapping bucketBy and partitionBy columns") {
     intercept[AnalysisException](
       df.write
         .partitionBy("i", "j")

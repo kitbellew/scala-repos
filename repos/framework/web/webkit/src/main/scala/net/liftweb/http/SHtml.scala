@@ -185,8 +185,7 @@ trait SHtml extends Loggable {
   private def parseOptOrLog(rawJsonText: String) = {
     parseOpt(rawJsonText) match {
       case None =>
-        logger.error(
-          s"Browser sent back something that wasn't JSON to a jsonCall function: $rawJsonText")
+        logger.error(s"Browser sent back something that wasn't JSON to a jsonCall function: $rawJsonText")
         None
 
       case anythingElse =>

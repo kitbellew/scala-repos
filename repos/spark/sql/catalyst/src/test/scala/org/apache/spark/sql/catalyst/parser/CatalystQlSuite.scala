@@ -221,15 +221,12 @@ class CatalystQlSuite extends PlanTest {
       "select sum(product + 1) over (partition by ((product / 2) + 1) " +
         "order by 2) from windowData")
 
-    parser.parsePlan(
-      "select sum(product + 1) over (partition by ((product) + (1)) order by 2) " +
-        "from windowData")
-    parser.parsePlan(
-      "select sum(product + 1) over (partition by ((product) + 1) order by 2) " +
-        "from windowData")
-    parser.parsePlan(
-      "select sum(product + 1) over (partition by (product + (1)) order by 2) " +
-        "from windowData")
+    parser.parsePlan("select sum(product + 1) over (partition by ((product) + (1)) order by 2) " +
+      "from windowData")
+    parser.parsePlan("select sum(product + 1) over (partition by ((product) + 1) order by 2) " +
+      "from windowData")
+    parser.parsePlan("select sum(product + 1) over (partition by (product + (1)) order by 2) " +
+      "from windowData")
   }
 
   test("very long AND/OR expression") {

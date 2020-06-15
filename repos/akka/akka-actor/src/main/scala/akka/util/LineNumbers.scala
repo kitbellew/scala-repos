@@ -162,8 +162,7 @@ object LineNumbers {
       skipVersion(dis)
       implicit val constants = getConstants(dis)
       if (debug)
-        println(
-          s"LNB:   fwd(${constants.fwd.size}) rev(${constants.rev.size}) ${constants.fwd.keys.toList.sorted}")
+        println(s"LNB:   fwd(${constants.fwd.size}) rev(${constants.rev.size}) ${constants.fwd.keys.toList.sorted}")
       skipClassInfo(dis)
       skipInterfaceInfo(dis)
       skipFields(dis)

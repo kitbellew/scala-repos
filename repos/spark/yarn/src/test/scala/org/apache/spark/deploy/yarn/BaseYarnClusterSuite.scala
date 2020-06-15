@@ -116,8 +116,7 @@ abstract class BaseYarnClusterSuite
       TimeUnit.MILLISECONDS.sleep(100)
     }
 
-    logInfo(
-      s"RM address in configuration is ${config.get(YarnConfiguration.RM_ADDRESS)}")
+    logInfo(s"RM address in configuration is ${config.get(YarnConfiguration.RM_ADDRESS)}")
 
     fakeSparkJar = File.createTempFile("sparkJar", null, tempDir)
     hadoopConfDir = new File(tempDir, Client.LOCALIZED_CONF_DIR)

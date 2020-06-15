@@ -123,8 +123,7 @@ object StreamLayout {
 
     if (print) {
       val indent = " " * (level * 2)
-      println(
-        s"$indent${simpleName(this)}($shape): ${ins(inPorts)} ${outs(outPorts)}")
+      println(s"$indent${simpleName(this)}($shape): ${ins(inPorts)} ${outs(outPorts)}")
       downstreams foreach {
         case (o, i) ⇒ println(s"$indent    ${out(o)} -> ${in(i)}")
       }
@@ -1017,8 +1016,7 @@ private[stream] abstract class MaterializerSession(
     val materializedValues: ju.Map[Module, Any] = new ju.HashMap
 
     if (MaterializerSession.Debug)
-      println(
-        f"entering module [${System.identityHashCode(module)}%08x] (${Logging.simpleName(module)})")
+      println(f"entering module [${System.identityHashCode(module)}%08x] (${Logging.simpleName(module)})")
 
     for (submodule ← module.subModules) {
       val subEffectiveAttributes =
@@ -1041,8 +1039,7 @@ private[stream] abstract class MaterializerSession(
     }
 
     if (MaterializerSession.Debug) {
-      println(f"resolving module [${System.identityHashCode(
-        module)}%08x] computation ${module.materializedValueComputation}")
+      println(f"resolving module [${System.identityHashCode(module)}%08x] computation ${module.materializedValueComputation}")
       println(s"  matValSrc = $matValSrc")
       println(s"  matVals =\n    ${materializedValues.asScala
         .map(p ⇒ "%08x".format(System.identityHashCode(p._1)) -> p._2)

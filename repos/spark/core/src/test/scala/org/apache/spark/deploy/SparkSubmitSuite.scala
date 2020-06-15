@@ -735,8 +735,7 @@ class SparkSubmitSuite
     try {
       val exitCode = failAfter(60 seconds) { process.waitFor() }
       if (exitCode != 0) {
-        fail(
-          s"Process returned with exit code $exitCode. See the log4j logs for more detail.")
+        fail(s"Process returned with exit code $exitCode. See the log4j logs for more detail.")
       }
     } finally {
       // Ensure we still kill the process in case it timed out

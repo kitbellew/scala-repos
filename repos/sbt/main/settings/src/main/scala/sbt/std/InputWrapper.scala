@@ -23,28 +23,22 @@ object InputWrapper {
   private[std] final val WrapInputName = "wrapInputTask_\u2603\u2603"
   private[std] final val WrapPreviousName = "wrapPrevious_\u2603\u2603"
 
-  @compileTimeOnly(
-    "`value` can only be called on a task within a task definition macro, such as :=, +=, ++=, or Def.task.")
+  @compileTimeOnly("`value` can only be called on a task within a task definition macro, such as :=, +=, ++=, or Def.task.")
   def wrapTask_\u2603\u2603[T](in: Any): T = implDetailError
 
-  @compileTimeOnly(
-    "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting.")
+  @compileTimeOnly("`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting.")
   def wrapInit_\u2603\u2603[T](in: Any): T = implDetailError
 
-  @compileTimeOnly(
-    "`value` can only be called on a task within a task definition macro, such as :=, +=, ++=, or Def.task.")
+  @compileTimeOnly("`value` can only be called on a task within a task definition macro, such as :=, +=, ++=, or Def.task.")
   def wrapInitTask_\u2603\u2603[T](in: Any): T = implDetailError
 
-  @compileTimeOnly(
-    "`value` can only be called on an input task within a task definition macro, such as := or Def.inputTask.")
+  @compileTimeOnly("`value` can only be called on an input task within a task definition macro, such as := or Def.inputTask.")
   def wrapInputTask_\u2603\u2603[T](in: Any): T = implDetailError
 
-  @compileTimeOnly(
-    "`value` can only be called on an input task within a task definition macro, such as := or Def.inputTask.")
+  @compileTimeOnly("`value` can only be called on an input task within a task definition macro, such as := or Def.inputTask.")
   def wrapInitInputTask_\u2603\u2603[T](in: Any): T = implDetailError
 
-  @compileTimeOnly(
-    "`previous` can only be called on a task within a task or input task definition macro, such as :=, +=, ++=, Def.task, or Def.inputTask.")
+  @compileTimeOnly("`previous` can only be called on a task within a task or input task definition macro, such as :=, +=, ++=, Def.task, or Def.inputTask.")
   def wrapPrevious_\u2603\u2603[T](in: Any): T = implDetailError
 
   private[this] def implDetailError =
@@ -157,33 +151,27 @@ object InputWrapper {
 }
 
 sealed abstract class MacroTaskValue[T] {
-  @compileTimeOnly(
-    "`taskValue` can only be used within a setting macro, such as :=, +=, ++=, or Def.setting.")
+  @compileTimeOnly("`taskValue` can only be used within a setting macro, such as :=, +=, ++=, or Def.setting.")
   def taskValue: Task[T] = macro InputWrapper.taskValueMacroImpl[T]
 }
 sealed abstract class MacroValue[T] {
-  @compileTimeOnly(
-    "`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting.")
+  @compileTimeOnly("`value` can only be used within a task or setting macro, such as :=, +=, ++=, Def.task, or Def.setting.")
   def value: T = macro InputWrapper.valueMacroImpl[T]
 }
 sealed abstract class ParserInput[T] {
-  @compileTimeOnly(
-    "`parsed` can only be used within an input task macro, such as := or Def.inputTask.")
+  @compileTimeOnly("`parsed` can only be used within an input task macro, such as := or Def.inputTask.")
   def parsed: T = macro ParserInput.parsedMacroImpl[T]
 }
 sealed abstract class InputEvaluated[T] {
-  @compileTimeOnly(
-    "`evaluated` can only be used within an input task macro, such as := or Def.inputTask.")
+  @compileTimeOnly("`evaluated` can only be used within an input task macro, such as := or Def.inputTask.")
   def evaluated: T = macro InputWrapper.valueMacroImpl[T]
 }
 sealed abstract class ParserInputTask[T] {
-  @compileTimeOnly(
-    "`parsed` can only be used within an input task macro, such as := or Def.inputTask.")
+  @compileTimeOnly("`parsed` can only be used within an input task macro, such as := or Def.inputTask.")
   def parsed: Task[T] = macro ParserInput.parsedInputMacroImpl[T]
 }
 sealed abstract class MacroPrevious[T] {
-  @compileTimeOnly(
-    "`previous` can only be used within a task macro, such as :=, +=, ++=, or Def.task.")
+  @compileTimeOnly("`previous` can only be used within a task macro, such as :=, +=, ++=, or Def.task.")
   def previous(implicit format: sbinary.Format[T]): Option[T] =
     macro InputWrapper.previousMacroImpl[T]
 }
@@ -196,14 +184,12 @@ object ParserInput {
   private[std] val WrapName = "parser_\u2603\u2603"
   private[std] val WrapInitName = "initParser_\u2603\u2603"
 
-  @compileTimeOnly(
-    "`parsed` can only be used within an input task macro, such as := or Def.inputTask.")
+  @compileTimeOnly("`parsed` can only be used within an input task macro, such as := or Def.inputTask.")
   def parser_\u2603\u2603[T](i: Any): T =
     sys.error(
       "This method is an implementation detail and should not be referenced.")
 
-  @compileTimeOnly(
-    "`parsed` can only be used within an input task macro, such as := or Def.inputTask.")
+  @compileTimeOnly("`parsed` can only be used within an input task macro, such as := or Def.inputTask.")
   def initParser_\u2603\u2603[T](i: Any): T =
     sys.error(
       "This method is an implementation detail and should not be referenced.")

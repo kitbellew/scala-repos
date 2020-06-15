@@ -45,8 +45,7 @@ class DockerAppIntegrationTest
       waitForTasks(app.id, 1) // The app has really started
     }
 
-    test(
-      "create a simple docker app using http health checks with HOST networking") {
+    test("create a simple docker app using http health checks with HOST networking") {
       Given("a new app")
       val app = dockerAppProxy(
         testBasePath / "docker-http-app",

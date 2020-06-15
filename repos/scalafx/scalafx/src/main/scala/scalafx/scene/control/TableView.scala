@@ -466,8 +466,7 @@ class TableView[S](
     delegate.onScrollToColumnProperty
   def onScrollToColumn_=(
       v: jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TableColumn[S, _]]]) {
-    ObjectProperty.fillProperty[
-      jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TableColumn[S, _]]]](
+    ObjectProperty.fillProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TableColumn[S, _]]]](
       onScrollToColumn,
       v)
   }

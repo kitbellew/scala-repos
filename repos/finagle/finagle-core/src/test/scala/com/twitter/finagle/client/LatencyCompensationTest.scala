@@ -149,8 +149,7 @@ class LatencyCompensationTest
     }
   }
 
-  test(
-    "TimeoutFilter.module accomodates configured latency compensation even when default override is set") {
+  test("TimeoutFilter.module accomodates configured latency compensation even when default override is set") {
     new Ctx {
       // set a compensation to 0 which should cause a failure if the caller does not
       // explicitly .configure the client with a compensation parameter.
@@ -181,8 +180,7 @@ class LatencyCompensationTest
     }
   }
 
-  test(
-    "TimeoutFilter.module accomodates configured latency compensation when set by override") {
+  test("TimeoutFilter.module accomodates configured latency compensation when set by override") {
     new Ctx {
       // Do not set the .configured param for LatencyCompensation. Instead override the default
       // compensation to 2 seconds which will make this succeed.

@@ -110,8 +110,7 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
       }
     }
 
-  property(
-    "0 or more merge producers at the start of every online bolts, followed by 1+ non-merge producers and no other merge producers following those.") =
+  property("0 or more merge producers at the start of every online bolts, followed by 1+ non-merge producers and no other merge producers following those.") =
     forAll { (dag: MemoryDag) =>
       dag.nodes.forall { n =>
         val (_, inError) = n.members.foldLeft((false, false)) {
@@ -157,8 +156,7 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
       }
   }
 
-  property(
-    "Sources must have no incoming dependencies, and they must have dependants") =
+  property("Sources must have no incoming dependencies, and they must have dependants") =
     forAll { (dag: MemoryDag) =>
       dag.nodes.forall { n =>
         val success = n match {
@@ -216,8 +214,7 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
       Producer.entireGraphOf(stripped).size <= Producer.entireGraphOf(tail).size
     }
 
-  property(
-    "The number of non-named nodes should remain constant running with StripNamedNode") =
+  property("The number of non-named nodes should remain constant running with StripNamedNode") =
     forAll { (tail: TailProducer[Memory, _]) =>
       def countNonNamed(tail: Producer[Memory, _]): Int = {
         Producer

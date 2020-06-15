@@ -116,9 +116,7 @@ object SyntheticMembersInjector {
         buffer += function
     } catch {
       case e: Throwable =>
-        LOG.error(
-          s"Error during parsing template from injector: ${injector.getClass.getName}",
-          e)
+        LOG.error(s"Error during parsing template from injector: ${injector.getClass.getName}", e)
     }
     buffer
   }
@@ -154,9 +152,7 @@ object SyntheticMembersInjector {
     } catch {
       case p: ProcessCanceledException => throw p
       case e: Throwable =>
-        LOG.error(
-          s"Error during parsing template from injector: ${injector.getClass.getName}",
-          e)
+        LOG.error(s"Error during parsing template from injector: ${injector.getClass.getName}", e)
     }
     buffer
   }
@@ -184,9 +180,7 @@ object SyntheticMembersInjector {
     } catch {
       case p: ProcessCanceledException => throw p
       case e: Throwable =>
-        LOG.error(
-          s"Error during parsing type element from injector: ${injector.getClass.getName}",
-          e)
+        LOG.error(s"Error during parsing type element from injector: ${injector.getClass.getName}", e)
     }
     buffer
   }

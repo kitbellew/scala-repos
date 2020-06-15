@@ -65,8 +65,7 @@ object LogisticRegressionExample {
     val defaultParams = Params()
 
     val parser = new OptionParser[Params]("LogisticRegressionExample") {
-      head(
-        "LogisticRegressionExample: an example Logistic Regression with Elastic-Net app.")
+      head("LogisticRegressionExample: an example Logistic Regression with Elastic-Net app.")
       opt[Double]("regParam")
         .text(s"regularization parameter, default: ${defaultParams.regParam}")
         .action((x, c) => c.copy(regParam = x))

@@ -117,14 +117,13 @@ object Schemifier extends Loggable {
         con.connection.commit
         con.connection.setAutoCommit(true)
       }
-      logger.debug(
-        "Starting schemify. write=%s, structureOnly=%s, dbId=%s, schema=%s, tables=%s"
-          .format(
-            performWrite,
-            structureOnly,
-            dbId,
-            getDefaultSchemaName(con),
-            tables.map(_.dbTableName)))
+      logger.debug("Starting schemify. write=%s, structureOnly=%s, dbId=%s, schema=%s, tables=%s"
+        .format(
+          performWrite,
+          structureOnly,
+          dbId,
+          getDefaultSchemaName(con),
+          tables.map(_.dbTableName)))
 
       val connection = con // SuperConnection(con)
       val driver = DriverType.calcDriver(connection)

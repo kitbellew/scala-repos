@@ -137,13 +137,11 @@ object ConsoleConsumer extends Logging {
           consumer.receive()
         } catch {
           case nse: StreamEndException =>
-            trace(
-              "Caught StreamEndException because consumer is shutdown, ignore and terminate.")
+            trace("Caught StreamEndException because consumer is shutdown, ignore and terminate.")
             // Consumer is already closed
             return
           case nse: WakeupException =>
-            trace(
-              "Caught WakeupException because consumer is shutdown, ignore and terminate.")
+            trace("Caught WakeupException because consumer is shutdown, ignore and terminate.")
             // Consumer will be closed
             return
           case e: Throwable =>

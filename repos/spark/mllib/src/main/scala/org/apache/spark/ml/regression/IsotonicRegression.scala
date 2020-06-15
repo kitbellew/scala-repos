@@ -124,8 +124,7 @@ private[regression] trait IsotonicRegressionBase
       if (hasWeightCol) {
         SchemaUtils.checkColumnType(schema, $(weightCol), DoubleType)
       } else {
-        logInfo(
-          "The weight column is not defined. Treat all instance weights as 1.0.")
+        logInfo("The weight column is not defined. Treat all instance weights as 1.0.")
       }
     }
     val featuresType = schema($(featuresCol)).dataType

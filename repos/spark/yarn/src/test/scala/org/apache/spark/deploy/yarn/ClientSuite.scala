@@ -78,8 +78,7 @@ class ClientSuite
     getDefaultMRApplicationClasspath should be(Some(Fixtures.knownDefMRAppCP))
   }
 
-  test(
-    "resultant classpath for an application that defines a classpath for YARN") {
+  test("resultant classpath for an application that defines a classpath for YARN") {
     withAppConf(Fixtures.mapYARNAppConf) { conf =>
       val env = newEnv
       populateHadoopClasspath(conf, env)
@@ -98,8 +97,7 @@ class ClientSuite
     }
   }
 
-  test(
-    "resultant classpath for an application that defines both classpaths, YARN and MR") {
+  test("resultant classpath for an application that defines both classpaths, YARN and MR") {
     withAppConf(Fixtures.mapAppConf) { conf =>
       val env = newEnv
       populateHadoopClasspath(conf, env)
@@ -202,8 +200,7 @@ class ClientSuite
     cp should contain("/remotePath/my1.jar")
   }
 
-  test(
-    "configuration and args propagate through createApplicationSubmissionContext") {
+  test("configuration and args propagate through createApplicationSubmissionContext") {
     val conf = new Configuration()
     // When parsing tags, duplicates and leading/trailing whitespace should be removed.
     // Spaces between non-comma strings should be preserved as single tags. Empty strings may or

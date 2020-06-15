@@ -93,9 +93,8 @@ private[summingbird] object MemoryStatProvider extends PlatformStatProvider {
     @annotation.tailrec
     def put(m: Map[String, MemoryCounter]): Unit =
       countersForJob.putIfAbsent(jobID, memoryCounters) match {
-        case null => () // The jobID was not present
-        case previous
-            if (previous.keySet & m.keySet).nonEmpty => // Key intersection nonempty
+        case null                                              => () // The jobID was not present
+        case previous if (previous.keySet & m.keySet).nonEmpty => // Key intersection nonempty
           // prefer the old values
           if (countersForJob.replace(jobID, previous, (m ++ previous))) ()
           else put(m)

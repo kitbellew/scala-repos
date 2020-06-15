@@ -143,8 +143,7 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
     })
   }
 
-  test(
-    "Compatibility of scalar multiplication with field multiplication - Matrix") {
+  test("Compatibility of scalar multiplication with field multiplication - Matrix") {
     check(Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
       val (a, _, _) = trip
       closeM((a) :* scalars.*(s, t), a :* s :* t, TOL)

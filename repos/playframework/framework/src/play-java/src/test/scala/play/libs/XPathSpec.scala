@@ -10,8 +10,8 @@ object XPathSpec extends Specification {
   //XPathFactory.newInstance() used internally by XPath is not thread safe so forcing sequential execution
   sequential
 
-  val xmlWithNamespace = XML.fromString(
-    """<x:foo xmlns:x="http://foo.com/"><x:bar><x:baz>hey</x:baz></x:bar></x:foo>""")
+  val xmlWithNamespace =
+    XML.fromString("""<x:foo xmlns:x="http://foo.com/"><x:bar><x:baz>hey</x:baz></x:bar></x:foo>""")
   val xmlWithoutNamespace = XML.fromString(
     """<foo><bar><baz>hey</baz></bar><bizz></bizz><bizz></bizz></foo>""")
 

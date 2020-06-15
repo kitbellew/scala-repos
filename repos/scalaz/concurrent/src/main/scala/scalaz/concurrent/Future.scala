@@ -359,9 +359,7 @@ object Future {
               val listener = new AtomicReference[A => Trampoline[Unit]](null)
               val residual = Async { (cb: A => Trampoline[Unit]) =>
                 if (used.compareAndSet(false, true)) { // get residual value from already running Future
-                  if (listener.compareAndSet(
-                      null,
-                      cb)) {} // we've successfully registered ourself with running task
+                  if (listener.compareAndSet(null, cb)) {} // we've successfully registered ourself with running task
                   else
                     cb(ref.get).run // the running task has completed, use its result
                 } else // residual value used up, revert to original Future

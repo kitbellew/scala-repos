@@ -143,8 +143,7 @@ class OfferMatcherReconcilerTest
     matchedTaskOps.ops should be(expectedOps)
   }
 
-  test(
-    "offer with volume for known tasks/apps DOES NOT lead to unreserve/destroy") {
+  test("offer with volume for known tasks/apps DOES NOT lead to unreserve/destroy") {
     val f = new Fixture
     Given("an offer with volume")
     val appId = PathId("/test")

@@ -56,21 +56,18 @@ case class WindowSpecDefinition(
   def validate: Option[String] =
     frameSpecification match {
       case UnspecifiedFrame =>
-        Some(
-          "Found a UnspecifiedFrame. It should be converted to a SpecifiedWindowFrame " +
-            "during analysis. Please file a bug report.")
+        Some("Found a UnspecifiedFrame. It should be converted to a SpecifiedWindowFrame " +
+          "during analysis. Please file a bug report.")
       case frame: SpecifiedWindowFrame =>
         frame.validate.orElse {
           def checkValueBasedBoundaryForRangeFrame(): Option[String] = {
             if (orderSpec.length > 1) {
               // It is not allowed to have a value-based PRECEDING and FOLLOWING
               // as the boundary of a Range Window Frame.
-              Some(
-                "This Range Window Frame only accepts at most one ORDER BY expression.")
+              Some("This Range Window Frame only accepts at most one ORDER BY expression.")
             } else if (orderSpec.nonEmpty && !orderSpec.head.dataType
                 .isInstanceOf[NumericType]) {
-              Some(
-                "The data type of the expression in the ORDER BY clause should be a numeric type.")
+              Some("The data type of the expression in the ORDER BY clause should be a numeric type.")
             } else {
               None
             }

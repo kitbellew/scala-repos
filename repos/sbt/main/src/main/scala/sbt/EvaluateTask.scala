@@ -522,8 +522,7 @@ object EvaluateTask {
     }
 
     val log = state.log
-    log.debug(
-      s"Running task... Cancel: ${config.cancelStrategy}, check cycles: ${config.checkCycles}, forcegc: ${config.forceGarbageCollection}")
+    log.debug(s"Running task... Cancel: ${config.cancelStrategy}, check cycles: ${config.checkCycles}, forcegc: ${config.forceGarbageCollection}")
     val tags = tagged[Task[_]](
       _.info get tagsKey getOrElse Map.empty,
       Tags.predicate(config.restrictions))

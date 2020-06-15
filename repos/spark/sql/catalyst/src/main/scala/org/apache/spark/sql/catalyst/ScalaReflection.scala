@@ -945,8 +945,7 @@ trait ScalaReflection {
         constructorSymbol.asTerm.alternatives.find(s =>
           s.isMethod && s.asMethod.isPrimaryConstructor)
       if (primaryConstructorSymbol.isEmpty) {
-        sys.error(
-          "Internal SQL error: Product object did not have a primary constructor.")
+        sys.error("Internal SQL error: Product object did not have a primary constructor.")
       } else {
         primaryConstructorSymbol.get.asMethod.paramss
       }

@@ -18,12 +18,10 @@ class IllegalInheritanceTest extends AnnotatorTestBase(IllegalInheritance) {
     assertNothing(
       messages(
         "trait X; trait T { self: X => }; class C extends T { self: X => }"))
-    assertNothing(messages(
-      "trait X; trait Y extends X; trait T { self: X => }; class C extends T { self: Y => }"))
+    assertNothing(messages("trait X; trait Y extends X; trait T { self: X => }; class C extends T { self: Y => }"))
     assertNothing(
-      messages(
-        "trait U; trait X[A]; trait Y[A] { self: X[A] => }; class Z extends X[U]; " +
-          "object A {new Z with Y[U]}"))
+      messages("trait U; trait X[A]; trait Y[A] { self: X[A] => }; class Z extends X[U]; " +
+        "object A {new Z with Y[U]}"))
     assertNothing(
       messages(
         """
@@ -65,14 +63,12 @@ class IllegalInheritanceTest extends AnnotatorTestBase(IllegalInheritance) {
     }
 
     val m3 = IllegalInheritance.Message("Holder.Y", "Holder.X")
-    assertMatches(messages(
-      "trait X; trait Y; trait T { self: X => }; class C extends T { self: Y => }")) {
+    assertMatches(messages("trait X; trait Y; trait T { self: X => }; class C extends T { self: Y => }")) {
       case Error("T", _) :: Nil =>
     }
 
     val m4 = IllegalInheritance.Message("Holder.X", "Holder.Y")
-    assertMatches(messages(
-      "trait X; trait Y extends X; trait T { self: Y => }; class C extends T { self: X => }")) {
+    assertMatches(messages("trait X; trait Y extends X; trait T { self: Y => }; class C extends T { self: X => }")) {
       case Error("T", _) :: Nil =>
     }
   }

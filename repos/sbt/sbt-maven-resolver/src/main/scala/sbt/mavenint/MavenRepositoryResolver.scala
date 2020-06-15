@@ -159,8 +159,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       val drid: ModuleRevisionId =
         if (MakePom.isDependencyVersionRange(
             dd.getDependencyRevisionId.getRevision)) {
-          Message.debug(
-            s"Got a dynamic revision, attempting to convert to real revision: ${dd.getDependencyRevisionId}")
+          Message.debug(s"Got a dynamic revision, attempting to convert to real revision: ${dd.getDependencyRevisionId}")
           val revision = MakePom.makeDependencyVersion(
             dd.getDependencyRevisionId.getRevision)
           // TODO - Alter revision id to be maven-friendly first.
@@ -188,8 +187,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
 
       // TODO - Check to see if we're asking for latest.* version, and if so, we should run a latest version query
       //        first and use that result to return the metadata/final module.
-      Message.debug(s"Requesting conf [${dd.getModuleConfigurations.mkString(
-        ",")}] from Aether module ${drid} in resolver ${getName}")
+      Message.debug(s"Requesting conf [${dd.getModuleConfigurations.mkString(",")}] from Aether module ${drid} in resolver ${getName}")
       val request = new AetherDescriptorRequest()
       val coords = aetherCoordsFromMrid(drid)
       Message.debug(s"Aether about to resolve [$coords]...")
@@ -280,8 +278,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
           s"Failed to read descriptor ${dd} from ${getName}, ${e.getMessage}")
         rd.getCurrentResolvedModuleRevision
       case e: MavenResolutionException =>
-        Message.debug(
-          s"Resolution Exception from ${getName}, ${e.getMessage}, returning: ${rd.getCurrentResolvedModuleRevision}")
+        Message.debug(s"Resolution Exception from ${getName}, ${e.getMessage}, returning: ${rd.getCurrentResolvedModuleRevision}")
         rd.getCurrentResolvedModuleRevision
     } finally IvyContext.popContext()
   }
@@ -329,8 +326,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       packaging: String,
       md: DefaultModuleDescriptor,
       lastModifiedTime: Long): Unit = {
-    Message.debug(
-      s"Calculating artifacts for ${dd.getDependencyId} w/ packaging $packaging")
+    Message.debug(s"Calculating artifacts for ${dd.getDependencyId} w/ packaging $packaging")
     // Here we add in additional artifact requests, which ALLWAYS have to be explicit since
     // Maven/Aether doesn't include all known artifacts in a pom.xml
     // TODO - This does not appear to be working correctly.
@@ -373,8 +369,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
             MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION,
             defaultArt)
         case _ => // Ignore, we have no idea what this artifact is.
-          Message.warn(
-            s"Not adding artifacts for resolution because we don't understand packaging: $packaging")
+          Message.warn(s"Not adding artifacts for resolution because we don't understand packaging: $packaging")
       }
 
     } else {
@@ -486,8 +481,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       val scope = Option(d.getScope).filterNot(_.isEmpty).getOrElse("compile")
       val mapping =
         ReplaceMavenConfigurationMappings.addMappings(dd, scope, d.isOptional)
-      Message.debug(
-        s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
+      Message.debug(s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
       // TODO - Unify this borrowed Java code into something a bit friendlier.
       // Now we add the artifact....
       if ((d.getArtifact.getClassifier != null) || ((d.getArtifact.getExtension != null) && !("jar" == d.getArtifact.getExtension))) {
@@ -542,8 +536,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
   override def findIvyFileRef(
       dd: DependencyDescriptor,
       rd: ResolveData): ResolvedResource = {
-    Message.error(
-      s"Looking for ivy file ref, method not implemented!  MavenRepositoryResolver($getName) will always return null.")
+    Message.error(s"Looking for ivy file ref, method not implemented!  MavenRepositoryResolver($getName) will always return null.")
     null
   }
 
@@ -670,13 +663,10 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
     // TODO - actually send all artifacts to aether
     currentTransaction match {
       case Some(t) =>
-        Message.debug(
-          s"Publishing module ${t.module}, with artifact count = ${t.artifacts.size}")
+        Message.debug(s"Publishing module ${t.module}, with artifact count = ${t.artifacts.size}")
         val artifacts =
           for ((art, file) <- t.artifacts) yield {
-            Message.debug(
-              s" - Publishing $art (${art.getType})(${art.getExtraAttribute(
-                "classifier")}) in [${art.getConfigurations.mkString(",")}] from $file")
+            Message.debug(s" - Publishing $art (${art.getType})(${art.getExtraAttribute("classifier")}) in [${art.getConfigurations.mkString(",")}] from $file")
             new AetherArtifact(
               t.module.getOrganisation,
               aetherArtifactIdFromMrid(t.module),

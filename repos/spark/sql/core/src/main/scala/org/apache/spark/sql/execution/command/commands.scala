@@ -98,9 +98,8 @@ case class SetCommand(kv: Option[(String, Option[String])])
       // Configures the deprecated "mapred.reduce.tasks" property.
       case Some((SQLConf.Deprecated.MAPRED_REDUCE_TASKS, Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(
-            s"Property ${SQLConf.Deprecated.MAPRED_REDUCE_TASKS} is deprecated, " +
-              s"automatically converted to ${SQLConf.SHUFFLE_PARTITIONS.key} instead.")
+          logWarning(s"Property ${SQLConf.Deprecated.MAPRED_REDUCE_TASKS} is deprecated, " +
+            s"automatically converted to ${SQLConf.SHUFFLE_PARTITIONS.key} instead.")
           if (value.toInt < 1) {
             val msg =
               s"Setting negative ${SQLConf.Deprecated.MAPRED_REDUCE_TASKS} for automatically " +
@@ -115,9 +114,8 @@ case class SetCommand(kv: Option[(String, Option[String])])
 
       case Some((SQLConf.Deprecated.EXTERNAL_SORT, Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(
-            s"Property ${SQLConf.Deprecated.EXTERNAL_SORT} is deprecated and will be ignored. " +
-              s"External sort will continue to be used.")
+          logWarning(s"Property ${SQLConf.Deprecated.EXTERNAL_SORT} is deprecated and will be ignored. " +
+            s"External sort will continue to be used.")
           Seq(Row(SQLConf.Deprecated.EXTERNAL_SORT, "true"))
         }
         (keyValueOutput, runFunc)
@@ -133,36 +131,32 @@ case class SetCommand(kv: Option[(String, Option[String])])
 
       case Some((SQLConf.Deprecated.TUNGSTEN_ENABLED, Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(
-            s"Property ${SQLConf.Deprecated.TUNGSTEN_ENABLED} is deprecated and " +
-              s"will be ignored. Tungsten will continue to be used.")
+          logWarning(s"Property ${SQLConf.Deprecated.TUNGSTEN_ENABLED} is deprecated and " +
+            s"will be ignored. Tungsten will continue to be used.")
           Seq(Row(SQLConf.Deprecated.TUNGSTEN_ENABLED, "true"))
         }
         (keyValueOutput, runFunc)
 
       case Some((SQLConf.Deprecated.CODEGEN_ENABLED, Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(
-            s"Property ${SQLConf.Deprecated.CODEGEN_ENABLED} is deprecated and " +
-              s"will be ignored. Codegen will continue to be used.")
+          logWarning(s"Property ${SQLConf.Deprecated.CODEGEN_ENABLED} is deprecated and " +
+            s"will be ignored. Codegen will continue to be used.")
           Seq(Row(SQLConf.Deprecated.CODEGEN_ENABLED, "true"))
         }
         (keyValueOutput, runFunc)
 
       case Some((SQLConf.Deprecated.UNSAFE_ENABLED, Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(
-            s"Property ${SQLConf.Deprecated.UNSAFE_ENABLED} is deprecated and " +
-              s"will be ignored. Unsafe mode will continue to be used.")
+          logWarning(s"Property ${SQLConf.Deprecated.UNSAFE_ENABLED} is deprecated and " +
+            s"will be ignored. Unsafe mode will continue to be used.")
           Seq(Row(SQLConf.Deprecated.UNSAFE_ENABLED, "true"))
         }
         (keyValueOutput, runFunc)
 
       case Some((SQLConf.Deprecated.SORTMERGE_JOIN, Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(
-            s"Property ${SQLConf.Deprecated.SORTMERGE_JOIN} is deprecated and " +
-              s"will be ignored. Sort merge join will continue to be used.")
+          logWarning(s"Property ${SQLConf.Deprecated.SORTMERGE_JOIN} is deprecated and " +
+            s"will be ignored. Sort merge join will continue to be used.")
           Seq(Row(SQLConf.Deprecated.SORTMERGE_JOIN, "true"))
         }
         (keyValueOutput, runFunc)
@@ -172,9 +166,8 @@ case class SetCommand(kv: Option[(String, Option[String])])
               SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED,
               Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(
-            s"Property ${SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED} is " +
-              s"deprecated and will be ignored. Vectorized parquet reader will be used instead.")
+          logWarning(s"Property ${SQLConf.Deprecated.PARQUET_UNSAFE_ROW_RECORD_READER_ENABLED} is " +
+            s"deprecated and will be ignored. Vectorized parquet reader will be used instead.")
           Seq(Row(SQLConf.PARQUET_VECTORIZED_READER_ENABLED, "true"))
         }
         (keyValueOutput, runFunc)
@@ -213,9 +206,8 @@ case class SetCommand(kv: Option[(String, Option[String])])
       // Queries the deprecated "mapred.reduce.tasks" property.
       case Some((SQLConf.Deprecated.MAPRED_REDUCE_TASKS, None)) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(
-            s"Property ${SQLConf.Deprecated.MAPRED_REDUCE_TASKS} is deprecated, " +
-              s"showing ${SQLConf.SHUFFLE_PARTITIONS.key} instead.")
+          logWarning(s"Property ${SQLConf.Deprecated.MAPRED_REDUCE_TASKS} is deprecated, " +
+            s"showing ${SQLConf.SHUFFLE_PARTITIONS.key} instead.")
           Seq(
             Row(
               SQLConf.SHUFFLE_PARTITIONS.key,

@@ -1358,9 +1358,8 @@ private[spark] class BlockManager(
         val removedFromMemory = memoryStore.remove(blockId)
         val removedFromDisk = diskStore.remove(blockId)
         if (!removedFromMemory && !removedFromDisk) {
-          logWarning(
-            s"Block $blockId could not be removed as it was not found in either " +
-              "the disk, memory, or external block store")
+          logWarning(s"Block $blockId could not be removed as it was not found in either " +
+            "the disk, memory, or external block store")
         }
         blockInfoManager.removeBlock(blockId)
         if (tellMaster && info.tellMaster) {

@@ -49,8 +49,7 @@ abstract class StepOverTestBase extends ScalaDebuggerTestCase {
         if (expectedNumbers.hasNext) checkLine(expectedNumbers.next())
         else {
           val lineNumber = currentLineNumber
-          Assert.fail(
-            s"No expected lines left, stopped at line $lineNumber: ${lines(lineNumber)}")
+          Assert.fail(s"No expected lines left, stopped at line $lineNumber: ${lines(lineNumber)}")
         }
         doStepOver()
       }

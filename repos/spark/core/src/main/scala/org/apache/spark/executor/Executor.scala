@@ -316,10 +316,10 @@ private[spark] class Executor(
         // directSend = sending directly back to the driver
         val serializedResult: ByteBuffer = {
           if (maxResultSize > 0 && resultSize > maxResultSize) {
-            logWarning(
-              s"Finished $taskName (TID $taskId). Result is larger than maxResultSize " +
-                s"(${Utils.bytesToString(resultSize)} > ${Utils.bytesToString(maxResultSize)}), " +
-                s"dropping it.")
+            logWarning(s"Finished $taskName (TID $taskId). Result is larger than maxResultSize " +
+              s"(${Utils.bytesToString(resultSize)} > ${Utils.bytesToString(
+                maxResultSize)}), " +
+              s"dropping it.")
             ser.serialize(
               new IndirectTaskResult[Any](
                 TaskResultBlockId(taskId),
@@ -330,12 +330,10 @@ private[spark] class Executor(
               blockId,
               new ChunkedByteBuffer(serializedDirectResult.duplicate()),
               StorageLevel.MEMORY_AND_DISK_SER)
-            logInfo(
-              s"Finished $taskName (TID $taskId). $resultSize bytes result sent via BlockManager)")
+            logInfo(s"Finished $taskName (TID $taskId). $resultSize bytes result sent via BlockManager)")
             ser.serialize(new IndirectTaskResult[Any](blockId, resultSize))
           } else {
-            logInfo(
-              s"Finished $taskName (TID $taskId). $resultSize bytes result sent to driver")
+            logInfo(s"Finished $taskName (TID $taskId). $resultSize bytes result sent to driver")
             serializedDirectResult
           }
         }
@@ -464,8 +462,7 @@ private[spark] class Executor(
           _userClassPathFirst)
       } catch {
         case _: ClassNotFoundException =>
-          logError(
-            "Could not find org.apache.spark.repl.ExecutorClassLoader on classpath!")
+          logError("Could not find org.apache.spark.repl.ExecutorClassLoader on classpath!")
           System.exit(1)
           null
       }

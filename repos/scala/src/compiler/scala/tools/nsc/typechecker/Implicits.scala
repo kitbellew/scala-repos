@@ -1156,8 +1156,7 @@ trait Implicits {
                 try improves(firstPending, alt)
                 catch {
                   case e: CyclicReference =>
-                    devWarning(
-                      s"Discarding $firstPending during implicit search due to cyclic reference.")
+                    devWarning(s"Discarding $firstPending during implicit search due to cyclic reference.")
                     true
                 }
               )
@@ -1176,8 +1175,7 @@ trait Implicits {
               case sr if sr.isDivergent => Nil
               case sr if sr.isFailure   => rankImplicits(otherPending, acc)
               case newBest =>
-                best =
-                  newBest // firstPending is our new best, since we already pruned last time around:
+                best = newBest // firstPending is our new best, since we already pruned last time around:
                 val pendingImprovingBest = undoLog undo {
                   otherPending filterNot firstPendingImproves
                 }
@@ -1300,8 +1298,7 @@ trait Implicits {
             infoMap get sym match {
               case Some(infos1) =>
                 if (infos1.nonEmpty && !(pre =:= infos1.head.pre.prefix)) {
-                  log(
-                    s"Ignoring implicit members of $pre#$sym as it is also visible via another prefix: ${infos1.head.pre.prefix}")
+                  log(s"Ignoring implicit members of $pre#$sym as it is also visible via another prefix: ${infos1.head.pre.prefix}")
                   infoMap(sym) =
                     List() // ambiguous prefix - ignore implicit members
                 }
@@ -1787,8 +1784,7 @@ trait Implicits {
             // must inline to avoid capturing result
             def prohibit(sym: Symbol) =
               (sym.tpe <:< out) && {
-                maybeInvalidConversionError(
-                  s"the result type of an implicit conversion must be more specific than ${sym.name}")
+                maybeInvalidConversionError(s"the result type of an implicit conversion must be more specific than ${sym.name}")
                 true
               }
             if (prohibit(AnyRefClass) || (settings.isScala211 && prohibit(
@@ -1804,8 +1800,7 @@ trait Implicits {
       }
 
       if (result.isFailure && settings.debug) // debuglog is not inlined for some reason
-        log(
-          s"no implicits found for ${pt} ${pt.typeSymbol.info.baseClasses} ${implicitsOfExpectedType}")
+        log(s"no implicits found for ${pt} ${pt.typeSymbol.info.baseClasses} ${implicitsOfExpectedType}")
 
       result
     }

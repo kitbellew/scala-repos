@@ -128,8 +128,7 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
               }
 
             case x =>
-              failure(ResourceError.corrupt(
-                "Attempted to load JSON as a table from something that wasn't a string: " + x))
+              failure(ResourceError.corrupt("Attempted to load JSON as a table from something that wasn't a string: " + x))
           }
 
           parsedV.map(_.flatten).disjunction.map(fromJson(_))

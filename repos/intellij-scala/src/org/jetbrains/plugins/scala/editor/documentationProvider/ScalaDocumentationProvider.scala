@@ -328,8 +328,8 @@ class ScalaDocumentationProvider extends CodeDocumentationProvider {
 }
 
 object ScalaDocumentationProvider {
-  private val LOG = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.editor.documentationProvider.ScalaDocumentationProvider")
+  private val LOG =
+    Logger.getInstance("#org.jetbrains.plugins.scala.editor.documentationProvider.ScalaDocumentationProvider")
 
   private def debugMessage(msg: String, elem: PsiElement) {
     val footer = if (!elem.isValid) {
@@ -754,8 +754,7 @@ object ScalaDocumentationProvider {
           buffer append " with " + ScType.urlText(
             seq(i).getType(TypingContext.empty).getOrAny)
       case None =>
-        buffer.append(
-          "<a href=\"psi_element://scala.ScalaObject\"><code>ScalaObject</code></a>")
+        buffer.append("<a href=\"psi_element://scala.ScalaObject\"><code>ScalaObject</code></a>")
         if (elem.isUnderCaseClass) {
           buffer.append(
             "<a href=\"psi_element://scala.Product\"><code>Product</code></a>")

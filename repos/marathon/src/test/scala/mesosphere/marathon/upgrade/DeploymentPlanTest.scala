@@ -218,10 +218,8 @@ class DeploymentPlanTest
       Set(RestartApplication(service._2)))
   }
 
-  test(
-    "when starting apps without dependencies, they are first started and then scaled parallely") {
-    Given(
-      "an empty group and the same group but now including four independent apps")
+  test("when starting apps without dependencies, they are first started and then scaled parallely") {
+    Given("an empty group and the same group but now including four independent apps")
     val emptyGroup = Group(id = "/test".toPath)
 
     val instances: Int = 10
@@ -248,8 +246,7 @@ class DeploymentPlanTest
       apps.map(ScaleApplication(_, instances)))
   }
 
-  test(
-    "when updating apps without dependencies, the restarts are executed in the same step") {
+  test("when updating apps without dependencies, the restarts are executed in the same step") {
     Given("Two application updates with command and scale changes")
     val mongoId = "/test/database/mongo".toPath
     val serviceId = "/test/service/srv1".toPath
@@ -308,8 +305,7 @@ class DeploymentPlanTest
       Set(RestartApplication(mongo._2), RestartApplication(service._2)))
   }
 
-  test(
-    "when updating a group with dependent and independent applications, the correct order is computed") {
+  test("when updating a group with dependent and independent applications, the correct order is computed") {
     Given("application updates with command and scale changes")
     val mongoId = "/test/database/mongo".toPath
     val serviceId = "/test/service/srv1".toPath
@@ -389,8 +385,7 @@ class DeploymentPlanTest
     When("the deployment plan is computed")
     val plan = DeploymentPlan(from, to)
 
-    Then(
-      "the deployment contains steps for dependent and independent applications")
+    Then("the deployment contains steps for dependent and independent applications")
     plan.steps should have size (5)
 
     actionsOf(plan) should have size (6)

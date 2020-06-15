@@ -102,8 +102,8 @@ object ParserUtils {
   }
 
   def getClause(clauseName: String, nodeList: Seq[ASTNode]): ASTNode = {
-    getClauseOption(clauseName, nodeList).getOrElse(sys.error(
-      s"Expected clause $clauseName missing from ${nodeList.map(_.treeString).mkString("\n")}"))
+    getClauseOption(clauseName, nodeList).getOrElse(
+      sys.error(s"Expected clause $clauseName missing from ${nodeList.map(_.treeString).mkString("\n")}"))
   }
 
   def getClauseOption(

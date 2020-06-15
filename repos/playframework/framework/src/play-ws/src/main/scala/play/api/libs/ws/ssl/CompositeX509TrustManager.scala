@@ -56,8 +56,7 @@ class CompositeX509TrustManager(
     var trusted = false
     val exceptionList = withTrustManagers { trustManager =>
       trustManager.checkClientTrusted(chain, authType)
-      logger.debug(
-        s"checkClientTrusted: trustManager $trustManager found a match for ${debugChain(chain)}")
+      logger.debug(s"checkClientTrusted: trustManager $trustManager found a match for ${debugChain(chain)}")
       trusted = true
     }
 
@@ -85,9 +84,7 @@ class CompositeX509TrustManager(
     val exceptionList = withTrustManagers { trustManager =>
       // always run through the trust manager before making any decisions
       trustManager.checkServerTrusted(chain, authType)
-      logger.debug(
-        s"checkServerTrusted: trustManager $trustManager using authType $authType found a match for ${debugChain(
-          chain).toSeq}")
+      logger.debug(s"checkServerTrusted: trustManager $trustManager using authType $authType found a match for ${debugChain(chain).toSeq}")
       trusted = true
     }
 
@@ -106,9 +103,7 @@ class CompositeX509TrustManager(
         block(trustManager)
       } catch {
         case e: CertPathBuilderException =>
-          logger.debug(
-            "No path found to certificate: this usually means the CA is not in the trust store",
-            e)
+          logger.debug("No path found to certificate: this usually means the CA is not in the trust store", e)
           exceptionList.append(e)
         case e: GeneralSecurityException =>
           logger.debug("General security exception", e)

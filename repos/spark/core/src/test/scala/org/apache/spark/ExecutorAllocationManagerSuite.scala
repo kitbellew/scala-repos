@@ -734,8 +734,7 @@ class ExecutorAllocationManagerSuite
     assert(removeTimes(manager).size === 0)
   }
 
-  test(
-    "SPARK-4951: onExecutorAdded should not add a busy executor to removeTimes") {
+  test("SPARK-4951: onExecutorAdded should not add a busy executor to removeTimes") {
     sc = createSparkContext(2, 10)
     val manager = sc.executorAllocationManager.get
     assert(executorIds(manager).isEmpty)

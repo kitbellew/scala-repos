@@ -216,9 +216,8 @@ private[deploy] class SparkSubmitArguments(
                 s"Cannot load main class from JAR $primaryResource")
           }
         case _ =>
-          SparkSubmit.printErrorAndExit(
-            s"Cannot load main class from JAR $primaryResource with URI $uriScheme. " +
-              "Please specify a class through --class.")
+          SparkSubmit.printErrorAndExit(s"Cannot load main class from JAR $primaryResource with URI $uriScheme. " +
+            "Please specify a class through --class.")
       }
     }
 
@@ -294,8 +293,7 @@ private[deploy] class SparkSubmitArguments(
 
   private def validateStatusRequestArguments(): Unit = {
     if (!master.startsWith("spark://") && !master.startsWith("mesos://")) {
-      SparkSubmit.printErrorAndExit(
-        "Requesting submission statuses is only supported in standalone or Mesos mode!")
+      SparkSubmit.printErrorAndExit("Requesting submission statuses is only supported in standalone or Mesos mode!")
     }
     if (submissionToRequestStatusFor == null) {
       SparkSubmit.printErrorAndExit(

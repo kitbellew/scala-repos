@@ -279,13 +279,12 @@ class RequestSendThread(
               case apiKey =>
                 throw new KafkaException(s"Unexpected apiKey received: $apiKey")
             }
-          stateChangeLogger.trace(
-            "Controller %d epoch %d received response %s for a request sent to broker %s"
-              .format(
-                controllerId,
-                controllerContext.epoch,
-                response.toString,
-                brokerNode.toString))
+          stateChangeLogger.trace("Controller %d epoch %d received response %s for a request sent to broker %s"
+            .format(
+              controllerId,
+              controllerContext.epoch,
+              response.toString,
+              brokerNode.toString))
 
           if (callback != null) {
             callback(response)
@@ -454,9 +453,8 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
               partitionStateInfo)
           }
         case None =>
-          info(
-            "Leader not yet assigned for partition %s. Skip sending UpdateMetadataRequest."
-              .format(partition))
+          info("Leader not yet assigned for partition %s. Skip sending UpdateMetadataRequest."
+            .format(partition))
       }
     }
 
@@ -656,19 +654,16 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
     } catch {
       case e: Throwable => {
         if (leaderAndIsrRequestMap.size > 0) {
-          error(
-            "Haven't been able to send leader and isr requests, current state of " +
-              s"the map is $leaderAndIsrRequestMap")
+          error("Haven't been able to send leader and isr requests, current state of " +
+            s"the map is $leaderAndIsrRequestMap")
         }
         if (updateMetadataRequestMap.size > 0) {
-          error(
-            "Haven't been able to send metadata update requests, current state of " +
-              s"the map is $updateMetadataRequestMap")
+          error("Haven't been able to send metadata update requests, current state of " +
+            s"the map is $updateMetadataRequestMap")
         }
         if (stopReplicaRequestMap.size > 0) {
-          error(
-            "Haven't been able to send stop replica requests, current state of " +
-              s"the map is $stopReplicaRequestMap")
+          error("Haven't been able to send stop replica requests, current state of " +
+            s"the map is $stopReplicaRequestMap")
         }
         throw new IllegalStateException(e)
       }

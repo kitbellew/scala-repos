@@ -417,12 +417,9 @@ class ScopeAnnotatorTest extends SimpleTestCase {
 
   def testConstructorFollowingApplications() {
     assertFine("class X { def this(a: Any) {}; def this(a: Any)(b: Any) {} }")
-    assertFine(
-      "class X { def this(a: Any)(b: AnyVal) {}; def this(a: Any)(b: AnyRef) {} }")
-    assertFine(
-      "class X { def this(a: Any)(b: Any) {}; def this(a: Any)(b: Any, c: Any) {} }")
-    assertFine(
-      "class X { def this(a: Any)(b: Any) {}; def this(a: Any)(b: Any)(c: Any) {} }")
+    assertFine("class X { def this(a: Any)(b: AnyVal) {}; def this(a: Any)(b: AnyRef) {} }")
+    assertFine("class X { def this(a: Any)(b: Any) {}; def this(a: Any)(b: Any, c: Any) {} }")
+    assertFine("class X { def this(a: Any)(b: Any) {}; def this(a: Any)(b: Any)(c: Any) {} }")
 
     assertFine(
       "class X { def this(a: Any)(b: Any) {}; def this(a: Any, b: Any) {} }")
@@ -462,12 +459,9 @@ class ScopeAnnotatorTest extends SimpleTestCase {
   def testNoTypeErasureForArray() {
     assertFine(
       "class Array[T]; def f(a: Array[Foo]) {}; def f(a: Array[Bar]) {}")
-    assertFine(
-      "class Array[T]; def f(a: Array[Array[Foo]]) {}; def f(a: Array[Array[Bar]]) {}")
-    assertFine(
-      "class Array[T]; def f(a: Array[Foo], b: Array[Bar]) {}; def f(a: Array[Bar], b: Array[Foo]) {}")
-    assertFine(
-      "class Array[A, B]; def f(a: Array[Foo, Bar]) {}; def f(a: Array[Bar, Foo]) {}")
+    assertFine("class Array[T]; def f(a: Array[Array[Foo]]) {}; def f(a: Array[Array[Bar]]) {}")
+    assertFine("class Array[T]; def f(a: Array[Foo], b: Array[Bar]) {}; def f(a: Array[Bar], b: Array[Foo]) {}")
+    assertFine("class Array[A, B]; def f(a: Array[Foo, Bar]) {}; def f(a: Array[Bar, Foo]) {}")
 
     assertClashes(
       "class ArrayFoo[T]; def f(a: ArrayFoo[Foo]) {}; def f(a: ArrayFoo[Bar]) {}",

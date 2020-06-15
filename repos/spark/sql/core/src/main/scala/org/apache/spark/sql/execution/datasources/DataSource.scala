@@ -376,8 +376,7 @@ case class DataSource(
         sqlContext.executePlan(plan).toRdd
 
       case _ =>
-        sys.error(
-          s"${providingClass.getCanonicalName} does not allow create table as select.")
+        sys.error(s"${providingClass.getCanonicalName} does not allow create table as select.")
     }
 
     // We replace the schema with that of the DataFrame we just wrote out to avoid re-inferring it.

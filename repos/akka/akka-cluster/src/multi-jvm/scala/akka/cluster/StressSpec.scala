@@ -317,16 +317,14 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         clusterStatsObservedByNode += from -> stats
       case ReportTick ⇒
         if (infolog)
-          log.info(
-            s"[${title}] in progress\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
+          log.info(s"[${title}] in progress\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
       case r: ClusterResult ⇒
         results :+= r
         if (results.size == expectedResults) {
           val aggregated =
             AggregatedClusterResult(title, maxDuration, totalGossipStats)
           if (infolog)
-            log.info(
-              s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
+            log.info(s"[${title}] completed in [${aggregated.duration.toMillis}] ms\n${aggregated.clusterStats}\n${formatMetrics}\n\n${formatPhi}\n\n${formatStats}")
           reportTo foreach { _ ! aggregated }
           context stop self
         }

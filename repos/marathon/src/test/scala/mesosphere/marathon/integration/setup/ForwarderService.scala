@@ -123,8 +123,7 @@ object ForwarderService {
 
   def createForwarder(forwardToPort: Int, args: String*): Service = {
     val conf = createConf(args: _*)
-    log.info(
-      s"Start forwarder on port  ${conf.httpPort()}, forwarding to $forwardToPort")
+    log.info(s"Start forwarder on port  ${conf.httpPort()}, forwarding to $forwardToPort")
     startImpl(
       conf,
       new LeaderInfoModule(

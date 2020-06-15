@@ -127,8 +127,7 @@ private[util] class BatchedWriteAheadLog(
     * Stop the batched writer thread, fulfill promises with failures and close the wrapped WAL.
     */
   override def close(): Unit = {
-    logInfo(
-      s"BatchedWriteAheadLog shutting down at time: ${System.currentTimeMillis()}.")
+    logInfo(s"BatchedWriteAheadLog shutting down at time: ${System.currentTimeMillis()}.")
     synchronized {
       active = false
     }

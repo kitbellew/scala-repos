@@ -71,8 +71,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             // is there an earlier test that checks our condition and whose dependencies are implied by ours?
             dependencies find {
               case (priorTest, deps) =>
-                ((simplify(
-                  priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
+                ((simplify(priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
                   (nonTrivial subsetOf deps) // or if it depends on a superset of our conditions
                 ) && (deps subsetOf tested) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
             } foreach {
@@ -548,7 +547,8 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
                         ) // report the first duplicated
                       reporter.warning(
                         pos,
-                        s"Pattern contains duplicate alternatives: ${duplicated.mkString(", ")}")
+                        s"Pattern contains duplicate alternatives: ${duplicated
+                          .mkString(", ")}")
                     }
                     CaseDef(Alternative(distinctAlts), guard, body)
                   }
@@ -698,8 +698,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       object SwitchableTreeMaker extends SwitchableTreeMakerExtractor {
         def unapply(x: TreeMaker): Option[Tree] =
           x match {
-            case tm @ TypeTestTreeMaker(_, _, pt, _)
-                if tm.isPureTypeTest => //  -- TODO: use this if binder does not occur in the body
+            case tm @ TypeTestTreeMaker(_, _, pt, _) if tm.isPureTypeTest => //  -- TODO: use this if binder does not occur in the body
               Some(
                 Bind(
                   tm.nextBinder,

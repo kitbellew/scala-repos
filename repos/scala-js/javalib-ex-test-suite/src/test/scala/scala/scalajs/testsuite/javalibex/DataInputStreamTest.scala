@@ -295,8 +295,7 @@ object DataInputStreamTest extends JasmineTest {
   tests("java.io.DataInputStream - ArrayBufferInputStream case")(bytes =>
     new ArrayBufferInputStream(new Int8Array(bytes.toJSArray).buffer))
 
-  tests(
-    "java.io.DataInputStream - partially consumed ArrayBufferInputStream case") {
+  tests("java.io.DataInputStream - partially consumed ArrayBufferInputStream case") {
     bytes =>
       val addBytes = Seq[Byte](0, 0, 0, 0)
       val allBytes = addBytes ++ bytes

@@ -652,8 +652,7 @@ trait NamesDefaults { self: Analyzer =>
       def checkAltName = {
         val res = checkDeprecation(false)
         if (res)
-          warn(
-            s"the parameter name $name has been deprecated. Use ${param.name} instead.")
+          warn(s"the parameter name $name has been deprecated. Use ${param.name} instead.")
         res
       }
       !param.isSynthetic && (checkName || checkAltName)
@@ -685,8 +684,7 @@ trait NamesDefaults { self: Analyzer =>
               if isAmbiguousAssignment(typer, params(paramPos), arg) =>
             AmbiguousReferenceInNamesDefaultError(arg, name)
           case paramPos if paramPos != argIndex =>
-            positionalAllowed =
-              false // named arg is not in original parameter order: require names after this
+            positionalAllowed = false // named arg is not in original parameter order: require names after this
             argPos(argIndex) = paramPos // fix up the arg position
             rhs
           case _ => rhs

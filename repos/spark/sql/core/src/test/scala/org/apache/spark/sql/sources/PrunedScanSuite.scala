@@ -133,10 +133,9 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
         val rawOutput = rawPlan.execute().first()
 
         if (rawColumns != expectedColumns) {
-          fail(
-            s"Wrong column names. Got $rawColumns, Expected $expectedColumns\n" +
-              s"Filters pushed: ${FiltersPushed.list.mkString(",")}\n" +
-              queryExecution)
+          fail(s"Wrong column names. Got $rawColumns, Expected $expectedColumns\n" +
+            s"Filters pushed: ${FiltersPushed.list.mkString(",")}\n" +
+            queryExecution)
         }
 
         if (rawOutput.numFields != expectedColumns.size) {

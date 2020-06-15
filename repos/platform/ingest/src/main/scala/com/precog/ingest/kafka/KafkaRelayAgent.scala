@@ -186,9 +186,8 @@ final class KafkaRelayAgent(
           }
       }
     } else {
-      logger.info(
-        "Kafka relay agent shutdown request detected. Halting at offset %d batch %d."
-          .format(offset, batch))
+      logger.info("Kafka relay agent shutdown request detected. Halting at offset %d batch %d."
+        .format(offset, batch))
       stopPromise.success(PrecogUnit)
     }
   }
@@ -235,15 +234,13 @@ final class KafkaRelayAgent(
                 messages
               } else {
                 if (ev.size == data.length) {
-                  logger.error(
-                    "Failed to reach reasonable message size after splitting IngestRecords to individual relays!")
+                  logger.error("Failed to reach reasonable message size after splitting IngestRecords to individual relays!")
                   throw new Exception(
                     "Failed relay of excessively large event(s)!")
                 }
 
-                logger.debug(
-                  "Breaking %d ingest records into %d messages for relay still too large, splitting."
-                    .format(data.length, messages.size))
+                logger.debug("Breaking %d ingest records into %d messages for relay still too large, splitting."
+                  .format(data.length, messages.size))
                 encodeIngestMessages(ev.flatMap(_.split))
               }
             }

@@ -132,18 +132,16 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
               "Some blocks do not have Write Ahead Log information; " +
                 "this is unexpected and data may not be recoverable after driver failures")
           } else {
-            logWarning(
-              "Some blocks have Write Ahead Log information; this is unexpected")
+            logWarning("Some blocks have Write Ahead Log information; this is unexpected")
           }
         }
         val validBlockIds = blockIds.filter { id =>
           ssc.sparkContext.env.blockManager.master.contains(id)
         }
         if (validBlockIds.length != blockIds.length) {
-          logWarning(
-            "Some blocks could not be recovered as they were not found in memory. " +
-              "To prevent such data loss, enable Write Ahead Log (see programming guide " +
-              "for more details.")
+          logWarning("Some blocks could not be recovered as they were not found in memory. " +
+            "To prevent such data loss, enable Write Ahead Log (see programming guide " +
+            "for more details.")
         }
         new BlockRDD[T](ssc.sc, validBlockIds)
       }

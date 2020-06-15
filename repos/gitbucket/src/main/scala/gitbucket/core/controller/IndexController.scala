@@ -160,8 +160,7 @@ trait IndexControllerBase extends ControllerBase {
 
   // TODO Move to RepositoryViwerController?
   post("/search", searchForm) { form =>
-    redirect(
-      s"/${form.owner}/${form.repository}/search?q=${StringUtil.urlEncode(form.query)}")
+    redirect(s"/${form.owner}/${form.repository}/search?q=${StringUtil.urlEncode(form.query)}")
   }
 
   // TODO Move to RepositoryViwerController?

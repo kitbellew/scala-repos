@@ -87,8 +87,7 @@ class ReceiverTrackerSuite extends TestSuiteBase {
     }
   }
 
-  test(
-    "SPARK-11063: TaskSetManager should use Receiver RDD's preferredLocations") {
+  test("SPARK-11063: TaskSetManager should use Receiver RDD's preferredLocations") {
     // Use ManualClock to prevent from starting batches so that we can make sure the only task is
     // for starting the Receiver
     val _conf = conf.clone.set(

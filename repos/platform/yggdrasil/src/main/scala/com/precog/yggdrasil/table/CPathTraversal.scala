@@ -477,8 +477,7 @@ object CPathTraversal {
 
       val pq = mutable.PriorityQueue[List[CPathPosition]](
         paths map (position(_)): _*) {
-        implicitly[
-          scalaz.Order[List[CPathPosition]]].reverseOrder.toScalaOrdering
+        implicitly[scalaz.Order[List[CPathPosition]]].reverseOrder.toScalaOrdering
       }
 
       @tailrec

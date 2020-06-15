@@ -179,8 +179,7 @@ package debug {
               if (isEqual)
                 callBuilder(
                   condExpr,
-                  c.Expr(
-                    q""" ${""} + $str + " (" + $leftExpr + " " + $actualRelExpr + " " + $rightExpr + ")" """)
+                  c.Expr(q""" ${""} + $str + " (" + $leftExpr + " " + $actualRelExpr + " " + $rightExpr + ")" """)
                   // c.Expr[String](q""" "%s (%s %s %s)".format($str, $leftExpr, $actualRelExpr, $rightExpr)""")
                   // reify(s"${str.splice} (${leftExpr.splice} ${actualRelExpr.splice} ${rightExpr.splice})")
                 ).tree

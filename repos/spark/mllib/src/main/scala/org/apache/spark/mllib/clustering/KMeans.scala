@@ -218,9 +218,8 @@ class KMeans private (
   def run(data: RDD[Vector]): KMeansModel = {
 
     if (data.getStorageLevel == StorageLevel.NONE) {
-      logWarning(
-        "The input data is not directly cached, which may hurt performance if its"
-          + " parent RDDs are also uncached.")
+      logWarning("The input data is not directly cached, which may hurt performance if its"
+        + " parent RDDs are also uncached.")
     }
 
     // Compute squared norms and cache them.
@@ -235,9 +234,8 @@ class KMeans private (
 
     // Warn at the end of the run as well, for increased visibility.
     if (data.getStorageLevel == StorageLevel.NONE) {
-      logWarning(
-        "The input data was not directly cached, which may hurt performance if its"
-          + " parent RDDs are also uncached.")
+      logWarning("The input data was not directly cached, which may hurt performance if its"
+        + " parent RDDs are also uncached.")
     }
     model
   }

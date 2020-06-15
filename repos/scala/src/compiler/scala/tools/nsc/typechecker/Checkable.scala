@@ -84,8 +84,7 @@ trait Checkable {
       val tps1 = (from baseType bc).typeArgs
       val tps2 = (tvarType baseType bc).typeArgs
       if (tps1.size != tps2.size)
-        devWarning(
-          s"Unequally sized type arg lists in propagateKnownTypes($from, $to): ($tps1, $tps2)")
+        devWarning(s"Unequally sized type arg lists in propagateKnownTypes($from, $to): ($tps1, $tps2)")
 
       (tps1, tps2).zipped foreach (_ =:= _)
     // Alternate, variance respecting formulation causes

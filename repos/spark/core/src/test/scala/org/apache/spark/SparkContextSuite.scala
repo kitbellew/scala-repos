@@ -50,8 +50,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext(conf)
   }
 
-  test(
-    "Can still construct a new SparkContext after failing to construct a previous one") {
+  test("Can still construct a new SparkContext after failing to construct a previous one") {
     val conf =
       new SparkConf().set("spark.driver.allowMultipleContexts", "false")
     // This is an invalid configuration (no app name or master URL)
@@ -62,8 +61,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     sc = new SparkContext(conf.setMaster("local").setAppName("test"))
   }
 
-  test(
-    "Check for multiple SparkContexts can be disabled via undocumented debug option") {
+  test("Check for multiple SparkContexts can be disabled via undocumented debug option") {
     var secondSparkContext: SparkContext = null
     try {
       val conf = new SparkConf()
@@ -151,12 +149,14 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
 
           if (length1 != gotten1.length()) {
             throw new SparkException(
-              s"file has different length $length1 than added file ${gotten1.length()} : " +
+              s"file has different length $length1 than added file ${gotten1
+                .length()} : " +
                 absolutePath1)
           }
           if (length2 != gotten2.length()) {
             throw new SparkException(
-              s"file has different length $length2 than added file ${gotten2.length()} : " +
+              s"file has different length $length2 than added file ${gotten2
+                .length()} : " +
                 absolutePath2)
           }
 
@@ -227,8 +227,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     }
   }
 
-  test(
-    "Cancelling job group should not cause SparkContext to shutdown (SPARK-6414)") {
+  test("Cancelling job group should not cause SparkContext to shutdown (SPARK-6414)") {
     try {
       sc =
         new SparkContext(new SparkConf().setAppName("test").setMaster("local"))
@@ -245,8 +244,7 @@ class SparkContextSuite extends SparkFunSuite with LocalSparkContext {
     }
   }
 
-  test(
-    "Comma separated paths for newAPIHadoopFile/wholeTextFiles/binaryFiles (SPARK-7155)") {
+  test("Comma separated paths for newAPIHadoopFile/wholeTextFiles/binaryFiles (SPARK-7155)") {
     // Regression test for SPARK-7155
     // dir1 and dir2 are used for wholeTextFiles and binaryFiles
     val dir1 = Utils.createTempDir()

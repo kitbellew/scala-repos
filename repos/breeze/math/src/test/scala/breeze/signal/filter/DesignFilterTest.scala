@@ -12,8 +12,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 class DesignFilterTest extends FunSuite {
 
-  test(
-    "designFilterFirwin tested against output from scipy.signal.firwin (0.13.2-1)") {
+  test("designFilterFirwin tested against output from scipy.signal.firwin (0.13.2-1)") {
 
     val testNormThreshold = 1.0e-10
     val firwin1 = designFilterFirwin[Double](

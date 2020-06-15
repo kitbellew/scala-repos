@@ -358,8 +358,7 @@ class AppTaskLauncherActorTest extends MarathonSpec with GivenWhenThen {
       TaskStatusUpdateTestHelper.killed,
       TaskStatusUpdateTestHelper.error
     )) {
-    test(
-      s"Remove terminated task (${update.wrapped.status.getClass.getSimpleName})") {
+    test(s"Remove terminated task (${update.wrapped.status.getClass.getSimpleName})") {
       Mockito
         .when(taskTracker.tasksByAppSync)
         .thenReturn(TaskTracker.TasksByApp.forTasks(marathonTask))
@@ -396,8 +395,7 @@ class AppTaskLauncherActorTest extends MarathonSpec with GivenWhenThen {
       TaskStatusUpdateTestHelper.killed,
       TaskStatusUpdateTestHelper.error
     )) {
-    test(
-      s"Revive offers if task with constraints terminates (${update.wrapped.status.getClass.getSimpleName})") {
+    test(s"Revive offers if task with constraints terminates (${update.wrapped.status.getClass.getSimpleName})") {
       Given("an actor for an app with constraints and one task")
       val constraint = Protos.Constraint
         .newBuilder()
@@ -439,8 +437,7 @@ class AppTaskLauncherActorTest extends MarathonSpec with GivenWhenThen {
       TaskStatusUpdateTestHelper.staging,
       TaskStatusUpdateTestHelper.running
     )) {
-    test(
-      s"DO NOT REMOVE running task (${update.wrapped.status.getClass.getSimpleName})") {
+    test(s"DO NOT REMOVE running task (${update.wrapped.status.getClass.getSimpleName})") {
       Mockito
         .when(taskTracker.tasksByAppSync)
         .thenReturn(TaskTracker.TasksByApp.forTasks(marathonTask))

@@ -117,8 +117,7 @@ class ParquetQuerySuite
     }
   }
 
-  test(
-    "SPARK-1913 regression: columns only referenced by pushed down filters should remain") {
+  test("SPARK-1913 regression: columns only referenced by pushed down filters should remain") {
     withParquetTable((1 to 10).map(Tuple1.apply), "t") {
       checkAnswer(
         sql("SELECT _1 FROM t WHERE _1 < 10"),
@@ -226,8 +225,7 @@ class ParquetQuerySuite
     }
   }
 
-  test(
-    "SPARK-8990 DataFrameReader.parquet() should respect user specified options") {
+  test("SPARK-8990 DataFrameReader.parquet() should respect user specified options") {
     withTempPath { dir =>
       val basePath = dir.getCanonicalPath
       sqlContext
@@ -344,8 +342,7 @@ class ParquetQuerySuite
   }
 
   // This test case is ignored because of parquet-mr bug PARQUET-370
-  ignore(
-    "SPARK-10301 requested schema clipping - schemas with disjoint sets of fields") {
+  ignore("SPARK-10301 requested schema clipping - schemas with disjoint sets of fields") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       val df = sqlContext
@@ -369,8 +366,7 @@ class ParquetQuerySuite
     }
   }
 
-  test(
-    "SPARK-10301 requested schema clipping - requested schema contains physical schema") {
+  test("SPARK-10301 requested schema clipping - requested schema contains physical schema") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       val df = sqlContext
@@ -422,8 +418,7 @@ class ParquetQuerySuite
     }
   }
 
-  test(
-    "SPARK-10301 requested schema clipping - physical schema contains requested schema") {
+  test("SPARK-10301 requested schema clipping - physical schema contains requested schema") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       val df = sqlContext
@@ -473,8 +468,7 @@ class ParquetQuerySuite
     }
   }
 
-  test(
-    "SPARK-10301 requested schema clipping - schemas overlap but don't contain each other") {
+  test("SPARK-10301 requested schema clipping - schemas overlap but don't contain each other") {
     withTempPath { dir =>
       val path = dir.getCanonicalPath
       val df = sqlContext

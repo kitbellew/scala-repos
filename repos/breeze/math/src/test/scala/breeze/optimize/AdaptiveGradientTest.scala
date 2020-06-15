@@ -82,8 +82,7 @@ class AdaptiveGradientTest extends OptimizeTestBase {
         result :- DenseVector.ones[Double](init.size) * targetValue,
         2) / result.size < 1e-2
       if (!ok) {
-        sys.error(
-          s"min $init with reg: ${sgd.lambda} gives $result should be $targetValue")
+        sys.error(s"min $init with reg: ${sgd.lambda} gives $result should be $targetValue")
       }
       ok
     }

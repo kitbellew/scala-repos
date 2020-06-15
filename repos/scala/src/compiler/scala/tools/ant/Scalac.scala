@@ -716,8 +716,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
           case cl: AntClassLoader =>
             path add new Path(getProject, cl.getClasspath)
           case _ =>
-            buildError(
-              "Cannot determine default classpath for scalac, please specify one!")
+            buildError("Cannot determine default classpath for scalac, please specify one!")
         }
       path
     }
@@ -772,8 +771,7 @@ class Scalac extends ScalaMatchingTask with ScalacShared {
           .format(reporter.ERROR.count, plural(reporter.ERROR.count))
       if (failonerror) buildError(msg) else log(msg)
     } else if (reporter.WARNING.count > 0)
-      log(
-        "Compile succeeded with %d warning%s; see the compiler output for details."
-          .format(reporter.WARNING.count, plural(reporter.WARNING.count)))
+      log("Compile succeeded with %d warning%s; see the compiler output for details."
+        .format(reporter.WARNING.count, plural(reporter.WARNING.count)))
   }
 }

@@ -43,8 +43,7 @@ private[twitter] object ClientRegistry extends StackRegistry {
             } else {
               resolution match {
                 case bound: Addr.Bound =>
-                  log.info(
-                    s"${name} resolved to Addr.Bound, current size=${bound.addrs.size}")
+                  log.info(s"${name} resolved to Addr.Bound, current size=${bound.addrs.size}")
                 case _ =>
                   log.info(s"${name} resolved to ${resolution}")
               }

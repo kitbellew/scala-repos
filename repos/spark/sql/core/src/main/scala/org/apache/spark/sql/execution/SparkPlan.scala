@@ -184,8 +184,7 @@ abstract class SparkPlan
       case (e, futureResult) =>
         val rows = Await.result(futureResult, Duration.Inf)
         if (rows.length > 1) {
-          sys.error(
-            s"more than one row returned by a subquery used as an expression:\n${e.plan}")
+          sys.error(s"more than one row returned by a subquery used as an expression:\n${e.plan}")
         }
         if (rows.length == 1) {
           assert(

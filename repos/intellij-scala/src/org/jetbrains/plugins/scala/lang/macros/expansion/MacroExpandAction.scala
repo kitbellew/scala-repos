@@ -86,8 +86,7 @@ class MacroExpandAction extends AnAction {
         applyExpansion(expansion)
       } catch {
         case e: UnresolvedExpansion =>
-          LOG.warn(
-            s"unable to expand ${expansion.expansion.place}, cannot resolve place, skipping")
+          LOG.warn(s"unable to expand ${expansion.expansion.place}, cannot resolve place, skipping")
       }
       e.getProject
     }
@@ -168,8 +167,7 @@ class MacroExpandAction extends AnAction {
               tryResolveExpansionPlace(x.expansion) :: xs,
               triedResolving = true)
           case exc: UnresolvedExpansion if triedResolving =>
-            LOG.warn(
-              s"unable to expand ${x.expansion.place}, cannot resolve place, skipping")
+            LOG.warn(s"unable to expand ${x.expansion.place}, cannot resolve place, skipping")
             applyExpansions(xs)
         }
       case Nil =>

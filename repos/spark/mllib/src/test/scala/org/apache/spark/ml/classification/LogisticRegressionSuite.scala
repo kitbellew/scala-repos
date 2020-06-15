@@ -153,8 +153,7 @@ class LogisticRegressionSuite
       }
     }
     // thresholds and threshold must be consistent: values
-    withClue(
-      "fit with ParamMap should throw error if threshold, thresholds do not match.") {
+    withClue("fit with ParamMap should throw error if threshold, thresholds do not match.") {
       intercept[IllegalArgumentException] {
         val lr2model = lr2.fit(
           dataset,
@@ -699,8 +698,7 @@ class LogisticRegressionSuite
     assert(model2.coefficients ~= coefficientsR2 relTol 1e-2)
   }
 
-  test(
-    "binary logistic regression with intercept with ElasticNet regularization") {
+  test("binary logistic regression with intercept with ElasticNet regularization") {
     val trainer1 = (new LogisticRegression)
       .setFitIntercept(true)
       .setElasticNetParam(0.38)
@@ -766,8 +764,7 @@ class LogisticRegressionSuite
     assert(model2.coefficients ~= coefficientsR2 absTol 1e-3)
   }
 
-  test(
-    "binary logistic regression without intercept with ElasticNet regularization") {
+  test("binary logistic regression without intercept with ElasticNet regularization") {
     val trainer1 = (new LogisticRegression)
       .setFitIntercept(false)
       .setElasticNetParam(0.38)

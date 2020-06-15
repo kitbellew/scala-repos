@@ -198,7 +198,8 @@ private object PeriodicGraphCheckpointerSuite {
             s"\t iteration = $iteration\n" +
             s"\t checkpointInterval = $checkpointInterval\n" +
             s"\t graph.isCheckpointed = ${graph.isCheckpointed}\n" +
-            s"\t graph.getCheckpointFiles = ${graph.getCheckpointFiles.mkString(", ")}\n" +
+            s"\t graph.getCheckpointFiles = ${graph.getCheckpointFiles.mkString(
+              ", ")}\n" +
             s"  AssertionError message: ${e.getMessage}")
     }
   }

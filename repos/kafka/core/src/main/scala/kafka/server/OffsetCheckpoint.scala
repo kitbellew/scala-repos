@@ -64,9 +64,7 @@ class OffsetCheckpoint(val file: File) extends Logging {
       } catch {
         case e: FileNotFoundException =>
           if (FileSystems.getDefault.isReadOnly) {
-            fatal(
-              "Halting writes to offset checkpoint file because the underlying file system is inaccessible : ",
-              e)
+            fatal("Halting writes to offset checkpoint file because the underlying file system is inaccessible : ", e)
             Runtime.getRuntime.halt(1)
           }
           throw e

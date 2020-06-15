@@ -536,9 +536,8 @@ private[spark] class MesosClusterScheduler(
         getResource(o.resources, "mem") >= driverMem
       }
       if (offerOption.isEmpty) {
-        logDebug(
-          s"Unable to find offer to launch driver id: ${submission.submissionId}, " +
-            s"cpu: $driverCpu, mem: $driverMem")
+        logDebug(s"Unable to find offer to launch driver id: ${submission.submissionId}, " +
+          s"cpu: $driverCpu, mem: $driverMem")
       } else {
         val offer = offerOption.get
         val taskId =

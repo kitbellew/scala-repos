@@ -187,8 +187,7 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
             )
             .toString
 
-        common.Failure(
-          s"Parser did not consume all input. Parser error? Unconsumed:\n$remainingString")
+        common.Failure(s"Parser did not consume all input. Parser error? Unconsumed:\n$remainingString")
 
       case failure =>
         common.Failure(s"Parse failed with result $failure") ~> failure

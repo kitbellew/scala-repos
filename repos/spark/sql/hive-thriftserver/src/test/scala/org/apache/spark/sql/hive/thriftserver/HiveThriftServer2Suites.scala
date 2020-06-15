@@ -531,8 +531,8 @@ class HiveThriftBinaryServerSuite extends HiveThriftJdbcTest {
         s"LOAD DATA LOCAL INPATH '$dataPath' OVERWRITE INTO TABLE test_udtf"
       ).foreach(statement.execute)
 
-      val rs2 = statement.executeQuery(
-        "SELECT key, cc FROM test_udtf LATERAL VIEW udtf_count2(value) dd AS cc")
+      val rs2 =
+        statement.executeQuery("SELECT key, cc FROM test_udtf LATERAL VIEW udtf_count2(value) dd AS cc")
 
       assert(rs2.next())
       assert(rs2.getInt(1) === 97)
@@ -777,8 +777,7 @@ abstract class HiveThriftServer2Test
          |System user: $user
        """.stripMargin.split("\n")
 
-    logInfo(
-      s"Trying to start HiveThriftServer2: port=$port, mode=$mode, attempt=$attempt")
+    logInfo(s"Trying to start HiveThriftServer2: port=$port, mode=$mode, attempt=$attempt")
 
     logPath = {
       val lines = Utils.executeAndGetOutput(

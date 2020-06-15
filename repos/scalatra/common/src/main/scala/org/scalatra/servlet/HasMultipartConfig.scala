@@ -32,8 +32,7 @@ trait HasMultipartConfig extends Initializable {
       multipartConfigFromContext getOrElse DefaultMultipartConfig
     } catch {
       case e: Throwable =>
-        System.err.println(
-          "Couldn't get the multipart config from the servlet context because: ")
+        System.err.println("Couldn't get the multipart config from the servlet context because: ")
         e.printStackTrace()
         DefaultMultipartConfig
     }

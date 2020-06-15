@@ -47,8 +47,8 @@ import org.jetbrains.plugins.scala.util.MultilineStringUtil
 import scala.annotation.tailrec
 
 object ScalaSpacingProcessor extends ScalaTokenTypes {
-  private val LOG = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.lang.formatting.processors.ScalaSpacingProcessor")
+  private val LOG =
+    Logger.getInstance("#org.jetbrains.plugins.scala.lang.formatting.processors.ScalaSpacingProcessor")
 
   val BLOCK_ELEMENT_TYPES = {
     import org.jetbrains.plugins.scala.lang.parser.ScalaElementTypes._

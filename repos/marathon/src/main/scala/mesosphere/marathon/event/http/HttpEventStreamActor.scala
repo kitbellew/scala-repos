@@ -87,8 +87,7 @@ class HttpEventStreamActor(
   private[this] def acceptingNewConnections: Receive = {
     case HttpEventStreamConnectionOpen(handle) =>
       metrics.numberOfStreams.setValue(streamHandleActors.size)
-      log.info(
-        s"Add EventStream Handle as event listener: $handle. Current nr of streams: ${streamHandleActors.size}")
+      log.info(s"Add EventStream Handle as event listener: $handle. Current nr of streams: ${streamHandleActors.size}")
       val actor = context.actorOf(handleStreamProps(handle), handle.id)
       context.watch(actor)
       streamHandleActors += handle -> actor

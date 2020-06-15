@@ -98,8 +98,7 @@ class SingleAppScalingTest
     val appWithManyInstances =
       appProxy(appIdPath, "v1", instances = 100000, withHealth = false)
     val response = marathon.createAppV2(appWithManyInstances)
-    log.info(
-      s"XXX ${response.originalResponse.status}: ${response.originalResponse.entity}")
+    log.info(s"XXX ${response.originalResponse.status}: ${response.originalResponse.entity}")
 
     val startTime = System.currentTimeMillis()
     var metrics = Seq.newBuilder[JsValue]
@@ -123,8 +122,7 @@ class SingleAppScalingTest
       val tasksRunning = (appJson \ "tasksRunning").as[Int]
       val tasksStaged = (appJson \ "tasksStaged").as[Int]
 
-      log.info(
-        s"XXX (starting) Current instance count: staged $tasksStaged, running $tasksRunning / $instances")
+      log.info(s"XXX (starting) Current instance count: staged $tasksStaged, running $tasksRunning / $instances")
 
       appInfos += ScalingTestResultFiles.addTimestamp(startTime)(appJson)
       metrics += ScalingTestResultFiles.addTimestamp(startTime)(
@@ -155,8 +153,7 @@ class SingleAppScalingTest
         (currentApp.entityJson \ "app" \ "tasksRunning").as[Int]
       val tasksStaged = (currentApp.entityJson \ "app" \ "tasksStaged").as[Int]
 
-      log.info(
-        s"XXX (suspendSuccessfully) Current instance count: staged $tasksStaged, running $tasksRunning / $instances")
+      log.info(s"XXX (suspendSuccessfully) Current instance count: staged $tasksStaged, running $tasksRunning / $instances")
 
       if (instances == 0) {
         Some(())

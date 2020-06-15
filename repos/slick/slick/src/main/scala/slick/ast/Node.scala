@@ -860,8 +860,7 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
   def elseClause = clauses.last
 
   /** Return a null-extended version of a single-column IfThenElse expression */
-  def nullExtend
-      : IfThenElse = { //TODO 3.2: Remove this method. It is only preserved for binary compatibility in 3.1.1
+  def nullExtend: IfThenElse = { //TODO 3.2: Remove this method. It is only preserved for binary compatibility in 3.1.1
     def isOpt(n: Node) =
       n match {
         case LiteralNode(null)  => true

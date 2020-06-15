@@ -92,9 +92,8 @@ class OfflinePartitionLeaderSelector(
                     currentLeaderAndIsr.isr.mkString(",")))
             }
 
-            debug(
-              "No broker in ISR is alive for %s. Pick the leader from the alive assigned replicas: %s"
-                .format(topicAndPartition, liveAssignedReplicas.mkString(",")))
+            debug("No broker in ISR is alive for %s. Pick the leader from the alive assigned replicas: %s"
+              .format(topicAndPartition, liveAssignedReplicas.mkString(",")))
             liveAssignedReplicas.isEmpty match {
               case true =>
                 throw new NoReplicaOnlineException(
@@ -106,12 +105,11 @@ class OfflinePartitionLeaderSelector(
               case false =>
                 ControllerStats.uncleanLeaderElectionRate.mark()
                 val newLeader = liveAssignedReplicas.head
-                warn(
-                  "No broker in ISR is alive for %s. Elect leader %d from live brokers %s. There's potential data loss."
-                    .format(
-                      topicAndPartition,
-                      newLeader,
-                      liveAssignedReplicas.mkString(",")))
+                warn("No broker in ISR is alive for %s. Elect leader %d from live brokers %s. There's potential data loss."
+                  .format(
+                    topicAndPartition,
+                    newLeader,
+                    liveAssignedReplicas.mkString(",")))
                 new LeaderAndIsr(
                   newLeader,
                   currentLeaderEpoch + 1,
@@ -122,12 +120,11 @@ class OfflinePartitionLeaderSelector(
             val liveReplicasInIsr =
               liveAssignedReplicas.filter(r => liveBrokersInIsr.contains(r))
             val newLeader = liveReplicasInIsr.head
-            debug(
-              "Some broker in ISR is alive for %s. Select %d from ISR %s to be the leader."
-                .format(
-                  topicAndPartition,
-                  newLeader,
-                  liveBrokersInIsr.mkString(",")))
+            debug("Some broker in ISR is alive for %s. Select %d from ISR %s to be the leader."
+              .format(
+                topicAndPartition,
+                newLeader,
+                liveBrokersInIsr.mkString(",")))
             new LeaderAndIsr(
               newLeader,
               currentLeaderEpoch + 1,
@@ -313,8 +310,7 @@ class NoOpLeaderSelector(controllerContext: ControllerContext)
   def selectLeader(
       topicAndPartition: TopicAndPartition,
       currentLeaderAndIsr: LeaderAndIsr): (LeaderAndIsr, Seq[Int]) = {
-    warn(
-      "I should never have been asked to perform leader election, returning the current LeaderAndIsr and replica assignment.")
+    warn("I should never have been asked to perform leader election, returning the current LeaderAndIsr and replica assignment.")
     (
       currentLeaderAndIsr,
       controllerContext.partitionReplicaAssignment(topicAndPartition))

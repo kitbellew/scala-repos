@@ -109,8 +109,7 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
       .putInt(nullCount)
       .put(nulls)
 
-    logDebug(
-      s"Compressor for [$columnName]: $encoder, ratio: ${encoder.compressionRatio}")
+    logDebug(s"Compressor for [$columnName]: $encoder, ratio: ${encoder.compressionRatio}")
     encoder.compress(nonNullBuffer, compressedBuffer)
   }
 }

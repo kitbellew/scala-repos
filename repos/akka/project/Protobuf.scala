@@ -42,8 +42,7 @@ object Protobuf {
       val targetDirs = outputPaths.value
 
       if (sourceDirs.size != targetDirs.size)
-        sys.error(
-          s"Unbalanced number of paths and destination paths!\nPaths: $sourceDirs\nDestination Paths: $targetDirs")
+        sys.error(s"Unbalanced number of paths and destination paths!\nPaths: $sourceDirs\nDestination Paths: $targetDirs")
 
       if (sourceDirs exists (_.exists)) {
         val cmd = protoc.value

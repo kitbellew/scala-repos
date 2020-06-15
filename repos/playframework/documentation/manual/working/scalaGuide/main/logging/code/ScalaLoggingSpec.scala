@@ -98,8 +98,7 @@ class ScalaLoggingSpec extends Specification with Mockito {
           def invokeBlock[A](
               request: Request[A],
               block: (Request[A]) => Future[Result]) = {
-            accessLogger.info(
-              s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress}")
+            accessLogger.info(s"method=${request.method} uri=${request.uri} remote-address=${request.remoteAddress}")
             block(request)
           }
         }

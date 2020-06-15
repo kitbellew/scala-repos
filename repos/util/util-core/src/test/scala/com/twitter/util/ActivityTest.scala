@@ -94,8 +94,7 @@ class ActivityTest extends FunSuite {
     assert(Activity.future(Future.never).run.sample == Activity.Pending)
   }
 
-  test(
-    "Activity.future: produce an Activity that completes on success of the original Future") {
+  test("Activity.future: produce an Activity that completes on success of the original Future") {
     val p = new Promise[Int]
     val act = Activity.future(p)
     assert(act.run.sample == Activity.Pending)
@@ -103,8 +102,7 @@ class ActivityTest extends FunSuite {
     assert(act.run.sample == Activity.Ok(4))
   }
 
-  test(
-    "Activity.future: produce an Activity that fails on failure of the original Future") {
+  test("Activity.future: produce an Activity that fails on failure of the original Future") {
     val p = new Promise[Unit]
     val e = new Exception("gooby pls")
     val act = Activity.future(p)

@@ -298,8 +298,7 @@ class ResourceUtilTest
       baseResource: Set[String],
       expectedResult: Option[Set[String]]): Unit = {
 
-    test(
-      s"consuming sets resource $consumedResource from $baseResource results in $expectedResult") {
+    test(s"consuming sets resource $consumedResource from $baseResource results in $expectedResult") {
       val r1 = set("cpus", consumedResource)
       val r2 = set("cpus", baseResource)
       val r3 = expectedResult.map(set("cpus", _))
@@ -322,8 +321,7 @@ class ResourceUtilTest
       baseResource: Seq[Range.Inclusive],
       expectedResult: Option[Seq[Range.Inclusive]]): Unit = {
 
-    test(
-      s"consuming ports resource $consumedResource from $baseResource results in $expectedResult") {
+    test(s"consuming ports resource $consumedResource from $baseResource results in $expectedResult") {
       val r1 = ports("cpus", consumedResource: _*)
       val r2 = ports("cpus", baseResource: _*)
       val r3 = expectedResult.map(ports("cpus", _: _*))
@@ -353,8 +351,7 @@ class ResourceUtilTest
       consumedResource: Double,
       baseResource: Double,
       expectedResult: Option[Double]): Unit = {
-    test(
-      s"consuming scalar resource $consumedResource from $baseResource results in $expectedResult") {
+    test(s"consuming scalar resource $consumedResource from $baseResource results in $expectedResult") {
       val r1 = MTH.scalarResource("cpus", consumedResource)
       val r2 = MTH.scalarResource("cpus", baseResource)
       val r3 = expectedResult.map(MTH.scalarResource("cpus", _))

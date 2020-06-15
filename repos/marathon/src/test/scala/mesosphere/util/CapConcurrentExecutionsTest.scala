@@ -146,8 +146,7 @@ class CapConcurrentExecutionsTest
     }
   }
 
-  test(
-    "queued executions are failed on stop, results of already executing futures are left untouched") {
+  test("queued executions are failed on stop, results of already executing futures are left untouched") {
     val metrics = capMetrics
     val serialize = CapConcurrentExecutions(
       metrics,

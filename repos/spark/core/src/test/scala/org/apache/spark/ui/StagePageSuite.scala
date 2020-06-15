@@ -49,8 +49,7 @@ class StagePageSuite extends SparkFunSuite with LocalSparkContext {
     assert(html3.contains(targetString))
   }
 
-  test(
-    "SPARK-10543: peak execution memory should be per-task rather than cumulative") {
+  test("SPARK-10543: peak execution memory should be per-task rather than cumulative") {
     val unsafeConf = "spark.sql.unsafe.enabled"
     val conf = new SparkConf(false).set(unsafeConf, "true")
     val html = renderStagePage(conf).toString().toLowerCase

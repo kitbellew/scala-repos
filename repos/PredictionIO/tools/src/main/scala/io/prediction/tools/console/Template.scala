@@ -65,9 +65,8 @@ object Template extends Logging {
 
   def templateMetaData(templateJson: File): TemplateMetaData = {
     if (!templateJson.exists) {
-      warn(
-        s"$templateJson does not exist. Template metadata will not be available. " +
-          "(This is safe to ignore if you are not working on a template.)")
+      warn(s"$templateJson does not exist. Template metadata will not be available. " +
+        "(This is safe to ignore if you are not working on a template.)")
       TemplateMetaData()
     } else {
       val jsonString =
@@ -77,8 +76,7 @@ object Template extends Logging {
           parse(jsonString)
         } catch {
           case e: org.json4s.ParserUtil.ParseException =>
-            warn(
-              s"$templateJson cannot be parsed. Template metadata will not be available.")
+            warn(s"$templateJson cannot be parsed. Template metadata will not be available.")
             return TemplateMetaData()
         }
       val pioVersionMin = json \ "pio" \ "version" \ "min"

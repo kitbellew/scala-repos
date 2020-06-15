@@ -437,8 +437,8 @@ class RewriteJoins extends Phase {
           }
         val a1 = isAliasing(p1)
         if (a1 || isAliasing(p2)) {
-          logger.debug(
-            s"Bind(${if (a1) s1 else s2}) is aliasing. Merging Bind($s1, Bind($s2)) to Bind($s2)")
+          logger.debug(s"Bind(${if (a1) s1
+          else s2}) is aliasing. Merging Bind($s1, Bind($s2)) to Bind($s2)")
           val m = p1.iterator.toMap
           Bind(
             s2,

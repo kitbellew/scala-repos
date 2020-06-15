@@ -267,8 +267,7 @@ class Engine[TD, EI, PD, Q, P, A](
                 m
               } catch {
                 case e: NullPointerException =>
-                  logger.warn(
-                    s"Null model detected for algorithm ${algo.getClass.getName}")
+                  logger.warn(s"Null model detected for algorithm ${algo.getClass.getName}")
                   m
               }
             }

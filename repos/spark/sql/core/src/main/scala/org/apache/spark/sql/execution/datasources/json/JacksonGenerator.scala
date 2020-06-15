@@ -88,8 +88,7 @@ private[sql] object JacksonGenerator {
         gen.writeEndObject()
 
       case (dt, v) =>
-        sys.error(
-          s"Failed to convert value $v (class of ${v.getClass}}) with the type of $dt to JSON.")
+        sys.error(s"Failed to convert value $v (class of ${v.getClass}}) with the type of $dt to JSON.")
     }
 
     valWriter(rowSchema, row)

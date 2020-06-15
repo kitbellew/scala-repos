@@ -65,8 +65,7 @@ class Roster private[registry] (
       // but we should be OK because this is impossible in theory
       if (result.isEmpty) {
         val serialized = s""""(${newKey.mkString(",")})""""
-        log.warning(
-          s"expected there to be a value at key $serialized in registry but it was empty.")
+        log.warning(s"expected there to be a value at key $serialized in registry but it was empty.")
       }
       result.isDefined
     }

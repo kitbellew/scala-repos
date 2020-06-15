@@ -113,12 +113,10 @@ private[akka] class TLSActor(
             ByteString.empty
         }
         if (tracing)
-          log.debug(
-            s"chopping from new chunk of ${buffer.size} into $name (${b.position})")
+          log.debug(s"chopping from new chunk of ${buffer.size} into $name (${b.position})")
       } else {
         if (tracing)
-          log.debug(
-            s"chopping from old chunk of ${buffer.size} into $name (${b.position})")
+          log.debug(s"chopping from old chunk of ${buffer.size} into $name (${b.position})")
       }
       val copied = buffer.copyToBuffer(b)
       buffer = buffer.drop(copied)
@@ -411,8 +409,7 @@ private[akka] class TLSActor(
     val result = engine.wrap(userInBuffer, transportOutBuffer)
     lastHandshakeStatus = result.getHandshakeStatus
     if (tracing)
-      log.debug(
-        s"wrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${userInBuffer.remaining} out=${transportOutBuffer.position}")
+      log.debug(s"wrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${userInBuffer.remaining} out=${transportOutBuffer.position}")
     if (lastHandshakeStatus == FINISHED) handshakeFinished()
     runDelegatedTasks()
     result.getStatus match {
@@ -434,8 +431,7 @@ private[akka] class TLSActor(
     if (ignoreOutput) userOutBuffer.clear()
     lastHandshakeStatus = result.getHandshakeStatus
     if (tracing)
-      log.debug(
-        s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer.remaining} out=${userOutBuffer.position}")
+      log.debug(s"unwrap: status=${result.getStatus} handshake=$lastHandshakeStatus remaining=${transportInBuffer.remaining} out=${userOutBuffer.position}")
     runDelegatedTasks()
     result.getStatus match {
       case OK ⇒
@@ -521,8 +517,7 @@ private[akka] class TLSActor(
     inputBunch.cancel()
     outputBunch.complete()
     if (tracing)
-      log.debug(
-        s"STOP Outbound Closed: ${engine.isOutboundDone} Inbound closed: ${engine.isInboundDone}")
+      log.debug(s"STOP Outbound Closed: ${engine.isOutboundDone} Inbound closed: ${engine.isInboundDone}")
     context.stop(self)
   }
 }

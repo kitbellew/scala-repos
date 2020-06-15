@@ -629,8 +629,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
         case None =>
           if (history.historicize(text)) echo("Placing text in recent history.")
           else
-            echo(
-              f"No EDITOR defined and you can't change history, echoing your text:%n$text")
+            echo(f"No EDITOR defined and you can't change history, echoing your text:%n$text")
       }
 
     // if what is a number, use it as a line number or range in history
@@ -669,8 +668,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       } catch {
         case _: NumberFormatException =>
           echo(s"Bad range '$what'")
-          echo(
-            "Use line 123, 120+3, -3, 120-123, 120-, note -3 is not 0-3 but (cur-3,cur)")
+          echo("Use line 123, 120+3, -3, 120-123, 120-, note -3 is not 0-3 but (cur-3,cur)")
       }
   }
 
@@ -1045,8 +1043,8 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
               .stackTraceString(e) + "\n"
           case (cls, Success(_)) => s"  - $cls OK"
         }
-        Console.println(
-          s"All InteractiveReaders tried: ${readerDiags.mkString("\n", "\n", "\n")}")
+        Console.println(s"All InteractiveReaders tried: ${readerDiags
+          .mkString("\n", "\n", "\n")}")
       }
       reader
     }

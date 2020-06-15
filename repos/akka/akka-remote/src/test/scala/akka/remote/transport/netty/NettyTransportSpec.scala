@@ -170,8 +170,7 @@ trait BindBehaviour { this: WordSpec with Matchers ⇒
           udp = proto == "udp")
         catch {
           case e: java.net.BindException ⇒
-            info(
-              s"skipping test due to [${e.getMessage}], you probably have to use `ifconfig lo0 alias 127.0.1.1`")
+            info(s"skipping test due to [${e.getMessage}], you probably have to use `ifconfig lo0 alias 127.0.1.1`")
             pending
             null
         }

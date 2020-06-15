@@ -401,8 +401,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
           macroDdef.pos,
           currentRun.runDefinitions.MacrosFeature,
           immediate = true)) {
-        macroLogVerbose(
-          "typecheck terminated unexpectedly: language.experimental.macros feature is not enabled")
+        macroLogVerbose("typecheck terminated unexpectedly: language.experimental.macros feature is not enabled")
         fail()
       } else {
         val macroDdef1: macroDdef.type = macroDdef
@@ -512,9 +511,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
                     ) // TODO: SI-5752
                   case LiftedUntyped => duplicatedArg
                   case _ =>
-                    abort(
-                      s"unexpected fingerprint $fingerprint in $binding with paramss being $paramss " +
-                        s"corresponding to arg $arg in $argss")
+                    abort(s"unexpected fingerprint $fingerprint in $binding with paramss being $paramss " +
+                      s"corresponding to arg $arg in $argss")
                 }
               })
 

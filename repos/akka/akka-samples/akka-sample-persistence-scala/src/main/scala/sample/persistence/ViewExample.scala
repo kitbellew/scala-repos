@@ -45,8 +45,7 @@ object ViewExample extends App {
       case SaveSnapshotSuccess(metadata) =>
         println(s"view saved snapshot (metadata = ${metadata})")
       case SaveSnapshotFailure(metadata, reason) =>
-        println(
-          s"view snapshot failure (metadata = ${metadata}), caused by ${reason}")
+        println(s"view snapshot failure (metadata = ${metadata}), caused by ${reason}")
       case payload =>
         println(s"view received other message ${payload}")
     }

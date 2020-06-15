@@ -245,8 +245,7 @@ trait Interface extends ast.TreeDSL {
               case SingleType(_, sym) =>
                 (from contains sym) && {
                   if (!toIdents)
-                    global.devWarning(
-                      s"Unexpected substitution of non-Ident into TypeTree `$tt`, subst= $this")
+                    global.devWarning(s"Unexpected substitution of non-Ident into TypeTree `$tt`, subst= $this")
                   true
                 }
               case _ => false

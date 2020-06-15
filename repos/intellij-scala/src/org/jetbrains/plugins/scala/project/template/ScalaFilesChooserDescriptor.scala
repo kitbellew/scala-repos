@@ -15,8 +15,7 @@ abstract class AbstractFilesChooserDescriptor(
     sdkDescriptor: SdkDescriptorCompanion)
     extends FileChooserDescriptor(true, true, true, true, false, true) {
   setTitle(s"$languageName SDK files")
-  setDescription(
-    s"Choose either a $languageName SDK directory or $languageName jar files (allowed: binaries, sources, docs)")
+  setDescription(s"Choose either a $languageName SDK directory or $languageName jar files (allowed: binaries, sources, docs)")
 
   override def isFileSelectable(file: VirtualFile) = {
     super.isFileSelectable(

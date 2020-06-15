@@ -68,8 +68,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
               tpe)
         case _: IrConstructor =>
           // This is a logic erorr
-          sys.error(
-            s"Pickling logic error.  Found constructor when trying to pickle field ${x.name}.")
+          sys.error(s"Pickling logic error.  Found constructor when trying to pickle field ${x.name}.")
         case y: IrMethod =>
           val tpe = y.returnType(c.universe)
           val staticallyElided = {
@@ -320,8 +319,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
                """
             } else reflectivelySet(newTermName("result"), x, read)
           case x =>
-            sys.error(
-              s"Cannot handle a setting method that does not take exactly one parameter, found parameters: $x")
+            sys.error(s"Cannot handle a setting method that does not take exactly one parameter, found parameters: $x")
         }
 
       case x: IrField =>

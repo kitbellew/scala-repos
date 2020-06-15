@@ -44,8 +44,7 @@ object TestOffsetManager {
       extends ShutdownableThread("stats-thread") {
 
     def printStats() {
-      println(
-        "--------------------------------------------------------------------------------")
+      println("--------------------------------------------------------------------------------")
       println("Aggregate stats for commits:")
       println(
         "Error count: %d; Max:%f; Min: %f; Mean: %f; Commit count: %d".format(
@@ -55,8 +54,7 @@ object TestOffsetManager {
           commitThreads.map(_.timer.mean()).sum / commitThreads.size,
           commitThreads.map(_.numCommits.get).sum
         ))
-      println(
-        "--------------------------------------------------------------------------------")
+      println("--------------------------------------------------------------------------------")
       commitThreads.foreach(t => println(t.stats))
       println(fetchThread.stats)
     }
@@ -298,14 +296,13 @@ object TestOffsetManager {
     val partitionCount = options.valueOf(numPartitionsOpt).intValue()
     val zookeeper = options.valueOf(zookeeperOpt)
     val reportingIntervalMs = options.valueOf(reportingIntervalOpt).intValue()
-    println(
-      "Commit thread count: %d; Partition count: %d, Commit interval: %d ms; Fetch interval: %d ms; Reporting interval: %d ms"
-        .format(
-          threadCount,
-          partitionCount,
-          commitIntervalMs,
-          fetchIntervalMs,
-          reportingIntervalMs))
+    println("Commit thread count: %d; Partition count: %d, Commit interval: %d ms; Fetch interval: %d ms; Reporting interval: %d ms"
+      .format(
+        threadCount,
+        partitionCount,
+        commitIntervalMs,
+        fetchIntervalMs,
+        reportingIntervalMs))
 
     var zkUtils: ZkUtils = null
     var commitThreads: Seq[CommitThread] = Seq()

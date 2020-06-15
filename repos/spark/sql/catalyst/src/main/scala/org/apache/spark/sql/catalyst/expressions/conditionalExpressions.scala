@@ -35,8 +35,7 @@ case class If(
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (predicate.dataType != BooleanType) {
-      TypeCheckResult.TypeCheckFailure(
-        s"type of predicate expression in If should be boolean, not ${predicate.dataType}")
+      TypeCheckResult.TypeCheckFailure(s"type of predicate expression in If should be boolean, not ${predicate.dataType}")
     } else if (trueValue.dataType.asNullable != falseValue.dataType.asNullable) {
       TypeCheckResult.TypeCheckFailure(s"differing types in '$sql' " +
         s"(${trueValue.dataType.simpleString} and ${falseValue.dataType.simpleString}).")
@@ -123,11 +122,11 @@ case class CaseWhen(
         val index = branches.indexWhere(_._1.dataType != BooleanType)
         TypeCheckResult.TypeCheckFailure(
           s"WHEN expressions in CaseWhen should all be boolean type, " +
-            s"but the ${index + 1}th when expression's type is ${branches(index)._1}")
+            s"but the ${index + 1}th when expression's type is ${branches(
+              index)._1}")
       }
     } else {
-      TypeCheckResult.TypeCheckFailure(
-        "THEN and ELSE expressions should all be same type or coercible to a common type")
+      TypeCheckResult.TypeCheckFailure("THEN and ELSE expressions should all be same type or coercible to a common type")
     }
   }
 

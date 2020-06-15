@@ -49,8 +49,7 @@ class HttpConfigurationSpec extends AkkaSpec {
     }
 
     "override `akka.http.parsing` by setting `akka.http.host-connection-pool.client.parsing` setting" in {
-      configuredSystem(
-        """akka.http.host-connection-pool.client.parsing.illegal-header-warnings = off""") {
+      configuredSystem("""akka.http.host-connection-pool.client.parsing.illegal-header-warnings = off""") {
         sys ⇒
           val client = ClientConnectionSettings(sys)
           client.parserSettings.illegalHeaderWarnings should ===(On)

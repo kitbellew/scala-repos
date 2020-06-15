@@ -172,9 +172,8 @@ class ExpandSums extends Phase {
           val c = discCandidates
             .filter { case (t, ss) => t == ts && ss.nonEmpty }
             .map(_._2)
-          logger.debug(
-            "Discriminator candidates from surrounding Filter and Join predicates: " +
-              c.map(Path.toString).mkString(", "))
+          logger.debug("Discriminator candidates from surrounding Filter and Join predicates: " +
+            c.map(Path.toString).mkString(", "))
           c
         case _ => Set.empty
       }

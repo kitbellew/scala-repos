@@ -330,8 +330,7 @@ object FieldSpec extends Specification {
       rec.mandatoryBooleanField,
       JsTrue,
       JBool(bool),
-      Full(
-        <input checked="checked" tabindex="1" value="true" type="checkbox" name=".*" id="mandatoryBooleanField_id"></input><input value="false" type="hidden" name=".*"></input>)
+      Full(<input checked="checked" tabindex="1" value="true" type="checkbox" name=".*" id="mandatoryBooleanField_id"></input><input value="false" type="hidden" name=".*"></input>)
     )
     "support java.lang.Boolean" in {
       rec.mandatoryBooleanField.setFromAny(java.lang.Boolean.TRUE)
@@ -367,10 +366,9 @@ object FieldSpec extends Specification {
         rec.mandatoryCountryField,
         Str(country.toString),
         JInt(country.id),
-        Full(
-          <select tabindex="1" name=".*" id="mandatoryCountryField_id"><option value=".*" selected="selected">{
-            country.toString
-          }</option></select>)
+        Full(<select tabindex="1" name=".*" id="mandatoryCountryField_id"><option value=".*" selected="selected">{
+          country.toString
+        }</option></select>)
       )
     }
   }
@@ -524,10 +522,9 @@ object FieldSpec extends Specification {
       rec.mandatoryEnumField,
       Str(ev.toString),
       JInt(ev.id),
-      Full(
-        <select tabindex="1" name=".*" id="mandatoryEnumField_id"><option value=".*" selected="selected">{
-          ev.toString
-        }</option></select>)
+      Full(<select tabindex="1" name=".*" id="mandatoryEnumField_id"><option value=".*" selected="selected">{
+        ev.toString
+      }</option></select>)
     )
   }
 
@@ -806,10 +803,9 @@ object FieldSpec extends Specification {
       rec.mandatoryTextareaField,
       Str(txt),
       JString(txt),
-      Full(
-        <textarea name=".*" rows="8" tabindex="1" cols="20" id="mandatoryTextareaField_id">{
-          txt
-        }</textarea>)
+      Full(<textarea name=".*" rows="8" tabindex="1" cols="20" id="mandatoryTextareaField_id">{
+        txt
+      }</textarea>)
     )
   }
 
@@ -834,10 +830,9 @@ object FieldSpec extends Specification {
       rec.mandatoryTimeZoneField,
       Str(example),
       JString(example),
-      Full(
-        <select tabindex="1" name=".*" id="mandatoryTimeZoneField_id"><option value=".*" selected="selected">{
-          example
-        }</option></select>)
+      Full(<select tabindex="1" name=".*" id="mandatoryTimeZoneField_id"><option value=".*" selected="selected">{
+        example
+      }</option></select>)
     )
   }
 

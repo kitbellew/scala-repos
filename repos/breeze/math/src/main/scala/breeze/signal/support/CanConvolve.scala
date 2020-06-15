@@ -232,8 +232,7 @@ object CanConvolve extends SerializableLogging {
           "kernel (" + kernel.length + ") cannot be longer than data(" + data.length + ") to be convolved/correlated!")
         require(
           range.start >= 0 && range.last <= (data.length - kernel.length + 1),
-          logger.error(
-            s"range (start ${range.start}, end ${range.end}, step ${range.step}, inclusive ${range.isInclusive}) is OOB for data (length ${data.length}) and kernel (length ${kernel.length})!")
+          logger.error(s"range (start ${range.start}, end ${range.end}, step ${range.step}, inclusive ${range.isInclusive}) is OOB for data (length ${data.length}) and kernel (length ${kernel.length})!")
         )
 
         val dataVect = data.toScalaVector() //make immutable
@@ -277,8 +276,7 @@ object CanConvolve extends SerializableLogging {
           "kernel cannot be longer than data to be convolved/corelated!")
         require(
           range.start >= 0 && range.last <= (data.length - kernel.length + 1),
-          logger.error(
-            s"range (start ${range.start}, end ${range.end}, step ${range.step}, inclusive ${range.isInclusive}) is OOB for data (length ${data.length}) and kernel (length ${kernel.length})!")
+          logger.error(s"range (start ${range.start}, end ${range.end}, step ${range.step}, inclusive ${range.isInclusive}) is OOB for data (length ${data.length}) and kernel (length ${kernel.length})!")
         )
 
         val dataL = convert(data, Long).toScalaVector() //make immutable

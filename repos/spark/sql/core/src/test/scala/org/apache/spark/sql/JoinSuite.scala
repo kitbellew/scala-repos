@@ -54,8 +54,7 @@ class JoinSuite extends QueryTest with SharedSQLContext {
 
     assert(operators.size === 1)
     if (operators(0).getClass() != c) {
-      fail(
-        s"$sqlString expected operator: $c, but got ${operators(0)}\n physical: \n$physical")
+      fail(s"$sqlString expected operator: $c, but got ${operators(0)}\n physical: \n$physical")
     }
   }
 

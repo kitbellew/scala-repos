@@ -35,8 +35,7 @@ class RewriteDistinct extends Phase {
           bottomUp = true
         ))
     else {
-      logger.debug(
-        "No DISTINCT used as determined by assignUniqueSymbols - skipping phase")
+      logger.debug("No DISTINCT used as determined by assignUniqueSymbols - skipping phase")
       state
     }
 

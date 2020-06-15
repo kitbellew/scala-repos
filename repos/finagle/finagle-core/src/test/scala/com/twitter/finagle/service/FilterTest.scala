@@ -39,8 +39,7 @@ class FilterTest extends FunSuite {
     assert(Await.result(result) == (123 * 2))
   }
 
-  test(
-    "filters should compose when synchronous exceptions are thrown with simple composition") {
+  test("filters should compose when synchronous exceptions are thrown with simple composition") {
     val h = new FilterHelper
     import h._
 
@@ -59,8 +58,7 @@ class FilterTest extends FunSuite {
           1.second)) == Throw(e))
   }
 
-  test(
-    "filters should compose when synchronous exceptions are thrown with transitive composition") {
+  test("filters should compose when synchronous exceptions are thrown with transitive composition") {
     val h = new FilterHelper
     import h._
 

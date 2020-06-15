@@ -197,9 +197,8 @@ object SimpleConsumerShell extends Logging {
     if (replicaId == UseLeaderReplica) {
       replicaOpt = partitionMetadataOpt.get.leader
       if (!replicaOpt.isDefined) {
-        System.err.println(
-          "Error: user specifies to fetch from leader for partition (%s, %d) which has not been elected yet"
-            .format(topic, partitionId))
+        System.err.println("Error: user specifies to fetch from leader for partition (%s, %d) which has not been elected yet"
+          .format(topic, partitionId))
         System.exit(1)
       }
     } else {
@@ -249,16 +248,15 @@ object SimpleConsumerShell extends Logging {
     formatter.init(formatterArgs)
 
     val replicaString = if (replicaId > 0) "leader" else "replica"
-    info(
-      "Starting simple consumer shell to partition [%s, %d], %s [%d], host and port: [%s, %d], from offset [%d]"
-        .format(
-          topic,
-          partitionId,
-          replicaString,
-          replicaId,
-          fetchTargetBroker.host,
-          fetchTargetBroker.port,
-          startingOffset))
+    info("Starting simple consumer shell to partition [%s, %d], %s [%d], host and port: [%s, %d], from offset [%d]"
+      .format(
+        topic,
+        partitionId,
+        replicaString,
+        replicaId,
+        fetchTargetBroker.host,
+        fetchTargetBroker.port,
+        startingOffset))
     val simpleConsumer = new SimpleConsumer(
       fetchTargetBroker.host,
       fetchTargetBroker.port,
@@ -279,9 +277,8 @@ object SimpleConsumerShell extends Logging {
               val fetchResponse = simpleConsumer.fetch(fetchRequest)
               val messageSet = fetchResponse.messageSet(topic, partitionId)
               if (messageSet.validBytes <= 0 && noWaitAtEndOfLog) {
-                println(
-                  "Terminating. Reached the end of partition (%s, %d) at offset %d"
-                    .format(topic, partitionId, offset))
+                println("Terminating. Reached the end of partition (%s, %d) at offset %d"
+                  .format(topic, partitionId, offset))
                 return
               }
               debug(

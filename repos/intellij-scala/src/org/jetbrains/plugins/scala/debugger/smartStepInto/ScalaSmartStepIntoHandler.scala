@@ -206,8 +206,7 @@ class ScalaSmartStepIntoHandler extends JvmSmartStepIntoHandler {
 
       val implicits = expr.getImplicitConversions()._2
       implicits match {
-        case Some(f: PsiMethod)
-            if f.isPhysical => //synthetic conversions are created for implicit classes
+        case Some(f: PsiMethod) if f.isPhysical => //synthetic conversions are created for implicit classes
           result += new MethodSmartStepTarget(
             f,
             "implicit ",

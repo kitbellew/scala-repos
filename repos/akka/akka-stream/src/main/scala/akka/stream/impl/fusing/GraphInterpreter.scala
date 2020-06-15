@@ -568,8 +568,7 @@ private[stream] final class GraphInterpreter(
     */
   def execute(eventLimit: Int): Int = {
     if (Debug)
-      println(
-        s"$Name ---------------- EXECUTE $queueStatus (running=$runningStages, shutdown=$shutdownCounters)")
+      println(s"$Name ---------------- EXECUTE $queueStatus (running=$runningStages, shutdown=$shutdownCounters)")
     val currentInterpreterHolder = _currentInterpreter.get()
     val previousInterpreter = currentInterpreterHolder(0)
     currentInterpreterHolder(0) = this
@@ -595,8 +594,7 @@ private[stream] final class GraphInterpreter(
       currentInterpreterHolder(0) = previousInterpreter
     }
     if (Debug)
-      println(
-        s"$Name ---------------- $queueStatus (running=$runningStages, shutdown=$shutdownCounters)")
+      println(s"$Name ---------------- $queueStatus (running=$runningStages, shutdown=$shutdownCounters)")
     // TODO: deadlock detection
     eventsRemaining
   }
@@ -629,9 +627,7 @@ private[stream] final class GraphInterpreter(
 
     def processElement(): Unit = {
       if (Debug)
-        println(
-          s"$Name PUSH ${outOwnerName(connection)} -> ${inOwnerName(connection)}, ${connectionSlots(
-            connection)} (${inHandlers(connection)}) [${inLogicName(connection)}]")
+        println(s"$Name PUSH ${outOwnerName(connection)} -> ${inOwnerName(connection)}, ${connectionSlots(connection)} (${inHandlers(connection)}) [${inLogicName(connection)}]")
       activeStage = safeLogics(assembly.inOwners(connection))
       portStates(connection) ^= PushEndFlip
       inHandlers(connection).onPush()
@@ -649,8 +645,8 @@ private[stream] final class GraphInterpreter(
 
       // PULL
     } else if ((code & (Pulling | OutClosed | InClosed)) == Pulling) {
-      if (Debug) println(s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(
-        connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
+      if (Debug)
+        println(s"$Name PULL ${inOwnerName(connection)} -> ${outOwnerName(connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
       portStates(connection) ^= PullEndFlip
       activeStage = safeLogics(assembly.outOwners(connection))
       outHandlers(connection).onPull()
@@ -660,8 +656,7 @@ private[stream] final class GraphInterpreter(
       val stageId = assembly.outOwners(connection)
       activeStage = safeLogics(stageId)
       if (Debug)
-        println(s"$Name CANCEL ${inOwnerName(connection)} -> ${outOwnerName(
-          connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
+        println(s"$Name CANCEL ${inOwnerName(connection)} -> ${outOwnerName(connection)} (${outHandlers(connection)}) [${outLogicName(connection)}]")
       portStates(connection) |= OutClosed
       completeConnection(stageId)
       outHandlers(connection).onDownstreamFinish()
@@ -671,8 +666,7 @@ private[stream] final class GraphInterpreter(
       if ((code & Pushing) == 0) {
         // Normal completion (no push pending)
         if (Debug)
-          println(s"$Name COMPLETE ${outOwnerName(connection)} -> ${inOwnerName(
-            connection)} (${inHandlers(connection)}) [${inLogicName(connection)}]")
+          println(s"$Name COMPLETE ${outOwnerName(connection)} -> ${inOwnerName(connection)} (${inHandlers(connection)}) [${inLogicName(connection)}]")
         portStates(connection) |= InClosed
         val stageId = assembly.inOwners(connection)
         activeStage = safeLogics(stageId)
@@ -851,8 +845,7 @@ private[stream] final class GraphInterpreter(
     }
 
     builder.append("}\n")
-    builder.append(
-      s"// $queueStatus (running=$runningStages, shutdown=${shutdownCounter.mkString(",")})")
+    builder.append(s"// $queueStatus (running=$runningStages, shutdown=${shutdownCounter.mkString(",")})")
     builder.toString()
   }
 }

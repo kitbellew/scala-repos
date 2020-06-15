@@ -447,9 +447,7 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
                    |  - result type:              '${resType.toString}'"""
             case _ => ""
           }
-          log(
-            s"""Dynamically application '$qual.${ad.symbol.name}(${paramsToString(
-              params)})' $mstr - resulting code: '$t'""")
+          log(s"""Dynamically application '$qual.${ad.symbol.name}(${paramsToString(params)})' $mstr - resulting code: '$t'""")
         }
 
         /* We return the dynamic call tree, after making sure no other

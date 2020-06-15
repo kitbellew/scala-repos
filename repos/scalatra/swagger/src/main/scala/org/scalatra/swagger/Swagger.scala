@@ -287,8 +287,7 @@ class Swagger(
       produces: List[String],
       protocols: List[String],
       authorizations: List[String]) = {
-    logger.debug(
-      s"registering swagger api with: { listingPath: $listingPath, resourcePath: $resourcePath, description: $resourcePath, servlet: ${s.getClass} }")
+    logger.debug(s"registering swagger api with: { listingPath: $listingPath, resourcePath: $resourcePath, description: $resourcePath, servlet: ${s.getClass} }")
     val endpoints: List[Endpoint] = s.endpoints(resourcePath) collect {
       case m: Endpoint => m
     }

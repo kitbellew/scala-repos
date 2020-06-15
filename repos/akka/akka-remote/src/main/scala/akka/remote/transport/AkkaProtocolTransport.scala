@@ -539,18 +539,14 @@ private[transport] class ProtocolStateActor(
     case Event(HandshakeTimer, OutboundUnderlyingAssociated(_, wrappedHandle)) ⇒
       sendDisassociate(wrappedHandle, Unknown)
       stop(
-        FSM.Failure(
-          TimeoutReason(
-            "No response from remote for outbound association. Handshake timed out after " +
-              s"[${settings.HandshakeTimeout.toMillis} ms].")))
+        FSM.Failure(TimeoutReason("No response from remote for outbound association. Handshake timed out after " +
+          s"[${settings.HandshakeTimeout.toMillis} ms].")))
 
     case Event(HandshakeTimer, InboundUnassociated(_, wrappedHandle)) ⇒
       sendDisassociate(wrappedHandle, Unknown)
       stop(
-        FSM.Failure(
-          TimeoutReason(
-            "No response from remote for inbound association. Handshake timed out after " +
-              s"[${settings.HandshakeTimeout.toMillis} ms].")))
+        FSM.Failure(TimeoutReason("No response from remote for inbound association. Handshake timed out after " +
+          s"[${settings.HandshakeTimeout.toMillis} ms].")))
 
   }
 
@@ -582,7 +578,8 @@ private[transport] class ProtocolStateActor(
               stay()
             case msg ⇒
               throw new AkkaProtocolException(
-                s"unhandled message in state Open(InboundPayload) with type [${safeClassName(msg)}]")
+                s"unhandled message in state Open(InboundPayload) with type [${safeClassName(
+                  msg)}]")
           }
 
         case _ ⇒ stay()
@@ -599,7 +596,8 @@ private[transport] class ProtocolStateActor(
         case AssociatedWaitHandler(_, wrappedHandle, _) ⇒ wrappedHandle
         case msg ⇒
           throw new AkkaProtocolException(
-            s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(msg)}]")
+            s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(
+              msg)}]")
       }
       sendDisassociate(handle, info)
       stop()
@@ -672,8 +670,7 @@ private[transport] class ProtocolStateActor(
         case FSM.Failure(info: DisassociateInfo) ⇒
           disassociateException(info)
         case FSM.Failure(ForbiddenUidReason) ⇒
-          InvalidAssociationException(
-            "The remote system has a UID that has been quarantined. Association aborted.")
+          InvalidAssociationException("The remote system has a UID that has been quarantined. Association aborted.")
         case _ ⇒
           new AkkaProtocolException(
             "Transport disassociated before handshake finished")
@@ -712,12 +709,10 @@ private[transport] class ProtocolStateActor(
         new AkkaProtocolException(
           "The remote system explicitly disassociated (reason unknown).")
       case Shutdown ⇒
-        InvalidAssociationException(
-          "The remote system refused the association because it is shutting down.")
+        InvalidAssociationException("The remote system refused the association because it is shutting down.")
       case Quarantined ⇒
-        InvalidAssociationException(
-          "The remote system has quarantined this system. No further associations to the remote " +
-            "system are possible until this system is restarted.")
+        InvalidAssociationException("The remote system has quarantined this system. No further associations to the remote " +
+          "system are possible until this system is restarted.")
     }
 
   override protected def logTermination(reason: FSM.Reason): Unit =

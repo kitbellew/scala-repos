@@ -201,8 +201,7 @@ object GradientDescent extends Logging {
 
     // if no data, return initial weights to avoid NaNs
     if (numExamples == 0) {
-      logWarning(
-        "GradientDescent.runMiniBatchSGD returning initial weights, no data found")
+      logWarning("GradientDescent.runMiniBatchSGD returning initial weights, no data found")
       return (initialWeights, stochasticLossHistory.toArray)
     }
 

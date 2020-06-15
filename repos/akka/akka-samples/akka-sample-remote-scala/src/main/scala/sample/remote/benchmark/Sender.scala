@@ -79,8 +79,7 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
       actor ! Start
 
     case Start =>
-      println(
-        s"Starting benchmark of $totalMessages messages with burst size $burstSize and payload size $payloadSize")
+      println(s"Starting benchmark of $totalMessages messages with burst size $burstSize and payload size $payloadSize")
       startTime = System.nanoTime
       val remaining = sendBatch(actor, totalMessages)
       if (remaining == 0)
@@ -95,9 +94,8 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
       maxRoundTripMillis = math.max(maxRoundTripMillis, roundTripMillis)
       if (duration >= 500) {
         val throughtput = (n * 1000.0 / duration).toInt
-        println(
-          s"It took $duration ms to deliver $n messages, throughtput $throughtput msg/s, " +
-            s"latest round-trip $roundTripMillis ms, remaining $remaining of $totalMessages")
+        println(s"It took $duration ms to deliver $n messages, throughtput $throughtput msg/s, " +
+          s"latest round-trip $roundTripMillis ms, remaining $remaining of $totalMessages")
       }
 
       val nextRemaining = sendBatch(actor, remaining)
@@ -114,10 +112,9 @@ class Sender(path: String, totalMessages: Int, burstSize: Int, payloadSize: Int)
     case Done =>
       val took = (System.nanoTime - startTime).nanos.toMillis
       val throughtput = (totalMessages * 1000.0 / took).toInt
-      println(
-        s"== It took $took ms to deliver $totalMessages messages, throughtput $throughtput msg/s, " +
-          s"max round-trip $maxRoundTripMillis ms, burst size $burstSize, " +
-          s"payload size $payloadSize")
+      println(s"== It took $took ms to deliver $totalMessages messages, throughtput $throughtput msg/s, " +
+        s"max round-trip $maxRoundTripMillis ms, burst size $burstSize, " +
+        s"payload size $payloadSize")
       actor ! Shutdown
 
     case Terminated(`actor`) =>

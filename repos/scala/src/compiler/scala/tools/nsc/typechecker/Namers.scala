@@ -417,8 +417,7 @@ trait Namers extends MethodSynthesis {
 
     private def enterClassSymbol(tree: ClassDef, clazz: ClassSymbol): Symbol = {
       if (clazz.sourceFile != null && clazz.sourceFile != contextFile)
-        devWarning(
-          s"Source file mismatch in $clazz: ${clazz.sourceFile} vs. $contextFile")
+        devWarning(s"Source file mismatch in $clazz: ${clazz.sourceFile} vs. $contextFile")
 
       clazz.associatedFile = contextFile
       if (clazz.sourceFile != null) {
@@ -824,8 +823,7 @@ trait Namers extends MethodSynthesis {
           for (tp1 @ TypeRef(_, sym, _) <- lo) {
             if (settings.breakCycles) {
               if (!sym.maybeInitialize) {
-                log(
-                  s"Cycle inspecting $lo for possible f-bounds: ${sym.fullLocationString}")
+                log(s"Cycle inspecting $lo for possible f-bounds: ${sym.fullLocationString}")
                 return sym
               }
             } else sym.initialize
@@ -1037,8 +1035,7 @@ trait Namers extends MethodSynthesis {
       // to use. clazz is the ModuleClass. sourceModule works also for classes defined in methods.
       val module = clazz.sourceModule
       for (cda <- module.attachments.get[ConstructorDefaultsAttachment]) {
-        debuglog(
-          s"Storing the template namer in the ConstructorDefaultsAttachment of ${module.debugLocationString}.")
+        debuglog(s"Storing the template namer in the ConstructorDefaultsAttachment of ${module.debugLocationString}.")
         cda.companionModuleClassNamer = templateNamer
       }
       val classTp = ClassInfoType(parents, decls, clazz)
@@ -1410,8 +1407,7 @@ trait Namers extends MethodSynthesis {
                   // by martin: the null case can happen in IDE; this is really an ugly hack on top of an ugly hack but it seems to work
                   case Some(cda) =>
                     if (cda.companionModuleClassNamer == null) {
-                      devWarning(
-                        s"SI-6576 The companion module namer for $meth was unexpectedly null")
+                      devWarning(s"SI-6576 The companion module namer for $meth was unexpectedly null")
                       return
                     }
                     val p =

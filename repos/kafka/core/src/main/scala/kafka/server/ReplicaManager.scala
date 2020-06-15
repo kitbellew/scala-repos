@@ -300,13 +300,11 @@ class ReplicaManager(
             logManager.deleteLog(topicAndPartition)
           }
         }
-        stateChangeLogger.trace(
-          "Broker %d ignoring stop replica (delete=%s) for partition [%s,%d] as replica doesn't exist on broker"
-            .format(localBrokerId, deletePartition, topic, partitionId))
+        stateChangeLogger.trace("Broker %d ignoring stop replica (delete=%s) for partition [%s,%d] as replica doesn't exist on broker"
+          .format(localBrokerId, deletePartition, topic, partitionId))
     }
-    stateChangeLogger.trace(
-      "Broker %d finished handling stop replica (delete=%s) for partition [%s,%d]"
-        .format(localBrokerId, deletePartition, topic, partitionId))
+    stateChangeLogger.trace("Broker %d finished handling stop replica (delete=%s) for partition [%s,%d]"
+      .format(localBrokerId, deletePartition, topic, partitionId))
     errorCode
   }
 
@@ -315,12 +313,11 @@ class ReplicaManager(
     replicaStateChangeLock synchronized {
       val responseMap = new collection.mutable.HashMap[TopicPartition, Short]
       if (stopReplicaRequest.controllerEpoch() < controllerEpoch) {
-        stateChangeLogger.warn(
-          "Broker %d received stop replica request from an old controller epoch %d. Latest known controller epoch is %d"
-            .format(
-              localBrokerId,
-              stopReplicaRequest.controllerEpoch,
-              controllerEpoch))
+        stateChangeLogger.warn("Broker %d received stop replica request from an old controller epoch %d. Latest known controller epoch is %d"
+          .format(
+            localBrokerId,
+            stopReplicaRequest.controllerEpoch,
+            controllerEpoch))
         (responseMap, Errors.STALE_CONTROLLER_EPOCH.code)
       } else {
         val partitions = stopReplicaRequest.partitions.asScala
@@ -555,22 +552,19 @@ class ReplicaManager(
             BrokerTopicStats.getBrokerAllTopicsStats.messagesInRate.mark(
               numAppendedMessages)
 
-            trace(
-              "%d bytes written to log %s-%d beginning at offset %d and ending at offset %d"
-                .format(
-                  messages.sizeInBytes,
-                  topicPartition.topic,
-                  topicPartition.partition,
-                  info.firstOffset,
-                  info.lastOffset))
+            trace("%d bytes written to log %s-%d beginning at offset %d and ending at offset %d"
+              .format(
+                messages.sizeInBytes,
+                topicPartition.topic,
+                topicPartition.partition,
+                info.firstOffset,
+                info.lastOffset))
             (topicPartition, LogAppendResult(info))
           } catch {
             // NOTE: Failed produce requests metric is not incremented for known exceptions
             // it is supposed to indicate un-expected failures of a broker in handling a produce request
             case e: KafkaStorageException =>
-              fatal(
-                "Halting due to unrecoverable I/O error while handling produce request: ",
-                e)
+              fatal("Halting due to unrecoverable I/O error while handling produce request: ", e)
               Runtime.getRuntime.halt(1)
               (topicPartition, null)
             case e @ (_: UnknownTopicOrPartitionException |
@@ -690,9 +684,8 @@ class ReplicaManager(
 
         val partitionDataAndOffsetInfo =
           try {
-            trace(
-              "Fetching log segment for topic %s, partition %d, offset %d, size %d"
-                .format(topic, partition, offset, fetchSize))
+            trace("Fetching log segment for topic %s, partition %d, offset %d, size %d"
+              .format(topic, partition, offset, fetchSize))
 
             // decide whether to only fetch from leader
             val localReplica =
@@ -814,14 +807,15 @@ class ReplicaManager(
       metadataCache: MetadataCache) {
     replicaStateChangeLock synchronized {
       if (updateMetadataRequest.controllerEpoch < controllerEpoch) {
-        val stateControllerEpochErrorMessage = ("Broker %d received update metadata request with correlation id %d from an " +
-          "old controller %d with epoch %d. Latest known controller epoch is %d")
-          .format(
-            localBrokerId,
-            correlationId,
-            updateMetadataRequest.controllerId,
-            updateMetadataRequest.controllerEpoch,
-            controllerEpoch)
+        val stateControllerEpochErrorMessage =
+          ("Broker %d received update metadata request with correlation id %d from an " +
+            "old controller %d with epoch %d. Latest known controller epoch is %d")
+            .format(
+              localBrokerId,
+              correlationId,
+              updateMetadataRequest.controllerId,
+              updateMetadataRequest.controllerEpoch,
+              controllerEpoch)
         stateChangeLogger.warn(stateControllerEpochErrorMessage)
         throw new ControllerMovedException(stateControllerEpochErrorMessage)
       } else {
@@ -839,17 +833,16 @@ class ReplicaManager(
       : BecomeLeaderOrFollowerResult = {
     leaderAndISRRequest.partitionStates.asScala.foreach {
       case (topicPartition, stateInfo) =>
-        stateChangeLogger.trace(
-          "Broker %d received LeaderAndIsr request %s correlation id %d from controller %d epoch %d for partition [%s,%d]"
-            .format(
-              localBrokerId,
-              stateInfo,
-              correlationId,
-              leaderAndISRRequest.controllerId,
-              leaderAndISRRequest.controllerEpoch,
-              topicPartition.topic,
-              topicPartition.partition
-            ))
+        stateChangeLogger.trace("Broker %d received LeaderAndIsr request %s correlation id %d from controller %d epoch %d for partition [%s,%d]"
+          .format(
+            localBrokerId,
+            stateInfo,
+            correlationId,
+            leaderAndISRRequest.controllerId,
+            leaderAndISRRequest.controllerEpoch,
+            topicPartition.topic,
+            topicPartition.partition
+          ))
     }
     replicaStateChangeLock synchronized {
       val responseMap = new mutable.HashMap[TopicPartition, Short]
@@ -1274,8 +1267,7 @@ class ReplicaManager(
   }
 
   private def maybeShrinkIsr(): Unit = {
-    trace(
-      "Evaluating ISR list of partitions to see which replicas can be removed from the ISR")
+    trace("Evaluating ISR list of partitions to see which replicas can be removed from the ISR")
     allPartitions.values.foreach(partition =>
       partition.maybeShrinkIsr(config.replicaLagTimeMaxMs))
   }
@@ -1299,9 +1291,8 @@ class ReplicaManager(
             tryCompleteDelayedProduce(
               new TopicPartitionOperationKey(topicAndPartition))
           case None =>
-            warn(
-              "While recording the replica LEO, the partition %s hasn't been created."
-                .format(topicAndPartition))
+            warn("While recording the replica LEO, the partition %s hasn't been created."
+              .format(topicAndPartition))
         }
     }
   }

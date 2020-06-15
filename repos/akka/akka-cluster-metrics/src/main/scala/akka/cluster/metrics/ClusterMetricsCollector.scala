@@ -63,9 +63,7 @@ private[metrics] class ClusterMetricsSupervisor
     if (CollectorEnabled) {
       self ! CollectionStartMessage
     } else {
-      log.warning(
-        s"Metrics collection is disabled in configuration. Use subtypes of ${classOf[
-          CollectionControlMessage].getName} to manage collection at runtime.")
+      log.warning(s"Metrics collection is disabled in configuration. Use subtypes of ${classOf[CollectionControlMessage].getName} to manage collection at runtime.")
     }
   }
 

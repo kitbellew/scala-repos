@@ -68,8 +68,7 @@ trait MySQLProfile extends JdbcProfile { profile =>
 
   override protected[this] def loadProfileConfig: Config = {
     if (!GlobalConfig.profileConfig("slick.driver.MySQL").entrySet().isEmpty)
-      SlickLogger[MySQLProfile].warn(
-        "The config key 'slick.driver.MySQL' is deprecated and not used anymore. Use 'slick.jdbc.MySQLProfile' instead.")
+      SlickLogger[MySQLProfile].warn("The config key 'slick.driver.MySQL' is deprecated and not used anymore. Use 'slick.jdbc.MySQLProfile' instead.")
     super.loadProfileConfig
   }
 
@@ -147,8 +146,8 @@ trait MySQLProfile extends JdbcProfile { profile =>
               case Some(s) => s
               case None =>
                 if (sym
-                    .flatMap(_.findColumnOption[
-                      RelationalProfile.ColumnOption.Default[_]])
+                    .flatMap(
+                      _.findColumnOption[RelationalProfile.ColumnOption.Default[_]])
                     .isDefined ||
                   sym
                     .flatMap(_.findColumnOption[ColumnOption.PrimaryKey.type])

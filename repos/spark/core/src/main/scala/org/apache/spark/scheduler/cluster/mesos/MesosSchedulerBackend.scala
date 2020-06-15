@@ -370,8 +370,7 @@ private[spark] class MesosSchedulerBackend(
                   slaveId,
                   // TODO: Add support for log urls for Mesos
                   new ExecutorInfo(o.host, o.cores, Map.empty))))
-          logTrace(
-            s"Launching Mesos tasks on slave '$slaveId', tasks:\n${getTasksSummary(tasks)}")
+          logTrace(s"Launching Mesos tasks on slave '$slaveId', tasks:\n${getTasksSummary(tasks)}")
           d.launchTasks(
             Collections.singleton(slaveIdToOffer(slaveId).getId),
             tasks,

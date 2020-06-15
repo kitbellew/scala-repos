@@ -170,8 +170,7 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     defaultWarnAfterNumberOfUnconfirmedAttempts
 
   private val defaultWarnAfterNumberOfUnconfirmedAttempts: Int =
-    Persistence(
-      context.system).settings.atLeastOnceDelivery.warnAfterNumberOfUnconfirmedAttempts
+    Persistence(context.system).settings.atLeastOnceDelivery.warnAfterNumberOfUnconfirmedAttempts
 
   /**
     * Maximum number of unconfirmed messages that this actor is allowed to hold in memory.

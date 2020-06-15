@@ -31,8 +31,7 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     val deadlineService = deadlineFilter.andThen(service)
   }
 
-  test(
-    "When there is no deadline set, DeadlineFilter should service the request") {
+  test("When there is no deadline set, DeadlineFilter should service the request") {
     val h = new DeadlineFilterHelper
     import h._
 
@@ -47,8 +46,7 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
   }
 
-  test(
-    "When the deadline is not exceeded, DeadlineFilter should service the request") {
+  test("When the deadline is not exceeded, DeadlineFilter should service the request") {
     val h = new DeadlineFilterHelper
     import h._
 
@@ -188,10 +186,9 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test(
-    "When the deadline is exceeded and within the tolerance threshold, and " +
-      "the reject token bucket contains sufficient tokens, DeadlineFilter " +
-      "should service the request and increment the exceeded and rejected stats") {
+  test("When the deadline is exceeded and within the tolerance threshold, and " +
+    "the reject token bucket contains sufficient tokens, DeadlineFilter " +
+    "should service the request and increment the exceeded and rejected stats") {
     val h = new DeadlineFilterHelper
     import h._
 

@@ -81,8 +81,7 @@ abstract class DockerJDBCIntegrationSuite
         docker.ping()
       } catch {
         case NonFatal(e) =>
-          log.error(
-            "Exception while connecting to Docker. Check whether Docker is running.")
+          log.error("Exception while connecting to Docker. Check whether Docker is running.")
           throw e
       }
       // Ensure that the Docker image is installed:
@@ -90,8 +89,7 @@ abstract class DockerJDBCIntegrationSuite
         docker.inspectImage(db.imageName)
       } catch {
         case e: ImageNotFoundException =>
-          log.warn(
-            s"Docker image ${db.imageName} not found; pulling image from registry")
+          log.warn(s"Docker image ${db.imageName} not found; pulling image from registry")
           docker.pull(db.imageName)
       }
       // Configure networking (necessary for boot2docker / Docker Machine)

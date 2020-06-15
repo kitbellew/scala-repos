@@ -199,8 +199,7 @@ object Plugins extends PluginsFunctions {
           (allRequirementsClause ::: allEnabledByClause) filterNot {
             _.head subsetOf knowlege0
           })
-        log.debug(
-          s"deducing auto plugins based on known facts ${knowlege0.toString} and clauses ${clauses.toString}")
+        log.debug(s"deducing auto plugins based on known facts ${knowlege0.toString} and clauses ${clauses.toString}")
         Logic.reduce(
           clauses,
           (flattenConvert(requestedPlugins) ++ convertAll(
@@ -237,8 +236,7 @@ object Plugins extends PluginsFunctions {
         found0: List[AutoPlugin],
         notFound0: List[AutoPlugin],
         limit0: Int): List[AutoPlugin] = {
-      log.debug(
-        s"  :: sorting:: found: ${found0.toString} not found ${notFound0.toString}")
+      log.debug(s"  :: sorting:: found: ${found0.toString} not found ${notFound0.toString}")
       if (limit0 < 0)
         throw AutoPluginException(s"Failed to sort ${ns} topologically")
       else if (notFound0.isEmpty) found0

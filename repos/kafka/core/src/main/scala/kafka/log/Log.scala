@@ -229,16 +229,14 @@ class Log(
             segment.index.sanityCheck()
           } catch {
             case e: java.lang.IllegalArgumentException =>
-              warn(
-                "Found a corrupted index file, %s, deleting and rebuilding index..."
-                  .format(indexFile.getAbsolutePath))
+              warn("Found a corrupted index file, %s, deleting and rebuilding index..."
+                .format(indexFile.getAbsolutePath))
               indexFile.delete()
               segment.recover(config.maxMessageSize)
           }
         } else {
-          error(
-            "Could not find index file corresponding to log file %s, rebuilding index..."
-              .format(segment.log.file.getAbsolutePath))
+          error("Could not find index file corresponding to log file %s, rebuilding index..."
+            .format(segment.log.file.getAbsolutePath))
           segment.recover(config.maxMessageSize)
         }
         segments.put(start, segment)
@@ -474,13 +472,12 @@ class Log(
         // increment the log end offset
         updateLogEndOffset(appendInfo.lastOffset + 1)
 
-        trace(
-          "Appended message set to log %s with first offset: %d, next offset: %d, and messages: %s"
-            .format(
-              this.name,
-              appendInfo.firstOffset,
-              nextOffsetMetadata.messageOffset,
-              validMessages))
+        trace("Appended message set to log %s with first offset: %d, next offset: %d, and messages: %s"
+          .format(
+            this.name,
+            appendInfo.firstOffset,
+            nextOffsetMetadata.messageOffset,
+            validMessages))
 
         if (unflushedMessages >= config.flushInterval)
           flush()
@@ -740,17 +737,16 @@ class Log(
     if (segment.size > config.segmentSize - messagesSize ||
       segment.size > 0 && time.milliseconds - segment.created > config.segmentMs - segment.rollJitterMs ||
       segment.index.isFull) {
-      debug(
-        "Rolling new log segment in %s (log_size = %d/%d, index_size = %d/%d, age_ms = %d/%d)."
-          .format(
-            name,
-            segment.size,
-            config.segmentSize,
-            segment.index.entries,
-            segment.index.maxEntries,
-            time.milliseconds - segment.created,
-            config.segmentMs - segment.rollJitterMs
-          ))
+      debug("Rolling new log segment in %s (log_size = %d/%d, index_size = %d/%d, age_ms = %d/%d)."
+        .format(
+          name,
+          segment.size,
+          config.segmentSize,
+          segment.index.entries,
+          segment.index.maxEntries,
+          time.milliseconds - segment.created,
+          config.segmentMs - segment.rollJitterMs
+        ))
       roll()
     } else {
       segment
@@ -862,9 +858,8 @@ class Log(
       throw new IllegalArgumentException(
         "Cannot truncate to a negative offset (%d).".format(targetOffset))
     if (targetOffset > logEndOffset) {
-      info(
-        "Truncating %s to %d has no effect as the largest offset in the log is %d."
-          .format(name, targetOffset, logEndOffset - 1))
+      info("Truncating %s to %d has no effect as the largest offset in the log is %d."
+        .format(name, targetOffset, logEndOffset - 1))
       return
     }
     lock synchronized {

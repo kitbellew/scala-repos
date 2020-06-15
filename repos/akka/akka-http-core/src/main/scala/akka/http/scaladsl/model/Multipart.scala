@@ -333,8 +333,7 @@ object Multipart {
                 params - "name",
                 headers.filterNot(_ is "content-disposition")))
           case None ⇒
-            Failure(IllegalHeaderException(
-              "multipart/form-data part must contain `Content-Disposition` header with `name` parameter"))
+            Failure(IllegalHeaderException("multipart/form-data part must contain `Content-Disposition` header with `name` parameter"))
         }
       }
       private[BodyPart] def tryCreateByteRangesBodyPart[T](

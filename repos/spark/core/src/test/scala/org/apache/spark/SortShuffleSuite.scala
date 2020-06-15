@@ -55,8 +55,7 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
     }
   }
 
-  test(
-    "SortShuffleManager properly cleans up files for shuffles that use the serialized path") {
+  test("SortShuffleManager properly cleans up files for shuffles that use the serialized path") {
     sc = new SparkContext("local", "test", conf)
     // Create a shuffled RDD and verify that it actually uses the new serialized map output path
     val rdd = sc.parallelize(1 to 10, 1).map(x => (x, x))
@@ -69,8 +68,7 @@ class SortShuffleSuite extends ShuffleSuite with BeforeAndAfterAll {
     ensureFilesAreCleanedUp(shuffledRdd)
   }
 
-  test(
-    "SortShuffleManager properly cleans up files for shuffles that use the deserialized path") {
+  test("SortShuffleManager properly cleans up files for shuffles that use the deserialized path") {
     sc = new SparkContext("local", "test", conf)
     // Create a shuffled RDD and verify that it actually uses the old deserialized map output path
     val rdd = sc.parallelize(1 to 10, 1).map(x => (x, x))

@@ -169,7 +169,8 @@ private[spark] object ThreadUtils {
         // Combine the two stack traces, with a place holder just specifying that there
         // was a helper method used, without any further details of the helper
         val placeHolderStackElem = new StackTraceElement(
-          s"... run in separate thread using ${ThreadUtils.getClass.getName.stripSuffix("$")} ..",
+          s"... run in separate thread using ${ThreadUtils.getClass.getName
+            .stripSuffix("$")} ..",
           " ",
           "",
           -1)

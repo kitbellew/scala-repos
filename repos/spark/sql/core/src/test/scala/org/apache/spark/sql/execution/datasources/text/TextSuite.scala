@@ -77,8 +77,7 @@ class TextSuite extends QueryTest with SharedSQLContext {
     }
   }
 
-  test(
-    "SPARK-13503 Support to specify the option for compression codec for TEXT") {
+  test("SPARK-13503 Support to specify the option for compression codec for TEXT") {
     val testDf = sqlContext.read.text(testFile)
     val extensionNameMap =
       Map("bzip2" -> ".bz2", "deflate" -> ".deflate", "gzip" -> ".gz")

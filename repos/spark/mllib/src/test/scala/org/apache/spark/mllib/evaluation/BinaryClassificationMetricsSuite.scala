@@ -116,8 +116,7 @@ class BinaryClassificationMetricsSuite
       recalls)
   }
 
-  test(
-    "binary evaluation metrics for RDD where all examples have positive label") {
+  test("binary evaluation metrics for RDD where all examples have positive label") {
     val scoreAndLabels = sc.parallelize(Seq((0.5, 1.0), (0.5, 1.0)), 2)
     val metrics = new BinaryClassificationMetrics(scoreAndLabels)
 
@@ -142,8 +141,7 @@ class BinaryClassificationMetricsSuite
       recalls)
   }
 
-  test(
-    "binary evaluation metrics for RDD where all examples have negative label") {
+  test("binary evaluation metrics for RDD where all examples have negative label") {
     val scoreAndLabels = sc.parallelize(Seq((0.5, 0.0), (0.5, 0.0)), 2)
     val metrics = new BinaryClassificationMetrics(scoreAndLabels)
 

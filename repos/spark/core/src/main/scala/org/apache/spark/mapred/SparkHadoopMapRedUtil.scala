@@ -105,8 +105,7 @@ object SparkHadoopMapRedUtil extends Logging {
       }
     } else {
       // Some other attempt committed the output, so we do nothing and signal success
-      logInfo(
-        s"No need to commit output of task because needsTaskCommit=false: $mrTaskAttemptID")
+      logInfo(s"No need to commit output of task because needsTaskCommit=false: $mrTaskAttemptID")
     }
   }
 }

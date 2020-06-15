@@ -17,6 +17,5 @@ object NoRuntimePicklerGeneration extends RuntimePicklerGenerator {
       classLoader: ClassLoader,
       clazz: Class[_],
       tag: FastTypeTag[_])(implicit share: Share): Pickler[_] =
-    sys.error(
-      s"Runtime pickling generation is disabled, cannot make unpickler for $clazz")
+    sys.error(s"Runtime pickling generation is disabled, cannot make unpickler for $clazz")
 }

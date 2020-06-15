@@ -163,8 +163,7 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
       shuffleId: Int,
       startPartition: Int,
       endPartition: Int): Seq[(BlockManagerId, Seq[(BlockId, Long)])] = {
-    logDebug(
-      s"Fetching outputs for shuffle $shuffleId, partitions $startPartition-$endPartition")
+    logDebug(s"Fetching outputs for shuffle $shuffleId, partitions $startPartition-$endPartition")
     val statuses = getStatuses(shuffleId)
     // Synchronize on the returned array because, on the driver, it gets mutated in place
     statuses.synchronized {

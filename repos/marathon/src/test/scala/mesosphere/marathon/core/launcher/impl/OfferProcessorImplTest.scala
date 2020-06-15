@@ -218,8 +218,7 @@ class OfferProcessorImplTest
     noMoreInteractions(taskCreationHandler)
   }
 
-  test(
-    "match successful but first store is so slow that we are hitting storage timeout") {
+  test("match successful but first store is so slow that we are hitting storage timeout") {
     Given("an offer")
     val dummySource = new DummySource
     val tasksWithSource = tasks.map(task =>
@@ -254,8 +253,7 @@ class OfferProcessorImplTest
     When("processing the offer")
     Await.result(offerProcessor.processOffer(offer), 1.second)
 
-    Then(
-      "we saw the matchOffer request and the task launch attempt for the first task")
+    Then("we saw the matchOffer request and the task launch attempt for the first task")
     val firstTaskOp: Seq[TaskOp] = tasksWithSource.take(1).map(_.op)
 
     verify(offerMatcher).matchOffer(deadline, offer)

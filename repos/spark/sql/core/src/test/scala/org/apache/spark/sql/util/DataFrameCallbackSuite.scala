@@ -29,8 +29,7 @@ class DataFrameCallbackSuite extends QueryTest with SharedSQLContext {
   import testImplicits._
   import functions._
 
-  test(
-    "execute callback functions when a DataFrame action finished successfully") {
+  test("execute callback functions when a DataFrame action finished successfully") {
     val metrics = ArrayBuffer.empty[(String, QueryExecution, Long)]
     val listener = new QueryExecutionListener {
       // Only test successful case here, so no need to implement `onFailure`

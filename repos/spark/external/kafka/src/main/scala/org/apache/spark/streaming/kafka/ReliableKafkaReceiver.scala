@@ -113,9 +113,8 @@ private[streaming] class ReliableKafkaReceiver[
 
     if (kafkaParams.contains(AUTO_OFFSET_COMMIT) && kafkaParams(
         AUTO_OFFSET_COMMIT) == "true") {
-      logWarning(
-        s"$AUTO_OFFSET_COMMIT should be set to false in ReliableKafkaReceiver, " +
-          "otherwise we will manually set it to false to turn off auto offset commit in Kafka")
+      logWarning(s"$AUTO_OFFSET_COMMIT should be set to false in ReliableKafkaReceiver, " +
+        "otherwise we will manually set it to false to turn off auto offset commit in Kafka")
     }
 
     val props = new Properties()

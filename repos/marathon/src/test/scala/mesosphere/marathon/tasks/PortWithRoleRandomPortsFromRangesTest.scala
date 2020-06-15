@@ -144,8 +144,7 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
       s"benchmarkDuration = ${benchmarkDuration.toMillis}ms, " +
         s"allowing time for test = ${allowTimeForTest.toMillis}ms"
     )
-    log.info(
-      s"duration = ${duration.toMillis}ms for $iterations iterations and $numberOfRanges ranges")
+    log.info(s"duration = ${duration.toMillis}ms for $iterations iterations and $numberOfRanges ranges")
     assert(duration.toMillis < allowTimeForTest.toMillis)
   }
 }

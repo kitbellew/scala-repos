@@ -167,8 +167,7 @@ class ClientTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test(
-    "ThriftConnectedClient.read should interrupt current trift request on close") {
+  test("ThriftConnectedClient.read should interrupt current trift request on close") {
     val queueName = "foo"
     val clientFactory = mock[FinagledClientFactory]
     val finagledClient = mock[FinagledClosableClient]

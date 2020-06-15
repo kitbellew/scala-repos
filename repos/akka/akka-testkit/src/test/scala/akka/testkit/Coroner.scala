@@ -102,8 +102,7 @@ object Coroner {
       try {
         if (!Await.result(watchedHandle, duration)) {
           watchedHandle.expired()
-          out.println(
-            s"Coroner not cancelled after ${duration.toMillis}ms. Looking for signs of foul play...")
+          out.println(s"Coroner not cancelled after ${duration.toMillis}ms. Looking for signs of foul play...")
           try printReport(reportTitle, out)
           catch {
             case NonFatal(ex) ⇒ {
@@ -115,8 +114,7 @@ object Coroner {
       } finally {
         if (displayThreadCounts) {
           val endThreads = threadMx.getThreadCount
-          out.println(
-            s"Coroner Thread Count started at $startThreads, ended at $endThreads, peaked at ${threadMx.getPeakThreadCount} in $reportTitle")
+          out.println(s"Coroner Thread Count started at $startThreads, ended at $endThreads, peaked at ${threadMx.getPeakThreadCount} in $reportTitle")
         }
         out.flush()
         watchedHandle.finished()

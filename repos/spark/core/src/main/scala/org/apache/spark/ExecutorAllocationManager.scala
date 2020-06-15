@@ -349,9 +349,8 @@ private[spark] class ExecutorAllocationManager(
             numExecutorsTarget,
             localityAwareTasks,
             hostToLocalTaskCount)
-          logDebug(
-            s"Lowering target number of executors to $numExecutorsTarget (previously " +
-              s"$oldNumExecutorsTarget) because not all requested executors are actually needed")
+          logDebug(s"Lowering target number of executors to $numExecutorsTarget (previously " +
+            s"$oldNumExecutorsTarget) because not all requested executors are actually needed")
         }
         numExecutorsTarget - oldNumExecutorsTarget
       } else if (addTime != NOT_SET && now >= addTime) {
@@ -423,8 +422,7 @@ private[spark] class ExecutorAllocationManager(
       }
       delta
     } else {
-      logWarning(
-        s"Unable to reach the cluster manager to request $numExecutorsTarget total executors!")
+      logWarning(s"Unable to reach the cluster manager to request $numExecutorsTarget total executors!")
       numExecutorsTarget = oldNumExecutorsTarget
       0
     }
@@ -487,8 +485,7 @@ private[spark] class ExecutorAllocationManager(
         // however, we are no longer at the lower bound, and so we must mark executor X
         // as idle again so as not to forget that it is a candidate for removal. (see SPARK-4951)
         executorIds.filter(listener.isExecutorIdle).foreach(onExecutorIdle)
-        logInfo(
-          s"New executor $executorId has registered (new total is ${executorIds.size})")
+        logInfo(s"New executor $executorId has registered (new total is ${executorIds.size})")
       } else {
         logWarning(s"Duplicate executor $executorId has registered")
       }
@@ -502,8 +499,7 @@ private[spark] class ExecutorAllocationManager(
       if (executorIds.contains(executorId)) {
         executorIds.remove(executorId)
         removeTimes.remove(executorId)
-        logInfo(
-          s"Existing executor $executorId has been removed (new total is ${executorIds.size})")
+        logInfo(s"Existing executor $executorId has been removed (new total is ${executorIds.size})")
         if (executorsPendingToRemove.contains(executorId)) {
           executorsPendingToRemove.remove(executorId)
           logDebug(
@@ -536,8 +532,7 @@ private[spark] class ExecutorAllocationManager(
     */
   private def onSchedulerQueueEmpty(): Unit =
     synchronized {
-      logDebug(
-        "Clearing timer to add executors because there are no more pending tasks")
+      logDebug("Clearing timer to add executors because there are no more pending tasks")
       addTime = NOT_SET
       numExecutorsToAdd = 1
     }
@@ -569,9 +564,8 @@ private[spark] class ExecutorAllocationManager(
           val realTimeout =
             if (timeout <= 0) Long.MaxValue else timeout // overflow
           removeTimes(executorId) = realTimeout
-          logDebug(
-            s"Starting idle timer for $executorId because there are no more tasks " +
-              s"scheduled to run on the executor (to expire in ${(realTimeout - now) / 1000} seconds)")
+          logDebug(s"Starting idle timer for $executorId because there are no more tasks " +
+            s"scheduled to run on the executor (to expire in ${(realTimeout - now) / 1000} seconds)")
         }
       } else {
         logWarning(s"Attempted to mark unknown executor $executorId idle")

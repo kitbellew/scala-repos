@@ -150,8 +150,7 @@ private[internal] trait GlbLubs {
                   tp,
                   ts0,
                   ts1) =>
-              log(
-                s"Breaking recursion in lublist, advancing frontier and discaring merged prefix/args from $tp")
+              log(s"Breaking recursion in lublist, advancing frontier and discaring merged prefix/args from $tp")
               loop(pretypes, tails)
             case tp =>
               loop(tp :: pretypes, tails)
@@ -315,8 +314,7 @@ private[internal] trait GlbLubs {
           // which have been applied to dummies or Nothing.
           ts.map(_.typeParams.size).distinct match {
             case x :: Nil if res.typeParams.size != x =>
-              logResult(
-                s"Stripping type args from lub because $res is not consistent with $ts")(
+              logResult(s"Stripping type args from lub because $res is not consistent with $ts")(
                 res.typeConstructor)
             case _ =>
               res

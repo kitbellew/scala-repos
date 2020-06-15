@@ -614,8 +614,7 @@ abstract class RDD[T: ClassTag](
             // this shouldn't happen often because we use a big multiplier for the initial size
             var numIters = 0
             while (samples.length < num) {
-              logWarning(
-                s"Needed to re-sample due to insufficient sample size. Repeat #$numIters")
+              logWarning(s"Needed to re-sample due to insufficient sample size. Repeat #$numIters")
               samples =
                 this.sample(withReplacement, fraction, rand.nextInt()).collect()
               numIters += 1
@@ -1695,12 +1694,11 @@ abstract class RDD[T: ClassTag](
     RDDCheckpointData.synchronized {
       if (conf.getBoolean("spark.dynamicAllocation.enabled", false) &&
         conf.contains("spark.dynamicAllocation.cachedExecutorIdleTimeout")) {
-        logWarning(
-          "Local checkpointing is NOT safe to use with dynamic allocation, " +
-            "which removes executors along with their cached blocks. If you must use both " +
-            "features, you are advised to set `spark.dynamicAllocation.cachedExecutorIdleTimeout` " +
-            "to a high value. E.g. If you plan to use the RDD for 1 hour, set the timeout to " +
-            "at least 1 hour.")
+        logWarning("Local checkpointing is NOT safe to use with dynamic allocation, " +
+          "which removes executors along with their cached blocks. If you must use both " +
+          "features, you are advised to set `spark.dynamicAllocation.cachedExecutorIdleTimeout` " +
+          "to a high value. E.g. If you plan to use the RDD for 1 hour, set the timeout to " +
+          "at least 1 hour.")
       }
 
       // Note: At this point we do not actually know whether the user will call persist() on
@@ -1731,8 +1729,7 @@ abstract class RDD[T: ClassTag](
         // Lineage is not truncated yet, so just override any existing checkpoint data with ours
         checkpointData match {
           case Some(_: ReliableRDDCheckpointData[_]) =>
-            logWarning(
-              "RDD was already marked for reliable checkpointing: overriding with local checkpoint.")
+            logWarning("RDD was already marked for reliable checkpointing: overriding with local checkpoint.")
           case _ =>
         }
         checkpointData = Some(new LocalRDDCheckpointData(this))

@@ -45,8 +45,7 @@ private[plugin] class PluginManagerImpl(
     def configure(plugin: T, definition: PluginDefinition): T =
       plugin match {
         case cf: PluginConfiguration if definition.configuration.isDefined =>
-          log.info(
-            s"Configure the plugin with this configuration: ${definition.configuration}")
+          log.info(s"Configure the plugin with this configuration: ${definition.configuration}")
           cf.initialize(
             Map("frameworkName" -> config.frameworkName()),
             definition.configuration.get)

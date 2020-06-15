@@ -943,8 +943,8 @@ class RemotingSpec
               akka.remote.netty.tcp.port = ${otherAddress.getPort}
               """)
           .withFallback(config)
-        val otherSelection = thisSystem.actorSelection(
-          s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
+        val otherSelection =
+          thisSystem.actorSelection(s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
         otherSelection.tell("ping", probeSender)
         probe.expectNoMsg(1.seconds)
         val otherSystem = ActorSystem("other-system", otherConfig)
@@ -989,8 +989,8 @@ class RemotingSpec
               akka.remote.netty.tcp.port = ${otherAddress.getPort}
               """)
           .withFallback(config)
-        val otherSelection = thisSystem.actorSelection(
-          s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
+        val otherSelection =
+          thisSystem.actorSelection(s"akka.tcp://other-system@localhost:${otherAddress.getPort}/user/echo")
         otherSelection.tell("ping", thisSender)
         thisProbe.expectNoMsg(1.seconds)
         val otherSystem = ActorSystem("other-system", otherConfig)

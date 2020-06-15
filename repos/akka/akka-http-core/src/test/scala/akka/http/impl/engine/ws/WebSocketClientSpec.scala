@@ -64,8 +64,7 @@ class WebSocketClientSpec
             |""")
 
         expectNetworkAbort()
-        expectInvalidUpgradeResponseCause(
-          "WebSocket server at ws://example.org/ws returned unexpected status code: 404 Not Found")
+        expectInvalidUpgradeResponseCause("WebSocket server at ws://example.org/ws returned unexpected status code: 404 Not Found")
       }
       "missing Sec-WebSocket-Accept hash" in new TestSetup with ClientEchoes {
         expectWireData(UpgradeRequestBytes)
@@ -79,8 +78,7 @@ class WebSocketClientSpec
             |""")
 
         expectNetworkAbort()
-        expectInvalidUpgradeResponseCause(
-          "WebSocket server at ws://example.org/ws returned response that was missing required `Sec-WebSocket-Accept` header.")
+        expectInvalidUpgradeResponseCause("WebSocket server at ws://example.org/ws returned response that was missing required `Sec-WebSocket-Accept` header.")
       }
       "wrong Sec-WebSocket-Accept hash" in new TestSetup with ClientEchoes {
         expectWireData(UpgradeRequestBytes)
@@ -95,8 +93,7 @@ class WebSocketClientSpec
             |""")
 
         expectNetworkAbort()
-        expectInvalidUpgradeResponseCause(
-          "WebSocket server at ws://example.org/ws returned response with invalid `Sec-WebSocket-Accept` header.")
+        expectInvalidUpgradeResponseCause("WebSocket server at ws://example.org/ws returned response with invalid `Sec-WebSocket-Accept` header.")
       }
       "missing `Upgrade` header" in new TestSetup with ClientEchoes {
         expectWireData(UpgradeRequestBytes)
@@ -110,8 +107,7 @@ class WebSocketClientSpec
             |""")
 
         expectNetworkAbort()
-        expectInvalidUpgradeResponseCause(
-          "WebSocket server at ws://example.org/ws returned response that was missing required `Upgrade` header.")
+        expectInvalidUpgradeResponseCause("WebSocket server at ws://example.org/ws returned response that was missing required `Upgrade` header.")
       }
       "missing `Connection: upgrade` header" in new TestSetup
         with ClientEchoes {
@@ -126,8 +122,7 @@ class WebSocketClientSpec
             |""")
 
         expectNetworkAbort()
-        expectInvalidUpgradeResponseCause(
-          "WebSocket server at ws://example.org/ws returned response that was missing required `Connection` header.")
+        expectInvalidUpgradeResponseCause("WebSocket server at ws://example.org/ws returned response that was missing required `Connection` header.")
       }
     }
 
@@ -273,8 +268,7 @@ class WebSocketClientSpec
               |""")
 
           expectNetworkAbort()
-          expectInvalidUpgradeResponseCause(
-            "WebSocket server at ws://example.org/ws returned response that indicated that the given subprotocol was not supported. (client supported: v2, server supported: None)")
+          expectInvalidUpgradeResponseCause("WebSocket server at ws://example.org/ws returned response that indicated that the given subprotocol was not supported. (client supported: v2, server supported: None)")
         }
         "if different protocol was selected" in new TestSetup
           with ClientProbes {
@@ -302,8 +296,7 @@ class WebSocketClientSpec
               |""")
 
           expectNetworkAbort()
-          expectInvalidUpgradeResponseCause(
-            "WebSocket server at ws://example.org/ws returned response that indicated that the given subprotocol was not supported. (client supported: v2, server supported: Some(v3))")
+          expectInvalidUpgradeResponseCause("WebSocket server at ws://example.org/ws returned response that indicated that the given subprotocol was not supported. (client supported: v2, server supported: Some(v3))")
         }
       }
     }

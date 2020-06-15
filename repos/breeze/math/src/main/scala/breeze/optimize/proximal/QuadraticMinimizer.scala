@@ -636,8 +636,7 @@ object QuadraticMinimizer {
   def main(args: Array[String]) {
     if (args.length < 4) {
       println("Usage: QpSolver n m lambda beta")
-      println(
-        "Test QpSolver with a simple quadratic function of dimension n and m equalities lambda beta for elasticNet")
+      println("Test QpSolver with a simple quadratic function of dimension n and m equalities lambda beta for elasticNet")
       sys.exit(1)
     }
 
@@ -647,12 +646,10 @@ object QuadraticMinimizer {
     val lambda = args(2).toDouble
     val beta = args(3).toDouble
 
-    println(
-      s"Generating randomized QPs with rank ${problemSize} equalities ${nequalities}")
+    println(s"Generating randomized QPs with rank ${problemSize} equalities ${nequalities}")
     val (aeq, b, bl, bu, q, h) = QpGenerator(problemSize, nequalities)
 
-    println(
-      s"Test QuadraticMinimizer, CG , BFGS and OWLQN with $problemSize variables and $nequalities equality constraints")
+    println(s"Test QuadraticMinimizer, CG , BFGS and OWLQN with $problemSize variables and $nequalities equality constraints")
 
     val luStart = System.nanoTime()
     val luResult = h \ q :* (-1.0)
@@ -676,10 +673,12 @@ object QuadraticMinimizer {
 
     println(
       s"||qp - lu|| norm ${norm(result - luResult, 2)} max-norm ${norm(result - luResult, inf)}")
-    println(
-      s"||cg - lu|| norm ${norm(cgResult - luResult, 2)} max-norm ${norm(cgResult - luResult, inf)}")
-    println(
-      s"||bfgs - lu|| norm ${norm(bfgsResult - luResult, 2)} max-norm ${norm(bfgsResult - luResult, inf)}")
+    println(s"||cg - lu|| norm ${norm(cgResult - luResult, 2)} max-norm ${norm(
+      cgResult - luResult,
+      inf)}")
+    println(s"||bfgs - lu|| norm ${norm(
+      bfgsResult - luResult,
+      2)} max-norm ${norm(bfgsResult - luResult, inf)}")
 
     val luObj = computeObjective(h, q, luResult)
     val bfgsObj = computeObjective(h, q, bfgsResult)

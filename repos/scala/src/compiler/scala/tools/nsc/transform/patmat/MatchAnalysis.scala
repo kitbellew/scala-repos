@@ -469,8 +469,7 @@ trait MatchApproximation
           cases: List[List[TreeMaker]],
           treeMakerToProp: TreeMakerToProp = conservative) = {
         val testss = cases.map { _ map (tm => Test(treeMakerToProp(tm), tm)) }
-        substitutionComputed =
-          true // a second call to approximateMatch should not re-compute the substitution (would be wrong)
+        substitutionComputed = true // a second call to approximateMatch should not re-compute the substitution (would be wrong)
         testss
       }
     }

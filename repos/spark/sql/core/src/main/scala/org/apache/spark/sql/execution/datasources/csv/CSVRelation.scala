@@ -82,8 +82,7 @@ object CSVRelation extends Logging {
     val row = new GenericMutableRow(requiredSize)
     tokenizedRDD.flatMap { tokens =>
       if (params.dropMalformed && schemaFields.length != tokens.length) {
-        logWarning(
-          s"Dropping malformed line: ${tokens.mkString(params.delimiter.toString)}")
+        logWarning(s"Dropping malformed line: ${tokens.mkString(params.delimiter.toString)}")
         None
       } else if (params.failFast && schemaFields.length != tokens.length) {
         throw new RuntimeException(
@@ -120,8 +119,10 @@ object CSVRelation extends Logging {
           Some(row)
         } catch {
           case NonFatal(e) if params.dropMalformed =>
-            logWarning("Parse exception. " +
-              s"Dropping malformed line: ${tokens.mkString(params.delimiter.toString)}")
+            logWarning(
+              "Parse exception. " +
+                s"Dropping malformed line: ${tokens.mkString(
+                  params.delimiter.toString)}")
             None
         }
       }

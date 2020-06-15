@@ -234,15 +234,14 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
           val assignedReplicas = controllerContext
             .partitionReplicaAssignment(topicAndPartition)
             .mkString(",")
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed partition %s state from %s to %s with assigned replicas %s"
-              .format(
-                controllerId,
-                controller.epoch,
-                topicAndPartition,
-                currState,
-                targetState,
-                assignedReplicas))
+          stateChangeLogger.trace("Controller %d epoch %d changed partition %s state from %s to %s with assigned replicas %s"
+            .format(
+              controllerId,
+              controller.epoch,
+              topicAndPartition,
+              currState,
+              targetState,
+              assignedReplicas))
         // post: partition has been assigned replicas
         case OnlinePartition =>
           assertValidPreviousStates(
@@ -264,15 +263,14 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
             .partitionLeadershipInfo(topicAndPartition)
             .leaderAndIsr
             .leader
-          stateChangeLogger.trace(
-            "Controller %d epoch %d changed partition %s from %s to %s with leader %d"
-              .format(
-                controllerId,
-                controller.epoch,
-                topicAndPartition,
-                currState,
-                targetState,
-                leader))
+          stateChangeLogger.trace("Controller %d epoch %d changed partition %s from %s to %s with leader %d"
+            .format(
+              controllerId,
+              controller.epoch,
+              topicAndPartition,
+              currState,
+              targetState,
+              leader))
         // post: partition has a leader
         case OfflinePartition =>
           // pre: partition should be in New or Online state
@@ -470,10 +468,11 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         val currentLeaderAndIsr = currentLeaderIsrAndEpoch.leaderAndIsr
         val controllerEpoch = currentLeaderIsrAndEpoch.controllerEpoch
         if (controllerEpoch > controller.epoch) {
-          val failMsg = ("aborted leader election for partition [%s,%d] since the LeaderAndIsr path was " +
-            "already written by another controller. This probably means that the current controller %d went through " +
-            "a soft failure and another controller was elected with epoch %d.")
-            .format(topic, partition, controllerId, controllerEpoch)
+          val failMsg =
+            ("aborted leader election for partition [%s,%d] since the LeaderAndIsr path was " +
+              "already written by another controller. This probably means that the current controller %d went through " +
+              "a soft failure and another controller was elected with epoch %d.")
+              .format(topic, partition, controllerId, controllerEpoch)
           stateChangeLogger.error(
             "Controller %d epoch %d "
               .format(controllerId, controller.epoch) + failMsg)
@@ -622,12 +621,11 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
                 !deletedTopics.contains(p._1.topic))
             controllerContext.partitionReplicaAssignment.++=(
               addedPartitionReplicaAssignment)
-            info(
-              "New topics: [%s], deleted topics: [%s], new partition replica assignment [%s]"
-                .format(
-                  newTopics,
-                  deletedTopics,
-                  addedPartitionReplicaAssignment))
+            info("New topics: [%s], deleted topics: [%s], new partition replica assignment [%s]"
+              .format(
+                newTopics,
+                deletedTopics,
+                addedPartitionReplicaAssignment))
             if (newTopics.size > 0)
               controller.onNewTopicCreation(
                 newTopics,
@@ -726,11 +724,10 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
           val partitionsToBeAdded = partitionReplicaAssignment.filter(p =>
             !controllerContext.partitionReplicaAssignment.contains(p._1))
           if (controller.deleteTopicManager.isTopicQueuedUpForDeletion(topic))
-            error(
-              "Skipping adding partitions %s for topic %s since it is currently being deleted"
-                .format(
-                  partitionsToBeAdded.map(_._1.partition).mkString(","),
-                  topic))
+            error("Skipping adding partitions %s for topic %s since it is currently being deleted"
+              .format(
+                partitionsToBeAdded.map(_._1.partition).mkString(","),
+                topic))
           else {
             if (partitionsToBeAdded.size > 0) {
               info("New partitions to be added %s".format(partitionsToBeAdded))

@@ -51,8 +51,7 @@ object StripNamedNode {
       case IdentityKeyedProducer(producer) => None
       case MergedProducer(l, r)            => None
       case _ =>
-        sys.error(
-          "Unreachable. Here to warn us if we add Producer subclasses but forget to update this")
+        sys.error("Unreachable. Here to warn us if we add Producer subclasses but forget to update this")
     }
 
   def apply[P <: Platform[P], T](tail: TailProducer[P, T])
@@ -95,10 +94,9 @@ object StripNamedNode {
             n -> oldNames.map(_.id)
           case None =>
             val newLine = "\n"
-            sys.error(
-              s"Node $n in the new node has no corresponding node in the original graph: ${tail}.\n" +
-                s"new: ${newNodeIrr}\n" +
-                s"old: ${oldIrrToNode.mkString(newLine)}")
+            sys.error(s"Node $n in the new node has no corresponding node in the original graph: ${tail}.\n" +
+              s"new: ${newNodeIrr}\n" +
+              s"old: ${oldIrrToNode.mkString(newLine)}")
         }
       }(breakOut)
     (newNames, newTail)

@@ -64,8 +64,7 @@ object Test extends App {
   def header(tpe: Type) {
     println(s"============\n$tpe")
     println("it's important to print the list of Byte's members")
-    println(
-      "if some of them change (possibly, adding and/or removing magic symbols), we must update this test")
+    println("if some of them change (possibly, adding and/or removing magic symbols), we must update this test")
     tpe.members.toList.sortBy(key).foreach(sym => println(key(sym)))
   }
 

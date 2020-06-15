@@ -88,9 +88,8 @@ private[kinesis] class KinesisCheckpointer(
             /* Perform the checkpoint */
             KinesisRecordProcessor
               .retryRandom(checkpointer.checkpoint(latestSeqNum), 4, 100)
-            logDebug(
-              s"Checkpoint:  WorkerId $workerId completed checkpoint at sequence number" +
-                s" $latestSeqNum for shardId $shardId")
+            logDebug(s"Checkpoint:  WorkerId $workerId completed checkpoint at sequence number" +
+              s" $latestSeqNum for shardId $shardId")
             lastCheckpointedSeqNums.put(shardId, latestSeqNum)
           }
         }

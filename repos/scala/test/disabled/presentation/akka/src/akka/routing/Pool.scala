@@ -39,9 +39,7 @@ trait ActorPool {
   def capacity(
       delegates: Seq[ActorRef])
       : Int //Question, What is the semantics of this return value?
-  def select(
-      delegates: Seq[ActorRef])
-      : Tuple2[Iterator[ActorRef], Int] //Question, Why does select return this instead of an ordered Set?
+  def select(delegates: Seq[ActorRef]): Tuple2[Iterator[ActorRef], Int] //Question, Why does select return this instead of an ordered Set?
 }
 
 /**

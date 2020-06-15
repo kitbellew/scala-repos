@@ -321,8 +321,7 @@ class MetadataCacheTest {
 
     try {
       val result = cache.getTopicMetadata(Set(topic), SecurityProtocol.SSL)
-      fail(
-        s"Exception should be thrown by `getTopicMetadata` with non-supported SecurityProtocol, $result was returned instead")
+      fail(s"Exception should be thrown by `getTopicMetadata` with non-supported SecurityProtocol, $result was returned instead")
     } catch {
       case e: BrokerEndPointNotAvailableException => //expected
     }

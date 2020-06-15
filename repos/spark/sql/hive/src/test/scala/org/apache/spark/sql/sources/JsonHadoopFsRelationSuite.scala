@@ -37,8 +37,7 @@ class JsonHadoopFsRelationSuite extends HadoopFsRelationTest {
       case _                       => true
     }
 
-  test(
-    "save()/load() - partitioned table - simple queries - partition columns in data") {
+  test("save()/load() - partitioned table - simple queries - partition columns in data") {
     withTempDir { file =>
       val basePath = new Path(file.getCanonicalPath)
       val fs = basePath.getFileSystem(SparkHadoopUtil.get.conf)

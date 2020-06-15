@@ -330,9 +330,8 @@ private[deploy] class Master(
               } else {
                 val execs = appInfo.executors.values
                 if (!execs.exists(_.state == ExecutorState.RUNNING)) {
-                  logError(
-                    s"Application ${appInfo.desc.name} with ID ${appInfo.id} failed " +
-                      s"${appInfo.retryCount} times; removing it")
+                  logError(s"Application ${appInfo.desc.name} with ID ${appInfo.id} failed " +
+                    s"${appInfo.retryCount} times; removing it")
                   removeApplication(appInfo, ApplicationState.FAILED)
                 }
               }
@@ -487,9 +486,8 @@ private[deploy] class Master(
           schedule()
         } else {
           val workerAddress = worker.endpoint.address
-          logWarning(
-            "Worker registration failed. Attempted to re-register worker at same " +
-              "address: " + workerAddress)
+          logWarning("Worker registration failed. Attempted to re-register worker at same " +
+            "address: " + workerAddress)
           context.reply(
             RegisterWorkerFailed(
               "Attempted to re-register worker at same address: "
@@ -1035,14 +1033,12 @@ private[deploy] class Master(
       requestedTotal: Int): Boolean = {
     idToApp.get(appId) match {
       case Some(appInfo) =>
-        logInfo(
-          s"Application $appId requested to set total executors to $requestedTotal.")
+        logInfo(s"Application $appId requested to set total executors to $requestedTotal.")
         appInfo.executorLimit = requestedTotal
         schedule()
         true
       case None =>
-        logWarning(
-          s"Unknown application $appId requested $requestedTotal total executors.")
+        logWarning(s"Unknown application $appId requested $requestedTotal total executors.")
         false
     }
   }
@@ -1097,8 +1093,7 @@ private[deploy] class Master(
         Some(executorId.toInt)
       } catch {
         case e: NumberFormatException =>
-          logError(
-            s"Encountered executor with a non-integer ID: $executorId. Ignoring")
+          logError(s"Encountered executor with a non-integer ID: $executorId. Ignoring")
           None
       }
     }
@@ -1147,8 +1142,7 @@ private[deploy] class Master(
 
       val eventLogFile = if (inProgressExists) {
         // Event logging is enabled for this application, but the application is still in progress
-        logWarning(
-          s"Application $appName is still in progress, it may be terminated abnormally.")
+        logWarning(s"Application $appName is still in progress, it may be terminated abnormally.")
         eventLogFilePrefix + EventLoggingListener.IN_PROGRESS
       } else {
         eventLogFilePrefix

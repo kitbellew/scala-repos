@@ -125,8 +125,7 @@ class StreamingKMeansModel @Since("1.2.0") (
           case _ => centroid.toArray.mkString("[", ",", "]")
         }
 
-        logInfo(
-          s"Cluster $label updated with weight $updatedWeight and centroid: $display")
+        logInfo(s"Cluster $label updated with weight $updatedWeight and centroid: $display")
     }
 
     // Check whether the smallest cluster is dying. If so, split the largest cluster.
@@ -134,8 +133,7 @@ class StreamingKMeansModel @Since("1.2.0") (
     val (maxWeight, largest) = weightsWithIndex.maxBy(_._1)
     val (minWeight, smallest) = weightsWithIndex.minBy(_._1)
     if (minWeight < 1e-8 * maxWeight) {
-      logInfo(
-        s"Cluster $smallest is dying. Split the largest cluster $largest into two.")
+      logInfo(s"Cluster $smallest is dying. Split the largest cluster $largest into two.")
       val weight = (maxWeight + minWeight) / 2.0
       clusterWeights(largest) = weight
       clusterWeights(smallest) = weight

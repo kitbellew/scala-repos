@@ -23,9 +23,7 @@ class RemoveTakeDrop(
         n.replace {
           case n @ TakeDrop(from, t, d)
               if (translateTake && t.isDefined) || (translateDrop && d.isDefined) =>
-            logger.debug(
-              s"""Translating "drop $d, then take $t" to zipWithIndex operation:""",
-              n)
+            logger.debug(s"""Translating "drop $d, then take $t" to zipWithIndex operation:""", n)
             val fromRetyped = tr(from).infer()
             val from2 = fromRetyped match {
               case b: Bind => b

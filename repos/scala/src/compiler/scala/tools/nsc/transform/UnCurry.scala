@@ -400,8 +400,7 @@ abstract class UnCurry
           byNameArgs += arg
           arg setType functionType(Nil, arg.tpe)
         } else {
-          log(
-            s"Argument '$arg' at line ${arg.pos.line} is $formal from ${fun.fullName}")
+          log(s"Argument '$arg' at line ${arg.pos.line} is $formal from ${fun.fullName}")
           def canUseDirectly(recv: Tree) =
             (
               recv.tpe.typeSymbol.isSubClass(FunctionClass(0))
@@ -686,8 +685,7 @@ abstract class UnCurry
               if (newParamss.head.isEmpty) { // We know newParamss.length == 1 from above
                 ddSym.info.resultType match {
                   case tp @ ConstantType(value) =>
-                    Literal(
-                      value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
+                    Literal(value) setType tp setPos newRhs.pos // inlining of gen.mkAttributedQualifier(tp)
                   case _ => newRhs
                 }
               } else newRhs

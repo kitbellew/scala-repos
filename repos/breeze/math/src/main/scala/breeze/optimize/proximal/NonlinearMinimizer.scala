@@ -285,8 +285,7 @@ object NonlinearMinimizer {
   def main(args: Array[String]) {
     if (args.length < 3) {
       println("Usage: ProjectedQuasiNewton n lambda beta")
-      println(
-        "Test NonlinearMinimizer with a quadratic function of dimenion n and m equalities with lambda beta for elasticNet")
+      println("Test NonlinearMinimizer with a quadratic function of dimenion n and m equalities with lambda beta for elasticNet")
       sys.exit(1)
     }
 
@@ -367,8 +366,7 @@ object NonlinearMinimizer {
     println(
       s"nlSparseTime ${nlSparseTime / 1e6} ms iters ${nlSparseResult.iter}")
     println(s"nlProxTime ${nlProxTime / 1e6} ms iters ${nlProxResult.iter}")
-    println(
-      s"owlqnObj $owlqnObj sparseQpObj $sparseQpObj nlSparseObj $nlSparseObj nlProxObj $nlProxObj")
+    println(s"owlqnObj $owlqnObj sparseQpObj $sparseQpObj nlSparseObj $nlSparseObj nlProxObj $nlProxObj")
 
     val logisticLoss = LogisticGenerator(problemSize)
     val elasticNetLoss =
@@ -450,8 +448,7 @@ object NonlinearMinimizer {
 
     println(
       s"Objective nl ${nlLogisticSimplexObj} admm ${nlProxLogisticSimplexObj}")
-    println(
-      s"Constraint nl ${sum(nlLogisticSimplexResult.x)} admm ${sum(nlProxLogisticSimplexResult.z)}")
+    println(s"Constraint nl ${sum(nlLogisticSimplexResult.x)} admm ${sum(nlProxLogisticSimplexResult.z)}")
     println(
       s"time nlProjection ${nlLogisticSimplexTime / 1e6} ms nlProx ${nlProxLogisticSimplexTime / 1e6} ms")
 
@@ -483,8 +480,7 @@ object NonlinearMinimizer {
       elasticNetLoss.calculate(nlLogisticProximalL1Result.z)._1
     val projectL1Obj = elasticNetLoss.calculate(nlLogisticProjectL1Result.x)._1
 
-    println(
-      s"Objective proximalL1 $proximalL1Obj projectL1 $projectL1Obj owlqn $owlqnLogisticObj")
+    println(s"Objective proximalL1 $proximalL1Obj projectL1 $projectL1Obj owlqn $owlqnLogisticObj")
     println(
       s"time proximalL1 ${nlLogisticProximalL1Time / 1e6} ms projectL1 ${nlLogisticProjectL1Time / 1e6} ms owlqn ${owlqnLogisticTime / 1e6} ms")
   }

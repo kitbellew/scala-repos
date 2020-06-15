@@ -798,7 +798,8 @@ private[kafka] class KafkaUtilsPythonHelper {
       if (topicsFromOffsets != topics.asScala.toSet) {
         throw new IllegalStateException(
           s"The specified topics: ${topics.asScala.toSet.mkString(" ")} " +
-            s"do not equal to the topic from offsets: ${topicsFromOffsets.mkString(" ")}")
+            s"do not equal to the topic from offsets: ${topicsFromOffsets
+              .mkString(" ")}")
       }
       Map(fromOffsets.asScala.mapValues { _.longValue() }.toSeq: _*)
     } else {

@@ -24,8 +24,7 @@ import org.apache.spark.mllib.util.TestingUtils._
 
 class ElementwiseProductSuite extends SparkFunSuite with MLlibTestSparkContext {
 
-  test(
-    "elementwise (hadamard) product should properly apply vector to dense data set") {
+  test("elementwise (hadamard) product should properly apply vector to dense data set") {
     val denseData = Array(
       Vectors.dense(1.0, 4.0, 1.9, -9.0)
     )
@@ -40,8 +39,7 @@ class ElementwiseProductSuite extends SparkFunSuite with MLlibTestSparkContext {
       s"Expected transformed vector $expectedVec but found $transformedVec")
   }
 
-  test(
-    "elementwise (hadamard) product should properly apply vector to sparse data set") {
+  test("elementwise (hadamard) product should properly apply vector to sparse data set") {
     val sparseData = Array(
       Vectors.sparse(3, Seq((1, -1.0), (2, -3.0)))
     )

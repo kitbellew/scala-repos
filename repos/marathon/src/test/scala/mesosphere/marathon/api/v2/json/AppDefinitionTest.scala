@@ -480,8 +480,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     reread.healthChecks.head.portIndex should be(None)
   }
 
-  test(
-    "Reading AppDefinition adds portIndex if you have at least one portMapping") {
+  test("Reading AppDefinition adds portIndex if you have at least one portMapping") {
     import Formats._
 
     val app = AppDefinition(
@@ -509,8 +508,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     reread.healthChecks.head.portIndex should be(Some(0))
   }
 
-  test(
-    "Reading AppDefinition does not add portIndex if there are no ports nor portMappings") {
+  test("Reading AppDefinition does not add portIndex if there are no ports nor portMappings") {
     import Formats._
 
     val app = AppDefinition(

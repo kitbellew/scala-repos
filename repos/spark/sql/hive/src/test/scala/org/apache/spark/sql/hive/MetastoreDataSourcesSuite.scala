@@ -86,14 +86,12 @@ class MetastoreDataSourcesSuite
         read.json(jsonFilePath).registerTempTable("expectedJsonTable")
         checkAnswer(
           sql("SELECT a, b, `c_!@(3)`, `<d>`.`d!`, `<d>`.`=` FROM jsonTable"),
-          sql(
-            "SELECT a, b, `c_!@(3)`, `<d>`.`d!`, `<d>`.`=` FROM expectedJsonTable"))
+          sql("SELECT a, b, `c_!@(3)`, `<d>`.`d!`, `<d>`.`=` FROM expectedJsonTable"))
       }
     }
   }
 
-  test(
-    "persistent JSON table with a user specified schema with a subset of fields") {
+  test("persistent JSON table with a user specified schema with a subset of fields") {
     withTable("jsonTable") {
       // This works because JSON objects are self-describing and JSONRelation can get needed
       // field values based on field names.
@@ -408,8 +406,7 @@ class MetastoreDataSourcesSuite
     }
   }
 
-  test(
-    "SPARK-5839 HiveMetastoreCatalog does not recognize table aliases of data source tables.") {
+  test("SPARK-5839 HiveMetastoreCatalog does not recognize table aliases of data source tables.") {
     withTable("savedJsonTable") {
       // Save the df as a managed table (by not specifying the path).
       (1 to 10)
@@ -579,8 +576,7 @@ class MetastoreDataSourcesSuite
           table("test_parquet_ctas").queryExecution.optimizedPlan match {
             case LogicalRelation(p: HadoopFsRelation, _, _) => // OK
             case _ =>
-              fail(
-                s"test_parquet_ctas should have be converted to ${classOf[HadoopFsRelation]}")
+              fail(s"test_parquet_ctas should have be converted to ${classOf[HadoopFsRelation]}")
           }
         }
       }

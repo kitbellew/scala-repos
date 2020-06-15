@@ -86,9 +86,8 @@ trait StartingBehavior { this: Actor with ActorLogging =>
           taskId.idString
         ) => // scalastyle:off line.size.limit
       startedRunningTasks += taskId.idString
-      log.info(
-        s"New task $taskId now running during app ${app.id.toString} scaling, " +
-          s"${nrToStart - startedRunningTasks.size} more to go")
+      log.info(s"New task $taskId now running during app ${app.id.toString} scaling, " +
+        s"${nrToStart - startedRunningTasks.size} more to go")
       checkFinished()
   }
 
@@ -106,8 +105,7 @@ trait StartingBehavior { this: Actor with ActorLogging =>
           _,
           _
         ) => // scalastyle:off line.size.limit
-      log.warning(
-        s"New task [$taskId] failed during app ${app.id.toString} scaling, queueing another task")
+      log.warning(s"New task [$taskId] failed during app ${app.id.toString} scaling, queueing another task")
       startedRunningTasks -= taskId.idString
       taskQueue.add(app)
 
@@ -118,8 +116,7 @@ trait StartingBehavior { this: Actor with ActorLogging =>
         .getOrElse(taskTracker.countLaunchedAppTasksSync(app.id))
       val tasksToStartNow = Math.max(scaleTo - actualSize, 0)
       if (tasksToStartNow > 0) {
-        log.info(
-          s"Reconciling tasks during app ${app.id.toString} scaling: queuing $tasksToStartNow new tasks")
+        log.info(s"Reconciling tasks during app ${app.id.toString} scaling: queuing $tasksToStartNow new tasks")
         taskQueue.add(app, tasksToStartNow)
       }
       context.system.scheduler.scheduleOnce(5.seconds, self, Sync)

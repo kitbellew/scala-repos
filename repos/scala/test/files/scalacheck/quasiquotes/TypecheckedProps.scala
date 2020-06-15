@@ -166,8 +166,7 @@ trait TypecheckedTypes { self: QuasiquoteProperties =>
 
   property("super type select") = test {
     val q"$_; class $_ extends $_ { type $_ = $tpt }" =
-      typecheck(
-        q"class C1 { type A = Int }; class C2 extends C1 { type B = super[C1].A }")
+      typecheck(q"class C1 { type A = Int }; class C2 extends C1 { type B = super[C1].A }")
     val tq"$empty.super[$c1].$a" = tpt
     val TypeName("") = empty
     val TypeName("C1") = c1

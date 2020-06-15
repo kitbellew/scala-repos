@@ -177,8 +177,7 @@ private[ui] class JobPage(parent: JobsTab) extends WebUIPage("job") {
     </div> ++
       <script type="text/javascript">
       {
-        Unparsed(
-          s"drawJobTimeline(${groupJsonArrayAsStr}, ${eventArrayAsStr}, ${appStartTime});")
+        Unparsed(s"drawJobTimeline(${groupJsonArrayAsStr}, ${eventArrayAsStr}, ${appStartTime});")
       }
     </script>
   }

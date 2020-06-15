@@ -1236,8 +1236,7 @@ trait Internals { self: Universe =>
     *  indicates that source compatibility with Scala 2.10 has been enabled.
     *  @group Internal
     */
-  @scala.annotation.implicitNotFound(
-    "This method has been removed from the public API. Import compat._ or migrate away.")
+  @scala.annotation.implicitNotFound("This method has been removed from the public API. Import compat._ or migrate away.")
   class CompatToken
 
   /** @see [[compat]]

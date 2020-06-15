@@ -103,15 +103,14 @@ class OffsetIndex(
   /* the last offset in the index */
   var lastOffset = readLastEntry.offset
 
-  debug(
-    "Loaded index file %s with maxEntries = %d, maxIndexSize = %d, entries = %d, lastOffset = %d, file position = %d"
-      .format(
-        file.getAbsolutePath,
-        maxEntries,
-        maxIndexSize,
-        entries(),
-        lastOffset,
-        mmap.position))
+  debug("Loaded index file %s with maxEntries = %d, maxIndexSize = %d, entries = %d, lastOffset = %d, file position = %d"
+    .format(
+      file.getAbsolutePath,
+      maxEntries,
+      maxIndexSize,
+      entries(),
+      lastOffset,
+      mmap.position))
 
   /**
     * The last entry in the index

@@ -25,8 +25,7 @@ class FlattenProjections extends Phase {
             val (newV, newTranslations) =
               flattenProjection(tr(v, false), !topLevel)
             translations += ts -> newTranslations
-            logger.debug(
-              s"Adding translation for $ts: ($newTranslations, ${newV.nodeType})")
+            logger.debug(s"Adding translation for $ts: ($newTranslations, ${newV.nodeType})")
             val res = Pure(newV, ts)
             logger.debug("Flattened projection to", res)
             res

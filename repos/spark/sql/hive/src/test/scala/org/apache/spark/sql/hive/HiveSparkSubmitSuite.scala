@@ -303,8 +303,7 @@ object SparkSubmitClassLoaderTest extends Logging {
       """.stripMargin)
     // Actually use the loaded UDF and SerDe.
     logInfo("Writing data into the table.")
-    hiveContext.sql(
-      "INSERT INTO TABLE t1 SELECT example_max(key) as key, val FROM sourceTable GROUP BY val")
+    hiveContext.sql("INSERT INTO TABLE t1 SELECT example_max(key) as key, val FROM sourceTable GROUP BY val")
     logInfo("Running a simple query on the table.")
     val count = hiveContext.table("t1").orderBy("key", "val").count()
     if (count != 10) {

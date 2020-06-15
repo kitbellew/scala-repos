@@ -212,8 +212,7 @@ final object Aggregation {
             inputTasks.map(_.key).mkString("Input task(s):\n\t", "\n\t", "\n")
           val otherStrings =
             other.map(_.key).mkString("Task(s)/setting(s):\n\t", "\n\t", "\n")
-          failure(
-            s"Cannot mix input tasks with plain tasks/settings.  $inputStrings $otherStrings")
+          failure(s"Cannot mix input tasks with plain tasks/settings.  $inputStrings $otherStrings")
         } else
           applyDynamicTasks(s, structure, maps(inputTasks)(castToAny), show)
       } else {

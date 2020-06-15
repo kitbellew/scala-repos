@@ -68,8 +68,7 @@ object DevModeBuild {
       connection.connect()
       connection match {
         case h: java.net.HttpURLConnection =>
-          println(
-            s"Server gave us status ${h.getResponseCode} ${h.getResponseMessage}")
+          println(s"Server gave us status ${h.getResponseCode} ${h.getResponseMessage}")
           if (h.getResponseCode != 200)
             throw new Exception(
               s"Bad response code ${h.getResponseCode} from server")

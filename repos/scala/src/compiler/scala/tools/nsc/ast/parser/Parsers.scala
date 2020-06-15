@@ -3121,8 +3121,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         case CASEOBJECT =>
           objectDef(
             pos,
-            (mods | Flags.CASE) withPosition (Flags.CASE, tokenRange(
-              in.prev /*scanner skips on 'case' to 'object', thus take prev*/ )))
+            (mods | Flags.CASE) withPosition (Flags.CASE, tokenRange(in.prev /*scanner skips on 'case' to 'object', thus take prev*/ )))
         case _ =>
           syntaxErrorOrIncompleteAnd(
             "expected start of definition",

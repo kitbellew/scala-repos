@@ -53,9 +53,8 @@ class TaskReplaceActor(
     if (nrToKillImmediately == 0 && maxCapacity == app.instances)
       maxCapacity += 1
 
-    log.info(
-      s"For minimumHealthCapacity ${app.upgradeStrategy.minimumHealthCapacity} of ${app.id.toString} leave " +
-        s"$minHealthy tasks running, maximum capacity $maxCapacity, killing $nrToKillImmediately tasks immediately")
+    log.info(s"For minimumHealthCapacity ${app.upgradeStrategy.minimumHealthCapacity} of ${app.id.toString} leave " +
+      s"$minHealthy tasks running, maximum capacity $maxCapacity, killing $nrToKillImmediately tasks immediately")
 
     for (_ <- 0 until nrToKillImmediately) {
       killNextOldTask()
@@ -159,8 +158,7 @@ class TaskReplaceActor(
     val tasksNotStartedYet = math.max(0, app.instances - newTasksStarted)
     val tasksToStartNow = math.min(tasksNotStartedYet, leftCapacity)
     if (tasksToStartNow > 0) {
-      log.info(
-        s"Reconciling tasks during app $appId restart: queuing $tasksToStartNow new tasks")
+      log.info(s"Reconciling tasks during app $appId restart: queuing $tasksToStartNow new tasks")
       taskQueue.add(app, tasksToStartNow)
       newTasksStarted += tasksToStartNow
     }
@@ -191,14 +189,12 @@ class TaskReplaceActor(
 
   def checkFinished(): Unit = {
     if (healthy.size == app.instances && oldTaskIds.isEmpty) {
-      log.info(
-        s"App All new tasks for $appId are healthy and all old tasks have been killed")
+      log.info(s"App All new tasks for $appId are healthy and all old tasks have been killed")
       promise.success(())
       context.stop(self)
     } else if (log.isDebugEnabled) {
-      log.debug(
-        s"For app: [${app.id}] there are [${healthy.size}] healthy new instances and " +
-          s"[${oldTaskIds.size}] old instances.")
+      log.debug(s"For app: [${app.id}] there are [${healthy.size}] healthy new instances and " +
+        s"[${oldTaskIds.size}] old instances.")
     }
   }
 

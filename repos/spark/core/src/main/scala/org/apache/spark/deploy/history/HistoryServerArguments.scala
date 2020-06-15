@@ -59,9 +59,8 @@ private[history] class HistoryServerArguments(
   }
 
   private def setLogDirectory(value: String): Unit = {
-    logWarning(
-      "Setting log directory through the command line is deprecated as of " +
-        "Spark 1.1.0. Please set this through spark.history.fs.logDirectory instead.")
+    logWarning("Setting log directory through the command line is deprecated as of " +
+      "Spark 1.1.0. Please set this through spark.history.fs.logDirectory instead.")
     conf.set("spark.history.fs.logDirectory", value)
   }
 

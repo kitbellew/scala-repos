@@ -106,8 +106,7 @@ private[spark] class YarnClientSchedulerBackend(
         } else if (envVar != null && System.getenv(envVar) != null) {
           extraArgs += (optionName, System.getenv(envVar))
           if (deprecatedEnvVars.contains(envVar)) {
-            logWarning(
-              s"NOTE: $envVar is deprecated. Use ${deprecatedEnvVars(envVar)} instead.")
+            logWarning(s"NOTE: $envVar is deprecated. Use ${deprecatedEnvVars(envVar)} instead.")
           }
         }
     }

@@ -72,8 +72,7 @@ class SymbolTableForUnitTesting extends SymbolTable {
     def lookupMemberAtTyperPhaseIfPossible(sym: Symbol, name: Name): Symbol =
       sym.info.member(name)
     protected override def compileLate(srcfile: AbstractFile): Unit =
-      sys.error(
-        s"We do not expect compileLate to be called in SymbolTableTest. The srcfile passed in is $srcfile")
+      sys.error(s"We do not expect compileLate to be called in SymbolTableTest. The srcfile passed in is $srcfile")
   }
 
   class GlobalMirror extends Roots(NoSymbol) {

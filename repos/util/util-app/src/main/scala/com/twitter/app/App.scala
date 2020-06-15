@@ -208,7 +208,6 @@ object App {
 
   private[app] def register(app: App): Unit =
     ref.getAndSet(Some(app)).foreach { existing =>
-      log.warning(
-        s"Multiple com.twitter.app.App main methods called. ${existing.name}, then ${app.name}")
+      log.warning(s"Multiple com.twitter.app.App main methods called. ${existing.name}, then ${app.name}")
     }
 }

@@ -857,9 +857,8 @@ object TestUtils extends Logging {
     val startTime = System.currentTimeMillis()
     var isLeaderElectedOrChanged = false
 
-    trace(
-      "Waiting for leader to be elected or changed for partition [%s,%d], older leader is %s, new leader is %s"
-        .format(topic, partition, oldLeaderOpt, newLeaderOpt))
+    trace("Waiting for leader to be elected or changed for partition [%s,%d], older leader is %s, new leader is %s"
+      .format(topic, partition, oldLeaderOpt, newLeaderOpt))
 
     var leader: Option[Int] = None
     while (!isLeaderElectedOrChanged && System
@@ -896,9 +895,8 @@ object TestUtils extends Logging {
       Thread.sleep(timeoutMs.min(100L))
     }
     if (!isLeaderElectedOrChanged)
-      fail(
-        "Timing out after %d ms since leader is not elected or changed for partition [%s,%d]"
-          .format(timeoutMs, topic, partition))
+      fail("Timing out after %d ms since leader is not elected or changed for partition [%s,%d]"
+        .format(timeoutMs, topic, partition))
 
     leader
   }
@@ -1392,8 +1390,7 @@ object TestUtils extends Logging {
       timeoutMs: Int) {
 
     def failWithTimeout() {
-      fail(
-        s"$message. Timed out, the concurrent functions took more than $timeoutMs milliseconds")
+      fail(s"$message. Timed out, the concurrent functions took more than $timeoutMs milliseconds")
     }
 
     val numThreads = functions.size

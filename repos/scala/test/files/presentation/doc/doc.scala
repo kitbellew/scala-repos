@@ -132,8 +132,7 @@ object Test extends InteractiveTest {
                     cnt(example) + cnt(version) + cnt(since) + cnt(todo) + cnt(
                       note) + cnt(see)
                   if (actual != i)
-                    println(
-                      s"Got docComment with $actual tags instead of $i, file text:\n$newText")
+                    println(s"Got docComment with $actual tags instead of $i, file text:\n$newText")
               }
           }
       }

@@ -63,7 +63,8 @@ class DontLeakActorsOnFailingConnectionSpecs
               }
             assert(
               children.isEmpty,
-              s"expected no StreamSupervisor children, but got [${children.mkString(", ")}]")
+              s"expected no StreamSupervisor children, but got [${children
+                .mkString(", ")}]")
           }
         }
         result

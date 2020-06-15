@@ -120,8 +120,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
         4))
   }
 
-  test(
-    "SparkContext.union creates UnionRDD if at least one RDD has no partitioner") {
+  test("SparkContext.union creates UnionRDD if at least one RDD has no partitioner") {
     val rddWithPartitioner =
       sc.parallelize(Seq(1 -> true)).partitionBy(new HashPartitioner(1))
     val rddWithNoPartitioner = sc.parallelize(Seq(2 -> true))
@@ -129,16 +128,14 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     assert(unionRdd.isInstanceOf[UnionRDD[_]])
   }
 
-  test(
-    "SparkContext.union creates PartitionAwareUnionRDD if all RDDs have partitioners") {
+  test("SparkContext.union creates PartitionAwareUnionRDD if all RDDs have partitioners") {
     val rddWithPartitioner =
       sc.parallelize(Seq(1 -> true)).partitionBy(new HashPartitioner(1))
     val unionRdd = sc.union(rddWithPartitioner, rddWithPartitioner)
     assert(unionRdd.isInstanceOf[PartitionerAwareUnionRDD[_]])
   }
 
-  test(
-    "PartitionAwareUnionRDD raises exception if at least one RDD has no partitioner") {
+  test("PartitionAwareUnionRDD raises exception if at least one RDD has no partitioner") {
     val rddWithPartitioner =
       sc.parallelize(Seq(1 -> true)).partitionBy(new HashPartitioner(1))
     val rddWithNoPartitioner = sc.parallelize(Seq(2 -> true))
@@ -1018,8 +1015,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     }
   }
 
-  test(
-    "RDD.partitions() fails fast when partitions indicies are incorrect (SPARK-13021)") {
+  test("RDD.partitions() fails fast when partitions indicies are incorrect (SPARK-13021)") {
     class BadRDD[T: ClassTag](prev: RDD[T]) extends RDD[T](prev) {
 
       override def compute(

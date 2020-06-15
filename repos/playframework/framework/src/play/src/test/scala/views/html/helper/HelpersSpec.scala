@@ -178,8 +178,7 @@ object HelpersSpec extends Specification {
         .apply(form("foo"), min) { f =>
           val a = f("a")
           val b = f("b")
-          Html(
-            s"${a.name}=${a.value.getOrElse("")},${b.name}=${b.value.getOrElse("")}")
+          Html(s"${a.name}=${a.value.getOrElse("")},${b.name}=${b.value.getOrElse("")}")
         }
         .map(_.toString)
 

@@ -123,8 +123,7 @@ class DDLTestSuite extends DataSourceTest with SharedSQLContext {
     )
   )
 
-  test(
-    "SPARK-7686 DescribeCommand should have correct physical plan output attributes") {
+  test("SPARK-7686 DescribeCommand should have correct physical plan output attributes") {
     val attributes =
       sql("describe ddlPeople").queryExecution.executedPlan.output
     assert(attributes.map(_.name) === Seq("col_name", "data_type", "comment"))

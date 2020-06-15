@@ -145,8 +145,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     else NullLogger
 
   import log.logreplay
-  debugLog(
-    s"logger: ${log.getClass} writing to ${(new java.io.File(logName)).getAbsolutePath}")
+  debugLog(s"logger: ${log.getClass} writing to ${(new java.io.File(
+    logName)).getAbsolutePath}")
   debugLog(s"classpath: $classPath")
 
   private var curTime = System.nanoTime
@@ -498,11 +498,10 @@ with ContextTrees with RichCompilationUnits with Picklers {
                   debugLog(
                     "ShutdownReq: cleaning work queue (%d items)".format(
                       units.size))
-                  debugLog(
-                    "Cleanup up responses (%d loadedType pending, %d parsedEntered pending)"
-                      .format(
-                        waitLoadedTypeResponses.size,
-                        getParsedEnteredResponses.size))
+                  debugLog("Cleanup up responses (%d loadedType pending, %d parsedEntered pending)"
+                    .format(
+                      waitLoadedTypeResponses.size,
+                      getParsedEnteredResponses.size))
                   checkNoResponsesOutstanding()
 
                   log.flush()

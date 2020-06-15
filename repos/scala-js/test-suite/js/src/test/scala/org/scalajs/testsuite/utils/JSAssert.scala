@@ -17,8 +17,7 @@ object JSAssert {
       val exp = expected(i)
       val act = actual(i)
       if (exp != act)
-        fail(
-          s"js.Arrays first differed at element [$i]; expected:<$exp> but was:<$act>")
+        fail(s"js.Arrays first differed at element [$i]; expected:<$exp> but was:<$act>")
     }
   }
 

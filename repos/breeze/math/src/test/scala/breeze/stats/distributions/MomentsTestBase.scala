@@ -63,8 +63,7 @@ trait MomentsTestBase[T] extends FunSuite with Checkers {
 //        println(distr,probMode,sample.map{ distr },sample)
       sample.find(x => probMode < distr(x) - 1e-4) match {
         case Some(x) =>
-          println(
-            s"$x has higher prob (${distr(x)}) than mode ${distr.mode} ($probMode)");
+          println(s"$x has higher prob (${distr(x)}) than mode ${distr.mode} ($probMode)");
           false
         case None => true
       }

@@ -54,8 +54,7 @@ class DarkTrafficFilterTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test(
-    "when decider is on, send dark traffic to darkService and light to service") {
+  test("when decider is on, send dark traffic to darkService and light to service") {
     new Fixture {
       when(gate()) thenReturn true
       assert(Await.result(filter(request, service)) == response)

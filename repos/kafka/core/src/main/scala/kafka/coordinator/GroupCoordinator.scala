@@ -349,8 +349,7 @@ class GroupCoordinator(
 
             // if this is the leader, then we can attempt to persist state and transition to stable
             if (memberId == group.leaderId) {
-              info(
-                s"Assignment received from leader for group ${group.groupId} for generation ${group.generationId}")
+              info(s"Assignment received from leader for group ${group.groupId} for generation ${group.generationId}")
 
               // fill any missing members with an empty assignment
               val missing = group.allMembers -- groupAssignment.keySet
@@ -608,8 +607,7 @@ class GroupCoordinator(
 
   private def onGroupUnloaded(group: GroupMetadata) {
     group synchronized {
-      info(
-        s"Unloading group metadata for ${group.groupId} with generation ${group.generationId}")
+      info(s"Unloading group metadata for ${group.groupId} with generation ${group.generationId}")
       val previousState = group.currentState
       group.transitionTo(Dead)
 
@@ -644,8 +642,7 @@ class GroupCoordinator(
 
   private def onGroupLoaded(group: GroupMetadata) {
     group synchronized {
-      info(
-        s"Loading group metadata for ${group.groupId} with generation ${group.generationId}")
+      info(s"Loading group metadata for ${group.groupId} with generation ${group.generationId}")
       assert(group.is(Stable))
       group.allMemberMetadata.foreach(
         completeAndScheduleNextHeartbeatExpiration(group, _))

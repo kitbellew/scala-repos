@@ -115,8 +115,7 @@ class LRUMap[K, V](
     *         existence, or use `[[contains]]` before calling this.
     */
   def apply(key: K) =
-    get(key).openOrThrowException(
-      "Simulating what happens with a regular Map, use contains(key) to check if it is present or not.")
+    get(key).openOrThrowException("Simulating what happens with a regular Map, use contains(key) to check if it is present or not.")
 
   /**
     * Check if the given `key` exists in the map. A key may not be in the map

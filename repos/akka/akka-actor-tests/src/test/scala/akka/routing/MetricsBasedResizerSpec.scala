@@ -259,9 +259,7 @@ class MetricsBasedResizerSpec
       val router = TestRouter(routees(2))
       val msgs1 = router.sendToAll(await = true)
       val msgs2 =
-        router.sendToAll(await =
-          false
-        ) //make sure the routees are still busy after the first batch of messages get processed.
+        router.sendToAll(await = false) //make sure the routees are still busy after the first batch of messages get processed.
 
       val before = LocalDateTime.now
       resizer.reportMessageCount(
@@ -294,9 +292,7 @@ class MetricsBasedResizerSpec
       val router = TestRouter(routees(2))
       val msgs1 = router.sendToAll(await = true)
       val msgs2 =
-        router.sendToAll(await =
-          false
-        ) //make sure the routees are still busy after the first batch of messages get processed.
+        router.sendToAll(await = false) //make sure the routees are still busy after the first batch of messages get processed.
 
       val before = LocalDateTime.now
       resizer.reportMessageCount(

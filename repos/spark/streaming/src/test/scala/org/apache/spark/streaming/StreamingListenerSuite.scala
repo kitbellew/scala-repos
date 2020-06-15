@@ -231,8 +231,7 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     assert(failureReasons(1).contains("This is another failed job"))
   }
 
-  test(
-    "StreamingListener receives no events after stopping StreamingListenerBus") {
+  test("StreamingListener receives no events after stopping StreamingListenerBus") {
     val streamingListener = mock(classOf[StreamingListener])
 
     ssc = new StreamingContext("local[2]", "test", Milliseconds(1000))

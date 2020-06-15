@@ -203,8 +203,7 @@ class AnnotationMacros(val c: whitebox.Context) extends CaseClassMacros {
           }
         }
       else
-        abort(
-          s"$tpe is not case class like or the root of a sealed family of types")
+        abort(s"$tpe is not case class like or the root of a sealed family of types")
 
     val wrapTpeTrees = annTreeOpts.map {
       case Some(annTree) =>

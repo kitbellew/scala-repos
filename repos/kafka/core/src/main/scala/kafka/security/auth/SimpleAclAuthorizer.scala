@@ -181,8 +181,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       host: String,
       acls: Set[Acl]): Boolean = {
     if (acls.isEmpty) {
-      authorizerLogger.debug(
-        s"No acl found for resource $resource, authorized = $shouldAllowEveryoneIfNoAclIsFound")
+      authorizerLogger.debug(s"No acl found for resource $resource, authorized = $shouldAllowEveryoneIfNoAclIsFound")
       shouldAllowEveryoneIfNoAclIsFound
     } else false
   }
@@ -193,8 +192,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       principal: KafkaPrincipal,
       host: String): Boolean = {
     if (superUsers.exists(_ == principal)) {
-      authorizerLogger.debug(
-        s"principal = $principal is a super user, allowing operation without checking acls.")
+      authorizerLogger.debug(s"principal = $principal is a super user, allowing operation without checking acls.")
       true
     } else false
   }
@@ -214,8 +212,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
           && (operations == acl.operation || acl.operation == All)
           && (acl.host == host || acl.host == Acl.WildCardHost))
       .map { acl: Acl =>
-        authorizerLogger.debug(
-          s"operation = $operations on resource = $resource from host = $host is $permissionType based on acl = $acl")
+        authorizerLogger.debug(s"operation = $operations on resource = $resource from host = $host is $permissionType based on acl = $acl")
         true
       }
       .getOrElse(false)
@@ -309,8 +306,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
       resource: Resource,
       host: String) {
     val permissionType = if (authorized) "Allowed" else "Denied"
-    authorizerLogger.debug(
-      s"Principal = $principal is $permissionType Operation = $operation from host = $host on resource = $resource")
+    authorizerLogger.debug(s"Principal = $principal is $permissionType Operation = $operation from host = $host on resource = $resource")
   }
 
   /**
@@ -349,8 +345,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
         }
 
       if (!updateSucceeded) {
-        trace(
-          s"Failed to update ACLs for $resource. Used version ${currentVersionedAcls.zkVersion}. Reading data and retrying update.")
+        trace(s"Failed to update ACLs for $resource. Used version ${currentVersionedAcls.zkVersion}. Reading data and retrying update.")
         Thread.sleep(backoffTime)
         currentVersionedAcls = getAclsFromZk(resource);
         retries += 1
@@ -365,8 +360,7 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
         s"Failed to update ACLs for $resource after trying a maximum of $maxUpdateRetries times")
 
     if (newVersionedAcls.acls != currentVersionedAcls.acls) {
-      debug(
-        s"Updated ACLs for $resource to ${newVersionedAcls.acls} with version ${newVersionedAcls.zkVersion}")
+      debug(s"Updated ACLs for $resource to ${newVersionedAcls.acls} with version ${newVersionedAcls.zkVersion}")
       updateCache(resource, newVersionedAcls)
       updateAclChangedFlag(resource)
       true

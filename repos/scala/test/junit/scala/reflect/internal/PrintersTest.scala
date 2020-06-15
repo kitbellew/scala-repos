@@ -358,25 +358,21 @@ trait BasePrintTests {
 
   @Test def testFunc2 =
     assertResultCode(code = "val sum: Seq[Int] => Int = _ reduceLeft (_+_)")(
-      parsedCode =
-        "val sum: _root_.scala.Function1[Seq[Int], Int] = ((x$1) => x$1.reduceLeft(((x$2, x$3) => x$2.+(x$3))))",
-      typedCode =
-        "val sum: _root_.scala.Function1[scala.`package`.Seq[scala.Int], scala.Int] = ((x$1: Seq[Int]) => x$1.reduceLeft[Int](((x$2: Int, x$3: Int) => x$2.+(x$3))))"
+      parsedCode = "val sum: _root_.scala.Function1[Seq[Int], Int] = ((x$1) => x$1.reduceLeft(((x$2, x$3) => x$2.+(x$3))))",
+      typedCode = "val sum: _root_.scala.Function1[scala.`package`.Seq[scala.Int], scala.Int] = ((x$1: Seq[Int]) => x$1.reduceLeft[Int](((x$2: Int, x$3: Int) => x$2.+(x$3))))"
     )
 
   @Test def testFunc3 =
     assertResultCode(code = "List(1, 2, 3) map (_ - 1)")(
       parsedCode = "List(1, 2, 3).map(((x$1) => x$1.-(1))) ",
-      typedCode =
-        "scala.collection.immutable.List.apply[Int](1, 2, 3).map[Int, List[Int]](((x$1: Int) => x$1.-(1)))(scala.collection.immutable.List.canBuildFrom[Int])"
+      typedCode = "scala.collection.immutable.List.apply[Int](1, 2, 3).map[Int, List[Int]](((x$1: Int) => x$1.-(1)))(scala.collection.immutable.List.canBuildFrom[Int])"
     )
 
   @Test def testFunc4 =
     assertResultCode(code = "val x: String => Int = ((str: String) => 1)")(
       parsedCode =
         "val x: _root_.scala.Function1[String, Int] = ((str: String) => 1)",
-      typedCode =
-        " val x: _root_.scala.Function1[_root_.scala.Predef.String, _root_.scala.Int] = ((str: _root_.scala.Predef.String) => 1)",
+      typedCode = " val x: _root_.scala.Function1[_root_.scala.Predef.String, _root_.scala.Int] = ((str: _root_.scala.Predef.String) => 1)",
       printRoot = true
     )
 
@@ -485,8 +481,7 @@ trait ClassPrintTests {
     assertPrintedCode("class X(val y: scala.Int)()(var z: scala.Double)")
 
   @Test def testClassWithImplicitParams =
-    assertPrintedCode(
-      "class X(var i: scala.Int)(implicit val d: scala.Double, var f: scala.Float)")
+    assertPrintedCode("class X(var i: scala.Int)(implicit val d: scala.Double, var f: scala.Float)")
 
   @Test def testClassWithEarly =
     assertPrintedCode(sm"""
@@ -1098,8 +1093,7 @@ trait ValAndDefPrintTests {
   }
 
   @Test def testDef9 =
-    assertPrintedCode(
-      "def a(x: scala.Int)(implicit z: scala.Double, y: scala.Float): scala.Unit = ()")
+    assertPrintedCode("def a(x: scala.Int)(implicit z: scala.Double, y: scala.Float): scala.Unit = ()")
 
   @Test def testDefWithLazyVal1 =
     assertResultCode(code = "def a = { lazy val test: Int = 42 }")(
@@ -1342,8 +1336,8 @@ trait QuasiTreesPrintTests {
     |}""")
 
   @Test def testQuasiCaseClassWithTypes1 =
-    assertTreeCode(q"""case class X(x: ${typeOf[Int]}, s: ${typeOf[
-      String]}){ def y = "test" }""")(sm"""
+    assertTreeCode(q"""case class X(x: ${typeOf[Int]}, s: ${typeOf[String]}){ def y = "test" }""")(
+      sm"""
     |case class X(x: Int, s: String) {
     |  def y = "test"
     |}""")

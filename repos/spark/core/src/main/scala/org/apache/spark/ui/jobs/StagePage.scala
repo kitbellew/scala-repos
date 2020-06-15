@@ -1081,7 +1081,8 @@ private[ui] class TaskDataSource(
     val inputSortable = maybeInput.map(_.bytesRead).getOrElse(0L)
     val inputReadable = maybeInput
       .map(m =>
-        s"${Utils.bytesToString(m.bytesRead)} (${m.readMethod.toString.toLowerCase()})")
+        s"${Utils.bytesToString(m.bytesRead)} (${m.readMethod.toString
+          .toLowerCase()})")
       .getOrElse("")
     val inputRecords = maybeInput.map(_.recordsRead.toString).getOrElse("")
 

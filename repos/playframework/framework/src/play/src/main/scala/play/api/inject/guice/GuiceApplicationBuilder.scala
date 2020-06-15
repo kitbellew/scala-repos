@@ -115,8 +115,7 @@ final case class GuiceApplicationBuilder(
     }
 
     if (shouldDisplayLoggerDeprecationMessage(appConfiguration)) {
-      Logger.warn(
-        "Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.")
+      Logger.warn("Logger configuration in conf files is deprecated and has no effect. Use a logback configuration file instead.")
     }
 
     val loadedModules = loadModules(environment, appConfiguration)

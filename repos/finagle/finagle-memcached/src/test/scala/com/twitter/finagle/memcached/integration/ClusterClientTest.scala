@@ -558,8 +558,7 @@ class ClusterClientTest
     }
 
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined)
-    test(
-      "Ketama ClusterClient using a distributor - unmanaged cache pool is changing") {
+    test("Ketama ClusterClient using a distributor - unmanaged cache pool is changing") {
       // create my cluster client solely based on a zk client and a path
       val mycluster = initializePool(5, ignoreConfigData = true)
 

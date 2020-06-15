@@ -88,6 +88,6 @@ abstract class ScTemplateParentsElementType[Func <: ScTemplateParents](
 }
 
 object ScTemplateParentsElementType {
-  private val LOG = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.lang.psi.stubs.elements.ScTemplateParentsElementType")
+  private val LOG =
+    Logger.getInstance("#org.jetbrains.plugins.scala.lang.psi.stubs.elements.ScTemplateParentsElementType")
 }

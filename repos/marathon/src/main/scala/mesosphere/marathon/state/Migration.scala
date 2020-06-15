@@ -189,8 +189,7 @@ class MigrationTo0_11(
             case Some(appInGroup) =>
               addVersionInfo(appId, appInGroup).map(storedApps ++ _)
             case None =>
-              log.warn(
-                s"App [$appId] will be expunged because it is not contained in the group data")
+              log.warn(s"App [$appId] will be expunged because it is not contained in the group data")
               appRepository.expunge(appId).map(_ => storedApps)
           }
         }
@@ -207,13 +206,11 @@ class MigrationTo0_11(
       maybeNextApp.map { nextApp =>
         maybeLastApp match {
           case Some(lastApp) if !lastApp.isUpgrade(nextApp) =>
-            log.info(
-              s"Adding versionInfo to ${nextApp.id} (${nextApp.version}): scaling or restart")
+            log.info(s"Adding versionInfo to ${nextApp.id} (${nextApp.version}): scaling or restart")
             nextApp.copy(versionInfo =
               lastApp.versionInfo.withScaleOrRestartChange(nextApp.version))
           case _ =>
-            log.info(
-              s"Adding versionInfo to ${nextApp.id} (${nextApp.version}): new config")
+            log.info(s"Adding versionInfo to ${nextApp.id} (${nextApp.version}): new config")
             nextApp.copy(versionInfo =
               AppDefinition.VersionInfo.forNewConfig(nextApp.version))
         }

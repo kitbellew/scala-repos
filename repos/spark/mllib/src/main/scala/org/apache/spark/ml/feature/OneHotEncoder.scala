@@ -74,7 +74,8 @@ class OneHotEncoder(override val uid: String)
 
     require(
       schema(inputColName).dataType.isInstanceOf[NumericType],
-      s"Input column must be of type NumericType but got ${schema(inputColName).dataType}")
+      s"Input column must be of type NumericType but got ${schema(
+        inputColName).dataType}")
     val inputFields = schema.fields
     require(
       !inputFields.exists(_.name == outputColName),

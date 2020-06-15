@@ -149,8 +149,7 @@ class HttpEventActor(
         metrics.failedCallbacks.mark()
         eventActor ! NotificationFailed(url)
       case Failure(ex) =>
-        log.warning(
-          s"Failed to post $event to $url because ${ex.getClass.getSimpleName}: ${ex.getMessage}")
+        log.warning(s"Failed to post $event to $url because ${ex.getClass.getSimpleName}: ${ex.getMessage}")
         metrics.failedCallbacks.mark()
         eventActor ! NotificationFailed(url)
     }

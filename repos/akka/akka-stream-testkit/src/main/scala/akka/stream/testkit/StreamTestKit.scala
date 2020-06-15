@@ -610,7 +610,8 @@ object TestSubscriber {
         self.expectEvent(deadline.timeLeft) match {
           case OnError(ex) ⇒
             throw new AssertionError(
-              s"toStrict received OnError while draining stream! Accumulated elements: ${b.result()}",
+              s"toStrict received OnError while draining stream! Accumulated elements: ${b
+                .result()}",
               ex)
           case OnComplete ⇒
             b.result()

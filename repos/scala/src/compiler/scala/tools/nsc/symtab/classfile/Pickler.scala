@@ -543,8 +543,7 @@ abstract class Pickler extends SubComponent {
           case (target: Symbol, other) => writeSymbolTuple(target, other)
           case ArrayAnnotArg(args)     => args foreach writeClassfileAnnotArg
           case _ =>
-            devWarning(
-              s"Unexpected entry to pickler ${shortClassOfInstance(entry)} $entry")
+            devWarning(s"Unexpected entry to pickler ${shortClassOfInstance(entry)} $entry")
         }
 
       // begin writeEntry

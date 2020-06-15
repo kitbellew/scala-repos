@@ -259,8 +259,8 @@ class HistoryServerSuite
     badStageId2._1 should be(HttpServletResponse.SC_NOT_FOUND)
     // will take some mucking w/ jersey to get a better error msg in this case
 
-    val badQuantiles = getContentAndCode(
-      "applications/local-1430917381534/stages/0/0/taskSummary?quantiles=foo,0.1")
+    val badQuantiles =
+      getContentAndCode("applications/local-1430917381534/stages/0/0/taskSummary?quantiles=foo,0.1")
     badQuantiles._1 should be(HttpServletResponse.SC_BAD_REQUEST)
     badQuantiles._3 should be(
       Some("Bad value for parameter \"quantiles\".  Expected a double, " +
@@ -460,7 +460,8 @@ class HistoryServerSuite
         s"jobs not updated, server=$server\n dir = ${listDir(logDirPath)}")
       assert(
         2 === getNumJobs("/jobs"),
-        s"job count under /jobs not updated, server=$server\n dir = ${listDir(logDirPath)}")
+        s"job count under /jobs not updated, server=$server\n dir = ${listDir(
+          logDirPath)}")
       getNumJobsRestful() should be(2)
     }
 

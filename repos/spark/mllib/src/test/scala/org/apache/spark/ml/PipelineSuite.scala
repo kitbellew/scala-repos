@@ -183,8 +183,7 @@ class PipelineSuite
       new PipelineModel(
         "pipeline_328957",
         Array(unWritableStage.asInstanceOf[Transformer]))
-    withClue(
-      "PipelineModel.write should fail when PipelineModel contains non-Writable stage") {
+    withClue("PipelineModel.write should fail when PipelineModel contains non-Writable stage") {
       intercept[UnsupportedOperationException] {
         unWritablePipeline.write
       }

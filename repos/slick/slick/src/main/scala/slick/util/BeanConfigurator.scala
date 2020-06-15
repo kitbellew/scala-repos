@@ -44,8 +44,7 @@ object BeanConfigurator extends Logging {
                   ex)
             }
           case None =>
-            logger.warn(
-              s"Ignoring unsupported bean property $name on target ${o.getClass}")
+            logger.warn(s"Ignoring unsupported bean property $name on target ${o.getClass}")
         }
       }
     }

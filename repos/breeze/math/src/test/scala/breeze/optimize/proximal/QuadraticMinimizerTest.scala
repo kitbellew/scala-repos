@@ -65,8 +65,7 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
   val init = DenseVector(0.1770, 0.2505, 1.5957, 0.7204, 0.9246)
   val eigs = eigSym(gram)
 
-  test(
-    "min eigen computed using inverse power law approximately same as min eigen") {
+  test("min eigen computed using inverse power law approximately same as min eigen") {
     val eigs = eigSym(gram)
     val eigenMin = min(eigs.eigenvalues)
     val approxEigenMin = QuadraticMinimizer.approximateMinEigen(gram)
@@ -199,8 +198,7 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
     assert(norm(boundsResult.x - goodBounds) < 1e-4)
   }
 
-  test(
-    "Quadratic Minimization with Equality compared to Octave MovieLens Example") {
+  test("Quadratic Minimization with Equality compared to Octave MovieLens Example") {
     val Hml = new DenseMatrix(
       25,
       25,
@@ -329,8 +327,7 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
     assert(abs(sum(directQpResult.x) - 1.0) < 1e-4)
   }
 
-  test(
-    "Quadratic Minimization with ProbabilitySimplex compared to Octave MovieLens Example") {
+  test("Quadratic Minimization with ProbabilitySimplex compared to Octave MovieLens Example") {
     val Hml = new DenseMatrix(
       25,
       25,
@@ -459,8 +456,7 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
     assert(abs(sum(directQpResult.z) - 1.0) < 1e-4)
   }
 
-  test(
-    "Quadratic Minimization with L1 Proximal compared to Octave MovieLens Example") {
+  test("Quadratic Minimization with L1 Proximal compared to Octave MovieLens Example") {
     val Hl1 = new DenseMatrix(
       25,
       25,
@@ -1023,8 +1019,7 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
     assert(norm(qpItersResult.x - nnlsResult, 2) < 1e-4)
   }
 
-  test(
-    "Quadratic Minimization consistency with multiple updates to proximal operator") {
+  test("Quadratic Minimization consistency with multiple updates to proximal operator") {
     //Ill conditioned problems
     //ALS: Diagnosing userOrProduct 34 lambdaL2 6.500000000000006E-4 lambdaL1 0.06435
     val data = Array(0.172933, 0.121672, 0.083271, 0.081677, 0.053990, 0.060374,
@@ -1201,8 +1196,7 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
     assert(norm(posResult - posResultTest, inf) < 1e-6)
   }
 
-  test(
-    "minimize API using triangular updateGram should generate identical answers") {
+  test("minimize API using triangular updateGram should generate identical answers") {
     val n = 5
     val ata = new DenseMatrix[Double](
       5,
@@ -1225,8 +1219,7 @@ class QuadraticMinimizerTest extends OptimizeTestBase with Matchers {
     assert(norm(posResult - posResultTest, inf) < 1e-6)
   }
 
-  test(
-    "Quadratic Minimization with Equality Quasi definite system validation over multiple runs") {
+  test("Quadratic Minimization with Equality Quasi definite system validation over multiple runs") {
     val Hml = new DenseMatrix(
       25,
       25,

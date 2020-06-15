@@ -330,9 +330,8 @@ class HoconPsiParser extends PsiParser {
           } else if (matches(StringLiteral)) {
             parseStringLiteral(KeyPart)
           } else {
-            tokenError(
-              "key must be a concatenation of unquoted, quoted or multiline strings " +
-                "(characters $ \" { } [ ] : = , + # ` ^ ? ! @ * & \\ are forbidden unquoted)")
+            tokenError("key must be a concatenation of unquoted, quoted or multiline strings " +
+              "(characters $ \" { } [ ] : = , + # ` ^ ? ! @ * & \\ are forbidden unquoted)")
           }
           parseKeyParts(first = false)
         }
@@ -417,8 +416,7 @@ class HoconPsiParser extends PsiParser {
           } else if (matches(StringLiteral)) {
             parseStringLiteral(StringValue)
           } else {
-            tokenError(
-              "characters $ \" { } [ ] : = , + # ` ^ ? ! @ * & \\ are forbidden unquoted")
+            tokenError("characters $ \" { } [ ] : = , + # ` ^ ? ! @ * & \\ are forbidden unquoted")
           }
           parseValueParts(partCount + 1)
         } else partCount

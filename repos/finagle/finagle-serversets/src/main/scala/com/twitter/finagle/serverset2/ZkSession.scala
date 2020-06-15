@@ -86,8 +86,7 @@ private[serverset2] class ZkSession(
     def loop(): Future[T] =
       limit { go }.rescue {
         case exc: KeeperException.ConnectionLoss =>
-          logger.warning(
-            s"ConnectionLoss to Zookeeper host. Session $sessionIdAsHex. Retrying")
+          logger.warning(s"ConnectionLoss to Zookeeper host. Session $sessionIdAsHex. Retrying")
           retryWithDelay { loop() }
       }
 
@@ -139,8 +138,7 @@ private[serverset2] class ZkSession(
                     sessionState == SessionState.SaslAuthenticated |
                     sessionState == SessionState.SyncConnected =>
                 u() = ok
-                logger.info(
-                  s"Reacquiring watch on $sessionState. Session: $sessionIdAsHex")
+                logger.info(s"Reacquiring watch on $sessionState. Session: $sessionIdAsHex")
                 // We may have lost or never set our watch correctly. Retry to ensure we stay connected
                 retryWithDelay { loop() }
 
@@ -160,8 +158,7 @@ private[serverset2] class ZkSession(
               // Do NOT keep retrying, wait to be reconnected automatically by the underlying session
 
               case WatchState.SessionState(sessionState) =>
-                logger.error(
-                  s"Unexpected session state $sessionState. Session: $sessionIdAsHex")
+                logger.error(s"Unexpected session state $sessionState. Session: $sessionIdAsHex")
                 u() = Activity.Failed(new Exception("" + sessionState))
                 // We don't know what happened. Retry.
                 retryWithDelay { loop() }
@@ -217,8 +214,7 @@ private[serverset2] class ZkSession(
             noteGoodChildWatch(path)
             Activity.value(Set.empty)
           case Activity.Failed(exc) =>
-            logger.error(
-              s"GetChildrenWatch to ($path, $prefix) failed with exception $exc")
+            logger.error(s"GetChildrenWatch to ($path, $prefix) failed with exception $exc")
             Activity.exception(exc)
         }
     }
@@ -240,8 +236,7 @@ private[serverset2] class ZkSession(
       case Throw(exc) =>
         statsReceiver.counter("read_fail").incr()
         unexpectedExceptions.record(statsReceiver, exc)
-        logger.warning(
-          s"Unexpected failure for session $sessionIdAsHex. retrieving node $path. ($exc)")
+        logger.warning(s"Unexpected failure for session $sessionIdAsHex. retrieving node $path. ($exc)")
         Future.exception(exc)
     }
 
@@ -343,8 +338,7 @@ private[serverset2] object ZkSession {
         .unit before zkSession.addAuthInfo(
         "digest",
         Buf.Utf8(authInfo)) onSuccess { _ =>
-        logger.info(
-          s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
+        logger.info(s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
         v() = zkSession
         backoff.reset()
       }
@@ -358,8 +352,7 @@ private[serverset2] object ZkSession {
         .unit
         .before {
           val jitter = backoff.next()
-          logger.error(
-            s"Zookeeper session ${zkSession.sessionIdAsHex} has expired. Reconnecting in $jitter")
+          logger.error(s"Zookeeper session ${zkSession.sessionIdAsHex} has expired. Reconnecting in $jitter")
           Future.sleep(jitter)
         }
         .ensure { reconnect() }

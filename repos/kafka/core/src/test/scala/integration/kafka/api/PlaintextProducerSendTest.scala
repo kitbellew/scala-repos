@@ -35,8 +35,7 @@ class PlaintextProducerSendTest extends BaseProducerSendTest {
   def testSerializerConstructors() {
     try {
       createNewProducerWithNoSerializer(brokerList)
-      fail(
-        "Instantiating a producer without specifying a serializer should cause a ConfigException")
+      fail("Instantiating a producer without specifying a serializer should cause a ConfigException")
     } catch {
       case ce: ConfigException => // this is ok
     }

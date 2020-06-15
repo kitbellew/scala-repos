@@ -190,9 +190,7 @@ class ExecutorClassLoader(
         None
       case e: Exception =>
         // Something bad happened while checking if the class exists
-        logError(
-          s"Failed to check existence of class $name on REPL class server at $uri",
-          e)
+        logError(s"Failed to check existence of class $name on REPL class server at $uri", e)
         None
     } finally {
       if (inputStream != null) {

@@ -72,8 +72,7 @@ class MarathonConfTest extends MarathonSpec {
     assert(!conf.checkpoint())
   }
 
-  test(
-    "--default_accepted_resource_roles *,marathon will fail without --mesos_role marathon") {
+  test("--default_accepted_resource_roles *,marathon will fail without --mesos_role marathon") {
     val triedConfig = Try(
       MarathonTestHelper.makeConfig(
         "--master",

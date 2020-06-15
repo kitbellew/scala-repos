@@ -96,8 +96,7 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
         val (adjValue, adjGrad) = adjust(x, grad, value)
         val oneOffImprovement =
           (state.adjustedValue - adjValue) / (state.adjustedValue.abs max adjValue.abs max 1e-6 * state.initialAdjVal.abs)
-        logger.info(
-          f"Val and Grad Norm: $adjValue%.6g (rel: $oneOffImprovement%.3g) ${norm(adjGrad)}%.6g")
+        logger.info(f"Val and Grad Norm: $adjValue%.6g (rel: $oneOffImprovement%.3g) ${norm(adjGrad)}%.6g")
         val history = updateHistory(x, grad, value, adjustedFun, state)
         val newCInfo =
           convergenceCheck.update(x, grad, value, state, state.convergenceInfo)
@@ -118,8 +117,7 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
           logger.error("Failure! Resetting history: " + x)
           state.copy(history = initialHistory(adjustedFun, state.x))
         case x: FirstOrderException =>
-          logger.error(
-            "Failure again! Giving up and returning. Maybe the objective is just poorly behaved?")
+          logger.error("Failure again! Giving up and returning. Maybe the objective is just poorly behaved?")
           state.copy(searchFailed = true)
       }
     }
@@ -380,12 +378,10 @@ object FirstOrderMinimizer {
       if (oldState.iter % evalFrequency == 0) {
         val newValue = f(newX)
         if (newValue <= oldInfo.bestValue * (1 - improvementRequirement)) {
-          logger.info(
-            f"External function improved: current ${newValue}%.3f old: ${oldInfo.bestValue}%.3f")
+          logger.info(f"External function improved: current ${newValue}%.3f old: ${oldInfo.bestValue}%.3f")
           Info(numFailures = 0, bestValue = newValue)
         } else {
-          logger.info(
-            f"External function failed to improve sufficiently! current ${newValue}%.3f old: ${oldInfo.bestValue}%.3f")
+          logger.info(f"External function failed to improve sufficiently! current ${newValue}%.3f old: ${oldInfo.bestValue}%.3f")
           oldInfo.copy(numFailures = oldInfo.numFailures + 1)
         }
       } else {

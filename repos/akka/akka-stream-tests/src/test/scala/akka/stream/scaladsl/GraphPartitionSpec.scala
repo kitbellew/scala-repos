@@ -207,8 +207,7 @@ class GraphPartitionSpec extends AkkaSpec {
         .run()
 
       c1.request(1)
-      c1.expectError(Partition.PartitionOutOfBoundsException(
-        "partitioner must return an index in the range [0,1]. returned: [-1] for input [java.lang.Integer]."))
+      c1.expectError(Partition.PartitionOutOfBoundsException("partitioner must return an index in the range [0,1]. returned: [-1] for input [java.lang.Integer]."))
     }
 
   }

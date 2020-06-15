@@ -8,8 +8,8 @@ object SbtLauncherPlugin extends AutoPlugin {
     val SbtLaunchConfiguration = config("sbt-launch")
     val sbtLaunchJar =
       taskKey[File]("constructs an sbt-launch.jar for this version of sbt.")
-    val rawSbtLaunchJar = taskKey[File](
-      "The released version of the sbt-launcher we use to bundle this application.")
+    val rawSbtLaunchJar =
+      taskKey[File]("The released version of the sbt-launcher we use to bundle this application.")
   }
   import autoImport._
 
@@ -24,8 +24,7 @@ object SbtLauncherPlugin extends AutoPlugin {
           .headOption match {
           case Some(jar) => jar.data
           case None =>
-            sys.error(
-              s"Could not resolve sbt launcher!, dependencies := ${libraryDependencies.value}")
+            sys.error(s"Could not resolve sbt launcher!, dependencies := ${libraryDependencies.value}")
         }
       },
       sbtLaunchJar := {

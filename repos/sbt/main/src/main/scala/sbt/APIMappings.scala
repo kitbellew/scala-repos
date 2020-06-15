@@ -40,8 +40,7 @@ private[sbt] object APIMappings {
     try Some(new URL(s))
     catch {
       case e: MalformedURLException =>
-        log.warn(
-          s"Invalid API base URL '$s' for classpath entry '$forEntry': ${e.toString}")
+        log.warn(s"Invalid API base URL '$s' for classpath entry '$forEntry': ${e.toString}")
         None
     }
 

@@ -18,8 +18,7 @@ private[pickling] class ExternalizablePickling extends PicklingAlgorithm {
       tpe: IrClass,
       logger: AlgorithmLogger): AlgorithmResult = {
     if (isExternalizable(tpe)) {
-      logger.warn(
-        s"Using Externalizable interface for $tpe.  This may be less efficient than writing your own pickler/unpickler.")
+      logger.warn(s"Using Externalizable interface for $tpe.  This may be less efficient than writing your own pickler/unpickler.")
       AlgorithmSucccess(
         PickleUnpickleImplementation(
           pickle = PickleEntry(Seq(PickleExternalizable(tpe))),

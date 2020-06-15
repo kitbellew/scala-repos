@@ -92,8 +92,7 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
             } yield "unapplySeq").getOrElse("unapply")
           case None => "unapply"
         }
-        Option(
-          s"def $unapplyName$typeParamString(x$$0: $name$typeParamStringRes): $paramStringRes = throw new Error()")
+        Option(s"def $unapplyName$typeParamString(x$$0: $name$typeParamStringRes): $paramStringRes = throw new Error()")
       }
 
     val apply: Option[String] =
@@ -118,8 +117,7 @@ trait ScClass extends ScTypeDefinition with ScParameterOwner {
           case None => ""
         }
 
-        Option(
-          s"def apply$typeParamString$paramString: $name$typeParamStringRes = throw new Error()")
+        Option(s"def apply$typeParamString$paramString: $name$typeParamStringRes = throw new Error()")
       }
 
     List(apply, unapply).flatten

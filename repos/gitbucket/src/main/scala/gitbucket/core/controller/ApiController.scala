@@ -307,9 +307,10 @@ trait ApiControllerBase extends ControllerBase {
                     RepositoryName(repository)))
               } else {
                 // TODO ApiError should support errors field to enhance compatibility of GitHub API
-                UnprocessableEntity(ApiError(
-                  "Validation Failed",
-                  Some("https://developer.github.com/v3/issues/labels/#create-a-label")))
+                UnprocessableEntity(
+                  ApiError(
+                    "Validation Failed",
+                    Some("https://developer.github.com/v3/issues/labels/#create-a-label")))
               }
           } getOrElse NotFound()
         }

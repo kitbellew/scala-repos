@@ -954,8 +954,7 @@ abstract class DStream[T: ClassTag](
       val alignedToTime = if ((toTime - zeroTime).isMultipleOf(slideDuration)) {
         toTime
       } else {
-        logWarning(
-          s"toTime ($toTime) is not a multiple of slideDuration ($slideDuration)")
+        logWarning(s"toTime ($toTime) is not a multiple of slideDuration ($slideDuration)")
         toTime.floor(slideDuration, zeroTime)
       }
 
@@ -963,8 +962,7 @@ abstract class DStream[T: ClassTag](
         if ((fromTime - zeroTime).isMultipleOf(slideDuration)) {
           fromTime
         } else {
-          logWarning(
-            s"fromTime ($fromTime) is not a multiple of slideDuration ($slideDuration)")
+          logWarning(s"fromTime ($fromTime) is not a multiple of slideDuration ($slideDuration)")
           fromTime.floor(slideDuration, zeroTime)
         }
 

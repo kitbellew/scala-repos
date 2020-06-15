@@ -160,8 +160,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       cache
     } catch {
       case e: Throwable =>
-        LOG.warn(
-          s"Failed to load injector cache, continuing with empty(${e.getMessage})")
+        LOG.warn(s"Failed to load injector cache, continuing with empty(${e.getMessage})")
         InjectorPersistentCache(
           ScalaPluginVersionVerifier.getPluginVersion.getOrElse(
             Version.Snapshot),
@@ -216,12 +215,10 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
             Some(injector)
           } catch {
             case e: ClassNotFoundException =>
-              LOG.warn(
-                s"Interface class ${injector.iface} not found, skipping injector")
+              LOG.warn(s"Interface class ${injector.iface} not found, skipping injector")
               None
             case e =>
-              LOG.warn(
-                s"Error while verifying injector interface - ${e.getMessage}, skipping")
+              LOG.warn(s"Error while verifying injector interface - ${e.getMessage}, skipping")
               None
           }
         }

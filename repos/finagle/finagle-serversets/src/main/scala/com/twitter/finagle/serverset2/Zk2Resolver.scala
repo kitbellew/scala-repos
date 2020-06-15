@@ -234,8 +234,7 @@ class Zk2Resolver(
 
                   val newAddr =
                     if (clientHealth == ClientHealth.Unhealthy) {
-                      logger.info(
-                        "ZkResolver reports unhealthy. resolution moving to Addr.Pending")
+                      logger.info("ZkResolver reports unhealthy. resolution moving to Addr.Pending")
                       Addr.Pending
                     } else addr
 

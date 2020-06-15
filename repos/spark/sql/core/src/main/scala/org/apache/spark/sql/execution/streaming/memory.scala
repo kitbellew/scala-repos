@@ -90,8 +90,7 @@ case class MemoryStream[A: Encoder](id: Int, sqlContext: SQLContext)
             .toInt + 1)
 
       if (newBlocks.nonEmpty) {
-        logDebug(
-          s"Running [$start, $currentOffset] on blocks ${newBlocks.mkString(", ")}")
+        logDebug(s"Running [$start, $currentOffset] on blocks ${newBlocks.mkString(", ")}")
         val df = newBlocks
           .map(_.toDF())
           .reduceOption(_ unionAll _)

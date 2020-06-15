@@ -119,8 +119,7 @@ object ServerConfig {
   }
 }
 
-@implicitNotFound(
-  "Builder is not fully configured: Codec: ${HasCodec}, BindTo: ${HasBindTo}, Name: ${HasName}")
+@implicitNotFound("Builder is not fully configured: Codec: ${HasCodec}, BindTo: ${HasBindTo}, Name: ${HasName}")
 trait ServerConfigEvidence[HasCodec, HasBindTo, HasName]
 
 private[builder] object ServerConfigEvidence {

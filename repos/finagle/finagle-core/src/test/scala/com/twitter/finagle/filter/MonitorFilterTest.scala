@@ -76,8 +76,7 @@ class MonitorFilterTest
     mockLogger.addHandler(new StreamHandler())
   }
 
-  test(
-    "MonitorFilter should when attached to a server, report source for sourced exceptions") {
+  test("MonitorFilter should when attached to a server, report source for sourced exceptions") {
     val h = new Helper
     import h._
 
@@ -100,8 +99,7 @@ class MonitorFilterTest
       .hostConnectionLimit(1)
       .build()
 
-    when(
-      service(any[String])) thenThrow outer // make server service throw the mock exception
+    when(service(any[String])) thenThrow outer // make server service throw the mock exception
 
     try {
       val f = Await.result(client("123"))
@@ -113,13 +111,11 @@ class MonitorFilterTest
     verify(monitor).handle(outer)
     verify(mockLogger).log(
       Matchers.eq(Level.SEVERE),
-      Matchers.eq(
-        "The 'FakeService2' service FakeService2 on behalf of FakeService1 threw an exception"),
+      Matchers.eq("The 'FakeService2' service FakeService2 on behalf of FakeService1 threw an exception"),
       Matchers.eq(outer))
   }
 
-  test(
-    "MonitorFilter should when attached to a client, report source for sourced exceptions") {
+  test("MonitorFilter should when attached to a client, report source for sourced exceptions") {
     val h = new Helper
     import h._
 

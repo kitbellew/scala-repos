@@ -294,8 +294,7 @@ trait ActorPublisher[T] extends Actor {
         } else {
           demand += n
           if (demand < 0)
-            demand =
-              Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
+            demand = Long.MaxValue // Long overflow, Reactive Streams Spec 3:17: effectively unbounded
           super.aroundReceive(receive, msg)
         }
 

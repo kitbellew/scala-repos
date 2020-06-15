@@ -293,8 +293,7 @@ class HiveContext private[hive] (
             "Please set spark.sql.hive.metastore.jars.")
       }
 
-      logInfo(
-        s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion using Spark classes.")
+      logInfo(s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion using Spark classes.")
       new IsolatedClientLoader(
         version = metaVersion,
         sparkConf = sc.conf,
@@ -306,8 +305,7 @@ class HiveContext private[hive] (
         sharedPrefixes = hiveMetastoreSharedPrefixes)
     } else if (hiveMetastoreJars == "maven") {
       // TODO: Support for loading the jars from an already downloaded location.
-      logInfo(
-        s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion using maven.")
+      logInfo(s"Initializing HiveMetastoreConnection version $hiveMetastoreVersion using maven.")
       IsolatedClientLoader.forVersion(
         hiveMetastoreVersion = hiveMetastoreVersion,
         hadoopVersion = VersionInfo.getVersion,
@@ -725,8 +723,7 @@ private[hive] object HiveContext {
   val HIVE_THRIFT_SERVER_ASYNC = booleanConf(
     "spark.sql.hive.thriftServer.async",
     defaultValue = Some(true),
-    doc =
-      "When set to true, Hive Thrift server executes SQL queries in an asynchronous way.")
+    doc = "When set to true, Hive Thrift server executes SQL queries in an asynchronous way.")
 
   /** Constructs a configuration for hive, where the metastore is located in a temp directory. */
   def newTemporaryConfiguration(

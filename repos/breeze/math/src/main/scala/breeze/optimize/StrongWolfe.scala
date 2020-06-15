@@ -151,8 +151,7 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
       if (java.lang.Double.isInfinite(c.fval) || java.lang.Double.isNaN(
           c.fval)) {
         t /= 2.0
-        logger.error(
-          "Encountered bad values in function evaluation. Decreasing step size to " + t)
+        logger.error("Encountered bad values in function evaluation. Decreasing step size to " + t)
       } else {
 
         // Zoom if "sufficient decrease" condition is not satisfied
@@ -181,8 +180,7 @@ class StrongWolfeLineSearch(maxZoomIter: Int, maxLineSearchIter: Int)
 
         low = c
         t *= 1.5
-        logger.debug(
-          "Sufficent Decrease condition but not curvature condition satisfied. Increased t to: " + t)
+        logger.debug("Sufficent Decrease condition but not curvature condition satisfied. Increased t to: " + t)
       }
     }
 

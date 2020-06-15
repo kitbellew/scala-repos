@@ -42,10 +42,10 @@ object Test extends App {
           val ex1 = scala.reflect.runtime.ReflectionUtils.unwrapThrowable(ex)
           s"${ex1.getClass}: ${ex1.getMessage}"
       }
-    println(
-      s"as seen by Scala reflection: ${msym.asInstanceOf[scala.reflect.internal.Symbols#Symbol].defString}")
-    println(
-      s"as seen by Java reflection: ${mmirror.asInstanceOf[{ val jmeth: java.lang.reflect.Method }].jmeth}")
+    println(s"as seen by Scala reflection: ${msym.asInstanceOf[scala.reflect.internal.Symbols#Symbol].defString}")
+    println(s"as seen by Java reflection: ${mmirror
+      .asInstanceOf[{ val jmeth: java.lang.reflect.Method }]
+      .jmeth}")
     println(s"result = $mresult")
   }
 

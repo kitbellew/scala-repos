@@ -86,8 +86,7 @@ object TaskTracker {
         log.info(s"Removed app [$appId] from tracker")
         copy(appTasksMap = appTasksMap - appId)
       } else {
-        log.debug(
-          s"Updated app [$appId], currently ${updated.taskMap.size} tasks in total.")
+        log.debug(s"Updated app [$appId], currently ${updated.taskMap.size} tasks in total.")
         copy(appTasksMap = appTasksMap + (appId -> updated))
       }
     }

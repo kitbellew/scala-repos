@@ -201,8 +201,7 @@ class Requester extends Actor {
     case Tick =>
       val msg = util.Random.shuffle(messages).head
       val uuid = UUID.randomUUID()
-      println(
-        s"""[Requester] requesting ("$msg", $uuid) to be sent to [Receiver]...""")
+      println(s"""[Requester] requesting ("$msg", $uuid) to be sent to [Receiver]...""")
 
       /*
        * Make the actual request...

@@ -226,8 +226,7 @@ verboseErrors - whether to print verbose error messages (default: false)
     // Start injecting
     startTime = System.currentTimeMillis()
     //println("Starting sample inject")
-    println(
-      "time                \ttotal errors\tqueries/s\tmin (ms)\tmax (ms)\tavg (ms)")
+    println("time                \ttotal errors\tqueries/s\tmin (ms)\tmax (ms)\tavg (ms)")
     while (true) {
       val sample = sampleSet.next(base, maxQuery)
       workQueue.put(sample)

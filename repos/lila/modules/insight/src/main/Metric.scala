@@ -37,8 +37,7 @@ object Metric {
         Move,
         Move,
         Average,
-        Html(
-          """Precision of your moves. Lower is better. <a href="http://lichess.org/qa/103/what-is-average-centipawn-loss">More info</a>"""))
+        Html("""Precision of your moves. Lower is better. <a href="http://lichess.org/qa/103/what-is-average-centipawn-loss">More info</a>"""))
 
   case object Movetime
       extends Metric(
@@ -98,8 +97,7 @@ object Metric {
         Move,
         Game,
         Average,
-        Html(
-          "Number of moves you play in the game. Doesn't count the opponent moves."))
+        Html("Number of moves you play in the game. Doesn't count the opponent moves."))
 
   case object PieceRole
       extends Metric(
@@ -119,8 +117,7 @@ object Metric {
         Move,
         Move,
         Percent,
-        Html(
-          "How often you take advantage of your opponent blunders. 100% means you punish them all, 0% means you counter-blunder them all."))
+        Html("How often you take advantage of your opponent blunders. 100% means you punish them all, 0% means you counter-blunder them all."))
 
   case object Luck
       extends Metric(
@@ -130,8 +127,7 @@ object Metric {
         Move,
         Move,
         Percent,
-        Html(
-          "How often your opponent fails to punish your blunders. 100% means they miss all your blunders, 0% means they spot them all."))
+        Html("How often your opponent fails to punish your blunders. 100% means they miss all your blunders, 0% means they spot them all."))
 
   case object Material
       extends Metric(

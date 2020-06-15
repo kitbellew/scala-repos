@@ -39,8 +39,7 @@ class InjectorReviewDialog(
               if (file.isDirectory) file.getChildren
               else Seq(file)
             } else {
-              LOG.warn(
-                s"Source root '$source' is broken, check your library - $containingJar")
+              LOG.warn(s"Source root '$source' is broken, check your library - $containingJar")
               Seq.empty
             }
           }

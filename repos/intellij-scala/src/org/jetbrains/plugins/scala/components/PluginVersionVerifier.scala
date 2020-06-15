@@ -83,8 +83,8 @@ object ScalaPluginVersionVerifier {
 }
 
 object ScalaPluginVersionVerifierApplicationComponent {
-  private val LOG = Logger.getInstance(
-    "#org.jetbrains.plugins.scala.components.ScalaPluginVersionVerifierApplicationComponent")
+  private val LOG =
+    Logger.getInstance("#org.jetbrains.plugins.scala.components.ScalaPluginVersionVerifierApplicationComponent")
 }
 
 class ScalaPluginVersionVerifierApplicationComponent

@@ -716,11 +716,9 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
               provider,
               opts)) :: Nil
         case c: CreateTableUsing if !c.temporary =>
-          sys.error(
-            "Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")
+          sys.error("Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")
         case c: CreateTableUsing if c.temporary && c.allowExisting =>
-          sys.error(
-            "allowExisting should be set to false when creating a temporary table.")
+          sys.error("allowExisting should be set to false when creating a temporary table.")
 
         case c: CreateTableUsingAsSelect
             if c.temporary && c.partitionColumns.nonEmpty =>
@@ -736,8 +734,7 @@ private[sql] abstract class SparkStrategies extends QueryPlanner[SparkPlan] {
             c.child)
           ExecutedCommand(cmd) :: Nil
         case c: CreateTableUsingAsSelect if !c.temporary =>
-          sys.error(
-            "Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")
+          sys.error("Tables created with SQLContext must be TEMPORARY. Use a HiveContext instead.")
 
         case describe @ LogicalDescribeCommand(table, isExtended) =>
           ExecutedCommand(

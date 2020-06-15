@@ -114,8 +114,7 @@ case class Explode(child: Expression)
         .isInstanceOf[MapType]) {
       TypeCheckResult.TypeCheckSuccess
     } else {
-      TypeCheckResult.TypeCheckFailure(
-        s"input to function explode should be array or map type, not ${child.dataType}")
+      TypeCheckResult.TypeCheckFailure(s"input to function explode should be array or map type, not ${child.dataType}")
     }
   }
 

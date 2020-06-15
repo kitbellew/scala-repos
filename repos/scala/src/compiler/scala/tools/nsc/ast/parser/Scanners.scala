@@ -216,11 +216,9 @@ trait Scanners extends ScannersCommon {
           token = kwArray(idx)
           if (token == IDENTIFIER && allowIdent != name) {
             if (name == nme.MACROkw)
-              syntaxError(
-                s"$name is now a reserved word; usage as an identifier is disallowed")
+              syntaxError(s"$name is now a reserved word; usage as an identifier is disallowed")
             else if (emitIdentifierDeprecationWarnings)
-              deprecationWarning(
-                s"$name is now a reserved word; usage as an identifier is deprecated")
+              deprecationWarning(s"$name is now a reserved word; usage as an identifier is deprecated")
           }
         }
       }
@@ -764,8 +762,7 @@ trait Scanners extends ScannersCommon {
             next.token = kwArray(idx)
           }
         } else {
-          syntaxError(
-            "invalid string interpolation: `$$', `$'ident or `$'BlockExpr expected")
+          syntaxError("invalid string interpolation: `$$', `$'ident or `$'BlockExpr expected")
         }
       } else {
         val isUnclosedLiteral =
@@ -919,8 +916,7 @@ trait Scanners extends ScannersCommon {
     def intVal(negated: Boolean): Long = {
       def malformed: Long = {
         if (base == 8)
-          syntaxError(
-            "Decimal integer literals may not have a leading zero. (Octal syntax is obsolete.)")
+          syntaxError("Decimal integer literals may not have a leading zero. (Octal syntax is obsolete.)")
         else syntaxError("malformed integer number")
         0
       }
@@ -1298,8 +1294,7 @@ trait Scanners extends ScannersCommon {
     }
 
     init()
-    log(
-      s"ParensAnalyzer for ${unit.source} of length ${unit.source.content.length}\n```\n$markedSource\n```")
+    log(s"ParensAnalyzer for ${unit.source} of length ${unit.source.content.length}\n```\n$markedSource\n```")
 
     /** The offset of the first token on this line, or next following line if blank
       */

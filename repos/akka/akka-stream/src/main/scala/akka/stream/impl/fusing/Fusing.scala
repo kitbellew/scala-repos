@@ -297,8 +297,8 @@ private[stream] object Fusing {
       case _ if m.isAtomic ⇒ true // non-GraphStage atomic or has AsyncBoundary
       case _ ⇒ m.attributes.contains(AsyncBoundary)
     }
-    if (Debug) log(s"entering ${m.getClass} (hash=${struct.hash(
-      m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
+    if (Debug)
+      log(s"entering ${m.getClass} (hash=${struct.hash(m)}, async=$async, name=${m.attributes.nameLifted}, dispatcher=${dispatcher(m)})")
     val localGroup =
       if (async) struct.newGroup(indent)
       else openGroup
@@ -308,8 +308,8 @@ private[stream] object Fusing {
         case gm: GraphModule if !async ⇒
           // need to dissolve previously fused GraphStages to allow further fusion
           if (Debug)
-            log(
-              s"dissolving graph module ${m.toString.replace("\n", "\n" + "  " * indent)}")
+            log(s"dissolving graph module ${m.toString
+              .replace("\n", "\n" + "  " * indent)}")
           val attributes = inheritedAttributes and m.attributes
           gm.matValIDs.flatMap(sub ⇒
             descend(sub, attributes, struct, localGroup, indent + 1))(
@@ -804,8 +804,8 @@ private[stream] object Fusing {
       */
     def rewire(oldShape: Shape, newShape: Shape, indent: Int): Unit = {
       if (Debug)
-        println(
-          "  " * indent + s"rewiring ${printShape(oldShape)} -> ${printShape(newShape)}")
+        println("  " * indent + s"rewiring ${printShape(
+          oldShape)} -> ${printShape(newShape)}")
       oldShape.inlets.iterator.zip(newShape.inlets.iterator).foreach {
         case (oldIn, newIn) ⇒
           addMapping(

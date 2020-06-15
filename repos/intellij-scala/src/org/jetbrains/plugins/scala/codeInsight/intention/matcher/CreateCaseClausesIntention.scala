@@ -104,8 +104,7 @@ final class CreateCaseClausesIntention extends PsiElementBaseIntentionAction {
     val caseClauseTexts =
       if (withoutDefault.nonEmpty) withoutDefault :+ defaultCaseClauseText
       else
-        Seq(
-          s"\n$defaultCaseClauseText //could not find inherited objects or case classes\n")
+        Seq(s"\n$defaultCaseClauseText //could not find inherited objects or case classes\n")
     val newMatchStmt = ScalaPsiElementFactory.createMatch(
       expr.getText,
       caseClauseTexts,

@@ -111,8 +111,7 @@ class ResidentTaskIntegrationTest
     When("the app is suspended")
     f.suspendSuccessfully(app.id)
 
-    Then(
-      "there are no used resources anymore but there are the same reserved resources")
+    Then("there are no used resources anymore but there are the same reserved resources")
     val state2: RestResult[ITMesosState] = mesos.state
 
     withClue("used_resources") {

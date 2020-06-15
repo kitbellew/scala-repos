@@ -43,10 +43,8 @@ class DotRunner(settings: doc.Settings) {
       dotProcess = null
       if (dotAttempts == 1 + settings.docDiagramsDotRestart.value) {
         settings.printMsg("\n")
-        settings.printMsg(
-          "**********************************************************************")
-        settings.printMsg(
-          "Diagrams will be disabled for this run because the graphviz dot tool")
+        settings.printMsg("**********************************************************************")
+        settings.printMsg("Diagrams will be disabled for this run because the graphviz dot tool")
         settings.printMsg(
           "has malfunctioned too many times. These scaladoc flags may help:")
         settings.printMsg("")
@@ -60,10 +58,8 @@ class DotRunner(settings: doc.Settings) {
           ("%-" + width + "s") format (s.helpSyntax) + "  " + s.helpDescription
         baseList.foreach((sett: doc.Settings#Setting) =>
           settings.printMsg(helpStr(sett)))
-        settings.printMsg(
-          "\nPlease note that graphviz package version 2.26 or above is required.")
-        settings.printMsg(
-          "**********************************************************************\n\n")
+        settings.printMsg("\nPlease note that graphviz package version 2.26 or above is required.")
+        settings.printMsg("**********************************************************************\n\n")
 
       }
     }
@@ -144,10 +140,8 @@ class DotProcess(settings: doc.Settings) {
 
     if (_error) {
       if (settings.docDiagramsDebug.value) {
-        settings.printMsg(
-          "\n**********************************************************************")
-        settings.printMsg(
-          "The graphviz dot diagram tool has malfunctioned and will be restarted.")
+        settings.printMsg("\n**********************************************************************")
+        settings.printMsg("The graphviz dot diagram tool has malfunctioned and will be restarted.")
         settings.printMsg("\nThe following is the log of the failure:")
         settings.printMsg(errorBuffer.toString)
         settings.printMsg("  Cleanup: Last template: " + templateName)
@@ -158,15 +152,13 @@ class DotProcess(settings: doc.Settings) {
           "  Cleanup: Dot path: " + settings.docDiagramsDotPath.value)
         if (process != null)
           settings.printMsg("  Cleanup: Dot exit code: " + process.exitValue)
-        settings.printMsg(
-          "**********************************************************************")
+        settings.printMsg("**********************************************************************")
       } else {
         // we shouldn't just sit there for 50s not reporting anything, no?
         settings.printMsg(
           "Graphviz dot encountered an error when generating the diagram for:")
         settings.printMsg(templateName)
-        settings.printMsg(
-          "These are usually spurious errors, but if you notice a persistent error on")
+        settings.printMsg("These are usually spurious errors, but if you notice a persistent error on")
         settings.printMsg(
           "a diagram, please use the " + settings.docDiagramsDebug.name + " flag and report a bug with the output.")
       }

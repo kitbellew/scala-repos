@@ -297,8 +297,7 @@ class ClientQuotaManager(
       val allMetrics = metrics.metrics()
       val quotaMetricName = clientRateMetricName(clientId)
       if (allMetrics.containsKey(quotaMetricName)) {
-        logger.info(
-          s"Sensor for clientId $clientId already exists. Changing quota to ${quota.bound()} in MetricConfig")
+        logger.info(s"Sensor for clientId $clientId already exists. Changing quota to ${quota.bound()} in MetricConfig")
         allMetrics.get(quotaMetricName).config(getQuotaMetricConfig(quota))
       }
     } finally {

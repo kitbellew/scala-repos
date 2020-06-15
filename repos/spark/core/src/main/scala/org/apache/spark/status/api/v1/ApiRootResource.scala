@@ -278,8 +278,7 @@ private[v1] class BadParameterException(msg: String)
         .build()
     ) {
   def this(param: String, exp: String, actual: String) = {
-    this(
-      raw"""Bad value for parameter "$param".  Expected a $exp, got "$actual"""")
+    this(raw"""Bad value for parameter "$param".  Expected a $exp, got "$actual"""")
   }
 }
 

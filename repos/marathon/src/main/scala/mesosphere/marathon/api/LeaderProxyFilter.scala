@@ -109,13 +109,11 @@ class LeaderProxyFilter @Inject() (
         }
 
         if (retries >= 0) {
-          log.info(
-            s"Waiting for consistent leadership state. Are we leader?: $weAreLeader, leader: $currentLeaderData")
+          log.info(s"Waiting for consistent leadership state. Are we leader?: $weAreLeader, leader: $currentLeaderData")
           sleep()
         } else {
-          log.error(
-            s"inconsistent leadership state, refusing request for ourselves at $myHostPort. " +
-              s"Are we leader?: $weAreLeader, leader: $currentLeaderData")
+          log.error(s"inconsistent leadership state, refusing request for ourselves at $myHostPort. " +
+            s"Are we leader?: $weAreLeader, leader: $currentLeaderData")
         }
 
         retries -= 1
@@ -135,9 +133,8 @@ class LeaderProxyFilter @Inject() (
           chain.doFilter(request, response)
         } else if (leaderDataOpt
             .forall(_ == myHostPort)) { // either not leader or ourselves
-          log.info(
-            s"Do not proxy to myself. Waiting for consistent leadership state. " +
-              s"Are we leader?: false, leader: $leaderDataOpt")
+          log.info(s"Do not proxy to myself. Waiting for consistent leadership state. " +
+            s"Are we leader?: false, leader: $leaderDataOpt")
           if (waitForConsistentLeadership(response)) {
             doFilter(rawRequest, rawResponse, chain)
           } else {

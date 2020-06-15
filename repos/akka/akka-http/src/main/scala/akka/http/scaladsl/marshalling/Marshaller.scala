@@ -80,8 +80,7 @@ sealed abstract class Marshaller[-A, +B] {
               WithFixedContentType(newMT, () ⇒ cto(marshal(), newMT))
 
             case x ⇒
-              sys.error(
-                s"Illegal marshaller wrapping. Marshalling `$x` cannot be wrapped with MediaType `$newMediaType`")
+              sys.error(s"Illegal marshaller wrapping. Marshalling `$x` cannot be wrapped with MediaType `$newMediaType`")
           }
         }
       }

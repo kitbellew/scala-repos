@@ -333,10 +333,9 @@ trait CoGrouped[K, +R]
               * This is non-trivial to encode in the type system, so we throw this exception
               * at the planning phase.
               */
-            sys.error(
-              "Except for self joins, where you are joining something with only itself,\n" +
-                "left-most pipe can only appear once. Firsts: " +
-                inputs.collect { case x if x == inputs.head => x }.toString)
+            sys.error("Except for self joins, where you are joining something with only itself,\n" +
+              "left-most pipe can only appear once. Firsts: " +
+              inputs.collect { case x if x == inputs.head => x }.toString)
           }
       }
       /*

@@ -277,8 +277,7 @@ class MarathonSchedulerService @Inject() (
     synchronized {
       log.info("Defeated (Leader Interface)")
 
-      log.info(
-        s"Call onDefeated leadership callbacks on ${leadershipCallbacks.mkString(", ")}")
+      log.info(s"Call onDefeated leadership callbacks on ${leadershipCallbacks.mkString(", ")}")
       Await.result(
         Future.sequence(leadershipCallbacks.map(_.onDefeated)),
         zkTimeout)

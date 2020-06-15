@@ -40,8 +40,7 @@ final class NoSharingRefUnpicklingRegistry extends RefUnpicklingRegistry {
 
   /** Looks up an unpicklee by its object id. Throws an exception if oid is not valid. */
   override def lookupUnpicklee(oid: Int): Any =
-    sys.error(
-      s"Runtime reference sharing is disabled.  Your pickled object is trying to reference previously pickled value #$oid.")
+    sys.error(s"Runtime reference sharing is disabled.  Your pickled object is trying to reference previously pickled value #$oid.")
 }
 
 /** An implementation of the RefRegistry which ensures NO sharing during pickling. */

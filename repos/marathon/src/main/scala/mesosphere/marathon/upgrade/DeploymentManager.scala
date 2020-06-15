@@ -65,8 +65,7 @@ class DeploymentManager(
 
       Future.sequence(cancellations) onComplete {
         case _ =>
-          log.info(
-            s"Conflicting deployments for deployment ${plan.id} have been canceled")
+          log.info(s"Conflicting deployments for deployment ${plan.id} have been canceled")
           scheduler.schedulerActor ! ConflictingDeploymentsCanceled(
             plan.id,
             if (conflictingDeployments.nonEmpty) {

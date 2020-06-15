@@ -64,8 +64,7 @@ class ConjugateGradient[T, M](
 
         val xnorm: Double = norm(nextX)
         if (xnorm >= maxNormValue) { // reached the edge. We're done.
-          logger.info(
-            f"$iter boundary reached! norm(x): $xnorm%.3f >= maxNormValue $maxNormValue")
+          logger.info(f"$iter boundary reached! norm(x): $xnorm%.3f >= maxNormValue $maxNormValue")
           val xtd = x dot d
           val xtx = x dot x
 
@@ -99,11 +98,9 @@ class ConjugateGradient[T, M](
           if (converged) {
             val done = iter > maxIterations && maxIterations > 0
             if (done)
-              logger.info(
-                f"max iteration $iter reached! norm(residual): $normr%.3f > tolerance $tolerance.")
+              logger.info(f"max iteration $iter reached! norm(residual): $normr%.3f > tolerance $tolerance.")
             else
-              logger.info(
-                f"$iter converged! norm(residual): $normr%.3f <= tolerance $tolerance.")
+              logger.info(f"$iter converged! norm(residual): $normr%.3f <= tolerance $tolerance.")
           } else {
             logger.info(
               f"$iter: norm(residual): $normr%.3f > tolerance $tolerance.")

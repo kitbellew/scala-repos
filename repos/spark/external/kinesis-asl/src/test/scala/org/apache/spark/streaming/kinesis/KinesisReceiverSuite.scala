@@ -130,8 +130,7 @@ class KinesisReceiverSuite
       .removeCheckpointer(meq(shardId), meq(checkpointerMock))
   }
 
-  test(
-    "shutdown should not checkpoint if the reason is something other than TERMINATE") {
+  test("shutdown should not checkpoint if the reason is something other than TERMINATE") {
     when(receiverMock.getLatestSeqNumToCheckpoint(shardId))
       .thenReturn(someSeqNum)
 

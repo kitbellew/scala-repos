@@ -117,8 +117,7 @@ abstract class LazyVals
                 } else
                   sym.owner
               }
-              debuglog(
-                s"determined enclosing class/dummy/method for lazy val as $enclosingClassOrDummyOrMethod given symbol $sym")
+              debuglog(s"determined enclosing class/dummy/method for lazy val as $enclosingClassOrDummyOrMethod given symbol $sym")
               val idx = lazyVals(enclosingClassOrDummyOrMethod)
               lazyVals(enclosingClassOrDummyOrMethod) = idx + 1
               val (rhs1, sDef) = mkLazyDef(
@@ -281,8 +280,7 @@ abstract class LazyVals
         STABLE | PRIVATE)
       defSym setInfo MethodType(List(), lzyVal.tpe.resultType)
       defSym.owner = lzyVal.owner
-      debuglog(
-        s"crete slow compute path $defSym with owner ${defSym.owner} for lazy val $lzyVal")
+      debuglog(s"crete slow compute path $defSym with owner ${defSym.owner} for lazy val $lzyVal")
       if (bitmaps.contains(lzyVal))
         bitmaps(lzyVal).map(_.owner = defSym)
       val rhs: Tree = gen

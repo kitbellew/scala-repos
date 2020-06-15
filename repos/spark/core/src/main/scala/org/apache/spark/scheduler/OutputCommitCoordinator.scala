@@ -100,8 +100,7 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
       case Some(endpointRef) =>
         endpointRef.askWithRetry[Boolean](msg)
       case None =>
-        logError(
-          "canCommit called after coordinator was stopped (is SparkEnv shutdown in progress)?")
+        logError("canCommit called after coordinator was stopped (is SparkEnv shutdown in progress)?")
         false
     }
   }
@@ -145,14 +144,12 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
         case Success =>
         // The task output has been committed successfully
         case denied: TaskCommitDenied =>
-          logInfo(
-            s"Task was denied committing, stage: $stage, partition: $partition, " +
-              s"attempt: $attemptNumber")
+          logInfo(s"Task was denied committing, stage: $stage, partition: $partition, " +
+            s"attempt: $attemptNumber")
         case otherReason =>
           if (authorizedCommitters(partition) == attemptNumber) {
-            logDebug(
-              s"Authorized committer (attemptNumber=$attemptNumber, stage=$stage, " +
-                s"partition=$partition) failed; clearing lock")
+            logDebug(s"Authorized committer (attemptNumber=$attemptNumber, stage=$stage, " +
+              s"partition=$partition) failed; clearing lock")
             authorizedCommitters(partition) = NO_AUTHORIZED_COMMITTER
           }
       }
@@ -177,21 +174,18 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
         case Some(authorizedCommitters) =>
           authorizedCommitters(partition) match {
             case NO_AUTHORIZED_COMMITTER =>
-              logDebug(
-                s"Authorizing attemptNumber=$attemptNumber to commit for stage=$stage, " +
-                  s"partition=$partition")
+              logDebug(s"Authorizing attemptNumber=$attemptNumber to commit for stage=$stage, " +
+                s"partition=$partition")
               authorizedCommitters(partition) = attemptNumber
               true
             case existingCommitter =>
-              logDebug(
-                s"Denying attemptNumber=$attemptNumber to commit for stage=$stage, " +
-                  s"partition=$partition; existingCommitter = $existingCommitter")
+              logDebug(s"Denying attemptNumber=$attemptNumber to commit for stage=$stage, " +
+                s"partition=$partition; existingCommitter = $existingCommitter")
               false
           }
         case None =>
-          logDebug(
-            s"Stage $stage has completed, so not allowing attempt number $attemptNumber of" +
-              s"partition $partition to commit")
+          logDebug(s"Stage $stage has completed, so not allowing attempt number $attemptNumber of" +
+            s"partition $partition to commit")
           false
       }
     }

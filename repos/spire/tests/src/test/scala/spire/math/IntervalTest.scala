@@ -198,8 +198,7 @@ class IntervalSubsetPartialOrderTest extends FunSuite {
 
   import Interval.{openUpper, openLower, closed, open, point}
 
-  test(
-    "Minimal and maximal elements of {[1, 3], [3], [2], [1]} by subset partial order") {
+  test("Minimal and maximal elements of {[1, 3], [3], [2], [1]} by subset partial order") {
     val intervals = Seq(closed(1, 3), point(3), point(2), point(1))
     assert(intervals.pmin.toSet == Set(point(1), point(2), point(3)))
     assert(intervals.pmax.toSet == Set(closed(1, 3)))

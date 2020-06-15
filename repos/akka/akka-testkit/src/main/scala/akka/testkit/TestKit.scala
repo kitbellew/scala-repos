@@ -522,7 +522,8 @@ trait TestKitBase {
     val o = receiveOne(max)
     assert(
       o ne null,
-      s"timeout ($max) during expectMsgAnyOf waiting for ${obj.mkString("(", ", ", ")")}")
+      s"timeout ($max) during expectMsgAnyOf waiting for ${obj
+        .mkString("(", ", ", ")")}")
     assert(obj exists (_ == o), s"found unexpected $o")
     o.asInstanceOf[T]
   }

@@ -308,19 +308,17 @@ object ConsumerGroupCommand {
               offsetMap.put(topicAndPartition, offset)
             } catch {
               case z: ZkNoNodeException =>
-                println(
-                  "Could not fetch offset from zookeeper for group %s partition %s due to missing offset data in zookeeper."
-                    .format(group, topicAndPartition))
+                println("Could not fetch offset from zookeeper for group %s partition %s due to missing offset data in zookeeper."
+                  .format(group, topicAndPartition))
             }
           } else if (offsetAndMetadata.error == Errors.NONE.code)
             offsetMap.put(topicAndPartition, offsetAndMetadata.offset)
           else
-            println(
-              "Could not fetch offset from kafka for group %s partition %s due to %s."
-                .format(
-                  group,
-                  topicAndPartition,
-                  Errors.forCode(offsetAndMetadata.error).exception))
+            println("Could not fetch offset from kafka for group %s partition %s due to %s."
+              .format(
+                group,
+                topicAndPartition,
+                Errors.forCode(offsetAndMetadata.error).exception))
       }
       channel.disconnect()
       offsetMap.toMap
@@ -331,13 +329,11 @@ object ConsumerGroupCommand {
       groups.asScala.foreach { group =>
         try {
           if (AdminUtils.deleteConsumerGroupInZK(zkUtils, group))
-            println(
-              "Deleted all consumer group information for group %s in zookeeper."
-                .format(group))
+            println("Deleted all consumer group information for group %s in zookeeper."
+              .format(group))
           else
-            println(
-              "Delete for group %s failed because its consumers are still active."
-                .format(group))
+            println("Delete for group %s failed because its consumers are still active."
+              .format(group))
         } catch {
           case e: ZkNoNodeException =>
             println(
@@ -357,18 +353,15 @@ object ConsumerGroupCommand {
               zkUtils,
               group,
               topic))
-            println(
-              "Deleted consumer group information for group %s topic %s in zookeeper."
-                .format(group, topic))
+            println("Deleted consumer group information for group %s topic %s in zookeeper."
+              .format(group, topic))
           else
-            println(
-              "Delete for group %s topic %s failed because its consumers are still active."
-                .format(group, topic))
+            println("Delete for group %s topic %s failed because its consumers are still active."
+              .format(group, topic))
         } catch {
           case e: ZkNoNodeException =>
-            println(
-              "Delete for group %s topic %s failed because group does not exist."
-                .format(group, topic))
+            println("Delete for group %s topic %s failed because group does not exist."
+              .format(group, topic))
         }
       }
     }
@@ -377,9 +370,8 @@ object ConsumerGroupCommand {
       val topic = opts.options.valueOf(opts.topicOpt)
       Topic.validate(topic)
       AdminUtils.deleteAllConsumerGroupInfoForTopicInZK(zkUtils, topic)
-      println(
-        "Deleted consumer group information for all inactive consumer groups for topic %s in zookeeper."
-          .format(topic))
+      println("Deleted consumer group information for all inactive consumer groups for topic %s in zookeeper."
+        .format(topic))
     }
 
     private def getZkConsumer(brokerId: Int): Option[SimpleConsumer] = {

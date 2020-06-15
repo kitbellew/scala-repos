@@ -30,8 +30,7 @@ class MultilayerPerceptronClassifierSuite
     extends SparkFunSuite
     with MLlibTestSparkContext {
 
-  test(
-    "XOR function learning as binary classification problem with two outputs.") {
+  test("XOR function learning as binary classification problem with two outputs.") {
     val dataFrame = sqlContext
       .createDataFrame(
         Seq(

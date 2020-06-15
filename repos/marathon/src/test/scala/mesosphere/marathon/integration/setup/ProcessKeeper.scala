@@ -237,8 +237,7 @@ object ProcessKeeper {
               s"Process $name exited before coming up. Give up. $processBuilder")
           case ProcessIsUp =>
             processes += name -> process
-            log.info(
-              s"Process $name is up and running. ${processes.size} processes in total.")
+            log.info(s"Process $name is up and running. ${processes.size} processes in total.")
         }
       case Failure(_) =>
         process.destroy()

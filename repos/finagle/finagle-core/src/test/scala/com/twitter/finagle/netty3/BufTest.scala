@@ -8,8 +8,7 @@ import org.jboss.netty.buffer.ChannelBuffers
 
 @RunWith(classOf[JUnitRunner])
 class BufTest extends FunSuite {
-  test(
-    "ChannelBufferBuf.slice: slices according to the underlying ChannelBuffer") {
+  test("ChannelBufferBuf.slice: slices according to the underlying ChannelBuffer") {
     val cb = ChannelBuffers.buffer(128)
     cb.writeBytes(Array[Byte](1, 2, 3, 4, 5, 6, 7, 8, 9))
     val buf = ChannelBufferBuf.Owned(cb)

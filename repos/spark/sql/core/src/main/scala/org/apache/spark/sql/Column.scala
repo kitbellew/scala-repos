@@ -241,9 +241,8 @@ class Column(protected[sql] val expr: Expression) extends Logging {
     withExpr {
       val right = lit(other).expr
       if (this.expr == right) {
-        logWarning(
-          s"Constructing trivially true equals predicate, '${this.expr} = $right'. " +
-            "Perhaps you need to use aliases.")
+        logWarning(s"Constructing trivially true equals predicate, '${this.expr} = $right'. " +
+          "Perhaps you need to use aliases.")
       }
       EqualTo(expr, right)
     }

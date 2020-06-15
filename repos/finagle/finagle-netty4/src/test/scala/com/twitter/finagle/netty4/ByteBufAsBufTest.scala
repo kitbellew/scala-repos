@@ -36,8 +36,7 @@ class ByteBufAsBufTest
     assert(Buf.ByteArray.Owned(newBytes) == buf)
   }
 
-  test(
-    "writes to slices of the underlying ByteBuf are reflected in ByteBufAsBuf") {
+  test("writes to slices of the underlying ByteBuf are reflected in ByteBufAsBuf") {
     val bbSlice = underlying.slice(1, 2)
     bbSlice.writerIndex(0)
     bbSlice.writeByte(99)

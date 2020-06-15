@@ -377,8 +377,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
           val sym = tree.symbol
           generatedType = symInfoTK(sym)
           val hostClass = findHostClass(qualifier.tpe, sym)
-          debuglog(
-            s"Host class of $sym with qual $qualifier (${qualifier.tpe}) is $hostClass")
+          debuglog(s"Host class of $sym with qual $qualifier (${qualifier.tpe}) is $hostClass")
           val qualSafeToElide = treeInfo isQualifierSafeToElide qualifier
 
           def genLoadQualUnlessElidable() {
@@ -435,8 +434,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
         case EmptyTree => if (expectedType != UNIT) { emitZeroOf(expectedType) }
 
         case _ =>
-          abort(
-            s"Unexpected tree in genLoad: $tree/${tree.getClass} at: ${tree.pos}")
+          abort(s"Unexpected tree in genLoad: $tree/${tree.getClass} at: ${tree.pos}")
       }
 
       // emit conversion
@@ -607,8 +605,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
             case Object_isInstanceOf => false
             case Object_asInstanceOf => true
             case _ =>
-              abort(
-                s"Unexpected type application $fun[sym: ${sym.fullName}] in: $app")
+              abort(s"Unexpected type application $fun[sym: ${sym.fullName}] in: $app")
           }
 
           val Select(obj, _) = fun
@@ -633,8 +630,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 bc boolconst false
               }
             } else if (r.isPrimitive && cast) {
-              abort(
-                s"Erasure should have added an unboxing operation to prevent this cast. Tree: $app")
+              abort(s"Erasure should have added an unboxing operation to prevent this cast. Tree: $app")
             } else if (r.isPrimitive) {
               bc isInstance boxedClassOfPrimitive(r.asPrimitiveBType)
             } else {
@@ -791,13 +787,11 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                   val qualSym = findHostClass(qual.tpe, sym)
                   if (qualSym == ArrayClass) {
                     targetTypeKind = tpeTK(qual)
-                    log(
-                      s"Stored target type kind for ${sym.fullName} as $targetTypeKind")
+                    log(s"Stored target type kind for ${sym.fullName} as $targetTypeKind")
                   } else {
                     hostClass = qualSym
                     if (qual.tpe.typeSymbol != qualSym) {
-                      log(
-                        s"Precisified host class for $sym from ${qual.tpe.typeSymbol.fullName} to ${qualSym.fullName}")
+                      log(s"Precisified host class for $sym from ${qual.tpe.typeSymbol.fullName} to ${qualSym.fullName}")
                     }
                   }
 
@@ -914,8 +908,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
                 flatKeys ::= value.intValue
                 targets ::= switchBlockPoint
               case _ =>
-                abort(
-                  s"Invalid alternative in alternative pattern in Match node: $tree at: ${tree.pos}")
+                abort(s"Invalid alternative in alternative pattern in Match node: $tree at: ${tree.pos}")
             }
           case _ =>
             abort(s"Invalid pattern in Match node: $tree at: ${tree.pos}")
@@ -1090,8 +1083,7 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
               case NoSymbol =>
                 abort(s"SI-5604: Cannot use package as value: $tree")
               case s =>
-                abort(
-                  s"SI-5604: found package class where package object expected: $tree")
+                abort(s"SI-5604: found package class where package object expected: $tree")
             }
         )
       lineNumber(tree)

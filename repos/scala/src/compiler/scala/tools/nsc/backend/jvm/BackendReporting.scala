@@ -290,7 +290,8 @@ object BackendReporting {
     override def toString =
       this match {
         case IllegalAccessInstruction(_, _, _, callsiteClass, instruction) =>
-          s"The callee $calleeMethodSig contains the instruction ${AsmUtils.textify(instruction)}" +
+          s"The callee $calleeMethodSig contains the instruction ${AsmUtils
+            .textify(instruction)}" +
             s"\nthat would cause an IllegalAccessError when inlined into class $callsiteClass."
 
         case IllegalAccessCheckFailed(

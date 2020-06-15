@@ -1099,8 +1099,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           "XXX")
       case result ⇒
         val info = result.errors.head
-        fail(
-          s"Input `${header.header}` failed to parse:\n${info.summary}\n${info.detail}")
+        fail(s"Input `${header.header}` failed to parse:\n${info.summary}\n${info.detail}")
     }
 
   def remoteAddress(ip: String) = RemoteAddress(InetAddress.getByName(ip))

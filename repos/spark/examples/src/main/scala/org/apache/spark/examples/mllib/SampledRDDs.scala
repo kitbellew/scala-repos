@@ -77,8 +77,7 @@ object SampledRDDs {
 
     // Example: RDD.sample() and RDD.takeSample()
     val expectedSampleSize = (numExamples * fraction).toInt
-    println(
-      s"Sampling RDD using fraction $fraction.  Expected sample size = $expectedSampleSize.")
+    println(s"Sampling RDD using fraction $fraction.  Expected sample size = $expectedSampleSize.")
     val sampledRDD =
       examples.sample(withReplacement = true, fraction = fraction)
     println(s"  RDD.sample(): sample has ${sampledRDD.count()} examples")
@@ -100,18 +99,16 @@ object SampledRDDs {
       keyedRDD.sampleByKey(withReplacement = true, fractions = fractions)
     val keyCountsB = sampledByKeyRDD.countByKey()
     val sizeB = keyCountsB.values.sum
-    println(
-      s"  Sampled $sizeB examples using approximate stratified sampling (by label)." +
-        " ==> Approx Sample")
+    println(s"  Sampled $sizeB examples using approximate stratified sampling (by label)." +
+      " ==> Approx Sample")
 
     //  Subsample, and count examples per label in sampled data. (approximate)
     val sampledByKeyRDDExact =
       keyedRDD.sampleByKeyExact(withReplacement = true, fractions = fractions)
     val keyCountsBExact = sampledByKeyRDDExact.countByKey()
     val sizeBExact = keyCountsBExact.values.sum
-    println(
-      s"  Sampled $sizeBExact examples using exact stratified sampling (by label)." +
-        " ==> Exact Sample")
+    println(s"  Sampled $sizeBExact examples using exact stratified sampling (by label)." +
+      " ==> Exact Sample")
 
     //  Compare samples
     println(s"   \tFractions of examples with key")

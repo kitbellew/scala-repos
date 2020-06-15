@@ -208,8 +208,7 @@ class OnlinePlan[P <: Platform[P], V](tail: Producer[P, V]) {
               if (!forkedNodes.contains(p) || rootMerge) =>
             // TODO support de-duping self merges  https://github.com/twitter/summingbird/issues/237
             if (subL == subR)
-              sys.error(
-                "Online Planner doesn't support both the left and right sides of a join being the same node.")
+              sys.error("Online Planner doesn't support both the left and right sides of a join being the same node.")
             val (lMergeNodes, lSiblings) = mergeCollapse(subL)
             val (rMergeNodes, rSiblings) = mergeCollapse(subR)
             (

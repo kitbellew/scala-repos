@@ -1138,8 +1138,7 @@ class LiftSession(
                   request.createNotFound {
                     processTemplate(Empty, request, _, 404)
                   } or
-                    Full(ForbiddenResponse(
-                      "The requested page was not defined in your SiteMap, so access was blocked.  (This message is displayed in development mode only)"))
+                    Full(ForbiddenResponse("The requested page was not defined in your SiteMap, so access was blocked.  (This message is displayed in development mode only)"))
                 case _ =>
                   request.createNotFound {
                     processTemplate(Empty, request, _, 404)
@@ -2906,16 +2905,16 @@ class LiftSession(
             partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsExp.cmd, false)))
 
           case ItemMsg(guid, value) =>
-            partialUpdate(JsCmds.JsSchedule(JsRaw(
-              s"lift.sendEvent(${guid.encJs}, {'success': ${compactRender(value)}} )").cmd))
+            partialUpdate(JsCmds.JsSchedule(
+              JsRaw(s"lift.sendEvent(${guid.encJs}, {'success': ${compactRender(value)}} )").cmd))
           case DoneMsg(guid) =>
             partialUpdate(
               JsCmds.JsSchedule(
                 JsRaw(s"lift.sendEvent(${guid.encJs}, {'done': true} )").cmd))
 
           case FailMsg(guid, msg) =>
-            partialUpdate(JsCmds.JsSchedule(JsRaw(
-              s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })").cmd))
+            partialUpdate(JsCmds.JsSchedule(
+              JsRaw(s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })").cmd))
           case _ =>
         }
       }

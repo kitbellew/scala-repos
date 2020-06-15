@@ -272,12 +272,11 @@ class Partition(
         // if it is not in the ISR yet
         maybeExpandIsr(replicaId)
 
-        debug(
-          "Recorded replica %d log end offset (LEO) position %d for partition %s."
-            .format(
-              replicaId,
-              logReadResult.info.fetchOffsetMetadata.messageOffset,
-              TopicAndPartition(topic, partitionId)))
+        debug("Recorded replica %d log end offset (LEO) position %d for partition %s."
+          .format(
+            replicaId,
+            logReadResult.info.fetchOffsetMetadata.messageOffset,
+            TopicAndPartition(topic, partitionId)))
       case None =>
         throw new NotAssignedReplicaException(
           ("Leader %d failed to record follower %d's position %d since the replica" +
@@ -404,14 +403,13 @@ class Partition(
           .format(topic, partitionId, newHighWatermark))
       true
     } else {
-      debug(
-        "Skipping update high watermark since Old hw %s is larger than new hw %s for partition [%s,%d]. All leo's are %s"
-          .format(
-            oldHighWatermark,
-            newHighWatermark,
-            topic,
-            partitionId,
-            allLogEndOffsets.mkString(",")))
+      debug("Skipping update high watermark since Old hw %s is larger than new hw %s for partition [%s,%d]. All leo's are %s"
+        .format(
+          oldHighWatermark,
+          newHighWatermark,
+          topic,
+          partitionId,
+          allLogEndOffsets.mkString(",")))
       false
     }
   }
@@ -549,9 +547,8 @@ class Partition(
         "ISR updated to [%s] and zkVersion updated to [%d]"
           .format(newIsr.mkString(","), zkVersion))
     } else {
-      info(
-        "Cached zkVersion [%d] not equal to that in zookeeper, skip updating ISR"
-          .format(zkVersion))
+      info("Cached zkVersion [%d] not equal to that in zookeeper, skip updating ISR"
+        .format(zkVersion))
     }
   }
 

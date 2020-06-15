@@ -107,8 +107,8 @@ class DecoderTest extends FunSuite with MockitoSugar {
     val context = new Context
     import context._
 
-    val buffer = stringToChannelBuffer(
-      "STAT items:1:number 1\r\nSTAT items:1:age 1468\r\nITEM foo [5 b; 1322514067 s]\r\nEND\r\n")
+    val buffer =
+      stringToChannelBuffer("STAT items:1:number 1\r\nSTAT items:1:age 1468\r\nITEM foo [5 b; 1322514067 s]\r\nEND\r\n")
     decoder.decode(null, null, buffer)
     decoder.decode(null, null, buffer)
     decoder.decode(null, null, buffer)

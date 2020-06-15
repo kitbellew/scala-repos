@@ -494,8 +494,7 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     }
   }
 
-  test(
-    "allow user to disable the output directory existence checking (old Hadoop API") {
+  test("allow user to disable the output directory existence checking (old Hadoop API") {
     val sf = new SparkConf()
     sf.setAppName("test")
       .setMaster("local")
@@ -535,8 +534,7 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     }
   }
 
-  test(
-    "allow user to disable the output directory existence checking (new Hadoop API") {
+  test("allow user to disable the output directory existence checking (new Hadoop API") {
     val sf = new SparkConf()
     sf.setAppName("test")
       .setMaster("local")

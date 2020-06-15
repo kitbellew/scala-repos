@@ -161,8 +161,7 @@ class DefaultClientTest
     )
   }
 
-  test(
-    "DefaultClient statsfilter should time stats on dispatch, not on queueing") {
+  test("DefaultClient statsfilter should time stats on dispatch, not on queueing") {
     val dur = 1.second
 
     new StatsHelper {

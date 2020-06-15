@@ -337,8 +337,7 @@ class JavaCompilerSpec
           case "4" =>
             sig shouldBe DocSig(
               DocFqn("java.io", "File"),
-              Some(
-                "createTempFile(java.lang.String,java.lang.String,java.io.File)"));
+              Some("createTempFile(java.lang.String,java.lang.String,java.io.File)"));
           case "5" => sig.fqn shouldBe DocFqn("java.io", "File")
           case "6" =>
             sig shouldBe DocSig(

@@ -232,7 +232,8 @@ object SQLConf {
           val _v = valueConverter(v)
           if (!validValues.contains(_v)) {
             throw new IllegalArgumentException(
-              s"The value of $key should be one of ${validValues.mkString(", ")}, but was $v")
+              s"The value of $key should be one of ${validValues.mkString(
+                ", ")}, but was $v")
           }
           _v
         },
@@ -333,8 +334,7 @@ object SQLConf {
   val SHUFFLE_PARTITIONS = intConf(
     "spark.sql.shuffle.partitions",
     defaultValue = Some(200),
-    doc =
-      "The default number of partitions to use when shuffling data for joins or aggregations.")
+    doc = "The default number of partitions to use when shuffling data for joins or aggregations.")
 
   val SHUFFLE_TARGET_POSTSHUFFLE_INPUT_SIZE =
     longMemConf(
@@ -410,8 +410,7 @@ object SQLConf {
   val PARQUET_CACHE_METADATA = booleanConf(
     "spark.sql.parquet.cacheMetadata",
     defaultValue = Some(true),
-    doc =
-      "Turns on caching of Parquet schema metadata. Can speed up querying of static data.")
+    doc = "Turns on caching of Parquet schema metadata. Can speed up querying of static data.")
 
   val PARQUET_COMPRESSION = enumConf(
     "spark.sql.parquet.compression.codec",
@@ -496,8 +495,7 @@ object SQLConf {
   val COLUMN_NAME_OF_CORRUPT_RECORD = stringConf(
     "spark.sql.columnNameOfCorruptRecord",
     defaultValue = Some("_corrupt_record"),
-    doc =
-      "The name of internal column for storing raw/un-parsed JSON records that fail to parse."
+    doc = "The name of internal column for storing raw/un-parsed JSON records that fail to parse."
   )
 
   val BROADCAST_TIMEOUT = intConf(
@@ -641,8 +639,7 @@ object SQLConf {
     "spark.sql.parser.supportSQL11ReservedKeywords",
     defaultValue = Some(false),
     isPublic = false,
-    doc =
-      "This flag should be set to true to enable support for SQL2011 reserved keywords."
+    doc = "This flag should be set to true to enable support for SQL2011 reserved keywords."
   )
 
   val WHOLESTAGE_CODEGEN_ENABLED = booleanConf(
@@ -657,16 +654,14 @@ object SQLConf {
   val FILES_MAX_PARTITION_BYTES = longConf(
     "spark.sql.files.maxPartitionBytes",
     defaultValue = Some(128 * 1024 * 1024), // parquet.block.size
-    doc =
-      "The maximum number of bytes to pack into a single partition when reading files.",
+    doc = "The maximum number of bytes to pack into a single partition when reading files.",
     isPublic = true
   )
 
   val EXCHANGE_REUSE_ENABLED = booleanConf(
     "spark.sql.exchange.reuse",
     defaultValue = Some(true),
-    doc =
-      "When true, the planner will try to find out duplicated exchanges and re-use them.",
+    doc = "When true, the planner will try to find out duplicated exchanges and re-use them.",
     isPublic = false
   )
 
@@ -899,8 +894,7 @@ class SQLConf
 
   private def setConfWithCheck(key: String, value: String): Unit = {
     if (key.startsWith("spark.") && !key.startsWith("spark.sql.")) {
-      logWarning(
-        s"Attempt to set non-Spark SQL config in SQLConf: key = $key, value = $value")
+      logWarning(s"Attempt to set non-Spark SQL config in SQLConf: key = $key, value = $value")
     }
     settings.put(key, value)
   }

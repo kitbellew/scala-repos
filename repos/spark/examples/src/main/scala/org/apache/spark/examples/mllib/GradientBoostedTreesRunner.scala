@@ -54,8 +54,8 @@ object GradientBoostedTreesRunner {
     val parser = new OptionParser[Params]("GradientBoostedTrees") {
       head("GradientBoostedTrees: an example decision tree app.")
       opt[String]("algo")
-        .text(
-          s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
+        .text(s"algorithm (${Algo.values.mkString(
+          ",")}), default: ${defaultParams.algo}")
         .action((x, c) => c.copy(algo = x))
       opt[Int]("maxDepth")
         .text(s"max depth of the tree, default: ${defaultParams.maxDepth}")

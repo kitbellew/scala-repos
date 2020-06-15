@@ -123,8 +123,7 @@ class ParameterDirectivesExamplesSpec
           case city :: Nil =>
             complete(s"The color is '$color' and the city is $city.")
           case multiple =>
-            complete(
-              s"The color is '$color' and the cities are ${multiple.mkString(", ")}.")
+            complete(s"The color is '$color' and the cities are ${multiple.mkString(", ")}.")
         }
       }
 
@@ -151,8 +150,7 @@ class ParameterDirectivesExamplesSpec
           case distance :: Nil =>
             complete(s"The color is '$color' and the distance is $distance.")
           case multiple =>
-            complete(
-              s"The color is '$color' and the distances are ${multiple.mkString(", ")}.")
+            complete(s"The color is '$color' and the distances are ${multiple.mkString(", ")}.")
         }
       }
 

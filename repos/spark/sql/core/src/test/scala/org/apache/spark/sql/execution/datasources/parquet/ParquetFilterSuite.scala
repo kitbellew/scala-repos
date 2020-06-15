@@ -382,8 +382,7 @@ class ParquetFilterSuite
     }
   }
 
-  test(
-    "SPARK-6554: don't push down predicates which reference partition columns") {
+  test("SPARK-6554: don't push down predicates which reference partition columns") {
     import testImplicits._
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
@@ -400,8 +399,7 @@ class ParquetFilterSuite
     }
   }
 
-  test(
-    "SPARK-10829: Filter combine partition key and attribute doesn't work in DataSource scan") {
+  test("SPARK-10829: Filter combine partition key and attribute doesn't work in DataSource scan") {
     import testImplicits._
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
@@ -420,8 +418,7 @@ class ParquetFilterSuite
     }
   }
 
-  test(
-    "SPARK-12231: test the filter and empty project in partitioned DataSource scan") {
+  test("SPARK-12231: test the filter and empty project in partitioned DataSource scan") {
     import testImplicits._
 
     withSQLConf(SQLConf.PARQUET_FILTER_PUSHDOWN_ENABLED.key -> "true") {
@@ -472,8 +469,7 @@ class ParquetFilterSuite
     }
   }
 
-  test(
-    "SPARK-11103: Filter applied on merged Parquet schema with new column fails") {
+  test("SPARK-11103: Filter applied on merged Parquet schema with new column fails") {
     import testImplicits._
 
     withSQLConf(

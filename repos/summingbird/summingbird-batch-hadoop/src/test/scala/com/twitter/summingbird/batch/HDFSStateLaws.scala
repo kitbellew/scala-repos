@@ -125,8 +125,7 @@ class HDFSStateLaws extends WordSpec {
     either match {
       case Right(t) => t.succeed
       case Left(t) =>
-        sys.error(
-          "PreparedState didn't accept its proposed Interval! failed state: " + t)
+        sys.error("PreparedState didn't accept its proposed Interval! failed state: " + t)
     }
   }
 

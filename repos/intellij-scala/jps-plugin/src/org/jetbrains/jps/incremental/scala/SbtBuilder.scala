@@ -261,7 +261,6 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
       client: Client): Unit = {
     val settings = projectSettings(context).getCompilerSettings(chunk)
     val options = settings.getSbtIncrementalOptions
-    client.debug(
-      s"Custom sbt incremental compiler options for ${chunk.getPresentableShortName}: ${options.nonDefault}")
+    client.debug(s"Custom sbt incremental compiler options for ${chunk.getPresentableShortName}: ${options.nonDefault}")
   }
 }

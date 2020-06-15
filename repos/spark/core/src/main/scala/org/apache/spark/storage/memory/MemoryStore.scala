@@ -65,10 +65,9 @@ private[spark] class MemoryStore(
   private def maxMemory: Long = memoryManager.maxStorageMemory
 
   if (maxMemory < unrollMemoryThreshold) {
-    logWarning(
-      s"Max memory ${Utils.bytesToString(maxMemory)} is less than the initial memory " +
-        s"threshold ${Utils.bytesToString(unrollMemoryThreshold)} needed to store a block in " +
-        s"memory. Please configure Spark with more memory.")
+    logWarning(s"Max memory ${Utils.bytesToString(maxMemory)} is less than the initial memory " +
+      s"threshold ${Utils.bytesToString(unrollMemoryThreshold)} needed to store a block in " +
+      s"memory. Please configure Spark with more memory.")
   }
 
   logInfo(

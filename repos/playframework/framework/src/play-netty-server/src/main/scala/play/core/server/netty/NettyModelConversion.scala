@@ -246,8 +246,7 @@ private[server] class NettyModelConversion(
               logger.info(
                 s"Manual Content-Length header, ignoring manual header.")
             } else {
-              logger.warn(
-                s"Content-Length header was set manually in the header ($manualContentLength) but is not the same as actual content length ($contentLength).")
+              logger.warn(s"Content-Length header was set manually in the header ($manualContentLength) but is not the same as actual content length ($contentLength).")
             }
           }
           HttpHeaders.setContentLength(response, contentLength)
@@ -255,8 +254,7 @@ private[server] class NettyModelConversion(
       }
       result.body.contentType.foreach { contentType =>
         if (response.headers().contains(CONTENT_TYPE)) {
-          logger.warn(
-            s"Content-Type set both in header (${response.headers().get(CONTENT_TYPE)}) and attached to entity ($contentType), ignoring content type from entity. To remove this warning, use Result.as(...) to set the content type, rather than setting the header manually.")
+          logger.warn(s"Content-Type set both in header (${response.headers().get(CONTENT_TYPE)}) and attached to entity ($contentType), ignoring content type from entity. To remove this warning, use Result.as(...) to set the content type, rather than setting the header manually.")
         } else {
           response.headers().add(CONTENT_TYPE, contentType)
         }

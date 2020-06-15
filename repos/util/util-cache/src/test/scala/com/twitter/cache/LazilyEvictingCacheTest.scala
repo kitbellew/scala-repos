@@ -55,8 +55,7 @@ class LazilyEvictingCacheTest extends FunSuite with MockitoSugar {
     verify(cache, never).evict("key", p)
   }
 
-  test(
-    "LazilyEvictingCache getOrElseUpdate doesn't mutate previously set values") {
+  test("LazilyEvictingCache getOrElseUpdate doesn't mutate previously set values") {
     val cache = new LoadingFutureCache(
       CacheBuilder
         .newBuilder()

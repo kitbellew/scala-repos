@@ -433,8 +433,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
       input.map(pair => Row(pair._2)))
 
     checkAnswer(
-      sql(
-        "select abs(0), abs(-1), abs(123), abs(-9223372036854775807), abs(9223372036854775807)"),
+      sql("select abs(0), abs(-1), abs(123), abs(-9223372036854775807), abs(9223372036854775807)"),
       Row(0, 1, 123, 9223372036854775807L, 9223372036854775807L)
     )
 

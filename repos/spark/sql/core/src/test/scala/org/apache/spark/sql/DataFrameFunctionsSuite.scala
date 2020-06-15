@@ -48,8 +48,7 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
   }
 
   // Turn this on once we add a rule to the analyzer to throw a friendly exception
-  ignore(
-    "array: throw exception if putting columns of different types into an array") {
+  ignore("array: throw exception if putting columns of different types into an array") {
     val df = Seq((0, "str")).toDF("a", "b")
     intercept[AnalysisException] {
       df.select(array("a", "b"))

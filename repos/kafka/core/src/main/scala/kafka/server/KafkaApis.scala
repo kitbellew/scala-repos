@@ -119,13 +119,12 @@ class KafkaApis(
     */
   def handle(request: RequestChannel.Request) {
     try {
-      trace(
-        "Handling request:%s from connection %s;securityProtocol:%s,principal:%s"
-          .format(
-            request.requestObj,
-            request.connectionId,
-            request.securityProtocol,
-            request.session.principal))
+      trace("Handling request:%s from connection %s;securityProtocol:%s,principal:%s"
+        .format(
+          request.requestObj,
+          request.connectionId,
+          request.securityProtocol,
+          request.session.principal))
       ApiKeys.forId(request.requestId) match {
         case ApiKeys.PRODUCE             => handleProducerRequest(request)
         case ApiKeys.FETCH               => handleFetchRequest(request)
@@ -362,9 +361,8 @@ class KafkaApis(
         mergedCommitStatus.foreach {
           case (topicPartition, errorCode) =>
             if (errorCode != Errors.NONE.code) {
-              debug(
-                s"Offset commit request with correlation id ${header.correlationId} from client ${header.clientId} " +
-                  s"on partition $topicPartition failed due to ${Errors.forCode(errorCode).exceptionName}")
+              debug(s"Offset commit request with correlation id ${header.correlationId} from client ${header.clientId} " +
+                s"on partition $topicPartition failed due to ${Errors.forCode(errorCode).exceptionName}")
             }
         }
         val combinedCommitStatus = mergedCommitStatus.mapValues(
@@ -489,13 +487,12 @@ class KafkaApis(
         case (topicPartition, status) =>
           if (status.errorCode != Errors.NONE.code) {
             errorInResponse = true
-            debug(
-              "Produce request with correlation id %d from client %s on partition %s failed due to %s"
-                .format(
-                  request.header.correlationId,
-                  request.header.clientId,
-                  topicPartition,
-                  Errors.forCode(status.errorCode).exceptionName))
+            debug("Produce request with correlation id %d from client %s on partition %s failed due to %s"
+              .format(
+                request.header.correlationId,
+                request.header.clientId,
+                topicPartition,
+                Errors.forCode(status.errorCode).exceptionName))
           }
       }
 
@@ -628,8 +625,7 @@ class KafkaApis(
                     .exists(_ > Message.MagicValue_V0) &&
                   !data.messages.isMagicValueInAllWrapperMessages(
                     Message.MagicValue_V0)) {
-                  trace(
-                    s"Down converting message to V0 for fetch request from ${fetchRequest.clientId}")
+                  trace(s"Down converting message to V0 for fetch request from ${fetchRequest.clientId}")
                   new FetchResponsePartitionData(
                     data.error,
                     data.hw,
@@ -648,9 +644,10 @@ class KafkaApis(
       mergedPartitionData.foreach {
         case (topicAndPartition, data) =>
           if (data.error != Errors.NONE.code)
-            debug(
-              s"Fetch request with correlation id ${fetchRequest.correlationId} from client ${fetchRequest.clientId} " +
-                s"on partition $topicAndPartition failed due to ${Errors.forCode(data.error).exceptionName}")
+            debug(s"Fetch request with correlation id ${fetchRequest.correlationId} from client ${fetchRequest.clientId} " +
+              s"on partition $topicAndPartition failed due to ${Errors
+                .forCode(data.error)
+                .exceptionName}")
           // record the bytes out metrics only when the response is being sent
           BrokerTopicStats
             .getBrokerTopicStats(topicAndPartition.topic)
@@ -765,18 +762,16 @@ class KafkaApis(
         // NOTE: UnknownTopicOrPartitionException and NotLeaderForPartitionException are special cased since these error messages
         // are typically transient and there is no value in logging the entire stack trace for the same
         case utpe: UnknownTopicOrPartitionException =>
-          debug(
-            "Offset request with correlation id %d from client %s on partition %s failed due to %s"
-              .format(correlationId, clientId, topicPartition, utpe.getMessage))
+          debug("Offset request with correlation id %d from client %s on partition %s failed due to %s"
+            .format(correlationId, clientId, topicPartition, utpe.getMessage))
           (
             topicPartition,
             new ListOffsetResponse.PartitionData(
               Errors.forException(utpe).code,
               List[JLong]().asJava))
         case nle: NotLeaderForPartitionException =>
-          debug(
-            "Offset request with correlation id %d from client %s on partition %s failed due to %s"
-              .format(correlationId, clientId, topicPartition, nle.getMessage))
+          debug("Offset request with correlation id %d from client %s on partition %s failed due to %s"
+            .format(correlationId, clientId, topicPartition, nle.getMessage))
           (
             topicPartition,
             new ListOffsetResponse.PartitionData(
@@ -880,9 +875,8 @@ class KafkaApis(
         replicationFactor,
         properties,
         RackAwareMode.Safe)
-      info(
-        "Auto creation of topic %s with %d partitions and replication factor %d is successful"
-          .format(topic, numPartitions, replicationFactor))
+      info("Auto creation of topic %s with %d partitions and replication factor %d is successful"
+        .format(topic, numPartitions, replicationFactor))
       new MetadataResponse.TopicMetadata(
         Errors.LEADER_NOT_AVAILABLE,
         topic,
@@ -1004,13 +998,12 @@ class KafkaApis(
 
     val brokers = metadataCache.getAliveBrokers
 
-    trace(
-      "Sending topic metadata %s and brokers %s for correlation id %d to client %s"
-        .format(
-          topicMetadata.mkString(","),
-          brokers.mkString(","),
-          request.header.correlationId,
-          request.header.clientId))
+    trace("Sending topic metadata %s and brokers %s for correlation id %d to client %s"
+      .format(
+        topicMetadata.mkString(","),
+        brokers.mkString(","),
+        request.header.correlationId,
+        request.header.clientId))
 
     val responseHeader = new ResponseHeader(request.header.correlationId)
     val responseBody = new MetadataResponse(
@@ -1118,8 +1111,7 @@ class KafkaApis(
         }
       }
 
-    trace(
-      s"Sending offset fetch response $offsetFetchResponse for correlation id ${header.correlationId} to client ${header.clientId}.")
+    trace(s"Sending offset fetch response $offsetFetchResponse for correlation id ${header.correlationId} to client ${header.clientId}.")
     requestChannel.sendResponse(
       new Response(
         request,

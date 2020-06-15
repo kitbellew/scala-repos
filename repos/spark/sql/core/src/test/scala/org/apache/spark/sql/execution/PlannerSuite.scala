@@ -56,8 +56,7 @@ class PlannerSuite extends SharedSQLContext {
     import planner._
     val plannedOption = Aggregation(query).headOption
     val planned =
-      plannedOption.getOrElse(fail(
-        s"Could query play aggregation query $query. Is it an aggregation query?"))
+      plannedOption.getOrElse(fail(s"Could query play aggregation query $query. Is it an aggregation query?"))
     val aggregations = planned.collect {
       case n if n.nodeName contains "Aggregate" => n
     }
@@ -91,8 +90,7 @@ class PlannerSuite extends SharedSQLContext {
     testPartialAggregationPlan(query)
   }
 
-  test(
-    "sizeInBytes estimation of limit operator for broadcast hash join optimization") {
+  test("sizeInBytes estimation of limit operator for broadcast hash join optimization") {
     def checkPlan(fieldTypes: Seq[DataType]): Unit = {
       withTempTable("testLimit") {
         val fields = fieldTypes.zipWithIndex.map {
@@ -215,8 +213,7 @@ class PlannerSuite extends SharedSQLContext {
     assert(planned.output === testData.select('value, 'key).logicalPlan.output)
   }
 
-  test(
-    "terminal limits that are not handled by TakeOrderedAndProject should use CollectLimit") {
+  test("terminal limits that are not handled by TakeOrderedAndProject should use CollectLimit") {
     val query = testData.select('value).limit(2)
     val planned = query.queryExecution.sparkPlan
     assert(planned.isInstanceOf[CollectLimit])
@@ -317,8 +314,7 @@ class PlannerSuite extends SharedSQLContext {
     }
   }
 
-  test(
-    "EnsureRequirements with incompatible child partitionings which satisfy distribution") {
+  test("EnsureRequirements with incompatible child partitionings which satisfy distribution") {
     // Consider an operator that requires inputs that are clustered by two expressions (e.g.
     // sort merge join where there are multiple columns in the equi-join condition)
     val clusteringA = Literal(1) :: Nil
@@ -350,8 +346,7 @@ class PlannerSuite extends SharedSQLContext {
     }
   }
 
-  test(
-    "EnsureRequirements with child partitionings with different numbers of output partitions") {
+  test("EnsureRequirements with child partitionings with different numbers of output partitions") {
     // This is similar to the previous test, except it checks that partitionings are not compatible
     // unless they produce the same number of partitions.
     val clustering = Literal(1) :: Nil
@@ -369,8 +364,7 @@ class PlannerSuite extends SharedSQLContext {
     assertDistributionRequirementsAreSatisfied(outputPlan)
   }
 
-  test(
-    "EnsureRequirements with compatible child partitionings that do not satisfy distribution") {
+  test("EnsureRequirements with compatible child partitionings that do not satisfy distribution") {
     val distribution = ClusteredDistribution(Literal(1) :: Nil)
     // The left and right inputs have compatible partitionings but they do not satisfy the
     // distribution because they are clustered on different columns. Thus, we need to shuffle.
@@ -392,8 +386,7 @@ class PlannerSuite extends SharedSQLContext {
     }
   }
 
-  test(
-    "EnsureRequirements with compatible child partitionings that satisfy distribution") {
+  test("EnsureRequirements with compatible child partitionings that satisfy distribution") {
     // In this case, all requirements are satisfied and no exchange should be added.
     val distribution = ClusteredDistribution(Literal(1) :: Nil)
     val childPartitioning = HashPartitioning(Literal(1) :: Nil, 5)
@@ -415,8 +408,7 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   // This is a regression test for SPARK-9703
-  test(
-    "EnsureRequirements should not repartition if only ordering requirement is unsatisfied") {
+  test("EnsureRequirements should not repartition if only ordering requirement is unsatisfied") {
     // Consider an operator that imposes both output distribution and  ordering requirements on its
     // children, such as sort sort merge join. If the distribution requirements are satisfied but
     // the output ordering requirements are unsatisfied, then the planner should only add sorts and
@@ -456,8 +448,7 @@ class PlannerSuite extends SharedSQLContext {
     }
   }
 
-  test(
-    "EnsureRequirements skips sort when required ordering is prefix of existing ordering") {
+  test("EnsureRequirements skips sort when required ordering is prefix of existing ordering") {
     val orderingA = SortOrder(Literal(1), Ascending)
     val orderingB = SortOrder(Literal(2), Ascending)
     assert(orderingA != orderingB)
@@ -476,8 +467,7 @@ class PlannerSuite extends SharedSQLContext {
   }
 
   // This is a regression test for SPARK-11135
-  test(
-    "EnsureRequirements adds sort when required ordering isn't a prefix of existing ordering") {
+  test("EnsureRequirements adds sort when required ordering isn't a prefix of existing ordering") {
     val orderingA = SortOrder(Literal(1), Ascending)
     val orderingB = SortOrder(Literal(2), Ascending)
     assert(orderingA != orderingB)
@@ -494,8 +484,7 @@ class PlannerSuite extends SharedSQLContext {
     }
   }
 
-  test(
-    "EnsureRequirements eliminates Exchange if child has Exchange with same partitioning") {
+  test("EnsureRequirements eliminates Exchange if child has Exchange with same partitioning") {
     val distribution = ClusteredDistribution(Literal(1) :: Nil)
     val finalPartitioning = HashPartitioning(Literal(1) :: Nil, 5)
     val childPartitioning = HashPartitioning(Literal(2) :: Nil, 5)
@@ -518,8 +507,7 @@ class PlannerSuite extends SharedSQLContext {
     }
   }
 
-  test(
-    "EnsureRequirements does not eliminate Exchange with different partitioning") {
+  test("EnsureRequirements does not eliminate Exchange with different partitioning") {
     val distribution = ClusteredDistribution(Literal(1) :: Nil)
     // Number of partitions differ
     val finalPartitioning = HashPartitioning(Literal(1) :: Nil, 8)

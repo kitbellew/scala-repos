@@ -77,9 +77,7 @@ private[camel] class DefaultCamel(val system: ExtendedActorSystem)
       try template.stop()
       catch {
         case NonFatal(e) ⇒
-          log.debug(
-            "Swallowing non-fatal exception [{}] on stopping Camel producer template",
-            e)
+          log.debug("Swallowing non-fatal exception [{}] on stopping Camel producer template", e)
       }
     }
     log.debug(

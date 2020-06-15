@@ -233,8 +233,7 @@ private[hive] class SparkExecuteStatementOperation(
       result.queryExecution.logical match {
         case SetCommand(Some((SQLConf.THRIFTSERVER_POOL.key, Some(value)))) =>
           sessionToActivePool(parentSession.getSessionHandle) = value
-          logInfo(
-            s"Setting spark.scheduler.pool=$value for future statements in this session.")
+          logInfo(s"Setting spark.scheduler.pool=$value for future statements in this session.")
         case _ =>
       }
       HiveThriftServer2.listener.onStatementParsed(

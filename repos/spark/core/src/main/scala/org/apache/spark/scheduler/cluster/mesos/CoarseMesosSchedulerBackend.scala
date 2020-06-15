@@ -322,9 +322,8 @@ private[spark] class CoarseMesosSchedulerBackend(
         .setRefuseSeconds(rejectOfferDurationForUnmetConstraints)
         .build()
 
-      logDebug(
-        s"Declining offer: $id with attributes: $offerAttributes mem: $mem cpu: $cpus"
-          + s" for $rejectOfferDurationForUnmetConstraints seconds")
+      logDebug(s"Declining offer: $id with attributes: $offerAttributes mem: $mem cpu: $cpus"
+        + s" for $rejectOfferDurationForUnmetConstraints seconds")
 
       d.declineOffer(offer.getId, filters)
     }
@@ -358,8 +357,7 @@ private[spark] class CoarseMesosSchedulerBackend(
           val mem = getResource(task.getResourcesList, "mem")
           val cpus = getResource(task.getResourcesList, "cpus")
 
-          logDebug(
-            s"Launching Mesos task: ${taskId.getValue} with mem: $mem cpu: $cpus.")
+          logDebug(s"Launching Mesos task: ${taskId.getValue} with mem: $mem cpu: $cpus.")
         }
 
         d.launchTasks(Collections.singleton(offer.getId), offerTasks.asJava)

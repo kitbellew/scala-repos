@@ -71,9 +71,8 @@ private[spark] class SortShuffleManager(conf: SparkConf)
     with Logging {
 
   if (!conf.getBoolean("spark.shuffle.spill", true)) {
-    logWarning(
-      "spark.shuffle.spill was set to false, but this configuration is ignored as of Spark 1.6+." +
-        " Shuffle will continue to spill to disk when necessary.")
+    logWarning("spark.shuffle.spill was set to false, but this configuration is ignored as of Spark 1.6+." +
+      " Shuffle will continue to spill to disk when necessary.")
   }
 
   /**
@@ -203,18 +202,15 @@ private[spark] object SortShuffleManager extends Logging {
     val shufId = dependency.shuffleId
     val numPartitions = dependency.partitioner.numPartitions
     if (!dependency.serializer.supportsRelocationOfSerializedObjects) {
-      log.debug(
-        s"Can't use serialized shuffle for shuffle $shufId because the serializer, " +
-          s"${dependency.serializer.getClass.getName}, does not support object relocation")
+      log.debug(s"Can't use serialized shuffle for shuffle $shufId because the serializer, " +
+        s"${dependency.serializer.getClass.getName}, does not support object relocation")
       false
     } else if (dependency.aggregator.isDefined) {
-      log.debug(
-        s"Can't use serialized shuffle for shuffle $shufId because an aggregator is defined")
+      log.debug(s"Can't use serialized shuffle for shuffle $shufId because an aggregator is defined")
       false
     } else if (numPartitions > MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE) {
-      log.debug(
-        s"Can't use serialized shuffle for shuffle $shufId because it has more than " +
-          s"$MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE partitions")
+      log.debug(s"Can't use serialized shuffle for shuffle $shufId because it has more than " +
+        s"$MAX_SHUFFLE_OUTPUT_PARTITIONS_FOR_SERIALIZED_MODE partitions")
       false
     } else {
       log.debug(s"Can use serialized shuffle for shuffle $shufId")

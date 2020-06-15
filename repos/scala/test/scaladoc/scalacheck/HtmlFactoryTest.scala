@@ -201,8 +201,7 @@ object Test extends Properties("HtmlFactory") {
           "<span title=\"gt4s: $plus$colon\" class=\"name\">+:</span>") &&
         html.contains(
           "<span title=\"gt4s: $minus$colon\" class=\"name\">-:</span>") &&
-        html.contains(
-          """<span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>""")
+        html.contains("""<span class="params">(<span name="n">n: <span class="extype" name="scala.Int">Int</span></span>)</span><span class="result">: <span class="extype" name="scala.Int">Int</span></span>""")
       }
       case _ => false
     }
@@ -395,20 +394,16 @@ object Test extends Properties("HtmlFactory") {
     "SI-5054: Use cases should keep their flags - final should not be lost") =
     checkText("SI_5054_q2.scala")((None, """final def test(): Int""", true))
 
-  property(
-    "SI-5054: Use cases should keep their flags - implicit should not be lost") =
+  property("SI-5054: Use cases should keep their flags - implicit should not be lost") =
     checkText("SI_5054_q3.scala")((None, """implicit def test(): Int""", true))
 
-  property(
-    "SI-5054: Use cases should keep their flags - real abstract should not be lost") =
+  property("SI-5054: Use cases should keep their flags - real abstract should not be lost") =
     checkText("SI_5054_q4.scala")((None, """abstract def test(): Int""", true))
 
-  property(
-    "SI-5054: Use cases should keep their flags - traits should not be affected") =
+  property("SI-5054: Use cases should keep their flags - traits should not be affected") =
     checkText("SI_5054_q5.scala")((None, """def test(): Int""", true))
 
-  property(
-    "SI-5054: Use cases should keep their flags - traits should not be affected") =
+  property("SI-5054: Use cases should keep their flags - traits should not be affected") =
     checkText("SI_5054_q6.scala")((None, """abstract def test(): Int""", true))
 
   property("SI-5054: Use case individual signature test") =

@@ -141,9 +141,8 @@ object GetOffsetShell {
               println(
                 "%s:%d:%s".format(topic, partitionId, offsets.mkString(",")))
             case None =>
-              System.err.println(
-                "Error: partition %d does not have a leader. Skip getting offsets"
-                  .format(partitionId))
+              System.err.println("Error: partition %d does not have a leader. Skip getting offsets"
+                .format(partitionId))
           }
         case None =>
           System.err.println(

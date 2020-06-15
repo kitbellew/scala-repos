@@ -269,8 +269,7 @@ class ScalaSigPrinter(stream: PrintStream, printPrivates: Boolean) {
         printMethodType(m.infoType, true)(
           {
             if (!m.isDeferred)
-              print(
-                " = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
+              print(" = { /* compiled code */ }" /* Print body only for non-abstract methods */ )
           }
         )
     }

@@ -201,8 +201,7 @@ trait Typers
             if (res.isSuccess) {
               argBuff += mkArg(param.name, res.tree)
             } else {
-              mkArg =
-                gen.mkNamedArg // don't pass the default argument (if any) here, but start emitting named arguments for the following args
+              mkArg = gen.mkNamedArg // don't pass the default argument (if any) here, but start emitting named arguments for the following args
               if (!param.hasDefault && !paramFailed) {
                 context.reporter.reportFirstDivergentError(fun, param, paramTp)(
                   context)
@@ -1597,8 +1596,7 @@ trait Typers
                 implRestriction(tree, "nested object")
               //see https://issues.scala-lang.org/browse/SI-6444
               //see https://issues.scala-lang.org/browse/SI-6463
-              case cd: ClassDef
-                  if !cd.symbol.isAnonymousClass => // Don't warn about partial functions, etc. SI-7571
+              case cd: ClassDef if !cd.symbol.isAnonymousClass => // Don't warn about partial functions, etc. SI-7571
                 implRestriction(
                   tree,
                   "nested class"
@@ -1799,8 +1797,7 @@ trait Typers
             case EmptyTree =>
               MissingTypeArgumentsParentTpeError(supertpt); supertpt
             case tpt =>
-              TypeTree(
-                tpt.tpe) setPos supertpt.pos // SI-7224: don't .focus positions of the TypeTree of a parent that exists in source
+              TypeTree(tpt.tpe) setPos supertpt.pos // SI-7224: don't .focus positions of the TypeTree of a parent that exists in source
           }
         }
 
@@ -2397,8 +2394,7 @@ trait Typers
         clazz: Symbol,
         vparamss: List[List[ValDef]],
         rhs: Tree) {
-      debuglog(
-        s"computing param aliases for $clazz:${clazz.primaryConstructor.tpe}:$rhs")
+      debuglog(s"computing param aliases for $clazz:${clazz.primaryConstructor.tpe}:$rhs")
       val pending = ListBuffer[AbsTypeError]()
 
       // !!! This method is redundant with other, less buggy ones.
@@ -2561,8 +2557,7 @@ trait Typers
           def checkAbstract(tp0: Type, what: String): Boolean = {
             def check(sym: Symbol): Boolean =
               !sym.isAbstractType || {
-                log(
-                  s"""checking $tp0 in refinement$parentString at ${meth.owner.owner.fullLocationString}""")
+                log(s"""checking $tp0 in refinement$parentString at ${meth.owner.owner.fullLocationString}""")
                 ((!sym.hasTransOwner(meth.owner) && failStruct(
                   paramPos,
                   "an abstract type defined outside that refinement",
@@ -2886,8 +2881,7 @@ trait Typers
         // but not in real life (i.e., now that's we've reset the method's type skolems'
         //   infos back to their pre-GADT-constraint state)
         if (isFullyDefined(pt) && !(body1.tpe <:< pt)) {
-          log(
-            s"Adding cast to pattern because ${body1.tpe} does not conform to expected type $pt")
+          log(s"Adding cast to pattern because ${body1.tpe} does not conform to expected type $pt")
           body1 = typedPos(body1.pos)(gen.mkCast(body1, pt.dealiasWiden))
         }
       }
@@ -3392,8 +3386,9 @@ trait Typers
               upper = false,
               lubDepth(sam.info :: Nil))
 
-            debuglog(
-              s"sam infer: $samClassTp --> ${appliedType(samTyCon, targs)} by $actualSamType <:< $expectedSamType --> $targs for $tparams")
+            debuglog(s"sam infer: $samClassTp --> ${appliedType(
+              samTyCon,
+              targs)} by $actualSamType <:< $expectedSamType --> $targs for $tparams")
 
             // a fully defined samClassTp
             appliedType(samTyCon, targs)
@@ -4650,8 +4645,7 @@ trait Typers
               atPos(tree.pos)(
                 ExistentialTypeTree(tpt.original, tree.whereClauses))
             case _ => {
-              debuglog(
-                s"cannot reconstruct the original for $tree, because $tpt1 is not a TypeTree")
+              debuglog(s"cannot reconstruct the original for $tree, because $tpt1 is not a TypeTree")
               tree
             }
           }

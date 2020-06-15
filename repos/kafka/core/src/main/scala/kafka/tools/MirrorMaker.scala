@@ -221,13 +221,11 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       val useNewConsumer = options.has(useNewConsumerOpt)
       if (useNewConsumer) {
         if (options.has(blacklistOpt)) {
-          error(
-            "blacklist can not be used when using new consumer in mirror maker. Use whitelist instead.")
+          error("blacklist can not be used when using new consumer in mirror maker. Use whitelist instead.")
           System.exit(1)
         }
         if (!options.has(whitelistOpt)) {
-          error(
-            "whitelist must be specified when using new consumer in mirror maker.")
+          error("whitelist must be specified when using new consumer in mirror maker.")
           System.exit(1)
         }
       } else {
@@ -315,22 +313,20 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
               options.valueOf(rebalanceListenerArgsOpt)
             if (rebalanceListenerArgs != null) {
               Some(
-                CoreUtils.createObject[
-                  org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
+                CoreUtils.createObject[org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
                   customRebalanceListenerClass,
                   rebalanceListenerArgs))
             } else {
               Some(
-                CoreUtils.createObject[
-                  org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
+                CoreUtils.createObject[org.apache.kafka.clients.consumer.ConsumerRebalanceListener](
                   customRebalanceListenerClass))
             }
           } else {
             None
           }
         }
-        if (customRebalanceListener.exists(!_.isInstanceOf[
-            org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
+        if (customRebalanceListener.exists(
+            !_.isInstanceOf[org.apache.kafka.clients.consumer.ConsumerRebalanceListener]))
           throw new IllegalArgumentException(
             "The rebalance listener should be an instance of" +
               "org.apache.kafka.clients.consumer.ConsumerRebalanceListner")
@@ -488,9 +484,8 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       propertyName,
       Option(propertyValue).getOrElse(defaultValue))
     if (properties.getProperty(propertyName) != defaultValue)
-      info(
-        "Property %s is overridden to %s - data loss or message reordering is possible."
-          .format(propertyName, propertyValue))
+      info("Property %s is overridden to %s - data loss or message reordering is possible."
+        .format(propertyName, propertyValue))
   }
 
   class MirrorMakerThread(
@@ -548,8 +543,7 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
         info("Mirror maker thread stopped")
         // if it exits accidentally, stop the entire mirror maker
         if (!isShuttingdown.get()) {
-          fatal(
-            "Mirror maker thread exited abnormally, stopping the whole mirror maker.")
+          fatal("Mirror maker thread exited abnormally, stopping the whole mirror maker.")
           System.exit(-1)
         }
       }

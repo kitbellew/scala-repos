@@ -23,8 +23,7 @@ class CumulativeGaugeTest extends FunSuite {
     assert(1 == gauge.numRegisters.get)
   }
 
-  test(
-    "a CumulativeGauge with size = 1 should deregister when all gauges are removed") {
+  test("a CumulativeGauge with size = 1 should deregister when all gauges are removed") {
     val gauge = new TestGauge()
     val added = gauge.addGauge { 1.0f }
     assert(0 == gauge.numDeregisters.get)
@@ -33,8 +32,7 @@ class CumulativeGaugeTest extends FunSuite {
     assert(1 == gauge.numDeregisters.get)
   }
 
-  test(
-    "a CumulativeGauge with size = 1 should not deregister after a System.gc when there are still valid references to the gauge") {
+  test("a CumulativeGauge with size = 1 should not deregister after a System.gc when there are still valid references to the gauge") {
     val gauge = new TestGauge()
     assert(0 == gauge.numDeregisters.get)
     val added = gauge.addGauge { 1.0f }
@@ -46,8 +44,7 @@ class CumulativeGaugeTest extends FunSuite {
     assert(0 == gauge.numDeregisters.get)
   }
 
-  test(
-    "a CumulativeGauge with size = 1 should deregister after a System.gc when no references are held onto") {
+  test("a CumulativeGauge with size = 1 should deregister after a System.gc when no references are held onto") {
     val gauge = new TestGauge()
     var added = gauge.addGauge { 1.0f }
     assert(0 == gauge.numDeregisters.get)

@@ -122,8 +122,7 @@ class SecurityServiceHandlers(
               } else {
                 Promise successful badRequest(
                   "Error creating new API key.",
-                  Some(
-                    "Requestor lacks permission to assign given grants to API key"))
+                  Some("Requestor lacks permission to assign given grants to API key"))
               }
             }
           }
@@ -200,8 +199,8 @@ class SecurityServiceHandlers(
         }
       }
 
-    val metadata = DescriptionMetadata(
-      "Returns the set of grants associated with the API key resource specified by the URL path.")
+    val metadata =
+      DescriptionMetadata("Returns the set of grants associated with the API key resource specified by the URL path.")
   }
 
   object CreateAPIKeyGrantHandler
@@ -267,8 +266,8 @@ class SecurityServiceHandlers(
         }
       }
 
-    val metadata = DescriptionMetadata(
-      "Deletes the grant resource specified by the URL path from the API key resource specified by the URL path.")
+    val metadata =
+      DescriptionMetadata("Deletes the grant resource specified by the URL path from the API key resource specified by the URL path.")
   }
 
   object ReadGrantsHandler
@@ -313,8 +312,8 @@ class SecurityServiceHandlers(
 
     protected val missingContentMessage = "Missing grant request body."
 
-    val metadata = DescriptionMetadata(
-      "Creates a new grant derived from permissions conferred by the grants of the authorizing API key.")
+    val metadata =
+      DescriptionMetadata("Creates a new grant derived from permissions conferred by the grants of the authorizing API key.")
   }
 
   object ReadGrantDetailsHandler
@@ -350,8 +349,8 @@ class SecurityServiceHandlers(
         }
       }
 
-    val metadata = DescriptionMetadata(
-      "Returns the set of child grants derived from the grant resource specified in the request URL.")
+    val metadata =
+      DescriptionMetadata("Returns the set of child grants derived from the grant resource specified in the request URL.")
   }
 
   object CreateGrantChildHandler
@@ -399,8 +398,8 @@ class SecurityServiceHandlers(
         } yield response.toEither.merge
       }
 
-    val metadata = DescriptionMetadata(
-      "Creates a new grant as a child of the grant resource specified in the request URL, and deriving its permissions therefrom.")
+    val metadata =
+      DescriptionMetadata("Creates a new grant as a child of the grant resource specified in the request URL, and deriving its permissions therefrom.")
   }
 
   object DeleteGrantHandler
@@ -471,11 +470,9 @@ class SecurityServiceHandlers(
     val metadata = AndMetadata(
       AboutMetadata(
         ParameterMetadata('at, Some("Defaults to the current time.")),
-        DescriptionMetadata(
-          "The timestamp against which permissions should be checked, in ISO8601 datetime format.")
+        DescriptionMetadata("The timestamp against which permissions should be checked, in ISO8601 datetime format.")
       ),
-      DescriptionMetadata(
-        "Retrieves the full set of permissions available to the authorizing API key.")
+      DescriptionMetadata("Retrieves the full set of permissions available to the authorizing API key.")
     )
   }
 }

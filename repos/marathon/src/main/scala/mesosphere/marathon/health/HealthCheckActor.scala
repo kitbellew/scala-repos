@@ -110,8 +110,7 @@ class HealthCheckActor(
 
       // kill the task
       marathonSchedulerDriverHolder.driver.foreach { driver =>
-        log.info(
-          s"Send kill request for ${task.taskId} on host ${task.agentInfo.host} to driver")
+        log.info(s"Send kill request for ${task.taskId} on host ${task.agentInfo.host} to driver")
         driver.killTask(task.taskId.mesosTaskId)
       }
     }

@@ -216,8 +216,7 @@ private class PartitionCoalescer(
       if (it.hasNext) {
         it.next()
       } else {
-        it =
-          resetIterator() // ran out of preferred locations, reset and rotate to the beginning
+        it = resetIterator() // ran out of preferred locations, reset and rotate to the beginning
         it.next()
       }
     }

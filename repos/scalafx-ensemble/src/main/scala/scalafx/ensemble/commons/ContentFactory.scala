@@ -143,8 +143,7 @@ object ContentFactory {
           new Button {
             thisButton =>
             text = "Save SBT Project..."
-            tooltip =
-              "Save sample code in a new project that can be build and run with SBT"
+            tooltip = "Save sample code in a new project that can be build and run with SBT"
             onAction = (ae: ActionEvent) =>
               try {
                 val initialDir = SBTProjectBuilder.parentDir

@@ -138,12 +138,10 @@ private[spark] object FileAppender extends Logging {
             s"Rolling executor logs enabled for $file with hourly rolling")
           Some(60 * 60 * 1000L, "--yyyy-MM-dd--HH")
         case "minutely" =>
-          logInfo(
-            s"Rolling executor logs enabled for $file with rolling every minute")
+          logInfo(s"Rolling executor logs enabled for $file with rolling every minute")
           Some(60 * 1000L, "--yyyy-MM-dd--HH-mm")
         case IntParam(seconds) =>
-          logInfo(
-            s"Rolling executor logs enabled for $file with rolling $seconds seconds")
+          logInfo(s"Rolling executor logs enabled for $file with rolling $seconds seconds")
           Some(seconds * 1000L, "--yyyy-MM-dd--HH-mm-ss")
         case _ =>
           logWarning(
@@ -168,16 +166,14 @@ private[spark] object FileAppender extends Logging {
     def createSizeBasedAppender(): FileAppender = {
       rollingSizeBytes match {
         case IntParam(bytes) =>
-          logInfo(
-            s"Rolling executor logs enabled for $file with rolling every $bytes bytes")
+          logInfo(s"Rolling executor logs enabled for $file with rolling every $bytes bytes")
           new RollingFileAppender(
             inputStream,
             file,
             new SizeBasedRollingPolicy(bytes),
             conf)
         case _ =>
-          logWarning(
-            s"Illegal size [$rollingSizeBytes] for rolling executor logs, rolling logs not enabled")
+          logWarning(s"Illegal size [$rollingSizeBytes] for rolling executor logs, rolling logs not enabled")
           new FileAppender(inputStream, file)
       }
     }

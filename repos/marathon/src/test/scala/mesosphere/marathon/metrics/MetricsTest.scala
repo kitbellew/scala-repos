@@ -64,8 +64,7 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     verify(metricsSpy, times(2)).stripGuiceMarksFromClassName(any())
   }
 
-  test(
-    "Metrics#name should use a dot to separate the class name and the method name") {
+  test("Metrics#name should use a dot to separate the class name and the method name") {
     val expectedName =
       "service.mesosphere.marathon.core.task.tracker.TaskTracker.write-request-time"
     val actualName =
@@ -96,8 +95,7 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     assert(origMeter.getCount == 11)
   }
 
-  test(
-    "The Timer wrapper should properly time method calls and proxy the updates") {
+  test("The Timer wrapper should properly time method calls and proxy the updates") {
     val origTimer = mock[com.codahale.metrics.Timer]
     val timer = new Timer(origTimer)
 

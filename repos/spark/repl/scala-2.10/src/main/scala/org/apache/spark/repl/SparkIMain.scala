@@ -263,8 +263,7 @@ class SparkIMain(
     else {
       // If init hasn't been called yet you're on your own.
       if (_isInitialized == null) {
-        logWarning(
-          "Warning: compiler accessed before init set up.  Assuming no postInit code.")
+        logWarning("Warning: compiler accessed before init set up.  Assuming no postInit code.")
         initialize(())
       }
       //       // blocks until it is ; false means catastrophic failure
@@ -667,8 +666,7 @@ class SparkIMain(
     } {
       afterTyper(replwarn(
         s"warning: previously defined $oldSym is not a companion to $newSym."))
-      replwarn(
-        "Companions must be defined together; you may wish to use :paste mode for this.")
+      replwarn("Companions must be defined together; you may wish to use :paste mode for this.")
     }
 
     // Updating the defined name map

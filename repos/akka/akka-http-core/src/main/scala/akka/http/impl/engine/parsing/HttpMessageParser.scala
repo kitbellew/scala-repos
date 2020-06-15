@@ -211,8 +211,7 @@ private[http] abstract class HttpMessageParser[
                 e100c,
                 hh)
             case _ ⇒
-              failMessageStart(
-                "HTTP message must not contain more than one Content-Length header")
+              failMessageStart("HTTP message must not contain more than one Content-Length header")
           }
         case h: `Content-Type` ⇒
           cth match {
@@ -241,8 +240,7 @@ private[http] abstract class HttpMessageParser[
                 e100c,
                 hh)
             case _ ⇒
-              failMessageStart(
-                "HTTP message must not contain more than one Content-Type header")
+              failMessageStart("HTTP message must not contain more than one Content-Type header")
           }
         case h: `Transfer-Encoding` ⇒
           teh match {
@@ -342,8 +340,7 @@ private[http] abstract class HttpMessageParser[
             hh)
       }
     } else
-      failMessageStart(
-        s"HTTP message contains more than the configured limit of $maxHeaderCount headers")
+      failMessageStart(s"HTTP message contains more than the configured limit of $maxHeaderCount headers")
 
   // work-around for compiler complaining about non-tail-recursion if we inline this method
   def parseHeaderLinesAux(
@@ -431,8 +428,7 @@ private[http] abstract class HttpMessageParser[
           case header if headerCount < maxHeaderCount ⇒
             parseTrailer(extension, lineEnd, header :: headers, headerCount + 1)
           case _ ⇒
-            failEntityStream(
-              s"Chunk trailer contains more than the configured limit of $maxHeaderCount headers")
+            failEntityStream(s"Chunk trailer contains more than the configured limit of $maxHeaderCount headers")
         }
       } else failEntityStream(errorInfo)
     }
@@ -473,8 +469,7 @@ private[http] abstract class HttpMessageParser[
           case _ ⇒ parseChunkExtensions(chunkSize, cursor + 1)(startIx)
         }
       } else
-        failEntityStream(
-          s"HTTP chunk extension length exceeds configured limit of $maxChunkExtLength characters")
+        failEntityStream(s"HTTP chunk extension length exceeds configured limit of $maxChunkExtLength characters")
 
     @tailrec def parseSize(cursor: Int, size: Long): StateResult =
       if (size <= maxChunkSize) {
@@ -489,8 +484,7 @@ private[http] abstract class HttpMessageParser[
             failEntityStream(s"Illegal character '${escape(c)}' in chunk start")
         }
       } else
-        failEntityStream(
-          s"HTTP chunk size exceeds the configured limit of $maxChunkSize bytes")
+        failEntityStream(s"HTTP chunk size exceeds the configured limit of $maxChunkSize bytes")
 
     try parseSize(offset, 0)
     catch {

@@ -52,8 +52,7 @@ object JavaStreamEnrichments {
   class ArrayWrappingOutputStream(val buffer: Array[Byte], initPos: Int)
       extends OutputStream {
     if (buffer.length < initPos) {
-      illegal(
-        s"Initial position cannot be more than length: $initPos > ${buffer.length}")
+      illegal(s"Initial position cannot be more than length: $initPos > ${buffer.length}")
     }
     private[this] var pos = initPos
     def position: Int = pos

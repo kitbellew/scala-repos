@@ -224,8 +224,7 @@ trait PatternTypers {
               tpSym,
               bounds)
             skolemBuffer += skolem
-            logResult(
-              s"Created gadt skolem $skolem: ${skolem.tpe_*} to stand in for $tpSym")(
+            logResult(s"Created gadt skolem $skolem: ${skolem.tpe_*} to stand in for $tpSym")(
               skolem.tpe_*)
           case tp1 => tp1
         }

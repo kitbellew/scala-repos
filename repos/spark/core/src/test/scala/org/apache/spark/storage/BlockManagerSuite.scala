@@ -208,8 +208,7 @@ class BlockManagerSuite
       "Deserialized id2 is not the same object as original id1")
   }
 
-  test(
-    "BlockManagerId.isDriver() backwards-compatibility with legacy driver ids (SPARK-6716)") {
+  test("BlockManagerId.isDriver() backwards-compatibility with legacy driver ids (SPARK-6716)") {
     assert(BlockManagerId(SparkContext.DRIVER_IDENTIFIER, "XXX", 1).isDriver)
     assert(
       BlockManagerId(SparkContext.LEGACY_DRIVER_IDENTIFIER, "XXX", 1).isDriver)
@@ -1549,8 +1548,7 @@ class BlockManagerSuite
     assert(unrollMemoryAfterB7 === unrollMemoryAfterB4)
   }
 
-  test(
-    "lazily create a big ByteBuffer to avoid OOM if it cannot be put into MemoryStore") {
+  test("lazily create a big ByteBuffer to avoid OOM if it cannot be put into MemoryStore") {
     store = makeBlockManager(12000)
     val memoryStore = store.memoryStore
     val blockId = BlockId("rdd_3_10")
@@ -1561,8 +1559,7 @@ class BlockManagerSuite
       blockId,
       13000,
       () => {
-        fail(
-          "A big ByteBuffer that cannot be put into MemoryStore should not be created")
+        fail("A big ByteBuffer that cannot be put into MemoryStore should not be created")
       })
   }
 
@@ -1605,8 +1602,7 @@ class BlockManagerSuite
     assert(store.getSingle("a3").isDefined, "a3 was not in store")
   }
 
-  test(
-    "SPARK-13328: refresh block locations (fetch should fail after hitting a threshold)") {
+  test("SPARK-13328: refresh block locations (fetch should fail after hitting a threshold)") {
     val mockBlockTransferService =
       new MockBlockTransferService(
         conf.getInt("spark.block.failures.beforeLocationRefresh", 5))
@@ -1620,8 +1616,7 @@ class BlockManagerSuite
     }
   }
 
-  test(
-    "SPARK-13328: refresh block locations (fetch should succeed after location refresh)") {
+  test("SPARK-13328: refresh block locations (fetch should succeed after location refresh)") {
     val maxFailuresBeforeLocationRefresh =
       conf.getInt("spark.block.failures.beforeLocationRefresh", 5)
     val mockBlockManagerMaster = mock(classOf[BlockManagerMaster])

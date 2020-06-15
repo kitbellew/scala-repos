@@ -65,8 +65,7 @@ object PowerIterationClusteringExample {
     val defaultParams = Params()
 
     val parser = new OptionParser[Params]("PowerIterationClusteringExample") {
-      head(
-        "PowerIterationClusteringExample: an example PIC app using concentric circles.")
+      head("PowerIterationClusteringExample: an example PIC app using concentric circles.")
       opt[Int]('k', "k")
         .text(s"number of circles (clusters), default: ${defaultParams.k}")
         .action((x, c) => c.copy(k = x))

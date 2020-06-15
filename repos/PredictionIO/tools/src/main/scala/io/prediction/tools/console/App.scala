@@ -159,8 +159,7 @@ object App extends Logging {
     val channels = storage.Storage.getMetaDataChannels
     val events = storage.Storage.getLEvents()
     val status = apps.getByName(ca.app.name) map { app =>
-      info(
-        s"The following app (including all channels) will be deleted. Are you sure?")
+      info(s"The following app (including all channels) will be deleted. Are you sure?")
       info(s"    App Name: ${app.name}")
       info(s"      App ID: ${app.id}")
       info(s" Description: ${app.description.getOrElse("")}")
@@ -280,8 +279,7 @@ object App extends Logging {
         info(s"      App ID: ${app.id}")
         info(s" Description: ${app.description}")
       } else {
-        info(
-          s"Data of the following app (default channel only) will be deleted. Are you sure?")
+        info(s"Data of the following app (default channel only) will be deleted. Are you sure?")
         info(s"    App Name: ${app.name}")
         info(s"      App ID: ${app.id}")
         info(s" Description: ${app.description}")
@@ -313,8 +311,7 @@ object App extends Logging {
           val dbInit = events.init(app.id, channelId)
           val r2 = if (dbInit) {
             if (channelId.isDefined) {
-              info(
-                s"Initialized Event Store for this channel ID: ${channelId.get}.")
+              info(s"Initialized Event Store for this channel ID: ${channelId.get}.")
             } else {
               info(s"Initialized Event Store for this app ID: ${app.id}.")
             }
@@ -350,9 +347,8 @@ object App extends Logging {
     val channels = storage.Storage.getMetaDataChannels
     val events = storage.Storage.getLEvents()
     val status = apps.getByName(ca.app.name) map { app =>
-      info(
-        s"All data of the app (including default and all channels) will be deleted." +
-          " Are you sure?")
+      info(s"All data of the app (including default and all channels) will be deleted." +
+        " Are you sure?")
       info(s"    App Name: ${app.name}")
       info(s"      App ID: ${app.id}")
       info(s" Description: ${app.description}")
@@ -387,8 +383,7 @@ object App extends Logging {
               info(s"Initialized Event Store of the channel ID: ${ch.id}")
               0
             } else {
-              error(
-                s"Unable to initialize Event Store of the channel ID: ${ch.id}.")
+              error(s"Unable to initialize Event Store of the channel ID: ${ch.id}.")
               1
             }
             r1 + r2
@@ -478,9 +473,8 @@ object App extends Logging {
                     s"Failed to revert back the Channel meta-data change.",
                     e)
                   error(s"The channel ${newChannel} CANNOT be used!")
-                  error(
-                    s"Please run 'pio app channel-delete ${app.name} ${newChannel}' " +
-                      "to delete this channel!")
+                  error(s"Please run 'pio app channel-delete ${app.name} ${newChannel}' " +
+                    "to delete this channel!")
                   1
               }
             }
@@ -535,9 +529,8 @@ object App extends Logging {
                   error(s"Unable to delete channel.", e)
                   error(s"Failed to update Channel meta-data.")
                   error(s"The channel ${deleteChannel} CANNOT be used!")
-                  error(
-                    s"Please run 'pio app channel-delete ${app.name} ${deleteChannel}' " +
-                      "to delete this channel again!")
+                  error(s"Please run 'pio app channel-delete ${app.name} ${deleteChannel}' " +
+                    "to delete this channel again!")
                   1
               }
             } else {

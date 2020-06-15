@@ -84,9 +84,8 @@ class CoordinateMatrix @Since("1.0.0") (
   def toIndexedRowMatrix(): IndexedRowMatrix = {
     val nl = numCols()
     if (nl > Int.MaxValue) {
-      sys.error(
-        s"Cannot convert to a row-oriented format because the number of columns $nl is " +
-          "too large.")
+      sys.error(s"Cannot convert to a row-oriented format because the number of columns $nl is " +
+        "too large.")
     }
     val n = nl.toInt
     val indexedRows = entries

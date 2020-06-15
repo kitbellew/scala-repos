@@ -149,9 +149,8 @@ private[yarn] class YarnAllocator(
           classOf[String]))
     } catch {
       case e: NoSuchMethodException => {
-        logWarning(
-          s"Node label expression $expr will be ignored because YARN version on" +
-            " classpath does not support it.")
+        logWarning(s"Node label expression $expr will be ignored because YARN version on" +
+          " classpath does not support it.")
         None
       }
     }
@@ -250,12 +249,11 @@ private[yarn] class YarnAllocator(
       val allocatedContainers = allocateResponse.getAllocatedContainers()
 
       if (allocatedContainers.size > 0) {
-        logDebug(
-          "Allocated containers: %d. Current executor count: %d. Cluster resources: %s."
-            .format(
-              allocatedContainers.size,
-              numExecutorsRunning,
-              allocateResponse.getAvailableResources))
+        logDebug("Allocated containers: %d. Current executor count: %d. Cluster resources: %s."
+          .format(
+            allocatedContainers.size,
+            numExecutorsRunning,
+            allocateResponse.getAvailableResources))
 
         handleAllocatedContainers(allocatedContainers.asScala)
       }
@@ -265,9 +263,8 @@ private[yarn] class YarnAllocator(
       if (completedContainers.size > 0) {
         logDebug("Completed %d containers".format(completedContainers.size))
         processCompletedContainers(completedContainers.asScala)
-        logDebug(
-          "Finished processing %d completed containers. Current running executor count: %d."
-            .format(completedContainers.size, numExecutorsRunning))
+        logDebug("Finished processing %d completed containers. Current running executor count: %d."
+          .format(completedContainers.size, numExecutorsRunning))
       }
     }
 
@@ -283,9 +280,8 @@ private[yarn] class YarnAllocator(
     val missing = targetNumExecutors - numPendingAllocate - numExecutorsRunning
 
     if (missing > 0) {
-      logInfo(
-        s"Will request $missing executor containers, each with ${resource.getVirtualCores} " +
-          s"cores and ${resource.getMemory} MB memory including $memoryOverhead MB overhead")
+      logInfo(s"Will request $missing executor containers, each with ${resource.getVirtualCores} " +
+        s"cores and ${resource.getMemory} MB memory including $memoryOverhead MB overhead")
 
       // Split the pending container request into three groups: locality matched list, locality
       // unmatched list and non-locality list. Take the locality matched container request into
@@ -303,8 +299,7 @@ private[yarn] class YarnAllocator(
         amClient.removeContainerRequest(stale)
       }
       val cancelledContainers = staleRequests.size
-      logInfo(
-        s"Canceled $cancelledContainers container requests (locality no longer needed)")
+      logInfo(s"Canceled $cancelledContainers container requests (locality no longer needed)")
 
       // consider the number of new containers and cancelled stale containers available
       val availableContainers = missing + cancelledContainers
@@ -340,14 +335,12 @@ private[yarn] class YarnAllocator(
         anyHostRequests.slice(0, numToCancel).foreach { nonLocal =>
           amClient.removeContainerRequest(nonLocal)
         }
-        logInfo(
-          s"Canceled $numToCancel container requests for any host to resubmit with locality")
+        logInfo(s"Canceled $numToCancel container requests for any host to resubmit with locality")
       }
 
       newLocalityRequests.foreach { request =>
         amClient.addContainerRequest(request)
-        logInfo(
-          s"Submitted container request (host: ${hostStr(request)}, capability: $resource)")
+        logInfo(s"Submitted container request (host: ${hostStr(request)}, capability: $resource)")
       }
 
     } else if (missing < 0) {
@@ -443,9 +436,8 @@ private[yarn] class YarnAllocator(
     }
 
     if (!remainingAfterOffRackMatches.isEmpty) {
-      logDebug(
-        s"Releasing ${remainingAfterOffRackMatches.size} unneeded containers that were " +
-          s"allocated to us")
+      logDebug(s"Releasing ${remainingAfterOffRackMatches.size} unneeded containers that were " +
+        s"allocated to us")
       for (container <- remainingAfterOffRackMatches) {
         internalReleaseContainer(container)
       }

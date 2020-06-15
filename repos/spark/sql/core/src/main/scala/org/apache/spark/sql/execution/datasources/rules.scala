@@ -82,9 +82,8 @@ private[sql] object PreInsertCastAndRename extends Rule[LogicalPlan] {
         // First, make sure the data to be inserted have the same number of fields with the
         // schema of the relation.
         if (l.output.size != child.output.size) {
-          sys.error(
-            s"$l requires that the query in the SELECT clause of the INSERT INTO/OVERWRITE " +
-              s"statement generates the same number of columns as its schema.")
+          sys.error(s"$l requires that the query in the SELECT clause of the INSERT INTO/OVERWRITE " +
+            s"statement generates the same number of columns as its schema.")
         }
         castAndRenameChildOutput(i, l.output, child)
     }
@@ -133,16 +132,14 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
             ifNotExists) =>
         // Right now, we do not support insert into a data source table with partition specs.
         if (partition.nonEmpty) {
-          failAnalysis(
-            s"Insert into a partition is not allowed because $l is not partitioned.")
+          failAnalysis(s"Insert into a partition is not allowed because $l is not partitioned.")
         } else {
           // Get all input data source relations of the query.
           val srcRelations = query.collect {
             case LogicalRelation(src: BaseRelation, _, _) => src
           }
           if (srcRelations.contains(t)) {
-            failAnalysis(
-              "Cannot insert overwrite into table that is also being read from.")
+            failAnalysis("Cannot insert overwrite into table that is also being read from.")
           } else {
             // OK
           }
@@ -210,8 +207,7 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
                 case LogicalRelation(src: BaseRelation, _, _) => src
               }
               if (srcRelations.contains(dest)) {
-                failAnalysis(
-                  s"Cannot overwrite table ${c.tableIdent} that is also being read from.")
+                failAnalysis(s"Cannot overwrite table ${c.tableIdent} that is also being read from.")
               } else {
                 // OK
               }
@@ -233,8 +229,7 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
           sortColumn <- c.child.schema.find(_.name == sortColumnName)
         } {
           if (!RowOrdering.isOrderable(sortColumn.dataType)) {
-            failAnalysis(
-              s"Cannot use ${sortColumn.dataType.simpleString} for sorting column.")
+            failAnalysis(s"Cannot use ${sortColumn.dataType.simpleString} for sorting column.")
           }
         }
 

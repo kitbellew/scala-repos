@@ -576,8 +576,7 @@ trait CogroupSpec[M[+_]]
           """{ "value":{ "ugsrry":-9.458984438931391E+306 }, "key":[6.0] }"""),
         parseUnsafe("""{ "value":{ "ugsrry":1.0 }, "key":[10.0] }"""),
         parseUnsafe("""{ "value":{ "ugsrry":0.0 }, "key":[13.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "ugsrry":-3.8439741460685273E+307 }, "key":[14.0] }"""),
+        parseUnsafe("""{ "value":{ "ugsrry":-3.8439741460685273E+307 }, "key":[14.0] }"""),
         parseUnsafe(
           """{ "value":{ "ugsrry":5.690895589711475E+307 }, "key":[15.0] }"""),
         parseUnsafe("""{ "value":{ "ugsrry":0.0 }, "key":[16.0] }"""),
@@ -593,28 +592,20 @@ trait CogroupSpec[M[+_]]
       Stream(
         parseUnsafe(
           """{ "value":{ "fzqJh5csbfsZqgkoi":[-1E-40146] }, "key":[2.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "fzqJh5csbfsZqgkoi":[-9.44770762864723688E-39073] }, "key":[3.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "fzqJh5csbfsZqgkoi":[2.894611552200768372E+19] }, "key":[5.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "fzqJh5csbfsZqgkoi":[-2.561276432629787073E-42575] }, "key":[6.0] }"""),
+        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[-9.44770762864723688E-39073] }, "key":[3.0] }"""),
+        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[2.894611552200768372E+19] }, "key":[5.0] }"""),
+        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[-2.561276432629787073E-42575] }, "key":[6.0] }"""),
         parseUnsafe(
           """{ "value":{ "fzqJh5csbfsZqgkoi":[-1E-10449] }, "key":[10.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "fzqJh5csbfsZqgkoi":[2110233717777347493] }, "key":[13.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "fzqJh5csbfsZqgkoi":[3.039020270015831847E+19] }, "key":[14.0] }"""),
+        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[2110233717777347493] }, "key":[13.0] }"""),
+        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[3.039020270015831847E+19] }, "key":[14.0] }"""),
         parseUnsafe(
           """{ "value":{ "fzqJh5csbfsZqgkoi":[1E-50000] }, "key":[15.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "fzqJh5csbfsZqgkoi":[-1.296393752892965818E-49982] }, "key":[16.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "fzqJh5csbfsZqgkoi":[4.611686018427387903E+50018] }, "key":[17.0] }"""),
+        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[-1.296393752892965818E-49982] }, "key":[16.0] }"""),
+        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[4.611686018427387903E+50018] }, "key":[17.0] }"""),
         parseUnsafe(
           """{ "value":{ "fzqJh5csbfsZqgkoi":[0E+48881] }, "key":[18.0] }"""),
-        parseUnsafe(
-          """{ "value":{ "fzqJh5csbfsZqgkoi":[2.326724524858976798E-10633] }, "key":[22.0] }""")
+        parseUnsafe("""{ "value":{ "fzqJh5csbfsZqgkoi":[2.326724524858976798E-10633] }, "key":[22.0] }""")
       ))
 
     testCogroup(s1, s2)

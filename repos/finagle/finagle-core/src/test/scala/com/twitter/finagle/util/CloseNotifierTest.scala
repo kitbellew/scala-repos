@@ -24,8 +24,7 @@ class CloseNotifierTest extends FunSuite {
     assert(invocations == (1 to 10).toList)
   }
 
-  test(
-    "CloseNotifier should invoke onClose handler immediately if close event already happened") {
+  test("CloseNotifier should invoke onClose handler immediately if close event already happened") {
     val closing = new Promise[Unit]
     val notifier = CloseNotifier.makeLifo(closing)
 

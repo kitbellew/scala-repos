@@ -76,8 +76,8 @@ object DecisionTreeRunner {
     val parser = new OptionParser[Params]("DecisionTreeRunner") {
       head("DecisionTreeRunner: an example decision tree app.")
       opt[String]("algo")
-        .text(
-          s"algorithm (${Algo.values.mkString(",")}), default: ${defaultParams.algo}")
+        .text(s"algorithm (${Algo.values.mkString(
+          ",")}), default: ${defaultParams.algo}")
         .action((x, c) => c.copy(algo = Algo.withName(x)))
       opt[String]("impurity")
         .text(s"impurity type (${ImpurityType.values.mkString(",")}), " +
@@ -151,8 +151,7 @@ object DecisionTreeRunner {
           } else if (params.algo == Regression && params.impurity == Variance) {
             success
           } else {
-            failure(
-              s"Algo ${params.algo} is not compatible with impurity ${params.impurity}.")
+            failure(s"Algo ${params.algo} is not compatible with impurity ${params.impurity}.")
           }
         }
       }

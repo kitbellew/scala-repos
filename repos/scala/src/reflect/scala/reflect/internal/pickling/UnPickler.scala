@@ -383,10 +383,7 @@ abstract class UnPickler {
           sym
         case MODULEsym =>
           val clazz =
-            at(
-              inforef,
-              () =>
-                readType()).typeSymbol // after NMT_TRANSITION, we can leave off the () => ... ()
+            at(inforef, () => readType()).typeSymbol // after NMT_TRANSITION, we can leave off the () => ... ()
           if (isModuleRoot) moduleRoot setFlag pflags
           else owner.newLinkedModule(clazz, pflags)
         case VALsym =>
@@ -698,8 +695,7 @@ abstract class UnPickler {
     }
 
     /* Read a reference to a pickled item */
-    protected def readSymbolRef()
-        : Symbol = { //OPT inlined from: at(readNat(), readSymbol) to save on closure creation
+    protected def readSymbolRef(): Symbol = { //OPT inlined from: at(readNat(), readSymbol) to save on closure creation
       val i = readNat()
       var r = entries(i)
       if (r eq null) {

@@ -57,8 +57,7 @@ trait StoppingBehavior extends Actor with ActorLogging {
           _,
           _) if idsToKill(taskId) =>
       idsToKill.remove(taskId)
-      log.info(
-        s"Task $taskId has been killed. Waiting for ${idsToKill.size} more tasks to be killed.")
+      log.info(s"Task $taskId has been killed. Waiting for ${idsToKill.size} more tasks to be killed.")
       checkFinished()
 
     case SynchronizeTasks =>

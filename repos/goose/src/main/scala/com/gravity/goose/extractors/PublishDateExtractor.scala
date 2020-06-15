@@ -73,8 +73,7 @@ object PublishDateExtractor extends Logging {
           .getTime)
     } catch {
       case ex: Exception =>
-        info(
-          s"`$txt` could not be parsed to date as it did not meet the ISO 8601 spec")
+        info(s"`$txt` could not be parsed to date as it did not meet the ISO 8601 spec")
         None
     }
   }

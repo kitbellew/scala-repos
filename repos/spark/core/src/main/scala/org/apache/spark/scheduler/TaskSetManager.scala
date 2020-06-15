@@ -517,9 +517,8 @@ private[spark] class TaskSetManager(
           // a good proxy to task serialization time.
           // val timeTaken = clock.getTime() - startTime
           val taskName = s"task ${info.id} in stage ${taskSet.id}"
-          logInfo(
-            s"Starting $taskName (TID $taskId, $host, partition ${task.partitionId}," +
-              s"$taskLocality, ${serializedTask.limit} bytes)")
+          logInfo(s"Starting $taskName (TID $taskId, $host, partition ${task.partitionId}," +
+            s"$taskLocality, ${serializedTask.limit} bytes)")
 
           sched.dagScheduler.taskStarted(task, info)
           return Some(
@@ -596,9 +595,9 @@ private[spark] class TaskSetManager(
         // be scheduled at a particular locality level, there is no point in waiting
         // for the locality wait timeout (SPARK-4939).
         lastLaunchTime = curTime
-        logDebug(
-          s"No tasks for locality level ${myLocalityLevels(currentLocalityIndex)}, " +
-            s"so moving to locality level ${myLocalityLevels(currentLocalityIndex + 1)}")
+        logDebug(s"No tasks for locality level ${myLocalityLevels(currentLocalityIndex)}, " +
+          s"so moving to locality level ${myLocalityLevels(
+            currentLocalityIndex + 1)}")
         currentLocalityIndex += 1
       } else if (curTime - lastLaunchTime >= localityWaits(
           currentLocalityIndex)) {
@@ -736,9 +735,8 @@ private[spark] class TaskSetManager(
         accumUpdates = ef.accumUpdates
         if (ef.className == classOf[NotSerializableException].getName) {
           // If the task result wasn't serializable, there's no point in trying to re-execute it.
-          logError(
-            "Task %s in stage %s (TID %d) had a not serializable result: %s; not retrying"
-              .format(info.id, taskSet.id, tid, ef.description))
+          logError("Task %s in stage %s (TID %d) had a not serializable result: %s; not retrying"
+            .format(info.id, taskSet.id, tid, ef.description))
           abort(
             "Task %s in stage %s (TID %d) had a not serializable result: %s"
               .format(info.id, taskSet.id, tid, ef.description))
@@ -764,17 +762,15 @@ private[spark] class TaskSetManager(
         if (printFull) {
           logWarning(failureReason)
         } else {
-          logInfo(
-            s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid) on executor ${info.host}: " +
-              s"${ef.className} (${ef.description}) [duplicate $dupCount]")
+          logInfo(s"Lost task ${info.id} in stage ${taskSet.id} (TID $tid) on executor ${info.host}: " +
+            s"${ef.className} (${ef.description}) [duplicate $dupCount]")
         }
         ef.exception
 
       case e: ExecutorLostFailure if !e.exitCausedByApp =>
-        logInfo(
-          s"Task $tid failed because while it was being computed, its executor " +
-            "exited for a reason unrelated to the task. Not counting this failure towards the " +
-            "maximum number of failures for the task.")
+        logInfo(s"Task $tid failed because while it was being computed, its executor " +
+          "exited for a reason unrelated to the task. Not counting this failure towards the " +
+          "maximum number of failures for the task.")
         None
 
       case e: TaskFailedReason => // TaskResultLost, TaskKilled, and others
@@ -932,9 +928,8 @@ private[spark] class TaskSetManager(
         if (!successful(index) && copiesRunning(index) == 1 && info.timeRunning(
             time) > threshold &&
           !speculatableTasks.contains(index)) {
-          logInfo(
-            "Marking task %d in stage %s (on %s) as speculatable because it ran more than %.0f ms"
-              .format(index, taskSet.id, info.host, threshold))
+          logInfo("Marking task %d in stage %s (on %s) as speculatable because it ran more than %.0f ms"
+            .format(index, taskSet.id, info.host, threshold))
           speculatableTasks += index
           foundTasks = true
         }

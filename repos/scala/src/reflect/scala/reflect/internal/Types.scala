@@ -239,15 +239,14 @@ trait Types
         case ConstantType(value) => widen.erasure
         case _ =>
           var result: Type = transformedType(this)
-          result =
-            result.normalize match { // necessary to deal with erasures of HK types, typeConstructor won't work
-              case PolyType(undets, underlying) =>
-                existentialAbstraction(
-                  undets,
-                  underlying
-                ) // we don't want undets in the result
-              case _ => result
-            }
+          result = result.normalize match { // necessary to deal with erasures of HK types, typeConstructor won't work
+            case PolyType(undets, underlying) =>
+              existentialAbstraction(
+                undets,
+                underlying
+              ) // we don't want undets in the result
+            case _ => result
+          }
           // erasure screws up all ThisTypes for modules into PackageTypeRefs
           // we need to unscrew them, or certain typechecks will fail mysteriously
           // http://groups.google.com/group/scala-internals/browse_thread/thread/6d3277ae21b6d581
@@ -856,8 +855,7 @@ trait Types
         case TypeRef(_, sym, args) =>
           val that1 = existentialAbstraction(args map (_.typeSymbol), that)
           (that ne that1) && (this <:< that1) && {
-            debuglog(
-              s"$this.matchesPattern($that) depended on discarding args and testing <:< $that1")
+            debuglog(s"$this.matchesPattern($that) depended on discarding args and testing <:< $that1")
             true
           }
         case _ =>
@@ -969,8 +967,7 @@ trait Types
         else if (sym isLess btssym) hi = mid - 1
         else if (btssym isLess sym) lo = mid + 1
         else
-          abort(
-            "sym is neither `sym == btssym`, `sym isLess btssym` nor `btssym isLess sym`")
+          abort("sym is neither `sym == btssym`, `sym isLess btssym` nor `btssym isLess sym`")
       }
       -1
     }
@@ -1909,8 +1906,7 @@ trait Types
           case tr @ TypeRef(_, sym, args) if args.nonEmpty =>
             val tparams = tr.initializedTypeParams
             if (settings.debug && !sameLength(tparams, args))
-              devWarning(
-                s"Mismatched zip in computeRefs(): ${sym.info.typeParams}, $args")
+              devWarning(s"Mismatched zip in computeRefs(): ${sym.info.typeParams}, $args")
 
             foreach2(tparams, args) { (tparam1, arg) =>
               if (arg contains tparam) {
@@ -2221,8 +2217,7 @@ trait Types
     override def coevolveSym(newPre: Type): Symbol =
       if ((pre ne newPre) && embeddedSymbol(pre, sym.name) == sym) {
         val newSym = embeddedSymbol(newPre, sym.name)
-        debuglog(
-          s"co-evolve: ${pre} -> ${newPre}, $sym : ${sym.info} -> $newSym : ${newSym.info}")
+        debuglog(s"co-evolve: ${pre} -> ${newPre}, $sym : ${sym.info} -> $newSym : ${newSym.info}")
         // To deal with erroneous `preNew`, fallback via `orElse sym`, in case `preNew` does not have a decl named `sym.name`.
         newSym orElse sym
       } else sym
@@ -2239,8 +2234,8 @@ trait Types
     // TODO: check the resulting symbol is owned by the refinement class? likely an invariant...
     if (tp.typeSymbol.isRefinementClass) tp.normalize.decls lookup name
     else {
-      debuglog(
-        s"no embedded symbol $name found in ${showRaw(tp)} --> ${tp.normalize.decls lookup name}")
+      debuglog(s"no embedded symbol $name found in ${showRaw(
+        tp)} --> ${tp.normalize.decls lookup name}")
       NoSymbol
     }
 
@@ -5097,8 +5092,7 @@ trait Types
       p: (Type, T) => Boolean,
       tp1: Type,
       arg2: T): Boolean = {
-    inform(
-      indent + tp1 + " " + op + " " + arg2 + "?" /* + "("+tp1.getClass+","+arg2.getClass+")"*/ )
+    inform(indent + tp1 + " " + op + " " + arg2 + "?" /* + "("+tp1.getClass+","+arg2.getClass+")"*/ )
     indent = indent + "  "
     val result = p(tp1, arg2)
     indent = indent stripSuffix "  "

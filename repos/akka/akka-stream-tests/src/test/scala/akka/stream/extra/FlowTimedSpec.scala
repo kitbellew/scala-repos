@@ -31,8 +31,7 @@ class FlowTimedSpec extends AkkaSpec with ScriptedTest {
       val measureBetweenEvery = 5
       val printInfo = (interval: Duration) ⇒ {
         testActor.ref ! interval
-        info(
-          s"Measured interval between $measureBetweenEvery elements was: $interval")
+        info(s"Measured interval between $measureBetweenEvery elements was: $interval")
       }
 
       val n = 20

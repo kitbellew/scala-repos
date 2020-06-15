@@ -77,8 +77,7 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
     assert(norm(nlResult.z - goodx, 2) < 1e-3)
   }
 
-  test(
-    "Nonlinear Minimization with bounds constraint compared to QuadraticMinimizer") {
+  test("Nonlinear Minimization with bounds constraint compared to QuadraticMinimizer") {
     init := 0.0
     val gold = QuadraticMinimizer(n, BOX).minimize(H, f :* (-1.0))
     val nlResult =
@@ -87,8 +86,7 @@ class NonlinearMinimizerTest extends OptimizeTestBase with Matchers {
     assert(norm(nlResult.x - gold) < 1e-4)
   }
 
-  test(
-    "Nonlinear Minimization with bounds proximal compared to QuadraticMinimizer") {
+  test("Nonlinear Minimization with bounds proximal compared to QuadraticMinimizer") {
     init := 0.0
     val gold = QuadraticMinimizer(n, BOX).minimize(H, f :* (-1.0))
     val lb = DenseVector.zeros[Double](n)

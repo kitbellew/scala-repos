@@ -68,8 +68,7 @@ class ClientTest extends FunSuite {
     }
   }
 
-  test(
-    "report a closed connection when the server doesn't reply, without retrying") {
+  test("report a closed connection when the server doesn't reply, without retrying") {
     withServer(failingFactory) { clientBuilder =>
       counter = 0
       val client = clientBuilder

@@ -47,8 +47,7 @@ object WriteSupportProvider {
 
       fieldType match {
         case tpe if tpe =:= typeOf[String] =>
-          writePrimitiveField(
-            q"rc.addBinary(_root_.org.apache.parquet.io.api.Binary.fromString($fValue))")
+          writePrimitiveField(q"rc.addBinary(_root_.org.apache.parquet.io.api.Binary.fromString($fValue))")
         case tpe if tpe =:= typeOf[Boolean] =>
           writePrimitiveField(q"rc.addBoolean($fValue)")
         case tpe if tpe =:= typeOf[Short] =>

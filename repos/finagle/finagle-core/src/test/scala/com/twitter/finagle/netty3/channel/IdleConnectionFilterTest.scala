@@ -73,8 +73,7 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     assert(filter.openConnections == 0)
   }
 
-  test(
-    "IdleConnectionFilter should try to close an idle connection if above lowerWaterMark") {
+  test("IdleConnectionFilter should try to close an idle connection if above lowerWaterMark") {
     val h = new ChannelHelper
     import h._
 
@@ -91,8 +90,7 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     verify(spyFilter, times(1)).closeIdleConnections()
   }
 
-  test(
-    "IdleConnectionFilter should don't close connections not yet answered by the server (long processing requests)") {
+  test("IdleConnectionFilter should don't close connections not yet answered by the server (long processing requests)") {
     val h = new ChannelHelper
     import h._
 
@@ -133,8 +131,7 @@ class IdleConnectionFilterTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test(
-    "IdleConnectionFilter should close an idle connection to accept a new one") {
+  test("IdleConnectionFilter should close an idle connection to accept a new one") {
     val h = new ChannelHelper
     import h._
 

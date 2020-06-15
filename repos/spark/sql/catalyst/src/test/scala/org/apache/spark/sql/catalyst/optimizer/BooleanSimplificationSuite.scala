@@ -63,8 +63,7 @@ class BooleanSimplificationSuite extends PlanTest with PredicateHelper {
       Literal(1) < 'a)
   }
 
-  test(
-    "(a && b && c && ...) || (a && b && d && ...) || (a && b && e && ...) ...") {
+  test("(a && b && c && ...) || (a && b && d && ...) || (a && b && e && ...) ...") {
     checkCondition('b > 3 || 'c > 5, 'b > 3 || 'c > 5)
 
     checkCondition(('a < 2 && 'a > 3 && 'b > 5) || 'a < 2, 'a < 2)
@@ -81,8 +80,7 @@ class BooleanSimplificationSuite extends PlanTest with PredicateHelper {
     checkCondition(input, expected)
   }
 
-  test(
-    "(a || b || c || ...) && (a || b || d || ...) && (a || b || e || ...) ...") {
+  test("(a || b || c || ...) && (a || b || d || ...) && (a || b || e || ...) ...") {
     checkCondition('b > 3 && 'c > 5, 'b > 3 && 'c > 5)
 
     checkCondition(('a < 2 || 'a > 3 || 'b > 5) && 'a < 2, 'a < 2)

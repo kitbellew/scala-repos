@@ -89,8 +89,7 @@ class RefreshTest extends FunSuite with MockitoSugar {
     verify(provider, times(1))()
   }
 
-  test(
-    "it should fail both responses if request is in flight, then request again") {
+  test("it should fail both responses if request is in flight, then request again") {
     val ctx = new Ctx
     import ctx._
 

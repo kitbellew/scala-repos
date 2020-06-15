@@ -231,12 +231,11 @@ class GroupMetadataManager(
 
       var responseCode = Errors.NONE.code
       if (status.errorCode != Errors.NONE.code) {
-        debug(
-          "Metadata from group %s with generation %d failed when appending to log due to %s"
-            .format(
-              group.groupId,
-              generationId,
-              Errors.forCode(status.errorCode).exceptionName))
+        debug("Metadata from group %s with generation %d failed when appending to log due to %s"
+          .format(
+            group.groupId,
+            generationId,
+            Errors.forCode(status.errorCode).exceptionName))
 
         // transform the log append error code to the corresponding the commit status error code
         responseCode =
@@ -250,18 +249,16 @@ class GroupMetadataManager(
             || status.errorCode == Errors.RECORD_LIST_TOO_LARGE.code
             || status.errorCode == Errors.INVALID_FETCH_SIZE.code) {
 
-            error(
-              "Appending metadata message for group %s generation %d failed due to %s, returning UNKNOWN error code to the client"
-                .format(
-                  group.groupId,
-                  generationId,
-                  Errors.forCode(status.errorCode).exceptionName))
+            error("Appending metadata message for group %s generation %d failed due to %s, returning UNKNOWN error code to the client"
+              .format(
+                group.groupId,
+                generationId,
+                Errors.forCode(status.errorCode).exceptionName))
 
             Errors.UNKNOWN.code
           } else {
-            error(
-              "Appending metadata message for group %s generation %d failed due to unexpected error: %s"
-                .format(group.groupId, generationId, status.errorCode))
+            error("Appending metadata message for group %s generation %d failed due to unexpected error: %s"
+              .format(group.groupId, generationId, status.errorCode))
 
             status.errorCode
           }
@@ -350,14 +347,13 @@ class GroupMetadataManager(
           }
           Errors.NONE.code
         } else {
-          debug(
-            "Offset commit %s from group %s consumer %s with generation %d failed when appending to log due to %s"
-              .format(
-                filteredOffsetMetadata,
-                groupId,
-                consumerId,
-                generationId,
-                Errors.forCode(status.errorCode).exceptionName))
+          debug("Offset commit %s from group %s consumer %s with generation %d failed when appending to log due to %s"
+            .format(
+              filteredOffsetMetadata,
+              groupId,
+              consumerId,
+              generationId,
+              Errors.forCode(status.errorCode).exceptionName))
 
           // transform the log append error code to the corresponding the commit status error code
           if (status.errorCode == Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
@@ -521,8 +517,7 @@ class GroupMetadataManager(
                         groupId,
                         msgAndOffset.message.payload)
                     if (groupMetadata != null) {
-                      trace(
-                        s"Loaded group metadata for group ${groupMetadata.groupId} with generation ${groupMetadata.generationId}")
+                      trace(s"Loaded group metadata for group ${groupMetadata.groupId} with generation ${groupMetadata.generationId}")
                       removedGroups.remove(groupId)
                       loadedGroups.put(groupId, groupMetadata)
                     } else {

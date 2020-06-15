@@ -327,8 +327,7 @@ abstract class KafkaShardIngestActor(
             .mkString("[", ", ", "]"))
         logger.error(
           "Metadata is consistent up to the lower bound:" + ingestCache.head._1)
-        logger.error(
-          "Ingest will continue, but query results may be inconsistent until the problem is resolved.")
+        logger.error("Ingest will continue, but query results may be inconsistent until the problem is resolved.")
         for (messages <- ingestCache.get(checkpoint).toSeq;
           (offset, ingestMessage) <- messages) {
           failureLog =
@@ -563,9 +562,8 @@ abstract class KafkaShardIngestActor(
                   authorityCache.get((apiKey, path)) map { authorities =>
                     Some((offset, genMessage(authorities)))
                   } getOrElse {
-                    logger.warn(
-                      "Discarding event at offset %d with apiKey %s for path %s because we could not determine the account"
-                        .format(offset, apiKey, path))
+                    logger.warn("Discarding event at offset %d with apiKey %s for path %s because we could not determine the account"
+                      .format(offset, apiKey, path))
                     None
                   }
               }

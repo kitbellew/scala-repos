@@ -240,8 +240,7 @@ abstract class ScaladocSyntaxAnalyzer[G <: Global](val global: G)
       super.skipDocComment()
     }
     override def skipBlockComment(): Unit = {
-      inDocComment =
-        false // ??? this means docBuffer won't receive contents of this comment???
+      inDocComment = false // ??? this means docBuffer won't receive contents of this comment???
       docBuffer = new StringBuilder("/*")
       super.skipBlockComment()
     }

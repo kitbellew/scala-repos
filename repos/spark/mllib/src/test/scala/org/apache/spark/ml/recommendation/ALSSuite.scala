@@ -258,9 +258,8 @@ class ALSSuite
         }
       }
     }
-    logInfo(
-      s"Generated an explicit feedback dataset with ${training.size} ratings for training " +
-        s"and ${test.size} for test.")
+    logInfo(s"Generated an explicit feedback dataset with ${training.size} ratings for training " +
+      s"and ${test.size} for test.")
     (sc.parallelize(training, 2), sc.parallelize(test, 2))
   }
 
@@ -308,9 +307,8 @@ class ALSSuite
         }
       }
     }
-    logInfo(
-      s"Generated an implicit feedback dataset with ${training.size} ratings for training " +
-        s"and ${test.size} for test.")
+    logInfo(s"Generated an implicit feedback dataset with ${training.size} ratings for training " +
+      s"and ${test.size} for test.")
     (sc.parallelize(training, 2), sc.parallelize(test, 2))
   }
 
