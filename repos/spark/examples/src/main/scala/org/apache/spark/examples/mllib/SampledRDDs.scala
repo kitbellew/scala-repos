@@ -72,8 +72,7 @@ object SampledRDDs {
     if (numExamples == 0) {
       throw new RuntimeException("Error: Data file had no samples to load.")
     }
-    println(
-      s"Loaded data with $numExamples examples from file: ${params.input}")
+    println(s"Loaded data with $numExamples examples from file: ${params.input}")
 
     // Example: RDD.sample() and RDD.takeSample()
     val expectedSampleSize = (numExamples * fraction).toInt

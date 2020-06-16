@@ -61,8 +61,8 @@ class ApiFormatsSpec extends MutableScalatraSpec {
       "when there are multiple formats take the first match" in {
         get(
           "/hello",
-          headers = Map(
-            "Accept" -> "application/json, application/xml, text/plain, */*")) {
+          headers =
+            Map("Accept" -> "application/json, application/xml, text/plain, */*")) {
           response.getContentType must startWith("application/json")
           body must_== "json"
         }
@@ -71,8 +71,8 @@ class ApiFormatsSpec extends MutableScalatraSpec {
       "when there are multiple formats with priority take the first one with the highest weight" in {
         get(
           "/hello",
-          headers = Map(
-            "Accept" -> "application/json; q=0.4, application/xml; q=0.8, text/plain, */*")) {
+          headers =
+            Map("Accept" -> "application/json; q=0.4, application/xml; q=0.8, text/plain, */*")) {
           response.getContentType must startWith("text/plain")
           body must_== "txt"
         }
@@ -91,8 +91,8 @@ class ApiFormatsSpec extends MutableScalatraSpec {
       "(#406) when there are multiple formats with malformed priority the parser should ignore the broken priority " in {
         get(
           "/hello",
-          headers = Map(
-            "Accept" -> "application/json; q=, application/xml; q=, text/plain, */*")) {
+          headers =
+            Map("Accept" -> "application/json; q=, application/xml; q=, text/plain, */*")) {
           response.getContentType must startWith("text/plain")
           body must_== "txt"
         }

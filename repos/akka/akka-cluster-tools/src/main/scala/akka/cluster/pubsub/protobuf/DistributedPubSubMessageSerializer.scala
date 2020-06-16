@@ -160,8 +160,7 @@ private[akka] class DistributedPubSubMessageSerializer(
                 .newBuilder()
                 .setKey(key)
                 .setVersion(value.version)
-              value.ref.foreach(r ⇒
-                b.setRef(Serialization.serializedActorPath(r)))
+              value.ref.foreach(r ⇒ b.setRef(Serialization.serializedActorPath(r)))
               b.build()
           }
           .toVector
@@ -259,8 +258,7 @@ private[akka] class DistributedPubSubMessageSerializer(
           builder.setMessageManifest(ByteString.copyFromUtf8(manifest))
       case _ ⇒
         if (msgSerializer.includeManifest)
-          builder.setMessageManifest(
-            ByteString.copyFromUtf8(m.getClass.getName))
+          builder.setMessageManifest(ByteString.copyFromUtf8(m.getClass.getName))
     }
 
     builder.build()

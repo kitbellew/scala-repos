@@ -16,9 +16,7 @@ import org.jetbrains.plugins.scala.lang.completion.lookups.ScalaLookupItem
   * on 2/17/16
   */
 class ScalaScopeWeigher extends CompletionWeigher {
-  def computeLevelsBetween(
-      it: Iterator[PsiElement],
-      y: PsiElement): Option[Int] = {
+  def computeLevelsBetween(it: Iterator[PsiElement], y: PsiElement): Option[Int] = {
     val idx = it.indexOf(y)
     if (idx == -1) None else Some(-idx)
   }

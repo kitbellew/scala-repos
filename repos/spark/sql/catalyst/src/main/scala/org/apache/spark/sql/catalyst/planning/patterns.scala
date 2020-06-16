@@ -104,10 +104,7 @@ object PhysicalOperation extends PredicateHelper {
         aliases
           .get(a)
           .map(
-            Alias(_, a.name)(
-              a.exprId,
-              a.qualifiers,
-              isGenerated = a.isGenerated))
+            Alias(_, a.name)(a.exprId, a.qualifiers, isGenerated = a.isGenerated))
           .getOrElse(a)
     }
   }

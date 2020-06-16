@@ -65,8 +65,7 @@ private[round] final class Takebacker(
       isAllowedByPrefs(game) flatMap {
         _.fold(
           f,
-          fufail(
-            ClientError("[takebacker] disallowed by preferences " + game.id)))
+          fufail(ClientError("[takebacker] disallowed by preferences " + game.id)))
       }
 
   private def single(game: Game): Fu[Events] =

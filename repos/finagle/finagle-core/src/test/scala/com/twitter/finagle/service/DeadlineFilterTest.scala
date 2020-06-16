@@ -39,8 +39,7 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     val res = deadlineService("marco")
     assert(statsReceiver.counters.get(List("exceeded")) == None)
-    assert(
-      statsReceiver.counters.get(List("exceeded_beyond_tolerance")) == None)
+    assert(statsReceiver.counters.get(List("exceeded_beyond_tolerance")) == None)
     assert(statsReceiver.counters.get(List("rejected")) == None)
     assert(Await.result(res, 1.second) == "polo")
 
@@ -155,8 +154,7 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
         val res = deadlineService("marco")
         assert(statsReceiver.counters.get(List("exceeded")) == None)
         assert(
-          statsReceiver.counters.get(List("exceeded_beyond_tolerance")) == Some(
-            1))
+          statsReceiver.counters.get(List("exceeded_beyond_tolerance")) == Some(1))
         assert(statsReceiver.counters.get(List("rejected")) == None)
         assert(Await.result(res, 1.second) == "polo")
       }
@@ -186,9 +184,10 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("When the deadline is exceeded and within the tolerance threshold, and " +
-    "the reject token bucket contains sufficient tokens, DeadlineFilter " +
-    "should service the request and increment the exceeded and rejected stats") {
+  test(
+    "When the deadline is exceeded and within the tolerance threshold, and " +
+      "the reject token bucket contains sufficient tokens, DeadlineFilter " +
+      "should service the request and increment the exceeded and rejected stats") {
     val h = new DeadlineFilterHelper
     import h._
 
@@ -319,8 +318,7 @@ class DeadlineFilterTest extends FunSuite with MockitoSugar {
 
     val ps: Stack.Params = Stack.Params.empty + p
     assert(ps.contains[Param])
-    assert(
-      (ps[Param] match { case Param(t, d) => (t, d) }) == ((1.second, 0.5)))
+    assert((ps[Param] match { case Param(t, d) => (t, d) }) == ((1.second, 0.5)))
   }
 
   test("module configured correctly using stack params") {

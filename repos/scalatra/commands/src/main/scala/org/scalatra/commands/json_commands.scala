@@ -9,9 +9,7 @@ import org.scalatra.json.{JsonImplicitConversions, JsonValueReader}
 import org.scalatra.util.ValueReader
 import org.scalatra.util.conversion._
 
-trait JsonBindingImplicits
-    extends BindingImplicits
-    with JsonImplicitConversions {
+trait JsonBindingImplicits extends BindingImplicits with JsonImplicitConversions {
 
   implicit def jsonToDateTime(implicit
       df: DateParser = JodaDateFormats.Web): TypeConverter[JValue, DateTime] =

@@ -1141,9 +1141,7 @@ class CoproductTests {
     assertTypedEquals[Option[Int :+: CNil]](None, r2)
 
     val r3 = Coproduct[Int :+: String :+: CNil](1).init
-    assertTypedEquals[Option[Int :+: CNil]](
-      Some(Coproduct[Int :+: CNil](1)),
-      r3)
+    assertTypedEquals[Option[Int :+: CNil]](Some(Coproduct[Int :+: CNil](1)), r3)
   }
 
   @Test

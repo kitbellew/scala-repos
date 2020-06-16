@@ -251,10 +251,7 @@ object Vector extends VectorConstructors[Vector] with VectorOps {
     def create(length: Int) = DenseVector(new Array[RV](length))
 
     /** Maps all corresponding values from the two collection. */
-    def map(
-        from: Vector[V],
-        from2: Vector[V],
-        fn: (Int, V, V) => RV): Vector[RV] = {
+    def map(from: Vector[V], from2: Vector[V], fn: (Int, V, V) => RV): Vector[RV] = {
       require(from.length == from2.length, "Vector lengths must match!")
       val result = create(from.length)
       var i = 0
@@ -570,8 +567,7 @@ trait VectorOps { this: Vector.type =>
         }, {
           _ pow _
         })
-      op: Op.Impl2[T, T, T])
-      : BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
+      op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -589,8 +585,7 @@ trait VectorOps { this: Vector.type =>
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub) Op <: OpType](implicit
       @expand.sequence[Op]({ _ + _ }, { _ - _ })
-      op: Op.Impl2[T, T, T])
-      : BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
+      op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] =
     new BinaryUpdateRegistry[Vector[T], Vector[T], Op.type] {
       override def bindingMissing(a: Vector[T], b: Vector[T]): Unit = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -603,8 +598,7 @@ trait VectorOps { this: Vector.type =>
   implicit def castUpdateOps[V1, V2, T, Op](implicit
       v1ev: V1 <:< Vector[T],
       V2ev: V2 <:< Vector[T],
-      op: UFunc.InPlaceImpl2[Op, Vector[T], Vector[T]])
-      : InPlaceImpl2[Op, V1, V2] = {
+      op: UFunc.InPlaceImpl2[Op, Vector[T], Vector[T]]): InPlaceImpl2[Op, V1, V2] = {
     op.asInstanceOf[UFunc.InPlaceImpl2[Op, V1, V2]]
   }
 
@@ -792,16 +786,8 @@ trait VectorOps { this: Vector.type =>
   @expand
   @expand.valify
   implicit def zipValuesImpl_V_V[@expand.args(Int, Double, Float, Long) T]
-      : BinaryRegistry[
-        Vector[T],
-        Vector[T],
-        zipValues.type,
-        ZippedValues[T, T]] = {
-    new BinaryRegistry[
-      Vector[T],
-      Vector[T],
-      zipValues.type,
-      ZippedValues[T, T]] {
+      : BinaryRegistry[Vector[T], Vector[T], zipValues.type, ZippedValues[T, T]] = {
+    new BinaryRegistry[Vector[T], Vector[T], zipValues.type, ZippedValues[T, T]] {
       protected override def bindingMissing(
           a: Vector[T],
           b: Vector[T]): ZippedValues[T, T] = {
@@ -1004,8 +990,7 @@ trait VectorOps { this: Vector.type =>
     }
   }
 
-  implicit def implOpSet_V_V_InPlace[V]
-      : OpSet.InPlaceImpl2[Vector[V], Vector[V]] = {
+  implicit def implOpSet_V_V_InPlace[V]: OpSet.InPlaceImpl2[Vector[V], Vector[V]] = {
 
     new OpSet.InPlaceImpl2[Vector[V], Vector[V]] {
       def apply(a: Vector[V], b: Vector[V]): Unit = {
@@ -1031,8 +1016,7 @@ trait VectorOps { this: Vector.type =>
     }
   }
 
-  implicit def canGaxpy[V: Semiring]
-      : scaleAdd.InPlaceImpl3[Vector[V], V, Vector[V]] =
+  implicit def canGaxpy[V: Semiring]: scaleAdd.InPlaceImpl3[Vector[V], V, Vector[V]] =
     new scaleAdd.InPlaceImpl3[Vector[V], V, Vector[V]] {
       val ring = implicitly[Semiring[V]]
       def apply(a: Vector[V], s: V, b: Vector[V]): Unit = {

@@ -76,11 +76,7 @@ class MockClient(val map: mutable.Map[String, Buf]) extends Client {
   /**
     * Note: expiry and flags are ignored.
     */
-  def append(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: Buf): Future[JBoolean] =
+  def append(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
     Future.value(
       map.synchronized {
         map.get(key) match {

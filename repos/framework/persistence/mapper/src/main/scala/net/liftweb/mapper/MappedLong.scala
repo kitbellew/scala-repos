@@ -240,9 +240,7 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
             f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
         })
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(
         inst,
@@ -439,9 +437,7 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
         accessor,
         { case f: MappedNullableLong[T] => f.st(asLong(v)) })
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(
         inst,
@@ -604,9 +600,7 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
     (inst, v) =>
       doField(inst, accessor, { case f: MappedLong[T] => f.st(toLong(v)) })
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(
         inst,

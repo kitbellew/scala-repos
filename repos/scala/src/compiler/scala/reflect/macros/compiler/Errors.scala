@@ -173,9 +173,7 @@ trait Errors extends Traces {
         rparams: List[Symbol]) =
       compatibilityError(lengthMsg("value", "found", aparams(rparams.length)))
 
-    def MacroImplMissingParamsError(
-        aparams: List[Symbol],
-        rparams: List[Symbol]) =
+    def MacroImplMissingParamsError(aparams: List[Symbol], rparams: List[Symbol]) =
       compatibilityError(
         abbreviateCoreAliases(
           lengthMsg("value", "required", rparams(aparams.length))))
@@ -206,9 +204,7 @@ trait Errors extends Traces {
           atparams,
           macroDebugVerbose || settings.explaintypes.value))
 
-    def MacroImplTparamInstantiationError(
-        atparams: List[Symbol],
-        e: NoInstance) = {
+    def MacroImplTparamInstantiationError(atparams: List[Symbol], e: NoInstance) = {
       val badps = atparams map (_.defString) mkString ", "
       compatibilityError(
         f"type parameters $badps cannot be instantiated%n${e.getMessage}")

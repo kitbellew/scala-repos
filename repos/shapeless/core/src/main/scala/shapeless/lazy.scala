@@ -208,9 +208,7 @@ class LazyMacros(val c: whitebox.Context)
 
   def mkStrictImpl[I](implicit iTag: WeakTypeTag[I]): Tree =
     mkImpl[I](
-      (
-          tree,
-          actualType) => q"_root_.shapeless.Strict.apply[$actualType]($tree)",
+      (tree, actualType) => q"_root_.shapeless.Strict.apply[$actualType]($tree)",
       q"null.asInstanceOf[_root_.shapeless.Strict[_root_.scala.Nothing]]"
     )
 
@@ -309,8 +307,8 @@ class LazyMacros(val c: whitebox.Context)
             val tree = c.inferImplicitValue(tpe, silent = true)
             if (tree.isEmpty) {
               tpe.typeSymbol.annotations
-                .find(_.tree.tpe =:= typeOf[
-                  _root_.scala.annotation.implicitNotFound])
+                .find(
+                  _.tree.tpe =:= typeOf[_root_.scala.annotation.implicitNotFound])
                 .foreach { infAnn =>
                   val global = c.universe.asInstanceOf[scala.tools.nsc.Global]
                   val analyzer: global.analyzer.type = global.analyzer
@@ -397,10 +395,7 @@ class LazyMacros(val c: whitebox.Context)
         (state0.copy(open = inst :: state0.open).update(inst), inst)
       }
 
-      def closeInst(
-          tpe: Type,
-          tree: Tree,
-          actualTpe: Type): (State, Instance) = {
+      def closeInst(tpe: Type, tree: Tree, actualTpe: Type): (State, Instance) = {
         assert(open.nonEmpty)
         assert(open.head.instTpe =:= tpe)
         val instance = open.head

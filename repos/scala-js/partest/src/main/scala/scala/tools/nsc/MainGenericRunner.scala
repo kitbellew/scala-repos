@@ -135,8 +135,7 @@ class MainGenericRunner {
               Apply(
                 LoadModule(ClassType(mainModuleClassName)),
                 Ident("main__AT__V"),
-                List(
-                  ArrayValue(ArrayType("T", 1), args.map(StringLiteral(_)))))(
+                List(ArrayValue(ArrayType("T", 1), args.map(StringLiteral(_)))))(
                 NoType),
               Undefined()
             )

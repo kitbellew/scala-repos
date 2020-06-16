@@ -129,8 +129,7 @@ class ReplicatedDataSerializerSpec
     "serialize GCounter" in {
       checkSerialization(GCounter())
       checkSerialization(GCounter().increment(address1, 3))
-      checkSerialization(
-        GCounter().increment(address1, 2).increment(address2, 5))
+      checkSerialization(GCounter().increment(address1, 2).increment(address2, 5))
 
       checkSameContent(
         GCounter().increment(address1, 2).increment(address2, 5),
@@ -232,8 +231,7 @@ class ReplicatedDataSerializerSpec
     "serialize VersionVector" in {
       checkSerialization(VersionVector())
       checkSerialization(VersionVector().increment(address1))
-      checkSerialization(
-        VersionVector().increment(address1).increment(address2))
+      checkSerialization(VersionVector().increment(address1).increment(address2))
 
       val v1 = VersionVector().increment(address1).increment(address1)
       val v2 = VersionVector().increment(address2)

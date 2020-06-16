@@ -47,11 +47,9 @@ object hist extends UFunc {
     }
 
   @expand
-  implicit def canTraverseValuesImpl[
-      T,
-      @expand.args(Int, Double, Float, Long) S](implicit
-      iter: CanTraverseValues[T, S])
-      : Impl3[T, Int, (Double, Double), Histogram[S]] =
+  implicit def canTraverseValuesImpl[T, @expand.args(Int, Double, Float, Long) S](
+      implicit
+      iter: CanTraverseValues[T, S]): Impl3[T, Int, (Double, Double), Histogram[S]] =
     new Impl3[T, Int, (Double, Double), Histogram[S]] {
 
       def apply(v: T, bins: Int, range: (Double, Double)): Histogram[S] = {
@@ -88,10 +86,8 @@ object hist extends UFunc {
     }
 
   @expand
-  implicit def defaultHistWeights[
-      T,
-      U,
-      @expand.args(Int, Double, Float, Long) S](implicit
+  implicit def defaultHistWeights[T, U, @expand.args(Int, Double, Float, Long) S](
+      implicit
       iter: CanZipAndTraverseValues[T, U, S, S],
       iter2: CanTraverseValues[T, S]): Impl2[T, U, Histogram[S]] =
     new Impl2[T, U, Histogram[S]] {
@@ -125,11 +121,7 @@ object hist extends UFunc {
       : Impl4[T, Int, (Double, Double), U, Histogram[S]] =
     new Impl4[T, Int, (Double, Double), U, Histogram[S]] {
 
-      def apply(
-          v: T,
-          bins: Int,
-          range: (Double, Double),
-          weights: U): Histogram[S] = {
+      def apply(v: T, bins: Int, range: (Double, Double), weights: U): Histogram[S] = {
         val (minima, maxima) = range
         if (maxima <= minima) {
           throw new IllegalArgumentException(

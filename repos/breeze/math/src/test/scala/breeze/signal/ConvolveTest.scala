@@ -58,15 +58,10 @@ class ConvolveTest extends FunSuite {
         10.0,
         13.0,
         10.0))
-    assert(
-      correlate(
-        data,
-        kernelEven,
-        overhang = OptOverhang.PreserveLength) == DenseVector(
-        8.0,
-        11.0,
-        14.0,
-        5.0))
+    assert(correlate(
+      data,
+      kernelEven,
+      overhang = OptOverhang.PreserveLength) == DenseVector(8.0, 11.0, 14.0, 5.0))
     assert(
       convolve(
         data,
@@ -111,9 +106,7 @@ class ConvolveTest extends FunSuite {
     assert(convolve(data, kernelEven) == DenseVector(7L, 10L, 13L))
     assert(correlate(data, kernelEven) == DenseVector(8L, 11L, 14L))
     assert(
-      correlate(data, kernelEven, range = (0 to 2 by 2)) == DenseVector(
-        8L,
-        14L))
+      correlate(data, kernelEven, range = (0 to 2 by 2)) == DenseVector(8L, 14L))
 
   }
 

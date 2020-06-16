@@ -88,12 +88,8 @@ class ArithmeticExpressionSuite
       val left = Literal(convert(1))
       val right = Literal(convert(2))
       checkEvaluation(Subtract(left, right), convert(-1))
-      checkEvaluation(
-        Subtract(Literal.create(null, left.dataType), right),
-        null)
-      checkEvaluation(
-        Subtract(left, Literal.create(null, right.dataType)),
-        null)
+      checkEvaluation(Subtract(Literal.create(null, left.dataType), right), null)
+      checkEvaluation(Subtract(left, Literal.create(null, right.dataType)), null)
     }
     checkEvaluation(
       Subtract(positiveShortLit, negativeShortLit),
@@ -115,12 +111,8 @@ class ArithmeticExpressionSuite
       val left = Literal(convert(1))
       val right = Literal(convert(2))
       checkEvaluation(Multiply(left, right), convert(2))
-      checkEvaluation(
-        Multiply(Literal.create(null, left.dataType), right),
-        null)
-      checkEvaluation(
-        Multiply(left, Literal.create(null, right.dataType)),
-        null)
+      checkEvaluation(Multiply(Literal.create(null, left.dataType), right), null)
+      checkEvaluation(Multiply(left, Literal.create(null, right.dataType)), null)
     }
     checkEvaluation(
       Multiply(positiveShortLit, negativeShortLit),

@@ -79,8 +79,7 @@ object CofreeTest extends SpecLite {
         Tree.Node(c.head, c.tail.map(from(_)))
     }
 
-  implicit def CofreeLazyOptionArb[A: Arbitrary]
-      : Arbitrary[CofreeLazyOption[A]] =
+  implicit def CofreeLazyOptionArb[A: Arbitrary]: Arbitrary[CofreeLazyOption[A]] =
     Functor[Arbitrary].map(implicitly[Arbitrary[OneAndStream[A]]])(
       oneAndStreamCofreeLazyOptionIso.to(_))
 
@@ -139,8 +138,7 @@ object CofreeTest extends SpecLite {
   {
     type CofreeZipStream[A] = CofreeZip[Stream, A]
 
-    implicit def CofreeZipStreamArb[A: Arbitrary]
-        : Arbitrary[CofreeZipStream[A]] =
+    implicit def CofreeZipStreamArb[A: Arbitrary]: Arbitrary[CofreeZipStream[A]] =
       Tags.Zip.subst(CofreeStreamArb[A])
 
     checkAll("CofreeZipStream", ScalazProperties.apply.laws[CofreeZipStream])

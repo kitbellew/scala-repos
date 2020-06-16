@@ -528,9 +528,8 @@ class SparkSubmitSuite
   ignore("correctly builds R packages included in a jar with --packages") {
     assume(RUtils.isRInstalled, "R isn't installed on this machine.")
     val main = MavenCoordinate("my.great.lib", "mylib", "0.1")
-    val sparkHome = sys.props.getOrElse(
-      "spark.test.home",
-      fail("spark.test.home is not set!"))
+    val sparkHome =
+      sys.props.getOrElse("spark.test.home", fail("spark.test.home is not set!"))
     val rScriptDir =
       Seq(sparkHome, "R", "pkg", "inst", "tests", "packageInAJarTest.R")
         .mkString(File.separator)
@@ -724,9 +723,8 @@ class SparkSubmitSuite
 
   // NOTE: This is an expensive operation in terms of time (10 seconds+). Use sparingly.
   private def runSparkSubmit(args: Seq[String]): Unit = {
-    val sparkHome = sys.props.getOrElse(
-      "spark.test.home",
-      fail("spark.test.home is not set!"))
+    val sparkHome =
+      sys.props.getOrElse("spark.test.home", fail("spark.test.home is not set!"))
     val process = Utils.executeCommand(
       Seq("./bin/spark-submit") ++ args,
       new File(sparkHome),

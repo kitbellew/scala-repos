@@ -20,8 +20,7 @@ final class DfaEngine[E](
     val forward = dfa.isForward
 
     val workList: java.util.Set[Instruction] =
-      new java.util.HashSet[Instruction](
-        java.util.Arrays.asList(cfg.toArray: _*))
+      new java.util.HashSet[Instruction](java.util.Arrays.asList(cfg.toArray: _*))
     while (!workList.isEmpty) {
       val v = workList.iterator.next
       workList.remove(v)

@@ -362,8 +362,8 @@ class InMemoryCatalog extends ExternalCatalog {
       newName: String): Unit =
     synchronized {
       requireFunctionExists(db, oldName)
-      val newFunc = getFunction(db, oldName).copy(name =
-        FunctionIdentifier(newName, Some(db)))
+      val newFunc =
+        getFunction(db, oldName).copy(name = FunctionIdentifier(newName, Some(db)))
       catalog(db).functions.remove(oldName)
       catalog(db).functions.put(newName, newFunc)
     }

@@ -309,10 +309,7 @@ trait Strings { self: BaseClient =>
     * @param key, millis, value
     * @see http://redis.io.commands/set
     */
-  def setPx(
-      key: ChannelBuffer,
-      millis: Long,
-      value: ChannelBuffer): Future[Unit] =
+  def setPx(key: ChannelBuffer, millis: Long, value: ChannelBuffer): Future[Unit] =
     doRequest(Set(key, value, Some(InMilliseconds(millis)))) {
       case StatusReply(_) => Future.Unit
     }

@@ -94,8 +94,7 @@ trait WikiControllerBase extends ControllerBase {
           getWikiPage(repository.owner, repository.name, "_Footer")
         )
     } getOrElse redirect(
-      s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(
-        pageName)}/_edit")
+      s"/${repository.owner}/${repository.name}/wiki/${StringUtil.urlEncode(pageName)}/_edit")
   })
 
   get("/:owner/:repository/wiki/:page/_history")(referrersOnly { repository =>
@@ -287,10 +286,7 @@ trait WikiControllerBase extends ControllerBase {
     html.pages(
       getWikiPageList(repository.owner, repository.name),
       repository,
-      hasWritePermission(
-        repository.owner,
-        repository.name,
-        context.loginAccount))
+      hasWritePermission(repository.owner, repository.name, context.loginAccount))
   })
 
   get("/:owner/:repository/wiki/_history")(referrersOnly { repository =>

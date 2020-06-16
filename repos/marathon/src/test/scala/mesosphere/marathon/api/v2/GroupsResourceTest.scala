@@ -83,11 +83,8 @@ class GroupsResourceTest
     create.getStatus should be(auth.NotAuthenticatedStatus)
 
     When(s"the group is created")
-    val createWithPath = groupsResource.createWithPath(
-      "/my/id",
-      false,
-      body.getBytes("UTF-8"),
-      req)
+    val createWithPath =
+      groupsResource.createWithPath("/my/id", false, body.getBytes("UTF-8"), req)
     Then("we receive a NotAuthenticated response")
     createWithPath.getStatus should be(auth.NotAuthenticatedStatus)
 
@@ -134,11 +131,8 @@ class GroupsResourceTest
     create.getStatus should be(auth.UnauthorizedStatus)
 
     When(s"the group is created")
-    val createWithPath = groupsResource.createWithPath(
-      "/my/id",
-      false,
-      body.getBytes("UTF-8"),
-      req)
+    val createWithPath =
+      groupsResource.createWithPath("/my/id", false, body.getBytes("UTF-8"), req)
     Then("we receive a Not Authorized response")
     createWithPath.getStatus should be(auth.UnauthorizedStatus)
 
@@ -200,8 +194,7 @@ class GroupsResourceTest
 
     Then("The versions are send as simple json array")
     rootVersionsResponse.getStatus should be(200)
-    rootVersionsResponse.getEntity should be(
-      Json.toJson(groupVersions).toString())
+    rootVersionsResponse.getEntity should be(Json.toJson(groupVersions).toString())
   }
 
   test("Group Versions for path are transferred as simple json string array (Fix #2329)") {
@@ -220,8 +213,7 @@ class GroupsResourceTest
 
     Then("The versions are send as simple json array")
     rootVersionsResponse.getStatus should be(200)
-    rootVersionsResponse.getEntity should be(
-      Json.toJson(groupVersions).toString())
+    rootVersionsResponse.getEntity should be(Json.toJson(groupVersions).toString())
   }
 
   test("Creation of a group with same path as an existing app should be prohibited (fixes #3385)") {
@@ -235,8 +227,8 @@ class GroupsResourceTest
     groupRepository.rootGroup returns Future.successful(Some(group))
 
     When("creating a group with the same path existing app")
-    val body = Json.stringify(
-      Json.toJson(GroupUpdate(id = Some("/group/app".toRootPath))))
+    val body =
+      Json.stringify(Json.toJson(GroupUpdate(id = Some("/group/app".toRootPath))))
 
     Then("we get a 409")
     intercept[ConflictingChangeException] {

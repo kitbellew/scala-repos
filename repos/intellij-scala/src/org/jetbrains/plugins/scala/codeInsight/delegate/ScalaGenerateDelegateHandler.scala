@@ -111,9 +111,7 @@ class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
   private def methodBody(
       delegate: ClassMember,
       prototype: ScFunction): ScExpression = {
-    def typeParameterUsedIn(
-        parameter: ScTypeParam,
-        elements: Seq[PsiElement]) = {
+    def typeParameterUsedIn(parameter: ScTypeParam, elements: Seq[PsiElement]) = {
       elements.exists(elem =>
         ReferencesSearch
           .search(parameter, new LocalSearchScope(elem))

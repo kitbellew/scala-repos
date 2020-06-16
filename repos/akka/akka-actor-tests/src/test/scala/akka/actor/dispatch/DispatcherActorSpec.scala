@@ -36,8 +36,7 @@ object DispatcherActorSpec {
     def receive = {
       case "Hello" ⇒ sender() ! "World"
       case "Failure" ⇒
-        throw new RuntimeException(
-          "Expected exception; to test fault-tolerance")
+        throw new RuntimeException("Expected exception; to test fault-tolerance")
     }
   }
 

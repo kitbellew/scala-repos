@@ -190,8 +190,7 @@ object WSClientAutobahnTest extends App {
       val stage =
         new PushStage[T, T] {
           def onPush(elem: T, ctx: Context[T]): SyncDirective = ctx.push(elem)
-          override def onUpstreamFinish(
-              ctx: Context[T]): TerminationDirective = {
+          override def onUpstreamFinish(ctx: Context[T]): TerminationDirective = {
             p.success(())
             super.onUpstreamFinish(ctx)
           }
@@ -218,9 +217,7 @@ object WSClientAutobahnTest extends App {
     */
   def runToSingleText(uri: Uri): Future[String] = {
     val sink = Sink.head[Message]
-    runWs(
-      uri,
-      Flow.fromSinkAndSourceMat(sink, Source.maybe[Message])(Keep.left))
+    runWs(uri, Flow.fromSinkAndSourceMat(sink, Source.maybe[Message])(Keep.left))
       .flatMap {
         case tm: TextMessage ⇒ tm.textStream.runWith(Sink.fold("")(_ + _))
         case other ⇒

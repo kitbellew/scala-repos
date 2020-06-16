@@ -4,11 +4,7 @@ import _root_.java.io.ByteArrayOutputStream
 import com.twitter.common.application.ShutdownRegistry.ShutdownRegistryImpl
 import com.twitter.common.zookeeper.ServerSet.EndpointStatus
 import com.twitter.common.zookeeper.testing.ZooKeeperTestServer
-import com.twitter.common.zookeeper.{
-  ServerSets,
-  ZooKeeperClient,
-  ZooKeeperUtils
-}
+import com.twitter.common.zookeeper.{ServerSets, ZooKeeperClient, ZooKeeperUtils}
 import com.twitter.concurrent.Spool
 import com.twitter.concurrent.Spool.*::
 import com.twitter.conversions.time._
@@ -326,9 +322,8 @@ class ClusterClientTest
       val myPool = initializePool(
         2,
         Some(
-          scala.collection.immutable.Set(
-            new CacheNode("host1", 11211, 1),
-            new CacheNode("host2", 11212, 1))))
+          scala.collection.immutable
+            .Set(new CacheNode("host1", 11211, 1), new CacheNode("host2", 11212, 1))))
 
       // bring the server back online
       // give it some time we should see the cache pool cluster pick up underlying pool

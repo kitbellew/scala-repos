@@ -236,8 +236,7 @@ object Tensor {
 
   implicit def liftTransposeInPlaceOps[Op, K, V, T](implicit
       ev: T <:< Tensor[K, V],
-      op: UFunc.InPlaceImpl2[Op, T, V])
-      : UFunc.InPlaceImpl2[Op, Transpose[T], V] = {
+      op: UFunc.InPlaceImpl2[Op, T, V]): UFunc.InPlaceImpl2[Op, Transpose[T], V] = {
     new UFunc.InPlaceImpl2[Op, Transpose[T], V] {
       def apply(a: Transpose[T], b: V) {
         op(a.inner, b)
@@ -271,16 +270,9 @@ object Tensor {
       }
     }
 
-  implicit def canSliceTensor2[K1, K2, V: Semiring: ClassTag]: CanSlice2[
-    Tensor[(K1, K2), V],
-    Seq[K1],
-    Seq[K2],
-    SliceMatrix[K1, K2, V]] = {
-    new CanSlice2[
-      Tensor[(K1, K2), V],
-      Seq[K1],
-      Seq[K2],
-      SliceMatrix[K1, K2, V]] {
+  implicit def canSliceTensor2[K1, K2, V: Semiring: ClassTag]
+      : CanSlice2[Tensor[(K1, K2), V], Seq[K1], Seq[K2], SliceMatrix[K1, K2, V]] = {
+    new CanSlice2[Tensor[(K1, K2), V], Seq[K1], Seq[K2], SliceMatrix[K1, K2, V]] {
       def apply(
           from: Tensor[(K1, K2), V],
           slice: Seq[K1],

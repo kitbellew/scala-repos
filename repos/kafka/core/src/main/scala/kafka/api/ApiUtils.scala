@@ -83,10 +83,7 @@ object ApiUtils {
     * Read an integer out of the bytebuffer from the current position and check that it falls within the given
     * range. If not, throw KafkaException.
     */
-  def readIntInRange(
-      buffer: ByteBuffer,
-      name: String,
-      range: (Int, Int)): Int = {
+  def readIntInRange(buffer: ByteBuffer, name: String, range: (Int, Int)): Int = {
     val value = buffer.getInt
     if (value < range._1 || value > range._2)
       throw new KafkaException(

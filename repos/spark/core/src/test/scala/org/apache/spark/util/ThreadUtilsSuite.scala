@@ -44,8 +44,8 @@ class ThreadUtilsSuite extends SparkFunSuite {
   }
 
   test("newDaemonSingleThreadScheduledExecutor") {
-    val executor = ThreadUtils.newDaemonSingleThreadScheduledExecutor(
-      "this-is-a-thread-name")
+    val executor =
+      ThreadUtils.newDaemonSingleThreadScheduledExecutor("this-is-a-thread-name")
     try {
       val latch = new CountDownLatch(1)
       @volatile var threadName = ""

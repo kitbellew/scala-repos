@@ -146,8 +146,7 @@ abstract class LambdaLift extends InfoTransform {
     private def markFree(sym: Symbol, enclosure: Symbol): Boolean = {
 //      println(s"mark free: ${sym.fullLocationString} marked free in $enclosure")
       (enclosure == sym.owner.logicallyEnclosingMember) || {
-        debuglog(
-          "%s != %s".format(enclosure, sym.owner.logicallyEnclosingMember))
+        debuglog("%s != %s".format(enclosure, sym.owner.logicallyEnclosingMember))
         if (enclosure.isPackageClass || !markFree(
             sym,
             enclosure.skipConstructor.owner.logicallyEnclosingMember)) false
@@ -541,9 +540,7 @@ abstract class LambdaLift extends InfoTransform {
       }
 
     /** Transform statements and add lifted definitions to them. */
-    override def transformStats(
-        stats: List[Tree],
-        exprOwner: Symbol): List[Tree] = {
+    override def transformStats(stats: List[Tree], exprOwner: Symbol): List[Tree] = {
       def addLifted(stat: Tree): Tree =
         stat match {
           case ClassDef(_, _, _, _) =>
@@ -572,10 +569,7 @@ abstract class LambdaLift extends InfoTransform {
     }
   } // class LambdaLifter
 
-  private def addFree[A](
-      sym: Symbol,
-      free: List[A],
-      original: List[A]): List[A] = {
+  private def addFree[A](sym: Symbol, free: List[A], original: List[A]): List[A] = {
     val prependFree = (
       !sym.isConstructor // this condition is redundant for now. It will be needed if we remove the second condition in 2.12.x
         && (settings.Ydelambdafy.value == "method" && sym.isDelambdafyTarget) // SI-8359 Makes the lambda body a viable as the target MethodHandle for a call to LambdaMetafactory

@@ -431,10 +431,8 @@ private object SparkDocker {
   }
 
   def startWorker(mountDir: String, masters: String): TestWorkerInfo = {
-    val cmd = Docker.makeRunCmd(
-      "spark-test-worker",
-      args = masters,
-      mountDir = mountDir)
+    val cmd =
+      Docker.makeRunCmd("spark-test-worker", args = masters, mountDir = mountDir)
     val (ip, id, outFile) = startNode(cmd)
     new TestWorkerInfo(ip, id, outFile)
   }

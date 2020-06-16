@@ -188,9 +188,7 @@ object ValueBound {
     }
 
   /** Returns the interval containing the two given bounds. */
-  @inline def union2[A: Order](
-      v1: ValueBound[A],
-      v2: ValueBound[A]): Interval[A] =
+  @inline def union2[A: Order](v1: ValueBound[A], v2: ValueBound[A]): Interval[A] =
     v1.a.compare(v2.a).signum match {
       case -1 => // ?v1 < v2?
         Interval.fromOrderedBounds(v1, v2)

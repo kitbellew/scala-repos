@@ -73,8 +73,7 @@ object BidiFlowDocSpec {
       val out = Outlet[ByteString]("FrameParser.out")
       override val shape = FlowShape.of(in, out)
 
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic =
+      override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
         new GraphStageLogic(shape) {
 
           // this holds the received but not yet parsed bytes

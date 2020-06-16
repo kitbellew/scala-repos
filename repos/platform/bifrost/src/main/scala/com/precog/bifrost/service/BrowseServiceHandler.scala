@@ -209,8 +209,7 @@ class BrowseServiceHandler[A](
               HttpResponse[JValue](
                 InternalServerError,
                 content = Some(
-                  JObject(
-                    "errors" -> "sorry, we're looking into it!".serialize)))
+                  JObject("errors" -> "sorry, we're looking into it!".serialize)))
           }
         )
       }

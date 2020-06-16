@@ -189,11 +189,8 @@ private[akka] class Deployer(
 
   def parseConfig(key: String, config: Config): Option[Deploy] = {
     val deployment = config.withFallback(default)
-    val router = createRouterConfig(
-      deployment.getString("router"),
-      key,
-      config,
-      deployment)
+    val router =
+      createRouterConfig(deployment.getString("router"), key, config, deployment)
     val dispatcher = deployment.getString("dispatcher")
     val mailbox = deployment.getString("mailbox")
     Some(Deploy(key, deployment, router, NoScopeGiven, dispatcher, mailbox))

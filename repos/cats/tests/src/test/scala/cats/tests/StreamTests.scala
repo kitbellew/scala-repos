@@ -12,14 +12,10 @@ import cats.laws.discipline.eq.tuple3Eq
 
 class StreamTests extends CatsSuite {
   checkAll("Stream[Int]", CartesianTests[Stream].cartesian[Int, Int, Int])
-  checkAll(
-    "Cartesian[Stream]",
-    SerializableTests.serializable(Cartesian[Stream]))
+  checkAll("Cartesian[Stream]", SerializableTests.serializable(Cartesian[Stream]))
 
   checkAll("Stream[Int]", CoflatMapTests[Stream].coflatMap[Int, Int, Int])
-  checkAll(
-    "CoflatMap[Stream]",
-    SerializableTests.serializable(CoflatMap[Stream]))
+  checkAll("CoflatMap[Stream]", SerializableTests.serializable(CoflatMap[Stream]))
 
   checkAll("Stream[Int]", MonadCombineTests[Stream].monadCombine[Int, Int, Int])
   checkAll(

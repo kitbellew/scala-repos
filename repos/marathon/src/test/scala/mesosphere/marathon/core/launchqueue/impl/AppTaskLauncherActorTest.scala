@@ -66,8 +66,7 @@ class AppTaskLauncherActorTest extends MarathonSpec with GivenWhenThen {
     Mockito.verify(taskTracker).tasksByAppSync
   }
 
-  test(
-    "Upgrading an app updates app definition in actor and requeries backoff") {
+  test("Upgrading an app updates app definition in actor and requeries backoff") {
     Given("an entry for an app")
     Mockito
       .when(taskTracker.tasksByAppSync)
@@ -131,8 +130,7 @@ class AppTaskLauncherActorTest extends MarathonSpec with GivenWhenThen {
     val upgradedApp = app.copy(cmd = Some("new command"))
     launcherRef ! AppTaskLauncherActor.AddTasks(upgradedApp, 1)
     rateLimiterActor.expectMsg(RateLimiterActor.GetDelay(upgradedApp))
-    rateLimiterActor.reply(
-      RateLimiterActor.DelayUpdate(upgradedApp, clock.now()))
+    rateLimiterActor.reply(RateLimiterActor.DelayUpdate(upgradedApp, clock.now()))
 
     // wait for message being processed
     Await
@@ -409,9 +407,7 @@ class AppTaskLauncherActorTest extends MarathonSpec with GivenWhenThen {
 
       val launcherRef =
         createLauncherRef(instances = 0, appToLaunch = appWithConstraints)
-      launcherRef ! RateLimiterActor.DelayUpdate(
-        appWithConstraints,
-        clock.now())
+      launcherRef ! RateLimiterActor.DelayUpdate(appWithConstraints, clock.now())
 
       And("that has succesfully started up")
       Await

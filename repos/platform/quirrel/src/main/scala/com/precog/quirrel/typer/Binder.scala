@@ -253,8 +253,7 @@ trait Binder extends parser.AST {
         listFreeVars(env)(left) ++ listFreeVars(env)(right)
       case Solve(_, _, _) => Set()
       case Relate(_, from, to, in) =>
-        listFreeVars(env)(from) ++ listFreeVars(env)(to) ++ listFreeVars(env)(
-          in)
+        listFreeVars(env)(from) ++ listFreeVars(env)(to) ++ listFreeVars(env)(in)
       case New(_, child)                                => listFreeVars(env)(child)
       case TicVar(_, name) if env.vars contains name    => Set()
       case TicVar(_, name) if !(env.vars contains name) => Set(name)

@@ -47,8 +47,7 @@ object TagUsage extends App {
 
   // tags have a convenience method name subst for tagging an F[A] as
   // a F[A @@ SomeTag]
-  assert(
-    Conjunction.subst(List(false, true, false)).suml === Conjunction(false))
+  assert(Conjunction.subst(List(false, true, false)).suml === Conjunction(false))
   assert(Conjunction.subst(List.empty[Boolean]).suml === Conjunction(true))
   assert(Conjunction.subst(List(true, true)).suml === Conjunction(true))
 

@@ -251,8 +251,7 @@ object AdditiveCollection {
   implicit def queueAdditiveCollection[T]: AdditiveCollection[Queue[T]] =
     new AdditiveCollection[Queue[T]] {}
 
-  implicit def indexedSeqAdditiveCollection[T]
-      : AdditiveCollection[IndexedSeq[T]] =
+  implicit def indexedSeqAdditiveCollection[T]: AdditiveCollection[IndexedSeq[T]] =
     new AdditiveCollection[IndexedSeq[T]] {}
 
   implicit def defaultAdditiveCollection[T]

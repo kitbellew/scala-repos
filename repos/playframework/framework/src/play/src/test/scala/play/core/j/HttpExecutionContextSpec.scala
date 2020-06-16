@@ -45,8 +45,7 @@ object HttpExecutionContextSpec
         .poll(5, SECONDS)
         .execute(new Runnable {
           def run() = {
-            actualClassLoader.offer(
-              Thread.currentThread().getContextClassLoader())
+            actualClassLoader.offer(Thread.currentThread().getContextClassLoader())
             actualHttpContext.offer(Http.Context.current.get())
           }
         })

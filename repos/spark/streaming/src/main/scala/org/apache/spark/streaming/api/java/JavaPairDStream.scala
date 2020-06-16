@@ -55,10 +55,7 @@ import org.apache.spark.streaming.dstream.DStream
 class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     implicit val kManifest: ClassTag[K],
     implicit val vManifest: ClassTag[V])
-    extends AbstractJavaDStreamLike[
-      (K, V),
-      JavaPairDStream[K, V],
-      JavaPairRDD[K, V]] {
+    extends AbstractJavaDStreamLike[(K, V), JavaPairDStream[K, V], JavaPairRDD[K, V]] {
 
   override def wrapRDD(rdd: RDD[(K, V)]): JavaPairRDD[K, V] =
     JavaPairRDD.fromRDD(rdd)
@@ -192,11 +189,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       mergeCombiners: JFunction2[C, C, C],
       partitioner: Partitioner): JavaPairDStream[K, C] = {
     implicit val cm: ClassTag[C] = fakeClassTag
-    dstream.combineByKey(
-      createCombiner,
-      mergeValue,
-      mergeCombiners,
-      partitioner)
+    dstream.combineByKey(createCombiner, mergeValue, mergeCombiners, partitioner)
   }
 
   /**
@@ -581,9 +574,7 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       partitioner: Partitioner
   ): JavaPairDStream[K, S] = {
     implicit val cm: ClassTag[S] = fakeClassTag
-    dstream.updateStateByKey(
-      convertUpdateStateFunction(updateFunc),
-      partitioner)
+    dstream.updateStateByKey(convertUpdateStateFunction(updateFunc), partitioner)
   }
 
   /**
@@ -636,8 +627,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     * Hash partitioning is used to generate the RDDs with Spark's default number
     * of partitions.
     */
-  def cogroup[W](other: JavaPairDStream[K, W])
-      : JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
+  def cogroup[W](
+      other: JavaPairDStream[K, W]): JavaPairDStream[K, (JIterable[V], JIterable[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     dstream.cogroup(other.dstream).mapValues(t => (t._1.asJava, t._2.asJava))
   }
@@ -787,8 +778,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
     * `other` DStream. Hash partitioning is used to generate the RDDs with Spark's default
     * number of partitions.
     */
-  def fullOuterJoin[W](other: JavaPairDStream[K, W])
-      : JavaPairDStream[K, (Optional[V], Optional[W])] = {
+  def fullOuterJoin[W](
+      other: JavaPairDStream[K, W]): JavaPairDStream[K, (Optional[V], Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.fullOuterJoin(other.dstream)
     joinResult.mapValues {

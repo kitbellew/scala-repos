@@ -21,8 +21,7 @@ import akka.actor.ActorRef
 import akka.sample.osgi.internal.Hakker
 import akka.sample.osgi.internal.HakkerTracker
 
-class DiningHakkersServiceImpl(system: ActorSystem)
-    extends DiningHakkersService {
+class DiningHakkersServiceImpl(system: ActorSystem) extends DiningHakkersService {
   def getHakker(name: String, chairNumber: Int): ActorRef =
     system.actorOf(Props(classOf[Hakker], name, chairNumber))
 

@@ -24,10 +24,7 @@ object IfElseToHeadOption extends SimplificationType {
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
-      case IfStmt(
-            CheckIsEmpty(coll, _, _),
-            scalaNone(),
-            scalaSome(coll2 `.head` ()))
+      case IfStmt(CheckIsEmpty(coll, _, _), scalaNone(), scalaSome(coll2 `.head` ()))
           if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
           replace(expr)
@@ -54,10 +51,7 @@ object IfElseToLastOption extends SimplificationType {
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
-      case IfStmt(
-            CheckIsEmpty(coll, _, _),
-            scalaNone(),
-            scalaSome(coll2 `.last` ()))
+      case IfStmt(CheckIsEmpty(coll, _, _), scalaNone(), scalaSome(coll2 `.last` ()))
           if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
           replace(expr)
@@ -101,8 +95,8 @@ object LiftToLastOption extends SimplificationType {
 
   override def getSimplification(expr: ScExpression): Option[Simplification] =
     expr match {
-      case (coll `.lift` ()) `.apply` (coll2 `.sizeOrLength` () `-` literal(
-            "1")) if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
+      case (coll `.lift` ()) `.apply` (coll2 `.sizeOrLength` () `-` literal("1"))
+          if PsiEquivalenceUtil.areElementsEquivalent(coll, coll2) =>
         Some(
           replace(expr)
             .withText(invocationText(coll, "lastOption"))

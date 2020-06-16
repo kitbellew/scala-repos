@@ -29,9 +29,7 @@ object Test extends DirectTest {
         log(s"ensureCompanionObject($cdef, ...)")
         Some(namer.standardEnsureCompanionObject(cdef, creator))
       }
-      override def pluginsEnterStats(
-          typer: Typer,
-          stats: List[Tree]): List[Tree] = {
+      override def pluginsEnterStats(typer: Typer, stats: List[Tree]): List[Tree] = {
         stats.foreach(stat => log(s"enterStat($stat)"))
         stats
       }

@@ -110,8 +110,7 @@ class SocketAddressResolveHandlerTest extends FunSuite with MockitoSugar {
     val helper = new SocketAddressResolveHandlerHelper
     import helper._
 
-    handleSocketAddress(
-      new InetSocketAddress(InetAddress.getLoopbackAddress, 80))
+    handleSocketAddress(new InetSocketAddress(InetAddress.getLoopbackAddress, 80))
     assert(channelFuture.getCause.isInstanceOf[InconsistentStateException])
     assertClosed()
   }

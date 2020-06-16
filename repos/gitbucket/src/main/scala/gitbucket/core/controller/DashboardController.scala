@@ -94,10 +94,7 @@ trait DashboardControllerBase extends ControllerBase {
     searchPullRequests("mentioned")
   })
 
-  private def getOrCreateCondition(
-      key: String,
-      filter: String,
-      userName: String) = {
+  private def getOrCreateCondition(key: String, filter: String, userName: String) = {
     val condition = session.putAndGet(
       key,
       if (request.hasQueryString) {
@@ -120,10 +117,7 @@ trait DashboardControllerBase extends ControllerBase {
           author = None,
           mentioned = None)
       case "mentioned" =>
-        condition.copy(
-          assigned = None,
-          author = None,
-          mentioned = Some(userName))
+        condition.copy(assigned = None, author = None, mentioned = Some(userName))
       case _ =>
         condition.copy(
           assigned = None,

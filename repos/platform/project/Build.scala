@@ -163,8 +163,7 @@ object PlatformBuild extends Build {
       (commonAssemblySettings ++ jettySettings): _*) dependsOn (common % "compile->compile;test->test", yggdrasil % "compile->compile;test->test", util, bifrost, muspelheim % "compile->compile;test->test", logging % "test->test", auth, accounts, ingest, dvergr)
 
   lazy val platform = Project(id = "platform", base = file("."))
-    .settings(
-      ScctPlugin.mergeReportSettings ++ ScctPlugin.instrumentSettings: _*)
+    .settings(ScctPlugin.mergeReportSettings ++ ScctPlugin.instrumentSettings: _*)
     .aggregate(
       quirrel,
       mirror,
@@ -214,14 +213,13 @@ object PlatformBuild extends Build {
       niflheim,
       logging % "test->test")
 
-  lazy val yggdrasilProf = Project(
-    id = "yggdrasilProf",
-    base = file("yggdrasilProf"))
-    .settings(commonNexusSettings ++ jprofilerSettings ++ Seq(
-      fullRunInputTask(profileTask, Test, "com.precog.yggdrasil.test.Run")): _*)
-    .dependsOn(
-      yggdrasil % "compile->compile;compile->test",
-      logging % "test->test")
+  lazy val yggdrasilProf =
+    Project(id = "yggdrasilProf", base = file("yggdrasilProf"))
+      .settings(commonNexusSettings ++ jprofilerSettings ++ Seq(
+        fullRunInputTask(profileTask, Test, "com.precog.yggdrasil.test.Run")): _*)
+      .dependsOn(
+        yggdrasil % "compile->compile;compile->test",
+        logging % "test->test")
 
   lazy val mongo = Project(id = "mongo", base = file("mongo"))
     .settings(commonAssemblySettings: _*)

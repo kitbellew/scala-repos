@@ -76,9 +76,7 @@ trait QueryStringBindable[A] {
     * @return `None` if the parameter was not present in the query string data. Otherwise, returns `Some` of either
     * `Right` of the parameter value, or `Left` of an error message if the binding failed.
     */
-  def bind(
-      key: String,
-      params: Map[String, Seq[String]]): Option[Either[String, A]]
+  def bind(key: String, params: Map[String, Seq[String]]): Option[Either[String, A]]
 
   /**
     * Unbind a query string parameter.
@@ -547,8 +545,7 @@ object QueryStringBindable {
   /**
     * QueryString binder for List
     */
-  implicit def bindableList[T: QueryStringBindable]
-      : QueryStringBindable[List[T]] =
+  implicit def bindableList[T: QueryStringBindable]: QueryStringBindable[List[T]] =
     bindableSeq[T].transform(_.toList, _.toSeq)
 
   /**

@@ -587,8 +587,7 @@ object TreeTableView {
     *
     * @since 8.0
     */
-  def classCssMetaData
-      : mutable.Buffer[jfxcss.CssMetaData[_ <: jfxcss.Styleable, _]] =
+  def classCssMetaData: mutable.Buffer[jfxcss.CssMetaData[_ <: jfxcss.Styleable, _]] =
     jfxsc.PopupControl.getClassCssMetaData
 }
 
@@ -681,8 +680,7 @@ class TreeTableView[S](
     * The FocusModel provides the API through which it is possible to control focus on zero or one rows of the
     * TreeTableView. Generally the default implementation should be more than sufficient.
     */
-  def focusModel
-      : ObjectProperty[jfxsc.TreeTableView.TreeTableViewFocusModel[S]] =
+  def focusModel: ObjectProperty[jfxsc.TreeTableView.TreeTableViewFocusModel[S]] =
     delegate.focusModelProperty
   def focusModel_=(v: TreeTableView.TreeTableViewFocusModel[S]): Unit = {
     focusModel() = v
@@ -748,9 +746,8 @@ class TreeTableView[S](
         })
   }
   def columnResizePolicy_=(
-      p: jfxu.Callback[
-        jfxsc.TreeTableView.ResizeFeatures[_],
-        java.lang.Boolean]): Unit = {
+      p: jfxu.Callback[jfxsc.TreeTableView.ResizeFeatures[_], java.lang.Boolean])
+      : Unit = {
     delegate.columnResizePolicyProperty().setValue(p)
   }
 
@@ -766,8 +763,8 @@ class TreeTableView[S](
     * You can create custom TableCell instances per column by assigning the appropriate function to the cellFactory
     * property in the TreeTableColumn class.
     */
-  def rowFactory: ObjectProperty[
-    jfxu.Callback[jfxsc.TreeTableView[S], jfxsc.TreeTableRow[S]]] =
+  def rowFactory
+      : ObjectProperty[jfxu.Callback[jfxsc.TreeTableView[S], jfxsc.TreeTableRow[S]]] =
     delegate.rowFactoryProperty
   def rowFactory_=(v: (TreeTableView[S] => TreeTableRow[S])): Unit = {
     rowFactory() =
@@ -821,8 +818,7 @@ class TreeTableView[S](
     * The sort order list contains the columns that have been added to it either programmatically or via a user clicking
     * on the headers themselves.
     */
-  def comparator
-      : ReadOnlyObjectProperty[java.util.Comparator[jfxsc.TreeItem[S]]] =
+  def comparator: ReadOnlyObjectProperty[java.util.Comparator[jfxsc.TreeItem[S]]] =
     delegate.comparatorProperty
 
   /** The sort policy specifies how sorting in this TreeTableView should be performed. For example, a basic sort policy
@@ -850,8 +846,8 @@ class TreeTableView[S](
   /**
     * Called when there's a request to sort the control.
     */
-  def onSort: ObjectProperty[
-    jfxe.EventHandler[jfxsc.SortEvent[jfxsc.TreeTableView[S]]]] =
+  def onSort
+      : ObjectProperty[jfxe.EventHandler[jfxsc.SortEvent[jfxsc.TreeTableView[S]]]] =
     delegate.onSortProperty
   def onSort_=(
       v: jfxe.EventHandler[jfxsc.SortEvent[jfxsc.TreeTableView[S]]]): Unit = {
@@ -901,9 +897,10 @@ class TreeTableView[S](
   def onScrollToColumn_=(
       v: jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]])
       : Unit = {
-    ObjectProperty.fillProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]]](
-      onScrollToColumn,
-      v)
+    ObjectProperty
+      .fillProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[jfxsc.TreeTableColumn[S, _]]]](
+        onScrollToColumn,
+        v)
   }
 
   /**

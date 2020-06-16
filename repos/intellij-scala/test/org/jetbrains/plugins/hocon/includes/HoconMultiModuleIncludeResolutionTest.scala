@@ -45,15 +45,13 @@ class HoconMultiModuleIncludeResolutionTest
     val moduleDirs =
       baseDir.listFiles.sortBy(_.getName).iterator.filter(_.isDirectory)
     val moduleFixtures = moduleDirs.map { dir =>
-      val builder = fixtureBuilder.addModule(
-        classOf[JavaModuleFixtureBuilder[ModuleFixture]])
+      val builder =
+        fixtureBuilder.addModule(classOf[JavaModuleFixtureBuilder[ModuleFixture]])
       builder.addContentRoot(dir.getPath)
 
       def subpath(name: String) = new File(dir, name).getPath
       def libMapping(lib: String) =
-        Map(
-          OrderRootType.CLASSES -> lib,
-          OrderRootType.SOURCES -> (lib + "src"))
+        Map(OrderRootType.CLASSES -> lib, OrderRootType.SOURCES -> (lib + "src"))
           .mapValues(s => Array(subpath(s)))
           .asJava
 
@@ -88,9 +86,7 @@ class HoconMultiModuleIncludeResolutionTest
         model.commit()
       }
 
-      def addDependency(
-          dependingModule: Module,
-          dependencyModule: Module): Unit = {
+      def addDependency(dependingModule: Module, dependencyModule: Module): Unit = {
         val model =
           ModuleRootManager.getInstance(dependingModule).getModifiableModel
         model.addModuleOrderEntry(dependencyModule).setExported(true)

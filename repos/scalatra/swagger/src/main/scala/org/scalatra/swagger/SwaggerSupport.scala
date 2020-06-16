@@ -28,9 +28,7 @@ trait SwaggerSupportBase {
       method: HttpMethod): SwaggerOperation
 }
 object SwaggerSupportSyntax {
-  private[swagger] case class Entry[T <: SwaggerOperation](
-      key: String,
-      value: T)
+  private[swagger] case class Entry[T <: SwaggerOperation](key: String, value: T)
 
   class SinatraSwaggerGenerator(matcher: SinatraRouteMatcher) {
     def toSwaggerPath: String =
@@ -648,9 +646,7 @@ trait SwaggerSupport
     (new OperationBuilder(DataType[T])
       nickname nickname)
   }
-  protected def apiOperation(
-      nickname: String,
-      model: Model): OperationBuilder = {
+  protected def apiOperation(nickname: String, model: Model): OperationBuilder = {
     registerModel(model)
     (new OperationBuilder(ValueDataType(model.id))
       nickname nickname)

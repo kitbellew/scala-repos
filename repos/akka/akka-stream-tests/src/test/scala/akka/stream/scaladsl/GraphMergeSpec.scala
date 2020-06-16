@@ -42,8 +42,7 @@ class GraphMergeSpec extends TwoStreamsSetup {
 
           source1 ~> m1.in(0)
           m1.out ~> Flow[Int].map(_ * 2) ~> m2.in(0)
-          m2.out ~> Flow[Int].map(_ / 2).map(_ + 1) ~> Sink.fromSubscriber(
-            probe)
+          m2.out ~> Flow[Int].map(_ / 2).map(_ + 1) ~> Sink.fromSubscriber(probe)
           source2 ~> m1.in(1)
           source3 ~> m2.in(1)
 

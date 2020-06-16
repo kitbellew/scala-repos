@@ -194,10 +194,7 @@ class MultilayerPerceptronClassifier @Since("1.5.0") (
       .setNumIterations($(maxIter))
     FeedForwardTrainer.setStackSize($(blockSize))
     val mlpModel = FeedForwardTrainer.train(data)
-    new MultilayerPerceptronClassificationModel(
-      uid,
-      myLayers,
-      mlpModel.weights())
+    new MultilayerPerceptronClassificationModel(uid, myLayers, mlpModel.weights())
   }
 }
 

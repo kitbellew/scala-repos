@@ -24,9 +24,7 @@ import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.mllib.util.TestingUtils._
 import org.apache.spark.rdd.RDD
 
-class WeightedLeastSquaresSuite
-    extends SparkFunSuite
-    with MLlibTestSparkContext {
+class WeightedLeastSquaresSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   private var instances: RDD[Instance] = _
   private var instancesConstLabel: RDD[Instance] = _
@@ -116,9 +114,8 @@ class WeightedLeastSquaresSuite
       [1] 17  0  0
      */
 
-    val expected = Seq(
-      Vectors.dense(0.0, -9.221298, 3.394343),
-      Vectors.dense(17.0, 0.0, 0.0))
+    val expected =
+      Seq(Vectors.dense(0.0, -9.221298, 3.394343), Vectors.dense(17.0, 0.0, 0.0))
 
     var idx = 0
     for (fitIntercept <- Seq(false, true)) {

@@ -96,9 +96,7 @@ class ReplicatorMessageSerializerSpec
           totChunks = 10))
       checkSerialization(
         Gossip(
-          Map(
-            "A" -> DataEnvelope(data1),
-            "B" -> DataEnvelope(GSet() + "b" + "c")),
+          Map("A" -> DataEnvelope(data1), "B" -> DataEnvelope(GSet() + "b" + "c")),
           sendBack = true))
     }
 

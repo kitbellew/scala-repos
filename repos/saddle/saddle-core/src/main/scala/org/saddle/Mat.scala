@@ -444,8 +444,7 @@ trait Mat[@spec(Boolean, Int, Long, Double) A]
       val buf = new StringBuilder()
       val strFn = (col: Int) => {
         val l = lenMap(col)
-        "%" + { if (l > 0) l else 1 } + "s " format scalarTag.show(
-          apply(r, col))
+        "%" + { if (l > 0) l else 1 } + "s " format scalarTag.show(apply(r, col))
       }
       buf.append(util.buildStr(ncols, numCols, strFn))
       buf.append("\n")

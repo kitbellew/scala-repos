@@ -69,10 +69,7 @@ trait FileUploadDirectives {
               .filter(part ⇒ part.filename.isDefined && part.name == fieldName)
               .map(part ⇒
                 (
-                  FileInfo(
-                    part.name,
-                    part.filename.get,
-                    part.entity.contentType),
+                  FileInfo(part.name, part.filename.get, part.entity.contentType),
                   part.entity.dataBytes))
               .take(1)
 

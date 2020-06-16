@@ -64,8 +64,7 @@ class DynamicTest {
     assertEquals(11, b.x(10))
   }
 
-  @Test def should_allow_instanciating_JS_classes_dynamically_issue_10()
-      : Unit = {
+  @Test def should_allow_instanciating_JS_classes_dynamically_issue_10(): Unit = {
     val DynamicTestClass = js
       .eval("""
         var DynamicTestClass = function(x) {

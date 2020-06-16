@@ -79,8 +79,7 @@ object LazyMacrosRef {
         else {
           lm.asInstanceOf[
             {
-              def mkStrictImpl(c: Context)(
-                  i: c.WeakTypeTag[I]): c.Expr[Strict[I]]
+              def mkStrictImpl(c: Context)(i: c.WeakTypeTag[I]): c.Expr[Strict[I]]
             }
           ].mkStrictImpl(c)(weakTypeTag[I])
         }

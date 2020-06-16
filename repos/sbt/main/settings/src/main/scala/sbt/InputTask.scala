@@ -80,8 +80,7 @@ object InputTask {
     *  b) a dynamically constructed Task that uses Settings, Tasks, and the result of parsing.
     */
   def createDyn[I, T](p: Initialize[State => Parser[I]])(
-      action: Initialize[Task[I => Initialize[Task[T]]]])
-      : Initialize[InputTask[T]] =
+      action: Initialize[Task[I => Initialize[Task[T]]]]): Initialize[InputTask[T]] =
     separate(p)(std.FullInstance.flattenFun[I, T](action))
 
   /** A dummy parser that consumes no input and produces nothing useful (unit). */

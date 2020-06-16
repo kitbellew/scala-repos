@@ -85,8 +85,8 @@ class DirectAPIKeyFinder[M[+_]](underlying: APIKeyManager[M])(implicit
       v1.GrantDetails(gid, gname, gdesc, perms, createdAt, exp)
   }
 
-  def recordDetails(rootKey: Option[APIKey])
-      : PartialFunction[APIKeyRecord, M[v1.APIKeyDetails]] = {
+  def recordDetails(
+      rootKey: Option[APIKey]): PartialFunction[APIKeyRecord, M[v1.APIKeyDetails]] = {
     case APIKeyRecord(apiKey, name, description, issuer, grantIds, false) =>
       underlying.findAPIKeyAncestry(apiKey).flatMap { ancestors =>
         val ancestorKeys =

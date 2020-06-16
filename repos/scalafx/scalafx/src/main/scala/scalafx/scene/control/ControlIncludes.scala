@@ -760,8 +760,7 @@ trait ControlIncludes extends CellIncludes {
     * @return $SFX $TVSM
     */
   implicit def jfxTableViewSelectionModel2sfx[S](
-      tvsm: jfxsc.TableView.TableViewSelectionModel[S])
-      : TableViewSelectionModel[S] =
+      tvsm: jfxsc.TableView.TableViewSelectionModel[S]): TableViewSelectionModel[S] =
     if (tvsm != null) new TableView.TableViewSelectionModel[S](tvsm) {}
     else null
 

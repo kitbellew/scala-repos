@@ -234,7 +234,6 @@ class ChannelTransportTest
 
     assert(f.poll == Some(Return("a")))
     assert(trans.read().poll == Some(Return("b")))
-    assert(
-      trans.read().poll == Some(Throw(ChannelException(exc, remoteAddress))))
+    assert(trans.read().poll == Some(Throw(ChannelException(exc, remoteAddress))))
   }
 }

@@ -14,8 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging.ScPackageCont
   * @author ilyas
   */
 
-class ScFullPackagingNameIndex
-    extends IntStubIndexExtension[ScPackageContainer] {
+class ScFullPackagingNameIndex extends IntStubIndexExtension[ScPackageContainer] {
 
   override def get(
       int: java.lang.Integer,

@@ -39,8 +39,7 @@ object Media {
     if (m != null) m.delegate else null
 }
 
-class Media(override val delegate: jfxsm.Media)
-    extends SFXDelegate[jfxsm.Media] {
+class Media(override val delegate: jfxsm.Media) extends SFXDelegate[jfxsm.Media] {
 
   /**
     * Constructs a Media instance.

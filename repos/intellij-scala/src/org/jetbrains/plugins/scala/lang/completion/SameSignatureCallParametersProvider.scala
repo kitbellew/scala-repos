@@ -28,10 +28,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   ScTemplateDefinition
 }
 import org.jetbrains.plugins.scala.lang.psi.types.ScType
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 
 import scala.collection.mutable.ArrayBuffer

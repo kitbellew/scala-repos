@@ -666,9 +666,7 @@ trait HttpHelpers {
     * URL taking into account # and if there are any other query
     * parameters
     */
-  def appendQueryParameters(
-      url: String,
-      params: List[(String, String)]): String =
+  def appendQueryParameters(url: String, params: List[(String, String)]): String =
     params match {
       case Nil => url
       case ps =>

@@ -278,9 +278,7 @@ class BindingSpec extends Specification {
     }
 
     "provide FieldDescriptor[DateTime] for a ISO8601 date without millis" in {
-      testLiftJsonDateTimeBinding(
-        JodaDateFormats.Iso8601NoMillis,
-        _.withMillis(0))
+      testLiftJsonDateTimeBinding(JodaDateFormats.Iso8601NoMillis, _.withMillis(0))
     }
 
     "provide FieldDescriptor[DateTime] for a HTTP date" in {

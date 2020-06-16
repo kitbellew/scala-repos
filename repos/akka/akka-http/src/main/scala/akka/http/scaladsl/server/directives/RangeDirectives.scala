@@ -160,11 +160,7 @@ trait RangeDirectives {
                       ctx.reject(UnsatisfiableRangeRejection(ranges, length))
                     case Seq(satisfiableRange) ⇒
                       ctx.complete(
-                        rangeResponse(
-                          satisfiableRange,
-                          entity,
-                          length,
-                          headers))
+                        rangeResponse(satisfiableRange, entity, length, headers))
                     case satisfiableRanges ⇒
                       ctx.complete(
                         (

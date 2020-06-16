@@ -18,10 +18,7 @@ import scala.reflect.macros.whitebox
   * Author: Svyatoslav Ilinskiy
   * Date: 9/18/15.
   */
-class Cached(
-    synchronized: Boolean,
-    modificationCount: ModCount,
-    psiElement: Any)
+class Cached(synchronized: Boolean, modificationCount: ModCount, psiElement: Any)
     extends StaticAnnotation {
   def macroTransform(annottees: Any*) = macro Cached.cachedImpl
 }

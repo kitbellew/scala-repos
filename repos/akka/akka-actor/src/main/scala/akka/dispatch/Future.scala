@@ -92,9 +92,7 @@ object ExecutionContexts {
     override protected def resubmitOnBlock: Boolean =
       false // No point since we execute on same thread
     override def reportFailure(t: Throwable): Unit =
-      throw new IllegalStateException(
-        "exception in sameThreadExecutionContext",
-        t)
+      throw new IllegalStateException("exception in sameThreadExecutionContext", t)
   }
 }
 

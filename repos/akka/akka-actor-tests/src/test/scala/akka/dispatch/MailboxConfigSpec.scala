@@ -57,8 +57,7 @@ abstract class MailboxSpec
 
       system.eventStream.subscribe(testActor, classOf[DeadLetter])
       q.enqueue(testActor, exampleMessage)
-      expectMsg(
-        DeadLetter(exampleMessage.message, system.deadLetters, testActor))
+      expectMsg(DeadLetter(exampleMessage.message, system.deadLetters, testActor))
       system.eventStream.unsubscribe(testActor, classOf[DeadLetter])
 
       q.dequeue should ===(exampleMessage)

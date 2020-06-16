@@ -43,8 +43,7 @@ trait KinesisFunSuite extends SparkFunSuite {
       body
     } else {
       ignore(
-        s"$message [enable by setting env var $envVarNameForEnablingTests=1]")(
-        ())
+        s"$message [enable by setting env var $envVarNameForEnablingTests=1]")(())
     }
   }
 }

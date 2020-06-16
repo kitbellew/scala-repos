@@ -707,12 +707,7 @@ object KafkaConfig {
         null,
         HIGH,
         ZkConnectionTimeoutMsDoc)
-      .define(
-        ZkSyncTimeMsProp,
-        INT,
-        Defaults.ZkSyncTimeMs,
-        LOW,
-        ZkSyncTimeMsDoc)
+      .define(ZkSyncTimeMsProp, INT, Defaults.ZkSyncTimeMs, LOW, ZkSyncTimeMsDoc)
       .define(
         ZkEnableSecureAclsProp,
         BOOLEAN,
@@ -1472,9 +1467,7 @@ object KafkaConfig {
     import scala.collection.JavaConversions._
     val names = configDef.names()
     for (name <- props.keys)
-      require(
-        names.contains(name),
-        "Unknown configuration \"%s\".".format(name))
+      require(names.contains(name), "Unknown configuration \"%s\".".format(name))
   }
 
   def fromProps(props: Properties): KafkaConfig =
@@ -1540,8 +1533,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     Option(getInt(KafkaConfig.AdvertisedPortProp)).getOrElse(port)
 
   val socketSendBufferBytes = getInt(KafkaConfig.SocketSendBufferBytesProp)
-  val socketReceiveBufferBytes = getInt(
-    KafkaConfig.SocketReceiveBufferBytesProp)
+  val socketReceiveBufferBytes = getInt(KafkaConfig.SocketReceiveBufferBytesProp)
   val socketRequestMaxBytes = getInt(KafkaConfig.SocketRequestMaxBytesProp)
   val maxConnectionsPerIp = getInt(KafkaConfig.MaxConnectionsPerIpProp)
   val maxConnectionsPerIpOverrides: Map[String, Int] =
@@ -1556,8 +1548,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val rack = Option(getString(KafkaConfig.RackProp))
 
   /** ********* Log Configuration ********** */
-  val autoCreateTopicsEnable = getBoolean(
-    KafkaConfig.AutoCreateTopicsEnableProp)
+  val autoCreateTopicsEnable = getBoolean(KafkaConfig.AutoCreateTopicsEnableProp)
   val numPartitions = getInt(KafkaConfig.NumPartitionsProp)
   val logDirs = CoreUtils.parseCsvList(
     Option(getString(KafkaConfig.LogDirsProp))
@@ -1662,10 +1653,8 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     KafkaConfig.ControlledShutdownEnableProp)
 
   /** ********* Group coordinator configuration ********** */
-  val groupMinSessionTimeoutMs = getInt(
-    KafkaConfig.GroupMinSessionTimeoutMsProp)
-  val groupMaxSessionTimeoutMs = getInt(
-    KafkaConfig.GroupMaxSessionTimeoutMsProp)
+  val groupMinSessionTimeoutMs = getInt(KafkaConfig.GroupMinSessionTimeoutMsProp)
+  val groupMaxSessionTimeoutMs = getInt(KafkaConfig.GroupMaxSessionTimeoutMsProp)
 
   /** ********* Offset management configuration ********** */
   val offsetMetadataMaxSize = getInt(KafkaConfig.OffsetMetadataMaxSizeProp)
@@ -1676,8 +1665,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   val offsetCommitTimeoutMs = getInt(KafkaConfig.OffsetCommitTimeoutMsProp)
   val offsetCommitRequiredAcks = getShort(
     KafkaConfig.OffsetCommitRequiredAcksProp)
-  val offsetsTopicSegmentBytes = getInt(
-    KafkaConfig.OffsetsTopicSegmentBytesProp)
+  val offsetsTopicSegmentBytes = getInt(KafkaConfig.OffsetsTopicSegmentBytesProp)
   val offsetsTopicCompressionCodec =
     Option(getInt(KafkaConfig.OffsetsTopicCompressionCodecProp))
       .map(value => CompressionCodec.getCompressionCodec(value))
@@ -1752,9 +1740,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
     millis
   }
 
-  private def getMap(
-      propName: String,
-      propValue: String): Map[String, String] = {
+  private def getMap(propName: String, propValue: String): Map[String, String] = {
     try {
       CoreUtils.parseCsvMap(propValue)
     } catch {
@@ -1804,8 +1790,7 @@ class KafkaConfig(val props: java.util.Map[_, _], doLog: Boolean)
   // If the user defined advertised listeners, we use those
   // If he didn't but did define advertised host or port, we'll use those and fill in the missing value from regular host / port or defaults
   // If none of these are defined, we'll use the listeners
-  private def getAdvertisedListeners()
-      : immutable.Map[SecurityProtocol, EndPoint] = {
+  private def getAdvertisedListeners(): immutable.Map[SecurityProtocol, EndPoint] = {
     if (getString(KafkaConfig.AdvertisedListenersProp) != null) {
       validateUniquePortAndProtocol(
         getString(KafkaConfig.AdvertisedListenersProp))

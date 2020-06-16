@@ -273,8 +273,7 @@ trait NIHDBQueryExecutorComponent {
             ingestSystem
               .map(_.stoppable)
               .getOrElse(Stoppable.fromFuture(Future(()))))
-          _ <-
-            IngestSystem.actorStop(yggConfig, projectionsActor, "projections")
+          _ <- IngestSystem.actorStop(yggConfig, projectionsActor, "projections")
           _ <- IngestSystem.actorStop(yggConfig, masterChef, "masterChef")
           _ <- Stoppable.stop(scheduleStorageStoppable)
           _ <-

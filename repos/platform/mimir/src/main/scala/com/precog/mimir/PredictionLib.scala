@@ -116,8 +116,8 @@ trait PredictionLibModule[M[+_]]
                               }
 
                               val conf = math.sqrt(inner)
-                              val pred = math.sqrt(
-                                math.pow(model.resStdErr, 2.0) + inner)
+                              val pred =
+                                math.sqrt(math.pow(model.resStdErr, 2.0) + inner)
 
                               arrConf(i) = tStat * conf
                               arrPred(i) = tStat * pred

@@ -69,10 +69,8 @@ final class ClosureLinkerBackend(
     // Build a Closure JSModule which includes the core libs
     val module = new JSModule("Scala.js")
 
-    module.add(
-      new CompilerInput(
-        toClosureSource(
-          CoreJSLibs.lib(semantics, OutputMode.ECMAScript51Isolated))))
+    module.add(new CompilerInput(
+      toClosureSource(CoreJSLibs.lib(semantics, OutputMode.ECMAScript51Isolated))))
 
     val ast = builder.closureAST
     module.add(new CompilerInput(ast, ast.getInputId(), false))

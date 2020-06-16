@@ -214,8 +214,7 @@ class UTF8StringPropertyCheckSuite
         UTF8String.concat(inputs.map(toUTF8): _*) === toUTF8(inputs.mkString))
     }
     forAll(nullalbeSeq) { (inputs: Seq[String]) =>
-      assert(
-        UTF8String.concat(inputs.map(toUTF8): _*) === toUTF8(concat(inputs)))
+      assert(UTF8String.concat(inputs.map(toUTF8): _*) === toUTF8(concat(inputs)))
     }
   }
 

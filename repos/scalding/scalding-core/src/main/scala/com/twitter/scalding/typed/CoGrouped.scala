@@ -308,10 +308,7 @@ trait CoGrouped[K, +R]
                     idx -> distincts.indexWhere(_ == item)
                 }.toMap
 
-                new CoGroupedJoiner(
-                  isize,
-                  Grouped.keyGetter(ord),
-                  joinFunction) {
+                new CoGroupedJoiner(isize, Grouped.keyGetter(ord), joinFunction) {
                   val distinctSize = dsize
                   def distinctIndexOf(orig: Int) = mapping(orig)
                 }

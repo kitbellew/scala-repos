@@ -215,8 +215,7 @@ abstract class PersistentFSMSpec(config: Config)
       expectMsg(CurrentState(recoveredFsmRef, Shopping, Some(1 second)))
 
       within(0.9 seconds, 1.9 seconds) {
-        expectMsg(
-          Transition(recoveredFsmRef, Shopping, Inactive, Some(2 seconds)))
+        expectMsg(Transition(recoveredFsmRef, Shopping, Inactive, Some(2 seconds)))
       }
 
       expectNoMsg(

@@ -716,7 +716,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     //#extractSettings-examples
     val route =
       extractSettings { settings: RoutingSettings =>
-        complete(s"RoutingSettings.renderVanityFooter = ${settings.renderVanityFooter}")
+        complete(
+          s"RoutingSettings.renderVanityFooter = ${settings.renderVanityFooter}")
       }
 
     // tests:
@@ -750,7 +751,8 @@ class BasicDirectivesExamplesSpec extends RoutingSpec {
     //#extractRequestContext-example
     val route =
       extractRequestContext { ctx =>
-        ctx.log.debug("Using access to additional context availablethings, like the logger.")
+        ctx.log.debug(
+          "Using access to additional context availablethings, like the logger.")
         val request = ctx.request
         complete(s"Request method is ${request.method.name} and content-type is ${request.entity.contentType}")
       }

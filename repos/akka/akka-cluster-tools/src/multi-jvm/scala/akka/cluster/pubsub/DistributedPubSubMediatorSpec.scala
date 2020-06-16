@@ -475,10 +475,8 @@ class DistributedPubSubMediatorSpec
         deltaBuckets.size should ===(3)
         deltaBuckets.find(_.owner == firstAddress).get.content.size should ===(
           10)
-        deltaBuckets.find(_.owner == secondAddress).get.content.size should ===(
-          9)
-        deltaBuckets.find(_.owner == thirdAddress).get.content.size should ===(
-          2)
+        deltaBuckets.find(_.owner == secondAddress).get.content.size should ===(9)
+        deltaBuckets.find(_.owner == thirdAddress).get.content.size should ===(2)
       }
       enterBarrier("verified-initial-delta")
 

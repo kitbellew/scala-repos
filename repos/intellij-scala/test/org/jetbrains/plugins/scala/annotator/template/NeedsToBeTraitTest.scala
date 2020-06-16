@@ -11,8 +11,7 @@ class NeedsToBeTraitTest extends AnnotatorTestBase(NeedsToBeTrait) {
 
   def testNeedsToBeTrait() {
     assertNothing(messages("class C; trait T; new C with T"))
-    assertNothing(
-      messages("class C; trait T1; trait T2; new C with T1 with T2"))
+    assertNothing(messages("class C; trait T1; trait T2; new C with T1 with T2"))
 
     assertMatches(messages("class C; class T; new C with T")) {
       case Error("T", Message("T")) :: Nil =>

@@ -70,13 +70,7 @@ object HiveTypeCoercion {
   // See https://cwiki.apache.org/confluence/display/Hive/LanguageManual+Types.
   // The conversion for integral and floating point types have a linear widening hierarchy:
   private[sql] val numericPrecedence =
-    IndexedSeq(
-      ByteType,
-      ShortType,
-      IntegerType,
-      LongType,
-      FloatType,
-      DoubleType)
+    IndexedSeq(ByteType, ShortType, IntegerType, LongType, FloatType, DoubleType)
 
   /**
     * Case 1 type widening (see the classdoc comment above for HiveTypeCoercion).

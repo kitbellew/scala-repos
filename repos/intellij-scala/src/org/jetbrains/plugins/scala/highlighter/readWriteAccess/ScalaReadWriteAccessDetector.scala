@@ -4,10 +4,7 @@ package highlighter.readWriteAccess
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector
 import com.intellij.codeInsight.highlighting.ReadWriteAccessDetector.Access
 import com.intellij.psi.{PsiElement, PsiNamedElement, PsiReference}
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{
-  ScAssignStmt,
-  ScExpression
-}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScAssignStmt, ScExpression}
 import org.jetbrains.plugins.scala.lang.psi.api.statements.{
   ScPatternDefinition,
   ScVariableDefinition

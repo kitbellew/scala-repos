@@ -609,8 +609,7 @@ object AccessibleRole
     * <li> {@link AccessibleAction#COLLAPSE} </li>
     * </ul>
     */
-  val SplitMenuButton = new AccessibleRole(
-    jfxs.AccessibleRole.SPLIT_MENU_BUTTON)
+  val SplitMenuButton = new AccessibleRole(jfxs.AccessibleRole.SPLIT_MENU_BUTTON)
 
   /**
     * Tab Item role.

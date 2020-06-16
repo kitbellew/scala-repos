@@ -83,10 +83,7 @@ private[launcher] class OfferProcessorImpl(
           savingTasksTimeMeter.timeFuture {
             saveTasks(tasks, savingDeadline).map { savedTasks =>
               def notAllSaved: Boolean = savedTasks.size != tasks.size
-              MatchedTaskOps(
-                offerId,
-                savedTasks,
-                resendThisOffer || notAllSaved)
+              MatchedTaskOps(offerId, savedTasks, resendThisOffer || notAllSaved)
             }
           }
       }

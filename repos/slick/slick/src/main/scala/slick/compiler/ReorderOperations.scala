@@ -101,9 +101,7 @@ class ReorderOperations extends Phase {
       case n => n
     }
 
-  def isAliasingOrLiteral(
-      base: TermSymbol,
-      defs: ConstArray[(TermSymbol, Node)]) = {
+  def isAliasingOrLiteral(base: TermSymbol, defs: ConstArray[(TermSymbol, Node)]) = {
     val r = defs.iterator.map(_._2).forall {
       case FwdPath(s :: _) if s == base => true
       case _: LiteralNode               => true

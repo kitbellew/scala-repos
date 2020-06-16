@@ -36,9 +36,7 @@ abstract class ScalaBaseGenerateAction(val handler: CodeInsightActionHandler)
 
   override protected def isValidForClass(targetClass: PsiClass): Boolean = true
 
-  override protected def getTargetClass(
-      editor: Editor,
-      file: PsiFile): PsiClass = {
+  override protected def getTargetClass(editor: Editor, file: PsiFile): PsiClass = {
     val offset: Int = editor.getCaretModel.getOffset
     val element: PsiElement = file.findElementAt(offset)
     PsiTreeUtil.getParentOfType(element, classOf[ScTemplateDefinition])

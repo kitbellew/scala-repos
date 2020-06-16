@@ -50,8 +50,7 @@ class TensorValues[K, V, +This](
 
   def map[TT >: This, O, That](fn: (V) => O)(implicit
       bf: CanMapValues[TT, V, O, That]): That = {
-    tensor.mapValues(fn)(
-      bf.asInstanceOf[CanMapValues[Tensor[K, V], V, O, That]])
+    tensor.mapValues(fn)(bf.asInstanceOf[CanMapValues[Tensor[K, V], V, O, That]])
   }
 
   def exists(f: V => Boolean) = iterator exists f

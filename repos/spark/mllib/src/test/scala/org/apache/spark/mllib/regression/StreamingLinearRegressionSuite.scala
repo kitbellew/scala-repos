@@ -108,11 +108,7 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
     // generate sequence of simulated data
     val numBatches = 10
     val input = (0 until numBatches).map { i =>
-      LinearDataGenerator.generateLinearInput(
-        0.0,
-        Array(10.0),
-        100,
-        42 * (i + 1))
+      LinearDataGenerator.generateLinearInput(0.0, Array(10.0), 100, 42 * (i + 1))
     }
 
     // create buffer to store intermediate fits

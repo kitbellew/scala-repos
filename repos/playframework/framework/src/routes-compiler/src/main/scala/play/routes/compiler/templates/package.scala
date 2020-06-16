@@ -60,9 +60,7 @@ package object templates {
   /**
     * Generate a controller method call for the given route
     */
-  def controllerMethodCall(
-      r: Route,
-      paramFormat: Parameter => String): String = {
+  def controllerMethodCall(r: Route, paramFormat: Parameter => String): String = {
     val methodPart = if (r.call.instantiate) {
       s"$Injector.instanceOf(classOf[${r.call.packageName}.${r.call.controller}]).${r.call.method}"
     } else {
@@ -268,9 +266,7 @@ package object templates {
     * In routes like /dummy controllers.Application.dummy(foo = "bar")
     * foo = "bar" is a constraint
     */
-  def reverseParameterConstraints(
-      route: Route,
-      localNames: Map[String, String]) = {
+  def reverseParameterConstraints(route: Route, localNames: Map[String, String]) = {
     route.call.parameters
       .getOrElse(Nil)
       .filter { p =>
@@ -298,9 +294,7 @@ package object templates {
   /**
     * Calculate the unique reverse constraints, and generate them using the given block
     */
-  def reverseUniqueConstraints(
-      routes: Seq[Route],
-      params: Seq[(Parameter, Int)])(
+  def reverseUniqueConstraints(routes: Seq[Route], params: Seq[(Parameter, Int)])(
       block: (Route, String, String, Map[String, String]) => ScalaContent)
       : Seq[ScalaContent] = {
     ListMap(routes.reverse.map { route =>

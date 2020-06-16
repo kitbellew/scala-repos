@@ -97,9 +97,7 @@ object BijectionT extends BijectionTInstances {
     liftBijection(x => x, x => x)
 
   def curryB[A, B, C]: Bijection[(A, B) => C, A => B => C] =
-    bijection[Id, Id, (A, B) => C, A => B => C](
-      _.curried,
-      Function.uncurried(_))
+    bijection[Id, Id, (A, B) => C, A => B => C](_.curried, Function.uncurried(_))
 
   // Left is true, Right is false
   def eitherB[A]: Bijection[A \/ A, (Boolean, A)] =
@@ -115,9 +113,7 @@ object BijectionT extends BijectionTInstances {
   def zipB[X[_], A, B](implicit
       Z: Zip[X],
       U: Unzip[X]): Bijection[(X[A], X[B]), X[(A, B)]] =
-    bijection[Id, Id, (X[A], X[B]), X[(A, B)]](
-      x => Z.zip(x._1, x._2),
-      U.unzip(_))
+    bijection[Id, Id, (X[A], X[B]), X[(A, B)]](x => Z.zip(x._1, x._2), U.unzip(_))
 
   def zipListB[A, B]: Bijection[(List[A], List[B]), List[(A, B)]] =
     zipB[List, A, B]

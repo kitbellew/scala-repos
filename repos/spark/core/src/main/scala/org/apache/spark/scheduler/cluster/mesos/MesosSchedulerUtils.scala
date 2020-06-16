@@ -131,8 +131,8 @@ private[mesos] trait MesosSchedulerUtils extends Logging {
             val ret = mesosDriver.run()
             logInfo("driver.run() returned with code " + ret)
             if (ret != null && ret.equals(Status.DRIVER_ABORTED)) {
-              error = Some(
-                new SparkException("Error starting driver, DRIVER_ABORTED"))
+              error =
+                Some(new SparkException("Error starting driver, DRIVER_ABORTED"))
               markErr()
             }
           } catch {

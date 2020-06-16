@@ -412,10 +412,7 @@ object SolverSpecs
         case Some(
               Div(
                 _,
-                Mul(
-                  _,
-                  someFunction,
-                  Mul(_, NumLit(_, "2"), Neg(_, NumLit(_, "3")))),
+                Mul(_, someFunction, Mul(_, NumLit(_, "2"), Neg(_, NumLit(_, "3")))),
                 Add(
                   _,
                   Mul(_, NumLit(_, "3"), Neg(_, NumLit(_, "3"))),
@@ -424,10 +421,7 @@ object SolverSpecs
         case Some(
               Div(
                 _,
-                Mul(
-                  _,
-                  someFunction,
-                  Mul(_, NumLit(_, "2"), Neg(_, NumLit(_, "3")))),
+                Mul(_, someFunction, Mul(_, NumLit(_, "2"), Neg(_, NumLit(_, "3")))),
                 Add(
                   _,
                   Mul(_, Neg(_, NumLit(_, "3")), NumLit(_, "3")),
@@ -451,17 +445,13 @@ object SolverSpecs
                   Neg(_, NumLit(_, "2")),
                   Mul(_, NumLit(_, "3"), NumLit(_, "3"))))) =>
           ok
-        case Some(
-              Div(
+        case Some(Div(
+              _,
+              Mul(_, Mul(_, someFunction, NumLit(_, "2")), Neg(_, NumLit(_, "3"))),
+              Add(
                 _,
-                Mul(
-                  _,
-                  Mul(_, someFunction, NumLit(_, "2")),
-                  Neg(_, NumLit(_, "3"))),
-                Add(
-                  _,
-                  NumLit(_, "2"),
-                  Mul(_, NumLit(_, "3"), Neg(_, NumLit(_, "3")))))) =>
+                NumLit(_, "2"),
+                Mul(_, NumLit(_, "3"), Neg(_, NumLit(_, "3")))))) =>
           ok
       }
 
@@ -493,17 +483,13 @@ object SolverSpecs
                   Mul(_, NumLit(_, "3"), Neg(_, NumLit(_, "3"))),
                   NumLit(_, "2")))) =>
           ok
-        case Some(
-              Div(
+        case Some(Div(
+              _,
+              Mul(_, Mul(_, someFunction, NumLit(_, "3")), Neg(_, NumLit(_, "2"))),
+              Add(
                 _,
-                Mul(
-                  _,
-                  Mul(_, someFunction, NumLit(_, "3")),
-                  Neg(_, NumLit(_, "2"))),
-                Add(
-                  _,
-                  Mul(_, NumLit(_, "3"), NumLit(_, "3")),
-                  Neg(_, NumLit(_, "2"))))) =>
+                Mul(_, NumLit(_, "3"), NumLit(_, "3")),
+                Neg(_, NumLit(_, "2"))))) =>
           ok
         case Some(
               Div(

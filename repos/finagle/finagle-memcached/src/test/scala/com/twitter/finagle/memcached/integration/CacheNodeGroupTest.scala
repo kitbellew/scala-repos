@@ -49,19 +49,14 @@ class CacheNodeGroupTest extends FunSuite with BeforeAndAfterEach {
       ZooKeeperClient.digestCredentials("user", "pass"))
 
     // create serverset
-    serverSet = new CompoundServerSet(
-      List(
-        ServerSets.create(
-          zookeeperClient,
-          ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
-          zkPath)))
+    serverSet = new CompoundServerSet(List(ServerSets
+      .create(zookeeperClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)))
 
     // start five memcached server and join the cluster
     addShards(List(0, 1, 2, 3, 4))
 
     // set cache pool config node data
-    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(
-      cachePoolSize = 5)
+    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(cachePoolSize = 5)
     val output: ByteArrayOutputStream = new ByteArrayOutputStream
     CachePoolConfig.jsonCodec.serialize(cachePoolConfig, output)
     zookeeperClient.get().setData(zkPath, output.toByteArray, -1)

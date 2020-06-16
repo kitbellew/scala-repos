@@ -80,12 +80,9 @@ object Namer {
                 IntegerString(port),
                 residual @ _*) =>
             Some(
-              (
-                Address(new InetSocketAddress(host, port)),
-                Path.Utf8(residual: _*)))
+              (Address(new InetSocketAddress(host, port)), Path.Utf8(residual: _*)))
           case Path.Utf8("$", "inet", IntegerString(port), residual @ _*) =>
-            Some(
-              (Address(new InetSocketAddress(port)), Path.Utf8(residual: _*)))
+            Some((Address(new InetSocketAddress(port)), Path.Utf8(residual: _*)))
           case _ => None
         }
     }
@@ -185,13 +182,13 @@ object Namer {
       trees: Seq[Weighted[Name]]
   ): Activity[NameTree[Name.Bound]] = {
 
-    val weightedTreeVars
-        : Seq[Var[Activity.State[NameTree.Weighted[Name.Bound]]]] = trees.map {
-      case Weighted(w, t) =>
-        val treesAct: Activity[NameTree[Name.Bound]] =
-          bind(lookup, depth, Some(w))(t)
-        treesAct.map(Weighted(w, _)).run
-    }
+    val weightedTreeVars: Seq[Var[Activity.State[NameTree.Weighted[Name.Bound]]]] =
+      trees.map {
+        case Weighted(w, t) =>
+          val treesAct: Activity[NameTree[Name.Bound]] =
+            bind(lookup, depth, Some(w))(t)
+          treesAct.map(Weighted(w, _)).run
+      }
 
     val stateVar: Var[Activity.State[NameTree[Name.Bound]]] =
       Var.collect(weightedTreeVars).map {

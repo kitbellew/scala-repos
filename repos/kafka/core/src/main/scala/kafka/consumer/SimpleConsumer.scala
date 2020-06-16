@@ -17,10 +17,7 @@
 
 package kafka.consumer
 
-import java.nio.channels.{
-  AsynchronousCloseException,
-  ClosedByInterruptException
-}
+import java.nio.channels.{AsynchronousCloseException, ClosedByInterruptException}
 import java.util.concurrent.TimeUnit
 
 import kafka.api._

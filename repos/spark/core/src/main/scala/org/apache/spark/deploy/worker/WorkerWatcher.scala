@@ -68,13 +68,10 @@ private[spark] class WorkerWatcher(
     }
   }
 
-  override def onNetworkError(
-      cause: Throwable,
-      remoteAddress: RpcAddress): Unit = {
+  override def onNetworkError(cause: Throwable, remoteAddress: RpcAddress): Unit = {
     if (isWorker(remoteAddress)) {
       // These logs may not be seen if the worker (and associated pipe) has died
-      logError(
-        s"Could not initialize connection to worker $workerUrl. Exiting.")
+      logError(s"Could not initialize connection to worker $workerUrl. Exiting.")
       logError(s"Error was: $cause")
       exitNonZero()
     }

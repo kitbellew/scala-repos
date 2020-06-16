@@ -7,8 +7,7 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
   def getF[S <: S1, RR <: R]: Monad[F] => F[(RR, S) => F[(W, A, S2)]]
 
   def run(r: R, s: S1)(implicit F: Monad[F]): F[(W, A, S2)] =
-    F.join(
-      F.map[(R, S1) => F[(W, A, S2)], F[(W, A, S2)]](getF(F))(f => f(r, s)))
+    F.join(F.map[(R, S1) => F[(W, A, S2)], F[(W, A, S2)]](getF(F))(f => f(r, s)))
 
   /** Discards the writer component. */
   def state(r: R)(implicit F: Monad[F]): IndexedStateT[F, S1, S2, A] =
@@ -61,19 +60,17 @@ sealed abstract class IndexedReaderWriterStateT[F[_], -R, W, -S1, S2, A] {
 object IndexedReaderWriterStateT
     extends ReaderWriterStateTInstances
     with ReaderWriterStateTFunctions {
-  def apply[F[_], R, W, S1, S2, A](f: (R, S1) => F[(W, A, S2)])
-      : IndexedReaderWriterStateT[F, R, W, S1, S2, A] =
+  def apply[F[_], R, W, S1, S2, A](
+      f: (R, S1) => F[(W, A, S2)]): IndexedReaderWriterStateT[F, R, W, S1, S2, A] =
     new IndexedReaderWriterStateT[F, R, W, S1, S2, A] {
-      override def getF[S <: S1, RR <: R]
-          : Monad[F] => F[(RR, S) => F[(W, A, S2)]] =
+      override def getF[S <: S1, RR <: R]: Monad[F] => F[(RR, S) => F[(W, A, S2)]] =
         (F: Monad[F]) => F.point((r: R, s: S) => f(r, s))
     }
 
   def create[F[_], R, W, S1, S2, A](f: Monad[F] => (R, S1) => F[(W, A, S2)])
       : IndexedReaderWriterStateT[F, R, W, S1, S2, A] =
     new IndexedReaderWriterStateT[F, R, W, S1, S2, A] {
-      override def getF[S <: S1, RR <: R]
-          : Monad[F] => F[(RR, S) => F[(W, A, S2)]] =
+      override def getF[S <: S1, RR <: R]: Monad[F] => F[(RR, S) => F[(W, A, S2)]] =
         (F: Monad[F]) => F.point(f(F))
     }
 }
@@ -120,8 +117,8 @@ sealed abstract class IndexedReaderWriterStateTInstances
 
 sealed abstract class ReaderWriterStateTInstances0
     extends IndexedReaderWriterStateTInstances {
-  implicit def irwstPlusEmpty[F[_], R, W, S1, S2](implicit F0: PlusEmpty[F])
-      : PlusEmpty[IndexedReaderWriterStateT[F, R, W, S1, S2, ?]] =
+  implicit def irwstPlusEmpty[F[_], R, W, S1, S2](implicit
+      F0: PlusEmpty[F]): PlusEmpty[IndexedReaderWriterStateT[F, R, W, S1, S2, ?]] =
     new IndexedReaderWriterStateTPlusEmpty[F, R, W, S1, S2] {
       override def F = F0
     }
@@ -236,8 +233,8 @@ private trait ReaderWriterStateTMonad[F[_], R, W, S]
     ReaderWriterStateT((_, s) => F.point((W.zero, a, s)))
   def ask: ReaderWriterStateT[F, R, W, S, R] =
     ReaderWriterStateT((r, s) => F.point((W.zero, r, s)))
-  def local[A](f: R => R)(fa: ReaderWriterStateT[F, R, W, S, A])
-      : ReaderWriterStateT[F, R, W, S, A] =
+  def local[A](
+      f: R => R)(fa: ReaderWriterStateT[F, R, W, S, A]): ReaderWriterStateT[F, R, W, S, A] =
     ReaderWriterStateT((r, s) => fa.run(f(r), s))
   override def scope[A](k: R)(fa: ReaderWriterStateT[F, R, W, S, A])
       : ReaderWriterStateT[F, R, W, S, A] =
@@ -257,8 +254,8 @@ private trait ReaderWriterStateTMonad[F[_], R, W, S]
     ReaderWriterStateT((_, s) => F.point((w, v, s)))
   override def tell(w: W): ReaderWriterStateT[F, R, W, S, Unit] =
     ReaderWriterStateT((_, s) => F.point((w, (), s)))
-  def listen[A](ma: ReaderWriterStateT[F, R, W, S, A])
-      : ReaderWriterStateT[F, R, W, S, (A, W)] =
+  def listen[A](
+      ma: ReaderWriterStateT[F, R, W, S, A]): ReaderWriterStateT[F, R, W, S, (A, W)] =
     ReaderWriterStateT((r, s) =>
       F.map(ma.run(r, s)) { case (w, a, s1) => (w, (a, w), s1) })
 }
@@ -268,14 +265,9 @@ private trait ReaderWriterStateTHoist[R, W, S]
   implicit def W: Monoid[W]
 
   def hoist[M[_], N[_]](f: M ~> N)(implicit M: Monad[M]) =
-    new (ReaderWriterStateT[M, R, W, S, ?] ~> ReaderWriterStateT[
-      N,
-      R,
-      W,
-      S,
-      ?]) {
-      def apply[A](ma: ReaderWriterStateT[M, R, W, S, A])
-          : ReaderWriterStateT[N, R, W, S, A] =
+    new (ReaderWriterStateT[M, R, W, S, ?] ~> ReaderWriterStateT[N, R, W, S, ?]) {
+      def apply[A](
+          ma: ReaderWriterStateT[M, R, W, S, A]): ReaderWriterStateT[N, R, W, S, A] =
         ReaderWriterStateT {
           case (r, s) => f.apply(ma.run(r, s))
         }

@@ -48,8 +48,7 @@ class DeploymentsResource @Inject() (
         .find(_.plan.id == id)
         .map(_.plan)
       plan.fold(notFound(s"DeploymentPlan $id does not exist")) { deployment =>
-        deployment.affectedApplications.foreach(
-          checkAuthorization(UpdateApp, _))
+        deployment.affectedApplications.foreach(checkAuthorization(UpdateApp, _))
 
         deployment match {
           case plan: DeploymentPlan if force =>

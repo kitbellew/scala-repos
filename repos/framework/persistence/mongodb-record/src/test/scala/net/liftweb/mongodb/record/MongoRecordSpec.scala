@@ -213,8 +213,7 @@ class MongoRecordSpec extends Specification with MongoTestKit {
 
     val mfttr = MongoFieldTypeTestRecord.createRecord
       .mandatoryDateField(new Date)
-      .mandatoryJsonObjectField(
-        TypeTestJsonObject(1, "jsonobj1", Map("x" -> "1")))
+      .mandatoryJsonObjectField(TypeTestJsonObject(1, "jsonobj1", Map("x" -> "1")))
       .mandatoryObjectIdField(ObjectId.get)
       .mandatoryUUIDField(UUID.randomUUID)
       .mandatoryMongoCaseClassField(

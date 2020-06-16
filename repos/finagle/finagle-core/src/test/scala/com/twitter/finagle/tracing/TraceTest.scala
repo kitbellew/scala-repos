@@ -324,11 +324,7 @@ class TraceTest
           verify(tracer, never()).sampleTrace(currentId)
           Trace.record("Hello world")
           verify(tracer, times(1)).record(
-            Record(
-              currentId,
-              Time.now,
-              Annotation.Message("Hello world"),
-              None))
+            Record(currentId, Time.now, Annotation.Message("Hello world"), None))
         }
       }
     }

@@ -59,8 +59,7 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
     def getOrCreateChildDir(name: String) = {
       val file = new File(getBaseDir.getCanonicalPath, name)
       if (!file.exists()) file.mkdir()
-      LocalFileSystem.getInstance.refreshAndFindFileByPath(
-        file.getCanonicalPath)
+      LocalFileSystem.getInstance.refreshAndFindFileByPath(file.getCanonicalPath)
     }
 
     inWriteAction {
@@ -133,8 +132,7 @@ abstract class ScalaCompilerTestBase extends ModuleTestCase with ScalaVersion {
       i += 1
     }
     Assert.assertTrue(
-      s"Too long compilation of test data for ${getClass.getSimpleName}.test${getTestName(
-        false)}",
+      s"Too long compilation of test data for ${getClass.getSimpleName}.test${getTestName(false)}",
       i < maxCompileTime)
     if (callback.hasError) {
       deleteProjectAtTearDown = true

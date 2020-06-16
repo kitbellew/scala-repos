@@ -553,8 +553,7 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
   }
 
   test("aggregate functions and window functions in one expression") {
-    checkHiveQl(
-      "SELECT MAX(c) + COUNT(a) OVER () FROM parquet_t2 GROUP BY a, b")
+    checkHiveQl("SELECT MAX(c) + COUNT(a) OVER () FROM parquet_t2 GROUP BY a, b")
   }
 
   test("window with different window specification") {
@@ -591,8 +590,7 @@ class LogicalPlanToSQLSuite extends SQLBuilderTest with SQLTestUtils {
       """.stripMargin)
   }
 
-  test(
-    "window with the same window specification without aggregate and filter") {
+  test("window with the same window specification without aggregate and filter") {
     checkHiveQl("""
          |SELECT key, value,
          |DENSE_RANK() OVER (DISTRIBUTE BY key SORT BY key, value) AS dr,

@@ -50,9 +50,7 @@ object Executor {
     (baseConfig, args)
   }
 
-  def apply(
-      inArgs: Array[String],
-      generator: (Args => ScaldingExecutionConfig)) {
+  def apply(inArgs: Array[String], generator: (Args => ScaldingExecutionConfig)) {
 
     val (hadoopConf, args) = buildHadoopConf(inArgs)
 

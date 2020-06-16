@@ -238,8 +238,7 @@ class FileJobManager[M[+_]] private[FileJobManager] (
               M.point(Left("Current status did not match expected status."))
 
             case None if prevStatus.isDefined =>
-              M.point(
-                Left("Job has not yet started, yet a status was expected."))
+              M.point(Left("Job has not yet started, yet a status was expected."))
 
             case None =>
               for (m <- addMessage(jobId, JobManager.channels.Status, jval))

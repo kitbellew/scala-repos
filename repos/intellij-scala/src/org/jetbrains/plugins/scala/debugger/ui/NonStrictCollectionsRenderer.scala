@@ -287,8 +287,7 @@ object NonStrictCollectionsRenderer {
   private class SimpleMethodInvocationResult[R]
   private case class MethodNotFound()
       extends SimpleMethodInvocationResult[Nothing]
-  private case class Success[R](value: R)
-      extends SimpleMethodInvocationResult[R]
+  private case class Success[R](value: R) extends SimpleMethodInvocationResult[R]
   private case class Fail[E <: Throwable](exc: E)
       extends SimpleMethodInvocationResult[E]
 
@@ -304,9 +303,7 @@ object NonStrictCollectionsRenderer {
         JavaPsiFacade
           .getInstance(project)
           .getElementFactory
-          .createExpressionFromText(
-            name,
-            PositionUtil getContextElement context)
+          .createExpressionFromText(name, PositionUtil getContextElement context)
       } catch {
         case e: IncorrectOperationException => null
       }

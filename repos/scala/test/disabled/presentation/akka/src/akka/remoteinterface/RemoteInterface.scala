@@ -29,8 +29,7 @@ trait RemoteModule {
   private[akka] def actorsFactories: ConcurrentHashMap[String, () => ActorRef]
   private[akka] def typedActors: ConcurrentHashMap[String, AnyRef]
   private[akka] def typedActorsByUuid: ConcurrentHashMap[String, AnyRef]
-  private[akka] def typedActorsFactories
-      : ConcurrentHashMap[String, () => AnyRef]
+  private[akka] def typedActorsFactories: ConcurrentHashMap[String, () => AnyRef]
 
   /** Lookup methods * */
 
@@ -59,9 +58,7 @@ trait RemoteModule {
     actorRefOrNull
   }
 
-  private[akka] def findTypedActorByIdOrUuid(
-      id: String,
-      uuid: String): AnyRef = {
+  private[akka] def findTypedActorByIdOrUuid(id: String, uuid: String): AnyRef = {
     var actorRefOrNull =
       if (id.startsWith(UUID_PREFIX))
         findTypedActorByUuid(id.substring(UUID_PREFIX.length))

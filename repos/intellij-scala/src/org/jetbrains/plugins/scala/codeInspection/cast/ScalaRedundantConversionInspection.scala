@@ -89,9 +89,7 @@ class ScalaRedundantConversionInspection
     holder.registerProblem(descriptor)
   }
 
-  private class RemoveConversionQuickFix(
-      element: PsiElement,
-      expr: ScExpression)
+  private class RemoveConversionQuickFix(element: PsiElement, expr: ScExpression)
       extends AbstractFixOnTwoPsiElements(
         "Remove Redundant Conversion",
         element,

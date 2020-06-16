@@ -337,8 +337,10 @@ trait KMediansCoreSetClustering {
     * @note Clustering to Minimize the Maximum Intercluster Distance, Gonzalez 1984
     * @link http://www.cs.ucsb.edu/~TEO/papers/Ktmm.pdf
     */
-  def approxKMedian(points: Array[Array[Double]], weights: Array[Long], k: Int)
-      : (Double, Array[Array[Double]], Array[Boolean]) = { // (cost, centers, isCenter)
+  def approxKMedian(points: Array[Array[Double]], weights: Array[Long], k: Int): (
+      Double,
+      Array[Array[Double]],
+      Array[Boolean]) = { // (cost, centers, isCenter)
 
     val reps = new Array[Array[Double]](k)
     reps(0) = points(0)
@@ -685,8 +687,7 @@ trait ClusteringLibModule[M[+_]]
 
         val wrappedTables = transformedTables.zipWithIndex map {
           case (tbl, idx) =>
-            tbl.transform(
-              trans.WrapObject(TransSpec1.Id, "cluster" + (idx + 1)))
+            tbl.transform(trans.WrapObject(TransSpec1.Id, "cluster" + (idx + 1)))
         }
 
         val table = wrappedTables reduce { (t1, t2) =>

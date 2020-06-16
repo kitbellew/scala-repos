@@ -18,8 +18,7 @@ private final class AggregationPipeline {
       case (acc, mtr) =>
         BSONDocument(
           "$cond" -> BSONArray(
-            BSONDocument(
-              "$lte" -> BSONArray("$" + F.moves("t"), mtr.tenths.last)),
+            BSONDocument("$lte" -> BSONArray("$" + F.moves("t"), mtr.tenths.last)),
             mtr.id,
             acc))
     }

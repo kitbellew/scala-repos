@@ -360,9 +360,7 @@ final class Split[T](
         private var willCompleteAfterInitialElement = false
 
         // Substreams are always assumed to be pushable position when we enter this method
-        private def closeThis(
-            handler: SubstreamHandler,
-            currentElem: T): Unit = {
+        private def closeThis(handler: SubstreamHandler, currentElem: T): Unit = {
           decision match {
             case SplitAfter ⇒
               if (!substreamCancelled) {
@@ -558,8 +556,7 @@ final class SubSource[T](
       case f: AsyncCallback[Any] @unchecked ⇒
         f.invoke(ActorSubscriberMessage.OnNext(elem))
       case _ ⇒
-        throw new IllegalStateException(
-          "cannot push to uninitialized substream")
+        throw new IllegalStateException("cannot push to uninitialized substream")
     }
 
   def completeSubstream(): Unit =

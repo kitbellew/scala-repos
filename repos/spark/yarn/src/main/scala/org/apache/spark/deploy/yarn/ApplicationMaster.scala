@@ -110,9 +110,7 @@ private[spark] class ApplicationMaster(
     // Ensure that progress is sent before YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS elapses.
     val expiryInterval =
       yarnConf.getInt(YarnConfiguration.RM_AM_EXPIRY_INTERVAL_MS, 120000)
-    math.max(
-      0,
-      math.min(expiryInterval / 2, sparkConf.get(RM_HEARTBEAT_INTERVAL)))
+    math.max(0, math.min(expiryInterval / 2, sparkConf.get(RM_HEARTBEAT_INTERVAL)))
   }
 
   // Initial wait interval before allocator poll, to allow for quicker ramp up when executors are
@@ -479,8 +477,9 @@ private[spark] class ApplicationMaster(
     t.setDaemon(true)
     t.setName("Reporter")
     t.start()
-    logInfo(s"Started progress reporter thread with (heartbeat : $heartbeatInterval, " +
-      s"initial allocation : $initialAllocationInterval) intervals")
+    logInfo(
+      s"Started progress reporter thread with (heartbeat : $heartbeatInterval, " +
+        s"initial allocation : $initialAllocationInterval) intervals")
     t
   }
 
@@ -697,12 +696,12 @@ private[spark] class ApplicationMaster(
         }
 
       case KillExecutors(executorIds) =>
-        logInfo(s"Driver requested to kill executor(s) ${executorIds.mkString(", ")}.")
+        logInfo(
+          s"Driver requested to kill executor(s) ${executorIds.mkString(", ")}.")
         Option(allocator) match {
           case Some(a) => executorIds.foreach(a.killExecutor)
           case None =>
-            logWarning(
-              "Container allocator is not ready to kill executors yet.")
+            logWarning("Container allocator is not ready to kill executors yet.")
         }
         context.reply(true)
 

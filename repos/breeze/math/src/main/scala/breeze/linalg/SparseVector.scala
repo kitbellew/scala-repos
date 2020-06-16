@@ -294,9 +294,7 @@ object SparseVector
     new CanMapValues[SparseVector[V], V, V2, SparseVector[V2]] {
 
       /** Maps all key-value pairs from the given collection. */
-      override def apply(
-          from: SparseVector[V],
-          fn: (V) => V2): SparseVector[V2] = {
+      override def apply(from: SparseVector[V], fn: (V) => V2): SparseVector[V2] = {
         SparseVector.tabulate(from.length)(i => fn(from(i)))
       }
     }
@@ -307,9 +305,7 @@ object SparseVector
     new CanMapActiveValues[SparseVector[V], V, V2, SparseVector[V2]] {
 
       /** Maps all active key-value pairs from the given collection. */
-      override def apply(
-          from: SparseVector[V],
-          fn: (V) => V2): SparseVector[V2] = {
+      override def apply(from: SparseVector[V], fn: (V) => V2): SparseVector[V2] = {
         val out = new Array[V2](from.activeSize)
         var i = 0
         while (i < from.activeSize) {
@@ -425,20 +421,14 @@ object SparseVector
       }
 
       /** Maps all active key-value pairs from the given collection. */
-      def mapActive(
-          from: SparseVector[V],
-          fn: (Int, V) => V2): SparseVector[V2] = {
+      def mapActive(from: SparseVector[V], fn: (Int, V) => V2): SparseVector[V2] = {
         val out = new Array[V2](from.used)
         var i = 0
         while (i < from.used) {
           out(i) = fn(from.index(i), from.data(i))
           i += 1
         }
-        new SparseVector(
-          from.index.take(from.used),
-          out,
-          from.used,
-          from.length)
+        new SparseVector(from.index.take(from.used), out, from.used, from.length)
       }
     }
   }
@@ -480,8 +470,7 @@ object SparseVector
       def apply(v: SparseVector[E]): Int = v.size
     }
 
-  implicit def canTabulate[E: ClassTag: Zero]
-      : CanTabulate[Int, SparseVector[E], E] =
+  implicit def canTabulate[E: ClassTag: Zero]: CanTabulate[Int, SparseVector[E], E] =
     new CanTabulate[Int, SparseVector[E], E] {
       def apply(d: Int, f: (Int) => E): SparseVector[E] = tabulate[E](d)(f)
     }

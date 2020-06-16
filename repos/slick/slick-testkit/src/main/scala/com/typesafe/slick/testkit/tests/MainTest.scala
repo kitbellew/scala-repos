@@ -19,9 +19,7 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
   lazy val users = TableQuery[Users]
 
   class Orders(tag: Tag)
-      extends Table[(Int, Int, String, Boolean, Option[Boolean])](
-        tag,
-        "orders") {
+      extends Table[(Int, Int, String, Boolean, Option[Boolean])](tag, "orders") {
     def userID = column[Int]("userID")
     def orderID = column[Int]("orderID", O.PrimaryKey, O.AutoInc)
     def product = column[String]("product")

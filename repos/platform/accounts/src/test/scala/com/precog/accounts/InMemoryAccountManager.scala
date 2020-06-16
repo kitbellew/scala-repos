@@ -99,9 +99,7 @@ class InMemoryAccountManager[M[+_]](resetExpiration: Int = 1)(implicit
     M.point(resetTokens.get(tokenId))
   }
 
-  def generateResetToken(
-      account: Account,
-      expiration: DateTime): M[ResetTokenId] = {
+  def generateResetToken(account: Account, expiration: DateTime): M[ResetTokenId] = {
     val tokenId = java.util.UUID.randomUUID.toString.replace("-", "")
 
     val token =

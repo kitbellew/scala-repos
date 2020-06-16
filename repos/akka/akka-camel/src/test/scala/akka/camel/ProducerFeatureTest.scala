@@ -318,9 +318,7 @@ class ProducerFeatureTest
       import TestSupport._
       filterEvents(EventFilter[Exception](occurrences = 1)) {
         val producerSupervisor = system.actorOf(
-          Props(
-            new ProducerSupervisor(
-              Props(new ChildProducer("mock:mock", true)))),
+          Props(new ProducerSupervisor(Props(new ChildProducer("mock:mock", true)))),
           "21-ignore-deadletter-sender-ref-test")
         mockEndpoint.reset()
         producerSupervisor.tell(CamelMessage("test", Map()), testActor)
@@ -402,9 +400,7 @@ object ProducerFeatureTest {
       }
   }
 
-  class TestForwarder(uri: String, target: ActorRef)
-      extends Actor
-      with Producer {
+  class TestForwarder(uri: String, target: ActorRef) extends Actor with Producer {
     def endpointUri = uri
 
     override def headersToCopy = Set(CamelMessage.MessageExchangeId, "test")

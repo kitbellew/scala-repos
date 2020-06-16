@@ -135,8 +135,7 @@ class ReceivedBlockTrackerSuite
 
     // Set WAL configuration
     conf.set("spark.streaming.driver.writeAheadLog.rollingIntervalSecs", "1")
-    require(
-      WriteAheadLogUtils.getRollingIntervalSecs(conf, isDriver = true) === 1)
+    require(WriteAheadLogUtils.getRollingIntervalSecs(conf, isDriver = true) === 1)
 
     // Start tracker and add blocks
     val tracker1 = createTracker(clock = manualClock)
@@ -244,8 +243,7 @@ class ReceivedBlockTrackerSuite
 
   test("parallel file deletion in FileBasedWriteAheadLog is robust to deletion error") {
     conf.set("spark.streaming.driver.writeAheadLog.rollingIntervalSecs", "1")
-    require(
-      WriteAheadLogUtils.getRollingIntervalSecs(conf, isDriver = true) === 1)
+    require(WriteAheadLogUtils.getRollingIntervalSecs(conf, isDriver = true) === 1)
 
     val addBlocks = generateBlockInfos()
     val batch1 = addBlocks.slice(0, 1)
@@ -284,9 +282,8 @@ class ReceivedBlockTrackerSuite
     // Create the tracker to recover from the log files. We're going to ask the tracker to clean
     // things up, and then we're going to rewrite that data, and recover using a different tracker.
     // They should have identical data no matter what
-    val tracker = createTracker(
-      recoverFromWriteAheadLog = true,
-      clock = new ManualClock(t(4)))
+    val tracker =
+      createTracker(recoverFromWriteAheadLog = true, clock = new ManualClock(t(4)))
 
     def compareTrackers(
         base: ReceivedBlockTracker,
@@ -302,18 +299,16 @@ class ReceivedBlockTrackerSuite
     tracker.cleanupOldBatches(t(3), waitForCompletion = true)
     assert(getWriteAheadLogFiles().length === 3)
 
-    val tracker2 = createTracker(
-      recoverFromWriteAheadLog = true,
-      clock = new ManualClock(t(4)))
+    val tracker2 =
+      createTracker(recoverFromWriteAheadLog = true, clock = new ManualClock(t(4)))
     compareTrackers(tracker, tracker2)
 
     // rewrite first file
     writeEventsManually(getLogFileName(t(0)), Seq(createBatchCleanup(t(0))))
     assert(getWriteAheadLogFiles().length === 4)
     // make sure trackers are consistent
-    val tracker3 = createTracker(
-      recoverFromWriteAheadLog = true,
-      clock = new ManualClock(t(4)))
+    val tracker3 =
+      createTracker(recoverFromWriteAheadLog = true, clock = new ManualClock(t(4)))
     compareTrackers(tracker, tracker3)
 
     // rewrite second file
@@ -322,9 +317,8 @@ class ReceivedBlockTrackerSuite
       batch1.map(BlockAdditionEvent) :+ batch1Allocation)
     assert(getWriteAheadLogFiles().length === 5)
     // make sure trackers are consistent
-    val tracker4 = createTracker(
-      recoverFromWriteAheadLog = true,
-      clock = new ManualClock(t(4)))
+    val tracker4 =
+      createTracker(recoverFromWriteAheadLog = true, clock = new ManualClock(t(4)))
     compareTrackers(tracker, tracker4)
   }
 

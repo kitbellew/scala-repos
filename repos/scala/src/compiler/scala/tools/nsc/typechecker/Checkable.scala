@@ -358,8 +358,7 @@ trait Checkable {
             tree.pos,
             s"a pattern match on a refinement type is unchecked")
         case RefinedType(parents, _) =>
-          parents foreach (p =>
-            checkCheckable(tree, p, X, inPattern, canRemedy))
+          parents foreach (p => checkCheckable(tree, p, X, inPattern, canRemedy))
         case _ =>
           val checker = new CheckabilityChecker(X, P)
           if (checker.result == RuntimeCheckable)

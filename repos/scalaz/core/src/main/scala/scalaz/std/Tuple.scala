@@ -156,8 +156,7 @@ sealed trait TupleInstances1 extends TupleInstances0 {
     new Tuple2BindRec[A1] {
       def _1 = implicitly
     }
-  implicit def tuple3BindRec[A1: Semigroup, A2: Semigroup]
-      : BindRec[(A1, A2, ?)] =
+  implicit def tuple3BindRec[A1: Semigroup, A2: Semigroup]: BindRec[(A1, A2, ?)] =
     new Tuple3BindRec[A1, A2] {
       def _1 = implicitly
       def _2 = implicitly
@@ -880,9 +879,7 @@ private trait Tuple5Cozip[A1, A2, A3, A4] extends Cozip[(A1, A2, A3, A4, ?)] {
 private trait Tuple6Cozip[A1, A2, A3, A4, A5]
     extends Cozip[(A1, A2, A3, A4, A5, ?)] {
   override def cozip[A, B](x: (A1, A2, A3, A4, A5, A \/ B)) =
-    x._6.bimap(
-      (x._1, x._2, x._3, x._4, x._5, _),
-      (x._1, x._2, x._3, x._4, x._5, _))
+    x._6.bimap((x._1, x._2, x._3, x._4, x._5, _), (x._1, x._2, x._3, x._4, x._5, _))
 }
 private trait Tuple7Cozip[A1, A2, A3, A4, A5, A6]
     extends Cozip[(A1, A2, A3, A4, A5, A6, ?)] {
@@ -954,9 +951,7 @@ private trait Tuple6Equal[A1, A2, A3, A4, A5, A6]
   implicit def _4: Equal[A4]
   implicit def _5: Equal[A5]
   implicit def _6: Equal[A6]
-  override def equal(
-      f1: (A1, A2, A3, A4, A5, A6),
-      f2: (A1, A2, A3, A4, A5, A6)) =
+  override def equal(f1: (A1, A2, A3, A4, A5, A6), f2: (A1, A2, A3, A4, A5, A6)) =
     _1.equal(f1._1, f2._1) && _2.equal(f1._2, f2._2) && _3.equal(
       f1._3,
       f2._3) && _4.equal(f1._4, f2._4) && _5.equal(f1._5, f2._5) && _6.equal(

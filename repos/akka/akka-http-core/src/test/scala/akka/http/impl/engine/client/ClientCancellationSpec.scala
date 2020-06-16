@@ -56,9 +56,9 @@ class ClientCancellationSpec extends AkkaSpec("""
       testCase(
         Flow[HttpRequest]
           .map((_, ()))
-          .via(Http().cachedHostConnectionPool(
-            address.getHostName,
-            address.getPort)(noncheckedMaterializer))
+          .via(
+            Http().cachedHostConnectionPool(address.getHostName, address.getPort)(
+              noncheckedMaterializer))
           .map(_._1.get))
     }
 

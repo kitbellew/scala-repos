@@ -40,8 +40,8 @@ object Engine0 {
       extends PDataSource[TrainingData, EvalInfo, Query, Actual] {
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
-    override def readEval(sc: SparkContext)
-        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+    override def readEval(
+        sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
       (0 until en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
@@ -64,8 +64,8 @@ object Engine0 {
     val id = params.id
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
-    override def readEval(sc: SparkContext)
-        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+    override def readEval(
+        sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
       (0 until params.en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
@@ -96,8 +96,8 @@ object Engine0 {
     val id = params.id
     def readTraining(sc: SparkContext): TrainingData = TrainingData(id)
 
-    override def readEval(sc: SparkContext)
-        : Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
+    override def readEval(
+        sc: SparkContext): Seq[(TrainingData, EvalInfo, RDD[(Query, Actual)])] = {
       (0 until params.en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
@@ -115,8 +115,7 @@ object Engine0 {
       extends LDataSource[TrainingData, EvalInfo, Query, Actual] {
     def readTraining(): TrainingData = TrainingData(id)
 
-    override def readEval()
-        : Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] = {
+    override def readEval(): Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] = {
       (0 until en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until qn).map { qx =>
@@ -139,8 +138,7 @@ object Engine0 {
     val id = params.id
     def readTraining(): TrainingData = TrainingData(id)
 
-    override def readEval()
-        : Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] = {
+    override def readEval(): Seq[(TrainingData, EvalInfo, Seq[(Query, Actual)])] = {
       (0 until params.en).map { ex =>
         {
           val qaSeq: Seq[(Query, Actual)] = (0 until params.qn).map { qx =>
@@ -312,8 +310,7 @@ object Engine0 {
     case class Model(id: Int, pd: ProcessedData)
         extends LocalFileSystemPersistentModel[EmptyParams]
 
-    object Model
-        extends LocalFileSystemPersistentModelLoader[EmptyParams, Model]
+    object Model extends LocalFileSystemPersistentModelLoader[EmptyParams, Model]
   }
 
   class LAlgo2(params: LAlgo2.Params)
@@ -375,8 +372,7 @@ object Engine0 {
     case class Model(id: Int, pd: ProcessedData)
         extends LocalFileSystemPersistentModel[EmptyParams]
 
-    object Model
-        extends LocalFileSystemPersistentModelLoader[EmptyParams, Model]
+    object Model extends LocalFileSystemPersistentModelLoader[EmptyParams, Model]
   }
 
   class NAlgo2(params: NAlgo2.Params)
@@ -455,9 +451,8 @@ class Engine1
   def eval(
       sc: SparkContext,
       engineParams: EngineParams,
-      params: WorkflowParams): Seq[(
-      Engine1.EvalInfo,
-      RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])] = {
+      params: WorkflowParams): Seq[
+    (Engine1.EvalInfo, RDD[(Engine1.Query, Engine1.Prediction, Engine1.Actual)])] = {
     val dsp = engineParams.dataSourceParams._2.asInstanceOf[Engine1.DSP]
     Seq(
       (

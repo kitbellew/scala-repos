@@ -15,8 +15,7 @@ class StdNamesTest {
 
   @Test
   def testNewTermNameInvalid(): Unit = {
-    assertThrows[IllegalArgumentException](
-      newTermName("foo".toCharArray, -1, 1))
+    assertThrows[IllegalArgumentException](newTermName("foo".toCharArray, -1, 1))
   }
 
   @Test

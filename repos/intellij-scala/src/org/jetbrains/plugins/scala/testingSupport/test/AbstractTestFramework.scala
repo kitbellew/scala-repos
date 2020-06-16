@@ -65,8 +65,7 @@ abstract class AbstractTestFramework extends JavaTestFramework {
 
   def generateObjectTests = false
 
-  protected def getLibraryDependencies(
-      scalaVersion: Option[String]): Seq[String]
+  protected def getLibraryDependencies(scalaVersion: Option[String]): Seq[String]
 
   protected def getLibraryResolvers(scalaVersion: Option[String]): Seq[String]
 

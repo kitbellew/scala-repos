@@ -701,8 +701,7 @@ object coproduct {
       type Out = Out0
     }
 
-    implicit def extendRightSingleton[H, A]
-        : Aux[H :+: CNil, A, H :+: A :+: CNil] =
+    implicit def extendRightSingleton[H, A]: Aux[H :+: CNil, A, H :+: A :+: CNil] =
       new ExtendRight[H :+: CNil, A] {
         type Out = H :+: A :+: CNil
 
@@ -850,9 +849,7 @@ object coproduct {
     * @author Stacy Curl
     * @author Alexandre Archambault
     */
-  trait RotateLeft[C <: Coproduct, N <: Nat]
-      extends DepFn1[C]
-      with Serializable {
+  trait RotateLeft[C <: Coproduct, N <: Nat] extends DepFn1[C] with Serializable {
     type Out <: Coproduct
   }
 
@@ -871,11 +868,8 @@ object coproduct {
       }
 
     /** Binary compatibility stub */
-    def implToRotateLeft[
-        C <: Coproduct,
-        N <: Nat,
-        Size <: Nat,
-        NModSize <: Succ[_]](implicit
+    def implToRotateLeft[C <: Coproduct, N <: Nat, Size <: Nat, NModSize <: Succ[_]](
+        implicit
         length: Length.Aux[C, Size],
         mod: nat.Mod.Aux[N, Size, NModSize],
         impl: Impl[C, NModSize]
@@ -1270,9 +1264,7 @@ object coproduct {
     *
     * @author Michael Pilquist
     */
-  trait Align[A <: Coproduct, B <: Coproduct]
-      extends (A => B)
-      with Serializable {
+  trait Align[A <: Coproduct, B <: Coproduct] extends (A => B) with Serializable {
     def apply(a: A): B
   }
 

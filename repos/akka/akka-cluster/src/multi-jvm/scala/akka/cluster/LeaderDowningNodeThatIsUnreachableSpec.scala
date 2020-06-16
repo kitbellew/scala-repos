@@ -38,17 +38,13 @@ class LeaderDowningNodeThatIsUnreachableWithFailureDetectorPuppetMultiJvmNode4
     extends LeaderDowningNodeThatIsUnreachableSpec(failureDetectorPuppet = true)
 
 class LeaderDowningNodeThatIsUnreachableWithAccrualFailureDetectorMultiJvmNode1
-    extends LeaderDowningNodeThatIsUnreachableSpec(
-      failureDetectorPuppet = false)
+    extends LeaderDowningNodeThatIsUnreachableSpec(failureDetectorPuppet = false)
 class LeaderDowningNodeThatIsUnreachableWithAccrualFailureDetectorMultiJvmNode2
-    extends LeaderDowningNodeThatIsUnreachableSpec(
-      failureDetectorPuppet = false)
+    extends LeaderDowningNodeThatIsUnreachableSpec(failureDetectorPuppet = false)
 class LeaderDowningNodeThatIsUnreachableWithAccrualFailureDetectorMultiJvmNode3
-    extends LeaderDowningNodeThatIsUnreachableSpec(
-      failureDetectorPuppet = false)
+    extends LeaderDowningNodeThatIsUnreachableSpec(failureDetectorPuppet = false)
 class LeaderDowningNodeThatIsUnreachableWithAccrualFailureDetectorMultiJvmNode4
-    extends LeaderDowningNodeThatIsUnreachableSpec(
-      failureDetectorPuppet = false)
+    extends LeaderDowningNodeThatIsUnreachableSpec(failureDetectorPuppet = false)
 
 abstract class LeaderDowningNodeThatIsUnreachableSpec(
     multiNodeConfig: LeaderDowningNodeThatIsUnreachableMultiNodeConfig)
@@ -56,8 +52,7 @@ abstract class LeaderDowningNodeThatIsUnreachableSpec(
     with MultiNodeClusterSpec {
 
   def this(failureDetectorPuppet: Boolean) =
-    this(
-      LeaderDowningNodeThatIsUnreachableMultiNodeConfig(failureDetectorPuppet))
+    this(LeaderDowningNodeThatIsUnreachableMultiNodeConfig(failureDetectorPuppet))
 
   import multiNodeConfig._
 

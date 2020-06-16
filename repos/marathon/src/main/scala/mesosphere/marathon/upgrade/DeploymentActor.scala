@@ -172,14 +172,8 @@ private class DeploymentActor(
 
   def killTasks(appId: PathId, tasks: Seq[Task]): Future[Unit] = {
     val promise = Promise[Unit]()
-    context.actorOf(
-      TaskKillActor.props(
-        driver,
-        appId,
-        taskTracker,
-        eventBus,
-        tasks.map(_.taskId),
-        promise))
+    context.actorOf(TaskKillActor
+      .props(driver, appId, taskTracker, eventBus, tasks.map(_.taskId), promise))
     promise.future
   }
 
@@ -210,9 +204,7 @@ private class DeploymentActor(
     }
   }
 
-  def resolveArtifacts(
-      app: AppDefinition,
-      urls: Map[URL, String]): Future[Unit] = {
+  def resolveArtifacts(app: AppDefinition, urls: Map[URL, String]): Future[Unit] = {
     val promise = Promise[Boolean]()
     context.actorOf(
       Props(classOf[ResolveArtifactsActor], app, urls, promise, storage))

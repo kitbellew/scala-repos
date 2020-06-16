@@ -305,9 +305,7 @@ trait DenseMatrixMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math.max(
-                math.min(A.rows, A.cols),
-                nrhs))
+              math.min(A.rows, A.cols) + math.max(math.min(A.rows, A.cols), nrhs))
           else
             math.max(queryWork(0).toInt, 1)
         }
@@ -371,9 +369,7 @@ trait DenseMatrixFloatMultiplyStuff
         DenseMatrix[Float],
         DenseMatrix[Float]] {
 
-    def apply(
-        _a: DenseMatrix[Float],
-        _b: DenseMatrix[Float]): DenseMatrix[Float] = {
+    def apply(_a: DenseMatrix[Float], _b: DenseMatrix[Float]): DenseMatrix[Float] = {
       require(_a.cols == _b.rows, "Dimension mismatch!")
       val rv = DenseMatrix.zeros[Float](_a.rows, _b.cols)
 
@@ -464,9 +460,7 @@ trait DenseMatrixFloatMultiplyStuff
       DenseVector[Float],
       DenseMatrix[Float],
       DenseMatrix[Float]] {
-      def apply(
-          a: DenseVector[Float],
-          b: DenseMatrix[Float]): DenseMatrix[Float] = {
+      def apply(a: DenseVector[Float], b: DenseMatrix[Float]): DenseMatrix[Float] = {
         require(b.rows == 1)
         //        val adata =  if(a.stride != 1) {
         //          val v = DenseVector.zeros[Float](a.length)
@@ -529,9 +523,7 @@ trait DenseMatrixFloatMultiplyStuff
     }
 
     /** X := A \ X, for square A */
-    def LUSolve(
-        X: DenseMatrix[Float],
-        A: DenseMatrix[Float]): DenseMatrix[Float] = {
+    def LUSolve(X: DenseMatrix[Float], A: DenseMatrix[Float]): DenseMatrix[Float] = {
 
       require(X.offset == 0)
       require(A.offset == 0)
@@ -606,9 +598,7 @@ trait DenseMatrixFloatMultiplyStuff
           if (queryInfo.`val` != 0)
             math.max(
               1,
-              math.min(A.rows, A.cols) + math.max(
-                math.min(A.rows, A.cols),
-                nrhs))
+              math.min(A.rows, A.cols) + math.max(math.min(A.rows, A.cols), nrhs))
           else
             math.max(queryWork(0).toInt, 1)
         }
@@ -861,8 +851,7 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
         { f.*(_, _) },
         { f./(_, _) },
         { f.%(_, _) },
-        { f.pow(_, _) }) op: Op.Impl2[T, T, T])
-      : Op.InPlaceImpl2[DenseMatrix[T], T] = {
+        { f.pow(_, _) }) op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseMatrix[T], T] = {
     val f = implicitly[Field[T]]
     new Op.InPlaceImpl2[DenseMatrix[T], T] {
       override def apply(a: DenseMatrix[T], b: T) = {
@@ -996,9 +985,7 @@ trait DenseMatrixOps { this: DenseMatrix.type =>
       : Op.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]] = {
     val uop = implicitly[Op.InPlaceImpl2[DenseMatrix[T], DenseMatrix[T]]]
     new Op.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]] {
-      override def apply(
-          a: DenseMatrix[T],
-          b: DenseMatrix[T]): DenseMatrix[T] = {
+      override def apply(a: DenseMatrix[T], b: DenseMatrix[T]): DenseMatrix[T] = {
         val c = copy(a)
         uop(c, b)
         c
@@ -1048,16 +1035,8 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
   @expand
   @expand.valify
   implicit def op_DM_V[@expand.args(Int, Long, Float, Double) T]
-      : BinaryRegistry[
-        DenseMatrix[T],
-        Vector[T],
-        OpMulMatrix.type,
-        DenseVector[T]] =
-    new BinaryRegistry[
-      DenseMatrix[T],
-      Vector[T],
-      OpMulMatrix.type,
-      DenseVector[T]] {
+      : BinaryRegistry[DenseMatrix[T], Vector[T], OpMulMatrix.type, DenseVector[T]] =
+    new BinaryRegistry[DenseMatrix[T], Vector[T], OpMulMatrix.type, DenseVector[T]] {
       override def bindingMissing(
           a: DenseMatrix[T],
           b: Vector[T]): DenseVector[T] = {
@@ -1079,24 +1058,15 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
         res
       }
 
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
         .register(this)
     }
 
   @expand
   @expand.valify
   implicit def op_DM_M[@expand.args(Int, Long, Float, Double) T]
-      : BinaryRegistry[
-        DenseMatrix[T],
-        Matrix[T],
-        OpMulMatrix.type,
-        DenseMatrix[T]] =
-    new BinaryRegistry[
-      DenseMatrix[T],
-      Matrix[T],
-      OpMulMatrix.type,
-      DenseMatrix[T]] {
+      : BinaryRegistry[DenseMatrix[T], Matrix[T], OpMulMatrix.type, DenseMatrix[T]] =
+    new BinaryRegistry[DenseMatrix[T], Matrix[T], OpMulMatrix.type, DenseMatrix[T]] {
       override def bindingMissing(
           a: DenseMatrix[T],
           b: Matrix[T]): DenseMatrix[T] = {
@@ -1131,8 +1101,7 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
         res
       }
 
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
         .register(this)
     }
 
@@ -1144,9 +1113,7 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
       : OpMulMatrix.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]] =
     new OpMulMatrix.Impl2[DenseMatrix[T], DenseMatrix[T], DenseMatrix[T]] {
       implicit val ring = implicitly[Semiring[T]]
-      override def apply(
-          a: DenseMatrix[T],
-          b: DenseMatrix[T]): DenseMatrix[T] = {
+      override def apply(a: DenseMatrix[T], b: DenseMatrix[T]): DenseMatrix[T] = {
 
         val res: DenseMatrix[T] = DenseMatrix.zeros[T](a.rows, b.cols)
         require(a.cols == b.rows)
@@ -1207,9 +1174,7 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
 
       }
 
-      override def apply(
-          a: DenseMatrix[T],
-          b: DenseMatrix[T]): DenseMatrix[T] = {
+      override def apply(a: DenseMatrix[T], b: DenseMatrix[T]): DenseMatrix[T] = {
         val res: DenseMatrix[T] = DenseMatrix.zeros[T](a.rows, b.cols)
         require(a.cols == b.rows)
 
@@ -1250,14 +1215,11 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
         .register(this)
-      implicitly[BinaryRegistry[
-        DenseMatrix[T],
-        Matrix[T],
-        OpMulMatrix.type,
-        DenseMatrix[T]]].register(this)
+      implicitly[
+        BinaryRegistry[DenseMatrix[T], Matrix[T], OpMulMatrix.type, DenseMatrix[T]]]
+        .register(this)
     }
 
   // </editor-fold>
@@ -1266,11 +1228,8 @@ trait DenseMatrixMultOps extends DenseMatrixOps with DenseMatrixOpsLowPrio {
 
 trait LowPriorityDenseMatrix extends LowPriorityDenseMatrix1 {
 
-  implicit def canSliceWeirdRows[V: Semiring: ClassTag]: CanSlice2[
-    DenseMatrix[V],
-    Seq[Int],
-    ::.type,
-    SliceMatrix[Int, Int, V]] = {
+  implicit def canSliceWeirdRows[V: Semiring: ClassTag]
+      : CanSlice2[DenseMatrix[V], Seq[Int], ::.type, SliceMatrix[Int, Int, V]] = {
     new CanSlice2[DenseMatrix[V], Seq[Int], ::.type, SliceMatrix[Int, Int, V]] {
       def apply(
           from: DenseMatrix[V],
@@ -1281,11 +1240,8 @@ trait LowPriorityDenseMatrix extends LowPriorityDenseMatrix1 {
     }
   }
 
-  implicit def canSliceWeirdCols[V: Semiring: ClassTag]: CanSlice2[
-    DenseMatrix[V],
-    ::.type,
-    Seq[Int],
-    SliceMatrix[Int, Int, V]] = {
+  implicit def canSliceWeirdCols[V: Semiring: ClassTag]
+      : CanSlice2[DenseMatrix[V], ::.type, Seq[Int], SliceMatrix[Int, Int, V]] = {
     new CanSlice2[DenseMatrix[V], ::.type, Seq[Int], SliceMatrix[Int, Int, V]] {
       def apply(
           from: DenseMatrix[V],
@@ -1386,18 +1342,9 @@ trait LowPriorityDenseMatrix extends LowPriorityDenseMatrix1 {
 
   // </editor-fold>
 
-  implicit def op_DM_V_Semiring[T](implicit
-      ring: Semiring[T],
-      ct: ClassTag[T]): BinaryRegistry[
-    DenseMatrix[T],
-    Vector[T],
-    OpMulMatrix.type,
-    DenseVector[T]] =
-    new BinaryRegistry[
-      DenseMatrix[T],
-      Vector[T],
-      OpMulMatrix.type,
-      DenseVector[T]] {
+  implicit def op_DM_V_Semiring[T](implicit ring: Semiring[T], ct: ClassTag[T])
+      : BinaryRegistry[DenseMatrix[T], Vector[T], OpMulMatrix.type, DenseVector[T]] =
+    new BinaryRegistry[DenseMatrix[T], Vector[T], OpMulMatrix.type, DenseVector[T]] {
       override def bindingMissing(
           a: DenseMatrix[T],
           b: Vector[T]): DenseVector[T] = {

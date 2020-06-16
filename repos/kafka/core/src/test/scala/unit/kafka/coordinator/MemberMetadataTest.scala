@@ -77,8 +77,7 @@ class MemberMetadataTest extends JUnitSuite {
       sessionTimeoutMs,
       protocols)
     assertTrue(util.Arrays.equals(Array[Byte](0), member.metadata("range")))
-    assertTrue(
-      util.Arrays.equals(Array[Byte](1), member.metadata("roundrobin")))
+    assertTrue(util.Arrays.equals(Array[Byte](1), member.metadata("roundrobin")))
   }
 
   @Test(expected = classOf[IllegalArgumentException])

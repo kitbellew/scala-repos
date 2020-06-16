@@ -196,9 +196,7 @@ private[hive] case class ScriptTransformation(
             } else {
               new GenericInternalRow(
                 prevLine
-                  .split(
-                    ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"),
-                    2)
+                  .split(ioschema.outputRowFormatMap("TOK_TABLEROWFORMATFIELD"), 2)
                   .map(CatalystTypeConverters.convertToCatalyst))
             }
           } else {

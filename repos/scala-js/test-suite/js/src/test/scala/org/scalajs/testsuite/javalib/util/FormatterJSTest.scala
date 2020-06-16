@@ -23,8 +23,7 @@ class FormatterJSTest {
     assertEquals("undefined", res)
   }
 
-  @Test def `should_allow_f_string_interpolation_to_survive_undefined`()
-      : Unit = {
+  @Test def `should_allow_f_string_interpolation_to_survive_undefined`(): Unit = {
     assertEquals("undefined", f"${js.undefined}%s")
   }
 }

@@ -230,8 +230,7 @@ sealed abstract class FreeTInstances3 extends FreeTInstances4 {
       override def M = implicitly
       override def handleError[A](fa: FreeT[S, M, A])(f: E => FreeT[S, M, A]) =
         FreeT
-          .liftM[S, M, FreeT[S, M, A]](E.handleError(fa.toM)(f.andThen(_.toM)))(
-            M)
+          .liftM[S, M, FreeT[S, M, A]](E.handleError(fa.toM)(f.andThen(_.toM)))(M)
           .flatMap(identity)
       override def raiseError[A](e: E) =
         FreeT.liftM(E.raiseError[A](e))(M)

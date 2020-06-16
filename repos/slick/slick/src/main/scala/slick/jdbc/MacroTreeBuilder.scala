@@ -106,8 +106,7 @@ private[jdbc] class MacroTreeBuilder[C <: Context](val c: C)(
         )
       case n =>
         val rtypeTree = {
-          val zero = TypeTree(
-            typeOf[slick.collection.heterogeneous.syntax.HNil])
+          val zero = TypeTree(typeOf[slick.collection.heterogeneous.syntax.HNil])
           val :: = Select(
             Select(HeterogenousTree, TermName("syntax")),
             TypeName("$colon$colon"))

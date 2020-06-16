@@ -46,9 +46,7 @@ import org.apache.spark.util.Utils
   * of JavaRDDLike should extend this dummy abstract class instead of directly inheriting
   * from the trait. See SPARK-3266 for additional details.
   */
-private[spark] abstract class AbstractJavaRDDLike[
-    T,
-    This <: JavaRDDLike[T, This]]
+private[spark] abstract class AbstractJavaRDDLike[T, This <: JavaRDDLike[T, This]]
     extends JavaRDDLike[T, This]
 
 /**
@@ -87,9 +85,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * This should ''not'' be called by users directly, but is available for implementors of custom
     * subclasses of RDD.
     */
-  def iterator(
-      split: Partition,
-      taskContext: TaskContext): java.util.Iterator[T] =
+  def iterator(split: Partition, taskContext: TaskContext): java.util.Iterator[T] =
     rdd.iterator(split, taskContext).asJava
 
   // Transformations (return a new RDD)
@@ -124,9 +120,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     */
   def mapToPair[K2, V2](f: PairFunction[T, K2, V2]): JavaPairRDD[K2, V2] = {
     def cm: ClassTag[(K2, V2)] = implicitly[ClassTag[(K2, V2)]]
-    new JavaPairRDD(rdd.map[(K2, V2)](f)(cm))(
-      fakeClassTag[K2],
-      fakeClassTag[V2])
+    new JavaPairRDD(rdd.map[(K2, V2)](f)(cm))(fakeClassTag[K2], fakeClassTag[V2])
   }
 
   /**
@@ -199,8 +193,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * Return a new RDD by applying a function to each partition of this RDD.
     */
   def mapPartitionsToPair[K2, V2](
-      f: PairFlatMapFunction[java.util.Iterator[T], K2, V2])
-      : JavaPairRDD[K2, V2] = {
+      f: PairFlatMapFunction[java.util.Iterator[T], K2, V2]): JavaPairRDD[K2, V2] = {
     def fn: (Iterator[T]) => Iterator[(K2, V2)] = { (x: Iterator[T]) =>
       f.call(x.asJava).asScala
     }
@@ -696,9 +689,7 @@ trait JavaRDDLike[T, This <: JavaRDDLike[T, This]] extends Serializable {
     * future for counting the number of elements in this RDD.
     */
   def countAsync(): JavaFutureAction[jl.Long] = {
-    new JavaFutureActionWrapper[Long, jl.Long](
-      rdd.countAsync(),
-      jl.Long.valueOf)
+    new JavaFutureActionWrapper[Long, jl.Long](rdd.countAsync(), jl.Long.valueOf)
   }
 
   /**

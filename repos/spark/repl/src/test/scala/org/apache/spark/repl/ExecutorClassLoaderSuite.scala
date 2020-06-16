@@ -68,9 +68,7 @@ class ExecutorClassLoaderSuite
     urls2 = List(tempDir2.toURI.toURL).toArray
     childClassNames.foreach(TestUtils.createCompiledClass(_, tempDir1, "1"))
     parentResourceNames.foreach { x =>
-      Files.write(
-        "resource".getBytes(StandardCharsets.UTF_8),
-        new File(tempDir2, x))
+      Files.write("resource".getBytes(StandardCharsets.UTF_8), new File(tempDir2, x))
     }
     parentClassNames.foreach(TestUtils.createCompiledClass(_, tempDir2, "2"))
   }
@@ -207,12 +205,10 @@ class ExecutorClassLoaderSuite
     when(env.rpcEnv).thenReturn(rpcEnv)
     when(rpcEnv.openChannel(anyString()))
       .thenAnswer(new Answer[ReadableByteChannel]() {
-        override def answer(
-            invocation: InvocationOnMock): ReadableByteChannel = {
+        override def answer(invocation: InvocationOnMock): ReadableByteChannel = {
           val uri = new URI(invocation.getArguments()(0).asInstanceOf[String])
-          val path = Paths.get(
-            tempDir1.getAbsolutePath(),
-            uri.getPath().stripPrefix("/"))
+          val path =
+            Paths.get(tempDir1.getAbsolutePath(), uri.getPath().stripPrefix("/"))
           FileChannel.open(path, StandardOpenOption.READ)
         }
       })

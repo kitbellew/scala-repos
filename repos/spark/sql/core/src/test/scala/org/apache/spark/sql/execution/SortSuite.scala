@@ -88,8 +88,7 @@ class SortSuite extends SparkPlanTest with SharedSQLContext {
       checkThatPlansAgree(
         (1 to 100).map(v => Tuple1(v)).toDF("a"),
         (child: SparkPlan) => Sort('a.asc :: Nil, global = true, child = child),
-        (child: SparkPlan) =>
-          ReferenceSort('a.asc :: Nil, global = true, child),
+        (child: SparkPlan) => ReferenceSort('a.asc :: Nil, global = true, child),
         sortAnswers = false
       )
     }

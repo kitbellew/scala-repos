@@ -67,8 +67,7 @@ object NonEmptyListTest extends SpecLite {
 
   "foldr1 is reduceRight" ! forAll { (rnge: NonEmptyList[IList[Int]]) =>
     val F = Foldable1[NonEmptyList]
-    rnge.list.toList.reduceRight(_ ++ _) must_=== (F.foldr1(rnge)(a =>
-      b => a ++ b))
+    rnge.list.toList.reduceRight(_ ++ _) must_=== (F.foldr1(rnge)(a => b => a ++ b))
   }
   "foldRight1 is reduceRight" ! forAll { xs: NonEmptyList[IList[Int]] =>
     val F = Foldable1[NonEmptyList]

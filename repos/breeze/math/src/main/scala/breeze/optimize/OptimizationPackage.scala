@@ -124,8 +124,8 @@ object OptimizationPackage {
     override def iterations(
         fn: BatchDiffFunction[Vector],
         init: Vector,
-        options: OptimizationOption*): Iterator[
-      FirstOrderMinimizer[Vector, BatchDiffFunction[Vector]]#State] = {
+        options: OptimizationOption*)
+        : Iterator[FirstOrderMinimizer[Vector, BatchDiffFunction[Vector]]#State] = {
       options
         .foldLeft(OptParams())((a, b) => b apply a)
         .iterations(new CachedBatchDiffFunction(fn)(space.copy), init)

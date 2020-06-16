@@ -57,8 +57,7 @@ private[api] final class GameApi(
           sort = BSONDocument(G.createdAt -> -1)
         ),
         nbResults = fuccess {
-          rated.fold(user.count.game)(
-            _.fold(user.count.rated, user.count.casual))
+          rated.fold(user.count.game)(_.fold(user.count.rated, user.count.casual))
         }
       ),
       currentPage = math.max(0, page | 1),
@@ -185,8 +184,7 @@ private[api] final class GameApi(
                       "sd" -> h.sd
                     )
                 },
-                "analysis" -> analysisOption.flatMap(
-                  analysisApi.player(p.color))
+                "analysis" -> analysisOption.flatMap(analysisApi.player(p.color))
               )
               .noNull
         }),

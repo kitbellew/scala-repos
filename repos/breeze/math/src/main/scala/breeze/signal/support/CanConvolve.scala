@@ -120,8 +120,7 @@ object CanConvolve extends SerializableLogging {
               padding match {
                 case OptPadding.Cyclical => data(dl - leftPadding to dl - 1)
                 case OptPadding.Boundary =>
-                  DenseVector.ones[T](leftPadding /*kernel.length-1*/ ) * data(
-                    0)
+                  DenseVector.ones[T](leftPadding /*kernel.length-1*/ ) * data(0)
                 case OptPadding.Zero => DenseVector.zeros[T](leftPadding)
                 case OptPadding.ValueOpt(v: T) =>
                   DenseVector.ones[T](leftPadding) * v
@@ -214,10 +213,7 @@ object CanConvolve extends SerializableLogging {
 
   @expand
   @expand.valify
-  implicit def correlateLoopNoOverhangRangeT[@expand.args(
-    Double,
-    Float,
-    Long) T]
+  implicit def correlateLoopNoOverhangRangeT[@expand.args(Double, Float, Long) T]
       : CanCorrelateNoOverhang[DenseVector[T], DenseVector[T], DenseVector[T]] =
     new CanCorrelateNoOverhang[DenseVector[T], DenseVector[T], DenseVector[T]] {
       def apply(

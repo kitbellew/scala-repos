@@ -395,9 +395,7 @@ class MutableSettings(val errorFn: String => Unit)
       *  output directory there will be two or more candidate source file
       *  paths.
       */
-    def srcFilesFor(
-        classFile: AbstractFile,
-        srcPath: String): List[AbstractFile] = {
+    def srcFilesFor(classFile: AbstractFile, srcPath: String): List[AbstractFile] = {
       def isBelow(srcDir: AbstractFile, outDir: AbstractFile) =
         classFile.path.startsWith(outDir.path)
 
@@ -987,8 +985,8 @@ class MutableSettings(val errorFn: String => Unit)
           case i if s.last == '-' => (s.init.toInt, Int.MaxValue)
           case i                  => (s.take(i).toInt, s.drop(i + 1).toInt)
         }
-      val numsAndStrs = t filter (_.nonEmpty) partition (_ forall (ch =>
-        ch.isDigit || ch == '-'))
+      val numsAndStrs =
+        t filter (_.nonEmpty) partition (_ forall (ch => ch.isDigit || ch == '-'))
       _numbs = numsAndStrs._1 map asRange
       _names = numsAndStrs._2
       _v = t

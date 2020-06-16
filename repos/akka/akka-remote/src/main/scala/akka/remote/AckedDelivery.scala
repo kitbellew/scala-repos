@@ -200,10 +200,7 @@ final case class AckedReceiveBuffer[T <: HasSequenceNumber](
     }
 
     val newBuf = if (deliver.isEmpty) buf else buf.filterNot(deliver.contains)
-    (
-      this.copy(buf = newBuf, lastDelivered = updatedLastDelivered),
-      deliver,
-      ack)
+    (this.copy(buf = newBuf, lastDelivered = updatedLastDelivered), deliver, ack)
   }
 
   /**

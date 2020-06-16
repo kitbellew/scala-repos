@@ -89,9 +89,7 @@ object EndToEndLatency {
       ProducerConfig.LINGER_MS_CONFIG,
       "0"
     ) //ensure writes are synchronous
-    producerProps.put(
-      ProducerConfig.MAX_BLOCK_MS_CONFIG,
-      Long.MaxValue.toString)
+    producerProps.put(ProducerConfig.MAX_BLOCK_MS_CONFIG, Long.MaxValue.toString)
     producerProps.put(ProducerConfig.ACKS_CONFIG, producerAcks.toString)
     producerProps.put(
       ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
@@ -160,8 +158,7 @@ object EndToEndLatency {
 
     //Results
     println(
-      "Avg latency: %.4f ms\n".format(
-        totalTime / numMessages / 1000.0 / 1000.0))
+      "Avg latency: %.4f ms\n".format(totalTime / numMessages / 1000.0 / 1000.0))
     Arrays.sort(latencies)
     val p50 = latencies((latencies.length * 0.5).toInt)
     val p99 = latencies((latencies.length * 0.99).toInt)

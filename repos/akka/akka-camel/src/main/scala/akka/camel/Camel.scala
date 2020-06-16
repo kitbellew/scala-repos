@@ -59,9 +59,7 @@ trait Camel extends Extension with Activation {
   * Settings for the Camel Extension
   * @param config the config
   */
-class CamelSettings private[camel] (
-    config: Config,
-    dynamicAccess: DynamicAccess) {
+class CamelSettings private[camel] (config: Config, dynamicAccess: DynamicAccess) {
   import akka.util.Helpers.ConfigOps
 
   /**
@@ -116,8 +114,7 @@ class CamelSettings private[camel] (
           )
       }
 
-    (s: String, r: RouteDefinition) ⇒
-      conversions.get(s).fold(r)(r.convertBodyTo)
+    (s: String, r: RouteDefinition) ⇒ conversions.get(s).fold(r)(r.convertBodyTo)
   }
 
   /**

@@ -324,9 +324,7 @@ trait ManagedActorClassification { this: ActorEventBus with ActorClassifier ⇒
     ActorClassificationUnsubscriber.start(system, this)
 
   @tailrec
-  protected final def associate(
-      monitored: ActorRef,
-      monitor: ActorRef): Boolean = {
+  protected final def associate(monitored: ActorRef, monitor: ActorRef): Boolean = {
     val current = mappings.get
 
     current.backing.get(monitored) match {
@@ -473,9 +471,7 @@ trait ActorClassification { this: ActorEventBus with ActorClassifier ⇒
     new ConcurrentHashMap[ActorRef, immutable.TreeSet[ActorRef]](mapSize)
 
   @tailrec
-  protected final def associate(
-      monitored: ActorRef,
-      monitor: ActorRef): Boolean = {
+  protected final def associate(monitored: ActorRef, monitor: ActorRef): Boolean = {
     val current = mappings get monitored
     current match {
       case null ⇒

@@ -19,11 +19,8 @@ class PackCheck
       val bs0 = Pack.intToBytes(n)
       val Array(b0, b1, b2, b3) = bs0
 
-      val bs1 = Array(
-        intToByte(n)(0),
-        intToByte(n)(1),
-        intToByte(n)(2),
-        intToByte(n)(3))
+      val bs1 =
+        Array(intToByte(n)(0), intToByte(n)(1), intToByte(n)(2), intToByte(n)(3))
 
       val i = 0
       val bs2 = Array(

@@ -231,10 +231,7 @@ trait MatchCodeGen extends Interface {
           val nextCase = newCaseSym
           _currCase = nextCase
 
-          LabelDef(
-            currCase,
-            Nil,
-            mkCase(new OptimizedCasegen(matchEnd, nextCase)))
+          LabelDef(currCase, Nil, mkCase(new OptimizedCasegen(matchEnd, nextCase)))
         }
         // must compute catchAll after caseLabels (side-effects nextCase)
         // catchAll.isEmpty iff no synthetic default case needed (the (last) user-defined case is a default)

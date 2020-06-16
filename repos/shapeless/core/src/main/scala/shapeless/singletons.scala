@@ -443,8 +443,7 @@ class SingletonTypeMacros(val c: whitebox.Context)
     val q"${tpeString: String}" = tpeSelector
     val tpe =
       parseLiteralType(tpeString)
-        .getOrElse(
-          c.abort(c.enclosingPosition, s"Malformed literal $tpeString"))
+        .getOrElse(c.abort(c.enclosingPosition, s"Malformed literal $tpeString"))
 
     fieldTypeCarrier(tpe)
   }

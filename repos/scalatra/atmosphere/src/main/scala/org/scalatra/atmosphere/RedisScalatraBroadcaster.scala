@@ -24,8 +24,7 @@ final class RedisScalatraBroadcaster()(implicit
     resources
   protected var _wireFormat: WireFormat = wireFormat
   implicit val formats = Serialization.formats(
-    ShortTypeHints(
-      List(classOf[Everyone], classOf[OnlySelf], classOf[SkipSelf])))
+    ShortTypeHints(List(classOf[Everyone], classOf[OnlySelf], classOf[SkipSelf])))
 
   override def broadcast[T <: OutboundMessage](
       msg: T,

@@ -135,9 +135,7 @@ object Streams {
           def readText(a: Key, sid: String = default): BufferedReader =
             make(a, sid)(f =>
               new BufferedReader(
-                new InputStreamReader(
-                  new FileInputStream(f),
-                  IO.defaultCharset)))
+                new InputStreamReader(new FileInputStream(f), IO.defaultCharset)))
 
           def readBinary(a: Key, sid: String = default): BufferedInputStream =
             make(a, sid)(f => new BufferedInputStream(new FileInputStream(f)))

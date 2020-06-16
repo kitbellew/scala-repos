@@ -60,8 +60,7 @@ object CascadingBinaryComparator {
       val sortingSelectors = s.getSortingSelectors.asScala
 
       def error(s: String): Try[Unit] =
-        Failure(
-          new RuntimeException("Cannot verify OrderedSerialization: " + s))
+        Failure(new RuntimeException("Cannot verify OrderedSerialization: " + s))
 
       if (m.isEmpty) error(s"Splice must have KeySelectors: $s")
       else {
@@ -81,8 +80,7 @@ object CascadingBinaryComparator {
       }
     }
 
-    def getDescriptionsForMissingOrdSer[U](
-        bfs: BaseFlowStep[U]): Option[String] =
+    def getDescriptionsForMissingOrdSer[U](bfs: BaseFlowStep[U]): Option[String] =
       // does this job have any Splices without OrderedSerialization:
       if (bfs.getGraph.vertexSet.asScala.exists {
           case gb: GroupBy => check(gb).isFailure

@@ -51,11 +51,8 @@ class ZKPathTest extends ZooKeeperTestHarness {
   def testCreatePersistentPath {
     val config = new ConsumerConfig(
       TestUtils.createConsumerProperties(zkConnect, "test", "1"))
-    var zkUtils = ZkUtils(
-      zkConnect,
-      zkSessionTimeoutMs,
-      config.zkConnectionTimeoutMs,
-      false)
+    var zkUtils =
+      ZkUtils(zkConnect, zkSessionTimeoutMs, config.zkConnectionTimeoutMs, false)
     try {
       ZkPath.resetNamespaceCheckedState
       zkUtils.createPersistentPath(path)
@@ -89,11 +86,8 @@ class ZKPathTest extends ZooKeeperTestHarness {
   def testMakeSurePersistsPathExists {
     val config = new ConsumerConfig(
       TestUtils.createConsumerProperties(zkConnect, "test", "1"))
-    var zkUtils = ZkUtils(
-      zkConnect,
-      zkSessionTimeoutMs,
-      config.zkConnectionTimeoutMs,
-      false)
+    var zkUtils =
+      ZkUtils(zkConnect, zkSessionTimeoutMs, config.zkConnectionTimeoutMs, false)
     try {
       ZkPath.resetNamespaceCheckedState
       zkUtils.makeSurePersistentPathExists(path)
@@ -127,11 +121,8 @@ class ZKPathTest extends ZooKeeperTestHarness {
   def testCreateEphemeralPathExists {
     val config = new ConsumerConfig(
       TestUtils.createConsumerProperties(zkConnect, "test", "1"))
-    var zkUtils = ZkUtils(
-      zkConnect,
-      zkSessionTimeoutMs,
-      config.zkConnectionTimeoutMs,
-      false)
+    var zkUtils =
+      ZkUtils(zkConnect, zkSessionTimeoutMs, config.zkConnectionTimeoutMs, false)
     try {
       ZkPath.resetNamespaceCheckedState
       zkUtils.createEphemeralPathExpectConflict(path, "somedata")
@@ -165,11 +156,8 @@ class ZKPathTest extends ZooKeeperTestHarness {
   def testCreatePersistentSequentialExists {
     val config = new ConsumerConfig(
       TestUtils.createConsumerProperties(zkConnect, "test", "1"))
-    var zkUtils = ZkUtils(
-      zkConnect,
-      zkSessionTimeoutMs,
-      config.zkConnectionTimeoutMs,
-      false)
+    var zkUtils =
+      ZkUtils(zkConnect, zkSessionTimeoutMs, config.zkConnectionTimeoutMs, false)
 
     var actualPath: String = ""
     try {
@@ -179,8 +167,6 @@ class ZKPathTest extends ZooKeeperTestHarness {
       case exception: Throwable => fail("Failed to create persistent path")
     }
 
-    assertTrue(
-      "Failed to create persistent path",
-      zkUtils.pathExists(actualPath))
+    assertTrue("Failed to create persistent path", zkUtils.pathExists(actualPath))
   }
 }

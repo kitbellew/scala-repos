@@ -61,8 +61,7 @@ class ScalaCopyPastePostProcessor
                   reference <- element.asOptionOf[ScReferenceElement];
                   dependency <- Dependency.dependencyFor(reference)
                   if dependency.isExternal;
-                  range =
-                    dependency.source.getTextRange.shiftRight(-startOffset)) {
+                  range = dependency.source.getTextRange.shiftRight(-startOffset)) {
                   if (System.currentTimeMillis > timeBound) {
                     Log.warn(
                       "Time-out while collecting dependencies in %s:\n%s"

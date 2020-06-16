@@ -118,8 +118,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
                   obj2.keySet mustEqual Set("fit")
                   obj2("fit") must beLike {
                     case SDecimal(d) =>
-                      (d must be_>=(BigDecimal(0))) and (d must be_<=(
-                        BigDecimal(1)))
+                      (d must be_>=(BigDecimal(0))) and (d must be_<=(BigDecimal(1)))
                   }
               }
           }
@@ -214,8 +213,7 @@ trait LogisticRegressionSpecs extends EvalStackSpecs {
                   obj2.keySet mustEqual Set("fit")
                   obj2("fit") must beLike {
                     case SDecimal(d) =>
-                      (d must be_>=(BigDecimal(0))) and (d must be_<=(
-                        BigDecimal(1)))
+                      (d must be_>=(BigDecimal(0))) and (d must be_<=(BigDecimal(1)))
                   }
               }
           }

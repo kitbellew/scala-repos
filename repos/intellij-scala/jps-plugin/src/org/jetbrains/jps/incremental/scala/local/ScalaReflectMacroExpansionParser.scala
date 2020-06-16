@@ -1,11 +1,6 @@
 package org.jetbrains.jps.incremental.scala.local
 
-import java.io.{
-  BufferedOutputStream,
-  ObjectOutputStream,
-  File,
-  FileOutputStream
-}
+import java.io.{BufferedOutputStream, ObjectOutputStream, File, FileOutputStream}
 import java.util.regex.Pattern
 
 import com.intellij.openapi.application.PathManager

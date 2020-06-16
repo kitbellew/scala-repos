@@ -33,9 +33,7 @@ import org.apache.spark.mllib.util.{LinearDataGenerator, MLlibTestSparkContext}
 import org.apache.spark.sql.DataFrame
 import org.apache.spark.sql.types.StructType
 
-class TrainValidationSplitSuite
-    extends SparkFunSuite
-    with MLlibTestSparkContext {
+class TrainValidationSplitSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("train validation with logistic regression") {
     val dataset = sqlContext.createDataFrame(
       sc.parallelize(generateLogisticInput(1.0, 1.0, 100, 42), 2))

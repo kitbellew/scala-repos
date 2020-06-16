@@ -68,9 +68,8 @@ class HMapTests {
 
   @Test
   def testNatTrans {
-    val nt = HMap[(Set ~?> Option)#λ](
-      Set("foo") -> Option("bar"),
-      Set(23) -> Option(13))
+    val nt =
+      HMap[(Set ~?> Option)#λ](Set("foo") -> Option("bar"), Set(23) -> Option(13))
 
     illTyped("""
       val nt2 = HMap[(Set ~?> Option)#λ](Set("foo") -> Option(13), Set(23) -> Option(13))
@@ -95,9 +94,8 @@ class HMapTests {
 
   @Test
   def testPolyNatTrans {
-    val nt = HMap[(Set ~?> Option)#λ](
-      Set("foo") -> Option("bar"),
-      Set(23) -> Option(13))
+    val nt =
+      HMap[(Set ~?> Option)#λ](Set("foo") -> Option("bar"), Set(23) -> Option(13))
     import nt._
 
     // Needed to allow V to be inferred in Case1 resolution (ie. map and pairApply)

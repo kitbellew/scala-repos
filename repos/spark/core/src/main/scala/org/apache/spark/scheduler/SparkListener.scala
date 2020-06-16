@@ -298,8 +298,7 @@ class StatsReportListener extends SparkListener with Logging {
 
   override def onStageCompleted(stageCompleted: SparkListenerStageCompleted) {
     implicit val sc = stageCompleted
-    this.logInfo(
-      s"Finished stage: ${getStatusDetail(stageCompleted.stageInfo)}")
+    this.logInfo(s"Finished stage: ${getStatusDetail(stageCompleted.stageInfo)}")
     showMillisDistribution(
       "task runtime:",
       (info, _) => Some(info.duration),
@@ -367,8 +366,7 @@ private[spark] object StatsReportListener extends Logging {
 
   def extractDoubleDistribution(
       taskInfoMetrics: Seq[(TaskInfo, TaskMetrics)],
-      getMetric: (TaskInfo, TaskMetrics) => Option[Double])
-      : Option[Distribution] = {
+      getMetric: (TaskInfo, TaskMetrics) => Option[Double]): Option[Distribution] = {
     Distribution(taskInfoMetrics.flatMap {
       case (info, metric) => getMetric(info, metric)
     })

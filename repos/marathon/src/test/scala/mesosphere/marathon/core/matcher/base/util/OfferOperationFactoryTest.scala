@@ -1,11 +1,7 @@
 package mesosphere.marathon.core.matcher.base.util
 
 import mesosphere.marathon.core.task.Task
-import mesosphere.marathon.state.{
-  PathId,
-  PersistentVolume,
-  PersistentVolumeInfo
-}
+import mesosphere.marathon.state.{PathId, PersistentVolume, PersistentVolumeInfo}
 import mesosphere.marathon.test.Mockito
 import mesosphere.marathon.{
   MarathonSpec,

@@ -185,8 +185,7 @@ trait Reshape {
         // type is deemed to be non-essential
         // erase it and hope that subsequent reflective compilation will be able to recreate it again
         if (reifyDebug)
-          println(
-            "TypeTree, non-essential: %s (%s)".format(tt.tpe, tt.tpe.kind))
+          println("TypeTree, non-essential: %s (%s)".format(tt.tpe, tt.tpe.kind))
         if (reifyDebug) println("verdict: discarded")
         TypeTree()
       }
@@ -277,9 +276,7 @@ trait Reshape {
         case Apply(Select(New(tpt), _), _) => tpt
       }
       assert(extractOriginal.isDefinedAt(ann.original), showRaw(ann.original))
-      New(
-        TypeTree(ann.atp) setOriginal extractOriginal(ann.original),
-        List(args))
+      New(TypeTree(ann.atp) setOriginal extractOriginal(ann.original), List(args))
     }
 
     private def toPreTyperLazyVal(ddef: DefDef): ValDef = {
@@ -358,8 +355,7 @@ trait Reshape {
           val name1 = name.dropLocal
           val vdef1 = ValDef(mods2, name1.toTermName, tpt, rhs)
           if (reifyDebug)
-            println(
-              "resetting visibility of field: %s => %s".format(vdef, vdef1))
+            println("resetting visibility of field: %s => %s".format(vdef, vdef1))
           Some(
             vdef1
           ) // no copyAttrs here, because new ValDef and old symbols are now out of sync

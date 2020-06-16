@@ -389,10 +389,8 @@ private[spark] class TaskSetManager(
   private def dequeueTask(
       execId: String,
       host: String,
-      maxLocality: TaskLocality.Value)
-      : Option[(Int, TaskLocality.Value, Boolean)] = {
-    for (index <-
-        dequeueTaskFromList(execId, getPendingTasksForExecutor(execId))) {
+      maxLocality: TaskLocality.Value): Option[(Int, TaskLocality.Value, Boolean)] = {
+    for (index <- dequeueTaskFromList(execId, getPendingTasksForExecutor(execId))) {
       return Some((index, TaskLocality.PROCESS_LOCAL, false))
     }
 
@@ -596,11 +594,9 @@ private[spark] class TaskSetManager(
         // for the locality wait timeout (SPARK-4939).
         lastLaunchTime = curTime
         logDebug(s"No tasks for locality level ${myLocalityLevels(currentLocalityIndex)}, " +
-          s"so moving to locality level ${myLocalityLevels(
-            currentLocalityIndex + 1)}")
+          s"so moving to locality level ${myLocalityLevels(currentLocalityIndex + 1)}")
         currentLocalityIndex += 1
-      } else if (curTime - lastLaunchTime >= localityWaits(
-          currentLocalityIndex)) {
+      } else if (curTime - lastLaunchTime >= localityWaits(currentLocalityIndex)) {
         // Jump to the next locality level, and reset lastLaunchTime so that the next locality
         // wait timer doesn't immediately expire
         lastLaunchTime += localityWaits(currentLocalityIndex)
@@ -768,9 +764,10 @@ private[spark] class TaskSetManager(
         ef.exception
 
       case e: ExecutorLostFailure if !e.exitCausedByApp =>
-        logInfo(s"Task $tid failed because while it was being computed, its executor " +
-          "exited for a reason unrelated to the task. Not counting this failure towards the " +
-          "maximum number of failures for the task.")
+        logInfo(
+          s"Task $tid failed because while it was being computed, its executor " +
+            "exited for a reason unrelated to the task. Not counting this failure towards the " +
+            "maximum number of failures for the task.")
         None
 
       case e: TaskFailedReason => // TaskResultLost, TaskKilled, and others

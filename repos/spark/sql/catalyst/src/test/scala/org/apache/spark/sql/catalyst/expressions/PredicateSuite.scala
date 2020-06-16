@@ -132,13 +132,9 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
       In(Literal.create(null, IntegerType), Seq(Literal(1), Literal(2))),
       null)
     checkEvaluation(
-      In(
-        Literal.create(null, IntegerType),
-        Seq(Literal.create(null, IntegerType))),
+      In(Literal.create(null, IntegerType), Seq(Literal.create(null, IntegerType))),
       null)
-    checkEvaluation(
-      In(Literal(1), Seq(Literal.create(null, IntegerType))),
-      null)
+    checkEvaluation(In(Literal(1), Seq(Literal.create(null, IntegerType))), null)
     checkEvaluation(
       In(Literal(1), Seq(Literal(1), Literal.create(null, IntegerType))),
       true)
@@ -302,9 +298,7 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
   test("BinaryComparison: GreaterThanOrEqual") {
     for (i <- 0 until smallValues.length) {
       checkEvaluation(GreaterThanOrEqual(smallValues(i), largeValues(i)), false)
-      checkEvaluation(
-        GreaterThanOrEqual(equalValues1(i), equalValues2(i)),
-        true)
+      checkEvaluation(GreaterThanOrEqual(equalValues1(i), equalValues2(i)), true)
       checkEvaluation(GreaterThanOrEqual(largeValues(i), smallValues(i)), true)
     }
   }

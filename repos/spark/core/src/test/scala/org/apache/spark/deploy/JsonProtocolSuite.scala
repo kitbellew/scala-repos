@@ -38,9 +38,7 @@ class JsonProtocolSuite extends SparkFunSuite with JsonTestUtils {
   test("writeApplicationInfo") {
     val output = JsonProtocol.writeApplicationInfo(createAppInfo())
     assertValidJson(output)
-    assertValidDataInJson(
-      output,
-      JsonMethods.parse(JsonConstants.appInfoJsonStr))
+    assertValidDataInJson(output, JsonMethods.parse(JsonConstants.appInfoJsonStr))
   }
 
   test("writeWorkerInfo") {
@@ -54,9 +52,7 @@ class JsonProtocolSuite extends SparkFunSuite with JsonTestUtils {
   test("writeApplicationDescription") {
     val output = JsonProtocol.writeApplicationDescription(createAppDesc())
     assertValidJson(output)
-    assertValidDataInJson(
-      output,
-      JsonMethods.parse(JsonConstants.appDescJsonStr))
+    assertValidDataInJson(output, JsonMethods.parse(JsonConstants.appDescJsonStr))
   }
 
   test("writeExecutorRunner") {

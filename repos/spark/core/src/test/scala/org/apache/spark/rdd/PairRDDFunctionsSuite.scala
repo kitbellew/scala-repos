@@ -281,9 +281,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val counted2 = rdd2.countApproxDistinctByKey(relativeSD).collect()
     counted2.foreach {
       case (k, count) =>
-        assert(
-          error(count, k) < relativeSD,
-          s"${error(count, k)} < $relativeSD")
+        assert(error(count, k) < relativeSD, s"${error(count, k)} < $relativeSD")
     }
   }
 
@@ -450,9 +448,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     assert(joined.size === 4)
     val joinedSet = joined
       .map(x =>
-        (
-          x._1,
-          (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
+        (x._1, (x._2._1.toList, x._2._2.toList, x._2._3.toList, x._2._4.toList)))
       .toSet
     assert(
       joinedSet === Set(
@@ -560,8 +556,7 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     val bufs = pairs.mapValues(v => ArrayBuffer(v)).cache()
     // Fold the values using in-place mutation
     val sums = bufs.foldByKey(new ArrayBuffer[Int])(_ ++= _).collect()
-    assert(
-      sums.toSet === Set((1, ArrayBuffer(1, 2, 3, 1)), (2, ArrayBuffer(1))))
+    assert(sums.toSet === Set((1, ArrayBuffer(1, 2, 3, 1)), (2, ArrayBuffer(1))))
     // Check that the mutable objects in the original RDD were not changed
     assert(
       bufs.collect().toSet === Set(

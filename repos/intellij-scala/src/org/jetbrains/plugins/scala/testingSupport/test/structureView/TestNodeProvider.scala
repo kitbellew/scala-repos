@@ -62,10 +62,7 @@ class TestNodeProvider extends FileStructureNodeProvider[TreeElement] {
               for (expr <- body.exprs) {
                 (expr match {
                   case expr: ScMethodCall =>
-                    TestNodeProvider.extractTestViewElement(
-                      expr,
-                      clazz,
-                      project)
+                    TestNodeProvider.extractTestViewElement(expr, clazz, project)
                   case expr: ScInfixExpr =>
                     TestNodeProvider.extractTestViewElementInfix(
                       expr,
@@ -166,8 +163,7 @@ object TestNodeProvider {
     } else if (getFeatureSpecBases.exists(isInheritor(clazz, _))) {
       extractFeatureSpec(expr, project)
     } else if (getFunSpecBasesPost2_0.exists(
-        isInheritor(clazz, _)) || getFunSpecBasesPre2_0.exists(
-        isInheritor(clazz, _))) {
+        isInheritor(clazz, _)) || getFunSpecBasesPre2_0.exists(isInheritor(clazz, _))) {
       extractFunSpec(expr, project)
     } else if (getPropSpecBases.exists(isInheritor(clazz, _))) {
       extractPropSpec(expr, project)
@@ -368,19 +364,13 @@ object TestNodeProvider {
         "ignore",
         List("void")) || checkIgnoreExpr(expr))) {
       Some(
-        ignoredScalaTestElement(
-          expr,
-          getInfixExprTestName(expr),
-          entry.children(())))
+        ignoredScalaTestElement(expr, getInfixExprTestName(expr), entry.children(())))
     } else if (checkScInfixExpr(
         expr,
         "is",
         List("org.scalatest.PendingNothing")) || checkPendingInfixExpr(expr)) {
       Some(
-        pendingScalaTestElement(
-          expr,
-          getInfixExprTestName(expr),
-          entry.children(())))
+        pendingScalaTestElement(expr, getInfixExprTestName(expr), entry.children(())))
     } else if (checkScInfixExpr(expr, entry.funName, entry.args: _*)) {
       Some(
         new TestStructureViewElement(
@@ -805,8 +795,7 @@ object TestNodeProvider {
           .orElse(
             elem.getParent match {
               case parent: ScPatternDefinition if parent.bindings.size == 1 =>
-                Option(
-                  PsiTreeUtil.getChildOfType(parent, classOf[ScPatternList]))
+                Option(PsiTreeUtil.getChildOfType(parent, classOf[ScPatternList]))
               case _ => None
             }
           )
@@ -850,10 +839,5 @@ object ExtractEntry {
       canIgnore: Boolean,
       canPend: Boolean,
       args: List[String]*): ExtractEntry =
-    ExtractEntry(
-      funName,
-      canIgnore,
-      canPend,
-      _ => Array[TreeElement](),
-      args: _*)
+    ExtractEntry(funName, canIgnore, canPend, _ => Array[TreeElement](), args: _*)
 }

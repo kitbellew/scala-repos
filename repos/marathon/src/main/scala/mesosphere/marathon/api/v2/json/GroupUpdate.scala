@@ -33,16 +33,15 @@ case class GroupUpdate(
         .map { case (group, groupUpdate) => groupUpdate(group, timestamp) }
       val groupAdditions = groupIds
         .diff(changedIds)
-        .flatMap(gid =>
-          updates.find(_.groupId.canonicalPath(current.id) == gid))
+        .flatMap(gid => updates.find(_.groupId.canonicalPath(current.id) == gid))
         .map(update =>
           update.toGroup(update.groupId.canonicalPath(current.id), timestamp))
       groupUpdates.toSet ++ groupAdditions
     }
     val effectiveApps: Set[AppDefinition] =
       apps.getOrElse(current.apps).map(toApp(current.id, _, timestamp))
-    val effectiveDependencies = dependencies.fold(current.dependencies)(
-      _.map(_.canonicalPath(current.id)))
+    val effectiveDependencies =
+      dependencies.fold(current.dependencies)(_.map(_.canonicalPath(current.id)))
     Group(
       current.id,
       effectiveApps,

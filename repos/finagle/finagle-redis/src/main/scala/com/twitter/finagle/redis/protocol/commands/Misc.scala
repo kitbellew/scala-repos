@@ -117,8 +117,7 @@ object Config {
       trimList(args.headOption.toList, 1, "CONFIG")(0)).toUpperCase
     val subCommand = subCommands
       .find { _.command == subCommandString }
-      .getOrElse(
-        throw ClientError("Invalid Config command " + subCommandString))
+      .getOrElse(throw ClientError("Invalid Config command " + subCommandString))
     subCommand(args.tail)
   }
 }

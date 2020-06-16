@@ -27,9 +27,7 @@ class DecimalExpressionSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(UnscaledValue(Literal(d1)), 101L)
     val d2 = Decimal(101, 3, 1)
     checkEvaluation(UnscaledValue(Literal(d2)), 101L)
-    checkEvaluation(
-      UnscaledValue(Literal.create(null, DecimalType(2, 1))),
-      null)
+    checkEvaluation(UnscaledValue(Literal.create(null, DecimalType(2, 1))), null)
   }
 
   test("MakeDecimal") {
@@ -49,17 +47,13 @@ class DecimalExpressionSuite extends SparkFunSuite with ExpressionEvalHelper {
 
   test("CheckOverflow") {
     val d1 = Decimal("10.1")
-    checkEvaluation(
-      CheckOverflow(Literal(d1), DecimalType(4, 0)),
-      Decimal("10"))
+    checkEvaluation(CheckOverflow(Literal(d1), DecimalType(4, 0)), Decimal("10"))
     checkEvaluation(CheckOverflow(Literal(d1), DecimalType(4, 1)), d1)
     checkEvaluation(CheckOverflow(Literal(d1), DecimalType(4, 2)), d1)
     checkEvaluation(CheckOverflow(Literal(d1), DecimalType(4, 3)), null)
 
     val d2 = Decimal(101, 3, 1)
-    checkEvaluation(
-      CheckOverflow(Literal(d2), DecimalType(4, 0)),
-      Decimal("10"))
+    checkEvaluation(CheckOverflow(Literal(d2), DecimalType(4, 0)), Decimal("10"))
     checkEvaluation(CheckOverflow(Literal(d2), DecimalType(4, 1)), d2)
     checkEvaluation(CheckOverflow(Literal(d2), DecimalType(4, 2)), d2)
     checkEvaluation(CheckOverflow(Literal(d2), DecimalType(4, 3)), null)

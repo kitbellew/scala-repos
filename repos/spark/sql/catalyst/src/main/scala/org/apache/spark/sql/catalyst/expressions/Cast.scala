@@ -141,9 +141,7 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
     from match {
       case BinaryType => buildCast[Array[Byte]](_, UTF8String.fromBytes)
       case DateType =>
-        buildCast[Int](
-          _,
-          d => UTF8String.fromString(DateTimeUtils.dateToString(d)))
+        buildCast[Int](_, d => UTF8String.fromString(DateTimeUtils.dateToString(d)))
       case TimestampType =>
         buildCast[Long](
           _,

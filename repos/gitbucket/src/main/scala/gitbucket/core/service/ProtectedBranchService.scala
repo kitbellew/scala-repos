@@ -65,10 +65,8 @@ trait ProtectedBranchService {
     }
   }
 
-  def disableBranchProtection(
-      owner: String,
-      repository: String,
-      branch: String)(implicit session: Session): Unit =
+  def disableBranchProtection(owner: String, repository: String, branch: String)(
+      implicit session: Session): Unit =
     ProtectedBranches.filter(_.byPrimaryKey(owner, repository, branch)).delete
 
 }

@@ -27,11 +27,7 @@ private[immutable] object IntMapUtils extends BitOperations.Int {
     else IntMap.Bin(p, m, t2, t1)
   }
 
-  def bin[T](
-      prefix: Int,
-      mask: Int,
-      left: IntMap[T],
-      right: IntMap[T]): IntMap[T] =
+  def bin[T](prefix: Int, mask: Int, left: IntMap[T], right: IntMap[T]): IntMap[T] =
     (left, right) match {
       case (left, IntMap.Nil)  => left
       case (IntMap.Nil, right) => right

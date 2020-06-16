@@ -22,9 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScAnnotationsStubImpl
 
 class ScAnnotationsElementType[Func <: ScAnnotations]
     extends ScStubElementType[ScAnnotationsStub, ScAnnotations]("annotations") {
-  def serialize(
-      stub: ScAnnotationsStub,
-      dataStream: StubOutputStream): Unit = {}
+  def serialize(stub: ScAnnotationsStub, dataStream: StubOutputStream): Unit = {}
 
   def createPsi(stub: ScAnnotationsStub): ScAnnotations = {
     new ScAnnotationsImpl(stub)

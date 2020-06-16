@@ -354,10 +354,8 @@ trait IssuesControllerBase extends ControllerBase {
                   enableAnchor = true,
                   enableLineBreaks = true,
                   enableTaskList = true,
-                  hasWritePermission = isEditable(
-                    x.userName,
-                    x.repositoryName,
-                    x.commentedUserName)
+                  hasWritePermission =
+                    isEditable(x.userName, x.repositoryName, x.commentedUserName)
                 )
               )
             )
@@ -382,8 +380,7 @@ trait IssuesControllerBase extends ControllerBase {
           repository.name,
           issueId,
           params("labelId").toInt)
-        html.labellist(
-          getIssueLabels(repository.owner, repository.name, issueId))
+        html.labellist(getIssueLabels(repository.owner, repository.name, issueId))
       }
   })
 
@@ -395,8 +392,7 @@ trait IssuesControllerBase extends ControllerBase {
           repository.name,
           issueId,
           params("labelId").toInt)
-        html.labellist(
-          getIssueLabels(repository.owner, repository.name, issueId))
+        html.labellist(getIssueLabels(repository.owner, repository.name, issueId))
       }
   })
 
@@ -567,10 +563,7 @@ trait IssuesControllerBase extends ControllerBase {
           getMilestones(owner, repoName),
           getLabels(owner, repoName),
           countIssue(condition.copy(state = "open"), false, owner -> repoName),
-          countIssue(
-            condition.copy(state = "closed"),
-            false,
-            owner -> repoName),
+          countIssue(condition.copy(state = "closed"), false, owner -> repoName),
           condition,
           repository,
           hasWritePermission(owner, repoName, context.loginAccount)

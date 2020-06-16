@@ -56,8 +56,7 @@ private[finagle] object ByteBufAsBuf {
 /**
   * a [[Buf]] wrapper for Netty `ByteBuf`s.
   */
-private[finagle] class ByteBufAsBuf(private val underlying: ByteBuf)
-    extends Buf {
+private[finagle] class ByteBufAsBuf(private val underlying: ByteBuf) extends Buf {
   def write(bytes: Array[Byte], off: Int): Unit = {
     val dup = underlying.duplicate()
     dup.readBytes(bytes, off, dup.readableBytes)

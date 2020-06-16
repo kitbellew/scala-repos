@@ -79,9 +79,7 @@ object JavaRouting extends Specification {
 
   }
 
-  def contentOf(
-      rh: RequestHeader,
-      router: Class[_ <: Router] = classOf[Routes]) = {
+  def contentOf(rh: RequestHeader, router: Class[_ <: Router] = classOf[Routes]) = {
     running(_.configure("play.http.router" -> router.getName)) { app =>
       implicit val mat = ActorMaterializer()(app.actorSystem)
       contentAsString(app.requestHandler.handlerForRequest(rh)._2 match {

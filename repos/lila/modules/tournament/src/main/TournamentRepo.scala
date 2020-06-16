@@ -17,8 +17,7 @@ object TournamentRepo {
   private def selectId(id: String) = BSONDocument("_id" -> id)
 
   private val enterableSelect = BSONDocument(
-    "status" -> BSONDocument(
-      "$in" -> List(Status.Created.id, Status.Started.id)))
+    "status" -> BSONDocument("$in" -> List(Status.Created.id, Status.Started.id)))
 
   private val createdSelect = BSONDocument("status" -> Status.Created.id)
   private val startedSelect = BSONDocument("status" -> Status.Started.id)
@@ -292,8 +291,8 @@ object TournamentRepo {
   def lastFinishedDaily(variant: Variant): Fu[Option[Tournament]] =
     coll
       .find(
-        finishedSelect ++ sinceSelect(
-          DateTime.now minusDays 1) ++ variantSelect(variant) ++
+        finishedSelect ++ sinceSelect(DateTime.now minusDays 1) ++ variantSelect(
+          variant) ++
           BSONDocument("schedule.freq" -> Schedule.Freq.Daily.name)
       )
       .sort(BSONDocument("startsAt" -> -1))

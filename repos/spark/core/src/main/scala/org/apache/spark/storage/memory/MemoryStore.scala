@@ -71,8 +71,7 @@ private[spark] class MemoryStore(
   }
 
   logInfo(
-    "MemoryStore started with capacity %s".format(
-      Utils.bytesToString(maxMemory)))
+    "MemoryStore started with capacity %s".format(Utils.bytesToString(maxMemory)))
 
   /** Total storage memory used including unroll memory, in bytes. */
   private def memoryUsed: Long = memoryManager.storageMemoryUsed

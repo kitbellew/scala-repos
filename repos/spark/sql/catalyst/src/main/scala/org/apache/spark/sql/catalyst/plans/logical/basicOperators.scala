@@ -255,10 +255,7 @@ case class Union(children: Seq[LogicalPlan]) extends LogicalPlan {
   override protected def validConstraints: Set[Expression] = {
     children
       .map(child =>
-        rewriteConstraints(
-          children.head.output,
-          child.output,
-          child.constraints))
+        rewriteConstraints(children.head.output, child.output, child.constraints))
       .reduce(_ intersect _)
   }
 }

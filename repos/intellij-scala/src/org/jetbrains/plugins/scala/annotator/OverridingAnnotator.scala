@@ -135,9 +135,7 @@ trait OverridingAnnotator {
     })
   }
 
-  def checkOverrideClassParameters(
-      v: ScClassParameter,
-      holder: AnnotationHolder) {
+  def checkOverrideClassParameters(v: ScClassParameter, holder: AnnotationHolder) {
     val supersWithSelfType =
       ScalaPsiUtil.superValsSignatures(v, withSelfType = true)
     val supers = ScalaPsiUtil.superValsSignatures(v, withSelfType = false)
@@ -268,10 +266,7 @@ trait OverridingAnnotator {
       if (overridesFinal) {
         val annotation: Annotation = holder.createErrorAnnotation(
           member.nameId,
-          ScalaBundle.message(
-            "can.not.override.final",
-            memberType,
-            member.name))
+          ScalaBundle.message("can.not.override.final", memberType, member.name))
         annotation.setHighlightType(
           ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
       }

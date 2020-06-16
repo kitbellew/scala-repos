@@ -77,8 +77,7 @@ object SbtProjectDataService {
           .flatMap(SdkUtils.findProjectSdk)
           .orElse(existingJdk)
           .orElse(SdkUtils.allJdks.headOption)
-        projectJdk.foreach(
-          ProjectRootManager.getInstance(project).setProjectSdk)
+        projectJdk.foreach(ProjectRootManager.getInstance(project).setProjectSdk)
       }
 
     private def setLanguageLevel(project: Project, data: SbtProjectData): Unit =

@@ -155,8 +155,7 @@ object build extends Build {
           case _ =>
             ScalazCrossType.shared(baseDirectory.value, "main")
         }
-        typeclassSource(tc).sources.map(
-          _.createOrUpdate(dir, streams.value.log))
+        typeclassSource(tc).sources.map(_.createOrUpdate(dir, streams.value.log))
       }
     },
     checkGenTypeClasses <<= genTypeClasses.map { classes =>

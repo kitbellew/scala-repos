@@ -164,8 +164,8 @@ class BaseReplicationClient(
   def getAll(key: String): Future[ReplicationStatus[Option[Buf]]] =
     getAll(Seq(key)) map { _.values.head }
 
-  def getAll(keys: Iterable[String])
-      : Future[Map[String, ReplicationStatus[Option[Buf]]]] = {
+  def getAll(
+      keys: Iterable[String]): Future[Map[String, ReplicationStatus[Option[Buf]]]] = {
     val keySet = keys.toSet
     Future.collect(clients map { _.getResult(keySet) }) map {
       results: Seq[GetResult] =>
@@ -526,11 +526,7 @@ class SimpleReplicationClient(underlying: BaseReplicationClient)
             "One or more underlying replica failed op: " + name))
     }
 
-  def append(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: Buf): Future[JBoolean] =
+  def append(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] =
     throw new UnsupportedOperationException(
       "append is not supported for replication cache client yet.")
 

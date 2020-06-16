@@ -147,8 +147,7 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
     val R = implicitly[Reducer[A, List[A]]]
     bind(chooseAny(fs.head, fs.tail.toList)) {
       case (a, residuals) =>
-        map(reduceUnordered(residuals)(R))(list =>
-          NonEmptyList.nels(a, list: _*))
+        map(reduceUnordered(residuals)(R))(list => NonEmptyList.nels(a, list: _*))
     }
   }
 

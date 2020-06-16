@@ -85,13 +85,8 @@ class FundepMaterializationBundle(val c: Context) {
             Modifiers(),
             newTermName("to"),
             List(),
-            List(
-              List(
-                ValDef(
-                  Modifiers(PARAM),
-                  newTermName("f"),
-                  Ident(sym),
-                  EmptyTree))),
+            List(List(
+              ValDef(Modifiers(PARAM), newTermName("f"), Ident(sym), EmptyTree))),
             TypeTree(),
             mkFrom())
         )

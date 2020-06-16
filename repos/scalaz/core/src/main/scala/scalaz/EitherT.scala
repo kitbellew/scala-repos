@@ -284,8 +284,7 @@ object EitherT extends EitherTInstances {
       left[F.M, F.A, B](F(fa))(F.TC)
   }
 
-  private[scalaz] final class EitherTRight[A](val dummy: Boolean)
-      extends AnyVal {
+  private[scalaz] final class EitherTRight[A](val dummy: Boolean) extends AnyVal {
     def apply[FB](fb: FB)(implicit
         F: Unapply[Functor, FB]): EitherT[F.M, A, F.A] =
       right[F.M, A, F.A](F(fb))(F.TC)

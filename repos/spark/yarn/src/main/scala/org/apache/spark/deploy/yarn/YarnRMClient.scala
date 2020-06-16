@@ -90,9 +90,7 @@ private[spark] class YarnRMClient(args: ApplicationMasterArguments)
     * @param status The final status of the AM.
     * @param diagnostics Diagnostics message to include in the final status.
     */
-  def unregister(
-      status: FinalApplicationStatus,
-      diagnostics: String = ""): Unit =
+  def unregister(status: FinalApplicationStatus, diagnostics: String = ""): Unit =
     synchronized {
       if (registered) {
         amClient.unregisterApplicationMaster(

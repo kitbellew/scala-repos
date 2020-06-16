@@ -222,7 +222,8 @@ class StabilizerTest extends FunSuite {
     }
   })
 
-  test("Adds are published immediately when >1 epoch has passed since last update")(
+  test(
+    "Adds are published immediately when >1 epoch has passed since last update")(
     new Ctx {
       Time.withCurrentTimeFrozen { timeControl =>
         timeControl.advance(30.seconds)

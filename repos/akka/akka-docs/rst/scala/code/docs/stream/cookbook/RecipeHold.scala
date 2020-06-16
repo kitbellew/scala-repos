@@ -10,8 +10,7 @@ object HoldOps {
   //#hold-version-1
   import akka.stream._
   import akka.stream.stage._
-  final class HoldWithInitial[T](initial: T)
-      extends GraphStage[FlowShape[T, T]] {
+  final class HoldWithInitial[T](initial: T) extends GraphStage[FlowShape[T, T]] {
     val in = Inlet[T]("HoldWithInitial.in")
     val out = Outlet[T]("HoldWithInitial.out")
 

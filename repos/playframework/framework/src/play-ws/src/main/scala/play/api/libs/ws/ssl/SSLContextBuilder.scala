@@ -106,11 +106,7 @@ class ConfigSSLContextBuilder(
   protected val logger = org.slf4j.LoggerFactory.getLogger(getClass)
 
   def build: SSLContext = {
-    buildSSLContext(
-      info.protocol,
-      keyManagers,
-      trustManagers,
-      info.secureRandom)
+    buildSSLContext(info.protocol, keyManagers, trustManagers, info.secureRandom)
   }
 
   lazy val revocationLists = certificateRevocationList(info)
@@ -251,9 +247,7 @@ class ConfigSSLContextBuilder(
           // http://bugs.java.com/bugdatabase/view_bug.do?bug_id=6974037
           // If you run into "Given final block not properly padded", then it's because you entered in the
           // wrong password for the keystore, and JSSE tries to decrypt and only then verify the MAC.
-          throw new SecurityException(
-            "Mac verify error: invalid password?",
-            bpe)
+          throw new SecurityException("Mac verify error: invalid password?", bpe)
       }
 
     if (!validateStoreContainsPrivateKeys(ksc, keyStore)) {
@@ -411,8 +405,7 @@ class ConfigSSLContextBuilder(
     */
   def validateStore(store: KeyStore, algorithmChecker: AlgorithmChecker) {
     import scala.collection.JavaConverters._
-    logger.debug(
-      s"validateStore: type = ${store.getType}, size = ${store.size}")
+    logger.debug(s"validateStore: type = ${store.getType}, size = ${store.size}")
 
     store.aliases().asScala.foreach { alias =>
       Option(store.getCertificate(alias)).map { c =>

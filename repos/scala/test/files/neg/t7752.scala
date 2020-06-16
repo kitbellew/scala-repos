@@ -24,29 +24,8 @@ object Test {
           String,
           String),
       rows: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)*)
-      : Tuple22[
-        A,
-        B,
-        C,
-        D,
-        E,
-        F,
-        G,
-        H,
-        I,
-        J,
-        K,
-        L,
-        M,
-        N,
-        O,
-        P,
-        Q,
-        R,
-        S,
-        T,
-        U,
-        V] = null
+      : Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V] =
+    null
   def foo[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
       heading: (
           String,
@@ -267,8 +246,8 @@ object Test {
           String,
           String,
           String),
-      rows: (A, B, C, D, E, F, G, H, I, J, K)*)
-      : Tuple11[A, B, C, D, E, F, G, H, I, J, K] = null
+      rows: (A, B, C, D, E, F, G, H, I, J, K)*): Tuple11[A, B, C, D, E, F, G, H, I, J, K] =
+    null
   def foo[A, B, C, D, E, F, G, H, I, J](
       heading: (
           String,
@@ -281,8 +260,8 @@ object Test {
           String,
           String,
           String),
-      rows: (A, B, C, D, E, F, G, H, I, J)*)
-      : Tuple10[A, B, C, D, E, F, G, H, I, J] = null
+      rows: (A, B, C, D, E, F, G, H, I, J)*): Tuple10[A, B, C, D, E, F, G, H, I, J] =
+    null
   def foo[A, B, C, D, E, F, G, H, I](
       heading: (
           String,

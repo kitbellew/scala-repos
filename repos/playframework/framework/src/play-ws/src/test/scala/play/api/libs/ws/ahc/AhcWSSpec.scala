@@ -34,8 +34,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
   "Ahc WS" should {
 
     object PairMagnet {
-      implicit def fromPair(
-          pair: Pair[WSClient, java.net.URL]): WSRequestMagnet =
+      implicit def fromPair(pair: Pair[WSClient, java.net.URL]): WSRequestMagnet =
         new WSRequestMagnet {
           def apply(): WSRequest = {
             val (client, netUrl) = pair
@@ -250,8 +249,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
         .withBody("HELLO WORLD")
         .asInstanceOf[AhcWSRequest]
         .buildRequest()
-      req.getHeaders.get(
-        "Content-Type") must_== ("text/plain; charset=US-ASCII")
+      req.getHeaders.get("Content-Type") must_== ("text/plain; charset=US-ASCII")
     }
 
     "Only send first content type header if two are sent" in new WithApplication {
@@ -531,8 +529,7 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       ahcResponse.getHeaders returns ahcHeaders
       val response = AhcWSResponse(ahcResponse)
       val headers = response.allHeaders
-      headers must beEqualTo(
-        Map("Foo" -> Seq("bar", "baz"), "Bar" -> Seq("baz")))
+      headers must beEqualTo(Map("Foo" -> Seq("bar", "baz"), "Bar" -> Seq("baz")))
       headers.contains("foo") must beTrue
       headers.contains("Foo") must beTrue
       headers.contains("BAR") must beTrue

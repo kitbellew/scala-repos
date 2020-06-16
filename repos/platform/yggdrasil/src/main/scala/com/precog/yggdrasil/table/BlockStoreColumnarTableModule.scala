@@ -275,9 +275,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                     val cp: Pair[ColumnRef, Column] = if (columns.size == 1) {
                       columns.head
                     } else {
-                      (
-                        ref,
-                        ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
+                      (ref, ArraySetColumn(ref.ctype, columns.map(_._2).toArray))
                     }
                     cp
                   }
@@ -790,8 +788,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                           //println("No more data on right and not in a span; emitting left based on bitset " + leq.toList.mkString("[", ",", "]"))
                           // entirely done; just emit both
                           val lemission = leq.nonEmpty.option(
-                            lhead.mapColumns(
-                              cf.util.filter(0, lhead.size, leq)))
+                            lhead.mapColumns(cf.util.filter(0, lhead.size, leq)))
                           (lemission map { e =>
                             writeAlignedSlices(
                               lkey,
@@ -1090,9 +1087,8 @@ trait BlockStoreColumnarTableModule[M[+_]]
                       val keyRowFormat = RowFormat.forSortingKey(keyColumnRefs)
                       val keyColumnEncoder =
                         keyRowFormat.ColumnEncoder(keyColumns)
-                      val keyComparator = SortingKeyComparator(
-                        keyRowFormat,
-                        sortOrder.isAscending)
+                      val keyComparator =
+                        SortingKeyComparator(keyRowFormat, sortOrder.isAscending)
 
                       writeRawSlices(
                         kslice,
@@ -1321,15 +1317,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
                   (k: SortingKey) => M.point(None))))
 
           case (
-                SliceIndex(
-                  name,
-                  dbFile,
-                  _,
-                  _,
-                  _,
-                  keyColumns,
-                  valColumns,
-                  count),
+                SliceIndex(name, dbFile, _, _, _, keyColumns, valColumns, count),
                 index) =>
             val sortProjection = new JDBMRawSortProjection[M](
               dbFile,
@@ -1476,10 +1464,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
               flip = false) map (JoinOrder.RightOrder -> _)
 
           case (Left(left), Right(right)) =>
-            hashJoin(
-              right.slice,
-              left,
-              flip = true) map (JoinOrder.LeftOrder -> _)
+            hashJoin(right.slice, left, flip = true) map (JoinOrder.LeftOrder -> _)
 
           case (leftE, rightE) =>
             val idT = Predef.identity[Table](_)
@@ -1490,10 +1475,7 @@ trait BlockStoreColumnarTableModule[M[+_]]
               joinSpec)
         }
       } else {
-        super.join(left1, right1, orderHint)(
-          leftKeySpec,
-          rightKeySpec,
-          joinSpec)
+        super.join(left1, right1, orderHint)(leftKeySpec, rightKeySpec, joinSpec)
       }
     }
 

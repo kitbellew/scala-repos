@@ -40,8 +40,7 @@ private[scheduler] case class ErrorReported(msg: String, e: Throwable)
   * This class schedules jobs to be run on Spark. It uses the JobGenerator to generate
   * the jobs and runs them using a thread pool.
   */
-private[streaming] class JobScheduler(val ssc: StreamingContext)
-    extends Logging {
+private[streaming] class JobScheduler(val ssc: StreamingContext) extends Logging {
 
   // Use of ConcurrentHashMap.keySet later causes an odd runtime problem due to Java 7/8 diff
   // https://gist.github.com/AlainODea/1375759b8720a3f9f094

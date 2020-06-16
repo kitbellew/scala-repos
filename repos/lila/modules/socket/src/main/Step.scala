@@ -61,10 +61,10 @@ object Step {
     Json.obj("pockets" -> List(v.pockets.white, v.pockets.black))
   }
 
-  private[socket] implicit val openingWriter
-      : OWrites[chess.opening.FullOpening] = OWrites { o =>
-    Json.obj("eco" -> o.eco, "name" -> o.name)
-  }
+  private[socket] implicit val openingWriter: OWrites[chess.opening.FullOpening] =
+    OWrites { o =>
+      Json.obj("eco" -> o.eco, "name" -> o.name)
+    }
 
   implicit val stepJsonWriter: Writes[Step] = Writes { step =>
     import step._

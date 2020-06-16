@@ -166,9 +166,7 @@ abstract class LogicalPlan extends QueryPlan[LogicalPlan] with Logging {
     * don't split the name parts quoted by backticks, for example,
     * `ab.cd`.`efg` should be split into two parts "ab.cd" and "efg".
     */
-  def resolveQuoted(
-      name: String,
-      resolver: Resolver): Option[NamedExpression] = {
+  def resolveQuoted(name: String, resolver: Resolver): Option[NamedExpression] = {
     resolve(UnresolvedAttribute.parseAttributeName(name), output, resolver)
   }
 

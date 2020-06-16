@@ -261,8 +261,7 @@ case class SpecifiedWindowFrame(
         Some(
           s"$UnboundedFollowing is not allowed as the start of a Window Frame.")
       case (_, _, UnboundedPreceding) =>
-        Some(
-          s"$UnboundedPreceding is not allowed as the end of a Window Frame.")
+        Some(s"$UnboundedPreceding is not allowed as the end of a Window Frame.")
       // case (RowFrame, start, end) => ??? RowFrame specific rule
       // case (RangeFrame, start, end) => ??? RangeFrame specific rule
       case (_, start, end) =>
@@ -507,10 +506,8 @@ trait SizeBasedWindowFunction extends AggregateWindowFunction {
 }
 
 object SizeBasedWindowFunction {
-  val n = AttributeReference(
-    "window__partition__size",
-    IntegerType,
-    nullable = false)()
+  val n =
+    AttributeReference("window__partition__size", IntegerType, nullable = false)()
 }
 
 /**

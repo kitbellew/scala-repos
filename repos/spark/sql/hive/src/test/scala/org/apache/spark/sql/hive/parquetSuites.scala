@@ -233,7 +233,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
       """.stripMargin)
 
     // Insert into am empty table.
-    sql("insert into table test_insert_parquet select a, b from jt where jt.a > 5")
+    sql(
+      "insert into table test_insert_parquet select a, b from jt where jt.a > 5")
     checkAnswer(
       sql(s"SELECT intField, stringField FROM test_insert_parquet WHERE intField < 8"),
       Row(6, "str6") :: Row(7, "str7") :: Nil
@@ -268,8 +269,7 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
     sql("insert into table test_insert_parquet select a, b from jt")
     checkAnswer(
       sql(s"SELECT intField, stringField FROM test_insert_parquet"),
-      (1 to 10).map(i => Row(i, s"str$i")) ++ (1 to 4).map(i =>
-        Row(i, s"str$i"))
+      (1 to 10).map(i => Row(i, s"str$i")) ++ (1 to 4).map(i => Row(i, s"str$i"))
     )
     dropTables("test_insert_parquet")
   }
@@ -706,7 +706,8 @@ class ParquetSourceSuite extends ParquetPartitioningTest {
     }
   }
 
-  test("Aggregation attribute names can't contain special chars \" ,;{}()\\n\\t=\"") {
+  test(
+    "Aggregation attribute names can't contain special chars \" ,;{}()\\n\\t=\"") {
     val tempDir = Utils.createTempDir()
     val filePath = new File(tempDir, "testParquet").getCanonicalPath
     val filePath2 = new File(tempDir, "testParquet2").getCanonicalPath
@@ -894,9 +895,7 @@ abstract class ParquetPartitioningTest
     }
 
     test(s"multi-partition pruned count $table") {
-      checkAnswer(
-        sql(s"SELECT COUNT(*) FROM $table WHERE p IN (1,2,3)"),
-        Row(30))
+      checkAnswer(sql(s"SELECT COUNT(*) FROM $table WHERE p IN (1,2,3)"), Row(30))
     }
 
     test(s"non-partition predicates $table") {

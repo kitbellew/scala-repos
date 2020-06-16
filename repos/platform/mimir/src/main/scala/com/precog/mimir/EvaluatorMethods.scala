@@ -114,13 +114,11 @@ trait EvaluatorMethodsModule[M[+_]]
 
       val sharedDerefs =
         for ((i, _) <- idMatch.sharedIndices)
-          yield trans.WrapArray(
-            DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
+          yield trans.WrapArray(DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
 
       val unsharedLeft =
         for (i <- idMatch.leftIndices)
-          yield trans.WrapArray(
-            DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
+          yield trans.WrapArray(DerefArrayStatic(leftIdentitySpec, CPathIndex(i)))
 
       val unsharedRight =
         for (i <- idMatch.rightIndices)

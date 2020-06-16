@@ -71,11 +71,7 @@ object Segments {
     Segments(id, 0, CTree.empty(CPath.Identity), ArrayBuffer.empty[Segment])
 }
 
-case class Segments(
-    id: Long,
-    var length: Int,
-    t: CTree,
-    a: ArrayBuffer[Segment]) {
+case class Segments(id: Long, var length: Int, t: CTree, a: ArrayBuffer[Segment]) {
 
   override def equals(that: Any): Boolean =
     that match {

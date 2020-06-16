@@ -142,8 +142,7 @@ object ExtractionExamples extends Specification {
 
   "Flatten example with simple case class" in {
     val f = Extraction.flatten(
-      Extraction.decompose(
-        SimplePerson("joe", Address("Bulevard", "Helsinki"))))
+      Extraction.decompose(SimplePerson("joe", Address("Bulevard", "Helsinki"))))
     val e = Map(
       ".name" -> "\"joe\"",
       ".address.street" -> "\"Bulevard\"",

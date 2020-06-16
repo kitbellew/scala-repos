@@ -165,8 +165,8 @@ trait Enumeratee2TFunctions {
       M: Monad[F]): Enumeratee2T[J, K, J, F] =
     new Enumeratee2T[J, K, J, F] {
       def apply[A] = {
-        def cstep(step: StepT[J, F, A])
-            : StepT[Either3[J, (J, K), K], F, StepT[J, F, A]] =
+        def cstep(
+            step: StepT[J, F, A]): StepT[Either3[J, (J, K), K], F, StepT[J, F, A]] =
           step.fold(
             cont = contf =>
               scont { in: Input[Either3[J, (J, K), K]] =>

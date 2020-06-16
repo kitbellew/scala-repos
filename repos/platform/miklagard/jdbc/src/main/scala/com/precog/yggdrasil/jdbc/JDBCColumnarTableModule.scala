@@ -314,9 +314,7 @@ trait JDBCColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     /** Maps a given database name to a JDBC connection URL */
     def databaseMap: Map[String, String]
 
-    private def jTypeToProperties(
-        tpe: JType,
-        current: Set[String]): Set[String] =
+    private def jTypeToProperties(tpe: JType, current: Set[String]): Set[String] =
       tpe match {
         case JArrayFixedT(elements) if current.nonEmpty =>
           elements

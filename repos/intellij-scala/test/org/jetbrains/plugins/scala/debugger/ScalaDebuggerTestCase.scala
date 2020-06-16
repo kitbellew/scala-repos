@@ -77,9 +77,7 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
           getModule,
           classOf[DefaultDebugExecutor],
           new ProcessAdapter {
-            override def onTextAvailable(
-                event: ProcessEvent,
-                outputType: Key[_]) {
+            override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
               val text = event.getText
               if (debug) print(text)
             }
@@ -281,9 +279,7 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
         semaphore.up()
         res
       }
-    assert(
-      semaphore.waitFor(10000),
-      "Too long evaluate expression: " + codeText)
+    assert(semaphore.waitFor(10000), "Too long evaluate expression: " + codeText)
     result
   }
 
@@ -320,10 +316,7 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
 
   protected def addOtherLibraries() = {}
 
-  def checkLocation(
-      source: String,
-      methodName: String,
-      lineNumber: Int): Unit = {
+  def checkLocation(source: String, methodName: String, lineNumber: Int): Unit = {
     def format(s: String, mn: String, ln: Int) = s"$s:$mn:$ln"
     managed {
       val location = suspendContext.getFrameProxy.getStackFrame.location

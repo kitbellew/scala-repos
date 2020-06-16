@@ -10,8 +10,7 @@ import scala.collection.JavaConverters._
 /**
   * @author Nikolay.Tropin
   */
-class ScalaBuildProcessParametersProvider
-    extends BuildProcessParametersProvider {
+class ScalaBuildProcessParametersProvider extends BuildProcessParametersProvider {
   override def getVMArguments: util.List[String] =
     customScalaCompilerInterfaceDir().toSeq.asJava
 

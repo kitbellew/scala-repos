@@ -428,8 +428,7 @@ object DecisionTree extends Serializable with Logging {
         val numSplits = agg.metadata.numSplits(featureIndex)
         var splitIndex = 0
         while (splitIndex < numSplits) {
-          if (splits(featureIndex)(splitIndex).categories.contains(
-              featureValue)) {
+          if (splits(featureIndex)(splitIndex).categories.contains(featureValue)) {
             agg.featureUpdate(
               leftNodeFeatureOffset,
               splitIndex,
@@ -961,10 +960,8 @@ object DecisionTree extends Serializable with Logging {
                         nodeFeatureOffset,
                         numSplits)
                     rightChildStats.subtract(leftChildStats)
-                    predictWithImpurity = Some(
-                      predictWithImpurity.getOrElse(calculatePredictImpurity(
-                        leftChildStats,
-                        rightChildStats)))
+                    predictWithImpurity = Some(predictWithImpurity.getOrElse(
+                      calculatePredictImpurity(leftChildStats, rightChildStats)))
                     val gainStats = calculateGainForSplit(
                       leftChildStats,
                       rightChildStats,
@@ -1219,8 +1216,7 @@ object DecisionTree extends Serializable with Logging {
         math.min(continuousFeatures.length, input.partitions.length)
 
       input
-        .flatMap(point =>
-          continuousFeatures.map(idx => (idx, point.features(idx))))
+        .flatMap(point => continuousFeatures.map(idx => (idx, point.features(idx))))
         .groupByKey(numPartitions)
         .map { case (k, v) => findSplits(k, v) }
         .collectAsMap()

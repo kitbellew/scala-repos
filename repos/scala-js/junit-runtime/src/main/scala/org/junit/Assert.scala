@@ -55,10 +55,7 @@ object Assert {
   def assertEquals(expected: Any, actual: Any): Unit =
     assertEquals(null, expected, actual)
 
-  def assertNotEquals(
-      message: String,
-      unexpected: AnyRef,
-      actual: AnyRef): Unit = {
+  def assertNotEquals(message: String, unexpected: AnyRef, actual: AnyRef): Unit = {
     if (equalsRegardingNull(unexpected, actual))
       failEquals(message, actual)
   }
@@ -181,10 +178,7 @@ object Assert {
       expecteds: Array[Double],
       actuals: Array[Double],
       delta: Double): Unit = {
-    new InexactComparisonCriteria(delta).arrayEquals(
-      message,
-      expecteds,
-      actuals)
+    new InexactComparisonCriteria(delta).arrayEquals(message, expecteds, actuals)
   }
 
   def assertArrayEquals(
@@ -199,10 +193,7 @@ object Assert {
       expecteds: Array[Float],
       actuals: Array[Float],
       delta: Float): Unit = {
-    new InexactComparisonCriteria(delta).arrayEquals(
-      message,
-      expecteds,
-      actuals)
+    new InexactComparisonCriteria(delta).arrayEquals(message, expecteds, actuals)
   }
 
   def assertArrayEquals(
@@ -291,10 +282,7 @@ object Assert {
   def assertSame(expected: AnyRef, actual: AnyRef): Unit =
     assertSame(null, expected, actual)
 
-  def assertNotSame(
-      message: String,
-      unexpected: AnyRef,
-      actual: AnyRef): Unit = {
+  def assertNotSame(message: String, unexpected: AnyRef, actual: AnyRef): Unit = {
     if (unexpected eq actual)
       failSame(message)
   }
@@ -323,10 +311,7 @@ object Assert {
   private def failNotEquals(message: String, expected: Any, actual: Any): Unit =
     fail(format(message, expected, actual))
 
-  private[junit] def format(
-      message: String,
-      expected: Any,
-      actual: Any): String = {
+  private[junit] def format(message: String, expected: Any, actual: Any): String = {
     val formatted = if (message != null && message != "") message + " " else ""
     val expectedString = String.valueOf(expected)
     val actualString = String.valueOf(actual)

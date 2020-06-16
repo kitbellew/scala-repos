@@ -95,8 +95,7 @@ class BalancingSpec
     "deliver messages in a balancing fashion when defined programatically" in {
       val latch = TestLatch(1)
       val pool = system.actorOf(
-        BalancingPool(poolSize).props(routeeProps =
-          Props(classOf[Worker], latch)),
+        BalancingPool(poolSize).props(routeeProps = Props(classOf[Worker], latch)),
         name = "balancingPool-1")
       test(pool, latch)
     }

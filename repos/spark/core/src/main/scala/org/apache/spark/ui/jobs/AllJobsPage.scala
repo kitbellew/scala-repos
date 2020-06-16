@@ -186,10 +186,7 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
         """.stripMargin
 
     val eventArrayAsStr =
-      (jobEventJsonAsStrSeq ++ executorEventJsonAsStrSeq).mkString(
-        "[",
-        ",",
-        "]")
+      (jobEventJsonAsStrSeq ++ executorEventJsonAsStrSeq).mkString("[", ",", "]")
 
     <span class="expand-application-timeline">
       <span class="expand-application-timeline-arrow arrow-closed"></span>

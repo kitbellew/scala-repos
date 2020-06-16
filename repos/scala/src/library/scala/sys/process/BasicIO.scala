@@ -96,10 +96,7 @@ object BasicIO {
     *               sent. If `None`, output will be sent to stderr.
     * @return A `ProcessIO` with the characteristics above.
     */
-  def apply(
-      withIn: Boolean,
-      output: String => Unit,
-      log: Option[ProcessLogger]) =
+  def apply(withIn: Boolean, output: String => Unit, log: Option[ProcessLogger]) =
     new ProcessIO(input(withIn), processFully(output), getErr(log))
 
   /** Creates a `ProcessIO` that appends its output to a `StringBuffer`. It can

@@ -67,9 +67,7 @@ package object util {
             localClass = Class.forName(resultClassDescriptor.getName)
           } catch {
             case e: ClassNotFoundException =>
-              logger.error(
-                "No local class for " + resultClassDescriptor.getName,
-                e)
+              logger.error("No local class for " + resultClassDescriptor.getName, e)
               return resultClassDescriptor
           }
 

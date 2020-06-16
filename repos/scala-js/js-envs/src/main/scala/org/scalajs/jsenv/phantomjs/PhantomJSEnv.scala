@@ -259,9 +259,8 @@ class PhantomJSEnv(
           val fragParts = msg.length / MaxCharPayloadSize
 
           for (i <- 0 until fragParts) {
-            val payload = msg.substring(
-              i * MaxCharPayloadSize,
-              (i + 1) * MaxCharPayloadSize)
+            val payload =
+              msg.substring(i * MaxCharPayloadSize, (i + 1) * MaxCharPayloadSize)
             mgr.sendMessage("1" + payload)
           }
 

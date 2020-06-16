@@ -112,10 +112,7 @@ object ValidationTest extends SpecLite {
 
     (List("1", "-2", "3") map (_.parseInt.leftMap(_.toString) excepting {
       case i if i < 0 => errmsgA(i)
-    })) must_=== (List(
-      1.success[Any],
-      errmsgA(-2).failure[Int],
-      3.success[Any]))
+    })) must_=== (List(1.success[Any], errmsgA(-2).failure[Int], 3.success[Any]))
   }
 
   "ensure" in {

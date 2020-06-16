@@ -68,19 +68,14 @@ object Position {
     validate(new TransparentPosition(source, start, point, end))
 }
 
-class OffsetPosition(sourceIn: SourceFile, pointIn: Int)
-    extends DefinedPosition {
+class OffsetPosition(sourceIn: SourceFile, pointIn: Int) extends DefinedPosition {
   override def isRange = false
   override def source = sourceIn
   override def point = pointIn
   override def start = point
   override def end = point
 }
-class RangePosition(
-    sourceIn: SourceFile,
-    startIn: Int,
-    pointIn: Int,
-    endIn: Int)
+class RangePosition(sourceIn: SourceFile, startIn: Int, pointIn: Int, endIn: Int)
     extends OffsetPosition(sourceIn, pointIn) {
   override def isRange = true
   override def start = startIn

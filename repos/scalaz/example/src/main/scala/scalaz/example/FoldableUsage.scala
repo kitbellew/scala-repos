@@ -70,9 +70,8 @@ object FoldableUsage extends App {
   // we can go deeeeep:
   val deepFolder = Foldable[List] compose Foldable[Vector] compose Foldable[
     Stream] compose Foldable[Option]
-  val deep: List[Vector[Stream[Option[Int]]]] = List(
-    Vector(Stream(1.some, none[Int]), Stream(2.some)),
-    Vector(Stream(3.some)))
+  val deep: List[Vector[Stream[Option[Int]]]] =
+    List(Vector(Stream(1.some, none[Int]), Stream(2.some)), Vector(Stream(3.some)))
   assert(deepFolder.fold(deep) === 6)
   assert(deepFolder.collapse[IList, Int](deep) === IList(1, 2, 3))
   assert(deepFolder.foldLeft(deep, "")(_ + _.toString) === "123")

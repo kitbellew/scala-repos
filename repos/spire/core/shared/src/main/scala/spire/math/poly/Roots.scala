@@ -174,8 +174,7 @@ private[poly] class FixedRealRoots(
           Real(
             Algebraic
               .unsafeRoot(zpoly, i, lb, ub)
-              .toBigDecimal(
-                new MathContext(Real.digits, RoundingMode.HALF_EVEN)))
+              .toBigDecimal(new MathContext(Real.digits, RoundingMode.HALF_EVEN)))
         case _ =>
           throw new RuntimeException("invalid isolated root interval")
       }

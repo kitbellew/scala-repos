@@ -91,7 +91,8 @@ class MetastoreDataSourcesSuite
     }
   }
 
-  test("persistent JSON table with a user specified schema with a subset of fields") {
+  test(
+    "persistent JSON table with a user specified schema with a subset of fields") {
     withTable("jsonTable") {
       // This works because JSON objects are self-describing and JSONRelation can get needed
       // field values based on field names.
@@ -103,9 +104,10 @@ class MetastoreDataSourcesSuite
          """.stripMargin)
 
       val innerStruct = StructType(
-        Seq(StructField(
-          "=",
-          ArrayType(StructType(StructField("Dd2", BooleanType, true) :: Nil)))))
+        Seq(
+          StructField(
+            "=",
+            ArrayType(StructType(StructField("Dd2", BooleanType, true) :: Nil)))))
 
       val expectedSchema = StructType(
         Seq(
@@ -472,8 +474,7 @@ class MetastoreDataSourcesSuite
         }
 
         // Create an external table by specifying the path.
-        withSQLConf(
-          SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
+        withSQLConf(SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
           df.write
             .format("org.apache.spark.sql.json")
             .mode(SaveMode.Append)
@@ -497,8 +498,7 @@ class MetastoreDataSourcesSuite
           s"""{ "a": $i, "b": "str$i" }"""
         }))
 
-        withSQLConf(
-          SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
+        withSQLConf(SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
           df.write
             .format("json")
             .mode(SaveMode.Append)
@@ -524,8 +524,7 @@ class MetastoreDataSourcesSuite
         checkAnswer(read.json(tempPath.toString), df)
 
         // Try to specify the schema.
-        withSQLConf(
-          SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
+        withSQLConf(SQLConf.DEFAULT_DATA_SOURCE_NAME.key -> "not a source name") {
           val schema = StructType(StructField("b", StringType, true) :: Nil)
           createExternalTable(
             "createdJsonTable",
@@ -711,8 +710,8 @@ class MetastoreDataSourcesSuite
     withSQLConf(SQLConf.SCHEMA_STRING_LENGTH_THRESHOLD.key -> "4000") {
       withTable("wide_schema") {
         // We will need 80 splits for this schema if the threshold is 4000.
-        val schema = StructType(
-          (1 to 5000).map(i => StructField(s"c_$i", StringType, true)))
+        val schema =
+          StructType((1 to 5000).map(i => StructField(s"c_$i", StringType, true)))
 
         // Manually create a metastore data source table.
         sessionState.catalog.createDataSourceTable(
@@ -785,8 +784,7 @@ class MetastoreDataSourcesSuite
       val actualPartitionColumns =
         StructType((0 until numPartCols).map { index =>
           df.schema(
-            metastoreTable.properties(
-              s"spark.sql.sources.schema.partCol.$index"))
+            metastoreTable.properties(s"spark.sql.sources.schema.partCol.$index"))
         })
       // Make sure partition columns are correctly stored in metastore.
       assert(
@@ -850,8 +848,7 @@ class MetastoreDataSourcesSuite
       val actualSortByColumns =
         StructType((0 until numSortCols).map { index =>
           df.schema(
-            metastoreTable.properties(
-              s"spark.sql.sources.schema.sortCol.$index"))
+            metastoreTable.properties(s"spark.sql.sources.schema.sortCol.$index"))
         })
       // Make sure sortBy columns are correctly stored in metastore.
       assert(
@@ -895,8 +892,7 @@ class MetastoreDataSourcesSuite
         .format("parquet")
         .saveAsTable("insertParquet")
       checkAnswer(
-        sql(
-          "SELECT p.c1, c2 FROM insertParquet p WHERE p.c1 > 5 AND p.c1 < 25"),
+        sql("SELECT p.c1, c2 FROM insertParquet p WHERE p.c1 > 5 AND p.c1 < 25"),
         (6 to 24).map(i => Row(i, s"str$i")))
 
       intercept[AnalysisException] {
@@ -905,22 +901,19 @@ class MetastoreDataSourcesSuite
 
       createDF(30, 39).write.mode(SaveMode.Append).saveAsTable("insertParquet")
       checkAnswer(
-        sql(
-          "SELECT p.c1, c2 FROM insertParquet p WHERE p.c1 > 5 AND p.c1 < 35"),
+        sql("SELECT p.c1, c2 FROM insertParquet p WHERE p.c1 > 5 AND p.c1 < 35"),
         (6 to 34).map(i => Row(i, s"str$i")))
 
       createDF(40, 49).write.mode(SaveMode.Append).insertInto("insertParquet")
       checkAnswer(
-        sql(
-          "SELECT p.c1, c2 FROM insertParquet p WHERE p.c1 > 5 AND p.c1 < 45"),
+        sql("SELECT p.c1, c2 FROM insertParquet p WHERE p.c1 > 5 AND p.c1 < 45"),
         (6 to 44).map(i => Row(i, s"str$i")))
 
       createDF(50, 59).write
         .mode(SaveMode.Overwrite)
         .saveAsTable("insertParquet")
       checkAnswer(
-        sql(
-          "SELECT p.c1, c2 FROM insertParquet p WHERE p.c1 > 51 AND p.c1 < 55"),
+        sql("SELECT p.c1, c2 FROM insertParquet p WHERE p.c1 > 51 AND p.c1 < 55"),
         (52 to 54).map(i => Row(i, s"str$i")))
       createDF(60, 69).write.mode(SaveMode.Ignore).saveAsTable("insertParquet")
       checkAnswer(
@@ -994,7 +987,6 @@ class MetastoreDataSourcesSuite
         .getTable("default", "skip_hive_metadata")
         .schema
         .forall(column =>
-          HiveMetastoreTypes.toDataType(column.dataType) == ArrayType(
-            StringType)))
+          HiveMetastoreTypes.toDataType(column.dataType) == ArrayType(StringType)))
   }
 }

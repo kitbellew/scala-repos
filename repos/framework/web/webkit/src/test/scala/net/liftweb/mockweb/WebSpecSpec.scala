@@ -41,10 +41,7 @@ object WebSpecSpecBoot {
     }
 
     LiftRules.statefulRewrite.append {
-      case RewriteRequest(
-            ParsePath(List("test", "stateful"), _, _, _),
-            _,
-            _) => {
+      case RewriteRequest(ParsePath(List("test", "stateful"), _, _, _), _, _) => {
         RewriteResponse(List("stateful", "works"))
       }
     }

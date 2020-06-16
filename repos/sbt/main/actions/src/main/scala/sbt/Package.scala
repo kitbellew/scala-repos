@@ -12,12 +12,7 @@ import sbt.io.Path._
 import sbt.io.IO
 
 import sbinary.{DefaultProtocol, Format}
-import DefaultProtocol.{
-  FileFormat,
-  immutableMapFormat,
-  StringFormat,
-  UnitFormat
-}
+import DefaultProtocol.{FileFormat, immutableMapFormat, StringFormat, UnitFormat}
 import sbt.internal.util.{
   Cache,
   FileInfo,

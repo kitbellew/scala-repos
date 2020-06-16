@@ -124,8 +124,7 @@ private class RandomForest(
     numTrees > 0,
     s"RandomForest requires numTrees > 0, but was given numTrees = $numTrees.")
   require(
-    RandomForest.supportedFeatureSubsetStrategies.contains(
-      featureSubsetStrategy),
+    RandomForest.supportedFeatureSubsetStrategies.contains(featureSubsetStrategy),
     s"RandomForest given invalid featureSubsetStrategy: $featureSubsetStrategy." +
       s" Supported values: ${RandomForest.supportedFeatureSubsetStrategies.mkString(", ")}."
   )
@@ -256,11 +255,7 @@ private class RandomForest(
       // Collect some nodes to split, and choose features for each node (if subsampling).
       // Each group of nodes may come from one or multiple trees, and at multiple levels.
       val (nodesForGroup, treeToNodeToIndexInfo) =
-        RandomForest.selectNodesToSplit(
-          nodeQueue,
-          maxMemoryUsage,
-          metadata,
-          rng)
+        RandomForest.selectNodesToSplit(nodeQueue, maxMemoryUsage, metadata, rng)
       // Sanity check (should never occur):
       assert(
         nodesForGroup.size > 0,

@@ -637,18 +637,12 @@ private[akka] class ActorCell(
       checkReceiveTimeout
       if (system.settings.DebugLifecycle)
         publish(
-          Debug(
-            self.path.toString,
-            clazz(created),
-            "started (" + created + ")"))
+          Debug(self.path.toString, clazz(created), "started (" + created + ")"))
     } catch {
       case e: InterruptedException ⇒
         clearOutActorIfNonNull()
         Thread.currentThread().interrupt()
-        throw ActorInitializationException(
-          self,
-          "interruption during creation",
-          e)
+        throw ActorInitializationException(self, "interruption during creation", e)
       case NonFatal(e) ⇒
         clearOutActorIfNonNull()
         e match {
@@ -662,10 +656,7 @@ private[akka] class ActorCell(
               i.getCause
             )
           case x ⇒
-            throw ActorInitializationException(
-              self,
-              "exception during creation",
-              x)
+            throw ActorInitializationException(self, "exception during creation", x)
         }
     }
   }
@@ -678,10 +669,7 @@ private[akka] class ActorCell(
           handleSupervise(child, async)
           if (system.settings.DebugLifecycle)
             publish(
-              Debug(
-                self.path.toString,
-                clazz(actor),
-                "now supervising " + child))
+              Debug(self.path.toString, clazz(actor), "now supervising " + child))
         case None ⇒
           publish(
             Error(

@@ -317,13 +317,10 @@ private[spark] class Executor(
         val serializedResult: ByteBuffer = {
           if (maxResultSize > 0 && resultSize > maxResultSize) {
             logWarning(s"Finished $taskName (TID $taskId). Result is larger than maxResultSize " +
-              s"(${Utils.bytesToString(resultSize)} > ${Utils.bytesToString(
-                maxResultSize)}), " +
+              s"(${Utils.bytesToString(resultSize)} > ${Utils.bytesToString(maxResultSize)}), " +
               s"dropping it.")
             ser.serialize(
-              new IndirectTaskResult[Any](
-                TaskResultBlockId(taskId),
-                resultSize))
+              new IndirectTaskResult[Any](TaskResultBlockId(taskId), resultSize))
           } else if (resultSize > maxDirectResultSize) {
             val blockId = TaskResultBlockId(taskId)
             env.blockManager.putBytes(
@@ -454,12 +451,7 @@ private[spark] class Executor(
           classOf[String],
           classOf[ClassLoader],
           classOf[Boolean])
-        constructor.newInstance(
-          conf,
-          env,
-          classUri,
-          parent,
-          _userClassPathFirst)
+        constructor.newInstance(conf, env, classUri, parent, _userClassPathFirst)
       } catch {
         case _: ClassNotFoundException =>
           logError("Could not find org.apache.spark.repl.ExecutorClassLoader on classpath!")

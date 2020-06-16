@@ -117,8 +117,7 @@ trait MatchTranslation {
       private def typeTestStep(sub: Symbol, subPt: Type) =
         step(TypeTestTreeMaker(sub, binder, subPt, glbWith(subPt))(pos))()
       private def alternativesStep(alts: List[Tree]) =
-        step(
-          AlternativesTreeMaker(binder, translatedAlts(alts), alts.head.pos))()
+        step(AlternativesTreeMaker(binder, translatedAlts(alts), alts.head.pos))()
       private def translatedAlts(alts: List[Tree]) =
         alts map (alt => rebindTo(alt).translate())
       private def noStep() = step()()
@@ -627,8 +626,7 @@ trait MatchTranslation {
         val mutableBinders =
           (
             if (!binder.info.typeSymbol.hasTransOwner(ScalaPackageClass) &&
-              (paramAccessors exists (x =>
-                x.isMutable || definitions.isRepeated(x)))) {
+              (paramAccessors exists (x => x.isMutable || definitions.isRepeated(x)))) {
 
               subPatBinders.zipWithIndex.flatMap {
                 case (binder, idx) =>

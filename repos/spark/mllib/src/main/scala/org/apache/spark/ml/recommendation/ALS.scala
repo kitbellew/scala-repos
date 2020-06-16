@@ -102,11 +102,8 @@ private[recommendation] trait ALSParams
     * Default: 10
     * @group param
     */
-  val rank = new IntParam(
-    this,
-    "rank",
-    "rank of the factorization",
-    ParamValidators.gtEq(1))
+  val rank =
+    new IntParam(this, "rank", "rank of the factorization", ParamValidators.gtEq(1))
 
   /** @group getParam */
   def getRank: Int = $(rank)
@@ -144,10 +141,8 @@ private[recommendation] trait ALSParams
     * Default: false
     * @group param
     */
-  val implicitPrefs = new BooleanParam(
-    this,
-    "implicitPrefs",
-    "whether to use implicit preference")
+  val implicitPrefs =
+    new BooleanParam(this, "implicitPrefs", "whether to use implicit preference")
 
   /** @group getParam */
   def getImplicitPrefs: Boolean = $(implicitPrefs)
@@ -695,9 +690,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       case (
             (userBlockId, itemBlockId),
             RatingBlock(userIds, itemIds, localRatings)) =>
-        (
-          (itemBlockId, userBlockId),
-          RatingBlock(itemIds, userIds, localRatings))
+        ((itemBlockId, userBlockId), RatingBlock(itemIds, userIds, localRatings))
     }
     val (itemInBlocks, itemOutBlocks) =
       makeBlocks(
@@ -1180,9 +1173,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       }
     }
 
-    override def getKey(
-        data: UncompressedInBlock[ID],
-        pos: Int): KeyWrapper[ID] = {
+    override def getKey(data: UncompressedInBlock[ID], pos: Int): KeyWrapper[ID] = {
       getKey(data, pos, null)
     }
 
@@ -1195,10 +1186,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       data(pos1) = tmp
     }
 
-    override def swap(
-        data: UncompressedInBlock[ID],
-        pos0: Int,
-        pos1: Int): Unit = {
+    override def swap(data: UncompressedInBlock[ID], pos0: Int, pos1: Int): Unit = {
       swapElements(data.srcIds, pos0, pos1)
       swapElements(data.dstEncodedIndices, pos0, pos1)
       swapElements(data.ratings, pos0, pos1)
@@ -1358,9 +1346,7 @@ object ALS extends DefaultParamsReadable[ALS] with Logging {
       case (srcBlockId, (srcOutBlock, srcFactors)) =>
         srcOutBlock.view.zipWithIndex.map {
           case (activeIndices, dstBlockId) =>
-            (
-              dstBlockId,
-              (srcBlockId, activeIndices.map(idx => srcFactors(idx))))
+            (dstBlockId, (srcBlockId, activeIndices.map(idx => srcFactors(idx))))
         }
     }
     val merged =

@@ -115,8 +115,7 @@ object Forms {
       a6: (String, Mapping[A6]),
       a7: (String, Mapping[A7]))(
       apply: Function7[A1, A2, A3, A4, A5, A6, A7, R])(
-      unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7)]])
-      : Mapping[R] = {
+      unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7)]]): Mapping[R] = {
     new ObjectMapping7(apply, unapply, a1, a2, a3, a4, a5, a6, a7)
   }
 
@@ -130,8 +129,7 @@ object Forms {
       a7: (String, Mapping[A7]),
       a8: (String, Mapping[A8]))(
       apply: Function8[A1, A2, A3, A4, A5, A6, A7, A8, R])(
-      unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7, A8)]])
-      : Mapping[R] = {
+      unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7, A8)]]): Mapping[R] = {
     new ObjectMapping8(apply, unapply, a1, a2, a3, a4, a5, a6, a7, a8)
   }
 
@@ -181,9 +179,8 @@ object Forms {
       a10: (String, Mapping[A10]),
       a11: (String, Mapping[A11]))(
       apply: Function11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, R])(
-      unapply: Function1[
-        R,
-        Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)]]): Mapping[R] = {
+      unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)]])
+      : Mapping[R] = {
     new ObjectMapping11(
       apply,
       unapply,
@@ -216,8 +213,7 @@ object Forms {
       apply: Function12[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, R])(
       unapply: Function1[
         R,
-        Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)]])
-      : Mapping[R] = {
+        Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12)]]): Mapping[R] = {
     new ObjectMapping12(
       apply,
       unapply,
@@ -388,9 +384,10 @@ object Forms {
         A13,
         A14,
         A15,
-        R])(unapply: Function1[
-    R,
-    Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]])
+        R])(
+      unapply: Function1[
+        R,
+        Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]])
       : Mapping[R] = {
     new ObjectMapping15(
       apply,
@@ -463,10 +460,11 @@ object Forms {
         A14,
         A15,
         A16,
-        R])(unapply: Function1[
-    R,
-    Option[
-      (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16)]])
+        R])(
+      unapply: Function1[
+        R,
+        Option[
+          (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16)]])
       : Mapping[R] = {
     new ObjectMapping16(
       apply,
@@ -1388,8 +1386,7 @@ object Forms {
           a10: A10,
           a11: A11,
           a12: A12,
-          a13: A13) =>
-        (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13))(
+          a13: A13) => (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13))(
       (t: (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)) => Some(t))
 
   def tuple[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14](
@@ -1534,23 +1531,7 @@ object Forms {
           a14: A14,
           a15: A15,
           a16: A16) =>
-        (
-          a1,
-          a2,
-          a3,
-          a4,
-          a5,
-          a6,
-          a7,
-          a8,
-          a9,
-          a10,
-          a11,
-          a12,
-          a13,
-          a14,
-          a15,
-          a16))(
+        (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15, a16))(
       (t: (
           A1,
           A2,
@@ -1604,24 +1585,7 @@ object Forms {
       a15: (String, Mapping[A15]),
       a16: (String, Mapping[A16]),
       a17: (String, Mapping[A17])): Mapping[
-    (
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14,
-        A15,
-        A16,
-        A17)] =
+    (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16, A17)] =
     mapping(
       a1,
       a2,

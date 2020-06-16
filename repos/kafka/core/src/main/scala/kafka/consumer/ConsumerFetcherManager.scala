@@ -49,8 +49,8 @@ class ConsumerFetcherManager(
       "ConsumerFetcherManager-%d".format(SystemTime.milliseconds),
       config.clientId,
       config.numConsumerFetchers) {
-  private var partitionMap
-      : immutable.Map[TopicAndPartition, PartitionTopicInfo] = null
+  private var partitionMap: immutable.Map[TopicAndPartition, PartitionTopicInfo] =
+    null
   private var cluster: Cluster = null
   private val noLeaderPartitionSet = new mutable.HashSet[TopicAndPartition]
   private val lock = new ReentrantLock
@@ -83,8 +83,7 @@ class ConsumerFetcherManager(
             correlationId.getAndIncrement)
           .topicsMetadata
         if (logger.isDebugEnabled)
-          topicsMetadata.foreach(topicMetadata =>
-            debug(topicMetadata.toString()))
+          topicsMetadata.foreach(topicMetadata => debug(topicMetadata.toString()))
         topicsMetadata.foreach { tmd =>
           val topic = tmd.topic
           tmd.partitionsMetadata.foreach { pmd =>

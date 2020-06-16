@@ -21,11 +21,7 @@ import akka.http.scaladsl.util.FastFuture
 import akka.http.scaladsl.server._
 import akka.http.scaladsl.unmarshalling._
 import akka.http.scaladsl.model._
-import akka.http.scaladsl.model.headers.{
-  Upgrade,
-  `Sec-WebSocket-Protocol`,
-  Host
-}
+import akka.http.scaladsl.model.headers.{Upgrade, `Sec-WebSocket-Protocol`, Host}
 import FastFuture._
 
 trait RouteTest

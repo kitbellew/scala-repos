@@ -25,12 +25,7 @@ object DiffUtil {
     if (diff.getDeltas.isEmpty) ""
     else
       difflib.DiffUtils
-        .generateUnifiedDiff(
-          originalInfo,
-          revisedInfo,
-          original.asJava,
-          diff,
-          1)
+        .generateUnifiedDiff(originalInfo, revisedInfo, original.asJava, diff, 1)
         .asScala
         .mkString("", "\n", "\n")
   }

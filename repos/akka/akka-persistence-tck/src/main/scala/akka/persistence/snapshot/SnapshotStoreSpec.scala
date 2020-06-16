@@ -60,10 +60,7 @@ abstract class SnapshotStoreSpec(config: Config)
   "A snapshot store" must {
     "not load a snapshot given an invalid persistenceId" in {
       snapshotStore.tell(
-        LoadSnapshot(
-          "invalid",
-          SnapshotSelectionCriteria.Latest,
-          Long.MaxValue),
+        LoadSnapshot("invalid", SnapshotSelectionCriteria.Latest, Long.MaxValue),
         senderProbe.ref)
       senderProbe.expectMsg(LoadSnapshotResult(None, Long.MaxValue))
     }

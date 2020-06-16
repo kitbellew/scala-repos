@@ -243,10 +243,9 @@ object StateSpec {
         Optional[ValueType],
         State[StateType],
         MappedType]): StateSpec[KeyType, ValueType, StateType, MappedType] = {
-    val wrappedFunc = (k: KeyType, v: Option[ValueType], s: State[StateType]) =>
-      {
-        mappingFunction.call(k, JavaUtils.optionToOptional(v), s)
-      }
+    val wrappedFunc = (k: KeyType, v: Option[ValueType], s: State[StateType]) => {
+      mappingFunction.call(k, JavaUtils.optionToOptional(v), s)
+    }
     StateSpec.function(wrappedFunc)
   }
 }
@@ -289,8 +288,8 @@ private[streaming] case class StateSpecImpl[K, V, S, T](
 
   // ================= Private Methods =================
 
-  private[streaming] def getFunction()
-      : (Time, K, Option[V], State[S]) => Option[T] = function
+  private[streaming] def getFunction(): (Time, K, Option[V], State[S]) => Option[T] =
+    function
 
   private[streaming] def getInitialStateRDD(): Option[RDD[(K, S)]] =
     Option(initialStateRDD)

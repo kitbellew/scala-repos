@@ -112,8 +112,7 @@ trait DB extends Loggable {
     )
 
     first(toTry)(f =>
-      tryo { t: Throwable => logger.trace("JNDI Lookup failed: " + t) }(
-        f())) or {
+      tryo { t: Throwable => logger.trace("JNDI Lookup failed: " + t) }(f())) or {
       logger.trace(
         "Unable to obtain Connection for JNDI name %s".format(name.jndiName))
       Empty
@@ -132,9 +131,7 @@ trait DB extends Loggable {
   private val threadLocalConnectionManagers =
     new ThreadGlobal[Map[ConnectionIdentifier, ConnectionManager]]
 
-  def defineConnectionManager(
-      name: ConnectionIdentifier,
-      mgr: ConnectionManager) {
+  def defineConnectionManager(name: ConnectionIdentifier, mgr: ConnectionManager) {
     connectionManagers(name) = mgr
   }
 
@@ -451,10 +448,7 @@ trait DB extends Loggable {
       f(st.executeQuery(query))
     }
 
-  private def asString(
-      pos: Int,
-      rs: ResultSet,
-      md: ResultSetMetaData): String = {
+  private def asString(pos: Int, rs: ResultSet, md: ResultSetMetaData): String = {
     import java.sql.Types._
     md.getColumnType(pos) match {
       case ARRAY | BINARY | BLOB | DATALINK | DISTINCT | JAVA_OBJECT |
@@ -625,8 +619,7 @@ trait DB extends Loggable {
   def performQuery(
       query: String,
       params: List[Any],
-      connectionIdentifier: ConnectionIdentifier)
-      : (List[String], List[List[Any]]) = {
+      connectionIdentifier: ConnectionIdentifier): (List[String], List[List[Any]]) = {
     use(connectionIdentifier)(conn =>
       prepareStatement(query, conn) { ps =>
         resultSetToAny(setPreparedParams(ps, params).executeQuery)
@@ -1250,9 +1243,7 @@ class StandardDBVendor(
         }(DriverManager.getConnection(dbUrl, user, pwd))
       case _ =>
         tryo { t: Throwable =>
-          logger.error(
-            "Unable to get database connection. url=%s".format(dbUrl),
-            t)
+          logger.error("Unable to get database connection. url=%s".format(dbUrl), t)
         }(DriverManager.getConnection(dbUrl))
     }
   }

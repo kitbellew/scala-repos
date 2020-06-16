@@ -23,8 +23,7 @@ class padTest extends FunSuite {
     assert(
       padRight(testDVD, dimensions = 7, mode = 11d) == DenseVector(1d, 2d, 3d,
         4d, 5d, 11d, 11d))
-    assert(
-      padRight(testDVD, 7, 10d) == DenseVector(1d, 2d, 3d, 4d, 5d, 10d, 10d))
+    assert(padRight(testDVD, 7, 10d) == DenseVector(1d, 2d, 3d, 4d, 5d, 10d, 10d))
     assert(
       padRight(testDVD, 7, Value(10d)) == DenseVector(1d, 2d, 3d, 4d, 5d, 10d,
         10d))
@@ -45,17 +44,13 @@ class padTest extends FunSuite {
         (0, 0, 0),
         (0, 0, 0)))
     assert(
-      padRight(testDMI, dimensions = (3, 3), 0) == DenseMatrix(
-        (1, 0, 0),
-        (2, 0, 0),
-        (3, 0, 0)))
+      padRight(testDMI, dimensions = (3, 3), 0) == DenseMatrix((1, 0, 0), (2, 0, 0), (3, 0, 0)))
 
     assert(padLeft(testDVI, dimensions = 3) == DenseVector(3, 4, 5))
     assert(
       padLeft(testDVD, dimensions = 7, mode = 11d) == DenseVector(11d, 11d, 1d,
         2d, 3d, 4d, 5d))
-    assert(
-      padLeft(testDVD, 7, 10d) == DenseVector(10d, 10d, 1d, 2d, 3d, 4d, 5d))
+    assert(padLeft(testDVD, 7, 10d) == DenseVector(10d, 10d, 1d, 2d, 3d, 4d, 5d))
     assert(
       padLeft(testDVD, 7, Value(10d)) == DenseVector(10d, 10d, 1d, 2d, 3d, 4d,
         5d))
@@ -75,11 +70,7 @@ class padTest extends FunSuite {
         (0, 0, 3),
         (0, 0, 4),
         (0, 0, 5)))
-    assert(
-      padLeft(testDMI, dimensions = (3, 3), 0) == DenseMatrix(
-        (0, 0, 3),
-        (0, 0, 4),
-        (0, 0, 5)))
+    assert(padLeft(testDMI, dimensions = (3, 3), 0) == DenseMatrix((0, 0, 3), (0, 0, 4), (0, 0, 5)))
 
   }
 

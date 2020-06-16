@@ -237,10 +237,7 @@ class ConcurrentMemory(implicit
             cast(go(prod, service))
 
           case Summer(producer, store, sg) => {
-            def go[K, V](
-                in: Prod[(K, V)],
-                str: Store[K, V],
-                semi: Semigroup[V]) = {
+            def go[K, V](in: Prod[(K, V)], str: Store[K, V], semi: Semigroup[V]) = {
               val (planned, targets) = maybeFanout[(K, (Option[V], V))]
               val phys = Sum(str, semi, targets)
               (planned + (that -> phys), phys)

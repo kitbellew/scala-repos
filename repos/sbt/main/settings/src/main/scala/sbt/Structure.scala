@@ -542,8 +542,7 @@ object Scoped {
     protected def convert[M[_], R](f: Fun[M, R]) = f.tupled
   }
   final class RichTaskable4[A, B, C, D](t4: (ST[A], ST[B], ST[C], ST[D]))
-      extends RichTaskables[AList.T4K[A, B, C, D]#l](t4)(
-        AList.tuple4[A, B, C, D]) {
+      extends RichTaskables[AList.T4K[A, B, C, D]#l](t4)(AList.tuple4[A, B, C, D]) {
     type Fun[M[_], Ret] = (M[A], M[B], M[C], M[D]) => Ret
     def identityMap = map(mkTuple4)
     protected def convert[M[_], R](f: Fun[M, R]) = f.tupled
@@ -591,18 +590,7 @@ object Scoped {
     protected def convert[M[_], R](z: Fun[M, R]) = z.tupled
   }
   final class RichTaskable10[A, B, C, D, E, F, G, H, I, J](
-      t10: (
-          (
-              ST[A],
-              ST[B],
-              ST[C],
-              ST[D],
-              ST[E],
-              ST[F],
-              ST[G],
-              ST[H],
-              ST[I],
-              ST[J])))
+      t10: ((ST[A], ST[B], ST[C], ST[D], ST[E], ST[F], ST[G], ST[H], ST[I], ST[J])))
       extends RichTaskables[AList.T10K[A, B, C, D, E, F, G, H, I, J]#l](t10)(
         AList.tuple10[A, B, C, D, E, F, G, H, I, J]) {
     type Fun[M[_], Ret] =
@@ -667,8 +655,8 @@ object Scoped {
       t3: (Initialize[A], Initialize[B], Initialize[C])): Apply3[A, B, C] =
     new Apply3(t3)
   implicit def t4ToApp4[A, B, C, D](
-      t4: (Initialize[A], Initialize[B], Initialize[C], Initialize[D]))
-      : Apply4[A, B, C, D] = new Apply4(t4)
+      t4: (Initialize[A], Initialize[B], Initialize[C], Initialize[D])): Apply4[A, B, C, D] =
+    new Apply4(t4)
   implicit def t5ToApp5[A, B, C, D, E](
       t5: (
           Initialize[A],
@@ -832,8 +820,7 @@ object Scoped {
   final class Apply4[A, B, C, D](
       t4: (Initialize[A], Initialize[B], Initialize[C], Initialize[D])) {
     def apply[T](z: (A, B, C, D) => T) =
-      Def.app[AList.T4K[A, B, C, D]#l, T](t4)(z.tupled)(
-        AList.tuple4[A, B, C, D])
+      Def.app[AList.T4K[A, B, C, D]#l, T](t4)(z.tupled)(AList.tuple4[A, B, C, D])
     def identity = apply(mkTuple4)
   }
   final class Apply5[A, B, C, D, E](
@@ -844,8 +831,7 @@ object Scoped {
           Initialize[D],
           Initialize[E])) {
     def apply[T](z: (A, B, C, D, E) => T) =
-      Def.app[AList.T5K[A, B, C, D, E]#l, T](t5)(z.tupled)(
-        AList.tuple5[A, B, C, D, E])
+      Def.app[AList.T5K[A, B, C, D, E]#l, T](t5)(z.tupled)(AList.tuple5[A, B, C, D, E])
     def identity = apply(mkTuple5)
   }
   final class Apply6[A, B, C, D, E, F](
@@ -958,9 +944,8 @@ object Scoped {
         def identity = apply(mkTuple15)
     }
    */
-  private[sbt] def extendScoped(
-      s1: Scoped,
-      ss: Seq[Scoped]): Seq[AttributeKey[_]] = s1.key +: ss.map(_.key)
+  private[sbt] def extendScoped(s1: Scoped, ss: Seq[Scoped]): Seq[AttributeKey[_]] =
+    s1.key +: ss.map(_.key)
 }
 
 import Scoped.extendScoped

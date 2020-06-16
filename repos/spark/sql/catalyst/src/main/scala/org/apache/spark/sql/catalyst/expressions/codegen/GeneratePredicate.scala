@@ -63,8 +63,7 @@ object GeneratePredicate
         }
       }"""
 
-    logDebug(
-      s"Generated predicate '$predicate':\n${CodeFormatter.format(code)}")
+    logDebug(s"Generated predicate '$predicate':\n${CodeFormatter.format(code)}")
 
     val p = CodeGenerator
       .compile(code)

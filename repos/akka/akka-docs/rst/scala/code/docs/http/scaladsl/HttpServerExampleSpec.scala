@@ -36,8 +36,7 @@ class HttpServerExampleSpec
     implicit val materializer = ActorMaterializer()
     implicit val executionContext = system.dispatcher
 
-    val serverSource
-        : Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
+    val serverSource: Source[Http.IncomingConnection, Future[Http.ServerBinding]] =
       Http().bind(interface = "localhost", port = 8080)
     val bindingFuture: Future[Http.ServerBinding] =
       serverSource
@@ -75,8 +74,7 @@ class HttpServerExampleSpec
   }
 
   // mock values:
-  val handleConnections
-      : Sink[Http.IncomingConnection, Future[Http.ServerBinding]] =
+  val handleConnections: Sink[Http.IncomingConnection, Future[Http.ServerBinding]] =
     Sink.ignore.mapMaterializedValue(_ => Future.failed(new Exception("")))
 
   "binding-failure-handling" in compileOnlySpec {
@@ -146,9 +144,8 @@ class HttpServerExampleSpec
       .via(reactToConnectionFailure)
       .map { request =>
         // simple text "echo" response:
-        HttpResponse(entity = HttpEntity(
-          ContentTypes.`text/plain(UTF-8)`,
-          request.entity.dataBytes))
+        HttpResponse(entity =
+          HttpEntity(ContentTypes.`text/plain(UTF-8)`, request.entity.dataBytes))
       }
 
     serverSource

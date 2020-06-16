@@ -90,10 +90,7 @@ class TypeCheckCanBeMatchInspection
 class TypeCheckCanBeMatchQuickFix(
     isInstOfUnderFix: ScGenericCall,
     ifStmt: ScIfStmt)
-    extends AbstractFixOnTwoPsiElements(
-      inspectionName,
-      isInstOfUnderFix,
-      ifStmt) {
+    extends AbstractFixOnTwoPsiElements(inspectionName, isInstOfUnderFix, ifStmt) {
   def doApplyFix(project: Project) {
     val isInstOf = getFirstElement
     val ifSt = getSecondElement
@@ -368,9 +365,7 @@ object TypeCheckToMatchUtil {
       }
     }
 
-    def equalTypes(
-        firstCall: ScGenericCall,
-        secondCall: ScGenericCall): Boolean = {
+    def equalTypes(firstCall: ScGenericCall, secondCall: ScGenericCall): Boolean = {
       val option = for {
         firstArgs <- firstCall.typeArgs
         secondArgs <- secondCall.typeArgs

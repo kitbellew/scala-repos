@@ -80,10 +80,7 @@ trait MarkupParsers {
       val result = ch; input.nextChar(); result
     }
 
-    def mkProcInstr(
-        position: Position,
-        name: String,
-        text: String): ElementType =
+    def mkProcInstr(position: Position, name: String, text: String): ElementType =
       parser.symbXMLBuilder.procInstr(position, name, text)
 
     var xEmbeddedBlock = false
@@ -356,9 +353,7 @@ trait MarkupParsers {
     }
 
     /** Some try/catch/finally logic used by xLiteral and xLiteralPattern. */
-    private def xLiteralCommon(
-        f: () => Tree,
-        ifTruncated: String => Unit): Tree = {
+    private def xLiteralCommon(f: () => Tree, ifTruncated: String => Unit): Tree = {
       try return f()
       catch {
         case c @ TruncatedXMLControl =>

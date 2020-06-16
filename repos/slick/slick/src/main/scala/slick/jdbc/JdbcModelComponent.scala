@@ -19,8 +19,7 @@ trait JdbcModelComponent { self: JdbcProfile =>
       ignoreInvalidDefaults: Boolean = true)(implicit
       ec: ExecutionContext): DBIO[Model] = {
     val tablesA = tables.getOrElse(defaultTables)
-    tablesA.flatMap(t =>
-      createModelBuilder(t, ignoreInvalidDefaults).buildModel)
+    tablesA.flatMap(t => createModelBuilder(t, ignoreInvalidDefaults).buildModel)
   }
 
   def createModelBuilder(tables: Seq[MTable], ignoreInvalidDefaults: Boolean)(

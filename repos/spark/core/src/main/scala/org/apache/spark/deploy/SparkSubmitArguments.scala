@@ -492,9 +492,7 @@ private[deploy] class SparkSubmitArguments(
     childArgs ++= extra.asScala
   }
 
-  private def printUsageAndExit(
-      exitCode: Int,
-      unknownParam: Any = null): Unit = {
+  private def printUsageAndExit(exitCode: Int, unknownParam: Any = null): Unit = {
     // scalastyle:off println
     val outStream = SparkSubmit.printStream
     if (unknownParam != null) {

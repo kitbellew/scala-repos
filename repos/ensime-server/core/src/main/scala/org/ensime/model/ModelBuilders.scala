@@ -18,9 +18,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
 
   import rootMirror.RootPackage
 
-  def locateSymbolPos(
-      sym: Symbol,
-      needPos: PosNeeded): Option[SourcePosition] = {
+  def locateSymbolPos(sym: Symbol, needPos: PosNeeded): Option[SourcePosition] = {
     _locateSymbolPos(sym, needPos).orElse({
       logger.debug(s"search $sym: Try Companion")
       sym.companionSymbol match {
@@ -220,13 +218,7 @@ trait ModelBuilders { self: RichPresentationCompiler =>
     }
 
     def nullInfo = {
-      new BasicTypeInfo(
-        "NA",
-        DeclaredAs.Nil,
-        "NA",
-        List.empty,
-        List.empty,
-        None)
+      new BasicTypeInfo("NA", DeclaredAs.Nil, "NA", List.empty, List.empty, None)
     }
   }
 

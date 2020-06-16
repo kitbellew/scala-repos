@@ -257,15 +257,15 @@ class ORSetSpec extends WordSpec with Matchers {
       val commonKeys: Set[String] = Set("K1", "K2")
       val thisDot1 = VersionVector(TreeMap(nodeA -> 3L, nodeD -> 7L))
       val thisDot2 = VersionVector(TreeMap(nodeB -> 5L, nodeC -> 2L))
-      val thisVvector = VersionVector(
-        TreeMap(nodeA -> 3L, nodeB -> 5L, nodeC -> 2L, nodeD -> 7L))
+      val thisVvector =
+        VersionVector(TreeMap(nodeA -> 3L, nodeB -> 5L, nodeC -> 2L, nodeD -> 7L))
       val thisSet = new ORSet(
         elementsMap = Map("K1" -> thisDot1, "K2" -> thisDot2),
         vvector = thisVvector)
       val thatDot1 = VersionVector(nodeA, 3L)
       val thatDot2 = VersionVector(nodeB, 6L)
-      val thatVvector = VersionVector(
-        TreeMap(nodeA -> 3L, nodeB -> 6L, nodeC -> 1L, nodeD -> 8L))
+      val thatVvector =
+        VersionVector(TreeMap(nodeA -> 3L, nodeB -> 6L, nodeC -> 1L, nodeD -> 8L))
       val thatSet = new ORSet(
         elementsMap = Map("K1" -> thatDot1, "K2" -> thatDot2),
         vvector = thatVvector)
@@ -274,8 +274,7 @@ class ORSetSpec extends WordSpec with Matchers {
         "K1" -> VersionVector(nodeA, 3L),
         "K2" -> VersionVector(TreeMap(nodeB -> 6L, nodeC -> 2L)))
 
-      ORSet.mergeCommonKeys(commonKeys, thisSet, thatSet) should be(
-        expectedDots)
+      ORSet.mergeCommonKeys(commonKeys, thisSet, thatSet) should be(expectedDots)
     }
 
     "verify mergeDisjointKeys" in {

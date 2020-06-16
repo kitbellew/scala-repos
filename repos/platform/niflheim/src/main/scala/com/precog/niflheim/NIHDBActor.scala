@@ -130,9 +130,7 @@ trait NIHDB {
       id: Option[Long],
       cols: Option[Set[ColumnRef]]): Future[Option[Block]]
 
-  def getBlock(
-      id: Option[Long],
-      cols: Option[Set[CPath]]): Future[Option[Block]]
+  def getBlock(id: Option[Long], cols: Option[Set[CPath]]): Future[Option[Block]]
 
   def length: Future[Long]
 
@@ -180,9 +178,7 @@ private[niflheim] class NIHDBImpl private[niflheim] (
       cols: Option[Set[ColumnRef]]): Future[Option[Block]] =
     getSnapshot().map(_.getBlockAfter(id, cols))
 
-  def getBlock(
-      id: Option[Long],
-      cols: Option[Set[CPath]]): Future[Option[Block]] =
+  def getBlock(id: Option[Long], cols: Option[Set[CPath]]): Future[Option[Block]] =
     getSnapshot().map(_.getBlock(id, cols))
 
   def length: Future[Long] =
@@ -248,8 +244,7 @@ private[niflheim] object NIHDBActor extends Logging {
     currentState map {
       _ map { s =>
         actorSystem.actorOf(
-          Props(
-            new NIHDBActor(s, baseDir, chef, cookThreshold, txLogScheduler)))
+          Props(new NIHDBActor(s, baseDir, chef, cookThreshold, txLogScheduler)))
       }
     }
   }
@@ -359,9 +354,7 @@ private[niflheim] class NIHDBActor private (
         }
         (handler, offsets)
       } else {
-        (
-          RawHandler.empty(txLog.currentBlockId, currentRawFile),
-          Seq.empty[Long])
+        (RawHandler.empty(txLog.currentBlockId, currentRawFile), Seq.empty[Long])
       }
 
       rawLogOffsets.sortBy(-_).headOption.foreach { newMaxOffset =>
@@ -442,9 +435,7 @@ private[niflheim] class NIHDBActor private (
     SortedMap(allBlocks.map { r => r.id -> r }.toSeq: _*)
   }
 
-  def updatedThresholds(
-      current: Map[Int, Int],
-      ids: Seq[Long]): Map[Int, Int] = {
+  def updatedThresholds(current: Map[Int, Int], ids: Seq[Long]): Map[Int, Int] = {
     (current.toSeq ++ ids.map { i =>
       val EventId(p, s) = EventId.fromLong(i); (p -> s)
     }).groupBy(_._1).map { case (p, ids) => (p -> ids.map(_._2).max) }

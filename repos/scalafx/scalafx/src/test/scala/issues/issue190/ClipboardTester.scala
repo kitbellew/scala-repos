@@ -54,8 +54,7 @@ object ClipboardTester extends JFXApp {
             onAction = handle {
               val systemClipboard = Clipboard.systemClipboard
               val contentTypes = systemClipboard.contentTypes
-              println(
-                s"\nClipboard contains " + contentTypes.size + " type(s).")
+              println(s"\nClipboard contains " + contentTypes.size + " type(s).")
               contentTypes.foreach { ct =>
                 println("Checking content type: " + ct)
                 val ctContent = systemClipboard.getContent(ct)

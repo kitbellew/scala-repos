@@ -340,9 +340,7 @@ private[twitter] object Message {
       error: String)
       extends Rdispatch(1, contexts, encodeString(error))
 
-  case class RdispatchNack(
-      tag: Int,
-      contexts: Seq[(ChannelBuffer, ChannelBuffer)])
+  case class RdispatchNack(tag: Int, contexts: Seq[(ChannelBuffer, ChannelBuffer)])
       extends Rdispatch(2, contexts, ChannelBuffers.EMPTY_BUFFER)
 
   /** Indicates to the client to stop sending new requests. */
@@ -367,8 +365,7 @@ private[twitter] object Message {
     def typ = ???
     def tag = ???
 
-    private[this] val cb = new ReadOnlyChannelBuffer(
-      encode(Tping(Tags.PingTag)))
+    private[this] val cb = new ReadOnlyChannelBuffer(encode(Tping(Tags.PingTag)))
     cb.markReaderIndex()
 
     def buf = {
@@ -523,12 +520,7 @@ private[twitter] object Message {
     val id = trace3 match {
       case Some((spanId, parentId, traceId)) =>
         Some(
-          TraceId(
-            Some(traceId),
-            Some(parentId),
-            spanId,
-            None,
-            Flags(traceFlags)))
+          TraceId(Some(traceId), Some(parentId), spanId, None, Flags(traceFlags)))
       case None => None
     }
 

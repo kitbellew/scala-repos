@@ -590,8 +590,7 @@ final class ClusterReceptionistSettings(
     copy(numberOfContacts = numberOfContacts)
 
   def withResponseTunnelReceiveTimeout(
-      responseTunnelReceiveTimeout: FiniteDuration)
-      : ClusterReceptionistSettings =
+      responseTunnelReceiveTimeout: FiniteDuration): ClusterReceptionistSettings =
     copy(responseTunnelReceiveTimeout = responseTunnelReceiveTimeout)
 
   private def copy(

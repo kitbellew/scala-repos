@@ -482,9 +482,7 @@ abstract class TreeGen {
         // therefore here we emit a dummy which gets populated when the template is named and typechecked
         Some(
           atPos(
-            wrappingPos(
-              superPos,
-              lvdefs ::: vparamss1.flatten).makeTransparent)(
+            wrappingPos(superPos, lvdefs ::: vparamss1.flatten).makeTransparent)(
             DefDef(
               constrMods,
               nme.CONSTRUCTOR,
@@ -852,8 +850,7 @@ abstract class TreeGen {
           Yield(
             Block(
               pdefs,
-              atPos(wrappingPos(ids)) { mkTuple(ids) }) setPos wrappingPos(
-              pdefs)))
+              atPos(wrappingPos(ids)) { mkTuple(ids) }) setPos wrappingPos(pdefs)))
         val allpats = (pat :: pats) map (_.duplicate)
         val pos1 =
           if (t.pos == NoPosition) NoPosition
@@ -916,10 +913,7 @@ abstract class TreeGen {
             rhs1,
             List(
               atPos(pat1.pos) {
-                CaseDef(
-                  pat1,
-                  EmptyTree,
-                  mkTuple(vars map (_._1) map Ident.apply))
+                CaseDef(pat1, EmptyTree, mkTuple(vars map (_._1) map Ident.apply))
               }
             ))
         }
@@ -1065,8 +1059,7 @@ abstract class TreeGen {
       tree match {
         case Ident(name)
             if (treeInfo.isVarPattern(tree) && name != nme.WILDCARD) =>
-          atPos(tree.pos)(
-            Bind(name, atPos(tree.pos.focus)(Ident(nme.WILDCARD))))
+          atPos(tree.pos)(Bind(name, atPos(tree.pos.focus)(Ident(nme.WILDCARD))))
         case Typed(id @ Ident(name), tpt)
             if (treeInfo.isVarPattern(id) && name != nme.WILDCARD) =>
           atPos(tree.pos.withPoint(id.pos.point)) {

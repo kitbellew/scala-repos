@@ -357,8 +357,7 @@ class AFTSurvivalRegressionModel private[ml] (
 }
 
 @Since("1.6.0")
-object AFTSurvivalRegressionModel
-    extends MLReadable[AFTSurvivalRegressionModel] {
+object AFTSurvivalRegressionModel extends MLReadable[AFTSurvivalRegressionModel] {
 
   @Since("1.6.0")
   override def read: MLReader[AFTSurvivalRegressionModel] =

@@ -83,10 +83,7 @@ final object Aggregation {
     }
     if (show.success) printSuccess(start, stop, extracted, success, log)
   }
-  def timedRun[T](
-      s: State,
-      ts: Values[Task[T]],
-      extra: DummyTaskMap): Complete[T] = {
+  def timedRun[T](s: State, ts: Values[Task[T]], extra: DummyTaskMap): Complete[T] = {
     import EvaluateTask._
     import std.TaskExtra._
 
@@ -268,14 +265,12 @@ final object Aggregation {
       key: ScopedKey[T],
       extra: BuildUtil[_],
       mask: ScopeMask): Seq[ScopedKey[T]] =
-    projectAggregates(
-      key.scope.project.toOption,
-      extra,
-      reverse = true) flatMap { ref =>
-      val toResolve = key.scope.copy(project = Select(ref))
-      val resolved = Resolve(extra, Global, key.key, mask)(toResolve)
-      val skey = ScopedKey(resolved, key.key)
-      if (aggregationEnabled(skey, extra.data)) skey :: Nil else Nil
+    projectAggregates(key.scope.project.toOption, extra, reverse = true) flatMap {
+      ref =>
+        val toResolve = key.scope.copy(project = Select(ref))
+        val resolved = Resolve(extra, Global, key.key, mask)(toResolve)
+        val skey = ScopedKey(resolved, key.key)
+        if (aggregationEnabled(skey, extra.data)) skey :: Nil else Nil
     }
 
   def aggregatedKeys[T](

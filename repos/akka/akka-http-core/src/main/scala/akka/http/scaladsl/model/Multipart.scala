@@ -246,8 +246,9 @@ object Multipart {
         .asInstanceOf[JSource[_ <: jm.Multipart.General.BodyPart, AnyRef]]
 
     /** Java API */
-    override def toStrict(timeoutMillis: Long, materializer: Materializer)
-        : CompletionStage[jm.Multipart.General.Strict] =
+    override def toStrict(
+        timeoutMillis: Long,
+        materializer: Materializer): CompletionStage[jm.Multipart.General.Strict] =
       super
         .toStrict(timeoutMillis, materializer)
         .asInstanceOf[Future[jm.Multipart.General.Strict]]
@@ -266,8 +267,8 @@ object Multipart {
         override def toString = s"General($mediaType, $parts)"
       }
 
-    def unapply(value: Multipart.General): Option[
-      (MediaType.Multipart, Source[Multipart.General.BodyPart, Any])] =
+    def unapply(value: Multipart.General)
+        : Option[(MediaType.Multipart, Source[Multipart.General.BodyPart, Any])] =
       Some(value.mediaType -> value.parts)
 
     /**
@@ -295,8 +296,8 @@ object Multipart {
       /** Java API */
       override def getStrictParts
           : java.lang.Iterable[jm.Multipart.General.BodyPart.Strict] =
-        super.getStrictParts.asInstanceOf[java.lang.Iterable[
-          jm.Multipart.General.BodyPart.Strict]]
+        super.getStrictParts
+          .asInstanceOf[java.lang.Iterable[jm.Multipart.General.BodyPart.Strict]]
     }
 
     /**
@@ -322,8 +323,7 @@ object Multipart {
           .toJava
 
       private[BodyPart] def tryCreateFormDataBodyPart[T](
-          f: (String, Map[String, String], immutable.Seq[HttpHeader]) ⇒ T)
-          : Try[T] = {
+          f: (String, Map[String, String], immutable.Seq[HttpHeader]) ⇒ T): Try[T] = {
         val params = dispositionParams
         params.get("name") match {
           case Some(name) ⇒
@@ -342,15 +342,15 @@ object Multipart {
           case Some(`Content-Range`(unit, range)) ⇒
             Success(f(range, unit, headers.filterNot(_ is "content-range")))
           case None ⇒
-            Failure(IllegalHeaderException(
-              "multipart/byteranges part must contain `Content-Range` header"))
+            Failure(
+              IllegalHeaderException(
+                "multipart/byteranges part must contain `Content-Range` header"))
         }
     }
     object BodyPart {
       def apply(
           _entity: BodyPartEntity,
-          _headers: immutable.Seq[HttpHeader] = Nil)
-          : Multipart.General.BodyPart =
+          _headers: immutable.Seq[HttpHeader] = Nil): Multipart.General.BodyPart =
         new Multipart.General.BodyPart {
           def entity = _entity
           def headers: immutable.Seq[HttpHeader] = _headers
@@ -377,8 +377,7 @@ object Multipart {
         override def toStrict(timeout: FiniteDuration)(implicit
             fm: Materializer): Future[Multipart.General.BodyPart.Strict] =
           FastFuture.successful(this)
-        override def toFormDataBodyPart
-            : Try[Multipart.FormData.BodyPart.Strict] =
+        override def toFormDataBodyPart: Try[Multipart.FormData.BodyPart.Strict] =
           tryCreateFormDataBodyPart(FormData.BodyPart.Strict(_, entity, _, _))
         override def toByteRangesBodyPart
             : Try[Multipart.ByteRanges.BodyPart.Strict] =
@@ -479,8 +478,8 @@ object Multipart {
       /** Java API */
       override def getStrictParts
           : java.lang.Iterable[jm.Multipart.FormData.BodyPart.Strict] =
-        super.getStrictParts.asInstanceOf[java.lang.Iterable[
-          jm.Multipart.FormData.BodyPart.Strict]]
+        super.getStrictParts
+          .asInstanceOf[java.lang.Iterable[jm.Multipart.FormData.BodyPart.Strict]]
     }
 
     /**
@@ -578,11 +577,8 @@ object Multipart {
           HttpEntity(contentType, file, chunkSize),
           Map("filename" -> file.getName))
 
-      def unapply(value: BodyPart): Option[(
-          String,
-          BodyPartEntity,
-          Map[String, String],
-          immutable.Seq[HttpHeader])] =
+      def unapply(value: BodyPart): Option[
+        (String, BodyPartEntity, Map[String, String], immutable.Seq[HttpHeader])] =
         Some(
           (
             value.name,
@@ -625,8 +621,7 @@ object Multipart {
     }
 
     /** Java API */
-    override def getParts
-        : JSource[_ <: jm.Multipart.ByteRanges.BodyPart, AnyRef] =
+    override def getParts: JSource[_ <: jm.Multipart.ByteRanges.BodyPart, AnyRef] =
       super.getParts
         .asInstanceOf[JSource[_ <: jm.Multipart.ByteRanges.BodyPart, AnyRef]]
 
@@ -666,9 +661,8 @@ object Multipart {
       /** Java API */
       override def getParts
           : JSource[jm.Multipart.ByteRanges.BodyPart.Strict, AnyRef] =
-        super.getParts.asInstanceOf[JSource[
-          jm.Multipart.ByteRanges.BodyPart.Strict,
-          AnyRef]]
+        super.getParts
+          .asInstanceOf[JSource[jm.Multipart.ByteRanges.BodyPart.Strict, AnyRef]]
 
       /** Java API */
       override def getStrictParts

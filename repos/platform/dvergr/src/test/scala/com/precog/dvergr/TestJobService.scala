@@ -486,8 +486,7 @@ class JobServiceSpec extends TestJobService {
     "allow status updates to be conditional" in {
       (for {
         jobId <- postJobAndGetId(simpleJob)
-        id1 <-
-          putStatusAndGetId(jobId, "Nearly there!", 99.999, "%", None, None)
+        id1 <- putStatusAndGetId(jobId, "Nearly there!", 99.999, "%", None, None)
         id2 <- putStatusAndGetId(
           jobId,
           "Very nearly there!",
@@ -504,8 +503,7 @@ class JobServiceSpec extends TestJobService {
           Some(id2))
       } yield res).copoint must beLike {
         case HttpResponse(HttpStatus(OK, _), _, Some(obj), _) =>
-          obj \ "value" \ "message" must_== JString(
-            "Very nearly, almost there!")
+          obj \ "value" \ "message" must_== JString("Very nearly, almost there!")
       }
     }
 
@@ -531,18 +529,13 @@ class JobServiceSpec extends TestJobService {
       val (res1, res2, res3, res4) = (for {
         jobId <- postJobAndGetId(simpleJob)
         res1 <- putStatusRaw(jobId, None)(JObject(Nil))
-        res2 <- putStatusRaw(jobId, None)(
+        res2 <- putStatusRaw(jobId, None)(JObject(
+          JField("message", JString("a")) :: JField("unit", JString("%")) :: Nil))
+        res3 <- putStatusRaw(jobId, None)(JObject(
+          JField("message", JString("a")) :: JField("progress", JNum(99)) :: Nil))
+        res4 <- putStatusRaw(jobId, None)(
           JObject(
-            JField("message", JString("a")) :: JField(
-              "unit",
-              JString("%")) :: Nil))
-        res3 <- putStatusRaw(jobId, None)(
-          JObject(
-            JField("message", JString("a")) :: JField(
-              "progress",
-              JNum(99)) :: Nil))
-        res4 <- putStatusRaw(jobId, None)(JObject(
-          JField("progress", JNum(99)) :: JField("unit", JString("%")) :: Nil))
+            JField("progress", JNum(99)) :: JField("unit", JString("%")) :: Nil))
       } yield (res1, res2, res3, res4)).copoint
 
       def mustBeBad(res: HttpResponse[JValue]) =

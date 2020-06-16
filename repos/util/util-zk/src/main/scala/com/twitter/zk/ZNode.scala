@@ -228,10 +228,7 @@ trait ZNode {
     def monitorWatch(
         watch: Future[ZNode.Watch[ZNode.Children]],
         knownChildren: Set[ZNode]) {
-      log.debug(
-        "monitoring %s with %d known children",
-        path,
-        knownChildren.size)
+      log.debug("monitoring %s with %d known children", path, knownChildren.size)
       watch onFailure { e =>
         // An error occurred and there's not really anything we can do about it.
         log.error(e, "%s: watch could not be established".format(path))
@@ -246,10 +243,7 @@ trait ZNode {
             removed = knownChildren -- children)
           log.debug("updating %s with %d children", path, treeUpdate.added.size)
           broker send (treeUpdate) sync () onSuccess { _ =>
-            log.debug(
-              "updated %s with %d children",
-              path,
-              treeUpdate.added.size)
+            log.debug("updated %s with %d children", path, treeUpdate.added.size)
             treeUpdate.added foreach { z =>
               pipeSubTreeUpdates(z.monitorTree())
             }

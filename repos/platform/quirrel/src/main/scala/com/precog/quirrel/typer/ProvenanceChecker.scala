@@ -315,10 +315,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         else if (left.provenance == UndefinedProvenance && right.provenance == UndefinedProvenance)
           (UndefinedProvenance, Set(), Set())
         else if (left.provenance == UndefinedProvenance || right.provenance == UndefinedProvenance)
-          (
-            NullProvenance,
-            Set(Error(expr, IntersectWithNoCommonalities)),
-            Set())
+          (NullProvenance, Set(Error(expr, IntersectWithNoCommonalities)), Set())
         else if (left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance)
           (
             NullProvenance,
@@ -355,10 +352,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
         // Can prove that result set is empty. Operation disallowed.
         else
-          (
-            NullProvenance,
-            Set(Error(expr, IntersectWithNoCommonalities)),
-            Set())
+          (NullProvenance, Set(Error(expr, IntersectWithNoCommonalities)), Set())
       }
 
       val finalErrors = leftErrors ++ rightErrors ++ errors
@@ -392,10 +386,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
         else if (left.provenance == UndefinedProvenance && right.provenance == UndefinedProvenance)
           (UndefinedProvenance, Set(), Set())
         else if (left.provenance == UndefinedProvenance || right.provenance == UndefinedProvenance)
-          (
-            NullProvenance,
-            Set(Error(expr, DifferenceWithNoCommonalities)),
-            Set())
+          (NullProvenance, Set(Error(expr, DifferenceWithNoCommonalities)), Set())
         else if (left.provenance == InfiniteProvenance || right.provenance == InfiniteProvenance)
           (
             NullProvenance,
@@ -427,10 +418,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
         // Can prove that result set is the entire LHS. Operation disallowed.
         else
-          (
-            NullProvenance,
-            Set(Error(expr, DifferenceWithNoCommonalities)),
-            Set())
+          (NullProvenance, Set(Error(expr, DifferenceWithNoCommonalities)), Set())
       }
 
       val finalErrors = leftErrors ++ rightErrors ++ errors
@@ -442,8 +430,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
     def loop(
         expr: Expr,
         relations: Map[Provenance, Set[Provenance]],
-        constraints: Map[Provenance, Expr])
-        : (Set[Error], Set[ProvConstraint]) = {
+        constraints: Map[Provenance, Expr]): (Set[Error], Set[ProvConstraint]) = {
       val back: (Set[Error], Set[ProvConstraint]) = expr match {
         case expr @ Let(_, _, _, left, right) => {
           val (leftErrors, leftConst) = loop(left, relations, constraints)
@@ -864,9 +851,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
 
                     val prov = unifyProvenance(relations)(
                       leftProv,
-                      rightProv) getOrElse ProductProvenance(
-                      leftProv,
-                      rightProv)
+                      rightProv) getOrElse ProductProvenance(leftProv, rightProv)
                     val (err, const, finalProv) = compute(prov, prov)
 
                     val errors = leftErrors ++ rightErrors ++ err
@@ -1310,9 +1295,7 @@ trait ProvenanceChecker extends parser.AST with Binder {
       }
 
     // TODO is this too slow?
-    private def findChildren(
-        prov: Provenance,
-        unified: Boolean): Set[Provenance] =
+    private def findChildren(prov: Provenance, unified: Boolean): Set[Provenance] =
       prov match {
         case UnifiedProvenance(left, right) if unified =>
           findChildren(left, unified) ++ findChildren(right, unified)

@@ -55,8 +55,7 @@ private[http] class HttpResponseRendererFactory(
   // split out so we can stabilize by overriding in tests
   protected def currentTimeMillis(): Long = System.currentTimeMillis()
 
-  def renderer
-      : Flow[ResponseRenderingContext, ResponseRenderingOutput, NotUsed] =
+  def renderer: Flow[ResponseRenderingContext, ResponseRenderingOutput, NotUsed] =
     Flow.fromGraph(HttpResponseRenderer)
 
   object HttpResponseRenderer
@@ -261,9 +260,7 @@ private[http] class HttpResponseRendererFactory(
                   case x ⇒
                     if (x.renderInResponses) render(x)
                     else
-                      log.warning(
-                        "HTTP header '{}' is not allowed in responses",
-                        x)
+                      log.warning("HTTP header '{}' is not allowed in responses", x)
                     renderHeaders(
                       tail,
                       alwaysClose,
@@ -348,8 +345,9 @@ private[http] class HttpResponseRendererFactory(
                 renderHeaders(headers.toList)
                 renderEntityContentType(r, entity)
                 renderContentLengthHeader(contentLength) ~~ CrLf
-                Streamed(byteStrings(
-                  data.via(CheckContentLengthTransformer.flow(contentLength))))
+                Streamed(
+                  byteStrings(
+                    data.via(CheckContentLengthTransformer.flow(contentLength))))
 
               case HttpEntity.CloseDelimited(_, data) ⇒
                 renderHeaders(

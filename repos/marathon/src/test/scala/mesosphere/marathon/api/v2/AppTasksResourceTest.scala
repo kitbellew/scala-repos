@@ -68,8 +68,7 @@ class AppTasksResourceTest
     config.zkTimeoutDuration returns 5.seconds
     taskTracker.appTasksSync(appId) returns Set(task1, task2)
     taskKiller.kill(any, any)(any) returns Future.successful(toKill)
-    groupManager.app(appId) returns Future.successful(
-      Some(AppDefinition(appId)))
+    groupManager.app(appId) returns Future.successful(Some(AppDefinition(appId)))
 
     val response = appsTaskResource.deleteOne(
       appId.toString,
@@ -97,8 +96,7 @@ class AppTasksResourceTest
       TaskTracker.AppTasks.forTasks(appId, Iterable(task1, task2)))
     healthCheckManager.statuses(appId) returns Future.successful(
       collection.immutable.Map.empty)
-    groupManager.app(appId) returns Future.successful(
-      Some(AppDefinition(appId)))
+    groupManager.app(appId) returns Future.successful(Some(AppDefinition(appId)))
 
     val response = appsTaskResource.indexJson("/my/app", auth.request)
     response.getStatus shouldEqual 200
@@ -160,7 +158,8 @@ class AppTasksResourceTest
     indexJson.getStatus should be(404)
   }
 
-  test("access to indexJson without authorization is not allowed if the app exists") {
+  test(
+    "access to indexJson without authorization is not allowed if the app exists") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false
@@ -199,8 +198,7 @@ class AppTasksResourceTest
 
     Given("the group exists")
     val groupPath = "/group".toRootPath
-    groupManager.group(groupPath) returns Future.successful(
-      Some(Group(groupPath)))
+    groupManager.group(groupPath) returns Future.successful(Some(Group(groupPath)))
 
     When(s"the indexJson is fetched")
     val indexJson = appsTaskResource.indexJson("/group/*", req)
@@ -208,7 +206,8 @@ class AppTasksResourceTest
     indexJson.getStatus should be(auth.UnauthorizedStatus)
   }
 
-  test("access to indexTxt without authorization is not allowed if the app exists") {
+  test(
+    "access to indexTxt without authorization is not allowed if the app exists") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false
@@ -239,7 +238,8 @@ class AppTasksResourceTest
     indexTxt.getStatus should be(404)
   }
 
-  test("access to deleteOne without authorization is not allowed if the app exists") {
+  test(
+    "access to deleteOne without authorization is not allowed if the app exists") {
     Given("An unauthorized request")
     auth.authenticated = true
     auth.authorized = false

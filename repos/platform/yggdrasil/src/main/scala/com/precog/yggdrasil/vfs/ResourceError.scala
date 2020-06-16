@@ -76,9 +76,7 @@ object ResourceError {
   case class Corrupt(message: String) extends ResourceError with FatalError {
     def messages = nels(message)
   }
-  case class IOError(exception: Throwable)
-      extends ResourceError
-      with FatalError {
+  case class IOError(exception: Throwable) extends ResourceError with FatalError {
     def messages =
       nels(Option(exception.getMessage).getOrElse(exception.getClass.getName))
   }
@@ -103,9 +101,7 @@ object ResourceError {
       extends ResourceError
       with FatalError
       with UserError { self =>
-    override def fold[A](
-        fatalError: FatalError => A,
-        userError: UserError => A) = {
+    override def fold[A](fatalError: FatalError => A, userError: UserError => A) = {
       val hasFatal = errors.list.exists(_.fold(_ => true, _ => false))
       if (hasFatal) fatalError(self) else userError(self)
     }

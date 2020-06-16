@@ -74,8 +74,8 @@ trait IntegrationBase extends FunSuite with MockitoSugar {
         any[Transport[Any, Any]],
         any[Stack.Params])) thenAnswer {
       new Answer[SerialClientDispatcher[String, String]] {
-        def answer(invocation: InvocationOnMock)
-            : SerialClientDispatcher[String, String] = {
+        def answer(
+            invocation: InvocationOnMock): SerialClientDispatcher[String, String] = {
           val arg = invocation.getArguments.head
           new SerialClientDispatcher[String, String](
             arg.asInstanceOf[Transport[String, String]])

@@ -59,7 +59,6 @@ class StatsScopingTest extends FunSuite with AssertionsForJUnit {
     Await.result(service("bar"))
     Await.result(service("baz"))
 
-    assert(
-      Map(Seq("foo", "bar") -> 1, Seq("foo", "baz") -> 1) == stats.counters)
+    assert(Map(Seq("foo", "bar") -> 1, Seq("foo", "baz") -> 1) == stats.counters)
   })
 }

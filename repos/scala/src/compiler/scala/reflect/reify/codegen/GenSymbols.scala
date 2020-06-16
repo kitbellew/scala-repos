@@ -96,11 +96,7 @@ trait GenSymbols {
             .isOverloaded) {
           val index = sym.owner.info.decl(sym.name).alternatives indexOf sym
           assert(index >= 0, sym)
-          mirrorBuildCall(
-            nme.selectOverloadedMethod,
-            rowner,
-            rname,
-            reify(index))
+          mirrorBuildCall(nme.selectOverloadedMethod, rowner, rname, reify(index))
         } else
           mirrorBuildCall(nme.selectTerm, rowner, rname)
       }

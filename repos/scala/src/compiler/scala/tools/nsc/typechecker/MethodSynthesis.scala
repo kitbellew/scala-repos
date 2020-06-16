@@ -181,9 +181,8 @@ trait MethodSynthesis {
     private def warnForDroppedAnnotations(tree: Tree) {
       val annotations = tree.symbol.initialize.annotations
       val targetClass = defaultAnnotationTarget(tree)
-      val retained = annotations filter annotationFilter(
-        targetClass,
-        defaultRetention = true)
+      val retained =
+        annotations filter annotationFilter(targetClass, defaultRetention = true)
 
       annotations filterNot (retained contains _) foreach (ann =>
         issueAnnotationWarning(tree, ann, targetClass))

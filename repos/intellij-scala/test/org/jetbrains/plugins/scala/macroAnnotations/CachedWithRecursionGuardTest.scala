@@ -14,9 +14,7 @@ class CachedWithRecursionGuardTest extends CachedWithRecursionGuardTestBase {
         this,
         Right("Failure"),
         PsiModificationTracker.MODIFICATION_COUNT)
-      def recursiveFunction(
-          d: Option[Int],
-          depth: Int = 0): Either[Long, String] = {
+      def recursiveFunction(d: Option[Int], depth: Int = 0): Either[Long, String] = {
         d match {
           case Some(l)        => Right(l.toString)
           case _ if depth > 2 => Left(System.currentTimeMillis())

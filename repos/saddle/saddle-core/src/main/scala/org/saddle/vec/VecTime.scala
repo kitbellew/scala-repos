@@ -33,9 +33,7 @@ import org.saddle.buffer.BufferInt
   * @param times A Vec[Long], where each element is a millisecond timestamp
   * @param tzone Optional time zone containing localization info
   */
-class VecTime(
-    val times: Vec[Long],
-    val tzone: DateTimeZone = ISO_CHRONO.getZone)
+class VecTime(val times: Vec[Long], val tzone: DateTimeZone = ISO_CHRONO.getZone)
     extends Vec[DateTime] {
 
   @transient lazy val scalarTag = ScalarTagTime

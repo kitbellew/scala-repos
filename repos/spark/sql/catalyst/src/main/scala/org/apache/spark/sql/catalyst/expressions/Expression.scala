@@ -220,14 +220,12 @@ abstract class Expression extends TreeNode[Expression] {
 trait Unevaluable extends Expression {
 
   final override def eval(input: InternalRow = null): Any =
-    throw new UnsupportedOperationException(
-      s"Cannot evaluate expression: $this")
+    throw new UnsupportedOperationException(s"Cannot evaluate expression: $this")
 
   final override protected def genCode(
       ctx: CodegenContext,
       ev: ExprCode): String =
-    throw new UnsupportedOperationException(
-      s"Cannot evaluate expression: $this")
+    throw new UnsupportedOperationException(s"Cannot evaluate expression: $this")
 }
 
 /**
@@ -497,8 +495,9 @@ abstract class BinaryOperator extends BinaryExpression with ExpectsInputTypes {
   override def checkInputDataTypes(): TypeCheckResult = {
     // First check whether left and right have the same type, then check if the type is acceptable.
     if (left.dataType != right.dataType) {
-      TypeCheckResult.TypeCheckFailure(s"differing types in '$sql' " +
-        s"(${left.dataType.simpleString} and ${right.dataType.simpleString}).")
+      TypeCheckResult.TypeCheckFailure(
+        s"differing types in '$sql' " +
+          s"(${left.dataType.simpleString} and ${right.dataType.simpleString}).")
     } else if (!inputType.acceptsType(left.dataType)) {
       TypeCheckResult.TypeCheckFailure(
         s"'$sql' requires ${inputType.simpleString} type," +

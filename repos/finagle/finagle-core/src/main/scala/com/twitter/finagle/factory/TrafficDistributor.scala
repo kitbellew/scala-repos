@@ -184,9 +184,7 @@ private[finagle] class TrafficDistributor[Req, Rep](
                   override def close(when: Time) =
                     (closeGate or outerClose).before { super.close(when) }
                 }
-                cache.updated(
-                  addr,
-                  WeightedFactory(endpoint, closeGate, weight))
+                cache.updated(addr, WeightedFactory(endpoint, closeGate, weight))
               case _ => cache
             }
         }

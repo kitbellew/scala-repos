@@ -303,9 +303,8 @@ class GroupManager @Singleton @Inject() (
       }
 
       app.copy(
-        portDefinitions = mergeServicePortsAndPortDefinitions(
-          app.portDefinitions,
-          servicePorts),
+        portDefinitions =
+          mergeServicePortsAndPortDefinitions(app.portDefinitions, servicePorts),
         container = newContainer.orElse(app.container)
       )
     }

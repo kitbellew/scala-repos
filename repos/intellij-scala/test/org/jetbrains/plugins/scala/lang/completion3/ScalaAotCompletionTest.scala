@@ -1,10 +1,7 @@
 package org.jetbrains.plugins.scala.lang.completion3
 
 import com.intellij.codeInsight.completion.CompletionType
-import com.intellij.codeInsight.lookup.{
-  LookupElement,
-  LookupElementPresentation
-}
+import com.intellij.codeInsight.lookup.{LookupElement, LookupElementPresentation}
 import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
 import org.jetbrains.plugins.scala.lang.completion3.ScalaAotCompletionTest._
 import org.junit.Assert

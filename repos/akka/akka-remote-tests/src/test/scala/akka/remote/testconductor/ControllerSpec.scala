@@ -19,9 +19,7 @@ object ControllerSpec {
     """
 }
 
-class ControllerSpec
-    extends AkkaSpec(ControllerSpec.config)
-    with ImplicitSender {
+class ControllerSpec extends AkkaSpec(ControllerSpec.config) with ImplicitSender {
 
   val A = RoleName("a")
   val B = RoleName("b")

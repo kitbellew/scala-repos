@@ -212,10 +212,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   /**
     * Find all documents using a DBObject query with sort
     */
-  def findAll(
-      qry: DBObject,
-      sort: DBObject,
-      opts: FindOption*): List[BaseRecord] =
+  def findAll(qry: DBObject, sort: DBObject, opts: FindOption*): List[BaseRecord] =
     findAll(qry, Some(sort), opts: _*)
 
   /**
@@ -320,11 +317,7 @@ trait MongoMetaRecord[BaseRecord <: MongoRecord[BaseRecord]]
   /*
    * Update records with a JObject query using the given Mongo instance
    */
-  def update(
-      qry: JObject,
-      newbr: BaseRecord,
-      db: DB,
-      opts: UpdateOption*): Unit = {
+  def update(qry: JObject, newbr: BaseRecord, db: DB, opts: UpdateOption*): Unit = {
     update(JObjectParser.parse(qry), newbr.asDBObject, db, opts: _*)
   }
 

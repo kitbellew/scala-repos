@@ -163,8 +163,8 @@ class PolynomialBenchmarks extends MyBenchmark {
     total
   }
 
-  def quotModSpireDoublePolynomials(data: Array[Polynomial[Double]])
-      : (Polynomial[Double], Polynomial[Double]) = {
+  def quotModSpireDoublePolynomials(
+      data: Array[Polynomial[Double]]): (Polynomial[Double], Polynomial[Double]) = {
     var total: (Polynomial[Double], Polynomial[Double]) = null
     var i = 0
     val len = data.length

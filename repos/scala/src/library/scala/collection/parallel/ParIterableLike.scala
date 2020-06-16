@@ -932,8 +932,7 @@ trait ParIterableLike[
 
   def copyToArray[U >: T](xs: Array[U], start: Int, len: Int) =
     if (len > 0) {
-      tasksupport.executeAndWaitResult(
-        new CopyToArray(start, len, xs, splitter))
+      tasksupport.executeAndWaitResult(new CopyToArray(start, len, xs, splitter))
     }
 
   def sameElements[U >: T](that: GenIterable[U]) = seq.sameElements(that)
@@ -1021,8 +1020,7 @@ trait ParIterableLike[
     toParCollection[T, ParSeq[T]](() => ParSeq.newCombiner[T])
 
   override def toSet[U >: T]: immutable.ParSet[U] =
-    toParCollection[U, immutable.ParSet[U]](() =>
-      immutable.ParSet.newCombiner[U])
+    toParCollection[U, immutable.ParSet[U]](() => immutable.ParSet.newCombiner[U])
 
   override def toMap[K, V](implicit ev: T <:< (K, V)): immutable.ParMap[K, V] =
     toParMap[K, V, immutable.ParMap[K, V]](() =>
@@ -1565,9 +1563,7 @@ trait ParIterableLike[
       cbfBefore: CombinerFactory[U, This],
       cbfAfter: CombinerFactory[U, This],
       protected[this] val pit: IterableSplitter[T])
-      extends Transformer[
-        (Combiner[U, This], Combiner[U, This]),
-        Span[U, This]] {
+      extends Transformer[(Combiner[U, This], Combiner[U, This]), Span[U, This]] {
     @volatile var result: (Combiner[U, This], Combiner[U, This]) = null
     def leaf(prev: Option[(Combiner[U, This], Combiner[U, This])]) =
       if (pos < pit.indexFlag) {
@@ -1634,8 +1630,7 @@ trait ParIterableLike[
       extends Transformer[Combiner[(U, S), That], ZipAll[U, S, That]] {
     @volatile var result: Result = null
     def leaf(prev: Option[Result]) =
-      result =
-        pit.zipAll2combiner[U, S, That](othpit, thiselem, thatelem, pbf())
+      result = pit.zipAll2combiner[U, S, That](othpit, thiselem, thatelem, pbf())
     protected[this] def newSubtask(p: IterableSplitter[T]) =
       throw new UnsupportedOperationException
     override def split =

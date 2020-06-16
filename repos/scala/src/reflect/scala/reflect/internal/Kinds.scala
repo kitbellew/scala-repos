@@ -466,10 +466,7 @@ trait Kinds {
 
     def apply(pre: Type): InferKind =
       new InferKind {
-        protected def infer(
-            tpe: Type,
-            owner: Symbol,
-            topLevel: Boolean): Kind = {
+        protected def infer(tpe: Type, owner: Symbol, topLevel: Boolean): Kind = {
           val bounds =
             if (topLevel) TypeBounds.empty
             else tpe.asSeenFrom(pre, owner).bounds

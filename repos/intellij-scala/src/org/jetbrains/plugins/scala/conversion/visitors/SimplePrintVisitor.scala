@@ -230,12 +230,7 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
 
     printer.append(escapeKeyword(name))
     if (typeParams.isDefined)
-      printWithSeparator(
-        typeParams.get,
-        ", ",
-        "[",
-        "]",
-        typeParams.get.nonEmpty)
+      printWithSeparator(typeParams.get, ", ", "[", "]", typeParams.get.nonEmpty)
 
     if (primaryConstructor.isDefined) {
       printer.space()
@@ -922,9 +917,7 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
     printWithSeparator(data, ", ", "[", "]", data.nonEmpty)
   }
 
-  def visitTypeParameterConstruction(
-      name: String,
-      typez: Seq[IntermediateNode]) = {
+  def visitTypeParameterConstruction(name: String, typez: Seq[IntermediateNode]) = {
     printer.append(escapeKeyword(name))
     if (typez.nonEmpty) {
       printer.append(" <: ")

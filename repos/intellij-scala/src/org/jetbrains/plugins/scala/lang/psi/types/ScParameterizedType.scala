@@ -24,10 +24,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
 }
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiManager
 import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.TypeParameter
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.refactoring.util.ScTypeUtil.AliasType
 
 import scala.collection.immutable.{HashSet, ListMap, Map}
@@ -237,17 +234,11 @@ class ScParameterizedType private (
             case _ => Seq.empty
           }
         ScParameterizedType(
-          designator.recursiveVarianceUpdateModifiable(
-            newData,
-            update,
-            variance),
+          designator.recursiveVarianceUpdateModifiable(newData, update, variance),
           typeArgs.zipWithIndex.map {
             case (ta, i) =>
               val v = if (i < des.length) des(i) else 0
-              ta.recursiveVarianceUpdateModifiable(
-                newData,
-                update,
-                v * variance)
+              ta.recursiveVarianceUpdateModifiable(newData, update, v * variance)
           }
         )
     }
@@ -274,9 +265,8 @@ class ScParameterizedType private (
         t = Conformance.conformsInner(r, subst.subst(lower), Set.empty, t._2)
         if (!t._1) return (false, uSubst)
         (true, t._2)
-      case (
-            ScParameterizedType(proj @ ScProjectionType(projected, _, _), args),
-            _) if proj.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
+      case (ScParameterizedType(proj @ ScProjectionType(projected, _, _), args), _)
+          if proj.actualElement.isInstanceOf[ScTypeAliasDefinition] =>
         isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
             Equivalence.equivInner(
@@ -290,9 +280,7 @@ class ScParameterizedType private (
           case _ => (false, uSubst)
         }
       case (
-            ScParameterizedType(
-              ScDesignatorType(a: ScTypeAliasDefinition),
-              args),
+            ScParameterizedType(ScDesignatorType(a: ScTypeAliasDefinition), args),
             _) =>
         isAliasType match {
           case Some(AliasType(ta: ScTypeAliasDefinition, lower, _)) =>
@@ -400,8 +388,7 @@ class ScParameterizedType private (
 }
 
 object ScParameterizedType {
-  val substitutorCache
-      : ConcurrentWeakHashMap[ScParameterizedType, ScSubstitutor] =
+  val substitutorCache: ConcurrentWeakHashMap[ScParameterizedType, ScSubstitutor] =
     new ConcurrentWeakHashMap()
 
   def apply(designator: ScType, typeArgs: Seq[ScType]): ValueType = {

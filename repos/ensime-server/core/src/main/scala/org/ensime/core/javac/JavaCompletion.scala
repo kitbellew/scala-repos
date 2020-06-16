@@ -111,8 +111,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
          // Kick off an index search if the name looks like a type.
          val typeSearch =
            if (TypeNameRegex.findFirstMatchIn(defaultPrefix).isDefined) {
-             Some(
-               fetchTypeSearchCompletions(defaultPrefix, maxResults, indexer))
+             Some(fetchTypeSearchCompletions(defaultPrefix, maxResults, indexer))
            } else None
 
          (scopeForPoint(info, indexAfterTarget) map {
@@ -194,11 +193,8 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     val relevance =
       if (s.startsWith(prefix)) baseRelevance + 50 else baseRelevance
 
-    if (matchesPrefix(
-        s,
-        prefix,
-        matchEntire = false,
-        caseSens = caseSense) && !s.contains("$")) {
+    if (matchesPrefix(s, prefix, matchEntire = false, caseSens = caseSense) && !s
+        .contains("$")) {
       e match {
         case e: ExecutableElement if !typesOnly =>
           List(methodInfo(e, relevance + 5))
@@ -300,9 +296,7 @@ trait JavaCompletion extends Helpers with SLF4JLogging {
     candidates.toList
   }
 
-  private def methodInfo(
-      e: ExecutableElement,
-      relavence: Int): CompletionInfo = {
+  private def methodInfo(e: ExecutableElement, relavence: Int): CompletionInfo = {
     val s = e.getSimpleName.toString
     CompletionInfo(
       s,

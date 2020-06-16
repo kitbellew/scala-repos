@@ -45,10 +45,8 @@ final class Env(
   def version(challengeId: Challenge.ID): Fu[Int] =
     socketHub ? Ask(challengeId, GetVersion) mapTo manifest[Int]
 
-  lazy val socketHandler = new SocketHandler(
-    hub = hub,
-    socketHub = socketHub,
-    pingChallenge = api.ping)
+  lazy val socketHandler =
+    new SocketHandler(hub = hub, socketHub = socketHub, pingChallenge = api.ping)
 
   lazy val api = new ChallengeApi(
     repo = repo,

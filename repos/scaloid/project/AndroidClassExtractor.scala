@@ -84,8 +84,8 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     def toAndroidMethod(m: Method): AndroidMethod = {
       val name = m.getName
       val retType = AndroidClassExtractor.toScalaType(m.getGenericReturnType)
-      val argTypes = m.getGenericParameterTypes.toList.map(
-        AndroidClassExtractor.toScalaType(_))
+      val argTypes =
+        m.getGenericParameterTypes.toList.map(AndroidClassExtractor.toScalaType(_))
       val paramedTypes = (retType +: argTypes).filter(_.isVar).distinct
 
       AndroidMethod(
@@ -185,13 +185,7 @@ object AndroidClassExtractor extends JavaConversionHelpers {
                 else None
 
               Some(
-                AndroidProperty(
-                  name,
-                  tpe,
-                  getter,
-                  setters,
-                  switch,
-                  nameClashes))
+                AndroidProperty(name, tpe, getter, setters, switch, nameClashes))
             }
         }
         .flatten

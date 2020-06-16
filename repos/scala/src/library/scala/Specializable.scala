@@ -26,7 +26,6 @@ object Specializable {
     (Byte, Short, Int, Long, Char, Float, Double, Boolean, Unit, AnyRef))
   final val Bits32AndUp = new Group((Int, Long, Float, Double))
   final val Integral = new Group((Byte, Short, Int, Long, Char))
-  final val AllNumeric = new Group(
-    (Byte, Short, Int, Long, Char, Float, Double))
+  final val AllNumeric = new Group((Byte, Short, Int, Long, Char, Float, Double))
   final val BestOfBreed = new Group((Int, Double, Boolean, Unit, AnyRef))
 }

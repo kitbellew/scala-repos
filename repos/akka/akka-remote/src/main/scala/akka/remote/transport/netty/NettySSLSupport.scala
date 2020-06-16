@@ -106,7 +106,8 @@ private[akka] object NettySSLSupport {
           unknown)
         new SecureRandom
       case None ⇒
-        log.debug("SSLRandomNumberGenerator not specified, falling back to SecureRandom")
+        log.debug(
+          "SSLRandomNumberGenerator not specified, falling back to SecureRandom")
         new SecureRandom
     }
     rng.nextInt() // prevent stall on first access
@@ -173,8 +174,7 @@ private[akka] object NettySSLSupport {
         new SslHandler({
           val sslEngine = context.createSSLEngine
           sslEngine.setUseClientMode(true)
-          sslEngine.setEnabledCipherSuites(
-            settings.SSLEnabledAlgorithms.toArray)
+          sslEngine.setEnabledCipherSuites(settings.SSLEnabledAlgorithms.toArray)
           sslEngine
         })
       case None ⇒

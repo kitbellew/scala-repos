@@ -12,8 +12,7 @@ sealed abstract class IntervalTrie[T] extends IntervalSet[T, IntervalTrie[T]]
 
 object IntervalTrie {
 
-  implicit def algebra[T: Element]
-      : Bool[IntervalTrie[T]] with Eq[IntervalTrie[T]] =
+  implicit def algebra[T: Element]: Bool[IntervalTrie[T]] with Eq[IntervalTrie[T]] =
     new Bool[IntervalTrie[T]] with Eq[IntervalTrie[T]] {
 
       def eqv(x: IntervalTrie[T], y: IntervalTrie[T]): Boolean = x == y

@@ -102,9 +102,7 @@ object SimpleConsumerShell extends Logging {
       "print-offsets",
       "Print the offsets returned by the iterator")
     val maxWaitMsOpt = parser
-      .accepts(
-        "max-wait-ms",
-        "The max amount of time each fetch request waits.")
+      .accepts("max-wait-ms", "The max amount of time each fetch request waits.")
       .withRequiredArg
       .describedAs("ms")
       .ofType(classOf[java.lang.Integer])
@@ -167,11 +165,7 @@ object SimpleConsumerShell extends Logging {
     ToolsUtils.validatePortOrDie(parser, brokerList)
     val metadataTargetBrokers = ClientUtils.parseBrokerList(brokerList)
     val topicsMetadata = ClientUtils
-      .fetchTopicMetadata(
-        Set(topic),
-        metadataTargetBrokers,
-        clientId,
-        maxWaitMs)
+      .fetchTopicMetadata(Set(topic), metadataTargetBrokers, clientId, maxWaitMs)
       .topicsMetadata
     if (topicsMetadata.size != 1 || !topicsMetadata(0).topic.equals(topic)) {
       System.err.println(
@@ -316,9 +310,7 @@ object SimpleConsumerShell extends Logging {
                 } catch {
                   case e: Throwable =>
                     if (skipMessageOnError)
-                      error(
-                        "Error processing message, skipping this message: ",
-                        e)
+                      error("Error processing message, skipping this message: ", e)
                     else
                       throw e
                 }

@@ -251,8 +251,7 @@ class ScaloidCodeGenerator(
        |}""".stripMargin
 
   def listener(l: AndroidListener) =
-    (if (l.argTypes.nonEmpty) fullListener(l) else "") + "\n\n" + unitListener(
-      l)
+    (if (l.argTypes.nonEmpty) fullListener(l) else "") + "\n\n" + unitListener(l)
 
   def listeners =
     cls.listeners.map(listener).mkString("\n\n")

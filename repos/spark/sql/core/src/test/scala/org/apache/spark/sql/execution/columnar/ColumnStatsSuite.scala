@@ -22,10 +22,7 @@ import org.apache.spark.sql.catalyst.expressions.GenericInternalRow
 import org.apache.spark.sql.types._
 
 class ColumnStatsSuite extends SparkFunSuite {
-  testColumnStats(
-    classOf[BooleanColumnStats],
-    BOOLEAN,
-    createRow(true, false, 0))
+  testColumnStats(classOf[BooleanColumnStats], BOOLEAN, createRow(true, false, 0))
   testColumnStats(
     classOf[ByteColumnStats],
     BYTE,

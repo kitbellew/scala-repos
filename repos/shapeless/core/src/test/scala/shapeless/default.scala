@@ -24,10 +24,7 @@ object DefaultTestDefinitions {
   trait Dummy
 
   trait Definitions {
-    case class CC(
-        i: Int,
-        s: String = "b",
-        flagOpt: Option[Boolean] = Some(true))
+    case class CC(i: Int, s: String = "b", flagOpt: Option[Boolean] = Some(true))
   }
 
   val definitions = new Definitions {}
@@ -54,8 +51,7 @@ class DefaultTests {
   @Test
   def simple {
     val default = Default[CC].apply()
-    assertTypedEquals[
-      None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
+    assertTypedEquals[None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
       None :: Some("b") :: Some(Some(true)) :: HNil,
       default
     )
@@ -65,8 +61,7 @@ class DefaultTests {
   def topLevel {
     // See https://github.com/milessabin/shapeless/issues/474
     val default = Default[DefaultCC].apply()
-    assertTypedEquals[
-      None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
+    assertTypedEquals[None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
       None :: Some("b") :: Some(Some(true)) :: HNil,
       default
     )
@@ -75,8 +70,7 @@ class DefaultTests {
   @Test
   def simpleFromPath {
     val default = Default[definitions.CC].apply()
-    assertTypedEquals[
-      None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
+    assertTypedEquals[None.type :: Some[String] :: Some[Option[Boolean]] :: HNil](
       None :: Some("b") :: Some(Some(true)) :: HNil,
       default
     )

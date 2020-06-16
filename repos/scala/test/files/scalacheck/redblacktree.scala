@@ -91,8 +91,7 @@ package scala.collection.immutable.redblacktree {
     def areRedNodeChildrenBlack[A](t: Tree[String, A]): Boolean =
       t match {
         case RedTree(_, _, left, right) =>
-          List(left, right) forall (t =>
-            isBlack(t) && areRedNodeChildrenBlack(t))
+          List(left, right) forall (t => isBlack(t) && areRedNodeChildrenBlack(t))
         case BlackTree(_, _, left, right) =>
           List(left, right) forall areRedNodeChildrenBlack
         case null => true

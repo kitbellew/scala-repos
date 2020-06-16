@@ -257,9 +257,8 @@ object CrossValidation {
     * Generic cross-validator that can be provided an arbitrary method to score
     * predictor results.
     */
-  def crossValidate[V, @sp(Double) F, K](
-      dataset: DataSet[V, F, K],
-      k: Int = 10)(train: CoordinateSpace[V, F] => List[(V, K)] => (V => K))(
+  def crossValidate[V, @sp(Double) F, K](dataset: DataSet[V, F, K], k: Int = 10)(
+      train: CoordinateSpace[V, F] => List[(V, K)] => (V => K))(
       score: List[Result[V, K]] => F): F = {
     implicit val field = dataset.space.scalar
 

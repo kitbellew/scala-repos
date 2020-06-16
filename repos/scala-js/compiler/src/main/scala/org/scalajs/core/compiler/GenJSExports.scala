@@ -288,11 +288,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
             0
           ) // we only have 1 argument
 
-      js.PropertyDef(
-        js.StringLiteral(jsName),
-        getTree,
-        genFormalArg(1),
-        setTree)
+      js.PropertyDef(js.StringLiteral(jsName), getTree, genFormalArg(1), setTree)
     }
 
     /** generates the exporter function (i.e. exporter for non-properties) for
@@ -477,12 +473,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
         if (altsByTypeTest.size == 1) {
           // Testing this parameter is not doing any us good
-          genExportSameArgc(
-            minArgc,
-            hasRestParam,
-            alts,
-            paramIndex + 1,
-            maxArgc)
+          genExportSameArgc(minArgc, hasRestParam, alts, paramIndex + 1, maxArgc)
         } else {
           // Sort them so that, e.g., isInstanceOf[String]
           // comes before isInstanceOf[Object]
@@ -515,8 +506,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
 
               val optCond = typeTest match {
                 case HijackedTypeTest(boxedClassName, _) =>
-                  Some(
-                    js.IsInstanceOf(paramRef, jstpe.ClassType(boxedClassName)))
+                  Some(js.IsInstanceOf(paramRef, jstpe.ClassType(boxedClassName)))
 
                 case InstanceOfTypeTest(tpe) =>
                   Some(genIsInstanceOf(paramRef, tpe))
@@ -642,9 +632,7 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
       }
     }
 
-    private def genApplyForSymNonJSSuperCall(
-        minArgc: Int,
-        sym: Symbol): js.Tree = {
+    private def genApplyForSymNonJSSuperCall(minArgc: Int, sym: Symbol): js.Tree = {
       implicit val pos = sym.pos
 
       // the (single) type of the repeated parameter if any

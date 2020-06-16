@@ -263,8 +263,7 @@ object User extends User with MetaMegaProtoUser[User] {
 
   // define the DB table name
   override def screenWrap =
-    Full(
-      <lift:surround with="default" at="content"><lift:bind/></lift:surround>)
+    Full(<lift:surround with="default" at="content"><lift:bind/></lift:surround>)
 
   // define the order fields will appear in forms and output
   override def fieldOrder =

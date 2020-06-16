@@ -184,9 +184,7 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
             tv.allSet(if (v == null) Empty else Full(toBoolean(v)))
         })
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(
         inst,

@@ -514,8 +514,7 @@ abstract class HiveComparisonTest
                 sideBySide(hivePrintOut, catalystPrintOut).mkString("\n")
 
               if (recomputeCache) {
-                logWarning(
-                  s"Clearing cache files for failed test $testCaseName")
+                logWarning(s"Clearing cache files for failed test $testCaseName")
                 hiveCacheFiles.foreach(_.delete())
               }
 

@@ -137,11 +137,8 @@ object ForkRun {
       sbt: ActorRef,
       config: ForkConfig,
       args: Seq[String]): InetSocketAddress => Unit = { address =>
-    val url = serverUrl(
-      args,
-      config.defaultHttpPort,
-      config.defaultHttpAddress,
-      address)
+    val url =
+      serverUrl(args, config.defaultHttpPort, config.defaultHttpAddress, address)
     sbt ! SbtClient.Execute(s"${config.notifyKey} $url")
   }
 
@@ -152,11 +149,8 @@ object ForkRun {
       defaultHttpAddress: String,
       address: InetSocketAddress): String = {
     val devSettings: Seq[(String, String)] = Seq.empty
-    val (properties, httpPort, httpsPort, httpAddress) = Reloader.filterArgs(
-      args,
-      defaultHttpPort,
-      defaultHttpAddress,
-      devSettings)
+    val (properties, httpPort, httpsPort, httpAddress) =
+      Reloader.filterArgs(args, defaultHttpPort, defaultHttpAddress, devSettings)
     val host = if (httpAddress == "0.0.0.0") "localhost" else httpAddress
     if (httpPort.isDefined) s"http://$host:${httpPort.get}"
     else if (httpsPort.isDefined) s"https://$host:${httpsPort.get}"

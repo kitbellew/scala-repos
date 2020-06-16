@@ -170,9 +170,7 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
         val rng = new scala.util.Random(seed = seed)
         val (
           nodesForGroup: Map[Int, Array[Node]],
-          treeToNodeToIndexInfo: Map[
-            Int,
-            Map[Int, RandomForest.NodeIndexInfo]]) =
+          treeToNodeToIndexInfo: Map[Int, Map[Int, RandomForest.NodeIndexInfo]]) =
           RandomForest.selectNodesToSplit(
             nodeQueue,
             maxMemoryUsage,
@@ -243,8 +241,7 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
       maxDepth = 2,
       numClasses = 2,
       categoricalFeaturesInfo = categoricalFeaturesInfo)
-    binaryClassificationTestWithContinuousFeaturesAndSubsampledFeatures(
-      strategy)
+    binaryClassificationTestWithContinuousFeaturesAndSubsampledFeatures(strategy)
   }
 
   test("Binary classification with continuous features and node Id cache: subsampling features") {
@@ -256,8 +253,7 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
       numClasses = 2,
       categoricalFeaturesInfo = categoricalFeaturesInfo,
       useNodeIdCache = true)
-    binaryClassificationTestWithContinuousFeaturesAndSubsampledFeatures(
-      strategy)
+    binaryClassificationTestWithContinuousFeaturesAndSubsampledFeatures(strategy)
   }
 
   test("alternating categorical and continuous features with multiclass labels to test indexing") {

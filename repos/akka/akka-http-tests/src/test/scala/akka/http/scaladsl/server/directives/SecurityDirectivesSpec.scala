@@ -54,8 +54,7 @@ class SecurityDirectivesSpec extends RoutingSpec {
       } ~> check {
         status shouldEqual StatusCodes.Unauthorized
         responseAs[String] shouldEqual "The supplied authentication is invalid"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
+        header[`WWW-Authenticate`] shouldEqual Some(`WWW-Authenticate`(challenge))
       }
     }
     "reject requests with illegal Authorization header with 401" in {
@@ -64,8 +63,7 @@ class SecurityDirectivesSpec extends RoutingSpec {
       } ~> check {
         status shouldEqual StatusCodes.Unauthorized
         responseAs[String] shouldEqual "The resource requires authentication, which was not supplied with the request"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
+        header[`WWW-Authenticate`] shouldEqual Some(`WWW-Authenticate`(challenge))
       }
     }
     "extract the object representing the user identity created by successful authentication" in {
@@ -114,8 +112,7 @@ class SecurityDirectivesSpec extends RoutingSpec {
       } ~> check {
         status shouldEqual StatusCodes.Unauthorized
         responseAs[String] shouldEqual "The supplied authentication is invalid"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
+        header[`WWW-Authenticate`] shouldEqual Some(`WWW-Authenticate`(challenge))
       }
     }
     "reject requests with illegal Authorization header with 401" in {
@@ -124,8 +121,7 @@ class SecurityDirectivesSpec extends RoutingSpec {
       } ~> check {
         status shouldEqual StatusCodes.Unauthorized
         responseAs[String] shouldEqual "The resource requires authentication, which was not supplied with the request"
-        header[`WWW-Authenticate`] shouldEqual Some(
-          `WWW-Authenticate`(challenge))
+        header[`WWW-Authenticate`] shouldEqual Some(`WWW-Authenticate`(challenge))
       }
     }
     "extract the object representing the user identity created by successful authentication" in {

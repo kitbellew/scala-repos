@@ -174,8 +174,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       lazy val storedCond = freshSym(pos, BooleanTpe, "rc") setFlag MUTABLE
       lazy val treesToHoist: List[Tree] = {
         nextBinder setFlag MUTABLE
-        List(storedCond, nextBinder) map (b =>
-          ValDef(b, codegen.mkZero(b.info)))
+        List(storedCond, nextBinder) map (b => ValDef(b, codegen.mkZero(b.info)))
       }
 
       // TODO: finer-grained duplication
@@ -500,9 +499,7 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
       }
 
       // empty list ==> failure
-      def apply(
-          cases: List[(Symbol, List[TreeMaker])],
-          pt: Type): List[CaseDef] =
+      def apply(cases: List[(Symbol, List[TreeMaker])], pt: Type): List[CaseDef] =
         // generate if-then-else for 1 case switch (avoids verify error... can't imagine a one-case switch being faster than if-then-else anyway)
         if (cases.isEmpty || cases.tail.isEmpty) Nil
         else {

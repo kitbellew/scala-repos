@@ -31,8 +31,7 @@ import scala.collection.mutable.ListBuffer
   *   val jsValue = mapper.readValue("""{"foo":"bar"}""", classOf[JsValue])
   * }}}
   */
-object PlayJsonModule
-    extends SimpleModule("PlayJson", Version.unknownVersion()) {
+object PlayJsonModule extends SimpleModule("PlayJson", Version.unknownVersion()) {
   override def setupModule(context: SetupContext) {
     context.addDeserializers(new PlayDeserializers)
     context.addSerializers(new PlaySerializers)
@@ -112,9 +111,7 @@ private[jackson] case class ReadingMap(content: ListBuffer[(String, JsValue)])
 
 }
 
-private[jackson] class JsValueDeserializer(
-    factory: TypeFactory,
-    klass: Class[_])
+private[jackson] class JsValueDeserializer(factory: TypeFactory, klass: Class[_])
     extends JsonDeserializer[Object] {
 
   override def isCachable: Boolean = true

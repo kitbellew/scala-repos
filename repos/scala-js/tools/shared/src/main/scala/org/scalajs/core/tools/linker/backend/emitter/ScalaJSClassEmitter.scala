@@ -482,10 +482,8 @@ private[scalajs] final class ScalaJSClassEmitter(
   }
 
   /** Generate `classVar.prototype.name = value` */
-  def genAddToPrototype(
-      className: String,
-      name: js.PropertyName,
-      value: js.Tree)(implicit pos: Position): js.Tree = {
+  def genAddToPrototype(className: String, name: js.PropertyName, value: js.Tree)(
+      implicit pos: Position): js.Tree = {
     val proto = encodeClassVar(className).prototype
     val select = name match {
       case name: js.Ident         => js.DotSelect(proto, name)
@@ -799,10 +797,7 @@ private[scalajs] final class ScalaJSClassEmitter(
             js.Function(
               List(js.ParamDef(Ident("x"), rest = false)),
               js.Return {
-                js.BinaryOp(
-                  JSBinaryOp.instanceof,
-                  js.VarRef(Ident("x")),
-                  jsCtor)
+                js.BinaryOp(JSBinaryOp.instanceof, js.VarRef(Ident("x")), jsCtor)
               }),
             js.Undefined())
         }

@@ -376,8 +376,7 @@ object AdminUtils extends Logging {
       if (brokerList.size != brokerList.toSet.size)
         throw new AdminOperationException(
           "duplicate brokers in replica assignment: " + brokerList)
-      if (checkBrokerAvailable && !brokerList.toSet.subsetOf(
-          availableBrokerList))
+      if (checkBrokerAvailable && !brokerList.toSet.subsetOf(availableBrokerList))
         throw new AdminOperationException(
           "some specified brokers not available. specified brokers: " + brokerList.toString +
             "available broker:" + availableBrokerList.toString)
@@ -629,10 +628,7 @@ object AdminUtils extends Logging {
   def getConfigChangeZnodeData(
       entityType: String,
       entityName: String): Map[String, Any] = {
-    Map(
-      "version" -> 1,
-      "entity_type" -> entityType,
-      "entity_name" -> entityName)
+    Map("version" -> 1, "entity_type" -> entityType, "entity_name" -> entityName)
   }
 
   /**
@@ -696,8 +692,7 @@ object AdminUtils extends Logging {
   def fetchAllTopicConfigs(zkUtils: ZkUtils): Map[String, Properties] =
     zkUtils
       .getAllTopics()
-      .map(topic =>
-        (topic, fetchEntityConfig(zkUtils, ConfigType.Topic, topic)))
+      .map(topic => (topic, fetchEntityConfig(zkUtils, ConfigType.Topic, topic)))
       .toMap
 
   def fetchAllEntityConfigs(

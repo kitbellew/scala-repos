@@ -88,8 +88,7 @@ class ScalaByNameWeigher extends CompletionWeigher {
       Option(
         textForPosition.getOrElse(
           position,
-          afterColonType.getOrElse(
-            asBindingPattern.getOrElse(afterNew.orNull))))
+          afterColonType.getOrElse(asBindingPattern.getOrElse(afterNew.orNull))))
     }
 
     def handleByText(element: PsiNamedElement): Option[Integer] = {

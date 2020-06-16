@@ -28,8 +28,7 @@ class DecoderTest extends FunSuite with MockitoSugar {
     import context._
 
     val buffer = "STORED\r\n"
-    assert(
-      decoder.decode(null, null, buffer) == Tokens(Seq(Buf.Utf8("STORED"))))
+    assert(decoder.decode(null, null, buffer) == Tokens(Seq(Buf.Utf8("STORED"))))
   }
 
   test("decode tokens with partial delimiter") {

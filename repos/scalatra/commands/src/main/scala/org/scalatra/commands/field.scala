@@ -216,8 +216,7 @@ trait DataboundFieldDescriptor[S, T] extends FieldDescriptor[T] {
   private[commands] def defVal: Option[DefVal[T]] = field.defVal
   def withDefaultValue(default: => T): DataboundFieldDescriptor[S, T]
   def valueSource: ValueSource.Value = field.valueSource
-  def sourcedFrom(
-      valueSource: ValueSource.Value): DataboundFieldDescriptor[S, T]
+  def sourcedFrom(valueSource: ValueSource.Value): DataboundFieldDescriptor[S, T]
   def allowableValues = field.allowableValues
   def allowableValues(vals: T*): DataboundFieldDescriptor[S, T]
   def displayName: Option[String] = field.displayName
@@ -260,8 +259,8 @@ class BoundFieldDescriptor[S, T](
       original,
       value)
 
-  def validateWith(bindingValidators: BindingValidator[T]*)
-      : DataboundFieldDescriptor[S, T] = {
+  def validateWith(
+      bindingValidators: BindingValidator[T]*): DataboundFieldDescriptor[S, T] = {
     val nwFld = field.validateWith(bindingValidators: _*)
     copy(field = nwFld, validator = nwFld.validator)
   }
@@ -349,15 +348,14 @@ class ValidatedBoundFieldDescriptor[S, T](
       original,
       value)
 
-  def validateWith(bindingValidators: BindingValidator[T]*)
-      : DataboundFieldDescriptor[S, T] = {
+  def validateWith(
+      bindingValidators: BindingValidator[T]*): DataboundFieldDescriptor[S, T] = {
     copy(field = field.validateWith(bindingValidators: _*))
   }
 
   def copy(
       value: FieldValidation[T] = value,
-      field: DataboundFieldDescriptor[S, T] = field)
-      : ValidatedFieldDescriptor[S, T] =
+      field: DataboundFieldDescriptor[S, T] = field): ValidatedFieldDescriptor[S, T] =
     new ValidatedBoundFieldDescriptor(value, field)
 
   def transform(endo: T => T): DataboundFieldDescriptor[S, T] =
@@ -419,15 +417,13 @@ object BindingValidators {
   class ValidatableSeq[T <: Seq[_]](b: FieldDescriptor[T]) {
     def notEmpty: FieldDescriptor[T] = notEmpty()
     def notEmpty(messageFormat: String = b.requiredError): FieldDescriptor[T] =
-      b.required.validateWith(
-        BindingValidators.nonEmptyCollection(messageFormat))
+      b.required.validateWith(BindingValidators.nonEmptyCollection(messageFormat))
   }
 
   class ValidatableOrdered[T <% Ordered[T]](b: FieldDescriptor[T]) {
     def greaterThan(
         min: T,
-        messageFormat: String = "%%s must be greater than %s")
-        : FieldDescriptor[T] =
+        messageFormat: String = "%%s must be greater than %s"): FieldDescriptor[T] =
       b.validateWith(BindingValidators.greaterThan(min, messageFormat))
 
     def lessThan(max: T, messageFormat: String = "%%s must be less than %s")
@@ -489,8 +485,7 @@ object BindingValidators {
     def validForConfirmation(
         against: Field[String],
         messageFormat: String = "%%s must match %s."): FieldDescriptor[String] =
-      b.validateWith(
-        BindingValidators.validConfirmation(against, messageFormat))
+      b.validateWith(BindingValidators.validConfirmation(against, messageFormat))
 
     def minLength(
         min: Int,
@@ -535,8 +530,7 @@ object BindingValidators {
   def nonEmptyCollection[TResult <: Traversable[_]]: BindingValidator[TResult] =
     nonEmptyCollection[TResult]()
   def nonEmptyCollection[TResult <: Traversable[_]](
-      messageFormat: String = "%s must not be empty.")
-      : BindingValidator[TResult] =
+      messageFormat: String = "%s must not be empty."): BindingValidator[TResult] =
     (s: String) => {
       _ flatMap (Validation.nonEmptyCollection(s, _, messageFormat))
     }
@@ -592,8 +586,7 @@ object BindingValidators {
 
   def greaterThan[T <% Ordered[T]](
       min: T,
-      messageFormat: String = "%%s must be greater than %s.")
-      : BindingValidator[T] =
+      messageFormat: String = "%%s must be greater than %s."): BindingValidator[T] =
     (s: String) => {
       _ flatMap Validators.greaterThan(s, min, messageFormat).validate
     }
@@ -639,8 +632,7 @@ object BindingValidators {
 
   def enumValue(
       enum: Enumeration,
-      messageFormat: String = "%%s must be one of %s.")
-      : BindingValidator[String] =
+      messageFormat: String = "%%s must be one of %s."): BindingValidator[String] =
     oneOf(messageFormat, enum.values.map(_.toString).toSeq)
 }
 

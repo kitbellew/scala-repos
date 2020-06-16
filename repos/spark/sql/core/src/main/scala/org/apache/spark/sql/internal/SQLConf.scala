@@ -232,8 +232,7 @@ object SQLConf {
           val _v = valueConverter(v)
           if (!validValues.contains(_v)) {
             throw new IllegalArgumentException(
-              s"The value of $key should be one of ${validValues.mkString(
-                ", ")}, but was $v")
+              s"The value of $key should be one of ${validValues.mkString(", ")}, but was $v")
           }
           _v
         },

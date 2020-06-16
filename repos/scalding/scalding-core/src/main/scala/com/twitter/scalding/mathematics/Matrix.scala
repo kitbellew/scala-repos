@@ -206,8 +206,7 @@ class MatrixMappableExtensions[T](mappable: Mappable[T])(implicit
       .from(mappable)
       .map(fn)
       .groupBy(t => (t._1, t._2))
-      .mapValueStream(s =>
-        Iterator(s.map { case (_, _, c, v) => (c, v) }.toMap))
+      .mapValueStream(s => Iterator(s.map { case (_, _, c, v) => (c, v) }.toMap))
       .toTypedPipe
       .map { case ((g, r), m) => (r, g, m) }
       .toPipe(('row, 'col, 'val))
@@ -466,12 +465,7 @@ class Matrix[RowT, ColT, ValT](
           val list = imp._2
           list.map { imp: (ColT, ValT) => (row, imp._1, imp._2) }
       }
-    new Matrix[RowT, ColT, ValT](
-      rowSym,
-      topSym,
-      valSym,
-      newPipe,
-      FiniteHint(-1L, k))
+    new Matrix[RowT, ColT, ValT](rowSym, topSym, valSym, newPipe, FiniteHint(-1L, k))
   }
 
   protected lazy val rowL0Norm = {
@@ -523,8 +517,7 @@ class Matrix[RowT, ColT, ValT](
 
     val newPipe = inPipe
       .groupBy(rowSym) { _.sizeAveStdev((valSym) -> ('size, 'ave, 'stdev)) }
-      .flatMapTo(
-        (rowSym, 'size, 'ave, 'stdev) -> (rowSym, newColSym, newValSym)) {
+      .flatMapTo((rowSym, 'size, 'ave, 'stdev) -> (rowSym, newColSym, newValSym)) {
         tup: (RowT, Long, Double, Double) =>
           val row = tup._1
           val size = tup._2.toDouble
@@ -533,12 +526,7 @@ class Matrix[RowT, ColT, ValT](
           List((row, 1, size), (row, 2, avg), (row, 3, stdev))
       }
     val newHint = sizeHint.setCols(3L)
-    new Matrix[RowT, Int, Double](
-      rowSym,
-      newColSym,
-      newValSym,
-      newPipe,
-      newHint)
+    new Matrix[RowT, Int, Double](rowSym, newColSym, newValSym, newPipe, newHint)
   }
 
   def rowColValSymbols: Fields = (rowSym, colSym, valSym)
@@ -1183,11 +1171,7 @@ class RowVector[ColT, ValT](
             .take(k)
         }
         .project(colS, valS)
-      new RowVector[ColT, ValT](
-        colS,
-        valS,
-        newPipe,
-        sizeH.setCols(k).setRows(1L))
+      new RowVector[ColT, ValT](colS, valS, newPipe, sizeH.setCols(k).setRows(1L))
     }
   }
 
@@ -1200,11 +1184,7 @@ class RowVector[ColT, ValT](
           (t0: (ColT, ValT), t1: (ColT, ValT)) => ord.gt(t0._2, t1._2))
       }
       .flatMap('top_vals -> (topSym, valS)) { imp: List[(ColT, ValT)] => imp }
-    new RowVector[ColT, ValT](
-      topSym,
-      valS,
-      newPipe,
-      sizeH.setCols(k).setRows(1L))
+    new RowVector[ColT, ValT](topSym, valS, newPipe, sizeH.setCols(k).setRows(1L))
   }
 
   def toMatrix[RowT](rowId: RowT): Matrix[RowT, ColT, ValT] = {
@@ -1321,11 +1301,7 @@ class ColVector[RowT, ValT](
             .take(k)
         }
         .project(rowS, valS)
-      new ColVector[RowT, ValT](
-        rowS,
-        valS,
-        newPipe,
-        sizeH.setCols(1L).setRows(k))
+      new ColVector[RowT, ValT](rowS, valS, newPipe, sizeH.setCols(1L).setRows(k))
     }
   }
 
@@ -1338,11 +1314,7 @@ class ColVector[RowT, ValT](
           (t0: (RowT, ValT), t1: (RowT, ValT)) => ord.gt(t0._2, t1._2))
       }
       .flatMap('top_vals -> (topSym, valS)) { imp: List[(RowT, ValT)] => imp }
-    new ColVector[RowT, ValT](
-      topSym,
-      valS,
-      newPipe,
-      sizeH.setCols(1L).setRows(k))
+    new ColVector[RowT, ValT](topSym, valS, newPipe, sizeH.setCols(1L).setRows(k))
   }
 
   def toMatrix[ColT](colIdx: ColT): Matrix[RowT, ColT, ValT] = {

@@ -30,8 +30,8 @@ private[graphx] object VertexPartitionBase {
     * Construct the constituents of a VertexPartitionBase from the given vertices, merging duplicate
     * entries arbitrarily.
     */
-  def initFrom[VD: ClassTag](iter: Iterator[(VertexId, VD)])
-      : (VertexIdToIndexMap, Array[VD], BitSet) = {
+  def initFrom[VD: ClassTag](
+      iter: Iterator[(VertexId, VD)]): (VertexIdToIndexMap, Array[VD], BitSet) = {
     val map = new GraphXPrimitiveKeyOpenHashMap[VertexId, VD]
     iter.foreach { pair =>
       map(pair._1) = pair._2

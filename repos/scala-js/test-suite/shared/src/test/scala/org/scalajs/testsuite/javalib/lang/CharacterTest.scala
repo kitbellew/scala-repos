@@ -49,12 +49,9 @@ class CharacterTest {
 
   @Test def toChars(): Unit = {
     assertTrue(Character.toChars(0x61) sameElements Array('a'))
-    assertTrue(
-      Character.toChars(0x10000) sameElements Array('\uD800', '\uDC00'))
-    assertTrue(
-      Character.toChars(0x10001) sameElements Array('\uD800', '\uDC01'))
-    assertTrue(
-      Character.toChars(0x10401) sameElements Array('\uD801', '\uDC01'))
+    assertTrue(Character.toChars(0x10000) sameElements Array('\uD800', '\uDC00'))
+    assertTrue(Character.toChars(0x10001) sameElements Array('\uD800', '\uDC01'))
+    assertTrue(Character.toChars(0x10401) sameElements Array('\uD801', '\uDC01'))
     assertTrue(
       Character.toChars(0x10ffff) sameElements Array('\uDBFF', '\uDFFF'))
 

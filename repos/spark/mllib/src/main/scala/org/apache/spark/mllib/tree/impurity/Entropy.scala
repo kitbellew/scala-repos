@@ -67,10 +67,7 @@ object Entropy extends Impurity {
     */
   @Since("1.0.0")
   @DeveloperApi
-  override def calculate(
-      count: Double,
-      sum: Double,
-      sumSquares: Double): Double =
+  override def calculate(count: Double, sum: Double, sumSquares: Double): Double =
     throw new UnsupportedOperationException("Entropy.calculate")
 
   /**

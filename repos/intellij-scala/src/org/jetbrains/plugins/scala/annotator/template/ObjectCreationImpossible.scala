@@ -8,10 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   ScObject,
   ScTemplateDefinition
 }
-import org.jetbrains.plugins.scala.overrideImplement.{
-  ScAliasMember,
-  ScalaOIUtil
-}
+import org.jetbrains.plugins.scala.overrideImplement.{ScAliasMember, ScalaOIUtil}
 
 /**
   * Pavel Fatin
@@ -56,9 +53,8 @@ object ObjectCreationImpossible extends AnnotatorPart[ScTemplateDefinition] {
             val element =
               if (isNew) refElement
               else definition.asInstanceOf[ScObject].nameId
-            val annotation = holder.createErrorAnnotation(
-              element,
-              message(undefined.toSeq: _*))
+            val annotation =
+              holder.createErrorAnnotation(element, message(undefined.toSeq: _*))
             annotation.registerFix(new ImplementMethodsQuickFix(definition))
           }
         case _ =>

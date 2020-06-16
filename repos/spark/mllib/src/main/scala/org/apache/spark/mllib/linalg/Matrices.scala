@@ -200,9 +200,7 @@ private[spark] class MatrixUDT extends UserDefinedType[Matrix] {
         row.setInt(1, sm.numRows)
         row.setInt(2, sm.numCols)
         row.update(3, new GenericArrayData(sm.colPtrs.map(_.asInstanceOf[Any])))
-        row.update(
-          4,
-          new GenericArrayData(sm.rowIndices.map(_.asInstanceOf[Any])))
+        row.update(4, new GenericArrayData(sm.rowIndices.map(_.asInstanceOf[Any])))
         row.update(5, new GenericArrayData(sm.values.map(_.asInstanceOf[Any])))
         row.setBoolean(6, sm.isTransposed)
 
@@ -923,10 +921,7 @@ object SparseMatrix {
       while (entries.size < nnz) {
         entries += ((rng.nextInt(numRows), rng.nextInt(numCols)))
       }
-      SparseMatrix.fromCOO(
-        numRows,
-        numCols,
-        entries.map(v => (v._1, v._2, 1.0)))
+      SparseMatrix.fromCOO(numRows, numCols, entries.map(v => (v._1, v._2, 1.0)))
     } else {
       // selection-rejection method
       var idx = 0L

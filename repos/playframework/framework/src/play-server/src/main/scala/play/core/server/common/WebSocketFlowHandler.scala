@@ -17,8 +17,8 @@ object WebSocketFlowHandler {
     * Implements the WebSocket protocol, including correctly handling the closing of the WebSocket, as well as
     * other control frames like ping/pong.
     */
-  def webSocketProtocol(bufferLimit: Int)
-      : BidiFlow[RawMessage, Message, Message, Message, NotUsed] = {
+  def webSocketProtocol(
+      bufferLimit: Int): BidiFlow[RawMessage, Message, Message, Message, NotUsed] = {
     BidiFlow.fromGraph(
       new GraphStage[BidiShape[RawMessage, Message, Message, Message]] {
         // The stream of incoming messages from the websocket connection

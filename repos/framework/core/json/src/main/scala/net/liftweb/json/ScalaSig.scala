@@ -36,15 +36,14 @@ private[json] object ScalaSigReader {
       if (current == null)
         Meta.fail("Can't find field " + name + " from " + clazz)
       else
-        findField(findClass(current), name).getOrElse(
-          read(current.getSuperclass))
+        findField(findClass(current), name).getOrElse(read(current.getSuperclass))
     }
     findArgTypeForField(read(clazz), typeArgIndex)
   }
 
   private def findClass(clazz: Class[_]): ClassSymbol = {
-    val sig = findScalaSig(clazz).getOrElse(
-      Meta.fail("Can't find ScalaSig for " + clazz))
+    val sig =
+      findScalaSig(clazz).getOrElse(Meta.fail("Can't find ScalaSig for " + clazz))
     findClass(sig, clazz).getOrElse(
       Meta.fail("Can't find " + clazz + " from parsed ScalaSig"))
   }

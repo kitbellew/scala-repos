@@ -64,15 +64,11 @@ sealed abstract class Marshaller[-A, +B] {
             case (
                   WithOpenCharset(oldMT, marshal),
                   newMT: MediaType.WithOpenCharset) ⇒
-              WithOpenCharset(
-                newMT,
-                cs ⇒ cto(marshal(cs), newMT withCharset cs))
+              WithOpenCharset(newMT, cs ⇒ cto(marshal(cs), newMT withCharset cs))
             case (
                   WithOpenCharset(oldMT, marshal),
                   newMT: MediaType.WithFixedCharset) ⇒
-              WithFixedContentType(
-                newMT,
-                () ⇒ cto(marshal(newMT.charset), newMT))
+              WithFixedContentType(newMT, () ⇒ cto(marshal(newMT.charset), newMT))
 
             case (Opaque(marshal), newMT: MediaType.Binary) ⇒
               WithFixedContentType(newMT, () ⇒ cto(marshal(), newMT))
@@ -180,9 +176,7 @@ object Marshalling {
   /**
     * A Marshalling to a specific [[akka.http.scaladsl.model.ContentType]].
     */
-  final case class WithFixedContentType[A](
-      contentType: ContentType,
-      marshal: () ⇒ A)
+  final case class WithFixedContentType[A](contentType: ContentType, marshal: () ⇒ A)
       extends Marshalling[A] {
     def map[B](f: A ⇒ B): WithFixedContentType[B] =
       copy(marshal = () ⇒ f(marshal()))

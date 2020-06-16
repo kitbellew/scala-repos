@@ -22,9 +22,7 @@ object Test extends App {
         Modifiers(LAZY),
         TermName("x"),
         TypeTree(),
-        Apply(
-          Ident(ListModule),
-          List(Literal(Constant(1)), Literal(Constant(2)))))),
+        Apply(Ident(ListModule), List(Literal(Constant(1)), Literal(Constant(2)))))),
     Ident(TermName("x")))
   toolBox.eval(Apply(reify, List(reifee)))
   val Block(

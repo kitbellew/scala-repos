@@ -190,31 +190,19 @@ trait ReadWarmup { self: DarkRead =>
 trait DarkWrite extends Client {
   protected val backendClient: Client
 
-  abstract override def set(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: Buf) = {
+  abstract override def set(key: String, flags: Int, expiry: Time, value: Buf) = {
     val result = super.set(key, flags, expiry, value)
     backendClient.set(key, flags, expiry, value)
     result
   }
 
-  abstract override def add(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: Buf) = {
+  abstract override def add(key: String, flags: Int, expiry: Time, value: Buf) = {
     val result = super.add(key, flags, expiry, value)
     backendClient.add(key, flags, expiry, value)
     result
   }
 
-  abstract override def append(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: Buf) = {
+  abstract override def append(key: String, flags: Int, expiry: Time, value: Buf) = {
     val result = super.append(key, flags, expiry, value)
     backendClient.append(key, flags, expiry, value)
     result
@@ -295,9 +283,7 @@ trait FallbackRead extends Client {
     }
   }
 
-  protected def combineGetResult(
-      frontR: GetResult,
-      backR: GetResult): GetResult = {
+  protected def combineGetResult(frontR: GetResult, backR: GetResult): GetResult = {
     // when fallback, merge the front hits with back result
     GetResult.merged(Seq(GetResult(frontR.hits), backR))
   }

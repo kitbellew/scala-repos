@@ -233,8 +233,7 @@ object SafeDeleteProcessorUtil {
       originalReferences: util.Collection[PsiReference],
       usages: util.List[UsageInfo],
       allElementsToDelete: Array[PsiElement]): Condition[PsiElement] = {
-    val constructorsToRefs
-        : util.HashMap[PsiMethod, util.Collection[PsiReference]] =
+    val constructorsToRefs: util.HashMap[PsiMethod, util.Collection[PsiReference]] =
       new util.HashMap[PsiMethod, util.Collection[PsiReference]]
     val newConstructors: util.HashSet[PsiMethod] = new util.HashSet[PsiMethod]
     if (isTheOnlyEmptyDefaultConstructor(constructor)) return null
@@ -289,9 +288,7 @@ object SafeDeleteProcessorUtil {
       originalMethod: PsiMethod,
       originalReferences: util.Collection[PsiReference],
       overridingMethods: util.Collection[PsiMethod],
-      methodToReferences: util.HashMap[
-        PsiMethod,
-        util.Collection[PsiReference]],
+      methodToReferences: util.HashMap[PsiMethod, util.Collection[PsiReference]],
       usages: util.List[UsageInfo],
       allElementsToDelete: Array[PsiElement]): util.Set[PsiMethod] = {
     val validOverriding: util.Set[PsiMethod] =
@@ -460,8 +457,7 @@ object SafeDeleteProcessorUtil {
           parent match {
             case assignExpr: PsiAssignmentExpression
                 if element == assignExpr.getLExpression =>
-              usages.add(
-                new SafeDeleteFieldWriteReference(assignExpr, psiField))
+              usages.add(new SafeDeleteFieldWriteReference(assignExpr, psiField))
             case _ =>
               val range: TextRange = reference.getRangeInElement
               usages.add(
@@ -482,9 +478,7 @@ object SafeDeleteProcessorUtil {
     isInsideDeleted
   }
 
-  def findParameterUsages(
-      parameter: PsiParameter,
-      usages: util.List[UsageInfo]) {
+  def findParameterUsages(parameter: PsiParameter, usages: util.List[UsageInfo]) {
     val method: PsiMethod =
       parameter.getDeclarationScope.asInstanceOf[PsiMethod]
     val index: Int = method.getParameterList.getParameterIndex(parameter)
@@ -536,8 +530,7 @@ object SafeDeleteProcessorUtil {
                 newText.append("/** @see #").append(method.name).append('(')
                 val parameters: java.util.List[PsiParameter] =
                   new util.ArrayList[PsiParameter](
-                    util.Arrays.asList(
-                      method.getParameterList.getParameters: _*))
+                    util.Arrays.asList(method.getParameterList.getParameters: _*))
                 parameters.remove(parameter)
                 newText.append(
                   parameters.map(_.getType.getCanonicalText).mkString(","))

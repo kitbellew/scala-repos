@@ -252,8 +252,7 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
       javaBatchInfo.processingStartTime === batchInfo.processingStartTime
         .getOrElse(-1))
     assert(
-      javaBatchInfo.processingEndTime === batchInfo.processingEndTime.getOrElse(
-        -1))
+      javaBatchInfo.processingEndTime === batchInfo.processingEndTime.getOrElse(-1))
     assert(
       javaBatchInfo.schedulingDelay === batchInfo.schedulingDelay.getOrElse(-1))
     assert(
@@ -292,8 +291,7 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
       javaOutputOperationInfo.startTime === outputOperationInfo.startTime
         .getOrElse(-1))
     assert(
-      javaOutputOperationInfo.endTime === outputOperationInfo.endTime.getOrElse(
-        -1))
+      javaOutputOperationInfo.endTime === outputOperationInfo.endTime.getOrElse(-1))
     assert(
       javaOutputOperationInfo.failureReason === outputOperationInfo.failureReason.orNull)
   }
@@ -342,8 +340,7 @@ class TestJavaStreamingListener extends JavaStreamingListener {
   }
 
   override def onOutputOperationStarted(
-      outputOperationStarted: JavaStreamingListenerOutputOperationStarted)
-      : Unit = {
+      outputOperationStarted: JavaStreamingListenerOutputOperationStarted): Unit = {
     this.outputOperationStarted = outputOperationStarted
   }
 

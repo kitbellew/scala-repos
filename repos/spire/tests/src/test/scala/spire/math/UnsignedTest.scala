@@ -128,10 +128,7 @@ class ULongTest
   }
 }
 
-class UIntTest
-    extends PropSpec
-    with Matchers
-    with GeneratorDrivenPropertyChecks {
+class UIntTest extends PropSpec with Matchers with GeneratorDrivenPropertyChecks {
 
   val zero = UInt(0)
   val one = UInt(1)

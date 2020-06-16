@@ -52,8 +52,7 @@ class FormatStringConverterSpec
 
   override protected def getJavaClassInstance = getScalaClassInstance
   override protected def getScalaClassInstance =
-    new FormatStringConverter[Number](
-      NumberFormat.getCurrencyInstance(Locale.US))
+    new FormatStringConverter[Number](NumberFormat.getCurrencyInstance(Locale.US))
 
   def getConverterForExample: FormatStringConverter[Number] =
     getScalaClassInstance
@@ -76,8 +75,7 @@ class FormatStringConverterSpec
       stringToNumber should equal(number)
     }
 
-    examples.foreach(example =>
-      runConversionsForExamples(example._1, example._2))
+    examples.foreach(example => runConversionsForExamples(example._1, example._2))
   }
 
   it should "convert Number to String and vice-versa" in {

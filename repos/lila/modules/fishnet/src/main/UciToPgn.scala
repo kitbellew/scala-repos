@@ -38,17 +38,17 @@ private object UciToPgn {
           variation
             .map(Uci.Move.apply)
             .sequence toValid "Invalid UCI moves " + variation
-        moves ← ucis.foldLeft[Valid[(Situation, List[Move])]](
-          success(situation -> Nil)) {
-          case (scalaz.Success((sit, moves)), uci) =>
-            sit.move(
-              uci.orig,
-              uci.dest,
-              uci.promotion) prefixFailuresWith s"ply $ply " map { move =>
-              move.situationAfter -> (move :: moves)
-            }
-          case (failure, _) => failure
-        }
+        moves ←
+          ucis.foldLeft[Valid[(Situation, List[Move])]](success(situation -> Nil)) {
+            case (scalaz.Success((sit, moves)), uci) =>
+              sit.move(
+                uci.orig,
+                uci.dest,
+                uci.promotion) prefixFailuresWith s"ply $ply " map { move =>
+                move.situationAfter -> (move :: moves)
+              }
+            case (failure, _) => failure
+          }
       } yield moves._2.reverse map Dumper.apply
 
     onlyMeaningfulVariations.foldLeft[WithErrors[List[Info]]]((Nil, Nil)) {

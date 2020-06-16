@@ -75,9 +75,7 @@ trait CodingDirectives {
                 case NonFatal(e) ⇒
                   IllegalRequestException(
                     StatusCodes.BadRequest,
-                    ErrorInfo(
-                      "The request's encoding is corrupt",
-                      e.getMessage))
+                    ErrorInfo("The request's encoding is corrupt", e.getMessage))
               })
           }
         }

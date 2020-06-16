@@ -39,9 +39,7 @@ import scalafx.testutil.{RunOnApplicationThread, SimpleSFXDelegateSpec}
   */
 @RunWith(classOf[JUnitRunner])
 class ComboBoxTreeCellSpec[T]
-    extends SimpleSFXDelegateSpec[
-      jfxscc.ComboBoxTreeCell[T],
-      ComboBoxTreeCell[T]](
+    extends SimpleSFXDelegateSpec[jfxscc.ComboBoxTreeCell[T], ComboBoxTreeCell[T]](
       classOf[jfxscc.ComboBoxTreeCell[T]],
       classOf[ComboBoxTreeCell[T]])
     with RunOnApplicationThread

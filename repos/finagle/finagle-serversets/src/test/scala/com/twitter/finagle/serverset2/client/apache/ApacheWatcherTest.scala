@@ -59,8 +59,7 @@ class ApacheWatcherTest extends FlatSpec with OneInstancePerTest {
           .filter(_ == WatchState.Determined(nodeEvents(ev)))
           .toFuture
         watcher.process(new WatchedEvent(ev, KeeperState.SyncConnected, path))
-        assert(
-          Await.result(determined) == WatchState.Determined(nodeEvents(ev)))
+        assert(Await.result(determined) == WatchState.Determined(nodeEvents(ev)))
         assert(statsReceiver.counter(ApacheNodeEvent(ev).name)() == 1)
       }
     }

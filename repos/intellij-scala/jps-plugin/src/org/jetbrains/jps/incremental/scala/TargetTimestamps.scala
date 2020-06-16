@@ -12,14 +12,13 @@ class TargetTimestamps(context: CompileContext) {
 
   def get(target: ModuleBuildTarget): Option[Long] = {
     Some(timestampFile(target)).filter(_.exists).flatMap { file =>
-      using(
-        new DataInputStream(
-          new BufferedInputStream(new FileInputStream(file)))) { in =>
-        try {
-          Some(in.readLong())
-        } catch {
-          case _: IOException => None
-        }
+      using(new DataInputStream(new BufferedInputStream(new FileInputStream(file)))) {
+        in =>
+          try {
+            Some(in.readLong())
+          } catch {
+            case _: IOException => None
+          }
       }
     }
   }
@@ -28,9 +27,9 @@ class TargetTimestamps(context: CompileContext) {
     val file = timestampFile(target)
 
     using(
-      new DataOutputStream(
-        new BufferedOutputStream(new FileOutputStream(file)))) { out =>
-      out.writeLong(timestamp)
+      new DataOutputStream(new BufferedOutputStream(new FileOutputStream(file)))) {
+      out =>
+        out.writeLong(timestamp)
     }
   }
 

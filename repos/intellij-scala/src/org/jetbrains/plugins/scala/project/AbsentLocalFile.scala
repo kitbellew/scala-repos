@@ -22,10 +22,7 @@ class AbsentLocalFile(url: String, path: String) extends VirtualFile {
 
   def getParent = throw new UnsupportedOperationException()
 
-  def refresh(
-      asynchronous: Boolean,
-      recursive: Boolean,
-      postRunnable: Runnable) =
+  def refresh(asynchronous: Boolean, recursive: Boolean, postRunnable: Runnable) =
     throw new UnsupportedOperationException()
 
   def getTimeStamp = throw new UnsupportedOperationException()
@@ -77,10 +74,7 @@ object AbsentLocalFileSystem extends VirtualFileSystem {
 
   def isReadOnly = throw new UnsupportedOperationException()
 
-  def createChildDirectory(
-      requestor: AnyRef,
-      vDir: VirtualFile,
-      dirName: String) =
+  def createChildDirectory(requestor: AnyRef, vDir: VirtualFile, dirName: String) =
     throw new UnsupportedOperationException()
 
   def removeVirtualFileListener(virtualFileListener: VirtualFileListener) =

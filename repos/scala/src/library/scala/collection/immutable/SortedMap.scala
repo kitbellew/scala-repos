@@ -93,9 +93,7 @@ trait SortedMap[A, +B]
   override def filterKeys(p: A => Boolean): SortedMap[A, B] =
     new FilteredKeys(p) with SortedMap.Default[A, B] {
       implicit def ordering: Ordering[A] = self.ordering
-      override def rangeImpl(
-          from: Option[A],
-          until: Option[A]): SortedMap[A, B] =
+      override def rangeImpl(from: Option[A], until: Option[A]): SortedMap[A, B] =
         self.rangeImpl(from, until).filterKeys(p)
       override def iteratorFrom(start: A) =
         self iteratorFrom start filter { case (k, _) => p(k) }
@@ -108,9 +106,7 @@ trait SortedMap[A, +B]
   override def mapValues[C](f: B => C): SortedMap[A, C] =
     new MappedValues(f) with SortedMap.Default[A, C] {
       implicit def ordering: Ordering[A] = self.ordering
-      override def rangeImpl(
-          from: Option[A],
-          until: Option[A]): SortedMap[A, C] =
+      override def rangeImpl(from: Option[A], until: Option[A]): SortedMap[A, C] =
         self.rangeImpl(from, until).mapValues(f)
       override def iteratorFrom(start: A) =
         self iteratorFrom start map { case (k, v) => (k, f(v)) }

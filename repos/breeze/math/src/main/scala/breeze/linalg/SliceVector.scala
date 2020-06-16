@@ -68,9 +68,7 @@ object SliceVector {
   implicit def canMapValues[K, V, V2: ClassTag]
       : CanMapValues[SliceVector[K, V], V, V2, DenseVector[V2]] = {
     new CanMapValues[SliceVector[K, V], V, V2, DenseVector[V2]] {
-      override def apply(
-          from: SliceVector[K, V],
-          fn: (V) => V2): DenseVector[V2] = {
+      override def apply(from: SliceVector[K, V], fn: (V) => V2): DenseVector[V2] = {
         DenseVector.tabulate(from.length)(i => fn(from(i)))
       }
 
@@ -119,8 +117,7 @@ object SliceVector {
     }
   }
 
-  implicit def canTransformValues[K, V]
-      : CanTransformValues[SliceVector[K, V], V] = {
+  implicit def canTransformValues[K, V]: CanTransformValues[SliceVector[K, V], V] = {
     new CanTransformValues[SliceVector[K, V], V] {
       def transform(from: SliceVector[K, V], fn: (V) => V) {
         for (i <- 0 until from.length) {

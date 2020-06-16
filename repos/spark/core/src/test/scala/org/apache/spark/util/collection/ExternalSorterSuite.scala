@@ -322,9 +322,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
    |  Helper test utility methods  |
    * ============================= */
 
-  private def createSparkConf(
-      loadDefaults: Boolean,
-      kryo: Boolean): SparkConf = {
+  private def createSparkConf(loadDefaults: Boolean, kryo: Boolean): SparkConf = {
     val conf = new SparkConf(loadDefaults)
     if (kryo) {
       conf.set("spark.serializer", classOf[KryoSerializer].getName)
@@ -671,10 +669,7 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
     val agg =
       if (withPartialAgg) {
         Some(
-          new Aggregator[Int, Int, Int](
-            i => i,
-            (i, j) => i + j,
-            (i, j) => i + j))
+          new Aggregator[Int, Int, Int](i => i, (i, j) => i + j, (i, j) => i + j))
       } else {
         None
       }

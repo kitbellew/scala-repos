@@ -59,8 +59,7 @@ class ScalaIntroduceParameterUsageProcessor
         val file = textRangeUsages.head.file
 
         val manager = PsiDocumentManager.getInstance(file.getProject)
-        manager.doPostponedOperationsAndUnblockDocument(
-          manager.getDocument(file))
+        manager.doPostponedOperationsAndUnblockDocument(manager.getDocument(file))
 
         ScalaRefactoringUtil.replaceOccurences(
           textRangeUsages.map(usage => TextRange.create(usage.range)),

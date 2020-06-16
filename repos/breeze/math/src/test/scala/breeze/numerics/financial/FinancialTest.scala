@@ -38,8 +38,7 @@ class FinancialTest extends FunSuite {
   }
   test("FutureValue") {
     assert(
-      math.abs(
-        futureValue(0.05 / 12, 10 * 12, -100, -100) - 15692.92889) < 1e-5)
+      math.abs(futureValue(0.05 / 12, 10 * 12, -100, -100) - 15692.92889) < 1e-5)
     assert(futureValue(0.0, 3, 1, 1) == -4.0)
   }
   test("presentValue") {

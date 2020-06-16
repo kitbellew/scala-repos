@@ -62,8 +62,7 @@ trait DAG extends Instructions {
         loc: Line,
         roots: List[Either[BucketSpec, DepGraph]],
         splits: List[OpenSplit],
-        stream: Vector[Instruction])
-        : Trampoline[Either[StackError, DepGraph]] = {
+        stream: Vector[Instruction]): Trampoline[Either[StackError, DepGraph]] = {
       @inline def continue(
           f: List[Either[BucketSpec, DepGraph]] => Either[
             StackError,
@@ -516,9 +515,8 @@ trait DAG extends Instructions {
     case object Undefined extends Identities {
       override def length = 0
       override def distinct = Identities.Undefined
-      override def fold[A](
-          identities: Vector[dag.IdentitySpec] => A,
-          undefined: A) = undefined
+      override def fold[A](identities: Vector[dag.IdentitySpec] => A, undefined: A) =
+        undefined
     }
   }
 
@@ -1131,10 +1129,8 @@ trait DAG extends Instructions {
     }
 
     //grouping node (e.g. foo where foo.a = 'b)
-    case class SplitGroup(
-        id: Int,
-        identities: Identities,
-        parentId: Identifier)(val loc: Line)
+    case class SplitGroup(id: Int, identities: Identities, parentId: Identifier)(
+        val loc: Line)
         extends DepGraph {
       def valueKeys = Set.empty
 

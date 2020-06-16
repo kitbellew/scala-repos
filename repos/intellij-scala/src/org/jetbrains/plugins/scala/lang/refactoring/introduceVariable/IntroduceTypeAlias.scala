@@ -265,8 +265,7 @@ trait IntroduceTypeAlias {
         val currentScope = currentDataObject.currentScope
 
         //need open modal dialog in inplace mode
-        if ((StartMarkAction.canStart(
-            project) != null) && (currentScope != null)) {
+        if ((StartMarkAction.canStart(project) != null) && (currentScope != null)) {
           currentDataObject.isCallModalDialogInProgress = true
           val templateState: TemplateState =
             TemplateManagerImpl.getTemplateState(
@@ -317,9 +316,8 @@ trait IntroduceTypeAlias {
       typeElement: ScTypeElement,
       typeName: String,
       occurrences: OccurrenceData,
-      scope: ScopeItem): (
-      SmartPsiElementPointer[PsiElement],
-      SmartPsiElementPointer[PsiElement]) = {
+      scope: ScopeItem)
+      : (SmartPsiElementPointer[PsiElement], SmartPsiElementPointer[PsiElement]) = {
     def addTypeAliasDefinition(
         typeName: String,
         typeElement: ScTypeElement,
@@ -452,9 +450,8 @@ trait IntroduceTypeAlias {
       SmartPsiElementPointer[PsiElement],
       SmartPsiElementPointer[PsiElement])] = {
 
-    new Computable[(
-        SmartPsiElementPointer[PsiElement],
-        SmartPsiElementPointer[PsiElement])]() {
+    new Computable[
+      (SmartPsiElementPointer[PsiElement], SmartPsiElementPointer[PsiElement])]() {
       def compute() =
         runRefactoringForTypeInside(
           file,
@@ -488,9 +485,7 @@ trait IntroduceTypeAlias {
       occurrences: Array[ScTypeElement],
       name: String,
       typeAlias: ScTypeAlias) = {
-    def replaceHelper(
-        typeElement: ScTypeElement,
-        inName: String): ScTypeElement = {
+    def replaceHelper(typeElement: ScTypeElement, inName: String): ScTypeElement = {
       val replacement = ScalaPsiElementFactory.createTypeElementFromText(
         inName,
         typeElement.getContext,
@@ -683,8 +678,7 @@ trait IntroduceTypeAlias {
       if (occurrences.length > 1) {
         WindowManager.getInstance
           .getStatusBar(project)
-          .setInfo(
-            ScalaBundle.message("press.escape.to.remove.the.highlighting"))
+          .setInfo(ScalaBundle.message("press.escape.to.remove.the.highlighting"))
       }
     }
 

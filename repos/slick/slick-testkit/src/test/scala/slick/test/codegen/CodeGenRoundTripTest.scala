@@ -33,8 +33,7 @@ class CodeGeneratorRoundTripTest(val tdb: JdbcTestDB) extends DBTest {
           ),
           Categories += CategoriesRow(2, "cat"),
           Posts.length.result
-            .zip(
-              Posts.filter(_.title =!= "post 1").map(_.title).to[List].result)
+            .zip(Posts.filter(_.title =!= "post 1").map(_.title).to[List].result)
             .map(res => assertEquals((3, List("post 2", "post 3")), res)),
           sql"""select * from #${quoteIdentifier(
             "POSTS")} where #${quoteIdentifier("id")} = 2"""

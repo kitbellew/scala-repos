@@ -54,8 +54,8 @@ object ConsumerGroupCommand {
         "List all consumer groups, describe a consumer group, or delete consumer group info.")
 
     // should have exactly one action
-    val actions = Seq(opts.listOpt, opts.describeOpt, opts.deleteOpt).count(
-      opts.options.has _)
+    val actions =
+      Seq(opts.listOpt, opts.describeOpt, opts.deleteOpt).count(opts.options.has _)
     if (actions != 1)
       CommandLineUtils.printUsageAndDie(
         opts.parser,
@@ -434,21 +434,18 @@ object ConsumerGroupCommand {
           val topicPartitions = consumerSummary.assignment.map(tp =>
             TopicAndPartition(tp.topic, tp.partition))
           val partitionOffsets = topicPartitions.flatMap { topicPartition =>
-            Option(
-              consumer.committed(
-                new TopicPartition(
-                  topicPartition.topic,
-                  topicPartition.partition))).map { offsetAndMetadata =>
-              topicPartition -> offsetAndMetadata.offset
-            }
+            Option(consumer.committed(
+              new TopicPartition(topicPartition.topic, topicPartition.partition)))
+              .map { offsetAndMetadata =>
+                topicPartition -> offsetAndMetadata.offset
+              }
           }.toMap
           describeTopicPartition(
             group,
             topicPartitions,
             partitionOffsets.get,
             _ =>
-              Some(
-                s"${consumerSummary.clientId}_${consumerSummary.clientHost}"))
+              Some(s"${consumerSummary.clientId}_${consumerSummary.clientHost}"))
         }
       }
     }

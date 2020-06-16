@@ -70,8 +70,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
   // reset cache if plugin has been updated
   // cache: jarFilePath -> jarManifest
   private var jarCache: InjectorPersistentCache = null
-  private val loadedInjectors
-      : mutable.HashMap[Class[_], mutable.HashSet[String]] = mutable.HashMap()
+  private val loadedInjectors: mutable.HashMap[Class[_], mutable.HashSet[String]] =
+    mutable.HashMap()
 
   private val myLibraryTableListener = new LibraryTable.Listener {
 
@@ -162,8 +162,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       case e: Throwable =>
         LOG.warn(s"Failed to load injector cache, continuing with empty(${e.getMessage})")
         InjectorPersistentCache(
-          ScalaPluginVersionVerifier.getPluginVersion.getOrElse(
-            Version.Snapshot),
+          ScalaPluginVersionVerifier.getPluginVersion.getOrElse(Version.Snapshot),
           new util.HashMap())
     } finally {
       if (stream != null) stream.close()
@@ -260,8 +259,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
         None
     }
     checkedDescriptor.map(descriptor =>
-      manifest.copy(pluginDescriptors = Seq(descriptor))(
-        manifest.isBlackListed))
+      manifest.copy(pluginDescriptors = Seq(descriptor))(manifest.isBlackListed))
   }
 
   private def loadCachedInjectors() = {
@@ -290,8 +288,8 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       .flatMap(f => extractLibraryManifest(f))
       .filterNot(jarCache.cache.values().contains)
     val validManifests = parsedManifests.flatMap(verifyManifest)
-    val candidates = validManifests.map(manifest =>
-      manifest -> findMatchingInjectors(manifest))
+    val candidates =
+      validManifests.map(manifest => manifest -> findMatchingInjectors(manifest))
     LOG.trace(s"Found ${candidates.size} new jars with embedded extensions")
     if (candidates.nonEmpty)
       askUser(candidates)
@@ -304,8 +302,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       INJECTOR_MANIFEST_NAME,
       GlobalSearchScope.allScope(project))
     psiFiles.map(f =>
-      jarFS.getJarRootForLocalFile(
-        jarFS.getVirtualFileForJar(f.getVirtualFile)))
+      jarFS.getJarRootForLocalFile(jarFS.getVirtualFileForJar(f.getVirtualFile)))
   }
 
   private def isJarCacheUpToDate(manifest: JarManifest): Boolean = {
@@ -423,9 +420,7 @@ class LibraryInjectorLoader(val project: Project) extends ProjectComponent {
       candidates: ManifestToDescriptors): ManifestToDescriptors = {
     val (accepted, rejected) = ackProvider.showReviewDialogAndFilter(candidates)
     for ((manifest, _) <- rejected) {
-      jarCache.cache.put(
-        manifest.jarPath,
-        manifest.copy()(isBlackListed = true))
+      jarCache.cache.put(manifest.jarPath, manifest.copy()(isBlackListed = true))
     }
     accepted
   }

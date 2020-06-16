@@ -436,10 +436,7 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
           "I HATE BACON",
           Empty,
           Full(
-            Failure(
-              "MORE BACON FAIL",
-              Empty,
-              Full(Failure("BACON WHY U BACON")))))
+            Failure("MORE BACON FAIL", Empty, Full(Failure("BACON WHY U BACON")))))
 
       singleBox must beLike {
         case ParamFailure(_, _, chain, _) =>

@@ -143,13 +143,8 @@ object InfoSerializers {
         methods0
       }
 
-      val info = ClassInfo(
-        encodedName,
-        isExported,
-        kind,
-        superClass,
-        interfaces,
-        methods)
+      val info =
+        ClassInfo(encodedName, isExported, kind, superClass, interfaces, methods)
 
       (version, info)
     }

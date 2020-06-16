@@ -166,8 +166,7 @@ class RangeDirectivesSpec extends RoutingSpec with Inspectors with Inside {
 
     "reject a request with too many requested ranges" in {
       val ranges = (1 to 20).map(a ⇒ ByteRange.fromOffset(a))
-      Get() ~> addHeader(Range(ranges)) ~> completeWithRangedBytes(
-        100) ~> check {
+      Get() ~> addHeader(Range(ranges)) ~> completeWithRangedBytes(100) ~> check {
         rejection shouldEqual TooManyRangesRejection(10)
       }
     }

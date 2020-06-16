@@ -227,8 +227,7 @@ class ActorSelectionSpec
           Some(result))
         askNode(
           looker,
-          SelectString(
-            pathOf.path.elements.mkString("/", "/", "/"))) should ===(
+          SelectString(pathOf.path.elements.mkString("/", "/", "/"))) should ===(
           Some(result))
       }
       for {
@@ -239,8 +238,7 @@ class ActorSelectionSpec
 
     "select actors by their relative path" in {
       def check(looker: ActorRef, result: ActorRef, elems: String*) {
-        askNode(looker, SelectString(elems mkString "/")) should ===(
-          Some(result))
+        askNode(looker, SelectString(elems mkString "/")) should ===(Some(result))
         askNode(looker, SelectString(elems mkString ("", "/", "/"))) should ===(
           Some(result))
       }

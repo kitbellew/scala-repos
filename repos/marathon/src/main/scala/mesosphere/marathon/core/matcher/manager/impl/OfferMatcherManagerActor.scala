@@ -107,8 +107,8 @@ private[impl] class OfferMatcherManagerActor private (
 
   private[this] var matchers: Set[OfferMatcher] = Set.empty
 
-  private[this] var offerQueues
-      : Map[OfferID, OfferMatcherManagerActor.OfferData] = Map.empty
+  private[this] var offerQueues: Map[OfferID, OfferMatcherManagerActor.OfferData] =
+    Map.empty
 
   override def receive: Receive =
     LoggingReceive {
@@ -252,9 +252,8 @@ private[impl] class OfferMatcherManagerActor private (
         case Some(data) =>
           val resend = data.resendThisOffer | resendOffer
           val nextData = processAddedTasks(
-            data.copy(
-              matchPasses = data.matchPasses + 1,
-              resendThisOffer = resend))
+            data
+              .copy(matchPasses = data.matchPasses + 1, resendThisOffer = resend))
           scheduleNextMatcherOrFinish(nextData)
 
         case None =>
@@ -299,10 +298,7 @@ private[impl] class OfferMatcherManagerActor private (
           .recover {
             case NonFatal(e) =>
               log.warning("Received error from {}", e)
-              MatchedTaskOps(
-                data.offer.getId,
-                Seq.empty,
-                resendThisOffer = true)
+              MatchedTaskOps(data.offer.getId, Seq.empty, resendThisOffer = true)
           }
           .pipeTo(self)
       case None => sendMatchResult(data, data.resendThisOffer)

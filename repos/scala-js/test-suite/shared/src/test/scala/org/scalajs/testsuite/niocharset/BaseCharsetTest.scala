@@ -92,9 +92,7 @@ class BaseCharsetTest(val charset: Charset) {
           assertEquals(expectedEx.getInputLength(), actualEx.getInputLength())
 
         case (Success(actualChars), Success(expectedChars)) =>
-          assertArrayEquals(
-            expectedChars.map(_.toInt),
-            actualChars.map(_.toInt))
+          assertArrayEquals(expectedChars.map(_.toInt), actualChars.map(_.toInt))
 
         case _ =>
           // For the error message

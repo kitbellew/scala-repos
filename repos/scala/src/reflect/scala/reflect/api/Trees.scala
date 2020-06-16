@@ -1976,8 +1976,7 @@ trait Trees { self: Universe =>
     */
   abstract class SelectFromTypeTreeExtractor {
     def apply(qualifier: Tree, name: TypeName): SelectFromTypeTree
-    def unapply(
-        selectFromTypeTree: SelectFromTypeTree): Option[(Tree, TypeName)]
+    def unapply(selectFromTypeTree: SelectFromTypeTree): Option[(Tree, TypeName)]
   }
 
   /** The API that all selects from type trees support
@@ -2124,8 +2123,8 @@ trait Trees { self: Universe =>
     */
   abstract class ExistentialTypeTreeExtractor {
     def apply(tpt: Tree, whereClauses: List[MemberDef]): ExistentialTypeTree
-    def unapply(existentialTypeTree: ExistentialTypeTree)
-        : Option[(Tree, List[MemberDef])]
+    def unapply(
+        existentialTypeTree: ExistentialTypeTree): Option[(Tree, List[MemberDef])]
   }
 
   /** The API that all existential type trees support

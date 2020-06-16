@@ -221,9 +221,8 @@ class CSRFAction(
   /**
     * Does a very simple multipart/form-data parse to find the token if it exists.
     */
-  private def extractTokenFromMultipartFormDataBody(boundary: ByteString)(
-      body: ByteString,
-      tokenName: String): Option[String] = {
+  private def extractTokenFromMultipartFormDataBody(
+      boundary: ByteString)(body: ByteString, tokenName: String): Option[String] = {
     val crlf = ByteString("\r\n")
     val boundaryLine = ByteString("\r\n--") ++ boundary
 
@@ -295,8 +294,7 @@ class CSRFAction(
                   None
                 } else {
                   // Extract the token value
-                  Some(
-                    prefixedBody.slice(startOfPartData, endOfData).utf8String)
+                  Some(prefixedBody.slice(startOfPartData, endOfData).utf8String)
                 }
               case _ =>
                 // Find the next part
@@ -449,8 +447,7 @@ object CSRFAction {
           val newTokenValue = tokenSigner
             .extractSignedToken(token.value)
             .map(tokenSigner.signToken)
-          newTokenValue.fold(newReq)(
-            newReq.withTag(Token.ReSignedRequestTag, _))
+          newTokenValue.fold(newReq)(newReq.withTag(Token.ReSignedRequestTag, _))
         } else {
           newReq
         }
@@ -475,15 +472,11 @@ object CSRFAction {
     ))
   }
 
-  private[csrf] def tagRequest[A](
-      request: Request[A],
-      token: Token): Request[A] = {
+  private[csrf] def tagRequest[A](request: Request[A], token: Token): Request[A] = {
     Request(tagRequest(request: RequestHeader, token), request.body)
   }
 
-  private[csrf] def getHeaderToken(
-      request: RequestHeader,
-      config: CSRFConfig) = {
+  private[csrf] def getHeaderToken(request: RequestHeader, config: CSRFConfig) = {
     val queryStringToken = request.getQueryString(config.tokenName)
     val headerToken = request.headers.get(config.headerName)
 
@@ -575,9 +568,7 @@ object CSRFAction {
   *
   * Apply this to all actions that require a CSRF check.
   */
-case class CSRFCheck @Inject() (
-    config: CSRFConfig,
-    tokenSigner: CSRFTokenSigner) {
+case class CSRFCheck @Inject() (config: CSRFConfig, tokenSigner: CSRFTokenSigner) {
 
   private class CSRFCheckAction[A](
       tokenProvider: TokenProvider,

@@ -64,9 +64,8 @@ class GitRepositoryServlet extends GitServlet with SystemSettingsService {
 class GitBucketRepositoryResolver(parent: FileResolver[HttpServletRequest])
     extends RepositoryResolver[HttpServletRequest] {
 
-  private val resolver = new FileResolver[HttpServletRequest](
-    new File(Directory.GitBucketHome),
-    true)
+  private val resolver =
+    new FileResolver[HttpServletRequest](new File(Directory.GitBucketHome), true)
 
   override def open(req: HttpServletRequest, name: String): Repository = {
     // Rewrite repository path if routing is marched
@@ -153,13 +152,10 @@ class CommitLogHook(
       commands.asScala.foreach { command =>
         // call pre-commit hook
         PluginRegistry().getReceiveHooks
-          .flatMap(
-            _.preReceive(owner, repository, receivePack, command, pusher))
+          .flatMap(_.preReceive(owner, repository, receivePack, command, pusher))
           .headOption
           .foreach { error =>
-            command.setResult(
-              ReceiveCommand.Result.REJECTED_OTHER_REASON,
-              error)
+            command.setResult(ReceiveCommand.Result.REJECTED_OTHER_REASON, error)
           }
       }
       using(Git.open(Directory.getRepositoryDir(owner, repository))) { git =>
@@ -214,8 +210,7 @@ class CommitLogHook(
           // Extract new commit and apply issue comment
           val defaultBranch = repositoryInfo.repository.defaultBranch
           val newCommits = commits.flatMap { commit =>
-            if (!existIds.contains(commit.id) && !pushedIds.contains(
-                commit.id)) {
+            if (!existIds.contains(commit.id) && !pushedIds.contains(commit.id)) {
               if (issueCount > 0) {
                 pushedIds.add(commit.id)
                 createIssueComment(owner, repository, commit)
@@ -237,11 +232,7 @@ class CommitLogHook(
           if (refName(1) == "heads") {
             command.getType match {
               case ReceiveCommand.Type.CREATE =>
-                recordCreateBranchActivity(
-                  owner,
-                  repository,
-                  pusher,
-                  branchName)
+                recordCreateBranchActivity(owner, repository, pusher, branchName)
               case ReceiveCommand.Type.UPDATE =>
                 recordPushActivity(
                   owner,
@@ -250,11 +241,7 @@ class CommitLogHook(
                   branchName,
                   newCommits)
               case ReceiveCommand.Type.DELETE =>
-                recordDeleteBranchActivity(
-                  owner,
-                  repository,
-                  pusher,
-                  branchName)
+                recordDeleteBranchActivity(owner, repository, pusher, branchName)
               case _ =>
             }
           } else if (refName(1) == "tags") {

@@ -156,11 +156,7 @@ trait CompletionControl {
                         .slice(fun.pos.startOrCursor, fun.pos.endOrCursor)
                         .mkString
                   Some(
-                    ScopeContext(
-                      src,
-                      fun.pos.endOrCursor,
-                      prefix,
-                      constructing))
+                    ScopeContext(src, fun.pos.endOrCursor, prefix, constructing))
               }
             case Literal(Constant(_)) => None
             case New(name) =>

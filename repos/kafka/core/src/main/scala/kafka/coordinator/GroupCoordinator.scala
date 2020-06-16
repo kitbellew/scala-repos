@@ -143,8 +143,7 @@ class GroupCoordinator(
         if (memberId != JoinGroupRequest.UNKNOWN_MEMBER_ID) {
           responseCallback(joinError(memberId, Errors.UNKNOWN_MEMBER_ID.code))
         } else {
-          group =
-            groupManager.addGroup(new GroupMetadata(groupId, protocolType))
+          group = groupManager.addGroup(new GroupMetadata(groupId, protocolType))
           doJoinGroup(
             group,
             memberId,
@@ -343,9 +342,7 @@ class GroupCoordinator(
 
           case AwaitingSync =>
             group.get(memberId).awaitingSyncCallback = responseCallback
-            completeAndScheduleNextHeartbeatExpiration(
-              group,
-              group.get(memberId))
+            completeAndScheduleNextHeartbeatExpiration(group, group.get(memberId))
 
             // if this is the leader, then we can attempt to persist state and transition to stable
             if (memberId == group.leaderId) {
@@ -384,9 +381,7 @@ class GroupCoordinator(
             // if the group is stable, we just return the current assignment
             val memberMetadata = group.get(memberId)
             responseCallback(memberMetadata.assignment, Errors.NONE.code)
-            completeAndScheduleNextHeartbeatExpiration(
-              group,
-              group.get(memberId))
+            completeAndScheduleNextHeartbeatExpiration(group, group.get(memberId))
         }
       }
     }
@@ -617,9 +612,7 @@ class GroupCoordinator(
           for (member <- group.allMemberMetadata) {
             if (member.awaitingJoinCallback != null) {
               member.awaitingJoinCallback(
-                joinError(
-                  member.memberId,
-                  Errors.NOT_COORDINATOR_FOR_GROUP.code))
+                joinError(member.memberId, Errors.NOT_COORDINATOR_FOR_GROUP.code))
               member.awaitingJoinCallback = null
             }
           }

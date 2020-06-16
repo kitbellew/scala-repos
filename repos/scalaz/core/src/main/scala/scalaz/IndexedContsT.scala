@@ -63,8 +63,7 @@ final class IndexedContsT[W[_], M[_], R, O, A] private (
       M: Functor[M],
       W: Functor[W]): ContsT[W, M, Z, A] =
     IndexedContsT { wami =>
-      M.map(run(W.map(wami) { ami => { a => M.map(ami(a))(f from _) } }))(
-        f to _)
+      M.map(run(W.map(wami) { ami => { a => M.map(ami(a))(f from _) } }))(f to _)
     }
 }
 
@@ -94,8 +93,8 @@ trait IndexedContsTFunctions {
         IndexedContsT { wk => f(fa.run(W.map(wk) { k => { x => g(k(x)) } })) }
     }
 
-  def contracohoist[W[_], V[_], M[_], R, O](f: V ~> W)
-      : (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[V, M, R, O, ?]) =
+  def contracohoist[W[_], V[_], M[_], R, O](
+      f: V ~> W): (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[V, M, R, O, ?]) =
     new (IndexedContsT[W, M, R, O, ?] ~> IndexedContsT[V, M, R, O, ?]) {
       def apply[A](
           fa: IndexedContsT[W, M, R, O, A]): IndexedContsT[V, M, R, O, A] =

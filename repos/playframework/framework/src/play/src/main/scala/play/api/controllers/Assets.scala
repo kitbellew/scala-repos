@@ -151,9 +151,7 @@ private[controllers] object AssetInfo {
         }
       } catch {
         case e: IllegalArgumentException =>
-          Logger.debug(
-            s"An invalid date was received: couldn't parse: $date",
-            e)
+          Logger.debug(s"An invalid date was received: couldn't parse: $date", e)
           None
       }
     } else {

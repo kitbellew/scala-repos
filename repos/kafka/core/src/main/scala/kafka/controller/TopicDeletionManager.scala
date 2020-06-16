@@ -325,8 +325,7 @@ class TopicDeletionManager(
     partitionsToBeDeleted.retain(_.topic != topic)
     val zkUtils = controllerContext.zkUtils
     zkUtils.zkClient.deleteRecursive(getTopicPath(topic))
-    zkUtils.zkClient.deleteRecursive(
-      getEntityConfigPath(ConfigType.Topic, topic))
+    zkUtils.zkClient.deleteRecursive(getEntityConfigPath(ConfigType.Topic, topic))
     zkUtils.zkClient.delete(getDeleteTopicPath(topic))
     controllerContext.removeTopic(topic)
   }
@@ -475,8 +474,7 @@ class TopicDeletionManager(
 
         topicsQueuedForDeletion.foreach { topic =>
           // if all replicas are marked as deleted successfully, then topic deletion is done
-          if (controller.replicaStateMachine.areAllReplicasForTopicDeleted(
-              topic)) {
+          if (controller.replicaStateMachine.areAllReplicasForTopicDeleted(topic)) {
             // clear up all state for this topic from controller cache and zookeeper
             completeDeleteTopic(topic)
             info("Deletion of topic %s successfully completed".format(topic))

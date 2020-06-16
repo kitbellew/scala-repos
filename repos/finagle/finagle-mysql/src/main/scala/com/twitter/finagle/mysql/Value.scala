@@ -182,9 +182,7 @@ class TimestampValue(
     * MySQL binary protocol.
     * @param timeZone The timezone in which to interpret the timestamp.
     */
-  private[this] def fromBytes(
-      bytes: Array[Byte],
-      timeZone: TimeZone): Timestamp = {
+  private[this] def fromBytes(bytes: Array[Byte], timeZone: TimeZone): Timestamp = {
     if (bytes.isEmpty) {
       return Zero
     }

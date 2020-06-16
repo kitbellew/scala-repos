@@ -110,10 +110,7 @@ object CpuProfile {
     *   impact, so it seems nonfaithful to exlude them.
     *   - Limit stack depth?
     */
-  def record(
-      howlong: Duration,
-      frequency: Int,
-      state: Thread.State): CpuProfile = {
+  def record(howlong: Duration, frequency: Int, state: Thread.State): CpuProfile = {
     require(frequency < 1000)
 
     // TODO: it may make sense to write a custom hash function here

@@ -35,9 +35,8 @@ abstract class Duplicators extends Analyzer {
       newClassOwner = newThis
     } else resetClassOwners()
 
-    envSubstitution = new SubstSkolemsTypeMap(
-      env.keysIterator.toList,
-      env.valuesIterator.toList)
+    envSubstitution =
+      new SubstSkolemsTypeMap(env.keysIterator.toList, env.valuesIterator.toList)
     debuglog("retyped with env: " + env)
 
     newBodyDuplicator(context).typed(tree)
@@ -104,10 +103,7 @@ abstract class Duplicators extends Analyzer {
             val newsym = updateSym(sym)
             if (newsym ne sym) {
               debuglog("fixing " + sym + " -> " + newsym)
-              typeRef(
-                mapOver(pre),
-                newsym,
-                mapOverArgs(args, newsym.typeParams))
+              typeRef(mapOver(pre), newsym, mapOverArgs(args, newsym.typeParams))
             } else
               super.mapOver(tpe)
 

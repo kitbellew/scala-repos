@@ -81,9 +81,8 @@ class SbtCompletionContributor extends ScalaCompletionContributor {
               typeArgs.last match {
                 case ScParameterizedType(settingType, Seq(seqFullType))
                     if qualifiedName(settingType) == "sbt.Init.Setting" =>
-                  val collectionTypeNames = Seq(
-                    "scala.collection.Seq",
-                    "scala.collection.immutable.Set")
+                  val collectionTypeNames =
+                    Seq("scala.collection.Seq", "scala.collection.immutable.Set")
                   seqFullType match {
                     case ScParameterizedType(seqType, Seq(valType))
                         if collectionTypeNames contains qualifiedName(

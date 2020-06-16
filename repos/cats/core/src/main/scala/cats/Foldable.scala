@@ -40,8 +40,7 @@ import simulacrum.typeclass
     * For more detailed information about how this method works see the
     * documentation for `Eval[_]`.
     */
-  def foldRight[A, B](fa: F[A], lb: Eval[B])(
-      f: (A, Eval[B]) => Eval[B]): Eval[B]
+  def foldRight[A, B](fa: F[A], lb: Eval[B])(f: (A, Eval[B]) => Eval[B]): Eval[B]
 
   def reduceLeftToOption[A, B](fa: F[A])(f: A => B)(g: (B, A) => B): Option[B] =
     foldLeft(fa, Option.empty[B]) {

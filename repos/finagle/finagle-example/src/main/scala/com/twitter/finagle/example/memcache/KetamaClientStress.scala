@@ -93,9 +93,7 @@ object KetamaClientStress extends App {
 
     // the test keys/values
     val keyValueSet: Seq[(String, Buf)] = List.fill(config.numkeys()) {
-      (
-        randomString(config.keysize()),
-        Buf.Utf8(randomString(config.valuesize())))
+      (randomString(config.keysize()), Buf.Utf8(randomString(config.valuesize())))
     }
 
     def nextKeyValue: (String, Buf) =

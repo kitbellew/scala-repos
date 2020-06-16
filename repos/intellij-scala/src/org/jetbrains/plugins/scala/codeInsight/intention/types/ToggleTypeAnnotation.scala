@@ -117,8 +117,7 @@ object ToggleTypeAnnotation {
       }
     }
 
-    for (pattern <-
-        element.parentsInFile.findByType(classOf[ScBindingPattern])) {
+    for (pattern <- element.parentsInFile.findByType(classOf[ScBindingPattern])) {
       pattern match {
         case p: ScTypedPattern if p.typePattern.isDefined =>
           strategy.removeFromPattern(p)
@@ -129,8 +128,7 @@ object ToggleTypeAnnotation {
         case _ =>
       }
     }
-    for (pattern <-
-        element.parentsInFile.findByType(classOf[ScWildcardPattern])) {
+    for (pattern <- element.parentsInFile.findByType(classOf[ScWildcardPattern])) {
       strategy.addToWildcardPattern(pattern)
       return true
     }

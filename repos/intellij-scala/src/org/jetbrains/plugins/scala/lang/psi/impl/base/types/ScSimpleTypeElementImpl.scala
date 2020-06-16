@@ -101,10 +101,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
     ProgressManager.checkCanceled()
     val lift: (ScType) => Success[ScType] = Success(_, Some(this))
 
-    def parametrise(
-        tp: ScType,
-        clazz: PsiClass,
-        subst: ScSubstitutor): ScType = {
+    def parametrise(tp: ScType, clazz: PsiClass, subst: ScSubstitutor): ScType = {
       if (clazz.getTypeParameters.isEmpty) {
         tp
       } else {
@@ -226,9 +223,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                       case (tpClass: ScTypeParam, tpConstr: ScTypeParam) =>
                         (
                           (tpClass.name, ScalaPsiUtil.getPsiElementId(tpClass)),
-                          new ScTypeParameterType(
-                            tpConstr,
-                            ScSubstitutor.empty))
+                          new ScTypeParameterType(tpConstr, ScSubstitutor.empty))
                     }
                     .toMap,
                   Map.empty,
@@ -319,14 +314,7 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                   nonValueType = InferUtil.localTypeInference(
                     nonValueType.internalType,
                     Seq(
-                      new Parameter(
-                        "",
-                        None,
-                        expected,
-                        false,
-                        false,
-                        false,
-                        0)),
+                      new Parameter("", None, expected, false, false, false, 0)),
                     Seq(
                       new Expression(
                         InferUtil
@@ -480,10 +468,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
             val (tp, ss) = getContext match {
               case p: ScParameterizedTypeElement
                   if !to.isInstanceOf[ScTypeAliasDeclaration] =>
-                val (parameterized, ss) = updateForParameterized(
-                  subst,
-                  to.asInstanceOf[PsiNamedElement],
-                  p)
+                val (parameterized, ss) =
+                  updateForParameterized(subst, to.asInstanceOf[PsiNamedElement], p)
                 (Success(parameterized, Some(this)), ss)
               case _ =>
                 (
@@ -503,10 +489,8 @@ class ScSimpleTypeElementImpl(node: ASTNode)
             val (result, ss) = getContext match {
               case p: ScParameterizedTypeElement
                   if !to.isInstanceOf[ScTypeAliasDeclaration] =>
-                val (parameterized, ss) = updateForParameterized(
-                  subst,
-                  to.asInstanceOf[PsiNamedElement],
-                  p)
+                val (parameterized, ss) =
+                  updateForParameterized(subst, to.asInstanceOf[PsiNamedElement], p)
                 (Success(parameterized, Some(this)), ss)
               case _ =>
                 (
@@ -660,17 +644,13 @@ object ScSimpleTypeElementImpl {
                     superReference = false),
                   Some(ref))
               case _ =>
-                Failure(
-                  "Cannot find template for this reference",
-                  Some(thisRef))
+                Failure("Cannot find template for this reference", Some(thisRef))
             }
           case Some(superRef: ScSuperReference) =>
             val template = superRef.drvTemplate match {
               case Some(x) => x
               case None =>
-                return Failure(
-                  "Cannot find enclosing container",
-                  Some(superRef))
+                return Failure("Cannot find enclosing container", Some(superRef))
             }
             Success(
               ScProjectionType(

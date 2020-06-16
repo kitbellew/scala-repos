@@ -64,10 +64,7 @@ object LWWRegister {
   /**
     * Java API
     */
-  def create[A](
-      node: Cluster,
-      initialValue: A,
-      clock: Clock[A]): LWWRegister[A] =
+  def create[A](node: Cluster, initialValue: A, clock: Clock[A]): LWWRegister[A] =
     apply(initialValue)(node, clock)
 
   /**

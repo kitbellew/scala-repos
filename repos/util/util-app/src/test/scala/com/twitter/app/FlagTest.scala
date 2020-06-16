@@ -422,8 +422,7 @@ class FlagTest extends FunSuite {
     }
 
     assert(matchesGlobal(flagWithGlobal.formattedFlagValuesString(WithGlobal)))
-    assert(
-      matchesGlobal(flagWithoutGlobal.formattedFlagValuesString(WithGlobal)))
+    assert(matchesGlobal(flagWithoutGlobal.formattedFlagValuesString(WithGlobal)))
 
     assert(flagWithGlobal.formattedFlagValuesString(WithoutGlobal) == localOnly)
     assert(

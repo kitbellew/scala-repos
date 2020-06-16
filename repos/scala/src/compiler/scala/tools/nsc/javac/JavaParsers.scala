@@ -458,9 +458,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
       if (in.token == DOTDOTDOT) {
         in.nextToken()
         t = atPos(t.pos) {
-          AppliedTypeTree(
-            scalaDot(tpnme.JAVA_REPEATED_PARAM_CLASS_NAME),
-            List(t))
+          AppliedTypeTree(scalaDot(tpnme.JAVA_REPEATED_PARAM_CLASS_NAME), List(t))
         }
       }
       varDecl(
@@ -537,9 +535,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
                 val annot =
                   atPos(pos) {
                     New(
-                      Select(
-                        scalaDot(nme.runtime),
-                        tpnme.AnnotationDefaultATTR),
+                      Select(scalaDot(nme.runtime), tpnme.AnnotationDefaultATTR),
                       Nil)
                   }
                 mods1 = mods1 withAnnotations annot :: Nil
@@ -593,11 +589,7 @@ trait JavaParsers extends ast.parser.ParsersCommon with JavaScanners {
             buf += varDecl(in.currentPos, mods, tpt.duplicate, name.toTermName)
             maybe.clear()
           } else if (in.token == COMMA) { // ... if there's a comma after the ident, it could be a real vardef or not.
-            maybe += varDecl(
-              in.currentPos,
-              mods,
-              tpt.duplicate,
-              name.toTermName)
+            maybe += varDecl(in.currentPos, mods, tpt.duplicate, name.toTermName)
           } else { // ... if there's something else we were still in the initializer of the
             // previous var def; skip to next comma or semicolon.
             skipTo(COMMA, SEMI)

@@ -266,10 +266,6 @@ private[coordinator] class GroupMetadata(
   }
 
   override def toString = {
-    "[%s,%s,%s,%s]".format(
-      groupId,
-      protocolType,
-      currentState.toString,
-      members)
+    "[%s,%s,%s,%s]".format(groupId, protocolType, currentState.toString, members)
   }
 }

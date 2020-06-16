@@ -95,10 +95,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   test("as case class - reordered fields by name") {
     val ds = Seq((1, "a"), (2, "b"), (3, "c")).toDF("b", "a").as[ClassData]
     assert(
-      ds.collect() === Array(
-        ClassData("a", 1),
-        ClassData("b", 2),
-        ClassData("c", 3)))
+      ds.collect() === Array(ClassData("a", 1), ClassData("b", 2), ClassData("c", 3)))
   }
 
   test("as case class - take") {
@@ -155,9 +152,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   test("select 2") {
     val ds = Seq(("a", 1), ("b", 2), ("c", 3)).toDS()
     checkDataset(
-      ds.select(expr("_1").as[String], expr("_2").as[Int]): Dataset[(
-          String,
-          Int)],
+      ds.select(expr("_1").as[String], expr("_2").as[Int]): Dataset[(String, Int)],
       ("a", 1),
       ("b", 2),
       ("c", 3))
@@ -440,8 +435,7 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
     val ds2 = Seq(2 -> ClassData("c", 3), 3 -> ClassData("d", 4)).toDS()
     val cogrouped = ds1.groupByKey(_._1).cogroup(ds2.groupByKey(_._1)) {
       case (key, data1, data2) =>
-        Iterator(
-          key -> (data1.map(_._2.a).mkString + data2.map(_._2.a).mkString))
+        Iterator(key -> (data1.map(_._2.a).mkString + data2.map(_._2.a).mkString))
     }
 
     checkDataset(cogrouped, 1 -> "a", 2 -> "bc", 3 -> "d")

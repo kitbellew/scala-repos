@@ -54,8 +54,7 @@ class InlinerTest extends ClearAfterClass {
   def compile(
       scalaCode: String,
       javaCode: List[(String, String)] = Nil,
-      allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[ClassNode] = {
+      allowMessage: StoreReporter#Info => Boolean = _ => false): List[ClassNode] = {
     InlinerTest.notPerRun.foreach(_.clear())
     compileClasses(compiler)(scalaCode, javaCode, allowMessage)
     // Use the class nodes stored in the byteCodeRepository. The ones returned by compileClasses are not the same,
@@ -66,8 +65,7 @@ class InlinerTest extends ClearAfterClass {
 
   def checkCallsite(callsite: callGraph.Callsite, callee: MethodNode) = {
     assert(
-      callsite.callsiteMethod.instructions.contains(
-        callsite.callsiteInstruction),
+      callsite.callsiteMethod.instructions.contains(callsite.callsiteInstruction),
       instructionsFromMethod(callsite.callsiteMethod))
 
     val callsiteClassNode =
@@ -76,9 +74,7 @@ class InlinerTest extends ClearAfterClass {
       callsiteClassNode.methods.contains(callsite.callsiteMethod),
       callsiteClassNode.methods.asScala.map(_.name).toList)
 
-    assert(
-      callsite.callee.get.callee == callee,
-      callsite.callee.get.callee.name)
+    assert(callsite.callee.get.callee == callee, callsite.callee.get.callee.name)
   }
 
   def getCallsite(method: MethodNode, calleeName: String) =
@@ -302,8 +298,8 @@ class InlinerTest extends ClearAfterClass {
     ) // f is inlined into g, g invokes itself recursively
 
     assert(callGraph.callsites.size == 3, callGraph.callsites)
-    for (callsite <- callGraph.callsites.valuesIterator.flatMap(
-        _.valuesIterator) if methods.contains(callsite.callsiteMethod)) {
+    for (callsite <- callGraph.callsites.valuesIterator.flatMap(_.valuesIterator)
+      if methods.contains(callsite.callsiteMethod)) {
       checkCallsite(callsite, g)
     }
   }
@@ -333,8 +329,8 @@ class InlinerTest extends ClearAfterClass {
     assert(
       callGraph.callsites.valuesIterator.flatMap(_.valuesIterator).size == 7,
       callGraph.callsites)
-    for (callsite <- callGraph.callsites.valuesIterator.flatMap(
-        _.valuesIterator) if methods.contains(callsite.callsiteMethod)) {
+    for (callsite <- callGraph.callsites.valuesIterator.flatMap(_.valuesIterator)
+      if methods.contains(callsite.callsiteMethod)) {
       checkCallsite(callsite, g)
     }
   }
@@ -1131,8 +1127,7 @@ class InlinerTest extends ClearAfterClass {
     inliner.inline(
       InlineRequest(
         hCall,
-        post =
-          List(InlineRequest(gCall, post = List(InlineRequest(fCall, Nil))))))
+        post = List(InlineRequest(gCall, post = List(InlineRequest(fCall, Nil))))))
     assertNoInvoke(
       convertMethod(iMeth)
     ) // no invoke in i: first h is inlined, then the inlined call to g is also inlined, etc for f

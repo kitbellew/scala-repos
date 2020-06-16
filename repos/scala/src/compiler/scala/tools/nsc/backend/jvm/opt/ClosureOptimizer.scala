@@ -172,8 +172,8 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
     */
   private def closureCallsites(
       closureInit: ClosureInstantiation,
-      prodCons: => ProdConsAnalyzer): List[
-    Either[RewriteClosureApplyToClosureBodyFailed, (MethodInsnNode, Int)]] = {
+      prodCons: => ProdConsAnalyzer)
+      : List[Either[RewriteClosureApplyToClosureBodyFailed, (MethodInsnNode, Int)]] = {
     val ownerMethod = closureInit.ownerMethod
     val ownerClass = closureInit.ownerClass
     val lambdaBodyHandle = closureInit.lambdaMetaFactoryCall.implMethod

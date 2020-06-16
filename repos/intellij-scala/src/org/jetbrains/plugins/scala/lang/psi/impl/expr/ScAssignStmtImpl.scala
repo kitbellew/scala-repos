@@ -15,10 +15,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.{
 }
 import org.jetbrains.plugins.scala.lang.psi.types.Compatibility.Expression
 import org.jetbrains.plugins.scala.lang.psi.types.Unit
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.resolve.processor.MethodResolveProcessor
 import org.jetbrains.plugins.scala.lang.resolve.{ScalaResolveResult, StdKinds}
 import org.jetbrains.plugins.scala.macroAnnotations.{Cached, ModCount}

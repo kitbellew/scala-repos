@@ -53,8 +53,7 @@ class ReadHandleTest extends FunSuite {
     }
   }
 
-  test(
-    "ReadHandle.buffered should not synchronize on send when buffer is full") {
+  test("ReadHandle.buffered should not synchronize on send when buffer is full") {
     new BufferedReadHandle {
       0 until N foreach { _ =>
         assert((messages ! msg(0)).isDefined == true)

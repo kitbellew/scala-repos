@@ -170,10 +170,9 @@ object CanPadRight {
           "Cannot pad to zero or negative length!")
 
         val tempret = DenseMatrix.zeros[T](optDim.n1, optDim.n2)
-        cforRange2(
-          0 until min(optDim.n2, m.cols),
-          0 until min(optDim.n1, m.rows)) { (c, r) =>
-          tempret(r, c) = m(r, c)
+        cforRange2(0 until min(optDim.n2, m.cols), 0 until min(optDim.n1, m.rows)) {
+          (c, r) =>
+            tempret(r, c) = m(r, c)
         }
         tempret
       }

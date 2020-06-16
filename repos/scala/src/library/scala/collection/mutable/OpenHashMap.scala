@@ -226,8 +226,7 @@ class OpenHashMap[Key, Value](initialSize: Int)
 
   override def clone() = {
     val it = new OpenHashMap[Key, Value]
-    foreachUndeletedEntry(entry =>
-      it.put(entry.key, entry.hash, entry.value.get))
+    foreachUndeletedEntry(entry => it.put(entry.key, entry.hash, entry.value.get))
     it
   }
 

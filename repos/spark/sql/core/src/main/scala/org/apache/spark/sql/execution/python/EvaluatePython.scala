@@ -57,10 +57,7 @@ case class EvaluatePython(
 
 object EvaluatePython {
   def apply(udf: PythonUDF, child: LogicalPlan): EvaluatePython =
-    new EvaluatePython(
-      udf,
-      child,
-      AttributeReference("pythonUDF", udf.dataType)())
+    new EvaluatePython(udf, child, AttributeReference("pythonUDF", udf.dataType)())
 
   def takeAndServe(df: DataFrame, n: Int): Int = {
     registerPicklers()

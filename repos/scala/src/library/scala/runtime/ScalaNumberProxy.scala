@@ -67,10 +67,7 @@ trait IntegralProxy[T]
   def to(end: T, step: T): NumericRange.Inclusive[T] =
     NumericRange.inclusive(self, end, step)
 }
-trait FractionalProxy[T]
-    extends Any
-    with ScalaNumberProxy[T]
-    with RangedProxy[T] {
+trait FractionalProxy[T] extends Any with ScalaNumberProxy[T] with RangedProxy[T] {
   protected implicit def num: Fractional[T]
   protected implicit def integralNum: Integral[T]
 

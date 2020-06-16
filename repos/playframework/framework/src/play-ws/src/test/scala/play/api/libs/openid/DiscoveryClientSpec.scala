@@ -188,10 +188,7 @@ object DiscoveryClientSpec extends Specification with Mockito {
         new URL(
           redirectUrl).hostAndPath must be equalTo "https://www.google.com/a/example.com/o8/ud"
 
-        verifyValidOpenIDRequest(
-          parseQueryString(redirectUrl),
-          openId,
-          returnTo)
+        verifyValidOpenIDRequest(parseQueryString(redirectUrl), openId, returnTo)
       }
 
       "should redirect to identifier selection" in {
@@ -243,10 +240,7 @@ object DiscoveryClientSpec extends Specification with Mockito {
         new URL(
           redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server"
 
-        verifyValidOpenIDRequest(
-          parseQueryString(redirectUrl),
-          openId,
-          returnTo)
+        verifyValidOpenIDRequest(parseQueryString(redirectUrl), openId, returnTo)
       }
 
       // OpenID 1.1 compatibility - http://openid.net/specs/openid-authentication-2_0.html#anchor38
@@ -272,10 +266,7 @@ object DiscoveryClientSpec extends Specification with Mockito {
         new URL(
           redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server-1"
 
-        verifyValidOpenIDRequest(
-          parseQueryString(redirectUrl),
-          openId,
-          returnTo)
+        verifyValidOpenIDRequest(parseQueryString(redirectUrl), openId, returnTo)
       }
 
     }
@@ -299,10 +290,7 @@ object DiscoveryClientSpec extends Specification with Mockito {
         new URL(
           redirectUrl).hostAndPath must be equalTo "https://www.example.com/openidserver/openid.server"
 
-        verifyValidOpenIDRequest(
-          parseQueryString(redirectUrl),
-          openId,
-          returnTo)
+        verifyValidOpenIDRequest(parseQueryString(redirectUrl), openId, returnTo)
       }
 
       "when given a response that includes a local identifier (using openid2.local_id openid.delegate)" in {

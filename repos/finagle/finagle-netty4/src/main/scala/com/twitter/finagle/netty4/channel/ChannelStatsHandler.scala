@@ -77,10 +77,7 @@ private[netty4] class ChannelStatsHandler(statsReceiver: StatsReceiver)
     super.channelActive(ctx)
   }
 
-  override def write(
-      ctx: ChannelHandlerContext,
-      msg: Object,
-      p: ChannelPromise) {
+  override def write(ctx: ChannelHandlerContext, msg: Object, p: ChannelPromise) {
     val channelWriteCount = ctx.attr(ConnectionStatsKey).get.bytesWritten
 
     msg match {

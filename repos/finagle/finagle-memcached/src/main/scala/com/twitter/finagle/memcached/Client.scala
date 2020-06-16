@@ -212,8 +212,7 @@ trait BaseClient[T] {
       value: T,
       casUnique: Buf
   ): Future[JBoolean] =
-    checkAndSet(key, flags, expiry, value, casUnique).flatMap(
-      CasFromCheckAndSet)
+    checkAndSet(key, flags, expiry, value, casUnique).flatMap(CasFromCheckAndSet)
 
   /**
     * Perform a CAS operation on the key, only if the value has not
@@ -577,11 +576,7 @@ protected class ConnectedClient(
     }
   }
 
-  def add(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: Buf): Future[JBoolean] = {
+  def add(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] = {
     try {
       service(Add(key, flags, expiry, value)).flatMap {
         case Stored()    => JavaTrue
@@ -595,11 +590,7 @@ protected class ConnectedClient(
     }
   }
 
-  def append(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: Buf): Future[JBoolean] = {
+  def append(key: String, flags: Int, expiry: Time, value: Buf): Future[JBoolean] = {
     try {
       service(Append(key, flags, expiry, value)).flatMap {
         case Stored()    => JavaTrue

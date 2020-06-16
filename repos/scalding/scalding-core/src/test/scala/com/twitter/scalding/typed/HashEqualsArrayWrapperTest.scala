@@ -58,16 +58,13 @@ class HashArrayEqualsWrapperProps
   property("Specialized orderings obey all laws for Arrays") {
     check(HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.longArrayOrd))
     check(HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.intArrayOrd))
-    check(
-      HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.shortArrayOrd))
+    check(HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.shortArrayOrd))
     check(HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.charArrayOrd))
     check(HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.byteArrayOrd))
     check(
       HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.booleanArrayOrd))
-    check(
-      HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.floatArrayOrd))
-    check(
-      HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.doubleArrayOrd))
+    check(HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.floatArrayOrd))
+    check(HashArrayEqualsWrapperLaws.check(HashEqualsArrayWrapper.doubleArrayOrd))
   }
 
   property("Specialized orderings obey all laws for wrapped Arrays") {

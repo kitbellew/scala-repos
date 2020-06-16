@@ -178,8 +178,7 @@ class WebSocketClientSpec
 
       messagesIn.requestNext(BinaryMessage(ByteString("Response")))
     }
-    "client echoes scenario" in new EstablishedConnectionSetup
-      with ClientEchoes {
+    "client echoes scenario" in new EstablishedConnectionSetup with ClientEchoes {
       sendWSFrame(Protocol.Opcode.Text, ByteString("Message 1"), fin = true)
       expectMaskedFrameOnNetwork(
         Protocol.Opcode.Text,
@@ -213,8 +212,7 @@ class WebSocketClientSpec
       expectNetworkClose()
     }
     "support subprotocols" - {
-      "accept if server supports subprotocol" in new TestSetup
-        with ClientEchoes {
+      "accept if server supports subprotocol" in new TestSetup with ClientEchoes {
         override protected def requestedSubProtocol: Option[String] = Some("v2")
 
         expectWireData("""GET /ws HTTP/1.1

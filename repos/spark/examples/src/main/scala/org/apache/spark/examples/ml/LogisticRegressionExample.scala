@@ -76,8 +76,7 @@ object LogisticRegressionExample {
             s"L1 and L2, default: ${defaultParams.elasticNetParam}")
         .action((x, c) => c.copy(elasticNetParam = x))
       opt[Int]("maxIter")
-        .text(
-          s"maximum number of iterations, default: ${defaultParams.maxIter}")
+        .text(s"maximum number of iterations, default: ${defaultParams.maxIter}")
         .action((x, c) => c.copy(maxIter = x))
       opt[Boolean]("fitIntercept")
         .text(

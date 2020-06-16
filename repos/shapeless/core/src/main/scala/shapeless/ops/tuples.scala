@@ -853,12 +853,8 @@ object tuple {
 
     type Aux[T, Out0] = Transposer[T] { type Out = Out0 }
 
-    implicit def transpose[
-        T,
-        L1 <: HList,
-        L2 <: HList,
-        L3 <: HList,
-        L4 <: HList](implicit
+    implicit def transpose[T, L1 <: HList, L2 <: HList, L3 <: HList, L4 <: HList](
+        implicit
         gen: Generic.Aux[T, L1],
         mpe: hl.Mapper.Aux[productElements.type, L1, L2],
         tps: hl.Transposer.Aux[L2, L3],
@@ -1131,8 +1127,7 @@ object tuple {
         toArray: ToArray[T, Lub]): Aux[T, Lub, toArray.Out] = toArray
 
     implicit def toArray[T, Lub](implicit
-        toTraversable: ToTraversable.Aux[T, Array, Lub])
-        : Aux[T, Lub, Array[Lub]] =
+        toTraversable: ToTraversable.Aux[T, Array, Lub]): Aux[T, Lub, Array[Lub]] =
       new ToArray[T, Lub] {
         type Out = Array[Lub]
         def apply(t: T) = toTraversable(t)

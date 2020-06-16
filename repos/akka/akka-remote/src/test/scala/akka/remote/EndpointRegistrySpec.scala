@@ -73,8 +73,7 @@ class EndpointRegistrySpec extends AkkaSpec {
       reg.registerWritableEndpoint(address1, None, None, actorA)
       val deadline = Deadline.now
       reg.markAsFailed(actorA, deadline)
-      reg.writableEndpointWithPolicyFor(address1) should ===(
-        Some(Gated(deadline)))
+      reg.writableEndpointWithPolicyFor(address1) should ===(Some(Gated(deadline)))
       reg.isReadOnly(actorA) should ===(false)
       reg.isWritable(actorA) should ===(false)
     }
@@ -99,8 +98,7 @@ class EndpointRegistrySpec extends AkkaSpec {
       reg.unregisterEndpoint(actorA)
       reg.unregisterEndpoint(actorB)
 
-      reg.writableEndpointWithPolicyFor(address1) should ===(
-        Some(Gated(deadline)))
+      reg.writableEndpointWithPolicyFor(address1) should ===(Some(Gated(deadline)))
       reg.writableEndpointWithPolicyFor(address2) should ===(
         Some(Quarantined(42, deadline)))
 

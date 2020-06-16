@@ -40,8 +40,7 @@ private[streaming] class Job(val time: Time, func: () => _) {
 
   def result: Try[_] = {
     if (_result == null) {
-      throw new IllegalStateException(
-        "Cannot access result before job finishes")
+      throw new IllegalStateException("Cannot access result before job finishes")
     }
     _result
   }
@@ -69,8 +68,7 @@ private[streaming] class Job(val time: Time, func: () => _) {
 
   def setOutputOpId(outputOpId: Int) {
     if (isSet) {
-      throw new IllegalStateException(
-        "Cannot call setOutputOpId more than once")
+      throw new IllegalStateException("Cannot call setOutputOpId more than once")
     }
     isSet = true
     _id = s"streaming job $time.$outputOpId"

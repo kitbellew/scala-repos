@@ -252,10 +252,7 @@ object FSM {
     * Case class representing the state of the [[akka.actor.FSM]] within the
     * `onTermination` block.
     */
-  final case class StopEvent[S, D](
-      reason: Reason,
-      currentState: S,
-      stateData: D)
+  final case class StopEvent[S, D](reason: Reason, currentState: S, stateData: D)
       extends NoSerializationVerificationNeeded
 
 }
@@ -396,10 +393,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
     * @param stateData initial state data
     * @param timeout state timeout for the initial state, overriding the default timeout for that state
     */
-  final def startWith(
-      stateName: S,
-      stateData: D,
-      timeout: Timeout = None): Unit =
+  final def startWith(stateName: S, stateData: D, timeout: Timeout = None): Unit =
     currentState = FSM.State(stateName, stateData, timeout)
 
   /**
@@ -627,10 +621,7 @@ trait FSM[S, D] extends Actor with Listeners with ActorLogging {
   private val stateFunctions = mutable.Map[S, StateFunction]()
   private val stateTimeouts = mutable.Map[S, Timeout]()
 
-  private def register(
-      name: S,
-      function: StateFunction,
-      timeout: Timeout): Unit = {
+  private def register(name: S, function: StateFunction, timeout: Timeout): Unit = {
     if (stateFunctions contains name) {
       stateFunctions(name) = stateFunctions(name) orElse function
       stateTimeouts(name) = timeout orElse stateTimeouts(name)

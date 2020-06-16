@@ -58,10 +58,7 @@ class DistributionSuite extends SparkFunSuite {
       ClusteredDistribution(Seq('a, 'b, 'c)),
       true)
 
-    checkSatisfied(
-      SinglePartition,
-      ClusteredDistribution(Seq('a, 'b, 'c)),
-      true)
+    checkSatisfied(SinglePartition, ClusteredDistribution(Seq('a, 'b, 'c)), true)
 
     checkSatisfied(
       SinglePartition,

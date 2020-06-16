@@ -128,8 +128,7 @@ case class FakeRequest[A](
       play.api.http.HeaderNames.COOKIE ->
         Cookies.mergeCookieHeader(
           headers.get(play.api.http.HeaderNames.COOKIE).getOrElse(""),
-          Seq(
-            Session.encodeAsCookie(new Session(session.data ++ newSessions)))))
+          Seq(Session.encodeAsCookie(new Session(session.data ++ newSessions)))))
   }
 
   /**
@@ -206,9 +205,7 @@ object FakeRequest {
   /**
     * Constructs a new request.
     */
-  def apply(
-      method: String,
-      path: String): FakeRequest[AnyContentAsEmpty.type] = {
+  def apply(method: String, path: String): FakeRequest[AnyContentAsEmpty.type] = {
     FakeRequest(method, path, FakeHeaders(), AnyContentAsEmpty)
   }
 

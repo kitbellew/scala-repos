@@ -39,8 +39,8 @@ class Producer[K, V](
     extends Logging {
 
   private val hasShutdown = new AtomicBoolean(false)
-  private val queue = new LinkedBlockingQueue[KeyedMessage[K, V]](
-    config.queueBufferingMaxMessages)
+  private val queue =
+    new LinkedBlockingQueue[KeyedMessage[K, V]](config.queueBufferingMaxMessages)
 
   private var sync: Boolean = true
   private var producerSendThread: ProducerSendThread[K, V] = null

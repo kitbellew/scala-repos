@@ -120,8 +120,7 @@ trait ConstructorAnnotator {
             if (fun.getTextRange.getStartOffset > constr.getTextRange.getStartOffset) {
               val annotation = holder.createErrorAnnotation(
                 self,
-                ScalaBundle.message(
-                  "called.constructor.definition.must.precede"))
+                ScalaBundle.message("called.constructor.definition.must.precede"))
               annotation.setHighlightType(
                 ProblemHighlightType.GENERIC_ERROR_OR_WARNING)
             }

@@ -859,9 +859,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     /*
      * must-single-thread
      */
-    def emitAnnotations(
-        cw: asm.ClassVisitor,
-        annotations: List[AnnotationInfo]) {
+    def emitAnnotations(cw: asm.ClassVisitor, annotations: List[AnnotationInfo]) {
       for (annot <- annotations; if shouldEmitAnnotation(annot)) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
@@ -873,9 +871,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     /*
      * must-single-thread
      */
-    def emitAnnotations(
-        mw: asm.MethodVisitor,
-        annotations: List[AnnotationInfo]) {
+    def emitAnnotations(mw: asm.MethodVisitor, annotations: List[AnnotationInfo]) {
       for (annot <- annotations; if shouldEmitAnnotation(annot)) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
@@ -887,9 +883,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     /*
      * must-single-thread
      */
-    def emitAnnotations(
-        fw: asm.FieldVisitor,
-        annotations: List[AnnotationInfo]) {
+    def emitAnnotations(fw: asm.FieldVisitor, annotations: List[AnnotationInfo]) {
       for (annot <- annotations; if shouldEmitAnnotation(annot)) {
         val AnnotationInfo(typ, args, assocs) = annot
         assert(args.isEmpty, args)
@@ -961,10 +955,7 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       getGenericSignature(sym, owner, memberTpe)
     }
 
-    def getGenericSignature(
-        sym: Symbol,
-        owner: Symbol,
-        memberTpe: Type): String = {
+    def getGenericSignature(sym: Symbol, owner: Symbol, memberTpe: Type): String = {
       if (!needsGenericSignature(sym)) { return null }
 
       val jsOpt: Option[String] = erasure.javaSig(sym, memberTpe)

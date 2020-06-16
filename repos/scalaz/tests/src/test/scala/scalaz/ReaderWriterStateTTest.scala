@@ -18,8 +18,7 @@ object ReaderWriterStateTTest extends SpecLite {
     ))
   implicit val RWSOptIntIntArb = Arbitrary(
     Gen.oneOf[RWSOptInt[Int => Int]](
-      Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
-        None)),
+      Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) => None)),
       Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
         Some((0, x => 0, 0)))),
       Gen.const(RWST[Option, Int, Int, Int, Int => Int]((r: Int, s: Int) =>
@@ -44,9 +43,8 @@ object ReaderWriterStateTTest extends SpecLite {
       .map(ii =>
         ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
           Trampoline.done(("", i, ii))))
-      .foldLeft(
-        ReaderWriterStateT[Trampoline, Unit, String, Int, Int]((_, i: Int) =>
-          Trampoline.done(("", i, i))))((a, b) => a.flatMap(_ => b))
+      .foldLeft(ReaderWriterStateT[Trampoline, Unit, String, Int, Int](
+        (_, i: Int) => Trampoline.done(("", i, i))))((a, b) => a.flatMap(_ => b))
     10000 must_=== result.run((), 0).run._3
   }
 

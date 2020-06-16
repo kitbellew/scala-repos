@@ -160,10 +160,7 @@ class PipelineSuite
   test("PipelineModel read/write: getStagePath") {
     val stageUid = "myStage"
     val stagesDir = new Path("pipeline", "stages").toString
-    def testStage(
-        stageIdx: Int,
-        numStages: Int,
-        expectedPrefix: String): Unit = {
+    def testStage(stageIdx: Int, numStages: Int, expectedPrefix: String): Unit = {
       val path =
         SharedReadWrite.getStagePath(stageUid, stageIdx, numStages, stagesDir)
       val expected =

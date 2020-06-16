@@ -63,9 +63,7 @@ trait PerfTestSuite extends Logging {
           Tree.node(Group(name), Stream[Tree[PerfTest]](t))
 
         case kids =>
-          Tree.node(
-            Group(name),
-            Stream(Tree.node(RunSequential, kids.toStream)))
+          Tree.node(Group(name), Stream(Tree.node(RunSequential, kids.toStream)))
       }
   }
 

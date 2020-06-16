@@ -536,9 +536,7 @@ class IntegerTest {
      */
     assertEquals("17777777777", Integer.toString(2147483647, 8))
     assertEquals("7fffffff", Integer.toString(2147483647, 16))
-    assertEquals(
-      "1111111111111111111111111111111",
-      Integer.toString(2147483647, 2))
+    assertEquals("1111111111111111111111111111111", Integer.toString(2147483647, 2))
     assertEquals("2147483647", Integer.toString(2147483647, 10))
     assertEquals("-17777777777", Integer.toString(-2147483647, 8))
     assertEquals("-7fffffff", Integer.toString(-2147483647, 16))

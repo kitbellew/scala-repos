@@ -84,10 +84,7 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
         val document =
           PsiDocumentManager.getInstance(file.getProject).getDocument(file)
 
-        def atPosition(
-            e: PsiElement,
-            line: Int,
-            column: Option[Int]): Boolean = {
+        def atPosition(e: PsiElement, line: Int, column: Option[Int]): Boolean = {
           val correctLine = if (line > 0) line - 1 else 0
           val sameLine = correctLine == document.getLineNumber(e.getTextOffset)
           column match {
@@ -98,9 +95,7 @@ class ScalastyleCodeInspection extends LocalInspectionTool {
           }
         }
 
-        def findPsiElement(
-            line: Int,
-            column: Option[Int]): Option[PsiElement] = {
+        def findPsiElement(line: Int, column: Option[Int]): Option[PsiElement] = {
           (for {
             element <- scalaFile.depthFirst
             if element != scalaFile && atPosition(element, line, column)

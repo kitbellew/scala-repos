@@ -317,9 +317,7 @@ object ScopeSuggester {
     val fileEncloser =
       if (packageObject.isDefined)
         PsiTreeUtil.getChildOfType(
-          PsiTreeUtil.getChildOfType(
-            packageObject.get,
-            classOf[ScExtendsBlock]),
+          PsiTreeUtil.getChildOfType(packageObject.get, classOf[ScExtendsBlock]),
           classOf[ScTemplateBody])
       else
         containinDirectory

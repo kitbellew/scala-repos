@@ -9,12 +9,7 @@ import mesosphere.marathon.integration.facades.{
   ITDeploymentResult,
   MarathonFacade
 }
-import mesosphere.marathon.state.{
-  DockerVolume,
-  AppDefinition,
-  Container,
-  PathId
-}
+import mesosphere.marathon.state.{DockerVolume, AppDefinition, Container, PathId}
 import org.apache.commons.io.FileUtils
 import org.apache.mesos.Protos
 import org.apache.zookeeper.{WatchedEvent, Watcher, ZooKeeper}

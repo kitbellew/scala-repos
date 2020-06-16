@@ -53,8 +53,7 @@ object TypeConstruction {
   // get simple parts of type if type is array or parametrized
   def getParts(
       scType: ScType,
-      buffer: ArrayBuffer[(IntermediateNode, Option[String])])
-      : IntermediateNode = {
+      buffer: ArrayBuffer[(IntermediateNode, Option[String])]): IntermediateNode = {
     scType match {
       case p @ ScParameterizedType(des, args) =>
         val typeConstruction: IntermediateNode = TypeConstruction(

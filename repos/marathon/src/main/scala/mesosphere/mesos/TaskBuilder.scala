@@ -274,8 +274,7 @@ class TaskBuilder(
               }
             )
         }
-        builder.mergeFrom(
-          ContainerSerializer.toMesos(containerWithPortMappings))
+        builder.mergeFrom(ContainerSerializer.toMesos(containerWithPortMappings))
       }
 
       // Set NetworkInfo if necessary

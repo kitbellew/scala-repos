@@ -436,8 +436,7 @@ private[spark] class BlockManager(
     val startTimeMs = System.currentTimeMillis
     val locations = master.getLocations(blockIds).toArray
     logDebug(
-      "Got multiple block location in %s".format(
-        Utils.getUsedTimeMs(startTimeMs)))
+      "Got multiple block location in %s".format(Utils.getUsedTimeMs(startTimeMs)))
     locations
   }
 
@@ -598,11 +597,7 @@ private[spark] class BlockManager(
       val data =
         try {
           blockTransferService
-            .fetchBlockSync(
-              loc.host,
-              loc.port,
-              loc.executorId,
-              blockId.toString)
+            .fetchBlockSync(loc.host, loc.port, loc.executorId, blockId.toString)
             .nioByteBuffer()
         } catch {
           case NonFatal(e) =>
@@ -1234,8 +1229,9 @@ private[spark] class BlockManager(
       s"Replicating $blockId of ${data.size} bytes to " +
         s"${peersReplicatedTo.size} peer(s) took $timeTakeMs ms")
     if (peersReplicatedTo.size < numPeersToReplicateTo) {
-      logWarning(s"Block $blockId replicated to only " +
-        s"${peersReplicatedTo.size} peer(s) instead of $numPeersToReplicateTo peers")
+      logWarning(
+        s"Block $blockId replicated to only " +
+          s"${peersReplicatedTo.size} peer(s) instead of $numPeersToReplicateTo peers")
     }
   }
 
@@ -1433,9 +1429,7 @@ private[spark] class BlockManager(
     * Deserializes a ByteBuffer into an iterator of values and disposes of it when the end of
     * the iterator is reached.
     */
-  def dataDeserialize(
-      blockId: BlockId,
-      bytes: ChunkedByteBuffer): Iterator[Any] = {
+  def dataDeserialize(blockId: BlockId, bytes: ChunkedByteBuffer): Iterator[Any] = {
     dataDeserializeStream(blockId, bytes.toInputStream(dispose = true))
   }
 

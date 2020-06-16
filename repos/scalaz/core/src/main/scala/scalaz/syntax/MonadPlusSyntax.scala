@@ -49,9 +49,7 @@ trait ToMonadPlusOps
   ////
 }
 
-trait MonadPlusSyntax[F[_]]
-    extends MonadSyntax[F]
-    with ApplicativePlusSyntax[F] {
+trait MonadPlusSyntax[F[_]] extends MonadSyntax[F] with ApplicativePlusSyntax[F] {
   implicit def ToMonadPlusOps[A](v: F[A]): MonadPlusOps[F, A] =
     new MonadPlusOps[F, A](v)(MonadPlusSyntax.this.F)
 

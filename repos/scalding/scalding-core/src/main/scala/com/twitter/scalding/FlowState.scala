@@ -75,8 +75,7 @@ object FlowStateMap {
     if (!flowDef.getSources.isEmpty) {
       get(flowDef)
         .getOrElse(
-          sys.error(
-            "Could not find a flowState for flowDef: %s".format(flowDef)))
+          sys.error("Could not find a flowState for flowDef: %s".format(flowDef)))
         .validateSources(mode)
     } else ()
 }

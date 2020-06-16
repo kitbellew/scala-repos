@@ -150,8 +150,7 @@ class SecurityTask(settings: Settings)
       listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
         contain(g))
       addToGrant(apiKey2, apiKey1, grantId).complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
-        g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(g)
     }
 
     "remove a grant from an api key" in {
@@ -165,8 +164,7 @@ class SecurityTask(settings: Settings)
       listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
         contain(g))
       addToGrant(apiKey2, apiKey1, grantId).complete()
-      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(
-        g)
+      listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must contain(g)
       removeGrant(apiKey2, apiKey1, grantId).complete()
       listGrantsFor(apiKey2, authApiKey = apiKey1).jvalue.children must not(
         contain(g))

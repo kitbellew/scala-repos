@@ -65,10 +65,8 @@ object TypeClass {
   lazy val isEmpty = TypeClass("IsEmpty", *->*, extendsList = Seq(plusEmpty))
   lazy val optional = TypeClass("Optional", *->*)
 
-  lazy val applicativePlus = TypeClass(
-    "ApplicativePlus",
-    *->*,
-    extendsList = Seq(applicative, plusEmpty))
+  lazy val applicativePlus =
+    TypeClass("ApplicativePlus", *->*, extendsList = Seq(applicative, plusEmpty))
   lazy val monadPlus =
     TypeClass("MonadPlus", *->*, extendsList = Seq(monad, applicativePlus))
 
@@ -210,16 +208,11 @@ object FileStatus {
 object GenTypeClass {
   val useDependentMethodTypes = true
 
-  case class SourceFile(
-      packages: Seq[String],
-      fileName: String,
-      source: String) {
+  case class SourceFile(packages: Seq[String], fileName: String, source: String) {
     def file(scalaSource: File): File =
       packages.foldLeft(scalaSource)((file, p) => file / p) / fileName
 
-    def createOrUpdate(
-        scalaSource: File,
-        log: Logger): (FileStatus, sbt.File) = {
+    def createOrUpdate(scalaSource: File, log: Logger): (FileStatus, sbt.File) = {
       val f = file(scalaSource)
       val (status, updatedSource) = if (f.exists()) {
         val old = IO.read(f)
@@ -262,9 +255,7 @@ object GenTypeClass {
     }
   }
 
-  case class TypeClassSource(
-      mainFile: SourceFile,
-      syntaxFile: Option[SourceFile]) {
+  case class TypeClassSource(mainFile: SourceFile, syntaxFile: Option[SourceFile]) {
     def sources: List[SourceFile] = mainFile :: syntaxFile.toList
   }
 

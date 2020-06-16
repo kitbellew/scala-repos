@@ -1050,9 +1050,7 @@ package play.api.mvc {
       * @param cookies the new cookies to encode
       * @return a valid Set-Cookie header value
       */
-    def mergeSetCookieHeader(
-        cookieHeader: String,
-        cookies: Seq[Cookie]): String = {
+    def mergeSetCookieHeader(cookieHeader: String, cookies: Seq[Cookie]): String = {
       val tupledCookies = (decodeSetCookieHeader(cookieHeader) ++ cookies).map {
         c =>
           // See rfc6265#section-4.1.2

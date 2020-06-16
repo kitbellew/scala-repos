@@ -35,11 +35,7 @@ object ExpiringService {
     * Creates a [[com.twitter.finagle.Stackable]] [[com.twitter.finagle.service.ExpiringService]].
     */
   private[finagle] def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =
-    new Stack.Module3[
-      Param,
-      param.Timer,
-      param.Stats,
-      ServiceFactory[Req, Rep]] {
+    new Stack.Module3[Param, param.Timer, param.Stats, ServiceFactory[Req, Rep]] {
       val role = ExpiringService.role
       val description = "Expire a service after a certain amount of idle time"
       def make(

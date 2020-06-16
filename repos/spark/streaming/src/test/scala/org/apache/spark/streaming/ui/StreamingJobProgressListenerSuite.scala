@@ -76,8 +76,7 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
     // onBatchSubmitted
     val batchInfoSubmitted =
       BatchInfo(Time(1000), streamIdToInputInfo, 1000, None, None, Map.empty)
-    listener.onBatchSubmitted(
-      StreamingListenerBatchSubmitted(batchInfoSubmitted))
+    listener.onBatchSubmitted(StreamingListenerBatchSubmitted(batchInfoSubmitted))
     listener.waitingBatches should be(List(BatchUIData(batchInfoSubmitted)))
     listener.runningBatches should be(Nil)
     listener.retainedCompletedBatches should be(Nil)
@@ -149,8 +148,7 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
         Some(2000),
         None,
         Map.empty)
-    listener.onBatchCompleted(
-      StreamingListenerBatchCompleted(batchInfoCompleted))
+    listener.onBatchCompleted(StreamingListenerBatchCompleted(batchInfoCompleted))
     listener.waitingBatches should be(Nil)
     listener.runningBatches should be(Nil)
     listener.retainedCompletedBatches should be(
@@ -245,17 +243,14 @@ class StreamingJobProgressListenerSuite extends TestSuiteBase with Matchers {
         None,
         None,
         Map.empty)
-    listener.onBatchSubmitted(
-      StreamingListenerBatchSubmitted(batchInfoSubmitted))
+    listener.onBatchSubmitted(StreamingListenerBatchSubmitted(batchInfoSubmitted))
 
     // We still can see the info retrieved from onJobStart
     val batchUIData = listener.getBatchUIData(Time(1000 + limit * 100))
     batchUIData should not be None
     batchUIData.get.batchTime should be(batchInfoSubmitted.batchTime)
-    batchUIData.get.schedulingDelay should be(
-      batchInfoSubmitted.schedulingDelay)
-    batchUIData.get.processingDelay should be(
-      batchInfoSubmitted.processingDelay)
+    batchUIData.get.schedulingDelay should be(batchInfoSubmitted.schedulingDelay)
+    batchUIData.get.processingDelay should be(batchInfoSubmitted.processingDelay)
     batchUIData.get.totalDelay should be(batchInfoSubmitted.totalDelay)
     batchUIData.get.streamIdToInputInfo should be(Map.empty)
     batchUIData.get.numRecords should be(0)

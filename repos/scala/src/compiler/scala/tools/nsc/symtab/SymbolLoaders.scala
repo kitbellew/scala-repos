@@ -64,10 +64,7 @@ abstract class SymbolLoaders {
   /** Enter class with given `name` into scope of `root`
     *  and give them `completer` as type.
     */
-  def enterClass(
-      owner: Symbol,
-      name: String,
-      completer: SymbolLoader): Symbol = {
+  def enterClass(owner: Symbol, name: String, completer: SymbolLoader): Symbol = {
     val clazz = owner.newClass(newTypeName(name))
     clazz setInfo completer
     enterIfNew(owner, clazz, completer)
@@ -390,8 +387,7 @@ abstract class SymbolLoaders {
       // errors. More concretely, the classfile parser calls "sym.companionModule", which calls
       // "isModuleNotMethod" on the companion. After refchecks, this method forces the info, which
       // may run the classfile parser. This produces the error.
-      enteringPhase(phaseBeforeRefchecks)(
-        classfileParser.parse(classfile, root))
+      enteringPhase(phaseBeforeRefchecks)(classfileParser.parse(classfile, root))
 
       if (root.associatedFile eq NoAbstractFile) {
         root match {

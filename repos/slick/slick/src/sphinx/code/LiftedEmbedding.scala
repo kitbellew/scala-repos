@@ -600,9 +600,7 @@ object LiftedEmbedding extends App {
       assert(
         Await.result(
           db.run(as.schema.create >> insertAction >> q2.result),
-          Duration.Inf) == Vector(
-          Pair(3, Pair(42, "bb")),
-          Pair(2, Pair(42, "cc"))))
+          Duration.Inf) == Vector(Pair(3, Pair(42, "bb")), Pair(2, Pair(42, "cc"))))
 
       //#case-class-shape
       // two custom case class variants

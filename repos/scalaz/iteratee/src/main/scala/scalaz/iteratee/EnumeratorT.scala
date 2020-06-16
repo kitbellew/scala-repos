@@ -107,8 +107,7 @@ trait EnumeratorTInstances extends EnumeratorTInstances0 {
       implicit def M = M0
     }
 
-  implicit val enumeratorTMonadTrans
-      : MonadTrans[λ[(β[_], α) => EnumeratorT[α, β]]] =
+  implicit val enumeratorTMonadTrans: MonadTrans[λ[(β[_], α) => EnumeratorT[α, β]]] =
     new MonadTrans[λ[(β[_], α) => EnumeratorT[α, β]]] {
       def liftM[G[_]: Monad, E](ga: G[E]): EnumeratorT[E, G] =
         new EnumeratorT[E, G] {
@@ -288,8 +287,7 @@ object EnumeratorT extends EnumeratorTFunctions with EnumeratorTInstances
 // Type class implementation traits
 //
 
-private trait EnumeratorTSemigroup[E, F[_]]
-    extends Semigroup[EnumeratorT[E, F]] {
+private trait EnumeratorTSemigroup[E, F[_]] extends Semigroup[EnumeratorT[E, F]] {
   implicit def F: Bind[F]
 
   def append(f1: EnumeratorT[E, F], f2: => EnumeratorT[E, F]) =

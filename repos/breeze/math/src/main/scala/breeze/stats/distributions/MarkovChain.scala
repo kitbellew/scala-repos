@@ -140,12 +140,11 @@ object MarkovChain {
     /**
       * Tupleization of nearly-transition kernels to produce a transition kernel for tuples
       */
-    def promoteTuple[A, B, C, D](
-        k1: (A, B) => Rand[C],
-        k2: (C, B) => Rand[D]) = { (t: (A, B)) =>
-      for (c <- k1(t._1, t._2);
-        d <- k2(c, t._2))
-        yield (c, d);
+    def promoteTuple[A, B, C, D](k1: (A, B) => Rand[C], k2: (C, B) => Rand[D]) = {
+      (t: (A, B)) =>
+        for (c <- k1(t._1, t._2);
+          d <- k2(c, t._2))
+          yield (c, d);
     }
 
     /**
@@ -265,8 +264,7 @@ object MarkovChain {
             if (!valid(right))
               right = last;
             else
-              while (prop < logMeasure(right) && k > 0 && valid(
-                  right + WINDOW)) {
+              while (prop < logMeasure(right) && k > 0 && valid(right + WINDOW)) {
                 right = right + WINDOW;
                 k -= 1;
               }
@@ -320,10 +318,7 @@ object MarkovChain {
     * @param init guess
     * @return a slice sampler
     */
-  def slice(
-      init: Double,
-      logMeasure: Double => Double,
-      valid: Double => Boolean) = {
+  def slice(init: Double, logMeasure: Double => Double, valid: Double => Boolean) = {
     MarkovChain(init)(Kernels.slice(logMeasure, valid));
   }
 }

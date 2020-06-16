@@ -122,14 +122,7 @@ package object signal {
       padding: OptPadding = OptPadding.Zero,
       method: OptMethod = OptMethod.Automatic
   )(implicit canConvolve: CanConvolve[Input, KernelType, Output]): Output =
-    canConvolve(
-      data,
-      kernel,
-      range,
-      correlate = true,
-      overhang,
-      padding,
-      method)
+    canConvolve(data, kernel, range, correlate = true, overhang, padding, method)
 
   // </editor-fold>
 

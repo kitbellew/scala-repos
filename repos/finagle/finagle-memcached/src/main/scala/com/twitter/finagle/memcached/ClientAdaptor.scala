@@ -22,17 +22,9 @@ class ClientAdaptor[T](
       expiry: Time,
       value: T): Future[JBoolean] =
     self.append(key, flags, expiry, bijection.inverse(value))
-  def prepend(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: T): Future[JBoolean] =
+  def prepend(key: String, flags: Int, expiry: Time, value: T): Future[JBoolean] =
     self.prepend(key, flags, expiry, bijection.inverse(value))
-  def replace(
-      key: String,
-      flags: Int,
-      expiry: Time,
-      value: T): Future[JBoolean] =
+  def replace(key: String, flags: Int, expiry: Time, value: T): Future[JBoolean] =
     self.replace(key, flags, expiry, bijection.inverse(value))
   def checkAndSet(
       key: String,

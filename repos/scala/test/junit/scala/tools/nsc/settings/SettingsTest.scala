@@ -11,8 +11,7 @@ import scala.tools.testing.AssertUtil.assertThrows
 class SettingsTest {
   @Test def booleanSettingColon() {
     def check(args: String*): MutableSettings#BooleanSetting = {
-      val s = new MutableSettings(msg =>
-        throw new IllegalArgumentException(msg))
+      val s = new MutableSettings(msg => throw new IllegalArgumentException(msg))
       val b1 = new s.BooleanSetting("-Ytest-setting", "")
       s.allSettings += b1
       val (ok, residual) = s.processArguments(args.toList, processAll = true)
@@ -29,8 +28,7 @@ class SettingsTest {
 
   @Test def userSettingsHavePrecedenceOverExperimental() {
     def check(args: String*): MutableSettings#BooleanSetting = {
-      val s = new MutableSettings(msg =>
-        throw new IllegalArgumentException(msg))
+      val s = new MutableSettings(msg => throw new IllegalArgumentException(msg))
       val (ok, residual) = s.processArguments(args.toList, processAll = true)
       assert(residual.isEmpty)
       s.YmethodInfer // among -Xexperimental
@@ -55,8 +53,7 @@ class SettingsTest {
 
   @Test def anonymousLintersCanBeNamed() {
     assertTrue(check("-Xlint")(_.warnMissingInterpolator)) // among Xlint
-    assertFalse(
-      check("-Xlint:-missing-interpolator")(_.warnMissingInterpolator))
+    assertFalse(check("-Xlint:-missing-interpolator")(_.warnMissingInterpolator))
 
     // positive overrides negative, but not the other way around
     assertTrue(
@@ -87,11 +84,9 @@ class SettingsTest {
 
     // -Xlint is the same as -Xlint:_
     assertFalse(
-      check("-Xlint:-missing-interpolator", "-Xlint")(
-        _.warnMissingInterpolator))
+      check("-Xlint:-missing-interpolator", "-Xlint")(_.warnMissingInterpolator))
     assertFalse(
-      check("-Xlint", "-Xlint:-missing-interpolator")(
-        _.warnMissingInterpolator))
+      check("-Xlint", "-Xlint:-missing-interpolator")(_.warnMissingInterpolator))
 
     // combination of positive, negative and _
     assertTrue(
@@ -112,8 +107,7 @@ class SettingsTest {
   }
 
   @Test def xLintInvalidChoices(): Unit = {
-    assertThrows[IllegalArgumentException](
-      check("-Xlint:-_")(_.warnAdaptedArgs))
+    assertThrows[IllegalArgumentException](check("-Xlint:-_")(_.warnAdaptedArgs))
     assertThrows[IllegalArgumentException](
       check("-Xlint:-warn-adapted-args")(_.warnAdaptedArgs)
     ) // "warn-" should not be there
@@ -123,8 +117,7 @@ class SettingsTest {
     assertTrue(
       check("-Xlint", "adapted-args", "-deprecation")(_.warnAdaptedArgs))
     assertFalse(
-      check("-Xlint", "adapted-args", "-deprecation")(
-        _.warnMissingInterpolator))
+      check("-Xlint", "adapted-args", "-deprecation")(_.warnMissingInterpolator))
     assertTrue(
       check("-Xlint", "adapted-args", "missing-interpolator", "-deprecation")(
         s => s.warnMissingInterpolator && s.warnAdaptedArgs))
@@ -186,12 +179,8 @@ class SettingsTest {
       val ac = Choice("ac", expandsTo = List(a, c))
       val uber = Choice("uber", expandsTo = List(ab, d))
     }
-    val m = s.MultiChoiceSetting(
-      "-m",
-      "args",
-      "magic sauce",
-      mChoices,
-      Some(List("ac")))
+    val m =
+      s.MultiChoiceSetting("-m", "args", "magic sauce", mChoices, Some(List("ac")))
 
     def check(args: String*)(
         t: s.MultiChoiceSetting[mChoices.type] => Boolean): Boolean = {
@@ -236,8 +225,7 @@ class SettingsTest {
 
   @Test def xSourceTest(): Unit = {
     def check(expected: String, args: String*): Unit = {
-      val s = new MutableSettings(msg =>
-        throw new IllegalArgumentException(msg))
+      val s = new MutableSettings(msg => throw new IllegalArgumentException(msg))
       val (_, residual) = s.processArguments(args.toList, processAll = true)
       assert(residual.isEmpty)
       assertTrue(s.source.value == ScalaVersion(expected))

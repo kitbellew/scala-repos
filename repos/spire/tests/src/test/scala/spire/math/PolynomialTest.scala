@@ -278,8 +278,7 @@ class PolynomialTest extends FunSuite {
 
   test("polynomial construction") {
     val p = Polynomial(Array(Term(r"1/2", 0), Term(r"1/4", 2), Term(r"2", 1)))
-    assert(
-      p.terms.toSet === Set(Term(r"1/2", 0), Term(r"1/4", 2), Term(r"2", 1)))
+    assert(p.terms.toSet === Set(Term(r"1/2", 0), Term(r"1/4", 2), Term(r"2", 1)))
     assert(p === Polynomial("1/4x^2 + 2x + 1/2"))
     assert(p === Polynomial("1/4x² + 2x + 1/2"))
     assert(p === Polynomial("1/4x² + x + x + 1/2"))
@@ -321,8 +320,7 @@ class PolynomialTest extends FunSuite {
     val legSparse = SpecialPolynomials.legendres[Rational](4).toList
 
     assert(p1 + p2 === Polynomial("1/2x^2 + 5x + 1"))
-    assert(
-      legSparse(2) * legSparse(3) === Polynomial("15/4x^5 - 7/2x^3 + 3/4x"))
+    assert(legSparse(2) * legSparse(3) === Polynomial("15/4x^5 - 7/2x^3 + 3/4x"))
     assert(p1 % p2 === Polynomial("-x"))
     assert(p1 /~ p2 === Polynomial("1"))
 

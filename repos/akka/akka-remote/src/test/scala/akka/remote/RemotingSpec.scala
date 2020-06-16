@@ -6,10 +6,7 @@ package akka.remote
 import akka.actor._
 import akka.event.AddressTerminatedTopic
 import akka.pattern.ask
-import akka.remote.transport.AssociationHandle.{
-  HandleEventListener,
-  HandleEvent
-}
+import akka.remote.transport.AssociationHandle.{HandleEventListener, HandleEvent}
 import akka.remote.transport._
 import akka.remote.transport.Transport.InvalidAssociationException
 import akka.testkit._
@@ -203,9 +200,7 @@ class RemotingSpec
       system.eventStream.unsubscribe(
         eventForwarder,
         classOf[AssociationErrorEvent])
-      system.eventStream.unsubscribe(
-        eventForwarder,
-        classOf[DisassociatedEvent])
+      system.eventStream.unsubscribe(eventForwarder, classOf[DisassociatedEvent])
       eventForwarder ! PoisonPill
       bigBounceOther ! PoisonPill
     }
@@ -281,8 +276,7 @@ class RemotingSpec
         sys.actorOf(Props[Echo2], name = "echo")
       }
       val moreRefs = moreSystems map (sys ⇒
-        system.actorSelection(
-          RootActorPath(addr(sys, "tcp")) / "user" / "echo"))
+        system.actorSelection(RootActorPath(addr(sys, "tcp")) / "user" / "echo"))
       val aliveEcho = system.actorSelection(
         RootActorPath(addr(remoteSystem, "tcp")) / "user" / "echo")
       val n = 100
@@ -632,8 +626,8 @@ class RemotingSpec
       try {
         val otherGuy = otherSystem.actorOf(Props[Echo2], "other-guy")
         // check that we use the specified transport address instead of the default
-        val otherGuyRemoteTcp = otherGuy.path.toSerializationFormatWithAddress(
-          addr(otherSystem, "tcp"))
+        val otherGuyRemoteTcp =
+          otherGuy.path.toSerializationFormatWithAddress(addr(otherSystem, "tcp"))
         val remoteEchoHereTcp = system.actorFor(
           s"akka.tcp://remote-sys@localhost:${port(remoteSystem, "tcp")}/user/echo")
         val proxyTcp = system.actorOf(

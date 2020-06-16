@@ -78,8 +78,7 @@ object ValidationExample extends Specification {
 
     "fail if lists contains invalid ranges" in {
       val r = fromJSON[List[Range]](json)
-      r mustEqual Failure(
-        NonEmptyList(UncategorizedError("asc", "11 > 8", Nil)))
+      r mustEqual Failure(NonEmptyList(UncategorizedError("asc", "11 > 8", Nil)))
     }
 
     "optionally return only valid ranges" in {

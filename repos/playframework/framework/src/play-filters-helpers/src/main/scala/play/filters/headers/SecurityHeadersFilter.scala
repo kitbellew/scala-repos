@@ -114,8 +114,7 @@ object SecurityHeadersConfig {
       contentTypeOptions = config.get[Option[String]]("contentTypeOptions"),
       permittedCrossDomainPolicies =
         config.get[Option[String]]("permittedCrossDomainPolicies"),
-      contentSecurityPolicy =
-        config.get[Option[String]]("contentSecurityPolicy")
+      contentSecurityPolicy = config.get[Option[String]]("contentSecurityPolicy")
     )
   }
 }

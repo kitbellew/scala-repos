@@ -38,8 +38,8 @@ case class ParallelDataSource(val dsp: DataSourceParams)
       RDD[LabeledPoint],
       Vector,
       Double] {
-  override def read(sc: SparkContext)
-      : Seq[(Integer, RDD[LabeledPoint], RDD[(Vector, Double)])] = {
+  override def read(
+      sc: SparkContext): Seq[(Integer, RDD[LabeledPoint], RDD[(Vector, Double)])] = {
     val input = sc.textFile(dsp.filepath)
     val points = input.map { line =>
       val parts = line.split(' ').map(_.toDouble)
@@ -51,10 +51,7 @@ case class ParallelDataSource(val dsp: DataSourceParams)
       .zipWithIndex
       .map {
         case (dataSet, index) =>
-          (
-            Int.box(index),
-            dataSet._1,
-            dataSet._2.map(p => (p.features, p.label)))
+          (Int.box(index), dataSet._1, dataSet._2.map(p => (p.features, p.label)))
       }
   }
 }

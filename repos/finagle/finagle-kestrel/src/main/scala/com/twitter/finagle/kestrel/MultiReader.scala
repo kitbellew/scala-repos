@@ -555,8 +555,7 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
     val event = config.va.changes map {
       case Addr.Bound(addrs, _) => {
         (currentHandles.keySet &~ addrs) foreach { addr =>
-          logger.info(
-            s"Host ${addr} left for reading queue ${config.queueName}")
+          logger.info(s"Host ${addr} left for reading queue ${config.queueName}")
         }
         val newHandles = (addrs &~ currentHandles.keySet) map { addr =>
           val factory = baseClientBuilder
@@ -577,8 +576,9 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
               factory.close()
           }
 
-          logger.info(s"Host ${addr} joined for reading ${config.queueName} " +
-            s"(handle = ${_root_.java.lang.System.identityHashCode(handle)}).")
+          logger.info(
+            s"Host ${addr} joined for reading ${config.queueName} " +
+              s"(handle = ${_root_.java.lang.System.identityHashCode(handle)}).")
 
           (addr, handle)
         }
@@ -614,12 +614,7 @@ abstract class MultiReaderBuilderMemcacheBase[Builder] private[kestrel] (
     config: MultiReaderConfig[Command, Response])
     extends MultiReaderBuilder[Command, Response, Builder](config) {
   type MemcacheClientBuilder =
-    ClientBuilder[
-      Command,
-      Response,
-      Nothing,
-      ClientConfig.Yes,
-      ClientConfig.Yes]
+    ClientBuilder[Command, Response, Nothing, ClientConfig.Yes, ClientConfig.Yes]
 
   protected[kestrel] def defaultClientBuilder: MemcacheClientBuilder =
     ClientBuilder()

@@ -84,15 +84,13 @@ class PartitionBatchPruningSuite
   checkBatchPruning("SELECT key FROM pruningData WHERE key = 1", 1, 1)(Seq(1))
   checkBatchPruning("SELECT key FROM pruningData WHERE 1 = key", 1, 1)(Seq(1))
   checkBatchPruning("SELECT key FROM pruningData WHERE key < 12", 1, 2)(1 to 11)
-  checkBatchPruning("SELECT key FROM pruningData WHERE key <= 11", 1, 2)(
-    1 to 11)
+  checkBatchPruning("SELECT key FROM pruningData WHERE key <= 11", 1, 2)(1 to 11)
   checkBatchPruning("SELECT key FROM pruningData WHERE key > 88", 1, 2)(
     89 to 100)
   checkBatchPruning("SELECT key FROM pruningData WHERE key >= 89", 1, 2)(
     89 to 100)
   checkBatchPruning("SELECT key FROM pruningData WHERE 12 > key", 1, 2)(1 to 11)
-  checkBatchPruning("SELECT key FROM pruningData WHERE 11 >= key", 1, 2)(
-    1 to 11)
+  checkBatchPruning("SELECT key FROM pruningData WHERE 11 >= key", 1, 2)(1 to 11)
   checkBatchPruning("SELECT key FROM pruningData WHERE 88 < key", 1, 2)(
     89 to 100)
   checkBatchPruning("SELECT key FROM pruningData WHERE 89 <= key", 1, 2)(
@@ -104,18 +102,13 @@ class PartitionBatchPruningSuite
   }
 
   // IS NOT NULL
-  checkBatchPruning(
-    "SELECT key FROM pruningData WHERE value IS NOT NULL",
-    5,
-    5) {
+  checkBatchPruning("SELECT key FROM pruningData WHERE value IS NOT NULL", 5, 5) {
     (11 to 20) ++ (31 to 40) ++ (51 to 60) ++ (71 to 80) ++ (91 to 100)
   }
 
   // Conjunction and disjunction
-  checkBatchPruning(
-    "SELECT key FROM pruningData WHERE key > 8 AND key <= 21",
-    2,
-    3)(9 to 21)
+  checkBatchPruning("SELECT key FROM pruningData WHERE key > 8 AND key <= 21", 2, 3)(
+    9 to 21)
   checkBatchPruning(
     "SELECT key FROM pruningData WHERE key < 2 OR key > 99",
     2,

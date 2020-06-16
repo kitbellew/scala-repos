@@ -86,9 +86,7 @@ class ScalaCompilingEvaluator(
         classLoader)
     } catch {
       case e: Exception =>
-        throw new EvaluateException(
-          "Error during classes definition:\n " + e,
-          e)
+        throw new EvaluateException("Error during classes definition:\n " + e, e)
     }
 
     try {

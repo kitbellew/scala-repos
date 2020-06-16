@@ -10,9 +10,7 @@ import org.joda.time.format.DateTimeFormat
 
 import lila.common.LightUser
 
-final class PgnDump(
-    netBaseUrl: String,
-    getLightUser: String => Option[LightUser]) {
+final class PgnDump(netBaseUrl: String, getLightUser: String => Option[LightUser]) {
 
   import PgnDump._
 

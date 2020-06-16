@@ -195,8 +195,8 @@ trait ApiControllerBase extends ControllerBase {
   /**
     * https://developer.github.com/v3/issues/comments/#create-a-comment
     */
-  post("/api/v3/repos/:owner/:repository/issues/:id/comments")(
-    readableUsersOnly { repository =>
+  post("/api/v3/repos/:owner/:repository/issues/:id/comments")(readableUsersOnly {
+    repository =>
       (for {
         issueId <- params("id").toIntOpt
         issue <- getIssue(repository.owner, repository.name, issueId.toString)
@@ -221,7 +221,7 @@ trait ApiControllerBase extends ControllerBase {
             ApiUser(context.loginAccount.get),
             issue.isPullRequest))
       }) getOrElse NotFound
-    })
+  })
 
   /**
     * List all labels for this repository
@@ -288,23 +288,16 @@ trait ApiControllerBase extends ControllerBase {
         LockUtil.lock(RepositoryName(repository).fullName) {
           getLabel(repository.owner, repository.name, params("labelName")).map {
             label =>
-              if (getLabel(
-                  repository.owner,
-                  repository.name,
-                  data.name).isEmpty) {
+              if (getLabel(repository.owner, repository.name, data.name).isEmpty) {
                 updateLabel(
                   repository.owner,
                   repository.name,
                   label.labelId,
                   data.name,
                   data.color)
-                JsonFormat(
-                  ApiLabel(
-                    getLabel(
-                      repository.owner,
-                      repository.name,
-                      label.labelId).get,
-                    RepositoryName(repository)))
+                JsonFormat(ApiLabel(
+                  getLabel(repository.owner, repository.name, label.labelId).get,
+                  RepositoryName(repository)))
               } else {
                 // TODO ApiError should support errors field to enhance compatibility of GitHub API
                 UnprocessableEntity(
@@ -321,8 +314,8 @@ trait ApiControllerBase extends ControllerBase {
     * Delete a label
     * https://developer.github.com/v3/issues/labels/#delete-a-label
     */
-  delete("/api/v3/repos/:owner/:repository/labels/:labelName")(
-    collaboratorsOnly { repository =>
+  delete("/api/v3/repos/:owner/:repository/labels/:labelName")(collaboratorsOnly {
+    repository =>
       LockUtil.lock(RepositoryName(repository).fullName) {
         getLabel(repository.owner, repository.name, params("labelName")).map {
           label =>
@@ -330,7 +323,7 @@ trait ApiControllerBase extends ControllerBase {
             NoContent()
         } getOrElse NotFound()
       }
-    })
+  })
 
   /**
     * https://developer.github.com/v3/pulls/#list-pull-requests
@@ -410,8 +403,7 @@ trait ApiControllerBase extends ControllerBase {
                     .call
                     .iterator
                     .asScala
-                    .map(c =>
-                      ApiCommitListItem(new CommitInfo(c), repoFullName))
+                    .map(c => ApiCommitListItem(new CommitInfo(c), repoFullName))
                     .toList
                   JsonFormat(commits)
               }
@@ -501,10 +493,7 @@ trait ApiControllerBase extends ControllerBase {
         val statuses =
           getCommitStatuesWithCreator(repository.owner, repository.name, sha)
         JsonFormat(
-          ApiCombinedCommitStatus(
-            sha,
-            statuses,
-            ApiRepository(repository, owner)))
+          ApiCombinedCommitStatus(sha, statuses, ApiRepository(repository, owner)))
       }) getOrElse NotFound
   })
 

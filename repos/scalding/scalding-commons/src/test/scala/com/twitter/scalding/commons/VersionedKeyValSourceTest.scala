@@ -70,8 +70,7 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
   "A TypedWriteIncrementalJob" should {
     JobTest(new TypedWriteIncrementalJob(_))
       .source(TypedTsv[Int]("input"), input)
-      .sink[(Int, Int)](
-        VersionedKeyValSource[Array[Byte], Array[Byte]]("output")) {
+      .sink[(Int, Int)](VersionedKeyValSource[Array[Byte], Array[Byte]]("output")) {
         outputBuffer: Buffer[(Int, Int)] =>
           "Outputs must be as expected" in {
             assert(outputBuffer.size === input.size)
@@ -90,8 +89,7 @@ class VersionedKeyValSourceTest extends WordSpec with Matchers {
   "A MoreComplexTypedWriteIncrementalJob" should {
     JobTest(new MoreComplexTypedWriteIncrementalJob(_))
       .source(TypedTsv[Int]("input"), input)
-      .sink[(Int, Int)](
-        VersionedKeyValSource[Array[Byte], Array[Byte]]("output")) {
+      .sink[(Int, Int)](VersionedKeyValSource[Array[Byte], Array[Byte]]("output")) {
         outputBuffer: Buffer[(Int, Int)] =>
           "Outputs must be as expected" in {
             assert(outputBuffer.size === input.size)

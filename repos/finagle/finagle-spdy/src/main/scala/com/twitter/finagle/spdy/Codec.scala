@@ -12,9 +12,7 @@ import org.jboss.netty.handler.codec.http.{HttpRequest, HttpResponse}
 import org.jboss.netty.handler.codec.spdy._
 
 class AnnotateSpdyStreamId extends SimpleFilter[HttpRequest, HttpResponse] {
-  def apply(
-      request: HttpRequest,
-      service: Service[HttpRequest, HttpResponse]) = {
+  def apply(request: HttpRequest, service: Service[HttpRequest, HttpResponse]) = {
     val streamId = request.headers.get(SpdyHttpHeaders.Names.STREAM_ID)
     service(request) map { response =>
       response.headers.set(SpdyHttpHeaders.Names.STREAM_ID, streamId)
@@ -26,9 +24,7 @@ class AnnotateSpdyStreamId extends SimpleFilter[HttpRequest, HttpResponse] {
 class GenerateSpdyStreamId extends SimpleFilter[HttpRequest, HttpResponse] {
   private[this] val currentStreamId = new AtomicInteger(1)
 
-  def apply(
-      request: HttpRequest,
-      service: Service[HttpRequest, HttpResponse]) = {
+  def apply(request: HttpRequest, service: Service[HttpRequest, HttpResponse]) = {
     SpdyHttpHeaders.setStreamId(request, currentStreamId.getAndAdd(2))
     service(request) map { response =>
       SpdyHttpHeaders.removeStreamId(response)

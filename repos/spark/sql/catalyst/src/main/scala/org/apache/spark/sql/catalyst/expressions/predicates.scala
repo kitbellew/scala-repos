@@ -395,8 +395,7 @@ private[sql] object Equality {
     }
 }
 
-case class EqualTo(left: Expression, right: Expression)
-    extends BinaryComparison {
+case class EqualTo(left: Expression, right: Expression) extends BinaryComparison {
 
   override def inputType: AbstractDataType = AnyDataType
 

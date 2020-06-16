@@ -106,9 +106,7 @@ package object time {
           isTime = true))
     def hourOfHalfday =
       cast(
-        getField(
-          DateTimeFieldType.hourOfHalfday.getField(chrono),
-          isTime = true))
+        getField(DateTimeFieldType.hourOfHalfday.getField(chrono), isTime = true))
     def clockhourOfHalfday =
       cast(
         getField(
@@ -116,12 +114,9 @@ package object time {
           isTime = true))
     def halfdayOfDay =
       cast(
-        getField(
-          DateTimeFieldType.halfdayOfDay.getField(chrono),
-          isTime = true))
+        getField(DateTimeFieldType.halfdayOfDay.getField(chrono), isTime = true))
     def hourOfDay =
-      cast(
-        getField(DateTimeFieldType.hourOfDay.getField(chrono), isTime = true))
+      cast(getField(DateTimeFieldType.hourOfDay.getField(chrono), isTime = true))
 
     def dayOfWeek = cast(getField(DateTimeFieldType.dayOfWeek.getField(chrono)))
     def dayOfMonth =

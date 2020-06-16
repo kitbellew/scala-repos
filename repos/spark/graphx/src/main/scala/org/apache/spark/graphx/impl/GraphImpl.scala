@@ -76,12 +76,11 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
   }
 
   override def getCheckpointFiles: Seq[String] = {
-    Seq(
-      vertices.getCheckpointFile,
-      replicatedVertexView.edges.getCheckpointFile).flatMap {
-      case Some(path) => Seq(path)
-      case None       => Seq()
-    }
+    Seq(vertices.getCheckpointFile, replicatedVertexView.edges.getCheckpointFile)
+      .flatMap {
+        case Some(path) => Seq(path)
+        case None       => Seq()
+      }
   }
 
   override def unpersist(blocking: Boolean = true): Graph[VD, ED] = {
@@ -132,9 +131,7 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
   }
 
   override def reverse: Graph[VD, ED] = {
-    new GraphImpl(
-      vertices.reverseRoutingTables(),
-      replicatedVertexView.reverse())
+    new GraphImpl(vertices.reverseRoutingTables(), replicatedVertexView.reverse())
   }
 
   override def mapVertices[VD2: ClassTag](f: (VertexId, VD) => VD2)(implicit
@@ -175,9 +172,7 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
       tripletFields.useDst)
     val newEdges = replicatedVertexView.edges.mapEdgePartitions { (pid, part) =>
       part.map(
-        f(
-          pid,
-          part.tripletIterator(tripletFields.useSrc, tripletFields.useDst)))
+        f(pid, part.tripletIterator(tripletFields.useSrc, tripletFields.useDst)))
     }
     new GraphImpl(vertices, replicatedVertexView.withEdges(newEdges))
   }
@@ -422,10 +417,7 @@ object GraphImpl {
     val edgesCached = edges.withTargetStorageLevel(edgeStorageLevel).cache()
     val vertices =
       VertexRDD
-        .fromEdges(
-          edgesCached,
-          edgesCached.partitions.length,
-          defaultVertexAttr)
+        .fromEdges(edgesCached, edgesCached.partitions.length, defaultVertexAttr)
         .withTargetStorageLevel(vertexStorageLevel)
     fromExistingRDDs(vertices, edgesCached)
   }

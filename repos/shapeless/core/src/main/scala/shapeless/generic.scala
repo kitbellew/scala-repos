@@ -469,8 +469,7 @@ trait CaseClassMacros extends ReprTypes {
         abort(s"Sealed trait $tpe has no case class subtypes")
       ctors
     } else
-      abort(
-        s"$tpe is not a case class, case class-like, a sealed trait or Unit")
+      abort(s"$tpe is not a case class, case class-like, a sealed trait or Unit")
   }
 
   def nameAsString(name: Name): String = name.decodedName.toString.trim
@@ -553,8 +552,8 @@ trait CaseClassMacros extends ReprTypes {
       case PolyType(params, body) if params.head.asType.toType =:= param =>
         appliedTypTree1(body, param, arg)
       case t @ TypeRef(pre, sym, List()) if t.takesTypeArgs =>
-        val argTrees = t.typeParams.map(sym =>
-          appliedTypTree1(sym.asType.toType, param, arg))
+        val argTrees =
+          t.typeParams.map(sym => appliedTypTree1(sym.asType.toType, param, arg))
         AppliedTypeTree(mkAttributedRef(pre, sym), argTrees)
       case TypeRef(pre, sym, List()) =>
         mkAttributedRef(pre, sym)
@@ -562,8 +561,8 @@ trait CaseClassMacros extends ReprTypes {
         val argTrees = args.map(appliedTypTree1(_, param, arg))
         AppliedTypeTree(mkAttributedRef(pre, sym), argTrees)
       case t if t.takesTypeArgs =>
-        val argTrees = t.typeParams.map(sym =>
-          appliedTypTree1(sym.asType.toType, param, arg))
+        val argTrees =
+          t.typeParams.map(sym => appliedTypTree1(sym.asType.toType, param, arg))
         AppliedTypeTree(mkAttributedRef(tpe.typeConstructor), argTrees)
       case t =>
         tq"$tpe"
@@ -917,9 +916,7 @@ trait CaseClassMacros extends ReprTypes {
         case Some(ctorSym) if !isNonGeneric(ctorSym) =>
           val ctorParamss = ctorSym.asMethod.infoIn(tpe).paramLists
           if (ctorParamss.length == 1)
-            alignFields(
-              tpe,
-              ctorParamss.head.map(param => unByName(param.info)))
+            alignFields(tpe, ctorParamss.head.map(param => unByName(param.info)))
           else None
         case _ => None
       }

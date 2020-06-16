@@ -141,9 +141,7 @@ trait TransSpecableModule[M[+_]]
         snd,
         some)
 
-    def findOrderAncestor(
-        to: DepGraph,
-        ctx: EvaluationContext): Option[DepGraph] =
+    def findOrderAncestor(to: DepGraph, ctx: EvaluationContext): Option[DepGraph] =
       mkTransSpecOrderWithState[Option, (TransSpec1, DepGraph)](
         to,
         None,
@@ -189,8 +187,7 @@ trait TransSpecableModule[M[+_]]
             leftMap(_)(trans.DerefMetadataStatic(_, CPathMeta(field))))
 
         def DerefArrayStatic(node: Join)(parent: N[S], index: Int) =
-          parent.flatMap(
-            leftMap(_)(trans.DerefArrayStatic(_, CPathIndex(index))))
+          parent.flatMap(leftMap(_)(trans.DerefArrayStatic(_, CPathIndex(index))))
 
         def ArraySwap(node: Join)(parent: N[S], index: Int) = {
           parent.flatMap(leftMap(_)(trans.ArraySwap(_, index)))
@@ -202,11 +199,8 @@ trait TransSpecableModule[M[+_]]
         def InnerArrayConcat(node: Join)(parent: N[S]) =
           parent.flatMap(leftMap(_)(trans.InnerArrayConcat(_)))
 
-        def Map1Left(node: Join)(
-            parent: N[S],
-            op: Op2F2,
-            graph: DepGraph,
-            value: RValue) =
+        def Map1Left(
+            node: Join)(parent: N[S], op: Op2F2, graph: DepGraph, value: RValue) =
           parent.flatMap(leftMap(_) { target =>
             value match {
               case cv: CValue =>
@@ -220,11 +214,8 @@ trait TransSpecableModule[M[+_]]
             }
           })
 
-        def Map1Right(node: Join)(
-            parent: N[S],
-            op: Op2F2,
-            graph: DepGraph,
-            value: RValue) =
+        def Map1Right(
+            node: Join)(parent: N[S], op: Op2F2, graph: DepGraph, value: RValue) =
           parent.flatMap(leftMap(_) { target =>
             value match {
               case cv: CValue =>

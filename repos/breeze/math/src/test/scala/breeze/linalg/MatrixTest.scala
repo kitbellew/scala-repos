@@ -30,9 +30,7 @@ class MatrixTest extends FunSuite with Checkers {
     val bd = DenseMatrix((7.0, -2.0, 8.0), (-3.0, -3.0, 1.0), (12.0, 0.0, 5.0))
     val c = DenseVector(6.0, 2.0, 3.0)
     assert(
-      (a * b: Matrix[Double]) === Matrix(
-        (37.0, -8.0, 25.0),
-        (85.0, -23.0, 67.0)))
+      (a * b: Matrix[Double]) === Matrix((37.0, -8.0, 25.0), (85.0, -23.0, 67.0)))
     assert(
       (ad * b: DenseMatrix[Double]) === DenseMatrix(
         (37.0, -8.0, 25.0),
@@ -105,15 +103,9 @@ class MatrixTest extends FunSuite with Checkers {
         (Complex(0, 74), Complex(0, -16), Complex(0, 50)),
         (Complex(0, 170), Complex(0, -46), Complex(0, 134))))
     assert(
-      b * c === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * c === DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
-      b * cs === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * cs === DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
 //    assert(b.t * c === DenseVector(Complex(72,-72), Complex(-18,18), Complex(65,-65)))
   }
 

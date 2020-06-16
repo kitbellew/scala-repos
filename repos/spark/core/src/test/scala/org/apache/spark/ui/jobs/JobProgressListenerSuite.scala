@@ -357,13 +357,7 @@ class JobProgressListenerSuite
 
     // Make sure we count success as success.
     listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        task.stageId,
-        1,
-        taskType,
-        Success,
-        taskInfo,
-        metrics))
+      SparkListenerTaskEnd(task.stageId, 1, taskType, Success, taskInfo, metrics))
     assert(listener.stageIdToData((task.stageId, 1)).numCompleteTasks === 1)
     assert(
       listener.stageIdToData((task.stageId, 0)).numFailedTasks === failCount)

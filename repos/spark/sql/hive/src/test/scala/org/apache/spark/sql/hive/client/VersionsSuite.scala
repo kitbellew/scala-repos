@@ -54,11 +54,8 @@ class VersionsSuite extends SparkFunSuite with Logging {
   private val ivyPath: Option[String] = {
     sys.env
       .get("SPARK_VERSIONS_SUITE_IVY_PATH")
-      .orElse(
-        Some(
-          new File(
-            sys.props("java.io.tmpdir"),
-            "hive-ivy-cache").getAbsolutePath))
+      .orElse(Some(
+        new File(sys.props("java.io.tmpdir"), "hive-ivy-cache").getAbsolutePath))
   }
 
   private def buildConf() = {

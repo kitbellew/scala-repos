@@ -52,10 +52,7 @@ object Multipart {
         .map { boundary =>
           val multipartFlow = Flow[ByteString]
             .transform(() =>
-              new BodyPartParser(
-                boundary,
-                maxMemoryBufferSize,
-                maxHeaderBuffer))
+              new BodyPartParser(boundary, maxMemoryBufferSize, maxHeaderBuffer))
             .splitWhen(_.isLeft)
             .prefixAndTail(1)
             .map {
@@ -316,9 +313,7 @@ object Multipart {
     private var state: ByteString ⇒ StateResult = tryParseInitialBoundary
     private var terminated = false
 
-    override def onPush(
-        input: ByteString,
-        ctx: Context[RawPart]): SyncDirective =
+    override def onPush(input: ByteString, ctx: Context[RawPart]): SyncDirective =
       if (!terminated) {
         state(input)
         if (output.nonEmpty) ctx.push(dequeue())
@@ -488,15 +483,11 @@ object Multipart {
           bufferExceeded("Memory buffer full on part " + partName)
         } else if (crlf(input, needleEnd)) {
           emit(
-            DataPart(
-              partName,
-              input.slice(partStart, currentPartEnd).utf8String))
+            DataPart(partName, input.slice(partStart, currentPartEnd).utf8String))
           parseHeader(input, needleEnd + 2, newMemoryBufferSize)
         } else if (doubleDash(input, needleEnd)) {
           emit(
-            DataPart(
-              partName,
-              input.slice(partStart, currentPartEnd).utf8String))
+            DataPart(partName, input.slice(partStart, currentPartEnd).utf8String))
           terminate()
         } else {
           fail("Unexpected boundary")

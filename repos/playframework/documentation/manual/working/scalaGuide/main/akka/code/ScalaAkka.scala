@@ -78,8 +78,7 @@ package scalaguide.akka {
         val futureConfig = for {
           child <-
             (actor ? actors.ParentActor.GetChild("my.config")).mapTo[ActorRef]
-          config <-
-            (child ? actors.ConfiguredChildActor.GetConfig).mapTo[String]
+          config <- (child ? actors.ConfiguredChildActor.GetConfig).mapTo[String]
         } yield config
         await(futureConfig) must_== "foo"
       }
@@ -225,8 +224,7 @@ package scalaguide.akka {
       case object GetConfig
     }
 
-    class ConfiguredActor @Inject() (configuration: Configuration)
-        extends Actor {
+    class ConfiguredActor @Inject() (configuration: Configuration) extends Actor {
       import ConfiguredActor._
 
       val config = configuration.getString("my.config").getOrElse("none")

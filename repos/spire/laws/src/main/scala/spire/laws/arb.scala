@@ -77,8 +77,7 @@ object arb {
   implicit def bound[A: Arbitrary]: Arbitrary[Bound[A]] =
     Arbitrary(gen.bound[A])
 
-  implicit def interval[A: Arbitrary: Order: AdditiveMonoid]
-      : Arbitrary[Interval[A]] =
+  implicit def interval[A: Arbitrary: Order: AdditiveMonoid]: Arbitrary[Interval[A]] =
     Arbitrary(gen.interval[A])
 
   implicit def freeMonoid[A: Arbitrary]: Arbitrary[FreeMonoid[A]] =

@@ -211,8 +211,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
             "File-text-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0") and
           (header("File-binary-Name") must_== "smiley.png") and
           (header("File-binary-Size") must_== "3432") and
-          (header(
-            "File-binary-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856")
+          (header("File-binary-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856")
       }
     }
 
@@ -224,8 +223,7 @@ class FileUploadSupportSpec extends MutableScalatraSpec {
             "File-files[]0-SHA") must_== "b3572a890c5005aed6409cf81d13fd19f6d004f0") and
           (header("File-files[]1-Name") must_== "smiley.png") and
           (header("File-files[]1-Size") must_== "3432") and
-          (header(
-            "File-files[]1-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856")
+          (header("File-files[]1-SHA") must_== "0e777b71581c631d056ee810b4550c5dcd9eb856")
       }
     }
 

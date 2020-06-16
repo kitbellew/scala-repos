@@ -22,9 +22,7 @@ class ScaladocConfiguration(
     Module.EMPTY_ARRAY
   }
 
-  def getState(
-      executor: Executor,
-      env: ExecutionEnvironment): RunProfileState = {
+  def getState(executor: Executor, env: ExecutionEnvironment): RunProfileState = {
     val state: ScaladocCommandLineState =
       new ScaladocCommandLineState(env, project)
     state.setAdditionalScaladocFlags(form.getAdditionalFlags)

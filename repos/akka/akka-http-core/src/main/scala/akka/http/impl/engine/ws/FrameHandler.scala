@@ -136,8 +136,9 @@ private[http] object FrameHandler {
         case Opcode.Other(o) ⇒
           closeWithCode(Protocol.CloseCodes.ProtocolError, "Unsupported opcode")
         case other ⇒
-          ctx.fail(new IllegalStateException(
-            s"unexpected message of type [${other.getClass.getName}] when expecting ControlFrame"))
+          ctx.fail(
+            new IllegalStateException(
+              s"unexpected message of type [${other.getClass.getName}] when expecting ControlFrame"))
       }
     }
     private def collectControlFrame(start: FrameStart, nextState: State)(
@@ -171,9 +172,7 @@ private[http] object FrameHandler {
     private object CloseAfterPeerClosed extends State {
       def onPush(elem: FrameEventOrError, ctx: Context[Output]): SyncDirective =
         elem match {
-          case FrameStart(
-                FrameHeader(Opcode.Close, _, length, _, _, _, _),
-                data) ⇒
+          case FrameStart(FrameHeader(Opcode.Close, _, length, _, _, _, _), data) ⇒
             become(WaitForPeerTcpClose)
             ctx.push(PeerClosed.parse(data))
           case _ ⇒ ctx.pull() // ignore all other data

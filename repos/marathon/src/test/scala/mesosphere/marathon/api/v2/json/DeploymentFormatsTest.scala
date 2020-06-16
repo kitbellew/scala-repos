@@ -45,8 +45,7 @@ class DeploymentFormatsTest extends MarathonSpec {
   test("Can write/read GroupUpdate") {
     marshalUnmarshal(genGroupUpdate())
     marshalUnmarshal(
-      genGroupUpdate(
-        Set(genGroupUpdate(), genGroupUpdate(Set(genGroupUpdate())))))
+      genGroupUpdate(Set(genGroupUpdate(), genGroupUpdate(Set(genGroupUpdate())))))
   }
 
   test("Will read from no given value") {
@@ -104,8 +103,7 @@ class DeploymentFormatsTest extends MarathonSpec {
     )
     val json = Json.toJson(plan)
     val fieldMap = json.as[JsObject].fields.toMap
-    fieldMap.keySet should be(
-      Set("version", "id", "target", "original", "steps"))
+    fieldMap.keySet should be(Set("version", "id", "target", "original", "steps"))
   }
 
   // regression test for #1176

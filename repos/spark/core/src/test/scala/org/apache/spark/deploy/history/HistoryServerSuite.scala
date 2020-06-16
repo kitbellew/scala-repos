@@ -67,8 +67,7 @@ class HistoryServerSuite
     with ResetSystemProperties {
 
   private val logDir = new File("src/test/resources/spark-events")
-  private val expRoot = new File(
-    "src/test/resources/HistoryServerExpectations/")
+  private val expRoot = new File("src/test/resources/HistoryServerExpectations/")
 
   private var provider: FsHistoryProvider = null
   private var server: HistoryServer = null
@@ -439,9 +438,7 @@ class HistoryServerSuite
     getNumJobs("") should be(1)
     getNumJobs("/jobs") should be(1)
     getNumJobsRestful() should be(1)
-    assert(
-      metrics.lookupCount.getCount > 1,
-      s"lookup count too low in $metrics")
+    assert(metrics.lookupCount.getCount > 1, s"lookup count too low in $metrics")
 
     // dump state before the next bit of test, which is where update
     // checking really gets stressed
@@ -460,8 +457,7 @@ class HistoryServerSuite
         s"jobs not updated, server=$server\n dir = ${listDir(logDirPath)}")
       assert(
         2 === getNumJobs("/jobs"),
-        s"job count under /jobs not updated, server=$server\n dir = ${listDir(
-          logDirPath)}")
+        s"job count under /jobs not updated, server=$server\n dir = ${listDir(logDirPath)}")
       getNumJobsRestful() should be(2)
     }
 

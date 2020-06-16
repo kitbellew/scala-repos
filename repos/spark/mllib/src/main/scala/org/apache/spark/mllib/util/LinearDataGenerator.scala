@@ -204,12 +204,7 @@ object LinearDataGenerator {
       sc.parallelize(0 until nparts, nparts).flatMap { p =>
         val seed = 42 + p
         val examplesInPartition = nexamples / nparts
-        generateLinearInput(
-          intercept,
-          w.toArray,
-          examplesInPartition,
-          seed,
-          eps)
+        generateLinearInput(intercept, w.toArray, examplesInPartition, seed, eps)
       }
     data
   }
@@ -218,8 +213,9 @@ object LinearDataGenerator {
   def main(args: Array[String]) {
     if (args.length < 2) {
       // scalastyle:off println
-      println("Usage: LinearDataGenerator " +
-        "<master> <output_dir> [num_examples] [num_features] [num_partitions]")
+      println(
+        "Usage: LinearDataGenerator " +
+          "<master> <output_dir> [num_examples] [num_features] [num_partitions]")
       // scalastyle:on println
       System.exit(1)
     }

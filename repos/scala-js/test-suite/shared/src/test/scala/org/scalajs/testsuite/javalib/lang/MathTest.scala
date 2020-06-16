@@ -25,14 +25,8 @@ class MathTest {
     assertTrue(Math.abs(-0.0).equals(0.0))
     assertEquals(42.0, Math.abs(42.0), 0.0)
     assertEquals(42.0, Math.abs(-42.0), 0.0)
-    assertEquals(
-      Double.PositiveInfinity,
-      Math.abs(Double.PositiveInfinity),
-      0.0)
-    assertEquals(
-      Double.PositiveInfinity,
-      Math.abs(Double.NegativeInfinity),
-      0.0)
+    assertEquals(Double.PositiveInfinity, Math.abs(Double.PositiveInfinity), 0.0)
+    assertEquals(Double.PositiveInfinity, Math.abs(Double.NegativeInfinity), 0.0)
     assertTrue(Math.abs(Double.NaN).isNaN)
     assertEquals(Long.MaxValue, Math.abs(Long.MaxValue))
     assertEquals(Long.MinValue, Math.abs(Long.MinValue))

@@ -121,9 +121,7 @@ class ScalaLibraryLoader(
       .getOrElse(ScalaLanguageLevel.Default)
 
     inWriteAction {
-      scalaSdkLib.convertToScalaSdkWith(
-        languageLevel,
-        scalaSdkJars.map(new File(_)))
+      scalaSdkLib.convertToScalaSdkWith(languageLevel, scalaSdkJars.map(new File(_)))
       module.attach(scalaSdkLib)
       addedLibraries += scalaSdkLib
     }
@@ -178,8 +176,7 @@ object ScalaLibraryLoader {
 
     val mockJdk = TestUtils.getDefaultJdk
     VfsRootAccess.allowRootAccess(mockJdk)
-    val javaSdk = Some(
-      JavaSdk.getInstance.createJdk("java sdk", mockJdk, false))
+    val javaSdk = Some(JavaSdk.getInstance.createJdk("java sdk", mockJdk, false))
     new ScalaLibraryLoader(
       project,
       module,

@@ -307,8 +307,7 @@ private[hive] class HadoopTableReader(
   private def createHadoopRdd(
       tableDesc: TableDesc,
       path: String,
-      inputFormatClass: Class[InputFormat[Writable, Writable]])
-      : RDD[Writable] = {
+      inputFormatClass: Class[InputFormat[Writable, Writable]]): RDD[Writable] = {
 
     val initializeJobConfFunc =
       HadoopTableReader.initializeLocalJobConfFunc(path, tableDesc) _

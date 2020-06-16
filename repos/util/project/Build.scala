@@ -65,12 +65,7 @@ object Util extends Build {
     scalacOptions := scalacOptionsVersion(scalaVersion.value),
     // Note: Use -Xlint rather than -Xlint:unchecked when TestThriftStructure
     // warnings are resolved
-    javacOptions ++= Seq(
-      "-Xlint:unchecked",
-      "-source",
-      "1.7",
-      "-target",
-      "1.7"),
+    javacOptions ++= Seq("-Xlint:unchecked", "-source", "1.7", "-target", "1.7"),
     javacOptions in doc := Seq("-source", "1.7"),
     // This is bad news for things like com.twitter.util.Time
     parallelExecution in Test := false,

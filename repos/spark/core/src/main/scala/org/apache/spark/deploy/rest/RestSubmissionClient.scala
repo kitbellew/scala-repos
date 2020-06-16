@@ -111,8 +111,7 @@ private[spark] class RestSubmissionClient(master: String) extends Logging {
 
   /** Request that the server kill the specified submission. */
   def killSubmission(submissionId: String): SubmitRestProtocolResponse = {
-    logInfo(
-      s"Submitting a request to kill submission $submissionId in $master.")
+    logInfo(s"Submitting a request to kill submission $submissionId in $master.")
     var handled: Boolean = false
     var response: SubmitRestProtocolResponse = null
     for (m <- masters if !handled) {

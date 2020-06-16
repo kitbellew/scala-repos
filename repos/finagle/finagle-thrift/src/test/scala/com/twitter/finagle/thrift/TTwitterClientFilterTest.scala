@@ -71,10 +71,7 @@ class TTwitterClientFilterTest extends FunSuite with MockitoSugar {
       filter(new ThriftClientRequest(buffer.toArray, false), service)
 
       val header = new thrift.RequestHeader
-      InputBuffer.peelMessage(
-        _request.getValue.message,
-        header,
-        protocolFactory)
+      InputBuffer.peelMessage(_request.getValue.message, header, protocolFactory)
 
       assert(header.getTrace_id == 1L)
       assert(header.getSpan_id == 2L)

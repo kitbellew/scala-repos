@@ -2,10 +2,7 @@ package org.jetbrains.plugins.scala.lang.psi.light
 
 import com.intellij.psi.{JavaPsiFacade, PsiElement, PsiMethod}
 import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 
 /**
   * @author Alefas
@@ -42,9 +39,7 @@ with LightScalaMethod {
 }
 
 object StaticTraitScFunctionWrapper {
-  def methodText(
-      function: ScFunction,
-      containingClass: PsiClassWrapper): String = {
+  def methodText(function: ScFunction, containingClass: PsiClassWrapper): String = {
     val builder = new StringBuilder
 
     builder.append(JavaConversionUtil.annotationsAndModifiers(function, true))

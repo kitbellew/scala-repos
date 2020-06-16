@@ -61,9 +61,7 @@ class MessageWriterTest extends JUnitSuite {
     new Message(bb)
   }
 
-  private def compress(
-      bytes: Array[Byte],
-      codec: CompressionCodec): Array[Byte] = {
+  private def compress(bytes: Array[Byte], codec: CompressionCodec): Array[Byte] = {
     val baos = new ByteArrayOutputStream()
     val out = CompressionFactory(codec, baos)
     out.write(bytes)

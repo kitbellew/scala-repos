@@ -43,8 +43,7 @@ object Test {
     val s =
       if (isFreeType(t.typeSymbol)) t.typeSymbol.info.toString
       else t.typeSymbol.toString
-    println(
-      "%s, t=%s, s=%s".format(t, t.asInstanceOf[Product].productPrefix, s))
+    println("%s, t=%s, s=%s".format(t, t.asInstanceOf[Product].productPrefix, s))
   }
   def m[T: TypeTag](x: T) = printTpe(typeOf[T])
   def m2[T: WeakTypeTag](x: T) = printTpe(implicitly[WeakTypeTag[T]].tpe)

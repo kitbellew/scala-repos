@@ -465,8 +465,7 @@ object KleeneDemo {
         Language(x.wss.flatMap(ws1 => y.wss.map(ws2 => ws1 #::: ws2)))
 
       override def kstar(x: Language[W]): Language[W] =
-        Language(
-          Stream.empty #:: x.wss.flatMap(s => kstar(x).wss.map(s #::: _)))
+        Language(Stream.empty #:: x.wss.flatMap(s => kstar(x).wss.map(s #::: _)))
     }
 
   /**

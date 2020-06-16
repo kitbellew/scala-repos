@@ -55,8 +55,7 @@ object IO {
     if (!dir.exists()) {
       val result = dir.mkdirs()
       if (!result || !dir.isDirectory || !dir.exists)
-        throw new IOException(
-          "Can not create Directory: " + dir.getAbsolutePath)
+        throw new IOException("Can not create Directory: " + dir.getAbsolutePath)
     }
   }
 

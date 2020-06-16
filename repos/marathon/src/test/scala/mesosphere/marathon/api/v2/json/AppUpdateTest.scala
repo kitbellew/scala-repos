@@ -24,17 +24,13 @@ class AppUpdateTest extends MarathonSpec {
   import mesosphere.marathon.integration.setup.V2TestFormats._
 
   test("Validation") {
-    def shouldViolate(
-        update: AppUpdate,
-        path: String,
-        template: String): Unit = {
+    def shouldViolate(update: AppUpdate, path: String, template: String): Unit = {
       val violations = validate(update)
       assert(violations.isFailure)
       assert(
         ValidationHelper
           .getAllRuleConstrains(violations)
-          .exists(v =>
-            v.path.getOrElse(false) == path && v.message == template))
+          .exists(v => v.path.getOrElse(false) == path && v.message == template))
     }
 
     def shouldNotViolate(
@@ -45,8 +41,7 @@ class AppUpdateTest extends MarathonSpec {
       assert(
         !ValidationHelper
           .getAllRuleConstrains(violations)
-          .exists(v =>
-            v.path.getOrElse(false) == path && v.message == template))
+          .exists(v => v.path.getOrElse(false) == path && v.message == template))
     }
 
     val update = AppUpdate()

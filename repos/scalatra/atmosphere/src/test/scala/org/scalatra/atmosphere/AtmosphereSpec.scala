@@ -61,9 +61,7 @@ class AtmosphereSpecServlet(implicit
     case t: Throwable => t.printStackTrace()
   }
 
-  override def handle(
-      request: HttpServletRequest,
-      response: HttpServletResponse) {
+  override def handle(request: HttpServletRequest, response: HttpServletResponse) {
     withRequestResponse(request, response) {
       println(request.headers)
       println("routeBasePath: " + routeBasePath(request))
@@ -136,10 +134,8 @@ class AtmosphereSpec extends MutableScalatraSpec {
       val latch = new CountDownLatch(1)
 
       // yay?
-      val client: Client[
-        DefaultOptions,
-        DefaultOptionsBuilder,
-        DefaultRequestBuilder] =
+      val client
+          : Client[DefaultOptions, DefaultOptionsBuilder, DefaultRequestBuilder] =
         ClientFactory.getDefault.newClient.asInstanceOf[Client[
           DefaultOptions,
           DefaultOptionsBuilder,

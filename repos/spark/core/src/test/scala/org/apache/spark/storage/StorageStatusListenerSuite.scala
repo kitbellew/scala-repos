@@ -87,23 +87,11 @@ class StorageStatusListenerSuite extends SparkFunSuite {
     assert(listener.executorIdToStorageStatus("big").numBlocks === 0)
     assert(listener.executorIdToStorageStatus("fat").numBlocks === 0)
     listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        1,
-        0,
-        "obliteration",
-        Success,
-        taskInfo1,
-        taskMetrics))
+      SparkListenerTaskEnd(1, 0, "obliteration", Success, taskInfo1, taskMetrics))
     assert(listener.executorIdToStorageStatus("big").numBlocks === 0)
     assert(listener.executorIdToStorageStatus("fat").numBlocks === 0)
     listener.onTaskEnd(
-      SparkListenerTaskEnd(
-        1,
-        0,
-        "obliteration",
-        Success,
-        taskInfo2,
-        taskMetrics))
+      SparkListenerTaskEnd(1, 0, "obliteration", Success, taskInfo2, taskMetrics))
     assert(listener.executorIdToStorageStatus("big").numBlocks === 0)
     assert(listener.executorIdToStorageStatus("fat").numBlocks === 0)
   }

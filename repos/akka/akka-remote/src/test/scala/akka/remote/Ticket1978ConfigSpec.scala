@@ -26,8 +26,7 @@ class Ticket1978ConfigSpec
       settings.SSLProtocol should ===(Some("TLSv1.2"))
       settings.SSLEnabledAlgorithms should ===(
         Set("TLS_RSA_WITH_AES_128_CBC_SHA"))
-      settings.SSLRandomNumberGenerator should ===(
-        Some("AES128CounterSecureRNG"))
+      settings.SSLRandomNumberGenerator should ===(Some("AES128CounterSecureRNG"))
     }
   }
 }

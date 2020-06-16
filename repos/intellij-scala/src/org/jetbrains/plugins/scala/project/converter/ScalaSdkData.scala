@@ -161,9 +161,7 @@ private object ScalaSdkData {
     document.detachRootElement()
   }
 
-  private def suggestLibraryFile(
-      name: String,
-      context: ConversionContext): File = {
+  private def suggestLibraryFile(name: String, context: ConversionContext): File = {
     val base = Option(context.getSettingsBaseDir)
       .getOrElse(
         throw new CannotConvertException(
@@ -178,7 +176,6 @@ private object ScalaSdkData {
 
     candidates
       .find(!_.exists)
-      .getOrElse(
-        throw new IllegalStateException("Run out of integer numbers :)"))
+      .getOrElse(throw new IllegalStateException("Run out of integer numbers :)"))
   }
 }

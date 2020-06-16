@@ -142,12 +142,10 @@ object Macros {
     try {
       val s = formatWhole(c, sep)
       val b = BigInt(s) // make sure it's ok
-      c.Expr[BigInt](
-        Apply(q"scala.math.BigInt.apply", List(Literal(Constant(s)))))
+      c.Expr[BigInt](Apply(q"scala.math.BigInt.apply", List(Literal(Constant(s)))))
     } catch {
       case e: Exception =>
-        throw new NumberFormatException(
-          "illegal %s BigInt constant" format name)
+        throw new NumberFormatException("illegal %s BigInt constant" format name)
     }
   }
 
@@ -164,8 +162,7 @@ object Macros {
         Apply(q"scala.math.BigDecimal.apply", List(Literal(Constant(s)))))
     } catch {
       case e: Exception =>
-        throw new NumberFormatException(
-          "illegal %s BigInt constant" format name)
+        throw new NumberFormatException("illegal %s BigInt constant" format name)
     }
   }
 

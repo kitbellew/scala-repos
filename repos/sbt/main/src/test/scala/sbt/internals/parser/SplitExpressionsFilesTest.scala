@@ -153,8 +153,7 @@ abstract class AbstractSplitExpressionsFilesTest(pathName: String)
   def splitLines(
       file: File,
       splitter: SplitExpressions.SplitExpression,
-      lines: List[String])
-      : scala.util.Try[(Seq[(String, Int)], Seq[LineRange])] = {
+      lines: List[String]): scala.util.Try[(Seq[(String, Int)], Seq[LineRange])] = {
     try {
       val (imports, settingsAndDefs) = splitter(file, lines)
 

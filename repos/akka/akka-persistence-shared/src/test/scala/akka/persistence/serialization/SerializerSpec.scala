@@ -279,32 +279,24 @@ class MessageSerializerPersistenceSpec extends AkkaSpec(customSerializers) {
         val serializer = serialization.findSerializerFor(snap)
 
         val bytes = serializer.toBinary(snap)
-        val deserialized = serializer.fromBinary(
-          bytes,
-          Some(classOf[AtLeastOnceDeliverySnapshot]))
+        val deserialized =
+          serializer.fromBinary(bytes, Some(classOf[AtLeastOnceDeliverySnapshot]))
 
         deserialized should ===(snap)
       }
 
       "handle a few unconfirmed" in {
         val unconfirmed = Vector(
-          UnconfirmedDelivery(
-            deliveryId = 1,
-            destination = testActor.path,
-            "a"),
-          UnconfirmedDelivery(
-            deliveryId = 2,
-            destination = testActor.path,
-            "b"),
+          UnconfirmedDelivery(deliveryId = 1, destination = testActor.path, "a"),
+          UnconfirmedDelivery(deliveryId = 2, destination = testActor.path, "b"),
           UnconfirmedDelivery(deliveryId = 3, destination = testActor.path, 42)
         )
         val snap = AtLeastOnceDeliverySnapshot(17, unconfirmed)
         val serializer = serialization.findSerializerFor(snap)
 
         val bytes = serializer.toBinary(snap)
-        val deserialized = serializer.fromBinary(
-          bytes,
-          Some(classOf[AtLeastOnceDeliverySnapshot]))
+        val deserialized =
+          serializer.fromBinary(bytes, Some(classOf[AtLeastOnceDeliverySnapshot]))
 
         deserialized should ===(snap)
       }

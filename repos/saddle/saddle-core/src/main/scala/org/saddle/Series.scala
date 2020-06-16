@@ -773,9 +773,7 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @param other Series to join with
     * @param how How to perform the join
     */
-  def hjoin(
-      other: Series[X, _],
-      how: JoinType = LeftJoin): Frame[X, Int, Any] = {
+  def hjoin(other: Series[X, _], how: JoinType = LeftJoin): Frame[X, Int, Any] = {
     val indexer = this.index.join(other.index, how)
     val lft = indexer.lTake.map(this.values.take(_)) getOrElse this.values
     val rgt = indexer.rTake.map(other.values.take(_)) getOrElse other.values
@@ -792,9 +790,7 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @param other Frame[X, Any, T]
     * @param how How to perform the join
     */
-  def joinF(
-      other: Frame[X, _, T],
-      how: JoinType = LeftJoin): Frame[X, Int, T] = {
+  def joinF(other: Frame[X, _, T], how: JoinType = LeftJoin): Frame[X, Int, T] = {
     val tmpFrame = other.joinS(this, how)
     Frame(
       tmpFrame.values.last +: tmpFrame.values
@@ -813,9 +809,7 @@ class Series[X: ST: ORD, T: ST](val values: Vec[T], val index: Index[X])
     * @param other Frame[X, Any, Any]
     * @param how How to perform the join
     */
-  def hjoinF(
-      other: Frame[X, _, _],
-      how: JoinType = LeftJoin): Frame[X, Int, Any] = {
+  def hjoinF(other: Frame[X, _, _], how: JoinType = LeftJoin): Frame[X, Int, Any] = {
     val tmpFrame = other.joinAnyS(this, how)
     Panel(
       tmpFrame.values.last +: tmpFrame.values

@@ -27,9 +27,7 @@ import org.jetbrains.plugins.scala.overrideImplement._
   * or after override element definition (override def <caret>)
   */
 class ScalaOverrideContributor extends ScalaCompletionContributor {
-  private def registerOverrideCompletion(
-      filter: ElementFilter,
-      keyword: String) {
+  private def registerOverrideCompletion(filter: ElementFilter, keyword: String) {
     extend(
       CompletionType.BASIC,
       PlatformPatterns.psiElement.and(
@@ -96,10 +94,8 @@ class ScalaOverrideContributor extends ScalaCompletionContributor {
       parameters: CompletionParameters): Unit = {
     val position = positionFromParameters(parameters)
 
-    val clazz = PsiTreeUtil.getParentOfType(
-      position,
-      classOf[ScTemplateDefinition],
-      false)
+    val clazz =
+      PsiTreeUtil.getParentOfType(position, classOf[ScTemplateDefinition], false)
     if (clazz == null) return
 
     val classMembers =

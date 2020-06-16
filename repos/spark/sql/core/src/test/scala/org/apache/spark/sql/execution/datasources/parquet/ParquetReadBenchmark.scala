@@ -286,9 +286,7 @@ object ParquetReadBenchmark {
     }
   }
 
-  def stringWithNullsScanBenchmark(
-      values: Int,
-      fractionOfNulls: Double): Unit = {
+  def stringWithNullsScanBenchmark(values: Int, fractionOfNulls: Double): Unit = {
     withTempPath { dir =>
       withTempTable("t1", "tempTable") {
         sqlContext.range(values).registerTempTable("t1")

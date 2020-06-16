@@ -31,11 +31,7 @@ import scalaz._
 import scalaz.syntax.traverse._
 import scalaz.std.list._
 
-case class Prepare(
-    blockid: Long,
-    seqId: Long,
-    root: File,
-    source: StorageReader)
+case class Prepare(blockid: Long, seqId: Long, root: File, source: StorageReader)
 case class Spoilt(blockid: Long, seqId: Long)
 case class Cooked(blockid: Long, seqId: Long, root: File, metadata: File)
 

@@ -64,10 +64,8 @@ class MultipartUnmarshallersSpec
             |Content-type: text/xml
             |Age: 12
             |--XYZABC--""".stripMarginWithNewline("\r\n")
-          )).to[Multipart.General] should haveParts(
-          Multipart.General.BodyPart.Strict(
-            HttpEntity.empty(ContentTypes.`text/xml(UTF-8)`),
-            List(Age(12))))
+          )).to[Multipart.General] should haveParts(Multipart.General.BodyPart
+          .Strict(HttpEntity.empty(ContentTypes.`text/xml(UTF-8)`), List(Age(12))))
       }
       "an implicitly typed part (without headers) (Strict)" in {
         Unmarshal(
@@ -410,9 +408,7 @@ class MultipartUnmarshallersSpec
           )).to[Multipart.FormData] should haveParts(
           Multipart.FormData.BodyPart.Strict(
             "email",
-            HttpEntity(
-              `application/octet-stream`,
-              ByteString("test@there.com"))))
+            HttpEntity(`application/octet-stream`, ByteString("test@there.com"))))
       }
       "with a file" in {
         Unmarshal {
@@ -447,9 +443,7 @@ class MultipartUnmarshallersSpec
         }.to[Multipart.FormData].flatMap(_.toStrict(1.second)) should haveParts(
           Multipart.FormData.BodyPart.Strict(
             "email",
-            HttpEntity(
-              `application/octet-stream`,
-              ByteString("test@there.com"))),
+            HttpEntity(`application/octet-stream`, ByteString("test@there.com"))),
           Multipart.FormData.BodyPart.Strict(
             "userfile",
             HttpEntity(`application/pdf`, ByteString("filecontent")),

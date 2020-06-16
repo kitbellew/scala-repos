@@ -179,8 +179,7 @@ class YarnSparkHadoopUtilSuite
       YarnSparkHadoopUtil.expandEnvironment(target) should be(
         "{{" + target + "}}")
     } else if (Utils.isWindows) {
-      YarnSparkHadoopUtil.expandEnvironment(target) should be(
-        "%" + target + "%")
+      YarnSparkHadoopUtil.expandEnvironment(target) should be("%" + target + "%")
     } else {
       YarnSparkHadoopUtil.expandEnvironment(target) should be("$" + target)
     }

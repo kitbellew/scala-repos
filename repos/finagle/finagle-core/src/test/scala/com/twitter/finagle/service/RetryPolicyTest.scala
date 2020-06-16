@@ -168,16 +168,14 @@ class RetryPolicyTest extends FunSpec {
     }
 
     it("mimicks first policy") {
-      val backoffs = getBackoffs(
-        combinedPolicy,
-        Stream.fill(4)(WriteException(new Exception)))
+      val backoffs =
+        getBackoffs(combinedPolicy, Stream.fill(4)(WriteException(new Exception)))
       assert(backoffs == Stream.fill(2)(writeExceptionBackoff))
     }
 
     it("mimicks second policy") {
-      val backoffs = getBackoffs(
-        combinedPolicy,
-        Stream.fill(4)(new ChannelClosedException()))
+      val backoffs =
+        getBackoffs(combinedPolicy, Stream.fill(4)(new ChannelClosedException()))
       assert(backoffs == Stream.fill(3)(channelClosedBackoff))
     }
 

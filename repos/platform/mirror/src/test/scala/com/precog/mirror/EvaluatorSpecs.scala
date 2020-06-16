@@ -156,8 +156,7 @@ object EvaluatorSpecs extends Specification with EvaluatorModule {
     }
 
     "evaluate a simple object concatenation" in {
-      "{a:1} with {b:2}" must evalTo(
-        JObject(Map("a" -> JNum(1), "b" -> JNum(2))))
+      "{a:1} with {b:2}" must evalTo(JObject(Map("a" -> JNum(1), "b" -> JNum(2))))
     }
 
     "evaluate a simple object deref" in {

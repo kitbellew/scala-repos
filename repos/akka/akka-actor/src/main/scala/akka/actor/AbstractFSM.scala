@@ -95,10 +95,7 @@ abstract class AbstractFSM[S, D] extends FSM[S, D] {
     * @param stateData initial state data
     * @param timeout state timeout for the initial state, overriding the default timeout for that state
     */
-  final def startWith(
-      stateName: S,
-      stateData: D,
-      timeout: FiniteDuration): Unit =
+  final def startWith(stateName: S, stateData: D, timeout: FiniteDuration): Unit =
     startWith(stateName, stateData, Option(timeout))
 
   /**

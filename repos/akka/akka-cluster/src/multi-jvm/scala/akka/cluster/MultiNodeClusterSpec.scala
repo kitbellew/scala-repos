@@ -304,8 +304,7 @@ trait MultiNodeClusterSpec
           expectedLeader,
           leader,
           clusterView.members))
-      clusterView.status should (be(MemberStatus.Up) or be(
-        MemberStatus.Leaving))
+      clusterView.status should (be(MemberStatus.Up) or be(MemberStatus.Leaving))
     }
 
   /**

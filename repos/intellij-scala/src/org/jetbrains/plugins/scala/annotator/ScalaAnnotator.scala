@@ -214,10 +214,8 @@ class ScalaAnnotator
             val annotation = holder.createWarningAnnotation(
               valKeyword,
               ScalaBundle.message("generator.val.keyword.removed"))
-            annotation.setHighlightType(
-              ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
-            annotation.registerFix(
-              new RemoveValFromGeneratorIntentionAction(gen))
+            annotation.setHighlightType(ProblemHighlightType.LIKE_UNKNOWN_SYMBOL)
+            annotation.registerFix(new RemoveValFromGeneratorIntentionAction(gen))
           case _ =>
         }
         super.visitGenerator(gen)
@@ -738,9 +736,7 @@ class ScalaAnnotator
     toCheck match {
       case boundOwner: ScTypeBoundsOwner =>
         checkAndHighlightBounds(boundOwner.upperTypeElement, varianceOfUpper)
-        checkAndHighlightBounds(
-          boundOwner.lowerTypeElement,
-          varianceOfUpper * -1)
+        checkAndHighlightBounds(boundOwner.lowerTypeElement, varianceOfUpper * -1)
       case _ =>
     }
     toCheck match {
@@ -1391,9 +1387,7 @@ class ScalaAnnotator
     }
   }
 
-  private def checkForStmtUsedTypes(
-      f: ScForStatement,
-      holder: AnnotationHolder) {
+  private def checkForStmtUsedTypes(f: ScForStatement, holder: AnnotationHolder) {
     ImportTracker
       .getInstance(f.getProject)
       .registerUsedImports(
@@ -1455,9 +1449,7 @@ class ScalaAnnotator
       case _ => false
     }
 
-  private def checkFunctionForVariance(
-      fun: ScFunction,
-      holder: AnnotationHolder) {
+  private def checkFunctionForVariance(fun: ScFunction, holder: AnnotationHolder) {
     if (!modifierIsThis(fun) && !compoundType(fun)) { //if modifier contains [this] or if it is a compound type we do not highlight it
       checkBoundsVariance(fun, holder, fun.nameId, fun.getParent)
       if (!childHasAnnotation(fun.returnTypeElement, "uncheckedVariance")) {
@@ -1616,8 +1608,7 @@ class ScalaAnnotator
             for (e <- toHighlight) {
               val annotation = holder.createErrorAnnotation(
                 e,
-                ScalaBundle.message(
-                  "abstract.member.not.have.private.modifier"))
+                ScalaBundle.message("abstract.member.not.have.private.modifier"))
               annotation.setHighlightType(ProblemHighlightType.GENERIC_ERROR)
             }
           case _ =>

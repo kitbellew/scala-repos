@@ -27,9 +27,8 @@ private[netty] trait NettyHelpers {
   protected def onMessage(ctx: ChannelHandlerContext, e: MessageEvent): Unit =
     ()
 
-  protected def onException(
-      ctx: ChannelHandlerContext,
-      e: ExceptionEvent): Unit = ()
+  protected def onException(ctx: ChannelHandlerContext, e: ExceptionEvent): Unit =
+    ()
 
   final protected def transformException(
       ctx: ChannelHandlerContext,

@@ -89,9 +89,7 @@ private[simul] final class SimulApi(
                   games =>
                     games.headOption foreach {
                       case (game, _) =>
-                        sendTo(
-                          simul.id,
-                          actorApi.StartSimul(game, simul.hostId))
+                        sendTo(simul.id, actorApi.StartSimul(game, simul.hostId))
                     }
                     games.foldLeft(started) {
                       case (s, (g, hostColor)) =>
@@ -116,9 +114,7 @@ private[simul] final class SimulApi(
     Sequence(simulId) {
       repo.findCreated(simulId) flatMap {
         _ ?? { simul =>
-          (repo remove simul) >>- sendTo(
-            simul.id,
-            actorApi.Aborted) >>- publish()
+          (repo remove simul) >>- sendTo(simul.id, actorApi.Aborted) >>- publish()
         }
       }
     }

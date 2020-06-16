@@ -105,8 +105,7 @@ abstract class ClusterDeathWatchSpec
         cluster.down(third)
         // removed
         awaitAssert(
-          clusterView.members.map(_.address) should not contain (address(
-            third)))
+          clusterView.members.map(_.address) should not contain (address(third)))
         awaitAssert(
           clusterView.unreachableMembers.map(
             _.address) should not contain (address(third)))
@@ -223,8 +222,7 @@ abstract class ClusterDeathWatchSpec
           clusterView.unreachableMembers.map(
             _.address) should not contain (address(fifth)))
         awaitAssert(
-          clusterView.members.map(_.address) should not contain (address(
-            fifth)))
+          clusterView.members.map(_.address) should not contain (address(fifth)))
       }
 
       enterBarrier("fifth-terminated")
@@ -262,8 +260,7 @@ abstract class ClusterDeathWatchSpec
           clusterView.unreachableMembers.map(
             _.address) should not contain (address(first)))
         awaitAssert(
-          clusterView.members.map(_.address) should not contain (address(
-            first)))
+          clusterView.members.map(_.address) should not contain (address(first)))
 
         expectTerminated(hello)
 

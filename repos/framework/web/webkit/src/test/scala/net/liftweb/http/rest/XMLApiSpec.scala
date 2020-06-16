@@ -119,10 +119,8 @@ object XmlApiSpec extends Specification {
     }
 
     "Convert Boxed booleans to LiftResponses" in {
-      produce("42") must matchXmlResponse(
-        <api success="true"><xml:group/></api>)
-      produce("1") must matchXmlResponse(
-        <api success="false"><xml:group/></api>)
+      produce("42") must matchXmlResponse(<api success="true"><xml:group/></api>)
+      produce("1") must matchXmlResponse(<api success="false"><xml:group/></api>)
 
       val failure = produce("invalidInt")
 

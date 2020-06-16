@@ -491,9 +491,7 @@ object Complex { outer =>
   }
 
   /** `Complex` as `scala.math.Fractional` trait. */
-  trait ComplexIsFractional
-      extends ComplexIsConflicted
-      with Fractional[Complex] {
+  trait ComplexIsFractional extends ComplexIsConflicted with Fractional[Complex] {
     def div(x: Complex, y: Complex): Complex = x / y
   }
 

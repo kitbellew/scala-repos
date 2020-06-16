@@ -196,9 +196,7 @@ sealed abstract class NullResultInstances extends NullResultInstances0 {
         fa.left
       override def right[A, B, C](fa: NullResult[A, B]) =
         fa.right
-      override def choice[A, B, C](
-          f: => NullResult[A, C],
-          g: => NullResult[B, C]) =
+      override def choice[A, B, C](f: => NullResult[A, C], g: => NullResult[B, C]) =
         NullResult {
           case \/-(a) => g(a)
           case -\/(a) => f(a)

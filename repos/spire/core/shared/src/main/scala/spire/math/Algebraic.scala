@@ -892,8 +892,7 @@ object Algebraic extends AlgebraicInstances {
         if (ub.signum > 0) {
           new BitBound(ub.numerator.bitLength - ub.denominator.bitLength + 1)
         } else {
-          new BitBound(
-            lb.numerator.abs.bitLength - lb.denominator.bitLength + 1)
+          new BitBound(lb.numerator.abs.bitLength - lb.denominator.bitLength + 1)
         }
 
       def signum: Int =

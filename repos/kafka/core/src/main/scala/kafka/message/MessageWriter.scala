@@ -23,8 +23,7 @@ import java.nio.ByteBuffer
 import org.apache.kafka.common.record.TimestampType
 import org.apache.kafka.common.utils.Crc32
 
-class MessageWriter(segmentSize: Int)
-    extends BufferingOutputStream(segmentSize) {
+class MessageWriter(segmentSize: Int) extends BufferingOutputStream(segmentSize) {
 
   import Message._
 

@@ -265,10 +265,7 @@ object JGitUtil {
     * @param path the directory path (optional)
     * @return HTML of the file list
     */
-  def getFileList(
-      git: Git,
-      revision: String,
-      path: String = "."): List[FileInfo] = {
+  def getFileList(git: Git, revision: String, path: String = "."): List[FileInfo] = {
     using(new RevWalk(git.getRepository)) { revWalk =>
       val objectId = git.getRepository.resolve(revision)
       if (objectId == null) return Nil
@@ -524,10 +521,7 @@ object JGitUtil {
     }
   }
 
-  def getCommitLogs(
-      git: Git,
-      begin: String,
-      includesLastCommit: Boolean = false)(
+  def getCommitLogs(git: Git, begin: String, includesLastCommit: Boolean = false)(
       endCondition: RevCommit => Boolean): List[CommitInfo] = {
     @scala.annotation.tailrec
     def getCommitLog(
@@ -1098,8 +1092,7 @@ object JGitUtil {
               .toURI
               .toString)
           .setRefSpecs(
-            new RefSpec(
-              s"refs/heads/${requestBranch}:refs/pull/${issueId}/head")
+            new RefSpec(s"refs/heads/${requestBranch}:refs/pull/${issueId}/head")
               .setForceUpdate(true))
           .call
 
@@ -1244,10 +1237,7 @@ object JGitUtil {
     * @param revstr  A git object references expression
     * @return sha1
     */
-  def getShaByRef(
-      owner: String,
-      name: String,
-      revstr: String): Option[String] = {
+  def getShaByRef(owner: String, name: String, revstr: String): Option[String] = {
     using(Git.open(getRepositoryDir(owner, name))) { git =>
       Option(git.getRepository.resolve(revstr)).map(ObjectId.toString(_))
     }

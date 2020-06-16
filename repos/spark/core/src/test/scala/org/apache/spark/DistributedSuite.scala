@@ -24,8 +24,7 @@ import org.scalatest.time.{Millis, Span}
 import org.apache.spark.storage.{RDDBlockId, StorageLevel}
 
 class NotSerializableClass
-class NotSerializableExn(val notSer: NotSerializableClass)
-    extends Throwable() {}
+class NotSerializableExn(val notSer: NotSerializableClass) extends Throwable() {}
 
 class DistributedSuite
     extends SparkFunSuite

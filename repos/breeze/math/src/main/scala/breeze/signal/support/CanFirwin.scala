@@ -99,9 +99,7 @@ object CanFirwin {
       optWindow: OptWindowFunction): DenseVector[Double] = {
     //various variable conditions which must be met
     require(omegas.length > 0, "At least one cutoff frequency must be given!")
-    require(
-      min(omegas) >= 0,
-      "The cutoff frequencies must be bigger than zero!")
+    require(min(omegas) >= 0, "The cutoff frequencies must be bigger than zero!")
     require(
       max(omegas) <= nyquist,
       "The cutoff frequencies must be smaller than the nyquist frequency!")

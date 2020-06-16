@@ -126,9 +126,7 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
   def findDeletedGrantChildren(gid: GrantId): M[Set[Grant]]
 
   def addGrants(apiKey: APIKey, grants: Set[GrantId]): M[Option[APIKeyRecord]]
-  def removeGrants(
-      apiKey: APIKey,
-      grants: Set[GrantId]): M[Option[APIKeyRecord]]
+  def removeGrants(apiKey: APIKey, grants: Set[GrantId]): M[Option[APIKeyRecord]]
 
   def deleteAPIKey(apiKey: APIKey): M[Option[APIKeyRecord]]
   def deleteGrant(apiKey: GrantId): M[Set[Grant]]
@@ -237,29 +235,27 @@ trait APIKeyManager[M[+_]] extends Logging { self =>
       grants: Set[v1.NewGrantRequest]): M[Option[APIKeyRecord]] = {
     val grantList = grants.toList
     grantList.traverse(grant =>
-      hasCapability(
-        issuerKey,
-        grant.permissions,
-        grant.expirationDate)) flatMap { checks =>
-      if (checks.forall(_ == true)) {
-        for {
-          newGrants <- grantList traverse { g =>
-            deriveGrant(
-              g.name,
-              g.description,
+      hasCapability(issuerKey, grant.permissions, grant.expirationDate)) flatMap {
+      checks =>
+        if (checks.forall(_ == true)) {
+          for {
+            newGrants <- grantList traverse { g =>
+              deriveGrant(
+                g.name,
+                g.description,
+                issuerKey,
+                g.permissions,
+                g.expirationDate)
+            }
+            newKey <- createAPIKey(
+              name,
+              description,
               issuerKey,
-              g.permissions,
-              g.expirationDate)
-          }
-          newKey <- createAPIKey(
-            name,
-            description,
-            issuerKey,
-            newGrants.flatMap(_.map(_.grantId))(collection.breakOut))
-        } yield some(newKey)
-      } else {
-        none[APIKeyRecord].point[M]
-      }
+              newGrants.flatMap(_.map(_.grantId))(collection.breakOut))
+          } yield some(newKey)
+        } else {
+          none[APIKeyRecord].point[M]
+        }
     }
   }
 

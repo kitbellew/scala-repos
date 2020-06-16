@@ -468,11 +468,7 @@ trait ClusteringLibSpecs[M[+_]]
               if (obj.contains("model2")) {
                 obj("model2") must beLike {
                   case SObject(model) =>
-                    testCluster(
-                      model,
-                      clusterMapB,
-                      assignmentsB,
-                      point.toRValue)
+                    testCluster(model, clusterMapB, assignmentsB, point.toRValue)
                 }
               } else {
                 ok

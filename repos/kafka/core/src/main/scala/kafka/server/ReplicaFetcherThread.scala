@@ -168,11 +168,7 @@ class ReplicaFetcherThread(
       if (logger.isTraceEnabled)
         trace(
           "Follower %d set replica high watermark for partition [%s,%d] to %s"
-            .format(
-              replica.brokerId,
-              topic,
-              partitionId,
-              followerHighWatermark))
+            .format(replica.brokerId, topic, partitionId, followerHighWatermark))
     } catch {
       case e: KafkaStorageException =>
         fatal("Disk error while replicating data.", e)
@@ -243,8 +239,7 @@ class ReplicaFetcherThread(
           replica.logEndOffset.messageOffset,
           sourceBroker.id,
           leaderEndOffset))
-      replicaMgr.logManager.truncateTo(
-        Map(topicAndPartition -> leaderEndOffset))
+      replicaMgr.logManager.truncateTo(Map(topicAndPartition -> leaderEndOffset))
       leaderEndOffset
     } else {
 
@@ -359,8 +354,7 @@ class ReplicaFetcherThread(
   }
 
   protected def buildFetchRequest(
-      partitionMap: Map[TopicAndPartition, PartitionFetchState])
-      : FetchRequest = {
+      partitionMap: Map[TopicAndPartition, PartitionFetchState]): FetchRequest = {
     val requestMap =
       mutable.Map.empty[TopicPartition, JFetchRequest.PartitionData]
 

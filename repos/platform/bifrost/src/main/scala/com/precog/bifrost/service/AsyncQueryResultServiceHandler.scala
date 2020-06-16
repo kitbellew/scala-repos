@@ -41,9 +41,7 @@ import scalaz._
 class AsyncQueryResultServiceHandler(jobManager: JobManager[Future])(implicit
     executor: ExecutionContext,
     M: Monad[Future])
-    extends CustomHttpService[
-      ByteChunk,
-      APIKey => Future[HttpResponse[ByteChunk]]] {
+    extends CustomHttpService[ByteChunk, APIKey => Future[HttpResponse[ByteChunk]]] {
   import JobManager._
   import JobState._
   import scalaz.syntax.monad._

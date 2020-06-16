@@ -78,9 +78,7 @@ class ReflectionTupleConverter[T](fields: Fields)(implicit m: Manifest[T])
     val missing =
       Dsl.asList(fields).find { f => !getSetters.contains(f.toString) }
 
-    assert(
-      missing.isEmpty,
-      "Field: " + missing.get.toString + " not in setters")
+    assert(missing.isEmpty, "Field: " + missing.get.toString + " not in setters")
   }
   validate
 

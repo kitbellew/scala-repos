@@ -194,9 +194,7 @@ object Permission {
   }
 
   val extractorV1Base: Extractor[Permission] = new Extractor[Permission] {
-    private def writtenByPermission(
-        obj: JValue,
-        pathV: Validation[Error, Path])(
+    private def writtenByPermission(obj: JValue, pathV: Validation[Error, Path])(
         f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
       (obj \? "ownerAccountIds") map { ids =>
         Apply[({ type l[a] = Validation[Error, a] })#l].zip
@@ -206,8 +204,9 @@ object Permission {
             else if (accountIds.size == 1)
               success(f(path, WrittenByAccount(accountIds.head)))
             else
-              failure(Invalid(
-                "Cannot extract read permission for more than one account ID."))
+              failure(
+                Invalid(
+                  "Cannot extract read permission for more than one account ID."))
         }
       } getOrElse {
         pathV map { f(_: Path, WrittenByAny) }
@@ -238,9 +237,7 @@ object Permission {
   }
 
   val extractorV0: Extractor[Permission] = new Extractor[Permission] {
-    private def writtenByPermission(
-        obj: JValue,
-        pathV: Validation[Error, Path])(
+    private def writtenByPermission(obj: JValue, pathV: Validation[Error, Path])(
         f: (Path, WrittenBy) => Permission): Validation[Error, Permission] = {
       obj.validated[Option[String]]("ownerAccountId") flatMap { opt =>
         opt map { id =>

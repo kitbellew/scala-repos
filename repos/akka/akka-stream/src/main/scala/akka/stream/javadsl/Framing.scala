@@ -51,8 +51,7 @@ object Framing {
   def delimiter(
       delimiter: ByteString,
       maximumFrameLength: Int,
-      allowTruncation: FramingTruncation)
-      : Flow[ByteString, ByteString, NotUsed] = {
+      allowTruncation: FramingTruncation): Flow[ByteString, ByteString, NotUsed] = {
     val truncationAllowed = allowTruncation == FramingTruncation.ALLOW
     scaladsl.Framing
       .delimiter(delimiter, maximumFrameLength, truncationAllowed)

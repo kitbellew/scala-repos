@@ -142,9 +142,7 @@ class TestRunner(
                   (true, Nil, Empty)
                 } catch {
                   case e: Throwable =>
-                    def combineStack(
-                        ex: Throwable,
-                        base: List[StackTraceElement])
+                    def combineStack(ex: Throwable, base: List[StackTraceElement])
                         : List[StackTraceElement] =
                       ex match {
                         case null => base

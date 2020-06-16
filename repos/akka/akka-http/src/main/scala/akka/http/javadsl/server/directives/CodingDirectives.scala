@@ -21,9 +21,7 @@ abstract class CodingDirectives extends CacheConditionDirectives {
     * using one of the predefined coders, `Gzip`, `Deflate`, or `NoCoding` depending on
     * a potential [[akka.http.javadsl.model.headers.AcceptEncoding]] header from the client.
     */
-  @varargs def encodeResponse(
-      innerRoute: Route,
-      moreInnerRoutes: Route*): Route =
+  @varargs def encodeResponse(innerRoute: Route, moreInnerRoutes: Route*): Route =
     RouteStructure.EncodeResponse(
       CodingDirectives._DefaultCodersToEncodeResponse)(
       innerRoute,
@@ -69,8 +67,7 @@ abstract class CodingDirectives extends CacheConditionDirectives {
   @varargs def decodeRequest(
       innerRoute: Route,
       moreInnerRoutes: Route*): Route =
-    RouteStructure.DecodeRequest(
-      CodingDirectives._DefaultCodersToDecodeRequest)(
+    RouteStructure.DecodeRequest(CodingDirectives._DefaultCodersToDecodeRequest)(
       innerRoute,
       moreInnerRoutes.toList)
 }

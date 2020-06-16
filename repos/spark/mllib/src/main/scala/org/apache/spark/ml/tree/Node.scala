@@ -233,9 +233,7 @@ final class InternalNode private[ml] (
   override private[ml] def maxSplitFeatureIndex(): Int = {
     math.max(
       split.featureIndex,
-      math.max(
-        leftChild.maxSplitFeatureIndex(),
-        rightChild.maxSplitFeatureIndex()))
+      math.max(leftChild.maxSplitFeatureIndex(), rightChild.maxSplitFeatureIndex()))
   }
 }
 

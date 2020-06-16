@@ -115,10 +115,7 @@ object Props extends AbstractProps {
   * }}}
   */
 @SerialVersionUID(2L)
-final case class Props(
-    deploy: Deploy,
-    clazz: Class[_],
-    args: immutable.Seq[Any]) {
+final case class Props(deploy: Deploy, clazz: Class[_], args: immutable.Seq[Any]) {
 
   Props.validate(clazz)
 

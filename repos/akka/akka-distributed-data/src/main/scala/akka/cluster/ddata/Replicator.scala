@@ -1078,9 +1078,7 @@ final class Replicator(settings: ReplicatorSettings)
             writeEnvelope.data.getClass.getName)
         }
       case None ⇒
-        setData(
-          key,
-          pruningCleanupTombstoned(writeEnvelope).addSeen(selfAddress))
+        setData(key, pruningCleanupTombstoned(writeEnvelope).addSeen(selfAddress))
     }
 
   def receiveReadRepair(key: String, writeEnvelope: DataEnvelope): Unit = {
@@ -1337,8 +1335,7 @@ final class Replicator(settings: ReplicatorSettings)
       context stop self
     else if (matchingRole(m)) {
       nodes -= m.address
-      removedNodes =
-        removedNodes.updated(m.uniqueAddress, allReachableClockTime)
+      removedNodes = removedNodes.updated(m.uniqueAddress, allReachableClockTime)
       unreachable -= m.address
     }
   }
@@ -1407,9 +1404,7 @@ final class Replicator(settings: ReplicatorSettings)
   def performRemovedNodePruning(): Unit = {
     // perform pruning when all seen Init
     dataEntries.foreach {
-      case (
-            key,
-            (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
+      case (key, (envelope @ DataEnvelope(data: RemovedNodePruning, pruning), _)) ⇒
         pruning.foreach {
           case (removed, PruningState(owner, PruningInitialized(seen)))
               if owner == selfUniqueAddress
@@ -1471,8 +1466,7 @@ final class Replicator(settings: ReplicatorSettings)
       removed: UniqueAddress,
       envelope: DataEnvelope): DataEnvelope = {
     val pruningCleanuped = pruningCleanupTombstoned(removed, envelope.data)
-    if ((pruningCleanuped ne envelope.data) || envelope.pruning.contains(
-        removed))
+    if ((pruningCleanuped ne envelope.data) || envelope.pruning.contains(removed))
       envelope.copy(
         data = pruningCleanuped,
         pruning = envelope.pruning - removed)

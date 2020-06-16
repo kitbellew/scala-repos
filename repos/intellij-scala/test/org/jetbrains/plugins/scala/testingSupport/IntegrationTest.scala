@@ -7,10 +7,7 @@ import javax.swing.SwingUtilities
 import com.intellij.execution.testframework.AbstractTestProxy
 import com.intellij.execution.{PsiLocation, RunnerAndConfigurationSettings}
 import com.intellij.ide.util.treeView.AbstractTreeNode
-import com.intellij.ide.util.treeView.smartTree.{
-  TreeElement,
-  TreeElementWrapper
-}
+import com.intellij.ide.util.treeView.smartTree.{TreeElement, TreeElementWrapper}
 import com.intellij.openapi.project.Project
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.{PsiDocumentManager, PsiElement}

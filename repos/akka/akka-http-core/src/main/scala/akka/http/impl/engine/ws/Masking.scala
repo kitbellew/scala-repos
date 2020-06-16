@@ -20,9 +20,8 @@ private[http] object Masking {
     /* net in */ FrameEvent, /* app out */ FrameEventOrError,
     /* app in */ FrameEvent, /* net out */ FrameEvent,
     NotUsed] =
-    BidiFlow.fromFlowsMat(
-      unmaskIf(serverSide),
-      maskIf(!serverSide, maskRandom))(Keep.none)
+    BidiFlow.fromFlowsMat(unmaskIf(serverSide), maskIf(!serverSide, maskRandom))(
+      Keep.none)
 
   def maskIf(
       condition: Boolean,

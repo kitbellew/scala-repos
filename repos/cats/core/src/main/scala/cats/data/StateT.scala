@@ -7,8 +7,7 @@ package data
   * an `S` value representing the updated state (which is wrapped in the `F`
   * context along with the `A` value.
   */
-final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]])
-    extends Serializable {
+final class StateT[F[_], S, A](val runF: F[S => F[(S, A)]]) extends Serializable {
 
   def flatMap[B](fas: A => StateT[F, S, B])(implicit
       F: Monad[F]): StateT[F, S, B] =
@@ -152,8 +151,8 @@ private[data] sealed abstract class StateTInstances {
         fa.map(f)
     }
 
-  implicit def stateTLift[M[_], S](implicit M: Applicative[M])
-      : TransLift[({ type λ[α[_], β] = StateT[α, S, β] })#λ, M] =
+  implicit def stateTLift[M[_], S](implicit
+      M: Applicative[M]): TransLift[({ type λ[α[_], β] = StateT[α, S, β] })#λ, M] =
     new TransLift[({ type λ[α[_], β] = StateT[α, S, β] })#λ, M] {
       def liftT[A](ma: M[A]): StateT[M, S, A] = StateT(s => M.map(ma)(s -> _))
     }

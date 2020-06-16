@@ -51,10 +51,7 @@ final case class SessionSettings(
     * @param eval  The mechanism to compile new settings.
     * @return  A new SessionSettings object
     */
-  def setCurrent(
-      build: URI,
-      project: String,
-      eval: () => Eval): SessionSettings =
+  def setCurrent(build: URI, project: String, eval: () => Eval): SessionSettings =
     copy(
       currentBuild = build,
       currentProject = currentProject.updated(build, project),
@@ -220,9 +217,7 @@ object SessionSettings {
         append = newAppend.toMap,
         original = newOriginal.flatten.toSeq)
       reapply(
-        newSession.copy(
-          original = newSession.mergeSettings,
-          append = Map.empty),
+        newSession.copy(original = newSession.mergeSettings, append = Map.empty),
         s)
     }
 
@@ -374,8 +369,8 @@ save, save-all
         "save" ^^^ new Save(false)) | token("clear-all" ^^^ new Clear(true)) |
         remove)
 
-  lazy val remove = token("remove") ~> token(Space) ~> natSelect.map(ranges =>
-    new Remove(ranges))
+  lazy val remove =
+    token("remove") ~> token(Space) ~> natSelect.map(ranges => new Remove(ranges))
 
   def natSelect = rep1sep(token(range, "<range>"), ',')
 

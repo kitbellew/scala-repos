@@ -201,8 +201,7 @@ object Counter2 extends LowPriorityCounter2 with Counter2Ops {
     }
   }
 
-  implicit def canIterateValues[K1, K2, V]
-      : CanTraverseValues[Counter2[K1, K2, V], V] =
+  implicit def canIterateValues[K1, K2, V]: CanTraverseValues[Counter2[K1, K2, V], V] =
     new CanTraverseValues[Counter2[K1, K2, V], V] {
       def isTraversableAgain(from: Counter2[K1, K2, V]): Boolean = true
 

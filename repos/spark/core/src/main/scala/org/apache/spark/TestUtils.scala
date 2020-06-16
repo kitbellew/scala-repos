@@ -152,20 +152,12 @@ private[spark] object TestUtils {
       Seq()
     }
     compiler
-      .getTask(
-        null,
-        null,
-        null,
-        options.asJava,
-        null,
-        Arrays.asList(sourceFile))
+      .getTask(null, null, null, options.asJava, null, Arrays.asList(sourceFile))
       .call()
 
     val fileName = className + ".class"
     val result = new File(fileName)
-    assert(
-      result.exists(),
-      "Compiled file not found: " + result.getAbsolutePath())
+    assert(result.exists(), "Compiled file not found: " + result.getAbsolutePath())
     val out = new File(destDir, fileName)
 
     // renameTo cannot handle in and out files in different filesystems

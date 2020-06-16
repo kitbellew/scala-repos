@@ -429,13 +429,8 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
       : (PLens[S, A], PLens[S, B], PLens[S, C], PLens[S, D], PLens[S, E]) =
     PLensFamilyUnzip[S, S].unzip5(lens.xmapbB(tuple5B))
 
-  def tuple6PLens[S, A, B, C, D, E, H](lens: PLens[S, (A, B, C, D, E, H)]): (
-      PLens[S, A],
-      PLens[S, B],
-      PLens[S, C],
-      PLens[S, D],
-      PLens[S, E],
-      PLens[S, H]) =
+  def tuple6PLens[S, A, B, C, D, E, H](lens: PLens[S, (A, B, C, D, E, H)])
+      : (PLens[S, A], PLens[S, B], PLens[S, C], PLens[S, D], PLens[S, E], PLens[S, H]) =
     PLensFamilyUnzip[S, S].unzip6(lens.xmapbB(tuple6B))
 
   def tuple7PLens[S, A, B, C, D, E, H, I](
@@ -517,8 +512,7 @@ trait PLensFunctions extends PLensInstances with PLensFamilyFunctions {
 
   def vectorLastPLens[A]: Vector[A] @?> A =
     plens(v =>
-      v.lastOption map (a =>
-        Store(x => v patch (v.length - 1, Vector(x), 1), a)))
+      v.lastOption map (a => Store(x => v patch (v.length - 1, Vector(x), 1), a)))
 
   import Stream._
 

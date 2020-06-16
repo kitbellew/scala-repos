@@ -185,9 +185,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
       "ErrorHandlingFilter recovers from a POST that throws an asynchronous exception" in withServer()(
         ErrorHandlingFilter) { ws =>
-        val response = Await.result(
-          ws.url("/error-async").post(expectedOkText),
-          Duration.Inf)
+        val response =
+          Await.result(ws.url("/error-async").post(expectedOkText), Duration.Inf)
         response.status must_== 500
         response.body must_== expectedOkText
       }
@@ -233,9 +232,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
 
       "ErrorHandlingFilter recovers from a POST that throws an asynchronous exception" in withServer()(
         JavaErrorHandlingFilter) { ws =>
-        val response = Await.result(
-          ws.url("/error-async").post(expectedOkText),
-          Duration.Inf)
+        val response =
+          Await.result(ws.url("/error-async").post(expectedOkText), Duration.Inf)
         response.status must_== 500
         response.body must_== expectedOkText
       }
@@ -298,10 +296,7 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
     }
 
     object CustomErrorHandler extends HttpErrorHandler {
-      def onClientError(
-          request: RequestHeader,
-          statusCode: Int,
-          message: String) = {
+      def onClientError(request: RequestHeader, statusCode: Int, message: String) = {
         Future.successful(
           Results.NotFound(
             request.headers

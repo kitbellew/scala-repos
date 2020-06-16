@@ -384,7 +384,8 @@ class MultiReaderTest
     }
   }
 
-  test("Var[Addr]-based cluster should read messages as cluster hosts are removed") {
+  test(
+    "Var[Addr]-based cluster should read messages as cluster hosts are removed") {
     new AddrClusterHelper {
       var mutableHosts: Seq[Address] = hosts
       val va = Var(Addr.Bound(mutableHosts: _*))

@@ -166,18 +166,17 @@ trait CSRFCommonSpecs extends Specification with PlaySpecification {
       "reject requests with unsigned token in body" in {
         csrfCheckRequest(req =>
           addToken(req, generate).post(
-            Map("foo" -> "bar", TokenName -> "foo")))(
-          _.status must_== FORBIDDEN)
+            Map("foo" -> "bar", TokenName -> "foo")))(_.status must_== FORBIDDEN)
       }
       "reject requests with unsigned token in session" in {
         csrfCheckRequest(req =>
-          addToken(req, "foo").post(
-            Map("foo" -> "bar", TokenName -> generate))) { response =>
-          response.status must_== FORBIDDEN
-          response.cookies.find(
-            _.name.exists(_ == Session.COOKIE_NAME)) must beSome.like {
-            case cookie => cookie.value must beNone
-          }
+          addToken(req, "foo").post(Map("foo" -> "bar", TokenName -> generate))) {
+          response =>
+            response.status must_== FORBIDDEN
+            response.cookies.find(
+              _.name.exists(_ == Session.COOKIE_NAME)) must beSome.like {
+              case cookie => cookie.value must beNone
+            }
         }
       }
       "return a different token on each request" in {

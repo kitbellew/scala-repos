@@ -267,8 +267,7 @@ object Trees {
     val tpe = cls
   }
 
-  case class LoadModule(cls: ClassType)(implicit val pos: Position)
-      extends Tree {
+  case class LoadModule(cls: ClassType)(implicit val pos: Position) extends Tree {
     val tpe = cls
   }
 
@@ -516,10 +515,8 @@ object Trees {
     val tpe = AnyType
   }
 
-  case class JSBracketMethodApply(
-      receiver: Tree,
-      method: Tree,
-      args: List[Tree])(implicit val pos: Position)
+  case class JSBracketMethodApply(receiver: Tree, method: Tree, args: List[Tree])(
+      implicit val pos: Position)
       extends Tree {
     val tpe = AnyType
   }
@@ -909,10 +906,8 @@ object Trees {
     val tpe = NoType
   }
 
-  case class ConstructorExportDef(
-      name: String,
-      args: List[ParamDef],
-      body: Tree)(implicit val pos: Position)
+  case class ConstructorExportDef(name: String, args: List[ParamDef], body: Tree)(
+      implicit val pos: Position)
       extends Tree {
     val tpe = NoType
   }

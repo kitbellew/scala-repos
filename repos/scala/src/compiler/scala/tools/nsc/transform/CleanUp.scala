@@ -143,20 +143,18 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
               methodCache,
               ApplyDynamic(
                 gen.mkAttributedIdent(StructuralCallSite_dummy),
-                LIT(StructuralCallSite_bootstrap) :: LIT(
-                  dummyMethodType) :: Nil).setType(StructuralCallSite.tpe)
+                LIT(StructuralCallSite_bootstrap) :: LIT(dummyMethodType) :: Nil)
+                .setType(StructuralCallSite.tpe)
             ),
             ValDef(
               methodSym,
-              (REF(methodCache) DOT StructuralCallSite_find)(
-                REF(forReceiverSym))),
+              (REF(methodCache) DOT StructuralCallSite_find)(REF(forReceiverSym))),
             IF(REF(methodSym) OBJ_NE NULL).THEN(Return(REF(methodSym)))
               ELSE {
                 def methodSymRHS =
                   ((REF(forReceiverSym) DOT Class_getMethod)(
                     LIT(method),
-                    (REF(
-                      methodCache) DOT StructuralCallSite_getParameterTypes)()))
+                    (REF(methodCache) DOT StructuralCallSite_getParameterTypes)()))
                 def cacheAdd =
                   ((REF(methodCache) DOT StructuralCallSite_add)(
                     REF(forReceiverSym),
@@ -558,9 +556,7 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
         case Apply(
               appMeth,
               List(
-                Apply(
-                  wrapRefArrayMeth,
-                  List(arg @ StripCast(ArrayValue(_, _)))),
+                Apply(wrapRefArrayMeth, List(arg @ StripCast(ArrayValue(_, _)))),
                 _))
             if wrapRefArrayMeth.symbol == currentRun.runDefinitions.Predef_wrapRefArray && appMeth.symbol == ArrayModule_genericApply =>
           super.transform(arg)

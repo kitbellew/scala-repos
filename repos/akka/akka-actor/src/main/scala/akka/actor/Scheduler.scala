@@ -107,10 +107,8 @@ trait Scheduler {
     *
     * Java & Scala API
     */
-  final def scheduleOnce(
-      delay: FiniteDuration,
-      receiver: ActorRef,
-      message: Any)(implicit
+  final def scheduleOnce(delay: FiniteDuration, receiver: ActorRef, message: Any)(
+      implicit
       executor: ExecutionContext,
       sender: ActorRef = Actor.noSender): Cancellable =
     scheduleOnce(

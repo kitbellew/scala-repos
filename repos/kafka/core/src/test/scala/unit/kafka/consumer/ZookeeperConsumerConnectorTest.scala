@@ -37,9 +37,7 @@ import scala.collection._
 @deprecated(
   "This test has been deprecated and it will be removed in a future release",
   "0.10.0.0")
-class ZookeeperConsumerConnectorTest
-    extends KafkaServerTestHarness
-    with Logging {
+class ZookeeperConsumerConnectorTest extends KafkaServerTestHarness with Logging {
 
   val RebalanceBackoffMs = 5000
   var dirs: ZKGroupTopicDirs = null
@@ -492,9 +490,7 @@ class ZookeeperConsumerConnectorTest
     // Check if rebalance listener is fired
     assertEquals(true, rebalanceListener1.beforeReleasingPartitionsCalled)
     assertEquals(true, rebalanceListener1.beforeStartingFetchersCalled)
-    assertEquals(
-      Set[Int](0, 1),
-      rebalanceListener1.partitionOwnership.get(topic))
+    assertEquals(Set[Int](0, 1), rebalanceListener1.partitionOwnership.get(topic))
     // Check if global partition ownership in rebalance listener is correct
     assertEquals(
       "group1_consumer1",

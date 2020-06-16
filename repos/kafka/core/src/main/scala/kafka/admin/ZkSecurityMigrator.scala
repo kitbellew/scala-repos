@@ -221,12 +221,10 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           // Starting a new session isn't really a problem, but it'd complicate
           // the logic of the tool, so we quit and let the user re-run it.
           System.out.println("ZooKeeper session expired while changing ACLs")
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException.create(KeeperException.create(Code.get(rc)))
         case _ =>
           System.out.println("Unexpected return code: %d".format(rc))
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException.create(KeeperException.create(Code.get(rc)))
       }
     }
   }
@@ -256,12 +254,10 @@ class ZkSecurityMigrator(zkUtils: ZkUtils) extends Logging {
           // Starting a new session isn't really a problem, but it'd complicate
           // the logic of the tool, so we quit and let the user re-run it.
           System.out.println("ZooKeeper session expired while changing ACLs")
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException.create(KeeperException.create(Code.get(rc)))
         case _ =>
           System.out.println("Unexpected return code: %d".format(rc))
-          promise failure ZkException.create(
-            KeeperException.create(Code.get(rc)))
+          promise failure ZkException.create(KeeperException.create(Code.get(rc)))
       }
     }
   }

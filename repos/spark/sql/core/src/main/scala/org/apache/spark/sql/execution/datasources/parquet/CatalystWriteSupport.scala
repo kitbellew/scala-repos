@@ -239,8 +239,7 @@ private[parquet] class CatalystWriteSupport
           shift -= 8
         }
 
-        recordConsumer.addBinary(
-          Binary.fromByteArray(decimalBuffer, 0, numBytes))
+        recordConsumer.addBinary(Binary.fromByteArray(decimalBuffer, 0, numBytes))
       }
 
     val binaryWriterUsingUnscaledBytes =

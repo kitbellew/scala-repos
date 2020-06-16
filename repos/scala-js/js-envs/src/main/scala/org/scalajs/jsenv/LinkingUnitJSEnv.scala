@@ -76,9 +76,7 @@ trait LinkingUnitJSEnv extends JSEnv {
 
     def name: String = LinkingUnitJSEnv.this.name
 
-    def jsRunner(
-        libs: Seq[ResolvedJSDependency],
-        code: VirtualJSFile): JSRunner =
+    def jsRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner =
       LinkingUnitJSEnv.this.jsRunner(Nil, loadedUnit, libs, code)
   }
 }

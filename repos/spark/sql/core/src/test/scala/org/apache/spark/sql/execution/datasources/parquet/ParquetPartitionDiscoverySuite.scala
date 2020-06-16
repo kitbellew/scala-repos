@@ -234,12 +234,8 @@ class ParquetPartitionDiscoverySuite
     check("file://path/a=10/_temporary/c=1.5", None)
     check("file://path/a=10/c=1.5/_temporary", None)
 
-    checkThrows[AssertionError](
-      "file://path/=10",
-      "Empty partition column name")
-    checkThrows[AssertionError](
-      "file://path/a=",
-      "Empty partition column value")
+    checkThrows[AssertionError]("file://path/=10", "Empty partition column name")
+    checkThrows[AssertionError]("file://path/a=", "Empty partition column value")
   }
 
   test("parse partitions") {
@@ -370,12 +366,9 @@ class ParquetPartitionDiscoverySuite
       PartitionSpec(
         StructType(
           Seq(StructField("a", StringType), StructField("b", StringType))),
-        Seq(
-          Partition(
-            InternalRow(
-              UTF8String.fromString("10"),
-              UTF8String.fromString("hello")),
-            "hdfs://host:9000/path/a=10/b=hello"))
+        Seq(Partition(
+          InternalRow(UTF8String.fromString("10"), UTF8String.fromString("hello")),
+          "hdfs://host:9000/path/a=10/b=hello"))
       )
     )
 
@@ -388,9 +381,7 @@ class ParquetPartitionDiscoverySuite
           Seq(StructField("a", StringType), StructField("b", StringType))),
         Seq(
           Partition(
-            InternalRow(
-              UTF8String.fromString("10"),
-              UTF8String.fromString("20")),
+            InternalRow(UTF8String.fromString("10"), UTF8String.fromString("20")),
             "hdfs://host:9000/path/a=10/b=20"),
           Partition(
             InternalRow(
@@ -419,9 +410,7 @@ class ParquetPartitionDiscoverySuite
           Seq(StructField("a", StringType), StructField("b", StringType))),
         Seq(
           Partition(
-            InternalRow(
-              UTF8String.fromString("10"),
-              UTF8String.fromString("20")),
+            InternalRow(UTF8String.fromString("10"), UTF8String.fromString("20")),
             "hdfs://host:9000/path/a=10/b=20"),
           Partition(
             InternalRow(
@@ -441,9 +430,7 @@ class ParquetPartitionDiscoverySuite
           Seq(StructField("a", StringType), StructField("b", StringType))),
         Seq(
           Partition(
-            InternalRow(
-              UTF8String.fromString("10"),
-              UTF8String.fromString("20")),
+            InternalRow(UTF8String.fromString("10"), UTF8String.fromString("20")),
             s"hdfs://host:9000/path/a=10/b=20"),
           Partition(
             InternalRow(null, UTF8String.fromString("hello")),
@@ -771,8 +758,7 @@ class ParquetPartitionDiscoverySuite
     }
   }
 
-  test(
-    "SPARK-11678: Partition discovery stops at the root path of the dataset") {
+  test("SPARK-11678: Partition discovery stops at the root path of the dataset") {
     withTempPath { dir =>
       val tablePath = new File(dir, "key=value")
       val df = (1 to 3).map(i => (i, i, i, i)).toDF("a", "b", "c", "d")
@@ -855,8 +841,7 @@ class ParquetPartitionDiscoverySuite
             .partitionBy("b", "c", "d")
             .save(tablePath.getCanonicalPath)
 
-          Files.touch(
-            new File(s"${tablePath.getCanonicalPath}/b=1", "_SUCCESS"))
+          Files.touch(new File(s"${tablePath.getCanonicalPath}/b=1", "_SUCCESS"))
           Files.touch(
             new File(s"${tablePath.getCanonicalPath}/b=1/c=1", "_SUCCESS"))
           Files.touch(
@@ -894,9 +879,7 @@ class ParquetPartitionDiscoverySuite
     assert(
       listConflictingPartitionColumns(
         Seq(
-          (
-            new Path("file:/tmp/foo/a=1"),
-            PartitionValues(Seq("a"), Seq(Literal(1)))),
+          (new Path("file:/tmp/foo/a=1"), PartitionValues(Seq("a"), Seq(Literal(1)))),
           (
             new Path("file:/tmp/foo/b=1"),
             PartitionValues(Seq("b"), Seq(Literal(1)))))).trim ===
@@ -909,9 +892,7 @@ class ParquetPartitionDiscoverySuite
         (
           new Path("file:/tmp/foo/a=1/_temporary"),
           PartitionValues(Seq("a"), Seq(Literal(1)))),
-        (
-          new Path("file:/tmp/foo/a=1"),
-          PartitionValues(Seq("a"), Seq(Literal(1))))
+        (new Path("file:/tmp/foo/a=1"), PartitionValues(Seq("a"), Seq(Literal(1))))
       )).trim ===
         makeExpectedMessage(
           Seq("a"),
@@ -919,9 +900,7 @@ class ParquetPartitionDiscoverySuite
 
     assert(
       listConflictingPartitionColumns(Seq(
-        (
-          new Path("file:/tmp/foo/a=1"),
-          PartitionValues(Seq("a"), Seq(Literal(1)))),
+        (new Path("file:/tmp/foo/a=1"), PartitionValues(Seq("a"), Seq(Literal(1)))),
         (
           new Path("file:/tmp/foo/a=1/b=foo"),
           PartitionValues(Seq("a", "b"), Seq(Literal(1), Literal("foo"))))

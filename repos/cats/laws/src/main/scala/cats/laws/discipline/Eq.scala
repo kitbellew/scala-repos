@@ -11,9 +11,7 @@ object eq {
     * Create an approximation of Eq[A => B] by generating 100 values for A
     * and comparing the application of the two functions.
     */
-  implicit def function1Eq[A, B](implicit
-      A: Arbitrary[A],
-      B: Eq[B]): Eq[A => B] =
+  implicit def function1Eq[A, B](implicit A: Arbitrary[A], B: Eq[B]): Eq[A => B] =
     new Eq[A => B] {
       def eqv(f: A => B, g: A => B): Boolean = {
         val samples = List.fill(100)(A.arbitrary.sample).collect {

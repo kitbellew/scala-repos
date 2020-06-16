@@ -895,9 +895,7 @@ case class Configuration(underlying: Config) {
     * @param e the related exception
     * @return a configuration exception
     */
-  def globalError(
-      message: String,
-      e: Option[Throwable] = None): PlayException = {
+  def globalError(message: String, e: Option[Throwable] = None): PlayException = {
     Configuration.configError(underlying.root.origin, message, e)
   }
 
@@ -1180,8 +1178,7 @@ private[play] object ConfigLoader {
       .map(millis => FiniteDuration(millis, TimeUnit.MILLISECONDS))
   implicit val seqFiniteDurationLoader: ConfigLoader[Seq[FiniteDuration]] =
     ConfigLoader(config => config.getDurationList(_, TimeUnit.MILLISECONDS))
-      .map(toScala(_).map(millis =>
-        FiniteDuration(millis, TimeUnit.MILLISECONDS)))
+      .map(toScala(_).map(millis => FiniteDuration(millis, TimeUnit.MILLISECONDS)))
 
   implicit val doubleLoader = ConfigLoader(_.getDouble)
   implicit val seqDoubleLoader = ConfigLoader(_.getDoubleList).map(toScala)

@@ -261,9 +261,7 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
           .updateApp(
             "/some/nested/path2/app".toPath,
             _ =>
-              AppDefinition(
-                "/some/nested/path2/app".toPath,
-                cmd = Some("true")),
+              AppDefinition("/some/nested/path2/app".toPath, cmd = Some("true")),
             Timestamp.now())
 
       current.transitiveGroups.map(_.id.toString) should be(
@@ -367,9 +365,8 @@ class GroupTest extends FunSpec with GivenWhenThen with Matchers {
                 Group(
                   "/test/service/service2".toPath,
                   Set(AppDefinition("/test/service/service2/s2".toPath)),
-                  dependencies = Set(
-                    "/test/database".toPath,
-                    "/test/service/service1".toPath)
+                  dependencies =
+                    Set("/test/database".toPath, "/test/service/service1".toPath)
                 )
               )
             ),

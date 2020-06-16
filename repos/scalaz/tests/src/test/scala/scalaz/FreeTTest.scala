@@ -76,8 +76,7 @@ object FreeTTest extends SpecLite {
       (
         1,
         Functor[Arbitrary]
-          .map(Arbitrary(g))(
-            FreeT.liftF[F, G, FreeT[F, G, A]](_).flatMap(x => x))
+          .map(Arbitrary(g))(FreeT.liftF[F, G, FreeT[F, G, A]](_).flatMap(x => x))
           .arbitrary)
     )
   "ListOption" should {

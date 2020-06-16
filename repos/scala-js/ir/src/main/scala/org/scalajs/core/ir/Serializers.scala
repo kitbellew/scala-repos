@@ -655,11 +655,8 @@ object Serializers {
         case TagApply       => Apply(readTree(), readIdent(), readTrees())(readType())
         case TagApplyStatically =>
           val result1 =
-            ApplyStatically(
-              readTree(),
-              readClassType(),
-              readIdent(),
-              readTrees())(readType())
+            ApplyStatically(readTree(), readClassType(), readIdent(), readTrees())(
+              readType())
           if (useHacks065 && result1.tpe != NoType && isConstructorName(
               result1.method.name))
             result1.copy()(NoType)
@@ -692,11 +689,7 @@ object Serializers {
         case TagJSSuperBracketSelect =>
           JSSuperBracketSelect(readClassType(), readTree(), readTree())
         case TagJSSuperBracketCall =>
-          JSSuperBracketCall(
-            readClassType(),
-            readTree(),
-            readTree(),
-            readTrees())
+          JSSuperBracketCall(readClassType(), readTree(), readTree(), readTrees())
         case TagJSSuperConstructorCall => JSSuperConstructorCall(readTrees())
         case TagLoadJSConstructor      => LoadJSConstructor(readClassType())
         case TagLoadJSModule           => LoadJSModule(readClassType())
@@ -755,8 +748,7 @@ object Serializers {
             defs0
           }
           val optimizerHints = new OptimizerHints(readInt())
-          ClassDef(name, kind, superClass, parents, jsName, defs)(
-            optimizerHints)
+          ClassDef(name, kind, superClass, parents, jsName, defs)(optimizerHints)
 
         case TagFieldDef =>
           FieldDef(readIdent(), readType(), readBoolean())

@@ -142,8 +142,7 @@ class SizeEstimatorSuite
       SizeEstimator.estimate(Array(new DummyClass1, new DummyClass2)))
 
     // Past size 100, our samples 100 elements, but we should still get the right size.
-    assertResult(28016)(
-      SizeEstimator.estimate(Array.fill(1000)(new DummyClass3)))
+    assertResult(28016)(SizeEstimator.estimate(Array.fill(1000)(new DummyClass3)))
 
     val arr = new Array[Char](100000)
     assertResult(200016)(SizeEstimator.estimate(arr))

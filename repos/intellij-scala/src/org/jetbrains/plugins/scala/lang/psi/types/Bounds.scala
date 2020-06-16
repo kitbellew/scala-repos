@@ -225,17 +225,9 @@ object Bounds {
             lub(lower, lower2, checkWeak),
             glb(upper, upper2, checkWeak))
         case (ScSkolemizedType(name, args, lower, upper), _) =>
-          ScSkolemizedType(
-            name,
-            args,
-            lub(lower, t2, checkWeak),
-            glb(upper, t2))
+          ScSkolemizedType(name, args, lub(lower, t2, checkWeak), glb(upper, t2))
         case (_, ScSkolemizedType(name, args, lower, upper)) =>
-          ScSkolemizedType(
-            name,
-            args,
-            lub(lower, t1, checkWeak),
-            glb(upper, t1))
+          ScSkolemizedType(name, args, lub(lower, t1, checkWeak), glb(upper, t1))
         case (ex: ScExistentialType, _) =>
           glb(ex.skolem, t2, checkWeak).unpackedType
         case (_, ex: ScExistentialType) =>
@@ -409,20 +401,12 @@ object Bounds {
         (
           ScTypeVariable("_$" + count),
           Some(
-            ScExistentialArgument(
-              "_$" + count,
-              List.empty,
-              substed1,
-              substed2)))
+            ScExistentialArgument("_$" + count, List.empty, substed1, substed2)))
       } else if (substed2 conforms substed1) {
         (
           ScTypeVariable("_$" + count),
           Some(
-            ScExistentialArgument(
-              "_$" + count,
-              List.empty,
-              substed2,
-              substed1)))
+            ScExistentialArgument("_$" + count, List.empty, substed2, substed1)))
       } else {
         (substed1, substed2) match {
           case (
@@ -433,25 +417,19 @@ object Bounds {
               else
                 lub(Seq(upper, upper2), checkWeak)(stopAddingUpperBound = true)
             (
-              ScSkolemizedType(
-                name,
-                args,
-                glb(lower, lower2, checkWeak),
-                newLub),
+              ScSkolemizedType(name, args, glb(lower, lower2, checkWeak), newLub),
               None)
           case (ScSkolemizedType(name, args, lower, upper), _) =>
             val newLub =
               if (stopAddingUpperBound) types.Any
               else
-                lub(Seq(upper, substed2), checkWeak)(stopAddingUpperBound =
-                  true)
+                lub(Seq(upper, substed2), checkWeak)(stopAddingUpperBound = true)
             (ScSkolemizedType(name, args, glb(lower, substed2), newLub), None)
           case (_, ScSkolemizedType(name, args, lower, upper)) =>
             val newLub =
               if (stopAddingUpperBound) types.Any
               else
-                lub(Seq(upper, substed1), checkWeak)(stopAddingUpperBound =
-                  true)
+                lub(Seq(upper, substed1), checkWeak)(stopAddingUpperBound = true)
             (ScSkolemizedType(name, args, glb(lower, substed1), newLub), None)
           case _ =>
             val newGlb = Bounds.glb(substed1, substed2)
@@ -467,11 +445,7 @@ object Bounds {
               (
                 ScTypeVariable("_$" + count),
                 Some(
-                  ScExistentialArgument(
-                    "_$" + count,
-                    List.empty,
-                    newGlb,
-                    newLub)))
+                  ScExistentialArgument("_$" + count, List.empty, newGlb, newLub)))
             } else {
               //todo: this is wrong, actually we should pick lub, just without merging parameters in this method
               (

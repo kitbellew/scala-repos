@@ -33,10 +33,8 @@ class DataView(buffer: ArrayBuffer, byteOffset: Int = 0, byteLength: Int = ???)
       byteOffset: Int,
       value: Int,
       littleEndian: Boolean = false): Unit = js.native
-  def setInt32(
-      byteOffset: Int,
-      value: Int,
-      littleEndian: Boolean = false): Unit = js.native
+  def setInt32(byteOffset: Int, value: Int, littleEndian: Boolean = false): Unit =
+    js.native
   def setUint32(
       byteOffset: Int,
       value: Double,

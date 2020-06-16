@@ -441,8 +441,7 @@ trait GroupSolver
     }
 
     case t @ TicVar(_, `tv`) =>
-      !free && t.binding == SolveBinding(b) || free && t.binding == FreeBinding(
-        b)
+      !free && t.binding == SolveBinding(b) || free && t.binding == FreeBinding(b)
   }
 
   private def enterLet(sigma: Sigma, let: Let, actuals: Vector[Expr]): Sigma = {
@@ -926,10 +925,7 @@ trait GroupSolver
         btrace: List[Dispatch])
         extends BucketSpec
 
-    case class UnfixedSolution(
-        id: TicId,
-        solution: Expr,
-        btrace: List[Dispatch])
+    case class UnfixedSolution(id: TicId, solution: Expr, btrace: List[Dispatch])
         extends BucketSpec
     case class FixedSolution(
         id: TicId,

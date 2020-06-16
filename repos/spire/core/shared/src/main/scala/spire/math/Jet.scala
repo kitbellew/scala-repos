@@ -277,9 +277,7 @@ final case class Jet[@sp(Float, Double) T](real: T, infinitesimal: Array[T])
     // which holds because dv dv = du dv = 0.
     val br_inv: T = f.one / b.real
     val ar_div_br: T = real * br_inv
-    new Jet(
-      ar_div_br,
-      br_inv *: (infinitesimal - (ar_div_br *: b.infinitesimal)))
+    new Jet(ar_div_br, br_inv *: (infinitesimal - (ar_div_br *: b.infinitesimal)))
   }
 
   def /~(b: Jet[T])(implicit

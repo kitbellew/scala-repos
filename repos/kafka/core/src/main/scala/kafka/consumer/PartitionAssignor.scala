@@ -48,8 +48,7 @@ class AssignmentContext(
     val consumerId: String,
     excludeInternalTopics: Boolean,
     zkUtils: ZkUtils) {
-  val myTopicThreadIds
-      : collection.Map[String, collection.Set[ConsumerThreadId]] = {
+  val myTopicThreadIds: collection.Map[String, collection.Set[ConsumerThreadId]] = {
     val myTopicCount = TopicCount.constructTopicCount(
       group,
       consumerId,

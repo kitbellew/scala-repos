@@ -52,10 +52,7 @@ case class ScUndefinedType(tpt: ScTypeParameterType) extends NonValueType {
   * to resolve generics. It's important if two local type
   * inferences work together.
   */
-case class ScAbstractType(
-    tpt: ScTypeParameterType,
-    lower: ScType,
-    upper: ScType)
+case class ScAbstractType(tpt: ScTypeParameterType, lower: ScType, upper: ScType)
     extends NonValueType {
   private var hash: Int = -1
 

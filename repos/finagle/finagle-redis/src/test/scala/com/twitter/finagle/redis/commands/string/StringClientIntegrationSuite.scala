@@ -118,8 +118,7 @@ final class StringClientIntegrationSuite extends RedisClientTest {
         Await.result(
           client.mSetNx(Map(foo -> bar, baz -> foo, boo -> moo))) == false)
       assert(Await.result(client.mSetNx(Map(baz -> foo, boo -> moo))) == true)
-      assert(
-        Await.result(client.mGet(Seq(baz, boo))) == Seq(Some(foo), Some(moo)))
+      assert(Await.result(client.mGet(Seq(baz, boo))) == Seq(Some(foo), Some(moo)))
     }
   }
 
@@ -137,8 +136,7 @@ final class StringClientIntegrationSuite extends RedisClientTest {
       assert(Await.result(client.setNx(baz, bar)) == false)
 
       assert(Await.result(client.setRange(baz, 1, baz)) == 4L)
-      assert(
-        Await.result(client.get(baz)) == Some(StringToChannelBuffer("fbaz")))
+      assert(Await.result(client.get(baz)) == Some(StringToChannelBuffer("fbaz")))
     }
   }
 

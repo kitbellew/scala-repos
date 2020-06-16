@@ -45,11 +45,7 @@ object LazyTuple3 extends LazyTuple3Instances {
 }
 
 object LazyTuple4 extends LazyTuple4Instances {
-  def apply[A, B, C, D](
-      a: => A,
-      b: => B,
-      c: => C,
-      d: => D): LazyTuple4[A, B, C, D] =
+  def apply[A, B, C, D](a: => A, b: => B, c: => C, d: => D): LazyTuple4[A, B, C, D] =
     new LazyTuple4[A, B, C, D] {
       def _1 = a
       def _2 = b
@@ -240,8 +236,7 @@ sealed abstract class LazyTuple4Instances0 {
       implicit def _4 = A4
     }
 
-  implicit def lazyTuple4Functor[A1, A2, A3]
-      : Functor[LazyTuple4[A1, A2, A3, ?]] =
+  implicit def lazyTuple4Functor[A1, A2, A3]: Functor[LazyTuple4[A1, A2, A3, ?]] =
     new LazyTuple4Functor[A1, A2, A3] {}
 
   implicit def lazyTuple4Equal[A1, A2, A3, A4](implicit

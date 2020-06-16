@@ -89,7 +89,8 @@ object TimePathSourceLaws extends Properties("Time path source") {
       } else true // not tested here
     }
 
-  property("If not a complete subset, but overlapping we can imply a few prerequisites") =
+  property(
+    "If not a complete subset, but overlapping we can imply a few prerequisites") =
     forAll { (data: TestData) =>
       val retData = BTimePathedSource.minify(
         genEmbiggen(data.embiggen),

@@ -46,10 +46,7 @@ trait JoinOptimizerModule[M[+_]]
       def compareAncestor(lhs: DepGraph, rhs: DepGraph): Boolean =
         findAncestor(lhs, ctx) == findAncestor(rhs, ctx)
 
-      def liftRewrite(
-          graph: DepGraph,
-          eq: DepGraph,
-          lifted: DepGraph): DepGraph =
+      def liftRewrite(graph: DepGraph, eq: DepGraph, lifted: DepGraph): DepGraph =
         transformBottomUp(graph) { g => if (g == eq) lifted else g }
 
       def rewrite(

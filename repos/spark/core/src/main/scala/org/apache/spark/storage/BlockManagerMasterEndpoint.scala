@@ -158,8 +158,7 @@ private[spark] class BlockManagerMasterEndpoint(
       blockLocations.asScala.keys.flatMap(_.asRDDId).filter(_.rddId == rddId)
     blocks.foreach { blockId =>
       val bms: mutable.HashSet[BlockManagerId] = blockLocations.get(blockId)
-      bms.foreach(bm =>
-        blockManagerInfo.get(bm).foreach(_.removeBlock(blockId)))
+      bms.foreach(bm => blockManagerInfo.get(bm).foreach(_.removeBlock(blockId)))
       blockLocations.remove(blockId)
     }
 
@@ -450,10 +449,7 @@ private[spark] class BlockManagerMasterEndpoint(
 }
 
 @DeveloperApi
-case class BlockStatus(
-    storageLevel: StorageLevel,
-    memSize: Long,
-    diskSize: Long) {
+case class BlockStatus(storageLevel: StorageLevel, memSize: Long, diskSize: Long) {
   def isCached: Boolean = memSize + diskSize > 0
 }
 
@@ -525,14 +521,10 @@ private[spark] class BlockManagerInfo(
             Utils.bytesToString(_remainingMem)))
       }
       if (storageLevel.useDisk) {
-        blockStatus =
-          BlockStatus(storageLevel, memSize = 0, diskSize = diskSize)
+        blockStatus = BlockStatus(storageLevel, memSize = 0, diskSize = diskSize)
         _blocks.put(blockId, blockStatus)
-        logInfo(
-          "Added %s on disk on %s (size: %s)".format(
-            blockId,
-            blockManagerId.hostPort,
-            Utils.bytesToString(diskSize)))
+        logInfo("Added %s on disk on %s (size: %s)"
+          .format(blockId, blockManagerId.hostPort, Utils.bytesToString(diskSize)))
       }
       if (!blockId.isBroadcast && blockStatus.isCached) {
         _cachedBlocks += blockId

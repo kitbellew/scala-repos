@@ -25,8 +25,7 @@ object Test extends App {
 
   val immsortedmap =
     immutable.SortedMap(1 -> false, 2 -> true, 3 -> false, 4 -> true)
-  println(
-    immsortedmap.filterKeys(_ % 2 == 0): immutable.SortedMap[Int, Boolean])
+  println(immsortedmap.filterKeys(_ % 2 == 0): immutable.SortedMap[Int, Boolean])
   println(immsortedmap.mapValues(_ + "!"): immutable.SortedMap[Int, String])
   println(
     immsortedmap

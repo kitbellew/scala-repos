@@ -77,9 +77,7 @@ private[remote] class TcpServerHandler(
     extends ServerHandler(_transport, _associationListenerFuture)
     with TcpHandlers {
 
-  override def onConnect(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent): Unit =
+  override def onConnect(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit =
     initInbound(e.getChannel, e.getChannel.getRemoteAddress, null)
 
 }
@@ -93,9 +91,7 @@ private[remote] class TcpClientHandler(
     extends ClientHandler(_transport, remoteAddress)
     with TcpHandlers {
 
-  override def onConnect(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent): Unit =
+  override def onConnect(ctx: ChannelHandlerContext, e: ChannelStateEvent): Unit =
     initOutbound(e.getChannel, e.getChannel.getRemoteAddress, null)
 
 }

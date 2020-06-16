@@ -260,8 +260,7 @@ trait CorsSupport extends Handler with Initializable { self: ScalatraBase ⇒
       for (header <- request.headers.getMulti(AccessControlRequestHeadersHeader)
         if header.nonBlank) yield header.toUpperCase(ENGLISH)
 
-    requestedHeaders.forall(h =>
-      isSimpleHeader(h) || allowedHeaders.contains(h))
+    requestedHeaders.forall(h => isSimpleHeader(h) || allowedHeaders.contains(h))
   }
 
   abstract override def handle(

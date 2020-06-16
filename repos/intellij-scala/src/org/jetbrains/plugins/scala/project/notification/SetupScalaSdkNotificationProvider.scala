@@ -37,17 +37,14 @@ class SetupScalaSdkNotificationProvider(
 
   override def getKey = ProviderKey
 
-  override def createNotificationPanel(
-      file: VirtualFile,
-      fileEditor: FileEditor) = {
+  override def createNotificationPanel(file: VirtualFile, fileEditor: FileEditor) = {
     val hasSdk = Option(PsiManager.getInstance(project).findFile(file))
       .filter(_.getLanguage == ScalaLanguage.Instance)
       .filter(
         !_.getName.endsWith(".sbt")
       ) // root SBT files belong to main (not *-build) modules
       .filter(_.isWritable)
-      .flatMap(psiFile =>
-        Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
+      .flatMap(psiFile => Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
       .filter(module =>
         ModuleUtil.getModuleType(module) == JavaModuleType.getModuleType)
       .filter(!_.getName

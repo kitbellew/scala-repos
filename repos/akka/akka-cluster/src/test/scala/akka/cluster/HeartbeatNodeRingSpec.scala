@@ -59,12 +59,9 @@ class HeartbeatNodeRingSpec extends WordSpec with Matchers {
 
     "pick all except own as receivers when less than total number of nodes" in {
       val expected = Set(aa, bb, dd, ee, ff)
-      HeartbeatNodeRing(cc, nodes, Set.empty, 5).myReceivers should ===(
-        expected)
-      HeartbeatNodeRing(cc, nodes, Set.empty, 6).myReceivers should ===(
-        expected)
-      HeartbeatNodeRing(cc, nodes, Set.empty, 7).myReceivers should ===(
-        expected)
+      HeartbeatNodeRing(cc, nodes, Set.empty, 5).myReceivers should ===(expected)
+      HeartbeatNodeRing(cc, nodes, Set.empty, 6).myReceivers should ===(expected)
+      HeartbeatNodeRing(cc, nodes, Set.empty, 7).myReceivers should ===(expected)
     }
 
     "pick none when alone" in {

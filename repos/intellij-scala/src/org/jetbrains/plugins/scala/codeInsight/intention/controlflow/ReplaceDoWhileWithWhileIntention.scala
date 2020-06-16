@@ -102,8 +102,7 @@ class ReplaceDoWhileWithWhileIntention extends PsiElementBaseIntentionAction {
 
     def doReplacement() {
       for {
-        doStmt <- Option(
-          PsiTreeUtil.getParentOfType(element, classOf[ScDoStmt]))
+        doStmt <- Option(PsiTreeUtil.getParentOfType(element, classOf[ScDoStmt]))
         condition <- doStmt.condition
         body <- doStmt.getExprBody
         doStmtParent <- doStmt.parent

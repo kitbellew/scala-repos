@@ -442,9 +442,8 @@ class ExecutionTest extends WordSpec with Matchers {
       writeAll(400).shouldSucceed()
     }
     "handle failure" in {
-      val result = Execution.withParallelism(
-        Seq(Execution.failed(new Exception("failed"))),
-        1)
+      val result =
+        Execution.withParallelism(Seq(Execution.failed(new Exception("failed"))), 1)
 
       assert(result.waitFor(Config.default, Local(true)).isFailure)
     }
@@ -488,8 +487,7 @@ class ExecutionTest extends WordSpec with Matchers {
 
       val result = Execution.withParallelism(executions, 1)
 
-      assert(
-        result.waitFor(Config.default, Local(true)).get == 0.to(10).reverse)
+      assert(result.waitFor(Config.default, Local(true)).get == 0.to(10).reverse)
     }
   }
 }

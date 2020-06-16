@@ -54,12 +54,10 @@ class InferSchemaSuite extends SparkFunSuite {
   }
 
   test("Timestamp field types are inferred correctly from other types") {
-    assert(
-      CSVInferSchema.inferField(IntegerType, "2015-08-20 14") == StringType)
+    assert(CSVInferSchema.inferField(IntegerType, "2015-08-20 14") == StringType)
     assert(
       CSVInferSchema.inferField(DoubleType, "2015-08-20 14:10") == StringType)
-    assert(
-      CSVInferSchema.inferField(LongType, "2015-08 14:49:00") == StringType)
+    assert(CSVInferSchema.inferField(LongType, "2015-08 14:49:00") == StringType)
   }
 
   test("Boolean fields types are inferred correctly from other types") {

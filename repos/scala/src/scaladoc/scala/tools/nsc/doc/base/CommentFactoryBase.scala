@@ -864,9 +864,7 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     /** {{{ eol ::= { whitespace } '\n' }}} */
     def blockEnded(blockType: String): Unit = {
       if (char != endOfLine && char != endOfText) {
-        reportError(
-          pos,
-          "no additional content on same line after " + blockType)
+        reportError(pos, "no additional content on same line after " + blockType)
         jumpUntil(endOfLine)
       }
       while (char == endOfLine)

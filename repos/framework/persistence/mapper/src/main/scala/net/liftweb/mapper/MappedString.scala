@@ -244,9 +244,7 @@ abstract class MappedString[T <: Mapper[T]](val fieldOwner: T, val maxLen: Int)
         accessor,
         { case f: MappedString[T] => f.wholeSet(if (v eq null) null else v) })
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(
         inst,

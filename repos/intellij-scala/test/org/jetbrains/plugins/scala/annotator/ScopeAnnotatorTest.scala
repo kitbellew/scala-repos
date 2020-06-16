@@ -163,9 +163,7 @@ class ScopeAnnotatorTest extends SimpleTestCase {
     assertClashes("while(true) { class C; class C }", "C")
     assertClashes("do { class C; class C } while(true)", "C")
     assertClashes("try { class C; class C } catch { case _ => }", "C")
-    assertClashes(
-      "try {} catch { case _ => } finally { class C; class C }",
-      "C")
+    assertClashes("try {} catch { case _ => } finally { class C; class C }", "C")
     assertClashes("new { class C; class C }", "C")
     assertClashes("null match { case _ => class C; class C }", "C")
     assertClashes("val x: (Any => Unit) = { case _ => class C; class C }", "C")
@@ -546,8 +544,8 @@ class ScopeAnnotatorTest extends SimpleTestCase {
       Assert.fail("Unexpected clashes: " + clashes.mkString(", "))
   }
 
-  def messages(@Language(value = "Scala", prefix = Header) code: String)
-      : List[Message] = {
+  def messages(
+      @Language(value = "Scala", prefix = Header) code: String): List[Message] = {
     val psi = (Header + code).parse
     val annotator = new ScopeAnnotator() {}
     val mock = new AnnotatorHolderMock

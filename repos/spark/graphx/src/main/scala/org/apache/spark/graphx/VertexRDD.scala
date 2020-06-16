@@ -389,8 +389,7 @@ object VertexRDD {
     vid2pid
       .partitionBy(vertexPartitioner)
       .mapPartitions(
-        iter =>
-          Iterator(RoutingTablePartition.fromMsgs(numEdgePartitions, iter)),
+        iter => Iterator(RoutingTablePartition.fromMsgs(numEdgePartitions, iter)),
         preservesPartitioning = true)
   }
 }

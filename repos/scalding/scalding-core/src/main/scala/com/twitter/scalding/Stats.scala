@@ -151,8 +151,7 @@ object RuntimeStats extends java.io.Serializable {
   @transient private lazy val logger: Logger =
     LoggerFactory.getLogger(this.getClass)
 
-  private val flowMappingStore
-      : mutable.Map[String, WeakReference[FlowProcess[_]]] = {
+  private val flowMappingStore: mutable.Map[String, WeakReference[FlowProcess[_]]] = {
     (new ConcurrentHashMap[String, WeakReference[FlowProcess[_]]]).asScala
   }
 
@@ -207,8 +206,7 @@ object RuntimeStats extends java.io.Serializable {
 /**
   * FlowListener that checks counter values against a function.
   */
-class StatsFlowListener(f: Map[StatKey, Long] => Try[Unit])
-    extends FlowListener {
+class StatsFlowListener(f: Map[StatKey, Long] => Try[Unit]) extends FlowListener {
 
   private var success = true
 

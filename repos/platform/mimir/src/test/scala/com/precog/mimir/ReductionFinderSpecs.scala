@@ -94,8 +94,7 @@ trait ReductionFinderSpecs[M[+_]]
       val notEq = Join(
         NotEq,
         Cross(None),
-        Join(DerefObject, Cross(None), clicks, Const(CString("foo"))(line))(
-          line),
+        Join(DerefObject, Cross(None), clicks, Const(CString("foo"))(line))(line),
         Const(CNum(5))(line))(line)
 
       val obj =
@@ -628,11 +627,8 @@ trait ReductionFinderSpecs[M[+_]]
             line),
           UnfixedSolution(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line))
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line))
         ),
         Join(
           JoinObject,
@@ -680,11 +676,8 @@ trait ReductionFinderSpecs[M[+_]]
             line),
           UnfixedSolution(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line))
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line))
         ),
         Join(
           JoinObject,
@@ -946,8 +939,7 @@ trait ReductionFinderSpecs[M[+_]]
         Join(
           JoinObject,
           Cross(None),
-          Join(WrapObject, Cross(None), userRoot, SplitParam(0, id)(line))(
-            line),
+          Join(WrapObject, Cross(None), userRoot, SplitParam(0, id)(line))(line),
           Join(
             JoinObject,
             Cross(None),

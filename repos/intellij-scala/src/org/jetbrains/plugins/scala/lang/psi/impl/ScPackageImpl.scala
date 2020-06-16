@@ -106,11 +106,8 @@ class ScPackageImpl private (val pack: PsiPackage)
               case tp: ScType =>
                 newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
             }
-            if (!obj.processDeclarations(
-                processor,
-                newState,
-                lastParent,
-                place)) return false
+            if (!obj.processDeclarations(processor, newState, lastParent, place))
+              return false
           case _ =>
         }
       } else {
@@ -121,11 +118,8 @@ class ScPackageImpl private (val pack: PsiPackage)
               case tp: ScType =>
                 newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
             }
-            if (!obj.processDeclarations(
-                processor,
-                newState,
-                lastParent,
-                place)) return false
+            if (!obj.processDeclarations(processor, newState, lastParent, place))
+              return false
           case _ =>
         }
       }
@@ -156,9 +150,7 @@ class ScPackageImpl private (val pack: PsiPackage)
     if (lastDot < 0) {
       ScPackageImpl.findPackage(getProject, "")
     } else {
-      ScPackageImpl.findPackage(
-        getProject,
-        myQualifiedName.substring(0, lastDot))
+      ScPackageImpl.findPackage(getProject, myQualifiedName.substring(0, lastDot))
     }
   }
 

@@ -130,11 +130,8 @@ class HBLEvents(
     }
   }
 
-  override def futureDelete(
-      eventId: String,
-      appId: Int,
-      channelId: Option[Int])(implicit
-      ec: ExecutionContext): Future[Boolean] = {
+  override def futureDelete(eventId: String, appId: Int, channelId: Option[Int])(
+      implicit ec: ExecutionContext): Future[Boolean] = {
     Future {
       val table = getTable(appId, channelId)
       val rowKey = RowKey(eventId)

@@ -70,8 +70,7 @@ object JavaScriptContext {
     }
   }
 
-  private object currentScript
-      extends TransientRequestVar[JSScope](new JSScope) {
+  private object currentScript extends TransientRequestVar[JSScope](new JSScope) {
     registerCleanupFunc(in => get.bye())
   }
 

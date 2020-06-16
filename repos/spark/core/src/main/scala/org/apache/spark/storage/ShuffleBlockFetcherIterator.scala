@@ -452,9 +452,7 @@ private[storage] object ShuffleBlockFetcherIterator {
     * @param blocks Sequence of tuple, where the first element is the block id,
     *               and the second element is the estimated size, used to calculate bytesInFlight.
     */
-  case class FetchRequest(
-      address: BlockManagerId,
-      blocks: Seq[(BlockId, Long)]) {
+  case class FetchRequest(address: BlockManagerId, blocks: Seq[(BlockId, Long)]) {
     val size = blocks.map(_._2).sum
   }
 

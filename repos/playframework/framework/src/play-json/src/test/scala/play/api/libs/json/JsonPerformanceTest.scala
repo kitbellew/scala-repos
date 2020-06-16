@@ -93,17 +93,13 @@ object JsonPerformanceTest extends App {
     }
   }
 
-  def testLargeArrayDeserialization(
-      times: Int = 100,
-      threads: Int = 10): Long = {
+  def testLargeArrayDeserialization(times: Int = 100, threads: Int = 10): Long = {
     runTest(times, threads) {
       Json.parse(largeArrayJson)
     }
   }
 
-  def testLargeObjectDeserialization(
-      times: Int = 100,
-      threads: Int = 100): Long = {
+  def testLargeObjectDeserialization(times: Int = 100, threads: Int = 100): Long = {
     runTest(times, threads) {
       Json.parse(largeObjectJson)
     }

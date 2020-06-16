@@ -50,7 +50,8 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("HttpConnectHandler should upon connect wrap the downstream connect request") {
+  test(
+    "HttpConnectHandler should upon connect wrap the downstream connect request") {
     val h = new HttpConnectHandlerHelper
     import h._
 
@@ -77,7 +78,8 @@ class HttpConnectHandlerTest extends FunSuite with MockitoSugar {
     assert(e.getFuture.isCancelled)
   }
 
-  test("HttpConnectHandler should when connect is successful not propagate success") {
+  test(
+    "HttpConnectHandler should when connect is successful not propagate success") {
     val h = new HttpConnectHandlerHelper
     import h._
 

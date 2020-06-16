@@ -360,13 +360,8 @@ abstract class KafkaShardIngestActor(
 
                   // create a handler for the batch, then reply to the sender with the message set
                   // using that handler reference as the sender to which the ingest system will reply
-                  val batchHandler = context.actorOf(
-                    Props(
-                      new BatchHandler(
-                        self,
-                        requestor,
-                        checkpoint,
-                        ingestTimeout)))
+                  val batchHandler = context.actorOf(Props(
+                    new BatchHandler(self, requestor, checkpoint, ingestTimeout)))
                   batchHandler.tell(ProjectionUpdatesExpected(messages.size))
                   requestor.tell(IngestData(messages), batchHandler)
                 } else {
@@ -399,8 +394,7 @@ abstract class KafkaShardIngestActor(
       } catch {
         case t: Throwable =>
           logger.error("Exception caught during ingest poll", t)
-          requestor ! IngestErrors(
-            List("Exception during poll: " + t.getMessage))
+          requestor ! IngestErrors(List("Exception during poll: " + t.getMessage))
       }
   }
 
@@ -409,8 +403,8 @@ abstract class KafkaShardIngestActor(
     */
   protected def handleBatchComplete(pendingCheckpoint: YggCheckpoint): Unit
 
-  private def readRemote(fromCheckpoint: YggCheckpoint): Future[
-    Validation[Error, (Vector[(Long, EventMessage)], YggCheckpoint)]] = {
+  private def readRemote(fromCheckpoint: YggCheckpoint)
+      : Future[Validation[Error, (Vector[(Long, EventMessage)], YggCheckpoint)]] = {
     // The bifrost ingest actor needs to compute the maximum offset, so it has
     // to traverse the full message set in process; to avoid traversing it
     // twice, we simply read the payload into event messages at this point.
@@ -420,8 +414,7 @@ abstract class KafkaShardIngestActor(
     def buildBatch(
         input: List[(Long, EventMessage)],
         batch: Vector[(Long, EventMessage)],
-        checkpoint: YggCheckpoint)
-        : (Vector[(Long, EventMessage)], YggCheckpoint) = {
+        checkpoint: YggCheckpoint): (Vector[(Long, EventMessage)], YggCheckpoint) = {
 
       input match {
         case Nil =>
@@ -495,8 +488,8 @@ abstract class KafkaShardIngestActor(
         consumer.fetch(req)
       }
 
-      val eventMessages: List[
-        Validation[Error, (Long, EventMessage.EventMessageExtraction)]] =
+      val eventMessages
+          : List[Validation[Error, (Long, EventMessage.EventMessageExtraction)]] =
         msTime({ t =>
           logger.debug(
             "Raw kafka deserialization of %d events in %d ms"

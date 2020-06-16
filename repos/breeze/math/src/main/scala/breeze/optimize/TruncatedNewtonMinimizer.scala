@@ -167,11 +167,7 @@ class TruncatedNewtonMinimizer[T, H](
             norm(residual),
             predictedReduction,
             actualReduction))
-        state.copy(
-          this_iter,
-          delta = newDelta,
-          stop = stop_cond,
-          accept = false)
+        state.copy(this_iter, delta = newDelta, stop = stop_cond, accept = false)
       }
 
     }

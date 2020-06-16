@@ -138,8 +138,7 @@ trait IntroduceExpressions {
                 .getInstance()
                 .INTRODUCE_VARIABLE_EXPLICIT_TYPE)
             val selectedType = if (needExplicitType) types(0) else null
-            val introduceRunnable
-                : Computable[SmartPsiElementPointer[PsiElement]] =
+            val introduceRunnable: Computable[SmartPsiElementPointer[PsiElement]] =
               introduceVariable(
                 startOffset,
                 endOffset,
@@ -167,8 +166,7 @@ trait IntroduceExpressions {
                     case _ => null
                   }
                   if (namedElement != null && namedElement.isValid) {
-                    editor.getCaretModel.moveToOffset(
-                      namedElement.getTextOffset)
+                    editor.getCaretModel.moveToOffset(namedElement.getTextOffset)
                     editor.getSelectionModel.removeSelection()
                     if (ScalaRefactoringUtil.isInplaceAvailable(editor)) {
                       PsiDocumentManager
@@ -380,8 +378,7 @@ trait IntroduceExpressions {
           case expr => Seq(expr)
         }
       else
-        replacedOccurences.toSeq.map(
-          ScalaRefactoringUtil.findParentExpr(file, _))
+        replacedOccurences.toSeq.map(ScalaRefactoringUtil.findParentExpr(file, _))
     val commonParent: PsiElement = PsiTreeUtil.findCommonParent(parentExprs: _*)
 
     val nextParent: PsiElement =
@@ -590,8 +587,7 @@ trait IntroduceExpressions {
       if (occurrences.length > 1) {
         WindowManager.getInstance
           .getStatusBar(project)
-          .setInfo(
-            ScalaBundle.message("press.escape.to.remove.the.highlighting"))
+          .setInfo(ScalaBundle.message("press.escape.to.remove.the.highlighting"))
       }
     }
 

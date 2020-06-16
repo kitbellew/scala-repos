@@ -13,8 +13,8 @@ class DeploymentPlanRevertTest
     with GivenWhenThen {
   private def normalizeVersions(group: Group): Group = {
     group.withNormalizedVersion.copy(
-      apps = group.apps.map(
-        _.copy(versionInfo = AppDefinition.VersionInfo.NoVersion)),
+      apps =
+        group.apps.map(_.copy(versionInfo = AppDefinition.VersionInfo.NoVersion)),
       groups = group.groups.map(normalizeVersions)
     )
   }
@@ -173,8 +173,7 @@ class DeploymentPlanRevertTest
       groups = Set(changeme)
     )
 
-    When(
-      "we remove the group and try to revert that without concurrent changes")
+    When("we remove the group and try to revert that without concurrent changes")
     val target = original.remove("changeme".toRootPath)
     val plan = DeploymentPlan(original, target)
     val revertToOriginal = plan.revert(target)
@@ -201,8 +200,7 @@ class DeploymentPlanRevertTest
       groups = Set(changeme)
     )
 
-    When(
-      "we remove the group and try to revert that without concurrent changes")
+    When("we remove the group and try to revert that without concurrent changes")
     val target = original.remove("changeme".toRootPath)
     val plan = DeploymentPlan(original, target)
     val revertToOriginal = plan.revert(target)
@@ -544,7 +542,8 @@ class DeploymentPlanRevertTest
       val reverted =
         deploymentReverterForFirst(normalizeVersions(targetWithAllDeployments))
 
-      Then("The result should only contain items with the prior or the new version")
+      Then(
+        "The result should only contain items with the prior or the new version")
       for (app <- reverted.transitiveApps) {
         withClue(s"version for app ${app.id} ") {
           app.version.toDateTime.getMillis should be <= (1L)
@@ -609,8 +608,6 @@ class DeploymentPlanRevertTest
         s"group '$groupId' change deps -{${removedIds.mkString(
           ", ")}} +{${addedIds.mkString(", ")}}"
 
-    Deployment(
-      name,
-      _.update(groupId.toRootPath, setDependencies, Timestamp.now()))
+    Deployment(name, _.update(groupId.toRootPath, setDependencies, Timestamp.now()))
   }
 }

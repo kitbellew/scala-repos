@@ -116,8 +116,7 @@ trait SchedulerSpec
       collectCancellable(
         system.scheduler.scheduleOnce(300 milliseconds, tickActor, Tick))
       collectCancellable(
-        system.scheduler.scheduleOnce(300 milliseconds)(
-          countDownLatch.countDown()))
+        system.scheduler.scheduleOnce(300 milliseconds)(countDownLatch.countDown()))
 
       // should not be run immediately
       assert(countDownLatch.await(100, TimeUnit.MILLISECONDS) == false)
@@ -203,8 +202,8 @@ trait SchedulerSpec
       val pingLatch = new TestLatch(6)
 
       val supervisor = system.actorOf(
-        Props(new Supervisor(
-          AllForOneStrategy(3, 1 second)(List(classOf[Exception])))))
+        Props(
+          new Supervisor(AllForOneStrategy(3, 1 second)(List(classOf[Exception])))))
       val props = Props(new Actor {
         def receive = {
           case Ping ⇒ pingLatch.countDown()
@@ -432,8 +431,7 @@ class LightArrayRevolverSchedulerSpec
           val counter = new AtomicInteger
           val terminated = future {
             var rounds = 0
-            while (Try(
-                sched.scheduleOnce(Duration.Zero)(())(localEC)).isSuccess) {
+            while (Try(sched.scheduleOnce(Duration.Zero)(())(localEC)).isSuccess) {
               Thread.sleep(1)
               driver.wakeUp(step)
               rounds += 1

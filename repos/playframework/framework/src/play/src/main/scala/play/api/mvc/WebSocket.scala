@@ -119,15 +119,14 @@ object WebSocket {
         : MessageFlowTransformer[String, String] = {
       new MessageFlowTransformer[String, String] {
         def transform(flow: Flow[String, String, _]) = {
-          AkkaStreams.bypassWith[Message, String, Message](
-            Flow[Message] collect {
-              case TextMessage(text) => Left(text)
-              case BinaryMessage(_) =>
-                Right(
-                  CloseMessage(
-                    Some(CloseCodes.Unacceptable),
-                    "This WebSocket only supports text frames"))
-            })(flow map TextMessage.apply)
+          AkkaStreams.bypassWith[Message, String, Message](Flow[Message] collect {
+            case TextMessage(text) => Left(text)
+            case BinaryMessage(_) =>
+              Right(
+                CloseMessage(
+                  Some(CloseCodes.Unacceptable),
+                  "This WebSocket only supports text frames"))
+          })(flow map TextMessage.apply)
         }
       }
     }
@@ -258,9 +257,8 @@ object WebSocket {
     */
   @deprecated("Use acceptOrResult with an Akka streams flow instead", "2.5.0")
   def tryAccept[A](
-      f: RequestHeader => Future[
-        Either[Result, (Iteratee[A, _], Enumerator[A])]])(implicit
-      transformer: MessageFlowTransformer[A, A]): WebSocket = {
+      f: RequestHeader => Future[Either[Result, (Iteratee[A, _], Enumerator[A])]])(
+      implicit transformer: MessageFlowTransformer[A, A]): WebSocket = {
     acceptOrResult[A, A](f.andThen(_.map(_.right.map {
       case (iteratee, enumerator) =>
         // Play 2.4 and earlier only closed the WebSocket if the enumerator specifically fed EOF. So, you could

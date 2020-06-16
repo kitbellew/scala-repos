@@ -132,7 +132,8 @@ class StandardCompileServer(fixPort: Int = 0) extends SocketServer(fixPort) {
       }
       val unequal = unequalSettings(newSettings, compiler.settings)
       if (unequal.nonEmpty) {
-        info("[Replacing compiler with new instance because settings are unequal.]")
+        info(
+          "[Replacing compiler with new instance because settings are unequal.]")
         info("[Asymmetric settings: " + unequal.mkString(", ") + "]")
       }
       unequal.isEmpty
@@ -214,10 +215,8 @@ object CompileServer {
       server.echo("Redirect dir is " + redirectDir)
     }
 
-    Console.withErr(
-      createRedirect(redirectDir, "scala-compile-server-err.log")) {
-      Console.withOut(
-        createRedirect(redirectDir, "scala-compile-server-out.log")) {
+    Console.withErr(createRedirect(redirectDir, "scala-compile-server-err.log")) {
+      Console.withOut(createRedirect(redirectDir, "scala-compile-server-out.log")) {
         Console.err.println(
           "...starting server on socket " + server.port + "...")
         Console.err.flush()

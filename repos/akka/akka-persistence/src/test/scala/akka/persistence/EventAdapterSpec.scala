@@ -206,8 +206,7 @@ class EventAdapterSpec(
     "create adapter requiring ActorSystem" in {
       val event = UserDataChanged("name", 42)
       toJournal(event, "with-actor-system") should equal(event)
-      fromJournal(event, "with-actor-system") should equal(
-        SingleEventSeq(event))
+      fromJournal(event, "with-actor-system") should equal(SingleEventSeq(event))
     }
   }
 

@@ -14,9 +14,7 @@ import org.jetbrains.plugins.scala.lang.completion.lookups.ScalaLookupItem
   */
 
 class SbtDefinitionWeigher extends CompletionWeigher {
-  def weigh(
-      element: LookupElement,
-      location: CompletionLocation): Comparable[_] =
+  def weigh(element: LookupElement, location: CompletionLocation): Comparable[_] =
     element match {
       case element: ScalaLookupItem if element.name == "???" => 0
       case element: ScalaLookupItem if element.isSbtLookupItem =>

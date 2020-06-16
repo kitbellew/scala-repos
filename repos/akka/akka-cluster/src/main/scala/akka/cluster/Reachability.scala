@@ -113,9 +113,7 @@ private[cluster] class Reachability private (
       : Option[Map[UniqueAddress, Reachability.Record]] =
     cache.observerRowsMap.get(observer)
 
-  def unreachable(
-      observer: UniqueAddress,
-      subject: UniqueAddress): Reachability =
+  def unreachable(observer: UniqueAddress, subject: UniqueAddress): Reachability =
     change(observer, subject, Unreachable)
 
   def reachable(observer: UniqueAddress, subject: UniqueAddress): Reachability =

@@ -310,9 +310,7 @@ class ConnectionFailedException(
   * Indicates that a given channel was closed, for instance if the connection
   * was reset by a peer or a proxy.
   */
-class ChannelClosedException(
-    underlying: Throwable,
-    remoteAddress: SocketAddress)
+class ChannelClosedException(underlying: Throwable, remoteAddress: SocketAddress)
     extends ChannelException(underlying, remoteAddress)
     with NoStacktrace {
   def this(remoteAddress: SocketAddress) = this(null, remoteAddress)

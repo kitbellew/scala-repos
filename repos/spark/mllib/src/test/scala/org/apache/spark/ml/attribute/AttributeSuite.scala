@@ -148,8 +148,7 @@ class AttributeSuite extends SparkFunSuite {
     assert(attr.toMetadataImpl(withType = false) === metadataWithoutType)
     assert(attr === Attribute.fromMetadata(metadata))
     assert(attr === NominalAttribute.fromMetadata(metadataWithoutType))
-    assert(
-      attr.withoutIndex === Attribute.fromStructField(attr.toStructField()))
+    assert(attr.withoutIndex === Attribute.fromStructField(attr.toStructField()))
 
     val attr2 =
       attr.withoutName.withoutIndex.withValues(attr.values.get :+ "x-large")
@@ -213,8 +212,7 @@ class AttributeSuite extends SparkFunSuite {
     assert(attr.toMetadataImpl(withType = false) === metadataWithoutType)
     assert(attr === Attribute.fromMetadata(metadata))
     assert(attr === BinaryAttribute.fromMetadata(metadataWithoutType))
-    assert(
-      attr.withoutIndex === Attribute.fromStructField(attr.toStructField()))
+    assert(attr.withoutIndex === Attribute.fromStructField(attr.toStructField()))
   }
 
   test("bad binary attributes") {

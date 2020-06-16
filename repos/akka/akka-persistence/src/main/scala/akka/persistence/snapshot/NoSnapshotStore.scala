@@ -35,9 +35,7 @@ final class NoSnapshotStore extends SnapshotStore {
       criteria: SnapshotSelectionCriteria): Future[Option[SelectedSnapshot]] =
     none
 
-  override def saveAsync(
-      metadata: SnapshotMetadata,
-      snapshot: Any): Future[Unit] =
+  override def saveAsync(metadata: SnapshotMetadata, snapshot: Any): Future[Unit] =
     flop
 
   override def deleteAsync(metadata: SnapshotMetadata): Future[Unit] =

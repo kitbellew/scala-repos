@@ -129,8 +129,11 @@ private[spire] trait Fuser[C <: Context, A] {
       case _ => false
     }
 
-  private def termify(apx: Tree, mes: Tree, ind: Tree, exact: Tree)
-      : Option[(TermName, TermName, Either[TermName, Int], TermName)] = {
+  private def termify(
+      apx: Tree,
+      mes: Tree,
+      ind: Tree,
+      exact: Tree): Option[(TermName, TermName, Either[TermName, Int], TermName)] = {
     def t(tree: Tree): Option[TermName] =
       tree match {
         case Ident(name: TermName) => Some(name: TermName)

@@ -21,8 +21,7 @@ final class StringClientServerIntegrationSuite
 
   test("APPEND should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
-      assert(
-        Await.result(client(Append("append1", "Hello"))) == IntegerReply(5))
+      assert(Await.result(client(Append("append1", "Hello"))) == IntegerReply(5))
       assert(
         Await.result(client(Append("append1", " World"))) == IntegerReply(11))
       assertBulkReply(client(Get("append1")), "Hello World")
@@ -68,8 +67,9 @@ final class StringClientServerIntegrationSuite
       assert(Await.result(client(GetBit("bitop3", 0))) == IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(0L))
 
-      assert(Await.result(
-        client(BitOp(BitOp.Not, "bitop3", Seq("bitop1")))) == IntegerReply(1L))
+      assert(
+        Await.result(
+          client(BitOp(BitOp.Not, "bitop3", Seq("bitop1")))) == IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 0))) == IntegerReply(0L))
       assert(Await.result(client(GetBit("bitop3", 1))) == IntegerReply(1L))
       assert(Await.result(client(GetBit("bitop3", 4))) == IntegerReply(1L))
@@ -244,8 +244,8 @@ final class StringClientServerIntegrationSuite
         Await.result(client(PSetEx("psetex1", 0L, "value")))
       }
       assert(
-        Await.result(
-          client(PSetEx("psetex1", 300000L, "value"))) == StatusReply("OK"))
+        Await.result(client(PSetEx("psetex1", 300000L, "value"))) == StatusReply(
+          "OK"))
     }
   }
 
@@ -302,8 +302,7 @@ final class StringClientServerIntegrationSuite
       val key = "setrange"
       val value = "Hello World"
       assert(Await.result(client(Set(key, value))) == StatusReply("OK"))
-      assert(
-        Await.result(client(SetRange(key, 6, "Redis"))) == IntegerReply(11))
+      assert(Await.result(client(SetRange(key, 6, "Redis"))) == IntegerReply(11))
       assertBulkReply(client(Get(key)), "Hello Redis")
     }
   }

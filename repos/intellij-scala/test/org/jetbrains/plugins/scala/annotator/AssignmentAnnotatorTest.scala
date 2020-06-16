@@ -156,8 +156,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
     assertMatches(messages("def a = A; def a_=(x: A) {}; a = A")) {
       case Nil =>
     }
-    assertMatches(
-      messages("def a(implicit b: B) = A; def a_=(x: A) {}; a = A")) {
+    assertMatches(messages("def a(implicit b: B) = A; def a_=(x: A) {}; a = A")) {
       case Nil =>
     }
     assertMatches(messages("def a() = A; def a_=(x: A) {}; a = A")) {
@@ -171,8 +170,8 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
     }
   }
 
-  def messages(@Language(value = "Scala", prefix = Header) code: String)
-      : List[Message] = {
+  def messages(
+      @Language(value = "Scala", prefix = Header) code: String): List[Message] = {
     val assignment =
       (Header + code).parse.depthFirst.findByType(classOf[ScAssignStmt]).get
 

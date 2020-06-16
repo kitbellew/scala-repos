@@ -1145,9 +1145,7 @@ private[ui] class TaskDataSource(
     val input =
       if (hasInput) {
         Some(
-          TaskTableRowInputData(
-            inputSortable,
-            s"$inputReadable / $inputRecords"))
+          TaskTableRowInputData(inputSortable, s"$inputReadable / $inputRecords"))
       } else {
         None
       }

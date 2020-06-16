@@ -187,9 +187,8 @@ class LiftServlet extends Loggable {
 
       case e if e.getClass.getName.endsWith("RetryRequest") => throw e
       case e: Throwable =>
-        logger.info(
-          "Request for " + req.request.uri + " failed " + e.getMessage,
-          e); throw e
+        logger.info("Request for " + req.request.uri + " failed " + e.getMessage, e);
+        throw e
     }
   }
 
@@ -248,9 +247,7 @@ class LiftServlet extends Loggable {
 
   object ShuttingDown extends ProcessingStep {
 
-    def notFoundOrIgnore(
-        req: Req,
-        session: Box[LiftSession]): Box[LiftResponse] = {
+    def notFoundOrIgnore(req: Req, session: Box[LiftSession]): Box[LiftResponse] = {
       if (LiftRules.passNotFoundToChain) {
         net.liftweb.common.Failure("Not found")
       } else {
@@ -384,8 +381,7 @@ class LiftServlet extends Loggable {
             .applyBox(req, LiftRules.statelessDispatch.toList)
             .map(_.apply() match {
               case Full(a) =>
-                Full(
-                  LiftRules.convertResponse((a, Nil, S.responseCookies, req)))
+                Full(LiftRules.convertResponse((a, Nil, S.responseCookies, req)))
               case r => r
             })
           tmpStatelessHolder.isDefined
@@ -627,9 +623,7 @@ class LiftServlet extends Loggable {
             java.lang.Long.parseLong(
               ajaxPathPart.substring(separator + 1, ajaxPathPart.length - 1),
               36),
-            Integer.parseInt(
-              ajaxPathPart.substring(ajaxPathPart.length - 1),
-              36)
+            Integer.parseInt(ajaxPathPart.substring(ajaxPathPart.length - 1), 36)
           )
         )
       else
@@ -918,10 +912,11 @@ class LiftServlet extends Loggable {
       session,
       actors,
       answers =>
-        request.request.resume((
-          request,
-          S.init(Box !! request, session)(LiftRules.performTransform(
-            convertAnswersToCometResponse(session, answers.toList, actors))))))
+        request.request.resume(
+          (
+            request,
+            S.init(Box !! request, session)(LiftRules.performTransform(
+              convertAnswersToCometResponse(session, answers.toList, actors))))))
 
     try {
       session.enterComet(cont -> request)
@@ -1080,8 +1075,8 @@ class LiftServlet extends Loggable {
               v._1,
               (
                 (for (updated <- Full(
-                    (if (!LiftRules.excludePathFromContextPathRewriting.vend(
-                         uri)) u.contextPath
+                    (if (!LiftRules.excludePathFromContextPathRewriting.vend(uri))
+                       u.contextPath
                      else "") + uri).filter(ignore => uri.startsWith("/"));
                   rwf <- URLRewriter.rewriteFunc) yield rwf(updated)) openOr uri
               ))

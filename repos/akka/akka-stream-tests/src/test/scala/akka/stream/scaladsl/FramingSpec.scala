@@ -217,8 +217,7 @@ class FramingSpec extends AkkaSpec {
       an[FramingException] should be thrownBy {
         Await.result(
           Source
-            .single(
-              encode(referenceChunk.take(100), 0, 1, ByteOrder.BIG_ENDIAN))
+            .single(encode(referenceChunk.take(100), 0, 1, ByteOrder.BIG_ENDIAN))
             .via(Framing.lengthField(1, 0, 99, ByteOrder.BIG_ENDIAN))
             .runFold(Vector.empty[ByteString])(_ :+ _),
           3.seconds
@@ -228,8 +227,7 @@ class FramingSpec extends AkkaSpec {
       an[FramingException] should be thrownBy {
         Await.result(
           Source
-            .single(
-              encode(referenceChunk.take(100), 49, 1, ByteOrder.BIG_ENDIAN))
+            .single(encode(referenceChunk.take(100), 49, 1, ByteOrder.BIG_ENDIAN))
             .via(Framing.lengthField(1, 0, 100, ByteOrder.BIG_ENDIAN))
             .runFold(Vector.empty[ByteString])(_ :+ _),
           3.seconds

@@ -247,9 +247,7 @@ private[kinesis] object KinesisTestUtils {
 private[kinesis] trait KinesisDataGenerator {
 
   /** Sends the data to Kinesis and returns the metadata for everything that has been sent. */
-  def sendData(
-      streamName: String,
-      data: Seq[Int]): Map[String, Seq[(Int, String)]]
+  def sendData(streamName: String, data: Seq[Int]): Map[String, Seq[(Int, String)]]
 }
 
 private[kinesis] class SimpleDataGenerator(client: AmazonKinesisClient)

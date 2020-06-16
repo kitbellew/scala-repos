@@ -85,9 +85,7 @@ class InvalidSourceTap(val hdfsPaths: Iterable[String])
   // 4. source.validateTaps (throws InvalidSourceException)
   // In the worst case if the flow plan is misconfigured,
   // openForRead on mappers should fail when using this tap.
-  override def sourceConfInit(
-      flow: FlowProcess[JobConf],
-      conf: JobConf): Unit = {
+  override def sourceConfInit(flow: FlowProcess[JobConf], conf: JobConf): Unit = {
     conf.setInputFormat(classOf[cascading.tap.hadoop.io.MultiInputFormat])
     super.sourceConfInit(flow, conf)
   }
@@ -106,8 +104,8 @@ case object Write extends AccessMode
 
 object HadoopSchemeInstance {
   def apply(scheme: Scheme[_, _, _, _, _]) =
-    scheme.asInstanceOf[
-      Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _]]
+    scheme
+      .asInstanceOf[Scheme[JobConf, RecordReader[_, _], OutputCollector[_, _], _, _]]
 }
 
 object CastHfsTap {

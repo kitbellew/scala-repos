@@ -117,9 +117,7 @@ trait Namers extends MethodSynthesis {
 
     protected def owner = context.owner
     def contextFile = context.unit.source.file
-    def typeErrorHandler[T](
-        tree: Tree,
-        alt: T): PartialFunction[Throwable, T] = {
+    def typeErrorHandler[T](tree: Tree, alt: T): PartialFunction[Throwable, T] = {
       case ex: TypeError =>
         // H@ need to ensure that we handle only cyclic references
         TypeSigError(tree, ex)
@@ -771,8 +769,7 @@ trait Namers extends MethodSynthesis {
 
       if (mods.isCase) {
         val m = ensureCompanionObject(tree, caseModuleDef)
-        m.moduleClass.updateAttachment(
-          new ClassForCaseCompanionAttachment(tree))
+        m.moduleClass.updateAttachment(new ClassForCaseCompanionAttachment(tree))
       }
       val hasDefault = impl.body exists treeInfo.isConstructorWithDefault
       if (hasDefault) {
@@ -1163,8 +1160,7 @@ trait Namers extends MethodSynthesis {
        */
       def methodTypeSchema(resTp: Type) = {
         // for all params without type set WildcaradType
-        mforeach(vparamss)(v =>
-          if (v.tpt.isEmpty) v.symbol setInfo WildcardType)
+        mforeach(vparamss)(v => if (v.tpt.isEmpty) v.symbol setInfo WildcardType)
         thisMethodType(resTp)
       }
 
@@ -1251,8 +1247,7 @@ trait Namers extends MethodSynthesis {
       val methResTp =
         if (tpt.isEmpty) WildcardType else typer.typedType(tpt).tpe
       val resTpFromOverride =
-        if (methOwner.isClass && (tpt.isEmpty || mexists(vparamss)(
-            _.tpt.isEmpty))) {
+        if (methOwner.isClass && (tpt.isEmpty || mexists(vparamss)(_.tpt.isEmpty))) {
           typesFromOverridden(methResTp)
         } else {
           methResTp

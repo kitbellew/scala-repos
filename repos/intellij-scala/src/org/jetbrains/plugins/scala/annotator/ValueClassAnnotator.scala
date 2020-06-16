@@ -63,8 +63,7 @@ trait ValueClassAnnotator {
           ) => //value class is inside a trait or a class, need to highlight it
         holder.createErrorAnnotation(
           valueClass.nameId,
-          ScalaBundle.message(
-            "value.classes.may.not.be.member.of.another.class"))
+          ScalaBundle.message("value.classes.may.not.be.member.of.another.class"))
       case _ => //we are done, value class is either top level or inside a statically accessible object
     }
   }

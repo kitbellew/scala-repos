@@ -186,9 +186,7 @@ object Metric {
         }
       case PieceRole =>
         chess.Role.all.reverse.map { r =>
-          MetricValue(
-            BSONString(r.forsyth.toString),
-            MetricValueName(r.toString))
+          MetricValue(BSONString(r.forsyth.toString), MetricValueName(r.toString))
         }
       case _ => Nil
     }

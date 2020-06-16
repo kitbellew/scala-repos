@@ -432,9 +432,7 @@ final class HObject(ast: ASTNode)
 
 final class HArray(ast: ASTNode) extends HoconPsiElement(ast) with HValue
 
-final class HSubstitution(ast: ASTNode)
-    extends HoconPsiElement(ast)
-    with HValue {
+final class HSubstitution(ast: ASTNode) extends HoconPsiElement(ast) with HValue {
   def path = findChild[HPath]
 }
 

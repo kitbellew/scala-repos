@@ -2,10 +2,7 @@ package org.jetbrains.plugins.scala.lang.psi.types
 
 import com.intellij.psi.PsiElement
 import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScTypeElement
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{
-  ScAssignStmt,
-  ScExpression
-}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScAssignStmt, ScExpression}
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params.ScParameterClause
 import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.{
   Parameter,
@@ -53,9 +50,7 @@ case class MissedValueParameter(parameter: Parameter)
 //TODO expectedType -> parameter
 case class TypeMismatch(expression: ScExpression, expectedType: ScType)
     extends ApplicabilityProblem
-case class DefaultTypeParameterMismatch(
-    expectedType: ScType,
-    actualType: ScType)
+case class DefaultTypeParameterMismatch(expectedType: ScType, actualType: ScType)
     extends ApplicabilityProblem
 case object WrongTypeParameterInferred extends ApplicabilityProblem
 

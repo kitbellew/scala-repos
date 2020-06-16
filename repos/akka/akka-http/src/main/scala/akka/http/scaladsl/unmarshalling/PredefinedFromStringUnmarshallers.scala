@@ -39,8 +39,8 @@ trait PredefinedFromStringUnmarshallers {
       }
     }
 
-  implicit def CsvSeq[T](implicit unmarshaller: Unmarshaller[String, T])
-      : Unmarshaller[String, immutable.Seq[T]] =
+  implicit def CsvSeq[T](implicit
+      unmarshaller: Unmarshaller[String, T]): Unmarshaller[String, immutable.Seq[T]] =
     Unmarshaller.strict[String, immutable.Seq[String]] { string ⇒
       string.split(",").toList
     } flatMap { implicit ec ⇒ implicit mat ⇒ strings ⇒
@@ -81,9 +81,7 @@ trait PredefinedFromStringUnmarshallers {
     case e: NumberFormatException ⇒
       throw if (value.isEmpty) Unmarshaller.NoContentException
       else
-        new IllegalArgumentException(
-          s"'$value' is not a valid $target value",
-          e)
+        new IllegalArgumentException(s"'$value' is not a valid $target value", e)
   }
 }
 

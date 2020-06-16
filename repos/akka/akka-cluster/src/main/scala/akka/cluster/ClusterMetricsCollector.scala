@@ -280,9 +280,7 @@ private[cluster] object EWMA {
     * its original relevance. The initial relevance of a data sample is given by
     * 1 – 0.5 ^ (collect-interval / half-life).
     */
-  def alpha(
-      halfLife: FiniteDuration,
-      collectInterval: FiniteDuration): Double = {
+  def alpha(halfLife: FiniteDuration, collectInterval: FiniteDuration): Double = {
     val halfLifeMillis = halfLife.toMillis
     require(halfLife.toMillis > 0, "halfLife must be > 0 s")
     val decayRate = LogOf2 / halfLifeMillis
@@ -429,9 +427,7 @@ object Metric extends MetricNumericConverter {
       case Failure(_) ⇒ None
     }
 
-  private def ceateEWMA(
-      value: Double,
-      decayFactor: Option[Double]): Option[EWMA] =
+  private def ceateEWMA(value: Double, decayFactor: Option[Double]): Option[EWMA] =
     decayFactor match {
       case Some(alpha) ⇒ Some(EWMA(value, alpha))
       case None ⇒ None
@@ -812,10 +808,7 @@ class JmxMetricsCollector(address: Address, decayFactor: Double)
 @deprecated(
   "Superseded by akka.cluster.metrics (in akka-cluster-metrics jar)",
   "2.4")
-class SigarMetricsCollector(
-    address: Address,
-    decayFactor: Double,
-    sigar: AnyRef)
+class SigarMetricsCollector(address: Address, decayFactor: Double, sigar: AnyRef)
     extends JmxMetricsCollector(address, decayFactor) {
 
   import StandardMetrics._

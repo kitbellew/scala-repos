@@ -37,9 +37,7 @@ final case class StopApplication(app: AppDefinition) extends DeploymentAction
 final case class RestartApplication(app: AppDefinition) extends DeploymentAction
 
 // resolve and store artifacts for given app
-final case class ResolveArtifacts(
-    app: AppDefinition,
-    url2Path: Map[URL, String])
+final case class ResolveArtifacts(app: AppDefinition, url2Path: Map[URL, String])
     extends DeploymentAction
 
 /**

@@ -378,12 +378,8 @@ private[spark] class DAGScheduler(
       firstJobId: Int): ShuffleMapStage = {
     val rdd = shuffleDep.rdd
     val numTasks = rdd.partitions.length
-    val stage = newShuffleMapStage(
-      rdd,
-      numTasks,
-      shuffleDep,
-      firstJobId,
-      rdd.creationSite)
+    val stage =
+      newShuffleMapStage(rdd, numTasks, shuffleDep, firstJobId, rdd.creationSite)
     if (mapOutputTracker.containsShuffle(shuffleDep.shuffleId)) {
       val serLocs =
         mapOutputTracker.getSerializedMapOutputStatuses(shuffleDep.shuffleId)
@@ -557,8 +553,7 @@ private[spark] class DAGScheduler(
                     waitingStages -= stage
                   }
                   if (failedStages.contains(stage)) {
-                    logDebug(
-                      "Removing stage %d from failed set.".format(stageId))
+                    logDebug("Removing stage %d from failed set.".format(stageId))
                     failedStages -= stage
                   }
                 }
@@ -751,11 +746,8 @@ private[spark] class DAGScheduler(
     // This makes it easier to avoid race conditions between the user code and the map output
     // tracker that might result if we told the user the stage had finished, but then they queries
     // the map output tracker and some node failures had caused the output statistics to be lost.
-    val waiter = new JobWaiter(
-      this,
-      jobId,
-      1,
-      (i: Int, r: MapOutputStatistics) => callback(r))
+    val waiter =
+      new JobWaiter(this, jobId, 1, (i: Int, r: MapOutputStatistics) => callback(r))
     eventProcessLoop.post(
       MapStageSubmitted(
         jobId,
@@ -794,9 +786,7 @@ private[spark] class DAGScheduler(
     runningStages
       .map(_.firstJobId)
       .foreach(
-        handleJobCancellation(
-          _,
-          reason = "as part of cancellation of all jobs"))
+        handleJobCancellation(_, reason = "as part of cancellation of all jobs"))
     activeJobs.clear() // These should already be empty by this point,
     jobIdToActiveJob.clear() // but just in case we lost track of some jobs...
     submitWaitingStages()
@@ -866,9 +856,7 @@ private[spark] class DAGScheduler(
     }
     val jobIds = activeInGroup.map(_.jobId)
     jobIds.foreach(
-      handleJobCancellation(
-        _,
-        "part of cancelled job group %s".format(groupId)))
+      handleJobCancellation(_, "part of cancelled job group %s".format(groupId)))
     submitWaitingStages()
   }
 
@@ -933,9 +921,7 @@ private[spark] class DAGScheduler(
       finalStage = newResultStage(finalRDD, func, partitions, jobId, callSite)
     } catch {
       case e: Exception =>
-        logWarning(
-          "Creating new stage failed due to exception - job: " + jobId,
-          e)
+        logWarning("Creating new stage failed due to exception - job: " + jobId, e)
         listener.jobFailed(e)
         return
     }
@@ -957,11 +943,7 @@ private[spark] class DAGScheduler(
     val stageInfos =
       stageIds.flatMap(id => stageIdToStage.get(id).map(_.latestInfo))
     listenerBus.post(
-      SparkListenerJobStart(
-        job.jobId,
-        jobSubmissionTime,
-        stageInfos,
-        properties))
+      SparkListenerJobStart(job.jobId, jobSubmissionTime, stageInfos, properties))
     submitStage(finalStage)
 
     submitWaitingStages()
@@ -982,9 +964,7 @@ private[spark] class DAGScheduler(
       finalStage = getShuffleMapStage(dependency, jobId)
     } catch {
       case e: Exception =>
-        logWarning(
-          "Creating new stage failed due to exception - job: " + jobId,
-          e)
+        logWarning("Creating new stage failed due to exception - job: " + jobId, e)
         listener.jobFailed(e)
         return
     }
@@ -1006,11 +986,7 @@ private[spark] class DAGScheduler(
     val stageInfos =
       stageIds.flatMap(id => stageIdToStage.get(id).map(_.latestInfo))
     listenerBus.post(
-      SparkListenerJobStart(
-        job.jobId,
-        jobSubmissionTime,
-        stageInfos,
-        properties))
+      SparkListenerJobStart(job.jobId, jobSubmissionTime, stageInfos, properties))
     submitStage(finalStage)
 
     // If the whole stage has already finished, tell the listener and remove it
@@ -1026,8 +1002,7 @@ private[spark] class DAGScheduler(
     val jobId = activeJobForStage(stage)
     if (jobId.isDefined) {
       logDebug("submitStage(" + stage + ")")
-      if (!waitingStages(stage) && !runningStages(stage) && !failedStages(
-          stage)) {
+      if (!waitingStages(stage) && !runningStages(stage) && !failedStages(stage)) {
         val missing = getMissingParentStages(stage).sortBy(_.id)
         logDebug("missing: " + missing)
         if (missing.isEmpty) {
@@ -1351,8 +1326,7 @@ private[spark] class DAGScheduler(
                   } catch {
                     case e: Exception =>
                       // TODO: Perhaps we want to mark the resultStage as failed?
-                      job.listener.jobFailed(
-                        new SparkDriverExecutionException(e))
+                      job.listener.jobFailed(new SparkDriverExecutionException(e))
                   }
                 }
               case None =>
@@ -1366,9 +1340,9 @@ private[spark] class DAGScheduler(
             val status = event.result.asInstanceOf[MapStatus]
             val execId = status.location.executorId
             logDebug("ShuffleMapTask finished on " + execId)
-            if (failedEpoch.contains(execId) && smt.epoch <= failedEpoch(
-                execId)) {
-              logInfo(s"Ignoring possibly bogus $smt completion from executor $execId")
+            if (failedEpoch.contains(execId) && smt.epoch <= failedEpoch(execId)) {
+              logInfo(
+                s"Ignoring possibly bogus $smt completion from executor $execId")
             } else {
               shuffleStage.addOutputLoc(smt.partitionId, status)
             }
@@ -1448,8 +1422,7 @@ private[spark] class DAGScheduler(
               failedStage,
               "Fetch failure will not retry stage due to testing config",
               None)
-          } else if (failedStage.failedOnFetchAndShouldAbort(
-              task.stageAttemptId)) {
+          } else if (failedStage.failedOnFetchAndShouldAbort(task.stageAttemptId)) {
             abortStage(
               failedStage,
               s"$failedStage (${failedStage.name}) " +

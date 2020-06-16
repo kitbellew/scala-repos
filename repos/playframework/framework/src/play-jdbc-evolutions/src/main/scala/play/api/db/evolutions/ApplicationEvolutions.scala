@@ -34,8 +34,7 @@ class ApplicationEvolutions @Inject() (
     */
   def start(): Unit = {
 
-    webCommands.addHandler(
-      new EvolutionsWebCommands(evolutions, reader, config))
+    webCommands.addHandler(new EvolutionsWebCommands(evolutions, reader, config))
 
     // allow db modules to write evolution files
     dynamicEvolutions.create()

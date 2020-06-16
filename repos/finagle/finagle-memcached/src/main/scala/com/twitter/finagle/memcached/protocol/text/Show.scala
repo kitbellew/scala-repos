@@ -19,10 +19,7 @@ class ResponseToEncoding extends OneToOneEncoder {
   private[this] val NOT_FOUND = Buf.Utf8("NOT_FOUND")
   private[this] val DELETED = Buf.Utf8("DELETED")
 
-  def encode(
-      ctx: ChannelHandlerContext,
-      ch: Channel,
-      message: AnyRef): Decoding =
+  def encode(ctx: ChannelHandlerContext, ch: Channel, message: AnyRef): Decoding =
     message match {
       case Stored()      => Tokens(Seq(STORED))
       case NotStored()   => Tokens(Seq(NOT_STORED))
@@ -80,10 +77,7 @@ class CommandToEncoding extends OneToOneEncoder {
   private[this] def intToUtf8(i: Int): Buf =
     if (i == 0) ZeroBuf else Buf.Utf8(i.toString)
 
-  def encode(
-      ctx: ChannelHandlerContext,
-      ch: Channel,
-      message: AnyRef): Decoding =
+  def encode(ctx: ChannelHandlerContext, ch: Channel, message: AnyRef): Decoding =
     message match {
       case Add(key, flags, expiry, value) =>
         TokensWithData(

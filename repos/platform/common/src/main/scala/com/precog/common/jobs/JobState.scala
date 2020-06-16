@@ -46,15 +46,13 @@ sealed abstract class JobState(val isTerminal: Boolean)
 
 object JobState extends JobStateSerialization {
   case object NotStarted extends JobState(false)
-  case class Started(timestamp: DateTime, prev: JobState)
-      extends JobState(false)
+  case class Started(timestamp: DateTime, prev: JobState) extends JobState(false)
   case class Cancelled(reason: String, timestamp: DateTime, prev: JobState)
       extends JobState(false)
   case class Aborted(reason: String, timestamp: DateTime, prev: JobState)
       extends JobState(true)
   case class Expired(timestamp: DateTime, prev: JobState) extends JobState(true)
-  case class Finished(timestamp: DateTime, prev: JobState)
-      extends JobState(true)
+  case class Finished(timestamp: DateTime, prev: JobState) extends JobState(true)
 
   def describe(state: JobState): String =
     state match {

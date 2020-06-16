@@ -31,8 +31,7 @@ import http.{S, SHtml}
 import S._
 import JE._
 
-trait EnumTypedField[EnumType <: Enumeration]
-    extends TypedField[EnumType#Value] {
+trait EnumTypedField[EnumType <: Enumeration] extends TypedField[EnumType#Value] {
   protected val enum: EnumType
   protected val valueManifest: Manifest[EnumType#Value]
 
@@ -131,10 +130,9 @@ class EnumField[OwnerType <: Record[OwnerType], EnumType <: Enumeration](
   protected val valueManifest = m
 }
 
-class OptionalEnumField[
-    OwnerType <: Record[OwnerType],
-    EnumType <: Enumeration](rec: OwnerType, protected val enum: EnumType)(
-    implicit m: Manifest[EnumType#Value])
+class OptionalEnumField[OwnerType <: Record[OwnerType], EnumType <: Enumeration](
+    rec: OwnerType,
+    protected val enum: EnumType)(implicit m: Manifest[EnumType#Value])
     extends Field[EnumType#Value, OwnerType]
     with OptionalTypedField[EnumType#Value]
     with EnumTypedField[EnumType] {

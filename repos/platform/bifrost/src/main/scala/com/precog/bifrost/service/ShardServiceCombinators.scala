@@ -232,28 +232,17 @@ trait ShardServiceCombinators
 
   type Query = String
 
-  def query[B](
-      next: HttpService[
-        ByteChunk,
-        (
-            APIKey,
-            AccountDetails,
-            Path,
-            Query,
-            QueryOptions) => Future[HttpResponse[B]]])(implicit
-      executor: ExecutionContext): HttpService[
+  def query[B](next: HttpService[
+    ByteChunk,
+    (APIKey, AccountDetails, Path, Query, QueryOptions) => Future[HttpResponse[B]]])(
+      implicit executor: ExecutionContext): HttpService[
     ByteChunk,
     ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]]] = {
     new DelegatingService[
       ByteChunk,
       ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]],
       ByteChunk,
-      (
-          APIKey,
-          AccountDetails,
-          Path,
-          Query,
-          QueryOptions) => Future[HttpResponse[B]]] {
+      (APIKey, AccountDetails, Path, Query, QueryOptions) => Future[HttpResponse[B]]] {
       val delegate = next
       val metadata = NoMetadata
       val service: HttpRequest[ByteChunk] => Validation[
@@ -272,9 +261,7 @@ trait ShardServiceCombinators
               } yield content
 
             next.service(request) map { f =>
-              val serv: (
-                  (APIKey, AccountDetails),
-                  Path) => Future[HttpResponse[B]] = {
+              val serv: ((APIKey, AccountDetails), Path) => Future[HttpResponse[B]] = {
                 case ((apiKey, account), path) =>
                   val query: Option[Future[String]] =
                     request.parameters
@@ -288,9 +275,8 @@ trait ShardServiceCombinators
                   val result: Future[HttpResponse[B]] = query map { q =>
                     q flatMap { f(apiKey, account, path, _: String, opts) }
                   } getOrElse {
-                    Promise.successful(HttpResponse(HttpStatus(
-                      BadRequest,
-                      "Neither the query string nor request body contained an identifiable quirrel query.")))
+                    Promise.successful(HttpResponse(
+                      HttpStatus(BadRequest, "Neither the query string nor request body contained an identifiable quirrel query.")))
                   }
                   result
               }
@@ -301,18 +287,11 @@ trait ShardServiceCombinators
     }
   }
 
-  def asyncQuery[B](
-      next: HttpService[
-        ByteChunk,
-        (
-            APIKey,
-            AccountDetails,
-            Path,
-            Query,
-            QueryOptions) => Future[HttpResponse[B]]])(implicit
-      executor: ExecutionContext): HttpService[
+  def asyncQuery[B](next: HttpService[
     ByteChunk,
-    ((APIKey, AccountDetails)) => Future[HttpResponse[B]]] = {
+    (APIKey, AccountDetails, Path, Query, QueryOptions) => Future[HttpResponse[B]]])(
+      implicit executor: ExecutionContext)
+      : HttpService[ByteChunk, ((APIKey, AccountDetails)) => Future[HttpResponse[B]]] = {
     new DelegatingService[
       ByteChunk,
       ((APIKey, AccountDetails)) => Future[HttpResponse[B]],
@@ -335,9 +314,8 @@ trait ShardServiceCombinators
   }
 
   def requireAccount[A, B](accountFinder: AccountFinder[Future])(
-      service: HttpService[
-        A,
-        ((APIKey, AccountDetails)) => Future[HttpResponse[B]]])(implicit
+      service: HttpService[A, ((APIKey, AccountDetails)) => Future[HttpResponse[B]]])(
+      implicit
       inj: JValue => B,
       M: Monad[Future]): HttpService[A, APIKey => Future[HttpResponse[B]]] = {
     val service0 = service map {

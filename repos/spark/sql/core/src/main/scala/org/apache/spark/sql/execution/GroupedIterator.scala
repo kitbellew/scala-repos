@@ -33,8 +33,7 @@ object GroupedIterator {
   def apply(
       input: Iterator[InternalRow],
       keyExpressions: Seq[Expression],
-      inputSchema: Seq[Attribute])
-      : Iterator[(InternalRow, Iterator[InternalRow])] = {
+      inputSchema: Seq[Attribute]): Iterator[(InternalRow, Iterator[InternalRow])] = {
     if (input.hasNext) {
       new GroupedIterator(input.buffered, keyExpressions, inputSchema)
     } else {
@@ -126,9 +125,7 @@ class GroupedIterator private (
     } else {
       // Skip to next group.
       // currentRow may be overwritten by `hasNext`, so we should compare them first.
-      while (keyOrdering.compare(
-          currentGroup,
-          currentRow) == 0 && input.hasNext) {
+      while (keyOrdering.compare(currentGroup, currentRow) == 0 && input.hasNext) {
         currentRow = input.next()
       }
 

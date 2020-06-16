@@ -255,8 +255,9 @@ class ScForStatementImpl(node: ASTNode)
         if (text == "") None
         else {
           try {
-            Option(ScalaPsiElementFactory
-              .createExpressionWithContextFromText(text, this.getContext, this))
+            Option(
+              ScalaPsiElementFactory
+                .createExpressionWithContextFromText(text, this.getContext, this))
           } catch {
             case e: Throwable => None
           }

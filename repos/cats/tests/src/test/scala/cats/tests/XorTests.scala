@@ -72,8 +72,7 @@ class XorTests extends CatsSuite {
       OrderLaws[ListWrapper[String] Xor ListWrapper[Int]].eqv)
     checkAll(
       "Eq[ListWrapper[String] Xor ListWrapper[Int]]",
-      SerializableTests.serializable(
-        Eq[ListWrapper[String] Xor ListWrapper[Int]]))
+      SerializableTests.serializable(Eq[ListWrapper[String] Xor ListWrapper[Int]]))
   }
 
   implicit val arbitraryXor: Arbitrary[Xor[Int, String]] = Arbitrary {

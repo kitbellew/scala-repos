@@ -54,8 +54,7 @@ private[log] class LogCleanerManager(
 
   /* the offset checkpoints holding the last cleaned point for each log */
   private val checkpoints = logDirs
-    .map(dir =>
-      (dir, new OffsetCheckpoint(new File(dir, offsetCheckpointFile))))
+    .map(dir => (dir, new OffsetCheckpoint(new File(dir, offsetCheckpointFile))))
     .toMap
 
   /* the set of logs currently being cleaned */
@@ -233,9 +232,7 @@ private[log] class LogCleanerManager(
     }
   }
 
-  def updateCheckpoints(
-      dataDir: File,
-      update: Option[(TopicAndPartition, Long)]) {
+  def updateCheckpoints(dataDir: File, update: Option[(TopicAndPartition, Long)]) {
     inLock(lock) {
       val checkpoint = checkpoints(dataDir)
       val existing = checkpoint.read().filterKeys(logs.keys) ++ update

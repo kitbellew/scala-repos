@@ -47,9 +47,7 @@ trait AccountManager[M[+_]] extends AccountFinder[M] {
 
   def updateAccount(account: Account): M[Boolean]
 
-  def updateAccountPassword(
-      account: Account,
-      newPassword: String): M[Boolean] = {
+  def updateAccountPassword(account: Account, newPassword: String): M[Boolean] = {
     val salt = randomSalt()
     updateAccount(
       account.copy(

@@ -168,8 +168,8 @@ trait EnumerateeTFunctions {
       e2: EnumeratorT[E2, F]): EnumerateeT[E1, (E1, E2), F] =
     new EnumerateeT[E1, (E1, E2), F] {
       def apply[A] = {
-        def outerLoop(step: StepT[(E1, E2), F, A])
-            : IterateeT[E1, F, StepT[(E1, E2), F, A]] =
+        def outerLoop(
+            step: StepT[(E1, E2), F, A]): IterateeT[E1, F, StepT[(E1, E2), F, A]] =
           for {
             outerOpt <- head[E1, F]
             sa <- outerOpt match {

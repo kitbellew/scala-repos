@@ -62,10 +62,7 @@ final case class Extracted(
     *
     * This method requests execution of only the given task and does not aggregate execution.
     */
-  def runInputTask[T](
-      key: InputKey[T],
-      input: String,
-      state: State): (State, T) = {
+  def runInputTask[T](key: InputKey[T], input: String, state: State): (State, T) = {
     import EvaluateTask._
 
     val scopedKey = Scoped.scopedSetting(
@@ -83,12 +80,9 @@ final case class Extracted(
     val config = extractedTaskConfig(this, structure, state)
     withStreams(structure, state) { str =>
       val nv = nodeView(state, str, rkey :: Nil)
-      val (newS, result) = EvaluateTask.runTask(
-        task,
-        state,
-        str,
-        structure.index.triggers,
-        config)(nv)
+      val (newS, result) =
+        EvaluateTask.runTask(task, state, str, structure.index.triggers, config)(
+          nv)
       (newS, processResult(result, newS.log))
     }
   }
@@ -115,10 +109,8 @@ final case class Extracted(
     Project.mapScope(
       Scope.resolveScope(GlobalScope, currentRef.build, rootProject))(
       key.scopedKey)
-  private def getOrError[T](
-      scope: Scope,
-      key: AttributeKey[_],
-      value: Option[T])(implicit display: Show[ScopedKey[_]]): T =
+  private def getOrError[T](scope: Scope, key: AttributeKey[_], value: Option[T])(
+      implicit display: Show[ScopedKey[_]]): T =
     value getOrElse sys.error(display(ScopedKey(scope, key)) + " is undefined.")
   private def getOrError[T](scope: Scope, key: AttributeKey[T])(implicit
       display: Show[ScopedKey[_]]): T =

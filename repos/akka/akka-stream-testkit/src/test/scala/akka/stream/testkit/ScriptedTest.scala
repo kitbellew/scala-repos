@@ -20,8 +20,7 @@ trait ScriptedTest extends Matchers {
 
   class ScriptException(msg: String) extends RuntimeException(msg)
 
-  def toPublisher[In, Out]
-      : (Source[Out, _], ActorMaterializer) ⇒ Publisher[Out] =
+  def toPublisher[In, Out]: (Source[Out, _], ActorMaterializer) ⇒ Publisher[Out] =
     (f, m) ⇒ f.runWith(Sink.asPublisher(false))(m)
 
   object Script {

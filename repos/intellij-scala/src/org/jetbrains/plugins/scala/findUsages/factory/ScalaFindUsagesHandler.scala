@@ -156,10 +156,7 @@ class ScalaFindUsagesHandler(
           isSingleFile,
           this)
       case _ =>
-        super.getFindUsagesDialog(
-          isSingleFile,
-          toShowInNewTab,
-          mustOpenInNewTab)
+        super.getFindUsagesDialog(isSingleFile, toShowInNewTab, mustOpenInNewTab)
     }
   }
 

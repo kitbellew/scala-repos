@@ -101,9 +101,7 @@ object HttpMuxer extends Service[Request, Response] {
       underlying = underlying.withHandler(pattern, service)
     }
 
-  def addRichHandler(
-      pattern: String,
-      service: Service[Request, Response]): Unit =
+  def addRichHandler(pattern: String, service: Service[Request, Response]): Unit =
     addHandler(pattern, service)
 
   def patterns: Seq[String] = underlying.patterns

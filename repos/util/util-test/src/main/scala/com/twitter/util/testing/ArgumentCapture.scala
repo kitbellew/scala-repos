@@ -46,9 +46,7 @@ trait ArgumentCapture {
     capturingAll[T](f).lastOption.getOrElse(noArgWasCaptured())
 
   /** Zip 2 iterables together into a Seq of 2-tuples. */
-  private[this] def zipN[A, B](
-      arg0: Iterable[A],
-      arg1: Iterable[B]): Seq[(A, B)] = {
+  private[this] def zipN[A, B](arg0: Iterable[A], arg1: Iterable[B]): Seq[(A, B)] = {
     arg0.zip(arg1).toSeq
   }
 
@@ -559,8 +557,8 @@ trait ArgumentCapture {
       G: ClassTag,
       H: ClassTag,
       I: ClassTag,
-      J: ClassTag](func: (A, B, C, D, E, F, G, H, I, J) => _)
-      : Seq[(A, B, C, D, E, F, G, H, I, J)] = {
+      J: ClassTag](
+      func: (A, B, C, D, E, F, G, H, I, J) => _): Seq[(A, B, C, D, E, F, G, H, I, J)] = {
     val argCaptorA =
       ArgumentCaptor.forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
     val argCaptorB =
@@ -617,8 +615,8 @@ trait ArgumentCapture {
       G: ClassTag,
       H: ClassTag,
       I: ClassTag,
-      J: ClassTag](func: (A, B, C, D, E, F, G, H, I, J) => _)
-      : (A, B, C, D, E, F, G, H, I, J) =
+      J: ClassTag](
+      func: (A, B, C, D, E, F, G, H, I, J) => _): (A, B, C, D, E, F, G, H, I, J) =
     capturingAll[A, B, C, D, E, F, G, H, I, J](func).lastOption
       .getOrElse(noArgWasCaptured())
 
@@ -739,8 +737,8 @@ trait ArgumentCapture {
       H: ClassTag,
       I: ClassTag,
       J: ClassTag,
-      K: ClassTag](func: (A, B, C, D, E, F, G, H, I, J, K) => _)
-      : (A, B, C, D, E, F, G, H, I, J, K) =
+      K: ClassTag](
+      func: (A, B, C, D, E, F, G, H, I, J, K) => _): (A, B, C, D, E, F, G, H, I, J, K) =
     capturingAll[A, B, C, D, E, F, G, H, I, J, K](func).lastOption
       .getOrElse(noArgWasCaptured())
 
@@ -1201,9 +1199,7 @@ trait ArgumentCapture {
       .zip(arg14)
       .map({
         case (
-              (
-                ((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m),
-                n),
+              (((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m), n),
               o) =>
           (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o)
       })
@@ -1346,8 +1342,7 @@ trait ArgumentCapture {
       arg12: Iterable[M],
       arg13: Iterable[N],
       arg14: Iterable[O],
-      arg15: Iterable[P])
-      : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] = {
+      arg15: Iterable[P]): Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P)] = {
     arg0
       .zip(arg1)
       .zip(arg2)
@@ -1366,11 +1361,7 @@ trait ArgumentCapture {
       .zip(arg15)
       .map({
         case (
-              (
-                (
-                  ((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m),
-                  n),
-                o),
+              ((((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m), n), o),
               p) =>
           (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p)
       })
@@ -1543,13 +1534,7 @@ trait ArgumentCapture {
       .map({
         case (
               (
-                (
-                  (
-                    (
-                      (((((((((((a, b), c), d), e), f), g), h), i), j), k), l),
-                      m),
-                    n),
-                  o),
+                ((((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m), n), o),
                 p),
               q) =>
           (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q)
@@ -1733,19 +1718,7 @@ trait ArgumentCapture {
       .zip(arg17)
       .map({
         case (
-              (
-                (
-                  (
-                    (
-                      (
-                        (
-                          ((((((((((a, b), c), d), e), f), g), h), i), j), k),
-                          l),
-                        m),
-                      n),
-                    o),
-                  p),
-                q),
+              ((((((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m), n), o), p), q),
               r) =>
           (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r)
       })
@@ -1895,26 +1868,7 @@ trait ArgumentCapture {
       func).lastOption.getOrElse(noArgWasCaptured())
 
   /** Zip 19 iterables together into a Seq of 19-tuples. */
-  private[this] def zipN[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S](
+  private[this] def zipN[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S](
       arg0: Iterable[A],
       arg1: Iterable[B],
       arg2: Iterable[C],
@@ -1956,21 +1910,7 @@ trait ArgumentCapture {
       .zip(arg18)
       .map({
         case (
-              (
-                (
-                  (
-                    (
-                      (
-                        (
-                          (
-                            ((((((((((a, b), c), d), e), f), g), h), i), j), k),
-                            l),
-                          m),
-                        n),
-                      o),
-                    p),
-                  q),
-                r),
+              (((((((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m), n), o), p), q), r),
               s) =>
           (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s)
       })
@@ -2127,27 +2067,7 @@ trait ArgumentCapture {
       func).lastOption.getOrElse(noArgWasCaptured())
 
   /** Zip 20 iterables together into a Seq of 20-tuples. */
-  private[this] def zipN[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T](
+  private[this] def zipN[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T](
       arg0: Iterable[A],
       arg1: Iterable[B],
       arg2: Iterable[C],
@@ -2191,25 +2111,7 @@ trait ArgumentCapture {
       .zip(arg19)
       .map({
         case (
-              (
-                (
-                  (
-                    (
-                      (
-                        (
-                          (
-                            (
-                              (
-                                (((((((((a, b), c), d), e), f), g), h), i), j),
-                                k),
-                              l),
-                            m),
-                          n),
-                        o),
-                      p),
-                    q),
-                  r),
-                s),
+              ((((((((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m), n), o), p), q), r), s),
               t) =>
           (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t)
       })
@@ -2373,28 +2275,7 @@ trait ArgumentCapture {
       func).lastOption.getOrElse(noArgWasCaptured())
 
   /** Zip 21 iterables together into a Seq of 21-tuples. */
-  private[this] def zipN[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U](
+  private[this] def zipN[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
       arg0: Iterable[A],
       arg1: Iterable[B],
       arg2: Iterable[C],
@@ -2441,27 +2322,7 @@ trait ArgumentCapture {
       .map({
         case (
               (
-                (
-                  (
-                    (
-                      (
-                        (
-                          (
-                            (
-                              (
-                                (
-                                  (
-                                    ((((((((a, b), c), d), e), f), g), h), i),
-                                    j),
-                                  k),
-                                l),
-                              m),
-                            n),
-                          o),
-                        p),
-                      q),
-                    r),
-                  s),
+                ((((((((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m), n), o), p), q), r), s),
                 t),
               u) =>
           (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u)
@@ -2492,28 +2353,7 @@ trait ArgumentCapture {
       S: ClassTag,
       T: ClassTag,
       U: ClassTag](
-      func: (
-          A,
-          B,
-          C,
-          D,
-          E,
-          F,
-          G,
-          H,
-          I,
-          J,
-          K,
-          L,
-          M,
-          N,
-          O,
-          P,
-          Q,
-          R,
-          S,
-          T,
-          U) => _)
+      func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => _)
       : Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] = {
     val argCaptorA =
       ArgumentCaptor.forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
@@ -2648,56 +2488,13 @@ trait ArgumentCapture {
       S: ClassTag,
       T: ClassTag,
       U: ClassTag](
-      func: (
-          A,
-          B,
-          C,
-          D,
-          E,
-          F,
-          G,
-          H,
-          I,
-          J,
-          K,
-          L,
-          M,
-          N,
-          O,
-          P,
-          Q,
-          R,
-          S,
-          T,
-          U) => _)
+      func: (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => _)
       : (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) =
     capturingAll[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U](
       func).lastOption.getOrElse(noArgWasCaptured())
 
   /** Zip 22 iterables together into a Seq of 22-tuples. */
-  private[this] def zipN[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U,
-      V](
+  private[this] def zipN[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V](
       arg0: Iterable[A],
       arg1: Iterable[B],
       arg2: Iterable[C],
@@ -2745,31 +2542,7 @@ trait ArgumentCapture {
       .zip(arg21)
       .map({
         case (
-              (
-                (
-                  (
-                    (
-                      (
-                        (
-                          (
-                            (
-                              (
-                                (
-                                  (
-                                    (
-                                      ((((((((a, b), c), d), e), f), g), h), i),
-                                      j),
-                                    k),
-                                  l),
-                                m),
-                              n),
-                            o),
-                          p),
-                        q),
-                      r),
-                    s),
-                  t),
-                u),
+              ((((((((((((((((((((a, b), c), d), e), f), g), h), i), j), k), l), m), n), o), p), q), r), s), t), u),
               v) =>
           (a, b, c, d, e, f, g, h, i, j, k, l, m, n, o, p, q, r, s, t, u, v)
       })
@@ -2822,8 +2595,7 @@ trait ArgumentCapture {
           S,
           T,
           U,
-          V) => _): Seq[
-    (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = {
+          V) => _): Seq[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = {
     val argCaptorA =
       ArgumentCaptor.forClass(classTag[A].runtimeClass.asInstanceOf[Class[A]])
     val argCaptorB =
@@ -2985,8 +2757,7 @@ trait ArgumentCapture {
           S,
           T,
           U,
-          V) => _)
-      : (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) =
+          V) => _): (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V) =
     capturingAll[
       A,
       B,

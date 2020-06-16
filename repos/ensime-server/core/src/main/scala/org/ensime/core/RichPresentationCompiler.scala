@@ -655,8 +655,6 @@ class RichPresentationCompiler(
     wrap[Tree](r => new AskTypeAtItem(position, r).apply(), t => throw t)
 
   def wrapLinkPos(sym: Symbol, source: SourceFile): Position =
-    wrap[Position](
-      r => new AskLinkPosItem(sym, source, r).apply(),
-      t => throw t)
+    wrap[Position](r => new AskLinkPosItem(sym, source, r).apply(), t => throw t)
 
 }

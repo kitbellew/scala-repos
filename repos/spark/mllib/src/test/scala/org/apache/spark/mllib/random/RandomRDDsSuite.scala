@@ -112,12 +112,7 @@ class RandomRDDsSuite
 
     // partition size needs to be <= Int.MaxValue
     intercept[IllegalArgumentException] {
-      new RandomRDD(
-        sc,
-        Int.MaxValue.toLong * 100L,
-        99,
-        new UniformGenerator,
-        0L)
+      new RandomRDD(sc, Int.MaxValue.toLong * 100L, 99, new UniformGenerator, 0L)
     }
   }
 
@@ -165,12 +160,8 @@ class RandomRDDsSuite
         math.sqrt(poissonMean),
         0.1)
 
-      val exponential = RandomRDDs.exponentialRDD(
-        sc,
-        exponentialMean,
-        size,
-        numPartitions,
-        seed)
+      val exponential =
+        RandomRDDs.exponentialRDD(sc, exponentialMean, size, numPartitions, seed)
       testGeneratedRDD(
         exponential,
         size,

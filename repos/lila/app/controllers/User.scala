@@ -53,15 +53,8 @@ object User extends LilaController {
           case (
                 ((((pov, donor), blocked), crosstable), followable),
                 relation) =>
-            Ok(
-              html.user.mini(
-                user,
-                pov,
-                blocked,
-                followable,
-                relation,
-                crosstable,
-                donor))
+            Ok(html.user
+              .mini(user, pov, blocked, followable, relation, crosstable, donor))
               .withHeaders(CACHE_CONTROL -> "max-age=5")
         }
       }
@@ -80,8 +73,9 @@ object User extends LilaController {
         html = notFound,
         api = _ =>
           env.cached top50Online true map { list =>
-            Ok(Json.toJson(
-              list.take(getInt("nb").fold(10)(_ min max)).map(env.jsonView(_))))
+            Ok(
+              Json.toJson(
+                list.take(getInt("nb").fold(10)(_ min max)).map(env.jsonView(_))))
           }
       )
     }
@@ -114,8 +108,8 @@ object User extends LilaController {
         else
           negotiate(
             html = fuccess(NotFound(html.user.disabled(u))),
-            api = _ =>
-              fuccess(NotFound(jsonError("No such user, or account closed"))))
+            api =
+              _ => fuccess(NotFound(jsonError("No such user, or account closed"))))
       }
     }
 

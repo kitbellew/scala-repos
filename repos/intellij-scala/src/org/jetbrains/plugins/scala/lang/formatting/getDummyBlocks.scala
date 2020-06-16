@@ -37,10 +37,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.{
 }
 import org.jetbrains.plugins.scala.lang.scaladoc.lexer.ScalaDocTokenType
 import org.jetbrains.plugins.scala.lang.scaladoc.parser.ScalaDocElementTypes
-import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.{
-  ScDocComment,
-  ScDocTag
-}
+import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.{ScDocComment, ScDocTag}
 import org.jetbrains.plugins.scala.util.MultilineStringUtil
 
 import scala.annotation.tailrec
@@ -59,9 +56,7 @@ object getDummyBlocks {
     if (lastNode != null) applyInner(firstNode, lastNode, block)
     else applyInner(firstNode, block)
 
-  private def applyInner(
-      node: ASTNode,
-      block: ScalaBlock): util.ArrayList[Block] = {
+  private def applyInner(node: ASTNode, block: ScalaBlock): util.ArrayList[Block] = {
     val children = node.getChildren(null)
     val subBlocks = new util.ArrayList[Block]
     var prevChild: ASTNode = null
@@ -230,8 +225,7 @@ object getDummyBlocks {
             acc: List[ASTNode] = List()): List[ASTNode] =
           if (firstNode == null) {
             acc.reverse
-          } else if (ScalaDocNewlinedPreFormatProcessor.isWhiteSpace(
-              firstNode)) {
+          } else if (ScalaDocNewlinedPreFormatProcessor.isWhiteSpace(firstNode)) {
             getNonWsSiblings(firstNode.getTreeNext, acc)
           } else {
             getNonWsSiblings(firstNode.getTreeNext, firstNode :: acc)
@@ -610,9 +604,8 @@ object getDummyBlocks {
           if (prev == null) return createNewAlignment
           val prevChild =
             prev.findChildByType(
-              TokenSet.create(
-                ScalaTokenTypes.tFUNTYPE,
-                ScalaTokenTypes.tFUNTYPE_ASCII))
+              TokenSet
+                .create(ScalaTokenTypes.tFUNTYPE, ScalaTokenTypes.tFUNTYPE_ASCII))
           if (prevChild == null) {
             return getChildAlignment(prev, child)
           } else return getAlignment(prevChild)
@@ -968,8 +961,7 @@ object getDummyBlocks {
                 indent,
                 childWrap,
                 block.getSettings))
-            subBlocks.addAll(
-              getIfSubBlocks(child.getTreeNext, block, alignment))
+            subBlocks.addAll(getIfSubBlocks(child.getTreeNext, block, alignment))
           case _ =>
         }
         child = child.getTreeNext

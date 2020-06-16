@@ -90,7 +90,8 @@ class OrcHadoopFsRelationSuite extends HadoopFsRelationTest {
     }
   }
 
-  test("SPARK-13543: Support for specifying compression codec for ORC via option()") {
+  test(
+    "SPARK-13543: Support for specifying compression codec for ORC via option()") {
     withTempPath { dir =>
       val path = s"${dir.getCanonicalPath}/table1"
       val df = (1 to 5).map(i => (i, (i % 2).toString)).toDF("a", "b")

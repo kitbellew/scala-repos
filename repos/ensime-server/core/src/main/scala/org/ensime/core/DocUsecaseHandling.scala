@@ -29,14 +29,13 @@ trait DocUsecaseHandling { self: DocResolver =>
           try {
             val jarFile = new JarFile(jar)
             try {
-              val is = jarFile.getInputStream(
-                jarFile.getEntry(scalaFqnToPath(sig.fqn)))
+              val is =
+                jarFile.getInputStream(jarFile.getEntry(scalaFqnToPath(sig.fqn)))
               val html = Source.fromInputStream(is).mkString
               val re = s"""<a id="(${Pattern.quote(prefix)}.+?)"""".r
               re.findFirstMatchIn(html)
                 .map { m =>
-                  sig.copy(member =
-                    Some(StringEscapeUtils.unescapeHtml(m.group(1))))
+                  sig.copy(member = Some(StringEscapeUtils.unescapeHtml(m.group(1))))
                 }
                 .getOrElse(sig)
             } finally jarFile.close()

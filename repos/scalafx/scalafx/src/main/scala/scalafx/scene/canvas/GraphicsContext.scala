@@ -470,10 +470,7 @@ class GraphicsContext(override val delegate: jfxsc.GraphicsContext)
   /**
     * Strokes a polygon with the given points using the currently set stroke paint.
     */
-  def strokePolygon(
-      xPoints: Array[Double],
-      yPoints: Array[Double],
-      nPoints: Int) {
+  def strokePolygon(xPoints: Array[Double], yPoints: Array[Double], nPoints: Int) {
     delegate.strokePolygon(xPoints, yPoints, nPoints)
   }
 

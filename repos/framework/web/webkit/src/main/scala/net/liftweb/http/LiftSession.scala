@@ -505,8 +505,8 @@ class LiftSession(
   // HttpServletRequests that have expired; these will then throw
   // NullPointerExceptions when their server name or otherwise are
   // accessed.
-  def cometForHost(hostAndPath: String)
-      : (Vector[(LiftActor, Req)], Vector[(LiftActor, Req)]) =
+  def cometForHost(
+      hostAndPath: String): (Vector[(LiftActor, Req)], Vector[(LiftActor, Req)]) =
     asyncSync
       .synchronized {
         cometList
@@ -1317,9 +1317,7 @@ class LiftSession(
     }
   }
 
-  def buildXformer(
-      xformRule: String,
-      field: List[String]): NodeSeq => NodeSeq = {
+  def buildXformer(xformRule: String, field: List[String]): NodeSeq => NodeSeq = {
     def retFunc(ns: NodeSeq): NodeSeq = {
       val cur = currentSourceContext.get
       val value = field match {
@@ -1391,9 +1389,7 @@ class LiftSession(
       case x    => x
     }
 
-  private def findVisibleTemplate(
-      path: ParsePath,
-      session: Req): Box[NodeSeq] = {
+  private def findVisibleTemplate(path: ParsePath, session: Req): Box[NodeSeq] = {
     val tpath = path.partPath
     val splits = tpath.toList.filter { a =>
       !a.startsWith("_") && !a.startsWith(".") && a.toLowerCase.indexOf(
@@ -1759,11 +1755,8 @@ class LiftSession(
         }
       }
 
-    def runWhitelist(
-        snippet: String,
-        cls: String,
-        method: String,
-        kids: NodeSeq)(f: => NodeSeq): NodeSeq = {
+    def runWhitelist(snippet: String, cls: String, method: String, kids: NodeSeq)(
+        f: => NodeSeq): NodeSeq = {
       val pf = LiftRules.snippetWhiteList.vend()
       val pair = (cls, method)
       if (pf.isDefinedAt(pair)) {
@@ -2398,8 +2391,7 @@ class LiftSession(
                 case jsCmd: JsCmd =>
                   partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsCmd, false)))
                 case jsExp: JsExp =>
-                  partialUpdate(
-                    JsCmds.JsSchedule(JsCmds.JsTry(jsExp.cmd, false)))
+                  partialUpdate(JsCmds.JsSchedule(JsCmds.JsTry(jsExp.cmd, false)))
                 case jv: JsonAST.JValue => {
                   val s: String = json.prettyRender(jv)
                   partialUpdate(
@@ -2413,8 +2405,9 @@ class LiftSession(
                   val ser: Box[String] = Helpers.tryo(Serialization.write(x))
 
                   ser.foreach(s =>
-                    partialUpdate(JsCmds.JsSchedule(
-                      JsCmds.JsTry(JsRaw(toCall + "(" + s + ")").cmd, false))))
+                    partialUpdate(
+                      JsCmds.JsSchedule(
+                        JsCmds.JsTry(JsRaw(toCall + "(" + s + ")").cmd, false))))
 
                 }
 
@@ -2913,8 +2906,8 @@ class LiftSession(
                 JsRaw(s"lift.sendEvent(${guid.encJs}, {'done': true} )").cmd))
 
           case FailMsg(guid, msg) =>
-            partialUpdate(JsCmds.JsSchedule(
-              JsRaw(s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })").cmd))
+            partialUpdate(JsCmds.JsSchedule(JsRaw(
+              s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })").cmd))
           case _ =>
         }
       }

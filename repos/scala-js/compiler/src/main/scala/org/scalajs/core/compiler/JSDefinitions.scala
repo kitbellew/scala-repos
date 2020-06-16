@@ -158,9 +158,8 @@ trait JSDefinitions { self: JSGlobalAddons =>
     lazy val Runtime_genTraversableOnce2jsArray = getMemberMethod(
       RuntimePackageModule,
       newTermName("genTraversableOnce2jsArray"))
-    lazy val Runtime_jsTupleArray2jsObject = getMemberMethod(
-      RuntimePackageModule,
-      newTermName("jsTupleArray2jsObject"))
+    lazy val Runtime_jsTupleArray2jsObject =
+      getMemberMethod(RuntimePackageModule, newTermName("jsTupleArray2jsObject"))
     lazy val Runtime_constructorOf =
       getMemberMethod(RuntimePackageModule, newTermName("constructorOf"))
     lazy val Runtime_newConstructorTag =

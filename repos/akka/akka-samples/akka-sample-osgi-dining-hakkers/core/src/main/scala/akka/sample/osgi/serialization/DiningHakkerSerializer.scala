@@ -5,8 +5,7 @@ import akka.actor.ExtendedActorSystem
 import akka.serialization.Serialization
 import akka.serialization.SerializationExtension
 
-class DiningHakkerSerializer(val system: ExtendedActorSystem)
-    extends Serializer {
+class DiningHakkerSerializer(val system: ExtendedActorSystem) extends Serializer {
 
   override def includeManifest: Boolean = true
 

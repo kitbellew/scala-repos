@@ -226,8 +226,7 @@ private[metrics] class ClusterMetricsCollector extends Actor with ActorLogging {
     */
   def receiveState(state: CurrentClusterState): Unit =
     nodes = (state.members diff state.unreachable) collect {
-      case m
-          if m.status == MemberStatus.Up || m.status == MemberStatus.WeaklyUp ⇒
+      case m if m.status == MemberStatus.Up || m.status == MemberStatus.WeaklyUp ⇒
         m.address
     }
 

@@ -56,9 +56,7 @@ object WikiService {
 
   def wikiSshUrl(repositoryInfo: RepositoryInfo)(implicit
       context: Context): Option[String] =
-    RepositoryService.sshUrl(
-      repositoryInfo.owner,
-      repositoryInfo.name + ".wiki")
+    RepositoryService.sshUrl(repositoryInfo.owner, repositoryInfo.name + ".wiki")
 
 }
 
@@ -166,9 +164,7 @@ trait WikiService {
           git =>
             val reader = git.getRepository.newObjectReader
             val oldTreeIter = new CanonicalTreeParser
-            oldTreeIter.reset(
-              reader,
-              git.getRepository.resolve(from + "^{tree}"))
+            oldTreeIter.reset(reader, git.getRepository.resolve(from + "^{tree}"))
 
             val newTreeIter = new CanonicalTreeParser
             newTreeIter.reset(reader, git.getRepository.resolve(to + "^{tree}"))

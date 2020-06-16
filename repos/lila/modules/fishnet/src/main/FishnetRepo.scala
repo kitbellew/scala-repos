@@ -25,9 +25,7 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
     clientColl
       .update(selectClient(client.key), client, upsert = true)
       .void >> clientCache.remove(client.key)
-  def updateClientInstance(
-      client: Client,
-      instance: Client.Instance): Fu[Client] =
+  def updateClientInstance(client: Client, instance: Client.Instance): Fu[Client] =
     client.updateInstance(instance).fold(fuccess(client)) { updated =>
       updateClient(updated) inject updated
     }
@@ -42,9 +40,10 @@ private final class FishnetRepo(analysisColl: Coll, clientColl: Coll) {
       .void >> clientCache.remove(key)
   def allRecentClients =
     clientColl
-      .find(BSONDocument(
-        "instance.seenAt" -> BSONDocument("$gt" -> Client.Instance.recentSince)
-      ))
+      .find(
+        BSONDocument(
+          "instance.seenAt" -> BSONDocument("$gt" -> Client.Instance.recentSince)
+        ))
       .cursor[Client]()
       .collect[List]()
   def lichessClients =

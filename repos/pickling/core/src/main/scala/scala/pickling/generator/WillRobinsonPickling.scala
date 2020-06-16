@@ -48,11 +48,7 @@ private[pickling] object WillRobinsonPickling extends PicklingAlgorithm {
         PickleEntry((fields.map(f => f.getter)))
 
       val pickle =
-        SubclassDispatch.apply(
-          Nil,
-          tpe,
-          Some(pickleBasic),
-          lookupRuntime = true)
+        SubclassDispatch.apply(Nil, tpe, Some(pickleBasic), lookupRuntime = true)
       val unpickle =
         SubclassUnpicklerDelegation.apply(
           Nil,

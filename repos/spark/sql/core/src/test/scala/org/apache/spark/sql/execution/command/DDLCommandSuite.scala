@@ -137,11 +137,9 @@ class DDLCommandSuite extends PlanTest {
     val parsed4 = parser.parsePlan(sql4)
     val parsed5 = parser.parsePlan(sql5)
     val tableIdent = TableIdentifier("table_name", None)
-    val expected1 = AlterTableSerDeProperties(
-      tableIdent,
-      Some("org.apache.class"),
-      None,
-      None)(sql1)
+    val expected1 =
+      AlterTableSerDeProperties(tableIdent, Some("org.apache.class"), None, None)(
+        sql1)
     val expected2 = AlterTableSerDeProperties(
       tableIdent,
       Some("org.apache.class"),

@@ -96,16 +96,10 @@ class AggregateFlatClassPathTest {
       fileName: String) =
     SourceFileEntryImpl(sourceFile(pathPrefix, inPackage, fileName))
 
-  private def classFile(
-      pathPrefix: String,
-      inPackage: String,
-      fileName: String) =
+  private def classFile(pathPrefix: String, inPackage: String, fileName: String) =
     virtualFile(pathPrefix, inPackage, fileName, ".class")
 
-  private def sourceFile(
-      pathPrefix: String,
-      inPackage: String,
-      fileName: String) =
+  private def sourceFile(pathPrefix: String, inPackage: String, fileName: String) =
     virtualFile(pathPrefix, inPackage, fileName, ".scala")
 
   private def virtualFile(
@@ -255,12 +249,8 @@ class AggregateFlatClassPathTest {
           sourceFile(dir1, pkg1, "A"))),
       cp.findClass(s"$pkg1.A")
     )
-    assertEquals(
-      Some(classFileEntry(dir3, pkg1, "D")),
-      cp.findClass(s"$pkg1.D"))
-    assertEquals(
-      Some(sourceFileEntry(dir2, pkg3, "L")),
-      cp.findClass(s"$pkg3.L"))
+    assertEquals(Some(classFileEntry(dir3, pkg1, "D")), cp.findClass(s"$pkg1.D"))
+    assertEquals(Some(sourceFileEntry(dir2, pkg3, "L")), cp.findClass(s"$pkg3.L"))
     assertEquals(None, cp.findClass("Nonexisting"))
   }
 }

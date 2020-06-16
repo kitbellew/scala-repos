@@ -243,12 +243,7 @@ final class URI(origStr: String) extends Serializable with Comparable[URI] {
       if (newPath == origPath)
         this
       else
-        new URI(
-          getScheme(),
-          getRawAuthority(),
-          newPath,
-          getQuery(),
-          getFragment())
+        new URI(getScheme(), getRawAuthority(), newPath, getQuery(), getFragment())
     }
 
   def parseServerAuthority(): URI = {

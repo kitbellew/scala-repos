@@ -33,8 +33,8 @@ import org.jetbrains.plugins.scala.lang.resolve.ResolvableReferenceElement
 import scala.collection.JavaConversions._
 
 object ScalaRenameUtil {
-  def filterAliasedReferences(allReferences: util.Collection[PsiReference])
-      : util.ArrayList[PsiReference] = {
+  def filterAliasedReferences(
+      allReferences: util.Collection[PsiReference]): util.ArrayList[PsiReference] = {
     val filtered = allReferences.filterNot(isAliased)
     new util.ArrayList(filtered)
   }

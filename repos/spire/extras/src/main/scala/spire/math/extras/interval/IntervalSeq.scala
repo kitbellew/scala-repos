@@ -577,9 +577,7 @@ object IntervalSeq {
     val result = op(a0, b0) && merge0(0, a.length, 0, b.length)
   }
 
-  private class IsSupersetOf[T](
-      val lhs: IntervalSeq[T],
-      val rhs: IntervalSeq[T])
+  private class IsSupersetOf[T](val lhs: IntervalSeq[T], val rhs: IntervalSeq[T])
       extends BooleanOperation[T] {
 
     override def op(a: Boolean, b: Boolean): Boolean = a | !b

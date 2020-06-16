@@ -30,10 +30,7 @@ import com.intellij.refactoring.introduce.inplace.InplaceVariableIntroducer
 import com.intellij.ui.NonFocusableCheckBox
 import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.ScTypedPattern
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{
-  ScEnumerator,
-  ScExpression
-}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScEnumerator, ScExpression}
 import org.jetbrains.plugins.scala.lang.psi.api.statements._
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScNamedElement
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
@@ -221,17 +218,15 @@ class ScalaInplaceVariableIntroducer(
           def setGreedyToRightToFalse(): Unit = {
             val highlighters: Array[RangeHighlighter] =
               myEditor.getMarkupModel.getAllHighlighters
-            for (highlighter <- highlighters; if checkRange(
-                highlighter.getStartOffset,
-                highlighter.getEndOffset))
+            for (highlighter <- highlighters;
+              if checkRange(highlighter.getStartOffset, highlighter.getEndOffset))
               greedyToRight += (highlighter -> highlighter.isGreedyToRight)
           }
           def resetGreedyToRightBack(): Unit = {
             val highlighters: Array[RangeHighlighter] =
               myEditor.getMarkupModel.getAllHighlighters
-            for (highlighter <- highlighters; if checkRange(
-                highlighter.getStartOffset,
-                highlighter.getEndOffset))
+            for (highlighter <- highlighters;
+              if checkRange(highlighter.getStartOffset, highlighter.getEndOffset))
               highlighter.setGreedyToRight(greedyToRight(highlighter))
           }
           def checkRange(start: Int, end: Int): Boolean = {
@@ -263,10 +258,10 @@ class ScalaInplaceVariableIntroducer(
                       isPresentableText = false)
                   val first =
                     fakeDeclaration.findFirstChildByType(ScalaTokenTypes.tCOLON)
-                  val last = fakeDeclaration.findFirstChildByType(
-                    ScalaTokenTypes.tASSIGN)
-                  val assign = declarationCopy.findFirstChildByType(
-                    ScalaTokenTypes.tASSIGN)
+                  val last =
+                    fakeDeclaration.findFirstChildByType(ScalaTokenTypes.tASSIGN)
+                  val assign =
+                    declarationCopy.findFirstChildByType(ScalaTokenTypes.tASSIGN)
                   declarationCopy.addRangeAfter(first, last, assign)
                   assign.delete()
                   val replaced = getDeclaration.replace(declarationCopy)

@@ -102,11 +102,7 @@ class BlockManagerReplicationSuite
     master = new BlockManagerMaster(
       rpcEnv.setupEndpoint(
         "blockmanager",
-        new BlockManagerMasterEndpoint(
-          rpcEnv,
-          true,
-          conf,
-          new LiveListenerBus)),
+        new BlockManagerMasterEndpoint(rpcEnv, true, conf, new LiveListenerBus)),
       conf,
       true)
     allStores.clear()
@@ -363,9 +359,7 @@ class BlockManagerReplicationSuite
     }
 
     // Insert a block with given replication factor and return the number of copies of the block\
-    def replicateAndGetNumCopies(
-        blockId: String,
-        replicationFactor: Int): Int = {
+    def replicateAndGetNumCopies(blockId: String, replicationFactor: Int): Int = {
       val storageLevel =
         StorageLevel(true, true, false, true, replicationFactor)
       initialStores.head.putSingle(
@@ -422,9 +416,7 @@ class BlockManagerReplicationSuite
       storageLevels: Seq[StorageLevel]) {
     import org.apache.spark.storage.StorageLevel._
 
-    assert(
-      maxReplication > 1,
-      s"Cannot test replication factor $maxReplication")
+    assert(maxReplication > 1, s"Cannot test replication factor $maxReplication")
 
     // storage levels to test with the given replication factor
 

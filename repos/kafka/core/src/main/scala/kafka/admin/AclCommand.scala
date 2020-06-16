@@ -109,9 +109,10 @@ object AclCommand {
               s"Are you sure you want to delete all ACLs for resource `${resource}`? (y/n)"))
             authorizer.removeAcls(resource)
         } else {
-          if (confirmAction(s"Are you sure you want to remove ACLs: $Newline ${acls
-              .map("\t" + _)
-              .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
+          if (confirmAction(
+              s"Are you sure you want to remove ACLs: $Newline ${acls
+                .map("\t" + _)
+                .mkString(Newline)} $Newline from resource `${resource}`? (y/n)"))
             authorizer.removeAcls(acls, resource)
         }
       }

@@ -90,16 +90,14 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       val result = decorate(
         Vector(Line(1, 1, ""), PushString("/foo"), instructions.AbsoluteLoad))
       result mustEqual Right(
-        dag.AbsoluteLoad(Const(CString("/foo"))(Line(1, 1, "")))(
-          Line(1, 1, "")))
+        dag.AbsoluteLoad(Const(CString("/foo"))(Line(1, 1, "")))(Line(1, 1, "")))
     }
 
     "parse out relative_load" in {
       val result = decorate(
         Vector(Line(1, 1, ""), PushString("/foo"), instructions.RelativeLoad))
       result mustEqual Right(
-        dag.RelativeLoad(Const(CString("/foo"))(Line(1, 1, "")))(
-          Line(1, 1, "")))
+        dag.RelativeLoad(Const(CString("/foo"))(Line(1, 1, "")))(Line(1, 1, "")))
     }
 
     "parse out map1" in {
@@ -139,14 +137,12 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
           Dup,
           PushString("Weight"),
           Map2Cross(DerefObject),
-          instructions.Reduce(
-            BuiltInReduction(Reduction(Vector(), "max", 0x2001))),
+          instructions.Reduce(BuiltInReduction(Reduction(Vector(), "max", 0x2001))),
           Map1(WrapArray),
           Swap(1),
           PushString("HeightIncm"),
           Map2Cross(DerefObject),
-          instructions.Reduce(
-            BuiltInReduction(Reduction(Vector(), "max", 0x2001))),
+          instructions.Reduce(BuiltInReduction(Reduction(Vector(), "max", 0x2001))),
           Map1(WrapArray),
           Map2Cross(JoinArray)
         ))
@@ -297,10 +293,7 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
               s1 @ dag.Split(
                 dag.Group(2, Const(CFalse), UnfixedSolution(1, Const(CTrue))),
                 s2 @ dag.Split(
-                  dag.Group(
-                    4,
-                    Const(CFalse),
-                    UnfixedSolution(3, Const(CLong(42)))),
+                  dag.Group(4, Const(CFalse), UnfixedSolution(3, Const(CLong(42)))),
                   IUI(
                     true,
                     Join(Add, Cross(_), sg1: SplitGroup, sp1: SplitParam),
@@ -438,14 +431,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         case Right(
               s @ dag.Split(
                 IntersectBucketSpec(
-                  dag.Group(
-                    2,
-                    Const(CLong(2)),
-                    UnfixedSolution(1, Const(CLong(1)))),
-                  dag.Group(
-                    3,
-                    Const(CLong(4)),
-                    UnfixedSolution(1, Const(CLong(3))))),
+                  dag.Group(2, Const(CLong(2)), UnfixedSolution(1, Const(CLong(1)))),
+                  dag.Group(3, Const(CLong(4)), UnfixedSolution(1, Const(CLong(3))))),
                 IUI(
                   true,
                   sg2: SplitGroup,
@@ -593,9 +580,8 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         ),
         dag.Group(
           4,
-          dag.AbsoluteLoad(
-            Const(CString("/campaigns"))(line),
-            JType.JUniverseT)(line),
+          dag.AbsoluteLoad(Const(CString("/campaigns"))(line), JType.JUniverseT)(
+            line),
           UnfixedSolution(
             3,
             Join(
@@ -637,8 +623,7 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         val line = Line(1, 1, "")
         val result = decorate(Vector(line, PushTrue, PushFalse, Map2Match(Add)))
         result mustEqual Right(
-          Join(Add, IdentitySort, Const(CTrue)(line), Const(CFalse)(line))(
-            line))
+          Join(Add, IdentitySort, Const(CTrue)(line), Const(CFalse)(line))(line))
       }
 
       "map2_cross" >> {
@@ -918,8 +903,7 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
       }
 
       "dup" >> {
-        decorate(Vector(Line(1, 1, ""), Dup)) mustEqual Left(
-          StackUnderflow(Dup))
+        decorate(Vector(Line(1, 1, ""), Dup)) mustEqual Left(StackUnderflow(Dup))
       }
 
       "swap" >> {

@@ -133,11 +133,7 @@ class ParCoder(words: List[String]) {
     }
   }
 
-  def assertWfn(
-      num: String,
-      split: String,
-      dropped: String,
-      r: List[List[String]]) {
+  def assertWfn(num: String, split: String, dropped: String, r: List[List[String]]) {
     val m = comparison.wfnmemo((num, split))
     val rs = r.toSet
     val words: List[String] = wordsForNum(split)

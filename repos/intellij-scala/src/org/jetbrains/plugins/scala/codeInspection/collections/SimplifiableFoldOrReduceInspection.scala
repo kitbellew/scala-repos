@@ -8,8 +8,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.ScExpression
   * Nikolay.Tropin
   * 2014-05-05
   */
-class SimplifiableFoldOrReduceInspection
-    extends OperationOnCollectionInspection {
+class SimplifiableFoldOrReduceInspection extends OperationOnCollectionInspection {
   val foldSum = new FoldSimplificationType(this, "fold.sum", "0", "+", "sum")
   val foldProduct =
     new FoldSimplificationType(this, "fold.product", "1", "*", "product")

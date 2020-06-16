@@ -331,8 +331,9 @@ object Source {
     * @param bufferSize size of buffer in element count
     * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
     */
-  def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
-      : Source[T, SourceQueueWithComplete[T]] =
+  def queue[T](
+      bufferSize: Int,
+      overflowStrategy: OverflowStrategy): Source[T, SourceQueueWithComplete[T]] =
     new Source(
       scaladsl.Source
         .queue[T](bufferSize, overflowStrategy)
@@ -1201,10 +1202,7 @@ final class Source[+Out, +Mat](delegate: scaladsl.Source[Out, Mat])
     *
     * '''Cancels when''' downstream cancels
     */
-  def intersperse[T >: Out](
-      start: T,
-      inject: T,
-      end: T): javadsl.Source[T, Mat] =
+  def intersperse[T >: Out](start: T, inject: T, end: T): javadsl.Source[T, Mat] =
     new Source(delegate.intersperse(start, inject, end))
 
   /**

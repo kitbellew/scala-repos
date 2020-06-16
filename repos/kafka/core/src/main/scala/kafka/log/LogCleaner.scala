@@ -304,14 +304,12 @@ class LogCleaner(
               stats.elapsedIndexSecs,
               mb(stats.mapBytesRead) / stats.elapsedIndexSecs,
               100 * stats.elapsedIndexSecs / stats.elapsedSecs) +
-          "\tBuffer utilization: %.1f%%%n".format(
-            100 * stats.bufferUtilization) +
+          "\tBuffer utilization: %.1f%%%n".format(100 * stats.bufferUtilization) +
           "\tCleaned %,.1f MB in %.1f seconds (%,.1f Mb/sec, %.1f%% of total time)%n"
             .format(
               mb(stats.bytesRead),
               stats.elapsedSecs - stats.elapsedIndexSecs,
-              mb(
-                stats.bytesRead) / (stats.elapsedSecs - stats.elapsedIndexSecs),
+              mb(stats.bytesRead) / (stats.elapsedSecs - stats.elapsedIndexSecs),
               100 * (stats.elapsedSecs - stats.elapsedIndexSecs).toDouble / stats.elapsedSecs
             ) +
           "\tStart size: %,.1f MB (%,d messages)%n".format(
@@ -549,11 +547,7 @@ private[log] class Cleaner(
           val retainedMessages = new mutable.ArrayBuffer[MessageAndOffset]
           messages.foreach { messageAndOffset =>
             messagesRead += 1
-            if (shouldRetainMessage(
-                source,
-                map,
-                retainDeletes,
-                messageAndOffset)) {
+            if (shouldRetainMessage(source, map, retainDeletes, messageAndOffset)) {
               retainedMessages += {
                 if (messageAndOffset.message.magic != messageFormatVersion) {
                   writeOriginalMessageSet = false
@@ -619,9 +613,8 @@ private[log] class Cleaner(
       var offset = -1L
       val timestampType = firstMessageOffset.message.timestampType
       val messageWriter = new MessageWriter(
-        math.min(
-          math.max(MessageSet.messageSetSize(messages) / 2, 1024),
-          1 << 16))
+        math
+          .min(math.max(MessageSet.messageSetSize(messages) / 2, 1024), 1 << 16))
       messageWriter.write(
         codec = compressionCodec,
         timestamp = magicAndTimestamp.timestamp,

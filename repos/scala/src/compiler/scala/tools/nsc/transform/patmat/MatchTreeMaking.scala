@@ -149,13 +149,11 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
       val res: Tree
 
       lazy val nextBinder = freshSym(pos, nextBinderTp)
-      lazy val localSubstitution = Substitution(
-        List(prevBinder),
-        List(gen.mkAttributedStableRef(nextBinder)))
+      lazy val localSubstitution =
+        Substitution(List(prevBinder), List(gen.mkAttributedStableRef(nextBinder)))
 
       def chainBefore(next: Tree)(casegen: Casegen): Tree =
-        atPos(pos)(
-          casegen.flatMapCond(cond, res, nextBinder, substitution(next)))
+        atPos(pos)(casegen.flatMapCond(cond, res, nextBinder, substitution(next)))
     }
 
     // unless we're optimizing, emit local variable bindings for all subpatterns of extractor/case class patterns
@@ -629,8 +627,8 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
           // (for now,) alternatives may not bind variables (except wildcards), so we don't care about the final substitution built internally by makeTreeMakers
           val combinedAlts = altss map (altTreeMakers =>
             ((casegen: Casegen) =>
-              combineExtractors(altTreeMakers :+ TrivialTreeMaker(
-                casegen.one(mkTRUE)))(casegen)))
+              combineExtractors(
+                altTreeMakers :+ TrivialTreeMaker(casegen.one(mkTRUE)))(casegen)))
 
           val findAltMatcher =
             codegenAlt.matcher(EmptyTree, NoSymbol, BooleanTpe)(
@@ -808,11 +806,7 @@ trait MatchTreeMaking extends MatchCodeGen with Debugging {
             case Function(_, _)
                 if (t.symbol.owner == NoSymbol) || (t.symbol.owner == origOwner) =>
               debug.patmat(
-                "fundef: " + (
-                  (
-                    t,
-                    t.symbol.ownerChain,
-                    currentOwner.ownerChain)))
+                "fundef: " + ((t, t.symbol.ownerChain, currentOwner.ownerChain)))
               t.symbol.owner = currentOwner
             case d: DefTree
                 if (d.symbol != NoSymbol) && ((d.symbol.owner == NoSymbol) || (d.symbol.owner == origOwner)) => // don't indiscriminately change existing owners! (see e.g., pos/t3440, pos/t3534, pos/unapplyContexts2)

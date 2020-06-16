@@ -585,12 +585,7 @@ private[hive] class HiveClientImpl(
       replace: Boolean,
       holdDDLTime: Boolean): Unit =
     withHiveState {
-      shim.loadTable(
-        client,
-        new Path(loadPath),
-        tableName,
-        replace,
-        holdDDLTime)
+      shim.loadTable(client, new Path(loadPath), tableName, replace, holdDDLTime)
     }
 
   def loadDynamicPartitions(
@@ -628,8 +623,8 @@ private[hive] class HiveClientImpl(
       oldName: String,
       newName: String): Unit =
     withHiveState {
-      val catalogFunc = getFunction(db, oldName).copy(name =
-        FunctionIdentifier(newName, Some(db)))
+      val catalogFunc =
+        getFunction(db, oldName).copy(name = FunctionIdentifier(newName, Some(db)))
       val hiveFunc = toHiveFunction(catalogFunc, db)
       client.alterFunction(db, oldName, hiveFunc)
     }

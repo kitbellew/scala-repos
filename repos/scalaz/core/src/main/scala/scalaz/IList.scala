@@ -163,8 +163,7 @@ sealed abstract class IList[A] extends Product with Serializable {
     foldLeft(==>>.empty[K, OneAnd[IList, A]]) { (m, a) =>
       m.alter(
         f(a),
-        _.map(oa => OneAnd(a, oa.head :: oa.tail)) orElse Some(
-          OneAnd(a, empty)))
+        _.map(oa => OneAnd(a, oa.head :: oa.tail)) orElse Some(OneAnd(a, empty)))
     }
 
   def headOption: Option[A] =
@@ -622,10 +621,7 @@ sealed abstract class IListInstances extends IListInstance0 {
 
       def alignWith[A, B, C](
           f: A \&/ B => C): (IList[A], IList[B]) => IList[C] = {
-        @tailrec def loop(
-            aa: IList[A],
-            bb: IList[B],
-            accum: IList[C]): IList[C] =
+        @tailrec def loop(aa: IList[A], bb: IList[B], accum: IList[C]): IList[C] =
           (aa, bb) match {
             case (INil(), _) => accum reverse_::: bb.map(b => f(\&/.That(b)))
             case (_, INil()) => accum reverse_::: aa.map(a => f(\&/.This(a)))

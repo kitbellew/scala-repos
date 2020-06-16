@@ -225,9 +225,7 @@ class BigDecimalTest {
       val bd = BigDecimal(bi)
       val bd2 = BigDecimal.decimal(d)
       assert(!bi.isValidLong || bi == l, s"Should be invalid or equal: $bi $l")
-      assert(
-        !bi.isValidDouble || bi == d,
-        s"Should be invalid or equal: $bi $d")
+      assert(!bi.isValidDouble || bi == d, s"Should be invalid or equal: $bi $d")
       assert(bd == bi, s"Should be equal $bi $bd")
       assert(bd.## == bi.##, s"Hash codes for $bi, $bd should be equal")
       assert(
@@ -244,9 +242,7 @@ class BigDecimalTest {
       BigDecimal.decimal((0.1f).toDouble)
     )
     for (a <- different; b <- different if (a ne b))
-      assert(
-        a != b,
-        "BigDecimal representations of Double mistakenly conflated")
+      assert(a != b, "BigDecimal representations of Double mistakenly conflated")
   }
 
   // Make sure hash code agrees with decimal representation of Double

@@ -99,9 +99,7 @@ trait RefactoringHandler { self: Analyzer =>
           case Left(failure)  => failure
         }
       case None =>
-        RefactorFailure(
-          procedureId,
-          "No effect found for procId " + procedureId)
+        RefactorFailure(procedureId, "No effect found for procId " + procedureId)
     }
   }
 
@@ -171,8 +169,7 @@ trait RefactoringControl { self: RichCompilerControl with RefactoringImpl =>
       case Right(result) =>
         // Reload all files touched by refactoring, so subsequent refactorings
         // will see consistent state.
-        askReloadFiles(
-          result.touchedFiles.map(f => createSourceFile(f.getPath)))
+        askReloadFiles(result.touchedFiles.map(f => createSourceFile(f.getPath)))
         Right(result)
       case Left(failure) => Left(failure)
     }

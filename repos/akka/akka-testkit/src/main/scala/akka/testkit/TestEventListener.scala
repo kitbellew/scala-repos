@@ -131,8 +131,7 @@ abstract class EventFilter(occurrences: Int) {
           throw new AssertionError(
             s"timeout ($leeway) waiting for $todo messages on $this")
         else
-          throw new AssertionError(
-            s"received ${-todo} excess messages on $this")
+          throw new AssertionError(s"received ${-todo} excess messages on $this")
       result
     } finally system.eventStream publish TestEvent.UnMute(this)
   }

@@ -101,8 +101,7 @@ private trait ProductMonadPlus[F[_], G[_]]
   implicit def G: MonadPlus[G]
 }
 
-private trait ProductFoldable[F[_], G[_]]
-    extends Foldable[λ[α => (F[α], G[α])]] {
+private trait ProductFoldable[F[_], G[_]] extends Foldable[λ[α => (F[α], G[α])]] {
   implicit def F: Foldable[F]
 
   implicit def G: Foldable[G]

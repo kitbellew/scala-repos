@@ -59,8 +59,7 @@ class AttributesSpec extends AkkaSpec {
 
     "be overridable on a module basis" in {
       val runnable = Source.empty.toMat(
-        AttributesSink().withAttributes(Attributes.name("new-name")))(
-        Keep.right)
+        AttributesSink().withAttributes(Attributes.name("new-name")))(Keep.right)
       whenReady(runnable.run()) { attributes ⇒
         attributes.get[Name] should contain(Name("new-name"))
       }
@@ -75,8 +74,8 @@ class AttributesSpec extends AkkaSpec {
       }
     }
 
-    val attributes = Attributes.name("a") and Attributes.name(
-      "b") and Attributes.inputBuffer(1, 2)
+    val attributes =
+      Attributes.name("a") and Attributes.name("b") and Attributes.inputBuffer(1, 2)
 
     "give access to first attribute" in {
       attributes.getFirst[Name] should ===(Some(Attributes.Name("a")))

@@ -47,9 +47,7 @@ private[optimizer] abstract class OptimizerCore(
   protected def getMethodBody(method: MethodID): MethodDef
 
   /** Returns the list of possible targets for a dynamically linked call. */
-  protected def dynamicCall(
-      intfName: String,
-      methodName: String): List[MethodID]
+  protected def dynamicCall(intfName: String, methodName: String): List[MethodID]
 
   /** Returns the target of a static call. */
   protected def staticCall(
@@ -110,12 +108,7 @@ private[optimizer] abstract class OptimizerCore(
       val MethodDef(static, name, params, resultType, body) = originalDef
       val (newParams, newBody1) =
         try {
-          transformIsolatedBody(
-            Some(myself),
-            thisType,
-            params,
-            resultType,
-            body)
+          transformIsolatedBody(Some(myself), thisType, params, resultType, body)
         } catch {
           case _: TooManyRollbacksException =>
             usedLocalNames.clear()
@@ -424,11 +417,7 @@ private[optimizer] abstract class OptimizerCore(
         val localDef = LocalDef(
           RefinedType(AnyType),
           true,
-          ReplaceWithVarRef(
-            newName,
-            newOriginalName,
-            newSimpleState(true),
-            None))
+          ReplaceWithVarRef(newName, newOriginalName, newSimpleState(true), None))
         val newHandler = {
           val handlerScope =
             scope.withEnv(scope.env.withLocalDef(name, localDef))
@@ -864,8 +853,7 @@ private[optimizer] abstract class OptimizerCore(
                 val refinedType =
                   constrainedLub(newThenp.tpe, newElsep.tpe, tree.tpe)
                 cont(
-                  PreTransTree(
-                    foldIf(newCond, newThenp, newElsep)(refinedType)))
+                  PreTransTree(foldIf(newCond, newThenp, newElsep)(refinedType)))
               }
           }
 
@@ -926,8 +914,7 @@ private[optimizer] abstract class OptimizerCore(
                 if (isSubtype(texpr.tpe.base, tpe.asInstanceOf[Type])) {
                   cont(texpr)
                 } else {
-                  cont(
-                    PreTransTree(AsInstanceOf(finishTransformExpr(texpr), tpe)))
+                  cont(PreTransTree(AsInstanceOf(finishTransformExpr(texpr), tpe)))
                 }
             }
           }
@@ -1158,8 +1145,7 @@ private[optimizer] abstract class OptimizerCore(
             PreTransRecordTree(
               RecordValue(
                 recordType,
-                recordType.fields.map(f =>
-                  fieldLocalDefs(f.name).newReplacement)),
+                recordType.fields.map(f => fieldLocalDefs(f.name).newReplacement)),
               tpe,
               cancelFun)
 
@@ -1516,13 +1502,8 @@ private[optimizer] abstract class OptimizerCore(
             scope.implsBeingInlined((allocationSites, target))
 
           if (shouldInline && !beingInlined) {
-            inline(
-              allocationSites,
-              None,
-              targs,
-              target,
-              isStat,
-              usePreTransform)(cont)
+            inline(allocationSites, None, targs, target, isStat, usePreTransform)(
+              cont)
           } else {
             treeNotInlined0(targs.map(finishTransformExpr))
           }
@@ -1572,11 +1553,8 @@ private[optimizer] abstract class OptimizerCore(
             }
 
           case _ =>
-            cont(
-              PreTransTree(
-                JSFunctionApply(
-                  finishTransformExpr(tfun),
-                  args.map(transformExpr))))
+            cont(PreTransTree(
+              JSFunctionApply(finishTransformExpr(tfun), args.map(transformExpr))))
         }
       }
     }
@@ -1887,10 +1865,8 @@ private[optimizer] abstract class OptimizerCore(
             List(asRTLong(newArgs(1))))(IntType))
       case LongDivideUnsigned =>
         contTree(
-          Apply(
-            firstArgAsRTLong,
-            LongImpl.divideUnsigned,
-            List(asRTLong(newArgs(1))))(LongType))
+          Apply(firstArgAsRTLong, LongImpl.divideUnsigned, List(asRTLong(newArgs(1))))(
+            LongType))
       case LongRemainderUnsigned =>
         contTree(
           Apply(
@@ -2111,9 +2087,7 @@ private[optimizer] abstract class OptimizerCore(
         val thisLocalDef = LocalDef(
           RefinedType(cls, isExact = true, isNullable = false),
           false,
-          InlineClassBeingConstructedReplacement(
-            inputFieldsLocalDefs,
-            cancelFun))
+          InlineClassBeingConstructedReplacement(inputFieldsLocalDefs, cancelFun))
         val statsScope = bodyScope
           .inlining(targetID)
           .withEnv(bodyScope.env.withLocalDef("this", thisLocalDef))
@@ -2150,8 +2124,7 @@ private[optimizer] abstract class OptimizerCore(
             s @ Select(ths: This, Ident(fieldName, fieldOrigName)),
             value) :: rest if !inputFieldsLocalDefs(fieldName).mutable =>
         pretransformExpr(value) { tvalue =>
-          withNewLocalDef(
-            Binding(fieldName, fieldOrigName, s.tpe, false, tvalue)) {
+          withNewLocalDef(Binding(fieldName, fieldOrigName, s.tpe, false, tvalue)) {
             (localDef, cont1) =>
               if (localDef.contains(thisLocalDef)) {
                 /* Uh oh, there is a `val x = ...this...`. We can't keep it,
@@ -3078,15 +3051,11 @@ private[optimizer] abstract class OptimizerCore(
                   val tempX = tempXDef.newReplacement
                   val tempY = tempYDef.newReplacement
                   cont(
-                    PreTransTree(
+                    PreTransTree(AndThen(
                       AndThen(
-                        AndThen(
-                          BinaryOp(Num_>, tempX, IntLiteral(0)),
-                          BinaryOp(Num_>, tempY, IntLiteral(0))),
-                        BinaryOp(
-                          Num_<,
-                          BinaryOp(Int_+, tempX, tempY),
-                          IntLiteral(0)))))
+                        BinaryOp(Num_>, tempX, IntLiteral(0)),
+                        BinaryOp(Num_>, tempY, IntLiteral(0))),
+                      BinaryOp(Num_<, BinaryOp(Int_+, tempX, tempY), IntLiteral(0)))))
               }(finishTransform(isStat = false))
             }
 
@@ -3446,11 +3415,9 @@ private[optimizer] abstract class OptimizerCore(
         RefinedType(ptpe),
         mutable,
         ReplaceWithVarRef(newName, newOriginalName, newSimpleState(true), None))
-      val newParamDef = ParamDef(
-        Ident(newName, newOriginalName)(ident.pos),
-        ptpe,
-        mutable,
-        rest)(p.pos)
+      val newParamDef =
+        ParamDef(Ident(newName, newOriginalName)(ident.pos), ptpe, mutable, rest)(
+          p.pos)
       ((name -> localDef), newParamDef)
     }).unzip
 
@@ -3547,8 +3514,7 @@ private[optimizer] abstract class OptimizerCore(
                       t != refinedOrigType && !t.isNothingType))
                     cancelFun()
 
-                  cont(
-                    PreTransRecordTree(resultTree, refinedOrigType, cancelFun))
+                  cont(PreTransRecordTree(resultTree, refinedOrigType, cancelFun))
                 }
             }
           }(bodyScope)
@@ -3720,8 +3686,7 @@ private[optimizer] abstract class OptimizerCore(
                         cont(tinner)
                       case _ =>
                         if (rhsSideEffects.tpe == NothingType)
-                          cont(
-                            PreTransTree(rhsSideEffects, RefinedType.Nothing))
+                          cont(PreTransTree(rhsSideEffects, RefinedType.Nothing))
                         else
                           cont(PreTransBlock(rhsSideEffects :: Nil, tinner))
                     }
@@ -3784,9 +3749,10 @@ private[optimizer] abstract class OptimizerCore(
                       op @ (BinaryOp.Long_+ | BinaryOp.Long_-),
                       LongFromInt(intLhs),
                       LongFromInt(intRhs)) =>
-                  withNewLocalDefs(List(
-                    Binding("x", None, IntType, false, PreTransTree(intLhs)),
-                    Binding("y", None, IntType, false, PreTransTree(intRhs)))) {
+                  withNewLocalDefs(
+                    List(
+                      Binding("x", None, IntType, false, PreTransTree(intLhs)),
+                      Binding("y", None, IntType, false, PreTransTree(intRhs)))) {
                     (intLocalDefs, cont1) =>
                       val List(lhsLocalDef, rhsLocalDef) = intLocalDefs
                       doDoBuildInner(
@@ -4094,8 +4060,7 @@ private[optimizer] object OptimizerCore {
 
   private class Scope(
       val env: OptEnv,
-      val implsBeingInlined: Set[
-        (List[Option[AllocationSite]], AbstractMethodID)]) {
+      val implsBeingInlined: Set[(List[Option[AllocationSite]], AbstractMethodID)]) {
     def withEnv(env: OptEnv): Scope =
       new Scope(env, implsBeingInlined)
 

@@ -95,8 +95,7 @@ class DictionaryEncodingSuite extends SparkFunSuite {
         }
 
         inputSeq.foreach { i =>
-          assertResult(i.toShort, "Wrong column element value")(
-            buffer.getShort())
+          assertResult(i.toShort, "Wrong column element value")(buffer.getShort())
         }
 
         // -------------

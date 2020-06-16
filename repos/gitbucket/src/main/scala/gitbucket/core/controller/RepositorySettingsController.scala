@@ -60,8 +60,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
   case class DefaultBranchForm(defaultBranch: String)
 
   val defaultBranchForm = mapping(
-    "defaultBranch" -> trim(
-      label("Default Branch", text(required, maxlength(100))))
+    "defaultBranch" -> trim(label("Default Branch", text(required, maxlength(100))))
   )(DefaultBranchForm.apply)
 
   // for collaborator addition
@@ -214,8 +213,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
       if (!getAccountByUserName(repository.owner).get.isGroupAccount) {
         addCollaborator(repository.owner, repository.name, form.userName)
       }
-      redirect(
-        s"/${repository.owner}/${repository.name}/settings/collaborators")
+      redirect(s"/${repository.owner}/${repository.name}/settings/collaborators")
     })
 
   /**
@@ -226,8 +224,7 @@ trait RepositorySettingsControllerBase extends ControllerBase {
       if (!getAccountByUserName(repository.owner).get.isGroupAccount) {
         removeCollaborator(repository.owner, repository.name, params("name"))
       }
-      redirect(
-        s"/${repository.owner}/${repository.name}/settings/collaborators")
+      redirect(s"/${repository.owner}/${repository.name}/settings/collaborators")
   })
 
   /**
@@ -303,8 +300,8 @@ trait RepositorySettingsControllerBase extends ControllerBase {
             if (repository.commitCount == 0) List.empty
             else
               git.log
-                .add(git.getRepository.resolve(
-                  repository.repository.defaultBranch))
+                .add(
+                  git.getRepository.resolve(repository.repository.defaultBranch))
                 .setMaxCount(4)
                 .call
                 .iterator

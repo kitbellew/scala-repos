@@ -78,10 +78,7 @@ abstract class BaseAlgorithm[PD, M, Q, P]
     * @return Batch of predicted results
     */
   @DeveloperApi
-  def batchPredictBase(
-      sc: SparkContext,
-      bm: Any,
-      qs: RDD[(Long, Q)]): RDD[(Long, P)]
+  def batchPredictBase(sc: SparkContext, bm: Any, qs: RDD[(Long, Q)]): RDD[(Long, P)]
 
   /** :: DeveloperApi ::
     * Engine developers should not use this directly. Called by serving to

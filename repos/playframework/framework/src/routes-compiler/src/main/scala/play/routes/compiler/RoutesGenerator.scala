@@ -309,10 +309,7 @@ object InjectedRoutesGenerator extends RoutesGenerator {
         includesDeps(include.router)
       case route: Route =>
         routesDeps(
-          (
-            route.call.packageName,
-            route.call.controller,
-            route.call.instantiate))
+          (route.call.packageName, route.call.controller, route.call.instantiate))
     }.distinct
 
     // Map all the rules to dependency descriptors
@@ -321,10 +318,8 @@ object InjectedRoutesGenerator extends RoutesGenerator {
         includesDeps(include.router).copy(rule = include)
       case route: Route =>
         routesDeps(
-          (
-            route.call.packageName,
-            route.call.controller,
-            route.call.instantiate)).copy(rule = route)
+          (route.call.packageName, route.call.controller, route.call.instantiate))
+          .copy(rule = route)
     }
 
     inject.twirl

@@ -244,9 +244,7 @@ trait ModelLibModule[M[+_]] {
         .toMap
     }
 
-    def alignWithModels(
-        schema: CSchema,
-        modelWithPaths: Map[String, Set[CPath]])
+    def alignWithModels(schema: CSchema, modelWithPaths: Map[String, Set[CPath]])
         : Map[String, Map[CPath, DoubleColumn]] = {
       modelWithPaths map {
         case (modelName, cpaths) =>

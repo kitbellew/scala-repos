@@ -171,9 +171,7 @@ trait PrecogLibModule[M[+_]]
                       Error.invalid(
                         "Number of items returned does not match number sent."))
                   } else {
-                    def sparseStream(
-                        row: Int,
-                        xs: List[RValue]): Stream[RValue] =
+                    def sparseStream(row: Int, xs: List[RValue]): Stream[RValue] =
                       if (row < slice.size) {
                         if (members(row))
                           Stream.cons(xs.head, sparseStream(row + 1, xs.tail))
@@ -197,8 +195,7 @@ trait PrecogLibModule[M[+_]]
                     body <- httpError <-: response.ok.validation
                     json <- jsonError <-: (Error.thrown(
                       _)) <-: JParser.parseFromString(body)
-                    data <-
-                      jsonError <-: (json \ "data").validated[List[JValue]]
+                    data <- jsonError <-: (json \ "data").validated[List[JValue]]
                     result <- jsonError <-: populate(data)
                   } yield result
                   validation leftMap (NonEmptyList(_))

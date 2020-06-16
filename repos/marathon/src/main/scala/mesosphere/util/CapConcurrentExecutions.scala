@@ -120,8 +120,7 @@ private[util] class RestrictParallelExecutionsActor(
     metrics.reset()
 
     for (execute <- queue) {
-      execute.complete(
-        Failure(new IllegalStateException(s"$self actor stopped")))
+      execute.complete(Failure(new IllegalStateException(s"$self actor stopped")))
     }
 
     queue = Queue.empty

@@ -25,7 +25,6 @@ trait MarathonClusterIntegrationTest extends SingleMarathonIntegrationTest {
       config.master,
       "--event_subscriber",
       "http_callback") ++ extraMarathonParameters
-    config.marathonPorts.tail.foreach(port =>
-      startMarathon(port, parameters: _*))
+    config.marathonPorts.tail.foreach(port => startMarathon(port, parameters: _*))
   }
 }

@@ -60,11 +60,8 @@ trait StringLibSpecs[M[+_]]
   }
 
   def op2Input(op: Op2, const: RValue, loadFrom: Line => dag.AbsoluteLoad) = {
-    Join(
-      BuiltInFunction2Op(op),
-      Cross(None),
-      loadFrom(line),
-      Const(const)(line))(line)
+    Join(BuiltInFunction2Op(op), Cross(None), loadFrom(line), Const(const)(line))(
+      line)
   }
 
   "for homogeneous sets, the appropriate string function" should {

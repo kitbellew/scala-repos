@@ -149,10 +149,7 @@ object ListHelpersSpec extends Specification with ListHelpers {
 
   "The ListHelpers rotateList function (rotate method on a List object)" should {
     "create a List of all the circular permutations of a given list" in {
-      List(1, 2, 3).rotate must_== List(
-        List(1, 2, 3),
-        List(2, 3, 1),
-        List(3, 1, 2))
+      List(1, 2, 3).rotate must_== List(List(1, 2, 3), List(2, 3, 1), List(3, 1, 2))
     }
   }
 

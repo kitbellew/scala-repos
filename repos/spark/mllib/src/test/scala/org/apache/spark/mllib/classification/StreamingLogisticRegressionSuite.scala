@@ -57,11 +57,7 @@ class StreamingLogisticRegressionSuite
     // generate sequence of simulated data
     val numBatches = 20
     val input = (0 until numBatches).map { i =>
-      LogisticRegressionSuite.generateLogisticInput(
-        0.0,
-        B,
-        nPoints,
-        42 * (i + 1))
+      LogisticRegressionSuite.generateLogisticInput(0.0, B, nPoints, 42 * (i + 1))
     }
 
     // apply model training to input stream
@@ -93,11 +89,7 @@ class StreamingLogisticRegressionSuite
     // generate sequence of simulated data
     val numBatches = 20
     val input = (0 until numBatches).map { i =>
-      LogisticRegressionSuite.generateLogisticInput(
-        0.0,
-        B,
-        nPoints,
-        42 * (i + 1))
+      LogisticRegressionSuite.generateLogisticInput(0.0, B, nPoints, 42 * (i + 1))
     }
 
     // create buffer to store intermediate fits
@@ -139,11 +131,7 @@ class StreamingLogisticRegressionSuite
     // generate sequence of simulated data for testing
     val numBatches = 10
     val testInput = (0 until numBatches).map { i =>
-      LogisticRegressionSuite.generateLogisticInput(
-        0.0,
-        B,
-        nPoints,
-        42 * (i + 1))
+      LogisticRegressionSuite.generateLogisticInput(0.0, B, nPoints, 42 * (i + 1))
     }
 
     // apply model predictions to test stream
@@ -176,11 +164,7 @@ class StreamingLogisticRegressionSuite
     val numBatches = 10
     val nPoints = 100
     val testInput = (0 until numBatches).map { i =>
-      LogisticRegressionSuite.generateLogisticInput(
-        0.0,
-        5.0,
-        nPoints,
-        42 * (i + 1))
+      LogisticRegressionSuite.generateLogisticInput(0.0, 5.0, nPoints, 42 * (i + 1))
     }
 
     // train and predict

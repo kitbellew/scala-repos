@@ -7,9 +7,7 @@ object Test {
 
   // illegal abstract type member refinement: changes the arity of MyType
   // the error is pretty strange, since the compiler forms the illegal type xs.MyType[a] anyway
-  def span[
-      a,
-      s <: Seq[a] { type MyType /*look ma, no type parameters!*/ <: s }](
+  def span[a, s <: Seq[a] { type MyType /*look ma, no type parameters!*/ <: s }](
       xs: s): s = xs f
 //        ^
 // found   : xs.MyType[a]

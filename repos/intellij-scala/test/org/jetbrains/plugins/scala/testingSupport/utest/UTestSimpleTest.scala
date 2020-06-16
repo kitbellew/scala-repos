@@ -135,10 +135,7 @@ trait UTestSimpleTest extends UTestTestCase {
   def testFileStructureViewHierarchy(): Unit = {
     addUTestTest()
     runFileStructureViewTest(uTestTestName, "\"sameName\"", Some("sameName"))
-    runFileStructureViewTest(
-      uTestTestName,
-      "\"sameName\"",
-      Some("\"sameName\""))
+    runFileStructureViewTest(uTestTestName, "\"sameName\"", Some("\"sameName\""))
     runFileStructureViewTest(uTestTestName, "\"outer2\"", Some("tests"))
     runFileStructureViewTest(uTestTestName, "\"inner2_1\"", Some("\"outer2\""))
   }

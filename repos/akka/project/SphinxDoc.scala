@@ -38,10 +38,9 @@ object SphinxDoc {
   def docsSettings =
     Seq(
       sourceDirectory in Sphinx <<= baseDirectory / "rst",
-      watchSources <++= (
-        sourceDirectory in Sphinx,
-        excludeFilter in Global) map { (source, excl) =>
-        source descendantsExcept ("*.rst", excl) get
+      watchSources <++= (sourceDirectory in Sphinx, excludeFilter in Global) map {
+        (source, excl) =>
+          source descendantsExcept ("*.rst", excl) get
       },
       sphinxPackages in Sphinx <+= baseDirectory { _ / "_sphinx" / "pygments" },
       // copy akka-contrib/docs into our rst_preprocess/contrib (and apply substitutions)

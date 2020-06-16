@@ -256,8 +256,7 @@ object Pipeline extends MLReadable[Pipeline] {
       val stagesDir = new Path(path, "stages").toString
       stages.zipWithIndex.foreach {
         case (stage: MLWritable, idx: Int) =>
-          stage.write.save(
-            getStagePath(stage.uid, idx, stages.length, stagesDir))
+          stage.write.save(getStagePath(stage.uid, idx, stages.length, stagesDir))
       }
     }
 

@@ -230,10 +230,8 @@ private[streaming] class OpenHashMapBasedStateMap[K, S](
     val tabs = if (deltaChainLength > 0) {
       ("    " * (deltaChainLength - 1)) + "+--- "
     } else ""
-    parentStateMap.toDebugString() + "\n" + deltaMap.iterator.mkString(
-      tabs,
-      "\n" + tabs,
-      "")
+    parentStateMap
+      .toDebugString() + "\n" + deltaMap.iterator.mkString(tabs, "\n" + tabs, "")
   }
 
   override def toString(): String = {

@@ -357,9 +357,7 @@ class Promise[A]
 
   override def toString = "Promise@%s(state=%s)".format(hashCode, state)
 
-  @inline private[this] def cas(
-      oldState: State[A],
-      newState: State[A]): Boolean =
+  @inline private[this] def cas(oldState: State[A], newState: State[A]): Boolean =
     unsafe.compareAndSwapObject(this, stateOff, oldState, newState)
 
   private[this] def runq(first: K[A], rest: List[K[A]], result: Try[A]) =

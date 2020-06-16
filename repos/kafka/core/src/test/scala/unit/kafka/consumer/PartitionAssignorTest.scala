@@ -47,16 +47,15 @@ class PartitionAssignorTest extends Logging {
             (
               "topic-" + topic,
               PartitionAssignorTest.MinPartitionCount.max(
-                TestUtils.random.nextInt(
-                  PartitionAssignorTest.MaxPartitionCount)))
+                TestUtils.random.nextInt(PartitionAssignorTest.MaxPartitionCount)))
           })
           .toSeq: _*)
 
       val subscriptions = Map(
         (1 to consumerCount)
           .map(consumer => {
-            val streamCount = 1.max(TestUtils.random.nextInt(
-              PartitionAssignorTest.MaxStreamCount + 1))
+            val streamCount = 1.max(
+              TestUtils.random.nextInt(PartitionAssignorTest.MaxStreamCount + 1))
             (
               "g1c" + consumer,
               WildcardSubscriptionInfo(streamCount, ".*", isWhitelist = true))
@@ -88,8 +87,7 @@ class PartitionAssignorTest extends Logging {
             (
               "topic-" + topic,
               PartitionAssignorTest.MinPartitionCount.max(
-                TestUtils.random.nextInt(
-                  PartitionAssignorTest.MaxPartitionCount)))
+                TestUtils.random.nextInt(PartitionAssignorTest.MaxPartitionCount)))
           })
           .toSeq: _*)
 
@@ -207,8 +205,7 @@ private object PartitionAssignorTest extends Logging {
         val replicaAssignment = Map((0 until partitionCount).map(partition =>
           (partition.toString, Seq(0))): _*)
         EasyMock
-          .expect(
-            zkClient.readData("/brokers/topics/%s".format(topic), new Stat()))
+          .expect(zkClient.readData("/brokers/topics/%s".format(topic), new Stat()))
           .andReturn(zkUtils.replicaAssignmentZkData(replicaAssignment))
         EasyMock.expectLastCall().anyTimes()
     }

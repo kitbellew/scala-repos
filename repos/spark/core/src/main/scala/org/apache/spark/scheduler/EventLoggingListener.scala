@@ -344,9 +344,7 @@ private[spark] object EventLoggingListener extends Logging {
     val logName = log.getName.stripSuffix(IN_PROGRESS)
     val codecName: Option[String] = logName.split("\\.").tail.lastOption
     val codec = codecName.map { c =>
-      codecMap.getOrElseUpdate(
-        c,
-        CompressionCodec.createCodec(new SparkConf, c))
+      codecMap.getOrElseUpdate(c, CompressionCodec.createCodec(new SparkConf, c))
     }
 
     try {

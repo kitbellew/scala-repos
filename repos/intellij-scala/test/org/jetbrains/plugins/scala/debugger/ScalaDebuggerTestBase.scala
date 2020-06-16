@@ -14,11 +14,7 @@ import com.intellij.openapi.module.Module
 import com.intellij.openapi.util.io.FileUtil
 import com.intellij.openapi.vfs.newvfs.impl.VfsRootAccess
 import com.intellij.openapi.vfs.{LocalFileSystem, VfsUtil}
-import com.intellij.testFramework.{
-  PlatformTestCase,
-  PsiTestUtil,
-  UsefulTestCase
-}
+import com.intellij.testFramework.{PlatformTestCase, PsiTestUtil, UsefulTestCase}
 import org.jetbrains.plugins.scala.extensions.inWriteAction
 import org.jetbrains.plugins.scala.util.TestUtils
 import org.junit.Assert
@@ -196,8 +192,7 @@ abstract class ScalaDebuggerTestBase extends ScalaCompilerTestBase {
       if (dir.exists) dir.listFiles().foreach { f =>
         if (f.isDirectory) computeForDir(f)
         else {
-          result += (testDataBasePath.toURI.relativize(f.toURI).toString -> md5(
-            f))
+          result += (testDataBasePath.toURI.relativize(f.toURI).toString -> md5(f))
         }
       }
     }

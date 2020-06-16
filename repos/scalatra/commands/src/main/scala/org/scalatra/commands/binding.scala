@@ -59,8 +59,7 @@ object Binding {
       new PartialBinding(field transform transformer)
 
     def validate: Binding =
-      throw new BindingException(
-        "Databinding needs to happen before validation")
+      throw new BindingException("Databinding needs to happen before validation")
   }
 
   private class DefaultBinding[I, A](
@@ -209,8 +208,7 @@ trait BindingImplicits
     safeOption(df.parse(_).map(_.toDate))
 
   implicit def stringToSeqDateTime(implicit
-      df: DateParser = JodaDateFormats.Web)
-      : TypeConverter[String, Seq[DateTime]] =
+      df: DateParser = JodaDateFormats.Web): TypeConverter[String, Seq[DateTime]] =
     stringToSeq(stringToDateTime)
 
   implicit def stringToSeqDate(implicit

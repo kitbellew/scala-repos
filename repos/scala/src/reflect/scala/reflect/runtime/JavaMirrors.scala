@@ -199,8 +199,8 @@ private[scala] trait JavaMirrors
         schemaAndValue match {
           case ConstantArg(value) => LiteralAnnotArg(Constant(value))
           case (clazz @ ArrayClass(), value: Array[_]) =>
-            ArrayAnnotArg(value map (x =>
-              apply(ScalaRunTime.arrayElementClass(clazz) -> x)))
+            ArrayAnnotArg(
+              value map (x => apply(ScalaRunTime.arrayElementClass(clazz) -> x)))
           case (AnnotationClass(), value: jAnnotation) =>
             NestedAnnotArg(JavaAnnotationProxy(value))
           case _ => UnmappableAnnotArg
@@ -223,8 +223,7 @@ private[scala] trait JavaMirrors
       override lazy val assocs: List[(Name, ClassfileAnnotArg)] = (
         jann.annotationType.getDeclaredMethods.sortBy(_.getName).toList map (
           m =>
-            TermName(m.getName) -> toAnnotArg(
-              m.getReturnType -> m.invoke(jann)))
+            TermName(m.getName) -> toAnnotArg(m.getReturnType -> m.invoke(jann)))
       )
     }
 
@@ -1363,9 +1362,10 @@ private[scala] trait JavaMirrors
           case jwild: WildcardType =>
             val tparam = owner
               .newExistential(newTypeName("T$" + tparams.length))
-              .setInfo(TypeBounds(
-                lub(jwild.getLowerBounds.toList map typeToScala),
-                glb(jwild.getUpperBounds.toList map typeToScala map objToAny)))
+              .setInfo(
+                TypeBounds(
+                  lub(jwild.getLowerBounds.toList map typeToScala),
+                  glb(jwild.getUpperBounds.toList map typeToScala map objToAny)))
             tparams += tparam
             typeRef(NoPrefix, tparam, List())
           case _ =>
@@ -1462,10 +1462,8 @@ private[scala] trait JavaMirrors
 
     private def jmethodAsScala1(jmeth: jMethod): MethodSymbol = {
       val clazz = sOwner(jmeth)
-      val meth = clazz.newMethod(
-        newTermName(jmeth.getName),
-        NoPosition,
-        jmeth.scalaFlags)
+      val meth =
+        clazz.newMethod(newTermName(jmeth.getName), NoPosition, jmeth.scalaFlags)
       methodCache enter (jmeth, meth)
       val tparams = jmeth.getTypeParameters.toList map createTypeParameter
       val paramtpes = jmeth.getGenericParameterTypes.toList map typeToScala

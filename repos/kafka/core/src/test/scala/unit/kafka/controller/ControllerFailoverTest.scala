@@ -108,15 +108,13 @@ class ControllerFailoverTest extends KafkaServerTestHarness with Logging {
           controller.kafkaController
             .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
           log.info(
-            "Queue state %d %d".format(
-              channelManager.queueCapacity(0),
-              channelManager.queueSize(0)))
+            "Queue state %d %d"
+              .format(channelManager.queueCapacity(0), channelManager.queueSize(0)))
           controller.kafkaController
             .sendUpdateMetadataRequest(Seq(0), Set(topicPartition))
           log.info(
-            "Queue state %d %d".format(
-              channelManager.queueCapacity(0),
-              channelManager.queueSize(0)))
+            "Queue state %d %d"
+              .format(channelManager.queueCapacity(0), channelManager.queueSize(0)))
         } catch {
           case e: Exception => {
             log.info("Thread interrupted")

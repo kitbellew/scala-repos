@@ -423,9 +423,7 @@ class ModelBuilderTest extends AsyncTest[JdbcTestDB] {
                 columnDefault("some_bool_default_true").toString)
             }
             ifCapU(jcap.booleanMetaData) {
-              assertEquals(
-                Some(false),
-                columnDefault("some_bool_default_false"))
+              assertEquals(Some(false), columnDefault("some_bool_default_false"))
             }
             ifNotCapU(jcap.booleanMetaData) {
               assert(

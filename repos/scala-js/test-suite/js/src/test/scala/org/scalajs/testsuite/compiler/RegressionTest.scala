@@ -41,8 +41,7 @@ class RegressionTest {
     // Nothing to check
   }
 
-  @Test def Bad_encoding_for_characters_spanning_2_UTF_16_chars_issue_23()
-      : Unit = {
+  @Test def Bad_encoding_for_characters_spanning_2_UTF_16_chars_issue_23(): Unit = {
     val str = "A∀\uD835\uDCAB"
     var s: String = ""
     for (c <- str) {
@@ -282,9 +281,7 @@ class RegressionTest {
     assertThrows(classOf[Exception], (giveMeANull(): scala.runtime.IntRef).elem)
 
     def giveMeANothing(): Nothing = sys.error("boom")
-    assertThrows(
-      classOf[Exception],
-      (giveMeANothing(): StringBuilder).append(5))
+    assertThrows(classOf[Exception], (giveMeANothing(): StringBuilder).append(5))
     assertThrows(
       classOf[Exception],
       (giveMeANothing(): scala.runtime.IntRef).elem)

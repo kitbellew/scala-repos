@@ -35,8 +35,7 @@ trait SegmentWriter {
 trait SegmentReader {
   def readSegmentId(
       channel: ReadableByteChannel): Validation[IOException, SegmentId]
-  def readSegment(
-      channel: ReadableByteChannel): Validation[IOException, Segment]
+  def readSegment(channel: ReadableByteChannel): Validation[IOException, Segment]
 }
 
 trait SegmentFormat {

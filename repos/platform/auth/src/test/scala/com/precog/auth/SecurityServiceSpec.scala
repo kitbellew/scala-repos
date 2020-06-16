@@ -145,10 +145,7 @@ class SecurityServiceSpec
       .query("apiKey", authAPIKey)
       .post("/grants/")(request)(identity[JValue], tc)
 
-  def removeAPIKeyGrant(
-      authAPIKey: String,
-      updateKey: String,
-      grantId: GrantId) =
+  def removeAPIKeyGrant(authAPIKey: String, updateKey: String, grantId: GrantId) =
     authService.delete("/apikeys/" + updateKey + "/grants/" + grantId)
 
   def getGrantDetails(authAPIKey: String, grantId: String) =
@@ -244,18 +241,10 @@ class SecurityServiceSpec
     to)
 
   val user5 = Await.result(
-    apiKeyManager.createAPIKey(
-      Some("user5-key"),
-      None,
-      user1.apiKey,
-      Set.empty),
+    apiKeyManager.createAPIKey(Some("user5-key"), None, user1.apiKey, Set.empty),
     to)
   val user6 = Await.result(
-    apiKeyManager.createAPIKey(
-      Some("user6-key"),
-      None,
-      user1.apiKey,
-      Set.empty),
+    apiKeyManager.createAPIKey(Some("user6-key"), None, user1.apiKey, Set.empty),
     to)
 
   val expiredGrant = Await.result(
@@ -424,11 +413,8 @@ class SecurityServiceSpec
       val request = JObject(List(JField("create", JString("invalid"))))
       createAPIKeyRaw(rootAPIKey, request) must awaited(to) {
         beLike {
-          case HttpResponse(
-                HttpStatus(BadRequest, msg),
-                _,
-                Some(JObject(elems)),
-                _) if elems.contains("error") =>
+          case HttpResponse(HttpStatus(BadRequest, msg), _, Some(JObject(elems)), _)
+              if elems.contains("error") =>
             msg must startWith("Invalid new API key request body")
         }
       }
@@ -481,8 +467,7 @@ class SecurityServiceSpec
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) =>
             val gs = jgs.deserialize[Set[v1.GrantDetails]]
-            gs.map(_.grantId) must haveTheSameElementsAs(
-              Seq(user1Grant.grantId))
+            gs.map(_.grantId) must haveTheSameElementsAs(Seq(user1Grant.grantId))
         }
       }
     }
@@ -534,8 +519,7 @@ class SecurityServiceSpec
           None,
           None,
           Set.empty[GrantId],
-          Set(
-            ReadPermission(Path("/user1/read-me"), WrittenByAccount("user1"))),
+          Set(ReadPermission(Path("/user1/read-me"), WrittenByAccount("user1"))),
           None)) must awaited(to) {
         beLike {
           case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
@@ -562,8 +546,7 @@ class SecurityServiceSpec
                 _) if elems.contains("error") =>
             elems("error") must beLike {
               case JString(msg) =>
-                msg must startWith(
-                  "Requestor lacks permissions to create grant")
+                msg must startWith("Requestor lacks permissions to create grant")
             }
         }
       }
@@ -618,8 +601,7 @@ class SecurityServiceSpec
             None,
             None,
             Set.empty[GrantId],
-            Set(
-              ReadPermission(Path("/user1/secret"), WrittenByAccount("user1"))),
+            Set(ReadPermission(Path("/user1/secret"), WrittenByAccount("user1"))),
             None)
         )
         details = jid.deserialize[v1.GrantDetails]
@@ -632,8 +614,9 @@ class SecurityServiceSpec
         HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) <-
           getGrantChildren(user1.apiKey, user1Grant.grantId)
         afterDelete = jgs.deserialize[Set[v1.GrantDetails]]
-      } yield !afterDelete.exists(_.grantId == details.grantId)) must awaited(
-        to) { beTrue }
+      } yield !afterDelete.exists(_.grantId == details.grantId)) must awaited(to) {
+        beTrue
+      }
     }
 
     "retrieve permissions for a given path owned by user" in {
@@ -656,8 +639,7 @@ class SecurityServiceSpec
             None,
             None,
             Set.empty,
-            Set(
-              ReadPermission(Path("/user1/public"), WrittenByAccount("user1"))),
+            Set(ReadPermission(Path("/user1/public"), WrittenByAccount("user1"))),
             None))
         _ <- addAPIKeyGrant(
           user1.apiKey,

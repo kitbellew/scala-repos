@@ -116,10 +116,7 @@ object Math {
     else if (a == 0)
       MinPositiveValue
     else {
-      def iter(
-          x: scala.Double,
-          xi: scala.Double,
-          n: scala.Double): scala.Double = {
+      def iter(x: scala.Double, xi: scala.Double, n: scala.Double): scala.Double = {
         if (Math.abs(xi - x) >= 1e-16) {
           val c0 = (xi + x) / 2
           val c =

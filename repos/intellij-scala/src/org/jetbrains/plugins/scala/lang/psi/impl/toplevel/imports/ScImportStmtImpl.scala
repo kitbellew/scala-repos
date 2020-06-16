@@ -27,10 +27,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
 }
 import org.jetbrains.plugins.scala.lang.psi.impl.base.types.ScSimpleTypeElementImpl
 import org.jetbrains.plugins.scala.lang.psi.stubs.ScImportStmtStub
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Failure,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Failure, TypingContext}
 import org.jetbrains.plugins.scala.lang.psi.types.{
   ScDesignatorType,
   ScSubstitutor
@@ -235,9 +232,7 @@ class ScImportStmtImpl private (
                 .put(ImportUsed.key, newImportsUsed)
               elem.processDeclarations(
                 new BaseProcessor(StdKinds.stableImportSelector) {
-                  def execute(
-                      element: PsiElement,
-                      state: ResolveState): Boolean = {
+                  def execute(element: PsiElement, state: ResolveState): Boolean = {
                     element match {
                       case elem: PsiNamedElement if isOK(elem.name) =>
                         processor.execute(element, state)
@@ -308,8 +303,7 @@ class ScImportStmtImpl private (
                     newState = newState
                       .put(
                         ImportUsed.key,
-                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
-                          selector))
+                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(selector))
                       .put(ScSubstitutor.key, subst)
                     calculateRefType(checkResolve(result)).foreach { tp =>
                       newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)
@@ -419,8 +413,7 @@ class ScImportStmtImpl private (
                     newState = newState
                       .put(
                         ImportUsed.key,
-                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(
-                          selector))
+                        Set(importsUsed.toSeq: _*) + ImportSelectorUsed(selector))
                       .put(ScSubstitutor.key, subst.followed(rSubst))
                     calculateRefType(checkResolve(result)).foreach { tp =>
                       newState = newState.put(BaseProcessor.FROM_TYPE_KEY, tp)

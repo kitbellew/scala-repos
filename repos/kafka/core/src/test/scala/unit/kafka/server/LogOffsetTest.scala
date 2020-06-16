@@ -21,11 +21,7 @@ import java.io.File
 import java.util.{Properties, Random}
 
 import kafka.admin.AdminUtils
-import kafka.api.{
-  FetchRequestBuilder,
-  OffsetRequest,
-  PartitionOffsetRequestInfo
-}
+import kafka.api.{FetchRequestBuilder, OffsetRequest, PartitionOffsetRequestInfo}
 import kafka.common.TopicAndPartition
 import kafka.consumer.SimpleConsumer
 import kafka.message.{ByteBufferMessageSet, Message, NoCompressionCodec}
@@ -54,12 +50,8 @@ class LogOffsetTest extends ZooKeeperTestHarness {
     logDir = new File(logDirPath)
     time = new MockTime()
     server = TestUtils.createServer(KafkaConfig.fromProps(config), time)
-    simpleConsumer = new SimpleConsumer(
-      "localhost",
-      server.boundPort(),
-      1000000,
-      64 * 1024,
-      "")
+    simpleConsumer =
+      new SimpleConsumer("localhost", server.boundPort(), 1000000, 64 * 1024, "")
   }
 
   @After

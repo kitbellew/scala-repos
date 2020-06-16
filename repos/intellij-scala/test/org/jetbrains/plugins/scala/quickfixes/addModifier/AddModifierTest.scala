@@ -12,11 +12,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScModifierListOwner
   */
 
 class AddModifierTest extends ScalaLightPlatformCodeInsightTestCaseAdapter {
-  def doTest(
-      fileText: String,
-      result: String,
-      modifier: String,
-      value: Boolean) {
+  def doTest(fileText: String, result: String, modifier: String, value: Boolean) {
     configureFromFileTextAdapter("dummy.scala", fileText)
     val place =
       getFileAdapter.findElementAt(getEditorAdapter.getCaretModel.getOffset)

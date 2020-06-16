@@ -11,9 +11,7 @@ abstract class Uploadable {
   def contentLength: Long
 }
 
-case class FilePart(
-    file: File,
-    contentType: String = "application/octet-stream")
+case class FilePart(file: File, contentType: String = "application/octet-stream")
     extends Uploadable {
 
   lazy val content = {

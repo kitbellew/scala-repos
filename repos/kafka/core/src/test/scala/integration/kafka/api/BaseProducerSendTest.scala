@@ -93,8 +93,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
       brokerList: String,
       retries: Int = 0,
       lingerMs: Long = 0,
-      props: Option[Properties] = None)
-      : KafkaProducer[Array[Byte], Array[Byte]] = {
+      props: Option[Properties] = None): KafkaProducer[Array[Byte], Array[Byte]] = {
     val producer = TestUtils.createNewProducer(
       brokerList,
       securityProtocol = securityProtocol,
@@ -133,9 +132,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
             case 1 =>
               assertEquals(metadata.serializedKeySize(), "key".getBytes.length)
             case 2 =>
-              assertEquals(
-                metadata.serializedValueSize,
-                "value".getBytes.length)
+              assertEquals(metadata.serializedValueSize, "value".getBytes.length)
             case _ => assertTrue(metadata.serializedValueSize > 0)
           }
           assertNotEquals(metadata.checksum(), 0)
@@ -600,9 +597,7 @@ abstract class BaseProducerSendTest extends KafkaServerTestHarness {
   @Test
   def testSendWithInvalidCreateTime() {
     val topicProps = new Properties()
-    topicProps.setProperty(
-      LogConfig.MessageTimestampDifferenceMaxMsProp,
-      "1000");
+    topicProps.setProperty(LogConfig.MessageTimestampDifferenceMaxMsProp, "1000");
     TestUtils.createTopic(zkUtils, topic, 1, 2, servers, topicProps)
 
     val producer = createProducer(brokerList = brokerList)

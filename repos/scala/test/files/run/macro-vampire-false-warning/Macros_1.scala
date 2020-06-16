@@ -20,9 +20,7 @@ object Macros {
     // val kvps = xs.toList map { case q"${_}(${Literal(Constant(name: String))}).->[${_}]($value)" => name -> value }
     val kvps = xs.map(_.tree).toList map {
       case Apply(
-            TypeApply(
-              Select(Apply(_, List(Literal(Constant(name: String)))), _),
-              _),
+            TypeApply(Select(Apply(_, List(Literal(Constant(name: String)))), _), _),
             List(value)) =>
         name -> value
     }
@@ -104,9 +102,7 @@ object Macros {
             )
           )
         ),
-        Apply(
-          Select(New(Ident(TypeName("$anon"))), termNames.CONSTRUCTOR),
-          List())
+        Apply(Select(New(Ident(TypeName("$anon"))), termNames.CONSTRUCTOR), List())
       ))
   }
 }

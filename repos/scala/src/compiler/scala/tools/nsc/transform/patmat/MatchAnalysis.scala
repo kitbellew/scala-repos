@@ -174,8 +174,7 @@ trait TreeAndTypeAnalysis extends Debugging {
 
             groupChildren(sym :: Nil, Nil)
           } else {
-            val subclasses = debug.patmatResult(
-              s"enum $sym sealed, subclasses")(
+            val subclasses = debug.patmatResult(s"enum $sym sealed, subclasses")(
               // symbols which are both sealed and abstract need not be covered themselves, because
               // all of their children must be and they cannot otherwise be created.
               sym.sealedDescendants.toList
@@ -390,8 +389,7 @@ trait MatchApproximation
 
           tm match {
             case ttm @ TypeTestTreeMaker(prevBinder, testedBinder, pt, _) =>
-              object condStrategy
-                  extends TypeTestTreeMaker.TypeTestCondStrategy {
+              object condStrategy extends TypeTestTreeMaker.TypeTestCondStrategy {
                 type Result = Prop
                 def and(a: Result, b: Result) = And(a, b)
                 def withOuterTest(testedBinder: Symbol, expectedTp: Type) =
@@ -415,9 +413,7 @@ trait MatchApproximation
               }
               ttm.renderCondition(condStrategy)
             case EqualityTestTreeMaker(prevBinder, patTree, _) =>
-              uniqueEqualityProp(
-                binderToUniqueTree(prevBinder),
-                unique(patTree))
+              uniqueEqualityProp(binderToUniqueTree(prevBinder), unique(patTree))
             case AlternativesTreeMaker(_, altss, _) =>
               \/(altss map (alts => /\(alts map this)))
             case ProductExtractorTreeMaker(testedBinder, None) =>
@@ -724,8 +720,7 @@ trait MatchAnalysis extends MatchApproximation {
     }
     case class ListExample(ctorArgs: List[CounterExample])
         extends CounterExample {
-      protected[MatchAnalyzer] override def flattenConsArgs
-          : List[CounterExample] =
+      protected[MatchAnalyzer] override def flattenConsArgs: List[CounterExample] =
         ctorArgs match {
           case hd :: tl :: Nil => hd :: tl.flattenConsArgs
           case _               => Nil
@@ -961,9 +956,7 @@ trait MatchAnalysis extends MatchApproximation {
         // need to prune since the model now incorporates all super types of a constant (needed for reachability)
         private lazy val uniqueEqualTo = equalTo filterNot (subsumed =>
           equalTo.exists(better =>
-            (better ne subsumed) && instanceOfTpImplies(
-              better.tp,
-              subsumed.tp)))
+            (better ne subsumed) && instanceOfTpImplies(better.tp, subsumed.tp)))
         private lazy val inSameDomain = uniqueEqualTo forall (const =>
           variable.domainSyms.exists(_.exists(_.const.tp =:= const.tp)))
         private lazy val prunedEqualTo = uniqueEqualTo filterNot (subsumed =>

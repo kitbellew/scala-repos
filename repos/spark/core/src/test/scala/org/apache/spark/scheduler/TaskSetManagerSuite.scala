@@ -426,9 +426,7 @@ class TaskSetManagerSuite
   test("executors should be blacklisted after task failure, in spite of locality preferences") {
     val rescheduleDelay = 300L
     val conf = new SparkConf()
-      .set(
-        "spark.scheduler.executorTaskBlacklistTime",
-        rescheduleDelay.toString)
+      .set("spark.scheduler.executorTaskBlacklistTime", rescheduleDelay.toString)
       .
       // don't wait to jump locality levels in this test
       set("spark.locality.wait", "0")
@@ -548,8 +546,7 @@ class TaskSetManagerSuite
     sched.addExecutor("execD", "host1")
     manager.executorAdded()
     // Valid locality should contain NODE_LOCAL and ANY
-    assert(
-      manager.myLocalityLevels.sameElements(Array(NODE_LOCAL, NO_PREF, ANY)))
+    assert(manager.myLocalityLevels.sameElements(Array(NODE_LOCAL, NO_PREF, ANY)))
     // Add another executor
     sched.addExecutor("execC", "host2")
     manager.executorAdded()
@@ -560,8 +557,7 @@ class TaskSetManagerSuite
     // test if the valid locality is recomputed when the executor is lost
     sched.removeExecutor("execC")
     manager.executorLost("execC", "host2", SlaveLost())
-    assert(
-      manager.myLocalityLevels.sameElements(Array(NODE_LOCAL, NO_PREF, ANY)))
+    assert(manager.myLocalityLevels.sameElements(Array(NODE_LOCAL, NO_PREF, ANY)))
     sched.removeExecutor("execD")
     manager.executorLost("execD", "host1", SlaveLost())
     assert(manager.myLocalityLevels.sameElements(Array(NO_PREF, ANY)))
@@ -667,9 +663,7 @@ class TaskSetManagerSuite
     val sched = new FakeTaskScheduler(sc, ("exec1", "host1"))
 
     val taskSet = new TaskSet(
-      Array(
-        new NotSerializableFakeTask(1, 0),
-        new NotSerializableFakeTask(0, 1)),
+      Array(new NotSerializableFakeTask(1, 0), new NotSerializableFakeTask(0, 1)),
       0,
       0,
       0,
@@ -700,8 +694,7 @@ class TaskSetManagerSuite
     val thrown = intercept[SparkException] {
       sc.makeRDD(genBytes(10 << 20)(0), 1).collect()
     }
-    assert(
-      thrown.getMessage().contains("bigger than spark.driver.maxResultSize"))
+    assert(thrown.getMessage().contains("bigger than spark.driver.maxResultSize"))
 
     // multiple 1M results
     val thrown2 = intercept[SparkException] {
@@ -838,8 +831,7 @@ class TaskSetManagerSuite
     assert(manager.pendingTasksWithNoPrefs.size === 0)
     // Valid locality should contain PROCESS_LOCAL, NODE_LOCAL and ANY
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+      manager.myLocalityLevels.sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     assert(manager.resourceOffer("execA", "host1", ANY) !== None)
     clock.advance(LOCALITY_WAIT_MS * 4)
     assert(manager.resourceOffer("execB.2", "host2", ANY) !== None)
@@ -870,18 +862,15 @@ class TaskSetManagerSuite
     val clock = new ManualClock
     val manager = new TaskSetManager(sched, taskSet, MAX_TASK_FAILURES, clock)
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+      manager.myLocalityLevels.sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execA")
     manager.executorAdded()
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+      manager.myLocalityLevels.sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execB")
     manager.executorAdded()
     assert(
-      manager.myLocalityLevels.sameElements(
-        Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
+      manager.myLocalityLevels.sameElements(Array(PROCESS_LOCAL, NODE_LOCAL, ANY)))
     sched.removeExecutor("execC")
     manager.executorAdded()
     assert(manager.myLocalityLevels.sameElements(Array(ANY)))

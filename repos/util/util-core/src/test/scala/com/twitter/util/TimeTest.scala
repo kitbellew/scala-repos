@@ -579,8 +579,7 @@ with Eventually with IntegrationPatience {
       val format = new TimeFormat("yyyy-MM-dd HH:mm:ss.SSS")
       val t0 = format.parse("2010-12-24 11:04:07.567")
       assert(t0.floor(1.millisecond) == t0)
-      assert(
-        t0.floor(10.milliseconds) == format.parse("2010-12-24 11:04:07.560"))
+      assert(t0.floor(10.milliseconds) == format.parse("2010-12-24 11:04:07.560"))
       assert(t0.floor(1.second) == format.parse("2010-12-24 11:04:07.000"))
       assert(t0.floor(5.second) == format.parse("2010-12-24 11:04:05.000"))
       assert(t0.floor(1.minute) == format.parse("2010-12-24 11:04:00.000"))
@@ -610,9 +609,10 @@ with Eventually with IntegrationPatience {
       val tolerance = 2.microseconds // we permit 1us slop
 
       forAll { i: Int =>
-        assert(Time
-          .fromSeconds(i)
-          .moreOrLessEquals(Time.fromFractionalSeconds(i.toDouble), tolerance))
+        assert(
+          Time
+            .fromSeconds(i)
+            .moreOrLessEquals(Time.fromFractionalSeconds(i.toDouble), tolerance))
       }
 
       forAll { d: Double =>
@@ -639,8 +639,7 @@ with Eventually with IntegrationPatience {
       assert(Time.fromMicroseconds(0).inNanoseconds == 0L)
       assert(Time.fromMicroseconds(-1).inNanoseconds == -1L * 1000L)
 
-      assert(
-        Time.fromMicroseconds(Long.MaxValue).inNanoseconds == Long.MaxValue)
+      assert(Time.fromMicroseconds(Long.MaxValue).inNanoseconds == Long.MaxValue)
       assert(Time.fromMicroseconds(Long.MaxValue - 1) == Time.Top)
 
       assert(Time.fromMicroseconds(Long.MinValue) == Time.Bottom)
@@ -657,8 +656,7 @@ with Eventually with IntegrationPatience {
       assert(Time.fromMilliseconds(0).inNanoseconds == 0L)
       assert(Time.fromMilliseconds(-1).inNanoseconds == -1L * 1000000L)
 
-      assert(
-        Time.fromMilliseconds(Long.MaxValue).inNanoseconds == Long.MaxValue)
+      assert(Time.fromMilliseconds(Long.MaxValue).inNanoseconds == Long.MaxValue)
       assert(Time.fromMilliseconds(Long.MaxValue - 1) == Time.Top)
 
       assert(Time.fromMilliseconds(Long.MinValue) == Time.Bottom)

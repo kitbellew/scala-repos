@@ -108,9 +108,7 @@ class NettyServer(
     config.entrySet().asScala.filterNot(_.getKey.startsWith("child.")).foreach {
       option =>
         if (ChannelOption.exists(option.getKey)) {
-          setOption(
-            ChannelOption.valueOf(option.getKey),
-            unwrap(option.getValue))
+          setOption(ChannelOption.valueOf(option.getKey), unwrap(option.getValue))
         } else {
           logger.warn("Ignoring unknown Netty channel option: " + option.getKey)
           transport match {
@@ -193,10 +191,7 @@ class NettyServer(
       // Netty HTTP decoders/encoders/etc
       pipeline.addLast(
         "decoder",
-        new HttpRequestDecoder(
-          maxInitialLineLength,
-          maxHeaderSize,
-          maxChunkSize))
+        new HttpRequestDecoder(maxInitialLineLength, maxHeaderSize, maxChunkSize))
       pipeline.addLast("encoder", new HttpResponseEncoder())
       pipeline.addLast("decompressor", new HttpContentDecompressor())
       if (logWire) {
@@ -208,8 +203,7 @@ class NettyServer(
       // Use the streams handler to close off the connection.
       pipeline.addLast(
         "http-handler",
-        new HttpStreamsServerHandler(
-          Seq[ChannelHandler](requestHandler).asJava))
+        new HttpStreamsServerHandler(Seq[ChannelHandler](requestHandler).asJava))
 
       pipeline.addLast("request-handler", requestHandler)
 

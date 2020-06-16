@@ -87,8 +87,7 @@ object Validation {
             case "value" => r.withDescription("/" + p)
             // Error is on property level, having a parent description. Prepend '/' as root.
             case s: String =>
-              r.withDescription(
-                concatPath("/" + p, r.description, prependSlash))
+              r.withDescription(concatPath("/" + p, r.description, prependSlash))
             // Error is on unknown level, having a parent description. Prepend '/' as root.
           } getOrElse r.withDescription("/" + p)
         } getOrElse {
@@ -146,8 +145,7 @@ object Validation {
           Success
         } catch {
           case _: URISyntaxException =>
-            Failure(
-              Set(RuleViolation(uri.uri, "URI has invalid syntax.", None)))
+            Failure(Set(RuleViolation(uri.uri, "URI has invalid syntax.", None)))
         }
       }
     }

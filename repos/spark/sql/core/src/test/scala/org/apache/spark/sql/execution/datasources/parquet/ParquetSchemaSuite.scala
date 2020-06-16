@@ -698,10 +698,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
     "Backwards-compatibility: LIST with non-nullable element type 7 - " +
       "parquet-protobuf primitive lists",
     new StructType()
-      .add(
-        "f1",
-        ArrayType(IntegerType, containsNull = false),
-        nullable = false),
+      .add("f1", ArrayType(IntegerType, containsNull = false), nullable = false),
     """message root {
       |  repeated int32 f1;
       |}
@@ -1282,10 +1279,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         .add("f012", LongType, nullable = true)
 
       val f0Type = new StructType()
-        .add(
-          "f00",
-          ArrayType(StringType, containsNull = false),
-          nullable = true)
+        .add("f00", ArrayType(StringType, containsNull = false), nullable = true)
         .add(
           "f01",
           ArrayType(f01ElementType, containsNull = false),
@@ -1333,10 +1327,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         .add("f012", LongType, nullable = true)
 
       val f0Type = new StructType()
-        .add(
-          "f00",
-          ArrayType(StringType, containsNull = false),
-          nullable = true)
+        .add("f00", ArrayType(StringType, containsNull = false), nullable = true)
         .add(
           "f01",
           ArrayType(f01ElementType, containsNull = false),
@@ -1481,10 +1472,7 @@ class ParquetSchemaSuite extends ParquetSchemaTest {
         .add("f012", LongType, nullable = true)
 
       val f0Type = new StructType()
-        .add(
-          "f00",
-          ArrayType(StringType, containsNull = false),
-          nullable = true)
+        .add("f00", ArrayType(StringType, containsNull = false), nullable = true)
         .add(
           "f01",
           ArrayType(f01ElementType, containsNull = false),

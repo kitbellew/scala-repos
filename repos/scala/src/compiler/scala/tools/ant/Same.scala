@@ -68,9 +68,7 @@ import org.apache.tools.ant.types.Mapper
       mapperElement = Some(mapper)
       mapper
     } else
-      throw new BuildException(
-        "Cannot define more than one mapper",
-        getLocation)
+      throw new BuildException("Cannot define more than one mapper", getLocation)
 
   def add(fileNameMapper: FileNameMapper) =
     createMapper().add(fileNameMapper)

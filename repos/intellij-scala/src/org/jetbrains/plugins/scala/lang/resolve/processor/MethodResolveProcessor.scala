@@ -34,10 +34,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.Compatibility.{
 }
 import org.jetbrains.plugins.scala.lang.psi.types._
 import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.TypeParameter
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.psi.{ScalaPsiElement, ScalaPsiUtil}
 
 import scala.collection.Set
@@ -605,8 +602,7 @@ object MethodResolveProcessor {
         s.followed(
           if (typeArgElements.nonEmpty && typeParameters.length == typeArgElements.length) {
             ScalaPsiUtil.genericCallSubstitutor(
-              typeParameters.map(p =>
-                (p.name, ScalaPsiUtil.getPsiElementId(p))),
+              typeParameters.map(p => (p.name, ScalaPsiUtil.getPsiElementId(p))),
               typeArgElements)
           } else {
             typeParameters.foldLeft(ScSubstitutor.empty) {
@@ -624,8 +620,7 @@ object MethodResolveProcessor {
         s.followed(
           if (typeArgElements.nonEmpty && typeParameters.length == typeArgElements.length) {
             ScalaPsiUtil.genericCallSubstitutor(
-              typeParameters.map(p =>
-                (p.name, ScalaPsiUtil.getPsiElementId(p))),
+              typeParameters.map(p => (p.name, ScalaPsiUtil.getPsiElementId(p))),
               typeArgElements)
           } else {
             typeParameters.foldLeft(ScSubstitutor.empty) {
@@ -640,8 +635,7 @@ object MethodResolveProcessor {
         s.followed(
           if (typeArgElements.nonEmpty && t.typeParameters.length == typeArgElements.length) {
             ScalaPsiUtil.genericCallSubstitutor(
-              t.typeParameters.map(p =>
-                (p.name, ScalaPsiUtil.getPsiElementId(p))),
+              t.typeParameters.map(p => (p.name, ScalaPsiUtil.getPsiElementId(p))),
               typeArgElements)
           } else {
             t.typeParameters.foldLeft(ScSubstitutor.empty) {

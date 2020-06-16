@@ -20,9 +20,7 @@ import java.io.{InputStream, OutputStream}
 
 import scala.util.{Failure, Success, Try}
 
-class Serialization2[A, B](
-    val serA: Serialization[A],
-    val serB: Serialization[B])
+class Serialization2[A, B](val serA: Serialization[A], val serB: Serialization[B])
     extends Serialization[(A, B)] {
   override def hash(x: (A, B)) = {
     import MurmurHashUtils._

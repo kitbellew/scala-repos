@@ -87,9 +87,7 @@ object LambdaDeserializer {
             implMethodSig)
         } catch {
           case e: ReflectiveOperationException =>
-            throw new IllegalArgumentException(
-              "Illegal lambda deserialization",
-              e)
+            throw new IllegalArgumentException("Illegal lambda deserialization", e)
         }
 
       val flags: Int =

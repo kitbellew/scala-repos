@@ -64,8 +64,7 @@ trait BtreeSortedSetCommands { self: BaseClient =>
   def bRange(
       key: ChannelBuffer,
       startField: Option[ChannelBuffer],
-      endField: Option[ChannelBuffer])
-      : Future[Seq[(ChannelBuffer, ChannelBuffer)]] = {
+      endField: Option[ChannelBuffer]): Future[Seq[(ChannelBuffer, ChannelBuffer)]] = {
     doRequest(BRange(key, startField, endField)) {
       case MBulkReply(messages) =>
         Future.value(returnPairs(ReplyFormat.toChannelBuffers(messages)))

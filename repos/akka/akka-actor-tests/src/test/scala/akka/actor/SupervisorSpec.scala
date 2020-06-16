@@ -135,9 +135,10 @@ class SupervisorSpec
 
   def singleActorAllForOne = {
     val supervisor = system.actorOf(
-      Props(new Supervisor(
-        AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+      Props(
+        new Supervisor(
+          AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+            List(classOf[Exception])))))
     val pingpong = child(supervisor, Props(new PingPongActor(testActor)))
 
     (pingpong, supervisor)
@@ -145,9 +146,10 @@ class SupervisorSpec
 
   def singleActorOneForOne = {
     val supervisor = system.actorOf(
-      Props(new Supervisor(
-        OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+      Props(
+        new Supervisor(
+          OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+            List(classOf[Exception])))))
     val pingpong = child(supervisor, Props(new PingPongActor(testActor)))
 
     (pingpong, supervisor)
@@ -155,9 +157,10 @@ class SupervisorSpec
 
   def multipleActorsAllForOne = {
     val supervisor = system.actorOf(
-      Props(new Supervisor(
-        AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+      Props(
+        new Supervisor(
+          AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+            List(classOf[Exception])))))
     val pingpong1, pingpong2, pingpong3 =
       child(supervisor, Props(new PingPongActor(testActor)))
 
@@ -166,9 +169,10 @@ class SupervisorSpec
 
   def multipleActorsOneForOne = {
     val supervisor = system.actorOf(
-      Props(new Supervisor(
-        OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+      Props(
+        new Supervisor(
+          OneForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+            List(classOf[Exception])))))
     val pingpong1, pingpong2, pingpong3 =
       child(supervisor, Props(new PingPongActor(testActor)))
 
@@ -177,16 +181,18 @@ class SupervisorSpec
 
   def nestedSupervisorsAllForOne = {
     val topSupervisor = system.actorOf(
-      Props(new Supervisor(
-        AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          List(classOf[Exception])))))
+      Props(
+        new Supervisor(
+          AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+            List(classOf[Exception])))))
     val pingpong1 = child(topSupervisor, Props(new PingPongActor(testActor)))
 
     val middleSupervisor = child(
       topSupervisor,
-      Props(new Supervisor(
-        AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
-          Nil))))
+      Props(
+        new Supervisor(
+          AllForOneStrategy(maxNrOfRetries = 3, withinTimeRange = DilatedTimeout)(
+            Nil))))
     val pingpong2, pingpong3 =
       child(middleSupervisor, Props(new PingPongActor(testActor)))
 

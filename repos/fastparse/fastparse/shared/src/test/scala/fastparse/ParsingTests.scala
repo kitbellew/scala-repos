@@ -12,10 +12,7 @@ object ParsingTests extends TestSuite {
     val parsed = parser.parse(str, index)
     assert(parsed == rhs)
   }
-  def checkFail[T](
-      parser: P[T],
-      input: (String, Int),
-      expectedFailureIndex: Int) = {
+  def checkFail[T](parser: P[T], input: (String, Int), expectedFailureIndex: Int) = {
     val (str, index) = input
     val parsed = parser.parse(str, index)
     val failureIndex = parsed.asInstanceOf[Failure].index
@@ -42,20 +39,14 @@ object ParsingTests extends TestSuite {
         Success((), 39))
     }
     'repeat {
-      check(
-        "Hello".!.rep,
-        ("HelloHello!", 0),
-        Success(Seq("Hello", "Hello"), 10))
+      check("Hello".!.rep, ("HelloHello!", 0), Success(Seq("Hello", "Hello"), 10))
       check("Hello".!.rep, ("HelloHello!", 2), Success(Seq(), 2))
       check("Hello".!.rep, ("HelloHello!", 5), Success(Seq("Hello"), 10))
       check(
         "Hello".!.rep(1),
         ("HelloHello!", 0),
         Success(Seq("Hello", "Hello"), 10))
-      check(
-        "Hello".!.rep(1, max = 1),
-        ("HelloHello!", 0),
-        Success(Seq("Hello"), 5))
+      check("Hello".!.rep(1, max = 1), ("HelloHello!", 0), Success(Seq("Hello"), 5))
       check(
         "Hello".!.rep(1, max = 2),
         ("HelloHello!", 0),
@@ -67,10 +58,7 @@ object ParsingTests extends TestSuite {
 
       check("Hello".!.rep(0, max = 0), ("HelloHello!", 0), Success(Seq(), 0))
       // identical :  check( ("Hello" | Pass).!, ("HelloHello!", 0), Success("Hello", 5))
-      check(
-        "Hello".!.rep(0, max = 1),
-        ("HelloHello!", 0),
-        Success(Seq("Hello"), 5))
+      check("Hello".!.rep(0, max = 1), ("HelloHello!", 0), Success(Seq("Hello"), 5))
 
       checkFail("Hello".rep(1), ("HelloHello!", 2), 2)
       checkFail("Hello".rep ~ "bye" ~ End, ("HelloHello!", 0), 10)
@@ -79,20 +67,14 @@ object ParsingTests extends TestSuite {
       check("Hello".! | "Bye".!, ("HelloBye", 0), Success("Hello", 5))
       check(("Hello" | "Bye").!, ("HelloBye", 5), Success("Bye", 8))
       checkFail("Hello" | "Bye", ("HelloBye", 2), 2)
-      check(
-        ("Hello" | "Bye").!.rep,
-        ("HelloBye", 0),
-        Success(Seq("Hello", "Bye"), 8))
+      check(("Hello" | "Bye").!.rep, ("HelloBye", 0), Success(Seq("Hello", "Bye"), 8))
       check(("Hello" | "Bye").rep.!, ("HelloBye", 0), Success("HelloBye", 8))
     }
     'sequence {
       val p = "Hello".! ~ "Bye".!
       println(p)
       check(p, ("HelloBye", 0), Success(("Hello", "Bye"), 8))
-      check(
-        "Hello".! ~ "Bye".! ~ "!",
-        ("HelloBye!", 0),
-        Success(("Hello", "Bye"), 9))
+      check("Hello".! ~ "Bye".! ~ "!", ("HelloBye!", 0), Success(("Hello", "Bye"), 9))
       check(
         "Hello".! ~ "Bye".! ~ "!".!,
         ("HelloBye!", 0),

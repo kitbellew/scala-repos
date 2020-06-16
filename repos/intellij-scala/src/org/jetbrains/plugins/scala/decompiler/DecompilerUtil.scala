@@ -70,9 +70,7 @@ object DecompilerUtil {
     }
   def isScalaFile(file: VirtualFile, bytes: => Array[Byte]): Boolean =
     decompile(file, bytes).isScala
-  def decompile(
-      file: VirtualFile,
-      bytes: => Array[Byte]): DecompilationResult = {
+  def decompile(file: VirtualFile, bytes: => Array[Byte]): DecompilationResult = {
     if (!file.isInstanceOf[VirtualFileWithId]) return DecompilationResult.empty
     val timeStamp = file.getTimeStamp
     var data = file.getUserData(SCALA_DECOMPILER_KEY)

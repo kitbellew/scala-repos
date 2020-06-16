@@ -249,12 +249,9 @@ class AppDeployIntegrationTest
 
   test("create a simple app with tcp health checks") {
     Given("a new app")
-    val app = appProxy(
-      testBasePath / "tcp-app",
-      "v1",
-      instances = 1,
-      withHealth = false).copy(healthChecks =
-      Set(healthCheck.copy(protocol = Protocol.TCP)))
+    val app =
+      appProxy(testBasePath / "tcp-app", "v1", instances = 1, withHealth = false)
+        .copy(healthChecks = Set(healthCheck.copy(protocol = Protocol.TCP)))
 
     When("The app is deployed")
     val result = marathon.createAppV2(app)
@@ -710,8 +707,7 @@ class AppDeployIntegrationTest
 
     Then("The container should still be of type MESOS")
     maybeContainer1 should not be empty
-    maybeContainer1.get.`type` should equal(
-      MesosProtos.ContainerInfo.Type.MESOS)
+    maybeContainer1.get.`type` should equal(MesosProtos.ContainerInfo.Type.MESOS)
 
     And("container.docker should not be set")
     maybeContainer1.get.docker shouldBe (empty)
@@ -729,8 +725,7 @@ class AppDeployIntegrationTest
 
     Then("The container should still be of type MESOS")
     maybeContainer2 should not be empty
-    maybeContainer2.get.`type` should equal(
-      MesosProtos.ContainerInfo.Type.MESOS)
+    maybeContainer2.get.`type` should equal(MesosProtos.ContainerInfo.Type.MESOS)
 
     And("container.docker should not be set")
     maybeContainer1.get.docker shouldBe (empty)

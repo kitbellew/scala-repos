@@ -348,9 +348,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
             parseJDate(pattern, corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() ->
-                  Seq(
-                    ValidationError("error.expected.date.isoformat", pattern))))
+                JsError(
+                  Seq(JsPath() ->
+                    Seq(ValidationError("error.expected.date.isoformat", pattern))))
             }
           case _ =>
             JsError(
@@ -360,9 +360,7 @@ trait DefaultReads extends LowPriorityDefaultReads {
         }
     }
 
-  private def parseJDate(
-      pattern: String,
-      input: String): Option[java.util.Date] = {
+  private def parseJDate(pattern: String, input: String): Option[java.util.Date] = {
     // REMEMBER THAT SIMPLEDATEFORMAT IS NOT THREADSAFE
     val df = new java.text.SimpleDateFormat(pattern)
     df.setLenient(false)
@@ -505,9 +503,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
             p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() ->
-                  Seq(
-                    ValidationError("error.expected.date.isoformat", parsing))))
+                JsError(
+                  Seq(JsPath() ->
+                    Seq(ValidationError("error.expected.date.isoformat", parsing))))
             }
           case _ =>
             JsError(
@@ -548,10 +546,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
     *   DateTimeFormatter.ISO_OFFSET_DATE_TIME, _.drop(1))
     * }}}
     */
-  def offsetDateTimeReads[T](
-      parsing: T,
-      corrector: String => String = identity)(implicit
-      p: T => TemporalParser[OffsetDateTime]): Reads[OffsetDateTime] =
+  def offsetDateTimeReads[T](parsing: T, corrector: String => String = identity)(
+      implicit p: T => TemporalParser[OffsetDateTime]): Reads[OffsetDateTime] =
     new Reads[OffsetDateTime] {
       def reads(json: JsValue): JsResult[OffsetDateTime] =
         json match {
@@ -559,9 +555,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
             p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() ->
-                  Seq(
-                    ValidationError("error.expected.date.isoformat", parsing))))
+                JsError(
+                  Seq(JsPath() ->
+                    Seq(ValidationError("error.expected.date.isoformat", parsing))))
             }
           case _ =>
             JsError(
@@ -605,9 +601,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
             p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() ->
-                  Seq(
-                    ValidationError("error.expected.date.isoformat", parsing))))
+                JsError(
+                  Seq(JsPath() ->
+                    Seq(ValidationError("error.expected.date.isoformat", parsing))))
             }
           case _ =>
             JsError(
@@ -653,9 +649,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
             p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() ->
-                  Seq(
-                    ValidationError("error.expected.date.isoformat", parsing))))
+                JsError(
+                  Seq(JsPath() ->
+                    Seq(ValidationError("error.expected.date.isoformat", parsing))))
             }
           case _ =>
             JsError(
@@ -701,9 +697,9 @@ trait DefaultReads extends LowPriorityDefaultReads {
             p(parsing).parse(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() ->
-                  Seq(
-                    ValidationError("error.expected.date.isoformat", parsing))))
+                JsError(
+                  Seq(JsPath() ->
+                    Seq(ValidationError("error.expected.date.isoformat", parsing))))
             }
           case _ =>
             JsError(
@@ -784,12 +780,12 @@ trait DefaultReads extends LowPriorityDefaultReads {
             parseDate(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() -> Seq(
-                  ValidationError("error.expected.jodadate.format", pattern))))
+                JsError(
+                  Seq(JsPath() -> Seq(
+                    ValidationError("error.expected.jodadate.format", pattern))))
             }
           case _ =>
-            JsError(
-              Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
+            JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
 
       private def parseDate(input: String): Option[DateTime] =
@@ -827,12 +823,12 @@ trait DefaultReads extends LowPriorityDefaultReads {
             parseDate(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() -> Seq(
-                  ValidationError("error.expected.jodadate.format", pattern))))
+                JsError(
+                  Seq(JsPath() -> Seq(
+                    ValidationError("error.expected.jodadate.format", pattern))))
             }
           case _ =>
-            JsError(
-              Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
+            JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.date"))))
         }
 
       private def parseDate(input: String): Option[LocalDate] =
@@ -870,12 +866,12 @@ trait DefaultReads extends LowPriorityDefaultReads {
             parseTime(corrector(s)) match {
               case Some(d) => JsSuccess(d)
               case None =>
-                JsError(Seq(JsPath() -> Seq(
-                  ValidationError("error.expected.jodatime.format", pattern))))
+                JsError(
+                  Seq(JsPath() -> Seq(
+                    ValidationError("error.expected.jodatime.format", pattern))))
             }
           case _ =>
-            JsError(
-              Seq(JsPath() -> Seq(ValidationError("error.expected.time"))))
+            JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.time"))))
         }
 
       private def parseTime(input: String): Option[LocalTime] =
@@ -917,12 +913,11 @@ trait DefaultReads extends LowPriorityDefaultReads {
             enum.values
               .find(_.toString == str)
               .map(JsSuccess(_))
-              .getOrElse(JsError(Seq(JsPath() -> Seq(
-                ValidationError("error.expected.validenumvalue")))))
+              .getOrElse(JsError(Seq(
+                JsPath() -> Seq(ValidationError("error.expected.validenumvalue")))))
           case _ =>
             JsError(
-              Seq(
-                JsPath() -> Seq(ValidationError("error.expected.enumstring"))))
+              Seq(JsPath() -> Seq(ValidationError("error.expected.enumstring"))))
         }
     }
 
@@ -1113,8 +1108,8 @@ trait DefaultReads extends LowPriorityDefaultReads {
         case JsString(s) => {
           parseUuid(s)
             .map(JsSuccess(_))
-            .getOrElse(JsError(
-              Seq(JsPath() -> Seq(ValidationError("error.expected.uuid")))))
+            .getOrElse(
+              JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.uuid")))))
         }
         case _ =>
           JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.uuid"))))

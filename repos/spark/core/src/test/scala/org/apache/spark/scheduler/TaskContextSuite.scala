@@ -210,7 +210,8 @@ class TaskContextSuite
     assert(Accumulators.get(acc2.id).get.value === 10L)
   }
 
-  test("failed tasks collect only accumulators whose values count during failures") {
+  test(
+    "failed tasks collect only accumulators whose values count during failures") {
     sc = new SparkContext("local", "test")
     val param = AccumulatorParam.LongAccumulatorParam
     val acc1 = new Accumulator(

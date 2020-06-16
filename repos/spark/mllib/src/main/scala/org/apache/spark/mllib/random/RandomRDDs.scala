@@ -53,12 +53,7 @@ object RandomRDDs {
       numPartitions: Int = 0,
       seed: Long = Utils.random.nextLong()): RDD[Double] = {
     val uniform = new UniformGenerator()
-    randomRDD(
-      sc,
-      uniform,
-      size,
-      numPartitionsOrDefault(sc, numPartitions),
-      seed)
+    randomRDD(sc, uniform, size, numPartitionsOrDefault(sc, numPartitions), seed)
   }
 
   /**
@@ -164,12 +159,7 @@ object RandomRDDs {
       numPartitions: Int = 0,
       seed: Long = Utils.random.nextLong()): RDD[Double] = {
     val poisson = new PoissonGenerator(mean)
-    randomRDD(
-      sc,
-      poisson,
-      size,
-      numPartitionsOrDefault(sc, numPartitions),
-      seed)
+    randomRDD(sc, poisson, size, numPartitionsOrDefault(sc, numPartitions), seed)
   }
 
   /**
@@ -245,8 +235,7 @@ object RandomRDDs {
       size: Long,
       numPartitions: Int,
       seed: Long): JavaDoubleRDD = {
-    JavaDoubleRDD.fromRDD(
-      exponentialRDD(jsc.sc, mean, size, numPartitions, seed))
+    JavaDoubleRDD.fromRDD(exponentialRDD(jsc.sc, mean, size, numPartitions, seed))
   }
 
   /**

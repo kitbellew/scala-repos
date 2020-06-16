@@ -284,10 +284,8 @@ class Analyzer(
           failAnalysis(s"${VirtualColumn.groupingIdName} is deprecated; use grouping_id() instead")
         // Ensure all the expressions have been resolved.
         case x: GroupingSets if x.expressions.forall(_.resolved) =>
-          val gid = AttributeReference(
-            VirtualColumn.groupingIdName,
-            IntegerType,
-            false)()
+          val gid =
+            AttributeReference(VirtualColumn.groupingIdName, IntegerType, false)()
 
           // Expand works by setting grouping expressions to null as determined by the bitmasks. To
           // prevent these null values from being used in an aggregate instead of the original value
@@ -465,9 +463,7 @@ class Analyzer(
       * Generate a new logical plan for the right child with different expression IDs
       * for all conflicting attributes.
       */
-    private def dedupRight(
-        left: LogicalPlan,
-        right: LogicalPlan): LogicalPlan = {
+    private def dedupRight(left: LogicalPlan, right: LogicalPlan): LogicalPlan = {
       val conflictingAttributes = left.outputSet.intersect(right.outputSet)
       logDebug(
         s"Conflicting attributes ${conflictingAttributes.mkString(",")} " +
@@ -807,9 +803,7 @@ class Analyzer(
       plan match {
         case p: Project =>
           val missing = missingAttrs -- p.child.outputSet
-          Project(
-            p.projectList ++ missingAttrs,
-            addMissingAttr(p.child, missing))
+          Project(p.projectList ++ missingAttrs, addMissingAttr(p.child, missing))
         case a: Aggregate =>
           // all the missing attributes should be grouping expressions
           // TODO: push down AggregateExpression
@@ -1698,8 +1692,7 @@ object CleanupAliases extends Rule[LogicalPlan] {
     plan resolveOperators {
       case Project(projectList, child) =>
         val cleanedProjectList =
-          projectList.map(
-            trimNonTopLevelAliases(_).asInstanceOf[NamedExpression])
+          projectList.map(trimNonTopLevelAliases(_).asInstanceOf[NamedExpression])
         Project(cleanedProjectList, child)
 
       case Aggregate(grouping, aggs, child) =>

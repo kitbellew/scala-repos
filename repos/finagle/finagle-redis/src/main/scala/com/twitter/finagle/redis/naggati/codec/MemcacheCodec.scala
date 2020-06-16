@@ -72,9 +72,7 @@ object MemcacheCodec {
   val END = "\r\nEND\r\n".getBytes
   val CRLF = "\r\n".getBytes
 
-  def asciiCodec(
-      bytesReadCounter: Int => Unit,
-      bytesWrittenCounter: Int => Unit) =
+  def asciiCodec(bytesReadCounter: Int => Unit, bytesWrittenCounter: Int => Unit) =
     new Codec(readAscii, writeAscii, bytesReadCounter, bytesWrittenCounter)
 
   def asciiCodec() = new Codec(readAscii, writeAscii)

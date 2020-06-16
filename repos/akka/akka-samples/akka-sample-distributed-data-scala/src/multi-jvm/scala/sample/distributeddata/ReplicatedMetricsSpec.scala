@@ -81,8 +81,7 @@ class ReplicatedMetricsSpec
         val probe = TestProbe()
         system.eventStream.subscribe(probe.ref, classOf[UsedHeap])
         awaitAssert {
-          probe.expectMsgType[UsedHeap](1.second).percentPerNode.size should be(
-            2)
+          probe.expectMsgType[UsedHeap](1.second).percentPerNode.size should be(2)
         }
         probe
           .expectMsgType[UsedHeap]

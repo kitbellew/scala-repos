@@ -3,26 +3,24 @@ package std
 package math
 
 trait BigInts {
-  implicit val bigIntInstance
-      : Monoid[BigInt] with Enum[BigInt] with Show[BigInt] = new Monoid[BigInt]
-    with Enum[BigInt]
-    with Show[BigInt] {
-    override def shows(f: BigInt) = f.toString
+  implicit val bigIntInstance: Monoid[BigInt] with Enum[BigInt] with Show[BigInt] =
+    new Monoid[BigInt] with Enum[BigInt] with Show[BigInt] {
+      override def shows(f: BigInt) = f.toString
 
-    def append(f1: BigInt, f2: => BigInt): BigInt = f1 + f2
+      def append(f1: BigInt, f2: => BigInt): BigInt = f1 + f2
 
-    def zero: BigInt = 0L
+      def zero: BigInt = 0L
 
-    def order(x: BigInt, y: BigInt): Ordering =
-      if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
+      def order(x: BigInt, y: BigInt): Ordering =
+        if (x < y) Ordering.LT else if (x == y) Ordering.EQ else Ordering.GT
 
-    def succ(b: BigInt) = b + 1
-    def pred(b: BigInt) = b - 1
-    override def succn(a: Int, b: BigInt) = b + a
-    override def predn(a: Int, b: BigInt) = b - a
-    override def min = None
-    override def max = None
-  }
+      def succ(b: BigInt) = b + 1
+      def pred(b: BigInt) = b - 1
+      override def succn(a: Int, b: BigInt) = b + a
+      override def predn(a: Int, b: BigInt) = b - a
+      override def min = None
+      override def max = None
+    }
 
   import Tags.Multiplication
 

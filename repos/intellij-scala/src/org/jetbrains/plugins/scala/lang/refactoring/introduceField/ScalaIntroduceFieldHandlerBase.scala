@@ -94,9 +94,8 @@ abstract class ScalaIntroduceFieldHandlerBase extends RefactoringActionHandler {
       expr: ScExpression,
       occurrences: Array[TextRange],
       aClass: ScTemplateDefinition): PsiElement = {
-    val commonParent = ScalaRefactoringUtil.commonParent(
-      aClass.getContainingFile,
-      occurrences: _*)
+    val commonParent =
+      ScalaRefactoringUtil.commonParent(aClass.getContainingFile, occurrences: _*)
     val firstOccOffset = occurrences.map(_.getStartOffset).min
     val anchor = ScalaRefactoringUtil
       .statementsAndMembersInClass(aClass)

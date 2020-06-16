@@ -500,11 +500,7 @@ class MapWithStateRDDSuite
   }
 
   /** Assert whether the `mapWithState` operation generates expected results */
-  private def assertOperation[
-      K: ClassTag,
-      V: ClassTag,
-      S: ClassTag,
-      T: ClassTag](
+  private def assertOperation[K: ClassTag, V: ClassTag, S: ClassTag, T: ClassTag](
       testStateRDD: MapWithStateRDD[K, V, S, T],
       newDataRDD: RDD[(K, V)],
       mappingFunction: (Time, K, Option[V], State[S]) => Option[T],

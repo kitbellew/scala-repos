@@ -82,8 +82,7 @@ private[spark] class PartitionerAwareUnionRDD[T: ClassTag](
 
   // Get the location where most of the partitions of parent RDDs are located
   override def getPreferredLocations(s: Partition): Seq[String] = {
-    logDebug(
-      "Finding preferred location for " + this + ", partition " + s.index)
+    logDebug("Finding preferred location for " + this + ", partition " + s.index)
     val parentPartitions =
       s.asInstanceOf[PartitionerAwareUnionRDDPartition].parents
     val locations = rdds.zip(parentPartitions).flatMap {

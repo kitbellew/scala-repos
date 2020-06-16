@@ -49,8 +49,7 @@ class ThriftRichClientTest
       .newServiceIface("/s/tweetypie/tweetypie", "tweetypie_client")(builder =
         mockBuilder)
 
-    assert(
-      captor.getValue.toString == "NullStatsReceiver/clnt/tweetypie_client")
+    assert(captor.getValue.toString == "NullStatsReceiver/clnt/tweetypie_client")
     verify(client).newService("/s/tweetypie/tweetypie", "tweetypie_client")
   }
 
@@ -65,8 +64,7 @@ class ThriftRichClientTest
     val client = spy(ThriftRichClientMock)
     client.newServiceIface(name, "tweetypie_client")(builder = mockBuilder)
 
-    assert(
-      captor.getValue.toString == "NullStatsReceiver/clnt/tweetypie_client")
+    assert(captor.getValue.toString == "NullStatsReceiver/clnt/tweetypie_client")
     verify(client).newService(name, "tweetypie_client")
   }
 }

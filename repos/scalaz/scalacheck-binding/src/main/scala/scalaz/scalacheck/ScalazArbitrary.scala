@@ -61,8 +61,8 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       : Arbitrary[BigInteger @@ Multiplication] =
     Tag.subst[BigInteger, Arbitrary, Multiplication](arb[BigInteger])
 
-  implicit val BigIntMultiplicationArbitrary
-      : Arbitrary[BigInt @@ Multiplication] = Tag.subst(arb[BigInt])
+  implicit val BigIntMultiplicationArbitrary: Arbitrary[BigInt @@ Multiplication] =
+    Tag.subst(arb[BigInt])
 
   implicit val ByteMultiplicationArbitrary: Arbitrary[Byte @@ Multiplication] =
     Tag.subst(arb[Byte])
@@ -82,16 +82,15 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   implicit val FloatMultiplicationArbitrary
       : Arbitrary[Float @@ Multiplication] = Tag.subst(arb[Float])
 
-  implicit val DoubleMultiplicationArbitrary
-      : Arbitrary[Double @@ Multiplication] = Tag.subst(arb[Double])
+  implicit val DoubleMultiplicationArbitrary: Arbitrary[Double @@ Multiplication] =
+    Tag.subst(arb[Double])
 
   implicit val DigitArbitrary: Arbitrary[Digit] = Arbitrary(oneOf(Digit.digits))
 
   import NonEmptyList._
   implicit def NonEmptyListArbitrary[A: Arbitrary]: Arbitrary[NonEmptyList[A]] =
-    Apply[Arbitrary].apply2[A, IList[A], NonEmptyList[A]](
-      arb[A],
-      ilistArbitrary)(nel(_, _))
+    Apply[Arbitrary].apply2[A, IList[A], NonEmptyList[A]](arb[A], ilistArbitrary)(
+      nel(_, _))
 
   /** @since 7.0.3 */
   implicit def OneAndArbitrary[F[_], A](implicit
@@ -233,8 +232,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
   implicit def Function0Arbitrary[A: Arbitrary]: Arbitrary[() => A] =
     Functor[Arbitrary].map(arb[A])(() => _)
 
-  implicit def FirstOptionArbitrary[A: Arbitrary]
-      : Arbitrary[Option[A] @@ First] =
+  implicit def FirstOptionArbitrary[A: Arbitrary]: Arbitrary[Option[A] @@ First] =
     Functor[Arbitrary].map(arb[Option[A]])(_.first)
 
   implicit def LastOptionArbitrary[A: Arbitrary]: Arbitrary[Option[A] @@ Last] =
@@ -294,8 +292,7 @@ object ScalazArbitrary extends ScalazArbitraryPlatform {
       oneOf(
         arbitrary[A].map(one(_): Finger[V, A]),
         ^(arbitrary[A], arbitrary[A])(two(_, _): Finger[V, A]),
-        ^^(arbitrary[A], arbitrary[A], arbitrary[A])(
-          three(_, _, _): Finger[V, A]),
+        ^^(arbitrary[A], arbitrary[A], arbitrary[A])(three(_, _, _): Finger[V, A]),
         ^^^(arbitrary[A], arbitrary[A], arbitrary[A], arbitrary[A])(
           four(_, _, _, _): Finger[V, A])
       ))

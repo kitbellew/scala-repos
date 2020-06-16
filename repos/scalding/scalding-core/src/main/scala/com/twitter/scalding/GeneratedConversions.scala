@@ -176,8 +176,7 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       gG: TupleGetter[G],
       gH: TupleGetter[H],
       gI: TupleGetter[I],
-      gJ: TupleGetter[J])
-      : TupleConverter[Tuple10[A, B, C, D, E, F, G, H, I, J]] =
+      gJ: TupleGetter[J]): TupleConverter[Tuple10[A, B, C, D, E, F, G, H, I, J]] =
     new TupleConverter[Tuple10[A, B, C, D, E, F, G, H, I, J]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple
@@ -462,10 +461,9 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       gN: TupleGetter[N],
       gO: TupleGetter[O],
       gP: TupleGetter[P],
-      gQ: TupleGetter[Q]): TupleConverter[
-    Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] =
-    new TupleConverter[
-      Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] {
+      gQ: TupleGetter[Q])
+      : TupleConverter[Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] =
+    new TupleConverter[Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple
         Tuple17(
@@ -527,10 +525,9 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       gO: TupleGetter[O],
       gP: TupleGetter[P],
       gQ: TupleGetter[Q],
-      gR: TupleGetter[R]): TupleConverter[
-    Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] =
-    new TupleConverter[
-      Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] {
+      gR: TupleGetter[R])
+      : TupleConverter[Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] =
+    new TupleConverter[Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple
         Tuple18(
@@ -595,10 +592,9 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       gP: TupleGetter[P],
       gQ: TupleGetter[Q],
       gR: TupleGetter[R],
-      gS: TupleGetter[S]): TupleConverter[
-    Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] =
-    new TupleConverter[
-      Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] {
+      gS: TupleGetter[S])
+      : TupleConverter[Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] =
+    new TupleConverter[Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple
         Tuple19(
@@ -666,10 +662,9 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       gQ: TupleGetter[Q],
       gR: TupleGetter[R],
       gS: TupleGetter[S],
-      gT: TupleGetter[T]): TupleConverter[
-    Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]] =
-    new TupleConverter[
-      Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]] {
+      gT: TupleGetter[T])
+      : TupleConverter[Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]] =
+    new TupleConverter[Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple
         Tuple20(
@@ -740,10 +735,9 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       gR: TupleGetter[R],
       gS: TupleGetter[S],
       gT: TupleGetter[T],
-      gU: TupleGetter[U]): TupleConverter[
-    Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] =
-    new TupleConverter[
-      Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] {
+      gU: TupleGetter[U])
+      : TupleConverter[Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] =
+    new TupleConverter[Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple
         Tuple21(
@@ -817,31 +811,9 @@ trait GeneratedTupleConverters extends LowPriorityTupleConverters {
       gS: TupleGetter[S],
       gT: TupleGetter[T],
       gU: TupleGetter[U],
-      gV: TupleGetter[V]): TupleConverter[
-    Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]] =
-    new TupleConverter[Tuple22[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U,
-      V]] {
+      gV: TupleGetter[V])
+      : TupleConverter[Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]] =
+    new TupleConverter[Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]] {
       def apply(te: TupleEntry) = {
         val tup = te.getTuple
         Tuple22(
@@ -990,8 +962,7 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 8
     }
 
-  implicit def tup9Setter[Z <: Tuple9[_, _, _, _, _, _, _, _, _]]
-      : TupleSetter[Z] =
+  implicit def tup9Setter[Z <: Tuple9[_, _, _, _, _, _, _, _, _]]: TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
         val tup = Tuple.size(9)
@@ -1100,8 +1071,8 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 13
     }
 
-  implicit def tup14Setter[
-      Z <: Tuple14[_, _, _, _, _, _, _, _, _, _, _, _, _, _]]: TupleSetter[Z] =
+  implicit def tup14Setter[Z <: Tuple14[_, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+      : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
         val tup = Tuple.size(14)
@@ -1125,8 +1096,7 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 14
     }
 
-  implicit def tup15Setter[
-      Z <: Tuple15[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+  implicit def tup15Setter[Z <: Tuple15[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
       : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
@@ -1152,8 +1122,7 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 15
     }
 
-  implicit def tup16Setter[
-      Z <: Tuple16[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+  implicit def tup16Setter[Z <: Tuple16[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
       : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
@@ -1180,8 +1149,7 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 16
     }
 
-  implicit def tup17Setter[
-      Z <: Tuple17[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+  implicit def tup17Setter[Z <: Tuple17[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
       : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
@@ -1209,8 +1177,7 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 17
     }
 
-  implicit def tup18Setter[
-      Z <: Tuple18[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+  implicit def tup18Setter[Z <: Tuple18[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
       : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
@@ -1239,8 +1206,7 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 18
     }
 
-  implicit def tup19Setter[
-      Z <: Tuple19[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+  implicit def tup19Setter[Z <: Tuple19[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
       : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
@@ -1270,8 +1236,7 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 19
     }
 
-  implicit def tup20Setter[
-      Z <: Tuple20[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+  implicit def tup20Setter[Z <: Tuple20[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
       : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
@@ -1302,28 +1267,8 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 20
     }
 
-  implicit def tup21Setter[Z <: Tuple21[
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _]]: TupleSetter[Z] =
+  implicit def tup21Setter[Z <: Tuple21[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+      : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
         val tup = Tuple.size(21)
@@ -1354,29 +1299,8 @@ trait GeneratedTupleSetters extends LowPriorityTupleSetters {
       override def arity = 21
     }
 
-  implicit def tup22Setter[Z <: Tuple22[
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _,
-    _]]: TupleSetter[Z] =
+  implicit def tup22Setter[Z <: Tuple22[_, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _, _]]
+      : TupleSetter[Z] =
     new TupleSetter[Z] {
       override def apply(arg: Z) = {
         val tup = Tuple.size(22)

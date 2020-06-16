@@ -41,9 +41,7 @@ trait NonObjectStackSpecs extends EvalStackSpecs {
           //test/empty_object
         """.stripMargin
 
-      eval(input) mustEqual Set(
-        SObject(Map()),
-        SObject(Map("foo" -> SObject(Map()))))
+      eval(input) mustEqual Set(SObject(Map()), SObject(Map("foo" -> SObject(Map()))))
     }
 
     "handle query on null" >> {

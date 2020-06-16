@@ -31,10 +31,7 @@ import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 
 /** JDBC implementation of [[LEvents]] */
-class JDBCLEvents(
-    client: String,
-    config: StorageClientConfig,
-    namespace: String)
+class JDBCLEvents(client: String, config: StorageClientConfig, namespace: String)
     extends LEvents
     with Logging {
   implicit private val formats = org.json4s.DefaultFormats
@@ -196,8 +193,7 @@ class JDBCLEvents(
             entityType.map(x => sqls"entityType = $x"),
             entityId.map(x => sqls"entityId = $x"),
             eventNames
-              .map(x =>
-                sqls.toOrConditionOpt(x.map(y => Some(sqls"event = $y")): _*))
+              .map(x => sqls.toOrConditionOpt(x.map(y => Some(sqls"event = $y")): _*))
               .getOrElse(None),
             targetEntityType.map(x =>
               x.map(y => sqls"targetEntityType = $y")

@@ -229,8 +229,7 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
           else
             videoColl
               .aggregate(
-                Match(
-                  BSONDocument("tags" -> BSONDocument("$all" -> filterTags))),
+                Match(BSONDocument("tags" -> BSONDocument("$all" -> filterTags))),
                 List(
                   Project(BSONDocument("tags" -> BSONBoolean(true))),
                   Unwind("tags"),

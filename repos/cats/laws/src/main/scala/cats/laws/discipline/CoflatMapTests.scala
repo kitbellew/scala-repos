@@ -18,8 +18,7 @@ trait CoflatMapTests[F[_]] extends Laws {
     new DefaultRuleSet(
       name = "coflatMap",
       parent = None,
-      "coflatMap associativity" -> forAll(
-        laws.coflatMapAssociativity[A, B, C] _))
+      "coflatMap associativity" -> forAll(laws.coflatMapAssociativity[A, B, C] _))
   }
 }
 

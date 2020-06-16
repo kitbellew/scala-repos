@@ -204,10 +204,7 @@ trait DestructureTypes {
           product(tp, parentList(parents), scope(decls), wrapAtom(clazz))
         case ConstantType(const) => product(tp, constant("value", const))
         case OverloadedType(pre, alts) =>
-          product(
-            tp,
-            prefix(pre),
-            node("alts", typeList(alts map pre.memberType)))
+          product(tp, prefix(pre), node("alts", typeList(alts map pre.memberType)))
         case RefinedType(parents, decls) =>
           product(tp, parentList(parents), scope(decls))
         case SingleType(pre, sym) => product(tp, prefix(pre), wrapAtom(sym))

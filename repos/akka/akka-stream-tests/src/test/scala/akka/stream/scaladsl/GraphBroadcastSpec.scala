@@ -26,12 +26,10 @@ class GraphBroadcastSpec extends AkkaSpec {
         .fromGraph(GraphDSL.create() { implicit b ⇒
           val bcast = b.add(Broadcast[Int](2))
           Source(List(1, 2, 3)) ~> bcast.in
-          bcast.out(0) ~> Flow[Int].buffer(
-            16,
-            OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
-          bcast.out(1) ~> Flow[Int].buffer(
-            16,
-            OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
+          bcast.out(0) ~> Flow[Int]
+            .buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c1)
+          bcast.out(1) ~> Flow[Int]
+            .buffer(16, OverflowStrategy.backpressure) ~> Sink.fromSubscriber(c2)
           ClosedShape
         })
         .run()

@@ -125,9 +125,7 @@ object CSVExporter {
           metrics.map(_.timers.find(_.name == name).map(_.count.toDouble)))
       },
       timers.map { name =>
-        Row(
-          name + ".mean",
-          metrics.map(_.timers.find(_.name == name).map(_.mean)))
+        Row(name + ".mean", metrics.map(_.timers.find(_.name == name).map(_.mean)))
       },
       timers.map { name =>
         Row(
@@ -150,44 +148,28 @@ object CSVExporter {
           metrics.map(_.timers.find(_.name == name).map(_.m15_rate)))
       },
       timers.map { name =>
-        Row(
-          name + ".min",
-          metrics.map(_.timers.find(_.name == name).map(_.min)))
+        Row(name + ".min", metrics.map(_.timers.find(_.name == name).map(_.min)))
       },
       timers.map { name =>
-        Row(
-          name + ".max",
-          metrics.map(_.timers.find(_.name == name).map(_.max)))
+        Row(name + ".max", metrics.map(_.timers.find(_.name == name).map(_.max)))
       },
       timers.map { name =>
-        Row(
-          name + ".p50",
-          metrics.map(_.timers.find(_.name == name).map(_.p50)))
+        Row(name + ".p50", metrics.map(_.timers.find(_.name == name).map(_.p50)))
       },
       timers.map { name =>
-        Row(
-          name + ".p75",
-          metrics.map(_.timers.find(_.name == name).map(_.p75)))
+        Row(name + ".p75", metrics.map(_.timers.find(_.name == name).map(_.p75)))
       },
       timers.map { name =>
-        Row(
-          name + ".p95",
-          metrics.map(_.timers.find(_.name == name).map(_.p95)))
+        Row(name + ".p95", metrics.map(_.timers.find(_.name == name).map(_.p95)))
       },
       timers.map { name =>
-        Row(
-          name + ".p98",
-          metrics.map(_.timers.find(_.name == name).map(_.p98)))
+        Row(name + ".p98", metrics.map(_.timers.find(_.name == name).map(_.p98)))
       },
       timers.map { name =>
-        Row(
-          name + ".p99",
-          metrics.map(_.timers.find(_.name == name).map(_.p99)))
+        Row(name + ".p99", metrics.map(_.timers.find(_.name == name).map(_.p99)))
       },
       timers.map { name =>
-        Row(
-          name + ".p999",
-          metrics.map(_.timers.find(_.name == name).map(_.p999)))
+        Row(name + ".p999", metrics.map(_.timers.find(_.name == name).map(_.p999)))
       },
       timers.map { name =>
         Row(

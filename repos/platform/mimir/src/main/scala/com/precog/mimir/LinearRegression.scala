@@ -199,9 +199,7 @@ trait LinearRegressionLibModule[M[+_]]
       }
 
       // removes `indices` from `values`
-      def removeAt(
-          values: Array[Double],
-          indices0: Array[Int]): Array[Double] = {
+      def removeAt(values: Array[Double], indices0: Array[Int]): Array[Double] = {
         val vlength = values.length
         val indices = indices0 filter { i =>
           (i >= 0) && (i < vlength)
@@ -321,8 +319,7 @@ trait LinearRegressionLibModule[M[+_]]
                     else if (rank < matrixRank0)
                       inner(matrix, idx + 1, colDim, removed)
                     else
-                      sys.error(
-                        "Rank cannot increase when a column is removed.")
+                      sys.error("Rank cannot increase when a column is removed.")
                   } else {
                     sys.error(
                       "Matrix cannot have rank larger than number of columns.")
@@ -475,8 +472,8 @@ trait LinearRegressionLibModule[M[+_]]
         val varCovarTable = varCovarTable0.transform(
           trans.WrapObject(Leaf(Source), "varianceCovarianceMatrix"))
 
-        val coeffsTable = thetaInSchema.transform(
-          trans.WrapObject(Leaf(Source), "coefficients"))
+        val coeffsTable =
+          thetaInSchema.transform(trans.WrapObject(Leaf(Source), "coefficients"))
 
         val stdErrResult = RObject(
           Map(
@@ -606,9 +603,7 @@ trait LinearRegressionLibModule[M[+_]]
         val spec = liftToValues(
           trans.DeepMap1(TransSpec1.Id, cf.util.CoerceToDouble))
         t2.transform(spec).reduce(reducer) map { models =>
-          (
-            t1.transform(spec),
-            morph1Apply(models, scala.Predef.identity[Double]))
+          (t1.transform(spec), morph1Apply(models, scala.Predef.identity[Double]))
         }
       }
     }

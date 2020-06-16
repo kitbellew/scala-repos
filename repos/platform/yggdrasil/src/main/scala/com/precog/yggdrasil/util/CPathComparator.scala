@@ -206,10 +206,7 @@ object CPathComparator {
       case (CNum, rCol: DoubleColumn) =>
         new HalfArrayCPathComparator[BigDecimal, Double](lPath, lCol, rCol(_))
       case (CNum, rCol: NumColumn) =>
-        new HalfArrayCPathComparator[BigDecimal, BigDecimal](
-          lPath,
-          lCol,
-          rCol(_))
+        new HalfArrayCPathComparator[BigDecimal, BigDecimal](lPath, lCol, rCol(_))
       case (CBoolean, rCol: BoolColumn) =>
         new HalfArrayCPathComparator[Boolean, Boolean](lPath, lCol, rCol(_))
       case (CString, rCol: StrColumn) =>

@@ -38,9 +38,7 @@ private[finagle] class SocketAddressResolveHandler(
     resolver: SocketAddressResolver,
     addr: InetSocketAddress
 ) extends SimpleChannelHandler {
-  override def connectRequested(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def connectRequested(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     (e, e.getValue) match {
       case (de: DownstreamChannelStateEvent, socketAddress: InetSocketAddress)
           if socketAddress.isUnresolved =>

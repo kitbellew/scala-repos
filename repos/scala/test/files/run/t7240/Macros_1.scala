@@ -70,9 +70,7 @@ object Bakery {
       )
 
     def constructor =
-      Apply(
-        Select(New(Ident(newTypeName("eval"))), termNames.CONSTRUCTOR),
-        List())
+      Apply(Select(New(Ident(newTypeName("eval"))), termNames.CONSTRUCTOR), List())
 
     c.eval(
       c.Expr[Any](

@@ -48,9 +48,8 @@ trait Bindings {
     * @param values Collection of values
     * @return The highest Value
     */
-  def min(
-      v1: jfxbv.ObservableNumberValue,
-      values: jfxbv.ObservableNumberValue*) = (v1 /: values)(jfxbb.Bindings.min)
+  def min(v1: jfxbv.ObservableNumberValue, values: jfxbv.ObservableNumberValue*) =
+    (v1 /: values)(jfxbb.Bindings.min)
 
   /**
     * Returns the Lowest value among a collection of $JFX
@@ -60,9 +59,8 @@ trait Bindings {
     * @param values Collection of values
     * @return The Lowest Value
     */
-  def max(
-      v1: jfxbv.ObservableNumberValue,
-      values: jfxbv.ObservableNumberValue*) = (v1 /: values)(jfxbb.Bindings.max)
+  def max(v1: jfxbv.ObservableNumberValue, values: jfxbv.ObservableNumberValue*) =
+    (v1 /: values)(jfxbb.Bindings.max)
 
   /**
     * Returns the sum of a collection of $JFX
@@ -72,9 +70,8 @@ trait Bindings {
     * @param values Collection of values
     * @return The Value sum.
     */
-  def add(
-      v1: jfxbv.ObservableNumberValue,
-      values: jfxbv.ObservableNumberValue*) = (v1 /: values)(jfxbb.Bindings.add)
+  def add(v1: jfxbv.ObservableNumberValue, values: jfxbv.ObservableNumberValue*) =
+    (v1 /: values)(jfxbb.Bindings.add)
 
   /**
     * @param condition Function that returns a $JFX
@@ -178,8 +175,9 @@ trait Bindings {
 
     // explicit conversion needed due to T(Any) typed method
     def choose[T](chooseExpression: ObservableValue[T, T]) =
-      new ObjectConditionBuilder[T](whenBuilder.`then`(
-        ObservableValue.sfxObservableValue2jfxObjectValue[T](chooseExpression)))
+      new ObjectConditionBuilder[T](
+        whenBuilder.`then`(
+          ObservableValue.sfxObservableValue2jfxObjectValue[T](chooseExpression)))
     def choose[T](chooseExpression: jfxbv.ObservableObjectValue[T]) =
       new ObjectConditionBuilder[T](whenBuilder.`then`(chooseExpression))
     def choose[T](chooseExpression: T) =
@@ -190,8 +188,7 @@ trait Bindings {
       * This is addressing problems pointed in Issue 16 - inability to bind an expression to JFX property
       * when `thenValue` is a SFX wrapper. */
     def choose[J <: Object](chooseExpression: SFXDelegate[J]) =
-      new ObjectConditionBuilder[J](
-        whenBuilder.`then`(chooseExpression.delegate))
+      new ObjectConditionBuilder[J](whenBuilder.`then`(chooseExpression.delegate))
 
   }
 
@@ -230,8 +227,7 @@ trait Bindings {
     // explicit conversion needed due to T(Any) typed method
     def otherwise(otherwiseExpression: ObservableValue[T, T]) =
       whenBuilder.otherwise(
-        ObservableValue.sfxObservableValue2jfxObjectValue[T](
-          otherwiseExpression))
+        ObservableValue.sfxObservableValue2jfxObjectValue[T](otherwiseExpression))
     def otherwise(otherwiseExpression: jfxbv.ObservableObjectValue[T]) =
       whenBuilder.otherwise(otherwiseExpression)
     def otherwise(otherwiseExpression: T) =

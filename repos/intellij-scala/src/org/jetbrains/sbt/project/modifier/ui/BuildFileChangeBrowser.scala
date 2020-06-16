@@ -20,9 +20,7 @@ class BuildFileChangeBrowser(
     val project: Project,
     val changes: java.util.List[Change],
     val canExcludeChanges: Boolean,
-    val fileChangesMap: mutable.Map[
-      VirtualFile,
-      (BuildFileModifiedStatus, Long)])
+    val fileChangesMap: mutable.Map[VirtualFile, (BuildFileModifiedStatus, Long)])
     extends ChangesBrowser(
       project,
       null,

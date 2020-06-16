@@ -112,9 +112,7 @@ object FutureCache {
     *
     * @see [[standard]] for the equivalent Java API.
     */
-  def default[K, V](
-      fn: K => Future[V],
-      cache: FutureCache[K, V]): K => Future[V] =
+  def default[K, V](fn: K => Future[V], cache: FutureCache[K, V]): K => Future[V] =
     AsyncMemoize(fn, new EvictingCache(cache)) andThen { f: Future[V] =>
       f.interruptible()
     }
@@ -122,9 +120,7 @@ object FutureCache {
   /**
     * Alias for [[default]] which can be called from Java.
     */
-  def standard[K, V](
-      fn: K => Future[V],
-      cache: FutureCache[K, V]): K => Future[V] =
+  def standard[K, V](fn: K => Future[V], cache: FutureCache[K, V]): K => Future[V] =
     default(fn, cache)
 
 }

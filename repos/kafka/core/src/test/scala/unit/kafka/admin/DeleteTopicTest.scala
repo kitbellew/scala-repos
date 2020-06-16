@@ -354,10 +354,7 @@ class DeleteTopicTest extends ZooKeeperTestHarness {
     servers
   }
 
-  private def writeDups(
-      numKeys: Int,
-      numDups: Int,
-      log: Log): Seq[(Int, Int)] = {
+  private def writeDups(numKeys: Int, numDups: Int, log: Log): Seq[(Int, Int)] = {
     var counter = 0
     for (dup <- 0 until numDups; key <- 0 until numKeys) yield {
       val count = counter

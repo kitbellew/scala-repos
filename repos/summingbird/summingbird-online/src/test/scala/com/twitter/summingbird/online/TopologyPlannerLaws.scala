@@ -156,7 +156,8 @@ object TopologyPlannerLaws extends Properties("Online Dag") {
       }
   }
 
-  property("Sources must have no incoming dependencies, and they must have dependants") =
+  property(
+    "Sources must have no incoming dependencies, and they must have dependants") =
     forAll { (dag: MemoryDag) =>
       dag.nodes.forall { n =>
         val success = n match {

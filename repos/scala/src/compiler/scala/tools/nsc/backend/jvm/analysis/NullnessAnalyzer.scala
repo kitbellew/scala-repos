@@ -113,9 +113,8 @@ final class NullnessInterpreter(bTypes: BTypes)
       case _ => NullnessValue.unknown(insn)
     }
 
-  def copyOperation(
-      insn: AbstractInsnNode,
-      value: NullnessValue): NullnessValue = value
+  def copyOperation(insn: AbstractInsnNode, value: NullnessValue): NullnessValue =
+    value
 
   def unaryOperation(
       insn: AbstractInsnNode,

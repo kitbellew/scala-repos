@@ -61,8 +61,7 @@ private[spark] abstract class ZippedPartitionsBaseRDD[V: ClassTag](
     val numParts = rdds.head.partitions.length
     if (!rdds.forall(rdd => rdd.partitions.length == numParts)) {
       throw new IllegalArgumentException(
-        s"Can't zip RDDs with unequal numbers of partitions: ${rdds.map(
-          _.partitions.length)}")
+        s"Can't zip RDDs with unequal numbers of partitions: ${rdds.map(_.partitions.length)}")
     }
     Array.tabulate[Partition](numParts) { i =>
       val prefs = rdds.map(rdd => rdd.preferredLocations(rdd.partitions(i)))
@@ -85,10 +84,7 @@ private[spark] abstract class ZippedPartitionsBaseRDD[V: ClassTag](
   }
 }
 
-private[spark] class ZippedPartitionsRDD2[
-    A: ClassTag,
-    B: ClassTag,
-    V: ClassTag](
+private[spark] class ZippedPartitionsRDD2[A: ClassTag, B: ClassTag, V: ClassTag](
     sc: SparkContext,
     var f: (Iterator[A], Iterator[B]) => Iterator[V],
     var rdd1: RDD[A],

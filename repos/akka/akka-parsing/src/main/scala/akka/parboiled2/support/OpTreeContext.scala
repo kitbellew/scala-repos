@@ -462,9 +462,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
           case x @ (Ident(_) | Select(_, _)) ⇒
             Times(rule, q"val min = $n; val max = min", collector, separator)
           case _ ⇒
-            c.abort(
-              n.pos,
-              "Invalid int base expression for `.times(...)`: " + n)
+            c.abort(n.pos, "Invalid int base expression for `.times(...)`: " + n)
         }
       case q"$a.this.range2NTimes($r)" ⇒
         r match {
@@ -479,9 +477,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
               collector,
               separator)
           case _ ⇒
-            c.abort(
-              r.pos,
-              "Invalid range base expression for `.times(...)`: " + r)
+            c.abort(r.pos, "Invalid range base expression for `.times(...)`: " + r)
         }
       case _ ⇒
         c.abort(base.pos, "Invalid base expression for `.times(...)`: " + base)
@@ -637,9 +633,7 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
               block(valDefs, rewrite(body))
 
             case x ⇒
-              c.abort(
-                argTree.pos,
-                "Unexpected `run` argument: " + show(argTree))
+              c.abort(argTree.pos, "Unexpected `run` argument: " + show(argTree))
           }
 
         actionBody(c.resetLocalAttrs(argTree))

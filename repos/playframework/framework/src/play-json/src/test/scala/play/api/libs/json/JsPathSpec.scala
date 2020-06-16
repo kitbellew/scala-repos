@@ -25,8 +25,7 @@ object JsPathSpec extends Specification {
     "retrieve path with array index" in {
       val obj = Json.obj("key1" -> Json.arr(Json.obj("key11" -> "value11")))
 
-      (JsPath \ "key1" \ 0 \ "key11")(obj) must equalTo(
-        Seq(JsString("value11")))
+      (JsPath \ "key1" \ 0 \ "key11")(obj) must equalTo(Seq(JsString("value11")))
     }
 
     "retrieve 1-level recursive path" in {
@@ -136,13 +135,10 @@ object JsPathSpec extends Specification {
           "key1" -> Json.arr(
             "key11",
             Json.obj(
-              "key111" -> Json.obj(
-                "key1111" -> Json.arr(
-                  Json.obj("alpha" -> "value11111", "key11112" -> "value11112"),
-                  "beta1",
-                  Json.obj(
-                    "key11121" -> "value11121",
-                    "key11122" -> "value111122")))),
+              "key111" -> Json.obj("key1111" -> Json.arr(
+                Json.obj("alpha" -> "value11111", "key11112" -> "value11112"),
+                "beta1",
+                Json.obj("key11121" -> "value11121", "key11122" -> "value111122")))),
             "key12"
           ),
           "key2" -> Json.obj(
@@ -287,8 +283,7 @@ object JsPathSpec extends Specification {
       )
 
       (__ \ 'level2 \ 'key3).applyTillLast(res) must beEqualTo(
-        Left(
-          JsError(__ \ 'level2 \ 'key3, ValidationError("error.path.missing")))
+        Left(JsError(__ \ 'level2 \ 'key3, ValidationError("error.path.missing")))
       )
     }
 

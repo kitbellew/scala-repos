@@ -83,8 +83,7 @@ private case class LibraryReference(level: Level, name: String) {
 
   private def deleteDirectoryBasedLibrary(context: ConversionContext): File = {
     val libraryFile = directoryBasedLibraryFileIn(context).getOrElse(
-      throw new IllegalArgumentException(
-        s"Cannot delete project library: $name"))
+      throw new IllegalArgumentException(s"Cannot delete project library: $name"))
 
     // We have to resort to this workaround because IDEA's converter "restores" the file otherwise
     invokeLater {
@@ -106,8 +105,7 @@ private case class LibraryReference(level: Level, name: String) {
         .asInstanceOf[Element]
     }
     if (libraryElement == null) {
-      throw new IllegalArgumentException(
-        s"Cannot delete project library: $name")
+      throw new IllegalArgumentException(s"Cannot delete project library: $name")
     }
     libraryElement.detach()
   }

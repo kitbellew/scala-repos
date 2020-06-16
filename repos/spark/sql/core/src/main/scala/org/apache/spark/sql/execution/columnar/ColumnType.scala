@@ -605,10 +605,7 @@ private[columnar] object BINARY extends ByteArrayColumnType[Array[Byte]](16) {
 
   def dataType: DataType = BinaryType
 
-  override def setField(
-      row: MutableRow,
-      ordinal: Int,
-      value: Array[Byte]): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: Array[Byte]): Unit = {
     row.update(ordinal, value)
   }
 
@@ -667,10 +664,7 @@ private[columnar] case class STRUCT(dataType: StructType)
 
   override def defaultSize: Int = 20
 
-  override def setField(
-      row: MutableRow,
-      ordinal: Int,
-      value: UnsafeRow): Unit = {
+  override def setField(row: MutableRow, ordinal: Int, value: UnsafeRow): Unit = {
     row.update(ordinal, value)
   }
 

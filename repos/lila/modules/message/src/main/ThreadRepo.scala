@@ -45,9 +45,10 @@ object ThreadRepo {
             BSONDocument(
               "posts.isRead" -> false
             )),
-          Project(BSONDocument(
-            "u" -> BSONDocument("$ne" -> BSONArray("$posts.isByCreator", "$m"))
-          )),
+          Project(
+            BSONDocument(
+              "u" -> BSONDocument("$ne" -> BSONArray("$posts.isByCreator", "$m"))
+            )),
           Match(
             BSONDocument(
               "u" -> true
@@ -77,8 +78,7 @@ object ThreadRepo {
 
   def visibleByUserContainingExists(user: ID, containing: String): Fu[Boolean] =
     $count.exists(
-      visibleByUserQuery(user) ++ Json.obj(
-        "posts.0.text" -> $regex(containing)))
+      visibleByUserQuery(user) ++ Json.obj("posts.0.text" -> $regex(containing)))
 
   def userQuery(user: String) = Json.obj("userIds" -> user)
 

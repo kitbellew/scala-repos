@@ -345,8 +345,7 @@ object WorkflowUtils extends Logging {
       }
     }
 
-    flatten(root \ "sparkConf").map(x =>
-      (x._1.reduce((a, b) => s"$a.$b"), x._2))
+    flatten(root \ "sparkConf").map(x => (x._1.reduce((a, b) => s"$a.$b"), x._2))
   }
 }
 

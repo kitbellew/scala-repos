@@ -68,10 +68,7 @@ object CassandraTest {
     ConfigHelper.setInputRpcPort(job.getConfiguration(), port)
     ConfigHelper.setOutputInitialAddress(job.getConfiguration(), host)
     ConfigHelper.setOutputRpcPort(job.getConfiguration(), port)
-    ConfigHelper.setInputColumnFamily(
-      job.getConfiguration(),
-      "casDemo",
-      "Words")
+    ConfigHelper.setInputColumnFamily(job.getConfiguration(), "casDemo", "Words")
     ConfigHelper.setOutputColumnFamily(
       job.getConfiguration(),
       "casDemo",

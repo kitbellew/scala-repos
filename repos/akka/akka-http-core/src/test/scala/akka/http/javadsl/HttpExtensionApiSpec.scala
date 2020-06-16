@@ -29,10 +29,7 @@ import org.scalatest.{WordSpec, Matchers, BeforeAndAfterAll}
 import org.scalatest.concurrent.ScalaFutures
 import scala.util.Try
 
-class HttpExtensionApiSpec
-    extends WordSpec
-    with Matchers
-    with BeforeAndAfterAll {
+class HttpExtensionApiSpec extends WordSpec with Matchers with BeforeAndAfterAll {
 
   // tries to cover all surface area of javadsl.Http
 
@@ -375,9 +372,8 @@ class HttpExtensionApiSpec
         Pair[HttpRequest, NotUsed],
         Pair[Try[HttpResponse], NotUsed],
         HostConnectionPool] =
-        http.cachedHostConnectionPool[NotUsed](
-          s"http://$host:$port",
-          materializer)
+        http
+          .cachedHostConnectionPool[NotUsed](s"http://$host:$port", materializer)
 
       val pair: Pair[
         HostConnectionPool,
@@ -540,9 +536,8 @@ class HttpExtensionApiSpec
 
     "allow a single request (with two parameters)" in {
       val (host, port, binding) = runServer()
-      val response = http.singleRequest(
-        HttpRequest.GET(s"http://$host:$port/"),
-        materializer)
+      val response =
+        http.singleRequest(HttpRequest.GET(s"http://$host:$port/"), materializer)
 
       waitFor(response).status() should be(StatusCodes.OK)
       binding.unbind()

@@ -260,13 +260,7 @@ object Fork {
         scalaJars: Iterable[File],
         arguments: Seq[String],
         log: Logger): Int =
-      apply(
-        javaHome,
-        jvmOptions,
-        scalaJars,
-        arguments,
-        None,
-        BufferedOutput(log))
+      apply(javaHome, jvmOptions, scalaJars, arguments, None, BufferedOutput(log))
 
     @deprecated("Use apply(ForkOptions, Seq[String])", "0.13.0")
     def apply(

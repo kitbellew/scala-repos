@@ -57,8 +57,7 @@ class DropShadow(
       spread: Double,
       offsetX: Double,
       offsetY: Double) =
-    this(
-      new jfxse.DropShadow(blurType, color, radius, spread, offsetX, offsetY))
+    this(new jfxse.DropShadow(blurType, color, radius, spread, offsetX, offsetY))
 
   /**
     * Creates a new instance of DropShadow with specified radius and color.

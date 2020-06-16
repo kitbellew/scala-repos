@@ -137,10 +137,7 @@ trait FieldConversions extends LowPriorityFieldConversions {
   implicit def fieldToFields(f: Field[_]) = RichFields(f)
 
   @tailrec
-  final def newSymbol(
-      avoid: Set[Symbol],
-      guess: Symbol,
-      trial: Int = 0): Symbol = {
+  final def newSymbol(avoid: Set[Symbol], guess: Symbol, trial: Int = 0): Symbol = {
     if (!avoid(guess)) {
       //We are good:
       guess

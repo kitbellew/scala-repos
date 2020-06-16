@@ -43,8 +43,11 @@ class FixedPointCheck
     }
   }
 
-  def build(x: Long, y0: Long, z: Byte, noZero: Boolean)
-      : (Int, Int, FixedPoint, FixedPoint, Rational, Rational) = {
+  def build(
+      x: Long,
+      y0: Long,
+      z: Byte,
+      noZero: Boolean): (Int, Int, FixedPoint, FixedPoint, Rational, Rational) = {
     val y = if (y0 == 0L && noZero) 1L else y0
     val d = z.toInt.abs % 11
     val denom = 10 ** (d)
@@ -79,11 +82,7 @@ class FixedPointCheck
       }
     }
 
-  def testBinop(
-      name: String,
-      noZero: Boolean,
-      f: S2[FixedPoint],
-      g: F2[Rational]) =
+  def testBinop(name: String, noZero: Boolean, f: S2[FixedPoint], g: F2[Rational]) =
     property(name) {
       forAll { (x: Long, y: Long, z: Byte) =>
         val (_, denom, fx, fy, ax, ay) = build(x, y, z, noZero)

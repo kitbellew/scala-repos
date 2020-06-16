@@ -11,10 +11,7 @@ import com.intellij.psi.util.{CachedValue, PsiTreeUtil}
 import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.psi.api.InferUtil
 import org.jetbrains.plugins.scala.lang.psi.api.base.patterns.ScBindingPattern
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{
-  ScExpression,
-  ScMethodCall
-}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScExpression, ScMethodCall}
 import org.jetbrains.plugins.scala.lang.psi.api.statements._
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params.{
   ScClassParameter,
@@ -195,9 +192,8 @@ class ScImplicitlyConvertible(
               case Some(substitutor) =>
                 exp match {
                   case Some(expected) =>
-                    val additionalUSubst = Conformance.undefinedSubst(
-                      expected,
-                      newSubst.subst(retTp))
+                    val additionalUSubst =
+                      Conformance.undefinedSubst(expected, newSubst.subst(retTp))
                     (uSubst + additionalUSubst).getSubstitutor match {
                       case Some(innerSubst) =>
                         result += ImplicitResolveResult(
@@ -513,9 +509,7 @@ class ScImplicitlyConvertible(
                     })
 
                     //todo: pass implicit parameters
-                    ScalaPsiUtil.debug(
-                      s"Implicit $r is ok for type $typez",
-                      LOG)
+                    ScalaPsiUtil.debug(s"Implicit $r is ok for type $typez", LOG)
                     ImplicitMapResult(
                       condition = true,
                       r,
@@ -689,8 +683,8 @@ object ScImplicitlyConvertible {
 
   val IMPLICIT_RESOLUTION_KEY: Key[PsiClass] =
     Key.create("implicit.resolution.key")
-  val IMPLICIT_CONVERSIONS_KEY: Key[CachedValue[
-    collection.Map[ScType, Set[(ScFunctionDefinition, Set[ImportUsed])]]]] =
+  val IMPLICIT_CONVERSIONS_KEY: Key[
+    CachedValue[collection.Map[ScType, Set[(ScFunctionDefinition, Set[ImportUsed])]]]] =
     Key.create("implicit.conversions.key")
 
   case class Implicit(
@@ -723,10 +717,7 @@ object ScImplicitlyConvertible {
       function: ScFunction,
       place: PsiElement): Boolean = {
     if (!function.hasExplicitType) {
-      if (PsiTreeUtil.isContextAncestor(
-          function.getContainingFile,
-          place,
-          false)) {
+      if (PsiTreeUtil.isContextAncestor(function.getContainingFile, place, false)) {
         val commonContext = PsiTreeUtil.findCommonContext(function, place)
         if (place == commonContext)
           return true //weird case, it covers situation, when function comes from object, not treeWalkUp

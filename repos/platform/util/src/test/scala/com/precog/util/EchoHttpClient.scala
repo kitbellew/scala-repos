@@ -25,8 +25,8 @@ import blueeyes.json.serialization.DefaultSerialization._
 import scalaz._
 
 trait EchoHttpClientModule[M[+_]] extends HttpClientModule[M] {
-  private def wrapper(request: Request[String])
-      : EitherT[M, HttpClientError, Response[String]] = {
+  private def wrapper(
+      request: Request[String]): EitherT[M, HttpClientError, Response[String]] = {
     val response = Response(
       200,
       "OK",
@@ -43,8 +43,8 @@ trait EchoHttpClientModule[M[+_]] extends HttpClientModule[M] {
     EitherT(M point \/-(response))
   }
 
-  private def options(request: Request[String])
-      : EitherT[M, HttpClientError, Response[String]] = {
+  private def options(
+      request: Request[String]): EitherT[M, HttpClientError, Response[String]] = {
     val response = Response(
       200,
       "OK",
@@ -58,27 +58,27 @@ trait EchoHttpClientModule[M[+_]] extends HttpClientModule[M] {
     EitherT(M point \/-(response))
   }
 
-  private def echo(request: Request[String])
-      : EitherT[M, HttpClientError, Response[String]] = {
+  private def echo(
+      request: Request[String]): EitherT[M, HttpClientError, Response[String]] = {
     val response = Response(200, "OK", request.body map (_.data))
     EitherT(M point \/-(response))
   }
 
-  private def misbehave(request: Request[String])
-      : EitherT[M, HttpClientError, Response[String]] = {
+  private def misbehave(
+      request: Request[String]): EitherT[M, HttpClientError, Response[String]] = {
     val data = Some(jobject(jfield("data", jarray())).renderCompact)
     val response = Response(200, "OK", data)
     EitherT(M point \/-(response))
   }
 
-  private def empty(request: Request[String])
-      : EitherT[M, HttpClientError, Response[String]] = {
+  private def empty(
+      request: Request[String]): EitherT[M, HttpClientError, Response[String]] = {
     val response = Response(200, "OK", None)
     EitherT(M point \/-(response))
   }
 
-  private def serverError(request: Request[String])
-      : EitherT[M, HttpClientError, Response[String]] = {
+  private def serverError(
+      request: Request[String]): EitherT[M, HttpClientError, Response[String]] = {
     val response = Response(500, "Server Error", None)
     EitherT(M point \/-(response))
   }
@@ -95,8 +95,8 @@ trait EchoHttpClientModule[M[+_]] extends HttpClientModule[M] {
   )
 
   final class HttpClient(baseUrl: String) extends HttpClientLike {
-    def execute(request: Request[String])
-        : EitherT[M, HttpClientError, Response[String]] =
+    def execute(
+        request: Request[String]): EitherT[M, HttpClientError, Response[String]] =
       urlMap get baseUrl map (_(request)) getOrElse {
         EitherT(
           M.point(-\/(HttpClientError

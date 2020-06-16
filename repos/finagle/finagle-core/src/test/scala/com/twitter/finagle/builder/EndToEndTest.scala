@@ -333,8 +333,7 @@ class EndToEndTest extends FunSuite with StringClient with StringServer {
     assert(triesRequests == 1)
   }
 
-  test(
-    "ClientBuilderClient.ofCodec should be properly instrumented on success") {
+  test("ClientBuilderClient.ofCodec should be properly instrumented on success") {
     val always = new Service[String, String] {
       def apply(request: String) = Future.value("pong");
     }

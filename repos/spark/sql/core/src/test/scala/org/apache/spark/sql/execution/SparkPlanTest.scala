@@ -153,8 +153,7 @@ object SparkPlanTest {
       sqlContext: SQLContext): Option[String] = {
 
     val outputPlan = planFunction(input.queryExecution.sparkPlan)
-    val expectedOutputPlan = expectedPlanFunction(
-      input.queryExecution.sparkPlan)
+    val expectedOutputPlan = expectedPlanFunction(input.queryExecution.sparkPlan)
 
     val expectedAnswer: Seq[Row] =
       try {

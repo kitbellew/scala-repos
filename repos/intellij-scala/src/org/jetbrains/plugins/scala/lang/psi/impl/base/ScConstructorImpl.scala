@@ -201,8 +201,7 @@ class ScConstructorImpl(node: ASTNode)
               try {
                 nonValueType = InferUtil.localTypeInference(
                   nonValueType.internalType,
-                  Seq(
-                    new Parameter("", None, expected, false, false, false, 0)),
+                  Seq(new Parameter("", None, expected, false, false, false, 0)),
                   Seq(
                     new Expression(
                       InferUtil

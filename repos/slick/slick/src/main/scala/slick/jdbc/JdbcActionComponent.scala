@@ -286,9 +286,7 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
         sendEndMarker)
   }
 
-  class QueryActionExtensionMethodsImpl[R, S <: NoStream](
-      tree: Node,
-      param: Any)
+  class QueryActionExtensionMethodsImpl[R, S <: NoStream](tree: Node, param: Any)
       extends super.QueryActionExtensionMethodsImpl[R, S] {
     def result: ProfileAction[R, S, Effect.Read] = {
       def findSql(n: Node): String =
@@ -836,10 +834,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
     protected def retOne(st: Statement, value: U, updateCount: Int) =
       updateCount
-    protected def retOneInsertOrUpdate(
-        st: Statement,
-        value: U,
-        updateCount: Int) = 1
+    protected def retOneInsertOrUpdate(st: Statement, value: U, updateCount: Int) =
+      1
     protected def retOneInsertOrUpdateFromInsert(
         st: Statement,
         value: U,

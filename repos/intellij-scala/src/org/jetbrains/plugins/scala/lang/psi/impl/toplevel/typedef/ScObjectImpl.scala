@@ -188,10 +188,8 @@ class ScObjectImpl protected (
             val res = new ArrayBuffer[PsiMethod]
             c.getSyntheticMethodsText.foreach(s => {
               try {
-                val method = ScalaPsiElementFactory.createMethodWithContext(
-                  s,
-                  c.getContext,
-                  c)
+                val method =
+                  ScalaPsiElementFactory.createMethodWithContext(s, c.getContext, c)
                 method.setSynthetic(this)
                 method.syntheticCaseClass = Some(c)
                 res += method

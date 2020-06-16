@@ -388,8 +388,7 @@ class GoldSitesTestIT {
     val article = TestUtils.getArticle(url)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart =
-        "Opposition to a proposal to remove certain personal data")
+      expectedStart = "Opposition to a proposal to remove certain personal data")
 
   }
 

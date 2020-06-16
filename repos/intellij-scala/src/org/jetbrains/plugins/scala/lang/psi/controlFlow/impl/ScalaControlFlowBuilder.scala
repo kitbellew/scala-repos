@@ -78,9 +78,8 @@ class ScalaControlFlowBuilder(
   /**
     * Process a new node inside the CFG
     */
-  private def startNode(
-      element: Option[ScalaPsiElement],
-      checkPending: Boolean)(body: InstructionImpl => Unit) {
+  private def startNode(element: Option[ScalaPsiElement], checkPending: Boolean)(
+      body: InstructionImpl => Unit) {
     val instr = new InstructionImpl(inc, element)
     addNode(instr)
     body(instr)

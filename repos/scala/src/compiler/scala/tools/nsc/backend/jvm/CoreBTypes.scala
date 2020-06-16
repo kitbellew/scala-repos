@@ -107,8 +107,7 @@ class CoreBTypes[BTFS <: BTypesFromSymbols[_ <: Global]](val bTypes: BTFS) {
 
   lazy val ObjectRef: ClassBType = classBTypeFromSymbol(ObjectClass)
   lazy val StringRef: ClassBType = classBTypeFromSymbol(StringClass)
-  lazy val PredefRef: ClassBType = classBTypeFromSymbol(
-    PredefModule.moduleClass)
+  lazy val PredefRef: ClassBType = classBTypeFromSymbol(PredefModule.moduleClass)
   lazy val jlStringBuilderRef: ClassBType = classBTypeFromSymbol(
     JavaStringBuilderClass)
   lazy val jlStringBufferRef: ClassBType = classBTypeFromSymbol(

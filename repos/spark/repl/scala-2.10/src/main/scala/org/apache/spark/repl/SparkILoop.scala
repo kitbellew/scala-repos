@@ -353,11 +353,7 @@ class SparkILoop(
 
   /** Standard commands */
   private lazy val standardCommands = List(
-    cmd(
-      "cp",
-      "<path>",
-      "add a jar or directory to the classpath",
-      addClasspath),
+    cmd("cp", "<path>", "add a jar or directory to the classpath", addClasspath),
     cmd(
       "help",
       "[command]",
@@ -383,19 +379,13 @@ class SparkILoop(
       pasteCommand),
 //    nullary("power", "enable power user mode", powerCmd),
     nullary("quit", "exit the repl", () => Result(false, None)),
-    nullary(
-      "replay",
-      "reset execution and replay all previous commands",
-      replay),
+    nullary("replay", "reset execution and replay all previous commands", replay),
     nullary(
       "reset",
       "reset the repl to its initial state, forgetting all session entries",
       resetCommand),
     shCommand,
-    nullary(
-      "silent",
-      "disable/enable automatic printing of results",
-      verbosity),
+    nullary("silent", "disable/enable automatic printing of results", verbosity),
     nullary(
       "fallback",
       """
@@ -840,8 +830,7 @@ class SparkILoop(
       if (f.exists) {
         added = true
         addedClasspath = ClassPath.join(addedClasspath, f.path)
-        totalClasspath =
-          ClassPath.join(settings.classpath.value, addedClasspath)
+        totalClasspath = ClassPath.join(settings.classpath.value, addedClasspath)
         intp.addUrlsToClassPath(f.toURI.toURL)
         sparkContext.addJar(f.toURI.toURL.getPath)
       }
@@ -983,8 +972,7 @@ class SparkILoop(
     else if (!paste.running && code.trim.startsWith(PromptString)) {
       paste.transcript(code)
       None
-    } else if (Completion.looksLikeInvocation(
-        code) && intp.mostRecentVar != "") {
+    } else if (Completion.looksLikeInvocation(code) && intp.mostRecentVar != "") {
       interpretStartingWith(intp.mostRecentVar + code)
     } else if (code.trim startsWith "//") {
       // line comment, do nothing
@@ -1197,9 +1185,7 @@ object SparkILoop extends Logging {
   // Designed primarily for use by test code: take a String with a
   // bunch of code, and prints out a transcript of what it would look
   // like if you'd just typed it into the repl.
-  private[repl] def runForTranscript(
-      code: String,
-      settings: Settings): String = {
+  private[repl] def runForTranscript(code: String, settings: Settings): String = {
     import java.io.{BufferedReader, StringReader, OutputStreamWriter}
 
     stringFromStream { ostream =>

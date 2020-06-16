@@ -84,8 +84,8 @@ object SortPrefixUtils {
     if (schema.nonEmpty) {
       val boundReference =
         BoundReference(0, schema.head.dataType, nullable = true)
-      val prefixProjection = UnsafeProjection.create(
-        SortPrefix(SortOrder(boundReference, Ascending)))
+      val prefixProjection =
+        UnsafeProjection.create(SortPrefix(SortOrder(boundReference, Ascending)))
       new UnsafeExternalRowSorter.PrefixComputer {
         override def computePrefix(row: InternalRow): Long = {
           prefixProjection.apply(row).getLong(0)

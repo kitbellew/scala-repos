@@ -234,11 +234,7 @@ private[history] class ApplicationCache(
     */
   def lookupCacheEntry(appId: String, attemptId: Option[String]): CacheEntry = {
     val entry = lookupAndUpdate(appId, attemptId)._1
-    new CacheEntry(
-      entry.ui,
-      entry.completed,
-      entry.updateProbe,
-      entry.probeTime)
+    new CacheEntry(entry.ui, entry.completed, entry.updateProbe, entry.probeTime)
   }
 
   /**
@@ -297,9 +293,7 @@ private[history] class ApplicationCache(
     * @throws NoSuchElementException if there is no matching element
     */
   @throws[NoSuchElementException]
-  def loadApplicationEntry(
-      appId: String,
-      attemptId: Option[String]): CacheEntry = {
+  def loadApplicationEntry(appId: String, attemptId: Option[String]): CacheEntry = {
 
     logDebug(s"Loading application Entry $appId/$attemptId")
     metrics.loadCount.inc()
@@ -313,10 +307,7 @@ private[history] class ApplicationCache(
             operations.attachSparkUI(appId, attemptId, ui, completed)
           } else {
             // incomplete UIs have the cache-check filter put in front of them.
-            ApplicationCacheCheckFilterRelay.registerFilter(
-              ui,
-              appId,
-              attemptId)
+            ApplicationCacheCheckFilterRelay.registerFilter(ui, appId, attemptId)
             operations.attachSparkUI(appId, attemptId, ui, completed)
           }
           // build the cache entry
@@ -542,9 +533,7 @@ private[history] trait ApplicationCacheOperations {
   * Implementation note: there's some abuse of a shared global entry here because
   * the configuration data passed to the servlet is just a string:string map.
   */
-private[history] class ApplicationCacheCheckFilter()
-    extends Filter
-    with Logging {
+private[history] class ApplicationCacheCheckFilter() extends Filter with Logging {
 
   import ApplicationCacheCheckFilterRelay._
   var appId: String = _
@@ -649,8 +638,7 @@ private[history] object ApplicationCacheCheckFilterRelay extends Logging {
     * @param cache new cache
     */
   def setApplicationCache(cache: ApplicationCache): Unit = {
-    applicationCache.foreach(c =>
-      logWarning(s"Overwriting application cache $c"))
+    applicationCache.foreach(c => logWarning(s"Overwriting application cache $c"))
     applicationCache = Some(cache)
   }
 

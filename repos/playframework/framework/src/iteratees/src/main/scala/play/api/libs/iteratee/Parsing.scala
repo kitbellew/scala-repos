@@ -41,8 +41,7 @@ object Parsing {
         Iteratee.flatten(
           inner.fold1(
             (a, e) =>
-              Future.successful(
-                Done(Done(a, e), Input.Empty: Input[Array[Byte]])),
+              Future.successful(Done(Done(a, e), Input.Empty: Input[Array[Byte]])),
             k => Future.successful(Cont(step(Array[Byte](), Cont(k)))),
             (err, r) => throw new Exception()
           )(dec))
@@ -79,9 +78,8 @@ object Parsing {
         }
       }
 
-      def step[A](
-          rest: Array[Byte],
-          inner: Iteratee[MatchInfo[Array[Byte]], A])(in: Input[Array[Byte]])
+      def step[A](rest: Array[Byte], inner: Iteratee[MatchInfo[Array[Byte]], A])(
+          in: Input[Array[Byte]])
           : Iteratee[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]] = {
 
         in match {
@@ -97,8 +95,7 @@ object Parsing {
 
             Iteratee.flatten(
               inner.fold1(
-                (a, e) =>
-                  Future.successful(Done(Done(a, e), inputOrEmpty(rest))),
+                (a, e) => Future.successful(Done(Done(a, e), inputOrEmpty(rest))),
                 k => {
                   val (result, suffix) = scan(Nil, all, 0)
                   val fed = result
@@ -107,9 +104,7 @@ object Parsing {
                       (p, m) =>
                         p.flatMap(i =>
                           i._2.fold1(
-                            (a, e) =>
-                              Future.successful(
-                                (i._1 ++ m.content, Done(a, e))),
+                            (a, e) => Future.successful((i._1 ++ m.content, Done(a, e))),
                             k => Future.successful((i._1, k(Input.El(m)))),
                             (err, e) => throw new Exception())(dec))(dec)
                     }
@@ -121,9 +116,7 @@ object Parsing {
                             Done(Done(a, e), inputOrEmpty(ss ++ suffix))),
                         k =>
                           Future.successful(
-                            Cont[
-                              Array[Byte],
-                              Iteratee[MatchInfo[Array[Byte]], A]](
+                            Cont[Array[Byte], Iteratee[MatchInfo[Array[Byte]], A]](
                               (in: Input[Array[Byte]]) =>
                                 in match {
                                   case Input.EOF =>

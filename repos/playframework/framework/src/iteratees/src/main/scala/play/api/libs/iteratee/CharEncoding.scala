@@ -24,9 +24,7 @@ object CharEncoding {
 
     protected def empty: From
 
-    protected def code(
-        data: From,
-        last: Boolean): Either[CoderResult, (To, From)]
+    protected def code(data: From, last: Boolean): Either[CoderResult, (To, From)]
 
     protected def concat(a: From, b: From): From
 

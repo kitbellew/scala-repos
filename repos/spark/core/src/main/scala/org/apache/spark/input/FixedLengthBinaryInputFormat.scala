@@ -91,9 +91,7 @@ private[spark] class FixedLengthBinaryInputFormat
   /**
     * Create a FixedLengthBinaryRecordReader
     */
-  override def createRecordReader(
-      split: InputSplit,
-      context: TaskAttemptContext)
+  override def createRecordReader(split: InputSplit, context: TaskAttemptContext)
       : RecordReader[LongWritable, BytesWritable] = {
     new FixedLengthBinaryRecordReader
   }

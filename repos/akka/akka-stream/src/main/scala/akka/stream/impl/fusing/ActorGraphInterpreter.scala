@@ -367,8 +367,7 @@ private[stream] object ActorGraphInterpreter {
     def cancel(): Unit = {
       downstreamCompleted = true
       subscriber = null
-      exposedPublisher.shutdown(
-        Some(new ActorPublisher.NormalShutdownException))
+      exposedPublisher.shutdown(Some(new ActorPublisher.NormalShutdownException))
       cancel(in)
     }
 

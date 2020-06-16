@@ -59,8 +59,7 @@ class MigrationTo0_16Test
 
     def appProtoInNewFormatAsserts(proto: Protos.ServiceDefinition) = {
       assert(
-        Seq(1000, 1001) == proto.getPortDefinitionsList.asScala.map(
-          _.getNumber),
+        Seq(1000, 1001) == proto.getPortDefinitionsList.asScala.map(_.getNumber),
         proto.toString)
       assert(proto.getPortsCount == 0)
     }

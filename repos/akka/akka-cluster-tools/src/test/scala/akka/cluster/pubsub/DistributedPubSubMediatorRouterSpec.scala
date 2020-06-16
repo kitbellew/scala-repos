@@ -42,10 +42,7 @@ trait DistributedPubSubMediatorRouterSpec {
 
       mediator ! DistributedPubSubMediator.Put(testActor)
 
-      mediator ! DistributedPubSubMediator.Send(
-        path,
-        msg,
-        localAffinity = false)
+      mediator ! DistributedPubSubMediator.Send(path, msg, localAffinity = false)
       expectMsg(msg)
 
       mediator ! DistributedPubSubMediator.Remove(path)

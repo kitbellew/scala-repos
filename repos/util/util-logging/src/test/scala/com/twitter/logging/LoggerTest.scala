@@ -414,10 +414,7 @@ class LoggerTest extends WordSpec with TempFolder with BeforeAndAfter {
 
       "varargs calls" in {
         before()
-        logger.log(
-          javalog.Level.INFO,
-          "V1={0}, V2={1}",
-          Array[AnyRef]("A", "B"))
+        logger.log(javalog.Level.INFO, "V1={0}, V2={1}", Array[AnyRef]("A", "B"))
         mustLog("V1=A, V2=B")
       }
 

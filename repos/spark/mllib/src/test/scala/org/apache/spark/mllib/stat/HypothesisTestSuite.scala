@@ -101,8 +101,7 @@ class HypothesisTestSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(chi.degreesOfFreedom === 6)
     assert(chi.pValue ~== 0.001213 relTol 1e-4)
     assert(chi.method === ChiSqTest.PEARSON.name)
-    assert(
-      chi.nullHypothesis === ChiSqTest.NullHypothesis.independence.toString)
+    assert(chi.nullHypothesis === ChiSqTest.NullHypothesis.independence.toString)
 
     // Negative counts
     val negCounts = Array(4.0, 5.0, 3.0, -3.0)

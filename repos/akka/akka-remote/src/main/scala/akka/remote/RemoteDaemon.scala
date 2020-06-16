@@ -136,10 +136,8 @@ private[akka] class RemoteSystemDaemon(
 
   override def sendSystemMessage(message: SystemMessage): Unit =
     message match {
-      case DeathWatchNotification(
-            child: ActorRefWithCell with ActorRefScope,
-            _,
-            _) if child.isLocal ⇒
+      case DeathWatchNotification(child: ActorRefWithCell with ActorRefScope, _, _)
+          if child.isLocal ⇒
         terminating.locked {
           removeChild(child.path.elements.drop(1).mkString("/"), child)
           val parent = child.getParent

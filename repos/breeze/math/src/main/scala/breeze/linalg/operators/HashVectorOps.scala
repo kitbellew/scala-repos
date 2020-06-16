@@ -174,8 +174,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpAdd, OpSub) Op <: OpType](implicit
       @expand.sequence[Op]({ _ + _ }, { _ - _ })
-      op: Op.Impl2[T, T, T])
-      : Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] =
+      op: Op.Impl2[T, T, T]): Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): HashVector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -209,8 +208,7 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpDiv, OpSet, OpMod, OpPow) Op <: OpType](implicit
       @expand.sequence[Op]({ _ / _ }, { (a, b) => b }, { _ % _ }, { _ pow _ })
-      op: Op.Impl2[T, T, T])
-      : Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] =
+      op: Op.Impl2[T, T, T]): Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] =
     new Op.Impl2[HashVector[T], HashVector[T], HashVector[T]] {
       def apply(a: HashVector[T], b: HashVector[T]): HashVector[T] = {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -341,20 +339,19 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   @expand
   implicit def hv_s_UpdateOp[
       @expand.args(Int, Double, Float, Long) T,
-      @expand.args(
-        OpAdd,
-        OpSub,
-        OpMulScalar,
-        OpDiv,
-        OpSet,
-        OpMod) Op <: OpType](implicit
+      @expand.args(OpAdd, OpSub, OpMulScalar, OpDiv, OpSet, OpMod) Op <: OpType](
+      implicit
       @expand.sequence[Op](
-        { _ + _ },
-        { _ - _ },
-        { _ * _ },
-        { _ / _ },
-        { (a, b) => b },
-        { _ % _ })
+        { _ + _ }, {
+          _ - _
+        }, {
+          _ * _
+        }, {
+          _ / _
+        },
+        { (a, b) => b }, {
+          _ % _
+        })
       op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[HashVector[T], T] =
     new Op.InPlaceImpl2[HashVector[T], T] {
       def apply(a: HashVector[T], b: T): Unit = {
@@ -369,14 +366,8 @@ trait HashVectorOps extends HashVector_GenericOps { this: HashVector.type =>
   @expand
   implicit def canDot_HV_HV[@expand.args(Int, Long, Double, Float) T](implicit
       @expand.sequence[T](0, 0L, 0.0, 0f) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        HashVector[T],
-        HashVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      HashVector[T],
-      HashVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], HashVector[T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], HashVector[T], T] {
       def apply(a: HashVector[T], b: HashVector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
 
@@ -533,14 +524,8 @@ trait HashVector_SparseVector_Ops extends HashVectorOps {
   @expand
   implicit def canDot_HV_SV[@expand.args(Int, Long, Float, Double) T](implicit
       @expand.sequence[T](0, 0L, 0f, 0.0) zero: T)
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        HashVector[T],
-        SparseVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      HashVector[T],
-      SparseVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], SparseVector[T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[HashVector[T], SparseVector[T], T] {
       def apply(a: HashVector[T], b: SparseVector[T]) = {
         require(b.length == a.length, "Vectors must be the same length!")
         var result: T = zero
@@ -656,14 +641,8 @@ trait SparseVector_HashVector_Ops
 
   implicit def canDot_SV_HV[T](implicit
       op: OpMulInner.Impl2[HashVector[T], SparseVector[T], T])
-      : breeze.linalg.operators.OpMulInner.Impl2[
-        SparseVector[T],
-        HashVector[T],
-        T] = {
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      SparseVector[T],
-      HashVector[T],
-      T] {
+      : breeze.linalg.operators.OpMulInner.Impl2[SparseVector[T], HashVector[T], T] = {
+    new breeze.linalg.operators.OpMulInner.Impl2[SparseVector[T], HashVector[T], T] {
       def apply(a: SparseVector[T], b: HashVector[T]) = {
         b dot a
       }
@@ -740,8 +719,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
     }
   }
 
-  implicit def canSet_HV_HV_Generic[V]
-      : OpSet.InPlaceImpl2[HashVector[V], Vector[V]] = {
+  implicit def canSet_HV_HV_Generic[V]: OpSet.InPlaceImpl2[HashVector[V], Vector[V]] = {
     new OpSet.InPlaceImpl2[HashVector[V], Vector[V]] {
       def apply(a: HashVector[V], b: Vector[V]) {
         require(b.length == a.length, "Vectors must be the same length!")
@@ -786,10 +764,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
       result
     }
 
-    def mapActive(
-        from: HashVector[V],
-        from2: HashVector[V],
-        fn: (V, V) => RV) = {
+    def mapActive(from: HashVector[V], from2: HashVector[V], fn: (V, V) => RV) = {
       map(from, from2, fn)
     }
 
@@ -867,8 +842,9 @@ trait HashVector_GenericOps { this: HashVector.type =>
 
   }
 
-  implicit def vMulIntoField[T](implicit field: Field[T], ct: ClassTag[T])
-      : OpMulScalar.InPlaceImpl2[HashVector[T], HashVector[T]] = {
+  implicit def vMulIntoField[T](implicit
+      field: Field[T],
+      ct: ClassTag[T]): OpMulScalar.InPlaceImpl2[HashVector[T], HashVector[T]] = {
     new OpMulScalar.InPlaceImpl2[HashVector[T], HashVector[T]] {
       override def apply(v: HashVector[T], v2: HashVector[T]) = {
         for (i <- 0 until v.length) v(i) = field.*(v(i), v2(i))
@@ -993,8 +969,7 @@ trait HashVector_GenericOps { this: HashVector.type =>
   def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
       copy: CanCopy[HashVector[V]],
       op: UFunc.InPlaceImpl2[Op, HashVector[V], Other],
-      man: ClassTag[V])
-      : UFunc.UImpl2[Op, HashVector[V], Other, HashVector[V]] = {
+      man: ClassTag[V]): UFunc.UImpl2[Op, HashVector[V], Other, HashVector[V]] = {
     new UFunc.UImpl2[Op, HashVector[V], Other, HashVector[V]] {
       override def apply(a: HashVector[V], b: Other): HashVector[V] = {
         val c = copy(a)
@@ -1020,8 +995,8 @@ trait HashVector_GenericOps { this: HashVector.type =>
   }
 
   /** Returns the k-norm of this HashVector. */
-  implicit def canNorm[T](implicit canNormS: norm.Impl[T, Double])
-      : norm.Impl2[HashVector[T], Double, Double] = {
+  implicit def canNorm[T](implicit
+      canNormS: norm.Impl[T, Double]): norm.Impl2[HashVector[T], Double, Double] = {
 
     new norm.Impl2[HashVector[T], Double, Double] {
       def apply(v: HashVector[T], n: Double): Double = {

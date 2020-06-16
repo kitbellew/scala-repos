@@ -29,8 +29,7 @@ import org.apache.spark.scheduler.cluster.mesos.{
 }
 import org.apache.spark.ui.{UIUtils, WebUIPage}
 
-private[ui] class DriverPage(parent: MesosClusterUI)
-    extends WebUIPage("driver") {
+private[ui] class DriverPage(parent: MesosClusterUI) extends WebUIPage("driver") {
 
   override def render(request: HttpServletRequest): Seq[Node] = {
     val driverId = request.getParameter("id")

@@ -48,8 +48,7 @@ package processtest {
             IO.transfer(file, System.out)
             catFiles(tail)
           } else
-            throw new FileNotFoundException(
-              "No such file or directory: " + file)
+            throw new FileNotFoundException("No such file or directory: " + file)
         case Nil => None
       }
   }

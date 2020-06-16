@@ -293,11 +293,7 @@ class SessionCatalog(externalCatalog: ExternalCatalog) {
       parts: Seq[TablePartitionSpec],
       ignoreIfNotExists: Boolean): Unit = {
     val db = tableName.database.getOrElse(currentDb)
-    externalCatalog.dropPartitions(
-      db,
-      tableName.table,
-      parts,
-      ignoreIfNotExists)
+    externalCatalog.dropPartitions(db, tableName.table, parts, ignoreIfNotExists)
   }
 
   /**

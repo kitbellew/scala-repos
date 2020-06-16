@@ -106,9 +106,7 @@ object ReplayLogProducer extends Logging {
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(1)
     val reportingIntervalOpt = parser
-      .accepts(
-        "reporting-interval",
-        "Interval at which to print progress info.")
+      .accepts("reporting-interval", "Interval at which to print progress info.")
       .withRequiredArg
       .describedAs("size")
       .ofType(classOf[java.lang.Integer])

@@ -592,10 +592,7 @@ trait ScExpression
       fromUnderscore = fromUnderscore)
   }
 
-  @CachedMappedWithRecursionGuard(
-    this,
-    None,
-    ModCount.getBlockModificationCount)
+  @CachedMappedWithRecursionGuard(this, None, ModCount.getBlockModificationCount)
   def smartExpectedType(fromUnderscore: Boolean = true): Option[ScType] =
     ExpectedTypes.smartExpectedType(ScExpression.this, fromUnderscore)
 
@@ -744,10 +741,7 @@ trait ScExpression
                 state.put(ScImplicitlyConvertible.IMPLICIT_RESOLUTION_KEY, cl)
             case _ =>
           }
-          applyProc.processType(
-            res.getTypeWithDependentSubstitutor,
-            expr,
-            state)
+          applyProc.processType(res.getTypeWithDependentSubstitutor, expr, state)
           cand = applyProc.candidates
         case _ =>
       }

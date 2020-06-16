@@ -361,8 +361,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(YearsBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -380,8 +379,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MonthsBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -400,8 +398,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(WeeksBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -420,8 +417,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(DaysBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -440,8 +436,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(HoursBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -461,8 +456,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MinutesBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -482,8 +476,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(SecondsBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -504,8 +497,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MillisBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -530,8 +522,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(YearsBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -549,8 +540,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MonthsBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -568,8 +558,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(WeeksBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -587,8 +576,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(DaysBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -606,8 +594,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(HoursBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -626,8 +613,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MinutesBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -646,8 +632,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(SecondsBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 
@@ -666,8 +651,7 @@ trait TimeDifferenceSpecs[M[+_]]
       val input = Join(
         BuiltInFunction2Op(MillisBetween),
         Cross(None),
-        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/iso8601AcrossSlices"))(line))(line),
         Const(CString("2010-09-23T18:33:22.520-10:00"))(line)
       )(line)
 

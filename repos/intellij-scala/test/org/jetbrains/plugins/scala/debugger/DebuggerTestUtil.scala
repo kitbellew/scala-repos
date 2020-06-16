@@ -82,8 +82,7 @@ object DebuggerTestUtil {
           _.listFiles()
             .sortBy(_.getName)
             .reverse
-            .find(f =>
-              f.getName.contains(suffix) && isJDK(new File(f, postfix)))
+            .find(f => f.getName.contains(suffix) && isJDK(new File(f, postfix)))
             .map(new File(_, s"$postfix/jre").getAbsolutePath))
     }
     def currentJava() = {

@@ -34,8 +34,7 @@ class StripNameTest extends FunSuite {
       .name("sumByKey")
 
     val deps = Dependants(graph)
-    assert(
-      deps.namesOf(src).map(_.id).toSet == Set("source", "map", "sumByKey"))
+    assert(deps.namesOf(src).map(_.id).toSet == Set("source", "map", "sumByKey"))
     assert(deps.namesOf(mapped).map(_.id).toSet == Set("map", "sumByKey"))
     assert(deps.namesOf(summed).map(_.id).toSet == Set("sumByKey"))
 

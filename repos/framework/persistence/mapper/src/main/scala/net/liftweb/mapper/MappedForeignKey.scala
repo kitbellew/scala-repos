@@ -285,9 +285,7 @@ abstract class MappedLongForeignKey[T <: Mapper[T], O <: KeyedMapper[Long, O]](
 
 }
 
-abstract class MappedStringForeignKey[
-    T <: Mapper[T],
-    O <: KeyedMapper[String, O]](
+abstract class MappedStringForeignKey[T <: Mapper[T], O <: KeyedMapper[String, O]](
     override val fieldOwner: T,
     foreign: => KeyedMetaMapper[String, O],
     override val maxLen: Int)

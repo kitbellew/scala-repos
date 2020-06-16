@@ -467,9 +467,7 @@ sealed abstract class LongMap[+T]
     * @param f       The combining function.
     * @return        Intersection of `this` and `that`, with values for identical keys produced by function `f`.
     */
-  def intersectionWith[S, R](
-      that: LongMap[S],
-      f: (Long, T, S) => R): LongMap[R] =
+  def intersectionWith[S, R](that: LongMap[S], f: (Long, T, S) => R): LongMap[R] =
     (this, that) match {
       case (LongMap.Bin(p1, m1, l1, r1), that @ LongMap.Bin(p2, m2, l2, r2)) =>
         if (shorter(m1, m2)) {

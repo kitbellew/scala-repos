@@ -18,9 +18,7 @@ package javaguide.testhelpers {
   import play.api.test.Helpers
   import java.lang.reflect.Method
 
-  abstract class MockJavaAction
-      extends Controller
-      with Action[Http.RequestBody] {
+  abstract class MockJavaAction extends Controller with Action[Http.RequestBody] {
     self =>
 
     private lazy val components = new DefaultJavaHandlerComponents(

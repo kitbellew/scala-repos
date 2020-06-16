@@ -142,8 +142,7 @@ object ScalaGenerationInfo {
       case e: ScBlockExpr =>
         val statements = e.statements
         if (statements.length == 0) {
-          editor.getCaretModel.moveToOffset(
-            body.getTextRange.getStartOffset + 1)
+          editor.getCaretModel.moveToOffset(body.getTextRange.getStartOffset + 1)
         } else {
           val range = new TextRange(
             statements(0).getTextRange.getStartOffset,
@@ -162,9 +161,7 @@ object ScalaGenerationInfo {
     }
   }
 
-  private def callSuperText(
-      td: ScTemplateDefinition,
-      method: PsiMethod): String = {
+  private def callSuperText(td: ScTemplateDefinition, method: PsiMethod): String = {
     val superOrSelfQual: String = td.selfType match {
       case None => "super."
       case Some(st: ScType) =>

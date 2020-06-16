@@ -227,8 +227,7 @@ object TLSProtocol {
     def withParameters(p: SSLParameters) = copy(sslParameters = Some(p))
   }
 
-  object NegotiateNewSession
-      extends NegotiateNewSession(None, None, None, None) {
+  object NegotiateNewSession extends NegotiateNewSession(None, None, None, None) {
 
     /**
       * Java API: obtain the default value (which will leave the SSLEngine’s

@@ -439,9 +439,7 @@ class InterpreterSupervisionSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "fail when onPull throws before pushing all generated elements" in {
-      def test(
-          decider: Supervision.Decider,
-          absorbTermination: Boolean): Unit = {
+      def test(decider: Supervision.Decider, absorbTermination: Boolean): Unit = {
         new OneBoundedSetup[Int](
           Seq(OneToManyTestStage(decider, absorbTermination))) {
 

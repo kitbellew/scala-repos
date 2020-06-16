@@ -114,9 +114,7 @@ class ConsumerIntegrationTest
       camel.routeCount should be > (0)
 
       system.stop(consumer)
-      Await.result(
-        camel.deactivationFutureFor(consumer),
-        defaultTimeoutDuration)
+      Await.result(camel.deactivationFutureFor(consumer), defaultTimeoutDuration)
 
       camel.routeCount should ===(0)
     }
@@ -128,9 +126,7 @@ class ConsumerIntegrationTest
       camel.routeCount should be > (0)
       camel.routes.get(0).getEndpoint.getEndpointUri should ===("direct://test")
       system.stop(consumer)
-      Await.result(
-        camel.deactivationFutureFor(consumer),
-        defaultTimeoutDuration)
+      Await.result(camel.deactivationFutureFor(consumer), defaultTimeoutDuration)
       camel.routeCount should ===(0)
       stop(consumer)
     }
@@ -245,8 +241,7 @@ class ErrorThrowingConsumer(override val endpointUri: String) extends Consumer {
   }
 }
 
-class ErrorRespondingConsumer(override val endpointUri: String)
-    extends Consumer {
+class ErrorRespondingConsumer(override val endpointUri: String) extends Consumer {
   def receive = {
     case msg: CamelMessage ⇒ throw new TestException("Error!")
   }

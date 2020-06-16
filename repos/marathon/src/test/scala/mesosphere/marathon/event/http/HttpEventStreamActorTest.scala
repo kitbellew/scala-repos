@@ -66,8 +66,7 @@ class HttpEventStreamActorTest
     Given("A handler that wants to connect")
     val handle = mock[HttpEventStreamHandle]("handle")
 
-    When(
-      "A connection open message is sent to the stream actor in standby mode")
+    When("A connection open message is sent to the stream actor in standby mode")
     streamActor ! HttpEventStreamConnectionOpen(handle)
 
     Then("The connection is immediately closed without creating an actor")

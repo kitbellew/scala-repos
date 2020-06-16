@@ -136,9 +136,7 @@ object BigInteger {
   }
 
   @inline
-  private[math] final class QuotAndRem(
-      val quot: BigInteger,
-      val rem: BigInteger) {
+  private[math] final class QuotAndRem(val quot: BigInteger, val rem: BigInteger) {
     def toArray(): Array[BigInteger] = Array[BigInteger](quot, rem)
   }
 }
@@ -385,11 +383,7 @@ class BigInteger extends Number with Comparable[BigInteger] {
           val resDigits = new Array[Int](resLength)
           val resSign = if (thisSign == divisorSign) 1 else -1
           if (divisorLen == 1) {
-            Division.divideArrayByInt(
-              resDigits,
-              digits,
-              thisLen,
-              divisor.digits(0))
+            Division.divideArrayByInt(resDigits, digits, thisLen, divisor.digits(0))
           } else {
             Division.divide(
               resDigits,

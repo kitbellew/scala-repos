@@ -112,10 +112,7 @@ object MultilineStringUtil {
       case _ => true
     }
 
-  def insertStripMargin(
-      document: Document,
-      literal: ScLiteral,
-      marginChar: Char) {
+  def insertStripMargin(document: Document, literal: ScLiteral, marginChar: Char) {
     if (needAddStripMargin(literal, "" + marginChar)) {
       document.insertString(
         literal.getTextRange.getEndOffset,

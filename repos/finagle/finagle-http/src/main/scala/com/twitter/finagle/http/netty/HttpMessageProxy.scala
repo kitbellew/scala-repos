@@ -1,11 +1,7 @@
 package com.twitter.finagle.http.netty
 
 import org.jboss.netty.buffer.ChannelBuffer
-import org.jboss.netty.handler.codec.http.{
-  HttpHeaders,
-  HttpMessage,
-  HttpVersion
-}
+import org.jboss.netty.handler.codec.http.{HttpHeaders, HttpMessage, HttpVersion}
 
 /** Proxy for HttpMessage.  Used by Request and Response. */
 private[finagle] trait HttpMessageProxy extends Proxy {

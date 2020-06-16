@@ -41,9 +41,7 @@ import scala.collection.{Set, mutable}
   * Date: 22.02.2008
   */
 
-trait ScReferenceElement
-    extends ScalaPsiElement
-    with ResolvableReferenceElement {
+trait ScReferenceElement extends ScalaPsiElement with ResolvableReferenceElement {
   override def getReference = this
 
   def nameId: PsiElement

@@ -219,9 +219,7 @@ abstract class MappedTime[T <: Mapper[T]](val fieldOwner: T)
     (inst, v) =>
       doField(inst, accessor, { case f: MappedTime[T] => f.st(toDate(v)) })
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(inst, accessor, { case f: MappedTime[T] => f.st(Full(v)) })
 

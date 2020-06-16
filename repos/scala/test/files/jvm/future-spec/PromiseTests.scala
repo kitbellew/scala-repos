@@ -37,9 +37,7 @@ class PromiseTests extends MinimalScalaTest {
       Await.result(
         failure fallbackTo timedOut,
         defaultTimeout) mustBe ("Timedout")
-      Await.result(
-        timedOut fallbackTo empty,
-        defaultTimeout) mustBe ("Timedout")
+      Await.result(timedOut fallbackTo empty, defaultTimeout) mustBe ("Timedout")
       Await.result(
         otherFailure fallbackTo failure fallbackTo timedOut,
         defaultTimeout) mustBe ("Timedout")
@@ -119,8 +117,7 @@ class PromiseTests extends MinimalScalaTest {
       }
       {
         val p = Promise[String]().failure(new RuntimeException("unbr0ken"))
-        p.completeWith(
-          Promise[String]().failure(new Exception("br0ken")).future)
+        p.completeWith(Promise[String]().failure(new Exception("br0ken")).future)
         intercept[RuntimeException] {
           Await.result(p.future, defaultTimeout)
         }.getMessage mustBe ("unbr0ken")
@@ -158,17 +155,14 @@ class PromiseTests extends MinimalScalaTest {
     }
 
     "return result with 'Await.result'" in {
-      f((future, result) =>
-        Await.result(future, defaultTimeout) mustBe (result))
+      f((future, result) => Await.result(future, defaultTimeout) mustBe (result))
     }
 
     "not timeout" in { f((future, _) => Await.ready(future, 0 millis)) }
 
     "filter result" in {
       f { (future, result) =>
-        Await.result(
-          (future filter (_ => true)),
-          defaultTimeout) mustBe (result)
+        Await.result((future filter (_ => true)), defaultTimeout) mustBe (result)
         intercept[NoSuchElementException] {
           Await.result((future filter (_ => false)), defaultTimeout)
         }

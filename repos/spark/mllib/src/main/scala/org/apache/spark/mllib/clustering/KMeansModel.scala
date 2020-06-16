@@ -89,8 +89,7 @@ class KMeansModel @Since("1.1.0") (
     val centersWithNorm = clusterCentersWithNorm
     val bcCentersWithNorm = data.context.broadcast(centersWithNorm)
     data
-      .map(p =>
-        KMeans.pointCost(bcCentersWithNorm.value, new VectorWithNorm(p)))
+      .map(p => KMeans.pointCost(bcCentersWithNorm.value, new VectorWithNorm(p)))
       .sum()
   }
 

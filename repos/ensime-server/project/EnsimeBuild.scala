@@ -99,19 +99,18 @@ object EnsimeBuild extends Build {
   )
 
   // the JSON protocol
-  lazy val jerky = Project(
-    "jerky",
-    file("protocol-jerky")) settings (commonSettings) dependsOn (
-    util,
-    api,
-    testutil % "test",
-    api % "test->test" // for the test data
-  ) settings (
-    libraryDependencies ++= Seq(
-      "com.github.fommil" %% "spray-json-shapeless" % "1.2.0",
-      "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion
-    ) ++ Sensible.shapeless(scalaVersion.value)
-  )
+  lazy val jerky =
+    Project("jerky", file("protocol-jerky")) settings (commonSettings) dependsOn (
+      util,
+      api,
+      testutil % "test",
+      api % "test->test" // for the test data
+    ) settings (
+      libraryDependencies ++= Seq(
+        "com.github.fommil" %% "spray-json-shapeless" % "1.2.0",
+        "com.typesafe.akka" %% "akka-slf4j" % Sensible.akkaVersion
+      ) ++ Sensible.shapeless(scalaVersion.value)
+    )
 
   // the S-Exp protocol
   lazy val swanky = Project(
@@ -172,8 +171,7 @@ object EnsimeBuild extends Build {
         "org.scala-refactoring" %% "org.scala-refactoring.library" % "0.9.1-SNAPSHOT",
         "commons-lang" % "commons-lang" % "2.6",
         "com.googlecode.java-diff-utils" % "diffutils" % "1.3.0"
-      ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(
-        scalaVersion.value)
+      ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(scalaVersion.value)
     ) enablePlugins BuildInfoPlugin settings (
     buildInfoPackage := organization.value,
     buildInfoKeys += BuildInfoKey.action("gitSha")(
@@ -208,8 +206,7 @@ object EnsimeBuild extends Build {
         "com.typesafe.akka" %% "akka-http-spray-json-experimental" % streamsVersion,
         "com.typesafe.akka" %% "akka-http-xml-experimental" % streamsVersion,
         "com.typesafe.akka" %% "akka-http-testkit-experimental" % streamsVersion % "test,it"
-      ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(
-        scalaVersion.value)
+      ) ++ Sensible.testLibs("it,test") ++ Sensible.shapeless(scalaVersion.value)
     )
 
   // testing modules
@@ -260,33 +257,32 @@ object EnsimeBuild extends Build {
   )
 
   // manual root project so we can exclude the testing projects from publication
-  lazy val root = Project(
-    id = "ensime",
-    base = file(".")) settings (commonSettings) aggregate (
-    api, monkeys, util, testutil, s_express, jerky, swanky, core, server
-  ) dependsOn (server) settings (
-    // e.g. `sbt ++2.11.8 ensime/assembly`
-    test in assembly := {},
-    aggregate in assembly := false,
-    assemblyMergeStrategy in assembly := {
-      case PathList("META-INF", "namedservices", xs @ _*) =>
-        MergeStrategy.filterDistinctLines
-      case "META-INF/netbeans/translate.names" =>
-        MergeStrategy.filterDistinctLines
-      case "META-INF/namedservices.index" => MergeStrategy.filterDistinctLines
-      case "META-INF/generated-layer.xml" => MergeStrategy.rename
-      case PathList("org", "apache", "commons", "vfs2", xs @ _*) =>
-        MergeStrategy.first // assumes our classpath is setup correctly
-      case other => MergeStrategy.defaultMergeStrategy(other)
-    },
-    assemblyExcludedJars in assembly <<= (fullClasspath in assembly).map {
-      everything =>
-        everything.filter { attr =>
-          val n = attr.data.getName
-          n.startsWith("scala-library") | n.startsWith("scala-compiler") |
-            n.startsWith("scala-reflect") | n.startsWith("scalap")
-        } :+ Attributed.blank(JavaTools)
-    },
-    assemblyJarName in assembly := s"ensime_${scalaBinaryVersion.value}-${version.value}-assembly.jar"
+  lazy val root =
+    Project(id = "ensime", base = file(".")) settings (commonSettings) aggregate (
+      api, monkeys, util, testutil, s_express, jerky, swanky, core, server
+    ) dependsOn (server) settings (
+      // e.g. `sbt ++2.11.8 ensime/assembly`
+      test in assembly := {},
+      aggregate in assembly := false,
+      assemblyMergeStrategy in assembly := {
+        case PathList("META-INF", "namedservices", xs @ _*) =>
+          MergeStrategy.filterDistinctLines
+        case "META-INF/netbeans/translate.names" =>
+          MergeStrategy.filterDistinctLines
+        case "META-INF/namedservices.index" => MergeStrategy.filterDistinctLines
+        case "META-INF/generated-layer.xml" => MergeStrategy.rename
+        case PathList("org", "apache", "commons", "vfs2", xs @ _*) =>
+          MergeStrategy.first // assumes our classpath is setup correctly
+        case other => MergeStrategy.defaultMergeStrategy(other)
+      },
+      assemblyExcludedJars in assembly <<= (fullClasspath in assembly).map {
+        everything =>
+          everything.filter { attr =>
+            val n = attr.data.getName
+            n.startsWith("scala-library") | n.startsWith("scala-compiler") |
+              n.startsWith("scala-reflect") | n.startsWith("scalap")
+          } :+ Attributed.blank(JavaTools)
+      },
+      assemblyJarName in assembly := s"ensime_${scalaBinaryVersion.value}-${version.value}-assembly.jar"
   )
 }

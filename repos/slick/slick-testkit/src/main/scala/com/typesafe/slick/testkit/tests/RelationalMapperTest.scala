@@ -99,9 +99,7 @@ class RelationalMapperTest extends AsyncTest[RelationalTestDB] {
         .to[Set]
         .result
         .map(
-          _ shouldBe Set(
-            (1, EnumValue1, None),
-            (2, EnumValue1, Some(EnumValue2)))),
+          _ shouldBe Set((1, EnumValue1, None), (2, EnumValue1, Some(EnumValue2)))),
       ts.filter(_.b === (EnumValue2: EnumType))
         .to[Set]
         .result

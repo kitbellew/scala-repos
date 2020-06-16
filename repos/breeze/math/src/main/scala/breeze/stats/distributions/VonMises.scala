@@ -74,8 +74,7 @@ case class VonMises(mu: Double, k: Double)(implicit rand: RandBasis = Rand)
 object VonMises extends ExponentialFamily[VonMises, Double] {
   type Parameter = (Double, Double)
   case class SufficientStatistic(n: Double, sines: Double, cosines: Double)
-      extends breeze.stats.distributions.SufficientStatistic[
-        SufficientStatistic] {
+      extends breeze.stats.distributions.SufficientStatistic[SufficientStatistic] {
     def +(t: SufficientStatistic) =
       new SufficientStatistic(n + t.n, sines + t.sines, cosines + t.cosines)
 

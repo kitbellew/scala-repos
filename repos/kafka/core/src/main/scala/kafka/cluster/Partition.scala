@@ -458,9 +458,7 @@ class Partition(
       tryCompleteDelayedRequests()
   }
 
-  def getOutOfSyncReplicas(
-      leaderReplica: Replica,
-      maxLagMs: Long): Set[Replica] = {
+  def getOutOfSyncReplicas(leaderReplica: Replica, maxLagMs: Long): Set[Replica] = {
 
     /**
       * there are two cases that will be handled here -

@@ -28,9 +28,7 @@ class ChangesConfirmationDialog private (
     val project: IJProject,
     private val changes: List[BuildFileChange],
     var myChangesBrowser: BuildFileChangeBrowser,
-    val fileStatusMap: mutable.Map[
-      VirtualFile,
-      (BuildFileModifiedStatus, Long)],
+    val fileStatusMap: mutable.Map[VirtualFile, (BuildFileModifiedStatus, Long)],
     val canExcludeChanges: Boolean = false)
     extends DialogWrapper(project) {
 

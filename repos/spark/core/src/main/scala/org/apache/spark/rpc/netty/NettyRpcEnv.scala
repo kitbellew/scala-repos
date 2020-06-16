@@ -61,8 +61,7 @@ private[netty] class NettyRpcEnv(
     transportConf,
     new NettyRpcHandler(dispatcher, this, streamManager))
 
-  private def createClientBootstraps()
-      : java.util.List[TransportClientBootstrap] = {
+  private def createClientBootstraps(): java.util.List[TransportClientBootstrap] = {
     if (securityManager.isAuthenticationEnabled()) {
       java.util.Arrays.asList(
         new SaslClientBootstrap(
@@ -647,10 +646,7 @@ private[netty] class NettyRpcHandler(
     val requestMessage = nettyEnv.deserialize[RequestMessage](client, message)
     if (requestMessage.senderAddress == null) {
       // Create a new message with the socket address of the client as the sender.
-      RequestMessage(
-        clientAddr,
-        requestMessage.receiver,
-        requestMessage.content)
+      RequestMessage(clientAddr, requestMessage.receiver, requestMessage.content)
     } else {
       // The remote RpcEnv listens to some port, we should also fire a RemoteProcessConnected for
       // the listening address

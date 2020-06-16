@@ -82,18 +82,14 @@ object SerializationBenchmark
   def toArrayOrd[T](t: OrderedSerialization[T]): Ordering[Array[Byte]] =
     new Ordering[Array[Byte]] {
       def compare(a: Array[Byte], b: Array[Byte]) = {
-        t.compareBinary(
-          new ByteArrayInputStream(a),
-          new ByteArrayInputStream(b))
+        t.compareBinary(new ByteArrayInputStream(a), new ByteArrayInputStream(b))
           .unsafeToInt
       }
     }
   def toArrayOrd[T](k: KryoPool, ord: Ordering[T]): Ordering[Array[Byte]] =
     new Ordering[Array[Byte]] {
       def compare(a: Array[Byte], b: Array[Byte]) =
-        ord.compare(
-          k.fromBytes(a).asInstanceOf[T],
-          k.fromBytes(b).asInstanceOf[T])
+        ord.compare(k.fromBytes(a).asInstanceOf[T], k.fromBytes(b).asInstanceOf[T])
     }
 
   val longArrayByte: Gen[Array[Byte]] =
@@ -131,9 +127,7 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons.unsignedLongCompare(
-            a(pos),
-            a(pos + 1))
+          effectInt ^= UnsignedComparisons.unsignedLongCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -153,9 +147,7 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons.unsignedIntCompare(
-            a(pos),
-            a(pos + 1))
+          effectInt ^= UnsignedComparisons.unsignedIntCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }
@@ -197,9 +189,7 @@ object SerializationBenchmark
         val max = a.length - 1
         var pos = 0
         while (pos < max) {
-          effectInt ^= UnsignedComparisons.unsignedByteCompare(
-            a(pos),
-            a(pos + 1))
+          effectInt ^= UnsignedComparisons.unsignedByteCompare(a(pos), a(pos + 1))
           pos += 2
         }
       }

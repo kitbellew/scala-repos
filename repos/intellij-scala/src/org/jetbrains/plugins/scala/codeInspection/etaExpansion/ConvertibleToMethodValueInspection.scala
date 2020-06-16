@@ -53,8 +53,7 @@ class ConvertibleToMethodValueInspection
         registerProblem(
           holder,
           expr,
-          InspectionBundle.message(
-            "convertible.to.method.value.anonymous.hint"))
+          InspectionBundle.message("convertible.to.method.value.anonymous.hint"))
     case und: ScUnderscoreSection if und.bindingExpr.isDefined =>
       val isInParameterOfParameterizedClass =
         PsiTreeUtil.getParentOfType(und, classOf[ScClassParameter]) match {

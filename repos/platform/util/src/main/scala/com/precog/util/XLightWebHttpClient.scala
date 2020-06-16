@@ -76,8 +76,8 @@ trait XLightWebHttpClientModule[M[+_]] extends HttpClientModule[M] {
         fromTryCatch(Some(request))(liftJUCFuture(client.send(request)))
           .sequence[M, IHttpResponse])
 
-    def execute(request: Request[String])
-        : EitherT[M, HttpClientError, Response[String]] =
+    def execute(
+        request: Request[String]): EitherT[M, HttpClientError, Response[String]] =
       for {
         httpRequest <- EitherT(M point buildRequest(request))
         response <- execute0(httpRequest)

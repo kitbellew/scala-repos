@@ -106,10 +106,7 @@ object Show extends LabelledTypeClassCompanion[Show] {
         def show(t: CNil) = ""
       }
 
-    def coproduct[L, R <: Coproduct](
-        name: String,
-        sl: => Show[L],
-        sr: => Show[R]) =
+    def coproduct[L, R <: Coproduct](name: String, sl: => Show[L], sr: => Show[R]) =
       new Show[L :+: R] {
         def show(lr: L :+: R) =
           lr match {

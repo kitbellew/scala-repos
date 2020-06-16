@@ -63,8 +63,7 @@ class ExactGenerationalQueue[A] extends GenerationalQueue[A] {
   * we consider the worst case and then we can miss some expired elements by never find elements
   * that aren't expired.
   */
-class BucketGenerationalQueue[A](timeout: Duration)
-    extends GenerationalQueue[A] {
+class BucketGenerationalQueue[A](timeout: Duration) extends GenerationalQueue[A] {
   object TimeBucket {
     def empty[B] = new TimeBucket[B](Time.now, timeSlice)
   }

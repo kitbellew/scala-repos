@@ -108,8 +108,8 @@ class PhiAccrualFailureDetector(
       history: HeartbeatHistory,
       timestamp: Option[Long])
 
-  private val state = new AtomicReference[State](
-    State(history = firstHeartbeat, timestamp = None))
+  private val state =
+    new AtomicReference[State](State(history = firstHeartbeat, timestamp = None))
 
   override def isAvailable: Boolean = isAvailable(clock())
 

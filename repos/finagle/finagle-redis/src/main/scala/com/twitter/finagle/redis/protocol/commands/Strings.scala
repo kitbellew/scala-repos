@@ -55,10 +55,7 @@ object BitCount {
       val end = RequireClientProtocol.safe {
         NumberFormat.toInt(BytesToString(list(2)))
       }
-      new BitCount(
-        ChannelBuffers.wrappedBuffer(list(0)),
-        Some(start),
-        Some(end))
+      new BitCount(ChannelBuffers.wrappedBuffer(list(0)), Some(start), Some(end))
     }
   }
 }
@@ -520,9 +517,7 @@ trait MultiSetCompanion {
       .grouped(2)
       .map {
         case key :: value :: Nil =>
-          (
-            ChannelBuffers.wrappedBuffer(key),
-            ChannelBuffers.wrappedBuffer(value))
+          (ChannelBuffers.wrappedBuffer(key), ChannelBuffers.wrappedBuffer(value))
         case _ =>
           throw ClientError("Unexpected uneven pair of elements in MSET")
       }

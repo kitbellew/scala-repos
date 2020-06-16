@@ -45,11 +45,7 @@ object IndexMaker extends IndexMakerLowPriority {
       def apply(in: (T[I1], T[I2])) = zip2V(in._1, in._2)
     }
 
-  implicit def make3V[
-      T[K] <: SeqLike[K],
-      I1: ST: ORD,
-      I2: ST: ORD,
-      I3: ST: ORD] =
+  implicit def make3V[T[K] <: SeqLike[K], I1: ST: ORD, I2: ST: ORD, I3: ST: ORD] =
     new IndexMaker[(T[I1], T[I2], T[I3]), (I1, I2, I3)] {
       def apply(in: (T[I1], T[I2], T[I3])) = zip3V(in._1, in._2, in._3)
     }

@@ -23,9 +23,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.impl.ScImportSelectorsStubImpl
 class ScImportSelectorsElementType[Func <: ScImportSelectors]
     extends ScStubElementType[ScImportSelectorsStub, ScImportSelectors](
       "import selectors") {
-  def serialize(
-      stub: ScImportSelectorsStub,
-      dataStream: StubOutputStream): Unit = {
+  def serialize(stub: ScImportSelectorsStub, dataStream: StubOutputStream): Unit = {
     dataStream.writeBoolean(stub.hasWildcard)
   }
 

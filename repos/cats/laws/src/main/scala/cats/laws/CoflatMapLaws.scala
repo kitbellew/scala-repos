@@ -35,8 +35,7 @@ trait CoflatMapLaws[F[_]] extends FunctorLaws[F] {
       h: F[C] => D,
       fa: F[A]): IsEq[D] = {
     val (cf, cg, ch) = (Cokleisli(f), Cokleisli(g), Cokleisli(h))
-    ((cf andThen cg) andThen ch).run(fa) <-> (cf andThen (cg andThen ch)).run(
-      fa)
+    ((cf andThen cg) andThen ch).run(fa) <-> (cf andThen (cg andThen ch)).run(fa)
   }
 }
 

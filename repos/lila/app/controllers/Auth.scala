@@ -127,19 +127,15 @@ object Auth extends LilaController {
           html = forms.signup.website.bindFromRequest.fold(
             err =>
               forms.anyCaptcha map { captcha =>
-                BadRequest(
-                  html.auth.signup(err, captcha, env.RecaptchaPublicKey))
+                BadRequest(html.auth.signup(err, captcha, env.RecaptchaPublicKey))
               },
             data =>
               env.recaptcha.verify(data.recaptchaResponse, req).flatMap {
                 case false =>
                   forms.signup.websiteWithCaptcha map {
                     case (form, captcha) =>
-                      BadRequest(
-                        html.auth.signup(
-                          form fill data,
-                          captcha,
-                          env.RecaptchaPublicKey))
+                      BadRequest(html.auth
+                        .signup(form fill data, captcha, env.RecaptchaPublicKey))
                   }
                 case true =>
                   lila.mon.user.register.website()
@@ -212,8 +208,7 @@ object Auth extends LilaController {
   private def noTorResponse(implicit ctx: Context) =
     negotiate(
       html = Unauthorized(html.auth.tor()).fuccess,
-      api =
-        _ => Unauthorized(jsonError("Can't login from TOR, sorry!")).fuccess)
+      api = _ => Unauthorized(jsonError("Can't login from TOR, sorry!")).fuccess)
 
   def setFingerprint(fp: String, ms: Int) =
     Auth { ctx => me =>
@@ -291,8 +286,7 @@ object Auth extends LilaController {
         case Some(user) =>
           implicit val req = ctx.body
           FormFuResult(forms.passwdReset) { err =>
-            fuccess(
-              html.auth.passwordResetConfirm(user, token, err, false.some))
+            fuccess(html.auth.passwordResetConfirm(user, token, err, false.some))
           } { data =>
             UserRepo.passwd(user.id, data.newPasswd1) >> authenticateUser(user)
           }

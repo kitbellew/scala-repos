@@ -143,7 +143,8 @@ trait OptimizationSpaceTest[M, V, S] extends TensorSpaceTestBase[V, Int, S] {
     })
   }
 
-  test("Compatibility of scalar multiplication with field multiplication - Matrix") {
+  test(
+    "Compatibility of scalar multiplication with field multiplication - Matrix") {
     check(Prop.forAll { (trip: (M, M, M), s: S, t: S) =>
       val (a, _, _) = trip
       closeM((a) :* scalars.*(s, t), a :* s :* t, TOL)
@@ -295,8 +296,8 @@ class DenseOptimizationSpaceTest_Double
     MutableOptimizationSpace.DenseDoubleOptimizationSpace.denseDoubleOptSpace
 
   val N = 30
-  override implicit def genTripleM: Arbitrary[
-    (DenseMatrix[Double], DenseMatrix[Double], DenseMatrix[Double])] = {
+  override implicit def genTripleM
+      : Arbitrary[(DenseMatrix[Double], DenseMatrix[Double], DenseMatrix[Double])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
@@ -311,8 +312,8 @@ class DenseOptimizationSpaceTest_Double
     }
   }
 
-  implicit def genTriple: Arbitrary[
-    (DenseVector[Double], DenseVector[Double], DenseVector[Double])] = {
+  implicit def genTriple
+      : Arbitrary[(DenseVector[Double], DenseVector[Double], DenseVector[Double])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Double].map { _ % 1e100 }
@@ -336,10 +337,8 @@ class SparseOptimizationSpaceTest_Double
       CSCMatrix[Double],
       SparseVector[Double],
       Double] {
-  override implicit val space: MutableOptimizationSpace[
-    CSCMatrix[Double],
-    SparseVector[Double],
-    Double] =
+  override implicit val space
+      : MutableOptimizationSpace[CSCMatrix[Double], SparseVector[Double], Double] =
     MutableOptimizationSpace.SparseDoubleOptimizationSpace.sparseDoubleOptSpace
 
   // TODO: generate arbitrarily dimensioned matrices

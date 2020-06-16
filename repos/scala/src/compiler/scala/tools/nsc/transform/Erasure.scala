@@ -500,8 +500,7 @@ abstract class Erasure
                 |${(bridge.matchingSymbol(bc, site))}"""))
 
         def overriddenBy(sym: Symbol) =
-          sym.matchingSymbol(bc, site).alternatives filter (sym =>
-            !sym.isBridge)
+          sym.matchingSymbol(bc, site).alternatives filter (sym => !sym.isBridge)
         for (overBridge <- exitingPostErasure(overriddenBy(bridge))) {
           if (overBridge == member) {
             clashError("the member itself")
@@ -740,8 +739,9 @@ abstract class Erasure
                 qual1,
                 List()) setPos qual1.pos setType qual1.tpe.resultType
               adaptMember(selectFrom(applied))
-            } else if (!(qual1.isInstanceOf[
-                Super] || (qual1.tpe.typeSymbol isSubClass tree.symbol.owner))) {
+            } else if (!(qual1
+                .isInstanceOf[
+                  Super] || (qual1.tpe.typeSymbol isSubClass tree.symbol.owner))) {
               assert(tree.symbol.owner != ArrayClass)
               selectFrom(cast(qual1, tree.symbol.owner.tpe.resultType))
             } else {
@@ -1074,9 +1074,7 @@ abstract class Erasure
                 unboundedGenericArrayLevel(arg.tpe) > 0) => // !!! todo: simplify by having GenericArray also extract trees
             val level = unboundedGenericArrayLevel(arg.tpe)
             def isArrayTest(arg: Tree) =
-              gen.mkRuntimeCall(
-                nme.isArray,
-                List(arg, Literal(Constant(level))))
+              gen.mkRuntimeCall(nme.isArray, List(arg, Literal(Constant(level))))
 
             global.typer.typedPos(tree.pos) {
               if (level == 1) isArrayTest(qual)
@@ -1159,9 +1157,10 @@ abstract class Erasure
                 }
               } else if (isPrimitiveValueClass(qual.tpe.typeSymbol)) {
                 // Rewrite 5.getClass to ScalaRunTime.anyValClass(5)
-                global.typer.typed(gen.mkRuntimeCall(
-                  nme.anyValClass,
-                  List(qual, typer.resolveClassTag(tree.pos, qual.tpe.widen))))
+                global.typer.typed(
+                  gen.mkRuntimeCall(
+                    nme.anyValClass,
+                    List(qual, typer.resolveClassTag(tree.pos, qual.tpe.widen))))
               } else if (primitiveGetClassMethods.contains(fn.symbol)) {
                 // if we got here then we're trying to send a primitive getClass method to either
                 // a) an Any, in which cage Object_getClass works because Any erases to object. Or

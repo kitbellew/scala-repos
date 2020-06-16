@@ -20,9 +20,7 @@ import com.twitter.algebird.monad._
 import com.twitter.summingbird.batch._
 
 import com.twitter.scalding.{Source => ScaldingSource, Test => TestMode, _}
-import com.twitter.summingbird.scalding.batch.{
-  BatchedService => BBatchedService
-}
+import com.twitter.summingbird.scalding.batch.{BatchedService => BBatchedService}
 import scala.collection.mutable.Buffer
 import cascading.tuple.Tuple
 import cascading.flow.FlowDef
@@ -68,14 +66,14 @@ class TestService[K, V](
               (
                 batch: BatchID,
                 writes: Iterable[(Timestamp, (K, Option[V]))])) =>
-          val thisBatch = writes.foldLeft(
-            map.get(batch).getOrElse(Map.empty[K, (Timestamp, V)])) {
-            case (innerMap, (time, (k, v))) =>
-              v match {
-                case None    => innerMap - k
-                case Some(v) => innerMap + (k -> (time -> v))
-              }
-          }
+          val thisBatch =
+            writes.foldLeft(map.get(batch).getOrElse(Map.empty[K, (Timestamp, V)])) {
+              case (innerMap, (time, (k, v))) =>
+                v match {
+                  case None    => innerMap - k
+                  case Some(v) => innerMap + (k -> (time -> v))
+                }
+            }
           map + (batch -> thisBatch)
       }
       .mapValues { innerMap =>

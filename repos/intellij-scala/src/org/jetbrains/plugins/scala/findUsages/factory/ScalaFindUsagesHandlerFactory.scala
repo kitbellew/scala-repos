@@ -2,10 +2,7 @@ package org.jetbrains.plugins.scala.findUsages.factory
 
 import javax.swing.SwingUtilities
 
-import com.intellij.find.findUsages.{
-  FindUsagesHandler,
-  FindUsagesHandlerFactory
-}
+import com.intellij.find.findUsages.{FindUsagesHandler, FindUsagesHandlerFactory}
 import com.intellij.openapi.extensions.Extensions
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.Messages

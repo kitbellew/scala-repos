@@ -58,8 +58,7 @@ object PersistencePluginProxy {
   * via configuration, without requiring any code changes or the creation of any actors.
   * @param system The actor system to initialize the extension for
   */
-class PersistencePluginProxyExtensionImpl(system: ActorSystem)
-    extends Extension {
+class PersistencePluginProxyExtensionImpl(system: ActorSystem) extends Extension {
   PersistencePluginProxy.start(system)
 }
 
@@ -227,9 +226,7 @@ final class PersistencePluginProxy(config: Config)
               persistentActor) ⇒
           persistentActor ! ReplayMessagesFailure(timeoutException)
         case DeleteMessagesTo(persistenceId, toSequenceNr, persistentActor) ⇒
-          persistentActor ! DeleteMessagesFailure(
-            timeoutException,
-            toSequenceNr)
+          persistentActor ! DeleteMessagesFailure(timeoutException, toSequenceNr)
       }
 
     case req: SnapshotProtocol.Request ⇒

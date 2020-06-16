@@ -577,9 +577,7 @@ class SQLContext private[sql] (
     * @group dataframes
     * @since 1.6.0
     */
-  def createDataFrame(
-      data: java.util.List[_],
-      beanClass: Class[_]): DataFrame = {
+  def createDataFrame(data: java.util.List[_], beanClass: Class[_]): DataFrame = {
     val attrSeq = getSchema(beanClass)
     val className = beanClass.getName
     val beanInfo = Introspector.getBeanInfo(beanClass)

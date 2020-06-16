@@ -46,8 +46,7 @@ class ListTablesSuite
   }
 
   override def afterAll(): Unit = {
-    sessionState.catalog.unregisterTable(
-      TableIdentifier("ListTablesSuiteTable"))
+    sessionState.catalog.unregisterTable(TableIdentifier("ListTablesSuiteTable"))
     sql("DROP TABLE IF EXISTS HiveListTablesSuiteTable")
     sql("DROP TABLE IF EXISTS ListTablesSuiteDB.HiveInDBListTablesSuiteTable")
     sql("DROP DATABASE IF EXISTS ListTablesSuiteDB")

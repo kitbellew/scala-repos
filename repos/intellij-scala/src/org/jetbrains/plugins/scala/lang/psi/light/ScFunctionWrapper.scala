@@ -246,8 +246,7 @@ object ScFunctionWrapper {
       forDefault: Option[Int] = None): String = {
     val builder = new StringBuilder
 
-    builder.append(
-      JavaConversionUtil.annotationsAndModifiers(function, isStatic))
+    builder.append(JavaConversionUtil.annotationsAndModifiers(function, isStatic))
 
     val subst = getSubstitutor(cClass, function)
 

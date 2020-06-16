@@ -226,8 +226,7 @@ object Tuple7 {
       .asInstanceOf[Tuple7[T1, T2, T3, T4, T5, T6, T7]]
 
   @inline def unapply[T1, T2, T3, T4, T5, T6, T7](
-      t: Tuple7[T1, T2, T3, T4, T5, T6, T7])
-      : Option[(T1, T2, T3, T4, T5, T6, T7)] =
+      t: Tuple7[T1, T2, T3, T4, T5, T6, T7]): Option[(T1, T2, T3, T4, T5, T6, T7)] =
     Some(t)
 
   @inline implicit def fromScalaTuple7[T1, T2, T3, T4, T5, T6, T7](
@@ -374,17 +373,8 @@ object Tuple10 {
       : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10)] =
     Some(t)
 
-  @inline implicit def fromScalaTuple10[
-      T1,
-      T2,
-      T3,
-      T4,
-      T5,
-      T6,
-      T7,
-      T8,
-      T9,
-      T10](t: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10))
+  @inline implicit def fromScalaTuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10](
+      t: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10))
       : Tuple10[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10] =
     apply(t._1, t._2, t._3, t._4, t._5, t._6, t._7, t._8, t._9, t._10)
 
@@ -618,8 +608,7 @@ object Tuple13 {
       _10: T10,
       _11: T11,
       _12: T12,
-      _13: T13)
-      : Tuple13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13] =
+      _13: T13): Tuple13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13] =
     Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13).asInstanceOf[
       Tuple13[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13]]
 
@@ -728,21 +717,7 @@ sealed trait Tuple14[
 }
 
 object Tuple14 {
-  @inline def apply[
-      T1,
-      T2,
-      T3,
-      T4,
-      T5,
-      T6,
-      T7,
-      T8,
-      T9,
-      T10,
-      T11,
-      T12,
-      T13,
-      T14](
+  @inline def apply[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14](
       _1: T1,
       _2: T2,
       _3: T3,
@@ -918,39 +893,11 @@ object Tuple15 {
       _12: T12,
       _13: T13,
       _14: T14,
-      _15: T15): Tuple15[
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10,
-    T11,
-    T12,
-    T13,
-    T14,
-    T15] =
+      _15: T15)
+      : Tuple15[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15] =
     Array(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15)
-      .asInstanceOf[Tuple15[
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7,
-        T8,
-        T9,
-        T10,
-        T11,
-        T12,
-        T13,
-        T14,
-        T15]]
+      .asInstanceOf[
+        Tuple15[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15]]
 
   @inline def unapply[
       T1,
@@ -983,8 +930,8 @@ object Tuple15 {
         T12,
         T13,
         T14,
-        T15]): Option[
-    (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)] =
+        T15])
+      : Option[(T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15)] =
     Some(t)
 
   @inline implicit def fromScalaTuple15[
@@ -1004,22 +951,7 @@ object Tuple15 {
       T14,
       T15](
       t: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15))
-      : Tuple15[
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7,
-        T8,
-        T9,
-        T10,
-        T11,
-        T12,
-        T13,
-        T14,
-        T15] =
+      : Tuple15[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15] =
     apply(
       t._1,
       t._2,
@@ -1068,8 +1000,7 @@ object Tuple15 {
         T12,
         T13,
         T14,
-        T15])
-      : (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) =
+        T15]): (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15) =
     (
       t._1,
       t._2,
@@ -1253,39 +1184,24 @@ object Tuple16 {
       T14,
       T15,
       T16](
-      t: (
-          T1,
-          T2,
-          T3,
-          T4,
-          T5,
-          T6,
-          T7,
-          T8,
-          T9,
-          T10,
-          T11,
-          T12,
-          T13,
-          T14,
-          T15,
-          T16)): Tuple16[
-    T1,
-    T2,
-    T3,
-    T4,
-    T5,
-    T6,
-    T7,
-    T8,
-    T9,
-    T10,
-    T11,
-    T12,
-    T13,
-    T14,
-    T15,
-    T16] =
+      t: (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16))
+      : Tuple16[
+        T1,
+        T2,
+        T3,
+        T4,
+        T5,
+        T6,
+        T7,
+        T8,
+        T9,
+        T10,
+        T11,
+        T12,
+        T13,
+        T14,
+        T15,
+        T16] =
     apply(
       t._1,
       t._2,
@@ -1542,24 +1458,7 @@ object Tuple17 {
         T15,
         T16,
         T17]): Option[
-    (
-        T1,
-        T2,
-        T3,
-        T4,
-        T5,
-        T6,
-        T7,
-        T8,
-        T9,
-        T10,
-        T11,
-        T12,
-        T13,
-        T14,
-        T15,
-        T16,
-        T17)] =
+    (T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, T17)] =
     Some(t)
 
   @inline implicit def fromScalaTuple17[

@@ -42,9 +42,7 @@ object Receiver {
       extends Command[T]
 
   sealed trait Replies[T]
-  final case class GetOneResult[T](
-      receiver: ActorRef[Command[T]],
-      msg: Option[T])
+  final case class GetOneResult[T](receiver: ActorRef[Command[T]], msg: Option[T])
       extends Replies[T]
   final case class GetAllResult[T](
       receiver: ActorRef[Command[T]],

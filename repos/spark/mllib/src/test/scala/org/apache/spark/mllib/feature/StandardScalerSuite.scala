@@ -18,12 +18,7 @@
 package org.apache.spark.mllib.feature
 
 import org.apache.spark.SparkFunSuite
-import org.apache.spark.mllib.linalg.{
-  DenseVector,
-  SparseVector,
-  Vector,
-  Vectors
-}
+import org.apache.spark.mllib.linalg.{DenseVector, SparseVector, Vector, Vectors}
 import org.apache.spark.mllib.stat.{
   MultivariateOnlineSummarizer,
   MultivariateStatisticalSummary
@@ -147,8 +142,7 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(
       data1(3) ~== Vectors
         .dense(1.637735298, 0.156973995, 1.32247368462) absTol 1e-5)
-    assert(
-      data2(4) ~== Vectors.dense(0.865538862, -0.22604255, 0.0) absTol 1e-5)
+    assert(data2(4) ~== Vectors.dense(0.865538862, -0.22604255, 0.0) absTol 1e-5)
     assert(data2(5) ~== Vectors.dense(0.0, 0.71580142, 0.0) absTol 1e-5)
     assert(
       data3(1) ~== Vectors
@@ -232,8 +226,7 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(
       data1(3) ~== Vectors
         .dense(1.637735298, 0.156973995, 1.32247368462) absTol 1e-5)
-    assert(
-      data2(4) ~== Vectors.dense(0.865538862, -0.22604255, 0.0) absTol 1e-5)
+    assert(data2(4) ~== Vectors.dense(0.865538862, -0.22604255, 0.0) absTol 1e-5)
     assert(data2(5) ~== Vectors.dense(0.0, 0.71580142, 0.0) absTol 1e-5)
     assert(
       data3(1) ~== Vectors
@@ -430,7 +423,8 @@ class StandardScalerSuite extends SparkFunSuite with MLlibTestSparkContext {
         model.setWithMean(true)
       }
     }
-    withClue("model needs std and mean vectors to be equal size when both are provided") {
+    withClue(
+      "model needs std and mean vectors to be equal size when both are provided") {
       intercept[IllegalArgumentException] {
         val model =
           new StandardScalerModel(Vectors.dense(0.0), Vectors.dense(0.0, 1.0))

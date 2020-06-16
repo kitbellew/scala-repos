@@ -91,9 +91,7 @@ trait NormedModule[V, S] extends Module[V, S] with Normed[V] {
     norm(subVV(a, b)) <= tolerance * math.max(norm(a), norm(b))
 }
 
-trait MutableNormedModule[V, S]
-    extends MutableModule[V, S]
-    with NormedModule[V, S]
+trait MutableNormedModule[V, S] extends MutableModule[V, S] with NormedModule[V, S]
 
 /**
   * An LP Module is a module equipped with a p-norm (named after LPSpace)
@@ -191,9 +189,7 @@ trait MutableLPVectorField[V, S]
 }
 
 // Same idea as VectorField, but with explicit key type specified.
-trait CoordinateField[V, S]
-    extends LPVectorField[V, S]
-    with Coordinated[V, S] {}
+trait CoordinateField[V, S] extends LPVectorField[V, S] with Coordinated[V, S] {}
 
 trait MutableCoordinateField[V, S]
     extends CoordinateField[V, S]
@@ -425,8 +421,7 @@ object MutableInnerProductModule {
       _addIntoVV: OpAdd.InPlaceImpl2[V, V],
       _subIntoVV: OpSub.InPlaceImpl2[V, V],
       _setIntoVV: OpSet.InPlaceImpl2[V, V],
-      _scaleAddVSV: scaleAdd.InPlaceImpl3[V, S, V])
-      : MutableInnerProductModule[V, S] =
+      _scaleAddVSV: scaleAdd.InPlaceImpl3[V, S, V]): MutableInnerProductModule[V, S] =
     new MutableInnerProductModule[V, S] {
       def scalars: Ring[S] = _ring
       override implicit def hasOps(v: V): NumericOps[V] = _ops(v)
@@ -958,8 +953,8 @@ object MutableOptimizationSpace {
       implicit def mulIntoVV: OpMulScalar.InPlaceImpl2[V, V] = _mulIntoVV
       implicit def setIntoVS: OpSet.InPlaceImpl2[V, S] = _setIntoVS
       implicit def zipMapValues: CanZipMapValues[V, S, S, V] = _zipMapVals
-      override implicit def zipMapKeyValues
-          : CanZipMapKeyValues[V, Int, S, S, V] = _zipMapKeyVals
+      override implicit def zipMapKeyValues: CanZipMapKeyValues[V, Int, S, S, V] =
+        _zipMapKeyVals
       implicit def iterateValues: CanTraverseValues[V, S] = _traverseVals
       implicit def mapValues: CanMapValues[V, S, S, V] = _mapVals
 

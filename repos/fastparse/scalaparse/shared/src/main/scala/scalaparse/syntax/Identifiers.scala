@@ -25,10 +25,7 @@ object Identifiers {
     val NonLetterDigitId = if (!allowDollar) "" else "$"
     val IdUnderscoreChunk = P(CharsWhile(_ == '_', min = 0) ~ CharsWhile(c =>
       NonLetterDigitId.contains(c) || c.isLetter || c.isDigit))
-    P(
-      IdUnderscoreChunk.rep ~ (CharsWhile(_ == '_') ~ CharsWhile(
-        isOpChar,
-        min = 0)).?)
+    P(IdUnderscoreChunk.rep ~ (CharsWhile(_ == '_') ~ CharsWhile(isOpChar, min = 0)).?)
   }
 
   val alphaKeywords = Seq(

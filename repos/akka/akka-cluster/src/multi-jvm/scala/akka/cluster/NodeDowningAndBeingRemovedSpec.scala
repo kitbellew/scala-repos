@@ -59,8 +59,7 @@ abstract class NodeDowningAndBeingRemovedSpec
           awaitAssert {
             clusterView.members.map(_.address) should not contain (address(
               second))
-            clusterView.members.map(_.address) should not contain (address(
-              third))
+            clusterView.members.map(_.address) should not contain (address(third))
           }
         }
       }

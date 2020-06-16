@@ -52,10 +52,8 @@ import scalaz.\/._
 import scalaz.syntax.std.option._
 
 object KafkaEventStore {
-  def apply(
-      config: Configuration,
-      permissionsFinder: PermissionsFinder[Future])(implicit
-      executor: ExecutionContext)
+  def apply(config: Configuration, permissionsFinder: PermissionsFinder[Future])(
+      implicit executor: ExecutionContext)
       : Validation[NEL[String], (EventStore[Future], Stoppable)] = {
     val localConfig = config.detach("local")
     val centralConfig = config.detach("central")

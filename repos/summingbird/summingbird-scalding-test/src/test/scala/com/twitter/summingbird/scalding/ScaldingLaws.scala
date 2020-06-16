@@ -454,8 +454,8 @@ class ScaldingLaws extends WordSpec {
       val batchCoveredInput2 =
         TestUtil.pruneToBatchCoveredWithTime(inWithTime2, intr, batcher)
 
-      def toTime[T, U](fn: T => TraversableOnce[U])
-          : ((Long, T)) => TraversableOnce[(Long, U)] =
+      def toTime[T, U](
+          fn: T => TraversableOnce[U]): ((Long, T)) => TraversableOnce[(Long, U)] =
         (x: (Long, T)) => fn(x._2).map((x._1, _))
 
       val fnAWithTime = toTime(fnA)
@@ -541,8 +541,8 @@ class ScaldingLaws extends WordSpec {
         (e: ((Int, Option[Int]))) =>
           valuesFlatMap1(e).flatMap { x => { valuesFlatMap2(x) } }
 
-      def toTime[T, U](fn: T => TraversableOnce[U])
-          : ((Long, T)) => TraversableOnce[(Long, U)] =
+      def toTime[T, U](
+          fn: T => TraversableOnce[U]): ((Long, T)) => TraversableOnce[(Long, U)] =
         (x: (Long, T)) => fn(x._2).map((x._1, _))
 
       val fnAWithTime = toTime(fnA)
@@ -614,8 +614,8 @@ class ScaldingLaws extends WordSpec {
       val valuesFlatMap = sample[((Int, Option[Int])) => List[Int]]
       val flatMapFn = sample[((Int, (Int, Option[Int]))) => List[(Int, Int)]]
 
-      def toTime[T, U](fn: T => TraversableOnce[U])
-          : ((Long, T)) => TraversableOnce[(Long, U)] =
+      def toTime[T, U](
+          fn: T => TraversableOnce[U]): ((Long, T)) => TraversableOnce[(Long, U)] =
         (x: (Long, T)) => fn(x._2).map((x._1, _))
 
       val fnAWithTime = toTime(fnA)
@@ -636,8 +636,7 @@ class ScaldingLaws extends WordSpec {
 
       val (inMemoryStoreAfterJoin, inMemoryStoreAfterFlatMap) =
         TestGraphs.leftJoinWithDependentStoreJoinFanoutInScala(
-          batchCoveredInput)(fnAWithTime)(valuesFlatMapWithTime)(
-          flatMapWithTime)
+          batchCoveredInput)(fnAWithTime)(valuesFlatMapWithTime)(flatMapWithTime)
 
       val storeAndServiceInit = sample[Map[Int, Int]]
       val storeAndServiceStore = TestStore[Int, Int](
@@ -716,10 +715,8 @@ class ScaldingLaws extends WordSpec {
       val (buffer, source) = TestSource(inWithTime)
 
       val summer = TestGraphs
-        .diamondJob[Scalding, (Long, Int), Int, Int](
-          source,
-          testSink,
-          testStore)(t => fn1(t._2))(t => fn2(t._2))
+        .diamondJob[Scalding, (Long, Int), Int, Int](source, testSink, testStore)(
+          t => fn1(t._2))(t => fn2(t._2))
 
       val scald = Scalding("scalding-diamond-Job")
       val ws = new LoopState(intr)

@@ -14,8 +14,7 @@ package scala.collection.mutable {
 
   trait Generators {
 
-    def genRedBlackTree[A: Arbitrary: Ordering, B: Arbitrary]
-        : Gen[RB.Tree[A, B]] = {
+    def genRedBlackTree[A: Arbitrary: Ordering, B: Arbitrary]: Gen[RB.Tree[A, B]] = {
       import org.scalacheck.Gen._
       for { entries <- listOf(arbitrary[(A, B)]) } yield {
         val tree = RB.Tree.empty[A, B]
@@ -26,8 +25,7 @@ package scala.collection.mutable {
 
     // Note: in scalacheck 1.12.2 tree maps can be automatically generated without the need for custom
     // machinery
-    def genTreeMap[A: Arbitrary: Ordering, B: Arbitrary]
-        : Gen[mutable.TreeMap[A, B]] = {
+    def genTreeMap[A: Arbitrary: Ordering, B: Arbitrary]: Gen[mutable.TreeMap[A, B]] = {
       import org.scalacheck.Gen._
       for {
         keys <- listOf(arbitrary[A])

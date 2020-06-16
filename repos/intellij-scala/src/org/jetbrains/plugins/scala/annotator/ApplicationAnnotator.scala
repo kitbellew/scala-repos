@@ -37,9 +37,7 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
   * Pavel.Fatin, 31.05.2010
   */
 trait ApplicationAnnotator {
-  def annotateReference(
-      reference: ScReferenceElement,
-      holder: AnnotationHolder) {
+  def annotateReference(reference: ScReferenceElement, holder: AnnotationHolder) {
     for {
       result <- reference.multiResolve(false)
       r = result.asInstanceOf[ScalaResolveResult]
@@ -226,9 +224,7 @@ trait ApplicationAnnotator {
     }
   }
 
-  def annotateMethodInvocation(
-      call: MethodInvocation,
-      holder: AnnotationHolder) {
+  def annotateMethodInvocation(call: MethodInvocation, holder: AnnotationHolder) {
     //do we need to check it:
     call.getEffectiveInvokedExpr match {
       case ref: ScReferenceElement =>
@@ -290,9 +286,7 @@ trait ApplicationAnnotator {
           expression,
           "Expansion for non-repeated parameter")
       case PositionalAfterNamedArgument(argument) =>
-        holder.createErrorAnnotation(
-          argument,
-          "Positional after named argument")
+        holder.createErrorAnnotation(argument, "Positional after named argument")
       case ParameterSpecifiedMultipleTimes(assignment) =>
         holder.createErrorAnnotation(
           assignment.getLExpression,

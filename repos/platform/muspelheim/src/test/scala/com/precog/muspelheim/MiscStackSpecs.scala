@@ -1464,8 +1464,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, SObject(obj)) =>
           ids.length must_== 1
           obj must haveSize(5)
-          obj must contain(
-            "ageRange" -> SArray(Vector(SDecimal(37), SDecimal(48))))
+          obj must contain("ageRange" -> SArray(Vector(SDecimal(37), SDecimal(48))))
       }
     }
 
@@ -1629,110 +1628,162 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, sv) if ids.length == 1 => sv
       }
 
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("319")), "state" -> SString("01"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("267")), "state" -> SString("02"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("248")), "state" -> SString("04"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("229")), "state" -> SString("05"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("242")), "state" -> SString("06"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("265")), "state" -> SString("08"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("207")), "state" -> SString("09"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("265")), "state" -> SString("10"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("183")), "state" -> SString("11"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("275")), "state" -> SString("12"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("267")), "state" -> SString("13"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("240")), "state" -> SString("15"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("269")), "state" -> SString("16"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("268")), "state" -> SString("17"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("221")), "state" -> SString("18"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("238")), "state" -> SString("19"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("251")), "state" -> SString("20"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("220")), "state" -> SString("21"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("215")), "state" -> SString("22"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("245")), "state" -> SString("23"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("232")), "state" -> SString("24"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("234")), "state" -> SString("25"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("239")), "state" -> SString("26"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("242")), "state" -> SString("27"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("219")), "state" -> SString("28"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("213")), "state" -> SString("29"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("216")), "state" -> SString("30"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("195")), "state" -> SString("31"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("196")), "state" -> SString("32"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("223")), "state" -> SString("33"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("207")), "state" -> SString("34"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("221")), "state" -> SString("35"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("204")), "state" -> SString("36"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("221")), "state" -> SString("37"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("231")), "state" -> SString("38"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("167")), "state" -> SString("39"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("219")), "state" -> SString("40"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("200")), "state" -> SString("41"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("206")), "state" -> SString("42"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("230")), "state" -> SString("44"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("224")), "state" -> SString("45"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("184")), "state" -> SString("46"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("215")), "state" -> SString("47"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("189")), "state" -> SString("48"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("227")), "state" -> SString("49"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("233")), "state" -> SString("50"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("206")), "state" -> SString("51"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("232")), "state" -> SString("53"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("223")), "state" -> SString("54"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("193")), "state" -> SString("55"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("186")), "state" -> SString("56"))))
-      results must contain(SObject(
-        Map("count" -> SDecimal(BigDecimal("153")), "state" -> SString("72"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("319")), "state" -> SString("01"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("267")), "state" -> SString("02"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("248")), "state" -> SString("04"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("229")), "state" -> SString("05"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("242")), "state" -> SString("06"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("265")), "state" -> SString("08"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("207")), "state" -> SString("09"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("265")), "state" -> SString("10"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("183")), "state" -> SString("11"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("275")), "state" -> SString("12"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("267")), "state" -> SString("13"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("240")), "state" -> SString("15"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("269")), "state" -> SString("16"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("268")), "state" -> SString("17"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("221")), "state" -> SString("18"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("238")), "state" -> SString("19"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("251")), "state" -> SString("20"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("220")), "state" -> SString("21"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("215")), "state" -> SString("22"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("245")), "state" -> SString("23"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("232")), "state" -> SString("24"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("234")), "state" -> SString("25"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("239")), "state" -> SString("26"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("242")), "state" -> SString("27"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("219")), "state" -> SString("28"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("213")), "state" -> SString("29"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("216")), "state" -> SString("30"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("195")), "state" -> SString("31"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("196")), "state" -> SString("32"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("223")), "state" -> SString("33"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("207")), "state" -> SString("34"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("221")), "state" -> SString("35"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("204")), "state" -> SString("36"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("221")), "state" -> SString("37"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("231")), "state" -> SString("38"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("167")), "state" -> SString("39"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("219")), "state" -> SString("40"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("200")), "state" -> SString("41"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("206")), "state" -> SString("42"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("230")), "state" -> SString("44"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("224")), "state" -> SString("45"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("184")), "state" -> SString("46"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("215")), "state" -> SString("47"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("189")), "state" -> SString("48"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("227")), "state" -> SString("49"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("233")), "state" -> SString("50"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("206")), "state" -> SString("51"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("232")), "state" -> SString("53"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("223")), "state" -> SString("54"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("193")), "state" -> SString("55"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("186")), "state" -> SString("56"))))
+      results must contain(
+        SObject(
+          Map("count" -> SDecimal(BigDecimal("153")), "state" -> SString("72"))))
     }
 
     "evaluate nathan's query, once and for all" in {
@@ -1869,9 +1920,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
           | gender := distinct((//campaigns).gender)
           | std::string::concat("alpha ", gender)""".stripMargin
 
-        eval(input) mustEqual Set(
-          SString("alpha female"),
-          SString("alpha male"))
+        eval(input) mustEqual Set(SString("alpha female"), SString("alpha male"))
       }
 
       "Mathlib" >> {
@@ -2048,8 +2097,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, SObject(obj)) => {
           ids.length must_== 1
           obj must haveSize(5)
-          obj must contain(
-            "ageRange" -> SArray(Vector(SDecimal(25), SDecimal(36))))
+          obj must contain("ageRange" -> SArray(Vector(SDecimal(25), SDecimal(36))))
           obj must contain("gender" -> SString("female"))
         }
       }
@@ -2084,125 +2132,108 @@ trait MiscStackSpecs extends EvalStackSpecs {
         case (ids, obj) if ids.length == 1 => obj
       }
 
-      results must contain(SObject(
-        Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("4")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("3")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("250-500M"),
-            "num" -> SDecimal(BigDecimal("5")))))
+          Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("4")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("5-50M"),
-            "num" -> SDecimal(BigDecimal("11")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("7")))))
+          Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("3")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("500K-5M"),
-            "num" -> SDecimal(BigDecimal("5")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("8")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("3")))))
+          Map("revenue" -> SString("250-500M"), "num" -> SDecimal(BigDecimal("5")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("250-500M"),
-            "num" -> SDecimal(BigDecimal("8")))))
+          Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("11")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("500K-5M"),
-            "num" -> SDecimal(BigDecimal("8")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("3")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("8")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("5")))))
+          Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("7")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("50-250M"),
-            "num" -> SDecimal(BigDecimal("3")))))
+          Map("revenue" -> SString("500K-5M"), "num" -> SDecimal(BigDecimal("5")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("250-500M"),
-            "num" -> SDecimal(BigDecimal("3")))))
+          Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("8")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("250-500M"),
-            "num" -> SDecimal(BigDecimal("1")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("7")))))
+          Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("3")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("50-250M"),
-            "num" -> SDecimal(BigDecimal("4")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("7")))))
+          Map("revenue" -> SString("250-500M"), "num" -> SDecimal(BigDecimal("8")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("500K-5M"),
-            "num" -> SDecimal(BigDecimal("1")))))
+          Map("revenue" -> SString("500K-5M"), "num" -> SDecimal(BigDecimal("8")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("50-250M"),
-            "num" -> SDecimal(BigDecimal("5")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("2")))))
+          Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("3")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("250-500M"),
-            "num" -> SDecimal(BigDecimal("4")))))
+          Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("8")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("50-250M"),
-            "num" -> SDecimal(BigDecimal("8")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("4")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("5")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("2")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("4")))))
+          Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("5")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("250-500M"),
-            "num" -> SDecimal(BigDecimal("7")))))
+          Map("revenue" -> SString("50-250M"), "num" -> SDecimal(BigDecimal("3")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("500K-5M"),
-            "num" -> SDecimal(BigDecimal("4")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("5")))))
+          Map("revenue" -> SString("250-500M"), "num" -> SDecimal(BigDecimal("3")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("500K-5M"),
-            "num" -> SDecimal(BigDecimal("3")))))
-      results must contain(SObject(
-        Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("1")))))
+          Map("revenue" -> SString("250-500M"), "num" -> SDecimal(BigDecimal("1")))))
       results must contain(
         SObject(
-          Map(
-            "revenue" -> SString("500K-5M"),
-            "num" -> SDecimal(BigDecimal("7")))))
+          Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("7")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("50-250M"), "num" -> SDecimal(BigDecimal("4")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("7")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("500K-5M"), "num" -> SDecimal(BigDecimal("1")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("50-250M"), "num" -> SDecimal(BigDecimal("5")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("2")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("250-500M"), "num" -> SDecimal(BigDecimal("4")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("50-250M"), "num" -> SDecimal(BigDecimal("8")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("4")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("5")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("2")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("500M+"), "num" -> SDecimal(BigDecimal("4")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("250-500M"), "num" -> SDecimal(BigDecimal("7")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("500K-5M"), "num" -> SDecimal(BigDecimal("4")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("5-50M"), "num" -> SDecimal(BigDecimal("5")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("500K-5M"), "num" -> SDecimal(BigDecimal("3")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("<500K"), "num" -> SDecimal(BigDecimal("1")))))
+      results must contain(
+        SObject(
+          Map("revenue" -> SString("500K-5M"), "num" -> SDecimal(BigDecimal("7")))))
     }
 
     "evaluate a function of multiple counts" in {
@@ -3843,8 +3874,7 @@ trait MiscStackSpecs extends EvalStackSpecs {
 
     "split a constant string along a constant delimiter" in {
       val input = """std::string::split("abc # def", "#")"""
-      eval(input) mustEqual Set(
-        SArray(Vector(SString("abc "), SString(" def"))))
+      eval(input) mustEqual Set(SArray(Vector(SString("abc "), SString(" def"))))
     }
 
     "split strings along a constant delimiter" in {

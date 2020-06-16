@@ -85,12 +85,7 @@ class CommandClient(
               val accessKey2 = accessKeyClient.insert(
                 AccessKey(key = "", appid = id, events = Seq()))
               accessKey2 map { k =>
-                new AppNewResponse(
-                  1,
-                  "App created successfully.",
-                  id,
-                  req.name,
-                  k)
+                new AppNewResponse(1, "App created successfully.", id, req.name, k)
               } getOrElse {
                 GeneralResponse(0, s"Unable to create new access key.")
               }
@@ -140,9 +135,7 @@ class CommandClient(
             s"Unable to initialize Event Store for this appId:" +
               s" ${app.id}.")
         }
-        GeneralResponse(
-          data.status * data2.status,
-          data.message + data2.message)
+        GeneralResponse(data.status * data2.status, data.message + data2.message)
       } getOrElse {
         GeneralResponse(0, s"App ${appName} does not exist.")
       }
@@ -158,9 +151,7 @@ class CommandClient(
           Storage.getMetaDataApps.delete(app.id)
           GeneralResponse(1, s"App successfully deleted")
         } else {
-          GeneralResponse(
-            0,
-            s"Error removing Event Store for app ${app.name}.");
+          GeneralResponse(0, s"Error removing Event Store for app ${app.name}.");
         }
         data
       } getOrElse {

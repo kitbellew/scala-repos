@@ -73,10 +73,7 @@ private abstract class BaseRRDD[T: ClassTag, U: ClassTag](
     // the socket used to send out the input of task
     serverSocket.setSoTimeout(10000)
     val inSocket = serverSocket.accept()
-    startStdinThread(
-      inSocket.getOutputStream(),
-      parentIterator,
-      partition.index)
+    startStdinThread(inSocket.getOutputStream(), parentIterator, partition.index)
 
     // the socket used to receive the output of task
     val outSocket = serverSocket.accept()

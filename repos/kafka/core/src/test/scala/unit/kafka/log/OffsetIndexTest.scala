@@ -77,9 +77,7 @@ class OffsetIndexTest extends JUnitSuite {
         if (offset < valMap.firstKey)
           OffsetPosition(idx.baseOffset, 0)
         else
-          OffsetPosition(
-            valMap.to(offset).last._1,
-            valMap.to(offset).last._2._2)
+          OffsetPosition(valMap.to(offset).last._1, valMap.to(offset).last._2._2)
       assertEquals(
         "The index should give the same answer as the sorted map",
         rightAnswer,

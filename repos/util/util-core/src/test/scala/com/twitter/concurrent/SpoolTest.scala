@@ -138,8 +138,8 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
         Await.result(
           Spool.empty[Int] ++ Future.value(s) flatMap (_.toSeq)) == Seq(1, 2))
 
-      val s2 = s ++ Future.value(
-        3 *:: Future.value(4 *:: Future.value(Spool.empty[Int])))
+      val s2 =
+        s ++ Future.value(3 *:: Future.value(4 *:: Future.value(Spool.empty[Int])))
       assert(Await.result(s2 flatMap (_.toSeq)) == Seq(1, 2, 3, 4))
     }
 
@@ -540,8 +540,7 @@ class SpoolTest extends WordSpec with GeneratorDrivenPropertyChecks {
       "ac" *:: Future.value(
         "bbe" *:: Future.value("ab" *:: Future.value(Spool.empty[String])))
     assert(
-      Await.result(spool.distinctBy(_.length).toSeq, 5.seconds) == Seq(
-        "ac",
-        "bbe"))
+      Await
+        .result(spool.distinctBy(_.length).toSeq, 5.seconds) == Seq("ac", "bbe"))
   }
 }

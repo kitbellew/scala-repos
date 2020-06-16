@@ -48,10 +48,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   ScTemplateDefinition
 }
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.psi.types.{ScSubstitutor, ScType}
 import org.jetbrains.plugins.scala.lang.refactoring.util.ScalaNamesUtil
 import org.jetbrains.plugins.scala.settings._
@@ -164,8 +161,7 @@ class ScalaLookupItem(
       case fun: ScFun =>
         presentation.setTypeText(presentationString(fun.retType, substitutor))
         val paramClausesText = fun.paramClauses
-          .map(
-            _.map(presentationString(_, substitutor)).mkString("(", ", ", ")"))
+          .map(_.map(presentationString(_, substitutor)).mkString("(", ", ", ")"))
           .mkString
         presentation.setTailText(tailText + paramClausesText)
       case bind: ScBindingPattern =>

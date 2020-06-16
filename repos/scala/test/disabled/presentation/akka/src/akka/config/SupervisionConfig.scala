@@ -265,12 +265,6 @@ object Supervision {
         timeout: Long,
         dispatcher: MessageDispatcher,
         remoteAddress: RemoteAddress) =
-      this(
-        null: Class[_],
-        target,
-        lifeCycle,
-        timeout,
-        dispatcher,
-        remoteAddress)
+      this(null: Class[_], target, lifeCycle, timeout, dispatcher, remoteAddress)
   }
 }

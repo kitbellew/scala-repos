@@ -149,9 +149,7 @@ abstract class ExternalJSEnv(
 
   }
 
-  protected class ExtRunner(
-      libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile)
+  protected class ExtRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile)
       extends AbstractExtRunner(libs, code)
       with JSRunner {
 

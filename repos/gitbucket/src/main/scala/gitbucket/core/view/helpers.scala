@@ -223,9 +223,7 @@ object helpers
             s"""<a href="${context.path}/${m.group(1)}/${m.group(
               2)}/tree/${encodeRefName(m.group(3))}">${m.group(3)}</a>"""
         )
-        .replaceAll(
-          "\\[user:([^\\s]+?)\\]",
-          (m: Match) => user(m.group(1)).body)
+        .replaceAll("\\[user:([^\\s]+?)\\]", (m: Match) => user(m.group(1)).body)
         .replaceAll(
           "\\[commit:([^\\s]+?)/([^\\s]+?)\\@([^\\s]+?)\\]",
           (m: Match) =>
@@ -354,8 +352,7 @@ object helpers
   }
 
   def pre(value: Html): Html =
-    Html(
-      s"<pre>${value.body.trim.split("\n").map(_.trim).mkString("\n")}</pre>")
+    Html(s"<pre>${value.body.trim.split("\n").map(_.trim).mkString("\n")}</pre>")
 
   /**
     * Implicit conversion to add mkHtml() to Seq[Html].

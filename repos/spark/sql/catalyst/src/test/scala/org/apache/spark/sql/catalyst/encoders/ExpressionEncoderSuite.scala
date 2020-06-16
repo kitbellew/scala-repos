@@ -128,11 +128,7 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
     Array(Array(31, -123), null, Array(4, 67)),
     "array of array of int")
   encodeDecodeTest(
-    Array(
-      Array("abc", "xyz"),
-      Array[String](null),
-      null,
-      Array("1", null, "2")),
+    Array(Array("abc", "xyz"), Array[String](null), null, Array("1", null, "2")),
     "array of array of string")
 
   encodeDecodeTest(Map(1 -> "a", 2 -> "b"), "map")
@@ -162,9 +158,7 @@ class ExpressionEncoderSuite extends PlanTest with AnalysisTest {
   productTest(InnerClass(1))
   encodeDecodeTest(Array(InnerClass(1)), "array of inner class")
 
-  encodeDecodeTest(
-    Array(Option(InnerClass(1))),
-    "array of optional inner class")
+  encodeDecodeTest(Array(Option(InnerClass(1))), "array of optional inner class")
 
   productTest(PrimitiveData(1, 1, 1, 1, 1, 1, true))
 

@@ -29,8 +29,7 @@ private[lobby] object Biter {
     for {
       userOption ← lobbyUserOption.map(_.id) ?? UserRepo.byId
       ownerOption ← hook.userId ?? UserRepo.byId
-      creatorColor <-
-        assignCreatorColor(ownerOption, userOption, hook.realColor)
+      creatorColor <- assignCreatorColor(ownerOption, userOption, hook.realColor)
       game = blame(
         !creatorColor,
         userOption,

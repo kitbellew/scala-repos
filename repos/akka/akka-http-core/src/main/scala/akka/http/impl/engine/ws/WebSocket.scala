@@ -37,8 +37,7 @@ private[http] object WebSocket {
       messageAPI(serverSide, closeTimeout)
 
   /** The lowest layer that implements the binary protocol */
-  def framing
-      : BidiFlow[ByteString, FrameEvent, FrameEvent, ByteString, NotUsed] =
+  def framing: BidiFlow[ByteString, FrameEvent, FrameEvent, ByteString, NotUsed] =
     BidiFlow
       .fromFlows(
         Flow[ByteString].via(FrameEventParser),
@@ -46,12 +45,8 @@ private[http] object WebSocket {
       .named("ws-framing")
 
   /** The layer that handles masking using the rules defined in the specification */
-  def masking(serverSide: Boolean, maskingRandomFactory: () ⇒ Random): BidiFlow[
-    FrameEvent,
-    FrameEventOrError,
-    FrameEvent,
-    FrameEvent,
-    NotUsed] =
+  def masking(serverSide: Boolean, maskingRandomFactory: () ⇒ Random)
+      : BidiFlow[FrameEvent, FrameEventOrError, FrameEvent, FrameEvent, NotUsed] =
     Masking(serverSide, maskingRandomFactory)
       .named("ws-masking")
 
@@ -92,8 +87,9 @@ private[http] object WebSocket {
             if (code.exists(Protocol.CloseCodes.isError))
               ctx.fail(new PeerClosedConnectionException(code.get, reason))
             else if (inMessage)
-              ctx.fail(new ProtocolException(
-                s"Truncated message, peer closed connection in the middle of message."))
+              ctx.fail(
+                new ProtocolException(
+                  s"Truncated message, peer closed connection in the middle of message."))
             else ctx.finish()
           case ActivelyCloseWithCode(code, reason) ⇒
             if (code.exists(Protocol.CloseCodes.isError))

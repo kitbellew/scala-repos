@@ -20,16 +20,7 @@ import scala.language.dynamics
 
 import labelled.{FieldType, field}
 import ops.coproduct.{Inject, Selector => CSelector}
-import ops.hlist.{
-  At,
-  Init,
-  Last,
-  Prepend,
-  Selector,
-  ReplaceAt,
-  Replacer,
-  Tupler
-}
+import ops.hlist.{At, Init, Last, Prepend, Selector, ReplaceAt, Replacer, Tupler}
 import ops.record.{Selector => RSelector, Updater}
 import tag.@@
 
@@ -520,15 +511,8 @@ trait LowPriorityMkPathOptic {
 
   type Aux1[S, P <: HList, Out0] = MkPathOptic[S, P] { type Out = Out0 }
 
-  implicit def mkCoselSelPathOptic[
-      S,
-      P <: HList,
-      K,
-      A,
-      C <: Coproduct,
-      I,
-      E,
-      R](implicit
+  implicit def mkCoselSelPathOptic[S, P <: HList, K, A, C <: Coproduct, I, E, R](
+      implicit
       mkPrefix: Aux[S, P, R, A],
       gen: Generic.Aux[A, C],
       infer: InferProduct.Aux[C, K, I],

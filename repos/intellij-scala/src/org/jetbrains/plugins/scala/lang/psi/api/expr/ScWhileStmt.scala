@@ -23,7 +23,7 @@ trait ScWhileStmt extends ScExpression {
 }
 
 object ScWhileStmt {
-  def unapply(statement: ScWhileStmt)
-      : Option[(Option[ScExpression], Option[ScExpression])] =
+  def unapply(
+      statement: ScWhileStmt): Option[(Option[ScExpression], Option[ScExpression])] =
     Some((statement.condition, statement.body))
 }

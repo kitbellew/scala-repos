@@ -126,9 +126,7 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
     dest.addAll(keys)
   }
 
-  def getMethodsByName(
-      name: String,
-      scope: GlobalSearchScope): Array[PsiMethod] = {
+  def getMethodsByName(name: String, scope: GlobalSearchScope): Array[PsiMethod] = {
     PsiMethod.EMPTY_ARRAY //todo:
   }
 
@@ -147,9 +145,7 @@ class ScalaShortNamesCache(project: Project) extends PsiShortNamesCache {
     //todo:
   }
 
-  def getFieldsByName(
-      name: String,
-      scope: GlobalSearchScope): Array[PsiField] = {
+  def getFieldsByName(name: String, scope: GlobalSearchScope): Array[PsiField] = {
     PsiField.EMPTY_ARRAY //todo:
   }
 

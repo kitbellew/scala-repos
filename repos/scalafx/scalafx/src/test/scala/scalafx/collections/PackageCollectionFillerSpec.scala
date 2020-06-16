@@ -145,9 +145,7 @@ class PackageCollectionFillerSpec extends FlatSpec with RunOnApplicationThread {
   }
 
   it should "clean originalCollection if receives a empty Iterable" in {
-    executeAndTestChanges(
-      getOriginalStringObservableList,
-      Iterable.empty[String])
+    executeAndTestChanges(getOriginalStringObservableList, Iterable.empty[String])
   }
 
   it should "replace new content" in {

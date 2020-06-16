@@ -307,9 +307,7 @@ class SparkHadoopUtil extends Logging {
     val now = System.currentTimeMillis()
 
     val renewalInterval =
-      sparkConf.getLong(
-        "spark.yarn.token.renewal.interval",
-        (24 hours).toMillis)
+      sparkConf.getLong("spark.yarn.token.renewal.interval", (24 hours).toMillis)
 
     credentials.getAllTokens.asScala
       .filter(_.getKind == DelegationTokenIdentifier.HDFS_DELEGATION_KIND)
@@ -326,8 +324,7 @@ class SparkHadoopUtil extends Logging {
     val fileName = credentialsPath.getName
     fileName
       .substring(
-        fileName.lastIndexOf(
-          SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
+        fileName.lastIndexOf(SparkHadoopUtil.SPARK_YARN_CREDS_COUNTER_DELIM) + 1)
       .toInt
   }
 
@@ -338,9 +335,7 @@ class SparkHadoopUtil extends Logging {
     * Substitute variables by looking them up in Hadoop configs. Only variables that match the
     * ${hadoopconf- .. } pattern are substituted.
     */
-  def substituteHadoopVariables(
-      text: String,
-      hadoopConf: Configuration): String = {
+  def substituteHadoopVariables(text: String, hadoopConf: Configuration): String = {
     text match {
       case HADOOP_CONF_PATTERN(matched) => {
         logDebug(text + " matched " + HADOOP_CONF_PATTERN)

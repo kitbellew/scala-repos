@@ -400,9 +400,7 @@ trait Results {
     * @param status the HTTP response status, e.g ‘200 OK’
     */
   class Status(status: Int)
-      extends Result(
-        header = ResponseHeader(status),
-        body = HttpEntity.NoEntity) {
+      extends Result(header = ResponseHeader(status), body = HttpEntity.NoEntity) {
 
     /**
       * Set the result's content.

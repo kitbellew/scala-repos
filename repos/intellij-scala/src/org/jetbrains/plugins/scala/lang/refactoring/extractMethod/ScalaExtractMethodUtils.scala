@@ -352,9 +352,7 @@ object ScalaExtractMethodUtils {
   /**
     * methods for Unit tests
     */
-  def getParameters(
-      myInput: Array[VariableInfo],
-      elements: Array[PsiElement]) = {
+  def getParameters(myInput: Array[VariableInfo], elements: Array[PsiElement]) = {
     var buffer: ArrayBuffer[VariableData] = new ArrayBuffer[VariableData]
     for (input <- myInput) {
       var d: VariableData =

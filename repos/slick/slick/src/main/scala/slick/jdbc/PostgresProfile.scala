@@ -267,8 +267,7 @@ trait PostgresProfile extends JdbcProfile {
     def createLobTrigger(tname: String): Option[String] =
       if (sqlType == "lo")
         Some(
-          "create trigger " + lobTrigger(
-            tname) + " before update or delete on " +
+          "create trigger " + lobTrigger(tname) + " before update or delete on " +
             quoteIdentifier(
               tname) + " for each row execute procedure lo_manage(" + quoteIdentifier(
             column.name) + ")"

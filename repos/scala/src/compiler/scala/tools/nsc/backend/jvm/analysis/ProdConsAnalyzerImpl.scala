@@ -169,8 +169,7 @@ trait ProdConsAnalyzerImpl {
             // see cyclicProdCons in ProdConsAnalyzerTest
             _ultimateConsumersCache(key) = Set.empty
             for {
-              producedSlot <-
-                copyOperationProducedValueSlots(insn, consumedSlot)
+              producedSlot <- copyOperationProducedValueSlots(insn, consumedSlot)
               consumer <- consumersOfValueAt(insn.getNext, producedSlot)
               ultimateConsumer <- ultimateConsumers(consumer, producedSlot)
             } yield ultimateConsumer
@@ -546,8 +545,6 @@ class InitialProducerSourceInterpreter extends SourceInterpreter {
       tryCatchBlockNode: TryCatchBlockNode,
       handlerFrame: Frame[_ <: Value],
       exceptionType: Type): SourceValue = {
-    new SourceValue(
-      1,
-      ExceptionProducer(tryCatchBlockNode.handler, handlerFrame))
+    new SourceValue(1, ExceptionProducer(tryCatchBlockNode.handler, handlerFrame))
   }
 }

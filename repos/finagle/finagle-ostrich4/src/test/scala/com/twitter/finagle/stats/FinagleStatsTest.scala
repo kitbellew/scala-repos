@@ -55,12 +55,8 @@ class FinagleStatsTest extends FunSuite with MockitoSugar {
             new ChannelPipelineFactory {
               def getPipeline = {
                 val pipeline = Channels.pipeline()
-                pipeline.addLast(
-                  "stringEncode",
-                  new StringEncoder(Charsets.Utf8))
-                pipeline.addLast(
-                  "stringDecode",
-                  new StringDecoder(Charsets.Utf8))
+                pipeline.addLast("stringEncode", new StringEncoder(Charsets.Utf8))
+                pipeline.addLast("stringDecode", new StringDecoder(Charsets.Utf8))
                 pipeline
               }
             }

@@ -188,13 +188,7 @@ final class BaseLinker(
         .map { info =>
           val (tree, version) = getTree(encodedName)
           val newVersion = version.map("real" + _) // avoid collision with dummy
-          linkedClassDef(
-            info,
-            tree,
-            analyzerInfo,
-            newVersion,
-            getTree,
-            analysis)
+          linkedClassDef(info, tree, analyzerInfo, newVersion, getTree, analysis)
         }
         .orElse(optDummyParent)
     }

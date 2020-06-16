@@ -219,8 +219,9 @@ class AsyncMeter private[concurrent] (
       restartTimerIfDead()
       p
     } else {
-      Future.exception(new RejectedExecutionException(
-        "Tried to wait when there were already the maximum number of waiters."))
+      Future.exception(
+        new RejectedExecutionException(
+          "Tried to wait when there were already the maximum number of waiters."))
     }
   }
 

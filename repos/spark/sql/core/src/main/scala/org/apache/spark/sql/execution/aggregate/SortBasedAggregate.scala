@@ -104,8 +104,7 @@ case class SortBasedAggregate(
             // There is no input and there is no grouping expressions.
             // We need to output a single row as the output.
             numOutputRows += 1
-            Iterator[UnsafeRow](
-              outputIter.outputForEmptyGroupingKeyWithoutInput())
+            Iterator[UnsafeRow](outputIter.outputForEmptyGroupingKeyWithoutInput())
           } else {
             outputIter
           }

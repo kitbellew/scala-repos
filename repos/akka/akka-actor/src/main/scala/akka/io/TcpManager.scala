@@ -61,13 +61,7 @@ private[io] class TcpManager(tcp: TcpExt)
         val commander =
           sender() // cache because we create a function that will run asynchly
         (registry ⇒
-          Props(
-            classOf[TcpListener],
-            selectorPool,
-            tcp,
-            registry,
-            commander,
-            b))
+          Props(classOf[TcpListener], selectorPool, tcp, registry, commander, b))
     }
 
 }

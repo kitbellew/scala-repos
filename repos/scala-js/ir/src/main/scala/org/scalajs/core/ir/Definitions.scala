@@ -156,8 +156,8 @@ object Definitions {
     *  at which class level it is private. If necessary, you can recover that
     *  information from `encodedName.indexOf("__p") >= 0`.
     */
-  def decodeMethodName(encodedName: String)
-      : (String, List[ReferenceType], Option[ReferenceType]) = {
+  def decodeMethodName(
+      encodedName: String): (String, List[ReferenceType], Option[ReferenceType]) = {
     val (simpleName, privateAndSigString) =
       if (isConstructorName(encodedName)) {
         val privateAndSigString =

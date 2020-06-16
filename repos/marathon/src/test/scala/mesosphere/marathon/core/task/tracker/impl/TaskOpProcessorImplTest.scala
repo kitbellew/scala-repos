@@ -4,11 +4,7 @@ import akka.actor.Status
 import akka.testkit.TestProbe
 import mesosphere.marathon.core.task.{Task, TaskStateChange, TaskStateOp}
 import mesosphere.marathon.state.{PathId, TaskRepository, Timestamp}
-import mesosphere.marathon.test.{
-  CaptureLogEvents,
-  MarathonActorSupport,
-  Mockito
-}
+import mesosphere.marathon.test.{CaptureLogEvents, MarathonActorSupport, Mockito}
 import mesosphere.marathon.{MarathonSpec, MarathonTestHelper}
 import org.apache.mesos.Protos.{TaskState, TaskStatus}
 import org.scalatest.concurrent.ScalaFutures
@@ -298,7 +294,8 @@ class TaskOpProcessorImplTest
     f.verifyNoMoreInteractions()
   }
 
-  test("process expunge, expunge fails but task reload confirms that task is gone") {
+  test(
+    "process expunge, expunge fails but task reload confirms that task is gone") {
     val f = new Fixture
     val appId = PathId("/app")
 
@@ -369,7 +366,8 @@ class TaskOpProcessorImplTest
     And("it reloads the task")
     verify(f.taskRepository).task(taskId)
 
-    And("the taskTracker gets the update and the ack contains the expunge failure")
+    And(
+      "the taskTracker gets the update and the ack contains the expunge failure")
     f.taskTrackerProbe.expectMsg(
       TaskTrackerActor.TaskUpdated(
         taskState,

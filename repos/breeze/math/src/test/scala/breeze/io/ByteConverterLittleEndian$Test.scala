@@ -94,41 +94,17 @@ class ByteConverterLittleEndian$Test extends FunSuite {
     var ba = int64ToBytes(valueL)
     assert(ba.length == 8)
     assert(
-      valueL == bytesToInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL == bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
 
     valueL = -9223372036854775808L
     ba = int64ToBytes(valueL)
     assert(
-      valueL == bytesToInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL == bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
 
     valueL = 9223372036854775807L
     ba = int64ToBytes(valueL)
     assert(
-      valueL == bytesToInt64(
-        ba(0),
-        ba(1),
-        ba(2),
-        ba(3),
-        ba(4),
-        ba(5),
-        ba(6),
-        ba(7)))
+      valueL == bytesToInt64(ba(0), ba(1), ba(2), ba(3), ba(4), ba(5), ba(6), ba(7)))
   }
 
   test("UInt64") {

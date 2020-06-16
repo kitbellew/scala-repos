@@ -121,8 +121,7 @@ class OneVsRestSuite extends SparkFunSuite with MLlibTestSparkContext {
     ova.fit(datasetWithLabelMetadata)
   }
 
-  test(
-    "SPARK-8092: ensure label features and prediction cols are configurable") {
+  test("SPARK-8092: ensure label features and prediction cols are configurable") {
     val labelIndexer = new StringIndexer()
       .setInputCol("label")
       .setOutputCol("indexed")

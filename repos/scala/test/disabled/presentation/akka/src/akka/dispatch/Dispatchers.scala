@@ -54,13 +54,10 @@ object Dispatchers {
   val MAILBOX_CAPACITY =
     config.getInt("akka.actor.default-dispatcher.mailbox-capacity", -1)
   val MAILBOX_PUSH_TIME_OUT = Duration(
-    config.getInt(
-      "akka.actor.default-dispatcher.mailbox-push-timeout-time",
-      10),
+    config.getInt("akka.actor.default-dispatcher.mailbox-push-timeout-time", 10),
     TIME_UNIT)
-  val THROUGHPUT_DEADLINE_TIME = Duration(
-    config.getInt("akka.actor.throughput-deadline-time", -1),
-    TIME_UNIT)
+  val THROUGHPUT_DEADLINE_TIME =
+    Duration(config.getInt("akka.actor.throughput-deadline-time", -1), TIME_UNIT)
   val THROUGHPUT_DEADLINE_TIME_MILLIS = THROUGHPUT_DEADLINE_TIME.toMillis.toInt
   val MAILBOX_TYPE: MailboxType =
     if (MAILBOX_CAPACITY < 1) UnboundedMailbox() else BoundedMailbox()
@@ -166,8 +163,7 @@ object Dispatchers {
     */
   def newExecutorBasedEventDrivenWorkStealingDispatcher(name: String) =
     ThreadPoolConfigDispatcherBuilder(
-      config =>
-        new ExecutorBasedEventDrivenWorkStealingDispatcher(name, config),
+      config => new ExecutorBasedEventDrivenWorkStealingDispatcher(name, config),
       ThreadPoolConfig())
 
   /**

@@ -277,14 +277,8 @@ case class RegExpReplace(
     val classNamePattern = classOf[Pattern].getCanonicalName
     val classNameStringBuffer = classOf[java.lang.StringBuffer].getCanonicalName
 
-    ctx.addMutableState(
-      "UTF8String",
-      termLastRegex,
-      s"${termLastRegex} = null;")
-    ctx.addMutableState(
-      classNamePattern,
-      termPattern,
-      s"${termPattern} = null;")
+    ctx.addMutableState("UTF8String", termLastRegex, s"${termLastRegex} = null;")
+    ctx.addMutableState(classNamePattern, termPattern, s"${termPattern} = null;")
     ctx.addMutableState(
       "String",
       termLastReplacement,
@@ -372,14 +366,8 @@ case class RegExpExtract(
     val termPattern = ctx.freshName("pattern")
     val classNamePattern = classOf[Pattern].getCanonicalName
 
-    ctx.addMutableState(
-      "UTF8String",
-      termLastRegex,
-      s"${termLastRegex} = null;")
-    ctx.addMutableState(
-      classNamePattern,
-      termPattern,
-      s"${termPattern} = null;")
+    ctx.addMutableState("UTF8String", termLastRegex, s"${termLastRegex} = null;")
+    ctx.addMutableState(classNamePattern, termPattern, s"${termPattern} = null;")
 
     nullSafeCodeGen(
       ctx,

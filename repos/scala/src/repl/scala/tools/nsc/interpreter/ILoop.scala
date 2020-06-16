@@ -267,10 +267,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
       "<options>",
       "update compiler options, if possible; see reset",
       changeSettings),
-    nullary(
-      "silent",
-      "disable/enable automatic printing of results",
-      verbosity),
+    nullary("silent", "disable/enable automatic printing of results", verbosity),
     cmd(
       "type",
       "[-v] <expr>",
@@ -1053,8 +1050,7 @@ class ILoop(in0: Option[BufferedReader], protected val out: JPrintWriter)
   private def loopPostInit() {
     // Bind intp somewhere out of the regular namespace where
     // we can get at it in generated code.
-    intp.quietBind(
-      NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
+    intp.quietBind(NamedParam[IMain]("$intp", intp)(tagOfIMain, classTag[IMain]))
     // Auto-run code via some setting.
     (replProps.replAutorunCode.option
       flatMap (f => io.File(f).safeSlurp())

@@ -74,13 +74,11 @@ class IntegralDeltaSuite extends SparkFunSuite {
         buffer.capacity)
 
       buffer.position(headerSize)
-      assertResult(scheme.typeId, "Wrong compression scheme ID")(
-        buffer.getInt())
+      assertResult(scheme.typeId, "Wrong compression scheme ID")(buffer.getInt())
 
       if (input.nonEmpty) {
-        assertResult(
-          Byte.MinValue,
-          "The first byte should be an escaping mark")(buffer.get())
+        assertResult(Byte.MinValue, "The first byte should be an escaping mark")(
+          buffer.get())
         assertResult(input.head, "The first value is wrong")(
           columnType.extract(buffer))
 

@@ -38,8 +38,7 @@ object JavaReceiverInputDStream {
     * [[org.apache.spark.streaming.api.java.JavaReceiverInputDStream]].
     */
   implicit def fromReceiverInputDStream[T: ClassTag](
-      receiverInputDStream: ReceiverInputDStream[T])
-      : JavaReceiverInputDStream[T] = {
+      receiverInputDStream: ReceiverInputDStream[T]): JavaReceiverInputDStream[T] = {
     new JavaReceiverInputDStream[T](receiverInputDStream)
   }
 }

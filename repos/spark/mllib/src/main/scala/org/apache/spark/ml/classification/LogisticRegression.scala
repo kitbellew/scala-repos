@@ -406,11 +406,7 @@ class LogisticRegression @Since("1.2.0") (
                 }
               }
             }
-          new BreezeOWLQN[Int, BDV[Double]](
-            $(maxIter),
-            10,
-            regParamL1Fun,
-            $(tol))
+          new BreezeOWLQN[Int, BDV[Double]]($(maxIter), 10, regParamL1Fun, $(tol))
         }
 
         val initialCoefficientsWithIntercept =
@@ -493,10 +489,7 @@ class LogisticRegression @Since("1.2.0") (
             rawCoefficients.last,
             arrayBuilder.result())
         } else {
-          (
-            Vectors.dense(rawCoefficients).compressed,
-            0.0,
-            arrayBuilder.result())
+          (Vectors.dense(rawCoefficients).compressed, 0.0, arrayBuilder.result())
         }
       }
     }
@@ -856,8 +849,7 @@ private[classification] class MultiClassSummarizer extends Serializable {
   * Currently, the training summary ignores the training weights except
   * for the objective trace.
   */
-sealed trait LogisticRegressionTrainingSummary
-    extends LogisticRegressionSummary {
+sealed trait LogisticRegressionTrainingSummary extends LogisticRegressionSummary {
 
   /** objective function (scaled loss + regularization) at each iteration. */
   def objectiveHistory: Array[Double]

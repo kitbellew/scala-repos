@@ -43,9 +43,7 @@ object Complex extends ComplexInstances {
     new Complex(n, BigDecimal(0))
   }
 
-  def polar[@sp(Float, Double) T: Field: Trig](
-      magnitude: T,
-      angle: T): Complex[T] =
+  def polar[@sp(Float, Double) T: Field: Trig](magnitude: T, angle: T): Complex[T] =
     new Complex(magnitude * Trig[T].cos(angle), magnitude * Trig[T].sin(angle))
 
   def apply[@sp(Float, Double) T: Semiring](real: T): Complex[T] =
@@ -122,10 +120,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     *
     * `sgn(z) = z / abs(z) = abs(z) / z`
     */
-  def complexSignum(implicit
-      f: Field[T],
-      o: IsReal[T],
-      n: NRoot[T]): Complex[T] =
+  def complexSignum(implicit f: Field[T], o: IsReal[T], n: NRoot[T]): Complex[T] =
     if (isZero) this else this / abs
 
   def abs(implicit f: Field[T], o: IsReal[T], n: NRoot[T]): T =
@@ -416,8 +411,7 @@ final case class Complex[@sp(Float, Double) T](real: T, imag: T)
     that match {
       case that: Complex[_] => this === that
       case that: Quaternion[_] =>
-        real == that.r && imag == that.i && anyIsZero(that.j) && anyIsZero(
-          that.k)
+        real == that.r && imag == that.i && anyIsZero(that.j) && anyIsZero(that.k)
       case that =>
         anyIsZero(imag) && real == that
     }
@@ -690,8 +684,7 @@ trait ComplexInstances extends ComplexInstances1 {
   implicit def ComplexEq[A: Eq]: Eq[Complex[A]] = new ComplexEq[A]
 }
 
-private[math] trait ComplexIsRing[@sp(Float, Double) A]
-    extends Ring[Complex[A]] {
+private[math] trait ComplexIsRing[@sp(Float, Double) A] extends Ring[Complex[A]] {
   implicit def algebra: Ring[A]
   implicit def order: IsReal[A]
 
@@ -725,8 +718,7 @@ private[math] trait ComplexIsField[@sp(Float, Double) A]
   }
 }
 
-private[math] trait ComplexIsTrig[@sp(Float, Double) A]
-    extends Trig[Complex[A]] {
+private[math] trait ComplexIsTrig[@sp(Float, Double) A] extends Trig[Complex[A]] {
   implicit def algebra: Field[A]
   implicit def nroot: NRoot[A]
   implicit def trig: Trig[A]

@@ -60,9 +60,9 @@ trait WebSocketSpec
     WebSocketClient { client =>
       val innerResult = Promise[A]()
       await(
-        client.connect(
-          URI.create("ws://localhost:" + testServerPort + "/stream")) { flow =>
-          innerResult.completeWith(handler(flow))
+        client.connect(URI.create("ws://localhost:" + testServerPort + "/stream")) {
+          flow =>
+            innerResult.completeWith(handler(flow))
         })
       await(innerResult.future)
     }

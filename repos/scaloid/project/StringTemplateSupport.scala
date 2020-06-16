@@ -6,10 +6,7 @@ import org.stringtemplate.v4.misc.STNoSuchPropertyException
 import sbt._
 import scala.collection.JavaConversions._
 
-class StringTemplateSupport(
-    version: Int,
-    templateFile: File,
-    logger: sbt.Logger) {
+class StringTemplateSupport(version: Int, templateFile: File, logger: sbt.Logger) {
   import StringTemplateSupport._
 
   def render(file: File, parameters: Map[String, Any]) = {
@@ -80,9 +77,7 @@ class StringTemplateSupport(
     }.toMap
 
   private def expandToPackageMap(pkg: Map[String, Any]): Map[String, Any] = {
-    def expand(
-        lmap: Map[List[String], Any],
-        level: Int = 0): Map[String, Any] = {
+    def expand(lmap: Map[List[String], Any], level: Int = 0): Map[String, Any] = {
       lmap
         .groupBy(_._1.head)
         .mapValues(_.map { case (k, v) => k.tail -> v })

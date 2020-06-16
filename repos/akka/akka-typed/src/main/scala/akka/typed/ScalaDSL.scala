@@ -15,8 +15,7 @@ object ScalaDSL {
 
   // FIXME check that all behaviors can cope with not getting PreStart as first message
 
-  implicit class BehaviorDecorators[T](val behavior: Behavior[T])
-      extends AnyVal {
+  implicit class BehaviorDecorators[T](val behavior: Behavior[T]) extends AnyVal {
 
     /**
       * Widen the type of this Behavior by providing a filter function that permits
@@ -49,9 +48,7 @@ object ScalaDSL {
       behavior: Behavior[T],
       matcher: PartialFunction[U, T])
       extends Behavior[U] {
-    private def postProcess(
-        ctx: ActorContext[U],
-        behv: Behavior[T]): Behavior[U] =
+    private def postProcess(ctx: ActorContext[U], behv: Behavior[T]): Behavior[U] =
       if (isUnhandled(behv)) Unhandled
       else if (isAlive(behv)) {
         val next =

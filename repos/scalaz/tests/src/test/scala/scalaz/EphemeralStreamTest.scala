@@ -136,8 +136,7 @@ object EphemeralStreamTest extends SpecLite {
     EphemeralStream
       .fromStream(xs)
       .take(n)
-      .zipWithIndex must_=== (EphemeralStream.fromStream(
-      xs.take(n).zipWithIndex))
+      .zipWithIndex must_=== (EphemeralStream.fromStream(xs.take(n).zipWithIndex))
   }
 
   "zipWithIndex from infinite stream" in {

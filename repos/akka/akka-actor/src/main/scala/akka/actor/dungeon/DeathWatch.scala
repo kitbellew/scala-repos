@@ -92,9 +92,7 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
 
   // TODO this should be removed and be replaced with `set - subject`
   //   when all actor references have uid, i.e. actorFor is removed
-  private def removeFromSet(
-      subject: ActorRef,
-      set: Set[ActorRef]): Set[ActorRef] =
+  private def removeFromSet(subject: ActorRef, set: Set[ActorRef]): Set[ActorRef] =
     if (subject.path.uid != ActorCell.undefinedUid)
       (set - subject) - new UndefinedUidActorRef(subject)
     else set filterNot (_.path == subject.path)
@@ -162,10 +160,7 @@ private[akka] trait DeathWatch { this: ActorCell ⇒
           watchedBy += watcher
           if (system.settings.DebugLifecycle)
             publish(
-              Debug(
-                self.path.toString,
-                clazz(actor),
-                s"now watched by $watcher"))
+              Debug(self.path.toString, clazz(actor), s"now watched by $watcher"))
         }
     } else if (!watcheeSelf && watcherSelf) {
       watch(watchee)

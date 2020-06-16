@@ -74,9 +74,7 @@ final class Api(
   def dedup(userId: String, req: RequestHeader): Funit =
     reqSessionId(req) ?? { Store.dedup(userId, _) }
 
-  def setFingerprint(
-      req: RequestHeader,
-      fingerprint: String): Fu[Option[String]] =
+  def setFingerprint(req: RequestHeader, fingerprint: String): Fu[Option[String]] =
     reqSessionId(req) ?? { Store.setFingerprint(_, fingerprint) map some }
 
   def reqSessionId(req: RequestHeader) = req.session get "sessionId"

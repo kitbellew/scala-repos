@@ -201,10 +201,8 @@ object ScopeFilter {
       classpath: Boolean): ProjectFilter =
     inResolvedProjects { data =>
       val resolvedRef = data.resolve(ref)
-      val direct = getDependencies(
-        data.units,
-        classpath = classpath,
-        aggregate = aggregate)
+      val direct =
+        getDependencies(data.units, classpath = classpath, aggregate = aggregate)
       if (transitive) {
         val full = Dag.topologicalSort(resolvedRef)(direct)
         if (includeRoot) full else full dropRight 1

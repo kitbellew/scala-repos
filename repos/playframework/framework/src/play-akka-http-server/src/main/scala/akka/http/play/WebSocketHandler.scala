@@ -166,24 +166,23 @@ object WebSocketHandler {
     Message,
     _] = {
     AkkaStreams.bypassWith(
-      Flow[Either[Message, RawMessage]].transform(() =>
-        new PushStage[
-          Either[Message, RawMessage],
-          Either[RawMessage, Message]] {
-          var closing = false
-          def onPush(
-              elem: Either[Message, RawMessage],
-              ctx: Context[Either[RawMessage, Message]]) =
-            elem match {
-              case _ if closing =>
-                ctx.finish()
-              case Right(message) =>
-                ctx.push(Left(message))
-              case Left(close) =>
-                closing = true
-                ctx.push(Right(close))
-            }
-        }),
+      Flow[Either[Message, RawMessage]]
+        .transform(() =>
+          new PushStage[Either[Message, RawMessage], Either[RawMessage, Message]] {
+            var closing = false
+            def onPush(
+                elem: Either[Message, RawMessage],
+                ctx: Context[Either[RawMessage, Message]]) =
+              elem match {
+                case _ if closing =>
+                  ctx.finish()
+                case Right(message) =>
+                  ctx.push(Left(message))
+                case Left(close) =>
+                  closing = true
+                  ctx.push(Right(close))
+              }
+          }),
       Merge(2, eagerComplete = true)
     )
   }

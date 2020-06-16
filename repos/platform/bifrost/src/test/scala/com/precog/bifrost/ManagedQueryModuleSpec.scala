@@ -300,39 +300,35 @@ trait TestManagedQueryModule
         new QueryExecutor[TestFuture, StreamT[TestFuture, CharBuffer]] {
           import UserQuery.Serialization._
 
-          def execute(
-              query: String,
-              ctx: EvaluationContext,
-              opts: QueryOptions) = {
+          def execute(query: String, ctx: EvaluationContext, opts: QueryOptions) = {
             val userQuery =
               UserQuery(query, ctx.basePath, opts.sortOn, opts.sortOrder)
             val numTicks = query.toInt
 
-            EitherT.right[
-              TestFuture,
-              EvaluationError,
-              StreamT[TestFuture, CharBuffer]] {
-              WriterT {
-                createQueryJob(
-                  ctx.apiKey,
-                  Some(userQuery.serialize),
-                  opts.timeout) map { implicit M0 =>
-                  val ticks = new AtomicInteger()
-                  val result = StreamT.unfoldM[JobQueryTF, CharBuffer, Int](0) {
-                    case i if i < numTicks =>
-                      schedule(1) {
-                        ticks.getAndIncrement()
-                        Some((CharBuffer.wrap("."), i + 1))
-                      }.liftM[JobQueryT]
+            EitherT
+              .right[TestFuture, EvaluationError, StreamT[TestFuture, CharBuffer]] {
+                WriterT {
+                  createQueryJob(
+                    ctx.apiKey,
+                    Some(userQuery.serialize),
+                    opts.timeout) map { implicit M0 =>
+                    val ticks = new AtomicInteger()
+                    val result =
+                      StreamT.unfoldM[JobQueryTF, CharBuffer, Int](0) {
+                        case i if i < numTicks =>
+                          schedule(1) {
+                            ticks.getAndIncrement()
+                            Some((CharBuffer.wrap("."), i + 1))
+                          }.liftM[JobQueryT]
 
-                    case _ =>
-                      M0.point { None }
+                        case _ =>
+                          M0.point { None }
+                      }
+
+                    (Tag(M0.jobId map (_ -> ticks)), completeJob(result))
                   }
-
-                  (Tag(M0.jobId map (_ -> ticks)), completeJob(result))
                 }
               }
-            }
           }
         }
       }

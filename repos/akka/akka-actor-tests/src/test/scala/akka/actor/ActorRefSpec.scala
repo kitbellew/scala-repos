@@ -84,8 +84,7 @@ object ActorRefSpec {
     }
   }
 
-  class FailingInheritingOuterActor(_inner: ActorRef)
-      extends OuterActor(_inner) {
+  class FailingInheritingOuterActor(_inner: ActorRef) extends OuterActor(_inner) {
     val fail = new InnerActor
   }
 
@@ -170,9 +169,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(
-              Props(new OuterActor(actorOf(
-                Props(promiseIntercept(new FailingInnerActor)(result)))))))
+            actorOf(Props(new OuterActor(
+              actorOf(Props(promiseIntercept(new FailingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -192,9 +190,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 2) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(
-              Props(new FailingOuterActor(actorOf(Props(
-                promiseIntercept(new FailingInheritingInnerActor)(result)))))))
+            actorOf(Props(new FailingOuterActor(actorOf(
+              Props(promiseIntercept(new FailingInheritingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -203,9 +200,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 2) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(
-              Props(new FailingInheritingOuterActor(actorOf(Props(
-                promiseIntercept(new FailingInheritingInnerActor)(result)))))))
+            actorOf(Props(new FailingInheritingOuterActor(actorOf(
+              Props(promiseIntercept(new FailingInheritingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -214,9 +210,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 2) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(
-              Props(new FailingInheritingOuterActor(actorOf(
-                Props(promiseIntercept(new FailingInnerActor)(result)))))))
+            actorOf(Props(new FailingInheritingOuterActor(
+              actorOf(Props(promiseIntercept(new FailingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -236,9 +231,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 2) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(
-              Props(new FailingOuterActor(actorOf(Props(
-                promiseIntercept(new FailingInheritingInnerActor)(result)))))))
+            actorOf(Props(new FailingOuterActor(actorOf(
+              Props(promiseIntercept(new FailingInheritingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -247,9 +241,8 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
       EventFilter[ActorInitializationException](occurrences = 1) intercept {
         intercept[akka.actor.ActorInitializationException] {
           wrap(result ⇒
-            actorOf(
-              Props(new OuterActor(actorOf(Props(
-                promiseIntercept(new FailingInheritingInnerActor)(result)))))))
+            actorOf(Props(new OuterActor(actorOf(
+              Props(promiseIntercept(new FailingInheritingInnerActor)(result)))))))
         }
 
         contextStackMustBeEmpty()
@@ -356,10 +349,7 @@ class ActorRefSpec extends AkkaSpec with DefaultTimeout {
         val in =
           new ObjectInputStream(new ByteArrayInputStream(baos.toByteArray))
         in.readObject should ===(
-          new EmptyLocalActorRef(
-            sysImpl.provider,
-            ref.path,
-            system.eventStream))
+          new EmptyLocalActorRef(sysImpl.provider, ref.path, system.eventStream))
       }
     }
 

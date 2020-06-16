@@ -209,9 +209,7 @@ trait DievImplementation {
 
     def -(interval: (A, A)): Diev[A] = {
       val orderedInterval = fixIntervalOrder(interval)
-      (
-        binarySearch(orderedInterval._1),
-        binarySearch(orderedInterval._2)) match {
+      (binarySearch(orderedInterval._1), binarySearch(orderedInterval._2)) match {
         case (Coincidence(startPosition), Coincidence(endPosition)) => {
           val middle =
             if (startPosition == endPosition)

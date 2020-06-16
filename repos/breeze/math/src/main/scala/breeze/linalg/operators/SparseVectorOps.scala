@@ -175,18 +175,9 @@ trait SparseVector_DenseVector_Ops { this: SparseVector.type =>
 
   @expand
   @expand.valify
-  implicit def implOpMulInner_SVT_DVT_eq_T[@expand.args(
-    Int,
-    Double,
-    Float,
-    Long) T]: breeze.linalg.operators.OpMulInner.Impl2[
-    SparseVector[T],
-    DenseVector[T],
-    T] =
-    new breeze.linalg.operators.OpMulInner.Impl2[
-      SparseVector[T],
-      DenseVector[T],
-      T] {
+  implicit def implOpMulInner_SVT_DVT_eq_T[@expand.args(Int, Double, Float, Long) T]
+      : breeze.linalg.operators.OpMulInner.Impl2[SparseVector[T], DenseVector[T], T] =
+    new breeze.linalg.operators.OpMulInner.Impl2[SparseVector[T], DenseVector[T], T] {
       def apply(a: SparseVector[T], b: DenseVector[T]): T = {
         require(b.length == a.length, "Vectors must be the same length!")
         b dot a
@@ -214,8 +205,7 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
           _ % _
         }, {
           _ pow _
-        }) op: Op.Impl2[T, T, T])
-      : Op.InPlaceImpl2[DenseVector[T], SparseVector[T]] =
+        }) op: Op.Impl2[T, T, T]): Op.InPlaceImpl2[DenseVector[T], SparseVector[T]] =
     new Op.InPlaceImpl2[DenseVector[T], SparseVector[T]] {
       def apply(a: DenseVector[T], b: SparseVector[T]): Unit = {
         require(a.length == b.length, "Vectors must have the same length")
@@ -312,11 +302,8 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
 
   @expand
   @expand.valify
-  implicit def implOpMulInner_DVT_SVT_eq_T[@expand.args(
-    Int,
-    Double,
-    Float,
-    Long) T](implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
+  implicit def implOpMulInner_DVT_SVT_eq_T[@expand.args(Int, Double, Float, Long) T](
+      implicit @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : OpMulInner.Impl2[DenseVector[T], SparseVector[T], T] =
     new OpMulInner.Impl2[DenseVector[T], SparseVector[T], T] {
       def apply(a: DenseVector[T], b: SparseVector[T]): T = {
@@ -397,11 +384,8 @@ trait DenseVector_SparseVector_Ops { this: SparseVector.type =>
         }
 
       }
-      implicitly[BinaryRegistry[
-        Vector[T],
-        Vector[T],
-        zipValues.type,
-        ZippedValues[T, T]]]
+      implicitly[
+        BinaryRegistry[Vector[T], Vector[T], zipValues.type, ZippedValues[T, T]]]
 
     }
 
@@ -744,8 +728,7 @@ trait SparseVectorOps { this: SparseVector.type =>
         }
       }
 
-      implicitly[
-        BinaryRegistry[Vector[T], Vector[T], OpMulScalar.type, Vector[T]]]
+      implicitly[BinaryRegistry[Vector[T], Vector[T], OpMulScalar.type, Vector[T]]]
         .register(this)
     }
 
@@ -1019,11 +1002,8 @@ trait SparseVectorOps { this: SparseVector.type =>
 
   @expand
   @expand.valify
-  implicit def implOpMulInner_SVT_SVT_eq_T[@expand.args(
-    Int,
-    Double,
-    Float,
-    Long) T](implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
+  implicit def implOpMulInner_SVT_SVT_eq_T[@expand.args(Int, Double, Float, Long) T](
+      implicit @expand.sequence[T](0, 0.0, 0f, 0L) zero: T)
       : OpMulInner.Impl2[SparseVector[T], SparseVector[T], T] =
     new OpMulInner.Impl2[SparseVector[T], SparseVector[T], T] {
       def apply(a: SparseVector[T], b: SparseVector[T]): T = {
@@ -1486,8 +1466,7 @@ trait SparseVectorOps { this: SparseVector.type =>
           off2 += 1
         }
 
-        if (off2 < from2.activeSize && from.indexAt(off1) == from2.indexAt(
-            off2)) {
+        if (off2 < from2.activeSize && from.indexAt(off1) == from2.indexAt(off2)) {
           val index = from2.indexAt(off2)
           vb.add(index, fn(index, from.valueAt(off1), from2.valueAt(off2)))
           off2 += 1
@@ -1528,16 +1507,10 @@ trait SparseVectorOps { this: SparseVector.type =>
 trait SparseVector_DenseMatrixOps { this: SparseVector.type =>
   @expand
   @expand.valify
-  implicit def implOpMulMatrix_DM_SV_eq_DV[@expand.args(
-    Int,
-    Float,
-    Long,
-    Double) T]
+  implicit def implOpMulMatrix_DM_SV_eq_DV[@expand.args(Int, Float, Long, Double) T]
       : OpMulMatrix.Impl2[DenseMatrix[T], SparseVector[T], DenseVector[T]] = {
     new OpMulMatrix.Impl2[DenseMatrix[T], SparseVector[T], DenseVector[T]] {
-      override def apply(
-          v: DenseMatrix[T],
-          v2: SparseVector[T]): DenseVector[T] = {
+      override def apply(v: DenseMatrix[T], v2: SparseVector[T]): DenseVector[T] = {
         require(v.cols == v2.length)
         val result = DenseVector.zeros[T](v.rows)
         cforRange(0 until v2.activeSize) { i =>
@@ -1546,11 +1519,9 @@ trait SparseVector_DenseMatrixOps { this: SparseVector.type =>
 
         result
       }
-      implicitly[BinaryRegistry[
-        DenseMatrix[T],
-        Vector[T],
-        OpMulMatrix.type,
-        DenseVector[T]]].register(this)
+      implicitly[
+        BinaryRegistry[DenseMatrix[T], Vector[T], OpMulMatrix.type, DenseVector[T]]]
+        .register(this)
     }
 
   }

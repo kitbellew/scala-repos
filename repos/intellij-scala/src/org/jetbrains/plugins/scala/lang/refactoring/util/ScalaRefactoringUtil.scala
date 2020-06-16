@@ -989,9 +989,7 @@ object ScalaRefactoringUtil {
     invokesNext(currentSelectedElement)
   }
 
-  private def getElementOnCaretOffset(
-      file: PsiFile,
-      editor: Editor): PsiElement = {
+  private def getElementOnCaretOffset(file: PsiFile, editor: Editor): PsiElement = {
     val offset = editor.getCaretModel.getOffset
     val element: PsiElement = file.findElementAt(offset) match {
       case w: PsiWhiteSpace
@@ -1120,8 +1118,7 @@ object ScalaRefactoringUtil {
 
     val guard: ScGuard = PsiTreeUtil.getParentOfType(expr, classOf[ScGuard])
     if (guard != null && guard.getParent.isInstanceOf[ScCaseClause])
-      errorMessage =
-        ScalaBundle.message("refactoring.is.not.supported.in.guard")
+      errorMessage = ScalaBundle.message("refactoring.is.not.supported.in.guard")
 
     expr match {
       case block: ScBlock if !block.hasRBrace && block.statements.size != 1 =>

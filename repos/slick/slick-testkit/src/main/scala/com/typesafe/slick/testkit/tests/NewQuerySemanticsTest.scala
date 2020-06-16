@@ -253,20 +253,8 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
             .map { r3b =>
               r3b shouldBe Set(
                 ("Colombian", "Acme, Inc.", "Colombian", 0, 799, 42),
-                (
-                  "French_Roast",
-                  "Superior Coffee",
-                  "French_Roast",
-                  0,
-                  1598,
-                  42),
-                (
-                  "Colombian_Decaf",
-                  "Acme, Inc.",
-                  "Colombian_Decaf",
-                  0,
-                  3396,
-                  42)
+                ("French_Roast", "Superior Coffee", "French_Roast", 0, 1598, 42),
+                ("Colombian_Decaf", "Acme, Inc.", "Colombian_Decaf", 0, 3396, 42)
               )
             }
         _ <- ifCap(rcap.pagingNested) {
@@ -418,14 +406,10 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
         q8b.result.named("Nested outer join").map(_.toSet).map { r8b =>
           r8b shouldBe Set(
             (
-              (
-                ("Colombian", 101, 799, 1, 0),
-                Some(("Colombian", 101, 799, 1, 0))),
+              (("Colombian", 101, 799, 1, 0), Some(("Colombian", 101, 799, 1, 0))),
               Some(("Colombian", 101, 799, 1, 0))),
             (
-              (
-                ("Colombian", 101, 799, 1, 0),
-                Some(("Colombian", 101, 799, 1, 0))),
+              (("Colombian", 101, 799, 1, 0), Some(("Colombian", 101, 799, 1, 0))),
               Some(("Colombian_Decaf", 101, 849, 4, 0)))
           )
         }
@@ -710,8 +694,7 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
       _ <- mark("q8", q8.result).map(_ shouldBe Seq("c", "a", "a"))
       _ <- mark("q9a", q9a.result).map(_ shouldBe Seq(3, 1, 2))
       _ <- mark("q9b", q9b.result).map(_ shouldBe Seq(3, 1, 2))
-      _ <-
-        mark("q10", q10.result).map(_ shouldBe Seq(1, 2, 3, 4, 5, 6, 7, 8, 9))
+      _ <- mark("q10", q10.result).map(_ shouldBe Seq(1, 2, 3, 4, 5, 6, 7, 8, 9))
       _ <- mark("q11a", q11a.result).map(_ shouldBe Seq(1, 2, 3, 4, 5))
       _ <- mark("q11b", q11b.result).map(_ shouldBe Seq(1, 2, 3))
       _ <- mark("q11c", q11c.result).map(_ shouldBe Seq(2, 3))

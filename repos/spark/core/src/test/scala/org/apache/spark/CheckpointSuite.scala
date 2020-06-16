@@ -322,8 +322,8 @@ class CheckpointSuite
           output.close()
         }
 
-        val newRDD = sc.checkpointFile[(Int, Int)](
-          rddWithPartitioner.getCheckpointFile.get)
+        val newRDD =
+          sc.checkpointFile[(Int, Int)](rddWithPartitioner.getCheckpointFile.get)
         assert(
           newRDD.collect().toSet === rddWithPartitioner.collect().toSet,
           "RDD not recovered")

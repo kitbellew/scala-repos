@@ -317,10 +317,7 @@ class ScParameterizedTypeElementImpl(node: ASTNode)
                                 0,
                                 math.min(lowerBound, upperBound))
                               processor.execute(
-                                new ScSyntheticClass(
-                                  getManager,
-                                  actualText,
-                                  Any),
+                                new ScSyntheticClass(getManager, actualText, Any),
                                 state)
                             }
                           }

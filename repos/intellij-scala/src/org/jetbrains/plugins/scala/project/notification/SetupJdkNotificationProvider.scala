@@ -39,13 +39,10 @@ class SetupJdkNotificationProvider(
 
   override def getKey = ProviderKey
 
-  override def createNotificationPanel(
-      file: VirtualFile,
-      fileEditor: FileEditor) = {
+  override def createNotificationPanel(file: VirtualFile, fileEditor: FileEditor) = {
     val jdk = Option(PsiManager.getInstance(project).findFile(file))
       .filter(_.getLanguage == ScalaLanguage.Instance)
-      .flatMap(psiFile =>
-        Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
+      .flatMap(psiFile => Option(ModuleUtilCore.findModuleForPsiElement(psiFile)))
       .map(module => ModuleRootManager.getInstance(module).getSdk)
 
     if (jdk.exists(_ == null))

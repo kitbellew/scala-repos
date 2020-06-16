@@ -4,11 +4,7 @@ import mesosphere.marathon.api.TestAuthFixture
 import mesosphere.marathon.state.{GroupManager, Timestamp, AppDefinition}
 import mesosphere.marathon.state.PathId._
 import mesosphere.marathon.test.Mockito
-import mesosphere.marathon.{
-  MarathonConf,
-  MarathonSchedulerService,
-  MarathonSpec
-}
+import mesosphere.marathon.{MarathonConf, MarathonSchedulerService, MarathonSpec}
 import org.scalatest.{GivenWhenThen, Matchers}
 
 import scala.concurrent.Future

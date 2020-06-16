@@ -132,8 +132,7 @@ class AnalysisErrorSuite extends AnalysisTest {
 
   errorTest(
     "single invalid type, single arg",
-    testRelation.select(
-      TestFunction(dateLit :: Nil, IntegerType :: Nil).as('a)),
+    testRelation.select(TestFunction(dateLit :: Nil, IntegerType :: Nil).as('a)),
     "cannot resolve" :: "testfunction(CAST(NULL AS DATE))" :: "argument 1" :: "requires int type" ::
       "'CAST(NULL AS DATE)' is of date type" :: Nil
   )
@@ -194,10 +193,7 @@ class AnalysisErrorSuite extends AnalysisTest {
         WindowSpecDefinition(
           UnresolvedAttribute("a") :: Nil,
           SortOrder(UnresolvedAttribute("b"), Ascending) :: Nil,
-          SpecifiedWindowFrame(
-            RangeFrame,
-            ValueFollowing(1),
-            ValueFollowing(2)))
+          SpecifiedWindowFrame(RangeFrame, ValueFollowing(1), ValueFollowing(2)))
       ).as('window)),
     "window frame" :: "must match the required frame" :: Nil
   )
@@ -384,10 +380,7 @@ class AnalysisErrorSuite extends AnalysisTest {
         .add("f2", StringType, nullable = true),
       new StructType()
         .add("f1", FloatType, nullable = true)
-        .add(
-          "f2",
-          ArrayType(BooleanType, containsNull = true),
-          nullable = true),
+        .add("f2", ArrayType(BooleanType, containsNull = true), nullable = true),
       new GroupableUDT()
     )
     supportedDataTypes.foreach { dataType =>

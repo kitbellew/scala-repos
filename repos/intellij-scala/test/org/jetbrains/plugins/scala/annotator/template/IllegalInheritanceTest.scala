@@ -57,8 +57,7 @@ class IllegalInheritanceTest extends AnnotatorTestBase(IllegalInheritance) {
 
     val m2 = IllegalInheritance.Message("Holder.C", "Holder.X")
     assertMatches(
-      messages(
-        "trait X; trait T { self: X => }; class C extends Object with T")) {
+      messages("trait X; trait T { self: X => }; class C extends Object with T")) {
       case Error("T", _) :: Nil =>
     }
 

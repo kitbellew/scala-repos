@@ -137,10 +137,7 @@ trait CompilerControl { self: Global =>
   @deprecated(
     "Use `askLoadedTyped` instead to avoid race conditions in the typechecker",
     "2.10.1")
-  def askType(
-      source: SourceFile,
-      forceReload: Boolean,
-      response: Response[Tree]) =
+  def askType(source: SourceFile, forceReload: Boolean, response: Response[Tree]) =
     postWorkItem(new AskTypeItem(source, forceReload, response))
 
   /** Sets sync var `response` to the position of the definition of the given link in
@@ -354,9 +351,7 @@ trait CompilerControl { self: Global =>
       response raise new MissingResponse
   }
 
-  case class FilesDeletedItem(
-      sources: List[SourceFile],
-      response: Response[Unit])
+  case class FilesDeletedItem(sources: List[SourceFile], response: Response[Unit])
       extends WorkItem {
     def apply() = filesDeleted(sources, response)
     override def toString = "files deleted " + sources
@@ -386,9 +381,7 @@ trait CompilerControl { self: Global =>
       response raise new MissingResponse
   }
 
-  case class AskTypeCompletionItem(
-      pos: Position,
-      response: Response[List[Member]])
+  case class AskTypeCompletionItem(pos: Position, response: Response[List[Member]])
       extends WorkItem {
     def apply() = self.getTypeCompletion(pos, response)
     override def toString = "type completion " + pos.source + " " + pos.show

@@ -180,10 +180,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
     accounts.post(accountId + "/password/reset")(request)
   }
 
-  def resetPassword(
-      accountId: AccountId,
-      tokenId: ResetTokenId,
-      newPass: String) = {
+  def resetPassword(accountId: AccountId, tokenId: ResetTokenId, newPass: String) = {
     val request: JValue = JObject(JField("password", JString(newPass)) :: Nil)
     accounts.post(accountId + "/password/reset/" + tokenId)(request)
   }
@@ -213,8 +210,7 @@ class AccountServiceSpec extends TestAccountService with Tags {
         id
 
       case error =>
-        sys.error(
-          "Invalid response from server when creating account: " + error)
+        sys.error("Invalid response from server when creating account: " + error)
     }
   }
 

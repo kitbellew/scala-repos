@@ -100,8 +100,7 @@ private[http] object RouteImplementation
           extractRequestContext.flatMap { ctx ⇒
             extractions
               .map { e ⇒
-                e.directive.flatMap(
-                  addExtraction(e.asInstanceOf[RequestVal[Any]], _))
+                e.directive.flatMap(addExtraction(e.asInstanceOf[RequestVal[Any]], _))
               }
               .reduce(_ & _)
           }

@@ -73,8 +73,6 @@ class InputStreamReader private[io] (
 
 object InputStreamReader {
   val DefaultMaxBufferSize = 4096
-  def apply(
-      inputStream: InputStream,
-      maxBufferSize: Int = DefaultMaxBufferSize) =
+  def apply(inputStream: InputStream, maxBufferSize: Int = DefaultMaxBufferSize) =
     new InputStreamReader(inputStream, maxBufferSize)
 }

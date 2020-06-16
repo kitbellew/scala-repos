@@ -368,8 +368,7 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
       val possiblePositions = positionsOnLine(file, lineNumber)
       val currentMethod = location.method()
 
-      lazy val (isDefaultArg, defaultArgIndex) = isDefaultArgument(
-        currentMethod)
+      lazy val (isDefaultArg, defaultArgIndex) = isDefaultArgument(currentMethod)
 
       def findPsiElementForIndyLambda(): Option[PsiElement] = {
         val lambdas = lambdasOnLine(file, lineNumber)
@@ -812,9 +811,7 @@ object ScalaPositionManager {
       val startLine = document.getLineStartOffset(lineNumber)
       val endLine = document.getLineEndOffset(lineNumber)
 
-      def elementsOnTheLine(
-          file: ScalaFile,
-          lineNumber: Int): Seq[PsiElement] = {
+      def elementsOnTheLine(file: ScalaFile, lineNumber: Int): Seq[PsiElement] = {
         val result = ArrayBuffer[PsiElement]()
         var elem = file.findElementAt(startLine)
 

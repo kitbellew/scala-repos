@@ -62,8 +62,7 @@ object SpinnerValueFactory {
     * @tparam T The type of the elements in the List.
     */
   class ListSpinnerValueFactory[T](
-      override val delegate: jfxsc.SpinnerValueFactory.ListSpinnerValueFactory[
-        T])
+      override val delegate: jfxsc.SpinnerValueFactory.ListSpinnerValueFactory[T])
       extends SpinnerValueFactory(delegate)
       with SFXDelegate[jfxsc.SpinnerValueFactory.ListSpinnerValueFactory[T]] {
 
@@ -74,8 +73,7 @@ object SpinnerValueFactory {
       * @param items The list of items to step through with the Spinner.
       */
     def this(items: ObservableBuffer[T]) {
-      this(
-        new jfxsc.SpinnerValueFactory.ListSpinnerValueFactory(items.delegate))
+      this(new jfxsc.SpinnerValueFactory.ListSpinnerValueFactory(items.delegate))
     }
 
     /**

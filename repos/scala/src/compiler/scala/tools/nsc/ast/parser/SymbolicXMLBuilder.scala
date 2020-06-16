@@ -182,15 +182,7 @@ abstract class SymbolicXMLBuilder(p: Parsers#Parser, preserveWS: Boolean) {
       case (Some(pre), rest) => (const(pre), const(rest))
       case _                 => (wild, const(n))
     }
-    mkXML(
-      pos,
-      isPattern = true,
-      prepat,
-      labpat,
-      null,
-      null,
-      empty = false,
-      args)
+    mkXML(pos, isPattern = true, prepat, labpat, null, null, empty = false, args)
   }
 
   protected def convertToTextPat(t: Tree): Tree =

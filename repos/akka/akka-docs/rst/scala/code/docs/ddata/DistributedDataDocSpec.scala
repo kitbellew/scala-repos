@@ -123,8 +123,7 @@ class DistributedDataDocSpec extends AkkaSpec(DistributedDataDocSpec.config) {
     replicator ! Update(Set1Key, GSet.empty[String], writeTo3)(_ + "hello")
 
     val writeMajority = WriteMajority(timeout = 5.seconds)
-    replicator ! Update(Set2Key, ORSet.empty[String], writeMajority)(
-      _ + "hello")
+    replicator ! Update(Set2Key, ORSet.empty[String], writeMajority)(_ + "hello")
 
     val writeAll = WriteAll(timeout = 5.seconds)
     replicator ! Update(ActiveFlagKey, Flag.empty, writeAll)(_.switchOn)
@@ -164,8 +163,7 @@ class DistributedDataDocSpec extends AkkaSpec(DistributedDataDocSpec.config) {
       case "increment" =>
         // incoming command to increase the counter
         val upd =
-          Update(Counter1Key, PNCounter(), writeTwo, request = Some(sender()))(
-            _ + 1)
+          Update(Counter1Key, PNCounter(), writeTwo, request = Some(sender()))(_ + 1)
         replicator ! upd
 
       case UpdateSuccess(Counter1Key, Some(replyTo: ActorRef)) =>

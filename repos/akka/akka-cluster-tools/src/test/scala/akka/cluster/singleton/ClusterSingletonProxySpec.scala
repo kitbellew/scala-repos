@@ -48,8 +48,8 @@ object ClusterSingletonProxySpec {
         ClusterSingletonManager.props(
           singletonProps = Props[Singleton],
           terminationMessage = PoisonPill,
-          settings = ClusterSingletonManagerSettings(system).withRemovalMargin(
-            5.seconds)),
+          settings =
+            ClusterSingletonManagerSettings(system).withRemovalMargin(5.seconds)),
         name = "singletonManager"
       )
     }

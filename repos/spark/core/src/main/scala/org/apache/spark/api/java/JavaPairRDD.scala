@@ -342,8 +342,9 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * Approximate version of countByKey that can return a partial result if it does
     * not finish within a timeout.
     */
-  def countByKeyApprox(timeout: Long, confidence: Double = 0.95)
-      : PartialResult[java.util.Map[K, BoundedDouble]] =
+  def countByKeyApprox(
+      timeout: Long,
+      confidence: Double = 0.95): PartialResult[java.util.Map[K, BoundedDouble]] =
     rdd.countByKeyApprox(timeout, confidence).map(mapAsSerializableJavaMap)
 
   /**
@@ -433,9 +434,7 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
     * also perform the merging locally on each mapper before sending results to a reducer, similarly
     * to a "combiner" in MapReduce. Output will be hash-partitioned with numPartitions partitions.
     */
-  def reduceByKey(
-      func: JFunction2[V, V, V],
-      numPartitions: Int): JavaPairRDD[K, V] =
+  def reduceByKey(func: JFunction2[V, V, V], numPartitions: Int): JavaPairRDD[K, V] =
     fromRDD(rdd.reduceByKey(func, numPartitions))
 
   /**
@@ -782,9 +781,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       other1: JavaPairRDD[K, W1],
       other2: JavaPairRDD[K, W2],
       other3: JavaPairRDD[K, W3],
-      partitioner: Partitioner): JavaPairRDD[
-    K,
-    (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3])] =
+      partitioner: Partitioner)
+      : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3])] =
     fromRDD(
       cogroupResult3ToJava(rdd.cogroup(other1, other2, other3, partitioner)))
 
@@ -812,9 +810,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
   def cogroup[W1, W2, W3](
       other1: JavaPairRDD[K, W1],
       other2: JavaPairRDD[K, W2],
-      other3: JavaPairRDD[K, W3]): JavaPairRDD[
-    K,
-    (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3])] =
+      other3: JavaPairRDD[K, W3])
+      : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3])] =
     fromRDD(cogroupResult3ToJava(rdd.cogroup(other1, other2, other3)))
 
   /**
@@ -846,9 +843,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
       other1: JavaPairRDD[K, W1],
       other2: JavaPairRDD[K, W2],
       other3: JavaPairRDD[K, W3],
-      numPartitions: Int): JavaPairRDD[
-    K,
-    (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3])] =
+      numPartitions: Int)
+      : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3])] =
     fromRDD(
       cogroupResult3ToJava(rdd.cogroup(other1, other2, other3, numPartitions)))
 
@@ -866,9 +862,8 @@ class JavaPairRDD[K, V](val rdd: RDD[(K, V)])(
   def groupWith[W1, W2, W3](
       other1: JavaPairRDD[K, W1],
       other2: JavaPairRDD[K, W2],
-      other3: JavaPairRDD[K, W3]): JavaPairRDD[
-    K,
-    (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3])] =
+      other3: JavaPairRDD[K, W3])
+      : JavaPairRDD[K, (JIterable[V], JIterable[W1], JIterable[W2], JIterable[W3])] =
     fromRDD(cogroupResult3ToJava(rdd.groupWith(other1, other2, other3)))
 
   /**

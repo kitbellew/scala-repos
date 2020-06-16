@@ -245,8 +245,7 @@ class ReflectiveCallTest {
     assertEquals(1, y.foo(Some("hello")).asInstanceOf[js.Any])
   }
 
-  @Test def should_work_on_java_lang_Object_notify_notifyAll_issue_303()
-      : Unit = {
+  @Test def should_work_on_java_lang_Object_notify_notifyAll_issue_303(): Unit = {
     type ObjNotifyLike = Any {
       def notify(): Unit
       def notifyAll(): Unit
@@ -302,10 +301,7 @@ class ReflectiveCallTest {
       def isNaN(): Boolean
       def isInfinite(): Boolean
     }
-    def test(
-        x: FloatingNumberLike,
-        isNaN: Boolean,
-        isInfinite: Boolean): Unit = {
+    def test(x: FloatingNumberLike, isNaN: Boolean, isInfinite: Boolean): Unit = {
       assertEquals(isNaN, x.isNaN())
       assertEquals(isInfinite, x.isInfinite())
     }

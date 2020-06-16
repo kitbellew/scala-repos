@@ -535,8 +535,7 @@ case class Sum[R, C, V](
 
   override lazy val toTypedPipe: TypedPipe[(R, C, V)] = {
     if (left.equals(right)) {
-      left.optimizedSelf.toTypedPipe.map(v =>
-        (v._1, v._2, mon.plus(v._3, v._3)))
+      left.optimizedSelf.toTypedPipe.map(v => (v._1, v._2, mon.plus(v._3, v._3)))
     } else {
       collectAddends(this)
         .reduce((x, y) => x ++ y)
@@ -757,8 +756,7 @@ object Matrix2 {
     */
   def optimizeProductChain[V](
       p: IndexedSeq[Matrix2[Any, Any, V]],
-      product: Option[(Ring[V], MatrixJoiner2)])
-      : (BigInt, Matrix2[Any, Any, V]) = {
+      product: Option[(Ring[V], MatrixJoiner2)]): (BigInt, Matrix2[Any, Any, V]) = {
 
     val subchainCosts = HashMap.empty[(Int, Int), BigInt]
 
@@ -846,8 +844,7 @@ object Matrix2 {
         case element @ MatrixLiteral(_, _) => (List(element), 0, None, None)
         // two potential basic blocks connected by a sum
         case Sum(left, right, mon) => {
-          val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(
-            left)
+          val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(left)
           val (lastRChain, lastCost2, ringR, joinerR) = optimizeBasicBlocks(
             right)
           val (cost1, newLeft) =
@@ -861,8 +858,7 @@ object Matrix2 {
             joinerL.orElse(joinerR))
         }
         case HadamardProduct(left, right, ring) => {
-          val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(
-            left)
+          val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(left)
           val (lastRChain, lastCost2, ringR, joinerR) = optimizeBasicBlocks(
             right)
           val (cost1, newLeft) =
@@ -877,8 +873,7 @@ object Matrix2 {
         }
         // chain (...something...)*(...something...)
         case p @ Product(left, right, ring, _) => {
-          val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(
-            left)
+          val (lastLChain, lastCost1, ringL, joinerL) = optimizeBasicBlocks(left)
           val (lastRChain, lastCost2, ringR, joinerR) = optimizeBasicBlocks(
             right)
           (

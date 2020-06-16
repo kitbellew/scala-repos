@@ -10,9 +10,8 @@ import scala.collection.{breakOut, immutable}
 
 abstract class Dns {
   def cached(name: String): Option[Dns.Resolved] = None
-  def resolve(name: String)(
-      system: ActorSystem,
-      sender: ActorRef): Option[Dns.Resolved] = {
+  def resolve(
+      name: String)(system: ActorSystem, sender: ActorRef): Option[Dns.Resolved] = {
     val ret = cached(name)
     if (ret.isEmpty)
       IO(Dns)(system).tell(Dns.Resolve(name), sender)

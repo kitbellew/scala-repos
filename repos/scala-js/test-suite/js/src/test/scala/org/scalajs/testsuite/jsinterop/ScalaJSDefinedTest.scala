@@ -611,9 +611,7 @@ class ScalaJSDefinedTest {
     assertEquals(0, new OverloadedConstructorWithRepeatedParameters().sum)
     assertEquals(1, new OverloadedConstructorWithRepeatedParameters(1).sum)
     assertEquals(3, new OverloadedConstructorWithRepeatedParameters(1, 2).sum)
-    assertEquals(
-      7,
-      new OverloadedConstructorWithRepeatedParameters(1, 2, 4).sum)
+    assertEquals(7, new OverloadedConstructorWithRepeatedParameters(1, 2, 4).sum)
 
     assertEquals(3, new OverloadedConstructorWithRepeatedParameters("abc").sum)
     assertEquals(
@@ -721,8 +719,7 @@ class ScalaJSDefinedTest {
     }
 
     @ScalaJSDefined
-    class OverrideDefaultParametersChild
-        extends OverrideDefaultParametersParent {
+    class OverrideDefaultParametersChild extends OverrideDefaultParametersParent {
       override def bar(x: Int, y: Int = 10): Int = super.bar(x, y)
       override def dependent(x: Int)(y: Int = x * 2): Int = x + y
     }

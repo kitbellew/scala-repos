@@ -157,9 +157,7 @@ private[hive] class SparkHiveWriterContainer(
     jID =
       new SerializableWritable[JobID](SparkHadoopWriter.createJobID(now, jobId))
     taID = new SerializableWritable[TaskAttemptID](
-      new TaskAttemptID(
-        new TaskID(jID.value, TaskType.MAP, splitID),
-        attemptID))
+      new TaskAttemptID(new TaskID(jID.value, TaskType.MAP, splitID), attemptID))
   }
 
   private def setConfParams() {
@@ -196,9 +194,7 @@ private[hive] class SparkHiveWriterContainer(
   }
 
   // this function is executed on executor side
-  def writeToFile(
-      context: TaskContext,
-      iterator: Iterator[InternalRow]): Unit = {
+  def writeToFile(context: TaskContext, iterator: Iterator[InternalRow]): Unit = {
     val (serializer, standardOI, fieldOIs, dataTypes, wrappers, outputData) =
       prepareForWrite()
     executorSideSetup(

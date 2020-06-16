@@ -213,12 +213,12 @@ object Expressions {
   val varargslist: P[Ast.arguments] = {
     val named_arg = P(fpdef ~ ("=" ~ test).?)
     val x = P(
-      named_arg.rep(sep =
-        ",") ~ ",".? ~ ("*" ~ NAME).? ~ ",".? ~ ("**" ~ NAME).?).map {
-      case (normal_args, starargs, kwargs) =>
-        val (args, defaults) = normal_args.unzip
-        Ast.arguments(args, starargs, kwargs, defaults.flatten)
-    }
+      named_arg.rep(sep = ",") ~ ",".? ~ ("*" ~ NAME).? ~ ",".? ~ ("**" ~ NAME).?)
+      .map {
+        case (normal_args, starargs, kwargs) =>
+          val (args, defaults) = normal_args.unzip
+          Ast.arguments(args, starargs, kwargs, defaults.flatten)
+      }
     P(x)
   }
 

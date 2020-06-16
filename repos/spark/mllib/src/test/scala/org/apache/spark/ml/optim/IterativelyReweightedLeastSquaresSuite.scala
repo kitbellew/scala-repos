@@ -105,10 +105,8 @@ class IterativelyReweightedLeastSquaresSuite
         regParam = 0.0,
         maxIter = 25,
         tol = 1e-8).fit(instances1)
-      val actual = Vectors.dense(
-        irls.intercept,
-        irls.coefficients(0),
-        irls.coefficients(1))
+      val actual =
+        Vectors.dense(irls.intercept, irls.coefficients(0), irls.coefficients(1))
       assert(actual ~== expected(idx) absTol 1e-4)
       idx += 1
     }
@@ -153,10 +151,8 @@ class IterativelyReweightedLeastSquaresSuite
         regParam = 0.0,
         maxIter = 25,
         tol = 1e-8).fit(instances2)
-      val actual = Vectors.dense(
-        irls.intercept,
-        irls.coefficients(0),
-        irls.coefficients(1))
+      val actual =
+        Vectors.dense(irls.intercept, irls.coefficients(0), irls.coefficients(1))
       assert(actual ~== expected(idx) absTol 1e-4)
       idx += 1
     }
@@ -177,9 +173,8 @@ class IterativelyReweightedLeastSquaresSuite
        [1] 1.266667 0.400000
        [1] 29.5 17.0 -5.5
      */
-    val expected = Seq(
-      Vectors.dense(0.0, 1.266667, 0.400000),
-      Vectors.dense(29.5, 17.0, -5.5))
+    val expected =
+      Seq(Vectors.dense(0.0, 1.266667, 0.400000), Vectors.dense(29.5, 17.0, -5.5))
 
     import IterativelyReweightedLeastSquaresSuite._
 
@@ -197,10 +192,8 @@ class IterativelyReweightedLeastSquaresSuite
         regParam = 0.0,
         maxIter = 200,
         tol = 1e-7).fit(instances2)
-      val actual = Vectors.dense(
-        irls.intercept,
-        irls.coefficients(0),
-        irls.coefficients(1))
+      val actual =
+        Vectors.dense(irls.intercept, irls.coefficients(0), irls.coefficients(1))
       assert(actual ~== expected(idx) absTol 1e-4)
       idx += 1
     }

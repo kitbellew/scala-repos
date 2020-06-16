@@ -63,8 +63,7 @@ object BuildCapabilitiesTable extends App {
   try {
     val wr = new PrintWriter(
       new BufferedWriter(new OutputStreamWriter(out, "UTF-8")))
-    wr.println(
-      "Capability," + profileNames.map(n => s":api:`$n`").mkString(","))
+    wr.println("Capability," + profileNames.map(n => s":api:`$n`").mkString(","))
     for ((cap, link) <- capabilities) {
       val flags = profiles.map(d => d.capabilities.contains(cap))
       wr.println(

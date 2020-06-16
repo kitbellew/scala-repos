@@ -294,8 +294,7 @@ trait SliceTransforms[M[+_]]
                 val unifiedNum = new AndLotsColumn(testedNum)
                 val unified = new BoolColumn {
                   def isDefinedAt(row: Int): Boolean =
-                    unifiedNonNum.isDefinedAt(row) || unifiedNum.isDefinedAt(
-                      row)
+                    unifiedNonNum.isDefinedAt(row) || unifiedNum.isDefinedAt(row)
                   def apply(row: Int): Boolean = {
                     val left =
                       !unifiedNonNum.isDefinedAt(row) || unifiedNonNum(row)
@@ -358,8 +357,7 @@ trait SliceTransforms[M[+_]]
 
                 Map(
                   ColumnRef(CPath.Identity, CBoolean) -> (if (invert)
-                                                            complement(
-                                                              aggregate)
+                                                            complement(aggregate)
                                                           else aggregate))
               }
             }
@@ -1022,10 +1020,8 @@ trait SliceTransforms[M[+_]]
         case (
               SliceTransform1SMS(sta, stb, stc),
               SliceTransform1SMS(std, ste, stf)) =>
-          val st = SliceTransform1SMS(
-            sta,
-            stb andThen stc andThen std andThen ste,
-            stf)
+          val st =
+            SliceTransform1SMS(sta, stb andThen stc andThen std andThen ste, stf)
           st.mapState(
             { case (a, (((b, c), d), e), f) => ((a, b, c), (d, e, f)) },
             { case ((a, b, c), (d, e, f)) => (a, (((b, c), d), e), f) })
@@ -1243,9 +1239,7 @@ trait SliceTransforms[M[+_]]
       MappedState1
     }
 
-    def liftM[A](
-        init: A,
-        f: (A, Slice, Slice) => (A, Slice)): SliceTransform2[A] =
+    def liftM[A](init: A, f: (A, Slice, Slice) => (A, Slice)): SliceTransform2[A] =
       SliceTransform2S(init, f)
 
     def apply[A](
@@ -1264,9 +1258,7 @@ trait SliceTransforms[M[+_]]
       st match {
         case (st: SliceTransform2S[_]) => mapS(st)(f)
         case SliceTransform2M(i, g) =>
-          SliceTransform2M(
-            i,
-            { case (a, sl, sr) => g(a, sl, sr) map (_ :-> f) })
+          SliceTransform2M(i, { case (a, sl, sr) => g(a, sl, sr) map (_ :-> f) })
         case SliceTransform2SM(sta, stb) => SliceTransform2SM(sta, stb map f)
         case SliceTransform2MS(sta, stb) =>
           SliceTransform2MS(sta, SliceTransform1.mapS(stb)(f))
@@ -1349,10 +1341,7 @@ trait SliceTransforms[M[+_]]
         case (a, sl, sr) => M point f0(a, sl, sr)
       }
       def advance(sl: Slice, sr: Slice): M[(SliceTransform2[A], Slice)] =
-        M point ({ (a: A) => SliceTransform2S[A](a, f0) } <-: f0(
-          initial,
-          sl,
-          sr))
+        M point ({ (a: A) => SliceTransform2S[A](a, f0) } <-: f0(initial, sl, sr))
     }
 
     private case class SliceTransform2M[A](

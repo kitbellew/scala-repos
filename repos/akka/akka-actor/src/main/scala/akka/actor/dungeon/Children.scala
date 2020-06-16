@@ -43,12 +43,7 @@ private[akka] trait Children { this: ActorCell ⇒
   def actorOf(props: Props): ActorRef =
     makeChild(this, props, randomName(), async = false, systemService = false)
   def actorOf(props: Props, name: String): ActorRef =
-    makeChild(
-      this,
-      props,
-      checkName(name),
-      async = false,
-      systemService = false)
+    makeChild(this, props, checkName(name), async = false, systemService = false)
   private[akka] def attachChild(
       props: Props,
       systemService: Boolean): ActorRef =
@@ -239,9 +234,7 @@ private[akka] trait Children { this: ActorCell ⇒
       case _ ⇒
     }
 
-  protected def resumeChildren(
-      causedByFailure: Throwable,
-      perp: ActorRef): Unit =
+  protected def resumeChildren(causedByFailure: Throwable, perp: ActorRef): Unit =
     childrenRefs.stats foreach {
       case ChildRestartStats(child: InternalActorRef, _, _) ⇒
         child.resume(if (perp == child) causedByFailure else null)

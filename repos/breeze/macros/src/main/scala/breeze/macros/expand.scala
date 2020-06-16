@@ -98,8 +98,8 @@ object expand {
           val grounded = substitute(c)(typeMap, valExpansions, rhs)
           val newvargs = valsToLeave
             .filterNot(_.isEmpty)
-            .map(_.map(
-              substitute(c)(typeMap, valExpansions, _).asInstanceOf[ValDef]))
+            .map(
+              _.map(substitute(c)(typeMap, valExpansions, _).asInstanceOf[ValDef]))
           val newtpt = substitute(c)(typeMap, valExpansions, tpt)
           val newName = newTermName(mkName(c)(name, typeMap))
           if (shouldValify) {

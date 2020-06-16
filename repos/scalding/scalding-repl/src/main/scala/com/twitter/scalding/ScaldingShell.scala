@@ -152,9 +152,7 @@ trait BaseScaldingShell extends MainGenericRunner {
     * @param jarFile that will be written.
     * @return the jarFile specified and written.
     */
-  private def createJar(
-      virtualDirectory: VirtualDirectory,
-      jarFile: File): File = {
+  private def createJar(virtualDirectory: VirtualDirectory, jarFile: File): File = {
     val jarStream = new JarOutputStream(new FileOutputStream(jarFile))
     try {
       addVirtualDirectoryToJar(virtualDirectory, "", jarStream)

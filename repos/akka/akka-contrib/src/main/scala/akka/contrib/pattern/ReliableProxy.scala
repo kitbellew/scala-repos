@@ -296,9 +296,7 @@ class ReliableProxy(
   }
 
   if (targetPath.address.host.isEmpty && self.path.address == targetPath.address) {
-    logDebug(
-      "Unnecessary to use ReliableProxy for local target: {}",
-      targetPath)
+    logDebug("Unnecessary to use ReliableProxy for local target: {}", targetPath)
   }
 
   override def supervisorStrategy =

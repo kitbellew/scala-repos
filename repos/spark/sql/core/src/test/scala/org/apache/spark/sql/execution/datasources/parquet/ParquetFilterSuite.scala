@@ -172,10 +172,7 @@ class ParquetFilterSuite
 
       checkFilterPredicate('_1 === 1, classOf[Eq[_]], 1)
       checkFilterPredicate('_1 <=> 1, classOf[Eq[_]], 1)
-      checkFilterPredicate(
-        '_1 =!= 1,
-        classOf[NotEq[_]],
-        (2 to 4).map(Row.apply(_)))
+      checkFilterPredicate('_1 =!= 1, classOf[NotEq[_]], (2 to 4).map(Row.apply(_)))
 
       checkFilterPredicate('_1 < 2, classOf[Lt[_]], 1)
       checkFilterPredicate('_1 > 3, classOf[Gt[_]], 4)
@@ -469,7 +466,8 @@ class ParquetFilterSuite
     }
   }
 
-  test("SPARK-11103: Filter applied on merged Parquet schema with new column fails") {
+  test(
+    "SPARK-11103: Filter applied on merged Parquet schema with new column fails") {
     import testImplicits._
 
     withSQLConf(
@@ -527,11 +525,9 @@ class ParquetFilterSuite
         // The fields "s.a" and "s.c" only exist in one Parquet file.
         val field = dfStruct3.schema("s").dataType.asInstanceOf[StructType]
         assert(
-          field("a").metadata.getBoolean(
-            StructType.metadataKeyForOptionalField))
+          field("a").metadata.getBoolean(StructType.metadataKeyForOptionalField))
         assert(
-          field("c").metadata.getBoolean(
-            StructType.metadataKeyForOptionalField))
+          field("c").metadata.getBoolean(StructType.metadataKeyForOptionalField))
 
         val pathSix = s"${dir.getCanonicalPath}/table6"
         dfStruct3.write.parquet(pathSix)

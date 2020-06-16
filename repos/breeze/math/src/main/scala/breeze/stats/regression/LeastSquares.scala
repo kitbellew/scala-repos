@@ -35,9 +35,7 @@ private object leastSquaresImplementation {
 
     val resultVec =
       new DenseVector[Double](Arrays.copyOf(outputs.data, data.cols))
-    LeastSquaresRegressionResult(
-      resultVec,
-      math.pow(outputs.data(data.cols + 1), 2))
+    LeastSquaresRegressionResult(resultVec, math.pow(outputs.data(data.cols + 1), 2))
   }
 }
 

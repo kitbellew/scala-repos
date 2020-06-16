@@ -330,9 +330,7 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
 
   private def getBucketSpec: Option[BucketSpec] = {
     if (sortColumnNames.isDefined) {
-      require(
-        numBuckets.isDefined,
-        "sortBy must be used together with bucketBy")
+      require(numBuckets.isDefined, "sortBy must be used together with bucketBy")
     }
 
     for {
@@ -445,10 +443,7 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
     *                             should be included.
     * @since 1.4.0
     */
-  def jdbc(
-      url: String,
-      table: String,
-      connectionProperties: Properties): Unit = {
+  def jdbc(url: String, table: String, connectionProperties: Properties): Unit = {
     val props = new Properties()
     extraOptions.foreach {
       case (key, value) =>

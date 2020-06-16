@@ -196,8 +196,7 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
 
     val emailAddresses: Source[String, NotUsed] =
       authors
-        .mapAsyncUnordered(4)(author =>
-          addressSystem.lookupEmail(author.handle))
+        .mapAsyncUnordered(4)(author => addressSystem.lookupEmail(author.handle))
         .collect { case Some(emailAddress) => emailAddress }
 
     val sendEmails: RunnableGraph[NotUsed] =
@@ -243,8 +242,7 @@ class IntegrationDocSpec extends AkkaSpec(IntegrationDocSpec.config) {
       phoneNumbers
         .mapAsync(4)(phoneNo => {
           Future {
-            smsServer.send(
-              TextMessage(to = phoneNo, body = "I like your tweet"))
+            smsServer.send(TextMessage(to = phoneNo, body = "I like your tweet"))
           }(blockingExecutionContext)
         })
         .to(Sink.ignore)

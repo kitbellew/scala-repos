@@ -130,8 +130,9 @@ object FileContent {
           }
 
         case _ =>
-          Failure(Invalid(
-            "File contents " + jv.renderCompact + " was not properly encoded as a JSON object."))
+          Failure(
+            Invalid(
+              "File contents " + jv.renderCompact + " was not properly encoded as a JSON object."))
       }
     }
   }

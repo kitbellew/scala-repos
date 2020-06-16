@@ -57,10 +57,7 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
     * `vertices`. This operation modifies the `ReplicatedVertexView`, and callers can access `edges`
     * afterwards to obtain the upgraded view.
     */
-  def upgrade(
-      vertices: VertexRDD[VD],
-      includeSrc: Boolean,
-      includeDst: Boolean) {
+  def upgrade(vertices: VertexRDD[VD], includeSrc: Boolean, includeDst: Boolean) {
     val shipSrc = includeSrc && !hasSrcId
     val shipDst = includeDst && !hasDstId
     if (shipSrc || shipDst) {
@@ -96,8 +93,7 @@ private[impl] class ReplicatedVertexView[VD: ClassTag, ED: ClassTag](
   def withActiveSet(actives: VertexRDD[_]): ReplicatedVertexView[VD, ED] = {
     val shippedActives = actives
       .shipVertexIds()
-      .setName(
-        "ReplicatedVertexView.withActiveSet - shippedActives (broadcast)")
+      .setName("ReplicatedVertexView.withActiveSet - shippedActives (broadcast)")
       .partitionBy(edges.partitioner.get)
 
     val newEdges = edges.withPartitionsRDD(

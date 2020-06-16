@@ -132,10 +132,7 @@ private[akka] abstract class AbstractEventsByTagPublisher(
       receiveRecoverySuccess(highestSeqNr)
 
     case ReplayMessagesFailure(cause) ⇒
-      log.debug(
-        "replay failed for tag [{}], due to [{}]",
-        tag,
-        cause.getMessage)
+      log.debug("replay failed for tag [{}], due to [{}]", tag, cause.getMessage)
       deliverBuf()
       onErrorThenStop(cause)
 

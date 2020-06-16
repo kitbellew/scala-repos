@@ -84,8 +84,8 @@ trait Morphism1Like extends FunctionLike {
 }
 
 object Morphism1Like {
-  def unapply(m: Morphism1Like)
-      : Option[(Vector[String], String, Int, UnaryOperationType)] =
+  def unapply(
+      m: Morphism1Like): Option[(Vector[String], String, Int, UnaryOperationType)] =
     Some(m.namespace, m.name, m.opcode, m.tpe)
 }
 

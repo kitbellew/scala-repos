@@ -260,8 +260,8 @@ case class InputAdapter(child: SparkPlan)
       input,
       s"$input = inputs[0];")
 
-    val exprs = output.zipWithIndex.map(x =>
-      new BoundReference(x._2, x._1.dataType, true))
+    val exprs =
+      output.zipWithIndex.map(x => new BoundReference(x._2, x._1.dataType, true))
     val row = ctx.freshName("row")
     ctx.INPUT_ROW = row
     ctx.currentVars = null

@@ -51,10 +51,7 @@ import org.apache.spark.sql.functions._
 @Experimental
 final class DecisionTreeRegressor @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
-    extends Predictor[
-      Vector,
-      DecisionTreeRegressor,
-      DecisionTreeRegressionModel]
+    extends Predictor[Vector, DecisionTreeRegressor, DecisionTreeRegressionModel]
     with DecisionTreeRegressorParams
     with DefaultParamsWritable {
 
@@ -211,9 +208,8 @@ final class DecisionTreeRegressionModel private[ml] (
         output.withColumn($(predictionCol), predictUDF(col($(featuresCol))))
     }
     if (isDefined(varianceCol) && $(varianceCol).nonEmpty) {
-      output = output.withColumn(
-        $(varianceCol),
-        predictVarianceUDF(col($(featuresCol))))
+      output =
+        output.withColumn($(varianceCol), predictVarianceUDF(col($(featuresCol))))
     }
     output
   }

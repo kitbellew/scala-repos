@@ -88,8 +88,7 @@ object SnapshotFailureRobustnessSpec {
       super.deleteAsync(
         metadata
       ) // we actually delete it properly, but act as if it failed
-      Future.failed(
-        new IOException("Failed to delete snapshot for some reason!"))
+      Future.failed(new IOException("Failed to delete snapshot for some reason!"))
     }
 
     override def deleteAsync(
@@ -99,8 +98,7 @@ object SnapshotFailureRobustnessSpec {
         persistenceId,
         criteria
       ) // we actually delete it properly, but act as if it failed
-      Future.failed(
-        new IOException("Failed to delete snapshot for some reason!"))
+      Future.failed(new IOException("Failed to delete snapshot for some reason!"))
     }
   }
 }
@@ -148,8 +146,7 @@ class SnapshotFailureRobustnessSpec
       } finally {
         system.eventStream.unsubscribe(testActor, classOf[Logging.Error])
         system.eventStream.publish(
-          TestEvent.UnMute(
-            EventFilter.error(start = "Error loading snapshot [")))
+          TestEvent.UnMute(EventFilter.error(start = "Error loading snapshot [")))
       }
     }
 

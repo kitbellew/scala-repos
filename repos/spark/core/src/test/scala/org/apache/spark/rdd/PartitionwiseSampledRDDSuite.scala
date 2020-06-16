@@ -40,9 +40,7 @@ class MockSampler extends RandomSampler[Long, Long] {
   override def clone: MockSampler = new MockSampler
 }
 
-class PartitionwiseSampledRDDSuite
-    extends SparkFunSuite
-    with SharedSparkContext {
+class PartitionwiseSampledRDDSuite extends SparkFunSuite with SharedSparkContext {
 
   test("seed distribution") {
     val rdd = sc.makeRDD(Array(1L, 2L, 3L, 4L), 2)

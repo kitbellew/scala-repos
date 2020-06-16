@@ -773,10 +773,7 @@ class RichPresentationCompilerSpec
 trait RichPresentationCompilerTestUtils {
   val scala210 = Properties.versionNumberString.startsWith("2.10")
 
-  def compileScala(
-      paths: List[String],
-      target: File,
-      classPath: String): Unit = {
+  def compileScala(paths: List[String], target: File, classPath: String): Unit = {
     val settings = new Settings
     settings.outputDirs.setSingleOutput(target.getAbsolutePath)
     val reporter = new ConsoleReporter(settings)

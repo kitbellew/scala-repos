@@ -17,8 +17,7 @@ object ClusterMetricsDisabledMultiJvmSpec extends MultiNodeConfig {
   commonConfig(
     ConfigFactory
       .parseString("akka.cluster.metrics.enabled = off")
-      .withFallback(
-        MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
+      .withFallback(MultiNodeClusterSpec.clusterConfigWithFailureDetectorPuppet))
 }
 
 class ClusterMetricsDisabledMultiJvmNode1 extends ClusterMetricsDisabledSpec

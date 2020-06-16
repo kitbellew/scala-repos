@@ -55,11 +55,8 @@ object App extends Logging {
         val r = if (dbInit) {
           info(s"Initialized Event Store for this app ID: ${id}.")
           val accessKeys = storage.Storage.getMetaDataAccessKeys
-          val accessKey = accessKeys.insert(
-            storage.AccessKey(
-              key = ca.accessKey.accessKey,
-              appid = id,
-              events = Seq()))
+          val accessKey = accessKeys.insert(storage
+            .AccessKey(key = ca.accessKey.accessKey, appid = id, events = Seq()))
           accessKey map { k =>
             info("Created new app:")
             info(s"      Name: ${ca.app.name}")
@@ -383,7 +380,8 @@ object App extends Logging {
               info(s"Initialized Event Store of the channel ID: ${ch.id}")
               0
             } else {
-              error(s"Unable to initialize Event Store of the channel ID: ${ch.id}.")
+              error(
+                s"Unable to initialize Event Store of the channel ID: ${ch.id}.")
               1
             }
             r1 + r2

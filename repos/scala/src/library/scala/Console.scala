@@ -180,10 +180,10 @@ private[scala] abstract class DeprecatedConsole {
 
   @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readBoolean()
       : Boolean = StdIn.readBoolean()
-  @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readByte()
-      : Byte = StdIn.readByte()
-  @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readChar()
-      : Char = StdIn.readChar()
+  @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readByte(): Byte =
+    StdIn.readByte()
+  @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readChar(): Char =
+    StdIn.readChar()
   @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readDouble()
       : Double = StdIn.readDouble()
   @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readFloat()
@@ -195,8 +195,8 @@ private[scala] abstract class DeprecatedConsole {
   @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readLine(
       text: String,
       args: Any*): String = StdIn.readLine(text, args: _*)
-  @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readLong()
-      : Long = StdIn.readLong()
+  @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readLong(): Long =
+    StdIn.readLong()
   @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readShort()
       : Short = StdIn.readShort()
   @deprecated("Use the method in scala.io.StdIn", "2.11.0") def readf(

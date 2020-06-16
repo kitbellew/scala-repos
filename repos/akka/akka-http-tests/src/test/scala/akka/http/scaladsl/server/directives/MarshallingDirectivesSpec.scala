@@ -22,9 +22,7 @@ class MarshallingDirectivesSpec extends RoutingSpec with Inside {
 
   private val iso88592 = HttpCharsets.getForKey("iso-8859-2").get
   implicit val IntUnmarshaller: FromEntityUnmarshaller[Int] =
-    nodeSeqUnmarshaller(
-      ContentTypeRange(`text/xml`, iso88592),
-      `text/html`) map {
+    nodeSeqUnmarshaller(ContentTypeRange(`text/xml`, iso88592), `text/html`) map {
       case NodeSeq.Empty ⇒ throw Unmarshaller.NoContentException
       case x ⇒ { val i = x.text.toInt; require(i >= 0); i }
     }

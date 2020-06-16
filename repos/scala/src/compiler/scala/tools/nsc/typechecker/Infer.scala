@@ -342,8 +342,7 @@ trait Infer extends Checkable {
             tree setSymbol sym1 setType (
               pre match {
                 case _: SuperType =>
-                  owntype map (tp =>
-                    if (tp eq pre) site.symbol.thisType else tp)
+                  owntype map (tp => if (tp eq pre) site.symbol.thisType else tp)
                 case _ => owntype
               }
             )
@@ -550,8 +549,8 @@ trait Infer extends Checkable {
       }
 
       object AllArgsAndUndets {
-        def unapply(m: Result)
-            : Some[(List[Symbol], List[Type], List[Type], List[Symbol])] =
+        def unapply(
+            m: Result): Some[(List[Symbol], List[Type], List[Type], List[Symbol])] =
           Some(toLists {
             val (ok, nok) = m
               .map { case (p, a) => (p, a.getOrElse(null)) }
@@ -857,9 +856,7 @@ trait Infer extends Checkable {
         }
       canSendTuple && canReceiveTuple
     }
-    def eligibleForTupleConversion(
-        formals: List[Type],
-        argsCount: Int): Boolean =
+    def eligibleForTupleConversion(formals: List[Type], argsCount: Int): Boolean =
       formals match {
         case p :: Nil =>
           eligibleForTupleConversion(
@@ -891,9 +888,7 @@ trait Infer extends Checkable {
       *  a list containing the type of the tuple.  Otherwise, the original
       *  argument list.
       */
-    def tupleIfNecessary(
-        formals: List[Type],
-        argtpes: List[Type]): List[Type] = {
+    def tupleIfNecessary(formals: List[Type], argtpes: List[Type]): List[Type] = {
       if (eligibleForTupleConversion(formals, argtpes.size))
         typeAfterTupleConversion(argtpes) :: Nil
       else

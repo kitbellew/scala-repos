@@ -56,10 +56,7 @@ object IngestProcessing {
   }
 
   sealed trait IngestResult
-  case class BatchResult(
-      total: Int,
-      ingested: Int,
-      errors: Vector[(Int, String)])
+  case class BatchResult(total: Int, ingested: Int, errors: Vector[(Int, String)])
       extends IngestResult
   case class StreamingResult(ingested: Int, error: Option[String])
       extends IngestResult
@@ -95,8 +92,7 @@ trait IngestProcessing {
     * Build an ingest processor based only upon the request metadata. The type of HttpRequest is existential here
     * specifically to prohibit implementations from peeking at the data.
     */
-  def forRequest(
-      request: HttpRequest[_]): ValidationNel[String, IngestProcessor]
+  def forRequest(request: HttpRequest[_]): ValidationNel[String, IngestProcessor]
 
   trait IngestProcessorLike {
     def ingest(

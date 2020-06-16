@@ -637,9 +637,7 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
   /**
     * Flattens the left deep tree with the specified pattern into a list.
     */
-  private def flattenLeftDeepTree(
-      node: ASTNode,
-      pattern: Regex): Seq[ASTNode] = {
+  private def flattenLeftDeepTree(node: ASTNode, pattern: Regex): Seq[ASTNode] = {
     val collected = ArrayBuffer[ASTNode]()
     var rest = node
     while (rest match {
@@ -730,9 +728,7 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
       case Token(
             "TOK_FUNCTION",
             Token("TOK_DECIMAL", precision :: scale :: nil) :: arg :: Nil) =>
-        Cast(
-          nodeToExpr(arg),
-          DecimalType(precision.text.toInt, scale.text.toInt))
+        Cast(nodeToExpr(arg), DecimalType(precision.text.toInt, scale.text.toInt))
       case Token(
             "TOK_FUNCTION",
             Token("TOK_DECIMAL", precision :: Nil) :: arg :: Nil) =>
@@ -851,10 +847,7 @@ private[sql] class CatalystQl(val conf: ParserConf = SimpleParserConf())
       case Token("TOK_FUNCTIONDI", Token(name, Nil) :: args) =>
         UnresolvedFunction(name, args.map(nodeToExpr), isDistinct = true)
       case Token("TOK_FUNCTIONSTAR", Token(name, Nil) :: args) =>
-        UnresolvedFunction(
-          name,
-          UnresolvedStar(None) :: Nil,
-          isDistinct = false)
+        UnresolvedFunction(name, UnresolvedStar(None) :: Nil, isDistinct = false)
 
       /* Literals */
       case Token("TOK_NULL", Nil) => Literal.create(null, NullType)

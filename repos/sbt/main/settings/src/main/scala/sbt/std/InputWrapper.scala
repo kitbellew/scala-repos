@@ -196,9 +196,7 @@ object ParserInput {
 
   private[std] def wrap[T: c.WeakTypeTag](
       c: Context)(ts: c.Expr[Any], pos: c.Position): c.Expr[T] =
-    InputWrapper.wrapImpl[T, ParserInput.type](c, ParserInput, WrapName)(
-      ts,
-      pos)
+    InputWrapper.wrapImpl[T, ParserInput.type](c, ParserInput, WrapName)(ts, pos)
   private[std] def wrapInit[T: c.WeakTypeTag](
       c: Context)(ts: c.Expr[Any], pos: c.Position): c.Expr[T] =
     InputWrapper.wrapImpl[T, ParserInput.type](c, ParserInput, WrapInitName)(

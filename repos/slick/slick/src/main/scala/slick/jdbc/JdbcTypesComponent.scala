@@ -1,14 +1,6 @@
 package slick.jdbc
 
-import java.sql.{
-  Blob,
-  Clob,
-  Date,
-  Time,
-  Timestamp,
-  ResultSet,
-  PreparedStatement
-}
+import java.sql.{Blob, Clob, Date, Time, Timestamp, ResultSet, PreparedStatement}
 import java.util.UUID
 
 import scala.reflect.ClassTag

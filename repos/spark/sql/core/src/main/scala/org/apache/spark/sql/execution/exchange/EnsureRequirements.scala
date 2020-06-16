@@ -75,8 +75,7 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
             child.outputPartitioning match {
               case hash: HashPartitioning => true
               case collection: PartitioningCollection =>
-                collection.partitionings.forall(
-                  _.isInstanceOf[HashPartitioning])
+                collection.partitionings.forall(_.isInstanceOf[HashPartitioning])
               case _ => false
             }
         }
@@ -86,8 +85,7 @@ case class EnsureRequirements(conf: SQLConf) extends Rule[SparkPlan] {
         // these children may not be partitioned in the same way.
         // Please see the comment in withCoordinator for more details.
         val supportsDistribution =
-          requiredChildDistributions.forall(
-            _.isInstanceOf[ClusteredDistribution])
+          requiredChildDistributions.forall(_.isInstanceOf[ClusteredDistribution])
         children.length > 1 && supportsDistribution
       }
 

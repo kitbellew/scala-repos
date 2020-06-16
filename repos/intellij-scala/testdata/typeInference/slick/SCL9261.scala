@@ -15,9 +15,7 @@ object SCL9261 extends App {
       pshape: Shape[ColumnsShapeLevel, P, U, P]
   ) extends TableQuery(cons) {}
 
-  class T(tag: Tag)
-      extends Table[(Long, String)](tag, "test")
-      with HasId1[Long] {
+  class T(tag: Tag) extends Table[(Long, String)](tag, "test") with HasId1[Long] {
     def id = column[Long]("id")
     def value = column[String]("value")
     def * = (id, value)

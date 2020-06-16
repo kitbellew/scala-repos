@@ -309,9 +309,7 @@ abstract class ExtensionMethods extends Transform with TypingTransformers {
       }
     }
 
-    override def transformStats(
-        stats: List[Tree],
-        exprOwner: Symbol): List[Tree] =
+    override def transformStats(stats: List[Tree], exprOwner: Symbol): List[Tree] =
       super.transformStats(stats, exprOwner) map {
         case md @ ModuleDef(_, _, _) =>
           val extraStats = extensionDefs remove md.symbol match {

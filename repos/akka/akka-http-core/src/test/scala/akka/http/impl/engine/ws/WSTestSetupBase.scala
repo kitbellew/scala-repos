@@ -60,10 +60,7 @@ trait WSTestSetupBase extends Matchers {
   def expectNetworkData(length: Int): ByteString = expectBytes(length)
   def expectNetworkData(data: ByteString): Unit = expectBytes(data)
 
-  def expectFrameOnNetwork(
-      opcode: Opcode,
-      data: ByteString,
-      fin: Boolean): Unit = {
+  def expectFrameOnNetwork(opcode: Opcode, data: ByteString, fin: Boolean): Unit = {
     expectFrameHeaderOnNetwork(opcode, data.size, fin)
     expectNetworkData(data)
   }

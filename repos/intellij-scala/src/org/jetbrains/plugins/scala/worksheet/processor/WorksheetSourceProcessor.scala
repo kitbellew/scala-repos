@@ -116,10 +116,7 @@ object WorksheetSourceProcessor {
 
     val classRes = new StringBuilder(s"final class $classPrologue { \n")
     val objectRes = new StringBuilder(
-      s"def main($runPrinterName: Any) ${withCompilerVersion(
-        "",
-        " : Unit = ",
-        "")} { \n val $instanceName = new $name \n")
+      s"def main($runPrinterName: Any) ${withCompilerVersion("", " : Unit = ", "")} { \n val $instanceName = new $name \n")
 
     var resCount = 0
     var assignCount = 0
@@ -230,9 +227,7 @@ object WorksheetSourceProcessor {
       for (_ <- 1 until count) objectRes append printMethodName append "()\n"
     }
 
-    @inline def appendAll(
-        psi: ScalaPsiElement,
-        numberStr: Option[String] = None) {
+    @inline def appendAll(psi: ScalaPsiElement, numberStr: Option[String] = None) {
       appendDeclaration(psi)
       appendPsiLineInfo(psi, numberStr)
     }

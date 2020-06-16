@@ -620,8 +620,7 @@ trait ColumnarTableModule[M[+_]]
           .toSeq
 
         def unionOfIntersections(
-            indicesGroupedBySource: Seq[Seq[(TableIndex, KeySchema)]])
-            : Set[Key] = {
+            indicesGroupedBySource: Seq[Seq[(TableIndex, KeySchema)]]): Set[Key] = {
           def allSourceDNF[T](l: Seq[Seq[T]]): Seq[Seq[T]] = {
             l match {
               case Seq(hd) => hd.map(Seq(_))
@@ -1242,13 +1241,8 @@ trait ColumnarTableModule[M[+_]]
                               .format(lpos, rpos))
 
                           case Some(
-                                SlicePosition(
-                                  endSliceId,
-                                  endPos,
-                                  _,
-                                  endSlice,
-                                  _,
-                                  _)) if endSliceId == rSliceId =>
+                                SlicePosition(endSliceId, endPos, _, endSlice, _, _))
+                              if endSliceId == rSliceId =>
                             buildRemappings(lpos, endPos, None, None, endRight)
 
                           case Some(
@@ -1611,13 +1605,7 @@ trait ColumnarTableModule[M[+_]]
                   stlr.initial,
                   strr.initial,
                   stbr.initial,
-                  SlicePosition(
-                    SliceId(0),
-                    0,
-                    lkstate,
-                    lkey,
-                    leftHead,
-                    leftTail),
+                  SlicePosition(SliceId(0), 0, lkstate, lkey, leftHead, leftTail),
                   SlicePosition(
                     SliceId(0),
                     0,
@@ -1740,8 +1728,7 @@ trait ColumnarTableModule[M[+_]]
 
                   transform.f(state.a, lslice, rhead) map {
                     case (a0, resultSlice) =>
-                      Some(
-                        (resultSlice, CrossState(a0, state.position, rtail0)))
+                      Some((resultSlice, CrossState(a0, state.position, rtail0)))
                   }
 
                 case None =>
@@ -1801,8 +1788,7 @@ trait ColumnarTableModule[M[+_]]
                     } else if (lempty) {
                       // left side is a small set, so restart it in memory
                       M.point(
-                        crossLeftSingle(lhead, rhead :: rtail)(
-                          transform.initial))
+                        crossLeftSingle(lhead, rhead :: rtail)(transform.initial))
                     } else if (rempty) {
                       // right side is a small set, so restart it in memory
                       M.point(
@@ -1907,9 +1893,7 @@ trait ColumnarTableModule[M[+_]]
     }
 
     def takeRange(startIndex: Long, numberToTake: Long): Table = {
-      def loop(
-          stream: StreamT[M, Slice],
-          readSoFar: Long): M[StreamT[M, Slice]] =
+      def loop(stream: StreamT[M, Slice], readSoFar: Long): M[StreamT[M, Slice]] =
         stream.uncons flatMap {
           // Prior to first needed slice, so skip
           case Some((head, tail))
@@ -1998,9 +1982,10 @@ trait ColumnarTableModule[M[+_]]
               val headComparator = comparatorGen(head)
               val spanEnd = findEnd(headComparator, 0, head.size - 1)
               if (spanEnd < head.size) {
-                M.point(Table(
-                  subSlices ++ (head.take(spanEnd) :: StreamT.empty[M, Slice]),
-                  ExactSize(size + spanEnd)))
+                M.point(
+                  Table(
+                    subSlices ++ (head.take(spanEnd) :: StreamT.empty[M, Slice]),
+                    ExactSize(size + spanEnd)))
               } else {
                 subTable0(
                   tail,

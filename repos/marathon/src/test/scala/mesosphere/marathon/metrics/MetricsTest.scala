@@ -42,8 +42,7 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     metrics = new Metrics(new MetricRegistry())
   }
 
-  test(
-    "Metrics#className should strip 'EnhancerByGuice' from the metric names") {
+  test("Metrics#className should strip 'EnhancerByGuice' from the metric names") {
     val instance =
       Guice.createInjector(new TestModule).getInstance(classOf[FooBar])
     assert(instance.getClass.getName.contains("EnhancerByGuice"))
@@ -95,7 +94,8 @@ class MetricsTest extends MarathonSpec with MockitoSugar {
     assert(origMeter.getCount == 11)
   }
 
-  test("The Timer wrapper should properly time method calls and proxy the updates") {
+  test(
+    "The Timer wrapper should properly time method calls and proxy the updates") {
     val origTimer = mock[com.codahale.metrics.Timer]
     val timer = new Timer(origTimer)
 

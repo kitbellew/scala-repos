@@ -341,8 +341,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
       }
     }
 
-    val nameAndType = processName(msymb.name) + " : " + toString(
-      msymb.infoType)(TypeFlags(true))
+    val nameAndType =
+      processName(msymb.name) + " : " + toString(msymb.infoType)(TypeFlags(true))
     val default = if (msymb.hasDefault) " = { /* compiled code */ }" else ""
     stream.print(nameAndType + default)
     baos.toString
@@ -589,9 +589,7 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
             }
           case "scala.<byname>" => "=> " + toString(typeArgs.head)
           case _ =>
-            def checkContainsSelf(
-                self: Option[Type],
-                parent: Symbol): Boolean = {
+            def checkContainsSelf(self: Option[Type], parent: Symbol): Boolean = {
               self match {
                 case Some(tp) =>
                   tp match {
@@ -868,8 +866,8 @@ class ScalaSigPrinter(stream: PrintStream, verbosity: Verbosity) {
         } else false
       }
       val result = NameTransformer.decode(name)
-      if (!isIdentifier(result) || keywordList.contains(
-          result) || result == "=") "`" + result + "`"
+      if (!isIdentifier(result) || keywordList.contains(result) || result == "=")
+        "`" + result + "`"
       else result
     }
     val stripped = stripPrivatePrefix(name)

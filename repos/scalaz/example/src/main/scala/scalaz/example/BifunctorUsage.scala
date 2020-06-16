@@ -38,8 +38,9 @@ object BifunctorUsage extends App {
     Bifunctor[Either].bimap(Left("asdf"): Either[String, Int])(
       _.toUpperCase,
       _ + 1) === (Left("ASDF")))
-  assert(Bifunctor[Either]
-    .bimap(Right(1): Either[String, Int])(_.toUpperCase, _ + 1) === (Right(2)))
+  assert(
+    Bifunctor[Either]
+      .bimap(Right(1): Either[String, Int])(_.toUpperCase, _ + 1) === (Right(2)))
 
   assert(
     Bifunctor[Validation]
@@ -92,9 +93,8 @@ object BifunctorUsage extends App {
   // bifunctor, we can get a bimap that operates on every item in the
   // list.
   val bff = Functor[List] bicompose Bifunctor[\/]
-  val bfres = bff.bimap(List("asdf".left, 2.right, "qwer".left, 4.right))(
-    _.toUpperCase,
-    _ + 1)
+  val bfres =
+    bff.bimap(List("asdf".left, 2.right, "qwer".left, 4.right))(_.toUpperCase, _ + 1)
   assert(bfres === List("ASDF".left, 3.right, "QWER".left, 5.right))
 
   //

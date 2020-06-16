@@ -134,8 +134,9 @@ class DefaultEventHandler[K, V](
         for ((brokerid, messagesPerBrokerMap) <- partitionedData) {
           if (logger.isTraceEnabled) {
             messagesPerBrokerMap.foreach(partitionAndEvent =>
-              trace("Handling event for Topic: %s, Broker: %d, Partitions: %s"
-                .format(partitionAndEvent._1, brokerid, partitionAndEvent._2)))
+              trace(
+                "Handling event for Topic: %s, Broker: %d, Partitions: %s"
+                  .format(partitionAndEvent._1, brokerid, partitionAndEvent._2)))
           }
           val messageSetPerBrokerOpt = groupMessagesToSet(messagesPerBrokerMap)
           messageSetPerBrokerOpt match {
@@ -200,9 +201,7 @@ class DefaultEventHandler[K, V](
 
   def partitionAndCollate(messages: Seq[KeyedMessage[K, Message]]): Option[Map[
     Int,
-    collection.mutable.Map[
-      TopicAndPartition,
-      Seq[KeyedMessage[K, Message]]]]] = {
+    collection.mutable.Map[TopicAndPartition, Seq[KeyedMessage[K, Message]]]]] = {
     val ret = new HashMap[
       Int,
       collection.mutable.Map[TopicAndPartition, Seq[KeyedMessage[K, Message]]]]
@@ -263,11 +262,8 @@ class DefaultEventHandler[K, V](
     val topicPartitionsList = brokerPartitionInfo.getBrokerPartitionInfo(
       m.topic,
       correlationId.getAndIncrement)
-    debug(
-      "Broker partitions registered for topic: %s are %s"
-        .format(
-          m.topic,
-          topicPartitionsList.map(p => p.partitionId).mkString(",")))
+    debug("Broker partitions registered for topic: %s are %s"
+      .format(m.topic, topicPartitionsList.map(p => p.partitionId).mkString(",")))
     val totalNumPartitions = topicPartitionsList.length
     if (totalNumPartitions == 0)
       throw new NoBrokersForPartitionException("Partition key = " + m.key)
@@ -459,8 +455,7 @@ class DefaultEventHandler[K, V](
                       config.compressionCodec,
                       rawMessages: _*)
                   case _ =>
-                    if (config.compressedTopics.contains(
-                        topicAndPartition.topic)) {
+                    if (config.compressedTopics.contains(topicAndPartition.topic)) {
                       debug(
                         "Sending %d messages with compression codec %d to %s"
                           .format(

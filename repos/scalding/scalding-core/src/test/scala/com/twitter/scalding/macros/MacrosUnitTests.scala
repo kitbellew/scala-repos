@@ -368,8 +368,7 @@ class MacrosUnitTests extends WordSpec with Matchers {
       val fields = Macros.toFieldsWithUnknown[SampleClassG]
       assert(fields.size === 1)
       assert(
-        fields.getTypes === Array[java.lang.reflect.Type](
-          classOf[java.util.Date]))
+        fields.getTypes === Array[java.lang.reflect.Type](classOf[java.util.Date]))
     }
 
     "Case Class should form expected Indexed Fields" in {

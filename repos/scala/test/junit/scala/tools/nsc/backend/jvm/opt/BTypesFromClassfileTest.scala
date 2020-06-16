@@ -57,9 +57,7 @@ class BTypesFromClassfileTest {
       fromSyms: Iterable[ClassBType],
       fromClassfiles: Iterable[ClassBType],
       checked: Set[InternalName]): Set[InternalName] = {
-    assert(
-      fromSyms.size == fromClassfiles.size,
-      s"\n$fromSyms\n$fromClassfiles")
+    assert(fromSyms.size == fromClassfiles.size, s"\n$fromSyms\n$fromClassfiles")
     (fromSyms, fromClassfiles).zipped.foldLeft(checked) {
       case (chk, (fromSym, fromClassfile)) =>
         sameBType(fromSym, fromClassfile, chk)

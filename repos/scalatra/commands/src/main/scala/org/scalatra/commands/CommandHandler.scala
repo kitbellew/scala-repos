@@ -15,8 +15,7 @@ import scalaz.syntax.validation._
 trait CommandHandler {
   @transient private[this] val commandLogger: Logger = Logger[this.type]
   def execute[S: Manifest](cmd: ModelCommand[S]): ModelValidation[S] = {
-    commandLogger.debug(
-      "Executing [%s].\n%s" format (cmd.getClass.getName, cmd))
+    commandLogger.debug("Executing [%s].\n%s" format (cmd.getClass.getName, cmd))
     if (cmd.isValid) {
       val res = (allCatch withApply (serverError(cmd.getClass.getName, _))) {
         handle.lift(cmd).map(_.map(_.asInstanceOf[S])) | ValidationError(
@@ -47,9 +46,8 @@ trait CommandHandler {
       cmdName: String,
       ex: Throwable): ModelValidation[R] = {
     commandLogger.error("There was an error while executing " + cmdName, ex)
-    ValidationError(
-      "An error occurred while handling: " + cmdName,
-      UnknownError).failureNel[R]
+    ValidationError("An error occurred while handling: " + cmdName, UnknownError)
+      .failureNel[R]
   }
 
   type Handler = PartialFunction[ModelCommand[_], ModelValidation[_]]

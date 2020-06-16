@@ -48,14 +48,10 @@ object Test extends DirectTest {
 
   def checkViews() {
     import collection._
-    checkView(
-      typeOf[TraversableView[_, _]],
-      typeOf[TraversableViewLike[_, _, _]])
+    checkView(typeOf[TraversableView[_, _]], typeOf[TraversableViewLike[_, _, _]])
     checkView(typeOf[IterableView[_, _]], typeOf[IterableViewLike[_, _, _]])
     checkView(typeOf[SeqView[_, _]], typeOf[SeqViewLike[_, _, _]])
-    checkView(
-      typeOf[mutable.IndexedSeqView[_, _]],
-      typeOf[SeqViewLike[_, _, _]])
+    checkView(typeOf[mutable.IndexedSeqView[_, _]], typeOf[SeqViewLike[_, _, _]])
     checkView(
       typeOf[immutable.StreamView[_, _]],
       typeOf[immutable.StreamViewLike[_, _, _]])

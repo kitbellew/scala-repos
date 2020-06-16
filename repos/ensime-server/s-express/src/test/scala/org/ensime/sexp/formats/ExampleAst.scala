@@ -62,10 +62,7 @@ object ExampleAst {
       extends TokenTree {
     val text = before.getOrElse("") + tree.text + after.getOrElse("")
   }
-  case class InTerm(
-      field: DatabaseField,
-      value: List[String],
-      text: String = "")
+  case class InTerm(field: DatabaseField, value: List[String], text: String = "")
       extends CompressedToken
 
   case class QualifierToken(text: String, field: DatabaseField)

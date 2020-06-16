@@ -85,9 +85,8 @@ class OfflinePartitionLeaderSelector(
                 .uncleanLeaderElectionEnable) {
               throw new NoReplicaOnlineException(
                 ("No broker in ISR for partition " +
-                  "%s is alive. Live brokers are: [%s],".format(
-                    topicAndPartition,
-                    controllerContext.liveBrokerIds)) +
+                  "%s is alive. Live brokers are: [%s],"
+                    .format(topicAndPartition, controllerContext.liveBrokerIds)) +
                   " ISR brokers are: [%s]".format(
                     currentLeaderAndIsr.isr.mkString(",")))
             }
@@ -98,9 +97,8 @@ class OfflinePartitionLeaderSelector(
               case true =>
                 throw new NoReplicaOnlineException(
                   ("No replica for partition " +
-                    "%s is alive. Live brokers are: [%s],".format(
-                      topicAndPartition,
-                      controllerContext.liveBrokerIds)) +
+                    "%s is alive. Live brokers are: [%s],"
+                      .format(topicAndPartition, controllerContext.liveBrokerIds)) +
                     " Assigned replicas are: [%s]".format(assignedReplicas))
               case false =>
                 ControllerStats.uncleanLeaderElectionRate.mark()
@@ -226,8 +224,7 @@ class PreferredReplicaPartitionLeaderSelector(
           " Trigerring preferred replica leader election")
       // check if preferred replica is not the current leader and is alive and in the isr
       if (controllerContext.liveBrokerIds.contains(
-          preferredReplica) && currentLeaderAndIsr.isr.contains(
-          preferredReplica)) {
+          preferredReplica) && currentLeaderAndIsr.isr.contains(preferredReplica)) {
         (
           new LeaderAndIsr(
             preferredReplica,

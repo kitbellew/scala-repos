@@ -319,8 +319,8 @@ class StreamingKMeans @Since("1.2.0") (
     * Java-friendly version of `predictOnValues`.
     */
   @Since("1.4.0")
-  def predictOnValues[K](data: JavaPairDStream[K, Vector])
-      : JavaPairDStream[K, java.lang.Integer] = {
+  def predictOnValues[K](
+      data: JavaPairDStream[K, Vector]): JavaPairDStream[K, java.lang.Integer] = {
     implicit val tag = fakeClassTag[K]
     JavaPairDStream.fromPairDStream(
       predictOnValues(data.dstream)

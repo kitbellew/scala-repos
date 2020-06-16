@@ -107,8 +107,7 @@ class DataFrameJoinSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       df1.join(df2, $"df1.key" === $"df2.key"),
-      sql(
-        "SELECT a.key, b.key FROM testData a JOIN testData b ON a.key = b.key")
+      sql("SELECT a.key, b.key FROM testData a JOIN testData b ON a.key = b.key")
         .collect()
         .toSeq)
   }

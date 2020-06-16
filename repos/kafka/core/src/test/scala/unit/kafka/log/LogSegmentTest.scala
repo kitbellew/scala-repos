@@ -66,9 +66,7 @@ class LogSegmentTest {
   def testReadOnEmptySegment() {
     val seg = createSegment(40)
     val read = seg.read(startOffset = 40, maxSize = 300, maxOffset = None)
-    assertNull(
-      "Read beyond the last offset in the segment should be null",
-      read)
+    assertNull("Read beyond the last offset in the segment should be null", read)
   }
 
   /**

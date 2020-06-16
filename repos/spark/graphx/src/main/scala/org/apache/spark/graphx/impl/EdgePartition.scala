@@ -243,8 +243,7 @@ private[graphx] class EdgePartition[
       et.srcAttr = vertexAttrs(localSrcId)
       et.dstAttr = vertexAttrs(localDstId)
       et.attr = data(i)
-      if (vpred(et.srcId, et.srcAttr) && vpred(et.dstId, et.dstAttr) && epred(
-          et)) {
+      if (vpred(et.srcId, et.srcAttr) && vpred(et.dstId, et.dstAttr) && epred(et)) {
         builder.add(et.srcId, et.dstId, localSrcId, localDstId, et.attr)
       }
       i += 1
@@ -308,12 +307,7 @@ private[graphx] class EdgePartition[
     }
     // Finally, release the last accumulated run
     if (size > 0) {
-      builder.add(
-        currSrcId,
-        currDstId,
-        currLocalSrcId,
-        currLocalDstId,
-        currAttr)
+      builder.add(currSrcId, currDstId, currLocalSrcId, currLocalDstId, currAttr)
     }
     builder.toEdgePartition
   }

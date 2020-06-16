@@ -159,8 +159,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
       sql("SELECT max(key) FROM src LIMIT 1").collect().toSeq)
 
     checkAnswer(
-      sql(
-        "SELECT percentile_approx(100.0D, array(0.9D, 0.9D)) FROM src LIMIT 1"),
+      sql("SELECT percentile_approx(100.0D, array(0.9D, 0.9D)) FROM src LIMIT 1"),
       sql("SELECT array(100, 100) FROM src LIMIT 1").collect().toSeq)
   }
 
@@ -225,9 +224,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
     val errMsg = intercept[AnalysisException] {
       sql("SELECT testUDFToStringIntMap(s) FROM inputTable")
     }
-    assert(
-      errMsg.getMessage contains "Map type in java is unsupported because " +
-        "JVM type erasure makes spark fail to catch key and value types in Map<>;")
+    assert(errMsg.getMessage contains "Map type in java is unsupported because " +
+      "JVM type erasure makes spark fail to catch key and value types in Map<>;")
 
     sql("DROP TEMPORARY FUNCTION IF EXISTS testUDFToStringIntMap")
     hiveContext.reset()
@@ -244,9 +242,8 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
     val errMsg = intercept[AnalysisException] {
       sql("SELECT testUDFToIntIntMap(s) FROM inputTable")
     }
-    assert(
-      errMsg.getMessage contains "Map type in java is unsupported because " +
-        "JVM type erasure makes spark fail to catch key and value types in Map<>;")
+    assert(errMsg.getMessage contains "Map type in java is unsupported because " +
+      "JVM type erasure makes spark fail to catch key and value types in Map<>;")
 
     sql("DROP TEMPORARY FUNCTION IF EXISTS testUDFToIntIntMap")
     hiveContext.reset()
@@ -288,8 +285,7 @@ class HiveUDFSuite extends QueryTest with TestHiveSingleton with SQLTestUtils {
 
   test("UDFStringString") {
     val testData = hiveContext.sparkContext
-      .parallelize(
-        StringCaseClass("world") :: StringCaseClass("goodbye") :: Nil)
+      .parallelize(StringCaseClass("world") :: StringCaseClass("goodbye") :: Nil)
       .toDF()
     testData.registerTempTable("stringTable")
 

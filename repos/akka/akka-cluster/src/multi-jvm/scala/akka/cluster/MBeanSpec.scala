@@ -78,8 +78,7 @@ abstract class MBeanSpec
         mbeanServer.getAttribute(mbeanName, "Leader") should ===("")
         mbeanServer.getAttribute(mbeanName, "Members") should ===("")
         mbeanServer.getAttribute(mbeanName, "Unreachable") should ===("")
-        mbeanServer.getAttribute(mbeanName, "MemberStatus") should ===(
-          "Removed")
+        mbeanServer.getAttribute(mbeanName, "MemberStatus") should ===("Removed")
       }
       awaitClusterUp(first)
       runOn(first) {

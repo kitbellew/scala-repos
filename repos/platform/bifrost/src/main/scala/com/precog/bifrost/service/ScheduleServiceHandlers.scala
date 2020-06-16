@@ -82,9 +82,8 @@ case class AddScheduledQueryRequest(
 object AddScheduledQueryRequest {
   import CronExpressionSerialization._
 
-  implicit val iso = Iso.hlist(
-    AddScheduledQueryRequest.apply _,
-    AddScheduledQueryRequest.unapply _)
+  implicit val iso =
+    Iso.hlist(AddScheduledQueryRequest.apply _, AddScheduledQueryRequest.unapply _)
 
   val schemaV1 =
     "schedule" :: "owners" :: "context" :: "source" :: "sink" :: "timeout" :: HNil
@@ -238,8 +237,7 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
       idStr <-
         request.parameters
           .get('scheduleId)
-          .toSuccess(
-            DispatchError(BadRequest, "Missing schedule Id for status."))
+          .toSuccess(DispatchError(BadRequest, "Missing schedule Id for status."))
       id <- Validation.fromTryCatch { UUID.fromString(idStr) } leftMap { ex =>
         DispatchError(
           BadRequest,

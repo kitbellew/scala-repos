@@ -29,8 +29,7 @@ object Losses {
       case "leastAbsoluteError" => AbsoluteError
       case "logLoss"            => LogLoss
       case _ =>
-        throw new IllegalArgumentException(
-          s"Did not recognize Loss name: $name")
+        throw new IllegalArgumentException(s"Did not recognize Loss name: $name")
     }
 
 }

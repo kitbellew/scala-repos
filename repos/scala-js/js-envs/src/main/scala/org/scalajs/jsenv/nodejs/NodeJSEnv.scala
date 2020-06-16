@@ -207,8 +207,7 @@ class NodeJSEnv private (
         comSocket.setSoTimeout((optDeadline.millisLeft min Int.MaxValue).toInt)
         val len = js2jvm.readInt()
         val carr = Array.fill(len) {
-          comSocket.setSoTimeout(
-            (optDeadline.millisLeft min Int.MaxValue).toInt)
+          comSocket.setSoTimeout((optDeadline.millisLeft min Int.MaxValue).toInt)
           js2jvm.readChar()
         }
 

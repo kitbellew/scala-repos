@@ -627,10 +627,7 @@ private[hive] trait HiveInspectors {
           x.setStructFieldData(
             result,
             fieldRefs.get(i),
-            wrap(
-              row.get(i, tpe),
-              fieldRefs.get(i).getFieldObjectInspector,
-              tpe))
+            wrap(row.get(i, tpe), fieldRefs.get(i).getFieldObjectInspector, tpe))
           i += 1
         }
 
@@ -644,10 +641,7 @@ private[hive] trait HiveInspectors {
         while (i < fieldRefs.size) {
           val tpe = structType(i).dataType
           result.add(
-            wrap(
-              row.get(i, tpe),
-              fieldRefs.get(i).getFieldObjectInspector,
-              tpe))
+            wrap(row.get(i, tpe), fieldRefs.get(i).getFieldObjectInspector, tpe))
           i += 1
         }
 

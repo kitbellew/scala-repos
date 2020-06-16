@@ -77,8 +77,7 @@ class StackTest extends FunSuite {
           .withStack(newClientStack)
           .newService(
             Name.bound(
-              Address(
-                new InetSocketAddress(InetAddress.getLoopbackAddress, 0))),
+              Address(new InetSocketAddress(InetAddress.getLoopbackAddress, 0))),
             "client")
 
       // marked busy by FailFastFactory

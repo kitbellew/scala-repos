@@ -21,7 +21,8 @@ class ExceptionsTest extends FunSuite with MockitoSugar {
     when(underlying.getMessage).thenReturn("bar")
   }
 
-  test("ChannelException should not generate message when all parameters are null") {
+  test(
+    "ChannelException should not generate message when all parameters are null") {
     new ExceptionsHelper {
       val ex = new ChannelException(null, null)
       assert(ex.getMessage == null)

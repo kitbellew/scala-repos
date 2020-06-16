@@ -46,8 +46,7 @@ trait Exprs extends Core with Types with Xml {
         val Finally = P(`finally` ~/ Expr)
         P(`try` ~/ Expr ~ Catch.? ~ Finally.?)
       }
-      val DoWhile = P(
-        `do` ~/ Expr ~ Semi.? ~ `while` ~ "(" ~ ExprCtx.Expr ~ ")")
+      val DoWhile = P(`do` ~/ Expr ~ Semi.? ~ `while` ~ "(" ~ ExprCtx.Expr ~ ")")
 
       val For = {
         val Body = P(

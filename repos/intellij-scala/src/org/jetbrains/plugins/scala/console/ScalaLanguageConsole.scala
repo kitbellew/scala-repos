@@ -57,10 +57,7 @@ class ScalaLanguageConsole(project: Project, title: String)
       project)
     val types = new mutable.HashMap[String, TextRange]
     val values = new mutable.HashMap[String, (TextRange, Boolean)]
-    def addValue(
-        name: String,
-        range: TextRange,
-        replaceWithPlaceholder: Boolean) {
+    def addValue(name: String, range: TextRange, replaceWithPlaceholder: Boolean) {
       values.get(name) match {
         case Some((oldRange, r)) =>
           val newText =

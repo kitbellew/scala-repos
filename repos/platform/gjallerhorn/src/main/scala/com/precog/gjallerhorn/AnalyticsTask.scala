@@ -72,10 +72,8 @@ class AnalyticsTask(settings: Settings)
         (json \ "size").deserialize[Long] must_== 5
       }
 
-      val jobId = asyncQuery(
-        account.apiKey,
-        "/" + account.bareRootPath,
-        "mean((//foo).a)")
+      val jobId =
+        asyncQuery(account.apiKey, "/" + account.bareRootPath, "mean((//foo).a)")
 
       EventuallyResults.eventually(10, 1.second) {
         val res =

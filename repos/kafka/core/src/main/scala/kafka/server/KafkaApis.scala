@@ -198,10 +198,7 @@ class KafkaApis(
 
       val responseHeader = new ResponseHeader(correlationId)
       val leaderAndIsrResponse =
-        if (authorize(
-            request.session,
-            ClusterAction,
-            Resource.ClusterResource)) {
+        if (authorize(request.session, ClusterAction, Resource.ClusterResource)) {
           val result = replicaManager.becomeLeaderOrFollower(
             correlationId,
             leaderAndIsrRequest,
@@ -302,12 +299,9 @@ class KafkaApis(
       controlledShutdownRequest.correlationId,
       Errors.NONE.code,
       partitionsRemaining)
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new RequestOrResponseSend(
-          request.connectionId,
-          controlledShutdownResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new RequestOrResponseSend(request.connectionId, controlledShutdownResponse)))
   }
 
   /**
@@ -365,15 +359,16 @@ class KafkaApis(
                 s"on partition $topicPartition failed due to ${Errors.forCode(errorCode).exceptionName}")
             }
         }
-        val combinedCommitStatus = mergedCommitStatus.mapValues(
-          new JShort(_)) ++ invalidRequestsInfo.map(
-          _._1 -> new JShort(Errors.UNKNOWN_TOPIC_OR_PARTITION.code))
+        val combinedCommitStatus =
+          mergedCommitStatus.mapValues(new JShort(_)) ++ invalidRequestsInfo.map(
+            _._1 -> new JShort(Errors.UNKNOWN_TOPIC_OR_PARTITION.code))
 
         val responseHeader = new ResponseHeader(header.correlationId)
         val responseBody = new OffsetCommitResponse(combinedCommitStatus.asJava)
-        requestChannel.sendResponse(new RequestChannel.Response(
-          request,
-          new ResponseSend(request.connectionId, responseHeader, responseBody)))
+        requestChannel.sendResponse(
+          new RequestChannel.Response(
+            request,
+            new ResponseSend(request.connectionId, responseHeader, responseBody)))
       }
 
       if (authorizedRequestInfo.isEmpty)
@@ -602,9 +597,7 @@ class KafkaApis(
 
     // the callback for sending a fetch response
     def sendResponseCallback(
-        responsePartitionData: Map[
-          TopicAndPartition,
-          FetchResponsePartitionData]) {
+        responsePartitionData: Map[TopicAndPartition, FetchResponsePartitionData]) {
 
       val convertedPartitionData =
         // Need to down-convert message when consumer only takes magic value 0.
@@ -660,8 +653,9 @@ class KafkaApis(
       }
 
       def fetchResponseCallback(delayTimeMs: Int) {
-        trace(s"Sending fetch response to client ${fetchRequest.clientId} of " +
-          s"${convertedPartitionData.values.map(_.messages.sizeInBytes).sum} bytes")
+        trace(
+          s"Sending fetch response to client ${fetchRequest.clientId} of " +
+            s"${convertedPartitionData.values.map(_.messages.sizeInBytes).sum} bytes")
         val response = FetchResponse(
           fetchRequest.correlationId,
           mergedPartitionData,
@@ -865,8 +859,7 @@ class KafkaApis(
       topic: String,
       numPartitions: Int,
       replicationFactor: Int,
-      properties: Properties = new Properties())
-      : MetadataResponse.TopicMetadata = {
+      properties: Properties = new Properties()): MetadataResponse.TopicMetadata = {
     try {
       AdminUtils.createTopic(
         zkUtils,
@@ -899,9 +892,7 @@ class KafkaApis(
     val aliveBrokers = metadataCache.getAliveBrokers
     val offsetsTopicReplicationFactor =
       if (aliveBrokers.nonEmpty)
-        Math.min(
-          config.offsetsTopicReplicationFactor.toInt,
-          aliveBrokers.length)
+        Math.min(config.offsetsTopicReplicationFactor.toInt, aliveBrokers.length)
       else
         config.offsetsTopicReplicationFactor.toInt
     createTopic(
@@ -921,8 +912,7 @@ class KafkaApis(
 
   private def getTopicMetadata(
       topics: Set[String],
-      securityProtocol: SecurityProtocol)
-      : Seq[MetadataResponse.TopicMetadata] = {
+      securityProtocol: SecurityProtocol): Seq[MetadataResponse.TopicMetadata] = {
     val topicResponses =
       metadataCache.getTopicMetadata(topics, securityProtocol)
     if (topics.isEmpty || topicResponses.size == topics.size) {
@@ -1112,13 +1102,9 @@ class KafkaApis(
       }
 
     trace(s"Sending offset fetch response $offsetFetchResponse for correlation id ${header.correlationId} to client ${header.clientId}.")
-    requestChannel.sendResponse(
-      new Response(
-        request,
-        new ResponseSend(
-          request.connectionId,
-          responseHeader,
-          offsetFetchResponse)))
+    requestChannel.sendResponse(new Response(
+      request,
+      new ResponseSend(request.connectionId, responseHeader, offsetFetchResponse)))
   }
 
   def handleGroupCoordinatorRequest(request: RequestChannel.Request) {
@@ -1187,10 +1173,7 @@ class KafkaApis(
       .asScala
       .map {
         case groupId =>
-          if (!authorize(
-              request.session,
-              Describe,
-              new Resource(Group, groupId))) {
+          if (!authorize(request.session, Describe, new Resource(Group, groupId))) {
             groupId -> DescribeGroupsResponse.GroupMetadata.forError(
               Errors.GROUP_AUTHORIZATION_FAILED)
           } else {
@@ -1325,9 +1308,7 @@ class KafkaApis(
         request.session,
         Read,
         new Resource(Group, syncGroupRequest.groupId()))) {
-      sendResponseCallback(
-        Array[Byte](),
-        Errors.GROUP_AUTHORIZATION_FAILED.code)
+      sendResponseCallback(Array[Byte](), Errors.GROUP_AUTHORIZATION_FAILED.code)
     } else {
       coordinator.handleSyncGroup(
         syncGroupRequest.groupId(),
@@ -1346,12 +1327,8 @@ class KafkaApis(
     // the callback for sending a heartbeat response
     def sendResponseCallback(errorCode: Short) {
       val response = new HeartbeatResponse(errorCode)
-      trace(
-        "Sending heartbeat response %s for correlation id %d to client %s."
-          .format(
-            response,
-            request.header.correlationId,
-            request.header.clientId))
+      trace("Sending heartbeat response %s for correlation id %d to client %s."
+        .format(response, request.header.correlationId, request.header.clientId))
       requestChannel.sendResponse(
         new RequestChannel.Response(
           request,
@@ -1364,9 +1341,10 @@ class KafkaApis(
         new Resource(Group, heartbeatRequest.groupId))) {
       val heartbeatResponse = new HeartbeatResponse(
         Errors.GROUP_AUTHORIZATION_FAILED.code)
-      requestChannel.sendResponse(new Response(
-        request,
-        new ResponseSend(request.connectionId, respHeader, heartbeatResponse)))
+      requestChannel.sendResponse(
+        new Response(
+          request,
+          new ResponseSend(request.connectionId, respHeader, heartbeatResponse)))
     } else {
       // let the coordinator to handle heartbeat
       coordinator.handleHeartbeat(
@@ -1436,9 +1414,10 @@ class KafkaApis(
         new Resource(Group, leaveGroupRequest.groupId))) {
       val leaveGroupResponse = new LeaveGroupResponse(
         Errors.GROUP_AUTHORIZATION_FAILED.code)
-      requestChannel.sendResponse(new Response(
-        request,
-        new ResponseSend(request.connectionId, respHeader, leaveGroupResponse)))
+      requestChannel.sendResponse(
+        new Response(
+          request,
+          new ResponseSend(request.connectionId, respHeader, leaveGroupResponse)))
     } else {
       // let the coordinator to handle leave-group
       coordinator.handleLeaveGroup(

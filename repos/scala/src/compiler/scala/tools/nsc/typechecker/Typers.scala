@@ -668,11 +668,7 @@ trait Typers
       *  3. Turn tree type into stable type if possible and required by context.
       *  4. Give getClass calls a more precise type based on the type of the target of the call.
       */
-    protected def stabilize(
-        tree: Tree,
-        pre: Type,
-        mode: Mode,
-        pt: Type): Tree = {
+    protected def stabilize(tree: Tree, pre: Type, mode: Mode, pt: Type): Tree = {
 
       // Side effect time! Don't be an idiot like me and think you
       // can move "val sym = tree.symbol" before this line, because
@@ -1397,17 +1393,12 @@ trait Typers
       silent(_.instantiate(tree, mode, UnitTpe)) orElse { _ =>
         context.undetparams = savedUndetparams
         val valueDiscard = atPos(tree.pos)(
-          Block(
-            List(instantiate(tree, mode, WildcardType)),
-            Literal(Constant(()))))
+          Block(List(instantiate(tree, mode, WildcardType)), Literal(Constant(()))))
         typed(valueDiscard, mode, UnitTpe)
       }
     }
 
-    def instantiatePossiblyExpectingUnit(
-        tree: Tree,
-        mode: Mode,
-        pt: Type): Tree = {
+    def instantiatePossiblyExpectingUnit(tree: Tree, mode: Mode, pt: Type): Tree = {
       if (mode.typingExprNotFun && pt.typeSymbol == UnitClass && !tree.tpe
           .isInstanceOf[MethodType])
         instantiateExpectingUnit(tree, mode)
@@ -1957,9 +1948,10 @@ trait Typers
         case Nil => List(atPos(templ.pos)(TypeTree(AnyRefTpe)))
         case first :: rest =>
           try {
-            val supertpts = fixDuplicateSyntheticParents(normalizeFirstParent(
-              typedParentType(first, templ, inMixinPosition = false) +:
-                (rest map (typedParentType(_, templ, inMixinPosition = true)))))
+            val supertpts = fixDuplicateSyntheticParents(
+              normalizeFirstParent(
+                typedParentType(first, templ, inMixinPosition = false) +:
+                  (rest map (typedParentType(_, templ, inMixinPosition = true)))))
 
             // if that is required to infer the targs of a super call
             // typedParentType calls typedPrimaryConstrBody to do the inferring typecheck
@@ -2130,8 +2122,7 @@ trait Typers
         for (ann <- clazz.getAnnotation(DeprecatedAttr)) {
           val m = companionSymbolOf(clazz, context)
           if (m != NoSymbol)
-            m.moduleClass.addAnnotation(
-              AnnotationInfo(ann.atp, ann.args, List()))
+            m.moduleClass.addAnnotation(AnnotationInfo(ann.atp, ann.args, List()))
         }
       }
       treeCopy
@@ -2262,9 +2253,7 @@ trait Typers
         ConstrArgsInParentOfTraitError(parents1.head, clazz)
 
       if ((clazz isSubClass ClassfileAnnotationClass) && !clazz.isTopLevel)
-        context.error(
-          clazz.pos,
-          "inner classes cannot be classfile annotations")
+        context.error(clazz.pos, "inner classes cannot be classfile annotations")
 
       if (!phase.erasedTypes && !clazz.info.resultType.isError) // @S: prevent crash for duplicated type members
         checkFinitary(clazz.info.resultType.asInstanceOf[ClassInfoType])
@@ -2654,8 +2643,7 @@ trait Typers
         for (p <- allParams) {
           for (n <- p.deprecatedParamName) {
             if (allParams.exists(p1 =>
-                p != p1 && (p1.name == n || p1.deprecatedParamName.exists(
-                  _ == n))))
+                p != p1 && (p1.name == n || p1.deprecatedParamName.exists(_ == n))))
               DeprecatedParamNameError(p, n)
           }
         }
@@ -3061,9 +3049,7 @@ trait Typers
           B1.tpe)
 
         val paramSyms = List(x, default)
-        methodSym setInfo genPolyType(
-          List(A1, B1),
-          MethodType(paramSyms, B1.tpe))
+        methodSym setInfo genPolyType(List(A1, B1), MethodType(paramSyms, B1.tpe))
 
         val methodBodyTyper = newTyper(
           context.makeNewScope(context.tree, methodSym))
@@ -3217,10 +3203,7 @@ trait Typers
         }
 
         // patch info to the class's definitive info
-        anonClass setInfo ClassInfoType(
-          parents(matchResTp),
-          newScope,
-          anonClass)
+        anonClass setInfo ClassInfoType(parents(matchResTp), newScope, anonClass)
         List(applyMeth, isDefinedAtMethod)
       }
 
@@ -3386,9 +3369,8 @@ trait Typers
               upper = false,
               lubDepth(sam.info :: Nil))
 
-            debuglog(s"sam infer: $samClassTp --> ${appliedType(
-              samTyCon,
-              targs)} by $actualSamType <:< $expectedSamType --> $targs for $tparams")
+            debuglog(
+              s"sam infer: $samClassTp --> ${appliedType(samTyCon, targs)} by $actualSamType <:< $expectedSamType --> $targs for $tparams")
 
             // a fully defined samClassTp
             appliedType(samTyCon, targs)
@@ -3643,13 +3625,11 @@ trait Typers
                 if (treeInfo.isSelfOrSuperConstrCall(result)) {
                   context.inConstructorSuffix = true
                   if (treeInfo.isSelfConstrCall(result) && result.symbol.pos
-                      .pointOrElse(0) >= exprOwner.enclMethod.pos.pointOrElse(
-                      0))
+                      .pointOrElse(0) >= exprOwner.enclMethod.pos.pointOrElse(0))
                     ConstructorsOrderError(stat)
                 }
 
-                if (!isPastTyper && treeInfo.isPureExprForWarningPurposes(
-                    result))
+                if (!isPastTyper && treeInfo.isPureExprForWarningPurposes(result))
                   context.warning(
                     stat.pos,
                     "a pure expression does nothing in statement position; " +
@@ -3937,10 +3917,7 @@ trait Typers
               inferMethodAlternative(fun, undetparams, argTpes, pt)
               doTypedApply(
                 tree,
-                adaptAfterOverloadResolution(
-                  fun,
-                  mode.forFunMode,
-                  WildcardType),
+                adaptAfterOverloadResolution(fun, mode.forFunMode, WildcardType),
                 args1,
                 mode,
                 pt)
@@ -4101,8 +4078,7 @@ trait Typers
                 if (!sameLength(allArgs, args) && callToCompanionConstr(
                     context,
                     funSym)) {
-                  duplErrorTree(
-                    ModuleUsingCompanionClassDefaultArgsErrror(tree))
+                  duplErrorTree(ModuleUsingCompanionClassDefaultArgsErrror(tree))
                 } else if (lencmp2 > 0) {
                   removeNames(Typer.this)(allArgs, params) // #3818
                   duplErrTree
@@ -4151,10 +4127,7 @@ trait Typers
                     if (noExpectedType)
                       typedArgs(args, forArgMode(fun, mode))
                     else
-                      typedArgsForFormals(
-                        args,
-                        paramTypes,
-                        forArgMode(fun, mode))
+                      typedArgsForFormals(args, paramTypes, forArgMode(fun, mode))
                   )
 
                 // instantiate dependent method types, must preserve singleton types where possible (stableTypeFor) -- example use case:
@@ -4179,10 +4152,8 @@ trait Typers
                 if (args.isEmpty && canTranslateEmptyListToNil && fun.symbol.isInitialized && ListModule.hasCompleteInfo && (fun.symbol == List_apply))
                   atPos(tree.pos)(gen.mkNil setType restpe)
                 else
-                  constfold(
-                    treeCopy
-                      .Apply(tree, fun, args1) setType ifPatternSkipFormals(
-                      restpe))
+                  constfold(treeCopy
+                    .Apply(tree, fun, args1) setType ifPatternSkipFormals(restpe))
               }
               checkDead.updateExpr(fun) {
                 handleMonomorphicCall
@@ -4410,8 +4381,7 @@ trait Typers
                   reportAnnotationError(UnknownAnnotationNameError(arg, name))
                   (nme.ERROR, None)
                 } else if (!names.contains(sym)) {
-                  reportAnnotationError(
-                    DuplicateValueAnnotationError(arg, name))
+                  reportAnnotationError(DuplicateValueAnnotationError(arg, name))
                   (nme.ERROR, None)
                 } else {
                   names -= sym
@@ -4471,8 +4441,7 @@ trait Typers
                 annInfo(fun)
 
               case _ =>
-                reportAnnotationError(
-                  UnexpectedTreeAnnotationError(t, typedAnn))
+                reportAnnotationError(UnexpectedTreeAnnotationError(t, typedAnn))
             }
 
           if (annType.typeSymbol == DeprecatedAttr && argss.flatten.size < 2)
@@ -4874,8 +4843,7 @@ trait Typers
                   .makeTransparent) {
                 Literal(Constant(name.decode))
               }
-              markDynamicRewrite(
-                atPos(qual.pos)(Apply(fun, List(nameStringLit))))
+              markDynamicRewrite(atPos(qual.pos)(Apply(fun, List(nameStringLit))))
             case _ =>
               setError(tree)
           }
@@ -4951,9 +4919,7 @@ trait Typers
           val atype = ann.tpe
           // For `f(): @inline/noinline` callsites, add the InlineAnnotatedAttachment. TypeApplys
           // are eliminated by erasure, so add it to the underlying function in this case.
-          def setInlineAttachment(
-              t: Tree,
-              att: InlineAnnotatedAttachment): Unit =
+          def setInlineAttachment(t: Tree, att: InlineAnnotatedAttachment): Unit =
             t match {
               case TypeApply(fun, _) => setInlineAttachment(fun, att)
               case _                 => t.updateAttachment(att)
@@ -5169,10 +5135,7 @@ trait Typers
             typed1(atPos(tree.pos) { Function(params, body) }, mode, pt)
           }
         } else
-          virtualizedMatch(
-            typedMatch(selector, cases, mode, pt, tree),
-            mode,
-            pt)
+          virtualizedMatch(typedMatch(selector, cases, mode, pt, tree), mode, pt)
       }
 
       def typedReturn(tree: Return) = {
@@ -5497,9 +5460,7 @@ trait Typers
           case Apply(Block(stats, expr), args) =>
             typed1(
               atPos(tree.pos)(
-                Block(
-                  stats,
-                  Apply(expr, args) setPos tree.pos.makeTransparent)),
+                Block(stats, Apply(expr, args) setPos tree.pos.makeTransparent)),
               mode,
               pt)
           case Apply(fun, args) =>
@@ -5684,8 +5645,7 @@ trait Typers
                 if (context.unit.isJava && name.isTypeName) {
                   // SI-3120 Java uses the same syntax, A.B, to express selection from the
                   // value A and from the type A. We have to try both.
-                  atPos(tree.pos)(
-                    gen.convertToSelectFromType(qual, name)) match {
+                  atPos(tree.pos)(gen.convertToSelectFromType(qual, name)) match {
                     case EmptyTree => None
                     case tree1     => Some(typed1(tree1, mode, pt))
                   }
@@ -5794,10 +5754,7 @@ trait Typers
         tree match {
           case Select(qual @ Super(_, _), nme.CONSTRUCTOR) =>
             // the qualifier type of a supercall constructor is its first parent class
-            typedSelect(
-              tree,
-              typedSelectOrSuperQualifier(qual),
-              nme.CONSTRUCTOR)
+            typedSelect(tree, typedSelectOrSuperQualifier(qual), nme.CONSTRUCTOR)
           case Select(qual, name) =>
             if (Statistics.canEnable) Statistics.incCounter(typedSelectCount)
             val qualTyped = checkDead(typedQualifier(qual, mode))
@@ -6075,9 +6032,8 @@ trait Typers
         if (!context.starPatterns && !isPastTyper)
           StarPatternWithVarargParametersError(tree)
 
-        treeCopy.Star(
-          tree,
-          typed(tree.elem, mode, pt)) setType makeFullyDefined(pt)
+        treeCopy.Star(tree, typed(tree.elem, mode, pt)) setType makeFullyDefined(
+          pt)
       }
       def issueTryWarnings(tree: Try): Try = {
         def checkForCatchAll(cdef: CaseDef) {
@@ -6648,8 +6604,7 @@ trait Typers
       // but arbitrary conversions (in adapt) are disabled
       // TODO: can we achieve the pattern matching bit of the string interpolation SIP without this?
       typingInPattern(
-        context.withImplicitsDisabledAllowEnrichment(
-          typed(tree, PATTERNmode, pt)))
+        context.withImplicitsDisabledAllowEnrichment(typed(tree, PATTERNmode, pt)))
     }
 
     /** Types a (fully parameterized) type tree */

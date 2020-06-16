@@ -181,9 +181,7 @@ object Test extends Properties("Either") {
     (
       "Left.prop_flatMapRightIdentity",
       CheckLeftProjection.prop_flatMapRightIdentity),
-    (
-      "Left.prop_flatMapComposition",
-      CheckLeftProjection.prop_flatMapComposition),
+    ("Left.prop_flatMapComposition", CheckLeftProjection.prop_flatMapComposition),
     ("Left.prop_mapIdentity", CheckLeftProjection.prop_mapIdentity),
     ("Left.prop_mapComposition", CheckLeftProjection.prop_mapComposition),
     ("Left.prop_filter", CheckLeftProjection.prop_filter),

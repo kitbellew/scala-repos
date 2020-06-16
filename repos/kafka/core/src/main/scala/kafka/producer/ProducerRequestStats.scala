@@ -24,8 +24,7 @@ import kafka.common.{ClientIdAllBrokers, ClientIdBroker, ClientIdAndBroker}
 @deprecated(
   "This class has been deprecated and will be removed in a future release.",
   "0.10.0.0")
-class ProducerRequestMetrics(metricId: ClientIdBroker)
-    extends KafkaMetricsGroup {
+class ProducerRequestMetrics(metricId: ClientIdBroker) extends KafkaMetricsGroup {
   val tags = metricId match {
     case ClientIdAndBroker(clientId, brokerHost, brokerPort) =>
       Map(
@@ -57,8 +56,7 @@ class ProducerRequestMetrics(metricId: ClientIdBroker)
   "This class has been deprecated and will be removed in a future release.",
   "0.10.0.0")
 class ProducerRequestStats(clientId: String) {
-  private val valueFactory = (k: ClientIdBroker) =>
-    new ProducerRequestMetrics(k)
+  private val valueFactory = (k: ClientIdBroker) => new ProducerRequestMetrics(k)
   private val stats =
     new Pool[ClientIdBroker, ProducerRequestMetrics](Some(valueFactory))
   private val allBrokersStats = new ProducerRequestMetrics(
@@ -70,8 +68,7 @@ class ProducerRequestStats(clientId: String) {
   def getProducerRequestStats(
       brokerHost: String,
       brokerPort: Int): ProducerRequestMetrics = {
-    stats.getAndMaybePut(
-      new ClientIdAndBroker(clientId, brokerHost, brokerPort))
+    stats.getAndMaybePut(new ClientIdAndBroker(clientId, brokerHost, brokerPort))
   }
 }
 

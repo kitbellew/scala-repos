@@ -82,9 +82,8 @@ class GroupMetadataManager(
   private val groupMetadataTopicPartitionCount = getOffsetsTopicPartitionCount
 
   /* Single-thread scheduler to handling offset/group metadata cache loading and unloading */
-  private val scheduler = new KafkaScheduler(
-    threads = 1,
-    threadNamePrefix = "group-metadata-manager-")
+  private val scheduler =
+    new KafkaScheduler(threads = 1, threadNamePrefix = "group-metadata-manager-")
 
   this.logIdent = "[Group Metadata Manager on Broker " + brokerId + "]: "
 
@@ -113,8 +112,7 @@ class GroupMetadataManager(
     Utils.abs(groupId.hashCode) % groupMetadataTopicPartitionCount
 
   def isGroupLocal(groupId: String): Boolean =
-    loadingPartitions synchronized ownedPartitions.contains(
-      partitionFor(groupId))
+    loadingPartitions synchronized ownedPartitions.contains(partitionFor(groupId))
 
   def isGroupLoading(groupId: String): Boolean =
     loadingPartitions synchronized loadingPartitions.contains(
@@ -317,11 +315,8 @@ class GroupMetadataManager(
       TopicConstants.GROUP_METADATA_TOPIC_NAME,
       partitionFor(groupId))
 
-    val offsetsAndMetadataMessageSet = Map(
-      offsetTopicPartition ->
-        new ByteBufferMessageSet(
-          config.offsetsTopicCompressionCodec,
-          messages: _*))
+    val offsetsAndMetadataMessageSet = Map(offsetTopicPartition ->
+      new ByteBufferMessageSet(config.offsetsTopicCompressionCodec, messages: _*))
 
     // set the callback function to insert offsets into cache after log append completed
     def putCacheCallback(
@@ -445,8 +440,7 @@ class GroupMetadataManager(
 
       loadingPartitions synchronized {
         if (loadingPartitions.contains(offsetsPartition)) {
-          info(
-            "Offset load from %s already in progress.".format(topicPartition))
+          info("Offset load from %s already in progress.".format(topicPartition))
           return
         } else {
           loadingPartitions.add(offsetsPartition)
@@ -477,8 +471,8 @@ class GroupMetadataManager(
                   require(
                     msgAndOffset.message.key != null,
                     "Offset entry key should not be null")
-                  val baseKey = GroupMetadataManager.readMessageKey(
-                    msgAndOffset.message.key)
+                  val baseKey =
+                    GroupMetadataManager.readMessageKey(msgAndOffset.message.key)
 
                   if (baseKey.isInstanceOf[OffsetKey]) {
                     // load offset
@@ -489,8 +483,7 @@ class GroupMetadataManager(
                           "Removed offset for %s due to tombstone entry."
                             .format(key))
                       else
-                        trace(
-                          "Ignoring redundant tombstone for %s.".format(key))
+                        trace("Ignoring redundant tombstone for %s.".format(key))
                     } else {
                       // special handling for version 0:
                       // set the expiration time stamp as commit time stamp + server default retention time
@@ -1171,8 +1164,7 @@ object GroupMetadataManager {
 
         group.generationId =
           value.get(GROUP_METADATA_GENERATION_V0).asInstanceOf[Int]
-        group.leaderId =
-          value.get(GROUP_METADATA_LEADER_V0).asInstanceOf[String]
+        group.leaderId = value.get(GROUP_METADATA_LEADER_V0).asInstanceOf[String]
         group.protocol =
           value.get(GROUP_METADATA_PROTOCOL_V0).asInstanceOf[String]
 
@@ -1214,8 +1206,7 @@ object GroupMetadataManager {
 
         group
       } else {
-        throw new IllegalStateException(
-          "Unknown group metadata message version")
+        throw new IllegalStateException("Unknown group metadata message version")
       }
     }
   }

@@ -56,8 +56,7 @@ object StreamInputInfo {
   * This class manages all the input streams as well as their input data statistics. The information
   * will be exposed through StreamingListener for monitoring.
   */
-private[streaming] class InputInfoTracker(ssc: StreamingContext)
-    extends Logging {
+private[streaming] class InputInfoTracker(ssc: StreamingContext) extends Logging {
 
   // Map to track all the InputInfo related to specific batch time and input stream.
   private val batchTimeToInputInfos =

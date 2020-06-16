@@ -57,9 +57,7 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
     val cl = BoxingFinder.getClassReader(f.getClass)
     val boxingFinder = new BoxingFinder()
     cl.accept(boxingFinder, 0)
-    assert(
-      boxingFinder.boxingInvokes.nonEmpty,
-      "Found find boxing in this test")
+    assert(boxingFinder.boxingInvokes.nonEmpty, "Found find boxing in this test")
   }
 
   /**
@@ -268,9 +266,7 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
       testSparkPlanMetrics(
         df,
         3,
-        Map(
-          1L -> ("BroadcastNestedLoopJoin", Map(
-            "number of output rows" -> 12L))))
+        Map(1L -> ("BroadcastNestedLoopJoin", Map("number of output rows" -> 12L))))
     }
   }
 
@@ -283,9 +279,7 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
     testSparkPlanMetrics(
       df,
       2,
-      Map(
-        0L -> ("BroadcastLeftSemiJoinHash", Map(
-          "number of output rows" -> 2L))))
+      Map(0L -> ("BroadcastLeftSemiJoinHash", Map("number of output rows" -> 2L))))
   }
 
   test("ShuffledHashJoin metrics") {
@@ -347,8 +341,7 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
     metricInfo.update match {
       case Some(v: LongSQLMetricValue) => assert(v.value === 10L)
       case Some(v) =>
-        fail(
-          s"metric value was not a LongSQLMetricValue: ${v.getClass.getName}")
+        fail(s"metric value was not a LongSQLMetricValue: ${v.getClass.getName}")
       case _ => fail("metric update is missing")
     }
     assert(metricInfo.metadata === Some(SQLMetrics.ACCUM_IDENTIFIER))
@@ -368,10 +361,7 @@ class SQLMetricsSuite extends SparkFunSuite with SharedSQLContext {
 
 }
 
-private case class MethodIdentifier[T](
-    cls: Class[T],
-    name: String,
-    desc: String)
+private case class MethodIdentifier[T](cls: Class[T], name: String, desc: String)
 
 /**
   * If `method` is null, search all methods of this class recursively to find if they do some boxing.

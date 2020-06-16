@@ -62,8 +62,7 @@ private[spark] class TaskResultGetter(
               .get()
               .deserialize[TaskResult[_]](serializedData) match {
               case directResult: DirectTaskResult[_] =>
-                if (!taskSetManager.canFetchMoreResults(
-                    serializedData.limit())) {
+                if (!taskSetManager.canFetchMoreResults(serializedData.limit())) {
                   return
                 }
                 // deserialize "value" without holding any lock so that it won't block other threads.

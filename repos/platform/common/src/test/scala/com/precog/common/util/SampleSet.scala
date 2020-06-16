@@ -406,8 +406,7 @@ object DistributedSampleSet {
   def sample[T](
       sampleSize: Int,
       queriableSamples: Int,
-      sampler: Gen[T] = AdSamples.defaultSample)
-      : (Vector[T], Option[Vector[T]]) = {
+      sampler: Gen[T] = AdSamples.defaultSample): (Vector[T], Option[Vector[T]]) = {
     def pull[T](
         sampleSet: SampleSet[T],
         sampleData: Vector[T],

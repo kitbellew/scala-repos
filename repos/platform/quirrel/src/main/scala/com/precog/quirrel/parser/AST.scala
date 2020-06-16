@@ -502,9 +502,7 @@ trait AST extends Phases {
             (left1 equalsIgnoreLoc left2) &&
             (right1 equalsIgnoreLoc right2)
 
-        case (
-              Solve(_, constraints1, child1),
-              Solve(_, constraints2, child2)) => {
+        case (Solve(_, constraints1, child1), Solve(_, constraints2, child2)) => {
           val sizing = constraints1.length == constraints2.length
           val contents = constraints1 zip constraints2 forall {
             case (e1, e2) => e1 equalsIgnoreLoc e2

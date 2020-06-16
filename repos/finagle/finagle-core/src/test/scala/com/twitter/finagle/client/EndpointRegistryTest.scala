@@ -55,7 +55,8 @@ class EndpointRegistryTest extends FunSuite {
     assert(getEndpoints(registry, name, dtab2, path2) == Some(bound2))
   }
 
-  test("adding endpoints for a path for an existing dtab adds them to the registry") {
+  test(
+    "adding endpoints for a path for an existing dtab adds them to the registry") {
     val registry = new EndpointRegistry()
 
     registry.addObservation(name, dtab, path, endpoints)

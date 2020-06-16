@@ -200,8 +200,7 @@ class SyncProducerTest extends KafkaServerTestHarness {
         0,
         new ByteBufferMessageSet(
           compressionCodec = NoCompressionCodec,
-          messages =
-            new Message(new Array[Byte](configs(0).messageMaxBytes + 1))),
+          messages = new Message(new Array[Byte](configs(0).messageMaxBytes + 1))),
         acks = 0))
 
     // Send another message whose size is large enough to exceed the buffer size so

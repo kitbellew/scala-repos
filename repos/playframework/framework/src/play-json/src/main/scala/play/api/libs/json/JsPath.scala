@@ -219,25 +219,23 @@ case class JsPath(path: List[PathNode] = List()) {
           node(json) match {
             case Nil =>
               Right(
-                JsError(
-                  Seq(this -> Seq(ValidationError("error.path.missing")))))
+                JsError(Seq(this -> Seq(ValidationError("error.path.missing")))))
             case List(js) => Right(JsSuccess(js))
             case _ :: _ =>
               Right(
-                JsError(Seq(
-                  this -> Seq(ValidationError("error.path.result.multiple")))))
+                JsError(
+                  Seq(this -> Seq(ValidationError("error.path.result.multiple")))))
           }
         case head :: tail =>
           head(json) match {
             case Nil =>
               Left(
-                JsError(
-                  Seq(this -> Seq(ValidationError("error.path.missing")))))
+                JsError(Seq(this -> Seq(ValidationError("error.path.missing")))))
             case List(js) => step(tail, js)
             case _ :: _ =>
               Left(
-                JsError(Seq(
-                  this -> Seq(ValidationError("error.path.result.multiple")))))
+                JsError(
+                  Seq(this -> Seq(ValidationError("error.path.result.multiple")))))
           }
       }
 
@@ -479,9 +477,7 @@ case class JsPath(path: List[PathNode] = List()) {
     * @see JsPath.lazyReadNullable to see behavior in reads
     * @see JsPath.lazyWriteNullable to see behavior in writes
     */
-  def lazyFormatNullable[T](
-      r: => Reads[T],
-      w: => Writes[T]): OFormat[Option[T]] =
+  def lazyFormatNullable[T](r: => Reads[T], w: => Writes[T]): OFormat[Option[T]] =
     OFormat[Option[T]](lazyReadNullable(r), lazyWriteNullable(w))
 
   private val self = this

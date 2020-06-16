@@ -46,8 +46,7 @@ object TerminateJson {
 
     def head: A = {
       if (next == 0)
-        throw new IllegalStateException(
-          "Cannot pop element off of empty stack.")
+        throw new IllegalStateException("Cannot pop element off of empty stack.")
       stack(next - 1)
     }
 
@@ -59,8 +58,7 @@ object TerminateJson {
 
     def pop(): A = {
       if (next == 0)
-        throw new IllegalStateException(
-          "Cannot pop element off of empty stack.")
+        throw new IllegalStateException("Cannot pop element off of empty stack.")
       next -= 1
       stack(next)
     }

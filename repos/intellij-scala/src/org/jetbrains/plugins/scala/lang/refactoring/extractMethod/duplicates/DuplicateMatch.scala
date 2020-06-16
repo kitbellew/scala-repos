@@ -29,9 +29,7 @@ import scala.collection.mutable
   * Nikolay.Tropin
   * 2014-05-15
   */
-class DuplicateMatch(
-    pattern: DuplicatePattern,
-    val candidates: Seq[PsiElement]) {
+class DuplicateMatch(pattern: DuplicatePattern, val candidates: Seq[PsiElement]) {
   private val parameterValues =
     mutable.Map[ExtractMethodParameter, ScExpression]()
   private val definitionCorrespondence =
@@ -90,9 +88,9 @@ class DuplicateMatch(
           if pattern.paramOccurences.contains(ref) =>
         val p = pattern.paramOccurences(ref)
         val paramValue = parameterValues.getOrElseUpdate(p, expr)
-        PsiEquivalenceUtil.areElementsEquivalent(
-          paramValue,
-          expr) && typesEquiv(ref, expr)
+        PsiEquivalenceUtil.areElementsEquivalent(paramValue, expr) && typesEquiv(
+          ref,
+          expr)
       case Both(
             (ref1: ScReferenceExpression, ref2: ScReferenceExpression),
             (

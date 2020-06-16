@@ -6,11 +6,7 @@ import java.io.{IOException, Closeable, File, FileNotFoundException}
 import com.intellij.openapi.progress.ProgressIndicator
 import org.apache.maven.index._
 import org.apache.maven.index.artifact.DefaultArtifactPackagingMapper
-import org.apache.maven.index.context.{
-  IndexCreator,
-  IndexUtils,
-  IndexingContext
-}
+import org.apache.maven.index.context.{IndexCreator, IndexUtils, IndexingContext}
 import org.apache.maven.index.incremental.DefaultIncrementalHandler
 import org.apache.maven.index.updater.{
   DefaultIndexUpdater,
@@ -184,8 +180,7 @@ class SbtMavenRepoIndexer private (val root: String, val indexDir: File)
           IndexUtils.constructArtifactInfo(reader.document(i - 1), context)
         if (info != null)
           f(info)
-        progressIndicator foreach (_.setFraction(
-          0.5 + 0.5 * (i.toFloat / maxDoc)))
+        progressIndicator foreach (_.setFraction(0.5 + 0.5 * (i.toFloat / maxDoc)))
       }
     } finally {
       context.releaseIndexSearcher(searcher)

@@ -174,11 +174,7 @@ class StringBuilder(private var content: String)
     else
       insert(index, ref.toString)
 
-  def insert(
-      index: Int,
-      csq: CharSequence,
-      start: Int,
-      end: Int): StringBuilder =
+  def insert(index: Int, csq: CharSequence, start: Int, end: Int): StringBuilder =
     if (csq == null)
       insert(index, "null", start, end)
     else

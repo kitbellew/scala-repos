@@ -68,9 +68,7 @@ private[spark] object UIWorkloadGenerator {
     val jobs = Seq[(String, () => Long)](
       ("Count", baseData.count),
       ("Cache and Count", baseData.map(x => x).cache().count),
-      (
-        "Single Shuffle",
-        baseData.map(x => (x % 10, x)).reduceByKey(_ + _).count),
+      ("Single Shuffle", baseData.map(x => (x % 10, x)).reduceByKey(_ + _).count),
       ("Entirely failed phase", baseData.map(x => throw new Exception).count),
       (
         "Partially failed phase", {

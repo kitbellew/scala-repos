@@ -58,8 +58,7 @@ object sum extends UFunc with sumLowPrio with VectorizedReduceUFunc {
     }
 
   @expand
-  implicit def helper[@expand.args(Int, Float, Long, Double) T]
-      : VectorizeHelper[T] =
+  implicit def helper[@expand.args(Int, Float, Long, Double) T]: VectorizeHelper[T] =
     new VectorizeHelper[T] {
       override def zerosLike(len: Int): DenseVector[T] =
         DenseVector.zeros[T](len)

@@ -74,11 +74,7 @@ trait ScalaTestPackageTest extends ScalaTestTestCase {
       root =>
         checkResultTreeHasExactNamedPath(root, "[root]", "Test1", "Test1") &&
           checkResultTreeHasExactNamedPath(root, "[root]", "Test2", "Test2") &&
-          checkResultTreeHasExactNamedPath(
-            root,
-            "[root]",
-            "Test1",
-            "SecondTest")
+          checkResultTreeHasExactNamedPath(root, "[root]", "Test1", "SecondTest")
     )
   }
 }

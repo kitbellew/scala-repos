@@ -53,9 +53,7 @@ class TypeclassExistenceTest extends FunSuite {
       "Expected implicit Numeric[%s] instance, but it was not found." format m)
   }
 
-  def hasFractional[A](implicit
-      f: Fractional[A] = null,
-      m: ClassTag[A]): Unit = {
+  def hasFractional[A](implicit f: Fractional[A] = null, m: ClassTag[A]): Unit = {
     assert(
       f != null,
       "Expected implicit Fractional[%s] instance, but it was not found." format m)

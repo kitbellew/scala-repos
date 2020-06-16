@@ -692,8 +692,8 @@ trait Internals { self: Universe =>
       def apply(
           paramss: List[List[Tree]],
           implparams: List[Tree]): List[List[Tree]]
-      def unapply(vparamss: List[List[ValDef]])
-          : Some[(List[List[ValDef]], List[ValDef])]
+      def unapply(
+          vparamss: List[List[ValDef]]): Some[(List[List[ValDef]], List[ValDef])]
     }
 
     val ScalaDot: ScalaDotExtractor
@@ -1290,9 +1290,7 @@ trait Internals { self: Universe =>
       def This(sym: Symbol): Tree = internal.reificationSupport.mkThis(sym)
 
       /** @see [[BuildApi.mkSelect]] */
-      @deprecated(
-        "Use `internal.reificationSupport.mkSelect` instead",
-        "2.11.0")
+      @deprecated("Use `internal.reificationSupport.mkSelect` instead", "2.11.0")
       def Select(qualifier: Tree, sym: Symbol): Select =
         internal.reificationSupport.mkSelect(qualifier, sym)
 

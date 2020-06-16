@@ -350,9 +350,7 @@ class KafkaConfigTest {
   def testUncleanElectionDisabled() {
     val props =
       TestUtils.createBrokerConfig(0, TestUtils.MockZkConnect, port = 8181)
-    props.put(
-      KafkaConfig.UncleanLeaderElectionEnableProp,
-      String.valueOf(false))
+    props.put(KafkaConfig.UncleanLeaderElectionEnableProp, String.valueOf(false))
     val serverConfig = KafkaConfig.fromProps(props)
 
     assertEquals(serverConfig.uncleanLeaderElectionEnable, false)
@@ -504,29 +502,13 @@ class KafkaConfigTest {
           case KafkaConfig.BrokerIdProp =>
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
           case KafkaConfig.NumNetworkThreadsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.NumIoThreadsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.BackgroundThreadsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.QueuedMaxRequestsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.RequestTimeoutMsProp =>
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
 
@@ -551,11 +533,7 @@ class KafkaConfigTest {
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
 
           case KafkaConfig.NumPartitionsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.LogDirsProp => // ignore string
           case KafkaConfig.LogDirProp  => // ignore string
           case KafkaConfig.LogSegmentBytesProp =>
@@ -566,45 +544,21 @@ class KafkaConfigTest {
               Message.MinMessageOverhead - 1)
 
           case KafkaConfig.LogRollTimeMillisProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.LogRollTimeHoursProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
 
           case KafkaConfig.LogRetentionTimeMillisProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.LogRetentionTimeMinutesProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.LogRetentionTimeHoursProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
 
           case KafkaConfig.LogRetentionBytesProp =>
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
           case KafkaConfig.LogCleanupIntervalMsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.LogCleanupPolicyProp =>
             assertPropertyInvalid(
               getBaseProperties(),
@@ -628,27 +582,15 @@ class KafkaConfigTest {
           case KafkaConfig.LogCleanerMinCleanRatioProp =>
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
           case KafkaConfig.LogIndexSizeMaxBytesProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "3")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "3")
           case KafkaConfig.LogFlushIntervalMessagesProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.LogFlushSchedulerIntervalMsProp =>
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
           case KafkaConfig.LogFlushIntervalMsProp =>
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
           case KafkaConfig.NumRecoveryThreadsPerDataDirProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.AutoCreateTopicsEnableProp =>
             assertPropertyInvalid(
               getBaseProperties(),
@@ -656,11 +598,7 @@ class KafkaConfigTest {
               "not_a_boolean",
               "0")
           case KafkaConfig.MinInSyncReplicasProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.ControllerSocketTimeoutMsProp =>
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
           case KafkaConfig.DefaultReplicationFactorProp =>
@@ -722,29 +660,13 @@ class KafkaConfigTest {
           case KafkaConfig.OffsetMetadataMaxSizeProp =>
             assertPropertyInvalid(getBaseProperties(), name, "not_a_number")
           case KafkaConfig.OffsetsLoadBufferSizeProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.OffsetsTopicReplicationFactorProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.OffsetsTopicPartitionsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.OffsetsTopicSegmentBytesProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.OffsetsTopicCompressionCodecProp =>
             assertPropertyInvalid(
               getBaseProperties(),
@@ -752,23 +674,11 @@ class KafkaConfigTest {
               "not_a_number",
               "-1")
           case KafkaConfig.OffsetsRetentionMinutesProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.OffsetsRetentionCheckIntervalMsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.OffsetCommitTimeoutMsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.OffsetCommitRequiredAcksProp =>
             assertPropertyInvalid(
               getBaseProperties(),
@@ -776,29 +686,13 @@ class KafkaConfigTest {
               "not_a_number",
               "-2")
           case KafkaConfig.ProducerQuotaBytesPerSecondDefaultProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.ConsumerQuotaBytesPerSecondDefaultProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.NumQuotaSamplesProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
           case KafkaConfig.QuotaWindowSizeSecondsProp =>
-            assertPropertyInvalid(
-              getBaseProperties(),
-              name,
-              "not_a_number",
-              "0")
+            assertPropertyInvalid(getBaseProperties(), name, "not_a_number", "0")
 
           case KafkaConfig.DeleteTopicEnableProp =>
             assertPropertyInvalid(

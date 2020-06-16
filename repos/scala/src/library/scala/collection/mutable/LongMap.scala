@@ -416,15 +416,7 @@ final class LongMap[V] private[collection] (
     val kz = java.util.Arrays.copyOf(_keys, _keys.length)
     val vz = java.util.Arrays.copyOf(_values, _values.length)
     val lm = new LongMap[V](defaultEntry, 1, false)
-    lm.initializeTo(
-      mask,
-      extraKeys,
-      zeroValue,
-      minValue,
-      _size,
-      _vacant,
-      kz,
-      vz)
+    lm.initializeTo(mask, extraKeys, zeroValue, minValue, _size, _vacant, kz, vz)
     lm
   }
 
@@ -534,8 +526,7 @@ object LongMap {
   private val exceptionDefault: Long => Nothing = (k: Long) =>
     throw new NoSuchElementException(k.toString)
 
-  implicit def canBuildFrom[V, U]
-      : CanBuildFrom[LongMap[V], (Long, U), LongMap[U]] =
+  implicit def canBuildFrom[V, U]: CanBuildFrom[LongMap[V], (Long, U), LongMap[U]] =
     new CanBuildFrom[LongMap[V], (Long, U), LongMap[U]] {
       def apply(from: LongMap[V]): LongMapBuilder[U] = apply()
       def apply(): LongMapBuilder[U] = new LongMapBuilder[U]

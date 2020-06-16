@@ -137,32 +137,20 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
   }
 
   testIfEnabled("Read data available in both block manager and Kinesis") {
-    testRDD(
-      numPartitions = 2,
-      numPartitionsInBM = 2,
-      numPartitionsInKinesis = 2)
+    testRDD(numPartitions = 2, numPartitionsInBM = 2, numPartitionsInKinesis = 2)
   }
 
   testIfEnabled("Read data available only in block manager, not in Kinesis") {
-    testRDD(
-      numPartitions = 2,
-      numPartitionsInBM = 2,
-      numPartitionsInKinesis = 0)
+    testRDD(numPartitions = 2, numPartitionsInBM = 2, numPartitionsInKinesis = 0)
   }
 
   testIfEnabled("Read data available only in Kinesis, not in block manager") {
-    testRDD(
-      numPartitions = 2,
-      numPartitionsInBM = 0,
-      numPartitionsInKinesis = 2)
+    testRDD(numPartitions = 2, numPartitionsInBM = 0, numPartitionsInKinesis = 2)
   }
 
   testIfEnabled(
     "Read data available partially in block manager, rest in Kinesis") {
-    testRDD(
-      numPartitions = 2,
-      numPartitionsInBM = 1,
-      numPartitionsInKinesis = 1)
+    testRDD(numPartitions = 2, numPartitionsInBM = 1, numPartitionsInKinesis = 1)
   }
 
   testIfEnabled("Test isBlockValid skips block fetching from block manager") {

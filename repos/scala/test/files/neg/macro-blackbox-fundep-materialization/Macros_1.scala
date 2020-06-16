@@ -42,9 +42,7 @@ object Iso {
       List(),
       Template(
         List(
-          AppliedTypeTree(
-            Ident(newTypeName("Iso")),
-            List(Ident(sym), mkTpt()))),
+          AppliedTypeTree(Ident(newTypeName("Iso")), List(Ident(sym), mkTpt()))),
         emptyValDef,
         List(
           DefDef(
@@ -66,13 +64,8 @@ object Iso {
             Modifiers(),
             newTermName("to"),
             List(),
-            List(
-              List(
-                ValDef(
-                  Modifiers(PARAM),
-                  newTermName("f"),
-                  Ident(sym),
-                  EmptyTree))),
+            List(List(
+              ValDef(Modifiers(PARAM), newTermName("f"), Ident(sym), EmptyTree))),
             TypeTree(),
             mkFrom())
         )

@@ -570,8 +570,7 @@ object Console extends Logging {
           },
           arg[String]("[<event1> <event2> ...]") unbounded () optional ()
             action { (x, c) =>
-              c.copy(accessKey =
-                c.accessKey.copy(events = c.accessKey.events :+ x))
+              c.copy(accessKey = c.accessKey.copy(events = c.accessKey.events :+ x))
             }
         ),
         cmd("list").text("List all access keys of an app.").action { (_, c) =>
@@ -859,8 +858,7 @@ object Console extends Logging {
   }
 
   def eventserver(ca: ConsoleArgs): Unit = {
-    info(
-      s"Creating Event Server at ${ca.eventServer.ip}:${ca.eventServer.port}")
+    info(s"Creating Event Server at ${ca.eventServer.ip}:${ca.eventServer.port}")
     EventServer.createEventServer(
       EventServerConfig(
         ip = ca.eventServer.ip,
@@ -869,8 +867,7 @@ object Console extends Logging {
   }
 
   def adminserver(ca: ConsoleArgs): Unit = {
-    info(
-      s"Creating Admin Server at ${ca.adminServer.ip}:${ca.adminServer.port}")
+    info(s"Creating Admin Server at ${ca.adminServer.ip}:${ca.adminServer.port}")
     AdminServer.createAdminServer(
       AdminServerConfig(
         ip = ca.adminServer.ip,

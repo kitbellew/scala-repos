@@ -92,13 +92,11 @@ class arityizeTest extends FunSuite {
   test("ktakagaki's tuple-y stuff") {
     @arityize(22)
     case class TupleToDenseVector(
-        tuple: Tuple[Any @arityize.repeat] @arityize.relative(
-          TupleToDenseVector))
+        tuple: Tuple[Any @arityize.repeat] @arityize.relative(TupleToDenseVector))
 
     @arityize(22)
     implicit def tupleToDenseVector(
-        tuple: Tuple[Any @arityize.repeat] @arityize.relative(
-          tupleToDenseVector)) = {
+        tuple: Tuple[Any @arityize.repeat] @arityize.relative(tupleToDenseVector)) = {
       new (TupleToDenseVector @arityize.relative(tupleToDenseVector))(tuple)
     }
   }

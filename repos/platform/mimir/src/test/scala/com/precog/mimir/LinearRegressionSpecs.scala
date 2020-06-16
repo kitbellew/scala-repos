@@ -367,11 +367,7 @@ trait LinearRegressionSpecs[M[+_]]
       val cpaths = Seq(
         CPath(CPathIndex(0), CPathField("ack"), CPathIndex(0)),
         CPath(CPathIndex(0), CPathField("bak"), CPathField("bazoo")),
-        CPath(
-          CPathIndex(0),
-          CPathField("bar"),
-          CPathField("baz"),
-          CPathIndex(0)),
+        CPath(CPathIndex(0), CPathField("bar"), CPathField("baz"), CPathIndex(0)),
         CPath(CPathIndex(0), CPathField("foo")),
         CPath(CPathIndex(1))
       ) sorted

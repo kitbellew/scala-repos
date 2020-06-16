@@ -48,8 +48,7 @@ private[appinfo] class DefaultInfoService(
     log.debug(s"queryAllInGroup $groupId")
     groupManager
       .group(groupId)
-      .map(
-        _.map(_.transitiveApps.filter(selector.matches)).getOrElse(Seq.empty))
+      .map(_.map(_.transitiveApps.filter(selector.matches)).getOrElse(Seq.empty))
       .flatMap(resolveAppInfos(_, embed))
   }
 

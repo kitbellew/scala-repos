@@ -86,9 +86,7 @@ private[spark] object Distribution {
     }
   }
 
-  def showQuantiles(
-      out: PrintStream = System.out,
-      quantiles: Traversable[Double]) {
+  def showQuantiles(out: PrintStream = System.out, quantiles: Traversable[Double]) {
     // scalastyle:off println
     out.println("min\t25%\t50%\t75%\tmax")
     quantiles.foreach { q => out.print(q + "\t") }

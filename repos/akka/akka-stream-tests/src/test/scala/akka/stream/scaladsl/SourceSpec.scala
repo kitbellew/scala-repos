@@ -150,16 +150,16 @@ class SourceSpec extends AkkaSpec with DefaultTimeout {
       val out = TestSubscriber.manualProbe[Int]
 
       val s = Source
-        .fromGraph(GraphDSL.create(source, source, source, source, source)(
-          Seq(_, _, _, _, _)) { implicit b ⇒ (i0, i1, i2, i3, i4) ⇒
-          import GraphDSL.Implicits._
-          val m = b.add(Merge[Int](5))
-          i0.out ~> m.in(0)
-          i1.out ~> m.in(1)
-          i2.out ~> m.in(2)
-          i3.out ~> m.in(3)
-          i4.out ~> m.in(4)
-          SourceShape(m.out)
+        .fromGraph(GraphDSL.create(source, source, source, source, source)(Seq(_, _, _, _, _)) {
+          implicit b ⇒ (i0, i1, i2, i3, i4) ⇒
+            import GraphDSL.Implicits._
+            val m = b.add(Merge[Int](5))
+            i0.out ~> m.in(0)
+            i1.out ~> m.in(1)
+            i2.out ~> m.in(2)
+            i3.out ~> m.in(3)
+            i4.out ~> m.in(4)
+            SourceShape(m.out)
         })
         .to(Sink.fromSubscriber(out))
         .run()

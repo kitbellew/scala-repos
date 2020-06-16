@@ -82,12 +82,8 @@ class HighwatermarkPersistenceTest {
       // create leader and follower replicas
       val log0 =
         logManagers(0).createLog(TopicAndPartition(topic, 0), LogConfig())
-      val leaderReplicaPartition0 = new Replica(
-        configs.head.brokerId,
-        partition0,
-        SystemTime,
-        0,
-        Some(log0))
+      val leaderReplicaPartition0 =
+        new Replica(configs.head.brokerId, partition0, SystemTime, 0, Some(log0))
       partition0.addReplicaIfNotExists(leaderReplicaPartition0)
       val followerReplicaPartition0 =
         new Replica(configs.last.brokerId, partition0, SystemTime)
@@ -157,13 +153,10 @@ class HighwatermarkPersistenceTest {
         leaderReplicaTopic1Partition0.highWatermark.messageOffset,
         topic1Partition0Hw)
       // set the high watermark for local replica
-      topic1Partition0.getReplica().get.highWatermark = new LogOffsetMetadata(
-        5L)
+      topic1Partition0.getReplica().get.highWatermark = new LogOffsetMetadata(5L)
       replicaManager.checkpointHighWatermarks()
       topic1Partition0Hw = hwmFor(replicaManager, topic1, 0)
-      assertEquals(
-        5L,
-        leaderReplicaTopic1Partition0.highWatermark.messageOffset)
+      assertEquals(5L, leaderReplicaTopic1Partition0.highWatermark.messageOffset)
       assertEquals(5L, topic1Partition0Hw)
       // add another partition and set highwatermark
       val topic2Partition0 = replicaManager.getOrCreatePartition(topic2, 0)

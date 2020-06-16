@@ -20,10 +20,7 @@ package org.apache.spark.sql.execution.datasources.json
 import com.fasterxml.jackson.core.{JsonFactory, JsonParser}
 
 import org.apache.spark.internal.Logging
-import org.apache.spark.sql.execution.datasources.{
-  CompressionCodecs,
-  ParseModes
-}
+import org.apache.spark.sql.execution.datasources.{CompressionCodecs, ParseModes}
 
 /**
   * Options for the JSON data source.

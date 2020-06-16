@@ -93,8 +93,7 @@ private[streaming] class WriteAheadLogBackedBlockRDD[T: ClassTag](
 
   // Hadoop configuration is not serializable, so broadcast it as a serializable.
   @transient private val hadoopConfig = sc.hadoopConfiguration
-  private val broadcastedHadoopConf = new SerializableConfiguration(
-    hadoopConfig)
+  private val broadcastedHadoopConf = new SerializableConfiguration(hadoopConfig)
 
   override def isValid(): Boolean = true
 

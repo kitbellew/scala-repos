@@ -282,14 +282,11 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           "text/plain; charset=UTF-8")
       "Content-Type: text/xml2; version=3; charset=windows-1252" =!=
         `Content-Type`(
-          MediaType.customWithOpenCharset(
-            "text",
-            "xml2",
-            params = Map("version" -> "3"))
+          MediaType
+            .customWithOpenCharset("text", "xml2", params = Map("version" -> "3"))
             withCharset HttpCharsets.getForKey("windows-1252").get)
       "Content-Type: text/plain; charset=fancy-pants" =!=
-        `Content-Type`(
-          `text/plain` withCharset HttpCharset.custom("fancy-pants"))
+        `Content-Type`(`text/plain` withCharset HttpCharset.custom("fancy-pants"))
       "Content-Type: multipart/mixed; boundary=ABC123" =!=
         `Content-Type`(
           `multipart/mixed` withBoundary "ABC123" withCharset `UTF-8`)
@@ -310,8 +307,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
     "Content-Range" in {
       "Content-Range: bytes 42-1233/1234" =!= `Content-Range`(
         ContentRange(42, 1233, 1234))
-      "Content-Range: bytes 42-1233/*" =!= `Content-Range`(
-        ContentRange(42, 1233))
+      "Content-Range: bytes 42-1233/*" =!= `Content-Range`(ContentRange(42, 1233))
       "Content-Range: bytes */1234" =!= `Content-Range`(
         ContentRange.Unsatisfiable(1234))
       "Content-Range: bytes */12345678901234567890123456789" =!= `Content-Range`(
@@ -325,8 +321,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         "SID" -> "31d4d96e407aad42",
         "lang" -> "en>US")
       "Cookie: a=1; b=2" =!= Cookie("a" -> "1", "b" -> "2")
-      "Cookie: a=1;b=2" =!= Cookie("a" -> "1", "b" -> "2").renderedTo(
-        "a=1; b=2")
+      "Cookie: a=1;b=2" =!= Cookie("a" -> "1", "b" -> "2").renderedTo("a=1; b=2")
       "Cookie: a=1 ;b=2" =!= Cookie("a" -> "1", "b" -> "2").renderedTo(
         "a=1; b=2")
 
@@ -446,9 +441,7 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
       """If-None-Match: "938fz3f83z3z38z"""" =!= `If-None-Match`(
         EntityTag("938fz3f83z3z38z"))
       """If-None-Match: "938fz3f83z3z38z", "0293f34hhv0nc"""" =!=
-        `If-None-Match`(
-          EntityTag("938fz3f83z3z38z"),
-          EntityTag("0293f34hhv0nc"))
+        `If-None-Match`(EntityTag("938fz3f83z3z38z"), EntityTag("0293f34hhv0nc"))
       """If-None-Match: W/"938fz3f83z3z38z"""" =!= `If-None-Match`(
         EntityTag("938fz3f83z3z38z", weak = true))
     }
@@ -625,12 +618,9 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
           Vector(WebSocketExtension("permessage-deflate")))
       "Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits; server_max_window_bits=10" =!=
         `Sec-WebSocket-Extensions`(
-          Vector(
-            WebSocketExtension(
-              "permessage-deflate",
-              Map(
-                "client_max_window_bits" -> "",
-                "server_max_window_bits" -> "10"))))
+          Vector(WebSocketExtension(
+            "permessage-deflate",
+            Map("client_max_window_bits" -> "", "server_max_window_bits" -> "10"))))
       "Sec-WebSocket-Extensions: permessage-deflate; client_max_window_bits; server_max_window_bits=10, permessage-deflate; client_max_window_bits" =!=
         `Sec-WebSocket-Extensions`(
           Vector(
@@ -649,15 +639,13 @@ class HttpHeaderSpec extends FreeSpec with Matchers {
         "c2Zxb3JpbmgyMzA5dGpoMDIzOWdlcm5vZ2luCg==")
     }
     "Sec-WebSocket-Protocol" in {
-      "Sec-WebSocket-Protocol: chat" =!= `Sec-WebSocket-Protocol`(
-        Vector("chat"))
+      "Sec-WebSocket-Protocol: chat" =!= `Sec-WebSocket-Protocol`(Vector("chat"))
       "Sec-WebSocket-Protocol: chat, superchat" =!= `Sec-WebSocket-Protocol`(
         Vector("chat", "superchat"))
     }
     "Sec-WebSocket-Version" in {
       "Sec-WebSocket-Version: 25" =!= `Sec-WebSocket-Version`(Vector(25))
-      "Sec-WebSocket-Version: 13, 8, 7" =!= `Sec-WebSocket-Version`(
-        Vector(13, 8, 7))
+      "Sec-WebSocket-Version: 13, 8, 7" =!= `Sec-WebSocket-Version`(Vector(13, 8, 7))
 
       "Sec-WebSocket-Version: 255" =!= `Sec-WebSocket-Version`(Vector(255))
       "Sec-WebSocket-Version: 0" =!= `Sec-WebSocket-Version`(Vector(0))

@@ -677,9 +677,7 @@ abstract class ClassfileParser {
       while (!isDelimiter(sig.charAt(index))) { index += 1 }
       sig.subName(start, index)
     }
-    def sig2type(
-        tparams: immutable.Map[Name, Symbol],
-        skiptvs: Boolean): Type = {
+    def sig2type(tparams: immutable.Map[Name, Symbol], skiptvs: Boolean): Type = {
       val tag = sig.charAt(index); index += 1
       tag match {
         case BYTE_TAG   => ByteTpe
@@ -713,8 +711,7 @@ abstract class ClassfileParser {
                         index += 1
                         val bounds = variance match {
                           case '+' =>
-                            TypeBounds.upper(
-                              objToAny(sig2type(tparams, skiptvs)))
+                            TypeBounds.upper(objToAny(sig2type(tparams, skiptvs)))
                           case '-' =>
                             val tp = sig2type(tparams, skiptvs)
                             // sig2type seems to return AnyClass regardless of the situation:
@@ -804,9 +801,7 @@ abstract class ClassfileParser {
             clazz.tpe_*
           } else
             sig2type(tparams, skiptvs)
-          JavaMethodType(
-            sym.newSyntheticValueParams(paramtypes.toList),
-            restype)
+          JavaMethodType(sym.newSyntheticValueParams(paramtypes.toList), restype)
         case 'T' =>
           val n = subName(';'.==).toTypeName
           index += 1
@@ -946,12 +941,7 @@ abstract class ClassfileParser {
                       ._2
                       .asInstanceOf[ScalaSigBytes]
                       .bytes
-                  unpickler.unpickle(
-                    bytes,
-                    0,
-                    clazz,
-                    staticModule,
-                    in.file.name)
+                  unpickler.unpickle(bytes, 0, clazz, staticModule, in.file.name)
                 case None =>
                   throw new RuntimeException(
                     "Scala class file does not contain Scala annotation")
@@ -1152,9 +1142,7 @@ abstract class ClassfileParser {
       val scope = getScope(jflags)
       def newStub(name: Name) =
         owner
-          .newStubSymbol(
-            name,
-            s"Class file for ${entry.externalName} not found")
+          .newStubSymbol(name, s"Class file for ${entry.externalName} not found")
           .setFlag(JAVA)
 
       val (innerClass, innerModule) = if (file == NoAbstractFile) {
@@ -1304,9 +1292,7 @@ abstract class ClassfileParser {
       throw new AssertionError("cyclic type dereferencing")
     }
   }
-  class LazyAliasType(alias: Symbol)
-      extends LazyType
-      with FlagAgnosticCompleter {
+  class LazyAliasType(alias: Symbol) extends LazyType with FlagAgnosticCompleter {
     override def complete(sym: Symbol) {
       sym setInfo createFromClonedSymbols(
         alias.initialize.typeParams,

@@ -191,8 +191,9 @@ private[finagle] class PipelineFactory(
         ctx,
         new UpstreamMessageEvent(
           e.getChannel,
-          Message.encode(Message
-            .Tdispatch(Message.Tags.MinTag, Nil, Path.empty, Dtab.empty, buf)),
+          Message.encode(
+            Message
+              .Tdispatch(Message.Tags.MinTag, Nil, Path.empty, Dtab.empty, buf)),
           e.getRemoteAddress))
     }
   }

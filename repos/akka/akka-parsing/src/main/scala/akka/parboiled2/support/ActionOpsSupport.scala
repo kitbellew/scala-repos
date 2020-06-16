@@ -71,8 +71,9 @@ object Join {
         L1 <: HList,
         L2 <: HList,
         Acc <: HList,
-        Out <: HList](implicit x: Aux[I, L1, L2, HNil, Acc, I, Out])
-        : Aux[I, L1, L2, Unit, Acc, I, Out] = `n/a`
+        Out <: HList](implicit
+        x: Aux[I, L1, L2, HNil, Acc, I, Out]): Aux[I, L1, L2, Unit, Acc, I, Out] =
+      `n/a`
 
     // if R <: HList and L1 non-empty move head of L1 to Acc
     implicit def iter1[

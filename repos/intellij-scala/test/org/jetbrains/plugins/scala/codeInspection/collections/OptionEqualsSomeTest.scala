@@ -84,8 +84,7 @@ class OptionEqualsSome_2_10_Test extends OperationsOnCollectionInspectionTest {
   }
 }
 
-class OptionNotEqualsSome_2_10_Test
-    extends OperationsOnCollectionInspectionTest {
+class OptionNotEqualsSome_2_10_Test extends OperationsOnCollectionInspectionTest {
   override val inspectionClass: Class[_ <: OperationOnCollectionInspection] =
     classOf[OptionEqualsSomeToContainsInspection]
 

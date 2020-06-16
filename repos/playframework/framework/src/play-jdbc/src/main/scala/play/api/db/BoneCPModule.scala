@@ -49,10 +49,7 @@ class BoneConnectionPool @Inject() (environment: Environment)
   /**
     * Create a data source with the given configuration.
     */
-  def create(
-      name: String,
-      dbConfig: DatabaseConfig,
-      conf: Config): DataSource = {
+  def create(name: String, dbConfig: DatabaseConfig, conf: Config): DataSource = {
 
     val config = PlayConfig(conf)
 
@@ -133,10 +130,8 @@ class BoneConnectionPool @Inject() (environment: Environment)
         "minConnectionsPerPartition"))
     datasource.setAcquireIncrement(
       config.getDeprecated[Int]("bonecp.acquireIncrement", "acquireIncrement"))
-    datasource.setAcquireRetryAttempts(
-      config.getDeprecated[Int](
-        "bonecp.acquireRetryAttempts",
-        "acquireRetryAttempts"))
+    datasource.setAcquireRetryAttempts(config
+      .getDeprecated[Int]("bonecp.acquireRetryAttempts", "acquireRetryAttempts"))
     datasource.setAcquireRetryDelayInMs(
       config
         .getDeprecated[FiniteDuration](
@@ -161,8 +156,9 @@ class BoneConnectionPool @Inject() (environment: Environment)
         .toSeconds)
     datasource.setDisableJMX(
       config.getDeprecated[Boolean]("bonecp.disableJMX", "disableJMX"))
-    datasource.setStatisticsEnabled(config
-      .getDeprecated[Boolean]("bonecp.statisticsEnabled", "statisticsEnabled"))
+    datasource.setStatisticsEnabled(
+      config
+        .getDeprecated[Boolean]("bonecp.statisticsEnabled", "statisticsEnabled"))
     datasource.setIdleConnectionTestPeriodInSeconds(
       config
         .getDeprecated[FiniteDuration](

@@ -108,12 +108,8 @@ private[http] object HttpServerBluePrint {
     NotUsed] =
     BidiFlow.fromGraph(new ControllerStage(settings, log)).reversed
 
-  def requestPreparation(settings: ServerSettings): BidiFlow[
-    HttpResponse,
-    HttpResponse,
-    RequestOutput,
-    HttpRequest,
-    NotUsed] =
+  def requestPreparation(settings: ServerSettings)
+      : BidiFlow[HttpResponse, HttpResponse, RequestOutput, HttpRequest, NotUsed] =
     BidiFlow.fromFlows(Flow[HttpResponse], new PrepareRequests(settings))
 
   def requestTimeoutSupport(timeout: Duration): BidiFlow[
@@ -215,8 +211,8 @@ private[http] object HttpServerBluePrint {
           }
         }
 
-        def createEntity(creator: EntityCreator[RequestOutput, RequestEntity])
-            : RequestEntity =
+        def createEntity(
+            creator: EntityCreator[RequestOutput, RequestEntity]): RequestEntity =
           creator match {
             case StrictEntityCreator(entity) ⇒ entity
             case StreamedEntityCreator(creator) ⇒ streamRequestEntity(creator)
@@ -539,8 +535,7 @@ private[http] object HttpServerBluePrint {
                     r.createEntity.isInstanceOf[StreamedEntityCreator[_, _]]
                   val rs = if (r.expect100Continue) {
                     oneHundredContinueResponsePending = true
-                    r.copy(createEntity =
-                      with100ContinueTrigger(r.createEntity))
+                    r.copy(createEntity = with100ContinueTrigger(r.createEntity))
                   } else r
                   push(requestPrepOut, rs)
                 case MessageEnd ⇒
@@ -620,8 +615,7 @@ private[http] object HttpServerBluePrint {
 
                 case NonFatal(e) ⇒
                   log.error(e, "Internal server error, sending 500 response")
-                  emitErrorResponse(
-                    HttpResponse(StatusCodes.InternalServerError))
+                  emitErrorResponse(HttpResponse(StatusCodes.InternalServerError))
               }
           }
         )

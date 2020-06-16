@@ -266,9 +266,8 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
             // make sure to set admin acls before view acls so they are properly picked up
             ui.getSecurityManager.setAdminAcls(
               appListener.adminAcls.getOrElse(""))
-            ui.getSecurityManager.setViewAcls(
-              attempt.sparkUser,
-              appListener.viewAcls.getOrElse(""))
+            ui.getSecurityManager
+              .setViewAcls(attempt.sparkUser, appListener.viewAcls.getOrElse(""))
             LoadedAppUI(ui, updateProbe(appId, attemptId, attempt.fileSize))
           }
         }
@@ -475,10 +474,7 @@ private[history] class FsHistoryProvider(conf: SparkConf, clock: Clock)
             attempts.sortWith(compareAttemptInfo))
         }
         .getOrElse(
-          new FsApplicationHistoryInfo(
-            attempt.appId,
-            attempt.name,
-            List(attempt)))
+          new FsApplicationHistoryInfo(attempt.appId, attempt.name, List(attempt)))
       newAppMap(attempt.appId) = appInfo
     }
 

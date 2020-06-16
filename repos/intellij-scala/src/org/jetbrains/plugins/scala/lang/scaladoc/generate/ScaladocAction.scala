@@ -33,8 +33,7 @@ import org.jetbrains.plugins.scala.lang.scaladoc.generate.ScaladocAction.Scalado
   * User: Dmitry Naidanov
   * Date: 01.10.11
   */
-class ScaladocAction
-    extends BaseAnalysisAction("Generate Scaladoc", "Scaladoc") {
+class ScaladocAction extends BaseAnalysisAction("Generate Scaladoc", "Scaladoc") {
   private var configurationDialog: ScaladocConsoleRunConfigurationForm = null
 
   private def disposeForm() {

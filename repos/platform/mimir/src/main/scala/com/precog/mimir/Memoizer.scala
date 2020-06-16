@@ -195,8 +195,7 @@ trait Memoizer extends DAG {
           case node @ dag.Join(op, joinSort, left, right) => {
             if (numRefs(node) > MemoThreshold)
               Memoize(
-                dag.Join(op, joinSort, memoized(left), memoized(right))(
-                  node.loc),
+                dag.Join(op, joinSort, memoized(left), memoized(right))(node.loc),
                 scaleMemoPriority(numRefs(node)))
             else
               dag.Join(op, joinSort, memoized(left), memoized(right))(node.loc)

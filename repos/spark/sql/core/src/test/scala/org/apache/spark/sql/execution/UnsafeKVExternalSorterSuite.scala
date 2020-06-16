@@ -225,10 +225,10 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
       val vBytes = new Array[Byte](rand.nextInt(pageSize))
       rand.nextBytes(kBytes)
       rand.nextBytes(vBytes)
-      val k = converter(
-        externalConverter.apply(Row(kBytes)).asInstanceOf[InternalRow])
-      val v = converter(
-        externalConverter.apply(Row(vBytes)).asInstanceOf[InternalRow])
+      val k =
+        converter(externalConverter.apply(Row(kBytes)).asInstanceOf[InternalRow])
+      val v =
+        converter(externalConverter.apply(Row(vBytes)).asInstanceOf[InternalRow])
       (k.asInstanceOf[InternalRow].copy(), v.asInstanceOf[InternalRow].copy())
     }
 

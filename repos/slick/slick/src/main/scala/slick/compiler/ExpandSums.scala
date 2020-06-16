@@ -92,9 +92,7 @@ class ExpandSums extends Phase {
               val ifDefined = map.replace(
                 {
                   case r @ Ref(s) if s == gen =>
-                    silentCast(
-                      r.nodeType,
-                      from.select(ElementSymbol(2)).infer())
+                    silentCast(r.nodeType, from.select(ElementSymbol(2)).infer())
                 },
                 keepType = true)
               val ifEmpty2 = silentCast(ifDefined.nodeType.structural, ifEmpty)
@@ -161,9 +159,7 @@ class ExpandSums extends Phase {
       pure) = bind
     val lComplex = !leftElemType.structural.isInstanceOf[AtomicType]
     val rComplex = !rightElemType.structural.isInstanceOf[AtomicType]
-    logger.debug(
-      s"Translating join ($jt, complex: $lComplex, $rComplex):",
-      bind)
+    logger.debug(s"Translating join ($jt, complex: $lComplex, $rComplex):", bind)
 
     // Find an existing column that can serve as a discriminator
     def findDisc(t: Type): Option[List[TermSymbol]] = {
@@ -180,8 +176,8 @@ class ExpandSums extends Phase {
       def find(t: Type, path: List[TermSymbol]): Vector[List[TermSymbol]] =
         t.structural match {
           case StructType(defs) =>
-            defs.toSeq.flatMap { case (s, t) => find(t, s :: path) }(
-              collection.breakOut)
+            defs.toSeq
+              .flatMap { case (s, t) => find(t, s :: path) }(collection.breakOut)
           case p: ProductType =>
             p.elements.iterator.zipWithIndex.flatMap {
               case (t, i) => find(t, ElementSymbol(i + 1) :: path)
@@ -196,8 +192,7 @@ class ExpandSums extends Phase {
           case _ => 0
         })
       }
-      logger.debug(
-        "Local candidates: " + local.map(Path.toString).mkString(", "))
+      logger.debug("Local candidates: " + local.map(Path.toString).mkString(", "))
       local.headOption
     }
 
@@ -268,8 +263,8 @@ class ExpandSums extends Phase {
       } else ref
       silentCast(trType(elemType.asInstanceOf[ProductType].children(idx)), v)
     }
-    val ref = ProductNode(
-      ConstArray(optionCast(0, ldisc), optionCast(1, rdisc))).infer()
+    val ref =
+      ProductNode(ConstArray(optionCast(0, ldisc), optionCast(1, rdisc))).infer()
     val pure2 = pure.replace(
       {
         case Ref(s) if s == bsym => ref

@@ -75,9 +75,7 @@ object ArrayBasedMapData {
     keys.zip(values).toMap
   }
 
-  def toJavaMap(
-      keys: Array[Any],
-      values: Array[Any]): java.util.Map[Any, Any] = {
+  def toJavaMap(keys: Array[Any], values: Array[Any]): java.util.Map[Any, Any] = {
     import scala.collection.JavaConverters._
     keys.zip(values).toMap.asJava
   }

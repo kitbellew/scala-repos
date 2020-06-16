@@ -32,10 +32,8 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
     AsmAnalyzer.sizeOKForAliasing(method) && {
       var changed = false
       val numParams = parametersSize(method)
-      lazy val aliasAnalysis = new AsmAnalyzer(
-        method,
-        owner,
-        new AliasingAnalyzer(new BasicInterpreter))
+      lazy val aliasAnalysis =
+        new AsmAnalyzer(method, owner, new AliasingAnalyzer(new BasicInterpreter))
 
       // Remember locals that are used in a `LOAD` instruction. Assume a program has two LOADs:
       //

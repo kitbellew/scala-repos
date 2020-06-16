@@ -912,11 +912,7 @@ private[execution] final class UnboundedFollowingWindowFunctionFrame(
     // the output row lower bound.
     tmp.skip(inputIndex)
     var nextRow = tmp.next()
-    while (nextRow != null && lbound.compare(
-        nextRow,
-        inputIndex,
-        current,
-        index) < 0) {
+    while (nextRow != null && lbound.compare(nextRow, inputIndex, current, index) < 0) {
       nextRow = tmp.next()
       inputIndex += 1
       bufferUpdated = true

@@ -212,8 +212,7 @@ class MongoAPIKeyManagerSpec
     val apiKeyManager = new MongoAPIKeyManager(
       mongo,
       testDB,
-      MongoAPIKeyManagerSettings.defaults.copy(rootKeyId =
-        rootAPIKeyOrig.apiKey))
+      MongoAPIKeyManagerSettings.defaults.copy(rootKeyId = rootAPIKeyOrig.apiKey))
 
     val notFoundAPIKeyID = "NOT-GOING-TO-FIND"
 

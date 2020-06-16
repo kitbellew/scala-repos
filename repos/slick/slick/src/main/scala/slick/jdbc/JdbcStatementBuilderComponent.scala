@@ -206,9 +206,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
     protected def flattenJoins(
         s: TermSymbol,
         n: Node): (Seq[(TermSymbol, Node)], Seq[Node]) = {
-      def f(
-          s: TermSymbol,
-          n: Node): Option[(Seq[(TermSymbol, Node)], Seq[Node])] =
+      def f(s: TermSymbol, n: Node): Option[(Seq[(TermSymbol, Node)], Seq[Node])] =
         n match {
           case Join(ls, rs, l, r, JoinType.Inner, on) =>
             for {
@@ -412,10 +410,7 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             case RewriteBooleans.ToFakeBoolean(ch) =>
               expr(
                 IfThenElse(
-                  ConstArray(
-                    ch,
-                    LiteralNode(1).infer(),
-                    LiteralNode(0).infer())),
+                  ConstArray(ch, LiteralNode(1).infer(), LiteralNode(0).infer())),
                 skipParens)
             case RewriteBooleans.ToRealBoolean(ch) =>
               expr(
@@ -631,11 +626,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
   /** Builder for INSERT statements. */
   class InsertBuilder(val ins: Insert) {
-    protected val Insert(
-      _,
-      table: TableNode,
-      ProductNode(rawColumns),
-      allFields) = ins
+    protected val Insert(_, table: TableNode, ProductNode(rawColumns), allFields) =
+      ins
     protected val syms: ConstArray[FieldSymbol] = rawColumns.map {
       case Select(_, fs: FieldSymbol) => fs
     }

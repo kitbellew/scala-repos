@@ -58,8 +58,7 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     assert(catalog.databaseExists("testing"))
     assert(catalog.listDatabases().toSet == Set("default", "testing"))
     catalog.createDatabase(newDb("testing2"), ignoreIfExists = false)
-    assert(
-      catalog.listDatabases().toSet == Set("default", "testing", "testing2"))
+    assert(catalog.listDatabases().toSet == Set("default", "testing", "testing2"))
     assert(catalog.databaseExists("testing2"))
     assert(!catalog.databaseExists("does_not_exist"))
   }
@@ -148,8 +147,7 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     assert(newDb1.properties.get("good") == Some("true"))
   }
 
-  test(
-    "alter database should throw exception when the database does not exist") {
+  test("alter database should throw exception when the database does not exist") {
     intercept[AnalysisException] {
       newBasicCatalog().alterDatabase(newDb("does_not_exist"))
     }
@@ -170,10 +168,7 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
     val catalog = newBasicCatalog()
     // Should always throw exception when the database does not exist
     intercept[AnalysisException] {
-      catalog.dropTable(
-        "unknown_db",
-        "unknown_table",
-        ignoreIfNotExists = false)
+      catalog.dropTable("unknown_db", "unknown_table", ignoreIfNotExists = false)
     }
     intercept[AnalysisException] {
       catalog.dropTable("unknown_db", "unknown_table", ignoreIfNotExists = true)
@@ -288,11 +283,7 @@ abstract class CatalogTestCases extends SparkFunSuite with BeforeAndAfterEach {
   test("create partitions that already exist") {
     val catalog = newBasicCatalog()
     intercept[AnalysisException] {
-      catalog.createPartitions(
-        "db2",
-        "tbl2",
-        Seq(part1),
-        ignoreIfExists = false)
+      catalog.createPartitions("db2", "tbl2", Seq(part1), ignoreIfExists = false)
     }
     catalog.createPartitions("db2", "tbl2", Seq(part1), ignoreIfExists = true)
   }

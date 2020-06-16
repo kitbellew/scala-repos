@@ -133,9 +133,7 @@ object FakeKeyStore {
     // Key and algorithm
     certInfo.set(X509CertInfo.KEY, new CertificateX509Key(keyPair.getPublic))
     val algorithm = new AlgorithmId(SignatureAlgorithmOID)
-    certInfo.set(
-      X509CertInfo.ALGORITHM_ID,
-      new CertificateAlgorithmId(algorithm))
+    certInfo.set(X509CertInfo.ALGORITHM_ID, new CertificateAlgorithmId(algorithm))
 
     // Create a new certificate and sign it
     val cert = new X509CertImpl(certInfo)

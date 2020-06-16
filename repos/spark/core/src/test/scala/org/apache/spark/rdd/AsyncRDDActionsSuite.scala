@@ -135,7 +135,8 @@ class AsyncRDDActionsSuite
       case scala.util.Success(res) =>
         sem.release()
       case scala.util.Failure(e) =>
-        info("Should not have reached this code path (onComplete matching Failure)")
+        info(
+          "Should not have reached this code path (onComplete matching Failure)")
         throw new Exception("Task should succeed")
     }
     f.onSuccess {
@@ -172,7 +173,8 @@ class AsyncRDDActionsSuite
 
     f.onComplete {
       case scala.util.Success(res) =>
-        info("Should not have reached this code path (onComplete matching Success)")
+        info(
+          "Should not have reached this code path (onComplete matching Success)")
         throw new Exception("Task should fail")
       case scala.util.Failure(e) =>
         sem.release()

@@ -87,8 +87,7 @@ object UpdateOffsetsInZK {
             "UpdateOffsetsInZk")
           val topicAndPartition = TopicAndPartition(topic, partition)
           val request = OffsetRequest(
-            Map(
-              topicAndPartition -> PartitionOffsetRequestInfo(offsetOption, 1)))
+            Map(topicAndPartition -> PartitionOffsetRequestInfo(offsetOption, 1)))
           val offset = consumer
             .getOffsetsBefore(request)
             .partitionErrorAndOffsets(topicAndPartition)

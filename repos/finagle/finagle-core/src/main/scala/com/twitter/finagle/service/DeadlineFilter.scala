@@ -52,10 +52,7 @@ object DeadlineFilter {
     * [[com.twitter.finagle.service.DeadlineFilter]].
     */
   def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =
-    new Stack.Module2[
-      param.Stats,
-      DeadlineFilter.Param,
-      ServiceFactory[Req, Rep]] {
+    new Stack.Module2[param.Stats, DeadlineFilter.Param, ServiceFactory[Req, Rep]] {
       val role = DeadlineFilter.role
       val description = "Reject requests when their deadline has passed"
 

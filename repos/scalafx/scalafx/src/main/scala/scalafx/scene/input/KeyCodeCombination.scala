@@ -57,8 +57,7 @@ class KeyCodeCombination(override val delegate: jfxsi.KeyCodeCombination)
       alt: jfxsi.KeyCombination.ModifierValue,
       meta: jfxsi.KeyCombination.ModifierValue,
       shortcut: jfxsi.KeyCombination.ModifierValue) =
-    this(
-      new jfxsi.KeyCodeCombination(code, shift, control, alt, meta, shortcut))
+    this(new jfxsi.KeyCodeCombination(code, shift, control, alt, meta, shortcut))
 
   /**
     * Gets the key code associated with this key combination.

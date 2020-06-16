@@ -28,9 +28,7 @@ object HoconPsiElementFactory {
   def createKeyPart(contents: String, manager: PsiManager): HKeyPart =
     createElement[HKeyPart](manager, s"$contents = null", 0)
 
-  def createIncludeTarget(
-      contents: String,
-      manager: PsiManager): HIncludeTarget =
+  def createIncludeTarget(contents: String, manager: PsiManager): HIncludeTarget =
     createElement[HIncludeTarget](manager, s"include $contents", 8)
 
   def createKey(contents: String, manager: PsiManager): HKey =

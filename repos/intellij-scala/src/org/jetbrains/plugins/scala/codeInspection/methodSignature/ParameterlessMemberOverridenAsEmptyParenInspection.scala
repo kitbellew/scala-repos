@@ -18,10 +18,7 @@ class ParameterlessMemberOverridenAsEmptyParenInspection
       f.superMethods.headOption match { // f.superMethod returns None for some reason
         case Some(method: ScFunction)
             if !method.isInCompiledFile && method.isParameterless =>
-          holder.registerProblem(
-            f.nameId,
-            getDisplayName,
-            new RemoveParentheses(f))
+          holder.registerProblem(f.nameId, getDisplayName, new RemoveParentheses(f))
         case _ =>
       }
   }

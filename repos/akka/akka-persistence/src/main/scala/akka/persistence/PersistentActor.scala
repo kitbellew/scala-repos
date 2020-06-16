@@ -149,8 +149,7 @@ trait StashOverflowStrategyConfigurator {
   def create(config: Config): StashOverflowStrategy
 }
 
-final class ThrowExceptionConfigurator
-    extends StashOverflowStrategyConfigurator {
+final class ThrowExceptionConfigurator extends StashOverflowStrategyConfigurator {
   override def create(config: Config) = ThrowOverflowExceptionStrategy
 }
 

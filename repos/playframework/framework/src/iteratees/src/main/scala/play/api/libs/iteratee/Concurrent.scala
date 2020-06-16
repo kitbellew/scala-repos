@@ -447,8 +447,7 @@ object Concurrent {
 
             case in =>
               if (!busy.single()) {
-                val readyOrNot
-                    : Future[Either[Iteratee[E, Iteratee[E, A]], Unit]] =
+                val readyOrNot: Future[Either[Iteratee[E, Iteratee[E, A]], Unit]] =
                   Future.firstCompletedOf(
                     Seq(
                       inner
@@ -659,9 +658,8 @@ object Concurrent {
       val interested: List[(Iteratee[E, _], Promise[Iteratee[E, _]])] =
         iteratees.single.swap(List())
 
-      val commitReady
-          : Ref[List[(Int, (Iteratee[E, _], Promise[Iteratee[E, _]]))]] = Ref(
-        List())
+      val commitReady: Ref[List[(Int, (Iteratee[E, _], Promise[Iteratee[E, _]]))]] =
+        Ref(List())
 
       val commitDone: Ref[List[Int]] = Ref(List())
 
@@ -684,8 +682,7 @@ object Concurrent {
                       commitDone.single.transform(_ :+ index)
                     }
                     case Step.Cont(k) =>
-                      commitReady.single.transform(
-                        _ :+ (index -> (Cont(k) -> p)))
+                      commitReady.single.transform(_ :+ (index -> (Cont(k) -> p)))
                     case Step.Error(msg, e) => {
                       p.success(Error(msg, e))
                       commitDone.single.transform(_ :+ index)
@@ -771,8 +768,7 @@ object Concurrent {
               case Success(_) => result.success(it)
               case Failure(e) => result.failure(e)
               case _ =>
-                throw new RuntimeException(
-                  "should be either Redeemed or Thrown")
+                throw new RuntimeException("should be either Redeemed or Thrown")
             }
             result.future
           }

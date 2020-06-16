@@ -20,10 +20,7 @@ package org.apache.spark.sql.hive.execution
 import org.apache.spark.sql.{AnalysisException, Row, SQLContext}
 import org.apache.spark.sql.catalyst.TableIdentifier
 import org.apache.spark.sql.catalyst.catalog.{CatalogColumn, CatalogTable}
-import org.apache.spark.sql.catalyst.plans.logical.{
-  InsertIntoTable,
-  LogicalPlan
-}
+import org.apache.spark.sql.catalyst.plans.logical.{InsertIntoTable, LogicalPlan}
 import org.apache.spark.sql.execution.command.RunnableCommand
 import org.apache.spark.sql.hive.{
   HiveContext,
@@ -63,8 +60,8 @@ private[hive] case class CreateTableAsSelect(
           outputFormat = tableDesc.storage.outputFormat
             .orElse(
               Some(classOf[HiveIgnoreKeyTextOutputFormat[Text, Text]].getName)),
-          serde = tableDesc.storage.serde.orElse(
-            Some(classOf[LazySimpleSerDe].getName))
+          serde =
+            tableDesc.storage.serde.orElse(Some(classOf[LazySimpleSerDe].getName))
         )
 
       val withSchema = if (withFormat.schema.isEmpty) {

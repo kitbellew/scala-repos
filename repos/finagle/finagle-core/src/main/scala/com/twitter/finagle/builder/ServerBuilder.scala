@@ -50,12 +50,8 @@ trait Server extends ListeningServer {
   */
 object ServerBuilder {
 
-  type Complete[Req, Rep] = ServerBuilder[
-    Req,
-    Rep,
-    ServerConfig.Yes,
-    ServerConfig.Yes,
-    ServerConfig.Yes]
+  type Complete[Req, Rep] =
+    ServerBuilder[Req, Rep, ServerConfig.Yes, ServerConfig.Yes, ServerConfig.Yes]
 
   def apply() = new ServerBuilder()
   def get() = apply()
@@ -133,12 +129,7 @@ private[builder] object ServerConfigEvidence {
 /**
   * A configuration object that represents what shall be built.
   */
-private[builder] final class ServerConfig[
-    Req,
-    Rep,
-    HasCodec,
-    HasBindTo,
-    HasName]
+private[builder] final class ServerConfig[Req, Rep, HasCodec, HasBindTo, HasName]
 
 /**
   * A handy Builder for constructing Servers (i.e., binding Services to
@@ -288,12 +279,7 @@ class ServerBuilder[Req, Rep, HasCodec, HasBindTo, HasName] private[builder] (
           (idle, life) match {
             case (None, None) => dispatcher
             case _ =>
-              new ExpiringService(
-                service,
-                idle,
-                life,
-                timer,
-                sr.scope("expired")) {
+              new ExpiringService(service, idle, life, timer, sr.scope("expired")) {
                 protected def onExpire() { dispatcher.close(Time.now) }
               }
           }

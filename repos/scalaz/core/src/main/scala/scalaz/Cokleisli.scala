@@ -42,8 +42,7 @@ sealed abstract class CokleisliInstances0 {
     new CokleisliCompose[F] {
       override implicit def F = F0
     }
-  implicit def cokleisliProfunctor[F[_]: Functor]
-      : Profunctor[Cokleisli[F, ?, ?]] =
+  implicit def cokleisliProfunctor[F[_]: Functor]: Profunctor[Cokleisli[F, ?, ?]] =
     new CokleisliProfunctor[F] {
       def F = implicitly
     }

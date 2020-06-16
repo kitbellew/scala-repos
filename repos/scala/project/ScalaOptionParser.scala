@@ -68,9 +68,7 @@ object ScalaOptionParser {
           "-D" ~ oneOrMore(NotSpaceClass & not('=', "not =")).string,
           TokenCompletions.displayOnly("-D<property name>")))
       val EqualsValue = concat(
-        "=" ~ token(
-          OptNotSpace,
-          TokenCompletions.displayOnly("<property value>")))
+        "=" ~ token(OptNotSpace, TokenCompletions.displayOnly("<property value>")))
       concat(PropName ~ EqualsValue.?.map(_.getOrElse("")))
     }
 
@@ -119,8 +117,9 @@ object ScalaOptionParser {
                 token(StringBasic, TokenCompletions.displayOnly("<arg>")),
                 Space).map(_.mkString(" ")))))
         val options = rep1sep(ScalaOpt, Space).map(_.mkString(" "))
-        Opt(Space ~> (options | concat(
-          concat(options ~ Space.string) ~ runnableAndArgs) | runnableAndArgs))
+        Opt(
+          Space ~> (options | concat(
+            concat(options ~ Space.string) ~ runnableAndArgs) | runnableAndArgs))
       case "scaladoc" =>
         Opt(Space ~> Opt(repsep(ScalaDocOpt, Space).map(_.mkString(" "))))
       case "scalac" =>

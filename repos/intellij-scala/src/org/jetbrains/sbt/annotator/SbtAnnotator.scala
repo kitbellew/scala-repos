@@ -84,8 +84,7 @@ class SbtAnnotator extends Annotator {
         expression: ScExpression,
         expressionType: ScType): Boolean =
       SbtAnnotator.AllowedTypes.exists(typeStr =>
-        findTypeByText(expression, typeStr) exists (t =>
-          expressionType conforms t))
+        findTypeByText(expression, typeStr) exists (t => expressionType conforms t))
 
     private def annotateMissingBlankLines(): Unit =
       sbtFileElements.sliding(3).foreach {

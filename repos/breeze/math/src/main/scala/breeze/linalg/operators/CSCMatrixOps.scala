@@ -24,8 +24,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
   implicit def canMulSV_CSC_eq_CSC[T](implicit
       op: OpMulMatrix.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]],
-      zero: Zero[T])
-      : OpMulMatrix.Impl2[SparseVector[T], CSCMatrix[T], CSCMatrix[T]] =
+      zero: Zero[T]): OpMulMatrix.Impl2[SparseVector[T], CSCMatrix[T], CSCMatrix[T]] =
     new OpMulMatrix.Impl2[SparseVector[T], CSCMatrix[T], CSCMatrix[T]] {
       def apply(v: SparseVector[T], v2: CSCMatrix[T]): CSCMatrix[T] = {
         require(v2.rows == 1)
@@ -152,10 +151,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
   implicit def csc_csc_BadOps[
       @expand.args(Int, Double, Float, Long) T,
       @expand.args(OpPow, OpDiv, OpMod) Op <: OpType](implicit
-      @expand.sequence[Op]({ _ pow _ }, { _ / _ }, { _ % _ }) op: Op.Impl2[
-        T,
-        T,
-        T],
+      @expand.sequence[Op]({ _ pow _ }, { _ / _ }, { _ % _ }) op: Op.Impl2[T, T, T],
       @expand.sequence[T](0, 0.0, 0.0f, 0L) zero: T)
       : Op.Impl2[CSCMatrix[T], CSCMatrix[T], CSCMatrix[T]] = {
     val mZero = implicitly[T](zero)
@@ -641,8 +637,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
         .register(this)
     }
 
@@ -677,8 +672,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
         .register(this)
     }
 
@@ -725,8 +719,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res.toSparseVector
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Vector[T], OpMulMatrix.type, Vector[T]]]
         .register(this)
     }
 
@@ -763,8 +756,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
         .register(this)
     }
 
@@ -801,8 +793,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
         .register(this)
       implicitly[
         BinaryRegistry[DenseMatrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
@@ -852,8 +843,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 
         res.result()
       }
-      implicitly[
-        BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
+      implicitly[BinaryRegistry[Matrix[T], Matrix[T], OpMulMatrix.type, Matrix[T]]]
         .register(this)
     }
 
@@ -927,8 +917,7 @@ trait CSCMatrixOps extends CSCMatrixOps_Ring { this: CSCMatrix.type =>
 trait CSCMatrixOps_Ring extends CSCMatrixOpsLowPrio with SerializableLogging {
   this: CSCMatrixOps =>
 
-  implicit def csc_OpNeg[T: Ring: ClassTag]
-      : OpNeg.Impl[CSCMatrix[T], CSCMatrix[T]] = {
+  implicit def csc_OpNeg[T: Ring: ClassTag]: OpNeg.Impl[CSCMatrix[T], CSCMatrix[T]] = {
     new OpNeg.Impl[CSCMatrix[T], CSCMatrix[T]] {
       val ring = implicitly[Ring[T]]
       def apply(a: CSCMatrix[T]): CSCMatrix[T] = {

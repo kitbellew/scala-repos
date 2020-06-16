@@ -56,9 +56,7 @@ private[akka] object Reflect {
     * INTERNAL API
     * Calls findConstructor and invokes it with the given arguments.
     */
-  private[akka] def instantiate[T](
-      clazz: Class[T],
-      args: immutable.Seq[Any]): T = {
+  private[akka] def instantiate[T](clazz: Class[T], args: immutable.Seq[Any]): T = {
     instantiate(findConstructor(clazz, args), args)
   }
 

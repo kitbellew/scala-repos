@@ -4,11 +4,7 @@ import com.intellij.codeInsight.completion._
 import com.intellij.codeInsight.lookup._
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.patterns.PsiElementPattern.Capture
-import com.intellij.patterns.{
-  ElementPattern,
-  PlatformPatterns,
-  StandardPatterns
-}
+import com.intellij.patterns.{ElementPattern, PlatformPatterns, StandardPatterns}
 import com.intellij.psi._
 import com.intellij.psi.search.GlobalSearchScope
 import com.intellij.psi.util.PsiTreeUtil
@@ -35,10 +31,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScTypedDefinition
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef._
 import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.synthetic.ScSyntheticFunction
 import org.jetbrains.plugins.scala.lang.psi.types._
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.resolve.processor.CompletionProcessor
 import org.jetbrains.plugins.scala.lang.resolve.{
   ResolveUtils,
@@ -77,9 +70,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
 
     if (typez.isEmpty || typez.forall(_ == types.Nothing)) return
 
-    def applyVariant(
-        _variant: Object,
-        checkForSecondCompletion: Boolean = false) {
+    def applyVariant(_variant: Object, checkForSecondCompletion: Boolean = false) {
       val chainVariant = _variant.isInstanceOf[ScalaChainLookupElement]
       val variant = _variant match {
         case el: ScalaLookupItem         => el
@@ -374,8 +365,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                     val lookupString =
                       (if (foundClazz) t.name + "." else "") + "this"
                     val el = new ScalaLookupItem(t, lookupString)
-                    if (!scType.equiv(Nothing) && typez.exists(
-                        scType conforms _)) {
+                    if (!scType.equiv(Nothing) && typez.exists(scType conforms _)) {
                       if (!foundClazz) el.bold = true
                       result.addElement(el)
                     } else {
@@ -388,8 +378,7 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
                             Some(place.getProject)) match {
                             case Some(clazz)
                                 if clazz.qualifiedName == "scala.Option" || clazz.qualifiedName == "scala.Some" =>
-                              if (!scType.equiv(Nothing) && scType.conforms(
-                                  arg)) {
+                              if (!scType.equiv(Nothing) && scType.conforms(arg)) {
                                 el.someSmartCompletion = true
                                 result.addElement(el)
                                 elementAdded = true
@@ -1016,9 +1005,8 @@ class ScalaSmartCompletionContributor extends ScalaCompletionContributor {
         }
 
         val addedClasses = new mutable.HashSet[String]
-        val newExpr = PsiTreeUtil.getContextOfType(
-          element,
-          classOf[ScNewTemplateDefinition])
+        val newExpr =
+          PsiTreeUtil.getContextOfType(element, classOf[ScNewTemplateDefinition])
         val types: Array[ScType] = newExpr.expectedTypes().map {
           case ScAbstractType(_, lower, upper) => upper
           case tp                              => tp

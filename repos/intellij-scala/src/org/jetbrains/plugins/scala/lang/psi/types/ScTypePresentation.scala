@@ -115,8 +115,7 @@ trait ScTypePresentation {
         sep: String,
         end: String,
         checkWildcard: Boolean = false): String = {
-      ts.map(
-        innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
+      ts.map(innerTypeText(_, needDotType = true, checkWildcard = checkWildcard))
         .mkString(start, sep, end)
     }
 
@@ -355,10 +354,7 @@ trait ScTypePresentation {
         case ScExistentialType(q, wilds) =>
           val wildsWithBounds =
             wilds.map(w => existentialArgWithBounds(w, "type " + w.name))
-          wildsWithBounds.mkString(
-            s"(${innerTypeText(q)}) forSome {",
-            "; ",
-            "}")
+          wildsWithBounds.mkString(s"(${innerTypeText(q)}) forSome {", "; ", "}")
       }
     }
 

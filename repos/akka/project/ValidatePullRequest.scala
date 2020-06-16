@@ -161,8 +161,7 @@ object ValidatePullRequest extends AutoPlugin {
             }
           } catch {
             case ex: Exception =>
-              log.warn(
-                "Unable to reach GitHub! Exception was: " + ex.getMessage)
+              log.warn("Unable to reach GitHub! Exception was: " + ex.getMessage)
               None
           }
       }
@@ -225,7 +224,8 @@ object ValidatePullRequest extends AutoPlugin {
         "timing"),
       projectBuildMode in ValidatePR := {
         val log = streams.value.log
-        log.debug(s"Analysing project (for inclusion in PR validation): [${name.value}]")
+        log.debug(
+          s"Analysing project (for inclusion in PR validation): [${name.value}]")
         val changedDirs = (changedDirectories in ValidatePR).value
         val githubCommandEnforcedBuildAll =
           (githubEnforcedBuildAll in ValidatePR).value

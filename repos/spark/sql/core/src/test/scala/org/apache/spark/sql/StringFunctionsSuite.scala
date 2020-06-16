@@ -30,9 +30,7 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
       df.select(concat($"a", $"b"), concat($"a", $"b", $"c")),
       Row("ab", null))
 
-    checkAnswer(
-      df.selectExpr("concat(a, b)", "concat(a, b, c)"),
-      Row("ab", null))
+    checkAnswer(df.selectExpr("concat(a, b)", "concat(a, b, c)"), Row("ab", null))
   }
 
   test("string concat_ws") {
@@ -88,9 +86,7 @@ class StringFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq((bytes, "AQIDBA==")).toDF("a", "b")
     checkAnswer(df.select(base64($"a"), unbase64($"b")), Row("AQIDBA==", bytes))
 
-    checkAnswer(
-      df.selectExpr("base64(a)", "unbase64(b)"),
-      Row("AQIDBA==", bytes))
+    checkAnswer(df.selectExpr("base64(a)", "unbase64(b)"), Row("AQIDBA==", bytes))
   }
 
   test("string / binary substring function") {

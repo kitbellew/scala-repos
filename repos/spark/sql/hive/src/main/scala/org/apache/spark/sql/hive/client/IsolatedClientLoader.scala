@@ -111,12 +111,7 @@ private[hive] object IsolatedClientLoader extends Logging {
       hadoopVersion: String,
       ivyPath: Option[String]): Seq[URL] = {
     val hiveArtifacts = version.extraDeps ++
-      Seq(
-        "hive-metastore",
-        "hive-exec",
-        "hive-common",
-        "hive-serde",
-        "hive-cli")
+      Seq("hive-metastore", "hive-exec", "hive-common", "hive-serde", "hive-cli")
         .map(a => s"org.apache.hive:$a:${version.fullVersion}") ++
       Seq(
         "com.google.guava:guava:14.0.1",
@@ -181,10 +176,8 @@ private[hive] class IsolatedClientLoader(
     extends Logging {
 
   // Check to make sure that the root classloader does not know about Hive.
-  assert(
-    Try(
-      rootClassLoader.loadClass(
-        "org.apache.hadoop.hive.conf.HiveConf")).isFailure)
+  assert(Try(
+    rootClassLoader.loadClass("org.apache.hadoop.hive.conf.HiveConf")).isFailure)
 
   /** All jars used by the hive specific classloader. */
   protected def allJars = execJars.toArray

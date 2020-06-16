@@ -399,10 +399,7 @@ final class MergeSorted[T: Ordering] extends GraphStage[FanInShape2[T, T, T]] {
           other,
           () ⇒ { nullOut(); passAlong(right, out, doPull = true) })
       val passL = () ⇒
-        emit(
-          out,
-          other,
-          () ⇒ { nullOut(); passAlong(left, out, doPull = true) })
+        emit(out, other, () ⇒ { nullOut(); passAlong(left, out, doPull = true) })
       val readR = () ⇒ read(right)(dispatchR, passL)
       val readL = () ⇒ read(left)(dispatchL, passR)
 
@@ -881,8 +878,8 @@ final class Concat[T](inputPorts: Int)
                 if (idx == activeStream) {
                   activeStream += 1
                   // Skip closed inputs
-                  while (activeStream < inputPorts && isClosed(
-                      in(activeStream))) activeStream += 1
+                  while (activeStream < inputPorts && isClosed(in(activeStream)))
+                    activeStream += 1
                   if (activeStream == inputPorts) completeStage()
                   else if (isAvailable(out)) pull(in(activeStream))
                 }

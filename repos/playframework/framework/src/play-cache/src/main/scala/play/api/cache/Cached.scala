@@ -142,9 +142,7 @@ object Cached {
     * @param duration Cache duration (in seconds)
     */
   @deprecated("Inject Cached into your component", "2.5.0")
-  def apply(
-      key: RequestHeader => String,
-      duration: Int): UnboundCachedBuilder = {
+  def apply(key: RequestHeader => String, duration: Int): UnboundCachedBuilder = {
     new UnboundCachedBuilder(
       key,
       { case (_: ResponseHeader) => Duration(duration, SECONDS) })
@@ -277,10 +275,7 @@ final class CachedBuilder(
         // Cache the new ETAG of the resource
         cache.set(etagKey, etag, duration)
         // Cache the new Result of the resource
-        cache.set(
-          resultKey,
-          new SerializableResult(resultWithHeaders),
-          duration)
+        cache.set(resultKey, new SerializableResult(resultWithHeaders), duration)
 
         resultWithHeaders
       }

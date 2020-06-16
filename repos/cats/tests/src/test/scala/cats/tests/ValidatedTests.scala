@@ -38,8 +38,7 @@ class ValidatedTests extends CatsSuite {
       .applicativeError[Int, Int, Int])
   checkAll(
     "ApplicativeError[Xor, String]",
-    SerializableTests.serializable(
-      ApplicativeError[Validated[String, ?], String]))
+    SerializableTests.serializable(ApplicativeError[Validated[String, ?], String]))
 
   checkAll(
     "Validated[String, Int] with Option",

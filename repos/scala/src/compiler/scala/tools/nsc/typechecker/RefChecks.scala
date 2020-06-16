@@ -173,8 +173,7 @@ abstract class RefChecks
                 .isProtectedAccessorName(sym.name))
           else
             (sym =>
-              hasDefaultParam(sym.info) && !nme.isProtectedAccessorName(
-                sym.name))
+              hasDefaultParam(sym.info) && !nme.isProtectedAccessorName(sym.name))
         )
 
         if (haveDefaults.lengthCompare(1) > 0) {
@@ -815,9 +814,7 @@ abstract class RefChecks
                       def subclassMsg(c1: Symbol, c2: Symbol) =
                         (
                           ": %s is a subclass of %s, but method parameter types must match exactly."
-                            .format(
-                              c1.fullLocationString,
-                              c2.fullLocationString)
+                            .format(c1.fullLocationString, c2.fullLocationString)
                           )
                       val addendum =
                         (
@@ -955,8 +952,7 @@ abstract class RefChecks
           )
         def classDecls = inclazz.info.nonPrivateDecl(member.name)
         def matchingSyms =
-          classDecls filter (sym =>
-            isSignatureMatch(sym) && javaAccessCheck(sym))
+          classDecls filter (sym => isSignatureMatch(sym) && javaAccessCheck(sym))
 
         (inclazz != clazz) && (matchingSyms != NoSymbol)
       }
@@ -1379,9 +1375,7 @@ abstract class RefChecks
       tree
     }
 
-    override def transformStats(
-        stats: List[Tree],
-        exprOwner: Symbol): List[Tree] = {
+    override def transformStats(stats: List[Tree], exprOwner: Symbol): List[Tree] = {
       pushLevel()
       try {
         enterSyms(stats)
@@ -1444,8 +1438,7 @@ abstract class RefChecks
               site.pos,
               STABLE | MODULE | MIXEDIN)
             .setInfo(moduleVar.tpe)
-            .andAlso(self =>
-              if (module.isPrivate) self.expandName(module.owner))
+            .andAlso(self => if (module.isPrivate) self.expandName(module.owner))
 
         val accessor = if (module.owner == site) module else mkAccessorSymbol
         val accessorDef = DefDef(
@@ -1584,10 +1577,7 @@ abstract class RefChecks
       }
     }
 
-    private def checkDelayedInitSelect(
-        qual: Tree,
-        sym: Symbol,
-        pos: Position) = {
+    private def checkDelayedInitSelect(qual: Tree, sym: Symbol, pos: Position) = {
       def isLikelyUninitialized =
         (
           (sym.owner isSubClass DelayedInitClass)

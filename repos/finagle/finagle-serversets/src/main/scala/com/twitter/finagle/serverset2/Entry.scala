@@ -69,13 +69,8 @@ object Entry {
 }
 
 object Endpoint {
-  val Empty = Endpoint(
-    null,
-    null,
-    Int.MinValue,
-    Int.MinValue,
-    Endpoint.Status.Unknown,
-    "")
+  val Empty =
+    Endpoint(null, null, Int.MinValue, Int.MinValue, Endpoint.Status.Unknown, "")
 
   object Status extends Enumeration {
     val Dead, Starting, Alive, Stopping, Stopped, Warning, Unknown = Value
@@ -119,9 +114,8 @@ object Endpoint {
         status <- Status.ofString(s)
       } yield status
     } getOrElse Endpoint.Status.Unknown
-    val tmpl = Endpoint.Empty.copy(
-      shard = shard.getOrElse(Int.MinValue),
-      status = status)
+    val tmpl =
+      Endpoint.Empty.copy(shard = shard.getOrElse(Int.MinValue), status = status)
 
     val namesByHostPort =
       Memoize.snappable[(String, Int), ArrayBuffer[String]] {

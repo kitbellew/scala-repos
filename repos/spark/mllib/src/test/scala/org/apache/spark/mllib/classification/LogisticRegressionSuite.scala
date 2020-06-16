@@ -59,8 +59,8 @@ object LogisticRegressionSuite {
       if (rnd.nextDouble() < p) 1.0 else 0.0
     }
 
-    val testData = (0 until nPoints).map(i =>
-      LabeledPoint(y(i), Vectors.dense(Array(x1(i)))))
+    val testData =
+      (0 until nPoints).map(i => LabeledPoint(y(i), Vectors.dense(Array(x1(i)))))
     testData
   }
 

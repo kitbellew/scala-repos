@@ -102,10 +102,7 @@ trait DocComments { self: Global =>
     *                                  of the same string are done, which is
     *                                  interpreted as a recursive variable definition.
     */
-  def expandedDocComment(
-      sym: Symbol,
-      site: Symbol,
-      docStr: String = ""): String = {
+  def expandedDocComment(sym: Symbol, site: Symbol, docStr: String = ""): String = {
     // when parsing a top level class or module, use the (module-)class itself to look up variable definitions
     val site1 =
       if ((sym.isModule || sym.isClass) && site.hasPackageFlag) sym

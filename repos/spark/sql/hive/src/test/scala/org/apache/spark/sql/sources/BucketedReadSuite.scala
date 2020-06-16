@@ -350,7 +350,8 @@ class BucketedReadSuite
       shuffleRight = true)
   }
 
-  test("only shuffle one side when 2 bucketed tables have different bucket number") {
+  test(
+    "only shuffle one side when 2 bucketed tables have different bucket number") {
     val bucketSpec1 = Some(BucketSpec(8, Seq("i", "j"), Nil))
     val bucketSpec2 = Some(BucketSpec(5, Seq("i", "j"), Nil))
     testBucketing(

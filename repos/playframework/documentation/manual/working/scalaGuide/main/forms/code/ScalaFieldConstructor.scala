@@ -41,8 +41,7 @@ package scalaguide.forms.scalafieldconstructor {
 //#form-myfield-helper
     object MyHelpers {
       import views.html.helper.FieldConstructor
-      implicit val myFields = FieldConstructor(
-        html.myFieldConstructorTemplate.f)
+      implicit val myFields = FieldConstructor(html.myFieldConstructorTemplate.f)
     }
 //#form-myfield-helper
 

@@ -57,9 +57,7 @@ class BinarizerSuite
       .collect()
       .foreach {
         case Row(x: Double, y: Double) =>
-          assert(
-            x === y,
-            "The feature value is not correct after binarization.")
+          assert(x === y, "The feature value is not correct after binarization.")
       }
   }
 
@@ -82,9 +80,7 @@ class BinarizerSuite
       .collect()
       .foreach {
         case Row(x: Double, y: Double) =>
-          assert(
-            x === y,
-            "The feature value is not correct after binarization.")
+          assert(x === y, "The feature value is not correct after binarization.")
       }
   }
 

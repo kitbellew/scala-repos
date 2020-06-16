@@ -48,9 +48,7 @@ final case class WriterT[F[_], L, V](run: F[(L, V)]) {
   def swap(implicit functorF: Functor[F]): WriterT[F, V, L] =
     mapBoth((l, v) => (v, l))
 
-  def reset(implicit
-      monoidL: Monoid[L],
-      functorF: Functor[F]): WriterT[F, L, V] =
+  def reset(implicit monoidL: Monoid[L], functorF: Functor[F]): WriterT[F, L, V] =
     mapWritten(_ => monoidL.empty)
 
   def show(implicit F: Show[F[(L, V)]]): String = F.show(run)

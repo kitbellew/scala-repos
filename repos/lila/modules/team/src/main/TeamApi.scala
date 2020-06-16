@@ -82,8 +82,7 @@ final class TeamApi(
       teamOption ← $find.byId[Team](teamId)
       result ← ~(teamOption |@| ctx.me.filter(_.canTeam))({
         case (team, user) if team.open =>
-          (doJoin(team, user.id) inject Joined(team).some): Fu[
-            Option[Requesting]]
+          (doJoin(team, user.id) inject Joined(team).some): Fu[Option[Requesting]]
         case (team, user) =>
           fuccess(Motivate(team).some: Option[Requesting])
       })

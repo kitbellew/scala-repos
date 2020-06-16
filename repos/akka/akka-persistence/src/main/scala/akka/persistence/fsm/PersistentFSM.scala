@@ -373,10 +373,7 @@ object PersistentFSM {
     * Case class representing the state of the [[akka.actor.FSM]] whithin the
     * `onTermination` block.
     */
-  final case class StopEvent[S, D](
-      reason: Reason,
-      currentState: S,
-      stateData: D)
+  final case class StopEvent[S, D](reason: Reason, currentState: S, stateData: D)
       extends NoSerializationVerificationNeeded
 
 }

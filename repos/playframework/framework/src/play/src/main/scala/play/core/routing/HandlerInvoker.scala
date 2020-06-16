@@ -135,9 +135,7 @@ object HandlerInvokerFactory {
     */
   private abstract class JavaActionInvokerFactory[A]
       extends HandlerInvokerFactory[A] {
-    def createInvoker(
-        fakeCall: => A,
-        handlerDef: HandlerDef): HandlerInvoker[A] =
+    def createInvoker(fakeCall: => A, handlerDef: HandlerDef): HandlerInvoker[A] =
       new HandlerInvoker[A] {
         val cachedHandlerTags = handlerTags(handlerDef)
         val cachedAnnotations = {
@@ -199,9 +197,7 @@ object HandlerInvokerFactory {
   private abstract class JavaWebSocketInvokerFactory[A, B]
       extends HandlerInvokerFactory[A] {
     def webSocketCall(call: => A): WebSocket
-    def createInvoker(
-        fakeCall: => A,
-        handlerDef: HandlerDef): HandlerInvoker[A] =
+    def createInvoker(fakeCall: => A, handlerDef: HandlerDef): HandlerInvoker[A] =
       new HandlerInvoker[A] {
         val cachedHandlerTags = handlerTags(handlerDef)
         def call(call: => A): WebSocket = webSocketCall(call)
@@ -215,15 +211,13 @@ object HandlerInvokerFactory {
         JavaWebSocket.ofBytes(call)
     }
 
-  implicit def javaStringWebSocket
-      : HandlerInvokerFactory[LegacyWebSocket[String]] =
+  implicit def javaStringWebSocket: HandlerInvokerFactory[LegacyWebSocket[String]] =
     new JavaWebSocketInvokerFactory[LegacyWebSocket[String], String] {
       def webSocketCall(call: => LegacyWebSocket[String]) =
         JavaWebSocket.ofString(call)
     }
 
-  implicit def javaJsonWebSocket
-      : HandlerInvokerFactory[LegacyWebSocket[JsonNode]] =
+  implicit def javaJsonWebSocket: HandlerInvokerFactory[LegacyWebSocket[JsonNode]] =
     new JavaWebSocketInvokerFactory[LegacyWebSocket[JsonNode], JsonNode] {
       def webSocketCall(call: => LegacyWebSocket[JsonNode]) =
         JavaWebSocket.ofJson(call)

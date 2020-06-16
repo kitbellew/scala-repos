@@ -164,8 +164,7 @@ private[spark] class HeartbeatReceiver(sc: SparkContext, clock: Clock)
         // Because Executor will sleep several seconds before sending the first "Heartbeat", this
         // case rarely happens. However, if it really happens, log it and ask the executor to
         // register itself again.
-        logWarning(
-          s"Dropping $heartbeat because TaskScheduler is not ready yet")
+        logWarning(s"Dropping $heartbeat because TaskScheduler is not ready yet")
         context.reply(HeartbeatResponse(reregisterBlockManager = true))
       }
   }

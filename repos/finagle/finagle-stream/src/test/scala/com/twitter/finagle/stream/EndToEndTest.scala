@@ -116,9 +116,7 @@ class EndToEndTest extends FunSuite {
       client.close()
     }
 
-    test(
-      "Streams %s: the client does not admit concurrent requests".format(
-        what)) {
+    test("Streams %s: the client does not admit concurrent requests".format(what)) {
       val c = new WorkItContext()
       import c._
       val (client, _) = mkClient(serverRes)
@@ -132,8 +130,7 @@ class EndToEndTest extends FunSuite {
 
     if (!sys.props.contains("SKIP_FLAKY"))
       test(
-        "Streams %s: the server does not admit concurrent requests".format(
-          what)) {
+        "Streams %s: the server does not admit concurrent requests".format(what)) {
         val c = new WorkItContext()
         import c._
         val (client, address) = mkClient(serverRes)

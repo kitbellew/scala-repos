@@ -466,8 +466,7 @@ abstract class BTypes {
           ObjectRef
 
         case _: MethodBType =>
-          assertionError(
-            s"unexpected method type when computing maxType: $this")
+          assertionError(s"unexpected method type when computing maxType: $this")
       }
 
     /**

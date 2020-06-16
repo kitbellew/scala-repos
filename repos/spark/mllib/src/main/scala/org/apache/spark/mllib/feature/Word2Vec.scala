@@ -443,12 +443,7 @@ class Word2Vec extends Serializable with Logging {
       while (i < synAgg.length) {
         val index = synAgg(i)._1
         if (index < vocabSize) {
-          Array.copy(
-            synAgg(i)._2,
-            0,
-            syn0Global,
-            index * vectorSize,
-            vectorSize)
+          Array.copy(synAgg(i)._2, 0, syn0Global, index * vectorSize, vectorSize)
         } else {
           Array.copy(
             synAgg(i)._2,
@@ -623,9 +618,7 @@ class Word2VecModel private[spark] (
   def getVectors: Map[String, Array[Float]] = {
     wordIndex.map {
       case (word, ind) =>
-        (
-          word,
-          wordVectors.slice(vectorSize * ind, vectorSize * ind + vectorSize))
+        (word, wordVectors.slice(vectorSize * ind, vectorSize * ind + vectorSize))
     }
   }
 

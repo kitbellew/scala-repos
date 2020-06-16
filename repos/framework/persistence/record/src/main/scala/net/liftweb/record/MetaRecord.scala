@@ -358,8 +358,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
         }
 
       case elem: Elem =>
-        elem.copy(child =
-          toForm(inst, elem.child.flatMap(n => toForm(inst, n))))
+        elem.copy(child = toForm(inst, elem.child.flatMap(n => toForm(inst, n))))
 
       case s: Seq[_] =>
         s.flatMap(e =>
@@ -381,9 +380,7 @@ trait MetaRecord[BaseRecord <: Record[BaseRecord]] {
     *
     * @return Box[The Field] (Empty if the field is not found)
     */
-  def fieldByName(
-      fieldName: String,
-      inst: BaseRecord): Box[Field[_, BaseRecord]] = {
+  def fieldByName(fieldName: String, inst: BaseRecord): Box[Field[_, BaseRecord]] = {
     Box(fieldMap.get(fieldName).map(_.field(inst)))
   }
 

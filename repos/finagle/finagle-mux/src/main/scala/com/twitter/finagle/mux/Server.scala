@@ -180,12 +180,7 @@ private[twitter] object ServerDispatcher {
       trans: Transport[Message, Message],
       service: Service[Request, Response]
   ): ServerDispatcher =
-    newRequestResponse(
-      trans,
-      service,
-      Lessor.nil,
-      NullTracer,
-      NullStatsReceiver)
+    newRequestResponse(trans, service, Lessor.nil, NullTracer, NullStatsReceiver)
 
   /**
     * Used when comparing the difference between leases.

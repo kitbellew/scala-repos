@@ -464,10 +464,8 @@ class GeneralizedLinearRegressionSuite
         .setFitIntercept(fitIntercept)
         .setRegParam(regParam)
       val model = trainer.fit(datasetGaussianIdentity)
-      val actual = Vectors.dense(
-        model.intercept,
-        model.coefficients(0),
-        model.coefficients(1))
+      val actual =
+        Vectors.dense(model.intercept, model.coefficients(0), model.coefficients(1))
       assert(
         actual ~= expected(idx) absTol 1e-4,
         "Model mismatch: GLM with gaussian family, " +

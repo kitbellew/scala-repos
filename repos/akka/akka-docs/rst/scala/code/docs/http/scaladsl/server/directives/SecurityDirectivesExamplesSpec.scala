@@ -175,10 +175,9 @@ class SecurityDirectivesExamplesSpec extends RoutingSpec {
     val route =
       Route.seal {
         path("secured") {
-          authenticateBasicAsync(
-            realm = "secure site",
-            myUserPassAuthenticator) { userName =>
-            complete(s"The user is '$userName'")
+          authenticateBasicAsync(realm = "secure site", myUserPassAuthenticator) {
+            userName =>
+              complete(s"The user is '$userName'")
           }
         }
       }

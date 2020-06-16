@@ -240,9 +240,7 @@ final class ORMultiMap[A] private[akka] (
   override def pruningCleanup(removedNode: UniqueAddress): T =
     new ORMultiMap(underlying.pruningCleanup(removedNode))
 
-  override def prune(
-      removedNode: UniqueAddress,
-      collapseInto: UniqueAddress): T =
+  override def prune(removedNode: UniqueAddress, collapseInto: UniqueAddress): T =
     new ORMultiMap(underlying.prune(removedNode, collapseInto))
 
   // this class cannot be a `case class` because we need different `unapply`

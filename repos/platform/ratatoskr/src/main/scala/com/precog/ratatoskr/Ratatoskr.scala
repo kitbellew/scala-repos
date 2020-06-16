@@ -350,10 +350,7 @@ object KafkaTools extends Command {
       slices += (timestamp -> byAccount)
     }
 
-    def processIngest(
-        trackInterval: Int,
-        state: ReportState,
-        msg: IngestMessage) = {
+    def processIngest(trackInterval: Int, state: ReportState, msg: IngestMessage) = {
       // Track timestamps
       (if (msg.timestamp != EventMessage.defaultTimestamp) {
          //println("Exact timestamp found: " + msg.timestamp)
@@ -509,11 +506,8 @@ object KafkaTools extends Command {
               case i: Interpolated    => interpolationMap.get(i)
             }).foreach { timestamp =>
               //println(index + " => " + timestamp)
-              println(
-                "%d,%d,%s".format(
-                  timestamp,
-                  accountTotals.sum,
-                  accountTotals.mkString(",")))
+              println("%d,%d,%s"
+                .format(timestamp, accountTotals.sum, accountTotals.mkString(",")))
             }
         }
       } else {
@@ -785,10 +779,7 @@ object ZookeeperTools extends Command {
     }
   }
 
-  def showChildren(
-      name: String,
-      path: String,
-      children: Buffer[(String, String)]) {
+  def showChildren(name: String, path: String, children: Buffer[(String, String)]) {
     children match {
       case l if l.size == 0 =>
         println("no %s at: %s".format(name, path))
@@ -1055,10 +1046,8 @@ object ImportTools extends Command with Logging {
     val masterChef =
       actorSystem.actorOf(Props[Chef].withRouter(RoundRobinRouter(chefs)))
 
-    val accountFinder = new StaticAccountFinder[Future](
-      config.accountId,
-      config.apiKey,
-      Some("/"))
+    val accountFinder =
+      new StaticAccountFinder[Future](config.accountId, config.apiKey, Some("/"))
 
     logger.info("Starting APIKeyFinder")
     //// ****** WARNING ****** ////

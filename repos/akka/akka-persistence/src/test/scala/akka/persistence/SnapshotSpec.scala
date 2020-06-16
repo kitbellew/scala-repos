@@ -202,9 +202,8 @@ class SnapshotSpec
       expectMsg(RecoveryCompleted)
     }
     "recover state from scratch if snapshot based recovery is disabled" in {
-      val recovery = Recovery(
-        fromSnapshot = SnapshotSelectionCriteria.None,
-        toSequenceNr = 3)
+      val recovery =
+        Recovery(fromSnapshot = SnapshotSelectionCriteria.None, toSequenceNr = 3)
       val persistentActor = system.actorOf(
         Props(
           classOf[LoadSnapshotTestPersistentActor],

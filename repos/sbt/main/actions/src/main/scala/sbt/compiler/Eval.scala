@@ -263,8 +263,7 @@ final class Eval(
     }
 
   def load(dir: AbstractFile, moduleName: String): ClassLoader => Any =
-    parent =>
-      getValue[Any](moduleName, new AbstractFileClassLoader(dir, parent))
+    parent => getValue[Any](moduleName, new AbstractFileClassLoader(dir, parent))
   def loadPlain(dir: File, moduleName: String): ClassLoader => Any =
     parent =>
       getValue[Any](
@@ -296,9 +295,10 @@ final class Eval(
         List(Nil),
         TypeTree(),
         Block(
-          List(Apply(
-            Select(Super(This(emptyTypeName), emptyTypeName), nme.CONSTRUCTOR),
-            Nil)),
+          List(
+            Apply(
+              Select(Super(This(emptyTypeName), emptyTypeName), nme.CONSTRUCTOR),
+              Nil)),
           Literal(Constant(())))
       )
 

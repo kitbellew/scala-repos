@@ -145,14 +145,7 @@ object ScriptedTests extends ScriptedRunner {
     val bootProperties = new File(args(5))
     val tests = args.drop(6)
     val logger = ConsoleLogger()
-    run(
-      directory,
-      buffer,
-      tests,
-      logger,
-      bootProperties,
-      Array(),
-      emptyCallback)
+    run(directory, buffer, tests, logger, bootProperties, Array(), emptyCallback)
   }
 }
 

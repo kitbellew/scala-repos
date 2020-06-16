@@ -47,10 +47,8 @@ object CodecSource {
     new CodecSource[T](paths)
 }
 
-class CodecSource[T] private (
-    val hdfsPaths: Seq[String],
-    val maxFailures: Int = 0)(implicit
-    @transient injection: Injection[T, Array[Byte]])
+class CodecSource[T] private (val hdfsPaths: Seq[String], val maxFailures: Int = 0)(
+    implicit @transient injection: Injection[T, Array[Byte]])
     extends FileSource
     with Mappable[T]
     with LocalTapSource {

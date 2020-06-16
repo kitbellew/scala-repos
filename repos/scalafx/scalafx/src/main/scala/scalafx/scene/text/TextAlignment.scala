@@ -39,9 +39,7 @@ object TextAlignment
   @deprecated("Use Left; LEFT will be removed in a future release", "2.2.60")
   val LEFT = Left
   val Center = new TextAlignment(jfxst.TextAlignment.CENTER)
-  @deprecated(
-    "Use Center; CENTER will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Center; CENTER will be removed in a future release", "2.2.60")
   val CENTER = Center
   val Right = new TextAlignment(jfxst.TextAlignment.RIGHT)
   @deprecated("Use Right; RIGHT will be removed in a future release", "2.2.60")

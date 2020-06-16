@@ -28,10 +28,7 @@ case class JavaFqn(
 }
 
 object JavaFqn {
-  def apply(
-      pack: String,
-      tpe: String,
-      fieldOrMethod: Option[String]): JavaFqn = {
+  def apply(pack: String, tpe: String, fieldOrMethod: Option[String]): JavaFqn = {
     JavaFqn(
       if (pack.isEmpty) None else Some(pack),
       if (tpe.isEmpty) None else Some(tpe),

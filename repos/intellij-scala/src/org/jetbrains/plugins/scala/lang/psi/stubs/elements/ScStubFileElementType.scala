@@ -30,9 +30,7 @@ class ScStubFileElementType(lang: Language)
     ScalaStubsUtil.deserializeFileStubElement(dataStream, parentStub)
   }
 
-  override def serialize(
-      stub: ScFileStub,
-      dataStream: StubOutputStream): Unit = {
+  override def serialize(stub: ScFileStub, dataStream: StubOutputStream): Unit = {
     ScalaStubsUtil.serializeFileStubElement(stub, dataStream)
   }
 

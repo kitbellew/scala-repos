@@ -449,8 +449,7 @@ abstract class UnCurry
       tree match {
         case dd @ DefDef(_, _, _, _, _, Apply(fn, body :: Nil))
             if isSelfSynchronized(dd) =>
-          log(
-            "Translating " + dd.symbol.defString + " into synchronized method")
+          log("Translating " + dd.symbol.defString + " into synchronized method")
           dd.symbol setFlag SYNCHRONIZED
           deriveDefDef(dd)(_ => body)
         case _ => tree
@@ -542,8 +541,9 @@ abstract class UnCurry
                         rhs1)
                     }
                   } else {
-                    super.transform(treeCopy
-                      .DefDef(dd, mods, name, tparams, vparamssNoRhs, tpt, rhs))
+                    super.transform(
+                      treeCopy
+                        .DefDef(dd, mods, name, tparams, vparamssNoRhs, tpt, rhs))
                   }
                 }
               case ValDef(_, _, _, rhs) =>

@@ -214,9 +214,7 @@ trait AkkaGuiceSupport {
 /**
   * Provider for creating actor refs
   */
-class ActorRefProvider[T <: Actor: ClassTag](
-    name: String,
-    props: Props => Props)
+class ActorRefProvider[T <: Actor: ClassTag](name: String, props: Props => Props)
     extends Provider[ActorRef] {
 
   @Inject private var actorSystem: ActorSystem = _

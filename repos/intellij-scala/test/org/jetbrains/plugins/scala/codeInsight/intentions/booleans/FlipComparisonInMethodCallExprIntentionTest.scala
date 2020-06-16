@@ -9,8 +9,7 @@ import org.jetbrains.plugins.scala.codeInsight.intentions.ScalaIntentionTestBase
   * @since 4/20/12
   */
 
-class FlipComparisonInMethodCallExprIntentionTest
-    extends ScalaIntentionTestBase {
+class FlipComparisonInMethodCallExprIntentionTest extends ScalaIntentionTestBase {
   def familyName = FlipComparisonInMethodCallExprIntention.familyName
 
   def testFlip() {

@@ -554,11 +554,7 @@ abstract class BCodeIdiomatic extends SubComponent {
           i += 1
         }
         assert(oldPos == keys.length, "emitSWITCH")
-        jmethod.visitTableSwitchInsn(
-          keyMin,
-          keyMax,
-          defaultBranch,
-          newBranches: _*)
+        jmethod.visitTableSwitchInsn(keyMin, keyMax, defaultBranch, newBranches: _*)
       } else {
         jmethod.visitLookupSwitchInsn(defaultBranch, keys, branches)
       }

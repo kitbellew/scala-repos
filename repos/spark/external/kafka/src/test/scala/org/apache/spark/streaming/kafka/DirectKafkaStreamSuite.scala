@@ -230,16 +230,12 @@ class DirectKafkaStreamSuite
     // Setup context and kafka stream with largest offset
     ssc = new StreamingContext(sparkConf, Milliseconds(200))
     val stream = withClue("Error creating direct stream") {
-      KafkaUtils.createDirectStream[
-        String,
-        String,
-        StringDecoder,
-        StringDecoder,
-        String](
-        ssc,
-        kafkaParams,
-        Map(topicPartition -> 11L),
-        (m: MessageAndMetadata[String, String]) => m.message())
+      KafkaUtils
+        .createDirectStream[String, String, StringDecoder, StringDecoder, String](
+          ssc,
+          kafkaParams,
+          Map(topicPartition -> 11L),
+          (m: MessageAndMetadata[String, String]) => m.message())
     }
     assert(
       stream
@@ -402,14 +398,10 @@ class DirectKafkaStreamSuite
     val topic = "maxMessagesPerPartition"
     val kafkaStream = getDirectKafkaStream(topic, None)
 
-    val input = Map(
-      TopicAndPartition(topic, 0) -> 50L,
-      TopicAndPartition(topic, 1) -> 50L)
-    assert(
-      kafkaStream.maxMessagesPerPartition(input).get ==
-        Map(
-          TopicAndPartition(topic, 0) -> 10L,
-          TopicAndPartition(topic, 1) -> 10L))
+    val input =
+      Map(TopicAndPartition(topic, 0) -> 50L, TopicAndPartition(topic, 1) -> 50L)
+    assert(kafkaStream.maxMessagesPerPartition(input).get ==
+      Map(TopicAndPartition(topic, 0) -> 10L, TopicAndPartition(topic, 1) -> 10L))
   }
 
   test("maxMessagesPerPartition with no lag") {
@@ -432,11 +424,8 @@ class DirectKafkaStreamSuite
     val input = Map(
       TopicAndPartition(topic, 0) -> 1000L,
       TopicAndPartition(topic, 1) -> 1000L)
-    assert(
-      kafkaStream.maxMessagesPerPartition(input).get ==
-        Map(
-          TopicAndPartition(topic, 0) -> 10L,
-          TopicAndPartition(topic, 1) -> 10L))
+    assert(kafkaStream.maxMessagesPerPartition(input).get ==
+      Map(TopicAndPartition(topic, 0) -> 10L, TopicAndPartition(topic, 1) -> 10L))
   }
 
   test("using rate controller") {

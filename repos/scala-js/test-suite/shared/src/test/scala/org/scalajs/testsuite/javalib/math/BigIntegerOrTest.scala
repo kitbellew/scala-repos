@@ -61,8 +61,8 @@ class BigIntegerOrTest {
       Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val aSign = -1
     val bSign = -1
-    val rBytes = Array[Byte](-1, 127, -57, -101, -5, -5, -18, -38, -17, -2, -65,
-      -2, -11, -3)
+    val rBytes =
+      Array[Byte](-1, 127, -57, -101, -5, -5, -18, -38, -17, -2, -65, -2, -11, -3)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.or(bNumber)
@@ -80,8 +80,8 @@ class BigIntegerOrTest {
     val bBytes = Array[Byte](0)
     val aSign = -1
     val bSign = 0
-    val rBytes = Array[Byte](-1, 1, 2, 3, 3, -6, -15, -24, -40, -49, -58, -67,
-      -6, -15, -23)
+    val rBytes =
+      Array[Byte](-1, 1, 2, 3, 3, -6, -15, -24, -40, -49, -58, -67, -6, -15, -23)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.or(bNumber)
@@ -322,8 +322,8 @@ class BigIntegerOrTest {
       Array[Byte](-2, -3, -4, -4, 5, 14, 23, 39, 48, 57, 66, 5, 14, 23)
     val aSign = 0
     val bSign = -1
-    val rBytes = Array[Byte](-1, 1, 2, 3, 3, -6, -15, -24, -40, -49, -58, -67,
-      -6, -15, -23)
+    val rBytes =
+      Array[Byte](-1, 1, 2, 3, 3, -6, -15, -24, -40, -49, -58, -67, -6, -15, -23)
     val aNumber = new BigInteger(aSign, aBytes)
     val bNumber = new BigInteger(bSign, bBytes)
     val result = aNumber.or(bNumber)

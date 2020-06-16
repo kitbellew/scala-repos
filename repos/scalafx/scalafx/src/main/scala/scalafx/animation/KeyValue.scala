@@ -67,9 +67,7 @@ object KeyValue {
       target: jfxbv.WritableDoubleValue,
       endValue: Double) =
     new KeyValue[T, J](new jfxa.KeyValue(target, double2Double(endValue)))
-  def apply[
-      T >: Boolean <: Boolean,
-      J >: java.lang.Boolean <: java.lang.Boolean](
+  def apply[T >: Boolean <: Boolean, J >: java.lang.Boolean <: java.lang.Boolean](
       target: jfxbv.WritableBooleanValue,
       endValue: Boolean) =
     new KeyValue[T, J](new jfxa.KeyValue(target, boolean2Boolean(endValue)))
@@ -79,9 +77,7 @@ object KeyValue {
       target: Property[T, J],
       endValue: Int) =
     new KeyValue[T, J](
-      new jfxa.KeyValue(
-        Property.sfxProperty2jfx(target),
-        int2Integer(endValue)))
+      new jfxa.KeyValue(Property.sfxProperty2jfx(target), int2Integer(endValue)))
   def apply[T >: Long <: Long, J >: Number <: Number](
       target: Property[T, J],
       endValue: Long) =
@@ -94,9 +90,7 @@ object KeyValue {
       target: Property[T, J],
       endValue: Double) =
     new KeyValue[T, J](new jfxa.KeyValue(target, double2Double(endValue)))
-  def apply[
-      T >: Boolean <: Boolean,
-      J >: java.lang.Boolean <: java.lang.Boolean](
+  def apply[T >: Boolean <: Boolean, J >: java.lang.Boolean <: java.lang.Boolean](
       target: Property[T, J],
       endValue: Boolean) =
     new KeyValue[T, J](new jfxa.KeyValue(target, boolean2Boolean(endValue)))
@@ -129,9 +123,7 @@ object KeyValue {
       interpolator: jfxa.Interpolator) =
     new KeyValue[T, J](
       new jfxa.KeyValue(target, double2Double(endValue), interpolator))
-  def apply[
-      T >: Boolean <: Boolean,
-      J >: java.lang.Boolean <: java.lang.Boolean](
+  def apply[T >: Boolean <: Boolean, J >: java.lang.Boolean <: java.lang.Boolean](
       target: jfxbv.WritableBooleanValue,
       endValue: Boolean,
       interpolator: jfxa.Interpolator) =
@@ -169,9 +161,7 @@ object KeyValue {
       interpolator: jfxa.Interpolator) =
     new KeyValue[T, J](
       new jfxa.KeyValue(target, double2Double(endValue), interpolator))
-  def apply[
-      T >: Boolean <: Boolean,
-      J >: java.lang.Boolean <: java.lang.Boolean](
+  def apply[T >: Boolean <: Boolean, J >: java.lang.Boolean <: java.lang.Boolean](
       target: Property[T, J],
       endValue: Boolean,
       interpolator: jfxa.Interpolator) =
@@ -254,9 +244,7 @@ object Tweenable {
   * @define TW `Tweenable`
   * @define KV `KeyValue`
   */
-class Tweenable[T <: Any, J <: Any](
-    target: jfxbv.WritableValue[J],
-    endValue: J) {
+class Tweenable[T <: Any, J <: Any](target: jfxbv.WritableValue[J], endValue: J) {
 
   /**
     * Returns a new [[scalafx.animation.KeyValue]] with a determinate Interpolator.

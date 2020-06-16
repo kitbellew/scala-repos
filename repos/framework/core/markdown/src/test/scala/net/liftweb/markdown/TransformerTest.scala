@@ -238,8 +238,7 @@ else in the doc, define the link:</p>
     apply("### A Header##\n") should equal("<h3>A Header</h3>\n")
     apply("### A Header##  \n") should equal("<h3>A Header</h3>\n")
     apply("### A Header  ##  \n") should equal("<h3>A Header</h3>\n")
-    apply("### A Header ## foo ## \n") should equal(
-      "<h3>A Header ## foo</h3>\n")
+    apply("### A Header ## foo ## \n") should equal("<h3>A Header ## foo</h3>\n")
   }
 
   it should "parse setext style level 1 headings" in {

@@ -72,9 +72,7 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
               Map("rack" -> "rack-2", "color" -> "blue"))) ++
         30.to(39)
           .map(num =>
-            makeSampleTask(
-              s"$num",
-              Map("rack" -> "rack-2", "color" -> "green")))
+            makeSampleTask(s"$num", Map("rack" -> "rack-2", "color" -> "green")))
 
     When("20 tasks should be selected to kill")
     val result = Constraints.selectTasksToKill(app, tasks, 20)
@@ -90,8 +88,7 @@ class ConstraintsTest extends MarathonSpec with GivenWhenThen with Matchers {
     result.count(
       _.agentInfo.attributes.exists(_.getText.getValue == "blue")) should be(10)
     result.count(
-      _.agentInfo.attributes.exists(_.getText.getValue == "green")) should be(
-      10)
+      _.agentInfo.attributes.exists(_.getText.getValue == "green")) should be(10)
   }
 
   test("Does not select any task without constraint") {

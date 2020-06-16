@@ -508,8 +508,7 @@ class ActorMailboxSpec(conf: Config)
 
     "get a bounded message queue with a balancing bounded dispatcher" in {
       checkMailboxQueue(
-        Props[QueueReportingActor].withDispatcher(
-          "balancing-bounded-dispatcher"),
+        Props[QueueReportingActor].withDispatcher("balancing-bounded-dispatcher"),
         "bounded-balancing",
         BoundedMailboxTypes)
     }

@@ -111,8 +111,7 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
       case _ =>
         Real({ p =>
           val s = findNonzero(0)
-          roundUp(
-            Rational(SafeLong.two.pow(2 * p + 2 * s + 2), x(p + 2 * s + 2)))
+          roundUp(Rational(SafeLong.two.pow(2 * p + 2 * s + 2), x(p + 2 * s + 2)))
         })
     }
   }
@@ -140,8 +139,7 @@ sealed trait Real extends ScalaNumber with ScalaNumericConversions { x =>
           val y0 = y(0).abs + 2
           val sx = Real.sizeInBase(x0, 2) + 3
           val sy = Real.sizeInBase(y0, 2) + 3
-          roundUp(
-            Rational(x(p + sy) * y(p + sx), SafeLong.two.pow(p + sx + sy)))
+          roundUp(Rational(x(p + sy) * y(p + sx), SafeLong.two.pow(p + sx + sy)))
         })
     }
 
@@ -553,10 +551,7 @@ object Real extends RealInstances {
       x * x)
 
   def cosDr(x: Real): Real =
-    powerSeries(
-      accSeq((r, n) => -r * Rational(1, 2 * n * (2 * n - 1))),
-      n => n,
-      x * x)
+    powerSeries(accSeq((r, n) => -r * Rational(1, 2 * n * (2 * n - 1))), n => n, x * x)
 
   def atanDr(x: Real): Real = {
     val y = x * x + Real(1)

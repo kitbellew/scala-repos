@@ -82,8 +82,7 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
           } map (_.toOption)
         }
       val query = $query(
-        gameQuery(user) ++ Json.obj(
-          Game.BSONFields.createdAt -> $gte($date(from))))
+        gameQuery(user) ++ Json.obj(Game.BSONFields.createdAt -> $gte($date(from))))
       pimpQB(query)
         .sort(Query.sortChronological)
         .cursor[Game]()

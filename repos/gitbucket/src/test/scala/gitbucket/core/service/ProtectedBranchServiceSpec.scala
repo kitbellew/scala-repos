@@ -36,10 +36,11 @@ class ProtectedBranchServiceSpec
       withTestDB { implicit session =>
         generateNewUserWithDBRepository("user1", "repo1")
         enableBranchProtection("user1", "repo1", "branch", false, Nil)
-        assert(getProtectedBranchInfo(
-          "user1",
-          "repo1",
-          "branch") == ProtectedBranchInfo("user1", "repo1", true, Nil, false))
+        assert(
+          getProtectedBranchInfo(
+            "user1",
+            "repo1",
+            "branch") == ProtectedBranchInfo("user1", "repo1", true, Nil, false))
         enableBranchProtection(
           "user1",
           "repo1",

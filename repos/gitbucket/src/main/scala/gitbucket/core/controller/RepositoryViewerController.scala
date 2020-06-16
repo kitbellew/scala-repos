@@ -420,8 +420,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
     try {
       using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
         git =>
-          defining(
-            JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))) {
+          defining(JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))) {
             revCommit =>
               JGitUtil.getDiffs(git, id) match {
                 case (diffs, oldCommitId) =>
@@ -641,10 +640,7 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
     html.branches(
       branches,
-      hasWritePermission(
-        repository.owner,
-        repository.name,
-        context.loginAccount),
+      hasWritePermission(repository.owner, repository.name, context.loginAccount),
       repository)
   })
 
@@ -815,9 +811,8 @@ trait RepositoryViewerControllerBase extends ControllerBase {
                       path -> StringUtil.convertFromByteArray(
                         JGitUtil
                           .getContentFromId(
-                            Git.open(getRepositoryDir(
-                              repository.owner,
-                              repository.name)),
+                            Git.open(
+                              getRepositoryDir(repository.owner, repository.name)),
                             file.id,
                             true)
                           .get)

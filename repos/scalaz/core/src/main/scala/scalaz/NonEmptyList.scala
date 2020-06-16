@@ -42,9 +42,7 @@ final class NonEmptyList[A] private[scalaz] (val head: A, val tail: IList[A]) {
     tail match {
       case INil() => F.map(f(head))(nel(_, INil()))
       case ICons(b, bs) =>
-        F.apply2(
-          f(head),
-          OneAnd.oneAndTraverse[IList].traverse1(OneAnd(b, bs))(f)) {
+        F.apply2(f(head), OneAnd.oneAndTraverse[IList].traverse1(OneAnd(b, bs))(f)) {
           case (h, t) => nel(h, t.head :: t.tail)
         }
     }

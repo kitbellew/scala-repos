@@ -259,9 +259,7 @@ class ArrayBuilderTest {
     assertSame(
       classOf[Array[Nothing]],
       ArrayBuilder.make[Nothing]().result().getClass)
-    assertSame(
-      classOf[Array[Null]],
-      ArrayBuilder.make[Null]().result().getClass)
+    assertSame(classOf[Array[Null]], ArrayBuilder.make[Null]().result().getClass)
 
     assertSame(
       classOf[Array[Nothing]],

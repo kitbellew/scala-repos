@@ -121,8 +121,7 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
     isInIncreasingOrder(
       batchInfosCompleted.asScala.map(_.submissionTime)) should be(true)
     isInIncreasingOrder(
-      batchInfosCompleted.asScala.map(_.processingStartTime.get)) should be(
-      true)
+      batchInfosCompleted.asScala.map(_.processingStartTime.get)) should be(true)
     isInIncreasingOrder(
       batchInfosCompleted.asScala.map(_.processingEndTime.get)) should be(true)
   }
@@ -167,8 +166,7 @@ class StreamingListenerSuite extends TestSuiteBase with Matchers {
       eventually(timeout(30 seconds), interval(20 millis)) {
         collector.startedOutputOperationIds.asScala.take(3) should be(
           Seq(0, 1, 2))
-        collector.completedOutputOperationIds.asScala.take(3) should be(
-          Seq(0, 1, 2))
+        collector.completedOutputOperationIds.asScala.take(3) should be(Seq(0, 1, 2))
       }
     } finally {
       ssc.stop()
@@ -356,8 +354,7 @@ class OutputOperationInfoCollector extends StreamingListener {
   }
 
   override def onOutputOperationCompleted(
-      outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-      : Unit = {
+      outputOperationCompleted: StreamingListenerOutputOperationCompleted): Unit = {
     completedOutputOperationIds.add(
       outputOperationCompleted.outputOperationInfo.id)
   }
@@ -388,8 +385,7 @@ class FailureReasonsCollector extends StreamingListener {
   val failureReasons = new HashMap[Int, String]
 
   override def onOutputOperationCompleted(
-      outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-      : Unit = {
+      outputOperationCompleted: StreamingListenerOutputOperationCompleted): Unit = {
     outputOperationCompleted.outputOperationInfo.failureReason.foreach { f =>
       failureReasons.synchronized {
         failureReasons(outputOperationCompleted.outputOperationInfo.id) = f

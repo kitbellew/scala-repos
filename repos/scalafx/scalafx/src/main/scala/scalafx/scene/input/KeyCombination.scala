@@ -44,9 +44,7 @@ object KeyCombination {
       * Constant which indicates that the modifier key can be either up or down.
       */
     val Any = new ModifierValue(jfxsi.KeyCombination.ModifierValue.ANY)
-    @deprecated(
-      "Use Any; ANY will be removed in a future release",
-      "8.0.60-R10")
+    @deprecated("Use Any; ANY will be removed in a future release", "8.0.60-R10")
     val ANY = Any
 
     /**

@@ -77,9 +77,7 @@ class ConsistentHashingRouterSpec
 
       router1 ! Msg(MsgKey("c"), "C")
       val destinationC = expectMsgType[ActorRef]
-      router1 ! ConsistentHashableEnvelope(
-        message = "CC",
-        hashKey = MsgKey("c"))
+      router1 ! ConsistentHashableEnvelope(message = "CC", hashKey = MsgKey("c"))
       expectMsg(destinationC)
     }
 
@@ -104,9 +102,7 @@ class ConsistentHashingRouterSpec
 
       router2 ! Msg2(MsgKey("c"), "C")
       val destinationC = expectMsgType[ActorRef]
-      router2 ! ConsistentHashableEnvelope(
-        message = "CC",
-        hashKey = MsgKey("c"))
+      router2 ! ConsistentHashableEnvelope(message = "CC", hashKey = MsgKey("c"))
       expectMsg(destinationC)
     }
   }

@@ -163,17 +163,13 @@ case class Pi() extends LeafMathExpression(math.Pi, "PI")
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-case class Acos(child: Expression)
-    extends UnaryMathExpression(math.acos, "ACOS")
+case class Acos(child: Expression) extends UnaryMathExpression(math.acos, "ACOS")
 
-case class Asin(child: Expression)
-    extends UnaryMathExpression(math.asin, "ASIN")
+case class Asin(child: Expression) extends UnaryMathExpression(math.asin, "ASIN")
 
-case class Atan(child: Expression)
-    extends UnaryMathExpression(math.atan, "ATAN")
+case class Atan(child: Expression) extends UnaryMathExpression(math.atan, "ATAN")
 
-case class Cbrt(child: Expression)
-    extends UnaryMathExpression(math.cbrt, "CBRT")
+case class Cbrt(child: Expression) extends UnaryMathExpression(math.cbrt, "CBRT")
 
 case class Ceil(child: Expression)
     extends UnaryMathExpression(math.ceil, "CEIL") {
@@ -208,8 +204,7 @@ case class Ceil(child: Expression)
 
 case class Cos(child: Expression) extends UnaryMathExpression(math.cos, "COS")
 
-case class Cosh(child: Expression)
-    extends UnaryMathExpression(math.cosh, "COSH")
+case class Cosh(child: Expression) extends UnaryMathExpression(math.cosh, "COSH")
 
 /**
   * Convert a num from one base to another
@@ -344,9 +339,7 @@ case class Factorial(child: Expression)
 case class Log(child: Expression) extends UnaryLogExpression(math.log, "LOG")
 
 case class Log2(child: Expression)
-    extends UnaryLogExpression(
-      (x: Double) => math.log(x) / math.log(2),
-      "LOG2") {
+    extends UnaryLogExpression((x: Double) => math.log(x) / math.log(2), "LOG2") {
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     nullSafeCodeGen(
       ctx,
@@ -380,16 +373,13 @@ case class Signum(child: Expression)
 
 case class Sin(child: Expression) extends UnaryMathExpression(math.sin, "SIN")
 
-case class Sinh(child: Expression)
-    extends UnaryMathExpression(math.sinh, "SINH")
+case class Sinh(child: Expression) extends UnaryMathExpression(math.sinh, "SINH")
 
-case class Sqrt(child: Expression)
-    extends UnaryMathExpression(math.sqrt, "SQRT")
+case class Sqrt(child: Expression) extends UnaryMathExpression(math.sqrt, "SQRT")
 
 case class Tan(child: Expression) extends UnaryMathExpression(math.tan, "TAN")
 
-case class Tanh(child: Expression)
-    extends UnaryMathExpression(math.tanh, "TANH")
+case class Tanh(child: Expression) extends UnaryMathExpression(math.tanh, "TANH")
 
 case class ToDegrees(child: Expression)
     extends UnaryMathExpression(math.toDegrees, "DEGREES") {
@@ -678,9 +668,7 @@ case class Hypot(left: Expression, right: Expression)
   * @param right the number to compute the logarithm of.
   */
 case class Logarithm(left: Expression, right: Expression)
-    extends BinaryMathExpression(
-      (c1, c2) => math.log(c2) / math.log(c1),
-      "LOG") {
+    extends BinaryMathExpression((c1, c2) => math.log(c2) / math.log(c1), "LOG") {
 
   /**
     * Natural log, i.e. using e as the base.

@@ -17,10 +17,7 @@ import akka.http.scaladsl.model.headers._
 import akka.http.impl.model.parser.CharacterClasses
 import akka.http.impl.util._
 
-class HttpHeaderParserSpec
-    extends WordSpec
-    with Matchers
-    with BeforeAndAfterAll {
+class HttpHeaderParserSpec extends WordSpec with Matchers with BeforeAndAfterAll {
 
   val testConf: Config = ConfigFactory.parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]

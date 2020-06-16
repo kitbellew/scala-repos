@@ -390,14 +390,7 @@ object Uri {
         }
       }
     }
-    create(
-      _scheme,
-      "",
-      _host,
-      _port,
-      collapseDotSegments(path),
-      query,
-      fragment)
+    create(_scheme, "", _host, _port, collapseDotSegments(path), query, fragment)
   }
 
   def httpScheme(securedConnection: Boolean = false) =
@@ -500,9 +493,7 @@ object Uri {
     private[http] def apply(bytes: Array[Byte], address: String): IPv4Host =
       IPv4Host(immutable.Seq(bytes: _*), address)
   }
-  final case class IPv6Host private (
-      bytes: immutable.Seq[Byte],
-      address: String)
+  final case class IPv6Host private (bytes: immutable.Seq[Byte], address: String)
       extends NonEmptyHost {
     require(bytes.length == 16, "bytes array must have length 16")
     require(!address.isEmpty, "address must not be empty")
@@ -592,9 +583,7 @@ object Uri {
             else
               build(
                 Slash(
-                  decode(
-                    string.substring(ix + 1, segmentEnd),
-                    charset) :: path),
+                  decode(string.substring(ix + 1, segmentEnd), charset) :: path),
                 ix - 1)
           else if (segmentEnd == 0) build(path, ix - 1, ix + 1)
           else build(path, ix - 1, segmentEnd)
@@ -950,8 +939,7 @@ object Uri {
   private[http] def verifyPath(path: Path, scheme: String, host: Host): Path = {
     if (host.isEmpty) {
       if (path.startsWithSlash && path.tail.startsWithSlash)
-        fail(
-          """The path of an URI without authority must not begin with "//"""")
+        fail("""The path of an URI without authority must not begin with "//"""")
     } else if (path.startsWithSegment)
       fail("The path of an URI containing an authority must either be empty or start with a '/' (slash) character")
     path

@@ -50,8 +50,7 @@ class FourierTrTest extends FunSuite {
 
   test("fft 2D of DenseMatrix[Double]") {
     assert(
-      norm(
-        (fourierTr(test5x5) - test5x5fftC).toDenseVector) < testNormThreshold)
+      norm((fourierTr(test5x5) - test5x5fftC).toDenseVector) < testNormThreshold)
   }
 
   test("ifft 2D of DenseMatrix[Complex]") {

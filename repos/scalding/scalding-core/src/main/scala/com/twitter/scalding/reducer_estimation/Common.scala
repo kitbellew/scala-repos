@@ -114,9 +114,7 @@ trait HistoryReducerEstimator extends ReducerEstimator {
       history: Seq[FlowStepHistory]): Option[Int]
 }
 
-case class FallbackEstimator(
-    first: ReducerEstimator,
-    fallback: ReducerEstimator)
+case class FallbackEstimator(first: ReducerEstimator, fallback: ReducerEstimator)
     extends ReducerEstimator {
   private val LOG = LoggerFactory.getLogger(this.getClass)
 
@@ -200,9 +198,7 @@ object ReducerEstimatorStepStrategy extends FlowStepStrategy[JobConf] {
       val numReducers = combinedEstimator.estimateReducers(info)
 
       // save the estimate in the JobConf which should be saved by hRaven
-      conf.setInt(
-        EstimatorConfig.estimatedNumReducers,
-        numReducers.getOrElse(-1))
+      conf.setInt(EstimatorConfig.estimatedNumReducers, numReducers.getOrElse(-1))
 
       // set number of reducers
       if (!setExplicitly || overrideExplicit) {

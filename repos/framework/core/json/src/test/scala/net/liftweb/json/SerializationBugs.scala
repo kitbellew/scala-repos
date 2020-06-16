@@ -151,8 +151,7 @@ object SerializationBugs extends Specification {
           json match {
             case JObject(List(JField("val", JDouble(x)))) => SingleValue(x)
             case JObject(List(JField("val", JArray(xs: List[_])))) =>
-              VectorValue(
-                xs.asInstanceOf[List[JDouble]].map(_.num).toIndexedSeq)
+              VectorValue(xs.asInstanceOf[List[JDouble]].map(_.num).toIndexedSeq)
             case x =>
               throw new MappingException(
                 "Can't convert " + x + " to SingleOrVector")
@@ -182,8 +181,7 @@ object SerializationBugs extends Specification {
 
     (read[SomeContainer[TypeA]](jsonA) mustEqual SomeContainer(
       TypeA("string"))) and
-      (read[SomeContainer[TypeB]](jsonB) mustEqual SomeContainer(
-        TypeB("string")))
+      (read[SomeContainer[TypeB]](jsonB) mustEqual SomeContainer(TypeB("string")))
   }
 }
 

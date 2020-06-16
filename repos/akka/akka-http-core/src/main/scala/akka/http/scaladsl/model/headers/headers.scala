@@ -540,8 +540,7 @@ final case class Date(date: DateTime)
 /**
   * INTERNAL API
   */
-private[headers] object EmptyCompanion
-    extends ModeledCompanion[EmptyHeader.type]
+private[headers] object EmptyCompanion extends ModeledCompanion[EmptyHeader.type]
 
 /**
   * INTERNAL API
@@ -803,12 +802,8 @@ final case class `Remote-Address`(address: RemoteAddress)
 
 // http://tools.ietf.org/html/rfc7231#section-5.5.2
 object Referer extends ModeledCompanion[Referer]
-final case class Referer(uri: Uri)
-    extends jm.headers.Referer
-    with RequestHeader {
-  require(
-    uri.fragment.isEmpty,
-    "Referer header URI must not contain a fragment")
+final case class Referer(uri: Uri) extends jm.headers.Referer with RequestHeader {
+  require(uri.fragment.isEmpty, "Referer header URI must not contain a fragment")
   require(
     uri.authority.userinfo.isEmpty,
     "Referer header URI must not contain a userinfo component")

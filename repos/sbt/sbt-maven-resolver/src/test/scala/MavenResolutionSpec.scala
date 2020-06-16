@@ -153,8 +153,7 @@ class MavenResolutionSpec extends BaseIvySpecification {
     System.err.println(s"${newJars.mkString("\n")}")
     (newJars should have size 1)
     (oldJars should have size 1)
-    (oldJars.map(_._2) should not(
-      contain theSameElementsAs (newJars.map(_._2))))
+    (oldJars.map(_._2) should not(contain theSameElementsAs (newJars.map(_._2))))
   }
 
   def resolveSnapshotPubDate = {

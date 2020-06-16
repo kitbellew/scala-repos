@@ -235,10 +235,9 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
                           addElement(el)
                         case memb: PsiMember =>
                           if (parameters.getInvocationCount > 1 ||
-                            ResolveUtils.isAccessible(
-                              memb,
-                              position,
-                              forCompletion = true)) addElement(el)
+                            ResolveUtils
+                              .isAccessible(memb, position, forCompletion = true))
+                            addElement(el)
                         case _ => addElement(el)
                       }
                     case memb: PsiMember =>
@@ -253,8 +252,8 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
             }
             def postProcessMethod(resolveResult: ScalaResolveResult) {
               import org.jetbrains.plugins.scala.lang.psi.types.Nothing
-              val probablyContinigClass = Option(
-                PsiTreeUtil.getContextOfType(position, classOf[PsiClass]))
+              val probablyContinigClass =
+                Option(PsiTreeUtil.getContextOfType(position, classOf[PsiClass]))
               val qualifierType = resolveResult.fromType.getOrElse(Nothing)
               val lookupItems: Seq[ScalaLookupItem] =
                 LookupElementManager.getLookupElement(
@@ -450,8 +449,7 @@ class ScalaBasicCompletionContributor extends ScalaCompletionContributor {
               PsiDocumentManager
                 .getInstance(file.getProject)
                 .doPostponedOperationsAndUnblockDocument(document)
-              context.getEditor.getCaretModel.moveToOffset(
-                context.getTailOffset)
+              context.getEditor.getCaretModel.moveToOffset(context.getTailOffset)
           }
         }
         item.getDelegate.handleInsert(context)

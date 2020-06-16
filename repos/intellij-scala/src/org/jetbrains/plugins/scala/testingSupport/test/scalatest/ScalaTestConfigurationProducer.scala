@@ -29,10 +29,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   ScTypeDefinition
 }
 import org.jetbrains.plugins.scala.lang.psi.types.ScType
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.testingSupport.test.TestRunConfigurationForm.TestKind
 import org.jetbrains.plugins.scala.testingSupport.test.{
   AbstractTestConfigurationProducer,
@@ -121,9 +118,7 @@ class ScalaTestConfigurationProducer extends {
     if (element.isInstanceOf[PsiPackage] || element
         .isInstanceOf[PsiDirectory]) {
       if (!configuration.isInstanceOf[ScalaTestRunConfiguration]) return false
-      return TestConfigurationUtil.isPackageConfiguration(
-        element,
-        configuration)
+      return TestConfigurationUtil.isPackageConfiguration(element, configuration)
     }
     val (testClass, testName) = getLocationClassAndTest(location)
     if (testClass == null) return false
@@ -152,8 +147,7 @@ class ScalaTestConfigurationProducer extends {
         clazz,
         classOf[ScTypeDefinition],
         true) != null) {
-      clazz =
-        PsiTreeUtil.getParentOfType(clazz, classOf[ScTypeDefinition], true)
+      clazz = PsiTreeUtil.getParentOfType(clazz, classOf[ScTypeDefinition], true)
     }
     if (!clazz.isInstanceOf[ScClass]) return (null, null)
     if (ScalaTestRunConfiguration.isInvalidSuite(clazz)) return (null, null)
@@ -426,10 +420,7 @@ class ScalaTestConfigurationProducer extends {
           var call = _call
           while (call != null) {
             checkCall(
-              PsiTreeUtil.getParentOfType(
-                call,
-                classOf[MethodInvocation],
-                true),
+              PsiTreeUtil.getParentOfType(call, classOf[MethodInvocation], true),
               Map("describe" -> fqn)) match {
               case SuccessResult(invoc, featureName, _) =>
                 testName = featureName + " " + testName
@@ -449,10 +440,7 @@ class ScalaTestConfigurationProducer extends {
       def checkFreeSpecInner(innerClassName: String): Option[String] = {
         val ifqn = fqn + innerClassName
         checkInfix(
-          PsiTreeUtil.getParentOfType(
-            element,
-            classOf[MethodInvocation],
-            false),
+          PsiTreeUtil.getParentOfType(element, classOf[MethodInvocation], false),
           Map("in" -> ifqn, "is" -> ifqn, "ignore" -> ifqn)) match {
           case SuccessResult(_call, _testName, _) =>
             var testName = _testName
@@ -494,10 +482,7 @@ class ScalaTestConfigurationProducer extends {
         val ifqn = fqn + innerClassName
         val wfqn = fqn + ".WordSpecStringWrapper"
         checkInfixTagged(
-          PsiTreeUtil.getParentOfType(
-            element,
-            classOf[MethodInvocation],
-            false),
+          PsiTreeUtil.getParentOfType(element, classOf[MethodInvocation], false),
           Map("in" -> ifqn, "is" -> ifqn, "ignore" -> ifqn),
           wfqn) match {
           case SuccessResult(_call, _testName, _) =>
@@ -747,12 +732,7 @@ class ScalaTestConfigurationProducer extends {
                 checkInfixWithIt(
                   m,
                   Map(
-                    "should" -> Set(
-                      shouldFqn,
-                      shouldFqn2,
-                      itFqn,
-                      igFqn,
-                      theyFqn),
+                    "should" -> Set(shouldFqn, shouldFqn2, itFqn, igFqn, theyFqn),
                     "must" -> Set(mustFqn, mustFqn2, itFqn, igFqn, theyFqn),
                     "can" -> Set(canFqn, canFqn2, itFqn, igFqn, theyFqn)
                   ),
@@ -893,9 +873,7 @@ class ScalaTestConfigurationProducer extends {
 
     if (selection != null) {
       if (selection.testNames.nonEmpty)
-        (
-          clazz,
-          escapeAndConcatTestNames(selection.testNames().toList.map(_.trim)))
+        (clazz, escapeAndConcatTestNames(selection.testNames().toList.map(_.trim)))
       else {
         val parent = location.getPsiElement.getParent
         if (parent != null)

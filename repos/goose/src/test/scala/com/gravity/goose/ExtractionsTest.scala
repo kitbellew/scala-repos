@@ -367,8 +367,7 @@ class ExtractionsTest {
     val article = TestUtils.getArticle(url, html)
     TestUtils.runArticleAssertions(
       article = article,
-      expectedStart =
-        "If the newest Census Bureau estimates stay close to form")
+      expectedStart = "If the newest Census Bureau estimates stay close to form")
   }
 
   @Test

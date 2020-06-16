@@ -22,10 +22,7 @@ trait FeatureSpecSingleTestTest extends FeatureSpecGenerator {
       5,
       7,
       featureSpecFileName,
-      checkConfigAndSettings(
-        _,
-        featureSpecClassName,
-        featureSpecConfigTestName),
+      checkConfigAndSettings(_, featureSpecClassName, featureSpecConfigTestName),
       root =>
         checkResultTreeHasExactNamedPath(root, featureSpecTestPath: _*) &&
           checkResultTreeDoesNotHaveNodes(root, "Scenario: Scenario B"),

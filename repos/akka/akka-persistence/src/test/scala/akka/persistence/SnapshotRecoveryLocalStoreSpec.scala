@@ -59,10 +59,7 @@ class SnapshotRecoveryLocalStoreSpec
     "recover state only from its own correct snapshot file" in {
 
       val recoveringActor = system.actorOf(
-        Props(
-          classOf[LoadSnapshotTestPersistentActor],
-          persistenceId,
-          testActor))
+        Props(classOf[LoadSnapshotTestPersistentActor], persistenceId, testActor))
 
       expectMsgPF() {
         case SnapshotOffer(

@@ -93,11 +93,7 @@ final class ModlogApi {
         ))
     }
 
-  def toggleHideTopic(
-      mod: String,
-      categ: String,
-      topic: String,
-      hidden: Boolean) =
+  def toggleHideTopic(mod: String, categ: String, topic: String, hidden: Boolean) =
     add {
       Modlog(
         mod,
@@ -119,11 +115,7 @@ final class ModlogApi {
 
   def deleteQaAnswer(mod: String, user: String, text: String) =
     add {
-      Modlog(
-        mod,
-        user.some,
-        Modlog.deleteQaAnswer,
-        details = Some(text take 140))
+      Modlog(mod, user.some, Modlog.deleteQaAnswer, details = Some(text take 140))
     }
 
   def deleteQaComment(mod: String, user: String, text: String) =

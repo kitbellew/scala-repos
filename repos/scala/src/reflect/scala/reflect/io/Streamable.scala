@@ -71,8 +71,7 @@ object Streamable {
 
       if (offset == arr.length) arr
       else
-        fail(
-          "Could not read entire source (%d of %d bytes)".format(offset, len))
+        fail("Could not read entire source (%d of %d bytes)".format(offset, len))
     }
   }
 

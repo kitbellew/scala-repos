@@ -30,12 +30,7 @@ import scala.annotation.{implicitNotFound, varargs}
   */
 object ClientBuilder {
   type Complete[Req, Rep] =
-    ClientBuilder[
-      Req,
-      Rep,
-      ClientConfig.Yes,
-      ClientConfig.Yes,
-      ClientConfig.Yes]
+    ClientBuilder[Req, Rep, ClientConfig.Yes, ClientConfig.Yes, ClientConfig.Yes]
   type NoCluster[Req, Rep] =
     ClientBuilder[Req, Rep, Nothing, ClientConfig.Yes, ClientConfig.Yes]
   type NoCodec =

@@ -76,9 +76,7 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
       // We use the sort transspec1 to compute a new table with a combination of the
       // original data and the new sort columns, referenced under the sortkey namespace
       val tableWithSortKey = transform(
-        InnerObjectConcat(
-          WrapObject(sortKey, "0"),
-          WrapObject(Leaf(Source), "1")))
+        InnerObjectConcat(WrapObject(sortKey, "0"), WrapObject(Leaf(Source), "1")))
 
       implicit val jValueOrdering = if (sortOrder.isAscending) {
         JValue.order.toScalaOrdering

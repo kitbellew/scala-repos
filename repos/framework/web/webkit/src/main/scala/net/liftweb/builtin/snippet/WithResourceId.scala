@@ -59,10 +59,7 @@ object WithResourceId extends DispatchSnippet {
           e.copy(attributes = MetaData.update(
             e.attributes,
             e.scope,
-            new UnprefixedAttribute(
-              "src",
-              LiftRules.attachResourceId(src),
-              Null)))
+            new UnprefixedAttribute("src", LiftRules.attachResourceId(src), Null)))
         } openOr e
       case e => e
     })

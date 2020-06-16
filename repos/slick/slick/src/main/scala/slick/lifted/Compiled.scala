@@ -170,8 +170,7 @@ object Compilable extends CompilableFunctions {
   implicit def function1IsCompilable[A, B <: Rep[_], P, U](implicit
       ashape: Shape[ColumnsShapeLevel, A, P, A],
       pshape: Shape[ColumnsShapeLevel, P, P, _],
-      bexe: Executable[B, U])
-      : Compilable[A => B, CompiledFunction[A => B, A, P, B, U]] =
+      bexe: Executable[B, U]): Compilable[A => B, CompiledFunction[A => B, A, P, B, U]] =
     new Compilable[A => B, CompiledFunction[A => B, A, P, B, U]] {
       def compiled(raw: A => B, profile: BasicProfile) =
         new CompiledFunction[A => B, A, P, B, U](

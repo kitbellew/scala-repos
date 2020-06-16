@@ -299,8 +299,7 @@ class JDBCSuite
         .collect()
         .size == 2)
     assert(
-      checkPushdown(
-        sql("SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary'"))
+      checkPushdown(sql("SELECT * FROM foobar WHERE THEID = 1 OR NAME = 'mary'"))
         .collect()
         .size == 2)
     assert(
@@ -365,9 +364,10 @@ class JDBCSuite
     // are applied for columns with Filter producing wrong results. On the other hand, JDBCRDD
     // correctly handles this case by assigning `requiredColumns` properly. See PR 10427 for more
     // discussions.
-    assert(sql(
-      "SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet === Set(
-      Row(1)))
+    assert(
+      sql(
+        "SELECT COUNT(1) FROM foobar WHERE NAME = 'mary'").collect.toSet === Set(
+        Row(1)))
   }
 
   test("SELECT * WHERE (quoted strings)") {
@@ -668,8 +668,7 @@ class JDBCSuite
 
   test("Default jdbc dialect registration") {
     assert(JdbcDialects.get("jdbc:mysql://127.0.0.1/db") == MySQLDialect)
-    assert(
-      JdbcDialects.get("jdbc:postgresql://127.0.0.1/db") == PostgresDialect)
+    assert(JdbcDialects.get("jdbc:postgresql://127.0.0.1/db") == PostgresDialect)
     assert(JdbcDialects.get("jdbc:db2://127.0.0.1/db") == DB2Dialect)
     assert(
       JdbcDialects.get("jdbc:sqlserver://127.0.0.1/db") == MsSqlServerDialect)
@@ -795,8 +794,7 @@ class JDBCSuite
     val errMsg = intercept[IllegalArgumentException] {
       Postgres.getJDBCType(ByteType)
     }
-    assert(
-      errMsg.getMessage contains "Unsupported type in postgresql: ByteType")
+    assert(errMsg.getMessage contains "Unsupported type in postgresql: ByteType")
   }
 
   test("DerbyDialect jdbc type mapping") {

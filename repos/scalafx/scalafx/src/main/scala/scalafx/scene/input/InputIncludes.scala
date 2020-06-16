@@ -326,8 +326,7 @@ trait InputIncludes {
     * @return $SFX $SEHS
     */
   implicit def jfxScrollEventHorizontalTextScrollUnits2sfx(
-      h: jfxsi.ScrollEvent.HorizontalTextScrollUnits)
-      : HorizontalTextScrollUnits =
+      h: jfxsi.ScrollEvent.HorizontalTextScrollUnits): HorizontalTextScrollUnits =
     ScrollEvent.HorizontalTextScrollUnits.jfxEnum2sfx(h)
 
   /**

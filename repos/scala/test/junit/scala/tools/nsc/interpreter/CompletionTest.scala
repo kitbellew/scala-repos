@@ -35,11 +35,8 @@ class CompletionTest {
   def completions(): Unit = {
     val intp = newIMain()
     val completer = new PresentationCompilerCompleter(intp)
-    checkExact(completer, "object O { def x_y_z = 1 }; import O._; x_y")(
-      "x_y_z")
-    checkExact(
-      completer,
-      "object O { private def x_y_z = 1 }; import O._; x_y")()
+    checkExact(completer, "object O { def x_y_z = 1 }; import O._; x_y")("x_y_z")
+    checkExact(completer, "object O { private def x_y_z = 1 }; import O._; x_y")()
     checkExact(completer, "object O { private def x_y_z = 1; x_y", "}")("x_y_z")
     checkExact(completer, "object x_y_z; import x_y")("x_y_z")
 
@@ -77,8 +74,7 @@ class CompletionTest {
     val completer = new PresentationCompilerCompleter(intp)
     checkExact(completer, "def foo[@specialize", " A]")("specialized")
     checkExact(completer, "def foo[@specialize")("specialized")
-    checkExact(completer, """@deprecatedN""", """ class Foo""")(
-      "deprecatedName")
+    checkExact(completer, """@deprecatedN""", """ class Foo""")("deprecatedName")
     checkExact(completer, """@deprecateN""")("deprecatedName")
     checkExact(completer, """{@deprecateN""")("deprecatedName")
   }

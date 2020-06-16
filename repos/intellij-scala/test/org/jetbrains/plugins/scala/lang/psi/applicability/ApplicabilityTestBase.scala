@@ -5,10 +5,7 @@ import org.jetbrains.plugins.scala.base.SimpleTestCase
 import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 import org.jetbrains.plugins.scala.lang.psi.api.base.ScReferenceElement
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{
-  ScAssignStmt,
-  ScExpression
-}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScAssignStmt, ScExpression}
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScClass
 import org.jetbrains.plugins.scala.lang.psi.types._
 import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.Parameter
@@ -81,10 +78,7 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
     assertProblems("", definition, application)(pattern)
   }
 
-  def assertProblems(
-      auxiliary: String,
-      definition: String,
-      application: String)(
+  def assertProblems(auxiliary: String, definition: String, application: String)(
       pattern: PartialFunction[List[ApplicabilityProblem], Unit]) {
     assertProblemsFunction(auxiliary, definition, application)(pattern)
     assertProblemsConstructor(auxiliary, definition, application)(pattern)
@@ -130,8 +124,7 @@ abstract class ApplicabilityTestBase extends SimpleTestCase {
   }
 
   private def problemsIn(file: ScalaFile): List[ApplicabilityProblem] = {
-    for (ref <-
-        file.depthFirst.filterByType(classOf[ScReferenceElement]).toList;
+    for (ref <- file.depthFirst.filterByType(classOf[ScReferenceElement]).toList;
       result <- ref.advancedResolve.toList;
       problem <- result.problems.filter(_ != ExpectedTypeMismatch))
       yield problem

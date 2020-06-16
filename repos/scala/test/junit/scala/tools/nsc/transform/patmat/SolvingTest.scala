@@ -325,14 +325,10 @@ class SolvingTest {
           ),
           And(
             Or(
-              Or(
-                sym("V1=null"),
-                Not(sym("V1=scala.collection.immutable.::[?]"))),
+              Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
               Or(sym("V1=null"), Or(Not(sym("V2=1")), Not(sym("V3=Nil"))))),
             Or(
-              Or(
-                sym("V1=null"),
-                Not(sym("V1=scala.collection.immutable.::[?]"))),
+              Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
               Or(sym("V1=null"), Or(Not(sym("V2=2")), Not(sym("V3=Nil")))))
           )
         )
@@ -368,26 +364,18 @@ class SolvingTest {
           And(
             And(
               Or(
-                Or(
-                  sym("V1=null"),
-                  Not(sym("V1=scala.collection.immutable.::[?]"))),
+                Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
                 Or(sym("V1=null"), Or(Not(sym("V2=1")), Not(sym("V3=Nil"))))),
               Or(
-                Or(
-                  sym("V1=null"),
-                  Not(sym("V1=scala.collection.immutable.::[?]"))),
+                Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
                 Or(sym("V1=null"), Or(Not(sym("V2=2")), Not(sym("V3=Nil")))))
             ),
             Or(
-              Or(
-                sym("V1=null"),
-                Not(sym("V1=scala.collection.immutable.::[?]"))),
+              Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
               Or(
                 sym("V1=null"),
                 Or(
-                  And(
-                    Not(sym("V2=4")),
-                    And(Not(sym("V2=5")), Not(sym("V2=6")))),
+                  And(Not(sym("V2=4")), And(Not(sym("V2=5")), Not(sym("V2=6")))),
                   Not(sym("V3=Nil"))))
             )
           )
@@ -404,9 +392,7 @@ class SolvingTest {
         And(Not(sym("V1=null")), And(sym("V2=7"), sym("V3=Nil")))),
       And(
         And(
-          Or(
-            Not(sym("V1=scala.collection.immutable.::[?]")),
-            Not(sym("V1=null"))),
+          Or(Not(sym("V1=scala.collection.immutable.::[?]")), Not(sym("V1=null"))),
           And(
             Or(
               sym("V3=scala.collection.immutable.::[?]"),
@@ -429,14 +415,10 @@ class SolvingTest {
         And(
           And(
             Or(
-              Or(
-                sym("V1=null"),
-                Not(sym("V1=scala.collection.immutable.::[?]"))),
+              Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
               Or(sym("V1=null"), Or(Not(sym("V2=1")), Not(sym("V3=Nil"))))),
             Or(
-              Or(
-                sym("V1=null"),
-                Not(sym("V1=scala.collection.immutable.::[?]"))),
+              Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
               Or(sym("V1=null"), Or(Not(sym("V2=2")), Not(sym("V3=Nil")))))
           ),
           Or(
@@ -451,9 +433,7 @@ class SolvingTest {
       ),
       And(
         And(
-          Or(
-            Not(sym("V1=scala.collection.immutable.::[?]")),
-            Not(sym("V1=null"))),
+          Or(Not(sym("V1=scala.collection.immutable.::[?]")), Not(sym("V1=null"))),
           And(
             Or(
               sym("V3=scala.collection.immutable.::[?]"),
@@ -484,9 +464,7 @@ class SolvingTest {
       ),
       And(
         And(
-          Or(
-            Not(sym("V1=scala.collection.immutable.::[?]")),
-            Not(sym("V1=null"))),
+          Or(Not(sym("V1=scala.collection.immutable.::[?]")), Not(sym("V1=null"))),
           And(
             Or(
               sym("V3=scala.collection.immutable.::[?]"),
@@ -510,27 +488,19 @@ class SolvingTest {
           sym("V1=Nil"),
           And(
             Or(
-              Or(
-                sym("V1=null"),
-                Not(sym("V1=scala.collection.immutable.::[?]"))),
+              Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
               Or(
                 sym("V1=null"),
                 Or(
-                  And(
-                    Not(sym("V2=4")),
-                    And(Not(sym("V2=5")), Not(sym("V2=6")))),
+                  And(Not(sym("V2=4")), And(Not(sym("V2=5")), Not(sym("V2=6")))),
                   Not(sym("V3=Nil"))))
             ),
             And(
               Or(
-                Or(
-                  sym("V1=null"),
-                  Not(sym("V1=scala.collection.immutable.::[?]"))),
+                Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
                 Or(sym("V1=null"), Or(Not(sym("V2=1")), Not(sym("V3=Nil"))))),
               Or(
-                Or(
-                  sym("V1=null"),
-                  Not(sym("V1=scala.collection.immutable.::[?]"))),
+                Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
                 Or(sym("V1=null"), Or(Not(sym("V2=2")), Not(sym("V3=Nil")))))
             )
           )
@@ -598,9 +568,7 @@ class SolvingTest {
               Or(
                 False,
                 Or(
-                  And(
-                    Not(sym("V2=4")),
-                    And(Not(sym("V2=5")), Not(sym("V2=6")))),
+                  And(Not(sym("V2=4")), And(Not(sym("V2=5")), Not(sym("V2=6")))),
                   Not(sym("V3=Nil"))))
             ),
             And(
@@ -624,9 +592,7 @@ class SolvingTest {
           sym("V1=scala.collection.immutable.::[?]"),
           Or(sym("V1=Nil"), sym("V1=null")))),
       And(
-        Or(
-          Not(sym("V1=scala.collection.immutable.::[?]")),
-          Not(sym("V1=null"))),
+        Or(Not(sym("V1=scala.collection.immutable.::[?]")), Not(sym("V1=null"))),
         And(
           Or(
             sym("V3=scala.collection.immutable.::[?]"),
@@ -649,9 +615,7 @@ class SolvingTest {
       And(
         Or(Not(sym("V3=Nil")), Not(sym("V3=null"))),
         And(
-          Or(
-            Not(sym("V3=scala.collection.immutable.::[?]")),
-            Not(sym("V3=null"))),
+          Or(Not(sym("V3=scala.collection.immutable.::[?]")), Not(sym("V3=null"))),
           And(
             Or(Not(sym("V1=Nil")), Not(sym("V1=null"))),
             Or(
@@ -660,9 +624,7 @@ class SolvingTest {
         )
       ),
       And(
-        Or(
-          Not(sym("V3=scala.collection.immutable.::[?]")),
-          Not(sym("V3=null"))),
+        Or(Not(sym("V3=scala.collection.immutable.::[?]")), Not(sym("V3=null"))),
         And(
           Or(Not(sym("V1=Nil")), Not(sym("V1=null"))),
           Or(
@@ -755,15 +717,11 @@ class SolvingTest {
             sym("V1=Nil"),
             And(
               Or(
-                Or(
-                  sym("V1=null"),
-                  Not(sym("V1=scala.collection.immutable.::[?]"))),
+                Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
                 Or(
                   sym("V1=null"),
                   Or(
-                    And(
-                      Not(sym("V2=4")),
-                      And(Not(sym("V2=5")), Not(sym("V2=6")))),
+                    And(Not(sym("V2=4")), And(Not(sym("V2=5")), Not(sym("V2=6")))),
                     Not(sym("V3=Nil"))))
               ),
               And(
@@ -817,14 +775,10 @@ class SolvingTest {
           ),
           And(
             Or(
-              Or(
-                sym("V1=null"),
-                Not(sym("V1=scala.collection.immutable.::[?]"))),
+              Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
               Or(sym("V1=null"), Or(Not(sym("V2=1")), Not(sym("V3=Nil"))))),
             Or(
-              Or(
-                sym("V1=null"),
-                Not(sym("V1=scala.collection.immutable.::[?]"))),
+              Or(sym("V1=null"), Not(sym("V1=scala.collection.immutable.::[?]"))),
               Or(sym("V1=null"), Or(Not(sym("V2=2")), Not(sym("V3=Nil")))))
           )
         )

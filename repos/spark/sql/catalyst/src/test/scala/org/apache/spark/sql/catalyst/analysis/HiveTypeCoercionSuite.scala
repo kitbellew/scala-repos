@@ -71,14 +71,8 @@ class HiveTypeCoercionSuite extends PlanTest {
     shouldCast(BinaryType, TypeCollection(StringType, BinaryType), BinaryType)
     shouldCast(StringType, TypeCollection(BinaryType, StringType), StringType)
 
-    shouldCast(
-      IntegerType,
-      TypeCollection(IntegerType, BinaryType),
-      IntegerType)
-    shouldCast(
-      IntegerType,
-      TypeCollection(BinaryType, IntegerType),
-      IntegerType)
+    shouldCast(IntegerType, TypeCollection(IntegerType, BinaryType), IntegerType)
+    shouldCast(IntegerType, TypeCollection(BinaryType, IntegerType), IntegerType)
     shouldCast(BinaryType, TypeCollection(BinaryType, IntegerType), BinaryType)
     shouldCast(BinaryType, TypeCollection(IntegerType, BinaryType), BinaryType)
 
@@ -677,10 +671,7 @@ class HiveTypeCoercionSuite extends PlanTest {
       Cast(TimeSub(str, interval), StringType))
 
     // interval operations should not be effected
-    ruleTest(
-      dateTimeOperations,
-      Add(interval, interval),
-      Add(interval, interval))
+    ruleTest(dateTimeOperations, Add(interval, interval), Add(interval, interval))
     ruleTest(
       dateTimeOperations,
       Subtract(interval, interval),

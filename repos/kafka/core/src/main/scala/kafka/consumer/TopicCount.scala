@@ -119,9 +119,7 @@ private[kafka] object TopicCount extends Logging {
     }
   }
 
-  def constructTopicCount(
-      consumerIdString: String,
-      topicCount: Map[String, Int]) =
+  def constructTopicCount(consumerIdString: String, topicCount: Map[String, Int]) =
     new StaticTopicCount(consumerIdString, topicCount)
 
   def constructTopicCount(

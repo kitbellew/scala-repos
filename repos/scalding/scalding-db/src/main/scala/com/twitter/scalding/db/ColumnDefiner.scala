@@ -58,12 +58,7 @@ trait ColumnDefiner {
       nullable: IsNullable = NotNullable,
       sizeOpt: Option[Int] = None,
       defaultValue: Option[String] = None) =
-    ColumnDefinition(
-      SMALLINT,
-      ColumnName(name),
-      nullable,
-      sizeOpt,
-      defaultValue)
+    ColumnDefinition(SMALLINT, ColumnName(name), nullable, sizeOpt, defaultValue)
 
   protected def tinyint(
       name: String,
@@ -98,12 +93,7 @@ trait ColumnDefiner {
       nullable: IsNullable = NotNullable,
       sizeOpt: Option[Int] = None,
       defaultValue: Option[String] = None) =
-    ColumnDefinition(
-      DATETIME,
-      ColumnName(name),
-      nullable,
-      sizeOpt,
-      defaultValue)
+    ColumnDefinition(DATETIME, ColumnName(name), nullable, sizeOpt, defaultValue)
 
   protected def text(
       name: String,

@@ -51,9 +51,8 @@ object Scheduler {
         .asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>
-        val error = SchedulerException(
-          message + " could not be scheduled on " + receiver,
-          e)
+        val error =
+          SchedulerException(message + " could not be scheduled on " + receiver, e)
         EventHandler.error(error, this, "%s @ %s".format(receiver, message))
         throw error
     }
@@ -101,10 +100,7 @@ object Scheduler {
       timeUnit: TimeUnit): ScheduledFuture[AnyRef] = {
     try {
       service
-        .schedule(
-          new Runnable { def run = receiver ! message },
-          delay,
-          timeUnit)
+        .schedule(new Runnable { def run = receiver ! message }, delay, timeUnit)
         .asInstanceOf[ScheduledFuture[AnyRef]]
     } catch {
       case e: Exception =>

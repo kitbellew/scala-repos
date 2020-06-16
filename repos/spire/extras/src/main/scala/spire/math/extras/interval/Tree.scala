@@ -53,11 +53,7 @@ private[interval] object Tree {
     * @param r the right child
     * @return the result, can be null
     */
-  @inline private final def branch(
-      p: Long,
-      level: Byte,
-      l: Tree,
-      r: Tree): Tree =
+  @inline private final def branch(p: Long, level: Byte, l: Tree, r: Tree): Tree =
     if (l eq null)
       r
     else if (r eq null)

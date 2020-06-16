@@ -128,8 +128,7 @@ class SyntaxTest extends SpireTests with Checkers with BaseSyntaxTest {
   }))
   test("CoordinateSpace syntax")(check(forAll {
     (v: Vector[Rational], w: Vector[Rational], a: NonZero[Rational]) =>
-      testCoordinateSpaceSyntax(v, w, a.x)(
-        CoordinateSpace.seq[Rational, Vector](3))
+      testCoordinateSpaceSyntax(v, w, a.x)(CoordinateSpace.seq[Rational, Vector](3))
   }))
   test("Bool syntax")(check(forAll { (a: Int, b: Int) =>
     testBoolSyntax(a, b)

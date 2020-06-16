@@ -167,8 +167,7 @@ class ChannelStatsHandlerTest extends FunSuite with MockitoSugar {
     handler.exceptionCaught(ctx, new Exception)
     assert(sr.counters(Seq("exn", "java.lang.RuntimeException")) == 1)
     assert(sr.counters(Seq("exn", "java.lang.Exception")) == 1)
-    assert(
-      sr.counters(Seq("exn", "java.util.concurrent.TimeoutException")) == 1)
+    assert(sr.counters(Seq("exn", "java.util.concurrent.TimeoutException")) == 1)
   }
 
   test("ChannelStatsHandler counts sent and received bytes") {

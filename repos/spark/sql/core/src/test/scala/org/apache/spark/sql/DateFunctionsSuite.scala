@@ -127,9 +127,7 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
 
     val df = Seq((d, sdfDate.format(d), ts)).toDF("a", "b", "c")
 
-    checkAnswer(
-      df.select(quarter($"a"), quarter($"b"), quarter($"c")),
-      Row(2, 2, 4))
+    checkAnswer(df.select(quarter($"a"), quarter($"b"), quarter($"c")), Row(2, 2, 4))
 
     checkAnswer(
       df.selectExpr("quarter(a)", "quarter(b)", "quarter(c)"),
@@ -151,9 +149,7 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
       df.select(dayofmonth($"a"), dayofmonth($"b"), dayofmonth($"c")),
       Row(8, 8, 8))
 
-    checkAnswer(
-      df.selectExpr("day(a)", "day(b)", "dayofmonth(c)"),
-      Row(8, 8, 8))
+    checkAnswer(df.selectExpr("day(a)", "day(b)", "dayofmonth(c)"), Row(8, 8, 8))
   }
 
   test("dayofyear") {
@@ -265,9 +261,7 @@ class DateFunctionsSuite extends QueryTest with SharedSQLContext {
       Seq(Row(Date.valueOf("2015-05-31")), Row(Date.valueOf("2015-06-01"))))
     checkAnswer(df.select(date_sub(lit(null), 1)).limit(1), Row(null))
 
-    checkAnswer(
-      df.selectExpr("""DATE_SUB(d, null)"""),
-      Seq(Row(null), Row(null)))
+    checkAnswer(df.selectExpr("""DATE_SUB(d, null)"""), Seq(Row(null), Row(null)))
     checkAnswer(
       df.selectExpr("""DATE_SUB(d, 1)"""),
       Seq(Row(Date.valueOf("2015-05-31")), Row(Date.valueOf("2015-06-01"))))

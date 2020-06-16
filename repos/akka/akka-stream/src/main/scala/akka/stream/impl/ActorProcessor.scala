@@ -247,8 +247,7 @@ private[akka] class SimpleOutputs(val actor: ActorRef, val pump: Pump)
       }
     case Cancel(subscription) ⇒
       downstreamCompleted = true
-      exposedPublisher.shutdown(
-        Some(new ActorPublisher.NormalShutdownException))
+      exposedPublisher.shutdown(Some(new ActorPublisher.NormalShutdownException))
       pump.pump()
   }
 

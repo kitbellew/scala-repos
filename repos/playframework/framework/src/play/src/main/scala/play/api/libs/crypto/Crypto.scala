@@ -225,8 +225,7 @@ class CookieSignerProvider @Inject() (config: CryptoConfig)
 /**
   * Uses an HMAC-SHA1 for signing cookies.
   */
-class HMACSHA1CookieSigner @Inject() (config: CryptoConfig)
-    extends CookieSigner {
+class HMACSHA1CookieSigner @Inject() (config: CryptoConfig) extends CookieSigner {
 
   /**
     * Signs the given String with HMAC-SHA1 using the given key.

@@ -174,10 +174,7 @@ object Trees {
   case class JSDotMethodApply(receiver: Tree, method: Ident, args: List[Tree])
       extends Tree
 
-  case class JSBracketMethodApply(
-      receiver: Tree,
-      method: Tree,
-      args: List[Tree])
+  case class JSBracketMethodApply(receiver: Tree, method: Tree, args: List[Tree])
       extends Tree
 
   case class JSDelete(prop: Tree) extends Tree
@@ -247,10 +244,7 @@ object Trees {
       setterBody: Tree)
       extends Tree
 
-  case class ConstructorExportDef(
-      name: String,
-      args: List[ParamDef],
-      body: Tree)
+  case class ConstructorExportDef(name: String, args: List[ParamDef], body: Tree)
       extends Tree
 
   case class ModuleExportDef(fullName: String) extends Tree

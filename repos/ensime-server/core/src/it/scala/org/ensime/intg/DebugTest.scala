@@ -39,10 +39,7 @@ class DebugTest
           ) { breakpointsFile =>
             import testkit._
 
-            checkTopStackFrame(
-              "stepping.ForComprehensionListString$",
-              "main",
-              9)
+            checkTopStackFrame("stepping.ForComprehensionListString$", "main", 9)
             project ! DebugNextReq(DebugThreadId(1))
             expectMsg(VoidResponse)
 

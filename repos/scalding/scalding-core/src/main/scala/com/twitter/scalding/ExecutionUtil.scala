@@ -64,9 +64,8 @@ object ExecutionUtil {
     * algebird supports monoids for maps and hll) and you wanted to do a
     * final aggregation of the Monoids computed for each duration.
     */
-  def runDateRangeWithParallelismSum[T](
-      duration: Duration,
-      parallelism: Int = 1)(fn: DateRange => Execution[T])(implicit
+  def runDateRangeWithParallelismSum[T](duration: Duration, parallelism: Int = 1)(
+      fn: DateRange => Execution[T])(implicit
       dr: DateRange,
       semigroup: Semigroup[T]): Execution[T] = {
     require(dr.each(duration).nonEmpty, s"Date Range can not be empty")

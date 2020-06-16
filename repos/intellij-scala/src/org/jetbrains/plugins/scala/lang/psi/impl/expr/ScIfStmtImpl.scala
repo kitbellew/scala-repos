@@ -11,10 +11,7 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.expr._
 import org.jetbrains.plugins.scala.lang.psi.types.Bounds
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Failure,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Failure, TypingContext}
 
 /**
   * @author Alexander Podkhalyuzin
@@ -50,9 +47,7 @@ class ScIfStmtImpl(node: ASTNode)
         getLastChild match {
           case expression: ScExpression => expression
           case _ =>
-            PsiTreeUtil.getPrevSiblingOfType(
-              getLastChild,
-              classOf[ScExpression])
+            PsiTreeUtil.getPrevSiblingOfType(getLastChild, classOf[ScExpression])
         }
     if (t == null) None
     else

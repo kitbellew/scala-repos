@@ -197,9 +197,7 @@ object TestBuild {
       cAxis <- oneOrGlobal(project.configurations map toConfigKey)
       tAxis <- oneOrGlobal(env.tasks map getKey)
       pAxis <- orGlobal(
-        frequency(
-          (1, BuildRef(build.uri)),
-          (3, ProjectRef(build.uri, project.id))))
+        frequency((1, BuildRef(build.uri)), (3, ProjectRef(build.uri, project.id))))
     } yield Scope(pAxis, cAxis, tAxis, Global)
 
   def orGlobal[T](gen: Gen[T]): Gen[ScopeAxis[T]] =

@@ -68,10 +68,7 @@ class AkkaGraphiteReporter(
       sendMetrics(now, meters.asScala, sendMetered)
       sendMetrics(now, timers.asScala, sendTimer)
 
-      sendMetrics(
-        now,
-        knownOpsInTimespanCounters,
-        sendKnownOpsInTimespanCounter)
+      sendMetrics(now, knownOpsInTimespanCounters, sendKnownOpsInTimespanCounter)
       sendMetrics(now, hdrHistograms, sendHdrHistogram)
       sendMetrics(now, averagingGauges, sendAveragingGauge)
 

@@ -463,10 +463,7 @@ private[spark] class MesosSchedulerBackend(
   private def removeExecutor(slaveId: String, reason: String) = {
     synchronized {
       listenerBus.post(
-        SparkListenerExecutorRemoved(
-          System.currentTimeMillis(),
-          slaveId,
-          reason))
+        SparkListenerExecutorRemoved(System.currentTimeMillis(), slaveId, reason))
       slaveIdToExecutorInfo -= slaveId
     }
   }

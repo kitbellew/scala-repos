@@ -141,9 +141,7 @@ trait Base { this: Types =>
           case JObject(fs) =>
             val r = fs
               .map(f => fromJSON[A](f.value).map(v => (f.name, v)))
-              .sequence[
-                ({ type λ[α] = ValidationNel[Error, α] })#λ,
-                (String, A)]
+              .sequence[({ type λ[α] = ValidationNel[Error, α] })#λ, (String, A)]
             r.map(_.toMap)
           case x =>
             failure(UnexpectedJSONError(x, classOf[JObject])).toValidationNel
@@ -152,7 +150,6 @@ trait Base { this: Types =>
   implicit def mapJSONW[A: JSONW]: JSONW[Map[String, A]] =
     new JSONW[Map[String, A]] {
       def write(values: Map[String, A]) =
-        JObject(
-          values.map { case (k, v) => JField(k, toJSON(v)) }(breakOut): _*)
+        JObject(values.map { case (k, v) => JField(k, toJSON(v)) }(breakOut): _*)
     }
 }

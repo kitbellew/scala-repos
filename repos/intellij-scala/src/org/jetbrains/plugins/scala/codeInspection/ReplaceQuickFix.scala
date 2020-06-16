@@ -14,9 +14,7 @@ class ReplaceQuickFix(family: String, name: String, substitution: String)
 
   override def getName = name
 
-  override def applyFix(
-      project: Project,
-      descriptor: ProblemDescriptor): Unit = {
+  override def applyFix(project: Project, descriptor: ProblemDescriptor): Unit = {
     val element = descriptor.getPsiElement
     val newElement = ScalaPsiElementFactory.parseElement(
       substitution,

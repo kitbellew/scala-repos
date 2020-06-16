@@ -97,8 +97,7 @@ abstract class MongoAccountManager(
 
   // Ensure indices for account lookup on apiKey, accountId, or email
   database(ensureIndex("apiKey_index").on(".apiKey").in(settings.accounts))
-  database(
-    ensureIndex("accountId_index").on(".accountId").in(settings.accounts))
+  database(ensureIndex("accountId_index").on(".accountId").in(settings.accounts))
   database(ensureIndex("email_index").on(".email").in(settings.accounts))
   // Ensure reset token lookup by token Id
   database(

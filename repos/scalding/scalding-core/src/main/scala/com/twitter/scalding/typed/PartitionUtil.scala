@@ -66,8 +66,7 @@ object PartitionUtil {
         val value = valueSetter(in._2)
         val output = Tuple.size(partition.size + value.size)
 
-        (0 until value.size).foreach(idx =>
-          output.set(idx, value.getObject(idx)))
+        (0 until value.size).foreach(idx => output.set(idx, value.getObject(idx)))
         (0 until partition.size).foreach(idx =>
           output.set(idx + value.size, partition.getObject(idx)))
 

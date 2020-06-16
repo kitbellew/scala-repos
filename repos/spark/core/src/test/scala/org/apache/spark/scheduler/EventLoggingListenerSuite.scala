@@ -192,8 +192,7 @@ class EventLoggingListenerSuite
       assert(JsonProtocol.sparkEventFromJson(parse(lines(0))) === logStart)
       assert(
         JsonProtocol.sparkEventFromJson(parse(lines(1))) === applicationStart)
-      assert(
-        JsonProtocol.sparkEventFromJson(parse(lines(2))) === applicationEnd)
+      assert(JsonProtocol.sparkEventFromJson(parse(lines(2))) === applicationEnd)
     } finally {
       logData.close()
     }

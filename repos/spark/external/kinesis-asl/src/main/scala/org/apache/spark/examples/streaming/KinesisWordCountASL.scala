@@ -230,8 +230,9 @@ object KinesisWordProducerASL {
       new DefaultAWSCredentialsProviderChain())
     kinesisClient.setEndpoint(endpoint)
 
-    println(s"Putting records onto stream $stream and endpoint $endpoint at a rate of" +
-      s" $recordsPerSecond records per second and $wordsPerRecord words per record")
+    println(
+      s"Putting records onto stream $stream and endpoint $endpoint at a rate of" +
+        s" $recordsPerSecond records per second and $wordsPerRecord words per record")
 
     // Iterate and put records onto the stream per the given recordPerSec and wordsPerRecord
     for (i <- 1 to 10) {

@@ -105,12 +105,8 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
             1.0,
             "marathon",
             reservation = Some(cpuReservation2)))
-        .addResources(
-          MarathonTestHelper.scalarResource(
-            "mem",
-            128.0,
-            "*",
-            reservation = Some(memReservation)))
+        .addResources(MarathonTestHelper
+          .scalarResource("mem", 128.0, "*", reservation = Some(memReservation)))
         .addResources(MarathonTestHelper
           .scalarResource("disk", 2, "*", reservation = Some(diskReservation)))
         .addResources(MarathonTestHelper
@@ -191,14 +187,9 @@ class ResourceMatcherTest extends MarathonSpec with Matchers {
             1.0,
             "marathon",
             reservation = Some(cpuReservation)))
-        .addResources(
-          MarathonTestHelper.scalarResource(
-            "mem",
-            128.0,
-            "*",
-            reservation = Some(memReservation)))
-        .addResources(
-          MarathonTestHelper.reservedDisk(id = "disk", size = 1024.0))
+        .addResources(MarathonTestHelper
+          .scalarResource("mem", 128.0, "*", reservation = Some(memReservation)))
+        .addResources(MarathonTestHelper.reservedDisk(id = "disk", size = 1024.0))
         .build()
 
     val app = AppDefinition(

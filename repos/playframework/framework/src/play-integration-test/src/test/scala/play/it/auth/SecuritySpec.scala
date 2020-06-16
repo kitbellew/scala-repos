@@ -55,8 +55,7 @@ object SecuritySpec extends PlaySpecification {
         request,
         { authRequest: AuthenticatedRequest[A, User] =>
           DB.withConnection { conn =>
-            block(
-              new AuthenticatedDbRequest[A](authRequest.user, conn, request))
+            block(new AuthenticatedDbRequest[A](authRequest.user, conn, request))
           }
         })
     }

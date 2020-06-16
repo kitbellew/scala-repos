@@ -40,17 +40,13 @@ class ScalaVersionTest {
     assertEquals(
       V(2, 11, 7, Development("RCCola")),
       ScalaVersion("2.11.7-RCCola"))
-    assertEquals(
-      V(2, 11, 7, Development("RC1.5")),
-      ScalaVersion("2.11.7-RC1.5"))
+    assertEquals(V(2, 11, 7, Development("RC1.5")), ScalaVersion("2.11.7-RC1.5"))
     assertEquals(V(2, 11, 7, Development("")), ScalaVersion("2.11.7-"))
     assertEquals(V(2, 11, 7, Development("0.5")), ScalaVersion("2.11.7-0.5"))
     assertEquals(
       V(2, 11, 7, Development("devbuild\nSI-9167")),
       ScalaVersion("2.11.7-devbuild\nSI-9167"))
-    assertEquals(
-      V(2, 11, 7, Development("final")),
-      ScalaVersion("2.11.7-final"))
+    assertEquals(V(2, 11, 7, Development("final")), ScalaVersion("2.11.7-final"))
 
     // oh really
     assertEquals(NoScalaVersion, ScalaVersion("none"))

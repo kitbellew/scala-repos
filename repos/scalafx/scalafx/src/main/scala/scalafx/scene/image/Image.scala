@@ -43,8 +43,7 @@ object Image {
     if (i != null) i.delegate else null
 }
 
-class Image(override val delegate: jfxsi.Image)
-    extends SFXDelegate[jfxsi.Image] {
+class Image(override val delegate: jfxsi.Image) extends SFXDelegate[jfxsi.Image] {
 
   /**
     * Construct an Image which pixels are loaded from the specified input stream.
@@ -89,12 +88,7 @@ class Image(override val delegate: jfxsi.Image)
       preserveRatio: Boolean,
       smooth: Boolean) =
     this(
-      new jfxsi.Image(
-        url,
-        requestedWidth,
-        requestedWidth,
-        preserveRatio,
-        smooth))
+      new jfxsi.Image(url, requestedWidth, requestedWidth, preserveRatio, smooth))
 
   /**
     * Construct a new Image with the specified parameters.

@@ -386,9 +386,7 @@ class QuadraticMinimizer(
     * @param initialState provide a initialState using initialState API
     * @return converged state from QuadraticMinimizer
     */
-  def minimizeAndReturnState(
-      q: DenseVector[Double],
-      initialState: State): State = {
+  def minimizeAndReturnState(q: DenseVector[Double], initialState: State): State = {
     val rho = computeRho(wsH)
     cforRange(0 until q.length) { i => wsH.update(i, i, wsH(i, i) + rho) }
     minimizeAndReturnState(q, rho, initialState)
@@ -433,9 +431,7 @@ class QuadraticMinimizer(
     * @param initialState provide an optional initialState for memory optimization
     * @return converged solution
     */
-  def minimize(
-      q: DenseVector[Double],
-      initialState: State): DenseVector[Double] = {
+  def minimize(q: DenseVector[Double], initialState: State): DenseVector[Double] = {
     minimizeAndReturnState(q, initialState).z
   }
 
@@ -673,12 +669,10 @@ object QuadraticMinimizer {
 
     println(
       s"||qp - lu|| norm ${norm(result - luResult, 2)} max-norm ${norm(result - luResult, inf)}")
-    println(s"||cg - lu|| norm ${norm(cgResult - luResult, 2)} max-norm ${norm(
-      cgResult - luResult,
-      inf)}")
-    println(s"||bfgs - lu|| norm ${norm(
-      bfgsResult - luResult,
-      2)} max-norm ${norm(bfgsResult - luResult, inf)}")
+    println(
+      s"||cg - lu|| norm ${norm(cgResult - luResult, 2)} max-norm ${norm(cgResult - luResult, inf)}")
+    println(
+      s"||bfgs - lu|| norm ${norm(bfgsResult - luResult, 2)} max-norm ${norm(bfgsResult - luResult, inf)}")
 
     val luObj = computeObjective(h, q, luResult)
     val bfgsObj = computeObjective(h, q, bfgsResult)

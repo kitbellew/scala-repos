@@ -75,10 +75,7 @@ private[remote] object AkkaProtocolTransport { //Couldn't these go into the Remo
       extends NoSerializationVerificationNeeded
 }
 
-final case class HandshakeInfo(
-    origin: Address,
-    uid: Int,
-    cookie: Option[String])
+final case class HandshakeInfo(origin: Address, uid: Int, cookie: Option[String])
 
 /**
   * Implementation of the Akka protocol as a Transport that wraps an underlying Transport instance.
@@ -423,11 +420,8 @@ private[transport] class ProtocolStateActor(
       statusPromise.failure(e)
       stop()
 
-    case Event(
-          Handle(wrappedHandle),
-          OutboundUnassociated(_, statusPromise, _)) ⇒
-      wrappedHandle.readHandlerPromise.trySuccess(
-        ActorHandleEventListener(self))
+    case Event(Handle(wrappedHandle), OutboundUnassociated(_, statusPromise, _)) ⇒
+      wrappedHandle.readHandlerPromise.trySuccess(ActorHandleEventListener(self))
       if (sendAssociate(wrappedHandle, localHandshakeInfo)) {
         failureDetector.heartbeat()
         initHeartbeatTimer()
@@ -578,8 +572,7 @@ private[transport] class ProtocolStateActor(
               stay()
             case msg ⇒
               throw new AkkaProtocolException(
-                s"unhandled message in state Open(InboundPayload) with type [${safeClassName(
-                  msg)}]")
+                s"unhandled message in state Open(InboundPayload) with type [${safeClassName(msg)}]")
           }
 
         case _ ⇒ stay()
@@ -596,8 +589,7 @@ private[transport] class ProtocolStateActor(
         case AssociatedWaitHandler(_, wrappedHandle, _) ⇒ wrappedHandle
         case msg ⇒
           throw new AkkaProtocolException(
-            s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(
-              msg)}]")
+            s"unhandled message in state Open(DisassociateUnderlying) with type [${safeClassName(msg)}]")
       }
       sendDisassociate(handle, info)
       stop()
@@ -751,8 +743,7 @@ private[transport] class ProtocolStateActor(
   private def notifyInboundHandler(
       wrappedHandle: AssociationHandle,
       handshakeInfo: HandshakeInfo,
-      associationListener: AssociationEventListener)
-      : Future[HandleEventListener] = {
+      associationListener: AssociationEventListener): Future[HandleEventListener] = {
     val readHandlerPromise = Promise[HandleEventListener]()
     listenForListenerRegistration(readHandlerPromise)
 

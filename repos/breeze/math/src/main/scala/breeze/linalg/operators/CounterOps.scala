@@ -59,8 +59,7 @@ trait CounterOps {
     binaryOpFromBinaryUpdateOp(canCopy, addIntoVV)
   }
 
-  implicit def addIntoVS[K1, V: Semiring]
-      : OpAdd.InPlaceImpl2[Counter[K1, V], V] =
+  implicit def addIntoVS[K1, V: Semiring]: OpAdd.InPlaceImpl2[Counter[K1, V], V] =
     new OpAdd.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Semiring[V]]
       def apply(a: Counter[K1, V], b: V) {
@@ -155,8 +154,8 @@ trait CounterOps {
       }
     }
 
-  implicit def canMulVS[K2, K1 <: K2, V](implicit semiring: Semiring[V])
-      : OpMulScalar.Impl2[Counter[K1, V], V, Counter[K1, V]] = {
+  implicit def canMulVS[K2, K1 <: K2, V](implicit
+      semiring: Semiring[V]): OpMulScalar.Impl2[Counter[K1, V], V, Counter[K1, V]] = {
     new OpMulScalar.Impl2[Counter[K1, V], V, Counter[K1, V]] {
       override def apply(a: Counter[K1, V], b: V) = {
         val r = Counter[K1, V]()
@@ -169,8 +168,8 @@ trait CounterOps {
     }
   }
 
-  implicit def canMulVS_M[K2, K1 <: K2, V](implicit semiring: Semiring[V])
-      : OpMulMatrix.Impl2[Counter[K1, V], V, Counter[K1, V]] = {
+  implicit def canMulVS_M[K2, K1 <: K2, V](implicit
+      semiring: Semiring[V]): OpMulMatrix.Impl2[Counter[K1, V], V, Counter[K1, V]] = {
     new OpMulMatrix.Impl2[Counter[K1, V], V, Counter[K1, V]] {
       override def apply(a: Counter[K1, V], b: V) = {
         val r = Counter[K1, V]()
@@ -226,8 +225,7 @@ trait CounterOps {
     }
   }
 
-  implicit def canDivIntoVS[K1, V: Field]
-      : OpDiv.InPlaceImpl2[Counter[K1, V], V] =
+  implicit def canDivIntoVS[K1, V: Field]: OpDiv.InPlaceImpl2[Counter[K1, V], V] =
     new OpDiv.InPlaceImpl2[Counter[K1, V], V] {
       val field = implicitly[Field[V]]
       def apply(a: Counter[K1, V], b: V) {
@@ -274,8 +272,7 @@ trait CounterOps {
 
   implicit def canMulInner[K1, V](implicit
       copy: CanCopy[Counter[K1, V]],
-      semiring: Semiring[V])
-      : OpMulInner.Impl2[Counter[K1, V], Counter[K1, V], V] = {
+      semiring: Semiring[V]): OpMulInner.Impl2[Counter[K1, V], Counter[K1, V], V] = {
     new OpMulInner.Impl2[Counter[K1, V], Counter[K1, V], V] {
       val zero = semiring.zero
       override def apply(a: Counter[K1, V], b: Counter[K1, V]) = {
@@ -290,8 +287,8 @@ trait CounterOps {
   }
 
   /** Returns the k-norm of this Vector. */
-  implicit def canNorm[K, V](implicit normImpl: norm.Impl[V, Double])
-      : norm.Impl2[Counter[K, V], Double, Double] =
+  implicit def canNorm[K, V](implicit
+      normImpl: norm.Impl[V, Double]): norm.Impl2[Counter[K, V], Double, Double] =
     new norm.Impl2[Counter[K, V], Double, Double] {
       def apply(c: Counter[K, V], n: Double): Double = {
         import c.{norm => _, _}

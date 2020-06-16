@@ -113,9 +113,7 @@ final class ParTrieMap[K, V] private[collection] (
     }
     def split = {
       val fp = howmany / 2
-      Seq(
-        new Size(offset, fp, array),
-        new Size(offset + fp, howmany - fp, array))
+      Seq(new Size(offset, fp, array), new Size(offset + fp, howmany - fp, array))
     }
     def shouldSplitFurther = howmany > 1
     override def merge(that: Size) = result = result + that.result
@@ -193,7 +191,6 @@ object ParTrieMap extends ParMapFactory[ParTrieMap] {
   def newCombiner[K, V]: Combiner[(K, V), ParTrieMap[K, V]] =
     new ParTrieMap[K, V]
 
-  implicit def canBuildFrom[K, V]
-      : CanCombineFrom[Coll, (K, V), ParTrieMap[K, V]] =
+  implicit def canBuildFrom[K, V]: CanCombineFrom[Coll, (K, V), ParTrieMap[K, V]] =
     new CanCombineFromMap[K, V]
 }

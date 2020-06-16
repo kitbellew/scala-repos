@@ -31,14 +31,9 @@ object CanFilter {
 
   /** Use via implicit delegate syntax filter(x: DenseVector)
     */
-  implicit val dvDouble1DFilter: CanFilter[
-    DenseVector[Double],
-    FIRKernel1D[Double],
-    DenseVector[Double]] = {
-    new CanFilter[
-      DenseVector[Double],
-      FIRKernel1D[Double],
-      DenseVector[Double]] {
+  implicit val dvDouble1DFilter
+      : CanFilter[DenseVector[Double], FIRKernel1D[Double], DenseVector[Double]] = {
+    new CanFilter[DenseVector[Double], FIRKernel1D[Double], DenseVector[Double]] {
       def apply(
           data: DenseVector[Double],
           kernel: FIRKernel1D[Double],
@@ -66,14 +61,9 @@ object CanFilter {
 
   /** Use via implicit delegate syntax filter(x: DenseVector)
     */
-  implicit val dvDouble1DFilterVectorKernel: CanFilter[
-    DenseVector[Double],
-    DenseVector[Double],
-    DenseVector[Double]] = {
-    new CanFilter[
-      DenseVector[Double],
-      DenseVector[Double],
-      DenseVector[Double]] {
+  implicit val dvDouble1DFilterVectorKernel
+      : CanFilter[DenseVector[Double], DenseVector[Double], DenseVector[Double]] = {
+    new CanFilter[DenseVector[Double], DenseVector[Double], DenseVector[Double]] {
       def apply(
           data: DenseVector[Double],
           kernel: DenseVector[Double],

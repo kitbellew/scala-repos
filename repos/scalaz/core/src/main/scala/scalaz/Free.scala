@@ -469,9 +469,7 @@ sealed abstract class FreeInstances
         f(a).flatMap(_.fold(tailrecM(f), point(_)))
     }
 
-  implicit def freeZip[S[_]](implicit
-      F: Functor[S],
-      Z: Zip[S]): Zip[Free[S, ?]] =
+  implicit def freeZip[S[_]](implicit F: Functor[S], Z: Zip[S]): Zip[Free[S, ?]] =
     new Zip[Free[S, ?]] {
       override def zip[A, B](aa: => Free[S, A], bb: => Free[S, B]) =
         (aa.resume, bb.resume) match {

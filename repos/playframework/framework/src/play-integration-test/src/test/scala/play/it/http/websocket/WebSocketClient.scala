@@ -298,9 +298,8 @@ object WebSocketClient {
             val handleConnectionTerminated =
               Flow[WebSocketFrame].transform(() =>
                 new PushStage[WebSocketFrame, WebSocketFrame] {
-                  def onPush(
-                      elem: WebSocketFrame,
-                      ctx: Context[WebSocketFrame]) = ctx.push(elem)
+                  def onPush(elem: WebSocketFrame, ctx: Context[WebSocketFrame]) =
+                    ctx.push(elem)
                   override def onUpstreamFinish(
                       ctx: Context[WebSocketFrame]) = {
                     disconnected.trySuccess(())

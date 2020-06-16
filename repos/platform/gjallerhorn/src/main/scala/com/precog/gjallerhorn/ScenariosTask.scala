@@ -75,14 +75,12 @@ class ScenariosTask(settings: Settings)
       val account1 = createAccount
       val account2 = createAccount
 
-      val res = ingestString(
-        account1.apiKey,
-        account2,
-        dummyEvents,
-        "application/json")(_ / account1.bareRootPath / "foo") match {
-        case Left(thr) => Failure(thr)
-        case Right(s)  => JParser.parseFromString(s)
-      }
+      val res =
+        ingestString(account1.apiKey, account2, dummyEvents, "application/json")(
+          _ / account1.bareRootPath / "foo") match {
+          case Left(thr) => Failure(thr)
+          case Right(s)  => JParser.parseFromString(s)
+        }
 
       res must beLike {
         case Success(jobj) => ok
@@ -124,14 +122,12 @@ class ScenariosTask(settings: Settings)
       val account1 = createAccount
       val account2 = createAccount
 
-      val res = ingestString(
-        account1.apiKey,
-        account2,
-        dummyEvents,
-        "application/json")(_ / account1.bareRootPath / "foo") match {
-        case Left(thr) => Failure(thr)
-        case Right(s)  => JParser.parseFromString(s)
-      }
+      val res =
+        ingestString(account1.apiKey, account2, dummyEvents, "application/json")(
+          _ / account1.bareRootPath / "foo") match {
+          case Left(thr) => Failure(thr)
+          case Right(s)  => JParser.parseFromString(s)
+        }
 
       EventuallyResults.eventually(10, 1.second) {
         val json =
@@ -144,14 +140,12 @@ class ScenariosTask(settings: Settings)
       val account1 = createAccount
       val account2 = createAccount
 
-      val res = ingestString(
-        account1.apiKey,
-        account2,
-        dummyEvents,
-        "application/json")(_ / account1.bareRootPath / "foo") match {
-        case Left(thr) => Failure(thr)
-        case Right(s)  => JParser.parseFromString(s)
-      }
+      val res =
+        ingestString(account1.apiKey, account2, dummyEvents, "application/json")(
+          _ / account1.bareRootPath / "foo") match {
+          case Left(thr) => Failure(thr)
+          case Right(s)  => JParser.parseFromString(s)
+        }
 
       EventuallyResults.eventually(10, 1.second) {
         val json =

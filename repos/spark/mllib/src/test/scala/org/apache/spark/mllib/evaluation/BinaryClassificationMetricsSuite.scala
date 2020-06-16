@@ -57,8 +57,7 @@ class BinaryClassificationMetricsSuite
     assertSequencesMatch(metrics.thresholds().collect(), expectedThresholds)
     assertTupleSequencesMatch(metrics.roc().collect(), expectedROCCurve)
     assert(
-      metrics.areaUnderROC() ~== AreaUnderCurve.of(
-        expectedROCCurve) absTol 1e-5)
+      metrics.areaUnderROC() ~== AreaUnderCurve.of(expectedROCCurve) absTol 1e-5)
     assertTupleSequencesMatch(metrics.pr().collect(), expectedPRCurve)
     assert(
       metrics.areaUnderPR() ~== AreaUnderCurve.of(expectedPRCurve) absTol 1e-5)

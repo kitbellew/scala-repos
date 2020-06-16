@@ -40,9 +40,8 @@ abstract class RejectionHandler {
     * Callback called to handle rejection created by scheme filters.
     * Signals that the request was rejected because the Uri scheme is unsupported.
     */
-  def handleSchemeRejection(
-      ctx: RequestContext,
-      supported: String): RouteResult = passRejection()
+  def handleSchemeRejection(ctx: RequestContext, supported: String): RouteResult =
+    passRejection()
 
   /**
     * Callback called to handle rejection created by parameter filters.

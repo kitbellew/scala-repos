@@ -161,17 +161,16 @@ class MesosSchedulerBackendSuite
     // uri is null.
     val (executorInfo, _) =
       mesosSchedulerBackend.createExecutorInfo(resources, "test-id")
-    assert(executorInfo.getCommand.getValue ===
-      s" /mesos-home/bin/spark-class ${classOf[MesosExecutorBackend].getName}")
+    assert(
+      executorInfo.getCommand.getValue ===
+        s" /mesos-home/bin/spark-class ${classOf[MesosExecutorBackend].getName}")
 
     // uri exists.
     conf.set("spark.executor.uri", "hdfs:///test-app-1.0.0.tgz")
     val (executorInfo1, _) =
       mesosSchedulerBackend.createExecutorInfo(resources, "test-id")
-    assert(
-      executorInfo1.getCommand.getValue ===
-        s"cd test-app-1*;  ./bin/spark-class ${classOf[
-          MesosExecutorBackend].getName}")
+    assert(executorInfo1.getCommand.getValue ===
+      s"cd test-app-1*;  ./bin/spark-class ${classOf[MesosExecutorBackend].getName}")
   }
 
   test("spark docker properties correctly populate the DockerInfo message") {
@@ -288,13 +287,8 @@ class MesosSchedulerBackendSuite
         mesosOffers.get(2).getHostname,
         (minCpu - backend.mesosExecutorCores).toInt
       ))
-    val taskDesc = new TaskDescription(
-      1L,
-      0,
-      "s1",
-      "n1",
-      0,
-      ByteBuffer.wrap(new Array[Byte](0)))
+    val taskDesc =
+      new TaskDescription(1L, 0, "s1", "n1", 0, ByteBuffer.wrap(new Array[Byte](0)))
     when(taskScheduler.resourceOffers(expectedWorkerOffers))
       .thenReturn(Seq(Seq(taskDesc)))
     when(taskScheduler.CPUS_PER_TASK).thenReturn(2)
@@ -408,13 +402,8 @@ class MesosSchedulerBackendSuite
         2 // Deducting 1 for executor
       ))
 
-    val taskDesc = new TaskDescription(
-      1L,
-      0,
-      "s1",
-      "n1",
-      0,
-      ByteBuffer.wrap(new Array[Byte](0)))
+    val taskDesc =
+      new TaskDescription(1L, 0, "s1", "n1", 0, ByteBuffer.wrap(new Array[Byte](0)))
     when(taskScheduler.resourceOffers(expectedWorkerOffers))
       .thenReturn(Seq(Seq(taskDesc)))
     when(taskScheduler.CPUS_PER_TASK).thenReturn(1)

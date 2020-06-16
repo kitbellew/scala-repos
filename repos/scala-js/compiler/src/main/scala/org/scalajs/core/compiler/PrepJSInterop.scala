@@ -335,17 +335,14 @@ abstract class PrepJSInterop
            * If we encounter such a tree, depending on the plugin options, we fail
            * here or silently fix those calls.
            */
-          case TypeApply(
-                classOfTree @ Select(predef, nme.classOf),
-                List(tpeArg)) if predef.symbol == PredefModule =>
+          case TypeApply(classOfTree @ Select(predef, nme.classOf), List(tpeArg))
+              if predef.symbol == PredefModule =>
             if (scalaJSOpts.fixClassOf) {
               // Replace call by literal constant containing type
               if (typer.checkClassType(tpeArg)) {
                 typer.typed { Literal(Constant(tpeArg.tpe.dealias.widen)) }
               } else {
-                reporter.error(
-                  tpeArg.pos,
-                  s"Type ${tpeArg} is not a class type")
+                reporter.error(tpeArg.pos, s"Type ${tpeArg} is not a class type")
                 EmptyTree
               }
             } else {
@@ -403,9 +400,7 @@ abstract class PrepJSInterop
           typer.typed {
             atPos(tree.pos) {
               Apply(
-                Select(
-                  Ident(RuntimePackageModule),
-                  newTermName("constructorOf")),
+                Select(Ident(RuntimePackageModule), newTermName("constructorOf")),
                 List(classValue))
             }
           }

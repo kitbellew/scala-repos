@@ -498,17 +498,14 @@ class NullTestRecord private ()
     override def optional_? = true
   }
 
-  object jsonobj
-      extends JsonObjectField[NullTestRecord, JsonObj](this, JsonObj) {
+  object jsonobj extends JsonObjectField[NullTestRecord, JsonObj](this, JsonObj) {
     def defaultValue = JsonObj("1", null)
   }
   object jsonobjlist
       extends MongoJsonObjectListField[NullTestRecord, JsonObj](this, JsonObj)
 }
 
-object NullTestRecord
-    extends NullTestRecord
-    with MongoMetaRecord[NullTestRecord]
+object NullTestRecord extends NullTestRecord with MongoMetaRecord[NullTestRecord]
 
 case class BoxTestJsonObj(
     id: String,
@@ -553,15 +550,13 @@ class RefFieldTestRecord private ()
   object mandatoryObjectIdRefField
       extends ObjectIdRefField(this, FieldTypeTestRecord)
   object mandatoryUUIDRefField extends UUIDRefField(this, ListTestRecord)
-  object mandatoryStringRefField
-      extends StringRefField(this, MapTestRecord, 100)
+  object mandatoryStringRefField extends StringRefField(this, MapTestRecord, 100)
   object mandatoryIntRefField extends IntRefField(this, NullTestRecord)
   object mandatoryLongRefField extends LongRefField(this, BoxTestRecord)
 
   object mandatoryObjectIdRefListField
       extends ObjectIdRefListField(this, FieldTypeTestRecord)
-  object mandatoryUUIDRefListField
-      extends UUIDRefListField(this, ListTestRecord)
+  object mandatoryUUIDRefListField extends UUIDRefListField(this, ListTestRecord)
   object mandatoryStringRefListField
       extends StringRefListField(this, MapTestRecord)
   object mandatoryIntRefListField extends IntRefListField(this, NullTestRecord)

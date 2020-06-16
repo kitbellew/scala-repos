@@ -101,8 +101,7 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
 
   test("Test Lazy Broadcast variables with TorrentBroadcast") {
     val numSlaves = 2
-    sc =
-      new SparkContext("local-cluster[%d, 1, 1024]".format(numSlaves), "test")
+    sc = new SparkContext("local-cluster[%d, 1, 1024]".format(numSlaves), "test")
     val rdd = sc.parallelize(1 to numSlaves)
     val results = new DummyBroadcastClass(rdd).doSomething()
 
@@ -121,7 +120,8 @@ class BroadcastSuite extends SparkFunSuite with LocalSparkContext {
     testUnpersistTorrentBroadcast(distributed = true, removeFromDriver = false)
   }
 
-  test("Unpersisting TorrentBroadcast on executors and driver in distributed mode") {
+  test(
+    "Unpersisting TorrentBroadcast on executors and driver in distributed mode") {
     testUnpersistTorrentBroadcast(distributed = true, removeFromDriver = true)
   }
 

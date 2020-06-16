@@ -64,11 +64,8 @@ trait ToApplyOps extends ToApplyOps0 with ToFunctorOps {
       f: (A, B, C) => D)(implicit F: Apply[F]): F[D] =
     F.apply3(fa, fb, fc)(f)
 
-  def ^^^[F[_], A, B, C, D, E](
-      fa: => F[A],
-      fb: => F[B],
-      fc: => F[C],
-      fd: => F[D])(f: (A, B, C, D) => E)(implicit F: Apply[F]): F[E] =
+  def ^^^[F[_], A, B, C, D, E](fa: => F[A], fb: => F[B], fc: => F[C], fd: => F[D])(
+      f: (A, B, C, D) => E)(implicit F: Apply[F]): F[E] =
     F.apply4(fa, fb, fc, fd)(f)
 
   def ^^^^[F[_], A, B, C, D, E, I](

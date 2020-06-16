@@ -946,10 +946,7 @@ object HashSet extends ImmutableSetFactory[HashSet] {
         case _ => this
       }
 
-    override protected def removed0(
-        key: A,
-        hash: Int,
-        level: Int): HashSet[A] = {
+    override protected def removed0(key: A, hash: Int, level: Int): HashSet[A] = {
       val index = (hash >>> level) & 0x1f
       val mask = (1 << index)
       val offset = Integer.bitCount(bitmap & (mask - 1))

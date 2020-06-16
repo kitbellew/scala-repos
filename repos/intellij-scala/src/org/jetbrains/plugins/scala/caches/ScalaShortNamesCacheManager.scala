@@ -59,9 +59,7 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
     null
   }
 
-  def getClassesByFQName(
-      fqn: String,
-      scope: GlobalSearchScope): Seq[PsiClass] = {
+  def getClassesByFQName(fqn: String, scope: GlobalSearchScope): Seq[PsiClass] = {
     if (DumbService.getInstance(project).isDumb) return Seq.empty
 
     val classes =
@@ -106,9 +104,8 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
     while (valIterator.hasNext) {
       res += valIterator.next()
     }
-    val varNames = StubIndex.getInstance.getAllKeys(
-      ScalaIndexKeys.VARIABLE_NAME_KEY,
-      project)
+    val varNames =
+      StubIndex.getInstance.getAllKeys(ScalaIndexKeys.VARIABLE_NAME_KEY, project)
     val varIterator = varNames.iterator()
     while (varIterator.hasNext) {
       res += varIterator.next()
@@ -173,9 +170,7 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
     classNames.toSeq
   }
 
-  def getMethodsByName(
-      name: String,
-      scope: GlobalSearchScope): Seq[PsiMethod] = {
+  def getMethodsByName(name: String, scope: GlobalSearchScope): Seq[PsiMethod] = {
     def scalaMethods: Seq[PsiMethod] = {
       val methods =
         StubIndex.getElements(
@@ -214,9 +209,7 @@ class ScalaShortNamesCacheManager(project: Project) extends ProjectComponent {
     scalaMethods ++ javaMethods
   }
 
-  def getFieldsByName(
-      name: String,
-      scope: GlobalSearchScope): Array[PsiField] = {
+  def getFieldsByName(name: String, scope: GlobalSearchScope): Array[PsiField] = {
     PsiShortNamesCache.getInstance(project).getFieldsByName(name, scope)
   }
 

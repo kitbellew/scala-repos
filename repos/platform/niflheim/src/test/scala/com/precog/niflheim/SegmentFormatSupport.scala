@@ -82,9 +82,7 @@ trait SegmentFormatSupport {
     val basic: Gen[CValueType[_]] = oneOf(
       Seq(CBoolean, CString, CLong, CDouble, CNum, CDate))
     if (maxDepth > 0) {
-      frequency(
-        6 -> basic,
-        1 -> (genCValueType(maxDepth - 1) map (CArrayType(_))))
+      frequency(6 -> basic, 1 -> (genCValueType(maxDepth - 1) map (CArrayType(_))))
     } else {
       basic
     }

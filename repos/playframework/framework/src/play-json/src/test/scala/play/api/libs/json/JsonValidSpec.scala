@@ -35,11 +35,9 @@ object JsonValidSpec extends Specification {
 
     "invalidate wrong simple type conversion" in {
       JsString("string").validate[Long] must equalTo(
-        JsError(
-          Seq(JsPath() -> Seq(ValidationError("error.expected.jsnumber")))))
+        JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.jsnumber")))))
       JsNumber(5).validate[String] must equalTo(
-        JsError(
-          Seq(JsPath() -> Seq(ValidationError("error.expected.jsstring")))))
+        JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.jsstring")))))
       JsNumber(5.123).validate[Int] must equalTo(
         JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.int")))))
       JsNumber(300).validate[Byte] must equalTo(
@@ -47,8 +45,7 @@ object JsonValidSpec extends Specification {
       JsNumber(Long.MaxValue).validate[Int] must equalTo(
         JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.int")))))
       JsBoolean(false).validate[Double] must equalTo(
-        JsError(
-          Seq(JsPath() -> Seq(ValidationError("error.expected.jsnumber")))))
+        JsError(Seq(JsPath() -> Seq(ValidationError("error.expected.jsnumber")))))
     }
 
     "validate simple numbered type conversion" in {
@@ -182,8 +179,7 @@ object JsonValidSpec extends Specification {
 
       Json.toJson[java.util.Date](dd).validate[java.util.Date] must beEqualTo(
         JsSuccess(dd))
-      JsNumber(dd.getTime).validate[java.util.Date] must beEqualTo(
-        JsSuccess(dd))
+      JsNumber(dd.getTime).validate[java.util.Date] must beEqualTo(JsSuccess(dd))
 
       val dj = new org.joda.time.DateTime()
       val dfj = org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd")
@@ -301,8 +297,7 @@ object JsonValidSpec extends Specification {
     case class User(name: String, age: Int)
 
     "validate simple reads" in {
-      JsString("alphabeta").validate[String] must equalTo(
-        JsSuccess("alphabeta"))
+      JsString("alphabeta").validate[String] must equalTo(JsSuccess("alphabeta"))
     }
 
     "validate simple constraints" in {
@@ -423,8 +418,7 @@ object JsonValidSpec extends Specification {
         "nb" -> 654
       )
 
-      Json.toJson("550e8400-e29b-41d4-a716-446655440000" -> 654) must equalTo(
-        js)
+      Json.toJson("550e8400-e29b-41d4-a716-446655440000" -> 654) must equalTo(js)
     }
 
     "JsObject tupled format" in {
@@ -438,8 +432,7 @@ object JsonValidSpec extends Specification {
         "nb" -> 654
       )
 
-      Json.toJson("550e8400-e29b-41d4-a716-446655440000" -> 654) must equalTo(
-        js)
+      Json.toJson("550e8400-e29b-41d4-a716-446655440000" -> 654) must equalTo(js)
       js.validate[(String, Int)] must equalTo(
         JsSuccess("550e8400-e29b-41d4-a716-446655440000" -> 654))
     }
@@ -876,8 +869,8 @@ object JsonValidSpec extends Specification {
       ).reduce
 
       val js0 = Json.obj("field1" -> "alpha")
-      val js = js0 ++ Json.obj(
-        "field2" -> Json.obj("field21" -> 123, "field22" -> true))
+      val js =
+        js0 ++ Json.obj("field2" -> Json.obj("field21" -> 123, "field22" -> true))
       val js2 = js ++ Json.obj("field3" -> "beta")
       js.validate(myReads) must beEqualTo(JsSuccess(js))
       js2.validate(myReads) must beEqualTo(JsSuccess(js))
@@ -1097,8 +1090,8 @@ object JsonValidSpec extends Specification {
       }
 
       "JsError" in {
-        val res2: JsResult[String] = JsError(Seq(
-          JsPath(List(KeyPathNode("bar"))) -> Seq(ValidationError("baz.bah"))))
+        val res2: JsResult[String] = JsError(
+          Seq(JsPath(List(KeyPathNode("bar"))) -> Seq(ValidationError("baz.bah"))))
         res2.map(identity) must equalTo(res2)
       }
     }

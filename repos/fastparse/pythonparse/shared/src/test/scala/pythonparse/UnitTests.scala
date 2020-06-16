@@ -99,9 +99,7 @@ object UnitTests extends TestSuite {
           Subscript(
             'abc,
             slice.ExtSlice(
-              Seq(
-                slice.Index('d),
-                slice.Slice(Some('e), Some('f), Some('None)))),
+              Seq(slice.Index('d), slice.Slice(Some('e), Some('f), Some('None)))),
             Load),
           "abc[d, e:f:]"
         )
@@ -220,19 +218,11 @@ object UnitTests extends TestSuite {
           "from x import y"
         )
         'import4 - stmt(
-          Seq(
-            ImportFrom(
-              Some(identifier("x.y")),
-              Seq(alias('y, Some('z))),
-              None)),
+          Seq(ImportFrom(Some(identifier("x.y")), Seq(alias('y, Some('z))), None)),
           "from x.y import y as z"
         )
         'import5 - stmt(
-          Seq(
-            ImportFrom(
-              Some(identifier("x.y")),
-              Seq(alias('y, Some('z))),
-              Some(1))),
+          Seq(ImportFrom(Some(identifier("x.y")), Seq(alias('y, Some('z))), Some(1))),
           "from .x.y import y as z"
         )
         'import6 - stmt(
@@ -350,12 +340,7 @@ object UnitTests extends TestSuite {
               Seq(Pass),
               Seq(
                 'foo,
-                Call(
-                  Attribute('bar, 'baz, Load),
-                  Seq(Num(1)),
-                  Nil,
-                  None,
-                  None)))),
+                Call(Attribute('bar, 'baz, Load), Seq(Num(1)), Nil, None, None)))),
           """@foo
             |@bar.baz(1)
             |class Foo(A | B):

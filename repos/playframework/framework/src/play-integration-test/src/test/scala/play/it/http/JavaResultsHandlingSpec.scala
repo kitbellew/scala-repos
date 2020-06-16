@@ -162,12 +162,11 @@ trait JavaResultsHandlingSpec
       response.body must_== "data: a\n\ndata: b\n\n"
     }
 
-    "stream input stream responses as chunked" in makeRequest(
-      new MockController {
-        def action = {
-          Results.ok(new ByteArrayInputStream("hello".getBytes("utf-8")))
-        }
-      }) { response =>
+    "stream input stream responses as chunked" in makeRequest(new MockController {
+      def action = {
+        Results.ok(new ByteArrayInputStream("hello".getBytes("utf-8")))
+      }
+    }) { response =>
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.body must_== "hello"
     }

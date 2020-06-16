@@ -80,8 +80,7 @@ class HeaderSpec extends FreeSpec with Matchers {
         `Accept-Language`(LanguageRange(Language("sv_SE"))),
         `Access-Control-Request-Headers`("Host"),
         `Access-Control-Request-Method`(HttpMethods.GET),
-        Authorization(
-          BasicHttpCredentials("johan", "correcthorsebatterystaple")),
+        Authorization(BasicHttpCredentials("johan", "correcthorsebatterystaple")),
         `Cache-Control`(CacheDirectives.`max-age`(3000)),
         Connection("upgrade"),
         `Content-Length`(2000),

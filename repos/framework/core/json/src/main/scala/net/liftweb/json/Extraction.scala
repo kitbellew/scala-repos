@@ -296,16 +296,17 @@ object Extraction {
                   jsonFields.get(name).foreach {
                     case (n, v) =>
                       val typeArgs = typeInfo.parameterizedType
-                        .map(_.getActualTypeArguments
-                          .map(_.asInstanceOf[Class[_]])
-                          .toList
-                          .zipWithIndex
-                          .map {
-                            case (t, idx) =>
-                              if (t == classOf[java.lang.Object])
-                                ScalaSigReader.readField(name, a.getClass, idx)
-                              else t
-                          })
+                        .map(
+                          _.getActualTypeArguments
+                            .map(_.asInstanceOf[Class[_]])
+                            .toList
+                            .zipWithIndex
+                            .map {
+                              case (t, idx) =>
+                                if (t == classOf[java.lang.Object])
+                                  ScalaSigReader.readField(name, a.getClass, idx)
+                                else t
+                            })
                       val value =
                         extract0(v, typeInfo.clazz, typeArgs.getOrElse(Nil))
                       Reflection.setField(a, n, value)
@@ -345,8 +346,7 @@ object Extraction {
           typeHint: String,
           fields: List[JField],
           typeInfo: TypeInfo) = {
-        val obj = JObject(
-          fields filterNot (_.name == formats.typeHintFieldName))
+        val obj = JObject(fields filterNot (_.name == formats.typeHintFieldName))
         val deserializer = formats.typeHints.deserialize
         if (!deserializer.isDefinedAt(typeHint, obj)) {
           val concreteClass =
@@ -455,11 +455,7 @@ object Extraction {
         case x                => fail("Expected array but got " + x)
       }
 
-    def mkValue(
-        root: JValue,
-        mapping: Mapping,
-        path: String,
-        optional: Boolean) = {
+    def mkValue(root: JValue, mapping: Mapping, path: String, optional: Boolean) = {
       if (optional && root == JNothing) {
         None
       } else {
@@ -480,10 +476,7 @@ object Extraction {
     build(json, mapping)
   }
 
-  private def convert(
-      json: JValue,
-      targetType: Class[_],
-      formats: Formats): Any =
+  private def convert(json: JValue, targetType: Class[_], formats: Formats): Any =
     json match {
       case JInt(x) if (targetType == classOf[Int]) => x.intValue
       case JInt(x) if (targetType == classOf[JavaInteger]) =>

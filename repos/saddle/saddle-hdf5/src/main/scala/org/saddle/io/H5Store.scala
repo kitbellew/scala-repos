@@ -229,10 +229,7 @@ object H5Store {
     * @tparam X Series index type
     * @tparam T Series values type
     */
-  def writeSeries[X: ST: ORD, T: ST](
-      path: String,
-      group: String,
-      s: Series[X, T]) {
+  def writeSeries[X: ST: ORD, T: ST](path: String, group: String, s: Series[X, T]) {
     withMonitor {
       writePandasSeries(path, group, s.index, s.values)
     }
@@ -262,10 +259,7 @@ object H5Store {
     * @tparam X Series index type
     * @tparam T Series values type
     */
-  def writeSeries[X: ST: ORD, T: ST](
-      fileid: Int,
-      group: String,
-      s: Series[X, T]) {
+  def writeSeries[X: ST: ORD, T: ST](fileid: Int, group: String, s: Series[X, T]) {
     withMonitor {
       writePandasSeries(fileid, group, s.index, s.values)
     }
@@ -432,9 +426,7 @@ object H5Store {
 
     // link creation property list
     val lcpl_id = H5.H5Pcreate(HDF5Constants.H5P_LINK_CREATE)
-    assertException(
-      lcpl_id >= 0,
-      "Could not create property list in createNode")
+    assertException(lcpl_id >= 0, "Could not create property list in createNode")
 
     H5Reg.save(lcpl_id, H5P)
 

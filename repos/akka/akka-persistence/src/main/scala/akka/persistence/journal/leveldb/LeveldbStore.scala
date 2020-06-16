@@ -163,9 +163,7 @@ private[persistence] trait LeveldbStore
       batch: WriteBatch): Unit = {
     val persistentBytes = persistentToBytes(persistent)
     val nid = numericId(persistent.persistenceId)
-    batch.put(
-      keyToBytes(counterKey(nid)),
-      counterToBytes(persistent.sequenceNr))
+    batch.put(keyToBytes(counterKey(nid)), counterToBytes(persistent.sequenceNr))
     batch.put(keyToBytes(Key(nid, persistent.sequenceNr, 0)), persistentBytes)
 
     tags.foreach { tag ⇒
@@ -254,8 +252,7 @@ private[persistence] trait LeveldbStore
     }
 
   override protected def newPersistenceIdAdded(id: String): Unit = {
-    if (hasAllPersistenceIdsSubscribers && !id.startsWith(
-        tagPersistenceIdPrefix)) {
+    if (hasAllPersistenceIdsSubscribers && !id.startsWith(tagPersistenceIdPrefix)) {
       val added = LeveldbJournal.PersistenceIdAdded(id)
       allPersistenceIdsSubscribers.foreach(_ ! added)
     }

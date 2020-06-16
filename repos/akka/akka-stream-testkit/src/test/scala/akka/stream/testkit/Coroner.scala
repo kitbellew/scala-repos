@@ -56,9 +56,7 @@ object Coroner { // FIXME: remove once going back to project dependencies
 
     override def cancel(): Unit = {
       cancelPromise.trySuccess(true)
-      finishedLatch.await(
-        startAndStopDuration.length,
-        startAndStopDuration.unit)
+      finishedLatch.await(startAndStopDuration.length, startAndStopDuration.unit)
     }
 
     override def ready(atMost: Duration)(implicit

@@ -164,9 +164,8 @@ private[scalding] object InternalService {
   def getLoopInputs[K, U, V](
       dag: Dependants[Scalding],
       left: Producer[Scalding, (K, U)],
-      store: BatchedStore[K, V]): (
-      (((U, Option[V])) => TraversableOnce[V]),
-      Option[Producer[Scalding, (K, V)]]) = {
+      store: BatchedStore[K, V])
+      : ((((U, Option[V])) => TraversableOnce[V]), Option[Producer[Scalding, (K, V)]]) = {
 
     val Summer(summerProd, _, _) = getSummer[K, V](dag, store).getOrElse(
       sys.error("Could not find the Summer for store."))
@@ -224,9 +223,8 @@ private[scalding] object InternalService {
       left: TypedPipe[(T, (K, V))],
       mergeLog: TypedPipe[(T, (K, U))],
       valueExpansion: ((V, Option[U])) => TraversableOnce[U],
-      reducers: Option[Int]): (
-      TypedPipe[(T, (K, (V, Option[U])))],
-      TypedPipe[(T, (K, (Option[U], U)))]) = {
+      reducers: Option[Int])
+      : (TypedPipe[(T, (K, (V, Option[U])))], TypedPipe[(T, (K, (Option[U], U)))]) = {
 
     def sum(opt: Option[U], u: U): U =
       if (opt.isDefined) Semigroup.plus(opt.get, u) else u
@@ -250,9 +248,7 @@ private[scalding] object InternalService {
         reducers.getOrElse(-1)
       ) // jank, but scalding needs a way to maybe set reducers
       .sorted
-      .scanLeft((
-        Option.empty[(T, (V, Option[U]))],
-        Option.empty[(T, (Option[U], U))])) {
+      .scanLeft((Option.empty[(T, (V, Option[U]))], Option.empty[(T, (Option[U], U))])) {
         case ((_, None), (time, Left(v))) =>
           /*
            * This is a lookup, but there is no value for this key

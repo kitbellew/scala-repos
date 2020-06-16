@@ -41,10 +41,8 @@ object GenerateRoundtripSources {
               override def autoIncLastAsOption = true
             }
         })
-    val db = Database.forURL(
-      url = url,
-      driver = jdbcDriver,
-      keepAliveConnection = true)
+    val db =
+      Database.forURL(url = url, driver = jdbcDriver, keepAliveConnection = true)
     val (gen, gen2) =
       try Await.result(db.run(ddl.create >> (a1 zip a2)), Duration.Inf)
       finally db.close

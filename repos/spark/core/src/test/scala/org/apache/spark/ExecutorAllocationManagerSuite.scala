@@ -93,8 +93,7 @@ class ExecutorAllocationManagerSuite
   test("add executors") {
     sc = createSparkContext(1, 10, 1)
     val manager = sc.executorAllocationManager.get
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 1000)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(createStageInfo(0, 1000)))
 
     // Keep adding until the limit is reached
     assert(numExecutorsTarget(manager) === 1)
@@ -276,8 +275,7 @@ class ExecutorAllocationManagerSuite
   test("interleaving add and remove") {
     sc = createSparkContext(5, 10, 5)
     val manager = sc.executorAllocationManager.get
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 1000)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(createStageInfo(0, 1000)))
 
     // Add a few executors
     assert(addExecutors(manager) === 1)
@@ -352,8 +350,7 @@ class ExecutorAllocationManagerSuite
     assert(addTime(manager) === NOT_SET)
     onSchedulerBacklogged(manager)
     val firstAddTime = addTime(manager)
-    assert(
-      firstAddTime === clock.getTimeMillis + schedulerBacklogTimeout * 1000)
+    assert(firstAddTime === clock.getTimeMillis + schedulerBacklogTimeout * 1000)
     clock.advance(100L)
     onSchedulerBacklogged(manager)
     assert(addTime(manager) === firstAddTime) // timer is already started
@@ -424,8 +421,7 @@ class ExecutorAllocationManagerSuite
     assert(removeTimes(manager).size === 3)
     assert(removeTimes(manager).contains("1"))
     val secondRemoveTime = removeTimes(manager)("1")
-    assert(
-      secondRemoveTime === clock.getTimeMillis + executorIdleTimeout * 1000)
+    assert(secondRemoveTime === clock.getTimeMillis + executorIdleTimeout * 1000)
     assert(
       removeTimes(manager)("1") === secondRemoveTime
     ) // timer is already started
@@ -464,8 +460,7 @@ class ExecutorAllocationManagerSuite
     val clock = new ManualClock(2020L)
     val manager = sc.executorAllocationManager.get
     manager.setClock(clock)
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 1000)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(createStageInfo(0, 1000)))
 
     // Scheduler queue backlogged
     onSchedulerBacklogged(manager)
@@ -734,7 +729,8 @@ class ExecutorAllocationManagerSuite
     assert(removeTimes(manager).size === 0)
   }
 
-  test("SPARK-4951: onExecutorAdded should not add a busy executor to removeTimes") {
+  test(
+    "SPARK-4951: onExecutorAdded should not add a busy executor to removeTimes") {
     sc = createSparkContext(2, 10)
     val manager = sc.executorAllocationManager.get
     assert(executorIds(manager).isEmpty)
@@ -783,8 +779,7 @@ class ExecutorAllocationManagerSuite
     adjustRequestedExecutors(manager)
     assert(numExecutorsTarget(manager) === 0)
 
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(1, 1000)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(createStageInfo(1, 1000)))
     addExecutors(manager)
     assert(numExecutorsTarget(manager) === 16)
   }
@@ -867,8 +862,9 @@ class ExecutorAllocationManagerSuite
     sc.listenerBus.postToAll(SparkListenerStageSubmitted(stageInfo2))
 
     assert(localityAwareTasks(manager) === 5)
-    assert(hostToLocalTaskCount(manager) ===
-      Map("host1" -> 2, "host2" -> 4, "host3" -> 4, "host4" -> 3, "host5" -> 2))
+    assert(
+      hostToLocalTaskCount(manager) ===
+        Map("host1" -> 2, "host2" -> 4, "host3" -> 4, "host4" -> 3, "host5" -> 2))
 
     sc.listenerBus.postToAll(SparkListenerStageCompleted(stageInfo1))
     assert(localityAwareTasks(manager) === 2)
@@ -905,8 +901,7 @@ class ExecutorAllocationManagerSuite
 
     // Allocation manager is reset when adding executor requests are sent without reporting back
     // executor added.
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 10)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(createStageInfo(0, 10)))
 
     assert(addExecutors(manager) === 1)
     assert(numExecutorsTarget(manager) === 2)
@@ -921,8 +916,7 @@ class ExecutorAllocationManagerSuite
     assert(executorIds(manager) === Set.empty)
 
     // Allocation manager is reset when executors are added.
-    sc.listenerBus.postToAll(
-      SparkListenerStageSubmitted(createStageInfo(0, 10)))
+    sc.listenerBus.postToAll(SparkListenerStageSubmitted(createStageInfo(0, 10)))
 
     addExecutors(manager)
     addExecutors(manager)
@@ -935,12 +929,7 @@ class ExecutorAllocationManagerSuite
     onExecutorAdded(manager, "fourth")
     onExecutorAdded(manager, "fifth")
     assert(
-      executorIds(manager) === Set(
-        "first",
-        "second",
-        "third",
-        "fourth",
-        "fifth"))
+      executorIds(manager) === Set("first", "second", "third", "fourth", "fifth"))
 
     // Cluster manager lost will make all the live executors lost, so here simulate this behavior
     onExecutorRemoved(manager, "first")
@@ -967,23 +956,13 @@ class ExecutorAllocationManagerSuite
     onExecutorAdded(manager, "fourth")
     onExecutorAdded(manager, "fifth")
     assert(
-      executorIds(manager) === Set(
-        "first",
-        "second",
-        "third",
-        "fourth",
-        "fifth"))
+      executorIds(manager) === Set("first", "second", "third", "fourth", "fifth"))
 
     removeExecutor(manager, "first")
     removeExecutor(manager, "second")
     assert(executorsPendingToRemove(manager) === Set("first", "second"))
     assert(
-      executorIds(manager) === Set(
-        "first",
-        "second",
-        "third",
-        "fourth",
-        "fifth"))
+      executorIds(manager) === Set("first", "second", "third", "fourth", "fifth"))
 
     // Cluster manager lost will make all the live executors lost, so here simulate this behavior
     onExecutorRemoved(manager, "first")
@@ -1010,9 +989,7 @@ class ExecutorAllocationManagerSuite
       .set("spark.dynamicAllocation.enabled", "true")
       .set("spark.dynamicAllocation.minExecutors", minExecutors.toString)
       .set("spark.dynamicAllocation.maxExecutors", maxExecutors.toString)
-      .set(
-        "spark.dynamicAllocation.initialExecutors",
-        initialExecutors.toString)
+      .set("spark.dynamicAllocation.initialExecutors", initialExecutors.toString)
       .set(
         "spark.dynamicAllocation.schedulerBacklogTimeout",
         s"${schedulerBacklogTimeout.toString}s")

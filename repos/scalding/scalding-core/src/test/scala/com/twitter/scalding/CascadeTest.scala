@@ -58,11 +58,7 @@ class TwoPhaseCascadeTest extends WordSpec with Matchers with FieldConversions {
       .arg("output1", "output1")
       .source(
         Tsv("input0", ('line)),
-        List(
-          Tuple1("line1"),
-          Tuple1("line2"),
-          Tuple1("line3"),
-          Tuple1("line4")))
+        List(Tuple1("line1"), Tuple1("line2"), Tuple1("line3"), Tuple1("line4")))
       .sink[String](Tsv("output1")) { ob =>
         "verify output got changed by both flows" in {
           ob.toList shouldBe List(

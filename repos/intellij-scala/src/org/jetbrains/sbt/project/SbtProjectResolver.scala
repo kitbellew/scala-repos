@@ -45,8 +45,7 @@ class SbtProjectResolver
       wrongProjectPathDontUseIt: String,
       isPreview: Boolean,
       settings: SbtExecutionSettings,
-      listener: ExternalSystemTaskNotificationListener)
-      : DataNode[ProjectData] = {
+      listener: ExternalSystemTaskNotificationListener): DataNode[ProjectData] = {
     val root = {
       val file = new File(settings.realProjectPath)
       if (file.isDirectory) file.getPath else file.getParent
@@ -121,8 +120,7 @@ class SbtProjectResolver
 
     val newPlay2Data =
       projects.flatMap(p => p.play2.map(d => (p.id, p.base, d)))
-    projectNode.add(
-      new Play2ProjectNode(Play2OldStructureAdapter(newPlay2Data)))
+    projectNode.add(new Play2ProjectNode(Play2OldStructureAdapter(newPlay2Data)))
 
     val libraryNodes = createLibraries(data, projects)
     projectNode.addAll(libraryNodes)
@@ -351,8 +349,7 @@ class SbtProjectResolver
       return extractedExcludes.distinct
 
     val managedDirectories = project.configurations
-      .flatMap(configuration =>
-        configuration.sources ++ configuration.resources)
+      .flatMap(configuration => configuration.sources ++ configuration.resources)
       .filter(_.managed)
       .map(_.file)
 
@@ -428,9 +425,7 @@ class SbtProjectResolver
       buildRoot / Sbt.ProjectDirectory / Sbt.TargetDirectory)
 
     result.storePaths(ExternalSystemSourceType.SOURCE, sourceDirs.map(_.path))
-    result.storePaths(
-      ExternalSystemSourceType.EXCLUDED,
-      exludedDirs.map(_.path))
+    result.storePaths(ExternalSystemSourceType.EXCLUDED, exludedDirs.map(_.path))
 
     result
   }
@@ -447,11 +442,9 @@ class SbtProjectResolver
       resolvers + SbtResolver.localCacheResolver(localCachePath))
   }
 
-  private def validRootPathsIn(
-      project: sbtStructure.ProjectData,
-      scope: String)(
-      selector: sbtStructure.ConfigurationData => Seq[
-        sbtStructure.DirectoryData]): Seq[String] = {
+  private def validRootPathsIn(project: sbtStructure.ProjectData, scope: String)(
+      selector: sbtStructure.ConfigurationData => Seq[sbtStructure.DirectoryData])
+      : Seq[String] = {
     project.configurations
       .find(_.id == scope)
       .map(selector)

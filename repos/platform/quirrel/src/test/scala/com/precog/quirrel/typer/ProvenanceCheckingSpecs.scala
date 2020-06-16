@@ -696,8 +696,8 @@ object ProvenanceCheckingSpecs
     }
 
     "give null provenance for difference with coproducts containing dynamic provenance" in {
-      val tree = compileSingle(
-        "(//foo union //bar) difference ((new //baz) union //qux)")
+      val tree =
+        compileSingle("(//foo union //bar) difference ((new //baz) union //qux)")
       tree.provenance mustEqual NullProvenance
       tree.errors mustEqual Set(DifferenceWithNoCommonalities)
     }

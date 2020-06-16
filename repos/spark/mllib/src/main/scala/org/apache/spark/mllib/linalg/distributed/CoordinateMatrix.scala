@@ -144,9 +144,7 @@ class CoordinateMatrix @Since("1.0.0") (
         val rowId = entry.i % rowsPerBlock
         val colId = entry.j % colsPerBlock
 
-        (
-          (blockRowIndex, blockColIndex),
-          (rowId.toInt, colId.toInt, entry.value))
+        ((blockRowIndex, blockColIndex), (rowId.toInt, colId.toInt, entry.value))
       }
       .groupByKey(partitioner)
       .map {

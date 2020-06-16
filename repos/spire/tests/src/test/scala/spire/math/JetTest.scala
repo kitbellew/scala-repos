@@ -285,8 +285,7 @@ class JetTest extends FunSuite with Matchers {
     val x = 0.8377469
     val jx = x + Jet.h[Double](0)
     spire.math.cos(jx).real should be(scala.math.cos(x))
-    spire.math.cos(jx).infinitesimal(0) should be(
-      -scala.math.sin(x) +- maxError)
+    spire.math.cos(jx).infinitesimal(0) should be(-scala.math.sin(x) +- maxError)
 
     spire.math.sin(jx).real should be(scala.math.sin(x))
     spire.math.sin(jx).infinitesimal(0) should be(scala.math.cos(x) +- maxError)

@@ -55,9 +55,7 @@ class ChannelStatsHandler(statsReceiver: StatsReceiver)
     super.channelOpen(ctx, e)
   }
 
-  override def writeComplete(
-      ctx: ChannelHandlerContext,
-      e: WriteCompletionEvent) {
+  override def writeComplete(ctx: ChannelHandlerContext, e: WriteCompletionEvent) {
     val (_, channelWriteCount) =
       ctx.getAttachment().asInstanceOf[(AtomicLong, AtomicLong)]
 

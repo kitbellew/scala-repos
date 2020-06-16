@@ -169,11 +169,7 @@ trait StatsLibModule[M[+_]]
                         if (count >= maxCount)
                           (Some(sv), count + 1, Set(sv), maxCount + 1)
                         else if (count + 1 == maxCount)
-                          (
-                            Some(sv),
-                            count + 1,
-                            modes + BigDecimal(sv),
-                            maxCount)
+                          (Some(sv), count + 1, modes + BigDecimal(sv), maxCount)
                         else
                           (Some(sv), count + 1, modes, maxCount)
                       } else {
@@ -505,13 +501,7 @@ trait StatsLibModule[M[+_]]
           BigDecimal,
           BigDecimal) // (count, sum1, sum2, sumsq1, sumsq2, productSum)
       type Result = Option[
-        (
-            BigDecimal,
-            BigDecimal,
-            BigDecimal,
-            BigDecimal,
-            BigDecimal,
-            BigDecimal)]
+        (BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal, BigDecimal)]
 
       implicit def monoid = implicitly[Monoid[Result]]
 
@@ -855,19 +845,16 @@ trait StatsLibModule[M[+_]]
 
             val result = cross map {
               case (c1: LongColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -875,19 +862,16 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -895,19 +879,16 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -915,19 +896,16 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: LongColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -935,19 +913,16 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: LongColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -955,19 +930,16 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -975,19 +947,16 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -995,19 +964,16 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -1015,19 +981,16 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
                   val foldedMapped: InitialResult = mapped.foldLeft(
-                    (
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0),
-                      BigDecimal(0))) {
+                    (BigDecimal(0), BigDecimal(0), BigDecimal(0), BigDecimal(0))) {
                     case ((count, sum1, sum2, productSum), (v1, v2)) =>
                       (count + 1, sum1 + v1, sum2 + v2, productSum + (v1 * v2))
                   }
@@ -1099,10 +1062,11 @@ trait StatsLibModule[M[+_]]
 
             val result = cross map {
               case (c1: LongColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1125,10 +1089,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1151,10 +1116,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1177,10 +1143,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: LongColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1203,10 +1170,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: LongColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1229,10 +1197,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1255,10 +1224,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1281,10 +1251,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1307,10 +1278,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1407,10 +1379,11 @@ trait StatsLibModule[M[+_]]
 
             val result = cross map {
               case (c1: LongColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1429,8 +1402,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)
@@ -1440,10 +1412,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1462,8 +1435,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)
@@ -1473,10 +1445,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1495,8 +1468,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)
@@ -1506,10 +1478,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: LongColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1528,8 +1501,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)
@@ -1539,10 +1511,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: LongColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1561,8 +1534,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)
@@ -1572,10 +1544,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1594,8 +1567,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)
@@ -1605,10 +1577,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: DoubleColumn, c2: NumColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1627,8 +1600,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)
@@ -1638,10 +1610,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: LongColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1660,8 +1633,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)
@@ -1671,10 +1643,11 @@ trait StatsLibModule[M[+_]]
                   Some(foldedMapped)
                 }
               case (c1: NumColumn, c2: DoubleColumn) =>
-                val mapped = range filter (r =>
-                  c1.isDefinedAt(r) && c2.isDefinedAt(r)) map { i =>
-                  (c1(i), c2(i))
-                }
+                val mapped =
+                  range filter (r => c1.isDefinedAt(r) && c2.isDefinedAt(r)) map {
+                    i =>
+                      (c1(i), c2(i))
+                  }
                 if (mapped.isEmpty) {
                   None
                 } else {
@@ -1693,8 +1666,7 @@ trait StatsLibModule[M[+_]]
                           count + 1,
                           sum1 + math.log(v1.toDouble),
                           sum2 + v2,
-                          sumsq1 + (math.log(v1.toDouble) * math.log(
-                            v1.toDouble)),
+                          sumsq1 + (math.log(v1.toDouble) * math.log(v1.toDouble)),
                           productSum + (math.log(v1.toDouble) * v2))
                       } else {
                         (count, sum1, sum2, sumsq1, productSum)

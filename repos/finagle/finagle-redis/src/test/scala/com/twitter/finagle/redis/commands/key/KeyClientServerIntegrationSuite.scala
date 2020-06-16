@@ -322,9 +322,10 @@ final class KeyClientServerIntegrationSuite
     withRedisClient { client =>
       val noSuchKey = string2ChanBuf("noSuchKey")
 
-      assert(Await
-        .result(client(RenameNx(noSuchKey, string2ChanBuf("DOES NOT MATTER"))))
-        .isInstanceOf[ErrorReply])
+      assert(
+        Await
+          .result(client(RenameNx(noSuchKey, string2ChanBuf("DOES NOT MATTER"))))
+          .isInstanceOf[ErrorReply])
     }
   }
 
@@ -336,8 +337,7 @@ final class KeyClientServerIntegrationSuite
       val rename1 = string2ChanBuf("rename1")
       val rename2 = string2ChanBuf("rename2")
       assert(Await.result(client(Set(rename1, bar))) == OKStatusReply)
-      assert(
-        Await.result(client(RenameNx(rename1, rename2))) == IntegerReply(1))
+      assert(Await.result(client(RenameNx(rename1, rename2))) == IntegerReply(1))
     }
   }
 
@@ -354,15 +354,11 @@ final class KeyClientServerIntegrationSuite
       val rename2 = string2ChanBuf("rename2")
       assert(Await.result(client(Set(rename2, baz))) == OKStatusReply)
 
-      assert(
-        Await.result(client(RenameNx(rename1, rename2))) == IntegerReply(0))
+      assert(Await.result(client(RenameNx(rename1, rename2))) == IntegerReply(0))
     }
   }
 
-  test(
-    "RANDOMKEY should return an EmptyBulkReply",
-    ClientServerTest,
-    RedisTest) {
+  test("RANDOMKEY should return an EmptyBulkReply", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       assert(Await.result(client(Randomkey())).isInstanceOf[EmptyBulkReply])
     }

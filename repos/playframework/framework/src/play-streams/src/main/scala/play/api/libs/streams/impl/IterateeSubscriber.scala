@@ -227,11 +227,9 @@ private[streams] class IterateeSubscriber[T, R, S](iter0: Iteratee[T, R])
         subs.cancel()
         finishWithDoneOrErrorStep(doneOrError, result)
       case NotSubscribedWithCont(cont, result) =>
-        throw new IllegalStateException(
-          "Can't get done or error while has cont")
+        throw new IllegalStateException("Can't get done or error while has cont")
       case SubscribedWithCont(subs, cont, result) =>
-        throw new IllegalStateException(
-          "Can't get done or error while has cont")
+        throw new IllegalStateException("Can't get done or error while has cont")
       case CompletedNoStep(result) =>
         finishWithDoneOrErrorStep(doneOrError, result)
       case Finished(resultIteratee) =>

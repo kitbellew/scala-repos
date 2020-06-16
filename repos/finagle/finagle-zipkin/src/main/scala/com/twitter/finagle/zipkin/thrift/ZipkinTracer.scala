@@ -36,10 +36,8 @@ private object Json {
       // We require an annotation here, because for small numbers, this gets
       // deserialized with a runtime type of int.
       // See: https://github.com/FasterXML/jackson-module-scala/issues/106.
-      @JsonDeserialize(contentAs = classOf[java.lang.Long]) traceId: Option[
-        Long],
-      @JsonDeserialize(contentAs = classOf[java.lang.Long]) spanId: Option[
-        Long],
+      @JsonDeserialize(contentAs = classOf[java.lang.Long]) traceId: Option[Long],
+      @JsonDeserialize(contentAs = classOf[java.lang.Long]) spanId: Option[Long],
       data: Annotation)
 
   val mapper = new ObjectMapper()

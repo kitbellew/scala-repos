@@ -137,9 +137,7 @@ object ZkUtils {
   def getTopicPartitionPath(topic: String, partitionId: Int): String =
     getTopicPartitionsPath(topic) + "/" + partitionId
 
-  def getTopicPartitionLeaderAndIsrPath(
-      topic: String,
-      partitionId: Int): String =
+  def getTopicPartitionLeaderAndIsrPath(topic: String, partitionId: Int): String =
     getTopicPartitionPath(topic, partitionId) + "/" + "state"
 
   def getEntityConfigRootPath(entityType: String): String =
@@ -752,8 +750,8 @@ class ZkUtils(
     ret
   }
 
-  def getPartitionAssignmentForTopics(topics: Seq[String])
-      : mutable.Map[String, collection.Map[Int, Seq[Int]]] = {
+  def getPartitionAssignmentForTopics(
+      topics: Seq[String]): mutable.Map[String, collection.Map[Int, Seq[Int]]] = {
     val ret = new mutable.HashMap[String, Map[Int, Seq[Int]]]()
     topics.foreach { topic =>
       val jsonPartitionMapOpt = readDataMaybeNull(getTopicPath(topic))._1
@@ -915,8 +913,9 @@ class ZkUtils(
     getChildren(dirs.consumerRegistryDir)
   }
 
-  def getConsumersPerTopic(group: String, excludeInternalTopics: Boolean)
-      : mutable.Map[String, List[ConsumerThreadId]] = {
+  def getConsumersPerTopic(
+      group: String,
+      excludeInternalTopics: Boolean): mutable.Map[String, List[ConsumerThreadId]] = {
     val dirs = new ZKGroupDirs(group)
     val consumers = getChildrenParentMayNotExist(dirs.consumerRegistryDir)
     val consumersPerTopicMap =
@@ -1174,8 +1173,7 @@ class ZKCheckedEphemeral(
           // try again
           createEphemeral
         case Code.NONODE =>
-          error(
-            "No node for path %s (could be the parent missing)".format(path))
+          error("No node for path %s (could be the parent missing)".format(path))
           setResult(Code.NONODE)
         case Code.NODEEXISTS =>
           zkHandle.getData(path, false, getDataCallback, null)

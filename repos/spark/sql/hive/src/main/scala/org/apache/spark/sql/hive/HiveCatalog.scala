@@ -290,9 +290,7 @@ private[spark] class HiveCatalog(client: HiveClient)
   // Functions
   // --------------------------------------------------------------------------
 
-  override def createFunction(
-      db: String,
-      funcDefinition: CatalogFunction): Unit =
+  override def createFunction(db: String, funcDefinition: CatalogFunction): Unit =
     withClient {
       client.createFunction(db, funcDefinition)
     }

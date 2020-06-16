@@ -157,8 +157,7 @@ trait MathLibModule[M[+_]]
 
     object sin extends Op1DD("sin", doubleIsDefined, Math.sin)
 
-    object log
-        extends Op1DD("log", n => doubleIsDefined(n) && n > 0.0, Math.log)
+    object log extends Op1DD("log", n => doubleIsDefined(n) && n > 0.0, Math.log)
 
     object signum extends Op1DD("signum", doubleIsDefined, Math.signum)
 

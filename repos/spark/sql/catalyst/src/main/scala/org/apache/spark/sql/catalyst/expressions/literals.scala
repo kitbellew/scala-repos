@@ -44,13 +44,9 @@ object Literal {
       case s: String  => Literal(UTF8String.fromString(s), StringType)
       case b: Boolean => Literal(b, BooleanType)
       case d: BigDecimal =>
-        Literal(
-          Decimal(d),
-          DecimalType(Math.max(d.precision, d.scale), d.scale))
+        Literal(Decimal(d), DecimalType(Math.max(d.precision, d.scale), d.scale))
       case d: java.math.BigDecimal =>
-        Literal(
-          Decimal(d),
-          DecimalType(Math.max(d.precision, d.scale), d.scale()))
+        Literal(Decimal(d), DecimalType(Math.max(d.precision, d.scale), d.scale()))
       case d: Decimal =>
         Literal(d, DecimalType(Math.max(d.precision, d.scale), d.scale))
       case t: Timestamp =>
@@ -127,8 +123,7 @@ object Literal {
       case map: MapType         => create(Map(), map)
       case struct: StructType =>
         create(
-          InternalRow.fromSeq(
-            struct.fields.map(f => default(f.dataType).value)),
+          InternalRow.fromSeq(struct.fields.map(f => default(f.dataType).value)),
           struct)
       case other =>
         throw new RuntimeException(s"no default for type $dataType")

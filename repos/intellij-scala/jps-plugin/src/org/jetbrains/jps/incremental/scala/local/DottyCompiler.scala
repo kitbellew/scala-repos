@@ -18,9 +18,7 @@ import scala.language.implicitConversions
   */
 class DottyCompiler(scalaInstance: ScalaInstance, compilerJars: CompilerJars)
     extends Compiler {
-  override def compile(
-      compilationData: CompilationData,
-      client: Client): Unit = {
+  override def compile(compilationData: CompilationData, client: Client): Unit = {
     val cArgs = new CompilerArguments(
       scalaInstance,
       ClasspathOptions.javac(compiler = false))

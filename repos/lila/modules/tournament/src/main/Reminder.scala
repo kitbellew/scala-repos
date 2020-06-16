@@ -9,8 +9,7 @@ import actorApi._
 import lila.hub.actorApi.SendTos
 import makeTimeout.short
 
-private[tournament] final class Reminder(renderer: ActorSelection)
-    extends Actor {
+private[tournament] final class Reminder(renderer: ActorSelection) extends Actor {
 
   private val bus = context.system.lilaBus
 

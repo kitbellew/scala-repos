@@ -43,9 +43,7 @@ import scalafx.testutil.SimpleSFXDelegateSpec
   */
 @RunWith(classOf[JUnitRunner])
 class ObservableMapSpec[K, V]
-    extends SimpleSFXDelegateSpec[
-      jfxc.ObservableMap[K, V],
-      ObservableMap[K, V]](
+    extends SimpleSFXDelegateSpec[jfxc.ObservableMap[K, V], ObservableMap[K, V]](
       classOf[jfxc.ObservableMap[K, V]],
       classOf[ObservableMap[K, V]]) {
 
@@ -222,8 +220,7 @@ class ObservableMapSpec[K, V]
 
     // First Verification
     map should equal(ObservableMap((10 to 20).map(i => (i, i.toString))))
-    removedEntries.toList should equal(
-      (0 to 9).map(i => (i, i.toString)).toList)
+    removedEntries.toList should equal((0 to 9).map(i => (i, i.toString)).toList)
 
     removedEntries.clear()
     // Retain even keys

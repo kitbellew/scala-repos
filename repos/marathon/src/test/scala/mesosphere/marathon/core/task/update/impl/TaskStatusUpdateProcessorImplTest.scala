@@ -229,8 +229,7 @@ class TaskStatusUpdateProcessorImplTest
     lazy val updateTaskTrackerStep = new UpdateTaskTrackerStepImpl(taskUpdater)
     lazy val postToEventStream = new PostToEventStreamStepImpl(eventBus)
     lazy val notifyLaunchQueue = new NotifyLaunchQueueStepImpl(launchQueue)
-    lazy val emitUpdate = new TaskStatusEmitterPublishStepImpl(
-      taskStatusEmitter)
+    lazy val emitUpdate = new TaskStatusEmitterPublishStepImpl(taskStatusEmitter)
     lazy val scaleApp = new ScaleAppUpdateStepImpl(schedulerActor.ref)
     lazy val guiceModule = new CoreGuiceModule
 

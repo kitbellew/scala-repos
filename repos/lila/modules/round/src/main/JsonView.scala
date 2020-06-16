@@ -78,8 +78,7 @@ final class JsonView(
                 "provisional" -> opponent.provisional.option(true),
                 "offeringRematch" -> opponent.isOfferingRematch.option(true),
                 "offeringDraw" -> opponent.isOfferingDraw.option(true),
-                "proposingTakeback" -> opponent.isProposingTakeback.option(
-                  true),
+                "proposingTakeback" -> opponent.isProposingTakeback.option(true),
                 "onGame" -> (opponent.isAi || socket.onGame(opponent.color)),
                 "isGone" -> (!opponent.isAi && socket.isGone(opponent.color)),
                 "checks" -> checkCount(game, opponent.color),

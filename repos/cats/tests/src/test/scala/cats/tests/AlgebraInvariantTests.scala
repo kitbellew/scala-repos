@@ -38,7 +38,5 @@ class AlgebraInvariantTests extends CatsSuite {
     SerializableTests.serializable(Invariant[Semigroup]))
 
   checkAll("Invariant[Monoid]", InvariantTests[Monoid].invariant[Int, Int, Int])
-  checkAll(
-    "Invariant[Monoid]",
-    SerializableTests.serializable(Invariant[Monoid]))
+  checkAll("Invariant[Monoid]", SerializableTests.serializable(Invariant[Monoid]))
 }

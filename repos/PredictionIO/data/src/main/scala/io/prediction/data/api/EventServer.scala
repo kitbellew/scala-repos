@@ -271,9 +271,7 @@ class EventServiceActor(
                           if (found) {
                             (StatusCodes.OK, Map("message" -> "Found"))
                           } else {
-                            (
-                              StatusCodes.NotFound,
-                              Map("message" -> "Not Found"))
+                            (StatusCodes.NotFound, Map("message" -> "Not Found"))
                           }
                         }
                       data
@@ -297,8 +295,7 @@ class EventServiceActor(
                 val events = authData.events
                 entity(as[Event]) { event =>
                   complete {
-                    if (events.isEmpty || authData.events.contains(
-                        event.event)) {
+                    if (events.isEmpty || authData.events.contains(event.event)) {
                       pluginContext.inputBlockers.values.foreach(
                         _.process(
                           EventInfo(
@@ -400,8 +397,7 @@ class EventServiceActor(
                                     eventNames = eventName.map(List(_)),
                                     targetEntityType =
                                       targetEntityType.map(Some(_)),
-                                    targetEntityId =
-                                      targetEntityId.map(Some(_)),
+                                    targetEntityId = targetEntityId.map(Some(_)),
                                     limit = limit.orElse(Some(20)),
                                     reversed = reversed
                                   )
@@ -477,9 +473,10 @@ class EventServiceActor(
                         }
                       data
                     } else {
-                      Future.successful(Map(
-                        "status" -> StatusCodes.Forbidden.intValue,
-                        "message" -> s"${event.event} events are not allowed"))
+                      Future.successful(
+                        Map(
+                          "status" -> StatusCodes.Forbidden.intValue,
+                          "message" -> s"${event.event} events are not allowed"))
                     }
                   }
                   case Failure(exception) => {
@@ -497,9 +494,8 @@ class EventServiceActor(
                     } else {
                       (
                         StatusCodes.BadRequest,
-                        Map(
-                          "message" -> (s"Batch request must have less than or equal to " +
-                            s"${MaxNumberOfEventsPerBatchRequest} events")))
+                        Map("message" -> (s"Batch request must have less than or equal to " +
+                          s"${MaxNumberOfEventsPerBatchRequest} events")))
                     }
                   }
                 }
@@ -705,7 +701,6 @@ object EventServer {
 
 object Run {
   def main(args: Array[String]) {
-    EventServer.createEventServer(
-      EventServerConfig(ip = "0.0.0.0", port = 7070))
+    EventServer.createEventServer(EventServerConfig(ip = "0.0.0.0", port = 7070))
   }
 }

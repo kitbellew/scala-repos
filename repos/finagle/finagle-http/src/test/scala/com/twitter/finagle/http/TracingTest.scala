@@ -20,8 +20,7 @@ class TracingTest extends FunSuite {
 
       val dummyService = new Service[Request, Response] {
         def apply(request: Request) = {
-          assert(
-            request.headers.get(Header.TraceId) == traceId.traceId.toString)
+          assert(request.headers.get(Header.TraceId) == traceId.traceId.toString)
           assert(request.headers.get(Header.SpanId) == traceId.spanId.toString)
           assert(request.headers.contains(Header.ParentSpanId) == false)
           assert(

@@ -92,9 +92,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
     def mongo: Mongo
     def dbAuthParams: Map[String, String]
 
-    private def jTypeToProperties(
-        tpe: JType,
-        current: Set[String]): Set[String] =
+    private def jTypeToProperties(tpe: JType, current: Set[String]): Set[String] =
       tpe match {
         case JArrayFixedT(elements) if current.nonEmpty =>
           elements
@@ -169,8 +167,7 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                       db <- safeOp("Database " + dbName + " does not exist")(
                         mongo.getDB(dbName)).flatMap {
                         d =>
-                          if (!d.isAuthenticated && dbAuthParams.contains(
-                              dbName)) {
+                          if (!d.isAuthenticated && dbAuthParams.contains(dbName)) {
                             logger.trace("Running auth setup for " + dbName)
                             dbAuthParams.get(dbName).map(_.split(':')) flatMap {
                               case Array(user, password) =>
@@ -270,8 +267,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       (slice, nextSkip)
     }
 
-    private def buildColumns(dbObjs: java.util.List[DBObject])
-        : (Boolean, Int, Map[ColumnRef, Column]) = {
+    private def buildColumns(
+        dbObjs: java.util.List[DBObject]): (Boolean, Int, Map[ColumnRef, Column]) = {
       val sliceSize = dbObjs.size
 
       val acc = mutable.Map.empty[(List[CPathNode], CType), ArrayColumn[_]]

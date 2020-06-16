@@ -57,8 +57,7 @@ class ClientServerSpec
 
   val testConf2: Config =
     ConfigFactory
-      .parseString(
-        "akka.stream.materializer.subscription-timeout.timeout = 1 s")
+      .parseString("akka.stream.materializer.subscription-timeout.timeout = 1 s")
       .withFallback(testConf)
   val system2 = ActorSystem(getClass.getSimpleName, testConf2)
   val materializer2 = ActorMaterializer.create(system2)
@@ -577,8 +576,7 @@ class ClientServerSpec
     val connSourceSub = connSource.expectSubscription()
 
     def openNewClientConnection(
-        settings: ClientConnectionSettings =
-          ClientConnectionSettings(system)) = {
+        settings: ClientConnectionSettings = ClientConnectionSettings(system)) = {
       val requestPublisherProbe = TestPublisher.manualProbe[HttpRequest]()
       val responseSubscriberProbe = TestSubscriber.manualProbe[HttpResponse]()
 
@@ -625,10 +623,8 @@ class ClientServerSpec
       writer
     }
 
-    def readAll(socket: Socket)(
-        reader: BufferedReader = new BufferedReader(
-          new InputStreamReader(socket.getInputStream)))
-        : (String, BufferedReader) = {
+    def readAll(socket: Socket)(reader: BufferedReader = new BufferedReader(
+      new InputStreamReader(socket.getInputStream))): (String, BufferedReader) = {
       val sb = new java.lang.StringBuilder
       val cbuf = new Array[Char](256)
       @tailrec def drain(): (String, BufferedReader) =

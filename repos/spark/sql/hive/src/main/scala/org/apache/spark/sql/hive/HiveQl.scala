@@ -413,8 +413,8 @@ private[hive] class HiveQl(conf: ParserConf)
           HiveSerDe.sourceToSerDe(defaultStorageType, hiveConf).getOrElse {
             HiveSerDe(
               inputFormat = Option("org.apache.hadoop.mapred.TextInputFormat"),
-              outputFormat = Option(
-                "org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat"))
+              outputFormat =
+                Option("org.apache.hadoop.hive.ql.io.IgnoreKeyTextOutputFormat"))
           }
 
         tableDesc = tableDesc.withNewStorage(
@@ -557,8 +557,8 @@ private[hive] class HiveQl(conf: ParserConf)
 
               case "avro" =>
                 tableDesc = tableDesc.withNewStorage(
-                  inputFormat =
-                    Option("org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat"),
+                  inputFormat = Option(
+                    "org.apache.hadoop.hive.ql.io.avro.AvroContainerInputFormat"),
                   outputFormat =
                     Option("org.apache.hadoop.hive.ql.io.avro.AvroContainerOutputFormat")
                 )
@@ -725,11 +725,7 @@ private[hive] class HiveQl(conf: ParserConf)
         val (inRowFormat, inSerdeClass, inSerdeProps, useDefaultRecordReader) =
           matchSerDe(inputSerdeClause)
 
-        val (
-          outRowFormat,
-          outSerdeClass,
-          outSerdeProps,
-          useDefaultRecordWriter) =
+        val (outRowFormat, outSerdeClass, outSerdeProps, useDefaultRecordWriter) =
           matchSerDe(outputSerdeClause)
 
         val unescapedScript = unescapeSQLString(script)

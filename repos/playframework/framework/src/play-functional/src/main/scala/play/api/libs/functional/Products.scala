@@ -438,9 +438,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
           reducer.append(
             reducer.append(
               reducer.append(
-                reducer.append(
-                  reducer.append(reducer.unit(a1: A), a2: A),
-                  a3: A),
+                reducer.append(reducer.append(reducer.unit(a1: A), a2: A), a3: A),
                 a4: A),
               a5: A),
             a6: A),
@@ -495,9 +493,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         (b: B) => {
           val (a1, a2, a3, a4, a5, a6, a7, a8) = f(b);
           new ~(
-            new ~(
-              new ~(new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5), a6),
-              a7),
+            new ~(new ~(new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5), a6), a7),
             a8)
         })
 
@@ -514,9 +510,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         (b: B) => {
           val (a1, a2, a3, a4, a5, a6, a7, a8) = f2(b);
           new ~(
-            new ~(
-              new ~(new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5), a6),
-              a7),
+            new ~(new ~(new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5), a6), a7),
             a8)
         }
       )
@@ -824,17 +818,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
         witness10: <:<[A, A10],
         fu: ContravariantFunctor[M]): M[A] =
       apply[A]((a: A) =>
-        (
-          a: A1,
-          a: A2,
-          a: A3,
-          a: A4,
-          a: A5,
-          a: A6,
-          a: A7,
-          a: A8,
-          a: A9,
-          a: A10))(fu)
+        (a: A1, a: A2, a: A3, a: A4, a: A5, a: A6, a: A7, a: A8, a: A9, a: A10))(
+        fu)
 
     def reduce[A >: A1, B](implicit
         witness1: <:<[A1, A],
@@ -1069,8 +1054,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
             a11: A
           ))(fu)
 
-    def tupled(implicit v: VariantExtractor[M])
-        : M[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)] =
+    def tupled(implicit
+        v: VariantExtractor[M]): M[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)] =
       v match {
         case FunctorExtractor(fu) =>
           apply {
@@ -1371,30 +1356,16 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       m2: M[A13]) {
 
     def ~[A14](m3: M[A14]) =
-      new CanBuild14[
-        A1,
-        A2,
-        A3,
-        A4,
-        A5,
-        A6,
-        A7,
-        A8,
-        A9,
-        A10,
-        A11,
-        A12,
-        A13,
-        A14](canBuild(m1, m2), m3)
+      new CanBuild14[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14](
+        canBuild(m1, m2),
+        m3)
 
     def and[A14](m3: M[A14]) = this.~(m3)
 
     def apply[B](
         f: (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13) => B)(
         implicit fu: Functor[M]): M[B] =
-      fu.fmap[
-        A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13,
-        B](
+      fu.fmap[A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13, B](
         canBuild(m1, m2),
         {
           case a1 ~ a2 ~ a3 ~ a4 ~ a5 ~ a6 ~ a7 ~ a8 ~ a9 ~ a10 ~ a11 ~ a12 ~ a13 =>
@@ -1415,9 +1386,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                   new ~(
                     new ~(
                       new ~(
-                        new ~(
-                          new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5),
-                          a6),
+                        new ~(new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5), a6),
                         a7),
                       a8),
                     a9),
@@ -1449,9 +1418,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                   new ~(
                     new ~(
                       new ~(
-                        new ~(
-                          new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5),
-                          a6),
+                        new ~(new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5), a6),
                         a7),
                       a8),
                     a9),
@@ -1987,22 +1954,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
     def and[A16](m3: M[A16]) = this.~(m3)
 
     def apply[B](
-        f: (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15) => B)(implicit fu: Functor[M]): M[B] =
+        f: (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15) => B)(
+        implicit fu: Functor[M]): M[B] =
       fu.fmap[
         A1 ~ A2 ~ A3 ~ A4 ~ A5 ~ A6 ~ A7 ~ A8 ~ A9 ~ A10 ~ A11 ~ A12 ~ A13 ~ A14 ~ A15,
         B](
@@ -2032,22 +1985,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
       fu.contramap(
         canBuild(m1, m2),
         (b: B) => {
-          val (
-            a1,
-            a2,
-            a3,
-            a4,
-            a5,
-            a6,
-            a7,
-            a8,
-            a9,
-            a10,
-            a11,
-            a12,
-            a13,
-            a14,
-            a15) = f(b);
+          val (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15) =
+            f(b);
           new ~(
             new ~(
               new ~(
@@ -2114,22 +2053,8 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
             f1(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15)
         },
         (b: B) => {
-          val (
-            a1,
-            a2,
-            a3,
-            a4,
-            a5,
-            a6,
-            a7,
-            a8,
-            a9,
-            a10,
-            a11,
-            a12,
-            a13,
-            a14,
-            a15) = f2(b);
+          val (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14, a15) =
+            f2(b);
           new ~(
             new ~(
               new ~(
@@ -2750,9 +2675,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                                 reducer.append(
                                   reducer.append(
                                     reducer.append(
-                                      reducer.append(
-                                        reducer.unit(a1: A),
-                                        a2: A),
+                                      reducer.append(reducer.unit(a1: A), a2: A),
                                       a3: A),
                                     a4: A),
                                   a5: A),
@@ -3108,9 +3031,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                             new ~(
                               new ~(
                                 new ~(
-                                  new ~(
-                                    new ~(new ~(new ~(a1, a2), a3), a4),
-                                    a5),
+                                  new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5),
                                   a6),
                                 a7),
                               a8),
@@ -3219,9 +3140,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                             new ~(
                               new ~(
                                 new ~(
-                                  new ~(
-                                    new ~(new ~(new ~(a1, a2), a3), a4),
-                                    a5),
+                                  new ~(new ~(new ~(new ~(a1, a2), a3), a4), a5),
                                   a6),
                                 a7),
                               a8),
@@ -3324,21 +3243,20 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                       reducer.append(
                         reducer.append(
                           reducer.append(
-                            reducer.append(
-                              reducer.append(
+                            reducer
+                              .append(
                                 reducer.append(
                                   reducer.append(
                                     reducer.append(
                                       reducer.append(
                                         reducer.append(
-                                          reducer.unit(a1: A),
-                                          a2: A),
-                                        a3: A),
-                                      a4: A),
-                                    a5: A),
-                                  a6: A),
-                                a7: A),
-                              a8: A),
+                                          reducer.append(reducer.unit(a1: A), a2: A),
+                                          a3: A),
+                                        a4: A),
+                                      a5: A),
+                                    a6: A),
+                                  a7: A),
+                                a8: A),
                             a9: A
                           ),
                           a10: A
@@ -3959,9 +3877,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                                     reducer.append(
                                       reducer.append(
                                         reducer.append(
-                                          reducer.append(
-                                            reducer.unit(a1: A),
-                                            a2: A),
+                                          reducer.append(reducer.unit(a1: A), a2: A),
                                           a3: A),
                                         a4: A),
                                       a5: A),
@@ -6485,9 +6401,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                                         new ~(
                                           new ~(
                                             new ~(
-                                              new ~(
-                                                new ~(new ~(a1, a2), a3),
-                                                a4),
+                                              new ~(new ~(new ~(a1, a2), a3), a4),
                                               a5),
                                             a6),
                                           a7),
@@ -6628,9 +6542,7 @@ class FunctionalBuilder[M[_]](canBuild: FunctionalCanBuild[M]) {
                                         new ~(
                                           new ~(
                                             new ~(
-                                              new ~(
-                                                new ~(new ~(a1, a2), a3),
-                                                a4),
+                                              new ~(new ~(new ~(a1, a2), a3), a4),
                                               a5),
                                             a6),
                                           a7),

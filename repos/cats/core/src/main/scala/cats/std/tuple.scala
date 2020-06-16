@@ -10,9 +10,7 @@ sealed trait Tuple2Instances {
           fab: (A, B))(f: A => G[C], g: B => G[D]): G[(C, D)] =
         Applicative[G].tuple2(f(fab._1), g(fab._2))
 
-      def bifoldLeft[A, B, C](fab: (A, B), c: C)(
-          f: (C, A) => C,
-          g: (C, B) => C): C =
+      def bifoldLeft[A, B, C](fab: (A, B), c: C)(f: (C, A) => C, g: (C, B) => C): C =
         g(f(c, fab._1), fab._2)
 
       def bifoldRight[A, B, C](fab: (A, B), c: Eval[C])(

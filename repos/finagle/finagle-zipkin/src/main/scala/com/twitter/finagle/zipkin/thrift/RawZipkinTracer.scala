@@ -192,9 +192,7 @@ private[thrift] class RawZipkinTracer(
       try {
         span.toThrift.write(transport.protocol)
         entries.append(
-          LogEntry(
-            category = TraceCategory,
-            message = transport.toBase64Line()))
+          LogEntry(category = TraceCategory, message = transport.toBase64Line()))
       } catch {
         case NonFatal(e) => errorReceiver.counter(e.getClass.getName).incr()
       } finally {
@@ -370,8 +368,7 @@ private[thrift] class RawZipkinTracer(
     */
   protected def annotate(record: Record, value: String) {
     spanMap.update(record.traceId) { span =>
-      span.addAnnotation(
-        ZipkinAnnotation(record.timestamp, value, span.endpoint))
+      span.addAnnotation(ZipkinAnnotation(record.timestamp, value, span.endpoint))
     }
   }
 }

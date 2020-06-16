@@ -10,9 +10,7 @@ object MapPicklerHelper {
     tpe.typeargs match {
       case List(one, two) =>
         FastTypeTag
-          .apply(
-            currentMirror,
-            s"scala.Tuple2[${one.toString},${two.toString}]")
+          .apply(currentMirror, s"scala.Tuple2[${one.toString},${two.toString}]")
           .asInstanceOf[FastTypeTag[(T, U)]]
       // Note: This is what we do to handle
       case List() =>
@@ -71,11 +69,8 @@ trait ImmutableSortedMapPicklers {
       elemUnpickler: Unpickler[(K, V)],
       pairTag: FastTypeTag[(K, V)],
       collTag: FastTypeTag[immutable.SortedMap[K, V]],
-      cbf: CanBuildFrom[
-        immutable.SortedMap[K, V],
-        (K, V),
-        immutable.SortedMap[K, V]]): Pickler[immutable.SortedMap[K, V]]
-    with Unpickler[immutable.SortedMap[K, V]] =
+      cbf: CanBuildFrom[immutable.SortedMap[K, V], (K, V), immutable.SortedMap[K, V]])
+      : Pickler[immutable.SortedMap[K, V]] with Unpickler[immutable.SortedMap[K, V]] =
     MapPickler[K, V, immutable.SortedMap]
 
   // TODO - SortedMap runtime generation involves using a specialized pickler that can remember the ordering of elements.  Currently our pickler does not do that.
@@ -94,10 +89,8 @@ trait MutableMapPicklers {
   locally {
     val generator =
       TravPickler.generate[(Any, Any), mutable.Map[Any, Any]](
-        implicitly[CanBuildFrom[
-          mutable.Map[Any, Any],
-          (Any, Any),
-          mutable.Map[Any, Any]]],
+        implicitly[
+          CanBuildFrom[mutable.Map[Any, Any], (Any, Any), mutable.Map[Any, Any]]],
         identity[mutable.Map[Any, Any]]) { tpe =>
         MapPicklerHelper.tupleTagExtractor(tpe)
       } _

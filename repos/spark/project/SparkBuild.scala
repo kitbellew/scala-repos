@@ -262,9 +262,7 @@ object SparkBuild extends PomBuild {
       val out = streams.value
 
       def logProblem(l: (=> String) => Unit, f: File, p: xsbti.Problem) = {
-        l(
-          f.toString + ":" + p.position.line.fold("")(
-            _ + ":") + " " + p.message)
+        l(f.toString + ":" + p.position.line.fold("")(_ + ":") + " " + p.message)
         l(p.position.lineContent)
         l("")
       }
@@ -526,8 +524,7 @@ object Catalyst {
       if (errorState.errors > 0) {
         sys.error("ANTLR: Caught %d build errors.".format(errorState.errors))
       } else if (errorState.warnings > 0) {
-        sys.error(
-          "ANTLR: Caught %d build warnings.".format(errorState.warnings))
+        sys.error("ANTLR: Caught %d build warnings.".format(errorState.warnings))
       }
 
       // Return all generated java files.
@@ -738,13 +735,11 @@ object Unidoc {
     packages
       .map(_.filterNot(_.getName.contains("$")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/deploy")))
-      .map(
-        _.filterNot(_.getCanonicalPath.contains("org/apache/spark/examples")))
+      .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/examples")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/memory")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/network")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/shuffle")))
-      .map(_.filterNot(
-        _.getCanonicalPath.contains("org/apache/spark/executor")))
+      .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/executor")))
       .map(_.filterNot(_.getCanonicalPath.contains("org/apache/spark/unsafe")))
       .map(_.filterNot(_.getCanonicalPath.contains("python")))
       .map(_.filterNot(

@@ -153,9 +153,8 @@ trait TableLibModule[M[+_]] extends TableModule[M] with TransSpecModule {
         }
       })
 
-      def spec[A <: SourceType](ctx: MorphContext)(
-          left: TransSpec[A],
-          right: TransSpec[A]): TransSpec[A]
+      def spec[A <: SourceType](
+          ctx: MorphContext)(left: TransSpec[A], right: TransSpec[A]): TransSpec[A]
 
       def fold[A](op2: Op2 => A, op2F2: Op2F2 => A): A = op2(this)
     }
@@ -280,9 +279,7 @@ trait ColumnarTableLibModule[M[+_]]
               implicit val monoid: Monoid[Result] = new Monoid[Result] {
                 def zero = (x.monoid.zero, acc.monoid.zero)
                 def append(r1: Result, r2: => Result): Result = {
-                  (
-                    x.monoid.append(r1._1, r2._1),
-                    acc.monoid.append(r1._2, r2._2))
+                  (x.monoid.append(r1._1, r2._1), acc.monoid.append(r1._2, r2._2))
                 }
               }
 
@@ -293,9 +290,7 @@ trait ColumnarTableLibModule[M[+_]]
                 val right = acc.extract(r._2)
 
                 left.cross(right)(
-                  OuterArrayConcat(
-                    WrapArray(Leaf(SourceLeft)),
-                    Leaf(SourceRight)))
+                  OuterArrayConcat(WrapArray(Leaf(SourceLeft)), Leaf(SourceRight)))
               }
 
               // TODO: Can't translate this into a CValue. Evaluator
@@ -443,9 +438,7 @@ object StdLib {
 
       override def isDefinedAt(row: Int) =
         super.isDefinedAt(row) &&
-          c1(row) != null && doubleIsDefined(c2(row)) && defined(
-          c1(row),
-          c2(row))
+          c1(row) != null && doubleIsDefined(c2(row)) && defined(c1(row), c2(row))
 
       def apply(row: Int) = f(c1(row), c2(row))
     }
@@ -781,9 +774,7 @@ object StdLib {
         with NumColumn {
 
       override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) && defined(
-          BigDecimal(c1(row)),
-          BigDecimal(c2(row)))
+        super.isDefinedAt(row) && defined(BigDecimal(c1(row)), BigDecimal(c2(row)))
 
       def apply(row: Int) = f(BigDecimal(c1(row)), BigDecimal(c2(row)))
     }
@@ -797,9 +788,7 @@ object StdLib {
         with NumColumn {
 
       override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) && defined(
-          BigDecimal(c1(row)),
-          BigDecimal(c2(row)))
+        super.isDefinedAt(row) && defined(BigDecimal(c1(row)), BigDecimal(c2(row)))
 
       def apply(row: Int) = f(BigDecimal(c1(row)), BigDecimal(c2(row)))
     }
@@ -827,9 +816,7 @@ object StdLib {
         with NumColumn {
 
       override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) && defined(
-          BigDecimal(c1(row)),
-          BigDecimal(c2(row)))
+        super.isDefinedAt(row) && defined(BigDecimal(c1(row)), BigDecimal(c2(row)))
 
       def apply(row: Int) = f(BigDecimal(c1(row)), BigDecimal(c2(row)))
     }
@@ -843,9 +830,7 @@ object StdLib {
         with NumColumn {
 
       override def isDefinedAt(row: Int) =
-        super.isDefinedAt(row) && defined(
-          BigDecimal(c1(row)),
-          BigDecimal(c2(row)))
+        super.isDefinedAt(row) && defined(BigDecimal(c1(row)), BigDecimal(c2(row)))
 
       def apply(row: Int) = f(BigDecimal(c1(row)), BigDecimal(c2(row).toDouble))
     }
@@ -1072,10 +1057,7 @@ object StdLib {
       def apply(row: Int) = f(c1(row), c2(row))
     }
 
-    class Dt(
-        c: DateColumn,
-        defined: DateTime => Boolean,
-        f: DateTime => Boolean)
+    class Dt(c: DateColumn, defined: DateTime => Boolean, f: DateTime => Boolean)
         extends Map1Column(c)
         with BoolColumn {
 

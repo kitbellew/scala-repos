@@ -512,9 +512,7 @@ class Flags extends ModifierFlags {
     )
 
   @deprecated("Use flagString on the flag-carrying member", "2.10.0")
-  private[scala] def flagsToString(
-      flags: Long,
-      privateWithin: String): String = {
+  private[scala] def flagsToString(flags: Long, privateWithin: String): String = {
     val access = accessString(flags, privateWithin)
     val nonAccess = flagsToString(flags & ~AccessFlags)
 

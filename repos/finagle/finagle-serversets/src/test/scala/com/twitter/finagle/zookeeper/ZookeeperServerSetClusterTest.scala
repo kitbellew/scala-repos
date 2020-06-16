@@ -42,9 +42,7 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
     verify(serverSet).watch(monitorCaptor.capture)
     val clusterMonitor = monitorCaptor.getValue()
 
-    def registerHost(
-        socketAddr: InetSocketAddress,
-        extraEndpoints: EndpointMap) {
+    def registerHost(socketAddr: InetSocketAddress, extraEndpoints: EndpointMap) {
       val additionalEndpoints = extraEndpoints map {
         case (name, addr) =>
           name -> new Endpoint(addr.getHostName, addr.getPort)
@@ -79,8 +77,7 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
     verify(serverSet).join(localAddress, EmptyEndpointMap.asJava, Status.ALIVE)
   }
 
-  test(
-    "ZookeeperServerSetCluster registers the server with multiple endpoints") {
+  test("ZookeeperServerSetCluster registers the server with multiple endpoints") {
     val serverSet = mock[ServerSet]
     when(
       serverSet.join(anyObject, anyObject, anyObject[Status])

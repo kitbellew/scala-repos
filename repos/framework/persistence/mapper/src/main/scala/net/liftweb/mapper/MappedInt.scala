@@ -192,9 +192,7 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
             f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
         })
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(
         inst,
@@ -246,8 +244,9 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
                                       v => this.set(fromInt(v))))
     else
      */
-    Full(SHtml
-      .selectObj[Int](buildDisplayList, Full(toInt), v => this.set(fromInt(v))))
+    Full(
+      SHtml
+        .selectObj[Int](buildDisplayList, Full(toInt), v => this.set(fromInt(v))))
 }
 
 abstract class MappedIntIndex[T <: Mapper[T]](owner: T)
@@ -441,9 +440,7 @@ abstract class MappedInt[T <: Mapper[T]](val fieldOwner: T)
     (inst, v) =>
       doField(inst, accessor, { case f: MappedInt[T] => f.st(toInt(v)) })
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(inst, accessor, { case f: MappedInt[T] => f.st(toInt(v)) })
 

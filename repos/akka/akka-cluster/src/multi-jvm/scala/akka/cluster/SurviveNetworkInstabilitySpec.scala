@@ -165,8 +165,7 @@ abstract class SurviveNetworkInstabilitySpec
       assertCanTalk(first, second, third, fourth, fifth)
     }
 
-    "heal after one isolated node" taggedAs LongRunningTest in within(
-      45.seconds) {
+    "heal after one isolated node" taggedAs LongRunningTest in within(45.seconds) {
       val others = Vector(second, third, fourth, fifth)
       runOn(first) {
         for (other ← others) {
@@ -313,8 +312,7 @@ abstract class SurviveNetworkInstabilitySpec
       runOn(others: _*) {
         // second should be removed because of quarantine
         awaitAssert(
-          clusterView.members.map(_.address) should not contain (address(
-            second)))
+          clusterView.members.map(_.address) should not contain (address(second)))
       }
 
       enterBarrier("after-6")

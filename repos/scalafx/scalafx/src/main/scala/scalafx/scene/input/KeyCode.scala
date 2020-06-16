@@ -86,9 +86,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val PAUSE = Pause
 
   val Caps = new KeyCode(jfxsi.KeyCode.CAPS)
-  @deprecated(
-    "Use Caps; CAPS will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Caps; CAPS will be removed in a future release", "8.0.60-R10")
   val CAPS = Caps
 
   val Escape = new KeyCode(jfxsi.KeyCode.ESCAPE)
@@ -120,15 +118,11 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val END = End
 
   val Home = new KeyCode(jfxsi.KeyCode.HOME)
-  @deprecated(
-    "Use Home; HOME will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Home; HOME will be removed in a future release", "8.0.60-R10")
   val HOME = Home
 
   val Left = new KeyCode(jfxsi.KeyCode.LEFT)
-  @deprecated(
-    "Use Left; LEFT will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Left; LEFT will be removed in a future release", "8.0.60-R10")
   val LEFT = Left
 
   val Up = new KeyCode(jfxsi.KeyCode.UP)
@@ -142,9 +136,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val RIGHT = Right
 
   val Down = new KeyCode(jfxsi.KeyCode.DOWN)
-  @deprecated(
-    "Use Down; DOWN will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Down; DOWN will be removed in a future release", "8.0.60-R10")
   val DOWN = Down
 
   val Comma = new KeyCode(jfxsi.KeyCode.COMMA)
@@ -436,15 +428,11 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val INSERT = Insert
 
   val Help = new KeyCode(jfxsi.KeyCode.HELP)
-  @deprecated(
-    "Use Help; HELP will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Help; HELP will be removed in a future release", "8.0.60-R10")
   val HELP = Help
 
   val Meta = new KeyCode(jfxsi.KeyCode.META)
-  @deprecated(
-    "Use Meta; META will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Meta; META will be removed in a future release", "8.0.60-R10")
   val META = Meta
 
   val BackQuote = new KeyCode(jfxsi.KeyCode.BACK_QUOTE)
@@ -598,9 +586,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val QUOTEDBL = Quotedbl
 
   val Less = new KeyCode(jfxsi.KeyCode.LESS)
-  @deprecated(
-    "Use Less; LESS will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Less; LESS will be removed in a future release", "8.0.60-R10")
   val LESS = Less
 
   val Greater = new KeyCode(jfxsi.KeyCode.GREATER)
@@ -675,9 +661,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val NUMBER_SIGN = NumberSign
 
   val Plus = new KeyCode(jfxsi.KeyCode.PLUS)
-  @deprecated(
-    "Use Plus; PLUS will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Plus; PLUS will be removed in a future release", "8.0.60-R10")
   val PLUS = Plus
 
   val RightParenthesis = new KeyCode(jfxsi.KeyCode.RIGHT_PARENTHESIS)
@@ -735,9 +719,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val MODECHANGE = Modechange
 
   val Kana = new KeyCode(jfxsi.KeyCode.KANA)
-  @deprecated(
-    "Use Kana; KANA will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Kana; KANA will be removed in a future release", "8.0.60-R10")
   val KANA = Kana
 
   val Kanji = new KeyCode(jfxsi.KeyCode.KANJI)
@@ -835,9 +817,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val CUT = Cut
 
   val Copy = new KeyCode(jfxsi.KeyCode.COPY)
-  @deprecated(
-    "Use Copy; COPY will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Copy; COPY will be removed in a future release", "8.0.60-R10")
   val COPY = Copy
 
   val Paste = new KeyCode(jfxsi.KeyCode.PASTE)
@@ -847,9 +827,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val PASTE = Paste
 
   val Undo = new KeyCode(jfxsi.KeyCode.UNDO)
-  @deprecated(
-    "Use Undo; UNDO will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Undo; UNDO will be removed in a future release", "8.0.60-R10")
   val UNDO = Undo
 
   val Again = new KeyCode(jfxsi.KeyCode.AGAIN)
@@ -859,9 +837,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val AGAIN = Again
 
   val Find = new KeyCode(jfxsi.KeyCode.FIND)
-  @deprecated(
-    "Use Find; FIND will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Find; FIND will be removed in a future release", "8.0.60-R10")
   val FIND = Find
 
   val Props = new KeyCode(jfxsi.KeyCode.PROPS)
@@ -871,9 +847,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val PROPS = Props
 
   val Stop = new KeyCode(jfxsi.KeyCode.STOP)
-  @deprecated(
-    "Use Stop; STOP will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Stop; STOP will be removed in a future release", "8.0.60-R10")
   val STOP = Stop
 
   val Compose = new KeyCode(jfxsi.KeyCode.COMPOSE)
@@ -985,9 +959,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val GAME_D = GameD
 
   val Star = new KeyCode(jfxsi.KeyCode.STAR)
-  @deprecated(
-    "Use Star; STAR will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Star; STAR will be removed in a future release", "8.0.60-R10")
   val STAR = Star
 
   val Pound = new KeyCode(jfxsi.KeyCode.POUND)
@@ -1003,9 +975,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val POWER = Power
 
   val Info = new KeyCode(jfxsi.KeyCode.INFO)
-  @deprecated(
-    "Use Info; INFO will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Info; INFO will be removed in a future release", "8.0.60-R10")
   val INFO = Info
 
   val ColoredKey0 = new KeyCode(jfxsi.KeyCode.COLORED_KEY_0)
@@ -1039,9 +1009,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val EJECT_TOGGLE = EjectToggle
 
   val Play = new KeyCode(jfxsi.KeyCode.PLAY)
-  @deprecated(
-    "Use Play; PLAY will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Play; PLAY will be removed in a future release", "8.0.60-R10")
   val PLAY = Play
 
   val Record = new KeyCode(jfxsi.KeyCode.RECORD)
@@ -1099,9 +1067,7 @@ object KeyCode extends SFXEnumDelegateCompanion[jfxsi.KeyCode, KeyCode] {
   val VOLUME_DOWN = VolumeDown
 
   val Mute = new KeyCode(jfxsi.KeyCode.MUTE)
-  @deprecated(
-    "Use Mute; MUTE will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Mute; MUTE will be removed in a future release", "8.0.60-R10")
   val MUTE = Mute
 
   val Command = new KeyCode(jfxsi.KeyCode.COMMAND)

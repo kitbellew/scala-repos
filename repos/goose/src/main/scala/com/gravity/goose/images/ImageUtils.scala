@@ -71,9 +71,7 @@ object ImageUtils extends Logging {
           val wStr = pair(0)
           val hStr = pair(1)
 
-          (
-            string.tryToInt(wStr).getOrElse(0),
-            string.tryToInt(hStr).getOrElse(0))
+          (string.tryToInt(wStr).getOrElse(0), string.tryToInt(hStr).getOrElse(0))
         } else {
           (0, 0)
         }
@@ -278,10 +276,7 @@ object ImageUtils extends Logging {
 
   }
 
-  def getLocalFileName(
-      linkhash: String,
-      imageSrc: String,
-      config: Configuration) = {
+  def getLocalFileName(linkhash: String, imageSrc: String, config: Configuration) = {
     val imageHash = HashUtils.md5(imageSrc)
     config.localStoragePath + "/" + linkhash + "_" + imageHash
   }

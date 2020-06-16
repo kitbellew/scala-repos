@@ -146,10 +146,7 @@ object ActorSystem {
     *
     * @see <a href="http://typesafehub.github.io/config/v1.3.0/" target="_blank">The Typesafe Config Library API Documentation</a>
     */
-  def apply(
-      name: String,
-      config: Config,
-      classLoader: ClassLoader): ActorSystem =
+  def apply(name: String, config: Config, classLoader: ClassLoader): ActorSystem =
     apply(name, Option(config), Option(classLoader), None)
 
   /**
@@ -232,8 +229,7 @@ object ActorSystem {
     final val LogDeadLettersDuringShutdown: Boolean =
       config.getBoolean("akka.log-dead-letters-during-shutdown")
 
-    final val AddLoggingReceive: Boolean = getBoolean(
-      "akka.actor.debug.receive")
+    final val AddLoggingReceive: Boolean = getBoolean("akka.actor.debug.receive")
     final val DebugAutoReceive: Boolean = getBoolean(
       "akka.actor.debug.autoreceive")
     final val DebugLifecycle: Boolean = getBoolean("akka.actor.debug.lifecycle")
@@ -250,8 +246,7 @@ object ActorSystem {
       case x ⇒ Some(x)
     }
 
-    final val SchedulerClass: String = getString(
-      "akka.scheduler.implementation")
+    final val SchedulerClass: String = getString("akka.scheduler.implementation")
     final val Daemonicity: Boolean = getBoolean("akka.daemonic")
     final val JvmExitOnFatalError: Boolean = getBoolean(
       "akka.jvm-exit-on-fatal-error")
@@ -958,10 +953,7 @@ private[akka] class ActorSystemImpl(
               case _ ⇒ ""
             }) +
             " " + (cell.childrenRefs match {
-            case ChildrenContainer.TerminatingChildrenContainer(
-                  _,
-                  toDie,
-                  reason) ⇒
+            case ChildrenContainer.TerminatingChildrenContainer(_, toDie, reason) ⇒
               "Terminating(" + reason + ")" +
                 (toDie.toSeq.sorted mkString ("\n" + indent + "   |    toDie: ", "\n" + indent + "   |           ", ""))
             case x @ (ChildrenContainer.TerminatedChildrenContainer |

@@ -278,9 +278,7 @@ object Load {
         def apply[T](key: ScopedKey[T]) =
           if (key.key == streams.key)
             ScopedKey(
-              Scope.fillTaskAxis(
-                Scope.replaceThis(to.scope)(key.scope),
-                to.key),
+              Scope.fillTaskAxis(Scope.replaceThis(to.scope)(key.scope), to.key),
               key.key)
           else key
       }
@@ -402,8 +400,8 @@ object Load {
     }
 
   @deprecated("No longer used.", "0.13.0")
-  def extractSettings(plugins: Seq[Plugin])
-      : (Seq[Setting[_]], Seq[Setting[_]], Seq[Setting[_]]) =
+  def extractSettings(
+      plugins: Seq[Plugin]): (Seq[Setting[_]], Seq[Setting[_]], Seq[Setting[_]]) =
     (
       plugins.flatMap(_.settings),
       plugins.flatMap(_.projectSettings),
@@ -428,10 +426,7 @@ object Load {
     () => eval
   }
   def mkEval(unit: sbt.BuildUnit): Eval =
-    mkEval(
-      unit.definitions,
-      unit.plugins,
-      unit.plugins.pluginData.scalacOptions)
+    mkEval(unit.definitions, unit.plugins, unit.plugins.pluginData.scalacOptions)
   def mkEval(
       defs: sbt.LoadedDefinitions,
       plugs: sbt.LoadedPlugins,
@@ -487,26 +482,19 @@ object Load {
           pluginManagement = config.pluginManagement.shift,
           extraBuilds = Nil)),
       config.extraBuilds.toList)
-  def builtinLoader(
-      s: State,
-      config: sbt.LoadBuildConfiguration): BuildLoader = {
+  def builtinLoader(s: State, config: sbt.LoadBuildConfiguration): BuildLoader = {
     val fail = (uri: URI) =>
       sys.error("Invalid build URI (no handler available): " + uri)
     val resolver = (info: BuildLoader.ResolveInfo) => RetrieveUnit(info)
     val build = (info: BuildLoader.BuildInfo) =>
       Some(() => loadUnit(info.uri, info.base, info.state, info.config))
-    val components = BuildLoader.components(
-      resolver,
-      build,
-      full = BuildLoader.componentLoader)
+    val components =
+      BuildLoader.components(resolver, build, full = BuildLoader.componentLoader)
     BuildLoader(components, fail, s, config)
   }
   def load(file: File, loaders: BuildLoader, extra: List[URI]): sbt.PartBuild =
     loadURI(IO.directoryURI(file), loaders, extra)
-  def loadURI(
-      uri: URI,
-      loaders: BuildLoader,
-      extra: List[URI]): sbt.PartBuild = {
+  def loadURI(uri: URI, loaders: BuildLoader, extra: List[URI]): sbt.PartBuild = {
     IO.assertAbsolute(uri)
     val (referenced, map, newLoaders) =
       loadAll(uri :: extra, Map.empty, loaders, Map.empty)
@@ -615,8 +603,7 @@ object Load {
       case (uri, unit) =>
         (
           uri,
-          unit.resolveRefs(ref =>
-            Scope.resolveProjectRef(uri, rootProject, ref)))
+          unit.resolveRefs(ref => Scope.resolveProjectRef(uri, rootProject, ref)))
     }
   }
   def checkAll(
@@ -658,8 +645,8 @@ object Load {
       unit: sbt.PartBuildUnit,
       rootProject: URI => String): sbt.LoadedBuildUnit = {
     IO.assertAbsolute(uri)
-    val resolve = (_: Project).resolve(ref =>
-      Scope.resolveProjectRef(uri, rootProject, ref))
+    val resolve =
+      (_: Project).resolve(ref => Scope.resolveProjectRef(uri, rootProject, ref))
     new sbt.LoadedBuildUnit(
       unit.unit,
       unit.defined mapValues resolve,
@@ -1435,9 +1422,7 @@ object Load {
   @deprecated("LoadBuildConfiguration is now top-level", "0.13.0")
   val LoadBuildConfiguration = sbt.LoadBuildConfiguration
 
-  final class EvaluatedConfigurations(
-      val eval: Eval,
-      val settings: Seq[Setting[_]])
+  final class EvaluatedConfigurations(val eval: Eval, val settings: Seq[Setting[_]])
   final case class InjectSettings(
       global: Seq[Setting[_]],
       project: Seq[Setting[_]],

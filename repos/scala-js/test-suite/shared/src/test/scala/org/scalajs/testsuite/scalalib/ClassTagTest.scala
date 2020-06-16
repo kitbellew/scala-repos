@@ -108,16 +108,12 @@ class ClassTagTest {
       classOf[Array[_ <: Seq[_]]],
       ClassTag(classOf[Array[_ <: Seq[_]]]).runtimeClass)
     assertSame(classOf[Array[Int]], ClassTag(classOf[Array[Int]]).runtimeClass)
-    assertSame(
-      classOf[Array[Unit]],
-      ClassTag(classOf[Array[Unit]]).runtimeClass)
+    assertSame(classOf[Array[Unit]], ClassTag(classOf[Array[Unit]]).runtimeClass)
 
     // These work as expected, though
     assertSame(
       classOf[Array[Nothing]],
       ClassTag(classOf[Array[Nothing]]).runtimeClass)
-    assertSame(
-      classOf[Array[Null]],
-      ClassTag(classOf[Array[Null]]).runtimeClass)
+    assertSame(classOf[Array[Null]], ClassTag(classOf[Array[Null]]).runtimeClass)
   }
 }

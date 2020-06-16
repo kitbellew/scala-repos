@@ -32,8 +32,7 @@ private[round] final class Player(
         pov match {
           case Pov(game, color) if game playableBy color =>
             lila.mon
-              .measure(_.round.move.segment.logic)(
-                applyUci(game, uci, blur, lag))
+              .measure(_.round.move.segment.logic)(applyUci(game, uci, blur, lag))
               .prefixFailuresWith(s"$pov ")
               .fold(errs => fufail(ClientError(errs.shows)), fuccess)
               .flatMap {
@@ -99,11 +98,7 @@ private[round] final class Player(
           FishnetError("Invalid AI move current FEN"))
     } else fufail(FishnetError("Not AI turn"))
 
-  private def applyUci(
-      game: Game,
-      uci: Uci,
-      blur: Boolean,
-      lag: FiniteDuration) =
+  private def applyUci(game: Game, uci: Uci, blur: Boolean, lag: FiniteDuration) =
     (uci match {
       case Uci.Move(orig, dest, prom) =>
         game.toChess.apply(orig, dest, prom, lag) map {

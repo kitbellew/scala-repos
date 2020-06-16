@@ -71,11 +71,8 @@ object DbProviders {
       def deleteAllTables {
         DB.use(DefaultConnectionIdentifier) { conn =>
           val md = conn.getMetaData
-          val rs = md.getTables(
-            null,
-            Schemifier.getDefaultSchemaName(conn),
-            null,
-            null)
+          val rs =
+            md.getTables(null, Schemifier.getDefaultSchemaName(conn), null, null)
           var toDelete: List[String] = Nil
           while (rs.next) {
             val tableName = rs.getString(3)

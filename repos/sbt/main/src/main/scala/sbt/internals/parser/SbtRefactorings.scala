@@ -30,9 +30,8 @@ private[sbt] object SbtRefactorings {
     val sortedRecordedCommands =
       recordedCommands.sortBy(_._1)(REVERSE_ORDERING_INT)
 
-    val newContent = replaceFromBottomToTop(
-      lines.mkString(END_OF_LINE),
-      sortedRecordedCommands)
+    val newContent =
+      replaceFromBottomToTop(lines.mkString(END_OF_LINE), sortedRecordedCommands)
     (file, newContent.lines.toList)
   }
 

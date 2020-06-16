@@ -52,12 +52,8 @@ class QuotasTest extends KafkaServerTestHarness {
   val overridingProps = new Properties()
 
   // Low enough quota that a producer sending a small payload in a tight loop should get throttled
-  overridingProps.put(
-    KafkaConfig.ProducerQuotaBytesPerSecondDefaultProp,
-    "8000")
-  overridingProps.put(
-    KafkaConfig.ConsumerQuotaBytesPerSecondDefaultProp,
-    "2500")
+  overridingProps.put(KafkaConfig.ProducerQuotaBytesPerSecondDefaultProp, "8000")
+  overridingProps.put(KafkaConfig.ConsumerQuotaBytesPerSecondDefaultProp, "2500")
 
   override def generateConfigs() = {
     FixedPortTestUtils
@@ -263,11 +259,7 @@ class QuotasTest extends KafkaServerTestHarness {
       val payload = i.toString.getBytes
       numBytesProduced += payload.length
       p.send(
-        new ProducerRecord[Array[Byte], Array[Byte]](
-          topic1,
-          null,
-          null,
-          payload),
+        new ProducerRecord[Array[Byte], Array[Byte]](topic1, null, null, payload),
         new ErrorLoggingCallback(topic1, null, null, true))
         .get()
       Thread.sleep(1)
@@ -275,9 +267,7 @@ class QuotasTest extends KafkaServerTestHarness {
     numBytesProduced
   }
 
-  def consume(
-      consumer: KafkaConsumer[Array[Byte], Array[Byte]],
-      numRecords: Int) {
+  def consume(consumer: KafkaConsumer[Array[Byte], Array[Byte]], numRecords: Int) {
     consumer.subscribe(List(topic1))
     var numConsumed = 0
     while (numConsumed < numRecords) {

@@ -380,9 +380,8 @@ package com.twitter.scalding {
       CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "misses"))
     private[this] val hits =
       CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "hits"))
-    private[this] val evictions = CounterImpl(
-      flowProcess,
-      StatKey(MapsideReduce.COUNTER_GROUP, "evictions"))
+    private[this] val evictions =
+      CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "evictions"))
 
     def flush = summingCache.flush
 
@@ -423,9 +422,8 @@ package com.twitter.scalding {
       CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "capacity"))
     private[this] val sentinel =
       CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "sentinel"))
-    private[this] val evictions = CounterImpl(
-      flowProcess,
-      StatKey(MapsideReduce.COUNTER_GROUP, "evictions"))
+    private[this] val evictions =
+      CounterImpl(flowProcess, StatKey(MapsideReduce.COUNTER_GROUP, "evictions"))
 
     def flush = adaptiveCache.flush
 
@@ -797,9 +795,7 @@ package com.twitter.scalding {
       operationCall.setContext(p);
     }
 
-    def operate(
-        flowProcess: FlowProcess[_],
-        functionCall: FunctionCall[Poisson]) {
+    def operate(flowProcess: FlowProcess[_], functionCall: FunctionCall[Poisson]) {
       val r = functionCall.getContext.nextInt
       for (i <- 0 until r)
         functionCall.getOutputCollector().add(Tuple.NULL)

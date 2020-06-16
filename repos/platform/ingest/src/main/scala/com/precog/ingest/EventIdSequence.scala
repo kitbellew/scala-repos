@@ -109,10 +109,6 @@ object SystemEventIdSequence {
       InternalState(eventRelayState)
     }
 
-    new SystemEventIdSequence(
-      agent,
-      coordination,
-      loadInitialState(),
-      blockSize)
+    new SystemEventIdSequence(agent, coordination, loadInitialState(), blockSize)
   }
 }

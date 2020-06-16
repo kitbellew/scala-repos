@@ -65,8 +65,7 @@ class PeekMailboxType(settings: ActorSystem.Settings, config: Config)
       case (Some(o), Some(s)) ⇒
         val retries = config.getInt("max-retries")
         if (retries < 1)
-          throw new akka.ConfigurationException(
-            "max-retries must be at least 1")
+          throw new akka.ConfigurationException("max-retries must be at least 1")
         val mailbox = new PeekMailbox(o, s, retries)
         PeekMailboxExtension(s).register(o, mailbox)
         mailbox

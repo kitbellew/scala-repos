@@ -50,9 +50,7 @@ class MarathonScheduler @Inject() (
       SchedulerRegisteredEvent(frameworkId.getValue, master.getHostname))
   }
 
-  override def reregistered(
-      driver: SchedulerDriver,
-      master: MasterInfo): Unit = {
+  override def reregistered(driver: SchedulerDriver, master: MasterInfo): Unit = {
     log.info("Re-registered to %s".format(master))
     mesosLeaderInfo.onNewMasterInfo(master)
     eventBus.publish(SchedulerReregisteredEvent(master.getHostname))
@@ -77,9 +75,7 @@ class MarathonScheduler @Inject() (
     log.info("Offer %s rescinded".format(offer))
   }
 
-  override def statusUpdate(
-      driver: SchedulerDriver,
-      status: TaskStatus): Unit = {
+  override def statusUpdate(driver: SchedulerDriver, status: TaskStatus): Unit = {
     log.info(
       "Received status update for task %s: %s (%s)"
         .format(status.getTaskId.getValue, status.getState, status.getMessage))

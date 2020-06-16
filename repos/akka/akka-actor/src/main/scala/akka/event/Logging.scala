@@ -280,8 +280,7 @@ trait LoggingBus extends ActorEventBus {
   * The default implementation of the second variant will just call the first.
   */
 @implicitNotFound(
-  "Cannot find LogSource for ${T} please see ScalaDoc for LogSource for how to obtain or construct one.") trait LogSource[
-    -T] {
+  "Cannot find LogSource for ${T} please see ScalaDoc for LogSource for how to obtain or construct one.") trait LogSource[-T] {
   def genString(t: T): String
   def genString(t: T, system: ActorSystem): String = genString(t)
   def getClazz(t: T): Class[_] = t.getClass
@@ -1210,12 +1209,7 @@ trait LoggingAdapter {
     * Message template with 4 replacement arguments.
     * @see [[LoggingAdapter]]
     */
-  def info(
-      template: String,
-      arg1: Any,
-      arg2: Any,
-      arg3: Any,
-      arg4: Any): Unit = {
+  def info(template: String, arg1: Any, arg2: Any, arg3: Any, arg4: Any): Unit = {
     if (isInfoEnabled) notifyInfo(format(template, arg1, arg2, arg3, arg4))
   }
 
@@ -1279,11 +1273,7 @@ trait LoggingAdapter {
   /**
     * Message template with 2 replacement arguments.
     */
-  def log(
-      level: Logging.LogLevel,
-      template: String,
-      arg1: Any,
-      arg2: Any): Unit = {
+  def log(level: Logging.LogLevel, template: String, arg1: Any, arg2: Any): Unit = {
     if (isEnabled(level)) notifyLog(level, format(template, arg1, arg2))
   }
 

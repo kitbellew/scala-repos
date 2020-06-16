@@ -46,9 +46,7 @@ object scaladoc extends Command {
       "their API as HTML files.",
     "By default, the generator puts each HTML file in the same directory as " &
       "its source file. You can specify a separate destination directory with " &
-      CmdOption("d") & "(see " & Link(
-      Bold("OPTIONS"),
-      "#options") & ", below).",
+      CmdOption("d") & "(see " & Link(Bold("OPTIONS"), "#options") & ", below).",
     // tags are defined in class "scala.tools.nsc.doc.DocGenerator"
     "The recognised format of comments in source is described in the " & Link(
       "online documentation",
@@ -135,10 +133,8 @@ object scaladoc extends Command {
           CmdOption("encoding", Argument("encoding")),
           SeqPara(
             "Specify character encoding used by source files.",
-            "The default value is platform-specific (Linux: " & Mono(
-              "\"UTF8\"") &
-              ", Windows: " & Mono(
-              "\"Cp1252\"") & "). Executing the following " &
+            "The default value is platform-specific (Linux: " & Mono("\"UTF8\"") &
+              ", Windows: " & Mono("\"Cp1252\"") & "). Executing the following " &
               "code in the Scala interpreter will return the default value " &
               "on your system:",
             MBold("    scala> ") &
@@ -151,8 +147,7 @@ object scaladoc extends Command {
 
   val exitStatus = Section(
     "EXIT STATUS",
-    MBold(
-      command) & " returns a zero exit status if it succeeds at processing " &
+    MBold(command) & " returns a zero exit status if it succeeds at processing " &
       "the specified input files. Non zero is returned in case of failure."
   )
 

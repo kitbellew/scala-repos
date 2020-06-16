@@ -25,8 +25,7 @@ object TestUtil {
           {
             implicitly(input)
             implicitly(stack)
-            parsedExpected.trim == expected.trim && parsedFound.startsWith(
-              found)
+            parsedExpected.trim == expected.trim && parsedFound.startsWith(found)
           }
         )
       case s: Parsed.Success[_] => assert { implicitly(input); false }

@@ -817,10 +817,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             syntaxError(tree.pos, msg, skipIt = false)
             errorParam
           case _ =>
-            syntaxError(
-              tree.pos,
-              "not a legal formal parameter",
-              skipIt = false)
+            syntaxError(tree.pos, "not a legal formal parameter", skipIt = false)
             errorParam
         }
       }
@@ -871,9 +868,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
       makeTupleTerm(elems)
     }
 
-    private[this] def checkTupleSize(
-        elems: List[Tree],
-        offset: Offset): Boolean =
+    private[this] def checkTupleSize(elems: List[Tree], offset: Offset): Boolean =
       if (elems.lengthCompare(definitions.MaxTupleArity) > 0) {
         syntaxError(
           offset,
@@ -986,8 +981,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         Position.range(rhs.pos.source, offset, offset, offset + operator.length)
       val pos = lhs.pos union rhs.pos union operatorPos withPoint offset
 
-      atPos(pos)(
-        makeBinop(isExpr, lhs, operator, rhs, operatorPos, opinfo.targs))
+      atPos(pos)(makeBinop(isExpr, lhs, operator, rhs, operatorPos, opinfo.targs))
     }
 
     def reduceExprStack(base: List[OpInfo], top: Tree): Tree =
@@ -1895,8 +1889,8 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             case Ident(_) | Select(_, _) | Apply(_, _) =>
               var app: Tree = t1
               while (in.token == LBRACKET)
-                app = atPos(app.pos.start, in.offset)(
-                  TypeApply(app, exprTypeArgs()))
+                app =
+                  atPos(app.pos.start, in.offset)(TypeApply(app, exprTypeArgs()))
 
               simpleExprRest(app, canApply = true)
             case _ =>
@@ -2277,8 +2271,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             }
             in.token match {
               case LPAREN =>
-                atPos(start, in.offset)(
-                  Apply(typeAppliedTree, argumentPatterns()))
+                atPos(start, in.offset)(Apply(typeAppliedTree, argumentPatterns()))
               case _ => typeAppliedTree
             }
           case USCORE =>
@@ -3121,18 +3114,15 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
         case CASEOBJECT =>
           objectDef(
             pos,
-            (mods | Flags.CASE) withPosition (Flags.CASE, tokenRange(in.prev /*scanner skips on 'case' to 'object', thus take prev*/ )))
+            (mods | Flags.CASE) withPosition (Flags.CASE, tokenRange(
+              in.prev /*scanner skips on 'case' to 'object', thus take prev*/ )))
         case _ =>
           syntaxErrorOrIncompleteAnd(
             "expected start of definition",
             skipIt = true)(
             // assume a class definition so as to have somewhere to stash the annotations
-            atPos(pos)(
-              gen.mkClassDef(
-                mods,
-                tpnme.ERROR,
-                Nil,
-                Template(Nil, noSelfType, Nil)))
+            atPos(pos)(gen
+              .mkClassDef(mods, tpnme.ERROR, Nil, Template(Nil, noSelfType, Nil)))
           )
       }
     }
@@ -3168,10 +3158,7 @@ trait Parsers extends Scanners with MarkupParsers with ParsersCommon {
             else
               (
                 accessModifierOpt(),
-                paramClauses(
-                  name,
-                  classContextBounds,
-                  ofCaseClass = mods.isCase))
+                paramClauses(name, classContextBounds, ofCaseClass = mods.isCase))
           var mods1 = mods
           val template = templateOpt(
             mods1,

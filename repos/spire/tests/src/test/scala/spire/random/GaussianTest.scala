@@ -24,8 +24,7 @@ class GaussianTest extends FunSuite {
     checkGaussian[Double](gen.nextGaussian(_, _))
   }
 
-  def checkMarsagliaGaussian[
-      A: Field: NRoot: Trig: IsReal: Uniform: ClassTag] = {
+  def checkMarsagliaGaussian[A: Field: NRoot: Trig: IsReal: Uniform: ClassTag] = {
     val gen = rng.Cmwc5.fromTime(42L)
     val gaussian = new MarsagliaGaussian[A]
     checkGaussian[A] { (mean, stdDev) =>

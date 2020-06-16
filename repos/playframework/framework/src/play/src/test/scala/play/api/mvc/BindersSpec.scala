@@ -21,8 +21,7 @@ object BindersSpec extends Specification {
     }
     "Fail on unparseable UUID" in {
       subject.bind("key", "bad-uuid") must be_==(
-        Left(
-          "Cannot parse parameter key as UUID: Invalid UUID string: bad-uuid"))
+        Left("Cannot parse parameter key as UUID: Invalid UUID string: bad-uuid"))
     }
   }
 
@@ -37,9 +36,8 @@ object BindersSpec extends Specification {
         Some(Right(uuid)))
     }
     "Fail on unparseable UUID" in {
-      subject.bind("key", Map("key" -> Seq("bad-uuid"))) must be_==(
-        Some(Left(
-          "Cannot parse parameter key as UUID: Invalid UUID string: bad-uuid")))
+      subject.bind("key", Map("key" -> Seq("bad-uuid"))) must be_==(Some(
+        Left("Cannot parse parameter key as UUID: Invalid UUID string: bad-uuid")))
     }
   }
 

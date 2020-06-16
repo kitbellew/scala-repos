@@ -210,9 +210,7 @@ class SocksConnectHandler(
       throw ReplayError
   }
 
-  override def connectRequested(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def connectRequested(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     e match {
       case de: DownstreamChannelStateEvent =>
         if (!connectFuture.compareAndSet(null, e.getFuture)) {
@@ -253,9 +251,7 @@ class SocksConnectHandler(
   }
 
   // we delay propagating connection upstream until we've completed the proxy connection.
-  override def channelConnected(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def channelConnected(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     if (connectFuture.get eq null) {
       fail(ctx.getChannel, new InconsistentStateException(addr))
       return
@@ -295,9 +291,7 @@ class SocksConnectHandler(
               state = Authenticating
               writeUserNameAndPass(ctx, username, pass)
             case None =>
-              fail(
-                e.getChannel,
-                new ConnectionFailedException(InvalidInit, addr))
+              fail(e.getChannel, new ConnectionFailedException(InvalidInit, addr))
           }
 
         case Authenticating =>

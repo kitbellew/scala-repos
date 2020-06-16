@@ -60,7 +60,8 @@ class HealthStabilizerTest extends FunSuite with BeforeAndAfter {
     assertHealthyCounter()
   }
 
-  test("Stabilizer doesn't change from healthy to unhealthy until the epoch turns") {
+  test(
+    "Stabilizer doesn't change from healthy to unhealthy until the epoch turns") {
     Time.withCurrentTimeFrozen { tc =>
       val underlying = Event[ClientHealth]()
       val underlyingVar = Var[ClientHealth](ClientHealth.Healthy, underlying)

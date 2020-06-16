@@ -92,9 +92,7 @@ object SyntheticMembersInjector {
     }
   }
 
-  def inject(
-      source: ScTypeDefinition,
-      withOverride: Boolean): Seq[ScFunction] = {
+  def inject(source: ScTypeDefinition, withOverride: Boolean): Seq[ScFunction] = {
     val buffer = new ArrayBuffer[ScFunction]()
     for {
       injector <- EP_NAME.getExtensions.toSet ++ injectedExtensions(
@@ -106,10 +104,8 @@ object SyntheticMembersInjector {
           ScalaPsiUtil.getCompanionModule(o).getOrElse(source)
         case _ => source
       }
-      val function = ScalaPsiElementFactory.createMethodWithContext(
-        template,
-        context,
-        source)
+      val function =
+        ScalaPsiElementFactory.createMethodWithContext(template, context, source)
       function.setSynthetic(context)
       function.syntheticContainingClass = Some(source)
       if (withOverride ^ !function.hasModifierProperty("override"))

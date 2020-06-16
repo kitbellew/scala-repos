@@ -125,10 +125,8 @@ trait ManagedExecution
   protected def executor(implicit shardQueryMonad: JobQueryTFMonad)
       : QueryExecutor[JobQueryTF, StreamT[JobQueryTF, Slice]]
 
-  def executorFor(apiKey: APIKey): EitherT[
-    Future,
-    String,
-    QueryExecutor[Future, StreamT[Future, Slice]]] = {
+  def executorFor(apiKey: APIKey)
+      : EitherT[Future, String, QueryExecutor[Future, StreamT[Future, Slice]]] = {
     import scalaz.syntax.monad._
     for (queryExec <- syncExecutorFor(apiKey)) yield {
       new QueryExecutor[Future, StreamT[Future, Slice]] {
@@ -189,10 +187,8 @@ trait ManagedExecution
       extends ManagedQueryExecutor[(Option[JobId], StreamT[Future, Slice])] {
     def complete(
         result: EitherT[Future, EvaluationError, StreamT[JobQueryTF, Slice]],
-        outputType: MimeType)(implicit M: JobQueryTFMonad): EitherT[
-      Future,
-      EvaluationError,
-      (Option[JobId], StreamT[Future, Slice])] = {
+        outputType: MimeType)(implicit M: JobQueryTFMonad)
+        : EitherT[Future, EvaluationError, (Option[JobId], StreamT[Future, Slice])] = {
       result map { stream =>
         M.jobId -> completeJob(stream)
       }

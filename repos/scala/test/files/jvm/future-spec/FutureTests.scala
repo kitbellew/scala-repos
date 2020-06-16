@@ -141,9 +141,7 @@ class FutureTests extends MinimalScalaTest {
       assert(
         f.mapTo[String] eq f,
         "Future.mapTo must be the same instance as Future.mapTo")
-      assert(
-        f.zip(f) eq f,
-        "Future.zip must be the same instance as Future.zip")
+      assert(f.zip(f) eq f, "Future.zip must be the same instance as Future.zip")
       assert(
         f.flatten eq f,
         "Future.flatten must be the same instance as Future.flatten")
@@ -251,8 +249,7 @@ class FutureTests extends MinimalScalaTest {
         test.flatMap(_ => fail("flatMap should not have been called"))(
           ec) eq test)
       ECNotUsed(ec =>
-        test.filter(_ => fail("filter should not have been called"))(
-          ec) eq test)
+        test.filter(_ => fail("filter should not have been called"))(ec) eq test)
       ECNotUsed(ec =>
         test.collect({ case _ => fail("collect should not have been called") })(
           ec) eq test)

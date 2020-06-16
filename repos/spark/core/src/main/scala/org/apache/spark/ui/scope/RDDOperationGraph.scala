@@ -58,9 +58,7 @@ private[ui] case class RDDOperationEdge(fromId: Int, toId: Int)
   * This represents any grouping of RDDs, including operation scopes (e.g. textFile, flatMap),
   * stages, jobs, or any higher level construct. A cluster may be nested inside of other clusters.
   */
-private[ui] class RDDOperationCluster(
-    val id: String,
-    private var _name: String) {
+private[ui] class RDDOperationCluster(val id: String, private var _name: String) {
   private val _childNodes = new ListBuffer[RDDOperationNode]
   private val _childClusters = new ListBuffer[RDDOperationCluster]
 

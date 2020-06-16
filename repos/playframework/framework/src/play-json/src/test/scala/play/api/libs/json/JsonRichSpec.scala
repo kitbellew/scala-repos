@@ -44,8 +44,8 @@ object JsonRichSpec extends Specification {
                 JsString("value41"),
                 JsNumber(345.6),
                 JsString("test"),
-                JsObject(Seq(
-                  "key411" -> JsObject(Seq("key4111" -> JsNumber(987.654)))))
+                JsObject(
+                  Seq("key411" -> JsObject(Seq("key4111" -> JsNumber(987.654)))))
               ))
           ))
       )

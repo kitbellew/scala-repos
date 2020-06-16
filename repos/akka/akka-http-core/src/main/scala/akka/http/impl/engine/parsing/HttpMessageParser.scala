@@ -484,7 +484,8 @@ private[http] abstract class HttpMessageParser[
             failEntityStream(s"Illegal character '${escape(c)}' in chunk start")
         }
       } else
-        failEntityStream(s"HTTP chunk size exceeds the configured limit of $maxChunkSize bytes")
+        failEntityStream(
+          s"HTTP chunk size exceeds the configured limit of $maxChunkSize bytes")
 
     try parseSize(offset, 0)
     catch {
@@ -622,6 +623,5 @@ private[http] object HttpMessageParser {
           ErrorInfo("Illegal HTTP message start")))
   val CompletionIsEntityStreamError: CompletionHandling =
     () ⇒
-      Some(
-        ParserOutput.EntityStreamError(ErrorInfo("Entity stream truncation")))
+      Some(ParserOutput.EntityStreamError(ErrorInfo("Entity stream truncation")))
 }

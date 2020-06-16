@@ -294,8 +294,7 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
         changeAclAndVerify(Set.empty[Acl], value, Set.empty[Acl], key)
     }
     TestUtils.waitUntilTrue(
-      () =>
-        resourceToAcls + (resource -> acls) == simpleAclAuthorizer.getAcls(),
+      () => resourceToAcls + (resource -> acls) == simpleAclAuthorizer.getAcls(),
       "changes not propagated in timeout period.")
 
     //test remove acl from existing acls.
@@ -304,14 +303,12 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
     //test remove all acls for resource
     simpleAclAuthorizer.removeAcls(resource)
     TestUtils.waitAndVerifyAcls(Set.empty[Acl], simpleAclAuthorizer, resource)
-    assertTrue(
-      !zkUtils.pathExists(simpleAclAuthorizer.toResourcePath(resource)))
+    assertTrue(!zkUtils.pathExists(simpleAclAuthorizer.toResourcePath(resource)))
 
     //test removing last acl also deletes zookeeper path
     acls = changeAclAndVerify(Set.empty[Acl], Set(acl1), Set.empty[Acl])
     changeAclAndVerify(acls, Set.empty[Acl], acls)
-    assertTrue(
-      !zkUtils.pathExists(simpleAclAuthorizer.toResourcePath(resource)))
+    assertTrue(!zkUtils.pathExists(simpleAclAuthorizer.toResourcePath(resource)))
   }
 
   @Test

@@ -202,9 +202,7 @@ trait TypeComparers {
   }
 
   // SI-2066 This prevents overrides with incompatible variance in higher order type parameters.
-  private def methodHigherOrderTypeParamsSameVariance(
-      sym1: Symbol,
-      sym2: Symbol) = {
+  private def methodHigherOrderTypeParamsSameVariance(sym1: Symbol, sym2: Symbol) = {
     def ignoreVariance(sym: Symbol) =
       !(sym.isHigherOrderTypeParameter && sym.logicallyEnclosingMember.isMethod)
     !settings.isScala211 || ignoreVariance(sym1) || ignoreVariance(

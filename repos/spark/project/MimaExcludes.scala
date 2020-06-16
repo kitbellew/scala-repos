@@ -313,8 +313,10 @@ object MimaExcludes {
             "org.apache.spark.streaming.zeromq.ZeroMQUtils.createStream"),
           ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.spark.streaming.zeromq.ZeroMQUtils.createStream$default$6"),
           ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.zeromq.ZeroMQUtils.createStream$default$5"),
-          ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.StreamingContext.actorStream$default$4"),
-          ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.StreamingContext.actorStream$default$3"),
+          ProblemFilters.exclude[MissingMethodProblem](
+            "org.apache.spark.streaming.StreamingContext.actorStream$default$4"),
+          ProblemFilters.exclude[MissingMethodProblem](
+            "org.apache.spark.streaming.StreamingContext.actorStream$default$3"),
           ProblemFilters.exclude[MissingMethodProblem](
             "org.apache.spark.streaming.StreamingContext.actorStream"),
           ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.api.java.JavaStreamingContext.actorStream"),
@@ -326,7 +328,8 @@ object MimaExcludes {
           // SPARK-12348 Remove deprecated Streaming APIs.
           ProblemFilters.exclude[DirectMissingMethodProblem](
             "org.apache.spark.streaming.dstream.DStream.foreach"),
-          ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.StreamingContext.toPairDStreamFunctions"),
+          ProblemFilters.exclude[MissingMethodProblem](
+            "org.apache.spark.streaming.StreamingContext.toPairDStreamFunctions"),
           ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.StreamingContext.toPairDStreamFunctions$default$4"),
           ProblemFilters.exclude[MissingMethodProblem](
             "org.apache.spark.streaming.StreamingContext.awaitTermination"),
@@ -337,7 +340,8 @@ object MimaExcludes {
           ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.api.java.JavaStreamingContext.awaitTermination"),
           ProblemFilters.exclude[MissingMethodProblem](
             "org.apache.spark.streaming.api.java.JavaStreamingContext.sc"),
-          ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.api.java.JavaDStreamLike.reduceByWindow"),
+          ProblemFilters.exclude[MissingMethodProblem](
+            "org.apache.spark.streaming.api.java.JavaDStreamLike.reduceByWindow"),
           ProblemFilters.exclude[MissingMethodProblem](
             "org.apache.spark.streaming.api.java.JavaDStreamLike.foreachRDD"),
           ProblemFilters.exclude[MissingMethodProblem](
@@ -526,7 +530,8 @@ object MimaExcludes {
             "org.apache.spark.executor.OutputMetrics.productPrefix"),
           ProblemFilters.exclude[DirectMissingMethodProblem](
             "org.apache.spark.executor.ShuffleReadMetrics.decFetchWaitTime"),
-          ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleReadMetrics.decLocalBlocksFetched"),
+          ProblemFilters.exclude[DirectMissingMethodProblem](
+            "org.apache.spark.executor.ShuffleReadMetrics.decLocalBlocksFetched"),
           ProblemFilters.exclude[DirectMissingMethodProblem](
             "org.apache.spark.executor.ShuffleReadMetrics.decRecordsRead"),
           ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleReadMetrics.decRemoteBlocksFetched"),
@@ -534,10 +539,12 @@ object MimaExcludes {
             "org.apache.spark.executor.ShuffleReadMetrics.decRemoteBytesRead"),
           ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleWriteMetrics.decShuffleBytesWritten"),
           ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleWriteMetrics.decShuffleRecordsWritten"),
-          ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleWriteMetrics.decShuffleWriteTime"),
+          ProblemFilters.exclude[DirectMissingMethodProblem](
+            "org.apache.spark.executor.ShuffleWriteMetrics.decShuffleWriteTime"),
           ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleWriteMetrics.incShuffleBytesWritten"),
           ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleWriteMetrics.incShuffleRecordsWritten"),
-          ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleWriteMetrics.incShuffleWriteTime"),
+          ProblemFilters.exclude[DirectMissingMethodProblem](
+            "org.apache.spark.executor.ShuffleWriteMetrics.incShuffleWriteTime"),
           ProblemFilters.exclude[DirectMissingMethodProblem]("org.apache.spark.executor.ShuffleWriteMetrics.setShuffleRecordsWritten"),
           ProblemFilters.exclude[DirectMissingMethodProblem](
             "org.apache.spark.ml.feature.PCAModel.this"),
@@ -745,7 +752,8 @@ object MimaExcludes {
             "org.apache.spark.ml.tuning.TrainValidationSplit.fit"),
           ProblemFilters.exclude[IncompatibleMethTypeProblem](
             "org.apache.spark.ml.tuning.TrainValidationSplitModel.transform"),
-          ProblemFilters.exclude[IncompatibleMethTypeProblem]("org.apache.spark.mllib.evaluation.BinaryClassificationMetrics.this"),
+          ProblemFilters.exclude[IncompatibleMethTypeProblem](
+            "org.apache.spark.mllib.evaluation.BinaryClassificationMetrics.this"),
           ProblemFilters.exclude[IncompatibleMethTypeProblem](
             "org.apache.spark.mllib.evaluation.MulticlassMetrics.this"),
           ProblemFilters.exclude[IncompatibleMethTypeProblem](
@@ -779,7 +787,8 @@ object MimaExcludes {
             "org.apache.spark.ml.recommendation.ALSModel.itemFactors"),
           ProblemFilters.exclude[IncompatibleResultTypeProblem](
             "org.apache.spark.ml.recommendation.ALSModel.userFactors"),
-          ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.spark.ml.regression.LinearRegressionSummary.predictions"),
+          ProblemFilters.exclude[IncompatibleResultTypeProblem](
+            "org.apache.spark.ml.regression.LinearRegressionSummary.predictions"),
           ProblemFilters.exclude[IncompatibleResultTypeProblem](
             "org.apache.spark.ml.regression.LinearRegressionSummary.residuals"),
           ProblemFilters.exclude[IncompatibleResultTypeProblem](
@@ -904,8 +913,7 @@ object MimaExcludes {
             "org.apache.spark.sql.sources.OutputWriterFactory.newInstance")
         ) ++ Seq(
           // [SPARK-13928] Move org.apache.spark.Logging into org.apache.spark.internal.Logging
-          ProblemFilters.exclude[MissingClassProblem](
-            "org.apache.spark.Logging"),
+          ProblemFilters.exclude[MissingClassProblem]("org.apache.spark.Logging"),
           (problem: Problem) =>
             problem match {
               case MissingTypesProblem(_, missing)
@@ -952,14 +960,16 @@ object MimaExcludes {
           ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.spark.scheduler.AskPermissionToCommitOutput.copy$default$2"),
           ProblemFilters.exclude[IncompatibleMethTypeProblem](
             "org.apache.spark.scheduler.AskPermissionToCommitOutput.copy"),
-          ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.scheduler.AskPermissionToCommitOutput.taskAttempt"),
+          ProblemFilters.exclude[MissingMethodProblem](
+            "org.apache.spark.scheduler.AskPermissionToCommitOutput.taskAttempt"),
           ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.spark.scheduler.AskPermissionToCommitOutput.copy$default$3"),
           ProblemFilters.exclude[IncompatibleMethTypeProblem](
             "org.apache.spark.scheduler.AskPermissionToCommitOutput.this"),
           ProblemFilters.exclude[IncompatibleMethTypeProblem](
             "org.apache.spark.scheduler.AskPermissionToCommitOutput.apply")
         ) ++ Seq(
-          ProblemFilters.exclude[MissingClassProblem]("org.apache.spark.shuffle.FileShuffleBlockResolver$ShuffleFileGroup")
+          ProblemFilters.exclude[MissingClassProblem](
+            "org.apache.spark.shuffle.FileShuffleBlockResolver$ShuffleFileGroup")
         ) ++ Seq(
           ProblemFilters.exclude[MissingMethodProblem](
             "org.apache.spark.ml.regression.LeastSquaresAggregator.add"),
@@ -1296,7 +1306,8 @@ object MimaExcludes {
           ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.spark.scheduler.AskPermissionToCommitOutput.copy$default$2"),
           ProblemFilters.exclude[IncompatibleMethTypeProblem](
             "org.apache.spark.scheduler.AskPermissionToCommitOutput.copy"),
-          ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.scheduler.AskPermissionToCommitOutput.taskAttempt"),
+          ProblemFilters.exclude[MissingMethodProblem](
+            "org.apache.spark.scheduler.AskPermissionToCommitOutput.taskAttempt"),
           ProblemFilters.exclude[IncompatibleResultTypeProblem]("org.apache.spark.scheduler.AskPermissionToCommitOutput.copy$default$3"),
           ProblemFilters.exclude[IncompatibleMethTypeProblem](
             "org.apache.spark.scheduler.AskPermissionToCommitOutput.this"),
@@ -1553,7 +1564,8 @@ object MimaExcludes {
           ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.api.java.JavaStreamingContext.fileStream")
         ) ++ Seq(
           // SPARK-5315 Spark Streaming Java API returns Scala DStream
-          ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.api.java.JavaDStreamLike.reduceByWindow")
+          ProblemFilters.exclude[MissingMethodProblem](
+            "org.apache.spark.streaming.api.java.JavaDStreamLike.reduceByWindow")
         ) ++ Seq(
           // SPARK-5461 Graph should have isCheckpointed, getCheckpointFiles methods
           ProblemFilters.exclude[MissingMethodProblem](
@@ -1646,7 +1658,8 @@ object MimaExcludes {
             "org.apache.spark.rdd.PairRDDFunctions")
         ) ++ Seq(
           // SPARK-4062
-          ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.streaming.kafka.KafkaReceiver#MessageHandler.this")
+          ProblemFilters.exclude[MissingMethodProblem](
+            "org.apache.spark.streaming.kafka.KafkaReceiver#MessageHandler.this")
         )
 
       case v if v.startsWith("1.1") =>
@@ -1670,7 +1683,8 @@ object MimaExcludes {
               "org.apache.spark.api.java.JavaPairRDD.countApproxDistinctByKey"),
             ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.api.java.JavaPairRDD.countApproxDistinct$default$1"),
             ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.api.java.JavaPairRDD.countApproxDistinctByKey$default$1"),
-            ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.api.java.JavaRDD.countApproxDistinct$default$1"),
+            ProblemFilters.exclude[MissingMethodProblem](
+              "org.apache.spark.api.java.JavaRDD.countApproxDistinct$default$1"),
             ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.api.java.JavaRDDLike.countApproxDistinct$default$1"),
             ProblemFilters.exclude[MissingMethodProblem]("org.apache.spark.api.java.JavaDoubleRDD.countApproxDistinct$default$1"),
             ProblemFilters.exclude[MissingMethodProblem](
@@ -1786,8 +1800,7 @@ object MimaExcludes {
           MimaBuild.excludeSparkClass(
             "mllib.regression.RidgeRegressionWithSGD") ++
           MimaBuild.excludeSparkClass("mllib.regression.LassoWithSGD") ++
-          MimaBuild.excludeSparkClass(
-            "mllib.regression.LinearRegressionWithSGD")
+          MimaBuild.excludeSparkClass("mllib.regression.LinearRegressionWithSGD")
       case _ => Seq()
     }
 }

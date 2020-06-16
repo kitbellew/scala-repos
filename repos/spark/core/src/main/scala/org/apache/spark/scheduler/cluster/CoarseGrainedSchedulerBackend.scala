@@ -58,9 +58,7 @@ private[spark] class CoarseGrainedSchedulerBackend(
   // Submit tasks only after (registered resources / total expected resources)
   // is equal to at least this value, that is double between 0 and 1.
   var minRegisteredRatio =
-    math.min(
-      1,
-      conf.getDouble("spark.scheduler.minRegisteredResourcesRatio", 0))
+    math.min(1, conf.getDouble("spark.scheduler.minRegisteredResourcesRatio", 0))
   // Submit tasks after maxRegisteredWaitingTime milliseconds
   // if minRegisteredRatio has not yet been reached
   val maxRegisteredWaitingTimeMs =
@@ -240,9 +238,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
         .foreach(
           removeExecutor(
             _,
-            SlaveLost("Remote RPC client disassociated. Likely due to " +
-              "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
-              "messages.")
+            SlaveLost(
+              "Remote RPC client disassociated. Likely due to " +
+                "containers exceeding thresholds, or network issues. Check driver logs for WARN " +
+                "messages.")
           ))
     }
 
@@ -274,9 +273,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
           scheduler.taskIdToTaskSetManager.get(task.taskId).foreach {
             taskSetMgr =>
               try {
-                var msg = "Serialized task %s:%d was %d bytes, which exceeds max allowed: " +
-                  "spark.rpc.message.maxSize (%d bytes). Consider increasing " +
-                  "spark.rpc.message.maxSize or using broadcast variables for large values."
+                var msg =
+                  "Serialized task %s:%d was %d bytes, which exceeds max allowed: " +
+                    "spark.rpc.message.maxSize (%d bytes). Consider increasing " +
+                    "spark.rpc.message.maxSize or using broadcast variables for large values."
                 msg = msg.format(
                   task.taskId,
                   task.index,
@@ -426,9 +426,10 @@ private[spark] class CoarseGrainedSchedulerBackend(
         // because (1) disconnected event is not yet received; (2) executors die silently.
         executorDataMap.toMap.foreach {
           case (eid, _) =>
-            driverEndpoint.askWithRetry[Boolean](RemoveExecutor(
-              eid,
-              SlaveLost("Stale executor after cluster manager re-registered.")))
+            driverEndpoint.askWithRetry[Boolean](
+              RemoveExecutor(
+                eid,
+                SlaveLost("Stale executor after cluster manager re-registered.")))
         }
       }
     }

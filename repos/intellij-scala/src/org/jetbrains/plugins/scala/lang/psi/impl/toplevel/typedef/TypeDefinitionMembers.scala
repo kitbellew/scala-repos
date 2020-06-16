@@ -210,8 +210,7 @@ object TypeDefinitionMembers {
           case constr: ScPrimaryConstructor =>
             val parameters = constr.parameters
             for (param <- parameters if nonBridge(place, param)) {
-              addSignature(
-                new Signature(param.name, Seq.empty, 0, subst, param))
+              addSignature(new Signature(param.name, Seq.empty, 0, subst, param))
               val beanProperty =
                 ScalaPsiUtil.isBeanProperty(param, noResolve = true)
               val booleanBeanProperty =
@@ -278,10 +277,7 @@ object TypeDefinitionMembers {
       }
     }
 
-    def processRefinement(
-        cp: ScCompoundType,
-        map: Map,
-        place: Option[PsiElement]) {
+    def processRefinement(cp: ScCompoundType, map: Map, place: Option[PsiElement]) {
       for ((sign, _) <- cp.signatureMap) {
         if (sign.paramLength.sum == 0 && (ScalaPsiUtil.nameContext(
             sign.namedElement) match {
@@ -361,10 +357,7 @@ object TypeDefinitionMembers {
       }
     }
 
-    def processRefinement(
-        cp: ScCompoundType,
-        map: Map,
-        place: Option[PsiElement]) {
+    def processRefinement(cp: ScCompoundType, map: Map, place: Option[PsiElement]) {
       for ((name, TypeAliasSignature(_, _, _, _, _, alias)) <- cp.typesMap
         if nonBridge(place, alias)) {
         map addToMap (alias, new Node(alias, ScSubstitutor.empty))
@@ -539,16 +532,10 @@ object TypeDefinitionMembers {
             val parameters = constr.parameters
             for (param <- parameters if nonBridge(place, param)) {
               lazy val t = param.getType(TypingContext.empty).getOrAny
-              addSignature(
-                new Signature(param.name, Seq.empty, 0, subst, param))
+              addSignature(new Signature(param.name, Seq.empty, 0, subst, param))
               if (!param.isStable)
                 addSignature(
-                  new Signature(
-                    param.name + "_=",
-                    Seq(() => t),
-                    1,
-                    subst,
-                    param))
+                  new Signature(param.name + "_=", Seq(() => t), 1, subst, param))
               val beanProperty =
                 ScalaPsiUtil.isBeanProperty(param, noResolve = true)
               val booleanBeanProperty =
@@ -638,10 +625,7 @@ object TypeDefinitionMembers {
       }
     }
 
-    def processRefinement(
-        cp: ScCompoundType,
-        map: Map,
-        place: Option[PsiElement]) {
+    def processRefinement(cp: ScCompoundType, map: Map, place: Option[PsiElement]) {
       for ((sign, _) <- cp.signatureMap) {
         if (ScalaPsiUtil.nameContext(sign.namedElement) match {
             case m: PsiMember => nonBridge(place, m)
@@ -726,9 +710,7 @@ object TypeDefinitionMembers {
                 c match {
                   case o: ScObject =>
                     if (allowedNames.contains(o.name)) {
-                      @CachedInsidePsiElement(
-                        o,
-                        CachesUtil.getDependentItem(o)())
+                      @CachedInsidePsiElement(o, CachesUtil.getDependentItem(o)())
                       def buildNodesObject(): SMap = SignatureNodes.build(o)
 
                       val add = buildNodesObject()
@@ -736,9 +718,7 @@ object TypeDefinitionMembers {
                     }
                   case c: ScClass =>
                     if (allowedNames.contains(c.name)) {
-                      @CachedInsidePsiElement(
-                        c,
-                        CachesUtil.getDependentItem(c)())
+                      @CachedInsidePsiElement(c, CachesUtil.getDependentItem(c)())
                       def buildNodesClass2(): SMap = SignatureNodes.build(c)
 
                       val add = buildNodesClass2()
@@ -1093,17 +1073,17 @@ object TypeDefinitionMembers {
                     if (processValsForScala &&
                       !processor.execute(
                         method,
-                        state.put(
-                          ScSubstitutor.key,
-                          n.substitutor followed subst))) return false
+                        state
+                          .put(ScSubstitutor.key, n.substitutor followed subst)))
+                      return false
                     true
                   }
                   if (decodedName.startsWith("set") && !process(
                       t.getSetBeanMethod)) return false
                   if (decodedName.startsWith("get") && !process(
                       t.getGetBeanMethod)) return false
-                  if (decodedName.startsWith("is") && !process(
-                      t.getIsBeanMethod)) return false
+                  if (decodedName.startsWith("is") && !process(t.getIsBeanMethod))
+                    return false
                   if (decodedName.isEmpty) {
                     //completion processor    a
                     val beanMethodsIterator = t.getBeanMethods.iterator

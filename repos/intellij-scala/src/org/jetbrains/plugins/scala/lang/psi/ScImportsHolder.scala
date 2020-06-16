@@ -207,9 +207,7 @@ trait ScImportsHolder extends ScalaPsiElement {
       case _                             => return
     }
 
-    def replaceWithNewInfos(
-        range: TextRange,
-        infosToAdd: Seq[ImportInfo]): Unit = {
+    def replaceWithNewInfos(range: TextRange, infosToAdd: Seq[ImportInfo]): Unit = {
       val rangeMarker = document.createRangeMarker(range)
       documentManager.doPostponedOperationsAndUnblockDocument(document)
       val newRange =
@@ -239,9 +237,8 @@ trait ScImportsHolder extends ScalaPsiElement {
       else refsContainer == null && hasCodeBeforeImports
 
     if (needToInsertFirst) {
-      val dummyImport = ScalaPsiElementFactory.createImportFromText(
-        "import dummy._",
-        getManager)
+      val dummyImport =
+        ScalaPsiElementFactory.createImportFromText("import dummy._", getManager)
       val usedNames = collectUsedImportedNames(this)
       val inserted =
         insertFirstImport(dummyImport, getFirstChild).asInstanceOf[ScImportStmt]

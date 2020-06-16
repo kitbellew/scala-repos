@@ -42,9 +42,7 @@ private[serverset2] trait ChattyClient extends ZooKeeperClient {
   def sessionTimeout: Duration = underlying.sessionTimeout
 }
 
-private[serverset2] trait ChattyReader
-    extends ChattyClient
-    with ZooKeeperReader {
+private[serverset2] trait ChattyReader extends ChattyClient with ZooKeeperReader {
   protected val underlying: ZooKeeperReader
 
   def exists(path: String): Future[Option[Data.Stat]] =
@@ -72,9 +70,7 @@ private[serverset2] trait ChattyReader
     printOp("sync", underlying.sync(path), path)
 }
 
-private[serverset2] trait ChattyWriter
-    extends ChattyClient
-    with ZooKeeperWriter {
+private[serverset2] trait ChattyWriter extends ChattyClient with ZooKeeperWriter {
   protected val underlying: ZooKeeperWriter
 
   def create(

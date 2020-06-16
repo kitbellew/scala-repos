@@ -14,9 +14,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScModifierListOwner
   */
 
 class ScalaContainingClassWiegher extends CompletionWeigher {
-  def weigh(
-      element: LookupElement,
-      location: CompletionLocation): Comparable[_] = {
+  def weigh(element: LookupElement, location: CompletionLocation): Comparable[_] = {
     import KindWeights._
     ScalaLookupItem.original(element) match {
       case si: ScalaLookupItem if si.isLocalVariable => local

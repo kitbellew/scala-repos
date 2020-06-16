@@ -262,8 +262,7 @@ class VertexRDDImpl[VD] private[graphx] (
       _.flatMap(_.shipVertexAttributes(shipSrc, shipDst)))
   }
 
-  override private[graphx] def shipVertexIds()
-      : RDD[(PartitionID, Array[VertexId])] = {
+  override private[graphx] def shipVertexIds(): RDD[(PartitionID, Array[VertexId])] = {
     partitionsRDD.mapPartitions(_.flatMap(_.shipVertexIds()))
   }
 

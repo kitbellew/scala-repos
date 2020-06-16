@@ -76,8 +76,7 @@ private[finagle] class ExceptionRemoteInfoFactory[Req, Rep](
     endpointAddr: SocketAddress,
     label: String)
     extends ServiceFactoryProxy[Req, Rep](underlying) {
-  private[this] val requestAddRemoteInfo
-      : PartialFunction[Throwable, Future[Rep]] =
+  private[this] val requestAddRemoteInfo: PartialFunction[Throwable, Future[Rep]] =
     ExceptionRemoteInfoFactory.addRemoteInfo(endpointAddr, label)
 
   private[this] val connectionAddRemoteInfo

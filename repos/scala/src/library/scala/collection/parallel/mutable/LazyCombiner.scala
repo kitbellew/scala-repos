@@ -47,6 +47,5 @@ trait LazyCombiner[Elem, +To, Buff <: Growable[Elem] with Sizing]
     *  `size` and `chain` members.
     */
   def allocateAndCopy: To
-  def newLazyCombiner(
-      buffchain: ArrayBuffer[Buff]): LazyCombiner[Elem, To, Buff]
+  def newLazyCombiner(buffchain: ArrayBuffer[Buff]): LazyCombiner[Elem, To, Buff]
 }

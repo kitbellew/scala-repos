@@ -360,8 +360,7 @@ private object BisectingKMeans extends Serializable {
   private def updateAssignments(
       assignments: RDD[(Long, VectorWithNorm)],
       divisibleIndices: Set[Long],
-      newClusterCenters: Map[Long, VectorWithNorm])
-      : RDD[(Long, VectorWithNorm)] = {
+      newClusterCenters: Map[Long, VectorWithNorm]): RDD[(Long, VectorWithNorm)] = {
     assignments.map {
       case (index, v) =>
         if (divisibleIndices.contains(index)) {
@@ -514,17 +513,13 @@ private[clustering] class ClusteringTreeNode private[clustering] (
     * @return (predicted leaf cluster index, cost)
     */
   @tailrec
-  private def predict(
-      pointWithNorm: VectorWithNorm,
-      cost: Double): (Int, Double) = {
+  private def predict(pointWithNorm: VectorWithNorm, cost: Double): (Int, Double) = {
     if (isLeaf) {
       (index, cost)
     } else {
       val (selectedChild, minCost) = children
         .map { child =>
-          (
-            child,
-            KMeans.fastSquaredDistance(child.centerWithNorm, pointWithNorm))
+          (child, KMeans.fastSquaredDistance(child.centerWithNorm, pointWithNorm))
         }
         .minBy(_._2)
       selectedChild.predict(pointWithNorm, minCost)

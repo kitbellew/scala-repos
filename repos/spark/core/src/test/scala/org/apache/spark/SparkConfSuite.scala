@@ -48,8 +48,7 @@ class SparkConfSuite
     val conf = new SparkConf()
     // Simply exercise the API, we don't need a complete conversion test since that's handled in
     // UtilsSuite.scala
-    assert(
-      conf.getTimeAsMs("fake", "1ms") === TimeUnit.MILLISECONDS.toMillis(1))
+    assert(conf.getTimeAsMs("fake", "1ms") === TimeUnit.MILLISECONDS.toMillis(1))
     assert(
       conf.getTimeAsSeconds("fake", "1000ms") === TimeUnit.MILLISECONDS
         .toSeconds(1000))

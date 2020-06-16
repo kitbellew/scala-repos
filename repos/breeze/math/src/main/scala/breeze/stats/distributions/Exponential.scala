@@ -41,8 +41,7 @@ object Exponential
     with ContinuousDistributionUFuncProvider[Double, Exponential] {
   type Parameter = Double
   case class SufficientStatistic(n: Double, v: Double)
-      extends breeze.stats.distributions.SufficientStatistic[
-        SufficientStatistic] {
+      extends breeze.stats.distributions.SufficientStatistic[SufficientStatistic] {
     def +(t: SufficientStatistic) = copy(n + t.n, v + t.v)
 
     def *(weight: Double) = copy(n * weight, v * weight)

@@ -98,8 +98,7 @@ abstract class CreateTypeDefinitionQuickFix(
   private def createInnerClassIn(target: ScTemplateDefinition): Unit = {
     val extBlock = target.extendsBlock
     val targetBody = extBlock.templateBody.getOrElse(
-      extBlock.add(
-        ScalaPsiElementFactory.createTemplateBody(target.getManager)))
+      extBlock.add(ScalaPsiElementFactory.createTemplateBody(target.getManager)))
     createClassIn(targetBody, Some(targetBody.getLastChild))
   }
 
@@ -107,8 +106,8 @@ abstract class CreateTypeDefinitionQuickFix(
       parent: PsiElement,
       anchorAfter: Option[PsiElement]): Unit = {
     try {
-      if (!FileModificationService.getInstance.preparePsiElementForWrite(
-          parent)) return
+      if (!FileModificationService.getInstance.preparePsiElementForWrite(parent))
+        return
 
       val text = s"${kind.keyword} $name"
       val newTd = ScalaPsiElementFactory.createTemplateDefinitionFromText(

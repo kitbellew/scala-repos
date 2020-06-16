@@ -40,31 +40,24 @@ class Migration @Inject() (
     List(
       StorageVersions(0, 7, 0) -> { () =>
         Future.failed(
-          new IllegalStateException(
-            "migration from 0.7.x not supported anymore"))
+          new IllegalStateException("migration from 0.7.x not supported anymore"))
       },
       StorageVersions(0, 11, 0) -> { () =>
         new MigrationTo0_11(groupRepo, appRepo).migrateApps().recover {
           case NonFatal(e) =>
-            throw new MigrationFailedException(
-              "while migrating storage to 0.11",
-              e)
+            throw new MigrationFailedException("while migrating storage to 0.11", e)
         }
       },
       StorageVersions(0, 13, 0) -> { () =>
         new MigrationTo0_13(taskRepo, store).migrate().recover {
           case NonFatal(e) =>
-            throw new MigrationFailedException(
-              "while migrating storage to 0.13",
-              e)
+            throw new MigrationFailedException("while migrating storage to 0.13", e)
         }
       },
       StorageVersions(0, 16, 0) -> { () =>
         new MigrationTo0_16(groupRepo, appRepo).migrate().recover {
           case NonFatal(e) =>
-            throw new MigrationFailedException(
-              "while migrating storage to 0.16",
-              e)
+            throw new MigrationFailedException("while migrating storage to 0.16", e)
         }
       }
     )
@@ -217,9 +210,7 @@ class MigrationTo0_11(
       }
     }
 
-    def loadApp(
-        id: PathId,
-        version: Timestamp): Future[Option[AppDefinition]] = {
+    def loadApp(id: PathId, version: Timestamp): Future[Option[AppDefinition]] = {
       if (appInGroup.version == version) {
         Future.successful(Some(appInGroup))
       } else {
@@ -426,8 +417,8 @@ class MigrationTo0_16(
             appRepository.app(appId, version).flatMap {
               case Some(app) => appRepository.store(app).map(_ => ())
               case None =>
-                Future.failed(new MigrationFailedException(
-                  s"App $appId:$version not found"))
+                Future.failed(
+                  new MigrationFailedException(s"App $appId:$version not found"))
             }
           }
         }

@@ -285,8 +285,7 @@ class FutureSpec
             val actor2 = system.actorOf(Props(new Actor {
               def receive = {
                 case s: String ⇒
-                  sender() ! Status.Failure(
-                    new ArithmeticException("/ by zero"))
+                  sender() ! Status.Failure(new ArithmeticException("/ by zero"))
               }
             }))
             val future = actor1 ? "Hello" flatMap {
@@ -535,8 +534,7 @@ class FutureSpec
       "fold by composing" in {
         val futures = (1 to 10).toList map { i ⇒ Future(i) }
         Await.result(
-          futures.foldLeft(Future(0))((fr, fa) ⇒
-            for (r ← fr; a ← fa) yield (r + a)),
+          futures.foldLeft(Future(0))((fr, fa) ⇒ for (r ← fr; a ← fa) yield (r + a)),
           timeout.duration) should ===(55)
       }
 
@@ -636,12 +634,9 @@ class FutureSpec
         system.stop(oddActor)
 
         val list = (1 to 100).toList
-        assert(
-          Await
-            .result(
-              Future.traverse(list)(x ⇒ Future(x * 2 - 1)),
-              timeout.duration)
-            .sum === 10000)
+        assert(Await
+          .result(Future.traverse(list)(x ⇒ Future(x * 2 - 1)), timeout.duration)
+          .sum === 10000)
       }
 
       "handle Throwables" in {
@@ -870,8 +865,7 @@ class FutureSpec
       f((future, result) ⇒
         (intercept[NoSuchElementException] {
           Await.result(future.failed, timeout.duration)
-        }).getMessage should ===(
-          "Future.failed not completed with a throwable."))
+        }).getMessage should ===("Future.failed not completed with a throwable."))
     }
     "not perform action on exception" is pending
     "cast using mapTo" in {

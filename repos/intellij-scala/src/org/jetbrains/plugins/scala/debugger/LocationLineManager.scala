@@ -214,8 +214,8 @@ trait LocationLineManager {
           if (code.nonEmpty) Some(code) else None
         }
 
-        val notCustomizedYet = caseLinesLocations.map(
-          _.filter(!customizedLocationsCache.contains(_)))
+        val notCustomizedYet =
+          caseLinesLocations.map(_.filter(!customizedLocationsCache.contains(_)))
         val repeating = notCustomizedYet.filter(_.size > 1)
         val lastLocations = repeating.map(_.last)
         val withStoreCode =

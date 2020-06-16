@@ -100,8 +100,7 @@ private[csv] object CSVInferSchema {
         case BooleanType   => tryParseBoolean(field)
         case StringType    => StringType
         case other: DataType =>
-          throw new UnsupportedOperationException(
-            s"Unexpected data type $other")
+          throw new UnsupportedOperationException(s"Unexpected data type $other")
       }
     }
   }

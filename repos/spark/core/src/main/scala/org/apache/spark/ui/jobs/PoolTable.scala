@@ -57,8 +57,7 @@ private[ui] class PoolTable(pools: Seq[Schedulable], parent: StagesTab) {
 
   private def poolRow(
       p: Schedulable,
-      poolToActiveStages: HashMap[String, HashMap[Int, StageInfo]])
-      : Seq[Node] = {
+      poolToActiveStages: HashMap[String, HashMap[Int, StageInfo]]): Seq[Node] = {
     val activeStages = poolToActiveStages.get(p.name) match {
       case Some(stages) => stages.size
       case None         => 0

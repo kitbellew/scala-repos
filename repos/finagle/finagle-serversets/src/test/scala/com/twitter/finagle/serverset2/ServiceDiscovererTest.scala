@@ -68,8 +68,7 @@ class ServiceDiscovererTest
     val serviceInstance = new ServiceInstance()
     serviceInstance.setShard(1)
     serviceInstance.setStatus(thrift.Status.ALIVE)
-    serviceInstance.setServiceEndpoint(
-      new thrift.Endpoint(s"$id.0.0.12", 32123))
+    serviceInstance.setServiceEndpoint(new thrift.Endpoint(s"$id.0.0.12", 32123))
     ByteArray.Owned(
       ServerSets.serializeServiceInstance(serviceInstance, jsonCodec))
   }
@@ -107,14 +106,12 @@ class ServiceDiscovererTest
 
     val ew @ ExistsWatch("/foo/bar") = watchedZk.value.opq(0)
     val ewwatchv = Var[WatchState](WatchState.Pending)
-    ew.res() = Return(
-      Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
+    ew.res() =
+      Return(Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
     gw.res() = Return(
-      Watched(
-        Node.Children(Seq("member_1"), null),
-        Var.value(WatchState.Pending)))
+      Watched(Node.Children(Seq("member_1"), null), Var.value(WatchState.Pending)))
 
     assert(!f1.isDefined)
 
@@ -139,8 +136,8 @@ class ServiceDiscovererTest
 
     val ew @ ExistsWatch("/foo/bar") = watchedZk.value.opq(0)
     val ewwatchv = Var[WatchState](WatchState.Pending)
-    ew.res() = Return(
-      Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
+    ew.res() =
+      Return(Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     assert(cache.keys == Set.empty)
 
@@ -201,8 +198,8 @@ class ServiceDiscovererTest
 
     val ew @ ExistsWatch("/foo/bar") = watchedZk.value.opq(0)
     val ewwatchv = Var[WatchState](WatchState.Pending)
-    ew.res() = Return(
-      Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
+    ew.res() =
+      Return(Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
     gw.res() = Return(
@@ -297,14 +294,12 @@ class ServiceDiscovererTest
 
     val ew @ ExistsWatch("/foo/bar") = watchedZk.value.opq(0)
     val ewwatchv = Var[WatchState](WatchState.Pending)
-    ew.res() = Return(
-      Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
+    ew.res() =
+      Return(Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
     gw.res() = Return(
-      Watched(
-        Node.Children(Seq("member_1"), null),
-        Var.value(WatchState.Pending)))
+      Watched(Node.Children(Seq("member_1"), null), Var.value(WatchState.Pending)))
 
     assert(!f1.isDefined)
     assert(!f2.isDefined)
@@ -324,28 +319,22 @@ class ServiceDiscovererTest
     val watchedZk = Watched(new OpqueueZkReader(), Var(WatchState.Pending))
     val watchedZkVar = new ReadWriteVar(
       new ZkSession(retryStream, fakeWatchedZk, NullStatsReceiver))
-    val sd = new ServiceDiscoverer(
-      watchedZkVar,
-      NullStatsReceiver,
-      ForeverEpoch,
-      timer)
+    val sd =
+      new ServiceDiscoverer(watchedZkVar, NullStatsReceiver, ForeverEpoch, timer)
 
     val f1 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
     val f2 = sd("/foo/bar").states.filter(_ != Activity.Pending).toFuture()
 
-    watchedZkVar.update(
-      new ZkSession(retryStream, watchedZk, NullStatsReceiver))
+    watchedZkVar.update(new ZkSession(retryStream, watchedZk, NullStatsReceiver))
 
     val ew @ ExistsWatch("/foo/bar") = watchedZk.value.opq(0)
     val ewwatchv = Var[WatchState](WatchState.Pending)
-    ew.res() = Return(
-      Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
+    ew.res() =
+      Return(Watched(Some(Data.Stat(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)), ewwatchv))
 
     val gw @ GetChildrenWatch("/foo/bar") = watchedZk.value.opq(1)
     gw.res() = Return(
-      Watched(
-        Node.Children(Seq("member_1"), null),
-        Var.value(WatchState.Pending)))
+      Watched(Node.Children(Seq("member_1"), null), Var.value(WatchState.Pending)))
 
     assert(!f1.isDefined)
     assert(!f2.isDefined)

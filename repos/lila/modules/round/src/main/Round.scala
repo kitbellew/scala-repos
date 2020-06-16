@@ -214,13 +214,9 @@ private[round] final class Round(
             .giveTime(Color.Black, freeSeconds)
           val progress = (game withClock newClock) + Event.Clock(newClock)
           messenger.system(game, (_.untranslated("Lichess has been updated")))
-          messenger.system(
-            game,
-            (_.untranslated("Sorry for the inconvenience!")))
+          messenger.system(game, (_.untranslated("Sorry for the inconvenience!")))
           Color.all.foreach { c =>
-            messenger.system(
-              game,
-              (_.untranslated(s"$c + $freeSeconds seconds")))
+            messenger.system(game, (_.untranslated(s"$c + $freeSeconds seconds")))
           }
           GameRepo save progress inject progress.events
         }
@@ -256,8 +252,8 @@ private[round] final class Round(
 
   protected def handle(playerId: String)(op: Pov => Fu[Events]): Funit =
     handlePov(
-      (GameRepo pov PlayerRef(gameId, playerId)).mon(
-        _.round.move.segment.fetch))(op)
+      (GameRepo pov PlayerRef(gameId, playerId)).mon(_.round.move.segment.fetch))(
+      op)
 
   protected def handle(color: Color)(op: Pov => Fu[Events]): Funit =
     handlePov(GameRepo pov PovRef(gameId, color))(op)

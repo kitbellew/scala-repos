@@ -86,9 +86,7 @@ trait ScFun extends ScTypeParametersOwner {
   def polymorphicType: ScType = {
     if (typeParameters.isEmpty) methodType
     else
-      ScTypePolymorphicType(
-        methodType,
-        typeParameters.map(new TypeParameter(_)))
+      ScTypePolymorphicType(methodType, typeParameters.map(new TypeParameter(_)))
   }
 }
 
@@ -359,9 +357,7 @@ trait ScFunction
             fun.returnTypeInner
           case _ =>
         }
-        parent.putUserData(
-          ScFunction.calculatedBlockKey,
-          java.lang.Boolean.TRUE)
+        parent.putUserData(ScFunction.calculatedBlockKey, java.lang.Boolean.TRUE)
         returnTypeInner
       }
     } else returnTypeInner
@@ -397,10 +393,7 @@ trait ScFunction
     } else {
       if (hasImplicit) None
       else
-        ScalaPsiUtil.syntheticParamClause(
-          this,
-          paramClauses,
-          classParam = false)
+        ScalaPsiUtil.syntheticParamClause(this, paramClauses, classParam = false)
     }
   }
 
@@ -411,16 +404,13 @@ trait ScFunction
     * @param name parameter name
     * @param clausePosition = -1, effective clause number, if -1 then parameter in any explicit? clause
     */
-  def getParamByName(
-      name: String,
-      clausePosition: Int = -1): Option[ScParameter] = {
+  def getParamByName(name: String, clausePosition: Int = -1): Option[ScParameter] = {
     clausePosition match {
       case -1 =>
         parameters.find {
           case param =>
             ScalaPsiUtil.memberNamesEquals(param.name, name) ||
-              param.deprecatedName.exists(
-                ScalaPsiUtil.memberNamesEquals(_, name))
+              param.deprecatedName.exists(ScalaPsiUtil.memberNamesEquals(_, name))
         }
       case i if i < 0 || i >= effectiveParameterClauses.length => None
       case _ =>

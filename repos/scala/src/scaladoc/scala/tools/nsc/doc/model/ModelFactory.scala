@@ -287,9 +287,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       with HigherKindedImpl
       with NoDocTemplate {
     assert(modelFinished, this)
-    assert(
-      !(noDocTemplatesCache isDefinedAt sym),
-      (sym, noDocTemplatesCache(sym)))
+    assert(!(noDocTemplatesCache isDefinedAt sym), (sym, noDocTemplatesCache(sym)))
     noDocTemplatesCache += (sym -> this)
     def isDocTemplate = false
   }
@@ -382,9 +380,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     }
 
     private def templateAndType(ancestor: Symbol): (TemplateImpl, TypeEntity) =
-      (
-        makeTemplate(ancestor),
-        makeType(reprSymbol.info.baseType(ancestor), this))
+      (makeTemplate(ancestor), makeType(reprSymbol.info.baseType(ancestor), this))
     lazy val (linearizationTemplates, linearizationTypes) =
       (reprSymbol.ancestors map templateAndType).unzip
 
@@ -761,9 +757,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     /**
       *  Create a template, either a package, class, trait or object
       */
-    def createTemplate(
-        aSym: Symbol,
-        inTpl: DocTemplateImpl): Option[MemberImpl] = {
+    def createTemplate(aSym: Symbol, inTpl: DocTemplateImpl): Option[MemberImpl] = {
       // don't call this after the model finished!
       assert(!modelFinished, (aSym, inTpl))
 
@@ -793,9 +787,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
             override def isAliasType = true
           }
         else if (bSym.isAbstractType)
-          new DocTemplateImpl(bSym, inTpl)
-            with TypeBoundsImpl
-            with AbstractType { override def isAbstractType = true }
+          new DocTemplateImpl(bSym, inTpl) with TypeBoundsImpl with AbstractType {
+            override def isAbstractType = true
+          }
         else if (bSym.isModule)
           new DocTemplateImpl(bSym, inTpl) with Object {}
         else if (bSym.isTrait)
@@ -913,14 +907,12 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         useCaseOf: Option[MemberImpl]): Option[MemberImpl] = {
       if (bSym.isGetter && bSym.isLazy)
         Some(
-          new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl)
-            with Val {
+          new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl) with Val {
             override def isLazyVal = true
           })
       else if (bSym.isGetter && bSym.accessed.isMutable)
         Some(
-          new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl)
-            with Val {
+          new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl) with Val {
             override def isVar = true
           })
       else if (bSym.isMethod && !bSym.hasAccessorFlag && !bSym.isConstructor && !bSym.isModule) {
@@ -956,8 +948,7 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
             })
       else if (bSym.isGetter) // Scala field accessor or Java field
         Some(
-          new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl)
-            with Val {
+          new NonTemplateMemberImpl(bSym, conversion, useCaseOf, inTpl) with Val {
             override def isVal = true
           })
       else if (bSym.isAbstractType && !typeShouldDocument(bSym, inTpl))

@@ -20,8 +20,7 @@ trait ComposeTests[F[_, _]] extends Laws {
     new DefaultRuleSet(
       name = "compose",
       parent = None,
-      "compose associativity" -> forAll(
-        laws.composeAssociativity[A, B, C, D] _))
+      "compose associativity" -> forAll(laws.composeAssociativity[A, B, C, D] _))
 }
 
 object ComposeTests {

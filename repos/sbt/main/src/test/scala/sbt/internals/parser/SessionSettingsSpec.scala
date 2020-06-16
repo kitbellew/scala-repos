@@ -41,9 +41,8 @@ abstract class AbstractSessionSettingsSpec(folder: String)
       val originalLines = Source.fromFile(file).getLines().toList
       foreach(expectedResultAndMap(file)) {
         case (expectedResultList, commands) =>
-          val resultList = SbtRefactorings.applySessionSettings(
-            (file, originalLines),
-            commands)
+          val resultList =
+            SbtRefactorings.applySessionSettings((file, originalLines), commands)
           val expected = SbtParser(file, expectedResultList)
           val result = SbtParser(file, resultList._2)
           result.settings must_== expected.settings
@@ -77,8 +76,7 @@ abstract class AbstractSessionSettingsSpec(folder: String)
 
 }
 
-class SessionSettingsSpec
-    extends AbstractSessionSettingsSpec("session-settings")
+class SessionSettingsSpec extends AbstractSessionSettingsSpec("session-settings")
 
 class SessionSettingsQuickSpec
     extends AbstractSessionSettingsSpec("session-settings-quick")

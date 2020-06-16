@@ -19,8 +19,7 @@ object Permission {
   case object UserSpy extends Permission("ROLE_USER_SPY")
   case object UserEvaluate extends Permission("ROLE_USER_EVALUATE")
   case object MarkTroll extends Permission("ROLE_CHAT_BAN", List(UserSpy))
-  case object MarkEngine
-      extends Permission("ROLE_ADJUST_CHEATER", List(UserSpy))
+  case object MarkEngine extends Permission("ROLE_ADJUST_CHEATER", List(UserSpy))
   case object MarkBooster
       extends Permission("ROLE_ADJUST_BOOSTER", List(UserSpy))
   case object IpBan extends Permission("ROLE_IP_BAN", List(UserSpy))
@@ -37,8 +36,7 @@ object Permission {
   case object MessageAnyone extends Permission("ROLE_MESSAGE_ANYONE")
   case object UserSearch extends Permission("ROLE_USER_SEARCH")
   case object CloseTeam extends Permission("ROLE_CLOSE_TEAM")
-  case object TerminateTournament
-      extends Permission("ROLE_TERMINATE_TOURNAMENT")
+  case object TerminateTournament extends Permission("ROLE_TERMINATE_TOURNAMENT")
 
   case object Hunter
       extends Permission(

@@ -193,8 +193,7 @@ private[http] object Handshake {
     def validateResponse(
         response: HttpResponse,
         subprotocols: Seq[String],
-        key: `Sec-WebSocket-Key`)
-        : Either[String, NegotiatedWebSocketSettings] = {
+        key: `Sec-WebSocket-Key`): Either[String, NegotiatedWebSocketSettings] = {
       /*
        From http://tools.ietf.org/html/rfc6455#section-4.1
 

@@ -35,9 +35,7 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         ("Test Post", -1),
         ("Formal Language Processing in Scala, Part 5", 1),
         ("Efficient Parameterized Queries in ScalaQuery", 2),
-        (
-          "Removing Libraries and HomeGroup icons from the Windows 7 desktop",
-          3),
+        ("Removing Libraries and HomeGroup icons from the Windows 7 desktop", 3),
         ("A ScalaQuery Update", 2)
       )
       // Implicit join
@@ -192,8 +190,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
       q10 = ((ys joinRight xs on (_.b === _.b)) joinRight xs on (_._1.map(
           _.b) === _.b)).to[Set]
       r10 <- mark("q10", q10.result)
-      r10t: Set[
-        (Option[(Option[(Int, String)], (Int, String))], (Int, String))] = r10
+      r10t: Set[(Option[(Option[(Int, String)], (Int, String))], (Int, String))] =
+        r10
       _ = r10 shouldBe Set(
         (Some((Some((1, "a")), (1, "a"))), (1, "a")),
         (Some((Some((2, "b")), (2, "b"))), (2, "b")),
@@ -291,13 +289,13 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
         q2 = for {
           (c, p) <- categories.sortBy(_.id) zip posts.sortBy(_.category)
         } yield (c.id, p.category)
-        _ <- mark("q2", q2.result).map(
-          _ shouldBe List((1, -1), (2, 1), (3, 2), (4, 2)))
+        _ <-
+          mark("q2", q2.result).map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 2)))
         q3 = for {
           (c, p) <- categories.sortBy(_.id) zip posts.sortBy(_.id)
         } yield (c.id, p.category)
-        _ <- mark("q3", q3.result).map(
-          _ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
+        _ <-
+          mark("q3", q3.result).map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
         q4 = for {
           res <-
             categories
@@ -306,8 +304,8 @@ class JoinTest extends AsyncTest[RelationalTestDB] {
                 posts.sortBy(_.id),
                 (c: Categories, p: Posts) => (c.id, p.category))
         } yield res
-        _ <- mark("q4", q4.result).map(
-          _ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
+        _ <-
+          mark("q4", q4.result).map(_ shouldBe List((1, -1), (2, 1), (3, 2), (4, 3)))
         q5 = for {
           (c, i) <- categories.sortBy(_.id).zipWithIndex
         } yield (c.id, i)

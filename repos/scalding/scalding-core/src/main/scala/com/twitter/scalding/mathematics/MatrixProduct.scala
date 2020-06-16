@@ -489,21 +489,13 @@ object MatrixProduct extends java.io.Serializable {
     }
 
   //TODO: remove in 0.9.0, only here just for compatibility.
-  def vectorInnerProduct[IdxT, ValT](implicit ring: Ring[ValT]): MatrixProduct[
-    RowVector[IdxT, ValT],
-    ColVector[IdxT, ValT],
-    Scalar[ValT]] =
+  def vectorInnerProduct[IdxT, ValT](implicit ring: Ring[ValT])
+      : MatrixProduct[RowVector[IdxT, ValT], ColVector[IdxT, ValT], Scalar[ValT]] =
     rowColProduct(ring)
 
-  implicit def rowColProduct[IdxT, ValT](implicit
-      ring: Ring[ValT]): MatrixProduct[
-    RowVector[IdxT, ValT],
-    ColVector[IdxT, ValT],
-    Scalar[ValT]] =
-    new MatrixProduct[
-      RowVector[IdxT, ValT],
-      ColVector[IdxT, ValT],
-      Scalar[ValT]] {
+  implicit def rowColProduct[IdxT, ValT](implicit ring: Ring[ValT])
+      : MatrixProduct[RowVector[IdxT, ValT], ColVector[IdxT, ValT], Scalar[ValT]] =
+    new MatrixProduct[RowVector[IdxT, ValT], ColVector[IdxT, ValT], Scalar[ValT]] {
       def apply(
           left: RowVector[IdxT, ValT],
           right: ColVector[IdxT, ValT]): Scalar[ValT] = {
@@ -523,9 +515,7 @@ object MatrixProduct extends java.io.Serializable {
       RowVector[Common, ValT],
       Matrix[Common, ColR, ValT],
       RowVector[ColR, ValT]] {
-      def apply(
-          left: RowVector[Common, ValT],
-          right: Matrix[Common, ColR, ValT]) = {
+      def apply(left: RowVector[Common, ValT], right: Matrix[Common, ColR, ValT]) = {
         (left.toMatrix(true) * right).getRow(true)
       }
     }
@@ -539,9 +529,7 @@ object MatrixProduct extends java.io.Serializable {
       Matrix[RowR, Common, ValT],
       ColVector[Common, ValT],
       ColVector[RowR, ValT]] {
-      def apply(
-          left: Matrix[RowR, Common, ValT],
-          right: ColVector[Common, ValT]) = {
+      def apply(left: Matrix[RowR, Common, ValT], right: ColVector[Common, ValT]) = {
         (left * right.toMatrix(true)).getCol(true)
       }
     }
@@ -612,8 +600,8 @@ object MatrixProduct extends java.io.Serializable {
                 (left.colSym -> getField(newRightFields, 0)),
                 newRightPipe)
               // Do the product:
-              .map((left.valSym.append(
-                getField(newRightFields, 2))) -> left.valSym) {
+              .map(
+                (left.valSym.append(getField(newRightFields, 2))) -> left.valSym) {
                 pair: (ValT, ValT) =>
                   ring.times(pair._1, pair._2)
               }
@@ -672,8 +660,7 @@ object MatrixProduct extends java.io.Serializable {
             }
             // Keep the names from the right:
             .project(newRightFields)
-            .rename(
-              newRightFields -> (right.rowSym, right.colSym, right.valSym))
+            .rename(newRightFields -> (right.rowSym, right.colSym, right.valSym))
         }
         new Matrix[RowT, ColT, ValT](
           right.rowSym,
@@ -728,8 +715,8 @@ object MatrixProduct extends java.io.Serializable {
                 (left.idxSym -> getField(newRightFields, 0)),
                 newRightPipe)
               // Do the product:
-              .map((left.valSym.append(
-                getField(newRightFields, 1))) -> left.valSym) {
+              .map(
+                (left.valSym.append(getField(newRightFields, 1))) -> left.valSym) {
                 pair: (ValT, ValT) =>
                   ring.times(pair._1, pair._2)
               }

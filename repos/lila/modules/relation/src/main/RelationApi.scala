@@ -58,9 +58,10 @@ final class RelationApi(
           )),
         List(
           Group(BSONNull)("u1" -> AddToSet("u1"), "u2" -> AddToSet("u2")),
-          Project(BSONDocument(
-            "_id" -> BSONDocument("$setIntersection" -> BSONArray("$u1", "$u2"))
-          ))
+          Project(
+            BSONDocument(
+              "_id" -> BSONDocument("$setIntersection" -> BSONArray("$u1", "$u2"))
+            ))
         )
       )
       .map {

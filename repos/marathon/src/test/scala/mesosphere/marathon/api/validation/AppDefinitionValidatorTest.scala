@@ -449,9 +449,7 @@ class AppDefinitionValidatorTest
       PersistentVolume(path, PersistentVolumeInfo(123), mesos.Volume.Mode.RW)
     val zero = UpgradeStrategy(0, 0)
 
-    def residentApp(
-        id: String,
-        volumes: Seq[PersistentVolume]): AppDefinition = {
+    def residentApp(id: String, volumes: Seq[PersistentVolume]): AppDefinition = {
       AppDefinition(
         id = PathId(id),
         cmd = Some("test"),

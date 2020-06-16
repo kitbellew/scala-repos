@@ -199,10 +199,8 @@ trait Instructions {
     }
 
     trait UnfixedBinaryOperation extends BinaryOperation {
-      val tpe = BinaryOperationType(
-        JType.JUniverseT,
-        JType.JUniverseT,
-        JType.JUniverseT)
+      val tpe =
+        BinaryOperationType(JType.JUniverseT, JType.JUniverseT, JType.JUniverseT)
     }
 
     case class BuiltInFunction1Op(op: Op1) extends UnaryOperation {

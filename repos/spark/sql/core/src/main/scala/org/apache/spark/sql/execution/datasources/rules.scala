@@ -139,7 +139,8 @@ private[sql] case class PreWriteCheck(catalog: Catalog)
             case LogicalRelation(src: BaseRelation, _, _) => src
           }
           if (srcRelations.contains(t)) {
-            failAnalysis("Cannot insert overwrite into table that is also being read from.")
+            failAnalysis(
+              "Cannot insert overwrite into table that is also being read from.")
           } else {
             // OK
           }

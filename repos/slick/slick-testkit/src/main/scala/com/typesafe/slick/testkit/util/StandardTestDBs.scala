@@ -302,8 +302,7 @@ class SQLiteTestDB(dburl: String, confName: String)
           (tables.map(t =>
             sqlu"""drop table if exists #${profile.quoteIdentifier(t)}""") ++
             sequences.map(t =>
-              sqlu"""drop sequence if exists #${profile.quoteIdentifier(
-                t)}""")): _*)
+              sqlu"""drop sequence if exists #${profile.quoteIdentifier(t)}""")): _*)
       } yield ()
     }
 }

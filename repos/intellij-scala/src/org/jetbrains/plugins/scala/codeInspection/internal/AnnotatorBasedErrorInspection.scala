@@ -100,9 +100,8 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
                 range: TextRange,
                 message: String): Annotation = FakeAnnotation
 
-            def createInfoAnnotation(
-                node: ASTNode,
-                message: String): Annotation = FakeAnnotation
+            def createInfoAnnotation(node: ASTNode, message: String): Annotation =
+              FakeAnnotation
 
             def createInfoAnnotation(
                 elt: PsiElement,
@@ -194,9 +193,8 @@ class AnnotatorBasedErrorInspection extends LocalInspectionTool {
                 p1: TextRange,
                 p2: String): Annotation = FakeAnnotation
 
-            def createWeakWarningAnnotation(
-                p1: ASTNode,
-                p2: String): Annotation = FakeAnnotation
+            def createWeakWarningAnnotation(p1: ASTNode, p2: String): Annotation =
+              FakeAnnotation
 
             def createWeakWarningAnnotation(
                 p1: PsiElement,

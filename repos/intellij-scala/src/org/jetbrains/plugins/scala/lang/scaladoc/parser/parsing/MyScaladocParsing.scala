@@ -109,10 +109,7 @@ class MyScaladocParsing(private val psiBuilder: PsiBuilder)
     }
 
     if (tokenType == DOC_LINK_TAG && builder.getTokenType == ScalaTokenTypes.tIDENTIFIER && !isEndOfComment) {
-      StableId.parse(
-        new ScalaPsiBuilderImpl(builder),
-        true,
-        DOC_CODE_LINK_VALUE)
+      StableId.parse(new ScalaPsiBuilderImpl(builder), true, DOC_CODE_LINK_VALUE)
     }
 
     while (!isEndOfComment) {

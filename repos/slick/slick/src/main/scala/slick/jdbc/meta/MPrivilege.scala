@@ -29,10 +29,7 @@ object MTablePrivilege {
 }
 
 /** A wrapper for a row in the ResultSet returned by DatabaseMetaData.getColumnPrivileges(). */
-case class MColumnPrivilege(
-    table: MQName,
-    column: String,
-    privilege: MPrivilege)
+case class MColumnPrivilege(table: MQName, column: String, privilege: MPrivilege)
 
 object MColumnPrivilege {
   def getColumnPrivileges(tablePattern: MQName, columnPattern: String) =

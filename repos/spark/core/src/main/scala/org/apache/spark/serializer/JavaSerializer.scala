@@ -120,9 +120,7 @@ private[spark] class JavaSerializerInstance(
     in.readObject()
   }
 
-  override def deserialize[T: ClassTag](
-      bytes: ByteBuffer,
-      loader: ClassLoader): T = {
+  override def deserialize[T: ClassTag](bytes: ByteBuffer, loader: ClassLoader): T = {
     val bis = new ByteBufferInputStream(bytes)
     val in = deserializeStream(bis, loader)
     in.readObject()

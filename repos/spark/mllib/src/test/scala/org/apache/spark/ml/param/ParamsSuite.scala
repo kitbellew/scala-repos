@@ -196,8 +196,9 @@ class ParamsSuite extends SparkFunSuite {
     assert(maxIter.isValid(1))
 
     solver.setMaxIter(5)
-    assert(solver.explainParam(maxIter) ===
-      "maxIter: maximum number of iterations (>= 0) (default: 10, current: 5)")
+    assert(
+      solver.explainParam(maxIter) ===
+        "maxIter: maximum number of iterations (>= 0) (default: 10, current: 5)")
 
     assert(inputCol.toString === s"${uid}__inputCol")
 

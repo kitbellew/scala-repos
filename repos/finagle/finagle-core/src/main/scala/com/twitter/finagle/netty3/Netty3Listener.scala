@@ -26,10 +26,7 @@ import org.jboss.netty.channel._
 import org.jboss.netty.channel.group._
 import org.jboss.netty.channel.socket.nio.NioServerSocketChannelFactory
 import org.jboss.netty.handler.ssl._
-import org.jboss.netty.handler.timeout.{
-  ReadTimeoutException,
-  ReadTimeoutHandler
-}
+import org.jboss.netty.handler.timeout.{ReadTimeoutException, ReadTimeoutHandler}
 import scala.collection.JavaConverters._
 import scala.collection.mutable
 

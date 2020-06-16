@@ -24,10 +24,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
 
       val keyManagerFactory = mock[KeyManagerFactoryWrapper]
       val trustManagerFactory = mock[TrustManagerFactoryWrapper]
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val actual: SSLContext = builder.build
       actual.getProtocol must_== Protocols.recommendedProtocol
@@ -68,10 +66,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val info = SSLConfig()
       val keyManagerFactory = mock[KeyManagerFactoryWrapper]
       val trustManagerFactory = mock[TrustManagerFactoryWrapper]
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val keyStore = KeyStore.getInstance("PKCS12")
       val keyPairGenerator = KeyPairGenerator.getInstance("RSA")
@@ -117,10 +113,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val info = SSLConfig()
       val keyManagerFactory = mock[KeyManagerFactoryWrapper]
       val trustManagerFactory = mock[TrustManagerFactoryWrapper]
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val trustManager = mock[X509TrustManager]
       trustManagerFactory.getTrustManagers returns Array(trustManager)
@@ -146,10 +140,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val info = SSLConfig()
       val keyManagerFactory = mock[KeyManagerFactoryWrapper]
       val trustManagerFactory = mock[TrustManagerFactoryWrapper]
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val keyManagerConfig = new KeyManagerConfig()
 
@@ -166,10 +158,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val info = SSLConfig()
       val keyManagerFactory = mock[KeyManagerFactoryWrapper]
       val trustManagerFactory = mock[TrustManagerFactoryWrapper]
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val disabledSignatureAlgorithms = Set(AlgorithmConstraint("md5"))
       val disabledKeyAlgorithms =
@@ -195,10 +185,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
         KeyManagerFactory.getDefaultAlgorithm)
       val trustManagerFactory = new DefaultTrustManagerFactoryWrapper(
         TrustManagerFactory.getDefaultAlgorithm)
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val certificate = CertificateGenerator.generateRSAWithSHA256()
       val certificateData = CertificateGenerator.toPEM(certificate)
@@ -234,10 +222,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val info = SSLConfig()
       val keyManagerFactory = mock[KeyManagerFactoryWrapper]
       val trustManagerFactory = mock[TrustManagerFactoryWrapper]
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val storeType = KeyStore.getDefaultType
       val filePath = "derp"
@@ -250,10 +236,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val info = SSLConfig()
       val keyManagerFactory = mock[KeyManagerFactoryWrapper]
       val trustManagerFactory = mock[TrustManagerFactoryWrapper]
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val data = "derp"
 
@@ -293,10 +277,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val trustManagerConfig = TrustManagerConfig(trustStoreConfigs = Seq(tsc))
 
       val info = SSLConfig(trustManagerConfig = trustManagerConfig)
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val trustStore = builder.trustStoreBuilder(tsc).build()
       val checker: AlgorithmChecker = new AlgorithmChecker(
@@ -336,10 +318,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val keyManagerConfig = KeyManagerConfig(keyStoreConfigs = Seq(ksc))
 
       val info = SSLConfig(keyManagerConfig = keyManagerConfig)
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
       builder.validateStoreContainsPrivateKeys(ksc, keyStore) must beTrue
     }
 
@@ -373,10 +353,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val keyManagerConfig = KeyManagerConfig(keyStoreConfigs = Seq(ksc))
 
       val info = SSLConfig(keyManagerConfig = keyManagerConfig)
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       builder.validateStoreContainsPrivateKeys(ksc, keyStore) must beFalse
     }
@@ -413,10 +391,8 @@ class ConfigSSLContextBuilderSpec extends Specification with Mockito {
       val trustManagerConfig = TrustManagerConfig(trustStoreConfigs = Seq(tsc))
 
       val info = SSLConfig(trustManagerConfig = trustManagerConfig)
-      val builder = new ConfigSSLContextBuilder(
-        info,
-        keyManagerFactory,
-        trustManagerFactory)
+      val builder =
+        new ConfigSSLContextBuilder(info, keyManagerFactory, trustManagerFactory)
 
       val trustStore = builder.trustStoreBuilder(tsc).build()
       val checker: AlgorithmChecker = new AlgorithmChecker(

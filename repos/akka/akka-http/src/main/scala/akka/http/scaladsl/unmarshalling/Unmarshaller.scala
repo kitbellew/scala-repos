@@ -18,8 +18,8 @@ trait Unmarshaller[-A, B] {
       ec: ExecutionContext,
       materializer: Materializer): Future[B]
 
-  def transform[C](f: ExecutionContext ⇒ Materializer ⇒ Future[B] ⇒ Future[C])
-      : Unmarshaller[A, C] =
+  def transform[C](
+      f: ExecutionContext ⇒ Materializer ⇒ Future[B] ⇒ Future[C]): Unmarshaller[A, C] =
     Unmarshaller.withMaterializer { implicit ec ⇒ implicit mat ⇒ a ⇒
       f(ec)(mat)(this(a))
     }

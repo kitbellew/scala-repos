@@ -521,8 +521,9 @@ class SubSource[+Out, +Mat](
     * `n` must be positive, and `d` must be greater than 0 seconds, otherwise
     * IllegalArgumentException is thrown.
     */
-  def groupedWithin(n: Int, d: FiniteDuration)
-      : SubSource[java.util.List[Out @uncheckedVariance], Mat] =
+  def groupedWithin(
+      n: Int,
+      d: FiniteDuration): SubSource[java.util.List[Out @uncheckedVariance], Mat] =
     new SubSource(
       delegate.groupedWithin(n, d).map(_.asJava)
     ) // TODO optimize to one step
@@ -866,9 +867,7 @@ class SubSource[+Out, +Mat](
     * @param size The size of the buffer in element count
     * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
     */
-  def buffer(
-      size: Int,
-      overflowStrategy: OverflowStrategy): SubSource[Out, Mat] =
+  def buffer(size: Int, overflowStrategy: OverflowStrategy): SubSource[Out, Mat] =
     new SubSource(delegate.buffer(size, overflowStrategy))
 
   /**

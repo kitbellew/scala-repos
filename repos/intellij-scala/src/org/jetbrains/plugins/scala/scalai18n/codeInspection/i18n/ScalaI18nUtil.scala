@@ -124,8 +124,7 @@ object ScalaI18nUtil {
       @NotNull myExpression: ScLiteral,
       annFqn: String,
       @Nullable annotationAttributeValues: mutable.HashMap[String, AnyRef],
-      @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner])
-      : Boolean = {
+      @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner]): Boolean = {
     val expression = getToplevelExpression(project, myExpression)
     val parent: PsiElement = expression.getParent
     if (!parent.isInstanceOf[ScArgumentExprList]) return false
@@ -205,8 +204,7 @@ object ScalaI18nUtil {
       expression = parent
       if (expression.isInstanceOf[PsiAssignmentExpression]) flag = false
       if (i > 10 && expression.isInstanceOf[PsiBinaryExpression]) {
-        val value
-            : ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
+        val value: ParameterizedCachedValue[ScExpression, (Project, ScExpression)] =
           expression.getUserData(TOP_LEVEL_EXPRESSION)
         if (value != null && value.hasUpToDateValue) {
           return getToplevelExpression(project, expression)
@@ -222,8 +220,7 @@ object ScalaI18nUtil {
       @Nullable myProcessed: mutable.HashSet[PsiMethod],
       annFqn: String,
       @Nullable annotationAttributeValues: mutable.HashMap[String, AnyRef],
-      @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner])
-      : Boolean = {
+      @Nullable nonNlsTargets: mutable.HashSet[PsiModifierListOwner]): Boolean = {
     var processed = myProcessed
     if (processed != null) {
       if (processed.contains(method)) return false
@@ -330,9 +327,7 @@ object ScalaI18nUtil {
     else formatI18nProperty(literal, property)
   }
 
-  @Nullable def getI18nProperty(
-      project: Project,
-      literal: ScLiteral): IProperty = {
+  @Nullable def getI18nProperty(project: Project, literal: ScLiteral): IProperty = {
     val property: Property = literal.getUserData(CACHE).asInstanceOf[Property]
     if (property eq NULL) return null
     if (property != null && isValid(property, literal)) return property

@@ -50,11 +50,8 @@ object ClassHelpersSpec extends Specification {
     "return a Full can with the found class when given the name and a list of packages" in {
       findClass(
         "ClassHelpers",
-        List("net.liftweb.util", "java.util")) must_== Full(
-        classOf[ClassHelpers])
-      findClass(
-        "ArrayList",
-        List("net.liftweb.util", "java.util")) must_== Full(
+        List("net.liftweb.util", "java.util")) must_== Full(classOf[ClassHelpers])
+      findClass("ArrayList", List("net.liftweb.util", "java.util")) must_== Full(
         classOf[java.util.ArrayList[_]])
     }
     "return a Full can with the found class when given the name, a list of packages and a target type to conform to" in {

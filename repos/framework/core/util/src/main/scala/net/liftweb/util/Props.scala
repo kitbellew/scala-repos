@@ -139,8 +139,8 @@ private[util] trait Props extends Logger {
     * @param updater Function that gets the current `PropProvider`s and returns
     *                the new ones to use.
     */
-  def updateProviders(updater: (List[PropProvider]) => List[PropProvider])
-      : List[PropProvider] = {
+  def updateProviders(
+      updater: (List[PropProvider]) => List[PropProvider]): List[PropProvider] = {
     providers = updater(providers)
     providers
   }
@@ -243,25 +243,25 @@ private[util] trait Props extends Logger {
     * is referenced. (An attempt to customise this after the run-mode is
     * realised will have no effect and will instead log a warning.)
     */
-  val doesStackTraceContainKnownTestRunner = new RunModeProperty[
-    Array[StackTraceElement] => Boolean](
-    "doesStackTraceContainKnownTestRunner",
-    (st: Array[StackTraceElement]) => {
-      val names = List(
-        "org.apache.maven.surefire.booter.SurefireBooter",
-        "sbt.TestRunner",
-        "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner",
-        "org.scalatest.tools.Runner",
-        "org.scalatest.tools.ScalaTestFramework$ScalaTestRunner",
-        "org.scalatools.testing.Runner",
-        "org.scalatools.testing.Runner2",
-        "org.specs2.runner.TestInterfaceRunner", // sometimes specs2 runs tests on another thread
-        "org.specs2.runner.TestInterfaceConsoleReporter",
-        "org.specs2.specification.FragmentExecution",
-        "org.specs2.specification.core.Execution"
-      )
-      st.exists(e => names.exists(e.getClassName.startsWith))
-    })
+  val doesStackTraceContainKnownTestRunner =
+    new RunModeProperty[Array[StackTraceElement] => Boolean](
+      "doesStackTraceContainKnownTestRunner",
+      (st: Array[StackTraceElement]) => {
+        val names = List(
+          "org.apache.maven.surefire.booter.SurefireBooter",
+          "sbt.TestRunner",
+          "org.jetbrains.plugins.scala.testingSupport.scalaTest.ScalaTestRunner",
+          "org.scalatest.tools.Runner",
+          "org.scalatest.tools.ScalaTestFramework$ScalaTestRunner",
+          "org.scalatools.testing.Runner",
+          "org.scalatools.testing.Runner2",
+          "org.specs2.runner.TestInterfaceRunner", // sometimes specs2 runs tests on another thread
+          "org.specs2.runner.TestInterfaceConsoleReporter",
+          "org.specs2.specification.FragmentExecution",
+          "org.specs2.specification.core.Execution"
+        )
+        st.exists(e => names.exists(e.getClassName.startsWith))
+      })
 
   /**
     * When the `run.mode` environment variable isn't set or recognised, this function is invoked to determine the

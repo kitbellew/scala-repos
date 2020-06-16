@@ -487,9 +487,7 @@ trait IndicesModule[M[+_]]
       back map { _.toArray }
     }
 
-    private def unionBuffers(
-        as: ArrayIntList,
-        bs: ArrayIntList): ArrayIntList = {
+    private def unionBuffers(as: ArrayIntList, bs: ArrayIntList): ArrayIntList = {
       //assertSorted(as)
       //assertSorted(bs)
       var i = 0

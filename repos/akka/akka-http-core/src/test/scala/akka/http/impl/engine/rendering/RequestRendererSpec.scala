@@ -166,9 +166,7 @@ class RequestRendererSpec
           PUT,
           "/abc/xyz",
           entity =
-            Chunked(
-              ContentTypes.`text/plain(UTF-8)`,
-              source())) should renderTo {
+            Chunked(ContentTypes.`text/plain(UTF-8)`, source())) should renderTo {
           """PUT /abc/xyz HTTP/1.1
             |Host: test.com:8080
             |User-Agent: akka-http/1.0.0
@@ -388,8 +386,8 @@ class RequestRendererSpec
     def renderTo(expected: String): Matcher[HttpRequest] =
       equal(expected.stripMarginWithNewline("\r\n")).matcher[String] compose {
         request ⇒
-          val byteStringSource = renderToSource(
-            RequestRenderingContext(request, Host(serverAddress)))
+          val byteStringSource =
+            renderToSource(RequestRenderingContext(request, Host(serverAddress)))
           val future = byteStringSource
             .limit(1000)
             .runWith(Sink.seq)

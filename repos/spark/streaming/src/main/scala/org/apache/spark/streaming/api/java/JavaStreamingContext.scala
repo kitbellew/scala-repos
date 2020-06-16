@@ -105,13 +105,7 @@ class JavaStreamingContext(val ssc: StreamingContext) extends Closeable {
       sparkHome: String,
       jars: Array[String]) =
     this(
-      new StreamingContext(
-        master,
-        appName,
-        batchDuration,
-        sparkHome,
-        jars,
-        Map()))
+      new StreamingContext(master, appName, batchDuration, sparkHome, jars, Map()))
 
   /**
     * Create a StreamingContext.

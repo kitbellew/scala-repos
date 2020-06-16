@@ -45,10 +45,7 @@ sealed trait NoStackAndThen[-A, +B] extends java.io.Serializable {
       case NoStackWrap(fn)         => andThen(fn)
       case NoStackMore(head, tail) =>
         // casts needed for the tailrec, they can't cause runtime errors
-        push(
-          this,
-          head.asInstanceOf[NoStackAndThen[Any, Any]],
-          EmptyStack(tail))
+        push(this, head.asInstanceOf[NoStackAndThen[Any, Any]], EmptyStack(tail))
     }
   }
 }
@@ -62,9 +59,7 @@ object NoStackAndThen {
 
   private sealed trait ReversedStack[-A, +B]
   private case class EmptyStack[-A, +B](fn: A => B) extends ReversedStack[A, B]
-  private case class NonEmpty[-A, B, +C](
-      head: A => B,
-      rest: ReversedStack[B, C])
+  private case class NonEmpty[-A, B, +C](head: A => B, rest: ReversedStack[B, C])
       extends ReversedStack[A, C]
 
   private[scalding] case class WithStackTrace[A, B](

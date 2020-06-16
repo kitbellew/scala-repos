@@ -346,8 +346,7 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
           Row(1, 2) ::
           Row(1, null) ::
           Row(null, null) :: Nil),
-      StructType(
-        Seq(StructField("a", IntegerType), StructField("b", IntegerType)))
+      StructType(Seq(StructField("a", IntegerType), StructField("b", IntegerType)))
     )
 
     checkAnswer(nullData.filter($"b" <=> 1), Row(1, 1) :: Nil)
@@ -489,16 +488,14 @@ class ColumnExpressionSuite extends QueryTest with SharedSQLContext {
     val testData = (1 to 3).map(i => (i, i.toString)).toDF("key", "value")
 
     checkAnswer(
-      testData.select(
-        when($"key" === 1, -1).when($"key" === 2, -2).otherwise(0)),
+      testData.select(when($"key" === 1, -1).when($"key" === 2, -2).otherwise(0)),
       Seq(Row(-1), Row(-2), Row(0))
     )
 
     // Without the ending otherwise, return null for unmatched conditions.
     // Also test putting a non-literal value in the expression.
     checkAnswer(
-      testData.select(
-        when($"key" === 1, lit(0) - $"key").when($"key" === 2, -2)),
+      testData.select(when($"key" === 1, lit(0) - $"key").when($"key" === 2, -2)),
       Seq(Row(-1), Row(-2), Row(null))
     )
 

@@ -106,9 +106,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
             val subClassesTooltip = Some(
               limitSize(_subClasses.map(_.tpe.name).mkString(", ")))
             List(
-              NormalNode(
-                textTypeEntity(_subClasses.length + MultiSuffix),
-                None)(subClassesTooltip))
+              NormalNode(textTypeEntity(_subClasses.length + MultiSuffix), None)(
+                subClassesTooltip))
           } else _subClasses
 
         incomingImplicits =
@@ -236,8 +235,8 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         case (from, tos) =>
           tos
             .map(to => {
-              val id = "graph" + counter + "_" + node2Index(
-                to) + "_" + node2Index(from)
+              val id =
+                "graph" + counter + "_" + node2Index(to) + "_" + node2Index(from)
               // the X -> Y edge is inverted twice to keep the diagram flowing the right way
               // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
               "node" + node2Index(to) + " -> node" + node2Index(from) +
@@ -436,13 +435,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       case Elem(prefix, "svg", attribs, scope, child @ _*) => {
         val klass =
           if (isInheritanceDiagram) "class-diagram" else "package-diagram"
-        Elem(
-          prefix,
-          "svg",
-          attribs,
-          scope,
-          true,
-          child map (x => transform(x)): _*) %
+        Elem(prefix, "svg", attribs, scope, true, child map (x => transform(x)): _*) %
           new UnprefixedAttribute("id", "graph" + counter, Null) %
           new UnprefixedAttribute("class", klass, Null)
       }
@@ -496,8 +489,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
                   case _ =>
                     g \ "a"
                 }
-                res =
-                  new Elem(prefix, "g", attribs, scope, true, anchorNode: _*)
+                res = new Elem(prefix, "g", attribs, scope, true, anchorNode: _*)
                 DiagramStats.addFixedImage()
               }
             }
@@ -513,13 +505,7 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
         scala.xml.Text("")
       // apply recursively
       case Elem(prefix, label, attribs, scope, child @ _*) =>
-        Elem(
-          prefix,
-          label,
-          attribs,
-          scope,
-          true,
-          child map (x => transform(x)): _*)
+        Elem(prefix, label, attribs, scope, true, child map (x => transform(x)): _*)
       case x => x
     }
 

@@ -22,8 +22,7 @@ class ScalateUrlGeneratorSupportTest extends Specification {
       servlet.reflectRoutes must haveValue(servlet.singleNamed)
     }
     "be indexed by their names" in {
-      servlet.reflectRoutes must havePair(
-        "simpleString" -> servlet.simpleString)
+      servlet.reflectRoutes must havePair("simpleString" -> servlet.simpleString)
       servlet.reflectRoutes must havePair("singleNamed" -> servlet.singleNamed)
     }
   }

@@ -123,8 +123,7 @@ abstract class CentralMomentAgg(child: Expression)
     val newM4 = if (momentOrder >= 4) {
       m4.left + m4.right +
         deltaN * deltaN * deltaN * delta * n1 * n2 * (n1 * n1 - n1 * n2 + n2 * n2) +
-        Literal(
-          6.0) * deltaN * deltaN * (n1 * n1 * m2.right + n2 * n2 * m2.left) +
+        Literal(6.0) * deltaN * deltaN * (n1 * n1 * m2.right + n2 * n2 * m2.left) +
         Literal(4.0) * deltaN * (n1 * m3.right - n2 * m3.left)
     } else {
       Literal(0.0)
@@ -155,10 +154,7 @@ case class StddevSamp(child: Expression) extends CentralMomentAgg(child) {
     If(
       n === Literal(0.0),
       Literal.create(null, DoubleType),
-      If(
-        n === Literal(1.0),
-        Literal(Double.NaN),
-        Sqrt(m2 / (n - Literal(1.0)))))
+      If(n === Literal(1.0), Literal(Double.NaN), Sqrt(m2 / (n - Literal(1.0)))))
   }
 
   override def prettyName: String = "stddev_samp"

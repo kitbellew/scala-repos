@@ -120,9 +120,7 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
       product(
         literal(globM, FiniteHint(15, 5)),
         product(
-          sum(
-            literal(globM, FiniteHint(5, 10)),
-            literal(globM, FiniteHint(5, 10))),
+          sum(literal(globM, FiniteHint(5, 10)), literal(globM, FiniteHint(5, 10))),
           product(
             literal(globM, FiniteHint(10, 20)),
             literal(globM, FiniteHint(20, 25))))
@@ -141,9 +139,7 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
       true),
     product(
       product(
-        sum(
-          literal(globM, FiniteHint(5, 10)),
-          literal(globM, FiniteHint(5, 10))),
+        sum(literal(globM, FiniteHint(5, 10)), literal(globM, FiniteHint(5, 10))),
         literal(globM, FiniteHint(10, 20)),
         true),
       literal(globM, FiniteHint(20, 25)),
@@ -189,9 +185,7 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
     (g ^ (5)) * literal(globM, FiniteHint(Long.MaxValue, 1))
 
   val optimizedGraphVectorPlan = product(
-    product(
-      literal(globM, FiniteHint(30, 30)),
-      literal(globM, FiniteHint(30, 30))),
+    product(literal(globM, FiniteHint(30, 30)), literal(globM, FiniteHint(30, 30))),
     product(
       literal(globM, FiniteHint(30, 30)),
       product(
@@ -252,8 +246,7 @@ class Matrix2OptimizationSpec extends WordSpec with Matchers {
     }
 
     "handle a G^5 V plan" in {
-      optimizedGraphVectorPlan shouldBe (optimize(
-        unoptimizedGraphVectorPlan)._2)
+      optimizedGraphVectorPlan shouldBe (optimize(unoptimizedGraphVectorPlan)._2)
     }
 
     "handle an optimized G^5 V plan" in {
@@ -360,8 +353,7 @@ object Matrix2Props extends Properties("Matrix2") {
   def generateRandomPlan(
       i: Int,
       j: Int,
-      p: IndexedSeq[MatrixLiteral[Any, Any, Double]])
-      : Matrix2[Any, Any, Double] = {
+      p: IndexedSeq[MatrixLiteral[Any, Any, Double]]): Matrix2[Any, Any, Double] = {
     if (i == j) p(i)
     else {
       val genK = Gen.choose(i, j - 1)
@@ -452,9 +444,7 @@ object Matrix2Props extends Properties("Matrix2") {
       def diff: Int = range._2 - range._1
     }
 
-    def labelTree(
-        p: Matrix2[Any, Any, Double],
-        start: Int): Option[LabeledTree] = {
+    def labelTree(p: Matrix2[Any, Any, Double], start: Int): Option[LabeledTree] = {
       p match {
         case Product(
               left @ MatrixLiteral(_, _),
@@ -502,10 +492,8 @@ object Matrix2Props extends Properties("Matrix2") {
       * as the dynamic programming procedure computes cost
       * (optimizeProductChain - computeCosts in Prototype)
       */
-    def evaluateProduct(
-        p: Matrix2[Any, Any, Double],
-        labels: LabeledTree): Option[
-      (BigInt, Matrix2[Any, Any, Double], Matrix2[Any, Any, Double])] = {
+    def evaluateProduct(p: Matrix2[Any, Any, Double], labels: LabeledTree)
+        : Option[(BigInt, Matrix2[Any, Any, Double], Matrix2[Any, Any, Double])] = {
       p match {
         case Product(
               left @ MatrixLiteral(_, _),

@@ -47,10 +47,7 @@ object IterateeUsage extends App {
     (_: Int) % 2 == 0) &= stream1_10).run assert_=== List(2, 4, 6, 8, 10)
 
   (collect[List[Int], List] %= group(3) &= enumStream(
-    (1 to 9).toStream)).run assert_=== List(
-    List(1, 2, 3),
-    List(4, 5, 6),
-    List(7, 8, 9))
+    (1 to 9).toStream)).run assert_=== List(List(1, 2, 3), List(4, 5, 6), List(7, 8, 9))
 
   import java.io._
 

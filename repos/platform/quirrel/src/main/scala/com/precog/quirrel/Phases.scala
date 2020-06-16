@@ -40,9 +40,7 @@ trait Phases {
     val empty = Trace(Array.empty[(Sigma, Expr)], Array.empty[BitSet])
 
     def safeCopy(trace: Trace, node: (Sigma, Expr), indices: BitSet) =
-      trace.copy(
-        nodes = trace.nodes :+ node,
-        indices = trace.indices :+ indices)
+      trace.copy(nodes = trace.nodes :+ node, indices = trace.indices :+ indices)
   }
 
   private val Phases: List[Phase] =

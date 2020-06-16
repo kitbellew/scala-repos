@@ -310,10 +310,7 @@ object ScalatraBuild extends Build {
     id = "scalatra-metrics",
     base = file("metrics"),
     settings = scalatraSettings ++ Seq(
-      libraryDependencies ++= Seq(
-        metricsScala,
-        metricsServlets,
-        metricsServlet),
+      libraryDependencies ++= Seq(metricsScala, metricsServlets, metricsServlet),
       description := "Scalatra integration with Metrics"
     )
   ) dependsOn (scalatraCore % "compile;test->test;provided->provided")
@@ -345,9 +342,7 @@ object ScalatraBuild extends Build {
         libraryDependencies += jettyWebsocket % "container;test;provided",
         libraryDependencies += jettyServer % "container;test;provided",
         libraryDependencies += jettyPlus % "container;test",
-        libraryDependencies ++= Seq(
-          jettyWebapp % "container;test",
-          slf4jSimple),
+        libraryDependencies ++= Seq(jettyWebapp % "container;test", slf4jSimple),
         libraryDependencies += json4sJackson,
         libraryDependencies += atmosphereJQuery,
         description := "Scalatra example project",

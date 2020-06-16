@@ -193,14 +193,11 @@ object IterateesSpec
       mustExecute(1) { flatMapEC =>
         await(
           Done(3, Input.El(List(1, 2)))
-            .flatMapTraversable(_ =>
-              Done[List[Int], Int](4, Input.El(List(3, 4))))(
+            .flatMapTraversable(_ => Done[List[Int], Int](4, Input.El(List(3, 4))))(
               implicitly[
                 List[Int] => scala.collection.TraversableLike[Int, List[Int]]],
-              implicitly[scala.collection.generic.CanBuildFrom[
-                List[Int],
-                Int,
-                List[Int]]],
+              implicitly[
+                scala.collection.generic.CanBuildFrom[List[Int], Int, List[Int]]],
               flatMapEC
             )
             .unflatten) must equalTo(Step.Done(4, Input.El(List(1, 2, 3, 4))))
@@ -642,8 +639,7 @@ object IterateesSpec
     "return its input as a list" in {
       val s = List(1, 2, 3, 4, 5)
       await(
-        Enumerator.enumerateSeq1(s) |>>> Iteratee.getChunks[Int]) must equalTo(
-        s)
+        Enumerator.enumerateSeq1(s) |>>> Iteratee.getChunks[Int]) must equalTo(s)
     }
 
   }
@@ -682,8 +678,8 @@ object IterateesSpec
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(
-        Input.Empty) >>> Enumerator(3, 4)
+      val enum =
+        Enumerator(1, 2) >>> Enumerator.enumInput(Input.Empty) >>> Enumerator(3, 4)
       await(enum |>>> takenAndNotTaken(3)) must equalTo((Seq(1, 2, 3), Seq(4)))
     }
 
@@ -713,8 +709,7 @@ object IterateesSpec
     }
 
     "be false for a stream with two elements" in {
-      await(Enumerator(1, 2) |>>> isEmptyThenRest) must equalTo(
-        (false, Seq(1, 2)))
+      await(Enumerator(1, 2) |>>> isEmptyThenRest) must equalTo((false, Seq(1, 2)))
     }
 
     "be false for a stream with empty and element inputs" in {
@@ -744,23 +739,20 @@ object IterateesSpec
     }
 
     "take 1 element and not be empty from 2" in {
-      await(Enumerator(1, 2) |>>> process(1)) must equalTo(
-        (Seq(1), false, Seq(2)))
+      await(Enumerator(1, 2) |>>> process(1)) must equalTo((Seq(1), false, Seq(2)))
     }
 
     "take 2 elements and be empty from 2" in {
-      await(Enumerator(1, 2) |>>> process(2)) must equalTo(
-        (Seq(1, 2), true, Seq()))
+      await(Enumerator(1, 2) |>>> process(2)) must equalTo((Seq(1, 2), true, Seq()))
     }
 
     "take 2 elements and be empty from 2 when asked for 3" in {
-      await(Enumerator(1, 2) |>>> process(3)) must equalTo(
-        (Seq(1, 2), true, Seq()))
+      await(Enumerator(1, 2) |>>> process(3)) must equalTo((Seq(1, 2), true, Seq()))
     }
 
     "skip Input.Empty when taking elements" in {
-      val enum = Enumerator(1, 2) >>> Enumerator.enumInput(
-        Input.Empty) >>> Enumerator(3, 4)
+      val enum =
+        Enumerator(1, 2) >>> Enumerator.enumInput(Input.Empty) >>> Enumerator(3, 4)
       await(enum |>>> process(3)) must equalTo((Seq(1, 2, 3), false, Seq(4)))
     }
 

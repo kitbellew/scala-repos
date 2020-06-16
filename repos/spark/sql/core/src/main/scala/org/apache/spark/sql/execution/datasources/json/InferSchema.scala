@@ -68,12 +68,8 @@ private[sql] object InferSchema {
         }
       }
       .treeAggregate[DataType](StructType(Seq()))(
-        compatibleRootType(
-          columnNameOfCorruptRecords,
-          shouldHandleCorruptRecord),
-        compatibleRootType(
-          columnNameOfCorruptRecords,
-          shouldHandleCorruptRecord))
+        compatibleRootType(columnNameOfCorruptRecords, shouldHandleCorruptRecord),
+        compatibleRootType(columnNameOfCorruptRecords, shouldHandleCorruptRecord))
 
     canonicalizeType(rootType) match {
       case Some(st: StructType) => st

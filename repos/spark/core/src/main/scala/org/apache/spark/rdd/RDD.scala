@@ -167,9 +167,7 @@ abstract class RDD[T: ClassTag](
     * @param newLevel the target storage level
     * @param allowOverride whether to override any existing level with the new one
     */
-  private def persist(
-      newLevel: StorageLevel,
-      allowOverride: Boolean): this.type = {
+  private def persist(newLevel: StorageLevel, allowOverride: Boolean): this.type = {
     // TODO: Handle changes of StorageLevel
     if (storageLevel != StorageLevel.NONE && newLevel != storageLevel && !allowOverride) {
       throw new UnsupportedOperationException(
@@ -1248,8 +1246,7 @@ abstract class RDD[T: ClassTag](
         // the wall-clock time, we stop tree aggregation.
 
         // Don't trigger TreeAggregation when it doesn't save wall-clock time
-        while (numPartitions > scale + math.ceil(
-            numPartitions.toDouble / scale)) {
+        while (numPartitions > scale + math.ceil(numPartitions.toDouble / scale)) {
           numPartitions /= scale
           val curNumPartitions = numPartitions
           partiallyAggregated = partiallyAggregated
@@ -1694,11 +1691,12 @@ abstract class RDD[T: ClassTag](
     RDDCheckpointData.synchronized {
       if (conf.getBoolean("spark.dynamicAllocation.enabled", false) &&
         conf.contains("spark.dynamicAllocation.cachedExecutorIdleTimeout")) {
-        logWarning("Local checkpointing is NOT safe to use with dynamic allocation, " +
-          "which removes executors along with their cached blocks. If you must use both " +
-          "features, you are advised to set `spark.dynamicAllocation.cachedExecutorIdleTimeout` " +
-          "to a high value. E.g. If you plan to use the RDD for 1 hour, set the timeout to " +
-          "at least 1 hour.")
+        logWarning(
+          "Local checkpointing is NOT safe to use with dynamic allocation, " +
+            "which removes executors along with their cached blocks. If you must use both " +
+            "features, you are advised to set `spark.dynamicAllocation.cachedExecutorIdleTimeout` " +
+            "to a high value. E.g. If you plan to use the RDD for 1 hour, set the timeout to " +
+            "at least 1 hour.")
       }
 
       // Note: At this point we do not actually know whether the user will call persist() on
@@ -1928,10 +1926,7 @@ abstract class RDD[T: ClassTag](
         case _ =>
           val frontDeps = rdd.dependencies.take(len - 1)
           val frontDepStrings = frontDeps.flatMap(d =>
-            debugString(
-              d.rdd,
-              prefix,
-              d.isInstanceOf[ShuffleDependency[_, _, _]]))
+            debugString(d.rdd, prefix, d.isInstanceOf[ShuffleDependency[_, _, _]]))
 
           val lastDep = rdd.dependencies.last
           val lastDepStrings =

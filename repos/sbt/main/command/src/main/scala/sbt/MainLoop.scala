@@ -77,9 +77,7 @@ object MainLoop {
     }
 
   /** Transfers logging and trace levels from the old global loggers to the new ones. */
-  private[this] def transferLevels(
-      state: State,
-      logging: GlobalLogging): Unit = {
+  private[this] def transferLevels(state: State, logging: GlobalLogging): Unit = {
     val old = state.globalLogging
     Logger.transferLevels(old.backed, logging.backed)
     (old.full, logging.full) match { // well, this is a hack

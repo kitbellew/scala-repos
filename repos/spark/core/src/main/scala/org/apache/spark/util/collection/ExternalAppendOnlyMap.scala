@@ -333,10 +333,7 @@ class ExternalAppendOnlyMap[K, V, C](
       * If the given buffer contains a value for the given key, merge that value into
       * baseCombiner and remove the corresponding (K, C) pair from the buffer.
       */
-    private def mergeIfKeyExists(
-        key: K,
-        baseCombiner: C,
-        buffer: StreamBuffer): C = {
+    private def mergeIfKeyExists(key: K, baseCombiner: C, buffer: StreamBuffer): C = {
       var i = 0
       while (i < buffer.pairs.length) {
         val pair = buffer.pairs(i)

@@ -85,9 +85,7 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     var c = Calendar.getInstance()
     c.set(2015, 0, 1, 0, 0, 0)
     c.set(Calendar.MILLISECOND, 0)
-    checkEvaluation(
-      Cast(Literal("2015"), DateType),
-      new Date(c.getTimeInMillis))
+    checkEvaluation(Cast(Literal("2015"), DateType), new Date(c.getTimeInMillis))
     c = Calendar.getInstance()
     c.set(2015, 2, 1, 0, 0, 0)
     c.set(Calendar.MILLISECOND, 0)
@@ -660,9 +658,7 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
       val ret =
         cast(map, MapType(StringType, IntegerType, valueContainsNull = true))
       assert(ret.resolved === true)
-      checkEvaluation(
-        ret,
-        Map("a" -> 123, "b" -> null, "c" -> null, "d" -> null))
+      checkEvaluation(ret, Map("a" -> 123, "b" -> null, "c" -> null, "d" -> null))
     }
     {
       val ret =
@@ -732,8 +728,7 @@ class CastSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkNullCast(
       StructType(
         Seq(StructField("a", StringType), StructField("b", IntegerType))),
-      StructType(
-        Seq(StructField("a", StringType), StructField("b", StringType))))
+      StructType(Seq(StructField("a", StringType), StructField("b", StringType))))
 
     val struct = Literal.create(
       InternalRow(

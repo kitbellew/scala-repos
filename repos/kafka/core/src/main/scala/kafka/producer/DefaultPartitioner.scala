@@ -23,8 +23,7 @@ import org.apache.kafka.common.utils.Utils
   "This class has been deprecated and will be removed in a future release. " +
     "It has been replaced by org.apache.kafka.clients.producer.internals.DefaultPartitioner.",
   "0.10.0.0")
-class DefaultPartitioner(props: VerifiableProperties = null)
-    extends Partitioner {
+class DefaultPartitioner(props: VerifiableProperties = null) extends Partitioner {
   private val random = new java.util.Random
 
   def partition(key: Any, numPartitions: Int): Int = {

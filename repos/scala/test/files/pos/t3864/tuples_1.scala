@@ -5,8 +5,7 @@ trait EnrichedType[X] {
 trait Tuples {
 
   trait Tuple15W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
-      extends EnrichedType[
-        Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]] {
+      extends EnrichedType[Tuple15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]] {
     def fold[Z](f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O) => Z): Z = {
       import value._;
       f(_1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15)
@@ -188,24 +187,8 @@ trait Tuples {
         _17)
     }
     def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple17[
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z]): IndexedSeq[Z] = {
+    ev: value.type <:< Tuple17[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
+        : IndexedSeq[Z] = {
       val zs = ev(value); import zs._;
       IndexedSeq(
         _1,
@@ -316,25 +299,8 @@ trait Tuples {
         _18)
     }
     def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple18[
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z]): IndexedSeq[Z] = {
+    ev: value.type <:< Tuple18[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
+        : IndexedSeq[Z] = {
       val zs = ev(value); import zs._;
       IndexedSeq(
         _1,
@@ -442,8 +408,7 @@ trait Tuples {
       extends EnrichedType[
         Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] {
     def fold[Z](
-        f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => Z)
-        : Z = {
+        f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S) => Z): Z = {
       import value._;
       f(
         _1,
@@ -467,26 +432,8 @@ trait Tuples {
         _19)
     }
     def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple19[
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z]): IndexedSeq[Z] = {
+    ev: value.type <:< Tuple19[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
+        : IndexedSeq[Z] = {
       val zs = ev(value); import zs._;
       IndexedSeq(
         _1,
@@ -617,8 +564,7 @@ trait Tuples {
       extends EnrichedType[
         Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]] {
     def fold[Z](
-        f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => Z)
-        : Z = {
+        f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T) => Z): Z = {
       import value._;
       f(
         _1,
@@ -643,27 +589,8 @@ trait Tuples {
         _20)
     }
     def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple20[
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z]): IndexedSeq[Z] = {
+    ev: value.type <:< Tuple20[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
+        : IndexedSeq[Z] = {
       val zs = ev(value); import zs._;
       IndexedSeq(
         _1,
@@ -820,28 +747,7 @@ trait Tuples {
         T,
         U]] {
     def fold[Z](
-        f: => (
-            A,
-            B,
-            C,
-            D,
-            E,
-            F,
-            G,
-            H,
-            I,
-            J,
-            K,
-            L,
-            M,
-            N,
-            O,
-            P,
-            Q,
-            R,
-            S,
-            T,
-            U) => Z): Z = {
+        f: => (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U) => Z): Z = {
       import value._;
       f(
         _1,
@@ -867,28 +773,8 @@ trait Tuples {
         _21)
     }
     def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple21[
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z]): IndexedSeq[Z] = {
+    ev: value.type <:< Tuple21[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
+        : IndexedSeq[Z] = {
       val zs = ev(value); import zs._;
       IndexedSeq(
         _1,
@@ -1071,29 +957,8 @@ trait Tuples {
       T,
       U,
       V]
-      extends EnrichedType[Tuple22[
-        A,
-        B,
-        C,
-        D,
-        E,
-        F,
-        G,
-        H,
-        I,
-        J,
-        K,
-        L,
-        M,
-        N,
-        O,
-        P,
-        Q,
-        R,
-        S,
-        T,
-        U,
-        V]] {
+      extends EnrichedType[
+        Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]] {
     def fold[Z](
         f: => (
             A,
@@ -1144,29 +1009,8 @@ trait Tuples {
         _22)
     }
     def toIndexedSeq[Z](implicit
-        ev: value.type <:< Tuple22[
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z,
-          Z]): IndexedSeq[Z] = {
+    ev: value.type <:< Tuple22[Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z, Z])
+        : IndexedSeq[Z] = {
       val zs = ev(value); import zs._;
       IndexedSeq(
         _1,
@@ -1330,27 +1174,6 @@ trait Tuples {
         T,
         U,
         V] =
-    new { val value = t } with Tuple22W[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U,
-      V]
+    new { val value = t }
+    with Tuple22W[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]
 }

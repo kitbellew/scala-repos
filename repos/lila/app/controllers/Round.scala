@@ -189,14 +189,8 @@ object Round extends LilaController with TheftPrevention {
                   tv = none,
                   withOpening = false) map {
                 case (((tour, simul), crosstable), data) =>
-                  Ok(
-                    html.round.watcher(
-                      pov,
-                      data,
-                      tour,
-                      simul,
-                      crosstable,
-                      userTv = userTv))
+                  Ok(html.round
+                    .watcher(pov, data, tour, simul, crosstable, userTv = userTv))
               }
             else // web crawlers don't need the full thing
               GameRepo.initialFen(pov.game.id) zip

@@ -103,8 +103,7 @@ private[streaming] class ReceiverSchedulingPolicy {
             // preferredLocation is a known host. Select an executor that has the least receivers in
             // this host
             val leastScheduledExecutor =
-              executorsOnHost.minBy(executor =>
-                numReceiversOnExecutor(executor))
+              executorsOnHost.minBy(executor => numReceiversOnExecutor(executor))
             scheduledLocations(i) += leastScheduledExecutor
             numReceiversOnExecutor(leastScheduledExecutor) =
               numReceiversOnExecutor(leastScheduledExecutor) + 1
@@ -124,8 +123,7 @@ private[streaming] class ReceiverSchedulingPolicy {
 
     // For those receivers that don't have preferredLocation, make sure we assign at least one
     // executor to them.
-    for (scheduledLocationsForOneReceiver <-
-        scheduledLocations.filter(_.isEmpty)) {
+    for (scheduledLocationsForOneReceiver <- scheduledLocations.filter(_.isEmpty)) {
       // Select the executor that has the least receivers
       val (leastScheduledExecutor, numReceivers) =
         numReceiversOnExecutor.minBy(_._2)

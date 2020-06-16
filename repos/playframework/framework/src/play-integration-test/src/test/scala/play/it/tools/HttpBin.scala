@@ -153,8 +153,7 @@ object HttpBinApplication {
   val responseHeaders: Routes = {
     case GET(p"/response-header") =>
       Action { request =>
-        Ok("").withHeaders(
-          request.queryString.mapValues(_.mkString(",")).toSeq: _*)
+        Ok("").withHeaders(request.queryString.mapValues(_.mkString(",")).toSeq: _*)
       }
   }
 

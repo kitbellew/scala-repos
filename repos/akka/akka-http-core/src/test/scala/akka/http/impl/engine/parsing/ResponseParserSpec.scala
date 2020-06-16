@@ -180,8 +180,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         Seq(start, "rest") should generalMultiParseTo(
           Right(baseResponse.withEntity(Chunked(`application/pdf`, source()))),
           Left(
-            EntityStreamError(
-              ErrorInfo("Illegal character 'r' in chunk start"))))
+            EntityStreamError(ErrorInfo("Illegal character 'r' in chunk start"))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -219,9 +218,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
       "message end" in new Test {
         Seq(start, """0
             |
-            |""") should generalMultiParseTo(
-          Right(baseResponse.withEntity(
-            Chunked(`application/pdf`, source(LastChunk)))))
+            |""") should generalMultiParseTo(Right(
+          baseResponse.withEntity(Chunked(`application/pdf`, source(LastChunk)))))
         closeAfterResponseCompletion shouldEqual Seq(false)
       }
 
@@ -233,11 +231,12 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
             |
             |HT""") should generalMultiParseTo(
           Right(
-            baseResponse.withEntity(Chunked(
-              `application/pdf`,
-              source(LastChunk(
-                "nice=true",
-                List(RawHeader("Foo", "pip apo"), RawHeader("Bar", "xyz"))))))),
+            baseResponse.withEntity(
+              Chunked(
+                `application/pdf`,
+                source(LastChunk(
+                  "nice=true",
+                  List(RawHeader("Foo", "pip apo"), RawHeader("Bar", "xyz"))))))),
           Left(
             MessageStartError(
               400: StatusCode,
@@ -398,9 +397,7 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
                 headers,
                 createEntity(entityParts),
                 protocol))
-          case (
-                Seq(x @ (MessageStartError(_, _) | EntityStreamError(_))),
-                tail) ⇒
+          case (Seq(x @ (MessageStartError(_, _) | EntityStreamError(_))), tail) ⇒
             tail.runWith(Sink.ignore)
             Left(x)
         }
@@ -412,9 +409,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
     protected def parserSettings: ParserSettings = ParserSettings(system)
 
     def newParserStage(requestMethod: HttpMethod = GET) = {
-      val parser = new HttpResponseParser(
-        parserSettings,
-        HttpHeaderParser(parserSettings)())
+      val parser =
+        new HttpResponseParser(parserSettings, HttpHeaderParser(parserSettings)())
       parser.setContextForNextResponse(
         HttpResponseParser.ResponseContext(requestMethod, None))
       parser.stage
@@ -428,8 +424,8 @@ class ResponseParserSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
         case _ ⇒ entity.toStrict(250.millis)
       }
 
-    private def compactEntityChunks(data: Source[ChunkStreamPart, Any])
-        : Future[Source[ChunkStreamPart, Any]] =
+    private def compactEntityChunks(
+        data: Source[ChunkStreamPart, Any]): Future[Source[ChunkStreamPart, Any]] =
       data
         .limit(100000)
         .runWith(Sink.seq)

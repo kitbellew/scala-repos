@@ -30,10 +30,7 @@ object Test extends App {
           lines drop (1) map { line =>
             line.split(";", -1).toList match {
               case phase$whitespace$name :: id :: description :: _ =>
-                record(
-                  phase$whitespace$name.trim(),
-                  id.trim(),
-                  description.trim())
+                record(phase$whitespace$name.trim(), id.trim(), description.trim())
               case _ => throw new Exception("format error")
             }
           }

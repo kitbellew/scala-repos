@@ -38,9 +38,7 @@ class FloatJSTest {
 
   @Test def fround_underflows(): Unit = {
     assertEquals(Double.PositiveInfinity, 1 / froundNotInlined(1e-300).toDouble)
-    assertEquals(
-      Double.NegativeInfinity,
-      1 / froundNotInlined(-1e-300).toDouble)
+    assertEquals(Double.NegativeInfinity, 1 / froundNotInlined(-1e-300).toDouble)
   }
 
   @Test def fround_normal_cases(): Unit = {

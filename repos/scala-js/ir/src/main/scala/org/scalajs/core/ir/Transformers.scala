@@ -158,10 +158,7 @@ object Transformers {
             args map transformExpr)
 
         case JSSuperBracketSelect(cls, qualifier, item) =>
-          JSSuperBracketSelect(
-            cls,
-            transformExpr(qualifier),
-            transformExpr(item))
+          JSSuperBracketSelect(cls, transformExpr(qualifier), transformExpr(item))
 
         case JSSuperBracketCall(cls, receiver, method, args) =>
           JSSuperBracketCall(

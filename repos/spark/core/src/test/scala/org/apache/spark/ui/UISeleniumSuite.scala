@@ -177,8 +177,7 @@ class UISeleniumSuite
       }
       val stageJson = getJson(sc.ui.get, "stages")
       stageJson.children.length should be(1)
-      (stageJson \ "status").extract[String] should be(
-        StageStatus.FAILED.name())
+      (stageJson \ "status").extract[String] should be(StageStatus.FAILED.name())
 
       // Regression test for SPARK-2105
       class NotSerializable
@@ -393,8 +392,7 @@ class UISeleniumSuite
     }
   }
 
-  test(
-    "stages that aren't run appear as 'skipped stages' after a job finishes") {
+  test("stages that aren't run appear as 'skipped stages' after a job finishes") {
     withSpark(newSparkContext()) { sc =>
       // Create an RDD that involves multiple stages:
       val rdd =

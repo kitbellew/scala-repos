@@ -173,8 +173,7 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
         }
         .count()
     }
-    assert(
-      thrownDueToTaskFailure.getMessage.contains("intentional task failure"))
+    assert(thrownDueToTaskFailure.getMessage.contains("intentional task failure"))
 
     // If the task succeeded but memory was leaked, then the task should fail due to that leak
     val thrownDueToMemoryLeak = intercept[SparkException] {

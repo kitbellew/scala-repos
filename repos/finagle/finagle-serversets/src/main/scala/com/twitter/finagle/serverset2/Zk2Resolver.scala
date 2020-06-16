@@ -131,9 +131,7 @@ class Zk2Resolver(
   }
 
   private[this] val serverSetOf =
-    Memoize[
-      (ServiceDiscoverer, String),
-      Var[Activity.State[Seq[(Entry, Double)]]]] {
+    Memoize[(ServiceDiscoverer, String), Var[Activity.State[Seq[(Entry, Double)]]]] {
       case (discoverer, path) => discoverer(path).run
     }
 
@@ -169,13 +167,7 @@ class Zk2Resolver(
             val endpoint = endpointOption.getOrElse(null)
             val subseq = eps collect {
               case (
-                    Endpoint(
-                      names,
-                      host,
-                      port,
-                      shard,
-                      Endpoint.Status.Alive,
-                      _),
+                    Endpoint(names, host, port, shard, Endpoint.Status.Alive, _),
                     weight) if names.contains(endpoint) && host != null =>
                 val metadata =
                   ZkMetadata.toAddrMetadata(ZkMetadata(Some(shard)))
@@ -183,9 +175,7 @@ class Zk2Resolver(
             }
 
             if (chatty()) {
-              eprintf(
-                "Received new serverset vector: %s\n",
-                subseq mkString ",")
+              eprintf("Received new serverset vector: %s\n", subseq mkString ",")
             }
 
             if (subseq.isEmpty) Var.value(Addr.Neg)

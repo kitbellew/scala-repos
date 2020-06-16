@@ -176,8 +176,7 @@ class DispatchersSpec
 
     "get the correct types of dispatchers" in {
       //All created/obtained dispatchers are of the expeced type/instance
-      assert(
-        typesAndValidators.forall(tuple ⇒ tuple._2(allDispatchers(tuple._1))))
+      assert(typesAndValidators.forall(tuple ⇒ tuple._2(allDispatchers(tuple._1))))
     }
 
     "provide lookup of dispatchers by id" in {
@@ -188,8 +187,7 @@ class DispatchersSpec
 
     "include system name and dispatcher id in thread names for fork-join-executor" in {
       assertMyDispatcherIsUsed(
-        system.actorOf(
-          Props[ThreadNameEcho].withDispatcher("myapp.mydispatcher")))
+        system.actorOf(Props[ThreadNameEcho].withDispatcher("myapp.mydispatcher")))
     }
 
     "include system name and dispatcher id in thread names for thread-pool-executor" in {

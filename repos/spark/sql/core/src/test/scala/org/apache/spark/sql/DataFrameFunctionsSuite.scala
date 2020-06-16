@@ -48,7 +48,8 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
   }
 
   // Turn this on once we add a rule to the analyzer to throw a friendly exception
-  ignore("array: throw exception if putting columns of different types into an array") {
+  ignore(
+    "array: throw exception if putting columns of different types into an array") {
     val df = Seq((0, "str")).toDF("a", "b")
     intercept[AnalysisException] {
       df.select(array("a", "b"))
@@ -148,9 +149,7 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
   test("if function") {
     val df = Seq((1, 2)).toDF("a", "b")
     checkAnswer(
-      df.selectExpr(
-        "if(a = 1, 'one', 'not_one')",
-        "if(b = 1, 'one', 'not_one')"),
+      df.selectExpr("if(a = 1, 'one', 'not_one')", "if(b = 1, 'one', 'not_one')"),
       Row("one", "not_one"))
   }
 
@@ -164,15 +163,11 @@ class DataFrameFunctionsSuite extends QueryTest with SharedSQLContext {
     val df = Seq(("ABC", Array[Byte](1, 2, 3, 4, 5, 6))).toDF("a", "b")
     checkAnswer(
       df.select(md5($"a"), md5($"b")),
-      Row(
-        "902fbdd2b1df0c4f70b4a5d23525e932",
-        "6ac1e56bc78f031059be7be854522c4c"))
+      Row("902fbdd2b1df0c4f70b4a5d23525e932", "6ac1e56bc78f031059be7be854522c4c"))
 
     checkAnswer(
       df.selectExpr("md5(a)", "md5(b)"),
-      Row(
-        "902fbdd2b1df0c4f70b4a5d23525e932",
-        "6ac1e56bc78f031059be7be854522c4c"))
+      Row("902fbdd2b1df0c4f70b4a5d23525e932", "6ac1e56bc78f031059be7be854522c4c"))
   }
 
   test("misc sha1 function") {

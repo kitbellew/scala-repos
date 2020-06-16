@@ -155,9 +155,7 @@ object DevServerStart {
                               val environment =
                                 Environment(path, projectClassloader, Mode.Dev)
                               val sourceMapper = new SourceMapper {
-                                def sourceOf(
-                                    className: String,
-                                    line: Option[Int]) = {
+                                def sourceOf(className: String, line: Option[Int]) = {
                                   Option(
                                     buildLink.findSource(
                                       className,
@@ -199,13 +197,13 @@ object DevServerStart {
                                 lastState
                               }
                               case NonFatal(e) => {
-                                lastState = Failure(
-                                  UnexpectedException(unexpected = Some(e)))
+                                lastState =
+                                  Failure(UnexpectedException(unexpected = Some(e)))
                                 lastState
                               }
                               case e: LinkageError => {
-                                lastState = Failure(
-                                  UnexpectedException(unexpected = Some(e)))
+                                lastState =
+                                  Failure(UnexpectedException(unexpected = Some(e)))
                                 lastState
                               }
                             }

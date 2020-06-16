@@ -202,9 +202,7 @@ abstract class MappedDecimal[T <: Mapper[T]](
       accessor: Method,
       columnName: String): (T, Boolean, Boolean) => Unit = null
 
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit =
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit =
     (inst, v) =>
       doField(
         inst,

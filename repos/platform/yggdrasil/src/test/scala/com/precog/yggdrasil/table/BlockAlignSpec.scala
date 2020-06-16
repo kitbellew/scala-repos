@@ -526,11 +526,8 @@ object BlockAlignSpec
     "a simple example" in alignSimple
     "across slice boundaries" in alignAcrossBoundaries
     "survive a trivial scalacheck" in checkAlign
-    "produce the same results irrespective of input order" in testAlignSymmetry(
-      0)
-    "produce the same results irrespective of input order" in testAlignSymmetry(
-      1)
-    "produce the same results irrespective of input order" in testAlignSymmetry(
-      2)
+    "produce the same results irrespective of input order" in testAlignSymmetry(0)
+    "produce the same results irrespective of input order" in testAlignSymmetry(1)
+    "produce the same results irrespective of input order" in testAlignSymmetry(2)
   }
 }

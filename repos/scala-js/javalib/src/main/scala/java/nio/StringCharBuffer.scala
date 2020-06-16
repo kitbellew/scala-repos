@@ -110,11 +110,6 @@ private[nio] object StringCharBuffer {
     val initialLimit = initialPosition + initialLength
     if (initialPosition < 0 || initialLength < 0 || initialLimit > capacity)
       throw new IndexOutOfBoundsException
-    new StringCharBuffer(
-      capacity,
-      csq,
-      csqOffset,
-      initialPosition,
-      initialLimit)
+    new StringCharBuffer(capacity, csq, csqOffset, initialPosition, initialLimit)
   }
 }

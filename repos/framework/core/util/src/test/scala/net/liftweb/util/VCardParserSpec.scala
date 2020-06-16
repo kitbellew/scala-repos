@@ -50,9 +50,7 @@ object VCardParserSpec extends Specification with XmlMatchers {
               VCardEntry(VCardKey("VERSION", List()), List("2.1")),
               VCardEntry(VCardKey("N", List()), List("Gump", "Forrest")),
               VCardEntry(VCardKey("FN", List()), List("Forrest Gump")),
-              VCardEntry(
-                VCardKey("ORG", List()),
-                List("Bubba Gump Shrimp Co.")),
+              VCardEntry(VCardKey("ORG", List()), List("Bubba Gump Shrimp Co.")),
               VCardEntry(VCardKey("TITLE", List()), List("Shrimp Man")),
               VCardEntry(
                 VCardKey("TEL", List(("WORK", ""), ("VOICE", ""))),

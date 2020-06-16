@@ -135,8 +135,7 @@ class ScPackagingImpl private (
       packageName.substring(0, packageName.indexOf("."))
     } else packageName
     val top = if (_prefix.length > 0) _prefix + "." + topRefName else topRefName
-    val p = ScPackageImpl(
-      JavaPsiFacade.getInstance(getProject).findPackage(top))
+    val p = ScPackageImpl(JavaPsiFacade.getInstance(getProject).findPackage(top))
     if (p == null) Seq.empty else Seq(p)
   }
 

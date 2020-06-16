@@ -27,8 +27,7 @@ private[pref] final class DataForm {
       "message" -> number.verifying(Pref.Message.choices.toMap contains _),
       "premove" -> number.verifying(Set(0, 1) contains _),
       "animation" -> number.verifying(Set(0, 1, 2, 3) contains _),
-      "submitMove" -> number.verifying(
-        Pref.SubmitMove.choices.toMap contains _),
+      "submitMove" -> number.verifying(Pref.SubmitMove.choices.toMap contains _),
       "insightShare" -> number.verifying(Set(0, 1, 2) contains _),
       "confirmResign" -> number.verifying(
         Pref.ConfirmResign.choices.toMap contains _),

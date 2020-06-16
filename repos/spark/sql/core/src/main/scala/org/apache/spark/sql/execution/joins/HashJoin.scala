@@ -121,9 +121,7 @@ trait HashJoin {
     UnsafeProjection.create(rewriteKeyExpr(streamedKeys), streamedPlan.output)
 
   @transient private[this] lazy val boundCondition = if (condition.isDefined) {
-    newPredicate(
-      condition.getOrElse(Literal(true)),
-      left.output ++ right.output)
+    newPredicate(condition.getOrElse(Literal(true)), left.output ++ right.output)
   } else { (r: InternalRow) =>
     true
   }

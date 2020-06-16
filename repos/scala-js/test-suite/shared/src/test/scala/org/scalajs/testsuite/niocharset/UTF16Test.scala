@@ -78,8 +78,7 @@ abstract class BaseUTF16Test(charset: Charset)
     testEncode(cb"你好")(bb"4f60 597d")
 
     // 4-byte characters
-    testEncode(
-      cb"\ud835\udcd7\ud835\udcee\ud835\udcf5\ud835\udcf5\ud835\udcf8")(
+    testEncode(cb"\ud835\udcd7\ud835\udcee\ud835\udcf5\ud835\udcf5\ud835\udcf8")(
       bb"d835 dcd7 d835 dcee d835 dcf5 d835 dcf5 d835 dcf8")
 
     testEncode(cb"")(bb"")

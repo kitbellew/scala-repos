@@ -533,7 +533,8 @@ trait StreamTest extends QueryTest with Timeouts {
 
         case e: ExpectException[_] =>
           val thrownException =
-            withClue(s"Did not throw ${e.t.runtimeClass.getSimpleName} when expected.") {
+            withClue(
+              s"Did not throw ${e.t.runtimeClass.getSimpleName} when expected.") {
               intercept[ContinuousQueryException] {
                 failAfter(testTimeout) {
                   awaitTermFunc()

@@ -37,9 +37,7 @@ class ScalaFileImplTest extends SimpleTestCase {
     assertPathIs("package a", List(List("a")))
     assertPathIs("package a.b", List(List("a", "b")))
     assertPathIs("package a\npackage b", List(List("a"), List("b")))
-    assertPathIs(
-      "package a.b\npackage c.d",
-      List(List("a", "b"), List("c", "d")))
+    assertPathIs("package a.b\npackage c.d", List(List("a", "b"), List("c", "d")))
 
     assertPathIs("/* foo */\npackage a", List(List("a")))
     assertPathIs(
@@ -94,10 +92,7 @@ class ScalaFileImplTest extends SimpleTestCase {
     assertSplitAs(List(List("a", "b")), List("c"), List(List("a", "b")))
     assertSplitAs(List(List("a", "b")), List("b"), List(List("a", "b")))
     assertSplitAs(List(List("a", "b")), List("a"), List(List("a"), List("b")))
-    assertSplitAs(
-      List(List("a"), List("b")),
-      List(),
-      List(List("a"), List("b")))
+    assertSplitAs(List(List("a"), List("b")), List(), List(List("a"), List("b")))
     assertSplitAs(
       List(List("a"), List("b")),
       List("a"),

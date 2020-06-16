@@ -204,8 +204,7 @@ class GoToImplicitConversionAction
                   expr.getAdditionalExpression.get._1
                     .getImplicitConversions(
                       fromUnder = false,
-                      expectedOption =
-                        Some(expr.getAdditionalExpression.get._2))
+                      expectedOption = Some(expr.getAdditionalExpression.get._2))
                     ._2
                     .isDefined) =>
               res += expr

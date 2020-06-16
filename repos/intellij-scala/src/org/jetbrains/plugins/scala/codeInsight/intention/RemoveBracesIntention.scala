@@ -124,8 +124,7 @@ class RemoveBracesIntention extends PsiElementBaseIntentionAction {
     // Everything other than case clauses is treated uniformly.
 
     // Is the expression a block containing a single expression?
-    val oneLinerBlock
-        : Option[(ScBlockExpr, ScExpression, CommentsAroundElement)] =
+    val oneLinerBlock: Option[(ScBlockExpr, ScExpression, CommentsAroundElement)] =
       expr.flatMap {
         case blk: ScBlockExpr =>
           blk.statements match {

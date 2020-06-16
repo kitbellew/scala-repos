@@ -189,8 +189,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
-          assert(
-            keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
+          assert(keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
           assert(weights == None)
           assert(aggregate == None)
         }
@@ -198,13 +197,11 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test(
-    "Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys and weights") {
+  test("Correctly encode ZINTERSTORE and ZUNIONSTORE with two keys and weights") {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2 WEIGHTS 2 3\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
-          assert(
-            keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
+          assert(keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
           assert(weights == Some(Weights(2, 3)))
           assert(aggregate == None)
         }
@@ -216,8 +213,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2 aggregate sum\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
-          assert(
-            keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
+          assert(keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
           assert(weights == None)
           assert(aggregate == Some(Aggregate.Sum))
         }
@@ -229,8 +225,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2 weights 2 3 aggregate min\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
-          assert(
-            keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
+          assert(keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
           assert(weights == Some(Weights(2, 3)))
           assert(aggregate == Some(Aggregate.Min))
         }
@@ -242,8 +237,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     List("ZINTERSTORE", "ZUNIONSTORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s out 2 zset1 zset2 aggregate max weights 2 3\r\n")) {
         verifyIU(cmd, "out", 2) { (keys, weights, aggregate) =>
-          assert(
-            keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
+          assert(keys.map(s => BytesToString(s.array)) == List("zset1", "zset2"))
           assert(weights == Some(Weights(2, 3)))
           assert(aggregate == Some(Aggregate.Max))
         }
@@ -355,11 +349,7 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  def verifyRangeByScore(
-      cmd: String,
-      k: String,
-      min: ZInterval,
-      max: ZInterval)(
+  def verifyRangeByScore(cmd: String, k: String, min: ZInterval, max: ZInterval)(
       f: (Option[CommandArgument], Option[Limit]) => Unit
   ): PartialFunction[Command, Unit] =
     cmd match {
@@ -438,7 +428,8 @@ final class SortedSetCodecSuite extends RedisRequestTest {
     }
   }
 
-  test("Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE with limit and scores") {
+  test(
+    "Correctly encode ZRANGEBYSCORE and ZREVRANGEBYSCORE with limit and scores") {
     List("ZRANGEBYSCORE", "ZREVRANGEBYSCORE").foreach { cmd =>
       unwrap(doCmd(cmd, "%s myzset -inf +inf LIMIT 3 9 WITHSCORES\r\n")) {
         verifyRangeByScore(cmd, "myzset", ZInterval.MIN, ZInterval.MAX) {

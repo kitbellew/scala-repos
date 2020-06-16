@@ -252,9 +252,7 @@ class InputStreamReaderTest {
     // Do it twice to check for a regression where this used to throw
     assertEquals(-1, streamReader.read(bytes))
     assertEquals(-1, streamReader.read(bytes))
-    expectThrows(
-      classOf[IndexOutOfBoundsException],
-      streamReader.read(bytes, 10, 3))
+    expectThrows(classOf[IndexOutOfBoundsException], streamReader.read(bytes, 10, 3))
     assertEquals(0, streamReader.read(new Array[Char](0)))
   }
 

@@ -148,15 +148,11 @@ class DenseVectorTest extends FunSuite with Checkers {
     // assert result is a dense matrix
     val m: DenseMatrix[Double] = a * b.t
     assert(
-      m === DenseMatrix(
-        (6.0, -4.0, 8.0),
-        (12.0, -8.0, 16.0),
-        (18.0, -12.0, 24.0)))
+      m === DenseMatrix((6.0, -4.0, 8.0), (12.0, -8.0, 16.0), (18.0, -12.0, 24.0)))
   }
 
   test("Range") {
-    assert(
-      DenseVector.range(0, 10) == DenseVector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
+    assert(DenseVector.range(0, 10) == DenseVector(0, 1, 2, 3, 4, 5, 6, 7, 8, 9))
     assert(
       norm(DenseVector.rangeD(0, 1, 0.1) - DenseVector(0.0, 0.1, 0.2, 0.3, 0.4,
         0.5, 0.6, 0.7, 0.8, 0.9)) < 1e-10)
@@ -549,8 +545,8 @@ class DenseVectorOps_DoubleTest
     extends DoubleValuedTensorSpaceTestBase[DenseVector[Double], Int] {
   val space = DenseVector.space[Double]
 
-  implicit def genTriple: Arbitrary[
-    (DenseVector[Double], DenseVector[Double], DenseVector[Double])] = {
+  implicit def genTriple
+      : Arbitrary[(DenseVector[Double], DenseVector[Double], DenseVector[Double])] = {
     val N = 30
     Arbitrary {
       for {

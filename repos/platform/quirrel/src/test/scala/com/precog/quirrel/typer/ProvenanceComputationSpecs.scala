@@ -1322,8 +1322,7 @@ object ProvenanceComputationSpecs
         {
           val tree = compileSingle("false union {foo: foo(3)}")
           tree.provenance mustEqual NullProvenance
-          tree.errors mustEqual Set(
-            UndefinedFunction(Identifier(Vector(), "foo")))
+          tree.errors mustEqual Set(UndefinedFunction(Identifier(Vector(), "foo")))
         }
       }
 
@@ -1336,8 +1335,7 @@ object ProvenanceComputationSpecs
         {
           val tree = compileSingle("false union [foo(5), {bar: 10}]")
           tree.provenance mustEqual NullProvenance
-          tree.errors mustEqual Set(
-            UndefinedFunction(Identifier(Vector(), "foo")))
+          tree.errors mustEqual Set(UndefinedFunction(Identifier(Vector(), "foo")))
         }
       }
 

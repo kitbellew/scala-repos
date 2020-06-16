@@ -323,9 +323,8 @@ case class DefaultOptimalSizeExploringResizer(
   }
 
   private def explore(currentSize: PoolSize): Int = {
-    val change = Math.max(
-      1,
-      random.nextInt(Math.ceil(currentSize * exploreStepSize).toInt))
+    val change =
+      Math.max(1, random.nextInt(Math.ceil(currentSize * exploreStepSize).toInt))
     if (random.nextDouble() < chanceOfScalingDownWhenFull)
       -change
     else

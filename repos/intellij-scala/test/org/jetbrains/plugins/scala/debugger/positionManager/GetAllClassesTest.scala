@@ -11,9 +11,7 @@ import org.jetbrains.plugins.scala.debugger.{
 
 class GetAllClassesTest extends GetAllClassesTestBase with ScalaVersion_2_11
 
-class GetAllClassesTest_212
-    extends GetAllClassesTestBase
-    with ScalaVersion_2_12 {
+class GetAllClassesTest_212 extends GetAllClassesTestBase with ScalaVersion_2_12 {
 
   override def testForStmt(): Unit = {
     checkGetAllClasses("ForStmt$")

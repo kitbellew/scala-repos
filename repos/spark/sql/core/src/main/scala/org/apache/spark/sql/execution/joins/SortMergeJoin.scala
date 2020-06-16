@@ -382,9 +382,7 @@ case class SortMergeJoin(
     * the variables should be declared separately from accessing the columns, we can't use the
     * codegen of BoundReference here.
     */
-  private def createLeftVars(
-      ctx: CodegenContext,
-      leftRow: String): Seq[ExprCode] = {
+  private def createLeftVars(ctx: CodegenContext, leftRow: String): Seq[ExprCode] = {
     ctx.INPUT_ROW = leftRow
     left.output.zipWithIndex.map {
       case (a, i) =>
@@ -919,9 +917,7 @@ private class SortMergeFullOuterJoinScanner(
     leftIndex = 0
     rightIndex = 0
 
-    while (leftRowKey != null && keyOrdering.compare(
-        leftRowKey,
-        matchingKey) == 0) {
+    while (leftRowKey != null && keyOrdering.compare(leftRowKey, matchingKey) == 0) {
       leftMatches += leftRow.copy()
       advancedLeft()
     }

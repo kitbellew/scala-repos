@@ -191,8 +191,7 @@ abstract class LazyVals
                 })
                 toAdd0
               } else List()
-            deriveTemplate(tree)(_ =>
-              innerClassBitmaps ++ flattenThickets(stats))
+            deriveTemplate(tree)(_ => innerClassBitmaps ++ flattenThickets(stats))
           }
 
         case ValDef(_, _, _, _) if !sym.owner.isModule && !sym.owner.isClass =>
@@ -257,9 +256,7 @@ abstract class LazyVals
         rhs match {
           case Block(assign, l @ LabelDef(name, params, _))
               if (name string_== "_" + methSym.name) && isMatch(params) =>
-            Block(
-              assign,
-              deriveLabelDef(l)(rhs => typed(prependStats(bmps, rhs))))
+            Block(assign, deriveLabelDef(l)(rhs => typed(prependStats(bmps, rhs))))
 
           case _ => prependStats(bmps, rhs)
         }

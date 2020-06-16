@@ -60,10 +60,8 @@ class AllDataTypesScanSource extends SchemaRelationProvider {
   }
 }
 
-case class AllDataTypesScan(
-    from: Int,
-    to: Int,
-    userSpecifiedSchema: StructType)(@transient val sqlContext: SQLContext)
+case class AllDataTypesScan(from: Int, to: Int, userSpecifiedSchema: StructType)(
+    @transient val sqlContext: SQLContext)
     extends BaseRelation
     with TableScan {
 

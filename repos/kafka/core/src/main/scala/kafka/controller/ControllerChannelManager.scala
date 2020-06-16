@@ -639,9 +639,7 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
               controllerEpoch,
               r.deletePartition,
               Set(
-                new TopicPartition(
-                  r.replica.topic,
-                  r.replica.partition)).asJava)
+                new TopicPartition(r.replica.topic, r.replica.partition)).asJava)
             controller.sendRequest(
               broker,
               ApiKeys.STOP_REPLICA,
@@ -662,8 +660,9 @@ class ControllerBrokerRequestBatch(controller: KafkaController)
             s"the map is $updateMetadataRequestMap")
         }
         if (stopReplicaRequestMap.size > 0) {
-          error("Haven't been able to send stop replica requests, current state of " +
-            s"the map is $stopReplicaRequestMap")
+          error(
+            "Haven't been able to send stop replica requests, current state of " +
+              s"the map is $stopReplicaRequestMap")
         }
         throw new IllegalStateException(e)
       }

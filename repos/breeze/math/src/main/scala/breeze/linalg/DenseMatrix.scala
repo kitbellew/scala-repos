@@ -678,10 +678,7 @@ object DenseMatrix
   implicit def canSliceColsAndRows[V]
       : CanSlice2[DenseMatrix[V], Range, Range, DenseMatrix[V]] = {
     new CanSlice2[DenseMatrix[V], Range, Range, DenseMatrix[V]] {
-      def apply(
-          m: DenseMatrix[V],
-          rowsWNegative: Range,
-          colsWNegative: Range) = {
+      def apply(m: DenseMatrix[V], rowsWNegative: Range, colsWNegative: Range) = {
 
         val rows = rowsWNegative.getRangeWithoutNegativeIndexes(m.rows)
         val cols = colsWNegative.getRangeWithoutNegativeIndexes(m.cols)
@@ -875,12 +872,7 @@ object DenseMatrix
         val idealMajorStride = if (isTranspose) cols else rows
 
         if (majorStride == idealMajorStride) {
-          fn.visitArray(
-            from.rowColumnFromLinearIndex,
-            data,
-            offset,
-            rows * cols,
-            1)
+          fn.visitArray(from.rowColumnFromLinearIndex, data, offset, rows * cols, 1)
         } else if (!from.isTranspose) {
           var j = 0
           while (j < from.cols) {
@@ -1002,8 +994,7 @@ object DenseMatrix
   def binaryOpFromUpdateOp[Op <: OpType, V, Other](implicit
       copy: CanCopy[DenseMatrix[V]],
       op: UFunc.InPlaceImpl2[Op, DenseMatrix[V], Other],
-      man: ClassTag[V])
-      : UFunc.UImpl2[Op, DenseMatrix[V], Other, DenseMatrix[V]] = {
+      man: ClassTag[V]): UFunc.UImpl2[Op, DenseMatrix[V], Other, DenseMatrix[V]] = {
     new UFunc.UImpl2[Op, DenseMatrix[V], Other, DenseMatrix[V]] {
       override def apply(a: DenseMatrix[V], b: Other) = {
         val c = copy(a)
@@ -1257,8 +1248,7 @@ object DenseMatrix
   implicit val setMV_D
       : OpSet.InPlaceImpl2[DenseMatrix[Double], DenseVector[Double]] =
     new SetDMDVOp[Double]();
-  implicit val setMV_F
-      : OpSet.InPlaceImpl2[DenseMatrix[Float], DenseVector[Float]] =
+  implicit val setMV_F: OpSet.InPlaceImpl2[DenseMatrix[Float], DenseVector[Float]] =
     new SetDMDVOp[Float]();
   implicit val setMV_I: OpSet.InPlaceImpl2[DenseMatrix[Int], DenseVector[Int]] =
     new SetDMDVOp[Int]();

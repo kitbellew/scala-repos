@@ -57,8 +57,7 @@ package object scalding {
 
   }
 
-  private[this] class AndPathFilter(filters: Seq[PathFilter])
-      extends PathFilter {
+  private[this] class AndPathFilter(filters: Seq[PathFilter]) extends PathFilter {
     override def accept(p: Path): Boolean = {
       filters.forall(_.accept(p))
     }

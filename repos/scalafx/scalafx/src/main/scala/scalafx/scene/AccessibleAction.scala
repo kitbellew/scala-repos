@@ -139,8 +139,7 @@ object AccessibleAction
     * <li> {@link java.lang.Integer} the end offset </li>
     * </ul>
     */
-  val ShowTextRange = new AccessibleAction(
-    jfxs.AccessibleAction.SHOW_TEXT_RANGE)
+  val ShowTextRange = new AccessibleAction(jfxs.AccessibleAction.SHOW_TEXT_RANGE)
 
   /**
     * Request the node to set the selection to a list of items.

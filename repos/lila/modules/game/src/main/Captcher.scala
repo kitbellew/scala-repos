@@ -47,8 +47,7 @@ private final class Captcher extends Actor {
     // Private stuff
 
     private val capacity = 512
-    private var challenges: NonEmptyList[Captcha] = NonEmptyList(
-      Captcha.default)
+    private var challenges: NonEmptyList[Captcha] = NonEmptyList(Captcha.default)
 
     private def add(c: Captcha) {
       find(c.gameId) ifNone {

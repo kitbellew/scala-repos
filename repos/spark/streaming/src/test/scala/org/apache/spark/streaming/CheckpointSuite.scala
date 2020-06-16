@@ -390,8 +390,7 @@ class CheckpointSuite
     // Verify new SparkConf has all the previous properties
     val newCpConf = newCp.createSparkConf()
     assert(newCpConf.get("spark.master") === originalConf.get("spark.master"))
-    assert(
-      newCpConf.get("spark.app.name") === originalConf.get("spark.app.name"))
+    assert(newCpConf.get("spark.app.name") === originalConf.get("spark.app.name"))
     assert(newCpConf.get(key) === value)
     assert(!newCpConf.contains("spark.driver.host"))
     assert(!newCpConf.contains("spark.driver.port"))
@@ -921,11 +920,7 @@ class CheckpointSuite
     val jobGenerator = mock(classOf[JobGenerator])
     val checkpointDir = Utils.createTempDir().toString
     val checkpointWriter =
-      new CheckpointWriter(
-        jobGenerator,
-        conf,
-        checkpointDir,
-        new Configuration())
+      new CheckpointWriter(jobGenerator, conf, checkpointDir, new Configuration())
     val bytes1 = Array.fill[Byte](10)(1)
     new checkpointWriter.CheckpointWriteHandler(
       Time(2000),
@@ -1007,8 +1002,7 @@ class CheckpointSuite
         }
 
         shouldCheckpointAllMarkedRDDs = Option(
-          rdd.sparkContext.getLocalProperty(
-            RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
+          rdd.sparkContext.getLocalProperty(RDD.CHECKPOINT_ALL_MARKED_ANCESTORS))
           .map(_.toBoolean)
           .getOrElse(false)
 

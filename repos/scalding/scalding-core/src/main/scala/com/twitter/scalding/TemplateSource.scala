@@ -76,11 +76,9 @@ abstract class TemplateSource extends SchemedSource with HfsTapProvider {
     */
   override def validateTaps(mode: Mode): Unit = {
     if (basePath == null) {
-      throw new InvalidSourceException(
-        "basePath cannot be null for TemplateTap")
+      throw new InvalidSourceException("basePath cannot be null for TemplateTap")
     } else if (template == null) {
-      throw new InvalidSourceException(
-        "template cannot be null for TemplateTap")
+      throw new InvalidSourceException("template cannot be null for TemplateTap")
     }
   }
 }

@@ -212,11 +212,8 @@ class AccumulatorSuite
   }
 
   test("only external accums are automatically registered") {
-    val accEx = new Accumulator(
-      0,
-      IntAccumulatorParam,
-      Some("external"),
-      internal = false)
+    val accEx =
+      new Accumulator(0, IntAccumulatorParam, Some("external"), internal = false)
     val accIn =
       new Accumulator(0, IntAccumulatorParam, Some("internal"), internal = true)
     assert(!accEx.isInternal)
@@ -300,11 +297,8 @@ class AccumulatorSuite
   test("value is reset on the executors") {
     val acc1 =
       new Accumulator(0, IntAccumulatorParam, Some("thing"), internal = false)
-    val acc2 = new Accumulator(
-      0L,
-      LongAccumulatorParam,
-      Some("thing2"),
-      internal = false)
+    val acc2 =
+      new Accumulator(0L, LongAccumulatorParam, Some("thing2"), internal = false)
     val externalAccums = Seq(acc1, acc2)
     val internalAccums = InternalAccumulator.createAll()
     // Set some values; these should not be observed later on the "executors"

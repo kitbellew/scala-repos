@@ -61,7 +61,8 @@ class UIUtilsSuite extends SparkFunSuite {
     )
   }
 
-  test("SPARK-11906: Progress bar should not overflow because of speculative tasks") {
+  test(
+    "SPARK-11906: Progress bar should not overflow because of speculative tasks") {
     val generated =
       makeProgressBar(2, 3, 0, 0, 4).head.child.filter(_.label == "div")
     val expected = Seq(

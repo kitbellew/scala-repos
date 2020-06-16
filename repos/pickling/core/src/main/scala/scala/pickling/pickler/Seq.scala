@@ -11,8 +11,7 @@ trait SeqPicklers {
       elemPickler: Pickler[T],
       elemUnpickler: Unpickler[T],
       collTag: FastTypeTag[Seq[T]],
-      cbf: CanBuildFrom[Seq[T], T, Seq[T]])
-      : Pickler[Seq[T]] with Unpickler[Seq[T]] =
+      cbf: CanBuildFrom[Seq[T], T, Seq[T]]): Pickler[Seq[T]] with Unpickler[Seq[T]] =
     SeqSetPickler[T, Seq]
 }
 

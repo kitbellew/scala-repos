@@ -141,8 +141,7 @@ class FsHistoryProviderSuite
         ApplicationHistoryInfo(
           id,
           name,
-          List(
-            ApplicationAttemptInfo(None, start, end, lastMod, user, completed)))
+          List(ApplicationAttemptInfo(None, start, end, lastMod, user, completed)))
       }
 
       list(0) should be(
@@ -435,8 +434,8 @@ class FsHistoryProviderSuite
       val outputStream = new ZipOutputStream(underlyingStream)
       provider.writeEventLogs("downloadApp1", Some(s"attempt$i"), outputStream)
       outputStream.close()
-      val inputStream = new ZipInputStream(
-        new ByteArrayInputStream(underlyingStream.toByteArray))
+      val inputStream =
+        new ZipInputStream(new ByteArrayInputStream(underlyingStream.toByteArray))
       var totalEntries = 0
       var entry = inputStream.getNextEntry
       entry should not be null

@@ -41,11 +41,7 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
               result,
               system)
           case chess.variant.Antichess =>
-            updateRatings(
-              ratingsW.antichess,
-              ratingsB.antichess,
-              result,
-              system)
+            updateRatings(ratingsW.antichess, ratingsB.antichess, result, system)
           case chess.variant.Atomic =>
             updateRatings(ratingsW.atomic, ratingsB.atomic, result, system)
           case chess.variant.Horde =>
@@ -198,10 +194,8 @@ final class PerfsUpdater(historyApi: HistoryApi, rankingApi: RankingApi) {
         game.ratingVariant.crazyhouse,
         perfs.crazyhouse,
         ratings.crazyhouse),
-      bullet = addRatingIf(
-        isStd && speed == Speed.Bullet,
-        perfs.bullet,
-        ratings.bullet),
+      bullet =
+        addRatingIf(isStd && speed == Speed.Bullet, perfs.bullet, ratings.bullet),
       blitz =
         addRatingIf(isStd && speed == Speed.Blitz, perfs.blitz, ratings.blitz),
       classical = addRatingIf(

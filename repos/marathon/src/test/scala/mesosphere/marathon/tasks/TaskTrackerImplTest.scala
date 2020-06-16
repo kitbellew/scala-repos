@@ -530,9 +530,7 @@ class TaskTrackerImplTest
     MarathonTestHelper
       .stagedTaskForApp(appId)
       .withAgentInfo(
-        _.copy(
-          host = "host",
-          attributes = Iterable(TextAttribute("attr1", "bar"))))
+        _.copy(host = "host", attributes = Iterable(TextAttribute("attr1", "bar"))))
       .withNetworking(Task.HostPorts(Iterable(999)))
   }
 

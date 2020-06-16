@@ -199,9 +199,8 @@ class YarnClusterSuite extends BaseYarnClusterSuite {
     // Create a jar file that contains a different version of "test.resource".
     val originalJar =
       TestUtils.createJarWithFiles(Map("test.resource" -> "ORIGINAL"), tempDir)
-    val userJar = TestUtils.createJarWithFiles(
-      Map("test.resource" -> "OVERRIDDEN"),
-      tempDir)
+    val userJar =
+      TestUtils.createJarWithFiles(Map("test.resource" -> "OVERRIDDEN"), tempDir)
     val driverResult = File.createTempFile("driver", null, tempDir)
     val executorResult = File.createTempFile("executor", null, tempDir)
     val finalState = runSpark(
@@ -251,10 +250,11 @@ private object YarnClusterDriver extends Logging with Matchers {
       System.exit(1)
     }
 
-    val sc = new SparkContext(new SparkConf()
-      .set("spark.extraListeners", classOf[SaveExecutorInfo].getName)
-      .setAppName(
-        "yarn \"test app\" 'with quotes' and \\back\\slashes and $dollarSigns"))
+    val sc = new SparkContext(
+      new SparkConf()
+        .set("spark.extraListeners", classOf[SaveExecutorInfo].getName)
+        .setAppName(
+          "yarn \"test app\" 'with quotes' and \\back\\slashes and $dollarSigns"))
     val conf = sc.getConf
     val status = new File(args(0))
     var result = "failure"

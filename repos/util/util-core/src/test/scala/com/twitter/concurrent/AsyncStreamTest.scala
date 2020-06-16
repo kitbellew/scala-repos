@@ -572,7 +572,8 @@ class AsyncStreamTest extends FunSuite with GeneratorDrivenPropertyChecks {
     }
   }
 
-  test("mapConcurrent makes progress, even with blocking streams and blocking work") {
+  test(
+    "mapConcurrent makes progress, even with blocking streams and blocking work") {
     val gen =
       Gen.zip(
         Gen.choose(0, 10).label("numActions"),

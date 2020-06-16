@@ -544,8 +544,7 @@ class ExportsTest {
     assertEquals("witness", obj.witness)
   }
 
-  @Test def exports_for_Scala_js_defined_JS_objects_with_implicit_name()
-      : Unit = {
+  @Test def exports_for_Scala_js_defined_JS_objects_with_implicit_name(): Unit = {
     val accessor = jsPackage.SJSDefinedExportedObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
@@ -565,8 +564,7 @@ class ExportsTest {
     assertEquals("witness", obj.witness)
   }
 
-  @Test def exports_for_Scala_js_defined_JS_objects_with_explicit_name()
-      : Unit = {
+  @Test def exports_for_Scala_js_defined_JS_objects_with_explicit_name(): Unit = {
     val accessor = js.Dynamic.global.TheSJSDefinedExportedObject
     assertJSNotUndefined(accessor)
     assertEquals("function", js.typeOf(accessor))
@@ -614,8 +612,7 @@ class ExportsTest {
     assertEquals(5, obj.x)
   }
 
-  @Test def exports_for_Scala_js_defined_JS_classes_with_implicit_name()
-      : Unit = {
+  @Test def exports_for_Scala_js_defined_JS_classes_with_implicit_name(): Unit = {
     val constr = jsPackage.SJSDefinedExportedClass
     assertJSNotUndefined(constr)
     assertEquals("function", js.typeOf(constr))
@@ -632,8 +629,7 @@ class ExportsTest {
     assertEquals(5, obj.x)
   }
 
-  @Test def exports_for_Scala_js_defined_JS_classes_with_explicit_name()
-      : Unit = {
+  @Test def exports_for_Scala_js_defined_JS_classes_with_explicit_name(): Unit = {
     val constr = js.Dynamic.global.TheSJSDefinedExportedClass
     assertJSNotUndefined(constr)
     assertEquals("function", js.typeOf(constr))

@@ -58,8 +58,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
         Set.empty,
         monitoredByNrOfMembers = 3),
       oldReceiversNowUnreachable = Set.empty[UniqueAddress],
-      failureDetector = new DefaultFailureDetectorRegistry[Address](() ⇒
-        new FailureDetectorStub)
+      failureDetector =
+        new DefaultFailureDetectorRegistry[Address](() ⇒ new FailureDetectorStub)
     )
 
   private def fd(
@@ -78,8 +78,7 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
     }
 
     "init with empty" in {
-      emptyState.init(Set.empty, Set.empty).activeReceivers should ===(
-        Set.empty)
+      emptyState.init(Set.empty, Set.empty).activeReceivers should ===(Set.empty)
     }
 
     "init with self" in {
@@ -196,13 +195,11 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
         try {
           operation match {
             case Add ⇒
-              if (node != selfUniqueAddress && !state.ring.nodes.contains(
-                  node)) {
+              if (node != selfUniqueAddress && !state.ring.nodes.contains(node)) {
                 val oldUnreachable = state.oldReceiversNowUnreachable
                 state = state.addMember(node)
                 // keep unreachable
-                (oldUnreachable diff state.activeReceivers) should ===(
-                  Set.empty)
+                (oldUnreachable diff state.activeReceivers) should ===(Set.empty)
                 state.failureDetector.isMonitoring(node.address) should ===(
                   false)
                 state.failureDetector.isAvailable(node.address) should ===(true)
@@ -233,10 +230,8 @@ class ClusterHeartbeatSenderStateSpec extends WordSpec with Matchers {
                   node.address
                 ) // make sure the fd is created
                 fd(state, node).markNodeAsUnavailable()
-                state.failureDetector.isMonitoring(node.address) should ===(
-                  true)
-                state.failureDetector.isAvailable(node.address) should ===(
-                  false)
+                state.failureDetector.isMonitoring(node.address) should ===(true)
+                state.failureDetector.isAvailable(node.address) should ===(false)
                 state = state.unreachableMember(node)
               }
 

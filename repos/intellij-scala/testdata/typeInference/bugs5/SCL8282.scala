@@ -23,8 +23,8 @@ trait FirstElement {
   }
 
   implicit def convertToCollectionFirstElementWrapper[E, CTC[_]](
-      collection: CTC[E])(implicit collecting: FirstElementCollector[E, CTC[E]])
-      : FirstElementWrapper[E, CTC] =
+      collection: CTC[E])(implicit
+      collecting: FirstElementCollector[E, CTC[E]]): FirstElementWrapper[E, CTC] =
     new FirstElementWrapper[E, CTC](collection)
 }
 //Int

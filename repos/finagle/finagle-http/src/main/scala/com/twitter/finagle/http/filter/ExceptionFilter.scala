@@ -46,9 +46,7 @@ class ExceptionFilter[REQUEST <: Request]
       }
   }
 
-  private def respond(
-      request: REQUEST,
-      responseStatus: Status): Future[Response] = {
+  private def respond(request: REQUEST, responseStatus: Status): Future[Response] = {
     val response = request.response
     response.status = responseStatus
     response.clearContent()

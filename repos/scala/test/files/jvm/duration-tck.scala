@@ -96,8 +96,7 @@ object Test extends App {
   inputs filterNot (_.isFinite) foreach (x => x / zero mustBe x.toUnit(DAYS))
   inputs filterNot (_.isFinite) foreach (_ * 0d mustBe undef)
   inputs filterNot (_.isFinite) foreach (_ * -0d mustBe undef)
-  inputs filterNot (_.isFinite) foreach (x =>
-    x * Double.PositiveInfinity mustBe x)
+  inputs filterNot (_.isFinite) foreach (x => x * Double.PositiveInfinity mustBe x)
   inputs filterNot (_.isFinite) foreach (x =>
     x * Double.NegativeInfinity mustBe -x)
 
@@ -139,14 +138,8 @@ object Test extends App {
   Duration.fromNanos(nan) mustBe undef
 
   // test overflow protection
-  for (unit ← Seq(
-      DAYS,
-      HOURS,
-      MINUTES,
-      SECONDS,
-      MILLISECONDS,
-      MICROSECONDS,
-      NANOSECONDS)) {
+  for (unit ←
+      Seq(DAYS, HOURS, MINUTES, SECONDS, MILLISECONDS, MICROSECONDS, NANOSECONDS)) {
     val x = unit.convert(Long.MaxValue, NANOSECONDS)
     val dur = Duration(x, unit)
     val mdur = Duration(-x, unit)

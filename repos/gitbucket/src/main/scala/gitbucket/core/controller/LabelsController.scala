@@ -48,10 +48,7 @@ trait LabelsControllerBase extends ControllerBase {
         IssuesService.IssueSearchCondition(),
         Map.empty),
       repository,
-      hasWritePermission(
-        repository.owner,
-        repository.name,
-        context.loginAccount)
+      hasWritePermission(repository.owner, repository.name, context.loginAccount)
     )
   })
 
@@ -60,8 +57,8 @@ trait LabelsControllerBase extends ControllerBase {
       html.edit(None, repository)
   })
 
-  ajaxPost("/:owner/:repository/issues/labels/new", labelForm)(
-    collaboratorsOnly { (form, repository) =>
+  ajaxPost("/:owner/:repository/issues/labels/new", labelForm)(collaboratorsOnly {
+    (form, repository) =>
       val labelId = createLabel(
         repository.owner,
         repository.name,
@@ -81,7 +78,7 @@ trait LabelsControllerBase extends ControllerBase {
           repository.name,
           context.loginAccount)
       )
-    })
+  })
 
   ajaxGet("/:owner/:repository/issues/labels/:labelId/edit")(collaboratorsOnly {
     repository =>
@@ -100,10 +97,7 @@ trait LabelsControllerBase extends ControllerBase {
         form.labelName,
         form.color.substring(1))
       html.label(
-        getLabel(
-          repository.owner,
-          repository.name,
-          params("labelId").toInt).get,
+        getLabel(repository.owner, repository.name, params("labelId").toInt).get,
         // TODO futility
         countIssueGroupByLabels(
           repository.owner,

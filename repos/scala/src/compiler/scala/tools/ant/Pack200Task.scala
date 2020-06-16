@@ -81,8 +81,7 @@ class Pack200Task extends ScalaMatchingTask {
   def setDestdir(file: File) {
     if (file != null && file.exists && file.isDirectory) destdir = Some(file)
     else
-      buildError(
-        "The destination directory is invalid: " + file.getAbsolutePath)
+      buildError("The destination directory is invalid: " + file.getAbsolutePath)
   }
 
   def setSuffix(s: String) { packFileSuffix = s }

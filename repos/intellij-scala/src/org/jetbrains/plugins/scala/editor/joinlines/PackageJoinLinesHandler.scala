@@ -31,11 +31,7 @@ class PackageJoinLinesHandler extends JoinRawLinesHandlerDelegate {
     }
   }
 
-  def tryJoinLines(
-      document: Document,
-      file: PsiFile,
-      start: Int,
-      end: Int): Int = {
+  def tryJoinLines(document: Document, file: PsiFile, start: Int, end: Int): Int = {
     JoinLinesHandlerDelegate.CANNOT_JOIN
   }
 }

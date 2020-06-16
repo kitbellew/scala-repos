@@ -80,9 +80,7 @@ package mongotestrecords {
 
   object Person extends JsonObjectMeta[Person]
 
-  class MainDoc private ()
-      extends MongoRecord[MainDoc]
-      with ObjectIdPk[MainDoc] {
+  class MainDoc private () extends MongoRecord[MainDoc] with ObjectIdPk[MainDoc] {
     def meta = MainDoc
 
     object name extends StringField(this, 12)
@@ -105,9 +103,7 @@ package mongotestrecords {
   }
   object RefUuidDoc extends RefUuidDoc with MongoMetaRecord[RefUuidDoc]
 
-  class ListDoc private ()
-      extends MongoRecord[ListDoc]
-      with ObjectIdPk[ListDoc] {
+  class ListDoc private () extends MongoRecord[ListDoc] with ObjectIdPk[ListDoc] {
     def meta = ListDoc
 
     import scala.collection.JavaConversions._

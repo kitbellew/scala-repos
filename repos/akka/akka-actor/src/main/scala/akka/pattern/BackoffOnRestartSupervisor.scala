@@ -42,8 +42,7 @@ private class BackoffOnRestartSupervisor(
         // to our own Restarts, which involves stopping the child.
         case Restart ⇒
           val childRef = sender()
-          become(
-            waitChildTerminatedBeforeBackoff(childRef) orElse handleBackoff)
+          become(waitChildTerminatedBeforeBackoff(childRef) orElse handleBackoff)
           Stop
 
         case other ⇒ other

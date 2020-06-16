@@ -130,8 +130,7 @@ trait PullRequestsControllerBase extends ControllerBase {
                       getCommitComments(owner, name, commit.id, true))
                     .flatten
                     .toList ::: getComments(owner, name, issueId))
-                    .sortWith((a, b) =>
-                      a.registeredDate before b.registeredDate),
+                    .sortWith((a, b) => a.registeredDate before b.registeredDate),
                   getIssueLabels(owner, name, issueId),
                   (getCollaborators(owner, name) ::: (if (getAccountByUserName(
                                                           owner).get.isGroupAccount)

@@ -56,8 +56,7 @@ case class ShuffleExchange(
 
   override def outputPartitioning: Partitioning = newPartitioning
 
-  private val serializer: Serializer = new UnsafeRowSerializer(
-    child.output.size)
+  private val serializer: Serializer = new UnsafeRowSerializer(child.output.size)
 
   override protected def doPrepare(): Unit = {
     // If an ExchangeCoordinator is needed, we register this Exchange operator
@@ -97,8 +96,7 @@ case class ShuffleExchange(
     */
   private[sql] def preparePostShuffleRDD(
       shuffleDependency: ShuffleDependency[Int, InternalRow, InternalRow],
-      specifiedPartitionStartIndices: Option[Array[Int]] = None)
-      : ShuffledRowRDD = {
+      specifiedPartitionStartIndices: Option[Array[Int]] = None): ShuffledRowRDD = {
     // If an array of partition start indices is provided, we need to use this array
     // to create the ShuffledRowRDD. Also, we need to update newPartitioning to
     // update the number of post-shuffle partitions.
@@ -121,8 +119,7 @@ case class ShuffleExchange(
         cachedShuffleRDD = coordinator match {
           case Some(exchangeCoordinator) =>
             val shuffleRDD = exchangeCoordinator.postShuffleRDD(this)
-            assert(
-              shuffleRDD.partitions.length == newPartitioning.numPartitions)
+            assert(shuffleRDD.partitions.length == newPartitioning.numPartitions)
             shuffleRDD
           case None =>
             val shuffleDependency = prepareShuffleDependency()

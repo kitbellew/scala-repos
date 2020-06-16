@@ -81,8 +81,7 @@ abstract class CurrencyZone {
         } catch {
           case e: java.text.ParseException => {
             make(
-              BigDecimal(
-                "" + NumberFormat.getCurrencyInstance(locale).parse(x)))
+              BigDecimal("" + NumberFormat.getCurrencyInstance(locale).parse(x)))
           } // try with currency symbol and grouping separator
         }
       }

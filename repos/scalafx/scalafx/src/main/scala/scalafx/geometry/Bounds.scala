@@ -68,13 +68,8 @@ abstract class Bounds protected (override val delegate: jfxg.Bounds)
   /**
     * Tests if the interior of this Bounds entirely contains the specified rectangular area.
     */
-  def contains(
-      x: Double,
-      y: Double,
-      z: Double,
-      w: Double,
-      h: Double,
-      d: Double) = delegate.contains(x, y, z, w, h, d)
+  def contains(x: Double, y: Double, z: Double, w: Double, h: Double, d: Double) =
+    delegate.contains(x, y, z, w, h, d)
 
   /**
     * Tests if the specified point is inside the boundary of Bounds.

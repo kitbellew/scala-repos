@@ -71,8 +71,7 @@ object FreeApUsage extends App {
 
   // An example that returns a tuple of (Boolean, String, Int) parsed from Map[String, Any]
   val failedProg: Parse[(Boolean, String, Int)] =
-    (parseBool("string") |@| parseString("list") |@| parseInt("bool"))(
-      (_, _, _))
+    (parseBool("string") |@| parseString("list") |@| parseInt("bool"))((_, _, _))
 
   // Test input for programs
   val testInput: Map[String, Any] =

@@ -263,8 +263,7 @@ final class MarshalledContext extends Context {
     * A translucent environment is capable of storing key/value pairs
     * to be (possibly) unmarshalled later.
     */
-  case class Translucent(next: Env, marshalId: Buf, marshalled: Buf)
-      extends Env {
+  case class Translucent(next: Env, marshalId: Buf, marshalled: Buf) extends Env {
     @volatile private var cachedEnv: Env = null
 
     private def env[A](key: Key[A]): Env = {

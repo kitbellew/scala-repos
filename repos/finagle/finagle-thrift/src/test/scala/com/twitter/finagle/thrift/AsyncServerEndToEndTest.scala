@@ -70,8 +70,8 @@ class AsyncServerEndToEndTest extends FunSuite {
             override def messageReceived(
                 ctx: ChannelHandlerContext,
                 e: MessageEvent) {
-              callResults() = Return(
-                e.getMessage.asInstanceOf[ThriftReply[Silly.bleep_result]])
+              callResults() =
+                Return(e.getMessage.asInstanceOf[ThriftReply[Silly.bleep_result]])
             }
           }
         )

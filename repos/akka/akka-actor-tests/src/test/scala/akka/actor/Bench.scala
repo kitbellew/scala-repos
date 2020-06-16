@@ -24,8 +24,7 @@ object Chameneos {
   var start = 0L
   var end = 0L
 
-  class Chameneo(var mall: ActorRef, var colour: Colour, cid: Int)
-      extends Actor {
+  class Chameneo(var mall: ActorRef, var colour: Colour, cid: Int) extends Actor {
     var meetings = 0
     mall ! Meet(self, colour)
 

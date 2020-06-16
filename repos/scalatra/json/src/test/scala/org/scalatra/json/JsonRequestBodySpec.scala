@@ -47,9 +47,8 @@ trait JsonRequestSpec extends MutableScalatraSpec {
       val rbody = """<req><name>hello world</name></req>"""
       post(
         "/json",
-        headers = Map(
-          "Accept" -> "application/xml",
-          "Content-Type" -> "application/xml"),
+        headers =
+          Map("Accept" -> "application/xml", "Content-Type" -> "application/xml"),
         body = rbody) {
         status must_== 200
         body must_== "hello world"
@@ -65,9 +64,8 @@ trait JsonRequestSpec extends MutableScalatraSpec {
 <req><name>&pass;</name></req>"""
       post(
         "/json",
-        headers = Map(
-          "Accept" -> "application/xml",
-          "Content-Type" -> "application/xml"),
+        headers =
+          Map("Accept" -> "application/xml", "Content-Type" -> "application/xml"),
         body = rbody) {
         status must_== 200
         body must_== ""

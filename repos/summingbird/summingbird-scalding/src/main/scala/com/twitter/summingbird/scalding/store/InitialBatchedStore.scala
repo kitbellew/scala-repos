@@ -49,8 +49,8 @@ class InitialBatchedStore[K, V](
     else if (exclusiveUB == firstNonZero)
       Right((firstNonZero.prev, Scalding.emptyFlowProducer[(K, V)]))
     else
-      Left(List(
-        "Earliest batch set at :" + firstNonZero + " but tried to read: " + exclusiveUB))
+      Left(
+        List("Earliest batch set at :" + firstNonZero + " but tried to read: " + exclusiveUB))
   }
 
   override def toString =

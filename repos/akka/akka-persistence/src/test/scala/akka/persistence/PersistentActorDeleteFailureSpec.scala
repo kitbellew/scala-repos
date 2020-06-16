@@ -81,8 +81,8 @@ class PersistentActorDeleteFailureSpec
     }
 
     "be receive an DeleteMessagesFailure when deletion failed, and the default logging should not be triggered" in {
-      val persistentActor = system.actorOf(
-        Props(classOf[HandlesDeleteFailureActor], name, testActor))
+      val persistentActor =
+        system.actorOf(Props(classOf[HandlesDeleteFailureActor], name, testActor))
       system.eventStream.subscribe(testActor, classOf[Logging.Warning])
       persistentActor ! DeleteTo(100)
       expectMsgType[DeleteMessagesFailure]

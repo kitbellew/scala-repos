@@ -189,8 +189,7 @@ class MyUpcastingEventAdapter(system: ExtendedActorSystem)
   * It manually takes care of smuggling through the manifest even if the journal does not do anything in this regard,
   * which is the case in this example since we're persisting to the inmem journal, which does nothing in terms of manifest.
   */
-class MyManualJsonEventAdapter(system: ExtendedActorSystem)
-    extends EventAdapter {
+class MyManualJsonEventAdapter(system: ExtendedActorSystem) extends EventAdapter {
 
   private val gson = new Gson
 

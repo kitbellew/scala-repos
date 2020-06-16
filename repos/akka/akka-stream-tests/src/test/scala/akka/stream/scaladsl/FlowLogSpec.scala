@@ -174,10 +174,11 @@ class FlowLogSpec extends AkkaSpec("akka.loglevel = DEBUG") with ScriptedTest {
           .log("flow-6e")
           .withAttributes(logAttrs)
           .runWith(Sink.ignore)
-        logProbe.expectMsg(Logging.Debug(
-          LogSrc,
-          LogClazz,
-          "[flow-6e] Upstream failed, cause: FlowLogSpec$TestException: Boom!"))
+        logProbe.expectMsg(
+          Logging.Debug(
+            LogSrc,
+            LogClazz,
+            "[flow-6e] Upstream failed, cause: FlowLogSpec$TestException: Boom!"))
       }
 
       "follow supervision strategy when exception thrown" in {

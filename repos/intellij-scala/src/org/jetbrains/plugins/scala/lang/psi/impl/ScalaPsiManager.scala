@@ -87,9 +87,7 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     ParameterlessNodes.build(tp, compoundTypeThisType)
   }
 
-  def getTypes(
-      tp: ScCompoundType,
-      compoundTypeThisType: Option[ScType]): TMap = {
+  def getTypes(tp: ScCompoundType, compoundTypeThisType: Option[ScType]): TMap = {
     if (ScalaProjectSettings.getInstance(project).isDontCacheCompoundTypes)
       TypeNodes.build(tp, compoundTypeThisType)
     else getTypesCached(tp, compoundTypeThisType)
@@ -267,9 +265,7 @@ class ScalaPsiManager(project: Project) extends ProjectComponent {
     synchronized = false,
     ValueWrapper.SofterReference,
     clearCacheOnOutOfBlockChange)
-  def getCachedClasses(
-      scope: GlobalSearchScope,
-      fqn: String): Array[PsiClass] = {
+  def getCachedClasses(scope: GlobalSearchScope, fqn: String): Array[PsiClass] = {
     def getCachedFacadeClasses(
         scope: GlobalSearchScope,
         fqn: String): Array[PsiClass] = {

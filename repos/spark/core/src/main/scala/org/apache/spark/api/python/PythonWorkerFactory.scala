@@ -147,9 +147,7 @@ private[spark] class PythonWorkerFactory(
         return socket
       } catch {
         case e: Exception =>
-          throw new SparkException(
-            "Python worker did not connect back in time",
-            e)
+          throw new SparkException("Python worker did not connect back in time", e)
       }
     } finally {
       if (serverSocket != null) {

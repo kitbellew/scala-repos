@@ -8,9 +8,7 @@ import lila.user.tube.userTube
 import lila.user.User
 import tube._
 
-private[team] final class PaginatorBuilder(
-    maxPerPage: Int,
-    maxUserPerPage: Int) {
+private[team] final class PaginatorBuilder(maxPerPage: Int, maxUserPerPage: Int) {
 
   def popularTeams(page: Int): Fu[Paginator[Team]] =
     Paginator(

@@ -513,9 +513,7 @@ class BigDecimalArithmeticTest {
     val bScale = 10
     val aNumber = new BigDecimal(new BigInteger(a), aScale)
     val bNumber = new BigDecimal(new BigInteger(b), bScale)
-    expectThrows(
-      classOf[IllegalArgumentException],
-      aNumber.divide(bNumber, 100))
+    expectThrows(classOf[IllegalArgumentException], aNumber.divide(bNumber, 100))
   }
 
   @Test def testDivideExceptionRM(): Unit = {

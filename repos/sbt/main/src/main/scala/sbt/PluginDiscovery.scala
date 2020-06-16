@@ -79,10 +79,7 @@ object PluginDiscovery {
   }
 
   /** Stores the module `names` in `dir / path`, one per line, unless `names` is empty and then the file is deleted and `None` returned. */
-  def writeDescriptor(
-      names: Seq[String],
-      dir: File,
-      path: String): Option[File] = {
+  def writeDescriptor(names: Seq[String], dir: File, path: String): Option[File] = {
     val descriptor: File = new File(dir, path)
     if (names.isEmpty) {
       IO.delete(descriptor)
@@ -104,8 +101,7 @@ object PluginDiscovery {
       subclasses: String*): Seq[String] =
     (
       binaryModuleNames(data(classpath), loader, resourceName) ++
-        (analyzed(classpath) flatMap (a =>
-          sourceModuleNames(a, subclasses: _*)))
+        (analyzed(classpath) flatMap (a => sourceModuleNames(a, subclasses: _*)))
     ).distinct
 
   /** Discovers top-level modules in `analysis` that inherit from any of `subclasses`. */

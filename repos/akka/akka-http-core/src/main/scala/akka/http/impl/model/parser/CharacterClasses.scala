@@ -81,12 +81,8 @@ private[http] object CharacterClasses {
   val `reg-rel-type-octet` = LOWER_ALPHA ++ DIGIT ++ '.' ++ '-'
 
   // helpers
-  val `qdtext-base` = CharPredicate(
-    HTAB,
-    SP,
-    '\u0021',
-    '\u0023' to '\u005B',
-    '\u005D' to '\u007E')
+  val `qdtext-base` =
+    CharPredicate(HTAB, SP, '\u0021', '\u0023' to '\u005B', '\u005D' to '\u007E')
   val `ctext-base` = CharPredicate(
     HTAB,
     SP,

@@ -63,8 +63,7 @@ object TextFieldTreeCell {
     * @return $FLVRET
     */
   def forTreeView(): (TreeView[String] => TreeCell[String]) =
-    (view: TreeView[String]) =>
-      jfxscc.TextFieldTreeCell.forTreeView().call(view)
+    (view: TreeView[String]) => jfxscc.TextFieldTreeCell.forTreeView().call(view)
 
   /**
     * Added to satisfy Spec tests.

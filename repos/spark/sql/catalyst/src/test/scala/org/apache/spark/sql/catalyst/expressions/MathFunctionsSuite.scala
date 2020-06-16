@@ -276,10 +276,7 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     testUnary(Ceil, (d: Double) => math.ceil(d).toLong)
     checkConsistencyBetweenInterpretedAndCodegen(Ceil, DoubleType)
 
-    testUnary(
-      Ceil,
-      (d: Decimal) => d.ceil,
-      (-20 to 20).map(x => Decimal(x * 0.1)))
+    testUnary(Ceil, (d: Decimal) => d.ceil, (-20 to 20).map(x => Decimal(x * 0.1)))
     checkConsistencyBetweenInterpretedAndCodegen(Ceil, DecimalType(25, 3))
     checkConsistencyBetweenInterpretedAndCodegen(Ceil, DecimalType(25, 0))
     checkConsistencyBetweenInterpretedAndCodegen(Ceil, DecimalType(5, 0))
@@ -716,9 +713,7 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     DataTypeTestUtils.numericTypes.foreach { dataType =>
       checkEvaluation(Round(Literal.create(null, dataType), Literal(2)), null)
       checkEvaluation(
-        Round(
-          Literal.create(null, dataType),
-          Literal.create(null, IntegerType)),
+        Round(Literal.create(null, dataType), Literal.create(null, IntegerType)),
         null)
     }
   }

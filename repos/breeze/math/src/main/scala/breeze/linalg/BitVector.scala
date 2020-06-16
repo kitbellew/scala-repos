@@ -24,15 +24,13 @@ class BitVector(
     with VectorLike[Boolean, BitVector] {
   def apply(i: Int): Boolean = {
     if (i < 0 || (i >= length))
-      throw new IndexOutOfBoundsException(
-        s"$i is not in the range [0, $length)")
+      throw new IndexOutOfBoundsException(s"$i is not in the range [0, $length)")
     data.get(i)
   }
 
   def update(i: Int, v: Boolean) {
     if (i < 0 || (i >= length))
-      throw new IndexOutOfBoundsException(
-        s"$i is not in the range [0, $length)")
+      throw new IndexOutOfBoundsException(s"$i is not in the range [0, $length)")
     data.set(i, v)
   }
 
@@ -168,8 +166,7 @@ object BitVector extends BitVectorOps {
       /** Iterates all key-value pairs from the given collection. */
       def traverse(
           from: BitVector,
-          fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[Int, Boolean])
-          : Unit = {
+          fn: CanTraverseKeyValuePairs.KeyValuePairsVisitor[Int, Boolean]): Unit = {
         for (i <- 0 until from.length) {
           fn.visit(i, from(i))
         }

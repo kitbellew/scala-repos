@@ -175,8 +175,7 @@ trait ArrayBufferInputStreamTest {
 
 object ArrayBufferInputStreamWithoutOffsetTest extends Requires.TypedArray
 
-class ArrayBufferInputStreamWithoutOffsetTest
-    extends ArrayBufferInputStreamTest {
+class ArrayBufferInputStreamWithoutOffsetTest extends ArrayBufferInputStreamTest {
   def mkStream(seq: Seq[Int]): InputStream = {
     import js.JSConverters._
     new ArrayBufferInputStream(new Int8Array(seq.toJSArray).buffer)

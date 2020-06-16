@@ -60,9 +60,7 @@ trait Evaluation extends Deployment {
     * @tparam R Metric result class
     */
   def engineEvaluator_=[EI, Q, P, A, R <: BaseEvaluatorResult](
-      engineEvaluator: (
-          BaseEngine[EI, Q, P, A],
-          BaseEvaluator[EI, Q, P, A, R])) {
+      engineEvaluator: (BaseEngine[EI, Q, P, A], BaseEvaluator[EI, Q, P, A, R])) {
     assert(!_evaluatorSet, "Evaluator can be set at most once")
     engine = engineEvaluator._1
     _evaluator = engineEvaluator._2
@@ -96,8 +94,7 @@ trait Evaluation extends Deployment {
         outputPath = "best.json"))
   }
 
-  private[prediction] def engineMetrics
-      : (BaseEngine[_, _, _, _], Metric[_, _, _, _, _]) = {
+  private[prediction] def engineMetrics: (BaseEngine[_, _, _, _], Metric[_, _, _, _, _]) = {
     throw new NotImplementedError("This method is to keep the compiler happy")
   }
 

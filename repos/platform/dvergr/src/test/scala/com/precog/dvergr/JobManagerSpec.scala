@@ -68,24 +68,21 @@ class FileJobManagerSpec extends Specification {
 }
 
 class WebJobManagerSpec extends TestJobService { self =>
-  include(new JobManagerSpec[Future] {
-    val validAPIKey = self.validAPIKey
+  include(
+    new JobManagerSpec[Future] {
+      val validAPIKey = self.validAPIKey
 
-    implicit val executionContext = self.executionContext
-    implicit val M: Monad[Future] with Comonad[Future] =
-      new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
+      implicit val executionContext = self.executionContext
+      implicit val M: Monad[Future] with Comonad[Future] =
+        new UnsafeFutureComonad(executionContext, Duration(5, "seconds"))
 
-    val jobs = (new WebJobManager {
-      val executionContext = self.executionContext
-      val M = self.M
-      protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
-        f(client.path("/jobs/v1/"))
-    }).withM[Future](
-      ResponseAsFuture(M),
-      FutureAsResponse(M),
-      Monad[Response],
-      M)
-  })
+      val jobs = (new WebJobManager {
+        val executionContext = self.executionContext
+        val M = self.M
+        protected def withRawClient[A](f: HttpClient[ByteChunk] => A): A =
+          f(client.path("/jobs/v1/"))
+      }).withM[Future](ResponseAsFuture(M), FutureAsResponse(M), Monad[Response], M)
+    })
 }
 
 class MongoJobManagerSpec extends Specification with RealMongoSpecSupport {
@@ -238,13 +235,7 @@ trait JobManagerSpec[M[+_]] extends Specification {
       status1 must beLike {
         case Some(Status(`jobId`, id, "1", `s0`, "%", None)) =>
           val status2 = jobs
-            .updateStatus(
-              jobId,
-              Some(id + 1),
-              "2",
-              5.0,
-              "%",
-              Some(JString("...")))
+            .updateStatus(jobId, Some(id + 1), "2", 5.0, "%", Some(JString("...")))
             .copoint
           val status2x = jobs.getStatus(jobId).copoint
           status2x must_== status1

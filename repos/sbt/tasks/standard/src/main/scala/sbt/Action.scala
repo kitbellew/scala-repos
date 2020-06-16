@@ -27,10 +27,7 @@ final case class Pure[T](f: () => T, inline: Boolean) extends Action[T] {
 }
 
 /** Applies a function to the result of evaluating a heterogeneous list of other tasks. */
-final case class Mapped[T, K[L[x]]](
-    in: K[Task],
-    f: K[Result] => T,
-    alist: AList[K])
+final case class Mapped[T, K[L[x]]](in: K[Task], f: K[Result] => T, alist: AList[K])
     extends Action[T] {
   private[sbt] def mapTask(g: Task ~> Task) =
     Mapped[T, K](alist.transform(in, g), f, alist)
@@ -47,8 +44,7 @@ final case class FlatMapped[T, K[L[x]]](
 }
 
 /** A computation `in` that requires other tasks `deps` to be evaluated first. */
-final case class DependsOn[T](in: Task[T], deps: Seq[Task[_]])
-    extends Action[T] {
+final case class DependsOn[T](in: Task[T], deps: Seq[Task[_]]) extends Action[T] {
   private[sbt] def mapTask(g: Task ~> Task) =
     DependsOn[T](g(in), deps.map(t => g(t)))
 }
@@ -74,8 +70,7 @@ final case class Task[T](info: Info[T], work: Action[T]) {
     g(Task(info, work.mapTask(g)))
   def tag(tags: Tag*): Task[T] = tagw(tags.map(t => (t, 1)): _*)
   def tagw(tags: (Tag, Int)*): Task[T] =
-    copy(info =
-      info.set(tagsKey, info.get(tagsKey).getOrElse(Map.empty) ++ tags))
+    copy(info = info.set(tagsKey, info.get(tagsKey).getOrElse(Map.empty) ++ tags))
   def tags: TagMap = info get tagsKey getOrElse Map.empty
 }
 

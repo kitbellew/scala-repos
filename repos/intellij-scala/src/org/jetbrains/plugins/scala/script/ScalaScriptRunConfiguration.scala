@@ -79,9 +79,7 @@ class ScalaScriptRunConfiguration(
     setWorkingDirectory(params.getWorkingDirectory)
   }
 
-  def getState(
-      executor: Executor,
-      env: ExecutionEnvironment): RunProfileState = {
+  def getState(executor: Executor, env: ExecutionEnvironment): RunProfileState = {
     def fileNotFoundError() {
       throw new ExecutionException("Scala script file not found.")
     }

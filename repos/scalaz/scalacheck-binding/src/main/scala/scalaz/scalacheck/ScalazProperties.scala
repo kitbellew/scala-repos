@@ -51,8 +51,7 @@ object ScalazProperties {
 
     def scalaOrdering[A: Order: SOrdering: Arbitrary] =
       forAll((a1: A, a2: A) =>
-        Order[A].order(a1, a2) == Ordering.fromInt(
-          SOrdering[A].compare(a1, a2)))
+        Order[A].order(a1, a2) == Ordering.fromInt(SOrdering[A].compare(a1, a2)))
 
     def laws[A](implicit A: Order[A], arb: Arbitrary[A]): Properties =
       newProperties("order") { p =>
@@ -118,15 +117,11 @@ object ScalazProperties {
   }
 
   object monoid {
-    def leftIdentity[A](implicit
-        A: Monoid[A],
-        eqa: Equal[A],
-        arb: Arbitrary[A]) = forAll(A.monoidLaw.leftIdentity _)
+    def leftIdentity[A](implicit A: Monoid[A], eqa: Equal[A], arb: Arbitrary[A]) =
+      forAll(A.monoidLaw.leftIdentity _)
 
-    def rightIdentity[A](implicit
-        A: Monoid[A],
-        eqa: Equal[A],
-        arb: Arbitrary[A]) = forAll(A.monoidLaw.rightIdentity _)
+    def rightIdentity[A](implicit A: Monoid[A], eqa: Equal[A], arb: Arbitrary[A]) =
+      forAll(A.monoidLaw.rightIdentity _)
 
     def laws[A](implicit
         A: Monoid[A],
@@ -555,9 +550,7 @@ object ScalazProperties {
     def emptyIsEmpty[F[_], X](implicit f: IsEmpty[F]): Prop =
       f.isEmptyLaw.emptyIsEmpty[X]
 
-    def emptyPlusIdentity[F[_], X](implicit
-        f: IsEmpty[F],
-        afx: Arbitrary[F[X]]) =
+    def emptyPlusIdentity[F[_], X](implicit f: IsEmpty[F], afx: Arbitrary[F[X]]) =
       forAll(f.isEmptyLaw.emptyPlusIdentity[X] _)
 
     def laws[F[_]](implicit
@@ -852,8 +845,7 @@ object ScalazProperties {
         p.include(compose.laws[=>:])
         p.property("left identity") = leftIdentity[=>:, Int, Int]
         p.property("right identity") = rightIdentity[=>:, Int, Int]
-        p.include(
-          monoid.laws[Int =>: Int](C.monoid[Int], implicitly, implicitly))
+        p.include(monoid.laws[Int =>: Int](C.monoid[Int], implicitly, implicitly))
       }
   }
 

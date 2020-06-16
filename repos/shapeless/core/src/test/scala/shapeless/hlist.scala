@@ -624,10 +624,8 @@ class HListTests {
 
     implicitly[Lub[HNil, HNil, HNil]]
     implicitly[Lub[Apple :: HNil, Apple :: HNil, Apple :: HNil]]
-    implicitly[Lub[
-      Fruit :: Pear :: HNil,
-      Fruit :: Fruit :: HNil,
-      Fruit :: Fruit :: HNil]]
+    implicitly[
+      Lub[Fruit :: Pear :: HNil, Fruit :: Fruit :: HNil, Fruit :: Fruit :: HNil]]
     implicitly[
       Lub[Apple :: Pear :: HNil, Pear :: Apple :: HNil, Fruit :: Fruit :: HNil]]
     implicitly[Lub[ISII, IIII, IYII]]
@@ -768,9 +766,7 @@ class HListTests {
 
     val m = mimsmimimd.to[List]
     equalInferredTypes(mimsmimimdList, m)
-    assertTypedEquals[List[M[_ >: Int with String with Double]]](
-      mimsmimimdList,
-      m)
+    assertTypedEquals[List[M[_ >: Int with String with Double]]](mimsmimimdList, m)
 
     val mWithEx = mimsmimemd.to[List]
     //  equalType(mimsmimemdList, mWithEx)
@@ -897,9 +893,7 @@ class HListTests {
 
     val m = mimsmimimd.toList
     equalInferredTypes(mimsmimimdList, m)
-    assertTypedEquals[List[M[_ >: Int with String with Double]]](
-      mimsmimimdList,
-      m)
+    assertTypedEquals[List[M[_ >: Int with String with Double]]](mimsmimimdList, m)
 
     // With existentials, it gets more tricky
     val mWithEx = mimsmimemd.toList
@@ -2021,23 +2015,23 @@ class HListTests {
 
     val t1 = (l1 :: l2 :: HNil).transpose
     val z1 = t1.map(tupled)
-    assertTypedEquals[(Int, Int) :: (String, String) :: (
-        Double,
-        Double) :: HNil]((1, 2) :: ("a", "b") :: (1.0, 2.0) :: HNil, z1)
+    assertTypedEquals[(Int, Int) :: (String, String) :: (Double, Double) :: HNil](
+      (1, 2) :: ("a", "b") :: (1.0, 2.0) :: HNil,
+      z1)
 
     def zip[L <: HList, OutT <: HList](l: L)(implicit
         transposer: Transposer.Aux[L, OutT],
         mapper: Mapper[tupled.type, OutT]) = l.transpose.map(tupled)
 
     val z2 = zip(l1 :: l2 :: HNil)
-    assertTypedEquals[(Int, Int) :: (String, String) :: (
-        Double,
-        Double) :: HNil]((1, 2) :: ("a", "b") :: (1.0, 2.0) :: HNil, z2)
+    assertTypedEquals[(Int, Int) :: (String, String) :: (Double, Double) :: HNil](
+      (1, 2) :: ("a", "b") :: (1.0, 2.0) :: HNil,
+      z2)
 
     val z3 = (l1 :: l2 :: HNil).zip
-    assertTypedEquals[(Int, Int) :: (String, String) :: (
-        Double,
-        Double) :: HNil]((1, 2) :: ("a", "b") :: (1.0, 2.0) :: HNil, z3)
+    assertTypedEquals[(Int, Int) :: (String, String) :: (Double, Double) :: HNil](
+      (1, 2) :: ("a", "b") :: (1.0, 2.0) :: HNil,
+      z3)
 
     val t2 = z1.map(productElements).transpose
     val u1 = t2.tupled
@@ -2067,9 +2061,9 @@ class HListTests {
       r1)
 
     val r2 = l1 zip l2
-    assertTypedEquals[(Int, Int) :: (String, String) :: (
-        Double,
-        Double) :: HNil]((1, 2) :: ("a", "b") :: (1.0, 2.0) :: HNil, r2)
+    assertTypedEquals[(Int, Int) :: (String, String) :: (Double, Double) :: HNil](
+      (1, 2) :: ("a", "b") :: (1.0, 2.0) :: HNil,
+      r2)
 
     val intInc: Int => Int = _ + 1
     val stringInc: String => String = _ + "*"
@@ -2166,10 +2160,8 @@ class HListTests {
       ls)
 
     val withDuplicates = 1 :: 'a' :: 'b' :: HNil
-    val remover = implicitly[Remove.Aux[
-      Int :: Char :: Char :: HNil,
-      Char,
-      (Char, Int :: Char :: HNil)]]
+    val remover = implicitly[
+      Remove.Aux[Int :: Char :: Char :: HNil, Char, (Char, Int :: Char :: HNil)]]
     assertTypedEquals[(Char, Int :: Char :: HNil)](
       ('a', 1 :: 'b' :: HNil),
       remover(withDuplicates))
@@ -2530,9 +2522,9 @@ class HListTests {
 
       // HList zipWithIndex
       val r3 = (0 :: 1 :: 2 :: 3 :: HNil).zipWithIndex
-      assertTypedEquals[(Int, _0) :: (Int, _1) :: (Int, _2) :: (
-          Int,
-          _3) :: HNil]((0, _0) :: (1, _1) :: (2, _2) :: (3, _3) :: HNil, r3)
+      assertTypedEquals[(Int, _0) :: (Int, _1) :: (Int, _2) :: (Int, _3) :: HNil](
+        (0, _0) :: (1, _1) :: (2, _2) :: (3, _3) :: HNil,
+        r3)
 
     }
 
@@ -3377,8 +3369,7 @@ class HListTests {
     object Obj
 
     val l = SFoo(23, "foo", 'bar, Obj, true)
-    typed[Witness.`23`.T :: Witness.`"foo"`.T :: Witness.`'bar`.T :: Obj.type :: Witness.`true`.T :: HNil](
-      l)
+    typed[Witness.`23`.T :: Witness.`"foo"`.T :: Witness.`'bar`.T :: Obj.type :: Witness.`true`.T :: HNil](l)
 
     // Annotations on the LHS here and subsequently, otherwise scalac will
     // widen the RHS to a non-singleton type.

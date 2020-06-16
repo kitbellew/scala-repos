@@ -293,9 +293,7 @@ class MacroExpandAction extends AnAction {
   def ensugarExpansion(text: String): String = {
 
     @tailrec
-    def applyRules(
-        rules: Seq[(String, String)],
-        input: String = text): String = {
+    def applyRules(rules: Seq[(String, String)], input: String = text): String = {
       def pat(p: String) =
         Pattern.compile(p, Pattern.DOTALL | Pattern.MULTILINE)
       rules match {

@@ -23,9 +23,7 @@ object ScentryAuthStore {
       cookieOptions: CookieOptions = CookieOptions(path = "/"))
       extends ScentryAuthStore {
 
-    def get(implicit
-        request: HttpServletRequest,
-        response: HttpServletResponse) =
+    def get(implicit request: HttpServletRequest, response: HttpServletResponse) =
       app.cookies.get(Scentry.scentryAuthKey) getOrElse ""
 
     def set(value: String)(implicit

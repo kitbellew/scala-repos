@@ -44,18 +44,14 @@ object MacroSupportInterpolationImpl {
                 case c2 @ ('(' | ')') => // optional parentheses
                   flushSB
                   exprs += If(
-                    Select(
-                      skipParens,
-                      TermName(NameTransformer.encode("unary_!"))),
+                    Select(skipParens, TermName(NameTransformer.encode("unary_!"))),
                     append(Literal(Constant(c2))),
                     ctx.universe.EmptyTree
                   )
                 case '{' => // optional open parentheses with indent
                   flushSB
                   exprs += If(
-                    Select(
-                      skipParens,
-                      TermName(NameTransformer.encode("unary_!"))),
+                    Select(skipParens, TermName(NameTransformer.encode("unary_!"))),
                     Block(
                       List(
                         append(Literal(Constant('('))),
@@ -67,9 +63,7 @@ object MacroSupportInterpolationImpl {
                 case '}' => // optional close parentheses with dedent
                   flushSB
                   exprs += If(
-                    Select(
-                      skipParens,
-                      TermName(NameTransformer.encode("unary_!"))),
+                    Select(skipParens, TermName(NameTransformer.encode("unary_!"))),
                     Block(
                       List(
                         Select(sqlBuilder, TermName("newLineDedent")),
@@ -125,9 +119,7 @@ object MacroSupportInterpolationImpl {
             ctx.abort(ae.tree.pos, "Unknown type. Must be Node or Symbol.")
         case '!' =>
           exprs ++= appendString(s.substring(0, len - 1))
-          exprs += Apply(
-            Ident(TermName("expr")),
-            List(a, Literal(Constant(true))))
+          exprs += Apply(Ident(TermName("expr")), List(a, Literal(Constant(true))))
         case _ =>
           exprs ++= appendString(s)
           //println("### tpe: "+ae.actualType)

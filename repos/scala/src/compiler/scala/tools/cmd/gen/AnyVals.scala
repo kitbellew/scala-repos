@@ -199,11 +199,7 @@ import scala.language.implicitConversions"""
     def mkShiftOps =
       (
         for (op <- shiftOps; arg <- List(I, L))
-          yield "%s\n  def %s(x: %s): %s".format(
-            op.doc,
-            op.op,
-            arg,
-            this opType I)
+          yield "%s\n  def %s(x: %s): %s".format(op.doc, op.op, arg, this opType I)
       )
 
     def clumps: List[List[String]] = {
@@ -300,9 +296,7 @@ import scala.language.implicitConversions"""
         "@unboxRunTimeDoc@" -> """
  *  Runtime implementation determined by `scala.runtime.BoxesRunTime.unboxTo%s`. See [[https://github.com/scala/scala src/library/scala/runtime/BoxesRunTime.java]].
  *""".format(name),
-        "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()".format(
-          boxedName,
-          lcname),
+        "@unboxImpl@" -> "x.asInstanceOf[%s].%sValue()".format(boxedName, lcname),
         "@unboxDoc@" -> "the %s resulting from calling %sValue() on `x`".format(
           name,
           lcname)

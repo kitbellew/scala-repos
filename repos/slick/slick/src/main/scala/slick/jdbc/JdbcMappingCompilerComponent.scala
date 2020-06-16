@@ -33,8 +33,10 @@ trait JdbcMappingCompilerComponent { self: JdbcProfile =>
     * single conversion only and must not be shared or reused. */
   class MappingCompiler
       extends ResultConverterCompiler[JdbcResultConverterDomain] {
-    def createColumnConverter(n: Node, idx: Int, column: Option[FieldSymbol])
-        : ResultConverter[JdbcResultConverterDomain, _] = {
+    def createColumnConverter(
+        n: Node,
+        idx: Int,
+        column: Option[FieldSymbol]): ResultConverter[JdbcResultConverterDomain, _] = {
       val JdbcType(ti, option) = n.nodeType.structural
       if (option) createOptionResultConverter(ti, idx)
       else createBaseResultConverter(ti, column.fold("<computed>")(_.name), idx)
@@ -92,8 +94,7 @@ trait JdbcMappingCompilerComponent { self: JdbcProfile =>
       val ibr = ib.buildInsert
       (
         CompiledStatement(ibr.sql, ibr, serverSide.nodeType).infer(),
-        mapping.map(n =>
-          mappingCompiler.compileMapping(ib.transformMapping(n))))
+        mapping.map(n => mappingCompiler.compileMapping(ib.transformMapping(n))))
     }
   }
 }

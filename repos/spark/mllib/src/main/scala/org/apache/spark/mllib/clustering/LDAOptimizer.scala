@@ -582,8 +582,7 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
     val randBasis = new RandBasis(
       new org.apache.commons.math3.random.MersenneTwister(
         randomGenerator.nextLong()))
-    val gammaRandomGenerator = new Gamma(gammaShape, 1.0 / gammaShape)(
-      randBasis)
+    val gammaRandomGenerator = new Gamma(gammaShape, 1.0 / gammaShape)(randBasis)
     val temp = gammaRandomGenerator.sample(row * col).toArray
     new BDM[Double](col, row, temp).t
   }

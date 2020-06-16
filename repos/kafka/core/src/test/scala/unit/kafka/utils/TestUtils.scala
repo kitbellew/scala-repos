@@ -308,8 +308,7 @@ object TestUtils extends Logging {
       zkUtils: ZkUtils,
       topic: String,
       partitionReplicaAssignment: collection.Map[Int, Seq[Int]],
-      servers: Seq[KafkaServer])
-      : scala.collection.immutable.Map[Int, Option[Int]] = {
+      servers: Seq[KafkaServer]): scala.collection.immutable.Map[Int, Option[Int]] = {
     // create topic
     AdminUtils.createOrUpdateTopicPartitionAssignmentPathInZK(
       zkUtils,
@@ -594,8 +593,7 @@ object TestUtils extends Logging {
      * invoke it before this call in IntegrationTestHarness, otherwise the
      * SSL client auth fails.
      */
-    if (!producerProps.containsKey(
-        CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
+    if (!producerProps.containsKey(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
       producerProps.putAll(
         producerSecurityConfigs(securityProtocol, trustStoreFile))
 
@@ -626,8 +624,7 @@ object TestUtils extends Logging {
       sessionTimeout: Int = 30000,
       securityProtocol: SecurityProtocol,
       trustStoreFile: Option[File] = None,
-      props: Option[Properties] = None)
-      : KafkaConsumer[Array[Byte], Array[Byte]] = {
+      props: Option[Properties] = None): KafkaConsumer[Array[Byte], Array[Byte]] = {
     import org.apache.kafka.clients.consumer.ConsumerConfig
 
     val consumerProps = props.getOrElse(new Properties())
@@ -658,8 +655,7 @@ object TestUtils extends Logging {
      * invoke it before this call in IntegrationTestHarness, otherwise the
      * SSL client auth fails.
      */
-    if (!consumerProps.containsKey(
-        CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
+    if (!consumerProps.containsKey(CommonClientConfigs.SECURITY_PROTOCOL_CONFIG))
       consumerProps.putAll(
         consumerSecurityConfigs(securityProtocol, trustStoreFile))
 
@@ -691,10 +687,7 @@ object TestUtils extends Logging {
     props
   }
 
-  def updateConsumerOffset(
-      config: ConsumerConfig,
-      path: String,
-      offset: Long) = {
+  def updateConsumerOffset(config: ConsumerConfig, path: String, offset: Long) = {
     val zkUtils = ZkUtils(
       config.zkConnect,
       config.zkSessionTimeoutMs,
@@ -791,8 +784,7 @@ object TestUtils extends Logging {
       correlationId: Int = 0,
       clientId: String): ProducerRequest = {
     val data = topics.flatMap(topic =>
-      partitions.map(partition =>
-        (TopicAndPartition(topic, partition), message)))
+      partitions.map(partition => (TopicAndPartition(topic, partition), message)))
     new ProducerRequest(
       correlationId,
       clientId,
@@ -918,8 +910,7 @@ object TestUtils extends Logging {
           if (ellapsed > maxWaitMs) {
             throw e
           } else {
-            info(
-              "Attempt failed, sleeping for " + wait + ", and then retrying.")
+            info("Attempt failed, sleeping for " + wait + ", and then retrying.")
             Thread.sleep(wait)
             wait += math.min(wait, 1000)
           }
@@ -1341,12 +1332,8 @@ object TestUtils extends Logging {
       throw new Exception("SSL enabled but no trustStoreFile provided")
     }
 
-    val sslConfigs = TestSslUtils.createSslConfig(
-      clientCert,
-      true,
-      mode,
-      trustStore,
-      certAlias)
+    val sslConfigs =
+      TestSslUtils.createSslConfig(clientCert, true, mode, trustStore, certAlias)
 
     val sslProps = new Properties()
     sslConfigs.foreach { case (k, v) => sslProps.put(k, v) }

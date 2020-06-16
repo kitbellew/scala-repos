@@ -19,10 +19,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr.{
 }
 import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTypeDefinition
-import org.jetbrains.plugins.scala.lang.psi.impl.{
-  ScPackageImpl,
-  ScalaPsiManager
-}
+import org.jetbrains.plugins.scala.lang.psi.impl.{ScPackageImpl, ScalaPsiManager}
 import org.jetbrains.plugins.scala.lang.psi.types.ScType
 
 import scala.annotation.tailrec
@@ -132,10 +129,8 @@ object CachesUtil {
                       } finally set.foreach(_.setProbablyRecursive(false))
                     case t @ ProbablyRecursionException(ee, data, k, set)
                         if k == key =>
-                      val fun = PsiTreeUtil.getContextOfType(
-                        e,
-                        true,
-                        classOf[ScFunction])
+                      val fun =
+                        PsiTreeUtil.getContextOfType(e, true, classOf[ScFunction])
                       if (fun == null || fun.isProbablyRecursive) throw t
                       else {
                         fun.setProbablyRecursive(true)
@@ -221,8 +216,7 @@ object CachesUtil {
       val manager = CachedValuesManager.getManager(e.getProject)
       computed = manager.createCachedValue(
         new CachedValueProvider[ConcurrentMap[Data, Result]] {
-          def compute()
-              : CachedValueProvider.Result[ConcurrentMap[Data, Result]] = {
+          def compute(): CachedValueProvider.Result[ConcurrentMap[Data, Result]] = {
             new CachedValueProvider.Result(
               ContainerUtil.newConcurrentMap[Data, Result](),
               dependencyItem)
@@ -404,9 +398,7 @@ object CachesUtil {
             ScalaPsiManager.instance(proj).incModificationCount()
             clearQueue()
           } else {
-            updateModificationCount(
-              fun.getContext,
-              incModCountOnTopLevel = true)
+            updateModificationCount(fun.getContext, incModCountOnTopLevel = true)
           }
         }
 

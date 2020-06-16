@@ -76,13 +76,10 @@ trait ProjectStructureMatcher {
     expected.foreach(resources)(
       assertModuleContentFoldersEqual(actual, JavaResourceRootType.RESOURCE))
     expected.foreach(testResources)(
-      assertModuleContentFoldersEqual(
-        actual,
-        JavaResourceRootType.TEST_RESOURCE))
+      assertModuleContentFoldersEqual(actual, JavaResourceRootType.TEST_RESOURCE))
     expected.foreach(excluded)(assertModuleExcludedFoldersEqual(actual))
     expected.foreach(moduleDependencies)(assertModuleDependenciesEqual(actual))
-    expected.foreach(libraryDependencies)(
-      assertLibraryDependenciesEqual(actual))
+    expected.foreach(libraryDependencies)(assertLibraryDependenciesEqual(actual))
     expected.foreach(libraries)(assertModuleLibrariesEqual(actual))
   }
 

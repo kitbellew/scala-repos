@@ -42,8 +42,7 @@ case class RunHookCompositeThrowable(val throwables: Set[Throwable])
     extends Exception(
       "Multiple exceptions thrown during RunHook run: " +
         throwables
-          .map(t =>
-            t + "\n" + t.getStackTrace.take(10).++("...").mkString("\n"))
+          .map(t => t + "\n" + t.getStackTrace.take(10).++("...").mkString("\n"))
           .mkString("\n\n")
     )
 

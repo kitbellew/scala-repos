@@ -42,9 +42,7 @@ object Play2OldStructureAdapter {
     val keyValues = playVersion ++ confDirectory ++ Seq(
       (TEMPLATES_IMPORT, new SeqStringParsedValue(data.templatesImports)),
       (ROUTES_IMPORT, new SeqStringParsedValue(data.routesImports)),
-      (
-        SOURCE_DIR,
-        new StringParsedValue(data.sourceDirectory.getCanonicalPath)),
+      (SOURCE_DIR, new StringParsedValue(data.sourceDirectory.getCanonicalPath)),
       (
         PROJECT_URI,
         new StringParsedValue(baseDir.getCanonicalFile.toURI.toString))

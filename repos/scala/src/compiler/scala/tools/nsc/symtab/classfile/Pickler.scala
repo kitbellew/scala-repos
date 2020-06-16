@@ -100,8 +100,7 @@ abstract class Pickler extends SubComponent {
       *  added to fix that bug, but there may be a better way.
       */
     private def localizedOwner(sym: Symbol) =
-      if (isLocalToPickle(sym) && !isRootSym(sym) && !isLocalToPickle(
-          sym.owner))
+      if (isLocalToPickle(sym) && !isRootSym(sym) && !isLocalToPickle(sym.owner))
         // don't use a class as the localized owner for type parameters that are not owned by a class: those are not instantiated by asSeenFrom
         // however, they would suddenly be considered by asSeenFrom if their localized owner became a class (causing the crashes of #4079, #2741)
         (if ((sym.isTypeParameter || sym.isValueParameter) && !sym.owner.isClass)

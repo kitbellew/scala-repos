@@ -300,8 +300,7 @@ class MarathonHealthCheckManagerTest
     val otherHealthChecks =
       Set(HealthCheck(protocol = Protocol.COMMAND, gracePeriod = 0.seconds))
     startTask(otherAppId, otherTask, Timestamp(42), otherHealthChecks)
-    hcManager.addAllFor(
-      appRepository.currentVersion(otherAppId).futureValue.get)
+    hcManager.addAllFor(appRepository.currentVersion(otherAppId).futureValue.get)
     assert(hcManager.list(otherAppId) == otherHealthChecks)
 
     // start task 0 without running health check

@@ -54,10 +54,7 @@ private[http] object BodyPartRenderer {
             case IndefiniteLength(_, data) ⇒ bodyPartChunks(data)
           }
 
-        renderBoundary(
-          r,
-          boundary,
-          suppressInitialCrLf = !firstBoundaryRendered)
+        renderBoundary(r, boundary, suppressInitialCrLf = !firstBoundaryRendered)
         firstBoundaryRendered = true
         renderEntityContentType(r, bodyPart.entity)
         renderHeaders(r, bodyPart.headers, log)
@@ -126,9 +123,7 @@ private[http] object BodyPartRenderer {
     r ~~ CrLf
   }
 
-  private def renderHeader(
-      r: Rendering,
-      log: LoggingAdapter): HttpHeader ⇒ Unit = {
+  private def renderHeader(r: Rendering, log: LoggingAdapter): HttpHeader ⇒ Unit = {
     case x: `Content-Length` ⇒
       suppressionWarning(
         log,

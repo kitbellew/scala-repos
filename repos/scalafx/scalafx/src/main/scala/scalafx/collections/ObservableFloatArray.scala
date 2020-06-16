@@ -78,11 +78,7 @@ class ObservableFloatArray(
   /**
     * @inheritdoc
     */
-  override def copyTo(
-      srcIdx: Int,
-      dest: Array[Float],
-      destIdx: Int,
-      length: Int) {
+  override def copyTo(srcIdx: Int, dest: Array[Float], destIdx: Int, length: Int) {
     delegate.copyTo(srcIdx, dest, destIdx, length)
   }
 

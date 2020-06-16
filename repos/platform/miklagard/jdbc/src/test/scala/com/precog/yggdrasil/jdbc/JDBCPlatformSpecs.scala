@@ -146,8 +146,7 @@ object JDBCPlatformSpecEngine extends Logging {
                     jv.flattenWithPath.map {
                       case (p, v) =>
                         (
-                          JDBCColumnarTableModule.escapePath(
-                            p.toString.drop(1)),
+                          JDBCColumnarTableModule.escapePath(p.toString.drop(1)),
                           jvToSQL(v))
                     }
                 }
@@ -264,10 +263,7 @@ trait JDBCPlatformSpecs
 
     val databaseMap = Map("test" -> JDBCPlatformSpecEngine.dbURL)
 
-    override def load(
-        table: Table,
-        apiKey: APIKey,
-        tpe: JType): Future[Table] = {
+    override def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {
       // Rewrite paths of the form /foo/bar/baz to /test/foo_bar_baz
       val pathFixTS = Map1(
         Leaf(Source),

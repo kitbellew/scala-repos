@@ -72,8 +72,7 @@ package object util {
           println(s"$marker: Complete")
           super.onUpstreamFinish(ctx)
         }
-        override def onDownstreamFinish(
-            ctx: Context[T]): TerminationDirective = {
+        override def onDownstreamFinish(ctx: Context[T]): TerminationDirective = {
           println(s"$marker: Cancel")
           super.onDownstreamFinish(ctx)
         }
@@ -149,9 +148,7 @@ package util {
       }
   }
 
-  private[http] class ToStrict(
-      timeout: FiniteDuration,
-      contentType: ContentType)
+  private[http] class ToStrict(timeout: FiniteDuration, contentType: ContentType)
       extends GraphStage[FlowShape[ByteString, HttpEntity.Strict]] {
 
     val in = Inlet[ByteString]("in")
@@ -197,8 +194,9 @@ package util {
         )
 
         override def onTimer(key: Any): Unit =
-          failStage(new java.util.concurrent.TimeoutException(
-            s"HttpEntity.toStrict timed out after $timeout while still waiting for outstanding data"))
+          failStage(
+            new java.util.concurrent.TimeoutException(
+              s"HttpEntity.toStrict timed out after $timeout while still waiting for outstanding data"))
       }
 
     override def toString = "ToStrict"

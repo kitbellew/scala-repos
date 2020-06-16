@@ -355,8 +355,9 @@ trait EvaluatorModule[M[+_]]
         def get0(pt: PendingTable): (TransSpec1, DepGraph) =
           (pt.trans, pt.graph)
 
-        def set0(pt: PendingTable, tg: (TransSpec1, DepGraph))
-            : StateT[N, EvaluatorState, PendingTable] = {
+        def set0(
+            pt: PendingTable,
+            tg: (TransSpec1, DepGraph)): StateT[N, EvaluatorState, PendingTable] = {
           for {
             _ <- monadState.modify { state =>
               state.copy(assume = state.assume + (tg._2 -> (pt.table, pt.sort)))
@@ -364,8 +365,8 @@ trait EvaluatorModule[M[+_]]
           } yield pt.copy(trans = tg._1, graph = tg._2)
         }
 
-        def init0(tg: (TransSpec1, DepGraph))
-            : StateT[N, EvaluatorState, PendingTable] =
+        def init0(
+            tg: (TransSpec1, DepGraph)): StateT[N, EvaluatorState, PendingTable] =
           memoized(tg._2, evalNotTransSpecable)
 
         /**
@@ -682,10 +683,8 @@ trait EvaluatorModule[M[+_]]
             case dag.New(parent) =>
               for {
                 pendingTable <- prepareEval(parent, splits)
-                idSpec = makeTableTrans(
-                  Map(
-                    paths.Key -> trans.WrapArray(
-                      Scan(Leaf(Source), freshIdScanner))))
+                idSpec = makeTableTrans(Map(
+                  paths.Key -> trans.WrapArray(Scan(Leaf(Source), freshIdScanner))))
                 tableM2 =
                   pendingTable.table
                     .transform(liftToValues(pendingTable.trans))
@@ -780,8 +779,7 @@ trait EvaluatorModule[M[+_]]
                 pendingTable <- prepareEval(parent, splits)
                 back <- transState liftM mn(
                   mor(
-                    pendingTable.table.transform(
-                      liftToValues(pendingTable.trans)),
+                    pendingTable.table.transform(liftToValues(pendingTable.trans)),
                     MorphContext(ctx, graph)))
               } yield {
                 PendingTable(
@@ -802,8 +800,7 @@ trait EvaluatorModule[M[+_]]
                     trans.WrapArray(srcRight))
               }
 
-              val joined
-                  : StateT[N, EvaluatorState, (Morph1Apply, PendingTable)] =
+              val joined: StateT[N, EvaluatorState, (Morph1Apply, PendingTable)] =
                 mor.alignment match {
                   case MorphismAlignment.Cross(morph1) =>
                     ((transState liftM mn(morph1)) |@| cross(
@@ -885,8 +882,7 @@ trait EvaluatorModule[M[+_]]
             case dag.Distinct(parent) =>
               val idSpec = makeTableTrans(
                 Map(
-                  paths.Key -> trans.WrapArray(
-                    Scan(Leaf(Source), freshIdScanner))))
+                  paths.Key -> trans.WrapArray(Scan(Leaf(Source), freshIdScanner))))
 
               for {
                 pending <- prepareEval(parent, splits)
@@ -955,11 +951,7 @@ trait EvaluatorModule[M[+_]]
                   )
                 }
               } yield {
-                PendingTable(
-                  wrapped,
-                  graph,
-                  TransSpec1.Id,
-                  IdentityOrder(graph))
+                PendingTable(wrapped, graph, TransSpec1.Id, IdentityOrder(graph))
               }
 
             case r @ dag.Reduce(red, parent) =>
@@ -981,8 +973,7 @@ trait EvaluatorModule[M[+_]]
             case s @ dag.Split(spec, child, id) =>
               val idSpec = makeTableTrans(
                 Map(
-                  paths.Key -> trans.WrapArray(
-                    Scan(Leaf(Source), freshIdScanner))))
+                  paths.Key -> trans.WrapArray(Scan(Leaf(Source), freshIdScanner))))
 
               val params = child.foldDown(true) {
                 case param: dag.SplitParam if param.parentId == id => Set(param)
@@ -1240,9 +1231,7 @@ trait EvaluatorModule[M[+_]]
 
       val resultTable: N[Table] = resultState.eval(EvaluatorState())
       resultTable map {
-        _ paged maxSliceSize compact DerefObjectStatic(
-          Leaf(Source),
-          paths.Value)
+        _ paged maxSliceSize compact DerefObjectStatic(Leaf(Source), paths.Value)
       }
     }
 
@@ -1278,10 +1267,7 @@ trait EvaluatorModule[M[+_]]
       }
     }
 
-    private[this] def replaceNode(
-        graph: DepGraph,
-        from: DepGraph,
-        to: DepGraph) = {
+    private[this] def replaceNode(graph: DepGraph, from: DepGraph, to: DepGraph) = {
       graph mapDown { recurse =>
         {
           case `from` => to
@@ -1585,8 +1571,7 @@ trait EvaluatorModule[M[+_]]
 
     private def zip[A](
         table1: StateT[N, EvaluatorState, A],
-        table2: StateT[N, EvaluatorState, A])
-        : StateT[N, EvaluatorState, (A, A)] =
+        table2: StateT[N, EvaluatorState, A]): StateT[N, EvaluatorState, (A, A)] =
       monadState.apply2(table1, table2) { (_, _) }
 
     private case class EvaluatorState(

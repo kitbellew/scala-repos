@@ -63,8 +63,7 @@ abstract class Page {
       case v: Val if (v.isVal)     => "val"
       case v: Val if (v.isVar)     => "var"
       case _ =>
-        sys.error(
-          "Cannot create kind for: " + mbr + " of class " + mbr.getClass)
+        sys.error("Cannot create kind for: " + mbr + " of class " + mbr.getClass)
     }
 
   def templateToPath(tpl: TemplateEntity): List[String] = {

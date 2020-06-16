@@ -62,9 +62,7 @@ abstract class DeterministicOldestWhenJoiningSpec
       }
       enterBarrier("first-seed-joined")
 
-      runOn(
-        roleByAddress(seedNodes(1)),
-        roleByAddress(roleByAddress(seedNodes(2)))) {
+      runOn(roleByAddress(seedNodes(1)), roleByAddress(roleByAddress(seedNodes(2)))) {
         cluster.joinSeedNodes(seedNodes)
       }
 

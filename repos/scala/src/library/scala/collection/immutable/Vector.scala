@@ -315,10 +315,8 @@ final class Vector[+A] private[immutable] (
           if (depth > 1) {
             val newBlockIndex = blockIndex + shift
             val newFocus = focus + shift
-            val s = new Vector(
-              startIndex - 1 + shift,
-              endIndex + shift,
-              newBlockIndex)
+            val s =
+              new Vector(startIndex - 1 + shift, endIndex + shift, newBlockIndex)
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(0, shiftBlocks) // shift right by n blocks
@@ -338,10 +336,8 @@ final class Vector[+A] private[immutable] (
             //assert(newBlockIndex == 0)
             //assert(newFocus == 0)
 
-            val s = new Vector(
-              startIndex - 1 + shift,
-              endIndex + shift,
-              newBlockIndex)
+            val s =
+              new Vector(startIndex - 1 + shift, endIndex + shift, newBlockIndex)
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(0, shiftBlocks) // shift right by n elements
@@ -431,10 +427,8 @@ final class Vector[+A] private[immutable] (
           if (depth > 1) {
             val newBlockIndex = blockIndex - shift
             val newFocus = focus - shift
-            val s = new Vector(
-              startIndex - shift,
-              endIndex + 1 - shift,
-              newBlockIndex)
+            val s =
+              new Vector(startIndex - shift, endIndex + 1 - shift, newBlockIndex)
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(shiftBlocks, 0) // shift left by n blocks
@@ -454,10 +448,8 @@ final class Vector[+A] private[immutable] (
             //assert(newBlockIndex == 0)
             //assert(newFocus == 0)
 
-            val s = new Vector(
-              startIndex - shift,
-              endIndex + 1 - shift,
-              newBlockIndex)
+            val s =
+              new Vector(startIndex - shift, endIndex + 1 - shift, newBlockIndex)
             s.initFrom(this)
             s.dirty = dirty
             s.shiftTopLevel(shiftBlocks, 0) // shift right by n elements
@@ -806,9 +798,7 @@ private[immutable] trait VectorPointer[T] {
   private[immutable] final def initFrom[U](that: VectorPointer[U]): Unit =
     initFrom(that, that.depth)
 
-  private[immutable] final def initFrom[U](
-      that: VectorPointer[U],
-      depth: Int) = {
+  private[immutable] final def initFrom[U](that: VectorPointer[U], depth: Int) = {
     this.depth = depth
     (depth - 1) match {
       case -1 =>
@@ -1011,9 +1001,7 @@ private[immutable] trait VectorPointer[T] {
     b
   }
 
-  private[immutable] final def nullSlotAndCopy(
-      array: Array[AnyRef],
-      index: Int) = {
+  private[immutable] final def nullSlotAndCopy(array: Array[AnyRef], index: Int) = {
     //println("copy and null")
     val x = array(index)
     array(index) = null

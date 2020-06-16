@@ -167,9 +167,7 @@ object S extends S {
     * Impersonates a function that is executed on HTTP requests from client. The function
     * takes a String as the only parameter and returns an Any.
     */
-  private final class SFuncHolder(
-      val func: String => Any,
-      val owner: Box[String])
+  private final class SFuncHolder(val func: String => Any, val owner: Box[String])
       extends AFuncHolder
       with Serializable {
     def this(func: String => Any) = this(func, Empty)
@@ -344,8 +342,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @see # attrs
     * @see # attr
     */
-  private val _attrs = new ThreadGlobal[
-    (MetaData, List[(Either[String, (String, String)], String)])]
+  private val _attrs =
+    new ThreadGlobal[(MetaData, List[(Either[String, (String, String)], String)])]
 
   /**
     * Holds the per-request LiftSession instance.
@@ -1156,9 +1154,10 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
       }
       case Full(bundles) => bundles
       case _ =>
-        throw new IllegalStateException("Attempted to use resource bundles outside of an initialized S scope. " +
-          "S only usable when initialized, such as during request processing. " +
-          "Did you call S.? from Boot?")
+        throw new IllegalStateException(
+          "Attempted to use resource bundles outside of an initialized S scope. " +
+            "S only usable when initialized, such as during request processing. " +
+            "Did you call S.? from Boot?")
     }
   }
 
@@ -1450,8 +1449,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     throw ResponseShortcutException.seeOther(where, func)
 
   private[http] object oldNotices
-      extends TransientRequestVar[
-        Seq[(NoticeType.Value, NodeSeq, Box[String])]](Nil)
+      extends TransientRequestVar[Seq[(NoticeType.Value, NodeSeq, Box[String])]](
+        Nil)
 
   /**
     * Initialize the current request session. Generally this is handled by Lift during request
@@ -1564,8 +1563,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
   private[http] def unsetSnippetForClass(cls: String): Unit =
     _statefulSnip.set(_statefulSnip.is - cls)
 
-  private var _queryAnalyzer
-      : List[(Box[Req], Long, List[(String, Long)]) => Any] = Nil
+  private var _queryAnalyzer: List[(Box[Req], Long, List[(String, Long)]) => Any] =
+    Nil
 
   /**
     * Add a query analyzer (passed queries for analysis or logging). The analyzer
@@ -2192,9 +2191,7 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
     * @param snips any snippet mapping specific to this template run
     * @return a Full Box containing the processed template, or a Failure if the template could not be found.
     */
-  def eval(
-      template: NodeSeq,
-      snips: (String, NodeSeq => NodeSeq)*): Box[NodeSeq] =
+  def eval(template: NodeSeq, snips: (String, NodeSeq => NodeSeq)*): Box[NodeSeq] =
     mapSnippetsWith(snips: _*) {
       for {
         sess <- session ?~ "No current session"

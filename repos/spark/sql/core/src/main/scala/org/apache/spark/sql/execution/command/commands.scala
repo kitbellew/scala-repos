@@ -139,8 +139,9 @@ case class SetCommand(kv: Option[(String, Option[String])])
 
       case Some((SQLConf.Deprecated.CODEGEN_ENABLED, Some(value))) =>
         val runFunc = (sqlContext: SQLContext) => {
-          logWarning(s"Property ${SQLConf.Deprecated.CODEGEN_ENABLED} is deprecated and " +
-            s"will be ignored. Codegen will continue to be used.")
+          logWarning(
+            s"Property ${SQLConf.Deprecated.CODEGEN_ENABLED} is deprecated and " +
+              s"will be ignored. Codegen will continue to be used.")
           Seq(Row(SQLConf.Deprecated.CODEGEN_ENABLED, "true"))
         }
         (keyValueOutput, runFunc)
@@ -413,9 +414,7 @@ case class DescribeFunction(functionName: String, isExtended: Boolean)
     schema.toAttributes
   }
 
-  private def replaceFunctionName(
-      usage: String,
-      functionName: String): String = {
+  private def replaceFunctionName(usage: String, functionName: String): String = {
     if (usage == null) {
       "To be added."
     } else {

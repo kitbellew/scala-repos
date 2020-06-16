@@ -246,11 +246,7 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "implement batch (conflate)" in new OneBoundedSetup[Int](
-      Batch(
-        1L,
-        ConstantFun.zeroLong,
-        (in: Int) ⇒ in,
-        (agg: Int, x: Int) ⇒ agg + x)) {
+      Batch(1L, ConstantFun.zeroLong, (in: Int) ⇒ in, (agg: Int, x: Int) ⇒ agg + x)) {
 
       lastEvents() should be(Set(RequestOne))
 
@@ -307,16 +303,8 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "work with batch-batch (conflate-conflate)" in new OneBoundedSetup[Int](
-      Batch(
-        1L,
-        ConstantFun.zeroLong,
-        (in: Int) ⇒ in,
-        (agg: Int, x: Int) ⇒ agg + x),
-      Batch(
-        1L,
-        ConstantFun.zeroLong,
-        (in: Int) ⇒ in,
-        (agg: Int, x: Int) ⇒ agg + x)) {
+      Batch(1L, ConstantFun.zeroLong, (in: Int) ⇒ in, (agg: Int, x: Int) ⇒ agg + x),
+      Batch(1L, ConstantFun.zeroLong, (in: Int) ⇒ in, (agg: Int, x: Int) ⇒ agg + x)) {
 
       lastEvents() should be(Set(RequestOne))
 
@@ -382,11 +370,7 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     "implement batch-expand (conflate-expand)" in new OneBoundedSetup[Int](
-      Batch(
-        1L,
-        ConstantFun.zeroLong,
-        (in: Int) ⇒ in,
-        (agg: Int, x: Int) ⇒ agg + x),
+      Batch(1L, ConstantFun.zeroLong, (in: Int) ⇒ in, (agg: Int, x: Int) ⇒ agg + x),
       new Expand(Iterator.continually(_: Int))) {
 
       lastEvents() should be(Set(RequestOne))
@@ -418,11 +402,7 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     "implement doubler-conflate (doubler-batch)" in new OneBoundedSetup[Int](
       Doubler().toGS,
-      Batch(
-        1L,
-        ConstantFun.zeroLong,
-        (in: Int) ⇒ in,
-        (agg: Int, x: Int) ⇒ agg + x)) {
+      Batch(1L, ConstantFun.zeroLong, (in: Int) ⇒ in, (agg: Int, x: Int) ⇒ agg + x)) {
       lastEvents() should be(Set(RequestOne))
 
       upstream.onNext(1)
@@ -437,8 +417,7 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
     }
 
     // Note, the new interpreter has no jumpback table, still did not want to remove the test
-    "work with jumpback table and completed elements" in new OneBoundedSetup[
-      Int](
+    "work with jumpback table and completed elements" in new OneBoundedSetup[Int](
       Seq(
         Map((x: Int) ⇒ x, stoppingDecider),
         Map((x: Int) ⇒ x, stoppingDecider),
@@ -501,9 +480,7 @@ class InterpreterSpec extends AkkaSpec with GraphInterpreterSpecKit {
 
     "work with pushAndFinish if upstream completes with pushAndFinish and downstream immediately pulls" in new OneBoundedSetup[
       Int](
-      Seq(
-        new PushFinishStage,
-        Fold(0, (x: Int, y: Int) ⇒ x + y, stoppingDecider))) {
+      Seq(new PushFinishStage, Fold(0, (x: Int, y: Int) ⇒ x + y, stoppingDecider))) {
 
       lastEvents() should be(Set.empty)
 

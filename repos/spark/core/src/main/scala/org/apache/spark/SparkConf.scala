@@ -74,10 +74,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     set(key, value, false)
   }
 
-  private[spark] def set(
-      key: String,
-      value: String,
-      silent: Boolean): SparkConf = {
+  private[spark] def set(key: String, value: String, silent: Boolean): SparkConf = {
     if (key == null) {
       throw new NullPointerException("null key")
     }
@@ -178,9 +175,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
     this
   }
 
-  private[spark] def setIfMissing[T](
-      entry: ConfigEntry[T],
-      value: T): SparkConf = {
+  private[spark] def setIfMissing[T](entry: ConfigEntry[T], value: T): SparkConf = {
     if (settings.putIfAbsent(entry.key, entry.stringConverter(value)) == null) {
       logDeprecationWarning(entry.key)
     }
@@ -190,9 +185,7 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   private[spark] def setIfMissing[T](
       entry: OptionalConfigEntry[T],
       value: T): SparkConf = {
-    if (settings.putIfAbsent(
-        entry.key,
-        entry.rawStringConverter(value)) == null) {
+    if (settings.putIfAbsent(entry.key, entry.rawStringConverter(value)) == null) {
       logDeprecationWarning(entry.key)
     }
     this

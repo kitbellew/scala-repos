@@ -87,10 +87,7 @@ trait CheckAnalysis {
                 WindowSpecDefinition(
                   _,
                   order,
-                  SpecifiedWindowFrame(
-                    frame,
-                    FrameBoundary(l),
-                    FrameBoundary(h))))
+                  SpecifiedWindowFrame(frame, FrameBoundary(l), FrameBoundary(h))))
               if order.isEmpty || frame != RowFrame || l != h =>
             failAnalysis(
               "An offset window function can only be evaluated in an ordered " +

@@ -97,8 +97,7 @@ class TimeoutsSpec extends AkkaSpec {
       downstreamProbe.expectNoMsg(500.millis) // No timeout yet
 
       val ex = downstreamProbe.expectError()
-      ex.getMessage should ===(
-        "The stream has not been completed in 2 seconds.")
+      ex.getMessage should ===("The stream has not been completed in 2 seconds.")
     }
 
   }

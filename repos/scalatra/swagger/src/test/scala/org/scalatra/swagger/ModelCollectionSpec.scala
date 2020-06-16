@@ -90,8 +90,7 @@ class ModelCollectionSpec extends Specification {
 
     "collect all the models in a nested structure" in {
       Swagger.collectModels[TaggedThing](
-        Set.empty) must containTheSameElementsAs(
-        taggedThingModels.flatten.toSeq)
+        Set.empty) must containTheSameElementsAs(taggedThingModels.flatten.toSeq)
     }
 
     "collect models when hiding in a list" in {

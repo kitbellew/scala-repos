@@ -212,10 +212,7 @@ class Eval(target: Option[File]) {
   /**
     * same as apply[T], but does not run preprocessors.
     */
-  def applyProcessed[T](
-      className: String,
-      code: String,
-      resetState: Boolean): T = {
+  def applyProcessed[T](className: String, code: String, resetState: Boolean): T = {
     val cls = compiler(wrapCodeInClass(className, code), className, resetState)
     cls
       .getConstructor()

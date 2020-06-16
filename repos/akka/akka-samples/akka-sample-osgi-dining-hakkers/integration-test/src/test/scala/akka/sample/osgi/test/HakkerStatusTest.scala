@@ -72,8 +72,7 @@ class HakkerStatusTest
       val Identification(fromHakker, busyWith) =
         testProbe.expectMsgType[Identification]
 
-      println(
-        "---------------> %s is busy with %s.".format(fromHakker, busyWith))
+      println("---------------> %s is busy with %s.".format(fromHakker, busyWith))
       fromHakker should be("TestHakker")
       busyWith should not be (null)
     }

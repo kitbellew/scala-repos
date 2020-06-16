@@ -35,8 +35,7 @@ class SbtDocumentationProvider extends AbstractDocumentationProvider {
   override def generateDoc(
       element: PsiElement,
       originalElement: PsiElement): String = {
-    val scalaDoc = Option(
-      scalaDocProvider.generateDoc(element, originalElement))
+    val scalaDoc = Option(scalaDocProvider.generateDoc(element, originalElement))
     scalaDoc.map { doc => appendToScalaDoc(doc, extractDoc(element)) }.orNull
   }
 

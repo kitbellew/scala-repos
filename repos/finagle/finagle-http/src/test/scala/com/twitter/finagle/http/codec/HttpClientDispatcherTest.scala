@@ -91,8 +91,7 @@ class HttpClientDispatcherTest extends FunSuite {
   }
 
   def chunk(content: String) =
-    new DefaultHttpChunk(
-      ChannelBuffers.wrappedBuffer(content.getBytes("UTF-8")))
+    new DefaultHttpChunk(ChannelBuffers.wrappedBuffer(content.getBytes("UTF-8")))
 
   private val timeout = Duration.fromSeconds(2)
 

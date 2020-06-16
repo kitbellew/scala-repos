@@ -125,8 +125,7 @@ private[parquet] class CatalystSchemaConverter(
       throw new AnalysisException(s"Parquet type not supported: $typeString")
 
     def typeNotImplemented() =
-      throw new AnalysisException(
-        s"Parquet type not yet supported: $typeString")
+      throw new AnalysisException(s"Parquet type not yet supported: $typeString")
 
     def illegalType() =
       throw new AnalysisException(s"Illegal Parquet type: $typeString")
@@ -249,8 +248,7 @@ private[parquet] class CatalystSchemaConverter(
 
         val keyValueType = field.getType(0).asGroupType()
         CatalystSchemaConverter.checkConversionRequirement(
-          keyValueType.isRepetition(
-            REPEATED) && keyValueType.getFieldCount == 2,
+          keyValueType.isRepetition(REPEATED) && keyValueType.getFieldCount == 2,
           s"Invalid map type: $field")
 
         val keyType = keyValueType.getType(0)
@@ -543,8 +541,8 @@ private[parquet] class CatalystSchemaConverter(
               .repeatedGroup()
               .addField(
                 convertField(StructField("key", keyType, nullable = false)))
-              .addField(convertField(
-                StructField("value", valueType, valueContainsNull)))
+              .addField(
+                convertField(StructField("value", valueType, valueContainsNull)))
               .named("key_value"))
           .named(field.name)
 

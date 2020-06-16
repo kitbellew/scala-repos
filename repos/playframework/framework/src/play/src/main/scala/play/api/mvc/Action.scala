@@ -291,8 +291,8 @@ object BodyParser {
     * }}}
     */
   @deprecated("Use apply instead", "2.5.0")
-  def iteratee[T](f: RequestHeader => Iteratee[ByteString, Either[Result, T]])
-      : BodyParser[T] = {
+  def iteratee[T](
+      f: RequestHeader => Iteratee[ByteString, Either[Result, T]]): BodyParser[T] = {
     iteratee("(no name)")(f)
   }
 
@@ -308,8 +308,7 @@ object BodyParser {
     */
   @deprecated("Use apply instead", "2.5.0")
   def iteratee[T](debugName: String)(
-      f: RequestHeader => Iteratee[ByteString, Either[Result, T]])
-      : BodyParser[T] =
+      f: RequestHeader => Iteratee[ByteString, Either[Result, T]]): BodyParser[T] =
     new BodyParser[T] {
       def apply(rh: RequestHeader) = Streams.iterateeToAccumulator(f(rh))
       override def toString = "BodyParser(" + debugName + ")"
@@ -536,9 +535,8 @@ trait ActionBuilder[+R[_]] extends ActionFunction[Request, R] {
 object Action extends ActionBuilder[Request] {
   private val logger = Logger(Action.getClass)
 
-  def invokeBlock[A](
-      request: Request[A],
-      block: (Request[A]) => Future[Result]) = block(request)
+  def invokeBlock[A](request: Request[A], block: (Request[A]) => Future[Result]) =
+    block(request)
 }
 
 /* NOTE: the following are all example uses of ActionFunction, each subtly
@@ -562,8 +560,7 @@ trait ActionRefiner[-R[_], +P[_]] extends ActionFunction[R, P] {
   protected def refine[A](request: R[A]): Future[Either[Result, P[A]]]
 
   final def invokeBlock[A](request: R[A], block: P[A] => Future[Result]) =
-    refine(request).flatMap(_.fold(Future.successful _, block))(
-      executionContext)
+    refine(request).flatMap(_.fold(Future.successful _, block))(executionContext)
 }
 
 /**

@@ -59,9 +59,7 @@ class BroadcastJoinSuite extends QueryTest with BeforeAndAfterAll {
   private def testBroadcastJoin[T: ClassTag](
       name: String,
       joinType: String): Unit = {
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sqlContext.sparkContext,
-      name) {
+    AccumulatorSuite.verifyPeakExecutionMemorySet(sqlContext.sparkContext, name) {
       val df1 =
         sqlContext.createDataFrame(Seq((1, "4"), (2, "2"))).toDF("key", "value")
       val df2 =

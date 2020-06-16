@@ -145,9 +145,7 @@ class Queue[A]
   @deprecated(
     "extractFirst inappropriately exposes implementation details.  Use dequeue or dequeueAll.",
     "2.11.0")
-  def extractFirst(
-      start: LinkedList[A],
-      p: A => Boolean): Option[LinkedList[A]] = {
+  def extractFirst(start: LinkedList[A], p: A => Boolean): Option[LinkedList[A]] = {
     if (isEmpty) None
     else {
       var cell = start

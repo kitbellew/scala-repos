@@ -32,13 +32,10 @@ import javafx.scene.{shape => jfxss}
 import scalafx.delegate.{SFXEnumDelegate, SFXEnumDelegateCompanion}
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/scene/shape/StrokeType.html javafx.scene.shape.StrokeType]] */
-object StrokeType
-    extends SFXEnumDelegateCompanion[jfxss.StrokeType, StrokeType] {
+object StrokeType extends SFXEnumDelegateCompanion[jfxss.StrokeType, StrokeType] {
 
   val Inside = new StrokeType(jfxss.StrokeType.INSIDE)
-  @deprecated(
-    "Use Inside; INSIDE will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Inside; INSIDE will be removed in a future release", "2.2.60")
   val INSIDE = Inside
   val Outside = new StrokeType(jfxss.StrokeType.OUTSIDE)
   @deprecated(

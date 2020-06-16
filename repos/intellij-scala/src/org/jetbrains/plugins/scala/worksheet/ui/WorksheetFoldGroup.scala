@@ -69,12 +69,7 @@ class WorksheetFoldGroup(
             leftStart,
             spaces,
             lsLength) =>
-        (
-          region.getStartOffset,
-          region.getEndOffset,
-          leftStart,
-          spaces,
-          lsLength)
+        (region.getStartOffset, region.getEndOffset, leftStart, spaces, lsLength)
     }
 
   private def traverseAndChange(

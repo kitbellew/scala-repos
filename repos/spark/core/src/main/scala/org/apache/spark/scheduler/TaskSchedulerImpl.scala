@@ -173,8 +173,7 @@ private[spark] class TaskSchedulerImpl(
 
   override def submitTasks(taskSet: TaskSet) {
     val tasks = taskSet.tasks
-    logInfo(
-      "Adding task set " + taskSet.id + " with " + tasks.length + " tasks")
+    logInfo("Adding task set " + taskSet.id + " with " + tasks.length + " tasks")
     this.synchronized {
       val manager = createTaskSetManager(taskSet, maxTaskFailures)
       val stage = taskSet.stageId
@@ -371,7 +370,8 @@ private[spark] class TaskSchedulerImpl(
           if (executorIdToTaskCount.contains(execId)) {
             removeExecutor(
               execId,
-              SlaveLost(s"Task $tid was lost, so marking the executor as lost as well."))
+              SlaveLost(
+                s"Task $tid was lost, so marking the executor as lost as well."))
             failedExecutor = Some(execId)
           }
         }

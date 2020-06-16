@@ -35,10 +35,7 @@ trait BytecodeWriters {
   /**
     * @param clsName cls.getName
     */
-  def getFile(
-      base: AbstractFile,
-      clsName: String,
-      suffix: String): AbstractFile = {
+  def getFile(base: AbstractFile, clsName: String, suffix: String): AbstractFile = {
     def ensureDirectory(dir: AbstractFile): AbstractFile =
       if (dir.isDirectory) dir
       else

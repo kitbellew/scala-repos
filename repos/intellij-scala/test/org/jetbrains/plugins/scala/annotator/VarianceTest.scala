@@ -60,8 +60,7 @@ class VarianceTest extends SimpleTestCase {
   }
 
   def testFunctionInsideFunction() {
-    assertMatches(
-      messages("trait H[+S] { def outer = {def inner(s: S) = s }}")) {
+    assertMatches(messages("trait H[+S] { def outer = {def inner(s: S) = s }}")) {
       case Nil =>
     }
   }
@@ -178,8 +177,8 @@ class VarianceTest extends SimpleTestCase {
     }
   }
 
-  def messages(@Language(value = "Scala", prefix = Header) code: String)
-      : List[Message] = {
+  def messages(
+      @Language(value = "Scala", prefix = Header) code: String): List[Message] = {
     val annotator = new ScalaAnnotator() {}
     val mock = new AnnotatorHolderMock
 
@@ -198,8 +197,7 @@ class VarianceTest extends SimpleTestCase {
     mock.annotations.filter((p: Message) => !p.isInstanceOf[Info])
   }
 
-  val ContravariantPosition = ContainsPattern(
-    "occurs in contravariant position")
+  val ContravariantPosition = ContainsPattern("occurs in contravariant position")
   val CovariantPosition = ContainsPattern("occurs in covariant position")
   val AbstractModifier = ContainsPattern(
     "Abstract member may not have private modifier")

@@ -224,10 +224,7 @@ class CertChainInput(
     openSSLRootConfFilename: String
 ) {
   val setupCADirPath: Path = Files.createTempDirectory(setupCADirName)
-  def writeResourceToDir(
-      klass: Class[_],
-      name: String,
-      directory: Path): File = {
+  def writeResourceToDir(klass: Class[_], name: String, directory: Path): File = {
     val fullName = File.separator + setupCADirName + File.separator + name
     val url = Resources.getResource(klass, fullName)
     val newFile = new File(setupCADirPath.toFile, name)

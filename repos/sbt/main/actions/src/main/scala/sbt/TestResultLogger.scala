@@ -183,10 +183,7 @@ object TestResultLogger {
             scala.reflect.NameTransformer.decode(name)
         }
 
-      def show(
-          label: String,
-          level: Level.Value,
-          tests: Iterable[String]): Unit =
+      def show(label: String, level: Level.Value, tests: Iterable[String]): Unit =
         if (tests.nonEmpty) {
           log.log(level, label)
           log.log(level, tests.mkString("\t", "\n\t", ""))

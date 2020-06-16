@@ -71,9 +71,7 @@ private[spark] class CartesianRDD[T: ClassTag, U: ClassTag](
       currSplit.s2)).distinct
   }
 
-  override def compute(
-      split: Partition,
-      context: TaskContext): Iterator[(T, U)] = {
+  override def compute(split: Partition, context: TaskContext): Iterator[(T, U)] = {
     val currSplit = split.asInstanceOf[CartesianPartition]
     for (x <- rdd1.iterator(currSplit.s1, context);
       y <- rdd2.iterator(currSplit.s2, context)) yield (x, y)

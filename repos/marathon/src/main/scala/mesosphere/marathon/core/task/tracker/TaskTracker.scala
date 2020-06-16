@@ -33,8 +33,7 @@ trait TaskTracker {
   def task(taskId: Task.Id)(implicit ec: ExecutionContext): Future[Option[Task]]
 
   def tasksByAppSync: TaskTracker.TasksByApp
-  def tasksByApp()(implicit
-      ec: ExecutionContext): Future[TaskTracker.TasksByApp]
+  def tasksByApp()(implicit ec: ExecutionContext): Future[TaskTracker.TasksByApp]
 
   def countLaunchedAppTasksSync(appId: PathId): Int
   def countAppTasksSync(appId: PathId): Int

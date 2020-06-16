@@ -401,8 +401,8 @@ object DenseVector
 
   implicit def canMapValues[
       @specialized(Int, Float, Double) V,
-      @specialized(Int, Float, Double) V2](implicit man: ClassTag[V2])
-      : CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] = {
+      @specialized(Int, Float, Double) V2](implicit
+      man: ClassTag[V2]): CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] = {
     new CanMapValues[DenseVector[V], V, V2, DenseVector[V2]] {
 
       /** Maps all key-value pairs from the given collection. */
@@ -570,9 +570,7 @@ object DenseVector
       }
 
       /** Maps all active key-value pairs from the given collection. */
-      def mapActive(
-          from: DenseVector[V],
-          fn: (Int, V) => V2): DenseVector[V2] = {
+      def mapActive(from: DenseVector[V], fn: (Int, V) => V2): DenseVector[V2] = {
         map(from, fn)
       }
     }
@@ -679,8 +677,7 @@ object DenseVector
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
         canDaxpy(a, 1.0, b)
       }
-      implicitly[
-        BinaryUpdateRegistry[Vector[Double], Vector[Double], OpAdd.type]]
+      implicitly[BinaryUpdateRegistry[Vector[Double], Vector[Double], OpAdd.type]]
         .register(this)
     }
   }
@@ -708,16 +705,12 @@ object DenseVector
     }
 
   }
-  implicitly[TernaryUpdateRegistry[
-    Vector[Double],
-    Double,
-    Vector[Double],
-    scaleAdd.type]].register(canDaxpy)
+  implicitly[
+    TernaryUpdateRegistry[Vector[Double], Double, Vector[Double], scaleAdd.type]]
+    .register(canDaxpy)
 
-  implicit val canAddD: OpAdd.Impl2[
-    DenseVector[Double],
-    DenseVector[Double],
-    DenseVector[Double]] = {
+  implicit val canAddD
+      : OpAdd.Impl2[DenseVector[Double], DenseVector[Double], DenseVector[Double]] = {
     pureFromUpdate_Double(canAddIntoD)
   }
   implicitly[
@@ -730,16 +723,13 @@ object DenseVector
       def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
         canDaxpy(a, -1.0, b)
       }
-      implicitly[
-        BinaryUpdateRegistry[Vector[Double], Vector[Double], OpSub.type]]
+      implicitly[BinaryUpdateRegistry[Vector[Double], Vector[Double], OpSub.type]]
         .register(this)
     }
 
   }
-  implicit val canSubD: OpSub.Impl2[
-    DenseVector[Double],
-    DenseVector[Double],
-    DenseVector[Double]] = {
+  implicit val canSubD
+      : OpSub.Impl2[DenseVector[Double], DenseVector[Double], DenseVector[Double]] = {
     pureFromUpdate_Double(canSubIntoD)
   }
   implicitly[
@@ -747,10 +737,7 @@ object DenseVector
     .register(canSubD)
 
   implicit object canDotD
-      extends OpMulInner.Impl2[
-        DenseVector[Double],
-        DenseVector[Double],
-        Double] {
+      extends OpMulInner.Impl2[DenseVector[Double], DenseVector[Double], Double] {
     def apply(a: DenseVector[Double], b: DenseVector[Double]) = {
       require(a.length == b.length, s"Vectors must have same length")
       if (a.noOffsetOrStride && b.noOffsetOrStride && a.length < DenseVectorSupportMethods.MAX_SMALL_DOT_PRODUCT_LENGTH) {
@@ -765,9 +752,7 @@ object DenseVector
 
     val UNROLL_FACTOR = 6
 
-    private def blasPath(
-        a: DenseVector[Double],
-        b: DenseVector[Double]): Double = {
+    private def blasPath(a: DenseVector[Double], b: DenseVector[Double]): Double = {
       if ((a.length <= 300 || !usingNatives) && a.stride == 1 && b.stride == 1) {
         DenseVectorSupportMethods.dotProduct_Double(
           a.data,
@@ -827,8 +812,7 @@ object DenseVector
   /**
     *  Returns the p-norm of this Vector (specialized for Double).
     */
-  implicit def canNorm_Double
-      : norm.Impl2[DenseVector[Double], Double, Double] = {
+  implicit def canNorm_Double: norm.Impl2[DenseVector[Double], Double, Double] = {
     new norm.Impl2[DenseVector[Double], Double, Double] {
       def apply(v: DenseVector[Double], p: Double): Double = {
         if (p == 2) {

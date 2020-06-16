@@ -60,9 +60,7 @@ trait TransSpecModuleSpec
             InnerArrayConcat(
               WrapArray(DerefArrayStatic(Leaf(Source), CPathIndex(4))),
               WrapArray(
-                WrapObject(
-                  DerefArrayStatic(Leaf(Source), CPathIndex(6)),
-                  "baz"))),
+                WrapObject(DerefArrayStatic(Leaf(Source), CPathIndex(6)), "baz"))),
             WrapArray(DerefArrayStatic(Leaf(Source), CPathIndex(2)))
           ),
           "bar"

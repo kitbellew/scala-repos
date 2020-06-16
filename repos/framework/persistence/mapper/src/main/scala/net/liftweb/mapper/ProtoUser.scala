@@ -72,8 +72,7 @@ trait ProtoUser[T <: ProtoUser[T]]
 
   lazy val firstName: MappedString[T] = new MyFirstName(this, 32)
 
-  protected class MyFirstName(obj: T, size: Int)
-      extends MappedString(obj, size) {
+  protected class MyFirstName(obj: T, size: Int) extends MappedString(obj, size) {
     override def displayName = fieldOwner.firstNameDisplayName
     override val fieldId = Some(Text("txtFirstName"))
   }

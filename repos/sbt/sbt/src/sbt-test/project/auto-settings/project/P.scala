@@ -17,9 +17,8 @@ object B extends Build {
   lazy val b = project("b", "0.1-SNAPSHOT") settingSets (buildScalaFiles)
 
   // version should be from the explicit settings call
-  lazy val c = project(
-    "c",
-    "0.9") settings (version := "0.9") settingSets (buildScalaFiles)
+  lazy val c =
+    project("c", "0.9") settings (version := "0.9") settingSets (buildScalaFiles)
 
   // version should be from d/build.sbt
   lazy val d = project(

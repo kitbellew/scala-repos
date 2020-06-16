@@ -376,8 +376,7 @@ class SparkContext(config: SparkConf)
 
   private[spark] def eventLogger: Option[EventLoggingListener] = _eventLogger
 
-  private[spark] def executorAllocationManager
-      : Option[ExecutorAllocationManager] =
+  private[spark] def executorAllocationManager: Option[ExecutorAllocationManager] =
     _executorAllocationManager
 
   private[spark] def cleaner: Option[ContextCleaner] = _cleaner
@@ -416,8 +415,7 @@ class SparkContext(config: SparkConf)
       Seq("ALL", "DEBUG", "ERROR", "FATAL", "INFO", "OFF", "TRACE", "WARN")
     if (!validLevels.contains(logLevel)) {
       throw new IllegalArgumentException(
-        s"Supplied level $logLevel did not match one of: ${validLevels.mkString(
-          ",")}")
+        s"Supplied level $logLevel did not match one of: ${validLevels.mkString(",")}")
     }
     Utils.setLogLevel(org.apache.log4j.Level.toLevel(logLevel))
   }
@@ -787,11 +785,7 @@ class SparkContext(config: SparkConf)
       numSlices: Int = defaultParallelism): RDD[T] =
     withScope {
       assertNotStopped()
-      new ParallelCollectionRDD[T](
-        this,
-        seq,
-        numSlices,
-        Map[Int, Seq[String]]())
+      new ParallelCollectionRDD[T](this, seq, numSlices, Map[Int, Seq[String]]())
     }
 
   /**
@@ -825,48 +819,47 @@ class SparkContext(config: SparkConf)
           (safeEnd - safeStart) / step + 1
         }
       }
-      parallelize(0 until numSlices, numSlices).mapPartitionsWithIndex(
-        (i, _) => {
-          val partitionStart = (i * numElements) / numSlices * step + start
-          val partitionEnd =
-            (((i + 1) * numElements) / numSlices) * step + start
-          def getSafeMargin(bi: BigInt): Long =
-            if (bi.isValidLong) {
-              bi.toLong
-            } else if (bi > 0) {
-              Long.MaxValue
-            } else {
-              Long.MinValue
-            }
-          val safePartitionStart = getSafeMargin(partitionStart)
-          val safePartitionEnd = getSafeMargin(partitionEnd)
-
-          new Iterator[Long] {
-            private[this] var number: Long = safePartitionStart
-            private[this] var overflow: Boolean = false
-
-            override def hasNext =
-              if (!overflow) {
-                if (step > 0) {
-                  number < safePartitionEnd
-                } else {
-                  number > safePartitionEnd
-                }
-              } else false
-
-            override def next() = {
-              val ret = number
-              number += step
-              if (number < ret ^ step < 0) {
-                // we have Long.MaxValue + Long.MaxValue < Long.MaxValue
-                // and Long.MinValue + Long.MinValue > Long.MinValue, so iff the step causes a step
-                // back, we are pretty sure that we have an overflow.
-                overflow = true
-              }
-              ret
-            }
+      parallelize(0 until numSlices, numSlices).mapPartitionsWithIndex((i, _) => {
+        val partitionStart = (i * numElements) / numSlices * step + start
+        val partitionEnd =
+          (((i + 1) * numElements) / numSlices) * step + start
+        def getSafeMargin(bi: BigInt): Long =
+          if (bi.isValidLong) {
+            bi.toLong
+          } else if (bi > 0) {
+            Long.MaxValue
+          } else {
+            Long.MinValue
           }
-        })
+        val safePartitionStart = getSafeMargin(partitionStart)
+        val safePartitionEnd = getSafeMargin(partitionEnd)
+
+        new Iterator[Long] {
+          private[this] var number: Long = safePartitionStart
+          private[this] var overflow: Boolean = false
+
+          override def hasNext =
+            if (!overflow) {
+              if (step > 0) {
+                number < safePartitionEnd
+              } else {
+                number > safePartitionEnd
+              }
+            } else false
+
+          override def next() = {
+            val ret = number
+            number += step
+            if (number < ret ^ step < 0) {
+              // we have Long.MaxValue + Long.MaxValue < Long.MaxValue
+              // and Long.MinValue + Long.MinValue > Long.MinValue, so iff the step causes a step
+              // back, we are pretty sure that we have an overflow.
+              overflow = true
+            }
+            ret
+          }
+        }
+      })
     }
 
   /** Distribute a local Scala collection to form an RDD.
@@ -1134,9 +1127,8 @@ class SparkContext(config: SparkConf)
     * If you plan to directly cache, sort, or aggregate Hadoop writable objects, you should first
     * copy them using a `map` function.
     */
-  def hadoopFile[K, V, F <: InputFormat[K, V]](
-      path: String,
-      minPartitions: Int)(implicit
+  def hadoopFile[K, V, F <: InputFormat[K, V]](path: String, minPartitions: Int)(
+      implicit
       km: ClassTag[K],
       vm: ClassTag[V],
       fm: ClassTag[F]): RDD[(K, V)] =
@@ -1522,8 +1514,7 @@ class SparkContext(config: SparkConf)
       useCache = false)
 
     logInfo(
-      "Added file " + path + " at " + key + " with timestamp " + addedFiles(
-        key))
+      "Added file " + path + " at " + key + " with timestamp " + addedFiles(key))
     postEnvironmentUpdate()
   }
 
@@ -2382,9 +2373,7 @@ object SparkContext extends Logging {
     // from assertNoOtherContextIsRunning within setActiveContext
     SPARK_CONTEXT_CONSTRUCTOR_LOCK.synchronized {
       if (activeContext.get() == null) {
-        setActiveContext(
-          new SparkContext(config),
-          allowMultipleContexts = false)
+        setActiveContext(new SparkContext(config), allowMultipleContexts = false)
       }
       activeContext.get()
     }
@@ -2637,7 +2626,8 @@ object SparkContext extends Logging {
         val backend =
           try {
             val clazz =
-              Utils.classForName("org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
+              Utils.classForName(
+                "org.apache.spark.scheduler.cluster.YarnClusterSchedulerBackend")
             val cons = clazz.getConstructor(
               classOf[TaskSchedulerImpl],
               classOf[SparkContext])
@@ -2801,9 +2791,8 @@ private[spark] class WritableFactory[T](
 
 object WritableFactory {
 
-  private[spark] def simpleWritableFactory[
-      T: ClassTag,
-      W <: Writable: ClassTag](convert: T => W): WritableFactory[T] = {
+  private[spark] def simpleWritableFactory[T: ClassTag, W <: Writable: ClassTag](
+      convert: T => W): WritableFactory[T] = {
     val writableClass =
       implicitly[ClassTag[W]].runtimeClass.asInstanceOf[Class[W]]
     new WritableFactory[T](_ => writableClass, convert)
@@ -2830,8 +2819,7 @@ object WritableFactory {
   implicit def stringWritableFactory: WritableFactory[String] =
     simpleWritableFactory(new Text(_))
 
-  implicit def writableWritableFactory[T <: Writable: ClassTag]
-      : WritableFactory[T] =
+  implicit def writableWritableFactory[T <: Writable: ClassTag]: WritableFactory[T] =
     simpleWritableFactory(w => w)
 
 }

@@ -117,8 +117,7 @@ object Utility {
         case SU =>
           reportTruncatedError("")
         case _ =>
-          reportSyntaxError(
-            "character '" + ch() + "' not allowed in char ref\n")
+          reportSyntaxError("character '" + ch() + "' not allowed in char ref\n")
       }
       nextch()
     }

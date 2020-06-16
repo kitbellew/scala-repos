@@ -60,10 +60,8 @@ object ManifestScalaType {
   private val IntType: ScalaType = new PrimitiveManifestScalaType(Manifest.Int)
   private val NumberType: ScalaType = new PrimitiveManifestScalaType(
     manifest[Number])
-  private val LongType: ScalaType = new PrimitiveManifestScalaType(
-    Manifest.Long)
-  private val ByteType: ScalaType = new PrimitiveManifestScalaType(
-    Manifest.Byte)
+  private val LongType: ScalaType = new PrimitiveManifestScalaType(Manifest.Long)
+  private val ByteType: ScalaType = new PrimitiveManifestScalaType(Manifest.Byte)
   private val ShortType: ScalaType = new PrimitiveManifestScalaType(
     Manifest.Short)
   private val BooleanType: ScalaType = new PrimitiveManifestScalaType(
@@ -244,8 +242,8 @@ class ManifestScalaType(val manifest: Manifest[_]) extends ScalaType {
         java.math.BigInteger]) ManifestScalaType.BigIntType
     else if (erasure == classOf[BigDecimal] || erasure == classOf[
         java.math.BigDecimal]) ManifestScalaType.BigDecimalType
-    else if (erasure == classOf[Boolean] || erasure == classOf[
-        java.lang.Boolean]) ManifestScalaType.BooleanType
+    else if (erasure == classOf[Boolean] || erasure == classOf[java.lang.Boolean])
+      ManifestScalaType.BooleanType
     else if (erasure == classOf[String] || erasure == classOf[java.lang.String])
       ManifestScalaType.StringType
     else if (erasure == classOf[java.util.Date]) ManifestScalaType.DateType

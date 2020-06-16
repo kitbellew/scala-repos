@@ -153,9 +153,7 @@ private[columnar] class StructColumnBuilder(dataType: StructType)
       STRUCT(dataType))
 
 private[columnar] class ArrayColumnBuilder(dataType: ArrayType)
-    extends ComplexColumnBuilder(
-      new ObjectColumnStats(dataType),
-      ARRAY(dataType))
+    extends ComplexColumnBuilder(new ObjectColumnStats(dataType), ARRAY(dataType))
 
 private[columnar] class MapColumnBuilder(dataType: MapType)
     extends ComplexColumnBuilder(new ObjectColumnStats(dataType), MAP(dataType))

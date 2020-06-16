@@ -129,18 +129,8 @@ class TaskReplaceActor(
       taskQueue.add(app)
 
     // Old task successfully killed
-    case MesosStatusUpdateEvent(
-          slaveId,
-          taskId,
-          KillComplete(_),
-          _,
-          `appId`,
-          _,
-          _,
-          _,
-          _,
-          _,
-          _) if oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
+    case MesosStatusUpdateEvent(slaveId, taskId, KillComplete(_), _, `appId`, _, _, _, _, _, _)
+        if oldTaskIds(taskId) => // scalastyle:ignore line.size.limit
       oldTaskIds -= taskId
       outstandingKills -= taskId
       reconcileNewTasks()

@@ -74,9 +74,7 @@ private final case class AggregatedCssBindFunc(binds: List[CssBind])
   * class="clearable" and this Bind will make them go away
   */
 class ClearClearable
-    extends CssBindImpl(
-      Full(".clearable"),
-      CssSelectorParser.parse(".clearable")) {
+    extends CssBindImpl(Full(".clearable"), CssSelectorParser.parse(".clearable")) {
 
   def calculate(in: NodeSeq): Seq[NodeSeq] = Nil
 }
@@ -166,9 +164,7 @@ private class SelectorMap(binds: List[CssBind])
       case ns                                               => ns
     }
 
-  private abstract class SlurpedAttrs(
-      val id: Box[String],
-      val name: Box[String]) {
+  private abstract class SlurpedAttrs(val id: Box[String], val name: Box[String]) {
     def attrs: Map[String, String]
 
     def classes: List[String]
@@ -473,10 +469,7 @@ private class SelectorMap(binds: List[CssBind])
                   new Elem(
                     e.prefix,
                     e.label,
-                    mergeAll(
-                      e.attributes,
-                      false,
-                      x == Full(DontMergeAttributes)),
+                    mergeAll(e.attributes, false, x == Full(DontMergeAttributes)),
                     e.scope,
                     e.minimizeEmpty,
                     e.child: _*)

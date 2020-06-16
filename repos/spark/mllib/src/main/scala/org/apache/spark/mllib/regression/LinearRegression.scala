@@ -212,9 +212,7 @@ object LinearRegressionWithSGD {
     * @return a LinearRegressionModel which has the weights and offset from training.
     */
   @Since("0.8.0")
-  def train(
-      input: RDD[LabeledPoint],
-      numIterations: Int): LinearRegressionModel = {
+  def train(input: RDD[LabeledPoint], numIterations: Int): LinearRegressionModel = {
     train(input, numIterations, 1.0, 1.0)
   }
 }

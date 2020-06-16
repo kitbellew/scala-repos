@@ -139,8 +139,7 @@ trait SimplyTypedNode extends Node {
 }
 
 /** An expression that represents a conjunction of expressions. */
-final case class ProductNode(children: ConstArray[Node])
-    extends SimplyTypedNode {
+final case class ProductNode(children: ConstArray[Node]) extends SimplyTypedNode {
   type Self = ProductNode
   override def getDumpInfo =
     super.getDumpInfo.copy(name = "ProductNode", mainInfo = "")
@@ -875,9 +874,7 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
 }
 
 /** Lift a value into an Option as Some (or None if the value is a `null` column). */
-final case class OptionApply(child: Node)
-    extends UnaryNode
-    with SimplyTypedNode {
+final case class OptionApply(child: Node) extends UnaryNode with SimplyTypedNode {
   type Self = OptionApply
   protected[this] def rebuild(ch: Node) = copy(child = ch)
   protected def buildType = OptionType(child.nodeType)
@@ -897,9 +894,7 @@ final case class OptionFold(
   protected[this] def rebuild(ch: ConstArray[Node]) = copy(ch(0), ch(1), ch(2))
   protected[this] def rebuildWithSymbols(gen: ConstArray[TermSymbol]) =
     copy(gen = gen(0))
-  protected[this] def withInferredType(
-      scope: Type.Scope,
-      typeChildren: Boolean) = {
+  protected[this] def withInferredType(scope: Type.Scope, typeChildren: Boolean) = {
     val from2 = from.infer(scope, typeChildren)
     val ifEmpty2 = ifEmpty.infer(scope, typeChildren)
     val genScope =

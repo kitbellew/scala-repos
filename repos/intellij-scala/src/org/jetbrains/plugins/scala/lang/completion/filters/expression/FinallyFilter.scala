@@ -35,8 +35,8 @@ class FinallyFilter extends ElementFilter {
       i = getNextNotWhitespaceAndComment(
         context.getTextRange.getEndOffset,
         context)
-      if (Array("catch", "finally").contains(
-          getLeafByOffset(i, context).getText)) return false
+      if (Array("catch", "finally").contains(getLeafByOffset(i, context).getText))
+        return false
       return true
     }
     false

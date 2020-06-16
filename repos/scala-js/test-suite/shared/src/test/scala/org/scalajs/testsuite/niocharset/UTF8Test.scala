@@ -27,8 +27,7 @@ class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
 
     // 2-byte characters
     testDecode(bb"47 72 c3 bc c3 9f 20 47 6f 74 74")(cb"Grüß Gott")
-    testDecode(bb"ce 9a ce b1 ce bb ce b7 ce bc ce ad cf 81 ce b1")(
-      cb"Καλημέρα")
+    testDecode(bb"ce 9a ce b1 ce bb ce b7 ce bc ce ad cf 81 ce b1")(cb"Καλημέρα")
     testDecode(bb"d8 b5 d8 a8 d8 a7 d8 ad 20 d8 a7 d9 84 d8 ae d9 8a d8 b1")(
       cb"صباح الخير")
 
@@ -188,8 +187,7 @@ class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
 
     // 2-byte characters
     testEncode(cb"Grüß Gott")(bb"47 72 c3 bc c3 9f 20 47 6f 74 74")
-    testEncode(cb"Καλημέρα")(
-      bb"ce 9a ce b1 ce bb ce b7 ce bc ce ad cf 81 ce b1")
+    testEncode(cb"Καλημέρα")(bb"ce 9a ce b1 ce bb ce b7 ce bc ce ad cf 81 ce b1")
     testEncode(cb"صباح الخير")(
       bb"d8 b5 d8 a8 d8 a7 d8 ad 20 d8 a7 d9 84 d8 ae d9 8a d8 b1")
 
@@ -200,8 +198,7 @@ class UTF8Test extends BaseCharsetTest(Charset.forName("UTF-8")) {
     testEncode(cb"你好")(bb"e4 bd a0 e5 a5 bd")
 
     // 4-byte characters
-    testEncode(
-      cb"\ud835\udcd7\ud835\udcee\ud835\udcf5\ud835\udcf5\ud835\udcf8")(
+    testEncode(cb"\ud835\udcd7\ud835\udcee\ud835\udcf5\ud835\udcf5\ud835\udcf8")(
       bb"f0 9d 93 97 f0 9d 93 ae f0 9d 93 b5 f0 9d 93 b5 f0 9d 93 b8")
 
     testEncode(cb"")(bb"")

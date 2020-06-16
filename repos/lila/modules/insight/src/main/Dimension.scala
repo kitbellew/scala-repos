@@ -80,7 +80,8 @@ object Dimension {
         F.eco,
         Game,
         _.ecoName,
-        Html("ECO identification of the initial moves, like \"A58 Benko Gambit\"."))
+        Html(
+          "ECO identification of the initial moves, like \"A58 Benko Gambit\"."))
 
   case object OpponentStrength
       extends Dimension[RelativeStrength](

@@ -46,13 +46,8 @@ object ForumPost extends LilaController with ForumController {
                     forms.anyCaptcha flatMap { captcha =>
                       ctx.userId ?? Env.timeline.status(
                         s"forum:${topic.id}") map { unsub =>
-                        BadRequest(
-                          html.forum.topic.show(
-                            categ,
-                            topic,
-                            posts,
-                            Some(err -> captcha),
-                            unsub))
+                        BadRequest(html.forum.topic
+                          .show(categ, topic, posts, Some(err -> captcha), unsub))
                       }
                     },
                   data =>
@@ -76,8 +71,7 @@ object ForumPost extends LilaController with ForumController {
     Open { implicit ctx =>
       OptionResult(postApi.urlData(id, ctx.troll)) {
         case lila.forum.PostUrlData(categ, topic, page, number) =>
-          Redirect(
-            routes.ForumTopic.show(categ, topic, page).url + "#" + number)
+          Redirect(routes.ForumTopic.show(categ, topic, page).url + "#" + number)
       }
     }
 }

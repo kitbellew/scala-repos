@@ -48,8 +48,7 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
     * partitioner that allows co-partitioning with `partitionsRDD`.
     */
   override val partitioner =
-    partitionsRDD.partitioner.orElse(
-      Some(new HashPartitioner(partitions.length)))
+    partitionsRDD.partitioner.orElse(Some(new HashPartitioner(partitions.length)))
 
   override def collect(): Array[Edge[ED]] = this.map(_.copy()).collect()
 
@@ -114,8 +113,7 @@ class EdgeRDDImpl[ED: ClassTag, VD: ClassTag] private[graphx] (
         (thisIter, otherIter) =>
           val (pid, thisEPart) = thisIter.next()
           val (_, otherEPart) = otherIter.next()
-          Iterator(
-            Tuple2(pid, thisEPart.innerJoin(otherEPart)(f)(ed2Tag, ed3Tag)))
+          Iterator(Tuple2(pid, thisEPart.innerJoin(otherEPart)(f)(ed2Tag, ed3Tag)))
       })
   }
 

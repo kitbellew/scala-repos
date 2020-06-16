@@ -65,8 +65,7 @@ object ClassPathImplComparator {
   private val oldCpSearchingStats = new DurationStats("Old classpath - search")
 
   private val flatCpCreationStats = new DurationStats("Flat classpath - create")
-  private val flatCpSearchingStats = new DurationStats(
-    "Flat classpath - search")
+  private val flatCpSearchingStats = new DurationStats("Flat classpath - search")
 
   def main(args: Array[String]): Unit = {
 

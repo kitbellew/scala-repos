@@ -113,8 +113,7 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           val namesakes = freeTerms takeWhile (_ != ft) filter (ft2 =>
             ft != ft2 && ft.name == ft2.name)
           if (namesakes.length > 0) name += ("$" + (namesakes.length + 1))
-          freeTermNames += (ft -> newTermName(
-            name + nme.REIFY_FREE_VALUE_SUFFIX))
+          freeTermNames += (ft -> newTermName(name + nme.REIFY_FREE_VALUE_SUFFIX))
         })
         val expr = new Transformer {
           override def transform(tree: Tree): Tree =
@@ -210,9 +209,8 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
           new TreeTypeSubstituter(
             dummies1 map (_.symbol),
             dummies1 map (dummy =>
-              SingleType(
-                NoPrefix,
-                invertedIndex(dummy.symbol.name.toTermName)))).traverse(result)
+              SingleType(NoPrefix, invertedIndex(dummy.symbol.name.toTermName))))
+            .traverse(result)
           result
         })
       }
@@ -243,18 +241,13 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             reportAmbiguousErrors = false) match {
             case analyzer.SilentResultValue(result) =>
               trace("success: ")(
-                showAttributed(
-                  result,
-                  true,
-                  true,
-                  settings.Yshowsymkinds.value))
+                showAttributed(result, true, true, settings.Yshowsymkinds.value))
               result
             case error @ analyzer.SilentTypeError(_) =>
               trace("failed: ")(error.err.errMsg)
               if (!silent)
                 throw ToolBoxError(
-                  "reflective typecheck has failed: %s".format(
-                    error.err.errMsg))
+                  "reflective typecheck has failed: %s".format(error.err.errMsg))
               EmptyTree
           }
         })

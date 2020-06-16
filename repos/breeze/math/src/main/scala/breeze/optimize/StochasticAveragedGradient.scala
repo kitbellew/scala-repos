@@ -33,9 +33,7 @@ class StochasticAveragedGradient[T](
       0)
   }
 
-  protected def chooseDescentDirection(
-      state: State,
-      f: BatchDiffFunction[T]): T = {
+  protected def chooseDescentDirection(state: State, f: BatchDiffFunction[T]): T = {
     state.history.currentSum * (-1.0 / f.fullRange.size)
   }
 

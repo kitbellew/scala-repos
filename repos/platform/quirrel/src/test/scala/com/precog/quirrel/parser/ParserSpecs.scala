@@ -262,10 +262,7 @@ object ParserSpecs
         case Solve(
               _,
               Vector(
-                Eq(
-                  _,
-                  TicVar(_, "'a"),
-                  Add(_, NumLit(_, "12"), BoolLit(_, true)))),
+                Eq(_, TicVar(_, "'a"), Add(_, NumLit(_, "12"), BoolLit(_, true)))),
               NumLit(_, "1")) =>
           ok
       }
@@ -276,10 +273,7 @@ object ParserSpecs
         case Solve(
               _,
               Vector(
-                Eq(
-                  _,
-                  TicVar(_, "'a"),
-                  Add(_, NumLit(_, "12"), BoolLit(_, true))),
+                Eq(_, TicVar(_, "'a"), Add(_, NumLit(_, "12"), BoolLit(_, true))),
                 TicVar(_, "'b")),
               NumLit(_, "1")) =>
           ok
@@ -301,10 +295,7 @@ object ParserSpecs
         case Solve(
               _,
               Vector(
-                Solve(
-                  _,
-                  Vector(TicVar(_, "'a"), TicVar(_, "'b")),
-                  NumLit(_, "1"))),
+                Solve(_, Vector(TicVar(_, "'a"), TicVar(_, "'b")), NumLit(_, "1"))),
               NumLit(_, "2")) =>
           ok
       }
@@ -2727,10 +2718,7 @@ object ParserSpecs
                   _,
                   Identifier(Vector(), "d"),
                   Vector(),
-                  Dispatch(
-                    _,
-                    Identifier(Vector(), "f"),
-                    Vector(NumLit(_, "1"))),
+                  Dispatch(_, Identifier(Vector(), "f"), Vector(NumLit(_, "1"))),
                   NumLit(_, "2")))) =>
           ok
       }

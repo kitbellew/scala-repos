@@ -57,9 +57,7 @@ class TestRpcEndpoint extends ThreadSafeRpcEndpoint with TripleEquals {
     * Invoked when some network error happens in the connection between the current node and
     * `remoteAddress`.
     */
-  override def onNetworkError(
-      cause: Throwable,
-      remoteAddress: RpcAddress): Unit = {
+  override def onNetworkError(cause: Throwable, remoteAddress: RpcAddress): Unit = {
     onNetworkErrorMessages += cause -> remoteAddress
   }
 

@@ -51,9 +51,7 @@ private[testadapter] object ComUtils {
     }
 
     def badResponse(cause: Throwable = null) = {
-      throw new AssertionError(
-        s"JS test interface sent bad reply: $resp",
-        cause)
+      throw new AssertionError(s"JS test interface sent bad reply: $resp", cause)
     }
 
     val pos = resp.indexOf(':')

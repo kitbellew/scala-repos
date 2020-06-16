@@ -26,8 +26,7 @@ import akka.actor.{ExtendedActorSystem, ActorRef, Props}
   * In the typical scenario, when camel is used with akka extension, it is natural that camel reuses the actor system it extends.
   * Also by not creating extra internal actor system we are conserving resources.
   */
-private[camel] class DefaultCamel(val system: ExtendedActorSystem)
-    extends Camel {
+private[camel] class DefaultCamel(val system: ExtendedActorSystem) extends Camel {
   val supervisor = system.actorOf(Props[CamelSupervisor], "camel-supervisor")
   private[camel] implicit val log = Logging(system, getClass.getName)
 

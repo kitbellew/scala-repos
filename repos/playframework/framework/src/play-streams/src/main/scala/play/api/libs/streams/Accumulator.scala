@@ -152,8 +152,7 @@ private class SinkAccumulator[-E, +A](wrappedSink: => Sink[E, Future[A]])
 /**
   * An accumulator that ignores the body passed in, and is immediately available.
   */
-private class DoneAccumulator[+A](future: Future[A])
-    extends Accumulator[Any, A] {
+private class DoneAccumulator[+A](future: Future[A]) extends Accumulator[Any, A] {
 
   def map[B](f: A => B)(implicit
       executor: ExecutionContext): Accumulator[Any, B] =

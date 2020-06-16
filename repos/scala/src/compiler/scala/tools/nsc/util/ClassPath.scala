@@ -341,9 +341,7 @@ class MergedClassPath[T](
     val context: ClassPathContext[T])
     extends ClassPath[T] {
 
-  def this(
-      entries: TraversableOnce[ClassPath[T]],
-      context: ClassPathContext[T]) =
+  def this(entries: TraversableOnce[ClassPath[T]], context: ClassPathContext[T]) =
     this(entries.toIndexedSeq, context)
 
   def name = entries.head.name

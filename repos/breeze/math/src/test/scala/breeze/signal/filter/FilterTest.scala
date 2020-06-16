@@ -45,8 +45,7 @@ class FilterTest extends FunSuite {
       padding = OptPadding.Zero)
     assert(
       norm(
-        filtered1(0 to -6) - spTestSignalFiltered1(
-          5 to -1)) < testNormThreshold,
+        filtered1(0 to -6) - spTestSignalFiltered1(5 to -1)) < testNormThreshold,
       "filtered result is incorrect!")
 
   }

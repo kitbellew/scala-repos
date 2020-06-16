@@ -31,9 +31,7 @@ import org.apache.kafka.common.utils.Time
   * @param quotaSensor @Sensor that tracks the quota
   * @param throttleTimeSensor @Sensor that tracks the throttle time
   */
-private case class ClientSensors(
-    quotaSensor: Sensor,
-    throttleTimeSensor: Sensor)
+private case class ClientSensors(quotaSensor: Sensor, throttleTimeSensor: Sensor)
 
 /**
   * Configuration settings for quota management
@@ -150,24 +148,19 @@ class ClientQuotaManager(
    * we need to add a delay of X to W such that O * W / (W + X) = T.
    * Solving for X, we get X = (O - T)/T * W.
    */
-  private def throttleTime(
-      clientMetric: KafkaMetric,
-      config: MetricConfig): Int = {
+  private def throttleTime(clientMetric: KafkaMetric, config: MetricConfig): Int = {
     val rateMetric: Rate =
       measurableAsRate(clientMetric.metricName(), clientMetric.measurable())
     val quota = config.quota()
     val difference = clientMetric.value() - quota.bound
     // Use the precise window used by the rate calculation
-    val throttleTimeMs = difference / quota.bound * rateMetric.windowSize(
-      config,
-      time.milliseconds())
+    val throttleTimeMs =
+      difference / quota.bound * rateMetric.windowSize(config, time.milliseconds())
     throttleTimeMs.round.toInt
   }
 
   // Casting to Rate because we only use Rate in Quota computation
-  private def measurableAsRate(
-      name: MetricName,
-      measurable: Measurable): Rate = {
+  private def measurableAsRate(name: MetricName, measurable: Measurable): Rate = {
     measurable match {
       case r: Rate => r
       case _ =>

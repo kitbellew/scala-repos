@@ -384,9 +384,8 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
 
   @Test
   def testAbsoluteOffsetAssignment() {
-    val messages = getMessages(
-      magicValue = Message.MagicValue_V0,
-      codec = NoCompressionCodec)
+    val messages =
+      getMessages(magicValue = Message.MagicValue_V0, codec = NoCompressionCodec)
     val compressedMessages = getMessages(
       magicValue = Message.MagicValue_V0,
       codec = DefaultCompressionCodec)
@@ -469,9 +468,8 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
   @Test
   def testOffsetAssignmentAfterMessageFormatConversion() {
     // Check up conversion
-    val messagesV0 = getMessages(
-      magicValue = Message.MagicValue_V0,
-      codec = NoCompressionCodec)
+    val messagesV0 =
+      getMessages(magicValue = Message.MagicValue_V0, codec = NoCompressionCodec)
     val compressedMessagesV0 = getMessages(
       magicValue = Message.MagicValue_V0,
       codec = DefaultCompressionCodec)
@@ -580,14 +578,8 @@ class ByteBufferMessageSetTest extends BaseMessageSetTestCases {
     if (magicValue == Message.MagicValue_V0) {
       new ByteBufferMessageSet(
         codec,
-        new Message(
-          "hello".getBytes,
-          Message.NoTimestamp,
-          Message.MagicValue_V0),
-        new Message(
-          "there".getBytes,
-          Message.NoTimestamp,
-          Message.MagicValue_V0),
+        new Message("hello".getBytes, Message.NoTimestamp, Message.MagicValue_V0),
+        new Message("there".getBytes, Message.NoTimestamp, Message.MagicValue_V0),
         new Message(
           "beautiful".getBytes,
           Message.NoTimestamp,

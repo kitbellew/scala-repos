@@ -39,9 +39,7 @@ class PregelSuite extends SparkFunSuite with LocalSparkContext {
       val n = 5
       val chain = Graph
         .fromEdgeTuples(
-          sc.parallelize(
-            (1 until n).map(x => (x: VertexId, x + 1: VertexId)),
-            3),
+          sc.parallelize((1 until n).map(x => (x: VertexId, x + 1: VertexId)), 3),
           0)
         .cache()
       assert(

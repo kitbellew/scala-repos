@@ -94,10 +94,8 @@ trait UserHelper { self: I18nHelper with StringHelper with NumberHelper =>
       perfType.iconChar,
       klass)
 
-  def showPerfRating(
-      u: User,
-      perfType: PerfType,
-      klass: String = "hint--bottom")(implicit ctx: Context): Html =
+  def showPerfRating(u: User, perfType: PerfType, klass: String = "hint--bottom")(
+      implicit ctx: Context): Html =
     showPerfRating(perfType, u perfs perfType, klass)
 
   def showPerfRating(u: User, perfKey: String)(implicit

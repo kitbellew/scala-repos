@@ -32,8 +32,7 @@ class DecoderSpec extends WordSpec with CodecSpecSupport {
       decoded.headers shouldEqual Nil
       decoded.entity
         .toStrict(1.second)
-        .awaitResult(1.second) shouldEqual HttpEntity(
-        dummyDecompress(smallText))
+        .awaitResult(1.second) shouldEqual HttpEntity(dummyDecompress(smallText))
     }
   }
 
@@ -45,8 +44,8 @@ class DecoderSpec extends WordSpec with CodecSpecSupport {
   case object DummyDecoder extends StreamDecoder {
     val encoding = HttpEncodings.compress
 
-    override def newDecompressorStage(maxBytesPerChunk: Int)
-        : () ⇒ GraphStage[FlowShape[ByteString, ByteString]] =
+    override def newDecompressorStage(
+        maxBytesPerChunk: Int): () ⇒ GraphStage[FlowShape[ByteString, ByteString]] =
       () ⇒
         new SimpleLinearGraphStage[ByteString] {
           override def createLogic(

@@ -59,9 +59,7 @@ class TestChannel[A](defaultTimeout: Duration) extends Concurrent.Channel[A] {
       case null =>
         throw new AssertionError(s"timeout ($timeout) waiting for $expected")
       case Input.El(input) =>
-        assert(
-          test(expected, input),
-          s"expected [$expected] but found [$input]")
+        assert(test(expected, input), s"expected [$expected] but found [$input]")
         input
       case other =>
         throw new AssertionError(

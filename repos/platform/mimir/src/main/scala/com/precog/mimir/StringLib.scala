@@ -183,10 +183,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       import trans._
 
       //@deprecated, see the DEPRECATED comment in StringLib
-      val tpe = BinaryOperationType(
-        StrAndDateT,
-        StrAndDateT,
-        JArrayHomogeneousT(JTextT))
+      val tpe =
+        BinaryOperationType(StrAndDateT, StrAndDateT, JArrayHomogeneousT(JTextT))
 
       lazy val prepare = UnifyStrDate
 
@@ -312,11 +310,7 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def f2(ctx: MorphContext): F2 =
         CF2P("builtin::str::substring::" + name) {
           case (c1: StrColumn, c2: LongColumn) =>
-            new StrFrom.SL(
-              c1,
-              c2,
-              (s, n) => n >= 0,
-              { (s, n) => f(s, n.toInt) })
+            new StrFrom.SL(c1, c2, (s, n) => n >= 0, { (s, n) => f(s, n.toInt) })
           case (c1: StrColumn, c2: DoubleColumn) =>
             new StrFrom.SD(
               c1,
@@ -455,10 +449,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
     object split extends Op2(StringNamespace, "split") with Op2Array {
       //@deprecated, see the DEPRECATED comment in StringLib
-      val tpe = BinaryOperationType(
-        StrAndDateT,
-        StrAndDateT,
-        JArrayHomogeneousT(JTextT))
+      val tpe =
+        BinaryOperationType(StrAndDateT, StrAndDateT, JArrayHomogeneousT(JTextT))
 
       lazy val prepare = UnifyStrDate
 
@@ -486,10 +478,8 @@ trait StringLibModule[M[+_]] extends ColumnarTableLibModule[M] {
 
     object splitRegex extends Op2(StringNamespace, "splitRegex") with Op2Array {
       //@deprecated, see the DEPRECATED comment in StringLib
-      val tpe = BinaryOperationType(
-        StrAndDateT,
-        StrAndDateT,
-        JArrayHomogeneousT(JTextT))
+      val tpe =
+        BinaryOperationType(StrAndDateT, StrAndDateT, JArrayHomogeneousT(JTextT))
 
       lazy val prepare = UnifyStrDate
 

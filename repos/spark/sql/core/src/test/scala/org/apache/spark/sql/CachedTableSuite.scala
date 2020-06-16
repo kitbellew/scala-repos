@@ -32,10 +32,7 @@ import org.apache.spark.storage.{RDDBlockId, StorageLevel}
 
 private case class BigData(s: String)
 
-class CachedTableSuite
-    extends QueryTest
-    with SQLTestUtils
-    with SharedSQLContext {
+class CachedTableSuite extends QueryTest with SQLTestUtils with SharedSQLContext {
   import testImplicits._
 
   def rddIdOf(tableName: String): Int = {
@@ -415,9 +412,7 @@ class CachedTableSuite
     sqlContext.cacheTable("orderedTable")
     assertCached(sqlContext.table("orderedTable"))
     // Should not have an exchange as the query is already sorted on the group by key.
-    verifyNumExchanges(
-      sql("SELECT key, count(*) FROM orderedTable GROUP BY key"),
-      0)
+    verifyNumExchanges(sql("SELECT key, count(*) FROM orderedTable GROUP BY key"), 0)
     checkAnswer(
       sql("SELECT key, count(*) FROM orderedTable GROUP BY key ORDER BY key"),
       sql("SELECT key, count(*) FROM testData3x GROUP BY key ORDER BY key")
@@ -436,9 +431,7 @@ class CachedTableSuite
         sqlContext.cacheTable("t2")
 
         // Joining them should result in no exchanges.
-        verifyNumExchanges(
-          sql("SELECT * FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a"),
-          0)
+        verifyNumExchanges(sql("SELECT * FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a"), 0)
         checkAnswer(
           sql("SELECT * FROM t1 t1 JOIN t2 t2 ON t1.key = t2.a"),
           sql("SELECT * FROM testData t1 JOIN testData2 t2 ON t1.key = t2.a"))

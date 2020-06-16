@@ -67,10 +67,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
       case DoWhile(body, cond, Some(label)) =>
         val doNode =
           new Node(Token.DO, transformBlock(body), transformExpr(cond))
-        new Node(
-          Token.LABEL,
-          transformLabel(label),
-          setNodePosition(doNode, pos))
+        new Node(Token.LABEL, transformLabel(label), setNodePosition(doNode, pos))
       case Try(block, errVar, handler, EmptyTree) =>
         val catchPos = handler.pos orElse pos
         val catchNode =
@@ -230,8 +227,7 @@ private[closure] class ClosureAstTransformer(relativizeBaseURI: Option[URI]) {
         genFunction("", args, body)
 
       case _ =>
-        throw new TransformException(
-          s"Unknown tree of class ${tree.getClass()}")
+        throw new TransformException(s"Unknown tree of class ${tree.getClass()}")
     }
   }
 

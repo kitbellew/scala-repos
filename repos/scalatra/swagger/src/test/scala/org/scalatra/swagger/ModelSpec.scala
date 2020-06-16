@@ -49,8 +49,7 @@ class ModelSpec extends Specification {
   "Model to Swagger" should {
 
     "convert a populated description property of an ApiProperty annotation" in {
-      swaggerProperties[WithDescription].description must beSome(
-        "a description")
+      swaggerProperties[WithDescription].description must beSome("a description")
     }
 
     "convert a populated allowable values property of an ApiProperty annotation" in {

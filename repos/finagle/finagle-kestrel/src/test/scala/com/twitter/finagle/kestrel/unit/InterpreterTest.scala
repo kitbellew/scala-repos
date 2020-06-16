@@ -80,8 +80,7 @@ class InterpreterTest extends FunSuite {
   test("Interpreter: timeouts: set & get/t=1") {
     new InterpreterHelper {
       assert(
-        interpreter(Get(Buf.Utf8("name"), Some(1.millisecond))) == Values(
-          Seq()))
+        interpreter(Get(Buf.Utf8("name"), Some(1.millisecond))) == Values(Seq()))
       interpreter(Set(Buf.Utf8("name"), Time.now, Buf.Utf8("rawr")))
       assert(
         interpreter(Get(Buf.Utf8("name"), Some(1.second))) == Values(

@@ -243,14 +243,11 @@ class ListView[T](
   /**
     * Called when there's a request to scroll an index into view using scrollTo(int) or #scrollTo(S)
     */
-  def onScrollTo
-      : ObjectProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]] =
+  def onScrollTo: ObjectProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]] =
     delegate.onScrollToProperty
   def onScrollTo_=(v: jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]) {
     ObjectProperty
-      .fillProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]](
-        onScrollTo,
-        v)
+      .fillProperty[jfxe.EventHandler[jfxsc.ScrollToEvent[Integer]]](onScrollTo, v)
   }
 
   /**

@@ -29,17 +29,9 @@ class MergeTest(args: Args) extends Job(args) {
   //Reverse sort to get the top items
   def cmpTup(t1: (String, Long), t2: (String, Long)) = t2._2.compareTo(t1._2)
 
-  def mergeSort2[T](
-      v1: List[T],
-      v2: List[T],
-      k: Int,
-      cmp: Function2[T, T, Int]) = {
+  def mergeSort2[T](v1: List[T], v2: List[T], k: Int, cmp: Function2[T, T, Int]) = {
     @tailrec
-    def mergeSortR(
-        acc: List[T],
-        list1: List[T],
-        list2: List[T],
-        k: Int): List[T] = {
+    def mergeSortR(acc: List[T], list1: List[T], list2: List[T], k: Int): List[T] = {
       (list1, list2, k) match {
         case (_, _, 0) => acc
         case (x1 :: t1, x2 :: t2, _) => {

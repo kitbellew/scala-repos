@@ -413,12 +413,7 @@ class BlockMatrix @Since("1.3.0") (
                 Matrices.fromBreeze(result))
             }
         }
-      new BlockMatrix(
-        newBlocks,
-        rowsPerBlock,
-        colsPerBlock,
-        numRows(),
-        numCols())
+      new BlockMatrix(newBlocks, rowsPerBlock, colsPerBlock, numRows(), numCols())
     } else {
       throw new SparkException(
         "Cannot perform on matrices with different block dimensions")
@@ -518,9 +513,8 @@ class BlockMatrix @Since("1.3.0") (
       // Each block of A must be multiplied with the corresponding blocks in the columns of B.
       val flatA = blocks.flatMap {
         case ((blockRowIndex, blockColIndex), block) =>
-          val destinations = leftDestinations.getOrElse(
-            (blockRowIndex, blockColIndex),
-            Set.empty)
+          val destinations =
+            leftDestinations.getOrElse((blockRowIndex, blockColIndex), Set.empty)
           destinations.map(j => (j, (blockRowIndex, blockColIndex, block)))
       }
       // Each block of B must be multiplied with the corresponding blocks in each row of A.

@@ -341,10 +341,7 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
 
     shouldNotViolate(app, "/fetch(1)", "URI has invalid syntax.")
 
-    shouldViolate(
-      app.copy(mem = -3.0),
-      "/mem",
-      "got -3.0, expected 0.0 or more")
+    shouldViolate(app.copy(mem = -3.0), "/mem", "got -3.0, expected 0.0 or more")
     shouldViolate(
       app.copy(cpus = -3.0),
       "/cpus",
@@ -480,7 +477,8 @@ class AppDefinitionTest extends MarathonSpec with Matchers {
     reread.healthChecks.head.portIndex should be(None)
   }
 
-  test("Reading AppDefinition adds portIndex if you have at least one portMapping") {
+  test(
+    "Reading AppDefinition adds portIndex if you have at least one portMapping") {
     import Formats._
 
     val app = AppDefinition(

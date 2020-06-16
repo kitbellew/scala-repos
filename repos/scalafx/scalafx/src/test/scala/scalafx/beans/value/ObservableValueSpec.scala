@@ -27,10 +27,7 @@
 
 package scalafx.beans.value
 
-import javafx.beans.value.{
-  ChangeListener,
-  ObservableValue => JFXObservableValue
-}
+import javafx.beans.value.{ChangeListener, ObservableValue => JFXObservableValue}
 
 import org.junit.runner.RunWith
 import org.scalatest.Matchers._

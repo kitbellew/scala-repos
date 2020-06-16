@@ -16,8 +16,7 @@ object Test {
   def testEquals2 {
     println(Array(Array(1), Array(2)) == Array(Array(1), Array(2)))
     println(Array(Array(1), Array(2)) equals Array(Array(1), Array(2)))
-    println(
-      Array(Array(1), Array(2)).deep equals Array(Array(1), Array(2)).deep)
+    println(Array(Array(1), Array(2)).deep equals Array(Array(1), Array(2)).deep)
     println
   }
 

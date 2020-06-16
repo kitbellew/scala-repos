@@ -295,8 +295,7 @@ case object UnassignedType extends AtomicType {
   * of the structural view but must update the AST at the end of the phase
   * so that all NominalTypes with the same symbol have the same structural
   * view. */
-final case class NominalType(sym: TypeSymbol, structuralView: Type)
-    extends Type {
+final case class NominalType(sym: TypeSymbol, structuralView: Type) extends Type {
   override def toString = s"$sym<$structuralView>"
   def withStructuralView(t: Type): NominalType =
     if (t == structuralView) this else copy(structuralView = t)

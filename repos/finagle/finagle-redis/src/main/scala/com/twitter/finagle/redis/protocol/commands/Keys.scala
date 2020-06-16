@@ -125,10 +125,7 @@ case class PExpire(key: ChannelBuffer, milliseconds: Long)
   def command = Commands.PEXPIRE
   def toChannelBuffer =
     RedisCodec.toUnifiedFormat(
-      Seq(
-        CommandBytes.PEXPIRE,
-        key,
-        StringToChannelBuffer(milliseconds.toString)))
+      Seq(CommandBytes.PEXPIRE, key, StringToChannelBuffer(milliseconds.toString)))
 }
 object PExpire {
   def apply(args: Seq[Array[Byte]]) = {

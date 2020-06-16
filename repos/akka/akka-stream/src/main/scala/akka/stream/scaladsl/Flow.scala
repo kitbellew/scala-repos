@@ -1269,9 +1269,7 @@ trait FlowOps[+Out, +Mat] {
     * @param maxSubstreams configures the maximum number of substreams (keys)
     *        that are supported; if more distinct keys are encountered then the stream fails
     */
-  def groupBy[K](
-      maxSubstreams: Int,
-      f: Out ⇒ K): SubFlow[Out, Mat, Repr, Closed] = {
+  def groupBy[K](maxSubstreams: Int, f: Out ⇒ K): SubFlow[Out, Mat, Repr, Closed] = {
     implicit def mat = GraphInterpreter.currentInterpreter.materializer
     val merge = new SubFlowImpl.MergeBack[Out, Repr] {
       override def apply[T](
@@ -1475,9 +1473,7 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def flatMapMerge[T, M](
-      breadth: Int,
-      f: Out ⇒ Graph[SourceShape[T], M]): Repr[T] =
+  def flatMapMerge[T, M](breadth: Int, f: Out ⇒ Graph[SourceShape[T], M]): Repr[T] =
     map(f).via(new FlattenMerge[T, M](breadth))
 
   /**
@@ -1542,9 +1538,7 @@ trait FlowOps[+Out, +Mat] {
     *
     * '''Cancels when''' downstream cancels
     */
-  def keepAlive[U >: Out](
-      maxIdle: FiniteDuration,
-      injectedElem: () ⇒ U): Repr[U] =
+  def keepAlive[U >: Out](maxIdle: FiniteDuration, injectedElem: () ⇒ U): Repr[U] =
     via(new Timers.IdleInject[Out, U](maxIdle, injectedElem))
 
   /**
@@ -1699,8 +1693,7 @@ trait FlowOps[+Out, +Mat] {
     via(zipWithGraph(that)(combine))
 
   protected def zipWithGraph[Out2, Out3, M](that: Graph[SourceShape[Out2], M])(
-      combine: (Out, Out2) ⇒ Out3)
-      : Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
+      combine: (Out, Out2) ⇒ Out3): Graph[FlowShape[Out @uncheckedVariance, Out3], M] =
     GraphDSL.create(that) { implicit b ⇒ r ⇒
       val zip = b.add(ZipWith[Out, Out2, Out3](combine))
       r ~> zip.in1

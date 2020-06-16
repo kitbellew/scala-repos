@@ -861,8 +861,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
             def printConstrParams(ts: List[ValDef]): Unit = {
               parenthesize() {
                 printImplicitInParamsList(ts)
-                printSeq(ts)(printParam(_, primaryCtorParam = true))(
-                  print(", "))
+                printSeq(ts)(printParam(_, primaryCtorParam = true))(print(", "))
               }
             }
             // constructor's params processing (don't print single empty constructor param list)
@@ -1097,9 +1096,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
             case Apply(
                   Block(
                     l1 @ List(sVD: ValDef),
-                    a1 @ Apply(
-                      Select(_, methodName),
-                      l2 @ List(Ident(iVDName)))),
+                    a1 @ Apply(Select(_, methodName), l2 @ List(Ident(iVDName)))),
                   l3)
                 if sVD.mods.isSynthetic && treeInfo.isLeftAssoc(
                   methodName) && sVD.name == iVDName =>

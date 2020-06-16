@@ -243,8 +243,7 @@ sealed abstract class Future[+A] {
     unsafePerformAsyncInterruptibly(a => sync.put(\/-(a)), interrupt)
     sync.get(timeoutInMillis).getOrElse {
       interrupt.set(true)
-      -\/(
-        new TimeoutException(s"Timed out after $timeoutInMillis milliseconds"))
+      -\/(new TimeoutException(s"Timed out after $timeoutInMillis milliseconds"))
     }
   }
 
@@ -376,9 +375,7 @@ object Future {
                   // If we're the first to finish, invoke `cb`, passing residuals
                   if (won.compareAndSet(false, true))
                     cb(
-                      (
-                        a,
-                        fs.collect { case (i, _, rf, _, _) if i != ind => rf }))
+                      (a, fs.collect { case (i, _, rf, _, _) if i != ind => rf }))
                   else {
                     Trampoline.done(
                       ()
@@ -424,8 +421,7 @@ object Future {
 
                   // only last completed f will hit the 0 here.
                   if (c.decrementAndGet() == 0)
-                    cb(
-                      results.toList.foldLeft(R.zero)((a, b) => R.append(a, b)))
+                    cb(results.toList.foldLeft(R.zero)((a, b) => R.append(a, b)))
                   else Trampoline.done(())
                 }
               }
@@ -491,8 +487,7 @@ object Future {
 
   /** Create a `Future` that will evaluate `a` after at least the given delay. */
   def schedule[A](a: => A, delay: Duration)(implicit
-      pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler)
-      : Future[A] =
+      pool: ScheduledExecutorService = Strategy.DefaultTimeoutScheduler): Future[A] =
     Async { cb =>
       pool.schedule(
         new Callable[Unit] {

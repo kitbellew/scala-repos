@@ -452,9 +452,7 @@ private[sbt] object PluginsDebug {
       case _             => fs(list)
     }
 
-  private[this] def willAdd(
-      base: AutoPlugin,
-      plugins: List[AutoPlugin]): String =
+  private[this] def willAdd(base: AutoPlugin, plugins: List[AutoPlugin]): String =
     str(plugins)(willAddPlugin(base), willAddPlugins(base))
 
   private[this] def willAddPlugin(base: AutoPlugin)(plugin: AutoPlugin) =

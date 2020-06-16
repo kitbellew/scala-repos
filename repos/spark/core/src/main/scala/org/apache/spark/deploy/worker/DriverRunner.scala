@@ -165,8 +165,7 @@ private[deploy] class DriverRunner(
     }
 
     if (!localJarFile.exists()) { // Verify copy succeeded
-      throw new Exception(
-        s"Did not see expected jar $jarFileName in $driverDir")
+      throw new Exception(s"Did not see expected jar $jarFileName in $driverDir")
     }
 
     localJarFilename
@@ -205,8 +204,7 @@ private[deploy] class DriverRunner(
     var keepTrying = !killed
 
     while (keepTrying) {
-      logInfo(
-        "Launch Command: " + command.command.mkString("\"", "\" \"", "\""))
+      logInfo("Launch Command: " + command.command.mkString("\"", "\" \"", "\""))
 
       synchronized {
         if (killed) { return }

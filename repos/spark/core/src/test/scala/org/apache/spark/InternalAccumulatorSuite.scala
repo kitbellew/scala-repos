@@ -145,8 +145,7 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
     assert(accums.forall(_.name.get.startsWith(METRICS_PREFIX)))
     // assert they all start with the expected prefixes
     assert(
-      shuffleReadAccums.forall(
-        _.name.get.startsWith(SHUFFLE_READ_METRICS_PREFIX)))
+      shuffleReadAccums.forall(_.name.get.startsWith(SHUFFLE_READ_METRICS_PREFIX)))
     assert(
       shuffleWriteAccums.forall(
         _.name.get.startsWith(SHUFFLE_WRITE_METRICS_PREFIX)))
@@ -300,10 +299,8 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       // Both map stages should have succeeded, since the fetch failure happened in the
       // result stage, not the map stage. This means we should get the accumulator updates
       // from all partitions.
-      assert(
-        stageAccum1stAttempt.value.get.asInstanceOf[Long] === numPartitions)
-      assert(
-        stageAccum2ndAttempt.value.get.asInstanceOf[Long] === numPartitions)
+      assert(stageAccum1stAttempt.value.get.asInstanceOf[Long] === numPartitions)
+      assert(stageAccum2ndAttempt.value.get.asInstanceOf[Long] === numPartitions)
       // Because this test resubmitted the map stage with all missing partitions, we should have
       // created a fresh set of internal accumulators in the 2nd stage attempt. Assert this is
       // the case by comparing the accumulator IDs between the two attempts.

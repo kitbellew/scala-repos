@@ -90,8 +90,7 @@ final class ParIncOptimizer(
       method.process()
   }
 
-  private class ParInterfaceType(encName: String)
-      extends InterfaceType(encName) {
+  private class ParInterfaceType(encName: String) extends InterfaceType(encName) {
     private val ancestorsAskers = TrieSet.empty[MethodImpl]
     private val dynamicCallers = TrieMap.empty[String, TrieSet[MethodImpl]]
     private val staticCallers = TrieMap.empty[String, TrieSet[MethodImpl]]

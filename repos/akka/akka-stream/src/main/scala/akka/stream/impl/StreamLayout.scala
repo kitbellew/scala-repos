@@ -123,7 +123,8 @@ object StreamLayout {
 
     if (print) {
       val indent = " " * (level * 2)
-      println(s"$indent${simpleName(this)}($shape): ${ins(inPorts)} ${outs(outPorts)}")
+      println(
+        s"$indent${simpleName(this)}($shape): ${ins(inPorts)} ${outs(outPorts)}")
       downstreams foreach {
         case (o, i) ⇒ println(s"$indent    ${out(o)} -> ${in(i)}")
       }
@@ -711,9 +712,8 @@ private[stream] final class VirtualProcessor[T]
     @tailrec def rec(ex: Throwable): Unit =
       get() match {
         case null =>
-          if (!compareAndSet(
-              null,
-              ErrorPublisher(ex, "failed-VirtualProcessor"))) rec(ex)
+          if (!compareAndSet(null, ErrorPublisher(ex, "failed-VirtualProcessor")))
+            rec(ex)
           else if (t == null) throw ex
         case s: Subscription =>
           if (!compareAndSet(s, ErrorPublisher(ex, "failed-VirtualProcessor")))
@@ -755,9 +755,8 @@ private[stream] final class VirtualProcessor[T]
       @tailrec def rec(): Unit =
         get() match {
           case x @ (null | _: Subscription) =>
-            if (!compareAndSet(
-                x,
-                ErrorPublisher(ex, "failed-VirtualProcessor"))) rec()
+            if (!compareAndSet(x, ErrorPublisher(ex, "failed-VirtualProcessor")))
+              rec()
           case s: Subscriber[_] =>
             try s.onError(ex)
             catch { case NonFatal(_) => }

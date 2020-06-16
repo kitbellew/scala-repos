@@ -118,8 +118,9 @@ sealed class AnnotatingTracingFilter[Req, Rep](
         resp match {
           case Return(_) =>
           case Throw(error) =>
-            Trace.record(afterFailure(
-              "%s: %s".format(error.getClass().getName(), error.getMessage())))
+            Trace.record(
+              afterFailure(
+                "%s: %s".format(error.getClass().getName(), error.getMessage())))
         }
         Trace.record(after)
       }

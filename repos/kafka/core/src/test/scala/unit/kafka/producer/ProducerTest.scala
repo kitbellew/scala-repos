@@ -323,9 +323,7 @@ class ProducerTest extends ZooKeeperTestHarness with Logging {
       assertTrue(message.timestamp >= startTime && message.timestamp < endTime)
       assertEquals(TimestampType.CREATE_TIME, message.timestampType)
       assertEquals(Message.MagicValue_V1, message.magic)
-      assertFalse(
-        "Message set should have another message",
-        messageSet1.hasNext)
+      assertFalse("Message set should have another message", messageSet1.hasNext)
     } catch {
       case e: Exception => fail("Not expected", e)
     }

@@ -101,15 +101,9 @@ trait ScNamedElement
         case member: ScMember if member != this => Some(member.getUseScope)
         case caseClause: ScCaseClause           => Some(new LocalSearchScope(caseClause))
         case elem @ (_: ScEnumerator | _: ScGenerator) =>
-          Option(
-            PsiTreeUtil.getContextOfType(elem, true, classOf[ScForStatement]))
-            .orElse(
-              Option(
-                PsiTreeUtil.getContextOfType(
-                  elem,
-                  true,
-                  classOf[ScBlock],
-                  classOf[ScMember])))
+          Option(PsiTreeUtil.getContextOfType(elem, true, classOf[ScForStatement]))
+            .orElse(Option(PsiTreeUtil
+              .getContextOfType(elem, true, classOf[ScBlock], classOf[ScMember])))
             .map(new LocalSearchScope(_))
         case _ => None
       }

@@ -91,9 +91,7 @@ class StatsReceiverTest extends FunSuite {
     val stat = receiver.stat("2", "chainz")
     verify(receiver, times(3)).stat("2", "chainz")
 
-    Await.result(
-      Stat.timeFuture(stat, TimeUnit.HOURS) { Future.Unit },
-      1.second)
+    Await.result(Stat.timeFuture(stat, TimeUnit.HOURS) { Future.Unit }, 1.second)
     verify(receiver, times(3)).stat("2", "chainz")
   }
 

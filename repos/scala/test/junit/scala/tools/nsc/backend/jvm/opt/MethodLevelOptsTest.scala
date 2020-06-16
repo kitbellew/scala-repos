@@ -679,9 +679,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
         |}
       """.stripMargin
     val List(c) = compileClasses(methodOptCompiler)(code)
-    assertSameSummary(
-      getSingleMethod(c, "t1"),
-      List(NEW, DUP, "<init>", ARETURN))
+    assertSameSummary(getSingleMethod(c, "t1"), List(NEW, DUP, "<init>", ARETURN))
     assertSameCode(getSingleMethod(c, "t2"), List(Op(LCONST_0), Op(LRETURN)))
     assertSameCode(getSingleMethod(c, "t3"), List(Op(ICONST_1), Op(IRETURN)))
     assertSameCode(getSingleMethod(c, "t4"), List(Op(ICONST_1), Op(IRETURN)))
@@ -782,9 +780,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
     def stores(m: String) =
       getSingleMethod(c, m).instructions.filter(_.opcode == ASTORE)
 
-    assertEquals(
-      locals(c, "t1"),
-      List(("this", 0), ("kept1", 1), ("result", 2)))
+    assertEquals(locals(c, "t1"), List(("this", 0), ("kept1", 1), ("result", 2)))
     assert(
       stores("t1") == List(
         VarOp(ASTORE, 1),
@@ -795,10 +791,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
 
     assertEquals(locals(c, "t2"), List(("this", 0), ("kept2", 1), ("kept3", 2)))
     assert(
-      stores("t2") == List(
-        VarOp(ASTORE, 1),
-        VarOp(ASTORE, 2),
-        VarOp(ASTORE, 1)),
+      stores("t2") == List(VarOp(ASTORE, 1), VarOp(ASTORE, 2), VarOp(ASTORE, 1)),
       textify(findAsmMethod(c, "t2")))
 
     assertEquals(locals(c, "t3"), List(("this", 0), ("kept4", 1)))
@@ -869,14 +862,7 @@ class MethodLevelOptsTest extends ClearAfterClass {
     // the local var can't be optimized as a store;laod sequence, there's a GETSTATIC between the two
     assertSameSummary(
       getSingleMethod(c, "t2"),
-      List(
-        ICONST_2,
-        ISTORE,
-        GETSTATIC,
-        ILOAD,
-        "boxToInteger",
-        "println",
-        RETURN))
+      List(ICONST_2, ISTORE, GETSTATIC, ILOAD, "boxToInteger", "println", RETURN))
 
     assertEquals(locals(c, "t3"), List(("this", 0)))
     assertEquals(locals(c, "t4"), List(("this", 0), ("x", 1)))

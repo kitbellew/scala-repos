@@ -195,8 +195,7 @@ class TypedPipeHashJoinWithForceToDiskFilterJob(args: Args) extends Job(args) {
     .write(TypedTsv[(Int, (Int, String))]("output"))
 }
 
-class TypedPipeHashJoinWithForceToDiskWithComplete(args: Args)
-    extends Job(args) {
+class TypedPipeHashJoinWithForceToDiskWithComplete(args: Args) extends Job(args) {
   PlatformTest.setAutoForceRight(mode, true)
 
   val x = TypedPipe.from[(Int, Int)](List((1, 1)))
@@ -626,12 +625,7 @@ class PlatformTest
         .source(TypedTsv[(String, Int)]("input1"), Seq(("first", 45)))
         .source(
           TypedTsv[(String, Int)]("input2"),
-          Seq(
-            ("first", 1),
-            ("first", 2),
-            ("first", 3),
-            ("second", 1),
-            ("second", 2)))
+          Seq(("first", 1), ("first", 2), ("first", 3), ("second", 1), ("second", 2)))
         .inspectCompletedFlow { flow =>
           val steps = flow.getFlowSteps.asScala
           steps should have size 2
@@ -647,9 +641,7 @@ class PlatformTest
   "A TypedPipeHashJoinWithCoGroupJob" should {
     "have a custom step name from withDescription and no extra forceToDisk after coGroup + map on hashJoin's rhs" in {
       HadoopPlatformJobTest(new TypedPipeHashJoinWithCoGroupJob(_), cluster)
-        .source(
-          TypedTsv[(Int, Int)]("input0"),
-          List((0, 1), (1, 1), (2, 1), (3, 2)))
+        .source(TypedTsv[(Int, Int)]("input0"), List((0, 1), (1, 1), (2, 1), (3, 2)))
         .source(TypedTsv[(Int, Int)]("input1"), List((0, 1), (2, 5), (3, 2)))
         .inspectCompletedFlow { flow =>
           val steps = flow.getFlowSteps.asScala

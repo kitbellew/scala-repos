@@ -330,10 +330,7 @@ class YahooDataSource(val params: YahooDataSource.Params)
         sc.parallelize(Array(trainingData)),
         sc.parallelize(queries))
          */
-        (
-          sc.parallelize(Array(trainingData)),
-          dataParams,
-          sc.parallelize(queries))
+        (sc.parallelize(Array(trainingData)), dataParams, sc.parallelize(queries))
     }
   }
 }

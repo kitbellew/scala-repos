@@ -11,11 +11,8 @@ import org.jboss.netty.buffer.ChannelBuffer
 trait SortedSets { self: BaseClient =>
   private[this] def parseMBulkReply(
       withScores: JBoolean
-  ): PartialFunction[
-    Reply,
-    Future[Either[ZRangeResults, Seq[ChannelBuffer]]]] = {
-    val parse
-        : PartialFunction[Reply, Either[ZRangeResults, Seq[ChannelBuffer]]] = {
+  ): PartialFunction[Reply, Future[Either[ZRangeResults, Seq[ChannelBuffer]]]] = {
+    val parse: PartialFunction[Reply, Either[ZRangeResults, Seq[ChannelBuffer]]] = {
       case MBulkReply(messages) => withScoresHelper(withScores)(messages)
       case EmptyMBulkReply()    => withScoresHelper(withScores)(Nil)
     }
@@ -155,9 +152,7 @@ trait SortedSets { self: BaseClient =>
     * @param key, member
     * @return Score of member
     */
-  def zScore(
-      key: ChannelBuffer,
-      member: ChannelBuffer): Future[Option[JDouble]] =
+  def zScore(key: ChannelBuffer, member: ChannelBuffer): Future[Option[JDouble]] =
     doRequest(ZScore(key, member)) {
       case BulkReply(message) =>
         Future.value(Some(NumberFormat.toDouble(BytesToString(message.array))))
@@ -170,9 +165,7 @@ trait SortedSets { self: BaseClient =>
     * @param member
     * @return the rank of the member
     */
-  def zRevRank(
-      key: ChannelBuffer,
-      member: ChannelBuffer): Future[Option[JLong]] =
+  def zRevRank(key: ChannelBuffer, member: ChannelBuffer): Future[Option[JLong]] =
     doRequest(ZRevRank(key, member)) {
       case IntegerReply(n)  => Future.value(Some(n))
       case EmptyBulkReply() => Future.value(None)

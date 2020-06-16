@@ -36,11 +36,7 @@ class FormatterTest {
     var precision: Int = _
     var calls = 0
 
-    def formatTo(
-        frm: Formatter,
-        flags: Int,
-        width: Int,
-        precision: Int): Unit = {
+    def formatTo(frm: Formatter, flags: Int, width: Int, precision: Int): Unit = {
       this.calls += 1
       this.flags = flags
       this.width = width
@@ -48,11 +44,7 @@ class FormatterTest {
       frm.out().append("foobar")
     }
 
-    def expectCalled(
-        times: Int,
-        flags: Int,
-        width: Int,
-        precision: Int): Unit = {
+    def expectCalled(times: Int, flags: Int, width: Int, precision: Int): Unit = {
       assertEquals(times, this.calls)
       assertEquals(flags, this.flags)
       assertEquals(width, this.width)

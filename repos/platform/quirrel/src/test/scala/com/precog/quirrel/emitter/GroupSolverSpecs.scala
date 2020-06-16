@@ -77,10 +77,7 @@ object GroupSolverSpecs
         tree @ Solve(
           _,
           _,
-          origin @ Where(
-            _,
-            target,
-            And(_, Eq(_, leftSol, _), Eq(_, rightSol, _))))) =
+          origin @ Where(_, target, And(_, Eq(_, leftSol, _), Eq(_, rightSol, _))))) =
         compileSingle(input)
 
       val btrace = List()
@@ -404,10 +401,8 @@ object GroupSolverSpecs
               _,
               _,
               originB @ Where(_, targetB, Eq(_, solB, _)),
-              add @ Add(
-                _,
-                descA @ Descent(_, dA, _),
-                descB @ Descent(_, dB, _)))))) = compileSingle(input)
+              add @ Add(_, descA @ Descent(_, dA, _), descB @ Descent(_, dB, _)))))) =
+        compileSingle(input)
 
       val btrace1 = List()
       val btrace2 = List()
@@ -712,10 +707,7 @@ object GroupSolverSpecs
           origin @ Where(
             _,
             target,
-            boolean @ Eq(
-              _,
-              fooa,
-              Add(_, TicVar(_, "'a"), n @ NumLit(_, "42")))))) =
+            boolean @ Eq(_, fooa, Add(_, TicVar(_, "'a"), n @ NumLit(_, "42")))))) =
         compileSingle(input)
 
       tree.errors must beEmpty
@@ -747,12 +739,7 @@ object GroupSolverSpecs
         _,
         _,
         _,
-        Let(
-          _,
-          _,
-          _,
-          _,
-          solve @ Solve(_, _, Relate(_, _, _, Where(_, left, right))))) =
+        Let(_, _, _, _, solve @ Solve(_, _, Relate(_, _, _, Where(_, left, right))))) =
         compileSingle(input)
 
       tree.errors must not(beEmpty)
@@ -1051,10 +1038,7 @@ object GroupSolverSpecs
                   _,
                   _,
                   Vector(
-                    d2 @ Dispatch(
-                      _,
-                      _,
-                      Vector(target, Eq(_, solution, _)))))))))) =
+                    d2 @ Dispatch(_, _, Vector(target, Eq(_, solution, _)))))))))) =
         compileSingle(input)
 
       val btrace = List(d2)
@@ -1445,10 +1429,7 @@ object GroupSolverSpecs
           _,
           _,
           _,
-          solve @ Solve(
-            _,
-            _,
-            Dispatch(_, _, Vector(target @ Where(_, path, _)))),
+          solve @ Solve(_, _, Dispatch(_, _, Vector(target @ Where(_, path, _)))),
           Union(
             _,
             d1 @ Dispatch(_, _, Vector(data)),

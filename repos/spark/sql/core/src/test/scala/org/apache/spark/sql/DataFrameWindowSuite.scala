@@ -74,8 +74,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
-        lead("value", 2, "n/a").over(
-          Window.partitionBy("key").orderBy("value"))),
+        lead("value", 2, "n/a").over(Window.partitionBy("key").orderBy("value"))),
       Seq(
         Row("1"),
         Row("1"),
@@ -94,8 +93,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
-        lag("value", 2, "n/a").over(
-          Window.partitionBy($"key").orderBy($"value"))),
+        lag("value", 2, "n/a").over(Window.partitionBy($"key").orderBy($"value"))),
       Seq(
         Row("n/a"),
         Row("n/a"),
@@ -138,8 +136,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     df.registerTempTable("window_table")
     checkAnswer(
       df.select(
-        avg("key").over(
-          Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 2))),
+        avg("key").over(Window.partitionBy($"value").orderBy($"key").rowsBetween(-1, 2))),
       Seq(
         Row(4.0d / 3.0d),
         Row(4.0d / 3.0d),
@@ -205,8 +202,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
       df.select(
         $"key",
         last("value")
-          .over(
-            Window.partitionBy($"value").orderBy($"key").rangeBetween(-2, -1))
+          .over(Window.partitionBy($"value").orderBy($"key").rangeBetween(-2, -1))
           .equalTo("2")
           .as("last_v"),
         avg("key")
@@ -417,8 +413,7 @@ class DataFrameWindowSuite extends QueryTest with SharedSQLContext {
     )
   }
 
-  test(
-    "SPARK-12989 ExtractWindowExpressions treats alias as regular attribute") {
+  test("SPARK-12989 ExtractWindowExpressions treats alias as regular attribute") {
     val src = Seq((0, 3, 5))
       .toDF("a", "b", "c")
       .withColumn("Data", struct("a", "b"))

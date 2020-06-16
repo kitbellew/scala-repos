@@ -120,16 +120,13 @@ private[impl] class LaunchQueueActor(
                 pathId,
                 actorRef)
             case Some(deferredMessages) =>
-              deferredMessages.foreach(msg =>
-                self.tell(msg.message, msg.sender))
+              deferredMessages.foreach(msg => self.tell(msg.message, msg.sender))
 
               suspendedLauncherPathIds -= pathId
               suspendedLaunchersMessages -= actorRef
           }
         case None =>
-          log.warning(
-            "Don't know anything about terminated actor: {}",
-            actorRef)
+          log.warning("Don't know anything about terminated actor: {}", actorRef)
       }
   }
 

@@ -135,9 +135,7 @@ class KryoSerializer(conf: SparkConf)
     kryo.register(classOf[SerializableJobConf], new KryoJavaSerializer())
     kryo.register(classOf[PythonBroadcast], new KryoJavaSerializer())
 
-    kryo.register(
-      classOf[GenericRecord],
-      new GenericAvroSerializer(avroSchemas))
+    kryo.register(classOf[GenericRecord], new GenericAvroSerializer(avroSchemas))
     kryo.register(
       classOf[GenericData.Record],
       new GenericAvroSerializer(avroSchemas))
@@ -180,8 +178,7 @@ class KryoSerializer(conf: SparkConf)
     kryo.register(classOf[Array[Tuple5[Any, Any, Any, Any, Any]]])
     kryo.register(classOf[Array[Tuple6[Any, Any, Any, Any, Any, Any]]])
     kryo.register(classOf[Array[Tuple7[Any, Any, Any, Any, Any, Any, Any]]])
-    kryo.register(
-      classOf[Array[Tuple8[Any, Any, Any, Any, Any, Any, Any, Any]]])
+    kryo.register(classOf[Array[Tuple8[Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(
       classOf[Array[Tuple9[Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(
@@ -190,25 +187,11 @@ class KryoSerializer(conf: SparkConf)
       classOf[
         Array[Tuple11[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(
-      classOf[Array[
-        Tuple12[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
-    kryo.register(
       classOf[
-        Array[
-          Tuple13[
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any]]])
+        Array[Tuple12[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
+    kryo.register(
+      classOf[Array[
+        Tuple13[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]]])
     kryo.register(
       classOf[
         Array[
@@ -570,9 +553,7 @@ private[spark] class KryoSerializerInstance(ks: KryoSerializer)
     }
   }
 
-  override def deserialize[T: ClassTag](
-      bytes: ByteBuffer,
-      loader: ClassLoader): T = {
+  override def deserialize[T: ClassTag](bytes: ByteBuffer, loader: ClassLoader): T = {
     val kryo = borrowKryo()
     val oldClassLoader = kryo.getClassLoader
     try {
@@ -693,9 +674,7 @@ private[spark] class KryoInputObjectInputBridge(kryo: Kryo, input: KryoInput)
   * methods of OutputStream and ObjectOutput to KryoOutput. It's usually helpful when an API expects
   * an OutputStream or ObjectOutput but you want to use Kryo.
   */
-private[spark] class KryoOutputObjectOutputBridge(
-    kryo: Kryo,
-    output: KryoOutput)
+private[spark] class KryoOutputObjectOutputBridge(kryo: Kryo, output: KryoOutput)
     extends FilterOutputStream(output)
     with ObjectOutput {
   override def writeFloat(v: Float): Unit = output.writeFloat(v)

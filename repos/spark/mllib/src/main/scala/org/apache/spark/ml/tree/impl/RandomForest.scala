@@ -178,11 +178,7 @@ private[ml] object RandomForest extends Logging {
       // Collect some nodes to split, and choose features for each node (if subsampling).
       // Each group of nodes may come from one or multiple trees, and at multiple levels.
       val (nodesForGroup, treeToNodeToIndexInfo) =
-        RandomForest.selectNodesToSplit(
-          nodeQueue,
-          maxMemoryUsage,
-          metadata,
-          rng)
+        RandomForest.selectNodesToSplit(nodeQueue, maxMemoryUsage, metadata, rng)
       // Sanity check (should never occur):
       assert(
         nodesForGroup.nonEmpty,
@@ -298,9 +294,7 @@ private[ml] object RandomForest extends Logging {
         val featureSplits = splits(featureIndex)
         var splitIndex = 0
         while (splitIndex < numSplits) {
-          if (featureSplits(splitIndex).shouldGoLeft(
-              featureValue,
-              featureSplits)) {
+          if (featureSplits(splitIndex).shouldGoLeft(featureValue, featureSplits)) {
             agg.featureUpdate(
               leftNodeFeatureOffset,
               splitIndex,
@@ -647,8 +641,7 @@ private[ml] object RandomForest extends Logging {
               LearningNode(
                 LearningNode.leftChildIndex(nodeIndex),
                 leftChildIsLeaf,
-                ImpurityStats.getEmptyImpurityStats(
-                  stats.leftImpurityCalculator)))
+                ImpurityStats.getEmptyImpurityStats(stats.leftImpurityCalculator)))
             node.rightChild = Some(
               LearningNode(
                 LearningNode.rightChildIndex(nodeIndex),
@@ -1017,8 +1010,7 @@ private[ml] object RandomForest extends Logging {
         math.min(continuousFeatures.length, input.partitions.length)
 
       input
-        .flatMap(point =>
-          continuousFeatures.map(idx => (idx, point.features(idx))))
+        .flatMap(point => continuousFeatures.map(idx => (idx, point.features(idx))))
         .groupByKey(numPartitions)
         .map {
           case (idx, samples) =>

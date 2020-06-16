@@ -125,8 +125,7 @@ class ScalaIntroduceParameterDialog(
   override protected def decorateParameterTable(table: JBTable): JPanel = {
     table.setCellSelectionEnabled(false)
     table.setRowSelectionAllowed(true)
-    table.getSelectionModel.setSelectionMode(
-      ListSelectionModel.SINGLE_SELECTION)
+    table.getSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     table.setSurrendersFocusOnKeystroke(true)
     val buttonsPanel: JPanel =
       ToolbarDecorator

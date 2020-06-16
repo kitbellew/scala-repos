@@ -88,9 +88,7 @@ case class ScalaFieldEvaluator(
     evaluateField(obj, context)
   }
 
-  private def evaluateField(
-      obj: AnyRef,
-      context: EvaluationContextImpl): AnyRef = {
+  private def evaluateField(obj: AnyRef, context: EvaluationContextImpl): AnyRef = {
     obj match {
       case refType: ReferenceType =>
         var field: Field = findField(refType, context)

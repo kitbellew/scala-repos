@@ -18,9 +18,7 @@ case class OpenConnectionsThresholds(
     lowWaterMark: Int,
     highWaterMark: Int,
     idleTimeout: Duration) {
-  require(
-    lowWaterMark <= highWaterMark,
-    "lowWaterMark must be <= highWaterMark")
+  require(lowWaterMark <= highWaterMark, "lowWaterMark must be <= highWaterMark")
 }
 
 object IdleConnectionFilter {
@@ -47,10 +45,7 @@ object IdleConnectionFilter {
       val role = IdleConnectionFilter.role
       val description = "Refuse requests and try to close idle connections " +
         "based on the number of active connections"
-      def make(
-          _param: Param,
-          _stats: param.Stats,
-          next: ServiceFactory[Req, Rep]) = {
+      def make(_param: Param, _stats: param.Stats, next: ServiceFactory[Req, Rep]) = {
         _param match {
           case Param(Some(thres)) =>
             val param.Stats(sr) = _stats

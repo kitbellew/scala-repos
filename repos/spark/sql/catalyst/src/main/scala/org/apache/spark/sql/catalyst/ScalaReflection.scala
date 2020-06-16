@@ -507,9 +507,7 @@ object ScalaReflection extends ScalaReflection {
                   IntegerType)
               case t if t <:< definitions.LongTpe =>
                 Invoke(
-                  UnwrapOption(
-                    ObjectType(classOf[java.lang.Long]),
-                    inputObject),
+                  UnwrapOption(ObjectType(classOf[java.lang.Long]), inputObject),
                   "longValue",
                   LongType)
               case t if t <:< definitions.DoubleTpe =>
@@ -521,23 +519,17 @@ object ScalaReflection extends ScalaReflection {
                   DoubleType)
               case t if t <:< definitions.FloatTpe =>
                 Invoke(
-                  UnwrapOption(
-                    ObjectType(classOf[java.lang.Float]),
-                    inputObject),
+                  UnwrapOption(ObjectType(classOf[java.lang.Float]), inputObject),
                   "floatValue",
                   FloatType)
               case t if t <:< definitions.ShortTpe =>
                 Invoke(
-                  UnwrapOption(
-                    ObjectType(classOf[java.lang.Short]),
-                    inputObject),
+                  UnwrapOption(ObjectType(classOf[java.lang.Short]), inputObject),
                   "shortValue",
                   ShortType)
               case t if t <:< definitions.ByteTpe =>
                 Invoke(
-                  UnwrapOption(
-                    ObjectType(classOf[java.lang.Byte]),
-                    inputObject),
+                  UnwrapOption(ObjectType(classOf[java.lang.Byte]), inputObject),
                   "byteValue",
                   ByteType)
               case t if t <:< definitions.BooleanTpe =>

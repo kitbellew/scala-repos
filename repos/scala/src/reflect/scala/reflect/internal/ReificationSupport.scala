@@ -179,10 +179,7 @@ trait ReificationSupport { self: SymbolTable =>
         excludeFlags: FlagSet): ValDef =
       tree match {
         case Typed(Ident(name: TermName), tpt) =>
-          mkParam(
-            ValDef(NoMods, name, tpt, EmptyTree),
-            extraFlags,
-            excludeFlags)
+          mkParam(ValDef(NoMods, name, tpt, EmptyTree), extraFlags, excludeFlags)
         case vd: ValDef =>
           var newmods = vd.mods & (~excludeFlags)
           if (vd.rhs.nonEmpty) newmods |= DEFAULTPARAM
@@ -281,8 +278,8 @@ trait ReificationSupport { self: SymbolTable =>
         if (implparams.nonEmpty) paramss :+ mkImplicitParam(implparams)
         else paramss
 
-      def unapply(vparamss: List[List[ValDef]])
-          : Some[(List[List[ValDef]], List[ValDef])] =
+      def unapply(
+          vparamss: List[List[ValDef]]): Some[(List[List[ValDef]], List[ValDef])] =
         vparamss match {
           case init :+ (last @ (initlast :: _)) if initlast.mods.isImplicit =>
             Some((init, last))
@@ -720,9 +717,7 @@ trait ReificationSupport { self: SymbolTable =>
       def unapply(tree: Tree): Option[(List[Tree], Tree)] =
         tree match {
           case MaybeTypeTreeOriginal(
-                AppliedTypeTree(
-                  FunctionClassRef(sym),
-                  args @ (argtpes :+ restpe)))
+                AppliedTypeTree(FunctionClassRef(sym), args @ (argtpes :+ restpe)))
               if sym == FunctionClass(args.length - 1) =>
             Some((argtpes, restpe))
           case _ => None
@@ -800,17 +795,13 @@ trait ReificationSupport { self: SymbolTable =>
           tree: Tree): Option[(List[Tree], List[Tree], ValDef, List[Tree])] =
         tree match {
           case treeInfo.Applied(
-                Select(
-                  New(SyntacticAppliedType(ident, targs)),
-                  nme.CONSTRUCTOR),
+                Select(New(SyntacticAppliedType(ident, targs)), nme.CONSTRUCTOR),
                 Nil,
                 List(Nil)) =>
             Some(
               (Nil, SyntacticAppliedType(ident, targs) :: Nil, noSelfType, Nil))
           case treeInfo.Applied(
-                Select(
-                  New(SyntacticAppliedType(ident, targs)),
-                  nme.CONSTRUCTOR),
+                Select(New(SyntacticAppliedType(ident, targs)), nme.CONSTRUCTOR),
                 Nil,
                 argss) =>
             Some(
@@ -1201,9 +1192,10 @@ trait ReificationSupport { self: SymbolTable =>
             val valeqs = pats.map {
               case (pat, rhs) => SyntacticValEq(pat, rhs)
             }
-            Some((
-              SyntacticValFrom(pat, rhs) :: innerRest ::: valeqs ::: outerRest,
-              fbody))
+            Some(
+              (
+                SyntacticValFrom(pat, rhs) :: innerRest ::: valeqs ::: outerRest,
+                fbody))
           case ((pat, rhs), filters, body) =>
             Some((SyntacticValFrom(pat, rhs) :: filters, body))
         }
@@ -1337,10 +1329,7 @@ trait ReificationSupport { self: SymbolTable =>
                             Match(
                               _,
                               cases :+
-                              CaseDef(
-                                Bind(nme.DEFAULT_CASE, Ident(nme.WILDCARD)),
-                                _,
-                                _))),
+                              CaseDef(Bind(nme.DEFAULT_CASE, Ident(nme.WILDCARD)), _, _))),
                           DefDef(_, nme.isDefinedAt, _, _, _, _))))),
                   Apply(
                     Select(
@@ -1556,11 +1545,7 @@ trait ReificationSupport { self: SymbolTable =>
           case NameSelectorRepr(name, pos) =>
             NameSelector(name, derivedOffset(pos))
           case RenameSelectorRepr(name1, pos1, name2, pos2) =>
-            RenameSelector(
-              name1,
-              derivedOffset(pos1),
-              name2,
-              derivedOffset(pos2))
+            RenameSelector(name1, derivedOffset(pos1), name2, derivedOffset(pos2))
           case UnimportSelectorRepr(name, pos) =>
             UnimportSelector(name, derivedOffset(pos))
           case tree =>

@@ -56,10 +56,7 @@ class SocketServerTest extends JUnitSuite {
   val server = new SocketServer(config, metrics, new SystemTime)
   server.startup()
 
-  def sendRequest(
-      socket: Socket,
-      request: Array[Byte],
-      id: Option[Short] = None) {
+  def sendRequest(socket: Socket, request: Array[Byte], id: Option[Short] = None) {
     val outgoing = new DataOutputStream(socket.getOutputStream)
     id match {
       case Some(id) =>
@@ -269,9 +266,7 @@ class SocketServerTest extends JUnitSuite {
         new java.security.SecureRandom())
       val socketFactory = sslContext.getSocketFactory
       val sslSocket = socketFactory
-        .createSocket(
-          "localhost",
-          overrideServer.boundPort(SecurityProtocol.SSL))
+        .createSocket("localhost", overrideServer.boundPort(SecurityProtocol.SSL))
         .asInstanceOf[SSLSocket]
       sslSocket.setNeedClientAuth(false)
 

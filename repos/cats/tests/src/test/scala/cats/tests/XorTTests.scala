@@ -71,8 +71,7 @@ class XorTTests extends CatsSuite {
       OrderLaws[XorT[ListWrapper, String, Int]].partialOrder)
     checkAll(
       "PartialOrder[XorT[ListWrapper, String, Int]]",
-      SerializableTests.serializable(
-        PartialOrder[XorT[ListWrapper, String, Int]]))
+      SerializableTests.serializable(PartialOrder[XorT[ListWrapper, String, Int]]))
   }
 
   {

@@ -134,9 +134,7 @@ private[ann] class AffineLayerModel private (w: BDM[Double], b: BDV[Double])
     z
   }
 
-  override def prevDelta(
-      nextDelta: BDM[Double],
-      input: BDM[Double]): BDM[Double] = {
+  override def prevDelta(nextDelta: BDM[Double], input: BDM[Double]): BDM[Double] = {
     if (d == null || d.cols != nextDelta.cols)
       d = new BDM[Double](w.cols, nextDelta.cols)
     BreezeUtil.dgemm(1.0, w.t, nextDelta, 0.0, d)
@@ -452,9 +450,7 @@ private[ann] class FunctionalLayerModel private (
     f
   }
 
-  override def prevDelta(
-      nextDelta: BDM[Double],
-      input: BDM[Double]): BDM[Double] = {
+  override def prevDelta(nextDelta: BDM[Double], input: BDM[Double]): BDM[Double] = {
     if (d == null || d.cols != nextDelta.cols)
       d = new BDM[Double](nextDelta.rows, nextDelta.cols)
     activationFunction.derivative(input, d)
@@ -475,9 +471,7 @@ private[ann] class FunctionalLayerModel private (
     (e, error)
   }
 
-  def squared(
-      output: BDM[Double],
-      target: BDM[Double]): (BDM[Double], Double) = {
+  def squared(output: BDM[Double], target: BDM[Double]): (BDM[Double], Double) = {
     if (e == null || e.cols != output.cols)
       e = new BDM[Double](output.rows, output.cols)
     val error = activationFunction.squared(output, target, e)
@@ -712,9 +706,7 @@ private[ann] object FeedForwardModel {
     * @param seed seed for generating the weights
     * @return model
     */
-  def apply(
-      topology: FeedForwardTopology,
-      seed: Long = 11L): FeedForwardModel = {
+  def apply(topology: FeedForwardTopology, seed: Long = 11L): FeedForwardModel = {
     val layers = topology.layers
     val layerModels = new Array[LayerModel](layers.length)
     var offset = 0
@@ -776,8 +768,9 @@ private[ann] class DataStacker(stackSize: Int, inputSize: Int, outputSize: Int)
       data.map { v =>
         (
           0.0,
-          Vectors.fromBreeze(BDV
-            .vertcat(v._1.toBreeze.toDenseVector, v._2.toBreeze.toDenseVector)))
+          Vectors.fromBreeze(
+            BDV
+              .vertcat(v._1.toBreeze.toDenseVector, v._2.toBreeze.toDenseVector)))
       }
     } else {
       data.mapPartitions { it =>

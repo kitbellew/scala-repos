@@ -65,11 +65,7 @@ trait LoopCommands {
     def apply(line: String): Result = f(line)
   }
 
-  class LineCmd(
-      name: String,
-      argWord: String,
-      help: String,
-      f: String => Result)
+  class LineCmd(name: String, argWord: String, help: String, f: String => Result)
       extends LoopCommand(name, help) {
     override def usage = argWord
     def apply(line: String): Result = f(line)

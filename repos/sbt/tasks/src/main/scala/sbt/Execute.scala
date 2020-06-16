@@ -378,10 +378,7 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       Some(caller),
       message = Some(msg),
       directCause = Some(new CyclicException(caller, target, msg)))
-  final class CyclicException[T](
-      val caller: A[T],
-      val target: A[T],
-      msg: String)
+  final class CyclicException[T](val caller: A[T], val target: A[T], msg: String)
       extends Exception(msg)
 
   // state testing

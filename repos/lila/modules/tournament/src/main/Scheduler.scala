@@ -136,19 +136,9 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
         ),
         List( // daily tournaments!
           Schedule(Daily, Bullet, Standard, std, at(today, 18) |> orTomorrow),
-          Schedule(
-            Daily,
-            SuperBlitz,
-            Standard,
-            std,
-            at(today, 19) |> orTomorrow),
+          Schedule(Daily, SuperBlitz, Standard, std, at(today, 19) |> orTomorrow),
           Schedule(Daily, Blitz, Standard, std, at(today, 20) |> orTomorrow),
-          Schedule(
-            Daily,
-            Classical,
-            Standard,
-            std,
-            at(today, 21) |> orTomorrow),
+          Schedule(Daily, Classical, Standard, std, at(today, 21) |> orTomorrow),
           Schedule(
             Daily,
             HyperBullet,
@@ -159,12 +149,7 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
         List( // daily variant tournaments!
           Schedule(Daily, Blitz, Crazyhouse, std, at(today, 22) |> orTomorrow),
           Schedule(Daily, Blitz, Chess960, std, at(today, 23) |> orTomorrow),
-          Schedule(
-            Daily,
-            Blitz,
-            KingOfTheHill,
-            std,
-            at(today, 0) |> orTomorrow),
+          Schedule(Daily, Blitz, KingOfTheHill, std, at(today, 0) |> orTomorrow),
           Schedule(Daily, Blitz, ThreeCheck, std, at(tomorrow, 1)),
           Schedule(Daily, Blitz, Antichess, std, at(tomorrow, 2)),
           Schedule(Daily, Blitz, Atomic, std, at(tomorrow, 3)),
@@ -180,12 +165,7 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
             std,
             at(today, 7) |> orTomorrow),
           Schedule(Eastern, Blitz, Standard, std, at(today, 8) |> orTomorrow),
-          Schedule(
-            Eastern,
-            Classical,
-            Standard,
-            std,
-            at(today, 9) |> orTomorrow)
+          Schedule(Eastern, Classical, Standard, std, at(today, 9) |> orTomorrow)
         ),
         (isHalloween ? // replace more thematic tournaments on halloween
           List(
@@ -235,12 +215,7 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
             Set(1, 7, 13, 19)(hour).fold[Schedule.Speed](HyperBullet, Bullet)
           List(
             Schedule(Hourly, Bullet, Standard, std, at(date, hour)).some,
-            Schedule(
-              Hourly,
-              bulletType,
-              Standard,
-              std,
-              at(date, hour, 30)).some,
+            Schedule(Hourly, bulletType, Standard, std, at(date, hour, 30)).some,
             Schedule(Hourly, SuperBlitz, Standard, std, at(date, hour)).some,
             Schedule(Hourly, Blitz, Standard, std, at(date, hour)).some,
             (hour % 2 == 0) option Schedule(

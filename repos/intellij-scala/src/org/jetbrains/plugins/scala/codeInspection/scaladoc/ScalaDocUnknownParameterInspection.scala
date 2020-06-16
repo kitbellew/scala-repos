@@ -22,10 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   ScTrait
 }
 import org.jetbrains.plugins.scala.lang.scaladoc.parser.parsing.MyScaladocParsing
-import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.{
-  ScDocComment,
-  ScDocTag
-}
+import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.{ScDocComment, ScDocTag}
 
 import scala.collection.mutable
 
@@ -69,8 +66,7 @@ class ScalaDocUnknownParameterInspection extends LocalInspectionTool {
         }
 
         def collectDocParams() {
-          for (tagParam <-
-              s.findTagsByName(Set("@param", "@tparam").contains(_))) {
+          for (tagParam <- s.findTagsByName(Set("@param", "@tparam").contains(_))) {
             if (tagParam.getValueElement != null) {
               tagParam.name match {
                 case "@param" =>

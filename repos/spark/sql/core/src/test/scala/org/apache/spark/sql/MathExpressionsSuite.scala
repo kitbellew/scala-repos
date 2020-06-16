@@ -280,9 +280,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
     checkAnswer(data.selectExpr("hex(b)"), Seq(Row("FFFFFFFFFFFFFFE4")))
     checkAnswer(data.selectExpr("hex(c)"), Seq(Row("177828FED4")))
     checkAnswer(data.selectExpr("hex(d)"), Seq(Row("68656C6C6F")))
-    checkAnswer(
-      data.selectExpr("hex(cast(d as binary))"),
-      Seq(Row("68656C6C6F")))
+    checkAnswer(data.selectExpr("hex(cast(d as binary))"), Seq(Row("68656C6C6F")))
   }
 
   test("unhex") {
@@ -461,9 +459,7 @@ class MathExpressionsSuite extends QueryTest with SharedSQLContext {
   }
 
   test("negative") {
-    checkAnswer(
-      sql("SELECT negative(1), negative(0), negative(-1)"),
-      Row(-1, 0, 1))
+    checkAnswer(sql("SELECT negative(1), negative(0), negative(-1)"), Row(-1, 0, 1))
   }
 
   test("positive") {

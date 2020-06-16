@@ -170,8 +170,7 @@ case class ScalaMethodEvaluator(
                       result = m
                         .allLineLocations()
                         .exists(l =>
-                          lines.contains(
-                            ScalaPositionManager.checkedLineNumber(l)))
+                          lines.contains(ScalaPositionManager.checkedLineNumber(l)))
                     } catch {
                       case e: Exception => //ignore
                     }
@@ -276,9 +275,7 @@ case class ScalaMethodEvaluator(
     }
   }
 
-  private def unwrappedArgs(
-      args: Seq[AnyRef],
-      jdiMethod: Method): Seq[AnyRef] = {
+  private def unwrappedArgs(args: Seq[AnyRef], jdiMethod: Method): Seq[AnyRef] = {
     val argTypeNames = jdiMethod.argumentTypeNames()
     args.zipWithIndex.map {
       case (DebuggerUtil.scalaRuntimeRefTo(value), idx)

@@ -90,9 +90,7 @@ case class QueryRequest(sqlStatement: String)
   * [[http://dev.mysql.com/doc/internals/en/com-stmt-prepare.html]]
   */
 case class PrepareRequest(sqlStatement: String)
-    extends SimpleCommandRequest(
-      Command.COM_STMT_PREPARE,
-      sqlStatement.getBytes)
+    extends SimpleCommandRequest(Command.COM_STMT_PREPARE, sqlStatement.getBytes)
 
 /**
   * Client response sent during connection phase.

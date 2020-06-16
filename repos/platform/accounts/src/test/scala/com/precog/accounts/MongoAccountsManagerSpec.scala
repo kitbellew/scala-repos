@@ -136,9 +136,8 @@ object MongoAccountManagerSpec extends Specification with RealMongoSpecSupport {
 
     "not locate expired password reset tokens" in new AccountManager {
       (for {
-        tokenId <- accountManager.generateResetToken(
-          account,
-          (new DateTime).minusMinutes(5))
+        tokenId <-
+          accountManager.generateResetToken(account, (new DateTime).minusMinutes(5))
         resolvedAccount <-
           accountManager.findAccountByResetToken(account.accountId, tokenId)
       } yield resolvedAccount).copoint must beLike {

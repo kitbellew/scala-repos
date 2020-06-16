@@ -340,8 +340,8 @@ object Enumerator {
             result.success(r)
         }
 
-        def iteratee[EE <: E2](f: ((Boolean, Boolean)) => (Boolean, Boolean))
-            : Iteratee[EE, Unit] = {
+        def iteratee[EE <: E2](
+            f: ((Boolean, Boolean)) => (Boolean, Boolean)): Iteratee[EE, Unit] = {
           def step(in: Input[EE]): Iteratee[EE, Unit] = {
 
             val p = Promise[Iteratee[E2, A]]()
@@ -771,14 +771,14 @@ object Enumerator {
       def apply[A](i: Iteratee[E, A]) = Future.successful(i)
     }
 
-  private def enumerateSeq[E, A]
-      : (Seq[E], Iteratee[E, A]) => Future[Iteratee[E, A]] = { (l, i) =>
-    l.foldLeft(Future.successful(i))((i, e) =>
-      i.flatMap(it =>
-        it.pureFold {
-          case Step.Cont(k) => k(Input.El(e))
-          case _            => it
-        }(dec))(dec))
+  private def enumerateSeq[E, A]: (Seq[E], Iteratee[E, A]) => Future[Iteratee[E, A]] = {
+    (l, i) =>
+      l.foldLeft(Future.successful(i))((i, e) =>
+        i.flatMap(it =>
+          it.pureFold {
+            case Step.Cont(k) => k(Input.El(e))
+            case _            => it
+          }(dec))(dec))
   }
 
   private[iteratee] def enumerateSeq1[E](s: Seq[E]): Enumerator[E] =

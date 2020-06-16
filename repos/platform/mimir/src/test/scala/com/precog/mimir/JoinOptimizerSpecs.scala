@@ -241,8 +241,7 @@ trait JoinOptimizerSpecs[M[+_]]
               key,
               Operate(
                 BuiltInFunction1Op(toLowerCase),
-                Join(DerefObject, Cross(None), users, userId)(line))(line))(
-              line),
+                Join(DerefObject, Cross(None), users, userId)(line))(line))(line),
             Join(WrapObject, Cross(Some(CrossRight)), value, users)(line)
           )(line),
           "key",
@@ -981,8 +980,7 @@ trait JoinOptimizerSpecs[M[+_]]
                 WrapObject,
                 Cross(Some(CrossRight)),
                 key,
-                Join(DerefObject, Cross(None), heightWeight, userId)(line))(
-                line),
+                Join(DerefObject, Cross(None), heightWeight, userId)(line))(line),
               Join(WrapObject, Cross(Some(CrossRight)), value, heightWeight)(
                 line)
             )(line),
@@ -1423,8 +1421,7 @@ trait JoinOptimizerSpecs[M[+_]]
         Join(
           JoinObject,
           IdentitySort,
-          Join(WrapObject, Cross(None), Const(CString("a"))(line), clicks)(
-            line),
+          Join(WrapObject, Cross(None), Const(CString("a"))(line), clicks)(line),
           Join(WrapObject, Cross(None), Const(CString("c"))(line), clicks)(line)
         )(line)
 

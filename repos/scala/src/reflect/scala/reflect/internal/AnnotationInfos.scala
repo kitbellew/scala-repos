@@ -486,8 +486,7 @@ trait AnnotationInfos extends api.Annotations { self: SymbolTable =>
 
   object UnmappableAnnotation extends CompleteAnnotationInfo(NoType, Nil, Nil)
 
-  class ErroneousAnnotation()
-      extends CompleteAnnotationInfo(ErrorType, Nil, Nil)
+  class ErroneousAnnotation() extends CompleteAnnotationInfo(ErrorType, Nil, Nil)
 
   /** Extracts the type of the thrown exception from an AnnotationInfo.
     *

@@ -30,14 +30,7 @@ import xml._
 import common._
 import json._
 import util.Helpers._
-import util.{
-  SourceFieldMetadata,
-  NamedPF,
-  FieldError,
-  Helpers,
-  CssSel,
-  PassThru
-}
+import util.{SourceFieldMetadata, NamedPF, FieldError, Helpers, CssSel, PassThru}
 import http.{LiftRules, S, SHtml, RequestMemoize, Factory}
 import http.js._
 
@@ -122,8 +115,7 @@ object MapperRules extends Factory {
     * used to easily localize fields based on the locale in the
     * current request
     */
-  val displayNameCalculator
-      : FactoryMaker[(BaseMapper, Locale, String) => String] =
+  val displayNameCalculator: FactoryMaker[(BaseMapper, Locale, String) => String] =
     new FactoryMaker[(BaseMapper, Locale, String) => String](
       (m: BaseMapper, l: Locale, name: String) => name) {}
 
@@ -406,8 +398,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
       val bl = by.toList ::: addlQueryParams.get
       val (query, start, max) = addEndStuffs(
         addFields(
-          "DELETE FROM " + MapperRules.quoteTableName.vend(
-            _dbTableNameLC) + " ",
+          "DELETE FROM " + MapperRules.quoteTableName.vend(_dbTableNameLC) + " ",
           false,
           bl,
           conn),
@@ -454,8 +445,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
   def buildSelectString(
       fields: Seq[SelectableField],
       conn: SuperConnection,
-      by: QueryParam[A]*)
-      : (String, Box[Long], Box[Long], List[QueryParam[A]]) = {
+      by: QueryParam[A]*): (String, Box[Long], Box[Long], List[QueryParam[A]]) = {
     val bl = by.toList ::: addlQueryParams.get
     val selectStatement = "SELECT " +
       distinct(by) +
@@ -811,8 +801,7 @@ trait MetaMapper[A <: Mapper[A]] extends BaseMetaMapper with Mapper[A] {
     toEncode.runSafe {
       JsonAST.JObject(
         JsonAST.JField("$persisted", JsonAST.JBool(toEncode.persisted_?)) ::
-          this.mappedFieldList.flatMap(fh =>
-            ??(fh.method, toEncode).asJsonField))
+          this.mappedFieldList.flatMap(fh => ??(fh.method, toEncode).asJsonField))
     }
   }
 
@@ -1912,9 +1901,7 @@ final case class OrderBySql[O <: Mapper[O]](
     checkedBy: IHaveValidatedThisSQL)
     extends QueryParam[O]
 
-final case class ByList[O <: Mapper[O], T](
-    field: MappedField[T, O],
-    vals: Seq[T])
+final case class ByList[O <: Mapper[O], T](field: MappedField[T, O], vals: Seq[T])
     extends QueryParam[O]
 
 /**

@@ -169,8 +169,7 @@ class DefaultLangs @Inject() (configuration: Configuration) extends Langs {
 
   val availables: Seq[Lang] = {
     val langs = configuration.getString("application.langs") map { langsStr =>
-      Logger.warn(
-        "application.langs is deprecated, use play.i18n.langs instead")
+      Logger.warn("application.langs is deprecated, use play.i18n.langs instead")
       langsStr.split(",").map(_.trim).toSeq
     } getOrElse {
       config.get[Seq[String]]("play.i18n.langs")
@@ -487,8 +486,7 @@ trait MessagesApi {
     * @param args the message arguments
     * @return the formatted message, if this key was defined
     */
-  def translate(key: String, args: Seq[Any])(implicit
-      lang: Lang): Option[String]
+  def translate(key: String, args: Seq[Any])(implicit lang: Lang): Option[String]
 
   /**
     * Check if a message key is defined.

@@ -436,8 +436,7 @@ object SparkSubmit {
 
       // Distribute the SparkR package.
       // Assigns a symbol link name "sparkr" to the shipped package.
-      args.archives =
-        mergeFileLists(args.archives, sparkRPackageURI + "#sparkr")
+      args.archives = mergeFileLists(args.archives, sparkRPackageURI + "#sparkr")
 
       // Distribute the R package archive containing all the built R packages.
       if (!RUtils.rPackages.isEmpty) {
@@ -508,11 +507,7 @@ object SparkSubmit {
         ALL_CLUSTER_MGRS,
         ALL_DEPLOY_MODES,
         sysProp = "spark.app.name"),
-      OptionAssigner(
-        args.jars,
-        ALL_CLUSTER_MGRS,
-        CLIENT,
-        sysProp = "spark.jars"),
+      OptionAssigner(args.jars, ALL_CLUSTER_MGRS, CLIENT, sysProp = "spark.jars"),
       OptionAssigner(
         args.ivyRepoPath,
         ALL_CLUSTER_MGRS,
@@ -545,11 +540,7 @@ object SparkSubmit {
         YARN,
         ALL_DEPLOY_MODES,
         sysProp = "spark.executor.instances"),
-      OptionAssigner(
-        args.files,
-        YARN,
-        CLIENT,
-        sysProp = "spark.yarn.dist.files"),
+      OptionAssigner(args.files, YARN, CLIENT, sysProp = "spark.yarn.dist.files"),
       OptionAssigner(
         args.archives,
         YARN,
@@ -706,8 +697,7 @@ object SparkSubmit {
           args.keytab != null,
           "Keytab must be specified when principal is specified")
         if (!new File(args.keytab).exists()) {
-          throw new SparkException(
-            s"Keytab file: ${args.keytab} does not exist")
+          throw new SparkException(s"Keytab file: ${args.keytab} does not exist")
         } else {
           // Add keytab and principal configurations in sysProps to make them available
           // for later use; e.g. in spark sql, the isolated class loader used to talk
@@ -908,9 +898,7 @@ object SparkSubmit {
     }
   }
 
-  private def addJarToClasspath(
-      localJar: String,
-      loader: MutableURLClassLoader) {
+  private def addJarToClasspath(localJar: String, loader: MutableURLClassLoader) {
     val uri = Utils.resolveURI(localJar)
     uri.getScheme match {
       case "file" | "local" =>

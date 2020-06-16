@@ -257,8 +257,7 @@ case class Form[T](
 
     Json.toJson(
       errors.groupBy(_.key).mapValues { errors =>
-        errors.map(e =>
-          messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
+        errors.map(e => messages(e.message, e.args.map(a => translateMsgArg(a)): _*))
       }
     )
 
@@ -892,8 +891,7 @@ case class OptionalMapping[T](
     */
   def bind(data: Map[String, String]): Either[Seq[FormError], Option[T]] = {
     data.keys
-      .filter(p =>
-        p == key || p.startsWith(key + ".") || p.startsWith(key + "["))
+      .filter(p => p == key || p.startsWith(key + ".") || p.startsWith(key + "["))
       .map(k => data.get(k).filterNot(_.isEmpty))
       .collect { case Some(v) => v }
       .headOption
@@ -1062,8 +1060,8 @@ trait ObjectMapping {
     *
     * @see bind()
     */
-  def merge(results: Either[Seq[FormError], Any]*)
-      : Either[Seq[FormError], Seq[Any]] = {
+  def merge(
+      results: Either[Seq[FormError], Any]*): Either[Seq[FormError], Seq[Any]] = {
     val all: Seq[Either[Seq[FormError], Seq[Any]]] =
       results.map(_.right.map(Seq(_)))
     all.fold(Right(Nil)) { (s, i) => merge2(s, i) }

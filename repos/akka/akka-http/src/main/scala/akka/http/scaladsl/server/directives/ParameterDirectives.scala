@@ -119,9 +119,7 @@ object ParameterDirectives extends ParameterDirectives {
       extractRequestContext flatMap { ctx ⇒
         import ctx.executionContext
         import ctx.materializer
-        handleParamResult(
-          paramName,
-          fsou(ctx.request.uri.query().get(paramName)))
+        handleParamResult(paramName, fsou(ctx.request.uri.query().get(paramName)))
       }
     implicit def forString(implicit
         fsu: FSU[String]): ParamDefAux[String, Directive1[String]] =
@@ -137,8 +135,8 @@ object ParameterDirectives extends ParameterDirectives {
       extractParameter[NameUnmarshallerReceptacle[T], T] { nr ⇒
         filter(nr.name, nr.um)
       }
-    implicit def forNOR[T](implicit fsou: FSOU[T])
-        : ParamDefAux[NameOptionReceptacle[T], Directive1[Option[T]]] =
+    implicit def forNOR[T](implicit
+        fsou: FSOU[T]): ParamDefAux[NameOptionReceptacle[T], Directive1[Option[T]]] =
       extractParameter[NameOptionReceptacle[T], Option[T]] { nr ⇒
         filter[Option[T]](nr.name, fsou)
       }
@@ -147,9 +145,8 @@ object ParameterDirectives extends ParameterDirectives {
       extractParameter[NameDefaultReceptacle[T], T] { nr ⇒
         filter[T](nr.name, fsou withDefaultValue nr.default)
       }
-    implicit def forNOUR[T]: ParamDefAux[
-      NameOptionUnmarshallerReceptacle[T],
-      Directive1[Option[T]]] =
+    implicit def forNOUR[T]
+        : ParamDefAux[NameOptionUnmarshallerReceptacle[T], Directive1[Option[T]]] =
       extractParameter[NameOptionUnmarshallerReceptacle[T], Option[T]] { nr ⇒
         filter(nr.name, nr.um: FSOU[T])
       }

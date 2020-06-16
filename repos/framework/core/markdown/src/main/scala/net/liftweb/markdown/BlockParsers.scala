@@ -137,9 +137,7 @@ trait BlockParsers extends Parsers {
   /**
     * Represents a paragraph of text
     */
-  class Paragraph(
-      lines: List[MarkdownLine],
-      lookup: Map[String, LinkDefinition])
+  class Paragraph(lines: List[MarkdownLine], lookup: Map[String, LinkDefinition])
       extends MarkdownBlock {
 
     def addResult(level: Int, out: StringBuilder) {
@@ -175,9 +173,7 @@ trait BlockParsers extends Parsers {
   /**
     * Represents a quoted text block. Text in the block is recursively evaluated.
     */
-  class Blockquote(
-      lines: List[MarkdownLine],
-      lookup: Map[String, LinkDefinition])
+  class Blockquote(lines: List[MarkdownLine], lookup: Map[String, LinkDefinition])
       extends MarkdownBlock {
     def addResult(level: Int, out: StringBuilder) {
       //the block parser needs to recurse:

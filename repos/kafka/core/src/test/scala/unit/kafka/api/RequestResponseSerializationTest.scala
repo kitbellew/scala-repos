@@ -171,18 +171,14 @@ object SerializationTestUtils {
   private val leaderIsrAndControllerEpoch3 =
     new LeaderIsrAndControllerEpoch(leaderAndIsr3, controllerEpoch = 0)
 
-  private val partitionStateInfo0 = new PartitionStateInfo(
-    leaderIsrAndControllerEpoch0,
-    brokers.map(_.id).toSet)
-  private val partitionStateInfo1 = new PartitionStateInfo(
-    leaderIsrAndControllerEpoch1,
-    brokers.map(_.id).toSet)
-  private val partitionStateInfo2 = new PartitionStateInfo(
-    leaderIsrAndControllerEpoch2,
-    brokers.map(_.id).toSet)
-  private val partitionStateInfo3 = new PartitionStateInfo(
-    leaderIsrAndControllerEpoch3,
-    brokers.map(_.id).toSet)
+  private val partitionStateInfo0 =
+    new PartitionStateInfo(leaderIsrAndControllerEpoch0, brokers.map(_.id).toSet)
+  private val partitionStateInfo1 =
+    new PartitionStateInfo(leaderIsrAndControllerEpoch1, brokers.map(_.id).toSet)
+  private val partitionStateInfo2 =
+    new PartitionStateInfo(leaderIsrAndControllerEpoch2, brokers.map(_.id).toSet)
+  private val partitionStateInfo3 =
+    new PartitionStateInfo(leaderIsrAndControllerEpoch3, brokers.map(_.id).toSet)
 
   private val updateMetadataRequestPartitionStateInfo =
     collection.immutable.Map(
@@ -200,9 +196,7 @@ object SerializationTestUtils {
     ProducerResponse(
       1,
       Map(
-        TopicAndPartition(topic1, 0) -> ProducerResponseStatus(
-          0.toShort,
-          10001),
+        TopicAndPartition(topic1, 0) -> ProducerResponseStatus(0.toShort, 10001),
         TopicAndPartition(topic2, 0) -> ProducerResponseStatus(0.toShort, 20001)
       ),
       ProducerRequest.CurrentVersion,

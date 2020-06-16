@@ -89,8 +89,7 @@ class YarnAllocatorSuite
     }
   }
 
-  class MockSplitInfo(host: String)
-      extends SplitInfo(null, host, null, 1, null) {
+  class MockSplitInfo(host: String) extends SplitInfo(null, host, null, 1, null) {
     override def equals(other: Any): Boolean = false
   }
 
@@ -266,11 +265,7 @@ class YarnAllocatorSuite
     }
 
     val statuses = Seq(container1, container2).map { c =>
-      ContainerStatus.newInstance(
-        c.getId(),
-        ContainerState.COMPLETE,
-        "Finished",
-        0)
+      ContainerStatus.newInstance(c.getId(), ContainerState.COMPLETE, "Finished", 0)
     }
     handler.updateResourceRequests()
     handler.processCompletedContainers(statuses.toSeq)

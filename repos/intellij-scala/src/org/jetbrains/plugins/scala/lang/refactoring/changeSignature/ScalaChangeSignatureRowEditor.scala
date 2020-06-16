@@ -89,8 +89,7 @@ class ScalaChangeSignatureRowEditor(
 
   def addDefaultValueEditor(additionalPanel: JPanel) {
     myDefaultValueEditor.setPreferredWidth(table.getWidth / 2)
-    myDefaultValueEditor.addDocumentListener(
-      new this.RowEditorChangeListener(2))
+    myDefaultValueEditor.addDocumentListener(new this.RowEditorChangeListener(2))
     myDefaultValueEditor.addDocumentListener(new DocumentAdapter {
       override def documentChanged(e: DocumentEvent): Unit = {
         item.parameter.defaultValue = myDefaultValueEditor.getText.trim

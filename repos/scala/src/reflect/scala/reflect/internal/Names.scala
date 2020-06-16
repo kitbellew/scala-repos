@@ -109,11 +109,7 @@ trait Names extends api.Names {
       val len = math.max(len0, 0)
       val h = hashValue(cs, offset, len) & HASH_MASK
       var n = termHashtable(h)
-      while ((n ne null) && (n.length != len || !equals(
-          n.start,
-          cs,
-          offset,
-          len)))
+      while ((n ne null) && (n.length != len || !equals(n.start, cs, offset, len)))
         n = n.next
 
       if (n ne null) n

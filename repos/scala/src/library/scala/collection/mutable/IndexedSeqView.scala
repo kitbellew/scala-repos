@@ -37,9 +37,7 @@ trait IndexedSeqView[A, +Coll]
 
   def update(idx: Int, elem: A): Unit
 
-  trait Transformed[B]
-      extends IndexedSeqView[B, Coll]
-      with super.Transformed[B] {
+  trait Transformed[B] extends IndexedSeqView[B, Coll] with super.Transformed[B] {
     def update(idx: Int, elem: B): Unit
     override def toString = viewToString
   }

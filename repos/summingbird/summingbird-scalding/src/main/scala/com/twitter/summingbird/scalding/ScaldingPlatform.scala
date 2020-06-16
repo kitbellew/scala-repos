@@ -154,8 +154,7 @@ object Scalding {
       available
         .flatMap { intersect(desired, _) }
         .map(Right(_))
-        .getOrElse(
-          Left(List("available: " + available + ", desired: " + desired)))
+        .getOrElse(Left(List("available: " + available + ", desired: " + desired)))
     } catch { case NonFatal(e) => toTry(e) }
 
   private def bisectingMinify(mode: Mode, desired: DateRange)(
@@ -219,60 +218,56 @@ object Scalding {
     */
   def optionMappedPipeFactory[T, U](factory: (DateRange) => Mappable[T])(
       fn: T => Option[U])(implicit timeOf: TimeExtractor[U]): PipeFactory[U] =
-    StateWithError[
-      (Interval[Timestamp], Mode),
-      List[FailureReason],
-      FlowToPipe[U]] { (timeMode: (Interval[Timestamp], Mode)) =>
-      {
-        val (timeSpan, mode) = timeMode
+    StateWithError[(Interval[Timestamp], Mode), List[FailureReason], FlowToPipe[U]] {
+      (timeMode: (Interval[Timestamp], Mode)) =>
+        {
+          val (timeSpan, mode) = timeMode
 
-        toDateRange(timeSpan).right.flatMap { dr =>
-          minify(mode, dr)(factory).right.map { newDr =>
-            val newIntr = newDr.as[Interval[Timestamp]]
-            val mappable = factory(newDr)
-            (
-              (newIntr, mode),
-              Reader { (fdM: (FlowDef, Mode)) =>
-                TypedPipe
-                  .from(mappable)
-                  .flatMap { t =>
-                    fn(t).flatMap { mapped =>
-                      val time = Timestamp(timeOf(mapped))
-                      if (newIntr(time)) Some((time, mapped)) else None
+          toDateRange(timeSpan).right.flatMap { dr =>
+            minify(mode, dr)(factory).right.map { newDr =>
+              val newIntr = newDr.as[Interval[Timestamp]]
+              val mappable = factory(newDr)
+              (
+                (newIntr, mode),
+                Reader { (fdM: (FlowDef, Mode)) =>
+                  TypedPipe
+                    .from(mappable)
+                    .flatMap { t =>
+                      fn(t).flatMap { mapped =>
+                        val time = Timestamp(timeOf(mapped))
+                        if (newIntr(time)) Some((time, mapped)) else None
+                      }
                     }
-                  }
-              })
+                })
+            }
           }
         }
-      }
     }
 
   def pipeFactoryExact[T](factory: (DateRange) => Mappable[T])(implicit
       timeOf: TimeExtractor[T]): PipeFactory[T] =
-    StateWithError[
-      (Interval[Timestamp], Mode),
-      List[FailureReason],
-      FlowToPipe[T]] { (timeMode: (Interval[Timestamp], Mode)) =>
-      {
-        val (timeSpan, mode) = timeMode
+    StateWithError[(Interval[Timestamp], Mode), List[FailureReason], FlowToPipe[T]] {
+      (timeMode: (Interval[Timestamp], Mode)) =>
+        {
+          val (timeSpan, mode) = timeMode
 
-        toDateRange(timeSpan).right.map { dr =>
-          val mappable = factory(dr)
-          (
-            (timeSpan, mode),
-            Reader { (fdM: (FlowDef, Mode)) =>
-              mappable.validateTaps(
-                fdM._2
-              ) //This can throw, but that is what this caller wants
-              TypedPipe
-                .from(mappable)
-                .flatMap { t =>
-                  val time = Timestamp(timeOf(t))
-                  if (timeSpan(time)) Some((time, t)) else None
-                }
-            })
+          toDateRange(timeSpan).right.map { dr =>
+            val mappable = factory(dr)
+            (
+              (timeSpan, mode),
+              Reader { (fdM: (FlowDef, Mode)) =>
+                mappable.validateTaps(
+                  fdM._2
+                ) //This can throw, but that is what this caller wants
+                TypedPipe
+                  .from(mappable)
+                  .flatMap { t =>
+                    val time = Timestamp(timeOf(t))
+                    if (timeSpan(time)) Some((time, t)) else None
+                  }
+              })
+          }
         }
-      }
     }
 
   def sourceFromMappable[T: TimeExtractor: Manifest](
@@ -283,16 +278,14 @@ object Scalding {
     timeSpan
       .as[Option[DateRange]]
       .map { Right(_) }
-      .getOrElse(Left(List(
-        "only finite time ranges are supported by scalding: " + timeSpan.toString)))
+      .getOrElse(Left(
+        List("only finite time ranges are supported by scalding: " + timeSpan.toString)))
 
   /**
     * This makes sure that the output FlowToPipe[T] produces a TypedPipe[T] with only
     * times in the given time interval.
     */
-  def limitTimes[T](
-      range: Interval[Timestamp],
-      in: FlowToPipe[T]): FlowToPipe[T] =
+  def limitTimes[T](range: Interval[Timestamp], in: FlowToPipe[T]): FlowToPipe[T] =
     in.map { pipe => pipe.filter { case (time, _) => range(time) } }
 
   private[scalding] def joinFP[T, U](
@@ -793,11 +786,7 @@ class Scalding(
     new Scalding(jobName, options, transformConfig, newRegs ++ passedRegistrars)
 
   def withConfigUpdater(fn: Config => Config) =
-    new Scalding(
-      jobName,
-      options,
-      transformConfig.andThen(fn),
-      passedRegistrars)
+    new Scalding(jobName, options, transformConfig.andThen(fn), passedRegistrars)
 
   def configProvider(hConf: Configuration): Config = {
     import com.twitter.scalding._
@@ -817,9 +806,7 @@ class Scalding(
       conf
         .setSerialization(
           Left(
-            (
-              classOf[serialization.KryoHadoop],
-              initKryo.withRegistrar(kryoReg))),
+            (classOf[serialization.KryoHadoop], initKryo.withRegistrar(kryoReg))),
           Nil)
     }
   }

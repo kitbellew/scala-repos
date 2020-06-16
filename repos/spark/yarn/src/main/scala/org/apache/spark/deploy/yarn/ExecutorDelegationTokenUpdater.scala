@@ -101,7 +101,8 @@ private[spark] class ExecutorDelegationTokenUpdater(
           1,
           TimeUnit.MINUTES)
       } else {
-        logInfo(s"Scheduling token refresh from HDFS in $timeFromNowToRenewal millis.")
+        logInfo(
+          s"Scheduling token refresh from HDFS in $timeFromNowToRenewal millis.")
         delegationTokenRenewer.schedule(
           executorUpdaterRunnable,
           timeFromNowToRenewal,

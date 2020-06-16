@@ -48,8 +48,7 @@ final class StringBuilder(private val underlying: JavaStringBuilder)
     *  and with additional character capacity `initCapacity`.
     */
   def this(initCapacity: Int, initValue: String) =
-    this(
-      new JavaStringBuilder(initValue.length + initCapacity) append initValue)
+    this(new JavaStringBuilder(initValue.length + initCapacity) append initValue)
 
   /** Constructs a string builder with no characters in it and an
     *  initial capacity of 16 characters.

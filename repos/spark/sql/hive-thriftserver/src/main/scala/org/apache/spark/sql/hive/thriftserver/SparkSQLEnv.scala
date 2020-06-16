@@ -47,12 +47,10 @@ private[hive] object SparkSQLEnv extends Logging {
         .filterNot(_ == classOf[SparkSQLCLIDriver].getName)
 
       sparkConf
-        .setAppName(
-          maybeAppName.getOrElse(s"SparkSQL::${Utils.localHostName()}"))
+        .setAppName(maybeAppName.getOrElse(s"SparkSQL::${Utils.localHostName()}"))
         .set(
           "spark.serializer",
-          maybeSerializer.getOrElse(
-            "org.apache.spark.serializer.KryoSerializer"))
+          maybeSerializer.getOrElse("org.apache.spark.serializer.KryoSerializer"))
         .set(
           "spark.kryo.referenceTracking",
           maybeKryoReferenceTracking.getOrElse("false"))
@@ -61,10 +59,8 @@ private[hive] object SparkSQLEnv extends Logging {
       sparkContext.addSparkListener(new StatsReportListener())
       hiveContext = new HiveContext(sparkContext)
 
-      hiveContext.metadataHive.setOut(
-        new PrintStream(System.out, true, "UTF-8"))
-      hiveContext.metadataHive.setInfo(
-        new PrintStream(System.err, true, "UTF-8"))
+      hiveContext.metadataHive.setOut(new PrintStream(System.out, true, "UTF-8"))
+      hiveContext.metadataHive.setInfo(new PrintStream(System.err, true, "UTF-8"))
       hiveContext.metadataHive.setError(
         new PrintStream(System.err, true, "UTF-8"))
 

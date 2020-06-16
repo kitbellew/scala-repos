@@ -19,10 +19,7 @@ private[tournament] final class CreatedOrganizer(
   case object AllCreatedTournaments
 
   def scheduleNext =
-    context.system.scheduler.scheduleOnce(
-      2 seconds,
-      self,
-      AllCreatedTournaments)
+    context.system.scheduler.scheduleOnce(2 seconds, self, AllCreatedTournaments)
 
   def receive = {
 

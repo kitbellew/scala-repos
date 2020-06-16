@@ -240,9 +240,7 @@ private[sql] abstract class BaseWriterContainer(
 
   private def setupConf(): Unit = {
     serializableConf.value.set("mapred.job.id", jobId.toString)
-    serializableConf.value.set(
-      "mapred.tip.id",
-      taskAttemptId.getTaskID.toString)
+    serializableConf.value.set("mapred.tip.id", taskAttemptId.getTaskID.toString)
     serializableConf.value.set("mapred.task.id", taskAttemptId.toString)
     serializableConf.value.setBoolean("mapred.task.is.map", true)
     serializableConf.value.setInt("mapred.task.partition", 0)
@@ -285,9 +283,7 @@ private[sql] class DefaultWriterContainer(
     isAppend: Boolean)
     extends BaseWriterContainer(relation, job, isAppend) {
 
-  def writeRows(
-      taskContext: TaskContext,
-      iterator: Iterator[InternalRow]): Unit = {
+  def writeRows(taskContext: TaskContext, iterator: Iterator[InternalRow]): Unit = {
     executorSideSetup(taskContext)
     val configuration = taskAttemptContext.getConfiguration
     configuration.set("spark.sql.sources.output.path", outputPath)
@@ -418,9 +414,7 @@ private[sql] class DynamicPartitionWriterContainer(
     newWriter
   }
 
-  def writeRows(
-      taskContext: TaskContext,
-      iterator: Iterator[InternalRow]): Unit = {
+  def writeRows(taskContext: TaskContext, iterator: Iterator[InternalRow]): Unit = {
     executorSideSetup(taskContext)
 
     // We should first sort by partition columns, then bucket id, and finally sorting columns.

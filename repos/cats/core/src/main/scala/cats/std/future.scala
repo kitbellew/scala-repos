@@ -9,8 +9,8 @@ import scala.concurrent.{ExecutionContext, Future}
 
 trait FutureInstances extends FutureInstances1 {
 
-  implicit def futureInstance(implicit ec: ExecutionContext)
-      : MonadError[Future, Throwable] with CoflatMap[Future] =
+  implicit def futureInstance(implicit
+      ec: ExecutionContext): MonadError[Future, Throwable] with CoflatMap[Future] =
     new FutureCoflatMap with MonadError[Future, Throwable] {
       def pure[A](x: A): Future[A] = Future.successful(x)
 

@@ -59,8 +59,7 @@ private[sbt] object SettingCompletions {
     def rescope[T](setting: Setting[T]): Seq[Setting[_]] = {
       val akey = setting.key.key
       val global = ScopedKey(Global, akey)
-      val globalSetting = resolve(
-        Def.setting(global, setting.init, setting.pos))
+      val globalSetting = resolve(Def.setting(global, setting.init, setting.pos))
       globalSetting ++ allDefs.flatMap { d =>
         if (d.key == akey)
           Seq(SettingKey(akey) in d.scope <<= global)
@@ -171,8 +170,7 @@ private[sbt] object SettingCompletions {
     val full = for {
       defineKey <- scopedKeyParser(keyMap, settings, context)
       a <- assign(defineKey)
-      deps <-
-        valueParser(defineKey, a, inputScopedKey(keyFilter(defineKey.key)))
+      deps <- valueParser(defineKey, a, inputScopedKey(keyFilter(defineKey.key)))
     } yield () // parser is currently only for completion and the parsed data structures are not used
 
     matched(full) | any.+.string
@@ -305,9 +303,7 @@ private[sbt] object SettingCompletions {
       f: (String, Int) => Set[Completion]): TokenCompletions =
     TokenCompletions.fixed((s, l) => Completions(f(s, l)))
 
-  private[this] def scalaID[T](
-      keyMap: Map[String, T],
-      label: String): Parser[T] = {
+  private[this] def scalaID[T](keyMap: Map[String, T], label: String): Parser[T] = {
     val identifier = Act.filterStrings(ScalaID, keyMap.keySet, label) map keyMap
     optionallyQuoted(identifier)
   }

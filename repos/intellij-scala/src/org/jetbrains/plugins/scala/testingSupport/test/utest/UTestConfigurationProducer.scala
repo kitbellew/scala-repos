@@ -45,9 +45,7 @@ with AbstractTestConfigurationProducer {
     if (element.isInstanceOf[PsiPackage] || element
         .isInstanceOf[PsiDirectory]) {
       if (!configuration.isInstanceOf[UTestRunConfiguration]) return false
-      return TestConfigurationUtil.isPackageConfiguration(
-        element,
-        configuration)
+      return TestConfigurationUtil.isPackageConfiguration(element, configuration)
     }
     val (testClass, testClassName) = getLocationClassAndTest(location)
     if (testClass == null) return false

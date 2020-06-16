@@ -118,9 +118,8 @@ object ScalaClassNameCompletionContributor {
     val expectedTypesAfterNew: Array[ScType] =
       if (afterNewPattern.accepts(dummyPosition, context)) {
         val element = dummyPosition
-        val newExpr = PsiTreeUtil.getContextOfType(
-          element,
-          classOf[ScNewTemplateDefinition])
+        val newExpr =
+          PsiTreeUtil.getContextOfType(element, classOf[ScNewTemplateDefinition])
         //todo: probably we need to remove all abstracts here according to variance
         newExpr.expectedTypes().map {
           case ScAbstractType(_, lower, upper) => upper
@@ -154,10 +153,8 @@ object ScalaClassNameCompletionContributor {
       position,
       false,
       classOf[ScStableCodeReferenceElement])
-    val refElement = ScalaPsiUtil.getContextOfType(
-      position,
-      false,
-      classOf[ScReferenceElement])
+    val refElement =
+      ScalaPsiUtil.getContextOfType(position, false, classOf[ScReferenceElement])
     val onlyClasses = stableRefElement != null && !stableRefElement.getContext
       .isInstanceOf[ScConstructorPattern]
 
@@ -252,8 +249,7 @@ object ScalaClassNameCompletionContributor {
 
     for {
       clazz <- SyntheticClasses.get(project).all.valuesIterator
-      if checkSynthetic || !ScType.baseTypesQualMap.contains(
-        clazz.qualifiedName)
+      if checkSynthetic || !ScType.baseTypesQualMap.contains(clazz.qualifiedName)
     } addTypeForCompletion(ClassTypeToImport(clazz))
 
     val prefixMatcher = result.getPrefixMatcher

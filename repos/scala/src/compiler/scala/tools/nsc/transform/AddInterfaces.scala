@@ -42,9 +42,7 @@ abstract class AddInterfaces extends InfoTransform { self: Erasure =>
     }
 
 // Tree transformation --------------------------------------------------------------
-  private class ChangeOwnerAndReturnTraverser(
-      oldowner: Symbol,
-      newowner: Symbol)
+  private class ChangeOwnerAndReturnTraverser(oldowner: Symbol, newowner: Symbol)
       extends ChangeOwnerTraverser(oldowner, newowner) {
     override def traverse(tree: Tree) {
       tree match {

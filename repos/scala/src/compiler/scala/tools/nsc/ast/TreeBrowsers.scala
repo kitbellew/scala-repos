@@ -124,8 +124,7 @@ abstract class TreeBrowsers {
         "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel")
     } catch {
       case _: Throwable =>
-        UIManager.setLookAndFeel(
-          UIManager.getCrossPlatformLookAndFeelClassName())
+        UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName())
     }
 
     val frame = new JFrame("Scala AST after " + phaseName + " phase")

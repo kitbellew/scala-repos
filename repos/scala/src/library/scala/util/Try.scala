@@ -239,8 +239,7 @@ final case class Failure[+T](exception: Throwable) extends Try[T] {
     this.asInstanceOf[Try[U]]
   override def filter(p: T => Boolean): Try[T] = this
   override def recover[U >: T](
-      @deprecatedName('rescueException) pf: PartialFunction[Throwable, U])
-      : Try[U] =
+      @deprecatedName('rescueException) pf: PartialFunction[Throwable, U]): Try[U] =
     try { if (pf isDefinedAt exception) Success(pf(exception)) else this }
     catch { case NonFatal(e) => Failure(e) }
   override def recoverWith[U >: T](
@@ -282,8 +281,8 @@ final case class Success[+T](value: T) extends Try[T] {
           new NoSuchElementException("Predicate does not hold for " + value))
     } catch { case NonFatal(e) => Failure(e) }
   override def recover[U >: T](
-      @deprecatedName('rescueException) pf: PartialFunction[Throwable, U])
-      : Try[U] = this
+      @deprecatedName('rescueException) pf: PartialFunction[Throwable, U]): Try[U] =
+    this
   override def recoverWith[U >: T](
       @deprecatedName('f) pf: PartialFunction[Throwable, Try[U]]): Try[U] = this
   override def failed: Try[Throwable] =

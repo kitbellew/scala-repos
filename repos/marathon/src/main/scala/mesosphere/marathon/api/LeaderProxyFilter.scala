@@ -133,8 +133,9 @@ class LeaderProxyFilter @Inject() (
           chain.doFilter(request, response)
         } else if (leaderDataOpt
             .forall(_ == myHostPort)) { // either not leader or ourselves
-          log.info(s"Do not proxy to myself. Waiting for consistent leadership state. " +
-            s"Are we leader?: false, leader: $leaderDataOpt")
+          log.info(
+            s"Do not proxy to myself. Waiting for consistent leadership state. " +
+              s"Are we leader?: false, leader: $leaderDataOpt")
           if (waitForConsistentLeadership(response)) {
             doFilter(rawRequest, rawResponse, chain)
           } else {
@@ -220,8 +221,7 @@ class JavaUrlConnectionRequestForwarder @Inject() (
             s"unexpected connection type: ${connection.getClass}")
       }
 
-      connection.setConnectTimeout(
-        leaderProxyConf.leaderProxyConnectionTimeout())
+      connection.setConnectTimeout(leaderProxyConf.leaderProxyConnectionTimeout())
       connection.setReadTimeout(leaderProxyConf.leaderProxyReadTimeout())
       connection.setInstanceFollowRedirects(false)
 
@@ -243,8 +243,7 @@ class JavaUrlConnectionRequestForwarder @Inject() (
         //
         // The host header is used to choose the correct virtual host and should be set to the hostname
         // of the URL for HTTP 1.1. Thus we do not preserve it, even though Marathon does not care.
-        if !name.equalsIgnoreCase("host") && !name.equalsIgnoreCase(
-          "connection")
+        if !name.equalsIgnoreCase("host") && !name.equalsIgnoreCase("connection")
         headerValues <- Option(request.getHeaders(name))
         headerValue <- headerValues.asScala
       } {

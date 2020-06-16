@@ -302,9 +302,7 @@ final class Sink[-In, +Mat](delegate: scaladsl.Sink[In, Mat])
   /**
     * Connect this `Sink` to a `Source` and run it.
     */
-  def runWith[M](
-      source: Graph[SourceShape[In], M],
-      materializer: Materializer): M =
+  def runWith[M](source: Graph[SourceShape[In], M], materializer: Materializer): M =
     asScala.runWith(source)(materializer)
 
   /**

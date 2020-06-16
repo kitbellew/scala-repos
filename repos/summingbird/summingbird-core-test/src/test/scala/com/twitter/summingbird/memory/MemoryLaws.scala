@@ -63,9 +63,7 @@ class MemoryLaws extends WordSpec {
       T: Manifest: Arbitrary,
       K: Arbitrary,
       V: Monoid: Arbitrary: Equiv] =
-    testGraph[T, K, V].singleStepChecker(
-      sample[List[T]],
-      sample[T => List[(K, V)]])
+    testGraph[T, K, V].singleStepChecker(sample[List[T]], sample[T => List[(K, V)]])
 
   /**
     * Tests the in-memory planner against a job with a single flatMap
@@ -113,8 +111,7 @@ class MemoryLaws extends WordSpec {
       V: Monoid: Arbitrary: Equiv] = {
     val platform = new Memory
     val finalStore: Memory#Store[K, V] = MutableMap.empty[K, V]
-    val storeAndService
-        : Memory#Store[K, JoinedU] with Memory#Service[K, JoinedU] =
+    val storeAndService: Memory#Store[K, JoinedU] with Memory#Service[K, JoinedU] =
       new MutableHashMap[K, JoinedU]() with MemoryService[K, JoinedU]
     val sourceMaker = Memory.toSource[T](_)
     val items1 = sample[List[T]]

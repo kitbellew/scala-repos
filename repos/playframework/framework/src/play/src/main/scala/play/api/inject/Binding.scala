@@ -216,12 +216,7 @@ final case class BindingKey[T](
     * Bind this binding key to another binding key.
     */
   def to(key: BindingKey[_ <: T]): Binding[T] =
-    Binding(
-      this,
-      Some(BindingKeyTarget(key)),
-      None,
-      false,
-      SourceLocator.source)
+    Binding(this, Some(BindingKeyTarget(key)), None, false, SourceLocator.source)
 
   /**
     * Bind this binding key to the given provider class.

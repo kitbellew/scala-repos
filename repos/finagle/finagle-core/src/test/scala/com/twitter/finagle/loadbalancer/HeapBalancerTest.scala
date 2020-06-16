@@ -15,8 +15,7 @@ class HeapBalancerTest
     extends FunSuite
     with MockitoSugar
     with AssertionsForJUnit {
-  class LoadedFactory(which: String)
-      extends ServiceFactory[Unit, LoadedFactory] {
+  class LoadedFactory(which: String) extends ServiceFactory[Unit, LoadedFactory] {
     var load = 0
     var _status: Status = Status.Open
     var _closed = false

@@ -214,8 +214,7 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
       * In case the log is already there, empty() must throw an Exception.
       */
     val tmp5 = tempfile()
-    "throw an exception when creating already-present logs " in new cleanup(
-      tmp5) {
+    "throw an exception when creating already-present logs " in new cleanup(tmp5) {
       RawHandler.empty(blockid, tmp5).close()
       RawHandler.empty(blockid, tmp5) must throwA[Exception]
     }
@@ -357,9 +356,7 @@ object RawHandlerSpecs extends Specification with ScalaCheck {
       val struct3 = h.structure
       struct1.toSet must_== Set()
       struct2.toSet must_== Set(ColumnRef(cpa, CString))
-      struct3.toSet must_== Set(
-        ColumnRef(cpa, CString),
-        ColumnRef(cpb, CString))
+      struct3.toSet must_== Set(ColumnRef(cpa, CString), ColumnRef(cpb, CString))
 
       val snap3 = h.snapshot(None).segments
       val snap3R = h.snapshotRef(None).segments

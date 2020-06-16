@@ -34,9 +34,7 @@ import java.lang.reflect.{
 import java.util.Date
 import java.sql.Timestamp
 
-case class TypeInfo(
-    clazz: Class[_],
-    parameterizedType: Option[ParameterizedType])
+case class TypeInfo(clazz: Class[_], parameterizedType: Option[ParameterizedType])
 
 trait ParameterNameReader {
   def lookupParameterNames(constructor: JConstructor[_]): Traversable[String]
@@ -69,9 +67,7 @@ private[json] object Meta {
   case class Cycle(targetType: Type) extends Mapping
   case class Dict(mapping: Mapping) extends Mapping
   case class Col(targetType: TypeInfo, mapping: Mapping) extends Mapping
-  case class Constructor(
-      targetType: TypeInfo,
-      choices: List[DeclaredConstructor])
+  case class Constructor(targetType: TypeInfo, choices: List[DeclaredConstructor])
       extends Mapping {
     def bestMatching(argNames: List[String]): Option[DeclaredConstructor] = {
       val names = Set(argNames: _*)
@@ -154,8 +150,7 @@ private[json] object Meta {
           val typeArgs = typeConstructors(t, k)(valueTypeIndex)
           factory(fieldMapping(typeArgs)._1)
         } else
-          factory(
-            fieldMapping(typeParameters(t, k, context)(valueTypeIndex))._1)
+          factory(fieldMapping(typeParameters(t, k, context)(valueTypeIndex))._1)
 
       def parameterizedTypeOpt(t: Type) =
         t match {
@@ -326,8 +321,7 @@ private[json] object Meta {
     def constructors(
         t: Type,
         names: ParameterNameReader,
-        context: Option[Context])
-        : List[(JConstructor[_], List[(String, Type)])] =
+        context: Option[Context]): List[(JConstructor[_], List[(String, Type)])] =
       rawClassOf(t).getDeclaredConstructors
         .map(c => (c, constructorArgs(t, c, names, context)))
         .toList

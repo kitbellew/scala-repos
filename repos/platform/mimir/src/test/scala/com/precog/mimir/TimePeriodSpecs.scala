@@ -176,11 +176,8 @@ trait TimePeriodSpecs[M[+_]]
         dag.AbsoluteLoad(Const(CString("/hom/timerange"))(line))(line)
 
       def deref(field: String) = {
-        dag.Join(
-          DerefObject,
-          Cross(None),
-          objects,
-          Const(CString(field))(line))(line)
+        dag.Join(DerefObject, Cross(None), objects, Const(CString(field))(line))(
+          line)
       }
 
       def createObject2(field: String, op1: Op1) = {
@@ -252,9 +249,8 @@ trait TimePeriodSpecs[M[+_]]
     }
 
     "fail to compute correct range given malformed input" in {
-      val input = Operate(
-        BuiltInFunction1Op(TimeRange),
-        Const(CString("foo"))(line))(line)
+      val input =
+        Operate(BuiltInFunction1Op(TimeRange), Const(CString("foo"))(line))(line)
 
       val result = testEval(input)
 

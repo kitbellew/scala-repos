@@ -77,9 +77,7 @@ case object Eating extends FSMHakkerState
 /**
   * Some state container to keep track of which chopsticks we have
   */
-final case class TakenChopsticks(
-    left: Option[ActorRef],
-    right: Option[ActorRef])
+final case class TakenChopsticks(left: Option[ActorRef], right: Option[ActorRef])
 
 /*
  * A fsm hakker is an awesome dude or dudette who either thinks about hacking or has to eat ;-)

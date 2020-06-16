@@ -22,9 +22,7 @@ class ScalaTypeHierarchyProvider extends JavaTypeHierarchyProvider {
     super.createHierarchyBrowser(target)
   }
 
-  def collectSupers(
-      clazz: ScTypeDefinition,
-      visited: HashSet[ScTypeDefinition]) {
+  def collectSupers(clazz: ScTypeDefinition, visited: HashSet[ScTypeDefinition]) {
     clazz.supers.foreach {
       case clazz: ScTypeDefinition =>
         if (visited.contains(clazz)) {

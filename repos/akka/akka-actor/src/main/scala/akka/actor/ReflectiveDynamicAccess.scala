@@ -38,8 +38,7 @@ class ReflectiveDynamicAccess(val classLoader: ClassLoader)
       val t = implicitly[ClassTag[T]].runtimeClass
       if (t.isInstance(obj)) obj.asInstanceOf[T]
       else
-        throw new ClassCastException(
-          clazz.getName + " is not a subtype of " + t)
+        throw new ClassCastException(clazz.getName + " is not a subtype of " + t)
     } recover {
       case i: InvocationTargetException if i.getTargetException ne null ⇒
         throw i.getTargetException

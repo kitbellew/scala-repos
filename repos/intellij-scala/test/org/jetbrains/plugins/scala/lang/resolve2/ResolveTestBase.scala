@@ -153,9 +153,7 @@ abstract class ResolveTestBase extends ScalaResolveTestCase {
         message(referenceName + " must NOT be resolved!"),
         target)
     } else {
-      Assert.assertNotNull(
-        message(referenceName + " must BE resolved!"),
-        target)
+      Assert.assertNotNull(message(referenceName + " must BE resolved!"), target)
 
       if (options.contains(Accessible) && options(Accessible) == "false") {
         Assert.assertFalse(

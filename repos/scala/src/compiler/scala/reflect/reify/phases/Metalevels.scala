@@ -140,16 +140,8 @@ trait Metalevels {
                   inlinees map (inlinee =>
                     symtab.symName(inlinee)) mkString (", ")))
           withinSplice {
-            super.transform(
-              TreeSplice(
-                ReifiedTree(
-                  universe,
-                  mirror,
-                  symtab1,
-                  rtree,
-                  tpe,
-                  rtpe,
-                  concrete)))
+            super.transform(TreeSplice(
+              ReifiedTree(universe, mirror, symtab1, rtree, tpe, rtpe, concrete)))
           }
         case TreeSplice(splicee) =>
           if (reifyDebug) println("entering splice: " + splicee)
@@ -162,9 +154,8 @@ trait Metalevels {
             // withinSplice { super.transform(tree) }
             if (reifyDebug)
               println(
-                "metalevel breach in %s: %s".format(
-                  tree,
-                  (breaches map (_.symbol)).distinct mkString ", "))
+                "metalevel breach in %s: %s"
+                  .format(tree, (breaches map (_.symbol)).distinct mkString ", "))
             CannotReifyRuntimeSplice(tree)
           } else {
             withinSplice { super.transform(tree) }

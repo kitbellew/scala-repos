@@ -35,8 +35,7 @@ class DefaultClientTest
     val qIn = new AsyncQueue[Int]()
     val qOut = new AsyncQueue[Int]()
 
-    val transporter
-        : (SocketAddress, StatsReceiver) => Future[Transport[Int, Int]] = {
+    val transporter: (SocketAddress, StatsReceiver) => Future[Transport[Int, Int]] = {
       case (_, _) =>
         Future.value(new QueueTransport(qIn, qOut))
     }
@@ -269,9 +268,7 @@ class DefaultClientTest
         failureAccrual = { factory: ServiceFactory[Int, Int] =>
           FailureAccrualFactory.wrapper(
             statsReceiver,
-            FailureAccrualPolicy.consecutiveFailures(
-              6,
-              Backoff.const(3.seconds)),
+            FailureAccrualPolicy.consecutiveFailures(6, Backoff.const(3.seconds)),
             name,
             DefaultLogger,
             failing,
@@ -285,8 +282,7 @@ class DefaultClientTest
         control.advance(4.seconds)
         timer.tick()
         assert(
-          statsReceiver.counters.get(
-            Seq("failure_accrual", "revivals")) == None)
+          statsReceiver.counters.get(Seq("failure_accrual", "revivals")) == None)
       }
     }
   }

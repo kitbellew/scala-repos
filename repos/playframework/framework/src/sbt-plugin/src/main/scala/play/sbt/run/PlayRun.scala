@@ -72,8 +72,7 @@ object PlayRun {
       val reloadCompile = () =>
         PlayReload.compile(
           () => Project.runTask(playReload in scope, state).map(_._2).get,
-          () =>
-            Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
+          () => Project.runTask(reloaderClasspath in scope, state).map(_._2).get,
           () =>
             Project
               .runTask(streamsManager in scope, state)
@@ -122,7 +121,8 @@ object PlayRun {
           devModeServer
 
           println()
-          println(Colors.green("(Server started, use Ctrl+D to stop and go back to the console...)"))
+          println(Colors.green(
+            "(Server started, use Ctrl+D to stop and go back to the console...)"))
           println()
 
           // If we have both Watched.Configuration and Watched.ContinuousState
@@ -205,8 +205,7 @@ object PlayRun {
               case ms if ms < 1000 => ms + "ms"
               case seconds         => (seconds / 1000) + "s"
             }
-            println(
-              "[" + Colors.green("success") + "] Compiled in " + formatted)
+            println("[" + Colors.green("success") + "] Compiled in " + formatted)
           }
       }
 
@@ -235,7 +234,8 @@ object PlayRun {
   val playTestProdCommand = Command.args("testProd", "<port>") {
     (state: State, args: Seq[String]) =>
       state.log.warn("The testProd command is deprecated, and will be removed in a future version of Play.")
-      state.log.warn("To test your application using production mode, run 'runProd' instead.")
+      state.log.warn(
+        "To test your application using production mode, run 'runProd' instead.")
       testProd(state, args)
   }
 

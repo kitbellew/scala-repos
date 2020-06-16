@@ -45,8 +45,7 @@ object Background {
     "8.0.60-R10")
   val EMPTY = Empty
 
-  def classCssMetaData
-      : Seq[javafx.css.CssMetaData[_ <: javafx.css.Styleable, _]] =
+  def classCssMetaData: Seq[javafx.css.CssMetaData[_ <: javafx.css.Styleable, _]] =
     jfxsl.Background.getClassCssMetaData
 }
 

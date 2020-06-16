@@ -244,9 +244,7 @@ object SnippetSpec extends Specification with XmlMatchers {
           S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
             for {
               s <- S.session
-            } yield s.processSurroundAndInclude(
-              "test",
-              <div class='lift:foo' />)
+            } yield s.processSurroundAndInclude("test", <div class='lift:foo' />)
           }
         }
 
@@ -259,9 +257,7 @@ object SnippetSpec extends Specification with XmlMatchers {
           S.mapSnippetsWith("foo" -> ((a: NodeSeq) => a)) {
             for {
               s <- S.session
-            } yield s.processSurroundAndInclude(
-              "test",
-              <div class="lift:bar" />)
+            } yield s.processSurroundAndInclude("test", <div class="lift:bar" />)
           }
         }
 

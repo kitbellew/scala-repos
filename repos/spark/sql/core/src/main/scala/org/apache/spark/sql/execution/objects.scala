@@ -196,10 +196,8 @@ case class CoGroup(
 
       new CoGroupedIterator(leftGrouped, rightGrouped, leftGroup).flatMap {
         case (key, leftResult, rightResult) =>
-          val result = func(
-            getKey(key),
-            leftResult.map(getLeft),
-            rightResult.map(getRight))
+          val result =
+            func(getKey(key), leftResult.map(getLeft), rightResult.map(getRight))
           result.map(outputObject)
       }
     }

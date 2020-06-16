@@ -83,8 +83,7 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
     )
   }
 
-  test(
-    "SELECT clause generating a different number of columns is not allowed.") {
+  test("SELECT clause generating a different number of columns is not allowed.") {
     val message = intercept[RuntimeException] {
       sql(s"""
         |INSERT OVERWRITE TABLE jsonTable SELECT a FROM jt
@@ -106,9 +105,8 @@ class InsertSuite extends DataSourceTest with SharedSQLContext {
     )
 
     // Writing the table to less part files.
-    val rdd1 = sparkContext.parallelize(
-      (1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""),
-      5)
+    val rdd1 =
+      sparkContext.parallelize((1 to 10).map(i => s"""{"a":$i, "b":"str$i"}"""), 5)
     caseInsensitiveContext.read.json(rdd1).registerTempTable("jt1")
     sql(s"""
          |INSERT OVERWRITE TABLE jsonTable SELECT a, b FROM jt1

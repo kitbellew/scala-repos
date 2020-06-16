@@ -248,18 +248,17 @@ trait SymbolTables {
           val sym = reifyBinding(entry).symbol
           if (sym != NoSymbol)
             result ++= cumulativeAliases.distinct filter (alias =>
-              alias._1 == sym && alias._2 != currtab.symName(sym)) map (
-              alias => {
-                val canonicalName = currtab.symName(sym)
-                val aliasName = alias._2
-                ValDef(
-                  NoMods,
-                  aliasName,
-                  TypeTree(),
-                  Ident(canonicalName)) updateAttachment ReifyAliasAttachment(
-                  sym,
-                  aliasName)
-              })
+              alias._1 == sym && alias._2 != currtab.symName(sym)) map (alias => {
+              val canonicalName = currtab.symName(sym)
+              val aliasName = alias._2
+              ValDef(
+                NoMods,
+                aliasName,
+                TypeTree(),
+                Ident(canonicalName)) updateAttachment ReifyAliasAttachment(
+                sym,
+                aliasName)
+            })
           result.toList
         })
 

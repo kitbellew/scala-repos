@@ -234,8 +234,7 @@ class CacheManagerProvider @Inject() (
   }
 }
 
-private[play] class NamedEhCacheProvider(name: String)
-    extends Provider[Ehcache] {
+private[play] class NamedEhCacheProvider(name: String) extends Provider[Ehcache] {
   @Inject private var manager: CacheManager = _
   lazy val get: Ehcache = NamedEhCacheProvider.getNamedCache(name, manager)
 }

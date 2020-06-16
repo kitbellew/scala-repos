@@ -51,7 +51,8 @@ class FailureAccrualPolicyTest extends FunSuite with MockitoSugar {
     assert(policy.markDeadOnFailure() == Some(5.seconds))
   }
 
-  test("Consecutive failures policy: markDeadOnFailure() iterates over markDeadFor") {
+  test(
+    "Consecutive failures policy: markDeadOnFailure() iterates over markDeadFor") {
     val policy = FailureAccrualPolicy.consecutiveFailures(1, expBackoff)
 
     for (i <- 0 until expBackoffList.length)
@@ -110,7 +111,8 @@ class FailureAccrualPolicyTest extends FunSuite with MockitoSugar {
       assert(policy.markDeadOnFailure() == Some(expBackoffList(i)))
   }
 
-  test("Success rate policy: markDeadOnFailure() returns 300 when stream runs out") {
+  test(
+    "Success rate policy: markDeadOnFailure() returns 300 when stream runs out") {
     val policy = FailureAccrualPolicy.successRate(1, 1, expBackoffList)
 
     for (i <- 0 until expBackoffList.length)

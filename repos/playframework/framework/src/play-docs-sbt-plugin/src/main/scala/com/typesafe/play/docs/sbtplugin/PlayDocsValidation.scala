@@ -163,10 +163,7 @@ object PlayDocsValidation {
               }
 
             case link =>
-              wikiLinks += LinkRef(
-                link.trim,
-                markdownFile,
-                node.getStartIndex + 2)
+              wikiLinks += LinkRef(link.trim, markdownFile, node.getStartIndex + 2)
 
           }
           new LinkRenderer.Rendering("foo", "bar")
@@ -237,8 +234,7 @@ object PlayDocsValidation {
       val astRoot = processor.parseMarkdown(IO.read(markdownFile).toCharArray)
       new ToHtmlSerializer(
         linkRenderer,
-        java.util.Arrays.asList[ToHtmlSerializerPlugin](
-          codeReferenceSerializer))
+        java.util.Arrays.asList[ToHtmlSerializerPlugin](codeReferenceSerializer))
         .toHtml(astRoot)
     }
 
@@ -688,8 +684,7 @@ object PlayDocsValidation {
     }
 }
 
-class AggregateFileRepository(repos: Seq[FileRepository])
-    extends FileRepository {
+class AggregateFileRepository(repos: Seq[FileRepository]) extends FileRepository {
 
   def this(repos: Array[FileRepository]) = this(repos.toSeq)
 

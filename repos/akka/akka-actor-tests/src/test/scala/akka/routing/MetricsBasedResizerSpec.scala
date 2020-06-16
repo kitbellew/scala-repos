@@ -178,9 +178,7 @@ class MetricsBasedResizerSpec
       val resizer = DefaultOptimalSizeExploringResizer()
       resizer.record = ResizeRecord(
         underutilizationStreak = Some(
-          UnderUtilizationStreak(
-            start = LocalDateTime.now,
-            highestUtilization = 2)))
+          UnderUtilizationStreak(start = LocalDateTime.now, highestUtilization = 2)))
 
       val router = TestRouter(routees(2))
       router.mockSend(await = true)
@@ -195,9 +193,7 @@ class MetricsBasedResizerSpec
       val resizer = DefaultOptimalSizeExploringResizer()
       resizer.record = ResizeRecord(
         underutilizationStreak = Some(
-          UnderUtilizationStreak(
-            start = LocalDateTime.now,
-            highestUtilization = 1)))
+          UnderUtilizationStreak(start = LocalDateTime.now, highestUtilization = 1)))
 
       val router = TestRouter(routees(3))
       router.mockSend(await = true, routeeIdx = 0)

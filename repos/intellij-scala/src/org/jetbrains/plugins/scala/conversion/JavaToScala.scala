@@ -157,12 +157,7 @@ object JavaToScala {
           convertPsiToIntermdeiate(_, externalProperties))
         val body =
           Option(w.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
-        WhileStatement(
-          None,
-          condition,
-          body,
-          None,
-          WhileStatement.PRE_TEST_LOOP)
+        WhileStatement(None, condition, body, None, WhileStatement.PRE_TEST_LOOP)
       case w: PsiDoWhileStatement =>
         val condition = Option(w.getCondition).map(
           convertPsiToIntermdeiate(_, externalProperties))
@@ -184,8 +179,8 @@ object JavaToScala {
         })
         val body =
           Option(f.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
-        val update = Option(f.getUpdate).map(
-          convertPsiToIntermdeiate(_, externalProperties))
+        val update =
+          Option(f.getUpdate).map(convertPsiToIntermdeiate(_, externalProperties))
         WhileStatement(
           initialization,
           condition,
@@ -205,9 +200,7 @@ object JavaToScala {
           else
             Option(s.getCaseValue).map(
               convertPsiToIntermdeiate(_, externalProperties))
-        SwitchLabelStatement(
-          caseValue,
-          ScalaPsiUtil.functionArrow(s.getProject))
+        SwitchLabelStatement(caseValue, ScalaPsiUtil.functionArrow(s.getProject))
       case s: PsiSwitchStatement =>
         val expr = Option(s.getExpression).map(
           convertPsiToIntermdeiate(_, externalProperties))
@@ -303,8 +296,7 @@ object JavaToScala {
           convertPsiToIntermdeiate(a.getIndexExpression, externalProperties))
       case a: PsiArrayInitializerExpression =>
         ArrayInitializer(
-          a.getInitializers.map(
-            convertPsiToIntermdeiate(_, externalProperties)))
+          a.getInitializers.map(convertPsiToIntermdeiate(_, externalProperties)))
       case c: PsiClassObjectAccessExpression =>
         ClassObjectAccess(
           convertPsiToIntermdeiate(c.getOperand, externalProperties))
@@ -356,9 +348,7 @@ object JavaToScala {
           case _ =>
             MethodCallExpression(
               m.getMethodExpression.getQualifiedName,
-              convertPsiToIntermdeiate(
-                m.getMethodExpression,
-                externalProperties),
+              convertPsiToIntermdeiate(m.getMethodExpression, externalProperties),
               convertPsiToIntermdeiate(m.getArgumentList, externalProperties)
             )
         }
@@ -416,8 +406,7 @@ object JavaToScala {
                         convertPsiToIntermdeiate(_, externalProperties))))
             }
           } else {
-            Option(m.getBody).map(
-              convertPsiToIntermdeiate(_, externalProperties))
+            Option(m.getBody).map(convertPsiToIntermdeiate(_, externalProperties))
           }
         }
 
@@ -866,8 +855,7 @@ object JavaToScala {
                 classType,
                 companionObject,
                 Some(
-                  extendList.map(
-                    convertPsiToIntermdeiate(_, externalProperties)))
+                  extendList.map(convertPsiToIntermdeiate(_, externalProperties)))
               )
           }
         } finally {
@@ -943,8 +931,8 @@ object JavaToScala {
           statement))
       }
 
-      def getSuperCall(dropStatements: ArrayBuffer[PsiExpressionStatement])
-          : IntermediateNode = {
+      def getSuperCall(
+          dropStatements: ArrayBuffer[PsiExpressionStatement]): IntermediateNode = {
         val firstStatement = getFirstStatement(constructor)
         val isSuper = firstStatement.map(_.getExpression).flatMap {
           case mc: PsiMethodCallExpression
@@ -1130,8 +1118,7 @@ object JavaToScala {
                 convertPsiToIntermdeiate(ref, null)))
           }
 
-          if (method.findSuperMethods.exists(
-              !_.hasModifierProperty("abstract")))
+          if (method.findSuperMethods.exists(!_.hasModifierProperty("abstract")))
             modifiers.append(SimpleModifier(ModifierType.OVERRIDE))
 
         case c: PsiClass =>

@@ -158,9 +158,7 @@ object Multinomial {
 
     def predictive(parameter: conjugateFamily.Parameter) = new Polya(parameter)
 
-    def posterior(
-        prior: conjugateFamily.Parameter,
-        evidence: TraversableOnce[I]) = {
+    def posterior(prior: conjugateFamily.Parameter, evidence: TraversableOnce[I]) = {
       val localCopy: T = space.copy(prior)
       for (e <- evidence) {
         localCopy(e) += 1.0

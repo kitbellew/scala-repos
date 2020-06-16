@@ -46,8 +46,8 @@ object Numeric {
   implicit final val RationalIsNumeric: Numeric[Rational] =
     new RationalIsNumeric
 
-  implicit def complexIsNumeric[A: Fractional: Trig: IsReal]
-      : ComplexIsNumeric[A] = new ComplexIsNumeric
+  implicit def complexIsNumeric[A: Fractional: Trig: IsReal]: ComplexIsNumeric[A] =
+    new ComplexIsNumeric
 
   @inline final def apply[A](implicit ev: Numeric[A]): Numeric[A] = ev
 }

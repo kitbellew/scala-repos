@@ -256,8 +256,8 @@ trait EventService
     }
   }
 
-  def shardProxy(shardClient: HttpClient[ByteChunk])
-      : AsyncHttpService[ByteChunk, ByteChunk] = {
+  def shardProxy(
+      shardClient: HttpClient[ByteChunk]): AsyncHttpService[ByteChunk, ByteChunk] = {
     path("/data/fs/'path") {
       get {
         accept(FileContent.XQuirrelScript) {

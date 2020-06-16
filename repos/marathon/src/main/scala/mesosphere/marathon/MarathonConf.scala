@@ -36,7 +36,8 @@ trait MarathonConf
 
   lazy val mesosLeaderUiUrl = opt[String](
     "mesos_leader_ui_url",
-    descr = "The host and port (e.g. \"http://mesos_host:5050\") of the Mesos master.",
+    descr =
+      "The host and port (e.g. \"http://mesos_host:5050\") of the Mesos master.",
     required = false,
     noshort = true)
 

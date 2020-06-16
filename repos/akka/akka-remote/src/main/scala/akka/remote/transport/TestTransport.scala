@@ -44,8 +44,7 @@ class TestTransport(
 
   private val associationListenerPromise = Promise[AssociationEventListener]()
 
-  private def defaultListen
-      : Future[(Address, Promise[AssociationEventListener])] = {
+  private def defaultListen: Future[(Address, Promise[AssociationEventListener])] = {
     registry.registerTransport(this, associationListenerPromise.future)
     Future.successful((localAddress, associationListenerPromise))
   }

@@ -18,11 +18,7 @@ class ScalaArrangementEntry(
     entryType: ArrangementSettingsToken,
     name: String,
     canBeMatched: Boolean)
-    extends DefaultArrangementEntry(
-      parent,
-      startOffset,
-      endOffset,
-      canBeMatched)
+    extends DefaultArrangementEntry(parent, startOffset, endOffset, canBeMatched)
     with TypeAwareArrangementEntry
     with NameAwareArrangementEntry
     with ModifierAwareArrangementEntry {

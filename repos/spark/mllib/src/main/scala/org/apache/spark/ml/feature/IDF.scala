@@ -33,10 +33,7 @@ import org.apache.spark.sql.types.StructType
 /**
   * Params for [[IDF]] and [[IDFModel]].
   */
-private[feature] trait IDFBase
-    extends Params
-    with HasInputCol
-    with HasOutputCol {
+private[feature] trait IDFBase extends Params with HasInputCol with HasOutputCol {
 
   /**
     * The minimum of documents in which a term should appear.
@@ -109,9 +106,7 @@ object IDF extends DefaultParamsReadable[IDF] {
   * Model fitted by [[IDF]].
   */
 @Experimental
-class IDFModel private[ml] (
-    override val uid: String,
-    idfModel: feature.IDFModel)
+class IDFModel private[ml] (override val uid: String, idfModel: feature.IDFModel)
     extends Model[IDFModel]
     with IDFBase
     with MLWritable {

@@ -96,8 +96,7 @@ trait TypedSource15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 }
 
 trait TypedSource16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
-    extends TypedSource[
-      Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] {
+    extends TypedSource[Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] {
   def converter[Z >: Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] =
     TupleConverter.asSuperConverter(
       TupleConverter
@@ -107,8 +106,7 @@ trait TypedSource16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
 trait TypedSource17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
     extends TypedSource[
       Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] {
-  def converter[
-      Z >: Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] =
+  def converter[Z >: Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] =
     TupleConverter.asSuperConverter(
       TupleConverter
         .of[Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]])
@@ -158,8 +156,9 @@ trait TypedSource20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
     R,
     S,
     T]] =
-    TupleConverter.asSuperConverter(TupleConverter
-      .of[Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]])
+    TupleConverter.asSuperConverter(
+      TupleConverter
+        .of[Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]])
 }
 
 trait TypedSource21[
@@ -186,30 +185,10 @@ trait TypedSource21[
     U]
     extends TypedSource[
       Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] {
-  def converter[Z >: Tuple21[
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U]] =
-    TupleConverter.asSuperConverter(
-      TupleConverter.of[Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]])
+  def converter[
+      Z >: Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] =
+    TupleConverter.asSuperConverter(TupleConverter
+      .of[Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]])
 }
 
 trait TypedSource22[
@@ -235,54 +214,12 @@ trait TypedSource22[
     T,
     U,
     V]
-    extends TypedSource[Tuple22[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U,
-      V]] {
-  def converter[Z >: Tuple22[
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V]] =
-    TupleConverter.asSuperConverter(
-      TupleConverter.of[Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]])
+    extends TypedSource[
+      Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]] {
+  def converter[
+      Z >: Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]] =
+    TupleConverter.asSuperConverter(TupleConverter
+      .of[Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]])
 }
 
 trait TypedSink1[A] extends TypedSink[Tuple1[A]] {
@@ -336,8 +273,7 @@ trait TypedSink9[A, B, C, D, E, F, G, H, I]
 trait TypedSink10[A, B, C, D, E, F, G, H, I, J]
     extends TypedSink[Tuple10[A, B, C, D, E, F, G, H, I, J]] {
   final def setter[Z <: Tuple10[A, B, C, D, E, F, G, H, I, J]] =
-    TupleSetter.asSubSetter(
-      TupleSetter.of[Tuple10[A, B, C, D, E, F, G, H, I, J]])
+    TupleSetter.asSubSetter(TupleSetter.of[Tuple10[A, B, C, D, E, F, G, H, I, J]])
 }
 
 trait TypedSink11[A, B, C, D, E, F, G, H, I, J, K]
@@ -377,15 +313,13 @@ trait TypedSink15[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O]
 
 trait TypedSink16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]
     extends TypedSink[Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] {
-  final def setter[
-      Z <: Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] =
+  final def setter[Z <: Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]] =
     TupleSetter.asSubSetter(
       TupleSetter.of[Tuple16[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P]])
 }
 
 trait TypedSink17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
-    extends TypedSink[
-      Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] {
+    extends TypedSink[Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] {
   final def setter[
       Z <: Tuple17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]] =
     TupleSetter.asSubSetter(
@@ -394,8 +328,7 @@ trait TypedSink17[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q]
 }
 
 trait TypedSink18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
-    extends TypedSink[
-      Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] {
+    extends TypedSink[Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] {
   final def setter[
       Z <: Tuple18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]] =
     TupleSetter.asSubSetter(
@@ -404,8 +337,7 @@ trait TypedSink18[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R]
 }
 
 trait TypedSink19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
-    extends TypedSink[
-      Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] {
+    extends TypedSink[Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] {
   final def setter[
       Z <: Tuple19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]] =
     TupleSetter.asSubSetter(
@@ -414,8 +346,7 @@ trait TypedSink19[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S]
 }
 
 trait TypedSink20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
-    extends TypedSink[
-      Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]] {
+    extends TypedSink[Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]] {
   final def setter[Z <: Tuple20[
     A,
     B,
@@ -437,110 +368,25 @@ trait TypedSink20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]
     R,
     S,
     T]] =
-    TupleSetter.asSubSetter(TupleSetter
-      .of[Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]])
+    TupleSetter.asSubSetter(
+      TupleSetter
+        .of[Tuple20[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T]])
 }
 
 trait TypedSink21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]
-    extends TypedSink[
-      Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] {
-  final def setter[Z <: Tuple21[
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U]] =
-    TupleSetter.asSubSetter(
-      TupleSetter.of[Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]])
+    extends TypedSink[Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] {
+  final def setter[
+      Z <: Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]] =
+    TupleSetter.asSubSetter(TupleSetter
+      .of[Tuple21[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U]])
 }
 
-trait TypedSink22[
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V]
-    extends TypedSink[Tuple22[
-      A,
-      B,
-      C,
-      D,
-      E,
-      F,
-      G,
-      H,
-      I,
-      J,
-      K,
-      L,
-      M,
-      N,
-      O,
-      P,
-      Q,
-      R,
-      S,
-      T,
-      U,
-      V]] {
-  final def setter[Z <: Tuple22[
-    A,
-    B,
-    C,
-    D,
-    E,
-    F,
-    G,
-    H,
-    I,
-    J,
-    K,
-    L,
-    M,
-    N,
-    O,
-    P,
-    Q,
-    R,
-    S,
-    T,
-    U,
-    V]] =
-    TupleSetter.asSubSetter(
-      TupleSetter.of[Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]])
+trait TypedSink22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]
+    extends TypedSink[Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]] {
+  final def setter[
+      Z <: Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]] =
+    TupleSetter.asSubSetter(TupleSetter
+      .of[Tuple22[A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V]])
 }
 
 // end of autogenerated

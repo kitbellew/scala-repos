@@ -3,12 +3,7 @@ package org.jetbrains.plugins.scala.lang.completion
 import com.intellij.codeInsight.completion._
 import com.intellij.patterns.PlatformPatterns
 import com.intellij.psi.filters.position.{FilterPattern, LeftNeighbour}
-import com.intellij.psi.filters.{
-  AndFilter,
-  ElementFilter,
-  NotFilter,
-  TextFilter
-}
+import com.intellij.psi.filters.{AndFilter, ElementFilter, NotFilter, TextFilter}
 import com.intellij.util.ProcessingContext
 import org.jetbrains.plugins.scala.lang.completion.filters.definitions.{
   DefTypeFilter,
@@ -36,9 +31,7 @@ import org.jetbrains.plugins.scala.lang.completion.lookups.LookupElementManager
   */
 
 class ScalaKeywordCompletionContributor extends ScalaCompletionContributor {
-  private def registerStandardCompletion(
-      filter: ElementFilter,
-      keywords: String*) {
+  private def registerStandardCompletion(filter: ElementFilter, keywords: String*) {
     extend(
       CompletionType.BASIC,
       PlatformPatterns.psiElement.and(

@@ -141,11 +141,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       i = until
     }
 
-    private def foreach_quick[U](
-        f: T => U,
-        a: Array[Any],
-        ntil: Int,
-        from: Int) = {
+    private def foreach_quick[U](f: T => U, a: Array[Any], ntil: Int, from: Int) = {
       var j = from
       while (j < ntil) {
         f(a(j).asInstanceOf[T])
@@ -159,11 +155,7 @@ class ParArray[T] private[mutable] (val arrayseq: ArraySeq[T])
       c
     }
 
-    private def count_quick(
-        p: T => Boolean,
-        a: Array[Any],
-        ntil: Int,
-        from: Int) = {
+    private def count_quick(p: T => Boolean, a: Array[Any], ntil: Int, from: Int) = {
       var cnt = 0
       var j = from
       while (j < ntil) {

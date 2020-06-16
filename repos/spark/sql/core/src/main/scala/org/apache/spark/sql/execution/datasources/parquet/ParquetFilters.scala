@@ -42,8 +42,7 @@ private[sql] object ParquetFilters {
     override def inverseCanDrop(statistics: Statistics[T]): Boolean = false
   }
 
-  private val makeEq
-      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+  private val makeEq: PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case BooleanType =>
       (n: String, v: Any) =>
         FilterApi.eq(booleanColumn(n), v.asInstanceOf[java.lang.Boolean])
@@ -104,8 +103,7 @@ private[sql] object ParquetFilters {
      */
   }
 
-  private val makeLt
-      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+  private val makeLt: PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case IntegerType =>
       (n: String, v: Any) => FilterApi.lt(intColumn(n), v.asInstanceOf[Integer])
     case LongType =>
@@ -157,8 +155,7 @@ private[sql] object ParquetFilters {
      */
   }
 
-  private val makeGt
-      : PartialFunction[DataType, (String, Any) => FilterPredicate] = {
+  private val makeGt: PartialFunction[DataType, (String, Any) => FilterPredicate] = {
     case IntegerType =>
       (n: String, v: Any) =>
         FilterApi.gt(intColumn(n), v.asInstanceOf[java.lang.Integer])

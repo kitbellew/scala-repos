@@ -26,9 +26,7 @@ abstract class TestConfigurationProducer(configurationType: ConfigurationType)
       configurationType)
     with AbstractTestConfigurationProducer {
 
-  protected def isObjectInheritor(
-      clazz: ScTypeDefinition,
-      fqn: String): Boolean = {
+  protected def isObjectInheritor(clazz: ScTypeDefinition, fqn: String): Boolean = {
     val suiteClazz = ScalaPsiManager
       .instance(clazz.getProject)
       .getCachedClass(

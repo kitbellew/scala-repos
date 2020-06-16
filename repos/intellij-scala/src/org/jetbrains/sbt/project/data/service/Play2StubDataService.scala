@@ -13,8 +13,7 @@ import org.jetbrains.sbt.project.data.Play2ProjectData
   * Date: 14.11.14.
   */
 class Play2StubDataService
-    extends AbstractDataService[Play2ProjectData, Project](
-      Play2ProjectData.Key) {
+    extends AbstractDataService[Play2ProjectData, Project](Play2ProjectData.Key) {
   override def createImporter(
       toImport: Seq[DataNode[Play2ProjectData]],
       projectData: ProjectData,

@@ -83,9 +83,7 @@ trait ScBlock
             Some(this))
         case _ =>
           val et = expectedType(fromUnderscore = false).getOrElse(
-            return Failure(
-              "Cannot infer type without expected type",
-              Some(this)))
+            return Failure("Cannot infer type without expected type", Some(this)))
           return et match {
             case f @ ScFunctionType(_, params) =>
               Success(
@@ -136,18 +134,14 @@ trait ScBlock
               val t = existize(
                 typed.getType(TypingContext.empty).getOrAny,
                 visitedWithT)
-              m.put(
-                typed.name,
-                new ScExistentialArgument(typed.name, Nil, t, t))
+              m.put(typed.name, new ScExistentialArgument(typed.name, Nil, t, t))
               new ScTypeVariable(typed.name)
             case ScDesignatorType(des)
                 if PsiTreeUtil.isContextAncestor(this, des, true) =>
               des match {
                 case obj: ScObject =>
                   val t = existize(leastClassType(obj), visitedWithT)
-                  m.put(
-                    obj.name,
-                    new ScExistentialArgument(obj.name, Nil, t, t))
+                  m.put(obj.name, new ScExistentialArgument(obj.name, Nil, t, t))
                   new ScTypeVariable(obj.name)
                 case clazz: ScTypeDefinition =>
                   val t = existize(leastClassType(clazz), visitedWithT)
@@ -162,9 +156,7 @@ trait ScBlock
                   val t = existize(
                     typed.getType(TypingContext.empty).getOrAny,
                     visitedWithT)
-                  m.put(
-                    typed.name,
-                    new ScExistentialArgument(typed.name, Nil, t, t))
+                  m.put(typed.name, new ScExistentialArgument(typed.name, Nil, t, t))
                   new ScTypeVariable(typed.name)
                 case _ => t
               }
@@ -248,9 +240,7 @@ trait ScBlock
       t.extendsBlock.templateBody match {
         case Some(b: ScTemplateBody) =>
           // jzaugg: Without these type annotations, a class cast exception occured above. I'm not entirely sure why.
-          (
-            b.holders: Seq[ScDeclaredElementsHolder],
-            b.aliases: Seq[ScTypeAlias])
+          (b.holders: Seq[ScDeclaredElementsHolder], b.aliases: Seq[ScTypeAlias])
         case None => (Seq.empty, Seq.empty)
       }
 

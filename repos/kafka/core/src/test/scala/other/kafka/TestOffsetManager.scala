@@ -172,10 +172,8 @@ object TestOffsetManager {
           if (channels.contains(coordinatorId))
             channels(coordinatorId)
           else {
-            val newChannel = ClientUtils.channelToOffsetManager(
-              group,
-              zkUtils,
-              SocketTimeoutMs)
+            val newChannel =
+              ClientUtils.channelToOffsetManager(group, zkUtils, SocketTimeoutMs)
             channels.put(coordinatorId, newChannel)
             newChannel
           }

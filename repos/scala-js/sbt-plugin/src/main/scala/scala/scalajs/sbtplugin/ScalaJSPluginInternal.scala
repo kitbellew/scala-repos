@@ -444,8 +444,7 @@ object ScalaJSPluginInternal {
     skip in packageScalaJSLauncher := !persistLauncher.value,
     packageScalaJSLauncher <<= Def.taskDyn {
       if ((skip in packageScalaJSLauncher).value)
-        Def.task(
-          Attributed.blank((artifactPath in packageScalaJSLauncher).value))
+        Def.task(Attributed.blank((artifactPath in packageScalaJSLauncher).value))
       else
         Def.task {
           mainClass.value map {
@@ -463,10 +462,7 @@ object ScalaJSPluginInternal {
     artifactPath in packageJSDependencies :=
       ((crossTarget in packageJSDependencies).value /
         ((moduleName in packageJSDependencies).value + "-jsdeps.js")),
-    packageJSDependenciesSetting(
-      packageJSDependencies,
-      "package-js-deps",
-      _.lib),
+    packageJSDependenciesSetting(packageJSDependencies, "package-js-deps", _.lib),
     artifactPath in packageMinifiedJSDependencies :=
       ((crossTarget in packageMinifiedJSDependencies).value /
         ((moduleName in packageMinifiedJSDependencies).value + "-jsdeps.min.js")),
@@ -638,8 +634,9 @@ object ScalaJSPluginInternal {
             "__ScalaJSEnv.javaSystemProperties = {" + formattedProps.mkString(
             ", ") + "};\n"
         }
-        Seq(ResolvedJSDependency.minimal(
-          new MemVirtualJSFile("setJavaSystemProperties.js").withContent(code)))
+        Seq(
+          ResolvedJSDependency.minimal(
+            new MemVirtualJSFile("setJavaSystemProperties.js").withContent(code)))
       }
     },
     loadedJSEnv <<= Def.taskDyn {
@@ -798,12 +795,9 @@ object ScalaJSPluginInternal {
   val scalaJSTestBuildSettings = (
     scalaJSConfigSettings
   ) ++ (
-    Seq(
-      fastOptJS,
-      fullOptJS,
-      packageScalaJSLauncher,
-      packageJSDependencies) map { packageJSTask =>
-      moduleName in packageJSTask := moduleName.value + "-test"
+    Seq(fastOptJS, fullOptJS, packageScalaJSLauncher, packageJSDependencies) map {
+      packageJSTask =>
+        moduleName in packageJSTask := moduleName.value + "-test"
     }
   )
 

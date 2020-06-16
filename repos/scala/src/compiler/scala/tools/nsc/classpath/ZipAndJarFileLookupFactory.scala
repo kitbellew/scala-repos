@@ -132,13 +132,8 @@ object ZipAndJarFlatClassPathFactory extends ZipAndJarFileLookupFactory {
         }
 
       val subpackages = getSubpackages(file)
-      packages.put(
-        FlatClassPath.RootPackage,
-        PackageFileInfo(file, subpackages))
-      traverse(
-        FlatClassPath.RootPackage,
-        subpackages,
-        collection.mutable.Queue())
+      packages.put(FlatClassPath.RootPackage, PackageFileInfo(file, subpackages))
+      traverse(FlatClassPath.RootPackage, subpackages, collection.mutable.Queue())
       packages
     }
 

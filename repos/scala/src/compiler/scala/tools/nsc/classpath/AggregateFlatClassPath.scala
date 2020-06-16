@@ -76,8 +76,7 @@ case class AggregateFlatClassPath(aggregates: Seq[FlatClassPath])
   override private[nsc] def list(inPackage: String): FlatClassPathEntries = {
     val (packages, classesAndSources) = aggregates.map(_.list(inPackage)).unzip
     val distinctPackages = packages.flatten.distinct
-    val distinctClassesAndSources = mergeClassesAndSources(
-      classesAndSources: _*)
+    val distinctClassesAndSources = mergeClassesAndSources(classesAndSources: _*)
     FlatClassPathEntries(distinctPackages, distinctClassesAndSources)
   }
 

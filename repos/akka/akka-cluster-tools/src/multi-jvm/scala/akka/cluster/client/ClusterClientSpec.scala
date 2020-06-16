@@ -216,10 +216,7 @@ class ClusterClientSpec
             ClusterClientSettings(system).withInitialContacts(initialContacts)),
           "client2")
 
-        c ! ClusterClient.Send(
-          "/user/service2",
-          "bonjour",
-          localAffinity = true)
+        c ! ClusterClient.Send("/user/service2", "bonjour", localAffinity = true)
         val reply = expectMsgType[Reply]
         reply.msg should be("bonjour-ack")
         val receptionistRoleName = roleName(reply.node) match {
@@ -311,8 +308,8 @@ class ClusterClientSpec
           node(r) / "system" / "receptionist"
         }
         val c = system.actorOf(
-          ClusterClient.props(ClusterClientSettings(system).withInitialContacts(
-            remainingContacts)),
+          ClusterClient.props(
+            ClusterClientSettings(system).withInitialContacts(remainingContacts)),
           "client4")
 
         c ! ClusterClient.Send(

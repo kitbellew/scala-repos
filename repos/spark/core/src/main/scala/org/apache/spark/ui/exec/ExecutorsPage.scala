@@ -44,9 +44,7 @@ private[ui] case class ExecutorSummaryInfo(
     maxMemory: Long,
     executorLogs: Map[String, String])
 
-private[ui] class ExecutorsPage(
-    parent: ExecutorsTab,
-    threadDumpEnabled: Boolean)
+private[ui] class ExecutorsPage(parent: ExecutorsTab, threadDumpEnabled: Boolean)
     extends WebUIPage("") {
   private val listener = parent.listener
   // When GCTimePercent is edited change ToolTips.TASK_TIME to match

@@ -22,8 +22,7 @@ import scala.collection.mutable
   * @author Alefas
   * @since 03.03.14
   */
-class ScalaApplicationUsagesCollector
-    extends AbstractApplicationUsagesCollector {
+class ScalaApplicationUsagesCollector extends AbstractApplicationUsagesCollector {
   override def getProjectUsages(project: Project): util.Set[UsageDescriptor] = {
     extensions.inReadAction {
       val set: mutable.HashSet[UsageDescriptor] =

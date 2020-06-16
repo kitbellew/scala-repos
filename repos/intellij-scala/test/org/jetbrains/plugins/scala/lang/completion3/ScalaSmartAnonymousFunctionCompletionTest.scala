@@ -7,8 +7,7 @@ import org.jetbrains.plugins.scala.codeInsight.ScalaCodeInsightTestBase
   * @author Alexander Podkhalyuzin
   */
 
-class ScalaSmartAnonymousFunctionCompletionTest
-    extends ScalaCodeInsightTestBase {
+class ScalaSmartAnonymousFunctionCompletionTest extends ScalaCodeInsightTestBase {
   def testAbstractTypeInfoFromFirstClause() {
     val fileText =
       """

@@ -46,9 +46,8 @@ class NameTreeParsersTest extends FunSuite with AssertionsForJUnit {
           NameTree.Weighted(defaultWeight, NameTree.Leaf(Path.Utf8("bar")))))
     assert(
       NameTreeParsers.parseNameTree("  /foo | /bar  ") ==
-        NameTree.Alt(
-          NameTree.Leaf(Path.Utf8("foo")),
-          NameTree.Leaf(Path.Utf8("bar"))))
+        NameTree
+          .Alt(NameTree.Leaf(Path.Utf8("foo")), NameTree.Leaf(Path.Utf8("bar"))))
     assert(
       NameTreeParsers.parseNameTree("/foo & /bar | /bar & /baz") ==
         NameTree.Alt(

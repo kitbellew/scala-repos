@@ -156,18 +156,15 @@ trait EntityPage extends HtmlPage {
 
       val (subsToTpl, subsAfterTpl) = parentSub.partition(_.name <= tpl.name)
 
-      val subsToTplLis = subsToTpl.map(
-        memberToHtml(_, tpl, indentation = rootToParentLis.length))
+      val subsToTplLis =
+        subsToTpl.map(memberToHtml(_, tpl, indentation = rootToParentLis.length))
       val subsAfterTplLis = subsAfterTpl.map(
         memberToHtml(_, tpl, indentation = rootToParentLis.length))
       val currEntityLis = currentPackageTpls
-        .filter(x =>
-          !x.isPackage && (x.isTrait || x.isClass || x.isAbstractType))
+        .filter(x => !x.isPackage && (x.isTrait || x.isClass || x.isAbstractType))
         .sortBy(_.name)
         .map(
-          entityToUl(
-            _,
-            (if (tpl.isPackage) 0 else -1) + rootToParentLis.length))
+          entityToUl(_, (if (tpl.isPackage) 0 else -1) + rootToParentLis.length))
       val currSubLis = tpl.templates
         .filter(_.isPackage)
         .sortBy(_.name)
@@ -255,9 +252,7 @@ trait EntityPage extends HtmlPage {
         NodeSeq.Empty
       else
         <p id="owner">{
-          templatesToHtml(
-            tpl.inTemplate.toRoot.reverse.tail,
-            scala.xml.Text("."))
+          templatesToHtml(tpl.inTemplate.toRoot.reverse.tail, scala.xml.Text("."))
         }</p>
     }
 

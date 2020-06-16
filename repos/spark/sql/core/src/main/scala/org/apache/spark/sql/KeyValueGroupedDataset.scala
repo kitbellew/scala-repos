@@ -26,11 +26,7 @@ import org.apache.spark.sql.catalyst.encoders.{
   ExpressionEncoder,
   OuterScopes
 }
-import org.apache.spark.sql.catalyst.expressions.{
-  Alias,
-  Attribute,
-  CreateStruct
-}
+import org.apache.spark.sql.catalyst.expressions.{Alias, Attribute, CreateStruct}
 import org.apache.spark.sql.catalyst.plans.logical._
 import org.apache.spark.sql.execution.QueryExecution
 

@@ -146,9 +146,7 @@ class CreateTableAsSelectSuite
         |SELECT b FROM jt
       """.stripMargin)
 
-    checkAnswer(
-      sql("SELECT * FROM jsonTable"),
-      sql("SELECT b FROM jt").collect())
+    checkAnswer(sql("SELECT * FROM jsonTable"), sql("SELECT b FROM jt").collect())
 
     caseInsensitiveContext.dropTempTable("jsonTable")
   }

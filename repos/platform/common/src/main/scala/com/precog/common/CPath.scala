@@ -67,9 +67,7 @@ sealed trait CPath { self =>
   }
 
   def dropPrefix(p: CPath): Option[CPath] = {
-    def remainder(
-        nodes: List[CPathNode],
-        toDrop: List[CPathNode]): Option[CPath] = {
+    def remainder(nodes: List[CPathNode], toDrop: List[CPathNode]): Option[CPath] = {
       nodes match {
         case x :: xs =>
           toDrop match {

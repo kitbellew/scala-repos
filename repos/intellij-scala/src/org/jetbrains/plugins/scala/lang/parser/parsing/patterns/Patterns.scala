@@ -80,10 +80,7 @@ object XmlPatterns extends ParserNode {
             ScalaTokenTypes.tUNDER,
             ScalaTokenTypes.tIDENTIFIER)
         else
-          lookAhead(
-            builder,
-            ScalaTokenTypes.tUNDER,
-            ScalaTokenTypes.tIDENTIFIER)) {
+          lookAhead(builder, ScalaTokenTypes.tUNDER, ScalaTokenTypes.tIDENTIFIER)) {
         if (withComma) builder.advanceLexer()
         val wild = builder.mark
         builder.getTokenType

@@ -173,8 +173,8 @@ private[scalaz] trait ApplicativeBuilder[M[_], A, B] {
                           implicit ap: Apply[M]): M[MM] =
                         ap.apply12(a, b, c, d, e, ff, g, h, i, j, k, l)(f)
 
-                      def tupled(implicit ap: Apply[M])
-                          : M[(A, B, C, D, E, F, G, H, I, J, K, L)] =
+                      def tupled(implicit
+                          ap: Apply[M]): M[(A, B, C, D, E, F, G, H, I, J, K, L)] =
                         apply(Tuple12.apply)
                     }
 

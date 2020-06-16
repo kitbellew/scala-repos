@@ -37,12 +37,12 @@ class PullRequestServiceSpec
           "user1/repo1/master",
           "user1/repo2/head1"
         ) // othre repository
-        val r1 = swap(
-          generateNewPullRequest("user1/repo1/master2", "user1/repo1/head1"))
-        val r2 = swap(
-          generateNewPullRequest("user1/repo1/master", "user1/repo1/head1"))
-        val r3 = swap(
-          generateNewPullRequest("user1/repo1/master4", "user1/repo1/head1"))
+        val r1 =
+          swap(generateNewPullRequest("user1/repo1/master2", "user1/repo1/head1"))
+        val r2 =
+          swap(generateNewPullRequest("user1/repo1/master", "user1/repo1/head1"))
+        val r3 =
+          swap(generateNewPullRequest("user1/repo1/master4", "user1/repo1/head1"))
         assert(
           getPullRequestFromBranch("user1", "repo1", "head1", "master") == Some(
             r2))

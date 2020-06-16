@@ -82,9 +82,8 @@ class HttpClientDispatcher(
                 Future.Done
 
               case res: HttpResponse if !res.isChunked =>
-                val response = Response(
-                  res,
-                  BufReader(ChannelBufferBuf.Owned(res.getContent)))
+                val response =
+                  Response(res, BufReader(ChannelBufferBuf.Owned(res.getContent)))
                 p.updateIfEmpty(Return(response))
                 Future.Done
 

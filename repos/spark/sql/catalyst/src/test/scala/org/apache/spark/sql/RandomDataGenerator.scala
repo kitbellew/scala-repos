@@ -224,10 +224,7 @@ object RandomDataGenerator {
           _.nextInt().toByte,
           Seq(Byte.MinValue, Byte.MaxValue, 0.toByte))
       case IntegerType =>
-        randomNumeric[Int](
-          rand,
-          _.nextInt(),
-          Seq(Int.MinValue, Int.MaxValue, 0))
+        randomNumeric[Int](rand, _.nextInt(), Seq(Int.MinValue, Int.MaxValue, 0))
       case LongType =>
         randomNumeric[Long](
           rand,

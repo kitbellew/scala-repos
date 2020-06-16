@@ -270,9 +270,8 @@ class ImplicitCollector(
           memb match {
             case memb: ScMember if memb.hasModifierProperty("implicit") =>
               placeCalculated = true
-              if (!isPredefPriority && !ResolveUtils.isAccessible(
-                  memb,
-                  getPlace)) return true
+              if (!isPredefPriority && !ResolveUtils.isAccessible(memb, getPlace))
+                return true
               addResult(
                 new ScalaResolveResult(
                   named,
@@ -290,9 +289,8 @@ class ImplicitCollector(
           memb match {
             case memb: ScMember if memb.hasModifierProperty("implicit") =>
               placeCalculated = true
-              if (!isPredefPriority && !ResolveUtils.isAccessible(
-                  memb,
-                  getPlace)) return true
+              if (!isPredefPriority && !ResolveUtils.isAccessible(memb, getPlace))
+                return true
               addResult(
                 new ScalaResolveResult(
                   named,
@@ -339,9 +337,7 @@ class ImplicitCollector(
               case Success(objType: ScType, _) =>
                 if (!subst.subst(objType).conforms(tp))
                   if (fullInfo)
-                    Some(
-                      c.copy(implicitReason = TypeDoesntConformResult),
-                      subst)
+                    Some(c.copy(implicitReason = TypeDoesntConformResult), subst)
                   else None
                 else Some(c.copy(implicitReason = OkResult), subst)
               case _ =>
@@ -358,9 +354,7 @@ class ImplicitCollector(
               case Success(paramType: ScType, _) =>
                 if (!subst.subst(paramType).conforms(tp))
                   if (fullInfo)
-                    Some(
-                      c.copy(implicitReason = TypeDoesntConformResult),
-                      subst)
+                    Some(c.copy(implicitReason = TypeDoesntConformResult), subst)
                   else None
                 else Some(c.copy(implicitReason = OkResult), subst)
               case _ =>
@@ -377,9 +371,7 @@ class ImplicitCollector(
               case Success(pattType: ScType, _) if !withLocalTypeInference =>
                 if (!subst.subst(pattType).conforms(tp))
                   if (fullInfo)
-                    Some(
-                      c.copy(implicitReason = TypeDoesntConformResult),
-                      subst)
+                    Some(c.copy(implicitReason = TypeDoesntConformResult), subst)
                   else None
                 else Some(c.copy(implicitReason = OkResult), subst)
               case _ =>
@@ -396,9 +388,7 @@ class ImplicitCollector(
               case Success(fType: ScType, _) =>
                 if (!subst.subst(fType).conforms(tp))
                   if (fullInfo)
-                    Some(
-                      c.copy(implicitReason = TypeDoesntConformResult),
-                      subst)
+                    Some(c.copy(implicitReason = TypeDoesntConformResult), subst)
                   else None
                 else Some(c.copy(implicitReason = OkResult), subst)
               case _ =>
@@ -449,8 +439,7 @@ class ImplicitCollector(
                 case Success(_funType: ScType, _) =>
                   def checkType(ret: ScType)
                       : Option[(ScalaResolveResult, ScSubstitutor)] = {
-                    def compute()
-                        : Option[(ScalaResolveResult, ScSubstitutor)] = {
+                    def compute(): Option[(ScalaResolveResult, ScSubstitutor)] = {
                       val typeParameters = fun.typeParameters
                       val lastImplicit =
                         fun.effectiveParameterClauses.lastOption.flatMap {
@@ -551,8 +540,7 @@ class ImplicitCollector(
                                     return reportWrong(BadTypeResult))) match {
                                     case (ScFunctionType(rt, _), _) =>
                                       if (predicateFunction(
-                                          c.copy(implicitParameterType =
-                                            Some(rt)),
+                                          c.copy(implicitParameterType = Some(rt)),
                                           subst).isEmpty)
                                         return reportWrong(
                                           CantFindExtensionMethodResult)

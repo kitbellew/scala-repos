@@ -32,10 +32,7 @@ object Main {
     make(args, System.out, standalone = true)
   }
 
-  private def make(
-      arguments: Seq[String],
-      out: PrintStream,
-      standalone: Boolean) {
+  private def make(arguments: Seq[String], out: PrintStream, standalone: Boolean) {
     var hasErrors = false
 
     val client = {

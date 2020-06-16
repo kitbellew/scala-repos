@@ -8,8 +8,7 @@ private[finagle] object socksProxyHost
     extends GlobalFlag("", "SOCKS proxy host") {
   override val name = "socksProxyHost"
 }
-private[finagle] object socksProxyPort
-    extends GlobalFlag(0, "SOCKS proxy port") {
+private[finagle] object socksProxyPort extends GlobalFlag(0, "SOCKS proxy port") {
   override val name = "socksProxyPort"
 }
 private[finagle] object socksUsernameFlag

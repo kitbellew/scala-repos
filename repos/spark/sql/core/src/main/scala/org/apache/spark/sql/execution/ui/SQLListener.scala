@@ -41,8 +41,7 @@ case class SparkListenerSQLExecutionStart(
 case class SparkListenerSQLExecutionEnd(executionId: Long, time: Long)
     extends SparkListenerEvent
 
-private[sql] class SQLHistoryListenerFactory
-    extends SparkHistoryListenerFactory {
+private[sql] class SQLHistoryListenerFactory extends SparkHistoryListenerFactory {
 
   override def createListeners(
       conf: SparkConf,
@@ -96,8 +95,7 @@ private[sql] class SQLListener(conf: SparkConf)
     if (executions.size > retainedExecutions) {
       val toRemove = math.max(retainedExecutions / 10, 1)
       executions.take(toRemove).foreach { execution =>
-        for (executionUIData <-
-            _executionIdToData.remove(execution.executionId)) {
+        for (executionUIData <- _executionIdToData.remove(execution.executionId)) {
           for (jobId <- executionUIData.jobs.keys) {
             _jobIdToExecutionId.remove(jobId)
           }

@@ -132,8 +132,7 @@ trait Slice { source =>
               ref,
               pairs
                 .map(_._2)
-                .reduceLeft((c1, c2) =>
-                  Column.unionRightSemigroup.append(c1, c2)))
+                .reduceLeft((c1, c2) => Column.unionRightSemigroup.append(c1, c2)))
         } toMap
       }
     }
@@ -452,10 +451,8 @@ trait Slice { source =>
                 JArrayFixedT(elems),
                 CArrayType(cElemType),
                 CPath(CPathArray, cPath @ _*)) =>
-            val mappers = elems mapValues (flattenDeleteTree(
-              _,
-              cElemType,
-              CPath(cPath: _*)))
+            val mappers =
+              elems mapValues (flattenDeleteTree(_, cElemType, CPath(cPath: _*)))
             xs =>
               Some(xs.zipWithIndex map {
                 case (x, j) =>
@@ -592,8 +589,7 @@ trait Slice { source =>
           ColumnRef(CPath.Identity, CBoolean) -> BoolColumn
             .Either(definedBits, includedBits))
       } else {
-        Map(
-          ColumnRef(CPath.Identity, CBoolean) -> BoolColumn.False(definedBits))
+        Map(ColumnRef(CPath.Identity, CBoolean) -> BoolColumn.False(definedBits))
       }
     }
 
@@ -826,9 +822,7 @@ trait Slice { source =>
             rowComparatorFor(prev, filter)(_.columns.keys map (_.selector))
 
           @tailrec
-          def findStraddlingDistinct0(
-              prevRow: Int,
-              curRow: Int): ArrayIntList = {
+          def findStraddlingDistinct0(prevRow: Int, curRow: Int): ArrayIntList = {
             if (curRow >= filter.size) acc
             else {
               val retain = straddleComparator.compare(prevRow, curRow) != EQ
@@ -1912,9 +1906,7 @@ object Slice {
 
           case CArray(arr, cType) =>
             acc
-              .getOrElse(
-                ref,
-                ArrayHomogeneousArrayColumn.empty(sliceSize)(cType))
+              .getOrElse(ref, ArrayHomogeneousArrayColumn.empty(sliceSize)(cType))
               .asInstanceOf[ArrayHomogeneousArrayColumn[cType.tpe]]
               .unsafeTap { c => c.update(sliceIndex, arr) }
 

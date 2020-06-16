@@ -468,8 +468,7 @@ sealed abstract class ValidationInstances0 extends ValidationInstances1 {
         f1 === f2
     }
 
-  implicit def ValidationMonoid[E: Semigroup, A: Monoid]
-      : Monoid[Validation[E, A]] =
+  implicit def ValidationMonoid[E: Semigroup, A: Monoid]: Monoid[Validation[E, A]] =
     new Monoid[Validation[E, A]] {
       def append(a1: Validation[E, A], a2: => Validation[E, A]) =
         a1 +++ a2
@@ -581,8 +580,7 @@ sealed abstract class ValidationInstances3 {
         fab.bitraverse(f, g)
     }
 
-  implicit def ValidationApplicative[L: Semigroup]
-      : Applicative[Validation[L, ?]] =
+  implicit def ValidationApplicative[L: Semigroup]: Applicative[Validation[L, ?]] =
     new Applicative[Validation[L, ?]] {
       override def map[A, B](fa: Validation[L, A])(f: A => B) =
         fa map f

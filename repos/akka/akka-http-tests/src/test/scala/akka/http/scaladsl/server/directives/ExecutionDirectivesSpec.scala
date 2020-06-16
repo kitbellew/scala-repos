@@ -77,8 +77,9 @@ class ExecutionDirectivesSpec extends RoutingSpec {
         responseAs[String] shouldEqual "There was an internal server error."
       }
     }
-    "always fall back to a default content type" in EventFilter[
-      RuntimeException](occurrences = 2, message = "buh2").intercept {
+    "always fall back to a default content type" in EventFilter[RuntimeException](
+      occurrences = 2,
+      message = "buh2").intercept {
       Get("/abc") ~> Accept(MediaTypes.`application/json`) ~>
         get {
           handleExceptions(handler) {

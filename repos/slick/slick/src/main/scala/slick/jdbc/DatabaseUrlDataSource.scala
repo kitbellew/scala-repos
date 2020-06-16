@@ -25,8 +25,8 @@ class DatabaseUrlDataSource extends DriverDataSource(null) {
       super.init
     }
 
-  private[this] def extractUrl(databaseUrl: Option[String])
-      : (Option[String], Option[(String, String)]) = {
+  private[this] def extractUrl(
+      databaseUrl: Option[String]): (Option[String], Option[(String, String)]) = {
     databaseUrl match {
       case Some(PostgresFullUrl(username, password, host, dbname)) =>
         Some(s"jdbc:postgresql://$host/$dbname") -> Some(username -> password)

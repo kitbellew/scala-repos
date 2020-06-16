@@ -290,12 +290,8 @@ object ProducerPerformance extends Logging {
         props.put(
           "request.required.acks",
           config.producerRequestRequiredAcks.toString)
-        props.put(
-          "request.timeout.ms",
-          config.producerRequestTimeoutMs.toString)
-        props.put(
-          "message.send.max.retries",
-          config.producerNumRetries.toString)
+        props.put("request.timeout.ms", config.producerRequestTimeoutMs.toString)
+        props.put("message.send.max.retries", config.producerNumRetries.toString)
         props.put("retry.backoff.ms", config.producerRetryBackoffMs.toString)
         props.put("serializer.class", classOf[DefaultEncoder].getName)
         props.put("key.serializer.class", classOf[NullEncoder[Long]].getName)
@@ -335,9 +331,7 @@ object ProducerPerformance extends Logging {
       seqMsgString.getBytes()
     }
 
-    private def generateProducerData(
-        topic: String,
-        messageId: Long): Array[Byte] = {
+    private def generateProducerData(topic: String, messageId: Long): Array[Byte] = {
       val msgSize =
         if (config.isFixedSize) config.messageSize
         else 1 + rand.nextInt(config.messageSize)

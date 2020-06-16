@@ -6,11 +6,7 @@ package akka.camel.internal.component
 
 import java.util.{Map ⇒ JMap}
 import org.apache.camel._
-import org.apache.camel.impl.{
-  DefaultProducer,
-  DefaultEndpoint,
-  DefaultComponent
-}
+import org.apache.camel.impl.{DefaultProducer, DefaultEndpoint, DefaultComponent}
 import akka.actor._
 import akka.pattern._
 import scala.beans.BeanProperty

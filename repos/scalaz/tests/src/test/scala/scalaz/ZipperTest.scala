@@ -496,11 +496,11 @@ object ZipperTest extends SpecLite {
       true
   }
 
-  "findPrevious should not blow the stack" ! forAll(
-    minSizeIntZipper(10 * 1000)) { z =>
-    var limit = 10 * 1000
-    z.end.findPrevious { x => limit -= 1; limit > 0 }
-    true
+  "findPrevious should not blow the stack" ! forAll(minSizeIntZipper(10 * 1000)) {
+    z =>
+      var limit = 10 * 1000
+      z.end.findPrevious { x => limit -= 1; limit > 0 }
+      true
   }
 
   "Update Modifies Zipper Correctly" ! forAll {

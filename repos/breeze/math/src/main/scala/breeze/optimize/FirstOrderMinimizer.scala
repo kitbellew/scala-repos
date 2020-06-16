@@ -75,10 +75,7 @@ abstract class FirstOrderMinimizer[T, DF <: StochasticDiffFunction[T]](
       convergenceCheck.initialInfo)
   }
 
-  protected def calculateObjective(
-      f: DF,
-      x: T,
-      history: History): (Double, T) = {
+  protected def calculateObjective(f: DF, x: T, history: History): (Double, T) = {
     f.calculate(x)
   }
 
@@ -245,8 +242,7 @@ object FirstOrderMinimizer {
 
     override def apply(
         state: State[T, _, _],
-        info: IndexedSeq[ConvergenceCheck[T]#Info])
-        : Option[ConvergenceReason] = {
+        info: IndexedSeq[ConvergenceCheck[T]#Info]): Option[ConvergenceReason] = {
       (checks zip info).iterator
         .flatMap { case (c, i) => c(state, i.asInstanceOf[c.Info]) }
         .toStream
@@ -445,17 +441,13 @@ object FirstOrderMinimizer {
     private implicit val random = new RandBasis(
       new ThreadLocalRandomGenerator(new MersenneTwister(randomSeed)))
 
-    @deprecated(
-      "Use breeze.optimize.minimize(f, init, params) instead.",
-      "0.10")
+    @deprecated("Use breeze.optimize.minimize(f, init, params) instead.", "0.10")
     def minimize[T](f: BatchDiffFunction[T], init: T)(implicit
         space: MutableFiniteCoordinateField[T, _, Double]): T = {
       this.iterations(f, init).last.x
     }
 
-    @deprecated(
-      "Use breeze.optimize.minimize(f, init, params) instead.",
-      "0.10")
+    @deprecated("Use breeze.optimize.minimize(f, init, params) instead.", "0.10")
     def minimize[T](f: DiffFunction[T], init: T)(implicit
         space: MutableEnumeratedCoordinateField[T, _, Double]): T = {
       this.iterations(f, init).last.x
@@ -508,9 +500,7 @@ object FirstOrderMinimizer {
           .iterations(f, init)
       else
         (new LBFGS[T](maxIterations, 5, tolerance = tolerance)(space))
-          .iterations(
-            DiffFunction.withL2Regularization(f, regularization),
-            init)
+          .iterations(DiffFunction.withL2Regularization(f, regularization), init)
     }
   }
 }

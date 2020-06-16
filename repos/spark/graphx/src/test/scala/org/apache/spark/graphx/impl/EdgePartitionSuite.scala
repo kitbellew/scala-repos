@@ -43,10 +43,8 @@ class EdgePartitionSuite extends SparkFunSuite {
       builder.add(e.srcId, e.dstId, e.attr)
     }
     val edgePartition = builder.toEdgePartition
-    assert(
-      edgePartition.reverse.iterator.map(_.copy()).toList === reversedEdges)
-    assert(
-      edgePartition.reverse.reverse.iterator.map(_.copy()).toList === edges)
+    assert(edgePartition.reverse.iterator.map(_.copy()).toList === reversedEdges)
+    assert(edgePartition.reverse.reverse.iterator.map(_.copy()).toList === edges)
   }
 
   test("map") {

@@ -87,9 +87,7 @@ object TopicCommand extends Logging {
 
   }
 
-  private def getTopics(
-      zkUtils: ZkUtils,
-      opts: TopicCommandOptions): Seq[String] = {
+  private def getTopics(zkUtils: ZkUtils, opts: TopicCommandOptions): Seq[String] = {
     val allTopics = zkUtils.getAllTopics().sorted
     if (opts.options.has(opts.topicOpt)) {
       val topicsSpec = opts.options.valueOf(opts.topicOpt)
@@ -110,9 +108,7 @@ object TopicCommand extends Logging {
       if (opts.options.has(opts.replicaAssignmentOpt)) {
         val assignment = parseReplicaAssignment(
           opts.options.valueOf(opts.replicaAssignmentOpt))
-        warnOnMaxMessagesChange(
-          configs,
-          assignment.valuesIterator.next().length)
+        warnOnMaxMessagesChange(configs, assignment.valuesIterator.next().length)
         AdminUtils.createOrUpdateTopicPartitionAssignmentPathInZK(
           zkUtils,
           topic,

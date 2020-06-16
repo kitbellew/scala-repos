@@ -333,8 +333,9 @@ private[spark] class ExternalSorter[K, V, C](
     * in order (you can't "skip ahead" to one partition without reading the previous one).
     * Guaranteed to return a key-value pair for each partition, in order of partition ID.
     */
-  private def merge(spills: Seq[SpilledFile], inMemory: Iterator[((Int, K), C)])
-      : Iterator[(Int, Iterator[Product2[K, C]])] = {
+  private def merge(
+      spills: Seq[SpilledFile],
+      inMemory: Iterator[((Int, K), C)]): Iterator[(Int, Iterator[Product2[K, C]])] = {
     val readers = spills.map(new SpillReader(_))
     val inMemBuffered = inMemory.buffered
     (0 until numPartitions).iterator.map { p =>
@@ -426,9 +427,7 @@ private[spark] class ExternalSorter[K, V, C](
           keys += firstPair._1
           combiners += firstPair._2
           val key = firstPair._1
-          while (sorted.hasNext && comparator.compare(
-              sorted.head._1,
-              key) == 0) {
+          while (sorted.hasNext && comparator.compare(sorted.head._1, key) == 0) {
             val pair = sorted.next()
             var i = 0
             var foundKey = false

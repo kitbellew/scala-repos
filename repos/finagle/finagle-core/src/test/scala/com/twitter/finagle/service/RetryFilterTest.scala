@@ -152,8 +152,7 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
 
         it("when failed with a non-WriteException, fail immediately") {
           new TriesFixture(retryExceptionsOnly) {
-            when(service(123)) thenReturn Future.exception(
-              new Exception("WTF!"))
+            when(service(123)) thenReturn Future.exception(new Exception("WTF!"))
             val e = intercept[Exception] {
               Await.result(retryingService(123))
             }
@@ -246,16 +245,12 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
     describe("with RetryPolicy.backoffJava: Exception cases") {
       describe("using RetryPolicy[(Req, Try[Rep])]") {
         testExceptionPolicy(
-          RetryPolicy.backoffJava(
-            Backoff.toJava(backoffs),
-            shouldRetryResponse),
+          RetryPolicy.backoffJava(Backoff.toJava(backoffs), shouldRetryResponse),
           retryExceptionsOnly = false)
       }
       describe("using RetryPolicy[Try[Nothing]]") {
         testExceptionPolicy(
-          RetryPolicy.backoffJava(
-            Backoff.toJava(backoffs),
-            shouldRetryException),
+          RetryPolicy.backoffJava(Backoff.toJava(backoffs), shouldRetryException),
           retryExceptionsOnly = true)
       }
     }
@@ -269,9 +264,7 @@ class RetryFilterTest extends FunSpec with MockitoSugar with BeforeAndAfter {
         RetryPolicy.backoffJava(Backoff.toJava(backoffs), shouldRetryResponse))
     }
 
-    def testExceptionPolicy(
-        policy: RetryPolicy[_],
-        retryExceptionsOnly: Boolean) {
+    def testExceptionPolicy(policy: RetryPolicy[_], retryExceptionsOnly: Boolean) {
 
       it("always try once") {
         new PolicyFixture(policy, retryExceptionsOnly, timer) {

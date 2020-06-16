@@ -197,8 +197,7 @@ class StreamingKMeansSuite extends SparkFunSuite with TestSuiteBase {
     val data = (0 until numBatches).map { i =>
       (0 until numPoints).map { idx =>
         val center = centers(idx % k)
-        Vectors.dense(
-          Array.tabulate(d)(x => center(x) + rand.nextGaussian() * r))
+        Vectors.dense(Array.tabulate(d)(x => center(x) + rand.nextGaussian() * r))
       }
     }
     (data, centers)

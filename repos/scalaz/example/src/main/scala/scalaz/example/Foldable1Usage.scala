@@ -21,8 +21,7 @@ object Foldable1Usage extends App {
 
   // With the identity function, foldMap just collapses the contained
   // values using the semigroup append:
-  assert(
-    Foldable1[NonEmptyList].foldMap1(NonEmptyList(1, 2, 3))(identity) === 6)
+  assert(Foldable1[NonEmptyList].foldMap1(NonEmptyList(1, 2, 3))(identity) === 6)
   assert(
     Foldable1[NonEmptyList].foldMap1(NonEmptyList("1", "2", "3"))(
       identity) === "123")

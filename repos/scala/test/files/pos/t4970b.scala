@@ -5,8 +5,7 @@ object Traits {
     }
   }
 
-  trait SubOuterClass[T <: SubOuterClass[T]#SubInnerClass]
-      extends OuterClass[T] {
+  trait SubOuterClass[T <: SubOuterClass[T]#SubInnerClass] extends OuterClass[T] {
     trait SubInnerClass extends super.InnerClass { self: T => }
   }
 

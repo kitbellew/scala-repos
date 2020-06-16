@@ -110,15 +110,9 @@ class CSCMatrixTest extends FunSuite with Checkers {
         (Complex(0, 74), Complex(0, -16), Complex(0, 50)),
         (Complex(0, 170), Complex(0, -46), Complex(0, 134))))
     assert(
-      b * c === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * c === DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
-      b * cs === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * cs === DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
       b.t * c === DenseVector(
         Complex(72, -72),
@@ -303,9 +297,7 @@ class CSCMatrixTest extends FunSuite with Checkers {
   }
 
   test("CSCxCSC: OpAddInPlace2:Field") {
-    def testAddInPlace[T: Field: Zero: ClassTag](
-        a: CSCMatrix[T],
-        b: CSCMatrix[T]) = {
+    def testAddInPlace[T: Field: Zero: ClassTag](a: CSCMatrix[T], b: CSCMatrix[T]) = {
       val optspace = SparseFieldOptimizationSpace.sparseOptSpace[T]
       import optspace._
       a += b
@@ -325,9 +317,7 @@ class CSCMatrixTest extends FunSuite with Checkers {
   }
 
   test("CSCxCSC: OpSubInPlace2:Field") {
-    def testSubInPlace[T: Field: Zero: ClassTag](
-        a: CSCMatrix[T],
-        b: CSCMatrix[T]) = {
+    def testSubInPlace[T: Field: Zero: ClassTag](a: CSCMatrix[T], b: CSCMatrix[T]) = {
       val optspace = SparseFieldOptimizationSpace.sparseOptSpace[T]
       import optspace._
       a -= b

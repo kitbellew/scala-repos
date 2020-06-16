@@ -23,8 +23,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScObject
 /**
   * @author Nikolay.Tropin
   */
-class ScalaMoveDirectoryWithClassesHelper
-    extends MoveDirectoryWithClassesHelper {
+class ScalaMoveDirectoryWithClassesHelper extends MoveDirectoryWithClassesHelper {
 
   override def findUsages(
       filesToMove: util.Collection[PsiFile],

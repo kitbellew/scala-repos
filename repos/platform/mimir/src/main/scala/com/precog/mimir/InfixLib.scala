@@ -232,74 +232,34 @@ trait InfixLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         def f2(ctx: MorphContext): F2 =
           CF2P("builtin::infix::compare") {
             case (c1: LongColumn, c2: LongColumn) =>
-              new BoolFrom.LL(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.LL(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: LongColumn, c2: DoubleColumn) =>
-              new BoolFrom.LD(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.LD(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: LongColumn, c2: NumColumn) =>
-              new BoolFrom.LN(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.LN(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: DoubleColumn, c2: LongColumn) =>
-              new BoolFrom.DL(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.DL(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: DoubleColumn, c2: DoubleColumn) =>
-              new BoolFrom.DD(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.DD(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: DoubleColumn, c2: NumColumn) =>
-              new BoolFrom.DN(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.DN(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: NumColumn, c2: LongColumn) =>
-              new BoolFrom.NL(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.NL(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: NumColumn, c2: DoubleColumn) =>
-              new BoolFrom.ND(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.ND(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: NumColumn, c2: NumColumn) =>
-              new BoolFrom.NN(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.NN(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
 
             case (c1: DateColumn, c2: DateColumn) =>
-              new BoolFrom.DtDt(
-                c1,
-                c2,
-                (x, y) => true,
-                (x, y) => f(compare(x, y)))
+              new BoolFrom.DtDt(c1, c2, (x, y) => true, (x, y) => f(compare(x, y)))
           }
       }
 

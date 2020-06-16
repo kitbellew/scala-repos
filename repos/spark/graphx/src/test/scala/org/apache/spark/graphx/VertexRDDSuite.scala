@@ -52,8 +52,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
     withSpark { sc =>
       val vertexA =
         VertexRDD(sc.parallelize(0 until 75, 2).map(i => (i.toLong, 0))).cache()
-      val vertexB = VertexRDD(
-        sc.parallelize(25 until 100, 2).map(i => (i.toLong, 1))).cache()
+      val vertexB =
+        VertexRDD(sc.parallelize(25 until 100, 2).map(i => (i.toLong, 1))).cache()
       val vertexC = vertexA.minus(vertexB)
       assert(vertexC.map(_._1).collect().toSet === (0 until 25).toSet)
     }
@@ -223,8 +223,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
   test("mergeFunc") {
     // test to see if the mergeFunc is working correctly
     withSpark { sc =>
-      val verts = sc.parallelize(
-        List((0L, 0), (1L, 1), (1L, 2), (2L, 3), (2L, 3), (2L, 3)))
+      val verts =
+        sc.parallelize(List((0L, 0), (1L, 1), (1L, 2), (2L, 3), (2L, 3), (2L, 3)))
       val edges = EdgeRDD.fromEdges(sc.parallelize(List.empty[Edge[Int]]))
       val rdd = VertexRDD(verts, edges, 0, (a: Int, b: Int) => a + b)
       // test merge function
@@ -235,8 +235,8 @@ class VertexRDDSuite extends SparkFunSuite with LocalSparkContext {
   test("cache, getStorageLevel") {
     // test to see if getStorageLevel returns correct value after caching
     withSpark { sc =>
-      val verts = sc.parallelize(
-        List((0L, 0), (1L, 1), (1L, 2), (2L, 3), (2L, 3), (2L, 3)))
+      val verts =
+        sc.parallelize(List((0L, 0), (1L, 1), (1L, 2), (2L, 3), (2L, 3), (2L, 3)))
       val edges = EdgeRDD.fromEdges(sc.parallelize(List.empty[Edge[Int]]))
       val rdd = VertexRDD(verts, edges, 0, (a: Int, b: Int) => a + b)
       assert(rdd.getStorageLevel == StorageLevel.NONE)

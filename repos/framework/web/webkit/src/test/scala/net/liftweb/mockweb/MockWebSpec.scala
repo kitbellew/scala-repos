@@ -55,10 +55,7 @@ object MockWebSpec extends Specification {
     }
 
     LiftRules.statefulRewrite.append {
-      case RewriteRequest(
-            ParsePath(List("test", "stateful"), _, _, _),
-            _,
-            _) => {
+      case RewriteRequest(ParsePath(List("test", "stateful"), _, _, _), _, _) => {
         RewriteResponse(List("stateful", "works"))
       }
     }
@@ -142,8 +139,7 @@ object MockWebSpec extends Specification {
       LiftRulesMocker.devTestLiftRulesInstance.doWith(mockLiftRules) {
         useLiftRules.doWith(true) {
           testS("http://foo.com/test/stateless") {
-            S.request.foreach(
-              _.path.partPath must_== List("stateless", "works"))
+            S.request.foreach(_.path.partPath must_== List("stateless", "works"))
           }
         }
       }

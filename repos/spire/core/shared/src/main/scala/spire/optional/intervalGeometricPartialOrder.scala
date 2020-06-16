@@ -52,6 +52,6 @@ object intervalGeometricPartialOrder {
     }
   }
 
-  implicit def intervalGeometricPartialOrder[A: Order]
-      : PartialOrder[Interval[A]] = new IntervalGeometricPartialOrder[A]
+  implicit def intervalGeometricPartialOrder[A: Order]: PartialOrder[Interval[A]] =
+    new IntervalGeometricPartialOrder[A]
 }

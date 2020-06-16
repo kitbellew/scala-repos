@@ -91,10 +91,8 @@ object Arrays {
   }
 
   @inline
-  private def sortRangeAnyRefImpl(
-      a: Array[AnyRef],
-      fromIndex: Int,
-      toIndex: Int)(implicit ord: Ordering[AnyRef]): Unit = {
+  private def sortRangeAnyRefImpl(a: Array[AnyRef], fromIndex: Int, toIndex: Int)(
+      implicit ord: Ordering[AnyRef]): Unit = {
     checkIndicesForCopyOfRange(a.length, fromIndex, toIndex)
     quickSortAnyRef(a, fromIndex, toIndex)
   }
@@ -212,10 +210,8 @@ object Arrays {
   // search variant of insertion sort
   // Caller must pass iN >= i0 or math will fail.  Also, i0 >= 0.
   @noinline
-  private final def insertionSort[@specialized T](
-      a: Array[T],
-      i0: Int,
-      iN: Int)(implicit ord: Ordering[T]): Unit = {
+  private final def insertionSort[@specialized T](a: Array[T], i0: Int, iN: Int)(
+      implicit ord: Ordering[T]): Unit = {
     val n = iN - i0
     if (n >= 2) {
       if (ord.compare(a(i0), a(i0 + 1)) > 0) {
@@ -476,10 +472,7 @@ object Arrays {
     binarySearchImplRef(a, startIndex, endIndex, key)
   }
 
-  @noinline def binarySearch[T](
-      a: Array[T],
-      key: T,
-      c: Comparator[_ >: T]): Int =
+  @noinline def binarySearch[T](a: Array[T], key: T, c: Comparator[_ >: T]): Int =
     binarySearchImpl[T](a, 0, a.length, key, (a, b) => c.compare(a, b) < 0)
 
   @noinline def binarySearch[T](
@@ -687,9 +680,7 @@ object Arrays {
     }
   }
 
-  @noinline def copyOf[T <: AnyRef](
-      original: Array[T],
-      newLength: Int): Array[T] = {
+  @noinline def copyOf[T <: AnyRef](original: Array[T], newLength: Int): Array[T] = {
     implicit val tagT = ClassTag[T](original.getClass.getComponentType)
     copyOfImpl(original, newLength)
   }
@@ -723,9 +714,7 @@ object Arrays {
   @noinline def copyOf(original: Array[Double], newLength: Int): Array[Double] =
     copyOfImpl(original, newLength)
 
-  @noinline def copyOf(
-      original: Array[Boolean],
-      newLength: Int): Array[Boolean] =
+  @noinline def copyOf(original: Array[Boolean], newLength: Int): Array[Boolean] =
     copyOfImpl(original, newLength)
 
   @inline

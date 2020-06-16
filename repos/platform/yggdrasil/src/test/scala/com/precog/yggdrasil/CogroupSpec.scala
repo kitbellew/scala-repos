@@ -189,17 +189,8 @@ trait CogroupSpec[M[+_]]
             JField("left", JString(i.toString)),
             JField("right", JString(i.toString)))))
 
-    val ltable = fromSample(
-      SampleData(
-        Stream(
-          recl(0),
-          recl(1),
-          recl(3),
-          recl(3),
-          recl(5),
-          recl(7),
-          recl(8),
-          recl(8))))
+    val ltable = fromSample(SampleData(
+      Stream(recl(0), recl(1), recl(3), recl(3), recl(5), recl(7), recl(8), recl(8))))
     val rtable = fromSample(
       SampleData(
         Stream(
@@ -258,8 +249,9 @@ trait CogroupSpec[M[+_]]
     val ltable = fromSample(
       SampleData(
         Stream(recl(0, 1), recl(1, 12), recl(3, 13), recl(4, 42), recl(5, 77))))
-    val rtable = fromSample(SampleData(
-      Stream(recr(6, -1), recr(7, 0), recr(8, 14), recr(9, 42), recr(10, 77))))
+    val rtable = fromSample(
+      SampleData(
+        Stream(recr(6, -1), recr(7, 0), recr(8, 14), recr(9, 42), recr(10, 77))))
 
     val expected = Vector(
       recl(0, 1),
@@ -451,25 +443,13 @@ trait CogroupSpec[M[+_]]
 
     val s2 = SampleData(
       Stream(
-        toRecord(
-          Array(1),
-          parseUnsafe("""{ "mbsn8ya":-629648309198725501 }""")),
-        toRecord(
-          Array(2),
-          parseUnsafe("""{ "mbsn8ya":-1642079669762657762 }""")),
+        toRecord(Array(1), parseUnsafe("""{ "mbsn8ya":-629648309198725501 }""")),
+        toRecord(Array(2), parseUnsafe("""{ "mbsn8ya":-1642079669762657762 }""")),
         toRecord(Array(3), parseUnsafe("""{ "mbsn8ya":-75462980385303464 }""")),
-        toRecord(
-          Array(4),
-          parseUnsafe("""{ "mbsn8ya":-4407493923710190330 }""")),
-        toRecord(
-          Array(5),
-          parseUnsafe("""{ "mbsn8ya":4611686018427387903 }""")),
-        toRecord(
-          Array(6),
-          parseUnsafe("""{ "mbsn8ya":-4374327062386862583 }""")),
-        toRecord(
-          Array(7),
-          parseUnsafe("""{ "mbsn8ya":1920642186250198767 }""")),
+        toRecord(Array(4), parseUnsafe("""{ "mbsn8ya":-4407493923710190330 }""")),
+        toRecord(Array(5), parseUnsafe("""{ "mbsn8ya":4611686018427387903 }""")),
+        toRecord(Array(6), parseUnsafe("""{ "mbsn8ya":-4374327062386862583 }""")),
+        toRecord(Array(7), parseUnsafe("""{ "mbsn8ya":1920642186250198767 }""")),
         toRecord(Array(8), parseUnsafe("""{ "mbsn8ya":1 }""")),
         toRecord(Array(9), parseUnsafe("""{ "mbsn8ya":0 }""")),
         toRecord(Array(10), parseUnsafe("""{ "mbsn8ya":1 }""")),
@@ -576,7 +556,8 @@ trait CogroupSpec[M[+_]]
           """{ "value":{ "ugsrry":-9.458984438931391E+306 }, "key":[6.0] }"""),
         parseUnsafe("""{ "value":{ "ugsrry":1.0 }, "key":[10.0] }"""),
         parseUnsafe("""{ "value":{ "ugsrry":0.0 }, "key":[13.0] }"""),
-        parseUnsafe("""{ "value":{ "ugsrry":-3.8439741460685273E+307 }, "key":[14.0] }"""),
+        parseUnsafe(
+          """{ "value":{ "ugsrry":-3.8439741460685273E+307 }, "key":[14.0] }"""),
         parseUnsafe(
           """{ "value":{ "ugsrry":5.690895589711475E+307 }, "key":[15.0] }"""),
         parseUnsafe("""{ "value":{ "ugsrry":0.0 }, "key":[16.0] }"""),
@@ -696,8 +677,7 @@ trait CogroupSpec[M[+_]]
       left <- 0 until 22
       right <- 0 until 22
     } yield {
-      JParser.parseUnsafe(
-        """{ "left": %d, "right": %d }""" format (left, right))
+      JParser.parseUnsafe("""{ "left": %d, "right": %d }""" format (left, right))
     }).toStream
 
     val keySpec = DerefObjectStatic(Leaf(Source), CPathField("key"))

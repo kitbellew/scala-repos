@@ -70,8 +70,7 @@ trait BasicBackend { self =>
       * you need to wait for the returned `Future` to complete in order to ensure that everything
       * has been shut down. */
     def shutdown: Future[Unit] =
-      Future(close)(
-        ExecutionContext.fromExecutor(AsyncExecutor.shutdownExecutor))
+      Future(close)(ExecutionContext.fromExecutor(AsyncExecutor.shutdownExecutor))
 
     /** Free all resources allocated by Slick for this Database, blocking the current thread until
       * everything has been shut down.
@@ -130,8 +129,7 @@ trait BasicBackend { self =>
     /** Create a Reactive Streams `Publisher` using the given context factory. */
     protected[this] def createPublisher[T](
         a: DBIOAction[_, Streaming[T], Nothing],
-        createCtx: Subscriber[_ >: T] => StreamingContext)
-        : DatabasePublisher[T] =
+        createCtx: Subscriber[_ >: T] => StreamingContext): DatabasePublisher[T] =
       new DatabasePublisher[T] {
         def subscribe(s: Subscriber[_ >: T]) = {
           if (s eq null) throw new NullPointerException("Subscriber is null")
@@ -191,11 +189,8 @@ trait BasicBackend { self =>
         case AndThenAction(actions) =>
           val last = actions.length - 1
           def run(pos: Int, v: Any): Future[Any] = {
-            val f1 = runInContext(
-              actions(pos),
-              ctx,
-              streaming && pos == last,
-              pos == 0)
+            val f1 =
+              runInContext(actions(pos), ctx, streaming && pos == last, pos == 0)
             if (pos == last) f1
             else f1.flatMap(run(pos + 1, _))(DBIO.sameThreadExecutionContext)
           }
@@ -256,11 +251,8 @@ trait BasicBackend { self =>
           if (streaming) {
             if (a.supportsStreaming)
               streamSynchronousDatabaseAction(
-                a.asInstanceOf[SynchronousDatabaseAction[
-                  _,
-                  _ <: NoStream,
-                  This,
-                  _ <: Effect]],
+                a.asInstanceOf[
+                  SynchronousDatabaseAction[_, _ <: NoStream, This, _ <: Effect]],
                 ctx.asInstanceOf[StreamingContext],
                 !topLevel).asInstanceOf[Future[R]]
             else

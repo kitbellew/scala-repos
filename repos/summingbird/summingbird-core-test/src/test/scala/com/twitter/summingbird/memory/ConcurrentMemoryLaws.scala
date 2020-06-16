@@ -83,9 +83,7 @@ class ConcurrentMemoryLaws extends WordSpec {
       T: Arbitrary: Manifest,
       K: Arbitrary,
       V: Monoid: Arbitrary: Equiv] =
-    testGraph[T, K, V].singleStepChecker(
-      sample[List[T]],
-      sample[T => List[(K, V)]])
+    testGraph[T, K, V].singleStepChecker(sample[List[T]], sample[T => List[(K, V)]])
 
   /**
     * Tests the in-memory planner against a job with a single flatMap

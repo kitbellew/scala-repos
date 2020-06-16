@@ -395,8 +395,7 @@ private[stream] object Fusing {
           result
         case _ ⇒
           if (Debug) log(s"atomic module $m")
-          List(
-            m -> struct.addModule(m, localGroup, inheritedAttributes, indent))
+          List(m -> struct.addModule(m, localGroup, inheritedAttributes, indent))
       }
     } else {
       val attributes = inheritedAttributes and m.attributes
@@ -424,14 +423,10 @@ private[stream] object Fusing {
           }
           val subMat = subMatBuilder.result()
           if (Debug)
-            log(
-              subMat
-                .map(p ⇒
-                  s"${p._1.getClass.getName}[${struct.hash(p._1)}] -> ${p._2}")
-                .mkString(
-                  "subMat\n  " + "  " * indent,
-                  "\n  " + "  " * indent,
-                  ""))
+            log(subMat
+              .map(p ⇒
+                s"${p._1.getClass.getName}[${struct.hash(p._1)}] -> ${p._2}")
+              .mkString("subMat\n  " + "  " * indent, "\n  " + "  " * indent, ""))
           // we need to remove all wirings that this module copied from nested modules so that we
           // don’t do wirings twice
           val oldDownstreams = m match {
@@ -597,10 +592,7 @@ private[stream] object Fusing {
       */
     val newOuts: ju.Map[OutPort, List[OutPort]] = new ju.HashMap
 
-    private def addMapping[T](
-        orig: T,
-        mapd: T,
-        map: ju.Map[T, List[T]]): Unit = {
+    private def addMapping[T](orig: T, mapd: T, map: ju.Map[T, List[T]]): Unit = {
       if (map.containsKey(orig)) {
         map.put(orig, mapd :: map.get(orig))
       } else map.put(orig, mapd :: Nil)
@@ -804,8 +796,8 @@ private[stream] object Fusing {
       */
     def rewire(oldShape: Shape, newShape: Shape, indent: Int): Unit = {
       if (Debug)
-        println("  " * indent + s"rewiring ${printShape(
-          oldShape)} -> ${printShape(newShape)}")
+        println(
+          "  " * indent + s"rewiring ${printShape(oldShape)} -> ${printShape(newShape)}")
       oldShape.inlets.iterator.zip(newShape.inlets.iterator).foreach {
         case (oldIn, newIn) ⇒
           addMapping(

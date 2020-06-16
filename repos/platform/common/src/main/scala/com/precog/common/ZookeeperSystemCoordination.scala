@@ -154,9 +154,7 @@ class ZookeeperSystemCoordination(
     }
   }
 
-  def acquireIdSequenceBlock(
-      producerId: Int,
-      blockSize: Int): IdSequenceBlock = {
+  def acquireIdSequenceBlock(producerId: Int, blockSize: Int): IdSequenceBlock = {
     val updater = new BlockUpdater(blockSize)
     zkc.updateDataSerialized(producerPath(producerId), updater)
 

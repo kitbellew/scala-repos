@@ -223,8 +223,7 @@ class DelayedFactoryTest extends FunSuite {
       }
 
       test(
-        "%s: a factory that's closed prematurely should still close".format(
-          name)) {
+        "%s: a factory that's closed prematurely should still close".format(name)) {
         val ctx = helpFn()
         import ctx._
 

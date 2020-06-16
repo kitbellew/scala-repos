@@ -30,8 +30,7 @@ object Test extends DirectTest {
       val hashesEqual = hash1 == hash2
       val hashBroken = equal && !hashesEqual
       if (hashBroken)
-        println(
-          f"$hash1%12s != $hash2 // hash codes differ for equal objects!!")
+        println(f"$hash1%12s != $hash2 // hash codes differ for equal objects!!")
     }
 
     check((), ())

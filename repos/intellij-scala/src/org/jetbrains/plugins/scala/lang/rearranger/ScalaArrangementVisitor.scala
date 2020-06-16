@@ -440,9 +440,7 @@ class ScalaArrangementVisitor(
       parseInfo.registerScalaGetter((methodName, psiParent), method, entry)
     } else if (ScalaArrangementVisitor.isScalaSetter(method)) {
       parseInfo.registerScalaSetter(
-        (
-          ScalaArrangementVisitor.removeScalaSetterEnding(methodName),
-          psiParent),
+        (ScalaArrangementVisitor.removeScalaSetterEnding(methodName), psiParent),
         method,
         entry)
     }

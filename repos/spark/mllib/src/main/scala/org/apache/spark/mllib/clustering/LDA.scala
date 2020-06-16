@@ -137,9 +137,7 @@ class LDA private (
     */
   @Since("1.5.0")
   def setDocConcentration(docConcentration: Vector): this.type = {
-    require(
-      docConcentration.size > 0,
-      "docConcentration must have > 0 elements")
+    require(docConcentration.size > 0, "docConcentration must have > 0 elements")
     this.docConcentration = docConcentration
     this
   }

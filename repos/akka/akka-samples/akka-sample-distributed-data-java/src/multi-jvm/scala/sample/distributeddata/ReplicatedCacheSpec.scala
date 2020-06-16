@@ -85,8 +85,7 @@ class ReplicatedCacheSpec
         val probe = TestProbe()
         for (i ← 100 to 200) {
           replicatedCache.tell(new GetFromCache("key" + i), probe.ref)
-          probe.expectMsg(
-            new Cached("key" + i, Optional.of(Integer.valueOf(i))))
+          probe.expectMsg(new Cached("key" + i, Optional.of(Integer.valueOf(i))))
         }
       }
 

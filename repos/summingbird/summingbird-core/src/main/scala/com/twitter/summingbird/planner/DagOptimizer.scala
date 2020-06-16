@@ -172,9 +172,8 @@ trait DagOptimizer[P <: Platform[P]] {
     }
     def summer[K, V](s: Summer[P, K, V]): (M, L[(K, (Option[V], V))]) = {
       val (h1, l1) = toLiteral(hm, s.producer)
-      val lit = UnaryLit[(K, V), (K, (Option[V], V)), N](
-        l1,
-        mkSum(s.store, s.semigroup))
+      val lit =
+        UnaryLit[(K, V), (K, (Option[V], V)), N](l1, mkSum(s.store, s.semigroup))
       (h1 + (s -> lit), lit)
     }
 

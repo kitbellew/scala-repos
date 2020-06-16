@@ -50,10 +50,7 @@ object Common {
         case AuthenticationFailedRejection.CredentialsMissing =>
           "Missing accessKey."
       }
-      complete(
-        StatusCodes.Unauthorized,
-        challengeHeaders,
-        Map("message" -> msg))
+      complete(StatusCodes.Unauthorized, challengeHeaders, Map("message" -> msg))
     }
     case ChannelRejection(msg) :: _ =>
       complete(StatusCodes.Unauthorized, Map("message" -> msg))

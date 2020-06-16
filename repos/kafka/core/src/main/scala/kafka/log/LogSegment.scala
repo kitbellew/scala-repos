@@ -158,10 +158,8 @@ class LogSegment(
     if (startPosition == null)
       return null
 
-    val offsetMetadata = new LogOffsetMetadata(
-      startOffset,
-      this.baseOffset,
-      startPosition.position)
+    val offsetMetadata =
+      new LogOffsetMetadata(startOffset, this.baseOffset, startPosition.position)
 
     // if the size is zero, still return a log segment but with zero size
     if (maxSize == 0)
@@ -306,8 +304,7 @@ class LogSegment(
       case e: IOException => throw kafkaStorageException("log", e)
     }
     try index.renameTo(
-      new File(
-        CoreUtils.replaceSuffix(index.file.getPath, oldSuffix, newSuffix)))
+      new File(CoreUtils.replaceSuffix(index.file.getPath, oldSuffix, newSuffix)))
     catch {
       case e: IOException => throw kafkaStorageException("index", e)
     }

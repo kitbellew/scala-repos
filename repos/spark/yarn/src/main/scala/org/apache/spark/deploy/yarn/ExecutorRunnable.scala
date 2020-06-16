@@ -237,8 +237,7 @@ private[yarn] class ExecutorRunnable(
       .toSeq
 
     val commands = prefixEnv ++ Seq(
-      YarnSparkHadoopUtil.expandEnvironment(
-        Environment.JAVA_HOME) + "/bin/java",
+      YarnSparkHadoopUtil.expandEnvironment(Environment.JAVA_HOME) + "/bin/java",
       "-server",
       // Kill if OOM is raised - leverage yarn's failure handling to cause rescheduling.
       // Not killing the task leaves various aspects of the executor and (to some extent) the jvm in

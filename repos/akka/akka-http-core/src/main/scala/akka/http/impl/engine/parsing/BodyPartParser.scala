@@ -161,8 +161,7 @@ private[http] final class BodyPartParser(
       }
     resultHeader match {
       case null ⇒
-        continue(input, lineStart)(
-          parseHeaderLinesAux(headers, headerCount, cth))
+        continue(input, lineStart)(parseHeaderLinesAux(headers, headerCount, cth))
 
       case BoundaryHeader ⇒
         emit(BodyPartStart(headers.toList, _ ⇒ HttpEntity.empty(contentType)))
@@ -254,11 +253,7 @@ private[http] final class BodyPartParser(
             parseEntity(null, null, simpleEmit, simpleEmit))
         } else
           continue(input, offset)(
-            parseEntity(
-              headers,
-              contentType,
-              emitPartChunk,
-              emitFinalPartChunk))
+            parseEntity(headers, contentType, emitPartChunk, emitFinalPartChunk))
     }
 
   def emit(bytes: ByteString): Unit =

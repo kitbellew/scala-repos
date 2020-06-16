@@ -119,8 +119,7 @@ case class ScaldingEnv(override val jobName: String, inargs: Array[String])
         .name(scaldingBuilder.id)
 
     val scald = Scalding(name, opts)
-      .withRegistrars(
-        ajob.registrars ++ builder.registrar.getRegistrars.asScala)
+      .withRegistrars(ajob.registrars ++ builder.registrar.getRegistrars.asScala)
       .withConfigUpdater { c =>
         Config.tryFrom(ajob.transformConfig(c.toMap).toMap).get
       }

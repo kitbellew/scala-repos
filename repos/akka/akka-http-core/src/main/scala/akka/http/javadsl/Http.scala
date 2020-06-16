@@ -97,8 +97,7 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
     HttpRequest,
     NotUsed] =
     adaptServerLayer(
-      delegate.serverLayer(settings.asScala, remoteAddress.asScala)(
-        materializer))
+      delegate.serverLayer(settings.asScala, remoteAddress.asScala)(materializer))
 
   /**
     * Constructs a server layer stage using the given [[ServerSettings]]. The returned [[BidiFlow]] isn't reusable and
@@ -201,16 +200,11 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
       : Source[IncomingConnection, CompletionStage[ServerBinding]] = {
     val connectionContext =
       connect.effectiveConnectionContext(defaultServerHttpContext).asScala
-    new Source(
-      delegate
-        .bind(
-          connect.host,
-          connect.port,
-          connectionContext,
-          settings.asScala,
-          log)(materializer)
-        .map(new IncomingConnection(_))
-        .mapMaterializedValue(_.map(new ServerBinding(_))(ec).toJava))
+    new Source(delegate
+      .bind(connect.host, connect.port, connectionContext, settings.asScala, log)(
+        materializer)
+      .map(new IncomingConnection(_))
+      .mapMaterializedValue(_.map(new ServerBinding(_))(ec).toJava))
   }
 
   /**
@@ -844,8 +838,7 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
   def singleWebSocketRequest[T](
       request: WebSocketRequest,
       clientFlow: Flow[Message, Message, T],
-      materializer: Materializer)
-      : Pair[CompletionStage[WebSocketUpgradeResponse], T] =
+      materializer: Materializer): Pair[CompletionStage[WebSocketUpgradeResponse], T] =
     adaptWsResultTuple {
       delegate.singleWebSocketRequest(
         request.asScala,
@@ -862,8 +855,7 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
       request: WebSocketRequest,
       clientFlow: Flow[Message, Message, T],
       connectionContext: ConnectionContext,
-      materializer: Materializer)
-      : Pair[CompletionStage[WebSocketUpgradeResponse], T] =
+      materializer: Materializer): Pair[CompletionStage[WebSocketUpgradeResponse], T] =
     adaptWsResultTuple {
       delegate.singleWebSocketRequest(
         request.asScala,
@@ -882,8 +874,7 @@ class Http(system: ExtendedActorSystem) extends akka.actor.Extension {
       localAddress: Optional[InetSocketAddress],
       settings: ClientConnectionSettings,
       log: LoggingAdapter,
-      materializer: Materializer)
-      : Pair[CompletionStage[WebSocketUpgradeResponse], T] =
+      materializer: Materializer): Pair[CompletionStage[WebSocketUpgradeResponse], T] =
     adaptWsResultTuple {
       delegate.singleWebSocketRequest(
         request.asScala,

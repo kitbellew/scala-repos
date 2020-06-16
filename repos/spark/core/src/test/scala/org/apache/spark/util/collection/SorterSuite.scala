@@ -304,10 +304,7 @@ class KeyReuseIntArraySortDataFormat
     new IntWrapper()
   }
 
-  override def getKey(
-      data: Array[Int],
-      pos: Int,
-      reuse: IntWrapper): IntWrapper = {
+  override def getKey(data: Array[Int], pos: Int, reuse: IntWrapper): IntWrapper = {
     if (reuse == null) {
       new IntWrapper(data(pos))
     } else {

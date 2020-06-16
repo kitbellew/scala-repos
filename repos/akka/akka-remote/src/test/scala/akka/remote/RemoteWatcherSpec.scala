@@ -87,10 +87,9 @@ class RemoteWatcherSpec
     remoteSystem.asInstanceOf[ExtendedActorSystem].provider.getDefaultAddress
   def remoteAddressUid = AddressUidExtension(remoteSystem).addressUid
 
-  Seq(system, remoteSystem).foreach(
-    muteDeadLetters(
-      akka.remote.transport.AssociationHandle.Disassociated.getClass,
-      akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying.getClass)(_))
+  Seq(system, remoteSystem).foreach(muteDeadLetters(
+    akka.remote.transport.AssociationHandle.Disassociated.getClass,
+    akka.remote.transport.ActorTransportAdapter.DisassociateUnderlying.getClass)(_))
 
   override def afterTermination() {
     shutdown(remoteSystem)
@@ -174,12 +173,8 @@ class RemoteWatcherSpec
     "generate AddressTerminated when missing heartbeats" in {
       val p = TestProbe()
       val q = TestProbe()
-      system.eventStream.subscribe(
-        p.ref,
-        classOf[TestRemoteWatcher.AddressTerm])
-      system.eventStream.subscribe(
-        q.ref,
-        classOf[TestRemoteWatcher.Quarantined])
+      system.eventStream.subscribe(p.ref, classOf[TestRemoteWatcher.AddressTerm])
+      system.eventStream.subscribe(q.ref, classOf[TestRemoteWatcher.Quarantined])
 
       val monitorA = system.actorOf(Props[TestRemoteWatcher], "monitor4")
       val monitorB =
@@ -208,9 +203,7 @@ class RemoteWatcherSpec
           p.expectMsg(1 second, TestRemoteWatcher.AddressTerm(b.path.address))
           q.expectMsg(
             1 second,
-            TestRemoteWatcher.Quarantined(
-              b.path.address,
-              Some(remoteAddressUid)))
+            TestRemoteWatcher.Quarantined(b.path.address, Some(remoteAddressUid)))
         }
       }
 
@@ -221,12 +214,8 @@ class RemoteWatcherSpec
     "generate AddressTerminated when missing first heartbeat" in {
       val p = TestProbe()
       val q = TestProbe()
-      system.eventStream.subscribe(
-        p.ref,
-        classOf[TestRemoteWatcher.AddressTerm])
-      system.eventStream.subscribe(
-        q.ref,
-        classOf[TestRemoteWatcher.Quarantined])
+      system.eventStream.subscribe(p.ref, classOf[TestRemoteWatcher.AddressTerm])
+      system.eventStream.subscribe(q.ref, classOf[TestRemoteWatcher.Quarantined])
 
       val fd = createFailureDetector()
       val heartbeatExpectedResponseAfter = 2.seconds
@@ -267,12 +256,8 @@ class RemoteWatcherSpec
     "generate AddressTerminated for new watch after broken connection that was re-established and broken again" in {
       val p = TestProbe()
       val q = TestProbe()
-      system.eventStream.subscribe(
-        p.ref,
-        classOf[TestRemoteWatcher.AddressTerm])
-      system.eventStream.subscribe(
-        q.ref,
-        classOf[TestRemoteWatcher.Quarantined])
+      system.eventStream.subscribe(p.ref, classOf[TestRemoteWatcher.AddressTerm])
+      system.eventStream.subscribe(q.ref, classOf[TestRemoteWatcher.Quarantined])
 
       val monitorA = system.actorOf(Props[TestRemoteWatcher], "monitor6")
       val monitorB =
@@ -301,9 +286,7 @@ class RemoteWatcherSpec
           p.expectMsg(1 second, TestRemoteWatcher.AddressTerm(b.path.address))
           q.expectMsg(
             1 second,
-            TestRemoteWatcher.Quarantined(
-              b.path.address,
-              Some(remoteAddressUid)))
+            TestRemoteWatcher.Quarantined(b.path.address, Some(remoteAddressUid)))
         }
       }
 
@@ -350,9 +333,7 @@ class RemoteWatcherSpec
           p.expectMsg(1 second, TestRemoteWatcher.AddressTerm(c.path.address))
           q.expectMsg(
             1 second,
-            TestRemoteWatcher.Quarantined(
-              c.path.address,
-              Some(remoteAddressUid)))
+            TestRemoteWatcher.Quarantined(c.path.address, Some(remoteAddressUid)))
         }
       }
 

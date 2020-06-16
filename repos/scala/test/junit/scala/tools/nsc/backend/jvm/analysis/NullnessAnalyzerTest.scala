@@ -113,8 +113,8 @@ class NullnessAnalyzerTest extends ClearAfterClass {
 
   @Test
   def constructorCall(): Unit = {
-    val List(m) = compileMethods(noOptCompiler)(
-      "def f = { val a = new Object; a.toString }")
+    val List(m) =
+      compileMethods(noOptCompiler)("def f = { val a = new Object; a.toString }")
     val a = newNullnessAnalyzer(m)
 
     // for reference, the output of showAllNullnessFrames(a, m) - note that the frame represents the state *before* executing the instr.

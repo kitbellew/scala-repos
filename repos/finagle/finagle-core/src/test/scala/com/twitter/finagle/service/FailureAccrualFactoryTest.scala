@@ -409,8 +409,7 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test(
-    "a failing service should go back to the Busy state after probing fails") {
+  test("a failing service should go back to the Busy state after probing fails") {
     val h = new Helper(consecutiveFailures)
     import h._
 
@@ -510,8 +509,7 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test(
-    "A failure during probing that does not mark dead moves back to probing") {
+  test("A failure during probing that does not mark dead moves back to probing") {
     val policy = new FailureAccrualPolicy {
       var markDead = true
 
@@ -769,20 +767,18 @@ class FailureAccrualFactoryTest extends FunSuite with MockitoSugar {
 
     // disabled
     Await.ready(s.make(ps + FailureAccrualFactory.Disabled).toService(10))
-    assert(
-      !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
+    assert(!h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 
     // replaced
-    Await.ready(s
-      .make(ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
-      .toService(10))
-    assert(
-      !h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
+    Await.ready(
+      s
+        .make(ps + FailureAccrualFactory.Replaced(ServiceFactoryWrapper.identity))
+        .toService(10))
+    assert(!h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
 
     // configured
     Await.ready(
       s.make(ps + FailureAccrualFactory.Param(1, Duration.Top)).toService(10))
-    assert(
-      h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
+    assert(h.statsReceiver.counters.contains(Seq("failure_accrual", "removals")))
   }
 }

@@ -84,10 +84,7 @@ trait MemoryQueryingProfile extends BasicProfile {
         case Apply(
               Library.CountAll,
               ch @ ConstArray(
-                Bind(
-                  gen2,
-                  FwdPath(s :: _),
-                  Pure(ProductOfCommonPaths(s2, _), _))))
+                Bind(gen2, FwdPath(s :: _), Pure(ProductOfCommonPaths(s2, _), _))))
             if s == gen && s2 == gen2 =>
           Apply(Library.Count, ch)(n.nodeType)
         case n =>

@@ -14,10 +14,8 @@ trait AccountService {
 
   private val logger = LoggerFactory.getLogger(classOf[AccountService])
 
-  def authenticate(
-      settings: SystemSettings,
-      userName: String,
-      password: String)(implicit s: Session): Option[Account] =
+  def authenticate(settings: SystemSettings, userName: String, password: String)(
+      implicit s: Session): Option[Account] =
     if (settings.ldapAuthentication) {
       ldapAuthentication(settings, userName, password)
     } else {

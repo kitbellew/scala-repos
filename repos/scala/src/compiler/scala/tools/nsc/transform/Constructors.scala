@@ -411,9 +411,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
               case Apply(fun @ Select(receiver, method), List(xs, idx, v))
                   if fun.symbol == arrayUpdateMethod =>
                 localTyper.typed(
-                  Apply(
-                    gen.mkAttributedSelect(xs, arrayUpdateMethod),
-                    List(idx, v)))
+                  Apply(gen.mkAttributedSelect(xs, arrayUpdateMethod), List(idx, v)))
               case _ => super.transform(t)
             }
         }
@@ -811,8 +809,7 @@ abstract class Constructors extends Statics with Transform with ast.TreeDSL {
         (pre ::: supercalls, rest)
       }
 
-      val (uptoSuperStats, remainingConstrStats) = splitAtSuper(
-        constructorStats)
+      val (uptoSuperStats, remainingConstrStats) = splitAtSuper(constructorStats)
 
       /* TODO: XXX This condition (`isDelayedInitSubclass && remainingConstrStats.nonEmpty`) is not correct:
        * remainingConstrStats.nonEmpty excludes too much,

@@ -71,10 +71,8 @@ private[spark] class ClientArguments(
 
   val executorMemoryOverhead = sparkConf
     .get(EXECUTOR_MEMORY_OVERHEAD)
-    .getOrElse(
-      math.max(
-        (MEMORY_OVERHEAD_FACTOR * executorMemory).toLong,
-        MEMORY_OVERHEAD_MIN))
+    .getOrElse(math
+      .max((MEMORY_OVERHEAD_FACTOR * executorMemory).toLong, MEMORY_OVERHEAD_MIN))
     .toInt
 
   /** Load any default arguments provided through environment variables and Spark properties. */
@@ -86,15 +84,13 @@ private[spark] class ClientArguments(
       .orElse(sys.env.get("SPARK_YARN_DIST_FILES"))
       .orNull
     archives = Option(archives)
-      .orElse(
-        sparkConf.get(ARCHIVES_TO_DISTRIBUTE).map(p => Utils.resolveURIs(p)))
+      .orElse(sparkConf.get(ARCHIVES_TO_DISTRIBUTE).map(p => Utils.resolveURIs(p)))
       .orElse(sys.env.get("SPARK_YARN_DIST_ARCHIVES"))
       .orNull
     // If dynamic allocation is enabled, start at the configured initial number of executors.
     // Default to minExecutors if no initialExecutors is set.
-    numExecutors = YarnSparkHadoopUtil.getInitialTargetExecutorNumber(
-      sparkConf,
-      numExecutors)
+    numExecutors =
+      YarnSparkHadoopUtil.getInitialTargetExecutorNumber(sparkConf, numExecutors)
     principal = Option(principal)
       .orElse(sparkConf.get(PRINCIPAL))
       .orNull

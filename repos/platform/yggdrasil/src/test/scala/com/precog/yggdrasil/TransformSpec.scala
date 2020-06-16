@@ -814,9 +814,7 @@ trait TransformSpec[M[+_]]
           sd.data.zipWithIndex map {
             case (jv, i) if i % 2 == 0 =>
               if ((jv \? ".value.value1").nonEmpty) {
-                jv.set(
-                  JPath(JPathField("value"), JPathField("value1")),
-                  JNum(0))
+                jv.set(JPath(JPathField("value"), JPathField("value1")), JNum(0))
               } else {
                 jv
               }
@@ -866,9 +864,7 @@ trait TransformSpec[M[+_]]
           sd.data.zipWithIndex map {
             case (jv, i) if i % 2 == 0 =>
               if ((jv \? ".value.value1").nonEmpty) {
-                jv.set(
-                  JPath(JPathField("value"), JPathField("value1")),
-                  JNum(0))
+                jv.set(JPath(JPathField("value"), JPathField("value1")), JNum(0))
               } else {
                 jv
               }
@@ -1886,8 +1882,7 @@ trait TransformSpec[M[+_]]
 
     val jtpe = JObjectFixedT(
       Map(
-        "value" -> JObjectFixedT(
-          Map("foo" -> JNumberT, "bar" -> JObjectUnfixedT)),
+        "value" -> JObjectFixedT(Map("foo" -> JNumberT, "bar" -> JObjectUnfixedT)),
         "key" -> JArrayUnfixedT))
     val results = toJson(table.transform {
       IsType(Leaf(Source), jtpe)
@@ -2048,9 +2043,8 @@ trait TransformSpec[M[+_]]
       {"key":[2,2,2],"value":{"dx":[8.342062585288287E+307]}}]
     """)
 
-    val sample = SampleData(
-      elements.toStream,
-      Some((3, Seq((JPath.Identity, CEmptyArray)))))
+    val sample =
+      SampleData(elements.toStream, Some((3, Seq((JPath.Identity, CEmptyArray)))))
 
     testIsType(sample)
   }
@@ -2067,8 +2061,7 @@ trait TransformSpec[M[+_]]
       Map(
         "value" -> Schema
           .mkType(cschema)
-          .getOrElse(
-            sys.error("Could not generate JType from schema " + cschema)),
+          .getOrElse(sys.error("Could not generate JType from schema " + cschema)),
         "key" -> JArrayUnfixedT
       ))
 
@@ -2147,8 +2140,7 @@ trait TransformSpec[M[+_]]
       Map(
         "value" -> Schema
           .mkType(cschema)
-          .getOrElse(
-            sys.error("Could not generate JType from schema " + cschema)),
+          .getOrElse(sys.error("Could not generate JType from schema " + cschema)),
         "key" -> JArrayUnfixedT
       ))
 
@@ -2247,8 +2239,7 @@ trait TransformSpec[M[+_]]
           List(
             JField(
               "value",
-              JObject(
-                List(JField("foo", JBool(true)), JField("bar", JNum(77))))),
+              JObject(List(JField("foo", JBool(true)), JField("bar", JNum(77))))),
             JField("key", JArray(List(JNum(1)))))))
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -2319,9 +2310,7 @@ trait TransformSpec[M[+_]]
     val sample = SampleData(data.toStream)
     val table = fromSample(sample)
     val jtpe = JObjectFixedT(
-      Map(
-        "value" -> JArrayFixedT(Map(1 -> JBooleanT)),
-        "key" -> JArrayUnfixedT))
+      Map("value" -> JArrayFixedT(Map(1 -> JBooleanT)), "key" -> JArrayUnfixedT))
 
     val results = toJson(table.transform {
       Typed(Leaf(Source), jtpe)
@@ -2343,9 +2332,10 @@ trait TransformSpec[M[+_]]
           List(
             JField("value", JArray(List(JArray(List()), JNum(23), JNull))),
             JField("key", JArray(List(JNum(1)))))),
-        JObject(List(
-          JField("value", JArray(List(JArray(List()), JArray(List()), JNull))),
-          JField("key", JArray(List(JNum(2))))))
+        JObject(
+          List(
+            JField("value", JArray(List(JArray(List()), JArray(List()), JNull))),
+            JField("key", JArray(List(JNum(2))))))
       )
     val sample = SampleData(data)
     val table = fromSample(sample)
@@ -2390,15 +2380,10 @@ trait TransformSpec[M[+_]]
     val sample = SampleData(data)
     val table = fromSample(sample)
 
-    val jtpe = JObjectFixedT(
-      Map(
-        "value" -> JArrayFixedT(
-          Map(
-            0 -> JNumberT,
-            1 -> JNumberT,
-            2 -> JBooleanT,
-            3 -> JArrayFixedT(Map()))),
-        "key" -> JArrayUnfixedT))
+    val jtpe = JObjectFixedT(Map(
+      "value" -> JArrayFixedT(
+        Map(0 -> JNumberT, 1 -> JNumberT, 2 -> JBooleanT, 3 -> JArrayFixedT(Map()))),
+      "key" -> JArrayUnfixedT))
     val results = toJson(table.transform {
       Typed(Leaf(Source), jtpe)
     })

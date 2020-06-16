@@ -196,9 +196,7 @@ private[remote] class EndpointDisassociatedException(msg: String)
   * INTERNAL API
   */
 @SerialVersionUID(1L)
-private[remote] class EndpointAssociationException(
-    msg: String,
-    cause: Throwable)
+private[remote] class EndpointAssociationException(msg: String, cause: Throwable)
     extends EndpointException(msg, cause)
 
 /**
@@ -393,9 +391,7 @@ private[remote] class ReliableDeliverySupervisor(
       writer forward s
   }
 
-  def gated(
-      writerTerminated: Boolean,
-      earlyUngateRequested: Boolean): Receive = {
+  def gated(writerTerminated: Boolean, earlyUngateRequested: Boolean): Receive = {
     case Terminated(_) if !writerTerminated ⇒
       if (earlyUngateRequested)
         self ! Ungate
@@ -456,10 +452,8 @@ private[remote] class ReliableDeliverySupervisor(
         localAddress,
         remoteAddress,
         uid,
-        new TimeoutException(
-          "Remote system has been silent for too long. " +
-            s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(
-              TimeUnit.HOURS)} hours)"))
+        new TimeoutException("Remote system has been silent for too long. " +
+          s"(more than ${settings.QuarantineSilentSystemTimeout.toUnit(TimeUnit.HOURS)} hours)"))
     case EndpointWriter.FlushAndStop ⇒ context.stop(self)
     case EndpointWriter.StopReading(w, replyTo) ⇒
       replyTo ! EndpointWriter.StoppedReading(w)
@@ -467,11 +461,8 @@ private[remote] class ReliableDeliverySupervisor(
 
   private def goToIdle(): Unit = {
     if (bufferWasInUse && maxSilenceTimer.isEmpty)
-      maxSilenceTimer = Some(
-        context.system.scheduler.scheduleOnce(
-          settings.QuarantineSilentSystemTimeout,
-          self,
-          TooLongIdle))
+      maxSilenceTimer = Some(context.system.scheduler
+        .scheduleOnce(settings.QuarantineSilentSystemTimeout, self, TooLongIdle))
     context.become(idle)
   }
 
@@ -1200,9 +1191,8 @@ private[remote] class EndpointReader(
 
     case InboundPayload(oversized) ⇒
       log.error(
-        new OversizedPayloadException(
-          s"Discarding oversized payload received: " +
-            s"max allowed size [${transport.maximumPayloadBytes}] bytes, actual size [${oversized.size}] bytes."),
+        new OversizedPayloadException(s"Discarding oversized payload received: " +
+          s"max allowed size [${transport.maximumPayloadBytes}] bytes, actual size [${oversized.size}] bytes."),
         "Transient error while reading from association (association remains live)"
       )
 

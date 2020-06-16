@@ -226,8 +226,8 @@ class RestartStrategySpec
       val countDownLatch = new TestLatch(2)
 
       val boss = system.actorOf(Props(new Actor {
-        override val supervisorStrategy = OneForOneStrategy(withinTimeRange =
-          1 second)(List(classOf[Throwable]))
+        override val supervisorStrategy =
+          OneForOneStrategy(withinTimeRange = 1 second)(List(classOf[Throwable]))
         def receive = {
           case p: Props ⇒ sender() ! context.watch(context.actorOf(p))
           case t: Terminated ⇒ maxNoOfRestartsLatch.open()

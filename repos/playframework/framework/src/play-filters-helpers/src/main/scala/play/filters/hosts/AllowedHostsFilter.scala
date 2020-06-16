@@ -21,9 +21,7 @@ case class AllowedHostsFilter @Inject() (
     extends EssentialFilter {
 
   // Java API
-  def this(
-      config: AllowedHostsConfig,
-      errorHandler: play.http.HttpErrorHandler) {
+  def this(config: AllowedHostsConfig, errorHandler: play.http.HttpErrorHandler) {
     this(config, new JavaHttpErrorHandlerAdapter(errorHandler))
   }
 

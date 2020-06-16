@@ -64,8 +64,7 @@ class MulticlassMetricsSuite extends SparkFunSuite with MLlibTestSparkContext {
     val f2measure2 =
       (1 + 2 * 2) * precision2 * recall2 / (2 * 2 * precision2 + recall2)
 
-    assert(
-      metrics.confusionMatrix.toArray.sameElements(confusionMatrix.toArray))
+    assert(metrics.confusionMatrix.toArray.sameElements(confusionMatrix.toArray))
     assert(math.abs(metrics.falsePositiveRate(0.0) - fpRate0) < delta)
     assert(math.abs(metrics.falsePositiveRate(1.0) - fpRate1) < delta)
     assert(math.abs(metrics.falsePositiveRate(2.0) - fpRate2) < delta)

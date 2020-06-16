@@ -442,9 +442,7 @@ trait OracleProfile extends JdbcProfile {
       ti: JdbcType[T],
       idx: Int): ResultConverter[JdbcResultConverterDomain, Option[T]] =
     if (ti.scalaType == ScalaBaseType.stringType)
-      (new OptionResultConverter[String](
-        ti.asInstanceOf[JdbcType[String]],
-        idx) {
+      (new OptionResultConverter[String](ti.asInstanceOf[JdbcType[String]], idx) {
         override def read(pr: ResultSet) = {
           val v = ti.getValue(pr, idx)
           if ((v eq null) || v.length == 0) None else Some(v)

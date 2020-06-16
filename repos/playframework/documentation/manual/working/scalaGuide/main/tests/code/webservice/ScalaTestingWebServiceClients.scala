@@ -48,8 +48,7 @@ package test {
         Server.withRouter() {
           case GET(p"/repositories") =>
             Action {
-              Results.Ok(
-                Json.arr(Json.obj("full_name" -> "octocat/Hello-World")))
+              Results.Ok(Json.arr(Json.obj("full_name" -> "octocat/Hello-World")))
             }
         } { implicit port =>
           implicit val materializer = Play.current.materializer

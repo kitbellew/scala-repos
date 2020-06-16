@@ -22,9 +22,7 @@ import org.apache.spark.mllib.linalg.{Matrices, Vectors}
 import org.apache.spark.mllib.util.MLlibTestSparkContext
 import org.apache.spark.mllib.util.TestingUtils._
 
-class MultivariateGaussianSuite
-    extends SparkFunSuite
-    with MLlibTestSparkContext {
+class MultivariateGaussianSuite extends SparkFunSuite with MLlibTestSparkContext {
   test("univariate") {
     val x1 = Vectors.dense(0.0)
     val x2 = Vectors.dense(1.5)

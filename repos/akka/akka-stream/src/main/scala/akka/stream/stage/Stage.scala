@@ -217,9 +217,7 @@ private[stream] object AbstractStage {
           Directive,
           Context[Out],
           LifecycleContext]]
-      (
-        new PushPullGraphLogic(shape, inheritedAttributes, stage),
-        stageAndMat._2)
+      (new PushPullGraphLogic(shape, inheritedAttributes, stage), stageAndMat._2)
     }
   }
 
@@ -594,9 +592,7 @@ abstract class StatefulStage[In, Out] extends PushPullStage[In, Out] {
     * Scala API: Can be used from [[StageState#onPush]] or [[StageState#onPull]] to push more than one
     * element downstream and after that finish (complete downstreams, cancel upstreams).
     */
-  final def emitAndFinish(
-      iter: Iterator[Out],
-      ctx: Context[Out]): SyncDirective = {
+  final def emitAndFinish(iter: Iterator[Out], ctx: Context[Out]): SyncDirective = {
     if (emitting) throw new IllegalStateException("already in emitting state")
     if (iter.isEmpty)
       ctx.finish()

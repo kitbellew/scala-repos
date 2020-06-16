@@ -8,8 +8,7 @@ object StringTest extends SpecLite {
   checkAll(monoid.laws[String])
   checkAll(isEmpty.laws[λ[α => String]])
 
-  checkAll(
-    order.laws[String].withProp("benchmark", order.scalaOrdering[String]))
+  checkAll(order.laws[String].withProp("benchmark", order.scalaOrdering[String]))
 
   "parseBoolean" in {
     import string.parseBoolean

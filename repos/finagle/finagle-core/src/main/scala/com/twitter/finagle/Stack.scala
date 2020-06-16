@@ -525,9 +525,7 @@ object Stack {
       Node(
         this,
         (prms, next) =>
-          Leaf(
-            this,
-            make(prms[P1], prms[P2], prms[P3], prms[P4], next.make(prms))),
+          Leaf(this, make(prms[P1], prms[P2], prms[P3], prms[P4], next.make(prms))),
         next)
   }
 

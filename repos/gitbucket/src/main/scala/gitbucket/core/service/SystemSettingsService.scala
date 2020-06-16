@@ -45,9 +45,7 @@ trait SystemSettingsService {
           smtp.fromName.foreach(props.setProperty(SmtpFromName, _))
         }
       }
-      props.setProperty(
-        LdapAuthentication,
-        settings.ldapAuthentication.toString)
+      props.setProperty(LdapAuthentication, settings.ldapAuthentication.toString)
       if (settings.ldapAuthentication) {
         settings.ldap.map { ldap =>
           props.setProperty(LdapHost, ldap.host)

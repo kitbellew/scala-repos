@@ -132,7 +132,8 @@ abstract class ReceiverInputDStream[T: ClassTag](_ssc: StreamingContext)
               "Some blocks do not have Write Ahead Log information; " +
                 "this is unexpected and data may not be recoverable after driver failures")
           } else {
-            logWarning("Some blocks have Write Ahead Log information; this is unexpected")
+            logWarning(
+              "Some blocks have Write Ahead Log information; this is unexpected")
           }
         }
         val validBlockIds = blockIds.filter { id =>

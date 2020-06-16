@@ -101,7 +101,8 @@ object SynthBenchmark {
 
     var startTime = System.currentTimeMillis()
     val numEdges = graph.edges.count()
-    println(s"Done creating graph. Num Vertices = $numVertices, Num Edges = $numEdges")
+    println(
+      s"Done creating graph. Num Vertices = $numVertices, Num Edges = $numEdges")
     val loadTime = System.currentTimeMillis() - startTime
 
     // Collect the degree distribution (if desired)

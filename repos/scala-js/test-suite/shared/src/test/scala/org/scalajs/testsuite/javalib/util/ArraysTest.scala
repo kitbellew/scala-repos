@@ -44,11 +44,7 @@ class ArraysTest {
     testSort[Long](_.toLong, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
 
   @Test def sort_Short(): Unit =
-    testSort[Short](
-      _.toShort,
-      new Array(_),
-      Arrays.sort(_),
-      Arrays.sort(_, _, _))
+    testSort[Short](_.toShort, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
 
   @Test def sort_Byte(): Unit =
     testSort[Byte](_.toByte, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
@@ -57,25 +53,13 @@ class ArraysTest {
     testSort[Char](_.toChar, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
 
   @Test def sort_Float(): Unit =
-    testSort[Float](
-      _.toFloat,
-      new Array(_),
-      Arrays.sort(_),
-      Arrays.sort(_, _, _))
+    testSort[Float](_.toFloat, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
 
   @Test def sort_Double(): Unit =
-    testSort[Double](
-      _.toDouble,
-      new Array(_),
-      Arrays.sort(_),
-      Arrays.sort(_, _, _))
+    testSort[Double](_.toDouble, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
 
   @Test def sort_String(): Unit =
-    testSort[AnyRef](
-      _.toString,
-      new Array(_),
-      Arrays.sort(_),
-      Arrays.sort(_, _, _))
+    testSort[AnyRef](_.toString, new Array(_), Arrays.sort(_), Arrays.sort(_, _, _))
 
   private def testSort[T: ClassTag](
       elem: Int => T,
@@ -679,9 +663,7 @@ class ArraysTest {
     if (!executingInJVM) {
       assertEquals(32, Arrays.hashCode(Array[Float](1f)))
       assertEquals(-2082726591, Arrays.hashCode(Array[Float](7.2f, -125.2f)))
-      assertEquals(
-        -1891539602,
-        Arrays.hashCode(Array[Float](302.1f, 0.0f, 4534f)))
+      assertEquals(-1891539602, Arrays.hashCode(Array[Float](302.1f, 0.0f, 4534f)))
       assertEquals(
         -1591440133,
         Arrays.hashCode(Array[Float](0.0f, 45f, -100f, 1.1f, -1f, 3567f)))
@@ -896,9 +878,8 @@ class ArraysTest {
     assertTrue(
       Arrays.deepEquals(Array[AnyRef](null, null), Array[AnyRef](null, null)))
     assertTrue(
-      Arrays.deepEquals(
-        Array[AnyRef]("a", "b", null),
-        Array[AnyRef]("a", "b", null)))
+      Arrays
+        .deepEquals(Array[AnyRef]("a", "b", null), Array[AnyRef]("a", "b", null)))
     assertTrue(
       Arrays.deepEquals(
         Array[AnyRef](null, "a", "b", null, "fooooo"),
@@ -943,9 +924,8 @@ class ArraysTest {
         Array[AnyRef](null, Array[AnyRef]()),
         Array[AnyRef](null, null)))
     assertFalse(
-      Arrays.deepEquals(
-        Array[AnyRef]("a", "b", null),
-        Array[AnyRef]("a", "c", null)))
+      Arrays
+        .deepEquals(Array[AnyRef]("a", "b", null), Array[AnyRef]("a", "c", null)))
     assertFalse(
       Arrays.deepEquals(
         Array[AnyRef](null, "a", "b", null, "fooooo"),
@@ -1012,9 +992,7 @@ class ArraysTest {
     assertEquals("[0]", Arrays.toString(Array[Short](0)))
     assertEquals("[1]", Arrays.toString(Array[Short](1)))
     assertEquals("[2, 3]", Arrays.toString(Array[Short](2, 3)))
-    assertEquals(
-      "[1, 2, 3, 4, 5]",
-      Arrays.toString(Array[Short](1, 2, 3, 4, 5)))
+    assertEquals("[1, 2, 3, 4, 5]", Arrays.toString(Array[Short](1, 2, 3, 4, 5)))
     assertEquals(
       "[1, -2, 3, 32767]",
       Arrays.toString(Array[Short](1, -2, 3, Short.MaxValue)))
@@ -1049,9 +1027,7 @@ class ArraysTest {
     assertEquals("[]", Arrays.toString(Array[Float]()))
     assertEquals("[0]", Arrays.toString(Array[Float](0.0f)))
     assertEquals("[1.100000023841858]", Arrays.toString(Array[Float](1.1f)))
-    assertEquals(
-      "[2.200000047683716, 3]",
-      Arrays.toString(Array[Float](2.2f, 3f)))
+    assertEquals("[2.200000047683716, 3]", Arrays.toString(Array[Float](2.2f, 3f)))
     assertEquals(
       "[1, 2, 3, 4, 5]",
       Arrays.toString(Array[Float](1f, 2f, 3f, 4f, 5f)))
@@ -1098,8 +1074,7 @@ class ArraysTest {
       Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3))))
     assertEquals(
       "[[1, 2, 3], [4, 5, 6]]",
-      Arrays.deepToString(
-        Array[AnyRef](Array[Int](1, 2, 3), Array[Int](4, 5, 6))))
+      Arrays.deepToString(Array[AnyRef](Array[Int](1, 2, 3), Array[Int](4, 5, 6))))
     assertEquals("[[]]", Arrays.deepToString(Array[AnyRef](Array[AnyRef]())))
     assertEquals(
       "[[[]]]",

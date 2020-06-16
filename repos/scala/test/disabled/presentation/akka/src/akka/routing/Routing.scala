@@ -28,9 +28,7 @@ object Routing {
   /**
     * Interceptor is a filter(x,y) where x.isDefinedAt is considered to be always true.
     */
-  def intercept[A, B](
-      interceptor: (A) => Unit,
-      interceptee: PF[A, B]): PF[A, B] =
+  def intercept[A, B](interceptor: (A) => Unit, interceptee: PF[A, B]): PF[A, B] =
     filter({ case a if a.isInstanceOf[A] => interceptor(a) }, interceptee)
 
   /**

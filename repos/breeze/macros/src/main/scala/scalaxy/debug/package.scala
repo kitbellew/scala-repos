@@ -51,8 +51,9 @@ package debug {
       assertLikeImpl(c)(
         condition,
         (condExpr, messageExpr) => {
-          reify(if (!condExpr.splice)
-            throw new AssertionError("assertion failed: " + messageExpr.splice))
+          reify(
+            if (!condExpr.splice)
+              throw new AssertionError("assertion failed: " + messageExpr.splice))
         })
     }
 
@@ -105,10 +106,8 @@ package debug {
       assertLikeImpl(c)(
         condition,
         (condExpr, messageExpr) => {
-          reify(
-            if (!condExpr.splice)
-              throw new AssertionError(
-                "assumption failed: " + messageExpr.splice))
+          reify(if (!condExpr.splice)
+            throw new AssertionError("assumption failed: " + messageExpr.splice))
         })
     }
 

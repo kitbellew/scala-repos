@@ -145,9 +145,8 @@ trait Validators {
       */
     private lazy val macroImplSig: MacroImplSig = {
       val tparams = macroImpl.typeParams
-      val paramss = transformTypeTagEvidenceParams(
-        macroImplRef,
-        (param, tparam) => NoSymbol)
+      val paramss =
+        transformTypeTagEvidenceParams(macroImplRef, (param, tparam) => NoSymbol)
       val ret = macroImpl.info.finalResultType
       MacroImplSig(tparams, paramss, ret)
     }
@@ -189,9 +188,7 @@ trait Validators {
               NoPrefix,
               makeParam(nme.macroContext, macroDdef.pos, ctxTpe, SYNTHETIC))
           else
-            singleType(
-              ThisType(macroImpl.owner),
-              macroImpl.owner.tpe.member(nme.c))
+            singleType(ThisType(macroImpl.owner), macroImpl.owner.tpe.member(nme.c))
         val paramss =
           if (isImplMethod)
             List(ctxPrefix.termSymbol) :: mmap(macroDdef.vparamss)(param)

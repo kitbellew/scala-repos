@@ -57,11 +57,7 @@ trait ScalaTestWholeSuiteTest
   )
   val funSpecTestPaths = List(
     List("[root]", "FunSpecTest", "FunSpecTest", "should launch single test"),
-    List(
-      "[root]",
-      "FunSpecTest",
-      "FunSpecTest",
-      "should not launch other tests"),
+    List("[root]", "FunSpecTest", "FunSpecTest", "should not launch other tests"),
     List("[root]", "FunSpecTest", "OtherScope", "is here")
   )
   val funSuiteTestPaths = List(
@@ -85,8 +81,7 @@ trait ScalaTestWholeSuiteTest
       "FeatureSpecTest.scala",
       checkConfigAndSettings(_, "FeatureSpecTest"),
       root =>
-        featureSpecTestPaths.forall(
-          checkResultTreeHasExactNamedPath(root, _: _*))
+        featureSpecTestPaths.forall(checkResultTreeHasExactNamedPath(root, _: _*))
 //        checkResultTreeHasExactNamedPath(root, "[root]", "FeatureSpecTest", "Feature: Feature 1", "Scenario: Scenario A") &&
 //          checkResultTreeHasExactNamedPath(root, "[root]", "FeatureSpecTest", "Feature: Feature 1", "Scenario: Scenario B") &&
 //          checkResultTreeHasExactNamedPath(root, "[root]", "FeatureSpecTest", "Feature: Feature 2", "Scenario: Scenario C")

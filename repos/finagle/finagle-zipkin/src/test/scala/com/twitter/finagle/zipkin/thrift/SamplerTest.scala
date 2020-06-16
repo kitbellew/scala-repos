@@ -39,8 +39,7 @@ class SamplerTest extends FunSuite with MockitoSugar {
     sampler.setSampleRate(0)
     for (i <- 1 until 100) {
       assert(
-        sampler.sampleTrace(TraceId(None, None, SpanId(i), None)) == Some(
-          false))
+        sampler.sampleTrace(TraceId(None, None, SpanId(i), None)) == Some(false))
     }
   }
 

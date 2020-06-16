@@ -38,9 +38,7 @@ object Runner extends Logging {
         })
       .toMap
 
-  def argumentValue(
-      arguments: Seq[String],
-      argumentName: String): Option[String] = {
+  def argumentValue(arguments: Seq[String], argumentName: String): Option[String] = {
     val argumentIndex = arguments.indexOf(argumentName)
     try {
       arguments(argumentIndex) // just to make it error out if index is -1
@@ -57,8 +55,8 @@ object Runner extends Logging {
     val localFilePath = localFile.getCanonicalPath
     (fileSystem, uri) match {
       case (Some(fs), Some(u)) =>
-        val dest = fs.makeQualified(
-          Path.mergePaths(new Path(u), new Path(localFilePath)))
+        val dest =
+          fs.makeQualified(Path.mergePaths(new Path(u), new Path(localFilePath)))
         info(s"Copying $localFile to ${dest.toString}")
         fs.copyFromLocalFile(new Path(localFilePath), dest)
         dest.toUri.toString

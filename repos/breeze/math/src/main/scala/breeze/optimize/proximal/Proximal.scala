@@ -118,8 +118,7 @@ case class ProjectEquality(Aeq: DenseMatrix[Double], beq: DenseVector[Double])
 
 //Projection onto hyper-plane is a special case of projection onto affine set and is given by
 //x + ((b - a'x)/||a||_2^2)a
-case class ProjectHyperPlane(a: DenseVector[Double], b: Double)
-    extends Proximal {
+case class ProjectHyperPlane(a: DenseVector[Double], b: Double) extends Proximal {
   val at = a.t
 
   def prox(x: DenseVector[Double], rho: Double = 0.0) = {

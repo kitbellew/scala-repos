@@ -132,10 +132,7 @@ abstract class TreeInfo {
     * Stable members are packages or members introduced
     * by object definitions or by value definitions of non-volatile types (§3.6).
     */
-  def isStableMemberOf(
-      sym: Symbol,
-      tree: Tree,
-      allowVolatile: Boolean): Boolean =
+  def isStableMemberOf(sym: Symbol, tree: Tree, allowVolatile: Boolean): Boolean =
     (
       symOk(
         sym) && (!sym.isTerm || (sym.isStable && (allowVolatile || !sym.hasVolatileType))) &&
@@ -979,9 +976,8 @@ abstract class TreeInfo {
   class DynamicApplicationExtractor(nameTest: Name => Boolean) {
     def unapply(tree: Tree) =
       tree match {
-        case Apply(
-              TypeApply(Select(qual, oper), _),
-              List(Literal(Constant(name)))) if nameTest(oper) =>
+        case Apply(TypeApply(Select(qual, oper), _), List(Literal(Constant(name))))
+            if nameTest(oper) =>
           Some((qual, name))
         case Apply(Select(qual, oper), List(Literal(Constant(name))))
             if nameTest(oper) =>
@@ -1026,12 +1022,7 @@ abstract class TreeInfo {
               if (qualSym.isModule) qualSym.moduleClass else qualSym
             }
           Some(
-            (
-              isBundle,
-              isBlackbox,
-              owner,
-              ref.symbol,
-              dissectApplied(tree).targs))
+            (isBundle, isBlackbox, owner, ref.symbol, dissectApplied(tree).targs))
         }
         case _ => None
       }

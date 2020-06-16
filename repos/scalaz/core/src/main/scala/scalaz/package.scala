@@ -304,16 +304,12 @@ package object scalaz {
   type PState[S, A] = PStateT[Id, S, A]
 
   type IndexedConts[W[_], R, O, A] = IndexedContsT[W, Id, R, O, A]
-  object IndexedConts
-      extends IndexedContsTInstances
-      with IndexedContsTFunctions {
+  object IndexedConts extends IndexedContsTInstances with IndexedContsTFunctions {
     def apply[W[_], R, O, A](f: W[A => O] => R): IndexedConts[W, R, O, A] =
       IndexedContsT[W, Id, R, O, A](f)
   }
   type IndexedContT[M[_], R, O, A] = IndexedContsT[Id, M, R, O, A]
-  object IndexedContT
-      extends IndexedContsTInstances
-      with IndexedContsTFunctions {
+  object IndexedContT extends IndexedContsTInstances with IndexedContsTFunctions {
     def apply[M[_], R, O, A](f: (A => M[O]) => M[R]): IndexedContT[M, R, O, A] =
       IndexedContsT[Id, M, R, O, A](f)
   }

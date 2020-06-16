@@ -37,10 +37,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.{
 import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 import org.jetbrains.plugins.scala.lang.psi.types.ScType.ExtractClass
 import org.jetbrains.plugins.scala.lang.psi.types._
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 import org.jetbrains.plugins.scala.project.ProjectPsiElementExt
 import org.jetbrains.plugins.scala.project.ScalaLanguageLevel.Scala_2_9
@@ -601,8 +598,9 @@ package object collections {
           infix
         case MethodRepr(
               itself,
-              Some(definedOutside(
-                ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue)))),
+              Some(
+                definedOutside(
+                  ScalaPsiUtil.inNameContext(v @ (_: ScVariable | _: ScValue)))),
               Some(ref),
               _)
             if isSideEffectCollectionMethod(ref) || isSetter(

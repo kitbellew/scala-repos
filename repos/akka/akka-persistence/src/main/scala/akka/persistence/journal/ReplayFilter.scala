@@ -42,12 +42,7 @@ private[akka] object ReplayFilter {
       mode: Mode,
       windowSize: Int,
       maxOldWriters: Int): Props =
-    props(
-      persistentActor,
-      mode,
-      windowSize,
-      maxOldWriters,
-      debugEnabled = false)
+    props(persistentActor, mode, windowSize, maxOldWriters, debugEnabled = false)
 
   sealed trait Mode
   case object Fail extends Mode
@@ -151,8 +146,7 @@ private[akka] class ReplayFilter(
                 case Fail ⇒ throw new IllegalStateException(errMsg)
                 case Warn ⇒ // keep
                 case Disabled ⇒
-                  throw new IllegalArgumentException(
-                    "mode must not be Disabled")
+                  throw new IllegalArgumentException("mode must not be Disabled")
               }
 
             }

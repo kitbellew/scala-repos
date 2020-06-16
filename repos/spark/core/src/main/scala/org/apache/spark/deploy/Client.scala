@@ -209,9 +209,7 @@ private class ClientEndpoint(
     }
   }
 
-  override def onNetworkError(
-      cause: Throwable,
-      remoteAddress: RpcAddress): Unit = {
+  override def onNetworkError(cause: Throwable, remoteAddress: RpcAddress): Unit = {
     if (!lostMasters.contains(remoteAddress)) {
       logError(s"Error connecting to master ($remoteAddress).")
       logError(s"Cause was: $cause")

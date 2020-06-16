@@ -21,12 +21,7 @@ import scala.collection.mutable
 
 import org.apache.spark._
 import org.apache.spark.internal.Logging
-import org.apache.spark.rpc.{
-  RpcCallContext,
-  RpcEndpoint,
-  RpcEndpointRef,
-  RpcEnv
-}
+import org.apache.spark.rpc.{RpcCallContext, RpcEndpoint, RpcEndpointRef, RpcEnv}
 
 private sealed trait OutputCommitCoordinationMessage extends Serializable
 
@@ -112,9 +107,7 @@ private[spark] class OutputCommitCoordinator(conf: SparkConf, isDriver: Boolean)
     * @param maxPartitionId the maximum partition id that could appear in this stage's tasks (i.e.
     *                       the maximum possible value of `context.partitionId`).
     */
-  private[scheduler] def stageStart(
-      stage: StageId,
-      maxPartitionId: Int): Unit = {
+  private[scheduler] def stageStart(stage: StageId, maxPartitionId: Int): Unit = {
     val arr = new Array[TaskAttemptNumber](maxPartitionId + 1)
     java.util.Arrays.fill(arr, NO_AUTHORIZED_COMMITTER)
     synchronized {

@@ -12,10 +12,7 @@ import akka.remote.transport.AssociationHandle.{
   InboundPayload
 }
 
-class TestTransportSpec
-    extends AkkaSpec
-    with DefaultTimeout
-    with ImplicitSender {
+class TestTransportSpec extends AkkaSpec with DefaultTimeout with ImplicitSender {
 
   val addressA: Address = Address("test", "testsytemA", "testhostA", 4321)
   val addressB: Address = Address("test", "testsytemB", "testhostB", 5432)

@@ -90,8 +90,8 @@ object Lexer {
       case _ =>
         if (' ' <= ch && ch < 128) buf += ch
         else
-          buf ++= "\\u" += toUDigit(ch >>> 12) += toUDigit(
-            ch >>> 8) += toUDigit(ch >>> 4) += toUDigit(ch.toInt)
+          buf ++= "\\u" += toUDigit(ch >>> 12) += toUDigit(ch >>> 8) += toUDigit(
+            ch >>> 4) += toUDigit(ch.toInt)
     }
   }
 

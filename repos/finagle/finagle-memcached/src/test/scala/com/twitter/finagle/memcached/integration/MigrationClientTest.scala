@@ -2,11 +2,7 @@ package com.twitter.finagle.memcached.integration
 
 import com.twitter.common.io.FileUtils._
 import com.twitter.common.quantity.{Amount, Time}
-import com.twitter.common.zookeeper.{
-  ServerSets,
-  ZooKeeperClient,
-  ZooKeeperUtils
-}
+import com.twitter.common.zookeeper.{ServerSets, ZooKeeperClient, ZooKeeperUtils}
 import com.twitter.conversions.time._
 import com.twitter.finagle.Memcached
 import com.twitter.finagle.cacheresolver.CachePoolConfig
@@ -91,8 +87,7 @@ class MigrationClientTest
     }
 
     // set config data
-    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(
-      cachePoolSize = 2)
+    val cachePoolConfig: CachePoolConfig = new CachePoolConfig(cachePoolSize = 2)
     val output: ByteArrayOutputStream = new ByteArrayOutputStream
     CachePoolConfig.jsonCodec.serialize(cachePoolConfig, output)
     zookeeperClient.get().setData(oldPoolPath, output.toByteArray, -1)
@@ -164,8 +159,7 @@ class MigrationClientTest
       Await.result(migrationClient.set("foo", Buf.Utf8("bar")), TIMEOUT)
 
       assert(
-        Await.result(migrationClient.get("foo"), TIMEOUT).get == Buf.Utf8(
-          "bar"))
+        Await.result(migrationClient.get("foo"), TIMEOUT).get == Buf.Utf8("bar"))
 
       assert(Await.result(client1.get("foo"), TIMEOUT).get == Buf.Utf8("bar"))
       eventually {

@@ -107,8 +107,7 @@ private[sql] class DefaultSource
           val availableCodecs =
             shortParquetCompressionCodecNames.keys.map(_.toLowerCase)
           throw new IllegalArgumentException(s"Codec [$codecName] " +
-            s"is not available. Available codecs are ${availableCodecs.mkString(
-              ", ")}.")
+            s"is not available. Available codecs are ${availableCodecs.mkString(", ")}.")
         }
         codecName.toLowerCase
       }
@@ -267,8 +266,7 @@ private[sql] class DefaultSource
     val leaves = allFiles
       .filter { f =>
         isSummaryFile(f.getPath) ||
-        !(f.getPath.getName.startsWith("_") || f.getPath.getName.startsWith(
-          "."))
+        !(f.getPath.getName.startsWith("_") || f.getPath.getName.startsWith("."))
       }
       .toArray
       .sortBy(_.getPath.toString)
@@ -372,8 +370,7 @@ private[sql] class DefaultSource
         // Overridden so we can inject our own cached files statuses.
         override def getPartitions: Array[SparkPartition] = {
           val inputFormat = new ParquetInputFormat[InternalRow] {
-            override def listStatus(
-                jobContext: JobContext): JList[FileStatus] = {
+            override def listStatus(jobContext: JobContext): JList[FileStatus] = {
               if (cacheMetadata) cachedStatuses.asJava
               else super.listStatus(jobContext)
             }

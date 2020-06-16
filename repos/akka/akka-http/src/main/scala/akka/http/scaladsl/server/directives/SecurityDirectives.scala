@@ -187,8 +187,7 @@ trait SecurityDirectives {
           case Left(challenge) ⇒
             val cause =
               if (cred.isEmpty) CredentialsMissing else CredentialsRejected
-            reject(AuthenticationFailedRejection(cause, challenge)): Directive1[
-              T]
+            reject(AuthenticationFailedRejection(cause, challenge)): Directive1[T]
         }
       }
     }

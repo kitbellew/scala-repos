@@ -220,8 +220,7 @@ object BasicDirectives extends BasicDirectives {
   private val _extractMaterializer: Directive1[Materializer] = extract(
     _.materializer)
   private val _extractLog: Directive1[LoggingAdapter] = extract(_.log)
-  private val _extractSettings: Directive1[RoutingSettings] = extract(
-    _.settings)
+  private val _extractSettings: Directive1[RoutingSettings] = extract(_.settings)
   private val _extractParserSettings: Directive1[ParserSettings] = extract(
     _.parserSettings)
   private val _extractRequestContext: Directive1[RequestContext] = extract(

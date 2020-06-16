@@ -204,9 +204,7 @@ object SbtRunner {
   private def implementationVersionOf(jar: File): Option[String] =
     readManifestAttributeFrom(jar, "Implementation-Version")
 
-  private def readManifestAttributeFrom(
-      file: File,
-      name: String): Option[String] = {
+  private def readManifestAttributeFrom(file: File, name: String): Option[String] = {
     val jar = new JarFile(file)
     try {
       Option(jar.getJarEntry("META-INF/MANIFEST.MF")).flatMap { entry =>

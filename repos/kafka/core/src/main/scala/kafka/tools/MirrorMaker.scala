@@ -639,10 +639,9 @@ object MirrorMaker extends Logging with KafkaMetricsGroup {
       whitelistOpt: Option[String])
       extends MirrorMakerBaseConsumer {
     val regex = whitelistOpt.getOrElse(
-      throw new IllegalArgumentException(
-        "New consumer only supports whitelist."))
-    var recordIter
-        : java.util.Iterator[ConsumerRecord[Array[Byte], Array[Byte]]] = null
+      throw new IllegalArgumentException("New consumer only supports whitelist."))
+    var recordIter: java.util.Iterator[ConsumerRecord[Array[Byte], Array[Byte]]] =
+      null
 
     // TODO: we need to manually maintain the consumed offsets for new consumer
     // since its internal consumed position is updated in batch rather than one

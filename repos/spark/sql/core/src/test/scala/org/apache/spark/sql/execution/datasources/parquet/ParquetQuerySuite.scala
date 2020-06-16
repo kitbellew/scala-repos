@@ -36,10 +36,7 @@ import org.apache.spark.util.Utils
 /**
   * A test suite that tests various Parquet queries.
   */
-class ParquetQuerySuite
-    extends QueryTest
-    with ParquetTest
-    with SharedSQLContext {
+class ParquetQuerySuite extends QueryTest with ParquetTest with SharedSQLContext {
   import testImplicits._
 
   test("simple select queries") {
@@ -119,16 +116,12 @@ class ParquetQuerySuite
 
   test("SPARK-1913 regression: columns only referenced by pushed down filters should remain") {
     withParquetTable((1 to 10).map(Tuple1.apply), "t") {
-      checkAnswer(
-        sql("SELECT _1 FROM t WHERE _1 < 10"),
-        (1 to 9).map(Row.apply(_)))
+      checkAnswer(sql("SELECT _1 FROM t WHERE _1 < 10"), (1 to 9).map(Row.apply(_)))
     }
   }
 
   test("SPARK-5309 strings stored using dictionary compression in parquet") {
-    withParquetTable(
-      (0 until 1000).map(i => ("same", "run_" + i / 100, 1)),
-      "t") {
+    withParquetTable((0 until 1000).map(i => ("same", "run_" + i / 100, 1)), "t") {
 
       checkAnswer(
         sql("SELECT _1, _2, SUM(_3) FROM t GROUP BY _1, _2"),
@@ -225,7 +218,8 @@ class ParquetQuerySuite
     }
   }
 
-  test("SPARK-8990 DataFrameReader.parquet() should respect user specified options") {
+  test(
+    "SPARK-8990 DataFrameReader.parquet() should respect user specified options") {
     withTempPath { dir =>
       val basePath = dir.getCanonicalPath
       sqlContext
@@ -335,9 +329,7 @@ class ParquetQuerySuite
         .partitionBy("n")
         .parquet(path)
 
-      checkAnswer(
-        sqlContext.read.parquet(path).filter("n is null"),
-        Row(2, null))
+      checkAnswer(sqlContext.read.parquet(path).filter("n is null"), Row(2, null))
     }
   }
 

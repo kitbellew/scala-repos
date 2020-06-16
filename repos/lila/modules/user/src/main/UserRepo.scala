@@ -275,10 +275,9 @@ object UserRepo {
     checkPassword(Json.obj(F.email -> email), password)
 
   private def checkPassword(select: JsObject, password: String): Fu[Boolean] =
-    $projection.one(
-      select,
-      Seq("password", "salt", "enabled", "sha512", "email")) { obj =>
-      (AuthData.reader reads obj).asOpt
+    $projection.one(select, Seq("password", "salt", "enabled", "sha512", "email")) {
+      obj =>
+        (AuthData.reader reads obj).asOpt
     } map {
       _ ?? (data => data.enabled && data.compare(password))
     }

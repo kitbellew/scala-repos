@@ -207,9 +207,7 @@ class RDDOperationGraphListenerSuite extends SparkFunSuite {
   }
 
   /** Start a job with the specified number of stages. */
-  private def startJob(
-      numStages: Int,
-      listener: RDDOperationGraphListener): Int = {
+  private def startJob(numStages: Int, listener: RDDOperationGraphListener): Int = {
     assert(numStages > 0, "I will not run a job with 0 stages for you.")
     val stageInfos = (0 until numStages).map { _ =>
       val stageInfo =

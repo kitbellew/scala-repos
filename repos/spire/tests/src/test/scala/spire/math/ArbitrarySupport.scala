@@ -67,11 +67,9 @@ object ArbitrarySupport {
 
   implicit def positive[A: Signed: Arbitrary]: Arbitrary[Positive[A]] =
     Arbitrary(arbitrary[A].map(_.abs).filter(_.signum > 0).map(Positive(_)))
-  implicit def negative[A: Signed: AdditiveGroup: Arbitrary]
-      : Arbitrary[Negative[A]] =
+  implicit def negative[A: Signed: AdditiveGroup: Arbitrary]: Arbitrary[Negative[A]] =
     Arbitrary(arbitrary[A].map(-_.abs).filter(_.signum < 0).map(Negative(_)))
-  implicit def nonZero[A: Signed: AdditiveGroup: Arbitrary]
-      : Arbitrary[NonZero[A]] =
+  implicit def nonZero[A: Signed: AdditiveGroup: Arbitrary]: Arbitrary[NonZero[A]] =
     Arbitrary(arbitrary[A].filter(_.signum != 0).map(NonZero(_)))
   implicit def nonPositive[A: Signed: AdditiveGroup: Arbitrary]
       : Arbitrary[NonPositive[A]] =

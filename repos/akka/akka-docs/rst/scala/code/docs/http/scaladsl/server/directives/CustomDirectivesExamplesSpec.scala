@@ -31,8 +31,7 @@ class CustomDirectivesExamplesSpec extends RoutingSpec {
       textParam.map(text => text.length)
 
     // tests:
-    Get("/?text=abcdefg") ~> lengthDirective(x =>
-      complete(x.toString)) ~> check {
+    Get("/?text=abcdefg") ~> lengthDirective(x => complete(x.toString)) ~> check {
       responseAs[String] === "7"
     }
   }

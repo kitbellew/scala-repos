@@ -150,9 +150,7 @@ object Long {
   }
 
   // Must be called only with valid radix
-  private def toUnsignedStringInternalLarge(
-      i: scala.Long,
-      radix: Int): String = {
+  private def toUnsignedStringInternalLarge(i: scala.Long, radix: Int): String = {
     import js.JSNumberOps._
     import js.JSStringOps._
 
@@ -222,10 +220,7 @@ object Long {
   @inline def parseUnsignedLong(s: String): scala.Long =
     parseUnsignedLong(s, 10)
 
-  def parseUnsignedLongInternal(
-      s: String,
-      radix: Int,
-      start: Int): scala.Long = {
+  def parseUnsignedLongInternal(s: String, radix: Int, start: Int): scala.Long = {
     import js.JSStringOps._
 
     val length = s.length

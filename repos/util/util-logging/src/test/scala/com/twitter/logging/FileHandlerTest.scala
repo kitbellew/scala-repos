@@ -31,8 +31,7 @@ import com.twitter.util.{TempFolder, Time}
 class FileHandlerTest extends WordSpec with TempFolder {
   def reader(filename: String) = {
     new BufferedReader(
-      new InputStreamReader(
-        new FileInputStream(new File(folderName, filename))))
+      new InputStreamReader(new FileInputStream(new File(folderName, filename))))
   }
 
   def writer(filename: String) = {

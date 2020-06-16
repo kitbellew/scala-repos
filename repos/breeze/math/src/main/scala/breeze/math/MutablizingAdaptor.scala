@@ -31,8 +31,8 @@ trait MutablizingAdaptor[+VS[_, _], MVS[_, _], V, S] {
 
 object MutablizingAdaptor {
 
-  def ensureMutable[V, S](vs: VectorSpace[V, S])
-      : MutablizingAdaptor[VectorSpace, MutableVectorSpace, V, S] = {
+  def ensureMutable[V, S](
+      vs: VectorSpace[V, S]): MutablizingAdaptor[VectorSpace, MutableVectorSpace, V, S] = {
     if (vs.isInstanceOf[MutableVectorSpace[_, _]])
       IdentityWrapper[MutableVectorSpace, V, S](
         vs.asInstanceOf[MutableVectorSpace[V, S]])
@@ -183,8 +183,8 @@ object MutablizingAdaptor {
             }
           }
 
-        def liftOp[Op <: OpType](implicit op: UFunc.UImpl2[Op, V, S, V])
-            : UFunc.UImpl2[Op, Wrapper, S, Wrapper] =
+        def liftOp[Op <: OpType](implicit
+            op: UFunc.UImpl2[Op, V, S, V]): UFunc.UImpl2[Op, Wrapper, S, Wrapper] =
           new UImpl2[Op, Wrapper, S, Wrapper] {
             def apply(a: Wrapper, b: S) = {
               a.map(op(_, b))
@@ -815,8 +815,7 @@ object MutablizingAdaptor {
             }
           }
 
-        implicit def mapActiveValues
-            : CanMapActiveValues[Wrapper, S, S, Wrapper] =
+        implicit def mapActiveValues: CanMapActiveValues[Wrapper, S, S, Wrapper] =
           new CanMapActiveValues[Wrapper, S, S, Wrapper] {
             override def apply(from: Wrapper, fn: (S) => S): Wrapper = {
               from.map(canMapActive(_, fn))

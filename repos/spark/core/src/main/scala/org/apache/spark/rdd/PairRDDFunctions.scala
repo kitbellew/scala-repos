@@ -321,9 +321,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       seed: Long = Utils.random.nextLong): RDD[(K, V)] =
     self.withScope {
 
-      require(
-        fractions.values.forall(v => v >= 0.0),
-        "Negative sampling rates.")
+      require(fractions.values.forall(v => v >= 0.0), "Negative sampling rates.")
 
       val samplingFunc = if (withReplacement) {
         StratifiedSamplingUtils.getPoissonSamplingFunction(
@@ -362,9 +360,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       seed: Long = Utils.random.nextLong): RDD[(K, V)] =
     self.withScope {
 
-      require(
-        fractions.values.forall(v => v >= 0.0),
-        "Negative sampling rates.")
+      require(fractions.values.forall(v => v >= 0.0), "Negative sampling rates.")
 
       val samplingFunc = if (withReplacement) {
         StratifiedSamplingUtils.getPoissonSamplingFunction(
@@ -958,8 +954,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
   def cogroup[W1, W2](
       other1: RDD[(K, W1)],
       other2: RDD[(K, W2)],
-      partitioner: Partitioner)
-      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] =
+      partitioner: Partitioner): RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] =
     self.withScope {
       if (partitioner.isInstanceOf[HashPartitioner] && keyClass.isArray) {
         throw new SparkException(
@@ -1006,8 +1001,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     * For each key k in `this` or `other1` or `other2`, return a resulting RDD that contains a
     * tuple with the list of values for that key in `this`, `other1` and `other2`.
     */
-  def cogroup[W1, W2](other1: RDD[(K, W1)], other2: RDD[(K, W2)])
-      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] =
+  def cogroup[W1, W2](
+      other1: RDD[(K, W1)],
+      other2: RDD[(K, W2)]): RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] =
     self.withScope {
       cogroup(other1, other2, defaultPartitioner(self, other1, other2))
     }
@@ -1057,8 +1053,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     }
 
   /** Alias for cogroup. */
-  def groupWith[W1, W2](other1: RDD[(K, W1)], other2: RDD[(K, W2)])
-      : RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] =
+  def groupWith[W1, W2](
+      other1: RDD[(K, W1)],
+      other2: RDD[(K, W2)]): RDD[(K, (Iterable[V], Iterable[W1], Iterable[W2]))] =
     self.withScope {
       cogroup(other1, other2, defaultPartitioner(self, other1, other2))
     }
@@ -1099,9 +1096,7 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
     }
 
   /** Return an RDD with the pairs from `this` whose keys are not in `other`. */
-  def subtractByKey[W: ClassTag](
-      other: RDD[(K, W)],
-      p: Partitioner): RDD[(K, V)] =
+  def subtractByKey[W: ClassTag](other: RDD[(K, W)], p: Partitioner): RDD[(K, V)] =
     self.withScope {
       new SubtractedRDD[K, V, W](self, other, p)
     }

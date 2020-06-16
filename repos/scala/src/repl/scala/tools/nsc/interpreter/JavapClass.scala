@@ -239,9 +239,7 @@ class JavapClass(
       classOf[JIterable[String]]
     ) orFailed null
 
-    class JavaReporter
-        extends DiagnosticListener[JavaFileObject]
-        with Clearable {
+    class JavaReporter extends DiagnosticListener[JavaFileObject] with Clearable {
       type D = Diagnostic[_ <: JavaFileObject]
       val diagnostics = new ConcurrentLinkedQueue[D]
       override def report(d: Diagnostic[_ <: JavaFileObject]) {

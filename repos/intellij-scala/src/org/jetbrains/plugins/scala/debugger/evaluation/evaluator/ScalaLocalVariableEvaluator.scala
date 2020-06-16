@@ -153,8 +153,7 @@ class ScalaLocalVariableEvaluator(name: String, sourceName: String)
         def setValue(value: Value) {
           val frameProxy: StackFrameProxyImpl = myContext.getFrameProxy
           try {
-            if (DebuggerUtil.isScalaRuntimeRef(
-                myEvaluatedVariable.getType.name())) {
+            if (DebuggerUtil.isScalaRuntimeRef(myEvaluatedVariable.getType.name())) {
               frameProxy.getValue(myEvaluatedVariable) match {
                 case objRef: ObjectReference =>
                   val field = objRef.referenceType().fieldByName("elem")

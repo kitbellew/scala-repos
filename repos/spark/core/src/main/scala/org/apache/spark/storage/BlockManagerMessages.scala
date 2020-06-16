@@ -39,9 +39,7 @@ private[spark] object BlockManagerMessages {
   case class RemoveShuffle(shuffleId: Int) extends ToBlockManagerSlave
 
   // Remove all blocks belonging to a specific broadcast.
-  case class RemoveBroadcast(
-      broadcastId: Long,
-      removeFromDriver: Boolean = true)
+  case class RemoveBroadcast(broadcastId: Long, removeFromDriver: Boolean = true)
       extends ToBlockManagerSlave
 
   /**

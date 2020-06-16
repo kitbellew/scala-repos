@@ -101,10 +101,8 @@ trait PatternMatching
   class PureMatchTranslator(val typer: analyzer.Typer, val matchStrategy: Tree)
       extends MatchTranslator
       with PureCodegen {
-    def optimizeCases(
-        prevBinder: Symbol,
-        cases: List[List[TreeMaker]],
-        pt: Type) = (cases, Nil)
+    def optimizeCases(prevBinder: Symbol, cases: List[List[TreeMaker]], pt: Type) =
+      (cases, Nil)
     def analyzeCases(
         prevBinder: Symbol,
         cases: List[List[TreeMaker]],
@@ -270,9 +268,7 @@ trait Interface extends ast.TreeDSL {
             def subst(from: List[Symbol], to: List[Tree]): Tree =
               if (from.isEmpty) tree
               else if (tree.symbol == from.head)
-                typedIfOrigTyped(
-                  typedStable(to.head).setPos(tree.pos),
-                  tree.tpe)
+                typedIfOrigTyped(typedStable(to.head).setPos(tree.pos), tree.tpe)
               else subst(from.tail, to.tail)
 
             val tree1 = tree match {

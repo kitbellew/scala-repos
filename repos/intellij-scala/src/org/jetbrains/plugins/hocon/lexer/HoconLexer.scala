@@ -120,11 +120,7 @@ class HoconLexer extends LexerBase {
     new LiteralTokenMatcher("+=", PlusEquals, always, forceState(Initial)),
     new LiteralTokenMatcher(".", Period, always, onContents),
     new RegexTokenMatcher("""#[^\n]*""".r, HashComment, always, identity),
-    new RegexTokenMatcher(
-      """//[^\n]*""".r,
-      DoubleSlashComment,
-      always,
-      identity),
+    new RegexTokenMatcher("""//[^\n]*""".r, DoubleSlashComment, always, identity),
     UnquotedCharsMatcher,
     MultilineStringMatcher,
     QuotedStringMatcher,
@@ -158,10 +154,7 @@ class HoconLexer extends LexerBase {
             }
           } else offset
         Some(
-          TokenMatch(
-            QuotedString,
-            drain(1, escaping = false),
-            onContents(state)))
+          TokenMatch(QuotedString, drain(1, escaping = false), onContents(state)))
       } else None
   }
 

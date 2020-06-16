@@ -81,8 +81,7 @@ object PlayForkProcess {
       // wait a bit for clean exit
       timedWaitFor(process, shutdownTimeout.toMillis) match {
         case None =>
-          log.info(
-            "Forked Play process did not exit on its own, terminating it")
+          log.info("Forked Play process did not exit on its own, terminating it")
           // fire-and-forget sigterm, may or may not work
           process.destroy()
         case Some(x) =>

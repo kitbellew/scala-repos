@@ -465,8 +465,9 @@ private[deploy] class Master(
           cores,
           memory,
           workerWebUiUrl) => {
-      logInfo("Registering worker %s:%d with %d cores, %s RAM"
-        .format(workerHost, workerPort, cores, Utils.megabytesToString(memory)))
+      logInfo(
+        "Registering worker %s:%d with %d cores, %s RAM"
+          .format(workerHost, workerPort, cores, Utils.megabytesToString(memory)))
       if (state == RecoveryState.STANDBY) {
         context.reply(MasterInStandby)
       } else if (idToWorker.contains(id)) {
@@ -545,8 +546,7 @@ private[deploy] class Master(
             // TODO: It would be nice for this to be a synchronous response
             val msg = s"Kill request for $driverId submitted"
             logInfo(msg)
-            context.reply(
-              KillDriverResponse(self, driverId, success = true, msg))
+            context.reply(KillDriverResponse(self, driverId, success = true, msg))
           case None =>
             val msg = s"Driver $driverId has already finished or does not exist"
             logWarning(msg)
@@ -877,12 +877,7 @@ private[deploy] class Master(
         exec.cores,
         exec.memory))
     exec.application.driver.send(
-      ExecutorAdded(
-        exec.id,
-        worker.id,
-        worker.hostPort,
-        exec.cores,
-        exec.memory))
+      ExecutorAdded(exec.id, worker.id, worker.hostPort, exec.cores, exec.memory))
   }
 
   private def registerWorker(worker: WorkerInfo): Boolean = {
@@ -1052,9 +1047,7 @@ private[deploy] class Master(
     *
     * @return whether the application has previously registered with this Master.
     */
-  private def handleKillExecutors(
-      appId: String,
-      executorIds: Seq[Int]): Boolean = {
+  private def handleKillExecutors(appId: String, executorIds: Seq[Int]): Boolean = {
     idToApp.get(appId) match {
       case Some(appInfo) =>
         logInfo(
@@ -1093,7 +1086,8 @@ private[deploy] class Master(
         Some(executorId.toInt)
       } catch {
         case e: NumberFormatException =>
-          logError(s"Encountered executor with a non-integer ID: $executorId. Ignoring")
+          logError(
+            s"Encountered executor with a non-integer ID: $executorId. Ignoring")
           None
       }
     }
@@ -1199,8 +1193,8 @@ private[deploy] class Master(
         var msg = s"Exception in replaying log for application $appName!"
         logError(msg, e)
         msg = URLEncoder.encode(msg, "UTF-8")
-        app.appUIUrlAtHistoryServer = Some(
-          notFoundBasePath + s"?msg=$msg&exception=$exception&title=$title")
+        app.appUIUrlAtHistoryServer =
+          Some(notFoundBasePath + s"?msg=$msg&exception=$exception&title=$title")
     }(ThreadUtils.sameThread)
 
     futureUI

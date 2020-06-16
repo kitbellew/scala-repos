@@ -23,9 +23,7 @@ private[tracker] object TaskOpProcessorImpl {
     * @param directTaskTracker a TaskTracker instance that goes directly to the correct taskTracker
     *                          without going through the WhenLeaderActor indirection.
     */
-  class StatusUpdateActionResolver(
-      clock: Clock,
-      directTaskTracker: TaskTracker) {
+  class StatusUpdateActionResolver(clock: Clock, directTaskTracker: TaskTracker) {
     private[this] val log = LoggerFactory.getLogger(getClass)
 
     /**

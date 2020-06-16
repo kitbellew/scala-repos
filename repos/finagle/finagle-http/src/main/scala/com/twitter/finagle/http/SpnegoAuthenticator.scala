@@ -33,8 +33,7 @@ object SpnegoAuthenticator {
     /** If the header represents a valid spnego negotiation, return it. */
     def unapply(header: String): Option[Token] =
       // must be a valid Negotiate header, and have a token
-      if (header.length <= SchemePrefixLength || !header.startsWith(
-          AuthScheme)) {
+      if (header.length <= SchemePrefixLength || !header.startsWith(AuthScheme)) {
         None
       } else {
         val tokenStr = header.substring(SchemePrefixLength)
@@ -79,9 +78,7 @@ object SpnegoAuthenticator {
         * Called by a client to initialize the security context and return the next Token
         * to send to the server. ChallengeToken may be empty if we haven't been challenged.
         */
-      def init(
-          context: GSSContext,
-          challengeToken: Option[Token]): Future[Token]
+      def init(context: GSSContext, challengeToken: Option[Token]): Future[Token]
     }
 
     /**
@@ -146,9 +143,7 @@ object SpnegoAuthenticator {
       val serverPrincipal =
         manager.createName(_serverPrincipal, _serverPrincipalType)
 
-      def init(
-          context: GSSContext,
-          challengeToken: Option[Token]): Future[Token] =
+      def init(context: GSSContext, challengeToken: Option[Token]): Future[Token] =
         pool {
           val tokenIn = challengeToken.getOrElse(Token.Empty)
           var tokenOut: Token = null

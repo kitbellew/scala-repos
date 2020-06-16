@@ -28,9 +28,7 @@ private trait DualSemigroup[F] extends Semigroup[F @@ Tags.Dual] {
     Tag(F.append(Tag.unwrap(f2), Tag.unwrap(f1)))
 }
 
-private trait DualMonoid[F]
-    extends Monoid[F @@ Tags.Dual]
-    with DualSemigroup[F] {
+private trait DualMonoid[F] extends Monoid[F @@ Tags.Dual] with DualSemigroup[F] {
   implicit def F: Monoid[F]
   def zero = Tag(F.zero)
 }

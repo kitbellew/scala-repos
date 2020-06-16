@@ -617,8 +617,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
           multiplyByPosInt(larger.getUnscaledValue, 10).add(biLarger)
         } else {
           val tempBI2 = larger.getUnscaledValue.subtract(biLarger)
-          multiplyByPosInt(tempBI2, 10).add(
-            BigInteger.valueOf(largerSignum * 9))
+          multiplyByPosInt(tempBI2, 10).add(BigInteger.valueOf(largerSignum * 9))
         }
       }
       // Rounding the improved adding
@@ -663,9 +662,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
 
       if (negDiffScale < LongTenPows.length && maxLen < 64) {
         val powTen = LongTenPows(negDiffScale)
-        valueOf(
-          _smallValue * powTen - subtrahend._smallValue,
-          subtrahend._scale)
+        valueOf(_smallValue * powTen - subtrahend._smallValue, subtrahend._scale)
       } else {
         val mult = multiplyByTenPow(this.getUnscaledValue, negDiffScale)
         val multSub = mult.subtract(subtrahend.getUnscaledValue)
@@ -1014,11 +1011,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
     // To strip trailing zeros until the specified precision is reached
     @inline
     @tailrec
-    def loop(
-        i: Int,
-        ns: Long,
-        q: BigInteger,
-        prec: Int): (Long, BigInteger, Int) = {
+    def loop(i: Int, ns: Long, q: BigInteger, prec: Int): (Long, BigInteger, Int) = {
       if (!q.testBit(0)) {
         val qr = q.divideAndRemainderImpl(BigTenPows(i))
         val cond1 = {
@@ -1057,9 +1050,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
   def divideAndRemainder(divisor: BigDecimal): Array[BigDecimal] =
     divideAndRemainderImpl(divisor).toArray()
 
-  def divideAndRemainder(
-      divisor: BigDecimal,
-      mc: MathContext): Array[BigDecimal] =
+  def divideAndRemainder(divisor: BigDecimal, mc: MathContext): Array[BigDecimal] =
     divideAndRemainderImpl(divisor, mc).toArray()
 
   def pow(n: Int): BigDecimal = {
@@ -1732,9 +1723,7 @@ class BigDecimal() extends Number with Comparable[BigDecimal] {
     } else if (-newScale < LongTenPows.length && _bitLength + lptbLen < 64) {
       valueOf(_smallValue * LongTenPows(-newScale.toInt), 0)
     } else {
-      new BigDecimal(
-        multiplyByTenPow(getUnscaledValue, safeLongToInt(-newScale)),
-        0)
+      new BigDecimal(multiplyByTenPow(getUnscaledValue, safeLongToInt(-newScale)), 0)
     }
   }
 

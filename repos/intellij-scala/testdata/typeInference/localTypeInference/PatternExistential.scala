@@ -6,7 +6,6 @@ class ListLikeCollectionNodeRenderer {
       value /*end*/
   }
   private class SimpleMethodInvocationResult[R]
-  private case class Success[R](value: R)
-      extends SimpleMethodInvocationResult[R]
+  private case class Success[R](value: R) extends SimpleMethodInvocationResult[R]
 }
 //Boolean

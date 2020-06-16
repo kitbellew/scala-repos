@@ -662,9 +662,7 @@ object LocalOptImpls {
       method: MethodNode): Set[TryCatchBlockNode] = {
 
     /** True if there exists code between start and end. */
-    def containsExecutableCode(
-        start: AbstractInsnNode,
-        end: LabelNode): Boolean = {
+    def containsExecutableCode(start: AbstractInsnNode, end: LabelNode): Boolean = {
       start != end && ((start.getOpcode: @switch) match {
         // FrameNode, LabelNode and LineNumberNode have opcode == -1.
         case -1 | GOTO => containsExecutableCode(start.getNext, end)

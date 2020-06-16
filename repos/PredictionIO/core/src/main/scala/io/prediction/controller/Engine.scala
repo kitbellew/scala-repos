@@ -78,9 +78,7 @@ import scala.language.implicitConversions
   * @group Engine
   */
 class Engine[TD, EI, PD, Q, P, A](
-    val dataSourceClassMap: Map[
-      String,
-      Class[_ <: BaseDataSource[TD, EI, Q, A]]],
+    val dataSourceClassMap: Map[String, Class[_ <: BaseDataSource[TD, EI, Q, A]]],
     val preparatorClassMap: Map[String, Class[_ <: BasePreparator[TD, PD]]],
     val algorithmClassMap: Map[String, Class[_ <: BaseAlgorithm[PD, _, Q, P]]],
     val servingClassMap: Map[String, Class[_ <: BaseServing[Q, P]]])
@@ -539,8 +537,8 @@ object Engine {
     */
   object DataSourceMap {
     implicit def cToMap[TD, EI, Q, A](
-        c: Class[_ <: BaseDataSource[TD, EI, Q, A]])
-        : DataSourceMap[TD, EI, Q, A] = new DataSourceMap(c)
+        c: Class[_ <: BaseDataSource[TD, EI, Q, A]]): DataSourceMap[TD, EI, Q, A] =
+      new DataSourceMap(c)
     implicit def mToMap[TD, EI, Q, A](
         m: Map[String, Class[_ <: BaseDataSource[TD, EI, Q, A]]])
         : DataSourceMap[TD, EI, Q, A] = new DataSourceMap(m)

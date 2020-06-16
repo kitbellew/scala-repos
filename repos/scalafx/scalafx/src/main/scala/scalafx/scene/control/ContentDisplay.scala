@@ -35,14 +35,10 @@ object ContentDisplay
     extends SFXEnumDelegateCompanion[jfxsc.ContentDisplay, ContentDisplay] {
 
   val Bottom = new ContentDisplay(jfxsc.ContentDisplay.BOTTOM)
-  @deprecated(
-    "Use Bottom; BOTTOM will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Bottom; BOTTOM will be removed in a future release", "2.2.60")
   val BOTTOM = Bottom
   val Center = new ContentDisplay(jfxsc.ContentDisplay.CENTER)
-  @deprecated(
-    "Use Center; CENTER will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Center; CENTER will be removed in a future release", "2.2.60")
   val CENTER = Center
   val GraphicOnly = new ContentDisplay(jfxsc.ContentDisplay.GRAPHIC_ONLY)
   @deprecated(

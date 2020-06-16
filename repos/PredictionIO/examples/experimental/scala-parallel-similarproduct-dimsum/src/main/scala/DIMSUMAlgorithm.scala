@@ -30,10 +30,7 @@ class DIMSUMModel(
 
   @transient lazy val itemIntStringMap = itemStringIntMap.inverse
 
-  def save(
-      id: String,
-      params: DIMSUMAlgorithmParams,
-      sc: SparkContext): Boolean = {
+  def save(id: String, params: DIMSUMAlgorithmParams, sc: SparkContext): Boolean = {
 
     similarities.saveAsObjectFile(s"/tmp/${id}/similarities")
     sc.parallelize(Seq(itemStringIntMap))
@@ -55,10 +52,7 @@ class DIMSUMModel(
 
 object DIMSUMModel
     extends IPersistentModelLoader[DIMSUMAlgorithmParams, DIMSUMModel] {
-  def apply(
-      id: String,
-      params: DIMSUMAlgorithmParams,
-      sc: Option[SparkContext]) = {
+  def apply(id: String, params: DIMSUMAlgorithmParams, sc: Option[SparkContext]) = {
     new DIMSUMModel(
       similarities = sc.get.objectFile(s"/tmp/${id}/similarities"),
       itemStringIntMap = sc.get

@@ -44,9 +44,7 @@ private[redis] object RedisCodec {
   val POS_INFINITY_BA = StringToChannelBuffer("+inf")
   val NEG_INFINITY_BA = StringToChannelBuffer("-inf")
 
-  def toUnifiedFormat(
-      args: Seq[ChannelBuffer],
-      includeHeader: Boolean = true) = {
+  def toUnifiedFormat(args: Seq[ChannelBuffer], includeHeader: Boolean = true) = {
     val header = includeHeader match {
       case true =>
         Seq(

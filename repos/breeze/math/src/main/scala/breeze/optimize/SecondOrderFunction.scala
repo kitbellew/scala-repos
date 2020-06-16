@@ -32,8 +32,7 @@ trait SecondOrderFunction[T, H] extends DiffFunction[T] {
 
 object SecondOrderFunction {
   def empirical[T, I](f: DiffFunction[T], eps: Double = 1e-5)(implicit
-      vs: VectorSpace[T, Double])
-      : SecondOrderFunction[T, EmpiricalHessian[T]] = {
+      vs: VectorSpace[T, Double]): SecondOrderFunction[T, EmpiricalHessian[T]] = {
     new SecondOrderFunction[T, EmpiricalHessian[T]] {
 
       /** Calculates the value, the gradient, and the Hessian at a point */
@@ -79,11 +78,8 @@ object SecondOrderFunction {
   * @param eps a small value
   * @tparam T
   */
-class EmpiricalHessian[T](
-    df: DiffFunction[T],
-    x: T,
-    grad: T,
-    eps: Double = 1e-5)(implicit vs: VectorSpace[T, Double]) {
+class EmpiricalHessian[T](df: DiffFunction[T], x: T, grad: T, eps: Double = 1e-5)(
+    implicit vs: VectorSpace[T, Double]) {
 
   import vs._
 

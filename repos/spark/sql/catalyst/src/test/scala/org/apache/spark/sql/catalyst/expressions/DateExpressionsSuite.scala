@@ -240,9 +240,7 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         Literal.create(null, IntegerType)),
       null)
     checkEvaluation(
-      DateAdd(
-        Literal.create(null, DateType),
-        Literal.create(null, IntegerType)),
+      DateAdd(Literal.create(null, DateType), Literal.create(null, IntegerType)),
       null)
     checkEvaluation(
       DateAdd(Literal(Date.valueOf("2016-02-28")), positiveIntLit),
@@ -267,9 +265,7 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         Literal.create(null, IntegerType)),
       null)
     checkEvaluation(
-      DateSub(
-        Literal.create(null, DateType),
-        Literal.create(null, IntegerType)),
+      DateSub(Literal.create(null, DateType), Literal.create(null, IntegerType)),
       null)
     checkEvaluation(
       DateSub(Literal(Date.valueOf("2016-02-28")), positiveIntLit),
@@ -359,9 +355,7 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       null)
     checkEvaluation(AddMonths(Literal.create(null, DateType), Literal(1)), null)
     checkEvaluation(
-      AddMonths(
-        Literal.create(null, DateType),
-        Literal.create(null, IntegerType)),
+      AddMonths(Literal.create(null, DateType), Literal.create(null, IntegerType)),
       null)
     checkEvaluation(
       AddMonths(Literal(Date.valueOf("2015-01-30")), Literal(Int.MinValue)),
@@ -477,9 +471,7 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     checkEvaluation(
       NextDay(Literal(Date.valueOf("2015-07-23")), Literal("xx")),
       null)
-    checkEvaluation(
-      NextDay(Literal.create(null, DateType), Literal("xx")),
-      null)
+    checkEvaluation(NextDay(Literal.create(null, DateType), Literal("xx")), null)
     checkEvaluation(
       NextDay(
         Literal(Date.valueOf("2015-07-23")),
@@ -540,9 +532,7 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         Literal.create(null, StringType)),
       null)
     checkEvaluation(
-      FromUnixTime(
-        Literal.create(null, LongType),
-        Literal("yyyy-MM-dd HH:mm:ss")),
+      FromUnixTime(Literal.create(null, LongType), Literal("yyyy-MM-dd HH:mm:ss")),
       null)
     checkEvaluation(
       FromUnixTime(Literal(1000L), Literal.create(null, StringType)),
@@ -578,9 +568,7 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       UnixTimestamp(Literal(date1), Literal("yyyy-MM-dd HH:mm:ss")),
       DateTimeUtils.daysToMillis(DateTimeUtils.fromJavaDate(date1)) / 1000L)
     checkEvaluation(
-      UnixTimestamp(
-        Literal(sdf2.format(new Timestamp(-1000000))),
-        Literal(fmt2)),
+      UnixTimestamp(Literal(sdf2.format(new Timestamp(-1000000))), Literal(fmt2)),
       -1000L)
     checkEvaluation(
       UnixTimestamp(
@@ -688,9 +676,7 @@ class DateExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         Literal(Date.valueOf("2015-07-24"))),
       -3)
     checkEvaluation(
-      DateDiff(
-        Literal.create(null, DateType),
-        Literal(Date.valueOf("2015-07-24"))),
+      DateDiff(Literal.create(null, DateType), Literal(Date.valueOf("2015-07-24"))),
       null)
     checkEvaluation(
       DateDiff(

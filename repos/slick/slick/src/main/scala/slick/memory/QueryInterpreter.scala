@@ -133,9 +133,7 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
           if (inner.headOption.isEmpty)
             Vector(
               new ProductValue(
-                Vector(
-                  createNullRow(left.nodeType.asCollectionType.elementType),
-                  r)))
+                Vector(createNullRow(left.nodeType.asCollectionType.elementType), r)))
           else inner
         }
         scope.remove(leftGen)

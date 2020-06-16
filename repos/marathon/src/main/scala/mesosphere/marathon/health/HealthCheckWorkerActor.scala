@@ -108,10 +108,7 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
         None
       } else {
         Some(
-          Unhealthy(
-            task.taskId,
-            launched.appVersion,
-            response.status.toString()))
+          Unhealthy(task.taskId, launched.appVersion, response.status.toString()))
       }
     }
   }
@@ -183,10 +180,7 @@ class HealthCheckWorkerActor extends Actor with ActorLogging {
         Some(Healthy(task.taskId, launched.appVersion))
       else
         Some(
-          Unhealthy(
-            task.taskId,
-            launched.appVersion,
-            response.status.toString()))
+          Unhealthy(task.taskId, launched.appVersion, response.status.toString()))
     }
   }
 

@@ -172,9 +172,8 @@ class ProjectedQuasiNewton(
         x,
         grad,
         history)
-      val spgResult = innerOptimizer.minimizeAndReturnState(
-        new CachedDiffFunction(subprob),
-        x)
+      val spgResult =
+        innerOptimizer.minimizeAndReturnState(new CachedDiffFunction(subprob), x)
       logger.info(f"ProjectedQuasiNewton: outerIter ${state.iter} innerIters ${spgResult.iter}")
       spgResult.x - x
       //	time += subprob.time

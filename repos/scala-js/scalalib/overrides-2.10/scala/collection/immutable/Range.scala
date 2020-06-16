@@ -306,11 +306,7 @@ class Range(val start: Int, val end: Int, val step: Int)
 object Range {
   private[immutable] val MAX_PRINT = 512 // some arbitrary value
 
-  private def description(
-      start: Int,
-      end: Int,
-      step: Int,
-      isInclusive: Boolean) =
+  private def description(start: Int, end: Int, step: Int, isInclusive: Boolean) =
     start + (if (isInclusive) " to " else " until ") + end + " by " + step
 
   private def fail(start: Int, end: Int, step: Int, isInclusive: Boolean) =

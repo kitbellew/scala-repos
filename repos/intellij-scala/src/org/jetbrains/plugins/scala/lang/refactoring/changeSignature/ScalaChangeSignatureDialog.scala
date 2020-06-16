@@ -124,8 +124,7 @@ class ScalaChangeSignatureDialog(
     decorateParameterTable(myParametersList.getTable)
   }
 
-  protected def createParametersTable()
-      : TableView[ScalaParameterTableModelItem] = {
+  protected def createParametersTable(): TableView[ScalaParameterTableModelItem] = {
     new TableView[ScalaParameterTableModelItem](myParametersTableModel) {
       override def removeEditor() {
         clearEditorListeners()
@@ -202,8 +201,7 @@ class ScalaChangeSignatureDialog(
 
   protected override def getTableEditor(
       t: JTable,
-      item: ParameterTableModelItemBase[ScalaParameterInfo])
-      : JBTableRowEditor = {
+      item: ParameterTableModelItemBase[ScalaParameterInfo]): JBTableRowEditor = {
     val scalaItem = item match {
       case si: ScalaParameterTableModelItem => si
       case _                                => throw new IllegalArgumentException
@@ -495,8 +493,7 @@ class ScalaChangeSignatureDialog(
 
   protected def decorateParameterTable(table: JBTable): JPanel = {
     table.setCellSelectionEnabled(true)
-    table.getSelectionModel.setSelectionMode(
-      ListSelectionModel.SINGLE_SELECTION)
+    table.getSelectionModel.setSelectionMode(ListSelectionModel.SINGLE_SELECTION)
     table.getSelectionModel.setSelectionInterval(0, 0)
     table.setSurrendersFocusOnKeystroke(true)
     val buttonsPanel: JPanel =
@@ -607,8 +604,8 @@ class ScalaChangeSignatureDialog(
       myParametersTableModel.getRowValue(row)
 
     override def getRowEditor(
-        item: ParameterTableModelItemBase[ScalaParameterInfo])
-        : JBTableRowEditor = getTableEditor(getTable, item)
+        item: ParameterTableModelItemBase[ScalaParameterInfo]): JBTableRowEditor =
+      getTableEditor(getTable, item)
   }
 
 }

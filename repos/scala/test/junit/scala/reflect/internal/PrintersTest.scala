@@ -415,9 +415,7 @@ trait ClassPrintTests {
     assertPrintedCode("class X(x: scala.Int, s: scala.Predef.String)")
 
   @Test def testClassWithParams2 =
-    assertPrintedCode(
-      "class X(@test x: Int, s: String)",
-      checkTypedTree = false)
+    assertPrintedCode("class X(@test x: Int, s: String)", checkTypedTree = false)
 
   @Test def testClassWithParams3 =
     assertPrintedCode(
@@ -1155,9 +1153,7 @@ trait ValAndDefPrintTests {
       checkTypedTree = false)
 
   @Test def testDefWithAnn6 =
-    assertPrintedCode(
-      "@test1(new test2()) def foo = 42",
-      checkTypedTree = false)
+    assertPrintedCode("@test1(new test2()) def foo = 42", checkTypedTree = false)
 
   @Test def testDefWithAnn7 =
     assertPrintedCode("@`t*` def foo = 42", checkTypedTree = false)

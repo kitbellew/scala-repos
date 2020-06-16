@@ -33,8 +33,7 @@ import scalafx.Includes._
 import scalafx.delegate.{SFXEnumDelegate, SFXEnumDelegateCompanion}
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/scene/text/FontWeight.html javafx.scene.text.FontWeight]] */
-object FontWeight
-    extends SFXEnumDelegateCompanion[jfxst.FontWeight, FontWeight] {
+object FontWeight extends SFXEnumDelegateCompanion[jfxst.FontWeight, FontWeight] {
 
   val Thin = new FontWeight(jfxst.FontWeight.THIN)
   @deprecated("Use Thin; THIN will be removed in a future release", "2.2.60")
@@ -48,14 +47,10 @@ object FontWeight
   @deprecated("Use Light; LIGHT will be removed in a future release", "2.2.60")
   val LIGHT = Light
   val Normal = new FontWeight(jfxst.FontWeight.NORMAL)
-  @deprecated(
-    "Use Normal; NORMAL will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Normal; NORMAL will be removed in a future release", "2.2.60")
   val NORMAL = Normal
   val Medium = new FontWeight(jfxst.FontWeight.MEDIUM)
-  @deprecated(
-    "Use Medium; MEDIUM will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Medium; MEDIUM will be removed in a future release", "2.2.60")
   val MEDIUM = Medium
   val SemiBold = new FontWeight(jfxst.FontWeight.SEMI_BOLD)
   @deprecated(

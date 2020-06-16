@@ -88,9 +88,7 @@ class HttpConnectHandler(
     Channels.write(ctx, Channels.future(ctx.getChannel), req, null)
   }
 
-  override def connectRequested(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def connectRequested(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     e match {
       case de: DownstreamChannelStateEvent =>
         if (!connectFuture.compareAndSet(null, e.getFuture)) {
@@ -131,9 +129,7 @@ class HttpConnectHandler(
   }
 
   // we delay propagating connection upstream until we've completed the proxy connection.
-  override def channelConnected(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def channelConnected(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     if (connectFuture.get eq null) {
       fail(ctx.getChannel, new InconsistentStateException(addr))
       return

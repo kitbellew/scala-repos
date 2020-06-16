@@ -76,8 +76,7 @@ private[streaming] object HdfsUtils {
     val dfsPath = new Path(path)
     val dfs = getFileSystemForPath(dfsPath, conf)
     val fileStatus = dfs.getFileStatus(dfsPath)
-    val blockLocs = Option(
-      dfs.getFileBlockLocations(fileStatus, offset, length))
+    val blockLocs = Option(dfs.getFileBlockLocations(fileStatus, offset, length))
     blockLocs.map(_.flatMap(_.getHosts)).getOrElse(Array.empty)
   }
 

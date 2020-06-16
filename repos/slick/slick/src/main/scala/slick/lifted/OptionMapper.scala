@@ -50,8 +50,8 @@ object OptionMapper2 {
     OptionMapper2.option
       .asInstanceOf[OptionMapper2[B1, B2, BR, Option[B1], B2, Option[BR]]]
   @inline implicit def getOptionMapper2OO[B1, B2: BaseTypedType, BR] =
-    OptionMapper2.option.asInstanceOf[
-      OptionMapper2[B1, B2, BR, Option[B1], Option[B2], Option[BR]]]
+    OptionMapper2.option
+      .asInstanceOf[OptionMapper2[B1, B2, BR, Option[B1], Option[B2], Option[BR]]]
 }
 
 @implicitNotFound("Cannot perform option-mapped operation\n      with type: (${P1}, ${P2}, ${P3}) => ${R}\n  for base type: (${B1}, ${B2}, ${B3}) => ${BR}")
@@ -85,15 +85,15 @@ object OptionMapper3 {
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, B1, B2, Option[B3], Option[BR]]]
+    OptionMapper3.option
+      .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, B2, Option[B3], Option[BR]]]
   @inline implicit def getOptionMapper3TOT[
       B1,
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, B1, Option[B2], B3, Option[BR]]]
+    OptionMapper3.option
+      .asInstanceOf[OptionMapper3[B1, B2, B3, BR, B1, Option[B2], B3, Option[BR]]]
   @inline implicit def getOptionMapper3TOO[
       B1,
       B2: BaseTypedType,
@@ -106,8 +106,8 @@ object OptionMapper3 {
       B2: BaseTypedType,
       B3: BaseTypedType,
       BR] =
-    OptionMapper3.option.asInstanceOf[
-      OptionMapper3[B1, B2, B3, BR, Option[B1], B2, B3, Option[BR]]]
+    OptionMapper3.option
+      .asInstanceOf[OptionMapper3[B1, B2, B3, BR, Option[B1], B2, B3, Option[BR]]]
   @inline implicit def getOptionMapper3OTO[
       B1,
       B2: BaseTypedType,
@@ -157,8 +157,7 @@ sealed trait OptionLift[M, O] {
 
 object OptionLift extends OptionLiftLowPriority {
   final implicit def repOptionLift[M <: Rep[_], P](implicit
-      shape: Shape[_ <: FlatShapeLevel, M, _, Rep[P]])
-      : OptionLift[M, Rep[Option[P]]] =
+      shape: Shape[_ <: FlatShapeLevel, M, _, Rep[P]]): OptionLift[M, Rep[Option[P]]] =
     new OptionLift[M, Rep[Option[P]]] {
       def lift(v: M): Rep[Option[P]] = {
         val n = OptionApply(v.toNode)
@@ -177,8 +176,7 @@ object OptionLift extends OptionLiftLowPriority {
 
 sealed trait OptionLiftLowPriority {
   final implicit def anyOptionLift[M, P](implicit
-      shape: Shape[_ <: FlatShapeLevel, M, _, P])
-      : OptionLift[M, Rep[Option[P]]] =
+      shape: Shape[_ <: FlatShapeLevel, M, _, P]): OptionLift[M, Rep[Option[P]]] =
     new OptionLift[M, Rep[Option[P]]] {
       def lift(v: M): Rep[Option[P]] =
         RepOption[P](

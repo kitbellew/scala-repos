@@ -58,8 +58,7 @@ class SyncProducer(val config: SyncProducerConfig) extends Logging {
     ProducerRequestStatsRegistry.getProducerRequestStats(config.clientId)
 
   trace(
-    "Instantiating Scala Sync Producer with properties: %s".format(
-      config.props))
+    "Instantiating Scala Sync Producer with properties: %s".format(config.props))
 
   private def verifyRequest(request: RequestOrResponse) = {
 

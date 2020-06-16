@@ -151,9 +151,7 @@ class OrcFilterSuite extends QueryTest with OrcTest {
         checkFilterPredicate(
           Literal(1) >= '_1,
           PredicateLeaf.Operator.LESS_THAN_EQUALS)
-        checkFilterPredicate(
-          Literal(4) <= '_1,
-          PredicateLeaf.Operator.LESS_THAN)
+        checkFilterPredicate(Literal(4) <= '_1, PredicateLeaf.Operator.LESS_THAN)
     }
   }
 
@@ -181,9 +179,7 @@ class OrcFilterSuite extends QueryTest with OrcTest {
         checkFilterPredicate(
           Literal(1) >= '_1,
           PredicateLeaf.Operator.LESS_THAN_EQUALS)
-        checkFilterPredicate(
-          Literal(4) <= '_1,
-          PredicateLeaf.Operator.LESS_THAN)
+        checkFilterPredicate(Literal(4) <= '_1, PredicateLeaf.Operator.LESS_THAN)
     }
   }
 
@@ -211,9 +207,7 @@ class OrcFilterSuite extends QueryTest with OrcTest {
         checkFilterPredicate(
           Literal(1) >= '_1,
           PredicateLeaf.Operator.LESS_THAN_EQUALS)
-        checkFilterPredicate(
-          Literal(4) <= '_1,
-          PredicateLeaf.Operator.LESS_THAN)
+        checkFilterPredicate(Literal(4) <= '_1, PredicateLeaf.Operator.LESS_THAN)
     }
   }
 
@@ -240,9 +234,7 @@ class OrcFilterSuite extends QueryTest with OrcTest {
       checkFilterPredicate(
         Literal("1") >= '_1,
         PredicateLeaf.Operator.LESS_THAN_EQUALS)
-      checkFilterPredicate(
-        Literal("4") <= '_1,
-        PredicateLeaf.Operator.LESS_THAN)
+      checkFilterPredicate(Literal("4") <= '_1, PredicateLeaf.Operator.LESS_THAN)
     }
   }
 

@@ -68,8 +68,7 @@ object NotificationUtil {
 
   private val IdHandler: Handler = { (s: String) => {} }
 
-  private class HyperlinkListener(handler: Handler)
-      extends NotificationListener {
+  private class HyperlinkListener(handler: Handler) extends NotificationListener {
     def hyperlinkUpdate(notification: Notification, event: HyperlinkEvent) {
       event match {
         case Link(url) => DesktopUtils browse url

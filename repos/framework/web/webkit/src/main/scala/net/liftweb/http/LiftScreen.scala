@@ -213,8 +213,9 @@ trait AbstractScreen extends Factory with Loggable {
         .map(ns => SHtml.ElemAttr.applyToAllElems(ns, formElemAttrs))
     }
 
-    protected def otherFuncVendors(what: Manifest[ValueType])
-        : Box[(ValueType, ValueType => Any) => NodeSeq] = Empty
+    protected def otherFuncVendors(
+        what: Manifest[ValueType]): Box[(ValueType, ValueType => Any) => NodeSeq] =
+      Empty
 
     def validate: List[FieldError] =
       currentField.doWith(this) {
@@ -757,9 +758,7 @@ trait AbstractScreen extends Factory with Loggable {
         case str if (null ne str) && str.length >= len => Nil
         case _ =>
           List(
-            FieldError(
-              currentField.box openOr new FieldIdentifier {},
-              Text(msg)))
+            FieldError(currentField.box openOr new FieldIdentifier {}, Text(msg)))
       }
 
   /**
@@ -774,9 +773,7 @@ trait AbstractScreen extends Factory with Loggable {
         case str if (null eq str) || str.length <= len => Nil
         case _ =>
           List(
-            FieldError(
-              currentField.box openOr new FieldIdentifier {},
-              Text(msg)))
+            FieldError(currentField.box openOr new FieldIdentifier {}, Text(msg)))
       }
 
   /**
@@ -790,9 +787,7 @@ trait AbstractScreen extends Factory with Loggable {
         case str if (null ne str) && pat.matcher(str).matches => Nil
         case _ =>
           List(
-            FieldError(
-              currentField.box openOr new FieldIdentifier {},
-              Text(msg)))
+            FieldError(currentField.box openOr new FieldIdentifier {}, Text(msg)))
       }
 
   protected def minVal[T](len: => T, msg: => String)(implicit
@@ -1058,8 +1053,7 @@ trait AbstractScreen extends Factory with Loggable {
       name,
       default,
       field =>
-        SHtml.selectElem(field.otherValue, Full(field.is), eAttr: _*)(
-          field.set(_)),
+        SHtml.selectElem(field.otherValue, Full(field.is), eAttr: _*)(field.set(_)),
       OtherValueInitializerImpl[Seq[T]](() => choices),
       stuff: _*)
   }
@@ -1088,8 +1082,7 @@ trait AbstractScreen extends Factory with Loggable {
       name,
       default,
       field =>
-        SHtml.multiSelectElem(field.otherValue, field.is, eAttr: _*)(
-          field.set(_)),
+        SHtml.multiSelectElem(field.otherValue, field.is, eAttr: _*)(field.set(_)),
       OtherValueInitializerImpl[Seq[T]](() => choices),
       stuff: _*)
   }
@@ -1179,9 +1172,7 @@ trait ScreenWizardRendered extends Loggable {
         "Binding %s to %s".format(replaceChildren(f), value),
         replaceChildren(f) #> value)
 
-    def funcSetChildren(
-        f: CssClassBinding => String,
-        value: NodeSeq => NodeSeq) =
+    def funcSetChildren(f: CssClassBinding => String, value: NodeSeq => NodeSeq) =
       traceInline(
         "Binding %s to function".format(replaceChildren(f)),
         replaceChildren(f) #> value)
@@ -1275,8 +1266,7 @@ trait ScreenWizardRendered extends Loggable {
           "Binding default field %s to %s".format(
             bindingInfo.selector(formName),
             defaultFieldNodeSeq),
-          bindingInfo.selector(formName) #> bindField(field)(
-            defaultFieldNodeSeq)
+          bindingInfo.selector(formName) #> bindField(field)(defaultFieldNodeSeq)
         )
 
     def customFields: List[CssBindFunc] =
@@ -1404,8 +1394,7 @@ trait ScreenWizardRendered extends Loggable {
       }
 
     def bindFieldsWithAdditional(xhtml: NodeSeq) =
-      (savAdditionalFormBindings map (bindFields & _) openOr (bindFields))(
-        xhtml)
+      (savAdditionalFormBindings map (bindFields & _) openOr (bindFields))(xhtml)
 
     def liftScreenAttr(s: String) =
       new UnprefixedAttribute("data-lift-screen-control", Text(s), Null)
@@ -1568,8 +1557,7 @@ trait ScreenWizardRendered extends Loggable {
 
   protected def createSnapshot: Snapshot
 
-  def noticeTypeToAttr(
-      screen: AbstractScreen): Box[NoticeType.Value => MetaData]
+  def noticeTypeToAttr(screen: AbstractScreen): Box[NoticeType.Value => MetaData]
 
   protected def Referer: AnyVar[String, _]
 

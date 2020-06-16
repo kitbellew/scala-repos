@@ -826,12 +826,9 @@ class LowLevelOutgoingConnectionSpec
       val netIn = TestPublisher.manualProbe[ByteString]()
 
       RunnableGraph
-        .fromGraph(
-          GraphDSL.create(
-            OutgoingConnectionBlueprint(
-              Host("example.com"),
-              settings,
-              NoLogging)) { implicit b ⇒ client ⇒
+        .fromGraph(GraphDSL.create(
+          OutgoingConnectionBlueprint(Host("example.com"), settings, NoLogging)) {
+          implicit b ⇒ client ⇒
             import GraphDSL.Implicits._
             Source.fromPublisher(netIn) ~> Flow[ByteString].map(
               SessionBytes(null, _)) ~> client.in2
@@ -841,7 +838,7 @@ class LowLevelOutgoingConnectionSpec
             Source.fromPublisher(requests) ~> client.in1
             client.out2 ~> Sink.fromSubscriber(responses)
             ClosedShape
-          })
+        })
         .run()
 
       netOut -> netIn
@@ -870,8 +867,7 @@ class LowLevelOutgoingConnectionSpec
 
     def expectWireData(s: String) = {
       netOutSub.request(1)
-      netOut.expectNext().utf8String shouldEqual s.stripMarginWithNewline(
-        "\r\n")
+      netOut.expectNext().utf8String shouldEqual s.stripMarginWithNewline("\r\n")
     }
 
     def closeNetworkInput(): Unit = netInSub.sendComplete()

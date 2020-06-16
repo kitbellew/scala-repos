@@ -179,10 +179,9 @@ class ParquetSourcesTests extends ParquetSourcesTestsBase {
 
     testDefaultFilter(default)
 
-    testReturnProvidedFilter(
-      new FixedPathParquetTuple(fields, path, path, path) {
-        override val withFilter: Option[FilterPredicate] = Some(filter1)
-      })
+    testReturnProvidedFilter(new FixedPathParquetTuple(fields, path, path, path) {
+      override val withFilter: Option[FilterPredicate] = Some(filter1)
+    })
   }
 }
 

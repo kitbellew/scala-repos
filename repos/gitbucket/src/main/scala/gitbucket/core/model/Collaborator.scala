@@ -16,9 +16,7 @@ trait CollaboratorComponent extends TemplateComponent { self: Profile =>
         collaboratorName) <> (Collaborator.tupled, Collaborator.unapply)
 
     def byPrimaryKey(owner: String, repository: String, collaborator: String) =
-      byRepository(
-        owner,
-        repository) && (collaboratorName === collaborator.bind)
+      byRepository(owner, repository) && (collaboratorName === collaborator.bind)
   }
 }
 

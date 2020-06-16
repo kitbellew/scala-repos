@@ -291,9 +291,7 @@ class AliasingFrame[V <: Value](nLocals: Int, nStack: Int)
     * }
     * [...]       // (x, a) -- merge of ((x, y, a)) and ((x, a), (y, b))
     */
-  override def merge(
-      other: Frame[_ <: V],
-      interpreter: Interpreter[V]): Boolean = {
+  override def merge(other: Frame[_ <: V], interpreter: Interpreter[V]): Boolean = {
     // merge is the main performance hot spot of a data flow analysis.
 
     // in nullness analysis, super.merge (which actually merges the nullness values) takes 20% of

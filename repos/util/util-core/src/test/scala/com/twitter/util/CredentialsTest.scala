@@ -71,7 +71,6 @@ password  : last_0f-the/international:playboys
       .filter(c => c != '\r' && c != '\n')
       .mkString
     val content = s"username: root\npassword: $pass\n"
-    assert(
-      Credentials(content) == Map("username" -> "root", "password" -> pass))
+    assert(Credentials(content) == Map("username" -> "root", "password" -> pass))
   }
 }

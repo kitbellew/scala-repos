@@ -93,9 +93,8 @@ object Test extends App {
   locally(sym.isLocal: Boolean)
   locally(sym.isOverride: Boolean)
   locally(tsym.isSkolem: Boolean)
-  locally(manifestToTypeTag(
-    mirror,
-    manifest): scala.reflect.api.Universe#TypeTag[Int])
+  locally(
+    manifestToTypeTag(mirror, manifest): scala.reflect.api.Universe#TypeTag[Int])
   locally(treeBuild.mkAttributedIdent(sym): RefTree)
   locally(treeBuild.mkAttributedQualifier(tpe): Tree)
   locally(treeBuild.mkAttributedQualifier(tpe, sym): Tree)

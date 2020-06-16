@@ -144,9 +144,7 @@ private[process] trait ProcessBuilderImpl {
       */
     def daemonized(): ProcessBuilder = new DaemonBuilder(this)
 
-    private[this] def slurp(
-        log: Option[ProcessLogger],
-        withIn: Boolean): String = {
+    private[this] def slurp(log: Option[ProcessLogger], withIn: Boolean): String = {
       val buffer = new StringBuffer
       val code = this ! BasicIO(withIn, buffer, log)
 

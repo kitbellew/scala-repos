@@ -93,9 +93,7 @@ class ServerActor(
             PortUtil.writePort(config.cacheDir, addr.getPort, "http")
           } catch {
             case ex: Throwable =>
-              log.error(
-                s"Error initializing http endpoint ${ex.getMessage}",
-                ex)
+              log.error(s"Error initializing http endpoint ${ex.getMessage}", ex)
               selfRef ! ShutdownRequest(
                 s"http endpoint failed to initialise: ${ex.getMessage}",
                 isError = true)

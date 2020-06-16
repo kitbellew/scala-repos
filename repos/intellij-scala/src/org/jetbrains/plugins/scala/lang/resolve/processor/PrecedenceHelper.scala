@@ -132,9 +132,7 @@ trait PrecedenceHelper[T] {
     */
   protected def getTopPrecedence(result: ScalaResolveResult): Int
   protected def setTopPrecedence(result: ScalaResolveResult, i: Int)
-  protected def filterNot(
-      p: ScalaResolveResult,
-      n: ScalaResolveResult): Boolean = {
+  protected def filterNot(p: ScalaResolveResult, n: ScalaResolveResult): Boolean = {
     getPrecedence(p) < getTopPrecedence(n)
   }
   protected def isCheckForEqualPrecedence = true

@@ -548,10 +548,7 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
 
     if (innerChildren.nonEmpty) {
       innerChildren.init.foreach(
-        _.generateTreeString(
-          depth + 2,
-          lastChildren :+ false :+ false,
-          builder))
+        _.generateTreeString(depth + 2, lastChildren :+ false :+ false, builder))
       innerChildren.last.generateTreeString(
         depth + 2,
         lastChildren :+ false :+ true,
@@ -691,9 +688,7 @@ object TreeNode {
     reconstruct(jsonAST.asInstanceOf[JArray], sc).asInstanceOf[BaseType]
   }
 
-  private def reconstruct(
-      treeNodeJson: JArray,
-      sc: SparkContext): TreeNode[_] = {
+  private def reconstruct(treeNodeJson: JArray, sc: SparkContext): TreeNode[_] = {
     assert(treeNodeJson.arr.forall(_.isInstanceOf[JObject]))
     val jsonNodes = Stack(treeNodeJson.arr.map(_.asInstanceOf[JObject]): _*)
 

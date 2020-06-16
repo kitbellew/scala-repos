@@ -17,12 +17,7 @@
 
 package org.apache.spark
 
-import java.util.concurrent.{
-  Callable,
-  CyclicBarrier,
-  Executors,
-  ExecutorService
-}
+import java.util.concurrent.{Callable, CyclicBarrier, Executors, ExecutorService}
 
 import org.scalatest.Matchers
 

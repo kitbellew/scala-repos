@@ -91,8 +91,7 @@ object WebAccountFinder extends Logging {
             nels("Configuration property service.user is required")) |@|
         serviceConfig
           .get[String]("password")
-          .toSuccess(
-            nels("Configuration property service.password is required"))) {
+          .toSuccess(nels("Configuration property service.password is required"))) {
         (protocol, host, port, path, user, password) =>
           logger.info(
             "Creating new WebAccountFinder with properties %s://%s:%s/%s %s:%s"

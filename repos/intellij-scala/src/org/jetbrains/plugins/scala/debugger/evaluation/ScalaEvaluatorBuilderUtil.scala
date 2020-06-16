@@ -208,10 +208,8 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
       val transformed = NameTransformer.encode(fun.name)
       fun match {
         case ScalaPositionManager.InsideAsync(call) =>
-          val containingFun = PsiTreeUtil.getParentOfType(
-            fun,
-            classOf[ScFunctionDefinition],
-            true)
+          val containingFun =
+            PsiTreeUtil.getParentOfType(fun, classOf[ScFunctionDefinition], true)
           if (containingFun != null && call.isAncestorOf(containingFun))
             transformed
           else
@@ -338,9 +336,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         throw EvaluationException(
           ScalaBundle.message("wrong.number.of.arguments", operatorName))
     }
-    def binaryEvalForBoxes(
-        operatorName: String,
-        boxesName: String): Evaluator = {
+    def binaryEvalForBoxes(operatorName: String, boxesName: String): Evaluator = {
       binaryEval(operatorName, binaryEvaluator(_, _, boxesName))
     }
     def equalsEval(opName: String): Evaluator = {
@@ -349,11 +345,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
       binaryEval(
         name,
         (l, r) =>
-          new ScalaMethodEvaluator(
-            BOXES_RUN_TIME,
-            "equals",
-            rawText,
-            boxed(l, r)))
+          new ScalaMethodEvaluator(BOXES_RUN_TIME, "equals", rawText, boxed(l, r)))
     }
     def isInstanceOfEval: Evaluator = {
       unaryEval(
@@ -535,10 +527,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
       DebuggerUtil.getJVMStringForType(innerType, isParam = true)
     val signature = JVMNameUtil.getJVMRawText(s"($innerJvmName)V")
     new ScalaDuplexEvaluator(
-      new ScalaNewClassInstanceEvaluator(
-        valueClassType,
-        signature,
-        Array(value)),
+      new ScalaNewClassInstanceEvaluator(valueClassType, signature, Array(value)),
       value)
   }
 
@@ -672,9 +661,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
     evaluator
   }
 
-  def javaFieldEvaluator(
-      field: PsiField,
-      ref: ScReferenceExpression): Evaluator = {
+  def javaFieldEvaluator(field: PsiField, ref: ScReferenceExpression): Evaluator = {
     ref.qualifier match {
       case Some(qual) =>
         if (field.hasModifierPropertyScala("static")) {
@@ -1230,8 +1217,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
                   )
                 ) //todo: signature?
               case ScalaDuplexEvaluator(first, second) =>
-                createAssignEvaluator(first) orElse createAssignEvaluator(
-                  second)
+                createAssignEvaluator(first) orElse createAssignEvaluator(second)
               case _ => None
             }
           }
@@ -1483,10 +1469,7 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
       val qual = "scala.runtime.VolatileObjectRef"
       val typeEvaluator = new TypeEvaluator(JVMNameUtil.getJVMRawText(qual))
       val signature = JVMNameUtil.getJVMRawText("(Ljava/lang/Object;)V")
-      new ScalaNewClassInstanceEvaluator(
-        typeEvaluator,
-        signature,
-        Array(refEval))
+      new ScalaNewClassInstanceEvaluator(typeEvaluator, signature, Array(refEval))
     } else FromLocalArgEvaluator(refEval)
   }
 

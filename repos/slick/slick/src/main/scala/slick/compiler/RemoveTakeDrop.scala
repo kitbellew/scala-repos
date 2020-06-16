@@ -48,9 +48,7 @@ class RemoveTakeDrop(
                 case (None, Some(d)) =>
                   Library.>.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), d)
                 case (Some(t), None) =>
-                  Library.<=.typed[Boolean](
-                    Select(Ref(fs), ElementSymbol(2)),
-                    t)
+                  Library.<=.typed[Boolean](Select(Ref(fs), ElementSymbol(2)), t)
                 case (Some(t), Some(d)) =>
                   Library.And.typed[Boolean](
                     Library.>.typed[Boolean](
@@ -71,8 +69,7 @@ class RemoveTakeDrop(
             val invalidate = fromRetyped.nodeType.collect {
               case NominalType(ts, _) => ts
             }
-            logger.debug(
-              "Invalidating TypeSymbols: " + invalidate.mkString(", "))
+            logger.debug("Invalidating TypeSymbols: " + invalidate.mkString(", "))
             invalid ++= invalidate.toSeq
             b2
 

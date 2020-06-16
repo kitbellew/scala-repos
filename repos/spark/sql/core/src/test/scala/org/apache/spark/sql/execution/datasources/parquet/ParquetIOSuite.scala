@@ -385,8 +385,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       writeMetadata(schema, path, hadoopConfiguration)
 
       assert(
-        fs.exists(
-          new Path(path, ParquetFileWriter.PARQUET_COMMON_METADATA_FILE)))
+        fs.exists(new Path(path, ParquetFileWriter.PARQUET_COMMON_METADATA_FILE)))
       assert(fs.exists(new Path(path, ParquetFileWriter.PARQUET_METADATA_FILE)))
 
       val expectedSchema = new CatalystSchemaConverter().convert(schema)
@@ -644,8 +643,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
 
         // If the file is written with version2, this should include
         // Encoding.RLE_DICTIONARY type. For version1, it is Encoding.PLAIN_DICTIONARY
-        assert(
-          columnChunkMetadata.getEncodings.contains(Encoding.RLE_DICTIONARY))
+        assert(columnChunkMetadata.getEncodings.contains(Encoding.RLE_DICTIONARY))
       } finally {
         // Manually clear the hadoop configuration for other tests.
         hadoopConfiguration.clear()
@@ -725,8 +723,7 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       var hash1: Int = 0
       var hash2: Int = 0
       (false :: true :: Nil).foreach { v =>
-        withSQLConf(
-          SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> v.toString) {
+        withSQLConf(SQLConf.PARQUET_VECTORIZED_READER_ENABLED.key -> v.toString) {
           val df = sqlContext.read.parquet(dir.getCanonicalPath)
           val rows = df.queryExecution.toRdd.map(_.copy()).collect()
           val unsafeRows = rows.map(_.asInstanceOf[UnsafeRow])

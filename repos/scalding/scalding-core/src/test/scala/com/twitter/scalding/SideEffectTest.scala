@@ -52,11 +52,7 @@ class SideEffectTest extends WordSpec with Matchers with FieldConversions {
     JobTest(new Zip(_))
       .source(
         Tsv("line", ('line)),
-        List(
-          Tuple1("line1"),
-          Tuple1("line2"),
-          Tuple1("line3"),
-          Tuple1("line4")))
+        List(Tuple1("line1"), Tuple1("line2"), Tuple1("line3"), Tuple1("line4")))
       .sink[(String, String)](Tsv("zipped")) { ob =>
         "correctly compute zipped sequence" in {
           val res = ob.toList

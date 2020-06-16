@@ -63,8 +63,6 @@ final class Scheduler(
 
   private def logger = lila.log("scheduler")
 
-  private def randomize(
-      d: FiniteDuration,
-      ratio: Float = 0.05f): FiniteDuration =
+  private def randomize(d: FiniteDuration, ratio: Float = 0.05f): FiniteDuration =
     approximatly(ratio)(d.toMillis) millis
 }

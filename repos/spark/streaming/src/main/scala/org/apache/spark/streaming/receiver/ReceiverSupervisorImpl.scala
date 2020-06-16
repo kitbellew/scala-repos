@@ -171,8 +171,7 @@ private[streaming] class ReceiverSupervisorImpl(
     val time = System.currentTimeMillis
     val blockStoreResult =
       receivedBlockHandler.storeBlock(blockId, receivedBlock)
-    logDebug(
-      s"Pushed block $blockId in ${(System.currentTimeMillis - time)} ms")
+    logDebug(s"Pushed block $blockId in ${(System.currentTimeMillis - time)} ms")
     val numRecords = blockStoreResult.numRecords
     val blockInfo =
       ReceivedBlockInfo(streamId, numRecords, metadataOption, blockStoreResult)
@@ -207,9 +206,7 @@ private[streaming] class ReceiverSupervisorImpl(
     trackerEndpoint.askWithRetry[Boolean](msg)
   }
 
-  override protected def onReceiverStop(
-      message: String,
-      error: Option[Throwable]) {
+  override protected def onReceiverStop(message: String, error: Option[Throwable]) {
     logInfo("Deregistering receiver " + streamId)
     val errorString = error.map(Throwables.getStackTraceAsString).getOrElse("")
     trackerEndpoint.askWithRetry[Boolean](

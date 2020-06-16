@@ -622,19 +622,13 @@ class SparkIMain(
   }
 
   /** Stubs for work in progress. */
-  private def handleTypeRedefinition(
-      name: TypeName,
-      old: Request,
-      req: Request) = {
+  private def handleTypeRedefinition(name: TypeName, old: Request, req: Request) = {
     for (t1 <- old.simpleNameOfType(name); t2 <- req.simpleNameOfType(name)) {
       logDebug("Redefining type '%s'\n  %s -> %s".format(name, t1, t2))
     }
   }
 
-  private def handleTermRedefinition(
-      name: TermName,
-      old: Request,
-      req: Request) = {
+  private def handleTermRedefinition(name: TermName, old: Request, req: Request) = {
     for (t1 <- old.compilerTypeOf get name; t2 <- req.compilerTypeOf get name) {
       //    Printing the types here has a tendency to cause assertion errors, like
       //   assertion failed: fatal: <refinement> has owner value x, but a class owner is required
@@ -664,8 +658,9 @@ class SparkIMain(
         case Seq(s1, s2) => s1.isClass && s2.isModule
       }
     } {
-      afterTyper(replwarn(
-        s"warning: previously defined $oldSym is not a companion to $newSym."))
+      afterTyper(
+        replwarn(
+          s"warning: previously defined $oldSym is not a companion to $newSym."))
       replwarn("Companions must be defined together; you may wish to use :paste mode for this.")
     }
 
@@ -949,8 +944,7 @@ class SparkIMain(
         .format(bindRep.evalName, boundType, boundType))
     bindRep.callEither("set", value) match {
       case Left(ex) =>
-        logDebug(
-          "Set failed in bind(%s, %s, %s)".format(name, boundType, value))
+        logDebug("Set failed in bind(%s, %s, %s)".format(name, boundType, value))
         logDebug(util.stackTraceString(ex))
         IR.Error
 
@@ -1894,10 +1888,7 @@ object SparkIMain {
   }
 
   class ReplReporter(intp: SparkIMain)
-      extends ConsoleReporter(
-        intp.settings,
-        null,
-        new ReplStrippingWriter(intp)) {
+      extends ConsoleReporter(intp.settings, null, new ReplStrippingWriter(intp)) {
     override def printMessage(msg: String) {
       // Avoiding deadlock when the compiler starts logging before
       // the lazy val is done.

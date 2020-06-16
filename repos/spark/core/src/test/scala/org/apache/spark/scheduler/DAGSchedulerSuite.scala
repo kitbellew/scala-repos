@@ -234,8 +234,7 @@ class DAGSchedulerSuite
       mapOutputTracker,
       blockManagerMaster,
       sc.env)
-    dagEventProcessLoopTester = new DAGSchedulerEventProcessLoopTester(
-      scheduler)
+    dagEventProcessLoopTester = new DAGSchedulerEventProcessLoopTester(scheduler)
   }
 
   override def afterEach(): Unit = {
@@ -586,9 +585,7 @@ class DAGSchedulerSuite
     submit(reduceRdd, Array(0))
     complete(
       taskSets(0),
-      Seq(
-        (Success, makeMapStatus("hostA", 1)),
-        (Success, makeMapStatus("hostB", 1))))
+      Seq((Success, makeMapStatus("hostA", 1)), (Success, makeMapStatus("hostB", 1))))
     assert(
       mapOutputTracker.getMapSizesByExecutorId(shuffleId, 0).map(_._1).toSet ===
         HashSet(makeBlockManagerId("hostA"), makeBlockManagerId("hostB")))
@@ -852,10 +849,7 @@ class DAGSchedulerSuite
         // Fail all these tasks with FetchFailure
         completeNextStageWithFetchFailure(1, attempt, shuffleDepOne)
       } else {
-        completeShuffleMapStageSuccessfully(
-          1,
-          attempt,
-          numShufflePartitions = 1)
+        completeShuffleMapStageSuccessfully(1, attempt, numShufflePartitions = 1)
 
         // Fail stage 2
         completeNextStageWithFetchFailure(
@@ -873,9 +867,7 @@ class DAGSchedulerSuite
     completeShuffleMapStageSuccessfully(1, 4, numShufflePartitions = 1)
 
     // Succeed stage2 with a "42"
-    completeNextResultStageWithSuccess(
-      2,
-      Stage.MAX_CONSECUTIVE_FETCH_FAILURES / 2)
+    completeNextResultStageWithSuccess(2, Stage.MAX_CONSECUTIVE_FETCH_FAILURES / 2)
 
     assert(results === Map(0 -> 42))
     assertDataStructuresEmpty()
@@ -1018,9 +1010,7 @@ class DAGSchedulerSuite
 
     complete(
       taskSets(0),
-      Seq(
-        (Success, makeMapStatus("hostA", 2)),
-        (Success, makeMapStatus("hostB", 2))))
+      Seq((Success, makeMapStatus("hostA", 2)), (Success, makeMapStatus("hostB", 2))))
     // The MapOutputTracker should know about both map output locations.
     assert(
       mapOutputTracker
@@ -1097,9 +1087,7 @@ class DAGSchedulerSuite
     // Complete the map stage.
     complete(
       taskSets(0),
-      Seq(
-        (Success, makeMapStatus("hostA", 2)),
-        (Success, makeMapStatus("hostB", 2))))
+      Seq((Success, makeMapStatus("hostA", 2)), (Success, makeMapStatus("hostB", 2))))
 
     // The reduce stage should have been submitted.
     sc.listenerBus.waitUntilEmpty(WAIT_TIMEOUT_MILLIS)
@@ -1450,8 +1438,7 @@ class DAGSchedulerSuite
     * We lose an executor after completing some shuffle map tasks on it.  Those tasks get
     * resubmitted, and when they finish the job completes normally
     */
-  test(
-    "register map outputs correctly after ExecutorLost and task Resubmitted") {
+  test("register map outputs correctly after ExecutorLost and task Resubmitted") {
     val firstRDD = new MyRDD(sc, 3, Nil)
     val firstShuffleDep =
       new ShuffleDependency(firstRDD, new HashPartitioner(2))
@@ -1703,9 +1690,7 @@ class DAGSchedulerSuite
     // rather than marking it is as failed and waiting.
     complete(
       taskSets(0),
-      Seq(
-        (Success, makeMapStatus("hostA", 1)),
-        (Success, makeMapStatus("hostB", 1))))
+      Seq((Success, makeMapStatus("hostA", 1)), (Success, makeMapStatus("hostB", 1))))
     // have hostC complete the resubmitted task
     complete(taskSets(1), Seq((Success, makeMapStatus("hostC", 1))))
     assert(
@@ -1730,15 +1715,11 @@ class DAGSchedulerSuite
     // have the first stage complete normally
     complete(
       taskSets(0),
-      Seq(
-        (Success, makeMapStatus("hostA", 2)),
-        (Success, makeMapStatus("hostB", 2))))
+      Seq((Success, makeMapStatus("hostA", 2)), (Success, makeMapStatus("hostB", 2))))
     // have the second stage complete normally
     complete(
       taskSets(1),
-      Seq(
-        (Success, makeMapStatus("hostA", 1)),
-        (Success, makeMapStatus("hostC", 1))))
+      Seq((Success, makeMapStatus("hostA", 1)), (Success, makeMapStatus("hostC", 1))))
     // fail the third stage because hostA went down
     complete(
       taskSets(2),
@@ -1778,15 +1759,11 @@ class DAGSchedulerSuite
     // complete stage 0
     complete(
       taskSets(0),
-      Seq(
-        (Success, makeMapStatus("hostA", 2)),
-        (Success, makeMapStatus("hostB", 2))))
+      Seq((Success, makeMapStatus("hostA", 2)), (Success, makeMapStatus("hostB", 2))))
     // complete stage 1
     complete(
       taskSets(1),
-      Seq(
-        (Success, makeMapStatus("hostA", 1)),
-        (Success, makeMapStatus("hostB", 1))))
+      Seq((Success, makeMapStatus("hostA", 1)), (Success, makeMapStatus("hostB", 1))))
     // pretend stage 2 failed because hostA went down
     complete(
       taskSets(2),
@@ -2261,10 +2238,7 @@ class DAGSchedulerSuite
 
     val oldTaskSet = taskSets(0)
     runEvent(
-      makeCompletionEvent(
-        oldTaskSet.tasks(0),
-        Success,
-        makeMapStatus("hostA", 2)))
+      makeCompletionEvent(oldTaskSet.tasks(0), Success, makeMapStatus("hostA", 2)))
     assert(results.size === 0) // Map stage job should not be complete yet
 
     // Pretend host A was lost
@@ -2275,34 +2249,22 @@ class DAGSchedulerSuite
 
     // Suppose we also get a completed event from task 1 on the same host; this should be ignored
     runEvent(
-      makeCompletionEvent(
-        oldTaskSet.tasks(1),
-        Success,
-        makeMapStatus("hostA", 2)))
+      makeCompletionEvent(oldTaskSet.tasks(1), Success, makeMapStatus("hostA", 2)))
     assert(results.size === 0) // Map stage job should not be complete yet
 
     // A completion from another task should work because it's a non-failed host
     runEvent(
-      makeCompletionEvent(
-        oldTaskSet.tasks(2),
-        Success,
-        makeMapStatus("hostB", 2)))
+      makeCompletionEvent(oldTaskSet.tasks(2), Success, makeMapStatus("hostB", 2)))
     assert(results.size === 0) // Map stage job should not be complete yet
 
     // Now complete tasks in the second task set
     val newTaskSet = taskSets(1)
     assert(newTaskSet.tasks.size === 2) // Both tasks 0 and 1 were on on hostA
     runEvent(
-      makeCompletionEvent(
-        newTaskSet.tasks(0),
-        Success,
-        makeMapStatus("hostB", 2)))
+      makeCompletionEvent(newTaskSet.tasks(0), Success, makeMapStatus("hostB", 2)))
     assert(results.size === 0) // Map stage job should not be complete yet
     runEvent(
-      makeCompletionEvent(
-        newTaskSet.tasks(1),
-        Success,
-        makeMapStatus("hostB", 2)))
+      makeCompletionEvent(newTaskSet.tasks(1), Success, makeMapStatus("hostB", 2)))
     assert(results.size === 1) // Map stage job should now finally be complete
     assertDataStructuresEmpty()
 

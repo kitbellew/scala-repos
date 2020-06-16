@@ -8,8 +8,7 @@ import org.jetbrains.plugins.scala.base.ScalaLightCodeInsightFixtureTestAdapter
   * Date: 2/27/12
   */
 
-class WikiPairedTagBackspaceTest
-    extends ScalaLightCodeInsightFixtureTestAdapter {
+class WikiPairedTagBackspaceTest extends ScalaLightCodeInsightFixtureTestAdapter {
 
   def testDeleteUnderlinedTag() {
     checkGeneratedTextAfterBackspace(

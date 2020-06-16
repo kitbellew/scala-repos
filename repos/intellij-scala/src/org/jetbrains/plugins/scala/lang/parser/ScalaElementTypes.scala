@@ -268,8 +268,7 @@ object ScalaElementTypes {
   val LITERAL_PATTERN = new ScalaElementType("literal pattern")
   val INTERPOLATION_PATTERN = new ScalaElementType("interpolation pattern")
   val REFERENCE_PATTERN = new ScReferencePatternElementType
-  val STABLE_REFERENCE_PATTERN = new ScalaElementType(
-    "stable reference pattern")
+  val STABLE_REFERENCE_PATTERN = new ScalaElementType("stable reference pattern")
   val PATTERN_IN_PARENTHESIS = new ScalaElementType("pattern in parenthesis")
 
   /** ************************************ TYPE PATTERNS ******************************* */

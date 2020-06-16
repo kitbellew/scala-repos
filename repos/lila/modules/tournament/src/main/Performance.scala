@@ -5,10 +5,7 @@ private final class Performance {
 
   private val DIFF = 500
 
-  def apply(
-      tour: Tournament,
-      player: Player,
-      pairings: Pairings): Fu[Option[Int]] =
+  def apply(tour: Tournament, player: Player, pairings: Pairings): Fu[Option[Int]] =
     if (!tour.isFinished || pairings.size < 3 || player.performance.isDefined)
       fuccess(player.performance)
     else {

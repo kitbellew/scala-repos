@@ -149,9 +149,7 @@ class IdeaIncrementalBuilder(category: BuilderCategory)
   override def getCompilableFileExtensions: util.List[String] =
     util.Arrays.asList("scala", "java")
 
-  private def isDisabled(
-      context: CompileContext,
-      chunk: ModuleChunk): Boolean = {
+  private def isDisabled(context: CompileContext, chunk: ModuleChunk): Boolean = {
     val settings = projectSettings(context)
     def wrongIncrType =
       settings.getIncrementalityType != IncrementalityType.IDEA

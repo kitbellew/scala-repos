@@ -248,8 +248,7 @@ case class ScMethodType(
         new ScMethodType(
           returnType.recursiveUpdate(update, newVisited),
           params.map(p =>
-            p.copy(paramType =
-              p.paramType.recursiveUpdate(update, newVisited))),
+            p.copy(paramType = p.paramType.recursiveUpdate(update, newVisited))),
           isImplicit)(project, scope)
     }
   }
@@ -262,10 +261,7 @@ case class ScMethodType(
       case (true, res, _) => res
       case (_, _, newData) =>
         new ScMethodType(
-          returnType.recursiveVarianceUpdateModifiable(
-            newData,
-            update,
-            variance),
+          returnType.recursiveVarianceUpdateModifiable(newData, update, variance),
           params.map(p =>
             p.copy(paramType = p.paramType
               .recursiveVarianceUpdateModifiable(newData, update, -variance))),
@@ -338,8 +334,7 @@ case class ScTypePolymorphicType(
             }
             if (pair != null) {
               val (tpName, id) = pair
-              if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
-                  tp.ptp)) {
+              if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(tp.ptp)) {
                 if (i == -1) contraVariant += 1
                 else coOrInVariant += 1
               }
@@ -515,10 +510,7 @@ case class ScTypePolymorphicType(
               tp.typeParams /* todo: ? */,
               () =>
                 tp.lowerType()
-                  .recursiveVarianceUpdateModifiable(
-                    newData,
-                    update,
-                    -variance),
+                  .recursiveVarianceUpdateModifiable(newData, update, -variance),
               () =>
                 tp.upperType()
                   .recursiveVarianceUpdateModifiable(newData, update, variance),

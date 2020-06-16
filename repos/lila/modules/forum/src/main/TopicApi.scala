@@ -85,10 +85,7 @@ private[forum] final class TopicApi(
         } inject topic
     }
 
-  def paginator(
-      categ: Categ,
-      page: Int,
-      troll: Boolean): Fu[Paginator[TopicView]] =
+  def paginator(categ: Categ, page: Int, troll: Boolean): Fu[Paginator[TopicView]] =
     Paginator(
       adapter = new Adapter[Topic](
         selector = TopicRepo(troll) byCategQuery categ,

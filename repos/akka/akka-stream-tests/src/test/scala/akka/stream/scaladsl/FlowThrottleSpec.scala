@@ -19,8 +19,7 @@ class FlowThrottleSpec extends AkkaSpec {
     ActorMaterializerSettings(system).withInputBuffer(1, 1))
 
   def genByteString(length: Int) =
-    ByteString(
-      new Random().shuffle(0 to 255).take(length).map(_.toByte).toArray)
+    ByteString(new Random().shuffle(0 to 255).take(length).map(_.toByte).toArray)
 
   "Throttle for single cost elements" must {
     "work for the happy case" in Utils.assertAllStagesStopped {

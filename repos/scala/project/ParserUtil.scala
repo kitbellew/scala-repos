@@ -14,8 +14,7 @@ object ParserUtil {
 
   val StringBasicNotStartingWithDash = notStartingWith(StringBasic, '-')
   val IsDirectoryFilter = new SimpleFileFilter(_.isDirectory)
-  val JarOrDirectoryParser = FileParser(
-    GlobFilter("*.jar") || IsDirectoryFilter)
+  val JarOrDirectoryParser = FileParser(GlobFilter("*.jar") || IsDirectoryFilter)
   def FileParser(
       fileFilter: FileFilter,
       dirFilter: FileFilter = AllPassFilter,
@@ -64,8 +63,7 @@ object ParserUtil {
                 Completions.strict(
                   Set(Completion.tokenDisplay(x.stripPrefix(seen), x)))
               else
-                Completions.strict(
-                  Set(Completion.suggestion(x.stripPrefix(seen))))
+                Completions.strict(Set(Completion.suggestion(x.stripPrefix(seen))))
             case xs =>
               Completions.strict(
                 xs.map(x => Completion.tokenDisplay(x.stripPrefix(seen), x))

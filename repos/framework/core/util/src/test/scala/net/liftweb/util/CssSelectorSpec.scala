@@ -618,8 +618,7 @@ object CssBindHelpersSpec extends Specification with XmlMatchers {
         }
       }
 
-      ".noMail" #> collapseUnless(
-        cachedMessageList.map(_.isEmpty).openOr(true)) {
+      ".noMail" #> collapseUnless(cachedMessageList.map(_.isEmpty).openOr(true)) {
         "tbody [id]" #> messageListId &
           "*" #> PassThru
       }

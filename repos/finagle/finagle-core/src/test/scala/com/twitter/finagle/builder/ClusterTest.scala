@@ -94,7 +94,8 @@ class ClusterTest extends FunSuite {
 
   // Cluster initialization should honor global timeout as well as timeout specified
   // together with the requests
-  test("Cluster ready should honor timeout while waiting for cluster to initialize") {
+  test(
+    "Cluster ready should honor timeout while waiting for cluster to initialize") {
     val cluster =
       new DynamicCluster[SocketAddress](Seq[SocketAddress]()) //empty cluster
     val client = ClientBuilder()

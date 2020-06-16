@@ -177,8 +177,7 @@ class ReviveOffersActorTest
 
   test("Revive timer is cancelled if offers not wanted anymore") {
     val f = new Fixture()
-    Given(
-      "we received offersWanted = true two times and thus scheduled a timer")
+    Given("we received offersWanted = true two times and thus scheduled a timer")
     f.actorRef.start()
     f.offersWanted.onNext(true)
     f.offersWanted.onNext(true)
@@ -196,8 +195,7 @@ class ReviveOffersActorTest
     f.verifyNoMoreInteractions()
   }
 
-  test(
-    "Check revives if last offersWanted == true and more than 5.seconds ago") {
+  test("Check revives if last offersWanted == true and more than 5.seconds ago") {
     val f = new Fixture()
     Given("that we received various flipping offers wanted requests")
     f.actorRef.start()

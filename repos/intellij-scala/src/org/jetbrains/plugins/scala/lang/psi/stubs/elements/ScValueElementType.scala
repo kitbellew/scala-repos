@@ -66,9 +66,7 @@ abstract class ScValueElementType[Value <: ScValue](debugName: String)
     dataStream.writeBoolean(stub.isLocal)
   }
 
-  def deserializeImpl(
-      dataStream: StubInputStream,
-      parentStub: Any): ScValueStub = {
+  def deserializeImpl(dataStream: StubInputStream, parentStub: Any): ScValueStub = {
     val isDecl = dataStream.readBoolean
     val namesLength = dataStream.readInt
     val names = new Array[StringRef](namesLength)

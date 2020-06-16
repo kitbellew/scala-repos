@@ -22,10 +22,7 @@ import org.jetbrains.plugins.scala.extensions._
 import org.jetbrains.plugins.scala.lang.formatting.settings.ScalaCodeStyleSettings
 import org.jetbrains.plugins.scala.lang.lexer.{ScalaLexer, ScalaTokenTypes}
 import org.jetbrains.plugins.scala.lang.parser.ScalaElementTypes
-import org.jetbrains.plugins.scala.lang.parser.parsing.base.{
-  Constructor,
-  Import
-}
+import org.jetbrains.plugins.scala.lang.parser.parsing.base.{Constructor, Import}
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.{
   ScalaPsiBuilder,
   ScalaPsiBuilderImpl
@@ -435,9 +432,7 @@ object ScalaPsiElementFactory {
     matchStmt.caseClauses.head
   }
 
-  def createPatternFromText(
-      patternText: String,
-      manager: PsiManager): ScPattern = {
+  def createPatternFromText(patternText: String, manager: PsiManager): ScPattern = {
     val text = "x match { case " + patternText + " => }"
     val dummyFile = PsiFileFactory
       .getInstance(manager.getProject)
@@ -902,9 +897,7 @@ object ScalaPsiElementFactory {
     dummyFile.getNode.getFirstChildNode
   }
 
-  def createBlockFromExpr(
-      expr: ScExpression,
-      manager: PsiManager): ScExpression = {
+  def createBlockFromExpr(expr: ScExpression, manager: PsiManager): ScExpression = {
     val text = "class a {\nval b = {\n" + expr.getText + "\n}\n}"
     val dummyFile = PsiFileFactory
       .getInstance(manager.getProject)
@@ -1321,9 +1314,7 @@ object ScalaPsiElementFactory {
     s"$overrideText$modifiersText$keyword$name$colon$typeText = $body"
   }
 
-  private def getShortName(
-      qualifiedName: String,
-      packageName: String): String = {
+  private def getShortName(qualifiedName: String, packageName: String): String = {
     if (packageName == null) return qualifiedName
     val qArray = qualifiedName.split("[.]")
     val pArray = packageName.split("[.]")
@@ -1420,11 +1411,7 @@ object ScalaPsiElementFactory {
       text: String,
       context: PsiElement,
       child: PsiElement): ScExpression = {
-    createElementWithContext(
-      s"foo($text)",
-      context,
-      child,
-      Expr.parse(_)) match {
+    createElementWithContext(s"foo($text)", context, child, Expr.parse(_)) match {
       case call: ScMethodCall =>
         val res =
           if (call.argumentExpressions.size > 0)

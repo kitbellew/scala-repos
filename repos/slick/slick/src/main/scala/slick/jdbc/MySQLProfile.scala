@@ -183,8 +183,7 @@ trait MySQLProfile extends JdbcProfile { profile =>
           new AnonSymbol,
           Pure(StructNode(ConstArray.empty)),
           Pure(
-            StructNode(
-              ConstArray(new AnonSymbol -> RowNumGen(countSym, offset - 1))))),
+            StructNode(ConstArray(new AnonSymbol -> RowNumGen(countSym, offset - 1))))),
         JoinType.Inner,
         LiteralNode(true)
       )

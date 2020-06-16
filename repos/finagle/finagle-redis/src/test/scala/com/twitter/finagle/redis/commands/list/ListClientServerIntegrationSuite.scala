@@ -13,10 +13,7 @@ import org.scalatest.junit.JUnitRunner
 final class ListClientServerIntegrationSuite
     extends RedisClientServerIntegrationTest {
 
-  test(
-    "LLEN should return the length of the list",
-    ClientServerTest,
-    RedisTest) {
+  test("LLEN should return the length of the list", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       assert(Await.result(client(LPush(foo, List(bar)))) == IntegerReply(1))
 
@@ -53,8 +50,7 @@ final class ListClientServerIntegrationSuite
       assert(Await.result(client(LPush(foo, List(bar)))) == IntegerReply(1))
 
       assert(
-        Await.result(client(LInsert(foo, "BEFORE", bar, moo))) == IntegerReply(
-          2))
+        Await.result(client(LInsert(foo, "BEFORE", bar, moo))) == IntegerReply(2))
     }
   }
 

@@ -86,12 +86,7 @@ trait TimeTruncationSpecs[M[+_]]
         case (ids, SString(d)) if ids.length == 1 => d
       }
 
-      result2 must contain(
-        "2010-04",
-        "2011-02",
-        "2011-09",
-        "2012-02",
-        "2012-12")
+      result2 must contain("2010-04", "2011-02", "2011-09", "2012-02", "2012-12")
     }
     "determine year and day of year" in {
       val input = dag.Operate(
@@ -319,12 +314,7 @@ trait TimeTruncationSpecs[M[+_]]
         case (ids, SString(d)) if ids.length == 1 => d
       }
 
-      result2 must contain(
-        "2010-04",
-        "2011-02",
-        "2011-09",
-        "2012-02",
-        "2012-12")
+      result2 must contain("2010-04", "2011-02", "2011-09", "2012-02", "2012-12")
     }
     "determine year and day of year" in {
       val input = dag.Operate(

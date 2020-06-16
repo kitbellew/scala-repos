@@ -32,8 +32,8 @@ class GraphStageDocSpec extends AkkaSpec {
       override val shape: SourceShape[Int] = SourceShape(out)
 
       // This is where the actual (possibly stateful) logic will live
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic = ???
+      override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
+        ???
     }
     //#boilerplate-example
 
@@ -50,8 +50,7 @@ class GraphStageDocSpec extends AkkaSpec {
       val out: Outlet[Int] = Outlet("NumbersSource")
       override val shape: SourceShape[Int] = SourceShape(out)
 
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic =
+      override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
         new GraphStageLogic(shape) {
           // All state MUST be inside the GraphStageLogic,
           // never inside the enclosing GraphStage.
@@ -240,8 +239,7 @@ class GraphStageDocSpec extends AkkaSpec {
 
       val shape = FlowShape.of(in, out)
 
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic =
+      override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
         new GraphStageLogic(shape) {
 
           setHandler(
@@ -306,8 +304,7 @@ class GraphStageDocSpec extends AkkaSpec {
 
       val shape = FlowShape.of(in, out)
 
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic =
+      override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
         new GraphStageLogic(shape) {
 
           override def preStart(): Unit = {
@@ -372,8 +369,7 @@ class GraphStageDocSpec extends AkkaSpec {
 
       val shape = FlowShape.of(in, out)
 
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic =
+      override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
         new TimerGraphStageLogic(shape) {
 
           var open = false
@@ -486,8 +482,7 @@ class GraphStageDocSpec extends AkkaSpec {
 
       val shape = FlowShape.of(in, out)
 
-      override def createLogic(
-          inheritedAttributes: Attributes): GraphStageLogic =
+      override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
         new GraphStageLogic(shape) {
 
           val buffer = mutable.Queue[A]()

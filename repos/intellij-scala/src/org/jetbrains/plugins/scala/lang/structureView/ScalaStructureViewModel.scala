@@ -95,8 +95,7 @@ class ScalaStructureViewModel(
     res
   }
 
-  override def getNodeProviders
-      : util.Collection[NodeProvider[_ <: TreeElement]] =
+  override def getNodeProviders: util.Collection[NodeProvider[_ <: TreeElement]] =
     ScalaStructureViewModel.NODE_PROVIDERS
 
   override def isSuitable(element: PsiElement): Boolean =

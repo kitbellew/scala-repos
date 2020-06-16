@@ -386,9 +386,7 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
   }
 }
 
-class NaiveBayesClusterSuite
-    extends SparkFunSuite
-    with LocalClusterSparkContext {
+class NaiveBayesClusterSuite extends SparkFunSuite with LocalClusterSparkContext {
 
   test("task size should be small in both training and prediction") {
     val m = 10

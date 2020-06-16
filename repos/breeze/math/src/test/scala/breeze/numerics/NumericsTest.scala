@@ -107,13 +107,9 @@ class NumericsTest extends FunSuite with Checkers with Matchers {
     lg(3.0, 4.0) should be(0.4212028764812177 +- 1e-8)
     lg(3.0, 1.0) should be(-1.828821079471455 +- 1e-8)
     assert(
-      lg(3.0, DenseVector(4.0, 1.0)) === DenseVector(
-        lg(3.0, 4.0),
-        lg(3.0, 1.0)))
+      lg(3.0, DenseVector(4.0, 1.0)) === DenseVector(lg(3.0, 4.0), lg(3.0, 1.0)))
     assert(
-      lg(DenseVector(3.0, 3.0), 4.0) === DenseVector(
-        lg(3.0, 4.0),
-        lg(3.0, 4.0)))
+      lg(DenseVector(3.0, 3.0), 4.0) === DenseVector(lg(3.0, 4.0), lg(3.0, 4.0)))
     assert(
       lg(DenseVector(3.0, 3.0), DenseVector(4.0, 1.0)) === DenseVector(
         lg(3.0, 4.0),

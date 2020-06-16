@@ -23,9 +23,7 @@ final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
       F: Cobind[F],
       G: Cobind[G]): Coproduct[F, G, Coproduct[F, G, A]] =
     Coproduct(
-      run.bimap(
-        x => F.extend(x)(a => leftc(a)),
-        x => G.extend(x)(a => rightc(a))))
+      run.bimap(x => F.extend(x)(a => leftc(a)), x => G.extend(x)(a => rightc(a))))
 
   def copoint(implicit F: Comonad[F], G: Comonad[G]): A =
     run.fold(F.copoint(_), G.copoint(_))
@@ -217,8 +215,7 @@ private trait CoproductContravariant[F[_], G[_]]
     a contramap f
 }
 
-private trait CoproductFoldable[F[_], G[_]]
-    extends Foldable[Coproduct[F, G, ?]] {
+private trait CoproductFoldable[F[_], G[_]] extends Foldable[Coproduct[F, G, ?]] {
   implicit def F: Foldable[F]
   implicit def G: Foldable[G]
 
@@ -245,8 +242,7 @@ private trait CoproductFoldable1[F[_], G[_]]
     fa.foldMapRight1(z)(f)
 }
 
-private trait CoproductTraverse[F[_], G[_]]
-    extends Traverse[Coproduct[F, G, ?]] {
+private trait CoproductTraverse[F[_], G[_]] extends Traverse[Coproduct[F, G, ?]] {
   implicit def F: Traverse[F]
   implicit def G: Traverse[G]
 

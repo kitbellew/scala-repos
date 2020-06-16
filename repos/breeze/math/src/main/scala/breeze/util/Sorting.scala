@@ -15,11 +15,7 @@ object Sorting {
   //**                          |/                                          **
   //\*                                                                      */
 
-  def indexSort(
-      x: Array[Int],
-      off: Int,
-      len: Int,
-      order: Array[Int]): Array[Int] = {
+  def indexSort(x: Array[Int], off: Int, len: Int, order: Array[Int]): Array[Int] = {
     indexSort_Int(x, off, len, order)
   }
 

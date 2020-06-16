@@ -36,13 +36,10 @@ class MetricEvaluatorDevSuite extends FunSuite with SharedSparkContext {
       Seq(Metric0(), Metric0())
     )
 
-    val engineEvalDataSet = Seq(
-      (
-        EngineParams(),
-        Seq((EmptyParams(), sc.parallelize(Seq((1, 0, 0), (2, 0, 0)))))),
-      (
-        EngineParams(),
-        Seq((EmptyParams(), sc.parallelize(Seq((1, 0, 0), (2, 0, 0)))))))
+    val engineEvalDataSet =
+      Seq(
+        (EngineParams(), Seq((EmptyParams(), sc.parallelize(Seq((1, 0, 0), (2, 0, 0)))))),
+        (EngineParams(), Seq((EmptyParams(), sc.parallelize(Seq((1, 0, 0), (2, 0, 0)))))))
 
     val r = metricEvaluator.evaluateBase(
       sc,

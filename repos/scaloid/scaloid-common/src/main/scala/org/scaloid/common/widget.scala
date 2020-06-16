@@ -248,8 +248,7 @@ trait TraitPopupWindow[This <: android.widget.PopupWindow] {
   @inline def disableSplitTouch() = { basis.setSplitTouchEnabled(false); basis }
 
   @inline def touchInterceptor(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'touchInterceptor'")
+    throw new Error("Android does not support the getter for 'touchInterceptor'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/PopupWindow.html#setTouchInterceptor(android.view.View.OnTouchListener) setTouchInterceptor(android.view.View.OnTouchListener)]]`
@@ -796,8 +795,7 @@ class RichEditText[This <: android.widget.EditText](val basis: This)
 /**
   * Automatically generated helper trait of `[[https://developer.android.com/reference/android/widget/EditText.html android.widget.EditText]]`. This contains several property accessors.
   */
-trait TraitEditText[This <: android.widget.EditText]
-    extends TraitTextView[This] {
+trait TraitEditText[This <: android.widget.EditText] extends TraitTextView[This] {
 
   @inline def selection(implicit no: NoGetterForThisProperty): Nothing =
     throw new Error("Android does not support the getter for 'selection'")
@@ -1589,8 +1587,8 @@ object STableLayout {
 /**
   * Automatically generated enriching class of `[[https://developer.android.com/reference/android/widget/SimpleCursorTreeAdapter.html android.widget.SimpleCursorTreeAdapter]]`.
   */
-class RichSimpleCursorTreeAdapter[
-    This <: android.widget.SimpleCursorTreeAdapter](val basis: This)
+class RichSimpleCursorTreeAdapter[This <: android.widget.SimpleCursorTreeAdapter](
+    val basis: This)
     extends TraitSimpleCursorTreeAdapter[This]
 
 /**
@@ -1764,18 +1762,16 @@ trait TraitTabHost[This <: android.widget.TabHost]
   @inline def tabWidget = basis.getTabWidget
 
   @inline def onTabChanged[U](f: java.lang.String => U): This = {
-    basis.setOnTabChangedListener(
-      new android.widget.TabHost.OnTabChangeListener {
-        def onTabChanged(p: java.lang.String): Unit = { f(p) }
-      })
+    basis.setOnTabChangedListener(new android.widget.TabHost.OnTabChangeListener {
+      def onTabChanged(p: java.lang.String): Unit = { f(p) }
+    })
     basis
   }
 
   @inline def onTabChanged[U](f: => U): This = {
-    basis.setOnTabChangedListener(
-      new android.widget.TabHost.OnTabChangeListener {
-        def onTabChanged(p: java.lang.String): Unit = { f }
-      })
+    basis.setOnTabChangedListener(new android.widget.TabHost.OnTabChangeListener {
+      def onTabChanged(p: java.lang.String): Unit = { f }
+    })
     basis
   }
 
@@ -2270,8 +2266,7 @@ class RichSpinner[This <: android.widget.Spinner](val basis: This)
 /**
   * Automatically generated helper trait of `[[https://developer.android.com/reference/android/widget/Spinner.html android.widget.Spinner]]`. This contains several property accessors.
   */
-trait TraitSpinner[This <: android.widget.Spinner]
-    extends TraitAbsSpinner[This] {
+trait TraitSpinner[This <: android.widget.Spinner] extends TraitAbsSpinner[This] {
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/Spinner.html#getDropDownHorizontalOffset() getDropDownHorizontalOffset()]]`
@@ -2932,8 +2927,7 @@ trait TraitNumberPicker[This <: android.widget.NumberPicker]
   }
 
   @inline def onScrollListener(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onScrollListener'")
+    throw new Error("Android does not support the getter for 'onScrollListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/NumberPicker.html#setOnScrollListener(android.widget.NumberPicker.OnScrollListener) setOnScrollListener(android.widget.NumberPicker.OnScrollListener)]]`
@@ -3511,9 +3505,8 @@ trait TraitShareActionProvider[This <: android.widget.ShareActionProvider]
   }
 
   @inline def onShareTargetSelected(
-      f: (
-          android.widget.ShareActionProvider,
-          android.content.Intent) => Boolean): This = {
+      f: (android.widget.ShareActionProvider, android.content.Intent) => Boolean)
+      : This = {
     basis.setOnShareTargetSelectedListener(
       new android.widget.ShareActionProvider.OnShareTargetSelectedListener {
         def onShareTargetSelected(
@@ -3720,10 +3713,9 @@ trait TraitTimePicker[This <: android.widget.TimePicker]
       f: (android.widget.TimePicker, Int, Int) => U): This = {
     basis.setOnTimeChangedListener(
       new android.widget.TimePicker.OnTimeChangedListener {
-        def onTimeChanged(
-            p1: android.widget.TimePicker,
-            p2: Int,
-            p3: Int): Unit = { f(p1, p2, p3) }
+        def onTimeChanged(p1: android.widget.TimePicker, p2: Int, p3: Int): Unit = {
+          f(p1, p2, p3)
+        }
       })
     basis
   }
@@ -3731,10 +3723,9 @@ trait TraitTimePicker[This <: android.widget.TimePicker]
   @inline def onTimeChanged[U](f: => U): This = {
     basis.setOnTimeChangedListener(
       new android.widget.TimePicker.OnTimeChangedListener {
-        def onTimeChanged(
-            p1: android.widget.TimePicker,
-            p2: Int,
-            p3: Int): Unit = { f }
+        def onTimeChanged(p1: android.widget.TimePicker, p2: Int, p3: Int): Unit = {
+          f
+        }
       })
     basis
   }
@@ -4263,8 +4254,7 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   }
 
   @inline def onScrollListener(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'onScrollListener'")
+    throw new Error("Android does not support the getter for 'onScrollListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setOnScrollListener(android.widget.AbsListView.OnScrollListener) setOnScrollListener(android.widget.AbsListView.OnScrollListener)]]`
@@ -4281,8 +4271,7 @@ trait TraitAbsListView[This <: android.widget.AbsListView]
   }
 
   @inline def recyclerListener(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'recyclerListener'")
+    throw new Error("Android does not support the getter for 'recyclerListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AbsListView.html#setRecyclerListener(android.widget.AbsListView.RecyclerListener) setRecyclerListener(android.widget.AbsListView.RecyclerListener)]]`
@@ -4576,8 +4565,7 @@ class RichSeekBar[This <: android.widget.SeekBar](val basis: This)
 /**
   * Automatically generated helper trait of `[[https://developer.android.com/reference/android/widget/SeekBar.html android.widget.SeekBar]]`. This contains several property accessors.
   */
-trait TraitSeekBar[This <: android.widget.SeekBar]
-    extends TraitAbsSeekBar[This] {
+trait TraitSeekBar[This <: android.widget.SeekBar] extends TraitAbsSeekBar[This] {
 
   @inline def onSeekBarChangeListener(implicit
       no: NoGetterForThisProperty): Nothing =
@@ -5113,8 +5101,7 @@ trait TraitViewAnimator[This <: android.widget.ViewAnimator]
     extends TraitFrameLayout[This] {
 
   @inline def animateFirstView(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'animateFirstView'")
+    throw new Error("Android does not support the getter for 'animateFirstView'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ViewAnimator.html#setAnimateFirstView(boolean) setAnimateFirstView(boolean)]]`
@@ -6463,8 +6450,7 @@ trait TraitZoomControls[This <: android.widget.ZoomControls]
   @inline def disableIsZoomIn() = { basis.setIsZoomInEnabled(false); basis }
 
   @inline def isZoomOutEnabled(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'isZoomOutEnabled'")
+    throw new Error("Android does not support the getter for 'isZoomOutEnabled'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/ZoomControls.html#setIsZoomOutEnabled(boolean) setIsZoomOutEnabled(boolean)]]`
@@ -7945,18 +7931,16 @@ trait TraitVideoView[This <: android.widget.VideoView]
   }
 
   @inline def onPrepared[U](f: android.media.MediaPlayer => U): This = {
-    basis.setOnPreparedListener(
-      new android.media.MediaPlayer.OnPreparedListener {
-        def onPrepared(p: android.media.MediaPlayer): Unit = { f(p) }
-      })
+    basis.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener {
+      def onPrepared(p: android.media.MediaPlayer): Unit = { f(p) }
+    })
     basis
   }
 
   @inline def onPrepared[U](f: => U): This = {
-    basis.setOnPreparedListener(
-      new android.media.MediaPlayer.OnPreparedListener {
-        def onPrepared(p: android.media.MediaPlayer): Unit = { f }
-      })
+    basis.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener {
+      def onPrepared(p: android.media.MediaPlayer): Unit = { f }
+    })
     basis
   }
 
@@ -9331,8 +9315,7 @@ trait TraitAdapterViewAnimator[This <: android.widget.AdapterViewAnimator]
     extends TraitAdapterView[This] {
 
   @inline def animateFirstView(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'animateFirstView'")
+    throw new Error("Android does not support the getter for 'animateFirstView'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/AdapterViewAnimator.html#setAnimateFirstView(boolean) setAnimateFirstView(boolean)]]`
@@ -10416,8 +10399,7 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   }
 
   @inline def selectAllOnFocus(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'selectAllOnFocus'")
+    throw new Error("Android does not support the getter for 'selectAllOnFocus'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setSelectAllOnFocus(boolean) setSelectAllOnFocus(boolean)]]`
@@ -10475,8 +10457,7 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   @inline def singleLine_=(p: Boolean) = { basis.setSingleLine(p); basis }
 
   @inline def spannableFactory(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'spannableFactory'")
+    throw new Error("Android does not support the getter for 'spannableFactory'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setSpannableFactory(android.text.Spannable.Factory) setSpannableFactory(android.text.Spannable.Factory)]]`
@@ -10547,8 +10528,7 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   @inline def textColors = basis.getTextColors
 
   @inline def textIsSelectable(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'textIsSelectable'")
+    throw new Error("Android does not support the getter for 'textIsSelectable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/widget/TextView.html#setTextIsSelectable(boolean) setTextIsSelectable(boolean)]]`
@@ -10748,8 +10728,7 @@ trait TraitTextView[This <: android.widget.TextView] extends TraitView[This] {
   }
 
   @inline def onEditorAction(
-      f: (android.widget.TextView, Int, android.view.KeyEvent) => Boolean)
-      : This = {
+      f: (android.widget.TextView, Int, android.view.KeyEvent) => Boolean): This = {
     basis.setOnEditorActionListener(
       new android.widget.TextView.OnEditorActionListener {
         def onEditorAction(
@@ -12351,8 +12330,7 @@ trait TraitGLSurfaceView[This <: android.opengl.GLSurfaceView]
     extends TraitSurfaceView[This] {
 
   @inline def EGLConfigChooser(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'EGLConfigChooser'")
+    throw new Error("Android does not support the getter for 'EGLConfigChooser'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/opengl/GLSurfaceView.html#setEGLConfigChooser(boolean) setEGLConfigChooser(boolean)]]`
@@ -13150,8 +13128,7 @@ trait TraitWebView[This <: android.webkit.WebView]
   @inline def contentHeight = basis.getContentHeight
 
   @inline def downloadListener(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'downloadListener'")
+    throw new Error("Android does not support the getter for 'downloadListener'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setDownloadListener(android.webkit.DownloadListener) setDownloadListener(android.webkit.DownloadListener)]]`
@@ -13241,8 +13218,7 @@ trait TraitWebView[This <: android.webkit.WebView]
   }
 
   @inline def networkAvailable(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'networkAvailable'")
+    throw new Error("Android does not support the getter for 'networkAvailable'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/webkit/WebView.html#setNetworkAvailable(boolean) setNetworkAvailable(boolean)]]`
@@ -13980,11 +13956,11 @@ trait WidgetImplicits {
       V <: android.widget.MultiAutoCompleteTextView](
       multiAutoCompleteTextView: V) =
     new RichMultiAutoCompleteTextView[V](multiAutoCompleteTextView)
-  @inline implicit def datePicker2RichDatePicker[
-      V <: android.widget.DatePicker](datePicker: V) =
+  @inline implicit def datePicker2RichDatePicker[V <: android.widget.DatePicker](
+      datePicker: V) =
     new RichDatePicker[V](datePicker)
-  @inline implicit def absSeekBar2RichAbsSeekBar[
-      V <: android.widget.AbsSeekBar](absSeekBar: V) =
+  @inline implicit def absSeekBar2RichAbsSeekBar[V <: android.widget.AbsSeekBar](
+      absSeekBar: V) =
     new RichAbsSeekBar[V](absSeekBar)
   @inline implicit def tableLayout2RichTableLayout[
       V <: android.widget.TableLayout](tableLayout: V) =
@@ -14001,15 +13977,15 @@ trait WidgetImplicits {
     new RichResourceCursorTreeAdapter[V](resourceCursorTreeAdapter)
   @inline implicit def tabHost2RichTabHost[V <: android.widget.TabHost](
       tabHost: V) = new RichTabHost[V](tabHost)
-  @inline implicit def gridLayout2RichGridLayout[
-      V <: android.widget.GridLayout](gridLayout: V) =
+  @inline implicit def gridLayout2RichGridLayout[V <: android.widget.GridLayout](
+      gridLayout: V) =
     new RichGridLayout[V](gridLayout)
   @inline implicit def heterogeneousExpandableList2RichHeterogeneousExpandableList[
       V <: android.widget.HeterogeneousExpandableList](
       heterogeneousExpandableList: V) =
     new RichHeterogeneousExpandableList[V](heterogeneousExpandableList)
-  @inline implicit def radioGroup2RichRadioGroup[
-      V <: android.widget.RadioGroup](radioGroup: V) =
+  @inline implicit def radioGroup2RichRadioGroup[V <: android.widget.RadioGroup](
+      radioGroup: V) =
     new RichRadioGroup[V](radioGroup)
   @inline implicit def ratingBar2RichRatingBar[V <: android.widget.RatingBar](
       ratingBar: V) = new RichRatingBar[V](ratingBar)
@@ -14036,8 +14012,8 @@ trait WidgetImplicits {
   @inline implicit def chronometer2RichChronometer[
       V <: android.widget.Chronometer](chronometer: V) =
     new RichChronometer[V](chronometer)
-  @inline implicit def filterable2RichFilterable[
-      V <: android.widget.Filterable](filterable: V) =
+  @inline implicit def filterable2RichFilterable[V <: android.widget.Filterable](
+      filterable: V) =
     new RichFilterable[V](filterable)
   @inline implicit def checkedTextView2RichCheckedTextView[
       V <: android.widget.CheckedTextView](checkedTextView: V) =
@@ -14057,8 +14033,8 @@ trait WidgetImplicits {
   @inline implicit def imageSwitcher2RichImageSwitcher[
       V <: android.widget.ImageSwitcher](imageSwitcher: V) =
     new RichImageSwitcher[V](imageSwitcher)
-  @inline implicit def timePicker2RichTimePicker[
-      V <: android.widget.TimePicker](timePicker: V) =
+  @inline implicit def timePicker2RichTimePicker[V <: android.widget.TimePicker](
+      timePicker: V) =
     new RichTimePicker[V](timePicker)
   @inline implicit def expandableListView2RichExpandableListView[
       V <: android.widget.ExpandableListView](expandableListView: V) =
@@ -14066,8 +14042,8 @@ trait WidgetImplicits {
   @inline implicit def absListView2RichAbsListView[
       V <: android.widget.AbsListView](absListView: V) =
     new RichAbsListView[V](absListView)
-  @inline implicit def absSpinner2RichAbsSpinner[
-      V <: android.widget.AbsSpinner](absSpinner: V) =
+  @inline implicit def absSpinner2RichAbsSpinner[V <: android.widget.AbsSpinner](
+      absSpinner: V) =
     new RichAbsSpinner[V](absSpinner)
   @inline implicit def seekBar2RichSeekBar[V <: android.widget.SeekBar](
       seekBar: V) = new RichSeekBar[V](seekBar)
@@ -14119,8 +14095,8 @@ trait WidgetImplicits {
     new RichQuickContactBadge[V](quickContactBadge)
   @inline implicit def space2RichSpace[V <: android.widget.Space](space: V) =
     new RichSpace[V](space)
-  @inline implicit def searchView2RichSearchView[
-      V <: android.widget.SearchView](searchView: V) =
+  @inline implicit def searchView2RichSearchView[V <: android.widget.SearchView](
+      searchView: V) =
     new RichSearchView[V](searchView)
   @inline implicit def digitalClock2RichDigitalClock[
       V <: android.widget.DigitalClock](digitalClock: V) =
@@ -14152,8 +14128,8 @@ trait WidgetImplicits {
   @inline implicit def progressBar2RichProgressBar[
       V <: android.widget.ProgressBar](progressBar: V) =
     new RichProgressBar[V](progressBar)
-  @inline implicit def scrollView2RichScrollView[
-      V <: android.widget.ScrollView](scrollView: V) =
+  @inline implicit def scrollView2RichScrollView[V <: android.widget.ScrollView](
+      scrollView: V) =
     new RichScrollView[V](scrollView)
   @inline implicit def adapterViewFlipper2RichAdapterViewFlipper[
       V <: android.widget.AdapterViewFlipper](adapterViewFlipper: V) =
@@ -14161,8 +14137,8 @@ trait WidgetImplicits {
   @inline implicit def cursorTreeAdapter2RichCursorTreeAdapter[
       V <: android.widget.CursorTreeAdapter](cursorTreeAdapter: V) =
     new RichCursorTreeAdapter[V](cursorTreeAdapter)
-  @inline implicit def edgeEffect2RichEdgeEffect[
-      V <: android.widget.EdgeEffect](edgeEffect: V) =
+  @inline implicit def edgeEffect2RichEdgeEffect[V <: android.widget.EdgeEffect](
+      edgeEffect: V) =
     new RichEdgeEffect[V](edgeEffect)
   @inline implicit def simpleCursorAdapter2RichSimpleCursorAdapter[
       V <: android.widget.SimpleCursorAdapter](simpleCursorAdapter: V) =
@@ -14174,8 +14150,8 @@ trait WidgetImplicits {
   @inline implicit def viewSwitcher2RichViewSwitcher[
       V <: android.widget.ViewSwitcher](viewSwitcher: V) =
     new RichViewSwitcher[V](viewSwitcher)
-  @inline implicit def zoomButton2RichZoomButton[
-      V <: android.widget.ZoomButton](zoomButton: V) =
+  @inline implicit def zoomButton2RichZoomButton[V <: android.widget.ZoomButton](
+      zoomButton: V) =
     new RichZoomButton[V](zoomButton)
   @deprecated("", "") @inline implicit def gallery2RichGallery[
       V <: android.widget.Gallery](gallery: V) = new RichGallery[V](gallery)

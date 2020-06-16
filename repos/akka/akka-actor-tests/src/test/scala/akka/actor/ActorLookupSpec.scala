@@ -266,8 +266,7 @@ class ActorLookupSpec extends AkkaSpec with DefaultTimeout {
             timeout.duration) should ===(target)
           if (target != root)
             Await.result(
-              looker ? LookupString(
-                target.path.elements.mkString("/", "/", "/")),
+              looker ? LookupString(target.path.elements.mkString("/", "/", "/")),
               timeout.duration) should ===(target)
         }
       }

@@ -221,9 +221,7 @@ trait TaskExtra {
       def text[T](sid: String)(f: BufferedReader => T): Task[T] =
         pipe0(Some(sid), f)
 
-      private def pipe0[T](
-          sid: Option[String],
-          f: BufferedReader => T): Task[T] =
+      private def pipe0[T](sid: Option[String], f: BufferedReader => T): Task[T] =
         streams map { s => f(s.readText(key(in), sid)) }
     }
   final implicit def linesTask[Key](in: Task[_])(implicit

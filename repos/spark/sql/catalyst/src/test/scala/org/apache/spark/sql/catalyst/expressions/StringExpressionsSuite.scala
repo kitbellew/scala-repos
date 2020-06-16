@@ -123,33 +123,21 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
 
     // substring from zero position with less-than-full length
     checkEvaluation(
-      Substring(
-        s,
-        Literal.create(0, IntegerType),
-        Literal.create(2, IntegerType)),
+      Substring(s, Literal.create(0, IntegerType), Literal.create(2, IntegerType)),
       "ex",
       row)
     checkEvaluation(
-      Substring(
-        s,
-        Literal.create(1, IntegerType),
-        Literal.create(2, IntegerType)),
+      Substring(s, Literal.create(1, IntegerType), Literal.create(2, IntegerType)),
       "ex",
       row)
 
     // substring from zero position with full length
     checkEvaluation(
-      Substring(
-        s,
-        Literal.create(0, IntegerType),
-        Literal.create(7, IntegerType)),
+      Substring(s, Literal.create(0, IntegerType), Literal.create(7, IntegerType)),
       "example",
       row)
     checkEvaluation(
-      Substring(
-        s,
-        Literal.create(1, IntegerType),
-        Literal.create(7, IntegerType)),
+      Substring(s, Literal.create(1, IntegerType), Literal.create(7, IntegerType)),
       "example",
       row)
 
@@ -171,19 +159,13 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
 
     // substring from nonzero position with less-than-full length
     checkEvaluation(
-      Substring(
-        s,
-        Literal.create(2, IntegerType),
-        Literal.create(2, IntegerType)),
+      Substring(s, Literal.create(2, IntegerType), Literal.create(2, IntegerType)),
       "xa",
       row)
 
     // substring from nonzero position with full length
     checkEvaluation(
-      Substring(
-        s,
-        Literal.create(2, IntegerType),
-        Literal.create(6, IntegerType)),
+      Substring(s, Literal.create(2, IntegerType), Literal.create(6, IntegerType)),
       "xample",
       row)
 
@@ -198,10 +180,7 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
 
     // zero-length substring (within string bounds)
     checkEvaluation(
-      Substring(
-        s,
-        Literal.create(0, IntegerType),
-        Literal.create(0, IntegerType)),
+      Substring(s, Literal.create(0, IntegerType), Literal.create(0, IntegerType)),
       "",
       row)
 
@@ -335,10 +314,7 @@ class StringExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       "org")
     checkEvaluation(SubstringIndex(Literal(""), Literal("."), Literal(-2)), "")
     checkEvaluation(
-      SubstringIndex(
-        Literal.create(null, StringType),
-        Literal("."),
-        Literal(-2)),
+      SubstringIndex(Literal.create(null, StringType), Literal("."), Literal(-2)),
       null)
     checkEvaluation(
       SubstringIndex(

@@ -469,12 +469,8 @@ trait GrouperSpec[M[+_]]
         GroupKeySpecSource(
           CPathField("extra"),
           Filter(
-            Map1(
-              DerefObjectStatic(SourceValue.Single, CPathField("a")),
-              eq12F1),
-            Map1(
-              DerefObjectStatic(SourceValue.Single, CPathField("a")),
-              eq12F1))
+            Map1(DerefObjectStatic(SourceValue.Single, CPathField("a")), eq12F1),
+            Map1(DerefObjectStatic(SourceValue.Single, CPathField("a")), eq12F1))
         ),
         GroupKeySpecSource(
           tic_b,
@@ -526,12 +522,8 @@ trait GrouperSpec[M[+_]]
         GroupKeySpecSource(
           CPathField("extra"),
           Filter(
-            Map1(
-              DerefObjectStatic(SourceValue.Single, CPathField("a")),
-              eq12F1),
-            Map1(
-              DerefObjectStatic(SourceValue.Single, CPathField("a")),
-              eq12F1))
+            Map1(DerefObjectStatic(SourceValue.Single, CPathField("a")), eq12F1),
+            Map1(DerefObjectStatic(SourceValue.Single, CPathField("a")), eq12F1))
         ),
         GroupKeySpecSource(
           tic_b,
@@ -659,8 +651,7 @@ trait GrouperSpec[M[+_]]
 
     val data1 = augmentWithIdentities(rawData1 map {
       case (a, b0) =>
-        JObject(
-          JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
+        JObject(JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
     })
 
     val data2 = augmentWithIdentities(rawData2 map { v =>
@@ -777,8 +768,7 @@ trait GrouperSpec[M[+_]]
 
     val data1 = augmentWithIdentities(rawData1 map {
       case (a, b0) =>
-        JObject(
-          JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
+        JObject(JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
     })
 
     val data2 = augmentWithIdentities(rawData2 map { v =>

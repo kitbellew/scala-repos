@@ -662,9 +662,7 @@ object Project extends ProjectExtra {
         ScopedKey(f(key.scope), key.key)
     }
 
-  def transform(
-      g: Scope => Scope,
-      ss: Seq[Def.Setting[_]]): Seq[Def.Setting[_]] = {
+  def transform(g: Scope => Scope, ss: Seq[Def.Setting[_]]): Seq[Def.Setting[_]] = {
     val f = mapScope(g)
     ss.map(_ mapKey f mapReferenced f)
   }
@@ -771,19 +769,12 @@ object Project extends ProjectExtra {
       providedBy +
       definedAt +
       printDepScopes("Dependencies", "derived from", depends, derivedDepends) +
-      printDepScopes(
-        "Reverse dependencies",
-        "derives",
-        reverse,
-        derivedReverse) +
+      printDepScopes("Reverse dependencies", "derives", reverse, derivedReverse) +
       printScopes("Delegates", delegates(structure, scope, key)) +
       printScopes("Related", related, 10)
   }
-  def settingGraph(
-      structure: BuildStructure,
-      basedir: File,
-      scoped: ScopedKey[_])(implicit
-      display: Show[ScopedKey[_]]): SettingGraph =
+  def settingGraph(structure: BuildStructure, basedir: File, scoped: ScopedKey[_])(
+      implicit display: Show[ScopedKey[_]]): SettingGraph =
     SettingGraph(structure, basedir, scoped, 0)
   def graphSettings(structure: BuildStructure, basedir: File)(implicit
       display: Show[ScopedKey[_]]): Unit = {
@@ -831,10 +822,8 @@ object Project extends ProjectExtra {
       display: Show[ScopedKey[_]]): String =
     s.map(display.apply).sorted.mkString("\n\t", "\n\t", "\n\n")
 
-  def definitions(
-      structure: BuildStructure,
-      actual: Boolean,
-      key: AttributeKey[_])(implicit display: Show[ScopedKey[_]]): Seq[Scope] =
+  def definitions(structure: BuildStructure, actual: Boolean, key: AttributeKey[_])(
+      implicit display: Show[ScopedKey[_]]): Seq[Scope] =
     relation(structure, actual)(display)._1s.toSeq flatMap { sk =>
       if (sk.key == key) sk.scope :: Nil else Nil
     }
@@ -975,10 +964,7 @@ object Project extends ProjectExtra {
         tx(
           task,
           (state, value) =>
-            persistAndSet(
-              resolveContext(key, scoped.scope, state),
-              state,
-              value)(f))
+            persistAndSet(resolveContext(key, scoped.scope, state), state, value)(f))
       }
     def keepAs(key: TaskKey[S]): Def.Initialize[Task[S]] =
       (i, Keys.resolvedScoped)((t, scoped) =>

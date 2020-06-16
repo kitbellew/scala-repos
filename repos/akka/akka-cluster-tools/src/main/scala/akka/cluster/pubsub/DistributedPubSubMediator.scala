@@ -179,8 +179,7 @@ object DistributedPubSubMediator {
   }
   @SerialVersionUID(1L) final case class SubscribeAck(subscribe: Subscribe)
       extends DeadLetterSuppression
-  @SerialVersionUID(1L) final case class UnsubscribeAck(
-      unsubscribe: Unsubscribe)
+  @SerialVersionUID(1L) final case class UnsubscribeAck(unsubscribe: Unsubscribe)
   @SerialVersionUID(1L) final case class Publish(
       topic: String,
       msg: Any,
@@ -817,8 +816,7 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     } ++ otherVersions
     var count = 0
     filledOtherVersions.collect {
-      case (owner, v)
-          if registry(owner).version > v && count < maxDeltaElements ⇒
+      case (owner, v) if registry(owner).version > v && count < maxDeltaElements ⇒
         val bucket = registry(owner)
         val deltaContent = bucket.content.filter {
           case (_, value) ⇒ value.version > v

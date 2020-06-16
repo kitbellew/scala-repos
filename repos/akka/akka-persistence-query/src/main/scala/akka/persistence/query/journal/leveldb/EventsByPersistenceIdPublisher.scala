@@ -108,12 +108,7 @@ private[akka] abstract class AbstractEventsByPersistenceIdPublisher(
       currSeqNo,
       toSequenceNr,
       limit)
-    journal ! ReplayMessages(
-      currSeqNo,
-      toSequenceNr,
-      limit,
-      persistenceId,
-      self)
+    journal ! ReplayMessages(currSeqNo, toSequenceNr, limit, persistenceId, self)
     context.become(replaying(limit))
   }
 

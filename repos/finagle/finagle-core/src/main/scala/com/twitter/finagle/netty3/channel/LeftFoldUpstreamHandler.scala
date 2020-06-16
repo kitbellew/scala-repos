@@ -127,9 +127,7 @@ private[channel] class LeftFoldHandlerToChannelHandler(
     state = state.channelClosed(ctx, e)
   }
 
-  override def channelConnected(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def channelConnected(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     state = state.channelConnected(ctx, e)
   }
 
@@ -175,9 +173,7 @@ private[channel] class LeftFoldHandlerToChannelHandler(
     state = state.messageReceived(ctx, e)
   }
 
-  override def writeComplete(
-      ctx: ChannelHandlerContext,
-      e: WriteCompletionEvent) {
+  override def writeComplete(ctx: ChannelHandlerContext, e: WriteCompletionEvent) {
     state = state.writeComplete(ctx, e)
   }
 }

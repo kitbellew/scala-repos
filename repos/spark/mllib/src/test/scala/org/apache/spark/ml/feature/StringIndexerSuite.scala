@@ -141,7 +141,8 @@ class StringIndexerSuite
     assert(output === expected)
   }
 
-  test("StringIndexerModel should keep silent if the input column does not exist.") {
+  test(
+    "StringIndexerModel should keep silent if the input column does not exist.") {
     val indexerModel = new StringIndexerModel("indexer", Array("a", "b", "c"))
       .setInputCol("label")
       .setOutputCol("labelIndex")

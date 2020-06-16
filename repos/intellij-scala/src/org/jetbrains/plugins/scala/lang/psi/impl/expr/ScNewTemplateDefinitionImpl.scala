@@ -27,10 +27,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.PsiClassFake
 import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.TypeDefinitionMembers
 import org.jetbrains.plugins.scala.lang.psi.stubs.ScTemplateDefinitionStub
 import org.jetbrains.plugins.scala.lang.psi.types._
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 
 import scala.collection.mutable.ArrayBuffer
 
@@ -199,9 +196,7 @@ class ScNewTemplateDefinitionImpl private (
     super[ScNewTemplateDefinition].findFieldByName(name, checkBases)
   }
 
-  override def findInnerClassByName(
-      name: String,
-      checkBases: Boolean): PsiClass = {
+  override def findInnerClassByName(name: String, checkBases: Boolean): PsiClass = {
     super[ScNewTemplateDefinition].findInnerClassByName(name, checkBases)
   }
 
@@ -230,10 +225,8 @@ class ScNewTemplateDefinitionImpl private (
   override def getAllMethods: Array[PsiMethod] = {
     val res = new ArrayBuffer[PsiMethod]()
     TypeDefinitionMembers.SignatureNodes.forAllSignatureNodes(this) { node =>
-      this.processPsiMethodsForNode(
-        node,
-        isStatic = false,
-        isInterface = false)(res += _)
+      this.processPsiMethodsForNode(node, isStatic = false, isInterface = false)(
+        res += _)
     }
     res.toArray
   }

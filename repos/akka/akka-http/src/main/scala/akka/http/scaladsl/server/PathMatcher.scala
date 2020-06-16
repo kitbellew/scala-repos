@@ -83,11 +83,8 @@ abstract class PathMatcher[L](implicit val ev: Tuple[L])
     * <tr><td>`PathMatcher[L :Tuple]`</td><td>`PathMatcher[List[L]]`</td></tr>
     * </table>
     */
-  def repeat(
-      min: Int,
-      max: Int,
-      separator: PathMatcher0 = PathMatchers.Neutral)(implicit
-      lift: PathMatcher.Lift[L, List]): PathMatcher[lift.Out] =
+  def repeat(min: Int, max: Int, separator: PathMatcher0 = PathMatchers.Neutral)(
+      implicit lift: PathMatcher.Lift[L, List]): PathMatcher[lift.Out] =
     new PathMatcher[lift.Out]()(lift.OutIsTuple) {
       require(min >= 0, "`min` must be >= 0")
       require(max >= min, "`max` must be >= `min`")
@@ -298,9 +295,7 @@ trait ImplicitPathMatcherConstruction {
               case Path.Segment(segment, tail) ⇒
                 regex findPrefixMatchOf segment match {
                   case Some(m) ⇒
-                    Matched(
-                      segment.substring(m.end) :: tail,
-                      Tuple1(m.group(1)))
+                    Matched(segment.substring(m.end) :: tail, Tuple1(m.group(1)))
                   case None ⇒ Unmatched
                 }
               case _ ⇒ Unmatched

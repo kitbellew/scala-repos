@@ -138,7 +138,8 @@ trait HandleCommentService {
             }
             action foreach {
               f.toNotify(repository, issue, _) {
-                Notifier.msgStatus(s"${context.baseUrl}/${owner}/${name}/issues/${issue.issueId}")
+                Notifier.msgStatus(
+                  s"${context.baseUrl}/${owner}/${name}/issues/${issue.issueId}")
               }
             }
         }

@@ -31,9 +31,7 @@ trait TcpIntegrationSpecSupport { _: AkkaSpec ⇒
     def establishNewClientConnection()
         : (TestProbe, ActorRef, TestProbe, ActorRef) = {
       val connectCommander = TestProbe()
-      connectCommander.send(
-        IO(Tcp),
-        Connect(endpoint, options = connectOptions))
+      connectCommander.send(IO(Tcp), Connect(endpoint, options = connectOptions))
       val Connected(`endpoint`, localAddress) =
         connectCommander.expectMsgType[Connected]
       val clientHandler = TestProbe()

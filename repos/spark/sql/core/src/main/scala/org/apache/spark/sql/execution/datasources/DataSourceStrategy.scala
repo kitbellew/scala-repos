@@ -224,8 +224,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
         t.bucketSpec match {
           case Some(spec) if t.sqlContext.conf.bucketingEnabled =>
-            val scanBuilder
-                : (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
+            val scanBuilder: (Seq[Attribute], Array[Filter]) => RDD[InternalRow] = {
               (requiredColumns: Seq[Attribute], filters: Array[Filter]) =>
                 {
                   val bucketed =
@@ -338,8 +337,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
                     val bucketed = files.groupBy { f =>
                       BucketingUtils
                         .getBucketId(f.getPath.getName)
-                        .getOrElse(
-                          sys.error(s"Invalid bucket file ${f.getPath}"))
+                        .getOrElse(sys.error(s"Invalid bucket file ${f.getPath}"))
                     }
 
                     bucketed.map { bucketFiles =>

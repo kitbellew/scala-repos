@@ -112,12 +112,7 @@ object MediaType {
       subType: String,
       comp: Compressibility,
       fileExtensions: String*): Binary =
-    new Binary(
-      "audio/" + subType,
-      "audio",
-      subType,
-      comp,
-      fileExtensions.toList) {
+    new Binary("audio/" + subType, "audio", subType, comp, fileExtensions.toList) {
       override def isAudio = true
     }
 
@@ -125,12 +120,7 @@ object MediaType {
       subType: String,
       comp: Compressibility,
       fileExtensions: String*): Binary =
-    new Binary(
-      "image/" + subType,
-      "image",
-      subType,
-      comp,
-      fileExtensions.toList) {
+    new Binary("image/" + subType, "image", subType, comp, fileExtensions.toList) {
       override def isImage = true
     }
 
@@ -160,12 +150,7 @@ object MediaType {
       subType: String,
       comp: Compressibility,
       fileExtensions: String*): Binary =
-    new Binary(
-      "video/" + subType,
-      "video",
-      subType,
-      comp,
-      fileExtensions.toList) {
+    new Binary("video/" + subType, "video", subType, comp, fileExtensions.toList) {
       override def isVideo = true
     }
 
@@ -257,9 +242,7 @@ object MediaType {
     }
   }
 
-  def customMultipart(
-      subType: String,
-      params: Map[String, String]): Multipart = {
+  def customMultipart(subType: String, params: Map[String, String]): Multipart = {
     require(
       subType != "*",
       "Cannot create a MediaRange here, use MediaRanges.`multipart/*` instead!")

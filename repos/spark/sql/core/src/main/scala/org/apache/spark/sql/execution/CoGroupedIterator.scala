@@ -34,8 +34,7 @@ class CoGroupedIterator(
     left: Iterator[(InternalRow, Iterator[InternalRow])],
     right: Iterator[(InternalRow, Iterator[InternalRow])],
     groupingSchema: Seq[Attribute])
-    extends Iterator[
-      (InternalRow, Iterator[InternalRow], Iterator[InternalRow])] {
+    extends Iterator[(InternalRow, Iterator[InternalRow], Iterator[InternalRow])] {
 
   private val keyOrdering =
     GenerateOrdering.generate(
@@ -56,8 +55,7 @@ class CoGroupedIterator(
     currentLeftData != null || currentRightData != null
   }
 
-  override def next()
-      : (InternalRow, Iterator[InternalRow], Iterator[InternalRow]) = {
+  override def next(): (InternalRow, Iterator[InternalRow], Iterator[InternalRow]) = {
     assert(hasNext)
 
     if (currentLeftData.eq(null)) {

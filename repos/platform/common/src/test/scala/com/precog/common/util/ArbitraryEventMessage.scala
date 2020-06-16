@@ -159,9 +159,7 @@ trait RealisticEventMessage extends ArbitraryEventMessage {
       List(parent)
     } else {
       parent ::
-        containerOfN[List, String](
-          choose(2, 4).sample.get,
-          resize(10, alphaStr))
+        containerOfN[List, String](choose(2, 4).sample.get, resize(10, alphaStr))
           .map(_.filter(_.length > 1).flatMap(child =>
             buildChildPaths(child :: parent, depth - 1)))
           .sample

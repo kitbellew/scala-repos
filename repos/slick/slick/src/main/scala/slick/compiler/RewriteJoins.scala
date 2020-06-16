@@ -201,8 +201,7 @@ class RewriteJoins extends Phase {
                   .find { case (s, n) => pOnBGen == n }
                   .map(_._1)))
         }.toMap
-        logger.debug(
-          "Found references in predicate: " + foundRefs.mkString(", "))
+        logger.debug("Found references in predicate: " + foundRefs.mkString(", "))
         val newDefs = foundRefs.filter(_._2._2.isEmpty).map {
           case (p, (pOnBGen, _)) => (p, (pOnBGen, new AnonSymbol))
         }

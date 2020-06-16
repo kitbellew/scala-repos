@@ -477,20 +477,7 @@ case class ScalaUDF(
 
     case 13 =>
       val func = function.asInstanceOf[
-        (
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any,
-            Any) => Any]
+        (Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any) => Any]
       val child0 = children(0)
       val child1 = children(1)
       val child2 = children(2)
@@ -1434,9 +1421,7 @@ case class ScalaUDF(
   // scalastyle:on line.size.limit
 
   // Generate codes used to convert the arguments to Scala type for user-defined functions
-  private[this] def genCodeForConverter(
-      ctx: CodegenContext,
-      index: Int): String = {
+  private[this] def genCodeForConverter(ctx: CodegenContext, index: Int): String = {
     val converterClassName = classOf[Any => Any].getName
     val typeConvertersClassName =
       CatalystTypeConverters.getClass.getName + ".MODULE$"

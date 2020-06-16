@@ -164,8 +164,7 @@ private[spark] class TorrentBroadcast[T: ClassTag](obj: T, id: Long)
               }
               blocks(pid) = b
             case None =>
-              throw new SparkException(
-                s"Failed to get $pieceId of $broadcastId")
+              throw new SparkException(s"Failed to get $pieceId of $broadcastId")
           }
       }
     }

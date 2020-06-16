@@ -82,8 +82,7 @@ object ActorSubscriberSpec {
     val router = {
       val routees = Vector.fill(3) {
         ActorRefRoutee(
-          context.actorOf(
-            Props[Worker].withDispatcher(context.props.dispatcher)))
+          context.actorOf(Props[Worker].withDispatcher(context.props.dispatcher)))
       }
       Router(RoundRobinRoutingLogic(), routees)
     }

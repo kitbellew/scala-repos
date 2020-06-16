@@ -40,8 +40,7 @@ abstract class ConnectionContext {
   def getDefaultPort: Int
 }
 
-abstract class HttpConnectionContext
-    extends akka.http.javadsl.ConnectionContext {
+abstract class HttpConnectionContext extends akka.http.javadsl.ConnectionContext {
   override final def isSecure = false
   override final def getDefaultPort = 80
 }

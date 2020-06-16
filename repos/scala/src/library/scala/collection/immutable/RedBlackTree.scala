@@ -104,10 +104,8 @@ private[collection] object RedBlackTree {
     blacken(doDrop(tree, n))
   def take[A: Ordering, B](tree: Tree[A, B], n: Int): Tree[A, B] =
     blacken(doTake(tree, n))
-  def slice[A: Ordering, B](
-      tree: Tree[A, B],
-      from: Int,
-      until: Int): Tree[A, B] = blacken(doSlice(tree, from, until))
+  def slice[A: Ordering, B](tree: Tree[A, B], from: Int, until: Int): Tree[A, B] =
+    blacken(doSlice(tree, from, until))
 
   def smallest[A, B](tree: Tree[A, B]): Tree[A, B] = {
     if (tree eq null) throw new NoSuchElementException("empty map")
@@ -488,12 +486,7 @@ private[collection] object RedBlackTree {
     val newRight = doTake(tree.right, until - count - 1)
     if ((newLeft eq tree.left) && (newRight eq tree.right)) tree
     else if (newLeft eq null)
-      updNth(
-        newRight,
-        from - count - 1,
-        tree.key,
-        tree.value,
-        overwrite = false)
+      updNth(newRight, from - count - 1, tree.key, tree.value, overwrite = false)
     else if (newRight eq null)
       updNth(newLeft, until, tree.key, tree.value, overwrite = false)
     else rebalance(tree, newLeft, newRight)
@@ -513,9 +506,7 @@ private[collection] object RedBlackTree {
       right: Tree[A, B]): (NList[Tree[A, B]], Boolean, Boolean, Int) = {
     import NList.cons
     // Once a side is found to be deeper, unzip it to the bottom
-    def unzip(
-        zipper: NList[Tree[A, B]],
-        leftMost: Boolean): NList[Tree[A, B]] = {
+    def unzip(zipper: NList[Tree[A, B]], leftMost: Boolean): NList[Tree[A, B]] = {
       val next = if (leftMost) zipper.head.left else zipper.head.right
       if (next eq null) zipper
       else unzip(cons(next, zipper), leftMost)
@@ -679,11 +670,7 @@ private[collection] object RedBlackTree {
     override def toString: String =
       "RedTree(" + key + ", " + value + ", " + left + ", " + right + ")"
   }
-  final class BlackTree[A, +B](
-      key: A,
-      value: B,
-      left: Tree[A, B],
-      right: Tree[A, B])
+  final class BlackTree[A, +B](key: A, value: B, left: Tree[A, B], right: Tree[A, B])
       extends Tree[A, B](key, value, left, right) {
     override def black: Tree[A, B] = this
     override def red: Tree[A, B] = RedTree(key, value, left, right)
@@ -692,20 +679,14 @@ private[collection] object RedBlackTree {
   }
 
   object RedTree {
-    @inline def apply[A, B](
-        key: A,
-        value: B,
-        left: Tree[A, B],
-        right: Tree[A, B]) = new RedTree(key, value, left, right)
+    @inline def apply[A, B](key: A, value: B, left: Tree[A, B], right: Tree[A, B]) =
+      new RedTree(key, value, left, right)
     def unapply[A, B](t: RedTree[A, B]) =
       Some((t.key, t.value, t.left, t.right))
   }
   object BlackTree {
-    @inline def apply[A, B](
-        key: A,
-        value: B,
-        left: Tree[A, B],
-        right: Tree[A, B]) = new BlackTree(key, value, left, right)
+    @inline def apply[A, B](key: A, value: B, left: Tree[A, B], right: Tree[A, B]) =
+      new BlackTree(key, value, left, right)
     def unapply[A, B](t: BlackTree[A, B]) =
       Some((t.key, t.value, t.left, t.right))
   }

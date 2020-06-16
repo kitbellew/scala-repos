@@ -341,8 +341,7 @@ class WindowOperationsSuite extends TestSuiteBase {
       slideDuration: Duration = Seconds(1)
   ) {
     test("reduceByKeyAndWindow with inverse and filter functions - " + name) {
-      logInfo(
-        "reduceByKeyAndWindow with inverse and filter functions - " + name)
+      logInfo("reduceByKeyAndWindow with inverse and filter functions - " + name)
       val numBatches =
         expectedOutput.size * (slideDuration / batchDuration).toInt
       val filterFunc = (p: (String, Int)) => p._2 != 0

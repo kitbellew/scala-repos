@@ -110,8 +110,7 @@ private[akka] final class CancellingSubscriber[T] extends Subscriber[T] {
 /**
   * INTERNAL API
   */
-private[akka] case object RejectAdditionalSubscribers
-    extends Publisher[Nothing] {
+private[akka] case object RejectAdditionalSubscribers extends Publisher[Nothing] {
   import ReactiveStreamsCompliance._
   override def subscribe(subscriber: Subscriber[_ >: Nothing]): Unit =
     try rejectAdditionalSubscriber(subscriber, "Publisher")

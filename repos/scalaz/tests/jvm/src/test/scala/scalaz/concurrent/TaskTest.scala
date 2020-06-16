@@ -221,8 +221,8 @@ object TaskTest extends SpecLite {
       val t2 = fork { now(throw ex) }
       val t3 = fork { sleep(1000); now(()) }.map { _ => t3v.set(3) }
 
-      val t = fork(
-        Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
+      val t =
+        fork(Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
 
       t.unsafePerformSyncAttempt mustMatch {
         case -\/(e) => e must_== ex; true
@@ -246,8 +246,8 @@ object TaskTest extends SpecLite {
       val t2 = fork { sleep(100); now(throw ex) }
       val t3 = fork { sleep(1000); now(()) }.map { _ => t3v.set(3) }
 
-      val t = fork(
-        Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
+      val t =
+        fork(Task.gatherUnordered(Seq(t1, t2, t3), exceptionCancels = true))(es3)
 
       t.unsafePerformSyncAttempt mustMatch {
         case -\/(e) => e must_== ex; true

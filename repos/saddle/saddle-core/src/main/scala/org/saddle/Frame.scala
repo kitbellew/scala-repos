@@ -1046,9 +1046,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @param other Series to join with
     * @param how How to perform the join
     */
-  def joinS(
-      other: Series[RX, T],
-      how: JoinType = LeftJoin): Frame[RX, Int, T] = {
+  def joinS(other: Series[RX, T], how: JoinType = LeftJoin): Frame[RX, Int, T] = {
     val indexer = rowIx.join(other.index, how)
     val lft = indexer.lTake.map { loc =>
       values.map(_.take(loc))
@@ -1480,9 +1478,8 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
   /**
     * See join; operates row-wise
     */
-  def rjoin(
-      other: Frame[_, CX, T],
-      how: JoinType = LeftJoin): Frame[Int, CX, T] = T.join(other.T, how).T
+  def rjoin(other: Frame[_, CX, T], how: JoinType = LeftJoin): Frame[Int, CX, T] =
+    T.join(other.T, how).T
 
   /**
     * See joinPreserveColIx; operates row-wise
@@ -1660,8 +1657,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       val sz = colIx.scalarTag.strList(colIx.raw(0)).size
       for (i <- 0 until sz) {
         buf.append(spacer)
-        buf.append(
-          util.buildStr(ncols, numCols, createColHeader(i), colBreakStr))
+        buf.append(util.buildStr(ncols, numCols, createColHeader(i), colBreakStr))
         buf.append("\n")
       }
 
@@ -1698,8 +1694,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
       // for building frame entries
       def createVals(r: Int) = {
         val elem = (col: Int) =>
-          "%" + clen(col) + "s " format values(col).scalarTag.show(
-            values(r, col))
+          "%" + clen(col) + "s " format values(col).scalarTag.show(values(r, col))
         util.buildStr(ncols, numCols, elem) + "\n"
       }
 
@@ -1724,10 +1719,7 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * @param nrows Number of rows to display
     * @param ncols Number of cols to display
     */
-  def print(
-      nrows: Int = 10,
-      ncols: Int = 10,
-      stream: OutputStream = System.out) {
+  def print(nrows: Int = 10, ncols: Int = 10, stream: OutputStream = System.out) {
     stream.write(stringify(nrows, ncols).getBytes)
   }
 

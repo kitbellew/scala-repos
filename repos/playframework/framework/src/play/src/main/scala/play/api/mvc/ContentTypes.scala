@@ -594,8 +594,8 @@ trait BodyParsers {
     def temporaryFile: BodyParser[TemporaryFile] =
       BodyParser("temporaryFile") { request =>
         val tempFile = TemporaryFile("requestBody", "asTemporaryFile")
-        file(tempFile.file)(request).map(_ => Right(tempFile))(
-          play.api.libs.iteratee.Execution.trampoline)
+        file(tempFile.file)(request)
+          .map(_ => Right(tempFile))(play.api.libs.iteratee.Execution.trampoline)
       }
 
     // -- FormUrlEncoded
@@ -731,8 +731,7 @@ trait BodyParsers {
       */
     def multipartFormData[A](
         filePartHandler: Multipart.FilePartHandler[A],
-        maxLength: Long = DefaultMaxDiskLength)
-        : BodyParser[MultipartFormData[A]] = {
+        maxLength: Long = DefaultMaxDiskLength): BodyParser[MultipartFormData[A]] = {
       BodyParser("multipartFormData") { request =>
         val app = Play.privateMaybeApplication.get // throw exception
         implicit val mat = app.materializer
@@ -906,8 +905,7 @@ object BodyParsers extends BodyParsers {
       FlowShape.of(in, out)
 
     override def createLogicAndMaterializedValue(
-        inheritedAttributes: Attributes)
-        : (GraphStageLogic, Future[MaxSizeStatus]) = {
+        inheritedAttributes: Attributes): (GraphStageLogic, Future[MaxSizeStatus]) = {
       val status = Promise[MaxSizeStatus]()
       var pushedBytes: Long = 0
 

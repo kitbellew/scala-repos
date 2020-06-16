@@ -254,9 +254,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
       subscriber: ActorRef,
       initialStateMode: SubscriptionInitialStateMode,
       to: Class[_]*): Unit = {
-    require(
-      to.length > 0,
-      "at least one `ClusterDomainEvent` class is required")
+    require(to.length > 0, "at least one `ClusterDomainEvent` class is required")
     require(
       to.forall(classOf[ClusterDomainEvent].isAssignableFrom),
       s"subscribe to `akka.cluster.ClusterEvent.ClusterDomainEvent` or subclasses, was [${to.map(_.getName).mkString(", ")}]"
@@ -393,8 +391,7 @@ class Cluster(val system: ExtendedActorSystem) extends Extension {
     if (_isTerminated.get())
       callback.run()
     else
-      clusterDaemons ! InternalClusterAction.AddOnMemberRemovedListener(
-        callback)
+      clusterDaemons ! InternalClusterAction.AddOnMemberRemovedListener(callback)
   }
 
   /**

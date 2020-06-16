@@ -164,9 +164,7 @@ class SbtModuleBuilder
       buildFile,
       SbtModuleBuilder.formatProjectDefinition(name, scalaVersion))
     writeToFile(pluginsFile, SbtModuleBuilder.PluginsDefinition)
-    writeToFile(
-      propertiesFile,
-      SbtModuleBuilder.formatSbtProperties(sbtVersion))
+    writeToFile(propertiesFile, SbtModuleBuilder.formatSbtProperties(sbtVersion))
   }
 
   override def getNodeIcon = Sbt.Icon

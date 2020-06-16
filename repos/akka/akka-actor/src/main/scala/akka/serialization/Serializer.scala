@@ -123,9 +123,7 @@ abstract class SerializerWithStringManifest extends Serializer {
     */
   def fromBinary(bytes: Array[Byte], manifest: String): AnyRef
 
-  final def fromBinary(
-      bytes: Array[Byte],
-      manifest: Option[Class[_]]): AnyRef = {
+  final def fromBinary(bytes: Array[Byte], manifest: Option[Class[_]]): AnyRef = {
     val manifestString = manifest match {
       case Some(c) ⇒ c.getName
       case None ⇒ ""

@@ -78,9 +78,7 @@ object ReplicaVerificationTool extends Logging {
       .ofType(classOf[java.lang.Integer])
       .defaultsTo(ConsumerConfig.FetchSize)
     val maxWaitMsOpt = parser
-      .accepts(
-        "max-wait-ms",
-        "The max amount of time each fetch request waits.")
+      .accepts("max-wait-ms", "The max amount of time each fetch request waits.")
       .withRequiredArg
       .describedAs("ms")
       .ofType(classOf[java.lang.Integer])
@@ -306,9 +304,7 @@ private class ReplicaBuffer(
       val initialOffsetMap: Map[TopicAndPartition, PartitionOffsetRequestInfo] =
         topicAndPartitions
           .map(topicAndPartition =>
-            topicAndPartition -> PartitionOffsetRequestInfo(
-              initialOffsetTime,
-              1))
+            topicAndPartition -> PartitionOffsetRequestInfo(initialOffsetTime, 1))
           .toMap
       val offsetRequest = OffsetRequest(initialOffsetMap)
       val offsetResponse = consumer.getOffsetsBefore(offsetRequest)

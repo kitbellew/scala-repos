@@ -169,9 +169,7 @@ class ConstantFoldingSuite extends PlanTest {
 
     val correctAnswer =
       testRelation
-        .select(
-          Rand(5L) + Literal(1.0) as Symbol("c1"),
-          sum('a) as Symbol("c2"))
+        .select(Rand(5L) + Literal(1.0) as Symbol("c1"), sum('a) as Symbol("c2"))
         .analyze
 
     comparePlans(optimized, correctAnswer)
@@ -188,9 +186,7 @@ class ConstantFoldingSuite extends PlanTest {
         Literal.create(Seq(1), ArrayType(IntegerType)),
         Literal.create(null, IntegerType)) as 'c4,
       UnresolvedExtractValue(
-        Literal.create(
-          null,
-          StructType(Seq(StructField("a", IntegerType, true)))),
+        Literal.create(null, StructType(Seq(StructField("a", IntegerType, true)))),
         "a") as 'c5,
       UnaryMinus(Literal.create(null, IntegerType)) as 'c6,
       Cast(Literal(null), IntegerType) as 'c7,

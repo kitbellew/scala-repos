@@ -400,10 +400,12 @@ object Test extends Properties("HtmlFactory") {
   property("SI-5054: Use cases should keep their flags - real abstract should not be lost") =
     checkText("SI_5054_q4.scala")((None, """abstract def test(): Int""", true))
 
-  property("SI-5054: Use cases should keep their flags - traits should not be affected") =
+  property(
+    "SI-5054: Use cases should keep their flags - traits should not be affected") =
     checkText("SI_5054_q5.scala")((None, """def test(): Int""", true))
 
-  property("SI-5054: Use cases should keep their flags - traits should not be affected") =
+  property(
+    "SI-5054: Use cases should keep their flags - traits should not be affected") =
     checkText("SI_5054_q6.scala")((None, """abstract def test(): Int""", true))
 
   property("SI-5054: Use case individual signature test") =

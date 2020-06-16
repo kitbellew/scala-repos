@@ -236,9 +236,7 @@ object DataType {
         leftFields.length == rightFields.length &&
           leftFields.zip(rightFields).forall {
             case (l, r) =>
-              l.name == r.name && equalsIgnoreNullability(
-                l.dataType,
-                r.dataType)
+              l.name == r.name && equalsIgnoreNullability(l.dataType, r.dataType)
           }
       case (l, r) => l == r
     }

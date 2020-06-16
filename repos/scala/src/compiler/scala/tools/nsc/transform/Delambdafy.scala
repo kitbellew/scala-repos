@@ -126,9 +126,7 @@ abstract class Delambdafy
     // this entry point is aimed at the statements in the compilation unit.
     // after working on the entire compilation until we'll have a set of
     // new class definitions to add to the top level
-    override def transformStats(
-        stats: List[Tree],
-        exprOwner: Symbol): List[Tree] = {
+    override def transformStats(stats: List[Tree], exprOwner: Symbol): List[Tree] = {
       // Need to remove from the lambdaClassDefs map: there may be multiple PackageDef for the same
       // package when defining a package object. We only add the lambda class to one. See SI-9097.
       super.transformStats(stats, exprOwner) ++ lambdaClassDefs
@@ -213,8 +211,7 @@ abstract class Delambdafy
               } else {
                 val functionParam = functionParamTypes(i - numCaptures)
                 val targetParam = targetParams(i)
-                if (enteringErasure(
-                    functionParam.typeSymbol.isDerivedValueClass)) {
+                if (enteringErasure(functionParam.typeSymbol.isDerivedValueClass)) {
                   val casted = cast(gen.mkAttributedRef(param), functionParam)
                   val unboxed = unbox(
                     casted,
@@ -277,9 +274,7 @@ abstract class Delambdafy
             ) // sort of a lie, EmptyTree.<static method> would be more honest, but the backend chokes on that.
 
         val body = localTyper typed Apply(Select(qual, target), oldParams)
-        body.substituteSymbols(
-          fun.vparams map (_.symbol),
-          params map (_.symbol))
+        body.substituteSymbols(fun.vparams map (_.symbol), params map (_.symbol))
         body changeOwner (fun.symbol -> methSym)
 
         val methDef = DefDef(methSym, List(params), body)
@@ -426,9 +421,7 @@ abstract class Delambdafy
           // TODO SI-6260 maybe just create the apply method with the signature (Object => Object) in all cases
           //      rather than the method+bridge pair.
           if (bm.symbol.tpe =:= applyMethodDef.symbol.tpe)
-            erasure.resolveAnonymousBridgeClash(
-              applyMethodDef.symbol,
-              bm.symbol))
+            erasure.resolveAnonymousBridgeClash(applyMethodDef.symbol, bm.symbol))
 
         val body = members ++ List(constr, applyMethodDef) ++ bridgeMethod
 

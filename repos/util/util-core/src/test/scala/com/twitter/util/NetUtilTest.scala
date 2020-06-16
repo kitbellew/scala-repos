@@ -42,13 +42,11 @@ class NetUtilTest extends WordSpec {
     }
 
     "isPrivate" in {
-      assert(
-        NetUtil.isPrivateAddress(InetAddress.getByName("0.0.0.0")) == false)
+      assert(NetUtil.isPrivateAddress(InetAddress.getByName("0.0.0.0")) == false)
       assert(
         NetUtil.isPrivateAddress(
           InetAddress.getByName("199.59.148.13")) == false)
-      assert(
-        NetUtil.isPrivateAddress(InetAddress.getByName("10.0.0.0")) == true)
+      assert(NetUtil.isPrivateAddress(InetAddress.getByName("10.0.0.0")) == true)
       assert(
         NetUtil.isPrivateAddress(
           InetAddress.getByName("10.255.255.255")) == true)
@@ -100,8 +98,7 @@ class NetUtilTest extends WordSpec {
       assert(NetUtil.cidrToIpBlock("127.0.0.1") == ((0x7f000001, 0xffffffff)))
       assert(NetUtil.cidrToIpBlock("127.0.0.1/1") == ((0x7f000001, 0x80000000)))
       assert(NetUtil.cidrToIpBlock("127.0.0.1/4") == ((0x7f000001, 0xf0000000)))
-      assert(
-        NetUtil.cidrToIpBlock("127.0.0.1/32") == ((0x7f000001, 0xffffffff)))
+      assert(NetUtil.cidrToIpBlock("127.0.0.1/32") == ((0x7f000001, 0xffffffff)))
       assert(NetUtil.cidrToIpBlock("127/24") == ((0x7f000000, 0xffffff00)))
     }
 

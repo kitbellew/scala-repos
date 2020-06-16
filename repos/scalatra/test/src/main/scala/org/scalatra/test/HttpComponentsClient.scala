@@ -159,8 +159,7 @@ trait HttpComponentsClient extends Client {
           HttpMultipartMode.BROWSER_COMPATIBLE)
         params.foreach {
           case (name, value) =>
-            multipartEntity.addPart(
-              new FormBodyPart(name, new StringBody(value)))
+            multipartEntity.addPart(new FormBodyPart(name, new StringBody(value)))
         }
 
         files.foreach {
@@ -174,8 +173,7 @@ trait HttpComponentsClient extends Client {
         throw new IllegalArgumentException(
           """|HTTP %s does not support enclosing an entity.
              |Please remove the value from `body` parameter
-             |or use POST/PUT/PATCH instead.""".stripMargin.format(
-            req.getMethod))
+             |or use POST/PUT/PATCH instead.""".stripMargin.format(req.getMethod))
     }
   }
 

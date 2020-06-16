@@ -226,9 +226,7 @@ object Collections {
     }
   }
 
-  private def copyImpl[T](
-      source: Iterator[_ <: T],
-      dest: ListIterator[T]): Unit = {
+  private def copyImpl[T](source: Iterator[_ <: T], dest: ListIterator[T]): Unit = {
     while (source.hasNext) {
       if (dest.hasNext) {
         dest.next()
@@ -921,8 +919,7 @@ object Collections {
       unmodifiableList(super.subList(fromIndex, toIndex))
   }
 
-  private class ImmutableList[E](inner: List[E])
-      extends UnmodifiableList(inner) {
+  private class ImmutableList[E](inner: List[E]) extends UnmodifiableList(inner) {
     override protected val eagerThrow: Boolean = false
   }
 

@@ -43,9 +43,7 @@ class FunctionTests extends CatsSuite {
   checkAll(
     "Function1[Int, Int]",
     ChoiceTests[Function1].choice[Int, Int, Int, Int])
-  checkAll(
-    "Choice[Function1]",
-    SerializableTests.serializable(Choice[Function1]))
+  checkAll("Choice[Function1]", SerializableTests.serializable(Choice[Function1]))
 
   checkAll(
     "Function1[Int, Int]",
@@ -56,8 +54,7 @@ class FunctionTests extends CatsSuite {
 
   checkAll(
     "Function1[String, Int]",
-    GroupLaws[Function1[String, Int]].semigroup(
-      function1Semigroup[String, Int]))
+    GroupLaws[Function1[String, Int]].semigroup(function1Semigroup[String, Int]))
 
   checkAll("Function1[String, Int]", GroupLaws[Function1[String, Int]].monoid)
 
@@ -68,9 +65,7 @@ class FunctionTests extends CatsSuite {
     "SemigroupK[Lambda[A => A => A]",
     SerializableTests.serializable(function1SemigroupK))
 
-  checkAll(
-    "Function1[Int, Int]",
-    MonoidKTests[Lambda[A => A => A]].monoidK[Int])
+  checkAll("Function1[Int, Int]", MonoidKTests[Lambda[A => A => A]].monoidK[Int])
   checkAll(
     "MonoidK[Lambda[A => A => A]",
     SerializableTests.serializable(function1MonoidK))

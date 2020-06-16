@@ -58,9 +58,7 @@ object Test extends CompilerTest {
         checkTree("P", gen.mkAttributedQualifier(p.moduleClass.thisType))
         val po =
           staticModule("test2.package").moduleClass.info.decl(TermName("PO"))
-        checkTree(
-          "test2.PO",
-          gen.mkAttributedQualifier(po.moduleClass.thisType))
+        checkTree("test2.PO", gen.mkAttributedQualifier(po.moduleClass.thisType))
         checkTree(
           "test2.bar",
           gen.mkAttributedRef(po.owner.info.decl(TermName("bar"))))

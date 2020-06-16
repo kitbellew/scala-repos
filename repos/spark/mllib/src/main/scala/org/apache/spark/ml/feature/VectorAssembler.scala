@@ -128,8 +128,7 @@ class VectorAssembler(override val uid: String)
       case _: NumericType | BooleanType   =>
       case t if t.isInstanceOf[VectorUDT] =>
       case other =>
-        throw new IllegalArgumentException(
-          s"Data type $other is not supported.")
+        throw new IllegalArgumentException(s"Data type $other is not supported.")
     }
     if (schema.fieldNames.contains(outputColName)) {
       throw new IllegalArgumentException(

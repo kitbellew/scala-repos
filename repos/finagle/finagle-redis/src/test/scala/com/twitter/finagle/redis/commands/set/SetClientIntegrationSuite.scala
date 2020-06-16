@@ -23,16 +23,12 @@ final class SetClientIntegrationSuite extends RedisClientTest {
       assert(
         Await.result(client.sAdd(key, List(bar))) == oneElemAdded,
         oneElemAddErrorMessage)
-      assert(
-        Await.result(client.sPop(key)) == Some(bar),
-        "Could not remove bar")
+      assert(Await.result(client.sPop(key)) == Some(bar), "Could not remove bar")
 
       assert(
         Await.result(client.sAdd(key, List(baz))) == oneElemAdded,
         oneElemAddErrorMessage)
-      assert(
-        Await.result(client.sPop(key)) == Some(baz),
-        "Could not remove baz")
+      assert(Await.result(client.sPop(key)) == Some(baz), "Could not remove baz")
     }
   }
 
@@ -119,10 +115,7 @@ final class SetClientIntegrationSuite extends RedisClientTest {
     }
   }
 
-  test(
-    "Correctly add members to a set, then remove them",
-    RedisTest,
-    ClientTest) {
+  test("Correctly add members to a set, then remove them", RedisTest, ClientTest) {
     withRedisClient { client =>
       assert(
         Await.result(client.sAdd(key, List(moo))) == oneElemAdded,
@@ -144,10 +137,7 @@ final class SetClientIntegrationSuite extends RedisClientTest {
     }
   }
 
-  test(
-    "Correctly add member to a set, and return random",
-    RedisTest,
-    ClientTest) {
+  test("Correctly add member to a set, and return random", RedisTest, ClientTest) {
     withRedisClient { client =>
       val allMembers = Seq(foo, bar)
       val empty = Await.result(client.sRandMember(key))
@@ -201,8 +191,7 @@ final class SetClientIntegrationSuite extends RedisClientTest {
       Await.result(client.sAdd(moo, List(a, b)))
 
       // Should intersect a single value
-      assert(
-        Await.result(client.sInter(Seq(foo, boo, baz))) == CollectionSet(c))
+      assert(Await.result(client.sInter(Seq(foo, boo, baz))) == CollectionSet(c))
 
       // Has no intersection
       assert(Await.result(client.sInter(Seq(boo, moo))) == CollectionSet.empty)

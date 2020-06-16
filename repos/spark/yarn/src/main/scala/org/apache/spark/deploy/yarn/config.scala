@@ -117,11 +117,11 @@ package object config {
     .booleanConf
     .withDefault(true)
 
-  private[spark] val REPORT_INTERVAL = ConfigBuilder(
-    "spark.yarn.report.interval")
-    .doc("Interval between reports of the current app status in cluster mode.")
-    .timeConf(TimeUnit.MILLISECONDS)
-    .withDefaultString("1s")
+  private[spark] val REPORT_INTERVAL =
+    ConfigBuilder("spark.yarn.report.interval")
+      .doc("Interval between reports of the current app status in cluster mode.")
+      .timeConf(TimeUnit.MILLISECONDS)
+      .withDefaultString("1s")
 
   /* Shared Client-mode AM / Driver configuration. */
 
@@ -157,8 +157,7 @@ package object config {
       .withDefaultString("200ms")
 
   private[spark] val SCHEDULER_SERVICES = ConfigBuilder("spark.yarn.services")
-    .doc(
-      "A comma-separated list of class names of services to add to the scheduler.")
+    .doc("A comma-separated list of class names of services to add to the scheduler.")
     .stringConf
     .toSequence
     .withDefault(Nil)

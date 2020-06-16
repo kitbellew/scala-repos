@@ -78,8 +78,7 @@ private[spark] class FairSchedulableBuilder(val rootPool: Pool, conf: SparkConf)
             new FileInputStream(f)
           }
           .getOrElse {
-            Utils.getSparkClassLoader.getResourceAsStream(
-              DEFAULT_SCHEDULER_FILE)
+            Utils.getSparkClassLoader.getResourceAsStream(DEFAULT_SCHEDULER_FILE)
           }
       }
 

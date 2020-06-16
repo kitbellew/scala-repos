@@ -83,9 +83,8 @@ object RDDConversions {
 }
 
 /** Logical plan node for scanning data from an RDD. */
-private[sql] case class LogicalRDD(
-    output: Seq[Attribute],
-    rdd: RDD[InternalRow])(sqlContext: SQLContext)
+private[sql] case class LogicalRDD(output: Seq[Attribute], rdd: RDD[InternalRow])(
+    sqlContext: SQLContext)
     extends LogicalPlan
     with MultiInstanceRelation {
 
@@ -243,8 +242,8 @@ private[sql] case class DataSourceScan(
     ctx.addMutableState(columnarBatchClz, batch, s"$batch = null;")
     ctx.addMutableState("int", idx, s"$idx = 0;")
 
-    val exprs = output.zipWithIndex.map(x =>
-      new BoundReference(x._2, x._1.dataType, true))
+    val exprs =
+      output.zipWithIndex.map(x => new BoundReference(x._2, x._1.dataType, true))
     val row = ctx.freshName("row")
     val numOutputRows = metricTerm(ctx, "numOutputRows")
 

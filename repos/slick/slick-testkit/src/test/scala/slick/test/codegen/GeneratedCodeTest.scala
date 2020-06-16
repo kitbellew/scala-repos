@@ -176,8 +176,7 @@ object GeneratedCodeTest {
       SimpleAs.length.result.map(assertEquals(0, _)),
       SimpleAs += SimpleA(CustomTyping.True, "1"),
       SimpleAs.length.result.map(assertEquals(1, _)),
-      SimpleAs.result.map(
-        assertEquals(List(SimpleA(CustomTyping.True, "1")), _))
+      SimpleAs.result.map(assertEquals(List(SimpleA(CustomTyping.True, "1")), _))
     )
   }
 

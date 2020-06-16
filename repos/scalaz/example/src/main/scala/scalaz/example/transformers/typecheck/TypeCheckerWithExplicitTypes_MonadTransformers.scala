@@ -49,11 +49,7 @@ object TypeCheckerWithExplicitTypes_MonadTransformers {
           lt <- typeCheck(texp)
           rt <- typeCheck(fexp)
           res <- liftK(
-            compare(
-              lt,
-              rt,
-              lt,
-              "if branches not the same type, got: " + (lt, rt)))
+            compare(lt, rt, lt, "if branches not the same type, got: " + (lt, rt)))
         } yield res
       case Fun(arg, argType, body) =>
         for {

@@ -90,8 +90,7 @@ private[data] sealed abstract class ProdInstances4 {
     }
 }
 
-sealed trait ProdFunctor[F[_], G[_]]
-    extends Functor[Lambda[X => Prod[F, G, X]]] {
+sealed trait ProdFunctor[F[_], G[_]] extends Functor[Lambda[X => Prod[F, G, X]]] {
   def F: Functor[F]
   def G: Functor[G]
   def map[A, B](fa: Prod[F, G, A])(f: A => B): Prod[F, G, B] =

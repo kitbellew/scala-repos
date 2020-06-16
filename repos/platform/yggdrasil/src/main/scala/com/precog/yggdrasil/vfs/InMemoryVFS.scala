@@ -189,9 +189,7 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
   }
 
   class InMemoryVFS(
-      data0: Map[
-        Path,
-        ((Array[Byte], MimeType) \/ Vector[JValue], Authorities)],
+      data0: Map[Path, ((Array[Byte], MimeType) \/ Vector[JValue], Authorities)],
       clock: Clock)(implicit M: Monad[M])
       extends VFS {
     import VFS._
@@ -352,8 +350,8 @@ trait InMemoryVFSModule[M[+_]] extends VFSModule[M, Slice] { moduleSelf =>
       }
     }
 
-    def writeAllSync(events: Seq[(Long, EventMessage)])
-        : EitherT[M, ResourceError, PrecogUnit] = {
+    def writeAllSync(
+        events: Seq[(Long, EventMessage)]): EitherT[M, ResourceError, PrecogUnit] = {
       EitherT.right(M.point(writeAll(events).unsafePerformIO))
     }
 

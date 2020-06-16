@@ -47,8 +47,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
   private def isImplementedStatically(sym: Symbol) =
     (
       sym.isMethod
-        && (!sym.hasFlag(
-          DEFERRED | SUPERACCESSOR) || (sym hasFlag lateDEFERRED))
+        && (!sym.hasFlag(DEFERRED | SUPERACCESSOR) || (sym hasFlag lateDEFERRED))
         && sym.owner.isTrait
         && sym.isMethod
         && (!sym.isModule || sym.hasFlag(PRIVATE | LIFTED))
@@ -296,7 +295,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
       for (mixinMember <- mixinClass.info.decls) {
         if (isConcreteAccessor(mixinMember)) {
           if (isOverriddenAccessor(mixinMember, clazz.info.baseClasses))
-            devWarning(s"Overridden concrete accessor: ${mixinMember.fullLocationString}")
+            devWarning(
+              s"Overridden concrete accessor: ${mixinMember.fullLocationString}")
           else {
             // mixin field accessors
             val mixedInAccessor =
@@ -709,9 +709,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           .changeOwner(currentOwner -> defSym)
         val strictSubst =
           new TreeSymSubstituterWithCopying(args.map(_.symbol), params)
-        addDef(
-          position(defSym),
-          DefDef(defSym, strictSubst(BLOCK(rhs, retVal))))
+        addDef(position(defSym), DefDef(defSym, strictSubst(BLOCK(rhs, retVal))))
         defSym
       }
 
@@ -846,8 +844,8 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
         val result =
           IF(mkTest(clazz, mask, bitmapSym, equalToZero = false, kind))
             .THEN(retVal)
-            .ELSE(Throw(
-              NewFromConstructor(UninitializedFieldConstructor, LIT(msg))))
+            .ELSE(
+              Throw(NewFromConstructor(UninitializedFieldConstructor, LIT(msg))))
 
         typedPos(pos)(BLOCK(result, retVal))
       }
@@ -883,12 +881,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           } else if (needsInitFlag(sym) && !isEmpty && !clazz.hasFlag(TRAIT)) {
             assert(fieldOffset contains sym, sym)
             deriveDefDef(stat)(rhs =>
-              (mkCheckedAccessor(
-                clazz,
-                _: Tree,
-                fieldOffset(sym),
-                stat.pos,
-                sym))(
+              (mkCheckedAccessor(clazz, _: Tree, fieldOffset(sym), stat.pos, sym))(
                 if (sym.tpe.resultType.typeSymbol == UnitClass) UNIT
                 else rhs
               ))
@@ -1087,9 +1080,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
             if (!sym.isMacro)
               addDefDef(
                 sym,
-                Apply(
-                  SuperSelect(clazz, sym.alias),
-                  sym.paramss.head.map(Ident(_))))
+                Apply(SuperSelect(clazz, sym.alias), sym.paramss.head.map(Ident(_))))
           }
         }
       }
@@ -1144,11 +1135,7 @@ abstract class Mixin extends InfoTransform with ast.TreeDSL {
           // mark fields which can be nulled afterward
           lazyValNullables = nullableFields(templ) withDefaultValue Set()
           // add all new definitions to current class or interface
-          treeCopy.Template(
-            tree,
-            parents1,
-            self,
-            addNewDefs(currentOwner, body))
+          treeCopy.Template(tree, parents1, self, addNewDefs(currentOwner, body))
 
         case Select(qual, name) if sym.owner.isTrait && !sym.isMethod =>
           // refer to fields in some trait an abstract getter in the interface.

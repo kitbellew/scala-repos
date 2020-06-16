@@ -21,8 +21,7 @@ import org.jetbrains.plugins.scala.lang.refactoring.namesSuggester.NameSuggester
   * Created by kate
   * on 1/29/16
   */
-class ScalaCaseClassParametersNameContributer
-    extends ScalaCompletionContributor {
+class ScalaCaseClassParametersNameContributer extends ScalaCompletionContributor {
   extend(
     CompletionType.BASIC,
     PlatformPatterns.psiElement(),
@@ -135,9 +134,8 @@ class ScalaCaseClassParametersNameContributer
         if (me == null) return ParameterWithPosition(None, -1)
 
         val patterns = Option(
-          PsiTreeUtil.getContextOfType(
-            position,
-            classOf[ScPatternArgumentList])).map(_.patterns)
+          PsiTreeUtil.getContextOfType(position, classOf[ScPatternArgumentList]))
+          .map(_.patterns)
 
         if (patterns.isEmpty || (patterns.isDefined && patterns.get.length > classParams.length))
           return ParameterWithPosition(

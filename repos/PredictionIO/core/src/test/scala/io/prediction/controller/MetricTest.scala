@@ -47,8 +47,7 @@ object MetricDevSuite {
     def calculate(q: Int, p: Int, a: Int): Double = q.toDouble
   }
 
-  class QOptionStdevMetric
-      extends OptionStdevMetric[EmptyParams, Int, Int, Int] {
+  class QOptionStdevMetric extends OptionStdevMetric[EmptyParams, Int, Int, Int] {
     def calculate(q: Int, p: Int, a: Int): Option[Double] = {
       if (q < 0) { None }
       else { Some(q.toDouble) }

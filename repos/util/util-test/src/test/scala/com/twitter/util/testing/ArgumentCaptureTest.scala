@@ -72,8 +72,9 @@ class ArgumentCaptureTest
 
   test("captureOne should handle 5-ary functions") {
     val theMockSubject = mock[MockSubject]
-    when(theMockSubject
-      .method5(any[String], any[String], any[String], any[String], any[String]))
+    when(
+      theMockSubject
+        .method5(any[String], any[String], any[String], any[String], any[String]))
       .thenReturn(789L)
 
     assert(theMockSubject.method5("doh", "ray", "mi", "fa", "so") == 789L)
@@ -139,8 +140,9 @@ class ArgumentCaptureTest
   test("captureAll should handle 5-ary functions") {
     // This is really just a test of zip5
     val theMockSubject = mock[MockSubject]
-    when(theMockSubject
-      .method5(any[String], any[String], any[String], any[String], any[String]))
+    when(
+      theMockSubject
+        .method5(any[String], any[String], any[String], any[String], any[String]))
       .thenReturn(789L)
     assert(theMockSubject.method5("foo", "bar", "baz", "spam", "ham") == 789L)
     assert(theMockSubject.method5("doh", "ray", "mi", "fa", "so") == 789L)

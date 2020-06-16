@@ -18,10 +18,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   ScClass,
   ScObject
 }
-import org.jetbrains.plugins.scala.lang.psi.impl.{
-  ScalaFileImpl,
-  ScalaPsiManager
-}
+import org.jetbrains.plugins.scala.lang.psi.impl.{ScalaFileImpl, ScalaPsiManager}
 import org.jetbrains.plugins.scala.lang.refactoring.move.ScalaMoveClassesOrPackagesProcessor
 import org.jetbrains.plugins.scala.settings.ScalaApplicationSettings
 import org.jetbrains.plugins.scala.util.TestUtils

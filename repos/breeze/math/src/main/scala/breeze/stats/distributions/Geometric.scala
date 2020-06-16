@@ -44,8 +44,7 @@ object Geometric
     with HasConjugatePrior[Geometric, Int] {
   type Parameter = Double
   case class SufficientStatistic(sum: Double, n: Double)
-      extends breeze.stats.distributions.SufficientStatistic[
-        SufficientStatistic] {
+      extends breeze.stats.distributions.SufficientStatistic[SufficientStatistic] {
     def +(t: SufficientStatistic) = SufficientStatistic(sum + t.sum, n + t.n)
 
     def *(weight: Double) = SufficientStatistic(sum * weight, n * weight)
@@ -74,9 +73,7 @@ object Geometric
 
   def predictive(parameter: conjugateFamily.Parameter) = TODO
 
-  def posterior(
-      prior: conjugateFamily.Parameter,
-      evidence: TraversableOnce[Int]) = {
+  def posterior(prior: conjugateFamily.Parameter, evidence: TraversableOnce[Int]) = {
     evidence.foldLeft(prior) { (acc, x) =>
       (acc._1 + 1, acc._2 + x)
     }

@@ -23,9 +23,7 @@ object EventBusSpec {
 }
 
 @org.junit.runner.RunWith(classOf[org.scalatest.junit.JUnitRunner])
-abstract class EventBusSpec(
-    busName: String,
-    conf: Config = ConfigFactory.empty())
+abstract class EventBusSpec(busName: String, conf: Config = ConfigFactory.empty())
     extends AkkaSpec(conf)
     with BeforeAndAfterEach {
   type BusType <: EventBus
@@ -355,9 +353,7 @@ object LookupEventBusSpec {
         b: Procedure[Int]): Int =
       akka.util.Helpers.compareIdentityHash(a, b)
     override protected def mapSize = 32
-    override protected def publish(
-        event: Int,
-        subscriber: Procedure[Int]): Unit =
+    override protected def publish(event: Int, subscriber: Procedure[Int]): Unit =
       subscriber(event)
   }
 }

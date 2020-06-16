@@ -447,9 +447,7 @@ class NodeMessageQueue
 
   final def hasMessages: Boolean = !isEmpty()
 
-  @tailrec final def cleanUp(
-      owner: ActorRef,
-      deadLetters: MessageQueue): Unit = {
+  @tailrec final def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = {
     val envelope = dequeue()
     if (envelope ne null) {
       deadLetters.enqueue(owner, envelope)
@@ -475,9 +473,7 @@ class BoundedNodeMessageQueue(capacity: Int)
         .asInstanceOf[InternalActorRef]
         .provider
         .deadLetters
-        .tell(
-          DeadLetter(handle.message, handle.sender, receiver),
-          handle.sender)
+        .tell(DeadLetter(handle.message, handle.sender, receiver), handle.sender)
 
   final def dequeue(): Envelope = poll()
 
@@ -485,9 +481,7 @@ class BoundedNodeMessageQueue(capacity: Int)
 
   final def hasMessages: Boolean = !isEmpty()
 
-  @tailrec final def cleanUp(
-      owner: ActorRef,
-      deadLetters: MessageQueue): Unit = {
+  @tailrec final def cleanUp(owner: ActorRef, deadLetters: MessageQueue): Unit = {
     val envelope = dequeue()
     if (envelope ne null) {
       deadLetters.enqueue(owner, envelope)
@@ -538,8 +532,8 @@ private[akka] trait DefaultSystemMessageQueue { self: Mailbox ⇒
   }
 
   @tailrec
-  final def systemDrain(newContents: LatestFirstSystemMessageList)
-      : EarliestFirstSystemMessageList = {
+  final def systemDrain(
+      newContents: LatestFirstSystemMessageList): EarliestFirstSystemMessageList = {
     val currentList = systemQueueGet
     if (currentList.head == NoMessage) new EarliestFirstSystemMessageList(null)
     else if (systemQueuePut(currentList, newContents)) currentList.reverse
@@ -563,9 +557,7 @@ trait MultipleConsumerSemantics
 /**
   * A QueueBasedMessageQueue is a MessageQueue backed by a java.util.Queue.
   */
-trait QueueBasedMessageQueue
-    extends MessageQueue
-    with MultipleConsumerSemantics {
+trait QueueBasedMessageQueue extends MessageQueue with MultipleConsumerSemantics {
   def queue: Queue[Envelope]
   def numberOfMessages = queue.size
   def hasMessages = !queue.isEmpty
@@ -1057,9 +1049,7 @@ final case class UnboundedControlAwareMailbox()
   // is used in the application config
   def this(settings: ActorSystem.Settings, config: Config) = this()
 
-  def create(
-      owner: Option[ActorRef],
-      system: Option[ActorSystem]): MessageQueue =
+  def create(owner: Option[ActorRef], system: Option[ActorSystem]): MessageQueue =
     new UnboundedControlAwareMailbox.MessageQueue
 }
 
@@ -1087,9 +1077,7 @@ final case class BoundedControlAwareMailbox(
       config.getInt("mailbox-capacity"),
       config.getNanosDuration("mailbox-push-timeout-time"))
 
-  def create(
-      owner: Option[ActorRef],
-      system: Option[ActorSystem]): MessageQueue =
+  def create(owner: Option[ActorRef], system: Option[ActorSystem]): MessageQueue =
     new BoundedControlAwareMailbox.MessageQueue(capacity, pushTimeOut)
 }
 

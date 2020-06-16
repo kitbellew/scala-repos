@@ -13,8 +13,7 @@ import org.jboss.netty.channel.{
 }
 import org.jboss.netty.handler.codec.http.{HttpHeaders, HttpRequest}
 
-private[http] class RespondToExpectContinue
-    extends SimpleChannelUpstreamHandler {
+private[http] class RespondToExpectContinue extends SimpleChannelUpstreamHandler {
   override def messageReceived(ctx: ChannelHandlerContext, e: MessageEvent) {
     e.getMessage match {
       case request: HttpRequest if HttpHeaders.is100ContinueExpected(request) =>

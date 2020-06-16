@@ -160,8 +160,7 @@ object SbtExternalSystemManager {
         }
       }
     } getOrElse {
-      throw new ExternalSystemException(
-        SbtBundle("sbt.import.noCustomJvmFound"))
+      throw new ExternalSystemException(SbtBundle("sbt.import.noCustomJvmFound"))
     }
   }
 

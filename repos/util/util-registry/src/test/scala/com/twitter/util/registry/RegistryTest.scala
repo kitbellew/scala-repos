@@ -104,8 +104,6 @@ abstract class RegistryTest extends FunSuite {
     registry.put("foo", "bar", "baz")
     registry.put("qux")
     assert(
-      registry.toSet == Set(
-        Entry(Seq("foo", "bar"), "baz"),
-        Entry(Seq(), "qux")))
+      registry.toSet == Set(Entry(Seq("foo", "bar"), "baz"), Entry(Seq(), "qux")))
   }
 }

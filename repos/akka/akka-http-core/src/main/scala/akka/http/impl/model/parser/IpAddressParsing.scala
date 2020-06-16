@@ -38,8 +38,8 @@ private[parser] trait IpAddressParsing { this: Parser ⇒
       }
     def h16(ix: Int) =
       rule {
-        h8(ix) ~ h8(ix + 1) | h4(ix) ~ h8(ix + 1) | zero(ix) ~ h8(
-          ix + 1) | zero(ix) ~ h4(ix + 1)
+        h8(ix) ~ h8(ix + 1) | h4(ix) ~ h8(ix + 1) | zero(ix) ~ h8(ix + 1) | zero(
+          ix) ~ h4(ix + 1)
       }
     def h16c(ix: Int) = rule { h16(ix) ~ ':' ~ !':' }
     def ch16o(ix: Int) = rule { optional(':' ~ !':') ~ (h16(ix) | zero2(ix)) }

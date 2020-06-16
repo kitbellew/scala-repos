@@ -16,11 +16,7 @@ import com.intellij.psi.codeStyle.CodeStyleSettingsManager
 import com.intellij.psi.impl.light.LightModifierList
 import com.intellij.psi.impl.source.PsiFileImpl
 import com.intellij.psi.scope.PsiScopeProcessor
-import com.intellij.psi.search.{
-  GlobalSearchScope,
-  LocalSearchScope,
-  SearchScope
-}
+import com.intellij.psi.search.{GlobalSearchScope, LocalSearchScope, SearchScope}
 import com.intellij.psi.stubs.StubElement
 import com.intellij.psi.tree.TokenSet
 import com.intellij.psi.util._
@@ -377,9 +373,7 @@ object ScalaPsiUtil {
         ScParameterizedType(
           ScType.designator(cl),
           cl.typeParameters.map(tp =>
-            new ScUndefinedType(
-              new ScTypeParameterType(tp, ScSubstitutor.empty),
-              1)))
+            new ScUndefinedType(new ScTypeParameterType(tp, ScSubstitutor.empty), 1)))
     } flatMap {
       case p: ScParameterizedType => Some(p)
       case _                      => None
@@ -440,9 +434,7 @@ object ScalaPsiUtil {
         return //do not proceed with nothing type, due to performance problems.
       val convertible = new ImplicitCollector(
         e,
-        ScFunctionType(types.Any, Seq(exprType))(
-          e.getProject,
-          e.getResolveScope),
+        ScFunctionType(types.Any, Seq(exprType))(e.getProject, e.getResolveScope),
         ScFunctionType(exprType, args)(e.getProject, e.getResolveScope),
         None,
         true,
@@ -488,8 +480,7 @@ object ScalaPsiUtil {
                                   rr.copy(
                                     subst = newRR.substitutor.followed(uSubst),
                                     implicitParameterType =
-                                      rr.implicitParameterType.map(
-                                        uSubst.subst)),
+                                      rr.implicitParameterType.map(uSubst.subst)),
                                   subst.followed(uSubst))
                               case _ => Some(rr, subst)
                             }
@@ -690,10 +681,7 @@ object ScalaPsiUtil {
           state = state.put(
             BaseProcessor.UNRESOLVED_TYPE_PARAMETERS_KEY,
             res.unresolvedTypeParameters)
-          processor.processType(
-            res.getTypeWithDependentSubstitutor,
-            expr,
-            state)
+          processor.processType(res.getTypeWithDependentSubstitutor, expr, state)
         case _ =>
       }
       candidates = processor.candidatesS
@@ -1299,9 +1287,7 @@ object ScalaPsiUtil {
   }
 
   @tailrec
-  def isPlaceTdAncestor(
-      td: ScTemplateDefinition,
-      placer: PsiElement): Boolean = {
+  def isPlaceTdAncestor(td: ScTemplateDefinition, placer: PsiElement): Boolean = {
     val newTd = getPlaceTd(placer)
     if (newTd == null) return false
     if (newTd == td) return true
@@ -1513,13 +1499,11 @@ object ScalaPsiUtil {
       })
       .map { case (_, n) => n.info.asInstanceOf[PhysicalSignature] }
 
-  def getMethodsForName(
-      clazz: PsiClass,
-      name: String): Seq[PhysicalSignature] = {
+  def getMethodsForName(clazz: PsiClass, name: String): Seq[PhysicalSignature] = {
     for ((n: PhysicalSignature, _) <-
         TypeDefinitionMembers.getSignatures(clazz).forName(name)._1
-      if clazz.isInstanceOf[ScObject] || !n.method.hasModifierProperty(
-        "static")) yield n
+      if clazz.isInstanceOf[ScObject] || !n.method.hasModifierProperty("static"))
+      yield n
   }
 
   def getApplyMethods(clazz: PsiClass): Seq[PhysicalSignature] = {
@@ -1736,8 +1720,7 @@ object ScalaPsiUtil {
 
       def substitute(typeParameter: PsiTypeParameter): PsiType = {
         ScType.toPsi(
-          substitutor.subst(
-            new ScTypeParameterType(typeParameter, substitutor)),
+          substitutor.subst(new ScTypeParameterType(typeParameter, substitutor)),
           project,
           scope)
       }
@@ -2410,9 +2393,7 @@ object ScalaPsiUtil {
     addBefore[ScTypeAlias](typeAlias, parent, anchorOpt)
   }
 
-  def changeVisibility(
-      member: ScModifierListOwner,
-      newVisibility: String): Unit = {
+  def changeVisibility(member: ScModifierListOwner, newVisibility: String): Unit = {
     val manager = member.getManager
     val modifierList = member.getModifierList
     if (newVisibility == "" || newVisibility == "public") {
@@ -2496,9 +2477,7 @@ object ScalaPsiUtil {
     * @see SCL-6140
     * @see https://github.com/scala/scala/pull/3018/
     */
-  def toSAMType(
-      expected: ScType,
-      scalaScope: GlobalSearchScope): Option[ScType] = {
+  def toSAMType(expected: ScType, scalaScope: GlobalSearchScope): Option[ScType] = {
 
     def constructorValidForSAM(constructors: Array[PsiMethod]): Boolean = {
       //primary constructor (if any) must be public, no-args, not overloaded

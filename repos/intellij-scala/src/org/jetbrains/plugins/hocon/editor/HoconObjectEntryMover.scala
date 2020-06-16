@@ -149,8 +149,8 @@ class HoconObjectEntryMover extends LineMover {
           .flatMap(_.prefixingField)
           .map(_.enclosingObjectField)
           .filter(of =>
-            field.parent.exists(pp =>
-              edgeLine(of) == edgeLine(pp)) && canInsert(of))
+            field.parent.exists(pp => edgeLine(of) == edgeLine(pp)) && canInsert(
+              of))
           .map(of =>
             (of, of.keyedField.fieldsInPathForward.map(keyString).toList))
       } else None

@@ -187,9 +187,7 @@ object CsvParser {
     }
   }
 
-  private def extractAllFields(
-      line: String,
-      params: CsvParams): Array[String] = {
+  private def extractAllFields(line: String, params: CsvParams): Array[String] = {
     val quote = params.quoteChar
     val sep = params.separChar
     val stripQuote = !params.withQuote

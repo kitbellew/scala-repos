@@ -69,10 +69,7 @@ private[summingbird] object HDFSMetadata {
       .flatMap { _.get[T].toOption }
 
   /** Put to the most recent version */
-  def put[T: JsonNodeInjection](
-      conf: Configuration,
-      path: String,
-      obj: Option[T]) =
+  def put[T: JsonNodeInjection](conf: Configuration, path: String, obj: Option[T]) =
     apply(conf, path).mostRecentVersion.get.put(obj)
 }
 

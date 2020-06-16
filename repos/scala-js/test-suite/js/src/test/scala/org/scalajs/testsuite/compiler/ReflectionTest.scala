@@ -132,9 +132,7 @@ class ReflectionTest {
   }
 
   @Test def getSuperclass_issue_1489(): Unit = {
-    assertEquals(
-      classOf[SomeParentClass],
-      classOf[SomeChildClass].getSuperclass)
+    assertEquals(classOf[SomeParentClass], classOf[SomeChildClass].getSuperclass)
     assertNull(classOf[AnyRef].getSuperclass)
     assertEquals(classOf[AnyRef], classOf[String].getSuperclass)
     assertEquals(classOf[Number], classOf[Integer].getSuperclass)

@@ -6,7 +6,8 @@ object Test extends App {
     // test that a HashTrieMap with one leaf element is not created!
     val x = HashMap.empty + (1 -> 1) + (2 -> 2)
     if (x.getClass.getSimpleName != "HashTrieMap")
-      println("A hash map containing two non-colliding values should be a HashTrieMap")
+      println(
+        "A hash map containing two non-colliding values should be a HashTrieMap")
 
     val y = x - 1
     if (y.getClass.getSimpleName != "HashMap1")

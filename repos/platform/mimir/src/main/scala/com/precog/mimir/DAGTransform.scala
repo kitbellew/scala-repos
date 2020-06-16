@@ -26,14 +26,7 @@ import com.precog.util.IdGen
 
 trait DAGTransform extends DAG {
   import dag._
-  import instructions.{
-    DerefObject,
-    Eq,
-    JoinObject,
-    Line,
-    PushString,
-    WrapObject
-  }
+  import instructions.{DerefObject, Eq, JoinObject, Line, PushString, WrapObject}
 
   def transformBottomUp(graph: DepGraph)(f: DepGraph => DepGraph): DepGraph = {
 

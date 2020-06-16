@@ -278,9 +278,7 @@ trait PrunedScan {
   */
 @DeveloperApi
 trait PrunedFilteredScan {
-  def buildScan(
-      requiredColumns: Array[String],
-      filters: Array[Filter]): RDD[Row]
+  def buildScan(requiredColumns: Array[String], filters: Array[Filter]): RDD[Row]
 }
 
 /**

@@ -10,8 +10,7 @@ sealed trait Line {
   def humanAuthor = isHuman option author
 }
 
-case class UserLine(username: String, text: String, troll: Boolean)
-    extends Line {
+case class UserLine(username: String, text: String, troll: Boolean) extends Line {
   def author = username
 }
 case class PlayerLine(color: Color, text: String) extends Line {

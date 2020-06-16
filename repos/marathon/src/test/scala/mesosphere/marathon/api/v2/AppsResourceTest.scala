@@ -66,8 +66,7 @@ class AppsResourceTest
     And("the JSON is as expected, including a newly generated version")
     import mesosphere.marathon.api.v2.json.Formats._
     val expected = AppInfo(
-      app.copy(versionInfo =
-        AppDefinition.VersionInfo.OnlyVersion(clock.now())),
+      app.copy(versionInfo = AppDefinition.VersionInfo.OnlyVersion(clock.now())),
       maybeTasks = Some(immutable.Seq.empty),
       maybeCounts = Some(TaskCounts.zero),
       maybeDeployments = Some(immutable.Seq(Identifiable(plan.id)))
@@ -156,8 +155,7 @@ class AppsResourceTest
     And("the JSON is as expected, including a newly generated version")
     import mesosphere.marathon.api.v2.json.Formats._
     val expected = AppInfo(
-      app.copy(versionInfo =
-        AppDefinition.VersionInfo.OnlyVersion(clock.now())),
+      app.copy(versionInfo = AppDefinition.VersionInfo.OnlyVersion(clock.now())),
       maybeTasks = Some(immutable.Seq.empty),
       maybeCounts = Some(TaskCounts.zero),
       maybeDeployments = Some(immutable.Seq(Identifiable(plan.id)))
@@ -183,8 +181,8 @@ class AppsResourceTest
 
   test("Create a new app with float instance count fails") {
     Given("The json of an invalid application")
-    val invalidAppJson = Json.stringify(
-      Json.obj("id" -> "/foo", "cmd" -> "cmd", "instances" -> 0.1))
+    val invalidAppJson =
+      Json.stringify(Json.obj("id" -> "/foo", "cmd" -> "cmd", "instances" -> 0.1))
     val group = Group(PathId("/"), Set.empty)
     val plan = DeploymentPlan(group, group)
     groupManager.updateApp(any, any, any, any, any) returns Future.successful(
@@ -216,8 +214,7 @@ class AppsResourceTest
     response.getStatus should be(200)
   }
 
-  test(
-    "Replace an existing application using ports instead of portDefinitions") {
+  test("Replace an existing application using ports instead of portDefinitions") {
     Given("An app and group")
     val app = AppDefinition(id = PathId("/app"), cmd = Some("foo"))
     val group = Group(PathId("/"), Set(app))
@@ -369,12 +366,8 @@ class AppsResourceTest
       .successful(Seq(appInfo))
 
     When("The the index is fetched without any filters")
-    val response = appsResource.index(
-      null,
-      null,
-      null,
-      new java.util.HashSet(),
-      auth.request)
+    val response =
+      appsResource.index(null, null, null, new java.util.HashSet(), auth.request)
 
     Then("The response holds counts and deployments")
     val appJson = Json.parse(response.getEntity.asInstanceOf[String])
@@ -406,32 +399,26 @@ class AppsResourceTest
     search(cmd = Some(""), id = None, label = None) should be(Set(app1, app2))
     search(cmd = Some("party"), id = None, label = None) should be(Set(app1))
     search(cmd = Some("work"), id = None, label = None) should be(Set(app2))
-    search(cmd = Some("hard"), id = None, label = None) should be(
-      Set(app1, app2))
+    search(cmd = Some("hard"), id = None, label = None) should be(Set(app1, app2))
     search(cmd = Some("none"), id = None, label = None) should be(Set.empty)
 
-    search(cmd = None, id = Some("app"), label = None) should be(
-      Set(app1, app2))
-    search(cmd = None, id = Some("service-a"), label = None) should be(
-      Set(app1))
+    search(cmd = None, id = Some("app"), label = None) should be(Set(app1, app2))
+    search(cmd = None, id = Some("service-a"), label = None) should be(Set(app1))
     search(cmd = Some("party"), id = Some("app"), label = None) should be(
       Set(app1))
     search(cmd = Some("work"), id = Some("app"), label = None) should be(
       Set(app2))
     search(cmd = Some("hard"), id = Some("service-a"), label = None) should be(
       Set(app1))
-    search(cmd = Some(""), id = Some(""), label = None) should be(
-      Set(app1, app2))
+    search(cmd = Some(""), id = Some(""), label = None) should be(Set(app1, app2))
 
     search(cmd = None, id = None, label = Some("b==2")) should be(Set(app1))
     search(
       cmd = Some("party"),
       id = Some("app"),
       label = Some("a==1")) should be(Set(app1))
-    search(
-      cmd = Some("work"),
-      id = Some("app"),
-      label = Some("a==1")) should be(Set(app2))
+    search(cmd = Some("work"), id = Some("app"), label = Some("a==1")) should be(
+      Set(app2))
     search(
       cmd = Some("hard"),
       id = Some("service-a"),

@@ -95,8 +95,7 @@ object RandomForestExample {
           s"min info gain required to create a split, default: ${defaultParams.minInfoGain}")
         .action((x, c) => c.copy(minInfoGain = x))
       opt[Int]("numTrees")
-        .text(
-          s"number of trees in ensemble, default: ${defaultParams.numTrees}")
+        .text(s"number of trees in ensemble, default: ${defaultParams.numTrees}")
         .action((x, c) => c.copy(numTrees = x))
       opt[String]("featureSubsetStrategy")
         .text(

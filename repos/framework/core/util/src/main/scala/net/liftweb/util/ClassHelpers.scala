@@ -260,12 +260,7 @@ trait ClassHelpers { self: ControlHelpers =>
       params: Array[AnyRef]): Box[Any] = {
     _invokeMethod(clz, inst, meth, params, Empty) or
       _invokeMethod(clz, inst, StringHelpers.camelify(meth), params, Empty) or
-      _invokeMethod(
-        clz,
-        inst,
-        StringHelpers.camelifyMethod(meth),
-        params,
-        Empty)
+      _invokeMethod(clz, inst, StringHelpers.camelifyMethod(meth), params, Empty)
   }
 
   /**

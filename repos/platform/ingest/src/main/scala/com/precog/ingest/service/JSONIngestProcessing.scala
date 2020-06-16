@@ -329,19 +329,12 @@ final class JSONIngestProcessing(
                   StreamingResult(ingested, errors.headOption.map(_._2))
 
                 case IngestAllPossible =>
-                  BatchResult(
-                    ingested + errors.size,
-                    ingested,
-                    Vector(errors: _*))
+                  BatchResult(ingested + errors.size, ingested, Vector(errors: _*))
               }
           }
 
         case GlobalDurability(jobId) =>
-          ingestJSONChunk(
-            errorHandling,
-            storeMode,
-            Some(jobId),
-            dataStream) map {
+          ingestJSONChunk(errorHandling, storeMode, Some(jobId), dataStream) map {
             case IngestReport(ingested, errors) =>
               BatchResult(ingested + errors.size, ingested, Vector(errors: _*))
           }

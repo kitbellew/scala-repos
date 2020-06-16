@@ -131,8 +131,7 @@ class CoreGuiceModule extends AbstractModule {
       notifyLaunchQueueStepImpl: NotifyLaunchQueueStepImpl,
       taskStatusEmitterPublishImpl: TaskStatusEmitterPublishStepImpl,
       postToEventStreamStepImpl: PostToEventStreamStepImpl,
-      scaleAppUpdateStepImpl: ScaleAppUpdateStepImpl)
-      : Seq[TaskStatusUpdateStep] = {
+      scaleAppUpdateStepImpl: ScaleAppUpdateStepImpl): Seq[TaskStatusUpdateStep] = {
 
     // This is a sequence on purpose. The specified steps are executed in order for every
     // task status update.

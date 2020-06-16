@@ -137,9 +137,7 @@ class UUIDTest {
 
   @Test def hashCodeTest(): Unit = {
     assertEquals(0, new UUID(0L, 0L).hashCode())
-    assertEquals(
-      new UUID(123L, 123L).hashCode(),
-      new UUID(123L, 123L).hashCode())
+    assertEquals(new UUID(123L, 123L).hashCode(), new UUID(123L, 123L).hashCode())
   }
 
   @Test def equalsTest(): Unit = {
@@ -156,14 +154,10 @@ class UUIDTest {
     assertTrue(uuid3.equals(uuid4))
     assertFalse(uuid3.equals(uuid1))
 
-    assertFalse(
-      uuid3.equals(new UUID(0x781d4fae7dec11d0L, 0xa76500a0c91e6bf6L)))
-    assertFalse(
-      uuid3.equals(new UUID(0xf81d4fae7dec11d1L, 0xa76500a0c91e6bf6L)))
-    assertFalse(
-      uuid3.equals(new UUID(0xf81d4fae7dec11d0L, 0xa76530a0c91e6bf6L)))
-    assertFalse(
-      uuid3.equals(new UUID(0xf81d4fae7dec11d0L, 0xa76500a0c91e6cf6L)))
+    assertFalse(uuid3.equals(new UUID(0x781d4fae7dec11d0L, 0xa76500a0c91e6bf6L)))
+    assertFalse(uuid3.equals(new UUID(0xf81d4fae7dec11d1L, 0xa76500a0c91e6bf6L)))
+    assertFalse(uuid3.equals(new UUID(0xf81d4fae7dec11d0L, 0xa76530a0c91e6bf6L)))
+    assertFalse(uuid3.equals(new UUID(0xf81d4fae7dec11d0L, 0xa76500a0c91e6cf6L)))
   }
 
   @Test def toStringTest(): Unit = {
@@ -228,9 +222,7 @@ class UUIDTest {
     assertThrows(
       classOf[Exception],
       UUID.fromString("f81d4fae-7dec-11d0--00a0c91e6bf6"))
-    assertThrows(
-      classOf[Exception],
-      UUID.fromString("f81d4fae-7dec-11d0-a765-"))
+    assertThrows(classOf[Exception], UUID.fromString("f81d4fae-7dec-11d0-a765-"))
     assertThrows(classOf[Exception], UUID.fromString("f81d4fae-7dec-11d0-a765"))
     assertThrows(
       classOf[Exception],

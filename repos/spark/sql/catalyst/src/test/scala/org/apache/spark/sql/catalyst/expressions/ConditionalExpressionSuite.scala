@@ -24,9 +24,7 @@ import org.apache.spark.sql.catalyst.InternalRow
 import org.apache.spark.sql.catalyst.dsl.expressions._
 import org.apache.spark.sql.types._
 
-class ConditionalExpressionSuite
-    extends SparkFunSuite
-    with ExpressionEvalHelper {
+class ConditionalExpressionSuite extends SparkFunSuite with ExpressionEvalHelper {
 
   test("if") {
     val testcases = Seq[(java.lang.Boolean, Integer, Integer, Integer)](
@@ -260,10 +258,7 @@ class ConditionalExpressionSuite
       Greatest(Seq(Literal(-1.0), Literal(2.5))),
       2.5,
       InternalRow.empty)
-    checkEvaluation(
-      Greatest(Seq(Literal(-1), Literal(2))),
-      2,
-      InternalRow.empty)
+    checkEvaluation(Greatest(Seq(Literal(-1), Literal(2))), 2, InternalRow.empty)
     checkEvaluation(
       Greatest(Seq(Literal((-1.0).toFloat), Literal(2.5.toFloat))),
       2.5.toFloat,

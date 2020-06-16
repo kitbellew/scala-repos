@@ -47,10 +47,7 @@ import org.specs2.specification.Fragments
 import scalaz._
 import scalaz.syntax.comonad._
 
-class NIHDBFileStoreSpec
-    extends NIHDBTestActors
-    with Specification
-    with Logging {
+class NIHDBFileStoreSpec extends NIHDBTestActors with Specification with Logging {
   class YggConfig extends NIHDBTestActorsConfig {
     val tmpDir = IOUtils.createTmpDir("filestorespec").unsafePerformIO
     val config = Configuration parse {

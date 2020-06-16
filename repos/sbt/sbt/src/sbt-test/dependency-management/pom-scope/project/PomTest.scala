@@ -36,8 +36,8 @@ object PomTest extends Build {
         case (id, scope, opt, classifier) =>
           val dep = deps
             .find(d => (d \ "artifactId").text == id)
-            .getOrElse(sys.error(
-              "Dependency '" + id + "' not written to pom:\n" + loaded))
+            .getOrElse(
+              sys.error("Dependency '" + id + "' not written to pom:\n" + loaded))
           val actualOpt =
             java.lang.Boolean.parseBoolean((dep \\ "optional").text)
           assert(

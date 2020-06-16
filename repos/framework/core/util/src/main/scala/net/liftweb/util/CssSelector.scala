@@ -62,10 +62,7 @@ final case class EnclosedSelector(selector: CssSelector, kid: CssSelector)
   def withSubnode(sn: SubNode): CssSelector = this
 }
 
-final case class AttrSelector(
-    name: String,
-    value: String,
-    subNodes: Box[SubNode])
+final case class AttrSelector(name: String, value: String, subNodes: Box[SubNode])
     extends CssSelector {
   def withSubnode(sn: SubNode): CssSelector = this.copy(subNodes = Full(sn))
 }
@@ -175,9 +172,7 @@ object CssSelectorParser extends PackratParsers with ImplicitConversions {
   private implicit def str2chars(s: String): List[Char] =
     new scala.collection.immutable.WrappedString(s).toList
 
-  private def fixAll(
-      all: List[CssSelector],
-      sn: Option[SubNode]): CssSelector = {
+  private def fixAll(all: List[CssSelector], sn: Option[SubNode]): CssSelector = {
     (all, sn) match {
       // case (Nil, Some())
       case (r :: Nil, None)     => r

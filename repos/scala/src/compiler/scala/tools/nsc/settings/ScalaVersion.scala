@@ -84,9 +84,7 @@ object ScalaVersion {
   private val rcpat = """(?i)rc(\d*)""".r
   private val mspat = """(?i)m(\d*)""".r
 
-  def apply(
-      versionString: String,
-      errorHandler: String => Unit): ScalaVersion = {
+  def apply(versionString: String, errorHandler: String => Unit): ScalaVersion = {
     def error() =
       errorHandler(
         s"Bad version (${versionString}) not major[.minor[.revision[-suffix]]]"

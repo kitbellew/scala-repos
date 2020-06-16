@@ -108,10 +108,7 @@ object DBLog {
   def prepareStatement(conn: Connection, query: String, autoKeys: Array[Int]) =
     proxyPreparedStatement(conn.prepareStatement(query, autoKeys), query)
 
-  def prepareStatement(
-      conn: Connection,
-      query: String,
-      autoKeys: Array[String]) =
+  def prepareStatement(conn: Connection, query: String, autoKeys: Array[String]) =
     proxyPreparedStatement(conn.prepareStatement(query, autoKeys), query)
 
   private def proxyPreparedStatement(
@@ -632,8 +629,7 @@ object DBLog {
         }
 
         case "setNClob" if args.length == 2 => {
-          paramMap += args(0).asInstanceOf[Int] -> "(NClob : %s)".format(
-            args(1))
+          paramMap += args(0).asInstanceOf[Int] -> "(NClob : %s)".format(args(1))
           chain(method, args)
         }
 

@@ -85,8 +85,7 @@ class PersistencePluginDocSpec extends WordSpec {
       "PersistencePluginDocSpec",
       ConfigFactory
         .parseString(providerConfig)
-        .withFallback(
-          ConfigFactory.parseString(PersistencePluginDocSpec.config)))
+        .withFallback(ConfigFactory.parseString(PersistencePluginDocSpec.config)))
     try {
       Persistence(system)
     } finally {

@@ -34,10 +34,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   ScClass,
   ScObject
 }
-import org.jetbrains.plugins.scala.lang.psi.impl.{
-  ScPackageImpl,
-  ScalaPsiManager
-}
+import org.jetbrains.plugins.scala.lang.psi.impl.{ScPackageImpl, ScalaPsiManager}
 import org.jetbrains.plugins.scala.project._
 import org.jetbrains.plugins.scala.project.maven.ScalaTestDefaultWorkingDirectoryProvider
 import org.jetbrains.plugins.scala.testingSupport.ScalaTestingConfiguration
@@ -262,31 +259,29 @@ abstract class AbstractTestRunConfiguration(
   def getValidModules: java.util.List[Module] = getProject.modulesWithScala
 
   override def getModules: Array[Module] = {
-    ApplicationManager.getApplication.runReadAction(
-      new Computable[Array[Module]] {
-        @SuppressWarnings(Array("ConstantConditions"))
-        def compute: Array[Module] = {
-          searchTest match {
-            case SearchForTest.ACCROSS_MODULE_DEPENDENCIES
-                if getModule != null =>
-              val buffer = new ArrayBuffer[Module]()
-              buffer += getModule
-              for (module <- ModuleManager.getInstance(getProject).getModules) {
-                if (ModuleManager
-                    .getInstance(getProject)
-                    .isModuleDependent(getModule, module)) {
-                  buffer += module
-                }
+    ApplicationManager.getApplication.runReadAction(new Computable[Array[Module]] {
+      @SuppressWarnings(Array("ConstantConditions"))
+      def compute: Array[Module] = {
+        searchTest match {
+          case SearchForTest.ACCROSS_MODULE_DEPENDENCIES if getModule != null =>
+            val buffer = new ArrayBuffer[Module]()
+            buffer += getModule
+            for (module <- ModuleManager.getInstance(getProject).getModules) {
+              if (ModuleManager
+                  .getInstance(getProject)
+                  .isModuleDependent(getModule, module)) {
+                buffer += module
               }
-              buffer.toArray
-            case SearchForTest.IN_SINGLE_MODULE if getModule != null =>
-              Array(getModule)
-            case SearchForTest.IN_WHOLE_PROJECT =>
-              ModuleManager.getInstance(getProject).getModules
-            case _ => Array.empty
-          }
+            }
+            buffer.toArray
+          case SearchForTest.IN_SINGLE_MODULE if getModule != null =>
+            Array(getModule)
+          case SearchForTest.IN_WHOLE_PROJECT =>
+            ModuleManager.getInstance(getProject).getModules
+          case _ => Array.empty
         }
-      })
+      }
+    })
   }
 
   private def getSuiteClass = {
@@ -575,8 +570,7 @@ abstract class AbstractTestRunConfiguration(
           params.getProgramParametersList.addParametersString(getTestArgs)
         }
 
-        for (ext <-
-            Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
+        for (ext <- Extensions.getExtensions(RunConfigurationExtension.EP_NAME)) {
           ext.updateJavaParameters(
             currentConfiguration,
             params,
@@ -598,13 +592,12 @@ abstract class AbstractTestRunConfiguration(
             currentConfiguration,
             processHandler,
             runnerSettings)
-        val consoleProperties = new SMTRunnerConsoleProperties(
-          currentConfiguration,
-          "Scala",
-          executor) with PropertiesExtension {
-          override def getTestLocator = new ScalaTestLocationProvider
-          def getRunConfigurationBase: RunConfigurationBase = config
-        }
+        val consoleProperties =
+          new SMTRunnerConsoleProperties(currentConfiguration, "Scala", executor)
+            with PropertiesExtension {
+            override def getTestLocator = new ScalaTestLocationProvider
+            def getRunConfigurationBase: RunConfigurationBase = config
+          }
 
         consoleProperties.setIdBasedTestTree(true)
 
@@ -641,9 +634,7 @@ abstract class AbstractTestRunConfiguration(
 
   override def writeExternal(element: Element) {
     super.writeExternal(element)
-    JavaRunConfigurationExtensionManager.getInstance.writeExternal(
-      this,
-      element)
+    JavaRunConfigurationExtensionManager.getInstance.writeExternal(this, element)
     writeModule(element)
     JDOMExternalizer.write(element, "path", getTestClassPath)
     JDOMExternalizer.write(element, "package", getTestPackagePath)

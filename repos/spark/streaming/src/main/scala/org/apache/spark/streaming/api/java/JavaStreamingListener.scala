@@ -22,15 +22,13 @@ import org.apache.spark.streaming.Time
 private[streaming] trait PythonStreamingListener {
 
   /** Called when a receiver has been started */
-  def onReceiverStarted(
-      receiverStarted: JavaStreamingListenerReceiverStarted) {}
+  def onReceiverStarted(receiverStarted: JavaStreamingListenerReceiverStarted) {}
 
   /** Called when a receiver has reported an error */
   def onReceiverError(receiverError: JavaStreamingListenerReceiverError) {}
 
   /** Called when a receiver has been stopped */
-  def onReceiverStopped(
-      receiverStopped: JavaStreamingListenerReceiverStopped) {}
+  def onReceiverStopped(receiverStopped: JavaStreamingListenerReceiverStopped) {}
 
   /** Called when a batch of jobs has been submitted for processing. */
   def onBatchSubmitted(batchSubmitted: JavaStreamingListenerBatchSubmitted) {}
@@ -92,8 +90,7 @@ private[streaming] class PythonStreamingListenerWrapper(
 
   /** Called when processing of a job of a batch has started. */
   override def onOutputOperationStarted(
-      outputOperationStarted: JavaStreamingListenerOutputOperationStarted)
-      : Unit = {
+      outputOperationStarted: JavaStreamingListenerOutputOperationStarted): Unit = {
     listener.onOutputOperationStarted(outputOperationStarted)
   }
 
@@ -135,8 +132,7 @@ private[streaming] class JavaStreamingListener {
 
   /** Called when processing of a job of a batch has started. */
   def onOutputOperationStarted(
-      outputOperationStarted: JavaStreamingListenerOutputOperationStarted)
-      : Unit = {}
+      outputOperationStarted: JavaStreamingListenerOutputOperationStarted): Unit = {}
 
   /** Called when processing of a job of a batch has completed. */
   def onOutputOperationCompleted(

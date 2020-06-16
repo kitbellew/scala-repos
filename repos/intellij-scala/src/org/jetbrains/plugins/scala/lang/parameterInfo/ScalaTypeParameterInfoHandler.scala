@@ -185,14 +185,14 @@ class ScalaTypeParameterInfoHandler
           param.lowerBound foreach {
             case psi.types.Nothing =>
             case tp: ScType =>
-              paramText = paramText + " >: " + ScType.presentableText(
-                substitutor.subst(tp))
+              paramText =
+                paramText + " >: " + ScType.presentableText(substitutor.subst(tp))
           }
           param.upperBound foreach {
             case psi.types.Any =>
             case tp: ScType =>
-              paramText = paramText + " <: " + ScType.presentableText(
-                substitutor.subst(tp))
+              paramText =
+                paramText + " <: " + ScType.presentableText(substitutor.subst(tp))
           }
           param.viewBound foreach { (tp: ScType) =>
             paramText =

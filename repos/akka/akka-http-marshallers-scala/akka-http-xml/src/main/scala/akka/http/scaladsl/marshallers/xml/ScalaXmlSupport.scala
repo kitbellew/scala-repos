@@ -15,8 +15,7 @@ import MediaTypes._
 
 trait ScalaXmlSupport {
   implicit def defaultNodeSeqMarshaller: ToEntityMarshaller[NodeSeq] =
-    Marshaller.oneOf(
-      ScalaXmlSupport.nodeSeqMediaTypes.map(nodeSeqMarshaller): _*)
+    Marshaller.oneOf(ScalaXmlSupport.nodeSeqMediaTypes.map(nodeSeqMarshaller): _*)
 
   def nodeSeqMarshaller(
       mediaType: MediaType.NonBinary): ToEntityMarshaller[NodeSeq] =

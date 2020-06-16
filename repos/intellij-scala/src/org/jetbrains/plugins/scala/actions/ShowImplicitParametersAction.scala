@@ -80,8 +80,8 @@ class ShowImplicitParametersAction
 
   private def implicitParams(
       expr: PsiElement): Option[Seq[ScalaResolveResult]] = {
-    def checkTypeElement(element: ScTypeElement)
-        : Option[Option[scala.Seq[ScalaResolveResult]]] = {
+    def checkTypeElement(
+        element: ScTypeElement): Option[Option[scala.Seq[ScalaResolveResult]]] = {
       def checkSimpleType(s: ScSimpleTypeElement) = {
         s.findImplicitParameters
       }
@@ -417,8 +417,7 @@ class ImplicitParametersTreeStructure(
                   data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
                   ": Diverging implicit"
                 case Some(CantInferTypeParameterResult) =>
-                  data.setTooltip(
-                    "Can't infer proper types for type parameters")
+                  data.setTooltip("Can't infer proper types for type parameters")
                   data.setAttributesKey(CodeInsightColors.ERRORS_ATTRIBUTES)
                   ": Type Parameter"
                 case Some(ImplicitParameterNotFoundResult) =>

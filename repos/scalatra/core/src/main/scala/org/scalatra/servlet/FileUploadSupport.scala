@@ -77,9 +77,7 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
       case _                        => false
     }
 
-  override def handle(
-      req: HttpServletRequest,
-      res: HttpServletResponse): Unit = {
+  override def handle(req: HttpServletRequest, res: HttpServletResponse): Unit = {
     val req2 =
       try {
         if (isMultipartRequest(req)) {
@@ -142,9 +140,7 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
       if (isMultipartRequest(req)) req.getParts.asScala else Seq.empty[Part]
     } catch {
       case e: Exception if isSizeConstraintException(e) =>
-        throw new SizeConstraintExceededException(
-          "Too large request or file",
-          e)
+        throw new SizeConstraintExceededException("Too large request or file", e)
     }
   }
 

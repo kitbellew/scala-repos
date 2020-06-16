@@ -93,9 +93,8 @@ private[spark] class PartitionedPairBuffer[K, V](initialCapacity: Int = 64)
         if (!hasNext) {
           throw new NoSuchElementException
         }
-        val pair = (
-          data(2 * pos).asInstanceOf[(Int, K)],
-          data(2 * pos + 1).asInstanceOf[V])
+        val pair =
+          (data(2 * pos).asInstanceOf[(Int, K)], data(2 * pos + 1).asInstanceOf[V])
         pos += 1
         pair
       }

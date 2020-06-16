@@ -88,9 +88,7 @@ trait TypedActorFactory {
   /**
     * Creates a new TypedActor with the specified properties
     */
-  def typedActorOf[R <: AnyRef, T <: R](
-      props: TypedProps[T],
-      name: String): R = {
+  def typedActorOf[R <: AnyRef, T <: R](props: TypedProps[T], name: String): R = {
     val proxyVar = new AtomVar[R] //Chicken'n'egg-resolver
     val c = props.creator //Cache this to avoid closing over the Props
     val i = props.interfaces //Cache this to avoid closing over the Props
@@ -596,9 +594,7 @@ object TypedProps {
   def apply[T <: AnyRef](
       interface: Class[_ >: T],
       implementation: Class[T]): TypedProps[T] =
-    new TypedProps[T](
-      extractInterfaces(interface),
-      instantiator(implementation))
+    new TypedProps[T](extractInterfaces(interface), instantiator(implementation))
 
   /**
     * Uses the supplied thunk as the factory for the TypedActor implementation,
@@ -620,8 +616,7 @@ object TypedProps {
     * Scala API
     */
   def apply[T <: AnyRef: ClassTag](): TypedProps[T] =
-    new TypedProps[T](
-      implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]])
+    new TypedProps[T](implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]])
 
   /**
     * INTERNAL API

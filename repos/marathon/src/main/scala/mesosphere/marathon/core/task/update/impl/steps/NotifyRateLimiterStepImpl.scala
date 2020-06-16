@@ -31,9 +31,7 @@ class NotifyRateLimiterStepImpl @Inject() (
     }
   }
 
-  private[this] def notifyRateLimiter(
-      status: TaskStatus,
-      task: Task): Future[_] = {
+  private[this] def notifyRateLimiter(status: TaskStatus, task: Task): Future[_] = {
     import scala.concurrent.ExecutionContext.Implicits.global
     task.launched.fold(Future.successful(())) { launched =>
       appRepository.app(task.appId, launched.appVersion).map { maybeApp =>

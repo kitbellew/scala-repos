@@ -39,16 +39,10 @@ import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.synthetic.{
   ScSyntheticValue
 }
 import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.TypeDefinitionMembers
-import org.jetbrains.plugins.scala.lang.psi.impl.{
-  ScPackageImpl,
-  ScalaPsiManager
-}
+import org.jetbrains.plugins.scala.lang.psi.impl.{ScPackageImpl, ScalaPsiManager}
 import org.jetbrains.plugins.scala.lang.psi.types._
 import org.jetbrains.plugins.scala.lang.psi.types.nonvalue._
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.psi.{
   ScalaPsiElement,
   ScalaPsiUtil,
@@ -327,10 +321,7 @@ object ResolveUtils {
                       true,
                       classOf[ScTemplateDefinition])
                     if (enclosing == null) return true
-                    return PsiTreeUtil.isContextAncestor(
-                      enclosing,
-                      place,
-                      false)
+                    return PsiTreeUtil.isContextAncestor(enclosing, place, false)
                 }
               }
               val ref = am.getReference
@@ -639,8 +630,7 @@ object ResolveUtils {
   }
 
   def packageContains(packageName: String, potentialChild: String): Boolean = {
-    potentialChild == packageName || potentialChild.startsWith(
-      packageName + ".")
+    potentialChild == packageName || potentialChild.startsWith(packageName + ".")
   }
 
   def packageProcessDeclarations(
@@ -752,11 +742,7 @@ object ResolveUtils {
               //process subpackages
               pack match {
                 case s: ScPackageImpl =>
-                  s.pack.processDeclarations(
-                    processor,
-                    state,
-                    lastParent,
-                    place)
+                  s.pack.processDeclarations(processor, state, lastParent, place)
                 case _ =>
                   pack.processDeclarations(processor, state, lastParent, place)
               }

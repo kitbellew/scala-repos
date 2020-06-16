@@ -53,9 +53,7 @@ trait AnnotationCheckers {
       * Decide whether this analyzer plugin can adapt a tree that has an annotated type to the
       * given type tp, taking into account the given mode (see method adapt in trait Typers).
       */
-    @deprecated(
-      "Create an AnalyzerPlugin and use canAdaptAnnotations",
-      "2.10.1")
+    @deprecated("Create an AnalyzerPlugin and use canAdaptAnnotations", "2.10.1")
     def canAdaptAnnotations(tree: Tree, mode: Mode, pt: Type): Boolean = false
 
     /**

@@ -23,8 +23,7 @@ import org.apache.spark.SparkFunSuite
 
 class ClientSuite extends SparkFunSuite with Matchers {
   test("correctly validates driver jar URL's") {
-    ClientArguments.isValidJarUrl("http://someHost:8080/foo.jar") should be(
-      true)
+    ClientArguments.isValidJarUrl("http://someHost:8080/foo.jar") should be(true)
     ClientArguments.isValidJarUrl("https://someHost:8080/foo.jar") should be(
       true)
 
@@ -39,8 +38,7 @@ class ClientSuite extends SparkFunSuite with Matchers {
     // file scheme without authority but with triple slash is valid.
     ClientArguments.isValidJarUrl(
       "file:///some/path/to/a/jarFile.jar") should be(true)
-    ClientArguments.isValidJarUrl("hdfs://someHost:1234/foo.jar") should be(
-      true)
+    ClientArguments.isValidJarUrl("hdfs://someHost:1234/foo.jar") should be(true)
 
     ClientArguments.isValidJarUrl("hdfs://someHost:1234/foo") should be(false)
     ClientArguments.isValidJarUrl("/missing/a/protocol/jarfile.jar") should be(

@@ -264,8 +264,7 @@ private[streaming] class ReceiverTracker(
       senderAddress: RpcAddress
   ): Boolean = {
     if (!receiverInputStreamIds.contains(streamId)) {
-      throw new SparkException(
-        "Register received for unexpected id " + streamId)
+      throw new SparkException("Register received for unexpected id " + streamId)
     }
 
     if (isTrackerStopping || isTrackerStopped) {
@@ -325,9 +324,7 @@ private[streaming] class ReceiverTracker(
       lastErrorTime = lastErrorTime)
     val newReceiverTrackingInfo = receiverTrackingInfos.get(streamId) match {
       case Some(oldInfo) =>
-        oldInfo.copy(
-          state = ReceiverState.INACTIVE,
-          errorInfo = Some(errorInfo))
+        oldInfo.copy(state = ReceiverState.INACTIVE, errorInfo = Some(errorInfo))
       case None =>
         logWarning("No prior receiver info")
         ReceiverTrackingInfo(
@@ -442,9 +439,7 @@ private[streaming] class ReceiverTracker(
     if (ssc.sc.isLocal) {
       val blockManagerId = ssc.sparkContext.env.blockManager.blockManagerId
       Seq(
-        ExecutorCacheTaskLocation(
-          blockManagerId.host,
-          blockManagerId.executorId))
+        ExecutorCacheTaskLocation(blockManagerId.host, blockManagerId.executorId))
     } else {
       ssc.sparkContext.env.blockManager.master.getMemoryStatus
         .filter {

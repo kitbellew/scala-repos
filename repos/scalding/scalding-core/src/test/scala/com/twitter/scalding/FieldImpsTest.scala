@@ -136,9 +136,7 @@ class FieldImpsTest extends WordSpec with Matchers with FieldConversions {
           ord,
           implicitly[Manifest[java.math.BigInteger]]))
       setAndCheckFieldS(
-        List(
-          Field[java.math.BigInteger](0),
-          Field[java.math.BigDecimal]("bar")))
+        List(Field[java.math.BigInteger](0), Field[java.math.BigDecimal]("bar")))
     }
     "convert from enumeration values" in {
       object Schema extends Enumeration {
@@ -235,9 +233,7 @@ class FieldImpsTest extends WordSpec with Matchers with FieldConversions {
       f2 shouldBe (new Fields(int2Integer(0)), new Fields(int2Integer(2)))
 
       f2 = (0, (1, "you"))
-      f2 shouldBe (new Fields(int2Integer(0)), new Fields(
-        int2Integer(1),
-        "you"))
+      f2 shouldBe (new Fields(int2Integer(0)), new Fields(int2Integer(1), "you"))
 
       val foo = Field[java.math.BigInteger]("foo")
       val bar = Field[java.math.BigDecimal]("bar")

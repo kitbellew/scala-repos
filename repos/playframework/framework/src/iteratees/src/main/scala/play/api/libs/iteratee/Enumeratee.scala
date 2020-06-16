@@ -71,8 +71,7 @@ trait Enumeratee[From, To] {
     */
   def composeConcat[X](other: Enumeratee[To, To])(implicit
       p: To => scala.collection.TraversableLike[X, To],
-      bf: scala.collection.generic.CanBuildFrom[To, X, To])
-      : Enumeratee[From, To] = {
+      bf: scala.collection.generic.CanBuildFrom[To, X, To]): Enumeratee[From, To] = {
     new Enumeratee[From, To] {
       def applyOn[A](
           iteratee: Iteratee[To, A]): Iteratee[From, Iteratee[To, A]] = {
@@ -86,8 +85,8 @@ trait Enumeratee[From, To] {
     */
   def >+>[X](other: Enumeratee[To, To])(implicit
       p: To => scala.collection.TraversableLike[X, To],
-      bf: scala.collection.generic.CanBuildFrom[To, X, To])
-      : Enumeratee[From, To] = composeConcat[X](other)
+      bf: scala.collection.generic.CanBuildFrom[To, X, To]): Enumeratee[From, To] =
+    composeConcat[X](other)
 
 }
 
@@ -176,8 +175,8 @@ object Enumeratee {
 
     }
 
-    def getInside[T](it: Iteratee[E, T]): Future[
-      (Option[Either[(String, Input[E]), (T, Input[E])]], Iteratee[E, T])] = {
+    def getInside[T](it: Iteratee[E, T])
+        : Future[(Option[Either[(String, Input[E]), (T, Input[E])]], Iteratee[E, T])] = {
       it.pureFold {
         case Step.Done(a, e)    => Some(Right((a, e)))
         case Step.Cont(k)       => None
@@ -189,14 +188,12 @@ object Enumeratee {
 
     def checkDone(
         x: Option[Either[(String, Input[E]), (A, Input[E])]],
-        y: Option[Either[(String, Input[E]), (B, Input[E])]]): Either[
-      (String, Input[E]),
-      Option[Either[Either[A, B], ((A, B), Input[E])]]] =
+        y: Option[Either[(String, Input[E]), (B, Input[E])]])
+        : Either[(String, Input[E]), Option[Either[Either[A, B], ((A, B), Input[E])]]] =
       (x, y) match {
         case (Some(Right((a, e1))), Some(Right((b, e2)))) =>
           Right(
-            Some(
-              Right(((a, b), e1 /* FIXME: should calculate smalled here*/ ))))
+            Some(Right(((a, b), e1 /* FIXME: should calculate smalled here*/ ))))
         case (Some(Left((msg, e))), _)   => Left((msg, e))
         case (_, Some(Left((msg, e))))   => Left((msg, e))
         case (Some(Right((a, _))), None) => Right(Some(Left(Left(a))))

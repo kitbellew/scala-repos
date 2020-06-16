@@ -131,14 +131,12 @@ class ObjectMapping1[R, A1](
         (a1._1) ->
           (a1._2)
       }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping1[R, A1] =
     addPrefix(prefix)
-      .map(newKey =>
-        new ObjectMapping1(apply, unapply, f1, newKey, constraints))
+      .map(newKey => new ObjectMapping1(apply, unapply, f1, newKey, constraints))
       .getOrElse(this)
 
   def verifying(addConstraints: Constraint[R]*): ObjectMapping1[R, A1] = {
@@ -200,8 +198,7 @@ class ObjectMapping2[R, A1, A2](
         (a1._1 ++ a2._1) ->
           (a1._2 ++ a2._2)
       }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping2[R, A1, A2] =
@@ -275,8 +272,7 @@ class ObjectMapping3[R, A1, A2, A3](
         (a1._1 ++ a2._1 ++ a3._1) ->
           (a1._2 ++ a2._2 ++ a3._2)
       }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping3[R, A1, A2, A3] =
@@ -363,8 +359,7 @@ class ObjectMapping4[R, A1, A2, A3, A4](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2)
       }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping4[R, A1, A2, A3, A4] =
@@ -458,8 +453,7 @@ class ObjectMapping5[R, A1, A2, A3, A4, A5](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2)
       }
-      .getOrElse(
-        Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping5[R, A1, A2, A3, A4, A5] =
@@ -569,8 +563,7 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping6[R, A1, A2, A3, A4, A5, A6] =
@@ -589,8 +582,8 @@ class ObjectMapping6[R, A1, A2, A3, A4, A5, A6](
           constraints))
       .getOrElse(this)
 
-  def verifying(addConstraints: Constraint[R]*)
-      : ObjectMapping6[R, A1, A2, A3, A4, A5, A6] = {
+  def verifying(
+      addConstraints: Constraint[R]*): ObjectMapping6[R, A1, A2, A3, A4, A5, A6] = {
     new ObjectMapping6(
       apply,
       unapply,
@@ -689,8 +682,7 @@ class ObjectMapping7[R, A1, A2, A3, A4, A5, A6, A7](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
@@ -818,8 +810,7 @@ class ObjectMapping8[R, A1, A2, A3, A4, A5, A6, A7, A8](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
@@ -956,8 +947,7 @@ class ObjectMapping9[R, A1, A2, A3, A4, A5, A6, A7, A8, A9](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(
@@ -1103,8 +1093,7 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
@@ -1154,9 +1143,7 @@ class ObjectMapping10[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10](
 
 class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
     apply: Function11[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, R],
-    unapply: Function1[
-      R,
-      Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)]],
+    unapply: Function1[R, Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -1260,8 +1247,7 @@ class ObjectMapping11[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
@@ -1425,8 +1411,7 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String)
@@ -1490,36 +1475,8 @@ class ObjectMapping12[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12](
 
 }
 
-class ObjectMapping13[
-    R,
-    A1,
-    A2,
-    A3,
-    A4,
-    A5,
-    A6,
-    A7,
-    A8,
-    A9,
-    A10,
-    A11,
-    A12,
-    A13](
-    apply: Function13[
-      A1,
-      A2,
-      A3,
-      A4,
-      A5,
-      A6,
-      A7,
-      A8,
-      A9,
-      A10,
-      A11,
-      A12,
-      A13,
-      R],
+class ObjectMapping13[R, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13](
+    apply: Function13[A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, R],
     unapply: Function1[
       R,
       Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13)]],
@@ -1639,8 +1596,7 @@ class ObjectMapping13[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping13[
@@ -1879,8 +1835,7 @@ class ObjectMapping14[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping14[
@@ -2000,8 +1955,7 @@ class ObjectMapping15[
       R],
     unapply: Function1[
       R,
-      Option[
-        (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]],
+      Option[(A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -2132,8 +2086,7 @@ class ObjectMapping15[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping15[
@@ -2260,23 +2213,7 @@ class ObjectMapping16[
     unapply: Function1[
       R,
       Option[
-        (
-            A1,
-            A2,
-            A3,
-            A4,
-            A5,
-            A6,
-            A7,
-            A8,
-            A9,
-            A10,
-            A11,
-            A12,
-            A13,
-            A14,
-            A15,
-            A16)]],
+        (A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, A15, A16)]],
     f1: (String, Mapping[A1]),
     f2: (String, Mapping[A2]),
     f3: (String, Mapping[A3]),
@@ -2444,8 +2381,7 @@ class ObjectMapping16[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping16[
@@ -2771,8 +2707,7 @@ class ObjectMapping17[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping17[
@@ -3113,8 +3048,7 @@ class ObjectMapping18[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping18[
@@ -3471,8 +3405,7 @@ class ObjectMapping19[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping19[
@@ -3844,8 +3777,7 @@ class ObjectMapping20[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping20[
@@ -4232,8 +4164,7 @@ class ObjectMapping21[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping21[
@@ -4636,8 +4567,7 @@ class ObjectMapping22[
         (a1._1 ++ a2._1 ++ a3._1 ++ a4._1 ++ a5._1 ++ a6._1 ++ a7._1 ++ a8._1 ++ a9._1 ++ a10._1 ++ a11._1 ++ a12._1 ++ a13._1 ++ a14._1 ++ a15._1 ++ a16._1 ++ a17._1 ++ a18._1 ++ a19._1 ++ a20._1 ++ a21._1 ++ a22._1) ->
           (a1._2 ++ a2._2 ++ a3._2 ++ a4._2 ++ a5._2 ++ a6._2 ++ a7._2 ++ a8._2 ++ a9._2 ++ a10._2 ++ a11._2 ++ a12._2 ++ a13._2 ++ a14._2 ++ a15._2 ++ a16._2 ++ a17._2 ++ a18._2 ++ a19._2 ++ a20._2 ++ a21._2 ++ a22._2)
       }
-      .getOrElse(Map.empty[String, String] -> Seq(
-        FormError(key, "unbind.failed")))
+      .getOrElse(Map.empty[String, String] -> Seq(FormError(key, "unbind.failed")))
   }
 
   def withPrefix(prefix: String): ObjectMapping22[

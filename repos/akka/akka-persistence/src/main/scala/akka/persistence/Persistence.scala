@@ -309,9 +309,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
     }
   }
 
-  private def createPlugin(
-      configPath: String,
-      pluginConfig: Config): ActorRef = {
+  private def createPlugin(configPath: String, pluginConfig: Config): ActorRef = {
     val pluginActorName = configPath
     val pluginClassName = pluginConfig.getString("class") match {
       case "" ⇒
@@ -348,9 +346,7 @@ class Persistence(val system: ExtendedActorSystem) extends Extension {
 
   private def id(ref: ActorRef) = ref.path.toStringWithoutAddress
 
-  private class PluginHolderExtensionId(
-      configPath: String,
-      fallbackPath: String)
+  private class PluginHolderExtensionId(configPath: String, fallbackPath: String)
       extends ExtensionId[PluginHolder] {
     override def createExtension(system: ExtendedActorSystem): PluginHolder = {
       require(

@@ -50,8 +50,7 @@ object CollectionsOnListTest extends CollectionsTestBase {
     }
   }
 
-  private def test_sort_on_comparables[
-      T <: AnyRef with Comparable[T]: ClassTag](
+  private def test_sort_on_comparables[T <: AnyRef with Comparable[T]: ClassTag](
       factory: ListFactory,
       toElem: Int => T,
       absoluteOrder: Boolean = true): Unit = {
@@ -449,9 +448,7 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       assertEquals(0, ju.Collections.indexOfSubList(source, target))
 
       source.remove(0)
-      assertEquals(
-        range.size - 1,
-        ju.Collections.indexOfSubList(source, target))
+      assertEquals(range.size - 1, ju.Collections.indexOfSubList(source, target))
 
       target.add(0, toElem(-5))
       assertEquals(-1, ju.Collections.indexOfSubList(source, target))
@@ -471,17 +468,13 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
       assertEquals(0, ju.Collections.lastIndexOfSubList(source, target))
 
       source.addAll(range.map(toElem))
-      assertEquals(
-        range.size,
-        ju.Collections.lastIndexOfSubList(source, target))
+      assertEquals(range.size, ju.Collections.lastIndexOfSubList(source, target))
 
       target.addAll(range.map(toElem))
       assertEquals(0, ju.Collections.lastIndexOfSubList(source, target))
 
       source.addAll(range.map(toElem))
-      assertEquals(
-        range.size,
-        ju.Collections.lastIndexOfSubList(source, target))
+      assertEquals(range.size, ju.Collections.lastIndexOfSubList(source, target))
 
       source.addAll(range.map(toElem))
       assertEquals(
@@ -489,9 +482,7 @@ trait CollectionsOnListTest extends CollectionsOnCollectionsTest {
         ju.Collections.lastIndexOfSubList(source, target))
 
       source.remove(source.size - 1)
-      assertEquals(
-        range.size,
-        ju.Collections.lastIndexOfSubList(source, target))
+      assertEquals(range.size, ju.Collections.lastIndexOfSubList(source, target))
 
       target.add(0, toElem(-5))
       assertEquals(-1, ju.Collections.lastIndexOfSubList(source, target))

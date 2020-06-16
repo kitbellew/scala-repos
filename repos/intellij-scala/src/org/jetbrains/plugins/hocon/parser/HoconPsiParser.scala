@@ -39,10 +39,7 @@ class HoconPsiParser extends PsiParser {
           getter: TokenTextGetter) = {
 
         @tailrec
-        def goThrough(
-            commentToken: IElementType,
-            resultSoFar: Int,
-            i: Int): Int = {
+        def goThrough(commentToken: IElementType, resultSoFar: Int, i: Int): Int = {
           def token = tokens.get(i)
           def text = getter.get(i)
 
@@ -392,8 +389,7 @@ class HoconPsiParser extends PsiParser {
         tryParse(passKeyword("null") && matches(endingMatcher), Null)
       def tryParseBoolean =
         tryParse(
-          (passKeyword("true") || passKeyword("false")) && matches(
-            endingMatcher),
+          (passKeyword("true") || passKeyword("false")) && matches(endingMatcher),
           Boolean)
       def tryParseNumber =
         tryParse(passNumber() && matches(endingMatcher), Number)

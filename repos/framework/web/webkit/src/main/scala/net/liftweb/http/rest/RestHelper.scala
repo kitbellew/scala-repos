@@ -401,8 +401,7 @@ trait RestHelper extends LiftRules.DispatchPF {
     serveType(jxSel)(pf)(
       new PartialFunction[(JsonXmlSelect, Any, Req), LiftResponse] {
         def isDefinedAt(p: (JsonXmlSelect, Any, Req)) =
-          convertAutoJsonXmlAble.isDefinedAt(
-            (p._1, AutoJsonXmlAble(p._2), p._3))
+          convertAutoJsonXmlAble.isDefinedAt((p._1, AutoJsonXmlAble(p._2), p._3))
 
         def apply(p: (JsonXmlSelect, Any, Req)) =
           convertAutoJsonXmlAble.apply((p._1, AutoJsonXmlAble(p._2), p._3))

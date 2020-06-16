@@ -36,10 +36,7 @@ class JavaNewHadoopRDD[K, V](rdd: NewHadoopRDD[K, V])(
   /** Maps over a partition, providing the InputSplit that was used as the base of the partition. */
   @DeveloperApi
   def mapPartitionsWithInputSplit[R](
-      f: JFunction2[
-        InputSplit,
-        java.util.Iterator[(K, V)],
-        java.util.Iterator[R]],
+      f: JFunction2[InputSplit, java.util.Iterator[(K, V)], java.util.Iterator[R]],
       preservesPartitioning: Boolean = false): JavaRDD[R] = {
     new JavaRDD(
       rdd.mapPartitionsWithInputSplit(

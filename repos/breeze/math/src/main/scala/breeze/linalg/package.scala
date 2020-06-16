@@ -311,9 +311,7 @@ package object linalg {
     * Compute the covariance matrix from the given data, centering
     * if necessary. Very simple, just does the basic thing.
     */
-  def cov(
-      x: DenseMatrix[Double],
-      center: Boolean = true): DenseMatrix[Double] = {
+  def cov(x: DenseMatrix[Double], center: Boolean = true): DenseMatrix[Double] = {
     val xc = scale(x, center, false)
     (xc.t * xc) /= xc.rows - 1.0
   }

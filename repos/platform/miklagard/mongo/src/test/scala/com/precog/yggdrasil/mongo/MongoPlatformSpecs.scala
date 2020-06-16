@@ -132,8 +132,7 @@ object MongoPlatformSpecEngine extends Logging {
         if (file.getName.endsWith(".json")) {
           try {
             val collectionName = path + file.getName.replace(".json", "")
-            logger.debug(
-              "Loading %s into /test/%s".format(file, collectionName))
+            logger.debug("Loading %s into /test/%s".format(file, collectionName))
             val collection = db.getCollection(collectionName)
             JParser.parseManyFromFile(file) match {
               case Success(data) =>
@@ -209,10 +208,7 @@ trait MongoPlatformSpecs
 
     def dbAuthParams = Map.empty
     def mongo = self.mongo
-    override def load(
-        table: Table,
-        apiKey: APIKey,
-        tpe: JType): Future[Table] = {
+    override def load(table: Table, apiKey: APIKey, tpe: JType): Future[Table] = {
       // Rewrite paths of the form /foo/bar/baz to /test/foo_bar_baz
       val pathFixTS = Map1(
         Leaf(Source),

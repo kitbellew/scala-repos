@@ -145,10 +145,7 @@ private class AppTaskLauncherActor(
 
     super.postStop()
 
-    log.info(
-      "Stopped appTaskLaunchActor for {} version {}",
-      app.id,
-      app.version)
+    log.info("Stopped appTaskLaunchActor for {} version {}", app.id, app.version)
   }
 
   override def receive: Receive = waitForInitialDelay

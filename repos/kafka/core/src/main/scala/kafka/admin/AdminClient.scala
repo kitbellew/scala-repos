@@ -47,10 +47,7 @@ class AdminClient(
     val bootstrapBrokers: List[Node])
     extends Logging {
 
-  private def send(
-      target: Node,
-      api: ApiKeys,
-      request: AbstractRequest): Struct = {
+  private def send(target: Node, api: ApiKeys, request: AbstractRequest): Struct = {
     var now = time.milliseconds()
     val deadline = now + requestTimeoutMs
     var future: RequestFuture[ClientResponse] = null

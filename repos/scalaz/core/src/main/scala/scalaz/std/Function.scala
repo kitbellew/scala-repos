@@ -139,9 +139,7 @@ trait FunctionInstances extends FunctionInstances0 {
         case \/-(b) => g(b)
       }
 
-      override def split[A, B, C, D](
-          f: A => B,
-          g: C => D): ((A, C)) => (B, D) = {
+      override def split[A, B, C, D](f: A => B, g: C => D): ((A, C)) => (B, D) = {
         case (a, c) => (f(a), g(c))
       }
     }
@@ -256,10 +254,8 @@ trait FunctionInstances extends FunctionInstances0 {
     }
 
   implicit def function5Instance[T1, T2, T3, T4, T5]
-      : Monad[(T1, T2, T3, T4, T5) => ?]
-        with BindRec[(T1, T2, T3, T4, T5) => ?] =
-    new Monad[(T1, T2, T3, T4, T5) => ?]
-      with BindRec[(T1, T2, T3, T4, T5) => ?] {
+      : Monad[(T1, T2, T3, T4, T5) => ?] with BindRec[(T1, T2, T3, T4, T5) => ?] =
+    new Monad[(T1, T2, T3, T4, T5) => ?] with BindRec[(T1, T2, T3, T4, T5) => ?] {
       def point[A](a: => A) =
         (_, _, _, _, _) => a
 

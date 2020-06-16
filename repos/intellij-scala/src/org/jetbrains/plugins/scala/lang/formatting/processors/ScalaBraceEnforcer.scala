@@ -114,10 +114,7 @@ class ScalaBraceEnforcer(settings: CodeStyleSettings)
         case Some(fin) =>
           fin.expression match {
             case Some(expr) =>
-              processExpression(
-                expr,
-                tryStmt,
-                scalaSettings.FINALLY_BRACE_FORCE)
+              processExpression(expr, tryStmt, scalaSettings.FINALLY_BRACE_FORCE)
             case _ =>
           }
         case _ =>

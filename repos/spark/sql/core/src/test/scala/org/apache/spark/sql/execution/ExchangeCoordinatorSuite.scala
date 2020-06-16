@@ -227,7 +227,8 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
     }
   }
 
-  test("test estimatePartitionStartIndices and enforce minimal number of reducers") {
+  test(
+    "test estimatePartitionStartIndices and enforce minimal number of reducers") {
     val coordinator = new ExchangeCoordinator(2, 100L, Some(2))
 
     {
@@ -314,8 +315,7 @@ class ExchangeCoordinatorSuite extends SparkFunSuite with BeforeAndAfterAll {
       case None                => ""
     }
 
-    test(
-      s"determining the number of reducers: aggregate operator$testNameNote") {
+    test(s"determining the number of reducers: aggregate operator$testNameNote") {
       val test = { sqlContext: SQLContext =>
         val df =
           sqlContext

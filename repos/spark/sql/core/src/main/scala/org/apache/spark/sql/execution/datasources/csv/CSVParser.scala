@@ -225,11 +225,7 @@ private class StringIteratorReader(val iter: Iterator[String])
             off)
           cbuf(off + n - 1) = '\n'
         } else {
-          str.getChars(
-            (next - start).toInt,
-            (next - start + n).toInt,
-            cbuf,
-            off)
+          str.getChars((next - start).toInt, (next - start + n).toInt, cbuf, off)
         }
         next += n
         if (n < len) {

@@ -112,10 +112,7 @@ class URITest {
   }
 
   @Test def should_parse_relative_URIs(): Unit = {
-    expectURI(
-      new URI("docs/guide/collections/designfaq.html#28"),
-      false,
-      false)(
+    expectURI(new URI("docs/guide/collections/designfaq.html#28"), false, false)(
       path = "docs/guide/collections/designfaq.html",
       fragment = "28",
       schemeSpecificPart = "docs/guide/collections/designfaq.html")()
@@ -306,8 +303,7 @@ class URITest {
     resTest("http:g", "http:g")
   }
 
-  @Test def should_provide_resolve_when_authority_is_empty__issue_2048()
-      : Unit = {
+  @Test def should_provide_resolve_when_authority_is_empty__issue_2048(): Unit = {
     val base = new URI("http://foo/a")
     def resTest(ref: String, trg: String): Unit =
       assertEquals(trg, base.resolve(ref).toString)

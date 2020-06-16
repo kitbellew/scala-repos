@@ -244,9 +244,7 @@ class ScalaTestGenerator extends TestGenerator {
             body,
             className,
             editor.getProject)
-        } else if (isInheritor(
-            typeDef,
-            "org.specs2.mutable.SpecificationLike")) {
+        } else if (isInheritor(typeDef, "org.specs2.mutable.SpecificationLike")) {
           ScalaTestGenerator.generateSpecs2BeforeAndAfter(
             generateBefore,
             generateAfter,
@@ -516,8 +514,7 @@ object ScalaTestGenerator {
       if (methods.nonEmpty)
         testNames
           .map(testName => doubleIndent + testName + " $" + testName)
-          .fold(
-            "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
+          .fold("\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
             _ + "\n" + _)
       else ""
     val closingBrace = templateBody.getLastChild
@@ -561,8 +558,7 @@ object ScalaTestGenerator {
           if (methods.nonEmpty)
             testNames
               .map(doubleIndent + "+ " + _)
-              .fold(
-                "\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
+              .fold("\n" + normalIndentString + "Methods of " + className + " should pass tests:")(
                 _ + "\n" + _)
           else ""
         templateBody.addBefore(

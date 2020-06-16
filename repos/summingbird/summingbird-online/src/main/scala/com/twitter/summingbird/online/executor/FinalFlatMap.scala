@@ -106,12 +106,12 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
     }
   }
 
-  override def tick: Future[
-    TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])]] =
+  override def tick
+      : Future[TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])]] =
     sCache.tick.map(formatResult(_))
 
-  def cache(state: S, items: TraversableOnce[(Key, Value)]): Future[
-    TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])]] =
+  def cache(state: S, items: TraversableOnce[(Key, Value)])
+      : Future[TraversableOnce[(Seq[S], Future[TraversableOnce[OutputElement]])]] =
     try {
       val itemL = items.toList
       if (itemL.size > 0) {

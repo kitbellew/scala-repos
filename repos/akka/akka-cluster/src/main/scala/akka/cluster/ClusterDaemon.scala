@@ -232,8 +232,7 @@ private[cluster] final class ClusterCoreSupervisor
 
   def createChildren(): Unit = {
     val publisher = context.actorOf(
-      Props[ClusterDomainEventPublisher].withDispatcher(
-        context.props.dispatcher),
+      Props[ClusterDomainEventPublisher].withDispatcher(context.props.dispatcher),
       name = "publisher")
     coreDaemon = Some(
       context.watch(
@@ -334,8 +333,9 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   val publishStatsTask: Option[Cancellable] = PublishStatsInterval match {
     case Duration.Zero | _: Duration.Infinite ⇒ None
     case d: FiniteDuration ⇒
-      Some(scheduler
-        .schedule(PeriodicTasksInitialDelay.max(d), d, self, PublishStatsTick))
+      Some(
+        scheduler
+          .schedule(PeriodicTasksInitialDelay.max(d), d, self, PublishStatsTick))
   }
 
   override def preStart(): Unit = {
@@ -370,9 +370,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     case msg: SubscriptionMessage ⇒ publisher forward msg
   }
 
-  def tryingToJoin(
-      joinWith: Address,
-      deadline: Option[Deadline]): Actor.Receive = {
+  def tryingToJoin(joinWith: Address, deadline: Option[Deadline]): Actor.Receive = {
     case Welcome(from, gossip) ⇒ welcome(joinWith, from, gossip)
     case InitJoin ⇒ sender() ! InitJoinNack(selfAddress)
     case ClusterUserAction.JoinTo(address) ⇒
@@ -635,8 +633,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
     */
   def leaving(address: Address): Unit = {
     // only try to update if the node is available (in the member ring)
-    if (latestGossip.members.exists(m ⇒
-        m.address == address && m.status == Up)) {
+    if (latestGossip.members.exists(m ⇒ m.address == address && m.status == Up)) {
       val newMembers = latestGossip.members map { m ⇒
         if (m.address == address) m.copy(status = Leaving) else m
       } // mark node as LEAVING
@@ -715,9 +712,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
 
   def receiveGossipStatus(status: GossipStatus): Unit = {
     val from = status.from
-    if (!latestGossip.overview.reachability.isReachable(
-        selfUniqueAddress,
-        from))
+    if (!latestGossip.overview.reachability.isReachable(selfUniqueAddress, from))
       logInfo("Ignoring received gossip status from unreachable [{}] ", from)
     else if (latestGossip.members.forall(_.uniqueAddress != from))
       log.debug(
@@ -775,8 +770,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
         selfAddress,
         from)
       Ignored
-    } else if (remoteGossip.members.forall(
-        _.uniqueAddress != selfUniqueAddress)) {
+    } else if (remoteGossip.members.forall(_.uniqueAddress != selfUniqueAddress)) {
       logInfo(
         "Ignoring received gossip that does not contain myself, from [{}]",
         from)
@@ -981,8 +975,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
             latestGossip.reachabilityExcludingDownedObservers,
             latestGossip.members
               .map(m ⇒
-                s"${m.address} ${m.status} seen=${latestGossip.seenByNode(
-                  m.uniqueAddress)}")
+                s"${m.address} ${m.status} seen=${latestGossip.seenByNode(m.uniqueAddress)}")
               .mkString(", ")
           )
       }
@@ -999,8 +992,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       val downed = latestGossip.members.collect {
         case m if m.status == Down ⇒ m.uniqueAddress
       }
-      if (downed.forall(node ⇒
-          unreachable(node) || latestGossip.seenByNode(node))) {
+      if (downed.forall(node ⇒ unreachable(node) || latestGossip.seenByNode(node))) {
         // the reason for not shutting down immediately is to give the gossip a chance to spread
         // the downing information to other downed nodes, so that they can shutdown themselves
         logInfo("Shutting down myself")
@@ -1181,8 +1173,7 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
       }
 
       val newlyDetectedReachableMembers =
-        localOverview.reachability.allUnreachableFrom(
-          selfUniqueAddress) collect {
+        localOverview.reachability.allUnreachableFrom(selfUniqueAddress) collect {
           case node
               if node != selfUniqueAddress && failureDetector.isAvailable(
                 node.address) ⇒
@@ -1295,8 +1286,8 @@ private[cluster] class ClusterCoreDaemon(publisher: ActorRef)
   def publishInternalStats(): Unit = {
     val vclockStats = VectorClockStats(
       versionSize = latestGossip.version.versions.size,
-      seenLatest = latestGossip.members.count(m ⇒
-        latestGossip.seenByNode(m.uniqueAddress)))
+      seenLatest =
+        latestGossip.members.count(m ⇒ latestGossip.seenByNode(m.uniqueAddress)))
     publisher ! CurrentInternalStats(gossipStats, vclockStats)
   }
 

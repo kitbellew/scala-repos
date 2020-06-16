@@ -60,8 +60,7 @@ object Box extends BoxTrait with Tryo {
     * Helper class to provide an easy way for converting a `List[Box[T]]` into
     * a `Box[List[T]]`.
     */
-  implicit class ListOfBoxes[T](val theListOfBoxes: List[Box[T]])
-      extends AnyVal {
+  implicit class ListOfBoxes[T](val theListOfBoxes: List[Box[T]]) extends AnyVal {
 
     /**
       * Convert a `List` of `Box`es into a single `Box` containting a `List[T]`,

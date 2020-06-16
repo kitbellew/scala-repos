@@ -175,9 +175,7 @@ trait EitherInstances extends EitherInstances0 {
   /** [[scala.Either.LeftProjection]] is isomorphic to [[scala.Either]] */
   val FirstLeftProjectionIso2
       : λ[(α, β) => LeftProjection[α, β] @@ First] <~~> Either =
-    new IsoBifunctorTemplate[
-      λ[(α, β) => LeftProjection[α, β] @@ First],
-      Either] {
+    new IsoBifunctorTemplate[λ[(α, β) => LeftProjection[α, β] @@ First], Either] {
       def to[A, B](fa: LeftProjection[A, B] @@ First) = Tag.unwrap(fa).e
       def from[A, B](ga: Either[A, B]) = First(ga.left)
     }
@@ -216,9 +214,7 @@ trait EitherInstances extends EitherInstances0 {
   /** [[scala.Either.RightProjection]] is isomorphic to [[scala.Either]] */
   val FirstRightProjectionIso2
       : λ[(α, β) => RightProjection[α, β] @@ First] <~~> Either =
-    new IsoBifunctorTemplate[
-      λ[(α, β) => RightProjection[α, β] @@ First],
-      Either] {
+    new IsoBifunctorTemplate[λ[(α, β) => RightProjection[α, β] @@ First], Either] {
       def to[A, B](fa: RightProjection[A, B] @@ First) = Tag.unwrap(fa).e
       def from[A, B](ga: Either[A, B]) = First(ga.right)
     }
@@ -226,9 +222,7 @@ trait EitherInstances extends EitherInstances0 {
   /** [[scala.Either.RightProjection]] is isomorphic to [[scala.Either]] */
   val LastRightProjectionIso2
       : λ[(α, β) => RightProjection[α, β] @@ Last] <~~> Either =
-    new IsoBifunctorTemplate[
-      λ[(α, β) => RightProjection[α, β] @@ Last],
-      Either] {
+    new IsoBifunctorTemplate[λ[(α, β) => RightProjection[α, β] @@ Last], Either] {
       def to[A, B](fa: RightProjection[A, B] @@ Last) = Tag.unwrap(fa).e
       def from[A, B](ga: Either[A, B]) = Last(ga.right)
     }
@@ -240,9 +234,7 @@ trait EitherInstances extends EitherInstances0 {
     }
 
   val eitherFirstLeftInstance =
-    new IsomorphismBifunctor[
-      λ[(α, β) => LeftProjection[α, β] @@ First],
-      Either] {
+    new IsomorphismBifunctor[λ[(α, β) => LeftProjection[α, β] @@ First], Either] {
       def iso = FirstLeftProjectionIso2
       implicit def G: Bifunctor[Either] = eitherInstance
     }
@@ -265,8 +257,7 @@ trait EitherInstances extends EitherInstances0 {
 
   implicit def eitherFirstRightLInstance[L]
       : Monad[λ[α => RightProjection[L, α] @@ First]] =
-    Tags.First.subst1[Monad, RightProjection[L, ?]](
-      Monad[RightProjection[L, ?]])
+    Tags.First.subst1[Monad, RightProjection[L, ?]](Monad[RightProjection[L, ?]])
 
   implicit def eitherLastRightLInstance[L]
       : Monad[λ[α => RightProjection[L, α] @@ Last]] =
@@ -407,9 +398,7 @@ object either extends EitherInstances
 private trait EitherRightEqual[X, A] extends Equal[RightProjection[X, A]] {
   implicit def A: Equal[A]
 
-  final override def equal(
-      a1: RightProjection[X, A],
-      a2: RightProjection[X, A]) =
+  final override def equal(a1: RightProjection[X, A], a2: RightProjection[X, A]) =
     (a1.toOption, a2.toOption) match {
       case (Some(x), Some(y)) => A.equal(x, y)
       case (None, None)       => true

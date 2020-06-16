@@ -42,8 +42,8 @@ trait SchemasSpec[M[+_]]
   def testSingleSchema = {
     val expected = Set(
       JObjectFixedT(Map("a" -> JNumberT, "b" -> JTextT, "c" -> JNullT)))
-    val trivialData = Stream.fill(100)(
-      JParser.parseUnsafe("""{ "a": 1, "b": "x", "c": null }"""))
+    val trivialData =
+      Stream.fill(100)(JParser.parseUnsafe("""{ "a": 1, "b": "x", "c": null }"""))
     val sample = SampleData(trivialData)
     val table = fromSample(sample, Some(10))
     table.schemas.copoint must_== expected
@@ -122,10 +122,10 @@ trait SchemasSpec[M[+_]]
       JObjectFixedT(Map("a" -> JNullT)),
       JObjectFixedT(Map("a" -> JArrayFixedT(Map.empty))),
       JObjectFixedT(Map("a" -> JObjectFixedT(Map.empty))),
-      JObjectFixedT(Map(
-        "a" -> JArrayFixedT(Map(0 -> JNumberT, 1 -> JTextT, 2 -> JBooleanT)))),
-      JObjectFixedT(Map(
-        "a" -> JObjectFixedT(Map("b" -> JObjectFixedT(Map("c" -> JNumberT))))))
+      JObjectFixedT(
+        Map("a" -> JArrayFixedT(Map(0 -> JNumberT, 1 -> JTextT, 2 -> JBooleanT)))),
+      JObjectFixedT(
+        Map("a" -> JObjectFixedT(Map("b" -> JObjectFixedT(Map("c" -> JNumberT))))))
     )
     val data = Stream(
       "1",

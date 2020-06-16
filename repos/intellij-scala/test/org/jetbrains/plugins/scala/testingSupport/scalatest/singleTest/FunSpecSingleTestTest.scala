@@ -23,9 +23,7 @@ trait FunSpecSingleTestTest extends FunSpecGenerator {
         "FunSpecTest should launch single test"),
       root =>
         checkResultTreeHasExactNamedPath(root, funSpecTestPath: _*) &&
-          checkResultTreeDoesNotHaveNodes(
-            root,
-            "should not launch other tests"),
+          checkResultTreeDoesNotHaveNodes(root, "should not launch other tests"),
       debug = true
     )
   }

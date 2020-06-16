@@ -83,8 +83,7 @@ class FileUploadExamplesSpec extends RoutingSpec {
                 b.entity.dataBytes
                   .via(splitLines)
                   .map(_.utf8String.split(",").toVector)
-                  .runForeach(csv =>
-                    metadataActor ! MetadataActor.Entry(id, csv))
+                  .runForeach(csv => metadataActor ! MetadataActor.Entry(id, csv))
               case _ => Future.successful(Done)
             }
             .runWith(Sink.ignore)

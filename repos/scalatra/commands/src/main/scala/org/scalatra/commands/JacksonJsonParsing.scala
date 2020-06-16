@@ -26,10 +26,7 @@ trait JacksonJsonParsing
           multiParams(request),
           request.headers)
       case _ =>
-        newCommand.bindTo(
-          params(request),
-          multiParams(request),
-          request.headers)
+        newCommand.bindTo(params(request), multiParams(request), request.headers)
     }
     request.update(commandRequestKey[T], newCommand)
     newCommand

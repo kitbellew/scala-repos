@@ -28,8 +28,7 @@ class MultivariateOnlineSummarizerSuite extends SparkFunSuite {
 
     assert(summarizer.count === 0, "should be zero since nothing is added.")
 
-    withClue(
-      "Getting numNonzeros from empty summarizer should throw exception.") {
+    withClue("Getting numNonzeros from empty summarizer should throw exception.") {
       intercept[IllegalArgumentException] {
         summarizer.numNonzeros
       }

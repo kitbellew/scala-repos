@@ -47,8 +47,8 @@ object TransformerAux {
     new TransformerAux[A, Future[B], B, C, Future[C]] {
       def apply(f: A ⇒ Future[B], g: B ⇒ C): A ⇒ Future[C] = f(_).map(g)
     }
-  implicit def aux3[A, B, C](implicit ec: ExecutionContext)
-      : TransformerAux[A, Future[B], B, Future[C], Future[C]] =
+  implicit def aux3[A, B, C](implicit
+      ec: ExecutionContext): TransformerAux[A, Future[B], B, Future[C], Future[C]] =
     new TransformerAux[A, Future[B], B, Future[C], Future[C]] {
       def apply(f: A ⇒ Future[B], g: B ⇒ Future[C]): A ⇒ Future[C] =
         f(_).flatMap(g)

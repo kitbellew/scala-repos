@@ -123,9 +123,7 @@ abstract class TypeInferenceTestBase
               ScType.presentableText(actualExpectedType)
             assertEquals(expectedExpectedTypeText, actualExpectedTypeText)
           case SimplifiedPattern(expectedText) =>
-            assertEquals(
-              expectedText,
-              ScTypePresentation.withoutAliases(ttypez))
+            assertEquals(expectedText, ScTypePresentation.withoutAliases(ttypez))
           case _ => assertEquals(output, res)
         }
       case Failure(msg, elem) =>

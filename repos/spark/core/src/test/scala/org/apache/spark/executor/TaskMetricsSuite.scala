@@ -21,12 +21,7 @@ import org.scalatest.Assertions
 
 import org.apache.spark._
 import org.apache.spark.scheduler.AccumulableInfo
-import org.apache.spark.storage.{
-  BlockId,
-  BlockStatus,
-  StorageLevel,
-  TestBlockId
-}
+import org.apache.spark.storage.{BlockId, BlockStatus, StorageLevel, TestBlockId}
 
 class TaskMetricsSuite extends SparkFunSuite {
   import AccumulatorParam._
@@ -167,12 +162,7 @@ class TaskMetricsSuite extends SparkFunSuite {
       accums,
       RESULT_SERIALIZATION_TIME,
       0L)
-    assertValueEquals(
-      tm,
-      _.memoryBytesSpilled,
-      accums,
-      MEMORY_BYTES_SPILLED,
-      0L)
+    assertValueEquals(tm, _.memoryBytesSpilled, accums, MEMORY_BYTES_SPILLED, 0L)
     assertValueEquals(tm, _.diskBytesSpilled, accums, DISK_BYTES_SPILLED, 0L)
     assertValueEquals(
       tm,

@@ -308,20 +308,10 @@ object ApplicationBuild extends Build {
 
   lazy val setup = project(
     "setup",
-    Seq(
-      common,
-      db,
-      memo,
-      hub,
-      socket,
-      chess,
-      game,
-      user,
-      lobby,
-      pref,
-      relation)).settings(
-    libraryDependencies ++= provided(play.api, RM, PRM)
-  )
+    Seq(common, db, memo, hub, socket, chess, game, user, lobby, pref, relation))
+    .settings(
+      libraryDependencies ++= provided(play.api, RM, PRM)
+    )
 
   lazy val importer =
     project("importer", Seq(common, chess, game, round)).settings(

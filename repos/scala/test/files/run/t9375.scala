@@ -150,8 +150,7 @@ object DeserializeModuleNoConstructor {
       c.a
     )
 
-    println(
-      "serializing outer objects should not initialize any nested objects")
+    println("serializing outer objects should not initialize any nested objects")
 
     val serANotInit = serialize(a)
     outers foreach serializeDeserialize

@@ -76,11 +76,7 @@ class ReceivedBlockHandlerSuite
     blockManagerMaster = new BlockManagerMaster(
       rpcEnv.setupEndpoint(
         "blockmanager",
-        new BlockManagerMasterEndpoint(
-          rpcEnv,
-          true,
-          conf,
-          new LiveListenerBus)),
+        new BlockManagerMasterEndpoint(rpcEnv, true, conf, new LiveListenerBus)),
       conf,
       true)
 

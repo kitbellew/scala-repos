@@ -32,8 +32,7 @@ class DistributedPubSubMessageSerializerSpec extends AkkaSpec {
       val u2 = system.actorOf(Props.empty, "u2")
       val u3 = system.actorOf(Props.empty, "u3")
       val u4 = system.actorOf(Props.empty, "u4")
-      checkSerialization(
-        Status(Map(address1 -> 3, address2 -> 17, address3 -> 5)))
+      checkSerialization(Status(Map(address1 -> 3, address2 -> 17, address3 -> 5)))
       checkSerialization(
         Delta(List(
           Bucket(
@@ -42,10 +41,7 @@ class DistributedPubSubMessageSerializerSpec extends AkkaSpec {
             TreeMap(
               "/user/u1" -> ValueHolder(2, Some(u1)),
               "/user/u2" -> ValueHolder(3, Some(u2)))),
-          Bucket(
-            address2,
-            17,
-            TreeMap("/user/u3" -> ValueHolder(17, Some(u3)))),
+          Bucket(address2, 17, TreeMap("/user/u3" -> ValueHolder(17, Some(u3)))),
           Bucket(
             address3,
             5,

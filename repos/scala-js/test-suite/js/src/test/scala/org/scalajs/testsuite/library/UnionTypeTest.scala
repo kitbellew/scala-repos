@@ -151,18 +151,14 @@ class UnionTypeTest {
     assertEquals(
       a,
       a: js.UndefOr[js.UndefOr[js.UndefOr[Int]] | js.UndefOr[String]])
-    assertEquals(
-      a,
-      a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[js.UndefOr[String]]])
+    assertEquals(a, a: js.UndefOr[js.UndefOr[Int] | js.UndefOr[js.UndefOr[String]]])
 
     assertEquals(a, a: js.UndefOr[String | Int])
     assertEquals(a, a: js.UndefOr[String | Int])
     assertEquals(a, a: js.UndefOr[js.UndefOr[String] | Int])
     assertEquals(a, a: js.UndefOr[String | js.UndefOr[Int]])
     assertEquals(a, a: js.UndefOr[js.UndefOr[String] | js.UndefOr[Int]])
-    assertEquals(
-      a,
-      a: js.UndefOr[js.UndefOr[String] | js.UndefOr[js.UndefOr[Int]]])
+    assertEquals(a, a: js.UndefOr[js.UndefOr[String] | js.UndefOr[js.UndefOr[Int]]])
     assertEquals(
       a,
       a: js.UndefOr[js.UndefOr[js.UndefOr[String]] | js.UndefOr[Int]])

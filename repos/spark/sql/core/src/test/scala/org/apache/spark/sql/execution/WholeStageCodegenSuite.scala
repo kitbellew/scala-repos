@@ -63,8 +63,8 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
   }
 
   test("BroadcastHashJoin should be included in WholeStageCodegen") {
-    val rdd = sqlContext.sparkContext.makeRDD(
-      Seq(Row(1, "1"), Row(1, "1"), Row(2, "2")))
+    val rdd =
+      sqlContext.sparkContext.makeRDD(Seq(Row(1, "1"), Row(1, "1"), Row(2, "2")))
     val schema = new StructType().add("k", IntegerType).add("v", StringType)
     val smallDF = sqlContext.createDataFrame(rdd, schema)
     val df =
@@ -77,8 +77,7 @@ class WholeStageCodegenSuite extends SparkPlanTest with SharedSQLContext {
               .child
               .isInstanceOf[BroadcastHashJoin])
         .isDefined)
-    assert(
-      df.collect() === Array(Row(1, 1, "1"), Row(1, 1, "1"), Row(2, 2, "2")))
+    assert(df.collect() === Array(Row(1, 1, "1"), Row(1, 1, "1"), Row(2, 2, "2")))
   }
 
   test("Sort should be included in WholeStageCodegen") {

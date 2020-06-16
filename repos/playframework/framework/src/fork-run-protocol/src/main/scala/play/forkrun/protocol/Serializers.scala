@@ -74,8 +74,7 @@ object Serializers {
       : Unpickler[ForkConfig.DefaultWatchService.type] =
     genUnpickler[ForkConfig.DefaultWatchService.type]
 
-  implicit val jDK7WatchServicePickler
-      : Pickler[ForkConfig.JDK7WatchService.type] =
+  implicit val jDK7WatchServicePickler: Pickler[ForkConfig.JDK7WatchService.type] =
     genPickler[ForkConfig.JDK7WatchService.type]
   implicit val jDK7WatchServiceUnpickler
       : Unpickler[ForkConfig.JDK7WatchService.type] =
@@ -260,10 +259,8 @@ object Serializers {
   }
 
   object LocalRegisteredSerializer {
-    def fromSbtSerializer[U](
-        _serializer: Pickler[U],
-        _unserializer: Unpickler[U])(implicit
-        mf: Manifest[U]): LocalRegisteredSerializer =
+    def fromSbtSerializer[U](_serializer: Pickler[U], _unserializer: Unpickler[U])(
+        implicit mf: Manifest[U]): LocalRegisteredSerializer =
       new LocalRegisteredSerializer {
         type T = U
         val manifest = mf

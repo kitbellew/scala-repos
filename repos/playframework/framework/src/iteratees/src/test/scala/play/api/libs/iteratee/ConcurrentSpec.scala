@@ -166,9 +166,8 @@ object ConcurrentSpec
       }
 
       val fastEnumerator = Enumerator((1 to 10): _*) >>> Enumerator.eof
-      val result = Try(
-        await(fastEnumerator &> Concurrent.lazyAndErrIfNotReady(
-          50) |>>> slowIteratee))
+      val result = Try(await(
+        fastEnumerator &> Concurrent.lazyAndErrIfNotReady(50) |>>> slowIteratee))
       // We've got our result (hopefully a timeout), so let the iteratee
       // complete.
       gotResult.countDown()

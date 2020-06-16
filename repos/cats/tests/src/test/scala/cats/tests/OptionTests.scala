@@ -13,14 +13,10 @@ import cats.laws.discipline.eq._
 
 class OptionTests extends CatsSuite {
   checkAll("Option[Int]", CartesianTests[Option].cartesian[Int, Int, Int])
-  checkAll(
-    "Cartesian[Option]",
-    SerializableTests.serializable(Cartesian[Option]))
+  checkAll("Cartesian[Option]", SerializableTests.serializable(Cartesian[Option]))
 
   checkAll("Option[Int]", CoflatMapTests[Option].coflatMap[Int, Int, Int])
-  checkAll(
-    "CoflatMap[Option]",
-    SerializableTests.serializable(CoflatMap[Option]))
+  checkAll("CoflatMap[Option]", SerializableTests.serializable(CoflatMap[Option]))
 
   checkAll("Option[Int]", MonadCombineTests[Option].monadCombine[Int, Int, Int])
   checkAll(

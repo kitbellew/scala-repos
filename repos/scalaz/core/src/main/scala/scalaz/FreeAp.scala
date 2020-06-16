@@ -19,9 +19,7 @@ sealed abstract class FreeAp[F[_], A] {
     }
 
   /** Provides access to the first instruction of this program, if present */
-  def para[B](
-      pure: A => B,
-      ap: λ[α => (F[α], FreeAp[F, α => A])] ~> λ[α => B]): B =
+  def para[B](pure: A => B, ap: λ[α => (F[α], FreeAp[F, α => A])] ~> λ[α => B]): B =
     this match {
       case Pure(x)  => pure(x)
       case x @ Ap() => ap(x.v() -> x.k())

@@ -91,10 +91,7 @@ class CamelMessage(
     * The CamelContext is accessible in a [[akka.camel.javaapi.UntypedConsumerActor]] and [[akka.camel.javaapi.UntypedProducerActor]]
     * using the `getCamelContext` method, and is available on the [[akka.camel.CamelExtension]].
     */
-  def getHeaderAs[T](
-      name: String,
-      clazz: Class[T],
-      camelContext: CamelContext): T =
+  def getHeaderAs[T](name: String, clazz: Class[T], camelContext: CamelContext): T =
     headerAs[T](name)(ClassTag(clazz), camelContext).get
 
   /**

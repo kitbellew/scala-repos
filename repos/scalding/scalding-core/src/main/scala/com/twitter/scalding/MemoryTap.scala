@@ -66,9 +66,7 @@ class MemoryTap[In, Out](
 
 }
 
-class MemoryTupleEntryCollector(
-    val tupleBuffer: Buffer[Tuple],
-    mt: MemoryTap[_, _])
+class MemoryTupleEntryCollector(val tupleBuffer: Buffer[Tuple], mt: MemoryTap[_, _])
     extends TupleEntryCollector {
 
   override def collect(tupleEntry: TupleEntry) {

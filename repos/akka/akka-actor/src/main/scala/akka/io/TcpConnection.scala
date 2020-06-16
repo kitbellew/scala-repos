@@ -154,9 +154,7 @@ private[io] abstract class TcpConnection(
   }
 
   /** connection is closed on our side and we're waiting from confirmation from the other side */
-  def closing(
-      info: ConnectionInfo,
-      closeCommander: Option[ActorRef]): Receive = {
+  def closing(info: ConnectionInfo, closeCommander: Option[ActorRef]): Receive = {
     case SuspendReading ⇒ suspendReading(info)
     case ResumeReading ⇒ resumeReading(info)
     case ChannelReadable ⇒ doRead(info, closeCommander)
@@ -327,8 +325,7 @@ private[io] abstract class TcpConnection(
         unsignDeathPact()
         if (TraceLogging)
           log.debug("Got Close command but write is still pending.")
-        context.become(
-          closingWithPendingWrite(info, closeCommander, closedEvent))
+        context.become(closingWithPendingWrite(info, closeCommander, closedEvent))
       case ConfirmedClosed ⇒ // shutdown output and wait for confirmation
         if (TraceLogging) log.debug("Got ConfirmedClose command, sending FIN.")
 

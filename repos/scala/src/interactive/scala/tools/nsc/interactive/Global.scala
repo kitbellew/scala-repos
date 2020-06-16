@@ -145,8 +145,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
     else NullLogger
 
   import log.logreplay
-  debugLog(s"logger: ${log.getClass} writing to ${(new java.io.File(
-    logName)).getAbsolutePath}")
+  debugLog(
+    s"logger: ${log.getClass} writing to ${(new java.io.File(logName)).getAbsolutePath}")
   debugLog(s"classpath: $classPath")
 
   private var curTime = System.nanoTime
@@ -879,9 +879,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
   }
 
   /** Set sync var `response` to a fully attributed tree located at position `pos` */
-  private[interactive] def getTypedTreeAt(
-      pos: Position,
-      response: Response[Tree]) {
+  private[interactive] def getTypedTreeAt(pos: Position, response: Response[Tree]) {
     respond(response)(typedTreeAt(pos))
   }
 
@@ -916,9 +914,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
     }
 
   /** Find a 'mirror' of symbol `sym` in unit `unit`. Pre: `unit is loaded. */
-  private def findMirrorSymbol(
-      sym: Symbol,
-      unit: RichCompilationUnit): Symbol = {
+  private def findMirrorSymbol(sym: Symbol, unit: RichCompilationUnit): Symbol = {
     val originalTypeParams = sym.owner.typeParams
     ensureUpToDate(unit)
     parseAndEnter(unit)
@@ -1062,10 +1058,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
         (m.sym.name == sym.name) && (m.sym.isType || (m.tpe matches symtpe))
       }
 
-    private def keepSecond(
-        m: M,
-        sym: Symbol,
-        implicitlyAdded: Boolean): Boolean =
+    private def keepSecond(m: M, sym: Symbol, implicitlyAdded: Boolean): Boolean =
       m.sym.hasFlag(ACCESSOR | PARAMACCESSOR) &&
         !sym.hasFlag(ACCESSOR | PARAMACCESSOR) &&
         (!implicitlyAdded || m.implicitlyAdded)
@@ -1360,8 +1353,7 @@ with ContextTrees with RichCompilationUnits with Picklers {
       val allTypeMembers = typeMembers(qualPos).toList.flatten
       val positionDelta: Int = pos.start - nameStart
       val subName: Name = name
-        .newName(
-          new String(pos.source.content, nameStart, pos.start - nameStart))
+        .newName(new String(pos.source.content, nameStart, pos.start - nameStart))
         .encodedName
       CompletionResult.TypeMembers(
         positionDelta,

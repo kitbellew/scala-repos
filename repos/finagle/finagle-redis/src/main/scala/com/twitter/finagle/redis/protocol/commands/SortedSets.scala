@@ -811,11 +811,7 @@ trait ZRangeCmdCompanion {
     }
   }
 
-  def apply(
-      key: ChannelBuffer,
-      start: Long,
-      stop: Long,
-      scored: CommandArgument) =
+  def apply(key: ChannelBuffer, start: Long, stop: Long, scored: CommandArgument) =
     scored match {
       case WithScores => get(key, start, stop, Some(scored))
       case _          => throw ClientError("Only WithScores is supported")

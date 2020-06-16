@@ -169,11 +169,7 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
 
   class StreamingQueryAction[R, T](tree: Node, param: Any)
       extends StreamingProfileAction[R, T, Effect.Read]
-      with SynchronousDatabaseAction[
-        R,
-        Streaming[T],
-        Backend#This,
-        Effect.Read] {
+      with SynchronousDatabaseAction[R, Streaming[T], Backend#This, Effect.Read] {
     type StreamState = Iterator[T]
     protected[this] def getIterator(ctx: Backend#Context): Iterator[T] = {
       val inter = createInterpreter(ctx.session.database, param)
@@ -224,9 +220,7 @@ trait MemoryProfile extends RelationalProfile with MemoryQueryingProfile {
     def getDumpInfo = DumpInfo("MemoryProfile.StreamingQueryAction")
   }
 
-  class QueryActionExtensionMethodsImpl[R, S <: NoStream](
-      tree: Node,
-      param: Any)
+  class QueryActionExtensionMethodsImpl[R, S <: NoStream](tree: Node, param: Any)
       extends super.QueryActionExtensionMethodsImpl[R, S] {
     def result: ProfileAction[R, S, Effect.Read] =
       new StreamingQueryAction[R, Nothing](tree, param)

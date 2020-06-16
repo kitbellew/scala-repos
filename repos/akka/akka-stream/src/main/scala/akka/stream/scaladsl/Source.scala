@@ -171,10 +171,7 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
   /**
     * Combines several sources with fun-in strategy like `Merge` or `Concat` and returns `Source`.
     */
-  def combine[T, U](
-      first: Source[T, _],
-      second: Source[T, _],
-      rest: Source[T, _]*)(
+  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
       strategy: Int ⇒ Graph[UniformFanInShape[T, U], NotUsed])
       : Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b ⇒
@@ -183,9 +180,7 @@ final class Source[+Out, +Mat](private[stream] override val module: Module)
       first ~> c.in(0)
       second ~> c.in(1)
 
-      @tailrec def combineRest(
-          idx: Int,
-          i: Iterator[Source[T, _]]): SourceShape[U] =
+      @tailrec def combineRest(idx: Int, i: Iterator[Source[T, _]]): SourceShape[U] =
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)
@@ -447,10 +442,7 @@ object Source {
   /**
     * Combines several sources with fun-in strategy like `Merge` or `Concat` and returns `Source`.
     */
-  def combine[T, U](
-      first: Source[T, _],
-      second: Source[T, _],
-      rest: Source[T, _]*)(
+  def combine[T, U](first: Source[T, _], second: Source[T, _], rest: Source[T, _]*)(
       strategy: Int ⇒ Graph[UniformFanInShape[T, U], NotUsed])
       : Source[U, NotUsed] =
     Source.fromGraph(GraphDSL.create() { implicit b ⇒
@@ -459,9 +451,7 @@ object Source {
       first ~> c.in(0)
       second ~> c.in(1)
 
-      @tailrec def combineRest(
-          idx: Int,
-          i: Iterator[Source[T, _]]): SourceShape[U] =
+      @tailrec def combineRest(idx: Int, i: Iterator[Source[T, _]]): SourceShape[U] =
         if (i.hasNext) {
           i.next() ~> c.in(idx)
           combineRest(idx + 1, i)
@@ -499,8 +489,9 @@ object Source {
     * @param bufferSize size of buffer in element count
     * @param overflowStrategy Strategy that is used when incoming elements cannot fit inside the buffer
     */
-  def queue[T](bufferSize: Int, overflowStrategy: OverflowStrategy)
-      : Source[T, SourceQueueWithComplete[T]] =
+  def queue[T](
+      bufferSize: Int,
+      overflowStrategy: OverflowStrategy): Source[T, SourceQueueWithComplete[T]] =
     Source.fromGraph(
       new QueueSource(bufferSize, overflowStrategy).withAttributes(
         DefaultAttributes.queueSource))

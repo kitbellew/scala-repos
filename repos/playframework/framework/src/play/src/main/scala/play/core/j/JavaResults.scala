@@ -70,9 +70,7 @@ object JavaResults
     )(internalContext)
   }
   //play.api.libs.iteratee.Enumerator.imperative[A](onComplete = onDisconnected)
-  def chunked(
-      stream: java.io.InputStream,
-      chunkSize: Int): Source[ByteString, _] =
+  def chunked(stream: java.io.InputStream, chunkSize: Int): Source[ByteString, _] =
     enumToSource(Enumerator.fromStream(stream, chunkSize)(internalContext))
   def chunked(file: java.io.File, chunkSize: Int) =
     enumToSource(Enumerator.fromFile(file, chunkSize)(internalContext))

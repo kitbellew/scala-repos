@@ -184,8 +184,7 @@ private[concurrent] object ExecutionContextImpl {
     }
   }
 
-  final class AdaptedForkJoinTask(runnable: Runnable)
-      extends ForkJoinTask[Unit] {
+  final class AdaptedForkJoinTask(runnable: Runnable) extends ForkJoinTask[Unit] {
     final override def setRawResult(u: Unit): Unit = ()
     final override def getRawResult(): Unit = ()
     final override def exec(): Boolean =

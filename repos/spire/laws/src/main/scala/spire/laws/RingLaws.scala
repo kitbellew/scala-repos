@@ -157,10 +157,7 @@ trait RingLaws[A] extends GroupLaws[A] {
   }
 
   object RingProperties {
-    def fromParent(
-        name: String,
-        parent: RingProperties,
-        props: (String, Prop)*) =
+    def fromParent(name: String, parent: RingProperties, props: (String, Prop)*) =
       new RingProperties(name, parent.al, parent.ml, Seq(parent), props: _*)
   }
 

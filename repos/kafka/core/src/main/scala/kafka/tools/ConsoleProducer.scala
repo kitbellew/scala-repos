@@ -386,8 +386,7 @@ object ConsoleProducer {
     override def init(inputStream: InputStream, props: Properties) {
       topic = props.getProperty("topic")
       if (props.containsKey("parse.key"))
-        parseKey =
-          props.getProperty("parse.key").trim.toLowerCase.equals("true")
+        parseKey = props.getProperty("parse.key").trim.toLowerCase.equals("true")
       if (props.containsKey("key.separator"))
         keySeparator = props.getProperty("key.separator")
       if (props.containsKey("ignore.error"))

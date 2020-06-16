@@ -139,8 +139,8 @@ object LookupJoin extends Serializable {
           }
       }
 
-    val joined: TypedPipe[
-      (K, (Option[(T, JoinedV)], Option[(T, V, Option[JoinedV])]))] =
+    val joined
+        : TypedPipe[(K, (Option[(T, JoinedV)], Option[(T, V, Option[JoinedV])]))] =
       left
         .map { case (t, (k, v)) => (k, (t, Left(v): Either[V, JoinedV])) }
         .++(right.map {

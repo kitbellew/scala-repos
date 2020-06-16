@@ -39,9 +39,7 @@ object HorizontalDirection
 
   /** A direction to the left. */
   val Left = new HorizontalDirection(jfxg.HorizontalDirection.LEFT)
-  @deprecated(
-    "Use Left; LEFT will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Left; LEFT will be removed in a future release", "8.0.60-R10")
   val LEFT = Left
 
   /** A direction to the right. */

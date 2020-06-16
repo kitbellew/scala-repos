@@ -182,9 +182,8 @@ abstract class ClusterConsistentHashingRouterSpec
 
         val router4 = system.actorOf(
           ClusterRouterPool(
-            local = ConsistentHashingPool(
-              nrOfInstances = 0,
-              hashMapping = hashMapping),
+            local =
+              ConsistentHashingPool(nrOfInstances = 0, hashMapping = hashMapping),
             settings = ClusterRouterPoolSettings(
               totalInstances = 10,
               maxInstancesPerNode = 1,

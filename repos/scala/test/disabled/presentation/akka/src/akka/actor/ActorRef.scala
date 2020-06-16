@@ -326,10 +326,7 @@ trait ActorRef extends ActorRefShared with java.lang.Comparable[ActorRef] {
     * If you are sending messages using <code>sendRequestReply</code> then you <b>have to</b> use <code>getContext().reply(..)</code>
     * to send a reply message to the original sender. If not then the sender will block until the timeout expires.
     */
-  def sendRequestReply(
-      message: AnyRef,
-      timeout: Long,
-      sender: ActorRef): AnyRef = {
+  def sendRequestReply(message: AnyRef, timeout: Long, sender: ActorRef): AnyRef = {
     !!(message, timeout)(Option(sender))
       .getOrElse(
         throw new ActorTimeoutException(

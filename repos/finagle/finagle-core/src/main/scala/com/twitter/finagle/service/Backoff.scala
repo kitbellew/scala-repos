@@ -87,9 +87,7 @@ object Backoff {
     * @param maximum must be greater than 0 and greater than or equal to `start`.
     * @see [[exponentialJittered]] and [[equalJittered]] for alternative jittered approaches.
     */
-  def decorrelatedJittered(
-      start: Duration,
-      maximum: Duration): Stream[Duration] =
+  def decorrelatedJittered(start: Duration, maximum: Duration): Stream[Duration] =
     decorrelatedJittered(start, maximum, Rng.threadLocal)
 
   /** Exposed for testing */

@@ -92,9 +92,7 @@ case class UnaryPositive(child: Expression)
 @ExpressionDescription(
   usage = "_FUNC_(expr) - Returns the absolute value of the numeric value",
   extended = "> SELECT _FUNC_('-1');\n1")
-case class Abs(child: Expression)
-    extends UnaryExpression
-    with ExpectsInputTypes {
+case class Abs(child: Expression) extends UnaryExpression with ExpectsInputTypes {
 
   override def inputTypes: Seq[AbstractDataType] = Seq(NumericType)
 

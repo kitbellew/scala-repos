@@ -192,8 +192,7 @@ trait VectorFunctions {
   final def findM[A, M[_]: Monad](as: Vector[A])(
       p: A => M[Boolean]): M[Option[A]] =
     lazyFoldRight(as, Monad[M].point(None: Option[A]))((a, g) =>
-      Monad[M].bind(p(a))(b =>
-        if (b) Monad[M].point(Some(a): Option[A]) else g))
+      Monad[M].bind(p(a))(b => if (b) Monad[M].point(Some(a): Option[A]) else g))
 
   final def powerset[A](as: Vector[A]): Vector[Vector[A]] = {
     import vector.vectorInstance

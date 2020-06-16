@@ -127,11 +127,8 @@ class Logger protected (val name: String, private val wrapped: javalog.Logger) {
   final def apply(level: Level, message: String, items: Any*) =
     log(level, message, items: _*)
 
-  final def apply(
-      level: Level,
-      thrown: Throwable,
-      message: String,
-      items: Any*) = log(level, thrown, message, items)
+  final def apply(level: Level, thrown: Throwable, message: String, items: Any*) =
+    log(level, thrown, message, items)
 
   // convenience methods:
   @varargs

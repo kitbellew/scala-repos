@@ -358,8 +358,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
                       val resultSlot = getLocal(tp.getSize)
                       loadOps = new VarInsnNode(
                         tp.getOpcode(ILOAD),
-                        resultSlot) :: extraction.postExtractionAdaptationOps(
-                        tp)
+                        resultSlot) :: extraction.postExtractionAdaptationOps(tp)
                       new VarInsnNode(tp.getOpcode(ISTORE), resultSlot)
                     } else {
                       getPop(tp.getSize)
@@ -709,9 +708,8 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
         mi: MethodInsnNode,
         prodCons: ProdConsAnalyzer): Option[AbstractInsnNode] = {
       val numArgs = Type.getArgumentTypes(mi.desc).length
-      val receiverProds = prodCons.producersForValueAt(
-        mi,
-        prodCons.frameAt(mi).stackTop - numArgs)
+      val receiverProds =
+        prodCons.producersForValueAt(mi, prodCons.frameAt(mi).stackTop - numArgs)
       if (receiverProds.size == 1) {
         val prod = receiverProds.head
         if (isPredefLoad(prod) && prodCons.consumersOfOutputsFrom(prod) == Set(
@@ -820,8 +818,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
     private def loadZeroValue(
         refZeroCall: MethodInsnNode): List[AbstractInsnNode] =
       List(
-        loadZeroForTypeSort(
-          runtimeRefClassBoxedType(refZeroCall.owner).getSort))
+        loadZeroForTypeSort(runtimeRefClassBoxedType(refZeroCall.owner).getSort))
 
     def checkRefCreation(
         insn: AbstractInsnNode,
@@ -840,9 +837,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             checkKind(mi).map((StaticFactory(mi, loadInitialValues = None), _))
           else if (isRefZero(mi))
             checkKind(mi).map(
-              (
-                StaticFactory(mi, loadInitialValues = Some(loadZeroValue(mi))),
-                _))
+              (StaticFactory(mi, loadInitialValues = Some(loadZeroValue(mi))), _))
           else None
 
         case ti: TypeInsnNode if ti.getOpcode == NEW =>
@@ -1099,9 +1094,7 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
       extends BoxConsumer
 
   /** An extractor method in a Scala module, e.g., `Predef.Integer2int` */
-  case class ModuleGetter(
-      moduleLoad: AbstractInsnNode,
-      consumer: MethodInsnNode)
+  case class ModuleGetter(moduleLoad: AbstractInsnNode, consumer: MethodInsnNode)
       extends BoxConsumer
 
   /** PUTFIELD or setter invocation */

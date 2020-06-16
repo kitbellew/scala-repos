@@ -117,10 +117,7 @@ private[spark] class FileAppender(
 private[spark] object FileAppender extends Logging {
 
   /** Create the right appender based on Spark configuration */
-  def apply(
-      inputStream: InputStream,
-      file: File,
-      conf: SparkConf): FileAppender = {
+  def apply(inputStream: InputStream, file: File, conf: SparkConf): FileAppender = {
 
     import RollingFileAppender._
 
@@ -134,11 +131,11 @@ private[spark] object FileAppender extends Logging {
           logInfo(s"Rolling executor logs enabled for $file with daily rolling")
           Some(24 * 60 * 60 * 1000L, "--yyyy-MM-dd")
         case "hourly" =>
-          logInfo(
-            s"Rolling executor logs enabled for $file with hourly rolling")
+          logInfo(s"Rolling executor logs enabled for $file with hourly rolling")
           Some(60 * 60 * 1000L, "--yyyy-MM-dd--HH")
         case "minutely" =>
-          logInfo(s"Rolling executor logs enabled for $file with rolling every minute")
+          logInfo(
+            s"Rolling executor logs enabled for $file with rolling every minute")
           Some(60 * 1000L, "--yyyy-MM-dd--HH-mm")
         case IntParam(seconds) =>
           logInfo(s"Rolling executor logs enabled for $file with rolling $seconds seconds")

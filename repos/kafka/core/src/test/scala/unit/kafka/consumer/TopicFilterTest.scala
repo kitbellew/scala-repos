@@ -89,12 +89,8 @@ class TopicFilterTest extends JUnitSuite {
   @Test
   def testWildcardTopicCountGetTopicCountMapEscapeJson() {
     def getTopicCountMapKey(regex: String): String = {
-      val topicCount = new WildcardTopicCount(
-        null,
-        "consumerId",
-        new Whitelist(regex),
-        1,
-        true)
+      val topicCount =
+        new WildcardTopicCount(null, "consumerId", new Whitelist(regex), 1, true)
       topicCount.getTopicCountMap.head._1
     }
     //lets make sure that the JSON strings are escaping as we expect

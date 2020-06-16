@@ -145,12 +145,7 @@ private[math] object Elementary {
     } else if (op2.sign == 0) {
       return
     } else if (op1.sign == op2.sign) {
-      add(
-        op1.digits,
-        op1.digits,
-        op1.numberLength,
-        op2.digits,
-        op2.numberLength)
+      add(op1.digits, op1.digits, op1.numberLength, op2.digits, op2.numberLength)
     } else {
       val sign =
         unsignedArraysCompare(
@@ -195,12 +190,7 @@ private[math] object Elementary {
       System.arraycopy(op2.digits, 0, op1.digits, 0, op2.numberLength)
       op1.sign = -op2.sign
     } else if (op1.sign != op2.sign) {
-      add(
-        op1.digits,
-        op1.digits,
-        op1.numberLength,
-        op2.digits,
-        op2.numberLength)
+      add(op1.digits, op1.digits, op1.numberLength, op2.digits, op2.numberLength)
       op1.sign = resultSign
     } else {
       val sign =

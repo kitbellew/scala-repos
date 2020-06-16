@@ -54,8 +54,7 @@ class OsgiActorSystemFactory(
     * Returns a default value of `bundle-&lt;bundle id&gt;-ActorSystem` is no name is being specified
     */
   def actorSystemName(name: Option[String]): String =
-    name.getOrElse(
-      "bundle-%s-ActorSystem".format(context.getBundle.getBundleId))
+    name.getOrElse("bundle-%s-ActorSystem".format(context.getBundle.getBundleId))
 
 }
 

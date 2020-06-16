@@ -27,8 +27,7 @@ package scaladoc {
 
     trait MyComponents {
       def applicationLifecycle: ApplicationLifecycle
-      lazy val component: MyComponent = new MyComponentImpl(
-        applicationLifecycle)
+      lazy val component: MyComponent = new MyComponentImpl(applicationLifecycle)
     }
 //#components-decl
   }

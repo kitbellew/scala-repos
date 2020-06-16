@@ -163,9 +163,7 @@ private[akka] case class ActorMaterializerImpl(
               assignPort(tls.plainOut, publishers(TLSActor.UserOut))
               assignPort(tls.cipherOut, publishers(TLSActor.TransportOut))
 
-              assignPort(
-                tls.plainIn,
-                FanIn.SubInput[Any](impl, TLSActor.UserIn))
+              assignPort(tls.plainIn, FanIn.SubInput[Any](impl, TLSActor.UserIn))
               assignPort(
                 tls.cipherIn,
                 FanIn.SubInput[Any](impl, TLSActor.TransportIn))

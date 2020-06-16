@@ -255,8 +255,7 @@ private[columnar] class BinaryColumnStats extends ColumnStats {
   }
 
   override def collectedStatistics: GenericInternalRow =
-    new GenericInternalRow(
-      Array[Any](null, null, nullCount, count, sizeInBytes))
+    new GenericInternalRow(Array[Any](null, null, nullCount, count, sizeInBytes))
 }
 
 private[columnar] class DecimalColumnStats(precision: Int, scale: Int)
@@ -294,6 +293,5 @@ private[columnar] class ObjectColumnStats(dataType: DataType)
   }
 
   override def collectedStatistics: GenericInternalRow =
-    new GenericInternalRow(
-      Array[Any](null, null, nullCount, count, sizeInBytes))
+    new GenericInternalRow(Array[Any](null, null, nullCount, count, sizeInBytes))
 }

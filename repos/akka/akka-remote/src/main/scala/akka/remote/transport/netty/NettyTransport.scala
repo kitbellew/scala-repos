@@ -14,11 +14,7 @@ import akka.{OnlyCauseStackTrace, ConfigurationException}
 import com.typesafe.config.Config
 import java.net.{SocketAddress, InetAddress, InetSocketAddress}
 import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.{
-  ConcurrentHashMap,
-  Executors,
-  CancellationException
-}
+import java.util.concurrent.{ConcurrentHashMap, Executors, CancellationException}
 import org.jboss.netty.bootstrap.{
   ConnectionlessBootstrap,
   Bootstrap,
@@ -249,8 +245,7 @@ private[netty] trait CommonHandlers extends NettyHelpers {
   */
 private[netty] abstract class ServerHandler(
     protected final val transport: NettyTransport,
-    private final val associationListenerFuture: Future[
-      AssociationEventListener])
+    private final val associationListenerFuture: Future[AssociationEventListener])
     extends NettyServerHelpers
     with CommonHandlers {
 
@@ -295,8 +290,7 @@ private[netty] abstract class ClientHandler(
       channel: Channel,
       remoteSocketAddress: SocketAddress,
       msg: ChannelBuffer): Unit = {
-    init(channel, remoteSocketAddress, remoteAddress, msg)(
-      statusPromise.success)
+    init(channel, remoteSocketAddress, remoteAddress, msg)(statusPromise.success)
   }
 
 }
@@ -425,10 +419,7 @@ class NettyTransport(
     case Tcp ⇒
       val boss, worker = createExecutorService()
       // This does not create a HashedWheelTimer internally
-      new NioServerSocketChannelFactory(
-        boss,
-        worker,
-        ServerSocketWorkerPoolSize)
+      new NioServerSocketChannelFactory(boss, worker, ServerSocketWorkerPoolSize)
     case Udp ⇒
       // This does not create a HashedWheelTimer internally
       new NioDatagramChannelFactory(

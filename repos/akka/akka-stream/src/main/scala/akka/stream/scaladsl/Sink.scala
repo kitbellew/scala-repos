@@ -137,8 +137,7 @@ object Sink {
       .withAttributes(DefaultAttributes.headSink)
       .mapMaterializedValue(e ⇒
         e.map(
-          _.getOrElse(
-            throw new NoSuchElementException("head of empty stream")))(
+          _.getOrElse(throw new NoSuchElementException("head of empty stream")))(
           ExecutionContexts.sameThreadExecutionContext))
 
   /**
@@ -166,8 +165,7 @@ object Sink {
       .withAttributes(DefaultAttributes.lastSink)
       .mapMaterializedValue(e ⇒
         e.map(
-          _.getOrElse(
-            throw new NoSuchElementException("last of empty stream")))(
+          _.getOrElse(throw new NoSuchElementException("last of empty stream")))(
           ExecutionContexts.sameThreadExecutionContext))
 
   /**
@@ -237,23 +235,21 @@ object Sink {
     * Combine several sinks with fun-out strategy like `Broadcast` or `Balance` and returns `Sink`.
     */
   def combine[T, U](first: Sink[U, _], second: Sink[U, _], rest: Sink[U, _]*)(
-      strategy: Int ⇒ Graph[UniformFanOutShape[T, U], NotUsed])
-      : Sink[T, NotUsed] =
-    Sink.fromGraph(GraphDSL.create() { implicit b ⇒
-      import GraphDSL.Implicits._
-      val d = b.add(strategy(rest.size + 2))
-      d.out(0) ~> first
-      d.out(1) ~> second
+      strategy: Int ⇒ Graph[UniformFanOutShape[T, U], NotUsed]): Sink[T, NotUsed] =
+    Sink.fromGraph(GraphDSL.create() {
+      implicit b ⇒
+        import GraphDSL.Implicits._
+        val d = b.add(strategy(rest.size + 2))
+        d.out(0) ~> first
+        d.out(1) ~> second
 
-      @tailrec def combineRest(
-          idx: Int,
-          i: Iterator[Sink[U, _]]): SinkShape[T] =
-        if (i.hasNext) {
-          d.out(idx) ~> i.next()
-          combineRest(idx + 1, i)
-        } else new SinkShape(d.in)
+        @tailrec def combineRest(idx: Int, i: Iterator[Sink[U, _]]): SinkShape[T] =
+          if (i.hasNext) {
+            d.out(idx) ~> i.next()
+            combineRest(idx + 1, i)
+          } else new SinkShape(d.in)
 
-      combineRest(2, rest.iterator)
+        combineRest(2, rest.iterator)
     })
 
   /**

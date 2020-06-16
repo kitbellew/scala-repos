@@ -41,12 +41,7 @@ class JobQueryLoggerSpec extends Specification {
       val clock = Clock.System
       val jobManager = new InMemoryJobManager[Need]
       val jobId = jobManager
-        .createJob(
-          "password",
-          "error-report-spec",
-          "hard",
-          None,
-          Some(clock.now()))
+        .createJob("password", "error-report-spec", "hard", None, Some(clock.now()))
         .copoint
         .id
       val decomposer = new Decomposer[Unit] {
@@ -77,8 +72,9 @@ class JobQueryLoggerSpec extends Specification {
       channels.Info) { (report, msg) => report.info((), msg) }
     "report warn messages to the correct channel" in testChannel(
       channels.Warning) { (report, msg) => report.warn((), msg) }
-    "report error messages to the correct channel" in testChannel(
-      channels.Error) { (report, msg) => report.error((), msg) }
+    "report error messages to the correct channel" in testChannel(channels.Error) {
+      (report, msg) => report.error((), msg)
+    }
     "cancel jobs on a die" in {
       withReport { report =>
         val reason = "Arrrgggggggggggghhhhhhh....."

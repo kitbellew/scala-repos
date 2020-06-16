@@ -58,8 +58,7 @@ class OfferOperationFactory(
           ReservationInfo
             .newBuilder()
             .setPrincipal(principal)
-            .setLabels(
-              TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
+            .setLabels(TaskLabels.labelsForTask(frameworkId, taskId).mesosLabels)
         )
         .build()
     }

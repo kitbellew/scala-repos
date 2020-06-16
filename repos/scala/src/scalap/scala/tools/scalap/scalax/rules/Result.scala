@@ -38,8 +38,7 @@ sealed abstract class Result[+Out, +A, +X] {
       other: => Result[Out2, B, Nothing]): Result[Out2, B, X]
 }
 
-case class Success[+Out, +A](out: Out, value: A)
-    extends Result[Out, A, Nothing] {
+case class Success[+Out, +A](out: Out, value: A) extends Result[Out, A, Nothing] {
   def error = throw new ScalaSigParserError("No error")
 
   def toOption = Some(value)

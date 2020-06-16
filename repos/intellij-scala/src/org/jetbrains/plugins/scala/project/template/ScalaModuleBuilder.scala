@@ -52,8 +52,7 @@ class ScalaModuleBuilder(
     new ScalaStep(settingsStep)
   }
 
-  private class ScalaStep(settingsStep: SettingsStep)
-      extends ModuleWizardStep() {
+  private class ScalaStep(settingsStep: SettingsStep) extends ModuleWizardStep() {
     private val javaStep = JavaModuleType.getModuleType.modifyProjectTypeStep(
       settingsStep,
       ScalaModuleBuilder.this)

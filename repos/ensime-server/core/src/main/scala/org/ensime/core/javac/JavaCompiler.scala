@@ -203,8 +203,7 @@ class JavaCompiler(
     try {
       task.parse()
       task.analyze()
-      log.info(
-        "Parsed and analyzed: " + (System.currentTimeMillis() - t) + "ms")
+      log.info("Parsed and analyzed: " + (System.currentTimeMillis() - t) + "ms")
     } catch {
       case e @ (_: Abort | _: ArrayIndexOutOfBoundsException |
           _: AssertionError) =>

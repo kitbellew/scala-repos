@@ -130,8 +130,7 @@ class AllProjectHighlightingTest
             range: TextRange,
             message: String): Annotation = {
           errorCount += 1
-          println(
-            s"Error in ${file.getName}. Range: $range. Message: $message.")
+          println(s"Error in ${file.getName}. Range: $range. Message: $message.")
           super.createErrorAnnotation(range, message)
         }
 

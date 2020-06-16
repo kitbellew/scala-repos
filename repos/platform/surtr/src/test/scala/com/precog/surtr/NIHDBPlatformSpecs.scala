@@ -118,10 +118,8 @@ trait NIHDBTestActors
     TestStack.testAPIKey,
     Some("/"))
   val apiKeyFinder = new StaticAPIKeyFinder[Future](TestStack.testAPIKey)
-  val permissionsFinder = new PermissionsFinder(
-    apiKeyFinder,
-    accountFinder,
-    yggConfig.clock.instant())
+  val permissionsFinder =
+    new PermissionsFinder(apiKeyFinder, accountFinder, yggConfig.clock.instant())
   val jobManager = new InMemoryJobManager[Future]
 
   val masterChef = actorSystem.actorOf(

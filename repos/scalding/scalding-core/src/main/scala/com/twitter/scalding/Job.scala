@@ -497,8 +497,9 @@ abstract class ExecutionJob[+T](args: Args) extends Job(args) {
   def result: Future[T] = resultPromise.future
 
   override def buildFlow: Flow[_] =
-    sys.error("ExecutionJobs do not have a single accessible flow. " +
-      "You cannot print the graph as it may be dynamically built or recurrent")
+    sys.error(
+      "ExecutionJobs do not have a single accessible flow. " +
+        "You cannot print the graph as it may be dynamically built or recurrent")
 
   final override def run = {
     val r = Config

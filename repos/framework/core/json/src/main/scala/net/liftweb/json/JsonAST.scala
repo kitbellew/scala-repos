@@ -135,9 +135,7 @@ object JsonAST {
         case _         => Nil
       }
 
-    private def findDirect(
-        xs: List[JValue],
-        p: JValue => Boolean): List[JValue] =
+    private def findDirect(xs: List[JValue], p: JValue => Boolean): List[JValue] =
       xs.flatMap {
         case JObject(l) =>
           l.collect {

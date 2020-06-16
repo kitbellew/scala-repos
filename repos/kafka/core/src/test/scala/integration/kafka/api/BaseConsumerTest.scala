@@ -305,10 +305,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
     sendRecords(5)
     consumer0.subscribe(List(topic).asJava)
-    consumeAndVerifyRecords(
-      consumer = consumer0,
-      numRecords = 5,
-      startingOffset = 0)
+    consumeAndVerifyRecords(consumer = consumer0, numRecords = 5, startingOffset = 0)
     consumer0.pause(List(tp).asJava)
 
     // subscribe to a new topic to trigger a rebalance
@@ -316,10 +313,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
 
     // after rebalance, our position should be reset and our pause state lost,
     // so we should be able to consume from the beginning
-    consumeAndVerifyRecords(
-      consumer = consumer0,
-      numRecords = 0,
-      startingOffset = 5)
+    consumeAndVerifyRecords(consumer = consumer0, numRecords = 0, startingOffset = 5)
   }
 
   protected class TestConsumerReassignmentListener
@@ -389,9 +383,7 @@ abstract class BaseConsumerTest extends IntegrationTestHarness with Logging {
       assertEquals(s"value $keyAndValueIndex", new String(record.value))
       // this is true only because K and V are byte arrays
       assertEquals(s"key $keyAndValueIndex".length, record.serializedKeySize)
-      assertEquals(
-        s"value $keyAndValueIndex".length,
-        record.serializedValueSize)
+      assertEquals(s"value $keyAndValueIndex".length, record.serializedValueSize)
     }
   }
 

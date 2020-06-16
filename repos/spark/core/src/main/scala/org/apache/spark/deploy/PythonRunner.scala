@@ -125,8 +125,7 @@ object PythonRunner {
 
     // Guard against malformed paths potentially throwing NPE
     if (formattedPath == null) {
-      throw new IllegalArgumentException(
-        s"Python file path is malformed: $path")
+      throw new IllegalArgumentException(s"Python file path is malformed: $path")
     }
 
     // In Windows, the drive should not be prefixed with "/"

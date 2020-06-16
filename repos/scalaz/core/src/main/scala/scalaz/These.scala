@@ -353,8 +353,7 @@ sealed abstract class TheseInstances extends TheseInstances0 {
 
 sealed abstract class TheseInstances0 extends TheseInstances1 {
 
-  implicit def TheseInstance0[L: Semigroup]
-      : Monad[L \&/ ?] with BindRec[L \&/ ?] =
+  implicit def TheseInstance0[L: Semigroup]: Monad[L \&/ ?] with BindRec[L \&/ ?] =
     new Monad[L \&/ ?] with BindRec[L \&/ ?] {
       def tailrecM[A, B](f: A => L \&/ (A \/ B))(a: A): L \&/ B =
         \&/.tailrecM(f)(a)
@@ -453,8 +452,6 @@ sealed abstract class TheseInstances1 {
       SB: Semigroup[B]): Semigroup[A \&/ B] =
     Semigroup.instance(_.append(_))
 
-  implicit def TheseShow[A, B](implicit
-      SA: Show[A],
-      SB: Show[B]): Show[A \&/ B] =
+  implicit def TheseShow[A, B](implicit SA: Show[A], SB: Show[B]): Show[A \&/ B] =
     Show.show(_.show)
 }

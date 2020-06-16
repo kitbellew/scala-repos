@@ -134,8 +134,7 @@ class U64Test extends WordSpec {
       (0 until 10000).foreach { _ =>
         val id = rng.nextLong
         assert(id == (id.toU64ByteArray.toU64Long))
-        assert(
-          id == (id.toU64ByteArray.toU64HexString.toU64ByteArray.toU64Long))
+        assert(id == (id.toU64ByteArray.toU64HexString.toU64ByteArray.toU64Long))
       }
     }
 

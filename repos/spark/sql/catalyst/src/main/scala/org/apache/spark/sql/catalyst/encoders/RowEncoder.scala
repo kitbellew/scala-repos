@@ -108,10 +108,7 @@ object RowEncoder {
               inputObject :: Nil,
               dataType = t)
           case _ =>
-            MapObjects(
-              extractorsFor(_, et),
-              inputObject,
-              externalDataTypeFor(et))
+            MapObjects(extractorsFor(_, et), inputObject, externalDataTypeFor(et))
         }
 
       case t @ MapType(kt, vt, valueNullable) =>

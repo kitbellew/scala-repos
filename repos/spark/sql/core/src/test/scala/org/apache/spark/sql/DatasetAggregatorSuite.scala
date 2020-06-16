@@ -169,9 +169,7 @@ class DatasetAggregatorSuite extends QueryTest with SharedSQLContext {
     val ds = Seq(1, 3, 2, 5).toDS()
 
     checkDataset(ds.select(sum((i: Int) => i)), 11)
-    checkDataset(
-      ds.select(sum((i: Int) => i), sum((i: Int) => i * 2)),
-      11 -> 22)
+    checkDataset(ds.select(sum((i: Int) => i), sum((i: Int) => i * 2)), 11 -> 22)
   }
 
   test("typed aggregation: class input") {

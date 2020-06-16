@@ -49,9 +49,7 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
 
     whiteSpaceAfterCaret =
       text.substring(caretOffset).takeWhile(c => c == ' ' || c == '\t')
-    document.deleteString(
-      caretOffset,
-      caretOffset + whiteSpaceAfterCaret.length)
+    document.deleteString(caretOffset, caretOffset + whiteSpaceAfterCaret.length)
 
     if ((ch1 != '(' || ch2 != ')') && (ch1 != '{' || ch2 != '}') || !CodeInsightSettings.getInstance.SMART_INDENT_ON_ENTER)
       return Result.Continue
@@ -222,8 +220,7 @@ class MultilineStringEnterHandler extends EnterHandlerDelegateAdapter {
           prevIndent + needInsertIndentInt + interpolatorPrefixLength(
             literal) + marginIndent
 
-        if (literal.getText.substring(
-            offset - literalOffset) == multilineQuotes) {
+        if (literal.getText.substring(offset - literalOffset) == multilineQuotes) {
           forceIndent(caretOffset, indentSize, marginCharOpt)
           caretMarker.setGreedyToRight(false)
           insertNewLine(

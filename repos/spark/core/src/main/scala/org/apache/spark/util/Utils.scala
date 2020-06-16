@@ -334,9 +334,7 @@ private[spark] object Utils extends Logging {
     * Note this relies on the Authenticator.setDefault being set properly to decode
     * the user name and password. This is currently set in the SecurityManager.
     */
-  def constructURIForAuthentication(
-      uri: URI,
-      securityMgr: SecurityManager): URI = {
+  def constructURIForAuthentication(uri: URI, securityMgr: SecurityManager): URI = {
     val userCred = securityMgr.getSecretKey()
     if (userCred == null)
       throw new Exception("Secret key is null with authentication on")
@@ -758,8 +756,7 @@ private[spark] object Utils extends Logging {
       conf.getenv("SPARK_EXECUTOR_DIRS").split(File.pathSeparator)
     } else if (conf.getenv("SPARK_LOCAL_DIRS") != null) {
       conf.getenv("SPARK_LOCAL_DIRS").split(",")
-    } else if (conf.getenv(
-        "MESOS_DIRECTORY") != null && !shuffleServiceEnabled) {
+    } else if (conf.getenv("MESOS_DIRECTORY") != null && !shuffleServiceEnabled) {
       // Mesos already creates a directory per Mesos task. Spark should use that directory
       // instead so all temporary files are automatically cleaned up when the Mesos task ends.
       // Note that we don't want this if the shuffle service is enabled because we want to
@@ -864,8 +861,7 @@ private[spark] object Utils extends Logging {
 
         for (ni <- reOrderedNetworkIFs) {
           val addresses = ni.getInetAddresses.asScala
-            .filterNot(addr =>
-              addr.isLinkLocalAddress || addr.isLoopbackAddress)
+            .filterNot(addr => addr.isLinkLocalAddress || addr.isLoopbackAddress)
             .toSeq
           if (addresses.nonEmpty) {
             val addr = addresses
@@ -1260,9 +1256,7 @@ private[spark] object Utils extends Logging {
           sc.stop()
         }
         if (!NonFatal(t)) {
-          logError(
-            s"throw uncaught fatal error in thread $currentThreadName",
-            t)
+          logError(s"throw uncaught fatal error in thread $currentThreadName", t)
           throw t
         }
     }
@@ -1408,8 +1402,8 @@ private[spark] object Utils extends Logging {
     *
     * @param skipClass Function that is used to exclude non-user-code classes.
     */
-  def getCallSite(skipClass: String => Boolean = sparkInternalExclusionFunction)
-      : CallSite = {
+  def getCallSite(
+      skipClass: String => Boolean = sparkInternalExclusionFunction): CallSite = {
     // Keep crawling up the stack trace until we find the first function not inside of the spark
     // package. We track the last (shallowest) contiguous Spark method. This might be an RDD
     // transformation, a SparkContext function (such as parallelize), or anything else that leads
@@ -1537,7 +1531,8 @@ private[spark] object Utils extends Logging {
             effectiveEndIndex))
       }
       sum += fileToLength(file)
-      logDebug(s"After processing file $file, string built is ${stringBuffer.toString}")
+      logDebug(
+        s"After processing file $file, string built is ${stringBuffer.toString}")
     }
     stringBuffer.toString
   }

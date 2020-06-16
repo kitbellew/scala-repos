@@ -6,9 +6,7 @@ import lila.team.Team
 
 import play.api.libs.json._
 
-final class TeamSearchApi(
-    client: ESClient,
-    fetcher: Seq[String] => Fu[List[Team]])
+final class TeamSearchApi(client: ESClient, fetcher: Seq[String] => Fu[List[Team]])
     extends SearchReadApi[Team, Query] {
 
   def search(query: Query, from: From, size: Size) =

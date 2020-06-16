@@ -190,8 +190,9 @@ object FormFieldDirectives extends FormFieldDirectives {
       extractField[NameUnmarshallerReceptacle[T], T] { nr ⇒
         filter(nr.name, StrictForm.Field.unmarshallerFromFSU(nr.um))
       }
-    implicit def forNOR[T](implicit sfu: SFU, fu: FSFFOU[T])
-        : FieldDefAux[NameOptionReceptacle[T], Directive1[Option[T]]] =
+    implicit def forNOR[T](implicit
+        sfu: SFU,
+        fu: FSFFOU[T]): FieldDefAux[NameOptionReceptacle[T], Directive1[Option[T]]] =
       extractField[NameOptionReceptacle[T], Option[T]] { nr ⇒
         filter[Option[T]](nr.name, fu)
       }
@@ -201,16 +202,15 @@ object FormFieldDirectives extends FormFieldDirectives {
       extractField[NameDefaultReceptacle[T], T] { nr ⇒
         filter(nr.name, fu withDefaultValue nr.default)
       }
-    implicit def forNOUR[T](implicit sfu: SFU): FieldDefAux[
-      NameOptionUnmarshallerReceptacle[T],
-      Directive1[Option[T]]] =
+    implicit def forNOUR[T](implicit sfu: SFU)
+        : FieldDefAux[NameOptionUnmarshallerReceptacle[T], Directive1[Option[T]]] =
       extractField[NameOptionUnmarshallerReceptacle[T], Option[T]] { nr ⇒
         filter[Option[T]](
           nr.name,
           StrictForm.Field.unmarshallerFromFSU(nr.um): FSFFOU[T])
       }
-    implicit def forNDUR[T](implicit sfu: SFU)
-        : FieldDefAux[NameDefaultUnmarshallerReceptacle[T], Directive1[T]] =
+    implicit def forNDUR[T](implicit
+        sfu: SFU): FieldDefAux[NameDefaultUnmarshallerReceptacle[T], Directive1[T]] =
       extractField[NameDefaultUnmarshallerReceptacle[T], T] { nr ⇒
         filter(
           nr.name,

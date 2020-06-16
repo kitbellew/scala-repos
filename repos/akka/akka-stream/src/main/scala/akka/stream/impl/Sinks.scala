@@ -108,8 +108,7 @@ private[akka] final class FanoutPublisherSink[In](
     val fanoutProcessor = ActorProcessorFactory[In, In](
       actorMaterializer.actorOf(
         context,
-        FanoutProcessorImpl.props(
-          actorMaterializer.effectiveSettings(attributes))))
+        FanoutProcessorImpl.props(actorMaterializer.effectiveSettings(attributes))))
     (fanoutProcessor, fanoutProcessor)
   }
 
@@ -321,9 +320,7 @@ private[akka] final class HeadOptionStage[T]
 }
 
 private[akka] final class SeqStage[T]
-    extends GraphStageWithMaterializedValue[
-      SinkShape[T],
-      Future[immutable.Seq[T]]] {
+    extends GraphStageWithMaterializedValue[SinkShape[T], Future[immutable.Seq[T]]] {
   val in = Inlet[T]("seq.in")
 
   override def toString: String = "SeqStage"
@@ -414,8 +411,9 @@ final private[stream] class QueueSink[T]()
         getAsyncCallback(promise ⇒
           currentRequest match {
             case Some(_) ⇒
-              promise.failure(new IllegalStateException(
-                "You have to wait for previous future to be resolved to send another request"))
+              promise.failure(
+                new IllegalStateException(
+                  "You have to wait for previous future to be resolved to send another request"))
             case None ⇒
               if (buffer.isEmpty) currentRequest = Some(promise)
               else {

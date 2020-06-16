@@ -192,8 +192,7 @@ trait AccountService
                 }
               } ~
                 orFail { req: HttpRequest[ByteChunk] =>
-                  self.logger.error(
-                    "Request " + req + " could not be serviced.")
+                  self.logger.error("Request " + req + " could not be serviced.")
                   (
                     HttpStatusCodes.NotFound,
                     "Request " + req + " could not be serviced.")

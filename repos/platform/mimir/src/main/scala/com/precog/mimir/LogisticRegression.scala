@@ -138,10 +138,7 @@ trait LogisticRegressionLibModule[M[+_]]
         }
       }
 
-      def gradient(
-          seq: Seq[ColumnValues],
-          theta: Theta,
-          alpha: Double): Theta = {
+      def gradient(seq: Seq[ColumnValues], theta: Theta, alpha: Double): Theta = {
         if (seq.isEmpty) {
           sys.error("empty sequence should never occur")
         } else {
@@ -154,8 +151,7 @@ trait LogisticRegressionLibModule[M[+_]]
 
               val result = (0 until xs.length)
                 .map { i =>
-                  theta(i) - alpha * (y - sigmoid(dotProduct(theta, xs))) * xs(
-                    i)
+                  theta(i) - alpha * (y - sigmoid(dotProduct(theta, xs))) * xs(i)
                 }
                 .map(checkValue)
 

@@ -198,10 +198,7 @@ class ActivityTest extends FunSuite {
     assert(ref.get == Seq(Activity.Pending, Activity.Pending))
     bw.notify(Return("ok"))
     assert(
-      ref.get == Seq(
-        Activity.Pending,
-        Activity.Pending,
-        Activity.Ok((1, "ok"))))
+      ref.get == Seq(Activity.Pending, Activity.Pending, Activity.Ok((1, "ok"))))
 
     val exc = new Exception
     aw.notify(Throw(exc))

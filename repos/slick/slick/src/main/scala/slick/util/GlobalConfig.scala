@@ -64,9 +64,7 @@ class ConfigExtensionMethods(val c: Config) extends AnyVal {
     if (c.hasPath(path)) c.getDuration(path, TimeUnit.MILLISECONDS) else default
   def getDurationOr(path: String, default: => Duration = Duration.Zero) =
     if (c.hasPath(path))
-      Duration(
-        c.getDuration(path, TimeUnit.MILLISECONDS),
-        TimeUnit.MILLISECONDS)
+      Duration(c.getDuration(path, TimeUnit.MILLISECONDS), TimeUnit.MILLISECONDS)
     else default
 
   def getPropertiesOr(path: String, default: => Properties = null): Properties =

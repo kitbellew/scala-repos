@@ -172,8 +172,8 @@ object FormSpec extends Specification {
       ) // is ONLY defined in messages.fr
     }
     "have an error due to missing required value" in new WithApplication() {
-      val req = dummyRequest(
-        Map("id" -> Array("1234567891x"), "name" -> Array("peter")))
+      val req =
+        dummyRequest(Map("id" -> Array("1234567891x"), "name" -> Array("peter")))
       Context.current.set(
         new Context(
           666,
@@ -327,8 +327,8 @@ object FormSpec extends Specification {
 
       val user2 = formFactory
         .form(classOf[AnotherUser])
-        .bindFromRequest(dummyRequest(
-          Map("name" -> Array("Kiki"), "company" -> Array("Acme"))))
+        .bindFromRequest(
+          dummyRequest(Map("name" -> Array("Kiki"), "company" -> Array("Acme"))))
         .get
       user2.getCompany.get must beEqualTo("Acme")
     }
@@ -431,8 +431,7 @@ object FormSpec extends Specification {
 
       "render the right number of fields if there's multiple sub fields at a given index when filled from a value" in {
         render(
-          form.fill(
-            new JavaForm(List(new JavaSubForm("somea", "someb")).asJava))
+          form.fill(new JavaForm(List(new JavaSubForm("somea", "someb")).asJava))
         ) must exactly("foo[0].a=somea,foo[0].b=someb")
       }
 

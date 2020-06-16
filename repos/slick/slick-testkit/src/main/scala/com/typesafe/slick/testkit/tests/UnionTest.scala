@@ -5,8 +5,7 @@ import com.typesafe.slick.testkit.util.{RelationalTestDB, AsyncTest}
 class UnionTest extends AsyncTest[RelationalTestDB] {
   import tdb.profile.api._
 
-  class Managers(tag: Tag)
-      extends Table[(Int, String, String)](tag, "managers") {
+  class Managers(tag: Tag) extends Table[(Int, String, String)](tag, "managers") {
     def id = column[Int]("id")
     def name = column[String]("name")
     def department = column[String]("department")
@@ -66,15 +65,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
       _ <- mark("q4b", q4b.result).map(r => r.toSet shouldBe Set(1, 2, 3))
       _ <- mark("q4c", q4c.result).map(r => r.toSet shouldBe Set(1, 2, 3))
       _ <- mark("q5", q5.result).map(r =>
-        r.toSet shouldBe Set(
-          (7, 7),
-          (6, 6),
-          (2, 0),
-          (4, 4),
-          (3, 0),
-          (8, 8),
-          (5, 5),
-          (1, 0)))
+        r.toSet shouldBe Set((7, 7), (6, 6), (2, 0), (4, 4), (3, 0), (8, 8), (5, 5), (1, 0)))
     } yield ()) andFinally (managers.schema ++ employees.schema).drop
   }
 
@@ -89,8 +80,7 @@ class UnionTest extends AsyncTest[RelationalTestDB] {
         (2, "Amy", "IT"),
         (3, "Steve", "IT")
       ),
-      q.result.map(r =>
-        r.toSet shouldBe Set((1, "Peter", "HR"), (2, "Amy", "IT")))
+      q.result.map(r => r.toSet shouldBe Set((1, "Peter", "HR"), (2, "Amy", "IT")))
     ) andFinally managers.schema.drop
   }
 

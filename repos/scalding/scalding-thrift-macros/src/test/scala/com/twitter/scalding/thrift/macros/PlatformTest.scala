@@ -56,8 +56,8 @@ class PlatformTest
   org.apache.log4j.Logger
     .getLogger("org.mortbay")
     .setLevel(org.apache.log4j.Level.FATAL)
-  implicit def toScroogeInternalOrderedSerialization[T]: OrderedSerialization[
-    T] = macro ScroogeInternalOrderedSerializationImpl[T]
+  implicit def toScroogeInternalOrderedSerialization[T]: OrderedSerialization[T] =
+    macro ScroogeInternalOrderedSerializationImpl[T]
 
   import ScroogeGenerators._
 

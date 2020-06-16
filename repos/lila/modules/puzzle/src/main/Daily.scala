@@ -51,8 +51,7 @@ private[puzzle] final class Daily(
     coll
       .find(
         BSONDocument(
-          "day" -> BSONDocument(
-            "$gt" -> DateTime.now.minusMinutes(24 * 60 - 15)))
+          "day" -> BSONDocument("$gt" -> DateTime.now.minusMinutes(24 * 60 - 15)))
       )
       .one[Puzzle]
 

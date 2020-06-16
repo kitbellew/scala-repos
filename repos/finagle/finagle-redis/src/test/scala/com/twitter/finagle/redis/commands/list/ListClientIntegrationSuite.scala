@@ -88,10 +88,7 @@ final class ListClientIntegrationSuite extends RedisClientTest {
     }
   }
 
-  test(
-    "Correctly insert before & after a pushed element",
-    RedisTest,
-    ClientTest) {
+  test("Correctly insert before & after a pushed element", RedisTest, ClientTest) {
     withRedisClient { client =>
       val key = string2ChanBuf("linsert")
       val PivotFailureMessage = "Pivot not found"

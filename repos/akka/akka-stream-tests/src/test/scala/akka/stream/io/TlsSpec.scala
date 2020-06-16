@@ -282,8 +282,7 @@ class TlsSpec
               bytes.map(b ⇒ SessionBytes(s, ByteString(b)))
           }
           .take(5)
-          .mapAsync(5)(x ⇒
-            later(500.millis, system.scheduler)(Future.successful(x)))
+          .mapAsync(5)(x ⇒ later(500.millis, system.scheduler)(Future.successful(x)))
           .via(super.flow)
       override def rightClosing = IgnoreCancel
 
@@ -301,8 +300,7 @@ class TlsSpec
               bytes.map(b ⇒ SessionBytes(s, ByteString(b)))
           }
           .take(5)
-          .mapAsync(5)(x ⇒
-            later(500.millis, system.scheduler)(Future.successful(x)))
+          .mapAsync(5)(x ⇒ later(500.millis, system.scheduler)(Future.successful(x)))
           .via(super.flow)
       override def rightClosing = IgnoreBoth
 
@@ -446,8 +444,8 @@ class TlsSpec
         .bind("localhost", 0)
         .map(c ⇒ {
           c.flow
-            .joinMat(serverTls(IgnoreBoth).reversed.joinMat(simple)(
-              Keep.right))(Keep.right)
+            .joinMat(serverTls(IgnoreBoth).reversed.joinMat(simple)(Keep.right))(
+              Keep.right)
             .run()
         })
         .toMat(Sink.head)(Keep.both)

@@ -58,11 +58,7 @@ class ReceiverSchedulingPolicySuite extends SparkFunSuite {
       (1 to 5).map(i => ExecutorCacheTaskLocation(s"host$i", s"$i"))
     // executor 1 is busy, others are idle.
     val receiverTrackingInfoMap = Map(
-      0 -> ReceiverTrackingInfo(
-        0,
-        ReceiverState.ACTIVE,
-        None,
-        Some(executors(0))))
+      0 -> ReceiverTrackingInfo(0, ReceiverState.ACTIVE, None, Some(executors(0))))
     val scheduledLocations = receiverSchedulingPolicy.rescheduleReceiver(
       1,
       None,

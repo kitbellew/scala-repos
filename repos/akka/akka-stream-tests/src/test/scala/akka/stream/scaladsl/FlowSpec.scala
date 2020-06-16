@@ -48,9 +48,7 @@ class FlowSpec
   val identity2: Flow[Any, Any, NotUsed] ⇒ Flow[Any, Any, NotUsed] = in ⇒
     identity(in)
 
-  class BrokenActorInterpreter(
-      _shell: GraphInterpreterShell,
-      brokenMessage: Any)
+  class BrokenActorInterpreter(_shell: GraphInterpreterShell, brokenMessage: Any)
       extends ActorGraphInterpreter(_shell) {
 
     override protected[akka] def aroundReceive(receive: Receive, msg: Any) = {
@@ -145,9 +143,7 @@ class FlowSpec
 
     "request more elements from upstream when downstream requests more elements" in {
       new ChainSetup(identity, settings, toPublisher) {
-        upstream.expectRequest(
-          upstreamSubscription,
-          settings.maxInputBufferSize)
+        upstream.expectRequest(upstreamSubscription, settings.maxInputBufferSize)
         downstreamSubscription.request(1)
         upstream.expectNoMsg(100.millis)
         downstreamSubscription.request(2)
@@ -579,8 +575,7 @@ class FlowSpec
         val downstream3 = TestSubscriber.manualProbe[Any]()
         publisher.subscribe(downstream3)
         downstream3.expectSubscription()
-        downstream3.expectError() should ===(
-          ActorPublisher.NormalShutdownReason)
+        downstream3.expectError() should ===(ActorPublisher.NormalShutdownReason)
       }
     }
 

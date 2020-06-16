@@ -58,7 +58,8 @@ class LBFGSSuite
 
   lazy val dataRDD = sc.parallelize(data, 2).cache()
 
-  test("LBFGS loss should be decreasing and match the result of Gradient Descent.") {
+  test(
+    "LBFGS loss should be decreasing and match the result of Gradient Descent.") {
     val regParam = 0
 
     val initialWeightsWithIntercept =

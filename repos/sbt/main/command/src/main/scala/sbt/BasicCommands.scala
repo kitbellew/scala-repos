@@ -295,9 +295,7 @@ object BasicCommands {
           s
         }
     }
-  private def readMessage(
-      port: Int,
-      previousSuccess: Boolean): Option[String] = {
+  private def readMessage(port: Int, previousSuccess: Boolean): Option[String] = {
     // split into two connections because this first connection ends the previous communication
     xsbt.IPC.client(port) { _.send(previousSuccess.toString) }
     //   and this second connection starts the next communication
@@ -343,8 +341,7 @@ object BasicCommands {
 
   def removeAliases(s: State): State = removeTagged(s, CommandAliasKey)
   def removeAlias(s: State, name: String): State =
-    s.copy(definedCommands = s.definedCommands.filter(c =>
-      !isAliasNamed(name, c)))
+    s.copy(definedCommands = s.definedCommands.filter(c => !isAliasNamed(name, c)))
 
   def removeTagged(s: State, tag: AttributeKey[_]): State =
     s.copy(definedCommands = removeTagged(s.definedCommands, tag))
@@ -367,9 +364,7 @@ object BasicCommands {
 
   def aliasNames(s: State): Seq[String] = allAliases(s).map(_._1)
   def allAliases(s: State): Seq[(String, String)] = aliases(s, (n, v) => true)
-  def aliases(
-      s: State,
-      pred: (String, String) => Boolean): Seq[(String, String)] =
+  def aliases(s: State, pred: (String, String) => Boolean): Seq[(String, String)] =
     s.definedCommands.flatMap(c => getAlias(c).filter(tupled(pred)))
 
   def newAlias(name: String, value: String): Command =

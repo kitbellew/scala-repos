@@ -188,10 +188,8 @@ object zipper {
         R0 <: HList](implicit
         split: SplitLeft.Aux[L, T, RP, R0],
         reverse: ReversePrepend[RP, R],
-        cons: IsHCons[R0]): Aux[
-      Zipper[C, L, R, P],
-      T,
-      Zipper[C, cons.T, cons.H :: reverse.Out, P]] =
+        cons: IsHCons[R0])
+        : Aux[Zipper[C, L, R, P], T, Zipper[C, cons.T, cons.H :: reverse.Out, P]] =
       new LeftTo[Zipper[C, L, R, P], T] {
         type Out = Zipper[C, cons.T, cons.H :: reverse.Out, P]
         def apply(z: Zipper[C, L, R, P]) = {
@@ -326,10 +324,7 @@ object zipper {
 
     implicit def modify[C, L <: HList, RH1, RT <: HList, P, RH2](implicit
         get: Get.Aux[Zipper[C, L, RH1 :: RT, P], RH1],
-        put: Put.Aux[
-          Zipper[C, L, RH1 :: RT, P],
-          RH2,
-          Zipper[C, L, RH2 :: RT, P]]
+        put: Put.Aux[Zipper[C, L, RH1 :: RT, P], RH2, Zipper[C, L, RH2 :: RT, P]]
     ): Aux[Zipper[C, L, RH1 :: RT, P], RH1, RH2, Zipper[C, L, RH2 :: RT, P]] =
       new Modify[Zipper[C, L, RH1 :: RT, P], RH1, RH2] {
         type Out = Zipper[C, L, RH2 :: RT, P]

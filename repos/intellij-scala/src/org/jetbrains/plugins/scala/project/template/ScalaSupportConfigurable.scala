@@ -3,10 +3,7 @@ package project.template
 
 import com.intellij.framework.addSupport.FrameworkSupportInModuleConfigurable
 import com.intellij.openapi.module.Module
-import com.intellij.openapi.roots.{
-  ModifiableModelsProvider,
-  ModifiableRootModel
-}
+import com.intellij.openapi.roots.{ModifiableModelsProvider, ModifiableRootModel}
 
 /**
   * @author Pavel Fatin

@@ -417,9 +417,7 @@ object KafkaCluster {
     * Simple consumers connect directly to brokers, but need many of the same configs.
     * This subclass won't warn about missing ZK params, or presence of broker params.
     */
-  class SimpleConsumerConfig private (
-      brokers: String,
-      originalProps: Properties)
+  class SimpleConsumerConfig private (brokers: String, originalProps: Properties)
       extends ConsumerConfig(originalProps) {
     val seedBrokers: Array[(String, Int)] = brokers.split(",").map { hp =>
       val hpa = hp.split(":")

@@ -283,12 +283,9 @@ class HashVectorOps_FloatTest
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
-          HashVector(N)(
-            xl.map(i => (i % N).abs -> math.random.toFloat * x): _*),
-          HashVector(N)(
-            yl.map(i => (i % N).abs -> math.random.toFloat * y): _*),
-          HashVector(N)(
-            zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
+          HashVector(N)(xl.map(i => (i % N).abs -> math.random.toFloat * x): _*),
+          HashVector(N)(yl.map(i => (i % N).abs -> math.random.toFloat * y): _*),
+          HashVector(N)(zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
       }
     }
   }
@@ -318,12 +315,9 @@ class HashVectorOps_IntTest
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
-          HashVector(N)(
-            xl.map(i => (i % N).abs -> (math.random * x).toInt): _*),
-          HashVector(N)(
-            yl.map(i => (i % N).abs -> (math.random * y).toInt): _*),
-          HashVector(N)(
-            zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
+          HashVector(N)(xl.map(i => (i % N).abs -> (math.random * x).toInt): _*),
+          HashVector(N)(yl.map(i => (i % N).abs -> (math.random * y).toInt): _*),
+          HashVector(N)(zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
       }
     }
   }
@@ -338,8 +332,8 @@ class HashVectorOps_ComplexTest
   val space = HashVector.space[Complex]
 
   val N = 30
-  implicit def genTriple: Arbitrary[
-    (HashVector[Complex], HashVector[Complex], HashVector[Complex])] = {
+  implicit def genTriple
+      : Arbitrary[(HashVector[Complex], HashVector[Complex], HashVector[Complex])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Complex]

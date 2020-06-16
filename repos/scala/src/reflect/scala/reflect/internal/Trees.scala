@@ -581,8 +581,7 @@ trait Trees extends api.Trees {
 
   // TODO remove this class, add a tree attachment to Apply to track whether implicits were involved
   // copying trees will all too easily forget to distinguish subclasses
-  class ApplyToImplicitArgs(fun: Tree, args: List[Tree])
-      extends Apply(fun, args)
+  class ApplyToImplicitArgs(fun: Tree, args: List[Tree]) extends Apply(fun, args)
 
   // TODO remove this class, add a tree attachment to Apply to track whether implicits were involved
   // copying trees will all too easily forget to distinguish subclasses
@@ -787,11 +786,7 @@ trait Trees extends api.Trees {
       new LabelDef(name.toTermName, params, rhs).copyAttrs(tree)
     def Import(tree: Tree, expr: Tree, selectors: List[ImportSelector]) =
       new Import(expr, selectors).copyAttrs(tree)
-    def Template(
-        tree: Tree,
-        parents: List[Tree],
-        self: ValDef,
-        body: List[Tree]) =
+    def Template(tree: Tree, parents: List[Tree], self: ValDef, body: List[Tree]) =
       new Template(parents, self, body).copyAttrs(tree)
     def Block(tree: Tree, stats: List[Tree], expr: Tree) =
       new Block(stats, expr).copyAttrs(tree)
@@ -867,10 +862,7 @@ trait Trees extends api.Trees {
       new AppliedTypeTree(tpt, args).copyAttrs(tree)
     def TypeBoundsTree(tree: Tree, lo: Tree, hi: Tree) =
       new TypeBoundsTree(lo, hi).copyAttrs(tree)
-    def ExistentialTypeTree(
-        tree: Tree,
-        tpt: Tree,
-        whereClauses: List[MemberDef]) =
+    def ExistentialTypeTree(tree: Tree, tpt: Tree, whereClauses: List[MemberDef]) =
       new ExistentialTypeTree(tpt, whereClauses).copyAttrs(tree)
   }
 
@@ -950,11 +942,7 @@ trait Trees extends api.Trees {
           t
         case _ => treeCopy.Import(tree, expr, selectors)
       }
-    def Template(
-        tree: Tree,
-        parents: List[Tree],
-        self: ValDef,
-        body: List[Tree]) =
+    def Template(tree: Tree, parents: List[Tree], self: ValDef, body: List[Tree]) =
       tree match {
         case t @ Template(parents0, self0, body0)
             if (parents0 == parents) && (self0 == self) && (body0 == body) =>
@@ -1158,10 +1146,7 @@ trait Trees extends api.Trees {
         case t @ TypeBoundsTree(lo0, hi0) if (lo0 == lo) && (hi0 == hi) => t
         case _                                                          => treeCopy.TypeBoundsTree(tree, lo, hi)
       }
-    def ExistentialTypeTree(
-        tree: Tree,
-        tpt: Tree,
-        whereClauses: List[MemberDef]) =
+    def ExistentialTypeTree(tree: Tree, tpt: Tree, whereClauses: List[MemberDef]) =
       tree match {
         case t @ ExistentialTypeTree(tpt0, whereClauses0)
             if (tpt0 == tpt) && (whereClauses0 == whereClauses) =>
@@ -1191,10 +1176,7 @@ trait Trees extends api.Trees {
     *    '''Note:''' the typechecker drops these annotations,
     *    use the AnnotationInfo's (Symbol.annotations) in later phases.
     */
-  case class Modifiers(
-      flags: Long,
-      privateWithin: Name,
-      annotations: List[Tree])
+  case class Modifiers(flags: Long, privateWithin: Name, annotations: List[Tree])
       extends ModifiersApi
       with HasFlags {
 
@@ -1625,18 +1607,11 @@ trait Trees extends api.Trees {
             transform(rhs))
         }
       case Block(stats, expr) =>
-        treeCopy.Block(
-          tree,
-          transformStats(stats, currentOwner),
-          transform(expr))
+        treeCopy.Block(tree, transformStats(stats, currentOwner), transform(expr))
       case If(cond, thenp, elsep) =>
         treeCopy.If(tree, transform(cond), transform(thenp), transform(elsep))
       case CaseDef(pat, guard, body) =>
-        treeCopy.CaseDef(
-          tree,
-          transform(pat),
-          transform(guard),
-          transform(body))
+        treeCopy.CaseDef(tree, transform(pat), transform(guard), transform(body))
       case TypeApply(fun, args) =>
         treeCopy.TypeApply(tree, transform(fun), transformTrees(args))
       case AppliedTypeTree(tpt, args) =>

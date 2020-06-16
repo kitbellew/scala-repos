@@ -22,8 +22,7 @@ package pkg {
       def mono = { import c.universe._; c.Expr[Boolean](q"true") }
       def poly[T: c.WeakTypeTag] = {
         import c.universe._;
-        c.Expr[String](
-          q"${c.weakTypeOf[T].toString + c.weakTypeOf[T].toString}")
+        c.Expr[String](q"${c.weakTypeOf[T].toString + c.weakTypeOf[T].toString}")
       }
       def weird = macro mono
     }

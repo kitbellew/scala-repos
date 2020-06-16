@@ -302,8 +302,7 @@ class TaskMetrics private[spark] (initialAccums: Seq[Accumulator[_]])
           tempShuffleReadMetrics.map(_.remoteBlocksFetched).sum)
         metrics.setLocalBlocksFetched(
           tempShuffleReadMetrics.map(_.localBlocksFetched).sum)
-        metrics.setFetchWaitTime(
-          tempShuffleReadMetrics.map(_.fetchWaitTime).sum)
+        metrics.setFetchWaitTime(tempShuffleReadMetrics.map(_.fetchWaitTime).sum)
         metrics.setRemoteBytesRead(
           tempShuffleReadMetrics.map(_.remoteBytesRead).sum)
         metrics.setLocalBytesRead(

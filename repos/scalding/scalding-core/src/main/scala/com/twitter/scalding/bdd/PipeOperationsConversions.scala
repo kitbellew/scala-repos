@@ -37,8 +37,7 @@ trait PipeOperationsConversions {
     }
   }
 
-  class ListRichPipesOperation(op: List[RichPipe] => Pipe)
-      extends PipeOperation {
+  class ListRichPipesOperation(op: List[RichPipe] => Pipe) extends PipeOperation {
     def apply(pipes: List[RichPipe]): Pipe = op(pipes)
   }
 

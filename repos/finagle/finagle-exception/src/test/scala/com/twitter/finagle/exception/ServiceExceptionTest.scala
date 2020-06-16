@@ -99,11 +99,8 @@ private[exception] class TestServiceException(
       mapEntry.getKey match {
         case "name" =>
           assert(jsonValue.isTextual)
-          hasName = verify(
-            jsonValue.textValue,
-            serviceName,
-            "bad service name",
-            hasName)
+          hasName =
+            verify(jsonValue.textValue, serviceName, "bad service name", hasName)
         case "traceId" =>
           assert(jsonValue.isNumber)
           hasTraceId = verifyOption(
@@ -160,11 +157,8 @@ private[exception] class TestServiceException(
             verifyOption(jsonValue.textValue, clientAddress, "peer", hasClient)
         case "sourceAddress" =>
           assert(jsonValue.isTextual)
-          hasSource = verifyOption(
-            jsonValue.textValue,
-            sourceAddress,
-            "source",
-            hasSource)
+          hasSource =
+            verifyOption(jsonValue.textValue, sourceAddress, "source", hasSource)
         case "cardinality" =>
           assert(jsonValue.isNumber)
           hasCardinality = verifyOption(

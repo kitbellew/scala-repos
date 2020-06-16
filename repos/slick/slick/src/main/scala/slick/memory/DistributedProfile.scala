@@ -68,9 +68,7 @@ class DistributedProfile(val profiles: RelationalProfile*)
   type StreamingProfileAction[+R, +T, -E <: Effect] =
     FixedBasicStreamingAction[R, T, E]
 
-  class QueryActionExtensionMethodsImpl[R, S <: NoStream](
-      tree: Node,
-      param: Any)
+  class QueryActionExtensionMethodsImpl[R, S <: NoStream](tree: Node, param: Any)
       extends super.QueryActionExtensionMethodsImpl[R, S] {
     protected[this] val exe = createQueryExecutor[R](tree, param)
     def result: ProfileAction[R, S, Effect.Read] =

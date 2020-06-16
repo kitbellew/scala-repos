@@ -31,9 +31,7 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     val generator = new AnonSymbol
     val aliased = shaped.encodeRef(Ref(generator)).value
     val fv = f(aliased)
-    new WrappingQuery[F, T, C](
-      new Bind(generator, toNode, fv.toNode),
-      fv.shaped)
+    new WrappingQuery[F, T, C](new Bind(generator, toNode, fv.toNode), fv.shaped)
   }
 
   /** Build a new query by applying a function to all elements of this query. */
@@ -358,8 +356,7 @@ object CanBeQueryCondition {
   // Using implicits with explicit type annotation here (instead of previously implicit objects)
   // because otherwise they would not be found in this file above this line.
   // See https://github.com/slick/slick/pull/217
-  implicit val BooleanColumnCanBeQueryCondition
-      : CanBeQueryCondition[Rep[Boolean]] =
+  implicit val BooleanColumnCanBeQueryCondition: CanBeQueryCondition[Rep[Boolean]] =
     new CanBeQueryCondition[Rep[Boolean]] {
       def apply(value: Rep[Boolean]) = value
     }

@@ -124,8 +124,7 @@ object Iteratee {
   trait Consume[E] {
     def apply[B, That]()(implicit
         t: E => TraversableOnce[B],
-        bf: scala.collection.generic.CanBuildFrom[E, B, That])
-        : Iteratee[E, That]
+        bf: scala.collection.generic.CanBuildFrom[E, B, That]): Iteratee[E, That]
   }
 
   /**

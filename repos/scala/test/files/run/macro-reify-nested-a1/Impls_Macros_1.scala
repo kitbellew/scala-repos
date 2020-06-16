@@ -36,9 +36,7 @@ object QueryableMacros {
         c.typecheck(
           Utils[c.type](c)
             .removeDoubleReify(
-              Apply(
-                Select(c.prefix.tree, TermName(name)),
-                List(projection.tree))
+              Apply(Select(c.prefix.tree, TermName(name)), List(projection.tree))
             )
             .asInstanceOf[Tree]
         )

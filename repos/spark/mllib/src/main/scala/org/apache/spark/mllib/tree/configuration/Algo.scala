@@ -36,7 +36,6 @@ object Algo extends Enumeration {
       case "classification" | "Classification" => Classification
       case "regression" | "Regression"         => Regression
       case _ =>
-        throw new IllegalArgumentException(
-          s"Did not recognize Algo name: $name")
+        throw new IllegalArgumentException(s"Did not recognize Algo name: $name")
     }
 }

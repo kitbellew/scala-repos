@@ -38,10 +38,7 @@ object ActorsLeakSpec {
           val cell = wc.underlying
 
           cell.childrenRefs match {
-            case ChildrenContainer.TerminatingChildrenContainer(
-                  _,
-                  toDie,
-                  reason) ⇒
+            case ChildrenContainer.TerminatingChildrenContainer(_, toDie, reason) ⇒
               Nil
             case x @ (ChildrenContainer.TerminatedChildrenContainer |
                 ChildrenContainer.EmptyChildrenContainer) ⇒
@@ -67,9 +64,7 @@ object ActorsLeakSpec {
 
 }
 
-class ActorsLeakSpec
-    extends AkkaSpec(ActorsLeakSpec.config)
-    with ImplicitSender {
+class ActorsLeakSpec extends AkkaSpec(ActorsLeakSpec.config) with ImplicitSender {
   import ActorsLeakSpec._
 
   "Remoting" must {

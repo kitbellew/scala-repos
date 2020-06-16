@@ -28,12 +28,8 @@ object CodeGenTools {
       throwsExceptions: Array[String] = null,
       handlers: List[ExceptionHandler] = Nil,
       localVars: List[LocalVariable] = Nil)(body: Instruction*): MethodNode = {
-    val node = new MethodNode(
-      flags,
-      name,
-      descriptor,
-      genericSignature,
-      throwsExceptions)
+    val node =
+      new MethodNode(flags, name, descriptor, genericSignature, throwsExceptions)
     applyToMethod(node, Method(body.toList, handlers, localVars))
     node
   }
@@ -133,8 +129,7 @@ object CodeGenTools {
   def compileTransformed(compiler: Global)(
       scalaCode: String,
       javaCode: List[(String, String)] = Nil,
-      beforeBackend: compiler.Tree => compiler.Tree)
-      : List[(String, Array[Byte])] = {
+      beforeBackend: compiler.Tree => compiler.Tree): List[(String, Array[Byte])] = {
     compiler.settings.stopBefore.value = "jvm" :: Nil
     val run = newRun(compiler)
     import compiler._
@@ -198,15 +193,13 @@ object CodeGenTools {
   def compileClasses(compiler: Global)(
       code: String,
       javaCode: List[(String, String)] = Nil,
-      allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[ClassNode] = {
+      allowMessage: StoreReporter#Info => Boolean = _ => false): List[ClassNode] = {
     readAsmClasses(compile(compiler)(code, javaCode, allowMessage))
   }
 
   def compileMethods(compiler: Global)(
       code: String,
-      allowMessage: StoreReporter#Info => Boolean = _ => false)
-      : List[MethodNode] = {
+      allowMessage: StoreReporter#Info => Boolean = _ => false): List[MethodNode] = {
     compileClasses(compiler)(
       s"class C { $code }",
       allowMessage = allowMessage).head.methods.asScala.toList
@@ -260,10 +253,7 @@ object CodeGenTools {
 
   def assertInvoke(m: Method, receiver: String, method: String): Unit =
     assertInvoke(m.instructions, receiver, method)
-  def assertInvoke(
-      l: List[Instruction],
-      receiver: String,
-      method: String): Unit = {
+  def assertInvoke(l: List[Instruction], receiver: String, method: String): Unit = {
     assert(
       l.exists {
         case Invoke(_, `receiver`, `method`, _, _) => true
@@ -285,9 +275,7 @@ object CodeGenTools {
 
   def assertInvokedMethods(m: Method, expected: List[String]): Unit =
     assertInvokedMethods(m.instructions, expected)
-  def assertInvokedMethods(
-      l: List[Instruction],
-      expected: List[String]): Unit = {
+  def assertInvokedMethods(l: List[Instruction], expected: List[String]): Unit = {
     def quote(l: List[String]) =
       l.map(s => s""""$s"""").mkString("List(", ", ", ")")
     val actual = l collect { case i: Invoke => i.owner + "." + i.name }

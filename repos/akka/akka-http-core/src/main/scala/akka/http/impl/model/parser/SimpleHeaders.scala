@@ -99,8 +99,7 @@ private[parser] trait SimpleHeaders {
   def `content-encoding` =
     rule {
       oneOrMore(token ~> (x ⇒
-        HttpEncodings.getForKeyCaseInsensitive(x) getOrElse HttpEncoding.custom(
-          x)))
+        HttpEncodings.getForKeyCaseInsensitive(x) getOrElse HttpEncoding.custom(x)))
         .separatedBy(listSep) ~ EOI ~> (`Content-Encoding`(_))
     }
 
@@ -113,9 +112,7 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/rfc7233#section-4.2
   def `content-range` =
     rule {
-      (`byte-content-range` | `other-content-range`) ~ EOI ~> (`Content-Range`(
-        _,
-        _))
+      (`byte-content-range` | `other-content-range`) ~ EOI ~> (`Content-Range`(_, _))
     }
 
   // https://tools.ietf.org/html/rfc6265#section-4.2
@@ -209,8 +206,7 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/rfc7235#section-4.3
   def `proxy-authenticate` =
     rule {
-      oneOrMore(challenge).separatedBy(listSep) ~ EOI ~> (`Proxy-Authenticate`(
-        _))
+      oneOrMore(challenge).separatedBy(listSep) ~ EOI ~> (`Proxy-Authenticate`(_))
     }
 
   // http://tools.ietf.org/html/rfc7235#section-4.4
@@ -220,9 +216,7 @@ private[parser] trait SimpleHeaders {
   // http://tools.ietf.org/html/rfc7233#section-3.1
   def `range` =
     rule {
-      `byte-ranges-specifier` /*| `other-ranges-specifier` */ ~ EOI ~> (Range(
-        _,
-        _))
+      `byte-ranges-specifier` /*| `other-ranges-specifier` */ ~ EOI ~> (Range(_, _))
     }
 
   // http://tools.ietf.org/html/rfc7231#section-5.5.2

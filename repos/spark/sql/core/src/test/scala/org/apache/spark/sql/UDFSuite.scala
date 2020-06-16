@@ -55,9 +55,7 @@ class UDFSuite extends QueryTest with SharedSQLContext {
     val df =
       Seq((1, "Tearing down the walls that divide us")).toDF("id", "saying")
     df.registerTempTable("tmp_table")
-    checkAnswer(
-      sql("select spark_partition_id() from tmp_table").toDF(),
-      Row(0))
+    checkAnswer(sql("select spark_partition_id() from tmp_table").toDF(), Row(0))
     sqlContext.dropTempTable("tmp_table")
   }
 
@@ -198,8 +196,7 @@ class UDFSuite extends QueryTest with SharedSQLContext {
   test("udf that is transformed") {
     sqlContext.udf.register("makeStruct", (x: Int, y: Int) => (x, y))
     // 1 + 1 is constant folded causing a transformation.
-    assert(
-      sql("SELECT makeStruct(1 + 1, 2)").first().getAs[Row](0) === Row(2, 2))
+    assert(sql("SELECT makeStruct(1 + 1, 2)").first().getAs[Row](0) === Row(2, 2))
   }
 
   test("type coercion for udf inputs") {

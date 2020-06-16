@@ -106,11 +106,8 @@ package scalaguide.http.scalasessionflash {
             Redirect("/home").flashing("success" -> "The item has been created")
           }
         //#using-flash
-        assertAction(
-          index,
-          OK,
-          FakeRequest().withFlash("success" -> "success!"))(res =>
-          contentAsString(res) must contain("success!"))
+        assertAction(index, OK, FakeRequest().withFlash("success" -> "success!"))(
+          res => contentAsString(res) must contain("success!"))
         assertAction(save, SEE_OTHER, FakeRequest())(res =>
           testFlash(res, "success", Some("The item has been created")))
       }
@@ -125,27 +122,18 @@ package scalaguide.http.scalasessionflash {
 
         assertAction(index, OK, FakeRequest())(result =>
           contentAsString(result) must contain("Welcome!"))
-        assertAction(
-          index,
-          OK,
-          FakeRequest().withFlash("success" -> "Flashed!"))(result =>
-          contentAsString(result) must contain("Flashed!"))
+        assertAction(index, OK, FakeRequest().withFlash("success" -> "Flashed!"))(
+          result => contentAsString(result) must contain("Flashed!"))
       }
 
     }
 
-    def testFlash(
-        results: Future[Result],
-        key: String,
-        value: Option[String]) = {
+    def testFlash(results: Future[Result], key: String, value: Option[String]) = {
       val flash = Helpers.flash(results)
       flash.get(key) === value
     }
 
-    def testSession(
-        results: Future[Result],
-        key: String,
-        value: Option[String]) = {
+    def testSession(results: Future[Result], key: String, value: Option[String]) = {
       val session = Helpers.session(results)
       session.get(key) === value
     }

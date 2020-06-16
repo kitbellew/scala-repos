@@ -104,8 +104,7 @@ private[deploy] object IvyTestUtils {
       className: String,
       packageName: String): Seq[(String, File)] = {
     val rFilesDir = new File(dir, "R" + File.separator + "pkg")
-    Files.createParentDirs(
-      new File(rFilesDir, "R" + File.separator + "mylib.R"))
+    Files.createParentDirs(new File(rFilesDir, "R" + File.separator + "mylib.R"))
     val contents =
       s"""myfunc <- function(x) {
         |  SparkR:::callJStatic("$packageName.$className", "myFunc", x)
@@ -325,9 +324,8 @@ private[deploy] object IvyTestUtils {
 
       val javaClass = createJavaClass(root, className, artifact.groupId)
       // A tuple of files representation in the jar, and the file
-      val javaFile = (
-        artifact.groupId.replace(".", "/") + "/" + javaClass.getName,
-        javaClass)
+      val javaFile =
+        (artifact.groupId.replace(".", "/") + "/" + javaClass.getName, javaClass)
       val allFiles = ArrayBuffer[(String, File)](javaFile)
       if (withPython) {
         val pythonFile = createPythonFile(root)

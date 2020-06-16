@@ -5,9 +5,8 @@ import cats.arrow.NaturalTransformation
 import cats.data.Const
 
 /** Applicative Functor for Free */
-sealed abstract class FreeApplicative[F[_], A]
-    extends Product
-    with Serializable { self =>
+sealed abstract class FreeApplicative[F[_], A] extends Product with Serializable {
+  self =>
   // ap => apply alias needed so we can refer to both
   // FreeApplicative.ap and FreeApplicative#ap
   import FreeApplicative.{FA, Pure, Ap, ap => apply, lift}

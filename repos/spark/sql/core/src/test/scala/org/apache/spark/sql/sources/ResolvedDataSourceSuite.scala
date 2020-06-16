@@ -49,13 +49,16 @@ class ResolvedDataSourceSuite extends SparkFunSuite {
   }
 
   test("parquet") {
-    assert(getProvidingClass("parquet") ===
-      classOf[org.apache.spark.sql.execution.datasources.parquet.DefaultSource])
-    assert(getProvidingClass(
-      "org.apache.spark.sql.execution.datasources.parquet") ===
-      classOf[org.apache.spark.sql.execution.datasources.parquet.DefaultSource])
-    assert(getProvidingClass("org.apache.spark.sql.parquet") ===
-      classOf[org.apache.spark.sql.execution.datasources.parquet.DefaultSource])
+    assert(
+      getProvidingClass("parquet") ===
+        classOf[org.apache.spark.sql.execution.datasources.parquet.DefaultSource])
+    assert(
+      getProvidingClass(
+        "org.apache.spark.sql.execution.datasources.parquet") ===
+        classOf[org.apache.spark.sql.execution.datasources.parquet.DefaultSource])
+    assert(
+      getProvidingClass("org.apache.spark.sql.parquet") ===
+        classOf[org.apache.spark.sql.execution.datasources.parquet.DefaultSource])
   }
 
   test("error message for unknown data sources") {

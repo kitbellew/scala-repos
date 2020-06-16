@@ -313,8 +313,7 @@ private[controllers] trait LilaController
       api = _ => unauthorizedApiResult.fuccess
     )
 
-  protected val unauthorizedApiResult = Unauthorized(
-    jsonError("Login required"))
+  protected val unauthorizedApiResult = Unauthorized(jsonError("Login required"))
 
   protected def authorizationFailed(req: RequestHeader): Result =
     Forbidden("no permission")

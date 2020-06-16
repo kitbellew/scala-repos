@@ -489,16 +489,13 @@ private final class Analyzer(
       targets.headOption
     }
 
-    private def reflProxyMatches(
-        methodName: String,
-        proxyName: String): Boolean = {
+    private def reflProxyMatches(methodName: String, proxyName: String): Boolean = {
       val sepPos = methodName.lastIndexOf("__")
       sepPos >= 0 && methodName.substring(0, sepPos + 2) == proxyName
     }
 
     private def methodResultType(methodName: String): ir.Types.ReferenceType =
-      decodeReferenceType(
-        methodName.substring(methodName.lastIndexOf("__") + 2))
+      decodeReferenceType(methodName.substring(methodName.lastIndexOf("__") + 2))
 
     private def isMoreSpecific(
         left: ir.Types.ReferenceType,

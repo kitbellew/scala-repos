@@ -176,8 +176,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       val justRight = Request("/")
       justRight.content = Buf.ByteArray.Owned(Array[Byte](100))
 
-      assert(
-        Await.result(client(tooBig)).status == Status.RequestEntityTooLarge)
+      assert(Await.result(client(tooBig)).status == Status.RequestEntityTooLarge)
       assert(Await.result(client(justRight)).status == Status.Ok)
       client.close()
     }
@@ -688,8 +687,7 @@ class EndToEndTest extends FunSuite with BeforeAndAfter {
       .configured(
         FailureAccrualFactory.Param(failureAccrualFailures, () => 1.minute))
       .newService(
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         name)
 
     new ServiceProxy(client) {

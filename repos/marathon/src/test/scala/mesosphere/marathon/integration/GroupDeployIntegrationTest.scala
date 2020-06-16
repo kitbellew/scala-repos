@@ -172,9 +172,7 @@ class GroupDeployIntegrationTest
 
     When("The group is updated")
     waitForChange(
-      marathon.updateGroup(
-        gid,
-        group.copy(apps = Some(Set(appProxy(appId, "v2", 2))))))
+      marathon.updateGroup(gid, group.copy(apps = Some(Set(appProxy(appId, "v2", 2))))))
 
     Then("The new version is deployed")
     val v2Checks = appProxyCheck(appId, "v2", state = true)
@@ -183,9 +181,7 @@ class GroupDeployIntegrationTest
     }
 
     When("A rollback to the first version is initiated")
-    waitForChange(
-      marathon.rollbackGroup(gid, create.value.version),
-      120.seconds)
+    waitForChange(marathon.rollbackGroup(gid, create.value.version), 120.seconds)
 
     Then("The rollback will be performed and the old version is available")
     v1Checks.healthy
@@ -232,9 +228,7 @@ class GroupDeployIntegrationTest
     val create = marathon.createGroup(group)
     waitForChange(create)
     appProxyCheck(appId, "v2", state = false) //will always fail
-    marathon.updateGroup(
-      id,
-      group.copy(apps = Some(Set(appProxy(appId, "v2", 2)))))
+    marathon.updateGroup(id, group.copy(apps = Some(Set(appProxy(appId, "v2", 2)))))
 
     When("Another upgrade is triggered, while the old one is not completed")
     val result = marathon.updateGroup(
@@ -271,8 +265,7 @@ class GroupDeployIntegrationTest
     deleteResult.code should be(HttpStatus.SC_CONFLICT)
     waitForEvent("group_change_failed")
 
-    When(
-      "Delete is triggered with force, while the deployment is not completed")
+    When("Delete is triggered with force, while the deployment is not completed")
     val force = marathon.deleteGroup(id, force = true)
 
     Then("The delete is performed")

@@ -36,8 +36,7 @@ trait KeyAuthentication {
     val param = "accessKey"
   }
 
-  def withAccessKeyFromFile
-      : RequestContext => Future[Authentication[HttpRequest]] = {
+  def withAccessKeyFromFile: RequestContext => Future[Authentication[HttpRequest]] = {
     ctx: RequestContext =>
       val accessKeyParamOpt = ctx.request.uri.query.get(ServerKey.param)
       Future {

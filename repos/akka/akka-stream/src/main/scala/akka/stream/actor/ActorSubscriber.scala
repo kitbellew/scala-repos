@@ -101,9 +101,7 @@ object WatermarkRequestStrategy {
 final case class WatermarkRequestStrategy(highWatermark: Int, lowWatermark: Int)
     extends RequestStrategy {
   require(lowWatermark >= 0, "lowWatermark must be >= 0")
-  require(
-    highWatermark >= lowWatermark,
-    "highWatermark must be >= lowWatermark")
+  require(highWatermark >= lowWatermark, "highWatermark must be >= lowWatermark")
 
   /**
     * Create [[WatermarkRequestStrategy]] with `lowWatermark` as half of

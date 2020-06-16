@@ -199,11 +199,8 @@ object JsonExtensionSpec extends Specification {
           "name" -> "bob",
           "cat" -> Json.obj("name" -> "minou"),
           "hobbies" -> Json.arr("bobsleig", "manhunting"),
-          "friends" -> Json.arr(
-            Json.obj(
-              "name" -> "tom",
-              "hobbies" -> Json.arr(),
-              "friends" -> Json.arr()))
+          "friends" -> Json.arr(Json
+            .obj("name" -> "tom", "hobbies" -> Json.arr(), "friends" -> Json.arr()))
         )
       ) must beEqualTo(
         JsSuccess(
@@ -236,11 +233,8 @@ object JsonExtensionSpec extends Specification {
           "name" -> "bob",
           "cat" -> Json.obj("name" -> "minou"),
           "hobbies" -> Json.arr("bobsleig", "manhunting"),
-          "friends" -> Json.arr(
-            Json.obj(
-              "name" -> "tom",
-              "hobbies" -> Json.arr(),
-              "friends" -> Json.arr()))
+          "friends" -> Json.arr(Json
+            .obj("name" -> "tom", "hobbies" -> Json.arr(), "friends" -> Json.arr()))
         )
       )
 
@@ -257,11 +251,8 @@ object JsonExtensionSpec extends Specification {
           "name" -> "bob",
           "cat" -> Json.obj("name" -> "minou"),
           "hobbies" -> Json.arr("bobsleig", "manhunting"),
-          "friends" -> Json.arr(
-            Json.obj(
-              "name" -> "tom",
-              "hobbies" -> Json.arr(),
-              "friends" -> Json.arr()))
+          "friends" -> Json.arr(Json
+            .obj("name" -> "tom", "hobbies" -> Json.arr(), "friends" -> Json.arr()))
         )
       ) must beEqualTo(
         JsSuccess(
@@ -286,11 +277,8 @@ object JsonExtensionSpec extends Specification {
           "name" -> "bob",
           "cat" -> Json.obj("name" -> "minou"),
           "hobbies" -> Json.arr("bobsleig", "manhunting"),
-          "friends" -> Json.arr(
-            Json.obj(
-              "name" -> "tom",
-              "hobbies" -> Json.arr(),
-              "friends" -> Json.arr()))
+          "friends" -> Json.arr(Json
+            .obj("name" -> "tom", "hobbies" -> Json.arr(), "friends" -> Json.arr()))
         )
       )
 
@@ -388,8 +376,7 @@ object JsonExtensionSpec extends Specification {
         "int" -> Json.obj("obj" -> 1)
       )
       Json.toJson(wrapped) must beEqualTo(expectedJsObj)
-      Json.fromJson[WrappedGenericInt](expectedJsObj).get must beEqualTo(
-        wrapped)
+      Json.fromJson[WrappedGenericInt](expectedJsObj).get must beEqualTo(wrapped)
     }
 
     "create a format[WrappedGenericIntString]" in {
@@ -626,8 +613,7 @@ object JsonExtensionSpec extends Specification {
         JsSuccess(CustomApply(5, "foo")))
       Json.toJson(CustomApply(5, "foo")) must beEqualTo(
         Json.obj("a" -> 5, "b" -> "foo"))
-      Json.toJson(CustomApply()) must beEqualTo(
-        Json.obj("a" -> 10, "b" -> "foo"))
+      Json.toJson(CustomApply()) must beEqualTo(Json.obj("a" -> 10, "b" -> "foo"))
     }
 
   }

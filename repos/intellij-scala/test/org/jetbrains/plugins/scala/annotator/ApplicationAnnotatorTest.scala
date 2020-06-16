@@ -126,8 +126,8 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
     }
   }
 
-  def messages(@Language(value = "Scala", prefix = Header) code: String)
-      : List[Message] = {
+  def messages(
+      @Language(value = "Scala", prefix = Header) code: String): List[Message] = {
     val annotator = new ApplicationAnnotator() {}
     val mock = new AnnotatorHolderMock
 

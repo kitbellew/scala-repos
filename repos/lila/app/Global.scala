@@ -43,8 +43,7 @@ object Global extends GlobalSettings {
       if (lila.common.PlayApp.isProd) {
         lila.mon.http.response.code500()
         fuccess(
-          InternalServerError(
-            views.html.base.errorPage(ex)(lila.api.Context(req))))
+          InternalServerError(views.html.base.errorPage(ex)(lila.api.Context(req))))
       } else super.onError(req, ex)
     } else fuccess(InternalServerError(ex.getMessage))
 }

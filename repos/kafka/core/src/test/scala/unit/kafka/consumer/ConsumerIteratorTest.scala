@@ -76,10 +76,8 @@ class ConsumerIteratorTest extends KafkaServerTestHarness {
   def testConsumerIteratorDeduplicationDeepIterator() {
     val messageStrings = (0 until 10).map(_.toString).toList
     val messages = messageStrings.map(s => new Message(s.getBytes))
-    val messageSet = new ByteBufferMessageSet(
-      DefaultCompressionCodec,
-      new LongRef(0),
-      messages: _*)
+    val messageSet =
+      new ByteBufferMessageSet(DefaultCompressionCodec, new LongRef(0), messages: _*)
 
     topicInfos(0).enqueue(messageSet)
     assertEquals(1, queue.size)

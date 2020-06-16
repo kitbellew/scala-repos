@@ -40,8 +40,7 @@ object PerfTests extends TestSuite {
       println("Optimizing Parser")
 
       val parser = Scala.CompilationUnit
-      println(
-        "Loaded " + genJsCodeSource.length + " bytes of input. Parsing...")
+      println("Loaded " + genJsCodeSource.length + " bytes of input. Parsing...")
 
       /**
         * Parboiled2 ( run separately in fork of parboiled project )

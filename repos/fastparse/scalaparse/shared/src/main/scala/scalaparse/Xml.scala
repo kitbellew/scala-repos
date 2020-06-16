@@ -249,8 +249,7 @@ trait Xml extends Core {
         ScalaExpr
     )
 
-    val Comment = P(
-      "<!--" ~ ((!"-" ~ Char) | ("-" ~ (!"-" ~ Char))).rep ~ "-->")
+    val Comment = P("<!--" ~ ((!"-" ~ Char) | ("-" ~ (!"-" ~ Char))).rep ~ "-->")
 
     val PI = P("<?" ~ PITarget ~ (WL ~ (!"?>" ~ Char).rep).? ~ "?>")
     val PITarget = P(!(("X" | "x") ~ ("M" | "m") ~ ("L" | "l")) ~ Name)

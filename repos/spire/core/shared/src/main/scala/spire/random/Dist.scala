@@ -318,8 +318,7 @@ object Dist extends DistInstances8 {
   implicit val long: Dist[Long] = new DistFromGen[Long](_.nextLong)
   implicit val double: Dist[Double] = new DistFromGen[Double](_.nextDouble)
 
-  implicit val ubyte: Dist[UByte] = new DistFromGen[UByte](g =>
-    UByte(g.nextInt))
+  implicit val ubyte: Dist[UByte] = new DistFromGen[UByte](g => UByte(g.nextInt))
   implicit val ushort: Dist[UShort] = new DistFromGen[UShort](g =>
     UShort(g.nextInt))
   implicit val uint: Dist[UInt] = new DistFromGen[UInt](g => UInt(g.nextInt))

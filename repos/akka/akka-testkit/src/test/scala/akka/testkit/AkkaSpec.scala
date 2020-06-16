@@ -63,8 +63,7 @@ abstract class AkkaSpec(_system: ActorSystem)
     with ConversionCheckedTripleEquals
     with ScalaFutures {
 
-  implicit val patience = PatienceConfig(
-    testKitSettings.DefaultTimeout.duration)
+  implicit val patience = PatienceConfig(testKitSettings.DefaultTimeout.duration)
 
   def this(config: Config) =
     this(
@@ -123,8 +122,7 @@ abstract class AkkaSpec(_system: ActorSystem)
       def areEqual(a: Class[A], b: Class[B]) = a == b
     }
 
-  implicit def setEqualityConstraint[A, T <: Set[_ <: A]]
-      : Constraint[Set[A], T] =
+  implicit def setEqualityConstraint[A, T <: Set[_ <: A]]: Constraint[Set[A], T] =
     new Constraint[Set[A], T] {
       def areEqual(a: Set[A], b: T) = a == b
     }

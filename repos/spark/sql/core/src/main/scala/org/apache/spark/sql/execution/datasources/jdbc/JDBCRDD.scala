@@ -426,8 +426,7 @@ private[sql] class JDBCRDD(
       val rs = stmt.executeQuery()
 
       val conversions = getConversions(schema)
-      val mutableRow = new SpecificMutableRow(
-        schema.fields.map(x => x.dataType))
+      val mutableRow = new SpecificMutableRow(schema.fields.map(x => x.dataType))
 
       def getNext(): InternalRow = {
         if (rs.next()) {

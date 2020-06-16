@@ -90,8 +90,7 @@ object SaddleBuild extends sbt.Build {
       id = "saddle-test-framework",
       base = file("saddle-test-framework"),
       settings = Seq(
-        libraryDependencies <++= scalaVersion(v =>
-          Shared.testDeps(v, "compile"))
+        libraryDependencies <++= scalaVersion(v => Shared.testDeps(v, "compile"))
       )
     ) dependsOn (core)
 

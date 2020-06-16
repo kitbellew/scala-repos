@@ -18,9 +18,7 @@ final class JUnitTask(val taskDef: TaskDef, runner: JUnitBaseRunner)
     continuation(execute(eventHandler, loggers))
   }
 
-  def execute(
-      eventHandler: EventHandler,
-      loggers: Array[Logger]): Array[Task] = {
+  def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
     val richLogger =
       new RichLogger(loggers, runner.runSettings, taskDef.fullyQualifiedName)
 

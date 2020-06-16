@@ -192,24 +192,16 @@ object Default {
           def apply(l: HNil) = HNil
         }
 
-      implicit def hconsSomeHelper[
-          H,
-          T <: HList,
-          ReprT <: HList,
-          OutT <: HList](implicit
-          tailHelper: Aux[T, ReprT, OutT]
+      implicit def hconsSomeHelper[H, T <: HList, ReprT <: HList, OutT <: HList](
+          implicit tailHelper: Aux[T, ReprT, OutT]
       ): Aux[Some[H] :: T, H :: ReprT, Option[H] :: OutT] =
         new Helper[Some[H] :: T, H :: ReprT] {
           type Out = Option[H] :: OutT
           def apply(l: Some[H] :: T) = l.head :: tailHelper(l.tail)
         }
 
-      implicit def hconsNoneHelper[
-          H,
-          T <: HList,
-          ReprT <: HList,
-          OutT <: HList](implicit
-          tailHelper: Aux[T, ReprT, OutT]
+      implicit def hconsNoneHelper[H, T <: HList, ReprT <: HList, OutT <: HList](
+          implicit tailHelper: Aux[T, ReprT, OutT]
       ): Aux[None.type :: T, H :: ReprT, Option[H] :: OutT] =
         new Helper[None.type :: T, H :: ReprT] {
           type Out = Option[H] :: OutT
@@ -275,8 +267,7 @@ class DefaultMacros(val c: whitebox.Context) extends CaseClassMacros {
     // We do this check here to detect that beforehand.
     def overloadsWithDefaultCount(tpe: Type): Int =
       tpe.members.count { m =>
-        m.isMethod && m.name.toString == "apply" && methodHasDefaults(
-          m.asMethod)
+        m.isMethod && m.name.toString == "apply" && methodHasDefaults(m.asMethod)
       }
 
     val mainOverloadsWithDefaultCount = overloadsWithDefaultCount(tpe.companion)

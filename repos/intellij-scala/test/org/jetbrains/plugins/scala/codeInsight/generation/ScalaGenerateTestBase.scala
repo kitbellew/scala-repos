@@ -13,10 +13,7 @@ abstract class ScalaGenerateTestBase
     extends ScalaLightCodeInsightFixtureTestAdapter {
   val handler: LanguageCodeInsightActionHandler
 
-  def testInvoke(
-      text: String,
-      assumedText: String,
-      checkCaret: Boolean): Unit = {
+  def testInvoke(text: String, assumedText: String, checkCaret: Boolean): Unit = {
     val (nText, nResult) = (
       text.stripMargin.replace("\r", "").trim,
       assumedText.stripMargin.replace("\r", "").trim)

@@ -158,9 +158,7 @@ trait MergeSpec[M[+_]]
             Some(
               InnerObjectConcat(
                 ObjectDelete(Leaf(Source), Set(valueField)),
-                WrapObject(
-                  DerefObjectStatic(Leaf(Source), valueField),
-                  "value"))),
+                WrapObject(DerefObjectStatic(Leaf(Source), valueField), "value"))),
             3,
             GroupKeySpecAnd(
               GroupKeySpecSource(
@@ -198,14 +196,14 @@ trait MergeSpec[M[+_]]
           | {"key":[5908438637678328473,5908438637678328579],"value":{"b":7,"c":11,"a":3,"fa":{"b":7,"a":3}}}
           | """.stripMargin
 
-        val r0 = fromJson(
-          JParser.parseManyFromString(r0Json).valueOr(throw _).toStream)
-        val r1 = fromJson(
-          JParser.parseManyFromString(r1Json).valueOr(throw _).toStream)
-        val r2 = fromJson(
-          JParser.parseManyFromString(r2Json).valueOr(throw _).toStream)
-        val r3 = fromJson(
-          JParser.parseManyFromString(r3Json).valueOr(throw _).toStream)
+        val r0 =
+          fromJson(JParser.parseManyFromString(r0Json).valueOr(throw _).toStream)
+        val r1 =
+          fromJson(JParser.parseManyFromString(r1Json).valueOr(throw _).toStream)
+        val r2 =
+          fromJson(JParser.parseManyFromString(r2Json).valueOr(throw _).toStream)
+        val r3 =
+          fromJson(JParser.parseManyFromString(r3Json).valueOr(throw _).toStream)
 
         (key match {
           case K0 => {
@@ -380,14 +378,14 @@ trait MergeSpec[M[+_]]
           | {"key":[],"value":{"year":"2008","ratio":119.0}}      
           | """.stripMargin
 
-        val r0 = fromJson(
-          JParser.parseManyFromString(r0Json).valueOr(throw _).toStream)
-        val r1 = fromJson(
-          JParser.parseManyFromString(r1Json).valueOr(throw _).toStream)
-        val r2 = fromJson(
-          JParser.parseManyFromString(r2Json).valueOr(throw _).toStream)
-        val r3 = fromJson(
-          JParser.parseManyFromString(r3Json).valueOr(throw _).toStream)
+        val r0 =
+          fromJson(JParser.parseManyFromString(r0Json).valueOr(throw _).toStream)
+        val r1 =
+          fromJson(JParser.parseManyFromString(r1Json).valueOr(throw _).toStream)
+        val r2 =
+          fromJson(JParser.parseManyFromString(r2Json).valueOr(throw _).toStream)
+        val r3 =
+          fromJson(JParser.parseManyFromString(r3Json).valueOr(throw _).toStream)
 
         (key match {
           case K0 => {

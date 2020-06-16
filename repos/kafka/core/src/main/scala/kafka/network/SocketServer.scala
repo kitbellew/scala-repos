@@ -54,10 +54,7 @@ import scala.util.control.{NonFatal, ControlThrowable}
   *   Acceptor has N Processor threads that each have their own selector and read requests from sockets
   *   M Handler threads that handle requests and produce responses back to the processor threads for writing.
   */
-class SocketServer(
-    val config: KafkaConfig,
-    val metrics: Metrics,
-    val time: Time)
+class SocketServer(val config: KafkaConfig, val metrics: Metrics, val time: Time)
     extends Logging
     with KafkaMetricsGroup {
 
@@ -248,8 +245,7 @@ private[kafka] abstract class AbstractServerThread(
     */
   def close(channel: SocketChannel) {
     if (channel != null) {
-      debug(
-        "Closing connection from " + channel.socket.getRemoteSocketAddress())
+      debug("Closing connection from " + channel.socket.getRemoteSocketAddress())
       connectionQuotas.dec(channel.socket.getInetAddress)
       swallowError(channel.socket().close())
       swallowError(channel.close())
@@ -348,9 +344,8 @@ private[kafka] class Acceptor(
     try {
       serverChannel.socket.bind(socketAddress)
       info(
-        "Awaiting socket connections on %s:%d.".format(
-          socketAddress.getHostString,
-          serverChannel.socket.getLocalPort))
+        "Awaiting socket connections on %s:%d."
+          .format(socketAddress.getHostString, serverChannel.socket.getLocalPort))
     } catch {
       case e: SocketException =>
         throw new KafkaException(
@@ -518,9 +513,7 @@ private[kafka] class Processor(
           } catch {
             case e @ (_: InvalidRequestException | _: SchemaException) =>
               // note that even though we got an exception, we can assume that receive.source is valid. Issues with constructing a valid receive object were handled earlier
-              error(
-                "Closing socket for " + receive.source + " because of error",
-                e)
+              error("Closing socket for " + receive.source + " because of error", e)
               close(selector, receive.source)
           }
         }

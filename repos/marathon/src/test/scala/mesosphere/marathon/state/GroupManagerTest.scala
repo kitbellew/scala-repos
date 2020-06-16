@@ -75,15 +75,9 @@ class GroupManagerTest
     val group = Group(
       PathId.empty,
       Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = PortDefinitions(0, 0, 0)),
-        AppDefinition(
-          "/app2".toPath,
-          portDefinitions = PortDefinitions(1, 2, 3)),
-        AppDefinition(
-          "/app3".toPath,
-          portDefinitions = PortDefinitions(0, 2, 0))
+        AppDefinition("/app1".toPath, portDefinitions = PortDefinitions(0, 0, 0)),
+        AppDefinition("/app2".toPath, portDefinitions = PortDefinitions(1, 2, 3)),
+        AppDefinition("/app3".toPath, portDefinitions = PortDefinitions(0, 2, 0))
       )
     )
     val update = manager(10, 20).assignDynamicServicePorts(Group.empty, group)
@@ -139,10 +133,7 @@ class GroupManagerTest
   test("Reassign dynamic service ports specified in the container") {
     val from = Group(
       PathId.empty,
-      Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = PortDefinitions(10, 11))))
+      Set(AppDefinition("/app1".toPath, portDefinitions = PortDefinitions(10, 11))))
     val to = Group(
       PathId.empty,
       Set(
@@ -194,12 +185,8 @@ class GroupManagerTest
     val group = Group(
       PathId.empty,
       Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = PortDefinitions(0, 0, 0)),
-        AppDefinition(
-          "/app2".toPath,
-          portDefinitions = PortDefinitions(0, 2, 0))
+        AppDefinition("/app1".toPath, portDefinitions = PortDefinitions(0, 0, 0)),
+        AppDefinition("/app2".toPath, portDefinitions = PortDefinitions(0, 2, 0))
       )
     )
     val update = manager(10, 20).assignDynamicServicePorts(Group.empty, group)
@@ -231,9 +218,7 @@ class GroupManagerTest
     val updatedGroup = Group(
       PathId.empty,
       Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = PortDefinitions(0, 0, 0))
+        AppDefinition("/app1".toPath, portDefinitions = PortDefinitions(0, 0, 0))
       ))
     val result =
       manager(10, 20).assignDynamicServicePorts(originalGroup, updatedGroup)
@@ -246,12 +231,8 @@ class GroupManagerTest
     val group = Group(
       PathId.empty,
       Set(
-        AppDefinition(
-          "/app1".toPath,
-          portDefinitions = PortDefinitions(0, 0, 0)),
-        AppDefinition(
-          "/app2".toPath,
-          portDefinitions = PortDefinitions(0, 0, 0))
+        AppDefinition("/app1".toPath, portDefinitions = PortDefinitions(0, 0, 0)),
+        AppDefinition("/app2".toPath, portDefinitions = PortDefinitions(0, 0, 0))
       )
     )
     val ex = intercept[PortRangeExhaustedException] {
@@ -318,8 +299,8 @@ class GroupManagerTest
     when(f.groupRepo.group(GroupRepository.zkRootName))
       .thenReturn(Future.successful(None))
     when(f.scheduler.deploy(any(), any())).thenReturn(Future.successful(()))
-    val appWithVersionInfo = app.copy(versionInfo =
-      AppDefinition.VersionInfo.forNewConfig(Timestamp(1)))
+    val appWithVersionInfo =
+      app.copy(versionInfo = AppDefinition.VersionInfo.forNewConfig(Timestamp(1)))
     val groupWithVersionInfo =
       Group(PathId.empty, Set(appWithVersionInfo)).copy(version = Timestamp(1))
     when(f.appRepo.store(any()))

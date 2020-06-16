@@ -33,8 +33,8 @@ object TreeTableColumn {
     * Object companion for [[scalafx.scene.control.TreeTableColumn.CellDataFeatures]]
     */
   object CellDataFeatures {
-    implicit def sfxCellDataFeatures2jfx[S, T](v: CellDataFeatures[S, T])
-        : jfxsc.TreeTableColumn.CellDataFeatures[S, T] =
+    implicit def sfxCellDataFeatures2jfx[S, T](
+        v: CellDataFeatures[S, T]): jfxsc.TreeTableColumn.CellDataFeatures[S, T] =
       if (v != null) v.delegate else null
   }
 
@@ -127,11 +127,7 @@ object TreeTableColumn {
         eventType: jfxe.EventType[jfxsc.TreeTableColumn.CellEditEvent[S, T]],
         newValue: T) =
       this(
-        new jfxsc.TreeTableColumn.CellEditEvent(
-          table,
-          pos,
-          eventType,
-          newValue))
+        new jfxsc.TreeTableColumn.CellEditEvent(table, pos, eventType, newValue))
 
     /**
       * Returns the TreeTableView upon which this event occurred.
@@ -168,9 +164,7 @@ object TreeTableColumn {
   }
 
   object SortType
-      extends SFXEnumDelegateCompanion[
-        jfxsc.TreeTableColumn.SortType,
-        SortType] {
+      extends SFXEnumDelegateCompanion[jfxsc.TreeTableColumn.SortType, SortType] {
 
     /** Column will be sorted in an ascending order. */
     val Ascending = new SortType(jfxsc.TreeTableColumn.SortType.ASCENDING)
@@ -300,8 +294,8 @@ class TreeTableColumn[S, T](
     *
     * firstNameCol.cellValueFactory = new TreeItemPropertyValueFactory[Person,String]("firstName"))
     */
-  def cellValueFactory: ObjectProperty[
-    TreeTableColumn.CellDataFeatures[S, T] => ObservableValue[T, T]] =
+  def cellValueFactory
+      : ObjectProperty[TreeTableColumn.CellDataFeatures[S, T] => ObservableValue[T, T]] =
     ObjectProperty((features: TreeTableColumn.CellDataFeatures[S, T]) =>
       jfxObservableValue2sfx[T](
         delegate.cellValueFactoryProperty.getValue.call(features)))

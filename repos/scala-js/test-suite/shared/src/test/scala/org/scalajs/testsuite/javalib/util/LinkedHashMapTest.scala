@@ -68,8 +68,7 @@ abstract class LinkedHashMapTest extends HashMapTest {
       assertEquals(expectedValue(index), value)
   }
 
-  @Test def should_iterate_in_the_same_order_after_removal_of_elements()
-      : Unit = {
+  @Test def should_iterate_in_the_same_order_after_removal_of_elements(): Unit = {
     val lhm = factory.empty[jl.Integer, String]
     (0 until 100).foreach(key => lhm.put(key, s"elem $key"))
 

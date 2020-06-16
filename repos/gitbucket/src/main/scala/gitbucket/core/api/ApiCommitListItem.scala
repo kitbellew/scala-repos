@@ -33,8 +33,7 @@ object ApiCommitListItem {
     )(repositoryName)
 
   case class Parent(sha: String)(repositoryName: RepositoryName) {
-    val url = ApiPath(
-      s"/api/v3/repos/${repositoryName.fullName}/commits/${sha}")
+    val url = ApiPath(s"/api/v3/repos/${repositoryName.fullName}/commits/${sha}")
   }
 
   case class Commit(

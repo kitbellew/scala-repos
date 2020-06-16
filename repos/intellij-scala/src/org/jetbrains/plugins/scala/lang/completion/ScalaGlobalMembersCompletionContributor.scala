@@ -53,8 +53,7 @@ import scala.collection.mutable
 /**
   * @author Alexander Podkhalyuzin
   */
-class ScalaGlobalMembersCompletionContributor
-    extends ScalaCompletionContributor {
+class ScalaGlobalMembersCompletionContributor extends ScalaCompletionContributor {
   extend(
     CompletionType.BASIC,
     psiElement,
@@ -337,9 +336,8 @@ class ScalaGlobalMembersCompletionContributor
               if isStatic(method, containingClass)
             } {
               assert(containingClass != null)
-              if (classes.add(containingClass) && isAccessible(
-                  method,
-                  containingClass)) {
+              if (classes
+                  .add(containingClass) && isAccessible(method, containingClass)) {
                 val shouldImport = !elemsSetContains(method)
                 showHint(shouldImport)
 

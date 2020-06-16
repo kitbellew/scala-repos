@@ -193,9 +193,7 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
   def encodeRef(value: Mixed, path: Node) = {
     val elems = shapes.iterator.zip(getIterator(value)).zipWithIndex.map {
       case ((p, x), pos) =>
-        p.encodeRef(
-          x.asInstanceOf[p.Mixed],
-          Select(path, ElementSymbol(pos + 1)))
+        p.encodeRef(x.asInstanceOf[p.Mixed], Select(path, ElementSymbol(pos + 1)))
     }
     buildValue(elems.toIndexedSeq)
   }
@@ -211,12 +209,7 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
 }
 
 /** Base class for ProductNodeShapes with a type mapping */
-abstract class MappedProductShape[
-    Level <: ShapeLevel,
-    C,
-    M <: C,
-    U <: C,
-    P <: C]
+abstract class MappedProductShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
     extends ProductNodeShape[Level, C, M, U, P] {
   override def toNode(value: Mixed) =
     TypeMapping(
@@ -358,9 +351,7 @@ trait FlatShapeLevel extends NestedShapeLevel
 trait ColumnsShapeLevel extends FlatShapeLevel
 
 /** A value together with its Shape */
-case class ShapedValue[T, U](
-    value: T,
-    shape: Shape[_ <: FlatShapeLevel, T, U, _])
+case class ShapedValue[T, U](value: T, shape: Shape[_ <: FlatShapeLevel, T, U, _])
     extends Rep[U] {
   def encodeRef(path: Node): ShapedValue[T, U] = {
     val fv = shape.encodeRef(value, path).asInstanceOf[T]
@@ -412,10 +403,7 @@ object ShapedValue {
     }
     val fields = rTag.tpe.decls.collect {
       case s: TermSymbol if s.isVal && s.isCaseAccessor =>
-        (
-          TermName(s.name.toString.trim),
-          s.typeSignature,
-          TermName(c.freshName()))
+        (TermName(s.name.toString.trim), s.typeSignature, TermName(c.freshName()))
     }.toIndexedSeq
     val (f, g) =
       if (uTag.tpe <:< c
@@ -425,11 +413,11 @@ object ShapedValue {
           case ((_, t, _), z) =>
             tq"_root_.slick.collection.heterogeneous.HCons[$t, $z]"
         }
-        val pat = fields.foldRight[Tree](
-          pq"_root_.slick.collection.heterogeneous.HNil") {
-          case ((_, _, n), z) =>
-            pq"_root_.slick.collection.heterogeneous.HCons($n, $z)"
-        }
+        val pat =
+          fields.foldRight[Tree](pq"_root_.slick.collection.heterogeneous.HNil") {
+            case ((_, _, n), z) =>
+              pq"_root_.slick.collection.heterogeneous.HCons($n, $z)"
+          }
         val cons = fields.foldRight[Tree](
           q"_root_.slick.collection.heterogeneous.HNil") {
           case ((n, _, _), z) => q"v.$n :: $z"

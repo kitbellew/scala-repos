@@ -153,8 +153,7 @@ class LatencyCompensationTest
     new Ctx {
       // set a compensation to 0 which should cause a failure if the caller does not
       // explicitly .configure the client with a compensation parameter.
-      LatencyCompensation.DefaultOverride.set(new Compensator(_ =>
-        Duration.Zero))
+      LatencyCompensation.DefaultOverride.set(new Compensator(_ => Duration.Zero))
 
       metadata = Addr.Metadata("compensation" -> 2.seconds)
 

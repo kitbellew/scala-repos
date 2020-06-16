@@ -236,8 +236,7 @@ class Test {
     configureFromFileTextAdapter("dummy7.scala", fileText)
     val (activeLookup, _) =
       complete(completionType = CompletionType.BASIC, time = 2)
-    Assert.assertTrue(
-      !activeLookup.exists(_.getLookupString == "doSmthPrivate"))
+    Assert.assertTrue(!activeLookup.exists(_.getLookupString == "doSmthPrivate"))
   }
 
   def testGlobalMember9() {

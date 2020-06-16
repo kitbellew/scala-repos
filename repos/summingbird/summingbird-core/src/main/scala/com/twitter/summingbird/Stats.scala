@@ -81,8 +81,8 @@ object SummingbirdRuntimeStats {
       prov <- provRef.get
       incr <- prov.counterIncrementor(jobID, group, name)
     } yield incr).toList.headOption
-      .getOrElse(sys.error(
-        "Could not find the platform stat provider for jobID " + jobID))
+      .getOrElse(
+        sys.error("Could not find the platform stat provider for jobID " + jobID))
   }
 }
 
@@ -109,10 +109,8 @@ object JobCounters {
     Option(registeredCountersForJob.get(jobID)).map(_.toList)
 
   def registerCounter(jobID: JobId, group: Group, name: Name): Unit = {
-    val set = getOrElseUpdate(
-      registeredCountersForJob,
-      jobID,
-      ParHashSet[(Group, Name)]())
+    val set =
+      getOrElseUpdate(registeredCountersForJob, jobID, ParHashSet[(Group, Name)]())
     set += ((group, name))
   }
 }

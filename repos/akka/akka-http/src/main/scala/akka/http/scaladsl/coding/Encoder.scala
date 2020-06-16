@@ -26,9 +26,7 @@ trait Encoder {
     else message.self
 
   def encodeData[T](t: T)(implicit mapper: DataMapper[T]): T =
-    mapper.transformDataBytes(
-      t,
-      Flow[ByteString].transform(newEncodeTransformer))
+    mapper.transformDataBytes(t, Flow[ByteString].transform(newEncodeTransformer))
 
   def encode(input: ByteString): ByteString =
     newCompressor.compressAndFinish(input)

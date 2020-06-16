@@ -29,8 +29,7 @@ import scala.collection.JavaConverters._
   *
   * @see [[SimpleRetryPolicy]] for a Java friendly API.
   */
-abstract class RetryPolicy[-A]
-    extends (A => Option[(Duration, RetryPolicy[A])]) {
+abstract class RetryPolicy[-A] extends (A => Option[(Duration, RetryPolicy[A])]) {
 
   /**
     * Creates a new `RetryPolicy` based on the current `RetryPolicy` in which values of `A`
@@ -203,8 +202,8 @@ object RetryPolicy extends JavaSingleton {
       policy: RetryPolicy[Try[Nothing]]
   ): RetryPolicy[(Req, Try[Rep])] =
     new RetryPolicy[(Req, Try[Rep])] {
-      def apply(input: (Req, Try[Rep]))
-          : Option[(Duration, RetryPolicy[(Req, Try[Rep])])] =
+      def apply(
+          input: (Req, Try[Rep])): Option[(Duration, RetryPolicy[(Req, Try[Rep])])] =
         input match {
           case (_, t @ Throw(_)) =>
             policy(t.asInstanceOf[Throw[Nothing]]) match {

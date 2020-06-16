@@ -322,9 +322,7 @@ object MongoFieldSpec extends Specification with MongoTestKit with AroundEach {
       rec.mandatoryPatternField,
       JsObj(("$regex", Str(ptrn.toString)), ("$flags", Num(2))),
       JObject(
-        List(
-          JField("$regex", JString(ptrn.toString)),
-          JField("$flags", JInt(2)))),
+        List(JField("$regex", JString(ptrn.toString)), JField("$flags", JInt(2)))),
       Empty,
       false
     )

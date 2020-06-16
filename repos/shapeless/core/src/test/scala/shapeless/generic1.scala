@@ -106,9 +106,7 @@ package Generic1TestsAux {
           icc.pack(
             icc
               .unpack(fa)
-              .fold(
-                hd => Left(icc.fh.map(hd)(f)),
-                tl => Right(icc.ft.map(tl)(f))))
+              .fold(hd => Left(icc.fh.map(hd)(f)), tl => Right(icc.ft.map(tl)(f))))
       }
 
     implicit def generic[F[_]](implicit gen: Generic1[F, Functor]): Functor[F] =
@@ -569,17 +567,17 @@ class Generic1Tests {
     materialize2[List]
 
     def materialize3[F[_]](implicit
-        ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ])
-        : Unit = ()
+        ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
+      ()
     def materialize4[F[_]](implicit
-        ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ])
-        : Unit = ()
+        ihc: IsHCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
+      ()
     def materialize5[F[_]](implicit
-        ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1])
-        : Unit = ()
+        ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
+      ()
     def materialize6[F[_]](implicit
-        ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1])
-        : Unit = ()
+        ihc: IsHCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
+      ()
 
     type H[t] = t :: scala.collection.immutable.List[t] :: HNil
 
@@ -589,17 +587,17 @@ class Generic1Tests {
     materialize6[H]
 
     def materialize7[F[_]](implicit
-        ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ])
-        : Unit = ()
+        ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[r, Option] })#λ]): Unit =
+      ()
     def materialize8[F[_]](implicit
-        ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ])
-        : Unit = ()
+        ihc: IsCCons1[F, Trivial1, ({ type λ[r[_]] = TC3[Option, r] })#λ]): Unit =
+      ()
     def materialize9[F[_]](implicit
-        ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1])
-        : Unit = ()
+        ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[r, Option] })#λ, Trivial1]): Unit =
+      ()
     def materialize10[F[_]](implicit
-        ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1])
-        : Unit = ()
+        ihc: IsCCons1[F, ({ type λ[r[_]] = TC3[Option, r] })#λ, Trivial1]): Unit =
+      ()
 
     type C[t] = scala.collection.immutable.::[t] :+: Nil.type :+: CNil
 

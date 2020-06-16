@@ -421,11 +421,7 @@ private[internal] trait GlbLubs {
           // add a refinement symbol for all non-class members of lubBase
           // which are refined by every type in ts.
           for (sym <- lubBase.nonPrivateMembers; if !excludeFromLub(sym)) {
-            try lubsym(sym) andAlso (addMember(
-              lubThisType,
-              lubRefined,
-              _,
-              depth))
+            try lubsym(sym) andAlso (addMember(lubThisType, lubRefined, _, depth))
             catch {
               case ex: NoCommonType =>
             }
@@ -520,9 +516,7 @@ private[internal] trait GlbLubs {
             (tparam, bounds) => tparam.cloneSymbol.setInfo(lub(bounds, depth)))
           PolyType(tparams1, glbNorm(matchingInstTypes(ts, tparams1), depth))
         case ts @ (mt @ MethodType(params, _)) :: rest =>
-          MethodType(
-            params,
-            glbNorm(matchingRestypes(ts, mt.paramTypes), depth))
+          MethodType(params, glbNorm(matchingRestypes(ts, mt.paramTypes), depth))
         case ts @ NullaryMethodType(_) :: rest =>
           NullaryMethodType(glbNorm(matchingRestypes(ts, Nil), depth))
         case ts @ TypeBounds(_, _) :: rest =>

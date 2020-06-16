@@ -312,16 +312,12 @@ object AlterTableCommandParser {
             col match {
               case Token(const, Nil) =>
                 Seq(
-                  (
-                    cleanAndUnquoteString(const),
-                    cleanAndUnquoteString(loc.text)))
+                  (cleanAndUnquoteString(const), cleanAndUnquoteString(loc.text)))
               case Token(
                     "TOK_TABCOLVALUES",
                     Token("TOK_TABCOLVALUE", keys) :: Nil) =>
                 keys.map { k =>
-                  (
-                    cleanAndUnquoteString(k.text),
-                    cleanAndUnquoteString(loc.text))
+                  (cleanAndUnquoteString(k.text), cleanAndUnquoteString(loc.text))
                 }
             }
           case _ =>
@@ -351,8 +347,7 @@ object AlterTableCommandParser {
           case _ =>
             parseFailed("Invalid ALTER TABLE command", node)
         }
-        AlterTableAddPartition(tableIdent, parsedParts, ifNotExists)(
-          node.source)
+        AlterTableAddPartition(tableIdent, parsedParts, ifNotExists)(node.source)
 
       // ALTER TABLE table_name PARTITION spec1 RENAME TO PARTITION spec2;
       case Token("TOK_ALTERTABLE_RENAMEPART", spec :: Nil) :: _ =>
@@ -411,10 +406,8 @@ object AlterTableCommandParser {
 
       // ALTER TABLE table_name [PARTITION spec] SET LOCATION "loc";
       case Token("TOK_ALTERTABLE_LOCATION", Token(loc, Nil) :: Nil) :: _ =>
-        AlterTableSetLocation(
-          tableIdent,
-          partition,
-          cleanAndUnquoteString(loc))(node.source)
+        AlterTableSetLocation(tableIdent, partition, cleanAndUnquoteString(loc))(
+          node.source)
 
       // ALTER TABLE table_name TOUCH [PARTITION spec];
       case Token("TOK_ALTERTABLE_TOUCH", args) :: _ =>

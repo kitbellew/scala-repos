@@ -115,8 +115,7 @@ object FoldableTest extends SpecLite {
       xs match {
         case Nil => (xs foldr1Opt gt2.curried) must_== None
         case _ =>
-          (xs foldr1Opt gt2.curried) must_== Some(
-            xs.init.foldRight(xs.last)(gt1))
+          (xs foldr1Opt gt2.curried) must_== Some(xs.init.foldRight(xs.last)(gt1))
       }
     }
 
@@ -142,8 +141,7 @@ object FoldableTest extends SpecLite {
 
     "findMapM: finding the first element performs transform and only runs only necessary effects" ! forAll {
       (x: Int, xs: List[Int]) =>
-        (x :: xs).findMapM[StateInt, Int](found).run(0) must_== (1 -> Some(
-          x * 2))
+        (x :: xs).findMapM[StateInt, Int](found).run(0) must_== (1 -> Some(x * 2))
     }
 
     "findMapM: finding the last element performs transform and runs all effects (once only)" ! forAll {

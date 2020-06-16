@@ -200,9 +200,7 @@ trait CReducer[A] {
 trait ArrayMapperS[M[+_]] extends CMapperS[M] {
   import org.joda.time.{DateTime, Period}
 
-  def map(
-      columns0: Map[ColumnRef, Column],
-      range: Range): Map[ColumnRef, Column] = {
+  def map(columns0: Map[ColumnRef, Column], range: Range): Map[ColumnRef, Column] = {
     val results = this(columns0, range)
 
     val columns = results flatMap {

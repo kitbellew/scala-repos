@@ -59,8 +59,7 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
     // scalastyle:off println
     writer.println(
       compact(render(JsonProtocol.sparkEventToJson(applicationStart))))
-    writer.println(
-      compact(render(JsonProtocol.sparkEventToJson(applicationEnd))))
+    writer.println(compact(render(JsonProtocol.sparkEventToJson(applicationEnd))))
     // scalastyle:on println
     writer.close()
 

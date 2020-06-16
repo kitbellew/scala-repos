@@ -48,8 +48,7 @@ trait ScalacPatternExpanders {
         fixed: List[Type],
         repeated: Repeated,
         typeOfSinglePattern: Type): Extractor =
-      logResult(
-        s"newExtractor($whole, $fixed, $repeated, $typeOfSinglePattern")(
+      logResult(s"newExtractor($whole, $fixed, $repeated, $typeOfSinglePattern")(
         Extractor(whole, fixed, repeated, typeOfSinglePattern))
     def newExtractor(
         whole: Type,

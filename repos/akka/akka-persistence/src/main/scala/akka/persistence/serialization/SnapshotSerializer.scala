@@ -30,8 +30,7 @@ private[serialization] final case class SnapshotHeader(
 /**
   * [[Snapshot]] serializer.
   */
-class SnapshotSerializer(val system: ExtendedActorSystem)
-    extends BaseSerializer {
+class SnapshotSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
 
   override val includeManifest: Boolean = false
 

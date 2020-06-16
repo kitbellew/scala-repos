@@ -109,9 +109,7 @@ trait Mirrors extends api.Mirrors {
     }
 
     def getClassByName(fullname: Name): ClassSymbol =
-      ensureClassSymbol(
-        fullname.toString,
-        getModuleOrClass(fullname.toTypeName))
+      ensureClassSymbol(fullname.toString, getModuleOrClass(fullname.toTypeName))
 
     def getRequiredClass(fullname: String): ClassSymbol =
       getClassByName(newTypeNameCached(fullname))
@@ -325,9 +323,7 @@ trait Mirrors extends api.Mirrors {
     }
     // Features common to RootClass and RootPackage, the roots of all
     // type and term symbols respectively.
-    sealed trait RootSymbol
-        extends WellKnownSymbol
-        with thisUniverse.RootSymbol {
+    sealed trait RootSymbol extends WellKnownSymbol with thisUniverse.RootSymbol {
       final override def isRootSymbol = true
       override def owner = rootOwner
       override def typeOfThis = thisSym.tpe

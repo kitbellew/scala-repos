@@ -167,7 +167,8 @@ class GradientBoostedTreesSuite
     }
   }
 
-  test("SPARK-5496: BoostingStrategy.defaultParams should recognize Classification") {
+  test(
+    "SPARK-5496: BoostingStrategy.defaultParams should recognize Classification") {
     for (algo <-
         Seq("classification", "Classification", "regression", "Regression")) {
       BoostingStrategy.defaultParams(algo)
@@ -201,7 +202,8 @@ class GradientBoostedTreesSuite
     }
   }
 
-  test("runWithValidation stops early and performs better on a validation dataset") {
+  test(
+    "runWithValidation stops early and performs better on a validation dataset") {
     // Set numIterations large enough so that it stops early.
     val numIterations = 20
     val trainRdd = sc.parallelize(GradientBoostedTreesSuite.trainData, 2)
@@ -231,8 +233,8 @@ class GradientBoostedTreesSuite
         val gbt = new GradientBoostedTrees(boostingStrategy).run(trainRdd)
         val (errorWithoutValidation, errorWithValidation) = {
           if (algo == Classification) {
-            val remappedRdd = validateRdd.map(x =>
-              new LabeledPoint(2 * x.label - 1, x.features))
+            val remappedRdd =
+              validateRdd.map(x => new LabeledPoint(2 * x.label - 1, x.features))
             (
               loss.computeError(gbt, remappedRdd),
               loss.computeError(gbtValidate, remappedRdd))

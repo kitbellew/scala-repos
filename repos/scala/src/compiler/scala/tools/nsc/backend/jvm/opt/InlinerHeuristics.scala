@@ -76,9 +76,7 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
                     else ""
                   val msg =
                     s"${BackendReporting.methodSignature(calleeDeclClass.internalName, callee)}$annotWarn could not be inlined:\n$w"
-                  backendReporting.inlinerWarning(
-                    callsite.callsitePosition,
-                    msg)
+                  backendReporting.inlinerWarning(callsite.callsitePosition, msg)
                 }
 
               case None =>
@@ -277,9 +275,7 @@ class InlinerHeuristics[BT <: BTypes](val bTypes: BT) {
     (
       "java/util/function/ToDoubleBiFunction",
       "applyAsDouble(Ljava/lang/Object;Ljava/lang/Object;)D"),
-    (
-      "java/util/function/ToDoubleFunction",
-      "applyAsDouble(Ljava/lang/Object;)D"),
+    ("java/util/function/ToDoubleFunction", "applyAsDouble(Ljava/lang/Object;)D"),
     (
       "java/util/function/ToIntBiFunction",
       "applyAsInt(Ljava/lang/Object;Ljava/lang/Object;)I"),

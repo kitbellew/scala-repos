@@ -36,9 +36,7 @@ import scala.collection.mutable.ListBuffer
 
 object ScalaOIUtil {
 
-  def toClassMember(
-      candidate: AnyRef,
-      isImplement: Boolean): Option[ClassMember] = {
+  def toClassMember(candidate: AnyRef, isImplement: Boolean): Option[ClassMember] = {
     candidate match {
       case sign: PhysicalSignature =>
         val method = sign.method

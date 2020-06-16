@@ -112,8 +112,7 @@ object SliceMatrix {
     }
   }
 
-  implicit def canIterateValues[K1, K2, V]
-      : CanTraverseValues[SliceMatrix[K1, K2, V], V] =
+  implicit def canIterateValues[K1, K2, V]: CanTraverseValues[SliceMatrix[K1, K2, V], V] =
     new CanTraverseValues[SliceMatrix[K1, K2, V], V] {
 
       def isTraversableAgain(from: SliceMatrix[K1, K2, V]): Boolean = true

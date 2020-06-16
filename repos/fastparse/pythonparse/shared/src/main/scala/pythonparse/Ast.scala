@@ -155,10 +155,7 @@ object Ast {
   object slice {
 
     case object Ellipsis extends slice
-    case class Slice(
-        lower: Option[expr],
-        upper: Option[expr],
-        step: Option[expr])
+    case class Slice(lower: Option[expr], upper: Option[expr], step: Option[expr])
         extends slice
     case class ExtSlice(dims: Seq[slice]) extends slice
     case class Index(value: expr) extends slice

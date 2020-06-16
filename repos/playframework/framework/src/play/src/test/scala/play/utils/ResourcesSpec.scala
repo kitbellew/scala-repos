@@ -184,10 +184,7 @@ object ResourcesSpec extends Specification {
     s"zip:${zipFile.toURI.toURL}!/${UriEncoding.encodePathSegment(file.getName, "utf-8")}"
   }
 
-  private def createTempDir(
-      prefix: String,
-      suffix: String,
-      parent: File = null) = {
+  private def createTempDir(prefix: String, suffix: String, parent: File = null) = {
     val f = File.createTempFile(prefix, suffix, parent)
     f.delete()
     f.mkdir()

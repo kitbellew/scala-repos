@@ -149,8 +149,8 @@ object ThrottlerTransportAdapter {
     override def timeToAvailable(
         currentNanoTime: Long,
         tokens: Int): FiniteDuration = {
-      val needed = (if (tokens > capacity) 1 else tokens) - tokensGenerated(
-        currentNanoTime)
+      val needed =
+        (if (tokens > capacity) 1 else tokens) - tokensGenerated(currentNanoTime)
       (needed / tokensPerSecond).seconds
     }
 
@@ -531,9 +531,7 @@ private[transport] class ThrottledAssociation(
   }
 
   when(WaitModeAndUpstreamListener) {
-    case Event(
-          ListenerAndMode(listener: HandleEventListener, mode: ThrottleMode),
-          _) ⇒
+    case Event(ListenerAndMode(listener: HandleEventListener, mode: ThrottleMode), _) ⇒
       upstreamListener = listener
       inboundThrottleMode = mode
       self ! Dequeue
@@ -568,9 +566,8 @@ private[transport] class ThrottledAssociation(
           ._1
         if (throttledMessages.nonEmpty)
           scheduleDequeue(
-            inboundThrottleMode.timeToAvailable(
-              System.nanoTime(),
-              throttledMessages.head.length))
+            inboundThrottleMode
+              .timeToAvailable(System.nanoTime(), throttledMessages.head.length))
       }
       stay()
 

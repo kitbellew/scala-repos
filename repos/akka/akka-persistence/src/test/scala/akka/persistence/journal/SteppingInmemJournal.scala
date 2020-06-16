@@ -148,11 +148,9 @@ final class SteppingInmemJournal extends InmemJournal {
     val future = promise.future
     doOrEnqueue { () ⇒
       promise.completeWith(
-        super.asyncReplayMessages(
-          persistenceId,
-          fromSequenceNr,
-          toSequenceNr,
-          max)(recoveryCallback))
+        super
+          .asyncReplayMessages(persistenceId, fromSequenceNr, toSequenceNr, max)(
+            recoveryCallback))
       future
     }
 

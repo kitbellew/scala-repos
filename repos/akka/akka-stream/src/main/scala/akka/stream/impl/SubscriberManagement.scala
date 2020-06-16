@@ -89,10 +89,8 @@ private[akka] trait SubscriberManagement[T]
     */
   protected def createSubscription(subscriber: Subscriber[_ >: T]): S
 
-  private[this] val buffer = new ResizableMultiReaderRingBuffer[T](
-    initialBufferSize,
-    maxBufferSize,
-    this)
+  private[this] val buffer =
+    new ResizableMultiReaderRingBuffer[T](initialBufferSize, maxBufferSize, this)
 
   protected def bufferDebug: String = buffer.toString
 
@@ -291,8 +289,7 @@ private[akka] trait SubscriberManagement[T]
           if (head eq subscription) tail reverse_::: result
           else removeFrom(tail, head :: result)
         case _ ⇒
-          throw new IllegalStateException(
-            "Subscription to unregister not found")
+          throw new IllegalStateException("Subscription to unregister not found")
       }
     if (subscription.active) {
       subscriptions = removeFrom(subscriptions)

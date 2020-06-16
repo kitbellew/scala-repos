@@ -70,8 +70,7 @@ class NormalizerSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(
       data1(3) ~== Vectors
         .sparse(3, Seq((1, 0.22141119), (2, 0.7785888))) absTol 1e-5)
-    assert(
-      data1(4) ~== Vectors.dense(0.625, 0.07894737, 0.29605263) absTol 1e-5)
+    assert(data1(4) ~== Vectors.dense(0.625, 0.07894737, 0.29605263) absTol 1e-5)
     assert(data1(5) ~== Vectors.sparse(3, Seq()) absTol 1e-5)
   }
 

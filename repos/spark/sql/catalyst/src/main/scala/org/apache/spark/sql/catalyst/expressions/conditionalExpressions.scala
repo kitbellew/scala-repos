@@ -120,10 +120,8 @@ case class CaseWhen(
         TypeCheckResult.TypeCheckSuccess
       } else {
         val index = branches.indexWhere(_._1.dataType != BooleanType)
-        TypeCheckResult.TypeCheckFailure(
-          s"WHEN expressions in CaseWhen should all be boolean type, " +
-            s"but the ${index + 1}th when expression's type is ${branches(
-              index)._1}")
+        TypeCheckResult.TypeCheckFailure(s"WHEN expressions in CaseWhen should all be boolean type, " +
+          s"but the ${index + 1}th when expression's type is ${branches(index)._1}")
       }
     } else {
       TypeCheckResult.TypeCheckFailure("THEN and ELSE expressions should all be same type or coercible to a common type")
@@ -345,8 +343,7 @@ case class Greatest(children: Seq[Expression]) extends Expression {
 
   override def checkInputDataTypes(): TypeCheckResult = {
     if (children.length <= 1) {
-      TypeCheckResult.TypeCheckFailure(
-        s"GREATEST requires at least 2 arguments")
+      TypeCheckResult.TypeCheckFailure(s"GREATEST requires at least 2 arguments")
     } else if (children.map(_.dataType).distinct.count(_ != NullType) > 1) {
       TypeCheckResult.TypeCheckFailure(
         s"The expressions should all have the same type," +

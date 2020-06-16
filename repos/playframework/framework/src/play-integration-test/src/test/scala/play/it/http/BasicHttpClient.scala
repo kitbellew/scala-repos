@@ -58,19 +58,14 @@ object BasicHttpClient {
     }
   }
 
-  def pipelineRequests(
-      port: Int,
-      requests: BasicRequest*): Seq[BasicResponse] = {
+  def pipelineRequests(port: Int, requests: BasicRequest*): Seq[BasicResponse] = {
     val client = new BasicHttpClient(port)
 
     try {
       var requestNo = 0
       requests.foreach { request =>
         requestNo += 1
-        client.sendRequest(
-          request,
-          requestNo.toString,
-          waitForResponses = false)
+        client.sendRequest(request, requestNo.toString, waitForResponses = false)
       }
       for (i <- 0 until requests.length) yield {
         client.readResponse(requestNo.toString)

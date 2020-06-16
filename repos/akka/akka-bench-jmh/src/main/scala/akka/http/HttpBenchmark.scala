@@ -48,8 +48,7 @@ class HttpBenchmark {
       }
     }
 
-    binding =
-      Await.result(Http().bindAndHandle(route, "127.0.0.1", 0), 1.second)
+    binding = Await.result(Http().bindAndHandle(route, "127.0.0.1", 0), 1.second)
     request = HttpRequest(uri =
       s"http://${binding.localAddress.getHostString}:${binding.localAddress.getPort}/test")
     pool = Http().cachedHostConnectionPool[Int](

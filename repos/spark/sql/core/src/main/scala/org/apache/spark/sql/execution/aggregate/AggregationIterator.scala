@@ -151,8 +151,7 @@ abstract class AggregationIterator(
   }
 
   // All imperative AggregateFunctions.
-  protected[this] val allImperativeAggregateFunctions
-      : Array[ImperativeAggregate] =
+  protected[this] val allImperativeAggregateFunctions: Array[ImperativeAggregate] =
     allImperativeAggregateFunctionPositions
       .map(aggregateFunctions)
       .map(_.asInstanceOf[ImperativeAggregate])
@@ -206,18 +205,14 @@ abstract class AggregationIterator(
   }
 
   protected val processRow: (MutableRow, InternalRow) => Unit =
-    generateProcessRow(
-      aggregateExpressions,
-      aggregateFunctions,
-      inputAttributes)
+    generateProcessRow(aggregateExpressions, aggregateFunctions, inputAttributes)
 
   protected val groupingProjection: UnsafeProjection =
     UnsafeProjection.create(groupingExpressions, inputAttributes)
   protected val groupingAttributes = groupingExpressions.map(_.toAttribute)
 
   // Initializing the function used to generate the output row.
-  protected def generateResultProjection()
-      : (UnsafeRow, MutableRow) => UnsafeRow = {
+  protected def generateResultProjection(): (UnsafeRow, MutableRow) => UnsafeRow = {
     val joinedRow = new JoinedRow
     val modes = aggregateExpressions.map(_.mode).distinct
     val bufferAttributes = aggregateFunctions.flatMap(_.aggBufferAttributes)

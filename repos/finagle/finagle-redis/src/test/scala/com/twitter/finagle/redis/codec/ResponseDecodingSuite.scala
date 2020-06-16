@@ -98,8 +98,7 @@ final class ResponseDecodingSuite extends RedisResponseTest {
   }
 
   test("Correctly decode multiple integers in one reply") {
-    assert(
-      codec(wrap(":1\r\n:2\r\n")) == List(IntegerReply(1), IntegerReply(2)))
+    assert(codec(wrap(":1\r\n:2\r\n")) == List(IntegerReply(1), IntegerReply(2)))
   }
 
   test("Throw ServerError when decoding BLANK integer reply") {

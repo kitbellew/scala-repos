@@ -33,10 +33,8 @@ class Counter2Test extends FunSuite with Checkers {
   test("Slice rows and columns") {
 //    val x = Counter2[String,Int,Double]()
 //    x(("a",1),("b",2),("c",2)) := List(3.0,7.75,8.0)
-    val x = Counter2[String, Int, Double](
-      ("a", 1, 3.0),
-      ("b", 2, 7.75),
-      ("c", 2, 8.0))
+    val x =
+      Counter2[String, Int, Double](("a", 1, 3.0), ("b", 2, 7.75), ("c", 2, 8.0))
 
     // require expected static type
     val s1: Counter[Int, Double] = x("a", ::)

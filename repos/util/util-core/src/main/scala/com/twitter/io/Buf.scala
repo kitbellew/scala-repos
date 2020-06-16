@@ -363,8 +363,7 @@ object Buf {
     * visible to the resulting Buf. The ByteBuffer should
     * be immutable in practice.
     */
-  class ByteBuffer(private[Buf] val underlying: java.nio.ByteBuffer)
-      extends Buf {
+  class ByteBuffer(private[Buf] val underlying: java.nio.ByteBuffer) extends Buf {
     def length = underlying.remaining
 
     override def toString = s"ByteBuffer($length)"

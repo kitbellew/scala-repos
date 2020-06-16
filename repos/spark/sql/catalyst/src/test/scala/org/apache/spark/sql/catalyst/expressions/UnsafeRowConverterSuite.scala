@@ -106,10 +106,8 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
       DateTimeUtils.fromJavaTimestamp(Timestamp.valueOf("2015-05-08 08:10:25")))
 
     val unsafeRow: UnsafeRow = converter.apply(row)
-    assert(
-      unsafeRow.getSizeInBytes ===
-        8 + (8 * 4) + roundedSize(
-          "Hello".getBytes(StandardCharsets.UTF_8).length))
+    assert(unsafeRow.getSizeInBytes ===
+      8 + (8 * 4) + roundedSize("Hello".getBytes(StandardCharsets.UTF_8).length))
 
     assert(unsafeRow.getLong(0) === 0)
     assert(unsafeRow.getString(1) === "Hello")
@@ -201,15 +199,12 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
     assert(
       setToNullAfterCreation.isNullAt(0) === rowWithNoNullColumns.isNullAt(0))
     assert(
-      setToNullAfterCreation.getBoolean(1) === rowWithNoNullColumns.getBoolean(
-        1))
-    assert(
-      setToNullAfterCreation.getByte(2) === rowWithNoNullColumns.getByte(2))
+      setToNullAfterCreation.getBoolean(1) === rowWithNoNullColumns.getBoolean(1))
+    assert(setToNullAfterCreation.getByte(2) === rowWithNoNullColumns.getByte(2))
     assert(
       setToNullAfterCreation.getShort(3) === rowWithNoNullColumns.getShort(3))
     assert(setToNullAfterCreation.getInt(4) === rowWithNoNullColumns.getInt(4))
-    assert(
-      setToNullAfterCreation.getLong(5) === rowWithNoNullColumns.getLong(5))
+    assert(setToNullAfterCreation.getLong(5) === rowWithNoNullColumns.getLong(5))
     assert(
       setToNullAfterCreation.getFloat(6) === rowWithNoNullColumns.getFloat(6))
     assert(
@@ -251,15 +246,12 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
     assert(
       setToNullAfterCreation.isNullAt(0) === rowWithNoNullColumns.isNullAt(0))
     assert(
-      setToNullAfterCreation.getBoolean(1) === rowWithNoNullColumns.getBoolean(
-        1))
-    assert(
-      setToNullAfterCreation.getByte(2) === rowWithNoNullColumns.getByte(2))
+      setToNullAfterCreation.getBoolean(1) === rowWithNoNullColumns.getBoolean(1))
+    assert(setToNullAfterCreation.getByte(2) === rowWithNoNullColumns.getByte(2))
     assert(
       setToNullAfterCreation.getShort(3) === rowWithNoNullColumns.getShort(3))
     assert(setToNullAfterCreation.getInt(4) === rowWithNoNullColumns.getInt(4))
-    assert(
-      setToNullAfterCreation.getLong(5) === rowWithNoNullColumns.getLong(5))
+    assert(setToNullAfterCreation.getLong(5) === rowWithNoNullColumns.getLong(5))
     assert(
       setToNullAfterCreation.getFloat(6) === rowWithNoNullColumns.getFloat(6))
     assert(
@@ -495,8 +487,7 @@ class UnsafeRowConverterSuite extends SparkFunSuite with Matchers {
     val innerMap = field1.getMap(0)
     testMapInt(innerMap, Seq(1), Seq(2))
 
-    assert(
-      field1.getSizeInBytes == 8 + 8 + roundedSize(innerMap.getSizeInBytes))
+    assert(field1.getSizeInBytes == 8 + 8 + roundedSize(innerMap.getSizeInBytes))
 
     val field2 = unsafeRow.getMap(1)
 

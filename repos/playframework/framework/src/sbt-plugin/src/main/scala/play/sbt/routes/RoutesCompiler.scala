@@ -179,11 +179,7 @@ object RoutesCompiler extends AutoPlugin {
         case RoutesCompilationError(source, message, line, column) =>
           reportCompilationError(
             log,
-            RoutesCompilationException(
-              source,
-              message,
-              line,
-              column.map(_ - 1)))
+            RoutesCompilationException(source, message, line, column.map(_ - 1)))
       }
       throw exceptions.head
     }

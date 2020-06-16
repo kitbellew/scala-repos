@@ -83,8 +83,7 @@ trait SegmentFormatSpec
 
   "segment formats" should {
     "roundtrip trivial null segments" in {
-      surviveRoundTrip(
-        NullSegment(1234L, CPath("a.b.c"), CNull, EmptyBitSet, 0))
+      surviveRoundTrip(NullSegment(1234L, CPath("a.b.c"), CNull, EmptyBitSet, 0))
       surviveRoundTrip(
         NullSegment(1234L, CPath("a.b.c"), CEmptyObject, EmptyBitSet, 0))
       surviveRoundTrip(
@@ -94,12 +93,7 @@ trait SegmentFormatSpec
       BooleanSegment(1234L, CPath("a.b.c"), EmptyBitSet, EmptyBitSet, 0))
     "roundtrip trivial array segments" in {
       surviveRoundTrip(
-        ArraySegment(
-          1234L,
-          CPath("a.b.c"),
-          CLong,
-          EmptyBitSet,
-          new Array[Long](0)))
+        ArraySegment(1234L, CPath("a.b.c"), CLong, EmptyBitSet, new Array[Long](0)))
       surviveRoundTrip(
         ArraySegment(
           1234L,

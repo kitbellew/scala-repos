@@ -284,8 +284,7 @@ private[storage] class BlockInfoManager extends Logging {
     */
   def downgradeLock(blockId: BlockId): Unit =
     synchronized {
-      logTrace(
-        s"Task $currentTaskAttemptId downgrading write lock for $blockId")
+      logTrace(s"Task $currentTaskAttemptId downgrading write lock for $blockId")
       val info = get(blockId).get
       require(
         info.writerTask == currentTaskAttemptId,
@@ -309,9 +308,7 @@ private[storage] class BlockInfoManager extends Logging {
         info.writerTask = BlockInfo.NO_WRITER
         writeLocksByTask.removeBinding(currentTaskAttemptId, blockId)
       } else {
-        assert(
-          info.readerCount > 0,
-          s"Block $blockId is not locked for reading")
+        assert(info.readerCount > 0, s"Block $blockId is not locked for reading")
         info.readerCount -= 1
         val countsForTask = readLocksByTask(currentTaskAttemptId)
         val newPinCountForTask: Int = countsForTask.remove(blockId, 1) - 1
@@ -333,9 +330,7 @@ private[storage] class BlockInfoManager extends Logging {
     *         a read lock on the existing block will be held. If this returns true, a write lock on
     *         the new block will be held.
     */
-  def lockNewBlockForWriting(
-      blockId: BlockId,
-      newBlockInfo: BlockInfo): Boolean =
+  def lockNewBlockForWriting(blockId: BlockId, newBlockInfo: BlockInfo): Boolean =
     synchronized {
       logTrace(s"Task $currentTaskAttemptId trying to put $blockId")
       lockForReading(blockId) match {

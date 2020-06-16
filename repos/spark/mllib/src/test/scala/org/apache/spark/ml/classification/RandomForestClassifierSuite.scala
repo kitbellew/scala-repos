@@ -80,11 +80,7 @@ class RandomForestClassifierSuite
     val model = new RandomForestClassificationModel(
       "rfc",
       Array(
-        new DecisionTreeClassificationModel(
-          "dtc",
-          new LeafNode(0.0, 0.0, null),
-          1,
-          2)),
+        new DecisionTreeClassificationModel("dtc", new LeafNode(0.0, 0.0, null), 1, 2)),
       2,
       2)
     ParamsSuite.checkParams(model)

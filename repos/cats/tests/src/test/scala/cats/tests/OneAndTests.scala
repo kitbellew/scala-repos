@@ -98,9 +98,7 @@ class OneAndTests extends CatsSuite {
     "Monad[NonEmptyList[A]]",
     SerializableTests.serializable(Monad[NonEmptyList]))
 
-  checkAll(
-    "NonEmptyList[Int]",
-    ComonadTests[NonEmptyList].comonad[Int, Int, Int])
+  checkAll("NonEmptyList[Int]", ComonadTests[NonEmptyList].comonad[Int, Int, Int])
   checkAll(
     "Comonad[NonEmptyList[A]]",
     SerializableTests.serializable(Comonad[NonEmptyList]))

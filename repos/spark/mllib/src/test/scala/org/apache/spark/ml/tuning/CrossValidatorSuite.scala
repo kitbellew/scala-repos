@@ -230,8 +230,7 @@ class CrossValidatorSuite
                   s" LogisticRegression but found type ${other.getClass.getName}")
             }
             assert(lrcv.uid === lrcv2.uid)
-            assert(
-              lrcv2.getEvaluator.isInstanceOf[BinaryClassificationEvaluator])
+            assert(lrcv2.getEvaluator.isInstanceOf[BinaryClassificationEvaluator])
             assert(lrEvaluator.uid === lrcv2.getEvaluator.uid)
             CrossValidatorSuite.compareParamMaps(
               lrParamMaps,

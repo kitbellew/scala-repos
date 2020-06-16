@@ -17,10 +17,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScClass
 import org.jetbrains.plugins.scala.lang.scaladoc.lexer.ScalaDocTokenType
 import org.jetbrains.plugins.scala.lang.scaladoc.parser.ScalaDocElementTypes
-import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.{
-  ScDocComment,
-  ScDocTag
-}
+import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.{ScDocComment, ScDocTag}
 
 import scala.collection.mutable
 
@@ -30,9 +27,7 @@ import scala.collection.mutable
   */
 
 class ScDocCommentImpl(text: CharSequence)
-    extends LazyParseablePsiElement(
-      ScalaDocElementTypes.SCALA_DOC_COMMENT,
-      text)
+    extends LazyParseablePsiElement(ScalaDocElementTypes.SCALA_DOC_COMMENT, text)
     with ScDocComment {
   def version: Int = {
     val firstLineIsEmpty = getNode

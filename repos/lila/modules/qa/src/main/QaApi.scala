@@ -120,8 +120,7 @@ final class QaApi(
     def byTags(tags: List[String], max: Int): Fu[List[Question]] =
       questionColl
         .find(
-          BSONDocument(
-            "tags" -> BSONDocument("$in" -> tags.map(_.toLowerCase))))
+          BSONDocument("tags" -> BSONDocument("$in" -> tags.map(_.toLowerCase))))
         .cursor[Question]()
         .collect[List](max)
 

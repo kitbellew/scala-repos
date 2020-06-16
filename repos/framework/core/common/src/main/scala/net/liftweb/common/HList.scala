@@ -158,9 +158,8 @@ object ExcludeThisType {
       A,
       B >: A]: A ExcludeThisType B = unexpected
 
-  implicit def `Ignore me, I only exist to cause the compiler to fail`[
-      A,
-      B >: A]: A ExcludeThisType B = unexpected
+  implicit def `Ignore me, I only exist to cause the compiler to fail`[A, B >: A]
+      : A ExcludeThisType B = unexpected
 
   // Type alias for context bound
   type exclude[T] = {

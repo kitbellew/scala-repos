@@ -28,9 +28,7 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
           }
         }
       } Then { buffer: mutable.Buffer[(String, Double)] =>
-        buffer.toList shouldBe List(
-          ("Joe", 1000.0 / 32),
-          ("Sarah", 1000.0 / 58))
+        buffer.toList shouldBe List(("Joe", 1000.0 / 32), ("Sarah", 1000.0 / 58))
       }
     }
 
@@ -184,9 +182,7 @@ class TypedApiTest extends WordSpec with Matchers with TBddDsl {
               }
 
               Some(
-                EstimatedContribution(
-                  name,
-                  floor(income / (lifeExpectancy - age))))
+                EstimatedContribution(name, floor(income / (lifeExpectancy - age))))
             case _ => None
           }
           .values

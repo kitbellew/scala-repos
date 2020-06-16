@@ -121,8 +121,7 @@ trait RuleDSLBasics {
     */
   def failX[I <: HList, O <: HList](expected: String): Rule[I, O] = `n/a`
 
-  @compileTimeOnly(
-    "Calls to `str2CharRangeSupport` must be inside `rule` macro")
+  @compileTimeOnly("Calls to `str2CharRangeSupport` must be inside `rule` macro")
   implicit def str2CharRangeSupport(s: String): CharRangeSupport = `n/a`
   sealed trait CharRangeSupport {
     def -(other: String): Rule0

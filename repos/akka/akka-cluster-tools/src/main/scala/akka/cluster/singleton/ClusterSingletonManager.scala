@@ -289,10 +289,9 @@ object ClusterSingletonManager {
       }
 
       def handleInitial(state: CurrentClusterState): Unit = {
-        membersByAge = immutable.SortedSet.empty(
-          ageOrdering) union state.members.filter(m ⇒
-          (m.status == MemberStatus.Up || m.status == MemberStatus.Leaving) && matchingRole(
-            m))
+        membersByAge =
+          immutable.SortedSet.empty(ageOrdering) union state.members.filter(m ⇒
+            (m.status == MemberStatus.Up || m.status == MemberStatus.Leaving) && matchingRole(m))
         val safeToBeOldest = !state.members.exists { m ⇒
           (m.status == MemberStatus.Down || m.status == MemberStatus.Exiting)
         }
@@ -591,9 +590,7 @@ class ClusterSingletonManager(
       scheduleDelayedMemberRemoved(m)
       stay
 
-    case Event(
-          DelayedMemberRemoved(m),
-          BecomingOldestData(Some(previousOldest)))
+    case Event(DelayedMemberRemoved(m), BecomingOldestData(Some(previousOldest)))
         if m.address == previousOldest ⇒
       logInfo("Previous oldest [{}] removed", previousOldest)
       addRemoved(m.address)

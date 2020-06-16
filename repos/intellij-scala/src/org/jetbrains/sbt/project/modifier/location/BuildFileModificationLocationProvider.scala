@@ -30,6 +30,5 @@ trait BuildFileModificationLocationProvider {
       file: PsiFile,
       module: IJModule,
       elementType: BuildFileElementType,
-      elementCondition: Option[PsiElement => Boolean])
-      : Option[(PsiElement, Int)]
+      elementCondition: Option[PsiElement => Boolean]): Option[(PsiElement, Int)]
 }

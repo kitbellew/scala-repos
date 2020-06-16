@@ -171,9 +171,7 @@ class ClientQuotaManagerTest {
       assertTrue("Should be throttled", throttleTime > 0)
       // the sensor should get recreated
       val throttleTimeSensor = metrics.getSensor("producerThrottleTime-client1")
-      assertTrue(
-        "Throttle time sensor should exist",
-        throttleTimeSensor != null)
+      assertTrue("Throttle time sensor should exist", throttleTimeSensor != null)
     } finally {
       clientMetrics.shutdown()
     }
@@ -196,9 +194,7 @@ class ClientQuotaManagerTest {
 
       // all the sensors should get recreated
       val throttleTimeSensor = metrics.getSensor("producerThrottleTime-client1")
-      assertTrue(
-        "Throttle time sensor should exist",
-        throttleTimeSensor != null)
+      assertTrue("Throttle time sensor should exist", throttleTimeSensor != null)
 
       val byteRateSensor = metrics.getSensor("producer-client1")
       assertTrue("Byte rate sensor should exist", byteRateSensor != null)

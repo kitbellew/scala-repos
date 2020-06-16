@@ -55,8 +55,7 @@ object v1 {
       createdAt: Instant,
       expirationDate: Option[DateTime]) {
     def isValidAt(timestamp: Instant) = {
-      createdAt.isBefore(timestamp) && expirationDate.forall(
-        _.isAfter(timestamp))
+      createdAt.isBefore(timestamp) && expirationDate.forall(_.isAfter(timestamp))
     }
   }
   object GrantDetails {

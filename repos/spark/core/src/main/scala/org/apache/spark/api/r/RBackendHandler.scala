@@ -144,8 +144,7 @@ private[r] class RBackendHandler(server: RBackend)
             s"cannot find matching method ${cls}.$methodName. "
               + s"Candidates are:")
           selectedMethods.foreach { method =>
-            logWarning(
-              s"$methodName(${method.getParameterTypes.mkString(",")})")
+            logWarning(s"$methodName(${method.getParameterTypes.mkString(",")})")
           }
           throw new Exception(s"No matched method found for $cls.$methodName")
         }

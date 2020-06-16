@@ -257,11 +257,10 @@ class AnalysisSuite extends AnalysisTest {
     checkAnalysis(plan, expected)
 
     // CreateStruct is a special case that we should not trim Alias for it.
-    plan =
-      testRelation.select(CreateStruct(Seq(a, (a + 1).as("a+1"))).as("col"))
+    plan = testRelation.select(CreateStruct(Seq(a, (a + 1).as("a+1"))).as("col"))
     checkAnalysis(plan, plan)
-    plan = testRelation.select(
-      CreateStructUnsafe(Seq(a, (a + 1).as("a+1"))).as("col"))
+    plan =
+      testRelation.select(CreateStructUnsafe(Seq(a, (a + 1).as("a+1"))).as("col"))
     checkAnalysis(plan, plan)
   }
 

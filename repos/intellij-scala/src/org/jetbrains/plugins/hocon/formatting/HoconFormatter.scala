@@ -19,9 +19,7 @@ class HoconFormatter(settings: CodeStyleSettings) {
   val customSettings =
     settings.getCustomSettings(classOf[HoconCustomCodeStyleSettings])
 
-  private def beforeCommentOnNewLineSpacing(
-      parent: ASTNode,
-      comment: ASTNode) = {
+  private def beforeCommentOnNewLineSpacing(parent: ASTNode, comment: ASTNode) = {
     val maxBlankLines =
       getMaxBlankLines(parent.getElementType, comment.getElementType)
     comment.getElementType match {
@@ -271,9 +269,7 @@ class HoconFormatter(settings: CodeStyleSettings) {
 
   def getIndent(parent: ASTNode, child: ASTNode) =
     (parent.getElementType, child.getElementType) match {
-      case (
-            Object,
-            Include | KeyedField.extractor() | Comma | Comment.extractor()) |
+      case (Object, Include | KeyedField.extractor() | Comma | Comment.extractor()) |
           (Array, Value.extractor() | Comma | Comment.extractor()) =>
         Indent.getNormalIndent
       case (Include, Included) |

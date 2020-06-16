@@ -37,9 +37,7 @@ object LogManager {
         state.globalLogging.console)
       manager(data, state, task, to)
     }
-  @deprecated(
-    "Use defaultManager to explicitly specify standard out.",
-    "0.13.0")
+  @deprecated("Use defaultManager to explicitly specify standard out.", "0.13.0")
   lazy val default: LogManager = defaultManager(StandardMain.console)
 
   def defaultManager(console: ConsoleOut): LogManager =

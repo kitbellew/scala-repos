@@ -135,10 +135,7 @@ abstract class ScalaRenameTestBase
   private def projectAdapter = getProjectAdapter
   private def moduleAdapter = getModuleAdapter
 
-  private def doRename(
-      editor: Editor,
-      file: PsiFile,
-      newName: String): String = {
+  private def doRename(editor: Editor, file: PsiFile, newName: String): String = {
     val element = TargetElementUtil.findTargetElement(
       InjectedLanguageUtil.getEditorForInjectedLanguageNoCommit(editor, file),
       TargetElementUtil.REFERENCED_ELEMENT_ACCEPTED | TargetElementUtil.ELEMENT_NAME_ACCEPTED

@@ -28,10 +28,7 @@ trait ConnectorTestUtil extends Specification {
 
   implicit val formats = DefaultFormats
 
-  def check(
-      connector: JsonConnector,
-      original: String,
-      event: String): Result = {
+  def check(connector: JsonConnector, original: String, event: String): Result = {
     val originalJson = parse(original).asInstanceOf[JObject]
     val eventJson = parse(event).asInstanceOf[JObject]
     // write and parse back to discard any JNothing field

@@ -173,8 +173,7 @@ class WorksheetEditorPrinter(
           viewerFolding.clearFoldRegions()
         }
       }
-      getViewerEditor.getCaretModel.moveToVisualPosition(
-        new VisualPosition(0, 0))
+      getViewerEditor.getCaretModel.moveToVisualPosition(new VisualPosition(0, 0))
     }
 
     if (file != null) {

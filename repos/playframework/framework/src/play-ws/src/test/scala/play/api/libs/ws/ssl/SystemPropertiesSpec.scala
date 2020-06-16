@@ -57,8 +57,8 @@ object SystemPropertiesSpec extends Specification with After {
 
     // @see http://www.oracle.com/technetwork/java/javase/documentation/tlsreadme2-176330.html
     "allowLegacyHelloMessages is set" in {
-      val config = WSClientConfig(ssl = SSLConfig(loose =
-        SSLLooseConfig(allowLegacyHelloMessages = Some(true))))
+      val config = WSClientConfig(ssl =
+        SSLConfig(loose = SSLLooseConfig(allowLegacyHelloMessages = Some(true))))
 
       sp.configure(config)
 
@@ -79,8 +79,8 @@ object SystemPropertiesSpec extends Specification with After {
 
     // @see http://www.oracle.com/technetwork/java/javase/documentation/tlsreadme2-176330.html
     "allowUnsafeRenegotiation is set" in {
-      val config = WSClientConfig(ssl = SSLConfig(loose =
-        SSLLooseConfig(allowUnsafeRenegotiation = Some(true))))
+      val config = WSClientConfig(ssl =
+        SSLConfig(loose = SSLLooseConfig(allowUnsafeRenegotiation = Some(true))))
 
       sp.configure(config)
 

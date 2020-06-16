@@ -89,9 +89,7 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
       "requires (numeric or calendarinterval) type")
     assertError(Multiply('booleanField, 'booleanField), "requires numeric type")
     assertError(Divide('booleanField, 'booleanField), "requires numeric type")
-    assertError(
-      Remainder('booleanField, 'booleanField),
-      "requires numeric type")
+    assertError(Remainder('booleanField, 'booleanField), "requires numeric type")
 
     assertError(
       BitwiseAnd('booleanField, 'booleanField),
@@ -157,9 +155,7 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
       "THEN and ELSE expressions should all be same type or coercible to a common type"
     )
     assertError(
-      CaseKeyWhen(
-        'intField,
-        Seq('intField, 'stringField, 'intField, 'mapField)),
+      CaseKeyWhen('intField, Seq('intField, 'stringField, 'intField, 'mapField)),
       "THEN and ELSE expressions should all be same type or coercible to a common type"
     )
     assertError(
@@ -182,9 +178,7 @@ class ExpressionTypeCheckingSuite extends SparkFunSuite {
     assertError(Min('mapField), "min does not support ordering on type")
     assertError(Max('mapField), "max does not support ordering on type")
     assertError(Sum('booleanField), "function sum requires numeric type")
-    assertError(
-      Average('booleanField),
-      "function average requires numeric type")
+    assertError(Average('booleanField), "function average requires numeric type")
   }
 
   test("check types for others") {

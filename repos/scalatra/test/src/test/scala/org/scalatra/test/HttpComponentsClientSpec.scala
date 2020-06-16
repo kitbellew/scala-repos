@@ -43,9 +43,7 @@ class HttpComponentsClientSpec
 
         req.getParameterMap.foreach {
           case (name, values) =>
-            resp.setHeader(
-              "Request-Param-%s".format(name),
-              values.mkString(", "))
+            resp.setHeader("Request-Param-%s".format(name), values.mkString(", "))
         }
 
         resp.getOutputStream.write("received: ".getBytes)

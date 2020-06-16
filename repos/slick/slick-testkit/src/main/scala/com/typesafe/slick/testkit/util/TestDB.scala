@@ -256,8 +256,7 @@ abstract class InternalJdbcTestDB(confName: String)
   override def toString = url
 }
 
-abstract class ExternalJdbcTestDB(confName: String)
-    extends JdbcTestDB(confName) {
+abstract class ExternalJdbcTestDB(confName: String) extends JdbcTestDB(confName) {
   import profile.api.actionBasedSQLInterpolation
 
   val jdbcDriver = confString("driver")
@@ -271,8 +270,7 @@ abstract class ExternalJdbcTestDB(confName: String)
 
   override def isEnabled = super.isEnabled && config.getBoolean("enabled")
 
-  override lazy val testClasses
-      : Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] =
+  override lazy val testClasses: Seq[Class[_ <: GenericTest[_ >: Null <: TestDB]]] =
     TestkitConfig
       .getStrings(config, "testClasses")
       .map(

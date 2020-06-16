@@ -48,8 +48,7 @@ class ConsumerIterator[K, V](
     val item = super.next()
     if (consumedOffset < 0)
       throw new KafkaException(
-        "Offset returned by the message set is invalid %d".format(
-          consumedOffset))
+        "Offset returned by the message set is invalid %d".format(consumedOffset))
     currentTopicInfo.resetConsumeOffset(consumedOffset)
     val topic = currentTopicInfo.topic
     trace("Setting %s consumed offset to %d".format(topic, consumedOffset))
@@ -66,8 +65,7 @@ class ConsumerIterator[K, V](
       if (consumerTimeoutMs < 0)
         currentDataChunk = channel.take
       else {
-        currentDataChunk =
-          channel.poll(consumerTimeoutMs, TimeUnit.MILLISECONDS)
+        currentDataChunk = channel.poll(consumerTimeoutMs, TimeUnit.MILLISECONDS)
         if (currentDataChunk == null) {
           // reset state to make the iterator re-iterable
           resetState()

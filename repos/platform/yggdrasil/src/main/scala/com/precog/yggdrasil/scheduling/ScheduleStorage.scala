@@ -37,8 +37,9 @@ trait ScheduleStorage[M[+_]] {
 
   def reportRun(report: ScheduledRunReport): M[PrecogUnit]
 
-  def statusFor(id: UUID, lastLimit: Option[Int])
-      : M[Option[(ScheduledTask, Seq[ScheduledRunReport])]]
+  def statusFor(
+      id: UUID,
+      lastLimit: Option[Int]): M[Option[(ScheduledTask, Seq[ScheduledRunReport])]]
 
   def listTasks: M[Seq[ScheduledTask]]
 }

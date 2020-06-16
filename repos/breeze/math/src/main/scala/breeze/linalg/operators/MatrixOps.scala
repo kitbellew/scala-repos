@@ -161,8 +161,7 @@ trait MatrixOps extends MatrixGenericOps { this: Matrix.type =>
         { (a, b) => b },
         { _ % _ },
         { _ pow _ })
-      op: Op.Impl2[T, T, T])
-      : BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type] =
+      op: Op.Impl2[T, T, T]): BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type] =
     new BinaryUpdateRegistry[Matrix[T], Matrix[T], Op.type] {
       override def bindingMissing(a: Matrix[T], b: Matrix[T]): Unit = {
         var c = 0

@@ -346,9 +346,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         r
     })(collection.breakOut)
 
-  private def setClassInfo(
-      classSym: Symbol,
-      classBType: ClassBType): ClassBType = {
+  private def setClassInfo(classSym: Symbol, classBType: ClassBType): ClassBType = {
 
     /**
       * Reconstruct the classfile flags from a Java defined class symbol.
@@ -463,8 +461,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
         if (isTopLevelModuleClass(classSym)) {
           // For Java compatibility, member classes of top-level objects are treated as members of
           // the top-level companion class, see comment below.
-          val members = exitingPickler(
-            memberClassesForInnerClassTable(classSym))
+          val members = exitingPickler(memberClassesForInnerClassTable(classSym))
           nested diff members
         } else {
           nested
@@ -626,8 +623,7 @@ class BTypesFromSymbols[G <: Global](val global: G) extends BTypes {
           ) // moduleSuffix for module classes
       }
 
-      Some(
-        NestedInfo(enclosingClass, outerName, innerName, isStaticNestedClass))
+      Some(NestedInfo(enclosingClass, outerName, innerName, isStaticNestedClass))
     }
   }
 

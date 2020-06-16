@@ -419,9 +419,7 @@ object SIntent {
 }
 
 class RichIntent(val intent: Intent) {
-  @inline def start[T <: Activity](implicit
-      context: Context,
-      mt: ClassTag[T]) = {
+  @inline def start[T <: Activity](implicit context: Context, mt: ClassTag[T]) = {
     val clazz = mt.runtimeClass
     intent.setClass(context, clazz)
     clazz match {

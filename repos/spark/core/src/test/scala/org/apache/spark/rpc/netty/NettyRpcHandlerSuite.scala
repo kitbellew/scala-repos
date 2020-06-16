@@ -37,8 +37,7 @@ class NettyRpcHandlerSuite extends SparkFunSuite {
   val env = mock(classOf[NettyRpcEnv])
   val sm = mock(classOf[StreamManager])
   when(
-    env.deserialize(any(classOf[TransportClient]), any(classOf[ByteBuffer]))(
-      any()))
+    env.deserialize(any(classOf[TransportClient]), any(classOf[ByteBuffer]))(any()))
     .thenReturn(RequestMessage(RpcAddress("localhost", 12345), null, null))
 
   test("receive") {

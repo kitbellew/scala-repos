@@ -78,8 +78,6 @@ final case class GenericHttpCredentials(
 }
 
 object GenericHttpCredentials {
-  def apply(
-      scheme: String,
-      params: Map[String, String]): GenericHttpCredentials =
+  def apply(scheme: String, params: Map[String, String]): GenericHttpCredentials =
     apply(scheme, "", params)
 }

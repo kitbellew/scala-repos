@@ -190,10 +190,7 @@ trait MongoDocumentMeta[BaseDocument]
   /**
     * Find all documents using a JObject query with sort
     */
-  def findAll(
-      qry: JObject,
-      sort: JObject,
-      opts: FindOption*): List[BaseDocument] =
+  def findAll(qry: JObject, sort: JObject, opts: FindOption*): List[BaseDocument] =
     findAll(JObjectParser.parse(qry), Some(JObjectParser.parse(sort)), opts: _*)
 
   /**

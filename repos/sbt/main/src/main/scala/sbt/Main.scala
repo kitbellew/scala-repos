@@ -44,8 +44,7 @@ final class xMain extends xsbti.AppMain {
       initialState(
         configuration,
         Seq(defaults, early),
-        runEarly(DefaultsCommand) :: runEarly(
-          InitCommand) :: BootCommand :: Nil))
+        runEarly(DefaultsCommand) :: runEarly(InitCommand) :: BootCommand :: Nil))
   }
 }
 final class ScriptMain extends xsbti.AppMain {
@@ -521,8 +520,7 @@ object BuiltinCommands {
   def lastGrepParser(s: State) =
     Act.requireSession(
       s,
-      (token(Space) ~> token(NotSpace, "<pattern>")) ~ aggregatedKeyValueParser(
-        s))
+      (token(Space) ~> token(NotSpace, "<pattern>")) ~ aggregatedKeyValueParser(s))
   def last =
     Command(LastCommand, lastBrief, lastDetailed)(aggregatedKeyValueParser) {
       case (s, Some(sks)) => lastImpl(s, sks, None)
@@ -534,10 +532,7 @@ object BuiltinCommands {
     Command(ExportCommand, exportBrief, exportDetailed)(exportParser)((s, f) =>
       f())
 
-  private[this] def lastImpl(
-      s: State,
-      sks: AnyKeys,
-      sid: Option[String]): State = {
+  private[this] def lastImpl(s: State, sks: AnyKeys, sid: Option[String]): State = {
     val (str, ref, display) = extractLast(s)
     Output.last(sks, str.streams(s), printLast(s), sid)(display)
     keepLastLog(s)
@@ -612,10 +607,8 @@ object BuiltinCommands {
     }
 
   def projects =
-    Command(
-      ProjectsCommand,
-      (ProjectsCommand, projectsBrief),
-      projectsDetailed)(s => projectsParser(s).?) {
+    Command(ProjectsCommand, (ProjectsCommand, projectsBrief), projectsDetailed)(
+      s => projectsParser(s).?) {
       case (s, Some(modifyBuilds)) => transformExtraBuilds(s, modifyBuilds)
       case (s, None)               => showProjects(s); s
     }
@@ -644,8 +637,7 @@ object BuiltinCommands {
     val removeBase = token(Space ~> "remove") ~> token(
       Space ~> Uri(Project.extraBuilds(s).toSet)).+
     addBase.map(toAdd => (xs: List[URI]) => (toAdd.toList ::: xs).distinct) |
-      removeBase.map(toRemove =>
-        (xs: List[URI]) => xs.filterNot(toRemove.toSet))
+      removeBase.map(toRemove => (xs: List[URI]) => xs.filterNot(toRemove.toSet))
   }
 
   def project =

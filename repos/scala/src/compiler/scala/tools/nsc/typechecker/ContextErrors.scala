@@ -393,10 +393,7 @@ trait ContextErrors {
       }
 
       //typedSuper
-      def MixinMissingParentClassNameError(
-          tree: Tree,
-          mix: Name,
-          clazz: Symbol) =
+      def MixinMissingParentClassNameError(tree: Tree, mix: Name, clazz: Symbol) =
         issueNormalTypeError(
           tree,
           mix + " does not name a parent class of " + clazz)
@@ -733,9 +730,7 @@ trait ContextErrors {
       }
 
       def ClassTypeRequiredError(tree: Tree, found: AnyRef) = {
-        issueNormalTypeError(
-          tree,
-          "class type required but " + found + " found")
+        issueNormalTypeError(tree, "class type required but " + found + " found")
         setError(tree)
       }
 
@@ -986,9 +981,7 @@ trait ContextErrors {
         macroExpansionError2(expandee, "too few arguments for macro invocation")
 
       def MacroTooManyArgumentsError(expandee: Tree) =
-        macroExpansionError2(
-          expandee,
-          "too many arguments for macro invocation")
+        macroExpansionError2(expandee, "too many arguments for macro invocation")
 
       def MacroGeneratedAbort(expandee: Tree, ex: AbortMacroException) = {
         // errors have been reported by the macro itself, so we do nothing here
@@ -1037,9 +1030,10 @@ trait ContextErrors {
             case NonFatal(
                   ex
                 ) => // currently giving a spurious warning, see SI-6994
-              macroLogVerbose("got an exception when processing a macro generated exception\n" +
-                "offender = " + stackTraceString(realex) + "\n" +
-                "error = " + stackTraceString(ex))
+              macroLogVerbose(
+                "got an exception when processing a macro generated exception\n" +
+                  "offender = " + stackTraceString(realex) + "\n" +
+                  "error = " + stackTraceString(ex))
               None
           }
         } getOrElse {
@@ -1163,10 +1157,8 @@ trait ContextErrors {
               AmbiguousTypeError(
                 pos,
                 "ambiguous reference to overloaded definition,\n" +
-                  s"both ${sym1.fullLocationString} of type ${pre.memberType(
-                    sym1)}\n" +
-                  s"and  ${sym2.fullLocationString} of type ${pre.memberType(
-                    sym2)}\n" +
+                  s"both ${sym1.fullLocationString} of type ${pre.memberType(sym1)}\n" +
+                  s"and  ${sym2.fullLocationString} of type ${pre.memberType(sym2)}\n" +
                   s"match $rest"
               )
             })
@@ -1315,10 +1307,7 @@ trait ContextErrors {
           kindErrors: List[String]) = {
         issueNormalTypeError(
           tree,
-          prefix + "kinds of the type arguments " + targs.mkString(
-            "(",
-            ",",
-            ")") +
+          prefix + "kinds of the type arguments " + targs.mkString("(", ",", ")") +
             " do not conform to the expected kinds of the type parameters " +
             tparams.mkString(
               "(",
@@ -1378,10 +1367,7 @@ trait ContextErrors {
           tree,
           "type " + tp + " cannot be used in a type pattern or isInstanceOf test")
 
-      def PatternTypeIncompatibleWithPtError1(
-          tree: Tree,
-          pattp: Type,
-          pt: Type) =
+      def PatternTypeIncompatibleWithPtError1(tree: Tree, pattp: Type, pt: Type) =
         issueNormalTypeError(
           tree,
           "pattern type is incompatible with expected type" + foundReqMsg(
@@ -1391,9 +1377,7 @@ trait ContextErrors {
       def IncompatibleScrutineeTypeError(tree: Tree, pattp: Type, pt: Type) =
         issueNormalTypeError(
           tree,
-          "scrutinee is incompatible with pattern type" + foundReqMsg(
-            pattp,
-            pt))
+          "scrutinee is incompatible with pattern type" + foundReqMsg(pattp, pt))
 
       def PatternTypeIncompatibleWithPtError2(pat: Tree, pt1: Type, pt: Type) =
         issueNormalTypeError(

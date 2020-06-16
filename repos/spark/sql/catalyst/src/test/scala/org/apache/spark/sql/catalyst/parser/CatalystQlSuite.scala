@@ -191,8 +191,7 @@ class CatalystQlSuite extends PlanTest {
 
   test("table identifier") {
     assert(TableIdentifier("q") === parser.parseTableIdentifier("q"))
-    assert(
-      TableIdentifier("q", Some("d")) === parser.parseTableIdentifier("d.q"))
+    assert(TableIdentifier("q", Some("d")) === parser.parseTableIdentifier("d.q"))
     intercept[AnalysisException](parser.parseTableIdentifier(""))
     intercept[AnalysisException](parser.parseTableIdentifier("d.q.g"))
   }

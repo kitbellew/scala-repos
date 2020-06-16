@@ -234,8 +234,7 @@ trait REPL
           val command =
             if ((successes lengthCompare 1) > 0)
               throw new AssertionError(
-                "Fatal error: ambiguous parse results: " + results.mkString(
-                  ", "))
+                "Fatal error: ambiguous parse results: " + results.mkString(", "))
             else
               successes.head
 

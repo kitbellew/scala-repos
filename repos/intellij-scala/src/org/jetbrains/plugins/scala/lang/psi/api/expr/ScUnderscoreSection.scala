@@ -28,9 +28,7 @@ trait ScUnderscoreSection extends ScExpression {
     if (bindingExpr != None) return Some(this)
 
     @tailrec
-    def go(
-        expr: PsiElement,
-        calcArguments: Boolean = true): Option[ScExpression] = {
+    def go(expr: PsiElement, calcArguments: Boolean = true): Option[ScExpression] = {
       expr.getContext match {
         case args: ScArgumentExprList =>
           if (!calcArguments) return Some(expr.asInstanceOf[ScExpression])

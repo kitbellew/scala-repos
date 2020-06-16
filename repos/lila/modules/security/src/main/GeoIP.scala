@@ -17,10 +17,7 @@ final class GeoIP(file: String, cacheTtl: Duration) {
   def orUnknown(ip: String): Location = apply(ip) | Location.unknown
 }
 
-case class Location(
-    country: String,
-    region: Option[String],
-    city: Option[String]) {
+case class Location(country: String, region: Option[String], city: Option[String]) {
 
   def comparable = (country, ~region, ~city)
 

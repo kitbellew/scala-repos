@@ -121,8 +121,7 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
         Seq(UnreachableMember(cUp)))
       // never include self member in unreachable
       diffUnreachable(g1, g2, cUp.uniqueAddress) should ===(Seq())
-      diffReachable(g1, g2, selfDummyAddress) should ===(
-        Seq(ReachableMember(bUp)))
+      diffReachable(g1, g2, selfDummyAddress) should ===(Seq(ReachableMember(bUp)))
       // never include self member in reachable
       diffReachable(g1, g2, bUp.uniqueAddress) should ===(Seq())
     }
@@ -150,9 +149,7 @@ class ClusterDomainEventSpec extends WordSpec with Matchers {
       diffUnreachable(g1, g2, selfDummyAddress) should ===(Seq.empty)
       diffSeen(g1, g2, selfDummyAddress) should ===(
         Seq(
-          SeenChanged(
-            convergence = true,
-            seenBy = Set(aUp.address, bUp.address))))
+          SeenChanged(convergence = true, seenBy = Set(aUp.address, bUp.address))))
       diffMemberEvents(g2, g1) should ===(Seq.empty)
       diffUnreachable(g2, g1, selfDummyAddress) should ===(Seq.empty)
       diffSeen(g2, g1, selfDummyAddress) should ===(

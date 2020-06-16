@@ -180,9 +180,7 @@ class InlineParsersTest
     (
       "*italic* **bold** *italic*",
       "<em>italic</em> <strong>bold</strong> <em>italic</em>"),
-    (
-      "*italic***bold***italic*",
-      "<em>italic<strong>*bold</strong></em>italic*"),
+    ("*italic***bold***italic*", "<em>italic<strong>*bold</strong></em>italic*"),
     ("***foo***", "<strong><em>foo</em></strong>")
   )
 
@@ -208,8 +206,7 @@ class InlineParsersTest
 
   it should "create bold text" in {
     runSucceedingParsingTests(
-      strongAsterisk(new InlineContext()) | strongUnderscore(
-        new InlineContext()),
+      strongAsterisk(new InlineContext()) | strongUnderscore(new InlineContext()),
       boldTests)
   }
 

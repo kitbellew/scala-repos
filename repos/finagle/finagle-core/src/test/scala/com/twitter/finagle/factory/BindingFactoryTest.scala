@@ -424,9 +424,7 @@ class BindingFactoryTest
         val role = Stack.Role("verifyModule")
         val description = "Verify that the dest was set properly"
 
-        def make(
-            dest: BindingFactory.Dest,
-            next: ServiceFactory[String, String]) = {
+        def make(dest: BindingFactory.Dest, next: ServiceFactory[String, String]) = {
           dest match {
             case BindingFactory.Dest(bound: Name.Bound) =>
               assert(bound.id == Path.read("/$/inet/0/1"))

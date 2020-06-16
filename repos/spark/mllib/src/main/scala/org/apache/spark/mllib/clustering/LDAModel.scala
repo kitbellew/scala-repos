@@ -459,8 +459,7 @@ class LocalLDAModel private[spark] (
       : JavaPairRDD[java.lang.Long, Vector] = {
     val distributions = topicDistributions(
       documents.rdd.asInstanceOf[RDD[(Long, Vector)]])
-    JavaPairRDD.fromRDD(
-      distributions.asInstanceOf[RDD[(java.lang.Long, Vector)]])
+    JavaPairRDD.fromRDD(distributions.asInstanceOf[RDD[(java.lang.Long, Vector)]])
   }
 
 }
@@ -544,8 +543,7 @@ object LocalLDAModel extends Loader[LocalLDAModel] {
     val expectedK = (metadata \ "k").extract[Int]
     val expectedVocabSize = (metadata \ "vocabSize").extract[Int]
     val docConcentration =
-      Vectors.dense(
-        (metadata \ "docConcentration").extract[Seq[Double]].toArray)
+      Vectors.dense((metadata \ "docConcentration").extract[Seq[Double]].toArray)
     val topicConcentration = (metadata \ "topicConcentration").extract[Double]
     val gammaShape = (metadata \ "gammaShape").extract[Double]
     val classNameV1_0 = SaveLoadV1_0.thisClassName
@@ -731,10 +729,8 @@ class DistributedLDAModel private[clustering] (
     val W = vocabSize
     val alpha = docConcentration(0)
     val N_k = globalTopicTotals
-    val sendMsg: EdgeContext[
-      TopicCounts,
-      TokenCount,
-      (Array[Int], Array[Int])] => Unit =
+    val sendMsg
+        : EdgeContext[TopicCounts, TokenCount, (Array[Int], Array[Int])] => Unit =
       (edgeContext) => {
         // E-STEP: Compute gamma_{wjk} (smoothed topic distributions).
         val scaledTopicDistribution: TopicCounts =
@@ -773,8 +769,7 @@ class DistributedLDAModel private[clustering] (
 
   /** Java-friendly version of [[topicAssignments]] */
   @Since("1.5.0")
-  lazy val javaTopicAssignments
-      : JavaRDD[(java.lang.Long, Array[Int], Array[Int])] = {
+  lazy val javaTopicAssignments: JavaRDD[(java.lang.Long, Array[Int], Array[Int])] = {
     topicAssignments
       .asInstanceOf[RDD[(java.lang.Long, Array[Int], Array[Int])]]
       .toJavaRDD()
@@ -1057,8 +1052,7 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
     val expectedK = (metadata \ "k").extract[Int]
     val vocabSize = (metadata \ "vocabSize").extract[Int]
     val docConcentration =
-      Vectors.dense(
-        (metadata \ "docConcentration").extract[Seq[Double]].toArray)
+      Vectors.dense((metadata \ "docConcentration").extract[Seq[Double]].toArray)
     val topicConcentration = (metadata \ "topicConcentration").extract[Double]
     val iterationTimes = (metadata \ "iterationTimes").extract[Seq[Double]]
     val gammaShape = (metadata \ "gammaShape").extract[Double]

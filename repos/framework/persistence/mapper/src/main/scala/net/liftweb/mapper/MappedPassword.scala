@@ -273,9 +273,7 @@ abstract class MappedPassword[T <: Mapper[T]](val fieldOwner: T)
       null
     }
   }
-  def buildSetDateValue(
-      accessor: Method,
-      columnName: String): (T, Date) => Unit = {
+  def buildSetDateValue(accessor: Method, columnName: String): (T, Date) => Unit = {
     null
   }
   def buildSetBooleanValue(

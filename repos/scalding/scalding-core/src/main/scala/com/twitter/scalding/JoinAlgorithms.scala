@@ -222,10 +222,7 @@ trait JoinAlgorithms {
   /**
     * This is joinWithLarger with joiner parameter fixed to LeftJoin. If the item is absent on the right put null for the keys and values
     */
-  def leftJoinWithLarger(
-      fs: (Fields, Fields),
-      that: Pipe,
-      reducers: Int = -1) = {
+  def leftJoinWithLarger(fs: (Fields, Fields), that: Pipe, reducers: Int = -1) = {
     joinWithLarger(fs, that, new LeftJoin, reducers)
   }
 
@@ -403,10 +400,7 @@ trait JoinAlgorithms {
     (0 until replication).map { rep => (rand, rep) }
   }
 
-  private def assertValidJoinMode(
-      joiner: Joiner,
-      left: Int,
-      right: Int): Unit = {
+  private def assertValidJoinMode(joiner: Joiner, left: Int, right: Int): Unit = {
     (joiner, left, right) match {
       case (i: InnerJoin, _, _) => ()
       case (k: LeftJoin, 1, _)  => ()

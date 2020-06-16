@@ -140,8 +140,7 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
       val resourceCommand: Array[String] = resourcesToAcls.keys
         .map(ResourceToCommand)
         .foldLeft(Array[String]())(_ ++ _)
-      AclCommand.main(
-        args ++ getCmd(Allow) ++ resourceCommand ++ cmd :+ "--add")
+      AclCommand.main(args ++ getCmd(Allow) ++ resourceCommand ++ cmd :+ "--add")
       for ((resources, acls) <- resourcesToAcls) {
         for (resource <- resources) {
           withAuthorizer(brokerProps) { authorizer =>
@@ -193,8 +192,7 @@ class AclCommandTest extends ZooKeeperTestHarness with Logging {
       if (permissionType == Allow) "--allow-principal" else "--deny-principal"
     val cmd = if (permissionType == Allow) AllowHostCommand else DenyHostCommand
 
-    Users.foldLeft(cmd)((cmd, user) =>
-      cmd ++ Array(principalCmd, user.toString))
+    Users.foldLeft(cmd)((cmd, user) => cmd ++ Array(principalCmd, user.toString))
   }
 
   def withAuthorizer(props: Properties)(f: Authorizer => Unit) {

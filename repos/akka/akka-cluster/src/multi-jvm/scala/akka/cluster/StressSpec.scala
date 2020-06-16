@@ -382,10 +382,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
     def formatPhiHeader: String =
       "[Monitor]\t[Subject]\t[count]\t[count phi > 1.0]\t[max phi]"
 
-    def formatPhiLine(
-        monitor: Address,
-        subject: Address,
-        phi: PhiValue): String =
+    def formatPhiLine(monitor: Address, subject: Address, phi: PhiValue): String =
       s"${monitor}\t${subject}\t${phi.count}\t${phi.countAboveOne}\t${phi.max.form}"
 
     def formatStats: String = {
@@ -590,10 +587,7 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
         if (outstanding.size == settings.workBatchSize / 2)
           if (batchInterval == Duration.Zero) self ! SendBatch
           else
-            context.system.scheduler.scheduleOnce(
-              batchInterval,
-              self,
-              SendBatch)
+            context.system.scheduler.scheduleOnce(batchInterval, self, SendBatch)
       case SendBatch ⇒ sendJobs()
       case RetryTick ⇒ resend()
       case End ⇒
@@ -915,11 +909,8 @@ abstract class StressSpec
       includeInHistory: Boolean): Unit = {
     runOn(roles.head) {
       val aggregator = system.actorOf(
-        Props(
-          classOf[ClusterResultAggregator],
-          title,
-          expectedResults,
-          settings).withDeploy(Deploy.local),
+        Props(classOf[ClusterResultAggregator], title, expectedResults, settings)
+          .withDeploy(Deploy.local),
         name = "result" + step)
       if (includeInHistory && infolog)
         aggregator ! ReportTo(Some(clusterResultHistory))

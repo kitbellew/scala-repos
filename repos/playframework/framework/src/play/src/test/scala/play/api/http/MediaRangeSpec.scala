@@ -83,12 +83,7 @@ object MediaRangeSpec extends Specification {
           Seq("p2" -> None))
     }
     "support non spec compliant everything media ranges" in {
-      parseSingleMediaRange("*") must_== new MediaRange(
-        "*",
-        "*",
-        Nil,
-        None,
-        Nil)
+      parseSingleMediaRange("*") must_== new MediaRange("*", "*", Nil, None, Nil)
     }
     "maintain the original order of media ranges in the accept header" in {
       MediaRange.parse("foo1/bar1, foo3/bar3, foo2/bar2") must contain(

@@ -460,8 +460,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
               outputMode match {
                 case OutputMode.ECMAScript51Global |
                     OutputMode.ECMAScript51Isolated =>
-                  val superCtor = genRawJSClassConstructor(
-                    getSuperClassOfJSClass(linkedClass))
+                  val superCtor =
+                    genRawJSClassConstructor(getSuperClassOfJSClass(linkedClass))
 
                   if (containsAnySpread(newArgs)) {
                     val argArray = spreadToArgArray(newArgs)
@@ -1572,9 +1572,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
           implicit val pos = expr.pos
           val temp = newSyntheticVar()
           val newEnv = env.withDef(temp, expr.tpe, false)
-          val computeTemp = pushLhsInto(
-            VarDef(temp, expr.tpe, mutable = false, EmptyTree),
-            expr)
+          val computeTemp =
+            pushLhsInto(VarDef(temp, expr.tpe, mutable = false, EmptyTree), expr)
           js.Block(computeTemp, makeTree(VarRef(temp)(expr.tpe), newEnv))
       }
     }
@@ -2188,10 +2187,8 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       pos: Position): js.Tree =
     genIsAsInstanceOf(expr, cls, test = false)
 
-  private def genIsAsInstanceOf(
-      expr: js.Tree,
-      cls: ReferenceType,
-      test: Boolean)(implicit
+  private def genIsAsInstanceOf(expr: js.Tree, cls: ReferenceType, test: Boolean)(
+      implicit
       outputMode: OutputMode,
       pos: Position): js.Tree = {
     import Definitions._
@@ -2296,9 +2293,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
   private[emitter] def envFieldDef(
       field: String,
       subField: String,
-      value: js.Tree)(implicit
-      outputMode: OutputMode,
-      pos: Position): js.Tree = {
+      value: js.Tree)(implicit outputMode: OutputMode, pos: Position): js.Tree = {
     envFieldDef(field, subField, value, mutable = false)
   }
 
@@ -2316,9 +2311,7 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
       field: String,
       subField: String,
       origName: Option[String],
-      value: js.Tree)(implicit
-      outputMode: OutputMode,
-      pos: Position): js.Tree = {
+      value: js.Tree)(implicit outputMode: OutputMode, pos: Position): js.Tree = {
     envFieldDef(field, subField, origName, value, mutable = false)
   }
 

@@ -33,10 +33,8 @@ class InspectionBasedIntention(
     }
   }
 
-  override def isAvailable(
-      project: Project,
-      editor: Editor,
-      element: PsiElement) = findProblemFrom(element).isDefined
+  override def isAvailable(project: Project, editor: Editor, element: PsiElement) =
+    findProblemFrom(element).isDefined
 
   private def findProblemFrom(
       element: PsiElement): Option[ProblemDescriptor] = {

@@ -530,9 +530,7 @@ trait MappedField[FieldType <: Any, OwnerType <: Mapper[OwnerType]]
     real_i_set_!(runFilters(value, setFilter))
   }
 
-  def runFilters(
-      in: FieldType,
-      filter: List[FieldType => FieldType]): FieldType =
+  def runFilters(in: FieldType, filter: List[FieldType => FieldType]): FieldType =
     filter match {
       case Nil     => in
       case x :: xs => runFilters(x(in), xs)

@@ -65,9 +65,7 @@ trait JavaConversionHelpers {
         tpe match {
           case null => throw new Error("Property cannot be null")
           case ga: GenericArrayType =>
-            ScalaType(
-              "Array",
-              List(step(ga.getGenericComponentType, nextLevel)))
+            ScalaType("Array", List(step(ga.getGenericComponentType, nextLevel)))
           case p: ParameterizedType =>
             ScalaType(
               step(p.getRawType, nextLevel).name,

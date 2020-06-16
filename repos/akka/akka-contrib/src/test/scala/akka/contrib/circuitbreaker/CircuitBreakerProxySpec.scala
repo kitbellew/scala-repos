@@ -32,8 +32,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
     def circuitBreaker: ActorRef
 
     def defaultCircuitBreaker =
-      system.actorOf(
-        baseCircuitBreakerPropsBuilder.props(target = receiver.ref))
+      system.actorOf(baseCircuitBreakerPropsBuilder.props(target = receiver.ref))
 
     def receiverRespondsWithFailureToRequest(request: Any) = {
       sender.send(circuitBreaker, request)
@@ -269,8 +268,7 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
         circuitBreaker,
         "Second message in half-open state, should be ignored")
 
-      receiver.expectMsg(
-        "First message in half-open state, should be forwarded")
+      receiver.expectMsg("First message in half-open state, should be forwarded")
       receiver.expectNoMsg()
 
       sender.expectMsg(

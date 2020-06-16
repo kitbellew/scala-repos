@@ -64,8 +64,7 @@ object TableColumn {
         tableView: TableView[S],
         tableColumn: TableColumn[S, T],
         value: S) =
-      this(
-        new jfxsc.TableColumn.CellDataFeatures(tableView, tableColumn, value))
+      this(new jfxsc.TableColumn.CellDataFeatures(tableView, tableColumn, value))
 
     /**
       * Returns the TableColumn passed in to the constructor.
@@ -207,8 +206,7 @@ object TableColumn {
   * Wraps [[http://docs.oracle.com/javase/8/javafx/api/javafx/scene/control/TableColumn.html]].
   */
 class TableColumn[S, T](
-    override val delegate: jfxsc.TableColumn[S, T] =
-      new jfxsc.TableColumn[S, T]())
+    override val delegate: jfxsc.TableColumn[S, T] = new jfxsc.TableColumn[S, T]())
     extends TableColumnBase[S, T](delegate)
     with SFXDelegate[jfxsc.TableColumn[S, T]] {
 
@@ -272,8 +270,8 @@ class TableColumn[S, T](
       new jfxu.Callback[
         jfxsc.TableColumn.CellDataFeatures[S, T],
         jfxbv.ObservableValue[T]] {
-        def call(v: jfxsc.TableColumn.CellDataFeatures[S, T])
-            : jfxbv.ObservableValue[T] = {
+        def call(
+            v: jfxsc.TableColumn.CellDataFeatures[S, T]): jfxbv.ObservableValue[T] = {
           f(v).delegate
         }
       })

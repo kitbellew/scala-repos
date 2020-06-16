@@ -18,8 +18,7 @@ private[lease] class BeanMemoryPool(pool: MemoryPoolMXBean) extends MemoryPool {
   def snapshot(): MemoryPoolInfo = new MemoryUsageInfo(pool.getUsage())
 }
 
-private[lease] class FakeMemoryPool(original: MemoryPoolInfo)
-    extends MemoryPool {
+private[lease] class FakeMemoryPool(original: MemoryPoolInfo) extends MemoryPool {
   @volatile private[this] var _snapshot: MemoryPoolInfo = original
   def setSnapshot(snap: MemoryPoolInfo) {
     _snapshot = snap
@@ -74,9 +73,7 @@ private[lease] class JvmInfo(
 
     lr.record("com_%s".format(state), snap.committed().toString)
     lr.record("use_%s".format(state), snap.used().toString)
-    lr.record(
-      "byte_%s".format(state),
-      (snap.committed() - snap.used()).toString)
+    lr.record("byte_%s".format(state), (snap.committed() - snap.used()).toString)
     lr.record("gen_%s".format(state), generation().toString)
   }
 

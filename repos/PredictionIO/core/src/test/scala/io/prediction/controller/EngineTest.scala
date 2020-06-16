@@ -224,8 +224,7 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
                 pQ shouldBe q
                 pModels shouldBe None
                 pPs should have size algoCount
-                pPs shouldBe Seq(
-                  Prediction(id = 2, q = q, models = Some(model0)))
+                pPs shouldBe Seq(Prediction(id = 2, q = q, models = Some(model0)))
               }
             }
         }
@@ -453,8 +452,7 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
                 pQ shouldBe q
                 pModels shouldBe None
                 pPs should have size 1
-                pPs shouldBe Seq(
-                  Prediction(id = 3, q = q, models = Some(model0)))
+                pPs shouldBe Seq(Prediction(id = 3, q = q, models = Some(model0)))
               }
             }
         }

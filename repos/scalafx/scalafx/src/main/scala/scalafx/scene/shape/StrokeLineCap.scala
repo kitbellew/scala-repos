@@ -42,9 +42,7 @@ object StrokeLineCap
   val SQUARE = Square
 
   val Butt = new StrokeLineCap(jfxss.StrokeLineCap.BUTT)
-  @deprecated(
-    "Use Butt; BUTT will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Butt; BUTT will be removed in a future release", "8.0.60-R10")
   val BUTT = Butt
 
   val Round = new StrokeLineCap(jfxss.StrokeLineCap.ROUND)

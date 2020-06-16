@@ -94,8 +94,7 @@ class ActorWithBoundedStashSpec
 
   override def atStartup: Unit = {
     system.eventStream.publish(
-      Mute(
-        EventFilter.warning(pattern = ".*received dead letter from.*hello.*")))
+      Mute(EventFilter.warning(pattern = ".*received dead letter from.*hello.*")))
   }
 
   override def beforeEach(): Unit =

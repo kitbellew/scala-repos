@@ -164,8 +164,8 @@ class WriteAheadLogBackedBlockRDDSuite
     val data = Seq.fill(numPartitions, 10)(scala.util.Random.nextString(50))
 
     // Put the necessary blocks in the block manager
-    val blockIds = Array.fill(numPartitions)(
-      StreamBlockId(Random.nextInt(), Random.nextInt()))
+    val blockIds =
+      Array.fill(numPartitions)(StreamBlockId(Random.nextInt(), Random.nextInt()))
     data.zip(blockIds).take(numPartitionsInBM).foreach {
       case (block, blockId) =>
         blockManager

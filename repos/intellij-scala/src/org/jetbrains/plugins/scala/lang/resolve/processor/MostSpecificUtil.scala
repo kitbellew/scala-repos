@@ -122,8 +122,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       applicable.map(r => {
         var callByName = false
         def checkCallByName(clauses: Seq[ScParameterClause]): Unit = {
-          if (clauses.length > 0 && clauses(
-              0).parameters.length == 1 && clauses(0)
+          if (clauses.length > 0 && clauses(0).parameters.length == 1 && clauses(0)
               .parameters(0)
               .isCallByNameParameter) {
             callByName = true
@@ -183,8 +182,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                     (subst: ScSubstitutor, tp: TypeParameter) =>
                       subst.bindT(
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                        new ScUndefinedType(
-                          ScalaPsiManager.typeVariable(tp.ptp)))
+                        new ScUndefinedType(ScalaPsiManager.typeVariable(tp.ptp)))
                   }
                 Left(params.map(p => p.copy(paramType = s.subst(p.paramType))))
               } else {
@@ -213,8 +211,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                     (subst: ScSubstitutor, tp: TypeParameter) =>
                       subst.bindT(
                         (tp.name, ScalaPsiUtil.getPsiElementId(tp.ptp)),
-                        new ScUndefinedType(
-                          ScalaPsiManager.typeVariable(tp.ptp)))
+                        new ScUndefinedType(ScalaPsiManager.typeVariable(tp.ptp)))
                   }
                 Right(s.subst(internal))
               } else {
@@ -268,9 +265,7 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
                           ScParameterizedType(ScDesignatorType(seq), Seq(q)),
                           wilds)
                       case paramType =>
-                        ScParameterizedType(
-                          ScDesignatorType(seq),
-                          Seq(paramType))
+                        ScParameterizedType(ScDesignatorType(seq), Seq(paramType))
                     }
                     Parameter(
                       p.name,

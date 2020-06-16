@@ -28,7 +28,8 @@ class ModelValidationTest
     validate(update).isSuccess should be(true)
   }
 
-  test("A group can not be updated to have more than the configured number of apps") {
+  test(
+    "A group can not be updated to have more than the configured number of apps") {
     val group = Group(
       "/".toPath,
       Set(

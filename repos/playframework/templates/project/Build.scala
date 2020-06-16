@@ -122,8 +122,7 @@ object Templates {
             val templateName: String = topDir(rebasedFile).getName
             val templateSources: TemplateSources = templateSourcesList
               .find(_.name == templateName)
-              .getOrElse(
-                sys.error(s"Couldn't find template named $templateName"))
+              .getOrElse(sys.error(s"Couldn't find template named $templateName"))
             templateSources.params
           }
           val allParams: Map[String, String] = params ++ templateParams
@@ -348,28 +347,23 @@ object Templates {
 
   val templatesCommand = Command(
     "templates",
-    Help.more(
-      "templates",
-      "Execute the given command for the given templates"))(templatesParser) {
-    (state, args) =>
-      val (templateDirs, command) = args
-      val extracted = Project.extract(state)
+    Help.more("templates", "Execute the given command for the given templates"))(
+    templatesParser) { (state, args) =>
+    val (templateDirs, command) = args
+    val extracted = Project.extract(state)
 
-      def createSetCommand(dirs: Seq[TemplateSources]): String = {
-        dirs
-          .map("file(\"" + _.mainDir.getAbsolutePath + "\")")
-          .mkString(
-            "set play.sbt.activator.Templates.templates := Seq(",
-            ",",
-            ")")
-      }
+    def createSetCommand(dirs: Seq[TemplateSources]): String = {
+      dirs
+        .map("file(\"" + _.mainDir.getAbsolutePath + "\")")
+        .mkString("set play.sbt.activator.Templates.templates := Seq(", ",", ")")
+    }
 
-      val setCommand = createSetCommand(templateDirs)
-      val setBack =
-        templates in extracted.currentRef get extracted.structure.data map createSetCommand toList
+    val setCommand = createSetCommand(templateDirs)
+    val setBack =
+      templates in extracted.currentRef get extracted.structure.data map createSetCommand toList
 
-      if (command == "") setCommand :: state
-      else setCommand :: command :: setBack ::: state
+    if (command == "") setCommand :: state
+    else setCommand :: command :: setBack ::: state
   }
 
   private def templatesParser(

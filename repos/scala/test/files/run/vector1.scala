@@ -54,11 +54,7 @@ object Test {
     res
   }
 
-  def assertVectorIterated[V](
-      a: Vector[V],
-      label: String,
-      start: Int,
-      end: Int) = {
+  def assertVectorIterated[V](a: Vector[V], label: String, start: Int, end: Int) = {
     val res = a
     assert(
       res.length == (end - start),

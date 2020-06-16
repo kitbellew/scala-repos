@@ -45,8 +45,8 @@ private[stream] class ConnectionSourceStage(
   val shape: SourceShape[StreamTcp.IncomingConnection] = SourceShape(out)
 
   // TODO: Timeout on bind
-  override def createLogicAndMaterializedValue(inheritedAttributes: Attributes)
-      : (GraphStageLogic, Future[ServerBinding]) = {
+  override def createLogicAndMaterializedValue(
+      inheritedAttributes: Attributes): (GraphStageLogic, Future[ServerBinding]) = {
     val bindingPromise = Promise[ServerBinding]
 
     val logic = new TimerGraphStageLogic(shape) {

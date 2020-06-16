@@ -17,20 +17,10 @@ class VectorTest extends FunSuite {
   //val dmTest = DenseMatrix((1,2,3,4), (5,6,7,8))
 
   test("scan") {
+    assert(dvTest
+      .scanLeft(0)((p1: Int, p2: Int) => p1 + p2) == DenseVector(0, 1, 3, 6, 10))
     assert(
-      dvTest.scanLeft(0)((p1: Int, p2: Int) => p1 + p2) == DenseVector(
-        0,
-        1,
-        3,
-        6,
-        10))
-    assert(
-      dvTest.scanRight(0)((p1: Int, p2: Int) => p1 + p2) == DenseVector(
-        10,
-        9,
-        7,
-        4,
-        0))
+      dvTest.scanRight(0)((p1: Int, p2: Int) => p1 + p2) == DenseVector(10, 9, 7, 4, 0))
   }
 
   test("fold") {
@@ -110,14 +100,12 @@ class VectorOps_DoubleTest
 }
 
 @RunWith(classOf[JUnitRunner])
-class VectorOps_FloatTest
-    extends TensorSpaceTestBase[Vector[Float], Int, Float] {
+class VectorOps_FloatTest extends TensorSpaceTestBase[Vector[Float], Int, Float] {
   val space = Vector.space[Float]
 
   override val TOL: Double = 1e-2
   val N = 30
-  implicit def genTriple
-      : Arbitrary[(Vector[Float], Vector[Float], Vector[Float])] = {
+  implicit def genTriple: Arbitrary[(Vector[Float], Vector[Float], Vector[Float])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Float].map { _ % 1000f }

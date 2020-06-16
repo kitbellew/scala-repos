@@ -21,10 +21,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
   ScTypeDefinition
 }
 import org.jetbrains.plugins.scala.lang.psi.api.{ScalaElementVisitor, ScalaFile}
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Failure,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Failure, TypingContext}
 
 import _root_.scala.collection.mutable.ArrayBuffer
 
@@ -205,10 +202,7 @@ class ScSuperReferenceImpl(node: ASTNode)
           case _ => None
         }
       case None => {
-        PsiTreeUtil.getContextOfType(
-          this,
-          false,
-          classOf[ScExtendsBlock]) match {
+        PsiTreeUtil.getContextOfType(this, false, classOf[ScExtendsBlock]) match {
           case null               => None
           case eb: ScExtendsBlock => Some(eb.superTypes)
         }

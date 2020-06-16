@@ -310,8 +310,7 @@ private[sql] class InputAggregationBuffer private[sql] (
       throw new IllegalArgumentException(
         s"Could not access ${i}th value in this buffer because it only has $length values.")
     }
-    toScalaConverters(i)(
-      bufferValueGetters(i)(underlyingInputBuffer, offsets(i)))
+    toScalaConverters(i)(bufferValueGetters(i)(underlyingInputBuffer, offsets(i)))
   }
 
   // Because get method call specialized getter based on the schema, we cannot use the
@@ -384,8 +383,7 @@ private[sql] case class ScalaUDAF(
 
   private lazy val inputProjection = {
     val inputAttributes = childrenSchema.toAttributes
-    log.debug(
-      s"Creating MutableProj: $children, inputSchema: $inputAttributes.")
+    log.debug(s"Creating MutableProj: $children, inputSchema: $inputAttributes.")
     GenerateMutableProjection.generate(children, inputAttributes)()
   }
 

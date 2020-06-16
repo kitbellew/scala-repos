@@ -189,10 +189,8 @@ object Pref {
     val CASUAL = 2
     val ALWAYS = 3
 
-    val choices = Seq(
-      NEVER -> "Never",
-      ALWAYS -> "Always",
-      CASUAL -> "In casual games only")
+    val choices =
+      Seq(NEVER -> "Never", ALWAYS -> "Always", CASUAL -> "In casual games only")
   }
 
   object Animation {

@@ -116,10 +116,7 @@ class FileMessageSetTest extends BaseMessageSetTestCases {
     // append a new message with a high offset
     val lastMessage = new Message("test".getBytes)
     messageSet.append(
-      new ByteBufferMessageSet(
-        NoCompressionCodec,
-        new LongRef(50),
-        lastMessage))
+      new ByteBufferMessageSet(NoCompressionCodec, new LongRef(50), lastMessage))
     var position = 0
     assertEquals(
       "Should be able to find the first message by its offset",

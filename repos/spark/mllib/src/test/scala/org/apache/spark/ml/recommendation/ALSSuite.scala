@@ -181,11 +181,7 @@ class ALSSuite
         val dstEncodedIndex = uncompressed.dstEncodedIndices(i)
         val dstBlockId = encoder.blockId(dstEncodedIndex)
         val dstLocalIndex = encoder.localIndex(dstEncodedIndex)
-        (
-          uncompressed.srcIds(i),
-          dstBlockId,
-          dstLocalIndex,
-          uncompressed.ratings(i))
+        (uncompressed.srcIds(i), dstBlockId, dstLocalIndex, uncompressed.ratings(i))
       }
       .toSet
     val expected =

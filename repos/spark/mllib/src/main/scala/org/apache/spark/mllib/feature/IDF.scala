@@ -21,12 +21,7 @@ import breeze.linalg.{DenseVector => BDV}
 
 import org.apache.spark.annotation.Since
 import org.apache.spark.api.java.JavaRDD
-import org.apache.spark.mllib.linalg.{
-  DenseVector,
-  SparseVector,
-  Vector,
-  Vectors
-}
+import org.apache.spark.mllib.linalg.{DenseVector, SparseVector, Vector, Vectors}
 import org.apache.spark.rdd.RDD
 
 /**
@@ -56,8 +51,7 @@ class IDF @Since("1.2.0") (@Since("1.2.0") val minDocFreq: Int) {
   @Since("1.1.0")
   def fit(dataset: RDD[Vector]): IDFModel = {
     val idf = dataset
-      .treeAggregate(
-        new IDF.DocumentFrequencyAggregator(minDocFreq = minDocFreq))(
+      .treeAggregate(new IDF.DocumentFrequencyAggregator(minDocFreq = minDocFreq))(
         seqOp = (df, v) => df.add(v),
         combOp = (df1, df2) => df1.merge(df2)
       )

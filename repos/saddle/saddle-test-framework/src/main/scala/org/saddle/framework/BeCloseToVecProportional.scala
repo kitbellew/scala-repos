@@ -18,9 +18,7 @@ class BeCloseToVecProportional[T: Numeric: ClassManifest](v: Vec[T], delta: T)
             num.lteq(
               num.minus(n, num.abs(num.times(delta, n))),
               x.value.raw(i)) &&
-              num.lteq(
-                x.value.raw(i),
-                num.plus(n, num.abs(num.times(delta, n))))
+              num.lteq(x.value.raw(i), num.plus(n, num.abs(num.times(delta, n))))
         }
         Vec(res: _*).all
       },

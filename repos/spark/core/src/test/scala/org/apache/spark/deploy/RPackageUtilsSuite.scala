@@ -77,12 +77,8 @@ class RPackageUtilsSuite
       val jars = Seq(main, dep1, dep2).map(c =>
         new JarFile(getJarPath(c, new File(new URI(repo)))))
       assert(RPackageUtils.checkManifestForR(jars(0)), "should have R code")
-      assert(
-        !RPackageUtils.checkManifestForR(jars(1)),
-        "should not have R code")
-      assert(
-        !RPackageUtils.checkManifestForR(jars(2)),
-        "should not have R code")
+      assert(!RPackageUtils.checkManifestForR(jars(1)), "should not have R code")
+      assert(!RPackageUtils.checkManifestForR(jars(2)), "should not have R code")
     }
   }
 

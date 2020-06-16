@@ -62,9 +62,7 @@ import org.apache.kafka.common.internals.TopicConstants
 /*
  * Result metadata of a log append operation on the log
  */
-case class LogAppendResult(
-    info: LogAppendInfo,
-    error: Option[Throwable] = None) {
+case class LogAppendResult(info: LogAppendInfo, error: Option[Throwable] = None) {
   def errorCode =
     error match {
       case None    => Errors.NONE.code
@@ -148,8 +146,7 @@ class ReplicaManager(
     .map(dir =>
       (
         new File(dir).getAbsolutePath,
-        new OffsetCheckpoint(
-          new File(dir, ReplicaManager.HighWatermarkFilename))))
+        new OffsetCheckpoint(new File(dir, ReplicaManager.HighWatermarkFilename))))
     .toMap
   private var hwThreadInitialized = false
   this.logIdent = "[Replica Manager on Broker " + localBrokerId + "]: "
@@ -513,10 +510,8 @@ class ReplicaManager(
             topicPartition,
             LogAppendResult(
               LogAppendInfo.UnknownLogAppendInfo,
-              Some(
-                new InvalidTopicException(
-                  "Cannot append to internal topic %s".format(
-                    topicPartition.topic)))))
+              Some(new InvalidTopicException(
+                "Cannot append to internal topic %s".format(topicPartition.topic)))))
         } else {
           try {
             val partitionOpt =
@@ -912,9 +907,7 @@ class ReplicaManager(
                     stateInfo.leaderEpoch,
                     partitionLeaderEpoch
                   ))
-              responseMap.put(
-                topicPartition,
-                Errors.STALE_CONTROLLER_EPOCH.code)
+              responseMap.put(topicPartition, Errors.STALE_CONTROLLER_EPOCH.code)
             }
         }
 
@@ -1241,11 +1234,7 @@ class ReplicaManager(
       case e: Throwable =>
         val errorMsg =
           ("Error on broker %d while processing LeaderAndIsr request with correlationId %d received from controller %d " +
-            "epoch %d").format(
-            localBrokerId,
-            correlationId,
-            controllerId,
-            epoch)
+            "epoch %d").format(localBrokerId, correlationId, controllerId, epoch)
         stateChangeLogger.error(errorMsg, e)
         // Re-throw the exception for it to be caught in KafkaApis
         throw e
@@ -1280,9 +1269,7 @@ class ReplicaManager(
         .format(replicaId, readResults))
     readResults.foreach {
       case (topicAndPartition, readResult) =>
-        getPartition(
-          topicAndPartition.topic,
-          topicAndPartition.partition) match {
+        getPartition(topicAndPartition.topic, topicAndPartition.partition) match {
           case Some(partition) =>
             partition.updateReplicaLogReadResult(replicaId, readResult)
 

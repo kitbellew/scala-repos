@@ -39,9 +39,7 @@ import scalafx.testutil.SimpleSFXDelegateSpec
   */
 @RunWith(classOf[JUnitRunner])
 class ScheduledServiceSpec[T]
-    extends SimpleSFXDelegateSpec[
-      jfxc.ScheduledService[T],
-      ScheduledService[T]](
+    extends SimpleSFXDelegateSpec[jfxc.ScheduledService[T], ScheduledService[T]](
       classOf[jfxc.ScheduledService[T]],
       classOf[ScheduledService[T]]) {
 

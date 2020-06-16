@@ -375,8 +375,7 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
           .getReceiverInputStreams()
           .length == receiverInputStreams.length)
       assert(ssc.graph.getReceiverInputStreams() === receiverInputStreams)
-      assert(
-        ssc.graph.getInputStreams().map(_.id) === Array.tabulate(5)(i => i))
+      assert(ssc.graph.getInputStreams().map(_.id) === Array.tabulate(5)(i => i))
       assert(receiverInputStreams.map(_.id) === Array(0, 1))
     }
   }

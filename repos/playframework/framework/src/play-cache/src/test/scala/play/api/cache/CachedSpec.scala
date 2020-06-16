@@ -75,8 +75,8 @@ class CachedSpec extends PlaySpecification {
       val diskCache = new EhCacheApi(diskEhcache2)
       val diskCached = new Cached(diskCache)
       val invoked = new AtomicInteger()
-      val action = diskCached(_ => "foo")(
-        Action(Results.Ok("" + invoked.incrementAndGet())))
+      val action =
+        diskCached(_ => "foo")(Action(Results.Ok("" + invoked.incrementAndGet())))
       val result1 = action(FakeRequest()).run()
       contentAsString(result1) must_== "1"
       invoked.get() must_== 1

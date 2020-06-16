@@ -264,8 +264,7 @@ class ResidentTaskIntegrationTest
         portDefinitions: Seq[PortDefinition] = PortDefinitions(0))
         : AppDefinition = {
 
-      val appId: PathId = PathId(
-        s"/$testBasePath/app-${IdGenerator.generate()}")
+      val appId: PathId = PathId(s"/$testBasePath/app-${IdGenerator.generate()}")
 
       val persistentVolume: Volume = PersistentVolume(
         containerPath = containerPath,

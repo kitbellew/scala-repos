@@ -97,10 +97,8 @@ class ManagedQueryExecutorSpec extends TestManagedPlatform with Specification {
         Path("/\\\\/\\///\\/"),
         Path.Root,
         clock.now())
-      result <- executor.execute(
-        numTicks.toString,
-        ctx,
-        QueryOptions(timeout = timeout))
+      result <-
+        executor.execute(numTicks.toString, ctx, QueryOptions(timeout = timeout))
     } yield result
 
     executionResult.valueOr(err => sys.error(err.toString))
@@ -236,9 +234,7 @@ trait TestManagedPlatform
             StreamT.unfoldM[JobQueryTF, Slice, Int](0) {
               case i if i < numTicks =>
                 schedule(1) {
-                  Some((
-                    Slice.fromJValues(Stream(JObject("value" -> JString(".")))),
-                    i + 1))
+                  Some((Slice.fromJValues(Stream(JObject("value" -> JString(".")))), i + 1))
                 }.liftM[JobQueryT]
 
               case _ =>

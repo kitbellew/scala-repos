@@ -113,16 +113,12 @@ object Test extends App {
     assert(ten.reverse startsWith List(10, 9, 8), ten.reverse.take(10).toList)
     assert(ten.reverse.length == 10)
     assert(ten.reverse.reverse == ten)
-    assert(
-      ten.reverseIterator.toList.reverse == ten,
-      ten.reverseIterator.toList)
+    assert(ten.reverseIterator.toList.reverse == ten, ten.reverseIterator.toList)
     assert(ten.startsWith(List(1)))
     assert(ten.startsWith(List(3, 4), 2))
     assert(ten.endsWith(List(9, 10)))
     assert(ten.endsWith(List()))
-    assert(
-      ten.indexOfSlice(List(3, 4, 5)) == 2,
-      ten.indexOfSlice(List(3, 4, 5)))
+    assert(ten.indexOfSlice(List(3, 4, 5)) == 2, ten.indexOfSlice(List(3, 4, 5)))
     assert(ten.lastIndexOfSlice(List(8, 9, 10)) == 7)
     assert(ten.lastIndexOfSlice(List(1, 2, 3)) == 0)
     assert(ten.lastIndexOfSlice(List(9, 10, 11)) == -1)

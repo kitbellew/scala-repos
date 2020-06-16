@@ -98,10 +98,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
       "test",
       topicsMetadata.head.topic)
     val partitionMetadata = topicsMetadata.head.partitionsMetadata
-    assertEquals(
-      "Expecting metadata for 1 partition",
-      1,
-      partitionMetadata.size)
+    assertEquals("Expecting metadata for 1 partition", 1, partitionMetadata.size)
     assertEquals(
       "Expecting partition id to be 0",
       0,
@@ -178,9 +175,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
         2000,
         0)
       .topicsMetadata
-    assertEquals(
-      Errors.LEADER_NOT_AVAILABLE.code,
-      topicsMetadata.head.errorCode)
+    assertEquals(Errors.LEADER_NOT_AVAILABLE.code, topicsMetadata.head.errorCode)
     assertEquals("Expecting metadata only for 1 topic", 1, topicsMetadata.size)
     assertEquals(
       "Expecting metadata for the test topic",
@@ -206,10 +201,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
       Errors.NONE.code,
       topicsMetadata.head.partitionsMetadata.head.errorCode)
     val partitionMetadata = topicsMetadata.head.partitionsMetadata
-    assertEquals(
-      "Expecting metadata for 1 partition",
-      1,
-      partitionMetadata.size)
+    assertEquals("Expecting metadata for 1 partition", 1, partitionMetadata.size)
     assertEquals(
       "Expecting partition id to be 0",
       0,
@@ -236,9 +228,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
       "Expecting metadata for topic1",
       topic1,
       topicsMetadata.head.topic)
-    assertEquals(
-      Errors.LEADER_NOT_AVAILABLE.code,
-      topicsMetadata.head.errorCode)
+    assertEquals(Errors.LEADER_NOT_AVAILABLE.code, topicsMetadata.head.errorCode)
     assertEquals(
       "Expecting metadata for topic2",
       topic2,
@@ -266,10 +256,7 @@ abstract class BaseTopicMetadataTest extends ZooKeeperTestHarness {
       Errors.NONE.code,
       topicsMetadata.head.partitionsMetadata.head.errorCode)
     var partitionMetadata = topicsMetadata.head.partitionsMetadata
-    assertEquals(
-      "Expecting metadata for 1 partition",
-      1,
-      partitionMetadata.size)
+    assertEquals("Expecting metadata for 1 partition", 1, partitionMetadata.size)
     assertEquals(
       "Expecting partition id to be 0",
       0,

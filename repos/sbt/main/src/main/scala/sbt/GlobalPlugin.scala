@@ -51,18 +51,13 @@ object GlobalPlugin {
     val session = Load.initialSession(structure, eval)
     (structure, Project.setProject(session, structure, s))
   }
-  def load(
-      base: File,
-      s: State,
-      config: LoadBuildConfiguration): GlobalPlugin = {
+  def load(base: File, s: State, config: LoadBuildConfiguration): GlobalPlugin = {
     val (structure, state) = build(base, s, config)
     val (newS, data) = extract(state, structure)
     Project.runUnloadHooks(newS) // discard state
     GlobalPlugin(data, structure, inject(data), base)
   }
-  def extract(
-      state: State,
-      structure: BuildStructure): (State, GlobalPluginData) = {
+  def extract(state: State, structure: BuildStructure): (State, GlobalPluginData) = {
     import structure.{data, root, rootProject}
     val p: Scope = Scope.GlobalScope in ProjectRef(root, rootProject(root))
 
@@ -109,8 +104,7 @@ object GlobalPlugin {
     Project.inScope(Scope.GlobalScope in LocalRootProject)(
       Seq(
         organization := SbtArtifacts.Organization,
-        onLoadMessage <<= Keys.baseDirectory(
-          "Loading global plugins from " + _),
+        onLoadMessage <<= Keys.baseDirectory("Loading global plugins from " + _),
         name := "global-plugin",
         sbtPlugin := true,
         version := "0.0"

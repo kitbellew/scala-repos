@@ -47,8 +47,7 @@ object BinaryOp {
 // because we don't need BinaryOp's to inherit from Function2, which has a lot of @specialzied cruft.
 trait BinaryRegistry[A, B, Op, +R]
     extends UFunc.UImpl2[Op, A, B, R]
-    with MMRegistry2[
-      UFunc.UImpl2[Op, _ <: A, _ <: B, _ <: (R @uncheckedVariance)]] {
+    with MMRegistry2[UFunc.UImpl2[Op, _ <: A, _ <: B, _ <: (R @uncheckedVariance)]] {
   protected def bindingMissing(a: A, b: B): R =
     throw new UnsupportedOperationException(
       "Types not found!" + a + b + " " + ops)

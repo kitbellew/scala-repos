@@ -43,8 +43,7 @@ class ScalaXmlSupportSpec
         .to[NodeSeq]
         .map(_.text) should
         haveFailedWith(
-          Unmarshaller.UnsupportedContentTypeException(
-            nodeSeqContentTypeRanges: _*))
+          Unmarshaller.UnsupportedContentTypeException(nodeSeqContentTypeRanges: _*))
     }
 
     "don't be vulnerable to XXE attacks" - {

@@ -53,10 +53,7 @@ trait SexpPrettyPrinter extends SexpPrinter {
       sb.append(')')
     }
 
-  protected def printList(
-      els: List[Sexp],
-      sb: StringBuilder,
-      indent: Int): Unit =
+  protected def printList(els: List[Sexp], sb: StringBuilder, indent: Int): Unit =
     if (els.isEmpty) print(SexpNil, sb)
     else {
       sb.append('(')

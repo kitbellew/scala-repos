@@ -39,10 +39,8 @@ class ProducerSendThread[K, V](
     with KafkaMetricsGroup {
 
   private val shutdownLatch = new CountDownLatch(1)
-  private val shutdownCommand = new KeyedMessage[K, V](
-    "shutdown",
-    null.asInstanceOf[K],
-    null.asInstanceOf[V])
+  private val shutdownCommand =
+    new KeyedMessage[K, V]("shutdown", null.asInstanceOf[K], null.asInstanceOf[V])
 
   newGauge(
     "ProducerQueueSize",

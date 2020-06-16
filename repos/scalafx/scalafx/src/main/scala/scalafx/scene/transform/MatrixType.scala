@@ -32,8 +32,7 @@ import javafx.scene.{transform => jfxst}
 import scalafx.delegate.{SFXEnumDelegate, SFXEnumDelegateCompanion}
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/scene/transform/MatrixType.html javafx.scene.transform.MatrixType]] */
-object MatrixType
-    extends SFXEnumDelegateCompanion[jfxst.MatrixType, MatrixType] {
+object MatrixType extends SFXEnumDelegateCompanion[jfxst.MatrixType, MatrixType] {
 
   /** A 2D affine transformation matrix of 2 rows and 3 columns. */
   val MT_2D_2x3 = new MatrixType(jfxst.MatrixType.MT_2D_2x3)

@@ -23,9 +23,7 @@ class OptionMonoid[A: Semigroup] extends Monoid[Option[A]] with Serializable {
 }
 
 @SerialVersionUID(0L)
-class OptionCMonoid[A: CSemigroup]
-    extends OptionMonoid[A]
-    with CMonoid[Option[A]]
+class OptionCMonoid[A: CSemigroup] extends OptionMonoid[A] with CMonoid[Option[A]]
 
 @SerialVersionUID(0L)
 class OptionAdditiveMonoid[A: AdditiveSemigroup]
@@ -95,8 +93,8 @@ trait OptionInstances0 {
 trait OptionInstances extends OptionInstances0 {
   implicit def OptionCMonoid[A: CSemigroup]: OptionCMonoid[A] =
     new OptionCMonoid[A]
-  implicit def OptionAdditiveMonoid[A: AdditiveSemigroup]
-      : OptionAdditiveMonoid[A] = new OptionAdditiveMonoid[A]
+  implicit def OptionAdditiveMonoid[A: AdditiveSemigroup]: OptionAdditiveMonoid[A] =
+    new OptionAdditiveMonoid[A]
   implicit def OptionMultiplicativeMonoid[A: MultiplicativeSemigroup]
       : OptionMultiplicativeMonoid[A] = new OptionMultiplicativeMonoid[A]
 

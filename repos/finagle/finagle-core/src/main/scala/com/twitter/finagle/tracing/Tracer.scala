@@ -9,10 +9,7 @@ import java.util.logging.Logger
 private[tracing] object RecordTimeFormat extends TimeFormat("MMdd HH:mm:ss.SSS")
 
 object Record {
-  def apply(
-      traceId: TraceId,
-      timestamp: Time,
-      annotation: Annotation): Record = {
+  def apply(traceId: TraceId, timestamp: Time, annotation: Annotation): Record = {
     Record(traceId, timestamp, annotation, None)
   }
 }

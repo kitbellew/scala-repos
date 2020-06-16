@@ -79,8 +79,7 @@ trait SyntheticMethods extends ast.TreeDSL {
         clazz0) filter (_ matchingSymbol clazz0.info isSynthetic) match {
         case Nil => true
         case syms =>
-          log(
-            "Not adding synthetic methods: already has " + syms.mkString(", "));
+          log("Not adding synthetic methods: already has " + syms.mkString(", "));
           false
       }
     }
@@ -267,8 +266,7 @@ trait SyntheticMethods extends ast.TreeDSL {
       List(
         Product_productPrefix -> (() =>
           constantNullary(nme.productPrefix, clazz.name.decode)),
-        Product_productArity -> (() =>
-          constantNullary(nme.productArity, arity)),
+        Product_productArity -> (() => constantNullary(nme.productArity, arity)),
         Product_productElement -> (() =>
           perElementMethod(nme.productElement, AnyTpe)(mkThisSelect)),
         Product_iterator -> (() => productIteratorMethod),

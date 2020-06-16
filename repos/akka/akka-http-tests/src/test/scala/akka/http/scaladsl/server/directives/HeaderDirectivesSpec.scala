@@ -69,9 +69,7 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
       }
 
     "extract a header if the name is matching" in {
-      Get("abc") ~> RawHeader(
-        "Referer",
-        "http://example.com") ~> route ~> check {
+      Get("abc") ~> RawHeader("Referer", "http://example.com") ~> route ~> check {
         responseAs[String] shouldEqual "The referer was http://example.com"
       }
     }
@@ -106,9 +104,7 @@ class HeaderDirectivesSpec extends RoutingSpec with Inside {
       }
 
     "extract a header if the name is matching" in {
-      Get("abc") ~> RawHeader(
-        "Referer",
-        "http://example.com") ~> route ~> check {
+      Get("abc") ~> RawHeader("Referer", "http://example.com") ~> route ~> check {
         responseAs[
           String] shouldEqual "The referer was Some(http://example.com)"
       }

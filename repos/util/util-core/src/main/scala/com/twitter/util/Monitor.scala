@@ -204,10 +204,7 @@ object RootMonitor extends Monitor {
         true /*NOTREACHED*/
 
       case e: Throwable =>
-        log.log(
-          Level.SEVERE,
-          "Fatal exception propagated to the root monitor!",
-          e)
+        log.log(Level.SEVERE, "Fatal exception propagated to the root monitor!", e)
         false
     }
 

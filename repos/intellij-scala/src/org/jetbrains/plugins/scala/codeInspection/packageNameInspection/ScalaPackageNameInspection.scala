@@ -62,8 +62,7 @@ class ScalaPackageNameInspection extends LocalInspectionTool {
         }
 
         if (packName == null) {
-          val fixes = Seq(
-            new EnablePerformanceProblemsQuickFix(file.getProject))
+          val fixes = Seq(new EnablePerformanceProblemsQuickFix(file.getProject))
           problemDescriptors(fixes).toArray
         } else if (packName != expectedPackageName) {
           val fixes = Seq(

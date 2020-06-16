@@ -15,10 +15,7 @@ trait MapSub {
   /** How `MapLike#updated` might be typed in a sane world.  A world
     * that embraced higher kinds, instead of shunning them.
     */
-  protected def ab_+[K: BuildKeyConstraint, V](
-      m: XMap[K, V],
-      k: K,
-      v: V): XMap[K, V]
+  protected def ab_+[K: BuildKeyConstraint, V](m: XMap[K, V], k: K, v: V): XMap[K, V]
 
   /** As with `ab_+, but with `MapLike#-`. */
   protected def ab_-[K: BuildKeyConstraint, V](m: XMap[K, V], k: K): XMap[K, V]
@@ -136,8 +133,7 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
     }
 
   /** Map union monoid, unifying values with `V`'s `append`. */
-  implicit def mapMonoid[K: BuildKeyConstraint, V: Semigroup]
-      : Monoid[XMap[K, V]] =
+  implicit def mapMonoid[K: BuildKeyConstraint, V: Semigroup]: Monoid[XMap[K, V]] =
     new Monoid[XMap[K, V]] {
       def zero = fromSeq[K, V]()
       def append(m1: XMap[K, V], m2: => XMap[K, V]) = {
@@ -220,9 +216,8 @@ trait MapSubFunctions extends MapSub {
     m map { case (k, v) => f(k) -> v }
 
   /** Like `unionWith`, but telling `f` about the key. */
-  final def unionWithKey[K: BuildKeyConstraint, A](
-      m1: XMap[K, A],
-      m2: XMap[K, A])(f: (K, A, A) => A): XMap[K, A] = {
+  final def unionWithKey[K: BuildKeyConstraint, A](m1: XMap[K, A], m2: XMap[K, A])(
+      f: (K, A, A) => A): XMap[K, A] = {
     val diff = m2 -- m1.keySet
     val aug = m1 map {
       case (k, v) => if (m2 contains k) k -> f(k, v, m2(k)) else (k, v)

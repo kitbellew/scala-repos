@@ -457,9 +457,7 @@ class CommandCodec extends UnifiedProtocolCodec {
       case t: Throwable =>
         log.warning(
           t,
-          "Unhandled exception %s(%s)".format(
-            t.getClass.toString,
-            t.getMessage))
+          "Unhandled exception %s(%s)".format(t.getClass.toString, t.getMessage))
         throw new ClientError(t.getMessage)
     }
   }

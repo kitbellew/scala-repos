@@ -404,9 +404,7 @@ object Template extends Logging {
         val fileContent = Source.fromFile(ftm).getLines()
         val processedLines =
           fileContent.map(_.replaceAllLiterally(pkgName, organization))
-        FileUtils.writeStringToFile(
-          new File(ftm),
-          processedLines.mkString("\n"))
+        FileUtils.writeStringToFile(new File(ftm), processedLines.mkString("\n"))
       }
     } getOrElse {
       error(
@@ -428,8 +426,9 @@ object Template extends Logging {
 
     metadata.pioVersionMin.foreach { pvm =>
       if (Version(BuildInfo.version) < Version(pvm)) {
-        error(s"This engine template requires at least PredictionIO $pvm. " +
-          s"The template may not work with PredictionIO ${BuildInfo.version}.")
+        error(
+          s"This engine template requires at least PredictionIO $pvm. " +
+            s"The template may not work with PredictionIO ${BuildInfo.version}.")
         sys.exit(1)
       }
     }

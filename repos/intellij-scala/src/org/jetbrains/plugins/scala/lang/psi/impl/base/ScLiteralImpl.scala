@@ -268,8 +268,8 @@ class ScLiteralImpl(node: ASTNode)
    * }
    */
 
-  private[this] var myAnnotationOwner
-      : Option[PsiAnnotationOwner with PsiElement] = None
+  private[this] var myAnnotationOwner: Option[PsiAnnotationOwner with PsiElement] =
+    None
   private[this] var expirationTime = 0L
 
   private val expTimeLengthGenerator: Random = new Random(

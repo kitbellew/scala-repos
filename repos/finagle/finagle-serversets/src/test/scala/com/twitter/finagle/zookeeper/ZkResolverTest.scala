@@ -183,8 +183,7 @@ class ZkResolverTest extends FunSuite with BeforeAndAfter {
 
     test("resolves from the main resolver") {
       Resolver.eval(
-        "zk!localhost:%d!/foo/bar/baz!blah".format(
-          inst.zookeeperAddress.getPort))
+        "zk!localhost:%d!/foo/bar/baz!blah".format(inst.zookeeperAddress.getPort))
     }
   }
 }

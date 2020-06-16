@@ -69,9 +69,7 @@ object ActorWithStashSpec {
     def receive = Actor.emptyBehavior
   }
 
-  class TerminatedMessageStashingActor(probe: ActorRef)
-      extends Actor
-      with Stash {
+  class TerminatedMessageStashingActor(probe: ActorRef) extends Actor with Stash {
     val watched = context.watch(context.actorOf(Props[WatchedActor]))
     var stashed = false
 

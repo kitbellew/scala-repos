@@ -167,8 +167,8 @@ trait DeathWatchSpec { this: AkkaSpec with ImplicitSender with DefaultTimeout â‡
               super.handleFailure(context, child, cause, stats, children)
             }
           }
-        val supervisor = system.actorOf(
-          Props(new Supervisor(strategy)).withDeploy(Deploy.local))
+        val supervisor =
+          system.actorOf(Props(new Supervisor(strategy)).withDeploy(Deploy.local))
 
         val failed = Await.result(
           (supervisor ? Props.empty).mapTo[ActorRef],
@@ -184,8 +184,7 @@ trait DeathWatchSpec { this: AkkaSpec with ImplicitSender with DefaultTimeout â‡
 
         failed ! Kill
         val result = receiveWhile(3 seconds, messages = 3) {
-          case FF(Failed(_, _: ActorKilledException, _))
-              if lastSender eq failed â‡’
+          case FF(Failed(_, _: ActorKilledException, _)) if lastSender eq failed â‡’
             1
           case FF(Failed(_, DeathPactException(`failed`), _))
               if lastSender eq brother â‡’

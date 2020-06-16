@@ -277,9 +277,7 @@ object Defaults extends BuildCommon {
   def projectCore: Seq[Setting[_]] =
     Seq(
       name := thisProject.value.id,
-      logManager := LogManager.defaults(
-        extraLoggers.value,
-        StandardMain.console),
+      logManager := LogManager.defaults(extraLoggers.value, StandardMain.console),
       onLoadMessage <<= onLoadMessage or (name, thisProjectRef)(
         "Set current project to " + _ + " (in build " + _.build + ")")
     )
@@ -376,9 +374,7 @@ object Defaults extends BuildCommon {
         crossPaths.value),
       clean := {
         val _ = clean.value
-        IvyActions.cleanCachedResolutionCache(
-          ivyModule.value,
-          streams.value.log)
+        IvyActions.cleanCachedResolutionCache(ivyModule.value, streams.value.log)
       },
       scalaCompilerBridgeSource := Compiler.defaultCompilerBridgeSource(
         scalaVersion.value)
@@ -428,9 +424,7 @@ object Defaults extends BuildCommon {
       classpathOptions.value,
       javaHome.value,
       bootIvyConfiguration.value,
-      scalaCompilerBridgeSource.value)(
-      appConfiguration.value,
-      streams.value.log)
+      scalaCompilerBridgeSource.value)(appConfiguration.value, streams.value.log)
 
   lazy val configTasks = docTaskSettings(doc) ++ inTask(compile)(
     compileInputsSettings) ++ configGlobal ++ compileAnalysisSettings ++ Seq(
@@ -478,8 +472,9 @@ object Defaults extends BuildCommon {
     watch <<= watchSetting
   )
 
-  def generate(generators: SettingKey[Seq[Task[Seq[File]]]])
-      : Initialize[Task[Seq[File]]] = generators { _.join.map(_.flatten) }
+  def generate(
+      generators: SettingKey[Seq[Task[Seq[File]]]]): Initialize[Task[Seq[File]]] =
+    generators { _.join.map(_.flatten) }
 
   @deprecated("Use the new <key>.all(<ScopeFilter>) API", "0.13.0")
   def inAllConfigurations[T](key: TaskKey[T]): Initialize[Task[Seq[T]]] =
@@ -1153,12 +1148,8 @@ object Defaults extends BuildCommon {
     Def.inputTask {
       val mainClass =
         mainClassTask.value getOrElse sys.error("No main class detected.")
-      toError(
-        scalaRun.value.run(
-          mainClass,
-          data(classpath.value),
-          parser.parsed,
-          streams.value.log))
+      toError(scalaRun.value
+        .run(mainClass, data(classpath.value), parser.parsed, streams.value.log))
     }
   }
 
@@ -1293,12 +1284,8 @@ object Defaults extends BuildCommon {
         val loader = sbt.internal.inc.classpath.ClasspathUtilities
           .makeLoader(fullcp, si, IO.createUniqueDirectory(temp))
         val compiler = cs.scalac.onArgs(exported(s, "scala"))
-        (new Console(compiler))(
-          cpFiles,
-          options,
-          loader,
-          initCommands,
-          cleanup)()(s.log).foreach(msg => sys.error(msg))
+        (new Console(compiler))(cpFiles, options, loader, initCommands, cleanup)()(
+          s.log).foreach(msg => sys.error(msg))
         println()
     }
 
@@ -1333,9 +1320,7 @@ object Defaults extends BuildCommon {
   def compileIncrementalTask =
     Def.task {
       // TODO - Should readAnalysis + saveAnalysis be scoped by the compile task too?
-      compileIncrementalTaskImpl(
-        streams.value,
-        (compileInputs in compile).value)
+      compileIncrementalTaskImpl(streams.value, (compileInputs in compile).value)
     }
   private[this] def compileIncrementalTaskImpl(
       s: TaskStreams,
@@ -1471,8 +1456,7 @@ object Defaults extends BuildCommon {
         "<arg>")
   }
 
-  def testOnlyParser
-      : (State, Seq[String]) => Parser[(Seq[String], Seq[String])] = {
+  def testOnlyParser: (State, Seq[String]) => Parser[(Seq[String], Seq[String])] = {
     (state, tests) =>
       import DefaultParsers._
       val selectTests = distinctParser(tests.toSet, true)
@@ -1481,9 +1465,7 @@ object Defaults extends BuildCommon {
       selectTests ~ options
   }
 
-  private def distinctParser(
-      exs: Set[String],
-      raw: Boolean): Parser[Seq[String]] = {
+  private def distinctParser(exs: Set[String], raw: Boolean): Parser[Seq[String]] = {
     import DefaultParsers._
     val base = token(Space) ~> token(NotSpace - "--" examples exs)
     val recurse = base flatMap { ex =>
@@ -1772,11 +1754,8 @@ object Classpaths {
           val cross =
             if (id.crossVersioned) CrossVersion.binary
             else CrossVersion.Disabled
-          val base = ModuleID(
-            id.groupID,
-            id.name,
-            sbtVersion.value,
-            crossVersion = cross)
+          val base =
+            ModuleID(id.groupID, id.name, sbtVersion.value, crossVersion = cross)
           CrossVersion(scalaVersion, binVersion)(base).copy(crossVersion =
             CrossVersion.Disabled)
         }
@@ -2411,8 +2390,7 @@ object Classpaths {
           } catch {
             case e: NullPointerException =>
               val r = work(in)
-              log.warn(
-                "Update task has failed to cache the report due to null.")
+              log.warn("Update task has failed to cache the report due to null.")
               log.warn("Report the following output to sbt:")
               r.toString.lines foreach { log.warn(_) }
               log.trace(e)
@@ -2700,11 +2678,7 @@ object Classpaths {
       defaultMapping: String): String => Seq[String] = {
     lazy val defaultMap =
       parseMapping(defaultMapping, masterConfs, depConfs, _ :: Nil)
-    parseMapping(
-      confString getOrElse default,
-      masterConfs,
-      depConfs,
-      defaultMap)
+    parseMapping(confString getOrElse default, masterConfs, depConfs, defaultMap)
   }
   def parseMapping(
       confString: String,
@@ -3003,9 +2977,7 @@ trait BuildExtra extends BuildCommon with DefExtra {
     * Names are restricted to be either alphanumeric or completely symbolic.
     * As an exception, '-' and '_' are allowed within an alphanumeric name.
     */
-  def addCommandAlias(
-      name: String,
-      value: String): Seq[Setting[State => State]] = {
+  def addCommandAlias(name: String, value: String): Seq[Setting[State => State]] = {
     val add = (s: State) => BasicCommands.addAlias(s, name, value)
     val remove = (s: State) => BasicCommands.removeAlias(s, name)
     def compose(setting: SettingKey[State => State], f: State => State) =
@@ -3271,9 +3243,7 @@ trait BuildCommon {
 
   def loadFromContext[T](task: TaskKey[T], context: ScopedKey[_], s: State)(
       implicit f: sbinary.Format[T]): Option[T] =
-    SessionVar.load(
-      SessionVar.resolveContext(task.scopedKey, context.scope, s),
-      s)
+    SessionVar.load(SessionVar.resolveContext(task.scopedKey, context.scope, s), s)
 
   // intended for use in constructing InputTasks
   def loadForParser[P, T](task: TaskKey[T])(f: (State, Option[T]) => Parser[P])(

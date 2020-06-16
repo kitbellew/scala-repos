@@ -66,9 +66,8 @@ class ScTemplateBodyImpl private (
       JavaArrayFactoryUtil.ScTypeDefinitionFactory).filterNot(_.isLocal)
 
   def members: Array[ScMember] =
-    getStubOrPsiChildren(
-      TokenSets.MEMBERS,
-      JavaArrayFactoryUtil.ScMemberFactory).filterNot(_.isLocal)
+    getStubOrPsiChildren(TokenSets.MEMBERS, JavaArrayFactoryUtil.ScMemberFactory)
+      .filterNot(_.isLocal)
 
   def holders: Array[ScDeclaredElementsHolder] =
     getStubOrPsiChildren(

@@ -152,8 +152,7 @@ class LinearRegressionSuite
           label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
-      .saveAsTextFile(
-        "target/tmp/LinearRegressionSuite/datasetWithDenseFeature")
+      .saveAsTextFile("target/tmp/LinearRegressionSuite/datasetWithDenseFeature")
 
     datasetWithDenseFeatureWithoutIntercept.rdd
       .map {
@@ -725,9 +724,8 @@ class LinearRegressionSuite
       [1] -9.221298  3.394343
       [1] 17  0  0
      */
-    val expected = Seq(
-      Vectors.dense(0.0, -9.221298, 3.394343),
-      Vectors.dense(17.0, 0.0, 0.0))
+    val expected =
+      Seq(Vectors.dense(0.0, -9.221298, 3.394343), Vectors.dense(17.0, 0.0, 0.0))
 
     Seq("auto", "l-bfgs", "normal").foreach { solver =>
       var idx = 0

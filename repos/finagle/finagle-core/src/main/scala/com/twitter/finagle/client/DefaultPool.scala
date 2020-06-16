@@ -66,11 +66,7 @@ object DefaultPool {
     */
   def module[Req, Rep]: Stackable[ServiceFactory[Req, Rep]] =
     new Stack.Module[ServiceFactory[Req, Rep]] {
-      import com.twitter.finagle.pool.{
-        CachingPool,
-        WatermarkPool,
-        BufferingPool
-      }
+      import com.twitter.finagle.pool.{CachingPool, WatermarkPool, BufferingPool}
       val role = DefaultPool.Role
       val description = "Control client connection pool"
       val parameters = Seq(

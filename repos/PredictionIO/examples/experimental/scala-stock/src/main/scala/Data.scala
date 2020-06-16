@@ -108,8 +108,8 @@ object SaddleWrapper {
     Frame(seriesList: _*)
   }
 
-  def FromFrame[A](data: Frame[DateTime, String, A])
-      : (Array[DateTime], Array[(String, Array[A])]) = {
+  def FromFrame[A](
+      data: Frame[DateTime, String, A]): (Array[DateTime], Array[(String, Array[A])]) = {
     val timeIndex = data.rowIx.toVec.contents
     val tickers = data.colIx.toVec.contents
 

@@ -84,9 +84,7 @@ object FormUrlEncodedParser {
     * @param encoding The encoding to use for interpreting the data
     * @return The sequence of key/value pairs
     */
-  private def parseToPairs(
-      data: String,
-      encoding: String): Seq[(String, String)] = {
+  private def parseToPairs(data: String, encoding: String): Seq[(String, String)] = {
     parameterDelimiter.split(data).map { param =>
       val parts = param.split("=", -1)
       val key = URLDecoder.decode(parts(0), encoding)

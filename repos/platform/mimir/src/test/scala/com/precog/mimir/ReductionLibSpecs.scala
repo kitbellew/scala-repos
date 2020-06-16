@@ -403,8 +403,7 @@ trait ReductionLibSpecs[M[+_]]
 
     "maxTime" >> {
       val input =
-        dag.Reduce(MaxTime, parseDateTimeFuzzy("/hom/iso8601AcrossSlices"))(
-          line)
+        dag.Reduce(MaxTime, parseDateTimeFuzzy("/hom/iso8601AcrossSlices"))(line)
 
       val result = testEval(input)
 
@@ -419,8 +418,7 @@ trait ReductionLibSpecs[M[+_]]
 
     "minTime" >> {
       val input =
-        dag.Reduce(MinTime, parseDateTimeFuzzy("/hom/iso8601AcrossSlices"))(
-          line)
+        dag.Reduce(MinTime, parseDateTimeFuzzy("/hom/iso8601AcrossSlices"))(line)
 
       val result = testEval(input)
 
@@ -518,8 +516,7 @@ trait ReductionLibSpecs[M[+_]]
 
     "maxTime" >> {
       val input =
-        dag.Reduce(MaxTime, parseDateTimeFuzzy("/het/iso8601AcrossSlices"))(
-          line)
+        dag.Reduce(MaxTime, parseDateTimeFuzzy("/het/iso8601AcrossSlices"))(line)
 
       val result = testEval(input)
 
@@ -534,8 +531,7 @@ trait ReductionLibSpecs[M[+_]]
 
     "minTime" >> {
       val input =
-        dag.Reduce(MinTime, parseDateTimeFuzzy("/het/iso8601AcrossSlices"))(
-          line)
+        dag.Reduce(MinTime, parseDateTimeFuzzy("/het/iso8601AcrossSlices"))(line)
 
       val result = testEval(input)
 

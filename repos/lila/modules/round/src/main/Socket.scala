@@ -83,9 +83,7 @@ private[round] final class Socket(
   override def postStop() {
     super.postStop()
     lilaBus.unsubscribe(self)
-    lilaBus.publish(
-      lila.hub.actorApi.round.SocketEvent.Stop(gameId),
-      'roundDoor)
+    lilaBus.publish(lila.hub.actorApi.round.SocketEvent.Stop(gameId), 'roundDoor)
   }
 
   private def refreshSubscriptions {

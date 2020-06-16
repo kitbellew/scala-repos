@@ -35,9 +35,7 @@ import scalafx.delegate.{SFXEnumDelegate, SFXEnumDelegateCompanion}
 object Priority extends SFXEnumDelegateCompanion[jfxsl.Priority, Priority] {
 
   val Always = new Priority(jfxsl.Priority.ALWAYS)
-  @deprecated(
-    "Use Always; ALWAYS will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Always; ALWAYS will be removed in a future release", "2.2.60")
   val ALWAYS = Always
   val Sometimes = new Priority(jfxsl.Priority.SOMETIMES)
   @deprecated(

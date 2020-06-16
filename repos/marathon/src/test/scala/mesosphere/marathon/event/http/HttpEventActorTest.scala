@@ -93,8 +93,7 @@ class HttpEventActorTest
 
   test(
     "A rate limited subscriber with success will not have a future backoff") {
-    Given(
-      "A HttpEventActor with 2 subscribers, where one has a overdue backoff")
+    Given("A HttpEventActor with 2 subscribers, where one has a overdue backoff")
     val aut = TestActorRef(new NoHttpEventActor(Set("host1", "host2")))
     aut.underlyingActor.limiter += "host1" -> EventNotificationLimit(
       23,

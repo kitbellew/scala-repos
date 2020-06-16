@@ -196,9 +196,7 @@ class StringTest {
   }
 
   @Test def split_with_char_as_argument(): Unit = {
-    assertArrayEquals(
-      Array[AnyRef]("Scala", "js"),
-      erased("Scala.js".split('.')))
+    assertArrayEquals(Array[AnyRef]("Scala", "js"), erased("Scala.js".split('.')))
     for (i <- 0 to 32) {
       val c = i.toChar
       assertArrayEquals(
@@ -275,9 +273,7 @@ class StringTest {
     assertEquals("-0010", String.format("%05d", new Integer(-10)))
     assertEquals("fffffffd", String.format("%x", new Integer(-3)))
     if (!executingInJVM)
-      assertEquals(
-        "fffffffc",
-        String.format("%x", new java.lang.Byte(-4.toByte)))
+      assertEquals("fffffffc", String.format("%x", new java.lang.Byte(-4.toByte)))
   }
 
   @Test def getBytes(): Unit = {
@@ -319,9 +315,7 @@ class StringTest {
     assertFalse(testU.regionMatches(true, 1, "bCdx", 1, 3))
     assertTrue(testU.regionMatches(true, 0, "xaBcd", 1, 4))
 
-    expectThrows(
-      classOf[NullPointerException],
-      test.regionMatches(-1, null, -1, -1))
+    expectThrows(classOf[NullPointerException], test.regionMatches(-1, null, -1, -1))
     expectThrows(
       classOf[NullPointerException],
       test.regionMatches(true, -1, null, -1, -1))

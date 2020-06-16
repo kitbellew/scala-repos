@@ -32,12 +32,7 @@ import json._
 
 import scala.xml._
 import java.util.{Locale, TimeZone, ResourceBundle, Date}
-import java.io.{
-  InputStream,
-  ByteArrayOutputStream,
-  BufferedReader,
-  StringReader
-}
+import java.io.{InputStream, ByteArrayOutputStream, BufferedReader, StringReader}
 import java.util.concurrent.{ConcurrentHashMap => CHash}
 import scala.reflect.Manifest
 
@@ -347,8 +342,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * A method that returns a function to create migratory sessions.  If you want migratory sessions for your
     * application, <code>LiftRules.sessionCreator = LiftRules.sessionCreatorForMigratorySessions</code>
     */
-  def sessionCreatorForMigratorySessions
-      : (HTTPSession, String) => LiftSession = {
+  def sessionCreatorForMigratorySessions: (HTTPSession, String) => LiftSession = {
     case (httpSession, contextPath) =>
       new LiftSession(contextPath, httpSession.sessionId, Full(httpSession))
         with MigratorySession
@@ -468,8 +462,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * A factory that will vend comet creators
     */
-  val cometCreationFactory
-      : FactoryMaker[CometCreationInfo => Box[LiftCometActor]] =
+  val cometCreationFactory: FactoryMaker[CometCreationInfo => Box[LiftCometActor]] =
     new FactoryMaker(() => noComet _) {}
 
   /**
@@ -1112,14 +1105,12 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     * if the function is not defined for the locale/path pair, the normal templating system will
     * be used.  Also, keep in mind how FactoryMaker can be used... it can be global, per request, etc.
     */
-  val externalTemplateResolver: FactoryMaker[
-    () => PartialFunction[(Locale, List[String]), Box[NodeSeq]]] =
+  val externalTemplateResolver
+      : FactoryMaker[() => PartialFunction[(Locale, List[String]), Box[NodeSeq]]] =
     new FactoryMaker(() =>
       (
           () =>
-            Map.empty: PartialFunction[
-              (Locale, List[String]),
-              Box[NodeSeq]])) {}
+            Map.empty: PartialFunction[(Locale, List[String]), Box[NodeSeq]])) {}
 
   /**
     * There may be times when you want to entirely control the templating process.  You can insert a function
@@ -1133,11 +1124,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   val snippetWhiteList: FactoryMaker[
     () => PartialFunction[(String, String), Box[NodeSeq => NodeSeq]]] =
     new FactoryMaker(() =>
-      (
-          () =>
-            Map.empty: PartialFunction[
-              (String, String),
-              Box[NodeSeq => NodeSeq]])) {}
+      (() => Map.empty: PartialFunction[(String, String), Box[NodeSeq => NodeSeq]])) {}
 
   /**
     * This FactoryMaker can be used to disable the little used attributeSnippets
@@ -1854,8 +1841,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   @volatile var autoIncludeComet: LiftSession => Boolean = session => true
 
   val autoIncludeAjaxCalc: FactoryMaker[() => LiftSession => Boolean] =
-    new FactoryMaker(() =>
-      () => (session: LiftSession) => session.stateful_?) {}
+    new FactoryMaker(() => () => (session: LiftSession) => session.stateful_?) {}
 
   /**
     * Tells Lift which JavaScript settings to use. If Empty, does not
@@ -2001,8 +1987,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
           else {
             val suffix = last.substring(firstDot + 1)
             // if the suffix isn't in the list of suffixes we care about, don't split it
-            if (!LiftRules.explicitlyParsedSuffixes.contains(
-                suffix.toLowerCase)) -1
+            if (!LiftRules.explicitlyParsedSuffixes.contains(suffix.toLowerCase))
+              -1
             else firstDot
           }
         }
@@ -2010,9 +1996,7 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
 
       if (idx == -1) (parts, "")
       else
-        (
-          parts.dropRight(1) ::: List(last.substring(0, idx)),
-          last.substring(idx + 1))
+        (parts.dropRight(1) ::: List(last.substring(0, idx)), last.substring(idx + 1))
 
   }
 
@@ -2056,8 +2040,8 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   private[http] def withMimeHeaders[T](map: Map[String, List[String]])(
       f: => T): T = _mimeHeaders.doWith(Full(map))(f)
 
-  @volatile var templateCache
-      : Box[TemplateCache[(Locale, List[String]), NodeSeq]] = Empty
+  @volatile var templateCache: Box[TemplateCache[(Locale, List[String]), NodeSeq]] =
+    Empty
 
   val dateTimeConverter: FactoryMaker[DateTimeConverter] =
     new FactoryMaker[DateTimeConverter](() => DefaultDateTimeConverter) {}
@@ -2374,10 +2358,7 @@ abstract class GenericValidator extends XHtmlValidator with Loggable {
     } catch {
       case e: org.xml.sax.SAXParseException =>
         List(
-          XHTMLValidationError(
-            e.getMessage,
-            e.getLineNumber,
-            e.getColumnNumber))
+          XHTMLValidationError(e.getMessage, e.getLineNumber, e.getColumnNumber))
     }) match {
       case Full(x) => x
       case Failure(msg, _, _) =>

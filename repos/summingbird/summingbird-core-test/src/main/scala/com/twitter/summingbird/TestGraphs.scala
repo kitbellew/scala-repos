@@ -61,18 +61,15 @@ object TestGraphs {
     */
   private def loopJoinInScala[K: Ordering, U, V: Monoid](
       leftAndRight: Iterable[(K, (Long, Either[U, V]))],
-      valuesFn: ((Long, (U, Option[V]))) => TraversableOnce[(Long, V)]): List[(
-      K,
-      List[
-        (Option[(Long, (U, Option[V]))], Option[(Long, (Option[V], V))])])] = {
+      valuesFn: ((Long, (U, Option[V]))) => TraversableOnce[(Long, V)])
+      : List[(K, List[(Option[(Long, (U, Option[V]))], Option[(Long, (Option[V], V))])])] = {
     leftAndRight
       .groupBy(_._1)
       .mapValues {
         _.map(_._2).toList
           .sortBy(identity)
-          .scanLeft((
-            Option.empty[(Long, (U, Option[V]))],
-            Option.empty[(Long, (Option[V], V))])) {
+          .scanLeft(
+            (Option.empty[(Long, (U, Option[V]))], Option.empty[(Long, (Option[V], V))])) {
             case ((_, None), (time, Left(u))) =>
               /*
                * This is a lookup, but there is no value for this key
@@ -132,8 +129,7 @@ object TestGraphs {
       source: Producer[P, T],
       sink: P#Sink[T],
       store: P#Store[K, V])(fnA: T => TraversableOnce[(K, V)])(
-      fnB: T => TraversableOnce[(K, V)])
-      : TailProducer[P, (K, (Option[V], V))] = {
+      fnB: T => TraversableOnce[(K, V)]): TailProducer[P, (K, (Option[V], V))] = {
     val written = source.write(sink)
     val left = written.flatMap(fnA)
     val right = written.flatMap(fnB)
@@ -195,8 +191,7 @@ object TestGraphs {
   def repeatedTupleLeftJoinInScala[T, U, JoinedU, K, V: Monoid](
       source: TraversableOnce[T])(service: K => Option[JoinedU])(
       preJoinFn: T => TraversableOnce[(K, U)])(
-      postJoinFn: ((K, (U, Option[JoinedU]))) => TraversableOnce[(K, V)])
-      : Map[K, V] =
+      postJoinFn: ((K, (U, Option[JoinedU]))) => TraversableOnce[(K, V)]): Map[K, V] =
     MapAlgebra.sumByKey(
       source
         .flatMap(preJoinFn)
@@ -222,8 +217,7 @@ object TestGraphs {
 
   def leftJoinInScala[T, U, JoinedU, K, V: Monoid](source: TraversableOnce[T])(
       service: K => Option[JoinedU])(preJoinFn: T => TraversableOnce[(K, U)])(
-      postJoinFn: ((K, (U, Option[JoinedU]))) => TraversableOnce[(K, V)])
-      : Map[K, V] =
+      postJoinFn: ((K, (U, Option[JoinedU]))) => TraversableOnce[(K, V)]): Map[K, V] =
     MapAlgebra.sumByKey(
       source
         .flatMap(preJoinFn)
@@ -256,13 +250,7 @@ object TestGraphs {
         .flatMap { case (k, v) => postJoinFn(v).map { v => (k, v) } }
     )
 
-  def leftJoinJobWithFlatMapValues[
-      P <: Platform[P],
-      T,
-      U,
-      JoinedU,
-      K,
-      V: Monoid](
+  def leftJoinJobWithFlatMapValues[P <: Platform[P], T, U, JoinedU, K, V: Monoid](
       source: Producer[P, T],
       service: P#Service[K, JoinedU],
       store: P#Store[K, V])(preJoinFn: T => TraversableOnce[(K, U)])(
@@ -441,8 +429,7 @@ object TestGraphs {
       storeAndService: P#Store[K, V] with P#Service[K, V])(
       simpleFM1: T => TraversableOnce[(K, U)])(
       valuesFlatMap1: ((U, Option[V])) => TraversableOnce[V1])(
-      valuesFlatMap2: (V1) => TraversableOnce[V])
-      : TailProducer[P, (K, (Option[V], V))] = {
+      valuesFlatMap2: (V1) => TraversableOnce[V]): TailProducer[P, (K, (Option[V], V))] = {
 
     source1
       .flatMap(simpleFM1)
@@ -460,8 +447,7 @@ object TestGraphs {
       V1: Monoid](source: TraversableOnce[T])(
       simpleFM: T => TraversableOnce[(Long, (K, U))])(
       flatMapValuesFn: ((Long, (U, Option[V]))) => TraversableOnce[(Long, V)])(
-      flatMapFn: (
-          (Long, (K, (U, Option[V])))) => TraversableOnce[(Long, (K, V1))])
+      flatMapFn: ((Long, (K, (U, Option[V])))) => TraversableOnce[(Long, (K, V1))])
       : (Map[K, V], Map[K, V1]) = {
 
     // zip the left and right streams
@@ -573,8 +559,8 @@ object TestGraphs {
   def writtenPostSum[P <: Platform[P], T, K, V: Monoid](
       source: Producer[P, T],
       sink: P#Sink[(K, (Option[V], V))],
-      store: P#Store[K, V])(fnA: T => TraversableOnce[(K, V)])
-      : TailProducer[P, (K, (Option[V], V))] = {
+      store: P#Store[K, V])(
+      fnA: T => TraversableOnce[(K, V)]): TailProducer[P, (K, (Option[V], V))] = {
     val left = source.flatMap(fnA)
     left.sumByKey(store).write(sink)
   }
@@ -621,14 +607,7 @@ object TestGraphs {
     (mapA, mapB)
   }
 
-  def multipleSummerJob[
-      P <: Platform[P],
-      T1,
-      T2,
-      K1,
-      V1: Monoid,
-      K2,
-      V2: Monoid](
+  def multipleSummerJob[P <: Platform[P], T1, T2, K1, V1: Monoid, K2, V2: Monoid](
       source: Producer[P, T1],
       store1: P#Store[K1, V1],
       store2: P#Store[K2, V2])(
@@ -641,9 +620,8 @@ object TestGraphs {
     combined.flatMap(fnA).sumByKey(store1).also(calculated)
   }
 
-  def mapOnlyJob[P <: Platform[P], T, U](
-      source: Producer[P, T],
-      sink: P#Sink[U])(mapOp: T => TraversableOnce[U]): TailProducer[P, U] =
+  def mapOnlyJob[P <: Platform[P], T, U](source: Producer[P, T], sink: P#Sink[U])(
+      mapOp: T => TraversableOnce[U]): TailProducer[P, U] =
     source
       .flatMap(mapOp)
       .write(sink)

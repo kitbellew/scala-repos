@@ -165,9 +165,7 @@ trait ScalateSupport extends org.scalatra.servlet.ServletBase {
     */
   protected def isScalateErrorPageEnabled = true
 
-  abstract override def handle(
-      req: HttpServletRequest,
-      res: HttpServletResponse) {
+  abstract override def handle(req: HttpServletRequest, res: HttpServletResponse) {
     //    try {
     super.handle(req, res)
     //    }

@@ -291,8 +291,7 @@ object HashEqualsArrayWrapper {
         floatArrayOrd.compare(x.wrapped, y.wrapped)
     }
 
-  implicit val hashEqualsDoubleOrdering
-      : Ordering[HashEqualsArrayWrapper[Double]] =
+  implicit val hashEqualsDoubleOrdering: Ordering[HashEqualsArrayWrapper[Double]] =
     new Ordering[HashEqualsArrayWrapper[Double]] {
       override def compare(
           x: HashEqualsArrayWrapper[Double],

@@ -59,15 +59,11 @@ sealed abstract class \/[+A, +B] extends Product with Serializable {
     }
 
   /** Spin in tail-position on the right value of this disjunction. */
-  def loopr[AA >: A, BB >: B, X](
-      left: AA => X,
-      right: BB => X \/ (AA \/ BB)): X =
+  def loopr[AA >: A, BB >: B, X](left: AA => X, right: BB => X \/ (AA \/ BB)): X =
     \/.loopRight(this, left, right)
 
   /** Spin in tail-position on the left value of this disjunction. */
-  def loopl[AA >: A, BB >: B, X](
-      left: AA => X \/ (AA \/ BB),
-      right: BB => X): X =
+  def loopl[AA >: A, BB >: B, X](left: AA => X \/ (AA \/ BB), right: BB => X): X =
     \/.loopLeft(this, left, right)
 
   /** Flip the left/right values in this disjunction. Alias for `unary_~` */
@@ -413,10 +409,7 @@ object \/ extends DisjunctionInstances {
 
   /** Spin in tail-position on the left value of the given disjunction. */
   @annotation.tailrec
-  final def loopLeft[A, B, X](
-      d: A \/ B,
-      left: A => X \/ (A \/ B),
-      right: B => X): X =
+  final def loopLeft[A, B, X](d: A \/ B, left: A => X \/ (A \/ B), right: B => X): X =
     d match {
       case -\/(a) =>
         left(a) match {

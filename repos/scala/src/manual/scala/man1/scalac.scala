@@ -62,8 +62,7 @@ object scalac extends Command {
             "property=value") & " directly to the runtime system."),
         Definition(
           CmdOptionBound("J", Argument("flag")),
-          "Pass " & Mono(
-            Argument("flag")) & " directly to the runtime system."),
+          "Pass " & Mono(Argument("flag")) & " directly to the runtime system."),
         Definition(
           CmdOptionBound("P:", Argument("plugin:opt")),
           "Pass an option to a plugin"),
@@ -101,10 +100,8 @@ object scalac extends Command {
           CmdOption("encoding", Argument("encoding")),
           SeqPara(
             "Specify character encoding used by source files.",
-            "The default value is platform-specific (Linux: " & Mono(
-              "\"UTF8\"") &
-              ", Windows: " & Mono(
-              "\"Cp1252\"") & "). Executing the following " &
+            "The default value is platform-specific (Linux: " & Mono("\"UTF8\"") &
+              ", Windows: " & Mono("\"Cp1252\"") & "). Executing the following " &
               "code in the Scala interpreter will return the default value " &
               "on your system:",
             MBold("    scala> ") &
@@ -209,9 +206,7 @@ object scalac extends Command {
           CmdOption("Xelide-below", Argument("n")),
           "Calls to " & MItalic("@elidable") &
             " methods are omitted if method priority is lower than argument."),
-        Definition(
-          CmdOption("Xexperimental"),
-          "Enable experimental extensions"),
+        Definition(CmdOption("Xexperimental"), "Enable experimental extensions"),
         Definition(
           CmdOption("Xfatal-warnings"),
           "Fail the compilation if there are any warnings."),
@@ -222,9 +217,7 @@ object scalac extends Command {
         Definition(
           CmdOption("Xgenerate-phase-graph", Argument("file")),
           "Generate the phase graphs (outputs .dot files) to fileX.dot."),
-        Definition(
-          CmdOption("Xlint"),
-          "Enable recommended additional warnings."),
+        Definition(CmdOption("Xlint"), "Enable recommended additional warnings."),
         Definition(
           CmdOption("Xlog-free-terms"),
           "Print a message when reification creates a free term."),
@@ -286,9 +279,7 @@ object scalac extends Command {
           CmdOptionBound("Xprint-icode", "[:" & Argument("phases") & "]"),
           "Log internal icode to *.icode files after" & Argument(
             "phases") & " (default: icode)."),
-        Definition(
-          CmdOption("Xprint-pos"),
-          "Print tree positions, as offsets."),
+        Definition(CmdOption("Xprint-pos"), "Print tree positions, as offsets."),
         Definition(
           CmdOption("Xprint-types"),
           "Print tree types (debugging option)."),
@@ -371,9 +362,7 @@ object scalac extends Command {
         Definition(
           MItalic("explicitouter"),
           "this refs to outer pointers, translate patterns"),
-        Definition(
-          MItalic("erasure"),
-          "erase types, add interfaces for traits"),
+        Definition(MItalic("erasure"), "erase types, add interfaces for traits"),
         Definition(MItalic("posterasure"), "clean up erased inline classes"),
         Definition(
           MItalic("lazyvals"),

@@ -14,8 +14,7 @@ class ProdTests extends CatsSuite {
     CartesianTests[Lambda[X => Prod[Option, List, X]]].cartesian[Int, Int, Int])
   checkAll(
     "Cartesian[Prod[Option, List, Int]]",
-    SerializableTests.serializable(
-      Cartesian[Lambda[X => Prod[Option, List, X]]]))
+    SerializableTests.serializable(Cartesian[Lambda[X => Prod[Option, List, X]]]))
 
   checkAll(
     "Prod[Option, List, Int]",
@@ -33,8 +32,7 @@ class ProdTests extends CatsSuite {
       MonoidKTests[Prod[ListWrapper, ListWrapper, ?]].monoidK[Int])
     checkAll(
       "MonoidK[Prod[ListWrapper, ListWrapper, ?]]",
-      SerializableTests.serializable(
-        MonoidK[Prod[ListWrapper, ListWrapper, ?]]))
+      SerializableTests.serializable(MonoidK[Prod[ListWrapper, ListWrapper, ?]]))
   }
 
   {
@@ -67,7 +65,6 @@ class ProdTests extends CatsSuite {
       FunctorTests[Prod[ListWrapper, ListWrapper, ?]].functor[Int, Int, Int])
     checkAll(
       "Functor[Prod[ListWrapper, ListWrapper, ?]]",
-      SerializableTests.serializable(
-        Functor[Prod[ListWrapper, ListWrapper, ?]]))
+      SerializableTests.serializable(Functor[Prod[ListWrapper, ListWrapper, ?]]))
   }
 }

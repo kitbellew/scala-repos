@@ -82,11 +82,7 @@ object SparseNaiveBayes {
       else sc.defaultMinPartitions
 
     val examples =
-      MLUtils.loadLibSVMFile(
-        sc,
-        params.input,
-        params.numFeatures,
-        minPartitions)
+      MLUtils.loadLibSVMFile(sc, params.input, params.numFeatures, minPartitions)
     // Cache examples because it will be used in both training and evaluation.
     examples.cache()
 

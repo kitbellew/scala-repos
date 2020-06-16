@@ -242,8 +242,7 @@ sealed trait ExpressionDag[N[_]] { self =>
     */
   def idOf[T](node: N[T]): Id[T] =
     find(node)
-      .getOrElse(
-        sys.error("could not get node: %s\n from %s".format(node, this)))
+      .getOrElse(sys.error("could not get node: %s\n from %s".format(node, this)))
 
   /**
     * ensure the given literal node is present in the Dag

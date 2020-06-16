@@ -97,9 +97,7 @@ class ScalaOIUtilTest extends SimpleTestCase {
       "1; trait T { def f }; abstract class H extends T {}",
       "f: Unit")
     assertUnimplemented("1; trait T { def f }; trait H extends T {}", "f: Unit")
-    assertUnimplemented(
-      "1; trait T { def f }; object H extends T {}",
-      "f: Unit")
+    assertUnimplemented("1; trait T { def f }; object H extends T {}", "f: Unit")
   }
 
   private def assertUnimplemented(
@@ -109,10 +107,7 @@ class ScalaOIUtilTest extends SimpleTestCase {
   }
 
   private def unimplementedIn(
-      @Language(
-        value = "Scala",
-        prefix = Prefix,
-        suffix = Suffix) code: String) = {
+      @Language(value = "Scala", prefix = Prefix, suffix = Suffix) code: String) = {
     val text: String = "" + code + Suffix
     val file: ScalaFile = text.parse
     val templateDefinitions: Seq[ScTemplateDefinition] =

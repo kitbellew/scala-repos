@@ -74,9 +74,7 @@ trait ObservableBuffer[A]
     })
   }
 
-  abstract override def insertAll(
-      n: Int,
-      elems: scala.collection.Traversable[A]) {
+  abstract override def insertAll(n: Int, elems: scala.collection.Traversable[A]) {
     super.insertAll(n, elems)
     var curr = n - 1
     val msg = elems.foldLeft(new Script[A]() with Undoable {

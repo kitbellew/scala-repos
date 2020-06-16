@@ -60,11 +60,7 @@ trait JdbcBackend extends RelationalBackend {
       createPublisher(
         a,
         s =>
-          new JdbcStreamingActionContext(
-            s,
-            false,
-            DatabaseDef.this,
-            bufferNext))
+          new JdbcStreamingActionContext(s, false, DatabaseDef.this, bufferNext))
 
     override protected[this] def createDatabaseActionContext[T](
         _useSameThread: Boolean): Context =
@@ -321,8 +317,7 @@ trait JdbcBackend extends RelationalBackend {
         path: String,
         config: Config = ConfigFactory.load(),
         driver: Driver = null,
-        classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
-        : Database = {
+        classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader): Database = {
       val usedConfig = if (path.isEmpty) config else config.getConfig(path)
       val source =
         JdbcDataSource.forConfig(usedConfig, driver, path, classLoader)

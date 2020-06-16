@@ -58,12 +58,7 @@ class LinearAlgebraTest
     assert(ranks(DenseVector(3, -1, 2)).toList === List(3.0, 1.0, 2.0))
     assert(ranks(DenseVector(1, 2, 3, 3)).toList === List(1.0, 2.0, 3.5, 3.5))
     assert(
-      ranks(DenseVector(1, 2, 3, 3, 3)).toList === List(
-        1.0,
-        2.0,
-        4.0,
-        4.0,
-        4.0))
+      ranks(DenseVector(1, 2, 3, 3, 3)).toList === List(1.0, 2.0, 4.0, 4.0, 4.0))
   }
 
   test("cholesky") {
@@ -76,8 +71,7 @@ class LinearAlgebraTest
     val A = DenseMatrix((9.0, 0.0, 0.0), (0.0, 82.0, 0.0), (0.0, 0.0, 25.0))
     val EigSym(lambda, evs) = eigSym(A)
     assert(lambda === DenseVector(9.0, 25.0, 82.0))
-    assert(
-      evs === DenseMatrix((1.0, 0.0, 0.0), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0)))
+    assert(evs === DenseMatrix((1.0, 0.0, 0.0), (0.0, 0.0, 1.0), (0.0, 1.0, 0.0)))
   }
 
   test("EVDR") {
@@ -192,10 +186,8 @@ class LinearAlgebraTest
 
   test("cross") {
     // specific example; with prime elements
-    val (v1, v2, r) = (
-      DenseVector(13, 3, 7),
-      DenseVector(5, 11, 17),
-      DenseVector(-26, -186, 128))
+    val (v1, v2, r) =
+      (DenseVector(13, 3, 7), DenseVector(5, 11, 17), DenseVector(-26, -186, 128))
     assert(cross(v1, v2) === r)
     assert(cross(v2, v1) === r * -1)
 

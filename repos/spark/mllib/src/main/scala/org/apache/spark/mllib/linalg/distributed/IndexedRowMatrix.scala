@@ -154,8 +154,10 @@ class IndexedRowMatrix @Since("1.0.0") (
     * @return SingularValueDecomposition(U, s, V)
     */
   @Since("1.0.0")
-  def computeSVD(k: Int, computeU: Boolean = false, rCond: Double = 1e-9)
-      : SingularValueDecomposition[IndexedRowMatrix, Matrix] = {
+  def computeSVD(
+      k: Int,
+      computeU: Boolean = false,
+      rCond: Double = 1e-9): SingularValueDecomposition[IndexedRowMatrix, Matrix] = {
 
     val n = numCols().toInt
     require(

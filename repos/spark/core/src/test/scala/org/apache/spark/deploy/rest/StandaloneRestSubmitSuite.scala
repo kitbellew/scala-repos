@@ -83,8 +83,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     assert(request.sparkProperties("spark.master") === masterUrl)
     val response = new RestSubmissionClient(masterUrl).createSubmission(request)
     val submitResponse = getSubmitResponse(response)
-    assert(
-      submitResponse.action === Utils.getFormattedClassName(submitResponse))
+    assert(submitResponse.action === Utils.getFormattedClassName(submitResponse))
     assert(submitResponse.serverSparkVersion === SPARK_VERSION)
     assert(submitResponse.message === submitMessage)
     assert(submitResponse.submissionId === submittedDriverId)
@@ -105,8 +104,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     val response =
       RestSubmissionClient.run("app-resource", "main-class", appArgs, conf)
     val submitResponse = getSubmitResponse(response)
-    assert(
-      submitResponse.action === Utils.getFormattedClassName(submitResponse))
+    assert(submitResponse.action === Utils.getFormattedClassName(submitResponse))
     assert(submitResponse.serverSparkVersion === SPARK_VERSION)
     assert(submitResponse.message === submitMessage)
     assert(submitResponse.submissionId === submittedDriverId)
@@ -138,8 +136,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
     val response =
       new RestSubmissionClient(masterUrl).requestSubmissionStatus(submissionId)
     val statusResponse = getStatusResponse(response)
-    assert(
-      statusResponse.action === Utils.getFormattedClassName(statusResponse))
+    assert(statusResponse.action === Utils.getFormattedClassName(statusResponse))
     assert(statusResponse.serverSparkVersion === SPARK_VERSION)
     assert(statusResponse.message.contains(submissionException.getMessage))
     assert(statusResponse.submissionId === submissionId)
@@ -440,13 +437,7 @@ class StandaloneRestSubmitSuite extends SparkFunSuite with BeforeAndAfterEach {
       state: DriverState = FINISHED,
       exception: Option[Exception] = None): String = {
     startServer(
-      new DummyMaster(
-        _,
-        submitId,
-        submitMessage,
-        killMessage,
-        state,
-        exception))
+      new DummyMaster(_, submitId, submitMessage, killMessage, state, exception))
   }
 
   /** Start a smarter dummy server that keeps track of submitted driver states. */
@@ -613,11 +604,7 @@ private class DummyMaster(
       context: RpcCallContext): PartialFunction[Any, Unit] = {
     case RequestSubmitDriver(driverDesc) =>
       context.reply(
-        SubmitDriverResponse(
-          self,
-          success = true,
-          Some(submitId),
-          submitMessage))
+        SubmitDriverResponse(self, success = true, Some(submitId), submitMessage))
     case RequestKillDriver(driverId) =>
       context.reply(
         KillDriverResponse(self, driverId, success = true, killMessage))

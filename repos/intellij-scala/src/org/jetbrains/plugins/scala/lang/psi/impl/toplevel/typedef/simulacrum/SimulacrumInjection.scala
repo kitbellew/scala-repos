@@ -6,10 +6,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types.{
   ScSimpleTypeElement,
   ScParameterizedTypeElement
 }
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{
-  ScAssignStmt,
-  ScAnnotation
-}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScAssignStmt, ScAnnotation}
 import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunction
 import org.jetbrains.plugins.scala.lang.psi.api.statements.params.{
   ScParameter,
@@ -25,10 +22,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.SyntheticMembersInjector
 import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.SyntheticMembersInjector.Kind
 import org.jetbrains.plugins.scala.lang.psi.types._
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 
 /**
   * @author Alefas
@@ -149,8 +143,7 @@ class SimulacrumInjection extends SyntheticMembersInjector {
                             substOpt match {
                               case Some(subst) =>
                                 p.name + " : " + subst
-                                  .subst(
-                                    p.getType(TypingContext.empty).getOrAny)
+                                  .subst(p.getType(TypingContext.empty).getOrAny)
                                   .canonicalText
                               case _ => p.getText
                             }

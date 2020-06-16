@@ -290,7 +290,8 @@ trait ExpressionEvalHelper extends GeneratorDrivenPropertyChecks {
     val codegen = plan(inputRow).get(0, expr.dataType)
 
     if (!compareResults(interpret, codegen)) {
-      fail(s"Incorrect evaluation: $expr, interpret: $interpret, codegen: $codegen")
+      fail(
+        s"Incorrect evaluation: $expr, interpret: $interpret, codegen: $codegen")
     }
   }
 

@@ -422,8 +422,7 @@ trait DefaultWrites {
   val LocalDateNumberWrites: Writes[LocalDate] = new Writes[LocalDate] {
     def writes(t: LocalDate): JsValue =
       JsNumber(
-        BigDecimal.valueOf(
-          t.atStartOfDay.toInstant(ZoneOffset.UTC).toEpochMilli))
+        BigDecimal.valueOf(t.atStartOfDay.toInstant(ZoneOffset.UTC).toEpochMilli))
   }
 
   /**

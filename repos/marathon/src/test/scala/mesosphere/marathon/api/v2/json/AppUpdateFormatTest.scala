@@ -40,8 +40,7 @@ class AppUpdateFormatTest extends MarathonSpec with Matchers {
     appUpdate.acceptedResourceRoles should equal(Some(Set("*")))
   }
 
-  test(
-    "FromJSON should fail when 'acceptedResourceRoles' is defined but empty") {
+  test("FromJSON should fail when 'acceptedResourceRoles' is defined but empty") {
     val json = Json.parse(""" { "id": "test", "acceptedResourceRoles": [] }""")
     a[JsResultException] shouldBe thrownBy { json.as[AppUpdate] }
   }

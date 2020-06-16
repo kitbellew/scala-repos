@@ -53,6 +53,5 @@ class PrimitivePickler[T: FastTypeTag](name: String)
 }
 object PrimitivePickler {
   def apply[A: FastTypeTag]: Pickler[A] with Unpickler[A] =
-    new PrimitivePickler[A](
-      FastTypeTag.valueTypeName(implicitly[FastTypeTag[A]]))
+    new PrimitivePickler[A](FastTypeTag.valueTypeName(implicitly[FastTypeTag[A]]))
 }

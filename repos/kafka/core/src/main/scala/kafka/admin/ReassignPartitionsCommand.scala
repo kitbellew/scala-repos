@@ -65,9 +65,7 @@ object ReassignPartitionsCommand extends Logging {
     }
   }
 
-  def verifyAssignment(
-      zkUtils: ZkUtils,
-      opts: ReassignPartitionsCommandOptions) {
+  def verifyAssignment(zkUtils: ZkUtils, opts: ReassignPartitionsCommandOptions) {
     if (!opts.options.has(opts.reassignmentJsonFileOpt))
       CommandLineUtils.printUsageAndDie(
         opts.parser,
@@ -168,9 +166,7 @@ object ReassignPartitionsCommand extends Logging {
     (partitionsToBeReassigned, currentAssignment)
   }
 
-  def executeAssignment(
-      zkUtils: ZkUtils,
-      opts: ReassignPartitionsCommandOptions) {
+  def executeAssignment(zkUtils: ZkUtils, opts: ReassignPartitionsCommandOptions) {
     if (!opts.options.has(opts.reassignmentJsonFileOpt))
       CommandLineUtils.printUsageAndDie(
         opts.parser,
@@ -215,12 +211,13 @@ object ReassignPartitionsCommand extends Logging {
       zkUtils.getReplicaAssignmentForTopics(
         partitionsToBeReassigned.map(_._1.topic))
     println("Current partition replica assignment\n\n%s\n\nSave this to use as the --reassignment-json-file option during rollback"
-      .format(zkUtils.getPartitionReassignmentZkData(
-        currentPartitionReplicaAssignment)))
+      .format(
+        zkUtils.getPartitionReassignmentZkData(currentPartitionReplicaAssignment)))
     // start the reassignment
     if (reassignPartitionsCommand.reassignPartitions())
-      println("Successfully started reassignment of partitions %s".format(
-        zkUtils.getPartitionReassignmentZkData(partitionsToBeReassigned.toMap)))
+      println(
+        "Successfully started reassignment of partitions %s".format(
+          zkUtils.getPartitionReassignmentZkData(partitionsToBeReassigned.toMap)))
     else
       println(
         "Failed to reassign partitions %s".format(partitionsToBeReassigned))

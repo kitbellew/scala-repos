@@ -210,10 +210,7 @@ object Test {
           Seq(DirRep("nested", sourceFiles = Seq("Nested" + baseFileName))),
         sourceFiles = Seq(baseFileName)))
 
-  private def createSources(
-      pkg: String,
-      dirFile: JFile,
-      dirRep: DirRep): Unit = {
+  private def createSources(pkg: String, dirFile: JFile, dirRep: DirRep): Unit = {
     dirRep.nestedDirs foreach { rep =>
       val nestedDir = dirFile createDir rep.name
       val nestedPkg = PackageNameUtils.packagePrefix(pkg) + rep.name

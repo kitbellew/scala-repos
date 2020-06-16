@@ -155,8 +155,7 @@ class IngestServiceHandler(
       request: HttpRequest[ByteChunk],
       durability: Durability,
       errorHandling: ErrorHandling,
-      storeMode: WriteMode)
-      : EitherT[Future, NonEmptyList[String], IngestResult] =
+      storeMode: WriteMode): EitherT[Future, NonEmptyList[String], IngestResult] =
     right(chooseProcessing(apiKey, path, authorities, request)) flatMap {
       case Some(processing) =>
         EitherT {
@@ -170,8 +169,9 @@ class IngestServiceHandler(
         }
 
       case None =>
-        right(Promise successful NotIngested(
-          "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
+        right(
+          Promise successful NotIngested(
+            "Could not determine a data type for your batch ingest. Please set the Content-Type header."))
     }
 
   def notifyJob(
@@ -281,9 +281,7 @@ class IngestServiceHandler(
                         val responseContent = JObject(
                           "ingested" -> JNum(ingested),
                           "errors" -> JArray())
-                        HttpResponse[JValue](
-                          OK,
-                          content = Some(responseContent))
+                        HttpResponse[JValue](OK, content = Some(responseContent))
                       }
 
                     case StreamingResult(ingested, Some(error)) =>

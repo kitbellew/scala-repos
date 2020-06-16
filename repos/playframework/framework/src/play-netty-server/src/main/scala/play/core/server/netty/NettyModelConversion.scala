@@ -11,10 +11,7 @@ import javax.net.ssl.SSLPeerUnverifiedException
 import akka.stream.Materializer
 import akka.stream.scaladsl.{Sink, Source}
 import akka.util.ByteString
-import com.typesafe.netty.http.{
-  DefaultStreamedHttpResponse,
-  StreamedHttpRequest
-}
+import com.typesafe.netty.http.{DefaultStreamedHttpResponse, StreamedHttpRequest}
 import io.netty.buffer.{ByteBuf, Unpooled}
 import io.netty.handler.codec.http._
 import io.netty.handler.ssl.SslHandler

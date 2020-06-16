@@ -220,9 +220,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     val nameId = named.nameId
     val newClauses = named match {
       case cl: ScClass =>
-        ScalaPsiElementFactory.createClassParamClausesWithContext(
-          paramsText,
-          cl)
+        ScalaPsiElementFactory.createClassParamClausesWithContext(paramsText, cl)
       case _ =>
         ScalaPsiElementFactory.createParamClausesWithContext(
           paramsText,
@@ -236,9 +234,7 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
     TypeAdjuster.markToAdjust(result)
   }
 
-  protected def handleUsageArguments(
-      change: ChangeInfo,
-      usage: UsageInfo): Unit = {
+  protected def handleUsageArguments(change: ChangeInfo, usage: UsageInfo): Unit = {
     usage match {
       case c: ConstructorUsageInfo => handleConstructorUsageArguments(change, c)
       case m: MethodCallUsageInfo  => handleMethodCallUsagesArguments(change, m)

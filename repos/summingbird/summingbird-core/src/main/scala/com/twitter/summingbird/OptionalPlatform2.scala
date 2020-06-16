@@ -121,8 +121,7 @@ class OptionalPlatform2[P1 <: Platform[P1], P2 <: Platform[P2]](p1: P1, p2: P2)
 
   override def plan[T](
       producer: TailProducer[OptionalPlatform2[P1, P2], T]): Plan[T] = {
-    val (leftProducer, rightProducer) = tCast(
-      OptionalUnzip2[P1, P2]()(producer))
+    val (leftProducer, rightProducer) = tCast(OptionalUnzip2[P1, P2]()(producer))
     (leftProducer.map(p1.plan(_)), rightProducer.map(p2.plan(_)))
   }
 }

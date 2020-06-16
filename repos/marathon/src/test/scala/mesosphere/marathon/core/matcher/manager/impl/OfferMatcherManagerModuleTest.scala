@@ -89,11 +89,9 @@ class OfferMatcherManagerModuleTest
     module.subOfferMatcherManager.setLaunchTokens(10)
 
     val task1: TaskInfo = makeOneCPUTask("task1")
-    module.subOfferMatcherManager.addSubscription(
-      new CPUOfferMatcher(Seq(task1)))
+    module.subOfferMatcherManager.addSubscription(new CPUOfferMatcher(Seq(task1)))
     val task2: TaskInfo = makeOneCPUTask("task2")
-    module.subOfferMatcherManager.addSubscription(
-      new CPUOfferMatcher(Seq(task2)))
+    module.subOfferMatcherManager.addSubscription(new CPUOfferMatcher(Seq(task2)))
 
     val matchedTasksFuture: Future[MatchedTaskOps] =
       module.globalOfferMatcher.matchOffer(clock.now() + 1.second, offer)
@@ -129,11 +127,9 @@ class OfferMatcherManagerModuleTest
     module.subOfferMatcherManager.setLaunchTokens(10)
 
     val task1: TaskInfo = makeOneCPUTask("task1")
-    module.subOfferMatcherManager.addSubscription(
-      new CPUOfferMatcher(Seq(task1)))
+    module.subOfferMatcherManager.addSubscription(new CPUOfferMatcher(Seq(task1)))
     val task2: TaskInfo = makeOneCPUTask("task2")
-    module.subOfferMatcherManager.addSubscription(
-      new CPUOfferMatcher(Seq(task2)))
+    module.subOfferMatcherManager.addSubscription(new CPUOfferMatcher(Seq(task2)))
 
     val matchedTasksFuture: Future[MatchedTaskOps] =
       module.globalOfferMatcher.matchOffer(clock.now() + 1.second, offer)

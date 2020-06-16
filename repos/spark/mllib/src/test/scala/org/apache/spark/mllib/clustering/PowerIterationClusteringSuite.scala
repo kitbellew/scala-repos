@@ -164,9 +164,8 @@ class PowerIterationClusteringSuite
       case Edge(i, j, x) =>
         assert(x ~== expected(i.toInt)(j.toInt) absTol 1e-14)
     }
-    val v0 = sc.parallelize(
-      Seq[(Long, Double)]((0, 0.1), (1, 0.2), (2, 0.3), (3, 0.4)),
-      2)
+    val v0 =
+      sc.parallelize(Seq[(Long, Double)]((0, 0.1), (1, 0.2), (2, 0.3), (3, 0.4)), 2)
     val w0 = Graph(v0, w.edges)
     val v1 = powerIter(w0, maxIterations = 1).collect()
     val u = Array(0.3, 0.2, 0.7 / 3.0, 0.2)

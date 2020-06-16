@@ -178,8 +178,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     "be successfully read with custom pattern from '03/12/2011, 10:15:30'" in {
       CustomReads1
         .reads(JsString("03/12/2011, 10:15:30-05:00"))
-        .aka("read date") must_== JsSuccess(
-        dateTime("2011-12-03T10:15:30-05:00"))
+        .aka("read date") must_== JsSuccess(dateTime("2011-12-03T10:15:30-05:00"))
     }
 
     "not be read from invalid corrected string" >> {
@@ -280,8 +279,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     "be successfully read with custom pattern from '03/12/2011, 10:15:30+08:00'" in {
       CustomReads1
         .reads(JsString("03/12/2011, 10:15:30+08:00"))
-        .aka("read date") must_== JsSuccess(
-        dateTime("2011-12-03T10:15:30+08:00"))
+        .aka("read date") must_== JsSuccess(dateTime("2011-12-03T10:15:30+08:00"))
     }
 
     "not be read from invalid corrected string" >> {
@@ -491,8 +489,7 @@ object ReadsSpec extends org.specs2.mutable.Specification {
     "be successfully read with custom pattern from '03/12/2011, 10:15:30 Z'" in {
       CustomReads1
         .reads(JsString("03/12/2011, 10:15:30 Z"))
-        .aka("read date") must_== JsSuccess(
-        Instant.parse("2011-12-03T10:15:30Z"))
+        .aka("read date") must_== JsSuccess(Instant.parse("2011-12-03T10:15:30Z"))
     }
 
     "not be read from invalid corrected string" >> {
@@ -558,8 +555,8 @@ object ReadsSpec extends org.specs2.mutable.Specification {
         aJson
           .validate(flatMappedReads)
           .aka("read a")
-          .must_==(JsError(
-            List((aPath, List(ValidationError("error.expected.jsnumber"))))))
+          .must_==(
+            JsError(List((aPath, List(ValidationError("error.expected.jsnumber"))))))
       }
     }
   }

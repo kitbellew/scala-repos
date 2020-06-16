@@ -157,9 +157,7 @@ class HandlerEventTest extends FunSuite with MockitoSugar {
     }
 
     var closeFired = false
-    override def close(
-        ctx: ChannelHandlerContext,
-        future: ChannelPromise): Unit = {
+    override def close(ctx: ChannelHandlerContext, future: ChannelPromise): Unit = {
       closeFired = true
       super.close(ctx, future)
     }
@@ -213,9 +211,7 @@ class HandlerEventTest extends FunSuite with MockitoSugar {
     }
 
     var channelReadFired = false
-    override def channelRead(
-        ctx: ChannelHandlerContext,
-        msg: scala.Any): Unit = {
+    override def channelRead(ctx: ChannelHandlerContext, msg: scala.Any): Unit = {
       channelReadFired = true
       super.channelRead(ctx, msg)
     }

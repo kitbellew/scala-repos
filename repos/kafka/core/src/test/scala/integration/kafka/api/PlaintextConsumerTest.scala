@@ -293,12 +293,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
       s"Expected partitions ${subscriptions.asJava} but actually got ${this.consumers(0).assignment}"
     )
 
-    TestUtils.createTopic(
-      this.zkUtils,
-      otherTopic,
-      2,
-      serverCount,
-      this.servers)
+    TestUtils.createTopic(this.zkUtils, otherTopic, 2, serverCount, this.servers)
     this.consumers(0).subscribe(List(topic, otherTopic).asJava)
     TestUtils.waitUntilTrue(
       () => {
@@ -312,12 +307,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
   @Test
   def testShrinkingTopicSubscriptions() {
     val otherTopic = "other"
-    TestUtils.createTopic(
-      this.zkUtils,
-      otherTopic,
-      2,
-      serverCount,
-      this.servers)
+    TestUtils.createTopic(this.zkUtils, otherTopic, 2, serverCount, this.servers)
     val subscriptions = Set(
       new TopicPartition(topic, 0),
       new TopicPartition(topic, 1),
@@ -758,17 +748,11 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     (0 until numRecords)
       .map { i =>
         testProducer.send(
-          new ProducerRecord(
-            tp.topic(),
-            tp.partition(),
-            s"key $i",
-            s"value $i"))
+          new ProducerRecord(tp.topic(), tp.partition(), s"key $i", s"value $i"))
       }
       .foreach(_.get)
     assertEquals(numRecords, MockProducerInterceptor.ONSEND_COUNT.intValue())
-    assertEquals(
-      numRecords,
-      MockProducerInterceptor.ON_SUCCESS_COUNT.intValue())
+    assertEquals(numRecords, MockProducerInterceptor.ON_SUCCESS_COUNT.intValue())
     // send invalid record
     try {
       testProducer.send(null, null)
@@ -802,9 +786,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     for (i <- 0 until numRecords) {
       val record = records.get(i)
       assertEquals(s"key $i", new String(record.key()))
-      assertEquals(
-        s"value $i$appendStr".toUpperCase,
-        new String(record.value()))
+      assertEquals(s"value $i$appendStr".toUpperCase, new String(record.value()))
     }
 
     // commit sync and verify onCommit is called
@@ -851,11 +833,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     (0 until numRecords)
       .map { i =>
         testProducer.send(
-          new ProducerRecord(
-            tp.topic(),
-            tp.partition(),
-            s"key $i",
-            s"value $i"))
+          new ProducerRecord(tp.topic(), tp.partition(), s"key $i", s"value $i"))
       }
       .foreach(_.get)
 
@@ -893,11 +871,7 @@ class PlaintextConsumerTest extends BaseConsumerTest {
     changeConsumerSubscriptionAndValidateAssignment(
       testConsumer,
       List(topic, topic2),
-      Set(
-        tp,
-        tp2,
-        new TopicPartition(topic2, 0),
-        new TopicPartition(topic2, 1)),
+      Set(tp, tp2, new TopicPartition(topic2, 0), new TopicPartition(topic2, 1)),
       rebalanceListener)
 
     // after rebalancing, we should have reset to the committed positions

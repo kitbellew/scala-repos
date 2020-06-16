@@ -54,10 +54,7 @@ final class Emitter private (
       internalOptions.withOptimizeBracketSelects(optimizeBracketSelects))
   }
 
-  def emitAll(
-      unit: LinkingUnit,
-      builder: JSFileBuilder,
-      logger: Logger): Unit = {
+  def emitAll(unit: LinkingUnit, builder: JSFileBuilder, logger: Logger): Unit = {
     emitPrelude(builder, logger)
     emit(unit, builder, logger)
     emitPostlude(builder, logger)
@@ -142,9 +139,8 @@ final class Emitter private (
       val methodCache = classCache.getStaticCache(m.info.encodedName)
 
       addTree(
-        methodCache.getOrElseUpdate(
-          m.version,
-          classEmitter.genMethod(className, m.tree)))
+        methodCache
+          .getOrElseUpdate(m.version, classEmitter.genMethod(className, m.tree)))
     }
 
     if (linkedClass.hasInstances && kind.isAnyScalaJSDefinedClass) {

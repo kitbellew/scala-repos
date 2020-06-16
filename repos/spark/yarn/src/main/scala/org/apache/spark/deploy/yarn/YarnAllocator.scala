@@ -114,10 +114,8 @@ private[yarn] class YarnAllocator(
   // Additional memory overhead.
   protected val memoryOverhead: Int = sparkConf
     .get(EXECUTOR_MEMORY_OVERHEAD)
-    .getOrElse(
-      math.max(
-        (MEMORY_OVERHEAD_FACTOR * executorMemory).toInt,
-        MEMORY_OVERHEAD_MIN))
+    .getOrElse(math
+      .max((MEMORY_OVERHEAD_FACTOR * executorMemory).toInt, MEMORY_OVERHEAD_MIN))
     .toInt
   // Number of cores per executor.
   protected val executorCores = args.executorCores
@@ -149,8 +147,9 @@ private[yarn] class YarnAllocator(
           classOf[String]))
     } catch {
       case e: NoSuchMethodException => {
-        logWarning(s"Node label expression $expr will be ignored because YARN version on" +
-          " classpath does not support it.")
+        logWarning(
+          s"Node label expression $expr will be ignored because YARN version on" +
+            " classpath does not support it.")
         None
       }
     }
@@ -290,9 +289,7 @@ private[yarn] class YarnAllocator(
       // requests, since required locality preference has been changed, recalculating using
       // container placement strategy.
       val (localRequests, staleRequests, anyHostRequests) =
-        splitPendingAllocationsByLocality(
-          hostToLocalTaskCounts,
-          pendingAllocate)
+        splitPendingAllocationsByLocality(hostToLocalTaskCounts, pendingAllocate)
 
       // cancel "stale" requests for locations that are no longer needed
       staleRequests.foreach { stale =>
@@ -326,8 +323,7 @@ private[yarn] class YarnAllocator(
       if (availableContainers >= newLocalityRequests.size) {
         // more containers are available than needed for locality, fill in requests for any host
         for (i <- 0 until (availableContainers - newLocalityRequests.size)) {
-          newLocalityRequests.append(
-            createContainerRequest(resource, null, null))
+          newLocalityRequests.append(createContainerRequest(resource, null, null))
         }
       } else {
         val numToCancel = newLocalityRequests.size - availableContainers

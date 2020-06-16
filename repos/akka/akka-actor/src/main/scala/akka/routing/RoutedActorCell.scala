@@ -125,8 +125,7 @@ private[akka] class RoutedActorCell(
           if (deprecatedNrOfInstances < 0) pool.nrOfInstances(system)
           else deprecatedNrOfInstances
         if (nrOfRoutees > 0)
-          addRoutees(
-            Vector.fill(nrOfRoutees)(pool.newRoutee(routeeProps, this)))
+          addRoutees(Vector.fill(nrOfRoutees)(pool.newRoutee(routeeProps, this)))
       case group: Group ⇒
         // must not use group.paths(system) for old (not re-compiled) custom routers
         // for binary backwards compatibility reasons

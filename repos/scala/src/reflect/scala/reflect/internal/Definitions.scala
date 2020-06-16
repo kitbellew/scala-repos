@@ -346,11 +346,8 @@ trait Definitions extends api.StandardDefinitions {
 
     lazy val AnyValClass: ClassSymbol =
       (ScalaPackageClass.info member tpnme.AnyVal orElse {
-        val anyval = enterNewClass(
-          ScalaPackageClass,
-          tpnme.AnyVal,
-          AnyTpe :: Nil,
-          ABSTRACT)
+        val anyval =
+          enterNewClass(ScalaPackageClass, tpnme.AnyVal, AnyTpe :: Nil, ABSTRACT)
         val av_constr = anyval.newClassConstructor(NoPosition)
         anyval.info.decls enter av_constr
         anyval markAllCompleted
@@ -371,8 +368,7 @@ trait Definitions extends api.StandardDefinitions {
       final override def isBottomClass = true
       final override def isThreadsafe(purpose: SymbolOps): Boolean = true
     }
-    final object NothingClass
-        extends BottomClassSymbol(tpnme.Nothing, AnyClass) {
+    final object NothingClass extends BottomClassSymbol(tpnme.Nothing, AnyClass) {
       override def isSubClass(that: Symbol) = true
     }
     final object NullClass extends BottomClassSymbol(tpnme.Null, AnyRefClass) {
@@ -1122,8 +1118,7 @@ trait Definitions extends api.StandardDefinitions {
     // name of a method without it sounding like the method "get"s something, whereas
     // this method is about a type member which just happens to be named get.
     def typeOfMemberNamedGet(tp: Type) =
-      typeArgOfBaseTypeOr(tp, OptionClass)(
-        resultOfMatchingMethod(tp, nme.get)())
+      typeArgOfBaseTypeOr(tp, OptionClass)(resultOfMatchingMethod(tp, nme.get)())
     def typeOfMemberNamedHead(tp: Type) =
       typeArgOfBaseTypeOr(tp, SeqClass)(resultOfMatchingMethod(tp, nme.head)())
     def typeOfMemberNamedApply(tp: Type) =
@@ -1407,8 +1402,7 @@ trait Definitions extends api.StandardDefinitions {
     lazy val VolatileObjectRefClass =
       requiredClass[scala.runtime.VolatileObjectRef[_]]
     lazy val RuntimeStaticsModule = getRequiredModule("scala.runtime.Statics")
-    lazy val BoxesRunTimeModule = getRequiredModule(
-      "scala.runtime.BoxesRunTime")
+    lazy val BoxesRunTimeModule = getRequiredModule("scala.runtime.BoxesRunTime")
     lazy val BoxesRunTimeClass = BoxesRunTimeModule.moduleClass
     lazy val BoxedNumberClass = getClassByName(sn.BoxedNumber)
     lazy val BoxedCharacterClass = getClassByName(sn.BoxedCharacter)

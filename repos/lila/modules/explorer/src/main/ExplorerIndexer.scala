@@ -17,9 +17,7 @@ import lila.game.tube.gameTube
 import lila.game.{Game, GameRepo, Query, PgnDump, Player}
 import lila.user.UserRepo
 
-private final class ExplorerIndexer(
-    endpoint: String,
-    massImportEndpoint: String) {
+private final class ExplorerIndexer(endpoint: String, massImportEndpoint: String) {
 
   private val maxGames = Int.MaxValue
   private val batchSize = 50

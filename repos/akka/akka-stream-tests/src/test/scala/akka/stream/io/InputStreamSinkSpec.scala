@@ -155,14 +155,11 @@ class InputStreamSinkSpec extends AkkaSpec(UnboundedMailboxConfig) {
       val inputStream =
         Source.single(byteString).runWith(StreamConverters.asInputStream())
       val buf = new Array[Byte](3)
-      an[IllegalArgumentException] shouldBe thrownBy(
-        inputStream.read(buf, -1, 2))
-      an[IllegalArgumentException] shouldBe thrownBy(
-        inputStream.read(buf, 0, 5))
+      an[IllegalArgumentException] shouldBe thrownBy(inputStream.read(buf, -1, 2))
+      an[IllegalArgumentException] shouldBe thrownBy(inputStream.read(buf, 0, 5))
       an[IllegalArgumentException] shouldBe thrownBy(
         inputStream.read(new Array[Byte](0), 0, 1))
-      an[IllegalArgumentException] shouldBe thrownBy(
-        inputStream.read(buf, 0, 0))
+      an[IllegalArgumentException] shouldBe thrownBy(inputStream.read(buf, 0, 0))
       inputStream.close()
     }
 

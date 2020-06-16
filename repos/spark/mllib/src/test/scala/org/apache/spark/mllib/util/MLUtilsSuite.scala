@@ -129,7 +129,8 @@ class MLUtilsSuite extends SparkFunSuite with MLlibTestSparkContext {
     Utils.deleteRecursively(tempDir)
   }
 
-  test("loadLibSVMFile throws IllegalArgumentException when indices is zero-based") {
+  test(
+    "loadLibSVMFile throws IllegalArgumentException when indices is zero-based") {
     val lines =
       """
         |0

@@ -124,9 +124,7 @@ private[parquet] object CatalystReadSupport {
       .named(CatalystSchemaConverter.SPARK_PARQUET_SCHEMA_NAME)
   }
 
-  private def clipParquetType(
-      parquetType: Type,
-      catalystType: DataType): Type = {
+  private def clipParquetType(parquetType: Type, catalystType: DataType): Type = {
     catalystType match {
       case t: ArrayType if !isPrimitiveCatalystType(t.elementType) =>
         // Only clips array types with nested type as element type.
@@ -288,8 +286,7 @@ private[parquet] object CatalystReadSupport {
       structType: StructType): Seq[Type] = {
     val parquetFieldMap =
       parquetRecord.getFields.asScala.map(f => f.getName -> f).toMap
-    val toParquet = new CatalystSchemaConverter(
-      writeLegacyParquetFormat = false)
+    val toParquet = new CatalystSchemaConverter(writeLegacyParquetFormat = false)
     structType.map { f =>
       parquetFieldMap
         .get(f.name)

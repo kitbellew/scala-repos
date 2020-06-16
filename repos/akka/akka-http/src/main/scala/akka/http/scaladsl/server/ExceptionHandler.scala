@@ -38,8 +38,7 @@ object ExceptionHandler {
         else this
       def seal(settings: RoutingSettings): ExceptionHandler =
         if (!knownToBeSealed)
-          ExceptionHandler(knownToBeSealed = true)(
-            this orElse default(settings))
+          ExceptionHandler(knownToBeSealed = true)(this orElse default(settings))
         else this
     }
 

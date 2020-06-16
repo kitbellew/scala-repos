@@ -31,12 +31,7 @@ import org.mockito.Mockito.{mock, spy, verify, when}
 import org.scalatest.{BeforeAndAfterEach, PrivateMethodTester}
 
 import org.apache.spark.executor.TaskMetrics
-import org.apache.spark.rpc.{
-  RpcCallContext,
-  RpcEndpoint,
-  RpcEndpointRef,
-  RpcEnv
-}
+import org.apache.spark.rpc.{RpcCallContext, RpcEndpoint, RpcEndpointRef, RpcEnv}
 import org.apache.spark.scheduler._
 import org.apache.spark.scheduler.cluster.CoarseGrainedClusterMessages._
 import org.apache.spark.scheduler.cluster.CoarseGrainedSchedulerBackend
@@ -287,10 +282,7 @@ private class FakeSchedulerBackend(
   protected override def doRequestTotalExecutors(
       requestedTotal: Int): Boolean = {
     clusterManagerEndpoint.askWithRetry[Boolean](
-      RequestExecutors(
-        requestedTotal,
-        localityAwareTasks,
-        hostToLocalTaskCount))
+      RequestExecutors(requestedTotal, localityAwareTasks, hostToLocalTaskCount))
   }
 
   protected override def doKillExecutors(executorIds: Seq[String]): Boolean = {

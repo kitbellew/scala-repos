@@ -160,8 +160,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
         if (MakePom.isDependencyVersionRange(
             dd.getDependencyRevisionId.getRevision)) {
           Message.debug(s"Got a dynamic revision, attempting to convert to real revision: ${dd.getDependencyRevisionId}")
-          val revision = MakePom.makeDependencyVersion(
-            dd.getDependencyRevisionId.getRevision)
+          val revision =
+            MakePom.makeDependencyVersion(dd.getDependencyRevisionId.getRevision)
           // TODO - Alter revision id to be maven-friendly first.
           val coords =
             s"${dd.getDependencyRevisionId.getOrganisation}:${aetherArtifactIdFromMrid(
@@ -191,8 +191,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       val request = new AetherDescriptorRequest()
       val coords = aetherCoordsFromMrid(drid)
       Message.debug(s"Aether about to resolve [$coords]...")
-      request.setArtifact(
-        new AetherArtifact(coords, getArtifactProperties(drid)))
+      request.setArtifact(new AetherArtifact(coords, getArtifactProperties(drid)))
       addRepositories(request)
       val result = system.readArtifactDescriptor(session, request)
       val packaging = getPackagingFromPomProperties(result.getProperties)
@@ -240,9 +239,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       }
 
       // Here we need to pretend we downloaded the pom.xml file
-      val pom = DefaultArtifact.newPomArtifact(
-        drid,
-        new java.util.Date(lastModifiedTime))
+      val pom =
+        DefaultArtifact.newPomArtifact(drid, new java.util.Date(lastModifiedTime))
       val madr = new MetadataArtifactDownloadReport(pom)
       madr.setSearched(true)
       madr.setDownloadStatus(
@@ -326,7 +324,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       packaging: String,
       md: DefaultModuleDescriptor,
       lastModifiedTime: Long): Unit = {
-    Message.debug(s"Calculating artifacts for ${dd.getDependencyId} w/ packaging $packaging")
+    Message.debug(
+      s"Calculating artifacts for ${dd.getDependencyId} w/ packaging $packaging")
     // Here we add in additional artifact requests, which ALLWAYS have to be explicit since
     // Maven/Aether doesn't include all known artifacts in a pom.xml
     // TODO - This does not appear to be working correctly.
@@ -395,8 +394,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
               MavenRepositoryResolver.DEFAULT_ARTIFACT_CONFIGURATION,
               defaultArt)
           case Some(scope) =>
-            Message.debug(
-              s"Adding additional artifact in $scope, $requestedArt")
+            Message.debug(s"Adding additional artifact in $scope, $requestedArt")
             // TODO - more Extra attributes?
             val mda =
               new MDArtifact(
@@ -423,11 +421,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
           d.getArtifact.getGroupId,
           d.getArtifact.getArtifactId),
         ExactPatternMatcher.INSTANCE,
-        new OverrideDependencyDescriptorMediator(
-          null,
-          d.getArtifact.getVersion) {
-          override def mediate(
-              dd: DependencyDescriptor): DependencyDescriptor = {
+        new OverrideDependencyDescriptorMediator(null, d.getArtifact.getVersion) {
+          override def mediate(dd: DependencyDescriptor): DependencyDescriptor = {
             super.mediate(dd)
           }
         }
@@ -481,7 +476,8 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       val scope = Option(d.getScope).filterNot(_.isEmpty).getOrElse("compile")
       val mapping =
         ReplaceMavenConfigurationMappings.addMappings(dd, scope, d.isOptional)
-      Message.debug(s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
+      Message.debug(
+        s"Adding maven transitive dependency ${md.getModuleRevisionId} -> ${dd}")
       // TODO - Unify this borrowed Java code into something a bit friendlier.
       // Now we add the artifact....
       if ((d.getArtifact.getClassifier != null) || ((d.getArtifact.getExtension != null) && !("jar" == d.getArtifact.getExtension))) {
@@ -572,9 +568,7 @@ abstract class MavenRepositoryResolver(settings: IvySettings)
       }
     val (aetherResults, failed) =
       try {
-        (
-          system.resolveArtifacts(session, requests.toList.asJava).asScala,
-          false)
+        (system.resolveArtifacts(session, requests.toList.asJava).asScala, false)
       } catch {
         case e: org.eclipse.aether.resolution.ArtifactResolutionException =>
           Message.error(

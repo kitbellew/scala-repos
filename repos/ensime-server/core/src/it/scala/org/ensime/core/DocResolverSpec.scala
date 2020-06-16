@@ -149,7 +149,8 @@ class DocResolverSpec
               Some("mkString(start:String,sep:String,end:String):String")),
             DocSig(
               DocFqn("scala", "Some"),
-              Some("mkString(java.lang.String, java.lang.String, java.lang.String)"))
+              Some(
+                "mkString(java.lang.String, java.lang.String, java.lang.String)"))
           )) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@mkString(start:String,sep:String,end:String):String")
 
@@ -182,10 +183,11 @@ class DocResolverSpec
           )) shouldBe Some(
           "docs/guava-18.0-javadoc.jar/com/google/common/io/Files.html#simplifyPath(java.lang.String)")
 
-        serv.resolve(DocSigPair(
-          DocSig(DocFqn("scala", "Some"), Some("mkString(sep:String):String")),
-          DocSig(DocFqn("scala", "Some"), Some("mkString(java.lang.String)"))
-        )) shouldBe Some(
+        serv.resolve(
+          DocSigPair(
+            DocSig(DocFqn("scala", "Some"), Some("mkString(sep:String):String")),
+            DocSig(DocFqn("scala", "Some"), Some("mkString(java.lang.String)"))
+          )) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@mkString(sep:String):String")
 
         serv.resolve(
@@ -199,13 +201,10 @@ class DocResolverSpec
           )) shouldBe Some(
           "docs/guava-18.0-javadoc.jar/com/google/common/io/Files.html#simplifyPath(java.lang.String)")
 
-        serv.resolve(
-          DocSigPair(
-            DocSig(
-              DocFqn("scala", "Some"),
-              Some("getOrElse[B>:A](default:=>B):B")),
-            DocSig(DocFqn("scala", "Some"), Some("getOrElse(scala.<byname>)"))
-          )) shouldBe Some(
+        serv.resolve(DocSigPair(
+          DocSig(DocFqn("scala", "Some"), Some("getOrElse[B>:A](default:=>B):B")),
+          DocSig(DocFqn("scala", "Some"), Some("getOrElse(scala.<byname>)"))
+        )) shouldBe Some(
           "docs/scala-library-" + c.scalaVersion + "-javadoc.jar/index.html#scala.Some@getOrElse[B>:A](default:=>B):B")
 
         serv.resolve(
@@ -285,7 +284,8 @@ class DocResolverSpec
           DocSigPair(
             DocSig(
               DocFqn("com.google.common.io", "Files$"),
-              Some("asByteSource(x$1:java.io.File):com.google.common.io.ByteSource")),
+              Some(
+                "asByteSource(x$1:java.io.File):com.google.common.io.ByteSource")),
             DocSig(
               DocFqn("com.google.common.io", "Files"),
               Some("asByteSource(java.io.File)"))
@@ -332,7 +332,8 @@ class DocResolverSpec
               Some("map(x$1:java.io.File,x$2:java.nio.channels.FileChannel.MapMode,x$3:Long):java.nio.MappedByteBuffer")),
             DocSig(
               DocFqn("com.google.common.io", "Files"),
-              Some("map(java.io.File, java.nio.channels.FileChannel.MapMode, long)"))
+              Some(
+                "map(java.io.File, java.nio.channels.FileChannel.MapMode, long)"))
           )) shouldBe Some(
           "docs/guava-18.0-javadoc.jar/com/google/common/io/Files.html#map(java.io.File, java.nio.channels.FileChannel.MapMode, long)")
 

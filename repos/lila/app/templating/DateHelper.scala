@@ -37,8 +37,7 @@ trait DateHelper { self: I18nHelper =>
   private def dateFormatter(ctx: Context): DateTimeFormatter =
     dateFormatters.getOrElseUpdate(
       lang(ctx).language,
-      DateTimeFormat forStyle dateStyle withLocale new Locale(
-        lang(ctx).language))
+      DateTimeFormat forStyle dateStyle withLocale new Locale(lang(ctx).language))
 
   private def periodFormatter(ctx: Context): PeriodFormatter =
     periodFormatters.getOrElseUpdate(

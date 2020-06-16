@@ -198,8 +198,7 @@ trait DescriptiveStats {
       }
 
     @expand
-    implicit def reduceSeq[@expand.args(Int, Long, Double, Float) T]
-        : Impl[Seq[T], T] =
+    implicit def reduceSeq[@expand.args(Int, Long, Double, Float) T]: Impl[Seq[T], T] =
       new Impl[Seq[T], T] {
         def apply(v: Seq[T]): T = { median(DenseVector(v.toArray)) }
       }
@@ -214,8 +213,7 @@ trait DescriptiveStats {
   }
 
   object covmat extends UFunc {
-    implicit val matrixCovariance
-        : Impl[DenseMatrix[Double], DenseMatrix[Double]] =
+    implicit val matrixCovariance: Impl[DenseMatrix[Double], DenseMatrix[Double]] =
       new Impl[DenseMatrix[Double], DenseMatrix[Double]] {
         def apply(data: DenseMatrix[Double]) = cov(data)
       }
@@ -361,9 +359,7 @@ trait DescriptiveStats {
     implicit def vecVersion[@expand.args(Int, Long, Double, Float) T]
         : Impl2[DenseVector[T], DenseVector[Double], DenseVector[Int]] =
       new Impl2[DenseVector[T], DenseVector[Double], DenseVector[Int]] {
-        def apply(
-            x: DenseVector[T],
-            bins: DenseVector[Double]): DenseVector[Int] = {
+        def apply(x: DenseVector[T], bins: DenseVector[Double]): DenseVector[Int] = {
           errorCheckBins(bins)
           val result = new DenseVector[Int](x.length)
           cfor(0)(i => i < x.length, i => i + 1)(i => {

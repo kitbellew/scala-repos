@@ -267,9 +267,7 @@ class CoarseMesosSchedulerBackendSuite
     }
   }
 
-  private def offerResources(
-      offers: List[(Int, Int)],
-      startId: Int = 1): Unit = {
+  private def offerResources(offers: List[(Int, Int)], startId: Int = 1): Unit = {
     val mesosOffers = offers.zipWithIndex.map {
       case (offer, i) =>
         createOffer(s"o${i + startId}", s"s${i + startId}", offer._1, offer._2)

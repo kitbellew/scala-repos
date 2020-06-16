@@ -30,8 +30,8 @@ class PipeFactoryOps[+T](pipeFactory: PipeFactory[T]) {
   def mapElements[U](fn: (T => U)): PipeFactory[U] =
     flatMapElements({ tup => List(fn(tup)) })
 
-  def mapPipe[U](fn: (TypedPipe[(Timestamp, T)] => TypedPipe[(Timestamp, U)]))
-      : PipeFactory[U] = {
+  def mapPipe[U](
+      fn: (TypedPipe[(Timestamp, T)] => TypedPipe[(Timestamp, U)])): PipeFactory[U] = {
     pipeFactory.map { flowProducer =>
       flowProducer.map(fn(_))
     }

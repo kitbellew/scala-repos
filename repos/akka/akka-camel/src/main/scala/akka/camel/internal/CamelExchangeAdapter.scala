@@ -82,9 +82,7 @@ private[camel] class CamelExchangeAdapter(val exchange: Exchange) {
     */
   def toAkkaCamelException(headers: Map[String, Any]): AkkaCamelException = {
     import scala.collection.JavaConversions._
-    new AkkaCamelException(
-      exchange.getException,
-      headers ++ response.getHeaders)
+    new AkkaCamelException(exchange.getException, headers ++ response.getHeaders)
   }
 
   /**

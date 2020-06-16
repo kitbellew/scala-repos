@@ -124,11 +124,8 @@ trait CrossOrdering extends DAG {
               Join(op, Cross(Some(CrossLeft)), memoized(left), memoized(right))(
                 node.loc)
             else if (left.isSingleton)
-              Join(
-                op,
-                Cross(Some(CrossRight)),
-                memoized(left),
-                memoized(right))(node.loc)
+              Join(op, Cross(Some(CrossRight)), memoized(left), memoized(right))(
+                node.loc)
             else {
               val right2 = memoized(right)
 

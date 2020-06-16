@@ -185,10 +185,7 @@ object StepWise {
       }
     }
 
-  private def run[T](
-      ctx: ActorContext[T],
-      ops: List[AST],
-      value: Any): Behavior[T] =
+  private def run[T](ctx: ActorContext[T], ops: List[AST], value: Any): Behavior[T] =
     ops match {
       case Thunk(f) :: tail ⇒ run(ctx, tail, f())
       case ThunkV(f) :: tail ⇒ run(ctx, tail, f(value))

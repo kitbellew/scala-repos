@@ -48,8 +48,7 @@ object InterpolatedStringParser extends StringParser {
                   case Some(e) if isTextElement(e) =>
                     FormatSpecifierPattern
                       .findFirstIn(textIn(e))
-                      .map(format =>
-                        Specifier(Span(e, 0, format.length), format))
+                      .map(format => Specifier(Span(e, 0, format.length), format))
                   case _ => None
                 }
             Injection(actualExpression, specifier)

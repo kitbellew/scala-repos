@@ -118,11 +118,7 @@ class BlockManagerSuite
     master = new BlockManagerMaster(
       rpcEnv.setupEndpoint(
         "blockmanager",
-        new BlockManagerMasterEndpoint(
-          rpcEnv,
-          true,
-          conf,
-          new LiveListenerBus)),
+        new BlockManagerMasterEndpoint(rpcEnv, true, conf, new LiveListenerBus)),
       conf,
       true)
 
@@ -167,15 +163,11 @@ class BlockManagerSuite
     val level1_ = Utils.deserialize[StorageLevel](bytes1)
     val bytes2 = Utils.serialize(level2)
     val level2_ = Utils.deserialize[StorageLevel](bytes2)
-    assert(
-      level1_ === level1,
-      "Deserialized level1 not same as original level1")
+    assert(level1_ === level1, "Deserialized level1 not same as original level1")
     assert(
       level1_.eq(level1),
       "Deserialized level1 not the same object as original level2")
-    assert(
-      level2_ === level2,
-      "Deserialized level2 not same as original level2")
+    assert(level2_ === level2, "Deserialized level2 not same as original level2")
     assert(
       level2_.eq(level1),
       "Deserialized level2 not the same object as original level1")
@@ -258,9 +250,7 @@ class BlockManagerSuite
     store2 = makeBlockManager(2000, "exec2")
 
     val peers = master.getPeers(store.blockManagerId)
-    assert(
-      peers.size === 1,
-      "master did not return the other manager as a peer")
+    assert(peers.size === 1, "master did not return the other manager as a peer")
     assert(
       peers.head === store2.blockManagerId,
       "peer returned by master is not the other manager")
@@ -460,9 +450,7 @@ class BlockManagerSuite
     assert(master.getLocations("a1").size > 0, "master was not told about a1")
 
     master.removeExecutor(store.blockManagerId.executorId)
-    assert(
-      master.getLocations("a1").size == 0,
-      "a1 was not removed from master")
+    assert(master.getLocations("a1").size == 0, "a1 was not removed from master")
 
     val reregister = !master.driverEndpoint.askWithRetry[Boolean](
       BlockManagerHeartbeat(store.blockManagerId))
@@ -478,9 +466,7 @@ class BlockManagerSuite
     assert(master.getLocations("a1").size > 0, "master was not told about a1")
 
     master.removeExecutor(store.blockManagerId.executorId)
-    assert(
-      master.getLocations("a1").size == 0,
-      "a1 was not removed from master")
+    assert(master.getLocations("a1").size == 0, "a1 was not removed from master")
 
     store.putSingle("a2", a2, StorageLevel.MEMORY_ONLY)
     store.waitForAsyncReregister()
@@ -736,9 +722,7 @@ class BlockManagerSuite
   }
 
   test("disk and memory storage with serialization and getLocalBytes") {
-    testDiskAndMemoryStorage(
-      StorageLevel.MEMORY_AND_DISK_SER,
-      getAsBytes = true)
+    testDiskAndMemoryStorage(StorageLevel.MEMORY_AND_DISK_SER, getAsBytes = true)
   }
 
   def testDiskAndMemoryStorage(
@@ -1368,10 +1352,12 @@ class BlockManagerSuite
     assert(memoryStore.remove("unroll"))
 
     // Unroll with not enough space. This should succeed after kicking out someBlock1.
-    assert(store
-      .putIterator("someBlock1", smallList.iterator, StorageLevel.MEMORY_ONLY))
-    assert(store
-      .putIterator("someBlock2", smallList.iterator, StorageLevel.MEMORY_ONLY))
+    assert(
+      store
+        .putIterator("someBlock1", smallList.iterator, StorageLevel.MEMORY_ONLY))
+    assert(
+      store
+        .putIterator("someBlock2", smallList.iterator, StorageLevel.MEMORY_ONLY))
     putResult = memoryStore.putIterator(
       "unroll",
       smallList.iterator,
@@ -1389,8 +1375,9 @@ class BlockManagerSuite
     // Unroll huge block with not enough space. Even after ensuring free space of 12000 * 0.4 =
     // 4800 bytes, there is still not enough room to unroll this block. This returns an iterator.
     // In the mean time, however, we kicked out someBlock2 before giving up.
-    assert(store
-      .putIterator("someBlock3", smallList.iterator, StorageLevel.MEMORY_ONLY))
+    assert(
+      store
+        .putIterator("someBlock3", smallList.iterator, StorageLevel.MEMORY_ONLY))
     putResult = memoryStore.putIterator(
       "unroll",
       bigList.iterator,

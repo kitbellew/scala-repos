@@ -88,8 +88,7 @@ package customserializersspecs {
   /*
    * ObjectId as String
    */
-  case class Team(id: String, name: String, qb: String)
-      extends JsonObject[Team] {
+  case class Team(id: String, name: String, qb: String) extends JsonObject[Team] {
     def meta = Team
   }
 
@@ -257,16 +256,14 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
               JField("name", JString("Jack")),
               JField(
                 "birthdate",
-                JObject(
-                  List(JField("$dt", JString("2010-11-02T23:58:00.000Z")))))
+                JObject(List(JField("$dt", JString("2010-11-02T23:58:00.000Z")))))
             )),
           JObject(
             List(
               JField("name", JString("Jill")),
               JField(
                 "birthdate",
-                JObject(
-                  List(JField("$dt", JString("2010-11-03T00:08:00.000Z")))))
+                JObject(List(JField("$dt", JString("2010-11-03T00:08:00.000Z")))))
             ))
         ))
       mother.children.toForm must beEmpty
@@ -422,8 +419,7 @@ object CustomSerializersSpec extends Specification with MongoTestKit {
       nfl.id.setFromString("garbage")
       nfl.id.valueBox mustEqual Failure("Invalid ObjectId string: garbage")
 
-      nfl.id.setFromJValue(
-        JObject(List(JField("$oid", JString(nflid.toString)))))
+      nfl.id.setFromJValue(JObject(List(JField("$oid", JString(nflid.toString)))))
       nfl.id.value mustEqual nflid
 
       nfl.id.setFromAny(nflid)

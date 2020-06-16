@@ -145,9 +145,7 @@ class BackupRequestFilter[Req, Rep] private[exp] (
     cachedCutoffMs
   }
 
-  private[this] def record(
-      f: Future[Rep],
-      successCounter: Counter): Future[Rep] = {
+  private[this] def record(f: Future[Rep], successCounter: Counter): Future[Rep] = {
     val start = nowMs()
     f.onSuccess { _ =>
       successCounter.incr()

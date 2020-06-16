@@ -103,10 +103,7 @@ object Test {
     check_success("1e-9d == 1.0e-9", 1e-9d, 1.0e-9)
     check_success("1e137 == 1.0e137", 1e137, 1.0e137)
     check_success("1.asInstanceOf[Double] == 1.0", 1.asInstanceOf[Double], 1.0)
-    check_success(
-      "1l.asInstanceOf[Double] == 1.0",
-      1L.asInstanceOf[Double],
-      1.0)
+    check_success("1l.asInstanceOf[Double] == 1.0", 1L.asInstanceOf[Double], 1.0)
 
     check_success("\"\".length()", "\u001a".length(), 1)
 

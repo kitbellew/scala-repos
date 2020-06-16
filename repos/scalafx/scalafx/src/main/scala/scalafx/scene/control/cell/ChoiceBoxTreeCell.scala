@@ -74,9 +74,7 @@ object ChoiceBoxTreeCell {
   /**
     * Added to satisfy Spec tests.
     */
-  @deprecated(
-    message = "Use forTreeView[T](ObservableBuffer[T])",
-    since = "1.0")
+  @deprecated(message = "Use forTreeView[T](ObservableBuffer[T])", since = "1.0")
   def forTreeView[T](items: jfxc.ObservableList[T]) =
     jfxscc.ChoiceBoxTreeCell.forTreeView[T](items)
 

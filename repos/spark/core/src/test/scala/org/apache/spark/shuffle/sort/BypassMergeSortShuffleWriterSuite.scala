@@ -100,8 +100,7 @@ class BypassMergeSortShuffleWriterSuite
         anyInt(),
         any[ShuffleWriteMetrics]
       )).thenAnswer(new Answer[DiskBlockObjectWriter] {
-      override def answer(
-          invocation: InvocationOnMock): DiskBlockObjectWriter = {
+      override def answer(invocation: InvocationOnMock): DiskBlockObjectWriter = {
         val args = invocation.getArguments
         new DiskBlockObjectWriter(
           args(1).asInstanceOf[File],

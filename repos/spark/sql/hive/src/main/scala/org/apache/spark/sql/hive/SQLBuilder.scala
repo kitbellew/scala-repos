@@ -36,9 +36,7 @@ import org.apache.spark.sql.types.{ByteType, DataType, IntegerType, NullType}
 /**
   * A place holder for generated SQL for subquery expression.
   */
-case class SubqueryHolder(query: String)
-    extends LeafExpression
-    with Unevaluable {
+case class SubqueryHolder(query: String) extends LeafExpression with Unevaluable {
   override def dataType: DataType = NullType
   override def nullable: Boolean = true
   override def sql: String = s"($query)"

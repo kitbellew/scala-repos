@@ -26,11 +26,7 @@ object Play extends AutoPlugin {
   override def projectSettings =
     PlaySettings.defaultSettings ++
       Seq(
-        scalacOptions ++= Seq(
-          "-deprecation",
-          "-unchecked",
-          "-encoding",
-          "utf8"),
+        scalacOptions ++= Seq("-deprecation", "-unchecked", "-encoding", "utf8"),
         javacOptions in Compile ++= Seq("-encoding", "utf8", "-g")
       )
 }

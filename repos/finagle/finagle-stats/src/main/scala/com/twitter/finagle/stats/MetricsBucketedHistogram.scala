@@ -52,9 +52,7 @@ private[stats] class MetricsBucketedHistogram(
     // requests for the snapshot will return values from the previous `latchPeriod`.
 
     if (Time.Undefined eq nextSnapAfter.get) {
-      nextSnapAfter.compareAndSet(
-        Time.Undefined,
-        JsonExporter.startOfNextMinute)
+      nextSnapAfter.compareAndSet(Time.Undefined, JsonExporter.startOfNextMinute)
     }
 
     current.synchronized {
@@ -74,8 +72,8 @@ private[stats] class MetricsBucketedHistogram(
         val _max = snap.max
         val _min = snap.min
         val _avg = snap.avg
-        val ps = new Array[Percentile](
-          MetricsBucketedHistogram.this.percentiles.length)
+        val ps =
+          new Array[Percentile](MetricsBucketedHistogram.this.percentiles.length)
         var i = 0
         while (i < ps.length) {
           ps(i) = new Percentile(

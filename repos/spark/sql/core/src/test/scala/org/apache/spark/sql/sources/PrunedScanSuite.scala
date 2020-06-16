@@ -87,9 +87,7 @@ class PrunedScanSuite extends DataSourceTest with SharedSQLContext {
 
   sqlTest("SELECT a FROM oneToTenPruned", (1 to 10).map(i => Row(i)).toSeq)
 
-  sqlTest(
-    "SELECT a, a FROM oneToTenPruned",
-    (1 to 10).map(i => Row(i, i)).toSeq)
+  sqlTest("SELECT a, a FROM oneToTenPruned", (1 to 10).map(i => Row(i, i)).toSeq)
 
   sqlTest("SELECT b FROM oneToTenPruned", (1 to 10).map(i => Row(i * 2)).toSeq)
 

@@ -160,9 +160,7 @@ class ApplicationCacheSuite
     /**
       * Lookup from the internal cache of attached UIs
       */
-    def getAttached(
-        appId: String,
-        attemptId: Option[String]): Option[SparkUI] = {
+    def getAttached(appId: String, attemptId: Option[String]): Option[SparkUI] = {
       attached.get(CacheKey(appId, attemptId))
     }
 
@@ -479,10 +477,7 @@ class ApplicationCacheSuite
         expectedLoad: Int,
         expectedEvictionCount: Int): Unit = {
       assertMetric("loadCount", metrics.loadCount, expectedLoad)
-      assertMetric(
-        "evictionCount",
-        metrics.evictionCount,
-        expectedEvictionCount)
+      assertMetric("evictionCount", metrics.evictionCount, expectedEvictionCount)
     }
 
     // first entry

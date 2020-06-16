@@ -461,8 +461,7 @@ abstract class ClusterShardingSpec(config: ClusterShardingSpecConfig)
           retry-interval = 1s
           buffer-size = 1000
         """)
-          .withFallback(
-            system.settings.config.getConfig("akka.cluster.sharding"))
+          .withFallback(system.settings.config.getConfig("akka.cluster.sharding"))
         val settings = ClusterShardingSettings(cfg)
         val proxy = system.actorOf(
           ShardRegion.proxyProps(

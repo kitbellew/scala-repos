@@ -86,14 +86,8 @@ trait Apply[F[_]] extends Functor[F] { self =>
       ff: => F[FF],
       fg: => F[G])(f: F[(A, B, C, D, E, FF, G) => R]): F[R] =
     ap3(fe, ff, fg)(
-      ap4(fa, fb, fc, fd)(
-        map(f)(f =>
-          (
-              (
-                  a: A,
-                  b: B,
-                  c: C,
-                  d: D) => (e: E, ff: FF, g: G) => f(a, b, c, d, e, ff, g)))))
+      ap4(fa, fb, fc, fd)(map(f)(f =>
+        ((a: A, b: B, c: C, d: D) => (e: E, ff: FF, g: G) => f(a, b, c, d, e, ff, g)))))
   def ap8[A, B, C, D, E, FF, G, H, R](
       fa: => F[A],
       fb: => F[B],
@@ -226,23 +220,21 @@ trait Apply[F[_]] extends Functor[F] { self =>
       fj: => F[J],
       fk: => F[K],
       fl: => F[L])(f: (A, B, C, D, E, FF, G, H, I, J, K, L) => R): F[R] =
-    apply3(
-      tuple4(fa, fb, fc, fd),
-      tuple4(fe, ff, fg, fh),
-      tuple4(fi, fj, fk, fl))((t, t2, t3) =>
-      f(
-        t._1,
-        t._2,
-        t._3,
-        t._4,
-        t2._1,
-        t2._2,
-        t2._3,
-        t2._4,
-        t3._1,
-        t3._2,
-        t3._3,
-        t3._4))
+    apply3(tuple4(fa, fb, fc, fd), tuple4(fe, ff, fg, fh), tuple4(fi, fj, fk, fl))(
+      (t, t2, t3) =>
+        f(
+          t._1,
+          t._2,
+          t._3,
+          t._4,
+          t2._1,
+          t2._2,
+          t2._3,
+          t2._4,
+          t3._1,
+          t3._2,
+          t3._3,
+          t3._4))
 
   def tuple2[A, B](fa: => F[A], fb: => F[B]): F[(A, B)] =
     apply2(fa, fb)((_, _))
@@ -272,8 +264,8 @@ trait Apply[F[_]] extends Functor[F] { self =>
   def lift5[A, B, C, D, E, R](
       f: (A, B, C, D, E) => R): (F[A], F[B], F[C], F[D], F[E]) => F[R] =
     apply5(_, _, _, _, _)(f)
-  def lift6[A, B, C, D, E, FF, R](f: (A, B, C, D, E, FF) => R)
-      : (F[A], F[B], F[C], F[D], F[E], F[FF]) => F[R] =
+  def lift6[A, B, C, D, E, FF, R](
+      f: (A, B, C, D, E, FF) => R): (F[A], F[B], F[C], F[D], F[E], F[FF]) => F[R] =
     apply6(_, _, _, _, _, _)(f)
   def lift7[A, B, C, D, E, FF, G, R](f: (A, B, C, D, E, FF, G) => R)
       : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G]) => F[R] =
@@ -289,18 +281,8 @@ trait Apply[F[_]] extends Functor[F] { self =>
       : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I], F[J]) => F[R] =
     apply10(_, _, _, _, _, _, _, _, _, _)(f)
   def lift11[A, B, C, D, E, FF, G, H, I, J, K, R](
-      f: (A, B, C, D, E, FF, G, H, I, J, K) => R): (
-      F[A],
-      F[B],
-      F[C],
-      F[D],
-      F[E],
-      F[FF],
-      F[G],
-      F[H],
-      F[I],
-      F[J],
-      F[K]) => F[R] =
+      f: (A, B, C, D, E, FF, G, H, I, J, K) => R)
+      : (F[A], F[B], F[C], F[D], F[E], F[FF], F[G], F[H], F[I], F[J], F[K]) => F[R] =
     apply11(_, _, _, _, _, _, _, _, _, _, _)(f)
   def lift12[A, B, C, D, E, FF, G, H, I, J, K, L, R](
       f: (A, B, C, D, E, FF, G, H, I, J, K, L) => R): (
@@ -347,8 +329,7 @@ trait Apply[F[_]] extends Functor[F] { self =>
         FC: Equal[F[C]]) =
       FC.equal(
         ap(ap(fa)(fab))(fbc),
-        ap(fa)(
-          ap(fab)(map(fbc)((bc: B => C) => (ab: A => B) => bc compose ab))))
+        ap(fa)(ap(fab)(map(fbc)((bc: B => C) => (ab: A => B) => bc compose ab))))
   }
   def applyLaw = new ApplyLaw {}
 

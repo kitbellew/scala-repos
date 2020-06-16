@@ -149,12 +149,7 @@ object Schemifier extends Loggable {
 
       val toRun =
         tables.foldLeft(EmptyCollector)((b, t) =>
-          b + ensureTable(
-            performWrite,
-            logFunc,
-            t,
-            connection,
-            actualTableNames)) +
+          b + ensureTable(performWrite, logFunc, t, connection, actualTableNames)) +
           tables.foldLeft(EmptyCollector)((b, t) =>
             b + tableCheck(
               t,

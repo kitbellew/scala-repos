@@ -356,9 +356,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
                 str.map(ScType.designator(_)).getOrElse(types.Any)
               (
                 res.map(tp =>
-                  ScTupleType(Seq(stringType, tp))(
-                    getProject,
-                    getResolveScope)),
+                  ScTupleType(Seq(stringType, tp))(getProject, getResolveScope)),
                 imports)
             }
           }
@@ -380,11 +378,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
     var res: ScType =
       checkApplication(invokedType, args(isNamedDynamic = isApplyDynamicNamed))
         .getOrElse {
-          var (
-            processedType,
-            importsUsed,
-            implicitFunction,
-            applyOrUpdateResult) =
+          var (processedType, importsUsed, implicitFunction, applyOrUpdateResult) =
             ScalaPsiUtil
               .processTypeForUpdateOrApply(invokedType, this, isShape = false)
               .getOrElse {
@@ -433,9 +427,7 @@ trait MethodInvocation extends ScExpression with ScalaPsiElement {
 
   def setApplicabilityProblemsVar(seq: Seq[ApplicabilityProblem]) {
     val modCount: Long = getManager.getModificationTracker.getModificationCount
-    putUserData(
-      MethodInvocation.APPLICABILITY_PROBLEMS_VAR_KEY,
-      (modCount, seq))
+    putUserData(MethodInvocation.APPLICABILITY_PROBLEMS_VAR_KEY, (modCount, seq))
   }
 
   private def setMatchedParametersVar(seq: Seq[(Parameter, ScExpression)]) {

@@ -58,8 +58,9 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
   val GroupReadAcl = Map(
     groupResource -> Set(
       new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
-  val ClusterAcl = Map(Resource.ClusterResource -> Set(
-    new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, ClusterAction)))
+  val ClusterAcl = Map(
+    Resource.ClusterResource -> Set(
+      new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, ClusterAction)))
   val TopicReadAcl = Map(
     topicResource -> Set(
       new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, Read)))
@@ -96,10 +97,8 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
       ApiKeys.LIST_OFFSETS.id -> classOf[requests.ListOffsetResponse],
       ApiKeys.OFFSET_COMMIT.id -> classOf[requests.OffsetCommitResponse],
       ApiKeys.OFFSET_FETCH.id -> classOf[requests.OffsetFetchResponse],
-      ApiKeys.GROUP_COORDINATOR.id -> classOf[
-        requests.GroupCoordinatorResponse],
-      ApiKeys.UPDATE_METADATA_KEY.id -> classOf[
-        requests.UpdateMetadataResponse],
+      ApiKeys.GROUP_COORDINATOR.id -> classOf[requests.GroupCoordinatorResponse],
+      ApiKeys.UPDATE_METADATA_KEY.id -> classOf[requests.UpdateMetadataResponse],
       ApiKeys.JOIN_GROUP.id -> classOf[JoinGroupResponse],
       ApiKeys.SYNC_GROUP.id -> classOf[SyncGroupResponse],
       ApiKeys.HEARTBEAT.id -> classOf[HeartbeatResponse],
@@ -175,11 +174,7 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
 
     addAndVerifyAcls(
       Set(
-        new Acl(
-          KafkaPrincipal.ANONYMOUS,
-          Allow,
-          Acl.WildCardHost,
-          ClusterAction)),
+        new Acl(KafkaPrincipal.ANONYMOUS, Allow, Acl.WildCardHost, ClusterAction)),
       Resource.ClusterResource)
 
     for (i <- 0 until producerCount)
@@ -319,11 +314,7 @@ class AuthorizerIntegrationTest extends KafkaServerTestHarness {
   }
 
   private def createStopReplicaRequest = {
-    new requests.StopReplicaRequest(
-      brokerId,
-      Int.MaxValue,
-      true,
-      Set(tp).asJava)
+    new requests.StopReplicaRequest(brokerId, Int.MaxValue, true, Set(tp).asJava)
   }
 
   private def createControlledShutdownRequest = {

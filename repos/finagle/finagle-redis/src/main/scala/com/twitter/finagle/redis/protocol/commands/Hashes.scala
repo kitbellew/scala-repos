@@ -227,10 +227,7 @@ object HSetNx {
       ChannelBuffers.wrappedBuffer(list(2)))
   }
 }
-case class HSetNx(
-    key: ChannelBuffer,
-    field: ChannelBuffer,
-    value: ChannelBuffer)
+case class HSetNx(key: ChannelBuffer, field: ChannelBuffer, value: ChannelBuffer)
     extends StrictKeyCommand {
   def command = Commands.HSETNX
   def toChannelBuffer =

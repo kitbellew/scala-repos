@@ -89,8 +89,7 @@ object FileWatchService {
         case (Windows | Linux | OSX) =>
           JNotifyFileWatchService(targetDirectory).recover {
             case e =>
-              logger.warn(
-                "Error loading JNotify watch service: " + e.getMessage)
+              logger.warn("Error loading JNotify watch service: " + e.getMessage)
               logger.trace(e)
               new PollingFileWatchService(pollDelayMillis)
           }.get
@@ -454,9 +453,7 @@ private[runsupport] object GlobalStaticVar {
     mmb.setManagedResource(reference, "ObjectReference")
 
     // Register the Model MBean in the MBean Server
-    ManagementFactory.getPlatformMBeanServer.registerMBean(
-      mmb,
-      objectName(name))
+    ManagementFactory.getPlatformMBeanServer.registerMBean(mmb, objectName(name))
   }
 
   /**

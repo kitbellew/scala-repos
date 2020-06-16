@@ -10,8 +10,7 @@ import org.jetbrains.plugins.scala.util.ScalaToolsFactory
   * Date: 3/12/12
   */
 
-class SurroundWithWikiSyntaxTest
-    extends ScalaLightCodeInsightFixtureTestAdapter {
+class SurroundWithWikiSyntaxTest extends ScalaLightCodeInsightFixtureTestAdapter {
   import org.jetbrains.plugins.scala.lang.scaladoc.SurroundWithWikiSyntaxTest._
   val s = ScalaLightCodeInsightFixtureTestAdapter.SELECTION_START
   val e = ScalaLightCodeInsightFixtureTestAdapter.SELECTION_END

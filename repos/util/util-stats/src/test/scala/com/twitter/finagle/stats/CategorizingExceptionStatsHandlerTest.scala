@@ -35,15 +35,11 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
           classOf[RuntimeException].getName,
           classOf[Exception].getName)) == 1)
 
-    assert(
-      receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 3)
+    assert(receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 3)
     assert(receiver.counters(Seq("sourcedfailures", "service")) == 1)
     assert(
       receiver.counters(
-        Seq(
-          "sourcedfailures",
-          "service",
-          classOf[RuntimeException].getName)) == 1)
+        Seq("sourcedfailures", "service", classOf[RuntimeException].getName)) == 1)
     assert(
       receiver.counters(
         Seq(
@@ -73,8 +69,7 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
     val keys = receiver.counters.keys.map(_.mkString("/")).toSeq.sorted
 
     assert(receiver.counters.filterKeys(_.contains("failures")).size == 3)
-    assert(
-      receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 0)
+    assert(receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 0)
 
     assert(
       keys == Seq(
@@ -108,8 +103,7 @@ class CategorizingExceptionStatsHandlerTest extends FunSuite {
           classOf[RuntimeException].getName,
           classOf[Exception].getName)) == 1)
 
-    assert(
-      receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 2)
+    assert(receiver.counters.filterKeys(_.contains("sourcedfailures")).size == 2)
     assert(receiver.counters(Seq("sourcedfailures", "service")) == 1)
     assert(
       receiver.counters(

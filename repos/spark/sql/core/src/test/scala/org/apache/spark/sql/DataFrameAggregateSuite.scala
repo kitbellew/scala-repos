@@ -113,10 +113,7 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       courseSales
         .cube("course", "year")
-        .agg(
-          grouping("course"),
-          grouping("year"),
-          grouping_id("course", "year")),
+        .agg(grouping("course"), grouping("year"), grouping_id("course", "year")),
       Row("Java", 2012, 0, 0, 0) ::
         Row("Java", 2013, 0, 0, 0) ::
         Row("Java", null, 0, 1, 1) ::
@@ -170,10 +167,7 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         4,
         1,
         2) :: Row(5, 2, 1)
-        :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(
-        5,
-        null,
-        1)
+        :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(5, null, 1)
         :: Row(null, null, 3) :: Nil
     )
 
@@ -195,10 +189,7 @@ class DataFrameAggregateSuite extends QueryTest with SharedSQLContext {
         4,
         1,
         2) :: Row(5, 2, 1)
-        :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(
-        5,
-        null,
-        1)
+        :: Row(2, null, 0) :: Row(3, null, 0) :: Row(4, null, 2) :: Row(5, null, 1)
         :: Row(null, 1, 3) :: Row(null, 2, 0)
         :: Row(null, null, 3) :: Nil
     )

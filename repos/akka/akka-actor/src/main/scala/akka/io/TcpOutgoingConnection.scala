@@ -117,8 +117,9 @@ private[io] class TcpOutgoingConnection(
               context.become(
                 connecting(registration, remainingFinishConnectRetries - 1))
             } else {
-              log.debug("Could not establish connection because finishConnect " +
-                "never returned true (consider increasing akka.io.tcp.finish-connect-retries)")
+              log.debug(
+                "Could not establish connection because finishConnect " +
+                  "never returned true (consider increasing akka.io.tcp.finish-connect-retries)")
               stop()
             }
           }

@@ -52,8 +52,7 @@ object BarChart {
       yAxis: Axis[Y],
       data: ObservableBuffer[jfxsc.XYChart.Series[X, Y]],
       categoryGap: Double) =
-    new BarChart[X, Y](
-      new jfxsc.BarChart[X, Y](xAxis, yAxis, data, categoryGap))
+    new BarChart[X, Y](new jfxsc.BarChart[X, Y](xAxis, yAxis, data, categoryGap))
 }
 
 class BarChart[X, Y](override val delegate: jfxsc.BarChart[X, Y])

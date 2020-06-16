@@ -191,8 +191,7 @@ case class AhcWSRequest(
     Streamed.execute(client.underlying, buildRequest())
 
   @deprecated("2.5", "Use `stream()` instead.")
-  def streamWithEnumerator()
-      : Future[(WSResponseHeaders, Enumerator[Array[Byte]])] =
+  def streamWithEnumerator(): Future[(WSResponseHeaders, Enumerator[Array[Byte]])] =
     Streamed.execute2(client.underlying, buildRequest())
 
   /**

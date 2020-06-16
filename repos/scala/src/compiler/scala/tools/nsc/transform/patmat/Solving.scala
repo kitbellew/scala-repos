@@ -418,9 +418,7 @@ trait Solving extends Logic {
         relevantLits.map(lit => -lit)
       }
 
-      final case class TseitinSolution(
-          model: TseitinModel,
-          unassigned: List[Int]) {
+      final case class TseitinSolution(model: TseitinModel, unassigned: List[Int]) {
         def projectToSolution(symForVar: Map[Int, Sym]) =
           Solution(projectToModel(model, symForVar), unassigned map symForVar)
       }
@@ -454,8 +452,7 @@ trait Solving extends Logic {
         }
 
       val tseitinSolutions = findAllModels(solvable.cnf, Nil)
-      tseitinSolutions.map(
-        _.projectToSolution(solvable.symbolMapping.symForVar))
+      tseitinSolutions.map(_.projectToSolution(solvable.symbolMapping.symForVar))
     }
 
     private def withLit(res: TseitinModel, l: Lit): TseitinModel = {

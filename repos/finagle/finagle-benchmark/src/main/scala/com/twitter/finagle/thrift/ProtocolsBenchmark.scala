@@ -46,9 +46,7 @@ class ProtocolsBenchmark extends StdBenchAnnotations {
       .getProtocol(ttransport)
   }
 
-  private[this] def writeStrings(
-      ss: Array[String],
-      tprotocol: TProtocol): Int = {
+  private[this] def writeStrings(ss: Array[String], tprotocol: TProtocol): Int = {
     ttransport.reset()
     var i = 0
     while (i < ss.length) {

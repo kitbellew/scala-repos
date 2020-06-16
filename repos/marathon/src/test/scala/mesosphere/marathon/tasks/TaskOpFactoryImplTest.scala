@@ -134,8 +134,7 @@ class TaskOpFactoryImplTest
   }
 
   test("Resident app -> Launch succeeds") {
-    Given(
-      "A resident app, an offer with persistent volumes and a matching task")
+    Given("A resident app, an offer with persistent volumes and a matching task")
     val f = new Fixture
     val app = f.residentApp.copy(instances = 2)
     val localVolumeIdLaunched =

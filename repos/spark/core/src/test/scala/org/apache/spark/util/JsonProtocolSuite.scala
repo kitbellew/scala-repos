@@ -96,8 +96,8 @@ class JsonProtocolSuite extends SparkFunSuite {
         hasOutput = true))
     val jobStart = {
       val stageIds = Seq[Int](1, 2, 3, 4)
-      val stageInfos = stageIds.map(x =>
-        makeStageInfo(x, x * 200, x * 300, x * 400L, x * 500L))
+      val stageInfos =
+        stageIds.map(x => makeStageInfo(x, x * 200, x * 300, x * 400L, x * 500L))
       SparkListenerJobStart(10, jobSubmissionTime, stageInfos, properties)
     }
     val jobEnd = SparkListenerJobEnd(20, jobCompletionTime, JobSucceeded)
@@ -108,9 +108,7 @@ class JsonProtocolSuite extends SparkFunSuite {
           ("Java home", "Land of coffee")),
         "Spark Properties" -> Seq(
           ("Job throughput", "80000 jobs/s, regardless of job type")),
-        "System Properties" -> Seq(
-          ("Username", "guest"),
-          ("Password", "guest")),
+        "System Properties" -> Seq(("Username", "guest"), ("Password", "guest")),
         "Classpath Entries" -> Seq(("Super library", "/tmp/super_library"))
       ))
     val blockManagerAdded = SparkListenerBlockManagerAdded(
@@ -541,9 +539,7 @@ class JsonProtocolSuite extends SparkFunSuite {
       .removeField({ _._1 == "Parent IDs" })
     val expectedStageInfo =
       new StageInfo(1, 1, "me-stage", 1, Seq.empty, Seq.empty, "details")
-    assertEquals(
-      expectedStageInfo,
-      JsonProtocol.stageInfoFromJson(oldStageInfo))
+    assertEquals(expectedStageInfo, JsonProtocol.stageInfoFromJson(oldStageInfo))
   }
 
   // `TaskCommitDenied` was added in 1.3.0 but JSON de/serialization logic was added in 1.5.1
@@ -851,12 +847,10 @@ private[spark] object JsonProtocolSuite extends Assertions {
   }
 
   private def assertEquals(metrics1: TaskMetrics, metrics2: TaskMetrics) {
-    assert(
-      metrics1.executorDeserializeTime === metrics2.executorDeserializeTime)
+    assert(metrics1.executorDeserializeTime === metrics2.executorDeserializeTime)
     assert(metrics1.resultSize === metrics2.resultSize)
     assert(metrics1.jvmGCTime === metrics2.jvmGCTime)
-    assert(
-      metrics1.resultSerializationTime === metrics2.resultSerializationTime)
+    assert(metrics1.resultSerializationTime === metrics2.resultSerializationTime)
     assert(metrics1.memoryBytesSpilled === metrics2.memoryBytesSpilled)
     assert(metrics1.diskBytesSpilled === metrics2.diskBytesSpilled)
     assertOptionEquals(
@@ -1189,9 +1183,7 @@ private[spark] object JsonProtocolSuite extends Assertions {
     }
     // Make at most 6 blocks
     t.setUpdatedBlockStatuses((1 to (e % 5 + 1)).map { i =>
-      (
-        RDDBlockId(e % i, f % i),
-        BlockStatus(StorageLevel.MEMORY_AND_DISK_SER_2, a % i, b % i))
+      (RDDBlockId(e % i, f % i), BlockStatus(StorageLevel.MEMORY_AND_DISK_SER_2, a % i, b % i))
     }.toSeq)
     t
   }

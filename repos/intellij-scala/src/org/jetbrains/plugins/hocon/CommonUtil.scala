@@ -35,8 +35,7 @@ object CommonUtil {
 
   implicit class CharSequenceOps(val cs: CharSequence) extends AnyVal {
     def startsWith(str: String) =
-      cs.length >= str.length && str.contentEquals(
-        cs.subSequence(0, str.length))
+      cs.length >= str.length && str.contentEquals(cs.subSequence(0, str.length))
 
     def charIterator =
       Iterator.range(0, cs.length).map(cs.charAt)

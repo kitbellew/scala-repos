@@ -44,8 +44,7 @@ object ArrayBuilder {
     *  @param  elementClass   runtime class of the elements in the array.
     */
   @inline
-  private final class generic[T](elementClass: Class[_])
-      extends ArrayBuilder[T] {
+  private final class generic[T](elementClass: Class[_]) extends ArrayBuilder[T] {
 
     private val isCharArrayBuilder = classOf[Char] == elementClass
     private val elems: js.Array[Any] = js.Array()

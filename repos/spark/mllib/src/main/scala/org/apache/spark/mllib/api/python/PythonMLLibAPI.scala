@@ -1318,8 +1318,7 @@ private[spark] object SerDe extends Serializable {
     def pickle(obj: Object, out: OutputStream, pickler: Pickler): Unit = {
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
-        out.write(
-          (module + "\n" + name + "\n").getBytes(StandardCharsets.UTF_8))
+        out.write((module + "\n" + name + "\n").getBytes(StandardCharsets.UTF_8))
       } else {
         pickler.save(this) // it will be memorized by Pickler
         saveState(obj, out, pickler)
@@ -1545,9 +1544,7 @@ private[spark] object SerDe extends Serializable {
       if (args.length != 2) {
         throw new PickleException("should be 2")
       }
-      new LabeledPoint(
-        args(0).asInstanceOf[Double],
-        args(1).asInstanceOf[Vector])
+      new LabeledPoint(args(0).asInstanceOf[Double], args(1).asInstanceOf[Vector])
     }
   }
 

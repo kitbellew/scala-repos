@@ -18,12 +18,7 @@
 package org.apache.spark.mllib.feature
 
 import org.apache.spark.annotation.Since
-import org.apache.spark.mllib.linalg.{
-  DenseVector,
-  SparseVector,
-  Vector,
-  Vectors
-}
+import org.apache.spark.mllib.linalg.{DenseVector, SparseVector, Vector, Vectors}
 
 /**
   * Normalizes samples individually to unit L^p^ norm

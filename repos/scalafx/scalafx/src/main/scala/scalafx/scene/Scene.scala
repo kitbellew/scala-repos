@@ -155,12 +155,7 @@ class Scene(
       depthBuffer: Boolean,
       antiAliasing: SceneAntialiasing) =
     this(
-      new jfxs.Scene(
-        new jfxs.Group(),
-        width,
-        height,
-        depthBuffer,
-        antiAliasing))
+      new jfxs.Scene(new jfxs.Group(), width, height, depthBuffer, antiAliasing))
 
   /**
     * Creates a Scene for a specific root Node with a specific size and fill.

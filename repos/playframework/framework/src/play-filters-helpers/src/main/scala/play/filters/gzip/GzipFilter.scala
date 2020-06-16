@@ -123,18 +123,14 @@ class GzipFilter @Inject() (config: GzipFilterConfig)(implicit
             })
 
           Future.successful(
-            Result(
-              header,
-              HttpEntity.Chunked(chunks via gzipFlow, contentType)))
+            Result(header, HttpEntity.Chunked(chunks via gzipFlow, contentType)))
       }
     } else {
       Future.successful(result)
     }
   }
 
-  private def compressStrictEntity(
-      data: ByteString,
-      contentType: Option[String]) = {
+  private def compressStrictEntity(data: ByteString, contentType: Option[String]) = {
     val builder = ByteString.newBuilder
     val gzipOs =
       new GZIPOutputStream(builder.asOutputStream, config.bufferSize, true)

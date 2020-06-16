@@ -366,9 +366,7 @@ trait RequestVarSnapshotGroup
   * This subclass of RequestVars that allow the specification of a RequestVarSnapshotGroup.
   * You can create a snapshot of all the members of this group in RequestVar.snapshot
   */
-abstract class SnapshotRequestVar[T](
-    val group: RequestVarSnapshotGroup,
-    d: => T)
+abstract class SnapshotRequestVar[T](val group: RequestVarSnapshotGroup, d: => T)
     extends RequestVar[T](d) {
 
   /**
@@ -581,8 +579,7 @@ private[http] trait CoreRequestVarHandler {
 
   private val logger = Logger(classOf[CoreRequestVarHandler])
   // This maps from the RV name to (RV instance, value, set-but-not-read flag)
-  private val vals
-      : ThreadGlobal[ConcurrentHashMap[String, (MyType, Any, Boolean)]] =
+  private val vals: ThreadGlobal[ConcurrentHashMap[String, (MyType, Any, Boolean)]] =
     new ThreadGlobal
   private val cleanup: ThreadGlobal[ListBuffer[Box[LiftSession] => Unit]] =
     new ThreadGlobal
@@ -733,8 +730,7 @@ abstract class RequestMemoize[K, V] extends MemoizeVar[K, V] {
   */
 abstract class TransientRequestMemoize[K, V] extends MemoizeVar[K, V] {
 
-  protected object coreVar
-      extends TransientRequestVar[LRU[K, Box[V]]](buildLRU) {
+  protected object coreVar extends TransientRequestVar[LRU[K, Box[V]]](buildLRU) {
     override def __nameSalt = TransientRequestMemoize.this.__nameSalt
   }
 

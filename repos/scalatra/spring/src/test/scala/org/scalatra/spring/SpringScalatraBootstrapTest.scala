@@ -24,8 +24,7 @@ class SpringScalatraBootstrapTest
 
   val reg = mock[ServletRegistration.Dynamic]
   Mockito
-    .when(
-      servletContext.addServlet(Matchers.anyString, Matchers.any[HttpServlet]))
+    .when(servletContext.addServlet(Matchers.anyString, Matchers.any[HttpServlet]))
     .thenReturn(reg)
 
   val resource = new CustomerResource

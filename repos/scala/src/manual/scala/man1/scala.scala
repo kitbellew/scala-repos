@@ -56,8 +56,7 @@ object scala extends Command {
           "save the compiled version in a file with the same name as the " &
           "script but with an extension of " & Mono(
           ".jar") & ".  On subsequent " &
-          "runs of the same script, the pre-compiled " & Mono(
-          ".jar") & " file " &
+          "runs of the same script, the pre-compiled " & Mono(".jar") & " file " &
           "will be used if it is newer than the script file."
       ),
       Definition(

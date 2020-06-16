@@ -175,9 +175,8 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, submitDriverResponseJson)
-    val newMessage = SubmitRestProtocolMessage.fromJson(
-      json,
-      classOf[CreateSubmissionResponse])
+    val newMessage =
+      SubmitRestProtocolMessage.fromJson(json, classOf[CreateSubmissionResponse])
     assert(newMessage.serverSparkVersion === "1.2.3")
     assert(newMessage.submissionId === "driver_123")
     assert(newMessage.success)
@@ -214,9 +213,8 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     // test JSON
     val json = message.toJson
     assertJsonEquals(json, driverStatusResponseJson)
-    val newMessage = SubmitRestProtocolMessage.fromJson(
-      json,
-      classOf[SubmissionStatusResponse])
+    val newMessage =
+      SubmitRestProtocolMessage.fromJson(json, classOf[SubmissionStatusResponse])
     assert(newMessage.serverSparkVersion === "1.2.3")
     assert(newMessage.submissionId === "driver_123")
     assert(newMessage.driverState === "RUNNING")
@@ -330,9 +328,7 @@ class SubmitRestProtocolSuite extends SparkFunSuite {
     """.stripMargin
 
   /** Assert that the contents in the two JSON strings are equal after ignoring whitespace. */
-  private def assertJsonEquals(
-      jsonString1: String,
-      jsonString2: String): Unit = {
+  private def assertJsonEquals(jsonString1: String, jsonString2: String): Unit = {
     val trimmedJson1 = jsonString1.trim
     val trimmedJson2 = jsonString2.trim
     val json1 = compact(render(parse(trimmedJson1)))

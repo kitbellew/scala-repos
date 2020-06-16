@@ -98,8 +98,7 @@ object BSON {
 
     implicit def MapHandler[V](implicit
         vr: BSONReader[_ <: BSONValue, V],
-        vw: BSONWriter[V, _ <: BSONValue])
-        : BSONHandler[BSONDocument, Map[String, V]] =
+        vw: BSONWriter[V, _ <: BSONValue]): BSONHandler[BSONDocument, Map[String, V]] =
       new BSONHandler[BSONDocument, Map[String, V]] {
         private val reader = MapReader[V]
         private val writer = MapWriter[V]

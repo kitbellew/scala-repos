@@ -11,10 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.{
   ScPrimaryConstructor,
   ScReferenceElement
 }
-import org.jetbrains.plugins.scala.lang.psi.api.expr.{
-  ScInfixExpr,
-  ScPostfixExpr
-}
+import org.jetbrains.plugins.scala.lang.psi.api.expr.{ScInfixExpr, ScPostfixExpr}
 import org.jetbrains.plugins.scala.lang.psi.api.statements.ScFunctionDefinition
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScNamedElement
 import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
@@ -79,11 +76,7 @@ object Dependency {
       fromType: Option[ScType]): Option[Dependency] = {
     def withEntity(entity: String) =
       Some(
-        new Dependency(
-          DependencyKind.Reference,
-          reference,
-          target,
-          Path(entity)))
+        new Dependency(DependencyKind.Reference, reference, target, Path(entity)))
 
     def withMember(entity: String, member: String) =
       Some(

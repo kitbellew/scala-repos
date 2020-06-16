@@ -31,8 +31,8 @@ class JdbcRDDSuite
 
   before {
     Utils.classForName("org.apache.derby.jdbc.EmbeddedDriver")
-    val conn = DriverManager.getConnection(
-      "jdbc:derby:target/JdbcRDDSuiteDb;create=true")
+    val conn =
+      DriverManager.getConnection("jdbc:derby:target/JdbcRDDSuiteDb;create=true")
     try {
 
       try {

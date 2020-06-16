@@ -50,10 +50,8 @@ final class IterableGroupoid[A, SA <: IterableLike[A, SA]](implicit
 }
 
 trait PartialIterable0 {
-  implicit def IterableSemigroupoid[
-      A: Semigroup,
-      CC[A] <: IterableLike[A, CC[A]]](implicit
-      cbf: CanBuildFrom[CC[A], A, CC[A]]): Semigroupoid[CC[A]] =
+  implicit def IterableSemigroupoid[A: Semigroup, CC[A] <: IterableLike[A, CC[A]]](
+      implicit cbf: CanBuildFrom[CC[A], A, CC[A]]): Semigroupoid[CC[A]] =
     new IterableSemigroupoid[A, CC[A]]
 }
 

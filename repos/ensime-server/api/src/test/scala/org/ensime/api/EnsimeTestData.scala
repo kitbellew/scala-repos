@@ -137,10 +137,8 @@ trait EnsimeTestData {
 
   val completionInfoCList = CompletionInfoList("fooBar", List(completionInfo))
 
-  val refactorRenameEffect = new RefactorEffect(
-    7,
-    RefactorType.Rename,
-    List(TextEdit(file3, 5, 7, "aaa")))
+  val refactorRenameEffect =
+    new RefactorEffect(7, RefactorType.Rename, List(TextEdit(file3, 5, 7, "aaa")))
 
   val fileRange = FileRange("/abc", 7, 9)
 

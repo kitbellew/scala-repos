@@ -167,8 +167,7 @@ class StreamExecution(
         }
       case None => // We are starting this stream for the first time.
       case _ =>
-        throw new IllegalArgumentException(
-          "Expected composite offset from sink")
+        throw new IllegalArgumentException("Expected composite offset from sink")
     }
   }
 

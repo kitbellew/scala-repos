@@ -59,8 +59,7 @@ class StreamFileDocSpec extends AkkaSpec(UnboundedMailboxConfig) {
     //#custom-dispatcher-code
     FileIO
       .fromFile(file)
-      .withAttributes(
-        ActorAttributes.dispatcher("custom-blocking-io-dispatcher"))
+      .withAttributes(ActorAttributes.dispatcher("custom-blocking-io-dispatcher"))
     //#custom-dispatcher-code
   }
 }

@@ -57,12 +57,10 @@ object IndexService extends SLF4JLogging {
     }
     def toEntity(d: Document): T = cons(d.get("fqn"), None)
   }
-  implicit object ClassIndexS
-      extends AFqnIndexS(classOf[ClassIndex], ClassIndex)
+  implicit object ClassIndexS extends AFqnIndexS(classOf[ClassIndex], ClassIndex)
   implicit object MethodIndexS
       extends AFqnIndexS(classOf[MethodIndex], MethodIndex)
-  implicit object FieldIndexS
-      extends AFqnIndexS(classOf[FieldIndex], FieldIndex)
+  implicit object FieldIndexS extends AFqnIndexS(classOf[FieldIndex], FieldIndex)
   implicit object FqnIndexS extends DocumentRecovery[FqnIndex] {
     def toEntity(d: Document) =
       d.get("TYPE") match {
@@ -96,10 +94,7 @@ class IndexService(path: File) {
 
   private val lucene = new SimpleLucene(path, analyzers)
 
-  def persist(
-      check: FileCheck,
-      symbols: List[FqnSymbol],
-      commit: Boolean): Unit = {
+  def persist(check: FileCheck, symbols: List[FqnSymbol], commit: Boolean): Unit = {
     val f = Some(check)
     val fqns: List[Document] = symbols.map {
       case FqnSymbol(_, _, _, fqn, Some(_), _, _, _, _) =>

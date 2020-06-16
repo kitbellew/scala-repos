@@ -391,9 +391,7 @@ sealed abstract class AsyncStream[+A] {
       case FromFuture(fa) =>
         Cons(Future.value(z), () => FromFuture(fa.map(f(z, _))))
       case Cons(fa, more) =>
-        Cons(
-          Future.value(z),
-          () => Embed(fa.map(a => more().scanLeft(f(z, a))(f))))
+        Cons(Future.value(z), () => Embed(fa.map(a => more().scanLeft(f(z, a))(f))))
     }
 
   /**
@@ -627,8 +625,7 @@ sealed abstract class AsyncStream[+A] {
 
 object AsyncStream {
   private case object Empty extends AsyncStream[Nothing]
-  private case class Embed[A](fas: Future[AsyncStream[A]])
-      extends AsyncStream[A]
+  private case class Embed[A](fas: Future[AsyncStream[A]]) extends AsyncStream[A]
   private case class FromFuture[A](fa: Future[A]) extends AsyncStream[A]
   private class Cons[A](val fa: Future[A], next: () => AsyncStream[A])
       extends AsyncStream[A] {

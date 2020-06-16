@@ -38,9 +38,7 @@ class MavenRepoTest extends IndexingTestCase with UsefulTestCaseHelper {
     else
       assertException[InvalidRepository](
         Some(
-          SbtBundle(
-            "sbt.resolverIndexer.invalidRepository",
-            "/non-existent-dir"))) {
+          SbtBundle("sbt.resolverIndexer.invalidRepository", "/non-existent-dir"))) {
         createAndUpdateIndex(
           SbtResolver(
             SbtResolver.Kind.Maven,

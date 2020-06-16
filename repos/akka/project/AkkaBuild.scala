@@ -44,9 +44,7 @@ object AkkaBuild extends Build {
     UnidocRoot.akkaSettings ++
     Protobuf.settings ++ Seq(
     parallelExecution in GlobalScope := System
-      .getProperty(
-        "akka.parallelExecution",
-        parallelExecutionByDefault.toString)
+      .getProperty("akka.parallelExecution", parallelExecutionByDefault.toString)
       .toBoolean,
     Dist.distExclude := Seq(actorTests.id, docs.id, samples.id, osgi.id),
     S3.host in S3.upload := "downloads.typesafe.com.s3.amazonaws.com",
@@ -693,9 +691,7 @@ object AkkaBuild extends Build {
       */
 
     parallelExecution in Test := System
-      .getProperty(
-        "akka.parallelExecution",
-        parallelExecutionByDefault.toString)
+      .getProperty("akka.parallelExecution", parallelExecutionByDefault.toString)
       .toBoolean,
     logBuffered in Test := System
       .getProperty("akka.logBufferedTests", "false")

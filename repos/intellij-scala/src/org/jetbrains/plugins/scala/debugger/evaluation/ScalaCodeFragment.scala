@@ -146,10 +146,8 @@ class ScalaCodeFragment(project: Project, text: String) extends {
     val clone = cloneImpl(calcTreeElement.clone.asInstanceOf[FileElement])
       .asInstanceOf[ScalaCodeFragment]
     clone.imports = this.imports
-    clone.vFile = new LightVirtualFile(
-      "Dummy.scala",
-      ScalaFileType.SCALA_FILE_TYPE,
-      getText)
+    clone.vFile =
+      new LightVirtualFile("Dummy.scala", ScalaFileType.SCALA_FILE_TYPE, getText)
     clone.provider = new SingleRootFileViewProvider(
       PsiManager.getInstance(project),
       clone.vFile,

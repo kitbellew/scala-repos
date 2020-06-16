@@ -135,10 +135,7 @@ private final class PushApi(
 
   private type MonitorType = lila.mon.push.send.type => (String => Unit)
 
-  private def pushToAll(
-      userId: String,
-      monitor: MonitorType,
-      data: PushApi.Data) = {
+  private def pushToAll(userId: String, monitor: MonitorType, data: PushApi.Data) = {
     googlePush(userId) {
       monitor(lila.mon.push.send)("android")
       data

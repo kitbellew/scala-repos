@@ -160,16 +160,12 @@ object ClassFileParser extends ByteCodeReader {
 
   // parse runtime-visible annotations
   abstract class ElementValue
-  case class AnnotationElement(
-      elementNameIndex: Int,
-      elementValue: ElementValue)
+  case class AnnotationElement(elementNameIndex: Int, elementValue: ElementValue)
   case class ConstValueIndex(index: Int) extends ElementValue
   case class EnumConstValue(typeNameIndex: Int, constNameIndex: Int)
       extends ElementValue
   case class ClassInfoIndex(index: Int) extends ElementValue
-  case class Annotation(
-      typeIndex: Int,
-      elementValuePairs: Seq[AnnotationElement])
+  case class Annotation(typeIndex: Int, elementValuePairs: Seq[AnnotationElement])
       extends ElementValue
   case class ArrayValue(values: Seq[ElementValue]) extends ElementValue
 
@@ -202,8 +198,7 @@ object ClassFileParser extends ByteCodeReader {
   def memberRef(description: String) =
     u2 ~ u2 ^^ add1 {
       case classRef ~ nameAndTypeRef =>
-        pool =>
-          description + ": " + pool(classRef) + ", " + pool(nameAndTypeRef)
+        pool => description + ": " + pool(classRef) + ", " + pool(nameAndTypeRef)
     }
 
   def add1[T](f: T => ConstantPool => Any)(raw: T)(pool: ConstantPool) =

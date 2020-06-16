@@ -264,9 +264,8 @@ object Execution {
       e.map(fn)
     override def flatMap[T, U](e: Execution[T])(
         fn: T => Execution[U]): Execution[U] = e.flatMap(fn)
-    override def join[T, U](
-        t: Execution[T],
-        u: Execution[U]): Execution[(T, U)] = t.zip(u)
+    override def join[T, U](t: Execution[T], u: Execution[U]): Execution[(T, U)] =
+      t.zip(u)
   }
 
   def withConfig[T](ex: Execution[T])(c: Config => Config): Execution[T] =

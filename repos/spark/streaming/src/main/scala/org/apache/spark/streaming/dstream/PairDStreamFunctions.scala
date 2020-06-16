@@ -147,10 +147,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     */
   def groupByKeyAndWindow(windowDuration: Duration): DStream[(K, Iterable[V])] =
     ssc.withScope {
-      groupByKeyAndWindow(
-        windowDuration,
-        self.slideDuration,
-        defaultPartitioner())
+      groupByKeyAndWindow(windowDuration, self.slideDuration, defaultPartitioner())
     }
 
   /**
@@ -629,8 +626,7 @@ class PairDStreamFunctions[K, V](self: DStream[(K, V)])(implicit
     ssc.withScope {
       self.transformWith(
         other,
-        (rdd1: RDD[(K, V)], rdd2: RDD[(K, W)]) =>
-          rdd1.cogroup(rdd2, partitioner)
+        (rdd1: RDD[(K, V)], rdd2: RDD[(K, W)]) => rdd1.cogroup(rdd2, partitioner)
       )
     }
 

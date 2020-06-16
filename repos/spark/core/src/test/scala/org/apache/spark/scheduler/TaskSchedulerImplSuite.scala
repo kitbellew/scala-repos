@@ -123,9 +123,7 @@ class TaskSchedulerImplSuite
     val numFreeCores = 1
     taskScheduler.setDAGScheduler(dagScheduler)
     val taskSet = new TaskSet(
-      Array(
-        new NotSerializableFakeTask(1, 0),
-        new NotSerializableFakeTask(0, 1)),
+      Array(new NotSerializableFakeTask(1, 0), new NotSerializableFakeTask(0, 1)),
       0,
       0,
       0,
@@ -148,8 +146,7 @@ class TaskSchedulerImplSuite
     assert(taskDescriptions.map(_.executorId) === Seq("executor0"))
   }
 
-  test(
-    "refuse to schedule concurrent attempts for the same stage (SPARK-8103)") {
+  test("refuse to schedule concurrent attempts for the same stage (SPARK-8103)") {
     sc = new SparkContext("local", "TaskSchedulerImplSuite")
     val taskScheduler = new TaskSchedulerImpl(sc)
     taskScheduler.initialize(new FakeSchedulerBackend)

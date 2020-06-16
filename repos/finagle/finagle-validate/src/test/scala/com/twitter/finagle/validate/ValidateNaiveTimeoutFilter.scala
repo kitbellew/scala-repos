@@ -47,11 +47,7 @@ class ValidateNaiveTimeoutFilter extends FunSuite {
     val gen =
       new LoadGenerator(
         data.map { latency =>
-          new Event(
-            now,
-            latency.milliseconds,
-            true,
-            { b: Boolean => Try(true) })
+          new Event(now, latency.milliseconds, true, { b: Boolean => Try(true) })
         },
         {
           case (duration: Duration, f: Future[Boolean]) =>

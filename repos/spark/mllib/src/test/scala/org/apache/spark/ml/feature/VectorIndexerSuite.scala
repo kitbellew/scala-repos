@@ -141,9 +141,7 @@ class VectorIndexerSuite
   }
 
   test("Same result with dense and sparse vectors") {
-    def testDenseSparse(
-        densePoints: DataFrame,
-        sparsePoints: DataFrame): Unit = {
+    def testDenseSparse(densePoints: DataFrame, sparsePoints: DataFrame): Unit = {
       val denseVectorIndexer = getIndexer.setMaxCategories(2)
       val sparseVectorIndexer = getIndexer.setMaxCategories(2)
       val denseModel = denseVectorIndexer.fit(densePoints)
@@ -233,18 +231,9 @@ class VectorIndexerSuite
           throw e
       }
     }
-    checkCategoryMaps(
-      densePoints1,
-      maxCategories = 2,
-      categoricalFeatures = Set(0))
-    checkCategoryMaps(
-      densePoints1,
-      maxCategories = 3,
-      categoricalFeatures = Set(0, 2))
-    checkCategoryMaps(
-      densePoints2,
-      maxCategories = 2,
-      categoricalFeatures = Set(1, 3))
+    checkCategoryMaps(densePoints1, maxCategories = 2, categoricalFeatures = Set(0))
+    checkCategoryMaps(densePoints1, maxCategories = 3, categoricalFeatures = Set(0, 2))
+    checkCategoryMaps(densePoints2, maxCategories = 2, categoricalFeatures = Set(1, 3))
   }
 
   test("Maintain sparsity for sparse vectors") {

@@ -122,9 +122,7 @@ class RegressionStrategy(params: RegressionStrategyParams)
   }
 
   // Returns a mapping of tickers to predictions
-  def onClose(
-      model: Map[String, DenseVector[Double]],
-      query: Query): Prediction = {
+  def onClose(model: Map[String, DenseVector[Double]], query: Query): Prediction = {
     val dataView = query.dataView
 
     val prediction = query.tickers

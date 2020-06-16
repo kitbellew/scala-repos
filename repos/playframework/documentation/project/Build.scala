@@ -24,8 +24,7 @@ object ApplicationBuild extends Build {
       libraryDependencies ++= Seq(
         "org.mockito" % "mockito-core" % "1.9.5" % "test"
       ),
-      PlayDocsKeys.docsJarFile := Some(
-        (packageBin in (playDocs, Compile)).value),
+      PlayDocsKeys.docsJarFile := Some((packageBin in (playDocs, Compile)).value),
       PlayDocsKeys.playDocsValidationConfig := PlayDocsValidation
         .ValidationConfig(downstreamWikiPages = Set(
           "ScalaAnorm",

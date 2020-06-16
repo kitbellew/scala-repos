@@ -297,8 +297,7 @@ class IllegalStateException(s: String, e: Throwable)
   def this() = this(null, null)
 }
 
-class IllegalThreadStateException(s: String)
-    extends IllegalArgumentException(s) {
+class IllegalThreadStateException(s: String) extends IllegalArgumentException(s) {
   def this() = this(null)
 }
 

@@ -79,8 +79,7 @@ trait Lifting { this: Types =>
           e: JValue => Result[E],
           f: JValue => Result[F]): JValue => Result[R] =
         (json: JValue) =>
-          (a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@| f(json))(
-            z)
+          (a(json) |@| b(json) |@| c(json) |@| d(json) |@| e(json) |@| f(json))(z)
     }
 
   implicit def Func7ToJSON[

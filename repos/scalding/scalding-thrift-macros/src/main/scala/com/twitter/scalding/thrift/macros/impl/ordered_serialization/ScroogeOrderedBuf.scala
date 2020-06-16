@@ -70,8 +70,7 @@ object ScroogeOrderedBuf {
     val elementData: List[(c.universe.Type, TermName, TreeOrderedBuf[c.type])] =
       outerType.declarations
         .collect { case m: MethodSymbol => m }
-        .filter(m =>
-          fieldNames.contains(m.name.toTermName.toString.toLowerCase))
+        .filter(m => fieldNames.contains(m.name.toTermName.toString.toLowerCase))
         .map { accessorMethod =>
           val fieldType = accessorMethod.returnType.asSeenFrom(
             outerType,

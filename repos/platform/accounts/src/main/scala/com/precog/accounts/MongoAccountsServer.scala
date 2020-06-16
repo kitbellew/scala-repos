@@ -88,9 +88,7 @@ object MongoAccountServer
 
   def Emailer(config: Configuration) = {
     val emailProps = new java.util.Properties
-    emailProps.setProperty(
-      "mail.smtp.host",
-      config[String]("host", "localhost"))
+    emailProps.setProperty("mail.smtp.host", config[String]("host", "localhost"))
     emailProps.setProperty("mail.smtp.port", config[String]("port", "25"))
     emailProps.setProperty(
       "mail.from",

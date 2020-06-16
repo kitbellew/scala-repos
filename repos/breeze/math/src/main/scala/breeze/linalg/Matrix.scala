@@ -39,8 +39,7 @@ trait MatrixLike[@spec(Double, Int, Float, Long) V, +Self <: Matrix[V]]
 
 }
 
-trait Matrix[@spec(Double, Int, Float, Long) V]
-    extends MatrixLike[V, Matrix[V]] {
+trait Matrix[@spec(Double, Int, Float, Long) V] extends MatrixLike[V, Matrix[V]] {
 
   final def apply(i: (Int, Int)) = apply(i._1, i._2)
   final def update(i: (Int, Int), e: V): Unit = {
@@ -186,9 +185,7 @@ object Matrix
   private[linalg] def zeroCols[V: ClassTag](rows: Int): Matrix[V] =
     emptyMatrix(rows, 0)
 
-  private[linalg] def emptyMatrix[V: ClassTag](
-      _rows: Int,
-      _cols: Int): Matrix[V] =
+  private[linalg] def emptyMatrix[V: ClassTag](_rows: Int, _cols: Int): Matrix[V] =
     new Matrix[V] {
       def activeIterator: Iterator[((Int, Int), V)] = Iterator.empty
 

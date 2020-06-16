@@ -61,15 +61,13 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
       MarathonTestHelper
         .runningTaskForApp(appWithoutIpAddress.id)
         .withAgentInfo(_.copy(host = host))
-        .withNetworking(
-          Task.NetworkInfoList(networkWithoutIp, networkWithOneIp1))
+        .withNetworking(Task.NetworkInfoList(networkWithoutIp, networkWithOneIp1))
 
     val taskWithMultipleNetworkAndNoIp =
       MarathonTestHelper
         .runningTaskForApp(appWithoutIpAddress.id)
         .withAgentInfo(_.copy(host = host))
-        .withNetworking(
-          Task.NetworkInfoList(networkWithoutIp, networkWithoutIp))
+        .withNetworking(Task.NetworkInfoList(networkWithoutIp, networkWithoutIp))
 
     val taskWithOneNetworkAndMultipleIPs =
       MarathonTestHelper
@@ -145,8 +143,7 @@ class TaskTest extends FunSuite with Mockito with GivenWhenThen with Matchers {
 
   test("ipAddresses returns one IP for MarathonTask instances with one IP and multiple NetworkInfo") {
     val f = new Fixture
-    f.taskWithMultipleNetworksAndOneIp.ipAddresses should equal(
-      Seq(f.ipAddress1))
+    f.taskWithMultipleNetworksAndOneIp.ipAddresses should equal(Seq(f.ipAddress1))
   }
 
 }

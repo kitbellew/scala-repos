@@ -88,9 +88,7 @@ case class PartestTask(taskDef: TaskDef, args: Array[String]) extends Task {
   val scalaVersion = taskDef.fullyQualifiedName.stripPrefix("partest-")
 
   /** Executes this task, possibly returning to the client new tasks to execute. */
-  def execute(
-      eventHandler: EventHandler,
-      loggers: Array[Logger]): Array[Task] = {
+  def execute(eventHandler: EventHandler, loggers: Array[Logger]): Array[Task] = {
     val forkedCp = scala.util.Properties.javaClassPath
     val classLoader = new URLClassLoader(
       forkedCp.split(java.io.File.pathSeparator).map(new File(_).toURI.toURL))

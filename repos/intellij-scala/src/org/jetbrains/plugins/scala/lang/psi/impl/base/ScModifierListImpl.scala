@@ -133,9 +133,8 @@ class ScModifierListImpl private (
     name match {
       case "override" =>
         if (value) {
-          val node = ScalaPsiElementFactory.createModifierFromText(
-            "override",
-            getManager)
+          val node =
+            ScalaPsiElementFactory.createModifierFromText("override", getManager)
           addBefore(node)
         } else
           getNode.removeChild(
@@ -179,18 +178,16 @@ class ScModifierListImpl private (
             findChildByType[PsiElement](ScalaTokenTypes.kFINAL).getNode)
       case "implicit" =>
         if (value) {
-          val node = ScalaPsiElementFactory.createModifierFromText(
-            "implicit",
-            getManager)
+          val node =
+            ScalaPsiElementFactory.createModifierFromText("implicit", getManager)
           addBefore(node)
         } else
           getNode.removeChild(
             findChildByType[PsiElement](ScalaTokenTypes.kIMPLICIT).getNode)
       case "abstract" =>
         if (value) {
-          val node = ScalaPsiElementFactory.createModifierFromText(
-            "abstract",
-            getManager)
+          val node =
+            ScalaPsiElementFactory.createModifierFromText("abstract", getManager)
           addBefore(node)
         } else
           getNode.removeChild(

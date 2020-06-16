@@ -133,12 +133,7 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
         })
         .to[Set]
       db.run(mark("q6", q6.result))
-        .map(
-          _ shouldBe Set(
-            (1, 3, 3, 3, 3, 3),
-            (2, 3, 3, 3, 3, 3),
-            (3, 2, 2, 2, 2, 2),
-            (4, 1, 1, 1, 1, 0)))
+        .map(_ shouldBe Set((1, 3, 3, 3, 3, 3), (2, 3, 3, 3, 3, 3), (3, 2, 2, 2, 2, 2), (4, 1, 1, 1, 1, 0)))
     }.flatMap { _ =>
       val q7 = ts
         .groupBy(_.a)

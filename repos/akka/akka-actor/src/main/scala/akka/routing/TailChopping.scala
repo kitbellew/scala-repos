@@ -272,10 +272,7 @@ final case class TailChoppingGroup(
       routeePaths: java.lang.Iterable[String],
       within: FiniteDuration,
       interval: FiniteDuration) =
-    this(
-      paths = immutableSeq(routeePaths),
-      within = within,
-      interval = interval)
+    this(paths = immutableSeq(routeePaths), within = within, interval = interval)
 
   override def createRouter(system: ActorSystem): Router =
     new Router(

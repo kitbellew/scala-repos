@@ -169,9 +169,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
           meq(path),
           w.capture(),
           cb.capture(),
-          meq(null))) thenAnswer answer[
-        Watcher,
-        AsyncCallback.Children2Callback](1, 2) {
+          meq(null))) thenAnswer answer[Watcher, AsyncCallback.Children2Callback](1, 2) {
         case (watcher: Watcher, cbValue: AsyncCallback.Children2Callback) =>
           children onSuccess {
             case ZNode.Children(znode, stat, children) =>
@@ -619,8 +617,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
 
             val update = new Promise[WatchedEvent]
 
-            watch(znode.path)(Future(new Stat))(
-              Future(StateEvent.Disconnected()))
+            watch(znode.path)(Future(new Stat))(Future(StateEvent.Disconnected()))
             val offer = znode.exists.monitor()
             assert(offer.syncWait().get() == result)
 
@@ -641,8 +638,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
             val h = new MonitorHelper
             import h._
 
-            watch(znode.path)(Future(new Stat))(
-              Future(StateEvent.Disconnected()))
+            watch(znode.path)(Future(new Stat))(Future(StateEvent.Disconnected()))
             val offer = znode.exists.monitor()
             assert(offer.syncWait().get == result)
 
@@ -802,8 +798,7 @@ class ZkClientTest extends WordSpec with MockitoSugar {
         val update = znode.getData.monitor()
         try {
           results foreach { data =>
-            assert(
-              Await.result(update.sync(), 1.second).get().path == data.path)
+            assert(Await.result(update.sync(), 1.second).get().path == data.path)
           }
         } catch {
           case e: Throwable =>

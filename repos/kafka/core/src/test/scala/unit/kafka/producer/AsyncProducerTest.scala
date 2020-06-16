@@ -239,14 +239,8 @@ class AsyncProducerTest {
 
     val topic1Broker1Data =
       ArrayBuffer[KeyedMessage[Int, Message]](
-        new KeyedMessage[Int, Message](
-          "topic1",
-          0,
-          new Message("msg1".getBytes)),
-        new KeyedMessage[Int, Message](
-          "topic1",
-          2,
-          new Message("msg3".getBytes)))
+        new KeyedMessage[Int, Message]("topic1", 0, new Message("msg1".getBytes)),
+        new KeyedMessage[Int, Message]("topic1", 2, new Message("msg3".getBytes)))
     val topic1Broker2Data = ArrayBuffer[KeyedMessage[Int, Message]](
       new KeyedMessage[Int, Message](
         "topic1",
@@ -456,9 +450,7 @@ class AsyncProducerTest {
     props.put("metadata.broker.list", brokerList)
     props.put("request.required.acks", "1")
     props.put("serializer.class", classOf[StringEncoder].getName.toString)
-    props.put(
-      "key.serializer.class",
-      classOf[NullEncoder[Int]].getName.toString)
+    props.put("key.serializer.class", classOf[NullEncoder[Int]].getName.toString)
     props.put("producer.num.retries", 3.toString)
 
     val config = new ProducerConfig(props)

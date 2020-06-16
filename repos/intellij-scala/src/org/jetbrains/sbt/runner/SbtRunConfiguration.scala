@@ -70,9 +70,7 @@ class SbtRunConfiguration(
     super.writeExternal(element)
     JDOMExternalizer.write(element, "tasks", getTasks)
     JDOMExternalizer.write(element, "vmparams", getJavaOptions)
-    EnvironmentVariablesComponent.writeExternal(
-      element,
-      getEnvironmentVariables)
+    EnvironmentVariablesComponent.writeExternal(element, getEnvironmentVariables)
   }
 
   override def readExternal(element: Element) {

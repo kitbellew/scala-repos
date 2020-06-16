@@ -102,9 +102,7 @@ private sealed trait ColumnHasher {
   protected def hashImpl(row: Int): Int
 }
 
-private final case class StrColumnHasher(
-    columnRef: ColumnRef,
-    column: StrColumn)
+private final case class StrColumnHasher(columnRef: ColumnRef, column: StrColumn)
     extends ColumnHasher {
   private val pathHash = columnRef.selector.hashCode
   protected final def hashImpl(row: Int): Int =
@@ -179,18 +177,14 @@ private final case class DoubleColumnHasher(
     13 * pathHash + 23 * NumericHash(column(row))
 }
 
-private final case class NumColumnHasher(
-    columnRef: ColumnRef,
-    column: NumColumn)
+private final case class NumColumnHasher(columnRef: ColumnRef, column: NumColumn)
     extends ColumnHasher {
   private val pathHash = columnRef.selector.hashCode
   protected final def hashImpl(row: Int): Int =
     13 * pathHash + 23 * NumericHash(column(row))
 }
 
-private final case class CValueColumnHasher(
-    columnRef: ColumnRef,
-    column: Column)
+private final case class CValueColumnHasher(columnRef: ColumnRef, column: Column)
     extends ColumnHasher {
   private val pathHash = columnRef.selector.hashCode
   protected final def hashImpl(row: Int): Int =

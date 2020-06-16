@@ -47,7 +47,8 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
     futures.foreach(Await.result(_, 10.seconds))
   }
 
-  test("SPARK-8443: split wide projections into blocks due to JVM code size limit") {
+  test(
+    "SPARK-8443: split wide projections into blocks due to JVM code size limit") {
     val length = 5000
     val expressions = List.fill(length)(EqualTo(Literal(1), Literal(1)))
     val plan = GenerateMutableProjection.generate(expressions)()
@@ -60,15 +61,15 @@ class CodeGenerationSuite extends SparkFunSuite with ExpressionEvalHelper {
     }
   }
 
-  test("SPARK-13242: case-when expression with large number of branches (or cases)") {
+  test(
+    "SPARK-13242: case-when expression with large number of branches (or cases)") {
     val cases = 50
     val clauses = 20
 
     // Generate an individual case
     def generateCase(n: Int): (Expression, Expression) = {
       val condition = (1 to clauses)
-        .map(c =>
-          EqualTo(BoundReference(0, StringType, false), Literal(s"$c:$n")))
+        .map(c => EqualTo(BoundReference(0, StringType, false), Literal(s"$c:$n")))
         .reduceLeft[Expression]((l, r) => Or(l, r))
       (condition, Literal(n))
     }

@@ -191,8 +191,7 @@ object Plugin {
             pd.name,
             s"Ignoring duplicate plugin ${pd.name} (${pd.classname})"))
       case Success((pd, loader)) if ignoring contains pd.name =>
-        Failure(
-          new PluginLoadException(pd.name, s"Disabling plugin ${pd.name}"))
+        Failure(new PluginLoadException(pd.name, s"Disabling plugin ${pd.name}"))
       case Success((pd, loader)) =>
         seen += pd.classname
         Plugin.load(pd.classname, loader)

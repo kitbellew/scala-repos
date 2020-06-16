@@ -33,10 +33,7 @@ object SerializationExamples extends Specification {
       Team("QA", List(Employee("John Doe", 5), Employee("Mike", 3))),
       Team(
         "Impl",
-        List(
-          Employee("Mark", 4),
-          Employee("Mary", 5),
-          Employee("Nick Noob", 1))))
+        List(Employee("Mark", 4), Employee("Mary", 5), Employee("Nick Noob", 1))))
   )
 
   "Project serialization example" in {
@@ -255,8 +252,7 @@ object CustomTypeHintFieldNameExample extends TypeHintExamples {
 
   implicit val formats = new Formats {
     val dateFormat = DefaultFormats.lossless.dateFormat
-    override val typeHints = ShortTypeHints(
-      classOf[Fish] :: classOf[Dog] :: Nil)
+    override val typeHints = ShortTypeHints(classOf[Fish] :: classOf[Dog] :: Nil)
     override val typeHintFieldName = "$type$"
   }
 
@@ -346,8 +342,7 @@ object CustomSerializerExamples extends Specification {
           },
           {
             case x: Date =>
-              JObject(
-                JField("$dt", JString(format.dateFormat.format(x))) :: Nil)
+              JObject(JField("$dt", JString(format.dateFormat.format(x))) :: Nil)
           }
         ))
 

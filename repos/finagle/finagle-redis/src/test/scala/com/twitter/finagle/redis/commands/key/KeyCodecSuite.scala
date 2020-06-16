@@ -112,9 +112,7 @@ final class KeyCodecSuite extends RedisRequestTest {
     assert(codec(wrap("PEXPIRE baz -1\r\n")) == List(PExpire(baz, -1L)))
   }
 
-  test(
-    "Correctly encode one key to PEXPIREAT at a future timestamp",
-    CodecTest) {
+  test("Correctly encode one key to PEXPIREAT at a future timestamp", CodecTest) {
     assert(
       codec(wrap("PEXPIREAT boo 100000\r\n")) ==
         List(PExpireAt(boo, Time.fromMilliseconds(100000))))

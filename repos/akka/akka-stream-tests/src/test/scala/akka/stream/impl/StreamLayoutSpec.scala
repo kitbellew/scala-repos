@@ -225,8 +225,7 @@ class StreamLayoutSpec extends AkkaSpec {
     override def cancel(): Unit = ()
   }
 
-  case class TestSubscriber(owner: Module, port: InPort)
-      extends Subscriber[Any] {
+  case class TestSubscriber(owner: Module, port: InPort) extends Subscriber[Any] {
     var upstreamModule: Module = _
     var upstreamPort: OutPort = _
 
@@ -310,8 +309,7 @@ class StreamLayoutSpec extends AkkaSpec {
       }
     }
 
-    materializer.publishers.distinct.size should be(
-      materializer.publishers.size)
+    materializer.publishers.distinct.size should be(materializer.publishers.size)
     materializer.subscribers.distinct.size should be(
       materializer.subscribers.size)
 

@@ -32,8 +32,7 @@ class RuntimeTypesTest {
     assertTrue((Array("hello"): Any).isInstanceOf[Cloneable])
   }
 
-  @Test def scala_Arrays_cast_to_Serializable_and_Cloneable_issue_2094()
-      : Unit = {
+  @Test def scala_Arrays_cast_to_Serializable_and_Cloneable_issue_2094(): Unit = {
     (Array(3): Any).asInstanceOf[Serializable] // should not throw
     (Array(3): Any).asInstanceOf[Cloneable] // should not throw
     (Array("hello"): Any).asInstanceOf[Serializable] // should not throw
@@ -58,8 +57,7 @@ class RuntimeTypesTest {
     test(null)
   }
 
-  @Test def scala_Nothing_reflected_casts_to_scala_Nothing_should_fail()
-      : Unit = {
+  @Test def scala_Nothing_reflected_casts_to_scala_Nothing_should_fail(): Unit = {
     assumeTrue(hasCompliantAsInstanceOfs)
     def test(x: Any): Unit = {
       try {

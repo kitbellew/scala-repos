@@ -31,8 +31,7 @@ final class FishnetApi(
     else repo.getEnabledClient(req.fishnet.apikey)
   } map {
     case None =>
-      Failure(
-        new Exception("Can't authenticate: invalid key or disabled client"))
+      Failure(new Exception("Can't authenticate: invalid key or disabled client"))
     case Some(client) =>
       ClientVersion accept req.fishnet.version map (_ => client)
   } flatMap {

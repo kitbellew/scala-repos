@@ -299,8 +299,7 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
       header(ACCESS_CONTROL_ALLOW_HEADERS, result) must beNone
       header(ACCESS_CONTROL_ALLOW_METHODS, result) must beNone
-      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
-        "http://localhost")
+      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome("http://localhost")
       header(ACCESS_CONTROL_EXPOSE_HEADERS, result) must beNone
       header(ACCESS_CONTROL_MAX_AGE, result) must beNone
       header(VARY, result) must beSome(ORIGIN)
@@ -315,8 +314,7 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
       header(ACCESS_CONTROL_ALLOW_HEADERS, result) must beNone
       header(ACCESS_CONTROL_ALLOW_METHODS, result) must beNone
-      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
-        "http://localhost")
+      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome("http://localhost")
       header(ACCESS_CONTROL_EXPOSE_HEADERS, result) must beNone
       header(ACCESS_CONTROL_MAX_AGE, result) must beNone
       header(VARY, result) must beSome(ORIGIN)
@@ -332,8 +330,7 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
       header(ACCESS_CONTROL_ALLOW_HEADERS, result) must beNone
       header(ACCESS_CONTROL_ALLOW_METHODS, result) must beSome("PUT")
-      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
-        "http://localhost")
+      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome("http://localhost")
       header(ACCESS_CONTROL_EXPOSE_HEADERS, result) must beNone
       header(ACCESS_CONTROL_MAX_AGE, result) must beSome("3600")
       header(VARY, result) must beSome(ORIGIN)
@@ -351,8 +348,7 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_ALLOW_HEADERS, result) must beSome(
         "x-header1,x-header2")
       header(ACCESS_CONTROL_ALLOW_METHODS, result) must beSome("PUT")
-      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
-        "http://localhost")
+      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome("http://localhost")
       header(ACCESS_CONTROL_EXPOSE_HEADERS, result) must beNone
       header(ACCESS_CONTROL_MAX_AGE, result) must beSome("3600")
       header(VARY, result) must beSome(ORIGIN)
@@ -366,8 +362,7 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
       header(ACCESS_CONTROL_ALLOW_HEADERS, result) must beNone
       header(ACCESS_CONTROL_ALLOW_METHODS, result) must beNone
-      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
-        "http://localhost")
+      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome("http://localhost")
       header(ACCESS_CONTROL_EXPOSE_HEADERS, result) must beNone
       header(ACCESS_CONTROL_MAX_AGE, result) must beNone
       header(VARY, result) must beSome(ORIGIN)
@@ -420,8 +415,7 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
       header(ACCESS_CONTROL_ALLOW_HEADERS, result) must beNone
       header(ACCESS_CONTROL_ALLOW_METHODS, result) must beSome("PUT")
-      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
-        "http://localhost")
+      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome("http://localhost")
       header(ACCESS_CONTROL_EXPOSE_HEADERS, result) must beNone
       header(ACCESS_CONTROL_MAX_AGE, result) must beNone
       header(VARY, result) must beSome(ORIGIN)
@@ -440,8 +434,7 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
       header(ACCESS_CONTROL_ALLOW_HEADERS, result) must beNone
       header(ACCESS_CONTROL_ALLOW_METHODS, result) must beSome("PUT")
-      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
-        "http://localhost")
+      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome("http://localhost")
       header(ACCESS_CONTROL_EXPOSE_HEADERS, result) must beNone
       header(ACCESS_CONTROL_MAX_AGE, result) must beSome("1800")
       header(VARY, result) must beSome(ORIGIN)
@@ -488,8 +481,7 @@ trait CORSCommonSpec extends PlaySpecification {
       header(ACCESS_CONTROL_ALLOW_CREDENTIALS, result) must beSome("true")
       header(ACCESS_CONTROL_ALLOW_HEADERS, result) must beNone
       header(ACCESS_CONTROL_ALLOW_METHODS, result) must beNone
-      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome(
-        "http://localhost")
+      header(ACCESS_CONTROL_ALLOW_ORIGIN, result) must beSome("http://localhost")
       header(ACCESS_CONTROL_EXPOSE_HEADERS, result) must beSome(
         "X-Header1,X-Header2")
       header(ACCESS_CONTROL_MAX_AGE, result) must beNone

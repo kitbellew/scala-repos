@@ -103,9 +103,7 @@ private[tournament] final class TournamentApi(
         .sortBy(_.bestRank)
         .headOption ?? { bestCandidate =>
         def switch =
-          TournamentRepo.setFeaturedGameId(
-            tour.id,
-            bestCandidate.pairing.gameId)
+          TournamentRepo.setFeaturedGameId(tour.id, bestCandidate.pairing.gameId)
         curOption.filter(_.pairing.playing) match {
           case Some(current) if bestCandidate.bestRank < current.bestRank =>
             switch
@@ -367,10 +365,7 @@ private[tournament] final class TournamentApi(
       }
     }
 
-  private def playerPovs(
-      tourId: String,
-      userId: String,
-      nb: Int): Fu[List[Pov]] =
+  private def playerPovs(tourId: String, userId: String, nb: Int): Fu[List[Pov]] =
     PairingRepo.recentIdsByTourAndUserId(tourId, userId, nb) flatMap { ids =>
       GameRepo games ids map {
         _.flatMap { Pov.ofUserId(_, userId) }

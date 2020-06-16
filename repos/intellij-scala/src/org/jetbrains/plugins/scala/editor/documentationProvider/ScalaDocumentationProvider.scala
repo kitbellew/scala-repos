@@ -54,10 +54,7 @@ import org.jetbrains.plugins.scala.lang.psi.{
 import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 import org.jetbrains.plugins.scala.lang.scaladoc.lexer.ScalaDocTokenType
 import org.jetbrains.plugins.scala.lang.scaladoc.parser.parsing.MyScaladocParsing
-import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.{
-  ScDocComment,
-  ScDocTag
-}
+import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.{ScDocComment, ScDocTag}
 import org.jetbrains.plugins.scala.lang.structureView.StructureViewUtil
 
 import scala.annotation.tailrec
@@ -463,9 +460,7 @@ object ScalaDocumentationProvider {
     }
   }
 
-  def parseType(
-      elem: ScTypedDefinition,
-      typeToString: ScType => String): String = {
+  def parseType(elem: ScTypedDefinition, typeToString: ScType => String): String = {
     val buffer: StringBuilder = new StringBuilder(": ")
     val typez = elem match {
       case fun: ScFunction => fun.returnType.getOrAny
@@ -714,8 +709,7 @@ object ScalaDocumentationProvider {
       parseType(
         param,
         t => {
-          (if (param.isCallByNameParameter) s"$arrow " else "") + typeToString(
-            t)
+          (if (param.isCallByNameParameter) s"$arrow " else "") + typeToString(t)
         }))
     if (param.isRepeatedParameter) buffer.append("*")
     if (param.isDefaultParam) {
@@ -1163,9 +1157,7 @@ object ScalaDocumentationProvider {
     })
   }
 
-  def generateClassInfo(
-      clazz: ScTypeDefinition,
-      subst: ScSubstitutor): String = {
+  def generateClassInfo(clazz: ScTypeDefinition, subst: ScSubstitutor): String = {
     val buffer = new StringBuilder
     val module = ModuleUtilCore.findModuleForPsiElement(clazz)
     if (module != null) {
@@ -1175,8 +1167,7 @@ object ScalaDocumentationProvider {
     val length = locationString.length
     if (length > 1) buffer.append(locationString.substring(1, length - 1))
     if (buffer.nonEmpty) buffer.append("\n")
-    buffer.append(
-      ScalaPsiUtil.getModifiersPresentableText(clazz.getModifierList))
+    buffer.append(ScalaPsiUtil.getModifiersPresentableText(clazz.getModifierList))
     buffer.append(clazz match {
       case _: ScObject => "object "
       case _: ScClass  => "class "
@@ -1207,9 +1198,7 @@ object ScalaDocumentationProvider {
     buffer.toString()
   }
 
-  def generateFunctionInfo(
-      function: ScFunction,
-      subst: ScSubstitutor): String = {
+  def generateFunctionInfo(function: ScFunction, subst: ScSubstitutor): String = {
     val buffer = new StringBuilder
     buffer.append(getMemberHeader(function))
     val list = function.getModifierList

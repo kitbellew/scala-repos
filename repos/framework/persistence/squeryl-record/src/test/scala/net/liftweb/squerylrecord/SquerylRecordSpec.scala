@@ -235,8 +235,8 @@ class SquerylRecordSpec extends Specification with AroundExample {
             where(e.companyId === company.idField) select (e)).head
           employee.id must_== td.e2.id
 
-          val loadedCompanies = from(companies)(c =>
-            where(c.created === company.created) select (c))
+          val loadedCompanies =
+            from(companies)(c => where(c.created === company.created) select (c))
           loadedCompanies.size must beGreaterThanOrEqualTo(1)
         }
       }
@@ -276,28 +276,22 @@ class SquerylRecordSpec extends Specification with AroundExample {
 
         // It should also be possible to select the ID field directly:
         val companyIdField: LongField[Company] = from(companies)(c =>
-          where(
-            c.idField in
-              from(companies)(c2 =>
-                where(c2.id === td.c1.id) select (c2.idField)))
+          where(c.idField in
+            from(companies)(c2 => where(c2.id === td.c1.id) select (c2.idField)))
             select (c.idField)).single
         companyIdField.get must_== td.c1.id
 
         // Strings should also be selectable in inner queries
         val companyIdByName: Long = from(companies)(c =>
-          where(
-            c.name in
-              from(companies)(c2 =>
-                where(c2.name === td.c1.name) select (c2.name)))
+          where(c.name in
+            from(companies)(c2 => where(c2.name === td.c1.name) select (c2.name)))
             select (c.id)).single
         companyIdByName must_== td.c1.id
 
         // ...And DateTime-Fields:
         val companyIdByCreated: DateTimeField[Company] = from(companies)(c =>
-          where(
-            c.created in
-              from(companies)(c2 =>
-                where(c2.id === td.c1.id) select (c2.created)))
+          where(c.created in
+            from(companies)(c2 => where(c2.id === td.c1.id) select (c2.created)))
             select (c.created)).single
         companyIdByCreated.get must_== td.c1.created.get
 

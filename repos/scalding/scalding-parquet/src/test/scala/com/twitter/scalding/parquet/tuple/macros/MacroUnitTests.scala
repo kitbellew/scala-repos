@@ -384,8 +384,7 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
 
       converter.currentValue shouldEqual SampleClassK(
         "foo",
-        Map(
-          SampleClassA(2, "bar") -> SampleClassB(SampleClassA(2, "bar"), "b1")))
+        Map(SampleClassA(2, "bar") -> SampleClassB(SampleClassA(2, "bar"), "b1")))
     }
   }
 
@@ -396,10 +395,7 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
       val e = SampleClassE(0, 1L, 2, d = true, 3f, 4d, "foo", 1)
       val schema = Macros.caseClassParquetSchema[SampleClassE]
       val rc = new StringBuilderRecordConsumer
-      writeSupport.writeRecord(
-        e,
-        rc,
-        MessageTypeParser.parseMessageType(schema))
+      writeSupport.writeRecord(e, rc, MessageTypeParser.parseMessageType(schema))
 
       rc.writeScenario shouldEqual """start message
                                      |start field a at 0
@@ -603,10 +599,7 @@ class MacroUnitTests extends WordSpec with Matchers with MockitoSugar {
       val writeSupport2 = Macros.caseClassParquetWriteSupport[SampleClassK]
       val k = SampleClassK(
         "foo",
-        Map(
-          SampleClassA(2, "foo") -> SampleClassB(
-            SampleClassA(2, "foo"),
-            "bar")))
+        Map(SampleClassA(2, "foo") -> SampleClassB(SampleClassA(2, "foo"), "bar")))
       val schema2 = MessageTypeParser.parseMessageType(
         Macros.caseClassParquetSchema[SampleClassK])
       val rc2 = new StringBuilderRecordConsumer

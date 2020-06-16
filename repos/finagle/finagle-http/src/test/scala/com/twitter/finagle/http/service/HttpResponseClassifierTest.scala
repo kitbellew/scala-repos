@@ -39,8 +39,7 @@ class HttpResponseClassifierTest extends FunSuite {
     val classifier = ok500.orElse(badReqs)
 
     assert(
-      ResponseClass.Success == classifier(
-        ReqRep(req, rep(Status.fromCode(500)))))
+      ResponseClass.Success == classifier(ReqRep(req, rep(Status.fromCode(500)))))
     assert(
       ResponseClass.NonRetryableFailure ==
         classifier(ReqRep(Request("fail" -> "1"), rep(Status.Ok))))

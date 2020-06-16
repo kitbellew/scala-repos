@@ -61,14 +61,11 @@ object IllegalHeaderException {
 case class InvalidContentLengthException(info: ErrorInfo)
     extends ExceptionWithErrorInfo(info)
 object InvalidContentLengthException {
-  def apply(
-      summary: String,
-      detail: String = ""): InvalidContentLengthException =
+  def apply(summary: String, detail: String = ""): InvalidContentLengthException =
     apply(ErrorInfo(summary, detail))
 }
 
-case class ParsingException(info: ErrorInfo)
-    extends ExceptionWithErrorInfo(info)
+case class ParsingException(info: ErrorInfo) extends ExceptionWithErrorInfo(info)
 object ParsingException {
   def apply(summary: String, detail: String = ""): ParsingException =
     apply(ErrorInfo(summary, detail))

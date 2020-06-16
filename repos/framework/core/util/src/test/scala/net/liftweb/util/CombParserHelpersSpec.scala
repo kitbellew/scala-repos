@@ -141,8 +141,7 @@ object CombParserHelpersSpec extends Specification with ScalaCheck {
       implicit def pick3Letters = AbcdStringGen.pickN(3, List("a", "a", "a"))
 
       forAll { (s: String) =>
-        (!(new scala.collection.immutable.StringOps(
-          s)).isEmpty) ==> repNNParser(s)
+        (!(new scala.collection.immutable.StringOps(s)).isEmpty) ==> repNNParser(s)
       }
     }
   }

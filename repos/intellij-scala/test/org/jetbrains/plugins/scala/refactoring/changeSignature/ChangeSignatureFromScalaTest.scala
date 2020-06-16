@@ -70,9 +70,8 @@ class ChangeSignatureFromScalaTest extends ChangeSignatureTestBase {
 
   def testSimpleMethod() = {
     isAddDefaultValue = false
-    val params = Seq(
-      parameterInfo("ii", 0, types.Int),
-      parameterInfo("b", 2, types.Boolean))
+    val params =
+      Seq(parameterInfo("ii", 0, types.Int), parameterInfo("b", 2, types.Boolean))
     doTest(null, "bar", null, Seq(params))
   }
 
@@ -168,9 +167,8 @@ class ChangeSignatureFromScalaTest extends ChangeSignatureTestBase {
   }
 
   def testRemoveClause() = {
-    val params = Seq(
-      parameterInfo("b", 1, types.Boolean),
-      parameterInfo("i", 0, types.Int))
+    val params =
+      Seq(parameterInfo("b", 1, types.Boolean), parameterInfo("i", 0, types.Int))
     doTest(null, "RemoveClauseConstructor", null, Seq(params))
   }
 

@@ -82,8 +82,7 @@ class LanguageFeatureInspection
           if e.getModifierList.has(ScalaTokenTypes.kIMPLICIT) &&
             e.parameters.size == 1 &&
             !e.parameterList.clauses.exists(_.isImplicit) =>
-        Option(
-          e.getModifierList.findFirstChildByType(ScalaTokenTypes.kIMPLICIT))
+        Option(e.getModifierList.findFirstChildByType(ScalaTokenTypes.kIMPLICIT))
           .getOrElse(e)
     },
     Feature(
@@ -119,8 +118,7 @@ class LanguageFeatureInspection
     PartialFunction.apply { e: PsiElement =>
       val module = ModuleUtilCore.findModuleForPsiElement(e)
 
-      if (module != null && module.scalaSdk.exists(
-          _.languageLevel >= Scala_2_10)) {
+      if (module != null && module.scalaSdk.exists(_.languageLevel >= Scala_2_10)) {
         Features.foreach(_.process(e, holder))
       }
     }
@@ -142,10 +140,7 @@ private case class Feature(
             holder.registerProblem(
               it,
               "Advanced language feature: " + name,
-              new ImportFeatureFlagFix(
-                it,
-                name,
-                flagQualifier + "." + flagName),
+              new ImportFeatureFlagFix(it, name, flagQualifier + "." + flagName),
               new EnableFeatureFix(
                 module.scalaCompilerSettings,
                 it,

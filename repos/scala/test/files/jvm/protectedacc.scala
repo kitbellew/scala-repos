@@ -99,8 +99,7 @@ package p {
     }
 
     /** Test interaction with Java inherited protected fields. */
-    class JavaInteraction(arr: Array[Char])
-        extends java.io.CharArrayReader(arr) {
+    class JavaInteraction(arr: Array[Char]) extends java.io.CharArrayReader(arr) {
       class Inner {
         def m = {
           Console.println("count before: " + count);

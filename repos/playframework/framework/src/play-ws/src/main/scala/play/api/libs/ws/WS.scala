@@ -291,9 +291,7 @@ case object EmptyBody extends WSBody
 /**
   * A streamed response containing a response header and a streamable body.
   */
-case class StreamedResponse(
-    headers: WSResponseHeaders,
-    body: Source[ByteString, _])
+case class StreamedResponse(headers: WSResponseHeaders, body: Source[ByteString, _])
 
 /**
   * A WS Request builder.
@@ -446,8 +444,7 @@ trait WSRequest {
     * Helper method for multipart body
     */
   private[libs] def withMultipartBody(
-      body: Source[MultipartFormData.Part[Source[ByteString, _]], _])
-      : WSRequest = {
+      body: Source[MultipartFormData.Part[Source[ByteString, _]], _]): WSRequest = {
     val boundary = Multipart.randomBoundary()
     val contentType = s"multipart/form-data; boundary=$boundary"
     withBody(StreamedBody(Multipart.transform(body, boundary)))
@@ -626,8 +623,7 @@ trait WSRequest {
     *       changed and the JVM doesn't allow overloading on the return type.
     */
   @deprecated("2.5.0", "Use `WS.stream()` instead.")
-  def streamWithEnumerator()
-      : Future[(WSResponseHeaders, Enumerator[Array[Byte]])]
+  def streamWithEnumerator(): Future[(WSResponseHeaders, Enumerator[Array[Byte]])]
 }
 
 /**
@@ -749,9 +745,7 @@ trait WSResponseHeaders {
   def headers: Map[String, Seq[String]]
 }
 
-case class DefaultWSResponseHeaders(
-    status: Int,
-    headers: Map[String, Seq[String]])
+case class DefaultWSResponseHeaders(status: Int, headers: Map[String, Seq[String]])
     extends WSResponseHeaders
 
 /**

@@ -663,9 +663,7 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
     }
 
     //this is a dirty hack for SCL-9264. It looks bad, but seems to be the only fast way to make this work.
-    (
-      leftNode.getElementType,
-      leftNode.getPsi.getPrevSiblingNotWhitespace) match {
+    (leftNode.getElementType, leftNode.getPsi.getPrevSiblingNotWhitespace) match {
       case (
             ScalaTokenTypes.tLBRACE | ScalaTokenTypes.tLPARENTHESIS,
             forNode: LeafPsiElement)
@@ -829,8 +827,7 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
             _: ScPackaging | _: ScBlockExpr | _: ScMatchStmt | _: ScTryBlock |
             _: ScCatchBlock) =>
           val oneLineNonEmpty =
-            leftString != "{" && !getText(block.getNode, fileText).contains(
-              '\n')
+            leftString != "{" && !getText(block.getNode, fileText).contains('\n')
           val spaceInsideOneLineMethod =
             scalaSettings.SPACES_IN_ONE_LINE_BLOCKS &&
               rightNode.getTreeParent.getTreeParent != null && rightNode.getTreeParent.getTreeParent.getPsi
@@ -1635,8 +1632,7 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
             _,
             (ScalaElementTypes.TEMPLATE_BODY | ScalaElementTypes.MATCH_STMT |
             ScalaElementTypes.REFINEMENT |
-            ScalaElementTypes.EXISTENTIAL_CLAUSE |
-            ScalaElementTypes.BLOCK_EXPR),
+            ScalaElementTypes.EXISTENTIAL_CLAUSE | ScalaElementTypes.BLOCK_EXPR),
             _) =>
         IMPORT_BETWEEN_SPACING
       case (ScalaTokenTypes.tLBRACE, _, _, _) => NO_SPACING_WITH_NEWLINE
@@ -1645,8 +1641,7 @@ object ScalaSpacingProcessor extends ScalaTokenTypes {
             ScalaTokenTypes.tRBRACE,
             (ScalaElementTypes.TEMPLATE_BODY | ScalaElementTypes.MATCH_STMT |
             ScalaElementTypes.REFINEMENT |
-            ScalaElementTypes.EXISTENTIAL_CLAUSE |
-            ScalaElementTypes.BLOCK_EXPR),
+            ScalaElementTypes.EXISTENTIAL_CLAUSE | ScalaElementTypes.BLOCK_EXPR),
             _) =>
         IMPORT_BETWEEN_SPACING
       case (_, ScalaTokenTypes.tRBRACE, _, _) => NO_SPACING_WITH_NEWLINE

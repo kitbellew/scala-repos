@@ -96,8 +96,7 @@ trait Lan[G[_], H[_], A] { lan =>
 object Lan extends LanInstances {
   import Id._
 
-  implicit def lanApplicative[G[_]: Functor, H[_]: Applicative]
-      : Applicative[Lan[G, H, ?]] =
+  implicit def lanApplicative[G[_]: Functor, H[_]: Applicative]: Applicative[Lan[G, H, ?]] =
     new Applicative[Lan[G, H, ?]] with LanApply[G, H] {
       def G = implicitly
       def H = implicitly

@@ -278,9 +278,8 @@ object ScalaRunTime {
     *  it's performing a series of Any/Any equals comparisons anyway.
     *  See ticket #2867 for specifics.
     */
-  def sameElements(
-      xs1: scala.collection.Seq[Any],
-      xs2: scala.collection.Seq[Any]) = xs1 sameElements xs2
+  def sameElements(xs1: scala.collection.Seq[Any], xs2: scala.collection.Seq[Any]) =
+    xs1 sameElements xs2
 
   /** Given any Scala value, convert it to a String.
     *

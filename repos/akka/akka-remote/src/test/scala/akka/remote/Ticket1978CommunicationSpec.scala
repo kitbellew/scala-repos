@@ -70,12 +70,8 @@ object Configuration {
       //if (true) throw new IllegalArgumentException("Ticket1978*Spec isn't enabled")
 
       val config = ConfigFactory.parseString(
-        conf.format(
-          localPort,
-          trustStore,
-          keyStore,
-          cipher,
-          enabled.mkString(", ")))
+        conf
+          .format(localPort, trustStore, keyStore, cipher, enabled.mkString(", ")))
       val fullConfig = config
         .withFallback(AkkaSpec.testConf)
         .withFallback(ConfigFactory.load)
@@ -224,8 +220,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
 
       "support tell" in within(timeout.duration) {
         val here = {
-          system.actorSelection(
-            otherAddress.toString + "/user/echo") ! Identify(None)
+          system.actorSelection(otherAddress.toString + "/user/echo") ! Identify(
+            None)
           expectMsgType[ActorIdentity].ref.get
         }
 
@@ -238,8 +234,8 @@ abstract class Ticket1978CommunicationSpec(val cipherConfig: CipherConfig)
       "support ask" in within(timeout.duration) {
         import system.dispatcher
         val here = {
-          system.actorSelection(
-            otherAddress.toString + "/user/echo") ! Identify(None)
+          system.actorSelection(otherAddress.toString + "/user/echo") ! Identify(
+            None)
           expectMsgType[ActorIdentity].ref.get
         }
 

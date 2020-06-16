@@ -225,9 +225,7 @@ trait Client {
     * returning None.
     * 0.seconds (the default) means no waiting, as opposed to infinite wait.
     */
-  def get(
-      queueName: String,
-      waitUpTo: Duration = 0.seconds): Future[Option[Buf]]
+  def get(queueName: String, waitUpTo: Duration = 0.seconds): Future[Option[Buf]]
 
   /**
     * Delete a queue. Removes the journal file on the remote server.
@@ -376,9 +374,7 @@ abstract protected[kestrel] class ClientBase[
     val close = new Broker[Unit]
     val abort = new Broker[ItemId]
 
-    def recv(
-        service: CommandExecutor,
-        command: CommandExecutor => Future[Reply]) {
+    def recv(service: CommandExecutor, command: CommandExecutor => Future[Reply]) {
       val reply = command(service)
       Offer
         .prioritize(
@@ -495,9 +491,7 @@ protected[kestrel] class ConnectedClient(
       expiry: Time = Time.epoch): Future[Response] =
     underlying.toService(Set(Buf.Utf8(queueName), expiry, value))
 
-  def get(
-      queueName: String,
-      waitUpTo: Duration = 0.seconds): Future[Option[Buf]] =
+  def get(queueName: String, waitUpTo: Duration = 0.seconds): Future[Option[Buf]] =
     underlying.toService(Get(Buf.Utf8(queueName), Some(waitUpTo))).map {
       case Values(Seq())                       => None
       case Values(Seq(Value(key, value: Buf))) => Some(value)
@@ -601,9 +595,7 @@ protected[kestrel] class ThriftConnectedClient(
         })
   }
 
-  def get(
-      queueName: String,
-      waitUpTo: Duration = 0.seconds): Future[Option[Buf]] = {
+  def get(queueName: String, waitUpTo: Duration = 0.seconds): Future[Option[Buf]] = {
     val waitUpToMsec = safeLongToInt(waitUpTo.inMilliseconds)
     withClient[Option[Buf]](client =>
       client.get(queueName, 1, waitUpToMsec).map {

@@ -41,10 +41,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       assert(graph.edges.collect().forall(e => e.attr == 1))
 
       // uniqueEdges option should uniquify edges and store duplicate count in edge attributes
-      val uniqueGraph = Graph.fromEdgeTuples(
-        sc.parallelize(doubleRing),
-        1,
-        Some(RandomVertexCut))
+      val uniqueGraph =
+        Graph.fromEdgeTuples(sc.parallelize(doubleRing), 1, Some(RandomVertexCut))
       assert(uniqueGraph.edges.count() === ring.size)
       assert(uniqueGraph.edges.collect().forall(e => e.attr == 2))
     }
@@ -120,9 +118,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
           mkGraph(sameSrcEdges).partitionBy(EdgePartition1D)).count === 1)
       // partitionBy(CanonicalRandomVertexCut) puts edges that are identical modulo direction into
       // the same partition
-      assert(
-        nonemptyParts(mkGraph(canonicalEdges).partitionBy(
-          CanonicalRandomVertexCut)).count === 1)
+      assert(nonemptyParts(
+        mkGraph(canonicalEdges).partitionBy(CanonicalRandomVertexCut)).count === 1)
       // partitionBy(EdgePartition2D) puts identical edges in the same partition
       assert(
         nonemptyParts(
@@ -377,8 +374,7 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
         _ + _,
         TripletFields.Src
       )
-      assert(
-        agg.collect().toSet === (1 to n).map(x => (x: VertexId, "v")).toSet)
+      assert(agg.collect().toSet === (1 to n).map(x => (x: VertexId, "v")).toSet)
     }
   }
 

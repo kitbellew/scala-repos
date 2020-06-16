@@ -180,9 +180,7 @@ private[spark] class DiskBlockManager(
             }
           } catch {
             case e: Exception =>
-              logError(
-                s"Exception while deleting local spark dir: $localDir",
-                e)
+              logError(s"Exception while deleting local spark dir: $localDir", e)
           }
         }
       }

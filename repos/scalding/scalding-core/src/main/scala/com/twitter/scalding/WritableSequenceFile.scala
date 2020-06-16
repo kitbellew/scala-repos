@@ -48,9 +48,7 @@ object WritableSequenceFile {
     WritableSequenceFile(path, Dsl.intFields(0 to 1))
 }
 
-case class WritableSequenceFile[
-    K <: Writable: Manifest,
-    V <: Writable: Manifest](
+case class WritableSequenceFile[K <: Writable: Manifest, V <: Writable: Manifest](
     p: String,
     f: Fields,
     override val sinkMode: SinkMode = SinkMode.REPLACE)

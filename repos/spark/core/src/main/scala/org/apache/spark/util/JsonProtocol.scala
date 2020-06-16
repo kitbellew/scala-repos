@@ -173,8 +173,7 @@ private[spark] object JsonProtocol {
       environmentUpdate: SparkListenerEnvironmentUpdate): JValue = {
     val environmentDetails = environmentUpdate.environmentDetails
     val jvmInformation = mapToJson(environmentDetails("JVM Information").toMap)
-    val sparkProperties = mapToJson(
-      environmentDetails("Spark Properties").toMap)
+    val sparkProperties = mapToJson(environmentDetails("Spark Properties").toMap)
     val systemProperties = mapToJson(
       environmentDetails("System Properties").toMap)
     val classpathEntries = mapToJson(
@@ -197,8 +196,7 @@ private[spark] object JsonProtocol {
 
   def blockManagerRemovedToJson(
       blockManagerRemoved: SparkListenerBlockManagerRemoved): JValue = {
-    val blockManagerId = blockManagerIdToJson(
-      blockManagerRemoved.blockManagerId)
+    val blockManagerId = blockManagerIdToJson(blockManagerRemoved.blockManagerId)
     ("Event" -> Utils.getFormattedClassName(blockManagerRemoved)) ~
       ("Block Manager ID" -> blockManagerId) ~
       ("Timestamp" -> blockManagerRemoved.time)
@@ -333,9 +331,7 @@ private[spark] object JsonProtocol {
     *
     * The behavior here must match that of [[accumValueFromJson]]. Exposed for testing.
     */
-  private[util] def accumValueToJson(
-      name: Option[String],
-      value: Any): JValue = {
+  private[util] def accumValueToJson(name: Option[String], value: Any): JValue = {
     import AccumulatorParam._
     if (name.exists(_.startsWith(InternalAccumulator.METRICS_PREFIX))) {
       (value, InternalAccumulator.getParam(name.get)) match {
@@ -869,9 +865,7 @@ private[spark] object JsonProtocol {
     *
     * The behavior here must match that of [[accumValueToJson]]. Exposed for testing.
     */
-  private[util] def accumValueFromJson(
-      name: Option[String],
-      value: JValue): Any = {
+  private[util] def accumValueFromJson(name: Option[String], value: JValue): Any = {
     import AccumulatorParam._
     if (name.exists(_.startsWith(InternalAccumulator.METRICS_PREFIX))) {
       (value, InternalAccumulator.getParam(name.get)) match {
@@ -936,14 +930,13 @@ private[spark] object JsonProtocol {
         (writeJson \ "Shuffle Records Written")
           .extractOpt[Long]
           .getOrElse(0L))
-      writeMetrics.incWriteTime(
-        (writeJson \ "Shuffle Write Time").extract[Long])
+      writeMetrics.incWriteTime((writeJson \ "Shuffle Write Time").extract[Long])
     }
 
     // Output metrics
     Utils.jsonOption(json \ "Output Metrics").foreach { outJson =>
-      val writeMethod = DataWriteMethod.withName(
-        (outJson \ "Data Write Method").extract[String])
+      val writeMethod =
+        DataWriteMethod.withName((outJson \ "Data Write Method").extract[String])
       val outputMetrics = metrics.registerOutputMetrics(writeMethod)
       outputMetrics.setBytesWritten((outJson \ "Bytes Written").extract[Long])
       outputMetrics.setRecordsWritten(

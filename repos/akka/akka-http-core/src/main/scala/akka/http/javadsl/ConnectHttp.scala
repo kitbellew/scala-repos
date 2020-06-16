@@ -105,8 +105,7 @@ abstract class ConnectWithHttps extends ConnectHttp {
 }
 
 /** INTERNAL API */
-final class ConnectHttpImpl(val host: String, val port: Int)
-    extends ConnectHttp {
+final class ConnectHttpImpl(val host: String, val port: Int) extends ConnectHttp {
   def isHttps: Boolean = false
 
   def connectionContext: Optional[HttpsConnectionContext] = Optional.empty()

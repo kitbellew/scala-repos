@@ -77,10 +77,7 @@ object Tracing {
     * Use reflection to register/unregister tracing boundaries so that cascading versions prior to 2.6 can be used
     * without completely breaking
     */
-  private def invokeStaticMethod(
-      clazz: String,
-      methodName: String,
-      args: AnyRef*) {
+  private def invokeStaticMethod(clazz: String, methodName: String, args: AnyRef*) {
     try {
       val argTypes = args map (_.getClass())
       Class

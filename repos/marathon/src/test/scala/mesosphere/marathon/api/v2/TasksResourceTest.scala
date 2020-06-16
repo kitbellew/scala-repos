@@ -41,8 +41,7 @@ class TasksResourceTest
     taskTracker.tasksByAppSync returns TaskTracker.TasksByApp.forTasks(
       task1,
       task2)
-    taskKiller.kill(any, any)(any) returns Future.successful(
-      Iterable.empty[Task])
+    taskKiller.kill(any, any)(any) returns Future.successful(Iterable.empty[Task])
     groupManager.app(app1) returns Future.successful(Some(AppDefinition(app1)))
     groupManager.app(app2) returns Future.successful(Some(AppDefinition(app2)))
 
@@ -116,8 +115,7 @@ class TasksResourceTest
     noMoreInteractions(taskKiller)
   }
 
-  test(
-    "killTask without authentication is denied when the affected app exists") {
+  test("killTask without authentication is denied when the affected app exists") {
     Given("An unauthenticated request")
     auth.authenticated = false
     val req = auth.request
@@ -128,8 +126,7 @@ class TasksResourceTest
     val body = s"""{"ids": ["$taskId1", "$taskId2", "$taskId3"]}""".getBytes
 
     Given("the app exists")
-    groupManager.app(appId) returns Future.successful(
-      Some(AppDefinition(appId)))
+    groupManager.app(appId) returns Future.successful(Some(AppDefinition(appId)))
 
     When(s"kill task is called")
     val killTasks =
@@ -204,8 +201,7 @@ class TasksResourceTest
     )
 
     Given("the app exists")
-    groupManager.app(appId) returns Future.successful(
-      Some(AppDefinition(appId)))
+    groupManager.app(appId) returns Future.successful(Some(AppDefinition(appId)))
     taskTracker.tasksByAppSync returns TaskTracker.TasksByApp.empty
 
     When(s"kill task is called")

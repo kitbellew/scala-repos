@@ -66,11 +66,7 @@ object GenerateMainSources extends TestCodeGenerator {
               }
           })
     },
-    new Config(
-      "CG8",
-      StandardTestDBs.H2Mem,
-      "H2Mem",
-      Seq("/dbs/h2-simple.sql")) {
+    new Config("CG8", StandardTestDBs.H2Mem, "H2Mem", Seq("/dbs/h2-simple.sql")) {
       override def generator =
         tdb.profile
           .createModel(ignoreInvalidDefaults = false)
@@ -114,11 +110,7 @@ val  SimpleA = CustomTyping.SimpleA
               }
           })
     },
-    new UUIDConfig(
-      "CG10",
-      StandardTestDBs.H2Mem,
-      "H2Mem",
-      Seq("/dbs/uuid.sql")),
+    new UUIDConfig("CG10", StandardTestDBs.H2Mem, "H2Mem", Seq("/dbs/uuid.sql")),
     new Config("Postgres1", StandardTestDBs.Postgres, "Postgres", Nil) {
       import tdb.profile.api._
       class A(tag: Tag) extends Table[(Int, Array[Byte], Blob)](tag, "a") {

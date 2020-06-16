@@ -416,8 +416,8 @@ class SparseVectorOps_FloatTest
 
   override val TOL: Double = 1e-2
   val N = 30
-  implicit def genTriple: Arbitrary[
-    (SparseVector[Float], SparseVector[Float], SparseVector[Float])] = {
+  implicit def genTriple
+      : Arbitrary[(SparseVector[Float], SparseVector[Float], SparseVector[Float])] = {
     Arbitrary {
       for {
         x <- Arbitrary.arbitrary[Float].map { _ % 100 }
@@ -428,12 +428,9 @@ class SparseVectorOps_FloatTest
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
-          SparseVector(N)(
-            xl.map(i => (i % N).abs -> math.random.toFloat * x): _*),
-          SparseVector(N)(
-            yl.map(i => (i % N).abs -> math.random.toFloat * y): _*),
-          SparseVector(N)(
-            zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
+          SparseVector(N)(xl.map(i => (i % N).abs -> math.random.toFloat * x): _*),
+          SparseVector(N)(yl.map(i => (i % N).abs -> math.random.toFloat * y): _*),
+          SparseVector(N)(zl.map(i => (i % N).abs -> math.random.toFloat * z): _*))
       }
     }
   }
@@ -464,12 +461,9 @@ class SparseVectorOps_IntTest
         zl <- Arbitrary.arbitrary[List[Int]]
       } yield {
         (
-          SparseVector(N)(
-            xl.map(i => (i % N).abs -> (math.random * x).toInt): _*),
-          SparseVector(N)(
-            yl.map(i => (i % N).abs -> (math.random * y).toInt): _*),
-          SparseVector(N)(
-            zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
+          SparseVector(N)(xl.map(i => (i % N).abs -> (math.random * x).toInt): _*),
+          SparseVector(N)(yl.map(i => (i % N).abs -> (math.random * y).toInt): _*),
+          SparseVector(N)(zl.map(i => (i % N).abs -> (math.random * z).toInt): _*))
       }
     }
   }

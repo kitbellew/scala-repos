@@ -21,8 +21,7 @@ import scala.language.higherKinds
   *  @define Coll `ParIterable`
   *  @since 2.8
   */
-abstract class ParFactory[
-    CC[X] <: ParIterable[X] with GenericParTemplate[X, CC]]
+abstract class ParFactory[CC[X] <: ParIterable[X] with GenericParTemplate[X, CC]]
     extends GenTraversableFactory[CC]
     with GenericParCompanion[CC] {
 

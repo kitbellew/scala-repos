@@ -142,11 +142,8 @@ object TestPurgatoryPerformance {
 
           if (requestArrivalTime > now) Thread.sleep(requestArrivalTime - now)
 
-          val request = new FakeOperation(
-            timeout,
-            requestDataSize,
-            latencyToComplete,
-            latch)
+          val request =
+            new FakeOperation(timeout, requestDataSize, latencyToComplete, latch)
           if (latencyToComplete < timeout) queue.add(request)
           purgatory.tryCompleteElseWatch(request, keys)
         }
@@ -314,16 +311,15 @@ object TestPurgatoryPerformance {
 
   private class CompletionQueue {
     private[this] val delayQueue = new DelayQueue[Scheduled]()
-    private[this] val thread = new ShutdownableThread(
-      name = "completion thread",
-      isInterruptible = false) {
-      override def doWork(): Unit = {
-        val scheduled = delayQueue.poll(100, TimeUnit.MILLISECONDS)
-        if (scheduled != null) {
-          scheduled.operation.forceComplete()
+    private[this] val thread =
+      new ShutdownableThread(name = "completion thread", isInterruptible = false) {
+        override def doWork(): Unit = {
+          val scheduled = delayQueue.poll(100, TimeUnit.MILLISECONDS)
+          if (scheduled != null) {
+            scheduled.operation.forceComplete()
+          }
         }
       }
-    }
     thread.start()
 
     def add(operation: FakeOperation): Unit = {

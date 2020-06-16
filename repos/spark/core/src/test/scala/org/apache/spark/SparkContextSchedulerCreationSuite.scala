@@ -42,9 +42,7 @@ class SparkContextSchedulerCreationSuite
   def createTaskScheduler(master: String): TaskSchedulerImpl =
     createTaskScheduler(master, "client")
 
-  def createTaskScheduler(
-      master: String,
-      deployMode: String): TaskSchedulerImpl =
+  def createTaskScheduler(master: String, deployMode: String): TaskSchedulerImpl =
     createTaskScheduler(master, deployMode, new SparkConf())
 
   def createTaskScheduler(

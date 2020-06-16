@@ -12,9 +12,7 @@ import scala.annotation.meta
 
 object languageFeature {
 
-  @meta.languageFeature(
-    "extension of type scala.Dynamic",
-    enableRequired = true)
+  @meta.languageFeature("extension of type scala.Dynamic", enableRequired = true)
   sealed trait dynamics
   object dynamics extends dynamics
 

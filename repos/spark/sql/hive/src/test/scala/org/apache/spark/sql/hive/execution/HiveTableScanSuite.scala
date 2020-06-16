@@ -81,11 +81,8 @@ class HiveTableScanSuite extends HiveComparisonTest {
 
     TestHive.sql(
       s"LOAD DATA LOCAL INPATH '$location' INTO TABLE timestamp_query_null")
-    assert(
-      TestHive.sql("SELECT time from timestamp_query_null limit 2").collect()
-        === Array(
-          Row(java.sql.Timestamp.valueOf("2014-12-11 00:00:00")),
-          Row(null)))
+    assert(TestHive.sql("SELECT time from timestamp_query_null limit 2").collect()
+      === Array(Row(java.sql.Timestamp.valueOf("2014-12-11 00:00:00")), Row(null)))
     TestHive.sql("DROP TABLE timestamp_query_null")
   }
 
@@ -93,9 +90,7 @@ class HiveTableScanSuite extends HiveComparisonTest {
     sql("create table spark_4959 (col1 string)")
     sql("""insert into table spark_4959 select "hi" from src limit 1""")
     table("spark_4959")
-      .select(
-        'col1.as("CaseSensitiveColName"),
-        'col1.as("CaseSensitiveColName2"))
+      .select('col1.as("CaseSensitiveColName"), 'col1.as("CaseSensitiveColName2"))
       .registerTempTable("spark_4959_2")
 
     assert(

@@ -61,8 +61,8 @@ import scalaz.syntax.traverse._
 import scalaz.syntax.std.option._
 
 object WebAPIKeyFinder {
-  def apply(config: Configuration)(implicit executor: ExecutionContext)
-      : ValidationNel[String, APIKeyFinder[Response]] = {
+  def apply(config: Configuration)(implicit
+      executor: ExecutionContext): ValidationNel[String, APIKeyFinder[Response]] = {
     val serviceConfig = config.detach("service")
     serviceConfig.get[String]("hardcoded_rootKey") map { apiKey =>
       implicit val M = ResponseMonad(new FutureMonad(executor))
@@ -86,8 +86,7 @@ object WebAPIKeyFinder {
             NEL("Configuration property \"service.port\" is required")) |@|
         serviceConfig
           .get[String]("path")
-          .toSuccess(
-            NEL("Configuration property \"service.path\" is required"))) {
+          .toSuccess(NEL("Configuration property \"service.path\" is required"))) {
         (rootKey, protocol, host, port, path) =>
           new RealWebAPIKeyFinder(protocol, host, port, path, rootKey)
       }
@@ -136,8 +135,7 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
         case res =>
           logger.error(
             "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
-          left(
-            "Unexpected response from security service; unable to proceed." + res)
+          left("Unexpected response from security service; unable to proceed." + res)
       })
     }
   }
@@ -151,8 +149,7 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
         case res =>
           logger.error(
             "Unexpected response from auth service for apiKey " + fromRoot + ":\n" + res)
-          left(
-            "Unexpected response from security service; unable to proceed." + res)
+          left("Unexpected response from security service; unable to proceed." + res)
       })
     }
   }
@@ -175,8 +172,7 @@ trait WebAPIKeyFinder extends BaseClient with APIKeyFinder[Response] {
         case res =>
           logger.error(
             "Unexpected response from auth service for apiKey " + apiKey + ":\n" + res)
-          left(
-            "Unexpected response from security service; unable to proceed." + res)
+          left("Unexpected response from security service; unable to proceed." + res)
       })
     }
   }

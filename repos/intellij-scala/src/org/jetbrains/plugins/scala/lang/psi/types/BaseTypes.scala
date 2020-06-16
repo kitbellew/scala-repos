@@ -96,8 +96,7 @@ object BaseTypes {
                 BaseTypes.get(
                   p.substitutor.subst(tp),
                   notAll,
-                  visitedAliases = visitedAliases) ++ Seq(
-                  p.substitutor.subst(tp))
+                  visitedAliases = visitedAliases) ++ Seq(p.substitutor.subst(tp))
               else Seq(p.substitutor.subst(tp))
             })
           case Some(clazz) =>
@@ -122,8 +121,7 @@ object BaseTypes {
           if (notAll) comps
           else
             comps.flatMap(comp =>
-              BaseTypes.get(comp, visitedAliases = visitedAliases) ++ Seq(
-                comp)))
+              BaseTypes.get(comp, visitedAliases = visitedAliases) ++ Seq(comp)))
       case proj @ ScProjectionType(p, elem, _) =>
         val s = proj.actualSubst
         elem match {

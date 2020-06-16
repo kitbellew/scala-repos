@@ -190,9 +190,8 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
             case _              => Other
           }
 
-        val transformed = transformTypeTagEvidenceParams(
-          macroImplRef,
-          (param, tparam) => tparam)
+        val transformed =
+          transformTypeTagEvidenceParams(macroImplRef, (param, tparam) => tparam)
         mmap(transformed)(p =>
           if (p.isTerm) fingerprint(p.info) else Tagged(p.paramPos))
       }
@@ -705,11 +704,7 @@ trait Macros extends MacroRuntimes with Traces with Helpers {
     *  @param outerPt Expected type that comes from enclosing context (something that's traditionally called `pt`).
     *  @param innerPt Expected type that comes from the signature of a macro def, possibly wildcarded to help type inference.
     */
-  class DefMacroExpander(
-      typer: Typer,
-      expandee: Tree,
-      mode: Mode,
-      outerPt: Type)
+  class DefMacroExpander(typer: Typer, expandee: Tree, mode: Mode, outerPt: Type)
       extends MacroExpander(typer, expandee) {
     lazy val innerPt = {
       val tp =

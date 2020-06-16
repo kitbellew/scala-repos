@@ -210,11 +210,8 @@ class ExecuteRequestTest extends FunSuite {
       new TimestampValue(TimeZone.getDefault(), TimeZone.getDefault())
 
     test("java.sql.Timestamp") {
-      val raw = RawValue(
-        Type.Timestamp,
-        Charset.Binary,
-        true,
-        br.readLengthCodedBytes())
+      val raw =
+        RawValue(Type.Timestamp, Charset.Binary, true, br.readLengthCodedBytes())
       val timestampValueLocal(ts) = raw
       assert(ts == timestamp)
     }

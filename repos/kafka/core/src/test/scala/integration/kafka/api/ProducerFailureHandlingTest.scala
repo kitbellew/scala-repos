@@ -271,13 +271,7 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
     val topicProps = new Properties()
     topicProps.put("min.insync.replicas", (numServers + 1).toString)
 
-    TestUtils.createTopic(
-      zkUtils,
-      topicName,
-      1,
-      numServers,
-      servers,
-      topicProps)
+    TestUtils.createTopic(zkUtils, topicName, 1, numServers, servers, topicProps)
 
     val record = new ProducerRecord[Array[Byte], Array[Byte]](
       topicName,
@@ -301,13 +295,7 @@ class ProducerFailureHandlingTest extends KafkaServerTestHarness {
     val topicProps = new Properties()
     topicProps.put("min.insync.replicas", numServers.toString)
 
-    TestUtils.createTopic(
-      zkUtils,
-      topicName,
-      1,
-      numServers,
-      servers,
-      topicProps)
+    TestUtils.createTopic(zkUtils, topicName, 1, numServers, servers, topicProps)
 
     val record = new ProducerRecord[Array[Byte], Array[Byte]](
       topicName,

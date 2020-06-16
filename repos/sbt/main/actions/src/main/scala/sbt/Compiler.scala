@@ -132,9 +132,8 @@ object Compiler {
   //     new AnalyzingCompiler(instance, provider, cpOptions)
   //   }
 
-  def compilers(
-      cpOptions: ClasspathOptions,
-      ivyConfiguration: IvyConfiguration)(implicit
+  def compilers(cpOptions: ClasspathOptions, ivyConfiguration: IvyConfiguration)(
+      implicit
       app: AppConfiguration,
       log: Logger): Compilers = {
     val scalaProvider = app.provider.scalaProvider

@@ -50,9 +50,7 @@ class NameSuggesterTest extends ScalaLightCodeInsightFixtureTestAdapter {
   }
 
   def testMaps() {
-    testNamesByType(
-      "java.util.Map[String, Object]",
-      Seq("stringToObject", "map"))
+    testNamesByType("java.util.Map[String, Object]", Seq("stringToObject", "map"))
     testNamesByType(
       "java.util.HashMap[String, Object]",
       Seq("stringToObject", "map", "hashMap"))

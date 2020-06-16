@@ -6,13 +6,7 @@ import mesosphere.marathon.core.task.Task
 import mesosphere.marathon.state.Container.Docker
 import mesosphere.marathon.state.Container.Docker.PortMapping
 import mesosphere.marathon.state.PathId._
-import mesosphere.marathon.state.{
-  AppDefinition,
-  Container,
-  PathId,
-  Timestamp,
-  _
-}
+import mesosphere.marathon.state.{AppDefinition, Container, PathId, Timestamp, _}
 import mesosphere.marathon.{MarathonTestHelper, MarathonSpec, Protos}
 import mesosphere.mesos.protos.{Resource, TaskID, _}
 import org.apache.mesos.Protos.ContainerInfo.DockerInfo
@@ -323,8 +317,7 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     assert(resourceOpt("disk").isEmpty)
   }
 
-  test(
-    "build creates task with appropriate resource share also preserves role") {
+  test("build creates task with appropriate resource share also preserves role") {
     val offer = MarathonTestHelper
       .makeBasicOffer(
         cpus = 2.0,
@@ -1505,8 +1498,7 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
     import MarathonTestHelper.Implicits._
     MarathonTestHelper
       .stagedTask(taskId = id.toString)
-      .withAgentInfo(
-        _.copy(attributes = Iterable(TextAttribute(attr, attrVal))))
+      .withAgentInfo(_.copy(attributes = Iterable(TextAttribute(attr, attrVal))))
       .withNetworking(Task.HostPorts(List(999)))
   }
 
@@ -1537,8 +1529,8 @@ class TaskBuilderTest extends MarathonSpec with Matchers {
 
     assert(cmd.hasEnvironment)
     val envVars = cmd.getEnvironment.getVariablesList.asScala
-    assert(envVars.exists(v =>
-      v.getName == "HOST" && v.getValue == offer.getHostname))
+    assert(
+      envVars.exists(v => v.getName == "HOST" && v.getValue == offer.getHostname))
     assert(envVars.exists(v => v.getName == "PORT0" && v.getValue.nonEmpty))
     assert(envVars.exists(v => v.getName == "PORT1" && v.getValue.nonEmpty))
     assert(envVars.exists(v => v.getName == "PORT_8080" && v.getValue.nonEmpty))

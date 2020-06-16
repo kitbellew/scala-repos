@@ -227,9 +227,7 @@ class JavaDoubleRDD(val srdd: RDD[scala.Double])
   /**
     * Approximate operation to return the sum within a timeout.
     */
-  def sumApprox(
-      timeout: Long,
-      confidence: JDouble): PartialResult[BoundedDouble] =
+  def sumApprox(timeout: Long, confidence: JDouble): PartialResult[BoundedDouble] =
     srdd.sumApprox(timeout, confidence)
 
   /**

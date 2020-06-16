@@ -26,12 +26,7 @@ import scala.collection.mutable.{ArrayBuffer, HashMap, HashSet, Map}
 import scala.reflect.ClassTag
 
 import org.apache.spark.internal.Logging
-import org.apache.spark.rpc.{
-  RpcCallContext,
-  RpcEndpoint,
-  RpcEndpointRef,
-  RpcEnv
-}
+import org.apache.spark.rpc.{RpcCallContext, RpcEndpoint, RpcEndpointRef, RpcEnv}
 import org.apache.spark.scheduler.MapStatus
 import org.apache.spark.shuffle.MetadataFetchFailedException
 import org.apache.spark.storage.{BlockId, BlockManagerId, ShuffleBlockId}
@@ -231,8 +226,7 @@ private[spark] abstract class MapOutputTracker(conf: SparkConf)
         try {
           val fetchedBytes =
             askTracker[Array[Byte]](GetMapOutputStatuses(shuffleId))
-          fetchedStatuses =
-            MapOutputTracker.deserializeMapStatuses(fetchedBytes)
+          fetchedStatuses = MapOutputTracker.deserializeMapStatuses(fetchedBytes)
           logInfo("Got the output locations")
           mapStatuses.put(shuffleId, fetchedStatuses)
         } finally {
@@ -349,10 +343,7 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
   }
 
   /** Unregister map output information of the given shuffle, mapper and block manager */
-  def unregisterMapOutput(
-      shuffleId: Int,
-      mapId: Int,
-      bmAddress: BlockManagerId) {
+  def unregisterMapOutput(shuffleId: Int, mapId: Int, bmAddress: BlockManagerId) {
     val arrayOpt = mapStatuses.get(shuffleId)
     if (arrayOpt.isDefined && arrayOpt.get != null) {
       val array = arrayOpt.get
@@ -570,8 +561,7 @@ private[spark] object MapOutputTracker extends Logging {
       shuffleId: Int,
       startPartition: Int,
       endPartition: Int,
-      statuses: Array[MapStatus])
-      : Seq[(BlockManagerId, Seq[(BlockId, Long)])] = {
+      statuses: Array[MapStatus]): Seq[(BlockManagerId, Seq[(BlockId, Long)])] = {
     assert(statuses != null)
     val splitsByAddress =
       new HashMap[BlockManagerId, ArrayBuffer[(BlockId, Long)]]

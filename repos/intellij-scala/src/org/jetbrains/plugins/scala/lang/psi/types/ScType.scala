@@ -271,9 +271,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   )
 
   @tailrec
-  def extractClass(
-      t: ScType,
-      project: Option[Project] = None): Option[PsiClass] = {
+  def extractClass(t: ScType, project: Option[Project] = None): Option[PsiClass] = {
     t match {
       case p @ ScParameterizedType(t1, _) =>
         extractClass(t1, project) //performance improvement
@@ -349,9 +347,7 @@ object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
           case t: ScTypeAliasDefinition if withoutAliases =>
             val result = t.aliasedType(TypingContext.empty)
             if (result.isEmpty) return None
-            extractDesignated(
-              proj.actualSubst.subst(result.get),
-              withoutAliases)
+            extractDesignated(proj.actualSubst.subst(result.get), withoutAliases)
           case _ => Some((proj.actualElement, proj.actualSubst))
         }
       case p @ ScParameterizedType(t1, _) =>

@@ -188,8 +188,7 @@ trait TypeHints {
           (
             th.hintFor(clazz),
             th.classFor(th.hintFor(clazz))
-              .getOrElse(
-                sys.error("hintFor/classFor not invertible for " + th))))
+              .getOrElse(sys.error("hintFor/classFor not invertible for " + th))))
         .sortWith((x, y) => (delta(x._2, clazz) - delta(y._2, clazz)) < 0)
         .head
         ._1
@@ -224,8 +223,7 @@ private[json] object ClassDelta {
     } else if (class2.isAssignableFrom(class1)) {
       1 + delta(class1.getSuperclass, class2)
     } else
-      sys.error(
-        "Don't call delta unless one class is assignable from the other")
+      sys.error("Don't call delta unless one class is assignable from the other")
   }
 }
 

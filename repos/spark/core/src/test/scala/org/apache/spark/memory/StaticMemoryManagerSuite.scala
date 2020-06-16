@@ -65,11 +65,8 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
     assert(mm
       .acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
     // Acquire up to the max
-    assert(
-      mm.acquireExecutionMemory(
-        1000L,
-        taskAttemptId,
-        MemoryMode.ON_HEAP) === 890L)
+    assert(mm
+      .acquireExecutionMemory(1000L, taskAttemptId, MemoryMode.ON_HEAP) === 890L)
     assert(mm.executionMemoryUsed === maxExecutionMem)
     assert(
       mm.acquireExecutionMemory(1L, taskAttemptId, MemoryMode.ON_HEAP) === 0L)
@@ -81,10 +78,7 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
       mm.acquireExecutionMemory(1L, taskAttemptId, MemoryMode.ON_HEAP) === 1L)
     assert(mm.executionMemoryUsed === 201L)
     // Release beyond what was acquired
-    mm.releaseExecutionMemory(
-      maxExecutionMem,
-      taskAttemptId,
-      MemoryMode.ON_HEAP)
+    mm.releaseExecutionMemory(maxExecutionMem, taskAttemptId, MemoryMode.ON_HEAP)
     assert(mm.executionMemoryUsed === 0L)
   }
 
@@ -143,11 +137,8 @@ class StaticMemoryManagerSuite extends MemoryManagerSuite {
       .acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
     assert(mm.storageMemoryUsed === 0L)
     assert(mm.executionMemoryUsed === 100L)
-    assert(
-      mm.acquireExecutionMemory(
-        1000L,
-        taskAttemptId,
-        MemoryMode.ON_HEAP) === 100L)
+    assert(mm
+      .acquireExecutionMemory(1000L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
     assert(mm.storageMemoryUsed === 0L)
     assert(mm.executionMemoryUsed === 200L)
     // Only storage memory should increase

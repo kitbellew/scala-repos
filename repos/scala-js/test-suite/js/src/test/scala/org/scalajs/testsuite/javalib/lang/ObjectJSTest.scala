@@ -21,8 +21,7 @@ class ObjectJSTest {
     assertTrue((js.Array(5): Any).isInstanceOf[Object])
   }
 
-  @Test def everything_should_cast_to_Object_successfully_including_null()
-      : Unit = {
+  @Test def everything_should_cast_to_Object_successfully_including_null(): Unit = {
     (new js.Object: Any).asInstanceOf[Object]
     (js.Array(5): Any).asInstanceOf[Object]
   }

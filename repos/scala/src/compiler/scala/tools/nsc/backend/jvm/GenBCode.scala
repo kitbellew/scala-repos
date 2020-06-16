@@ -141,7 +141,8 @@ abstract class GenBCode extends BCodeSyncAndTry {
             catch {
               case ex: Throwable =>
                 ex.printStackTrace()
-                error(s"Error while emitting ${item.cunit.source}\n${ex.getMessage}")
+                error(
+                  s"Error while emitting ${item.cunit.source}\n${ex.getMessage}")
             }
           }
         }

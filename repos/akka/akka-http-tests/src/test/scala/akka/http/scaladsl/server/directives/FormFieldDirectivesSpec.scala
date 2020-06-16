@@ -77,7 +77,8 @@ class FormFieldDirectivesSpec extends RoutingSpec {
       Post("/", multipartFormWithFile) ~> {
         formFields('file.as[StrictForm.FileData]) {
           case StrictForm.FileData(name, HttpEntity.Strict(ct, data)) ⇒
-            complete(s"type ${ct.mediaType} length ${data.length} filename ${name.get}")
+            complete(
+              s"type ${ct.mediaType} length ${data.length} filename ${name.get}")
         }
       } ~> check {
         responseAs[

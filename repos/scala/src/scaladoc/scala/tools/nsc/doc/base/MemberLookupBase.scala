@@ -147,10 +147,8 @@ trait MemberLookupBase {
     val result = members match {
       case Nil => Nil
       case mbrName :: Nil =>
-        var syms = lookupInTemplate(pos, mbrName, container, OnlyType) map (
-          (
-            _,
-            container))
+        var syms =
+          lookupInTemplate(pos, mbrName, container, OnlyType) map ((_, container))
         if (syms.isEmpty)
           syms = lookupInTemplate(pos, mbrName, container, OnlyTerm) map (
             (

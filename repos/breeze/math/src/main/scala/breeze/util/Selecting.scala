@@ -102,9 +102,7 @@ object quickSelect extends UFunc {
         val coll = view(rawx)
         var pivotIndex = -1
 
-        def implQuickSelectSort(
-            x: mutable.IndexedSeq[T],
-            position: Int): Unit = {
+        def implQuickSelectSort(x: mutable.IndexedSeq[T], position: Int): Unit = {
           var left = 0
           var right = x.length - 1
           require(

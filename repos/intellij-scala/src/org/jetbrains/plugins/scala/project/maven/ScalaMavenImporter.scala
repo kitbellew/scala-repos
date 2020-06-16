@@ -104,9 +104,8 @@ class ScalaMavenImporter
         .filter(_.getName.contains("scala-library"))
         .find(_.scalaVersion == Some(compilerVersion))
         .getOrElse(
-          throw new ExternalSystemException(
-            "Cannot find project Scala library " +
-              compilerVersion.number + " for module " + module.getName))
+          throw new ExternalSystemException("Cannot find project Scala library " +
+            compilerVersion.number + " for module " + module.getName))
 
       if (!scalaLibrary.isScalaSdk) {
         val languageLevel =

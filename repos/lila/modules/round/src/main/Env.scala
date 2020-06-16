@@ -135,9 +135,8 @@ final class Env(
 
   lazy val perfsUpdater = new PerfsUpdater(historyApi, rankingApi)
 
-  lazy val forecastApi: ForecastApi = new ForecastApi(
-    coll = db(CollectionForecast),
-    roundMap = hub.actor.roundMap)
+  lazy val forecastApi: ForecastApi =
+    new ForecastApi(coll = db(CollectionForecast), roundMap = hub.actor.roundMap)
 
   private lazy val finisher = new Finisher(
     messenger = messenger,
@@ -164,8 +163,7 @@ final class Env(
   private lazy val drawer =
     new Drawer(prefApi = prefApi, messenger = messenger, finisher = finisher)
 
-  private lazy val cheatDetector = new CheatDetector(
-    reporter = hub.actor.report)
+  private lazy val cheatDetector = new CheatDetector(reporter = hub.actor.report)
 
   lazy val cli = new Cli(db, roundMap = roundMap, system = system)
 

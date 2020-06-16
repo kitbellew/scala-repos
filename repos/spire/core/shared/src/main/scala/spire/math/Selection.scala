@@ -86,11 +86,8 @@ trait SelectLike extends Any with Select {
     len
   }
 
-  final def partition[@sp A](
-      data: Array[A],
-      left: Int,
-      right: Int,
-      stride: Int)(m: A)(implicit o: Order[A]): Int = {
+  final def partition[@sp A](data: Array[A], left: Int, right: Int, stride: Int)(
+      m: A)(implicit o: Order[A]): Int = {
     var i = left // Iterator.
     var j = left // Pointer to first element > m.
     var k = left // Pointer to end of equal elements.

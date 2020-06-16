@@ -429,8 +429,7 @@ object ColumnPruning extends Rule[LogicalPlan] {
       case p @ Project(_, w: Window)
           if (w.windowOutputSet -- p.references).nonEmpty =>
         p.copy(child = w.copy(
-          windowExpressions =
-            w.windowExpressions.filter(p.references.contains)))
+          windowExpressions = w.windowExpressions.filter(p.references.contains)))
 
       // Eliminate no-op Window
       case w: Window if w.windowExpressions.isEmpty => w.child
@@ -1212,8 +1211,7 @@ object OuterJoinElimination extends Rule[LogicalPlan] with PredicateHelper {
     val rightHasNonNullPredicate = rightConditions.exists(canFilterOutNull) ||
       filter.constraints
         .filter(_.isInstanceOf[IsNotNull])
-        .exists(expr =>
-          join.right.outputSet.intersect(expr.references).nonEmpty)
+        .exists(expr => join.right.outputSet.intersect(expr.references).nonEmpty)
 
     join.joinType match {
       case RightOuter if leftHasNonNullPredicate => Inner
@@ -1273,10 +1271,7 @@ object PushPredicateThroughJoin extends Rule[LogicalPlan] with PredicateHelper {
       case f @ Filter(
             filterCondition,
             Join(left, right, joinType, joinCondition)) =>
-        val (
-          leftFilterConditions,
-          rightFilterConditions,
-          commonFilterCondition) =
+        val (leftFilterConditions, rightFilterConditions, commonFilterCondition) =
           split(splitConjunctivePredicates(filterCondition), left, right)
 
         joinType match {

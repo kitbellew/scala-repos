@@ -220,9 +220,7 @@ object ManifestFactory {
   }
 
   private object AnyValManifest
-      extends PhantomManifest[scala.AnyVal](
-        classOf[java.lang.Object],
-        "AnyVal") {
+      extends PhantomManifest[scala.AnyVal](classOf[java.lang.Object], "AnyVal") {
     override def runtimeClass = classOf[java.lang.Object]
     override def newArray(len: Int) = new Array[scala.AnyVal](len)
     override def <:<(that: ClassManifest[_]): Boolean =

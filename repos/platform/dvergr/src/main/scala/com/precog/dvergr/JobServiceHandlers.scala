@@ -60,9 +60,7 @@ class ListJobsHandler(jobs: JobManager[Future])(implicit ctx: ExecutionContext)
     Future[HttpResponse[JValue]]] = (request: HttpRequest[Future[JValue]]) => {
     Success(request.parameters get 'apiKey map { apiKey =>
       jobs.listJobs(apiKey) map { jobs =>
-        HttpResponse(
-          OK,
-          content = Some(JArray((jobs map (_.serialize)).toList)))
+        HttpResponse(OK, content = Some(JArray((jobs map (_.serialize)).toList)))
       }
     } getOrElse {
       Future(
@@ -111,8 +109,7 @@ class CreateJobHandler(
             Future(
               HttpResponse[JValue](
                 BadRequest,
-                content =
-                  Some(JString("Missing both `name` and `type` of job."))))
+                content = Some(JString("Missing both `name` and `type` of job."))))
 
           case (name, JUndefined, _) =>
             Future(
@@ -127,10 +124,11 @@ class CreateJobHandler(
                 content = Some(JString("Missing `name` of job."))))
 
           case (name, tpe, _) =>
-            Future(HttpResponse[JValue](
-              BadRequest,
-              content = Some(JString(
-                "Expected `name` and `type` to be strings, but found '%s' and '%s'." format (name, tpe)))))
+            Future(
+              HttpResponse[JValue](
+                BadRequest,
+                content = Some(JString(
+                  "Expected `name` and `type` to be strings, but found '%s' and '%s'." format (name, tpe)))))
         }
       })
     } getOrElse {
@@ -238,8 +236,8 @@ class UpdateJobStatusHandler(jobs: JobManager[Future])(implicit
             Future(
               HttpResponse[JValue](
                 BadRequest,
-                content =
-                  Some(JString("Status update requires fields 'message', 'progress', 'unit'."))))
+                content = Some(JString(
+                  "Status update requires fields 'message', 'progress', 'unit'."))))
         }
       })
     }) getOrElse {
@@ -303,9 +301,7 @@ class AddMessageHandler(jobs: JobManager[Future])(implicit
       })
     }) getOrElse {
       Failure(
-        DispatchError(
-          BadRequest,
-          "Messages require a JSON body in the request."))
+        DispatchError(BadRequest, "Messages require a JSON body in the request."))
     }
   }
 
@@ -342,8 +338,7 @@ class ListMessagesHandler(jobs: JobManager[Future])(implicit
             HttpResponse[JValue](OK, content = Some(messages.toList.serialize))
           }
         case Left(error) =>
-          Future(
-            HttpResponse[JValue](BadRequest, content = Some(JString(error))))
+          Future(HttpResponse[JValue](BadRequest, content = Some(JString(error))))
       })
     }) getOrElse {
       Failure(
@@ -419,9 +414,7 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
         }
       case Failure(error) =>
         Future(
-          HttpResponse[JValue](
-            BadRequest,
-            content = Some(JString(error.toString))))
+          HttpResponse[JValue](BadRequest, content = Some(JString(error.toString))))
     }
   }
 
@@ -502,8 +495,8 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
       Future(
         HttpResponse[JValue](
           BadRequest,
-          content = Some(JString(
-            "Both 'jobId parameter and JSON request body are required."))))
+          content = Some(
+            JString("Both 'jobId parameter and JSON request body are required."))))
     })
   }
 

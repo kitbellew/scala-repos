@@ -14,9 +14,7 @@ private[reflect] trait SynchronizedOps
 
 // BaseTypeSeqs
 
-  override protected def newBaseTypeSeq(
-      parents: List[Type],
-      elems: Array[Type]) =
+  override protected def newBaseTypeSeq(parents: List[Type], elems: Array[Type]) =
     // only need to synchronize BaseTypeSeqs if they contain refined types
     if (elems.exists(_.isInstanceOf[RefinedType]))
       new BaseTypeSeq(parents, elems) with SynchronizedBaseTypeSeq

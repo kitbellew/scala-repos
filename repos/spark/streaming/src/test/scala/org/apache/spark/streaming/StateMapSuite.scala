@@ -91,8 +91,7 @@ class StateMapSuite extends SparkFunSuite {
     assert(map.get(3) === Some(300))
     map.put(4, 400, 4)
     assert(map.get(4) === Some(400))
-    assert(
-      map.getByTime(10).toSet === Set((2, 200, 2), (3, 300, 3), (4, 400, 4)))
+    assert(map.getByTime(10).toSet === Set((2, 200, 2), (3, 300, 3), (4, 400, 4)))
     assert(map.getByTime(4).toSet === Set((2, 200, 2), (3, 300, 3)))
     assert(map.getAll().toSet === Set((2, 200, 2), (3, 300, 3), (4, 400, 4)))
     assert(parentMap.getAll().toSet === Set((2, 200, 2)))
@@ -381,8 +380,7 @@ class StateMapSuite extends SparkFunSuite {
 
       // Assert that get on every key returns the right value
       for (keyId <- refMapToTestWith.keys) {
-        assert(
-          mapToTest.get(keyId) === refMapToTestWith.get(keyId).map { _._1 })
+        assert(mapToTest.get(keyId) === refMapToTestWith.get(keyId).map { _._1 })
       }
 
       // Assert that every time threshold returns the correct data

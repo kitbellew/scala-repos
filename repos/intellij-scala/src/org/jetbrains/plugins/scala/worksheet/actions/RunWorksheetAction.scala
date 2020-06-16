@@ -286,8 +286,7 @@ object RunWorksheetAction {
     WorksheetCompiler.getModuleForCpName(file) flatMap {
       case name =>
         scala.extensions.inReadAction {
-          Option(
-            ModuleManager getInstance file.getProject findModuleByName name)
+          Option(ModuleManager getInstance file.getProject findModuleByName name)
         }
     } getOrElse getModuleFor(file.getVirtualFile, file.getProject)
 }

@@ -208,8 +208,7 @@ class BlockMatrixSuite extends SparkFunSuite with MLlibTestSparkContext {
     val sparseBM = new BlockMatrix(sc.makeRDD(sparseBlocks, 4), 4, 4, 8, 8)
     val denseBM = new BlockMatrix(sc.makeRDD(denseBlocks, 4), 4, 4, 8, 8)
 
-    assert(
-      sparseBM.add(sparseBM).toBreeze() === sparseBM.add(denseBM).toBreeze())
+    assert(sparseBM.add(sparseBM).toBreeze() === sparseBM.add(denseBM).toBreeze())
   }
 
   test("subtract") {

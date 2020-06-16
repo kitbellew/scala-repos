@@ -37,8 +37,7 @@ object Test extends InteractiveTest {
       }
   }
 
-  private class ScaladocEnabledGlobal
-      extends Global(settings, compilerReporter) {
+  private class ScaladocEnabledGlobal extends Global(settings, compilerReporter) {
     override lazy val analyzer = new {
       val global: ScaladocEnabledGlobal.this.type = ScaladocEnabledGlobal.this
     } with InteractiveScaladocAnalyzer

@@ -223,7 +223,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
       "InMemoryCache_different_data_types should be cached.")
     // Issue a query and check the results.
     checkAnswer(
-      sql(s"SELECT DISTINCT ${allColumns} FROM InMemoryCache_different_data_types"),
+      sql(
+        s"SELECT DISTINCT ${allColumns} FROM InMemoryCache_different_data_types"),
       sqlContext.table("InMemoryCache_different_data_types").collect())
     sqlContext.dropTempTable("InMemoryCache_different_data_types")
   }

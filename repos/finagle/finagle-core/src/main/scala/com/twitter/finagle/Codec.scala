@@ -11,11 +11,7 @@ import com.twitter.finagle.tracing.TraceInitializerFilter
 import com.twitter.finagle.transport.Transport
 import com.twitter.util.Closable
 import java.net.{InetSocketAddress, SocketAddress}
-import org.jboss.netty.channel.{
-  Channel,
-  ChannelPipeline,
-  ChannelPipelineFactory
-}
+import org.jboss.netty.channel.{Channel, ChannelPipeline, ChannelPipelineFactory}
 
 /**
   * Codecs provide protocol encoding and decoding via netty pipelines

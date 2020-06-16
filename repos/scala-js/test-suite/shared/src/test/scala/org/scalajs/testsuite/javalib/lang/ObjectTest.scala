@@ -57,8 +57,7 @@ class ObjectTest {
     assertFalse((null: Any).isInstanceOf[Object])
   }
 
-  @Test def everything_should_cast_to_Object_successfully_including_null()
-      : Unit = {
+  @Test def everything_should_cast_to_Object_successfully_including_null(): Unit = {
     ((): Any).asInstanceOf[Object]
     (true: Any).asInstanceOf[Object]
     ('a': Any).asInstanceOf[Object]

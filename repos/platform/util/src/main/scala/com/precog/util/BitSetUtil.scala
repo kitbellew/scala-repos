@@ -192,11 +192,7 @@ object BitSetUtil {
 
   def bitSetToList(bs: BitSet): List[Int] = {
     @tailrec
-    def loopBits(
-        long: Long,
-        bit: Int,
-        base: Int,
-        sofar: List[Int]): List[Int] = {
+    def loopBits(long: Long, bit: Int, base: Int, sofar: List[Int]): List[Int] = {
       if (bit < 0)
         sofar
       else if (((long >> bit) & 1) == 1)

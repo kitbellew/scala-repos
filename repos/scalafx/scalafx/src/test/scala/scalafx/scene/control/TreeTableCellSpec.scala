@@ -39,8 +39,6 @@ import scalafx.testutil.SimpleSFXDelegateSpec
   */
 @RunWith(classOf[JUnitRunner])
 class TreeTableCellSpec[S, T]
-    extends SimpleSFXDelegateSpec[
-      jfxsc.TreeTableCell[S, T],
-      TreeTableCell[S, T]](
+    extends SimpleSFXDelegateSpec[jfxsc.TreeTableCell[S, T], TreeTableCell[S, T]](
       classOf[jfxsc.TreeTableCell[S, T]],
       classOf[TreeTableCell[S, T]])

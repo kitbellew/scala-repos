@@ -231,10 +231,7 @@ trait WebJobManager
       })
     }
 
-  def addMessage(
-      jobId: JobId,
-      channel: String,
-      value: JValue): Response[Message] =
+  def addMessage(jobId: JobId, channel: String, value: JValue): Response[Message] =
     withJsonClient { client =>
       eitherT(
         client.post[JValue]("/jobs/" + jobId + "/messages/" + channel)(
@@ -321,8 +318,8 @@ trait WebJobManager
     }
   }
 
-  def getResult(jobId: JobId): Response[
-    Either[String, (Option[MimeType], StreamT[Response, Array[Byte]])]] = {
+  def getResult(jobId: JobId)
+      : Response[Either[String, (Option[MimeType], StreamT[Response, Array[Byte]])]] = {
     def contentType(headers: HttpHeaders): Option[MimeType] =
       headers.header[`Content-Type`] flatMap (_.mimeTypes.headOption)
 
@@ -331,9 +328,7 @@ trait WebJobManager
         case HttpResponse(HttpStatus(OK, _), headers, Some(Left(bytes)), _) =>
           right(
             Right(
-              (
-                contentType(headers),
-                bytes :: StreamT.empty[Response, Array[Byte]])))
+              (contentType(headers), bytes :: StreamT.empty[Response, Array[Byte]])))
 
         case HttpResponse(HttpStatus(OK, _), headers, Some(Right(chunks)), _) =>
           val t = FutureStreamAsResponseStream

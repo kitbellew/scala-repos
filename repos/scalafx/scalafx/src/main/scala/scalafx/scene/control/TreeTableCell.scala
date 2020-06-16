@@ -68,8 +68,7 @@ object TreeTableCell {
   * @define ORIGINALDOC Original Documentation]].
   */
 class TreeTableCell[S, T](
-    override val delegate: jfxsc.TreeTableCell[S, T] =
-      new jfxsc.TreeTableCell[S, T])
+    override val delegate: jfxsc.TreeTableCell[S, T] = new jfxsc.TreeTableCell[S, T])
     extends IndexedCell[T](delegate)
     with SFXDelegate[jfxsc.TreeTableCell[S, T]] {
 

@@ -101,10 +101,7 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         coalesce(functions map { SingleSummary -> _ })
       }
 
-      def reduceTable(
-          table: Table,
-          jtype: JType,
-          ctx: MorphContext): M[Table] = {
+      def reduceTable(table: Table, jtype: JType, ctx: MorphContext): M[Table] = {
         val reduction = makeReduction(jtype)
 
         implicit def monoid = reduction.monoid

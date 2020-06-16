@@ -355,10 +355,8 @@ class DenseMatrixTest
 
   test("Multiply Float") {
     val a = DenseMatrix((1.0f, 2.0f, 3.0f), (4.0f, 5.0f, 6.0f))
-    val b = DenseMatrix(
-      (7.0f, -2.0f, 8.0f),
-      (-3.0f, -3.0f, 1.0f),
-      (12.0f, 0.0f, 5.0f))
+    val b =
+      DenseMatrix((7.0f, -2.0f, 8.0f), (-3.0f, -3.0f, 1.0f), (12.0f, 0.0f, 5.0f))
     val c = DenseVector(6.0f, 2.0f, 3.0f)
     val cs = SparseVector(6.0f, 2.0f, 3.0f)
     assert(a * b === DenseMatrix((37.0f, -8.0f, 25.0f), (85.0f, -23.0f, 67.0f)))
@@ -406,15 +404,9 @@ class DenseMatrixTest
         (Complex(0, 74), Complex(0, -16), Complex(0, 50)),
         (Complex(0, 170), Complex(0, -46), Complex(0, 134))))
     assert(
-      b * c === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * c === DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
-      b * cs === DenseVector(
-        Complex(62, 62),
-        Complex(-21, -21),
-        Complex(87, 87)))
+      b * cs === DenseVector(Complex(62, 62), Complex(-21, -21), Complex(87, 87)))
     assert(
       b.t * c === DenseVector(
         Complex(72, -72),
@@ -434,11 +426,8 @@ class DenseMatrixTest
     assert(a * c === DenseVector(19, 52).mapValues(BigDecimal(_)))
     assert(b * c === DenseVector(62, -21, 87).mapValues(BigDecimal(_)))
     assert(b.t * c === DenseVector(72, -18, 65).mapValues(BigDecimal(_)))
-    assert(
-      a.t * DenseVector(4, 3).mapValues(BigDecimal(_)) === DenseVector(
-        16,
-        23,
-        30).mapValues(BigDecimal(_)))
+    assert(a.t * DenseVector(4, 3)
+      .mapValues(BigDecimal(_)) === DenseVector(16, 23, 30).mapValues(BigDecimal(_)))
 
     // should be dense
     val x = a * a.t
@@ -754,10 +743,7 @@ class DenseMatrixTest
       area === DenseMatrix((3, 4, 5, 6, 7), (3, 4, 5, 6, 7), (3, 4, 5, 6, 7)))
 
     assert(
-      area.t === DenseMatrix(
-        (3, 4, 5, 6, 7),
-        (3, 4, 5, 6, 7),
-        (3, 4, 5, 6, 7)).t)
+      area.t === DenseMatrix((3, 4, 5, 6, 7), (3, 4, 5, 6, 7), (3, 4, 5, 6, 7)).t)
 
     val sl2t = area.t(0 until area.cols, 1 until area.rows)
     assert(
@@ -826,10 +812,8 @@ class DenseMatrixTest
 
   test("lhs scalars") {
     assert(
-      1.0 :/ (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix.fill(2, 2)(
-        1 / 10.0))
-    assert(
-      1.0 :- (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix.fill(2, 2)(-9.0))
+      1.0 :/ (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix.fill(2, 2)(1 / 10.0))
+    assert(1.0 :- (DenseMatrix.fill(2, 2)(10.0)) === DenseMatrix.fill(2, 2)(-9.0))
   }
 
   test("mapping ufunc") {

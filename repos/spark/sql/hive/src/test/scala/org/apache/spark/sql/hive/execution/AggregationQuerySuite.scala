@@ -938,8 +938,8 @@ abstract class AggregationQuerySuite
             new Random(System.nanoTime()))
         val dataGenerator =
           maybeDataGenerator
-            .getOrElse(
-              fail(s"Failed to create data generator for schema $schemaForGenerator"))
+            .getOrElse(fail(
+              s"Failed to create data generator for schema $schemaForGenerator"))
         val data = (1 to 50).map { i =>
           dataGenerator.apply() match {
             case row: Row => Row.fromSeq(i +: row.toSeq)

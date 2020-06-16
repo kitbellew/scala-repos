@@ -149,15 +149,17 @@ trait Inbox { this: ActorDSL.type ⇒
           val next = clientsByTimeout.head.deadline
           import context.dispatcher
           if (currentDeadline.isEmpty) {
-            currentDeadline = Some((
-              next,
-              context.system.scheduler.scheduleOnce(next.timeLeft, self, Kick)))
+            currentDeadline = Some(
+              (
+                next,
+                context.system.scheduler.scheduleOnce(next.timeLeft, self, Kick)))
           } else {
             // must not rely on the Scheduler to not fire early (for robustness)
             currentDeadline.get._2.cancel()
-            currentDeadline = Some((
-              next,
-              context.system.scheduler.scheduleOnce(next.timeLeft, self, Kick)))
+            currentDeadline = Some(
+              (
+                next,
+                context.system.scheduler.scheduleOnce(next.timeLeft, self, Kick)))
           }
         }
       }

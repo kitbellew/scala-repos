@@ -226,8 +226,7 @@ class Interaction @Since("1.6.0") (override val uid: String)
       case (nominal: NominalAttribute, i) =>
         if (nominal.values.isDefined) {
           nominal.values.get.map(v =>
-            BinaryAttribute.defaultAttr.withName(
-              format(i, nominal.name, Some(v))))
+            BinaryAttribute.defaultAttr.withName(format(i, nominal.name, Some(v))))
         } else {
           Array.tabulate(nominal.getNumValues.get)(j =>
             BinaryAttribute.defaultAttr.withName(

@@ -372,8 +372,7 @@ class FilterPushdownSuite extends PlanTest {
 
     val originalQuery = {
       x.join(y, LeftOuter, Some("y.b".attr === 1))
-        .where(
-          "x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
+        .where("x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
     }
 
     val optimized = Optimize.execute(originalQuery.analyze)
@@ -394,8 +393,7 @@ class FilterPushdownSuite extends PlanTest {
 
     val originalQuery = {
       x.join(y, RightOuter, Some("y.b".attr === 1))
-        .where(
-          "x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
+        .where("x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
     }
 
     val optimized = Optimize.execute(originalQuery.analyze)
@@ -416,8 +414,7 @@ class FilterPushdownSuite extends PlanTest {
 
     val originalQuery = {
       x.join(y, LeftOuter, Some("y.b".attr === 1 && "x.a".attr === 3))
-        .where(
-          "x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
+        .where("x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
     }
 
     val optimized = Optimize.execute(originalQuery.analyze)
@@ -438,8 +435,7 @@ class FilterPushdownSuite extends PlanTest {
 
     val originalQuery = {
       x.join(y, RightOuter, Some("y.b".attr === 1 && "x.a".attr === 3))
-        .where(
-          "x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
+        .where("x.b".attr === 2 && "y.b".attr === 2 && "x.c".attr === "y.c".attr)
     }
 
     val optimized = Optimize.execute(originalQuery.analyze)

@@ -84,7 +84,8 @@ class LabelSelectorParsersTest extends MarathonSpec with Matchers {
       false)
   }
 
-  test("A valid combined label query without alphanumeric characters can be parsed") {
+  test(
+    "A valid combined label query without alphanumeric characters can be parsed") {
     val parser = new LabelSelectorParsers
     val combined =
       parser.parsed("""\{\{\{ in (\*\*\*, \&\&\&, \$\$\$), \^\^\^ notin (\-\-\-, \!\!\!, \@\@\@), \#\#\#""")

@@ -14,12 +14,7 @@ import scala.concurrent.duration._
 import java.lang.String
 import akka.camel._
 import internal.{DefaultCamel, CamelExchangeAdapter}
-import org.scalatest.{
-  Suite,
-  WordSpecLike,
-  BeforeAndAfterAll,
-  BeforeAndAfterEach
-}
+import org.scalatest.{Suite, WordSpecLike, BeforeAndAfterAll, BeforeAndAfterEach}
 import akka.camel.TestSupport._
 import java.util.concurrent.{TimeoutException, CountDownLatch}
 import org.mockito.{ArgumentMatcher, Matchers ⇒ MMatchers, Mockito}

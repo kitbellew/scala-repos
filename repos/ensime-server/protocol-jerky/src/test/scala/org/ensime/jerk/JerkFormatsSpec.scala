@@ -628,11 +628,7 @@ class JerkFormatsSpec
   it should "support ranges and semantic highlighting" in {
     roundtrip(
       ERangePositions(
-        ERangePosition(
-          batchSourceFile,
-          75,
-          70,
-          90) :: Nil): EnsimeServerMessage,
+        ERangePosition(batchSourceFile, 75, 70, 90) :: Nil): EnsimeServerMessage,
       s"""{"typehint":"ERangePositions","positions":[{"file":"/abc","offset":75,"start":70,"end":90}]}"""
     )
 

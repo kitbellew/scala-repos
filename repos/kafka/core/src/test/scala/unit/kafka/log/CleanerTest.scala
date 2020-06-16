@@ -128,10 +128,8 @@ class CleanerTest extends JUnitSuite {
     for (i <- 0 until 6)
       log.append(messageSet, assignOffsets = true)
 
-    val logToClean = LogToClean(
-      TopicAndPartition("test", 0),
-      log,
-      log.activeSegment.baseOffset)
+    val logToClean =
+      LogToClean(TopicAndPartition("test", 0), log, log.activeSegment.baseOffset)
 
     assertEquals(
       "Total bytes of LogToClean should equal size of all segments excluding the active segment",
@@ -398,10 +396,7 @@ class CleanerTest extends JUnitSuite {
         map.size)
       for (i <- start until end)
         assertEquals("Should find all the keys", i.toLong, map.get(key(i)))
-      assertEquals(
-        "Should not find a value too small",
-        -1L,
-        map.get(key(start - 1)))
+      assertEquals("Should not find a value too small", -1L, map.get(key(start - 1)))
       assertEquals("Should not find a value too large", -1L, map.get(key(end)))
     }
     val segments = log.logSegments.toSeq

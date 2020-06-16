@@ -104,8 +104,7 @@ object ParserInput {
       new String(bytes, start, end - start, `ISO-8859-1`)
     def sliceCharArray(start: Int, end: Int) =
       `ISO-8859-1`
-        .decode(
-          ByteBuffer.wrap(java.util.Arrays.copyOfRange(bytes, start, end)))
+        .decode(ByteBuffer.wrap(java.util.Arrays.copyOfRange(bytes, start, end)))
         .array()
   }
 

@@ -15,9 +15,7 @@ object EitherTest extends SpecLite {
   checkAll(
     "Either.LeftProjection @@ Last",
     order.laws[Either.LeftProjection[Int, Int] @@ Last])
-  checkAll(
-    "Either.RightProjection",
-    order.laws[Either.RightProjection[Int, Int]])
+  checkAll("Either.RightProjection", order.laws[Either.RightProjection[Int, Int]])
   checkAll(
     "Either.RightProjection @@ First",
     order.laws[Either.RightProjection[Int, Int] @@ First])
@@ -25,18 +23,14 @@ object EitherTest extends SpecLite {
     "Either.RightProjection @@ Last",
     order.laws[Either.RightProjection[Int, Int] @@ Last])
 
-  checkAll(
-    "Either.LeftProjection",
-    monoid.laws[Either.LeftProjection[Int, Int]])
+  checkAll("Either.LeftProjection", monoid.laws[Either.LeftProjection[Int, Int]])
   checkAll(
     "Either.LeftProjection @@ First",
     monoid.laws[Either.LeftProjection[Int, Int] @@ First])
   checkAll(
     "Either.LeftProjection @@ Last",
     monoid.laws[Either.LeftProjection[Int, Int] @@ Last])
-  checkAll(
-    "Either.RightProjection",
-    monoid.laws[Either.RightProjection[Int, Int]])
+  checkAll("Either.RightProjection", monoid.laws[Either.RightProjection[Int, Int]])
   checkAll(
     "Either.RightProjection @@ First",
     monoid.laws[Either.RightProjection[Int, Int] @@ First])

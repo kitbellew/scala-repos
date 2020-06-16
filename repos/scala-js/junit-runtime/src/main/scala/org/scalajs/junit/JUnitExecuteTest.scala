@@ -97,10 +97,7 @@ final class JUnitExecuteTest(
       val testMethodFailed = {
         try {
           classMetadata.invoke(testClassInstance, method.name)
-          executedWithoutExceptions(
-            method.name,
-            testAnnotation,
-            timeInSeconds())
+          executedWithoutExceptions(method.name, testAnnotation, timeInSeconds())
           false
         } catch {
           case ex: Throwable =>
@@ -131,8 +128,7 @@ final class JUnitExecuteTest(
               Some(ex))
             val selector =
               new NestedTestSelector(fullyQualifiedName, method.name)
-            eventHandler.handle(
-              new JUnitEvent(taskDef, Status.Failure, selector))
+            eventHandler.handle(new JUnitEvent(taskDef, Status.Failure, selector))
         }
       }
     }

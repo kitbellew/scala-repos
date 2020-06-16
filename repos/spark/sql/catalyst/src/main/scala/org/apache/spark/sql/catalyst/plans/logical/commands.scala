@@ -47,9 +47,7 @@ private[sql] case class DescribeFunction(
   * Returned for the "SHOW FUNCTIONS" command, which will list all of the
   * registered function list.
   */
-private[sql] case class ShowFunctions(
-    db: Option[String],
-    pattern: Option[String])
+private[sql] case class ShowFunctions(db: Option[String], pattern: Option[String])
     extends LogicalPlan
     with Command {
   override def children: Seq[LogicalPlan] = Seq.empty

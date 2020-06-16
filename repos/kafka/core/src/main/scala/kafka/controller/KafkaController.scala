@@ -337,8 +337,7 @@ class KafkaController(
         debug("Live brokers: " + controllerContext.liveBrokerIds.mkString(","))
       }
 
-      val allPartitionsAndReplicationFactorOnBroker
-          : Set[(TopicAndPartition, Int)] =
+      val allPartitionsAndReplicationFactorOnBroker: Set[(TopicAndPartition, Int)] =
         inLock(controllerContext.controllerLock) {
           controllerContext
             .partitionsOnBroker(id)
@@ -596,8 +595,7 @@ class KafkaController(
   def onBrokerFailure(deadBrokers: Seq[Int]) {
     info("Broker failure callback for %s".format(deadBrokers.mkString(",")))
     val deadBrokersThatWereShuttingDown =
-      deadBrokers.filter(id =>
-        controllerContext.shuttingDownBrokerIds.remove(id))
+      deadBrokers.filter(id => controllerContext.shuttingDownBrokerIds.remove(id))
     info(
       "Removed %s from list of shutting down brokers.".format(
         deadBrokersThatWereShuttingDown))
@@ -667,8 +665,7 @@ class KafkaController(
     */
   def onNewPartitionCreation(newPartitions: Set[TopicAndPartition]) {
     info(
-      "New partition creation callback for %s".format(
-        newPartitions.mkString(",")))
+      "New partition creation callback for %s".format(newPartitions.mkString(",")))
     partitionStateMachine.handleStateChanges(newPartitions, NewPartition)
     replicaStateMachine.handleStateChanges(
       controllerContext.replicasForPartition(newPartitions),
@@ -789,9 +786,7 @@ class KafkaController(
           reassignedPartitionContext,
           oldReplicas)
         //10. Update AR in ZK with RAR.
-        updateAssignedReplicasForPartition(
-          topicAndPartition,
-          reassignedReplicas)
+        updateAssignedReplicasForPartition(topicAndPartition, reassignedReplicas)
         //11. Update the /admin/reassign_partitions path in ZK to remove this partition.
         removePartitionFromReassignedPartitions(topicAndPartition)
         info("Removed partition %s from the list of reassigned partitions in zookeeper"
@@ -1077,8 +1072,7 @@ class KafkaController(
         topicDeleted || successful
       }
       .map(_._1)
-    reassignedPartitions.foreach(p =>
-      removePartitionFromReassignedPartitions(p))
+    reassignedPartitions.foreach(p => removePartitionFromReassignedPartitions(p))
     var partitionsToReassign
         : mutable.Map[TopicAndPartition, ReassignedPartitionsContext] =
       new mutable.HashMap
@@ -1089,8 +1083,7 @@ class KafkaController(
       "Partitions being reassigned: %s".format(
         partitionsBeingReassigned.toString()))
     info(
-      "Partitions already reassigned: %s".format(
-        reassignedPartitions.toString()))
+      "Partitions already reassigned: %s".format(reassignedPartitions.toString()))
     info(
       "Resuming reassignment of partitions: %s".format(
         partitionsToReassign.toString()))
@@ -1108,8 +1101,7 @@ class KafkaController(
         .keySet
         .map(_.topic)
     val topicsForWhichPreferredReplicaElectionIsInProgress =
-      controllerContext.partitionsUndergoingPreferredReplicaElection.map(
-        _.topic)
+      controllerContext.partitionsUndergoingPreferredReplicaElection.map(_.topic)
     val topicsForWhichPartitionReassignmentIsInProgress =
       controllerContext.partitionsBeingReassigned.keySet.map(_.topic)
     val topicsIneligibleForDeletion =
@@ -1268,9 +1260,7 @@ class KafkaController(
       "Updated assigned replicas for partition %s being reassigned to %s "
         .format(topicAndPartition, replicas.mkString(",")))
     // update the assigned replica list after a successful zookeeper write
-    controllerContext.partitionReplicaAssignment.put(
-      topicAndPartition,
-      replicas)
+    controllerContext.partitionReplicaAssignment.put(topicAndPartition, replicas)
   }
 
   private def startNewReplicasForReassignedPartition(
@@ -1691,8 +1681,7 @@ class KafkaController(
       */
     @throws(classOf[Exception])
     def handleNewSession() {
-      info(
-        "ZK expired; shut down all controller components and try to re-elect")
+      info("ZK expired; shut down all controller components and try to re-elect")
       inLock(controllerContext.controllerLock) {
         onControllerResignation()
         controllerElector.elect
@@ -1812,9 +1801,7 @@ class PartitionsReassignedListener(controller: KafkaController)
         if (controller.deleteTopicManager.isTopicQueuedUpForDeletion(
             partitionToBeReassigned._1.topic)) {
           error("Skipping reassignment of partition %s for topic %s since it is currently being deleted"
-            .format(
-              partitionToBeReassigned._1,
-              partitionToBeReassigned._1.topic))
+            .format(partitionToBeReassigned._1, partitionToBeReassigned._1.topic))
           controller.removePartitionFromReassignedPartitions(
             partitionToBeReassigned._1)
         } else {
@@ -1861,8 +1848,7 @@ class ReassignedPartitionsIsrChangeListener(
       val topicAndPartition = TopicAndPartition(topic, partition)
       try {
         // check if this partition is still being reassigned or not
-        controllerContext.partitionsBeingReassigned.get(
-          topicAndPartition) match {
+        controllerContext.partitionsBeingReassigned.get(topicAndPartition) match {
           case Some(reassignedPartitionContext) =>
             // need to re-read leader and isr from zookeeper since the zkclient callback doesn't return the Stat object
             val newLeaderAndIsrOpt =

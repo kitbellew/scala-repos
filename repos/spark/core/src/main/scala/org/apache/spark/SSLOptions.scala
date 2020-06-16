@@ -131,8 +131,7 @@ private[spark] case class SSLOptions(
   override def toString: String =
     s"SSLOptions{enabled=$enabled, " +
       s"keyStore=$keyStore, keyStorePassword=${keyStorePassword.map(_ => "xxx")}, " +
-      s"trustStore=$trustStore, trustStorePassword=${trustStorePassword.map(_ =>
-        "xxx")}, " +
+      s"trustStore=$trustStore, trustStorePassword=${trustStorePassword.map(_ => "xxx")}, " +
       s"protocol=$protocol, enabledAlgorithms=$enabledAlgorithms}"
 
 }

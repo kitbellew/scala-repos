@@ -336,9 +336,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
         pos: Position = NoPosition,
         newFlags: Long = 0L): MethodSymbol =
       createMethodSymbol(name, pos, METHOD | newFlags)
-    final def newLabel(
-        name: TermName,
-        pos: Position = NoPosition): MethodSymbol =
+    final def newLabel(name: TermName, pos: Position = NoPosition): MethodSymbol =
       newMethod(name, pos, LABEL)
 
     /** Propagates ConstrFlags (JAVA, specifically) from owner to constructor. */
@@ -3790,8 +3788,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     def implicitMembers: Scope = {
       val tp = info
       if ((implicitMembersCacheKey1 ne tp) || (implicitMembersCacheKey2 ne tp.decls.elems)) {
-        implicitMembersCacheValue =
-          tp.membersBasedOnFlags(BridgeFlags, IMPLICIT)
+        implicitMembersCacheValue = tp.membersBasedOnFlags(BridgeFlags, IMPLICIT)
         implicitMembersCacheKey1 = tp
         implicitMembersCacheKey2 = tp.decls.elems
       }
@@ -3824,9 +3821,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     override def isPackageClass = true
   }
 
-  class RefinementClassSymbol protected[Symbols] (
-      owner0: Symbol,
-      pos0: Position)
+  class RefinementClassSymbol protected[Symbols] (owner0: Symbol, pos0: Position)
       extends ClassSymbol(owner0, pos0, tpnme.REFINE_CLASS_NAME) {
     override def name_=(name: Name) {
       abort("Cannot set name of RefinementClassSymbol to " + name)
@@ -3987,9 +3982,7 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     *  @param    symFn   the function to create new symbols
     *  @return           the new list of info-adjusted symbols
     */
-  def deriveSymbols(
-      syms: List[Symbol],
-      symFn: Symbol => Symbol): List[Symbol] = {
+  def deriveSymbols(syms: List[Symbol], symFn: Symbol => Symbol): List[Symbol] = {
     val syms1 = mapList(syms)(symFn)
     mapList(syms1)(_ substInfo (syms, syms1))
   }

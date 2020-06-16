@@ -28,10 +28,8 @@ class DefaultRuntimePicklerGenerator(reflectionLock: ReentrantLock)
     extends spi.RuntimePicklerGenerator {
 
   /** Create a new pickler using the given tagKey. */
-  def genPickler(
-      classLoader: ClassLoader,
-      clazz: Class[_],
-      tag: FastTypeTag[_])(implicit share: refs.Share): Pickler[_] = {
+  def genPickler(classLoader: ClassLoader, clazz: Class[_], tag: FastTypeTag[_])(
+      implicit share: refs.Share): Pickler[_] = {
     reflectionLock.lock()
     try {
       // debug(s"!!! could not find registered pickler for class $className, tag ${tag.key} !!!")

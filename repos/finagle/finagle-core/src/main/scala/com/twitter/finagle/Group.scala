@@ -134,8 +134,7 @@ trait MutableGroup[T] extends Group[T] {
 @deprecated(
   "Use `com.twitter.finagle.Name` to represent clusters instead",
   "6.7.x")
-case class LabelledGroup[T](underlying: Group[T], name: String)
-    extends Group[T] {
+case class LabelledGroup[T](underlying: Group[T], name: String) extends Group[T] {
   protected[finagle] lazy val set: Var[Set[T]] = underlying.set
 }
 

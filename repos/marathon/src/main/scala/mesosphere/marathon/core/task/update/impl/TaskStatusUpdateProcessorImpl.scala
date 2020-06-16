@@ -38,8 +38,7 @@ class TaskStatusUpdateProcessorImpl @Inject() (
   private[this] val log = LoggerFactory.getLogger(getClass)
 
   private[this] val publishFutureTimer: Timer =
-    metrics.timer(
-      metrics.name(MetricPrefixes.SERVICE, getClass, "publishFuture"))
+    metrics.timer(metrics.name(MetricPrefixes.SERVICE, getClass, "publishFuture"))
 
   private[this] val killUnknownTaskTimer: Timer =
     metrics.timer(

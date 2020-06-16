@@ -226,8 +226,7 @@ object HashVector
     }
   }
 
-  implicit def canTabulate[E: ClassTag: Zero]
-      : CanTabulate[Int, HashVector[E], E] =
+  implicit def canTabulate[E: ClassTag: Zero]: CanTabulate[Int, HashVector[E], E] =
     new CanTabulate[Int, HashVector[E], E] {
       def apply(d: Int, f: (Int) => E): HashVector[E] = tabulate[E](d)(f)
     }

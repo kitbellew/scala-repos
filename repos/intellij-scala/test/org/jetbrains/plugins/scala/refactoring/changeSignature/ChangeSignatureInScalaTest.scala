@@ -101,9 +101,8 @@ class ChangeSignatureInScalaTest extends ChangeSignatureTestBase {
 
   def testRemoveRepeatedParam(): Unit = {
     isAddDefaultValue = false
-    val params = Seq(
-      parameterInfo("i", 0, types.Int),
-      parameterInfo("b", 1, types.Boolean))
+    val params =
+      Seq(parameterInfo("i", 0, types.Int), parameterInfo("b", 1, types.Boolean))
     doTest(null, "foo", null, Seq(params))
   }
 

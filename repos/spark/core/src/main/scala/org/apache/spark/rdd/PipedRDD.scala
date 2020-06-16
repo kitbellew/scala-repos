@@ -76,9 +76,7 @@ private[spark] class PipedRDD[T: ClassTag](
     }
   }
 
-  override def compute(
-      split: Partition,
-      context: TaskContext): Iterator[String] = {
+  override def compute(split: Partition, context: TaskContext): Iterator[String] = {
     val pb = new ProcessBuilder(command.asJava)
     // Add the environmental variables to the process.
     val currentEnvVars = pb.environment()

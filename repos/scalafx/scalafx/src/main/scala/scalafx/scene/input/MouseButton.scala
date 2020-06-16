@@ -36,9 +36,7 @@ object MouseButton
     extends SFXEnumDelegateCompanion[jfxsi.MouseButton, MouseButton] {
 
   val None = new MouseButton(jfxsi.MouseButton.NONE)
-  @deprecated(
-    "Use None; NONE will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use None; NONE will be removed in a future release", "8.0.60-R10")
   val NONE = None
 
   val Primary = new MouseButton(jfxsi.MouseButton.PRIMARY)

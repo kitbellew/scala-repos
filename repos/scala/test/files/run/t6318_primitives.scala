@@ -10,16 +10,14 @@ object Test extends App {
     val x = 1.toByte
     println(s"Checking if ${x.getClass} matches ${classTag[Byte].runtimeClass}")
     println(ClassTag.Byte.unapply(x))
-    println(
-      s"Checking if ${x.getClass} matches ${classTag[Short].runtimeClass}")
+    println(s"Checking if ${x.getClass} matches ${classTag[Short].runtimeClass}")
     println(ClassTag.Short.unapply(x))
     test(x)
   }
 
   {
     val x = 1.toShort
-    println(
-      s"Checking if ${x.getClass} matches ${classTag[Short].runtimeClass}")
+    println(s"Checking if ${x.getClass} matches ${classTag[Short].runtimeClass}")
     println(ClassTag.Short.unapply(x))
     println(s"Checking if ${x.getClass} matches ${classTag[Char].runtimeClass}")
     println(ClassTag.Char.unapply(x))
@@ -48,16 +46,14 @@ object Test extends App {
     val x = 1.toLong
     println(s"Checking if ${x.getClass} matches ${classTag[Long].runtimeClass}")
     println(ClassTag.Long.unapply(x))
-    println(
-      s"Checking if ${x.getClass} matches ${classTag[Float].runtimeClass}")
+    println(s"Checking if ${x.getClass} matches ${classTag[Float].runtimeClass}")
     println(ClassTag.Float.unapply(x))
     test(x)
   }
 
   {
     val x = 1.toFloat
-    println(
-      s"Checking if ${x.getClass} matches ${classTag[Float].runtimeClass}")
+    println(s"Checking if ${x.getClass} matches ${classTag[Float].runtimeClass}")
     println(ClassTag.Float.unapply(x))
     println(
       s"Checking if ${x.getClass} matches ${classTag[Double].runtimeClass}")

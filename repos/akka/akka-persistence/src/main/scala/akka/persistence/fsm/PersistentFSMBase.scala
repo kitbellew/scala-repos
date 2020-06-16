@@ -152,10 +152,7 @@ trait PersistentFSMBase[S, D, E]
     * @param stateData initial state data
     * @param timeout state timeout for the initial state, overriding the default timeout for that state
     */
-  final def startWith(
-      stateName: S,
-      stateData: D,
-      timeout: Timeout = None): Unit =
+  final def startWith(stateName: S, stateData: D, timeout: Timeout = None): Unit =
     currentState = PersistentFSM.State(stateName, stateData, timeout)()
 
   /**
@@ -388,10 +385,7 @@ trait PersistentFSMBase[S, D, E]
   private val stateFunctions = mutable.Map[S, StateFunction]()
   private val stateTimeouts = mutable.Map[S, Timeout]()
 
-  private def register(
-      name: S,
-      function: StateFunction,
-      timeout: Timeout): Unit = {
+  private def register(name: S, function: StateFunction, timeout: Timeout): Unit = {
     if (stateFunctions contains name) {
       stateFunctions(name) = stateFunctions(name) orElse function
       stateTimeouts(name) = timeout orElse stateTimeouts(name)
@@ -451,18 +445,12 @@ trait PersistentFSMBase[S, D, E]
       // TODO Use context.watch(actor) and receive Terminated(actor) to clean up list
       listeners.add(actorRef)
       // send current state back as reference point
-      actorRef ! CurrentState(
-        self,
-        currentState.stateName,
-        currentState.timeout)
+      actorRef ! CurrentState(self, currentState.stateName, currentState.timeout)
     case Listen(actorRef) ⇒
       // TODO Use context.watch(actor) and receive Terminated(actor) to clean up list
       listeners.add(actorRef)
       // send current state back as reference point
-      actorRef ! CurrentState(
-        self,
-        currentState.stateName,
-        currentState.timeout)
+      actorRef ! CurrentState(self, currentState.stateName, currentState.timeout)
     case UnsubscribeTransitionCallBack(actorRef) ⇒
       listeners.remove(actorRef)
     case Deafen(actorRef) ⇒
@@ -745,10 +733,7 @@ abstract class AbstractPersistentFSMBase[S, D, E]
     * @param stateData initial state data
     * @param timeout state timeout for the initial state, overriding the default timeout for that state
     */
-  final def startWith(
-      stateName: S,
-      stateData: D,
-      timeout: FiniteDuration): Unit =
+  final def startWith(stateName: S, stateData: D, timeout: FiniteDuration): Unit =
     startWith(stateName, stateData, Option(timeout))
 
   /**

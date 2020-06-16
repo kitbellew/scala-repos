@@ -108,9 +108,7 @@ private[collection] trait AugmentedIterableIterator[+T]
 
   /* transformers to combiners */
 
-  def map2combiner[S, That](
-      f: T => S,
-      cb: Combiner[S, That]): Combiner[S, That] = {
+  def map2combiner[S, That](f: T => S, cb: Combiner[S, That]): Combiner[S, That] = {
     //val cb = pbf(repr)
     if (isRemainingCheap) cb.sizeHint(remaining)
     while (hasNext) cb += f(next())
@@ -230,9 +228,7 @@ private[collection] trait AugmentedIterableIterator[+T]
     (before, after)
   }
 
-  def takeWhile2combiner[U >: T, This](
-      p: T => Boolean,
-      cb: Combiner[U, This]) = {
+  def takeWhile2combiner[U >: T, This](p: T => Boolean, cb: Combiner[U, This]) = {
     var loop = true
     while (hasNext && loop) {
       val curr = next()

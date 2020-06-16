@@ -30,9 +30,7 @@ import scala.collection.mutable.ArrayBuffer
   */
 
 class ScalaDirectClassInheritorsSearcher
-    extends QueryExecutor[
-      PsiClass,
-      DirectClassInheritorsSearch.SearchParameters] {
+    extends QueryExecutor[PsiClass, DirectClassInheritorsSearch.SearchParameters] {
   def execute(
       queryParameters: DirectClassInheritorsSearch.SearchParameters,
       consumer: Processor[PsiClass]): Boolean = {

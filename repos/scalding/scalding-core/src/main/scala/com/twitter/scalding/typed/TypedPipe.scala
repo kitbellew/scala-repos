@@ -388,10 +388,8 @@ trait TypedPipe[+T] extends Serializable {
   protected def onRawSingle(onPipe: Pipe => Pipe): TypedPipe[T] = {
     val self = this
     TypedPipeFactory({ (fd, m) =>
-      val pipe = self.toPipe[T](new Fields(java.lang.Integer.valueOf(0)))(
-        fd,
-        m,
-        singleSetter)
+      val pipe = self
+        .toPipe[T](new Fields(java.lang.Integer.valueOf(0)))(fd, m, singleSetter)
       TypedPipe.fromSingleField[T](onPipe(pipe))(fd, m)
     })
   }
@@ -644,8 +642,8 @@ trait TypedPipe[+T] extends Serializable {
     * If you want to writeThrough to a specific file if it doesn't already exist,
     * and otherwise just read from it going forward, use this.
     */
-  def make[U >: T](dest: Source with TypedSink[T] with TypedSource[U])
-      : Execution[TypedPipe[U]] =
+  def make[U >: T](
+      dest: Source with TypedSink[T] with TypedSource[U]): Execution[TypedPipe[U]] =
     Execution.getMode.flatMap { mode =>
       try {
         dest.validateTaps(mode)
@@ -945,9 +943,7 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
 
   private[this] def toSourcePipe =
     TypedPipe.from(
-      IterableSource[T](iterable, new Fields("0"))(
-        singleSetter,
-        singleConverter))
+      IterableSource[T](iterable, new Fields("0"))(singleSetter, singleConverter))
 
   override def toIterableExecution: Execution[Iterable[T]] =
     Execution.from(iterable)
@@ -1003,9 +999,7 @@ class TypedPipeFactory[T] private (
 
   override def limit(count: Int) = andThen(_.limit(count))
 
-  override def sumByLocalKeys[K, V](implicit
-      ev: T <:< (K, V),
-      sg: Semigroup[V]) =
+  override def sumByLocalKeys[K, V](implicit ev: T <:< (K, V), sg: Semigroup[V]) =
     andThen(_.sumByLocalKeys[K, V])
 
   override def asPipe[U >: T](fieldNames: Fields)(implicit
@@ -1059,8 +1053,7 @@ class TypedPipeInst[T] private[scalding] (
     * If this TypedPipeInst represents a Source that was opened with no
     * filtering or mapping
     */
-  private[scalding] def openIfHead
-      : Option[(Tap[_, _, _], Fields, FlatMapFn[T])] =
+  private[scalding] def openIfHead: Option[(Tap[_, _, _], Fields, FlatMapFn[T])] =
     // Keep this local
     if (inpipe.getPrevious.isEmpty) {
       val srcs = localFlowDef.getSources
@@ -1089,20 +1082,10 @@ class TypedPipeInst[T] private[scalding] (
     }
 
   override def filter(f: T => Boolean): TypedPipe[T] =
-    new TypedPipeInst[T](
-      inpipe,
-      fields,
-      localFlowDef,
-      mode,
-      flatMapFn.filter(f))
+    new TypedPipeInst[T](inpipe, fields, localFlowDef, mode, flatMapFn.filter(f))
 
   override def flatMap[U](f: T => TraversableOnce[U]): TypedPipe[U] =
-    new TypedPipeInst[U](
-      inpipe,
-      fields,
-      localFlowDef,
-      mode,
-      flatMapFn.flatMap(f))
+    new TypedPipeInst[U](inpipe, fields, localFlowDef, mode, flatMapFn.flatMap(f))
 
   override def map[U](f: T => U): TypedPipe[U] =
     new TypedPipeInst[U](inpipe, fields, localFlowDef, mode, flatMapFn.map(f))

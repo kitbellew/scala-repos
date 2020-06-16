@@ -22,10 +22,8 @@ object PairingSystem extends AbstractPairingSystem {
       users: WaitingUsers,
       ranking: Ranking): Fu[Pairings] = {
     for {
-      lastOpponents <- PairingRepo.lastOpponents(
-        tour.id,
-        users.all,
-        Math.min(100, users.size * 4))
+      lastOpponents <-
+        PairingRepo.lastOpponents(tour.id, users.all, Math.min(100, users.size * 4))
       onlyTwoActivePlayers <- (tour.nbPlayers > 20).fold(
         fuccess(false),
         PlayerRepo.countActive(tour.id).map(2 ==))
@@ -57,9 +55,7 @@ object PairingSystem extends AbstractPairingSystem {
 
   val pairingGroupSize = 18
 
-  private def makePreps(
-      data: Data,
-      users: List[String]): Fu[List[Pairing.Prep]] = {
+  private def makePreps(data: Data, users: List[String]): Fu[List[Pairing.Prep]] = {
     import data._
     if (users.size < 2) fuccess(Nil)
     else
@@ -125,9 +121,8 @@ object PairingSystem extends AbstractPairingSystem {
             i = i + Math.abs(a.rank - b.rank) * 1000 +
               Math.abs(a.player.rating - b.player.rating) +
               justPlayedTogether(a.player.userId, b.player.userId).?? {
-                if (veryMuchJustPlayedTogether(
-                    a.player.userId,
-                    b.player.userId)) 9000 * 1000
+                if (veryMuchJustPlayedTogether(a.player.userId, b.player.userId))
+                  9000 * 1000
                 else 8000 * 1000
               }
         }

@@ -11,10 +11,7 @@ import org.scalatest.mock.MockitoSugar
 import org.scalatest.{FunSuite, OneInstancePerTest}
 
 @RunWith(classOf[JUnitRunner])
-class CachingPoolTest
-    extends FunSuite
-    with MockitoSugar
-    with OneInstancePerTest {
+class CachingPoolTest extends FunSuite with MockitoSugar with OneInstancePerTest {
 
   val timer = new MockTimer
   val obj = mock[Object]

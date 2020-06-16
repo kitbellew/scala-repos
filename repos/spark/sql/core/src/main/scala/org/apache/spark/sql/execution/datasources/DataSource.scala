@@ -249,11 +249,7 @@ case class DataSource(
         }
 
         val fileCatalog: FileCatalog =
-          new HDFSFileCatalog(
-            sqlContext,
-            options,
-            globbedPaths,
-            partitionSchema)
+          new HDFSFileCatalog(sqlContext, options, globbedPaths, partitionSchema)
         val dataSchema = userSpecifiedSchema
           .orElse {
             format.inferSchema(

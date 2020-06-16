@@ -224,9 +224,7 @@ private[pickling] class IrScalaSymbols[
 
   }
 
-  private class ScalaIrField(
-      field: TermSymbol,
-      override val owner: ScalaIrClass)
+  private class ScalaIrField(field: TermSymbol, override val owner: ScalaIrClass)
       extends IrField {
 
     override def isMarkedTransient: Boolean = {
@@ -284,8 +282,7 @@ private[pickling] class IrScalaSymbols[
     override def parameterTypes[U <: Universe with Singleton](
         u: U): List[List[u.Type]] = {
       mthd.paramss.map(
-        _.map(x =>
-          fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
+        _.map(x => fillParameters(x).asSeenFrom(owner.tpe, owner.tpe.typeSymbol))
           .map(_.asInstanceOf[u.Type]))
     }
 

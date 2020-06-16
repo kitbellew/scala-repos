@@ -46,9 +46,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           val msg = s"${BackendReporting.methodSignature(
             callee.calleeDeclarationClass.internalName,
             callee.callee)}$annotWarn could not be inlined:\n$warning"
-          backendReporting.inlinerWarning(
-            request.callsite.callsitePosition,
-            msg)
+          backendReporting.inlinerWarning(request.callsite.callsitePosition, msg)
         }
       }
     }
@@ -273,9 +271,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
       java.util.Arrays.sort(requests, callsiteOrdering)
       for (r <- requests) {
         // is there a chain of inlining requests that would inline the callsite method into the callee?
-        if (isReachable(
-            r.callsite.callee.get.callee,
-            r.callsite.callsiteMethod))
+        if (isReachable(r.callsite.callee.get.callee, r.callsite.callsiteMethod))
           elided += r
         else
           result += r
@@ -413,10 +409,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
 
     // New labels for the cloned instructions
     val labelsMap = cloneLabels(callee)
-    val (
-      clonedInstructions,
-      instructionMap,
-      hasSerializableClosureInstantiation) =
+    val (clonedInstructions, instructionMap, hasSerializableClosureInstantiation) =
       cloneInstructions(callee, labelsMap)
     val keepLineNumbers = callsiteClass == calleeDeclarationClass
     if (!keepLineNumbers) {
@@ -923,8 +916,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
                 opcode: Int,
                 methodFlags: Int,
                 methodDeclClass: ClassBType,
-                methodRefClass: ClassBType)
-                : Either[OptimizerWarning, Boolean] = {
+                methodRefClass: ClassBType): Either[OptimizerWarning, Boolean] = {
               opcode match {
                 case INVOKESPECIAL
                     if mi.name != GenBCode.INSTANCE_CONSTRUCTOR_NAME =>
@@ -1012,8 +1004,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           // the implMethod is public, lambdaMetaFactory doesn't use the Lookup object's extended
           // capability, and we can safely inline the instruction into a different class.
 
-          val methodRefClass = classBTypeFromParsedClassfile(
-            implMethod.getOwner)
+          val methodRefClass = classBTypeFromParsedClassfile(implMethod.getOwner)
           for {
             (methodNode, methodDeclClassNode) <-
               byteCodeRepository.methodNode(
@@ -1038,8 +1029,7 @@ class Inliner[BT <: BTypes](val btypes: BT) {
           ci.cst match {
             case t: asm.Type =>
               classIsAccessible(
-                bTypeForDescriptorOrInternalNameFromClassfile(
-                  t.getInternalName),
+                bTypeForDescriptorOrInternalNameFromClassfile(t.getInternalName),
                 destinationClass)
             case _ => Right(true)
           }

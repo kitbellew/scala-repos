@@ -74,9 +74,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
     "password" -> trim(label("Password", text(required, maxlength(20)))),
     "fullName" -> trim(label("Full Name", text(required, maxlength(100)))),
     "mailAddress" -> trim(
-      label(
-        "Mail Address",
-        text(required, maxlength(100), uniqueMailAddress()))),
+      label("Mail Address", text(required, maxlength(100), uniqueMailAddress()))),
     "url" -> trim(label("URL", optional(text(maxlength(200))))),
     "fileId" -> trim(label("File ID", optional(text())))
   )(AccountNewForm.apply)
@@ -143,9 +141,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
   val newRepositoryForm = mapping(
     "owner" -> trim(
-      label(
-        "Owner",
-        text(required, maxlength(100), identifier, existsAccount))),
+      label("Owner", text(required, maxlength(100), identifier, existsAccount))),
     "name" -> trim(
       label(
         "Repository name",
@@ -163,8 +159,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   case class AccountForm(accountName: String)
 
   val accountForm = mapping(
-    "account" -> trim(
-      label("Group/User name", text(required, validAccountName)))
+    "account" -> trim(label("Group/User name", text(required, validAccountName)))
   )(AccountForm.apply)
 
   /**
@@ -395,12 +390,10 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         getRepositoryNamesOfUser(groupName).foreach {
           repositoryName =>
             deleteRepository(groupName, repositoryName)
-            FileUtils.deleteDirectory(
-              getRepositoryDir(groupName, repositoryName))
+            FileUtils.deleteDirectory(getRepositoryDir(groupName, repositoryName))
             FileUtils.deleteDirectory(
               getWikiRepositoryDir(groupName, repositoryName))
-            FileUtils.deleteDirectory(
-              getTemporaryDir(groupName, repositoryName))
+            FileUtils.deleteDirectory(getTemporaryDir(groupName, repositoryName))
         }
     }
     redirect("/")

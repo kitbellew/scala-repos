@@ -24,8 +24,7 @@ import locator.Locator
   * Concrete implementation of Joiner instance which is specialized on basic
   * types.
   */
-class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD]
-    extends Joiner[T] {
+class JoinerImpl[@spec(Boolean, Int, Long, Double) T: ST: ORD] extends Joiner[T] {
   private implicit def wrapArray(arr: Array[Int]): Option[Array[Int]] =
     Some(arr)
 

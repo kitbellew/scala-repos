@@ -314,21 +314,13 @@ object Test extends BytecodeTest {
       "m$1",
       "()Ljava/lang/Object;")
     assertEnclosingMethod("SI_9105$C$1", "SI_9105", null, null)
-    assertEnclosingMethod(
-      "SI_9105$D$1",
-      "SI_9105",
-      "met",
-      "()Lscala/Function1;")
+    assertEnclosingMethod("SI_9105$D$1", "SI_9105", "met", "()Lscala/Function1;")
     assertEnclosingMethod(
       "SI_9105$E$1",
       "SI_9105",
       "m$3",
       "()Ljava/lang/Object;")
-    assertEnclosingMethod(
-      "SI_9105$F$1",
-      "SI_9105",
-      "met",
-      "()Lscala/Function1;")
+    assertEnclosingMethod("SI_9105$F$1", "SI_9105", "met", "()Lscala/Function1;")
     assertNoEnclosingMethod("SI_9105")
 
     assertLocal(innerClassNodes("SI_9105$A$3").head, "SI_9105$A$3", "A$3")

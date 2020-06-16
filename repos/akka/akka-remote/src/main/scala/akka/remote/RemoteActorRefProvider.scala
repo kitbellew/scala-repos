@@ -63,7 +63,8 @@ private[akka] object RemoteActorRefProvider {
     // TODO: state timeout
     when(WaitDaemonShutdown) {
       case Event(TerminationHookDone, Some(internals)) ⇒
-        log.info("Remote daemon shut down; proceeding with flushing remote transports.")
+        log.info(
+          "Remote daemon shut down; proceeding with flushing remote transports.")
         internals.transport.shutdown() pipeTo self
         goto(WaitTransportShutdown)
     }

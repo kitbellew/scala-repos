@@ -61,9 +61,5 @@ object FileIO {
   def toFile(f: File, options: Set[StandardOpenOption] = Set(WRITE, CREATE))
       : Sink[ByteString, Future[IOResult]] =
     new Sink(
-      new FileSink(
-        f,
-        options,
-        DefaultAttributes.fileSink,
-        sinkShape("FileSink")))
+      new FileSink(f, options, DefaultAttributes.fileSink, sinkShape("FileSink")))
 }

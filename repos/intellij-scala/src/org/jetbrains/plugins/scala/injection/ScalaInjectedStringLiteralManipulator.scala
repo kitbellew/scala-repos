@@ -44,8 +44,7 @@ class ScalaInjectedStringLiteralManipulator
             expr.replace(l)
             l
           case _ =>
-            throw new IncorrectOperationException(
-              "cannot handle content change")
+            throw new IncorrectOperationException("cannot handle content change")
         }
       case str if str.isString =>
         val newExpr = ScalaPsiElementFactory.createExpressionFromText(

@@ -49,8 +49,7 @@ class ParameterDirectivesExamplesSpec
     val route =
       parameters('color, 'backgroundColor.?) { (color, backgroundColor) =>
         val backgroundStr = backgroundColor.getOrElse("<undefined>")
-        complete(
-          s"The color is '$color' and the background is '$backgroundStr'")
+        complete(s"The color is '$color' and the background is '$backgroundStr'")
       }
 
     // tests:
@@ -172,8 +171,7 @@ class ParameterDirectivesExamplesSpec
       parameterMap { params =>
         def paramString(param: (String, String)): String =
           s"""${param._1} = '${param._2}'"""
-        complete(
-          s"The parameters are ${params.map(paramString).mkString(", ")}")
+        complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
       }
 
     // tests:
@@ -206,8 +204,7 @@ class ParameterDirectivesExamplesSpec
       parameterSeq { params =>
         def paramString(param: (String, String)): String =
           s"""${param._1} = '${param._2}'"""
-        complete(
-          s"The parameters are ${params.map(paramString).mkString(", ")}")
+        complete(s"The parameters are ${params.map(paramString).mkString(", ")}")
       }
 
     // tests:

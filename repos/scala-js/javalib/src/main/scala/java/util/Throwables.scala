@@ -96,8 +96,7 @@ class InputMismatchException(s: String) extends NoSuchElementException(s) {
   def this() = this(null)
 }
 
-class InvalidPropertiesFormatException(s: String)
-    extends java.io.IOException(s) {
+class InvalidPropertiesFormatException(s: String) extends java.io.IOException(s) {
   def this(e: Throwable) = {
     this(if (e == null) null.asInstanceOf[String] else e.toString())
     this.initCause(e)
@@ -152,8 +151,7 @@ class TooManyListenersException(s: String) extends Exception(s) {
   def this() = this(null)
 }
 
-class UnknownFormatConversionException private ()
-    extends IllegalFormatException {
+class UnknownFormatConversionException private () extends IllegalFormatException {
   private var s: String = null
   def this(s: String) = {
     this()

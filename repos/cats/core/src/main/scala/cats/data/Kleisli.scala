@@ -217,8 +217,7 @@ private[data] sealed abstract class KleisliInstances3
 
 private[data] sealed abstract class KleisliInstances4 {
 
-  implicit def kleisliMonadReader[F[_]: Monad, A]
-      : MonadReader[Kleisli[F, A, ?], A] =
+  implicit def kleisliMonadReader[F[_]: Monad, A]: MonadReader[Kleisli[F, A, ?], A] =
     new MonadReader[Kleisli[F, A, ?], A] {
       def pure[B](x: B): Kleisli[F, A, B] =
         Kleisli.pure[F, A, B](x)

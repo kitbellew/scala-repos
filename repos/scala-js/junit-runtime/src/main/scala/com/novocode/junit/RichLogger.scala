@@ -10,10 +10,7 @@ final class RichLogger private (loggers: Array[Logger], settings: RunSettings) {
 
   private[this] val currentTestClassName = new mutable.Stack[String]()
 
-  def this(
-      loggers: Array[Logger],
-      settings: RunSettings,
-      testClassName: String) = {
+  def this(loggers: Array[Logger], settings: RunSettings, testClassName: String) = {
     this(loggers, settings)
     currentTestClassName.push(testClassName)
   }

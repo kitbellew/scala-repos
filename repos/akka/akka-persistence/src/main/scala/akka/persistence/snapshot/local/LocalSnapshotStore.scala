@@ -59,9 +59,7 @@ private[persistence] class LocalSnapshotStore
     Future(load(metadata))(streamDispatcher)
   }
 
-  override def saveAsync(
-      metadata: SnapshotMetadata,
-      snapshot: Any): Future[Unit] = {
+  override def saveAsync(metadata: SnapshotMetadata, snapshot: Any): Future[Unit] = {
     saving += metadata
     val completion = Future(save(metadata, snapshot))(streamDispatcher)
     completion

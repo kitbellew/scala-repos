@@ -551,8 +551,7 @@ trait TraitView[This <: android.view.View]
   @inline def disable() = { basis.setEnabled(false); basis }
 
   @inline def fadingEdgeLength(implicit no: NoGetterForThisProperty): Nothing =
-    throw new Error(
-      "Android does not support the getter for 'fadingEdgeLength'")
+    throw new Error("Android does not support the getter for 'fadingEdgeLength'")
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/View.html#setFadingEdgeLength(int) setFadingEdgeLength(int)]]`
@@ -1991,38 +1990,35 @@ trait TraitView[This <: android.view.View]
   }
 
   @inline def onLayoutChange[U](
-      f: (android.view.View, Int, Int, Int, Int, Int, Int, Int, Int) => U)
-      : This = {
-    basis.addOnLayoutChangeListener(
-      new android.view.View.OnLayoutChangeListener {
-        def onLayoutChange(
-            p1: android.view.View,
-            p2: Int,
-            p3: Int,
-            p4: Int,
-            p5: Int,
-            p6: Int,
-            p7: Int,
-            p8: Int,
-            p9: Int): Unit = { f(p1, p2, p3, p4, p5, p6, p7, p8, p9) }
-      })
+      f: (android.view.View, Int, Int, Int, Int, Int, Int, Int, Int) => U): This = {
+    basis.addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener {
+      def onLayoutChange(
+          p1: android.view.View,
+          p2: Int,
+          p3: Int,
+          p4: Int,
+          p5: Int,
+          p6: Int,
+          p7: Int,
+          p8: Int,
+          p9: Int): Unit = { f(p1, p2, p3, p4, p5, p6, p7, p8, p9) }
+    })
     basis
   }
 
   @inline def onLayoutChange[U](f: => U): This = {
-    basis.addOnLayoutChangeListener(
-      new android.view.View.OnLayoutChangeListener {
-        def onLayoutChange(
-            p1: android.view.View,
-            p2: Int,
-            p3: Int,
-            p4: Int,
-            p5: Int,
-            p6: Int,
-            p7: Int,
-            p8: Int,
-            p9: Int): Unit = { f }
-      })
+    basis.addOnLayoutChangeListener(new android.view.View.OnLayoutChangeListener {
+      def onLayoutChange(
+          p1: android.view.View,
+          p2: Int,
+          p3: Int,
+          p4: Int,
+          p5: Int,
+          p6: Int,
+          p7: Int,
+          p8: Int,
+          p9: Int): Unit = { f }
+    })
     basis
   }
 
@@ -2483,9 +2479,9 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
       f: (android.view.View, android.view.View) => U): This = {
     basis.setOnHierarchyChangeListener(
       new android.view.ViewGroup.OnHierarchyChangeListener {
-        def onChildViewAdded(
-            p1: android.view.View,
-            p2: android.view.View): Unit = { f(p1, p2) }
+        def onChildViewAdded(p1: android.view.View, p2: android.view.View): Unit = {
+          f(p1, p2)
+        }
         def onChildViewRemoved(
             p1: android.view.View,
             p2: android.view.View): Unit = {}
@@ -2496,9 +2492,9 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
   @inline def onChildViewAdded[U](f: => U): This = {
     basis.setOnHierarchyChangeListener(
       new android.view.ViewGroup.OnHierarchyChangeListener {
-        def onChildViewAdded(
-            p1: android.view.View,
-            p2: android.view.View): Unit = { f }
+        def onChildViewAdded(p1: android.view.View, p2: android.view.View): Unit = {
+          f
+        }
         def onChildViewRemoved(
             p1: android.view.View,
             p2: android.view.View): Unit = {}
@@ -2510,9 +2506,7 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
       f: (android.view.View, android.view.View) => U): This = {
     basis.setOnHierarchyChangeListener(
       new android.view.ViewGroup.OnHierarchyChangeListener {
-        def onChildViewAdded(
-            p1: android.view.View,
-            p2: android.view.View): Unit = {}
+        def onChildViewAdded(p1: android.view.View, p2: android.view.View): Unit = {}
         def onChildViewRemoved(
             p1: android.view.View,
             p2: android.view.View): Unit = { f(p1, p2) }
@@ -2523,9 +2517,7 @@ trait TraitViewGroup[This <: android.view.ViewGroup] extends TraitView[This] {
   @inline def onChildViewRemoved[U](f: => U): This = {
     basis.setOnHierarchyChangeListener(
       new android.view.ViewGroup.OnHierarchyChangeListener {
-        def onChildViewAdded(
-            p1: android.view.View,
-            p2: android.view.View): Unit = {}
+        def onChildViewAdded(p1: android.view.View, p2: android.view.View): Unit = {}
         def onChildViewRemoved(
             p1: android.view.View,
             p2: android.view.View): Unit = { f }
@@ -2749,8 +2741,7 @@ class RichSurfaceView[This <: android.view.SurfaceView](val basis: This)
 /**
   * Automatically generated helper trait of `[[https://developer.android.com/reference/android/view/SurfaceView.html android.view.SurfaceView]]`. This contains several property accessors.
   */
-trait TraitSurfaceView[This <: android.view.SurfaceView]
-    extends TraitView[This] {
+trait TraitSurfaceView[This <: android.view.SurfaceView] extends TraitView[This] {
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/SurfaceView.html#getHolder() getHolder()]]`
@@ -2972,8 +2963,7 @@ class RichTextureView[This <: android.view.TextureView](val basis: This)
 /**
   * Automatically generated helper trait of `[[https://developer.android.com/reference/android/view/TextureView.html android.view.TextureView]]`. This contains several property accessors.
   */
-trait TraitTextureView[This <: android.view.TextureView]
-    extends TraitView[This] {
+trait TraitTextureView[This <: android.view.TextureView] extends TraitView[This] {
 
   /**
     * Shortcut for `[[https://developer.android.com/reference/android/view/TextureView.html#getBitmap() getBitmap()]]`
@@ -3080,19 +3070,19 @@ trait ViewImplicits {
       viewGroup: V) = new RichViewGroup[V](viewGroup)
   @inline implicit def menu2RichMenu[V <: android.view.Menu](menu: V) =
     new RichMenu[V](menu)
-  @inline implicit def contextMenu2RichContextMenu[
-      V <: android.view.ContextMenu](contextMenu: V) =
+  @inline implicit def contextMenu2RichContextMenu[V <: android.view.ContextMenu](
+      contextMenu: V) =
     new RichContextMenu[V](contextMenu)
-  @inline implicit def surfaceView2RichSurfaceView[
-      V <: android.view.SurfaceView](surfaceView: V) =
+  @inline implicit def surfaceView2RichSurfaceView[V <: android.view.SurfaceView](
+      surfaceView: V) =
     new RichSurfaceView[V](surfaceView)
   @inline implicit def viewStub2RichViewStub[V <: android.view.ViewStub](
       viewStub: V) = new RichViewStub[V](viewStub)
   @inline implicit def actionProvider2RichActionProvider[
       V <: android.view.ActionProvider](actionProvider: V) =
     new RichActionProvider[V](actionProvider)
-  @inline implicit def textureView2RichTextureView[
-      V <: android.view.TextureView](textureView: V) =
+  @inline implicit def textureView2RichTextureView[V <: android.view.TextureView](
+      textureView: V) =
     new RichTextureView[V](textureView)
 }
 object ViewImplicits extends ViewImplicits

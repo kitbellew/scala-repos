@@ -36,9 +36,7 @@ import org.apache.spark.rdd.RDD
   * @param binnedFeatures  Binned feature values.
   *                        Same length as LabeledPoint.features, but values are bin indices.
   */
-private[spark] class TreePoint(
-    val label: Double,
-    val binnedFeatures: Array[Int])
+private[spark] class TreePoint(val label: Double, val binnedFeatures: Array[Int])
     extends Serializable {}
 
 private[spark] object TreePoint {
@@ -129,10 +127,11 @@ private[spark] object TreePoint {
       // Perform binary search for finding bin for continuous features.
       val binIndex = binarySearchForBins()
       if (binIndex == -1) {
-        throw new RuntimeException("No bin was found for continuous feature." +
-          " This error can occur when given invalid data values (such as NaN)." +
-          s" Feature index: $featureIndex.  Feature value: ${labeledPoint
-            .features(featureIndex)}")
+        throw new RuntimeException(
+          "No bin was found for continuous feature." +
+            " This error can occur when given invalid data values (such as NaN)." +
+            s" Feature index: $featureIndex.  Feature value: ${labeledPoint
+              .features(featureIndex)}")
       }
       binIndex
     } else {

@@ -22,10 +22,7 @@ final case class Scope(
   def in(project: Reference, task: AttributeKey[_]): Scope =
     copy(project = Select(project), task = Select(task))
   def in(project: Reference, config: ConfigKey, task: AttributeKey[_]): Scope =
-    copy(
-      project = Select(project),
-      config = Select(config),
-      task = Select(task))
+    copy(project = Select(project), config = Select(config), task = Select(task))
   def in(project: Reference): Scope = copy(project = Select(project))
   def in(config: ConfigKey): Scope = copy(config = Select(config))
   def in(task: AttributeKey[_]): Scope = copy(task = Select(task))
@@ -90,9 +87,7 @@ object Scope {
       case ThisBuild     => BuildRef(current)
       case BuildRef(uri) => BuildRef(resolveBuild(current, uri))
     }
-  def resolveProjectBuild(
-      current: URI,
-      ref: ProjectReference): ProjectReference =
+  def resolveProjectBuild(current: URI, ref: ProjectReference): ProjectReference =
     ref match {
       case LocalRootProject    => RootProject(current)
       case LocalProject(id)    => ProjectRef(current, id)

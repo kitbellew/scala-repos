@@ -289,11 +289,7 @@ object ConsumerPerformance {
 
     val options = parser.parse(args: _*)
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      topicOpt,
-      numMessagesOpt)
+    CommandLineUtils.checkRequiredArgs(parser, options, topicOpt, numMessagesOpt)
 
     val useNewConsumer = options.has(useNewConsumerOpt)
 

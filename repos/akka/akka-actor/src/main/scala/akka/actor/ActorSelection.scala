@@ -240,10 +240,7 @@ object ActorSelection {
                       wildcardFanOut =
                         sel.wildcardFanOut || matchingChildren.size > 1)
                     matchingChildren.foreach(c ⇒
-                      deliverSelection(
-                        c.asInstanceOf[InternalActorRef],
-                        sender,
-                        m))
+                      deliverSelection(c.asInstanceOf[InternalActorRef], sender, m))
                   }
                 }
             }

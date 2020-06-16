@@ -594,8 +594,7 @@ package object numerics {
   object isNonfinite extends UFunc with MappingUFunc {
     @expand
     @expand.valify
-    implicit def isNonfiniteImpl[@expand.args(Double, Float) T]
-        : Impl[T, Boolean] = {
+    implicit def isNonfiniteImpl[@expand.args(Double, Float) T]: Impl[T, Boolean] = {
       new Impl[T, Boolean] {
         override def apply(v: T): Boolean = {
           // TODO: only in Java 8
@@ -609,8 +608,7 @@ package object numerics {
   object isFinite extends UFunc with MappingUFunc {
     @expand
     @expand.valify
-    implicit def isFiniteImpl[@expand.args(Double, Float) T]
-        : Impl[T, Boolean] = {
+    implicit def isFiniteImpl[@expand.args(Double, Float) T]: Impl[T, Boolean] = {
       new Impl[T, Boolean] {
         override def apply(v: T): Boolean = {
           m.abs(v) <= Double.MaxValue
@@ -645,8 +643,7 @@ package object numerics {
       * May store lgamma(a) in lgam(0) if it's non-null and needs to be computed.
       * Based on NR
       */
-    implicit object lgammaImplDoubleDouble
-        extends Impl2[Double, Double, Double] {
+    implicit object lgammaImplDoubleDouble extends Impl2[Double, Double, Double] {
       def apply(a: Double, x: Double): Double = {
         if (x < 0.0 || a <= 0.0) throw new IllegalArgumentException()
         else if (x == 0) 0.0

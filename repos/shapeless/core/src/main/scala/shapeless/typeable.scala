@@ -152,9 +152,7 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
     }
 
   /** Typeable instance for singleton reference types */
-  def referenceSingletonTypeable[T <: AnyRef](
-      value: T,
-      name: String): Typeable[T] =
+  def referenceSingletonTypeable[T <: AnyRef](value: T, name: String): Typeable[T] =
     new Typeable[T] {
       def cast(t: Any): Option[T] =
         if (t.asInstanceOf[AnyRef] eq value) Some(value) else None

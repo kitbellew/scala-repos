@@ -101,8 +101,7 @@ class CompletionProcessor(
       state.get(CachesUtil.IMPLICIT_FUNCTION))
     lazy val isNamedParameter: Boolean =
       Option(state.get(CachesUtil.NAMED_PARAM_KEY)).exists(_.booleanValue())
-    val fromType: Option[ScType] = Option(
-      state.get(BaseProcessor.FROM_TYPE_KEY))
+    val fromType: Option[ScType] = Option(state.get(BaseProcessor.FROM_TYPE_KEY))
     val importsUsed: Set[ImportUsed] =
       Option(state.get(ImportUsed.key)).getOrElse(Set.empty)
     val prefixCompletion: Boolean = Option(

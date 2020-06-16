@@ -31,8 +31,7 @@ import org.apache.spark.sql.internal.{SessionState, SQLConf}
 /**
   * A class that holds all session-specific state in a given [[HiveContext]].
   */
-private[hive] class HiveSessionState(ctx: HiveContext)
-    extends SessionState(ctx) {
+private[hive] class HiveSessionState(ctx: HiveContext) extends SessionState(ctx) {
 
   override lazy val conf: SQLConf = new SQLConf {
     override def caseSensitiveAnalysis: Boolean =

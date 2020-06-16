@@ -36,9 +36,7 @@ class OptimizedBytecodeTest extends ClearAfterClass {
         |}
       """.stripMargin
     val List(c) = compileClasses(compiler)(code)
-    assertSameCode(
-      getSingleMethod(c, "t"),
-      List(Label(0), Jump(GOTO, Label(0))))
+    assertSameCode(getSingleMethod(c, "t"), List(Label(0), Jump(GOTO, Label(0))))
   }
 
   @Test

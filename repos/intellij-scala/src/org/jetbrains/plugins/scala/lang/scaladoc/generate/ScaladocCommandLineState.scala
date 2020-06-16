@@ -36,8 +36,7 @@ import scala.collection.mutable.ListBuffer
 
 class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     extends JavaCommandLineState(env) {
-  setConsoleBuilder(
-    TextConsoleBuilderFactory.getInstance.createBuilder(project))
+  setConsoleBuilder(TextConsoleBuilderFactory.getInstance.createBuilder(project))
   private val MAIN_CLASS = "scala.tools.nsc.ScalaDoc"
   private val classpathDelimeter = File.pathSeparator
   private var outputDir: String = ""
@@ -109,8 +108,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
           visitInner(c, scope, acc)
         }
       } else {
-        if (file.getExtension == "scala" && file.isValid && scope.contains(
-            file)) {
+        if (file.getExtension == "scala" && file.isValid && scope.contains(file)) {
           PsiManager.getInstance(project).findFile(file) match {
             case f: ScalaFile if !f.isScriptFile() => acc += file
             case _                                 => // do nothing
@@ -135,8 +133,8 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
           if ScaladocCommandLineState.generatedParamsWithArgs.contains(param) =>
         true
       case (_, param: String) =>
-        if (!ScaladocCommandLineState.generatedParamsWithoutArgs.contains(
-            param)) result += param
+        if (!ScaladocCommandLineState.generatedParamsWithoutArgs.contains(param))
+          result += param
         false
     }
 
@@ -172,10 +170,7 @@ class ScaladocCommandLineState(env: ExecutionEnvironment, project: Project)
     val jp = new JavaParameters
     val jdk: Sdk = PathUtilEx.getAnyJdk(project)
     assert(jdk != null, "JDK IS NULL")
-    jp.configureByProject(
-      project,
-      JavaParameters.JDK_AND_CLASSES_AND_TESTS,
-      jdk)
+    jp.configureByProject(project, JavaParameters.JDK_AND_CLASSES_AND_TESTS, jdk)
     jp.setWorkingDirectory(project.getBaseDir.getPath)
 
     val scalaModule = project.anyScalaModule.getOrElse {

@@ -44,10 +44,7 @@ import org.jetbrains.plugins.scala.lang.psi.types.nonvalue.{
   ScMethodType,
   ScTypePolymorphicType
 }
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.resolve.processor._
 import org.jetbrains.plugins.scala.macroAnnotations.{
   CachedMappedWithRecursionGuard,
@@ -405,9 +402,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
             candidate match {
               case ScalaResolveResult(fun: ScFunction, subst: ScSubstitutor) =>
                 if (!baseProcessor.isInstanceOf[CompletionProcessor]) {
-                  fun.getParamByName(
-                    ref.refName,
-                    arguments.indexOf(args)) match {
+                  fun.getParamByName(ref.refName, arguments.indexOf(args)) match {
                     case Some(param) =>
                       var state = ResolveState.initial
                         .put(ScSubstitutor.key, subst)
@@ -660,9 +655,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
           val newProcessor = new MethodResolveProcessor(
             e,
             name,
-            List(
-              List(emptyStringExpression),
-              argumentExpressions.toSeq.flatten),
+            List(List(emptyStringExpression), argumentExpressions.toSeq.flatten),
             mrp.typeArgElements,
             mrp.prevTypeInfo,
             mrp.kinds,
@@ -694,8 +687,7 @@ trait ResolvableReferenceExpression extends ScReferenceExpression {
       noImplicitsForArgs: Boolean) {
     processor match {
       case _: CompletionProcessor =>
-        val convertible: ScImplicitlyConvertible = new ScImplicitlyConvertible(
-          e)
+        val convertible: ScImplicitlyConvertible = new ScImplicitlyConvertible(e)
         for (res <- convertible.implicitMap()) { //todo: args?
           ProgressManager.checkCanceled()
           var state = ResolveState.initial.put(ImportUsed.key, res.importUsed)

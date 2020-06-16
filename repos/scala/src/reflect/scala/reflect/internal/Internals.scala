@@ -278,10 +278,7 @@ trait Internals extends api.Internals {
       self.gen.mkMethodCall(method, args)
     def mkMethodCall(target: Tree, args: List[Tree]): Tree =
       self.gen.mkMethodCall(target, args)
-    def mkMethodCall(
-        receiver: Symbol,
-        methodName: Name,
-        args: List[Tree]): Tree =
+    def mkMethodCall(receiver: Symbol, methodName: Name, args: List[Tree]): Tree =
       self.gen.mkMethodCall(receiver, methodName, args)
     def mkMethodCall(
         receiver: Tree,

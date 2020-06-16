@@ -193,12 +193,8 @@ class LogTest extends JUnitSuite {
   @Test
   def testLoadEmptyLog() {
     createEmptyLogs(logDir, 0)
-    val log = new Log(
-      logDir,
-      logConfig,
-      recoveryPoint = 0L,
-      time.scheduler,
-      time = time)
+    val log =
+      new Log(logDir, logConfig, recoveryPoint = 0L, time.scheduler, time = time)
     log.append(TestUtils.singleMessageSet("test".getBytes))
   }
 
@@ -268,10 +264,7 @@ class LogTest extends JUnitSuite {
         "Offset read should match message id.",
         messageIds(idx),
         read.offset)
-      assertEquals(
-        "Message should match appended.",
-        messages(idx),
-        read.message)
+      assertEquals("Message should match appended.", messages(idx), read.message)
     }
   }
 
@@ -371,8 +364,7 @@ class LogTest extends JUnitSuite {
       assertEquals(
         "Messages not equal at offset " + offset,
         messageSets(i).head.message,
-        messages.head.message.toFormatVersion(
-          messageSets(i).head.message.magic))
+        messages.head.message.toFormatVersion(messageSets(i).head.message.magic))
       offset = messages.head.offset + 1
     }
     val lastRead = log
@@ -1004,10 +996,7 @@ class LogTest extends JUnitSuite {
     log.close()
 
     log = new Log(logDir, config, recoveryPoint = 0L, time.scheduler, time)
-    assertEquals(
-      "The deleted segments should be gone.",
-      1,
-      log.numberOfSegments)
+    assertEquals("The deleted segments should be gone.", 1, log.numberOfSegments)
   }
 
   @Test
@@ -1017,9 +1006,7 @@ class LogTest extends JUnitSuite {
     log.append(new ByteBufferMessageSet(new Message(bytes = null)))
     val messageSet = log.read(0, 4096, None).messageSet
     assertEquals(0, messageSet.head.offset)
-    assertTrue(
-      "Message payload should be null.",
-      messageSet.head.message.isNull)
+    assertTrue("Message payload should be null.", messageSet.head.message.isNull)
   }
 
   @Test(expected = classOf[IllegalArgumentException])

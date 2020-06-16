@@ -22,9 +22,7 @@ import scala.Predef._
   * 4/23/13
   */
 class SimplifyBooleanInspection
-    extends AbstractInspection(
-      "SimplifyBoolean",
-      "Simplify boolean expression") {
+    extends AbstractInspection("SimplifyBoolean", "Simplify boolean expression") {
 
   def actionFor(holder: ProblemsHolder): PartialFunction[PsiElement, Any] = {
     case _: ScParenthesisedExpr => //do nothing to avoid many similar expressions
@@ -53,9 +51,7 @@ class SimplifyBooleanQuickFix(expr: ScExpression)
 object SimplifyBooleanUtil {
   val boolInfixOperations = Set("==", "!=", "&&", "&", "||", "|", "^")
 
-  def canBeSimplified(
-      expr: ScExpression,
-      isTopLevel: Boolean = true): Boolean = {
+  def canBeSimplified(expr: ScExpression, isTopLevel: Boolean = true): Boolean = {
     expr match {
       case _: ScLiteral if !isTopLevel => booleanConst(expr).isDefined
       case ScParenthesisedExpr(e)      => canBeSimplified(e, isTopLevel)
@@ -169,9 +165,7 @@ object SimplifyBooleanUtil {
               .createExpressionFromText("!a", manager)
               .asInstanceOf[ScPrefixExpr]
             val copyExpr = expr.copy.asInstanceOf[ScExpression]
-            negated.operand.replaceExpression(
-              copyExpr,
-              removeParenthesis = true)
+            negated.operand.replaceExpression(copyExpr, removeParenthesis = true)
             negated.getText
           case (true, "||") | (true, "|") =>
             ScalaKeyword.TRUE

@@ -30,8 +30,7 @@ class SortingSuite
 
   test("sortByKey") {
     val pairs = sc.parallelize(Array((1, 0), (2, 0), (0, 0), (3, 0)), 2)
-    assert(
-      pairs.sortByKey().collect() === Array((0, 0), (1, 0), (2, 0), (3, 0)))
+    assert(pairs.sortByKey().collect() === Array((0, 0), (1, 0), (2, 0), (3, 0)))
   }
 
   test("large array") {
@@ -142,7 +141,8 @@ class SortingSuite
     assert((800 to 200 by -1).toArray === range.map(_._1))
   }
 
-  test("get a range of elements in an array not partitioned by a range partitioner") {
+  test(
+    "get a range of elements in an array not partitioned by a range partitioner") {
     val pairArr = util.Random.shuffle((1 to 1000).toList).map(x => (x, x))
     val pairs = sc.parallelize(pairArr, 10)
     val range = pairs.filterByRange(200, 800).collect()

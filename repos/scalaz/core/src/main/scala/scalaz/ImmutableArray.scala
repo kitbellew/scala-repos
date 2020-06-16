@@ -33,8 +33,7 @@ sealed abstract class ImmutableArrayInstances {
   implicit def immutableArrayEqual[A](implicit
       A: Equal[A]): Equal[ImmutableArray[A]] =
     Equal.equal { (a, b) =>
-      (a.length == b.length) && (0 until a.length).forall(i =>
-        A.equal(a(i), b(i)))
+      (a.length == b.length) && (0 until a.length).forall(i => A.equal(a(i), b(i)))
     }
 
   implicit val immutableArrayInstance
@@ -192,8 +191,7 @@ object ImmutableArray extends ImmutableArrayInstances {
     protected[this] def elemTag = ClassTag.Byte
   }
 
-  final class ofShort(array: Array[Short])
-      extends ImmutableArray1[Short](array) {
+  final class ofShort(array: Array[Short]) extends ImmutableArray1[Short](array) {
     protected[this] def elemTag = ClassTag.Short
   }
 
@@ -212,8 +210,7 @@ object ImmutableArray extends ImmutableArrayInstances {
     protected[this] def elemTag = ClassTag.Long
   }
 
-  final class ofFloat(array: Array[Float])
-      extends ImmutableArray1[Float](array) {
+  final class ofFloat(array: Array[Float]) extends ImmutableArray1[Float](array) {
     protected[this] def elemTag = ClassTag.Float
   }
 
@@ -290,8 +287,7 @@ object ImmutableArray extends ImmutableArrayInstances {
 
     protected[this] def arrayBuilder: Builder[A, ImmutableArray[A]]
 
-    override protected[this] def newBuilder
-        : Builder[A, WrappedImmutableArray[A]] =
+    override protected[this] def newBuilder: Builder[A, WrappedImmutableArray[A]] =
       arrayBuilder.mapResult(wrapArray)
   }
 

@@ -60,7 +60,7 @@ trait ScInfixExpr extends ScExpression with ScSugarCallExpr {
 }
 
 object ScInfixExpr {
-  def unapply(it: ScInfixExpr)
-      : Some[(ScExpression, ScReferenceExpression, ScExpression)] =
+  def unapply(
+      it: ScInfixExpr): Some[(ScExpression, ScReferenceExpression, ScExpression)] =
     Some(it.lOp, it.operation, it.rOp)
 }

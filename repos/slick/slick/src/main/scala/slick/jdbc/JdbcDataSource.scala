@@ -242,8 +242,7 @@ class ConnectionPreparer(c: Config) extends (Connection => Unit) {
     case "REPEATABLE_READ"  => Connection.TRANSACTION_REPEATABLE_READ
     case "SERIALIZABLE"     => Connection.TRANSACTION_SERIALIZABLE
     case unknown =>
-      throw new SlickException(
-        s"Unknown transaction isolation level [$unknown]")
+      throw new SlickException(s"Unknown transaction isolation level [$unknown]")
   }
   val catalog =
     c.getStringOpt("catalog").orElse(c.getStringOpt("defaultCatalog"))

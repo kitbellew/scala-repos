@@ -245,8 +245,8 @@ trait NormalizationHelperModule[M[+_]]
       def morph1Apply(summary: Result): Morph1Apply
 
       def alignCustom(t1: Table, t2: Table): M[(Table, Morph1Apply)] = {
-        val valueTable = t2.transform(
-          trans.DerefObjectStatic(trans.TransSpec1.Id, paths.Value))
+        val valueTable =
+          t2.transform(trans.DerefObjectStatic(trans.TransSpec1.Id, paths.Value))
         valueTable.reduce(reducer) map { summary => (t1, morph1Apply(summary)) }
       }
     }

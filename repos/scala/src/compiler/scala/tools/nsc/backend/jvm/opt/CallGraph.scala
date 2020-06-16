@@ -53,10 +53,9 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
     * optimizer: finding callsites to re-write requires running a producers-consumers analysis on
     * the method. Here the closure instantiations are already grouped by method.
     */
-  val closureInstantiations: mutable.Map[
-    MethodNode,
-    Map[InvokeDynamicInsnNode, ClosureInstantiation]] = recordPerRunCache(
-    concurrent.TrieMap.empty withDefaultValue Map.empty)
+  val closureInstantiations
+      : mutable.Map[MethodNode, Map[InvokeDynamicInsnNode, ClosureInstantiation]] =
+    recordPerRunCache(concurrent.TrieMap.empty withDefaultValue Map.empty)
 
   def removeCallsite(
       invocation: MethodInsnNode,
@@ -294,8 +293,7 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       val params = Type
         .getMethodType(methodNode.desc)
         .getArgumentTypes
-        .map(t =>
-          bTypeForDescriptorOrInternalNameFromClassfile(t.getDescriptor))
+        .map(t => bTypeForDescriptorOrInternalNameFromClassfile(t.getDescriptor))
       val isStatic = BytecodeUtils.isStaticMethod(methodNode)
       if (isStatic) params else receiverType +: params
     }

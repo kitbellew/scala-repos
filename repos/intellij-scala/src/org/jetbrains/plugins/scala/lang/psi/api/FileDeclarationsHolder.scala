@@ -191,11 +191,8 @@ trait FileDeclarationsHolder
                   case tp: ScType =>
                     newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
                 }
-                if (!clazz.processDeclarations(
-                    processor,
-                    newState,
-                    null,
-                    place)) return false
+                if (!clazz.processDeclarations(processor, newState, null, place))
+                  return false
               case _ =>
             }
           }

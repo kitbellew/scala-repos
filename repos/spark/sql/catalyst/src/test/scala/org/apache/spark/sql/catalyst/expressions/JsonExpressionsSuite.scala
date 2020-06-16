@@ -146,15 +146,11 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   }
 
   test("$.zip code") {
-    checkEvaluation(
-      GetJsonObject(Literal(json), Literal("$.zip code")),
-      "94025")
+    checkEvaluation(GetJsonObject(Literal(json), Literal("$.zip code")), "94025")
   }
 
   test("$.fb:testid") {
-    checkEvaluation(
-      GetJsonObject(Literal(json), Literal("$.fb:testid")),
-      "1234")
+    checkEvaluation(GetJsonObject(Literal(json), Literal("$.fb:testid")), "1234")
   }
 
   test("preserve newlines") {
@@ -201,9 +197,7 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
 
   test("non foldable literal") {
     checkEvaluation(
-      GetJsonObject(
-        NonFoldableLiteral(json),
-        NonFoldableLiteral("$.fb:testid")),
+      GetJsonObject(NonFoldableLiteral(json), NonFoldableLiteral("$.fb:testid")),
       "1234")
   }
 
@@ -303,8 +297,7 @@ class JsonExpressionsSuite extends SparkFunSuite with ExpressionEvalHelper {
   test("json_tuple - hive key 5 - null and empty fields") {
     checkJsonTuple(
       JsonTuple(Literal("""{"f1": "", "f5": null}""") :: jsonTupleQuery),
-      InternalRow.fromSeq(
-        Seq(UTF8String.fromString(""), null, null, null, null)))
+      InternalRow.fromSeq(Seq(UTF8String.fromString(""), null, null, null, null)))
   }
 
   test("json_tuple - hive key 6 - invalid json (array)") {

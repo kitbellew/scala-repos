@@ -148,10 +148,8 @@ class LocalActorRefProviderSpec
         implicit val timeout = Timeout(5 seconds)
         val actors =
           for (j ← 1 to 4)
-            yield Future(
-              system.actorOf(
-                Props(new Actor { def receive = { case _ ⇒ } }),
-                address))
+            yield Future(system
+              .actorOf(Props(new Actor { def receive = { case _ ⇒ } }), address))
         val set = Set() ++ actors.map(a ⇒
           Await.ready(a, timeout.duration).value match {
             case Some(Success(a: ActorRef)) ⇒ 1

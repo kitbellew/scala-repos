@@ -114,8 +114,8 @@ object OpenSSL {
       if (nextProtos != null)
         configMap.put("ssl.next_protos", nextProtos)
 
-      val config = linker.configurationCtor.newInstance(
-        configMap.asInstanceOf[MapOfStrings])
+      val config =
+        linker.configurationCtor.newInstance(configMap.asInstanceOf[MapOfStrings])
 
       log.finest(
         "OpenSSL context instantiated for certificate '%s'".format(

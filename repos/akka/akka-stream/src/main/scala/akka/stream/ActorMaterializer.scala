@@ -62,10 +62,8 @@ object ActorMaterializer {
     * the processing steps. The default `namePrefix` is `"flow"`. The actor names are built up of
     * `namePrefix-flowNumber-flowStepNumber-stepName`.
     */
-  def apply(
-      materializerSettings: ActorMaterializerSettings,
-      namePrefix: String)(implicit
-      context: ActorRefFactory): ActorMaterializer = {
+  def apply(materializerSettings: ActorMaterializerSettings, namePrefix: String)(
+      implicit context: ActorRefFactory): ActorMaterializer = {
     val haveShutDown = new AtomicBoolean(false)
     val system = actorSystemOf(context)
 
@@ -404,9 +402,7 @@ final class ActorMaterializerSettings private (
     *
     * FIXME: Currently only the initialSize is used, auto-tuning is not yet implemented.
     */
-  def withInputBuffer(
-      initialSize: Int,
-      maxSize: Int): ActorMaterializerSettings = {
+  def withInputBuffer(initialSize: Int, maxSize: Int): ActorMaterializerSettings = {
     if (initialSize == this.initialInputBufferSize && maxSize == this.maxInputBufferSize)
       this
     else

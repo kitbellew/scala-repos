@@ -272,9 +272,7 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
     * @return  Model instance
     */
   @Since("1.3.0")
-  override def load(
-      sc: SparkContext,
-      path: String): GradientBoostedTreesModel = {
+  override def load(sc: SparkContext, path: String): GradientBoostedTreesModel = {
     val (loadedClassName, version, jsonMetadata) = Loader.loadMetadata(sc, path)
     val classNameV1_0 = SaveLoadV1_0.thisClassName
     (loadedClassName, version) match {
@@ -501,8 +499,7 @@ private[tree] object TreeEnsembleModel extends Logging {
         .parallelize(model.trees.zipWithIndex)
         .flatMap {
           case (tree, treeId) =>
-            tree.topNode.subtreeIterator.toSeq.map(node =>
-              NodeData(treeId, node))
+            tree.topNode.subtreeIterator.toSeq.map(node => NodeData(treeId, node))
         }
         .toDF()
       dataRDD.write.parquet(Loader.dataPath(path))

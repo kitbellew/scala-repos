@@ -139,9 +139,7 @@ class BrokerChannelHandler extends SimpleChannelHandler {
     upstreamBroker ! Bound(e, ctx)
   }
 
-  override def channelConnected(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def channelConnected(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     upstreamBroker ! Connected(e, ctx)
   }
 
@@ -167,9 +165,7 @@ class BrokerChannelHandler extends SimpleChannelHandler {
     upstreamBroker ! Closed(e, ctx)
   }
 
-  override def writeComplete(
-      ctx: ChannelHandlerContext,
-      e: WriteCompletionEvent) {
+  override def writeComplete(ctx: ChannelHandlerContext, e: WriteCompletionEvent) {
     upstreamBroker ! WriteComplete(e, ctx)
   }
 
@@ -195,9 +191,7 @@ class BrokerChannelHandler extends SimpleChannelHandler {
     downstreamBroker ! Bind(e, ctx)
   }
 
-  override def connectRequested(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def connectRequested(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     downstreamBroker ! Connect(e, ctx)
   }
 
@@ -213,9 +207,7 @@ class BrokerChannelHandler extends SimpleChannelHandler {
     downstreamBroker ! Disconnect(e, ctx)
   }
 
-  override def unbindRequested(
-      ctx: ChannelHandlerContext,
-      e: ChannelStateEvent) {
+  override def unbindRequested(ctx: ChannelHandlerContext, e: ChannelStateEvent) {
     downstreamBroker ! Unbind(e, ctx)
   }
 

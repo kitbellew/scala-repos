@@ -74,9 +74,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
     val intNumber: Int = 2147483647
     checkTypePromotion(intNumber, enforceCorrectType(intNumber, IntegerType))
-    checkTypePromotion(
-      intNumber.toLong,
-      enforceCorrectType(intNumber, LongType))
+    checkTypePromotion(intNumber.toLong, enforceCorrectType(intNumber, LongType))
     checkTypePromotion(
       intNumber.toDouble,
       enforceCorrectType(intNumber, DoubleType))
@@ -202,10 +200,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
       DecimalType.SYSTEM_DEFAULT,
       DecimalType.SYSTEM_DEFAULT)
     checkDataType(DecimalType.SYSTEM_DEFAULT, StringType, StringType)
-    checkDataType(
-      DecimalType.SYSTEM_DEFAULT,
-      ArrayType(IntegerType),
-      StringType)
+    checkDataType(DecimalType.SYSTEM_DEFAULT, ArrayType(IntegerType), StringType)
     checkDataType(DecimalType.SYSTEM_DEFAULT, StructType(Nil), StringType)
 
     // StringType
@@ -458,7 +453,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     jsonDF.registerTempTable("jsonTable")
 
     checkAnswer(
-      sql("select arrayOfStruct[0].field1, arrayOfStruct[0].field2 from jsonTable"),
+      sql(
+        "select arrayOfStruct[0].field1, arrayOfStruct[0].field2 from jsonTable"),
       Row(true, "str1")
     )
 
@@ -1045,8 +1041,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     )
 
     checkAnswer(
-      sql(
-        "select `map`['a'].field1, `map`['c'].field2 from jsonWithComplexMap"),
+      sql("select `map`['a'].field1, `map`['c'].field2 from jsonWithComplexMap"),
       Row(Seq(1, 2, 3, null), null) ::
         Row(null, null) ::
         Row(null, 4) ::
@@ -1061,7 +1056,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     jsonDF.registerTempTable("jsonTable")
 
     checkAnswer(
-      sql("select arrayOfStruct[0].field1, arrayOfStruct[0].field2 from jsonTable"),
+      sql(
+        "select arrayOfStruct[0].field1, arrayOfStruct[0].field2 from jsonTable"),
       Row(true, "str1")
     )
     checkAnswer(
@@ -1119,8 +1115,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         .json(corruptRecords)
         .collect()
     }
-    assert(
-      exceptionOne.getMessage.contains("Malformed line in FAILFAST mode: {"))
+    assert(exceptionOne.getMessage.contains("Malformed line in FAILFAST mode: {"))
 
     val exceptionTwo = intercept[SparkException] {
       sqlContext.read
@@ -1129,8 +1124,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         .json(corruptRecords)
         .collect()
     }
-    assert(
-      exceptionTwo.getMessage.contains("Malformed line in FAILFAST mode: {"))
+    assert(exceptionTwo.getMessage.contains("Malformed line in FAILFAST mode: {"))
   }
 
   test("Corrupt records: DROPMALFORMED mode") {
@@ -1283,11 +1277,9 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     val result = df2.toJSON.collect()
     // scalastyle:off
     assert(
-      result(
-        0) === "{\"f1\":1,\"f2\":\"A1\",\"f3\":true,\"f4\":[\"1\",\" A1\",\" true\",\" null\"]}")
+      result(0) === "{\"f1\":1,\"f2\":\"A1\",\"f3\":true,\"f4\":[\"1\",\" A1\",\" true\",\" null\"]}")
     assert(
-      result(
-        3) === "{\"f1\":4,\"f2\":\"D4\",\"f3\":true,\"f4\":[\"4\",\" D4\",\" true\",\" 2147483644\"],\"f5\":2147483644}")
+      result(3) === "{\"f1\":4,\"f2\":\"D4\",\"f3\":true,\"f4\":[\"4\",\" D4\",\" true\",\" 2147483644\"],\"f5\":2147483644}")
     // scalastyle:on
 
     val schema2 = StructType(
@@ -1698,7 +1690,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
     }
   }
 
-  test("Parse JSON rows having an array type and a struct type in the same field.") {
+  test(
+    "Parse JSON rows having an array type and a struct type in the same field.") {
     withTempDir { dir =>
       val dir = Utils.createTempDir()
       dir.delete()
@@ -1753,9 +1746,7 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
 
   test("SPARK-13543 Write the output as uncompressed via option()") {
     val clonedConf = new Configuration(hadoopConfiguration)
-    hadoopConfiguration.set(
-      "mapreduce.output.fileoutputformat.compress",
-      "true")
+    hadoopConfiguration.set("mapreduce.output.fileoutputformat.compress", "true")
     hadoopConfiguration
       .set(
         "mapreduce.output.fileoutputformat.compress.type",

@@ -257,9 +257,7 @@ object GraphStages {
     BidiBreaker.asInstanceOf[Graph[BidiShape[T1, T1, T2, T2], Future[Breaker]]]
 
   private object TerminationWatcher
-      extends GraphStageWithMaterializedValue[
-        FlowShape[Any, Any],
-        Future[Done]] {
+      extends GraphStageWithMaterializedValue[FlowShape[Any, Any], Future[Done]] {
     val in = Inlet[Any]("terminationWatcher.in")
     val out = Outlet[Any]("terminationWatcher.out")
     override val shape = FlowShape(in, out)
@@ -306,8 +304,8 @@ object GraphStages {
 
   def terminationWatcher[T]
       : GraphStageWithMaterializedValue[FlowShape[T, T], Future[Done]] =
-    TerminationWatcher.asInstanceOf[
-      GraphStageWithMaterializedValue[FlowShape[T, T], Future[Done]]]
+    TerminationWatcher
+      .asInstanceOf[GraphStageWithMaterializedValue[FlowShape[T, T], Future[Done]]]
 
   private object TickSource {
     class TickSourceCancellable(cancelled: AtomicBoolean) extends Cancellable {
@@ -439,8 +437,7 @@ object GraphStages {
                 case scala.util.Success(v) ⇒ emit(out, v, () ⇒ completeStage())
                 case scala.util.Failure(t) ⇒ failStage(t)
               }.invoke _
-              future.onComplete(cb)(
-                ExecutionContexts.sameThreadExecutionContext)
+              future.onComplete(cb)(ExecutionContexts.sameThreadExecutionContext)
               setHandler(
                 out,
                 eagerTerminateOutput

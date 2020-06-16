@@ -202,8 +202,7 @@ class ScalaReflectionSuite extends SparkFunSuite {
     val schema = schemaFor[GenericData[Int]]
     assert(
       schema === Schema(
-        StructType(
-          Seq(StructField("genericField", IntegerType, nullable = false))),
+        StructType(Seq(StructField("genericField", IntegerType, nullable = false))),
         nullable = true))
   }
 
@@ -284,8 +283,7 @@ class ScalaReflectionSuite extends SparkFunSuite {
     val anyFunc = (i: Any, j: AnyRef) => "x"
     val anyTypes = getParameterTypes(anyFunc)
     assert(anyTypes.forall(!_.isPrimitive))
-    assert(
-      anyTypes === Seq(classOf[java.lang.Object], classOf[java.lang.Object]))
+    assert(anyTypes === Seq(classOf[java.lang.Object], classOf[java.lang.Object]))
   }
 
   private val dataTypeForComplexData = dataTypeFor[ComplexData]

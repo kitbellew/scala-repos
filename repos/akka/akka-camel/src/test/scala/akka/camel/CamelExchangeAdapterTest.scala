@@ -113,8 +113,7 @@ class CamelExchangeAdapterTest extends FunSuite with SharedCamelSystem {
 
   }
 
-  test(
-    "mustCreateFailureMessageFromExceptionAndOutMessageWithAdditionalHeader") {
+  test("mustCreateFailureMessageFromExceptionAndOutMessageWithAdditionalHeader") {
     val e1 = sampleInOut
     e1.setException(new Exception("test2"))
     assert(e1.toAkkaCamelException.getMessage === "test2")

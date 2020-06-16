@@ -155,8 +155,7 @@ private[pickling] case class UnpickleBehavior(operations: Seq[UnpicklerAst])
 }
 
 /** A raw `Unsafe.allocateInstance` call for a given type/class. */
-private[pickling] case class AllocateInstance(tpe: IrClass)
-    extends UnpicklerAst {
+private[pickling] case class AllocateInstance(tpe: IrClass) extends UnpicklerAst {
   def requiresReflection = true
 }
 

@@ -72,10 +72,7 @@ final class ChatApi(
         pushLine(chatId, line) inject line.some
       }
 
-    private def makeLine(
-        chatId: ChatId,
-        color: Color,
-        t1: String): Option[Line] =
+    private def makeLine(chatId: ChatId, color: Color, t1: String): Option[Line] =
       Writer cut t1 flatMap { t2 =>
         flood.allowMessage(s"$chatId/${color.letter}", t2) option
           PlayerLine(color, Writer preprocessUserInput t2)

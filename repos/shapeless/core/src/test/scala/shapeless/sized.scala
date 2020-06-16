@@ -358,16 +358,11 @@ class SizedTests {
     // equalInferredTypes(m2eim2esm2eim2eem2edList.head, hlM2eim2esm2eim2eem2ed(Nat._2))
     // equalInferredTypes(m2eim2esm2eim2eem2edList.head, hlM2eim2esm2eim2eem2ed(Nat._3))
     // equalInferredTypes(m2eim2esm2eim2eem2edList.head, hlM2eim2esm2eim2eem2ed(Nat._4))
-    typed[M2[_ >: Double with Int with String, _]](
-      hlM2eim2esm2eim2eem2ed(Nat._0))
-    typed[M2[_ >: Double with Int with String, _]](
-      hlM2eim2esm2eim2eem2ed(Nat._1))
-    typed[M2[_ >: Double with Int with String, _]](
-      hlM2eim2esm2eim2eem2ed(Nat._2))
-    typed[M2[_ >: Double with Int with String, _]](
-      hlM2eim2esm2eim2eem2ed(Nat._3))
-    typed[M2[_ >: Double with Int with String, _]](
-      hlM2eim2esm2eim2eem2ed(Nat._4))
+    typed[M2[_ >: Double with Int with String, _]](hlM2eim2esm2eim2eem2ed(Nat._0))
+    typed[M2[_ >: Double with Int with String, _]](hlM2eim2esm2eim2eem2ed(Nat._1))
+    typed[M2[_ >: Double with Int with String, _]](hlM2eim2esm2eim2eem2ed(Nat._2))
+    typed[M2[_ >: Double with Int with String, _]](hlM2eim2esm2eim2eem2ed(Nat._3))
+    typed[M2[_ >: Double with Int with String, _]](hlM2eim2esm2eim2eem2ed(Nat._4))
     assertEquals(m2eim2esm2eim2eem2ed, hlM2eim2esm2eim2eem2ed)
   }
 

@@ -67,9 +67,8 @@ class RemoteScatterGatherSpec
       runOn(fourth) {
         enterBarrier("start")
         val actor = system.actorOf(
-          ScatterGatherFirstCompletedPool(
-            nrOfInstances = 1,
-            within = 10.seconds).props(Props[SomeActor]),
+          ScatterGatherFirstCompletedPool(nrOfInstances = 1, within = 10.seconds)
+            .props(Props[SomeActor]),
           "service-hello")
         actor.isInstanceOf[RoutedActorRef] should ===(true)
 

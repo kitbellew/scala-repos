@@ -144,8 +144,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         }
     }
 
-    object ParseDateTimeFuzzy
-        extends Op1F1(TimeNamespace, "parseDateTimeFuzzy") {
+    object ParseDateTimeFuzzy extends Op1F1(TimeNamespace, "parseDateTimeFuzzy") {
       val tpe = UnaryOperationType(StrAndDateT, JDateT)
       def f1(ctx: MorphContext): F1 =
         CF1P("builtin::time::parseDateTimeFuzzy") {
@@ -203,8 +202,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def newColumn(c1: DateColumn, c2: StrColumn): DateColumn =
         new DateColumn {
           def isDefinedAt(row: Int) =
-            c1.isDefinedAt(row) && c2.isDefinedAt(row) && isValidTimeZone(
-              c2(row))
+            c1.isDefinedAt(row) && c2.isDefinedAt(row) && isValidTimeZone(c2(row))
 
           def apply(row: Int) = {
             val time = c1(row)
@@ -436,15 +434,11 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def plus(d: DateTime, i: Int) = d.plus(Period.hours(i))
     }
 
-    object MinutesPlus
-        extends Op2F2(TimeNamespace, "minutesPlus")
-        with TimePlus {
+    object MinutesPlus extends Op2F2(TimeNamespace, "minutesPlus") with TimePlus {
       def plus(d: DateTime, i: Int) = d.plus(Period.minutes(i))
     }
 
-    object SecondsPlus
-        extends Op2F2(TimeNamespace, "secondsPlus")
-        with TimePlus {
+    object SecondsPlus extends Op2F2(TimeNamespace, "secondsPlus") with TimePlus {
       def plus(d: DateTime, i: Int) = d.plus(Period.seconds(i))
     }
 
@@ -716,9 +710,7 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       }
     }
 
-    object DayOfYear
-        extends Op1F1(TimeNamespace, "dayOfYear")
-        with TimeFraction {
+    object DayOfYear extends Op1F1(TimeNamespace, "dayOfYear") with TimeFraction {
       def fraction(d: DateTime) = d.dayOfYear.get
     }
 
@@ -728,15 +720,11 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       def fraction(d: DateTime) = d.dayOfMonth.get
     }
 
-    object DayOfWeek
-        extends Op1F1(TimeNamespace, "dayOfWeek")
-        with TimeFraction {
+    object DayOfWeek extends Op1F1(TimeNamespace, "dayOfWeek") with TimeFraction {
       def fraction(d: DateTime) = d.dayOfWeek.get
     }
 
-    object HourOfDay
-        extends Op1F1(TimeNamespace, "hourOfDay")
-        with TimeFraction {
+    object HourOfDay extends Op1F1(TimeNamespace, "hourOfDay") with TimeFraction {
       def fraction(d: DateTime) = d.hourOfDay.get
     }
 
@@ -793,15 +781,11 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
       val fmt = ISODateTimeFormat.ordinalDate()
     }
 
-    object MonthDay
-        extends Op1F1(TimeNamespace, "monthDay")
-        with TimeTruncation {
+    object MonthDay extends Op1F1(TimeNamespace, "monthDay") with TimeTruncation {
       val fmt = DateTimeFormat.forPattern("MM-dd")
     }
 
-    object DateHour
-        extends Op1F1(TimeNamespace, "dateHour")
-        with TimeTruncation {
+    object DateHour extends Op1F1(TimeNamespace, "dateHour") with TimeTruncation {
       val fmt = ISODateTimeFormat.dateHour()
     }
 

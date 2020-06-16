@@ -180,8 +180,7 @@ object VideoCubeDemo extends JFXApp {
   play()
 }
 
-class VideoCube(val mediaPlayers: List[MediaPlayer], size: Double)
-    extends Group {
+class VideoCube(val mediaPlayers: List[MediaPlayer], size: Double) extends Group {
   val rx = new Rotate(0, Rotate.XAxis)
   val ry = new Rotate(0, Rotate.YAxis)
   val rz = new Rotate(0, Rotate.ZAxis)

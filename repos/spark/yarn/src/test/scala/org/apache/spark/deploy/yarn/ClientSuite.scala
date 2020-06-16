@@ -70,8 +70,7 @@ class ClientSuite
   }
 
   test("default Yarn application classpath") {
-    getDefaultYarnApplicationClasspath should be(
-      Some(Fixtures.knownDefYarnAppCP))
+    getDefaultYarnApplicationClasspath should be(Some(Fixtures.knownDefYarnAppCP))
   }
 
   test("default MR application classpath") {
@@ -87,8 +86,7 @@ class ClientSuite
     }
   }
 
-  test(
-    "resultant classpath for an application that defines a classpath for MR") {
+  test("resultant classpath for an application that defines a classpath for MR") {
     withAppConf(Fixtures.mapMRAppConf) { conf =>
       val env = newEnv
       populateHadoopClasspath(conf, env)
@@ -260,9 +258,7 @@ class ClientSuite
     assert(
       sparkConf.get(SPARK_JARS) ===
         Some(
-          Seq(
-            s"local:${jar4.getPath()}",
-            s"local:${single.getAbsolutePath()}/*")))
+          Seq(s"local:${jar4.getPath()}", s"local:${single.getAbsolutePath()}/*")))
 
     verify(client).copyFileToRemote(
       any(classOf[Path]),

@@ -57,10 +57,8 @@ object ReachingDefintionsCollector {
       cfowner.getControlFlow(policy =
         ExtractMethodControlFlowPolicy
       ) //todo: make cache more right to not get PsiInvalidAccess
-    val engine = new DfaEngine(
-      cfg,
-      ReachingDefinitionsInstance,
-      ReachingDefinitionsLattice)
+    val engine =
+      new DfaEngine(cfg, ReachingDefinitionsInstance, ReachingDefinitionsLattice)
     val dfaResult = engine.performDFA
 
     // instructions in given fragment
@@ -136,9 +134,7 @@ object ReachingDefintionsCollector {
   private def isInFragment(element: PsiElement, fragment: Seq[PsiElement]) =
     fragment.exists(PsiTreeUtil.isAncestor(_, element, false))
 
-  private def filterByFragment(
-      cfg: Seq[Instruction],
-      fragment: Seq[PsiElement]) =
+  private def filterByFragment(cfg: Seq[Instruction], fragment: Seq[PsiElement]) =
     cfg.filter { i =>
       i.element.exists(isInFragment(_, fragment))
     }

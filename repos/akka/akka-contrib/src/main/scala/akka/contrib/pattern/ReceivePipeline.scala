@@ -114,9 +114,7 @@ trait ReceivePipeline extends Actor {
   /**
     * INTERNAL API.
     */
-  override protected[akka] def aroundReceive(
-      receive: Receive,
-      msg: Any): Unit = {
+  override protected[akka] def aroundReceive(receive: Receive, msg: Any): Unit = {
     def withCachedDecoration(decorator: Receive ⇒ Receive): Receive =
       decoratorCache match {
         case Some((`receive`, cached)) ⇒ cached

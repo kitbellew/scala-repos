@@ -164,9 +164,7 @@ abstract class QueryTest extends PlanTest {
     checkAnswer(df, Seq(expectedAnswer))
   }
 
-  protected def checkAnswer(
-      df: => DataFrame,
-      expectedAnswer: DataFrame): Unit = {
+  protected def checkAnswer(df: => DataFrame, expectedAnswer: DataFrame): Unit = {
     checkAnswer(df, expectedAnswer.collect())
   }
 

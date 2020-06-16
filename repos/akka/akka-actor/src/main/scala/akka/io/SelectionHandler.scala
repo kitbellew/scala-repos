@@ -6,11 +6,7 @@ package akka.io
 
 import java.util.{Iterator ⇒ JIterator}
 import java.util.concurrent.atomic.AtomicBoolean
-import java.nio.channels.{
-  SelectableChannel,
-  SelectionKey,
-  CancelledKeyException
-}
+import java.nio.channels.{SelectableChannel, SelectionKey, CancelledKeyException}
 import java.nio.channels.SelectionKey._
 import java.nio.channels.spi.SelectorProvider
 import com.typesafe.config.Config
@@ -323,8 +319,9 @@ private[io] class SelectionHandler(settings: SelectionHandlerSettings)
               }
             case e ⇒ e.getMessage
           }
-          context.system.eventStream.publish(Logging
-            .Debug(child.path.toString, classOf[SelectionHandler], logMessage))
+          context.system.eventStream.publish(
+            Logging
+              .Debug(child.path.toString, classOf[SelectionHandler], logMessage))
         } catch { case NonFatal(_) ⇒ }
     }
   }

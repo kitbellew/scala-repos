@@ -59,7 +59,8 @@ object RemoveInternalClusterShardingData {
     */
   def main(args: Array[String]): Unit = {
     if (args.isEmpty)
-      println("Specify the Cluster Sharding type names to remove in program arguments")
+      println(
+        "Specify the Cluster Sharding type names to remove in program arguments")
     else {
       val system = ActorSystem("RemoveInternalClusterShardingData")
       val remove2dot3Data = (args(0) == "-2.3")

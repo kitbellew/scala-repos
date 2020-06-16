@@ -326,8 +326,8 @@ trait TraitFragmentManager[This <: android.support.v4.app.FragmentManager] {
 /**
   * Automatically generated enriching class of `[[https://developer.android.com/reference/android/support/v4/app/FragmentTransaction.html android.support.v4.app.FragmentTransaction]]`.
   */
-class RichFragmentTransaction[
-    This <: android.support.v4.app.FragmentTransaction](val basis: This)
+class RichFragmentTransaction[This <: android.support.v4.app.FragmentTransaction](
+    val basis: This)
     extends TraitFragmentTransaction[This]
 
 /**

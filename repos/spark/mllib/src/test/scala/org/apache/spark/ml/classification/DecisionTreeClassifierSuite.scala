@@ -67,11 +67,8 @@ class DecisionTreeClassifierSuite
 
   test("params") {
     ParamsSuite.checkParams(new DecisionTreeClassifier)
-    val model = new DecisionTreeClassificationModel(
-      "dtc",
-      new LeafNode(0.0, 0.0, null),
-      1,
-      2)
+    val model =
+      new DecisionTreeClassificationModel("dtc", new LeafNode(0.0, 0.0, null), 1, 2)
     ParamsSuite.checkParams(model)
   }
 
@@ -184,7 +181,8 @@ class DecisionTreeClassifierSuite
     compareAPIs(rdd, dt, categoricalFeatures, numClasses)
   }
 
-  test("Multiclass classification stump with 10-ary (ordered) categorical features") {
+  test(
+    "Multiclass classification stump with 10-ary (ordered) categorical features") {
     val rdd = categoricalDataPointsForMulticlassForOrderedFeaturesRDD
     val dt = new DecisionTreeClassifier()
       .setImpurity("Gini")
@@ -195,8 +193,9 @@ class DecisionTreeClassifierSuite
     compareAPIs(rdd, dt, categoricalFeatures, numClasses)
   }
 
-  test("Multiclass classification tree with 10-ary (ordered) categorical features," +
-    " with just enough bins") {
+  test(
+    "Multiclass classification tree with 10-ary (ordered) categorical features," +
+      " with just enough bins") {
     val rdd = categoricalDataPointsForMulticlassForOrderedFeaturesRDD
     val dt = new DecisionTreeClassifier()
       .setImpurity("Gini")

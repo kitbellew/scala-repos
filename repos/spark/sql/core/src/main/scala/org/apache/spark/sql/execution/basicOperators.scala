@@ -141,8 +141,8 @@ case class Filter(condition: Expression, child: SparkPlan)
     ctx.currentVars = input
     val predicates = otherPreds
       .map { e =>
-        val bound = ExpressionCanonicalizer.execute(
-          BindReferences.bindReference(e, output))
+        val bound =
+          ExpressionCanonicalizer.execute(BindReferences.bindReference(e, output))
         val ev = bound.gen(ctx)
         val nullCheck = if (bound.nullable) {
           s"${ev.isNull} || "

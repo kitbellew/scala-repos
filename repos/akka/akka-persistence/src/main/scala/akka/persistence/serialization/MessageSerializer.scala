@@ -90,8 +90,8 @@ class MessageSerializer(val system: ExtendedActorSystem)
   // toBinary helpers
   //
 
-  def atLeastOnceDeliverySnapshotBuilder(snap: AtLeastOnceDeliverySnapshot)
-      : mf.AtLeastOnceDeliverySnapshot.Builder = {
+  def atLeastOnceDeliverySnapshotBuilder(
+      snap: AtLeastOnceDeliverySnapshot): mf.AtLeastOnceDeliverySnapshot.Builder = {
     val builder = mf.AtLeastOnceDeliverySnapshot.newBuilder
     builder.setCurrentDeliveryId(snap.currentDeliveryId)
     snap.unconfirmedDeliveries.foreach { unconfirmed ⇒

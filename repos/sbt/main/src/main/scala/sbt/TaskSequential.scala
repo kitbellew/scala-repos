@@ -283,23 +283,7 @@ trait TaskSequential {
       ),
       last
     )
-  def sequential[
-      A0,
-      A1,
-      A2,
-      A3,
-      A4,
-      A5,
-      A6,
-      A7,
-      A8,
-      A9,
-      A10,
-      A11,
-      A12,
-      A13,
-      A14,
-      B](
+  def sequential[A0, A1, A2, A3, A4, A5, A6, A7, A8, A9, A10, A11, A12, A13, A14, B](
       task0: Initialize[Task[A0]],
       task1: Initialize[Task[A1]],
       task2: Initialize[Task[A2]],

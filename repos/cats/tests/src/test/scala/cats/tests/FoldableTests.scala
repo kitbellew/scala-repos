@@ -79,8 +79,8 @@ class FoldableTestsAdditional extends CatsSuite {
     assert(contains(large, 10000).value)
 
     // safely build large lists
-    val larger = F.foldRight(large, Now(List.empty[Int]))((x, lxs) =>
-      lxs.map((x + 1) :: _))
+    val larger =
+      F.foldRight(large, Now(List.empty[Int]))((x, lxs) => lxs.map((x + 1) :: _))
     larger.value should ===(large.map(_ + 1))
   }
 

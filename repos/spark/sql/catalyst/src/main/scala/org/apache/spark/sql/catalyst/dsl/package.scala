@@ -333,9 +333,7 @@ package object dsl {
           outputNames.map(UnresolvedAttribute(_)),
           logicalPlan)
 
-      def insertInto(
-          tableName: String,
-          overwrite: Boolean = false): LogicalPlan =
+      def insertInto(tableName: String, overwrite: Boolean = false): LogicalPlan =
         InsertIntoTable(
           analysis.UnresolvedRelation(TableIdentifier(tableName)),
           Map.empty,

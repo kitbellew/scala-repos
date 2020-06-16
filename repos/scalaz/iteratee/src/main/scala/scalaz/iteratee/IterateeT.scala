@@ -151,15 +151,13 @@ sealed abstract class IterateeT[E, F[_], A] {
     new EnumerateeT[E, A, F] {
       def apply[B] = {
         def loop = doneOr(checkEof)
-        def checkEof: (
-            Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
+        def checkEof: (Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
           k =>
             isEof[E, F] flatMap { eof =>
               if (eof) done(scont(k), eofInput)
               else step(k)
             }
-        def step: (
-            Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
+        def step: (Input[A] => IterateeT[A, F, B]) => IterateeT[E, F, StepT[A, F, B]] =
           k => flatMap(a => k(elInput(a)) >>== loop)
         loop
       }
@@ -220,8 +218,7 @@ sealed abstract class IterateeTInstances0 {
 }
 
 sealed abstract class IterateeTInstances extends IterateeTInstances0 {
-  implicit def IterateeTMonadTrans[E]
-      : Hoist[λ[(α[_], β) => IterateeT[E, α, β]]] =
+  implicit def IterateeTMonadTrans[E]: Hoist[λ[(α[_], β) => IterateeT[E, α, β]]] =
     new IterateeTHoist[E] {}
 
   implicit def IterateeTHoistT[E, H[_[_], _]](implicit
@@ -236,8 +233,7 @@ sealed abstract class IterateeTInstances extends IterateeTInstances0 {
       implicit def F = M0
     }
 
-  implicit def IterateeTContravariant[F[_]: Monad, A]
-      : Contravariant[IterateeT[?, F, A]] =
+  implicit def IterateeTContravariant[F[_]: Monad, A]: Contravariant[IterateeT[?, F, A]] =
     new Contravariant[IterateeT[?, F, A]] {
       def contramap[E, EE](r: IterateeT[E, F, A])(f: EE => E) = r.contramap(f)
     }
@@ -253,9 +249,7 @@ trait IterateeTFunctions {
       c: Input[E] => IterateeT[E, F, A]): IterateeT[E, F, A] =
     StepT.scont(c).pointI
 
-  def done[E, F[_]: Applicative, A](
-      d: => A,
-      r: => Input[E]): IterateeT[E, F, A] =
+  def done[E, F[_]: Applicative, A](d: => A, r: => Input[E]): IterateeT[E, F, A] =
     StepT.sdone(d, r).pointI
 
   /**
@@ -270,8 +264,7 @@ trait IterateeTFunctions {
   /**
     * An iteratee that consumes all of the input into something that is PlusEmpty and Applicative.
     */
-  def consume[E, F[_]: Monad, A[_]: PlusEmpty: Applicative]
-      : IterateeT[E, F, A[E]] = {
+  def consume[E, F[_]: Monad, A[_]: PlusEmpty: Applicative]: IterateeT[E, F, A[E]] = {
     import scalaz.syntax.plus._
     def step(e: Input[E]): IterateeT[E, F, A[E]] =
       e.fold(

@@ -1017,8 +1017,7 @@ trait Contexts { self: Analyzer =>
             // !!! In the body of `class C(implicit a: A) { }`, `implicitss` returns `List(List(a), List(a), List(<predef..)))`
             //     it handled correctly by implicit search, which considers the second `a` to be shadowed, but should be
             //     remedied nonetheless.
-            Some(
-              collectImplicits(owner.thisType.implicitMembers, owner.thisType))
+            Some(collectImplicits(owner.thisType.implicitMembers, owner.thisType))
           }
       } else if (scope != nextOuter.scope && !owner.isPackageClass) {
         debuglog("collect local implicits " + scope.toList) //DEBUG
@@ -1376,9 +1375,8 @@ trait Contexts { self: Analyzer =>
   abstract class ContextReporter(
       private[this] var _errorBuffer: mutable.LinkedHashSet[AbsTypeError] =
         null,
-      private[this] var _warningBuffer: mutable.LinkedHashSet[(
-          Position,
-          String)] = null)
+      private[this] var _warningBuffer: mutable.LinkedHashSet[(Position, String)] =
+        null)
       extends Reporter {
     type Error = AbsTypeError
     type Warning = (Position, String)

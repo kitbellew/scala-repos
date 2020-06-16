@@ -59,10 +59,7 @@ private[twitter] object ThriftUtil {
       case _: NoSuchMethodException => None
     }
 
-  def findMethod(
-      clz: Class[_],
-      name: String,
-      params: Class[_]*): Option[Method] =
+  def findMethod(clz: Class[_], name: String, params: Class[_]*): Option[Method] =
     try Some(clz.getMethod(name, params: _*))
     catch {
       case _: NoSuchMethodException => None

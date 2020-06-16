@@ -25,12 +25,10 @@ class MockClientTest extends FunSuite {
       Await.result(memcache.set("key", "new value").liftToTry) == Return.Unit)
     assert(Await.result(memcache.get("key")) == Some("new value"))
 
-    assert(
-      Await.result(memcache.set("key2", "value2").liftToTry) == Return.Unit)
+    assert(Await.result(memcache.set("key2", "value2").liftToTry) == Return.Unit)
     assert(Await.result(memcache.get("key2")) == Some("value2"))
 
-    assert(
-      Await.result(memcache.set("key2", "value3").liftToTry) == Return.Unit)
+    assert(Await.result(memcache.set("key2", "value3").liftToTry) == Return.Unit)
     assert(Await.result(memcache.get("key2")) == Some("value3"))
   }
 

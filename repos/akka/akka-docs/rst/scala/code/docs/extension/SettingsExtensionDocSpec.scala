@@ -76,8 +76,7 @@ object SettingsExtensionDocSpec {
 
 }
 
-class SettingsExtensionDocSpec
-    extends AkkaSpec(SettingsExtensionDocSpec.config) {
+class SettingsExtensionDocSpec extends AkkaSpec(SettingsExtensionDocSpec.config) {
 
   "demonstrate how to create application specific settings extension in Scala" in {
     //#extension-usage

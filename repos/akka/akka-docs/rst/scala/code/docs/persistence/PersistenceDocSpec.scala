@@ -71,9 +71,7 @@ object PersistenceDocSpec {
       def recoveryFinished: Boolean
       //#recovery-status
     }
-    class MyPersistentActor1
-        extends PersistentActor
-        with PersistentActorMethods {
+    class MyPersistentActor1 extends PersistentActor with PersistentActorMethods {
       //#persistence-id-override
       override def persistenceId = "my-stable-persistence-id"
       //#persistence-id-override

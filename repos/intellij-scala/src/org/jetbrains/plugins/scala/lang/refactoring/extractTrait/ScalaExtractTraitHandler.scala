@@ -60,10 +60,7 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
       case Array(clazz: ScTemplateDefinition) => clazz
       case _ =>
         val parent = PsiTreeUtil.findCommonParent(elements: _*)
-        PsiTreeUtil.getParentOfType(
-          parent,
-          classOf[ScTemplateDefinition],
-          false)
+        PsiTreeUtil.getParentOfType(parent, classOf[ScTemplateDefinition], false)
     }
 
     if (dataContext != null) {
@@ -266,8 +263,7 @@ class ScalaExtractTraitHandler extends RefactoringActionHandler {
     private def addToClassesForSelfType(cl: PsiClass) {
       if (!classesForSelfType.contains(cl) && !classesForSelfType.exists(
           _.isInheritor(cl, true))) {
-        classesForSelfType --= classesForSelfType.filter(
-          cl.isInheritor(_, true))
+        classesForSelfType --= classesForSelfType.filter(cl.isInheritor(_, true))
         classesForSelfType += cl
       }
     }

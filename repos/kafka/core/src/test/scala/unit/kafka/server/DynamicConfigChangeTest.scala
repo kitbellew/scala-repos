@@ -117,9 +117,7 @@ class DynamicConfigChangeTest extends KafkaServerTestHarness {
     val propertiesArgument = EasyMock.newCapture[Properties]
     val handler = EasyMock.createNiceMock(classOf[ConfigHandler])
     handler.processConfigChanges(
-      EasyMock.and(
-        EasyMock.capture(entityArgument),
-        EasyMock.isA(classOf[String])),
+      EasyMock.and(EasyMock.capture(entityArgument), EasyMock.isA(classOf[String])),
       EasyMock.and(
         EasyMock.capture(propertiesArgument),
         EasyMock.isA(classOf[Properties]))

@@ -34,15 +34,9 @@ class ServerChannelConfigCodec extends CodecFactory[String, String] {
               val pipeline = Channels.pipeline()
               pipeline.addLast(
                 "line",
-                new DelimiterBasedFrameDecoder(
-                  100,
-                  Delimiters.lineDelimiter: _*))
-              pipeline.addLast(
-                "stringDecoder",
-                new StringDecoder(Charsets.Utf8))
-              pipeline.addLast(
-                "stringEncoder",
-                new StringEncoder(Charsets.Utf8))
+                new DelimiterBasedFrameDecoder(100, Delimiters.lineDelimiter: _*))
+              pipeline.addLast("stringDecoder", new StringDecoder(Charsets.Utf8))
+              pipeline.addLast("stringEncoder", new StringEncoder(Charsets.Utf8))
               pipeline
             }
           }

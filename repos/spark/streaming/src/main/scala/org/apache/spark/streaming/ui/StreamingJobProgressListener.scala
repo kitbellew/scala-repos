@@ -135,8 +135,7 @@ private[streaming] class StreamingJobProgressListener(ssc: StreamingContext)
     }
 
   override def onOutputOperationCompleted(
-      outputOperationCompleted: StreamingListenerOutputOperationCompleted)
-      : Unit =
+      outputOperationCompleted: StreamingListenerOutputOperationCompleted): Unit =
     synchronized {
       // This method is called before onBatchCompleted
       runningBatchUIData(outputOperationCompleted.outputOperationInfo.batchTime)

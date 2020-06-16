@@ -77,10 +77,8 @@ abstract class WithServer(
 
   override def around[T: AsResult](t: => T): Result =
     Helpers.running(
-      TestServer(
-        port = port,
-        application = app,
-        serverProvider = serverProvider))(AsResult.effectively(t))
+      TestServer(port = port, application = app, serverProvider = serverProvider))(
+      AsResult.effectively(t))
 }
 
 /**

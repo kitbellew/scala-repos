@@ -331,8 +331,7 @@ class UriSpec extends WordSpec with Matchers {
       "a/" should roundTripTo("a" :: Path./)
       "/a" should roundTripTo(Path / "a")
       "/abc/de/f" should roundTripTo(Path / "abc" / "de" / "f")
-      "abc/de/f/" should roundTripTo(
-        "abc" :: '/' :: "de" :: '/' :: "f" :: Path./)
+      "abc/de/f/" should roundTripTo("abc" :: '/' :: "de" :: '/' :: "f" :: Path./)
       "abc///de" should roundTripTo("abc" :: '/' :: '/' :: '/' :: "de" :: Empty)
       "/abc%2F" should roundTripTo(Path / "abc/")
       "/:foo:/" should roundTripTo(Path / ":foo:" / "")
@@ -512,9 +511,7 @@ class UriSpec extends WordSpec with Matchers {
       Uri("http://") shouldEqual Uri(
         scheme = "http",
         authority = Authority(Host.Empty))
-      Uri("http:?") shouldEqual Uri.from(
-        scheme = "http",
-        queryString = Some(""))
+      Uri("http:?") shouldEqual Uri.from(scheme = "http", queryString = Some(""))
       Uri("http:") shouldEqual Uri.from(scheme = "http", queryString = None)
       Uri("?a+b=c%2Bd").query() shouldEqual ("a b", "c+d") +: Query.Empty
 
@@ -766,8 +763,7 @@ class UriSpec extends WordSpec with Matchers {
       val uri = Uri("http://host:80/path?query#fragment")
       val nonDefaultUri = Uri("http://host:6060/path?query#fragment")
 
-      uri.withScheme("https") shouldEqual Uri(
-        "https://host/path?query#fragment")
+      uri.withScheme("https") shouldEqual Uri("https://host/path?query#fragment")
       nonDefaultUri.withScheme("https") shouldEqual Uri(
         "https://host:6060/path?query#fragment")
 

@@ -61,8 +61,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     // setup and run the model
     val ssc = setupStreams(
       input,
-      (inputDStream: DStream[BinarySample]) =>
-        model.registerStream(inputDStream))
+      (inputDStream: DStream[BinarySample]) => model.registerStream(inputDStream))
     val outputBatches =
       runStreams[StreamingTestResult](ssc, numBatches, numBatches)
 
@@ -97,8 +96,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     // setup and run the model
     val ssc = setupStreams(
       input,
-      (inputDStream: DStream[BinarySample]) =>
-        model.registerStream(inputDStream))
+      (inputDStream: DStream[BinarySample]) => model.registerStream(inputDStream))
     val outputBatches =
       runStreams[StreamingTestResult](ssc, numBatches, numBatches)
 
@@ -133,8 +131,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     // setup and run the model
     val ssc = setupStreams(
       input,
-      (inputDStream: DStream[BinarySample]) =>
-        model.registerStream(inputDStream))
+      (inputDStream: DStream[BinarySample]) => model.registerStream(inputDStream))
     val outputBatches =
       runStreams[StreamingTestResult](ssc, numBatches, numBatches)
 
@@ -169,8 +166,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     // setup and run the model
     val ssc = setupStreams(
       input,
-      (inputDStream: DStream[BinarySample]) =>
-        model.registerStream(inputDStream))
+      (inputDStream: DStream[BinarySample]) => model.registerStream(inputDStream))
     val outputBatches =
       runStreams[StreamingTestResult](ssc, numBatches, numBatches)
 
@@ -286,8 +282,7 @@ class StreamingTestSuite extends SparkFunSuite with TestSuiteBase {
     // setup and run the model
     val ssc = setupStreams(
       input,
-      (inputDStream: DStream[BinarySample]) =>
-        model.registerStream(inputDStream))
+      (inputDStream: DStream[BinarySample]) => model.registerStream(inputDStream))
     val outputBatches =
       runStreams[StreamingTestResult](ssc, numBatches, numBatches)
 

@@ -100,11 +100,9 @@ case class SimpleFilteredScan(from: Int, to: Int)(
         case IsNotNull("a") => (a: Int) => true
         case Not(pred)      => (a: Int) => !translateFilterOnA(pred)(a)
         case And(left, right) =>
-          (a: Int) =>
-            translateFilterOnA(left)(a) && translateFilterOnA(right)(a)
+          (a: Int) => translateFilterOnA(left)(a) && translateFilterOnA(right)(a)
         case Or(left, right) =>
-          (a: Int) =>
-            translateFilterOnA(left)(a) || translateFilterOnA(right)(a)
+          (a: Int) => translateFilterOnA(left)(a) || translateFilterOnA(right)(a)
         case _ => (a: Int) => true
       }
 
@@ -187,9 +185,7 @@ class FilteredScanSuite
 
   sqlTest("SELECT a FROM oneToTenFiltered", (1 to 10).map(i => Row(i)).toSeq)
 
-  sqlTest(
-    "SELECT b FROM oneToTenFiltered",
-    (1 to 10).map(i => Row(i * 2)).toSeq)
+  sqlTest("SELECT b FROM oneToTenFiltered", (1 to 10).map(i => Row(i * 2)).toSeq)
 
   sqlTest(
     "SELECT a * 2 FROM oneToTenFiltered",
@@ -259,10 +255,7 @@ class FilteredScanSuite
     Set("a", "b", "c"))
   testPushDown("SELECT a FROM oneToTenFiltered WHERE A = 1", 1, Set("a"))
   testPushDown("SELECT b FROM oneToTenFiltered WHERE A = 1", 1, Set("b"))
-  testPushDown(
-    "SELECT a, b FROM oneToTenFiltered WHERE A = 1",
-    1,
-    Set("a", "b"))
+  testPushDown("SELECT a, b FROM oneToTenFiltered WHERE A = 1", 1, Set("a", "b"))
   testPushDown(
     "SELECT * FROM oneToTenFiltered WHERE a = 1",
     1,
@@ -401,11 +394,7 @@ class FilteredScanSuite
       sqlString: String,
       expectedCount: Int,
       requiredColumnNames: Set[String]): Unit = {
-    testPushDown(
-      sqlString,
-      expectedCount,
-      requiredColumnNames,
-      Set.empty[Filter])
+    testPushDown(sqlString, expectedCount, requiredColumnNames, Set.empty[Filter])
   }
 
   def testPushDown(

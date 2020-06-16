@@ -276,10 +276,8 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
           val allInjections =
             new util.HashMap[
               InjectedLanguage,
-              util.ArrayList[Trinity[
-                PsiLanguageInjectionHost,
-                InjectedLanguage,
-                TextRange]]]()
+              util.ArrayList[
+                Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]]()
 
           literals filter {
             case interpolated: ScInterpolatedStringLiteral

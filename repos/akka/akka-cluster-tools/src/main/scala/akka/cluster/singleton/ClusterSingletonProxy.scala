@@ -270,8 +270,7 @@ final class ClusterSingletonProxy(
       cancelTimer()
       sendBuffered()
     case _: ActorIdentity ⇒ // do nothing
-    case ClusterSingletonProxy.TryToIdentifySingleton
-        if identifyTimer.isDefined ⇒
+    case ClusterSingletonProxy.TryToIdentifySingleton if identifyTimer.isDefined ⇒
       membersByAge.headOption.foreach { oldest ⇒
         val singletonAddress = RootActorPath(oldest.address) / singletonPath
         log.debug("Trying to identify singleton at [{}]", singletonAddress)

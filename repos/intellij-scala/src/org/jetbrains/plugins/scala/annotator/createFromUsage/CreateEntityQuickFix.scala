@@ -126,8 +126,7 @@ abstract class CreateEntityQuickFix(
       val builder = new TemplateBuilderImpl(entity)
 
       for (aType <- entityType;
-        typeElement <-
-          entity.children.findByType(classOf[ScSimpleTypeElement])) {
+        typeElement <- entity.children.findByType(classOf[ScSimpleTypeElement])) {
         builder.replaceElement(typeElement, aType)
       }
 
@@ -194,8 +193,9 @@ object CreateEntityQuickFix {
         unambiguousSuper(sup) match {
           case Some(ScTemplateDefinition.ExtendsBlock(block)) => Success(block)
           case None =>
-            Failure(new IllegalStateException(
-              "Cannot find template definition for not-static super reference"))
+            Failure(
+              new IllegalStateException(
+                "Cannot find template definition for not-static super reference"))
         }
       case Both(th: ScThisReference, ParentExtendsBlock(block)) =>
         Success(block)

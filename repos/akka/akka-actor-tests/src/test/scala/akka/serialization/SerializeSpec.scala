@@ -42,11 +42,9 @@ object SerializationTests {
   """
 
   @BeanInfo
-  final case class Address(
-      no: String,
-      street: String,
-      city: String,
-      zip: String) { def this() = this("", "", "", "") }
+  final case class Address(no: String, street: String, city: String, zip: String) {
+    def this() = this("", "", "", "")
+  }
   @BeanInfo
   final case class Person(name: String, age: Int, address: Address) {
     def this() = this("", 0, null)

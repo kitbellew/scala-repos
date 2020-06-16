@@ -693,12 +693,7 @@ trait ScalatraBase
       includeServletPath: Boolean = true)(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): String = {
-    url(
-      path,
-      params,
-      includeContextPath,
-      includeServletPath,
-      absolutize = false)
+    url(path, params, includeContextPath, includeServletPath, absolutize = false)
   }
 
   /**
@@ -727,8 +722,7 @@ trait ScalatraBase
 
     val newPath = path match {
       case x if x.startsWith("/") && includeContextPath && includeServletPath =>
-        ensureSlash(routeBasePath) + ensureContextPathsStripped(
-          ensureSlash(path))
+        ensureSlash(routeBasePath) + ensureContextPathsStripped(ensureSlash(path))
       case x if x.startsWith("/") && includeContextPath =>
         ensureSlash(contextPath) + ensureContextPathStripped(ensureSlash(path))
       case x if x.startsWith("/") && includeServletPath =>

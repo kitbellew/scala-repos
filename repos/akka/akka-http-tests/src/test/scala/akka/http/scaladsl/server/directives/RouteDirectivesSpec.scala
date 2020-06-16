@@ -41,8 +41,7 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
     "support completion from response futures" - {
       "simple case without marshaller" in {
         Get() ~> {
-          get & complete(
-            Promise.successful(HttpResponse(entity = "yup")).future)
+          get & complete(Promise.successful(HttpResponse(entity = "yup")).future)
         } ~> check { responseAs[String] shouldEqual "yup" }
       }
       "for successful futures and marshalling" in {
@@ -109,8 +108,7 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       val route = get & complete(Data("Ida", 83))
 
       import akka.http.scaladsl.model.headers.Accept
-      Get().withHeaders(
-        Accept(MediaTypes.`application/json`)) ~> route ~> check {
+      Get().withHeaders(Accept(MediaTypes.`application/json`)) ~> route ~> check {
         responseAs[String] shouldEqual
           """{
             |  "name": "Ida",
@@ -147,9 +145,7 @@ class RouteDirectivesSpec extends FreeSpec with GenericRoutingSpec {
       Get() ~> {
         redirect("/foo", NotModified)
       } ~> check {
-        response shouldEqual HttpResponse(
-          304,
-          headers = Location("/foo") :: Nil)
+        response shouldEqual HttpResponse(304, headers = Location("/foo") :: Nil)
       }
     }
   }

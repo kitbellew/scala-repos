@@ -258,9 +258,7 @@ abstract class GenIncOptimizer private[optimizer] (
        *
        * Non-batch mode only.
        */
-      objectClass.walkForChanges(
-        CollOps.remove(neededClasses, _).get,
-        Set.empty)
+      objectClass.walkForChanges(CollOps.remove(neededClasses, _).get, Set.empty)
     }
 
     /* Class additions:
@@ -587,9 +585,7 @@ abstract class GenIncOptimizer private[optimizer] (
         val (fieldValues, fieldTypes) = (for {
           f @ FieldDef(Ident(name, originalName), tpe, mutable) <- allFields
         } yield {
-          (
-            zeroOf(tpe)(f.pos),
-            RecordType.Field(name, originalName, tpe, mutable))
+          (zeroOf(tpe)(f.pos), RecordType.Field(name, originalName, tpe, mutable))
         }).unzip
         tryNewInlineable = Some(
           RecordValue(RecordType(fieldTypes), fieldValues)(Position.NoPosition))

@@ -292,8 +292,7 @@ object PriorityGenerator {
   * A PriorityGenerator is a convenience API to create a Comparator that orders the messages of a
   * PriorityExecutorBasedEventDrivenDispatcher
   */
-abstract class PriorityGenerator
-    extends java.util.Comparator[MessageInvocation] {
+abstract class PriorityGenerator extends java.util.Comparator[MessageInvocation] {
   def gen(message: Any): Int
 
   final def compare(

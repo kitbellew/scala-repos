@@ -376,8 +376,7 @@ private[data] trait XorTMonadCombine[F[_], L] extends MonadCombine[XorT[F, L, ?]
 }
  */
 
-private[data] sealed trait XorTFoldable[F[_], L]
-    extends Foldable[XorT[F, L, ?]] {
+private[data] sealed trait XorTFoldable[F[_], L] extends Foldable[XorT[F, L, ?]] {
   implicit def F0: Foldable[F]
 
   def foldLeft[A, B](fa: XorT[F, L, A], b: B)(f: (B, A) => B): B =

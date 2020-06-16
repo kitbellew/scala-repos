@@ -171,8 +171,7 @@ class ScalaGradleDataServiceTest
       .instanceIn(getProject)
       .getSettingsForModule(module)
 
-    assert(
-      compilerConfiguration.debuggingInfoLevel == DebuggingInfoLevel.Source)
+    assert(compilerConfiguration.debuggingInfoLevel == DebuggingInfoLevel.Source)
     assert(compilerConfiguration.plugins == Seq("test-plugin.jar"))
     assert(
       compilerConfiguration.additionalCompilerOptions == Seq(

@@ -507,7 +507,8 @@ class PlannerSuite extends SharedSQLContext {
     }
   }
 
-  test("EnsureRequirements does not eliminate Exchange with different partitioning") {
+  test(
+    "EnsureRequirements does not eliminate Exchange with different partitioning") {
     val distribution = ClusteredDistribution(Literal(1) :: Nil)
     // Number of partitions differ
     val finalPartitioning = HashPartitioning(Literal(1) :: Nil, 8)

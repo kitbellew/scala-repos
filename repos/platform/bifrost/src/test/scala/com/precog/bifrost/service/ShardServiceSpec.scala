@@ -188,10 +188,8 @@ trait TestShardService
         }
 
         val rawVFS = new InMemoryVFS(stubData, clock)
-        val permissionsFinder = new PermissionsFinder(
-          self.apiKeyFinder,
-          accountFinder,
-          clock.instant())
+        val permissionsFinder =
+          new PermissionsFinder(self.apiKeyFinder, accountFinder, clock.instant())
         val vfs = new SecureVFS(rawVFS, permissionsFinder, jobManager, clock)
       }
 
@@ -237,8 +235,7 @@ trait TestShardService
                       .parseFromByteBuffer(ByteBuffer.wrap(bytes))
                       .valueOr(throw _))
                 case Right(stream) =>
-                  Right(
-                    stream.map(bytes => utf8.decode(ByteBuffer.wrap(bytes))))
+                  Right(stream.map(bytes => utf8.decode(ByteBuffer.wrap(bytes))))
               }
 
             case error =>
@@ -250,8 +247,7 @@ trait TestShardService
                         .parseFromByteBuffer(ByteBuffer.wrap(bytes))
                         .valueOr(throw _))
                   case Right(stream) =>
-                    Right(
-                      stream.map(bytes => utf8.decode(ByteBuffer.wrap(bytes))))
+                    Right(stream.map(bytes => utf8.decode(ByteBuffer.wrap(bytes))))
                 }
               } else {
                 response map {
@@ -346,8 +342,8 @@ class ShardServiceSpec extends TestShardService {
     }
   }
 
-  def waitForJobCompletion(jobId: JobId): Future[
-    Either[String, (Option[MimeType], StreamT[Future, Array[Byte]])]] = {
+  def waitForJobCompletion(jobId: JobId)
+      : Future[Either[String, (Option[MimeType], StreamT[Future, Array[Byte]])]] = {
     import JobState._
 
     jobManager.findJob(jobId) flatMap {
@@ -639,8 +635,7 @@ trait TestPlatform extends ManagedPlatform { self =>
           }
         } else {
           EitherT[JobQueryTF, EvaluationError, StreamT[JobQueryTF, Slice]] {
-            shardQueryMonad.point(
-              \/.right(toSlice(JObject("value" -> JNum(2)))))
+            shardQueryMonad.point(\/.right(toSlice(JObject("value" -> JNum(2)))))
           }
         }
       }

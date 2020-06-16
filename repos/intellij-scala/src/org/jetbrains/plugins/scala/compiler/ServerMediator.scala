@@ -29,9 +29,7 @@ class ServerMediator(project: Project) extends ProjectComponent {
 
   private val connection = project.getMessageBus.connect
   private val serverLauncher = new BuildManagerListener {
-    override def beforeBuildProcessStarted(
-        project: Project,
-        uuid: UUID): Unit = {}
+    override def beforeBuildProcessStarted(project: Project, uuid: UUID): Unit = {}
 
     override def buildStarted(
         project: Project,

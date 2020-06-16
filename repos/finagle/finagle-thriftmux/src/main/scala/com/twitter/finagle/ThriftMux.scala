@@ -486,9 +486,7 @@ object ThriftMux
         addr: SocketAddress,
         factory: ServiceFactory[Array[Byte], Array[Byte]]
     ): ListeningServer = {
-      muxer.serve(
-        addr,
-        MuxToArrayFilter.andThen(tracingFilter).andThen(factory))
+      muxer.serve(addr, MuxToArrayFilter.andThen(tracingFilter).andThen(factory))
     }
 
     // Java-friendly forwarders

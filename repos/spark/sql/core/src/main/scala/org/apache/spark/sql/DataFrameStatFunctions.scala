@@ -334,10 +334,7 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     *
     * @since 1.5.0
     */
-  def sampleBy[T](
-      col: String,
-      fractions: Map[T, Double],
-      seed: Long): DataFrame = {
+  def sampleBy[T](col: String, fractions: Map[T, Double], seed: Long): DataFrame = {
     require(
       fractions.values.forall(p => p >= 0.0 && p <= 1.0),
       s"Fractions must be in [0, 1], but got $fractions.")
@@ -494,10 +491,7 @@ final class DataFrameStatFunctions private[sql] (df: DataFrame) {
     * @param fpp expected false positive probability of the filter.
     * @since 2.0.0
     */
-  def bloomFilter(
-      col: Column,
-      expectedNumItems: Long,
-      fpp: Double): BloomFilter = {
+  def bloomFilter(col: Column, expectedNumItems: Long, fpp: Double): BloomFilter = {
     buildBloomFilter(col, BloomFilter.create(expectedNumItems, fpp))
   }
 

@@ -26,8 +26,7 @@ object BoundAddressesExtension
     new BoundAddressesExtension(system)
 }
 
-class BoundAddressesExtension(val system: ExtendedActorSystem)
-    extends Extension {
+class BoundAddressesExtension(val system: ExtendedActorSystem) extends Extension {
 
   /**
     * Returns a mapping from a protocol to a set of bound addresses.

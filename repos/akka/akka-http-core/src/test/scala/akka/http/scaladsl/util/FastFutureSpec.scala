@@ -32,9 +32,7 @@ class FastFutureSpec extends FreeSpec with Matchers {
         }
       }
       "Failure -> Success" in {
-        test(
-          Failure(TheException),
-          _.transformWith(t ⇒ FastFuture.successful(23))) {
+        test(Failure(TheException), _.transformWith(t ⇒ FastFuture.successful(23))) {
           _ shouldEqual Success(23)
         }
       }

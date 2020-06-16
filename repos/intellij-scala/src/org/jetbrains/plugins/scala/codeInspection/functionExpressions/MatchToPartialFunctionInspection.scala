@@ -182,9 +182,7 @@ class MatchToPartialFunctionQuickFix(
     }
   }
 
-  private def addNamingPatterns(
-      matchStmt: ScMatchStmt,
-      indexes: Seq[Int]): Unit = {
+  private def addNamingPatterns(matchStmt: ScMatchStmt, indexes: Seq[Int]): Unit = {
     val clauses = matchStmt.caseClauses
     val name = matchStmt.expr
       .map(_.getText)

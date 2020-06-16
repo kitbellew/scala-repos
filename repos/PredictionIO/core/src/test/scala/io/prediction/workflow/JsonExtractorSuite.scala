@@ -216,8 +216,7 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val jValue = JsonExtractor.toJValue(JsonExtractorOption.Both, query)
 
     compact(render(jValue)) should
-      be(
-        """{"string":"query string","optional":"option","default":"default"}""")
+      be("""{"string":"query string","optional":"option","default":"default"}""")
   }
 
   test("Scala object to JValue using option Gson does not serialize optional") {
@@ -233,8 +232,7 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     val jValue = JsonExtractor.toJValue(JsonExtractorOption.Json4sNative, query)
 
     compact(render(jValue)) should
-      be(
-        """{"string":"query string","optional":"option","default":"default"}""")
+      be("""{"string":"query string","optional":"option","default":"default"}""")
   }
 
   test(
@@ -247,8 +245,7 @@ class JsonExtractorSuite extends FunSuite with Matchers {
     )
 
     compact(render(jValue)) should
-      be(
-        """{"string":"QUERY STRING","optional":"OPTION","default":"DEFAULT"}""")
+      be("""{"string":"QUERY STRING","optional":"OPTION","default":"DEFAULT"}""")
   }
 
   test("Java object to JValue using option Gson with custom serializer") {

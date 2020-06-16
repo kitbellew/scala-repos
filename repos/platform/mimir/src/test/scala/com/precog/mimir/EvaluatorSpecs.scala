@@ -138,8 +138,7 @@ trait EvaluatorTestSupport[M[+_]]
 
                   val src =
                     if (target startsWith prefix)
-                      io.Source.fromFile(
-                        new File(target.substring(prefix.length)))
+                      io.Source.fromFile(new File(target.substring(prefix.length)))
                     else
                       io.Source.fromInputStream(
                         getClass.getResourceAsStream(target))
@@ -460,8 +459,7 @@ trait EvaluatorSpecs[M[+_]]
         }
 
         result2 must contain(84, 54, 119, 43, 55, 43, 54, 24, 89, 13, 25, 13,
-          119, 89, 154, 78, 90, 78, 43, 13, 78, 2, 14, 2, 55, 25, 90, 14, 26,
-          14)
+          119, 89, 154, 78, 90, 78, 43, 13, 78, 2, 14, 2, 55, 25, 90, 14, 26, 14)
       }
     }
 
@@ -1005,11 +1003,9 @@ trait EvaluatorSpecs[M[+_]]
       "mod negative left" >> {
         val line = Line(1, 1, "")
 
-        val input = Join(
-          Mod,
-          Cross(None),
-          Const(CLong(-11))(line),
-          Const(CLong(4))(line))(line)
+        val input =
+          Join(Mod, Cross(None), Const(CLong(-11))(line), Const(CLong(4))(line))(
+            line)
 
         testEval(input) { result =>
           result must haveSize(1)
@@ -1024,11 +1020,9 @@ trait EvaluatorSpecs[M[+_]]
       "mod" >> {
         val line = Line(1, 1, "")
 
-        val input = Join(
-          Mod,
-          Cross(None),
-          Const(CLong(11))(line),
-          Const(CLong(-4))(line))(line)
+        val input =
+          Join(Mod, Cross(None), Const(CLong(11))(line), Const(CLong(-4))(line))(
+            line)
 
         testEval(input) { result =>
           result must haveSize(1)
@@ -1154,11 +1148,8 @@ trait EvaluatorSpecs[M[+_]]
           Join(
             Gt,
             Cross(None),
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("time"))(line))(line),
+            Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
+              line),
             Const(CLong(0))(line))(line))(line)
       )(line)
 
@@ -2001,11 +1992,8 @@ trait EvaluatorSpecs[M[+_]]
           Join(
             Gt,
             Cross(None),
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks2,
-              Const(CString("time"))(line))(line),
+            Join(DerefObject, Cross(None), clicks2, Const(CString("time"))(line))(
+              line),
             Const(CLong(0))(line))(line))(line)
       )(line)
 
@@ -2611,8 +2599,7 @@ trait EvaluatorSpecs[M[+_]]
         val input = Filter(
           IdentitySort,
           numbers9,
-          Join(Eq, Cross(None), numbers9, Const(RArray.empty)(line))(line))(
-          line)
+          Join(Eq, Cross(None), numbers9, Const(RArray.empty)(line))(line))(line)
 
         testEval(input) { result =>
           result must haveSize(1)
@@ -3189,11 +3176,8 @@ trait EvaluatorSpecs[M[+_]]
             line),
           UnfixedSolution(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line))
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line))
         ),
         SplitGroup(1, clicks.identities, id)(line),
         id
@@ -3384,11 +3368,8 @@ trait EvaluatorSpecs[M[+_]]
           clicks,
           UnfixedSolution(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line))),
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line))),
         Join(
           JoinObject,
           Cross(None),
@@ -3477,11 +3458,8 @@ trait EvaluatorSpecs[M[+_]]
           clicks,
           UnfixedSolution(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line))),
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line))),
         Join(
           JoinObject,
           Cross(None),
@@ -3675,11 +3653,8 @@ trait EvaluatorSpecs[M[+_]]
           clicks,
           UnfixedSolution(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line))),
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line))),
         Join(
           JoinObject,
           Cross(None),
@@ -3704,11 +3679,8 @@ trait EvaluatorSpecs[M[+_]]
         Join(
           Eq,
           Cross(None),
-          Join(
-            DerefObject,
-            Cross(None),
-            histogram,
-            Const(CString("num"))(line))(line),
+          Join(DerefObject, Cross(None), histogram, Const(CString("num"))(line))(
+            line),
           Const(CLong(9))(line))(line))(line)
 
       testEval(input) { result =>
@@ -3744,11 +3716,8 @@ trait EvaluatorSpecs[M[+_]]
           clicks,
           UnfixedSolution(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line))),
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line))),
         Join(
           JoinObject,
           Cross(None),
@@ -3952,11 +3921,8 @@ trait EvaluatorSpecs[M[+_]]
         AddSortKey(clicks2, "time", "time", 0))(line)
 
       testEval(
-        dag.Join(
-          DerefObject,
-          Cross(None),
-          clicks,
-          Const(CString("time"))(line))(line)) { expected =>
+        dag.Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
+          line)) { expected =>
         val decimalValues = expected.toList collect {
           case (_, SDecimal(d)) => d
         }
@@ -4005,11 +3971,8 @@ trait EvaluatorSpecs[M[+_]]
         dag.Join(
           Mul,
           Cross(None),
-          dag.Join(
-            DerefObject,
-            Cross(None),
-            clicks,
-            Const(CString("time"))(line))(line),
+          dag.Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
+            line),
           Const(CLong(2))(line))(line)
       )(line)
 
@@ -4041,11 +4004,8 @@ trait EvaluatorSpecs[M[+_]]
           Const(CLong(500))(line))(line))(line)
 
       testEval(
-        dag.Join(
-          DerefObject,
-          Cross(None),
-          clicks,
-          Const(CString("time"))(line))(line)) { expected =>
+        dag.Join(DerefObject, Cross(None), clicks, Const(CString("time"))(line))(
+          line)) { expected =>
         val decimalValues = expected.toList collect {
           case (_, SDecimal(d)) => d
         }
@@ -4114,8 +4074,7 @@ trait EvaluatorSpecs[M[+_]]
         Join(
           Eq,
           Cross(None),
-          Join(DerefObject, Cross(None), t1, Const(CString("time"))(line))(
-            line),
+          Join(DerefObject, Cross(None), t1, Const(CString("time"))(line))(line),
           Join(DerefObject, Cross(None), t2, Const(CString("time"))(line))(line)
         )(line)
       )(line)
@@ -4147,9 +4106,9 @@ trait EvaluatorSpecs[M[+_]]
     "evaluate as a transspec a cond on a single source" in {
       val line = Line(1, 1, "")
 
-      val source = dag.New(dag.Const(
-        RObject("a" -> CBoolean(true), "b" -> CNum(1), "c" -> CNum(2)))(line))(
-        line)
+      val source = dag.New(
+        dag.Const(RObject("a" -> CBoolean(true), "b" -> CNum(1), "c" -> CNum(2)))(
+          line))(line)
 
       val input = dag.Cond(
         Join(DerefObject, Cross(None), source, dag.Const(CString("a"))(line))(

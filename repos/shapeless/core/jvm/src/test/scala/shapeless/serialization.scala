@@ -182,9 +182,7 @@ object SerializationTestDefns {
           icc.pack(
             icc
               .unpack(fa)
-              .fold(
-                hd => Left(icc.fh.map(hd)(f)),
-                tl => Right(icc.ft.map(tl)(f))))
+              .fold(hd => Left(icc.fh.map(hd)(f)), tl => Right(icc.ft.map(tl)(f))))
       }
 
     implicit def generic[F[_]](implicit gen: Generic1[F, Functor]): Functor[F] =
@@ -261,8 +259,7 @@ object SerializationTestDefns {
   /**
     * A `CanBuildFrom` for `List` implementing `Serializable`, unlike the one provided by the standard library.
     */
-  implicit def listSerializableCanBuildFrom[T]
-      : CanBuildFrom[List[T], T, List[T]] =
+  implicit def listSerializableCanBuildFrom[T]: CanBuildFrom[List[T], T, List[T]] =
     new CanBuildFrom[List[T], T, List[T]] with Serializable {
       def apply(from: List[T]) = from.genericBuilder[T]
       def apply() = List.newBuilder[T]
@@ -971,9 +968,7 @@ class SerializationTests {
   @Test
   def testHMap {
     assertSerializable(
-      HMap[(Set ~?> Option)#λ](
-        Set("foo") -> Option("bar"),
-        Set(23) -> Option(13)))
+      HMap[(Set ~?> Option)#λ](Set("foo") -> Option("bar"), Set(23) -> Option(13)))
     assertSerializable(new (Set ~?> Option))
     assertSerializable(implicitly[(Set ~?> Option)#λ[Set[Int], Option[Int]]])
   }
@@ -988,8 +983,7 @@ class SerializationTests {
     assertSerializableBeforeAfter(
       implicitly[Lazy[Lazy.Values[Generic[Wibble] :: HNil]]])(_.value)
     assertSerializableBeforeAfter(
-      implicitly[
-        Lazy[Lazy.Values[Generic[Wibble] :: Generic1[Box, TC1] :: HNil]]])(
+      implicitly[Lazy[Lazy.Values[Generic[Wibble] :: Generic1[Box, TC1] :: HNil]]])(
       _.value)
   }
 

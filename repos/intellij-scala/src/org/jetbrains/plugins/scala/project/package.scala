@@ -6,10 +6,7 @@ import java.net.URL
 import com.intellij.openapi.module.{Module, ModuleManager, ModuleUtilCore}
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots._
-import com.intellij.openapi.roots.impl.libraries.{
-  LibraryEx,
-  ProjectLibraryTable
-}
+import com.intellij.openapi.roots.impl.libraries.{LibraryEx, ProjectLibraryTable}
 import com.intellij.openapi.roots.libraries.Library
 import com.intellij.openapi.roots.ui.configuration.libraryEditor.{
   ExistingLibraryEditor,
@@ -148,9 +145,7 @@ package object project {
     def scalaCompilerSettings: ScalaCompilerSettings =
       compilerConfiguration.getSettingsForModule(module)
 
-    def configureScalaCompilerSettingsFrom(
-        source: String,
-        options: Seq[String]) {
+    def configureScalaCompilerSettingsFrom(source: String, options: Seq[String]) {
       compilerConfiguration.configureSettingsForModule(module, source, options)
     }
 

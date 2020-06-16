@@ -220,9 +220,7 @@ private[streaming] class ReceivedBlockTracker(
 
       // Insert the recovered block-to-batch allocations and clear the queue of received blocks
       // (when the blocks were originally allocated to the batch, the queue must have been cleared).
-      def insertAllocatedBatch(
-          batchTime: Time,
-          allocatedBlocks: AllocatedBlocks) {
+      def insertAllocatedBatch(batchTime: Time, allocatedBlocks: AllocatedBlocks) {
         logTrace(
           s"Recovery: Inserting allocated batch for time $batchTime to " +
             s"${allocatedBlocks.streamIdToAllocatedBlocks}")

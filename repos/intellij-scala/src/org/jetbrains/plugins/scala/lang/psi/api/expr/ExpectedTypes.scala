@@ -54,8 +54,9 @@ private[expr] object ExpectedTypes {
       fromUnderscore: Boolean = true): Option[ScType] =
     smartExpectedTypeEx(expr, fromUnderscore).map(_._1)
 
-  def smartExpectedTypeEx(expr: ScExpression, fromUnderscore: Boolean = true)
-      : Option[(ScType, Option[ScTypeElement])] = {
+  def smartExpectedTypeEx(
+      expr: ScExpression,
+      fromUnderscore: Boolean = true): Option[(ScType, Option[ScTypeElement])] = {
     val types = expectedExprTypes(
       expr,
       withResolvedFunction = true,
@@ -66,8 +67,9 @@ private[expr] object ExpectedTypes {
     }
   }
 
-  def expectedExprType(expr: ScExpression, fromUnderscore: Boolean = true)
-      : Option[(ScType, Option[ScTypeElement])] = {
+  def expectedExprType(
+      expr: ScExpression,
+      fromUnderscore: Boolean = true): Option[(ScType, Option[ScTypeElement])] = {
     val types = expr.expectedTypesEx(fromUnderscore)
     types.length match {
       case 1 => Some(types(0))
@@ -241,11 +243,8 @@ private[expr] object ExpectedTypes {
                   case f: PsiField =>
                     Array(
                       (
-                        subst.subst(
-                          ScType.create(
-                            f.getType,
-                            f.getProject,
-                            expr.getResolveScope)),
+                        subst.subst(ScType
+                          .create(f.getType, f.getProject, expr.getResolveScope)),
                         None))
                   case _ => Array.empty
                 }
@@ -276,8 +275,7 @@ private[expr] object ExpectedTypes {
                 mapResolves(ref.shapeResolve, ref.shapeMultiType)
               else mapResolves(ref.multiResolve(false), ref.multiType)
             case _ =>
-              Array(
-                (callExpression.getNonValueType(TypingContext.empty), false))
+              Array((callExpression.getNonValueType(TypingContext.empty), false))
           }
           tps.foreach {
             case (r, isDynamicNamed) =>
@@ -404,8 +402,7 @@ private[expr] object ExpectedTypes {
                   .getOrElse(multiType.map((_, false)))
               }
             case _ =>
-              Array(
-                (callExpression.getNonValueType(TypingContext.empty), false))
+              Array((callExpression.getNonValueType(TypingContext.empty), false))
           }
           val callOption = args.getParent match {
             case call: MethodInvocation => Some(call)
@@ -497,9 +494,7 @@ private[expr] object ExpectedTypes {
     def applyForParams(params: Seq[Parameter]) {
       val p: (ScType, Option[ScTypeElement]) =
         if (i >= params.length && params.nonEmpty && params.last.isRepeated)
-          (
-            params.last.paramType,
-            params.last.paramInCode.flatMap(_.typeElement))
+          (params.last.paramType, params.last.paramInCode.flatMap(_.typeElement))
         else if (i >= params.length) (Nothing, None)
         else (params(i).paramType, params(i).paramInCode.flatMap(_.typeElement))
       expr match {
@@ -594,8 +589,7 @@ private[expr] object ExpectedTypes {
               var polyType: TypeResult[ScType] = Success(
                 s.subst(fun.polymorphicType()) match {
                   case ScTypePolymorphicType(internal, params) =>
-                    update(
-                      ScTypePolymorphicType(internal, params ++ typeParams))
+                    update(ScTypePolymorphicType(internal, params ++ typeParams))
                   case tp => update(ScTypePolymorphicType(tp, typeParams))
                 },
                 Some(expr)

@@ -45,19 +45,16 @@ class SerializerPropertiesSuite extends SparkFunSuite {
 
   test("KryoSerializer supports relocation when auto-reset is enabled") {
     val ser = new KryoSerializer(new SparkConf)
-    assert(
-      ser.newInstance().asInstanceOf[KryoSerializerInstance].getAutoReset())
+    assert(ser.newInstance().asInstanceOf[KryoSerializerInstance].getAutoReset())
     testSupportsRelocationOfSerializedObjects(ser, generateRandomItem)
   }
 
-  test(
-    "KryoSerializer does not support relocation when auto-reset is disabled") {
+  test("KryoSerializer does not support relocation when auto-reset is disabled") {
     val conf = new SparkConf().set(
       "spark.kryo.registrator",
       classOf[RegistratorWithoutAutoReset].getName)
     val ser = new KryoSerializer(conf)
-    assert(
-      !ser.newInstance().asInstanceOf[KryoSerializerInstance].getAutoReset())
+    assert(!ser.newInstance().asInstanceOf[KryoSerializerInstance].getAutoReset())
     testSupportsRelocationOfSerializedObjects(ser, generateRandomItem)
   }
 

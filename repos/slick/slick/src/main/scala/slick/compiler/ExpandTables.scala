@@ -64,9 +64,7 @@ class ExpandTables extends Phase {
               case (ts, v) =>
                 (
                   ts,
-                  NominalType(
-                    ts,
-                    StructType(ConstArray.from(v.map(_._2).toMap))))
+                  NominalType(ts, StructType(ConstArray.from(v.map(_._2).toMap))))
             }
           logger.debug(
             "Found Selects for NominalTypes: " + structs.keySet.mkString(", "))

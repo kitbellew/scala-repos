@@ -97,9 +97,7 @@ object UniqueKeyedService extends java.io.Serializable {
 
       def reducers: Option[Int] = inputReducers
 
-      override def satisfiable(
-          requested: DateRange,
-          mode: Mode): Try[DateRange] = {
+      override def satisfiable(requested: DateRange, mode: Mode): Try[DateRange] = {
         if (requireFullySatisfiable) {
           val s = fn(requested)
           try {

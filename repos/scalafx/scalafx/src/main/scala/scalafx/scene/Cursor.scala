@@ -99,18 +99,14 @@ object Cursor {
     * can be clicked, such as a hyperlink.
     */
   val Hand = new Cursor(jfxs.Cursor.HAND) {}
-  @deprecated(
-    "Use Hand; HAND will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Hand; HAND will be removed in a future release", "8.0.60-R10")
   val HAND = Hand
 
   /**
     * The move cursor type.
     */
   val Move = new Cursor(jfxs.Cursor.MOVE) {}
-  @deprecated(
-    "Use Move; MOVE will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Move; MOVE will be removed in a future release", "8.0.60-R10")
   val MOVE = Move
 
   /**
@@ -135,9 +131,7 @@ object Cursor {
     * The none cursor type.
     */
   val None = new Cursor(jfxs.Cursor.NONE) {}
-  @deprecated(
-    "Use None; NONE will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use None; NONE will be removed in a future release", "8.0.60-R10")
   val NONE = None
 
   /**
@@ -189,9 +183,7 @@ object Cursor {
     * The text cursor type.
     */
   val Text = new Cursor(jfxs.Cursor.TEXT) {}
-  @deprecated(
-    "Use Text; TEXT will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Text; TEXT will be removed in a future release", "8.0.60-R10")
   val TEXT = Text
 
   /**
@@ -216,9 +208,7 @@ object Cursor {
     * The wait cursor type.
     */
   val Wait = new Cursor(jfxs.Cursor.WAIT) {}
-  @deprecated(
-    "Use Wait; WAIT will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Wait; WAIT will be removed in a future release", "8.0.60-R10")
   val WAIT = Wait
 
 }

@@ -99,9 +99,7 @@ class TupleTest {
     assertEquals(3, scalaObj._3)
     assertEquals(3, t3IsInt)
     assertTrue((jsObj: Any).isInstanceOf[js.Array[_]])
-    assertJSArrayEquals(
-      js.Array("1", "2", 3),
-      jsObj.asInstanceOf[js.Array[Any]])
+    assertJSArrayEquals(js.Array("1", "2", 3), jsObj.asInstanceOf[js.Array[Any]])
   }
 
   @Test def should_support_tuple_of_4(): Unit = {
@@ -311,20 +309,7 @@ class TupleTest {
     assertEquals(13, t13IsInt)
     assertTrue((jsObj: Any).isInstanceOf[js.Array[_]])
     assertJSArrayEquals(
-      js.Array(
-        "1",
-        "2",
-        "3",
-        "4",
-        "5",
-        "6",
-        "7",
-        "8",
-        "9",
-        "10",
-        "11",
-        "12",
-        13),
+      js.Array("1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", 13),
       jsObj.asInstanceOf[js.Array[Any]])
   }
 

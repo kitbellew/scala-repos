@@ -267,11 +267,7 @@ sealed abstract class ISet[A] {
     difference(other)
 
   final def intersection(other: ISet[A])(implicit o: Order[A]) = {
-    def hedgeInt(
-        blo: Option[A],
-        bhi: Option[A],
-        t1: ISet[A],
-        t2: ISet[A]): ISet[A] =
+    def hedgeInt(blo: Option[A], bhi: Option[A], t1: ISet[A], t2: ISet[A]): ISet[A] =
       (t1, t2) match {
         case (_, Tip()) =>
           t2

@@ -216,9 +216,7 @@ trait Pool extends RouterConfig {
   /**
     * INTERNAL API
     */
-  private[akka] def newRoutee(
-      routeeProps: Props,
-      context: ActorContext): Routee =
+  private[akka] def newRoutee(routeeProps: Props, context: ActorContext): Routee =
     ActorRefRoutee(
       context.actorOf(enrichWithPoolDispatcher(routeeProps, context)))
 

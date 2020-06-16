@@ -98,9 +98,7 @@ trait JxBase {
             parent + ".appendChild(document.createTextNode(" + a.text.encJs + "));").cmd
         case e: scala.xml.Elem =>
           val varName = "v" + Helpers.nextFuncName
-          JsCrVar(
-            varName,
-            JsRaw("document.createElement(" + e.label.encJs + ")")) &
+          JsCrVar(varName, JsRaw("document.createElement(" + e.label.encJs + ")")) &
             addAttrs(varName, e.attributes.toList) &
             JsRaw(parent + ".appendChild(" + varName + ")") &
             addToDocFrag(varName, e.child.toList)

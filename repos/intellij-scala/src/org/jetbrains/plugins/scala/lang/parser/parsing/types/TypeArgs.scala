@@ -38,8 +38,7 @@ object TypeArgs {
                       case ScalaTokenTypes.tCOMMA |
                           ScalaTokenTypes.tRSQBRACKET =>
                         idMarker.drop()
-                        typeParameterMarker.done(
-                          ScalaElementTypes.TYPE_VARIABLE)
+                        typeParameterMarker.done(ScalaElementTypes.TYPE_VARIABLE)
                         true
                       case _ =>
                         idMarker.rollbackTo()

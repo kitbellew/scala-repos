@@ -159,8 +159,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
           )
           .withFallback(AkkaSpec.testConf)
 
-        shutdown(
-          ActorSystem("invalid-number-of-instances", invalidDeployerConf))
+        shutdown(ActorSystem("invalid-number-of-instances", invalidDeployerConf))
       }
     }
 
@@ -243,8 +242,7 @@ class DeployerSpec extends AkkaSpec(DeployerSpec.deployerConf) {
         classOf[akka.routing.RoundRobinPool].getName)
       mapping("round-robin-group") should ===(
         classOf[akka.routing.RoundRobinGroup].getName)
-      mapping("random-pool") should ===(
-        classOf[akka.routing.RandomPool].getName)
+      mapping("random-pool") should ===(classOf[akka.routing.RandomPool].getName)
       mapping("random-group") should ===(
         classOf[akka.routing.RandomGroup].getName)
       mapping("balancing-pool") should ===(

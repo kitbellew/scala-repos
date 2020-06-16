@@ -231,10 +231,7 @@ trait StringHelpers {
     * @param second default value for the second part if one or less parts can be found
     * @return a pair containing the first and second parts
     */
-  def splitColonPair(
-      in: String,
-      first: String,
-      second: String): (String, String) = {
+  def splitColonPair(in: String, first: String, second: String): (String, String) = {
     (in match {
       case null                      => List("")
       case s if s.indexOf(".") != -1 => s.roboSplit("\\.")

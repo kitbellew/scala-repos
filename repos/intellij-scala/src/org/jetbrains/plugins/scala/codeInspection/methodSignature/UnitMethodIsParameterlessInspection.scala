@@ -16,9 +16,6 @@ class UnitMethodIsParameterlessInspection
   def actionFor(holder: ProblemsHolder) = {
     case f: ScFunction
         if f.isParameterless && f.hasUnitResultType && f.superMethods.isEmpty =>
-      holder.registerProblem(
-        f.nameId,
-        getDisplayName,
-        new AddEmptyParentheses(f))
+      holder.registerProblem(f.nameId, getDisplayName, new AddEmptyParentheses(f))
   }
 }

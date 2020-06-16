@@ -123,8 +123,7 @@ object Metadata {
 
     def combineMetadata(m1: Metadata, m2: Metadata) =
       m1.merge(m2)
-        .getOrElse(
-          sys.error("Invalid attempt to combine incompatible metadata"))
+        .getOrElse(sys.error("Invalid attempt to combine incompatible metadata"))
   }
 }
 
@@ -132,8 +131,7 @@ sealed trait MetadataStats extends Metadata {
   def count: Long
 }
 
-case class BooleanValueStats(count: Long, trueCount: Long)
-    extends MetadataStats {
+case class BooleanValueStats(count: Long, trueCount: Long) extends MetadataStats {
   def falseCount: Long = count - trueCount
   def probability: Double = trueCount.toDouble / count
 
@@ -179,10 +177,7 @@ case class LongValueStats(count: Long, min: Long, max: Long)
     that match {
       case LongValueStats(count, min, max) =>
         Some(
-          LongValueStats(
-            this.count + count,
-            this.min.min(min),
-            this.max.max(max)))
+          LongValueStats(this.count + count, this.min.min(min), this.max.max(max)))
       case _ => None
     }
 }

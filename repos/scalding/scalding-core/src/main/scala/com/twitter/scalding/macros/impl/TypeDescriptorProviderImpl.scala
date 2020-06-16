@@ -117,23 +117,9 @@ object TypeDescriptorProviderImpl {
       typeOf[Tuple9[Any, Any, Any, Any, Any, Any, Any, Any, Any]],
       typeOf[Tuple10[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]],
       typeOf[Tuple11[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]],
+      typeOf[Tuple12[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]],
       typeOf[
-        Tuple12[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]],
-      typeOf[
-        Tuple13[
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any,
-          Any]],
+        Tuple13[Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any, Any]],
       typeOf[
         Tuple14[
           Any,

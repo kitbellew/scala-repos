@@ -27,8 +27,7 @@ class DefaultInterpreterTest extends FunSuite {
 
   def boundWithWeight(weight: Double, addrs: Address*): Name.Bound =
     Name.Bound(
-      Var.value(
-        Addr.Bound(addrs.toSet, Addr.Metadata(AddrWeightKey -> weight))),
+      Var.value(Addr.Bound(addrs.toSet, Addr.Metadata(AddrWeightKey -> weight))),
       addrs.toSet)
 
   test("basic dtab evaluation") {

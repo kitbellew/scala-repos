@@ -101,8 +101,7 @@ private[stream] object Timers {
     override def toString = "CompletionTimeout"
   }
 
-  final class Idle[T](timeout: FiniteDuration)
-      extends SimpleLinearGraphStage[T] {
+  final class Idle[T](timeout: FiniteDuration) extends SimpleLinearGraphStage[T] {
 
     override def createLogic(inheritedAttributes: Attributes): GraphStageLogic =
       new TimerGraphStageLogic(shape) {

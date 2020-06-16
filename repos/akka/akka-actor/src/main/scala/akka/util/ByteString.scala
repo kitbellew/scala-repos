@@ -623,10 +623,7 @@ object CompactByteString {
     * Creates a new CompactByteString by copying length bytes starting at offset from
     * an Array.
     */
-  def fromArray(
-      array: Array[Byte],
-      offset: Int,
-      length: Int): CompactByteString = {
+  def fromArray(array: Array[Byte], offset: Int, length: Int): CompactByteString = {
     val copyOffset = math.max(offset, 0)
     val copyLength = math.max(math.min(array.length - copyOffset, length), 0)
     if (copyLength == 0) empty

@@ -144,10 +144,7 @@ class JSFileBuilderWithSourceMap(
     extends JSFileBuilderWithSourceMapWriter(
       n,
       ow,
-      new SourceMapWriter(
-        sourceMapOutputWriter,
-        n,
-        relativizeSourceMapBasePath)) {
+      new SourceMapWriter(sourceMapOutputWriter, n, relativizeSourceMapBasePath)) {
 
   override def complete(): Unit = {
     addLine("//# sourceMappingURL=" + name + ".map")

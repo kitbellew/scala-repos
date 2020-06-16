@@ -62,11 +62,8 @@ class UnifiedMemoryManagerSuite
     assert(mm
       .acquireExecutionMemory(100L, taskAttemptId, MemoryMode.ON_HEAP) === 100L)
     // Acquire up to the max
-    assert(
-      mm.acquireExecutionMemory(
-        1000L,
-        taskAttemptId,
-        MemoryMode.ON_HEAP) === 890L)
+    assert(mm
+      .acquireExecutionMemory(1000L, taskAttemptId, MemoryMode.ON_HEAP) === 890L)
     assert(mm.executionMemoryUsed === maxMemory)
     assert(
       mm.acquireExecutionMemory(1L, taskAttemptId, MemoryMode.ON_HEAP) === 0L)

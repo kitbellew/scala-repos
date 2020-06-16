@@ -53,8 +53,7 @@ private[netty4] object Netty4Transporter {
             .handler(init)
 
         val Transport.Liveness(_, _, keepAlive) = params[Transport.Liveness]
-        keepAlive.foreach(
-          bootstrap.option[JBool](ChannelOption.SO_KEEPALIVE, _))
+        keepAlive.foreach(bootstrap.option[JBool](ChannelOption.SO_KEEPALIVE, _))
         sendBufSize.foreach(bootstrap.option[JInt](ChannelOption.SO_SNDBUF, _))
         recvBufSize.foreach(bootstrap.option[JInt](ChannelOption.SO_RCVBUF, _))
 

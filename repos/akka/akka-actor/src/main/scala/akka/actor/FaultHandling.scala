@@ -456,8 +456,7 @@ case class AllForOneStrategy(
       maxNrOfRetries: Int,
       withinTimeRange: Duration,
       decider: SupervisorStrategy.JDecider) =
-    this(maxNrOfRetries, withinTimeRange)(
-      SupervisorStrategy.makeDecider(decider))
+    this(maxNrOfRetries, withinTimeRange)(SupervisorStrategy.makeDecider(decider))
 
   /**
     * Java API
@@ -562,8 +561,7 @@ case class OneForOneStrategy(
       maxNrOfRetries: Int,
       withinTimeRange: Duration,
       decider: SupervisorStrategy.JDecider) =
-    this(maxNrOfRetries, withinTimeRange)(
-      SupervisorStrategy.makeDecider(decider))
+    this(maxNrOfRetries, withinTimeRange)(SupervisorStrategy.makeDecider(decider))
 
   /**
     * Java API

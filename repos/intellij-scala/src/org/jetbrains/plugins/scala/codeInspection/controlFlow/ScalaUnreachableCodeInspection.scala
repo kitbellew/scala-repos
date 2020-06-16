@@ -83,9 +83,7 @@ class ScalaUnreachableCodeInspection
     elements.groupBy(_.getParent).values
   }
 
-  private def registerProblem(
-      fragment: Seq[PsiElement],
-      holder: ProblemsHolder) {
+  private def registerProblem(fragment: Seq[PsiElement], holder: ProblemsHolder) {
     if (fragment.isEmpty) return
 
     val descriptor = {

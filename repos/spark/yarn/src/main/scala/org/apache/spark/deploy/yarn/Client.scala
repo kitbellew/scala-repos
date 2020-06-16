@@ -949,8 +949,8 @@ private[spark] class Client(
       }
 
       sparkConf.get(AM_LIBRARY_PATH).foreach { paths =>
-        prefixEnv = Some(
-          getClusterPath(sparkConf, Utils.libraryPathEnvPrefix(Seq(paths))))
+        prefixEnv =
+          Some(getClusterPath(sparkConf, Utils.libraryPathEnvPrefix(Seq(paths))))
       }
     }
 
@@ -1014,8 +1014,7 @@ private[spark] class Client(
 
     // Command for the ApplicationMaster
     val commands = prefixEnv ++ Seq(
-      YarnSparkHadoopUtil.expandEnvironment(
-        Environment.JAVA_HOME) + "/bin/java",
+      YarnSparkHadoopUtil.expandEnvironment(Environment.JAVA_HOME) + "/bin/java",
       "-server"
     ) ++
       javaOpts ++ amArgs ++
@@ -1326,8 +1325,8 @@ object Client extends Logging {
 
   private[yarn] def getDefaultYarnApplicationClasspath: Option[Seq[String]] = {
     val triedDefault = Try[Seq[String]] {
-      val field = classOf[YarnConfiguration].getField(
-        "DEFAULT_YARN_APPLICATION_CLASSPATH")
+      val field =
+        classOf[YarnConfiguration].getField("DEFAULT_YARN_APPLICATION_CLASSPATH")
       val value = field.get(null).asInstanceOf[Array[String]]
       value.toSeq
     } recoverWith {

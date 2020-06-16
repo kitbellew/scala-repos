@@ -822,8 +822,7 @@ trait CustomExecutionContext extends TestBase {
             Promise.successful(x + 1).future.map(addOne).map(addOne)
           } onComplete {
             case Failure(t) =>
-              done(
-                throw new AssertionError("error in test: " + t.getMessage, t))
+              done(throw new AssertionError("error in test: " + t.getMessage, t))
             case Success(x) =>
               assertEC()
               done(x == 14)

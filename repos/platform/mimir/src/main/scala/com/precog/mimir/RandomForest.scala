@@ -624,10 +624,7 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         })
       }
 
-      def makeForest(
-          table: Table,
-          tpe: JType,
-          prev: F = Monoid[F].zero): M[F] = {
+      def makeForest(table: Table, tpe: JType, prev: F = Monoid[F].zero): M[F] = {
         if (prev.trees.size > maxForestSize) {
           M.point(prev)
         } else {

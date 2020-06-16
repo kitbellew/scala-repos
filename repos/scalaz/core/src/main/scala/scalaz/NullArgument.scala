@@ -145,9 +145,7 @@ sealed abstract class NullArgumentInstances extends NullArgumentInstances0 {
           f: NullArgument[B, C],
           g: NullArgument[A, B]): NullArgument[A, C] =
         f compose g
-      override def split[A, B, C, D](
-          f: NullArgument[A, B],
-          g: NullArgument[C, D]) =
+      override def split[A, B, C, D](f: NullArgument[A, B], g: NullArgument[C, D]) =
         f *** g
       override def mapfst[A, B, C](r: NullArgument[A, B])(f: C => A) =
         r contramap f

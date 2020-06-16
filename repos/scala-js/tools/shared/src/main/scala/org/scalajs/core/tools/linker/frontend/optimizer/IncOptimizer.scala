@@ -75,8 +75,7 @@ final class IncOptimizer(
     methodsToProcess.clear()
   }
 
-  private class SeqInterfaceType(encName: String)
-      extends InterfaceType(encName) {
+  private class SeqInterfaceType(encName: String) extends InterfaceType(encName) {
     private val ancestorsAskers = mutable.Set.empty[MethodImpl]
     private val dynamicCallers =
       mutable.Map.empty[String, mutable.Set[MethodImpl]]

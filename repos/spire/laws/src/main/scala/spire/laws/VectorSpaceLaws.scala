@@ -67,8 +67,7 @@ trait VectorSpaceLaws[V, A] extends Laws {
       "identity" → forAll((x: V, y: V) =>
         if (x === y) V.distance(x, y) === A.zero
         else V.distance(x, y) =!= A.zero),
-      "symmetric" → forAll((x: V, y: V) =>
-        V.distance(x, y) === V.distance(y, x)),
+      "symmetric" → forAll((x: V, y: V) => V.distance(x, y) === V.distance(y, x)),
       "triangle inequality" → forAll((x: V, y: V, z: V) =>
         V.distance(x, z) <= (V.distance(x, y) + V.distance(y, z)))
     )
@@ -111,10 +110,7 @@ trait VectorSpaceLaws[V, A] extends Laws {
     )
 
   object SpaceProperties {
-    def fromParent(
-        name: String,
-        parent: SpaceProperties,
-        props: (String, Prop)*) =
+    def fromParent(name: String, parent: SpaceProperties, props: (String, Prop)*) =
       new SpaceProperties(name, parent.sl, parent.vl, Seq(parent), props: _*)
   }
 

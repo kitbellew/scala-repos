@@ -4,11 +4,7 @@ import _root_.java.io.ByteArrayOutputStream
 import _root_.java.lang.{Boolean => JBoolean}
 import com.twitter.common.application.ShutdownRegistry.ShutdownRegistryImpl
 import com.twitter.common.zookeeper.testing.ZooKeeperTestServer
-import com.twitter.common.zookeeper.{
-  ServerSets,
-  ZooKeeperClient,
-  ZooKeeperUtils
-}
+import com.twitter.common.zookeeper.{ServerSets, ZooKeeperClient, ZooKeeperUtils}
 import com.twitter.finagle.Memcached
 import com.twitter.finagle.cacheresolver.CachePoolConfig
 import com.twitter.finagle.memcached.PartitionedClient
@@ -96,8 +92,7 @@ class Finagle6APITest extends FunSuite with BeforeAndAfter {
   if (!Option(System.getProperty("SKIP_FLAKY")).isDefined) {
     test("with unmanaged regular zk serverset") {
       val client = Memcached.client
-        .newTwemcacheClient(
-          "zk!localhost:" + zookeeperServerPort + "!" + zkPath)
+        .newTwemcacheClient("zk!localhost:" + zookeeperServerPort + "!" + zkPath)
         .asInstanceOf[PartitionedClient]
 
       // Wait for group to contain members

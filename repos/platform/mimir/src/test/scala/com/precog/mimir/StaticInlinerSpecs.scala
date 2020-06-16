@@ -104,11 +104,8 @@ trait StaticInlinerSpecs[M[+_]]
           Add,
           Cross(None),
           dag.AbsoluteLoad(Const(CString("/foo"))(line))(line),
-          Join(
-            Div,
-            Cross(None),
-            Const(CNum(3.14))(line),
-            Const(CLong(0))(line))(line))(line)
+          Join(Div, Cross(None), Const(CNum(3.14))(line), Const(CLong(0))(line))(
+            line))(line)
 
         val expected = Const(CUndefined)(line)
 
@@ -119,11 +116,8 @@ trait StaticInlinerSpecs[M[+_]]
         val input = Join(
           Add,
           Cross(None),
-          Join(
-            Div,
-            Cross(None),
-            Const(CNum(3.14))(line),
-            Const(CLong(0))(line))(line),
+          Join(Div, Cross(None), Const(CNum(3.14))(line), Const(CLong(0))(line))(
+            line),
           dag.AbsoluteLoad(Const(CString("/foo"))(line))(line))(line)
 
         val expected = Const(CUndefined)(line)

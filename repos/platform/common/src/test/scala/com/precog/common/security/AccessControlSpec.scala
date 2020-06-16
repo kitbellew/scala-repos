@@ -325,12 +325,7 @@ class AccessControlSpec extends Specification {
       )
 
       apiKeyManager
-        .deriveAndAddGrant(
-          None,
-          None,
-          otherAPIKey,
-          writeDeleteOther,
-          userAPIKey)
+        .deriveAndAddGrant(None, None, otherAPIKey, writeDeleteOther, userAPIKey)
         .get
 
       hasCapability(
@@ -629,18 +624,14 @@ class AccessControlSpec extends Specification {
           Path("/customer1/data"),
           WrittenByAccount(customer1AccountId)))
       val readCustomer1AddOn = Set[Permission](
-        ReadPermission(
-          Path("/customer1/data"),
-          WrittenByAccount(addOnAccountId)))
+        ReadPermission(Path("/customer1/data"), WrittenByAccount(addOnAccountId)))
 
       val readCustomer2Customer2 = Set[Permission](
         ReadPermission(
           Path("/customer2/data"),
           WrittenByAccount(customer2AccountId)))
       val readCustomer2AddOn = Set[Permission](
-        ReadPermission(
-          Path("/customer2/data"),
-          WrittenByAccount(addOnAccountId)))
+        ReadPermission(Path("/customer2/data"), WrittenByAccount(addOnAccountId)))
 
       hasCapability(customer1APIKey, readCustomer1Customer1) must beTrue
       hasCapability(customer1APIKey, readCustomer1AddOn) must beFalse

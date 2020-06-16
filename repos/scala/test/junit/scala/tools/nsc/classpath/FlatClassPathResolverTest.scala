@@ -21,11 +21,8 @@ class FlatClassPathResolverTest {
 
   val tempDir = new TemporaryFolder()
 
-  private val packagesToTest = List(
-    FlatClassPath.RootPackage,
-    "scala",
-    "scala.reflect",
-    "scala.reflect.io")
+  private val packagesToTest =
+    List(FlatClassPath.RootPackage, "scala", "scala.reflect", "scala.reflect.io")
   private val classFilesToFind = List(
     "scala.tools.util.FlatClassPathResolver",
     "scala.reflect.io.AbstractFile",

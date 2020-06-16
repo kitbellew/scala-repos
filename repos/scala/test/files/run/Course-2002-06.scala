@@ -132,8 +132,7 @@ class PostScript(filename: String, _width: Double, _height: Double)
   /** Print the PS header. */
   Console.println("%!PS-Adobe-3.0 EPSF-3.0\n%%Title: ProgrammationIV");
   Console.println("%%Creator: LAMP");
-  Console.println(
-    "%%BoundingBox: 0 0 " + mm2ps(psWidth) + " " + mm2ps(psHeight));
+  Console.println("%%BoundingBox: 0 0 " + mm2ps(psWidth) + " " + mm2ps(psHeight));
   Console.println("%%EndComments\n");
   Console.println("/m {moveto} bind def\n/l {lineto} bind def\n");
   Console.println(mm2ps(line_thickness) + " setlinewidth\nnewpath");
@@ -245,10 +244,8 @@ object M0 {
     val canvas: Graphics = new PostScript(psfile, 2, 2);
 
     // the identity frame
-    val identFrame = new Frame(
-      new Vector(0.0, 0.0),
-      new Vector(1.0, 0.0),
-      new Vector(0.0, 1.0));
+    val identFrame =
+      new Frame(new Vector(0.0, 0.0), new Vector(1.0, 0.0), new Vector(0.0, 1.0));
 
     // Create a basic painter...
     val p: Painter = house(canvas);

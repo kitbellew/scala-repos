@@ -46,8 +46,7 @@ trait LinkConverter { self: RequestCache =>
 
     escaped
     // convert username/project@SHA to link
-      .replaceBy(
-        "(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)@([a-f0-9]{40})(?=(\\W|$))".r) {
+      .replaceBy("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)/([a-zA-Z0-9\\-_\\.]+)@([a-f0-9]{40})(?=(\\W|$))".r) {
         m =>
           getAccountByUserName(m.group(2)).map { _ =>
             s"""<a href="${context.path}/${m.group(2)}/${m.group(3)}/commit/${m
@@ -73,17 +72,16 @@ trait LinkConverter { self: RequestCache =>
           }
       }
       // convert username@SHA to link
-      .replaceBy(
-        ("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)@([a-f0-9]{40})(?=(\\W|$))").r) { m =>
-        getAccountByUserName(m.group(2)).map { _ =>
-          s"""<a href="${context.path}/${m.group(
-            2)}/${repository.name}/commit/${m.group(3)}">${m
-            .group(2)}@${m.group(3).substring(0, 7)}</a>"""
-        }
+      .replaceBy(("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)@([a-f0-9]{40})(?=(\\W|$))").r) {
+        m =>
+          getAccountByUserName(m.group(2)).map { _ =>
+            s"""<a href="${context.path}/${m.group(
+              2)}/${repository.name}/commit/${m.group(3)}">${m
+              .group(2)}@${m.group(3).substring(0, 7)}</a>"""
+          }
       }
       // convert username#Num to link
-      .replaceBy(
-        ("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)" + issueIdPrefix + "([0-9]+)(?=(\\W|$))").r) {
+      .replaceBy(("(?<=(^|\\W))([a-zA-Z0-9\\-_]+)" + issueIdPrefix + "([0-9]+)(?=(\\W|$))").r) {
         m =>
           getIssue(m.group(2), repository.name, m.group(3)) match {
             case Some(issue) if (issue.isPullRequest) =>
@@ -99,21 +97,21 @@ trait LinkConverter { self: RequestCache =>
           }
       }
       // convert issue id to link
-      .replaceBy(
-        ("(?<=(^|\\W))(GH-|" + issueIdPrefix + ")([0-9]+)(?=(\\W|$))").r) { m =>
-        val prefix = if (m.group(2) == "issue:") "#" else m.group(2)
-        getIssue(repository.owner, repository.name, m.group(3)) match {
-          case Some(issue) if (issue.isPullRequest) =>
-            Some(
-              s"""<a href="${context.path}/${repository.owner}/${repository.name}/pull/${m
-                .group(3)}">${prefix}${m.group(3)}</a>""")
-          case Some(_) =>
-            Some(
-              s"""<a href="${context.path}/${repository.owner}/${repository.name}/issues/${m
-                .group(3)}">${prefix}${m.group(3)}</a>""")
-          case None =>
-            Some(s"""${m.group(2)}${m.group(3)}""")
-        }
+      .replaceBy(("(?<=(^|\\W))(GH-|" + issueIdPrefix + ")([0-9]+)(?=(\\W|$))").r) {
+        m =>
+          val prefix = if (m.group(2) == "issue:") "#" else m.group(2)
+          getIssue(repository.owner, repository.name, m.group(3)) match {
+            case Some(issue) if (issue.isPullRequest) =>
+              Some(
+                s"""<a href="${context.path}/${repository.owner}/${repository.name}/pull/${m
+                  .group(3)}">${prefix}${m.group(3)}</a>""")
+            case Some(_) =>
+              Some(
+                s"""<a href="${context.path}/${repository.owner}/${repository.name}/issues/${m
+                  .group(3)}">${prefix}${m.group(3)}</a>""")
+            case None =>
+              Some(s"""${m.group(2)}${m.group(3)}""")
+          }
       }
       // convert @username to link
       .replaceBy("(?<=(^|\\W))@([a-zA-Z0-9\\-_\\.]+)(?=(\\W|$))".r) { m =>

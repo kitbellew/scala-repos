@@ -183,9 +183,7 @@ object Analysis {
   final case class MissingClass(info: ClassInfo, from: From) extends Error
   final case class NotAModule(info: ClassInfo, from: From) extends Error
   final case class MissingMethod(info: MethodInfo, from: From) extends Error
-  final case class ConflictingDefaultMethods(
-      infos: List[MethodInfo],
-      from: From)
+  final case class ConflictingDefaultMethods(infos: List[MethodInfo], from: From)
       extends Error
 
   sealed trait From
@@ -252,9 +250,7 @@ object Analysis {
       def loopTrace(optFrom: Option[From], verb: String = "called"): Unit = {
         optFrom match {
           case None =>
-            log(
-              level,
-              s"$verb from ... er ... nowhere!? (this is a bug in dce)")
+            log(level, s"$verb from ... er ... nowhere!? (this is a bug in dce)")
           case Some(from) =>
             from match {
               case FromMethod(methodInfo) =>

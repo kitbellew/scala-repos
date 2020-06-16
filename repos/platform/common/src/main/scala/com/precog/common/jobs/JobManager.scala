@@ -158,8 +158,8 @@ trait JobManager[M[+_]] { self =>
       mimeType: Option[MimeType],
       data: StreamT[M, Array[Byte]]): M[Either[String, Unit]]
 
-  def getResult(job: JobId)
-      : M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]]
+  def getResult(
+      job: JobId): M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]]
 
   def withM[N[+_]](implicit t: M ~> N, u: N ~> M, M: Monad[M], N: Monad[N]) =
     new JobManager[N] {
@@ -238,8 +238,8 @@ trait JobManager[M[+_]] { self =>
           data: StreamT[N, Array[Byte]]): N[Either[String, Unit]] =
         t(self.setResult(job, mimeType, transformStreamBack(data)))
 
-      def getResult(job: JobId)
-          : N[Either[String, (Option[MimeType], StreamT[N, Array[Byte]])]] =
+      def getResult(
+          job: JobId): N[Either[String, (Option[MimeType], StreamT[N, Array[Byte]])]] =
         t(self.getResult(job)) map {
           case Left(s) => Left(s)
           case Right((mimeType, data)) =>
@@ -284,8 +284,7 @@ trait JobStateManager[M[+_]] { self: JobManager[M] =>
         Right(Aborted(reason, abortedAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState.describe(
-            badState))
+          "Job already in terminal state. %s" format JobState.describe(badState))
     }
 
   def finish(
@@ -296,8 +295,7 @@ trait JobStateManager[M[+_]] { self: JobManager[M] =>
         Right(Finished(finishedAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState.describe(
-            badState))
+          "Job already in terminal state. %s" format JobState.describe(badState))
     }
 
   def expire(
@@ -308,8 +306,7 @@ trait JobStateManager[M[+_]] { self: JobManager[M] =>
         Right(Expired(expiredAt, prev))
       case badState =>
         Left(
-          "Job already in terminal state. %s" format JobState.describe(
-            badState))
+          "Job already in terminal state. %s" format JobState.describe(badState))
     }
 }
 
@@ -328,8 +325,8 @@ trait JobResultManager[M[+_]] { self: JobManager[M] =>
     } getOrElse M.point(Left("Invalid job id: " + id)))
   }
 
-  def getResult(job: JobId)
-      : M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]] = {
+  def getResult(
+      job: JobId): M[Either[String, (Option[MimeType], StreamT[M, Array[Byte]])]] = {
     fs.load(job) map (_ map {
       case FileData(mimeType, data) =>
         Right((mimeType, data))

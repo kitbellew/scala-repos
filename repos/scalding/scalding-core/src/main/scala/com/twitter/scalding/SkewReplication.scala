@@ -29,10 +29,7 @@ sealed abstract class SkewReplication {
     * from "sampled counts" to "estimates of full counts", and also change how we deal with counts of
     * zero.
     */
-  def getReplications(
-      leftCount: Int,
-      rightCount: Int,
-      reducers: Int): (Int, Int)
+  def getReplications(leftCount: Int, rightCount: Int, reducers: Int): (Int, Int)
 }
 
 /**
@@ -41,10 +38,7 @@ sealed abstract class SkewReplication {
 case class SkewReplicationA(replicationFactor: Int = 1)
     extends SkewReplication {
 
-  override def getReplications(
-      leftCount: Int,
-      rightCount: Int,
-      reducers: Int) = {
+  override def getReplications(leftCount: Int, rightCount: Int, reducers: Int) = {
     val numReducers = if (reducers <= 0) DEFAULT_NUM_REDUCERS else reducers
 
     val left = scala.math.min(rightCount * replicationFactor, numReducers)
@@ -64,10 +58,7 @@ case class SkewReplicationB(
     maxReducerOutput: Int = 1e7.toInt)
     extends SkewReplication {
 
-  override def getReplications(
-      leftCount: Int,
-      rightCount: Int,
-      reducers: Int) = {
+  override def getReplications(leftCount: Int, rightCount: Int, reducers: Int) = {
     val numReducers = if (reducers <= 0) DEFAULT_NUM_REDUCERS else reducers
 
     val left = scala.math.max(1, rightCount / maxKeysInMemory)

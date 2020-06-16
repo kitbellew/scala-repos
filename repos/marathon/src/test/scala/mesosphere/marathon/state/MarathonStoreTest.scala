@@ -337,8 +337,7 @@ class MarathonStoreTest extends MarathonSpec with Matchers {
     }
   }
 
-  test(
-    "state.names() throwing exception is treated as empty iterator (direct)") {
+  test("state.names() throwing exception is treated as empty iterator (direct)") {
     val state = new InMemoryStore() {
       override def allIds(): Future[scala.Seq[ID]] = super.allIds()
     }

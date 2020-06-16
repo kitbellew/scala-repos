@@ -11,10 +11,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaElementVisitor
 import org.jetbrains.plugins.scala.lang.psi.api.base.types._
 import org.jetbrains.plugins.scala.lang.psi.types
 import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
-import org.jetbrains.plugins.scala.lang.psi.types.{
-  ScCompoundType,
-  ScSubstitutor
-}
+import org.jetbrains.plugins.scala.lang.psi.types.{ScCompoundType, ScSubstitutor}
 
 /**
   * @author Alexander Podkhalyuzin

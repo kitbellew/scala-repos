@@ -38,10 +38,8 @@ final class DefaultPicklerRegistry(generator: RuntimePicklerGenerator)
         p
     }
   }
-  def genPickler(
-      classLoader: ClassLoader,
-      clazz: Class[_],
-      tag: FastTypeTag[_])(implicit share: refs.Share): Pickler[_] = {
+  def genPickler(classLoader: ClassLoader, clazz: Class[_], tag: FastTypeTag[_])(
+      implicit share: refs.Share): Pickler[_] = {
     lookupPickler(tag.key) match {
       case Some(p) => p
       case None    =>

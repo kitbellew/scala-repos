@@ -54,9 +54,7 @@ object Quote {
     new Quote(
       "Combinations have always been the most intriguing aspect of chess.  The masters look for them, the public applauds them, the critics praise them. It is because combinations are possible that chess is more than a lifeless mathematical exercise. They are the poetry of the game; they are to chess what melody is to music. They represent the triumph of mind over matter.",
       "Reuben Fine"),
-    new Quote(
-      "I give 98 percent of my mental energy to chess.",
-      "Bobby Fischer"),
+    new Quote("I give 98 percent of my mental energy to chess.", "Bobby Fischer"),
     new Quote("Chess is a fairy tale of 1001 blunders.", "Savielly Tartakower"),
     new Quote(
       "Chess is no whit inferior to the violin, and we have a large number of professional violinists.",
@@ -124,9 +122,7 @@ object Quote {
     new Quote(
       "That’s what chess is all about. One day you give your opponent a lesson, the next day he gives you one.",
       "Bobby Fischer"),
-    new Quote(
-      "Some part of a mistake is always correct.",
-      "Savielly Tartakover"),
+    new Quote("Some part of a mistake is always correct.", "Savielly Tartakover"),
     new Quote(
       "Methodical thinking is of more use in chess than inspiration.",
       "C. J. S. Purdy"),
@@ -239,9 +235,7 @@ object Quote {
     new Quote(
       "It is not enough to be a good player... you must also play well.",
       "Siegbert Tarrasch"),
-    new Quote(
-      "A sacrifice is best refuted by accepting it.",
-      "Wilhelm Steinitz"),
+    new Quote("A sacrifice is best refuted by accepting it.", "Wilhelm Steinitz"),
     new Quote("Tactics flow from a superior position.", "Bobby Fischer"),
     new Quote(
       "Later, I began to succeed in decisive games. Perhaps because I realized a very simple truth: not only was I worried, but also my opponent.",
@@ -446,9 +440,7 @@ object Quote {
     new Quote(
       "Pawns; they are the soul of this game, they alone form the attack and defense.",
       "Philidor"),
-    new Quote(
-      "In chess, at least, the brave inherit the earth.",
-      "Edmar Mednis"),
+    new Quote("In chess, at least, the brave inherit the earth.", "Edmar Mednis"),
     new Quote(
       "There are two classes of men; those who are content to yield to circumstances and who play whist; those who aim to control circumstances, and who play chess.",
       "Mortimer Collins"),
@@ -708,9 +700,7 @@ object Quote {
       "When I asked Fischer why he had not played a certain move in our game, he replied: ‘Well, you laughed when I wrote it down!’",
       "Mikhail Tal"),
     new Quote("I look one move ahead... the best!", "Siegbert Tarrasch"),
-    new Quote(
-      "Fischer prefers to enter chess history alone.",
-      "Miguel Najdorf"),
+    new Quote("Fischer prefers to enter chess history alone.", "Miguel Najdorf"),
     new Quote(
       "Bobby is the most misunderstood, misquoted celebrity walking the face of this earth.",
       "Yasser Seirawan"),
@@ -1472,9 +1462,7 @@ object Quote {
       "I claim that nothing else is so effective in encouraging the growth of chess strength as such independent analysis, both of the games of the great players and your own.",
       "Mikhail Botvinnik"),
     new Quote("Watch out for the tricky knights.", "ChessNetwork"),
-    new Quote(
-      "I think crazyhouse improves your standard chess.",
-      "ChessNetwork"),
+    new Quote("I think crazyhouse improves your standard chess.", "ChessNetwork"),
     new Quote(
       "The biggest tool for chess improvement would be playing against stronger opposition",
       "Peter Svidler")

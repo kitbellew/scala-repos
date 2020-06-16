@@ -51,9 +51,7 @@ trait DeltaTrait {
   def toJs: JsCmd
 }
 
-trait CometState[
-    DeltaType <: DeltaTrait,
-    MyType <: CometState[DeltaType, MyType]] {
+trait CometState[DeltaType <: DeltaTrait, MyType <: CometState[DeltaType, MyType]] {
   self: MyType =>
 
   def -(other: MyType): Seq[DeltaType]
@@ -480,10 +478,7 @@ trait MessageCometActor extends BaseCometActor {
 /**
   * Takes care of the plumbing for building Comet-based Web Apps
   */
-trait BaseCometActor
-    extends LiftActor
-    with LiftCometActor
-    with CssBindImplicits {
+trait BaseCometActor extends LiftActor with LiftCometActor with CssBindImplicits {
   private val logger = Logger(classOf[CometActor])
   val uniqueId = Helpers.nextFuncName
   private var spanId = uniqueId
@@ -812,8 +807,7 @@ trait BaseCometActor
       cachedFixedRender.get
     }
 
-  private val cachedFixedRender: FatLazy[Box[NodeSeq]] = FatLazy(
-    calcFixedRender)
+  private val cachedFixedRender: FatLazy[Box[NodeSeq]] = FatLazy(calcFixedRender)
 
   /**
     * By default, we do not cache the value of fixedRender.  If it's
@@ -1279,12 +1273,7 @@ trait BaseCometActor
     */
   protected def ask(who: LiftCometActor, what: Any)(answerWith: Any => Unit) {
     who.callInitCometActor(
-      CometCreationInfo(
-        who.uniqueId,
-        name,
-        defaultHtml,
-        attributes,
-        theSession))
+      CometCreationInfo(who.uniqueId, name, defaultHtml, attributes, theSession))
     theSession.addCometActor(who)
 
     who ! PerformSetupComet2(Empty)
@@ -1594,10 +1583,7 @@ case class AnswerQuestion(
     listeners: List[(ListenerId, AnswerRender => Unit)])
     extends CometMessage
 
-case class Listen(
-    when: Long,
-    uniqueId: ListenerId,
-    action: AnswerRender => Unit)
+case class Listen(when: Long, uniqueId: ListenerId, action: AnswerRender => Unit)
     extends CometMessage
 
 case class Unlisten(uniqueId: ListenerId) extends CometMessage

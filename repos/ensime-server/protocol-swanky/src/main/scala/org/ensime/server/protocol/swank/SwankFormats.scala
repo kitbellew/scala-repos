@@ -744,8 +744,8 @@ object SwankProtocolRequest {
   implicit val PackageMemberCompletionReqHint =
     TypeHint[PackageMemberCompletionReq](
       SexpSymbol("swank:package-member-completion"))
-  implicit val UsesOfSymbolAtPointReqHint = TypeHint[UsesOfSymbolAtPointReq](
-    SexpSymbol("swank:uses-of-symbol-at-point"))
+  implicit val UsesOfSymbolAtPointReqHint =
+    TypeHint[UsesOfSymbolAtPointReq](SexpSymbol("swank:uses-of-symbol-at-point"))
   implicit val TypeByNameReqHint =
     TypeHint[TypeByNameReq](SexpSymbol("swank:type-by-name"))
   implicit val TypeByNameAtPointReqHint =
@@ -820,9 +820,8 @@ object SwankProtocolRequest {
   // higher priority than labelledProductFormat, so SexpFormat[T]
   // should pick up on this instead, also private so we don't
   // accidentally export it.
-  private implicit def tupledProductFormat[
-      T <: RpcRequest,
-      R <: shapeless.HList](implicit
+  private implicit def tupledProductFormat[T <: RpcRequest, R <: shapeless.HList](
+      implicit
       g: shapeless.Generic.Aux[T, R],
       r: HListFormat[R]
   ): SexpFormat[T] =

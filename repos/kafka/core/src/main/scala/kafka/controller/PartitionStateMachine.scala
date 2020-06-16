@@ -215,11 +215,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
       throw new StateChangeFailedException(
         ("Controller %d epoch %d initiated state change for partition %s to %s failed because " +
           "the partition state machine has not started")
-          .format(
-            controllerId,
-            controller.epoch,
-            topicAndPartition,
-            targetState))
+          .format(controllerId, controller.epoch, topicAndPartition, targetState))
     val currState =
       partitionState.getOrElseUpdate(topicAndPartition, NonExistentPartition)
     try {
@@ -533,9 +529,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
   }
 
   private def registerTopicChangeListener() = {
-    zkUtils.zkClient.subscribeChildChanges(
-      BrokerTopicsPath,
-      topicChangeListener)
+    zkUtils.zkClient.subscribeChildChanges(BrokerTopicsPath, topicChangeListener)
   }
 
   private def deregisterTopicChangeListener() = {
@@ -622,10 +616,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
             controllerContext.partitionReplicaAssignment.++=(
               addedPartitionReplicaAssignment)
             info("New topics: [%s], deleted topics: [%s], new partition replica assignment [%s]"
-              .format(
-                newTopics,
-                deletedTopics,
-                addedPartitionReplicaAssignment))
+              .format(newTopics, deletedTopics, addedPartitionReplicaAssignment))
             if (newTopics.size > 0)
               controller.onNewTopicCreation(
                 newTopics,
@@ -664,8 +655,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
         debug(
           "Delete topics listener fired for topics %s to be deleted".format(
             topicsToBeDeleted.mkString(",")))
-        val nonExistentTopics = topicsToBeDeleted.filter(t =>
-          !controllerContext.allTopics.contains(t))
+        val nonExistentTopics =
+          topicsToBeDeleted.filter(t => !controllerContext.allTopics.contains(t))
         if (nonExistentTopics.size > 0) {
           warn(
             "Ignoring request to delete non-existing topics " + nonExistentTopics
@@ -733,8 +724,7 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
               info("New partitions to be added %s".format(partitionsToBeAdded))
               controllerContext.partitionReplicaAssignment.++=(
                 partitionsToBeAdded)
-              controller.onNewPartitionCreation(
-                partitionsToBeAdded.keySet.toSet)
+              controller.onNewPartitionCreation(partitionsToBeAdded.keySet.toSet)
             }
           }
         } catch {

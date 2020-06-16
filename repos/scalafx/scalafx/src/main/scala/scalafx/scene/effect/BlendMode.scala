@@ -51,9 +51,7 @@ object BlendMode extends SFXEnumDelegateCompanion[jfxse.BlendMode, BlendMode] {
     "2.2.60")
   val COLOR_DODGE = ColorDodge
   val Darken = new BlendMode(jfxse.BlendMode.DARKEN)
-  @deprecated(
-    "Use Darken; DARKEN will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Darken; DARKEN will be removed in a future release", "2.2.60")
   val DARKEN = Darken
   val Difference = new BlendMode(jfxse.BlendMode.DIFFERENCE)
   @deprecated(
@@ -92,9 +90,7 @@ object BlendMode extends SFXEnumDelegateCompanion[jfxse.BlendMode, BlendMode] {
   @deprecated("Use Red; RED will be removed in a future release", "2.2.60")
   val RED = Red
   val Screen = new BlendMode(jfxse.BlendMode.SCREEN)
-  @deprecated(
-    "Use Screen; SCREEN will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Screen; SCREEN will be removed in a future release", "2.2.60")
   val SCREEN = Screen
   val SoftLight = new BlendMode(jfxse.BlendMode.SOFT_LIGHT)
   @deprecated(

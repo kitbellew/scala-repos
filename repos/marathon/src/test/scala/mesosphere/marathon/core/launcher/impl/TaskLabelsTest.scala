@@ -13,8 +13,8 @@ class TaskLabelsTest extends FunSuite with GivenWhenThen with Matchers {
 
     Given("unlabeled resources")
     When("checking for taskIds")
-    val taskIds = f.unlabeledResources.flatMap(
-      TaskLabels.taskIdForResource(f.frameworkId, _))
+    val taskIds =
+      f.unlabeledResources.flatMap(TaskLabels.taskIdForResource(f.frameworkId, _))
 
     Then("we don't get any taskIds")
     taskIds should be(empty)

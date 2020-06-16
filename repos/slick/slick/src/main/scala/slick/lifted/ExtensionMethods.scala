@@ -247,8 +247,7 @@ final class AnyOptionExtensionMethods[O <: Rep[_], P](val r: O) extends AnyVal {
     // create a None for arbitrary types. Here we can use a None of the dummy type Option[Null].
     val gen = new AnonSymbol
     val mapv = f(OptionLift.baseValue[P, O](r, Ref(gen)))
-    mapv.encodeRef(
-      OptionFold(r.toNode, LiteralNode.nullOption, mapv.toNode, gen))
+    mapv.encodeRef(OptionFold(r.toNode, LiteralNode.nullOption, mapv.toNode, gen))
   }
 
   /** Transform the value inside this Option */
@@ -341,7 +340,6 @@ trait ExtensionMethodConversions {
     new SingleColumnQueryExtensionMethods[B1, Option[B1], C](q)
 
   implicit def anyOptionExtensionMethods[T, P](v: Rep[Option[T]])(implicit
-      ol: OptionLift[P, Rep[Option[T]]])
-      : AnyOptionExtensionMethods[Rep[Option[T]], P] =
+      ol: OptionLift[P, Rep[Option[T]]]): AnyOptionExtensionMethods[Rep[Option[T]], P] =
     new AnyOptionExtensionMethods[Rep[Option[T]], P](v)
 }

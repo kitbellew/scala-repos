@@ -445,10 +445,7 @@ class TinyThenSmallJoin(args: Args) extends Job(args) {
 
 case class TC(val n: Int)
 
-class TinyThenSmallJoinTest
-    extends WordSpec
-    with Matchers
-    with FieldConversions {
+class TinyThenSmallJoinTest extends WordSpec with Matchers with FieldConversions {
   "A TinyThenSmallJoin" should {
     val input0 = List((1, TC(2)), (2, TC(3)), (3, TC(4)))
     val input1 = List((1, TC(20)), (2, TC(30)), (3, TC(40)))
@@ -832,9 +829,7 @@ class ForceReducersTest extends WordSpec with Matchers {
   "A ForceReducersJob" should {
     var idx = 0
     JobTest(new ForceReducersJob(_))
-      .source(
-        TextLine("in"),
-        List("0" -> "single test", "1" -> "single result"))
+      .source(TextLine("in"), List("0" -> "single test", "1" -> "single result"))
       .sink[(Int, String)](Tsv("out")) { outBuf =>
         (idx + ": must get the result right") in {
           //need to convert to sets because order
@@ -930,13 +925,7 @@ class CrossTest extends WordSpec with Matchers {
       .sink[(Int, Int, Int)](Tsv("fakeOut")) { outBuf =>
         (idx + ": must look exactly right") in {
           outBuf should have size 6
-          outBuf.toSet shouldBe (Set(
-            (0, 1, 4),
-            (0, 1, 5),
-            (1, 2, 4),
-            (1, 2, 5),
-            (2, 3, 4),
-            (2, 3, 5)))
+          outBuf.toSet shouldBe (Set((0, 1, 4), (0, 1, 5), (1, 2, 4), (1, 2, 5), (2, 3, 4), (2, 3, 5)))
         }
         idx += 1
       }
@@ -1563,9 +1552,7 @@ class TypedItsATrapTest extends WordSpec with Matchers {
       }
       .typedSink(trap2) { outBuf =>
         "trap2 must contain the even numbered" in {
-          outBuf.toList.sorted shouldBe List(
-            ("b", 2, 4, "b"),
-            ("d", 4, 16, "d"))
+          outBuf.toList.sorted shouldBe List(("b", 2, 4, "b"), ("d", 4, 16, "d"))
         }
       }
       .run

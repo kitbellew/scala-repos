@@ -68,8 +68,7 @@ class CompileServerLauncher extends ApplicationComponent {
           all.headOption
         }
 
-      choice.foreach(sdk =>
-        applicationSettings.COMPILE_SERVER_SDK = sdk.getName)
+      choice.foreach(sdk => applicationSettings.COMPILE_SERVER_SDK = sdk.getName)
 
 //       val message = "JVM SDK is automatically selected: " + name +
 //               "\n(can be changed in Application Settings / Scala)"
@@ -202,8 +201,7 @@ class CompileServerLauncher extends ApplicationComponent {
 
 object CompileServerLauncher {
   def instance: CompileServerLauncher =
-    ApplicationManager.getApplication.getComponent(
-      classOf[CompileServerLauncher])
+    ApplicationManager.getApplication.getComponent(classOf[CompileServerLauncher])
 
   def compilerJars: Seq[File] = {
     val jpsBuildersJar = new File(

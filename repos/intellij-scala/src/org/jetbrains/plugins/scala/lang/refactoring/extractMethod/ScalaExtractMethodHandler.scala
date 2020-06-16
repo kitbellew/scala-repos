@@ -118,9 +118,8 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
 
     def returnType: Option[ScType] = {
-      val fun = PsiTreeUtil.getParentOfType(
-        elements.head,
-        classOf[ScFunctionDefinition])
+      val fun =
+        PsiTreeUtil.getParentOfType(elements.head, classOf[ScFunctionDefinition])
       if (fun == null) return None
       var result: Option[ScType] = None
       val visitor = new ScalaRecursiveElementVisitor {
@@ -206,9 +205,7 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
       @Nullable stopAtScope: PsiElement): Array[PsiElement] = {
     def isParentOk(parent: PsiElement): Boolean = {
       if (parent == null) return false
-      assert(
-        parent.getTextRange != null,
-        "TextRange is null: " + parent.getText)
+      assert(parent.getTextRange != null, "TextRange is null: " + parent.getText)
       stopAtScope == null || stopAtScope.getTextRange.contains(
         parent.getTextRange)
     }

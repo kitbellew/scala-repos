@@ -70,10 +70,8 @@ object ResultsSpec extends Specification {
       val Result(ResponseHeader(_, headers, _), _) =
         Ok("hello")
           .as("text/html")
-          .withDateHeaders(
-            DATE ->
-              new DateTime(2015, 4, 1, 0, 0).withZoneRetainFields(
-                DateTimeZone.UTC))
+          .withDateHeaders(DATE ->
+            new DateTime(2015, 4, 1, 0, 0).withZoneRetainFields(DateTimeZone.UTC))
       headers must havePair(DATE -> "Wed, 01 Apr 2015 00:00:00 GMT")
     }
 
@@ -105,9 +103,7 @@ object ResultsSpec extends Specification {
       val Result(ResponseHeader(_, headers, _), _) =
         Ok("hello")
           .as("text/html")
-          .withCookies(
-            Cookie("session", "items"),
-            Cookie("preferences", "blue"))
+          .withCookies(Cookie("session", "items"), Cookie("preferences", "blue"))
           .withCookies(Cookie("lang", "fr"), Cookie("session", "items2"))
           .discardingCookies(DiscardingCookie("logged"))
 

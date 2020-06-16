@@ -12,8 +12,7 @@ object O {
 }
 
 object Empty extends Tree[Nothing]
-case class Node[c <% Ordered[c]](elem: c, l: Tree[c], r: Tree[c])
-    extends Tree[c]
+case class Node[c <% Ordered[c]](elem: c, l: Tree[c], r: Tree[c]) extends Tree[c]
 
 abstract class Tree[+a <% Ordered[a]] {
   def insert[b >: a <% Ordered[b]](x: b): Tree[b] =

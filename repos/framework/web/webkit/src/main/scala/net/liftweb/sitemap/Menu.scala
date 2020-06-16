@@ -757,8 +757,7 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
     kids.foreach(_.validate)
   }
 
-  private[sitemap] def testParentAccess
-      : Either[Boolean, Box[() => LiftResponse]] =
+  private[sitemap] def testParentAccess: Either[Boolean, Box[() => LiftResponse]] =
     _parent match {
       case Full(p) => p.testAccess
       case _       => Left(true)
@@ -797,8 +796,7 @@ case class Menu(loc: Loc[_], private val convertableKids: ConvertableToMenu*)
 
   def makeMenuItem(path: List[Loc[_]]): Box[MenuItem] =
     loc.buildItem(
-      kids.toList.flatMap(
-        _.makeMenuItem(path)) ::: loc.supplementalKidMenuItems,
+      kids.toList.flatMap(_.makeMenuItem(path)) ::: loc.supplementalKidMenuItems,
       _lastInPath(path),
       _inPath(path))
 

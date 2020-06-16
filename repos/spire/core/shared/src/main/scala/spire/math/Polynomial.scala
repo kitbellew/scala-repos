@@ -62,9 +62,7 @@ object Polynomial extends PolynomialInstances {
     if (c === Semiring[C].zero) zero[C] else Polynomial(Map((0, c)))
   def linear[@sp(Double) C: Eq: Semiring: ClassTag](c: C): Polynomial[C] =
     if (c === Semiring[C].zero) zero[C] else Polynomial(Map((1, c)))
-  def linear[@sp(Double) C: Eq: Semiring: ClassTag](
-      c1: C,
-      c0: C): Polynomial[C] =
+  def linear[@sp(Double) C: Eq: Semiring: ClassTag](c1: C, c0: C): Polynomial[C] =
     Polynomial(Map((1, c1), (0, c0)))
   def quadratic[@sp(Double) C: Eq: Semiring: ClassTag](
       c1: C,
@@ -145,8 +143,7 @@ object Polynomial extends PolynomialInstances {
     // make sure we have at most one variable
     val vs = ts.view.map(_.v).toSet.filter(_ != "")
     if (vs.size > 1)
-      throw new IllegalArgumentException(
-        "only univariate polynomials supported")
+      throw new IllegalArgumentException("only univariate polynomials supported")
 
     // we're done!
     (Polynomial.zero[Rational] /: ts)((a, t) => a + Polynomial(t.c, t.e))
@@ -234,8 +231,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
 
   /** Returns a map from exponent to coefficient of this polynomial. */
   def data(implicit ring: Semiring[C], eq: Eq[C]): Map[Int, C] = {
-    val bldr = new scala.collection.mutable.MapBuilder[Int, C, Map[Int, C]](
-      Map.empty[Int, C])
+    val bldr =
+      new scala.collection.mutable.MapBuilder[Int, C, Map[Int, C]](Map.empty[Int, C])
     foreachNonZero { (e, c) =>
       bldr += ((e, c))
     }
@@ -406,12 +403,10 @@ trait Polynomial[@sp(Double) C] { lhs =>
   // EuclideanRing ops.
 
   def unary_-()(implicit ring: Rng[C]): Polynomial[C]
-  def +(
-      rhs: Polynomial[C])(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C]
+  def +(rhs: Polynomial[C])(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C]
   def -(rhs: Polynomial[C])(implicit ring: Rng[C], eq: Eq[C]): Polynomial[C] =
     lhs + (-rhs)
-  def *(
-      rhs: Polynomial[C])(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C]
+  def *(rhs: Polynomial[C])(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C]
   def /~(
       rhs: Polynomial[C])(implicit field: Field[C], eq: Eq[C]): Polynomial[C] =
     (lhs /% rhs)._1

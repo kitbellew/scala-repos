@@ -187,8 +187,7 @@ trait Mapper[A <: Mapper[A]]
     * @param func called with displayHtml, fieldId, form
     */
   def flatMapFieldTitleForm[T](
-      func: (NodeSeq, Box[NodeSeq], NodeSeq) => scala.collection.Seq[T])
-      : List[T] =
+      func: (NodeSeq, Box[NodeSeq], NodeSeq) => scala.collection.Seq[T]): List[T] =
     getSingleton.flatMapFieldTitleForm(this, func)
 
   /**
@@ -465,8 +464,7 @@ trait KeyedMapper[KeyType, OwnerType <: KeyedMapper[KeyType, OwnerType]]
   type TheKeyType = KeyType
   type KeyedMapperType = OwnerType
 
-  def primaryKeyField
-      : MappedField[KeyType, OwnerType] with IndexedField[KeyType]
+  def primaryKeyField: MappedField[KeyType, OwnerType] with IndexedField[KeyType]
   def getSingleton: KeyedMetaMapper[KeyType, OwnerType];
 
   override def comparePrimaryKeys(other: OwnerType) =

@@ -42,8 +42,7 @@ private object ConfigHelpers {
       s.toBoolean
     } catch {
       case _: IllegalArgumentException =>
-        throw new IllegalArgumentException(
-          s"$key should be boolean, but was $s")
+        throw new IllegalArgumentException(s"$key should be boolean, but was $s")
     }
   }
 

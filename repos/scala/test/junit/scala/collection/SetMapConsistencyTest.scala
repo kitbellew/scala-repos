@@ -299,19 +299,13 @@ class SetMapConsistencyTest {
     new BoxImmutableSet[Int, ci.BitSet](ci.BitSet.empty, "immutable.BitSet")
 
   def boxIhs[A] =
-    new BoxImmutableSet[A, ci.HashSet[A]](
-      ci.HashSet.empty[A],
-      "mutable.HashSet")
+    new BoxImmutableSet[A, ci.HashSet[A]](ci.HashSet.empty[A], "mutable.HashSet")
 
   def boxIls[A] =
-    new BoxImmutableSet[A, ci.ListSet[A]](
-      ci.ListSet.empty[A],
-      "mutable.ListSet")
+    new BoxImmutableSet[A, ci.ListSet[A]](ci.ListSet.empty[A], "mutable.ListSet")
 
   def boxIts[A: Ordering] =
-    new BoxImmutableSet[A, ci.TreeSet[A]](
-      ci.TreeSet.empty[A],
-      "mutable.TreeSet")
+    new BoxImmutableSet[A, ci.TreeSet[A]](ci.TreeSet.empty[A], "mutable.TreeSet")
 
   // Random operations on maps
   def churn[A](

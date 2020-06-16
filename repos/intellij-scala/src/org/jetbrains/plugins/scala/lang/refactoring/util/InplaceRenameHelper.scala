@@ -12,12 +12,7 @@ import com.intellij.codeInsight.template.impl.{
 }
 import com.intellij.openapi.editor.colors.{EditorColors, EditorColorsManager}
 import com.intellij.openapi.editor.markup.{RangeHighlighter, TextAttributes}
-import com.intellij.openapi.editor.{
-  Document,
-  Editor,
-  EditorFactory,
-  RangeMarker
-}
+import com.intellij.openapi.editor.{Document, Editor, EditorFactory, RangeMarker}
 import com.intellij.openapi.util.TextRange
 import com.intellij.psi.{PsiDocumentManager, PsiElement, PsiNamedElement}
 import com.intellij.refactoring.rename.inplace.MyLookupExpression

@@ -22,8 +22,7 @@ object Validation {
   def nonEmptyCollection[TResult <: Traversable[_]](
       fieldName: String,
       value: ⇒ TResult,
-      messageFormat: String = "%s must not be empty.")
-      : FieldValidation[TResult] =
+      messageFormat: String = "%s must not be empty."): FieldValidation[TResult] =
     Validators.nonEmptyCollection(fieldName, messageFormat).validate(value)
 
   def validEmail(
@@ -78,8 +77,7 @@ object Validation {
       fieldName: String,
       value: ⇒ T,
       min: T,
-      messageFormat: String = "%%s must be greater than %s.")
-      : FieldValidation[T] =
+      messageFormat: String = "%%s must be greater than %s."): FieldValidation[T] =
     Validators.greaterThan(fieldName, min, messageFormat).validate(value)
 
   def lessThan[T <% Ordered[T]](
@@ -126,8 +124,7 @@ object Validation {
       fieldName: String,
       value: ⇒ String,
       enum: Enumeration,
-      messageFormat: String = "%%s must be one of %s.")
-      : FieldValidation[String] =
+      messageFormat: String = "%%s must be one of %s."): FieldValidation[String] =
     oneOf(fieldName, value, messageFormat, enum.values.map(_.toString).toSeq)
 
 }

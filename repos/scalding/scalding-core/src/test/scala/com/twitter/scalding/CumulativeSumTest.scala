@@ -67,14 +67,14 @@ class CumulativeSumTest1 extends WordSpec {
   "A simple ranking cumulative sum job" should {
     JobTest("com.twitter.scalding.AddRankingWithCumulativeSum")
       .source(TypedTsv[(String, Double)]("input1"), sampleInput1)
-      .sink[(String, Double, Long)](
-        TypedTsv[(String, Double, Long)]("result1")) { outBuf1 =>
-        "produce correct number of records when filtering out null values" in {
-          assert(outBuf1.size === 10)
-        }
-        "create correct ranking per group, 1st being the heighest person of that group" in {
-          assert(outBuf1.toSet === expectedOutput1)
-        }
+      .sink[(String, Double, Long)](TypedTsv[(String, Double, Long)]("result1")) {
+        outBuf1 =>
+          "produce correct number of records when filtering out null values" in {
+            assert(outBuf1.size === 10)
+          }
+          "create correct ranking per group, 1st being the heighest person of that group" in {
+            assert(outBuf1.toSet === expectedOutput1)
+          }
       }
       .run
       .finish
@@ -83,14 +83,14 @@ class CumulativeSumTest1 extends WordSpec {
   "A partitioned ranking cumulative sum job" should {
     JobTest("com.twitter.scalding.AddRankingWithPartitionedCumulativeSum")
       .source(TypedTsv[(String, Double)]("input1"), sampleInput1)
-      .sink[(String, Double, Long)](
-        TypedTsv[(String, Double, Long)]("result1")) { outBuf1 =>
-        "produce correct number of records when filtering out null values" in {
-          assert(outBuf1.size === 10)
-        }
-        "create correct ranking per group, 1st being the heighest person of that group" in {
-          assert(outBuf1.toSet === expectedOutput1)
-        }
+      .sink[(String, Double, Long)](TypedTsv[(String, Double, Long)]("result1")) {
+        outBuf1 =>
+          "produce correct number of records when filtering out null values" in {
+            assert(outBuf1.size === 10)
+          }
+          "create correct ranking per group, 1st being the heighest person of that group" in {
+            assert(outBuf1.toSet === expectedOutput1)
+          }
       }
       .run
       .finish

@@ -13,9 +13,7 @@ private[sbt] object APIMappings {
   def extract(cp: Seq[Attributed[File]], log: Logger): Seq[(File, URL)] =
     cp.flatMap(entry => extractFromEntry(entry, log))
 
-  def extractFromEntry(
-      entry: Attributed[File],
-      log: Logger): Option[(File, URL)] =
+  def extractFromEntry(entry: Attributed[File], log: Logger): Option[(File, URL)] =
     entry.get(Keys.entryApiURL) match {
       case Some(u) => Some((entry.data, u))
       case None =>
@@ -33,10 +31,7 @@ private[sbt] object APIMappings {
       u <- parseURL(urlString, entry, log)
     } yield (entry, u)
 
-  private[this] def parseURL(
-      s: String,
-      forEntry: File,
-      log: Logger): Option[URL] =
+  private[this] def parseURL(s: String, forEntry: File, log: Logger): Option[URL] =
     try Some(new URL(s))
     catch {
       case e: MalformedURLException =>

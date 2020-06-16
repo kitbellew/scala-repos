@@ -515,8 +515,7 @@ class ShardRegion(
           case _ ⇒
         }
         regionByShard = regionByShard.updated(shard, ref)
-        regions =
-          regions.updated(ref, regions.getOrElse(ref, Set.empty) + shard)
+        regions = regions.updated(ref, regions.getOrElse(ref, Set.empty) + shard)
 
         if (ref != self)
           context.watch(ref)
@@ -600,8 +599,7 @@ class ShardRegion(
         replyToRegionStatsQuery(sender())
 
       case msg: GetClusterShardingStats ⇒
-        coordinator.fold(sender ! ClusterShardingStats(Map.empty))(
-          _ forward msg)
+        coordinator.fold(sender ! ClusterShardingStats(Map.empty))(_ forward msg)
 
       case _ ⇒ unhandled(query)
     }

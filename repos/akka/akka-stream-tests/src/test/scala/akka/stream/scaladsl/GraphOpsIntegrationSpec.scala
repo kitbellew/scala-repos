@@ -79,8 +79,7 @@ class GraphOpsIntegrationSpec extends AkkaSpec {
         })
         .run()
 
-      Await.result(resultFuture, 3.seconds).sorted should be(
-        List(1, 2, 3, 4, 5, 6))
+      Await.result(resultFuture, 3.seconds).sorted should be(List(1, 2, 3, 4, 5, 6))
     }
 
     "support balance - merge (parallelization) layouts" in {

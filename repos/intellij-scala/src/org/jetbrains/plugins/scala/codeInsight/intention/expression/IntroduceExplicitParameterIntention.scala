@@ -247,9 +247,7 @@ class IntroduceExplicitParameterIntention
               clearHighlighters()
             }
 
-            override def templateFinished(
-                template: Template,
-                brokenOff: Boolean) {
+            override def templateFinished(template: Template, brokenOff: Boolean) {
               clearHighlighters()
             }
 

@@ -68,8 +68,9 @@ final class SortedSetClientServerIntegrationSuite
   test("ZCOUNT should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       initialize(client)
-      assert(Await.result(
-        client(ZCount(ZKEY, ZInterval.MIN, ZInterval.MAX))) == IntegerReply(3))
+      assert(
+        Await.result(
+          client(ZCount(ZKEY, ZInterval.MIN, ZInterval.MAX))) == IntegerReply(3))
       assert(
         Await.result(
           client(ZCount(ZKEY, ZInterval.exclusive(1), ZInterval(3)))) ==
@@ -120,10 +121,7 @@ final class SortedSetClientServerIntegrationSuite
     }
   }
 
-  test(
-    "ZRANGE and ZREVRANGE should work correctly",
-    ClientServerTest,
-    RedisTest) {
+  test("ZRANGE and ZREVRANGE should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       zAdd(
         client,
@@ -161,12 +159,7 @@ final class SortedSetClientServerIntegrationSuite
     RedisTest) {
     withRedisClient { client =>
       val key = "zrangebyscore1"
-      zAdd(
-        client,
-        key,
-        ZMember(1, "one"),
-        ZMember(2, "two"),
-        ZMember(3, "three"))
+      zAdd(client, key, ZMember(1, "one"), ZMember(2, "two"), ZMember(3, "three"))
       assertMBulkReply(
         client(ZRangeByScore(key, ZInterval.MIN, ZInterval.MAX)),
         List("one", "two", "three"))
@@ -195,10 +188,7 @@ final class SortedSetClientServerIntegrationSuite
         List("two"))
       assertMBulkReply(
         client(
-          ZRevRangeByScore(
-            key,
-            ZInterval.exclusive(2f),
-            ZInterval.exclusive(1f))),
+          ZRevRangeByScore(key, ZInterval.exclusive(2f), ZInterval.exclusive(1f))),
         List())
     }
   }
@@ -209,12 +199,7 @@ final class SortedSetClientServerIntegrationSuite
     RedisTest) {
     withRedisClient { client =>
       val key = "zrank1"
-      zAdd(
-        client,
-        key,
-        ZMember(1, "one"),
-        ZMember(2, "two"),
-        ZMember(3, "three"))
+      zAdd(client, key, ZMember(1, "one"), ZMember(2, "two"), ZMember(3, "three"))
       assert(Await.result(client(ZRank(key, "three"))) == IntegerReply(2))
       assert(Await.result(client(ZRank(key, "four"))) == EmptyBulkReply())
       assert(Await.result(client(ZRevRank(key, "one"))) == IntegerReply(2))
@@ -225,16 +210,10 @@ final class SortedSetClientServerIntegrationSuite
   test("ZREM should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       val key = "zrem1"
-      zAdd(
-        client,
-        key,
-        ZMember(1, "one"),
-        ZMember(2, "two"),
-        ZMember(3, "three"))
+      zAdd(client, key, ZMember(1, "one"), ZMember(2, "two"), ZMember(3, "three"))
       assert(Await.result(client(ZRem(key, List("two")))) == IntegerReply(1))
       assert(
-        Await.result(client(ZRem(key, List("nosuchmember")))) == IntegerReply(
-          0))
+        Await.result(client(ZRem(key, List("nosuchmember")))) == IntegerReply(0))
       assertMBulkReply(
         client(ZRange(key, 0, -1, WithScores)),
         List("one", "1", "three", "3"))
@@ -244,29 +223,16 @@ final class SortedSetClientServerIntegrationSuite
   test("ZREMRANGEBYRANK should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       val key = "zremrangebyrank1"
-      zAdd(
-        client,
-        key,
-        ZMember(1, "one"),
-        ZMember(2, "two"),
-        ZMember(3, "three"))
-      assert(
-        Await.result(client(ZRemRangeByRank(key, 0, 1))) == IntegerReply(2))
-      assertMBulkReply(
-        client(ZRange(key, 0, -1, WithScores)),
-        List("three", "3"))
+      zAdd(client, key, ZMember(1, "one"), ZMember(2, "two"), ZMember(3, "three"))
+      assert(Await.result(client(ZRemRangeByRank(key, 0, 1))) == IntegerReply(2))
+      assertMBulkReply(client(ZRange(key, 0, -1, WithScores)), List("three", "3"))
     }
   }
 
   test("ZREMRANGEBYSCORE should work correctly", ClientServerTest, RedisTest) {
     withRedisClient { client =>
       val key = "zremrangebyscore1"
-      zAdd(
-        client,
-        key,
-        ZMember(1, "one"),
-        ZMember(2, "two"),
-        ZMember(3, "three"))
+      zAdd(client, key, ZMember(1, "one"), ZMember(2, "two"), ZMember(3, "three"))
       assert(Await.result(
         client(ZRemRangeByScore(key, ZInterval.MIN, ZInterval.exclusive(2)))) ==
         IntegerReply(1))

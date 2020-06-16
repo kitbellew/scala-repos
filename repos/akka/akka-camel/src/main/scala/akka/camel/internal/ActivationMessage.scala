@@ -46,9 +46,7 @@ private[camel] object ActivationProtocol {
     * @param cause the cause for failure
     */
   @SerialVersionUID(1L)
-  final case class EndpointFailedToActivate(
-      actorRef: ActorRef,
-      cause: Throwable)
+  final case class EndpointFailedToActivate(actorRef: ActorRef, cause: Throwable)
       extends ActivationMessage(actorRef)
 
   /**

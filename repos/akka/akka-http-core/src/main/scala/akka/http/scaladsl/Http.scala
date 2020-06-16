@@ -56,8 +56,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
 
   // configured default HttpsContext for the client-side
   // SYNCHRONIZED ACCESS ONLY!
-  private[this] var _defaultClientHttpsConnectionContext
-      : HttpsConnectionContext = _
+  private[this] var _defaultClientHttpsConnectionContext: HttpsConnectionContext =
+    _
   private[this] var _defaultServerConnectionContext: ConnectionContext = _
 
   // ** SERVER ** //
@@ -527,8 +527,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
   def superPool[T](
       connectionContext: HttpsConnectionContext = defaultClientHttpsContext,
       settings: ConnectionPoolSettings = defaultConnectionPoolSettings,
-      log: LoggingAdapter = system.log)(implicit fm: Materializer)
-      : Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] =
+      log: LoggingAdapter = system.log)(implicit
+      fm: Materializer): Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] =
     clientFlow[T](settings) { request ⇒
       request -> cachedGateway(request, settings, connectionContext, log)
     }
@@ -601,13 +601,8 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
 
     webSocketClientLayer(request, settings, log)
       .joinMat(
-        _outgoingTlsConnectionLayer(
-          host,
-          port,
-          localAddress,
-          settings,
-          ctx,
-          log))(Keep.left)
+        _outgoingTlsConnectionLayer(host, port, localAddress, settings, ctx, log))(
+        Keep.left)
   }
 
   /**
@@ -750,8 +745,7 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
   private def clientFlow[T](settings: ConnectionPoolSettings)(
       f: HttpRequest ⇒ (HttpRequest, Future[PoolGateway]))(implicit
       system: ActorSystem,
-      fm: Materializer)
-      : Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] = {
+      fm: Materializer): Flow[(HttpRequest, T), (Try[HttpResponse], T), NotUsed] = {
     // a connection pool can never have more than pipeliningLimit * maxConnections requests in flight at any point
     val parallelism = settings.pipeliningLimit * settings.maxConnections
     Flow[(HttpRequest, T)].mapAsyncUnordered(parallelism) {

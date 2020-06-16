@@ -121,8 +121,7 @@ class RemoveInternalClusterShardingDataSpec
   }
 
   def hasEvents(typeName: String): Boolean = {
-    system.actorOf(
-      Props(classOf[HasEvents], persistenceId(typeName), testActor))
+    system.actorOf(Props(classOf[HasEvents], persistenceId(typeName), testActor))
     expectMsgType[Boolean]
   }
 

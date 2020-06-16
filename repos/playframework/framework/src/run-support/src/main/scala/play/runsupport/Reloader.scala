@@ -123,8 +123,7 @@ object Reloader {
     new NamedURLClassLoader(name, urls, parent)
 
   val createDelegatedResourcesClassLoader: ClassLoaderCreator =
-    (name, urls, parent) =>
-      new DelegatedResourcesClassLoader(name, urls, parent)
+    (name, urls, parent) => new DelegatedResourcesClassLoader(name, urls, parent)
 
   def assetsClassLoader(allAssets: Seq[(String, File)])(
       parent: ClassLoader): ClassLoader =

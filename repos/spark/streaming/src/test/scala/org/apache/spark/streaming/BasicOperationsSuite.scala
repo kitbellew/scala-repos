@@ -129,8 +129,7 @@ class BasicOperationsSuite extends TestSuiteBase {
   test("groupByKey") {
     testOperation(
       Seq(Seq("a", "a", "b"), Seq("", ""), Seq()),
-      (s: DStream[String]) =>
-        s.map(x => (x, 1)).groupByKey().mapValues(_.toSeq),
+      (s: DStream[String]) => s.map(x => (x, 1)).groupByKey().mapValues(_.toSeq),
       Seq(Seq(("a", Seq(1, 1)), ("b", Seq(1))), Seq(("", Seq(1, 1))), Seq()),
       true
     )
@@ -165,11 +164,7 @@ class BasicOperationsSuite extends TestSuiteBase {
     testOperation(
       Seq(1 to 1, Seq(1, 1, 1), 1 to 2, Seq(1, 1, 2, 2)),
       (s: DStream[Int]) => s.countByValue(),
-      Seq(
-        Seq((1, 1L)),
-        Seq((1, 3L)),
-        Seq((1, 1L), (2, 1L)),
-        Seq((2, 2L), (1, 2L))),
+      Seq(Seq((1, 1L)), Seq((1, 3L)), Seq((1, 1L), (2, 1L)), Seq((2, 2L), (1, 2L))),
       true
     )
   }
@@ -761,8 +756,7 @@ class BasicOperationsSuite extends TestSuiteBase {
         val earliestBlockRdd = blockRdds(blockRdds.keySet.min)
         // verify that the latest mapped RDD is persisted but the earliest one has been unpersisted
         assert(ssc.sparkContext.persistentRdds.contains(latestPersistedRddId))
-        assert(
-          !ssc.sparkContext.persistentRdds.contains(earliestPersistedRddId))
+        assert(!ssc.sparkContext.persistentRdds.contains(earliestPersistedRddId))
 
         // verify that the latest input blocks are present but the earliest blocks have been removed
         assert(latestBlockRdd.isValid)

@@ -113,8 +113,7 @@ private[spark] class AppClient(
               if (registered.get) {
                 return
               }
-              logInfo(
-                "Connecting to master " + masterAddress.toSparkURL + "...")
+              logInfo("Connecting to master " + masterAddress.toSparkURL + "...")
               val masterRef =
                 rpcEnv.setupEndpointRef(masterAddress, Master.ENDPOINT_NAME)
               masterRef.send(RegisterApplication(appDescription, self))

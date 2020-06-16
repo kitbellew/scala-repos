@@ -121,8 +121,7 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
           override def dequeueSpeculativeTask(
               execId: String,
               host: String,
-              locality: TaskLocality.Value)
-              : Option[(Int, TaskLocality.Value)] = {
+              locality: TaskLocality.Value): Option[(Int, TaskLocality.Value)] = {
             if (!hasDequeuedSpeculatedTask) {
               hasDequeuedSpeculatedTask = true
               Some(0, TaskLocality.PROCESS_LOCAL)
@@ -170,10 +169,7 @@ class OutputCommitCoordinatorSuite extends SparkFunSuite with BeforeAndAfter {
     // Create a mock OutputCommitCoordinator that denies all attempts to commit
     doReturn(false)
       .when(outputCommitCoordinator)
-      .handleAskPermissionToCommit(
-        Matchers.any(),
-        Matchers.any(),
-        Matchers.any())
+      .handleAskPermissionToCommit(Matchers.any(), Matchers.any(), Matchers.any())
     val rdd: RDD[Int] = sc.parallelize(Seq(1), 1)
     def resultHandler(x: Int, y: Unit): Unit = {}
     val futureAction: SimpleFutureAction[Unit] = sc.submitJob[Int, Unit, Unit](

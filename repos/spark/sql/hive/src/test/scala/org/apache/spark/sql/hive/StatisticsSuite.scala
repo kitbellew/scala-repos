@@ -120,8 +120,7 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
     intercept[UnsupportedOperationException] {
       hiveContext.analyze("tempTable")
     }
-    hiveContext.sessionState.catalog.unregisterTable(
-      TableIdentifier("tempTable"))
+    hiveContext.sessionState.catalog.unregisterTable(TableIdentifier("tempTable"))
   }
 
   test("estimates the size of a test MetastoreRelation") {
@@ -208,7 +207,8 @@ class StatisticsSuite extends QueryTest with TestHiveSingleton {
     )
   }
 
-  test("auto converts to broadcast left semi join, by size estimate of a relation") {
+  test(
+    "auto converts to broadcast left semi join, by size estimate of a relation") {
     val leftSemiJoinQuery =
       """SELECT * FROM src a
         |left semi JOIN src b ON a.key=86 and a.key = b.key""".stripMargin

@@ -26,8 +26,7 @@ import scala.concurrent.duration._
 // scalastyle:off file.size.limit
 object Formats extends Formats {
 
-  implicit class ReadsWithDefault[A](val reads: Reads[Option[A]])
-      extends AnyVal {
+  implicit class ReadsWithDefault[A](val reads: Reads[Option[A]]) extends AnyVal {
     def withDefault(a: A): Reads[A] = reads.map(_.getOrElse(a))
   }
 
@@ -453,8 +452,8 @@ trait EventFormats {
     Json.writes[DeploymentStepSuccess]
   implicit lazy val DeploymentStepFailureWrites: Writes[DeploymentStepFailure] =
     Json.writes[DeploymentStepFailure]
-  implicit lazy val MesosStatusUpdateEventWrites
-      : Writes[MesosStatusUpdateEvent] = Json.writes[MesosStatusUpdateEvent]
+  implicit lazy val MesosStatusUpdateEventWrites: Writes[MesosStatusUpdateEvent] =
+    Json.writes[MesosStatusUpdateEvent]
   implicit lazy val MesosFrameworkMessageEventWrites
       : Writes[MesosFrameworkMessageEvent] =
     Json.writes[MesosFrameworkMessageEvent]
@@ -1127,16 +1126,16 @@ trait AppAndGroupFormats {
         )(ExtraFields)
 
       extraReads
-        .filter(
-          ValidationError("You cannot specify both uris and fetch fields")) {
+        .filter(ValidationError("You cannot specify both uris and fetch fields")) {
           extra =>
             !(extra.uris.nonEmpty && extra.fetch.nonEmpty)
         }
-        .filter(ValidationError(
-          "You cannot specify both ports and port definitions")) { extra =>
-          val portDefinitionsIsEquivalentToPorts =
-            extra.portDefinitions.map(_.map(_.port)) == extra.ports
-          portDefinitionsIsEquivalentToPorts || extra.ports.isEmpty || extra.portDefinitions.isEmpty
+        .filter(
+          ValidationError("You cannot specify both ports and port definitions")) {
+          extra =>
+            val portDefinitionsIsEquivalentToPorts =
+              extra.portDefinitions.map(_.map(_.port)) == extra.ports
+            portDefinitionsIsEquivalentToPorts || extra.ports.isEmpty || extra.portDefinitions.isEmpty
         }
         .map { extra =>
           update.copy(

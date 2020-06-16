@@ -215,8 +215,7 @@ class MapperSpec extends Specification with BeforeExample {
             conn.driverType.supportsForeignKeys_?
           }
           if (!supportsFK)
-            skipped(
-              "Driver %s does not support FK constraints".format(provider))
+            skipped("Driver %s does not support FK constraints".format(provider))
 
           SampleTag.create.model(42).save must throwA[java.sql.SQLException]
         }

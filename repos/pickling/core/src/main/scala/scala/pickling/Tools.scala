@@ -107,9 +107,7 @@ class Tools[C <: Context](val c: C) {
     result
   }
 
-  def allStaticallyKnownConcreteSubclasses(
-      tpe: Type,
-      mirror: Mirror): List[Type] = {
+  def allStaticallyKnownConcreteSubclasses(tpe: Type, mirror: Mirror): List[Type] = {
     // TODO: so far the search is a bit dumb
     // given `class C[T]; class D extends C[Int]` and `tpe = C[String]`, it will return <symbol of D>
     // TODO: on a more elaborate note
@@ -463,8 +461,7 @@ abstract class Macro extends RichTypes { self =>
         val theirPt = candidates.tail.head.pt
         ourPt =:= theirPt
       }) {
-      debug(
-        s"no, because: ourPt = $ourPt, theirPt = ${candidates.tail.head.pt}")
+      debug(s"no, because: ourPt = $ourPt, theirPt = ${candidates.tail.head.pt}")
       // c.diverge()
       c.abort(c.enclosingPosition, "stepping aside: repeating itself")
     } else {

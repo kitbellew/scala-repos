@@ -42,8 +42,7 @@ class SimpleCache[K, V](private val backing: GCache[K, V]) extends Map[K, V] {
   def invalidateAll = backing.invalidateAll
 }
 
-class AutoCache[K, V](private val backing: LoadingCache[K, V])
-    extends Map[K, V] {
+class AutoCache[K, V](private val backing: LoadingCache[K, V]) extends Map[K, V] {
   def +=(kv: (K, V)) = { backing.put(kv._1, kv._2); this }
   def -=(key: K) = { backing.invalidate(key); this }
   def get(key: K): Option[V] = getFull(key).toOption
@@ -74,8 +73,7 @@ object Cache {
       builder.expireAfterAccess(timeout.length, timeout.unit)
   }
 
-  case class ExpireAfterWrite[K, V](timeout: Duration)
-      extends CacheOption[K, V] {
+  case class ExpireAfterWrite[K, V](timeout: Duration) extends CacheOption[K, V] {
     def apply(builder: CacheBuilder[K, V]) =
       builder.expireAfterWrite(timeout.length, timeout.unit)
   }

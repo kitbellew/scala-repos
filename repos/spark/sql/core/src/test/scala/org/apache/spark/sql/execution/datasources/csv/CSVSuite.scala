@@ -286,11 +286,7 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
       """.stripMargin.replaceAll("\n", " "))
 
     val cars = sqlContext.table("carsTable")
-    verifyCars(
-      cars,
-      withHeader = true,
-      checkHeader = false,
-      checkValues = false)
+    verifyCars(cars, withHeader = true, checkHeader = false, checkValues = false)
     assert(
       cars.schema.fieldNames === Array(
         "yearMade",
@@ -449,9 +445,7 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
 
   test("SPARK-13543 Write the output as uncompressed via option()") {
     val clonedConf = new Configuration(hadoopConfiguration)
-    hadoopConfiguration.set(
-      "mapreduce.output.fileoutputformat.compress",
-      "true")
+    hadoopConfiguration.set("mapreduce.output.fileoutputformat.compress", "true")
     hadoopConfiguration
       .set(
         "mapreduce.output.fileoutputformat.compress.type",

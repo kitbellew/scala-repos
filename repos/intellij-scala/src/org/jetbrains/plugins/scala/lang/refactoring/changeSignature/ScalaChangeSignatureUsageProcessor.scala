@@ -115,9 +115,7 @@ class ScalaChangeSignatureUsageProcessor
           case f: ScFunction =>
             processNamedElementUsage(changeInfo, FunUsageInfo(f))
           case pc: ScPrimaryConstructor =>
-            processNamedElementUsage(
-              changeInfo,
-              PrimaryConstructorUsageInfo(pc))
+            processNamedElementUsage(changeInfo, PrimaryConstructorUsageInfo(pc))
           case _ =>
         }
         true
@@ -228,10 +226,7 @@ class ScalaChangeSignatureUsageProcessor
       case ScalaNamedElementUsageInfo(u: OverriderValUsageInfo) =>
         ConflictsUtil.addBindingPatternConflicts(u.namedElement, info, result)
       case javaOverriderUsage: OverriderUsageInfo =>
-        ConflictsUtil.addJavaOverriderConflicts(
-          javaOverriderUsage,
-          info,
-          result)
+        ConflictsUtil.addJavaOverriderConflicts(javaOverriderUsage, info, result)
       case p: PatternUsageInfo =>
         ConflictsUtil.addUnapplyUsagesConflicts(p, info, result)
       case _ =>

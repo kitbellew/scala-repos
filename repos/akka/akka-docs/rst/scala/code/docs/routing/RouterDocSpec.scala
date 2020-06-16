@@ -521,8 +521,7 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
     val router: ActorRef = system.actorOf(
       // “head” router actor will run on "router-dispatcher" dispatcher
       // Worker routees will run on "pool-dispatcher" dispatcher
-      RandomPool(5, routerDispatcher = "router-dispatcher").props(
-        Props[Worker]),
+      RandomPool(5, routerDispatcher = "router-dispatcher").props(Props[Worker]),
       name = "poolWithDispatcher"
     )
     //#dispatchers
@@ -539,8 +538,8 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   }
 
   "demonstrate PoisonPill" in {
-    val router = watch(
-      system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo])))
+    val router =
+      watch(system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo])))
     //#poisonPill
     import akka.actor.PoisonPill
     router ! PoisonPill
@@ -549,8 +548,8 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   }
 
   "demonstrate broadcast of PoisonPill" in {
-    val router = watch(
-      system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo])))
+    val router =
+      watch(system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo])))
     //#broadcastPoisonPill
     import akka.actor.PoisonPill
     import akka.routing.Broadcast
@@ -560,8 +559,8 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   }
 
   "demonstrate Kill" in {
-    val router = watch(
-      system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo])))
+    val router =
+      watch(system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo])))
     //#kill
     import akka.actor.Kill
     router ! Kill
@@ -570,8 +569,8 @@ class RouterDocSpec extends AkkaSpec(RouterDocSpec.config) with ImplicitSender {
   }
 
   "demonstrate broadcast of Kill" in {
-    val router = watch(
-      system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo])))
+    val router =
+      watch(system.actorOf(RoundRobinPool(nrOfInstances = 5).props(Props[Echo])))
     //#broadcastKill
     import akka.actor.Kill
     import akka.routing.Broadcast

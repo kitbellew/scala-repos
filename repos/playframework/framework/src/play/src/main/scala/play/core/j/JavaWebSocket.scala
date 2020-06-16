@@ -100,12 +100,10 @@ object JavaWebSocket extends JavaHelpers {
   // -- String
 
   def ofString(retrieveWebSocket: => LegacyWebSocket[String]): WebSocket =
-    webSocketWrapper[String](
-      CompletableFuture.completedFuture(retrieveWebSocket))
+    webSocketWrapper[String](CompletableFuture.completedFuture(retrieveWebSocket))
 
   def promiseOfString(
-      retrieveWebSocket: => CompletionStage[LegacyWebSocket[String]])
-      : WebSocket =
+      retrieveWebSocket: => CompletionStage[LegacyWebSocket[String]]): WebSocket =
     webSocketWrapper[String](retrieveWebSocket)
 
   // -- Json (JsonNode)

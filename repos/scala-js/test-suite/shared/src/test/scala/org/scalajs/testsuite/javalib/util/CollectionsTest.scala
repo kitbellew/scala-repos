@@ -24,9 +24,7 @@ class CollectionsTest extends CollectionsTestBase {
       coll: ju.Collection[E],
       elem: E): Unit = {
     expectThrows(classOf[UnsupportedOperationException], coll.add(elem))
-    expectThrows(
-      classOf[UnsupportedOperationException],
-      coll.addAll(List(elem)))
+    expectThrows(classOf[UnsupportedOperationException], coll.addAll(List(elem)))
     assertFalse(coll.addAll(List.empty[E]))
 
     if (coll.count(_ == elem) != coll.size)
@@ -70,9 +68,7 @@ class CollectionsTest extends CollectionsTestBase {
       k: K,
       v: V): Unit = {
     expectThrows(classOf[UnsupportedOperationException], map.put(k, v))
-    expectThrows(
-      classOf[UnsupportedOperationException],
-      map.putAll(Map(k -> v)))
+    expectThrows(classOf[UnsupportedOperationException], map.putAll(Map(k -> v)))
     map.putAll(Map.empty[K, V]) // Should not throw
 
     if (map.containsKey(k))

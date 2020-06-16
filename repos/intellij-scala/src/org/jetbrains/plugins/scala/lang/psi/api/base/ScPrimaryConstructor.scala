@@ -126,14 +126,10 @@ trait ScPrimaryConstructor
     val typeParameters = getParent.asInstanceOf[ScTypeDefinition].typeParameters
     if (typeParameters.isEmpty) methodType
     else
-      ScTypePolymorphicType(
-        methodType,
-        typeParameters.map(new TypeParameter(_)))
+      ScTypePolymorphicType(methodType, typeParameters.map(new TypeParameter(_)))
   }
 
-  def getParamByName(
-      name: String,
-      clausePosition: Int = -1): Option[ScParameter] = {
+  def getParamByName(name: String, clausePosition: Int = -1): Option[ScParameter] = {
     clausePosition match {
       case -1 =>
         for (param <- parameters

@@ -43,9 +43,7 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
     * to. This is an associative operation and sufficient to scedule the service.
     * This only has the keys that changed value during this batch.
     */
-  def readStream(
-      batchID: BatchID,
-      mode: Mode): Option[FlowToPipe[(K, Option[V])]]
+  def readStream(batchID: BatchID, mode: Mode): Option[FlowToPipe[(K, Option[V])]]
 
   def reducers: Option[Int]
 
@@ -135,11 +133,7 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
                     (available, outM),
                     Scalding.limitTimes(
                       available,
-                      batchedLookup(
-                        available,
-                        getFlow,
-                        batchLastFlow,
-                        existing)))
+                      batchedLookup(available, getFlow, batchLastFlow, existing)))
               }
           }
       }
@@ -178,7 +172,6 @@ object BatchedService extends java.io.Serializable {
   def fromStoreAndDeltaSink[K, V: Semigroup](
       store: BatchedStore[K, V],
       sink: BatchedSink[(K, V)],
-      reducerOption: Option[Int] = None)
-      : scalding.service.BatchedDeltaService[K, V] =
+      reducerOption: Option[Int] = None): scalding.service.BatchedDeltaService[K, V] =
     new scalding.service.BatchedDeltaService[K, V](store, sink, reducerOption)
 }

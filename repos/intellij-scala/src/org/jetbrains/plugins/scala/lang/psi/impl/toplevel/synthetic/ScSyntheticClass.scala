@@ -274,10 +274,8 @@ class SyntheticClasses(project: Project)
 
     val any = registerClass(Any, "Any")
     val manager = any.manager
-    any.addMethod(
-      new ScSyntheticFunction(manager, "==", Boolean, Seq(Seq(Any))))
-    any.addMethod(
-      new ScSyntheticFunction(manager, "!=", Boolean, Seq(Seq(Any))))
+    any.addMethod(new ScSyntheticFunction(manager, "==", Boolean, Seq(Seq(Any))))
+    any.addMethod(new ScSyntheticFunction(manager, "!=", Boolean, Seq(Seq(Any))))
     any.addMethod(new ScSyntheticFunction(manager, "##", Int, Seq.empty))
     any.addMethod(
       new ScSyntheticFunction(
@@ -349,11 +347,7 @@ class SyntheticClasses(project: Project)
           new ScSyntheticFunction(manager, op, Boolean, Seq(Seq(nc1.t))))
       for (nc1 <- numeric; op <- numeric_arith_ops)
         nc.addMethod(
-          new ScSyntheticFunction(
-            manager,
-            op,
-            op_type(nc, nc1),
-            Seq(Seq(nc1.t))))
+          new ScSyntheticFunction(manager, op, op_type(nc, nc1), Seq(Seq(nc1.t))))
       for (nc1 <- numeric)
         nc.addMethod(
           new ScSyntheticFunction(
@@ -376,11 +370,7 @@ class SyntheticClasses(project: Project)
     for (ic <- integer) {
       for (ic1 <- integer; op <- bitwise_bin_ops)
         ic.addMethod(
-          new ScSyntheticFunction(
-            manager,
-            op,
-            op_type(ic, ic1),
-            Seq(Seq(ic1.t))))
+          new ScSyntheticFunction(manager, op, op_type(ic, ic1), Seq(Seq(ic1.t))))
       ic.addMethod(new ScSyntheticFunction(manager, "unary_~", ic.t, Seq.empty))
 
       val ret = ic.t match {

@@ -88,8 +88,7 @@ class ScSelfInvocationImpl(node: ASTNode)
       case Some(c: ScMethodLike) =>
         val methodType = ScType
           .nested(c.methodType, i)
-          .getOrElse(
-            return Failure("Not enough parameter sections", Some(this)))
+          .getOrElse(return Failure("Not enough parameter sections", Some(this)))
         (methodType, c.containingClass)
       case _ =>
         return Failure("Cannot shape resolve self invocation", Some(this))

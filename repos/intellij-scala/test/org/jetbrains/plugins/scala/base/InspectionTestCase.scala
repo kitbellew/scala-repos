@@ -18,9 +18,7 @@ abstract class InspectionTestCase[T <: LocalInspectionTool: ClassTag]
       highlights: Highlight*) {
     Assert.assertEquals(
       highlights,
-      highlight(
-        code,
-        implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]))
+      highlight(code, implicitly[ClassTag[T]].runtimeClass.asInstanceOf[Class[T]]))
   }
 
   protected def highlight(

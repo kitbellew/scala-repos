@@ -115,8 +115,8 @@ class AccountServiceHandlers(
             Future(
               HttpResponse[JValue](
                 HttpStatus(Unauthorized),
-                content = Some(
-                  JString("You do not have access to account " + accountId))))
+                content =
+                  Some(JString("You do not have access to account " + accountId))))
           }
         }
 
@@ -155,8 +155,7 @@ class AccountServiceHandlers(
                   HttpStatus(OK),
                   content = found
                     .map { account =>
-                      JArray(
-                        JObject("accountId" -> account.accountId.serialize))
+                      JArray(JObject("accountId" -> account.accountId.serialize))
                     }
                     .orElse { Some(JArray()) })
               }
@@ -317,8 +316,8 @@ class AccountServiceHandlers(
                           "Account successfully created: " + account.accountId)
                         HttpResponse[JValue](
                           OK,
-                          content = Some(
-                            jobject(jfield("accountId", account.accountId))))
+                          content =
+                            Some(jobject(jfield("accountId", account.accountId))))
                       }
                     }
                   } yield accountResponse
@@ -365,14 +364,12 @@ class AccountServiceHandlers(
 
                         case false =>
                           logger.error(
-                            "Grant added to %s (from %s) failed for %s".format(
-                              accountId,
-                              remoteIpFrom(request),
-                              grantId))
+                            "Grant added to %s (from %s) failed for %s"
+                              .format(accountId, remoteIpFrom(request), grantId))
                           HttpResponse(
                             InternalServerError,
-                            content =
-                              Some(JString("Grant creation failed; please contact support.")))
+                            content = Some(JString(
+                              "Grant creation failed; please contact support.")))
                       }
 
                     case Failure(error) =>
@@ -388,8 +385,7 @@ class AccountServiceHandlers(
               Promise.successful(
                 HttpResponse[JValue](
                   HttpStatus(NotFound),
-                  content =
-                    Some(JString("Unable to find account " + accountId))))
+                  content = Some(JString("Unable to find account " + accountId))))
           }
         } getOrElse {
           Future(badRequest("Missing account Id"))
@@ -474,19 +470,21 @@ class AccountServiceHandlers(
                           } else {
                             logger.warn("Password reset request for account %s did not match email on file (%s provided)"
                               .format(accountId, requestEmail))
-                            Future(HttpResponse[JValue](
-                              HttpStatus(Forbidden),
-                              content = Some(JString(
-                                "Provided email does not match account for " + accountId))))
+                            Future(
+                              HttpResponse[JValue](
+                                HttpStatus(Forbidden),
+                                content = Some(JString(
+                                  "Provided email does not match account for " + accountId))))
                           }
 
                         case None =>
                           logger.warn(
                             "Password reset request on non-existent account " + accountId)
-                          Future(HttpResponse[JValue](
-                            HttpStatus(NotFound),
-                            content = Some(
-                              JString("Unable to find Account " + accountId))))
+                          Future(
+                            HttpResponse[JValue](
+                              HttpStatus(NotFound),
+                              content = Some(
+                                JString("Unable to find Account " + accountId))))
                       }
 
                     case Failure(error) =>
@@ -496,8 +494,8 @@ class AccountServiceHandlers(
                       Future(
                         HttpResponse[JValue](
                           HttpStatus(BadRequest, "Invalid request body"),
-                          content = Some(
-                            JString("Missing/invalid email in request body"))))
+                          content =
+                            Some(JString("Missing/invalid email in request body"))))
                   }
                 }
               }
@@ -636,11 +634,10 @@ class AccountServiceHandlers(
               logger.warn(
                 "Missing password update body for account %s from %s"
                   .format(account.accountId, remoteIpFrom(request)))
-              Future(
-                HttpResponse[JValue](
-                  HttpStatus(BadRequest, "Request body missing."),
-                  content =
-                    Some(JString("You must provide a JSON object containing a password field."))))
+              Future(HttpResponse[JValue](
+                HttpStatus(BadRequest, "Request body missing."),
+                content = Some(JString(
+                  "You must provide a JSON object containing a password field."))))
             }
           }
         }
@@ -695,11 +692,10 @@ class AccountServiceHandlers(
                 }
               }
             } getOrElse {
-              Future(
-                HttpResponse[JValue](
-                  HttpStatus(BadRequest, "Request body missing."),
-                  content =
-                    Some(JString("You must provide a JSON object containing a \"type\" field."))))
+              Future(HttpResponse[JValue](
+                HttpStatus(BadRequest, "Request body missing."),
+                content = Some(JString(
+                  "You must provide a JSON object containing a \"type\" field."))))
             }
           }
         }
@@ -728,8 +724,7 @@ class AccountServiceHandlers(
                     .format(account.accountId, remoteIpFrom(request)))
                 HttpResponse[JValue](
                   OK,
-                  content =
-                    Some(jobject(jfield("type", account.plan.planType))))
+                  content = Some(jobject(jfield("type", account.plan.planType))))
               case _ =>
                 logger.error(
                   "Account plan for %s deletion by %s failed"
@@ -789,8 +784,8 @@ class AccountServiceHandlers(
                   .format(account.accountId, remoteIpFrom(request)))
                 HttpResponse[JValue](
                   HttpStatus(InternalServerError),
-                  content = Some(JString(
-                    "Account deletion failed, please contact support.")))
+                  content = Some(
+                    JString("Account deletion failed, please contact support.")))
             }
           }
         }

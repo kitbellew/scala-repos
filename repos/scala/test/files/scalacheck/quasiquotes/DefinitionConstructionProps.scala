@@ -203,11 +203,7 @@ trait TraitConstruction { self: QuasiquoteProperties =>
 trait TypeDefConstruction { self: QuasiquoteProperties =>
   property("unquote type name into typedef") = forAll {
     (name1: TypeName, name2: TypeName) =>
-      q"type $name1 = $name2" ≈ TypeDef(
-        Modifiers(),
-        name1,
-        List(),
-        Ident(name2))
+      q"type $name1 = $name2" ≈ TypeDef(Modifiers(), name1, List(), Ident(name2))
   }
 
   property("unquote type names into type bounds") = forAll {
@@ -260,9 +256,7 @@ trait TypeDefConstruction { self: QuasiquoteProperties =>
               Modifiers(PARAM),
               T2,
               List(),
-              TypeBoundsTree(
-                Ident(TypeName("Any")),
-                Ident(TypeName("Nothing"))))),
+              TypeBoundsTree(Ident(TypeName("Any")), Ident(TypeName("Nothing"))))),
           t)
   }
 
@@ -273,15 +267,10 @@ trait TypeDefConstruction { self: QuasiquoteProperties =>
           Modifiers(),
           T,
           List(),
-          CompoundTypeTree(
-            Template(
-              List(Ident(A), Ident(B)),
-              ValDef(
-                Modifiers(PRIVATE),
-                termNames.WILDCARD,
-                TypeTree(),
-                EmptyTree),
-              List())))
+          CompoundTypeTree(Template(
+            List(Ident(A), Ident(B)),
+            ValDef(Modifiers(PRIVATE), termNames.WILDCARD, TypeTree(), EmptyTree),
+            List())))
   }
 
   property("unquote trees into existential type tree") = forAll {

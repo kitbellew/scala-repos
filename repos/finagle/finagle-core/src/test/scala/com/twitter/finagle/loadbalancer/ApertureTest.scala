@@ -14,9 +14,7 @@ private trait ApertureTesting {
 
   class Empty extends Exception
 
-  protected trait TestBal
-      extends Balancer[Unit, Unit]
-      with Aperture[Unit, Unit] {
+  protected trait TestBal extends Balancer[Unit, Unit] with Aperture[Unit, Unit] {
     protected val rng = Rng(12345L)
     protected val emptyException = new Empty
     protected val maxEffort = 10

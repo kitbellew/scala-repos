@@ -60,9 +60,7 @@ import scala.util.control.NonFatal
 
 class Summer[Key, Value: Semigroup, Event, S, D, RC](
     @transient storeSupplier: MergeableStoreFactory[Key, Value],
-    @transient flatMapOp: FlatMapOperation[
-      (Key, (Option[Value], Value)),
-      Event],
+    @transient flatMapOp: FlatMapOperation[(Key, (Option[Value], Value)), Event],
     @transient successHandler: OnlineSuccessHandler,
     @transient exceptionHandler: OnlineExceptionHandler,
     summerBuilder: SummerBuilder,
@@ -104,9 +102,7 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
       if (includeSuccessHandler.get) Some(successHandlerBox.get) else None
   }
 
-  override def notifyFailure(
-      inputs: Seq[InputState[S]],
-      error: Throwable): Unit = {
+  override def notifyFailure(inputs: Seq[InputState[S]], error: Throwable): Unit = {
     super.notifyFailure(inputs, error)
     exceptionHandlerBox.get.apply(error)
   }

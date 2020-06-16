@@ -85,8 +85,7 @@ class MaxAbsScaler @Since("2.0.0") (override val uid: String)
       math.max(math.abs(minVals(i)), math.abs(maxVals(i)))
     }
 
-    copyValues(
-      new MaxAbsScalerModel(uid, Vectors.dense(maxAbs)).setParent(this))
+    copyValues(new MaxAbsScalerModel(uid, Vectors.dense(maxAbs)).setParent(this))
   }
 
   override def transformSchema(schema: StructType): StructType = {

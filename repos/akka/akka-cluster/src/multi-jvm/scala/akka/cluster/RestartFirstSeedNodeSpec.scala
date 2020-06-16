@@ -102,8 +102,7 @@ abstract class RestartFirstSeedNodeSpec
         Cluster(seed1System).joinSeedNodes(seedNodes)
         awaitAssert(Cluster(seed1System).readView.members.size should ===(3))
         awaitAssert(
-          Cluster(seed1System).readView.members.map(_.status) should ===(
-            Set(Up)))
+          Cluster(seed1System).readView.members.map(_.status) should ===(Set(Up)))
       }
       runOn(seed2, seed3) {
         cluster.joinSeedNodes(seedNodes)

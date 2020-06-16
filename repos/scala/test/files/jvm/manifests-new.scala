@@ -82,8 +82,7 @@ object Test2 {
   println()
 
   println(
-    "List(List(1), List(2))=" + load[List[List[Int]]](
-      dump(List(List(1), List(2)))))
+    "List(List(1), List(2))=" + load[List[List[Int]]](dump(List(List(1), List(2)))))
   println()
 
   println(

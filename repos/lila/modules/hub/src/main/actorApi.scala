@@ -52,10 +52,7 @@ package report {
 package shutup {
   case class RecordPublicForumMessage(userId: String, text: String)
   case class RecordTeamForumMessage(userId: String, text: String)
-  case class RecordPrivateMessage(
-      userId: String,
-      toUserId: String,
-      text: String)
+  case class RecordPrivateMessage(userId: String, toUserId: String, text: String)
   case class RecordPrivateChat(chatId: String, userId: String, text: String)
   case class RecordPublicChat(chatId: String, userId: String, text: String)
 }
@@ -112,11 +109,7 @@ package timeline {
       extends Atom(s"qa", true)
   case class QaAnswer(userId: String, id: Int, title: String, answerId: Int)
       extends Atom(s"qa", true)
-  case class QaComment(
-      userId: String,
-      id: Int,
-      title: String,
-      commentId: String)
+  case class QaComment(userId: String, id: Int, title: String, commentId: String)
       extends Atom(s"qa", true)
   case class GameEnd(
       playerId: String,

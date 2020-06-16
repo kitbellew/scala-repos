@@ -42,8 +42,7 @@ abstract class ScalaPsiTestCase extends PsiTestCase {
       assert(testDataRoot != null)
 
       val contentEntry = rootModel.addContentEntry(testDataRoot)
-      rootModel.setSdk(
-        JavaSdk.getInstance.createJdk("java sdk", JDK_HOME, false))
+      rootModel.setSdk(JavaSdk.getInstance.createJdk("java sdk", JDK_HOME, false))
       contentEntry.addSourceFolder(testDataRoot, false)
 
       // Add Scala Library

@@ -2,11 +2,7 @@ package akka.stream.testkit
 
 import akka.actor.NoSerializationVerificationNeeded
 import akka.stream.scaladsl.Source
-import akka.stream.stage.{
-  OutHandler,
-  GraphStageWithMaterializedValue,
-  InHandler
-}
+import akka.stream.stage.{OutHandler, GraphStageWithMaterializedValue, InHandler}
 import akka.stream._
 import akka.testkit.TestProbe
 

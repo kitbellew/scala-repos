@@ -170,8 +170,8 @@ class LeaderElectionTest extends ZooKeeperTestHarness {
 
     val controllerConfig = KafkaConfig.fromProps(
       TestUtils.createBrokerConfig(controllerId, zkConnect))
-    val brokers = servers.map(s =>
-      new Broker(s.config.brokerId, "localhost", s.boundPort()))
+    val brokers =
+      servers.map(s => new Broker(s.config.brokerId, "localhost", s.boundPort()))
     val brokerEndPoints = brokers.map { b =>
       val brokerEndPoint = b.getBrokerEndPoint(SecurityProtocol.PLAINTEXT)
       new BrokerEndPoint(

@@ -323,10 +323,8 @@ class AppInfoBaseDataTest
     withClue(Json.prettyPrint(Json.toJson(appInfo))) {
       appInfo.maybeTaskStats should not be empty
       appInfo.maybeTaskStats.get.maybeTotalSummary should not be empty
-      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts.tasksStaged should be(
-        1)
-      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts.tasksRunning should be(
-        2)
+      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts.tasksStaged should be(1)
+      appInfo.maybeTaskStats.get.maybeTotalSummary.get.counts.tasksRunning should be(2)
 
       appInfo should be(
         AppInfo(

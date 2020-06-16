@@ -124,9 +124,7 @@ trait ModelFactoryImplicitSupport {
       // Filter out non-sensical conversions from value types
       if (isPrimitiveValueType(sym.tpe_*))
         conversions = conversions.filter((ic: ImplicitConversionImpl) =>
-          hardcoded.valueClassFilter(
-            sym.nameString,
-            ic.conversionQualifiedName))
+          hardcoded.valueClassFilter(sym.nameString, ic.conversionQualifiedName))
 
       // Put the visible conversions in front
       val (ownConversions, commonConversions) =
@@ -548,11 +546,9 @@ trait ModelFactoryImplicitSupport {
     try {
       (
         List(
-          wildcardToNothing(
-            lub(constr.loBounds map typeVarToOriginOrWildcard))),
+          wildcardToNothing(lub(constr.loBounds map typeVarToOriginOrWildcard))),
         List(
-          wildcardToNothing(
-            glb(constr.hiBounds map typeVarToOriginOrWildcard))))
+          wildcardToNothing(glb(constr.hiBounds map typeVarToOriginOrWildcard))))
     } catch {
       // does this actually ever happen? (probably when type vars occur in the bounds)
       case x: Throwable => (constr.loBounds.distinct, constr.hiBounds.distinct)

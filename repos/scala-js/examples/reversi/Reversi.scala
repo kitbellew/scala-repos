@@ -241,11 +241,7 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
     }
   }
 
-  def computeFlipsInDirection(
-      x: Int,
-      y: Int,
-      dirx: Int,
-      diry: Int): List[Square] = {
+  def computeFlipsInDirection(x: Int, y: Int, dirx: Int, diry: Int): List[Square] = {
 
     val allInDir = allSquaresInDirection(x, y, dirx, diry)
     val (toFlip, remaining) =

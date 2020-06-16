@@ -111,9 +111,8 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
     * until the real RPC issue (referred to in the comment above `blockOnCleanupTasks`) is
     * resolved.
     */
-  private val blockOnShuffleCleanupTasks = sc.conf.getBoolean(
-    "spark.cleaner.referenceTracking.blocking.shuffle",
-    false)
+  private val blockOnShuffleCleanupTasks =
+    sc.conf.getBoolean("spark.cleaner.referenceTracking.blocking.shuffle", false)
 
   @volatile private var stopped = false
 
@@ -175,9 +174,7 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
   }
 
   /** Register a RDDCheckpointData for cleanup when it is garbage collected. */
-  def registerRDDCheckpointDataForCleanup[T](
-      rdd: RDD[_],
-      parentId: Int): Unit = {
+  def registerRDDCheckpointDataForCleanup[T](rdd: RDD[_], parentId: Int): Unit = {
     registerForCleanup(rdd, CleanCheckpoint(parentId))
   }
 
@@ -210,9 +207,7 @@ private[spark] class ContextCleaner(sc: SparkContext) extends Logging {
                     shuffleId,
                     blocking = blockOnShuffleCleanupTasks)
                 case CleanBroadcast(broadcastId) =>
-                  doCleanupBroadcast(
-                    broadcastId,
-                    blocking = blockOnCleanupTasks)
+                  doCleanupBroadcast(broadcastId, blocking = blockOnCleanupTasks)
                 case CleanAccum(accId) =>
                   doCleanupAccum(accId, blocking = blockOnCleanupTasks)
                 case CleanCheckpoint(rddId) =>

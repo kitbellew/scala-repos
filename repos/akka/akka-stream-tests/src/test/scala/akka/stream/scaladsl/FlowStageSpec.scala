@@ -293,28 +293,27 @@ class FlowStageSpec
 
     "support emit of final elements when onUpstreamFailure" in assertAllStagesStopped {
       val p = Source(List(1, 2, 3)).runWith(Sink.asPublisher(false))
-      val p2 = Source
-        .fromPublisher(p)
-        .map(elem ⇒
-          if (elem == 2) throw new IllegalArgumentException("two not allowed")
-          else elem)
-        .transform(() ⇒
-          new StatefulStage[Int, Int] {
-            override def initial =
-              new State {
-                override def onPush(elem: Int, ctx: Context[Int]) =
-                  ctx.push(elem)
-              }
+      val p2 =
+        Source
+          .fromPublisher(p)
+          .map(elem ⇒
+            if (elem == 2) throw new IllegalArgumentException("two not allowed")
+            else elem)
+          .transform(() ⇒
+            new StatefulStage[Int, Int] {
+              override def initial =
+                new State {
+                  override def onPush(elem: Int, ctx: Context[Int]) =
+                    ctx.push(elem)
+                }
 
-            override def onUpstreamFailure(
-                cause: Throwable,
-                ctx: Context[Int]) = {
-              terminationEmit(Iterator(100, 101), ctx)
-            }
-          })
-        .filter(elem ⇒ elem != 1)
-        . // it's undefined if element 1 got through before the error or not
-        runWith(TestSink.probe[Int])
+              override def onUpstreamFailure(cause: Throwable, ctx: Context[Int]) = {
+                terminationEmit(Iterator(100, 101), ctx)
+              }
+            })
+          .filter(elem ⇒ elem != 1)
+          . // it's undefined if element 1 got through before the error or not
+          runWith(TestSink.probe[Int])
       EventFilter[IllegalArgumentException]("two not allowed") intercept {
         p2.request(100)
           .expectNext(100)

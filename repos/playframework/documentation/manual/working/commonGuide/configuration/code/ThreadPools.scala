@@ -214,8 +214,7 @@ object ThreadPoolsSpec extends PlaySpecification {
       block: Application => T) = {
     val parsed: java.util.Map[String, Object] =
       ConfigFactory.parseString(config).root.unwrapped
-    running(_.configure(Configuration(ConfigFactory.parseString(config))))(
-      block)
+    running(_.configure(Configuration(ConfigFactory.parseString(config))))(block)
   }
 }
 

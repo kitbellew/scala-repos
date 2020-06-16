@@ -30,8 +30,8 @@ object MarathonTaskStatusTestHelper {
     Some(mesosStatus(TaskState.TASK_FINISHED)))
   val error = MarathonTaskStatus.Error(mesosStatus =
     Some(mesosStatus(TaskState.TASK_ERROR)))
-  val lost = MarathonTaskStatus.Lost(mesosStatus =
-    Some(mesosStatus(TaskState.TASK_LOST)))
+  val lost =
+    MarathonTaskStatus.Lost(mesosStatus = Some(mesosStatus(TaskState.TASK_LOST)))
   val killed = MarathonTaskStatus.Killed(mesosStatus =
     Some(mesosStatus(TaskState.TASK_KILLED)))
 }

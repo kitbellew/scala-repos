@@ -106,8 +106,8 @@ class MongoScheduleStorage private[MongoScheduleStorage] (
         case Some(taskjv) =>
           for {
             _ <- insertTask(\/-(taskjv), settings.deletedTasks)
-            _ <- database(
-              remove.from(settings.tasks) where (".id" === id.toString))
+            _ <-
+              database(remove.from(settings.tasks) where (".id" === id.toString))
           } yield {
             taskjv.validated[ScheduledTask].disjunction leftMap {
               _.message

@@ -60,8 +60,7 @@ object MemcacheStress extends App {
         new NioClientSocketChannelFactory(
           Executors.newCachedThreadPool(
             new NamedPoolThreadFactory("memcacheboss")),
-          Executors.newCachedThreadPool(
-            new NamedPoolThreadFactory("memcacheIO")),
+          Executors.newCachedThreadPool(new NamedPoolThreadFactory("memcacheIO")),
           config.nworkers()
         )
       )

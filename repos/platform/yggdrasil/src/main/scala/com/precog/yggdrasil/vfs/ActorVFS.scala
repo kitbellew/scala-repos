@@ -482,8 +482,8 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
         for {
           _ <- IOUtils.makeDirectory(pathDir)
-          _ = logger.debug(
-            "Created new path dir for %s : %s".format(path, pathDir))
+          _ =
+            logger.debug("Created new path dir for %s : %s".format(path, pathDir))
           vlog <- VersionLog.open(pathDir)
           actorV <- vlog traverse { versionLog =>
             logger.debug("Creating new PathManagerActor for " + path)
@@ -511,8 +511,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
 
     def receive = {
       case FindChildren(path) =>
-        logger.debug(
-          "Received request to find children of %s".format(path.path))
+        logger.debug("Received request to find children of %s".format(path.path))
         VFSPathUtils.findChildren(baseDir, path) map { children =>
           sender ! PathChildren(path, children)
         } except {
@@ -583,8 +582,7 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
               }
             } except {
               case t: Throwable =>
-                IO(
-                  logger.error("Failure during version log open on " + path, t))
+                IO(logger.error("Failure during version log open on " + path, t))
             }
         }
 
@@ -881,8 +879,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
                 terminal)
 
             case StreamRef.Replace(streamId, terminal) =>
-              logger.trace("Received replace for %s stream %s: complete: %b"
-                .format(path.path, streamId, versionLog.isCompleted(streamId)))
+              logger.trace(
+                "Received replace for %s stream %s: complete: %b"
+                  .format(path.path, streamId, versionLog.isCompleted(streamId)))
               persistNIHDB(
                 !versionLog.isCompleted(streamId),
                 offset,

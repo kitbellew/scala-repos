@@ -163,6 +163,5 @@ class DriverDataSource(
   def unwrap[T](iface: Class[T]): T =
     if (iface.isInstance(this)) this.asInstanceOf[T]
     else
-      throw new SQLException(
-        getClass.getName + " is not a wrapper for " + iface)
+      throw new SQLException(getClass.getName + " is not a wrapper for " + iface)
 }

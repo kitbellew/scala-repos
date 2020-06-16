@@ -400,9 +400,7 @@ class Control {
 object theModel extends Model(theModelValues.optionalFrogMap)
 
 object theView
-    extends View(
-      theModel.position compose (_.getFrog),
-      theViewValues.frogShapes) {
+    extends View(theModel.position compose (_.getFrog), theViewValues.frogShapes) {
   theControl.update(theModel, this)
 }
 

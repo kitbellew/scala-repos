@@ -1036,8 +1036,7 @@ class LogisticRegressionSuite
     val allZeroInterceptModel = lrIntercept
       .setLabelCol("zeroLabel")
       .fit(sameLabels)
-    assert(
-      allZeroInterceptModel.coefficients ~== Vectors.dense(0.0) absTol 1e-3)
+    assert(allZeroInterceptModel.coefficients ~== Vectors.dense(0.0) absTol 1e-3)
     assert(allZeroInterceptModel.intercept === Double.NegativeInfinity)
     assert(allZeroInterceptModel.summary.totalIterations === 0)
 

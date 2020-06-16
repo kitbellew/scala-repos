@@ -60,8 +60,7 @@ class InnerShadow(
       choke: Double,
       offsetX: Double,
       offsetY: Double) =
-    this(
-      new jfxse.InnerShadow(blurType, color, radius, choke, offsetX, offsetY))
+    this(new jfxse.InnerShadow(blurType, color, radius, choke, offsetX, offsetY))
 
   /**
     * Creates a new instance of InnerShadow with specified radius and color.

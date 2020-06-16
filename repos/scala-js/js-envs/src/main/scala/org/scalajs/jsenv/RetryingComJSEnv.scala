@@ -37,9 +37,7 @@ final class RetryingComJSEnv(val baseEnv: ComJSEnv, val maxRetries: Int)
 
   def name: String = s"Retrying ${baseEnv.name}"
 
-  def jsRunner(
-      libs: Seq[ResolvedJSDependency],
-      code: VirtualJSFile): JSRunner = {
+  def jsRunner(libs: Seq[ResolvedJSDependency], code: VirtualJSFile): JSRunner = {
     baseEnv.jsRunner(libs, code)
   }
 

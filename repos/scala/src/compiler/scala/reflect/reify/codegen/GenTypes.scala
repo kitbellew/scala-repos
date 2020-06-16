@@ -102,8 +102,7 @@ trait GenTypes {
               EmptyTree
             } else {
               if (reifyDebug)
-                println(
-                  "successfully spliced as manifest: " + splicedAsManifest)
+                println("successfully spliced as manifest: " + splicedAsManifest)
               splicedAsManifest
             }
           case success =>

@@ -40,8 +40,7 @@ class ConsumerTopicMetrics(metricId: ClientIdTopic) extends KafkaMetricsGroup {
   * @param clientId The clientId of the given consumer client.
   */
 class ConsumerTopicStats(clientId: String) extends Logging {
-  private val valueFactory = (k: ClientIdAndTopic) =>
-    new ConsumerTopicMetrics(k)
+  private val valueFactory = (k: ClientIdAndTopic) => new ConsumerTopicMetrics(k)
   private val stats =
     new Pool[ClientIdAndTopic, ConsumerTopicMetrics](Some(valueFactory))
   private val allTopicStats = new ConsumerTopicMetrics(

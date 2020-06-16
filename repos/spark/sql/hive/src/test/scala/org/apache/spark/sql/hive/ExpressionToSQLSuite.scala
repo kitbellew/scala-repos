@@ -239,8 +239,7 @@ class ExpressionToSQLSuite extends SQLBuilderTest with SQLTestUtils {
     checkSqlGeneration("SELECT dayofyear('2001-05-02')")
     checkSqlGeneration("SELECT dayofmonth('2001-05-02')")
     checkSqlGeneration("SELECT from_unixtime(1000, 'yyyy-MM-dd HH:mm:ss')")
-    checkSqlGeneration(
-      "SELECT from_utc_timestamp('2015-07-24 00:00:00', 'PST')")
+    checkSqlGeneration("SELECT from_utc_timestamp('2015-07-24 00:00:00', 'PST')")
     checkSqlGeneration("SELECT hour('11:35:55')")
     checkSqlGeneration("SELECT last_day('2001-01-01')")
     checkSqlGeneration("SELECT minute('11:35:55')")

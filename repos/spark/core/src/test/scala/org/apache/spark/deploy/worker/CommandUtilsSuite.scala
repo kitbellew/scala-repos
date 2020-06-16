@@ -30,16 +30,10 @@ class CommandUtilsSuite
 
   test("set libraryPath correctly") {
     val appId = "12345-worker321-9876"
-    val sparkHome = sys.props.getOrElse(
-      "spark.test.home",
-      fail("spark.test.home is not set!"))
-    val cmd = new Command(
-      "mainClass",
-      Seq(),
-      Map(),
-      Seq(),
-      Seq("libraryPathToB"),
-      Seq())
+    val sparkHome =
+      sys.props.getOrElse("spark.test.home", fail("spark.test.home is not set!"))
+    val cmd =
+      new Command("mainClass", Seq(), Map(), Seq(), Seq("libraryPathToB"), Seq())
     val builder = CommandUtils.buildProcessBuilder(
       cmd,
       new SecurityManager(new SparkConf),

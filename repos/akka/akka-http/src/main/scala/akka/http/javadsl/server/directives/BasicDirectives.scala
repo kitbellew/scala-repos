@@ -215,9 +215,7 @@ abstract class BasicDirectives extends BasicDirectivesBase {
           (ctx, params) ⇒
             resultAdaptor(
               ctx,
-              method.invoke(
-                instance,
-                params.toArray.asInstanceOf[Array[AnyRef]]: _*))
+              method.invoke(instance, params.toArray.asInstanceOf[Array[AnyRef]]: _*))
         else
           (ctx, params) ⇒
             resultAdaptor(

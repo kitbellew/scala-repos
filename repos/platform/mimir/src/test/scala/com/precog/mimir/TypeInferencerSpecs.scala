@@ -558,11 +558,8 @@ trait TypeInferencerSpecs[M[+_]]
         Split(
           Group(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line),
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line),
             UnfixedSolution(
               1,
               Join(
@@ -611,11 +608,8 @@ trait TypeInferencerSpecs[M[+_]]
         Split(
           Group(
             0,
-            Join(
-              DerefObject,
-              Cross(None),
-              clicks,
-              Const(CString("user"))(line))(line),
+            Join(DerefObject, Cross(None), clicks, Const(CString("user"))(line))(
+              line),
             UnfixedSolution(
               1,
               Join(
@@ -646,11 +640,8 @@ trait TypeInferencerSpecs[M[+_]]
               WrapObject,
               Cross(None),
               Const(CString("age"))(line),
-              Join(
-                DerefObject,
-                Cross(None),
-                clicks,
-                Const(CString("age"))(line))(line))(line)
+              Join(DerefObject, Cross(None), clicks, Const(CString("age"))(line))(
+                line))(line)
           )(line),
           id
         )(line)
@@ -755,9 +746,7 @@ trait TypeInferencerSpecs[M[+_]]
       val result = extractLoads(inferTypes(JType.JPrimitiveUnfixedT)(input))
 
       val expected = Map(
-        "/clicks" -> Map(
-          JPath.Identity -> cLiterals,
-          JPath("time") -> cLiterals))
+        "/clicks" -> Map(JPath.Identity -> cLiterals, JPath("time") -> cLiterals))
 
       result mustEqual expected
     }

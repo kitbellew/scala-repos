@@ -184,8 +184,7 @@ class DateTimeUtilsSuite extends SparkFunSuite {
 
     c.set(2000, 11, 30, 10, 0, 0)
     assert(
-      stringToTime("2000-12-30 10:00:00") === new Timestamp(
-        c.getTimeInMillis()))
+      stringToTime("2000-12-30 10:00:00") === new Timestamp(c.getTimeInMillis()))
   }
 
   test("string to timestamp") {
@@ -380,10 +379,8 @@ class DateTimeUtilsSuite extends SparkFunSuite {
 
     assert(stringToTimestamp(UTF8String.fromString("238")).isEmpty)
     assert(stringToTimestamp(UTF8String.fromString("00238")).isEmpty)
-    assert(
-      stringToTimestamp(UTF8String.fromString("2015-03-18 123142")).isEmpty)
-    assert(
-      stringToTimestamp(UTF8String.fromString("2015-03-18T123123")).isEmpty)
+    assert(stringToTimestamp(UTF8String.fromString("2015-03-18 123142")).isEmpty)
+    assert(stringToTimestamp(UTF8String.fromString("2015-03-18T123123")).isEmpty)
     assert(stringToTimestamp(UTF8String.fromString("2015-03-18X")).isEmpty)
     assert(stringToTimestamp(UTF8String.fromString("2015/03/18")).isEmpty)
     assert(stringToTimestamp(UTF8String.fromString("2015.03.18")).isEmpty)

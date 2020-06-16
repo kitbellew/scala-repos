@@ -118,9 +118,7 @@ class CookieSupportTest extends ScalatraFunSuite {
     session {
       post(
         "/foo/setcookie",
-        Map(
-          "cookieval" -> "The value",
-          "anothercookieval" -> "Another Cookie")) {
+        Map("cookieval" -> "The value", "anothercookieval" -> "Another Cookie")) {
         body should equal("OK")
       }
       get("/foo/getcookie") {

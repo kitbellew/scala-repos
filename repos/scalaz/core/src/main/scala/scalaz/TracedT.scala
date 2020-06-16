@@ -30,8 +30,7 @@ final case class TracedT[W[_], A, B](run: W[A => B]) {
 }
 
 sealed abstract class TracedTInstances5 {
-  implicit final def tracedTFunctor[W[_]: Functor, C]
-      : Functor[TracedT[W, C, ?]] =
+  implicit final def tracedTFunctor[W[_]: Functor, C]: Functor[TracedT[W, C, ?]] =
     new TracedTFunctor[W, C] {
       def W = implicitly
     }
@@ -68,8 +67,7 @@ sealed abstract class TracedTInstances2 extends TracedTInstances3 {
 }
 
 sealed abstract class TracedTInstances1 extends TracedTInstances2 {
-  implicit final def tracedTCobind[W[_]: Cobind, C: Semigroup]
-      : Cobind[TracedT[W, C, ?]] =
+  implicit final def tracedTCobind[W[_]: Cobind, C: Semigroup]: Cobind[TracedT[W, C, ?]] =
     new TracedTCobind[W, C] {
       def W = implicitly
       def C = implicitly
@@ -78,8 +76,7 @@ sealed abstract class TracedTInstances1 extends TracedTInstances2 {
 
 sealed abstract class TracedTInstances0 extends TracedTInstances1 {
 
-  implicit final def tracedTComonad[W[_]: Comonad, C: Monoid]
-      : Comonad[TracedT[W, C, ?]] =
+  implicit final def tracedTComonad[W[_]: Comonad, C: Monoid]: Comonad[TracedT[W, C, ?]] =
     new TracedTComonad[W, C] {
       def W = implicitly
       def C = implicitly

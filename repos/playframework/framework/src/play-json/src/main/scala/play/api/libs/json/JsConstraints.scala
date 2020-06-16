@@ -31,8 +31,7 @@ trait PathReads {
     at(path)(reads)
 
   def at[A](path: JsPath)(implicit reads: Reads[A]): Reads[A] =
-    Reads[A](js =>
-      path.asSingleJsResult(js).flatMap(reads.reads(_).repath(path)))
+    Reads[A](js => path.asSingleJsResult(js).flatMap(reads.reads(_).repath(path)))
 
   /**
     * Reads a Option[T] search optional or nullable field at JsPath (field not found or null is None
@@ -78,8 +77,7 @@ trait PathReads {
     Reads[JsObject](json => JsSuccess(JsPath.createObj(path -> a)))
 
   def jsCopyTo[A <: JsValue](path: JsPath)(reads: Reads[A]) =
-    Reads[JsObject](js =>
-      reads.reads(js).map(js => JsPath.createObj(path -> js)))
+    Reads[JsObject](js => reads.reads(js).map(js => JsPath.createObj(path -> js)))
 
   def jsUpdate[A <: JsValue](path: JsPath)(reads: Reads[A]) =
     Reads[JsObject](js =>

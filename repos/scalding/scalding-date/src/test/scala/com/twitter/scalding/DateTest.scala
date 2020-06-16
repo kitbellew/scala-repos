@@ -134,8 +134,7 @@ class DateTest extends WordSpec {
       //10-25 is a Tuesday, earliest in week is a monday
       assert(Weeks(1).floorOf("2011-10-25") === RichDate("2011-10-24"))
       assert(Weeks(1).floorOf("20111025") === RichDate("2011-10-24"))
-      assert(
-        Days(1).floorOf("2011-10-25 10:01") === RichDate("2011-10-25 00:00"))
+      assert(Days(1).floorOf("2011-10-25 10:01") === RichDate("2011-10-25 00:00"))
       assert(Days(1).floorOf("201110251001") === RichDate("2011-10-25 00:00"))
       //Leaving off the time should give the same result:
       assert(Days(1).floorOf("201110251001") === RichDate("2011-10-25"))

@@ -42,14 +42,13 @@ class ScalaUselessExpressionInspection
           expr)) {
         val message = "Useless expression"
         val removeElemFix = new RemoveElementQuickFix("Remove expression", expr)
-        val addReturnKeywordFix = PsiTreeUtil.getParentOfType(
-          expr,
-          classOf[ScFunctionDefinition]) match {
-          case null => Seq.empty
-          case fun if fun.returnType.getOrAny != types.Unit =>
-            Seq(new AddReturnQuickFix(expr))
-          case _ => Seq.empty
-        }
+        val addReturnKeywordFix =
+          PsiTreeUtil.getParentOfType(expr, classOf[ScFunctionDefinition]) match {
+            case null => Seq.empty
+            case fun if fun.returnType.getOrAny != types.Unit =>
+              Seq(new AddReturnQuickFix(expr))
+            case _ => Seq.empty
+          }
 
         holder.registerProblem(
           expr,

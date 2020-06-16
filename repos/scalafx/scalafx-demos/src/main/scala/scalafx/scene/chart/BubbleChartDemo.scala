@@ -47,12 +47,7 @@ object BubbleChartDemo extends JFXApp {
         data = ObservableBuffer(
           xyrSeries(
             "Series 1",
-            Seq(
-              (30, 40, 10),
-              (60, 20, 13),
-              (10, 90, 7),
-              (100, 40, 10),
-              (50, 23, 5))),
+            Seq((30, 40, 10), (60, 20, 13), (10, 90, 7), (100, 40, 10), (50, 23, 5))),
           xyrSeries(
             "Series 2",
             Seq(

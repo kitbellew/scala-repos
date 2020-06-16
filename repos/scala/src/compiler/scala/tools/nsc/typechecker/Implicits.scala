@@ -373,9 +373,7 @@ trait Implicits {
   object HasMember {
     private val hasMemberCache = perRunCaches.newMap[Name, Type]()
     def apply(name: Name): Type =
-      hasMemberCache.getOrElseUpdate(
-        name,
-        memberWildcardType(name, WildcardType))
+      hasMemberCache.getOrElseUpdate(name, memberWildcardType(name, WildcardType))
   }
 
   /** An extractor for types of the form ? { name: (? >: argtpe <: Any*)restp }
@@ -531,13 +529,9 @@ trait Implicits {
             intersectionType(parents map core, tp.typeSymbol.owner)
           case AnnotatedType(annots, tp) => core(tp)
           case ExistentialType(tparams, result) =>
-            core(result).subst(
-              tparams,
-              tparams map (t => core(t.info.bounds.hi)))
+            core(result).subst(tparams, tparams map (t => core(t.info.bounds.hi)))
           case PolyType(tparams, result) =>
-            core(result).subst(
-              tparams,
-              tparams map (t => core(t.info.bounds.hi)))
+            core(result).subst(tparams, tparams map (t => core(t.info.bounds.hi)))
           case _ => tp
         }
       def stripped(tp: Type): Type = {
@@ -688,10 +682,7 @@ trait Implicits {
       *  they are: perhaps someone more familiar with the intentional distinctions
       *  can examine the now much smaller concrete implementations below.
       */
-    private def checkCompatibility(
-        fast: Boolean,
-        tp0: Type,
-        pt0: Type): Boolean = {
+    private def checkCompatibility(fast: Boolean, tp0: Type, pt0: Type): Boolean = {
       @tailrec def loop(tp: Type, pt: Type): Boolean =
         tp match {
           case mt @ MethodType(params, restpe) =>
@@ -1104,8 +1095,7 @@ trait Implicits {
             // seen divergence so far, we won't issue this error just yet, and instead temporarily
             // treat `i` as a failed candidate.
             saveDivergent(DivergentImplicitTypeError(tree, pt, i.sym))
-            log(
-              s"discarding divergent implicit ${i.sym} during implicit search")
+            log(s"discarding divergent implicit ${i.sym} during implicit search")
             SearchFailure
           } else {
             if (search.isFailure) {
@@ -1427,18 +1417,13 @@ trait Implicits {
     /** Creates a tree will produce a tag of the requested flavor.
       * An EmptyTree is returned if materialization fails.
       */
-    private def tagOfType(
-        pre: Type,
-        tp: Type,
-        tagClass: Symbol): SearchResult = {
+    private def tagOfType(pre: Type, tp: Type, tagClass: Symbol): SearchResult = {
       def success(arg: Tree) = {
         def isMacroException(msg: String): Boolean =
           // [Eugene] very unreliable, ask Hubert about a better way
           msg contains "exception during macro expansion"
 
-        def processMacroExpansionError(
-            pos: Position,
-            msg: String): SearchResult = {
+        def processMacroExpansionError(pos: Position, msg: String): SearchResult = {
           // giving up and reporting all macro exceptions regardless of their source
           // this might lead to an avalanche of errors if one of your implicit macros misbehaves
           if (isMacroException(msg)) context.error(pos, msg)
@@ -1578,10 +1563,7 @@ trait Implicits {
             } else if (sym == RepeatedParamClass || sym == ByNameParamClass) {
               EmptyTree
             } else if (sym == ArrayClass && args.length == 1) {
-              manifestFactoryCall(
-                "arrayType",
-                args.head,
-                findManifest(args.head))
+              manifestFactoryCall("arrayType", args.head, findManifest(args.head))
             } else if (sym.isClass) {
               val classarg0 = gen.mkClassOf(tp1)
               val classarg = tp match {
@@ -1649,10 +1631,7 @@ trait Implicits {
                   |however typetag -> manifest conversion requires Scala reflection, which is not present on the classpath.
                   |to proceed put scala-reflect.jar on your compilation classpath and recompile.""")
           }
-          if (resolveClassTag(
-              pos,
-              tp,
-              allowMaterialization = true) == EmptyTree) {
+          if (resolveClassTag(pos, tp, allowMaterialization = true) == EmptyTree) {
             throw new TypeError(
               pos,
               sm"""to create a manifest here, it is necessary to interoperate with the type tag `$tagInScope` in scope.

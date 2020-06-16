@@ -41,9 +41,7 @@ object MiscTests extends TestSuite {
         check(
           ("A".? | "B").rep(1, max = 2),
           """ ("A".? | "B").rep(1, max = 2) """)
-        check(
-          ("A".? | "B").rep(sep = "C"),
-          """ ("A".? | "B").rep(sep = "C") """)
+        check(("A".? | "B").rep(sep = "C"), """ ("A".? | "B").rep(sep = "C") """)
         check(
           ("A".? | "B").rep(sep = "C", max = 2),
           """ ("A".? | "B").rep(sep = "C", max = 2) """)

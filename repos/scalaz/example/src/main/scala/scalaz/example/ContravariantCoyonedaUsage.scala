@@ -196,10 +196,7 @@ object ContravariantCoyonedaUsage extends App {
   // calls.
 
   val decomposedSortKeys: List[(CtCoyo[Order, String], Int)] =
-    List(
-      (CCOrder(caseInsensitively), 0),
-      (CCOrder(parseDate), 1),
-      (numerically4, 2))
+    List((CCOrder(caseInsensitively), 0), (CCOrder(parseDate), 1), (numerically4, 2))
 
   // Now we’re ready.
 
@@ -264,9 +261,7 @@ object ContravariantCoyonedaUsage extends App {
   // And then, similarly to `bySchwartzianListSorts', to combine one
   // of these `k's with a Vector lookup to produce a sort of records.
 
-  def recItemOrd(
-      i: Int,
-      o: CtCoyo[Order, String]): CtCoyo[Order, Vector[String]] =
+  def recItemOrd(i: Int, o: CtCoyo[Order, String]): CtCoyo[Order, Vector[String]] =
     o contramap (v => v(i))
 
   // Now what?  A `SortSpec' has several such values in it; how do we

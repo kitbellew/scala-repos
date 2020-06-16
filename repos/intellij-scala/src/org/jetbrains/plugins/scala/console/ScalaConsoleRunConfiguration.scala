@@ -31,9 +31,7 @@ class ScalaConsoleRunConfiguration(
     setModule(params.getModule)
   }
 
-  def getState(
-      executor: Executor,
-      env: ExecutionEnvironment): RunProfileState = {
+  def getState(executor: Executor, env: ExecutionEnvironment): RunProfileState = {
     val state = new JavaCommandLineState(env) {
       protected override def createJavaParameters: JavaParameters = {
         val params = createParams

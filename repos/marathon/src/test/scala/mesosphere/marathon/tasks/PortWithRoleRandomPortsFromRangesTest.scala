@@ -16,10 +16,7 @@ class PortWithRoleRandomPortsFromRangesTest extends MarathonSpec {
 
   private[this] val log = LoggerFactory.getLogger(getClass)
 
-  private[this] def portRange(
-      role: String,
-      begin: Long,
-      end: Long): PortRange = {
+  private[this] def portRange(role: String, begin: Long, end: Long): PortRange = {
     PortRange(role, begin.toInt, end.toInt)
   }
 

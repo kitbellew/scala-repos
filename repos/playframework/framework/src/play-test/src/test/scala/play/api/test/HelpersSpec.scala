@@ -62,10 +62,7 @@ class HelpersSpec extends Specification {
   "contentAsBytes" should {
 
     "extract the content from Result as Bytes" in {
-      contentAsBytes(Future.successful(Ok("abc"))) must_== ByteString(
-        97,
-        98,
-        99)
+      contentAsBytes(Future.successful(Ok("abc"))) must_== ByteString(97, 98, 99)
     }
 
     "extract the content from chunked Result as Bytes" in {

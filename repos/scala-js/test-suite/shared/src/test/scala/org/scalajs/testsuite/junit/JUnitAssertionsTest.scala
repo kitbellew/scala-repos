@@ -42,9 +42,7 @@ class JUnitAssertionsTest {
     testIfAsserts(assertTrue("'true' did not assertTrue", false), ShallNotPass)
     testIfAsserts(assertTrue(false), ShallNotPass)
 
-    testIfAsserts(
-      assertFalse("'false' did not assertFalse", true),
-      ShallNotPass)
+    testIfAsserts(assertFalse("'false' did not assertFalse", true), ShallNotPass)
     testIfAsserts(assertFalse(true), ShallNotPass)
   }
 
@@ -270,11 +268,7 @@ class JUnitAssertionsTest {
         delta: Double,
         equals: Boolean = true): Unit = {
       testIfAsserts(
-        assertEquals(
-          s"Asserting $expected == $actual",
-          expected,
-          actual,
-          delta),
+        assertEquals(s"Asserting $expected == $actual", expected, actual, delta),
         equals)
       testIfAsserts(assertEquals(expected, actual, delta), equals)
       testIfAsserts(
@@ -304,11 +298,7 @@ class JUnitAssertionsTest {
         delta: Float,
         equals: Boolean = true): Unit = {
       testIfAsserts(
-        assertEquals(
-          s"Asserting $expected == $actual",
-          expected,
-          actual,
-          delta),
+        assertEquals(s"Asserting $expected == $actual", expected, actual, delta),
         equals)
       testIfAsserts(assertEquals(expected, actual, delta), equals)
       testIfAsserts(
@@ -437,9 +427,7 @@ class JUnitAssertionsTest {
 
     testIfAsserts(assertThat(42, instanceOf(classOf[Int])))
     testIfAsserts(assertThat(42, instanceOf[Int](classOf[Long])), ShallNotPass)
-    testIfAsserts(
-      assertThat(42, instanceOf[Int](classOf[String])),
-      ShallNotPass)
+    testIfAsserts(assertThat(42, instanceOf[Int](classOf[String])), ShallNotPass)
 
     testIfAsserts(assertThat(Float.MaxValue, instanceOf(classOf[Float])))
     testIfAsserts(assertThat(Double.MaxValue, instanceOf(classOf[Double])))
@@ -520,8 +508,7 @@ class JUnitAssertionsTest {
 
       case Failure(ex: AssertionError)
           if ex.getMessage == "Assertion should have failed." =>
-        fail(
-          "testIfAsserts should have succeed with <throw new AssertionError>")
+        fail("testIfAsserts should have succeed with <throw new AssertionError>")
 
       case Failure(ex) => throw ex
     }

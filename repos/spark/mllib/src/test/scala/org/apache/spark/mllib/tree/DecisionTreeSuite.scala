@@ -43,7 +43,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
   // Tests examining individual elements of training
   /////////////////////////////////////////////////////////////////////////////
 
-  test("Binary classification with continuous features: split and bin calculation") {
+  test(
+    "Binary classification with continuous features: split and bin calculation") {
     val arr = DecisionTreeSuite.generateOrderedLabeledPointsWithLabel1()
     assert(arr.length === 1000)
     val rdd = sc.parallelize(arr)
@@ -132,10 +133,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         0,
         0)
       val featureSamples = Array.fill(200000)(math.random)
-      val splits = DecisionTree.findSplitsForContinuousFeature(
-        featureSamples,
-        fakeMetadata,
-        0)
+      val splits =
+        DecisionTree.findSplitsForContinuousFeature(featureSamples, fakeMetadata, 0)
       assert(splits.length === 5)
       assert(fakeMetadata.numSplits(0) === 5)
       assert(fakeMetadata.numBins(0) === 6)
@@ -163,10 +162,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         0)
       val featureSamples =
         Array(1, 1, 2, 2, 2, 2, 2, 2, 2, 2, 3).map(_.toDouble)
-      val splits = DecisionTree.findSplitsForContinuousFeature(
-        featureSamples,
-        fakeMetadata,
-        0)
+      val splits =
+        DecisionTree.findSplitsForContinuousFeature(featureSamples, fakeMetadata, 0)
       assert(splits.length === 3)
       // check returned splits are distinct
       assert(splits.distinct.length === splits.length)
@@ -191,10 +188,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         0)
       val featureSamples =
         Array(2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 3, 4, 5).map(_.toDouble)
-      val splits = DecisionTree.findSplitsForContinuousFeature(
-        featureSamples,
-        fakeMetadata,
-        0)
+      val splits =
+        DecisionTree.findSplitsForContinuousFeature(featureSamples, fakeMetadata, 0)
       assert(splits.length === 2)
       assert(splits(0) === 2.0)
       assert(splits(1) === 3.0)
@@ -219,10 +214,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         0)
       val featureSamples =
         Array(0, 1, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2).map(_.toDouble)
-      val splits = DecisionTree.findSplitsForContinuousFeature(
-        featureSamples,
-        fakeMetadata,
-        0)
+      val splits =
+        DecisionTree.findSplitsForContinuousFeature(featureSamples, fakeMetadata, 0)
       assert(splits.length === 1)
       assert(splits(0) === 1.0)
     }
@@ -505,9 +498,7 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
         0,
         Map(
           (rootNode1.leftNode.get.id, new RandomForest.NodeIndexInfo(0, None)),
-          (
-            rootNode1.rightNode.get.id,
-            new RandomForest.NodeIndexInfo(1, None)))))
+          (rootNode1.rightNode.get.id, new RandomForest.NodeIndexInfo(1, None)))))
     val nodeQueue = new mutable.Queue[(Int, Node)]()
     DecisionTree.findBestSplits(
       baggedInput,
@@ -524,10 +515,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     // Train one second-level node at a time.
     val nodesForGroupA = Map((0, Array(rootNode2.leftNode.get)))
-    val treeToNodeToIndexInfoA = Map((
-      0,
-      Map(
-        (rootNode2.leftNode.get.id, new RandomForest.NodeIndexInfo(0, None)))))
+    val treeToNodeToIndexInfoA = Map(
+      (0, Map((rootNode2.leftNode.get.id, new RandomForest.NodeIndexInfo(0, None)))))
     nodeQueue.clear()
     DecisionTree.findBestSplits(
       baggedInput,
@@ -539,10 +528,10 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
       bins,
       nodeQueue)
     val nodesForGroupB = Map((0, Array(rootNode2.rightNode.get)))
-    val treeToNodeToIndexInfoB = Map((
-      0,
-      Map(
-        (rootNode2.rightNode.get.id, new RandomForest.NodeIndexInfo(0, None)))))
+    val treeToNodeToIndexInfoB = Map(
+      (
+        0,
+        Map((rootNode2.rightNode.get.id, new RandomForest.NodeIndexInfo(0, None)))))
     nodeQueue.clear()
     DecisionTree.findBestSplits(
       baggedInput,
@@ -930,7 +919,8 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(split.threshold < 2020)
   }
 
-  test("Multiclass classification stump with 10-ary (ordered) categorical features") {
+  test(
+    "Multiclass classification stump with 10-ary (ordered) categorical features") {
     val arr = DecisionTreeSuite
       .generateCategoricalDataPointsForMulticlassForOrderedFeatures()
     val rdd = sc.parallelize(arr)
@@ -955,8 +945,9 @@ class DecisionTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(split.featureType === Categorical)
   }
 
-  test("Multiclass classification tree with 10-ary (ordered) categorical features," +
-    " with just enough bins") {
+  test(
+    "Multiclass classification tree with 10-ary (ordered) categorical features," +
+      " with just enough bins") {
     val arr = DecisionTreeSuite
       .generateCategoricalDataPointsForMulticlassForOrderedFeatures()
     val rdd = sc.parallelize(arr)
@@ -1225,11 +1216,8 @@ object DecisionTreeSuite extends SparkFunSuite {
     * Note: This does NOT set the child nodes.
     */
   private def createInternalNode(id: Int, featureType: FeatureType): Node = {
-    val node = Node(
-      nodeIndex = id,
-      new Predict(0.0, 1.0),
-      impurity = 0.5,
-      isLeaf = false)
+    val node =
+      Node(nodeIndex = id, new Predict(0.0, 1.0), impurity = 0.5, isLeaf = false)
     featureType match {
       case Continuous =>
         node.split = Some(

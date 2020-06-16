@@ -123,8 +123,8 @@ trait ShardService
 
   def shardService[F[+_]](
       service: HttpService[ByteChunk, F[Future[HttpResponse[QueryResult]]]])(
-      implicit F: Functor[F])
-      : HttpService[ByteChunk, F[Future[HttpResponse[ByteChunk]]]] = {
+      implicit
+      F: Functor[F]): HttpService[ByteChunk, F[Future[HttpResponse[ByteChunk]]]] = {
     service map { _ map { _ map { _ map queryResultToByteChunk } } }
   }
 
@@ -135,17 +135,15 @@ trait ShardService
           path("/'jobId") {
             get(new AsyncQueryResultServiceHandler(state.jobManager)) ~
               delete(
-                new QueryDeleteHandler[ByteChunk](
-                  state.jobManager,
-                  state.clock))
+                new QueryDeleteHandler[ByteChunk](state.jobManager, state.clock))
           } ~
             requireAccount(state.accountFinder) {
               // async handler *always* returns a JSON object containing the job ID
               shardService[({
                 type λ[+α] = (((APIKey, AccountDetails)) => α)
               })#λ] {
-                asyncQuery(post(
-                  new AsyncQueryServiceHandler(state.platform.asynchronous)))
+                asyncQuery(
+                  post(new AsyncQueryServiceHandler(state.platform.asynchronous)))
               }
             }
         }

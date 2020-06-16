@@ -71,9 +71,9 @@ trait Player { this: TestConductorExt ⇒
     _client = system.actorOf(
       Props(classOf[ClientFSM], name, controllerAddr),
       "TestConductorClient")
-    val a = system.actorOf(
-      Props(
-        new Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
+    val a =
+      system.actorOf(
+        Props(new Actor with RequiresMessageQueue[UnboundedMessageQueueSemantics] {
           var waiting: ActorRef = _
           def receive = {
             case fsm: ActorRef ⇒
@@ -201,8 +201,7 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
 
   when(Connecting, stateTimeout = settings.ConnectTimeout) {
     case Event(msg: ClientOp, _) ⇒
-      stay replying Status.Failure(
-        new IllegalStateException("not connected yet"))
+      stay replying Status.Failure(new IllegalStateException("not connected yet"))
     case Event(Connected(channel), _) ⇒
       channel.write(Hello(name.name, TestConductor().address))
       goto(AwaitDone) using Data(Some(channel), None)
@@ -224,8 +223,7 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
       log.error("received {} instead of Done", msg)
       goto(Failed)
     case Event(msg: ServerOp, _) ⇒
-      stay replying Status.Failure(
-        new IllegalStateException("not connected yet"))
+      stay replying Status.Failure(new IllegalStateException("not connected yet"))
     case Event(StateTimeout, _) ⇒
       log.error("connect timeout to TestConductor")
       goto(Failed)
@@ -256,8 +254,9 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
             case Some((barrier, requester)) ⇒
               val response =
                 if (b != barrier)
-                  Status.Failure(new RuntimeException(
-                    "wrong barrier " + b + " received while waiting for " + barrier))
+                  Status.Failure(
+                    new RuntimeException(
+                      "wrong barrier " + b + " received while waiting for " + barrier))
                 else if (!success)
                   Status.Failure(new RuntimeException("barrier failed: " + b))
                 else b
@@ -351,16 +350,13 @@ private[akka] class PlayerHandler(
 
   var nextAttempt: Deadline = _
 
-  override def channelOpen(
-      ctx: ChannelHandlerContext,
-      event: ChannelStateEvent) = log.debug("channel {} open", event.getChannel)
+  override def channelOpen(ctx: ChannelHandlerContext, event: ChannelStateEvent) =
+    log.debug("channel {} open", event.getChannel)
   override def channelClosed(
       ctx: ChannelHandlerContext,
       event: ChannelStateEvent) =
     log.debug("channel {} closed", event.getChannel)
-  override def channelBound(
-      ctx: ChannelHandlerContext,
-      event: ChannelStateEvent) =
+  override def channelBound(ctx: ChannelHandlerContext, event: ChannelStateEvent) =
     log.debug("channel {} bound", event.getChannel)
   override def channelUnbound(
       ctx: ChannelHandlerContext,
@@ -371,9 +367,7 @@ private[akka] class PlayerHandler(
       event: WriteCompletionEvent) =
     log.debug("channel {} written {}", event.getChannel, event.getWrittenAmount)
 
-  override def exceptionCaught(
-      ctx: ChannelHandlerContext,
-      event: ExceptionEvent) = {
+  override def exceptionCaught(ctx: ChannelHandlerContext, event: ExceptionEvent) = {
     log.debug("channel {} exception {}", event.getChannel, event.getCause)
     event.getCause match {
       case c: ConnectException if reconnects > 0 ⇒

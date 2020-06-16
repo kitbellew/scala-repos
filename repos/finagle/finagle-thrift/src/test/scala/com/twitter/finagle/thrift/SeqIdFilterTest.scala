@@ -12,10 +12,7 @@ import org.scalatest.junit.JUnitRunner
 import org.scalatest.mock.MockitoSugar
 
 @RunWith(classOf[JUnitRunner])
-class SeqIdFilterTest
-    extends FunSuite
-    with MockitoSugar
-    with OneInstancePerTest {
+class SeqIdFilterTest extends FunSuite with MockitoSugar with OneInstancePerTest {
   val protocolFactory = new TBinaryProtocol.Factory()
 
   def mkmsg(tmsg: TMessage, strictWrite: Boolean) = {
@@ -107,8 +104,7 @@ class SeqIdFilterTest
     }
 
     test(
-      "SeqIdFilter(%s) must not modify the underlying request buffer".format(
-        how)) {
+      "SeqIdFilter(%s) must not modify the underlying request buffer".format(how)) {
       val reqBuf = mkmsg(new TMessage("proc", TMessageType.CALL, 0))
       val origBuf = reqBuf.clone()
       filtered(new ThriftClientRequest(reqBuf, false))

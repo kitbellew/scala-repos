@@ -224,13 +224,10 @@ trait Emitter
           insertIdx) >>
           insertInstrAtMulti(
             restoreSwaps,
-            e.bytecode.length + pullUp.length + 1 + pushDown.length + saveSwaps.length))(
-          e)
+            e.bytecode.length + pullUp.length + 1 + pushDown.length + saveSwaps.length))(e)
       }
 
-    def emitConstraints(
-        expr: Expr,
-        dispatches: Set[ast.Dispatch]): EmitterState = {
+    def emitConstraints(expr: Expr, dispatches: Set[ast.Dispatch]): EmitterState = {
       val optState =
         for (const <- expr.constrainingExpr if !(const equalsIgnoreLoc expr))
           yield {
@@ -324,9 +321,7 @@ trait Emitter
         right.provenance)
     }
 
-    def emitWhere(
-        where: ast.Where,
-        dispatches: Set[ast.Dispatch]): EmitterState =
+    def emitWhere(where: ast.Where, dispatches: Set[ast.Dispatch]): EmitterState =
       StateT.apply[Id, Emission, Unit] { e =>
         val ast.Where(loc, left, right) = where
 
@@ -401,9 +396,7 @@ trait Emitter
                 nextId { id =>
                   state(id) >>
                     (StateT.apply[Id, Emission, Unit] { e =>
-                      (
-                        e.copy(keyParts = e.keyParts + ((solve, name) -> id)),
-                        ())
+                      (e.copy(keyParts = e.keyParts + ((solve, name) -> id)), ())
                     })
                 }
               }
@@ -447,9 +440,7 @@ trait Emitter
       }
     }
 
-    def prepareContext(
-        context: List[ast.Dispatch],
-        dispatches: Set[ast.Dispatch])(
+    def prepareContext(context: List[ast.Dispatch], dispatches: Set[ast.Dispatch])(
         f: Set[ast.Dispatch] => EmitterState): EmitterState =
       context match {
         case d :: tail => {
@@ -471,8 +462,7 @@ trait Emitter
         provs: NEL[Provenance],
         op2: BinaryOperation): (Set[Provenance], Vector[EmitterState]) = {
       // if `provs` has size one, we should not emit a join instruction
-      provs.tail.foldLeft(
-        (provs.head.possibilities, Vector.empty[EmitterState])) {
+      provs.tail.foldLeft((provs.head.possibilities, Vector.empty[EmitterState])) {
         case ((provAcc, instrAcc), prov) => {
           val joinInstr = StateT.apply[Id, Emission, Unit] { e =>
             val resolvedProv = e.subResolve(prov)
@@ -513,8 +503,7 @@ trait Emitter
 
       val actualStates = params zip actuals map {
         case (name, expr) =>
-          labelFormal(Identifier(Vector(), name), let)(
-            emitExpr(expr, dispatches))
+          labelFormal(Identifier(Vector(), name), let)(emitExpr(expr, dispatches))
       }
 
       StateT.apply[Id, Emission, Unit] { e =>
@@ -687,9 +676,8 @@ trait Emitter
 
                 val joinInstr = StateT.apply[Id, Emission, Unit] { e =>
                   val resolved = e.subResolve(provenance)
-                  emitInstr(
-                    if (resolved == ValueProvenance) Map2Cross(JoinArray)
-                    else Map2Match(JoinArray))(e)
+                  emitInstr(if (resolved == ValueProvenance) Map2Cross(JoinArray)
+                  else Map2Match(JoinArray))(e)
                 }
 
                 val joins = Vector.fill(singles.length - 1)(joinInstr)
@@ -706,36 +694,36 @@ trait Emitter
             def resolve(remap: Map[Int, Int])(i: Int): Int =
               remap get i map resolve(remap) getOrElse i
 
-            val (_, swaps) = indices.zipWithIndex.foldLeft(
-              (Map[Int, Int](), mzero[EmitterState])) {
-              case ((remap, state), (j, i)) if resolve(remap)(i) != j => {
-                // swap(i')
-                // swap(j)
-                // swap(i')
+            val (_, swaps) =
+              indices.zipWithIndex.foldLeft((Map[Int, Int](), mzero[EmitterState])) {
+                case ((remap, state), (j, i)) if resolve(remap)(i) != j => {
+                  // swap(i')
+                  // swap(j)
+                  // swap(i')
 
-                val i2 = resolve(remap)(i)
+                  val i2 = resolve(remap)(i)
 
-                val state2 = {
-                  if (j == 0) { //required for correctness
-                    emitInstr(PushNum(i2.toString)) >> emitInstr(
-                      Map2Cross(ArraySwap))
-                  } else if (i2 == 0) { //not required for correctness, but nice simplification
-                    emitInstr(PushNum(j.toString)) >> emitInstr(
-                      Map2Cross(ArraySwap))
-                  } else {
-                    val swps = (i2 :: j :: i2 :: Nil)
-                    swps map { idx =>
-                      emitInstr(PushNum(idx.toString)) >> emitInstr(
+                  val state2 = {
+                    if (j == 0) { //required for correctness
+                      emitInstr(PushNum(i2.toString)) >> emitInstr(
                         Map2Cross(ArraySwap))
-                    } reduce { _ >> _ }
+                    } else if (i2 == 0) { //not required for correctness, but nice simplification
+                      emitInstr(PushNum(j.toString)) >> emitInstr(
+                        Map2Cross(ArraySwap))
+                    } else {
+                      val swps = (i2 :: j :: i2 :: Nil)
+                      swps map { idx =>
+                        emitInstr(PushNum(idx.toString)) >> emitInstr(
+                          Map2Cross(ArraySwap))
+                      } reduce { _ >> _ }
+                    }
                   }
+
+                  (remap + (j -> i2), state >> state2)
                 }
 
-                (remap + (j -> i2), state >> state2)
+                case (pair, _) => pair
               }
-
-              case (pair, _) => pair
-            }
 
             joined >> swaps
           }

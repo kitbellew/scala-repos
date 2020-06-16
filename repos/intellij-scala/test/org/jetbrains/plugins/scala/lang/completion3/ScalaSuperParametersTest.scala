@@ -64,8 +64,7 @@ class TUI {
 }
       """.replaceAll("\r", "").trim()
 
-    completeLookupItem(
-      activeLookup.find(le => le.getLookupString == "x, y").get)
+    completeLookupItem(activeLookup.find(le => le.getLookupString == "x, y").get)
     checkResultByText(resultText)
   }
 
@@ -94,8 +93,7 @@ class TUI {
 }
       """.replaceAll("\r", "").trim()
 
-    completeLookupItem(
-      activeLookup.find(le => le.getLookupString == "x, y").get)
+    completeLookupItem(activeLookup.find(le => le.getLookupString == "x, y").get)
     checkResultByText(resultText)
   }
 
@@ -134,8 +132,7 @@ class TUI {
 }
       """.replaceAll("\r", "").trim()
 
-    completeLookupItem(
-      activeLookup.find(le => le.getLookupString == "x, y").get)
+    completeLookupItem(activeLookup.find(le => le.getLookupString == "x, y").get)
     checkResultByText(resultText)
   }
 

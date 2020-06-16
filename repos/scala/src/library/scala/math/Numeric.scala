@@ -154,9 +154,7 @@ object Numeric {
   implicit object FloatIsFractional
       extends FloatIsFractional
       with Ordering.FloatOrdering
-  object FloatAsIfIntegral
-      extends FloatAsIfIntegral
-      with Ordering.FloatOrdering {}
+  object FloatAsIfIntegral extends FloatAsIfIntegral with Ordering.FloatOrdering {}
 
   trait DoubleIsConflicted extends Numeric[Double] {
     def plus(x: Double, y: Double): Double = x + y

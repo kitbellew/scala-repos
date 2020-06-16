@@ -92,8 +92,7 @@ class CorsTest extends FlatSpec with MustMatchers {
       Some("juughaus"))
     response.headerMap.get("Access-Control-Allow-Credentials") must be(
       Some("true"))
-    response.headerMap.get("Access-Control-Expose-Headers") must be(
-      Some("Icey"))
+    response.headerMap.get("Access-Control-Expose-Headers") must be(Some("Icey"))
     response.headerMap.get("Vary") must be(Some("Origin"))
     response.contentString must be("#guwop")
   }

@@ -12,11 +12,7 @@ import mesosphere.marathon.api.v2.Validation._
 import mesosphere.marathon.api.v2.json.AppUpdate
 import mesosphere.marathon.api.v2.json.Formats._
 import mesosphere.marathon.api.{AuthResource, MarathonMediaType, RestResource}
-import mesosphere.marathon.core.appinfo.{
-  AppInfoService,
-  AppSelector,
-  TaskCounts
-}
+import mesosphere.marathon.core.appinfo.{AppInfoService, AppSelector, TaskCounts}
 import mesosphere.marathon.core.appinfo.AppInfo
 import mesosphere.marathon.core.base.Clock
 import mesosphere.marathon.event.{ApiPostEvent, EventModule}
@@ -80,8 +76,8 @@ class AppsResource @Inject() (
       withValid(Json.parse(body).as[AppDefinition].withCanonizedIds()) {
         appDef =>
           val now = clock.now()
-          val app = appDef.copy(versionInfo =
-            AppDefinition.VersionInfo.OnlyVersion(now))
+          val app =
+            appDef.copy(versionInfo = AppDefinition.VersionInfo.OnlyVersion(now))
 
           checkAuthorization(CreateApp, app)
 
@@ -210,8 +206,7 @@ class AppsResource @Inject() (
             }
 
           deploymentResult(
-            result(
-              groupManager.update(PathId.empty, updateGroup, version, force)))
+            result(groupManager.update(PathId.empty, updateGroup, version, force)))
       }
     }
 
@@ -327,8 +322,7 @@ class AppsResource @Inject() (
       b.toLowerCase contains a.toLowerCase
     val selectors = Seq[Option[AppSelector]](
       cmd.map(c => AppSelector(_.cmd.exists(containCaseInsensitive(c, _)))),
-      id.map(s =>
-        AppSelector(app => containCaseInsensitive(s, app.id.toString))),
+      id.map(s => AppSelector(app => containCaseInsensitive(s, app.id.toString))),
       label.map(new LabelSelectorParsers().parsed)
     ).flatten
     AppSelector.forall(selectors)

@@ -103,9 +103,7 @@ object FutureRef {
   /**
     * Wraps an ActorRef and a Future into a FutureRef.
     */
-  private[akka] def wrap[T](
-      actorRef: ActorRef,
-      future: Future[T]): FutureRef[T] = {
+  private[akka] def wrap[T](actorRef: ActorRef, future: Future[T]): FutureRef[T] = {
     new FutureRefImpl(actorRef, future)
   }
 
@@ -143,9 +141,7 @@ object FutureRef {
   }
 }
 
-private[akka] class PromiseRefImpl[T](
-    val ref: ActorRef,
-    val promise: Promise[T])
+private[akka] class PromiseRefImpl[T](val ref: ActorRef, val promise: Promise[T])
     extends PromiseRef[T]
     with FutureRef[T] {
   def toFutureRef: FutureRef[T] = this

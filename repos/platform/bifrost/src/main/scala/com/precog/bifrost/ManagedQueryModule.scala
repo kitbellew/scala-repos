@@ -187,8 +187,7 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
               "Query was cancelled before it was completed.")
           case Expired =>
             M.jobId map (jobManager.expire(_, yggConfig.clock.now()))
-            throw QueryExpiredException(
-              "Query expired before it was completed.")
+            throw QueryExpiredException("Query expired before it was completed.")
         }
     }
 
@@ -274,10 +273,12 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
     def start(): Unit =
       lock.synchronized {
         if (poller.isEmpty) {
-          poller = Some(jobActorSystem.scheduler
-            .schedule(yggConfig.jobPollFrequency, yggConfig.jobPollFrequency) {
-              poll()
-            })
+          poller =
+            Some(
+              jobActorSystem.scheduler
+                .schedule(yggConfig.jobPollFrequency, yggConfig.jobPollFrequency) {
+                  poll()
+                })
         }
       }
 

@@ -41,8 +41,7 @@ object JsError {
 
   def merge(
       e1: Seq[(JsPath, Seq[ValidationError])],
-      e2: Seq[(JsPath, Seq[ValidationError])])
-      : Seq[(JsPath, Seq[ValidationError])] = {
+      e2: Seq[(JsPath, Seq[ValidationError])]): Seq[(JsPath, Seq[ValidationError])] = {
     (e1 ++ e2).groupBy(_._1).mapValues(_.map(_._2).flatten).toList
   }
 
@@ -84,9 +83,7 @@ sealed trait JsResult[+A] { self =>
   def isSuccess: Boolean = this.isInstanceOf[JsSuccess[_]]
   def isError: Boolean = this.isInstanceOf[JsError]
 
-  def fold[X](
-      invalid: Seq[(JsPath, Seq[ValidationError])] => X,
-      valid: A => X): X =
+  def fold[X](invalid: Seq[(JsPath, Seq[ValidationError])] => X, valid: A => X): X =
     this match {
       case JsSuccess(v, _) => valid(v)
       case JsError(e)      => invalid(e)

@@ -83,8 +83,7 @@ private[spark] abstract class Stopwatch extends Serializable {
 /**
   * A local [[Stopwatch]].
   */
-private[spark] class LocalStopwatch(override val name: String)
-    extends Stopwatch {
+private[spark] class LocalStopwatch(override val name: String) extends Stopwatch {
 
   private var elapsedTime: Long = 0L
 

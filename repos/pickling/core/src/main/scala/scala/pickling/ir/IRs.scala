@@ -144,11 +144,7 @@ class IRs[U <: Universe with Singleton](val uni: U) {
           }
         val symTpe =
           existentialAbstraction(quantified, rawSymTpe)
-        FieldIR(
-          sym.getter.name.toString,
-          symTpe,
-          None,
-          Some(sym.getter.asMethod))
+        FieldIR(sym.getter.name.toString, symTpe, None, Some(sym.getter.asMethod))
     }).toList ++ javaFieldIRs
   }
 

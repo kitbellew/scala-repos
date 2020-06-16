@@ -75,8 +75,7 @@ object Flow {
       source: Graph[SourceShape[O], M2],
       combine: function.Function2[M1, M2, M]): Flow[I, O, M] =
     new Flow(
-      scaladsl.Flow.fromSinkAndSourceMat(sink, source)(
-        combinerToScala(combine)))
+      scaladsl.Flow.fromSinkAndSourceMat(sink, source)(combinerToScala(combine)))
 }
 
 /** Create a `Flow` which can process elements of type `T`. */
@@ -321,8 +320,8 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     *
     * '''Cancels when''' downstream cancels
     */
-  def mapConcat[T](f: function.Function[Out, java.lang.Iterable[T]])
-      : javadsl.Flow[In, T, Mat] =
+  def mapConcat[T](
+      f: function.Function[Out, java.lang.Iterable[T]]): javadsl.Flow[In, T, Mat] =
     new Flow(delegate.mapConcat { elem ⇒ Util.immutableSeq(f(elem)) })
 
   /**
@@ -1286,8 +1285,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     * '''Cancels when''' downstream cancels
     */
   def flatMapConcat[T, M](
-      f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-      : Flow[In, T, Mat] =
+      f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
     new Flow(delegate.flatMapConcat[T, M](x ⇒ f(x)))
 
   /**
@@ -1305,8 +1303,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def flatMapMerge[T, M](
       breadth: Int,
-      f: function.Function[Out, _ <: Graph[SourceShape[T], M]])
-      : Flow[In, T, Mat] =
+      f: function.Function[Out, _ <: Graph[SourceShape[T], M]]): Flow[In, T, Mat] =
     new Flow(delegate.flatMapMerge(breadth, o ⇒ f(o)))
 
   /**
@@ -1635,8 +1632,7 @@ final class Flow[-In, +Out, +Mat](delegate: scaladsl.Flow[In, Out, Mat])
     */
   def zipWith[Out2, Out3](
       that: Graph[SourceShape[Out2], _],
-      combine: function.Function2[Out, Out2, Out3])
-      : javadsl.Flow[In, Out3, Mat] =
+      combine: function.Function2[Out, Out2, Out3]): javadsl.Flow[In, Out3, Mat] =
     new Flow(delegate.zipWith[Out2, Out3](that)(combinerToScala(combine)))
 
   /**

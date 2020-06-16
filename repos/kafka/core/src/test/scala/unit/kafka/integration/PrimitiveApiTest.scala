@@ -122,8 +122,7 @@ class PrimitiveApiTest
       producerProps = props
     )
 
-    stringProducer1.send(
-      new KeyedMessage[String, String](topic, "test-message"))
+    stringProducer1.send(new KeyedMessage[String, String](topic, "test-message"))
 
     val fetched = consumer.fetch(
       new FetchRequestBuilder().addFetch(topic, 0, 0, 10000).build())

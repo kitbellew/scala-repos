@@ -137,8 +137,7 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
     }
   }
 
-  implicit def canSet[T]
-      : OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
+  implicit def canSet[T]: OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] = {
     new OpSet.InPlaceImpl2[VectorBuilder[T], VectorBuilder[T]] {
       def apply(a: VectorBuilder[T], b: VectorBuilder[T]) {
         if (a eq b) return
@@ -157,11 +156,8 @@ trait VectorBuilderOps { this: VectorBuilder.type =>
       op: InPlaceImpl2[Op, VectorBuilder[V], Other],
       semi: Semiring[V],
       dev: Zero[V],
-      classTag: ClassTag[V])
-      : UImpl2[Op, VectorBuilder[V], Other, VectorBuilder[V]] = {
-    BinaryOp.fromCopyAndUpdate[VectorBuilder[V], Other, Op](
-      op,
-      canCopyBuilder[V])
+      classTag: ClassTag[V]): UImpl2[Op, VectorBuilder[V], Other, VectorBuilder[V]] = {
+    BinaryOp.fromCopyAndUpdate[VectorBuilder[V], Other, Op](op, canCopyBuilder[V])
   }
 
   @expand

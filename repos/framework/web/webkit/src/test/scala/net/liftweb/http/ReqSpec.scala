@@ -196,8 +196,7 @@ object ReqSpec extends Specification with XmlMatchers with Mockito {
         req("text/json").forcedBodyAsJson should_== Full(parsedJson)
       }
 
-      "with invalid JSON should return a Failure" in new mockJsonReq(
-        "epic fail") {
+      "with invalid JSON should return a Failure" in new mockJsonReq("epic fail") {
         req("text/json").json should beAnInstanceOf[Failure]
       }
     }

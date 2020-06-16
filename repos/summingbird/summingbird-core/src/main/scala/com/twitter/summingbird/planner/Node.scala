@@ -206,22 +206,18 @@ object Dag {
     }
     val producerToNode = buildProducerToNodeLookUp(registry)
     val dag = registry.foldLeft(
-      Dag(
-        originalTail,
-        producerToPriorityNames,
-        tail,
-        producerToNode,
-        registry)) { (curDag, stormNode) =>
-      // Here we are building the Dag's connection topology.
-      // We visit every producer and connect the Node's represented by its dependant and dependancies.
-      // Producers which live in the same node will result in a NOP in connect.
-      stormNode.members.foldLeft(curDag) { (innerDag, dependantProducer) =>
-        Producer
-          .dependenciesOf(dependantProducer)
-          .foldLeft(innerDag) { (dag, dep) =>
-            dag.connect(dep, dependantProducer)
-          }
-      }
+      Dag(originalTail, producerToPriorityNames, tail, producerToNode, registry)) {
+      (curDag, stormNode) =>
+        // Here we are building the Dag's connection topology.
+        // We visit every producer and connect the Node's represented by its dependant and dependancies.
+        // Producers which live in the same node will result in a NOP in connect.
+        stormNode.members.foldLeft(curDag) { (innerDag, dependantProducer) =>
+          Producer
+            .dependenciesOf(dependantProducer)
+            .foldLeft(innerDag) { (dag, dep) =>
+              dag.connect(dep, dependantProducer)
+            }
+        }
     }
 
     def tryGetName(

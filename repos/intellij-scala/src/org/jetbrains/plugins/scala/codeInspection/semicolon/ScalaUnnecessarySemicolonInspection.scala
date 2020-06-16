@@ -45,8 +45,7 @@ class ScalaUnnecessarySemicolonInspection extends LocalInspectionTool {
               element.getManager)
             var elem1 = file.findElementAt(offset - 1)
             var elem2 = newFile.findElementAt(offset - 1)
-            while (elem1 != null && endOffset(
-                elem1) <= offset && elem2 != null) {
+            while (elem1 != null && endOffset(elem1) <= offset && elem2 != null) {
               if (elem1.getText != elem2.getText) return
               if (elem1.getNode.getElementType != elem2.getNode.getElementType)
                 return

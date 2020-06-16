@@ -40,10 +40,7 @@ trait MilestonesControllerBase extends ControllerBase {
       params.getOrElse("state", "open"),
       getMilestonesWithIssueCount(repository.owner, repository.name),
       repository,
-      hasWritePermission(
-        repository.owner,
-        repository.name,
-        context.loginAccount)
+      hasWritePermission(repository.owner, repository.name, context.loginAccount)
     )
   })
 
@@ -71,23 +68,22 @@ trait MilestonesControllerBase extends ControllerBase {
       } getOrElse NotFound
     })
 
-  post(
-    "/:owner/:repository/issues/milestones/:milestoneId/edit",
-    milestoneForm)(collaboratorsOnly { (form, repository) =>
-    params("milestoneId").toIntOpt.flatMap {
-      milestoneId =>
-        getMilestone(repository.owner, repository.name, milestoneId).map {
-          milestone =>
-            updateMilestone(
-              milestone.copy(
-                title = form.title,
-                description = form.description,
-                dueDate = form.dueDate))
-            redirect(
-              s"/${repository.owner}/${repository.name}/issues/milestones")
-        }
-    } getOrElse NotFound
-  })
+  post("/:owner/:repository/issues/milestones/:milestoneId/edit", milestoneForm)(
+    collaboratorsOnly { (form, repository) =>
+      params("milestoneId").toIntOpt.flatMap {
+        milestoneId =>
+          getMilestone(repository.owner, repository.name, milestoneId).map {
+            milestone =>
+              updateMilestone(
+                milestone.copy(
+                  title = form.title,
+                  description = form.description,
+                  dueDate = form.dueDate))
+              redirect(
+                s"/${repository.owner}/${repository.name}/issues/milestones")
+          }
+      } getOrElse NotFound
+    })
 
   get("/:owner/:repository/issues/milestones/:milestoneId/close")(
     collaboratorsOnly { repository =>

@@ -44,9 +44,7 @@ private[netty4] trait ChannelSnooper extends ChannelDuplexHandler {
 @Sharable
 private[netty4] class ByteBufSnooper(val name: String) extends ChannelSnooper {
 
-  override def exceptionCaught(
-      ctx: ChannelHandlerContext,
-      exn: Throwable): Unit = {
+  override def exceptionCaught(ctx: ChannelHandlerContext, exn: Throwable): Unit = {
     printer("Snooped exception", exn)
     super.exceptionCaught(ctx, exn)
   }
@@ -116,9 +114,7 @@ private[netty4] class SimpleChannelSnooper(val name: String)
     super.flush(ctx)
   }
 
-  override def close(
-      ctx: ChannelHandlerContext,
-      future: ChannelPromise): Unit = {
+  override def close(ctx: ChannelHandlerContext, future: ChannelPromise): Unit = {
     printEvent(ctx.channel, "close")
     super.close(ctx, future)
   }

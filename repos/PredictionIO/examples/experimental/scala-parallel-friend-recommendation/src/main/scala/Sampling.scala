@@ -97,10 +97,7 @@ object Sampling {
   }
 
   // Samples vertices uniformly and induces edges.
-  def nodeSampling(
-      sc: SparkContext,
-      graph: Graph[Int, Int],
-      fraction: Double) = {
+  def nodeSampling(sc: SparkContext, graph: Graph[Int, Int], fraction: Double) = {
     val vertices = graph.vertices.sample(false, fraction, Random.nextLong)
     val vertexMap = vertices.collectAsMap()
     val edges = graph.edges.filter(e =>

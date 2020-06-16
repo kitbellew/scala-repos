@@ -30,10 +30,7 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.{
 }
 import org.jetbrains.plugins.scala.lang.psi.impl.toplevel.typedef.TypeDefinitionMembers.SignatureNodes
 import org.jetbrains.plugins.scala.lang.psi.stubs.ScTemplateDefinitionStub
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.psi.types.{
   PhysicalSignature,
   ScSubstitutor,
@@ -234,10 +231,7 @@ class ScClassImpl private (
     buffer ++= functions
       .filter(_.isConstructor)
       .flatMap(
-        _.getFunctionWrappers(
-          isStatic = false,
-          isInterface = false,
-          Some(this)))
+        _.getFunctionWrappers(isStatic = false, isInterface = false, Some(this)))
     constructor match {
       case Some(x) => buffer ++= x.getFunctionWrappers
       case _       =>

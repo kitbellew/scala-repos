@@ -127,8 +127,7 @@ object Test extends ScaladocModelTest {
     assert(conv.members.length == 1)
     assert(conv.constraints.length == 0)
     assert(isShadowed(conv._member("convToEnrichedA")))
-    assert(
-      conv._member("convToEnrichedA").resultType.name == "Bar[Foo[Double]]")
+    assert(conv._member("convToEnrichedA").resultType.name == "Bar[Foo[Double]]")
 
     // def convToMyNumericA: Double        // enrichA6: (if showAll is set) with a constraint that there is x: MyNumeric[Double] implicit in scope
     conv = B._conversion(A.qualifiedName + ".enrichA6")
@@ -220,8 +219,7 @@ object Test extends ScaladocModelTest {
     assert(conv.members.length == 1)
     assert(conv.constraints.length == 0)
     assert(isShadowed(conv._member("convToEnrichedA")))
-    assert(
-      conv._member("convToEnrichedA").resultType.name == "Bar[Foo[String]]")
+    assert(conv._member("convToEnrichedA").resultType.name == "Bar[Foo[String]]")
 
     // def convToMyNumericA: String        // enrichA6: (if showAll is set) with a constraint that there is x: MyNumeric[String] implicit in scope
     conv = D._conversion(A.qualifiedName + ".enrichA6")

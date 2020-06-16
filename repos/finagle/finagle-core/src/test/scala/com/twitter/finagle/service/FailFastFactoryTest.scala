@@ -38,12 +38,8 @@ class FailFastFactoryTest
       when(underlying.close(any[Time])).thenReturn(Future.Done)
       val stats = new InMemoryStatsReceiver
       val label = "test"
-      val failfast = new FailFastFactory(
-        underlying,
-        stats,
-        timer,
-        label,
-        backoffs = backoffs)
+      val failfast =
+        new FailFastFactory(underlying, stats, timer, label, backoffs = backoffs)
 
       val p, q, r = new Promise[Service[Int, Int]]
       when(underlying()).thenReturn(p)

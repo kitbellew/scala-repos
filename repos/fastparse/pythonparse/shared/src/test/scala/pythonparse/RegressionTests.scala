@@ -214,11 +214,7 @@ object RegressionTests extends TestSuite {
     'comment_after_decorator - TestUtils.check(
       Statements.file_input,
       Seq(
-        ClassDef(
-          'GenericForeignKeyTests,
-          Nil,
-          Seq(Pass),
-          Seq('override_settings))),
+        ClassDef('GenericForeignKeyTests, Nil, Seq(Pass), Seq('override_settings))),
       """@override_settings # ForeignKey(unique=True)
         |class GenericForeignKeyTests:
         |    pass

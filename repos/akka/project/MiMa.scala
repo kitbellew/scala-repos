@@ -127,8 +127,7 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.testkit.TestKitBase.expectMsg"),
       // Adding akka.japi.Option.getOrElse #15383
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.japi.Option.getOrElse"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.japi.Option.getOrElse"),
       // Change to internal API to fix #15991
       ProblemFilters.exclude[MissingClassProblem](
         "akka.io.TcpConnection$UpdatePendingWrite$"),
@@ -192,15 +191,13 @@ object MiMa extends AutoPlugin {
         "akka.cluster.Gossip.akka$cluster$Gossip$$convergenceMemberStatus"),
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.cluster.Gossip.isLeader"),
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.cluster.Gossip.leader"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.cluster.Gossip.leader"),
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.cluster.Gossip.roleLeader"),
       // copied everything above from release-2.3 branch
 
       // final case classes
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.dispatch.ThreadPoolConfig"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.ThreadPoolConfig"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.dispatch.UnboundedDequeBasedMailbox"),
       ProblemFilters.exclude[FinalClassProblem](
@@ -212,16 +209,13 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[FinalClassProblem](
         "akka.dispatch.DefaultDispatcherPrerequisites"),
       ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.BoundedMailbox"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.dispatch.UnboundedMailbox"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.UnboundedMailbox"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.dispatch.SingleConsumerOnlyUnboundedMailbox"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.dispatch.CachingConfig$StringPathEntry"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.dispatch.sysmsg.Supervise"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.dispatch.sysmsg.Recreate"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.sysmsg.Supervise"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.sysmsg.Recreate"),
       ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.sysmsg.Resume"),
       ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.sysmsg.Failed"),
       ProblemFilters.exclude[FinalClassProblem](
@@ -229,8 +223,7 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.sysmsg.Create"),
       ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.sysmsg.Suspend"),
       ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.sysmsg.Unwatch"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.dispatch.sysmsg.Terminate"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.dispatch.sysmsg.Terminate"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.AddressTerminated"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.FSM$Event"),
       ProblemFilters.exclude[FinalClassProblem](
@@ -244,10 +237,8 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.FSM$Transition"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.actor.FSM$SubscribeTransitionCallBack"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.actor.SelectChildPattern"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.actor.SerializedActorRef"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.actor.SelectChildPattern"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.actor.SerializedActorRef"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.actor.TypedActor$SerializedMethodCall"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.Status$Success"),
@@ -261,17 +252,14 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.ChildRestartStats"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.ActorNotFound"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.TypedProps"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.actor.SchedulerException"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.actor.DeathPactException"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.actor.SchedulerException"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.actor.DeathPactException"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.FSM$Timer"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.Identify"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.actor.InvalidMessageException"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.Terminated"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.actor.PreRestartException"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.actor.PreRestartException"),
       ProblemFilters.exclude[FinalClassProblem]("akka.actor.ActorIdentity"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.actor.TypedActor$MethodCall"),
@@ -307,11 +295,9 @@ object MiMa extends AutoPlugin {
         "akka.io.TcpConnection$ConnectionInfo"),
       ProblemFilters.exclude[FinalClassProblem]("akka.io.Tcp$ErrorClosed"),
       ProblemFilters.exclude[FinalClassProblem]("akka.io.UdpConnected$Send"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.io.UdpConnected$Received"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.io.UdpConnected$Received"),
       ProblemFilters.exclude[FinalClassProblem]("akka.io.Udp$CommandFailed"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.io.SelectionHandler$Retry"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.io.SelectionHandler$Retry"),
       ProblemFilters.exclude[FinalClassProblem]("akka.io.Tcp$WriteFile"),
       ProblemFilters.exclude[FinalClassProblem]("akka.io.Tcp$Bound"),
       ProblemFilters.exclude[FinalClassProblem](
@@ -343,8 +329,7 @@ object MiMa extends AutoPlugin {
         "akka.serialization.Serialization$Information"),
       ProblemFilters.exclude[FinalClassProblem]("akka.util.WildcardTree"),
       ProblemFilters.exclude[FinalClassProblem]("akka.routing.AddRoutee"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.routing.ConsistentRoutee"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.routing.ConsistentRoutee"),
       ProblemFilters.exclude[FinalClassProblem]("akka.routing.SeveralRoutees"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.routing.ScatterGatherFirstCompletedRoutees"),
@@ -359,32 +344,26 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[FinalClassProblem]("akka.routing.Routees"),
       ProblemFilters.exclude[FinalClassProblem]("akka.routing.WithListeners"),
       ProblemFilters.exclude[FinalClassProblem]("akka.testkit.TestEvent$Mute"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.testkit.TestActor$UnWatch"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.testkit.TestActor$UnWatch"),
       ProblemFilters.exclude[FinalClassProblem]("akka.testkit.ErrorFilter"),
       ProblemFilters.exclude[FinalClassProblem]("akka.testkit.InfoFilter"),
       ProblemFilters.exclude[FinalClassProblem]("akka.testkit.TestActor$Watch"),
       ProblemFilters.exclude[FinalClassProblem]("akka.testkit.WarningFilter"),
       ProblemFilters.exclude[FinalClassProblem]("akka.testkit.DebugFilter"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.testkit.DeadLettersFilter"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.testkit.DeadLettersFilter"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.testkit.TestActor$RealMessage"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.testkit.TestEvent$UnMute"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.testkit.TestEvent$UnMute"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.testkit.TestActor$SetIgnore"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.testkit.TestActor$SetAutoPilot"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.testkit.CustomEventFilter"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.testkit.CustomEventFilter"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.EndpointManager$ListensFailure"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.remote.InvalidAssociation"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.remote.InvalidAssociation"),
       ProblemFilters.exclude[FinalClassProblem]("akka.remote.RemoteScope"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.remote.AckedReceiveBuffer"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.remote.AckedReceiveBuffer"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.RemoteWatcher$WatchRemote"),
       ProblemFilters.exclude[FinalClassProblem](
@@ -468,7 +447,8 @@ object MiMa extends AutoPlugin {
         "akka.remote.transport.TestTransport$DisassociateAttempt"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.transport.ProtocolStateActor$HandleListenerRegistered"),
-      ProblemFilters.exclude[FinalClassProblem]("akka.remote.transport.ProtocolStateActor$OutboundUnderlyingAssociated"),
+      ProblemFilters.exclude[FinalClassProblem](
+        "akka.remote.transport.ProtocolStateActor$OutboundUnderlyingAssociated"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.remote.transport.ProtocolStateActor$InboundUnassociated"),
       ProblemFilters.exclude[FinalClassProblem]("akka.remote.transport.AkkaProtocolTransport$AssociateUnderlyingRefuseUid"),
@@ -661,8 +641,7 @@ object MiMa extends AutoPlugin {
         "akka.cluster.InternalClusterAction$JoinSeedNodes"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.cluster.StandardMetrics$HeapMemory"),
-      ProblemFilters.exclude[FinalClassProblem](
-        "akka.cluster.VectorClockStats"),
+      ProblemFilters.exclude[FinalClassProblem]("akka.cluster.VectorClockStats"),
       ProblemFilters.exclude[FinalClassProblem]("akka.cluster.NodeMetrics"),
       ProblemFilters.exclude[FinalClassProblem](
         "akka.cluster.Reachability$Record"),
@@ -728,14 +707,11 @@ object MiMa extends AutoPlugin {
       FilterAnyProblem("akka.routing.ConsistentHashingRouter"),
       ProblemFilters.exclude[MissingClassProblem](
         "akka.routing.SmallestMailboxRouter$"),
-      ProblemFilters.exclude[MissingClassProblem](
-        "akka.routing.RouterRoutees$"),
+      ProblemFilters.exclude[MissingClassProblem]("akka.routing.RouterRoutees$"),
       ProblemFilters.exclude[MissingClassProblem](
         "akka.routing.ScatterGatherFirstCompletedRouter"),
-      ProblemFilters.exclude[MissingClassProblem](
-        "akka.routing.CurrentRoutees$"),
-      ProblemFilters.exclude[MissingClassProblem](
-        "akka.routing.CurrentRoutees"),
+      ProblemFilters.exclude[MissingClassProblem]("akka.routing.CurrentRoutees$"),
+      ProblemFilters.exclude[MissingClassProblem]("akka.routing.CurrentRoutees"),
       ProblemFilters.exclude[MissingClassProblem]("akka.routing.RouterRoutees"),
       ProblemFilters.exclude[MissingClassProblem]("akka.routing.RandomRouter"),
       // class akka.routing.CollectRouteeRefs does not have a correspondent in new version
@@ -756,8 +732,7 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[MissingClassProblem](
         "akka.routing.RoundRobinRouter"),
       // class akka.routing.BroadcastRouter does not have a correspondent in new version
-      ProblemFilters.exclude[MissingClassProblem](
-        "akka.routing.BroadcastRouter"),
+      ProblemFilters.exclude[MissingClassProblem]("akka.routing.BroadcastRouter"),
       // class akka.routing.SmallestMailboxRouter does not have a correspondent in new version
       ProblemFilters.exclude[MissingClassProblem](
         "akka.routing.SmallestMailboxRouter"),
@@ -825,8 +800,7 @@ object MiMa extends AutoPlugin {
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.actor.IndirectActorProducer.UntypedActorFactoryConsumerClass"),
       FilterAnyProblem("akka.actor.ActorSystemImpl"),
-      ProblemFilters.exclude[MissingMethodProblem](
-        "akka.pattern.AskSupport.ask"),
+      ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.AskSupport.ask"),
       FilterAnyProblem("akka.actor.ActorSystemImpl$TerminationCallbacks"),
       ProblemFilters.exclude[MissingMethodProblem](
         "akka.event.Logging#LogEvent.getMDC"),
@@ -938,7 +912,8 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$child_="),
         ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$restartCount"),
         ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$restartCount_="),
-        ProblemFilters.exclude[MissingMethodProblem]("akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$child"),
+        ProblemFilters.exclude[MissingMethodProblem](
+          "akka.pattern.BackoffSupervisor.akka$pattern$BackoffSupervisor$$child"),
         // #19487
         FilterAnyProblem("akka.actor.dungeon.Children"),
         // #19440
@@ -980,7 +955,8 @@ object MiMa extends AutoPlugin {
           "akka.http.scaladsl.model.headers.CacheDirectives#private.apply"),
         ProblemFilters.exclude[IncompatibleMethTypeProblem](
           "akka.http.scaladsl.model.headers.CacheDirectives#no-cache.apply"),
-        ProblemFilters.exclude[ReversedMissingMethodProblem]("akka.http.impl.model.parser.SimpleHeaders.strict-transport-security"),
+        ProblemFilters.exclude[ReversedMissingMethodProblem](
+          "akka.http.impl.model.parser.SimpleHeaders.strict-transport-security"),
         ProblemFilters.exclude[DirectMissingMethodProblem](
           "akka.http.impl.engine.rendering.RequestRenderingContext.copy"),
         ProblemFilters.exclude[DirectMissingMethodProblem](
@@ -1095,8 +1071,10 @@ object MiMa extends AutoPlugin {
         ProblemFilters.exclude[IncompatibleMethTypeProblem](
           "akka.stream.impl.SourceQueueAdapter.this"),
         // #19828
-        ProblemFilters.exclude[DirectAbstractMethodProblem]("akka.persistence.Eventsourced#ProcessingState.onWriteMessageComplete"),
-        ProblemFilters.exclude[ReversedAbstractMethodProblem]("akka.persistence.Eventsourced#ProcessingState.onWriteMessageComplete")
+        ProblemFilters.exclude[DirectAbstractMethodProblem](
+          "akka.persistence.Eventsourced#ProcessingState.onWriteMessageComplete"),
+        ProblemFilters.exclude[ReversedAbstractMethodProblem](
+          "akka.persistence.Eventsourced#ProcessingState.onWriteMessageComplete")
       )
     )
   }

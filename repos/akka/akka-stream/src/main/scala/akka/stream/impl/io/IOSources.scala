@@ -46,8 +46,8 @@ private[akka] final class FileSource(
     (akka.stream.actor.ActorPublisher[ByteString](ref), ioResultPromise.future)
   }
 
-  override protected def newInstance(shape: SourceShape[ByteString])
-      : SourceModule[ByteString, Future[IOResult]] =
+  override protected def newInstance(
+      shape: SourceShape[ByteString]): SourceModule[ByteString, Future[IOResult]] =
     new FileSource(f, chunkSize, attributes, shape)
 
   override def withAttributes(attr: Attributes): Module =
@@ -88,8 +88,8 @@ private[akka] final class InputStreamSource(
     (pub, ioResultPromise.future)
   }
 
-  override protected def newInstance(shape: SourceShape[ByteString])
-      : SourceModule[ByteString, Future[IOResult]] =
+  override protected def newInstance(
+      shape: SourceShape[ByteString]): SourceModule[ByteString, Future[IOResult]] =
     new InputStreamSource(createInputStream, chunkSize, attributes, shape)
 
   override def withAttributes(attr: Attributes): Module =

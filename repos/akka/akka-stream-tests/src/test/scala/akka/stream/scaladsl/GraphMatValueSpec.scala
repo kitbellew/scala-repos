@@ -88,8 +88,7 @@ class GraphMatValueSpec extends AkkaSpec {
             .mapAsync(4)(identity)
             .map(_ + 100)
             .mapMaterializedValue((_) ⇒ ())
-          Await.result(noMatSource.runWith(Sink.head), 3.seconds) should ===(
-            155)
+          Await.result(noMatSource.runWith(Sink.head), 3.seconds) should ===(155)
         }
 
         "work properly with nesting and reusing" in {

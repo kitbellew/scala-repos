@@ -194,8 +194,7 @@ object Counter extends CounterOps {
       }
     }
 
-  implicit def canCreateZeros[K, V: Zero: Semiring]
-      : CanCreateZeros[Counter[K, V], K] = {
+  implicit def canCreateZeros[K, V: Zero: Semiring]: CanCreateZeros[Counter[K, V], K] = {
     new CanCreateZeros[Counter[K, V], K] {
       // Shouldn't need to supply a key value here, but it really mixes up the
       // VectorSpace hierarchy since it would require separate types for

@@ -179,8 +179,7 @@ final class DetectedPlugins(
     BuildUtil.getImports(plugins.names ++ builds.names) ++
       BuildUtil.importAllRoot(autoImports(autoPluginAutoImports)) ++
       BuildUtil.importAll(autoImports(topLevelAutoPluginAutoImports)) ++
-      BuildUtil.importNamesRoot(
-        autoPlugins.map(_.name).filter(nonTopLevelPlugin))
+      BuildUtil.importNamesRoot(autoPlugins.map(_.name).filter(nonTopLevelPlugin))
 
   private[this] lazy val (
     autoPluginAutoImports,
@@ -333,8 +332,7 @@ object BuildStreams {
       case Global => GlobalPath
       case This =>
         sys.error(
-          "Unresolved This reference for " + label + " in " + displayFull(
-            scoped))
+          "Unresolved This reference for " + label + " in " + displayFull(scoped))
       case Select(t) => show(t)
     }
   def nonProjectPath[T](scoped: ScopedKey[T]): Seq[String] = {
@@ -365,8 +363,7 @@ object BuildStreams {
         sys.error(
           "Unresolved project reference (" + pr + ") in " + displayFull(scoped))
       case This =>
-        sys.error(
-          "Unresolved project reference (This) in " + displayFull(scoped))
+        sys.error("Unresolved project reference (This) in " + displayFull(scoped))
     }
 
   def refTarget(

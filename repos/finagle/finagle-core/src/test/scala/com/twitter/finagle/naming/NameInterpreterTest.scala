@@ -31,7 +31,6 @@ class NameInterpreterTest extends FunSuite with BeforeAndAfter {
         Activity.value(NameTree.Leaf(Name.empty))
     }
 
-    assert(
-      NameInterpreter.bind(dtab, name).sample() == NameTree.Leaf(Name.empty))
+    assert(NameInterpreter.bind(dtab, name).sample() == NameTree.Leaf(Name.empty))
   }
 }

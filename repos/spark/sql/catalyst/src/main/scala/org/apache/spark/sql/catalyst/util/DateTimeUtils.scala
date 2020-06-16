@@ -349,8 +349,7 @@ object DateTimeUtils {
         4) > 59 ||
       segments(5) < 0 || segments(5) > 59 || segments(6) < 0 || segments(
         6) > 999999 ||
-      segments(7) < 0 || segments(7) > 23 || segments(8) < 0 || segments(
-        8) > 59) {
+      segments(7) < 0 || segments(7) > 23 || segments(8) < 0 || segments(8) > 59) {
       return None
     }
 
@@ -401,8 +400,7 @@ object DateTimeUtils {
     var currentSegmentValue = 0
     val bytes = s.getBytes
     var j = 0
-    while (j < bytes.length && (i < 3 && !(bytes(j) == ' ' || bytes(
-        j) == 'T'))) {
+    while (j < bytes.length && (i < 3 && !(bytes(j) == ' ' || bytes(j) == 'T'))) {
       val b = bytes(j)
       if (i < 2 && b == '-') {
         if (i == 0 && j != 4) {

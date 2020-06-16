@@ -185,11 +185,8 @@ class InsertIntoHiveTableSuite
   }
 
   test("Insert MapType.valueContainsNull == false") {
-    val schema = StructType(
-      Seq(
-        StructField(
-          "m",
-          MapType(StringType, StringType, valueContainsNull = false))))
+    val schema = StructType(Seq(
+      StructField("m", MapType(StringType, StringType, valueContainsNull = false))))
     val rowRDD = hiveContext.sparkContext.parallelize((1 to 100).map(i =>
       Row(Map(s"key$i" -> s"value$i"))))
     val df = hiveContext.createDataFrame(rowRDD, schema)

@@ -115,10 +115,11 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
               value,
               Right(unsubscriber))) {
             if (debug)
-              publish(Logging.Debug(
-                simpleName(this),
-                this.getClass,
-                "initialized unsubscriber to: " + unsubscriber + ", registering " + subscribers.size + " initial subscribers with it"))
+              publish(
+                Logging.Debug(
+                  simpleName(this),
+                  this.getClass,
+                  "initialized unsubscriber to: " + unsubscriber + ", registering " + subscribers.size + " initial subscribers with it"))
             subscribers foreach registerWithUnsubscriber
             true
           } else {
@@ -129,10 +130,11 @@ class EventStream(sys: ActorSystem, private val debug: Boolean)
 
         case Right(presentUnsubscriber) ⇒
           if (debug)
-            publish(Logging.Debug(
-              simpleName(this),
-              this.getClass,
-              s"not using unsubscriber $unsubscriber, because already initialized with $presentUnsubscriber"))
+            publish(
+              Logging.Debug(
+                simpleName(this),
+                this.getClass,
+                s"not using unsubscriber $unsubscriber, because already initialized with $presentUnsubscriber"))
           false
       }
   }

@@ -756,15 +756,9 @@ class MatrixTest extends WordSpec with Matchers {
        *  [1 0 0]] = List((0,1,1), (0,2,1), (1,2,1), (2,0,1))
        * [1.0 2.0 4.0] = List((0,1.0), (1,2.0), (2,4.0))
        */
-        .source(
-          TypedTsv[(Int, Int, Int)]("graph"),
-          List((0, 1, 1), (0, 2, 1), (1, 2, 1), (2, 0, 1)))
-        .source(
-          TypedTsv[(Int, Double)]("row"),
-          List((0, 1.0), (1, 2.0), (2, 4.0)))
-        .source(
-          TypedTsv[(Int, Double)]("col"),
-          List((0, 1.0), (1, 2.0), (2, 4.0)))
+        .source(TypedTsv[(Int, Int, Int)]("graph"), List((0, 1, 1), (0, 2, 1), (1, 2, 1), (2, 0, 1)))
+        .source(TypedTsv[(Int, Double)]("row"), List((0, 1.0), (1, 2.0), (2, 4.0)))
+        .source(TypedTsv[(Int, Double)]("col"), List((0, 1.0), (1, 2.0), (2, 4.0)))
         .sink[(Int, Double)](Tsv("prop-col")) { ob =>
           "correctly propagate columns" in {
             ob.toMap shouldBe Map(0 -> 6.0, 1 -> 4.0, 2 -> 1.0)
@@ -785,9 +779,7 @@ class MatrixTest extends WordSpec with Matchers {
       .source(
         TypedTsv[(Int, Int, Int)]("graph"),
         List((0, 1, 1), (1, 1, 3), (0, 2, 1), (1, 2, 1), (2, 0, 1)))
-      .source(
-        TypedTsv[(Int, Double)]("row"),
-        List((0, 1.0), (1, 2.0), (2, 4.0)))
+      .source(TypedTsv[(Int, Double)]("row"), List((0, 1.0), (1, 2.0), (2, 4.0)))
       .sink[(Int, Double)](Tsv("first")) { ob =>
         "correctly mapWithIndex on Row" in {
           ob.toMap shouldBe Map(0 -> 1.0)
@@ -1137,8 +1129,8 @@ class MatrixTest extends WordSpec with Matchers {
   "A Col Diagonal job" should {
     TUtil.printStack {
       "correctly compute the size of the diagonal matrix" in {
-        val col = new ColDiagonal(
-          Mode.putMode(new Test(Map.empty), new Args(Map.empty)))
+        val col =
+          new ColDiagonal(Mode.putMode(new Test(Map.empty), new Args(Map.empty)))
         col.sizeHintTotal shouldBe 100L
       }
     }

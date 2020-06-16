@@ -68,9 +68,7 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
     encoder.compressionRatio < 0.8
   }
 
-  private def gatherCompressibilityStats(
-      row: InternalRow,
-      ordinal: Int): Unit = {
+  private def gatherCompressibilityStats(row: InternalRow, ordinal: Int): Unit = {
     var i = 0
     while (i < compressionEncoders.length) {
       compressionEncoders(i).gatherCompressibilityStats(row, ordinal)

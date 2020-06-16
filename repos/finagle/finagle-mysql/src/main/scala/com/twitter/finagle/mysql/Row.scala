@@ -90,8 +90,7 @@ class StringEncodedRow(
           // can't fit into a Array[Byte]. This should be streamed and
           // support for this needs to begin at the transport layer.
           case Type.LongBlob =>
-            throw new UnsupportedOperationException(
-              "LongBlob is not supported!")
+            throw new UnsupportedOperationException("LongBlob is not supported!")
           case typ => RawValue(typ, field.charset, false, bytes)
         }
       }
@@ -155,8 +154,7 @@ class BinaryEncodedRow(
             StringValue(buffer.readLengthCodedString(Charset(field.charset)))
 
           case Type.LongBlob =>
-            throw new UnsupportedOperationException(
-              "LongBlob is not supported!")
+            throw new UnsupportedOperationException("LongBlob is not supported!")
           case typ =>
             RawValue(typ, field.charset, true, buffer.readLengthCodedBytes())
         }

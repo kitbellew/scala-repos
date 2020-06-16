@@ -38,8 +38,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
       results(1)._1 must_== ForwardedEntry(
         Some("[2001:db8:cafe::17]:4711"),
         None)
-      results(1)._2 must beRight(
-        ConnectionInfo(addr("2001:db8:cafe::17"), false))
+      results(1)._2 must beRight(ConnectionInfo(addr("2001:db8:cafe::17"), false))
       results(1)._3 must beSome(false)
       results(2)._1 must_== ForwardedEntry(Some("192.0.2.60"), Some("http"))
       results(2)._2 must beRight(ConnectionInfo(addr("192.0.2.60"), false))
@@ -81,8 +80,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
       results(2)._1 must_== ForwardedEntry(
         Some("[2001:db8:cafe::17]"),
         Some("https"))
-      results(2)._2 must beRight(
-        ConnectionInfo(addr("2001:db8:cafe::17"), true))
+      results(2)._2 must beRight(ConnectionInfo(addr("2001:db8:cafe::17"), true))
       results(2)._3 must beSome(true)
       results(3)._1 must_== ForwardedEntry(Some("127.0.0.1"), Some("http"))
       results(3)._2 must beRight(ConnectionInfo(addr("127.0.0.1"), false))
@@ -138,8 +136,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     }
 
     "get first untrusted proxy with rfc7239 with trusted proxy subnet" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -167,8 +164,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     }
 
     "get first untrusted proxy protocol with rfc7239 with subnet mask" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -206,8 +202,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     }
 
     "ignore obfuscated addresses with rfc7239" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -218,8 +213,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     }
 
     "ignore unknown addresses with rfc7239" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -240,8 +234,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     }
 
     "partly ignore rfc7239 header with some empty addresses" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -252,8 +245,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     }
 
     "ignore rfc7239 header field with missing = sign" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -264,8 +256,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     }
 
     "ignore rfc7239 header field with two == signs" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -278,8 +269,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     // This quotation handling is not RFC-compliant but we want to make sure we
     // at least handle the case gracefully.
     "don't unquote rfc7239 header field with one \" character" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -292,8 +282,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     // This quotation handling is not RFC-compliant but we want to make sure we
     // at least handle the case gracefully.
     "unquote and ignore rfc7239 empty quoted header field" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -306,8 +295,7 @@ class ForwardedHeaderHandlerSpec extends Specification {
     // This quotation handling is not RFC-compliant but we want to make sure we
     // at least handle the case gracefully.
     "kind of unquote rfc7239 header field with three \" characters" in {
-      handler(
-        version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
+      handler(version("rfc7239") ++ trustedProxies("192.168.1.1/24", "127.0.0.1"))
         .remoteConnection(
           localhost,
           false,
@@ -527,8 +515,8 @@ class ForwardedHeaderHandlerSpec extends Specification {
     new Headers(s.split("\n").flatMap(split(_, ":\\s*")))
   }
 
-  def processHeaders(config: Map[String, Any], headers: Headers): Seq[
-    (ForwardedEntry, Either[String, ConnectionInfo], Option[Boolean])] = {
+  def processHeaders(config: Map[String, Any], headers: Headers)
+      : Seq[(ForwardedEntry, Either[String, ConnectionInfo], Option[Boolean])] = {
     val configuration = ForwardedHeaderHandlerConfig(
       Some(Configuration.from(config)))
     configuration.forwardedHeaders(headers).map { forwardedEntry =>

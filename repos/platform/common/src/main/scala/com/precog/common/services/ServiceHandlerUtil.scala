@@ -30,9 +30,7 @@ import blueeyes.json.serialization.Extractor._
 
 object ServiceHandlerUtil {
   def forbidden(message: String): HttpResponse[JValue] =
-    HttpResponse[JValue](
-      HttpStatus(Forbidden),
-      content = Some(JString(message)))
+    HttpResponse[JValue](HttpStatus(Forbidden), content = Some(JString(message)))
 
   def badRequest(
       message: String,

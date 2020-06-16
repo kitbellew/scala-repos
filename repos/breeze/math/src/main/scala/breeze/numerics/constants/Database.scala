@@ -68,9 +68,7 @@ object Database {
   // <editor-fold defaultstate="collapsed" desc=" CODATA2010 Database HashMap ">
 
   private lazy val databaseHM = HashMap[String, (Double, Double, String)](
-    (
-      """{220} lattice spacing of silicon""",
-      (1.920155714e-10, 3.2e-18, """m""")),
+    ("""{220} lattice spacing of silicon""", (1.920155714e-10, 3.2e-18, """m""")),
     ("""alpha particle-electron mass ratio""", (7294.29953610, 2.9e-6, """""")),
     ("""alpha particle mass""", (6.64465675e-27, 2.9e-34, """kg""")),
     (
@@ -107,9 +105,7 @@ object Database {
     (
       """atomic mass unit-joule relationship""",
       (1.492417954e-10, 6.6e-18, """J""")),
-    (
-      """atomic mass unit-kelvin relationship""",
-      (1.08095408e13, 9.8e6, """K""")),
+    ("""atomic mass unit-kelvin relationship""", (1.08095408e13, 9.8e6, """K""")),
     (
       """atomic mass unit-kilogram relationship""",
       (1.660538921e-27, 7.3e-35, """kg""")),
@@ -121,16 +117,12 @@ object Database {
       (6.23538054e-65, 2.8e-72, """C^4 m^4 J^-3""")),
     ("""atomic unit of action""", (1.054571726e-34, 4.7e-42, """J s""")),
     ("""atomic unit of charge""", (1.602176565e-19, 3.5e-27, """C""")),
-    (
-      """atomic unit of charge density""",
-      (1.081202338e12, 24000.0, """C m^-3""")),
+    ("""atomic unit of charge density""", (1.081202338e12, 24000.0, """C m^-3""")),
     ("""atomic unit of current""", (0.006623617950, 1.5e-10, """A""")),
     (
       """atomic unit of electric dipole mom.""",
       (8.47835326e-30, 1.9e-37, """C m""")),
-    (
-      """atomic unit of electric field""",
-      (5.14220652e11, 11000.0, """V m^-1""")),
+    ("""atomic unit of electric field""", (5.14220652e11, 11000.0, """V m^-1""")),
     (
       """atomic unit of electric field gradient""",
       (9.717362e21, 2.1e14, """V m^-2""")),
@@ -166,9 +158,7 @@ object Database {
     ("""Bohr magneton in K/T""", (0.67171388, 6.1e-7, """K T^-1""")),
     ("""Bohr radius""", (5.2917721092e-11, 1.7e-20, """m""")),
     ("""Boltzmann constant""", (1.3806488e-23, 1.3e-29, """J K^-1""")),
-    (
-      """Boltzmann constant in eV/K""",
-      (0.000086173324, 7.8e-11, """eV K^-1""")),
+    ("""Boltzmann constant in eV/K""", (0.000086173324, 7.8e-11, """eV K^-1""")),
     ("""Boltzmann constant in Hz/K""", (2.0836618e10, 19000.0, """Hz K^-1""")),
     (
       """Boltzmann constant in inverse meters per kelvin""",
@@ -185,9 +175,7 @@ object Database {
       """conventional value of von Klitzing constant""",
       (25812.807, 0d, """ohm""")),
     ("""Cu x unit""", (1.00207697e-13, 2.8e-20, """m""")),
-    (
-      """deuteron-electron mag. mom. ratio""",
-      (-0.0004664345537, 3.9e-12, """""")),
+    ("""deuteron-electron mag. mom. ratio""", (-0.0004664345537, 3.9e-12, """""")),
     ("""deuteron-electron mass ratio""", (3670.48296520, 1.5e-6, """""")),
     ("""deuteron g factor""", (0.8574382308, 7.2e-9, """""")),
     ("""deuteron mag. mom.""", (4.33073489e-27, 1.0e-34, """J T^-1""")),
@@ -263,9 +251,7 @@ object Database {
     (
       """electron volt-inverse meter relationship""",
       (806554.4290, 0.018, """m^-1""")),
-    (
-      """electron volt-joule relationship""",
-      (1.602176565e-19, 3.5e-27, """J""")),
+    ("""electron volt-joule relationship""", (1.602176565e-19, 3.5e-27, """J""")),
     ("""electron volt-kelvin relationship""", (11604.519, 0.011, """K""")),
     (
       """electron volt-kilogram relationship""",
@@ -315,12 +301,8 @@ object Database {
     (
       """hertz-atomic mass unit relationship""",
       (4.4398216689e-24, 3.1e-33, """u""")),
-    (
-      """hertz-electron volt relationship""",
-      (4.135667516e-15, 9.1e-23, """eV""")),
-    (
-      """hertz-hartree relationship""",
-      (1.5198298460045e-16, 7.6e-28, """E_h""")),
+    ("""hertz-electron volt relationship""", (4.135667516e-15, 9.1e-23, """eV""")),
+    ("""hertz-hartree relationship""", (1.5198298460045e-16, 7.6e-28, """E_h""")),
     ("""hertz-inverse meter relationship""", (3.335640951e-9, 0d, """m^-1""")),
     ("""hertz-joule relationship""", (6.62606957e-34, 2.9e-41, """J""")),
     ("""hertz-kelvin relationship""", (4.7992434e-11, 4.4e-17, """K""")),
@@ -336,9 +318,7 @@ object Database {
       """inverse meter-hartree relationship""",
       (4.556335252755e-8, 2.3e-19, """E_h""")),
     ("""inverse meter-hertz relationship""", (2.99792458e8, 0d, """Hz""")),
-    (
-      """inverse meter-joule relationship""",
-      (1.986445684e-25, 8.8e-33, """J""")),
+    ("""inverse meter-joule relationship""", (1.986445684e-25, 8.8e-33, """J""")),
     ("""inverse meter-kelvin relationship""", (0.014387770, 1.3e-8, """K""")),
     (
       """inverse meter-kilogram relationship""",
@@ -349,30 +329,22 @@ object Database {
     ("""joule-electron volt relationship""", (6.24150934e18, 1.4e11, """eV""")),
     ("""joule-hartree relationship""", (2.29371248e17, 1.0e10, """E_h""")),
     ("""joule-hertz relationship""", (1.509190311e33, 6.7e25, """Hz""")),
-    (
-      """joule-inverse meter relationship""",
-      (5.03411701e24, 2.2e17, """m^-1""")),
+    ("""joule-inverse meter relationship""", (5.03411701e24, 2.2e17, """m^-1""")),
     ("""joule-kelvin relationship""", (7.2429716e22, 6.6e16, """K""")),
     ("""joule-kilogram relationship""", (1.112650056e-17, 0d, """kg""")),
     (
       """kelvin-atomic mass unit relationship""",
       (9.2510868e-14, 8.4e-20, """u""")),
-    (
-      """kelvin-electron volt relationship""",
-      (0.000086173324, 7.8e-11, """eV""")),
+    ("""kelvin-electron volt relationship""", (0.000086173324, 7.8e-11, """eV""")),
     ("""kelvin-hartree relationship""", (3.1668114e-6, 2.9e-12, """E_h""")),
     ("""kelvin-hertz relationship""", (2.0836618e10, 19000.0, """Hz""")),
-    (
-      """kelvin-inverse meter relationship""",
-      (69.503476, 0.000063, """m^-1""")),
+    ("""kelvin-inverse meter relationship""", (69.503476, 0.000063, """m^-1""")),
     ("""kelvin-joule relationship""", (1.3806488e-23, 1.3e-29, """J""")),
     ("""kelvin-kilogram relationship""", (1.536179e-40, 1.4e-46, """kg""")),
     (
       """kilogram-atomic mass unit relationship""",
       (6.02214129e26, 2.7e19, """u""")),
-    (
-      """kilogram-electron volt relationship""",
-      (5.60958885e35, 1.2e28, """eV""")),
+    ("""kilogram-electron volt relationship""", (5.60958885e35, 1.2e28, """eV""")),
     ("""kilogram-hartree relationship""", (2.061485968e34, 9.1e26, """E_h""")),
     ("""kilogram-hertz relationship""", (1.356392608e50, 6.0e42, """Hz""")),
     (
@@ -392,9 +364,7 @@ object Database {
     ("""molar gas constant""", (8.3144621, 7.5e-6, """J mol^-1 K^-1""")),
     ("""molar mass constant""", (0.0010, 0d, """kg mol^-1""")),
     ("""molar mass of carbon-12""", (0.012, 0d, """kg mol^-1""")),
-    (
-      """molar Planck constant""",
-      (3.9903127176e-10, 2.8e-19, """J s mol^-1""")),
+    ("""molar Planck constant""", (3.9903127176e-10, 2.8e-19, """J s mol^-1""")),
     (
       """molar Planck constant times c""",
       (0.119626565779, 8.4e-11, """J m mol^-1""")),
@@ -404,14 +374,10 @@ object Database {
     (
       """molar volume of ideal gas (273.15 K, 101.325 kPa)""",
       (0.022413968, 2.0e-8, """m^3 mol^-1""")),
-    (
-      """molar volume of silicon""",
-      (0.00001205883301, 8.0e-13, """m^3 mol^-1""")),
+    ("""molar volume of silicon""", (0.00001205883301, 8.0e-13, """m^3 mol^-1""")),
     ("""Mo x unit""", (1.00209952e-13, 5.3e-20, """m""")),
     ("""muon Compton wavelength""", (1.173444103e-14, 3.0e-22, """m""")),
-    (
-      """muon Compton wavelength over 2 pi""",
-      (1.867594294e-15, 4.7e-23, """m""")),
+    ("""muon Compton wavelength over 2 pi""", (1.867594294e-15, 4.7e-23, """m""")),
     ("""muon-electron mass ratio""", (206.7682843, 5.2e-6, """""")),
     ("""muon g factor""", (-2.00233184180, 1.3e-9, """""")),
     ("""muon mag. mom.""", (-4.49044807e-26, 1.5e-33, """J T^-1""")),
@@ -424,9 +390,7 @@ object Database {
       (-8.890596970, 2.2e-7, """""")),
     ("""muon mass""", (1.883531475e-28, 9.6e-36, """kg""")),
     ("""muon mass energy equivalent""", (1.692833667e-11, 8.6e-19, """J""")),
-    (
-      """muon mass energy equivalent in MeV""",
-      (105.6583715, 3.5e-6, """MeV""")),
+    ("""muon mass energy equivalent in MeV""", (105.6583715, 3.5e-6, """MeV""")),
     ("""muon mass in u""", (0.1134289267, 2.9e-9, """u""")),
     ("""muon molar mass""", (0.0001134289267, 2.9e-12, """kg mol^-1""")),
     ("""muon-neutron mass ratio""", (0.1124545177, 2.8e-9, """""")),
@@ -434,17 +398,13 @@ object Database {
     ("""muon-proton mass ratio""", (0.1126095272, 2.8e-9, """""")),
     ("""muon-tau mass ratio""", (0.0594649, 5.4e-6, """""")),
     ("""natural unit of action""", (1.054571726e-34, 4.7e-42, """J s""")),
-    (
-      """natural unit of action in eV s""",
-      (6.58211928e-16, 1.5e-23, """eV s""")),
+    ("""natural unit of action in eV s""", (6.58211928e-16, 1.5e-23, """eV s""")),
     ("""natural unit of energy""", (8.18710506e-14, 3.6e-21, """J""")),
     ("""natural unit of energy in MeV""", (0.5109989280, 1.1e-8, """MeV""")),
     ("""natural unit of length""", (3.86159268e-13, 2.5e-22, """m""")),
     ("""natural unit of mass""", (9.10938291e-31, 4.0e-38, """kg""")),
     ("""natural unit of mom.um""", (2.73092429e-22, 1.2e-29, """kg m s^-1""")),
-    (
-      """natural unit of mom.um in MeV/c""",
-      (0.5109989280, 1.1e-8, """MeV/c""")),
+    ("""natural unit of mom.um in MeV/c""", (0.5109989280, 1.1e-8, """MeV/c""")),
     ("""natural unit of time""", (1.28808866833e-21, 8.3e-31, """s""")),
     ("""natural unit of velocity""", (2.99792458e8, 0d, """m s^-1""")),
     ("""neutron Compton wavelength""", (1.3195909068e-15, 1.1e-24, """m""")),
@@ -481,9 +441,7 @@ object Database {
     (
       """neutron-proton mass difference energy equivalent in MeV""",
       (1.293332170, 4.2e-7, """""")),
-    (
-      """neutron-proton mass difference in u""",
-      (0.001388449190, 4.5e-10, """""")),
+    ("""neutron-proton mass difference in u""", (0.001388449190, 4.5e-10, """""")),
     ("""neutron-proton mass ratio""", (1.00137841917, 4.5e-10, """""")),
     ("""neutron-tau mass ratio""", (0.528790, 0.000048, """""")),
     (
@@ -513,9 +471,7 @@ object Database {
       (197.3269718, 4.4e-6, """MeV fm""")),
     ("""Planck length""", (1.616199e-35, 9.7e-40, """m""")),
     ("""Planck mass""", (2.17651e-8, 1.3e-12, """kg""")),
-    (
-      """Planck mass energy equivalent in GeV""",
-      (1.220932e19, 7.3e14, """GeV""")),
+    ("""Planck mass energy equivalent in GeV""", (1.220932e19, 7.3e14, """GeV""")),
     ("""Planck temperature""", (1.416833e32, 8.5e27, """K""")),
     ("""Planck time""", (5.39106e-44, 3.2e-48, """s""")),
     ("""proton charge to mass quotient""", (9.57883358e7, 2.1, """C kg^-1""")),
@@ -526,9 +482,7 @@ object Database {
     ("""proton-electron mass ratio""", (1836.15267245, 7.5e-7, """""")),
     ("""proton g factor""", (5.585694713, 4.6e-8, """""")),
     ("""proton gyromag. ratio""", (2.675222005e8, 6.3, """s^-1 T^-1""")),
-    (
-      """proton gyromag. ratio over 2 pi""",
-      (42.57748060, 1.0e-6, """MHz T^-1""")),
+    ("""proton gyromag. ratio over 2 pi""", (42.57748060, 1.0e-6, """MHz T^-1""")),
     ("""proton mag. mom.""", (1.410606743e-26, 3.3e-34, """J T^-1""")),
     (
       """proton mag. mom. to Bohr magneton ratio""",
@@ -554,27 +508,19 @@ object Database {
       """quantum of circulation times 2""",
       (0.0007273895104, 4.7e-13, """m^2 s^-1""")),
     ("""Rydberg constant""", (1.0973731568539e7, 0.000055, """m^-1""")),
-    (
-      """Rydberg constant times c in Hz""",
-      (3.289841960364e15, 17000.0, """Hz""")),
+    ("""Rydberg constant times c in Hz""", (3.289841960364e15, 17000.0, """Hz""")),
     ("""Rydberg constant times hc in eV""", (13.60569253, 3.0e-7, """eV""")),
     ("""Rydberg constant times hc in J""", (2.179872171e-18, 9.6e-26, """J""")),
-    (
-      """Sackur-Tetrode constant (1 K, 100 kPa)""",
-      (-1.1517078, 2.3e-6, """""")),
+    ("""Sackur-Tetrode constant (1 K, 100 kPa)""", (-1.1517078, 2.3e-6, """""")),
     (
       """Sackur-Tetrode constant (1 K, 101.325 kPa)""",
       (-1.1648708, 2.3e-6, """""")),
     ("""second radiation constant""", (0.014387770, 1.3e-8, """m K""")),
-    (
-      """shielded helion gyromag. ratio""",
-      (2.037894659e8, 5.1, """s^-1 T^-1""")),
+    ("""shielded helion gyromag. ratio""", (2.037894659e8, 5.1, """s^-1 T^-1""")),
     (
       """shielded helion gyromag. ratio over 2 pi""",
       (32.43410084, 8.1e-7, """MHz T^-1""")),
-    (
-      """shielded helion mag. mom.""",
-      (-1.074553044e-26, 2.7e-34, """J T^-1""")),
+    ("""shielded helion mag. mom.""", (-1.074553044e-26, 2.7e-34, """J T^-1""")),
     (
       """shielded helion mag. mom. to Bohr magneton ratio""",
       (-0.001158671471, 1.4e-11, """""")),
@@ -587,9 +533,7 @@ object Database {
     (
       """shielded helion to shielded proton mag. mom. ratio""",
       (-0.7617861313, 3.3e-9, """""")),
-    (
-      """shielded proton gyromag. ratio""",
-      (2.675153268e8, 6.6, """s^-1 T^-1""")),
+    ("""shielded proton gyromag. ratio""", (2.675153268e8, 6.6, """s^-1 T^-1""")),
     (
       """shielded proton gyromag. ratio over 2 pi""",
       (42.57638660, 1.0e-6, """MHz T^-1""")),
@@ -604,9 +548,7 @@ object Database {
     ("""standard acceleration of gravity""", (9.80665, 0d, """m s^-2""")),
     ("""standard atmosphere""", (101325.0, 0d, """Pa""")),
     ("""standard-state pressure""", (100000.0, 0d, """Pa""")),
-    (
-      """Stefan-Boltzmann constant""",
-      (5.670373e-8, 2.1e-13, """W m^-2 K^-4""")),
+    ("""Stefan-Boltzmann constant""", (5.670373e-8, 2.1e-13, """W m^-2 K^-4""")),
     ("""tau Compton wavelength""", (6.97787e-16, 6.3e-20, """m""")),
     ("""tau Compton wavelength over 2 pi""", (1.11056e-16, 1.0e-20, """m""")),
     ("""tau-electron mass ratio""", (3477.15, 0.31, """""")),

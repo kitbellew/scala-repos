@@ -18,9 +18,7 @@ class LocationOfLineTest_212
 
   override def testLambdas(): Unit = {
     checkLocationsOfLine(
-      Set(
-        Loc("Lambdas$", "main", 4),
-        Loc("Lambdas$", "Lambdas$$$anonfun$1", 4)),
+      Set(Loc("Lambdas$", "main", 4), Loc("Lambdas$", "Lambdas$$$anonfun$1", 4)),
       Set(
         Loc("Lambdas$", "main", 5),
         Loc("Lambdas$", "Lambdas$$$anonfun$2", 5),
@@ -40,10 +38,7 @@ class LocationOfLineTest_212
       Set(Loc("Multilevel$This$1$$anon$1", "run", 8)),
       Set(Loc("Multilevel$This$1$$anon$1", "run", 8)),
       Set(
-        Loc(
-          "Multilevel$This$1$$anon$1",
-          "Multilevel$This$1$$anon$1$$$anonfun$1",
-          9)),
+        Loc("Multilevel$This$1$$anon$1", "Multilevel$This$1$$anon$1$$$anonfun$1", 9)),
       Set(Loc("Multilevel$", "main", 18))
     )
 

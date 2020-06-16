@@ -47,10 +47,7 @@ import org.apache.spark.sql.functions._
 @Experimental
 final class RandomForestRegressor @Since("1.4.0") (
     @Since("1.4.0") override val uid: String)
-    extends Predictor[
-      Vector,
-      RandomForestRegressor,
-      RandomForestRegressionModel]
+    extends Predictor[Vector, RandomForestRegressor, RandomForestRegressionModel]
     with RandomForestParams
     with TreeRegressorParams {
 

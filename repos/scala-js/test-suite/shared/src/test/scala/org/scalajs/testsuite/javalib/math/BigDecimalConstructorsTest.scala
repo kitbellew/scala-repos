@@ -86,9 +86,7 @@ class BigDecimalConstructorsTest {
     val resScale = 46
     assertEquals(result.toString, res)
     assertEquals(result.scale(), resScale)
-    expectThrows(
-      classOf[NumberFormatException],
-      new BigDecimal(Array[Char](), 0, 0))
+    expectThrows(classOf[NumberFormatException], new BigDecimal(Array[Char](), 0, 0))
   }
 
   @Test def testConstrCharIntIntMathContext(): Unit = {

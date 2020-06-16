@@ -103,9 +103,7 @@ class SbtBuilder extends ModuleLevelBuilder(BuilderCategory.TRANSLATOR) {
     util.Arrays.asList("scala", "java")
 
   // TODO Mirror file deletion (either via the outputConsumer or a custom index)
-  private def updateSharedResources(
-      context: CompileContext,
-      chunk: ModuleChunk) {
+  private def updateSharedResources(context: CompileContext, chunk: ModuleChunk) {
     val project = context.getProjectDescriptor
 
     val resourceTargets: Seq[ResourcesTarget] = {

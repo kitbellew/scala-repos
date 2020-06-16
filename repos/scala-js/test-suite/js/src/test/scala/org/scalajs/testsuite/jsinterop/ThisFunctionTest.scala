@@ -42,8 +42,7 @@ class ThisFunctionTest {
     assertEquals("foo42", g(f, obj))
   }
 
-  @Test def should_accept_a_lambda_where_a_js_ThisFunction_is_expected()
-      : Unit = {
+  @Test def should_accept_a_lambda_where_a_js_ThisFunction_is_expected(): Unit = {
     val g = js
       .eval("""
         var g = function(f, x) { return f.call(x, 42, x.foo); }; g;

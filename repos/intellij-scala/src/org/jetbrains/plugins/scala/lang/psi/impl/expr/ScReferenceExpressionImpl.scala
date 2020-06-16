@@ -337,10 +337,8 @@ class ScReferenceExpressionImpl(node: ASTNode)
         s.subst(fun.polymorphicType)
       //prevent infinite recursion for recursive pattern reference
       case Some(ScalaResolveResult(self: ScSelfTypeElement, _)) =>
-        val clazz = PsiTreeUtil.getContextOfType(
-          self,
-          true,
-          classOf[ScTemplateDefinition])
+        val clazz =
+          PsiTreeUtil.getContextOfType(self, true, classOf[ScTemplateDefinition])
         ScThisReferenceImpl.getThisTypeForTypeDefinition(clazz, this) match {
           case success: Success[ScType] => success.get
           case failure                  => return failure
@@ -487,10 +485,11 @@ class ScReferenceExpressionImpl(node: ASTNode)
       case Some(ScalaResolveResult(pack: PsiPackage, _)) =>
         ScType.designator(pack)
       case Some(ScalaResolveResult(clazz: ScClass, s)) if clazz.isCase =>
-        s.subst(clazz.constructor
-          .getOrElse(
-            return Failure("Case Class hasn't primary constructor", Some(this)))
-          .polymorphicType)
+        s.subst(
+          clazz.constructor
+            .getOrElse(
+              return Failure("Case Class hasn't primary constructor", Some(this)))
+            .polymorphicType)
       case Some(ScalaResolveResult(clazz: ScTypeDefinition, s))
           if clazz.typeParameters.nonEmpty =>
         s.subst(
@@ -526,12 +525,12 @@ class ScReferenceExpressionImpl(node: ASTNode)
                           .getOrElse(Any)
                     case _ => ScTypeUtil.removeTypeDesignator(tp).getOrElse(Any)
                   }
-                  Some(ScExistentialType(
-                    ScParameterizedType(
-                      ScDesignatorType(jlClass),
-                      Seq(ScTypeVariable("_$1"))),
-                    List(
-                      ScExistentialArgument("_$1", Nil, Nothing, actualType))))
+                  Some(
+                    ScExistentialType(
+                      ScParameterizedType(
+                        ScDesignatorType(jlClass),
+                        Seq(ScTypeVariable("_$1"))),
+                      List(ScExistentialArgument("_$1", Nil, Nothing, actualType))))
                 case _ => None
               }
             } else None
@@ -573,9 +572,10 @@ class ScReferenceExpressionImpl(node: ASTNode)
                 inner match {
                   case ScTypePolymorphicType(internal, typeParams2) =>
                     return Success(
-                      ScalaPsiUtil.removeBadBounds(ScTypePolymorphicType(
-                        internal,
-                        typeParams ++ typeParams2 ++ unresolvedTypeParameters)),
+                      ScalaPsiUtil.removeBadBounds(
+                        ScTypePolymorphicType(
+                          internal,
+                          typeParams ++ typeParams2 ++ unresolvedTypeParameters)),
                       Some(this))
                   case _ =>
                     return Success(

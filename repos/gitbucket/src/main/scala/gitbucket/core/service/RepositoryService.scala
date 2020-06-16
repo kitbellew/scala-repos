@@ -128,19 +128,13 @@ trait RepositoryService { self: AccountService =>
 
         WebHooks.insertAll(
           webHooks.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         WebHookEvents.insertAll(
           webHookEvents.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         Milestones.insertAll(
           milestones.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         IssueId.insertAll(
           issueId.map(_.copy(_1 = newUserName, _2 = newRepositoryName)): _*)
 
@@ -161,39 +155,25 @@ trait RepositoryService { self: AccountService =>
 
         PullRequests.insertAll(
           pullRequests.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         IssueComments.insertAll(
           issueComments.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         Labels.insertAll(
           labels.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         CommitComments.insertAll(
           commitComments.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         CommitStatuses.insertAll(
           commitStatuses.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         ProtectedBranches.insertAll(
           protectedBranches.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         ProtectedBranchContexts.insertAll(
           protectedBranchContexts.map(
-            _.copy(
-              userName = newUserName,
-              repositoryName = newRepositoryName)): _*)
+            _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
 
         // Update source repository of pull requests
         PullRequests
@@ -224,9 +204,7 @@ trait RepositoryService { self: AccountService =>
         } else {
           Collaborators.insertAll(
             collaborators.map(
-              _.copy(
-                userName = newUserName,
-                repositoryName = newRepositoryName)): _*)
+              _.copy(userName = newUserName, repositoryName = newRepositoryName)): _*)
         }
 
         // Update activity messages
@@ -389,10 +367,8 @@ trait RepositoryService { self: AccountService =>
       .list
   }
 
-  def getUserRepositories(
-      userName: String,
-      withoutPhysicalInfo: Boolean = false)(implicit
-      s: Session): List[RepositoryInfo] = {
+  def getUserRepositories(userName: String, withoutPhysicalInfo: Boolean = false)(
+      implicit s: Session): List[RepositoryInfo] = {
     Repositories
       .filter { t1 =>
         (t1.userName === userName.bind) ||
@@ -531,10 +507,7 @@ trait RepositoryService { self: AccountService =>
       userName: String,
       repositoryName: String,
       collaboratorName: String)(implicit s: Session): Unit =
-    Collaborators insert Collaborator(
-      userName,
-      repositoryName,
-      collaboratorName)
+    Collaborators insert Collaborator(userName, repositoryName, collaboratorName)
 
   /**
     * Remove collaborator from the repository.

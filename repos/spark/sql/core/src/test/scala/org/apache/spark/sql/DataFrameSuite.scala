@@ -93,8 +93,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   test("access complex data") {
     assert(complexData.filter(complexData("a").getItem(0) === 2).count() == 1)
     assert(complexData.filter(complexData("m").getItem("1") === 1).count() == 1)
-    assert(
-      complexData.filter(complexData("s").getField("key") === 1).count() == 1)
+    assert(complexData.filter(complexData("s").getField("key") === 1).count() == 1)
   }
 
   test("table scan") {
@@ -137,9 +136,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       df1.unionAll(df2).orderBy("label"),
-      Seq(
-        Row(1, new ExamplePoint(1.0, 2.0)),
-        Row(2, new ExamplePoint(3.0, 4.0)))
+      Seq(Row(1, new ExamplePoint(1.0, 2.0)), Row(2, new ExamplePoint(3.0, 4.0)))
     )
   }
 
@@ -747,8 +744,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       testData.select($"*").filter($"key" < 0).showString(1) === expectedAnswer)
   }
 
-  test(
-    "createDataFrame(RDD[Row], StructType) should convert UDTs (SPARK-6672)") {
+  test("createDataFrame(RDD[Row], StructType) should convert UDTs (SPARK-6672)") {
     val rowRDD = sparkContext.parallelize(Seq(Row(new ExamplePoint(1.0, 2.0))))
     val schema =
       StructType(Array(StructField("point", new ExamplePointUDT(), false)))
@@ -831,9 +827,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       testData.dropDuplicates(Seq("value1", "value2")),
       Seq(Row(2, 1, 2), Row(1, 2, 1), Row(1, 1, 1), Row(2, 2, 2)))
 
-    checkAnswer(
-      testData.dropDuplicates(Seq("key")),
-      Seq(Row(2, 1, 2), Row(1, 1, 1)))
+    checkAnswer(testData.dropDuplicates(Seq("key")), Seq(Row(2, 1, 2), Row(1, 1, 1)))
 
     checkAnswer(
       testData.dropDuplicates(Seq("value1")),
@@ -917,8 +911,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-8797: sort by double column containing NaN should not crash") {
-    val inputData = Seq.fill(10)(Tuple1(Double.NaN)) ++ (1 to 1000).map(x =>
-      Tuple1(x.toDouble))
+    val inputData =
+      Seq.fill(10)(Tuple1(Double.NaN)) ++ (1 to 1000).map(x => Tuple1(x.toDouble))
     val df = Random.shuffle(inputData).toDF("a")
     df.orderBy("a").collect()
   }
@@ -1094,8 +1088,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     }
   }
 
-  test(
-    "Alias uses internally generated names 'aggOrder' and 'havingCondition'") {
+  test("Alias uses internally generated names 'aggOrder' and 'havingCondition'") {
     val df = Seq(1 -> 2).toDF("i", "j")
     val query1 = df
       .groupBy('i)
@@ -1127,7 +1120,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       }
   }
 
-  test("SPARK-10539: Project should not be pushed down through Intersect or Except") {
+  test(
+    "SPARK-10539: Project should not be pushed down through Intersect or Except") {
     val df1 = (1 to 100).map(Tuple1.apply).toDF("i")
     val df2 = (1 to 30).map(Tuple1.apply).toDF("i")
     val intersect = df1.intersect(df2)
@@ -1344,8 +1338,7 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
   }
 
   // This test case is to verify a bug when making a new instance of LogicalRDD.
-  test(
-    "SPARK-11633: LogicalRDD throws TreeNode Exception: Failed to Copy Node") {
+  test("SPARK-11633: LogicalRDD throws TreeNode Exception: Failed to Copy Node") {
     withSQLConf(SQLConf.CASE_SENSITIVE.key -> "false") {
       val rdd = sparkContext.makeRDD(Seq(Row(1, 3), Row(2, 1)))
       val df = sqlContext
@@ -1433,10 +1426,11 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     val df9 =
       Seq((1L, Tuple4(1L, Tuple4(1L, 2L, 3L, 4L), 2L, 3L), 20.0, 1))
         .toDF("c1", "c2", "c3", "c4")
-    assert(df9.toString ===
-      "[c1: bigint, c2: struct<_1: bigint," +
-        " _2: struct<_1: bigint," +
-        " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
+    assert(
+      df9.toString ===
+        "[c1: bigint, c2: struct<_1: bigint," +
+          " _2: struct<_1: bigint," +
+          " _2: bigint ... 2 more fields> ... 2 more fields> ... 2 more fields]")
 
   }
 

@@ -24,8 +24,8 @@ class SbtConfigLocator extends ExternalSystemConfigLocator {
     modules
       .flatMap { path =>
         Option(
-          LocalFileSystem.getInstance.refreshAndFindFileByIoFile(
-            new File(path))).safeMap(adjust)
+          LocalFileSystem.getInstance.refreshAndFindFileByIoFile(new File(path)))
+          .safeMap(adjust)
       }
       .toList
       .asJava

@@ -174,9 +174,7 @@ case class BaseBolt[I, O](
     }
   }
 
-  private def finish(
-      inputs: Seq[InputState[Tuple]],
-      results: TraversableOnce[O]) {
+  private def finish(inputs: Seq[InputState[Tuple]], results: TraversableOnce[O]) {
     var emitCount = 0
     if (hasDependants) {
       if (anchorTuples.anchor) {

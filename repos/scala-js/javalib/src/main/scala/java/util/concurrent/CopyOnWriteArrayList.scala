@@ -226,10 +226,7 @@ class CopyOnWriteArrayList[E <: AnyRef] private (private var inner: js.Array[E])
   protected def innerPush(elem: E): Unit =
     inner.push(elem)
 
-  protected def innerSplice(
-      index: Int,
-      deleteCount: Int,
-      items: E*): js.Array[E] =
+  protected def innerSplice(index: Int, deleteCount: Int, items: E*): js.Array[E] =
     inner.splice(index, deleteCount, items: _*)
 
   protected def copyIfNeeded(): Unit = {

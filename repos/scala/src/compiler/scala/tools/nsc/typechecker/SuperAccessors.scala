@@ -234,8 +234,7 @@ abstract class SuperAccessors
                 decls.unlink(s)
                 s.expandName(s.privateWithin)
                 decls.enter(s)
-                log(
-                  "Expanded '%s' to '%s' in %s".format(savedName, s.name, sym))
+                log("Expanded '%s' to '%s' in %s".format(savedName, s.name, sym))
               }
             }
             super.transform(tree)
@@ -326,9 +325,7 @@ abstract class SuperAccessors
                     sym.alias)) {
                   val result = (localTyper
                     .typedPos(tree.pos) {
-                      Select(
-                        Super(qual, tpnme.EMPTY) setPos qual.pos,
-                        sym.alias)
+                      Select(Super(qual, tpnme.EMPTY) setPos qual.pos, sym.alias)
                     })
                     .asInstanceOf[Select]
                   debuglog(
@@ -387,10 +384,7 @@ abstract class SuperAccessors
                 transformSuperSelect(sel)
 
               case _ =>
-                mayNeedProtectedAccessor(
-                  sel,
-                  EmptyTree.asList,
-                  goToSuper = true)
+                mayNeedProtectedAccessor(sel, EmptyTree.asList, goToSuper = true)
             }
           }
           transformSelect
@@ -417,10 +411,7 @@ abstract class SuperAccessors
 
         case Apply(fn, args) =>
           assert(fn.tpe != null, tree)
-          treeCopy.Apply(
-            tree,
-            transform(fn),
-            transformArgs(fn.tpe.params, args))
+          treeCopy.Apply(tree, transform(fn), transformArgs(fn.tpe.params, args))
 
         case Function(vparams, body) =>
           withInvalidOwner {
@@ -652,9 +643,7 @@ abstract class SuperAccessors
       *     - C is a subclass of sym.owner or
       *     - C is declared in the same package as sym's owner
       */
-    private def hostForAccessorOf(
-        sym: Symbol,
-        referencingClass: Symbol): Symbol = {
+    private def hostForAccessorOf(sym: Symbol, referencingClass: Symbol): Symbol = {
       if (referencingClass.isSubClass(sym.owner.enclClass)
         || referencingClass.thisSym.isSubClass(sym.owner.enclClass)
         || referencingClass.enclosingPackageClass == sym.owner.enclosingPackageClass) {

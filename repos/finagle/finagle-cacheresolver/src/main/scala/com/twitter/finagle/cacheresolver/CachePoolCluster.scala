@@ -105,9 +105,7 @@ object CacheNodeGroup {
     }.toSet)
   }
 
-  def apply(
-      group: Group[SocketAddress],
-      useOnlyResolvedAddress: Boolean = false) =
+  def apply(group: Group[SocketAddress], useOnlyResolvedAddress: Boolean = false) =
     group collect {
       case node: CacheNode => node
       // Note: we ignore weights here
@@ -326,8 +324,9 @@ class ZookeeperCachePoolCluster private[cacheresolver] (
   import ZookeeperCachePoolCluster._
 
   private[this] val zkServerSetCluster =
-    new ZookeeperServerSetCluster(ServerSets
-      .create(zkClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)) map {
+    new ZookeeperServerSetCluster(
+      ServerSets
+        .create(zkClient, ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL, zkPath)) map {
       case addr: InetSocketAddress =>
         CacheNode(addr.getHostName, addr.getPort, 1)
     }

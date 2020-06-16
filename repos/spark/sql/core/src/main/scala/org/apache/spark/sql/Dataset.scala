@@ -174,10 +174,7 @@ class Dataset[T] private[sql] (
   // Note for Spark contributors: if adding or updating any action in `Dataset`, please make sure
   // you wrap it with `withNewExecutionId` if this actions doesn't call other action.
 
-  def this(
-      sqlContext: SQLContext,
-      logicalPlan: LogicalPlan,
-      encoder: Encoder[T]) = {
+  def this(sqlContext: SQLContext, logicalPlan: LogicalPlan, encoder: Encoder[T]) = {
     this(sqlContext, sqlContext.executePlan(logicalPlan), encoder)
   }
 
@@ -589,11 +586,7 @@ class Dataset[T] private[sql] (
     // by creating a new instance for one of the branch.
     val joined = sqlContext
       .executePlan(
-        Join(
-          logicalPlan,
-          right.logicalPlan,
-          joinType = JoinType(joinType),
-          None))
+        Join(logicalPlan, right.logicalPlan, joinType = JoinType(joinType), None))
       .analyzed
       .asInstanceOf[Join]
 
@@ -1501,10 +1494,7 @@ class Dataset[T] private[sql] (
     * @group typedrel
     * @since 1.6.0
     */
-  def sample(
-      withReplacement: Boolean,
-      fraction: Double,
-      seed: Long): Dataset[T] =
+  def sample(withReplacement: Boolean, fraction: Double, seed: Long): Dataset[T] =
     withTypedPlan {
       Sample(0.0, fraction, withReplacement, seed, logicalPlan)()
     }
@@ -1871,10 +1861,8 @@ class Dataset[T] private[sql] (
 
       // The list of summary statistics to compute, in the form of expressions.
       val statistics = List[(String, Expression => Expression)](
-        "count" -> ((child: Expression) =>
-          Count(child).toAggregateExpression()),
-        "mean" -> ((child: Expression) =>
-          Average(child).toAggregateExpression()),
+        "count" -> ((child: Expression) => Count(child).toAggregateExpression()),
+        "mean" -> ((child: Expression) => Average(child).toAggregateExpression()),
         "stddev" -> ((child: Expression) =>
           StddevSamp(child).toAggregateExpression()),
         "min" -> ((child: Expression) => Min(child).toAggregateExpression()),

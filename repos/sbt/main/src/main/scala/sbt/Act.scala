@@ -237,8 +237,7 @@ object Act {
   def taskAxis(
       d: Option[String],
       tasks: Set[AttributeKey[_]],
-      allKnown: Map[String, AttributeKey[_]])
-      : Parser[ParsedAxis[AttributeKey[_]]] = {
+      allKnown: Map[String, AttributeKey[_]]): Parser[ParsedAxis[AttributeKey[_]]] = {
     val taskSeq = tasks.toSeq
     def taskKeys(f: AttributeKey[_] => String): Seq[(String, AttributeKey[_])] =
       taskSeq.map(key => (f(key), key))

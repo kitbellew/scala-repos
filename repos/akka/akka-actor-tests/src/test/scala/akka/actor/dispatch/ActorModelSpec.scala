@@ -355,10 +355,7 @@ abstract class ActorModelSpec(config: String)
         start,
         3.seconds.dilated.toMillis,
         "Should process first message within 3 seconds")
-      assertRefDefaultZero(a)(
-        registers = 1,
-        msgsReceived = 1,
-        msgsProcessed = 1)
+      assertRefDefaultZero(a)(registers = 1, msgsReceived = 1, msgsProcessed = 1)
 
       a ! Wait(1000)
       a ! CountDown(oneAtATime)
@@ -367,10 +364,7 @@ abstract class ActorModelSpec(config: String)
         oneAtATime,
         (1.5 seconds).dilated.toMillis,
         "Processed message when allowed")
-      assertRefDefaultZero(a)(
-        registers = 1,
-        msgsReceived = 3,
-        msgsProcessed = 3)
+      assertRefDefaultZero(a)(registers = 1, msgsReceived = 3, msgsProcessed = 3)
 
       system.stop(a)
       assertRefDefaultZero(a)(

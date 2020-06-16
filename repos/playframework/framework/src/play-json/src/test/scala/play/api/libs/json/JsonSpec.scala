@@ -20,9 +20,7 @@ object JsonSpec extends org.specs2.mutable.Specification {
   implicit val UserFormat: Format[User] = (
     (__ \ 'id).format[Long] and
       (__ \ 'name).format[String] and
-      (__ \ 'friends).lazyFormat(
-        Reads.list(UserFormat),
-        Writes.list(UserFormat))
+      (__ \ 'friends).lazyFormat(Reads.list(UserFormat), Writes.list(UserFormat))
   )(User, unlift(User.unapply))
 
   case class Car(id: Long, models: Map[String, String])

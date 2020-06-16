@@ -79,8 +79,7 @@ object SlickBuild extends Build {
       scalaHome := Some(file(path)),
       autoScalaLibrary := false,
       unmanagedJars <<= scalaInstance.map(_.jars.classpath),
-      unmanagedJars in config("compile") <<= scalaInstance.map(
-        _.jars.classpath),
+      unmanagedJars in config("compile") <<= scalaInstance.map(_.jars.classpath),
       unmanagedJars in config("test") <<= scalaInstance.map(_.jars.classpath),
       unmanagedJars in config("macro") <<= scalaInstance.map(_.jars.classpath)
     )
@@ -134,11 +133,9 @@ object SlickBuild extends Build {
       if (v.trim.endsWith("SNAPSHOT")) "snapshots" else "releases"),
     publishTo <<= (repoKind) {
       case "snapshots" =>
-        Some(
-          "snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
+        Some("snapshots" at "https://oss.sonatype.org/content/repositories/snapshots")
       case "releases" =>
-        Some(
-          "releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
+        Some("releases" at "https://oss.sonatype.org/service/local/staging/deploy/maven2")
     },
     publishMavenStyle := true,
     publishArtifact in Test := false,
@@ -209,16 +206,16 @@ object SlickBuild extends Build {
   lazy val aRootProject: Project = Project(
     id = "root",
     base = file("."),
-    settings = Defaults.coreDefaultSettings ++ sharedSettings ++ extTarget(
-      "root") ++ Seq(
-      sourceDirectory := file("target/root-src"),
-      publishArtifact := false,
-      test := (),
-      testOnly := (), // suppress test status output
-      commands += testAll,
-      sdlc := (),
-      sdlc <<= sdlc dependsOn (sdlc in slickProject, sdlc in slickCodegenProject, sdlc in slickHikariCPProject)
-    )
+    settings =
+      Defaults.coreDefaultSettings ++ sharedSettings ++ extTarget("root") ++ Seq(
+        sourceDirectory := file("target/root-src"),
+        publishArtifact := false,
+        test := (),
+        testOnly := (), // suppress test status output
+        commands += testAll,
+        sdlc := (),
+        sdlc <<= sdlc dependsOn (sdlc in slickProject, sdlc in slickCodegenProject, sdlc in slickHikariCPProject)
+      )
   ).aggregate(
     slickProject,
     slickCodegenProject,

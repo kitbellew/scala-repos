@@ -82,8 +82,7 @@ object hlist {
       new Mapped[H :: T, F] { type Out = F[H] :: OutM }
 
     implicit def hlistMapped2[H, T <: HList, F, OutM <: HList](implicit
-        mt: Mapped.Aux[T, Const[F]#λ, OutM])
-        : Aux[H :: T, Const[F]#λ, F :: OutM] =
+        mt: Mapped.Aux[T, Const[F]#λ, OutM]): Aux[H :: T, Const[F]#λ, F :: OutM] =
       new Mapped[H :: T, Const[F]#λ] { type Out = F :: OutM }
   }
 
@@ -688,10 +687,7 @@ object hlist {
       new ToTraversable[L, M] {
         type Lub = T
         def builder() = cbf()
-        def append[LLub](
-            l: L,
-            b: mutable.Builder[LLub, M[LLub]],
-            f: Lub => LLub) = {}
+        def append[LLub](l: L, b: mutable.Builder[LLub, M[LLub]], f: Lub => LLub) = {}
       }
 
     implicit def hnilToTraversableNothing[L <: HNil, M[_]](implicit
@@ -1514,9 +1510,7 @@ object hlist {
     *
     * @author Olivier Blanvillain
     */
-  trait Intersection[L <: HList, M <: HList]
-      extends DepFn1[L]
-      with Serializable {
+  trait Intersection[L <: HList, M <: HList] extends DepFn1[L] with Serializable {
     type Out <: HList
   }
 
@@ -1628,8 +1622,7 @@ object hlist {
 
     type Aux[L <: HList, U, V, Out0] = Replacer[L, U, V] { type Out = Out0 }
 
-    implicit def hlistReplacer1[T <: HList, U, V]
-        : Aux[U :: T, U, V, (U, V :: T)] =
+    implicit def hlistReplacer1[T <: HList, U, V]: Aux[U :: T, U, V, (U, V :: T)] =
       new Replacer[U :: T, U, V] {
         type Out = (U, V :: T)
         def apply(l: U :: T, v: V): Out = (l.head, v :: l.tail)
@@ -1905,9 +1898,7 @@ object hlist {
           S <: HList](implicit st: Split0[AccP, AccST, N, P, S])
           : Split0[AccP, AccSH :: AccST, Succ[N], AccSH :: P, S] =
         new Split0[AccP, AccSH :: AccST, Succ[N], AccSH :: P, S] {
-          def apply(
-              accP: AccP,
-              accS: AccSH :: AccST): (AccSH :: P) :: S :: HNil =
+          def apply(accP: AccP, accS: AccSH :: AccST): (AccSH :: P) :: S :: HNil =
             st(accP, accS.tail) match {
               case prefix :: suffix :: HNil =>
                 (accS.head :: prefix) :: suffix :: HNil
@@ -2027,9 +2018,7 @@ object hlist {
           S <: HList](implicit slt: SplitLeft0[AccP, AccST, U, P, S])
           : SplitLeft0[AccP, AccSH :: AccST, U, AccSH :: P, S] =
         new SplitLeft0[AccP, AccSH :: AccST, U, AccSH :: P, S] {
-          def apply(
-              accP: AccP,
-              accS: AccSH :: AccST): (AccSH :: P) :: S :: HNil =
+          def apply(accP: AccP, accS: AccSH :: AccST): (AccSH :: P) :: S :: HNil =
             slt(accP, accS.tail) match {
               case prefix :: suffix :: HNil =>
                 (accS.head :: prefix) :: suffix :: HNil
@@ -2075,8 +2064,7 @@ object hlist {
       }
 
     implicit def reverseSplitLeft[L <: HList, U, P <: HList, S <: HList](
-        implicit
-        splitLeft: ReverseSplitLeft0[HNil, L, U, P, S]): Aux[L, U, P, S] =
+        implicit splitLeft: ReverseSplitLeft0[HNil, L, U, P, S]): Aux[L, U, P, S] =
       new ReverseSplitLeft[L, U] {
         type Prefix = P
         type Suffix = S
@@ -2183,10 +2171,7 @@ object hlist {
           srt: SplitRight0[HNil, AccPT, AccPH :: AccS, U, P, S])
           : SplitRight0[HNil, AccPH :: AccPT, AccS, U, P, S] =
         new SplitRight0[HNil, AccPH :: AccPT, AccS, U, P, S] {
-          def apply(
-              rev: HNil,
-              accP: AccPH :: AccPT,
-              accS: AccS): P :: S :: HNil =
+          def apply(rev: HNil, accP: AccPH :: AccPT, accS: AccS): P :: S :: HNil =
             srt(rev, accP.tail, accP.head :: accS)
         }
     }
@@ -2232,21 +2217,15 @@ object hlist {
       }
 
     implicit def reverseSplitRight[L <: HList, U, P <: HList, S <: HList](
-        implicit splitRight: ReverseSplitRight0[L, HNil, HNil, U, P, S])
-        : Aux[L, U, P, S] =
+        implicit
+        splitRight: ReverseSplitRight0[L, HNil, HNil, U, P, S]): Aux[L, U, P, S] =
       new ReverseSplitRight[L, U] {
         type Prefix = P
         type Suffix = S
         def product(l: L): Prefix :: Suffix :: HNil = splitRight(l, HNil, HNil)
       }
 
-    trait ReverseSplitRight0[
-        Rev <: HList,
-        AccP <: HList,
-        AccS <: HList,
-        U,
-        P,
-        S]
+    trait ReverseSplitRight0[Rev <: HList, AccP <: HList, AccS <: HList, U, P, S]
         extends Serializable {
       def apply(rev: Rev, accP: AccP, accS: AccS): P :: S :: HNil
     }
@@ -2276,10 +2255,7 @@ object hlist {
           srt: ReverseSplitRight0[HNil, AccPT, AccPH :: AccS, U, P, S])
           : ReverseSplitRight0[HNil, AccPH :: AccPT, AccS, U, P, S] =
         new ReverseSplitRight0[HNil, AccPH :: AccPT, AccS, U, P, S] {
-          def apply(
-              rev: HNil,
-              accP: AccPH :: AccPT,
-              accS: AccS): P :: S :: HNil =
+          def apply(rev: HNil, accP: AccPH :: AccPT, accS: AccS): P :: S :: HNil =
             srt(rev, accP.tail, accP.head :: accS)
         }
     }
@@ -2288,10 +2264,8 @@ object hlist {
       implicit def hlistReverseSplitRight3[PH, PT <: HList, S <: HList]
           : ReverseSplitRight0[HNil, PH :: PT, S, PH, PH :: PT, S] =
         new ReverseSplitRight0[HNil, PH :: PT, S, PH, PH :: PT, S] {
-          def apply(
-              rev: HNil,
-              accP: PH :: PT,
-              accS: S): (PH :: PT) :: S :: HNil = accP :: accS :: HNil
+          def apply(rev: HNil, accP: PH :: PT, accS: S): (PH :: PT) :: S :: HNil =
+            accP :: accS :: HNil
         }
     }
   }
@@ -2678,17 +2652,15 @@ object hlist {
 
     implicit def hnilZipWithHNil[P <: Poly2]: Aux[HNil, HNil, P, HNil] =
       constZipWith[HNil, HNil, P]
-    implicit def hnilZipWithHList[R <: HList, P <: Poly2]
-        : Aux[HNil, R, P, HNil] = constZipWith[HNil, R, P]
-    implicit def hlistZipWithHNil[L <: HList, P <: Poly2]
-        : Aux[L, HNil, P, HNil] = constZipWith[L, HNil, P]
+    implicit def hnilZipWithHList[R <: HList, P <: Poly2]: Aux[HNil, R, P, HNil] =
+      constZipWith[HNil, R, P]
+    implicit def hlistZipWithHNil[L <: HList, P <: Poly2]: Aux[L, HNil, P, HNil] =
+      constZipWith[L, HNil, P]
 
-    implicit def hlistZipWithHList[
-        LH,
-        RH,
-        LT <: HList,
-        RT <: HList,
-        P <: Poly2](implicit zipWith: ZipWith[LT, RT, P], clr: Case2[P, LH, RH])
+    implicit def hlistZipWithHList[LH, RH, LT <: HList, RT <: HList, P <: Poly2](
+        implicit
+        zipWith: ZipWith[LT, RT, P],
+        clr: Case2[P, LH, RH])
         : Aux[LH :: LT, RH :: RT, P, clr.Result :: zipWith.Out] =
       new ZipWith[LH :: LT, RH :: RT, P] {
         type Out = clr.Result :: zipWith.Out
@@ -3331,8 +3303,7 @@ object hlist {
 
     implicit def hcons[F[_], H, T <: HList](implicit
         headInstance: F[H],
-        tailInstances: LiftAll[F, T])
-        : Aux[F, H :: T, F[H] :: tailInstances.Out] =
+        tailInstances: LiftAll[F, T]): Aux[F, H :: T, F[H] :: tailInstances.Out] =
       new LiftAll[F, H :: T] {
         type Out = F[H] :: tailInstances.Out
         def instances = headInstance :: tailInstances.instances

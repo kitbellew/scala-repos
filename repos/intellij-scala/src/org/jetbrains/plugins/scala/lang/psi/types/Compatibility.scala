@@ -56,8 +56,9 @@ object Compatibility {
       place,
       (Success(typez, None), Set.empty),
       ModCount.getBlockModificationCount)
-    private def eval(typez: ScType, expectedOption: Option[ScType])
-        : (TypeResult[ScType], Set[ImportUsed]) = {
+    private def eval(
+        typez: ScType,
+        expectedOption: Option[ScType]): (TypeResult[ScType], Set[ImportUsed]) = {
       expectedOption match {
         case Some(expected) if typez.conforms(expected) =>
           (Success(typez, None), Set.empty)
@@ -518,8 +519,8 @@ object Compatibility {
 
   def toParameter(p: ScParameter, substitutor: ScSubstitutor): Parameter = {
     val t = substitutor.subst(p.getType(TypingContext.empty).getOrNothing)
-    val default = p.getDefaultExpression.flatMap(
-      _.getType().toOption.map(substitutor.subst))
+    val default =
+      p.getDefaultExpression.flatMap(_.getType().toOption.map(substitutor.subst))
     new Parameter(
       p.name,
       p.deprecatedName,

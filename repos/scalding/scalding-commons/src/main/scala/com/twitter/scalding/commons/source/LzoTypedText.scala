@@ -94,9 +94,7 @@ object LzoTypedText {
 
 }
 
-trait LzoTypedTextDelimited[T]
-    extends TypedTextDelimited[T]
-    with LocalTapSource {
+trait LzoTypedTextDelimited[T] extends TypedTextDelimited[T] with LocalTapSource {
   override def hdfsScheme =
     HadoopSchemeInstance(
       new LzoTextDelimited(

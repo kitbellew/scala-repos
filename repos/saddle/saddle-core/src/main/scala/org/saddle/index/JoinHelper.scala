@@ -132,9 +132,7 @@ private[saddle] object JoinHelper {
     permuter
   }
 
-  private def applyUnsorter(
-      unsorter: Array[Int],
-      labels: Array[Int]): Array[Int] = {
+  private def applyUnsorter(unsorter: Array[Int], labels: Array[Int]): Array[Int] = {
     if (unsorter.length > 0)
       array.take(unsorter, labels, -1)
     else {

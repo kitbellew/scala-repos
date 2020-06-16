@@ -106,8 +106,7 @@ abstract class RestartNodeSpec
         Cluster(secondSystem).joinSeedNodes(seedNodes)
         awaitAssert(Cluster(secondSystem).readView.members.size should ===(3))
         awaitAssert(
-          Cluster(secondSystem).readView.members.map(_.status) should ===(
-            Set(Up)))
+          Cluster(secondSystem).readView.members.map(_.status) should ===(Set(Up)))
       }
       enterBarrier("started")
 

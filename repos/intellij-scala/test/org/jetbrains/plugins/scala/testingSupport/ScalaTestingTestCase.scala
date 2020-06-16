@@ -91,8 +91,7 @@ abstract class ScalaTestingTestCase(
       tests: String*) = {
     val structureViewRoot = buildFileStructure(testClassName + ".scala")
     for (test <- tests) {
-      assert(
-        checkTestNodeInFileStructure(structureViewRoot, test, None, status))
+      assert(checkTestNodeInFileStructure(structureViewRoot, test, None, status))
     }
   }
 
@@ -171,10 +170,7 @@ abstract class ScalaTestingTestCase(
     new PsiLocation(project, myModule, psiElement)
   }
 
-  private def failedConfigMessage(
-      fileName: String,
-      lineNumber: Int,
-      offset: Int) =
+  private def failedConfigMessage(fileName: String, lineNumber: Int, offset: Int) =
     "Failed to create run configuration for test from file " + fileName + " from line " + lineNumber + " at offset " + offset
 
   private def failedConfigMessage(packageName: String) =
@@ -242,8 +238,7 @@ abstract class ScalaTestingTestCase(
       duration: Int = 3000,
       debug: Boolean = false): (String, Option[AbstractTestProxy]) = {
     assert(configurationCheck(runConfig))
-    assert(
-      runConfig.getConfiguration.isInstanceOf[AbstractTestRunConfiguration])
+    assert(runConfig.getConfiguration.isInstanceOf[AbstractTestRunConfiguration])
     runConfig.getConfiguration
       .asInstanceOf[AbstractTestRunConfiguration]
       .setupIntegrationTestClassPath()
@@ -262,9 +257,7 @@ abstract class ScalaTestingTestCase(
           runConfig,
           classOf[DefaultRunExecutor],
           new ProcessAdapter {
-            override def onTextAvailable(
-                event: ProcessEvent,
-                outputType: Key[_]) {
+            override def onTextAvailable(event: ProcessEvent, outputType: Key[_]) {
               val text = event.getText
               if (debug) print(text)
             }

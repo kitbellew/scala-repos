@@ -29,10 +29,7 @@ import org.scalacheck._
 import scalaz._
 import scalaz.syntax.semigroup._
 
-class MetadataSpec
-    extends Specification
-    with MetadataGenerators
-    with ScalaCheck {
+class MetadataSpec extends Specification with MetadataGenerators with ScalaCheck {
   import Prop._
 
   val sampleSize = 100
@@ -171,8 +168,5 @@ trait MetadataGenerators extends util.ArbitraryJValue {
   def genStringMetadata: Gen[StringValueStats] =
     for (count <- choose(0, 1000); a <- arbString.arbitrary;
       b <- arbString.arbitrary)
-      yield StringValueStats(
-        count,
-        Order[String].min(a, b),
-        Order[String].max(a, b))
+      yield StringValueStats(count, Order[String].min(a, b), Order[String].max(a, b))
 }

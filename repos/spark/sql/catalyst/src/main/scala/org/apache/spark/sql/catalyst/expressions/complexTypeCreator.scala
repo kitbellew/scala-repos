@@ -270,8 +270,7 @@ case class CreateStructUnsafe(children: Seq[Expression]) extends Expression {
   *
   * @param children Seq(name1, val1, name2, val2, ...)
   */
-case class CreateNamedStructUnsafe(children: Seq[Expression])
-    extends Expression {
+case class CreateNamedStructUnsafe(children: Seq[Expression]) extends Expression {
 
   private lazy val (nameExprs, valExprs) =
     children

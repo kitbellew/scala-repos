@@ -28,9 +28,7 @@ import net.liftweb.common._
 import net.liftweb.util._
 import Helpers._
 
-class HTTPRequestServlet(
-    val req: HttpServletRequest,
-    val provider: HTTPProvider)
+class HTTPRequestServlet(val req: HttpServletRequest, val provider: HTTPProvider)
     extends HTTPRequest {
   private lazy val ctx = {
     new HTTPServletContext(req.getSession.getServletContext)

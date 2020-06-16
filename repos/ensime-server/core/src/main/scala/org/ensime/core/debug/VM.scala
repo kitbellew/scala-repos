@@ -388,10 +388,7 @@ class VM(
     } else {
       stackSlotForName(thread, name)
         .map({ slot =>
-          DebugStackSlot(
-            DebugThreadId(thread.uniqueID),
-            slot.frame,
-            slot.offset)
+          DebugStackSlot(DebugThreadId(thread.uniqueID), slot.frame, slot.offset)
         })
         .orElse(
           fieldByName(objRef, name).flatMap { f =>
@@ -487,9 +484,7 @@ class VM(
     savedObjects.get(objectId)
   }
 
-  private def valueForField(
-      objectId: DebugObjectId,
-      name: String): Option[Value] = {
+  private def valueForField(objectId: DebugObjectId, name: String): Option[Value] = {
     for (obj <- savedObjects.get(objectId);
       f <- fieldByName(obj, name)) yield {
       remember(obj.getValue(f))
@@ -580,10 +575,7 @@ class VM(
       DebugObjectId(thisObjId))
   }
 
-  def backtrace(
-      thread: ThreadReference,
-      index: Int,
-      count: Int): DebugBacktrace = {
+  def backtrace(thread: ThreadReference, index: Int, count: Int): DebugBacktrace = {
     val frames = ListBuffer[DebugStackFrame]()
     var i = index
     while (i < thread.frameCount && (count == -1 || i < count)) {
@@ -591,10 +583,7 @@ class VM(
       frames += makeStackFrame(i, stackFrame)
       i += 1
     }
-    DebugBacktrace(
-      frames.toList,
-      DebugThreadId(thread.uniqueID()),
-      thread.name())
+    DebugBacktrace(frames.toList, DebugThreadId(thread.uniqueID()), thread.name())
   }
 
   private def mirrorFromString(tpe: Type, toMirror: String): Option[Value] = {

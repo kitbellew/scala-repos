@@ -125,8 +125,7 @@ case class TestMethod(
           await(method.invoke(testObject).asInstanceOf[Future[Any]])
         else if (r == classOf[DBIOAction[_, _, _]])
           await(
-            testObject.db.run(
-              method.invoke(testObject).asInstanceOf[DBIO[Any]]))
+            testObject.db.run(method.invoke(testObject).asInstanceOf[DBIO[Any]]))
         else
           throw new RuntimeException(
             s"Illegal return type: '${r.getName}' in test method '$name' -- AsyncTest methods must return Future or Action")
@@ -374,8 +373,7 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
   def materializeAsync[T, R](
       p: Publisher[T],
       tr: T => Future[R],
-      delay: Duration = Duration(100L, TimeUnit.MILLISECONDS))
-      : Future[Vector[R]] = {
+      delay: Duration = Duration(100L, TimeUnit.MILLISECONDS)): Future[Vector[R]] = {
     val exe = new ThreadPoolExecutor(
       1,
       1,

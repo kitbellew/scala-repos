@@ -179,9 +179,7 @@ class TaskTrackerActorTest
     val taskState = TaskSerializer.fromProto(stagedTaskNowRunning)
     probe.send(
       f.taskTrackerActor,
-      TaskTrackerActor.TaskUpdated(
-        taskState,
-        TaskTrackerActor.Ack(probe.ref, ())))
+      TaskTrackerActor.TaskUpdated(taskState, TaskTrackerActor.Ack(probe.ref, ())))
     probe.expectMsg(())
 
     Then("it will have set the correct metric counts")
@@ -209,9 +207,7 @@ class TaskTrackerActorTest
     val taskState = TaskSerializer.fromProto(newTask)
     probe.send(
       f.taskTrackerActor,
-      TaskTrackerActor.TaskUpdated(
-        taskState,
-        TaskTrackerActor.Ack(probe.ref, ())))
+      TaskTrackerActor.TaskUpdated(taskState, TaskTrackerActor.Ack(probe.ref, ())))
     probe.expectMsg(())
 
     Then("it will have set the correct metric counts")

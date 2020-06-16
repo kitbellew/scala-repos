@@ -10,9 +10,7 @@ import org.scalatest.junit.JUnitRunner
 @RunWith(classOf[JUnitRunner])
 final class StringCodecSuite extends RedisRequestTest {
 
-  test(
-    "Throw a ClientError if APPEND is called with no key or value",
-    CodecTest) {
+  test("Throw a ClientError if APPEND is called with no key or value", CodecTest) {
     intercept[ClientError] {
       codec(wrap("APPEND\r\n"))
     }
@@ -103,8 +101,7 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode DECRBY") {
     assert(
-      codec(wrap("DECRBY foo 1\r\n")) == List(
-        DecrBy(StringToChannelBuffer("foo"), 1)))
+      codec(wrap("DECRBY foo 1\r\n")) == List(DecrBy(StringToChannelBuffer("foo"), 1)))
     assert(
       codec(wrap("DECRBY foo 4096\r\n")) == List(
         DecrBy(StringToChannelBuffer("foo"), 4096)))
@@ -117,8 +114,7 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode GET") {
-    assert(
-      codec(wrap("GET foo\r\n")) == List(Get(StringToChannelBuffer("foo"))))
+    assert(codec(wrap("GET foo\r\n")) == List(Get(StringToChannelBuffer("foo"))))
   }
 
   test("Throw a ClientError if GETBIT is called with no arguments") {
@@ -135,8 +131,7 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode GETBIT") {
     assert(
-      codec(wrap("GETBIT foo 0\r\n")) == List(
-        GetBit(StringToChannelBuffer("foo"), 0)))
+      codec(wrap("GETBIT foo 0\r\n")) == List(GetBit(StringToChannelBuffer("foo"), 0)))
   }
 
   test("Throw a ClientError if GETRANGE is called with no arguments") {
@@ -204,8 +199,7 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode INCRBY") {
     assert(
-      codec(wrap("INCRBY foo 1\r\n")) == List(
-        IncrBy(StringToChannelBuffer("foo"), 1)))
+      codec(wrap("INCRBY foo 1\r\n")) == List(IncrBy(StringToChannelBuffer("foo"), 1)))
     assert(
       codec(wrap("INCRBY foo 4096\r\n")) == List(
         IncrBy(StringToChannelBuffer("foo"), 4096)))
@@ -218,9 +212,9 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode MGET") {
-    assert(codec(wrap("MGET foo bar\r\n")) ==
-      List(
-        MGet(List(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
+    assert(
+      codec(wrap("MGET foo bar\r\n")) ==
+        List(MGet(List(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
   }
 
   test("Throw a ClientError if MSETNX is called with no arguments") {
@@ -250,13 +244,9 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode PSETEX") {
-    assert(
-      codec(wrap("PSETEX foo 1000 bar\r\n")) ==
-        List(
-          PSetEx(
-            StringToChannelBuffer("foo"),
-            1000L,
-            StringToChannelBuffer("bar"))))
+    assert(codec(wrap("PSETEX foo 1000 bar\r\n")) ==
+      List(
+        PSetEx(StringToChannelBuffer("foo"), 1000L, StringToChannelBuffer("bar"))))
   }
 
   test("Correctly encode SET") {
@@ -413,8 +403,7 @@ final class StringCodecSuite extends RedisRequestTest {
 
   test("Correctly encode STRLEN") {
     assert(
-      codec(wrap("STRLEN foo\r\n")) == List(
-        Strlen(StringToChannelBuffer("foo"))))
+      codec(wrap("STRLEN foo\r\n")) == List(Strlen(StringToChannelBuffer("foo"))))
   }
 
   // Unified GET request
@@ -422,9 +411,7 @@ final class StringCodecSuite extends RedisRequestTest {
     assert(codec(wrap("*2\r\n")) == Nil)
   }
 
-  test(
-    "Correctly encode command string size in unified GET requests",
-    CodecTest) {
+  test("Correctly encode command string size in unified GET requests", CodecTest) {
     assert(codec(wrap("$3\r\n")) == Nil)
   }
 
@@ -468,9 +455,9 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode unified MGET requests", CodecTest) {
-    assert(codec(wrap("bar\r\n")) ==
-      List(
-        MGet(List(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
+    assert(
+      codec(wrap("bar\r\n")) ==
+        List(MGet(List(StringToChannelBuffer("foo"), StringToChannelBuffer("bar")))))
   }
 
   // Unified MSET request

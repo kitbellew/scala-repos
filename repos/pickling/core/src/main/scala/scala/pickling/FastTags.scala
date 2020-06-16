@@ -234,9 +234,7 @@ object FastTypeTag {
     classOf[Array[Double]] -> FastTypeTag.ArrayDouble
   )
 
-  def mkRawArrayTypeAndKey(
-      clazz: Class[_],
-      mirror: ru.Mirror): (ru.Type, String) = {
+  def mkRawArrayTypeAndKey(clazz: Class[_], mirror: ru.Mirror): (ru.Type, String) = {
     // create Type without going through `typeFromString`
     val elemClass = clazz.getComponentType()
     // debug(s"creating tag for array with element type '${elemClass.getName}'")

@@ -368,8 +368,7 @@ trait Config extends Serializable {
       .toList
 
   def addFlowStepStrategy(
-      flowStrategyProvider: (Mode, Config) => FlowStepStrategy[JobConf])
-      : Config = {
+      flowStrategyProvider: (Mode, Config) => FlowStepStrategy[JobConf]): Config = {
     val serializedListener = flowStepStrategiesSerializer(flowStrategyProvider)
     update(Config.FlowStepStrategies) {
       case None      => (Some(serializedListener), ())
@@ -380,8 +379,7 @@ trait Config extends Serializable {
   def clearFlowStepStrategies: Config =
     this.-(Config.FlowStepStrategies)
 
-  def getFlowStepStrategies
-      : List[Try[(Mode, Config) => FlowStepStrategy[JobConf]]] =
+  def getFlowStepStrategies: List[Try[(Mode, Config) => FlowStepStrategy[JobConf]]] =
     get(Config.FlowStepStrategies).toIterable
       .flatMap(s => StringUtility.fastSplit(s, ","))
       .map(flowStepStrategiesSerializer.invert(_))
@@ -558,9 +556,7 @@ object Config {
   /**
     * This overwrites any keys in m that exist in config.
     */
-  def overwrite[K >: String, V >: String](
-      m: Map[K, V],
-      conf: Config): Map[K, V] =
+  def overwrite[K >: String, V >: String](m: Map[K, V], conf: Config): Map[K, V] =
     m ++ (conf.toMap.toMap[K, V])
 
   /*

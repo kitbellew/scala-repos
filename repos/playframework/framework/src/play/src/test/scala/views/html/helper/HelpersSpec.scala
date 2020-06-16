@@ -126,10 +126,7 @@ object HelpersSpec extends Specification {
       val form =
         Form(single("foo" -> Forms.list(Forms.text))).fill(List("0", "1"))
       val body = select
-        .apply(
-          form("foo"),
-          Seq(("0", "test"), ("1", "test")),
-          'multiple -> None)
+        .apply(form("foo"), Seq(("0", "test"), ("1", "test")), 'multiple -> None)
         .body
 
       // Append [] to the name for the form binding

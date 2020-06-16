@@ -33,9 +33,7 @@ object OFormat {
     new InvariantFunctor[OFormat] {
 
       def inmap[A, B](fa: OFormat[A], f1: A => B, f2: B => A): OFormat[B] =
-        OFormat[B](
-          (js: JsValue) => fa.reads(js).map(f1),
-          (b: B) => fa.writes(f2(b)))
+        OFormat[B]((js: JsValue) => fa.reads(js).map(f1), (b: B) => fa.writes(f2(b)))
 
     }
 

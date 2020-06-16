@@ -21,10 +21,7 @@ import HttpEntity._
 
 import scala.util.control.NonFatal
 
-class ResponseRendererSpec
-    extends FreeSpec
-    with Matchers
-    with BeforeAndAfterAll {
+class ResponseRendererSpec extends FreeSpec with Matchers with BeforeAndAfterAll {
   val testConf: Config = ConfigFactory.parseString("""
     akka.event-handlers = ["akka.testkit.TestEventListener"]
     akka.loglevel = WARNING""")
@@ -663,8 +660,7 @@ class ResponseRendererSpec
             ),
             requestMethod = if (headReq) HttpMethods.HEAD else HttpMethods.GET,
             requestProtocol = reqProto,
-            closeRequested =
-              HttpMessage.connectionCloseExpected(reqProto, reqCH)
+            closeRequested = HttpMessage.connectionCloseExpected(reqProto, reqCH)
           ) should renderTo(
             s"""${resProto.value} 200 OK
                  |Server: akka-http/1.0.0

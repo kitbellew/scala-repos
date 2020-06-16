@@ -273,10 +273,7 @@ class AkkaProtocolSpec
 
       val reader = system.actorOf(
         ProtocolStateActor.inboundProps(
-          HandshakeInfo(
-            origin = localAddress,
-            uid = 42,
-            cookie = Some("abcde")),
+          HandshakeInfo(origin = localAddress, uid = 42, cookie = Some("abcde")),
           handle,
           ActorAssociationEventListener(testActor),
           new AkkaProtocolSettings(
@@ -300,10 +297,7 @@ class AkkaProtocolSpec
 
       val reader = system.actorOf(
         ProtocolStateActor.inboundProps(
-          HandshakeInfo(
-            origin = localAddress,
-            uid = 42,
-            cookie = Some("abcde")),
+          HandshakeInfo(origin = localAddress, uid = 42, cookie = Some("abcde")),
           handle,
           ActorAssociationEventListener(testActor),
           new AkkaProtocolSettings(
@@ -341,10 +335,7 @@ class AkkaProtocolSpec
 
       system.actorOf(
         ProtocolStateActor.outboundProps(
-          HandshakeInfo(
-            origin = localAddress,
-            uid = 42,
-            cookie = Some("abcde")),
+          HandshakeInfo(origin = localAddress, uid = 42, cookie = Some("abcde")),
           remoteAddress,
           statusPromise,
           transport,

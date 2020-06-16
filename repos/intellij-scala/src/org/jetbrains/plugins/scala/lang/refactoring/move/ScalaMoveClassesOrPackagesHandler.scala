@@ -10,10 +10,7 @@ import com.intellij.openapi.ui.{DialogWrapper, Messages}
 import com.intellij.psi.{PsiClass, PsiDirectory, PsiElement}
 import com.intellij.refactoring.move.MoveCallback
 import com.intellij.refactoring.move.moveClassesOrPackages._
-import com.intellij.refactoring.util.{
-  CommonRefactoringUtil,
-  TextOccurrencesUtil
-}
+import com.intellij.refactoring.util.{CommonRefactoringUtil, TextOccurrencesUtil}
 import com.intellij.refactoring.{
   HelpID,
   JavaRefactoringSettings,
@@ -29,8 +26,7 @@ import org.jetbrains.plugins.scala.settings.ScalaApplicationSettings
   * @author Alefas
   * @since 02.11.12
   */
-class ScalaMoveClassesOrPackagesHandler
-    extends JavaMoveClassesOrPackagesHandler {
+class ScalaMoveClassesOrPackagesHandler extends JavaMoveClassesOrPackagesHandler {
   override def doMove(
       project: Project,
       elements: Array[PsiElement],

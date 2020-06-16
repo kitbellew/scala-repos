@@ -154,9 +154,7 @@ private[spark] object SubmitRestProtocolMessage {
     * inferring it from the action field. This is useful for deserializing JSON that
     * represents custom user-defined messages.
     */
-  def fromJson[T <: SubmitRestProtocolMessage](
-      json: String,
-      clazz: Class[T]): T = {
+  def fromJson[T <: SubmitRestProtocolMessage](json: String, clazz: Class[T]): T = {
     mapper.readValue(json, clazz)
   }
 }

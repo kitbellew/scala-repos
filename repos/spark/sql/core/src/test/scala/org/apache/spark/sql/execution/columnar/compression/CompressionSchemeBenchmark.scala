@@ -325,12 +325,7 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     // RunLengthEncoding(0.999)                 2260 / 3021         29.7          33.7       0.0X
     // DictionaryEncoding(0.251)                1270 / 1438         52.8          18.9       0.0X
     // LongDelta(0.125)                          496 /  509        135.3           7.4       0.1X
-    runEncodeBenchmark(
-      "LONG Encode (Higher Skew)",
-      iters,
-      count,
-      LONG,
-      testData)
+    runEncodeBenchmark("LONG Encode (Higher Skew)", iters, count, LONG, testData)
 
     // Intel(R) Core(TM) i7-4578U CPU @ 3.00GHz
     // LONG Decode (Higher Skew):          Best/Avg Time(ms)    Rate(M/s)   Per Row(ns)   Relative
@@ -339,12 +334,7 @@ object CompressionSchemeBenchmark extends AllCompressionSchemes {
     // RunLengthEncoding                        1350 / 1378         49.7          20.1       0.7X
     // DictionaryEncoding                        892 /  924         75.2          13.3       1.1X
     // LongDelta                                 817 /  847         82.2          12.2       1.2X
-    runDecodeBenchmark(
-      "LONG Decode (Higher Skew)",
-      iters,
-      count,
-      LONG,
-      testData)
+    runDecodeBenchmark("LONG Decode (Higher Skew)", iters, count, LONG, testData)
   }
 
   def stringEncodingBenchmark(iters: Int): Unit = {

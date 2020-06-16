@@ -33,9 +33,7 @@ object CacheDirective {
       content: Option[String]): RequestDirective with ResponseDirective =
     CustomCacheDirective(name, content)
 
-  sealed abstract class FieldNamesDirective
-      extends Product
-      with ValueRenderable {
+  sealed abstract class FieldNamesDirective extends Product with ValueRenderable {
     def fieldNames: immutable.Seq[String]
     final def render[R <: Rendering](r: R): r.type =
       if (fieldNames.nonEmpty) {

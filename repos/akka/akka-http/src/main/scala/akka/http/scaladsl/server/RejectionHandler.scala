@@ -139,20 +139,16 @@ object RejectionHandler {
         complete((
           MethodNotAllowed,
           List(Allow(methods)),
-          "HTTP method not allowed, supported methods: " + names.mkString(
-            ", ")))
+          "HTTP method not allowed, supported methods: " + names.mkString(", ")))
       }
       .handle {
         case AuthorizationFailedRejection ⇒
-          complete((
-            Forbidden,
-            "The supplied authentication is not authorized to access this resource"))
+          complete((Forbidden, "The supplied authentication is not authorized to access this resource"))
       }
       .handle {
         case MalformedFormFieldRejection(name, msg, _) ⇒
-          complete((
-            BadRequest,
-            "The form field '" + name + "' was malformed:\n" + msg))
+          complete(
+            (BadRequest, "The form field '" + name + "' was malformed:\n" + msg))
       }
       .handle {
         case MalformedHeaderRejection(headerName, msg, _) ⇒
@@ -204,14 +200,11 @@ object RejectionHandler {
             (RequestedRangeNotSatisfiable, "Request contains too many ranges."))
       }
       .handle {
-        case UnsatisfiableRangeRejection(
-              unsatisfiableRanges,
-              actualEntityLength) ⇒
+        case UnsatisfiableRangeRejection(unsatisfiableRanges, actualEntityLength) ⇒
           complete(
             (
               RequestedRangeNotSatisfiable,
-              List(`Content-Range`(
-                ContentRange.Unsatisfiable(actualEntityLength))),
+              List(`Content-Range`(ContentRange.Unsatisfiable(actualEntityLength))),
               unsatisfiableRanges.mkString(
                 "None of the following requested Ranges were satisfiable:\n",
                 "\n",
@@ -259,9 +252,10 @@ object RejectionHandler {
       }
       .handleAll[UnsupportedRequestEncodingRejection] { rejections ⇒
         val supported = rejections.map(_.supported.value).mkString(" or ")
-        complete((
-          BadRequest,
-          "The request's Content-Encoding is not supported. Expected:\n" + supported))
+        complete(
+          (
+            BadRequest,
+            "The request's Content-Encoding is not supported. Expected:\n" + supported))
       }
       .handle {
         case ExpectedWebSocketRequestRejection ⇒

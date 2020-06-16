@@ -41,8 +41,7 @@ class JGitUtilSpec extends FunSuite {
         list("master", ".") == List(
           ("dir/subdir", "commit3", true),
           ("README.md", "commit2", false)))
-      assert(
-        list("master", "dir/subdir") == List(("File3.md", "commit3", false)))
+      assert(list("master", "dir/subdir") == List(("File3.md", "commit3", false)))
       assert(list("branch", ".") == Nil)
       assert(list("branch", "dir/subdir") == Nil)
 

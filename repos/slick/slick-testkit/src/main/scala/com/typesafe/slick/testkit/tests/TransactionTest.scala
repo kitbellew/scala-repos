@@ -73,8 +73,7 @@ class TransactionTest extends AsyncTest[JdbcTestDB] {
               _ <-
                 getTI
                   .withTransactionIsolation(TransactionIsolation.Serializable)
-                  .map(
-                    _ should (_ >= TransactionIsolation.Serializable.intValue))
+                  .map(_ should (_ >= TransactionIsolation.Serializable.intValue))
               _ <- getTI.map(
                 _ should (_ >= TransactionIsolation.ReadUncommitted.intValue))
             } yield ())

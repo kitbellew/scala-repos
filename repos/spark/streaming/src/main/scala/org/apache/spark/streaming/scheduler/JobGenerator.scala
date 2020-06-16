@@ -164,8 +164,7 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
         def haveAllBatchesBeenProcessed: Boolean = {
           lastProcessedBatch != null && lastProcessedBatch.milliseconds == stopTime
         }
-        logInfo(
-          "Waiting for jobs to be processed and checkpoints to be written")
+        logInfo("Waiting for jobs to be processed and checkpoints to be written")
         while (!hasTimedOut && !haveAllBatchesBeenProcessed) {
           Thread.sleep(pollTime)
         }
@@ -235,8 +234,7 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
     // Batches when the master was down, that is,
     // between the checkpoint and current restart time
     val checkpointTime = ssc.initialCheckpoint.checkpointTime
-    val restartTime = new Time(
-      timer.getRestartTime(graph.zeroTime.milliseconds))
+    val restartTime = new Time(timer.getRestartTime(graph.zeroTime.milliseconds))
     val downTimes = checkpointTime.until(restartTime, batchDuration)
     logInfo(
       "Batches during down time (" + downTimes.size + " batches): "
@@ -336,9 +334,7 @@ private[streaming] class JobGenerator(jobScheduler: JobScheduler)
         ssc.checkpointDuration)) {
       logInfo("Checkpointing graph for time " + time)
       ssc.graph.updateCheckpointData(time)
-      checkpointWriter.write(
-        new Checkpoint(ssc, time),
-        clearCheckpointDataLater)
+      checkpointWriter.write(new Checkpoint(ssc, time), clearCheckpointDataLater)
     }
   }
 

@@ -61,9 +61,8 @@ package object framework {
     Gen.listOfN(dsize, genSeriesOfN[X, S](ssize)).map(ss => Frame(ss: _*))
 
   /** Yield an arbitrary 100 x 100 Matrix. */
-  def arbMatrixOfN[S: ClassManifest: Gen](
-      cols: Int,
-      rows: Int): Arbitrary[Mat[S]] = Arbitrary(genMatrixOfN[S](cols, rows))
+  def arbMatrixOfN[S: ClassManifest: Gen](cols: Int, rows: Int): Arbitrary[Mat[S]] =
+    Arbitrary(genMatrixOfN[S](cols, rows))
 
   /** Yield an arbitrary Vector of 100 values. */
   def arbVectorOfN[S: ClassManifest: Gen](size: Int): Arbitrary[Vec[S]] =

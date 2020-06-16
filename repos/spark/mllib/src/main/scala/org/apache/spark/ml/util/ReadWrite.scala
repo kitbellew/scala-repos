@@ -51,8 +51,7 @@ private[util] sealed trait BaseReadWrite {
     */
   protected final def sqlContext: SQLContext = {
     if (optionSQLContext.isEmpty) {
-      optionSQLContext = Some(
-        SQLContext.getOrCreate(SparkContext.getOrCreate()))
+      optionSQLContext = Some(SQLContext.getOrCreate(SparkContext.getOrCreate()))
     }
     optionSQLContext.get
   }

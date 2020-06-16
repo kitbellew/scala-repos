@@ -29,8 +29,7 @@ object Mono extends MonoDynamic {
   def f4 = f(this.bar)
   def f5 = f(f(f(f(f(f(this.bar)))))) + f(f(f(f(f(f(this.baz))))))
   def f6 =
-    f(f(f(f(f(f(this.bar(bippy = 1, boppy = 2))))))) + f(
-      f(f(f(f(f(this.baz))))))
+    f(f(f(f(f(f(this.bar(bippy = 1, boppy = 2))))))) + f(f(f(f(f(f(this.baz))))))
 }
 
 object Poly extends Dynamic {

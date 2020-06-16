@@ -67,9 +67,7 @@ package object collections {
     * @param originalList List to be filled
     * @param filler Iterable which will fill originalList
     */
-  def fillCollection[T](
-      originalList: jfxc.ObservableList[T],
-      filler: Iterable[T]) {
+  def fillCollection[T](originalList: jfxc.ObservableList[T], filler: Iterable[T]) {
     this.internalFiller(originalList, filler, (t: T) => t)
   }
 
@@ -81,9 +79,7 @@ package object collections {
     * @param originalList List to be filled
     * @param element Element which will replace originalList content.
     */
-  def fillCollectionWithOne[T](
-      originalList: jfxc.ObservableList[T],
-      element: T) {
+  def fillCollectionWithOne[T](originalList: jfxc.ObservableList[T], element: T) {
     internalFillerWithOne(originalList, element, (t: T) => t)
   }
 

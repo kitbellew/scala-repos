@@ -72,8 +72,8 @@ object Challenge extends LilaController {
             negotiate(
               html =
                 Redirect(routes.Round.watcher(pov.game.id, "white")).fuccess,
-              api = apiVersion =>
-                Env.api.roundApi.player(pov, apiVersion) map { Ok(_) }
+              api =
+                apiVersion => Env.api.roundApi.player(pov, apiVersion) map { Ok(_) }
             ) flatMap withChallengeAnonCookie(ctx.isAnon, c, false)
           case None =>
             negotiate(
@@ -133,8 +133,7 @@ object Challenge extends LilaController {
                 env.api.rematchOf(g, me) map {
                   _.fold(
                     Ok,
-                    BadRequest(
-                      jsonError("Sorry, couldn't create the rematch.")))
+                    BadRequest(jsonError("Sorry, couldn't create the rematch.")))
                 }
             }
           }

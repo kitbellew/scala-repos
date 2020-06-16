@@ -52,10 +52,8 @@ trait Counter2Ops {
     }
   }
 
-  implicit def addVV[K1, K2, V: Semiring: Zero]: OpAdd.Impl2[
-    Counter2[K1, K2, V],
-    Counter2[K1, K2, V],
-    Counter2[K1, K2, V]] = {
+  implicit def addVV[K1, K2, V: Semiring: Zero]
+      : OpAdd.Impl2[Counter2[K1, K2, V], Counter2[K1, K2, V], Counter2[K1, K2, V]] = {
     binaryOpFromBinaryUpdateOp(canCopy, addIntoVV)
   }
 
@@ -86,15 +84,12 @@ trait Counter2Ops {
       }
     }
 
-  implicit def subVV[K1, K2, V: Ring: Zero]: OpSub.Impl2[
-    Counter2[K1, K2, V],
-    Counter2[K1, K2, V],
-    Counter2[K1, K2, V]] = {
+  implicit def subVV[K1, K2, V: Ring: Zero]
+      : OpSub.Impl2[Counter2[K1, K2, V], Counter2[K1, K2, V], Counter2[K1, K2, V]] = {
     binaryOpFromBinaryUpdateOp(canCopy, subIntoVV)
   }
 
-  implicit def subIntoVS[K1, K2, V: Ring]
-      : OpSub.InPlaceImpl2[Counter2[K1, K2, V], V] =
+  implicit def subIntoVS[K1, K2, V: Ring]: OpSub.InPlaceImpl2[Counter2[K1, K2, V], V] =
     new OpSub.InPlaceImpl2[Counter2[K1, K2, V], V] {
       val field = implicitly[Ring[V]]
       def apply(a: Counter2[K1, K2, V], b: V) {
@@ -205,14 +200,9 @@ trait Counter2Ops {
 
   implicit def canDivVV[K1, K2, V](implicit
       copy: CanCopy[Counter2[K1, K2, V]],
-      semiring: Field[V]): OpDiv.Impl2[
-    Counter2[K1, K2, V],
-    Counter2[K1, K2, V],
-    Counter2[K1, K2, V]] = {
-    new OpDiv.Impl2[
-      Counter2[K1, K2, V],
-      Counter2[K1, K2, V],
-      Counter2[K1, K2, V]] {
+      semiring: Field[V])
+      : OpDiv.Impl2[Counter2[K1, K2, V], Counter2[K1, K2, V], Counter2[K1, K2, V]] = {
+    new OpDiv.Impl2[Counter2[K1, K2, V], Counter2[K1, K2, V], Counter2[K1, K2, V]] {
       override def apply(a: Counter2[K1, K2, V], b: Counter2[K1, K2, V]) = {
         val r = Counter2[K1, K2, V]()
         for ((k, v) <- a.activeIterator) {
@@ -312,11 +302,8 @@ trait Counter2Ops {
     *    }
     *  } */
 
-  implicit def canMultiplyC2C1[K1, K2, V](implicit
-      semiring: Semiring[V]): OpMulMatrix.Impl2[
-    Counter2[K1, K2, V],
-    Counter[K2, V],
-    Counter[K1, V]] = {
+  implicit def canMultiplyC2C1[K1, K2, V](implicit semiring: Semiring[V])
+      : OpMulMatrix.Impl2[Counter2[K1, K2, V], Counter[K2, V], Counter[K1, V]] = {
     new OpMulMatrix.Impl2[Counter2[K1, K2, V], Counter[K2, V], Counter[K1, V]] {
       override def apply(a: Counter2[K1, K2, V], b: Counter[K2, V]) = {
         val r = Counter[K1, V]()

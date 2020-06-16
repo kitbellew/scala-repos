@@ -128,7 +128,8 @@ class DocFindingSpec
           case "14" =>
             sig.java shouldBe DocSig(
               DocFqn("com.google.common.io", "Files"),
-              Some("map(java.io.File, java.nio.channels.FileChannel.MapMode, long)"))
+              Some(
+                "map(java.io.File, java.nio.channels.FileChannel.MapMode, long)"))
           case "15" =>
             sig.java shouldBe DocSig(
               DocFqn("com.google.common.io", "Files"),
@@ -159,9 +160,7 @@ class DocFindingSpec
           case "26" =>
             sig.java shouldBe DocSig(DocFqn("java.util", "package"), None)
           case "27" =>
-            sig.java shouldBe DocSig(
-              DocFqn("scala.collection", "package"),
-              None)
+            sig.java shouldBe DocSig(DocFqn("scala.collection", "package"), None)
           // TODO: Would be nice to be able to inspect a particular constructor. The problem is that
           // symbolAt returns the type itself when point is in 'File', and it's not totally clear
           // that's wrong.

@@ -30,9 +30,7 @@ trait CollectionsTestBase {
       coll: ju.Collection[E],
       elem: E): Unit = {
     expectThrows(classOf[UnsupportedOperationException], coll.add(elem))
-    expectThrows(
-      classOf[UnsupportedOperationException],
-      coll.addAll(Seq.empty[E]))
+    expectThrows(classOf[UnsupportedOperationException], coll.addAll(Seq.empty[E]))
     expectThrows(classOf[UnsupportedOperationException], coll.clear())
     expectThrows(classOf[UnsupportedOperationException], coll.remove(elem))
     expectThrows(
@@ -101,9 +99,7 @@ trait CollectionsTestBase {
       value: V): Unit = {
     expectThrows(classOf[UnsupportedOperationException], map.clear())
     expectThrows(classOf[UnsupportedOperationException], map.put(key, value))
-    expectThrows(
-      classOf[UnsupportedOperationException],
-      map.putAll(Map.empty[K, V]))
+    expectThrows(classOf[UnsupportedOperationException], map.putAll(Map.empty[K, V]))
     testSetUnmodifiability(
       map.entrySet(),
       new ju.AbstractMap.SimpleImmutableEntry(key, value))

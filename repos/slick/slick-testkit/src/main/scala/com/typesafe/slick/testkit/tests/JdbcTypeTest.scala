@@ -125,9 +125,7 @@ class JdbcTypeTest extends AsyncTest[JdbcTestDB] {
         ts.to[Set]
           .result
           .map(
-            _ shouldBe Set(
-              (1, Serialized(List(1, 2, 3))),
-              (2, Serialized(List(4, 5)))))
+            _ shouldBe Set((1, Serialized(List(1, 2, 3))), (2, Serialized(List(4, 5)))))
       ).transactionally
     }
 

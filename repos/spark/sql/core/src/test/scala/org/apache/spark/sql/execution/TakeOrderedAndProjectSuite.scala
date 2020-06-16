@@ -60,8 +60,7 @@ class TakeOrderedAndProjectSuite extends SparkPlanTest with SharedSQLContext {
     withClue(s"seed = $seed") {
       checkThatPlansAgree(
         generateRandomInputData(),
-        input =>
-          noOpFilter(TakeOrderedAndProject(limit, sortOrder, None, input)),
+        input => noOpFilter(TakeOrderedAndProject(limit, sortOrder, None, input)),
         input =>
           GlobalLimit(limit, LocalLimit(limit, Sort(sortOrder, true, input))),
         sortAnswers = false

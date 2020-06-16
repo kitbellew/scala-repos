@@ -82,11 +82,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
       new SparkConf(),
       10)
 
-    testRolling(
-      appender,
-      testOutputStream,
-      textToAppend,
-      rolloverIntervalMillis)
+    testRolling(appender, testOutputStream, textToAppend, rolloverIntervalMillis)
   }
 
   test("rolling file appender - size-based rolling") {
@@ -163,9 +159,7 @@ class FileAppenderSuite extends SparkFunSuite with BeforeAndAfter with Logging {
     // Test whether FileAppender.apply() returns the right type of the FileAppender based
     // on SparkConf settings.
 
-    def testAppenderSelection[
-        ExpectedAppender: ClassTag,
-        ExpectedRollingPolicy](
+    def testAppenderSelection[ExpectedAppender: ClassTag, ExpectedRollingPolicy](
         properties: Seq[(String, String)],
         expectedRollingPolicyParam: Long = -1): Unit = {
 

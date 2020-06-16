@@ -201,9 +201,7 @@ object BigDecimalRootRefinement {
     // If we first scale the polynomial by b^poly.degree, then the roots
     // remain the same, but the first composition will partially cancel with
     // b^poly.degree, leaving an integer.
-    def shift(
-        poly: Polynomial[BigDecimal],
-        h: Rational): Polynomial[BigDecimal] = {
+    def shift(poly: Polynomial[BigDecimal], h: Rational): Polynomial[BigDecimal] = {
       val n = poly.degree
       poly
         .mapTerms {

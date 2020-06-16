@@ -43,9 +43,7 @@ abstract class ScalaIntentionTestBase
   def checkIntentionIsNotAvailable(
       text: String,
       familyName: String = this.familyName) {
-    assert(
-      intentionByFamilyName(text, familyName).isEmpty,
-      "Intention is found")
+    assert(intentionByFamilyName(text, familyName).isEmpty, "Intention is found")
   }
 
   def checkIntentionIsAvailable(

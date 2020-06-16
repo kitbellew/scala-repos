@@ -40,11 +40,9 @@ class IdTest extends FunSuite {
 
   test("serialize and deserialize") {
     val traceIdOne = TraceId(None, Some(SpanId(1L)), SpanId(1L), None)
-    assert(
-      traceIdOne == TraceId.deserialize(TraceId.serialize(traceIdOne)).get())
+    assert(traceIdOne == TraceId.deserialize(TraceId.serialize(traceIdOne)).get())
     val traceIdTwo = TraceId(None, None, SpanId(0L), None, Flags().setDebug)
-    assert(
-      traceIdTwo == TraceId.deserialize(TraceId.serialize(traceIdTwo)).get())
+    assert(traceIdTwo == TraceId.deserialize(TraceId.serialize(traceIdTwo)).get())
   }
 
   test("fail to deserialize incorrect traces") {

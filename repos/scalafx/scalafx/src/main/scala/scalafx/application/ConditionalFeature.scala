@@ -33,9 +33,7 @@ import scalafx.delegate._
 
 /** Wrapper for [[http://docs.oracle.com/javase/8/javafx/api/javafx/application/ConditionalFeature.html javafx.application.ConditionalFeature]] */
 object ConditionalFeature
-    extends SFXEnumDelegateCompanion[
-      jfxa.ConditionalFeature,
-      ConditionalFeature] {
+    extends SFXEnumDelegateCompanion[jfxa.ConditionalFeature, ConditionalFeature] {
 
   val Controls = new ConditionalFeature(jfxa.ConditionalFeature.CONTROLS)
   @deprecated(
@@ -48,9 +46,7 @@ object ConditionalFeature
     "8.0.5")
   val GRAPHICS = Graphics
   val Effect = new ConditionalFeature(jfxa.ConditionalFeature.EFFECT)
-  @deprecated(
-    "Use Effect; EFFECT will be removed in a future release",
-    "2.2.60")
+  @deprecated("Use Effect; EFFECT will be removed in a future release", "2.2.60")
   val EFFECT = Effect
   val FXML = new ConditionalFeature(jfxa.ConditionalFeature.FXML)
   val InputMethod = new ConditionalFeature(jfxa.ConditionalFeature.INPUT_METHOD)

@@ -49,15 +49,9 @@ class Word2VecSuite
       sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
 
     val codes = Map(
-      "a" -> Array(
-        -0.2811822295188904,
-        -0.6356269121170044,
-        -0.3020961284637451),
+      "a" -> Array(-0.2811822295188904, -0.6356269121170044, -0.3020961284637451),
       "b" -> Array(1.0309048891067505, -1.29472815990448, 0.22276712954044342),
-      "c" -> Array(
-        -0.08456747233867645,
-        0.5137411952018738,
-        0.11731560528278351)
+      "c" -> Array(-0.08456747233867645, 0.5137411952018738, 0.11731560528278351)
     )
 
     val expected = doc.map { sentence =>
@@ -83,10 +77,8 @@ class Word2VecSuite
 
     // These expectations are just magic values, characterizing the current
     // behavior.  The test needs to be updated to be more general, see SPARK-11502
-    val magicExp = Vectors.dense(
-      0.30153007534417237,
-      -0.6833061711354689,
-      0.5116530778733167)
+    val magicExp =
+      Vectors.dense(0.30153007534417237, -0.6833061711354689, 0.5116530778733167)
     model.transform(docDF).select("result", "expected").collect().foreach {
       case Row(vector1: Vector, vector2: Vector) =>
         assert(
@@ -105,15 +97,9 @@ class Word2VecSuite
       sc.parallelize(Seq(sentence, sentence)).map(line => line.split(" "))
 
     val codes = Map(
-      "a" -> Array(
-        -0.2811822295188904,
-        -0.6356269121170044,
-        -0.3020961284637451),
+      "a" -> Array(-0.2811822295188904, -0.6356269121170044, -0.3020961284637451),
       "b" -> Array(1.0309048891067505, -1.29472815990448, 0.22276712954044342),
-      "c" -> Array(
-        -0.08456747233867645,
-        0.5137411952018738,
-        0.11731560528278351)
+      "c" -> Array(-0.08456747233867645, 0.5137411952018738, 0.11731560528278351)
     )
     val expectedVectors =
       codes.toSeq.sortBy(_._1).map { case (w, v) => Vectors.dense(v) }
@@ -138,14 +124,8 @@ class Word2VecSuite
     // These expectations are just magic values, characterizing the current
     // behavior.  The test needs to be updated to be more general, see SPARK-11502
     val magicExpected = Seq(
-      Vectors.dense(
-        0.3326166272163391,
-        -0.5603077411651611,
-        -0.2309209555387497),
-      Vectors.dense(
-        0.32463887333869934,
-        -0.9306551218032837,
-        1.393115520477295),
+      Vectors.dense(0.3326166272163391, -0.5603077411651611, -0.2309209555387497),
+      Vectors.dense(0.32463887333869934, -0.9306551218032837, 1.393115520477295),
       Vectors.dense(
         -0.27150997519493103,
         0.4372006058692932,

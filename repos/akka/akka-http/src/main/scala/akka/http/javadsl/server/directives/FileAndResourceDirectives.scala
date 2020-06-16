@@ -87,8 +87,7 @@ abstract class FileAndResourceDirectives extends ExecutionDirectives {
     * If the resource cannot be found or read the Route rejects the request.
     */
   def getFromResource(path: String, classLoader: ClassLoader): Route =
-    FileAndResourceRoute.forFixedName(path)(
-      GetFromResource(path, _, classLoader))
+    FileAndResourceRoute.forFixedName(path)(GetFromResource(path, _, classLoader))
 
   /**
     * Completes GET requests with the content from the resource identified by the given
@@ -104,8 +103,7 @@ abstract class FileAndResourceDirectives extends ExecutionDirectives {
   def getFromResourceDirectory(
       directoryPath: String,
       classLoader: ClassLoader): FileAndResourceRoute =
-    FileAndResourceRoute(
-      GetFromResourceDirectory(directoryPath, classLoader, _))
+    FileAndResourceRoute(GetFromResourceDirectory(directoryPath, classLoader, _))
 
   /**
     * Completes GET requests with the content of the given file.

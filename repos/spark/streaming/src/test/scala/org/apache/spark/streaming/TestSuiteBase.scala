@@ -32,11 +32,7 @@ import org.scalatest.time.{Seconds => ScalaTestSeconds, Span}
 import org.apache.spark.{SparkConf, SparkFunSuite}
 import org.apache.spark.internal.Logging
 import org.apache.spark.rdd.RDD
-import org.apache.spark.streaming.dstream.{
-  DStream,
-  ForEachDStream,
-  InputDStream
-}
+import org.apache.spark.streaming.dstream.{DStream, ForEachDStream, InputDStream}
 import org.apache.spark.streaming.scheduler._
 import org.apache.spark.util.{ManualClock, Utils}
 
@@ -421,9 +417,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       numBatches: Int,
       numExpectedOutput: Int
   ): Seq[Seq[Seq[V]]] = {
-    assert(
-      numBatches > 0,
-      "Number of batches to run stream computation is zero")
+    assert(numBatches > 0, "Number of batches to run stream computation is zero")
     assert(
       numExpectedOutput > 0,
       "Number of expected outputs after " + numBatches + " is zero")
@@ -571,13 +565,7 @@ trait TestSuiteBase extends SparkFunSuite with BeforeAndAfter with Logging {
       expectedOutput: Seq[Seq[W]],
       useSet: Boolean
   ) {
-    testOperation[U, V, W](
-      input1,
-      input2,
-      operation,
-      expectedOutput,
-      -1,
-      useSet)
+    testOperation[U, V, W](input1, input2, operation, expectedOutput, -1, useSet)
   }
 
   /**

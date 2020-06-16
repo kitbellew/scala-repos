@@ -115,9 +115,7 @@ trait SetupHelper { self: I18nHelper =>
   def translatedClockTenthsChoices(implicit ctx: Context) =
     List(
       (Pref.ClockTenths.NEVER, trans.never.str()),
-      (
-        Pref.ClockTenths.LOWTIME,
-        trans.whenTimeRemainingLessThanTenSeconds.str()),
+      (Pref.ClockTenths.LOWTIME, trans.whenTimeRemainingLessThanTenSeconds.str()),
       (Pref.ClockTenths.ALWAYS, trans.always.str())
     )
 
@@ -139,9 +137,7 @@ trait SetupHelper { self: I18nHelper =>
     List(
       (Pref.AutoThreefold.NEVER, trans.never.str()),
       (Pref.AutoThreefold.ALWAYS, trans.always.str()),
-      (
-        Pref.AutoThreefold.TIME,
-        trans.whenTimeRemainingLessThanThirtySeconds.str())
+      (Pref.AutoThreefold.TIME, trans.whenTimeRemainingLessThanThirtySeconds.str())
     )
 
   def translatedDifficultyChoices(implicit ctx: Context) =
@@ -155,9 +151,7 @@ trait SetupHelper { self: I18nHelper =>
     List(
       (Pref.SubmitMove.NEVER, trans.never.str()),
       (Pref.SubmitMove.CORRESPONDENCE_ONLY, trans.inCorrespondenceGames.str()),
-      (
-        Pref.SubmitMove.CORRESPONDENCE_UNLIMITED,
-        "Correspondence and unlimited"),
+      (Pref.SubmitMove.CORRESPONDENCE_UNLIMITED, "Correspondence and unlimited"),
       (Pref.SubmitMove.ALWAYS, trans.always.str())
     )
 

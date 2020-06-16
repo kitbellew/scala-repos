@@ -80,12 +80,12 @@ class FileSourceTest extends WordSpec with Matchers {
           outBuf.toList shouldBe List(("foobar0", 1), ("helloworld0", 2))
         }
       }
-      .sink[(String, Int)](
-        WritableSequenceFile("output1", ('query, 'queryStats))) { outBuf =>
-        "writable sequence file input" in {
-          outBuf should have length 2
-          outBuf.toList shouldBe List(("foobar1", 1), ("helloworld1", 2))
-        }
+      .sink[(String, Int)](WritableSequenceFile("output1", ('query, 'queryStats))) {
+        outBuf =>
+          "writable sequence file input" in {
+            outBuf should have length 2
+            outBuf.toList shouldBe List(("foobar1", 1), ("helloworld1", 2))
+          }
       }
       .run
       .finish
@@ -334,8 +334,7 @@ object TestInvalidFileSource extends FileSource with Mappable[String] {
   override def localPaths: Iterable[String] = Iterable("invalid_local_path")
   override def hdfsScheme = new NullScheme(Fields.ALL, Fields.NONE)
   override def converter[U >: String] =
-    TupleConverter.asSuperConverter[String, U](
-      implicitly[TupleConverter[String]])
+    TupleConverter.asSuperConverter[String, U](implicitly[TupleConverter[String]])
 
   val conf = new Configuration()
 

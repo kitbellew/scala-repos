@@ -227,19 +227,23 @@ abstract class Storm(
     }.head
     val nodeName = stormDag.getNodeName(node)
 
-    val tormentaSpout = node.members.reverse.foldLeft(
-      spout.asInstanceOf[Spout[(Timestamp, Any)]]) { (spout, p) =>
-      p match {
-        case Source(_) =>
-          spout // The source is still in the members list so drop it
-        case OptionMappedProducer(_, op) =>
-          spout.flatMap { case (time, t) => op.apply(t).map { x => (time, x) } }
-        case NamedProducer(_, _)      => spout
-        case IdentityKeyedProducer(_) => spout
-        case AlsoProducer(_, _)       => spout
-        case _                        => sys.error("not possible, given the above call to span.\n" + p)
+    val tormentaSpout =
+      node.members.reverse.foldLeft(spout.asInstanceOf[Spout[(Timestamp, Any)]]) {
+        (spout, p) =>
+          p match {
+            case Source(_) =>
+              spout // The source is still in the members list so drop it
+            case OptionMappedProducer(_, op) =>
+              spout.flatMap {
+                case (time, t) => op.apply(t).map { x => (time, x) }
+              }
+            case NamedProducer(_, _)      => spout
+            case IdentityKeyedProducer(_) => spout
+            case AlsoProducer(_, _)       => spout
+            case _ =>
+              sys.error("not possible, given the above call to span.\n" + p)
+          }
       }
-    }
 
     val countersForSpout: Seq[(Group, Name)] =
       JobCounters.getCountersForJob(jobID).getOrElse(Nil)

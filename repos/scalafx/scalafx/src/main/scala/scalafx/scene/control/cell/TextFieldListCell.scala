@@ -62,8 +62,7 @@ object TextFieldListCell {
     * @return $FLVRET
     */
   def forListView(): (ListView[String] => ListCell[String]) =
-    (view: ListView[String]) =>
-      jfxscc.TextFieldListCell.forListView().call(view)
+    (view: ListView[String]) => jfxscc.TextFieldListCell.forListView().call(view)
 
   /**
     * $FLVINTI

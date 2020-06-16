@@ -30,8 +30,7 @@ package object testkit {
 
       result
     } finally {
-      system.eventStream.publish(
-        TestEvent.UnMute(eventFilters.to[immutable.Seq]))
+      system.eventStream.publish(TestEvent.UnMute(eventFilters.to[immutable.Seq]))
     }
   }
 

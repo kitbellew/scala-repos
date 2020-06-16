@@ -33,13 +33,11 @@ object RouterSpec extends PlaySpecification {
       contentAsString(result2) must equalTo("false")
       // Bind boolean values from 1 and 0 integers too
       contentAsString(
-        route(
-          implicitApp,
-          FakeRequest(GET, "/take-bool?b=1")).get) must equalTo("true")
+        route(implicitApp, FakeRequest(GET, "/take-bool?b=1")).get) must equalTo(
+        "true")
       contentAsString(
-        route(
-          implicitApp,
-          FakeRequest(GET, "/take-bool?b=0")).get) must equalTo("false")
+        route(implicitApp, FakeRequest(GET, "/take-bool?b=0")).get) must equalTo(
+        "false")
     }
     "from the path" in new WithApplication() {
       val Some(result) =
@@ -50,13 +48,11 @@ object RouterSpec extends PlaySpecification {
       contentAsString(result2) must equalTo("false")
       // Bind boolean values from 1 and 0 integers too
       contentAsString(
-        route(
-          implicitApp,
-          FakeRequest(GET, "/take-bool-2/1")).get) must equalTo("true")
+        route(implicitApp, FakeRequest(GET, "/take-bool-2/1")).get) must equalTo(
+        "true")
       contentAsString(
-        route(
-          implicitApp,
-          FakeRequest(GET, "/take-bool-2/0")).get) must equalTo("false")
+        route(implicitApp, FakeRequest(GET, "/take-bool-2/0")).get) must equalTo(
+        "false")
     }
   }
 

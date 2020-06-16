@@ -174,11 +174,9 @@ class ReceivePipelineSpec extends AkkaSpec with ImplicitSender {
 
     "support swapping inner and outer interceptors mixin order" in {
       val outerInnerReplier = system.actorOf(
-        Props(
-          new ReplierActor with ListBuilderInterceptor with AdderInterceptor))
+        Props(new ReplierActor with ListBuilderInterceptor with AdderInterceptor))
       val innerOuterReplier = system.actorOf(
-        Props(
-          new ReplierActor with AdderInterceptor with ListBuilderInterceptor))
+        Props(new ReplierActor with AdderInterceptor with ListBuilderInterceptor))
       outerInnerReplier ! 4
       expectMsg(IntList(List(14, 15, 16)))
       innerOuterReplier ! 6
@@ -342,11 +340,8 @@ class PersistentReceivePipelineSpec(config: Config)
     }
 
     "call side-effecting receive code only once" in {
-      val totaller = system.actorOf(
-        Props(
-          new TotallerActor
-            with EvenHalverInterceptor
-            with OddDoublerInterceptor))
+      val totaller = system.actorOf(Props(
+        new TotallerActor with EvenHalverInterceptor with OddDoublerInterceptor))
 
       totaller ! 8
       totaller ! 6
@@ -355,11 +350,8 @@ class PersistentReceivePipelineSpec(config: Config)
     }
 
     "not cache the result of the same message" in {
-      val totaller = system.actorOf(
-        Props(
-          new TotallerActor
-            with EvenHalverInterceptor
-            with OddDoublerInterceptor))
+      val totaller = system.actorOf(Props(
+        new TotallerActor with EvenHalverInterceptor with OddDoublerInterceptor))
 
       totaller ! 6
       totaller ! 6

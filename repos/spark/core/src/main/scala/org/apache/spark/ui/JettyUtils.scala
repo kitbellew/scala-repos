@@ -55,10 +55,7 @@ private[spark] object JettyUtils extends Logging {
   // Conversions from various types of Responder's to appropriate servlet parameters
   implicit def jsonResponderToServlet(
       responder: Responder[JValue]): ServletParams[JValue] =
-    new ServletParams(
-      responder,
-      "text/json",
-      (in: JValue) => pretty(render(in)))
+    new ServletParams(responder, "text/json", (in: JValue) => pretty(render(in)))
 
   implicit def htmlResponderToServlet(
       responder: Responder[Seq[Node]]): ServletParams[Seq[Node]] =

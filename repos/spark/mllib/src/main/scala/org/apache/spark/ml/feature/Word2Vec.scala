@@ -205,8 +205,8 @@ class Word2VecModel private[ml] (
     val sc = SparkContext.getOrCreate()
     val sqlContext = SQLContext.getOrCreate(sc)
     import sqlContext.implicits._
-    val wordVec = wordVectors.getVectors.mapValues(vec =>
-      Vectors.dense(vec.map(_.toDouble)))
+    val wordVec =
+      wordVectors.getVectors.mapValues(vec => Vectors.dense(vec.map(_.toDouble)))
     sc.parallelize(wordVec.toSeq).toDF("word", "vector")
   }
 
@@ -285,9 +285,7 @@ object Word2VecModel extends MLReadable[Word2VecModel] {
   private[Word2VecModel] class Word2VecModelWriter(instance: Word2VecModel)
       extends MLWriter {
 
-    private case class Data(
-        wordIndex: Map[String, Int],
-        wordVectors: Seq[Float])
+    private case class Data(wordIndex: Map[String, Int], wordVectors: Seq[Float])
 
     override protected def saveImpl(path: String): Unit = {
       DefaultParamsWriter.saveMetadata(instance, path, sc)

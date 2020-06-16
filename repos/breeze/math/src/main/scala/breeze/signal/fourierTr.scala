@@ -40,8 +40,7 @@ object fourierTr extends UFunc {
     }
   }
 
-  implicit def dvDT1DFFT_Float
-      : Impl[DenseVector[Float], DenseVector[Complex]] = {
+  implicit def dvDT1DFFT_Float: Impl[DenseVector[Float], DenseVector[Complex]] = {
     new Impl[DenseVector[Float], DenseVector[Complex]] {
       def apply(v: DenseVector[Float]) = fourierTr(v.map(_.toDouble))
     }

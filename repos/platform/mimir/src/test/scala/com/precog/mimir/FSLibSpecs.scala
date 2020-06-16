@@ -60,12 +60,9 @@ trait FSLibSpecs[M[+_]]
   lazy val yggConfig = new YggConfig
 
   lazy val projectionMetadata: Map[Path, Map[ColumnRef, Long]] = Map(
-    Path("/foo/bar1/baz/quux1") -> Map(
-      ColumnRef(CPath.Identity, CString) -> 10L),
-    Path("/foo/bar2/baz/quux1") -> Map(
-      ColumnRef(CPath.Identity, CString) -> 20L),
-    Path("/foo/bar2/baz/quux2") -> Map(
-      ColumnRef(CPath.Identity, CString) -> 30L),
+    Path("/foo/bar1/baz/quux1") -> Map(ColumnRef(CPath.Identity, CString) -> 10L),
+    Path("/foo/bar2/baz/quux1") -> Map(ColumnRef(CPath.Identity, CString) -> 20L),
+    Path("/foo/bar2/baz/quux2") -> Map(ColumnRef(CPath.Identity, CString) -> 30L),
     Path("/foo2/bar1/baz/quux1") -> Map(
       ColumnRef(CPath.Identity, CString) -> 40L)
   )

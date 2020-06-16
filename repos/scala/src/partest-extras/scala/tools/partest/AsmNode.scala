@@ -38,8 +38,7 @@ object AsmNode {
       xs sortBy (_.characteristics)
     }
   }
-  implicit class AsmMethodNode(val node: MethodNode)
-      extends AsmNode[MethodNode] {
+  implicit class AsmMethodNode(val node: MethodNode) extends AsmNode[MethodNode] {
     def access: Int = node.access
     def desc: String = node.desc
     def name: String = node.name

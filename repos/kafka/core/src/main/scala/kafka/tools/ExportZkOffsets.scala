@@ -71,11 +71,7 @@ object ExportZkOffsets extends Logging {
       System.exit(0)
     }
 
-    CommandLineUtils.checkRequiredArgs(
-      parser,
-      options,
-      zkConnectOpt,
-      outFileOpt)
+    CommandLineUtils.checkRequiredArgs(parser, options, zkConnectOpt, outFileOpt)
 
     val zkConnect = options.valueOf(zkConnectOpt)
     val groups = options.valuesOf(groupOpt)
@@ -85,8 +81,7 @@ object ExportZkOffsets extends Logging {
     val fileWriter: FileWriter = new FileWriter(outfile)
 
     try {
-      zkUtils =
-        ZkUtils(zkConnect, 30000, 30000, JaasUtils.isZkSecurityEnabled())
+      zkUtils = ZkUtils(zkConnect, 30000, 30000, JaasUtils.isZkSecurityEnabled())
 
       var consumerGroups: Seq[String] = null
 

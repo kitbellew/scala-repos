@@ -312,8 +312,7 @@ class MarathonSchedulerActor private (
           .mapTo[RunningDeployments]
           .foreach {
             case RunningDeployments(plans) =>
-              def intersectsWithNewPlan(
-                  existingPlan: DeploymentPlan): Boolean = {
+              def intersectsWithNewPlan(existingPlan: DeploymentPlan): Boolean = {
                 existingPlan.affectedApplicationIds
                   .intersect(plan.affectedApplicationIds)
                   .nonEmpty
@@ -583,7 +582,8 @@ class SchedulerActions(
         driver.killTask(taskId)
       }
     } else {
-      log.info(s"Already running ${app.instances} instances of ${app.id}. Not scaling.")
+      log.info(
+        s"Already running ${app.instances} instances of ${app.id}. Not scaling.")
     }
   }
 

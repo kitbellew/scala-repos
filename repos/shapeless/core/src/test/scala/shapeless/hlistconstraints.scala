@@ -129,8 +129,7 @@ class HListConstraintsTests {
         (id ->> 262162091) ::
         HNil
 
-    def acceptKeys[
-        R <: HList: Keys[author.type :: title.type :: id.type :: HNil]#λ](
+    def acceptKeys[R <: HList: Keys[author.type :: title.type :: id.type :: HNil]#λ](
         r: R) = true
 
     acceptKeys(summary) // Compiles

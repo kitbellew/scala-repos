@@ -50,10 +50,7 @@ trait SpecialCharactersTest extends ScalaTestTestCase {
       3,
       3,
       testName + ".scala",
-      checkConfigAndSettings(
-        _,
-        testName,
-        "Comma , test should contain , comma"),
+      checkConfigAndSettings(_, testName, "Comma , test should contain , comma"),
       root => checkResultTreeHasExactNamedPath(root, commaTestPath: _*)
     )
   }

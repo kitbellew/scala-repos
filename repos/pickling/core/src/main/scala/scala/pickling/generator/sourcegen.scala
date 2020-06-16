@@ -112,10 +112,8 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
             q"""throw _root_.scala.pickling.PicklingException("Class " + clazz + " not recognized by pickler, looking for one of: " + $dispatcheeNames)"""
         CaseDef(Bind(otherTermName, Ident(nme.WILDCARD)), throwUnknownTag)
       }
-      val runtimeDispatch = CaseDef(
-        Ident(nme.WILDCARD),
-        EmptyTree,
-        createRuntimePickler(q"builder"))
+      val runtimeDispatch =
+        CaseDef(Ident(nme.WILDCARD), EmptyTree, createRuntimePickler(q"builder"))
       // TODO - Figure out if we can handle runtime dispatch...
       val unknownDispatch =
         if (x.lookupRuntime) List(runtimeDispatch)
@@ -167,10 +165,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
         case x: PickleEntry      => genPickleEntry(x)
         case x: SubclassDispatch => genSubclassDispatch(x)
         case x: PickleExternalizable =>
-          genExternalizablePickle(
-            newTermName("picklee"),
-            newTermName("builder"),
-            x)
+          genExternalizablePickle(newTermName("picklee"), newTermName("builder"), x)
       }
     genPickleOp(picklerAst)
   }
@@ -596,10 +591,7 @@ private[pickling] trait SourceGenerator extends Macro with FastTypeTagMacros {
       }
     List(body(valueTree))
   }
-  def reflectivelySet(
-      target: TermName,
-      setter: IrMember,
-      value: c.Tree): c.Tree = {
+  def reflectivelySet(target: TermName, setter: IrMember, value: c.Tree): c.Tree = {
     // TODO - Should we use scala reflection?
     // TODO - Should we trap errors and return better error messages?
     // TODO - We should attempt to SAVE the reflective methods/fields somewhere so we aren't

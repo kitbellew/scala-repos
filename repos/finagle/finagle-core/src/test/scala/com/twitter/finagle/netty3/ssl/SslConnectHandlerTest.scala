@@ -96,7 +96,8 @@ class SslConnectHandlerTest extends FunSuite with MockitoSugar {
     }
   }
 
-  test("SslConnectHandler should upon connect wrap the downstream connect request") {
+  test(
+    "SslConnectHandler should upon connect wrap the downstream connect request") {
     val h = new SslConnectHandlerHelper
     import h._
 
@@ -142,7 +143,8 @@ class SslConnectHandlerTest extends FunSuite with MockitoSugar {
     verify(sslHandler).handshake()
   }
 
-  test("SslConnectHandler should when connect is successful not propagate success") {
+  test(
+    "SslConnectHandler should when connect is successful not propagate success") {
     val h = new helper2
     import h._
 

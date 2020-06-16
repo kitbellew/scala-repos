@@ -268,8 +268,7 @@ object AnnotatorHighlighter {
                       if mod.hasModifierProperty("lazy") =>
                     annotation.setTextAttributes(DefaultHighlighter.LOCAL_LAZY)
                   case _: ScValue =>
-                    annotation.setTextAttributes(
-                      DefaultHighlighter.LOCAL_VALUES)
+                    annotation.setTextAttributes(DefaultHighlighter.LOCAL_VALUES)
                   case _: ScVariable =>
                     annotation.setTextAttributes(
                       DefaultHighlighter.LOCAL_VARIABLES)
@@ -308,8 +307,7 @@ object AnnotatorHighlighter {
           val clazz = fun.containingClass
           clazz match {
             case o: ScObject if o.allSynthetics.contains(fun) =>
-              annotation.setTextAttributes(
-                DefaultHighlighter.OBJECT_METHOD_CALL)
+              annotation.setTextAttributes(DefaultHighlighter.OBJECT_METHOD_CALL)
               return
             case _ =>
           }
@@ -355,8 +353,7 @@ object AnnotatorHighlighter {
         getParentByStub(element) match {
           case _: ScNameValuePair =>
             val annotation = holder.createInfoAnnotation(element, null)
-            annotation.setTextAttributes(
-              DefaultHighlighter.ANNOTATION_ATTRIBUTE)
+            annotation.setTextAttributes(DefaultHighlighter.ANNOTATION_ATTRIBUTE)
           case _: ScTypeParam =>
             val annotation = holder.createInfoAnnotation(element, null)
             annotation.setTextAttributes(DefaultHighlighter.TYPEPARAM)
@@ -452,9 +449,7 @@ object AnnotatorHighlighter {
     }
   }
 
-  private def visitParameter(
-      param: ScParameter,
-      holder: AnnotationHolder): Unit = {
+  private def visitParameter(param: ScParameter, holder: AnnotationHolder): Unit = {
     val annotation = holder.createInfoAnnotation(param.nameId, null)
     val attributesKey =
       if (param.isAnonymousParameter) DefaultHighlighter.ANONYMOUS_PARAMETER

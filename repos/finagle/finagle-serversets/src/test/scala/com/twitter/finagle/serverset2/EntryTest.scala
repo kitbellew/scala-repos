@@ -24,8 +24,9 @@ class EntryTest extends FunSuite {
       epByName(null) ==
         Endpoint(Array(null), "10.0.0.3", port, 0, Endpoint.Status.Alive, ""))
 
-    assert(epByName("aurora") ==
-      Endpoint(Array("aurora"), "10.0.0.1", port, 0, Endpoint.Status.Alive, ""))
+    assert(
+      epByName("aurora") ==
+        Endpoint(Array("aurora"), "10.0.0.1", port, 0, Endpoint.Status.Alive, ""))
 
     assert(
       epByName("http") ==

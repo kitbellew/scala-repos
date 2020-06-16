@@ -136,11 +136,7 @@ case class StructType(fields: Array[StructField])
     */
   def add(name: String, dataType: DataType): StructType = {
     StructType(
-      fields :+ new StructField(
-        name,
-        dataType,
-        nullable = true,
-        Metadata.empty))
+      fields :+ new StructField(name, dataType, nullable = true, Metadata.empty))
   }
 
   /**

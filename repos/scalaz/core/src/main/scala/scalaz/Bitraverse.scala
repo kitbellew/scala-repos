@@ -111,8 +111,7 @@ trait Bitraverse[F[_, _]] extends Bifunctor[F] with Bifoldable[F] { self =>
 
   def bifoldLShape[A, B, C](fa: F[A, B], z: C)(f: (C, A) => C)(
       g: (C, B) => C): (C, F[Unit, Unit]) =
-    runBitraverseS(fa, z)(a => State.modify(f(_, a)))(b =>
-      State.modify(g(_, b)))
+    runBitraverseS(fa, z)(a => State.modify(f(_, a)))(b => State.modify(g(_, b)))
 
   def bisequence[G[_]: Applicative, A, B](x: F[G[A], G[B]]): G[F[A, B]] =
     bitraverseImpl(x)(fa => fa, fb => fb)

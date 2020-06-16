@@ -247,9 +247,7 @@ case class NamedProducer[P <: Platform[P], +T](
     id: String)
     extends Producer[P, T]
 
-class TPNamedProducer[P <: Platform[P], +T](
-    producer: Producer[P, T],
-    id: String)
+class TPNamedProducer[P <: Platform[P], +T](producer: Producer[P, T], id: String)
     extends NamedProducer[P, T](producer, id)
     with TailProducer[P, T]
 

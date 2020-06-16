@@ -34,10 +34,7 @@ object Framing {
       allowTruncation: Boolean = false): Flow[ByteString, ByteString, NotUsed] =
     Flow[ByteString]
       .transform(() ⇒
-        new DelimiterFramingStage(
-          delimiter,
-          maximumFrameLength,
-          allowTruncation))
+        new DelimiterFramingStage(delimiter, maximumFrameLength, allowTruncation))
       .named("delimiterFraming")
 
   /**
@@ -103,8 +100,7 @@ object Framing {
     */
   def simpleFramingProtocolDecoder(
       maximumMessageLength: Int): Flow[ByteString, ByteString, NotUsed] =
-    lengthField(4, 0, maximumMessageLength + 4, ByteOrder.BIG_ENDIAN).map(
-      _.drop(4))
+    lengthField(4, 0, maximumMessageLength + 4, ByteOrder.BIG_ENDIAN).map(_.drop(4))
 
   /**
     * Protocol encoder that is used by [[Framing#simpleFramingProtocol]]
@@ -133,17 +129,16 @@ object Framing {
 
   class FramingException(msg: String) extends RuntimeException(msg)
 
-  private final val bigEndianDecoder: (ByteIterator, Int) ⇒ Int = (bs, length) ⇒
-    {
-      var count = length
-      var decoded = 0
-      while (count > 0) {
-        decoded <<= 8
-        decoded |= bs.next().toInt & 0xff
-        count -= 1
-      }
-      decoded
+  private final val bigEndianDecoder: (ByteIterator, Int) ⇒ Int = (bs, length) ⇒ {
+    var count = length
+    var decoded = 0
+    while (count > 0) {
+      decoded <<= 8
+      decoded |= bs.next().toInt & 0xff
+      count -= 1
     }
+    decoded
+  }
 
   private final val littleEndianDecoder: (ByteIterator, Int) ⇒ Int =
     (bs, length) ⇒ {
@@ -186,8 +181,9 @@ object Framing {
       if (ctx.isFinishing) {
         if (allowTruncation) ctx.pushAndFinish(buffer)
         else
-          ctx.fail(new FramingException(
-            "Stream finished but there was a truncated final frame in the buffer"))
+          ctx.fail(
+            new FramingException(
+              "Stream finished but there was a truncated final frame in the buffer"))
       } else ctx.pull()
     }
 
@@ -196,8 +192,9 @@ object Framing {
       val possibleMatchPos =
         buffer.indexOf(firstSeparatorByte, from = nextPossibleMatch)
       if (possibleMatchPos > maximumLineBytes)
-        ctx.fail(new FramingException(s"Read ${buffer.size} bytes " +
-          s"which is more than $maximumLineBytes without seeing a line terminator"))
+        ctx.fail(
+          new FramingException(s"Read ${buffer.size} bytes " +
+            s"which is more than $maximumLineBytes without seeing a line terminator"))
       else {
         if (possibleMatchPos == -1) {
           // No matching character, we need to accumulate more bytes into the buffer

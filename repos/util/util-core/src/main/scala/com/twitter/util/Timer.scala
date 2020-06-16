@@ -157,8 +157,7 @@ trait ReferenceCountedTimer extends Timer {
   def acquire(): Unit
 }
 
-class ReferenceCountingTimer(factory: () => Timer)
-    extends ReferenceCountedTimer {
+class ReferenceCountingTimer(factory: () => Timer) extends ReferenceCountedTimer {
   private[this] var refcount = 0
   private[this] var underlying: Timer = null
 

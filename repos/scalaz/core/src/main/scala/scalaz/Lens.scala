@@ -291,11 +291,8 @@ trait LensFamilyFunctions {
       : LensFamily[LazyTuple2[A, B1], LazyTuple2[A, B2], B1, B2] =
     lensFamily(z => IndexedStore(x => LazyTuple2(z._1, x), z._2))
 
-  def predicateLensFamily[A1, A2]: LensFamily[
-    Store[A1, Boolean],
-    Store[A2, Boolean],
-    (A1 \/ A1),
-    (A2 \/ A2)] =
+  def predicateLensFamily[A1, A2]
+      : LensFamily[Store[A1, Boolean], Store[A2, Boolean], (A1 \/ A1), (A2 \/ A2)] =
     lensFamily(q =>
       IndexedStore(
         _ match {

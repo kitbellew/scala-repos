@@ -274,10 +274,7 @@ class Log(
       swapSegment.recover(config.maxMessageSize)
       val oldSegments =
         logSegments(swapSegment.baseOffset, swapSegment.nextOffset)
-      replaceSegments(
-        swapSegment,
-        oldSegments.toSeq,
-        isRecoveredSwapFile = true)
+      replaceSegments(swapSegment, oldSegments.toSeq, isRecoveredSwapFile = true)
     }
 
     if (logSegments.size == 0) {

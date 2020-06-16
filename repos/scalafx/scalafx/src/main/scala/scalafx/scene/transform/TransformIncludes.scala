@@ -64,8 +64,7 @@ trait TransformIncludes {
     if (v != null) new MatrixType(v) else null
 
   implicit def jfxNonInvertibleTransformException2sfx(
-      v: jfxst.NonInvertibleTransformException)
-      : NonInvertibleTransformException =
+      v: jfxst.NonInvertibleTransformException): NonInvertibleTransformException =
     if (v != null) new NonInvertibleTransformException(v) else null
 
   /**

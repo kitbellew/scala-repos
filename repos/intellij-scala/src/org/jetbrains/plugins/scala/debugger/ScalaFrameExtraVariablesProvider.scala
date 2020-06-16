@@ -128,20 +128,16 @@ class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
       case tp: ScTypedPattern if tp.name == "_" => false
       case cp: ScClassParameter if !cp.isEffectiveVal =>
         def notInThisClass(elem: PsiElement) = {
-          elem != null && !PsiTreeUtil.isAncestor(
-            cp.containingClass,
-            elem,
-            true)
+          elem != null && !PsiTreeUtil.isAncestor(cp.containingClass, elem, true)
         }
         val funDef =
           PsiTreeUtil.getParentOfType(place, classOf[ScFunctionDefinition])
-        val lazyVal = PsiTreeUtil.getParentOfType(
-          place,
-          classOf[ScPatternDefinition]) match {
-          case null         => null
-          case LazyVal(lzy) => lzy
-          case _            => null
-        }
+        val lazyVal =
+          PsiTreeUtil.getParentOfType(place, classOf[ScPatternDefinition]) match {
+            case null         => null
+            case LazyVal(lzy) => lzy
+            case _            => null
+          }
         notInThisClass(funDef) || notInThisClass(lazyVal)
       case named
           if ScalaEvaluatorBuilderUtil.isNotUsedEnumerator(named, place) =>

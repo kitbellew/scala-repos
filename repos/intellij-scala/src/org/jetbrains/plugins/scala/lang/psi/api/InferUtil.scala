@@ -121,9 +121,7 @@ object InferUtil {
           params.map(p => fullAbstractSubstitutor.subst(p.paramType))
         val splitMethodType = params.reverse.foldLeft(retType) {
           case (tp: ScType, param: Parameter) =>
-            ScMethodType(tp, Seq(param), isImplicit = true)(
-              mt.project,
-              mt.scope)
+            ScMethodType(tp, Seq(param), isImplicit = true)(mt.project, mt.scope)
         }
         resInner = ScTypePolymorphicType(splitMethodType, typeParams)
         val paramsForInferBuffer = new ArrayBuffer[Parameter]()
@@ -232,10 +230,8 @@ object InferUtil {
       check: Boolean,
       searchImplicitsRecursively: Int = 0,
       abstractSubstitutor: ScSubstitutor = ScSubstitutor.empty,
-      polymorphicSubst: ScSubstitutor = ScSubstitutor.empty): (
-      Seq[Parameter],
-      Seq[Compatibility.Expression],
-      Seq[ScalaResolveResult]) = {
+      polymorphicSubst: ScSubstitutor = ScSubstitutor.empty)
+      : (Seq[Parameter], Seq[Compatibility.Expression], Seq[ScalaResolveResult]) = {
     val exprs = new ArrayBuffer[Expression]
     val paramsForInfer = new ArrayBuffer[Parameter]()
     val resolveResults = new ArrayBuffer[ScalaResolveResult]
@@ -359,9 +355,8 @@ object InferUtil {
                 isDefault = false,
                 isRepeated = false,
                 isByName = false)),
-            Seq(
-              new Expression(undefineSubstitutor(typeParams).subst(
-                innerInternal.inferValueType))),
+            Seq(new Expression(
+              undefineSubstitutor(typeParams).subst(innerInternal.inferValueType))),
             typeParams,
             shouldUndefineParameters = false,
             safeCheck = check,
@@ -388,8 +383,8 @@ object InferUtil {
                   isRepeated = false,
                   isByName = false)),
               Seq(
-                new Expression(undefineSubstitutor(typeParams).subst(
-                  internal.inferValueType))),
+                new Expression(
+                  undefineSubstitutor(typeParams).subst(internal.inferValueType))),
               typeParams,
               shouldUndefineParameters = false,
               safeCheck = check,
@@ -415,11 +410,10 @@ object InferUtil {
               && !mt.returnType.conforms(expectedType) =>
           mt.returnType match {
             case methodType: ScMethodType =>
-              return mt.copy(
-                returnType = applyImplicitViewToResult(
-                  methodType,
-                  Some(expectedRet),
-                  fromSAM))(mt.project, mt.scope)
+              return mt.copy(returnType =
+                applyImplicitViewToResult(methodType, Some(expectedRet), fromSAM))(
+                mt.project,
+                mt.scope)
             case _ =>
           }
           val dummyExpr = ScalaPsiElementFactory
@@ -564,13 +558,9 @@ object InferUtil {
               typeParams
                 .map(typeParam => {
                   (
-                    (
-                      typeParam.name,
-                      ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
+                    (typeParam.name, ScalaPsiUtil.getPsiElementId(typeParam.ptp)),
                     new ScUndefinedType(
-                      new ScTypeParameterType(
-                        typeParam.ptp,
-                        ScSubstitutor.empty)))
+                      new ScTypeParameterType(typeParam.ptp, ScSubstitutor.empty)))
                 })
                 .toMap,
               Map.empty,
@@ -678,15 +668,13 @@ object InferUtil {
                   if (tp.lowerType() != Nothing) {
                     val substedLowerType = unSubst.subst(tp.lowerType())
                     if (!hasRecursiveTypeParameters(substedLowerType)) {
-                      un =
-                        un.addLower(name, substedLowerType, additional = true)
+                      un = un.addLower(name, substedLowerType, additional = true)
                     }
                   }
                   if (tp.upperType() != Any) {
                     val substedUpperType = unSubst.subst(tp.upperType())
                     if (!hasRecursiveTypeParameters(substedUpperType)) {
-                      un =
-                        un.addUpper(name, substedUpperType, additional = true)
+                      un = un.addUpper(name, substedUpperType, additional = true)
                     }
                   }
                 }

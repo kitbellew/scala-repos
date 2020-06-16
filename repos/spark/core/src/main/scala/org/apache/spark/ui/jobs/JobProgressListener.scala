@@ -292,8 +292,7 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
         trimStagesIfNecessary(failedStages)
       }
 
-      for (activeJobsDependentOnStage <-
-          stageIdToActiveJobIds.get(stage.stageId);
+      for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(stage.stageId);
         jobId <- activeJobsDependentOnStage;
         jobData <- jobIdToData.get(jobId)) {
         jobData.numActiveStages -= 1
@@ -330,13 +329,11 @@ class JobProgressListener(conf: SparkConf) extends SparkListener with Logging {
         Option(p.getProperty(SparkContext.SPARK_JOB_DESCRIPTION))
       }
 
-      val stages = poolToActiveStages.getOrElseUpdate(
-        poolName,
-        new HashMap[Int, StageInfo])
+      val stages =
+        poolToActiveStages.getOrElseUpdate(poolName, new HashMap[Int, StageInfo])
       stages(stage.stageId) = stage
 
-      for (activeJobsDependentOnStage <-
-          stageIdToActiveJobIds.get(stage.stageId);
+      for (activeJobsDependentOnStage <- stageIdToActiveJobIds.get(stage.stageId);
         jobId <- activeJobsDependentOnStage;
         jobData <- jobIdToData.get(jobId)) {
         jobData.numActiveStages += 1

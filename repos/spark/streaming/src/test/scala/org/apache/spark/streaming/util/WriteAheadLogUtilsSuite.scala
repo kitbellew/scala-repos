@@ -129,8 +129,7 @@ class WriteAheadLogUtilsSuite extends SparkFunSuite {
   test("closeFileAfterWrite is disabled by default in WriteAheadLog") {
     val conf = new SparkConf()
     assert(!WriteAheadLogUtils.shouldCloseFileAfterWrite(conf, isDriver = true))
-    assert(
-      !WriteAheadLogUtils.shouldCloseFileAfterWrite(conf, isDriver = false))
+    assert(!WriteAheadLogUtils.shouldCloseFileAfterWrite(conf, isDriver = false))
   }
 }
 

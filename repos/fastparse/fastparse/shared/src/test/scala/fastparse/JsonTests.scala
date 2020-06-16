@@ -100,8 +100,7 @@ object JsonTests extends TestSuite {
         val Parsed.Success(value, _) = jsonExpr.parse(
           """{"omg": "123", "wtf": 12.4123}"""
         )
-        assert(
-          value == Js.Obj("omg" -> Js.Str("123"), "wtf" -> Js.Num(12.4123)))
+        assert(value == Js.Obj("omg" -> Js.Str("123"), "wtf" -> Js.Num(12.4123)))
       }
       'bigJsonExpr - test(
         jsonExpr,

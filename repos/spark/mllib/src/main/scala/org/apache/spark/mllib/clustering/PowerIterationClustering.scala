@@ -98,8 +98,7 @@ object PowerIterationClusteringModel
 
       val k = (metadata \ "k").extract[Int]
       val assignments = sqlContext.read.parquet(Loader.dataPath(path))
-      Loader.checkSchema[PowerIterationClustering.Assignment](
-        assignments.schema)
+      Loader.checkSchema[PowerIterationClustering.Assignment](assignments.schema)
 
       val assignmentsRDD = assignments.rdd.map {
         case Row(id: Long, cluster: Int) =>
@@ -420,9 +419,7 @@ object PowerIterationClustering extends Logging {
     * @param k number of clusters
     * @return a [[VertexRDD]] representing the clustering assignments
     */
-  private[clustering] def kMeans(
-      v: VertexRDD[Double],
-      k: Int): VertexRDD[Int] = {
+  private[clustering] def kMeans(v: VertexRDD[Double], k: Int): VertexRDD[Int] = {
     val points = v.mapValues(x => Vectors.dense(x)).cache()
     val model = new KMeans()
       .setK(k)

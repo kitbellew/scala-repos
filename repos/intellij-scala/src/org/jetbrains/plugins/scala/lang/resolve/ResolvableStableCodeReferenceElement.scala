@@ -30,10 +30,7 @@ import org.jetbrains.plugins.scala.lang.psi.impl.{
   ScalaPsiManager
 }
 import org.jetbrains.plugins.scala.lang.psi.types._
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.psi.{ScImportsHolder, ScalaPsiUtil}
 import org.jetbrains.plugins.scala.lang.resolve.ResolvableStableCodeReferenceElement.EMPTY_ARRAY
 import org.jetbrains.plugins.scala.lang.resolve.processor.{

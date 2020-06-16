@@ -190,8 +190,7 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rsmd.getColumnTypeName(3)) thenReturn ("INT")
     when(rsmd.isNullable(3)) thenReturn (ResultSetMetaData.columnNullable)
     when(rsmd.getColumnTypeName(4)) thenReturn ("VARCHAR")
-    when(
-      rsmd.isNullable(4)) thenReturn (ResultSetMetaData.columnNullableUnknown)
+    when(rsmd.isNullable(4)) thenReturn (ResultSetMetaData.columnNullableUnknown)
 
     assert(columnDef.resultSetExtractor.validate(rsmd).isSuccess)
 
@@ -201,8 +200,9 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
     when(rs.getInt("age")) thenReturn (26)
     when(rs.getString("gender")) thenReturn ("F")
 
-    assert(columnDef.resultSetExtractor
-      .toCaseClass(rs, typeDesc.converter) == User(123, "alice", Some(26), "F"))
+    assert(
+      columnDef.resultSetExtractor
+        .toCaseClass(rs, typeDesc.converter) == User(123, "alice", Some(26), "F"))
   }
 
   "Produces the ColumnDefinition for nested case class " should {
@@ -307,12 +307,7 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
         NotNullable,
         None,
         None),
-      ColumnDefinition(
-        DOUBLE,
-        ColumnName("numberFun"),
-        NotNullable,
-        None,
-        None),
+      ColumnDefinition(DOUBLE, ColumnName("numberFun"), NotNullable, None, None),
       ColumnDefinition(
         BOOLEAN,
         ColumnName("booleanFlag"),
@@ -331,12 +326,7 @@ class JdbcMacroUnitTests extends WordSpec with Matchers with MockitoSugar {
         NotNullable,
         Some(200),
         None),
-      ColumnDefinition(
-        TEXT,
-        ColumnName("largeString"),
-        NotNullable,
-        None,
-        None),
+      ColumnDefinition(TEXT, ColumnName("largeString"), NotNullable, None, None),
       ColumnDefinition(
         TEXT,
         ColumnName("forceTextString"),

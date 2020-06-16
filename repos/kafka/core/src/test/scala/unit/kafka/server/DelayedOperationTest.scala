@@ -26,8 +26,8 @@ class DelayedOperationTest {
 
   @Before
   def setUp() {
-    purgatory = new DelayedOperationPurgatory[MockDelayedOperation](
-      purgatoryName = "mock")
+    purgatory =
+      new DelayedOperationPurgatory[MockDelayedOperation](purgatoryName = "mock")
   }
 
   @After

@@ -413,9 +413,7 @@ trait LiftActor
   @volatile
   private[this] var responseFuture: LAFuture[Any] = null
 
-  protected final def forwardMessageTo(
-      msg: Any,
-      forwardTo: TypedActor[Any, Any]) {
+  protected final def forwardMessageTo(msg: Any, forwardTo: TypedActor[Any, Any]) {
     if (null ne responseFuture) {
       forwardTo match {
         case la: LiftActor => la ! MsgWithResp(msg, responseFuture)

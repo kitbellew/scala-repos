@@ -23,10 +23,7 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.index.{
   ScDirectInheritorsIndex,
   ScSelfTypeInheritorsIndex
 }
-import org.jetbrains.plugins.scala.lang.psi.types.result.{
-  Success,
-  TypingContext
-}
+import org.jetbrains.plugins.scala.lang.psi.types.result.{Success, TypingContext}
 import org.jetbrains.plugins.scala.lang.psi.types.{ScCompoundType, ScType}
 
 import scala.collection.mutable.ArrayBuffer
@@ -142,9 +139,7 @@ object ScalaStubsUtil {
     dataStream.writeName(stub.getFileName)
   }
 
-  def deserializeFileStubElement(
-      dataStream: StubInputStream,
-      parentStub: Object) = {
+  def deserializeFileStubElement(dataStream: StubInputStream, parentStub: Object) = {
     val script = dataStream.readBoolean
     val compiled = dataStream.readBoolean
     val packName = dataStream.readName

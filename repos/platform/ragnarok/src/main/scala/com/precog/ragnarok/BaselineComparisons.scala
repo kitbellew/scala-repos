@@ -123,8 +123,7 @@ trait BaselineComparisons {
             (obj \? "stats") match {
               case Some(stats) =>
                 (for {
-                  JArray(jpath) <-
-                    obj \? "path" flatMap (_ -->? classOf[JArray])
+                  JArray(jpath) <- obj \? "path" flatMap (_ -->? classOf[JArray])
                   JNum(mean) <- stats \? "mean" flatMap (_ -->? classOf[JNum])
                   JNum(variance) <-
                     stats \? "variance" flatMap (_ -->? classOf[JNum])

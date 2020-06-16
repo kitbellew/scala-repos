@@ -582,9 +582,7 @@ object ScalaFileImpl {
   def splitsIn(path: List[List[String]]): List[List[String]] =
     path.scanLeft(List[String]())((vs, v) => vs ::: v).tail.dropRight(1)
 
-  def splitAt(
-      path: List[List[String]],
-      vector: List[String]): List[List[String]] = {
+  def splitAt(path: List[List[String]], vector: List[String]): List[List[String]] = {
     if (vector.isEmpty) path
     else
       path match {

@@ -45,9 +45,7 @@ trait HttpErrorHandler {
     * @param request The request that triggered the server error.
     * @param exception The server error.
     */
-  def onServerError(
-      request: RequestHeader,
-      exception: Throwable): Future[Result]
+  def onServerError(request: RequestHeader, exception: Throwable): Future[Result]
 }
 
 object HttpErrorHandler {
@@ -147,11 +145,7 @@ class DefaultHttpErrorHandler(
       configuration: Configuration,
       sourceMapper: OptionalSourceMapper,
       router: Provider[Router]) =
-    this(
-      environment,
-      configuration,
-      sourceMapper.sourceMapper,
-      Some(router.get))
+    this(environment, configuration, sourceMapper.sourceMapper, Some(router.get))
 
   private val playEditor = configuration.getString("play.editor")
 
@@ -186,8 +180,9 @@ class DefaultHttpErrorHandler(
   protected def onBadRequest(
       request: RequestHeader,
       message: String): Future[Result] =
-    Future.successful(BadRequest(
-      views.html.defaultpages.badRequest(request.method, request.uri, message)))
+    Future.successful(
+      BadRequest(
+        views.html.defaultpages.badRequest(request.method, request.uri, message)))
 
   /**
     * Invoked when a client makes a request that was forbidden.
@@ -229,8 +224,9 @@ class DefaultHttpErrorHandler(
       request: RequestHeader,
       statusCode: Int,
       message: String): Future[Result] = {
-    Future.successful(Results.Status(statusCode)(
-      views.html.defaultpages.badRequest(request.method, request.uri, message)))
+    Future.successful(
+      Results.Status(statusCode)(
+        views.html.defaultpages.badRequest(request.method, request.uri, message)))
   }
 
   /**
@@ -243,9 +239,7 @@ class DefaultHttpErrorHandler(
     * @param request The request that triggered the server error.
     * @param exception The server error.
     */
-  def onServerError(
-      request: RequestHeader,
-      exception: Throwable): Future[Result] = {
+  def onServerError(request: RequestHeader, exception: Throwable): Future[Result] = {
     try {
       val usefulException =
         HttpErrorHandlerExceptions.throwableToUsefulException(
@@ -297,8 +291,7 @@ class DefaultHttpErrorHandler(
       request: RequestHeader,
       exception: UsefulException): Future[Result] =
     Future.successful(
-      InternalServerError(
-        views.html.defaultpages.devError(playEditor, exception)))
+      InternalServerError(views.html.defaultpages.devError(playEditor, exception)))
 
   /**
     * Invoked in prod mode when a server error occurs.

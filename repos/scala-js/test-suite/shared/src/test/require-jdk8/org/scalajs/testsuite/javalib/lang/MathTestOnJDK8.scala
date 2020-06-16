@@ -144,21 +144,15 @@ class MathTestOnJDK8 {
     expectThrows(
       classOf[ArithmeticException],
       Math.subtractExact(0, Long.MinValue))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.subtractExact(Long.MinValue, 1))
+    expectThrows(classOf[ArithmeticException], Math.subtractExact(Long.MinValue, 1))
     expectThrows(
       classOf[ArithmeticException],
       Math.subtractExact(Long.MinValue, Long.MaxValue))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.subtractExact(Long.MinValue, 1))
+    expectThrows(classOf[ArithmeticException], Math.subtractExact(Long.MinValue, 1))
     expectThrows(
       classOf[ArithmeticException],
       Math.subtractExact(-2, Long.MaxValue))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.subtractExact(Long.MaxValue, -1))
+    expectThrows(classOf[ArithmeticException], Math.subtractExact(Long.MaxValue, -1))
     expectThrows(
       classOf[ArithmeticException],
       Math.subtractExact(Long.MaxValue, Long.MinValue))
@@ -199,18 +193,10 @@ class MathTestOnJDK8 {
     expectThrows(
       classOf[ArithmeticException],
       Math.multiplyExact(Int.MaxValue, Int.MinValue))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.multiplyExact(1073741824, 2))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.multiplyExact(2, 1073741824))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.multiplyExact(1073741825, -2))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.multiplyExact(-2, 1073741825))
+    expectThrows(classOf[ArithmeticException], Math.multiplyExact(1073741824, 2))
+    expectThrows(classOf[ArithmeticException], Math.multiplyExact(2, 1073741824))
+    expectThrows(classOf[ArithmeticException], Math.multiplyExact(1073741825, -2))
+    expectThrows(classOf[ArithmeticException], Math.multiplyExact(-2, 1073741825))
 
     for (n <- Seq(Long.MinValue, -1L, 0L, 1L, Long.MaxValue)) {
       assertEquals(0L, Math.multiplyExact(n, 0))
@@ -231,9 +217,7 @@ class MathTestOnJDK8 {
     assertEquals(Long.MinValue, Math.multiplyExact(4611686018427387904L, -2))
     assertEquals(Long.MinValue, Math.multiplyExact(-2, 4611686018427387904L))
 
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.multiplyExact(Long.MinValue, -1))
+    expectThrows(classOf[ArithmeticException], Math.multiplyExact(Long.MinValue, -1))
     expectThrows(
       classOf[ArithmeticException],
       Math.multiplyExact(-1, Long.MinValue))
@@ -267,24 +251,16 @@ class MathTestOnJDK8 {
     assertEquals(Int.MaxValue, Math.incrementExact(Int.MaxValue - 1))
     assertEquals(Long.MaxValue, Math.incrementExact(Long.MaxValue - 1))
 
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.incrementExact(Int.MaxValue))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.incrementExact(Long.MaxValue))
+    expectThrows(classOf[ArithmeticException], Math.incrementExact(Int.MaxValue))
+    expectThrows(classOf[ArithmeticException], Math.incrementExact(Long.MaxValue))
   }
 
   @Test def decrementExact(): Unit = {
     assertEquals(Int.MinValue, Math.decrementExact(Int.MinValue + 1))
     assertEquals(Long.MinValue, Math.decrementExact(Long.MinValue + 1))
 
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.decrementExact(Int.MinValue))
-    expectThrows(
-      classOf[ArithmeticException],
-      Math.decrementExact(Long.MinValue))
+    expectThrows(classOf[ArithmeticException], Math.decrementExact(Int.MinValue))
+    expectThrows(classOf[ArithmeticException], Math.decrementExact(Long.MinValue))
   }
 
   @Test def negateExact(): Unit = {

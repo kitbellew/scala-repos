@@ -138,8 +138,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       (serverWhich, serverClosable, port) <- servers(pf)
     } {
       for {
-        (clientWhich, clientIface, clientClosable) <-
-          clients(pf, clientId, port)
+        (clientWhich, clientIface, clientClosable) <- clients(pf, clientId, port)
       } withClue(
         s"Server ($serverWhich) Client ($clientWhich) clientId $clientId protocolFactory $pf"
       ) {
@@ -448,8 +447,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       .configured(Stats(sr))
       .withResponseClassifier(classifier)
       .newIface[Echo.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     testFailureClassification(sr, client)
@@ -464,8 +462,8 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       .name("client")
       .reportTo(sr)
       .responseClassifier(classifier)
-      .dest(Name.bound(
-        Address(server.boundAddress.asInstanceOf[InetSocketAddress])))
+      .dest(
+        Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])))
       .build()
     val client = new Echo.FinagledClient(clientBuilder)
 
@@ -481,8 +479,7 @@ class EndToEndTest extends FunSuite with ThriftTest with BeforeAndAfter {
       .withResponseClassifier(
         ThriftResponseClassifier.ThriftExceptionsAsFailures)
       .newIface[Echo.FutureIface](
-        Name.bound(
-          Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
+        Name.bound(Address(server.boundAddress.asInstanceOf[InetSocketAddress])),
         "client")
 
     val ex = intercept[InvalidQueryException] {

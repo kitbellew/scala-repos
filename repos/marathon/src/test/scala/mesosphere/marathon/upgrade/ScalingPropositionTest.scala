@@ -7,8 +7,7 @@ import org.scalatest.{FunSuite, Matchers}
 
 class ScalingPropositionTest extends FunSuite with Matchers {
 
-  test(
-    "propose - empty tasksToKill should lead to ScalingProposition(None, _)") {
+  test("propose - empty tasksToKill should lead to ScalingProposition(None, _)") {
     val proposition = ScalingProposition.propose(
       runningTasks = noTasks,
       toKill = Some(noTasks),

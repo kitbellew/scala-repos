@@ -437,9 +437,7 @@ object StackTrace {
       .asInstanceOf[String])
       .jsReplace("""^\s*at\s+(.*)$""".re("gm"), "$1")
       .jsReplace("""^Anonymous function\s+""".re("gm"), "{anonymous}() ")
-      .jsReplace(
-        """^([^\(]+|\{anonymous\}\(\))\s+\((.+)\)$""".re("gm"),
-        "$1@$2")
+      .jsReplace("""^([^\(]+|\{anonymous\}\(\))\s+\((.+)\)$""".re("gm"), "$1@$2")
       .jsSplit("\n")
       .jsSlice(1)
   }

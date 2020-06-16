@@ -584,8 +584,7 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             DenseRank,
-            dag.AbsoluteLoad(Const(CString("/hom/numbers6"))(line))(line))(
-            line),
+            dag.AbsoluteLoad(Const(CString("/hom/numbers6"))(line))(line))(line),
           Const(CLong(3))(line))(line)
       )(line)
 
@@ -893,8 +892,7 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             Rank,
-            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
-            line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
           Const(CLong(13))(line))(line)
       )(line)
 
@@ -920,8 +918,7 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             Rank,
-            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
-            line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
           Const(CLong(5))(line))(line)
       )(line)
 
@@ -948,8 +945,7 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             Rank,
-            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
-            line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
           Const(CLong(10))(line))(line)
       )(line)
 
@@ -1015,8 +1011,7 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             DenseRank,
-            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
-            line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
           Const(CLong(10))(line))(line)
       )(line)
 
@@ -1042,8 +1037,7 @@ trait StatsLibSpecs[M[+_]]
           Cross(None),
           dag.Morph1(
             DenseRank,
-            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(
-            line),
+            dag.AbsoluteLoad(Const(CString("/het/numbers6"))(line))(line))(line),
           Const(CLong(9))(line))(line)
       )(line)
 
@@ -1617,14 +1611,12 @@ trait StatsLibSpecs[M[+_]]
           Join(
             DerefObject,
             Cross(None),
-            dag.AbsoluteLoad(Const(CString("hom/heightWeight_neg"))(line))(
-              line),
+            dag.AbsoluteLoad(Const(CString("hom/heightWeight_neg"))(line))(line),
             Const(CString("height"))(line))(line),
           Join(
             DerefObject,
             Cross(None),
-            dag.AbsoluteLoad(Const(CString("hom/heightWeight_neg"))(line))(
-              line),
+            dag.AbsoluteLoad(Const(CString("hom/heightWeight_neg"))(line))(line),
             Const(CString("weight"))(line))(line)
         )(line)
 
@@ -1882,8 +1874,7 @@ trait StatsLibSpecs[M[+_]]
 
       val input = Filter(
         IdentitySort,
-        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/hom/numbersAcrossSlices"))(line))(line),
         Join(
           Eq,
           Cross(None),
@@ -2225,8 +2216,7 @@ trait StatsLibSpecs[M[+_]]
 
       val input = Filter(
         IdentitySort,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
         Join(
           Eq,
           Cross(None),
@@ -2253,8 +2243,7 @@ trait StatsLibSpecs[M[+_]]
 
       val input = Filter(
         IdentitySort,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
         Join(
           Eq,
           Cross(None),
@@ -2281,8 +2270,7 @@ trait StatsLibSpecs[M[+_]]
 
       val input = Filter(
         IdentitySort,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
         Join(
           LtEq,
           Cross(None),
@@ -2353,8 +2341,7 @@ trait StatsLibSpecs[M[+_]]
 
       val input = Filter(
         IdentitySort,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
         Join(
           Eq,
           Cross(None),
@@ -2381,8 +2368,7 @@ trait StatsLibSpecs[M[+_]]
 
       val input = Filter(
         IdentitySort,
-        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(
-          line),
+        dag.AbsoluteLoad(Const(CString("/het/numbersAcrossSlices"))(line))(line),
         Join(
           LtEq,
           Cross(None),

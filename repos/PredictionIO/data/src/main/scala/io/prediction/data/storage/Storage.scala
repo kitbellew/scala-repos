@@ -250,10 +250,8 @@ object Storage extends Logging {
       val props = sys.env
         .filter(t => t._1.startsWith(keyedPath))
         .map(t => t._1.replace(s"${keyedPath}_", "") -> t._2)
-      val clientConfig = StorageClientConfig(
-        properties = props,
-        parallel = parallel,
-        test = test)
+      val clientConfig =
+        StorageClientConfig(properties = props, parallel = parallel, test = test)
       val client = getClient(clientConfig, sourceType)
       Some(ClientMeta(sourceType, client, clientConfig))
     } catch {
@@ -365,9 +363,7 @@ object Storage extends Logging {
     info("Test writing to Event Store (App Id 0)...")
     // use appId=0 for testing purpose
     eventsDb.init(0)
-    eventsDb.insert(
-      Event(event = "test", entityType = "test", entityId = "test"),
-      0)
+    eventsDb.insert(Event(event = "test", entityType = "test", entityId = "test"), 0)
     eventsDb.remove(0)
     eventsDb.close()
   }

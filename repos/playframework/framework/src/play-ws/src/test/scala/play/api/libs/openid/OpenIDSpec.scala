@@ -69,8 +69,7 @@ object OpenIDSpec extends Specification with Mockito {
       isValidOpenIDRequest(query)
 
       query.get("openid.ax.mode") must_== Some(Seq("fetch_request"))
-      query.get("openid.ns.ax") must_== Some(
-        Seq("http://openid.net/srv/ax/1.0"))
+      query.get("openid.ns.ax") must_== Some(Seq("http://openid.net/srv/ax/1.0"))
       query.get("openid.ax.required") must_== Some(Seq("email"))
       query.get("openid.ax.type.email") must_== Some(
         Seq("http://schema.openid.net/contact/email"))
@@ -92,8 +91,7 @@ object OpenIDSpec extends Specification with Mockito {
       isValidOpenIDRequest(query)
 
       query.get("openid.ax.mode") must_== Some(Seq("fetch_request"))
-      query.get("openid.ns.ax") must_== Some(
-        Seq("http://openid.net/srv/ax/1.0"))
+      query.get("openid.ns.ax") must_== Some(Seq("http://openid.net/srv/ax/1.0"))
       query.get("openid.ax.if_available") must_== Some(Seq("email"))
       query.get("openid.ax.type.email") must_== Some(
         Seq("http://schema.openid.net/contact/email"))
@@ -117,8 +115,7 @@ object OpenIDSpec extends Specification with Mockito {
       isValidOpenIDRequest(query)
 
       query.get("openid.ax.mode") must_== Some(Seq("fetch_request"))
-      query.get("openid.ns.ax") must_== Some(
-        Seq("http://openid.net/srv/ax/1.0"))
+      query.get("openid.ns.ax") must_== Some(Seq("http://openid.net/srv/ax/1.0"))
       query.get("openid.ax.required") must_== Some(Seq("first"))
       query.get("openid.ax.type.first") must_== Some(
         Seq("http://axschema.org/namePerson/first"))
@@ -143,8 +140,7 @@ object OpenIDSpec extends Specification with Mockito {
 
       val argument = ArgumentCaptor.forClass(classOf[Params])
       "direct verification using a POST request was used" in {
-        there was one(ws.request).post(argument.capture())(
-          any[Writeable[Params]])
+        there was one(ws.request).post(argument.capture())(any[Writeable[Params]])
 
         val verificationQuery = argument.getValue
 
@@ -174,9 +170,7 @@ object OpenIDSpec extends Specification with Mockito {
         openIdResponse - "openid.op_endpoint" + ("openid.op_endpoint" -> Seq(
           spoofedEndpoint))
 
-      Await.result(
-        openId.verifiedId(setupMockRequest(responseQueryString)),
-        dur)
+      Await.result(openId.verifiedId(setupMockRequest(responseQueryString)), dur)
 
       "direct verification does not use the openid.op_endpoint that is part of the query string" in {
         ws.urls contains (spoofedEndpoint) must beFalse

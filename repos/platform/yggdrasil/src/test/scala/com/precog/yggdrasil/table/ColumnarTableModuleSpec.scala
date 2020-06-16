@@ -120,8 +120,8 @@ trait ColumnarTableModuleSpec[M[+_]]
 
   override val defaultPrettyParams = Pretty.Params(2)
 
-  lazy val xlogger = LoggerFactory.getLogger(
-    "com.precog.yggdrasil.table.ColumnarTableModuleSpec")
+  lazy val xlogger =
+    LoggerFactory.getLogger("com.precog.yggdrasil.table.ColumnarTableModuleSpec")
 
   def streamToString(stream: StreamT[M, CharBuffer]): String = {
     def loop(stream: StreamT[M, CharBuffer], sb: StringBuilder): M[String] =
@@ -352,10 +352,8 @@ trait ColumnarTableModuleSpec[M[+_]]
                     JArray(
                       List(
                         JNum(6.615224799778253e307d),
-                        JArray(List(
-                          JBool(false),
-                          JNull,
-                          JNum(-8.988465674311579e307d))),
+                        JArray(
+                          List(JBool(false), JNull, JNum(-8.988465674311579e307d))),
                         JNum(-3.536399224770604e307d)))),
                   JField("lwu", JNum(-5.121099465699862e307d))
                 ))
@@ -385,8 +383,7 @@ trait ColumnarTableModuleSpec[M[+_]]
         val dataset2 = fromJson(sample.toStream, Some(3))
 
         dataset1
-          .cross(dataset1)(
-            InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
+          .cross(dataset1)(InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
           .slices
           .uncons
           .copoint must beLike {

@@ -45,15 +45,14 @@ class BidiFlowSpec extends AkkaSpec {
 
     "work top/bottom in isolation" in {
       val (top, bottom) = RunnableGraph
-        .fromGraph(
-          GraphDSL.create(Sink.head[Long], Sink.head[String])(Keep.both) {
-            implicit b ⇒ (st, sb) ⇒
-              val s = b.add(bidi)
+        .fromGraph(GraphDSL.create(Sink.head[Long], Sink.head[String])(Keep.both) {
+          implicit b ⇒ (st, sb) ⇒
+            val s = b.add(bidi)
 
-              Source.single(1) ~> s.in1; s.out1 ~> st
-              sb <~ s.out2; s.in2 <~ Source.single(bytes)
-              ClosedShape
-          })
+            Source.single(1) ~> s.in1; s.out1 ~> st
+            sb <~ s.out2; s.in2 <~ Source.single(bytes)
+            ClosedShape
+        })
         .run()
 
       Await.result(top, 1.second) should ===(3)

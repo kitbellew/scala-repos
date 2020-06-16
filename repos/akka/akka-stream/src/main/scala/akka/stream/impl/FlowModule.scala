@@ -10,8 +10,7 @@ import akka.event.Logging
 /**
   * INTERNAL API
   */
-private[stream] trait FlowModule[In, Out, Mat]
-    extends StreamLayout.AtomicModule {
+private[stream] trait FlowModule[In, Out, Mat] extends StreamLayout.AtomicModule {
   override def replaceShape(s: Shape) =
     if (s != shape)
       throw new UnsupportedOperationException(

@@ -59,10 +59,8 @@ class DelegateResultSet(rs: ResultSet) extends ResultSet {
       columnLabel: String,
       inputStream: InputStream,
       length: Long): Unit = rs.updateBlob(columnLabel, inputStream, length)
-  def updateBlob(
-      columnIndex: Int,
-      inputStream: InputStream,
-      length: Long): Unit = rs.updateBlob(columnIndex, inputStream, length)
+  def updateBlob(columnIndex: Int, inputStream: InputStream, length: Long): Unit =
+    rs.updateBlob(columnIndex, inputStream, length)
   def updateCharacterStream(
       columnLabel: String,
       reader: Reader,
@@ -72,10 +70,8 @@ class DelegateResultSet(rs: ResultSet) extends ResultSet {
       columnLabel: String,
       x: InputStream,
       length: Long): Unit = rs.updateBinaryStream(columnLabel, x, length)
-  def updateAsciiStream(
-      columnLabel: String,
-      x: InputStream,
-      length: Long): Unit = rs.updateAsciiStream(columnLabel, x, length)
+  def updateAsciiStream(columnLabel: String, x: InputStream, length: Long): Unit =
+    rs.updateAsciiStream(columnLabel, x, length)
   def updateCharacterStream(columnIndex: Int, x: Reader, length: Long): Unit =
     rs.updateCharacterStream(columnIndex, x, length)
   def updateBinaryStream(columnIndex: Int, x: InputStream, length: Long): Unit =
@@ -178,10 +174,8 @@ class DelegateResultSet(rs: ResultSet) extends ResultSet {
       columnLabel: String,
       reader: Reader,
       length: Int): Unit = rs.updateCharacterStream(columnLabel, reader, length)
-  def updateBinaryStream(
-      columnLabel: String,
-      x: InputStream,
-      length: Int): Unit = rs.updateBinaryStream(columnLabel, x, length)
+  def updateBinaryStream(columnLabel: String, x: InputStream, length: Int): Unit =
+    rs.updateBinaryStream(columnLabel, x, length)
   def updateAsciiStream(
       columnLabel: String,
       x: InputStream,

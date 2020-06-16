@@ -234,9 +234,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         Seq("{\"a\": \"1\"}}", "{\"a\": \"2\"}}", "{\"a\": \"3\"}}")))
       .registerTempTable("d")
 
-    checkAnswer(
-      sql("select * from d where d.a in (1,2)"),
-      Seq(Row("1"), Row("2")))
+    checkAnswer(sql("select * from d where d.a in (1,2)"), Seq(Row("1"), Row("2")))
   }
 
   test("SPARK-11226 Skip empty line in json file") {
@@ -281,9 +279,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     try {
       // Just to group rows.
-      testCodeGen(
-        "SELECT key FROM testData3x GROUP BY key",
-        (1 to 100).map(Row(_)))
+      testCodeGen("SELECT key FROM testData3x GROUP BY key", (1 to 100).map(Row(_)))
       // COUNT
       testCodeGen(
         "SELECT key, count(value) FROM testData3x GROUP BY key",
@@ -424,8 +420,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("index into array") {
     checkAnswer(
-      sql(
-        "SELECT data, data[0], data[0] + data[1], data[0 + 1] FROM arrayData"),
+      sql("SELECT data, data[0], data[0] + data[1], data[0 + 1] FROM arrayData"),
       arrayData
         .map(d => Row(d.data, d.data(0), d.data(0) + d.data(1), d.data(1)))
         .collect()
@@ -434,7 +429,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("left semi greater than predicate") {
     checkAnswer(
-      sql("SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.a >= y.a + 2"),
+      sql(
+        "SELECT * FROM testData2 x LEFT SEMI JOIN testData2 y ON x.a >= y.a + 2"),
       Seq(Row(3, 1), Row(3, 2))
     )
   }
@@ -600,9 +596,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       """.stripMargin),
       Row(1))
 
-    checkAnswer(
-      sql("select key from (select * from testData) x limit 1"),
-      Row(1))
+    checkAnswer(sql("select key from (select * from testData) x limit 1"), Row(1))
 
     checkAnswer(
       sql("""
@@ -637,9 +631,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("approximate count distinct with user provided standard deviation") {
-    checkAnswer(
-      sql("SELECT APPROX_COUNT_DISTINCT(a, 0.04) FROM testData2"),
-      Row(3))
+    checkAnswer(sql("SELECT APPROX_COUNT_DISTINCT(a, 0.04) FROM testData2"), Row(3))
   }
 
   test("null count") {
@@ -747,8 +739,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("right outer join") {
     checkAnswer(
-      sql(
-        "SELECT * FROM lowerCaseData RIGHT OUTER JOIN upperCaseData ON n = N"),
+      sql("SELECT * FROM lowerCaseData RIGHT OUTER JOIN upperCaseData ON n = N"),
       Row(1, "a", 1, "A") ::
         Row(2, "b", 2, "B") ::
         Row(3, "c", 3, "C") ::
@@ -776,8 +767,8 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("SPARK-11111 null-safe join should not use cartesian product") {
-    val df = sql(
-      "select count(*) from testData a join testData b on (a.key <=> b.key)")
+    val df =
+      sql("select count(*) from testData a join testData b on (a.key <=> b.key)")
     val cp = df.queryExecution.sparkPlan.collect {
       case cp: CartesianProduct => cp
     }
@@ -959,8 +950,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         s"$key should exist in SQLConf.")
       assert(
         TestSQLContext.overrideConfs(key) === value,
-        s"The value of $key should be ${TestSQLContext.overrideConfs(
-          key)} instead of $value.")
+        s"The value of $key should be ${TestSQLContext.overrideConfs(key)} instead of $value.")
     }
     val overrideConfs = sql("SET").collect()
 
@@ -1126,10 +1116,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       .putString(docKey, docValue)
       .build()
     val schemaWithMeta = new StructType(
-      Array(
-        schema("id"),
-        schema("name").copy(metadata = metadata),
-        schema("age")))
+      Array(schema("id"), schema("name").copy(metadata = metadata), schema("age")))
     val personWithMeta = sqlContext.createDataFrame(person.rdd, schemaWithMeta)
     def validateMetadata(rdd: DataFrame): Unit = {
       assert(rdd.schema("name").metadata.getString(docKey) == docValue)
@@ -1143,8 +1130,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     validateMetadata(
       sql("SELECT * FROM personWithMeta JOIN salary ON id = personId"))
     validateMetadata(
-      sql(
-        "SELECT name, salary FROM personWithMeta JOIN salary ON id = personId"))
+      sql("SELECT name, salary FROM personWithMeta JOIN salary ON id = personId"))
   }
 
   test("SPARK-3371 Renaming a function expression with group by gives error") {
@@ -1398,8 +1384,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
   test("SPARK-4154 Query does not work if it has 'not between' in Spark SQL and HQL") {
     checkAnswer(
-      sql(
-        "SELECT key FROM testData WHERE key not between 0 and 10 order by key"),
+      sql("SELECT key FROM testData WHERE key not between 0 and 10 order by key"),
       (11 to 100).map(i => Row(i)))
   }
 
@@ -1456,9 +1441,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     val data = TestData(1, "val_1") :: TestData(2, "val_2") :: Nil
     val rdd = sparkContext.parallelize((0 to 1).map(i => data(i)))
     rdd.toDF().registerTempTable("distinctData")
-    checkAnswer(
-      sql("SELECT COUNT(DISTINCT key,value) FROM distinctData"),
-      Row(2))
+    checkAnswer(sql("SELECT COUNT(DISTINCT key,value) FROM distinctData"), Row(2))
   }
 
   test("SPARK-4699 case sensitivity SQL query") {
@@ -1621,9 +1604,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   test("SPARK-8782: ORDER BY NULL") {
     withTempTable("t") {
       Seq((1, 2), (1, 2)).toDF("a", "b").registerTempTable("t")
-      checkAnswer(
-        sql("SELECT * FROM t ORDER BY NULL"),
-        Seq(Row(1, 2), Row(1, 2)))
+      checkAnswer(sql("SELECT * FROM t ORDER BY NULL"), Seq(Row(1, 2), Row(1, 2)))
     }
   }
 
@@ -1643,9 +1624,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       df,
       Row(
-        new CalendarInterval(
-          12 * 3 - 3,
-          7L * 1000 * 1000 * 3600 * 24 * 7 + 123)))
+        new CalendarInterval(12 * 3 - 3, 7L * 1000 * 1000 * 3600 * 24 * 7 + 123)))
     withTempPath(f => {
       // Currently we don't yet support saving out values of interval data type.
       val e = intercept[AnalysisException] {
@@ -1679,13 +1658,11 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
 
     checkAnswer(
       df.select(df("i") + new CalendarInterval(2, 123)),
-      Row(
-        new CalendarInterval(12 * 3 - 3 + 2, 7L * MICROS_PER_WEEK + 123 + 123)))
+      Row(new CalendarInterval(12 * 3 - 3 + 2, 7L * MICROS_PER_WEEK + 123 + 123)))
 
     checkAnswer(
       df.select(df("i") - new CalendarInterval(2, 123)),
-      Row(
-        new CalendarInterval(12 * 3 - 3 - 2, 7L * MICROS_PER_WEEK + 123 - 123)))
+      Row(new CalendarInterval(12 * 3 - 3 - 2, 7L * MICROS_PER_WEEK + 123 - 123)))
 
     // unary minus
     checkAnswer(
@@ -1710,9 +1687,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
     checkAnswer(
       sql("select 10.300000000000000000 * 3.000000000000000000"),
       Row(
-        BigDecimal(
-          "30.900000000000000000000000000000000000",
-          new MathContext(38))))
+        BigDecimal("30.900000000000000000000000000000000000", new MathContext(38))))
     checkAnswer(
       sql("select 10.300000000000000000 * 3.0000000000000000000"),
       Row(null))
@@ -1750,9 +1725,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
   }
 
   test("external sorting updates peak execution memory") {
-    AccumulatorSuite.verifyPeakExecutionMemorySet(
-      sparkContext,
-      "external sort") {
+    AccumulatorSuite.verifyPeakExecutionMemorySet(sparkContext, "external sort") {
       sql("SELECT * FROM testData2 ORDER BY a ASC, b ASC").collect()
     }
   }
@@ -1821,8 +1794,7 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
         sql("SELECT MAX(value) FROM src GROUP BY key + 1 ORDER BY key + 1"),
         Seq(Row(1), Row(1)))
       checkAnswer(
-        sql(
-          "SELECT MAX(value) FROM src GROUP BY key + 1 ORDER BY (key + 1) * 2"),
+        sql("SELECT MAX(value) FROM src GROUP BY key + 1 ORDER BY (key + 1) * 2"),
         Seq(Row(1), Row(1)))
     }
   }
@@ -1833,11 +1805,10 @@ class SQLQuerySuite extends QueryTest with SharedSQLContext {
       df.write.json(f.getCanonicalPath)
       checkAnswer(sql(s"select id from json.`${f.getCanonicalPath}`"), df)
       checkAnswer(
-        sql(s"select id from `org.apache.spark.sql.json`.`${f.getCanonicalPath}`"),
+        sql(
+          s"select id from `org.apache.spark.sql.json`.`${f.getCanonicalPath}`"),
         df)
-      checkAnswer(
-        sql(s"select a.id from json.`${f.getCanonicalPath}` as a"),
-        df)
+      checkAnswer(sql(s"select a.id from json.`${f.getCanonicalPath}` as a"), df)
     })
 
     val e1 = intercept[AnalysisException] {

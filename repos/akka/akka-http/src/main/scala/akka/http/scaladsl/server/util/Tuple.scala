@@ -26,10 +26,10 @@ object Tuple {
   implicit def forTuple6[A, B, C, D, E, F]: Tuple[(A, B, C, D, E, F)] = null
   implicit def forTuple7[A, B, C, D, E, F, G]: Tuple[(A, B, C, D, E, F, G)] =
     null
-  implicit def forTuple8[A, B, C, D, E, F, G, H]
-      : Tuple[(A, B, C, D, E, F, G, H)] = null
-  implicit def forTuple9[A, B, C, D, E, F, G, H, I]
-      : Tuple[(A, B, C, D, E, F, G, H, I)] = null
+  implicit def forTuple8[A, B, C, D, E, F, G, H]: Tuple[(A, B, C, D, E, F, G, H)] =
+    null
+  implicit def forTuple9[A, B, C, D, E, F, G, H, I]: Tuple[(A, B, C, D, E, F, G, H, I)] =
+    null
   implicit def forTuple10[A, B, C, D, E, F, G, H, I, J]
       : Tuple[(A, B, C, D, E, F, G, H, I, J)] = null
   implicit def forTuple11[A, B, C, D, E, F, G, H, I, J, K]
@@ -112,8 +112,7 @@ object Tuple {
       R,
       S,
       T,
-      U]
-      : Tuple[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
+      U]: Tuple[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U)] =
     null
   implicit def forTuple22[
       A,
@@ -137,6 +136,7 @@ object Tuple {
       S,
       T,
       U,
-      V]: Tuple[
-    (A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] = null
+      V]
+      : Tuple[(A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V)] =
+    null
 }

@@ -345,18 +345,15 @@ class IsotonicRegression private (private var isotonic: Boolean)
     * @return Result tuples (label, feature, weight) where labels were updated
     *         to form a monotone sequence as per isotonic regression definition.
     */
-  private def poolAdjacentViolators(input: Array[(Double, Double, Double)])
-      : Array[(Double, Double, Double)] = {
+  private def poolAdjacentViolators(
+      input: Array[(Double, Double, Double)]): Array[(Double, Double, Double)] = {
 
     if (input.isEmpty) {
       return Array.empty
     }
 
     // Pools sub array within given bounds assigning weighted average value to all elements.
-    def pool(
-        input: Array[(Double, Double, Double)],
-        start: Int,
-        end: Int): Unit = {
+    def pool(input: Array[(Double, Double, Double)], start: Int, end: Int): Unit = {
       val poolSubArray = input.slice(start, end + 1)
 
       val weightedSum = poolSubArray.map(lp => lp._1 * lp._3).sum

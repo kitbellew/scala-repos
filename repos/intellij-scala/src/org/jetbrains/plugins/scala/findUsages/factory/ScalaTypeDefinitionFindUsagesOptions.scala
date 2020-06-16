@@ -47,8 +47,7 @@ class ScalaTypeDefinitionFindUsagesOptions(project: Project)
     }
 
     if (isImplementingTypeDefinitions) {
-      strings.add(
-        ScalaBundle.message("find.usages.implementing.type.definition"))
+      strings.add(ScalaBundle.message("find.usages.implementing.type.definition"))
     }
 
     if (isSearchCompanionModule) {

@@ -11,9 +11,7 @@ class WebJarServlet extends HttpServlet {
   private[this] val log = LoggerFactory.getLogger(getClass)
 
   //scalastyle:off method.length
-  override def doGet(
-      req: HttpServletRequest,
-      resp: HttpServletResponse): Unit = {
+  override def doGet(req: HttpServletRequest, resp: HttpServletResponse): Unit = {
 
     def sendResource(resourceURI: String, mime: String): Unit = {
       //scalastyle:off magic.number

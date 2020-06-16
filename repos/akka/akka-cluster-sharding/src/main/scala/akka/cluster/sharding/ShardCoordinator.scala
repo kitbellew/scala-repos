@@ -99,8 +99,7 @@ object ShardCoordinator {
     * Java API: Java implementations of custom shard allocation and rebalancing logic used by the [[ShardCoordinator]]
     * should extend this abstract class and implement the two methods.
     */
-  abstract class AbstractShardAllocationStrategy
-      extends ShardAllocationStrategy {
+  abstract class AbstractShardAllocationStrategy extends ShardAllocationStrategy {
     override final def allocateShard(
         requester: ActorRef,
         shardId: ShardId,
@@ -149,8 +148,7 @@ object ShardCoordinator {
         currentShardAllocations: java.util.Map[
           ActorRef,
           immutable.IndexedSeq[String]],
-        rebalanceInProgress: java.util.Set[String])
-        : Future[java.util.Set[String]]
+        rebalanceInProgress: java.util.Set[String]): Future[java.util.Set[String]]
   }
 
   private val emptyRebalanceResult = Future.successful(Set.empty[ShardId])

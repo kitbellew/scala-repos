@@ -150,17 +150,11 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
         "OwnedPartitionsCount"),
       // kafka.consumer.ConsumerFetcherManager
       new MetricName("kafka.consumer", "ConsumerFetcherManager", "MaxLag"),
-      new MetricName(
-        "kafka.consumer",
-        "ConsumerFetcherManager",
-        "MinFetchRate"),
+      new MetricName("kafka.consumer", "ConsumerFetcherManager", "MinFetchRate"),
       // kafka.server.AbstractFetcherThread <-- kafka.consumer.ConsumerFetcherThread
       new MetricName("kafka.server", "FetcherLagMetrics", "ConsumerLag"),
       // kafka.consumer.ConsumerTopicStats <-- kafka.consumer.{ConsumerIterator, PartitionTopicInfo}
-      new MetricName(
-        "kafka.consumer",
-        "ConsumerTopicMetrics",
-        "MessagesPerSec"),
+      new MetricName("kafka.consumer", "ConsumerTopicMetrics", "MessagesPerSec"),
       // kafka.consumer.ConsumerTopicStats
       new MetricName("kafka.consumer", "ConsumerTopicMetrics", "BytesPerSec"),
       // kafka.server.AbstractFetcherThread <-- kafka.consumer.ConsumerFetcherThread
@@ -208,10 +202,7 @@ object KafkaMetricsGroup extends KafkaMetricsGroup with Logging {
         "ProducerSendThread",
         "ProducerQueueSize"),
       // kafka.producer.ProducerTopicStats <-- kafka.producer.{Producer, async.DefaultEventHandler}
-      new MetricName(
-        "kafka.producer",
-        "ProducerTopicMetrics",
-        "MessagesPerSec"),
+      new MetricName("kafka.producer", "ProducerTopicMetrics", "MessagesPerSec"),
       new MetricName(
         "kafka.producer",
         "ProducerTopicMetrics",

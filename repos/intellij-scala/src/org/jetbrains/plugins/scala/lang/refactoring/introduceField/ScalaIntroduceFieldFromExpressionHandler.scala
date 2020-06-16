@@ -246,8 +246,7 @@ class ScalaIntroduceFieldFromExpressionHandler
 
   protected def getDialog(
       ifc: IntroduceFieldContext[ScExpression],
-      settings: IntroduceFieldSettings[ScExpression])
-      : ScalaIntroduceFieldDialog = {
+      settings: IntroduceFieldSettings[ScExpression]): ScalaIntroduceFieldDialog = {
     val occCount = ifc.occurrences.length
     // Add occurrences highlighting
     if (occCount > 1)
@@ -276,10 +275,7 @@ class ScalaIntroduceFieldFromExpressionHandler
       range.getEndOffset)
   }
 
-  private def showErrorMessage(
-      text: String,
-      project: Project,
-      editor: Editor) = {
+  private def showErrorMessage(text: String, project: Project, editor: Editor) = {
     CommonRefactoringUtil.showErrorHint(
       project,
       editor,

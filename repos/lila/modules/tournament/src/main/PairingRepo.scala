@@ -41,8 +41,7 @@ object PairingRepo {
       nb: Int): Fu[Pairing.LastOpponents] =
     coll
       .find(
-        selectTour(tourId) ++ BSONDocument(
-          "u" -> BSONDocument("$in" -> userIds)),
+        selectTour(tourId) ++ BSONDocument("u" -> BSONDocument("$in" -> userIds)),
         BSONDocument("_id" -> false, "u" -> true)
       )
       .sort(recentSort)
@@ -87,10 +86,7 @@ object PairingRepo {
         _.flatMap(_.getAs[String]("_id"))
       }
 
-  def byTourUserNb(
-      tourId: String,
-      userId: String,
-      nb: Int): Fu[Option[Pairing]] =
+  def byTourUserNb(tourId: String, userId: String, nb: Int): Fu[Option[Pairing]] =
     (nb > 0) ?? coll
       .find(
         selectTourUser(tourId, userId)
@@ -138,9 +134,7 @@ object PairingRepo {
   def findPlaying(tourId: String, userId: String): Fu[Option[Pairing]] =
     coll.find(selectTourUser(tourId, userId) ++ selectPlaying).one[Pairing]
 
-  def finishedByPlayerChronological(
-      tourId: String,
-      userId: String): Fu[Pairings] =
+  def finishedByPlayerChronological(tourId: String, userId: String): Fu[Pairings] =
     coll
       .find(
         selectTourUser(tourId, userId) ++ selectFinished
@@ -187,9 +181,7 @@ object PairingRepo {
         Match(selectTour(tour.id) ++ selectPlaying),
         List(
           Project(
-            BSONDocument(
-              "u" -> BSONBoolean(true),
-              "_id" -> BSONBoolean(false))),
+            BSONDocument("u" -> BSONBoolean(true), "_id" -> BSONBoolean(false))),
           Unwind("u"),
           Group(BSONBoolean(true))("ids" -> AddToSet("u")))
       )

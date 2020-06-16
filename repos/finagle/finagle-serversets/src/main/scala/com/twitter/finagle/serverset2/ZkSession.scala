@@ -66,9 +66,7 @@ private[serverset2] class ZkSession(
       case None =>
         // if there was no previous value, ensure we have a gauge
         synchronized {
-          watchUpdateGauges ::= statsReceiver.addGauge(
-            "last_watch_update",
-            path) {
+          watchUpdateGauges ::= statsReceiver.addGauge("last_watch_update", path) {
             Time.now.inLongSeconds - lastGoodUpdate.getOrElse(path, 0L)
           }
         }
@@ -214,7 +212,8 @@ private[serverset2] class ZkSession(
             noteGoodChildWatch(path)
             Activity.value(Set.empty)
           case Activity.Failed(exc) =>
-            logger.error(s"GetChildrenWatch to ($path, $prefix) failed with exception $exc")
+            logger.error(
+              s"GetChildrenWatch to ($path, $prefix) failed with exception $exc")
             Activity.exception(exc)
         }
     }
@@ -338,7 +337,8 @@ private[serverset2] object ZkSession {
         .unit before zkSession.addAuthInfo(
         "digest",
         Buf.Utf8(authInfo)) onSuccess { _ =>
-        logger.info(s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
+        logger.info(
+          s"New ZKSession is connected. Session ID: ${zkSession.sessionIdAsHex}")
         v() = zkSession
         backoff.reset()
       }

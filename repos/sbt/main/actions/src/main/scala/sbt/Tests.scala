@@ -105,9 +105,7 @@ object Tests {
     *                  If None, the arguments will apply to all test frameworks.
     * @param args The list of arguments to pass to the selected framework(s).
     */
-  final case class Argument(
-      framework: Option[TestFramework],
-      args: List[String])
+  final case class Argument(framework: Option[TestFramework], args: List[String])
       extends TestOption
 
   /**
@@ -348,9 +346,7 @@ object Tests {
           val (result, nestedTasks) = testFun.apply()
           val nestedRunnables =
             createNestedRunnables(loader, testFun, nestedTasks)
-          processRunnable(
-            nestedRunnables.toList ::: rst,
-            (hd._1, result) :: acc)
+          processRunnable(nestedRunnables.toList ::: rst, (hd._1, result) :: acc)
         case Nil => acc
       }
 
@@ -443,10 +439,7 @@ object Tests {
   @deprecated(
     "Tests.showResults() has been superseded with TestResultLogger and setting 'testResultLogger'.",
     "0.13.5")
-  def showResults(
-      log: Logger,
-      results: Output,
-      noTestsMessage: => String): Unit =
+  def showResults(log: Logger, results: Output, noTestsMessage: => String): Unit =
     TestResultLogger.Default
       .copy(printNoTests = TestResultLogger.const(_ info noTestsMessage))
       .run(log, results, "")

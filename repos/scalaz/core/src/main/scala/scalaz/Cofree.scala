@@ -184,8 +184,7 @@ sealed abstract class CofreeInstances1 extends CofreeInstances2 {
 }
 
 sealed abstract class CofreeInstances0 extends CofreeInstances1 {
-  implicit def cofreeZipApplicative[F[_]: Applicative]
-      : Applicative[CofreeZip[F, ?]] =
+  implicit def cofreeZipApplicative[F[_]: Applicative]: Applicative[CofreeZip[F, ?]] =
     new CofreeZipApplicative[F] {
       def F = implicitly
     }
@@ -266,9 +265,7 @@ private trait CofreeBind[F[_]]
 
   def bind[A, B](fa: Cofree[F, A])(f: A => Cofree[F, B]): Cofree[F, B] = {
     val c = f(fa.head)
-    Cofree.applyT(
-      c.head,
-      c.t.map(ct => G.plus(c.tail, F.map(fa.tail)(bind(_)(f)))))
+    Cofree.applyT(c.head, c.t.map(ct => G.plus(c.tail, F.map(fa.tail)(bind(_)(f)))))
   }
 }
 

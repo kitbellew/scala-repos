@@ -41,9 +41,7 @@ object Side extends SFXEnumDelegateCompanion[jfxg.Side, Side] {
   val BOTTOM = Bottom
 
   val Left = new Side(jfxg.Side.LEFT)
-  @deprecated(
-    "Use Left; LEFT will be removed in a future release",
-    "8.0.60-R10")
+  @deprecated("Use Left; LEFT will be removed in a future release", "8.0.60-R10")
   val LEFT = Left
 
   val Right = new Side(jfxg.Side.RIGHT)

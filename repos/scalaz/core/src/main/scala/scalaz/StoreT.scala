@@ -118,8 +118,7 @@ sealed abstract class IndexedStoreTInstances2 {
     }
 }
 sealed abstract class IndexedStoreTInstances1 extends IndexedStoreTInstances2 {
-  implicit def indexedStoreTFunctorLeft[F[_], A, B]
-      : Functor[IndexedStoreT[F, ?, A, B]] =
+  implicit def indexedStoreTFunctorLeft[F[_], A, B]: Functor[IndexedStoreT[F, ?, A, B]] =
     new IndexedStoreTFunctorLeft[F, A, B] {}
 }
 sealed abstract class IndexedStoreTInstances0 extends IndexedStoreTInstances1 {

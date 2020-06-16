@@ -53,9 +53,7 @@ object ParserInstance extends Instance {
 
 /** Composes the Task and Initialize Instances to provide an Instance for [T] Initialize[Task[T]]. */
 object FullInstance
-    extends Instance.Composed[Initialize, Task](
-      InitializeInstance,
-      TaskInstance)
+    extends Instance.Composed[Initialize, Task](InitializeInstance, TaskInstance)
     with MonadInstance {
   type SS = sbt.internal.util.Settings[Scope]
   val settingsData = TaskKey[SS](
@@ -146,8 +144,7 @@ object TaskMacro {
   def taskAppendNPosition[S: c.WeakTypeTag, V: c.WeakTypeTag](c: Context)(
       vs: c.Expr[Initialize[Task[V]]])(
       a: c.Expr[Append.Values[S, V]]): c.Expr[Setting[Task[S]]] =
-    c.Expr[Setting[Task[S]]](
-      appendMacroImpl(c)(vs.tree, a.tree)(AppendNInitName))
+    c.Expr[Setting[Task[S]]](appendMacroImpl(c)(vs.tree, a.tree)(AppendNInitName))
 
   def settingAppendNPosition[S: c.WeakTypeTag, V: c.WeakTypeTag](c: Context)(
       vs: c.Expr[Initialize[V]])(
@@ -157,8 +154,7 @@ object TaskMacro {
   def taskAppend1Position[S: c.WeakTypeTag, V: c.WeakTypeTag](c: Context)(
       v: c.Expr[Initialize[Task[V]]])(
       a: c.Expr[Append.Value[S, V]]): c.Expr[Setting[Task[S]]] =
-    c.Expr[Setting[Task[S]]](
-      appendMacroImpl(c)(v.tree, a.tree)(Append1InitName))
+    c.Expr[Setting[Task[S]]](appendMacroImpl(c)(v.tree, a.tree)(Append1InitName))
 
   def settingAppend1Position[S: c.WeakTypeTag, V: c.WeakTypeTag](c: Context)(
       v: c.Expr[Initialize[V]])(
@@ -473,17 +469,15 @@ object TaskMacro {
         tpeB: Type,
         arg1: Tree,
         arg2: Tree) = {
-      val typedApp = TypeApply(
-        util.select(it, name),
-        TypeTree(tpeA) :: TypeTree(tpeB) :: Nil)
+      val typedApp =
+        TypeApply(util.select(it, name), TypeTree(tpeA) :: TypeTree(tpeB) :: Nil)
       val app = ApplyTree(ApplyTree(typedApp, arg1 :: Nil), arg2 :: Nil)
       c.Expr[Initialize[InputTask[T]]](app)
     }
     // Tree for InputTask.createFree[<tpe>](arg1)
     def inputTaskCreateFree(tpe: Type, arg: Tree) = {
-      val typedApp = TypeApply(
-        util.select(it, InputTaskCreateFreeName),
-        TypeTree(tpe) :: Nil)
+      val typedApp =
+        TypeApply(util.select(it, InputTaskCreateFreeName), TypeTree(tpe) :: Nil)
       val app = ApplyTree(typedApp, arg :: Nil)
       c.Expr[Initialize[InputTask[T]]](app)
     }

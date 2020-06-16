@@ -21,7 +21,8 @@ object Test {
     if (u.toString startsWith "scala.concurrent.impl.ExecutionContextImpl")
       println("ExecutionContext.global.executor.getUncaughtExceptionHandler is a scala.concurrent.impl.ExecutionContextImpl.")
     else
-      println(s"!! ExecutionContext.global.executor.getUncaughtExceptionHandler == $u")
+      println(
+        s"!! ExecutionContext.global.executor.getUncaughtExceptionHandler == $u")
 
     print("should just print out on uncaught: ")
     u.uncaughtException(

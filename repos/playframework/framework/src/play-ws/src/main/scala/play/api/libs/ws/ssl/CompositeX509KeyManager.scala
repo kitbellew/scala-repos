@@ -31,9 +31,7 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
   // This doesn't mean you can't have multiple key managers, but that you can't have multiple key managers of
   // the same class, i.e. you can't have two X509KeyManagers in the array.
 
-  def getClientAliases(
-      keyType: String,
-      issuers: Array[Principal]): Array[String] = {
+  def getClientAliases(keyType: String, issuers: Array[Principal]): Array[String] = {
     logger.debug(
       s"getClientAliases: keyType = $keyType, issuers = ${issuers.toSeq}")
 
@@ -108,9 +106,7 @@ class CompositeX509KeyManager(keyManagers: Seq[X509KeyManager])
     null
   }
 
-  def getServerAliases(
-      keyType: String,
-      issuers: Array[Principal]): Array[String] = {
+  def getServerAliases(keyType: String, issuers: Array[Principal]): Array[String] = {
     logger.debug(
       s"getServerAliases: keyType = $keyType, issuers = ${issuers.toSeq}")
 

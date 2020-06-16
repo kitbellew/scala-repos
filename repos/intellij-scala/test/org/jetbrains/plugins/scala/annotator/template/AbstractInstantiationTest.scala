@@ -40,11 +40,9 @@ class AbstractInstantiationTest
     assertNothing(messages("abstract class C; class X extends C"))
     assertNothing(messages("abstract class C; class X extends C {}"))
     assertNothing(messages("abstract class C; class X extends C with Object"))
-    assertNothing(
-      messages("abstract class C; class X extends C with Object {}"))
+    assertNothing(messages("abstract class C; class X extends C with Object {}"))
     assertNothing(messages("abstract class C; class X extends Object with C"))
-    assertNothing(
-      messages("abstract class C; class X extends Object with C {}"))
+    assertNothing(messages("abstract class C; class X extends Object with C {}"))
   }
 
   def testAbstractClassEarlyDefinition() {

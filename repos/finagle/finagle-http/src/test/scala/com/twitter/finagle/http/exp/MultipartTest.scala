@@ -28,8 +28,7 @@ class MultipartTest extends FunSuite {
   private[this] def newRequest(buf: Buf): Request =
     RequestBuilder()
       .url("http://example.com")
-      .add(
-        FileElement("groups", buf, Some("image/gif"), Some("dealwithit.gif")))
+      .add(FileElement("groups", buf, Some("image/gif"), Some("dealwithit.gif")))
       .add(SimpleElement("type", "text"))
       .buildFormPost(multipart = true)
 
@@ -49,8 +48,7 @@ class MultipartTest extends FunSuite {
   }
 
   test("Attribute") {
-    assert(
-      newRequest(Buf.Empty).multipart.get.attributes("type").head == "text")
+    assert(newRequest(Buf.Empty).multipart.get.attributes("type").head == "text")
   }
 
   test("FileUpload (in-memory)") {

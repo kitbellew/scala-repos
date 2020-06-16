@@ -40,9 +40,7 @@ object ScalaJSPlugin extends AutoPlugin {
    */
   val autoImport = AutoImport
 
-  object AutoImport
-      extends impl.DependencyBuilders
-      with cross.CrossProjectExtra {
+  object AutoImport extends impl.DependencyBuilders with cross.CrossProjectExtra {
     import KeyRanks._
 
     // Some constants

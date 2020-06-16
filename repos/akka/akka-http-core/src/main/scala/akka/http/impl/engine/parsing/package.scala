@@ -33,10 +33,7 @@ package object parsing {
   private[http] def byteAt(input: ByteString, ix: Int): Byte =
     if (ix < input.length) input(ix) else throw NotEnoughDataException
 
-  private[http] def asciiString(
-      input: ByteString,
-      start: Int,
-      end: Int): String = {
+  private[http] def asciiString(input: ByteString, start: Int, end: Int): String = {
     @tailrec def build(
         ix: Int = start,
         sb: JStringBuilder = new JStringBuilder(end - start)): String =

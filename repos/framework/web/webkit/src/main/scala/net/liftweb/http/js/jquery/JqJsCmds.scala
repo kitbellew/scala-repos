@@ -61,8 +61,7 @@ object JqWiringSupport {
         if (first) cmd
         else {
           val sel = "jQuery('#'+" + id.encJs + ")"
-          Run(
-            sel + ".hide(); " + cmd.toJsCmd + " " + sel + ".slideDown('fast')")
+          Run(sel + ".hide(); " + cmd.toJsCmd + " " + sel + ".slideDown('fast')")
         }
       }
   }

@@ -421,8 +421,7 @@ object EvaluateTask {
       config: EvaluateTaskConfig): Option[(State, Result[T])] = {
     withStreams(structure, state) { str =>
       for ((task, toNode) <- getTask(structure, taskKey, state, str, ref))
-        yield runTask(task, state, str, structure.index.triggers, config)(
-          toNode)
+        yield runTask(task, state, str, structure.index.triggers, config)(toNode)
     }
   }
   def logIncResult(result: Result[_], state: State, streams: Streams) =
@@ -634,10 +633,7 @@ object EvaluateTask {
     case i => i
   }
 
-  def processResult[T](
-      result: Result[T],
-      log: Logger,
-      show: Boolean = false): T =
+  def processResult[T](result: Result[T], log: Logger, show: Boolean = false): T =
     onResult(result, log) { v => if (show) println("Result: " + v); v }
   def onResult[T, S](result: Result[T], log: Logger)(f: T => S): S =
     result match {

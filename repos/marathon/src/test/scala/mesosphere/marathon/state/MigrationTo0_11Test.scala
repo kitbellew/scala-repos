@@ -93,8 +93,7 @@ class MigrationTo0_11Test
       Await.result(f.groupRepo.rootGroup(), 3.seconds)
     val appWithFullVersion =
       app.copy(versionInfo = app.versionInfo.withConfigChange(app.version))
-    maybeGroup should be(
-      Some(groupWithApp.copy(apps = Set(appWithFullVersion))))
+    maybeGroup should be(Some(groupWithApp.copy(apps = Set(appWithFullVersion))))
 
     And("the same app has been stored in the appRepo")
     f.appRepo.allPathIds().futureValue should be(Seq(PathId("/test")))
@@ -138,8 +137,8 @@ class MigrationTo0_11Test
     f.migration.migrateApps().futureValue
 
     Then("the versionInfo is accurate in the group")
-    val correctedAppV1 = appV1.copy(versionInfo =
-      appV1.versionInfo.withConfigChange(appV1.version))
+    val correctedAppV1 =
+      appV1.copy(versionInfo = appV1.versionInfo.withConfigChange(appV1.version))
     val correctedAppV2 = appV2Upgrade.copy(versionInfo =
       correctedAppV1.versionInfo.withConfigChange(appV2Upgrade.version))
     val correctedAppV3 = appV3Scaling.copy(versionInfo =
@@ -198,8 +197,8 @@ class MigrationTo0_11Test
     f.migration.migrateApps().futureValue
 
     Then("the versionInfo is accurate in the group")
-    val correctedAppV1 = appV1.copy(versionInfo =
-      appV1.versionInfo.withConfigChange(appV1.version))
+    val correctedAppV1 =
+      appV1.copy(versionInfo = appV1.versionInfo.withConfigChange(appV1.version))
     val correctedAppV2 = appV2Upgrade.copy(versionInfo =
       correctedAppV1.versionInfo.withConfigChange(appV2Upgrade.version))
     val correctedAppV3 = appV3Scaling.copy(versionInfo =

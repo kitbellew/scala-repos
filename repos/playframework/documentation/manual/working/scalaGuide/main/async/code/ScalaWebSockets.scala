@@ -39,8 +39,7 @@ object ScalaWebSockets extends PlaySpecification {
             (result :+ out, remaining - 1)
           }
         import play.api.libs.iteratee.Execution.Implicits.trampoline
-        await(
-          Future.firstCompletedOf(Seq(promise.future, flowResult.map(_._1))))
+        await(Future.firstCompletedOf(Seq(promise.future, flowResult.map(_._1))))
       }
     }
 

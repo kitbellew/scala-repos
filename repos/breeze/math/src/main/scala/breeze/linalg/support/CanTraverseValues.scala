@@ -58,11 +58,7 @@ object CanTraverseValues {
     def visit(a: A)
     def visitArray(arr: Array[A]): Unit = visitArray(arr, 0, arr.length, 1)
 
-    def visitArray(
-        arr: Array[A],
-        offset: Int,
-        length: Int,
-        stride: Int): Unit = {
+    def visitArray(arr: Array[A], offset: Int, length: Int, stride: Int): Unit = {
       import spire.syntax.cfor._
       // Standard array bounds check stuff
       if (stride == 1) {

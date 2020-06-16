@@ -60,10 +60,8 @@ trait Warnings {
       "adapted-args",
       "Warn if an argument list is modified to match the receiver.",
       true)
-    val NullaryUnit = LintWarning(
-      "nullary-unit",
-      "Warn when nullary methods return Unit.",
-      true)
+    val NullaryUnit =
+      LintWarning("nullary-unit", "Warn when nullary methods return Unit.", true)
     val Inaccessible = LintWarning(
       "inaccessible",
       "Warn about inaccessible types in method signatures.",

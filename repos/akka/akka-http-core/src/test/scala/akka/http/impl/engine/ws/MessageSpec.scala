@@ -269,10 +269,7 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           expectFrameOnNetwork(Opcode.Continuation, data2, fin = false)
 
           sub.sendComplete()
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString.empty,
-            fin = true)
+          expectFrameOnNetwork(Opcode.Continuation, ByteString.empty, fin = true)
         }
         "for a streamed message with a chunk being larger than configured maximum frame size" in pending
         "and mask input on the client side" in new ClientTestSetup {
@@ -294,17 +291,11 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           expectMaskedFrameOnNetwork(Opcode.Continuation, data2, fin = false)
 
           sub.sendComplete()
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString.empty,
-            fin = true)
+          expectFrameOnNetwork(Opcode.Continuation, ByteString.empty, fin = true)
         }
         "and mask input on the client side for empty frame" in new ClientTestSetup {
           pushMessage(BinaryMessage(ByteString.empty))
-          expectMaskedFrameOnNetwork(
-            Opcode.Binary,
-            ByteString.empty,
-            fin = true)
+          expectMaskedFrameOnNetwork(Opcode.Binary, ByteString.empty, fin = true)
         }
       }
       "for text messages" - {
@@ -340,10 +331,7 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           expectFrameOnNetwork(Opcode.Continuation, text2Bytes, fin = false)
 
           sub.sendComplete()
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString.empty,
-            fin = true)
+          expectFrameOnNetwork(Opcode.Continuation, ByteString.empty, fin = true)
         }
         "for a streamed message don't convert half surrogate pairs naively" in new ServerTestSetup {
           val gclef = "𝄞"
@@ -397,10 +385,7 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
             fin = false)
 
           sub.sendComplete()
-          expectFrameOnNetwork(
-            Opcode.Continuation,
-            ByteString.empty,
-            fin = true)
+          expectFrameOnNetwork(Opcode.Continuation, ByteString.empty, fin = true)
         }
         "and mask input on the client side for empty frame" in new ClientTestSetup {
           pushMessage(TextMessage(""))
@@ -425,10 +410,7 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
           frameHeader(Opcode.Ping, 6, fin = true) ++ ByteString("abcdef")
 
         pushInput(input)
-        expectMaskedFrameOnNetwork(
-          Opcode.Pong,
-          ByteString("abcdef"),
-          fin = true)
+        expectMaskedFrameOnNetwork(Opcode.Pong, ByteString("abcdef"), fin = true)
       }
       "respond to ping frames interleaved with data frames (without mixing frame data)" in new ServerTestSetup {
         // receive multi-frame message
@@ -517,11 +499,7 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
       }
       "after receiving close frame without close code" in new ServerTestSetup {
         pushInput(
-          frameHeader(
-            Opcode.Close,
-            0,
-            fin = true,
-            mask = Some(Random.nextInt())))
+          frameHeader(Opcode.Close, 0, fin = true, mask = Some(Random.nextInt())))
         expectComplete(messageIn)
 
         messageOut.sendComplete()
@@ -848,8 +826,7 @@ class MessageSpec extends FreeSpec with Matchers with WithMaterializerSpec {
         expectProtocolErrorOnNetwork()
       }
       "unexpected continuation frame" in new ServerTestSetup {
-        pushInput(
-          frameHeader(Opcode.Continuation, 0, fin = false, mask = Some(0)))
+        pushInput(frameHeader(Opcode.Continuation, 0, fin = false, mask = Some(0)))
         expectProtocolErrorOnNetwork()
       }
       "unexpected data frame when waiting for continuation" in new ServerTestSetup {

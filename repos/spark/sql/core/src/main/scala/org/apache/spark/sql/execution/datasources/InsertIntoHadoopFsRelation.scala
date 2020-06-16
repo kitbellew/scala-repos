@@ -91,8 +91,7 @@ private[sql] case class InsertIntoHadoopFsRelation(
     val pathExists = fs.exists(qualifiedOutputPath)
     val doInsertion = (mode, pathExists) match {
       case (SaveMode.ErrorIfExists, true) =>
-        throw new AnalysisException(
-          s"path $qualifiedOutputPath already exists.")
+        throw new AnalysisException(s"path $qualifiedOutputPath already exists.")
       case (SaveMode.Overwrite, true) =>
         Utils.tryOrIOException {
           if (!fs.delete(qualifiedOutputPath, true /* recursively */ )) {

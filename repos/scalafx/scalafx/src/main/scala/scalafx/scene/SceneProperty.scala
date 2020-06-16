@@ -161,9 +161,8 @@ class SceneProperty(
     "Use of SceneProperty can result in infinite recursion and StackOverflow errors. See discussion of [Issue #69](https://github.com/scalafx/scalafx/issues/69)",
     "8.0.60-R10")
   def onKeyPressed =
-    jfxbb.Bindings.select[jfxbb.ObjectBinding[_ >: jfxsi.KeyEvent]](
-      delegate,
-      "onKeyPressed")
+    jfxbb.Bindings
+      .select[jfxbb.ObjectBinding[_ >: jfxsi.KeyEvent]](delegate, "onKeyPressed")
   @deprecated(
     "Use of SceneProperty can result in infinite recursion and StackOverflow errors. See discussion of [Issue #69](https://github.com/scalafx/scalafx/issues/69)",
     "8.0.60-R10")

@@ -101,9 +101,7 @@ class CaseClassPickling(
     } else AlgorithmFailure("class is not a case class")
   }
 
-  def checkFactoryImpl(
-      tpe: IrClass,
-      logger: AlgorithmLogger): AlgorithmResult = {
+  def checkFactoryImpl(tpe: IrClass, logger: AlgorithmLogger): AlgorithmResult = {
     // THis should be accurate, because all case calsses have companions
     (for {
       companion <- tpe.companion
@@ -219,7 +217,6 @@ class CaseClassPickling(
         }
       } else behavior
     } else
-      AlgorithmFailure(
-        s"Cannot use case-class algorithm on non-case class $tpe")
+      AlgorithmFailure(s"Cannot use case-class algorithm on non-case class $tpe")
   }
 }

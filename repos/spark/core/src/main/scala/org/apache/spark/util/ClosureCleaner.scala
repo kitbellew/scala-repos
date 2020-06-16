@@ -304,8 +304,7 @@ private[spark] object ClosureCleaner extends Logging {
       }
     }
 
-    logDebug(
-      s" +++ closure $func (${func.getClass.getName}) is now cleaned +++")
+    logDebug(s" +++ closure $func (${func.getClass.getName}) is now cleaned +++")
 
     if (checkSerializable) {
       ensureSerializable(func)
@@ -323,9 +322,7 @@ private[spark] object ClosureCleaner extends Logging {
     }
   }
 
-  private def instantiateClass(
-      cls: Class[_],
-      enclosingObject: AnyRef): AnyRef = {
+  private def instantiateClass(cls: Class[_], enclosingObject: AnyRef): AnyRef = {
     // Use reflection to instantiate object without calling constructor
     val rf = sun.reflect.ReflectionFactory.getReflectionFactory()
     val parentCtor = classOf[java.lang.Object].getDeclaredConstructor()
@@ -365,10 +362,7 @@ private class ReturnStatementFinder extends ClassVisitor(ASM5) {
 }
 
 /** Helper class to identify a method. */
-private case class MethodIdentifier[T](
-    cls: Class[T],
-    name: String,
-    desc: String)
+private case class MethodIdentifier[T](cls: Class[T], name: String, desc: String)
 
 /**
   * Find the fields accessed by a given class.

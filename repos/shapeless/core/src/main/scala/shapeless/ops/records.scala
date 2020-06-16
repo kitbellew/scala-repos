@@ -280,8 +280,7 @@ package record {
     def apply[L <: HList, K](implicit
         remover: Remover[L, K]): Aux[L, K, remover.Out] = remover
 
-    implicit def hlistRemove1[K, V, T <: HList]
-        : Aux[FieldType[K, V] :: T, K, (V, T)] =
+    implicit def hlistRemove1[K, V, T <: HList]: Aux[FieldType[K, V] :: T, K, (V, T)] =
       new Remover[FieldType[K, V] :: T, K] {
         type Out = (V, T)
         def apply(l: FieldType[K, V] :: T): Out = (l.head, l.tail)
@@ -504,8 +503,7 @@ package record {
 
     implicit def hlistSwapRecord[K, V, T <: HList](implicit
         wk: Witness.Aux[K],
-        kt: SwapRecord[T])
-        : Aux[FieldType[K, V] :: T, FieldType[V, K] :: kt.Out] =
+        kt: SwapRecord[T]): Aux[FieldType[K, V] :: T, FieldType[V, K] :: kt.Out] =
       new SwapRecord[FieldType[K, V] :: T] {
         type Out = FieldType[V, K] :: kt.Out
         def apply(): Out = field[V](wk.value) :: kt()

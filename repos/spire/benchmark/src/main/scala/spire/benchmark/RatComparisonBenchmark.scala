@@ -15,8 +15,7 @@ import org.apfloat._
 
 import org.jscience.mathematics.number
 
-object RatComparisonBenchmarks
-    extends MyRunner(classOf[RatComparisonBenchmarks])
+object RatComparisonBenchmarks extends MyRunner(classOf[RatComparisonBenchmarks])
 
 class RatComparisonBenchmarks extends MyBenchmark {
   @Param(Array("100"))

@@ -45,10 +45,7 @@ object RoutesFileParserSpec extends Specification {
 
     "parse a path with dynamic parts and it should be encodeable" in {
       parseRoute("GET /s/:d/s p.c.m(d)").path must_== PathPattern(
-        Seq(
-          StaticPart("s/"),
-          DynamicPart("d", "[^/]+", true),
-          StaticPart("/s")))
+        Seq(StaticPart("s/"), DynamicPart("d", "[^/]+", true), StaticPart("/s")))
     }
 
     "parse a path with multiple dynamic parts and it should not be encodeable" in {

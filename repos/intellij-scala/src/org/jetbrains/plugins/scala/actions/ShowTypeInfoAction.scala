@@ -107,10 +107,7 @@ class ShowTypeInfoAction extends AnAction(ScalaBundle.message("type.info")) {
 }
 
 object ShowTypeInfoAction {
-  def getTypeInfoHint(
-      editor: Editor,
-      file: PsiFile,
-      offset: Int): Option[String] = {
+  def getTypeInfoHint(editor: Editor, file: PsiFile, offset: Int): Option[String] = {
     val typeInfoFromRef = file.findReferenceAt(offset) match {
       case ResolvedWithSubst(e, subst) => typeTextOf(e, subst)
       case _ =>

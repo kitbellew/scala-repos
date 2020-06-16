@@ -477,8 +477,7 @@ object PCDataXmlParser {
 case class PCData(_data: String) extends Atom[String](_data) {
   /* The following code is a derivative work of scala.xml.Text */
   if (null == data)
-    throw new java.lang.NullPointerException(
-      "tried to construct Text with null")
+    throw new java.lang.NullPointerException("tried to construct Text with null")
 
   final override def equals(x: Any) =
     x match {

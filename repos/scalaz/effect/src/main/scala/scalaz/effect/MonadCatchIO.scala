@@ -35,8 +35,7 @@ sealed abstract class MonadCatchIOFunctions {
     * exception was raised.
     */
   def catchLeft[M[_]: MonadCatchIO, A](ma: M[A]): M[Throwable \/ A] =
-    except(ma.map(\/.right[Throwable, A]))(t =>
-      \/.left[Throwable, A](t).point[M])
+    except(ma.map(\/.right[Throwable, A]))(t => \/.left[Throwable, A](t).point[M])
 
   /** Like "catchLeft" but takes a predicate to select which exceptions are caught. */
   def catchSomeLeft[M[_]: MonadCatchIO, A, B](ma: M[A])(
@@ -86,8 +85,7 @@ sealed abstract class MonadCatchIOFunctions {
 
   implicit def KleisliMonadCatchIO[F[_], R](implicit
       F: MonadCatchIO[F]): MonadCatchIO[Kleisli[F, R, ?]] =
-    new MonadCatchIO[Kleisli[F, R, ?]]
-      with MonadIO.FromLiftIO[Kleisli[F, R, ?]] {
+    new MonadCatchIO[Kleisli[F, R, ?]] with MonadIO.FromLiftIO[Kleisli[F, R, ?]] {
       def FM = MonadIO.kleisliMonadIO[F, R]
       def FLO = MonadIO.kleisliMonadIO[F, R]
       def except[A](k: Kleisli[F, R, A])(h: Throwable => Kleisli[F, R, A]) =

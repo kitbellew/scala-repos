@@ -42,8 +42,7 @@ import org.apache.spark.sql.types._
   * Right now, it only supports Hive tables and it only updates the size of a Hive table
   * in the Hive metastore.
   */
-private[hive] case class AnalyzeTable(tableName: String)
-    extends RunnableCommand {
+private[hive] case class AnalyzeTable(tableName: String) extends RunnableCommand {
 
   override def run(sqlContext: SQLContext): Seq[Row] = {
     sqlContext.asInstanceOf[HiveContext].analyze(tableName)

@@ -56,9 +56,8 @@ object ByteBufferMessageSet {
       }
       var offset = -1L
       val messageWriter = new MessageWriter(
-        math.min(
-          math.max(MessageSet.messageSetSize(messages) / 2, 1024),
-          1 << 16))
+        math
+          .min(math.max(MessageSet.messageSetSize(messages) / 2, 1024), 1 << 16))
       messageWriter.write(
         codec = compressionCodec,
         timestamp = magicAndTimestamp.timestamp,
@@ -606,11 +605,7 @@ class ByteBufferMessageSet(val buffer: ByteBuffer)
     this.internalIterator(isShallow = true).foreach {
       case MessageAndOffset(message, _) =>
         validateMessageKey(message, compactedTopic)
-        validateTimestamp(
-          message,
-          now,
-          timestampType,
-          messageTimestampDiffMaxMs)
+        validateTimestamp(message, now, timestampType, messageTimestampDiffMaxMs)
         newBuffer.position(newMessagePosition)
         newBuffer.putLong(offsetCounter.getAndIncrement())
         val newMessageSize =

@@ -587,8 +587,7 @@ class FutureTest
             "2" -> Future.value("2")
           )
 
-          assert(
-            Await.result(Future.collect(map)) == Map("1" -> "1", "2" -> "2"))
+          assert(Await.result(Future.collect(map)) == Map("1" -> "1", "2" -> "2"))
         }
 
         "work correctly if the given map is empty" in {
@@ -1350,8 +1349,9 @@ class FutureTest
       }
 
       "willEqual" in {
-        assert(Await
-          .result(const.value(1) willEqual (const.value(1)), 1.second) == true)
+        assert(
+          Await
+            .result(const.value(1) willEqual (const.value(1)), 1.second) == true)
       }
 
       "Future() handles exceptions" in {

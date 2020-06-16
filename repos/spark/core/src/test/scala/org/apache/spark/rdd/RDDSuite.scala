@@ -49,13 +49,10 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     assert(nums.map(_.toString).collect().toList === List("1", "2", "3", "4"))
     assert(nums.filter(_ > 2).collect().toList === List(3, 4))
     assert(
-      nums.flatMap(x => 1 to x).collect().toList === List(1, 1, 2, 1, 2, 3, 1,
-        2, 3, 4))
+      nums.flatMap(x => 1 to x).collect().toList === List(1, 1, 2, 1, 2, 3, 1, 2, 3, 4))
     assert(nums.union(nums).collect().toList === List(1, 2, 3, 4, 1, 2, 3, 4))
     assert(
-      nums.glom().map(_.toList).collect().toList === List(
-        List(1, 2),
-        List(3, 4)))
+      nums.glom().map(_.toList).collect().toList === List(List(1, 2), List(3, 4)))
     assert(
       nums
         .collect({ case i if i >= 3 => i.toString })
@@ -112,15 +109,14 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   test("SparkContext.union") {
     val nums = sc.makeRDD(Array(1, 2, 3, 4), 2)
     assert(sc.union(nums).collect().toList === List(1, 2, 3, 4))
-    assert(
-      sc.union(nums, nums).collect().toList === List(1, 2, 3, 4, 1, 2, 3, 4))
+    assert(sc.union(nums, nums).collect().toList === List(1, 2, 3, 4, 1, 2, 3, 4))
     assert(sc.union(Seq(nums)).collect().toList === List(1, 2, 3, 4))
     assert(
-      sc.union(Seq(nums, nums)).collect().toList === List(1, 2, 3, 4, 1, 2, 3,
-        4))
+      sc.union(Seq(nums, nums)).collect().toList === List(1, 2, 3, 4, 1, 2, 3, 4))
   }
 
-  test("SparkContext.union creates UnionRDD if at least one RDD has no partitioner") {
+  test(
+    "SparkContext.union creates UnionRDD if at least one RDD has no partitioner") {
     val rddWithPartitioner =
       sc.parallelize(Seq(1 -> true)).partitionBy(new HashPartitioner(1))
     val rddWithNoPartitioner = sc.parallelize(Seq(2 -> true))
@@ -239,9 +235,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
     val rdd = new RDD[Int](sc, Nil) {
       override def getPartitions: Array[Partition] = Array(onlySplit)
       override val getDependencies = List[Dependency[_]]()
-      override def compute(
-          split: Partition,
-          context: TaskContext): Iterator[Int] = {
+      override def compute(split: Partition, context: TaskContext): Iterator[Int] = {
         throw new Exception("injected failure")
       }
     }.cache()
@@ -1018,9 +1012,7 @@ class RDDSuite extends SparkFunSuite with SharedSparkContext {
   test("RDD.partitions() fails fast when partitions indicies are incorrect (SPARK-13021)") {
     class BadRDD[T: ClassTag](prev: RDD[T]) extends RDD[T](prev) {
 
-      override def compute(
-          part: Partition,
-          context: TaskContext): Iterator[T] = {
+      override def compute(part: Partition, context: TaskContext): Iterator[T] = {
         prev.compute(part, context)
       }
 

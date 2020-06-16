@@ -45,8 +45,7 @@ class TestKitUsageSpec
   val headList = immutable.Seq().padTo(randomHead, "0")
   val tailList = immutable.Seq().padTo(randomTail, "1")
   val seqRef =
-    system.actorOf(
-      Props(classOf[SequencingActor], testActor, headList, tailList))
+    system.actorOf(Props(classOf[SequencingActor], testActor, headList, tailList))
 
   override def afterAll {
     shutdown()

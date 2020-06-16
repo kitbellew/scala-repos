@@ -32,8 +32,7 @@ object IgnoreBodyParserSpec extends PlaySpecification {
     }
 
     "ignore non-empty bodies" in new WithApplication() {
-      parse(42, ByteString(1), Some("application/xml"), "utf-8") must beRight(
-        42)
+      parse(42, ByteString(1), Some("application/xml"), "utf-8") must beRight(42)
       parse("foo", ByteString(1, 2, 3), None, "utf-8") must beRight("foo")
     }
 

@@ -38,10 +38,8 @@ class ScAnnotationStubImpl[ParentPsi <: PsiElement](
       if (typeElement != null && (typeElement.getContext eq getPsi))
         return typeElement
     }
-    val res: ScTypeElement = ScalaPsiElementFactory.createTypeElementFromText(
-      getTypeText,
-      getPsi,
-      null)
+    val res: ScTypeElement =
+      ScalaPsiElementFactory.createTypeElementFromText(getTypeText, getPsi, null)
     myTypeElement = new SofterReference[ScTypeElement](res)
     res
   }

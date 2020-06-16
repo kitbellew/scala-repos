@@ -143,8 +143,7 @@ private[cluster] final class ClusterHeartbeatSender
   }
 
   def addMember(m: Member): Unit =
-    if (m.uniqueAddress != selfUniqueAddress && !state.contains(
-        m.uniqueAddress))
+    if (m.uniqueAddress != selfUniqueAddress && !state.contains(m.uniqueAddress))
       state = state.addMember(m.uniqueAddress)
 
   def removeMember(m: Member): Unit =
@@ -228,8 +227,7 @@ private[cluster] final case class ClusterHeartbeatSenderState(
   def init(
       nodes: Set[UniqueAddress],
       unreachable: Set[UniqueAddress]): ClusterHeartbeatSenderState =
-    copy(ring =
-      ring.copy(nodes = nodes + selfAddress, unreachable = unreachable))
+    copy(ring = ring.copy(nodes = nodes + selfAddress, unreachable = unreachable))
 
   def contains(node: UniqueAddress): Boolean = ring.nodes(node)
 

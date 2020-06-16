@@ -35,10 +35,7 @@ private[classification] object GLMClassificationModel {
     def thisFormatVersion: String = "1.0"
 
     /** Model data for import/export */
-    case class Data(
-        weights: Vector,
-        intercept: Double,
-        threshold: Option[Double])
+    case class Data(weights: Vector, intercept: Double, threshold: Option[Double])
 
     /**
       * Helper method for saving GLM classification model metadata and data.

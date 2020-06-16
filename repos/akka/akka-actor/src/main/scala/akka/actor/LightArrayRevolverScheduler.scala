@@ -121,8 +121,7 @@ class LightArrayRevolverScheduler(
                     schedule(
                       preparedEC,
                       this,
-                      Duration.fromNanos(
-                        Math.max(delay.toNanos - driftNanos, 1))))
+                      Duration.fromNanos(Math.max(delay.toNanos - driftNanos, 1))))
               } catch {
                 case _: SchedulerException ⇒ // ignore failure to enqueue or terminated target actor
               }

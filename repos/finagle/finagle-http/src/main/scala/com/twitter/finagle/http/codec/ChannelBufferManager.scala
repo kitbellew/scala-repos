@@ -81,9 +81,7 @@ private[http] class ChannelBufferManager(
     super.messageReceived(ctx, e)
   }
 
-  override def writeComplete(
-      ctx: ChannelHandlerContext,
-      e: WriteCompletionEvent) {
+  override def writeComplete(ctx: ChannelHandlerContext, e: WriteCompletionEvent) {
     clearBufferUsage()
 
     super.writeComplete(ctx, e)

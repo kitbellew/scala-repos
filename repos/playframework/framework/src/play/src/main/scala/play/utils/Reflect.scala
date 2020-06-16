@@ -116,9 +116,7 @@ object Reflect {
       default: ClassTag[Default])
       : Option[Either[Class[_ <: ScalaTrait], Class[_ <: JavaInterface]]] = {
 
-    def loadClass(
-        className: String,
-        notFoundFatal: Boolean): Option[Class[_]] = {
+    def loadClass(className: String, notFoundFatal: Boolean): Option[Class[_]] = {
       try {
         Some(environment.classLoader.loadClass(className))
       } catch {
@@ -190,8 +188,7 @@ object Reflect {
     val t = implicitly[ClassTag[T]].runtimeClass
     if (t.isInstance(o)) o.asInstanceOf[T]
     else
-      throw new ClassCastException(
-        clazz.getName + " is not an instance of " + t)
+      throw new ClassCastException(clazz.getName + " is not an instance of " + t)
   }
 
   def simpleName(clazz: Class[_]): String = {

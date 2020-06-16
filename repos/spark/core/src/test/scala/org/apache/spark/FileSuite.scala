@@ -228,9 +228,8 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     val original = Thread.currentThread().getContextClassLoader
     val className = "FileSuiteObjectFileTest"
     val jar = TestUtils.createJarWithClasses(Seq(className))
-    val loader = new java.net.URLClassLoader(
-      Array(jar),
-      Utils.getContextOrSparkClassLoader)
+    val loader =
+      new java.net.URLClassLoader(Array(jar), Utils.getContextOrSparkClassLoader)
     Thread.currentThread().setContextClassLoader(loader)
     try {
       sc = new SparkContext("local", "test")
@@ -482,8 +481,7 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     }
   }
 
-  test(
-    "prevent user from overwriting the non-empty directory (old Hadoop API)") {
+  test("prevent user from overwriting the non-empty directory (old Hadoop API)") {
     sc = new SparkContext("local", "test")
     val randomRDD =
       sc.parallelize(Array((1, "a"), (1, "a"), (2, "b"), (3, "c")), 1)
@@ -519,8 +517,7 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
     }
   }
 
-  test(
-    "prevent user from overwriting the non-empty directory (new Hadoop API)") {
+  test("prevent user from overwriting the non-empty directory (new Hadoop API)") {
     sc = new SparkContext("local", "test")
     val randomRDD = sc.parallelize(
       Array(("key1", "a"), ("key2", "a"), ("key3", "b"), ("key4", "c")),
@@ -602,8 +599,7 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
           Iterator(split.asInstanceOf[FileSplit].getPath.toUri.getPath)
         }
         .collect()
-    assert(
-      inputPaths.toSet === Set(s"$outDir/part-00000", s"$outDir/part-00001"))
+    assert(inputPaths.toSet === Set(s"$outDir/part-00000", s"$outDir/part-00001"))
   }
 
   test("Get input files via new Hadoop API") {
@@ -622,7 +618,6 @@ class FileSuite extends SparkFunSuite with LocalSparkContext {
           Iterator(split.asInstanceOf[NewFileSplit].getPath.toUri.getPath)
         }
         .collect()
-    assert(
-      inputPaths.toSet === Set(s"$outDir/part-00000", s"$outDir/part-00001"))
+    assert(inputPaths.toSet === Set(s"$outDir/part-00000", s"$outDir/part-00001"))
   }
 }

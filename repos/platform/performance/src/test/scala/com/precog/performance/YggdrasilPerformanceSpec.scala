@@ -538,8 +538,7 @@ class TestQueryExecutor(config: Configuration, testShard: TestShard)
         with ZippedStreamSerialization
 
     override lazy val flatMapTimeout: Duration = 5000 seconds
-    override lazy val projectionRetrievalTimeout: Timeout = Timeout(
-      5000 seconds)
+    override lazy val projectionRetrievalTimeout: Timeout = Timeout(5000 seconds)
     override lazy val maxEvalDuration: Duration = 5000 seconds
   }
   type Storage = TestShard

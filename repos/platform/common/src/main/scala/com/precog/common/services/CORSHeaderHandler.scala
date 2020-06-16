@@ -67,11 +67,7 @@ object CORSHeaderHandler {
   def allowOrigin[A, B](value: String, executor: ExecutionContext)(
       delegateService: HttpService[A, Future[HttpResponse[B]]])
       : HttpService[A, Future[HttpResponse[B]]] =
-    new DelegatingService[
-      A,
-      Future[HttpResponse[B]],
-      A,
-      Future[HttpResponse[B]]] {
+    new DelegatingService[A, Future[HttpResponse[B]], A, Future[HttpResponse[B]]] {
       private val corsHeaders = CORSHeaders.genHeaders(origin = value)
       val delegate = delegateService
       val service = (r: HttpRequest[A]) =>

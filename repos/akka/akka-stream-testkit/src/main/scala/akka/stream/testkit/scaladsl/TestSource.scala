@@ -20,8 +20,6 @@ object TestSource {
     */
   def probe[T](implicit system: ActorSystem) =
     new Source[T, TestPublisher.Probe[T]](
-      new StreamTestKit.ProbeSource(
-        none,
-        SourceShape(Outlet("ProbeSource.out"))))
+      new StreamTestKit.ProbeSource(none, SourceShape(Outlet("ProbeSource.out"))))
 
 }

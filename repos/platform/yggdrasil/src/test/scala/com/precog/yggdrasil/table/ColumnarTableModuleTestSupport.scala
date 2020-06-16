@@ -74,9 +74,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
 
   // production-path code uses fromRValues, but all the tests use fromJson
   // this will need to be changed when our tests support non-json such as CDate and CPeriod
-  def fromJson0(
-      values: Stream[JValue],
-      maxSliceSize: Option[Int] = None): Table = {
+  def fromJson0(values: Stream[JValue], maxSliceSize: Option[Int] = None): Table = {
     val sliceSize = maxSliceSize.getOrElse(yggConfig.maxSliceSize)
 
     Table(
@@ -158,9 +156,7 @@ trait ColumnarTableModuleTestSupport[M[+_]]
               }
             }
 
-          (
-            a2,
-            Map(ColumnRef(CPath.Identity, CNum) -> ArrayNumColumn(mask, arr)))
+          (a2, Map(ColumnRef(CPath.Identity, CNum) -> ArrayNumColumn(mask, arr)))
         }
       }
     )

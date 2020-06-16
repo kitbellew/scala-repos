@@ -257,8 +257,7 @@ class SecurityServiceHandlers(
             else
               badRequest(
                 "Invalid remove grant request.",
-                Some(
-                  "Unable to remove grant " + grantId + " from API key " + apiKey))
+                Some("Unable to remove grant " + grantId + " from API key " + apiKey))
           }
         } getOrElse {
           Promise successful badRequest(

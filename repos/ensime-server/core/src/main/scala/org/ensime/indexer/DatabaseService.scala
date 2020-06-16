@@ -132,8 +132,7 @@ object DatabaseService {
       FileCheck(None, name, ts)
     }
   }
-  private class FileChecks(tag: Tag)
-      extends Table[FileCheck](tag, "FILECHECKS") {
+  private class FileChecks(tag: Tag) extends Table[FileCheck](tag, "FILECHECKS") {
     def id = column[Int]("id", O.PrimaryKey, O.AutoInc)
     def filename = column[String]("filename")
     def timestamp = column[Timestamp]("timestamp")

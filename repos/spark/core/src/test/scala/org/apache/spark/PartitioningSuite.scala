@@ -219,21 +219,17 @@ class PartitioningSuite
     assert(grouped4.groupByKey(4).partitioner === grouped4.partitioner)
 
     assert(grouped2.join(grouped4).partitioner === grouped4.partitioner)
-    assert(
-      grouped2.leftOuterJoin(grouped4).partitioner === grouped4.partitioner)
+    assert(grouped2.leftOuterJoin(grouped4).partitioner === grouped4.partitioner)
     assert(
       grouped2.rightOuterJoin(grouped4).partitioner === grouped4.partitioner)
-    assert(
-      grouped2.fullOuterJoin(grouped4).partitioner === grouped4.partitioner)
+    assert(grouped2.fullOuterJoin(grouped4).partitioner === grouped4.partitioner)
     assert(grouped2.cogroup(grouped4).partitioner === grouped4.partitioner)
 
     assert(grouped2.join(reduced2).partitioner === grouped2.partitioner)
-    assert(
-      grouped2.leftOuterJoin(reduced2).partitioner === grouped2.partitioner)
+    assert(grouped2.leftOuterJoin(reduced2).partitioner === grouped2.partitioner)
     assert(
       grouped2.rightOuterJoin(reduced2).partitioner === grouped2.partitioner)
-    assert(
-      grouped2.fullOuterJoin(reduced2).partitioner === grouped2.partitioner)
+    assert(grouped2.fullOuterJoin(reduced2).partitioner === grouped2.partitioner)
     assert(grouped2.cogroup(reduced2).partitioner === grouped2.partitioner)
 
     assert(grouped2.map(_ => 1).partitioner === None)

@@ -178,9 +178,7 @@ trait TransSpecModule extends FNModule {
     // target is the transspec that provides defineedness information. The resulting table will be defined
     // and have the constant value wherever a row provided by the target transspec has at least one member
     // that is not undefined
-    case class ConstLiteral[+A <: SourceType](
-        value: CValue,
-        target: TransSpec[A])
+    case class ConstLiteral[+A <: SourceType](value: CValue, target: TransSpec[A])
         extends TransSpec[A]
 
     case class FilterDefined[+A <: SourceType](

@@ -227,9 +227,7 @@ class NaiveBayesModel private[ml] (
 
   @Since("1.5.0")
   override def copy(extra: ParamMap): NaiveBayesModel = {
-    copyValues(
-      new NaiveBayesModel(uid, pi, theta).setParent(this.parent),
-      extra)
+    copyValues(new NaiveBayesModel(uid, pi, theta).setParent(this.parent), extra)
   }
 
   @Since("1.5.0")

@@ -142,8 +142,7 @@ class ZookeeperConsumerConnectorTest
   private def toJavaMap(
       scalaMap: Map[String, Int]): java.util.Map[String, java.lang.Integer] = {
     val javaMap = new java.util.HashMap[String, java.lang.Integer]()
-    scalaMap.foreach(m =>
-      javaMap.put(m._1, m._2.asInstanceOf[java.lang.Integer]))
+    scalaMap.foreach(m => javaMap.put(m._1, m._2.asInstanceOf[java.lang.Integer]))
     javaMap
   }
 }

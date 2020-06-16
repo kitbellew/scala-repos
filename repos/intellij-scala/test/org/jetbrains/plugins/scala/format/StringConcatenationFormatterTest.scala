@@ -33,9 +33,7 @@ class StringConcatenationFormatterTest extends SimpleTestCase {
   }
 
   def testExpressionWithDispensableFormat() {
-    assertEquals(
-      "foo",
-      format(Injection(exp("foo"), Some(Specifier(null, "%d")))))
+    assertEquals("foo", format(Injection(exp("foo"), Some(Specifier(null, "%d")))))
   }
 
   def testExpressionWithMadatoryFormat() {
@@ -49,9 +47,7 @@ class StringConcatenationFormatterTest extends SimpleTestCase {
   }
 
   def testLiteralWithDispensableFormat() {
-    assertEquals(
-      "123",
-      format(Injection(exp("123"), Some(Specifier(null, "%d")))))
+    assertEquals("123", format(Injection(exp("123"), Some(Specifier(null, "%d")))))
   }
 
   def testLiteralWithMadatoryFormat() {

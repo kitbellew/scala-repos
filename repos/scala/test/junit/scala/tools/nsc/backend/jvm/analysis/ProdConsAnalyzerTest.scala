@@ -314,9 +314,7 @@ class ProdConsAnalyzerTest extends ClearAfterClass {
     assert(secondLoad.getOpcode == ILOAD)
 
     testSingleInsn(a.producersForValueAt(iadd, 2), "ILOAD")
-    testSingleInsn(
-      a.initialProducersForValueAt(iadd, 2),
-      "ParameterProducer(1)")
+    testSingleInsn(a.initialProducersForValueAt(iadd, 2), "ParameterProducer(1)")
     testMultiInsns(
       a.producersForInputsOf(firstLoad),
       List("ParameterProducer", "ISTORE"))

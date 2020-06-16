@@ -187,9 +187,10 @@ private[spark] class LiveListenerBus extends SparkListenerBus {
   def onDropEvent(event: SparkListenerEvent): Unit = {
     if (logDroppedEvent.compareAndSet(false, true)) {
       // Only log the following message once to avoid duplicated annoying logs.
-      logError("Dropping SparkListenerEvent because no remaining room in event queue. " +
-        "This likely means one of the SparkListeners is too slow and cannot keep up with " +
-        "the rate at which tasks are being started by the scheduler.")
+      logError(
+        "Dropping SparkListenerEvent because no remaining room in event queue. " +
+          "This likely means one of the SparkListeners is too slow and cannot keep up with " +
+          "the rate at which tasks are being started by the scheduler.")
     }
   }
 }

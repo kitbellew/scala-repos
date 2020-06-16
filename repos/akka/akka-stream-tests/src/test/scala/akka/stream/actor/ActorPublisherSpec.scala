@@ -444,8 +444,7 @@ class ActorPublisherSpec
         ActorMaterializerSettings(system).withDispatcher("my-dispatcher1"))
       val s = TestSubscriber.manualProbe[String]()
       val ref = Source
-        .actorPublisher(
-          testPublisherProps(testActor, useTestDispatcher = false))
+        .actorPublisher(testPublisherProps(testActor, useTestDispatcher = false))
         .to(Sink.fromSubscriber(s))
         .run()
       ref ! ThreadName
@@ -456,8 +455,7 @@ class ActorPublisherSpec
       implicit val materializer = ActorMaterializer()
       val s = TestSubscriber.manualProbe[String]()
       val ref = Source
-        .actorPublisher(
-          testPublisherProps(testActor, useTestDispatcher = false))
+        .actorPublisher(testPublisherProps(testActor, useTestDispatcher = false))
         .withAttributes(ActorAttributes.dispatcher("my-dispatcher1"))
         .to(Sink.fromSubscriber(s))
         .run()

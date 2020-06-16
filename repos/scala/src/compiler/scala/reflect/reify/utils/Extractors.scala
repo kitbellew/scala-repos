@@ -111,9 +111,10 @@ trait Extractors {
             List(List()),
             TypeTree(),
             Block(
-              List(Apply(
-                Select(Super(This(tpnme.EMPTY), tpnme.EMPTY), nme.CONSTRUCTOR),
-                List())),
+              List(
+                Apply(
+                  Select(Super(This(tpnme.EMPTY), tpnme.EMPTY), nme.CONSTRUCTOR),
+                  List())),
               Literal(Constant(())))
           ),
           DefDef(
@@ -196,8 +197,8 @@ trait Extractors {
       mkWrapper(universe, mirror, unwrapped)
     }
 
-    def unapply(tree: Tree)
-        : Option[(Tree, Tree, SymbolTable, Tree, Type, Tree, Boolean)] =
+    def unapply(
+        tree: Tree): Option[(Tree, Tree, SymbolTable, Tree, Type, Tree, Boolean)] =
       tree match {
         case Block(
               List(
@@ -313,13 +314,7 @@ trait Extractors {
                           _,
                           List(
                             _,
-                            DefDef(
-                              _,
-                              _,
-                              _,
-                              _,
-                              _,
-                              Block(_ :: _ :: symtab, rtpe)))))),
+                            DefDef(_, _, _, _, _, Block(_ :: _ :: symtab, rtpe)))))),
                     _))))
             if udef.name == nme.UNIVERSE_SHORT && mdef.name == nme.MIRROR_SHORT =>
           val tagFlavor = tagFactory match {
@@ -397,8 +392,7 @@ trait Extractors {
       }
     }
   }
-  object FreeDef
-      extends FreeDefExtractor(acceptTerms = true, acceptTypes = true)
+  object FreeDef extends FreeDefExtractor(acceptTerms = true, acceptTypes = true)
   object FreeTermDef
       extends FreeDefExtractor(acceptTerms = true, acceptTypes = false)
   object FreeTypeDef

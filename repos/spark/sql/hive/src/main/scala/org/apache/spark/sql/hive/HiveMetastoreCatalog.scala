@@ -101,8 +101,8 @@ private[hive] object HiveSerDe {
             "org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat"),
           outputFormat = Option(
             "org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat"),
-          serde = Option(
-            "org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe")
+          serde =
+            Option("org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe")
         )
     )
 
@@ -205,10 +205,7 @@ private[hive] class HiveMetastoreCatalog(
 
         val bucketSpec =
           table.properties.get("spark.sql.sources.schema.numBuckets").map { n =>
-            BucketSpec(
-              n.toInt,
-              getColumnNames("bucket"),
-              getColumnNames("sort"))
+            BucketSpec(n.toInt, getColumnNames("bucket"), getColumnNames("sort"))
           }
 
         val options = table.storage.serdeProperties
@@ -424,10 +421,7 @@ private[hive] class HiveMetastoreCatalog(
           val message =
             s"Persisting data source relation $qualifiedTableName with multiple input paths into " +
               "Hive metastore in Spark SQL specific format, which is NOT compatible with Hive. " +
-              s"Input paths: " + relation.location.paths.mkString(
-              "\n",
-              "\n",
-              "")
+              s"Input paths: " + relation.location.paths.mkString("\n", "\n", "")
           (None, message)
 
         case (Some(serde), _) =>
@@ -536,8 +530,7 @@ private[hive] class HiveMetastoreCatalog(
         tableIdentifier: QualifiedTableName,
         pathsInMetastore: Seq[String],
         schemaInMetastore: StructType,
-        partitionSpecInMetastore: Option[PartitionSpec])
-        : Option[LogicalRelation] = {
+        partitionSpecInMetastore: Option[PartitionSpec]): Option[LogicalRelation] = {
       cachedDataSourceTables.getIfPresent(tableIdentifier) match {
         case null => None // Cache miss
         case logical @ LogicalRelation(
@@ -826,8 +819,7 @@ private[hive] class HiveMetastoreCatalog(
       val childOutputDataTypes = child.output.map(_.dataType)
       val numDynamicPartitions = p.partition.values.count(_.isEmpty)
       val tableOutputDataTypes =
-        (table.attributes ++ table.partitionKeys.takeRight(
-          numDynamicPartitions))
+        (table.attributes ++ table.partitionKeys.takeRight(numDynamicPartitions))
           .take(child.output.length)
           .map(_.dataType)
 

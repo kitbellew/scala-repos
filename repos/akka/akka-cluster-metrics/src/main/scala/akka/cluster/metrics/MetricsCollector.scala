@@ -219,10 +219,7 @@ class SigarMetricsCollector(
   import StandardMetrics._
   import org.hyperic.sigar.CpuPerc
 
-  def this(
-      address: Address,
-      settings: ClusterMetricsSettings,
-      sigar: SigarProxy) =
+  def this(address: Address, settings: ClusterMetricsSettings, sigar: SigarProxy) =
     this(
       address,
       EWMA.alpha(

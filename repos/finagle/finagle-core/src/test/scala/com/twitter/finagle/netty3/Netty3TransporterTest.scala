@@ -82,9 +82,10 @@ class Netty3TransporterTest extends FunSpec with MockitoSugar with Eventually {
       assert(
         transporter.channelOptions
           .get("keepAlive") == inputParams[Transport.Liveness].keepAlive)
-      assert(transporter.channelOptions.get("connectTimeoutMillis").get ==
-        inputParams[Transporter.ConnectTimeout].howlong.inMilliseconds +
-          inputParams[LatencyCompensation.Compensation].howlong.inMilliseconds)
+      assert(
+        transporter.channelOptions.get("connectTimeoutMillis").get ==
+          inputParams[Transporter.ConnectTimeout].howlong.inMilliseconds +
+            inputParams[LatencyCompensation.Compensation].howlong.inMilliseconds)
       assert(
         transporter.channelSnooper.nonEmpty == inputParams[
           Transport.Verbose].enabled)

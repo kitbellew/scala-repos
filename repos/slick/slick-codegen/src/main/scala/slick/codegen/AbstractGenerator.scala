@@ -392,8 +392,7 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
         model.referencingColumns.map(_.name).map(columnsByName)
 
       /** Referenced Table code generator */
-      final lazy val referencedTable: Table = tablesByName(
-        model.referencedTable)
+      final lazy val referencedTable: Table = tablesByName(model.referencedTable)
 
       /** Referenced Columns code generators */
       final lazy val referencedColumns: Seq[TableDef#Column] =

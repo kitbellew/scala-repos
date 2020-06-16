@@ -104,9 +104,7 @@ trait ClassTag[T]
   def unapply(x: Boolean): Option[T] = unapplyImpl(x, classOf[Boolean])
   def unapply(x: Unit): Option[T] = unapplyImpl(x, classOf[Unit])
 
-  private[this] def unapplyImpl(
-      x: Any,
-      alternative: jClass[_] = null): Option[T] = {
+  private[this] def unapplyImpl(x: Any, alternative: jClass[_] = null): Option[T] = {
     val conforms = runtimeClass.isInstance(
       x) || (alternative != null && runtimeClass.isAssignableFrom(alternative))
     if (conforms) Some(x.asInstanceOf[T]) else None

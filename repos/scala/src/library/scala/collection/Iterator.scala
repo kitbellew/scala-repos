@@ -1365,10 +1365,7 @@ trait Iterator[+A] extends TraversableOnce[A] {
     *  @param replaced   The number of values in the original iterator that are replaced by the patch.
     *  @note           Reuse: $consumesTwoAndProducesOneIterator
     */
-  def patch[B >: A](
-      from: Int,
-      patchElems: Iterator[B],
-      replaced: Int): Iterator[B] =
+  def patch[B >: A](from: Int, patchElems: Iterator[B], replaced: Int): Iterator[B] =
     new AbstractIterator[B] {
       private var origElems = self
       private var i =

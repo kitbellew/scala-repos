@@ -777,11 +777,7 @@ abstract class GraphStageLogic private[stream] (
         if (elems.hasNext)
           setOrAddEmitting(
             out,
-            new EmittingIterator(
-              out,
-              elems,
-              getNonEmittingHandler(out),
-              andThen))
+            new EmittingIterator(out, elems, getNonEmittingHandler(out), andThen))
         else andThen()
       } else {
         setOrAddEmitting(
@@ -807,10 +803,7 @@ abstract class GraphStageLogic private[stream] (
     * is needed and reinstalls the current handler upon receiving an `onPull()`
     * signal (before invoking the `andThen` function).
     */
-  final protected def emit[T](
-      out: Outlet[T],
-      elem: T,
-      andThen: () ⇒ Unit): Unit =
+  final protected def emit[T](out: Outlet[T], elem: T, andThen: () ⇒ Unit): Unit =
     if (isAvailable(out)) {
       push(out, elem)
       andThen()
@@ -1301,8 +1294,7 @@ abstract class TimerGraphStageLogic(_shape: Shape)
       interval,
       new Runnable {
         def run() =
-          getTimerAsyncCallback.invoke(
-            Scheduled(timerKey, id, repeating = true))
+          getTimerAsyncCallback.invoke(Scheduled(timerKey, id, repeating = true))
       })
     keyToTimers(timerKey) = Timer(id, task)
   }
@@ -1312,17 +1304,14 @@ abstract class TimerGraphStageLogic(_shape: Shape)
     * Any existing timer with the same key will automatically be canceled before
     * adding the new timer.
     */
-  final protected def scheduleOnce(
-      timerKey: Any,
-      delay: FiniteDuration): Unit = {
+  final protected def scheduleOnce(timerKey: Any, delay: FiniteDuration): Unit = {
     cancelTimer(timerKey)
     val id = timerIdGen.next()
     val task = interpreter.materializer.scheduleOnce(
       delay,
       new Runnable {
         def run() =
-          getTimerAsyncCallback.invoke(
-            Scheduled(timerKey, id, repeating = false))
+          getTimerAsyncCallback.invoke(Scheduled(timerKey, id, repeating = false))
       })
     keyToTimers(timerKey) = Timer(id, task)
   }

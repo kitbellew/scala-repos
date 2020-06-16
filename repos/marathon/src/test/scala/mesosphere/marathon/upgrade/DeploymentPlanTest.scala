@@ -154,8 +154,7 @@ class DeploymentPlanTest
     plan.isAffectedBy(DeploymentPlan(from, from)) should equal(right = false)
   }
 
-  test(
-    "when updating a group with dependencies, the correct order is computed") {
+  test("when updating a group with dependencies, the correct order is computed") {
 
     Given("Two application updates with command and scale changes")
     val mongoId = "/test/database/mongo".toPath
@@ -214,8 +213,7 @@ class DeploymentPlanTest
     Then("the deployment steps are correct")
     plan.steps should have size 2
     plan.steps(0).actions.toSet should equal(Set(RestartApplication(mongo._2)))
-    plan.steps(1).actions.toSet should equal(
-      Set(RestartApplication(service._2)))
+    plan.steps(1).actions.toSet should equal(Set(RestartApplication(service._2)))
   }
 
   test("when starting apps without dependencies, they are first started and then scaled parallely") {
@@ -385,7 +383,8 @@ class DeploymentPlanTest
     When("the deployment plan is computed")
     val plan = DeploymentPlan(from, to)
 
-    Then("the deployment contains steps for dependent and independent applications")
+    Then(
+      "the deployment contains steps for dependent and independent applications")
     plan.steps should have size (5)
 
     actionsOf(plan) should have size (6)
@@ -394,8 +393,7 @@ class DeploymentPlanTest
     plan.steps(1).actions.toSet should equal(Set(StartApplication(toStart, 0)))
     plan.steps(2).actions.toSet should equal(
       Set(RestartApplication(mongo._2), RestartApplication(independent._2)))
-    plan.steps(3).actions.toSet should equal(
-      Set(RestartApplication(service._2)))
+    plan.steps(3).actions.toSet should equal(Set(RestartApplication(service._2)))
     plan.steps(4).actions.toSet should equal(Set(ScaleApplication(toStart, 2)))
   }
 
@@ -530,8 +528,7 @@ class DeploymentPlanTest
     validate(plan).isSuccess should be(true)
   }
 
-  test(
-    "Deployment plan validation fails for invalid changes in resident tasks") {
+  test("Deployment plan validation fails for invalid changes in resident tasks") {
     Given("All options are supplied and we have a valid group change")
     AllConf.SuppliedOptionNames = Set(
       "mesos_authentication_principal",
@@ -554,9 +551,7 @@ class DeploymentPlanTest
       PersistentVolume(path, PersistentVolumeInfo(123), mesos.Volume.Mode.RW)
     val zero = UpgradeStrategy(0, 0)
 
-    def residentApp(
-        id: String,
-        volumes: Seq[PersistentVolume]): AppDefinition = {
+    def residentApp(id: String, volumes: Seq[PersistentVolume]): AppDefinition = {
       AppDefinition(
         id = PathId(id),
         container = Some(Container(mesos.ContainerInfo.Type.MESOS, volumes)),

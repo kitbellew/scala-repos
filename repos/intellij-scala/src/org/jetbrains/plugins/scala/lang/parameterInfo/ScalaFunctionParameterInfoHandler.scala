@@ -120,9 +120,7 @@ class ScalaFunctionParameterInfoHandler
     }
   }
 
-  def showParameterInfo(
-      element: PsiElement,
-      context: CreateParameterInfoContext) {
+  def showParameterInfo(element: PsiElement, context: CreateParameterInfoContext) {
     context.showHint(element, element.getTextRange.getStartOffset, this)
   }
 
@@ -403,8 +401,8 @@ class ScalaFunctionParameterInfoHandler
                         buffer.append(name)
                       }
                       buffer.append(": ")
-                      buffer.append(ScType.presentableText(
-                        subst.subst(param.exactParamType())))
+                      buffer.append(
+                        ScType.presentableText(subst.subst(param.exactParamType())))
                       if (param.isVarArgs) buffer.append("*")
 
                       val isBold = if (p.getParameters.indexOf(
@@ -767,10 +765,7 @@ class ScalaFunctionParameterInfoHandler
                                 substitutor.followed(subst)),
                               i))
                         case _ =>
-                          res += (
-                            (
-                              new PhysicalSignature(constructor, subst),
-                              i))
+                          res += ((new PhysicalSignature(constructor, subst), i))
                       }
                     }
                   case _ =>
@@ -801,10 +796,7 @@ class ScalaFunctionParameterInfoHandler
                 } {
                   if (!PsiTreeUtil.isAncestor(constr, self, true) &&
                     constr.getTextRange.getStartOffset < self.getTextRange.getStartOffset) {
-                    res += (
-                      (
-                        new PhysicalSignature(constr, ScSubstitutor.empty),
-                        i))
+                    res += ((new PhysicalSignature(constr, ScSubstitutor.empty), i))
                   }
                 }
               case _ =>

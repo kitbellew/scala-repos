@@ -65,8 +65,7 @@ trait LocalFileSystemPersistentModelLoader[AP <: Params, M]
   *
   * @group Algorithm */
 @deprecated("Use LocalFileSystemPersistentModel instead.", "0.9.2")
-trait IFSPersistentModel[AP <: Params]
-    extends LocalFileSystemPersistentModel[AP]
+trait IFSPersistentModel[AP <: Params] extends LocalFileSystemPersistentModel[AP]
 
 /** DEPRECATED. Use [[LocalFileSystemPersistentModelLoader]] instead.
   *

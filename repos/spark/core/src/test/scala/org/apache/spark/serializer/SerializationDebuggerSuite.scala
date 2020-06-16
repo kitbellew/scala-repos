@@ -115,8 +115,7 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
     assert(find(new ExternalizableClass(new SerializableClass1)).isEmpty)
   }
 
-  test(
-    "object containing writeReplace() which returns not serializable object") {
+  test("object containing writeReplace() which returns not serializable object") {
     val s = find(new SerializableClassWithWriteReplace(new NotSerializable))
     assert(s.size === 3)
     assert(s(0).contains("NotSerializable"))
@@ -140,8 +139,7 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
 
   test("object containing writeObject() and serializable field") {
     assert(
-      find(
-        new SerializableClassWithWriteObject(new SerializableClass1)).isEmpty)
+      find(new SerializableClassWithWriteObject(new SerializableClass1)).isEmpty)
   }
 
   test("object of serializable subclass with more fields than superclass (SPARK-7180)") {
@@ -207,7 +205,8 @@ class SerializationDebuggerSuite extends SparkFunSuite with BeforeAndAfterEach {
         throw new Exception()
       }
     }
-    withClue("requirement: SerializationDebugger should fail trying debug this object") {
+    withClue(
+      "requirement: SerializationDebugger should fail trying debug this object") {
       intercept[Exception] {
         SerializationDebugger.find(o)
       }

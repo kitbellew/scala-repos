@@ -95,8 +95,7 @@ object ReflectionUtils {
       }
 
     val accessor = singletonAccessor(outer.getClass) getOrElse {
-      throw new NoSuchMethodException(
-        s"${outer.getClass.getName}.$accessorName")
+      throw new NoSuchMethodException(s"${outer.getClass.getName}.$accessorName")
     }
     accessor setAccessible true
     accessor invoke outer

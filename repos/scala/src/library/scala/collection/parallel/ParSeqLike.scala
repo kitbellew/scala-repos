@@ -274,10 +274,8 @@ trait ParSeqLike[
     } else patch_sequential(from, patch.seq, replaced)
   }
 
-  private def patch_sequential[U >: T, That](
-      fromarg: Int,
-      patch: Seq[U],
-      r: Int)(implicit bf: CanBuildFrom[Repr, U, That]): That = {
+  private def patch_sequential[U >: T, That](fromarg: Int, patch: Seq[U], r: Int)(
+      implicit bf: CanBuildFrom[Repr, U, That]): That = {
     val from = 0 max fromarg
     val b = bf(repr)
     val repl = (r min (length - from)) max 0

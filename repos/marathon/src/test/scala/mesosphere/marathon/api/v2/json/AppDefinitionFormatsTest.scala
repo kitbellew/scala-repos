@@ -60,8 +60,7 @@ class AppDefinitionFormatsTest
     (r1 \ "uris").as[Seq[String]] should equal(DefaultUris)
     (r1 \ "fetch").as[Seq[FetchUri]] should equal(DefaultFetch)
     (r1 \ "storeUrls").as[Seq[String]] should equal(DefaultStoreUrls)
-    (r1 \ "ports").as[Seq[Long]] should equal(
-      DefaultPortDefinitions.map(_.port))
+    (r1 \ "ports").as[Seq[Long]] should equal(DefaultPortDefinitions.map(_.port))
     (r1 \ "portDefinitions").as[Seq[PortDefinition]] should equal(
       DefaultPortDefinitions)
     (r1 \ "requirePorts").as[Boolean] should equal(DefaultRequirePorts)
@@ -170,8 +169,7 @@ class AppDefinitionFormatsTest
     val appDefinition =
       AppDefinition(id = PathId("test"), acceptedResourceRoles = Some(Set("a")))
     val json = Json.toJson(appDefinition)
-    (json \ "acceptedResourceRoles").asOpt[Set[String]] should be(
-      Some(Set("a")))
+    (json \ "acceptedResourceRoles").asOpt[Set[String]] should be(Some(Set("a")))
   }
 
   test(
@@ -189,8 +187,7 @@ class AppDefinitionFormatsTest
     appDef.acceptedResourceRoles should equal(Some(Set("*")))
   }
 
-  test(
-    "FromJSON should fail when 'acceptedResourceRoles' is defined but empty") {
+  test("FromJSON should fail when 'acceptedResourceRoles' is defined but empty") {
     val json = Json.parse(""" { "id": "test", "acceptedResourceRoles": [] }""")
     a[JsResultException] shouldBe thrownBy { json.as[AppDefinition] }
   }
@@ -248,9 +245,7 @@ class AppDefinitionFormatsTest
 
     val json = Json.toJson(
       a1.copy(residency = Some(
-        Residency(
-          7200,
-          Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER))))
+        Residency(7200, Protos.ResidencyDefinition.TaskLostBehavior.WAIT_FOREVER))))
     (json \ "residency" \ "relaunchEscalationTimeoutSeconds")
       .as[Long] should equal(7200)
     (json \ "residency" \ "taskLostBehavior").as[String] should equal(

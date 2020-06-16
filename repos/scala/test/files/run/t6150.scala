@@ -2,10 +2,8 @@ object Test {
   import collection.{immutable, mutable, generic}
   def TheOneTrueCBF = collection.IndexedSeq.ReusableCBF
 
-  val cbf1 = implicitly[generic.CanBuildFrom[
-    immutable.Vector[Int],
-    Int,
-    collection.IndexedSeq[Int]]]
+  val cbf1 = implicitly[
+    generic.CanBuildFrom[immutable.Vector[Int], Int, collection.IndexedSeq[Int]]]
   val cbf2 = implicitly[generic.CanBuildFrom[
     immutable.IndexedSeq[Int],
     Int,

@@ -339,11 +339,7 @@ class LinearRegression @Since("1.3.0") (
             else 0.0
           }
         }
-      new BreezeOWLQN[Int, BDV[Double]](
-        $(maxIter),
-        10,
-        effectiveL1RegFun,
-        $(tol))
+      new BreezeOWLQN[Int, BDV[Double]]($(maxIter), 10, effectiveL1RegFun, $(tol))
     }
 
     val initialCoefficients = Vectors.zeros(numFeatures)

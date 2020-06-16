@@ -319,9 +319,7 @@ object ASMConverters {
       }) && equivalentBytecode(as.tail, bs.tail, varMap, labelMap)
   }
 
-  def applyToMethod(
-      method: t.MethodNode,
-      instructions: List[Instruction]): Unit = {
+  def applyToMethod(method: t.MethodNode, instructions: List[Instruction]): Unit = {
     val asmLabel = createLabelNodes(instructions)
     instructions.foreach(visitMethod(method, _, asmLabel))
   }

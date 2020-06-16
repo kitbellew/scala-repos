@@ -17,8 +17,7 @@ import generic._
   *  @define coll linked hash map
   */
 object LinkedHashMap extends MutableMapFactory[LinkedHashMap] {
-  implicit def canBuildFrom[A, B]
-      : CanBuildFrom[Coll, (A, B), LinkedHashMap[A, B]] =
+  implicit def canBuildFrom[A, B]: CanBuildFrom[Coll, (A, B), LinkedHashMap[A, B]] =
     new MapCanBuildFrom[A, B]
   def empty[A, B] = new LinkedHashMap[A, B]
 }

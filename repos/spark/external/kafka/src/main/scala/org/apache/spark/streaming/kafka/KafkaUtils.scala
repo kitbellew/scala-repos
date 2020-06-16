@@ -201,8 +201,7 @@ object KafkaUtils {
   /** get leaders for the given offset ranges, or throw an exception */
   private def leadersForRanges(
       kc: KafkaCluster,
-      offsetRanges: Array[OffsetRange])
-      : Map[TopicAndPartition, (String, Int)] = {
+      offsetRanges: Array[OffsetRange]): Map[TopicAndPartition, (String, Int)] = {
     val topics =
       offsetRanges.map(o => TopicAndPartition(o.topic, o.partition)).toSet
     val leaders = kc.findLeaders(topics)
@@ -737,8 +736,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       kafkaParams: JMap[String, String],
       offsetRanges: JList[OffsetRange],
       leaders: JMap[TopicAndPartition, Broker],
-      messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V)
-      : RDD[V] = {
+      messageHandler: MessageAndMetadata[Array[Byte], Array[Byte]] => V): RDD[V] = {
     KafkaUtils
       .createRDD[Array[Byte], Array[Byte], DefaultDecoder, DefaultDecoder, V](
         jsc.sc,
@@ -759,12 +757,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       (mmd: MessageAndMetadata[Array[Byte], Array[Byte]]) =>
         (mmd.key, mmd.message)
     new JavaDStream(
-      createDirectStream(
-        jssc,
-        kafkaParams,
-        topics,
-        fromOffsets,
-        messageHandler))
+      createDirectStream(jssc, kafkaParams, topics, fromOffsets, messageHandler))
   }
 
   def createDirectStreamWithMessageHandler(
@@ -829,9 +822,7 @@ private[kafka] class KafkaUtilsPythonHelper {
       untilOffset: JLong): OffsetRange =
     OffsetRange.create(topic, partition, fromOffset, untilOffset)
 
-  def createTopicAndPartition(
-      topic: String,
-      partition: JInt): TopicAndPartition =
+  def createTopicAndPartition(topic: String, partition: JInt): TopicAndPartition =
     TopicAndPartition(topic, partition)
 
   def createBroker(host: String, port: JInt): Broker = Broker(host, port)
@@ -890,8 +881,7 @@ private object KafkaUtilsPythonHelper {
       if (obj == this) {
         out.write(Opcodes.GLOBAL)
         out.write(
-          s"$module\nKafkaMessageAndMetadata\n".getBytes(
-            StandardCharsets.UTF_8))
+          s"$module\nKafkaMessageAndMetadata\n".getBytes(StandardCharsets.UTF_8))
       } else {
         pickler.save(this)
         val msgAndMetaData = obj.asInstanceOf[PythonMessageAndMetadata]

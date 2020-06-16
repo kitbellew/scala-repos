@@ -53,8 +53,8 @@ object WritesSpec extends org.specs2.mutable.Specification {
     val DefaultWrites = implicitly[Writes[OffsetDateTime]]
     import DefaultWrites.writes
 
-    val CustomWrites1 = Writes.temporalWrites[OffsetDateTime, String](
-      "dd/MM/yyyy, HH:mm:ss (XXX)")
+    val CustomWrites1 =
+      Writes.temporalWrites[OffsetDateTime, String]("dd/MM/yyyy, HH:mm:ss (XXX)")
 
     "be written with default implicit as '2011-12-03T10:15:30-01:30'" in {
       writes(
@@ -153,8 +153,7 @@ object WritesSpec extends org.specs2.mutable.Specification {
     }
 
     "be written with default implicit as '2011-12-03T10:15:30Z'" in {
-      writes(instant) aka "written date" must_== JsString(
-        "2011-12-03T10:15:30Z")
+      writes(instant) aka "written date" must_== JsString("2011-12-03T10:15:30Z")
     }
 
     "be written with custom pattern as '03/12/2011, 10:15:30'" in {

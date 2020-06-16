@@ -41,10 +41,7 @@ trait PropSpecFileStructureViewTest extends ScalaTestTestCase {
 
   def testPropSpecPending(): Unit = {
     addPropSpecViewTest()
-    runFileStructureViewTest(
-      className,
-      pendingStatusId,
-      "property(\"pending\")")
+    runFileStructureViewTest(className, pendingStatusId, "property(\"pending\")")
   }
 
   def testPropSpecIgnoredAndPending(): Unit = {

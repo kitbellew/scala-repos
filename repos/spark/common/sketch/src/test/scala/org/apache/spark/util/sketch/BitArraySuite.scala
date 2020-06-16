@@ -25,8 +25,7 @@ class BitArraySuite extends FunSuite { // scalastyle:ignore funsuite
 
   test("error case when create BitArray") {
     intercept[IllegalArgumentException](new BitArray(0))
-    intercept[IllegalArgumentException](
-      new BitArray(64L * Integer.MAX_VALUE + 1))
+    intercept[IllegalArgumentException](new BitArray(64L * Integer.MAX_VALUE + 1))
   }
 
   test("bitSize") {

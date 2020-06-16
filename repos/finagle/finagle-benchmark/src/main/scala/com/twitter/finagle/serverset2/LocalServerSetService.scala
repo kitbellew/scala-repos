@@ -18,10 +18,8 @@ import org.apache.zookeeper.CreateMode
   */
 private[serverset2] object LocalServerSetService extends App {
 
-  private val initialMembers = flag(
-    "members.init",
-    500,
-    "Number of members to start with in the serverset")
+  private val initialMembers =
+    flag("members.init", 500, "Number of members to start with in the serverset")
   private val additionsPerCycle =
     flag("members.add", 100, "Number of members to add each churn cycle")
   private val removalsPerCycle =

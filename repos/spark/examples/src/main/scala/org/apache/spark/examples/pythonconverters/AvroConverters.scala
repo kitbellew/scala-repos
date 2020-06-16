@@ -92,8 +92,7 @@ object AvroConversionUtil extends Serializable {
         arr
       case arr: Array[Byte] => arr
       case other =>
-        throw new SparkException(
-          s"Unknown BYTES type ${other.getClass.getName}")
+        throw new SparkException(s"Unknown BYTES type ${other.getClass.getName}")
     }
     val bytearray = new Array[Byte](bytes.length)
     System.arraycopy(bytes, 0, bytearray, 0, bytes.length)
@@ -109,8 +108,7 @@ object AvroConversionUtil extends Serializable {
       case arr: Array[_] =>
         arr.map(fromAvro(_, schema.getElementType)).toSeq.asJava
       case other =>
-        throw new SparkException(
-          s"Unknown ARRAY type ${other.getClass.getName}")
+        throw new SparkException(s"Unknown ARRAY type ${other.getClass.getName}")
     }
 
   def unpackUnion(obj: Any, schema: Schema): Any = {

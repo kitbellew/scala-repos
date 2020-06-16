@@ -42,8 +42,7 @@ object ProtobufSerializer {
   * It is using reflection to find the `parseFrom` and `toByteArray` methods to avoid
   * dependency to `com.google.protobuf`.
   */
-class ProtobufSerializer(val system: ExtendedActorSystem)
-    extends BaseSerializer {
+class ProtobufSerializer(val system: ExtendedActorSystem) extends BaseSerializer {
 
   @deprecated("Use constructor with ExtendedActorSystem", "2.4")
   def this() = this(null)

@@ -128,9 +128,8 @@ class FileChooser(
       : ObjectProperty[jfxs.FileChooser.ExtensionFilter] =
     delegate.selectedExtensionFilterProperty
   def selectedExtensionFilter_=(v: ExtensionFilter) {
-    ObjectProperty.fillProperty[jfxs.FileChooser.ExtensionFilter](
-      selectedExtensionFilter,
-      v)
+    ObjectProperty
+      .fillProperty[jfxs.FileChooser.ExtensionFilter](selectedExtensionFilter, v)
   }
 
   /**

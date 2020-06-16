@@ -156,8 +156,7 @@ object ScalaPluginUpdater {
         InstalledPluginsState.getInstance().getInstalledPlugins
       val pluginIdString: String = pluginId.getIdString
       import scala.collection.JavaConversions._
-      while (installedPlugins.exists(
-          _.getPluginId.getIdString == pluginIdString)) {
+      while (installedPlugins.exists(_.getPluginId.getIdString == pluginIdString)) {
         installedPlugins.remove(pluginIdString)
       }
     } catch {
@@ -397,9 +396,7 @@ object ScalaPluginUpdater {
         message,
         NotificationType.INFORMATION,
         new NotificationListener {
-          def hyperlinkUpdate(
-              notification: Notification,
-              event: HyperlinkEvent) {
+          def hyperlinkUpdate(notification: Notification, event: HyperlinkEvent) {
             notification.expire()
             applicationSettings.ASK_USE_LATEST_PLUGIN_BUILDS = false
             event.getDescription match {

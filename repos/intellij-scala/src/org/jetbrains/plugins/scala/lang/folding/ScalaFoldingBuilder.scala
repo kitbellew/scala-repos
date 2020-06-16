@@ -153,8 +153,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
     } else if (node.getElementType == ScalaTokenTypes.tLINE_COMMENT && !isWorksheetResults(
         node)) {
       val stack = new mutable.Stack[PsiElement]
-      if (!isCustomRegionStart(node.getText) && !isCustomRegionEnd(
-          node.getText)) {
+      if (!isCustomRegionStart(node.getText) && !isCustomRegionEnd(node.getText)) {
         addCommentFolds(
           node.getPsi.asInstanceOf[PsiComment],
           processedComments,
@@ -186,9 +185,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
 
       node.getPsi match {
         case sc: ScalaPsiElement =>
-          (
-            sc.getPrevSiblingNotWhitespace,
-            sc.getNextSiblingNotWhitespace) match {
+          (sc.getPrevSiblingNotWhitespace, sc.getNextSiblingNotWhitespace) match {
             case (a1: PsiElement, a2: PsiElement)
                 if a1.getNode.getElementType == ScalaTokenTypes.tCOLON && a2.getNode.getElementType == ScalaTokenTypes.tASSIGN =>
               val startElement =
@@ -239,8 +236,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
   override def getLanguagePlaceholderText(
       node: ASTNode,
       textRange: TextRange): String = {
-    if (isMultiline(node) || isMultilineImport(node) && !isWorksheetResults(
-        node)) {
+    if (isMultiline(node) || isMultilineImport(node) && !isWorksheetResults(node)) {
       node.getElementType match {
         case ScalaElementTypes.BLOCK_EXPR           => return "{...}"
         case ScalaTokenTypes.tBLOCK_COMMENT         => return "/.../"
@@ -562,8 +558,7 @@ class ScalaFoldingBuilder extends CustomFoldingBuilder with PossiblyDumbAware {
         if (elementType == ScalaTokenTypes.tLINE_COMMENT && isCustomRegionEnd(
             node.getText) && !isWorksheetResults(node)) {
           if ((isTagRegion && isTagRegionEnd(
-              node.getText)) || (!isTagRegion && isSimpleRegionEnd(
-              node.getText))) {
+              node.getText)) || (!isTagRegion && isSimpleRegionEnd(node.getText))) {
             if (!processedRegions.contains(current) && stack.isEmpty) {
               end = current
               processedRegions.add(current)

@@ -102,9 +102,7 @@ object ActorRef {
   * about the exact actor incarnation you can use the ``ActorPath`` as key because
   * the unique id of the actor is not taken into account when comparing actor paths.
   */
-abstract class ActorRef
-    extends java.lang.Comparable[ActorRef]
-    with Serializable {
+abstract class ActorRef extends java.lang.Comparable[ActorRef] with Serializable {
   scalaRef: InternalActorRef ⇒
 
   /**

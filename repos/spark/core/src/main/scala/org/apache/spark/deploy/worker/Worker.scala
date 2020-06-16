@@ -289,23 +289,22 @@ private[deploy] class Worker(
             }
             val masterAddress = masterRef.address
             registerMasterFutures =
-              Array(registerMasterThreadPool.submit(new Runnable {
-                override def run(): Unit = {
-                  try {
-                    logInfo("Connecting to master " + masterAddress + "...")
-                    val masterEndpoint = rpcEnv.setupEndpointRef(
-                      masterAddress,
-                      Master.ENDPOINT_NAME)
-                    registerWithMaster(masterEndpoint)
-                  } catch {
-                    case ie: InterruptedException => // Cancelled
-                    case NonFatal(e) =>
-                      logWarning(
-                        s"Failed to connect to master $masterAddress",
-                        e)
+              Array(
+                registerMasterThreadPool.submit(new Runnable {
+                  override def run(): Unit = {
+                    try {
+                      logInfo("Connecting to master " + masterAddress + "...")
+                      val masterEndpoint = rpcEnv.setupEndpointRef(
+                        masterAddress,
+                        Master.ENDPOINT_NAME)
+                      registerWithMaster(masterEndpoint)
+                    } catch {
+                      case ie: InterruptedException => // Cancelled
+                      case NonFatal(e) =>
+                        logWarning(s"Failed to connect to master $masterAddress", e)
+                    }
                   }
-                }
-              }))
+                }))
           case None =>
             if (registerMasterFutures != null) {
               registerMasterFutures.foreach(_.cancel(true))
@@ -378,14 +377,7 @@ private[deploy] class Worker(
   private def registerWithMaster(masterEndpoint: RpcEndpointRef): Unit = {
     masterEndpoint
       .ask[RegisterWorkerResponse](
-        RegisterWorker(
-          workerId,
-          host,
-          port,
-          self,
-          cores,
-          memory,
-          workerWebUiUrl))
+        RegisterWorker(workerId, host, port, self, cores, memory, workerWebUiUrl))
       .onComplete {
         // This is a very fast action so we can use "ThreadUtils.sameThread"
         case Success(msg) =>
@@ -561,7 +553,9 @@ private[deploy] class Worker(
               ExecutorStateChanged(appId, execId, manager.state, None, None))
           } catch {
             case e: Exception => {
-              logError(s"Failed to launch executor $appId/$execId for ${appDesc.name}.", e)
+              logError(
+                s"Failed to launch executor $appId/$execId for ${appDesc.name}.",
+                e)
               if (executors.contains(appId + "/" + execId)) {
                 executors(appId + "/" + execId).kill()
                 executors -= appId + "/" + execId

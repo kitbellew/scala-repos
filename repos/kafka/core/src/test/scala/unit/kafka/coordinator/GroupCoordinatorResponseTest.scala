@@ -804,11 +804,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     val tp = new TopicPartition("topic", 0)
     val offset = OffsetAndMetadata(0)
 
-    val commitOffsetResult = commitOffsets(
-      groupId,
-      memberId,
-      generationId,
-      immutable.Map(tp -> offset))
+    val commitOffsetResult =
+      commitOffsets(groupId, memberId, generationId, immutable.Map(tp -> offset))
     assertEquals(Errors.ILLEGAL_GENERATION.code, commitOffsetResult(tp))
   }
 
@@ -1142,8 +1139,7 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       assignment: Map[String, Array[Byte]]): Future[SyncGroupCallbackParams] = {
     val (responseFuture, responseCallback) = setupSyncGroupCallback
 
-    val capturedArgument
-        : Capture[Map[TopicPartition, PartitionResponse] => Unit] =
+    val capturedArgument: Capture[Map[TopicPartition, PartitionResponse] => Unit] =
       EasyMock.newCapture()
 
     EasyMock
@@ -1158,10 +1154,11 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       .andAnswer(new IAnswer[Unit] {
         override def answer =
           capturedArgument.getValue.apply(
-            Map(new TopicPartition(
-              TopicConstants.GROUP_METADATA_TOPIC_NAME,
-              groupPartitionId) ->
-              new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
+            Map(
+              new TopicPartition(
+                TopicConstants.GROUP_METADATA_TOPIC_NAME,
+                groupPartitionId) ->
+                new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
           )
       })
     EasyMock
@@ -1260,8 +1257,7 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       : CommitOffsetCallbackParams = {
     val (responseFuture, responseCallback) = setupCommitOffsetsCallback
 
-    val capturedArgument
-        : Capture[Map[TopicPartition, PartitionResponse] => Unit] =
+    val capturedArgument: Capture[Map[TopicPartition, PartitionResponse] => Unit] =
       EasyMock.newCapture()
 
     EasyMock
@@ -1276,10 +1272,11 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
       .andAnswer(new IAnswer[Unit] {
         override def answer =
           capturedArgument.getValue.apply(
-            Map(new TopicPartition(
-              TopicConstants.GROUP_METADATA_TOPIC_NAME,
-              groupPartitionId) ->
-              new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
+            Map(
+              new TopicPartition(
+                TopicConstants.GROUP_METADATA_TOPIC_NAME,
+                groupPartitionId) ->
+                new PartitionResponse(Errors.NONE.code, 0L, Record.NO_TIMESTAMP))
           )
       })
     EasyMock
@@ -1303,10 +1300,8 @@ class GroupCoordinatorResponseTest extends JUnitSuite {
     val (responseFuture, responseCallback) = setupHeartbeatCallback
 
     EasyMock
-      .expect(
-        replicaManager.getPartition(
-          TopicConstants.GROUP_METADATA_TOPIC_NAME,
-          groupPartitionId))
+      .expect(replicaManager
+        .getPartition(TopicConstants.GROUP_METADATA_TOPIC_NAME, groupPartitionId))
       .andReturn(None)
     EasyMock
       .expect(replicaManager.getMessageFormatVersion(EasyMock.anyObject()))

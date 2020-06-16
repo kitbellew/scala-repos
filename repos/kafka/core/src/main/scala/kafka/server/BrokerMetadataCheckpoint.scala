@@ -74,8 +74,7 @@ class BrokerMetadataCheckpoint(val file: File) extends Logging {
       } catch {
         case e: FileNotFoundException =>
           warn(
-            "No meta.properties file under dir %s".format(
-              file.getAbsolutePath()))
+            "No meta.properties file under dir %s".format(file.getAbsolutePath()))
           None
         case e1: Exception =>
           error(

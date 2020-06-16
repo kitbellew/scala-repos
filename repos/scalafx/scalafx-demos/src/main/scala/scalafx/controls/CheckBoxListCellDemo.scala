@@ -65,8 +65,7 @@ object CheckBoxListCellDemo extends JFXApp {
           new Button("Print State ") {
             onAction = handle {
               println("-------------")
-              println(
-                data.map(d => d.name + ": " + d.selected()).mkString("\n"))
+              println(data.map(d => d.name + ": " + d.selected()).mkString("\n"))
             }
           }
         )

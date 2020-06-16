@@ -111,9 +111,7 @@ object ActionBasedSQLInterpolation {
   }
 }
 
-case class SQLActionBuilder(
-    queryParts: Seq[Any],
-    unitPConv: SetParameter[Unit]) {
+case class SQLActionBuilder(queryParts: Seq[Any], unitPConv: SetParameter[Unit]) {
   def as[R](implicit
       rconv: GetResult[R]): SqlStreamingAction[Vector[R], R, Effect] = {
     val query =
