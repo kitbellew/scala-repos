@@ -27,7 +27,8 @@ import org.jetbrains.plugins.scala.macroAnnotations.{ModCount, Cached}
 /**
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
-  * Time: 9:23:53 */
+  * Time: 9:23:53
+  */
 
 trait ScTemplateParents extends ScalaPsiElement {
   def typeElements: Seq[ScTypeElement]

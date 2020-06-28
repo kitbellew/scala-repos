@@ -370,7 +370,8 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
   /** Asynchronously consume a Reactive Stream and materialize it as a Vector, requesting new
     * elements one by one and transforming them after the specified delay. This ensures that the
     * transformation does not run in the synchronous database context but still preserves
-    * proper sequencing. */
+    * proper sequencing.
+    */
   def materializeAsync[T, R](
       p: Publisher[T],
       tr: T => Future[R],

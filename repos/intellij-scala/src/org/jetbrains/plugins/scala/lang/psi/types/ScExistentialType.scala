@@ -20,7 +20,8 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
-  * @author ilyas */
+  * @author ilyas
+  */
 case class ScExistentialType(
     quantified: ScType,
     wildcards: List[ScExistentialArgument])

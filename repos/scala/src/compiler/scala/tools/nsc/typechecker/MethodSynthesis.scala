@@ -282,7 +282,8 @@ trait MethodSynthesis {
     sealed trait Derived {
 
       /** The tree from which we are deriving a synthetic member. Typically, that's
-        *  given as an argument of the instance. */
+        *  given as an argument of the instance.
+        */
       def tree: Tree
 
       /** The name of the method */
@@ -292,7 +293,8 @@ trait MethodSynthesis {
       def flagsMask: Long
 
       /** The flags that the derived symbol has in addition to those retained from
-        *  the original symbol */
+        *  the original symbol
+        */
       def flagsExtra: Long
 
       /** type completer for the synthetic member.
@@ -300,7 +302,8 @@ trait MethodSynthesis {
       def completer(sym: Symbol): Type
 
       /** The derived symbol. It is assumed that this symbol already exists and has been
-        *  entered in the parent scope when derivedSym is called */
+        *  entered in the parent scope when derivedSym is called
+        */
       def derivedSym: Symbol
 
       /** The definition tree of the derived symbol. */

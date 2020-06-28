@@ -12,21 +12,24 @@ import slick.SlickException
 
 /** A `JdbcDataSource` provides a way to create a `Connection` object for a database. It is
   * similar to a `javax.sql.DataSource` but simpler. Unlike [[JdbcBackend.DatabaseDef]] it is not a
-  * part of the backend cake. This trait defines the SPI for 3rd-party connection pool support. */
+  * part of the backend cake. This trait defines the SPI for 3rd-party connection pool support.
+  */
 trait JdbcDataSource extends Closeable {
 
   /** Create a new Connection or get one from the pool */
   def createConnection(): Connection
 
   /** If this object represents a connection pool managed directly by Slick, close it.
-    * Otherwise no action is taken. */
+    * Otherwise no action is taken.
+    */
   def close(): Unit
 }
 
 object JdbcDataSource extends Logging {
 
   /** Create a JdbcDataSource from a `Config`. See [[JdbcBackend.DatabaseFactoryDef.forConfig]]
-    * for documentation of the supported configuration parameters. */
+    * for documentation of the supported configuration parameters.
+    */
   def forConfig(
       c: Config,
       driver: Driver,
@@ -53,7 +56,8 @@ object JdbcDataSource extends Logging {
 
 /** Create a [[JdbcDataSource]] from a `Config` object and an optional JDBC `Driver`.
   * This is used with the "connectionPool" configuration option in
-  * [[JdbcBackend.DatabaseFactoryDef.forConfig]]. */
+  * [[JdbcBackend.DatabaseFactoryDef.forConfig]].
+  */
 trait JdbcDataSourceFactory {
   def forConfig(
       c: Config,
@@ -151,7 +155,8 @@ trait DriverBasedJdbcDataSource extends JdbcDataSource {
     }
 
   /** Deregister the JDBC driver if it was registered by this JdbcDataSource.
-    * Returns true if an attempt was made to deregister a driver. */
+    * Returns true if an attempt was made to deregister a driver.
+    */
   def deregisterDriver(): Boolean =
     if (registeredDriver ne null) {
       DriverManager.deregisterDriver(registeredDriver); true

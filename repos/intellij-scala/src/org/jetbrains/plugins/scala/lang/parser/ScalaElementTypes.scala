@@ -62,33 +62,45 @@ object ScalaElementTypes {
   val REQUIRES_BLOCK = new ScalaElementType("requires block")
   val NEW_TEMPLATE = new ScNewTemplateDefinitionStubElementType
 
-  /** ********************************************************************************** */
-  /** *********************** PARAMETERS OF CLASS AND FUNCTIONS ************************ */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** *********************** PARAMETERS OF CLASS AND FUNCTIONS ************************
+    */
+  /** **********************************************************************************
+    */
 
   val PARAM_TYPE = new ScalaElementType("parameter type")
   val PARAM = new ScParameterElementType
   val PARAM_CLAUSE = new ScParamClauseElementType
   val PARAM_CLAUSES = new ScParamClausesElementType
 
-  /** ********** class ************** */
+  /** ********** class **************
+    */
   val CLASS_PARAM = new ScClassParameterElementType
 
-  /** ********************************************************************************** */
-  /** *********************** TYPE PARAMETERS OF CLASS AND FUNCTIONS ************************ */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** *********************** TYPE PARAMETERS OF CLASS AND FUNCTIONS ************************
+    */
+  /** **********************************************************************************
+    */
   val TYPE_PARAM_CLAUSE = new ScTypeParamClauseElementType
 
-  /** ********** class ************** */
+  /** ********** class **************
+    */
   val VARIANT_TYPE_PARAM = new ScalaElementType("variant parameter of type")
 
-  /** ********** function ************ */
+  /** ********** function ************
+    */
   val TYPE_PARAM = new ScTypeParamElementType
   val TYPE_PARAMS = new ScalaElementType("parameters of type")
 
-  /** ********************************************************************************** */
-  /** ************************************ TYPES *************************************** */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ************************************ TYPES ***************************************
+    */
+  /** **********************************************************************************
+    */
   val STABLE_ID = new ScalaElementType("stable id")
   val STABLE_ID_ID = new ScalaElementType("stable id")
   val SIMPLE_TYPE = new ScalaElementType("simple type")
@@ -113,18 +125,24 @@ object ScalaElementTypes {
   val SEQUENCE_ARG = new ScalaElementType("sequence argument type")
   val TYPE_VARIABLE = new ScalaElementType("type variable")
 
-  /** ********************************************************************************** */
-  /** ********************************* IDENTIFIER ************************************* */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ********************************* IDENTIFIER *************************************
+    */
+  /** **********************************************************************************
+    */
 
   val UNIT_EXPR = new ScalaElementType("unit expression")
   val IDENTIFIER_LIST = new ScIdListElementType
   val FIELD_ID = new ScFieldIdElementType
   val REFERENCE = new ScalaElementType("reference")
 
-  /** ********************************************************************************** */
-  /** ******************************* IMPORT GROUP ************************************* */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ******************************* IMPORT GROUP *************************************
+    */
+  /** **********************************************************************************
+    */
 
   val IMPORT_SELECTOR = new ScImportSelectorElementType
   val IMPORT_SELECTORS = new ScImportSelectorsElementType
@@ -133,14 +151,20 @@ object ScalaElementTypes {
   val IMPORT = new ScalaElementType("import")
   val STABLE_ID_LIST = new ScalaElementType("stable id list")
 
-  /** ********************************************************************************** */
-  /** ******************************* METHODS, VARIABLES and ETC *********************** */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ******************************* METHODS, VARIABLES and ETC ***********************
+    */
+  /** **********************************************************************************
+    */
   val STATEMENT_TEMPLATE = new ScalaElementType("template statement")
 
-  /** ********************************************************************************** */
-  /** ********************************** DECLARATION *********************************** */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ********************************** DECLARATION ***********************************
+    */
+  /** **********************************************************************************
+    */
   val VALUE_DECLARATION: ScValueElementType[_ <: ScValue] =
     new ScValueDeclarationElementType
   val VARIABLE_DECLARATION: ScVariableElementType[_ <: ScVariable] =
@@ -149,9 +173,12 @@ object ScalaElementTypes {
     new ScFunctionDeclarationElementType
   val TYPE_DECLARATION = new ScTypeAliasDeclarationElementType
 
-  /** ********************************************************************************** */
-  /** ********************************** DEFINITION ************************************ */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ********************************** DEFINITION ************************************
+    */
+  /** **********************************************************************************
+    */
   val PATTERN_DEFINITION: ScValueElementType[_ <: ScValue] =
     new ScValueDefinitionElementType
   val PATTERN_LIST = new ScPatternListElementType
@@ -160,35 +187,45 @@ object ScalaElementTypes {
   val TYPE_DEFINITION = new ScTypeAliasDefinitionElementType
   val EARLY_DEFINITIONS = new ScEarlyDefinitionsElementType
 
-  /** ************** functions ************************ */
+  /** ************** functions ************************
+    */
   val FUNCTION_DEFINITION = new ScFunctionDefinitionElementType
   val MACRO_DEFINITION = new ScMacroDefinitionElementType
   val FUN_SIG = new ScalaElementType("function signature")
   val CONSTR_EXPR = new ScalaElementType("constructor expression")
   val SELF_INVOCATION = new ScalaElementType("self invocation")
 
-  /** *************** types ***************** */
+  /** *************** types *****************
+    */
   val LOWER_BOUND_TYPE = new ScalaElementType("lower bound type")
   val UPPER_BOUND_TYPE = new ScalaElementType("upper bound type")
 
-  /** ********************************************************************************** */
-  /** ***************************** MODIFIERS AND ATTRIBUTES *************************** */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ***************************** MODIFIERS AND ATTRIBUTES ***************************
+    */
+  /** **********************************************************************************
+    */
 
-  /** ***************** modifiers ********************* */
+  /** ***************** modifiers *********************
+    */
   val MODIFIERS = new ScModifiersElementType("moifiers")
   val ACCESS_MODIFIER = new ScAccessModifierElementType
 
-  /** ***************** annotation ******************** */
+  /** ***************** annotation ********************
+    */
 
   val NAME_VALUE_PAIR = new ScalaElementType("name value pair")
   val ANNOTATION_EXPR = new ScalaElementType("annotation expression")
   val ANNOTATION = new ScAnnotationElementType
   val ANNOTATIONS = new ScAnnotationsElementType
 
-  /** ********************************************************************************** */
-  /** ************************************ LITERALS ************************************ */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ************************************ LITERALS ************************************
+    */
+  /** **********************************************************************************
+    */
   val LITERAL = new ScalaElementType("Literal")
   //  String literals
   val STRING_LITERAL = new ScalaElementType("String Literal")
@@ -202,9 +239,12 @@ object ScalaElementTypes {
   // Boolean literals
   val BOOLEAN_LITERAL = new ScalaElementType("Boolean Literal")
 
-  /** ********************************************************************************** */
-  /** ************************************ EXPRESSIONS ********************************* */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ************************************ EXPRESSIONS *********************************
+    */
+  /** **********************************************************************************
+    */
   /**/
   val PREFIX_EXPR = new ScalaElementType("prefix expression")
   val PREFIX = new ScalaElementType("prefix")
@@ -234,7 +274,8 @@ object ScalaElementTypes {
   val BLOCK = new ScalaElementType("block")
   val TUPLE = new ScalaElementType("Tuple")
 
-  /** ****************************** COMPOSITE EXPRESSIONS **************************** */
+  /** ****************************** COMPOSITE EXPRESSIONS ****************************
+    */
   val IF_STMT = new ScalaElementType("if statement")
   val FOR_STMT = new ScalaElementType("for statement")
   val WHILE_STMT = new ScalaElementType("while statement")
@@ -249,9 +290,12 @@ object ScalaElementTypes {
   val MATCH_STMT = new ScalaElementType("match statement")
   val TYPED_EXPR_STMT = new ScalaElementType("typed statement")
 
-  /** ********************************************************************************** */
-  /** ************************************ PATTERNS ************************************ */
-  /** ********************************************************************************** */
+  /** **********************************************************************************
+    */
+  /** ************************************ PATTERNS ************************************
+    */
+  /** **********************************************************************************
+    */
 
   val TUPLE_PATTERN = new ScalaElementType("Tuple Pattern")
   val SEQ_WILDCARD = new ScalaElementType("Sequence Wildcard")
@@ -272,7 +316,8 @@ object ScalaElementTypes {
     "stable reference pattern")
   val PATTERN_IN_PARENTHESIS = new ScalaElementType("pattern in parenthesis")
 
-  /** ************************************ TYPE PATTERNS ******************************* */
+  /** ************************************ TYPE PATTERNS *******************************
+    */
 
   val ARG_TYPE_PATTERN = new ScalaElementType("Argument type pattern")
   val ARG_TYPE_PATTERNS = new ScalaElementType("Argument type patterns")
@@ -285,7 +330,8 @@ object ScalaElementTypes {
   val TYPE_WITH_TYPES = new ScalaElementType("type WITH types")
   val REFINEMENT = new ScalaElementType("refinement")
 
-  /** ************************************* XML ************************************ */
+  /** ************************************* XML ************************************
+    */
 
   val XML_EXPR = new ScalaElementType("Xml expr")
   val XML_START_TAG = new ScalaElementType("Xml start tag")

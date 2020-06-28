@@ -29,7 +29,8 @@ import java.util.Date
 
 /**
   * Implement this trait to specify a set of rules to parse and format dates
-  * @author nafg */
+  * @author nafg
+  */
 trait DateTimeConverter {
 
   /**
@@ -64,12 +65,13 @@ trait DateTimeConverter {
 }
 
 /**
-  * A default implementation of DateTimeConverter that uses (Time)Helpers */
+  * A default implementation of DateTimeConverter that uses (Time)Helpers
+  */
 object DefaultDateTimeConverter extends DateTimeConverter {
   def formatDateTime(d: Date) = internetDateFormat.format(d)
   def formatDate(d: Date) = dateFormat.format(d)
 
-  /**  Uses Helpers.hourFormat which includes seconds but not time zone */
+  /** Uses Helpers.hourFormat which includes seconds but not time zone */
   def formatTime(d: Date) = hourFormat.format(d)
 
   def parseDateTime(s: String) = tryo { internetDateFormat.parse(s) }

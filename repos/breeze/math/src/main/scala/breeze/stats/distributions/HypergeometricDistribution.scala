@@ -23,7 +23,8 @@ import org.apache.commons.math3.distribution.{
 /**
   * The Hypergeometric-distribution - ratio of two scaled chi^2 variables
   *
-  * @author stucchio */
+  * @author stucchio
+  */
 
 class HypergeometricDistribution(
     populationSize: Int,

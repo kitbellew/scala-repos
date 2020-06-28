@@ -15,7 +15,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 }
 
 /**
-  * @author Alexander Podkhalyuzin, ilyas */
+  * @author Alexander Podkhalyuzin, ilyas
+  */
 
 class ScParenthesisedTypeElementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

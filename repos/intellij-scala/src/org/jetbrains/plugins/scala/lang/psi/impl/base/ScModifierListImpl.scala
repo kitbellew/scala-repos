@@ -19,7 +19,8 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008 */
+  * Date: 22.02.2008
+  */
 class ScModifierListImpl private (
     stub: StubElement[ScModifierList],
     nodeType: IElementType,

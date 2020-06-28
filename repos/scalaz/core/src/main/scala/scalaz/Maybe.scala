@@ -21,7 +21,8 @@ sealed abstract class Maybe[A] {
 
   /** Catamorphism.
     * Run the given function on the underlying value if present, otherwise return
-    * the provided fallback value */
+    * the provided fallback value
+    */
   final def cata[B](f: A => B, b: => B): B =
     this match {
       case Just(a) => f(a)
@@ -37,17 +38,20 @@ sealed abstract class Maybe[A] {
     getOrElse(a)
 
   /** Turn the underlying value into a failure validation if present, otherwise
-    * return a success validation with the provided fallback value */
+    * return a success validation with the provided fallback value
+    */
   final def toFailure[B](b: => B): Validation[A, B] =
     cata(Validation.failure, Success(b))
 
   /** Turn the underlying value into a success validation if present, otherwise
-    * return a failure validation with the provided fallback value */
+    * return a failure validation with the provided fallback value
+    */
   final def toSuccess[B](b: => B): Validation[B, A] =
     cata(Validation.success, Failure(b))
 
   /** Turn the underlying value into a left disjunction if present, otherwise
-    * return a right disjunction with the provided fallback value */
+    * return a right disjunction with the provided fallback value
+    */
   final def toLeft[B](b: => B): A \/ B =
     cata(\/.left, \/.right(b))
 
@@ -56,7 +60,8 @@ sealed abstract class Maybe[A] {
     toLeft(b)
 
   /** Turn the underlying value into a right disjunction if present, otherwise
-    * return a left disjunction with the provided fallback value */
+    * return a left disjunction with the provided fallback value
+    */
   final def toRight[B](b: => B): B \/ A =
     cata(\/.right, \/.left(b))
 
@@ -122,12 +127,14 @@ sealed abstract class Maybe[A] {
     filter(f.andThen(!_))
 
   /** Return `true` if this is a [[Maybe.Empty]] or if this is a [[Maybe.Just]]
-    * and the underlying value satisfies the provided predicate */
+    * and the underlying value satisfies the provided predicate
+    */
   final def forall(f: A => Boolean): Boolean =
     cata(f, true)
 
   /** Return `true` if this is a [[Maybe.Just]] and the underlying value
-    * satisfies the provided predicate */
+    * satisfies the provided predicate
+    */
   final def exists(f: A => Boolean): Boolean =
     cata(f, false)
 
@@ -141,7 +148,8 @@ sealed abstract class Maybe[A] {
 
   /**
     * Return the underlying value wrapped in type `F` if present, otherwise the
-    * empty value for type `F` */
+    * empty value for type `F`
+    */
   final def orEmpty[F[_]](implicit F: Applicative[F], G: PlusEmpty[F]): F[A] =
     cata(F.point(_), G.empty)
 }

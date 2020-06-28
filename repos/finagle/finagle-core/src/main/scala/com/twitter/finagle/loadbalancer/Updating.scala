@@ -27,6 +27,7 @@ private trait Updating[Req, Rep] extends Balancer[Req, Rep] with OnReady {
    */
   private[this] val observation = activity.states.respond {
     case Activity.Pending =>
+
     case Activity.Ok(newList) =>
       update(newList)
       ready.setDone()

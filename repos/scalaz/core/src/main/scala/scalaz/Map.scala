@@ -13,7 +13,8 @@ import annotation.tailrec
   *
   * Based on Haskell's Data.Map
   *
-  * @since 7.0.3 */
+  * @since 7.0.3
+  */
 sealed abstract class ==>>[A, B] {
   import ==>>._
 
@@ -29,7 +30,8 @@ sealed abstract class ==>>[A, B] {
 
   /** inserts a new key/value - O(log n).
     *
-    * If the key is already present, its value is replaced by the provided value. */
+    * If the key is already present, its value is replaced by the provided value.
+    */
   def insert(kx: A, x: B)(implicit n: Order[A]): A ==>> B =
     this match {
       case Tip() =>
@@ -50,7 +52,8 @@ sealed abstract class ==>>[A, B] {
     * @param f function to resolve conflict with existing key:
     *   (insertedValue, existingValue) => resolvedValue
     * @param kx key
-    * @param x value to insert if the key is not already present */
+    * @param x value to insert if the key is not already present
+    */
   def insertWith(f: (B, B) => B, kx: A, x: B)(implicit o: Order[A]): A ==>> B =
     insertWithKey((_, a, b) => f(a, b), kx, x)
 
@@ -59,7 +62,8 @@ sealed abstract class ==>>[A, B] {
     * @param f function to resolve conflict with existing key:
     *   (key, insertedValue, existingValue) => resolvedValue
     * @param kx key
-    * @param x value to insert if the key is not already present */
+    * @param x value to insert if the key is not already present
+    */
   def insertWithKey(f: (A, B, B) => B, kx: A, x: B)(implicit
       o: Order[A]): A ==>> B =
     this match {
@@ -106,7 +110,8 @@ sealed abstract class ==>>[A, B] {
 
   /** updates or removes a value - O(log n)
     *
-    * if `f` returns `None`, then the key is removed from the map */
+    * if `f` returns `None`, then the key is removed from the map
+    */
   def update(k: A, f: B => Option[B])(implicit o: Order[A]): A ==>> B =
     updateWithKey(k, (_, x) => f(x))
 
@@ -135,7 +140,8 @@ sealed abstract class ==>>[A, B] {
   /** looks up a key and updates its value - O(log n)
     *
     * Similar to [[updateWithKey]] but also returns the value. If the value was updated, returns the
-    * new value. If the value was deleted, returns the old value. */
+    * new value. If the value was deleted, returns the old value.
+    */
   def updateLookupWithKey(k: A, f: (A, B) => Option[B])(implicit
       o: Order[A]): (Option[B], A ==>> B) =
     this match {

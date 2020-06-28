@@ -1105,10 +1105,12 @@ trait ColumnarTableModule[M[+_]]
       case class SlicePosition[K](
           sliceId: SliceId,
           /** The position in the current slice. This will only be nonzero when the slice has been appended
-            * to as a result of a cartesian crossing the slice boundary */
+            * to as a result of a cartesian crossing the slice boundary
+            */
           pos: Int,
           /** Present if not in a final right or left run. A pair of a key slice that is parallel to the
-            * current data slice, and the value that is needed as input to sltk or srtk to produce the next key. */
+            * current data slice, and the value that is needed as input to sltk or srtk to produce the next key.
+            */
           keyState: K,
           key: Slice,
           /** The current slice to be operated upon. */

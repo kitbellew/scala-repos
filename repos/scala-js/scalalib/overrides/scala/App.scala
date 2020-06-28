@@ -40,7 +40,8 @@ import scala.scalajs.js.annotation.JSExport
 trait App extends DelayedInit {
 
   /** The time when the execution of this program started, in milliseconds since 1
-    * January 1970 UTC. */
+    * January 1970 UTC.
+    */
   val executionStart: Long = currentTime
 
   /** The command line arguments passed to the application's `main` method.

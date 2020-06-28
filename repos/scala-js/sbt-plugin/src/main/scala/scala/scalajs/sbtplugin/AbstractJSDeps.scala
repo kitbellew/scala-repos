@@ -7,7 +7,8 @@ import StringUtilities.nonEmpty
 import org.scalajs.core.tools.jsdep.JSDependency
 
 /** Something JavaScript related a project may depend on. Either a JavaScript
-  *  module/library, or the DOM at runtime. */
+  *  module/library, or the DOM at runtime.
+  */
 sealed trait AbstractJSDep {
   def configurations: Option[String]
 
@@ -58,7 +59,8 @@ object JarJSModuleID {
 }
 
 /** A JavaScript module that we depend on, but is provided externally or
-  *  by the project itself */
+  *  by the project itself
+  */
 final case class ProvidedJSModuleID(
     jsDep: JSDependency,
     configurations: Option[String])

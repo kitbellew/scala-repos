@@ -27,7 +27,8 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
   * @author Alexander Podkhalyuzin
-  * @since 20.02.2008 */
+  * @since 20.02.2008
+  */
 class ScTraitImpl private (
     stub: StubElement[ScTemplateDefinition],
     nodeType: IElementType,

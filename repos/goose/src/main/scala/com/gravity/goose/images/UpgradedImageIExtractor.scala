@@ -18,7 +18,8 @@ import scala.util.parsing.json.{JSON, JSONObject}
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 9/22/11 */
+  * Date: 9/22/11
+  */
 
 class UpgradedImageIExtractor(
     httpClient: HttpClient,

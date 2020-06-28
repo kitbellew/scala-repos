@@ -2,7 +2,8 @@ package scalaz
 
 /** `F` on the left, and `G` on the right, of [[scalaz.\/]].
   *
-  * @param run The underlying [[scalaz.\/]]. */
+  * @param run The underlying [[scalaz.\/]].
+  */
 final case class Coproduct[F[_], G[_], A](run: F[A] \/ G[A]) {
   import Coproduct._
 

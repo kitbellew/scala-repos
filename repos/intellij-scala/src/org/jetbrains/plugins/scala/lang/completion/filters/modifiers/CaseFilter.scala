@@ -17,7 +17,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.templates._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.05.2008 */
+  * Date: 22.05.2008
+  */
 
 class CaseFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {

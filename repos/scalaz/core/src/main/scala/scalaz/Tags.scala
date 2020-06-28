@@ -48,7 +48,8 @@ object Tags {
   val Max = Tag.of[Max]
 
   /** Type tag to choose a [[scalaz.Monoid]] instance for a numeric type that performs multiplication,
-    *  rather than the default monoid for these types which by convention performs addition. */
+    *  rather than the default monoid for these types which by convention performs addition.
+    */
   sealed trait Multiplication
 
   val Multiplication = Tag.of[Multiplication]

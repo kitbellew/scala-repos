@@ -441,7 +441,8 @@ class SparkConf(loadDefaults: Boolean) extends Cloneable with Logging {
   private[spark] def getenv(name: String): String = System.getenv(name)
 
   /** Checks for illegal or deprecated config settings. Throws an exception for the former. Not
-    * idempotent - may mutate this conf object to convert deprecated settings to supported ones. */
+    * idempotent - may mutate this conf object to convert deprecated settings to supported ones.
+    */
   private[spark] def validateSettings() {
     if (contains("spark.local.dir")) {
       val msg =

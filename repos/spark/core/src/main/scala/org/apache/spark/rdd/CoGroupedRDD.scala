@@ -32,7 +32,8 @@ import org.apache.spark.util.Utils
 /** The references to rdd and splitIndex are transient because redundant information is stored
   * in the CoGroupedRDD object.  Because CoGroupedRDD is serialized separately from
   * CoGroupPartition, if rdd and splitIndex aren't transient, they'll be included twice in the
-  * task closure. */
+  * task closure.
+  */
 private[spark] case class NarrowCoGroupSplitDep(
     @transient rdd: RDD[_],
     @transient splitIndex: Int,

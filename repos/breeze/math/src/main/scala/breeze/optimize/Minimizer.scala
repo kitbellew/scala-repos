@@ -19,7 +19,8 @@ package breeze.optimize;
 /**
   * Anything that can minimize a function
   *
-  * @author dlwh */
+  * @author dlwh
+  */
 trait Minimizer[T, -F] {
   def minimize(f: F, initial: T): T
 }

@@ -135,7 +135,8 @@ object TestMutable3 {
   *
   *  println(bMax == bLarge)
   * }
-  * * */
+  * *
+  */
 
 object TestImmutable {
   import scala.collection.immutable.BitSet

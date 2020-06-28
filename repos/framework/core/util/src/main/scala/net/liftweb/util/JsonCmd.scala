@@ -37,7 +37,8 @@ import net.liftweb.json.JsonAST._
 
 /**
   * A helpful extractor to take the JValue sent from the client-side JSON stuff and
-  * make some sense of it. */
+  * make some sense of it.
+  */
 object JsonCommand {
   import scala.language.implicitConversions
 

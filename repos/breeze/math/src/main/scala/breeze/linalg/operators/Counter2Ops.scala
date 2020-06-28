@@ -310,7 +310,8 @@ trait Counter2Ops {
     *        math.pow(sum, 1.0 / n)
     *      }
     *    }
-    *  } */
+    *  }
+    */
 
   implicit def canMultiplyC2C1[K1, K2, V](implicit
       semiring: Semiring[V]): OpMulMatrix.Impl2[

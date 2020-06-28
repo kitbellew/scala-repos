@@ -30,7 +30,8 @@ import scala.reflect.ClassTag
   * fill in blanks if you don't add things consecutively. Otherwise you
   * get an Exception.
   *
-  * @author dlwh */
+  * @author dlwh
+  */
 @SerialVersionUID(1)
 class ArrayMap[@specialized V](defValue: => V, private val arr: ArrayBuffer[V])
     extends scala.collection.mutable.Map[Int, V]

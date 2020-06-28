@@ -9,7 +9,8 @@ import QueryParameter.constOp
 import scala.collection.mutable
 
 /** Replace all occurrences of `Take` and `Drop` with row number computations based on
-  * `zipWithIndex` operations. */
+  * `zipWithIndex` operations.
+  */
 class RemoveTakeDrop(
     val translateTake: Boolean = true,
     val translateDrop: Boolean = true)

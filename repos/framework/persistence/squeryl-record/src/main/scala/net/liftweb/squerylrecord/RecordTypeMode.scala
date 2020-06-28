@@ -225,7 +225,8 @@ trait RecordTypeMode extends PrimitiveTypeMode {
     }
 
   /** Needed for inner selects. The cast is possible here because the type is not
-    * used in the in query. Only the AST of the query is needed. */
+    * used in the in query. Only the AST of the query is needed.
+    */
   //implicit def queryStringField2QueryString[T <: TypedField[String]](q: Query[T]): Query[String] = q.asInstanceOf[Query[String]]
 
   /** Needed for outer joins. */

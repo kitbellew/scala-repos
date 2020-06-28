@@ -30,7 +30,8 @@ trait JdbcMappingCompilerComponent { self: JdbcProfile =>
 
   /** A ResultConverterCompiler that builds JDBC-based converters. Instances of
     * this class use mutable state internally. They are meant to be used for a
-    * single conversion only and must not be shared or reused. */
+    * single conversion only and must not be shared or reused.
+    */
   class MappingCompiler
       extends ResultConverterCompiler[JdbcResultConverterDomain] {
     def createColumnConverter(n: Node, idx: Int, column: Option[FieldSymbol])

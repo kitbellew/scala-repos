@@ -11,7 +11,8 @@ private[tests] trait CoreTestDefs
   import scala.tools.nsc.interactive.Global
 
   /** Ask the presentation compiler for completion at all locations
-    * (in all sources) where the defined `marker` is found. */
+    * (in all sources) where the defined `marker` is found.
+    */
   class TypeCompletionAction(override val compiler: Global)
       extends PresentationCompilerTestDef
       with AskTypeCompletionAt {
@@ -38,7 +39,8 @@ private[tests] trait CoreTestDefs
   }
 
   /** Ask the presentation compiler for completion at all locations
-    * (in all sources) where the defined `marker` is found. */
+    * (in all sources) where the defined `marker` is found.
+    */
   class ScopeCompletionAction(override val compiler: Global)
       extends PresentationCompilerTestDef
       with AskScopeCompletionAt {
@@ -70,7 +72,8 @@ private[tests] trait CoreTestDefs
   }
 
   /** Ask the presentation compiler for type info at all locations
-    * (in all sources) where the defined `marker` is found. */
+    * (in all sources) where the defined `marker` is found.
+    */
   class TypeAction(override val compiler: Global)
       extends PresentationCompilerTestDef
       with AskTypeAt {
@@ -88,7 +91,8 @@ private[tests] trait CoreTestDefs
   }
 
   /** Ask the presentation compiler for hyperlink at all locations
-    * (in all sources) where the defined `marker` is found. */
+    * (in all sources) where the defined `marker` is found.
+    */
   class HyperlinkAction(override val compiler: Global)
       extends PresentationCompilerTestDef
       with AskTypeAt

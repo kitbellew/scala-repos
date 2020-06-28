@@ -353,6 +353,7 @@ object Concurrent {
               case Waiting(p) =>
                 p.success(Input.EOF)
               case _ =>
+
             }
             Iteratee.flatten(last.future)
 

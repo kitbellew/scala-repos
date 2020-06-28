@@ -10,7 +10,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008 */
+  * Date: 22.02.2008
+  */
 
 class ScRefineStatImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

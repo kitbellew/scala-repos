@@ -294,7 +294,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   }
 
   /** Remove a crashed file from the ignore buffer. Background compilation will take it into account
-    *  and errors will be reported against it. */
+    *  and errors will be reported against it.
+    */
   def enableIgnoredFile(file: AbstractFile) {
     ignoredFiles -= file
     debugLog(
@@ -887,7 +888,8 @@ with ContextTrees with RichCompilationUnits with Picklers {
   }
 
   /** Set sync var `response` to a fully attributed tree corresponding to the
-    *  entire compilation unit */
+    *  entire compilation unit
+    */
   private[interactive] def getTypedTree(
       source: SourceFile,
       forceReload: Boolean,

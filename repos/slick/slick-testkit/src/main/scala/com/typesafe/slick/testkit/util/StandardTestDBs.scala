@@ -22,7 +22,8 @@ object StandardTestDBs {
   }
 
   /** A modified H2Mem that tests the `removeTakeDrop` phase (which is not used by any of the
-    * standard profiles). */
+    * standard profiles).
+    */
   lazy val H2Rownum = new H2TestDB("h2rownum", false) {
     val url = "jdbc:h2:mem:test_rownum"
     override def isPersistent = false

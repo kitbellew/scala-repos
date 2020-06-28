@@ -1,5 +1,6 @@
 /**
-  * @author ven */
+  * @author ven
+  */
 package org.jetbrains.plugins.scala
 package lang
 package psi

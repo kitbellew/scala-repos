@@ -382,7 +382,8 @@ trait Scopes extends api.Scopes { self: SymbolTable =>
     def sorted: List[Symbol] = toList
 
     /** Return the nesting level of this scope, i.e. the number of times this scope
-      *  was nested in another */
+      *  was nested in another
+      */
     def nestingLevel = nestinglevel
 
     /** Return all symbols as an iterator in the order they were entered in this scope.

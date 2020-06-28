@@ -56,7 +56,8 @@ import scala.collection.mutable.ListBuffer
 
 /**
   * Nikolay.Tropin
-  * 2014-08-29 */
+  * 2014-08-29
+  */
 class ScalaChangeSignatureDialog(
     val project: Project,
     val method: ScalaMethodDescriptor)

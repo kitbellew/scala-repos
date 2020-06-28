@@ -123,7 +123,8 @@ trait DiagramDirectiveParser {
   }
 
   /** The AnnotationDiagramFilter trait directs the diagram engine according to an annotation
-    *  TODO: Should document the annotation, for now see parseDiagramAnnotation in ModelFactory.scala */
+    *  TODO: Should document the annotation, for now see parseDiagramAnnotation in ModelFactory.scala
+    */
   case class AnnotationDiagramFilter(
       hideDiagram: Boolean,
       hideIncomingImplicits: Boolean,

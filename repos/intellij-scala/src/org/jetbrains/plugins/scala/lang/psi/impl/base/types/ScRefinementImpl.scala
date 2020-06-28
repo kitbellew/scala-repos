@@ -12,7 +12,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008 */
+  * Date: 07.03.2008
+  */
 
 class ScRefinementImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

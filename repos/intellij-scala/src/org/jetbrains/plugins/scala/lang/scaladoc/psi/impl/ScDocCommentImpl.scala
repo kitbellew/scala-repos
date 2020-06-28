@@ -92,6 +92,7 @@ class ScDocCommentImpl(text: CharSequence)
               filter(docTag.name) =>
           answer += currentChild.asInstanceOf[PsiDocTag]
         case _ =>
+
       }
       currentChild = currentChild.getNextSibling
     }

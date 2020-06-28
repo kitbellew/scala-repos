@@ -8,7 +8,8 @@ import scala.reflect.macros.whitebox.Context
   *
   * All type-level computations are done with Church Numerals.
   * Value-level computations at run-time are done directly on the underlying
-  * `Int` values, similar to `java.lang.Integer`. */
+  * `Int` values, similar to `java.lang.Integer`.
+  */
 abstract class Nat {
 
   /** The type of this Nat object. */
@@ -191,7 +192,8 @@ object Nat {
   private[this] val cached = Array(_0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10)
 
   /** Get a `Nat` for an `Int`. If the Int is a literal, the Nat will have
-    * the proper type, otherwise only the supertype `Nat`. */
+    * the proper type, otherwise only the supertype `Nat`.
+    */
   def apply(i: Int): Nat = macro Nat.applyImpl
   def applyImpl(ctx: Context)(i: ctx.Expr[Int]): ctx.Expr[Nat] = {
     import ctx.universe._

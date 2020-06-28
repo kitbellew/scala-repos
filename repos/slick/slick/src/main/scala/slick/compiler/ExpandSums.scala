@@ -353,7 +353,8 @@ class ExpandSums extends Phase {
     }
 
   /** Collect discriminator candidate fields in a predicate. These are all paths below an
-    * OptionApply, which indicates their future use under a discriminator guard. */
+    * OptionApply, which indicates their future use under a discriminator guard.
+    */
   def collectDiscriminatorCandidates(
       n: Node): Set[(TypeSymbol, List[TermSymbol])] =
     n.collectAll[(TypeSymbol, List[TermSymbol])] {
@@ -374,7 +375,8 @@ class ExpandSums extends Phase {
   }
 
   /** Expand multi-column conditional expressions and SilentCasts.
-    * Single-column conditionals involving NULL values are optimized away where possible. */
+    * Single-column conditionals involving NULL values are optimized away where possible.
+    */
   def expandConditionals(n: Node): Node = {
     val invalid = mutable.HashSet.empty[TypeSymbol]
     def invalidate(n: Node): Unit =

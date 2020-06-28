@@ -67,7 +67,8 @@ final class NodeOps(val tree: Node) extends AnyVal {
   /** Replace nodes in a bottom-up traversal while invalidating TypeSymbols. Any later references
     * to the invalidated TypeSymbols have their types unassigned, so that the whole tree can be
     * retyped afterwards to get the correct new TypeSymbols in. The PartialFunction may return
-    * `null`, which is considered the same as not matching. */
+    * `null`, which is considered the same as not matching.
+    */
   def replaceInvalidate(f: PartialFunction[Node, (Node, TypeSymbol)]): Node = {
     import TypeUtil.typeToTypeUtil
     val invalid = mutable.HashSet.empty[TypeSymbol]

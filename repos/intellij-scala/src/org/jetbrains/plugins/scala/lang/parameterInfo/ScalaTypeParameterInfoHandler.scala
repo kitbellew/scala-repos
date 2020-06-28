@@ -257,6 +257,7 @@ class ScalaTypeParameterInfoHandler
                             substitutor)) =>
                       res += Tuple2(r.getElement, substitutor)
                     case _ =>
+
                   }
                 case _ =>
               }

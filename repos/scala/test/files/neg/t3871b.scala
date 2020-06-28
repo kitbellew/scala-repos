@@ -16,7 +16,8 @@
   *     modifier is called object-protected; it can be accessed only from within the object
   *     in which it is defined. That is, a selection p.M is only legal if the prefix is this
   *     or O.this, for some class O enclosing the reference. In addition, the restrictions
-  *     for unqualified protected apply. */
+  *     for unqualified protected apply.
+  */
 
 object E {
   val e = new E

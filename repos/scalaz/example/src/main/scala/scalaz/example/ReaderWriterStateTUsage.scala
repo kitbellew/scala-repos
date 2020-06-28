@@ -71,7 +71,8 @@ object CABRunLengthEncoder {
 
   /**
     * the configuration of our encoder, this will be used in the
-    * Reader part of our RWST */
+    * Reader part of our RWST
+    */
   case class RunLengthConfig(
       /**
         * if we are emitting less than minRun tokens, just emit them as

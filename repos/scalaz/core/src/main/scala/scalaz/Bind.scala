@@ -21,7 +21,8 @@ trait Bind[F[_]] extends Apply[F] { self =>
   }
 
   /** Sequence the inner `F` of `FFA` after the outer `F`, forming a
-    * single `F[A]`. */
+    * single `F[A]`.
+    */
   def join[A](ffa: F[F[A]]) = bind(ffa)(a => a)
 
   // derived functions

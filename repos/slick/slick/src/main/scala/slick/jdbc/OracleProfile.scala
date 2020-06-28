@@ -467,7 +467,8 @@ trait OracleProfile extends JdbcProfile {
   }*/
 
   /** Remove ORDER BY from comprehensions that are used as arguments to a
-    * scalar function. */
+    * scalar function.
+    */
   class RemoveSubqueryOrdering extends Phase {
     val name = "removeSubqueryOrdering"
 

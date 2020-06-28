@@ -6,7 +6,8 @@ import TypeUtil._
 import slick.util.ConstArray
 
 /** Convert unreferenced StructNodes to single columns or ProductNodes (which is needed for
-  * aggregation functions and at the top level). */
+  * aggregation functions and at the top level).
+  */
 class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
     extends Phase {
   val name = "removeFieldNames"

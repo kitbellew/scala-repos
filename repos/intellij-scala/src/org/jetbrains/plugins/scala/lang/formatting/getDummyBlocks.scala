@@ -3,7 +3,8 @@ package lang
 package formatting
 
 /**
-  * @author ilyas */
+  * @author ilyas
+  */
 
 import _root_.java.util
 

@@ -10,7 +10,8 @@ import TypeUtil._
 /** Flatten all `Pure` node contents into a single `StructNode`.
   *
   * After this phase, all `Pure` nodes produce a `StructNode` of primitive fields. As a
-  * side-effect, nested NominalTypes are eliminated. */
+  * side-effect, nested NominalTypes are eliminated.
+  */
 class FlattenProjections extends Phase {
   val name = "flattenProjections"
 
@@ -63,7 +64,8 @@ class FlattenProjections extends Phase {
     * candidate TypeSymbols in the path, otherwise returns `Some(base, rest, tsym)`
     * where `tsym` is the symbol that was found and `base` is the Node in the path
     * which has a NominalType of that symbol. `rest` is a (possibly empty) path of
-    * symbols on top of `base`. */
+    * symbols on top of `base`.
+    */
   def splitPath(n: PathElement, candidates: scala.collection.Set[TypeSymbol])
       : Option[(PathElement, List[TermSymbol], TypeSymbol)] = {
     def checkType(
@@ -88,7 +90,8 @@ class FlattenProjections extends Phase {
     *   must not be used in the top-level Bind because the definitions have to match the top-level
     *   type (which is used later in `createResultSetMapping`). Any duplicates there will be
     *   eliminated in `hoistClientOps`. It is also disabled directly under a Union because the
-    *   columns on both sides have to match up. */
+    *   columns on both sides have to match up.
+    */
   def flattenProjection(
       n: Node,
       collapse: Boolean): (StructNode, Map[List[TermSymbol], TermSymbol]) = {

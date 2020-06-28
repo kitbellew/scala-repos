@@ -21,7 +21,8 @@ import java.io.Writer
 
 /** An html page that is part of a Scaladoc site.
   * @author David Bernard
-  * @author Gilles Dubochet */
+  * @author Gilles Dubochet
+  */
 abstract class HtmlPage extends Page { thisPage =>
 
   /** The title of this page. */
@@ -81,7 +82,8 @@ abstract class HtmlPage extends Page { thisPage =>
   }
 
   /** Transforms an optional comment into an styled HTML tree representing its body if it is defined, or into an empty
-    * node sequence if it is not. */
+    * node sequence if it is not.
+    */
   def commentToHtml(comment: Option[Comment]): NodeSeq =
     (comment map (commentToHtml(_))) getOrElse NodeSeq.Empty
 
@@ -258,7 +260,8 @@ abstract class HtmlPage extends Page { thisPage =>
   }
 
   /** Returns the _big image name and the alt attribute
-    *  corresponding to the DocTemplate Entity (upper left icon) */
+    *  corresponding to the DocTemplate Entity (upper left icon)
+    */
   def docEntityKindToBigImage(ety: DocTemplateEntity) = {
     def entityToImage(e: DocTemplateEntity) =
       if (e.isTrait) Image.Trait

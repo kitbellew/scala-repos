@@ -103,7 +103,8 @@ class MergeToComprehensions extends Phase {
     /** Merge Bind, Filter (as WHERE or HAVING depending on presence of GROUP BY), CollectionCast,
       * SortBy and Distinct into an existing Comprehension. If Distinct is present, no other
       * Distinct or Filter (as HAVING) is allowed. A subquery is created if necessary to avoid
-      * this situation. */
+      * this situation.
+      */
     def mergeSortBy(
         n: Node,
         buildBase: Boolean): (Comprehension, Replacements) =
@@ -246,7 +247,8 @@ class MergeToComprehensions extends Phase {
 
     /** Convert a Node for use as a source in a Join. Joins and TableNodes are not converted to
       * Comprehensions. Instead of returning regular replacements, the method returns identity
-      * mappings for all fields in the source. */
+      * mappings for all fields in the source.
+      */
     def createSource(n: Node): Option[(Node, Mappings)] =
       n match {
         case t: TableNode =>
@@ -317,7 +319,8 @@ class MergeToComprehensions extends Phase {
       }
 
     /** Create a source node, or alternatively a top-level node (possibly lifting the node into a
-      * subquery) if it is not a valid source. */
+      * subquery) if it is not a valid source.
+      */
     def createSourceOrTopLevel(n: Node): (Node, Mappings) =
       createSource(n).getOrElse {
         logger.debug("Creating subquery from top-level:", n)
@@ -414,7 +417,8 @@ class MergeToComprehensions extends Phase {
 
   /** Merge the common operations Bind, Filter and CollectionCast into an existing Comprehension.
     * This method is used at different stages of the pipeline. If the Comprehension already contains
-    * a Distinct clause, it is pushed into a subquery. */
+    * a Distinct clause, it is pushed into a subquery.
+    */
   def mergeCommon(
       rec: (Node, Boolean) => (Comprehension, Replacements),
       parent: (Node, Boolean) => (Comprehension, Replacements),
@@ -471,7 +475,8 @@ class MergeToComprehensions extends Phase {
   }
 
   /** Remove purely aliasing `Bind` mappings, apply the conversion to the source, then inject the
-    * mappings back into the source's mappings. */
+    * mappings back into the source's mappings.
+    */
   def dealias(n: Node)(f: Node => (Node, Mappings)): (Node, Mappings) = {
     def isAliasing(base: TermSymbol, defs: ConstArray[(TermSymbol, Node)]) = {
       val r = defs.forall {
@@ -508,7 +513,8 @@ class MergeToComprehensions extends Phase {
   }
 
   /** Apply the replacements and current selection of a Comprehension to a new Node that
-    * will be merged into the Comprehension. */
+    * will be merged into the Comprehension.
+    */
   def applyReplacements(n1: Node, r: Replacements, c: Comprehension): Node = {
     val Pure(StructNode(base), _) = c.select
     val baseM = base.iterator.toMap

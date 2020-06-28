@@ -14,7 +14,8 @@ package test.templates {
     type String = test.templates.String
 
     /** @template
-      * @inheritanceDiagram */
+      * @inheritanceDiagram
+      */
     type T <: Foo
     val T: FooExtractor
     trait Foo { def foo: Int }
@@ -25,7 +26,8 @@ package test.templates {
   trait Api extends Base {
 
     /** @documentable
-      *  @inheritanceDiagram */
+      *  @inheritanceDiagram
+      */
     override type T <: FooApi
     trait FooApi extends Foo { def bar: String }
   }

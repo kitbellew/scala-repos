@@ -8,7 +8,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 04.05.2008 */
+  * Date: 04.05.2008
+  */
 
 class ScalaFileItemPresentation(private val element: ScalaFile)
     extends ScalaItemPresentation(element) {

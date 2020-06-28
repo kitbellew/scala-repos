@@ -227,7 +227,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
     }
 
   /** Typeable instance for `GenTraversable`.
-    *  Note that the contents be will tested for conformance to the element type. */
+    *  Note that the contents be will tested for conformance to the element type.
+    */
   implicit def genTraversableTypeable[CC[X] <: GenTraversable[X], T](implicit
       mCC: ClassTag[CC[_]],
       castT: Typeable[T]): Typeable[CC[T] with GenTraversable[T]] =

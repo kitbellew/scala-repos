@@ -4,7 +4,8 @@ import java.sql.{PreparedStatement, ResultSet}
 import slick.ast.{FieldSymbol, BaseTypedType}
 
 /** A JdbcType object represents a Scala type that can be used as a column type in the database.
-  * Implicit JdbcTypes for the standard types are provided by the profile. */
+  * Implicit JdbcTypes for the standard types are provided by the profile.
+  */
 trait JdbcType[@specialized(
   Byte,
   Short,
@@ -36,11 +37,13 @@ trait JdbcType[@specialized(
     }
 
   /** Get a result column of the type. For reference types, SQL NULL values
-    * are returned as `null`, for primitive types a default value is returned. */
+    * are returned as `null`, for primitive types a default value is returned.
+    */
   def getValue(r: ResultSet, idx: Int): T
 
   /** Check if the value returned by the immediately preceding call to
-    * getValue() was NULL. */
+    * getValue() was NULL.
+    */
   def wasNull(r: ResultSet, idx: Int): Boolean
 
   /** Update a column of the type in a mutable result set. */
@@ -50,14 +53,16 @@ trait JdbcType[@specialized(
   def updateNull(r: ResultSet, idx: Int): Unit = r.updateNull(idx)
 
   /** Convert a value to a SQL literal.
-    * This should throw a `SlickException` if `hasLiteralForm` is false. */
+    * This should throw a `SlickException` if `hasLiteralForm` is false.
+    */
   def valueToSQLLiteral(value: T): String
 
   /** Indicates whether values of this type have a literal representation in
     * SQL statements.
     * This must return false if `valueToSQLLiteral` throws a SlickException.
     * QueryBuilder (and profile-specific subclasses thereof) uses this method
-    * to treat LiteralNodes as volatile (i.e. using bind variables) as needed. */
+    * to treat LiteralNodes as volatile (i.e. using bind variables) as needed.
+    */
   def hasLiteralForm: Boolean
 
   override def toString = scalaType.toString + "'"

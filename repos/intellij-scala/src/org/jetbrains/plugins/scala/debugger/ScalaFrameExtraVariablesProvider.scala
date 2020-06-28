@@ -59,7 +59,8 @@ import scala.util.Try
 
 /**
   * Nikolay.Tropin
-  * 2014-12-04 */
+  * 2014-12-04
+  */
 class ScalaFrameExtraVariablesProvider extends FrameExtraVariablesProvider {
   override def isAvailable(
       sourcePosition: SourcePosition,

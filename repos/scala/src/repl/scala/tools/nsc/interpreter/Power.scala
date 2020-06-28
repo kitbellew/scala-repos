@@ -36,7 +36,8 @@ import scala.reflect.ClassTag
   *  method super$f$mcJ$sp
   *  method super$f$mcI$sp
   *  method super$f
-  * } */
+  * }
+  */
 
 /** A class for methods to be injected into the intp in power mode.
   */

@@ -26,7 +26,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
 
   /** Build a new query by applying a function to all elements of this query
     * and using the elements of the resulting queries. This corresponds to an
-    * implicit inner join in SQL. */
+    * implicit inner join in SQL.
+    */
   def flatMap[F, T, D[_]](f: E => Query[F, T, D]): Query[F, T, C] = {
     val generator = new AnonSymbol
     val aliased = shaped.encodeRef(Ref(generator)).value
@@ -54,7 +55,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
 
   /** Select all elements of this query which satisfy a predicate. Unlike
     * `withFilter, this method only allows `Rep`-valued predicates, so it
-    * guards against the accidental use use plain Booleans. */
+    * guards against the accidental use use plain Booleans.
+    */
   def filter[T <: Rep[_]](f: E => T)(implicit
       wt: CanBeQueryCondition[T]): Query[E, U, C] =
     withFilter(f)
@@ -64,11 +66,13 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
 
   /** Select all elements of this query which satisfy a predicate. This method
     * is used when desugaring for-comprehensions over queries. There is no
-    * reason to call it directly because it is the same as `filter`. */
+    * reason to call it directly because it is the same as `filter`.
+    */
   def withFilter[T: CanBeQueryCondition](f: E => T) = filterHelper(f, identity)
 
   /** Join two queries with a cross join or inner join.
-    * An optional join predicate can be specified later by calling `on`. */
+    * An optional join predicate can be specified later by calling `on`.
+    */
   def join[E2, U2, D[_]](q2: Query[E2, U2, D]) = {
     val leftGen, rightGen = new AnonSymbol
     val aliased1 = shaped.encodeRef(Ref(leftGen))
@@ -88,7 +92,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     * An optional join predicate can be specified later by calling `on`.
     * The right side of the join is lifted to an `Option`. If at least one element on the right
     * matches, all matching elements are returned as `Some`, otherwise a single `None` row is
-    * returned. */
+    * returned.
+    */
   def joinLeft[E2, U2, D[_], O2](q2: Query[E2, _, D])(implicit
       ol: OptionLift[E2, O2],
       sh: Shape[FlatShapeLevel, O2, U2, _]) = {
@@ -111,7 +116,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     * An optional join predicate can be specified later by calling `on`.
     * The left side of the join is lifted to an `Option`. If at least one element on the left
     * matches, all matching elements are returned as `Some`, otherwise a single `None` row is
-    * returned. */
+    * returned.
+    */
   def joinRight[E1 >: E, E2, U2, D[_], O1, U1](q2: Query[E2, U2, D])(implicit
       ol: OptionLift[E1, O1],
       sh: Shape[FlatShapeLevel, O1, U1, _]) = {
@@ -134,7 +140,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     * An optional join predicate can be specified later by calling `on`.
     * Both sides of the join are lifted to an `Option`. If at least one element on either side
     * matches the other side, all matching elements are returned as `Some`, otherwise a single
-    * `None` row is returned. */
+    * `None` row is returned.
+    */
   def joinFull[E1 >: E, E2, U2, D[_], O1, U1, O2](q2: Query[E2, _, D])(implicit
       ol1: OptionLift[E1, O1],
       sh1: Shape[FlatShapeLevel, O1, U1, _],
@@ -174,12 +181,14 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   }
 
   /** Return a query formed from this query and another query by combining
-    * corresponding elements in pairs. */
+    * corresponding elements in pairs.
+    */
   def zip[E2, U2, D[_]](q2: Query[E2, U2, D]): Query[(E, E2), (U, U2), C] =
     standardJoin(q2, JoinType.Zip)
 
   /** Return a query formed from this query and another query by combining
-    * corresponding elements with the specified function. */
+    * corresponding elements with the specified function.
+    */
   def zipWith[E2, U2, F, G, T, D[_]](q2: Query[E2, U2, D], f: (E, E2) => F)(
       implicit shape: Shape[_ <: FlatShapeLevel, F, T, G]): Query[G, T, C] =
     standardJoin(q2, JoinType.Zip).map[F, G, T](x => f(x._1, x._2))
@@ -203,7 +212,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   }
 
   /** Sort this query according to a function which extracts the ordering
-    * criteria from the query's elements. */
+    * criteria from the query's elements.
+    */
   def sortBy[T](f: E => T)(implicit ev: T => Ordered): Query[E, U, C] = {
     val generator = new AnonSymbol
     val aliased = shaped.encodeRef(Ref(generator))
@@ -217,7 +227,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
 
   /** Partition this query into a query of pairs of a key and a nested query
     * containing the elements for the key, according to some discriminator
-    * function. */
+    * function.
+    */
   def groupBy[K, T, G, P](f: E => K)(implicit
       kshape: Shape[_ <: FlatShapeLevel, K, T, G],
       vshape: Shape[_ <: FlatShapeLevel, E, _, P])
@@ -241,17 +252,20 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
     }
 
   /** Return a new query containing the elements from both operands. Duplicate
-    * elements are eliminated from the result. */
+    * elements are eliminated from the result.
+    */
   def union[O >: E, R, D[_]](other: Query[O, U, D]): Query[O, U, C] =
     new WrappingQuery[O, U, C](Union(toNode, other.toNode, false), shaped)
 
   /** Return a new query containing the elements from both operands. Duplicate
-    * elements are preserved. */
+    * elements are preserved.
+    */
   def unionAll[O >: E, R, D[_]](other: Query[O, U, D]): Query[O, U, C] =
     new WrappingQuery[O, U, C](Union(toNode, other.toNode, true), shaped)
 
   /** Return a new query containing the elements from both operands. Duplicate
-    * elements are preserved. */
+    * elements are preserved.
+    */
   def ++[O >: E, R, D[_]](other: Query[O, U, D]) = unionAll(other)
 
   /** The total number of elements (i.e. rows). */
@@ -294,13 +308,15 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   def drop(num: Int): Query[E, U, C] = drop(num.toLong)
 
   /** Remove duplicate elements. When used on an ordered Query, there is no guarantee in which
-    * order duplicates are removed. This method is equivalent to `distinctOn(identity)`. */
+    * order duplicates are removed. This method is equivalent to `distinctOn(identity)`.
+    */
   def distinct: Query[E, U, C] =
     distinctOn[E, U](identity)(
       shaped.shape.asInstanceOf[Shape[FlatShapeLevel, E, U, _]])
 
   /** Remove duplicate elements which are the same in the given projection. When used on an
-    * ordered Query, there is no guarantee in which order duplicates are removed. */
+    * ordered Query, there is no guarantee in which order duplicates are removed.
+    */
   def distinctOn[F, T](f: E => F)(implicit
       shape: Shape[_ <: FlatShapeLevel, F, T, _]): Query[E, U, C] = {
     val generator = new AnonSymbol
@@ -322,7 +338,8 @@ sealed abstract class Query[+E, U, C[_]] extends QueryBase[C[U]] { self =>
   /** Force a subquery to be created when using this Query as part of a larger Query. This method
     * should never be necessary for correctness. If a query works with an explicit `.subquery` call
     * but fails without, this should be considered a bug in Slick. The method is exposed in the API
-    * to enable workarounds to be written in such cases. */
+    * to enable workarounds to be written in such cases.
+    */
   def subquery: Query[E, U, C] =
     new WrappingQuery[E, U, C](Subquery(toNode, Subquery.Default), shaped)
 }
@@ -403,7 +420,8 @@ final class BaseJoinQuery[+E1, +E2, U1, U2, C[_], +B1, +B2](
 
 /** Represents a database table. Profiles add extension methods to TableQuery
   * for operations that can be performed on tables but not on arbitrary
-  * queries, e.g. getting the table DDL. */
+  * queries, e.g. getting the table DDL.
+  */
 class TableQuery[E <: AbstractTable[_]](cons: Tag => E)
     extends Query[E, E#TableElementType, Seq] {
   lazy val shaped = {
@@ -420,7 +438,8 @@ class TableQuery[E <: AbstractTable[_]](cons: Tag => E)
 
   /** Get the "raw" table row that represents the table itself, as opposed to
     * a Path for a variable of the table's type. This method should generally
-    * not be called from user code. */
+    * not be called from user code.
+    */
   def baseTableRow: E = shaped.value
 }
 

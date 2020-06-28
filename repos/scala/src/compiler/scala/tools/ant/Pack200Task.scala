@@ -63,7 +63,8 @@ class Pack200Task extends ScalaMatchingTask {
     * is used to remove empty packages and improve pack200 optimization.
     * @param x
     *         `'''true'''` to retain file ordering.
-    *         `'''false'''` to optimize directory structure (DEFAULT). */
+    *         `'''false'''` to optimize directory structure (DEFAULT).
+    */
   def setKeepFileOrder(x: Boolean) { keepFileOrder = x }
 
   /** If false, a single modification time is used for all contained files */
@@ -92,7 +93,8 @@ class Pack200Task extends ScalaMatchingTask {
 \*============================================================================*/
 
   /** Gets the list of individual JAR files for processing.
-    * @return The list of JAR files */
+    * @return The list of JAR files
+    */
   private def getFileList: List[File] = {
     var files: List[File] = Nil
     val fs = getImplicitFileSet

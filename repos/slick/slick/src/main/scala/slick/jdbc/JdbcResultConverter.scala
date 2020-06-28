@@ -33,7 +33,8 @@ class BaseResultConverter[@specialized(
 }
 
 /** Specialized JDBC ResultConverter for handling values of type `Option[T]`.
-  * Boxing is avoided when the result is `None`. */
+  * Boxing is avoided when the result is `None`.
+  */
 class OptionResultConverter[@specialized(
   Byte,
   Short,
@@ -75,7 +76,8 @@ class OptionResultConverter[@specialized(
 }
 
 /** Specialized JDBC ResultConverter for handling non-`Option` values with a default.
-  * A (possibly specialized) function for the default value is used to translate SQL `NULL` values. */
+  * A (possibly specialized) function for the default value is used to translate SQL `NULL` values.
+  */
 class DefaultingResultConverter[@specialized(
   Byte,
   Short,

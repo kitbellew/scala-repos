@@ -549,7 +549,8 @@ abstract class TreeBrowsers {
     }
 
     /** Return a textual representation of (some of) the symbol's
-      * attributes */
+      * attributes
+      */
     def symbolAttributes(t: Tree): String = {
       val s = t.symbol
 

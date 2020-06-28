@@ -306,7 +306,8 @@ trait Contexts { self: Analyzer =>
       if (inTypeConstructorAllowed) Mode.NOmode else Mode.EXPRmode
 
     /** To enrich error messages involving default arguments.
-      *        When extending the notion, group diagnostics in an object. */
+      *        When extending the notion, group diagnostics in an object.
+      */
     var diagUsedDefaults: Boolean = false
 
     /** Saved type bounds for type parameters which are narrowed in a GADT. */

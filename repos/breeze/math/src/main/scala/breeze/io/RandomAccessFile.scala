@@ -1014,7 +1014,8 @@ abstract class ByteConverter {
 
   /** Takes 8 Bytes and returns a UInt64 shifted down to the range of Int64 (Long). The shifted number range runs from
     * -2^63 to 2^63-1, so that UInt64 can be represented in the JVM long (Int64). Addition and subtraction
-    * are valid with these long representations, multiplication and division, naturally, are not. */
+    * are valid with these long representations, multiplication and division, naturally, are not.
+    */
   def bytesToUInt64Shifted(
       b0: Byte,
       b1: Byte,
@@ -1053,7 +1054,8 @@ abstract class ByteConverter {
   def uInt64ToBytes(value: ULong): Array[Byte]
 
   /** Takes an Int64 (Long), and returns an array of 8 bytes, shifted up to a UInt64.
-    * See [[breeze.io.ByteConverter.bytesToUInt64Shifted()]] */
+    * See [[breeze.io.ByteConverter.bytesToUInt64Shifted()]]
+    */
   def uInt64ShiftedToBytes(value: Long): Array[Byte]
 
 }

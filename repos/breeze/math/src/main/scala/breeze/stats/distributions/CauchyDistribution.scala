@@ -24,7 +24,8 @@ import org.apache.commons.math3.random.RandomGenerator
 /**
   * The Cauchy-distribution
   *
-  * @author stucchio */
+  * @author stucchio
+  */
 
 class CauchyDistribution(median: Double, scale: Double)(implicit
     rand: RandBasis = Rand)

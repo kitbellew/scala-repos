@@ -5,7 +5,8 @@ package api
 package expr
 
 /**
-  * @author Alexander Podkhalyuzin */
+  * @author Alexander Podkhalyuzin
+  */
 
 trait ScTryStmt extends ScExpression {
   def tryBlock = findChildByClassScala(classOf[ScTryBlock])

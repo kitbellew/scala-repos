@@ -29,7 +29,8 @@ import language.implicitConversions // according to SIP18
   *  - conv6-7 should not be ambiguous
   *  - conv8 should be ambiguous
   *  - conv9 should be ambiguous
-  *  - conv10 and conv11 should not be ambiguous */
+  *  - conv10 and conv11 should not be ambiguous
+  */
 class A[T]
 
 /** conv1-9 should be the same, conv10 should be ambiguous, conv11 should be okay */

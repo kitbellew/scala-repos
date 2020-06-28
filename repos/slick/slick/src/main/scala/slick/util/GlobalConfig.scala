@@ -12,7 +12,8 @@ import java.util.Properties
   *
   * In addition to being listed in reference.conf, all essential config options also have their
   * default values hardcoded here because we cannot rely on getting reference.conf on the classpath
-  * in all cases (e.g. the `tsql` macro). */
+  * in all cases (e.g. the `tsql` macro).
+  */
 object GlobalConfig {
   import ConfigExtensionMethods._
 

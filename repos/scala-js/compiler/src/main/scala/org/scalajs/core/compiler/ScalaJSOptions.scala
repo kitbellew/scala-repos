@@ -16,11 +16,13 @@ trait ScalaJSOptions {
   import ScalaJSOptions.URIMap
 
   /** should calls to Predef.classOf[T] be fixed in the jsinterop phase.
-    *  If false, bad calls to classOf will cause an error. */
+    *  If false, bad calls to classOf will cause an error.
+    */
   def fixClassOf: Boolean
 
   /** which source locations in source maps should be relativized (or where
-    *  should they be mapped to)? */
+    *  should they be mapped to)?
+    */
   def sourceURIMaps: List[URIMap]
 
 }

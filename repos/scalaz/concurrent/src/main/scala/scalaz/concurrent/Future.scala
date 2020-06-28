@@ -236,7 +236,8 @@ sealed abstract class Future[+A] {
     unsafePerformSyncFor(timeout)
 
   /** Like `unsafePerformSyncFor`, but returns `TimeoutException` as left value.
-    * Will not report any other exceptions that may be raised during computation of `A` */
+    * Will not report any other exceptions that may be raised during computation of `A`
+    */
   def unsafePerformSyncAttemptFor(timeoutInMillis: Long): Throwable \/ A = {
     val sync = new SyncVar[Throwable \/ A]
     val interrupt = new AtomicBoolean(false)

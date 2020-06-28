@@ -16,7 +16,8 @@ package scala.test.scaladoc {
   package diagrams {
 
     /** @contentDiagram
-      *  @inheritanceDiagram hideDiagram */
+      *  @inheritanceDiagram hideDiagram
+      */
     trait WeekDayTraitWithDiagram extends Enumeration {
       type WeekDay = Value
 
@@ -43,7 +44,8 @@ package scala.test.scaladoc {
     }
 
     /** @contentDiagram
-      *  @inheritanceDiagram hideDiagram */
+      *  @inheritanceDiagram hideDiagram
+      */
     class WeekDayClassWithDiagram extends Enumeration {
       type WeekDay = Value
 
@@ -70,7 +72,8 @@ package scala.test.scaladoc {
     }
 
     /** @contentDiagram
-      *  @inheritanceDiagram hideDiagram */
+      *  @inheritanceDiagram hideDiagram
+      */
     object WeekDayObjectWithDiagram extends Enumeration {
       type WeekDay = Value
 

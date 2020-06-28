@@ -16,7 +16,8 @@ object ClientSideOp {
 
   /** Perform a computation only on the server side of a tree that may be
     * wrapped in client-side operations. Types are preserved unless
-    * ``keepType`` is set to false. */
+    * ``keepType`` is set to false.
+    */
   def mapServerSide(n: Node, keepType: Boolean = true)(f: Node => Node): Node =
     n match {
       case n: ClientSideOp =>
@@ -52,7 +53,8 @@ final case class First(val child: Node)
   * which only operate on real collections, a ResultSetMapping may use an
   * Identity functor as its collection type constructor ``c``, thus giving it
   * a type of ``(t, u) => u`` where ``t`` and ``u`` are primitive or Option
-  * types. */
+  * types.
+  */
 final case class ResultSetMapping(generator: TermSymbol, from: Node, map: Node)
     extends BinaryNode
     with DefNode
@@ -91,7 +93,8 @@ final case class ResultSetMapping(generator: TermSymbol, from: Node, map: Node)
 }
 
 /** A switch for special-cased parameters that needs to be interpreted in order
-  * to find the correct query string for the query arguments. */
+  * to find the correct query string for the query arguments.
+  */
 final case class ParameterSwitch(
     cases: ConstArray[((Any => Boolean), Node)],
     default: Node)

@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.ScalaFile
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 04.05.2008 */
+  * Date: 04.05.2008
+  */
 class ScalaStructureViewFactory extends PsiStructureViewFactory {
   def getStructureViewBuilder(psiFile: PsiFile): StructureViewBuilder =
     psiFile match {

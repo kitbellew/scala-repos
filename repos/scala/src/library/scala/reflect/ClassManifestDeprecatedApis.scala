@@ -226,7 +226,8 @@ object ClassManifestFactory {
     new ClassTypeManifest[T](None, clazz, Nil)
 
   /** ClassManifest for the class type `clazz[args]`, where `clazz` is
-    * a top-level or static class and `args` are its type arguments */
+    * a top-level or static class and `args` are its type arguments
+    */
   def classType[T](
       clazz: jClass[_],
       arg1: OptManifest[_],
@@ -250,7 +251,8 @@ object ClassManifestFactory {
 
   /** ClassManifest for the abstract type `prefix # name`. `upperBound` is not
     * strictly necessary as it could be obtained by reflection. It was
-    * added so that erasure can be calculated without reflection. */
+    * added so that erasure can be calculated without reflection.
+    */
   def abstractType[T](
       prefix: OptManifest[_],
       name: String,
@@ -280,7 +282,8 @@ object ClassManifestFactory {
 }
 
 /** Manifest for the class type `clazz[args]`, where `clazz` is
-  * a top-level or static class */
+  * a top-level or static class
+  */
 private class ClassTypeManifest[T](
     prefix: Option[OptManifest[_]],
     val runtimeClass: jClass[_],

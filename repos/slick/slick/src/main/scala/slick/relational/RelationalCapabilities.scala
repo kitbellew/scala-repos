@@ -12,11 +12,13 @@ object RelationalCapabilities {
   val foreignKeyActions = Capability("relational.foreignKeyActions")
 
   /** Supports the ''database'' function to get the current database name.
-    * A profile without this capability will return an empty string. */
+    * A profile without this capability will return an empty string.
+    */
   val functionDatabase = Capability("relational.functionDatabase")
 
   /** Supports the ''user'' function to get the current database user.
-    * A profile without this capability will return an empty string. */
+    * A profile without this capability will return an empty string.
+    */
   val functionUser = Capability("relational.functionUser")
 
   /** Supports indexOf method on string columns */
@@ -45,7 +47,8 @@ object RelationalCapabilities {
 
   /** Returns only the requested number of rows even if some rows are not
     * unique. Without this capability, non-unique rows may be counted as
-    * only one row each. */
+    * only one row each.
+    */
   val pagingPreciseTake = Capability("relational.pagingPreciseTake")
 
   /** Supports replace method on string columns */

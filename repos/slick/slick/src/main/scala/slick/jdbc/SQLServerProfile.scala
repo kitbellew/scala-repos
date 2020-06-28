@@ -338,7 +338,8 @@ trait SQLServerProfile extends JdbcProfile {
 object SQLServerProfile extends SQLServerProfile
 
 /** Ensure that every expression in a GroupBy's "by" clause contains a reference to a proper
-  * source field. If this is not the case, wrap the source in a Subquery boundary. */
+  * source field. If this is not the case, wrap the source in a Subquery boundary.
+  */
 class ProtectGroupBy extends Phase {
   val name = "protectGroupBy"
 

@@ -8,7 +8,8 @@ import com.intellij.psi.PsiElement
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008 */
+  * Date: 06.03.2008
+  */
 
 trait ScIfStmt extends ScExpression {
   def condition: Option[ScExpression]

@@ -75,7 +75,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
   def createTableNamer(meta: MTable): TableNamer = new TableNamer(meta)
 
   /** Column model builder factory. Override for customization.
-    * @group Basic customization overrides */
+    * @group Basic customization overrides
+    */
   def createColumnBuilder(
       tableBuilder: TableBuilder,
       meta: MColumn): ColumnBuilder = new ColumnBuilder(tableBuilder, meta)
@@ -102,7 +103,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     mTables.map(m => m.name).zip(tableNamers).toMap
 
   /** Table model builder factory. Override for customization.
-    * @group Basic customization overrides */
+    * @group Basic customization overrides
+    */
   def createTableBuilder(namer: TableNamer): DBIO[TableBuilder] =
     for {
       cs <- readColumns(namer.meta)
@@ -112,7 +114,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     } yield new TableBuilder(namer.meta, namer, cs, pks, fks, idxs)
 
   /** Creates a Slick data model from jdbc meta data. Foreign keys pointing out of the given tables
-    * are not included. */
+    * are not included.
+    */
   def buildModel: DBIO[m.Model] =
     for {
       ts <- DBIO.sequence(tableNamers.map(createTableBuilder))
@@ -174,11 +177,13 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     def name: String = meta.name.name
 
     /** Optional table schema
-      * @group Basic customization overrides */
+      * @group Basic customization overrides
+      */
     def schema: Option[String] = meta.name.schema
 
     /** Optional table catalog
-      * @group Basic customization overrides */
+      * @group Basic customization overrides
+      */
     def catalog = meta.name.catalog
 
     /** Fully qualified table name */
@@ -186,7 +191,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
   }
 
   /** Table model builder
-    * @group Basic customization overrides */
+    * @group Basic customization overrides
+    */
   class TableBuilder(
       val meta: MTable,
       val namer: TableNamer,
@@ -228,7 +234,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
   }
 
   /** Column model builder.
-    * @group Basic customization overrides */
+    * @group Basic customization overrides
+    */
   class ColumnBuilder(tableBuilder: TableBuilder, meta: MColumn) {
 
     /** Regex matcher to extract string out ouf surrounding '' */
@@ -250,19 +257,22 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
     def autoInc: Boolean = meta.isAutoInc.getOrElse(false)
 
     /** Indicates whether a ColumnOption Primary key should be put into the model.
-      * Only valid for single column primary keys. */
+      * Only valid for single column primary keys.
+      */
     def createPrimaryKeyColumnOption: Boolean =
       tableBuilder.mPrimaryKeys.size == 1 && tableBuilder.mPrimaryKeys.head.column == meta.name
 
     /** A (potentially non-portable) database column type for string types, this should not
-      * include a length ascription for other types it should */
+      * include a length ascription for other types it should
+      */
     def dbType: Option[String] = Some(meta.typeName)
 
     /** Column length of string types */
     def length: Option[Int] =
       if (tpe == "String") meta.size else None // Only valid for strings!
     /** Indicates wether this should be a varchar in case of a string column.
-      * Currently defaults to true. Should be based on the value of dbType in the future. */
+      * Currently defaults to true. Should be based on the value of dbType in the future.
+      */
     def varying: Boolean =
       Seq(
         java.sql.Types.NVARCHAR,
@@ -279,7 +289,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * Default values for autoInc column are automatically ignored (as if returning None).
       *
       * If `ignoreInvalidDefaults = true`, Slick catches scala.MatchError and java.lang.NumberFormatException thrown by
-      * this method, logs the message and treats it as no default value for convenience. */
+      * this method, logs the message and treats it as no default value for convenience.
+      */
     def default: Option[Option[Any]] =
       rawDefault.map { v =>
         if (v == "NULL") None
@@ -318,7 +329,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * Default values for autoInc columns are automatically ignored.
       *
       * If `ignoreInvalidDefaults = true`, Slick catches scala.MatchError and java.lang.NumberFormatException thrown by
-      * this method, logs the message and treats it as no default value for convenience. */
+      * this method, logs the message and treats it as no default value for convenience.
+      */
     def defaultColumnOption: Option[RelationalProfile.ColumnOption.Default[_]] =
       rawDefault
         .map(v => (v, tpe))
@@ -377,7 +389,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
   class PrimaryKeyBuilder(tableBuilder: TableBuilder, meta: Seq[MPrimaryKey]) {
 
     /** Indicates wether a primary key should be generated. Disabled by default for single column primary keys in favor
-      * of ColumnOption PrimaryKey via Column#createPrimaryKeyColumnOption. */
+      * of ColumnOption PrimaryKey via Column#createPrimaryKeyColumnOption.
+      */
     def enabled: Boolean = meta.size > 1
     def name: Option[String] = meta.head.pkName.filter(_ != "")
     def columns = meta.map(_.column)
@@ -434,7 +447,8 @@ class JdbcModelBuilder(mTables: Seq[MTable], ignoreInvalidDefaults: Boolean)(
       * - indexType == tableIndexStatistic
       * - indices matching primary key
       * - non-unique indices matching foreign keys referencing columns
-      * - indices matching foreign keys referenced columns */
+      * - indices matching foreign keys referenced columns
+      */
     def enabled =
       (
         idx.indexType != DatabaseMetaData.tableIndexStatistic &&

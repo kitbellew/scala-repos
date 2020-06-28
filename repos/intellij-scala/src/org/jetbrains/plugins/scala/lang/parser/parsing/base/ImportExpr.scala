@@ -9,7 +9,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 import org.jetbrains.plugins.scala.lang.parser.parsing.types.StableId
 
 /**
-  * User: Alexander.Podkhalyuzin */
+  * User: Alexander.Podkhalyuzin
+  */
 
 /*
  *  ImportExpr ::= StableId  '.'  (id | '_'  | ImportSelectors)

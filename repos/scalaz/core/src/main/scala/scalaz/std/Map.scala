@@ -234,7 +234,8 @@ trait MapSubFunctions extends MapSub {
     * guaranteed to be from `m1`, the second from `m2`.
     *
     * @note iff `f` gives rise to a [[scalaz.Semigroup]], so does
-    *       `unionWith(_, _)(f)`. */
+    *       `unionWith(_, _)(f)`.
+    */
   final def unionWith[K: BuildKeyConstraint, A](m1: XMap[K, A], m2: XMap[K, A])(
       f: (A, A) => A): XMap[K, A] =
     unionWithKey(m1, m2)((_, x, y) => f(x, y))

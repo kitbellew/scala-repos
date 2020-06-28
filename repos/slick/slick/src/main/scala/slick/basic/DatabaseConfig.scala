@@ -18,7 +18,8 @@ import com.typesafe.config.{ConfigFactory, Config}
 trait DatabaseConfig[P <: BasicProfile] {
 
   /** Get the configured Database. It is instantiated lazily when this method is called for the
-    * first time, and must be closed after use. */
+    * first time, and must be closed after use.
+    */
   def db: P#Backend#Database
 
   /** The configured Profile. */
@@ -128,7 +129,8 @@ object DatabaseConfig {
     * is given, it is resolved as a path in the global app config (e.g. in `application.conf` at
     * the root of the class path), otherwise as a path in the configuration located at the URI
     * without the fragment, which must be a valid URL. Without a fragment, the whole config object
-    * is used. */
+    * is used.
+    */
   def forURI[P <: BasicProfile: ClassTag](
       uri: URI,
       classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)
@@ -148,14 +150,16 @@ object DatabaseConfig {
   }
 
   /** Load a profile and database configuration from the URI specified in a [[StaticDatabaseConfig]]
-    * annotation in the static scope of the caller. */
+    * annotation in the static scope of the caller.
+    */
   def forAnnotation[P <: BasicProfile](
       classLoader: ClassLoader = ClassLoaderUtil.defaultClassLoader)(implicit
       ct: ClassTag[P]): DatabaseConfig[P] =
     macro StaticDatabaseConfigMacros.getWithClassLoaderImpl[P]
 
   /** Load a profile and database configuration from the URI specified in a [[StaticDatabaseConfig]]
-    * annotation in the static scope of the caller. */
+    * annotation in the static scope of the caller.
+    */
   def forAnnotation[P <: BasicProfile](implicit
       ct: ClassTag[P]): DatabaseConfig[P] =
     macro StaticDatabaseConfigMacros.getImpl[P]
@@ -163,7 +167,8 @@ object DatabaseConfig {
 
 /** An annotation for injecting a DatabaseConfig at compile time. The URI parameter must be a
   * literal String. This annotation is required for providing a statically scoped database
-  * configuration to the `tsql` interpolator. */
+  * configuration to the `tsql` interpolator.
+  */
 final class StaticDatabaseConfig(val uri: String)
     extends Annotation
     with StaticAnnotation

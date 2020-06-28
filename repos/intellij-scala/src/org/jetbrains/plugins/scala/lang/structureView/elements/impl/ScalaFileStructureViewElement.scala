@@ -24,7 +24,8 @@ import scala.collection.mutable
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 04.05.2008 */
+  * Date: 04.05.2008
+  */
 class ScalaFileStructureViewElement(
     file: ScalaFile,
     private val console: ScalaLanguageConsole = null)

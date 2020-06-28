@@ -12,7 +12,8 @@ import org.apache.spark.SparkContext
 import org.apache.spark.SparkConf
 
 /** Manages a local `sc` {@link SparkContext} variable, correctly stopping it
-  * after each test. */
+  * after each test.
+  */
 trait LocalSparkContext extends BeforeAndAfterEach with BeforeAndAfterAll {
   self: Suite =>
 

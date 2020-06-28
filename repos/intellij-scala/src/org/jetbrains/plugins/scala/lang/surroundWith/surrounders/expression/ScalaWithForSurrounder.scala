@@ -6,7 +6,8 @@ package expression
 
 /**
   * @author Alexander.Podkhalyuzin
-  * Date: 28.04.2008 */
+  * Date: 28.04.2008
+  */
 
 import com.intellij.lang.ASTNode
 import com.intellij.openapi.util.TextRange

@@ -22,7 +22,8 @@ import org.apache.spark.SparkContext
 
 /**
   * Provides a method to run tests against a {@link SparkContext} variable that is correctly stopped
-  * after each test. */
+  * after each test.
+  */
 trait LocalSparkContext {
 
   /** Runs `f` on a new SparkContext and ensures that it is stopped afterwards. */

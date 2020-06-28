@@ -236,7 +236,8 @@ class DistributedProfile(val profiles: RelationalProfile*)
 
 /** Represents a computation that needs to be performed by another profile.
   * Despite having a child it is a NullaryNode because the sub-computation
-  * should be opaque to the query compiler. */
+  * should be opaque to the query compiler.
+  */
 final case class ProfileComputation(
     compiled: Node,
     profile: RelationalProfile,

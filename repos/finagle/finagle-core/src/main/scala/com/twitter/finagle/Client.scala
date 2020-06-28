@@ -36,7 +36,6 @@ trait Client[Req, Rep] {
   def newService(dest: Name, label: String): Service[Req, Rep]
 
   @deprecated("Use destination names", "6.7.x")
-
   /** $newService */
   final def newService(dest: Group[SocketAddress]): Service[Req, Rep] =
     dest match {
@@ -68,7 +67,6 @@ trait Client[Req, Rep] {
   def newClient(dest: Name, label: String): ServiceFactory[Req, Rep]
 
   @deprecated("Use destination names", "6.7.x")
-
   /** $newClient */
   final def newClient(dest: Group[SocketAddress]): ServiceFactory[Req, Rep] =
     dest match {

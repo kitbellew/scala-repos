@@ -160,7 +160,8 @@ class MockIngestActor(toSend: Int, messageBatch: Seq[IngestMessage])
         replyTo ! NoIngestData
       }
     case () =>
-    case x  => println("Unplanned ingest actor action: " + x.getClass.getName)
+
+    case x => println("Unplanned ingest actor action: " + x.getClass.getName)
   }
 }
 

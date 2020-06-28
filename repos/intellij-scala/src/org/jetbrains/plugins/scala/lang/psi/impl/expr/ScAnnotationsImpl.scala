@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScAnnotationsStub
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008 */
+  * Date: 07.03.2008
+  */
 
 class ScAnnotationsImpl private (
     stub: StubElement[ScAnnotations],

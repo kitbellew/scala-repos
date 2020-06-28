@@ -117,7 +117,8 @@ class ConsumerConfig private (val props: VerifiableProperties)
   val groupId = props.getString("group.id")
 
   /** consumer id: generated automatically if not set.
-    *  Set this explicitly for only testing purpose. */
+    *  Set this explicitly for only testing purpose.
+    */
   val consumerId: Option[String] = Option(props.getString("consumer.id", null))
 
   /** the socket timeout for network requests. Its value should be at least fetch.wait.max.ms. */
@@ -171,7 +172,8 @@ class ConsumerConfig private (val props: VerifiableProperties)
     props.getInt("offsets.channel.backoff.ms", OffsetsChannelBackoffMs)
 
   /** socket timeout to use when reading responses for Offset Fetch/Commit requests. This timeout will also be used for
-    *  the ConsumerMetdata requests that are used to query for the offset coordinator. */
+    *  the ConsumerMetdata requests that are used to query for the offset coordinator.
+    */
   val offsetsChannelSocketTimeoutMs = props.getInt(
     "offsets.channel.socket.timeout.ms",
     OffsetsChannelSocketTimeoutMs)
@@ -179,7 +181,8 @@ class ConsumerConfig private (val props: VerifiableProperties)
   /** Retry the offset commit up to this many times on failure. This retry count only applies to offset commits during
     * shut-down. It does not apply to commits from the auto-commit thread. It also does not apply to attempts to query
     * for the offset coordinator before committing offsets. i.e., if a consumer metadata request fails for any reason,
-    * it is retried and that retry does not count toward this limit. */
+    * it is retried and that retry does not count toward this limit.
+    */
   val offsetsCommitMaxRetries =
     props.getInt("offsets.commit.max.retries", OffsetsCommitMaxRetries)
 
@@ -190,7 +193,8 @@ class ConsumerConfig private (val props: VerifiableProperties)
   /** If you are using "kafka" as offsets.storage, you can dual commit offsets to ZooKeeper (in addition to Kafka). This
     * is required during migration from zookeeper-based offset storage to kafka-based offset storage. With respect to any
     * given consumer group, it is safe to turn this off after all instances within that group have been migrated to
-    * the new jar that commits offsets to the broker (instead of directly to ZooKeeper). */
+    * the new jar that commits offsets to the broker (instead of directly to ZooKeeper).
+    */
   val dualCommitEnabled = props.getBoolean(
     "dual.commit.enabled",
     if (offsetsStorage == "kafka") true else false)

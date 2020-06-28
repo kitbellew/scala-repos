@@ -1,7 +1,8 @@
 /** Test the Scala implementation of classes <code>scala.BigInt</code>
   * and <code>scala.BigDecimal</code>.
   *
-  *  @author Stephane Micheloud */
+  *  @author Stephane Micheloud
+  */
 object Test {
   def main(args: Array[String]) {
     Test_BigInt.runTest()

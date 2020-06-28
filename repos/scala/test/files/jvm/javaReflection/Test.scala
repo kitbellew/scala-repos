@@ -47,7 +47,8 @@
   *
   *  - Scala-defined classes are never synthetic for Java reflection. The implementation
   *    checks for the SYNTHETEIC flag, which does not seem to be added by scalac (maybe this
-  *    will change some day). */
+  *    will change some day).
+  */
 
 object Test {
 

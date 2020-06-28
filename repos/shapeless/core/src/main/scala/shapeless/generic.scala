@@ -214,7 +214,8 @@ object LabelledGeneric {
   type Aux[T, Repr0] = LabelledGeneric[T] { type Repr = Repr0 }
 
   /** Provides an instance of LabelledGeneric for the given T. As with [[shapeless.Generic]],
-    * use this method or {{{the[LabelledGeneric[T]]}}} to obtain an instance for suitable given T. */
+    * use this method or {{{the[LabelledGeneric[T]]}}} to obtain an instance for suitable given T.
+    */
   def apply[T](implicit lgen: LabelledGeneric[T]): Aux[T, lgen.Repr] = lgen
 
   /** Handles the Product case (fields in a case class, for example) */

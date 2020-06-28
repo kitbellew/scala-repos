@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.structureView.itemsPresentations.impl._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 16.05.2008 */
+  * Date: 16.05.2008
+  */
 
 class ScalaPrimaryConstructorStructureViewElement(
     private val element: ScPrimaryConstructor)

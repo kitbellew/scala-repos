@@ -7,7 +7,8 @@ import com.gravity.goose.text.StopWords
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 8/16/11 */
+  * Date: 8/16/11
+  */
 
 class FileHelperTest {
 

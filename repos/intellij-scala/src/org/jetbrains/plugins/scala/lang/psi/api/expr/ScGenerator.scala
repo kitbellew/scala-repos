@@ -9,7 +9,8 @@ import org.jetbrains.plugins.scala.lang.lexer.ScalaTokenTypes
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008 */
+  * Date: 07.03.2008
+  */
 
 trait ScGenerator extends ScalaPsiElement with ScPatterned {
   def guard: ScGuard

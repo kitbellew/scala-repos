@@ -9,7 +9,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008 */
+  * Date: 06.03.2008
+  */
 
 trait ScForStatement extends ScExpression {
   def getDesugarizedExpr: Option[ScExpression]

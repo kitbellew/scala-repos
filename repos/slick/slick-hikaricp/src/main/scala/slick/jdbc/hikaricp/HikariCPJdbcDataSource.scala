@@ -7,7 +7,8 @@ import slick.jdbc.{JdbcDataSourceFactory, JdbcDataSource}
 import slick.util.ConfigExtensionMethods._
 
 /** A JdbcDataSource for a HikariCP connection pool.
-  * See `slick.jdbc.JdbcBackend#Database.forConfig` for documentation on the config parameters. */
+  * See `slick.jdbc.JdbcBackend#Database.forConfig` for documentation on the config parameters.
+  */
 class HikariCPJdbcDataSource(
     val ds: com.zaxxer.hikari.HikariDataSource,
     val hconf: com.zaxxer.hikari.HikariConfig)

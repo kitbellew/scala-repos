@@ -856,9 +856,11 @@ private final class IRChecker(unit: LinkingUnit, logger: Logger) {
           typecheckExpr(value, env)
 
       case JSLinkingInfo() =>
+
       // Literals
 
       case _: Literal =>
+
       // Atomic expressions
 
       case VarRef(Ident(name, _)) =>

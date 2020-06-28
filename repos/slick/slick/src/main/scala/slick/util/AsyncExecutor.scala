@@ -7,14 +7,16 @@ import scala.concurrent.{Promise, Future, ExecutionContext}
 import scala.util.control.NonFatal
 
 /** A connection pool for asynchronous execution of blocking I/O actions.
-  * This is used for the asynchronous query execution API on top of blocking back-ends like JDBC. */
+  * This is used for the asynchronous query execution API on top of blocking back-ends like JDBC.
+  */
 trait AsyncExecutor extends Closeable {
 
   /** An ExecutionContext for running Futures. */
   def executionContext: ExecutionContext
 
   /** Shut the thread pool down and try to stop running computations. The thread pool is
-    * transitioned into a state where it will not accept any new jobs. */
+    * transitioned into a state where it will not accept any new jobs.
+    */
   def close(): Unit
 }
 
@@ -25,7 +27,8 @@ object AsyncExecutor extends Logging {
     *
     * @param name A prefix to use for the names of the created threads.
     * @param numThreads The number of threads in the pool.
-    * @param queueSize The size of the job queue, 0 for direct hand-off or -1 for unlimited size. */
+    * @param queueSize The size of the job queue, 0 for direct hand-off or -1 for unlimited size.
+    */
   def apply(name: String, numThreads: Int, queueSize: Int): AsyncExecutor = {
     new AsyncExecutor {
       // Before init: 0, during init: 1, after init: 2, during/after shutdown: 3
@@ -96,7 +99,8 @@ object AsyncExecutor extends Logging {
   }
 
   /** An Executor which spawns a new daemon thread for each command. It is useful for wrapping
-    * synchronous `close` calls for asynchronous `shutdown` operations. */
+    * synchronous `close` calls for asynchronous `shutdown` operations.
+    */
   private[slick] val shutdownExecutor: Executor = new Executor {
     def execute(command: Runnable): Unit = {
       val t = new Thread(command)

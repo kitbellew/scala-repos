@@ -61,6 +61,7 @@ class VotingService extends Actor {
       replicator ! update
 
     case _: UpdateSuccess[_] ⇒
+
     case Close ⇒
       replicator ! Update(ClosedKey, Flag(), WriteAll(5.seconds))(_.switchOn)
       context.become(getVotes(open = false))
@@ -84,6 +85,7 @@ class VotingService extends Actor {
       replyTo ! Votes(Map.empty, open)
 
     case _: GetFailure[_] ⇒
+
     case _: UpdateSuccess[_] ⇒
   }
 

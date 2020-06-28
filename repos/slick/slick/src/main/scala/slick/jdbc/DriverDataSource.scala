@@ -16,7 +16,8 @@ import scala.collection.JavaConverters._
 import scala.util.control.NonFatal
 
 /** A DataSource that wraps the DriverManager API. It can be configured as a Java Bean and used
-  * both stand-alone and as a source for a connection pool. */
+  * both stand-alone and as a source for a connection pool.
+  */
 class DriverDataSource(
     /** The JDBC URL (required) */
     @BeanProperty @volatile var url: String,
@@ -27,7 +28,8 @@ class DriverDataSource(
     /** Optional connection properties */
     @BeanProperty @volatile var properties: Properties = null,
     /** Name of the `java.sql.Driver` class. This must be set unless a `driverObject` is set
-      * directly or the driver is already registered with the DriverManager. */
+      * directly or the driver is already registered with the DriverManager.
+      */
     @BeanProperty @volatile var driverClassName: String = null,
     /** When `close()` is called, try to deregister a driver that was registered by this instance. */
     @BeanProperty @volatile var deregisterDriver: Boolean = false,

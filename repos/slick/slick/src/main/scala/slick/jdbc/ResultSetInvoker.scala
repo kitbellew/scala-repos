@@ -10,7 +10,8 @@ import slick.util.CloseableIterator
   * many methods that return ResultSets.
   *
   * For convenience, if the function returns null, this is treated like an
-  * empty ResultSet. */
+  * empty ResultSet.
+  */
 abstract class ResultSetInvoker[+R] extends Invoker[R] { self =>
 
   protected def createResultSet(session: JdbcBackend#Session): ResultSet

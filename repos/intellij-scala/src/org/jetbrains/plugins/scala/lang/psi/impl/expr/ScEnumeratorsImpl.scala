@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.resolve.processor.BaseProcessor
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008 */
+  * Date: 06.03.2008
+  */
 
 class ScEnumeratorsImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

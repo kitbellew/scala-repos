@@ -6,7 +6,8 @@ import Util._
 import slick.util.ConstArray
 
 /** Specialize the AST for edge cases of query parameters. This is required for
-  * compiling `take(0)` for some databases which do not allow `LIMIT 0`. */
+  * compiling `take(0)` for some databases which do not allow `LIMIT 0`.
+  */
 class SpecializeParameters extends Phase {
   val name = "specializeParameters"
 

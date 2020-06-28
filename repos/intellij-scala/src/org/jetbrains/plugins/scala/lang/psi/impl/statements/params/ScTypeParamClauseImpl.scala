@@ -19,7 +19,8 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
   * @author Alexander Podkhalyuzin
-  * @since 22.02.2008 */
+  * @since 22.02.2008
+  */
 class ScTypeParamClauseImpl private (
     stub: StubElement[ScTypeParamClause],
     nodeType: IElementType,

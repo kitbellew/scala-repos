@@ -263,7 +263,8 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   def asBoolean(in: String): Box[Boolean] = AsBoolean.unapply(in)
 
   /**
-    * A helpful Boolean extractor */
+    * A helpful Boolean extractor
+    */
   object AsBoolean {
     def unapply(in: String): Option[Boolean] =
       if (null eq in) None
@@ -281,7 +282,8 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   def asInt(in: String): Box[Int] = tryo { in.trim.toInt }
 
   /**
-    * A helpful Int extractor */
+    * A helpful Int extractor
+    */
   object AsInt {
     def unapply(in: String): Option[Int] = asInt(in)
   }
@@ -292,7 +294,8 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   def asDouble(in: String): Box[Double] = tryo { in.trim.toDouble }
 
   /**
-    * A helpful Double extractor */
+    * A helpful Double extractor
+    */
   object AsDouble {
     def unapply(in: String): Option[Double] = asDouble(in)
   }
@@ -303,7 +306,8 @@ trait BasicTypesHelpers { self: StringHelpers with ControlHelpers =>
   def asLong(in: String): Box[Long] = tryo(in.toLong)
 
   /**
-    * A helpful Long extractor */
+    * A helpful Long extractor
+    */
   object AsLong {
     def unapply(in: String): Option[Long] = asLong(in)
   }

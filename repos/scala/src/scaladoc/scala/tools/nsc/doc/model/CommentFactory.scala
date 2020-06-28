@@ -17,7 +17,8 @@ import scala.reflect.internal.util.Position
   * should only be built once for a given Scaladoc run.
   *
   * @author Manohar Jonnalagedda
-  * @author Gilles Dubochet */
+  * @author Gilles Dubochet
+  */
 trait CommentFactory extends base.CommentFactoryBase {
   thisFactory: ModelFactory with CommentFactory with MemberLookup =>
 
@@ -39,7 +40,8 @@ trait CommentFactory extends base.CommentFactoryBase {
   /** A comment is usually created by the parser, however for some special
     * cases we have to give some `inTpl` comments (parent class for example)
     * to the comment of the symbol.
-    * This function manages some of those cases : Param accessor and Primary constructor */
+    * This function manages some of those cases : Param accessor and Primary constructor
+    */
   def defineComment(
       sym: Symbol,
       linkTarget: DocTemplateImpl,
@@ -106,7 +108,8 @@ trait CommentFactory extends base.CommentFactoryBase {
     *  - Removed Scaladoc start and end markers.
     *  - Removed start-of-line star and one whitespace afterwards (if present).
     *  - Removed all end-of-line whitespace.
-    *  - Only `endOfLine` is used to mark line endings. */
+    *  - Only `endOfLine` is used to mark line endings.
+    */
   def parseWiki(string: String, pos: Position, inTpl: DocTemplateImpl): Body = {
     val sym = if (inTpl eq null) NoSymbol else inTpl.sym
     parseWikiAtSymbol(string, pos, sym)

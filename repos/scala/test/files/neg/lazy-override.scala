@@ -1,4 +1,5 @@
-/** Test which should fail compilation */
+/** Test which should fail compilation
+  */
 class A {
   val x: Int = { print("/*A.x*/"); 2 }
   lazy val y: Int = { print("/*A.y*/"); 2 }

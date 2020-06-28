@@ -38,7 +38,8 @@ import scala.collection.JavaConversions._
 
 /**
   * Nikolay.Tropin
-  * 2014-03-21 */
+  * 2014-03-21
+  */
 class ScalaGenerateDelegateHandler extends GenerateDelegateHandler {
 
   type ClassMember = overrideImplement.ClassMember

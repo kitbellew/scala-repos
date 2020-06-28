@@ -117,7 +117,8 @@ trait BaseTypeSeqs {
     def updateHead(tp: Type): BaseTypeSeq = copy(tp, 0)
 
     /** Compute new base type sequence where every element is mapped
-      *  with function `f`. Lazy types are mapped but not evaluated */
+      *  with function `f`. Lazy types are mapped but not evaluated
+      */
     def map(f: Type => Type): BaseTypeSeq = {
       // inlined `elems map f` for performance
       val len = length

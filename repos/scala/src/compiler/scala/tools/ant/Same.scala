@@ -32,7 +32,8 @@ import org.apache.tools.ant.types.Mapper
   *  This task itself defines a fileset that represents the set of original files.
   *
   * @author  Gilles Dubochet
-  * @version 1.0 */
+  * @version 1.0
+  */
 @deprecated("Use diff", "2.11.0") class Same extends ScalaMatchingTask {
   /*============================================================================*\
 **                             Ant user-properties                            **

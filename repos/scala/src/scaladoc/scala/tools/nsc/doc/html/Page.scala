@@ -19,7 +19,8 @@ abstract class Page {
   /** The path of this page, relative to the API site. `path.tail` is a list
     * of folder names leading to this page (from closest package to
     * one-above-root package), `path.head` is the file name of this page.
-    * Note that `path` has a length of at least one. */
+    * Note that `path` has a length of at least one.
+    */
   def path: List[String]
 
   def absoluteLinkTo(path: List[String]) = path.reverse.mkString("/")
@@ -46,7 +47,8 @@ abstract class Page {
 
   /** Writes this page as a file. The file's location is relative to the
     * generator's site root, and the encoding is also defined by the generator.
-    * @param site The generator that is writing this page. */
+    * @param site The generator that is writing this page.
+    */
   def writeFor(site: HtmlFactory): Unit
 
   def kindToString(mbr: MemberEntity) =
@@ -89,12 +91,14 @@ abstract class Page {
   }
 
   /** A relative link from this page to some destination class entity.
-    * @param destClass The class or object entity that the link will point to. */
+    * @param destClass The class or object entity that the link will point to.
+    */
   def relativeLinkTo(destClass: TemplateEntity): String =
     relativeLinkTo(templateToPath(destClass))
 
   /** A relative link from this page to some destination path.
-    * @param destPath The path that the link will point to. */
+    * @param destPath The path that the link will point to.
+    */
   def relativeLinkTo(destPath: List[String]): String = {
     def relativize(from: List[String], to: List[String]): List[String] =
       (from, to) match {

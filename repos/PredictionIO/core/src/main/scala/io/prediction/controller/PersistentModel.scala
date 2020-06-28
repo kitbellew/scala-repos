@@ -103,13 +103,15 @@ trait PersistentModelLoader[AP <: Params, M] {
 
 /** DEPRECATED. Use [[PersistentModel]] instead.
   *
-  * @group Algorithm */
+  * @group Algorithm
+  */
 @deprecated("Use PersistentModel instead.", "0.9.2")
 trait IPersistentModel[AP <: Params] extends PersistentModel[AP]
 
 /** DEPRECATED. Use [[PersistentModelLoader]] instead.
   *
-  * @group Algorithm */
+  * @group Algorithm
+  */
 @deprecated("Use PersistentModelLoader instead.", "0.9.2")
 trait IPersistentModelLoader[AP <: Params, M]
     extends PersistentModelLoader[AP, M]

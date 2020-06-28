@@ -222,7 +222,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
   }
 
   /** Returns the result of running [[transformExpressions]] on this node
-    * and all its children. */
+    * and all its children.
+    */
   def transformAllExpressions(
       rule: PartialFunction[Expression, Expression]): this.type = {
     transform {

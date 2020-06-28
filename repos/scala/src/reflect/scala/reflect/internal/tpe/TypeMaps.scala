@@ -283,7 +283,8 @@ private[internal] trait TypeMaps {
     }
 
     /** Map over a set of annotation arguments.  If any
-      *  of the arguments cannot be mapped, then return Nil. */
+      *  of the arguments cannot be mapped, then return Nil.
+      */
     def mapOverAnnotArgs(args: List[Tree]): List[Tree] = {
       val args1 = args mapConserve mapOver
       if (args1 contains UnmappableTree) Nil
@@ -302,7 +303,8 @@ private[internal] trait TypeMaps {
       (new TypeMapTransformer).transform(tree)
 
     /** This transformer leaves the tree alone except to remap
-      *  its types. */
+      *  its types.
+      */
     class TypeMapTransformer extends Transformer {
       override def transform(tree: Tree) = {
         val tree1 = super.transform(tree)
@@ -1091,7 +1093,8 @@ private[internal] trait TypeMaps {
   }
 
   /** A map to convert every occurrence of a wildcard type to a fresh
-    *  type variable */
+    *  type variable
+    */
   object wildcardToTypeVarMap extends TypeMap {
     def apply(tp: Type): Type =
       tp match {

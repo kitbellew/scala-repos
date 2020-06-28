@@ -10,7 +10,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.02.2008 */
+  * Date: 28.02.2008
+  */
 
 trait ScTuplePattern extends ScPattern {
   def patternList = findChild(classOf[ScPatterns])

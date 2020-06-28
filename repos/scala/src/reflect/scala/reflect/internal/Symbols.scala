@@ -2176,7 +2176,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       owner == that || owner != NoSymbol && (owner isNestedIn that)
 
     /** Is this class symbol a subclass of that symbol,
-      *  and is this class symbol also different from Null or Nothing? */
+      *  and is this class symbol also different from Null or Nothing?
+      */
     def isNonBottomSubClass(that: Symbol): Boolean = false
 
     /** Is this class symbol Null or Nothing,
@@ -2438,11 +2439,13 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
 
     /** The package class containing this symbol, or NoSymbol if there
-      *  is not one. */
+      *  is not one.
+      */
     def enclosingRootClass: Symbol = enclosingSuchThat(_.isRoot)
 
     /** The package containing this symbol, or NoSymbol if there
-      *  is not one. */
+      *  is not one.
+      */
     def enclosingPackage: Symbol = enclosingPackageClass.companionModule
 
     /** The method or class which logically encloses the current symbol.
@@ -2760,11 +2763,13 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
     }
 
     /** If this symbol is a type parameter skolem (not an existential skolem!)
-      *  its corresponding type parameter, otherwise this */
+      *  its corresponding type parameter, otherwise this
+      */
     def deSkolemize: Symbol = this
 
     /** If this symbol is an existential skolem the location (a Tree or null)
-      *  where it was unpacked. Resulttype is AnyRef because trees are not visible here. */
+      *  where it was unpacked. Resulttype is AnyRef because trees are not visible here.
+      */
     def unpackLocation: AnyRef = null
 
     /** Remove private modifier from symbol `sym`s definition. If `sym` is a
@@ -3125,7 +3130,8 @@ trait Symbols extends api.Symbols { self: SymbolTable =>
       *      else
       *        (infos ne null) && infos.info.isInstanceOf[OverloadedType]
       *    )
-      * * */
+      * *
+      */
     override def isValueParameter = this hasFlag PARAM
 
     override def isSetterParameter = isValueParameter && owner.isSetter

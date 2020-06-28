@@ -29,7 +29,8 @@ import org.joda.time.DateTime
 import org.saddle.scalar.ScalarTagTime
 
 /**
-  * Typeclass interface for sorting implementations */
+  * Typeclass interface for sorting implementations
+  */
 trait Sorter[T] {
   def argSorted(arr: Array[T]): Array[Int]
   def sorted(arr: Array[T]): Array[T]

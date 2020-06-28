@@ -42,8 +42,10 @@ abstract class LazyVals
 
           case ClassDef(_, _, _, _) | DefDef(_, _, _, _, _, _) |
               ModuleDef(_, _, _) =>
+
           // Avoid adding bitmaps when they are fully overshadowed by those that are added inside loops
           case LabelDef(name, _, _) if nme.isLoopHeaderLabel(name) =>
+
           case _ =>
             super.traverse(t)
         }

@@ -9,7 +9,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements.params._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008 */
+  * Date: 22.02.2008
+  */
 
 trait ScTypeArgs extends ScArguments {
 

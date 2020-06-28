@@ -102,7 +102,8 @@ object D extends A
 
 /** EnrichedA class <br/>
   *  - tests simple inheritance and asSeenFrom
-  *  - A, B and C should be implicitly converted to this */
+  *  - A, B and C should be implicitly converted to this
+  */
 class EnrichedA[V](a: A[V]) {
 
   /** The convToEnrichedA: V documentation... */
@@ -111,7 +112,8 @@ class EnrichedA[V](a: A[V]) {
 
 /** NumericA class <br/>
   *  - tests the implicit conversion between parametric and fixed types
-  *  - A, B and C should be implicitly converted to this */
+  *  - A, B and C should be implicitly converted to this
+  */
 class NumericA[U: Numeric](a: A[U]) {
 
   /** The convToNumericA: U documentation... */
@@ -120,7 +122,8 @@ class NumericA[U: Numeric](a: A[U]) {
 
 /** IntA class <br/>
   *  - tests the interaction between implicit conversion and specific types
-  *  - A and C should be implicitly converted to this */
+  *  - A and C should be implicitly converted to this
+  */
 class IntA(a: A[Int]) {
 
   /** The convToIntA: Int documentation... */
@@ -129,7 +132,8 @@ class IntA(a: A[Int]) {
 
 /** GtColonDoubleA class <br/>
   *  - tests the interaction between implicit conversion and existential types
-  *  - A and B should be implicitly converted to this */
+  *  - A and B should be implicitly converted to this
+  */
 class GtColonDoubleA(a: A[T] forSome { type T <: Double }) {
 
   /** The convToGtColonDoubleA: Double documentation... */
@@ -138,7 +142,8 @@ class GtColonDoubleA(a: A[T] forSome { type T <: Double }) {
 
 /** MyNumericA class <br/>
   *  - tests the implicit conversion between parametric and fixed types
-  *  - A should be implicitly converted to this */
+  *  - A should be implicitly converted to this
+  */
 class MyNumericA[U: MyNumeric](a: A[U]) {
 
   /** The convToMyNumericA: U documentation... */
@@ -147,7 +152,8 @@ class MyNumericA[U: MyNumeric](a: A[U]) {
 
 /** ManifestA class <br/>
   *  - tests the manifest recognition
-  *  - A, B, C, D should be implicitly converted to this */
+  *  - A, B, C, D should be implicitly converted to this
+  */
 class ManifestA[W: Manifest](a: A[W]) {
 
   /** The convToManifestA: W documentation... */

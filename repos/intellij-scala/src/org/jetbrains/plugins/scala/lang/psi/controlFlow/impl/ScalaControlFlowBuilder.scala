@@ -154,7 +154,8 @@ class ScalaControlFlowBuilder(
 
   /** ************************************
     * VISITOR METHODS
-    * ************************************ */
+    * ************************************
+    */
 
   override def visitPatternDefinition(pattern: ScPatternDefinition) {
     pattern.expr.foreach(_.accept(this))

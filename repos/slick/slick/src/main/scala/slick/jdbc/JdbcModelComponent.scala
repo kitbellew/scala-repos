@@ -13,7 +13,8 @@ trait JdbcModelComponent { self: JdbcProfile =>
 
   /** Gets the Slick data model describing this data source
     * @param tables used to build the model, uses defaultTables if None given
-    * @param ignoreInvalidDefaults logs unrecognized default values instead of throwing an exception */
+    * @param ignoreInvalidDefaults logs unrecognized default values instead of throwing an exception
+    */
   def createModel(
       tables: Option[DBIO[Seq[MTable]]] = None,
       ignoreInvalidDefaults: Boolean = true)(implicit

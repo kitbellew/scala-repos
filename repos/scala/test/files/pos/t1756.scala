@@ -16,7 +16,8 @@
   *
   * To solve this, I added a fallback scheme similar to implicit arguments:
   * When an implicit view that adds a method matching given arguments and result
-  * type fails, try again without the result type. */
+  * type fails, try again without the result type.
+  */
 trait Ring[T <: Ring[T]] {
   def +(that: T): T
   def *(that: T): T

@@ -202,7 +202,8 @@ private[internal] trait GlbLubs {
     }
 
   /** Eliminate from list of types all elements which are a supertype
-    *  of some other element of the list. */
+    *  of some other element of the list.
+    */
   private def elimSuper(ts: List[Type]): List[Type] =
     ts match {
       case List()  => List()
@@ -213,7 +214,8 @@ private[internal] trait GlbLubs {
     }
 
   /** Eliminate from list of types all elements which are a subtype
-    *  of some other element of the list. */
+    *  of some other element of the list.
+    */
   private def elimSub(ts: List[Type], depth: Depth): List[Type] = {
     def elimSub0(ts: List[Type]): List[Type] =
       ts match {
@@ -511,7 +513,8 @@ private[internal] trait GlbLubs {
     }
 
   /** The greatest lower bound of a list of types (as determined by `<:<`), which have been normalized
-    *  with regard to `elimSuper`. */
+    *  with regard to `elimSuper`.
+    */
   protected def glbNorm(ts: List[Type], depth: Depth): Type = {
     def glb0(ts0: List[Type]): Type =
       ts0 match {

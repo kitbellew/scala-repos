@@ -9,7 +9,8 @@ import scala.collection.mutable
 
 /** Expand table-valued expressions in the result type to their star projection and compute the
   * missing structural expansions of table types. After this phase the AST should always be
-  * well-typed. */
+  * well-typed.
+  */
 class ExpandTables extends Phase {
   val name = "expandTables"
 

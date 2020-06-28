@@ -16,7 +16,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 }
 
 /**
-  * @author Alexander.Podkhalyuzin */
+  * @author Alexander.Podkhalyuzin
+  */
 
 class ScWhileStmtImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

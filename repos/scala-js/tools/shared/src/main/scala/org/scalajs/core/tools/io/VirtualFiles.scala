@@ -14,7 +14,8 @@ import org.scalajs.core.tools.json._
 trait VirtualFile {
 
   /** Path of the file, including everything.
-    *  Unique if possible (used for lookup). */
+    *  Unique if possible (used for lookup).
+    */
   def path: String
 
   /** Name of the file/writer, including extension */

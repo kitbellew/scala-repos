@@ -198,7 +198,8 @@ class HashIndex[T] extends MutableIndex[T] with Serializable {
   * For use when we need an index, but we already have (densely packed) positive
   * ints and don't want hash overhead.
   *
-  * @author dlwh, dramage */
+  * @author dlwh, dramage
+  */
 class DenseIntIndex(beg: Int, end: Int) extends Index[Int] {
   def this(end: Int) = this(0, end)
 

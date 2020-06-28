@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.expr.ScNameValuePairImpl
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008 */
+  * Date: 07.03.2008
+  */
 
 trait ScAnnotationExpr extends ScalaPsiElement {
   def constr = findChildByClassScala(classOf[ScConstructor])

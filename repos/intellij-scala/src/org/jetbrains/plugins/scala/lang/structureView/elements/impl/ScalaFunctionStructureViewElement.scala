@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.structureView.itemsPresentations.impl._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 04.05.2008 */
+  * Date: 04.05.2008
+  */
 
 class ScalaFunctionStructureViewElement(
     private val func: ScFunction,

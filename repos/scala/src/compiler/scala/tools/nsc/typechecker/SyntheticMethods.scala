@@ -260,7 +260,8 @@ trait SyntheticMethods extends ast.TreeDSL {
       *    def projectionMethod(accessor: Symbol, num: Int) = {
       *      createMethod(nme.productAccessorName(num), accessor.tpe.resultType)(_ => REF(accessor))
       *    }
-      * ** */
+      * **
+      */
 
     // methods for both classes and objects
     def productMethods = {

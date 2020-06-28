@@ -68,6 +68,7 @@ class KindProjectorUseCorrectLambdaKeywordInspection
             case _ =>
           }
         case _ =>
+
       }
   }
 }

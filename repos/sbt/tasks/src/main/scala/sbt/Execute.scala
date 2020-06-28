@@ -209,7 +209,8 @@ private[sbt] final class Execute[A[_] <: AnyRef](
       progressState,
       node,
       deps,
-      active.toList /** active is mutable, so take a snapshot */ )
+      active.toList /** active is mutable, so take a snapshot
+        */ )
 
     if (active.isEmpty)
       ready(node)

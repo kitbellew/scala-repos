@@ -9,7 +9,8 @@ import Util._
 import TypeUtil._
 
 /** A node in the Slick AST.
-  * Every Node has a number of child nodes and an optional type annotation. */
+  * Every Node has a number of child nodes and an optional type annotation.
+  */
 trait Node extends Dumpable {
   type Self >: this.type <: Node
 
@@ -20,18 +21,21 @@ trait Node extends Dumpable {
   def children: ConstArray[Node]
 
   /** Names for the child nodes to show in AST dumps. Defaults to a numbered sequence starting at 0
-    * but can be overridden by subclasses to produce more suitable names. */
+    * but can be overridden by subclasses to produce more suitable names.
+    */
   def childNames: Iterable[String] = Stream.from(0).map(_.toString)
 
   /** Rebuild this node with a new list of children. Implementations of this method must not reuse
-    * the current node. This method always returns a fresh copy. */
+    * the current node. This method always returns a fresh copy.
+    */
   protected[this] def rebuild(ch: ConstArray[Node]): Self
 
   /** Build a copy of this node with the current children. */
   protected[this] def buildCopy: Self = rebuild(children)
 
   /** Rebuild this node with new child nodes unless all children are identical to the current ones,
-    * in which case this node is returned. */
+    * in which case this node is returned.
+    */
   final def withChildren(ch2: ConstArray[Node]): Self = {
     val ch = children
     val len = ch.length
@@ -45,7 +49,8 @@ trait Node extends Dumpable {
 
   /** Apply a mapping function to all children of this node and recreate the node with the new
     * children. If all new children are identical to the old ones, this node is returned. If
-    * ``keepType`` is true, the type of this node is kept even when the children have changed. */
+    * ``keepType`` is true, the type of this node is kept even when the children have changed.
+    */
   def mapChildren(f: Node => Node, keepType: Boolean = false): Self = {
     val ch = children
     val ch2 = ch.endoMap(f)
@@ -56,7 +61,8 @@ trait Node extends Dumpable {
 
   /** Apply a side-effecting function to all direct children from left to right. Note that
     * {{{ n.childrenForeach(f) }}} is equivalent to {{{ n.children.foreach(f) }}} but can be
-    * implemented more efficiently in `Node` subclasses. */
+    * implemented more efficiently in `Node` subclasses.
+    */
   def childrenForeach[R](f: Node => R): Unit =
     children.foreach(f)
 
@@ -86,7 +92,8 @@ trait Node extends Dumpable {
   /** Rebuild this node and all children with their computed type. If this node already has a type,
     * the children are only type-checked again if ``typeChildren`` is true. if ``retype`` is also
     * true, the existing type of this node is replaced. If this node does not yet have a type, the
-    * types of all children are computed first. */
+    * types of all children are computed first.
+    */
   final def infer(
       scope: Type.Scope = Map.empty,
       typeChildren: Boolean = false): Self =
@@ -126,7 +133,8 @@ trait Node extends Dumpable {
 }
 
 /** A Node which can be typed without access to its scope, and whose children can be typed
-  * independently of each other. */
+  * independently of each other.
+  */
 trait SimplyTypedNode extends Node {
   type Self >: this.type <: SimplyTypedNode
 
@@ -165,7 +173,8 @@ final case class ProductNode(children: ConstArray[Node])
 }
 
 /** An expression that represents a structure, i.e. a conjunction where the
-  * individual components have Symbols associated with them. */
+  * individual components have Symbols associated with them.
+  */
 final case class StructNode(elements: ConstArray[(TermSymbol, Node)])
     extends SimplyTypedNode
     with DefNode {
@@ -195,7 +204,8 @@ final case class StructNode(elements: ConstArray[(TermSymbol, Node)])
   * @param volatileHint Indicates whether this value should be considered volatile, i.e. it
   *                     contains user-generated data or may change in future executions of what
   *                     is otherwise the same query. A database back-end should usually turn
-  *                     volatile constants into bind variables. */
+  *                     volatile constants into bind variables.
+  */
 class LiteralNode(
     val buildType: Type,
     val value: Any,
@@ -313,7 +323,8 @@ final case class CollectionCast(child: Node, cons: CollectionTypeConstructor)
 
 /** Forces a subquery to be created in `mergeToComprehension` if it occurs between two other
   * collection-valued operations that would otherwise be fused, and the subquery condition
-  * is true. */
+  * is true.
+  */
 final case class Subquery(child: Node, condition: Subquery.Condition)
     extends UnaryNode
     with SimplyTypedNode {
@@ -519,7 +530,8 @@ final case class Distinct(generator: TermSymbol, from: Node, on: Node)
   * Option-extended right outer joins as
   * (CollectionType(c, t), CollectionType(_, u)) => CollecionType(c, (Option(t), u))
   * and Option-extended full outer joins as
-  * (CollectionType(c, t), CollectionType(_, u)) => CollecionType(c, (Option(t), Option(u))). */
+  * (CollectionType(c, t), CollectionType(_, u)) => CollecionType(c, (Option(t), Option(u))).
+  */
 final case class Join(
     leftGen: TermSymbol,
     rightGen: TermSymbol,
@@ -565,7 +577,8 @@ final case class Join(
 }
 
 /** A union of type
-  * (CollectionType(c, t), CollectionType(_, t)) => CollectionType(c, t). */
+  * (CollectionType(c, t), CollectionType(_, t)) => CollectionType(c, t).
+  */
 final case class Union(left: Node, right: Node, all: Boolean)
     extends BinaryNode
     with SimplyTypedNode {
@@ -579,7 +592,8 @@ final case class Union(left: Node, right: Node, all: Boolean)
 }
 
 /** A .flatMap call of type
-  * (CollectionType(c, _), CollectionType(_, u)) => CollectionType(c, u). */
+  * (CollectionType(c, _), CollectionType(_, u)) => CollectionType(c, u).
+  */
 final case class Bind(generator: TermSymbol, from: Node, select: Node)
     extends BinaryNode
     with DefNode {
@@ -611,7 +625,8 @@ final case class Bind(generator: TermSymbol, from: Node, select: Node)
 
 /** An aggregation function application which is similar to a Bind(_, _, Pure(_)) where the
   * projection contains a mapping function application. The return type is an aggregated
-  * scalar value though, not a collection. */
+  * scalar value though, not a collection.
+  */
 final case class Aggregate(sym: TermSymbol, from: Node, select: Node)
     extends BinaryNode
     with DefNode {
@@ -724,7 +739,8 @@ final case class Ref(sym: TermSymbol) extends PathElement with NullaryNode {
 }
 
 /** A constructor/extractor for nested Selects starting at a Ref so that, for example,
-  * `c :: b :: a :: Nil` corresponds to path `a.b.c`. */
+  * `c :: b :: a :: Nil` corresponds to path `a.b.c`.
+  */
 object Path {
   def apply(l: List[TermSymbol]): PathElement =
     l match {
@@ -757,7 +773,8 @@ object Path {
 }
 
 /** A constructor/extractor for nested Selects starting at a Ref so that, for example,
-  * `a :: b :: c :: Nil` corresponds to path `a.b.c`. */
+  * `a :: b :: c :: Nil` corresponds to path `a.b.c`.
+  */
 object FwdPath {
   def apply(ch: List[TermSymbol]): PathElement = {
     var p: PathElement = Ref(ch.head)
@@ -813,7 +830,8 @@ final case class SequenceNode(name: String)(val increment: Long)
 /** A Query of this special Node represents an infinite stream of consecutive
   * numbers starting at the given number. This is used as an operand for
   * zipWithIndex. It is not exposed directly in the query language because it
-  * cannot be represented in SQL outside of a 'zip' operation. */
+  * cannot be represented in SQL outside of a 'zip' operation.
+  */
 final case class RangeFrom(start: Long = 1L)
     extends NullaryNode
     with SimplyTypedNode {
@@ -824,7 +842,8 @@ final case class RangeFrom(start: Long = 1L)
 }
 
 /** A conditional expression; The clauses should be: `(if then)+ else`.
-  * The result type is taken from the first `then` (i.e. the second clause). */
+  * The result type is taken from the first `then` (i.e. the second clause).
+  */
 final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
   type Self = IfThenElse
   def children = clauses
@@ -979,7 +998,8 @@ object QueryParameter {
 
   /** Create a LiteralNode or QueryParameter that performs a client-side computation
     * on two primitive values. The given Nodes must also be of type `LiteralNode` or
-    * `QueryParameter`. */
+    * `QueryParameter`.
+    */
   def constOp[T](name: String)(op: (T, T) => T)(l: Node, r: Node)(implicit
       tpe: ScalaBaseType[T]): Node =
     (l, r) match {

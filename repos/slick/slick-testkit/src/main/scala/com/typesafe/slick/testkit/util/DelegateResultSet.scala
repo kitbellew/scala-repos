@@ -10,7 +10,8 @@ import java.net.URL
   * Individual methods can be overridden in subclasses to implement custom behavior.
   * Methods from JDK 7 are declared but they throw a NotImplementedException instead
   * of delegating the call, so that this class can be compiled on both, JDK 6 and
-  * JDK 7. */
+  * JDK 7.
+  */
 class DelegateResultSet(rs: ResultSet) extends ResultSet {
   def next(): Boolean = rs.next()
   def isWrapperFor(iface: Class[_]): Boolean = rs.isWrapperFor(iface)

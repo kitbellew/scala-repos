@@ -18,7 +18,8 @@ import scala.language.postfixOps
   * should only be built once for a given Scaladoc run.
   *
   * @author Manohar Jonnalagedda
-  * @author Gilles Dubochet */
+  * @author Gilles Dubochet
+  */
 trait CommentFactoryBase { this: MemberLookupBase =>
 
   val global: Global
@@ -121,17 +122,20 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     throw FatalError("program logic: " + msg)
 
   /** The body of a line, dropping the (optional) start star-marker,
-    * one leading whitespace and all trailing whitespace. */
+    * one leading whitespace and all trailing whitespace.
+    */
   private val CleanCommentLine =
     new Regex("""(?:\s*\*\s?)?(.*)""")
 
   /** Dangerous HTML tags that should be replaced by something safer,
-    * such as wiki syntax, or that should be dropped. */
+    * such as wiki syntax, or that should be dropped.
+    */
   private val DangerousTags =
     new Regex("""<(/?(div|ol|ul|li|h[1-6]|p))( [^>]*)?/?>|<!--.*-->""")
 
   /** Maps a dangerous HTML tag to a safe wiki replacement, or an empty string
-    * if it cannot be salvaged. */
+    * if it cannot be salvaged.
+    */
   private def htmlReplacement(mtch: Regex.Match): String =
     mtch.group(1) match {
       case "p" | "div"           => "\n\n"
@@ -148,7 +152,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     }
 
   /** Javadoc tags that should be replaced by something useful, such as wiki
-    * syntax, or that should be dropped. */
+    * syntax, or that should be dropped.
+    */
   private val JavadocTags =
     new Regex(
       """\{\@(code|docRoot|linkplain|link|literal|value)\p{Zs}*([^}]*)\}""")
@@ -182,7 +187,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     new Regex("""\s*@(\S+)\s+(.*)""")
 
   /** A Scaladoc tag linked to a symbol. Returns the name of the tag, the name
-    * of the symbol, and the rest of the line. */
+    * of the symbol, and the rest of the line.
+    */
   private val SymbolTagRegex =
     new Regex(
       """\s*@(param|tparam|throws|groupdesc|groupname|groupprio)\s+(\S*)\s*(.*)""")
@@ -197,7 +203,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
 
   /** A key used for a tag map. The key is built from the name of the tag and
     * from the linked symbol if the tag has one.
-    * Equality on tag keys is structural. */
+    * Equality on tag keys is structural.
+    */
   private sealed abstract class TagKey {
     def name: String
   }
@@ -211,7 +218,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
   /** Parses a raw comment string into a `Comment` object.
     * @param comment The expanded comment string (including start and end markers) to be parsed.
     * @param src     The raw comment source string.
-    * @param pos     The position of the comment in source. */
+    * @param pos     The position of the comment in source.
+    */
   protected def parseAtSymbol(
       comment: String,
       src: String,
@@ -219,7 +227,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       site: Symbol = NoSymbol): Comment = {
 
     /** The cleaned raw comment as a list of lines. Cleaning removes comment
-      * start and end markers, line start markers  and unnecessary whitespace. */
+      * start and end markers, line start markers  and unnecessary whitespace.
+      */
     def clean(comment: String): List[String] = {
       def cleanLine(line: String): String = {
         // Remove trailing whitespaces
@@ -253,7 +262,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       * @param lastTagKey  The last parsed tag, or `None` if the tag section hasn't started. Lines that are not tagged
       *                    are part of the previous tag or, if none exists, of the body.
       * @param remaining   The lines that must still recursively be parsed.
-      * @param inCodeBlock Whether the next line is part of a code block (in which no tags must be read). */
+      * @param inCodeBlock Whether the next line is part of a code block (in which no tags must be read).
+      */
     def parse0(
         docBody: StringBuilder,
         tags: Map[TagKey, List[String]],
@@ -533,7 +543,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     *  - Removed Scaladoc start and end markers.
     *  - Removed start-of-line star and one whitespace afterwards (if present).
     *  - Removed all end-of-line whitespace.
-    *  - Only `endOfLine` is used to mark line endings. */
+    *  - Only `endOfLine` is used to mark line endings.
+    */
   def parseWikiAtSymbol(string: String, pos: Position, site: Symbol): Body =
     new WikiParser(string, pos, site).document()
 
@@ -541,7 +552,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     *
     * @author Ingo Maier
     * @author Manohar Jonnalagedda
-    * @author Gilles Dubochet */
+    * @author Gilles Dubochet
+    */
   protected final class WikiParser(
       val buffer: String,
       pos: Position,
@@ -574,7 +586,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     }
 
     /** listStyle ::= '-' spc | '1.' spc | 'I.' spc | 'i.' spc | 'A.' spc | 'a.' spc
-      * Characters used to build lists and their constructors */
+      * Characters used to build lists and their constructors
+      */
     protected val listStyles = Map[String, (Seq[
       Block] => Block)]( // TODO Should this be defined at some list companion?
       "- " -> (UnorderedList(_)),
@@ -595,11 +608,13 @@ trait CommentFactoryBase { this: MemberLookupBase =>
       * nListBlock ::= nLine { mListBlock }
       *      nLine ::= nSpc listStyle para '\n'
       * }}}
-      * Where n and m stand for the number of spaces. When `m > n`, a new list is nested. */
+      * Where n and m stand for the number of spaces. When `m > n`, a new list is nested.
+      */
     def listBlock(): Block = {
 
       /** Consumes one list item block and returns it, or None if the block is
-        * not a list or a different list. */
+        * not a list or a different list.
+        */
       def listLine(indent: Int, style: String): Option[Block] =
         if (countWhitespace > indent && checkList)
           Some(listBlock)
@@ -614,7 +629,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
         }
 
       /** Consumes all list item blocks (possibly with nested lists) of the
-        * same list and returns the list block. */
+        * same list and returns the list block.
+        */
       def listLevel(indent: Int, style: String): Block = {
         val lines = mutable.ListBuffer.empty[Block]
         var line: Option[Block] = listLine(indent, style)
@@ -988,7 +1004,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     /* JUMPERS */
 
     /** jumps a character and consumes it
-      * @return true only if the correct character has been jumped */
+      * @return true only if the correct character has been jumped
+      */
     final def jump(ch: Char): Boolean = {
       if (char == ch) {
         nextChar()
@@ -997,7 +1014,8 @@ trait CommentFactoryBase { this: MemberLookupBase =>
     }
 
     /** jumps all the characters in chars, consuming them in the process.
-      * @return true only if the correct characters have been jumped */
+      * @return true only if the correct characters have been jumped
+      */
     final def jump(chars: String): Boolean = {
       var index = 0
       while (index < chars.length && char == chars.charAt(

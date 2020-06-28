@@ -891,7 +891,8 @@ class SparkILoop(
 
   /** Run one command submitted by the user.  Two values are returned:
     * (1) whether to keep running, (2) the line to record for replay,
-    * if any. */
+    * if any.
+    */
   private[repl] def command(line: String): Result = {
     if (line startsWith ":") {
       val cmd = line.tail takeWhile (x => !x.isWhitespace)

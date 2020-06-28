@@ -10,7 +10,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.Type
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 03.03.2008 */
+  * Date: 03.03.2008
+  */
 
 object Ascription {
   def parse(builder: ScalaPsiBuilder): Boolean = {

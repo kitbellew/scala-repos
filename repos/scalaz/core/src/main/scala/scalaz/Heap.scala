@@ -122,7 +122,8 @@ sealed abstract class Heap[A] {
           if (p(x.value)) singletonWith(leq, x.value) else Empty[A]))
 
   /** Partition the heap according to a predicate. The first heap contains all elements that
-    * satisfy the predicate. The second contains all elements that fail the predicate. O(n) */
+    * satisfy the predicate. The second contains all elements that fail the predicate. O(n)
+    */
   def partition(p: A => Boolean): (Heap[A], Heap[A]) =
     fold(
       (Empty[A], Empty[A]),
@@ -156,28 +157,33 @@ sealed abstract class Heap[A] {
   def drop(n: Int) = withList(_.drop(n))
 
   /** Split into two heaps, the first containing the n least elements, the second containing the n
-    * greatest elements. O(n log n) */
+    * greatest elements. O(n log n)
+    */
   def splitAt(n: Int) = splitWithList(_.splitAt(n))
 
   /** Returns a tuple where the first element is a heap consisting of the longest prefix of least elements
     * in this heap that do not satisfy the given predicate, and the second element is the remainder
-    * of the elements. O(n log n) */
+    * of the elements. O(n log n)
+    */
   def break(p: A => Boolean): (Heap[A], Heap[A]) =
     span(x => !p(x))
 
   /** Returns a tuple where the first element is a heap consisting of the longest prefix of least elements
     * in this heap that satisfy the given predicate and the second element is the remainder of the elements.
-    * O(n log n) */
+    * O(n log n)
+    */
   def span(p: A => Boolean): (Heap[A], Heap[A]) =
     splitWithList(_.span(p))
 
   /** Returns a heap consisting of the longest prefix of least elements of this heap that satisfy the predicate.
-    * O(n log n) */
+    * O(n log n)
+    */
   def takeWhile(p: A => Boolean) =
     withList(_.takeWhile(p))
 
   /** Returns a heap consisting of the longest prefix of least elements of this heap that do not
-    * satisfy the predicate. O(n log n) */
+    * satisfy the predicate. O(n log n)
+    */
   def dropWhile(p: A => Boolean) =
     withList(_.dropWhile(p))
 
@@ -197,7 +203,8 @@ sealed abstract class Heap[A] {
     fold(Empty[B], (_, _, t) => t foldMap (x => f(x.value)))
 
   /** Traverse the elements of the heap in sorted order and produce a new heap with applicative effects.
-    * O(n log n) */
+    * O(n log n)
+    */
   def traverse[F[_]: Applicative, B: Order](f: A => F[B]): F[Heap[B]] = {
     val F = Applicative[F]
     import std.stream._

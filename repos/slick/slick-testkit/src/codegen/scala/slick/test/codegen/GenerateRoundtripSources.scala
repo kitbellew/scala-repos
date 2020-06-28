@@ -11,7 +11,8 @@ import slick.jdbc.JdbcProfile
   * This is generated using Derby currently because Derby strips column size of some columns, which
   * works with all backends. If the code was generated using model data where the size is included
   * it would fail in derby and hsqldb. The code is tested using all enabled profiles. We should also
-  * diversify generation as well at some point. */
+  * diversify generation as well at some point.
+  */
 object GenerateRoundtripSources {
   def main(args: Array[String]) {
     val profile = slick.jdbc.H2Profile

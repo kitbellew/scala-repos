@@ -127,7 +127,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
   // Immutable config options (to be overridden by subclasses)
   /** The table name for scalar selects (e.g. "select 42 from DUAL;"), or `None` for
-    * scalar selects without a FROM clause ("select 42;"). */
+    * scalar selects without a FROM clause ("select 42;").
+    */
   val scalarFrom: Option[String] = None
 
   /** Builder for SELECT and UPDATE statements. */
@@ -667,7 +668,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         s"insert into $tableName (${quoteIdentifier(allFields.head.name)}) values (default)"
 
     /** Reorder InsertColumn indices in a mapping Node in the order of the given
-      * sequence of FieldSymbols (which may contain duplicates). */
+      * sequence of FieldSymbols (which may contain duplicates).
+      */
     protected def reorderColumns(
         n: Node,
         order: IndexedSeq[FieldSymbol]): Node = {
@@ -726,7 +728,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
 
   /** Builder for SELECT statements that can be used to check for the existing of
     * primary keys supplied to an INSERT operation. Used by the insertOrUpdate emulation
-    * on databases that don't support this in a single server-side statement. */
+    * on databases that don't support this in a single server-side statement.
+    */
   class CheckInsertBuilder(ins: Insert) extends UpsertBuilder(ins) {
     override def buildInsert: InsertBuilderResult =
       new InsertBuilderResult(
@@ -738,7 +741,8 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
   }
 
   /** Builder for UPDATE statements used as part of an insertOrUpdate operation
-    * on databases that don't support this in a single server-side statement. */
+    * on databases that don't support this in a single server-side statement.
+    */
   class UpdateInsertBuilder(ins: Insert) extends UpsertBuilder(ins) {
     override def buildInsert: InsertBuilderResult =
       new InsertBuilderResult(

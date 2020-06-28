@@ -37,7 +37,8 @@ trait Order[F] extends Equal[F] { self =>
     }
 
   /** @note `Order.fromScalaOrdering(toScalaOrdering).order(x, y)`
-    *            = `this.order(x, y)` */
+    *            = `this.order(x, y)`
+    */
   def toScalaOrdering: SOrdering[F] =
     new SOrdering[F] {
       def compare(x: F, y: F) = self.order(x, y).toInt

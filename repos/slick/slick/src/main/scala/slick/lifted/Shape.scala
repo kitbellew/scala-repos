@@ -45,12 +45,14 @@ abstract class Shape[Level <: ShapeLevel, -Mixed_, Unpacked_, Packed_] {
   /** Build a packed representation containing QueryParameters that can extract
     * data from the unpacked representation later.
     * This method is not available for shapes where Mixed and Unpacked are
-    * different types. */
+    * different types.
+    */
   def buildParams(extract: Any => Unpacked): Packed
 
   /** Encode a reference into a value of this Shape.
     * This method may not be available for shapes where Mixed and Packed are
-    * different types. */
+    * different types.
+    */
   def encodeRef(value: Mixed, path: Node): Any
 
   /** Return an AST Node representing a mixed value. */
@@ -101,7 +103,8 @@ trait ConstColumnShapeImplicits extends RepShapeImplicits {
   /** A Shape for ConstColumns. It is identical to `columnShape` but it
     * ensures that a `ConstColumn[T]` packs to itself, not just to
     * `Rep[T]`. This allows ConstColumns to be used as fully packed
-    * types when compiling query functions. */
+    * types when compiling query functions.
+    */
   @inline implicit def constColumnShape[T, Level <: ShapeLevel] =
     RepShape[Level, ConstColumn[T], T]
 }
@@ -162,14 +165,16 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
   def buildValue(elems: IndexedSeq[Any]): Any
 
   /** Create a copy of this Shape with new element Shapes. This is used for
-    * packing Shapes recursively. */
+    * packing Shapes recursively.
+    */
   def copy(shapes: Seq[Shape[_ <: ShapeLevel, _, _, _]]): Shape[Level, _, _, _]
 
   /** Get the element value from a record value at the specified index. */
   def getElement(value: C, idx: Int): Any
 
   /** Get an Iterator of a record value's element values. The default
-    * implementation repeatedly calls `getElement`. */
+    * implementation repeatedly calls `getElement`.
+    */
   def getIterator(value: C): Iterator[Any] =
     shapes.iterator.zipWithIndex.map(t => getElement(value, t._2))
 
@@ -345,18 +350,21 @@ class ProductClassShape[E <: Product, C <: Product](
 
 /** The level of a Shape, i.e. what kind of types it allows.
   * Subtypes of this trait are used as a phantom type for Shape resolution.
-  * There are no instances of any ShapeLevel. */
+  * There are no instances of any ShapeLevel.
+  */
 trait ShapeLevel
 
 /** ShapeLevel that allows nested collections. */
 trait NestedShapeLevel extends ShapeLevel
 
 /** ShapeLevel that does not allow nested collections.
-  * This is the standard level for executable queries. */
+  * This is the standard level for executable queries.
+  */
 trait FlatShapeLevel extends NestedShapeLevel
 
 /** ShapeLevel that only allows records of individual columns.
-  * This level is used for parameters of compiled queries. */
+  * This level is used for parameters of compiled queries.
+  */
 trait ColumnsShapeLevel extends FlatShapeLevel
 
 /** A value together with its Shape */
@@ -486,7 +494,8 @@ object ShapedValue {
 /** A limited version of ShapedValue which can be constructed for every type
   * that has a valid shape. We use it to enforce that a table's * projection
   * has a valid shape. A ProvenShape has itself a Shape so it can be used in
-  * place of the value that it wraps for purposes of packing and unpacking. */
+  * place of the value that it wraps for purposes of packing and unpacking.
+  */
 trait ProvenShape[U] {
   def value: Any
   val shape: Shape[_ <: FlatShapeLevel, _, U, _]

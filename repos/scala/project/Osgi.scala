@@ -10,7 +10,8 @@ import VersionUtil.versionProperties
   * depends on a newer version of BND which gives slightly different output (probably OK to upgrade
   * in the future but for now it would make comparing the sbt and ant build output harder) and does
   * not allow a crucial bit of configuration that we need: Setting the classpath for BND. In sbt-osgi
-  * this is always `fullClasspath in Compile` whereas we want `products in Compile in packageBin`. */
+  * this is always `fullClasspath in Compile` whereas we want `products in Compile in packageBin`.
+  */
 object Osgi {
   val bundle = TaskKey[File]("osgiBundle", "Create an OSGi bundle.")
   val bundleName =

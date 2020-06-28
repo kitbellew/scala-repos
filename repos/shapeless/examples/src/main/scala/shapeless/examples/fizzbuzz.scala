@@ -17,7 +17,8 @@
 package shapeless.examples
 
 /** A type-level implementation of [[http://en.wikipedia.org/wiki/Fizz_buzz fizz buzz]]
-  * based on `Nat` and `HList` */
+  * based on `Nat` and `HList`
+  */
 object FizzBuzzExample {
   import shapeless._
   import nat._

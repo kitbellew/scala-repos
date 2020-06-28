@@ -30,7 +30,8 @@ import org.jsoup.select._
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 8/15/11 */
+  * Date: 8/15/11
+  */
 object ContentExtractor extends Logging {
   val logPrefix = "ContentExtractor: "
 }

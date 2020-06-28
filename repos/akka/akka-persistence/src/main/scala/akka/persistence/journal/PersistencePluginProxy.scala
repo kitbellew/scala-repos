@@ -248,6 +248,7 @@ final class PersistencePluginProxy(config: Config)
       becomeIdentifying(address)
 
     case Terminated(_) ⇒
+
     case other ⇒
       val e = timeoutException()
       log.error(e, "Failed PersistencePluginProxy request: {}", e.getMessage)

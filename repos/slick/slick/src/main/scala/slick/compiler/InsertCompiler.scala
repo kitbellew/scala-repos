@@ -8,7 +8,8 @@ import org.slf4j.LoggerFactory
 import Util._
 
 /** A custom compiler for INSERT statements. We could reuse the standard
-  * phases with a minor modification instead, but this is much faster. */
+  * phases with a minor modification instead, but this is much faster.
+  */
 class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
   val name = "insertCompiler"
 
@@ -88,7 +89,8 @@ class InsertCompiler(val mode: InsertCompiler.Mode) extends Phase {
 object InsertCompiler {
 
   /** Determines which columns to include in the `Insert` and mapping nodes
-    * created by `InsertCompiler`. */
+    * created by `InsertCompiler`.
+    */
   trait Mode extends (FieldSymbol => Boolean)
 
   /** Include all columns. For use in forced inserts and merges. */

@@ -7,7 +7,8 @@ package types
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008 */
+  * Date: 07.03.2008
+  */
 trait ScTupleTypeElement extends ScTypeElement {
   def typeList = findChildByClassScala(classOf[ScTypes])
 

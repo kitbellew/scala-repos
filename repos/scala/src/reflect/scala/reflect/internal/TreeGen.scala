@@ -974,7 +974,8 @@ abstract class TreeGen {
     }
 
   /** If tree is a variable pattern, return Some("its name and type").
-    *  Otherwise return none */
+    *  Otherwise return none
+    */
   private def matchVarPattern(tree: Tree): Option[(Name, Tree)] = {
     def wildType(t: Tree): Option[Tree] =
       t match {

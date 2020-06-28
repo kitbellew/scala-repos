@@ -18,7 +18,8 @@ abstract class RefTag(val path: Node) extends Tag
 trait BaseTag extends Tag
 
 /** The profile-independent superclass of all table row objects.
-  * @tparam T Row type for this table. Make sure it matches the type of your `*` projection. */
+  * @tparam T Row type for this table. Make sure it matches the type of your `*` projection.
+  */
 abstract class AbstractTable[T](
     val tableTag: Tag,
     val schemaName: Option[String],
@@ -43,7 +44,8 @@ abstract class AbstractTable[T](
     * The `ProvenShape` return type ensures that
     * there is a `Shape` available for translating between the `Column`-based
     * type in * and the client-side type without `Column` in the table's type
-    * parameter. */
+    * parameter.
+    */
   def * : ProvenShape[T]
 
   override def toNode =
@@ -113,7 +115,8 @@ abstract class AbstractTable[T](
     * It is usually simpler to use the `O.PrimaryKey` option on the primary
     * key column but this method allows you to define compound primary keys
     * or give them user-defined names (when defining the database schema
-    * with Slick). */
+    * with Slick).
+    */
   def primaryKey[T](name: String, sourceColumns: T)(implicit
       shape: Shape[_ <: FlatShapeLevel, T, _, _]): PrimaryKey =
     PrimaryKey(name, ForeignKey.linearizeFieldRefs(shape.toNode(sourceColumns)))

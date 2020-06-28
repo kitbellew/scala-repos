@@ -2018,7 +2018,8 @@ trait Trees extends api.Trees {
       selfOrSuperCalls contains clazz
 
     /** The stack of class symbols in which a call to this() or to the super
-      * constructor, or early definition is active */
+      * constructor, or early definition is active
+      */
     private val selfOrSuperCalls = mutable.Stack[Symbol]()
 
     abstract override def transform(tree: Tree) = {

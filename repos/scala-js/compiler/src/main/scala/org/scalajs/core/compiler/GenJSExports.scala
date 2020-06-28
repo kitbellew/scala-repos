@@ -296,7 +296,8 @@ trait GenJSExports extends SubComponent { self: GenJSCode =>
     }
 
     /** generates the exporter function (i.e. exporter for non-properties) for
-      *  a given name */
+      *  a given name
+      */
     private def genExportMethod(alts0: List[Exported], jsName: String) = {
       assert(
         alts0.nonEmpty,

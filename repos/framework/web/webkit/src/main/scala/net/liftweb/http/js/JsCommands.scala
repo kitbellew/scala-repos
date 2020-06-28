@@ -1092,7 +1092,8 @@ object JsCmds {
 }
 
 /**
-  * A collection of defaults for JavaScript related stuff */
+  * A collection of defaults for JavaScript related stuff
+  */
 object JsRules {
 
   /**

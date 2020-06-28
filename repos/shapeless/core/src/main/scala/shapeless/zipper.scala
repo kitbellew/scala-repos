@@ -44,14 +44,16 @@ case class Zipper[C, L <: HList, R <: HList, P](
   def last(implicit last: Last[Self]): last.Out = last(this)
 
   /** Move the cursor ''n'' places to the right. Requires an explicit type argument. Available only if there are
-    * ''n'' places to the right of the cursor. */
+    * ''n'' places to the right of the cursor.
+    */
   def rightBy[N <: Nat](implicit rightBy: RightBy[Self, N]) = rightBy(this)
 
   /** Move the cursor ''n'' places to the right. Available only if there are ''n'' places to the right of the cursor. */
   def rightBy(n: Nat)(implicit rightBy: RightBy[Self, n.N]) = rightBy(this)
 
   /** Move the cursor ''n'' places to the left. Requires an explicit type argument. Available only if there are
-    * ''n'' places to the left of the cursor. */
+    * ''n'' places to the left of the cursor.
+    */
   def leftBy[N <: Nat](implicit leftBy: LeftBy[Self, N]) = leftBy(this)
 
   /** Move the cursor ''n'' places to the left. Available only if there are ''n'' places to the right of the cursor. */

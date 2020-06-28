@@ -284,7 +284,8 @@ class DefaultPromiseTest {
   }
 
   /** Link promises in different orders, using the same link structure as is
-    *  used in Future.flatMap */
+    *  used in Future.flatMap
+    */
   @Test
   def simulateFlatMapLinking {
     val random = new scala.util.Random(1)
@@ -322,7 +323,8 @@ class DefaultPromiseTest {
   }
 
   /** Link promises together on more than one thread, using the same link
-    *  structure as is used in Future.flatMap */
+    *  structure as is used in Future.flatMap
+    */
   @Test
   def testFlatMapLinking {
     for (_ <- 0 until 100) {

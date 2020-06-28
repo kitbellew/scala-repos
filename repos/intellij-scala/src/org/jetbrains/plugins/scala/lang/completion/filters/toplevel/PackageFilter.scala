@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.packaging._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 21.05.2008 */
+  * Date: 21.05.2008
+  */
 
 class PackageFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {

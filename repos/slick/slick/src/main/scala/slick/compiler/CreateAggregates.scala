@@ -109,7 +109,8 @@ class CreateAggregates extends Phase {
     }
 
   /** Find all scalar Aggregate calls in a sub-tree that do not refer to the given Symbol,
-    * and replace them by temporary Refs. */
+    * and replace them by temporary Refs.
+    */
   def liftAggregates(
       n: Node,
       outer: TermSymbol): (Node, Map[TermSymbol, Aggregate]) =

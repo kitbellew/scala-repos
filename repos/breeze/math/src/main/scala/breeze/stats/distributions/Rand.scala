@@ -192,7 +192,8 @@ private final case class MultiplePredicatesRand[@specialized(Int, Double) T](
 
 /**
   * Provides standard combinators and such to use
-  * to compose new Rands. */
+  * to compose new Rands.
+  */
 class RandBasis(val generator: RandomGenerator) {
 
   /**

@@ -24,7 +24,8 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
 import org.jetbrains.plugins.scala.lang.resolve.processor.MethodResolveProcessor
 
 /**
-  * @author Alexander Podkhalyuzin */
+  * @author Alexander Podkhalyuzin
+  */
 
 class ScTryStmtImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

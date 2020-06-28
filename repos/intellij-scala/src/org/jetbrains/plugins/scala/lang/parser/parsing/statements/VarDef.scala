@@ -12,7 +12,8 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.02.2008 */
+  * Date: 06.02.2008
+  */
 
 /*
  *  ValDef ::= PatDef |

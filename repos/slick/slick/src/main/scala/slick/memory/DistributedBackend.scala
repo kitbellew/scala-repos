@@ -69,7 +69,8 @@ trait DistributedBackend extends RelationalBackend with Logging {
   class DatabaseFactoryDef {
 
     /** Create a new distributed database instance that uses the supplied ExecutionContext for
-      * asynchronous execution of database actions. */
+      * asynchronous execution of database actions.
+      */
     def apply(
         dbs: TraversableOnce[BasicBackend#DatabaseDef],
         executionContext: ExecutionContext): Database =

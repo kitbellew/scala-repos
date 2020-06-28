@@ -9,13 +9,15 @@ package internal
 
 /** Additions to the type checker that can be added at
   *  run time.  Typically these are added by
-  *  compiler plugins. */
+  *  compiler plugins.
+  */
 trait AnnotationCheckers {
   self: SymbolTable =>
 
   /** An additional checker for annotations on types.
     *  Typically these are registered by compiler plugins
-    *  with the addAnnotationChecker method. */
+    *  with the addAnnotationChecker method.
+    */
   trait AnnotationChecker {
 
     /**
@@ -29,11 +31,13 @@ trait AnnotationCheckers {
     def annotationsConform(tpe1: Type, tpe2: Type): Boolean
 
     /** Refine the computed least upper bound of a list of types.
-      *  All this should do is add annotations. */
+      *  All this should do is add annotations.
+      */
     def annotationsLub(tp: Type, ts: List[Type]): Type = tp
 
     /** Refine the computed greatest lower bound of a list of types.
-      *  All this should do is add annotations. */
+      *  All this should do is add annotations.
+      */
     def annotationsGlb(tp: Type, ts: List[Type]): Type = tp
 
     /** Refine the bounds on type parameters to the given type arguments. */

@@ -1,4 +1,5 @@
-/** Test scala.Console functionality. */
+/** Test scala.Console functionality.
+  */
 object Test extends App {
 
   import Console._

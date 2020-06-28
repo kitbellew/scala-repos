@@ -713,11 +713,13 @@ private[execution] final class SlidingWindowFunctionFrame(
   private[this] val buffer = new util.ArrayDeque[InternalRow]()
 
   /** Index of the first input row with a value greater than the upper bound of the current
-    * output row. */
+    * output row.
+    */
   private[this] var inputHighIndex = 0
 
   /** Index of the first input row with a value equal to or greater than the lower bound of the
-    * current output row. */
+    * current output row.
+    */
   private[this] var inputLowIndex = 0
 
   /** Prepare the frame for calculating a new partition. Reset all variables. */
@@ -832,7 +834,8 @@ private[execution] final class UnboundedPrecedingWindowFunctionFrame(
   private[this] var nextRow: InternalRow = null
 
   /** Index of the first input row with a value greater than the upper bound of the current
-    * output row. */
+    * output row.
+    */
   private[this] var inputIndex = 0
 
   /** Prepare the frame for calculating a new partition. */
@@ -893,7 +896,8 @@ private[execution] final class UnboundedFollowingWindowFunctionFrame(
   private[this] var input: RowBuffer = null
 
   /** Index of the first input row with a value equal to or greater than the lower bound of the
-    * current output row. */
+    * current output row.
+    */
   private[this] var inputIndex = 0
 
   /** Prepare the frame for calculating a new partition. */

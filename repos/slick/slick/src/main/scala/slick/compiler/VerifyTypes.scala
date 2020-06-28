@@ -8,7 +8,8 @@ import slick.util.{Dumpable, RefId}
 import scala.collection.mutable
 
 /** Optional phase which verifies that retyping the tree does not change any types. Useful for
-  * debugging type-related problems with large trees. */
+  * debugging type-related problems with large trees.
+  */
 class VerifyTypes(after: Option[Phase] = None) extends Phase {
   val name = "verifyTypes"
 

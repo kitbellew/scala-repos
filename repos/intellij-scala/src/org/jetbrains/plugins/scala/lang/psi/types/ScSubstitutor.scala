@@ -25,7 +25,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.TypingContext
 import scala.collection.immutable.{HashMap, HashSet, Map}
 
 /**
-  * @author ven */
+  * @author ven
+  */
 object ScSubstitutor {
   val empty: ScSubstitutor = new ScSubstitutor() {
     override def toString: String = "Empty substitutor"

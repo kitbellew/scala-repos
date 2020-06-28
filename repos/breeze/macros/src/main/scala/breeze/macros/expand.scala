@@ -58,7 +58,8 @@ object expand {
   class args(args: Any*) extends Annotation with StaticAnnotation
 
   /** Excludes specific instantiations of the cross product inferred by @args.
-    * Order is the same as the order of the type arguments */
+    * Order is the same as the order of the type arguments
+    */
   class exclude(args: Any*) extends Annotation with StaticAnnotation
 
   /** Replaces a def with a val. Requires that all type arguments be expanded and all term arguments be sequenced */

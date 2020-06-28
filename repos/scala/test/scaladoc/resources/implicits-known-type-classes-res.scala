@@ -1,7 +1,8 @@
 /** Tests the "known type classes" feature of scaladoc implicits
   *  if the test fails, please update the correct qualified name of
   *  the type class in src/compiler/scala/tools/nsc/doc/Settings.scala
-  *  in the knownTypeClasses map. Thank you! */
+  *  in the knownTypeClasses map. Thank you!
+  */
 package scala.test.scaladoc.implicits.typeclasses {
   class A[T]
   object A {

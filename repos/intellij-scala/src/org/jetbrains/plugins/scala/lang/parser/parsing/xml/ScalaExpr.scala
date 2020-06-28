@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.expressions._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 18.04.2008 */
+  * Date: 18.04.2008
+  */
 
 /*
  * ScalaExpr ::= '{' Block '}'

@@ -210,7 +210,8 @@ trait VectorFunctions {
       })))
 
   /** A pair of the longest prefix of passing `as` against `p`, and
-    * the remainder. */
+    * the remainder.
+    */
   final def spanM[A, M[_]: Monad](as: Vector[A])(
       p: A => M[Boolean]): M[(Vector[A], Vector[A])] =
     Monad[M].map(takeWhileM(as)(p))(ys => (ys, as drop (ys.length)))
@@ -259,7 +260,8 @@ trait VectorFunctions {
   }
 
   /** All of the `B`s, in order, and the final `C` acquired by a
-    * stateful left fold over `as`. */
+    * stateful left fold over `as`.
+    */
   final def mapAccumLeft[A, B, C](
       as: Vector[A])(c: C, f: (C, A) => (C, B)): (C, Vector[B]) =
     as.foldLeft((c, empty[B])) { (acc, a) =>
@@ -272,7 +274,8 @@ trait VectorFunctions {
     }
 
   /** All of the `B`s, in order `as`-wise, and the final `C` acquired
-    * by a stateful right fold over `as`. */
+    * by a stateful right fold over `as`.
+    */
   final def mapAccumRight[A, B, C](
       as: Vector[A])(c: C, f: (C, A) => (C, B)): (C, Vector[B]) =
     as.foldRight((c, empty[B])) { (a, acc) =>

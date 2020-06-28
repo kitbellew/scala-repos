@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.ScTemplateDefin
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 14.03.2008 */
+  * Date: 14.03.2008
+  */
 
 trait ScSuperReference extends ScExpression with ScPathElement {
 

@@ -20,7 +20,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.result.{
 import org.jetbrains.plugins.scala.lang.psi.types.{ScType, Unit}
 
 /**
-  * @author Alexander Podkhalyuzin */
+  * @author Alexander Podkhalyuzin
+  */
 
 class ScFunctionDeclarationImpl private (
     stub: StubElement[ScFunction],

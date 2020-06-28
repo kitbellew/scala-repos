@@ -147,15 +147,18 @@ trait FlagSets { self: Universe =>
     val BYNAMEPARAM: FlagSet
 
     /** Flag indicating that tree represents a class or parameter.
-      *  Both type and value parameters carry the flag. */
+      *  Both type and value parameters carry the flag.
+      */
     val PARAM: FlagSet
 
     /** Flag indicating that tree represents a covariant
-      *  type parameter (marked with `+`). */
+      *  type parameter (marked with `+`).
+      */
     val COVARIANT: FlagSet
 
     /** Flag indicating that tree represents a contravariant
-      *  type parameter (marked with `-`). */
+      *  type parameter (marked with `-`).
+      */
     val CONTRAVARIANT: FlagSet
 
     /** Flag indicating that tree represents a parameter that has a default value */

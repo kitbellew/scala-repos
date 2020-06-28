@@ -824,6 +824,7 @@ trait Printers extends api.Printers { self: SymbolTable =>
       tree match {
         // don't remove synthetic ValDef/TypeDef
         case _ if syntheticToRemove(tree) =>
+
         case cl @ ClassDef(mods, name, tparams, impl) =>
           if (mods.isJavaDefined) super.printTree(cl)
           printAnnotations(cl)
@@ -1243,7 +1244,8 @@ trait Printers extends api.Printers { self: SymbolTable =>
           printColumn(whereClauses, " forSome { ", ";", "})")
 
         case EmptyTree =>
-        case tree      => super.printTree(tree)
+
+        case tree => super.printTree(tree)
       }
     }
   }

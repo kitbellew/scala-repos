@@ -7,7 +7,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScTypeElement
 
 /**
   *  Created by Kate Ustyuzhanina
-  *  on 8/18/15 */
+  *  on 8/18/15
+  */
 object OccurrenceData {
   def apply(
       typeElement: ScTypeElement,

@@ -5,7 +5,8 @@ import cats.functor.Contravariant
 
 /** `F` on the left and `G` on the right of [[Xor]].
   *
-  * @param run The underlying [[Xor]]. */
+  * @param run The underlying [[Xor]].
+  */
 final case class Coproduct[F[_], G[_], A](run: F[A] Xor G[A]) {
 
   import Coproduct._

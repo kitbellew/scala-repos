@@ -25,7 +25,8 @@ import distributions._;
   *
   * Labels must have .equals.
   *
-  * @author dlwh */
+  * @author dlwh
+  */
 // TODO: use quasi-random bit sequence.
 class RandomizationTest[L](
     val numSamples: Int,

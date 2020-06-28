@@ -37,7 +37,8 @@ import org.apache.http.client.methods.HttpGet
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 8/18/11 */
+  * Date: 8/18/11
+  */
 
 case class DepthTraversal(node: Element, parentDepth: Int, siblingDepth: Int)
 
@@ -48,7 +49,8 @@ case class DepthTraversal(node: Element, parentDepth: Int, siblingDepth: Int)
   * in the image tags themselves or can be falsified.
   * We'll weight the images in descending order depending on how high up they are compared to the top node content
   *
-  * //todo this is a straight java to scala conversion, need to add the nicities of scala, all these null checks make me dizzy */
+  * //todo this is a straight java to scala conversion, need to add the nicities of scala, all these null checks make me dizzy
+  */
 class StandardImageExtractor(
     httpClient: HttpClient,
     article: Article,

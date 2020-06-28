@@ -78,7 +78,8 @@ class ByteCode(val bytes: Array[Byte], val pos: Int, val length: Int) {
   */
 case class StringBytesPair(string: String, bytes: Array[Byte])
 
-/** Provides rules for parsing byte-code. */
+/** Provides rules for parsing byte-code.
+  */
 trait ByteCodeReader extends RulesWithState {
   type S = ByteCode
   type Parser[A] = Rule[A, String]

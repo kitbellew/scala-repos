@@ -43,7 +43,8 @@ object Endo extends EndoInstances {
 sealed abstract class EndoInstances {
 
   /** Endo forms a monoid where `zero` is the identity endomorphism
-    * and `append` composes the underlying functions. */
+    * and `append` composes the underlying functions.
+    */
   implicit def endoInstance[A]: Monoid[Endo[A]] =
     new Monoid[Endo[A]] {
       def append(f1: Endo[A], f2: => Endo[A]) = f1 compose f2

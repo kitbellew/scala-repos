@@ -205,6 +205,7 @@ object Traversers {
             _: LoadJSConstructor | _: LoadJSModule | _: JSLinkingInfo |
             _: Literal | _: UndefinedParam | _: VarRef | _: This | _: FieldDef |
             _: JSClassExportDef | _: ModuleExportDef | EmptyTree =>
+
         case _ =>
           sys.error(s"Invalid tree in traverse() of class ${tree.getClass}")
       }

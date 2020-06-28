@@ -17,7 +17,8 @@ import org.jetbrains.plugins.scala.lang.psi.impl.ScalaPsiElementFactory
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 20.02.2008 */
+  * Date: 20.02.2008
+  */
 
 trait ScClass extends ScTypeDefinition with ScParameterOwner {
   def constructor: Option[ScPrimaryConstructor]

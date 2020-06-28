@@ -12,7 +12,8 @@ import scala.annotation.tailrec
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 15.02.2008 */
+  * Date: 15.02.2008
+  */
 
 /*
  * SimpleType ::= SimpleType TypeArgs

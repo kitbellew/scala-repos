@@ -93,7 +93,8 @@ trait HeapBackend extends RelationalBackend with Logging {
   class DatabaseFactoryDef {
 
     /** Create a new heap database instance that uses the supplied ExecutionContext for
-      * asynchronous execution of database actions. */
+      * asynchronous execution of database actions.
+      */
     def apply(executionContext: ExecutionContext): Database =
       new DatabaseDef(executionContext)
   }
@@ -195,7 +196,8 @@ trait HeapBackend extends RelationalBackend with Logging {
 
   /** A Verifier is called before and after data is updated in a table. It
     * ensures that no constraints are violated before the update and updates
-    * the indices afterwards. */
+    * the indices afterwards.
+    */
   trait Verifier { self =>
     def verify(row: Row): Unit
     def inserted(row: Row): Unit

@@ -30,7 +30,8 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScTemplateBodyStub
 /**
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
-  * Time: 9:38:04 */
+  * Time: 9:38:04
+  */
 
 class ScTemplateBodyImpl private (
     stub: StubElement[ScTemplateBody],

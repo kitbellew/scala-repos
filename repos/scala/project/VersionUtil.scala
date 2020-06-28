@@ -70,7 +70,8 @@ object VersionUtil {
     * A `baseVersionSuffix` of "SNAPSHOT" is the default, which is used for local snapshot builds. The PR validation
     * job uses "SHA-SNAPSHOT". An empty suffix is used for releases. All other suffix values are treated as RC /
     * milestone builds. The special suffix value "SPLIT" is used to split the real suffix off from `baseVersion`
-    * instead and then apply the usual logic. */
+    * instead and then apply the usual logic.
+    */
   private lazy val versionPropertiesImpl: Def.Initialize[Versions] =
     Def.setting {
 

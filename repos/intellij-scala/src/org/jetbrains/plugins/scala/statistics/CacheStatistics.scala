@@ -12,7 +12,8 @@ import scala.ref.WeakReference
 
 /**
   *  Author: Svyatoslav Ilinskiy
-  *  Date: 10/9/15. */
+  *  Date: 10/9/15.
+  */
 class CacheStatistics private (id: String, name: String) {
   @volatile
   var cachedAreaEntrances: Long = 0

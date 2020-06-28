@@ -12,7 +12,8 @@ import scala.reflect.ClassTag
 
 /** A profile for relational databases that does not assume the existence
   * of SQL (or any other text-based language for executing statements).
-  * It requires a relational table structure as its basic model of data. */
+  * It requires a relational table structure as its basic model of data.
+  */
 trait RelationalProfile
     extends BasicProfile
     with RelationalTableComponent
@@ -95,7 +96,8 @@ trait RelationalProfile
       buildTableSchemaDescription(q.shaped.value.asInstanceOf[Table[_]])
 
     /** Create a `Compiled` query which selects all rows where the specified
-      * key matches the parameter value. */
+      * key matches the parameter value.
+      */
     def findBy[P](f: (T => Rep[P]))(implicit
         ashape: Shape[ColumnsShapeLevel, Rep[P], P, Rep[P]],
         pshape: Shape[ColumnsShapeLevel, P, P, _]): CompiledFunction[
@@ -113,7 +115,8 @@ trait RelationalProfile
   }
 
   /** Run a query synchronously on the provided session. This is used by DistributedProfile until we
-    * can make it fully asynchronous. */
+    * can make it fully asynchronous.
+    */
   def runSynchronousQuery[R](tree: Node, param: Any)(implicit
       session: Backend#Session): R
 
@@ -147,7 +150,8 @@ object RelationalProfile {
       * varying=false and VARCHAR when varying=true. Slick uses VARCHAR or VARCHAR(254) in DDL for
       * String columns if neither ColumnOption DBType nor Length are given.
       *
-      * @param varying indicates wether this is just the maximum length of a varying */
+      * @param varying indicates wether this is just the maximum length of a varying
+      */
     case class Length(length: Int, varying: Boolean = true)
         extends ColumnOption[Nothing]
   }

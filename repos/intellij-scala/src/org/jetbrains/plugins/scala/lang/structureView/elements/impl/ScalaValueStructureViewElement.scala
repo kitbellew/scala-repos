@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.structureView.itemsPresentations.impl._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 08.05.2008 */
+  * Date: 08.05.2008
+  */
 
 class ScalaValueStructureViewElement(
     val element: PsiElement,

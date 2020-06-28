@@ -40,14 +40,16 @@ import scala.util.control.NonFatal
 sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
 
   /** Transform the result of a successful execution of this action. If this action fails, the
-    * resulting action also fails. */
+    * resulting action also fails.
+    */
   def map[R2](f: R => R2)(implicit
       executor: ExecutionContext): DBIOAction[R2, NoStream, E] =
     flatMap[R2, NoStream, E](r => SuccessAction[R2](f(r)))
 
   /** Use the result produced by the successful execution of this action to compute and then
     * run the next action in sequence. The resulting action fails if either this action, the
-    * computation, or the computed action fails. */
+    * computation, or the computed action fails.
+    */
   def flatMap[R2, S2 <: NoStream, E2 <: Effect](f: R => DBIOAction[R2, S2, E2])(
       implicit executor: ExecutionContext): DBIOAction[R2, S2, E with E2] =
     FlatMapAction[R2, S2, R, E with E2](this, f, executor)
@@ -60,7 +62,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
     flatMap(ev)(DBIO.sameThreadExecutionContext)
 
   /** Run another action after this action, if it completed successfully, and return the result
-    * of the second action. If either of the two actions fails, the resulting action also fails. */
+    * of the second action. If either of the two actions fails, the resulting action also fails.
+    */
   def andThen[R2, S2 <: NoStream, E2 <: Effect](
       a: DBIOAction[R2, S2, E2]): DBIOAction[R2, S2, E with E2] =
     a match {
@@ -69,7 +72,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
     }
 
   /** Run another action after this action, if it completed successfully, and return the result
-    * of both actions. If either of the two actions fails, the resulting action also fails. */
+    * of both actions. If either of the two actions fails, the resulting action also fails.
+    */
   def zip[R2, E2 <: Effect](a: DBIOAction[R2, NoStream, E2])
       : DBIOAction[(R, R2), NoStream, E with E2] =
     SequenceAction[Any, ArrayBuffer[Any], E with E2](Vector(this, a)).map { r =>
@@ -78,7 +82,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
 
   /** Run another action after this action, if it completed successfully, and zip the result
     * of both actions with a function `f`, then create a new DBIOAction holding this result,
-    * If either of the two actions fails, the resulting action also fails. */
+    * If either of the two actions fails, the resulting action also fails.
+    */
   def zipWith[R2, E2 <: Effect, R3](a: DBIOAction[R2, NoStream, E2])(
       f: (R, R2) => R3)(implicit
       executor: ExecutionContext): DBIOAction[R3, NoStream, E with E2] =
@@ -89,7 +94,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
   /** Run another action after this action, whether it succeeds or fails, and then return the
     * result of the first action. If the first action fails, its failure is propagated, whether
     * the second action fails or succeeds. If the first action succeeds, a failure of the second
-    * action is propagated. */
+    * action is propagated.
+    */
   def andFinally[E2 <: Effect](
       a: DBIOAction[_, NoStream, E2]): DBIOAction[R, S, E with E2] =
     cleanUp[E2](_ => a)(DBIO.sameThreadExecutionContext)
@@ -103,7 +109,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
     *                    `keepFailure` is set to `true` (the default), the resulting action fails
     *                    with the same error, no matter whether the clean-up action succeeds or
     *                    fails. If `keepFailure` is set to `false`, an error from the clean-up
-    *                    action will override the error from this action. */
+    *                    action will override the error from this action.
+    */
   def cleanUp[E2 <: Effect](
       f: Option[Throwable] => DBIOAction[_, NoStream, E2],
       keepFailure: Boolean = true)(implicit
@@ -117,7 +124,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
 
   /** Filter the result of this action with the given predicate. If the predicate matches, the
     * original result is returned, otherwise the resulting action fails with a
-    * NoSuchElementException. */
+    * NoSuchElementException.
+    */
   final def filter(p: R => Boolean)(implicit
       executor: ExecutionContext): DBIOAction[R, NoStream, E] =
     withFilter(p)
@@ -131,7 +139,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
   /** Transform the result of a successful execution of this action, if the given partial function is defined at that value,
     * otherwise, the result DBIOAction will fail with a `NoSuchElementException`.
     *
-    * If this action fails, the resulting action also fails. */
+    * If this action fails, the resulting action also fails.
+    */
   def collect[R2](pf: PartialFunction[R, R2])(implicit
       executor: ExecutionContext): DBIOAction[R2, NoStream, E] =
     map(r1 =>
@@ -142,18 +151,21 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
             s"DBIOAction.collect partial function is not defined at: $r")))
 
   /** Return an action which contains the Throwable with which this action failed as its result.
-    * If this action succeeded, the resulting action fails with a NoSuchElementException. */
+    * If this action succeeded, the resulting action fails with a NoSuchElementException.
+    */
   def failed: DBIOAction[Throwable, NoStream, E] = FailedAction[E](this)
 
   /** Convert a successful result `v` of this action into a successful result `Success(v)` and a
     * failure `t` into a successful result `Failure(t)`. This is the most generic combinator that
     * can be used for error recovery. If possible, use [[andFinally]] or [[cleanUp]] instead,
-    * because those combinators, unlike `asTry`, support streaming. */
+    * because those combinators, unlike `asTry`, support streaming.
+    */
   def asTry: DBIOAction[Try[R], NoStream, E] = AsTryAction[R, E](this)
 
   /** Use a pinned database session when running this action. If it is composed of multiple
     * database actions, they will all use the same session, even when sequenced with non-database
-    * actions. For non-composite or non-database actions, this has no effect. */
+    * actions. For non-composite or non-database actions, this has no effect.
+    */
   def withPinnedSession: DBIOAction[R, S, E] =
     DBIO.Pin andThen this andFinally DBIO.Unpin
 
@@ -162,7 +174,8 @@ sealed trait DBIOAction[+R, +S <: NoStream, -E <: Effect] extends Dumpable {
     NamedAction[R, S, E](this, name)
 
   /** Get the equivalent non-fused action if this action has been fused, otherwise this
-    * action is returned. */
+    * action is returned.
+    */
   def nonFusedEquivalentAction: DBIOAction[R, S, E] = this
 
   /** Whether or not this action should be included in log output by default. */
@@ -284,7 +297,8 @@ object DBIOAction {
 
   /** A simpler version of `sequence` that takes a number of DBIOActions with any return type as
     * varargs and returns a DBIOAction that performs the individual actions in sequence, returning
-    * `()` in the end. */
+    * `()` in the end.
+    */
   def seq[E <: Effect](
       actions: DBIOAction[_, NoStream, E]*): DBIOAction[Unit, NoStream, E] = {
     def sequenceGroup(
@@ -328,7 +342,8 @@ object DBIOAction {
   }
 
   /** Create a DBIOAction that runs some other actions in sequence and combines their results
-    * with the given function. */
+    * with the given function.
+    */
   def fold[T, E <: Effect](actions: Seq[DBIOAction[T, NoStream, E]], zero: T)(
       f: (T, T) => T)(implicit
       ec: ExecutionContext): DBIOAction[T, NoStream, E] =
@@ -351,7 +366,8 @@ object DBIOAction {
   }
 
   /** An ExecutionContext used internally for executing plumbing operations during DBIOAction
-    * composition. */
+    * composition.
+    */
   private[slick] object sameThreadExecutionContext extends ExecutionContext {
     private[this] val trampoline = new ThreadLocal[List[Runnable]]
 
@@ -422,7 +438,8 @@ case class FlatMapAction[+R, +S <: NoStream, P, -E <: Effect](
 }
 
 /** A DBIOAction that represents a `seq` or `andThen` operation for sequencing in the DBIOAction
-  * monad. Unlike `SequenceAction` it only keeps the last result. */
+  * monad. Unlike `SequenceAction` it only keeps the last result.
+  */
 case class AndThenAction[R, +S <: NoStream, -E <: Effect](
     as: IndexedSeq[DBIOAction[Any, NoStream, E]])
     extends DBIOAction[R, S, E] {
@@ -486,7 +503,8 @@ case class NamedAction[+R, +S <: NoStream, -E <: Effect](
 }
 
 /** The base trait for the context object passed to synchronous database actions by the execution
-  * engine. */
+  * engine.
+  */
 trait ActionContext {
   private[this] var stickiness = 0
 
@@ -498,7 +516,8 @@ trait ActionContext {
     * session will not be released at the end of a primitive database action. Instead, the same
     * pinned session is passed to all subsequent actions until it is unpinned. Note that pinning
     * does not force an actual database connection to be opened. This still happens on demand.
-    * May only be called from a synchronous action context. */
+    * May only be called from a synchronous action context.
+    */
   final def pin: Unit = stickiness += 1
 
   /** Unpin this session once. May only be called from a synchronous action context. */
@@ -509,7 +528,8 @@ trait ActionContext {
 trait StreamingActionContext extends ActionContext {
 
   /** Emit a single result of the stream. Any Exception thrown by this method should be passed on
-    * to the caller. */
+    * to the caller.
+    */
   def emit(v: Any)
 
   /** Get the Subscription for this stream. */
@@ -525,7 +545,8 @@ trait StreamingActionContext extends ActionContext {
   *
   * The execution engine ensures that an [[ActionContext]] is never used concurrently and that
   * all state changes performed by one invocation of a SynchronousDatabaseAction are visible
-  * to the next invocation of the same or a different SynchronousDatabaseAction. */
+  * to the next invocation of the same or a different SynchronousDatabaseAction.
+  */
 trait SynchronousDatabaseAction[
     +R,
     +S <: NoStream,
@@ -534,11 +555,13 @@ trait SynchronousDatabaseAction[
     extends DatabaseAction[R, S, E] { self =>
 
   /** The type used by this action for the state of a suspended stream. A call to `emitStream`
-    * produces such a state which is then fed back into the next call. */
+    * produces such a state which is then fed back into the next call.
+    */
   type StreamState >: Null <: AnyRef
 
   /** Run this action synchronously and produce a result, or throw an Exception to indicate a
-    * failure. */
+    * failure.
+    */
   def run(context: B#Context): R
 
   /** Run this action synchronously and emit results to the context. This methods may throw an
@@ -548,7 +571,8 @@ trait SynchronousDatabaseAction[
     * @param state The state returned by a previous invocation of this method, or `null` if
     *             a new stream should be produced.
     * @return A stream state if there are potentially more results available, or null if the
-    *         stream is finished. */
+    *         stream is finished.
+    */
   def emitStream(
       context: B#StreamingContext,
       limit: Long,
@@ -558,12 +582,14 @@ trait SynchronousDatabaseAction[
 
   /** Dispose of a `StreamState` when a streaming action is cancelled. Whenever `emitStream`
     * returns `null` or throws an Exception, it needs to dispose of the state itself. This
-    * method will not be called in these cases. */
+    * method will not be called in these cases.
+    */
   def cancelStream(context: B#StreamingContext, state: StreamState): Unit = ()
 
   /** Whether or not this action supports streaming results. An action with a `Streaming` result
     * type must either support streaming directly or have a [[nonFusedEquivalentAction]] which
-    * supports streaming. This flag is not used if the Action has a `NoStream` result type. */
+    * supports streaming. This flag is not used if the Action has a `NoStream` result type.
+    */
   def supportsStreaming: Boolean = true
 
   override def andThen[R2, S2 <: NoStream, E2 <: Effect](
@@ -731,7 +757,8 @@ object SynchronousDatabaseAction {
   /** Fuse `flatMap` / `map`, `cleanUp` and `filter` / `withFilter` combinators if they use
     * `DBIO.sameThreadExecutionContext` and produce a `SynchronousDatabaseAction` in their
     * evaluation function (where applicable). This cannot be verified at fusion time, so a wrongly
-    * fused action can fail with a `ClassCastException` during evaluation. */
+    * fused action can fail with a `ClassCastException` during evaluation.
+    */
   private[slick] def fuseUnsafe[R, S <: NoStream, E <: Effect](
       a: DBIOAction[R, S, E]): DBIOAction[R, S, E] = {
     a match {

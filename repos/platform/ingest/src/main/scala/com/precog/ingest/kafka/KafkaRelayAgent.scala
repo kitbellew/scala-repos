@@ -96,7 +96,8 @@ object KafkaRelayAgent extends Logging {
 }
 
 /** An independent agent that will consume records using the specified consumer,
-  * augment them with record identities, then send them with the specified producer. */
+  * augment them with record identities, then send them with the specified producer.
+  */
 final class KafkaRelayAgent(
     permissionsFinder: PermissionsFinder[Future],
     eventIdSeq: EventIdSequence,

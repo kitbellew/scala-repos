@@ -1067,7 +1067,8 @@ object Log {
   val SwapFileSuffix = ".swap"
 
   /** Clean shutdown file that indicates the broker was cleanly shutdown in 0.8. This is required to maintain backwards compatibility
-    * with 0.8 and avoid unnecessary log recovery when upgrading from 0.8 to 0.8.1 */
+    * with 0.8 and avoid unnecessary log recovery when upgrading from 0.8 to 0.8.1
+    */
   /** TODO: Get rid of CleanShutdownFile in 0.8.2 */
   val CleanShutdownFile = ".kafka_cleanshutdown"
 

@@ -47,7 +47,8 @@ object Test extends ScaladocModelTest {
       *  - conv6-7 should not be ambiguous
       *  - conv8 should be ambiguous
       *  - conv9 should be ambiguous
-      *  - conv10 and conv11 should not be ambiguous */
+      *  - conv10 and conv11 should not be ambiguous
+      */
     def check1to9(cls: String): Unit = {
       for (conv <- (1 to 5).map("conv" + _)) {
         assert(

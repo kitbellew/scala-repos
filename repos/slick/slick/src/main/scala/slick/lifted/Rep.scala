@@ -63,7 +63,8 @@ object Rep {
 }
 
 /** A scalar value that is known at the client side at the time a query is executed.
-  * This is either a constant value (`LiteralColumn`) or a scalar parameter. */
+  * This is either a constant value (`LiteralColumn`) or a scalar parameter.
+  */
 class ConstColumn[T: TypedType](val toNode: Node) extends Rep.TypedRep[T] {
   override def encodeRef(path: Node): ConstColumn[T] = new ConstColumn[T](path)
 }
@@ -79,7 +80,8 @@ final case class LiteralColumn[T](value: T)(implicit tt: TypedType[T])
 /** Represents `Rep[Option[T]]` in all cases where `T` is not a column base type. This special
   * representation is necessary so that a non-Option `Rep` value can be retrieved for encoding
   * Option-based operations. This base value is of type `T` if `T <: Rep[_]`, otherwise of
-  * type `Rep[T]`. */
+  * type `Rep[T]`.
+  */
 final case class RepOption[T](base: ShapedValue[_, _], toNode: Node)
     extends Rep[Option[T]] {
   def encodeRef(path: Node): Rep[Option[T]] = copy(toNode = path)

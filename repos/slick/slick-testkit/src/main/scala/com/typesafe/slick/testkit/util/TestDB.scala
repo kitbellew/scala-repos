@@ -125,7 +125,8 @@ trait TestDB {
   def cleanUpBefore() {}
 
   /** This method is called to clean up after running all tests. It
-    * defaults to cleanUpBefore(). */
+    * defaults to cleanUpBefore().
+    */
   def cleanUpAfter() = cleanUpBefore()
 
   /** The profile for the database */
@@ -135,7 +136,8 @@ trait TestDB {
   def isPersistent = true
 
   /** This method is called between individual test methods to remove all
-    * database artifacts that were created by the test. */
+    * database artifacts that were created by the test.
+    */
   def dropUserArtifacts(implicit session: profile.Backend#Session): Unit
 
   /** Create the Database object for this test database configuration */
@@ -143,11 +145,13 @@ trait TestDB {
 
   /** Indicates whether the database's sessions have shared state. When a
     * database is shared but not persistent, Testkit keeps a session open
-    * to make it persistent. */
+    * to make it persistent.
+    */
   def isShared = true
 
   /** The capabilities of the Slick profile, possibly modified for this
-    * test configuration. */
+    * test configuration.
+    */
   def capabilities: Set[Capability] =
     profile.capabilities ++ TestDB.capabilities.all
 

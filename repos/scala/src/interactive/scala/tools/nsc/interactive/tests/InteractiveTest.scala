@@ -113,5 +113,6 @@ abstract class InteractiveTest
     *    }
     *    tester.run()
     *  }
-    * ** */
+    * **
+    */
 }

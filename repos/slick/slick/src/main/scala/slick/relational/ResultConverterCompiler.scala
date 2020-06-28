@@ -7,7 +7,8 @@ import slick.util.SlickLogger
 import org.slf4j.LoggerFactory
 
 /** Create a ResultConverter for parameters and result sets. Subclasses have
-  * to provide profile-specific createColumnConverter implementations. */
+  * to provide profile-specific createColumnConverter implementations.
+  */
 trait ResultConverterCompiler[Domain <: ResultConverterDomain] {
 
   def compile(n: Node): ResultConverter[Domain, _] =

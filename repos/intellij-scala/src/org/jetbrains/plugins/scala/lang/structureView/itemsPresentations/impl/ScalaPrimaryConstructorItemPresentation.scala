@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base._;
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 16.05.2008 */
+  * Date: 16.05.2008
+  */
 
 class ScalaPrimaryConstructorItemPresentation(
     private val element: ScPrimaryConstructor)

@@ -12,7 +12,8 @@ import slick.relational.RelationalProfile
   * subclasses for Column, etc.
   * The implementation follows the virtual class pattern, which allows flexible
   * customization by overriding the inner classes (following the pattern).
-  * @see http://lampwww.epfl.ch/~odersky/papers/ScalableComponent.html */
+  * @see http://lampwww.epfl.ch/~odersky/papers/ScalableComponent.html
+  */
 abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     extends GeneratorHelpers[Code, TermName, TypeName] { codegen =>
   model.assertConsistency
@@ -30,18 +31,21 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
 
   // pulled out here to make this common use case simpler
   /** Maps database table name to Table class and value name
-    *      @group Basic customization overrides */
+    *      @group Basic customization overrides
+    */
   def tableName = (dbName: String) => dbName.toCamelCase
 
   /** Maps database table name to entity case class name
-    *      @group Basic customization overrides */
+    *      @group Basic customization overrides
+    */
   def entityName = (dbName: String) => dbName.toCamelCase + "Row"
 
   /** Table generator virtual class */
   type Table <: TableDef
 
   /** Table generator factory. Override for customization.
-    *      @group Basic customization overrides */
+    *      @group Basic customization overrides
+    */
   def Table: m.Table => Table
 
   /**
@@ -90,12 +94,14 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     final lazy val allRawTermNames: Seq[String] = (definitions ++ TableClass.definitions.flatten).collect{ case d:TermDef => d}.map(_.rawName)
      */
     /** Definitions to be generated for this table
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def definitions =
       Seq[Def](EntityType, PlainSqlMapper, TableClass, TableValue)
 
     /** Generates the complete code for this table and its subordinate generators.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def code: Seq[Code] = definitions.flatMap(_.getEnabled).map(_.docWithCode)
 
     /** Creates a compound type from a given sequence of types.
@@ -109,35 +115,42 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     def compoundValue(values: Seq[Code]): Code
 
     /** If HList should be used as a compound type instead of tuples. Default to true for > 22 columns.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def hlistEnabled = columns.size > 22
 
     /** Indicates whether auto increment columns should be put last and made an Option with a None default.
       *        Please set to !hlistEnabled for switching this on.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def autoIncLastAsOption = false
 
     /** Indicates if this table should be mapped using factory and extractor or not, in which case tuples are used. (Consider overriding EntityType.enabled instead, which affects this, too.) Disabled by default when using hlists.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def mappingEnabled = !hlistEnabled
 
     /** Function that constructs an entity object from the unmapped values
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def factory: Code
 
     /** Function that extracts the unmapped values from an entity object
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def extractor: Code
 
     /** Entity case class or type alias generator virtual class */
     type EntityType <: EntityTypeDef
 
     /** Entity case class or type alias generator factory. Override for customization.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def EntityType: EntityType
 
     /** Entity case class or type alias generator definition (Mapped case class holding a complete row of data of this table).
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     trait EntityTypeDef extends TypeDef {
 
       /** Column types */
@@ -159,11 +172,13 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     type PlainSqlMapper <: PlainSqlMapperDef
 
     /** Plain SQL GetResult mapper generator factory. Override for customization.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def PlainSqlMapper: PlainSqlMapper
 
     /** Plain SQL GetResult mapper generator definition
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     trait PlainSqlMapperDef extends TermDef {
       def doc =
         s"GetResult implicit for fetching ${EntityType.name} objects using plain SQL queries"
@@ -174,11 +189,13 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     type TableClass <: TableClassDef
 
     /** Table class generator factory. Override for customization.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def TableClass: TableClass
 
     /** Table class generator definition
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     trait TableClassDef extends TypeDef {
 
       /** The type of the elements this table yields. */
@@ -250,11 +267,13 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     type TableValue <: TableValueDef
 
     /** Table value generator factory. Override for customization.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def TableValue: TableValue
 
     /** Table value generator definition (generates a collection-like value representing this database table).
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     trait TableValueDef extends TermDef {
       def doc =
         s"Collection-like TableQuery object for table ${TableValue.name}"
@@ -266,7 +285,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     type Column <: ColumnDef
 
     /** Column generator factory. Override for customization.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def Column: m.Column => Column
 
     /**
@@ -341,7 +361,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     type PrimaryKey <: PrimaryKeyDef
 
     /** PrimaryKey generator factory. Override for customization.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def PrimaryKey: m.PrimaryKey => PrimaryKey
 
     /**
@@ -373,7 +394,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     type ForeignKey <: ForeignKeyDef
 
     /** ForeignKey generator factory. Override for customization.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def ForeignKey: m.ForeignKey => ForeignKey
 
     /**
@@ -431,7 +453,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     type Index <: IndexDef
 
     /** Index generator factory. Override for customization.
-      *        @group Basic customization overrides */
+      *        @group Basic customization overrides
+      */
     def Index: m.Index => Index
 
     /**
@@ -460,7 +483,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
     trait Def {
 
       /** Indicates whether this will be included in the generated code
-        *        @group Basic customization overrides */
+        *        @group Basic customization overrides
+        */
       def enabled = true
 
       /** Returns Some(this) if enabled else None */
@@ -470,15 +494,18 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       def docWithCode: Code = codegen.docWithCode(doc, code)
 
       /** Scala doc comment
-        *        @group Basic customization overrides */
+        *        @group Basic customization overrides
+        */
       def doc: String
 
       /** Scala code
-        *        @group Basic customization overrides */
+        *        @group Basic customization overrides
+        */
       def code: Code
 
       /** Name as desired in Scala Code. (Allowed to collide with Scala keywords. Will be automatically escaped.)
-        *        @group Basic customization overrides */
+        *        @group Basic customization overrides
+        */
       def rawName: String
     }
 
@@ -517,7 +544,8 @@ abstract class AbstractGenerator[Code, TermName, TypeName](model: m.Model)
       final def name: TypeName = typeName(rawName)
 
       /** Inherited traits.
-        *        @group Basic customization overrides */
+        *        @group Basic customization overrides
+        */
       def parents: Seq[Code] = Seq()
     }
   }

@@ -17,7 +17,8 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserPatcher
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008 */
+  * Date: 06.03.2008
+  */
 
 /*
  * BlockStat ::= Import

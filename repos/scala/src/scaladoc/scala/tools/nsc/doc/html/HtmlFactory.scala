@@ -15,12 +15,14 @@ import page.diagram._
 
 /** A class that can generate Scaladoc sites to some fixed root folder.
   * @author David Bernard
-  * @author Gilles Dubochet */
+  * @author Gilles Dubochet
+  */
 class HtmlFactory(val universe: doc.Universe, val reporter: ScalaDocReporter) {
   import page.{IndexScript, EntityPage}
 
   /** The character encoding to be used for generated Scaladoc sites.
-    * This value is currently always UTF-8. */
+    * This value is currently always UTF-8.
+    */
   def encoding: String = "UTF-8"
 
   def siteRoot: JFile = new JFile(universe.settings.outdir.value)

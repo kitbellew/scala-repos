@@ -882,7 +882,8 @@ class SparkContext(config: SparkConf)
 
   /** Distribute a local Scala collection to form an RDD, with one or more
     * location preferences (hostnames of Spark nodes) for each object.
-    * Create a new partition for each collection item. */
+    * Create a new partition for each collection item.
+    */
   def makeRDD[T: ClassTag](seq: Seq[(T, Seq[String])]): RDD[T] =
     withScope {
       assertNotStopped()

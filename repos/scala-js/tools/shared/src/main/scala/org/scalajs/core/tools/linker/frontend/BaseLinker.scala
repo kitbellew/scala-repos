@@ -214,7 +214,8 @@ final class BaseLinker(
   }
 
   /** Takes a Infos, a ClassDef and DCE infos to construct a stripped down
-    *  LinkedClassDef */
+    *  LinkedClassDef
+    */
   private def linkedClassDef(
       info: Infos.ClassInfo,
       classDef: ClassDef,

@@ -11,7 +11,8 @@ import java.sql.{
 }
 
 /** A wrapper for `java.sql.Statement` that logs statements and benchmark results
-  * to the appropriate [[JdbcBackend]] loggers. */
+  * to the appropriate [[JdbcBackend]] loggers.
+  */
 class LoggingStatement(st: Statement) extends Statement {
   private[this] val doStatement = JdbcBackend.statementLogger.isDebugEnabled
   private[this] val doBenchmark = JdbcBackend.benchmarkLogger.isDebugEnabled
@@ -99,7 +100,8 @@ class LoggingStatement(st: Statement) extends Statement {
 }
 
 /** A wrapper for `java.sql.PreparedStatement` that logs statements and benchmark results
-  * to the appropriate [[JdbcBackend]] loggers. */
+  * to the appropriate [[JdbcBackend]] loggers.
+  */
 class LoggingPreparedStatement(st: PreparedStatement)
     extends LoggingStatement(st)
     with PreparedStatement {

@@ -18,7 +18,8 @@ class SeqCoder(words: List[String]) {
     for ((digit, letters) <- m; letter <- letters) yield letter -> digit
 
   /** Maps a word to the digit string it represents,
-    * e.g. `Java` -> `5282` */
+    * e.g. `Java` -> `5282`
+    */
   private def wordCode(word: String): String = word.toUpperCase map charCode
 
   /** A map from digit strings to the words that represent
@@ -57,7 +58,8 @@ class SeqCoder(words: List[String]) {
     }
 
   /** Maps a number to a list of all word phrases that can
-    *  represent it */
+    *  represent it
+    */
   def translate(number: String): Set[String] =
     encode(number) map (_ mkString " ")
 
@@ -81,7 +83,8 @@ class ParCoder(words: List[String]) {
     for ((digit, letters) <- m; letter <- letters) yield letter -> digit
 
   /** Maps a word to the digit string it represents,
-    * e.g. `Java` -> `5282` */
+    * e.g. `Java` -> `5282`
+    */
   private def wordCode(word: String): String = word.toUpperCase map charCode
 
   /** A map from digit strings to the words that represent
@@ -173,7 +176,8 @@ class ParCoder(words: List[String]) {
   }
 
   /** Maps a number to a list of all word phrases that can
-    *  represent it */
+    *  represent it
+    */
   def translate(number: String): ParSet[String] = {
     comparison.translate(number)
     encode(number) map (_.seq mkString " ")

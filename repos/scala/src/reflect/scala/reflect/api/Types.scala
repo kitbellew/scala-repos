@@ -245,7 +245,8 @@ trait Types {
       */
     def dealias: Type
 
-    /** ***** popular methods from subclasses ****** */
+    /** ***** popular methods from subclasses ******
+      */
 
     /** List of type arguments ingrained in this type reference.
       *  Depending on your use case you might or might not want to call `dealias` first.
@@ -353,7 +354,8 @@ trait Types {
       */
     def finalResultType: Type
 
-    /** ***************** helpers ****************** */
+    /** ***************** helpers ******************
+      */
 
     /** Provides an alternate if type is NoType.
       *
@@ -372,7 +374,8 @@ trait Types {
     def substituteTypes(from: List[Symbol], to: List[Type]): Type
 
     /** Apply `f` to each part of this type, returning
-      *  a new type. children get mapped before their parents */
+      *  a new type. children get mapped before their parents
+      */
     def map(f: Type => Type): Type
 
     /** Apply `f` to each part of this type, for side effects only */

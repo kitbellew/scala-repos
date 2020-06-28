@@ -6,7 +6,8 @@ import comment._
 
 /** This trait extracts all required information for documentation from compilation units.
   *  The base trait has been extracted to allow getting light-weight documentation
-  * for a particular symbol in the IDE. */
+  * for a particular symbol in the IDE.
+  */
 trait MemberLookupBase {
 
   val global: Global

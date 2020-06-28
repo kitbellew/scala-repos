@@ -86,7 +86,8 @@ object Library {
 
   /** A type assignment describing an inherent type change that does not require any code to be
     * generated. It is used in SQL-like ASTs for assigning the proper scalar type to aggregating
-    * subqueries which are used in a scalar context. */
+    * subqueries which are used in a scalar context.
+    */
   val SilentCast = new FunctionSymbol("SilentCast")
 
   val IfNull = new JdbcFunction("ifnull")

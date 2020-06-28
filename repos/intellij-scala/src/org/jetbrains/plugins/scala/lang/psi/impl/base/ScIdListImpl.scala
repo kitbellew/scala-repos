@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.psi.stubs.ScIdListStub
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008 */
+  * Date: 22.02.2008
+  */
 
 class ScIdListImpl private (
     stub: StubElement[ScIdList],

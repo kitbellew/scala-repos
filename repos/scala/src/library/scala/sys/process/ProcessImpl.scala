@@ -132,7 +132,8 @@ private[process] trait ProcessImpl {
 
       /** Release PipeSource, PipeSink and Process in the correct order.
         * If once connect Process with Source or Sink, then the order of releasing them
-        * must be Source -> Sink -> Process, otherwise IOException will be thrown. */
+        * must be Source -> Sink -> Process, otherwise IOException will be thrown.
+        */
       def releaseResources(so: PipeSource, sk: PipeSink, p: Process*) = {
         so.release()
         sk.release()
@@ -231,7 +232,8 @@ private[process] trait ProcessImpl {
   }
 
   /** A thin wrapper around a java.lang.Process.  `ioThreads` are the Threads created to do I/O.
-    * The implementation of `exitValue` waits until these threads die before returning. */
+    * The implementation of `exitValue` waits until these threads die before returning.
+    */
   private[process] class DummyProcess(action: => Int) extends Process {
     private[this] val exitCode = Future(action)
     override def isAlive() = exitCode._1.isAlive()
@@ -243,7 +245,8 @@ private[process] trait ProcessImpl {
     * output and error streams of the process.  `inputThread` is the Thread created to write to the input stream of
     * the process.
     * The implementation of `exitValue` interrupts `inputThread` and then waits until all I/O threads die before
-    * returning. */
+    * returning.
+    */
   private[process] class SimpleProcess(
       p: JProcess,
       inputThread: Thread,

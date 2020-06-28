@@ -22,7 +22,8 @@ package com.gravity.goose.text
   * Created by IntelliJ IDEA.
   * User: robbie
   * Date: 5/13/11
-  * Time: 11:38 AM */
+  * Time: 11:38 AM
+  */
 
 import java.util.regex.Pattern
 

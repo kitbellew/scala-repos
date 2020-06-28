@@ -39,7 +39,8 @@ import JE._
 import java.util.Locale
 
 /**
-  * A case class that contains the information necessary to set up a CometActor */
+  * A case class that contains the information necessary to set up a CometActor
+  */
 final case class CometCreationInfo(
     cometType: String,
     cometName: Box[String],

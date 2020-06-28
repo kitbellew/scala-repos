@@ -27,7 +27,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.{Any, Nothing}
 /**
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
-  * Time: 9:54:54 */
+  * Time: 9:54:54
+  */
 
 class ScTypeAliasDeclarationImpl private (
     stub: StubElement[ScTypeAlias],

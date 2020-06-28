@@ -25,7 +25,8 @@ import mocks.MockHttpServletRequest
 
 /**
   * This only exists to keep the WebSpecSpec clean. Normally,
-  * you could just use "() => bootstrap.Boot.boot". */
+  * you could just use "() => bootstrap.Boot.boot".
+  */
 object WebSpecSpecBoot {
   def boot() {
     // Add this so that withTemplateFor test works

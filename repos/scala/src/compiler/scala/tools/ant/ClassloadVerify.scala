@@ -19,7 +19,8 @@ class ClassloadVerify extends ScalaMatchingTask {
   protected var classpath: Option[Path] = None
 
   /** Sets the `classpath` attribute. Used by [[http://ant.apache.org Ant]].
-    *  @param input The value of `classpath`. */
+    *  @param input The value of `classpath`.
+    */
   def setClasspath(input: Path) {
     classpath = Some(input)
   }

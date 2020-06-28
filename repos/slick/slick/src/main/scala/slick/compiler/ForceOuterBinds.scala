@@ -6,7 +6,8 @@ import slick.util.ConstArray
 /** Ensure that all collection operations are wrapped in a Bind so that we
   * have a place for expanding references later. FilteredQueries are allowed
   * on top of collection operations without a Bind in between, unless that
-  * operation is a Join, Pure or Distinct node. */
+  * operation is a Join, Pure or Distinct node.
+  */
 class ForceOuterBinds extends Phase {
   val name = "forceOuterBinds"
 

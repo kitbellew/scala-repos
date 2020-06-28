@@ -12,7 +12,8 @@ import slick.util.ConstArray
   * which should be the outcome of Phase.flattenProjections.
   *
   * @param rownumStyle Whether to use `Subquery` boundaries suitable for Oracle-style ROWNUM
-  *                    semantics instead of standard ROW_NUMBER(). */
+  *                    semantics instead of standard ROW_NUMBER().
+  */
 class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
   type State = Boolean
   val name = "resolveZipJoins"
@@ -64,7 +65,8 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
   /** Transform a `zipWithIndex` operation of the form
     * `Bind(s1, Join(_, _, Bind(ls, from, Pure(StructNode(defs), _)), RangeFrom(offset), JoinType.Zip, LiteralNode(true)), p)`
     * into an equivalent mapping operation using `RowNum`. This method can be overridden in
-    * subclasses to implement non-standard translations. */
+    * subclasses to implement non-standard translations.
+    */
   def transformZipWithIndex(
       s1: TermSymbol,
       ls: TermSymbol,
@@ -94,7 +96,8 @@ class ResolveZipJoins(rownumStyle: Boolean = false) extends Phase {
   /** Transform a `zip` operation of the form
     * `Bind(s1, Join(jlsym, jrsym, l @ Bind(_, _, Pure(StructNode(ldefs), _)), r @ Bind(_, _, Pure(StructNode(rdefs), _)), JoinType.Zip, LiteralNode(true)), sel)`
     * into an equivalent mapping operation using `RowNum` by first transforming both sides of the
-    * join into `zipWithIndex` and then using `transformZipWithIndex` on those. */
+    * join into `zipWithIndex` and then using `transformZipWithIndex` on those.
+    */
   def transformZip(
       s1: TermSymbol,
       jlsym: TermSymbol,

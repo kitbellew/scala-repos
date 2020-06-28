@@ -973,7 +973,8 @@ class ClientBuilder[
   def trafficClass(value: Option[Int]): This =
     configured(Transporter.TrafficClass(value))
 
-  /** * BUILD ** */
+  /** * BUILD **
+    */
 
   // This is only used for client alterations outside of the stack.
   // a more ideal usage would be to retrieve the stats param inside your specific module

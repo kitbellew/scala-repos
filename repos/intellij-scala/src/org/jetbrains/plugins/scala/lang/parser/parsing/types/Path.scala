@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.parser.ScalaElementTypes._
 import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
-  * @author Alexander Podkhalyuzin */
+  * @author Alexander Podkhalyuzin
+  */
 
 /*
  * Path ::= StableId

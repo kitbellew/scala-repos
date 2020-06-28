@@ -257,10 +257,12 @@ object TestInlineHandlersSynchronizedWithStack {
   *
   *    result.length
   *  }
-  * } */
+  * }
+  */
 
 /** This test should check the preciseness of the inliner: it should not do any inlining here
-  * as it is not able to discern between the different exceptions */
+  * as it is not able to discern between the different exceptions
+  */
 object TestInlineHandlersPreciseness {
 
   def main(args: Array[String]): Unit = {

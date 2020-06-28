@@ -27,7 +27,8 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
   val backend: Backend
 
   /** The capabilities supported by this profile. This can be used to query at
-    * runtime whether a specific feature is supported. */
+    * runtime whether a specific feature is supported.
+    */
   final val capabilities: Set[Capability] = computeCapabilities
 
   /** Compute the capabilities. This should be overridden in subclasses as needed. */
@@ -39,7 +40,8 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
   /** A schema description contains the SQL statements for creating and
     * dropping database entities. Schema descriptions can be combined for
     * creating or dropping multiple entities together, even if they have
-    * circular dependencies. */
+    * circular dependencies.
+    */
   trait SchemaDescriptionDef {
     def ++(other: SchemaDescription): SchemaDescription
   }
@@ -97,7 +99,8 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
 
   /** The API for using the query language with a single import
     * statement. This provides the profile's implicits, the Database API
-    * and commonly used query language types and objects. */
+    * and commonly used query language types and objects.
+    */
   val api: API
 
   /** The compiler used for queries */
@@ -114,7 +117,8 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
 
   /** The type of a (partially) compiled AST for Insert operations. Unlike
     * querying or deleting, inserts may require different compilation results
-    * which should be computed lazily. */
+    * which should be computed lazily.
+    */
   type CompiledInsert
 
   /** (Partially) ompile an AST for insert operations */
@@ -131,7 +135,8 @@ trait BasicProfile extends BasicActionComponent { self: BasicProfile =>
     * The default implementation does a breadth-first search in the supertype hierarchy of the
     * runtime class until it finds a class or trait with a name matching "slick.[...]Profile"
     * and then returns uses this name as a path in the application config. If no configuration
-    * exists at this path, an empty Config object is returned. */
+    * exists at this path, an empty Config object is returned.
+    */
   protected[this] def loadProfileConfig: Config = {
     def findConfigName(classes: Vector[Class[_]]): Option[String] =
       classes.iterator
@@ -210,11 +215,13 @@ trait BasicStreamingAction[+R, +T, -E <: Effect]
     extends BasicAction[R, Streaming[T], E] {
 
   /** Create an Action that returns only the first value of this stream of data. The Action will
-    * fail if the stream is empty. Only available on streaming Actions. */
+    * fail if the stream is empty. Only available on streaming Actions.
+    */
   def head: ResultAction[T, NoStream, E]
 
   /** Create an Action that returns only the first value of this stream of data as an `Option`.
-    * Only available on streaming Actions. */
+    * Only available on streaming Actions.
+    */
   def headOption: ResultAction[Option[T], NoStream, E]
 }
 

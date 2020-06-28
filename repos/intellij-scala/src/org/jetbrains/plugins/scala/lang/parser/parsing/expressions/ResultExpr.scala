@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.CompoundType
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008 */
+  * Date: 06.03.2008
+  */
 
 /*
  * ResultExpr ::= Expr1

@@ -9,11 +9,13 @@ import scala.collection._
   * to configure what data is actually available to the generator:
   *  - A `Universer` provides a `Universe` data structure representing the interfaces and comments of the documented
   *    program.
-  * To implement this class only requires defining method `generateImpl`. */
+  * To implement this class only requires defining method `generateImpl`.
+  */
 abstract class Generator {
 
   /** A series of tests that must be true before generation can be done. This is used by data provider traits to
-    * confirm that they have been correctly initialised before allowing generation to proceed. */
+    * confirm that they have been correctly initialised before allowing generation to proceed.
+    */
   protected val checks: mutable.Set[() => Boolean] =
     mutable.Set.empty[() => Boolean]
 

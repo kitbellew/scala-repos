@@ -3,7 +3,8 @@ package refactoring.extractTrait
 
 /**
   * Nikolay.Tropin
-  * 2014-06-02 */
+  * 2014-06-02
+  */
 class ExtractTraitTestSelfType extends ExtractTraitTestBase {
 
   def testMethodFromClassItself() {

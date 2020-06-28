@@ -14,7 +14,8 @@ private[sbt] class PluginsDebug(
     val provided: Relation[AutoPlugin, AttributeKey[_]]) {
 
   /** The set of [[AutoPlugin]]s that might define a key named `keyName`.
-    * Because plugins can define keys in different scopes, this should only be used as a guideline. */
+    * Because plugins can define keys in different scopes, this should only be used as a guideline.
+    */
   def providers(keyName: String): Set[AutoPlugin] =
     nameToKey.get(keyName) match {
       case None      => Set.empty
@@ -208,7 +209,8 @@ private[sbt] object PluginsDebug {
     * @param initial The initially defined [[AutoPlugin]]s.
     * @param enabled The resulting model.
     * @param deducePlugin The function used to compute the model.
-    * @param available All [[AutoPlugin]]s available for consideration. */
+    * @param available All [[AutoPlugin]]s available for consideration.
+    */
   final case class Context(
       initial: Plugins,
       enabled: Seq[AutoPlugin],
@@ -237,7 +239,8 @@ private[sbt] object PluginsDebug {
     * @param enablingPlugins [[AutoPlugin]]s that are not currently enabled, but need to be enabled for [[plugin]] to activate
     * @param extraEnabledPlugins Plugins that will be enabled as a result of [[plugin]] activating, but are not required for [[plugin]] to activate
     * @param willRemove Plugins that will be deactivated as a result of [[plugin]] activating
-    * @param deactivate Describes plugins that must be deactivated for [[plugin]] to activate.  These require an explicit exclusion or dropping a transitive [[AutoPlugin]]. */
+    * @param deactivate Describes plugins that must be deactivated for [[plugin]] to activate.  These require an explicit exclusion or dropping a transitive [[AutoPlugin]].
+    */
   final case class PluginRequirements(
       plugin: AutoPlugin,
       context: Context,
@@ -251,7 +254,8 @@ private[sbt] object PluginsDebug {
   /** Describes a [[plugin]] that must be removed in order to activate another plugin in some context.
     * The [[plugin]] can always be directly, explicitly excluded.
     * @param removeOneOf If non-empty, removing one of these [[AutoPlugin]]s will deactivate [[plugin]] without affecting the other plugin.  If empty, a direct exclusion is required.
-    * @param newlySelected If false, this plugin was selected in the original context. */
+    * @param newlySelected If false, this plugin was selected in the original context.
+    */
   final case class DeactivatePlugin(
       plugin: AutoPlugin,
       removeOneOf: Set[AutoPlugin],
@@ -408,7 +412,8 @@ private[sbt] object PluginsDebug {
     }
 
   /** Provides a [[Relation]] between plugins and the keys they potentially define.
-    * Because plugins can define keys in different scopes and keys can be overridden, this is not definitive. */
+    * Because plugins can define keys in different scopes and keys can be overridden, this is not definitive.
+    */
   def definedKeys(
       available: List[AutoPlugin]): Relation[AutoPlugin, AttributeKey[_]] = {
     def extractDefinedKeys(ss: Seq[Setting[_]]): Seq[AttributeKey[_]] =

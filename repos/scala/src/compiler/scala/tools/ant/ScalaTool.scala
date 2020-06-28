@@ -46,35 +46,41 @@ class ScalaTool extends ScalaMatchingTask {
   }
 
   /** The path to the exec script file. `".bat"` will be appended for the
-    * Windows BAT file, if generated. */
+    * Windows BAT file, if generated.
+    */
   private var file: Option[File] = None
 
   /** The main class to run. */
   private var mainClass: Option[String] = None
 
   /** Supported platforms for the script. Either `"unix"` or `"windows"`.
-    * Defaults to both. */
+    * Defaults to both.
+    */
   private var platforms: List[String] = List("unix", "windows")
 
   /** An (optional) path to all JARs that this script depend on. Paths must be
     * relative to the scala home directory. If not set, all JAR archives and
-    * folders in `"lib/"` are automatically added. */
+    * folders in `"lib/"` are automatically added.
+    */
   private var classpath: List[String] = Nil
 
   /** An (optional) path to JARs that this script depends on relative to the
-    * ant project's `basedir`. */
+    * ant project's `basedir`.
+    */
   private var classpathPath: Path = emptyPath
 
   /** Comma-separated Java system properties to pass to the JRE. Properties
     * are formatted as `name=value`. Properties `scala.home`, `scala.tool.name`
-    * and `scala.tool.version` are always set. */
+    * and `scala.tool.version` are always set.
+    */
   private var properties: List[(String, String)] = Nil
 
   /** Additional flags passed to the JRE (`"java [javaFlags] class"`). */
   private var javaFlags: String = ""
 
   /** Additional flags passed to the tool (`"java class [toolFlags]"`).
-    * Can only be set when a main class is defined. */
+    * Can only be set when a main class is defined.
+    */
   private var toolFlags: String = ""
 
   /*============================================================================*\
@@ -157,7 +163,8 @@ class ScalaTool extends ScalaMatchingTask {
 \*============================================================================*/
 
   /** Gets the value of the classpath attribute in a Scala-friendly form.
-    * @return The class path as a list of files. */
+    * @return The class path as a list of files.
+    */
   private def getUnixclasspath: String =
     transposeVariableMarkup(
       classpath.mkString("", ":", "").replace('\\', '/'),
@@ -165,7 +172,8 @@ class ScalaTool extends ScalaMatchingTask {
       "}")
 
   /** Gets the value of the classpath attribute in a Scala-friendly form.
-    * @return The class path as a list of files. */
+    * @return The class path as a list of files.
+    */
   private def getWinclasspath: String =
     transposeVariableMarkup(
       classpath.mkString("", ";", "").replace('/', '\\'),

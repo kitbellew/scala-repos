@@ -10,7 +10,8 @@ package html
 import doclet._
 
 /** The default doclet used by the scaladoc command line tool
-  * when no user-provided doclet is provided. */
+  * when no user-provided doclet is provided.
+  */
 class Doclet extends Generator with Universer {
 
   def generateImpl() {

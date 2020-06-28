@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.typedef.{
 }
 
 /**
-  * @author ilyas */
+  * @author ilyas
+  */
 class ScalaJVMNameMapper extends NameMapper {
   def getQualifiedName(@NotNull clazz: PsiClass): String = {
     ApplicationManager.getApplication.runReadAction(new Computable[String] {

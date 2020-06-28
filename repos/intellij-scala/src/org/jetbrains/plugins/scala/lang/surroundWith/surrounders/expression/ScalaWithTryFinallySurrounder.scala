@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.04.2008 */
+  * Date: 28.04.2008
+  */
 
 class ScalaWithTryFinallySurrounder extends ScalaExpressionSurrounder {
   override def getTemplateAsString(elements: Array[PsiElement]): String = {

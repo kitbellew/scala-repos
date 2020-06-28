@@ -9,7 +9,8 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
 import org.jetbrains.plugins.scala.lang.psi.api.base.types.ScTypeArgs
 
 /**
-  * @author Alexander Podkhalyuzin */
+  * @author Alexander Podkhalyuzin
+  */
 
 trait ScInfixExpr extends ScExpression with ScSugarCallExpr {
   def lOp: ScExpression =

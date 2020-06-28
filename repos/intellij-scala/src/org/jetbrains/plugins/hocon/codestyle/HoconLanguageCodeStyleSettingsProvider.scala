@@ -183,6 +183,7 @@ class HoconLanguageCodeStyleSettingsProvider
           BLANK_LINES_KEEP)
 
       case _ =>
+
     }
 
   }

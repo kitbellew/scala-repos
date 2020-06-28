@@ -1113,7 +1113,8 @@ class IMain(
     }
 
     /** Compile the object file.  Returns whether the compilation succeeded.
-      *  If all goes well, the "types" map is computed. */
+      *  If all goes well, the "types" map is computed.
+      */
     lazy val compile: Boolean = {
       // error counting is wrong, hence interpreter may overlook failure - so we reset
       reporter.reset()

@@ -12,7 +12,8 @@ import scala.collection.mutable.ArrayBuffer
 trait Constraint
 
 /** Represents a foreign key. Objects of this type are used internally by Slick.
-  * At the user level you generally see `ForeignKeyQuery` objects instead. */
+  * At the user level you generally see `ForeignKeyQuery` objects instead.
+  */
 final class ForeignKey( //TODO Simplify this mess!
     val name: String,
     val sourceTable: Node,
@@ -81,7 +82,8 @@ class ForeignKeyQuery[E <: AbstractTable[_], U](
 
   /** Combine the constraints of this `ForeignKeyQuery` with another one with the
     * same target table, leading to a single instance of the target table which
-    * satisfies the constraints of both. */
+    * satisfies the constraints of both.
+    */
   def &(other: ForeignKeyQuery[E, U]): ForeignKeyQuery[E, U] = {
     val newFKs = fks ++ other.fks
     val conditions = newFKs
@@ -106,7 +108,8 @@ class ForeignKeyQuery[E <: AbstractTable[_], U](
 }
 
 /** An explicit primary key. Simple primary keys can also be represented by `O.PrimaryKey`
-  * column options instead. */
+  * column options instead.
+  */
 case class PrimaryKey(name: String, columns: IndexedSeq[Node])
     extends Constraint
 

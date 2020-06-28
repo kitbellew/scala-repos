@@ -48,7 +48,8 @@ object PickResult {
 }
 
 /** A container for the result of a pick event. Wrapper for JavaFX's
-  * [[http://download.java.net/jdk8/jfxdocs/javafx/scene/input/PickResult.html PickResult]]. */
+  * [[http://download.java.net/jdk8/jfxdocs/javafx/scene/input/PickResult.html PickResult]].
+  */
 class PickResult(override val delegate: jfxsi.PickResult)
     extends SFXDelegate[jfxsi.PickResult] {
 

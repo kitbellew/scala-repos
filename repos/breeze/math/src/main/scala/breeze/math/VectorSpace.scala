@@ -28,7 +28,8 @@ import scala.reflect.ClassTag
   * are enumerable as well, in which case you want an XXX
   * @tparam V Vector type
   * @tparam S Scalar type
-  * @author gabeos, dlwh */
+  * @author gabeos, dlwh
+  */
 trait Coordinated[V, S] {
   implicit def scalarOf: ScalarOf[V, S]
   implicit def mapActiveValues: CanMapActiveValues[V, S, S, V]

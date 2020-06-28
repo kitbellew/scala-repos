@@ -3,13 +3,15 @@ package slick.jdbc
 import java.sql.{PreparedStatement, Date, Time, Timestamp, Types, Blob, Clob}
 
 /** A wrapper for a JDBC `PreparedStatement` which allows inceremental setting of
-  * parameters without having to sepcify the column index each time. */
+  * parameters without having to sepcify the column index each time.
+  */
 class PositionedParameters(val ps: PreparedStatement) {
 
   var pos = 0
 
   /** Set the next parameter of the specified type, provided that a
-    * `SetParameter` instance is available for it. */
+    * `SetParameter` instance is available for it.
+    */
   def >>[T](value: T)(implicit f: SetParameter[T]): Unit = f(value, this)
 
   /** Set the next parameter to SQL NULL with the specified SQL type code. */
@@ -93,7 +95,8 @@ class PositionedParameters(val ps: PreparedStatement) {
   }
 
   /** Set the next parameter to an object of a driver-specific type that
-    * corresponds to the specified SQL type code. */
+    * corresponds to the specified SQL type code.
+    */
   def setObject(value: AnyRef, sqlType: Int) {
     val npos = pos + 1; ps.setObject(npos, value, sqlType); pos = npos
   }

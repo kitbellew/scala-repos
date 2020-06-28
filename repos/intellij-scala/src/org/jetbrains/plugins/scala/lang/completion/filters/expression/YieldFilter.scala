@@ -12,7 +12,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.05.2008 */
+  * Date: 28.05.2008
+  */
 
 class YieldFilter extends ElementFilter {
   private def leafText(i: Int, context: PsiElement): String = {

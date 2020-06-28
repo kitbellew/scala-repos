@@ -25,7 +25,8 @@ import slick.util._
 
 /** Backend for the basic database and session handling features.
   * Concrete backends like `JdbcBackend` extend this type and provide concrete
-  * types for `Database`, `DatabaseFactory` and `Session`. */
+  * types for `Database`, `DatabaseFactory` and `Session`.
+  */
 trait BasicBackend { self =>
   protected lazy val actionLogger = new SlickLogger(
     LoggerFactory.getLogger(classOf[BasicBackend].getName + ".action"))
@@ -68,7 +69,8 @@ trait BasicBackend { self =>
 
     /** Free all resources allocated by Slick for this Database. This is done asynchronously, so
       * you need to wait for the returned `Future` to complete in order to ensure that everything
-      * has been shut down. */
+      * has been shut down.
+      */
     def shutdown: Future[Unit] =
       Future(close)(
         ExecutionContext.fromExecutor(AsyncExecutor.shutdownExecutor))
@@ -79,7 +81,8 @@ trait BasicBackend { self =>
       * Backend implementations which are based on a naturally blocking shutdown procedure can
       * simply implement this method and get `shutdown` as an asynchronous wrapper for free. If
       * the underlying shutdown procedure is asynchronous, you should implement `shutdown` instead
-      * and wrap it with `Await.result` in this method. */
+      * and wrap it with `Await.result` in this method.
+      */
     def close: Unit
 
     /** Run an Action asynchronously and return the result as a Future. */
@@ -115,7 +118,8 @@ trait BasicBackend { self =>
       * is not advanced before `onNext` returns. This allows the Subscriber to access LOB pointers
       * from within `onNext`. If streaming is interrupted due to back-pressure signaling, the next
       * row will be prefetched (in order to buffer the next result page from the server when a page
-      * boundary has been reached). */
+      * boundary has been reached).
+      */
     final def stream[T](
         a: DBIOAction[_, Streaming[T], Nothing]): DatabasePublisher[T] =
       streamInternal(a, false)
@@ -174,7 +178,8 @@ trait BasicBackend { self =>
       * @param streaming Whether to return the result as a stream. In this case, the context must
       *                  be a `StreamingDatabaseActionContext` and the Future result should be
       *                  completed with `null` or failed after streaming has finished. This
-      *                  method should not call any `Subscriber` method other than `onNext`. */
+      *                  method should not call any `Subscriber` method other than `onNext`.
+      */
     protected[this] def runInContext[R](
         a: DBIOAction[R, NoStream, Nothing],
         ctx: Context,
@@ -290,7 +295,8 @@ trait BasicBackend { self =>
     /** Within a synchronous execution, close the current Session unless it is pinned.
       *
       * @param discardErrors If set to true, swallow all non-fatal errors that arise while
-      *        closing the Session. */
+      *        closing the Session.
+      */
     protected[this] final def releaseSession(
         ctx: Context,
         discardErrors: Boolean): Unit =
@@ -436,7 +442,8 @@ trait BasicBackend { self =>
       }
 
     /** Return the default ExecutionContet for this Database which should be used for running
-      * SynchronousDatabaseActions for asynchronous execution. */
+      * SynchronousDatabaseActions for asynchronous execution.
+      */
     protected[this] def synchronousExecutionContext: ExecutionContext
 
     protected[this] def logAction(
@@ -467,7 +474,8 @@ trait BasicBackend { self =>
     def close(): Unit
 
     /** Force an actual database session to be opened. Slick sessions are lazy, so you do not
-      * get a real database connection until you need it or you call force() on the session. */
+      * get a real database connection until you need it or you call force() on the session.
+      */
     def force(): Unit
   }
 
@@ -475,11 +483,13 @@ trait BasicBackend { self =>
   trait BasicActionContext extends ActionContext {
 
     /** Whether to run all operations on the current thread or schedule them normally on the
-      * appropriate ExecutionContext. This is used by the blocking API. */
+      * appropriate ExecutionContext. This is used by the blocking API.
+      */
     protected[BasicBackend] val useSameThread: Boolean
 
     /** Return the specified ExecutionContext unless running in same-thread mode, in which case
-      * `Action.sameThreadExecutionContext` is returned instead. */
+      * `Action.sameThreadExecutionContext` is returned instead.
+      */
     private[BasicBackend] def getEC(ec: ExecutionContext): ExecutionContext =
       if (useSameThread) DBIO.sameThreadExecutionContext else ec
 
@@ -488,7 +498,8 @@ trait BasicBackend { self =>
       * [[http://gee.cs.oswego.edu/dl/jmm/cookbook.html]]) when executing something in
       * a synchronous action context. It is read when entering the context and written when leaving
       * so that all writes to non-volatile variables within the context are visible to the next
-      * synchronous execution. */
+      * synchronous execution.
+      */
     @volatile private[BasicBackend] var sync = 0
 
     private[BasicBackend] def readSync =
@@ -497,7 +508,8 @@ trait BasicBackend { self =>
     private[BasicBackend] var currentSession: Session = null
 
     /** Used for the sequence counter in Action debug output. This variable is volatile because it
-      * is only updated sequentially but not protected by a synchronous action context. */
+      * is only updated sequentially but not protected by a synchronous action context.
+      */
     @volatile private[BasicBackend] var sequenceCounter = 0
 
     def session: Session = currentSession
@@ -519,16 +531,19 @@ trait BasicBackend { self =>
       * streaming action. Whenever this value drops to 0, streaming is suspended. When it is raised
       * up from 0 in `request`, streaming is scheduled to be restarted. It is initially set to
       * `Long.MinValue` when streaming starts. Any negative value above `Long.MinValue` indicates
-      * the actual demand at that point. It is reset to 0 when the initial streaming ends. */
+      * the actual demand at that point. It is reset to 0 when the initial streaming ends.
+      */
     private[this] val remaining = new AtomicLong(Long.MinValue)
 
     /** An error that will be signaled to the Subscriber when the stream is cancelled or
       * terminated. This is used for signaling demand overflow in `request()` while guaranteeing
-      * that the `onError` message does not overlap with an active `onNext` call. */
+      * that the `onError` message does not overlap with an active `onNext` call.
+      */
     private[BasicBackend] var deferredError: Throwable = null
 
     /** The state for a suspended streaming action. Must only be set from a synchronous action
-      * context. */
+      * context.
+      */
     private[BasicBackend] var streamState: AnyRef = null
 
     /** The streaming action which may need to be continued with the suspended state */
@@ -542,13 +557,15 @@ trait BasicBackend { self =>
 
     /** Indicate that the specified number of elements has been delivered. Returns the remaining
       * demand. This is an atomic operation. It must only be called from the synchronous action
-      * context which performs the streaming. */
+      * context which performs the streaming.
+      */
     def delivered(num: Long): Long = remaining.addAndGet(-num)
 
     /** Get the current demand that has not yet been marked as delivered and mark it as being in
       * the current batch. When this value is negative, the initial streaming action is still
       * running and the real demand can be computed by subtracting `Long.MinValue` from the
-      * returned value. */
+      * returned value.
+      */
     def demandBatch: Long = remaining.get()
 
     /** Whether the stream has been cancelled by the Subscriber */
@@ -557,7 +574,8 @@ trait BasicBackend { self =>
     def emit(v: Any): Unit = subscriber.asInstanceOf[Subscriber[Any]].onNext(v)
 
     /** Finish the stream with `onComplete` if it is not finished yet. May only be called from a
-      * synchronous action context. */
+      * synchronous action context.
+      */
     def tryOnComplete: Unit =
       if (!finished && !cancelRequested) {
         if (streamLogger.isDebugEnabled)
@@ -571,7 +589,8 @@ trait BasicBackend { self =>
       }
 
     /** Finish the stream with `onError` if it is not finished yet. May only be called from a
-      * synchronous action context. */
+      * synchronous action context.
+      */
     def tryOnError(t: Throwable): Unit =
       if (!finished) {
         if (streamLogger.isDebugEnabled)

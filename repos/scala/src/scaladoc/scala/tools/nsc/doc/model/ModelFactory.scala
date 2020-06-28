@@ -309,7 +309,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     lazy val definitionName = optimize(
       inDefinitionTemplates.head.qualifiedName + "." + name)
     def valueParams: List[List[ValueParam]] =
-      Nil /** TODO, these are now only computed for DocTemplates */
+      Nil /** TODO, these are now only computed for DocTemplates
+        */
 
     def parentTypes =
       if (sym.hasPackageFlag || sym == AnyClass) List()
@@ -1162,7 +1163,8 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         /** Returns:
           *   - a DocTemplate if the type's symbol is documented
           *   - a NoDocTemplateMember if the type's symbol is not documented in its parent but in another template
-          *   - a NoDocTemplate if the type's symbol is not documented at all */
+          *   - a NoDocTemplate if the type's symbol is not documented at all
+          */
         def makeTemplateOrMemberTemplate(parent: Type): TemplateImpl = {
           def noDocTemplate = makeTemplate(parent.typeSymbol)
           findTemplateMaybe(parent.typeSymbol) match {

@@ -54,7 +54,8 @@ class Cylinder(override val delegate: jfxss.Cylinder = new jfxss.Cylinder())
   /** Creates a new instance of Cylinder of a given radius, height, and divisions.
     * Resolution defaults to 15 divisions along X and Z axis.
     * Note that divisions should be at least 3.
-    * Any value less than that will be clamped to 3. */
+    * Any value less than that will be clamped to 3.
+    */
   def this(radius: Double, height: Double, divisions: Int) =
     this(new jfxss.Cylinder(radius, height, divisions))
 

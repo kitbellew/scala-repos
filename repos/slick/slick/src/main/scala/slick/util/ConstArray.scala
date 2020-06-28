@@ -9,7 +9,8 @@ import scala.util.hashing.MurmurHash3
 
 /** An efficient immutable array implementation which is used in the AST. Semantics are generally
   * the same as for Scala collections but for performance reasons it does not implement any
-  * standard collection traits. */
+  * standard collection traits.
+  */
 final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
     extends Product { self =>
   private def this(a: Array[Any]) = this(a, a.length)
@@ -113,7 +114,8 @@ final class ConstArray[+T] private[util] (a: Array[Any], val length: Int)
   }
 
   /** Perform a mapping operation that does not change the type. If all elements remain unchanged
-    * (as determined by object identity), return this ConstArray instead of building a new one. */
+    * (as determined by object identity), return this ConstArray instead of building a new one.
+    */
   def endoMap(f: T => T @uncheckedVariance): ConstArray[T] = {
     var i = 0
     var changed = false
@@ -464,7 +466,8 @@ object ConstArray {
 }
 
 /** A lazy operation on a ConstArray, produced by `withFilter`, `zip`, `zipWithIndex` and
-  * `ConstArrayOp.from(Range)`. */
+  * `ConstArrayOp.from(Range)`.
+  */
 trait ConstArrayOp[+T] extends Any {
   def map[R](f: T => R): ConstArray[R]
   def foreach[R](f: T => R): Unit

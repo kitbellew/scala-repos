@@ -5,7 +5,8 @@ import slick.jdbc.{JdbcBackend, ResultSetAction, Invoker}
 import slick.model.ForeignKeyAction
 
 /** A wrapper for a row in the ResultSet returned by
-  * DatabaseMetaData.getImportedKeys/getExportedKeys/getCrossReference(). */
+  * DatabaseMetaData.getImportedKeys/getExportedKeys/getCrossReference().
+  */
 case class MForeignKey(
     pkTable: MQName,
     pkColumn: String,

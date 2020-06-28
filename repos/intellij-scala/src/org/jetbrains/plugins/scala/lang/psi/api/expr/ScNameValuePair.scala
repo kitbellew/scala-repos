@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.toplevel.ScNamedElement
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008 */
+  * Date: 07.03.2008
+  */
 
 trait ScNameValuePair
     extends ScalaPsiElement

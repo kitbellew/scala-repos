@@ -92,7 +92,8 @@ final class OptionColumnExtensionMethods[B1](val c: Rep[Option[B1]])
   /** Get the value inside this Option, if it is non-empty, otherwise throw a SlickException. This
     * operation is only allowed in places where it can be performed at the client side (e.g. not
     * inside a subquery that cannot be fused), otherwise the exception is thrown during query
-    * compilation. */
+    * compilation.
+    */
   def get: Rep[B1] =
     Rep.forNode[B1](
       GetOrElse(
@@ -261,7 +262,8 @@ final class AnyOptionExtensionMethods[O <: Rep[_], P](val r: O) extends AnyVal {
     flatMap[QO](identity)
 
   /** Return this Option if it is non-empty and applying the predicate p to
-    * this Option's value returns true. Otherwise, return None. */
+    * this Option's value returns true. Otherwise, return None.
+    */
   def filter[T](p: P => T)(implicit wt: CanBeQueryCondition[T]): O = {
     // fold(None, (v => if p(v) Some(v) else None))
     val gen = new AnonSymbol

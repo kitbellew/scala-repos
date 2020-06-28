@@ -2,7 +2,8 @@ package slick
 
 /** Contains the abstract `MemoryQueryingProfile` and related code, as well as the concrete
   * `MemoryProfile` and `DistributedProfile` implementations for in-memory interpretation of
-  * queries and scheduling of distributed queries (i.e. combining several profiles and backends). */
+  * queries and scheduling of distributed queries (i.e. combining several profiles and backends).
+  */
 package object memory {
 
   @deprecated(

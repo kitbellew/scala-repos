@@ -14,7 +14,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.top.template.{
 /**
   * @author Alexander Podkhalyuzin
   * Date: 06.03.2008
-  * Time: 9:31:16 */
+  * Time: 9:31:16
+  */
 
 /*
  * ClassTemplate ::= [EarlyDefs] ClassParents [TemplateBody]

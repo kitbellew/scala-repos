@@ -8,7 +8,8 @@ import slick.util.ConstArray
 
 /** Create a ResultSetMapping root node, ensure that the top-level server-side node returns a
   * collection, and hoist client-side type conversions into the ResultSetMapping. The original
-  * result type (which was removed by `removeMappedTypes`) is assigned back to the top level. */
+  * result type (which was removed by `removeMappedTypes`) is assigned back to the top level.
+  */
 class CreateResultSetMapping extends Phase {
   val name = "createResultSetMapping"
 
@@ -54,7 +55,8 @@ class CreateResultSetMapping extends Phase {
     }
 
   /** Create a structured return value for the client side, based on the
-    * result type (which may contain MappedTypes). */
+    * result type (which may contain MappedTypes).
+    */
   def createResult(ref: Ref, tpe: Type, syms: ConstArray[TermSymbol]): Node = {
     var curIdx = 0
     def f(tpe: Type): Node = {
@@ -87,7 +89,8 @@ class CreateResultSetMapping extends Phase {
 }
 
 /** Remove all mapped types from the tree and store the original top-level type as the phase state
-  * to be used later for building the ResultSetMapping. */
+  * to be used later for building the ResultSetMapping.
+  */
 class RemoveMappedTypes extends Phase {
   val name = "removeMappedTypes"
   type State = Type

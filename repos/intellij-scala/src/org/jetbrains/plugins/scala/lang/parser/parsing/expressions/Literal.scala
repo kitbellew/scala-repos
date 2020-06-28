@@ -9,7 +9,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 15.02.2008 */
+  * Date: 15.02.2008
+  */
 
 /*
 Literal ::= ['-']integerLiteral

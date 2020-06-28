@@ -7,7 +7,8 @@ package patterns
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 28.02.2008 */
+  * Date: 28.02.2008
+  */
 
 trait ScCaseClauses extends ScalaPsiElement {
   def caseClause = findChildByClassScala(classOf[ScCaseClause])

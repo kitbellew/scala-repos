@@ -11,7 +11,8 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserPatcher
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 18.04.2008 */
+  * Date: 18.04.2008
+  */
 
 /*
  * AttrValue ::= " {CharQ | CharRef} "

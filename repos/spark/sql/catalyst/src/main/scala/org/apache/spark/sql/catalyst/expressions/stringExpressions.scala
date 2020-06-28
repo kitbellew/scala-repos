@@ -1010,7 +1010,8 @@ case class Decode(bin: Expression, charset: Expression)
 /**
   * Encodes the first argument into a BINARY using the provided character set
   * (one of 'US-ASCII', 'ISO-8859-1', 'UTF-8', 'UTF-16BE', 'UTF-16LE', 'UTF-16').
-  * If either argument is null, the result will also be null. */
+  * If either argument is null, the result will also be null.
+  */
 case class Encode(value: Expression, charset: Expression)
     extends BinaryExpression
     with ImplicitCastInputTypes {

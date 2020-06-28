@@ -30,7 +30,8 @@ import _root_.scala.collection.mutable.ArrayBuffer
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 14.03.2008 */
+  * Date: 14.03.2008
+  */
 
 class ScSuperReferenceImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)

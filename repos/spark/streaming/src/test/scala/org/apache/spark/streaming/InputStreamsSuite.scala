@@ -496,6 +496,7 @@ class TestServer(portToBind: Int = 0) extends Logging {
         }
       } catch {
         case ie: InterruptedException =>
+
       } finally {
         serverSocket.close()
       }

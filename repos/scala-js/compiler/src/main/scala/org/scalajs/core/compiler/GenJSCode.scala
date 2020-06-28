@@ -1482,7 +1482,6 @@ abstract class GenJSCode
       implicit val pos = tree.pos
 
       tree match {
-
         /** LabelDefs (for while and do..while loops) */
         case lblDf: LabelDef =>
           genLabelDef(lblDf)
@@ -3785,7 +3784,6 @@ abstract class GenJSCode
             }
 
             code match {
-
               /** Convert a scala.FunctionN f to a js.FunctionN. */
               case F2JS =>
                 arg match {

@@ -13,7 +13,8 @@ import org.jetbrains.plugins.scala.lang.scaladoc.psi.api.ScDocComment
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.05.2008 */
+  * Date: 22.05.2008
+  */
 
 class FinallyFilter extends ElementFilter {
   def isAcceptable(element: Object, context: PsiElement): Boolean = {

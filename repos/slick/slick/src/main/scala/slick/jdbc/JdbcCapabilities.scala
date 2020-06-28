@@ -14,7 +14,8 @@ object JdbcCapabilities {
   /** Supports a native insertOrUpdate command. Ootherwise the functionality
     * is emulated on the client side. The emulation uses transactions for
     * consistency but does not guarantee atomicity, so it may fail if another
-    * insert for the same key happens concurrently. */
+    * insert for the same key happens concurrently.
+    */
   val insertOrUpdate = Capability("jdbc.insertOrUpdate")
 
   /** Supports mutable result sets */

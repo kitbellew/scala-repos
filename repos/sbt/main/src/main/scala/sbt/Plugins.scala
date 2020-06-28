@@ -80,7 +80,8 @@ abstract class AutoPlugin extends Plugins.Basic with PluginsFunctions {
     * instance will be added automatically if the `Web` and `Javascript` plugins are enabled.
     *
     * When this method returns `noTrigger`, and `requires` method returns `Web && Javascript`, this plugin
-    * instance will be added only if the build user enables it, but it will automatically add both `Web` and `Javascript`. */
+    * instance will be added only if the build user enables it, but it will automatically add both `Web` and `Javascript`.
+    */
   def trigger: PluginTrigger = noTrigger
 
   /** This AutoPlugin requires the plugins the [[Plugins]] matcher returned by this method. See [[trigger]].
@@ -99,7 +100,8 @@ abstract class AutoPlugin extends Plugins.Basic with PluginsFunctions {
 
   /** The [[Setting]]s to add to the build scope for each project that activates this AutoPlugin.
     * The settings returned here are guaranteed to be added to a given build scope only once
-    * regardless of how many projects for that build activate this AutoPlugin. */
+    * regardless of how many projects for that build activate this AutoPlugin.
+    */
   def buildSettings: Seq[Setting[_]] = Nil
 
   /** The [[Setting]]s to add to the global scope exactly once if any project activates this AutoPlugin. */
@@ -122,7 +124,8 @@ abstract class AutoPlugin extends Plugins.Basic with PluginsFunctions {
 }
 
 /** An error that occurs when auto-plugins aren't configured properly.
-  * It translates the error from the underlying logic system to be targeted at end users. */
+  * It translates the error from the underlying logic system to be targeted at end users.
+  */
 final class AutoPluginException private (
     val message: String,
     val origin: Option[LogicException])
@@ -162,7 +165,8 @@ sealed trait PluginsFunctions {
 object Plugins extends PluginsFunctions {
 
   /** Given the available auto plugins `defined`, returns a function that selects [[AutoPlugin]]s for the provided [[AutoPlugin]]s.
-    * The [[AutoPlugin]]s are topologically sorted so that a required [[AutoPlugin]] comes before its requiring [[AutoPlugin]]. */
+    * The [[AutoPlugin]]s are topologically sorted so that a required [[AutoPlugin]] comes before its requiring [[AutoPlugin]].
+    */
   def deducer(
       defined0: List[AutoPlugin]): (Plugins, Logger) => Seq[AutoPlugin] =
     if (defined0.isEmpty) (_, _) => Nil

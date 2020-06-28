@@ -15,7 +15,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.types.ParamType
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 08.02.2008 */
+  * Date: 08.02.2008
+  */
 
 /*
  * ClassParam ::= {Annotation} [{Modifier} ('val' | 'var')] id ':' ParamType ['=' Expr]

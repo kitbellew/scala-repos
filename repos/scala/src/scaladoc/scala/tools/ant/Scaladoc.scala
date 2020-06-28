@@ -403,44 +403,52 @@ class Scaladoc extends ScalaMatchingTask {
     nofail = Flag.getBooleanValue(input, "nofail")
 
   /** Set the `implicits` info attribute.
-    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
+    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off.
+    */
   def setImplicits(input: String) =
     docImplicits = Flag.getBooleanValue(input, "implicits")
 
   /** Set the `implicitsShowAll` info attribute to enable scaladoc to show all implicits, including those impossible to
     *  convert to from the default scope
-    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
+    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off.
+    */
   def setImplicitsShowAll(input: String) =
     docImplicitsShowAll = Flag.getBooleanValue(input, "implicitsShowAll")
 
   /** Set the `implicitsDebug` info attribute so scaladoc outputs implicit conversion debug information
-    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
+    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off.
+    */
   def setImplicitsDebug(input: String) =
     docImplicitsDebug = Flag.getBooleanValue(input, "implicitsDebug")
 
   /** Set the `diagrams` bit so Scaladoc adds diagrams to the documentation
-    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
+    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off.
+    */
   def setDiagrams(input: String) =
     docDiagrams = Flag.getBooleanValue(input, "diagrams")
 
   /** Set the `diagramsDebug` bit so Scaladoc outputs diagram building debug information
-    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
+    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off.
+    */
   def setDiagramsDebug(input: String) =
     docDiagramsDebug = Flag.getBooleanValue(input, "diagramsDebug")
 
   /** Set the `diagramsDotPath` attribute to the path where graphviz dot can be found (including the binary file name,
-    *  eg: /usr/bin/dot) */
+    *  eg: /usr/bin/dot)
+    */
   def setDiagramsDotPath(input: String) =
     docDiagramsDotPath = Some(input)
 
   /** Set the `rawOutput` bit so Scaladoc also outputs text from each html file
-    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
+    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off.
+    */
   def setRawOutput(input: String) =
     docRawOutput = Flag.getBooleanValue(input, "rawOutput")
 
   /** Set the `noPrefixes` bit to prevent Scaladoc from generating prefixes in
     *  front of types -- may lead to confusion, but significantly speeds up the generation.
-    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off. */
+    *  @param input One of the flags `yes/no` or `on/off`. Default if no/off.
+    */
   def setNoPrefixes(input: String) =
     docNoPrefixes = Flag.getBooleanValue(input, "noPrefixes")
 

@@ -22,7 +22,8 @@ private[hashing] class MurmurHash3 {
 
   /** May optionally be used as the last mixing step. Is a little bit faster than mix,
     *  as it does no further mixing of the resulting hash. For the last element this is not
-    *  necessary as the hash is thoroughly mixed during finalization anyway. */
+    *  necessary as the hash is thoroughly mixed during finalization anyway.
+    */
   final def mixLast(hash: Int, data: Int): Int = {
     var k = data
 

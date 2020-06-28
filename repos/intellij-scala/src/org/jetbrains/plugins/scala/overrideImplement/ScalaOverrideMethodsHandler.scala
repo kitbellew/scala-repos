@@ -8,7 +8,8 @@ import com.intellij.psi.PsiFile
 
 /**
   * User: Alexander Podkhalyuzin
-  * Date: 08.07.2008 */
+  * Date: 08.07.2008
+  */
 
 class ScalaOverrideMethodsHandler extends LanguageCodeInsightActionHandler {
   def startInWriteAction: Boolean = false

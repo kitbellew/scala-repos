@@ -158,7 +158,8 @@ trait Bindings {
     /** Create `ObjectConditionBuilder` with type of the delegate rather than wrapping SFX.
       *
       * This is addressing problems pointed in Issue 16 - inability to bind an expression to JFX property
-      * when `thenValue` is a SFX wrapper. */
+      * when `thenValue` is a SFX wrapper.
+      */
     @deprecated(
       message =
         "`then` is a reserved word in Scala 2.10+, use `choose` instead. `then` will be removed in ScalaFX 1.0.0-m3",
@@ -201,7 +202,8 @@ trait Bindings {
     /** Create `ObjectConditionBuilder` with type of the delegate rather than wrapping SFX.
       *
       * This is addressing problems pointed in Issue 16 - inability to bind an expression to JFX property
-      * when `thenValue` is a SFX wrapper. */
+      * when `thenValue` is a SFX wrapper.
+      */
     def choose[J <: Object](chooseExpression: SFXDelegate[J]) =
       new ObjectConditionBuilder[J](
         whenBuilder.`then`(chooseExpression.delegate))

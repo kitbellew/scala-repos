@@ -4,7 +4,8 @@ import slick.ast._
 import Util._
 
 /** Expand paths of record types to reference all fields individually and
-  * recreate the record structure at the call site. */
+  * recreate the record structure at the call site.
+  */
 class ExpandRecords extends Phase {
   val name = "expandRecords"
 

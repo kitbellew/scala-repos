@@ -198,14 +198,16 @@ class MutableSettings(val errorFn: String => Unit)
   /** Initializes these settings for embedded use by type `T`.
     * The class loader defining `T` should provide resources `app.class.path`
     * and `boot.class.path`.  These resources should contain the application
-    * and boot classpaths in the same form as would be passed on the command line. */
+    * and boot classpaths in the same form as would be passed on the command line.
+    */
   def embeddedDefaults[T: ClassTag]: Unit = // called from sbt and repl
     embeddedDefaults(classTag[T].runtimeClass.getClassLoader)
 
   /** Initializes these settings for embedded use by a class from the given class loader.
     * The class loader for `T` should provide resources `app.class.path`
     * and `boot.class.path`.  These resources should contain the application
-    * and boot classpaths in the same form as would be passed on the command line. */
+    * and boot classpaths in the same form as would be passed on the command line.
+    */
   def embeddedDefaults(loader: ClassLoader) {
     explicitParentLoader =
       Option(loader) // for the Interpreter parentClassLoader
@@ -217,7 +219,8 @@ class MutableSettings(val errorFn: String => Unit)
   private[nsc] var explicitParentLoader: Option[ClassLoader] = None
 
   /** Retrieves the contents of resource "${id}.class.path" from `loader`
-    * (wrapped in Some) or None if the resource does not exist. */
+    * (wrapped in Some) or None if the resource does not exist.
+    */
   private def getClasspath(id: String, loader: ClassLoader): Option[String] =
     Option(loader)
       .flatMap(ld => Option(ld.getResource(id + ".class.path")))

@@ -654,7 +654,8 @@ abstract class TreeInfo {
   private def hasNoSymbol(t: Tree) = t.symbol == null || t.symbol == NoSymbol
 
   /** Is this pattern node a synthetic catch-all case, added during PartialFunction synthesis before we know
-    * whether the user provided cases are exhaustive. */
+    * whether the user provided cases are exhaustive.
+    */
   def isSyntheticDefaultCase(cdef: CaseDef) =
     cdef match {
       case CaseDef(Bind(nme.DEFAULT_CASE, _), EmptyTree, _) => true

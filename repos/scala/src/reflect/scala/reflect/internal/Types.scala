@@ -421,7 +421,8 @@ trait Types
     /** For a class or intersection type, its parents.
       *  For a TypeBounds type, the parents of its hi bound.
       *  inherited by typerefs, singleton types, and refinement types,
-      *  The empty list for all other types */
+      *  The empty list for all other types
+      */
     def parents: List[Type] = List()
 
     /** For a class with nonEmpty parents, the first parent.
@@ -430,7 +431,8 @@ trait Types
     def firstParent = if (parents.nonEmpty) parents.head else ObjectTpe
 
     /** For a typeref or single-type, the prefix of the normalized type (@see normalize).
-      *  NoType for all other types. */
+      *  NoType for all other types.
+      */
     def prefix: Type = NoType
 
     /** A chain of all typeref or singletype prefixes of this type, longest first.
@@ -455,7 +457,8 @@ trait Types
     protected def dummyArgs: List[Type] = typeParams map (_.typeConstructor)
 
     /** For a (nullary) method or poly type, its direct result type,
-      *  the type itself for all other types. */
+      *  the type itself for all other types.
+      */
     def resultType: Type = this
 
     def resultType(actuals: List[Type]) = this
@@ -464,31 +467,38 @@ trait Types
     def resultApprox: Type = ApproximateDependentMap(resultType)
 
     /** For a curried/nullary method or poly type its non-method result type,
-      *  the type itself for all other types */
+      *  the type itself for all other types
+      */
     final def finalResultType: Type = definitions finalResultType this
 
     /** For a method type, the number of its value parameter sections,
-      *  0 for all other types */
+      *  0 for all other types
+      */
     def paramSectionCount: Int = 0
 
     /** For a method or poly type, a list of its value parameter sections,
-      *  the empty list for all other types */
+      *  the empty list for all other types
+      */
     def paramss: List[List[Symbol]] = List()
 
     /** For a method or poly type, its first value parameter section,
-      *  the empty list for all other types */
+      *  the empty list for all other types
+      */
     def params: List[Symbol] = List()
 
     /** For a method or poly type, the types of its first value parameter section,
-      *  the empty list for all other types */
+      *  the empty list for all other types
+      */
     def paramTypes: List[Type] = List()
 
     /** For a (potentially wrapped) poly type, its type parameters,
-      *  the empty list for all other types */
+      *  the empty list for all other types
+      */
     def typeParams: List[Symbol] = List()
 
     /** For a (potentially wrapped) poly or existential type, its bound symbols,
-      *  the empty list for all other types */
+      *  the empty list for all other types
+      */
     def boundSyms: immutable.Set[Symbol] = emptySymbolSet
 
     /** Replace formal type parameter symbols with actual type arguments. ErrorType on arity mismatch.
@@ -635,7 +645,8 @@ trait Types
     def deferredMembers: Scope = membersBasedOnFlags(BridgeFlags, DEFERRED)
 
     /** The member with given name,
-      *  an OverloadedSymbol if several exist, NoSymbol if none exist */
+      *  an OverloadedSymbol if several exist, NoSymbol if none exist
+      */
     def member(name: Name): Symbol =
       memberBasedOnName(name, BridgeFlags)
 
@@ -659,7 +670,8 @@ trait Types
       memberBasedOnName(name, BridgeAndPrivateFlags & ~admit)
 
     /** The non-local member with given name,
-      *  an OverloadedSymbol if several exist, NoSymbol if none exist */
+      *  an OverloadedSymbol if several exist, NoSymbol if none exist
+      */
     def nonLocalMember(name: Name): Symbol =
       memberBasedOnName(name, BridgeFlags | LOCAL)
 
@@ -3720,7 +3732,8 @@ trait Types
     }
 
     /** Return the base type sequence of tp, dropping the annotations, unless the base type sequence of tp
-      * is precisely tp itself. */
+      * is precisely tp itself.
+      */
     override def baseTypeSeq: BaseTypeSeq = {
       val oftp = underlying.baseTypeSeq
       if ((oftp.length == 1) && (oftp(0) eq underlying))
@@ -3991,7 +4004,8 @@ trait Types
     *          }
     *        case _ => tps
     *      }
-    *      refinedType(merge(tps), owner) */
+    *      refinedType(merge(tps), owner)
+    */
 
   /** A creator for type applications */
   def appliedType(tycon: Type, args: List[Type]): Type = {
@@ -4554,7 +4568,8 @@ trait Types
     *    case TypeBounds(lo, hi)                  => true
     *    case _                                   => false
     *  }
-    * ** */
+    * **
+    */
   private def isInternalTypeUsedAsTypeArg(tp: Type): Boolean =
     tp match {
       case WildcardType           => true
@@ -4854,7 +4869,8 @@ trait Types
     *      case _ =>
     *        alwaysMatchSimple || tp1 =:= tp2
     *    }
-    *  } */
+    *  }
+    */
 
   /** Are `syms1` and `syms2` parameter lists with pairwise equivalent types? */
   protected[internal] def matchingParams(

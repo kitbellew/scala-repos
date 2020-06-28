@@ -297,7 +297,8 @@ object SlickBuild extends Build {
   )
 
   /** Create an OSGi version range for standard Scala / Typesafe versioning
-    * schemes that describes binary compatible versions. */
+    * schemes that describes binary compatible versions.
+    */
   def osgiVersionRange(version: String, requireMicro: Boolean = false): String =
     if (version contains '-') "${@}" // M, RC or SNAPSHOT -> exact version
     else if (requireMicro)

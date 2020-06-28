@@ -12,7 +12,8 @@ private[lifted] abstract class SimpleFeatureNode[T](implicit
 }
 
 /** A SimpleFunction gets translated to a plain function call or JDBC/ODBC
-  * scalar function {fn ...} call in SQL. */
+  * scalar function {fn ...} call in SQL.
+  */
 trait SimpleFunction extends Node {
   val name: String
   val scalar = false
@@ -81,7 +82,8 @@ object SimpleBinaryOperator {
 
 /** A SimpleLiteral is inserted verbatim into a SQL query string. For the
   * purpose of handling it in the query compiler it is assumed to be an
-  * expression of the specified type. */
+  * expression of the specified type.
+  */
 final case class SimpleLiteral(name: String)(val buildType: Type)
     extends NullaryNode
     with SimplyTypedNode {

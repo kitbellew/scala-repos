@@ -2,7 +2,8 @@ package slick.util
 
 /** A wrapper for a value, which uses reference equality of the wrapped
   * value as its own equality. This can be used, for example, to get the
-  * equivalent of an `IdentityHashMap` from a regular `HashMap`. */
+  * equivalent of an `IdentityHashMap` from a regular `HashMap`.
+  */
 final case class RefId[E <: AnyRef](e: E) {
   override def hashCode = System.identityHashCode(e)
   override def equals(o: Any) =

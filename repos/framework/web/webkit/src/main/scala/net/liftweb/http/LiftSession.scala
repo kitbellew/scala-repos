@@ -2917,6 +2917,7 @@ class LiftSession(
             partialUpdate(JsCmds.JsSchedule(JsRaw(
               s"lift.sendEvent(${guid.encJs}, {'failure': ${msg.encJs} })").cmd))
           case _ =>
+
         }
       }
 

@@ -44,6 +44,7 @@ trait AjaxEditableField[FieldType, OwnerType <: Mapper[OwnerType]]
   def onSave {}
 
   /** This method allows you to do programmatic control of whether the field will display
-    *  as editable. The default is true */
+    *  as editable. The default is true
+    */
   def editableField = true
 }

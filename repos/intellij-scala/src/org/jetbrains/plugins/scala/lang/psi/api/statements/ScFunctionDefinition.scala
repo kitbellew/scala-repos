@@ -24,7 +24,8 @@ import org.jetbrains.plugins.scala.macroAnnotations.{Cached, ModCount}
 /**
   * @author Alexander Podkhalyuzin
   * Date: 22.02.2008
-  * Time: 9:49:36 */
+  * Time: 9:49:36
+  */
 trait ScFunctionDefinition extends ScFunction with ScControlFlowOwner {
   def body: Option[ScExpression]
 

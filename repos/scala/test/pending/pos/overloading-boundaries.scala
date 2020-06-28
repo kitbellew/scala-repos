@@ -34,4 +34,5 @@ object Test {
   *         ^
   * one error found
   *
-  * ** */
+  * **
+  */

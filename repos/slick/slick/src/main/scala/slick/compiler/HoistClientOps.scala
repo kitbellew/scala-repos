@@ -223,7 +223,8 @@ class HoistClientOps extends Phase {
     }
 
   /** Remove a hoistable operation from a top-level column or join column and create a
-    * function to reapply it at an outer layer. */
+    * function to reapply it at an outer layer.
+    */
   def unwrap(n: Node, topLevel: Boolean): (Node, (Node => Node)) =
     n match {
       case GetOrElse(ch, default) =>

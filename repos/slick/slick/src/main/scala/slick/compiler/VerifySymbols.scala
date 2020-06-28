@@ -5,7 +5,8 @@ import slick.ast.Util._
 import slick.ast._
 
 /** Verify that all monadic joins have been transformed into applicative joins and that the
-  * resulting tree does not contain references to unreachable symbols. */
+  * resulting tree does not contain references to unreachable symbols.
+  */
 class VerifySymbols extends Phase {
   val name = "verifySymbols"
 

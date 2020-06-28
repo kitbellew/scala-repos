@@ -5,7 +5,8 @@ import Util._
 
 /** Assign the AnonSymbols of fields from the left side of a Union to the
   * right side. This ensures that both sides are protected when we prune
-  * unused references pointing to left-side Symbols. */
+  * unused references pointing to left-side Symbols.
+  */
 class RelabelUnions extends Phase {
   val name = "relabelUnions"
 

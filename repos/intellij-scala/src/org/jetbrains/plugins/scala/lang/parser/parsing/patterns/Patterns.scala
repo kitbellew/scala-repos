@@ -10,7 +10,8 @@ import org.jetbrains.plugins.scala.lang.parser.util.ParserUtils
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 29.02.2008 */
+  * Date: 29.02.2008
+  */
 
 object Patterns {
   def parse(builder: ScalaPsiBuilder): Boolean =

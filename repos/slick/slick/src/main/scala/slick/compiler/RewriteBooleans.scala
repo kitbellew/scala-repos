@@ -11,7 +11,8 @@ import TypeUtil._
   * The default for booleans in the AST is to use the fake type (mapped to a numeric type by the
   * profile). There are specific places where a real boolean (that can be used in boolean
   * expressions) is required or produced, so we inject a call to ToRealBoolean or ToFakeBoolean as
-  * needed. */
+  * needed.
+  */
 class RewriteBooleans extends Phase {
   import RewriteBooleans._
   val name = "rewriteBooleans"
@@ -27,7 +28,8 @@ class RewriteBooleans extends Phase {
   }
 
   /** Rewrite a single Node. This method can be overridden in subclasses to
-    * change the situations in which conversions are applied. */
+    * change the situations in which conversions are applied.
+    */
   def rewrite(n: Node): Node =
     n match {
       // These boolean operators accept and produce real booleans
@@ -49,7 +51,8 @@ class RewriteBooleans extends Phase {
     }
 
   /** Create a conversion to a fake boolean, cancelling out an existing
-    * conversion to a real boolean. */
+    * conversion to a real boolean.
+    */
   def toFake(n: Node) =
     n match {
       case ToRealBoolean(ch) => ch
@@ -57,7 +60,8 @@ class RewriteBooleans extends Phase {
     }
 
   /** Create a conversion to a real boolean, cancelling out an existing
-    * conversion to a fake boolean. */
+    * conversion to a fake boolean.
+    */
   def toReal(n: Node) =
     n match {
       case ToFakeBoolean(ch) => ch
@@ -65,7 +69,8 @@ class RewriteBooleans extends Phase {
     }
 
   /** Check if a type is equivalent to the Scala Boolean type or a (possibly
-    * nested) Option of that type. */
+    * nested) Option of that type.
+    */
   def isBooleanLike(t: Type): Boolean =
     t match {
       case t: TypedType[_] if t.scalaType == ScalaBaseType.booleanType => true

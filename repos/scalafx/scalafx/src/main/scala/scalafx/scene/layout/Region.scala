@@ -62,7 +62,8 @@ object Region {
   val USE_PREF_SIZE = jfxsl.Region.USE_PREF_SIZE
 
   /** Utility method which lays out the child within an area of it's parent defined by areaX, areaY,
-    * areaWidth x areaHeight, with a baseline offset relative to that area. */
+    * areaWidth x areaHeight, with a baseline offset relative to that area.
+    */
   def layoutInArea(
       child: javafx.scene.Node,
       areaX: Double,
@@ -92,7 +93,8 @@ object Region {
   }
 
   /** Utility method which positions the child within an area of this region defined by areaX, areaY,
-    * areaWidth x areaHeight, with a baseline offset relative to that area. */
+    * areaWidth x areaHeight, with a baseline offset relative to that area.
+    */
   def positionInArea(
       child: javafx.scene.Node,
       areaX: Double,
@@ -138,7 +140,8 @@ class Region(override val delegate: jfxsl.Region = new jfxsl.Region())
   }
 
   /** Defines a hint to the system indicating that the Shape used to define the region's
-    * background is stable and would benefit from caching. */
+    * background is stable and would benefit from caching.
+    */
   def cacheShape: BooleanProperty = delegate.cacheProperty()
   def cacheShape_=(v: Boolean) {
     cacheShape() = v

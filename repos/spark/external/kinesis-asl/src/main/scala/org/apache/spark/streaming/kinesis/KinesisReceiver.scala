@@ -154,7 +154,8 @@ private[kinesis] class KinesisReceiver[T](
 
   /**
     * Latest sequence number ranges that have been stored successfully.
-    * This is used for checkpointing through KCL */
+    * This is used for checkpointing through KCL
+    */
   private val shardIdToLatestStoredSeqNum =
     new ConcurrentHashMap[String, String]
 

@@ -49,7 +49,8 @@ object TailCalls {
       flatMap(a => Call(() => Done(f(a))))
 
     /** Continue the computation with `f` and merge the trampolining
-      * of this computation with that of `f`. */
+      * of this computation with that of `f`.
+      */
     final def flatMap[B](f: A => TailRec[B]): TailRec[B] =
       this match {
         case Done(a)     => Call(() => f(a))
@@ -59,7 +60,8 @@ object TailCalls {
       }
 
     /** Returns either the next step of the tailcalling computation,
-      * or the result if there are no more steps. */
+      * or the result if there are no more steps.
+      */
     @annotation.tailrec
     final def resume: Either[() => TailRec[A], A] =
       this match {
@@ -93,11 +95,13 @@ object TailCalls {
   protected case class Call[A](rest: () => TailRec[A]) extends TailRec[A]
 
   /** Internal class representing the final result returned from a tailcalling
-    * computation */
+    * computation
+    */
   protected case class Done[A](value: A) extends TailRec[A]
 
   /** Internal class representing a continuation with function A => TailRec[B].
-    * It is needed for the flatMap to be implemented. */
+    * It is needed for the flatMap to be implemented.
+    */
   protected case class Cont[A, B](a: TailRec[A], f: A => TailRec[B])
       extends TailRec[B]
 

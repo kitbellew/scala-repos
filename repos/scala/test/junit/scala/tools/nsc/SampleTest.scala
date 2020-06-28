@@ -6,7 +6,8 @@ import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
 
 /** Sample JUnit test that shows that all pieces
-  *    of JUnit infrastructure work correctly */
+  *    of JUnit infrastructure work correctly
+  */
 @RunWith(classOf[JUnit4])
 class SampleTest {
   @Test

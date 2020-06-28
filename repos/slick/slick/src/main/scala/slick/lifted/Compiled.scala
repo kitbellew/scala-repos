@@ -12,7 +12,8 @@ import slick.compiler.QueryCompiler
   * always tied to a specific profile.
   *
   * `Cached` forms a limited monad which ensures that it can only contain
-  * values that are `Compilable`. */
+  * values that are `Compilable`.
+  */
 sealed trait Compiled[T] {
 
   /** The profile which is used for compiling the query. */
@@ -23,18 +24,21 @@ sealed trait Compiled[T] {
   /** Perform a transformation of the underlying value. The computed value must
     * be `Compilable`. The resulting `Compiled` instance will be recompiled when
     * needed. It does not benefit from this instance already containing the
-    * compiled state. */
+    * compiled state.
+    */
   def map[U, C <: Compiled[U]](f: T => U)(implicit
       ucompilable: Compilable[U, C]): C =
     ucompilable.compiled(f(extract), profile)
 
   /** Perform a transformation of the underlying value. The computed `Compiled`
-    * value is returned unmodified. */
+    * value is returned unmodified.
+    */
   def flatMap[U <: Compiled[_]](f: T => U): U =
     f(extract)
 
   /** Return the underlying query or query function. It can be safely
-    * extracted for reuse without caching the compiled representation. */
+    * extracted for reuse without caching the compiled representation.
+    */
   def extract: T
 }
 
@@ -63,7 +67,8 @@ class CompiledFunction[F, PT, PU, R <: Rep[_], RU](
     with CompilersMixin {
 
   /** Create an applied `Compiled` value for this compiled function. All applied
-    * values share their compilation state with the original compiled function. */
+    * values share their compilation state with the original compiled function.
+    */
   def apply(p: PU) = new AppliedCompiledFunction[PU, R, RU](p, this, profile)
 
   def toNode: Node = {
@@ -115,7 +120,8 @@ abstract class CompiledStreamingExecutable[R, RU, EU](
     with StreamableCompiled[R, RU, EU]
 
 /** Typeclass for types that can be executed as queries. This encompasses
-  * collection-valued (`Query[_, _, _[_] ]`), scalar and record types. */
+  * collection-valued (`Query[_, _, _[_] ]`), scalar and record types.
+  */
 @implicitNotFound(
   "Computation of type ${T} cannot be executed (with result type ${TU})")
 trait Executable[T, TU] {
@@ -147,7 +153,8 @@ object Executable {
 /** Typeclass for types that can be executed as streaming queries, i.e. only
   * collection-valued (`Query[_, _, _[_] ]`) types. This is used
   * as a phantom type for computing the required types. The actual value is
-  * always `null`. */
+  * always `null`.
+  */
 @implicitNotFound(
   "Computation of type ${T} cannot be executed (with sequence result type ${TU} and base result type ${EU})")
 trait StreamingExecutable[T, TU, EU] extends Executable[T, TU]
@@ -161,7 +168,8 @@ object StreamingExecutable extends StreamingExecutable[Rep[Any], Any, Any] {
 
 /** Typeclass for types that can be contained in a `Compiled` container. This
   * includes all `Executable` types as well as functions (of any arity) from
-  * flat, fully packed parameter types to an `Executable` result type. */
+  * flat, fully packed parameter types to an `Executable` result type.
+  */
 @implicitNotFound("Computation of type ${T} cannot be compiled (as type ${C})")
 trait Compilable[T, C <: Compiled[T]] {
   def compiled(raw: T, profile: BasicProfile): C

@@ -84,6 +84,7 @@ class HeapBalancer[Req, Rep](
 
   private[this] val observation = factories.run.changes respond {
     case Activity.Pending =>
+
     case Activity.Ok(newSet) =>
       updateGroup(newSet)
       ready.setDone()

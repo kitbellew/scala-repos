@@ -6,7 +6,8 @@ import java.sql.ResultSet
 sealed abstract class ResultSetConcurrency(val intValue: Int) { self =>
 
   /** Return this `ResultSetConcurrency`, unless it is `Auto` in which case
-    * the specified concurrency mode is returned instead. */
+    * the specified concurrency mode is returned instead.
+    */
   def withDefault(r: ResultSetConcurrency) = this
 }
 

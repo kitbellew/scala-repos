@@ -10,7 +10,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.02.2008 */
+  * Date: 06.02.2008
+  */
 
 /*
   QualId ::= id {. id}

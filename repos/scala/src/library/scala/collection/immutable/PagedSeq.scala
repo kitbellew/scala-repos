@@ -229,7 +229,8 @@ private class Page[T: ClassTag](val num: Int) {
   var filled: Int = 0
 
   /** Set true if the current page is the last in the sequence or if
-    *   the `more` function returned -1 signalling end of input. */
+    *   the `more` function returned -1 signalling end of input.
+    */
   var isLast: Boolean = false
 
   /** The element array */
@@ -239,18 +240,21 @@ private class Page[T: ClassTag](val num: Int) {
   final def start = num * PageSize
 
   /** The index of the element following the last element in this page relative
-    *  to the whole sequence */
+    *  to the whole sequence
+    */
   final def end = start + filled
 
   /** The last page as currently present in the sequence; This can change as more
-    *  elements get appended to the sequence. */
+    *  elements get appended to the sequence.
+    */
   final def latest: Page[T] = {
     if (later.next != null) later = later.next.latest
     later
   }
 
   /** The element at the given sequence index.
-    *  That index is relative to the whole sequence, not the page. */
+    *  That index is relative to the whole sequence, not the page.
+    */
   def apply(index: Int) = {
     if (index < start || index - start >= filled)
       throw new IndexOutOfBoundsException(index.toString)
@@ -259,7 +263,8 @@ private class Page[T: ClassTag](val num: Int) {
 
   /** Produces more elements by calling `more` and adds them on the current page,
     *  or fills a subsequent page if current page is full.
-    *  @note If current page is full, it is the last one in the sequence. */
+    *  @note If current page is full, it is the last one in the sequence.
+    */
   final def addMore(more: (Array[T], Int, Int) => Int): Page[T] =
     if (filled == PageSize) {
       next = new Page[T](num + 1)

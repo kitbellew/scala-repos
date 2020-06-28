@@ -230,7 +230,8 @@ abstract class SymbolPairs {
     }
 
     /** Implements `bs1 * bs2 * {0..n} != 0`.
-      *  Used in hasCommonParentAsSubclass */
+      *  Used in hasCommonParentAsSubclass
+      */
     private def intersectionContainsElementLeq(
         bs1: BitSet,
         bs2: BitSet,

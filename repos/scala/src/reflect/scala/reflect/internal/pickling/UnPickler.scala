@@ -554,7 +554,8 @@ abstract class UnPickler {
 
     /** Read an annotation and as a side effect store it into
       *  the symbol it requests. Called at top-level, for all
-      *  (symbol, annotInfo) entries. */
+      *  (symbol, annotInfo) entries.
+      */
     protected def readSymbolAnnotation() {
       expect(SYMANNOT, "symbol annotation expected")
       val end = readEnd()
@@ -563,7 +564,8 @@ abstract class UnPickler {
     }
 
     /** Read an annotation and return it. Used when unpickling
-      *  an ANNOTATED(WSELF)tpe or a NestedAnnotArg */
+      *  an ANNOTATED(WSELF)tpe or a NestedAnnotArg
+      */
     protected def readAnnotation(): AnnotationInfo = {
       val tag = readByte()
       if (tag != ANNOTINFO)

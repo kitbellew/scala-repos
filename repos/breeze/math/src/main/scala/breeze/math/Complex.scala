@@ -470,7 +470,8 @@ object Complex { outer =>
 
   /** `Complex` as `scala.math.Numeric` trait.
     * Conversions to `Int`, `Long`, `Float` and `Double` are only performed
-    * if the imaginary component of the complex number is exactly 0. */
+    * if the imaginary component of the complex number is exactly 0.
+    */
   trait ComplexIsConflicted extends Numeric[Complex] {
     def plus(x: Complex, y: Complex): Complex = x + y
     def minus(x: Complex, y: Complex): Complex = x - y
@@ -483,7 +484,8 @@ object Complex { outer =>
     def toDouble(x: Complex): Double = strictlyReal(x)
 
     /** Checks that a `Complex` number is strictly real, and returns the real
-      * component. */
+      * component.
+      */
     private def strictlyReal(x: Complex): Double = {
       require(x.imag == 0.0) // only proceed if x.imag is *exactly* zero
       x.real
@@ -498,7 +500,8 @@ object Complex { outer =>
   }
 
   /** Ordering for complex numbers: orders lexicographically first
-    * on the real, then on the imaginary part of the number. */
+    * on the real, then on the imaginary part of the number.
+    */
   trait ComplexOrdering extends Ordering[Complex] {
     override def compare(a: Complex, b: Complex) = {
       if (a.real < b.real) -1
@@ -512,7 +515,8 @@ object Complex { outer =>
   /** Implicit object providing `scala.math.Fractional` capabilities.
     * Although complex numbers have no natural ordering, some kind of
     * `Ordering` is required because `Numeric` extends `Ordering`.  Hence,
-    * an ordering based upon the real then imaginary components is used. */
+    * an ordering based upon the real then imaginary components is used.
+    */
   implicit object ComplexIsFractional
       extends ComplexIsFractional
       with ComplexOrdering

@@ -91,7 +91,8 @@ object ScalaJSPluginInternal {
     KeyRanks.Invisible)
 
   /** Internal task to calculate whether a project requests the DOM
-    *  (through jsDependencies or requiresDOM) */
+    *  (through jsDependencies or requiresDOM)
+    */
   val scalaJSRequestsDOM = TaskKey[Boolean](
     "scalaJSRequestsDOM",
     "Scala.js internal: Whether a project really wants the DOM. " +

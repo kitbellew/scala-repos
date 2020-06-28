@@ -106,7 +106,8 @@ trait SecurityHelpers {
 
   /** Compare two strings in a way that does not vary if the strings
     * are determined to be not equal early (test every byte... avoids
-    * timing attacks */
+    * timing attacks
+    */
   def secureEquals(s1: String, s2: String): Boolean =
     (s1, s2) match {
       case (null, null) => true
@@ -117,7 +118,8 @@ trait SecurityHelpers {
 
   /** Compare two byte arrays in a way that does not vary if the arrays
     * are determined to be not equal early (test every byte... avoids
-    * timing attacks */
+    * timing attacks
+    */
   def secureEquals(s1: Array[Byte], s2: Array[Byte]): Boolean =
     (s1, s2) match {
       case (null, null) => true

@@ -43,7 +43,8 @@ trait JdbcBackend extends RelationalBackend {
       * first Session that needs them. Access does not need to be synchronized
       * because, in the worst case, capabilities will be determined multiple
       * times by different concurrent sessions but the result should always be
-      * the same. */
+      * the same.
+      */
     @volatile
     protected[JdbcBackend] var capabilities: DatabaseCapabilities = null
 
@@ -53,7 +54,8 @@ trait JdbcBackend extends RelationalBackend {
       * `bufferNext = false`. The ResultSet will not advance to the next row until you
       * `request()` more data. This allows you to process LOBs asynchronously by requesting only
       * one single element at a time after processing the current one, so that the proper
-      * sequencing is preserved even though processing may happen on a different thread. */
+      * sequencing is preserved even though processing may happen on a different thread.
+      */
     final def stream[T](
         a: StreamingDBIO[_, T],
         bufferNext: Boolean): DatabasePublisher[T] =
@@ -83,13 +85,15 @@ trait JdbcBackend extends RelationalBackend {
     /** The `ExecutionContext` which is used for performing blocking database I/O, similar to how
       * `run` or `stream` would run it. This can be used for calling back into blocking JDBC APIs
       * (e.g. for materializing a LOB or mutating a result set row) from asynchronous processors of
-      * unbuffered streams. */
+      * unbuffered streams.
+      */
     final def ioExecutionContext: ExecutionContext = executor.executionContext
 
     /** Free all resources allocated by Slick for this Database object. In particular, the
       * [[slick.util.AsyncExecutor]] with the thread pool for asynchronous execution is shut
       * down. If this object represents a connection pool managed directly by Slick, it is also
-      * closed. */
+      * closed.
+      */
     def close: Unit =
       try executor.close()
       finally source.close()
@@ -156,7 +160,8 @@ trait JdbcBackend extends RelationalBackend {
     }
 
     /** Create a Database that directly uses a Driver to open new connections.
-      * This is needed to open a JDBC URL with a driver that was not loaded by the system ClassLoader. */
+      * This is needed to open a JDBC URL with a driver that was not loaded by the system ClassLoader.
+      */
     def forDriver(
         driver: Driver,
         url: String,

@@ -239,7 +239,8 @@ trait ProcessBuilder extends Source with Sink {
   def !<(log: ProcessLogger): Int
 
   /** Starts the process represented by this builder.  Standard output and error
-    * are sent to the console. */
+    * are sent to the console.
+    */
   def run(): Process
 
   /** Starts the process represented by this builder.  Standard output and error

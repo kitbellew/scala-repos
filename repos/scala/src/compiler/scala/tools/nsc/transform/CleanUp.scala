@@ -62,7 +62,8 @@ abstract class CleanUp extends Statics with Transform with ast.TreeDSL {
 
     /** A value class is defined to be only Java-compatible values: unit is
       * not part of it, as opposed to isPrimitiveValueClass in definitions. scala.Int is
-      * a value class, java.lang.Integer is not. */
+      * a value class, java.lang.Integer is not.
+      */
     def isJavaValueClass(sym: Symbol) = boxedClass contains sym
     def isJavaValueType(tp: Type) = isJavaValueClass(tp.typeSymbol)
 

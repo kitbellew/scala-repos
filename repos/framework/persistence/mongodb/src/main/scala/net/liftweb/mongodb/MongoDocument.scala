@@ -129,7 +129,6 @@ trait MongoDocumentMeta[BaseDocument]
     import scala.collection.JavaConversions._
 
     MongoDB.useCollection(connectionIdentifier, collectionName)(coll => {
-
       /** Mongo Cursors are both Iterable and Iterator,
         * so we need to reduce ambiguity for implicits
         */

@@ -14,7 +14,8 @@ sealed abstract class Memo[
 sealed abstract class MemoInstances {}
 
 /** @define immuMapNote As this memo uses a single var, it's
-  * thread-safe. */
+  * thread-safe.
+  */
 object Memo extends MemoInstances {
   def memo[@specialized(Int) K, @specialized(Int, Long, Double) V](
       f: (K => V) => K => V): Memo[K, V] =

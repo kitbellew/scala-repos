@@ -9,7 +9,8 @@ import com.intellij.psi.{PsiTypeParameter, PsiTypeParameterList}
 
 /**
   * @author Alexander Podkhalyuzin
-  * @since 22.02.2008 */
+  * @since 22.02.2008
+  */
 trait ScTypeParamClause extends ScalaPsiElement with PsiTypeParameterList {
   def typeParameters: Seq[ScTypeParam]
 

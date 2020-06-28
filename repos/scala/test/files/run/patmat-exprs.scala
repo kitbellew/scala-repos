@@ -209,7 +209,8 @@ trait Pattern {
     }
 
     /** Simplifies this expression to make evaluation faster and more accurate.
-      *  Performs only one pass. */
+      *  Performs only one pass.
+      */
     private def reduce(implicit num: NumericOps[T]): Expr[T] = {
       this match {
         case Add(Seq(Neg(x), Neg(y), Neg(z)))   => Neg(Add(List(x, y, z)))

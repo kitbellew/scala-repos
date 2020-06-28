@@ -56,7 +56,8 @@ class SeqRule[S, +A, +X](rule: Rule[S, S, A, X]) {
     }
 
   /** Creates a rule that always succeeds with a Boolean value.
-    *  Value is 'true' if this rule succeeds, 'false' otherwise */
+    *  Value is 'true' if this rule succeeds, 'false' otherwise
+    */
   def -? = ? map { _ isDefined }
 
   def * =

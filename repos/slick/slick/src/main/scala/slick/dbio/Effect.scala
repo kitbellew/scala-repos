@@ -4,7 +4,8 @@ package slick.dbio
   * `Transactional`). Effects can be composed through intersection types (e.g.
   * `Write with Transactional`. The standard Slick back-ends do not restrict the evaluation of
   * actions based on effects but they can be used in user-level code (e.g. for ensuring that all
-  * writes go to a master database but reads can also be performed by a slave). */
+  * writes go to a master database but reads can also be performed by a slave).
+  */
 trait Effect
 
 object Effect {
@@ -25,6 +26,7 @@ object Effect {
     * type aliases instead of `Nothing` because the compiler does not properly infer `Nothing`
     * where needed. You can still introduce your own custom effect types but they will not be
     * used by `DBIO` and `StreamingDBIO`, so you either have to define your own type aliases
-    * or spell out the proper `DBIOAction` types in type annotations. */
+    * or spell out the proper `DBIOAction` types in type annotations.
+    */
   trait All extends Read with Write with Schema with Transactional
 }

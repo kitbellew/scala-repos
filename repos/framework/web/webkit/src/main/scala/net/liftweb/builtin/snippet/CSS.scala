@@ -22,7 +22,8 @@ import net.liftweb.http._
 import scala.xml._
 
 /**
-  * Display Blueprint CSS headers */
+  * Display Blueprint CSS headers
+  */
 object CSS extends DispatchSnippet {
   def dispatch: DispatchIt = {
     case "blueprint" => _ => blueprint

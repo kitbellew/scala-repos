@@ -152,6 +152,7 @@ private trait Balancer[Req, Rep] extends ServiceFactory[Req, Rep] { self =>
           dist = dist.rebuild()
 
         case Rebuild(_stale) =>
+
         case Invoke(fn) =>
           fn(dist)
       }

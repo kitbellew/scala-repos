@@ -8,7 +8,8 @@ import org.jetbrains.plugins.scala.lang.psi.types.{ScSubstitutor, ScType}
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.06.2008 */
+  * Date: 07.06.2008
+  */
 
 object StructureViewUtil {
   def getParametersAsString(

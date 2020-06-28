@@ -104,7 +104,8 @@ class SyncVar[A] {
   def set(x: A): Unit = setVal(x)
 
   /** Place a value in the SyncVar. If the SyncVar already has a stored value,
-    * wait until another thread takes it. */
+    * wait until another thread takes it.
+    */
   def put(x: A): Unit =
     synchronized {
       while (isDefined) wait()

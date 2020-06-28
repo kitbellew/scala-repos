@@ -125,7 +125,8 @@ object SqlProfile {
       * type of the underlying DBMS it may not be portable to other DBMS.
       *
       * Note that Slick uses VARCHAR or VARCHAR(254) in DDL for String columns if neither
-      * ColumnOption DBType nor Length are given. */
+      * ColumnOption DBType nor Length are given.
+      */
     case class SqlType(val typeName: String) extends ColumnOption[Nothing]
   }
 }
@@ -186,7 +187,8 @@ trait SqlAction[+R, +S <: NoStream, -E <: Effect] extends BasicAction[R, S, E] {
   def statements: Iterable[String]
 
   /** Create an Action that uses the specified SQL statement(s) but otherwise
-    * behaves the same as this Action. */
+    * behaves the same as this Action.
+    */
   def overrideStatements(statements: Iterable[String]): ResultAction[R, S, E]
 
   def getDumpInfo =

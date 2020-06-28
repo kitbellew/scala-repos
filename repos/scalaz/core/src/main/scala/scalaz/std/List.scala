@@ -280,7 +280,8 @@ trait ListFunctions {
     }
 
   /** A pair of the longest prefix of passing `as` against `p`, and
-    * the remainder. */
+    * the remainder.
+    */
   final def spanM[A, M[_]: Monad](as: List[A])(
       p: A => M[Boolean]): M[(List[A], List[A])] =
     as match {
@@ -350,7 +351,8 @@ trait ListFunctions {
     }
 
   /** All of the `B`s, in order, and the final `C` acquired by a
-    * stateful left fold over `as`. */
+    * stateful left fold over `as`.
+    */
   final def mapAccumLeft[A, B, C](
       as: List[A])(c: C, f: (C, A) => (C, B)): (C, List[B]) = {
     val (c0, list) = mapAccum(as)(c, f)
@@ -358,7 +360,8 @@ trait ListFunctions {
   }
 
   /** All of the `B`s, in order `as`-wise, and the final `C` acquired
-    * by a stateful right fold over `as`. */
+    * by a stateful right fold over `as`.
+    */
   final def mapAccumRight[A, B, C](
       as: List[A])(c: C, f: (C, A) => (C, B)): (C, List[B]) =
     mapAccum(as.reverse)(c, f)

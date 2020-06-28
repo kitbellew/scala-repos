@@ -70,6 +70,7 @@ class HoconErrorHighlightingAnnotator extends Annotator {
         validateConcatenation(null, element.getNode.getFirstChildNode)
 
       case _ =>
+
     }
   }
 }

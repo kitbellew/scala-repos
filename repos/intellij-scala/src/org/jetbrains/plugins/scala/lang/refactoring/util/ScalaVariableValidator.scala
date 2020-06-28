@@ -30,7 +30,8 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
   * User: Alexander Podkhalyuzin
-  * Date: 24.06.2008 */
+  * Date: 24.06.2008
+  */
 
 object ScalaVariableValidator {
   def apply(

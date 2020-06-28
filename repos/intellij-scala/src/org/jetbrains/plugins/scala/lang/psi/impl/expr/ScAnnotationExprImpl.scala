@@ -9,7 +9,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.expr._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 07.03.2008 */
+  * Date: 07.03.2008
+  */
 class ScAnnotationExprImpl(node: ASTNode)
     extends ScalaPsiElementImpl(node)
     with ScAnnotationExpr {

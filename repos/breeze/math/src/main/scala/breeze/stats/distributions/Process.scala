@@ -33,7 +33,8 @@ trait Process[T] extends Rand[T] { process =>
   }
 
   /** Returns an Iterator that automatically moves the Process along as
-    *    next is called */
+    *    next is called
+    */
   def steps: Iterator[T] =
     new Iterator[T] {
       private var current = process;

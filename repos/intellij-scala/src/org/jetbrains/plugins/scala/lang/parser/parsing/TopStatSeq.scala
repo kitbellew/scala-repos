@@ -8,7 +8,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 05.02.2008 */
+  * Date: 05.02.2008
+  */
 
 /*
  *  TopStatSeq ::= TopStat {semi TopStat}

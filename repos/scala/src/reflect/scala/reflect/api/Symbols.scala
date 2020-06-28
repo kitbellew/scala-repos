@@ -356,7 +356,8 @@ trait Symbols { self: Universe =>
       */
     def alternatives: List[Symbol]
 
-    /** ***************** tests ****************** */
+    /** ***************** tests ******************
+      */
 
     /** Does this symbol represent a synthetic (i.e. a compiler-generated) entity?
       *  Examples of synthetic entities are accessors for vals and vars
@@ -521,7 +522,8 @@ trait Symbols { self: Universe =>
       */
     def isJavaAnnotation: Boolean
 
-    /** ***************** helpers ****************** */
+    /** ***************** helpers ******************
+      */
 
     /** Provides an alternate if symbol is a NoSymbol.
       *
@@ -777,7 +779,8 @@ trait Symbols { self: Universe =>
 
     /** @see [[paramLists]]
       *
-      * The name ending with "ss" indicates that the result type is a list of lists. */
+      * The name ending with "ss" indicates that the result type is a list of lists.
+      */
     @deprecated("Use `paramLists` instead", "2.11.0")
     def paramss: List[List[Symbol]]
 

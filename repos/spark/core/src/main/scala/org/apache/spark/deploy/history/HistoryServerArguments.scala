@@ -52,6 +52,7 @@ private[history] class HistoryServerArguments(
           parse(tail)
 
         case Nil =>
+
         case _ =>
           printUsageAndExit(1)
       }

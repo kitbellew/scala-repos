@@ -28,7 +28,8 @@ import org.slf4j.Logger
 /**
   * Created by Jim Plush
   * User: jim
-  * Date: 8/17/11 */
+  * Date: 8/17/11
+  */
 
 trait OutputFormatter {
   val logPrefix = "outformat: "

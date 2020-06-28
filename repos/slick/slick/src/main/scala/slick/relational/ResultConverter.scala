@@ -7,7 +7,8 @@ import slick.util.{Dumpable, DumpInfo, TupleSupport}
 import java.io.{StringWriter, OutputStreamWriter, PrintWriter}
 
 /** A `ResultConverter` is used to read data from a result, update a result,
-  * and set parameters of a query. */
+  * and set parameters of a query.
+  */
 trait ResultConverter[M <: ResultConverterDomain, @specialized T]
     extends Dumpable {
   protected[this] type Reader = M#Reader
@@ -22,7 +23,8 @@ trait ResultConverter[M <: ResultConverterDomain, @specialized T]
   }
 
   /** The width of this converter (in columns), corresponding to the
-    * number of columns that will be read or written by it. */
+    * number of columns that will be read or written by it.
+    */
   def width: Int
 
   override def getDumpInfo = {
@@ -38,7 +40,8 @@ trait ResultConverter[M <: ResultConverterDomain, @specialized T]
 /** The domain of a `ResultConverter` and associated classes. It defines the
   * `Reader`, `Writer` and `Updater` types that are needed at the lowest
   * level of ResultConverters for accessing the underlying profile-specific
-  * data structures. */
+  * data structures.
+  */
 trait ResultConverterDomain {
   type Reader
   type Writer
@@ -194,7 +197,8 @@ final case class OptionRebuildingResultConverter[M <: ResultConverterDomain, T](
 /** A `ResultConverter` that simplifies the implementation of fast path
   * converters. It always wraps a `TypeMappingResultConverter`
   * on top of a `ProductResultConverter`, allowing direct access to the product
-  * elements. */
+  * elements.
+  */
 abstract class SimpleFastPathResultConverter[M <: ResultConverterDomain, T](
     protected[this] val rc: TypeMappingResultConverter[M, T, _])
     extends ResultConverter[M, T] {

@@ -10,7 +10,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.patterns.Guard
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 06.03.2008 */
+  * Date: 06.03.2008
+  */
 
 /*
  * Enumerators ::= Generator {semi Enumerator}

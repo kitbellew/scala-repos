@@ -22,7 +22,8 @@ import breeze.util._
 /**
   * Minimizes a function using stochastic gradient descent
   *
-  * @author dlwh */
+  * @author dlwh
+  */
 abstract class StochasticGradientDescent[T](
     val defaultStepSize: Double,
     val maxIter: Int,

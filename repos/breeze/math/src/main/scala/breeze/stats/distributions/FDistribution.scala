@@ -24,7 +24,8 @@ import org.apache.commons.math3.distribution.{
 /**
   * The F-distribution - ratio of two scaled chi^2 variables
   *
-  * @author stucchio */
+  * @author stucchio
+  */
 
 class FDistribution(
     numeratorDegreesOfFreedom: Double,

@@ -1009,7 +1009,6 @@ abstract class GenJSCode
       implicit val pos = tree.pos
 
       tree match {
-
         /** LabelDefs (for while and do..while loops) */
         case lblDf: LabelDef =>
           genLabelDef(lblDf)
@@ -3132,7 +3131,6 @@ abstract class GenJSCode
             }
 
             code match {
-
               /** Convert a scala.FunctionN f to a js.FunctionN. */
               case F2JS =>
                 arg match {
@@ -4230,7 +4228,8 @@ abstract class GenJSCode
     JavaScriptExceptionClass isSubClass tpe.typeSymbol
 
   /** Get JS name of Symbol if it was specified with JSName annotation, or
-    *  infers a default from the Scala name. */
+    *  infers a default from the Scala name.
+    */
   def jsNameOf(sym: Symbol): String =
     sym
       .getAnnotation(JSNameAnnotation)

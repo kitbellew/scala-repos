@@ -183,7 +183,8 @@ object Syntax {
     /**
       * Instead of just returning 'tree', we will go ahead and inline
       * anonymous functions which are immediately applied.
-      * v */
+      * v
+      */
     new InlineUtil[c.type](c).inlineAndReset[Unit](tree)
   }
 

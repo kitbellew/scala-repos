@@ -17,7 +17,8 @@ import java.util.concurrent.atomic._
 private[optimizer] object ConcurrencyUtils {
 
   /** An atomic accumulator supports adding single elements and retrieving and
-    *  deleting all contained elements */
+    *  deleting all contained elements
+    */
   type AtomicAcc[T] = AtomicReference[List[T]]
 
   object AtomicAcc {

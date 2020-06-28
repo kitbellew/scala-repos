@@ -19,7 +19,8 @@ class ABC extends A with B with C {
   *     Not otherwise used in the test except that compiling
   *     it helps make sure it still compiles.
   *
-  * ** */
+  * **
+  */
 
 object Gen {
   case class Tp(outer: String, elem: String) {

@@ -153,7 +153,8 @@ abstract class DriverType(val name: String) {
   }
 
   /** This defines the syntax for adding a column in an alter. This is
-    *  used because some DBs (Oracle, for one) use slightly different syntax. */
+    *  used because some DBs (Oracle, for one) use slightly different syntax.
+    */
   def alterAddColumn = "ADD COLUMN"
 }
 

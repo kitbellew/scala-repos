@@ -18,7 +18,8 @@ import scala.annotation.tailrec
 private[html] object SyntaxHigh {
 
   /** Reserved words, sorted alphabetically
-    * (see [[scala.reflect.internal.StdNames]]) */
+    * (see [[scala.reflect.internal.StdNames]])
+    */
   val reserved = Array(
     "abstract",
     "case",

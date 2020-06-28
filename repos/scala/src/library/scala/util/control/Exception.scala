@@ -135,7 +135,8 @@ object Exception {
     def withTry[U >: T](body: => U): scala.util.Try[U] = toTry(Success(body))
 
     /** Create a `Catch` object with the same `isDefinedAt` logic as this one,
-      * but with the supplied `apply` method replacing the current one. */
+      * but with the supplied `apply` method replacing the current one.
+      */
     def withApply[U](f: Throwable => U): Catch[U] = {
       val pf2 = new Catcher[U] {
         def isDefinedAt(x: Throwable) = pf isDefinedAt x

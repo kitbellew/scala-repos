@@ -60,7 +60,8 @@ object MappedToBase {
   * supported column type) lets you use your custom type as a column
   * type in the Lifted Embedding. You must provide a constructor that
   * takes a single value of the underlying type (same restriction as
-  * for value classes). */
+  * for value classes).
+  */
 trait MappedTo[T] extends Any with MappedToBase {
   type Underlying = T
   def value: T

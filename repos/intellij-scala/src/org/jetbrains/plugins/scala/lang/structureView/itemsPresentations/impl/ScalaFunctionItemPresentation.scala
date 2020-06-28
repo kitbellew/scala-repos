@@ -9,7 +9,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.statements._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 04.05.2008 */
+  * Date: 04.05.2008
+  */
 
 class ScalaFunctionItemPresentation(
     private val element: ScFunction,

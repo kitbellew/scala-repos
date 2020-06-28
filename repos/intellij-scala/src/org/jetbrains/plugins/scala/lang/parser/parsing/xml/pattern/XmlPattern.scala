@@ -8,7 +8,8 @@ import org.jetbrains.plugins.scala.lang.parser.parsing.builder.ScalaPsiBuilder
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 18.04.2008 */
+  * Date: 18.04.2008
+  */
 
 /*
  * XmlPattern ::= EmptyElemTagP

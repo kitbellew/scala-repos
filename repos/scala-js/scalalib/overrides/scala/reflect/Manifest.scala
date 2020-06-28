@@ -272,7 +272,8 @@ object ManifestFactory {
     new ClassTypeManifest[T](None, clazz, Nil)
 
   /** Manifest for the class type `clazz`, where `clazz` is
-    * a top-level or static class and args are its type arguments. */
+    * a top-level or static class and args are its type arguments.
+    */
   def classType[T](
       clazz: Predef.Class[T],
       arg1: Manifest[_],
@@ -297,7 +298,8 @@ object ManifestFactory {
   }
 
   /** Manifest for the class type `clazz[args]`, where `clazz` is
-    * a top-level or static class. */
+    * a top-level or static class.
+    */
   private class ClassTypeManifest[T](
       prefix: Option[Manifest[_]],
       runtimeClass1: Predef.Class[_],
@@ -315,7 +317,8 @@ object ManifestFactory {
 
   /** Manifest for the abstract type `prefix # name'. `upperBound` is not
     * strictly necessary as it could be obtained by reflection. It was
-    * added so that erasure can be calculated without reflection. */
+    * added so that erasure can be calculated without reflection.
+    */
   def abstractType[T](
       prefix: Manifest[_],
       name: String,

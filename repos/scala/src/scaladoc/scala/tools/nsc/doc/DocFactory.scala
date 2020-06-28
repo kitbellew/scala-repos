@@ -28,7 +28,8 @@ import scala.reflect.internal.util.BatchSourceFile
   * @param reporter The reporter to which both documentation and compilation errors will be reported.
   * @param settings The settings to be used by the documenter and compiler for generating documentation.
   *
-  * @author Gilles Dubochet */
+  * @author Gilles Dubochet
+  */
 class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
   processor =>
 
@@ -38,7 +39,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
   /** Creates a scaladoc site for all symbols defined in this call's `source`,
     * as well as those defined in `sources` of previous calls to the same processor.
     * @param source The list of paths (relative to the compiler's source path,
-    *        or absolute) of files to document or the source code. */
+    *        or absolute) of files to document or the source code.
+    */
   def makeUniverse(source: Either[List[String], String]): Option[Universe] = {
     assert(settings.docformat.value == "html")
     source match {
@@ -113,7 +115,8 @@ class DocFactory(val reporter: Reporter, val settings: doc.Settings) {
   }
 
   /** Generate document(s) for all `files` containing scaladoc documentation.
-    * @param files The list of paths (relative to the compiler's source path, or absolute) of files to document. */
+    * @param files The list of paths (relative to the compiler's source path, or absolute) of files to document.
+    */
   def document(files: List[String]) {
     def generate() = {
       import doclet._

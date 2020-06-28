@@ -98,7 +98,8 @@ class PickleBuffer(data: Array[Byte], from: Int, to: Int) {
   }
 
   /** Read a natural number in big endian format, base 128.
-    *  All but the last digits have bit 0x80 set. */
+    *  All but the last digits have bit 0x80 set.
+    */
   def readNat(): Int = readLongNat().toInt
 
   def readLongNat(): Long = {

@@ -100,7 +100,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       * on the outcome of running the Action it surrounds, the transaction is committed if the
       * wrapped Action succeeds, or rolled back if the wrapped Action fails. When called on a
       * [[slick.dbio.SynchronousDatabaseAction]], this combinator gets fused into the
-      * action. */
+      * action.
+      */
     def transactionally: DBIOAction[R, S, E with Effect.Transactional] =
       SynchronousDatabaseAction.fuseUnsafe(
         StartTransaction
@@ -112,7 +113,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
     /** Run this Action with the specified transaction isolation level. This should be used around
       * the outermost `transactionally` Action. The semantics of using it inside a transaction are
-      * database-dependent. It does not create a transaction by itself but it pins the session. */
+      * database-dependent. It does not create a transaction by itself but it pins the session.
+      */
     def withTransactionIsolation(
         ti: TransactionIsolation): DBIOAction[R, S, E] = {
       val isolated =
@@ -137,7 +139,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       *                      statement parameters (e.g. `setQueryTimeout`). When multuple
       *                      `withStatementParameters` Actions are nested, all init functions
       *                      are run, starting with the outermost one.
-      * @param fetchSize The fetch size for all statements or 0 for the default. */
+      * @param fetchSize The fetch size for all statements or 0 for the default.
+      */
     def withStatementParameters(
         rsType: ResultSetType = null,
         rsConcurrency: ResultSetConcurrency = null,
@@ -348,7 +351,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       * @param sendEndMarker If set to true, an extra event is sent after the end of the result
       *                      set, poviding you with a chance to insert additional rows after
       *                      seeing all results. Only `end` (to check for this special event) and
-      *                      `insert` may be called in the ResultSetMutator in this case. */
+      *                      `insert` may be called in the ResultSetMutator in this case.
+      */
     def mutate(sendEndMarker: Boolean = false): ProfileAction[
       Nothing,
       Streaming[ResultSetMutator[T]],
@@ -504,7 +508,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
     /** Insert a single row, including AutoInc columns. This is not supported
       * by all database engines (see
-      * [[slick.jdbc.JdbcCapabilities.forceInsert]]). */
+      * [[slick.jdbc.JdbcCapabilities.forceInsert]]).
+      */
     def forceInsert(
         value: U): ProfileAction[SingleInsertResult, NoStream, Effect.Write]
 
@@ -512,7 +517,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       * Uses JDBC's batch update feature if supported by the JDBC driver.
       * Returns Some(rowsAffected), or None if the database returned no row
       * count for some part of the batch. If any part of the batch fails, an
-      * exception is thrown. */
+      * exception is thrown.
+      */
     def ++=(values: Iterable[U])
         : ProfileAction[MultiInsertResult, NoStream, Effect.Write]
 
@@ -522,12 +528,14 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
       * Uses JDBC's batch update feature if supported by the JDBC driver.
       * Returns Some(rowsAffected), or None if the database returned no row
       * count for some part of the batch. If any part of the batch fails, an
-      * exception is thrown. */
+      * exception is thrown.
+      */
     def forceInsertAll(values: Iterable[U])
         : ProfileAction[MultiInsertResult, NoStream, Effect.Write]
 
     /** Insert a single row if its primary key does not exist in the table,
-      * otherwise update the existing record. */
+      * otherwise update the existing record.
+      */
     def insertOrUpdate(value: U)
         : ProfileAction[SingleInsertOrUpdateResult, NoStream, Effect.Write]
   }
@@ -584,7 +592,8 @@ trait JdbcActionComponent extends SqlActionComponent { self: JdbcProfile =>
 
     /** Specifies a mapping from inserted values and generated keys to a desired value.
       * @param f Function that maps inserted values and generated keys to a desired value.
-      * @tparam R target type of the mapping */
+      * @tparam R target type of the mapping
+      */
     def into[R](f: (U, RU) => R): IntoInsertActionComposer[U, R]
   }
 

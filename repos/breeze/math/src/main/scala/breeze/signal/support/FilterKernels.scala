@@ -33,7 +33,8 @@ object FIRKernel1D {
 }
 
 /** This immutable class encapsulates 1D FIR filter kernels. It also internally stores the kernel Fourier transform for
-  * multiple applications of fft convolution. */
+  * multiple applications of fft convolution.
+  */
 class FIRKernel1D[T](
     val kernel: DenseVector[T],
     override val multiplier: Double,

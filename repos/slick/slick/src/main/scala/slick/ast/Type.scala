@@ -18,7 +18,8 @@ trait Type extends Dumpable {
 
   /** Apply a transformation to all type children and reconstruct this
     * type with the new children, or return the original object if no
-    * child is changed. */
+    * child is changed.
+    */
   def mapChildren(f: Type => Type): Type
 
   /** Apply a side-effecting function to all children. */
@@ -175,7 +176,8 @@ final case class CollectionType(
 /** Represents a type constructor that can be usd for a collection-valued query.
   * The relevant information for Slick is whether the elements of the collection
   * keep their insertion order (isSequential) and whether only distinct elements
-  * are allowed (isUnique). */
+  * are allowed (isUnique).
+  */
 trait CollectionTypeConstructor {
 
   /** The ClassTag for the type constructor */
@@ -191,7 +193,8 @@ trait CollectionTypeConstructor {
   def createBuilder[E: ClassTag]: Builder[E, Any]
 
   /** Return a CollectionTypeConstructor which builds a subtype of Iterable
-    * but has the same properties otherwise. */
+    * but has the same properties otherwise.
+    */
   def iterableSubstitute: CollectionTypeConstructor =
     if (isUnique && !isSequential) TypedCollectionTypeConstructor.set
     else TypedCollectionTypeConstructor.seq
@@ -295,7 +298,8 @@ case object UnassignedType extends AtomicType {
   * Compiler phases which change types may keep their own representation
   * of the structural view but must update the AST at the end of the phase
   * so that all NominalTypes with the same symbol have the same structural
-  * view. */
+  * view.
+  */
 final case class NominalType(sym: TypeSymbol, structuralView: Type)
     extends Type {
   override def toString = s"$sym<$structuralView>"
@@ -416,7 +420,8 @@ object TypeUtil {
   *
   * All profiles should support the following types which are used internally
   * by the lifted embedding and the query compiler: Boolean, Char, Int, Long,
-  * Null, String. */
+  * Null, String.
+  */
 trait ScalaType[T] extends TypedType[T] {
   override def optionType: ScalaOptionType[T] = new ScalaOptionType[T](this)
   def nullable: Boolean

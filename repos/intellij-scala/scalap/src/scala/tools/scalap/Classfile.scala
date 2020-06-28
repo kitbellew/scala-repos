@@ -134,7 +134,8 @@ class Classfile(in: ByteArrayReader) {
       ).mkString
   }
 
-  /** * */
+  /** *
+    */
   case class Member(
       field: Boolean,
       flags: Int,

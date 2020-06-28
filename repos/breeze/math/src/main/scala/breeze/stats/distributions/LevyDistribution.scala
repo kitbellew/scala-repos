@@ -24,7 +24,8 @@ import org.apache.commons.math3.random.{RandomGenerator, JDKRandomGenerator}
 /**
   * The Levy-distribution - ratio of two scaled chi^2 variables
   *
-  * @author stucchio */
+  * @author stucchio
+  */
 
 class LevyDistribution(
     mu: Double,

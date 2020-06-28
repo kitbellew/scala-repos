@@ -258,7 +258,8 @@ trait JFXApp extends DelayedInit {
   // startup.
 
   /** JFXApp stage must be an instance of [[scalafx.application.JFXApp.PrimaryStage]] to ensure that it
-    * actually is a proper wrapper for the primary stage supplied by JavaFX. */
+    * actually is a proper wrapper for the primary stage supplied by JavaFX.
+    */
   var stage: PrimaryStage = null
 
   private var arguments: Seq[String] = _

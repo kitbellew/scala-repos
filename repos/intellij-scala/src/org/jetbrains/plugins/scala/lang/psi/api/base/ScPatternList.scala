@@ -8,7 +8,8 @@ import org.jetbrains.plugins.scala.lang.psi.api.base.patterns._
 
 /**
   * @author Alexander Podkhalyuzin
-  * Date: 22.02.2008 */
+  * Date: 22.02.2008
+  */
 
 trait ScPatternList extends ScalaPsiElement {
   def patterns: Seq[ScPattern]

@@ -18,7 +18,8 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
   def ++(ps: Seq[Phase]) = new QueryCompiler(phases ++ ps)
 
   /** Return a new compiler with the new phase added directly after another
-    * phase (or a different implementation of the same phase name). */
+    * phase (or a different implementation of the same phase name).
+    */
   def addAfter(p: Phase, after: Phase) =
     new QueryCompiler({
       val i = phases.lastIndexWhere(_.name == after.name)
@@ -28,7 +29,8 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
     })
 
   /** Return a new compiler with the new phase added directly before another
-    * phase (or a different implementation of the same phase name). */
+    * phase (or a different implementation of the same phase name).
+    */
   def addBefore(p: Phase, before: Phase) =
     new QueryCompiler({
       val i = phases.indexWhere(_.name == before.name)
@@ -39,12 +41,14 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
     })
 
   /** Return a new compiler without the given phase (or a different
-    * implementation of the same phase name. */
+    * implementation of the same phase name.
+    */
   def -(p: Phase) = new QueryCompiler(phases.filterNot(_.name == p.name))
 
   /** Return a new compiler that replaces an existing phase by a new one with
     * the same name. The new phase must have a State that is assignable to the
-    * original phase's state. */
+    * original phase's state.
+    */
   def replace(p: Phase) =
     new QueryCompiler(phases.map(o => if (o.name == p.name) p else o))
 
@@ -55,12 +59,14 @@ class QueryCompiler(val phases: Vector[Phase]) extends Logging {
   }
 
   /** Compile an AST in an existing `CompilerState`. This can be used for triggering
-    * compilation of subtrees within the current `CompilerState`. */
+    * compilation of subtrees within the current `CompilerState`.
+    */
   def run(state: CompilerState): CompilerState =
     runPhases(phases.iterator, state)
 
   /** Compile an AST in an existing `CompilerState`, stopping just before the specified phase.
-    * This can be used for triggering compilation of subtrees within the current `CompilerState`. */
+    * This can be used for triggering compilation of subtrees within the current `CompilerState`.
+    */
   def runBefore(before: Phase, state: CompilerState): CompilerState =
     runPhases(phases.iterator.takeWhile(_.name != before.name), state)
 
@@ -192,7 +198,8 @@ trait Phase extends (CompilerState => CompilerState) with Logging {
 }
 
 /** The `Phase` companion objects contains ready-to-use `Phase` objects for
-  * the standard phases of the query compiler */
+  * the standard phases of the query compiler
+  */
 object Phase {
   /* The standard phases of the query compiler */
   val assignUniqueSymbols = new AssignUniqueSymbols
@@ -228,7 +235,8 @@ object Phase {
 /** The current state of a compiler run, consisting of the current AST and
   * additional immutable state of individual phases. Mutability is confined
   * to the SymbolNamer. The state is tied to a specific compiler instance so
-  * that phases can call back into the compiler. */
+  * that phases can call back into the compiler.
+  */
 class CompilerState private (
     val compiler: QueryCompiler,
     val symbolNamer: SymbolNamer,
@@ -256,7 +264,8 @@ class CompilerState private (
     new CompilerState(compiler, symbolNamer, tree, state, wellTyped)
 
   /** Return a new `CompilerState` which indicates whether or not the AST should be well-typed
-    * after every phase. */
+    * after every phase.
+    */
   def withWellTyped(wellTyped: Boolean) =
     new CompilerState(compiler, symbolNamer, tree, state, wellTyped)
 

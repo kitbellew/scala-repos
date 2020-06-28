@@ -39,7 +39,8 @@ import scala.collection.mutable.ListBuffer
 trait App extends DelayedInit {
 
   /** The time when the execution of this program started, in milliseconds since 1
-    * January 1970 UTC. */
+    * January 1970 UTC.
+    */
   @deprecatedOverriding("executionStart should not be overridden", "2.11.0")
   val executionStart: Long = currentTime
 

@@ -9,7 +9,8 @@ import TypeUtil._
 import scala.collection.mutable.ArrayBuffer
 
 /** Rewrite monadic joins to applicative joins. After this phase all `Bind` nodes are of the
-  * form `Bind(_, _, Pure(_, _))` (i.e. `flatMap` has been reduced to `map`). */
+  * form `Bind(_, _, Pure(_, _))` (i.e. `flatMap` has been reduced to `map`).
+  */
 class RewriteJoins extends Phase {
   val name = "rewriteJoins"
 
@@ -177,7 +178,8 @@ class RewriteJoins extends Phase {
 
   /** Recursively hoist `Filter` out of of `Bind(_, Filter, Pure(StructNode))`. Returns the possibly
     * modified tree plus a set of invalidated TypeSymbols (non-empty if additional columns
-    * have to be added to the base projection for the filters). */
+    * have to be added to the base projection for the filters).
+    */
   def hoistFilterFromBind(b: Bind): (Node, Set[TypeSymbol]) = {
     (b.from match {
       case b2: Bind => hoistFilterFromBind(b2)
@@ -248,7 +250,8 @@ class RewriteJoins extends Phase {
     * at the RHS of a Join. Returns the (possibly transformed) Join and replacements for forward
     * paths into it.
     *
-    * TODO: If the remainder of the mapping Bind is purely aliasing, eliminate it entirely. */
+    * TODO: If the remainder of the mapping Bind is purely aliasing, eliminate it entirely.
+    */
   def eliminateIllegalRefs(
       j: Join,
       illegal: Set[TermSymbol],
@@ -366,7 +369,8 @@ class RewriteJoins extends Phase {
   /** In a `Join(s1, _, _, Join(_, _, _, _, JoinType.Inner, on2), JoinType.Inner, on1)` where parts
     * of `on2` refer to `s1`, merge them into `on1`. Nested joins are processed recursively. The
     * same is done in the opposite direction, pushing predicates down into sub-joins if they only
-    * reference one side of the join. */
+    * reference one side of the join.
+    */
   def rearrangeJoinConditions(j: Join, alsoPull: Set[TermSymbol]): Join =
     j match {
       case Join(
@@ -422,7 +426,8 @@ class RewriteJoins extends Phase {
   /** Merge nested mapping operations of the form `Bind(_, Bind(_, _, Pure(StructNode(p1), _)), Pure(StructNode(p2), _))`
     * into a single Bind, provided that each element of either p1 or p2 contains not more than one path.
     * This transformation is not required for the correctness of join rewriting but it keeps the
-    * tree smaller to speed up subsequent phases. */
+    * tree smaller to speed up subsequent phases.
+    */
   def flattenAliasingMap(b: Bind): Bind =
     b match {
       case Bind(

@@ -54,7 +54,8 @@ private[scala] abstract class JSUniquenessCache[V] {
 }
 
 /** This is private so it won't appear in the library API, but
-  * abstracted to offer some hope of reusability. */
+  * abstracted to offer some hope of reusability.
+  */
 /* DELETED for Scala.js
 private[scala] abstract class UniquenessCache[K >: js.String, V >: Null]
 {

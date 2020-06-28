@@ -23,7 +23,8 @@ import org.jetbrains.plugins.scala.lang.refactoring.util.ScTypeUtil.AliasType
 import scala.annotation.tailrec
 
 /**
-  * @author ilyas */
+  * @author ilyas
+  */
 object ScFunctionType {
   def apply(returnType: ScType, params: Seq[ScType])(
       project: Project,
