@@ -2846,7 +2846,7 @@ object Classpaths {
               .put(artifact.key, art)
               .put(moduleID.key, module)
               .put(configuration.key, config))
-    } distinct;
+      } distinct;
 
   def findUnmanagedJars(
       config: Configuration,

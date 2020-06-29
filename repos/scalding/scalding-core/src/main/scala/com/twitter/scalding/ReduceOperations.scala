@@ -180,7 +180,7 @@ trait ReduceOperations[+Self <: ReduceOperations[Self]]
         asMap.size == outputList.size,
         "Repeated pivot key fields: " + outputList.toString)
       val values = fieldDef._2.iterator.asScala
-      // Look up this key:
+        // Look up this key:
         .map { fname =>
           asMap.getOrElse(
             fname.asInstanceOf[String],

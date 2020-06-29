@@ -606,7 +606,7 @@ object MatrixProduct extends java.io.Serializable {
         val productPipe = Matrix
           .filterOutZeros(left.valSym, ring) {
             getJoiner(left.sizeHint, right.sizeHint)
-            // TODO: we should use the size hints to set the number of reducers:
+              // TODO: we should use the size hints to set the number of reducers:
               .apply(
                 left.pipe,
                 (left.colSym -> getField(newRightFields, 0)),
@@ -624,7 +624,7 @@ object MatrixProduct extends java.io.Serializable {
                 }
                 // There is a low chance that many (row,col) keys are co-located, and the keyspace
                 // is likely huge, just push to reducers
-                .forceToReducers
+                  .forceToReducers
                   .reducers(grpReds)
               }
           }
@@ -658,7 +658,7 @@ object MatrixProduct extends java.io.Serializable {
         val newHint = left.sizeHint * right.sizeHint
         val productPipe = Matrix.filterOutZeros(right.valSym, ring) {
           getJoiner(left.sizeHint, right.sizeHint)
-          // TODO: we should use the size hints to set the number of reducers:
+            // TODO: we should use the size hints to set the number of reducers:
             .apply(
               left.pipe,
               (left.idxSym -> getField(newRightFields, 0)),
@@ -722,7 +722,7 @@ object MatrixProduct extends java.io.Serializable {
         val productPipe = Matrix
           .filterOutZeros(left.valSym, ring) {
             getJoiner(left.sizeHint, right.sizeHint)
-            // TODO: we should use the size hints to set the number of reducers:
+              // TODO: we should use the size hints to set the number of reducers:
               .apply(
                 left.pipe,
                 (left.idxSym -> getField(newRightFields, 0)),

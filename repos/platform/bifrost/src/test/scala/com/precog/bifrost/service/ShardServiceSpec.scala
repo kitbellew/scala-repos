@@ -142,7 +142,7 @@ trait TestShardService
           expiredAPIKey,
           Some(new DateTime().minusYears(1000)))
         .map(_ => expiredAPIKey)
-  } copoint
+    } copoint
 
   def configureShardState(config: Configuration) =
     Future {

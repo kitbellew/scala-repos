@@ -598,8 +598,8 @@ trait JoinAlgorithms {
       * and this could result in subtle bugs.
       */
     pipe
-    // Join the pipe against the sampled counts, so that we know approximately how often each
-    // join key appears.
+      // Join the pipe against the sampled counts, so that we know approximately how often each
+      // join key appears.
       .leftJoinWithTiny(joinFields -> renamedFields, renamedSampledCounts)
       .using(new Random(Seed) with Stateful)
       .flatMap(countFields -> replicationFields) {

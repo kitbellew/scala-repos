@@ -107,7 +107,7 @@ class ReflectionSetter[T](fields: Fields)(implicit m: Manifest[T])
   // TODO: filter by isAccessible, which somehow seems to fail
   def methodMap =
     m.runtimeClass.getDeclaredMethods
-    // Keep only methods with 0 parameter types
+      // Keep only methods with 0 parameter types
       .filter { m => m.getParameterTypes.length == 0 }
       .groupBy { _.getName }
       .mapValues { _.head }

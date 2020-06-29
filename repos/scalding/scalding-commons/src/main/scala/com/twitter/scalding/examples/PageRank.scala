@@ -35,13 +35,13 @@ class PageRank(args: Args) extends Job(args) {
   //columns: source node, comma separated (no spaces) destination nodes as a string, and
   //initial rank (default to 1.0 if you are starting from nothing)
   initialize('src, 'dst, 'rank)
-  /*
-   * This algorithm works by having two types of rows that have the same column structure.
-   * the node -> list(neighbors), and node -> individual neighbor.
-   * We distinguish these two types with an id which nodes if this is a NODESET or an EDGE.
-   * The first step is to append that value.  We also need to have a column for the degree.
-   * It doesn't matter what the initial degree is, we recompute below
-   */
+    /*
+     * This algorithm works by having two types of rows that have the same column structure.
+     * the node -> list(neighbors), and node -> individual neighbor.
+     * We distinguish these two types with an id which nodes if this is a NODESET or an EDGE.
+     * The first step is to append that value.  We also need to have a column for the degree.
+     * It doesn't matter what the initial degree is, we recompute below
+     */
     .map(() -> ('rowtype, 'd_src)) { (u: Unit) => (NODESET, -1) }
     .thenDo(doPageRank(STEPS) _)
     .thenDo(computeError _)
@@ -92,7 +92,7 @@ class PageRank(args: Args) extends Job(args) {
     */
   def initialize(nodeCol: Symbol, neighCol: Symbol, pageRank: Symbol) = {
     Tsv(args("input")).read
-    //Just to name the columns:
+      //Just to name the columns:
       .mapTo((0, 1, 2) -> (nodeCol, neighCol, pageRank)) {
         input: (Long, String, Double) => input
       }
@@ -109,7 +109,7 @@ class PageRank(args: Args) extends Job(args) {
     if (steps <= 0) { pagerank }
     else {
       val nodeRows = pagerank
-      //remove any EDGE rows from the previous loop
+        //remove any EDGE rows from the previous loop
         .filter('rowtype) { (rowtype: Int) => rowtype == NODESET }
       //compute the incremental rank due to the random jump:
       val randomJump = nodeRows.map('rank -> 'rank) { (rank: Double) => ALPHA }

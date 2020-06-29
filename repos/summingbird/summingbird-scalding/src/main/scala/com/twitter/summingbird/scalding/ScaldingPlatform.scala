@@ -651,7 +651,6 @@ object Scalding {
             } yield Scalding.limitTimes(maxAvailable._1, merged)
             (merged, mr)
           }
-
           /**
             * The logic here is identical to a merge except we ignore what comes out of
             * the left side, BUT NOT THE TIME. we can't let the right get ahead of what the

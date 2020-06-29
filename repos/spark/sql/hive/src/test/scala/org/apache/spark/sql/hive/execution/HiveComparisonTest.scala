@@ -281,9 +281,9 @@ abstract class HiveComparisonTest
       // TODO: DOCUMENT UNSUPPORTED
       val queryList =
         allQueries
-        // In hive, setting the hive.outerjoin.supports.filters flag to "false" essentially tells
-        // the system to return the wrong answer.  Since we have no intention of mirroring their
-        // previously broken behavior we simply filter out changes to this setting.
+          // In hive, setting the hive.outerjoin.supports.filters flag to "false" essentially tells
+          // the system to return the wrong answer.  Since we have no intention of mirroring their
+          // previously broken behavior we simply filter out changes to this setting.
           .filterNot(_ contains "hive.outerjoin.supports.filters")
           .filterNot(_ contains "hive.exec.post.hooks")
 

@@ -705,7 +705,7 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
       // when the columns of this projection are enough to evaluate all filter conditions,
       // just do a scan followed by a filter, with no extra project.
       val requestedColumns = projects
-      // Safe due to if above.
+        // Safe due to if above.
         .asInstanceOf[Seq[Attribute]]
         // Match original case of attributes.
         .map(relation.attributeMap)

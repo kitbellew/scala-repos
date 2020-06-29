@@ -415,6 +415,7 @@ class StackClientTest
 
     val stack = StackClient
       .newStack[Unit, Unit]
+
       // direct the two addresses to the two service factories instead
       // of trying to connect to them
       .replace(

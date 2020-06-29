@@ -152,7 +152,7 @@ class TypedTutorial(args: Args) extends Job(args) {
               .map(word => (word.toLowerCase, offset))
         }
         // make the 'word' field the key
-        .group
+          .group
 
       // Associate scores with each word; merges the two value types into
       // a tuple: [String,Long] join [String,Double] -> [String,(Long,Double)]
@@ -161,7 +161,7 @@ class TypedTutorial(args: Args) extends Job(args) {
       // get scores for each line (indexed by line number)
       val scoredLinesByNumber =
         scoredWords
-        // select the line offset and score fields
+          // select the line offset and score fields
           .map { case (word, (offset, score)) => (offset, score) }
           // group by line offset (groups all the words for a line together)
           .group
@@ -174,9 +174,9 @@ class TypedTutorial(args: Args) extends Job(args) {
       // discard the 'offset' field
       val scoredLines: TypedPipe[(String, Double)] =
         lines
-        // index lines by 'offset'
-        .group
-        // associate scores with lines (by offset)
+          // index lines by 'offset'
+          .group
+          // associate scores with lines (by offset)
           .join(scoredLinesByNumber)
           // take just the value fields (discard the 'line offset')
           .values

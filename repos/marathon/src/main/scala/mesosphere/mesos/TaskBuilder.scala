@@ -123,7 +123,7 @@ class TaskBuilder(
 
     val taskId = newTaskId(app.id)
     val builder = TaskInfo.newBuilder
-    // Use a valid hostname to make service discovery easier
+      // Use a valid hostname to make service discovery easier
       .setName(app.id.toHostname)
       .setTaskId(taskId.mesosTaskId)
       .setSlaveId(offer.getSlaveId)

@@ -188,8 +188,8 @@ object Constraints {
     var flag = true
     while (flag && toKillTasks.size != toKillCount) {
       val tried = distributions
-      //sort all distributions in descending order based on distribution difference
-      .toSeq
+        //sort all distributions in descending order based on distribution difference
+        .toSeq
         .sortBy(_.distributionDifference(toKillTasks))
         .reverseIterator
         //select tasks to kill (without already selected ones)

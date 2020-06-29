@@ -456,8 +456,8 @@ class DirectKafkaStreamSuite
     kafkaTestUtils.sendMessages(topic, messages)
 
     val sparkConf = new SparkConf()
-    // Safe, even with streaming, because we're using the direct API.
-    // Using 1 core is useful to make the test more predictable.
+      // Safe, even with streaming, because we're using the direct API.
+      // Using 1 core is useful to make the test more predictable.
       .setMaster("local[1]")
       .setAppName(this.getClass.getSimpleName)
       .set("spark.streaming.kafka.maxRatePerPartition", "100")

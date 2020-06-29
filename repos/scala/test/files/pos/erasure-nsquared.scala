@@ -62,5 +62,5 @@ trait BigCast {
         .head
         .asInstanceOf[List[AnyRef]]
         .head
-    )
+      )
 }

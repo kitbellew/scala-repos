@@ -39,7 +39,7 @@ object HttpStreamingServer {
 
     Await.result(
       Http.server
-      // Translate buffered writes into HTTP chunks.
+        // Translate buffered writes into HTTP chunks.
         .withStreaming(enabled = true)
         // Listen on port 8080.
         .serve("0.0.0.0:8080", service))

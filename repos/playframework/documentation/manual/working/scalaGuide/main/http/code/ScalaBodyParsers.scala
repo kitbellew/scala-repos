@@ -126,8 +126,8 @@ package scalaguide.http.scalabodyparsers {
             BodyParser { req =>
               Accumulator.source[ByteString].mapFuture { source =>
                 request
-                // TODO: stream body when support is implemented
-                // .withBody(source)
+                  // TODO: stream body when support is implemented
+                  // .withBody(source)
                   .execute()
                   .map(Right.apply)
               }
@@ -156,7 +156,7 @@ package scalaguide.http.scalabodyparsers {
           // A flow that splits the stream into CSV lines
           val sink
               : Sink[ByteString, Future[Seq[Seq[String]]]] = Flow[ByteString]
-          // We split by the new line character, allowing a maximum of 1000 characters per line
+            // We split by the new line character, allowing a maximum of 1000 characters per line
             .via(
               Framing.delimiter(ByteString("\n"), 1000, allowTruncation = true))
             // Turn each line to a String and split it by commas

@@ -410,7 +410,7 @@ class Product(val i: Int) extends Group("Product") with Arity {
          |   */
          |  def %s: %s
          |""".stripMargin.format(index + 1, index + 1, method, typeName)
-    } mkString
+      } mkString
   }
 
   def apply() = {

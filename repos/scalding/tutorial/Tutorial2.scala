@@ -34,19 +34,21 @@ class Tutorial2(args: Args) extends Job(args) {
   val output = TextLine("tutorial/data/output2.txt")
 
   input.read
-  /**
-    *    As with a scala collection, you can map over a pipe, where each
-    *    item gets passed into an anonymous function, and we create a new
-    *    pipe with the results.
-    *
-    *    In scalding, we need to also annotate the call to map with the names of the
-    *    fields it operates on. In this case, we want to take the 'line field
-    *    as input, and we want to output a new field named 'reversed.
-    *
-    *    Unlike with a normal scala map{}, we always need to specify the
-    *    types of the arguments to the anonymous function.
-    */
+
+    /**
+      *    As with a scala collection, you can map over a pipe, where each
+      *    item gets passed into an anonymous function, and we create a new
+      *    pipe with the results.
+      *
+      *    In scalding, we need to also annotate the call to map with the names of the
+      *    fields it operates on. In this case, we want to take the 'line field
+      *    as input, and we want to output a new field named 'reversed.
+      *
+      *    Unlike with a normal scala map{}, we always need to specify the
+      *    types of the arguments to the anonymous function.
+      */
     .map('line -> 'reversed) { line: String => line.reverse }
+
     /**
       *    The map transformation in scalding is additive: the 'offset and 'line
       *    fields haven't gone away, we've just added a new 'reversed field to each

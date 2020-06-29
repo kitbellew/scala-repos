@@ -420,7 +420,7 @@ trait IssuesService {
           .filter(_.byPrimaryKey(owner, repository))
           .map(_.issueId)
           .update(id) > 0
-    } get
+      } get
 
   def registerIssueLabel(
       owner: String,

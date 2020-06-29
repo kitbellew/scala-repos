@@ -102,7 +102,7 @@ private[columnar] trait CompressibleColumnBuilder[T <: AtomicType]
     }
 
     val compressedBuffer = ByteBuffer
-    // Reserves 4 bytes for compression scheme ID
+      // Reserves 4 bytes for compression scheme ID
       .allocate(headerSize + 4 + compressedSize)
       .order(ByteOrder.nativeOrder)
       // Write the header

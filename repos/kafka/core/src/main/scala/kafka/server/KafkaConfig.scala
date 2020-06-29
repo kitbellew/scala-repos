@@ -734,8 +734,9 @@ object KafkaConfig {
     import ConfigDef.ValidString._
 
     new ConfigDef()
-    /** ********* Zookeeper Configuration **********
-      */
+
+      /** ********* Zookeeper Configuration **********
+        */
       .define(ZkConnectProp, STRING, HIGH, ZkConnectDoc)
       .define(
         ZkSessionTimeoutMsProp,
@@ -761,6 +762,7 @@ object KafkaConfig {
         Defaults.ZkEnableSecureAcls,
         HIGH,
         ZkEnableSecureAclsDoc)
+
       /** ********* General Configuration **********
         */
       .define(
@@ -818,6 +820,7 @@ object KafkaConfig {
         Defaults.RequestTimeoutMs,
         HIGH,
         RequestTimeoutMsDoc)
+
       /** *********** Authorizer Configuration **********
         */
       .define(
@@ -826,6 +829,7 @@ object KafkaConfig {
         Defaults.AuthorizerClassName,
         LOW,
         AuthorizerClassNameDoc)
+
       /** ********* Socket Server Configuration **********
         */
       .define(PortProp, INT, Defaults.Port, HIGH, PortDoc)
@@ -877,9 +881,11 @@ object KafkaConfig {
         Defaults.ConnectionsMaxIdleMs,
         MEDIUM,
         ConnectionsMaxIdleMsDoc)
+
       /** ********** Rack Configuration *****************
         */
       .define(RackProp, STRING, null, MEDIUM, RackDoc)
+
       /** ********* Log Configuration **********
         */
       .define(
@@ -1102,6 +1108,7 @@ object KafkaConfig {
         atLeast(0),
         MEDIUM,
         LogMessageTimestampDifferenceMaxMsDoc)
+
       /** ********* Replication configuration **********
         */
       .define(
@@ -1219,6 +1226,7 @@ object KafkaConfig {
         Defaults.InterBrokerProtocolVersion,
         MEDIUM,
         InterBrokerProtocolVersionDoc)
+
       /** ********* Controlled shutdown configuration **********
         */
       .define(
@@ -1239,6 +1247,7 @@ object KafkaConfig {
         Defaults.ControlledShutdownEnable,
         MEDIUM,
         ControlledShutdownEnableDoc)
+
       /** ********* Consumer coordinator configuration **********
         */
       .define(
@@ -1253,6 +1262,7 @@ object KafkaConfig {
         Defaults.ConsumerMaxSessionTimeoutMs,
         MEDIUM,
         ConsumerMaxSessionTimeoutMsDoc)
+
       /** ********* Offset management configuration **********
         */
       .define(
@@ -1334,6 +1344,7 @@ object KafkaConfig {
         Defaults.CompressionType,
         HIGH,
         CompressionTypeDoc)
+
       /** ********* Kafka Metrics Configuration **********
         */
       .define(
@@ -1356,6 +1367,7 @@ object KafkaConfig {
         Defaults.MetricReporterClasses,
         LOW,
         MetricReporterClassesDoc)
+
       /** ********* Quota configuration **********
         */
       .define(
@@ -1386,6 +1398,7 @@ object KafkaConfig {
         atLeast(1),
         LOW,
         QuotaWindowSizeSecondsDoc)
+
       /** ********* SSL Configuration ***************
         */
       .define(
@@ -1474,6 +1487,7 @@ object KafkaConfig {
         SslClientAuthDoc
       )
       .define(SslCipherSuitesProp, LIST, null, MEDIUM, SslCipherSuitesDoc)
+
       /** ********* Sasl Configuration ***************
         */
       .define(

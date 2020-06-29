@@ -4,6 +4,7 @@ class Foo {
 
   val m = Map(1 -> new Object)
   m(1).toS /*!*/
-  m(1). /*!*/
-  println()
+  m(1)
+    . /*!*/
+    println()
 }

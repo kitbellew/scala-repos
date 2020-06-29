@@ -343,10 +343,10 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       recentItems.map(x => model.itemStringIntMap.get(x)).flatten
 
     val recentFeatures: Vector[Array[Double]] = recentList.toVector
-    // productFeatures may not contain the requested item
-    .map { i =>
-      productFeatures.get(i).map { case (item, f) => f }.flatten
-    }.flatten
+      // productFeatures may not contain the requested item
+      .map { i =>
+        productFeatures.get(i).map { case (item, f) => f }.flatten
+      }.flatten
 
     val indexScores: Map[Int, Double] = if (recentFeatures.isEmpty) {
       logger.info(s"No productFeatures vector for recent items ${recentItems}.")

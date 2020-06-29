@@ -144,12 +144,14 @@ class ShuffleJobTest extends WordSpec with Matchers {
 }
 
 class MapToGroupBySizeSumMaxJob(args: Args) extends Job(args) {
-  TextLine(args("input")).read.
-  //1 is the line
-  mapTo(1 -> ('kx, 'x)) { line: String =>
-    val x = line.toDouble
-    ((x > 0.5), x)
-  }.groupBy('kx) { _.size.sum[Double]('x -> 'sx).max('x) }
+  TextLine(args("input")).read
+    .
+    //1 is the line
+    mapTo(1 -> ('kx, 'x)) { line: String =>
+      val x = line.toDouble
+      ((x > 0.5), x)
+    }
+    .groupBy('kx) { _.size.sum[Double]('x -> 'sx).max('x) }
     .write(Tsv(args("output")))
 }
 

@@ -73,7 +73,7 @@ class WebSocketDirectivesExamplesSpec extends RoutingSpec {
 
     def echoService: Flow[Message, Message, Any] =
       Flow[Message]
-      // needed because a noop flow hasn't any buffer that would start processing in tests
+        // needed because a noop flow hasn't any buffer that would start processing in tests
         .buffer(1, OverflowStrategy.backpressure)
 
     def websocketMultipleProtocolRoute =

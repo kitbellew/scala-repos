@@ -842,8 +842,8 @@ class Global(var currentSettings: Settings, var reporter: Reporter)
       .foldLeft(List[(Phase, T)]()) { (res, ph) =>
         val value = exitingPhase(ph)(op)
         if (res.nonEmpty && res.head._2 == value) res
-      else ((ph, value)) :: res
-    } reverse
+        else ((ph, value)) :: res
+      } reverse
   }
 
   // ------------ REPL utilities ---------------------------------

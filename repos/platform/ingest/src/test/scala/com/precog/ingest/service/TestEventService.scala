@@ -100,7 +100,7 @@ trait TestEventService
       None,
       None) { accountId =>
       apiKeyManager.newStandardAPIKeyRecord(accountId).map(_.apiKey)
-  } copoint
+    } copoint
 
   private val accountFinder = new TestAccountFinder[Future](
     Map(testAccount.apiKey -> testAccount.accountId),
@@ -136,8 +136,8 @@ trait TestEventService
               expiredAPIKey,
               Some(new DateTime().minusYears(1000)))
             .map(_ => expiredAPIKey)
-    }
-  } copoint
+      }
+    } copoint
 
   private val stored = scala.collection.mutable.ArrayBuffer.empty[Event]
 

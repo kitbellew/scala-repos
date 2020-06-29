@@ -467,16 +467,16 @@ class TJoinCountJob(args: Args) extends Job(args) {
   //Also check simple joins:
   (TypedPipe.from[(Int, Int)](Tsv("in0", (0, 1)), (0, 1)).group
     join TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)).group)
-  //Flatten out to three values:
-  .toTypedPipe
+    //Flatten out to three values:
+    .toTypedPipe
     .map { kvw => (kvw._1, kvw._2._1, kvw._2._2) }
     .write(TypedText.tsv[(Int, Int, Int)]("out2"))
 
   //Also check simple leftJoins:
   (TypedPipe.from[(Int, Int)](Tsv("in0", (0, 1)), (0, 1)).group
     leftJoin TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)).group)
-  //Flatten out to three values:
-  .toTypedPipe
+    //Flatten out to three values:
+    .toTypedPipe
     .map { kvw: (Int, (Int, Option[Int])) =>
       (kvw._1, kvw._2._1, kvw._2._2.getOrElse(-1))
     }
@@ -495,16 +495,16 @@ class TNiceJoinCountJob(args: Args) extends Job(args) {
   //Also check simple joins:
   (TypedPipe.from[(Int, Int)](Tsv("in0", (0, 1)), (0, 1))
     join TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)))
-  //Flatten out to three values:
-  .toTypedPipe
+    //Flatten out to three values:
+    .toTypedPipe
     .map { kvw => (kvw._1, kvw._2._1, kvw._2._2) }
     .write(TypedText.tsv[(Int, Int, Int)]("out2"))
 
   //Also check simple leftJoins:
   (TypedPipe.from[(Int, Int)](Tsv("in0", (0, 1)), (0, 1))
     leftJoin TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)))
-  //Flatten out to three values:
-  .toTypedPipe
+    //Flatten out to three values:
+    .toTypedPipe
     .map { kvw: (Int, (Int, Option[Int])) =>
       (kvw._1, kvw._2._1, kvw._2._2.getOrElse(-1))
     }
@@ -523,8 +523,8 @@ class TNiceJoinByCountJob(args: Args) extends Job(args) {
   //Also check simple joins:
   (TypedPipe.from[(Int, Int)](Tsv("in0", (0, 1)), (0, 1))
     joinBy TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)))(_._1, _._1)
-  //Flatten out to three values:
-  .toTypedPipe
+    //Flatten out to three values:
+    .toTypedPipe
     .map { kvw => (kvw._1, kvw._2._1._2, kvw._2._2._2) }
     .write(TypedText.tsv[(Int, Int, Int)]("out2"))
 
@@ -533,8 +533,8 @@ class TNiceJoinByCountJob(args: Args) extends Job(args) {
     leftJoinBy TypedPipe.from[(Int, Int)](Tsv("in1", (0, 1)), (0, 1)))(
     _._1,
     _._1)
-  //Flatten out to three values:
-  .toTypedPipe
+    //Flatten out to three values:
+    .toTypedPipe
     .map { kvw: (Int, ((Int, Int), Option[(Int, Int)])) =>
       (kvw._1, kvw._2._1._2, kvw._2._2.getOrElse((-1, -1))._2)
     }

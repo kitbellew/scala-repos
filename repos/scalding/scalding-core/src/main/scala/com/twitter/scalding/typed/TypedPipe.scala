@@ -1234,7 +1234,7 @@ final case class MergedTypedPipe[T](left: TypedPipe[T], right: TypedPipe[T])
      * Cascading cannot handle multiple pipes with the same name.
      */
     val merged = flattenMerge(List(this), Nil)
-    // check for repeated pipes
+      // check for repeated pipes
       .groupBy(identity)
       .mapValues(_.size)
       .map {

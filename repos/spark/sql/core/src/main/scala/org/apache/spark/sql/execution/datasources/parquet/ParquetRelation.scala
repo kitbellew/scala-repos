@@ -244,7 +244,7 @@ private[sql] class DefaultSource
         // Tries any "_common_metadata" first. Parquet files written by old versions or Parquet
         // don't have this.
         filesByType.commonMetadata.headOption
-        // Falls back to "_metadata"
+          // Falls back to "_metadata"
           .orElse(filesByType.metadata.headOption)
           // Summary file(s) not found, the Parquet file is either corrupted, or different part-
           // files contain conflicting user defined metadata (two or more values are associated
@@ -502,9 +502,9 @@ private[sql] object ParquetRelation extends Logging {
     // Try to push down filters when filter push-down is enabled.
     if (parquetFilterPushDown) {
       filters
-      // Collects all converted Parquet filter predicates. Notice that not all predicates can be
-      // converted (`ParquetFilters.createFilter` returns an `Option`). That's why a `flatMap`
-      // is used here.
+        // Collects all converted Parquet filter predicates. Notice that not all predicates can be
+        // converted (`ParquetFilters.createFilter` returns an `Option`). That's why a `flatMap`
+        // is used here.
         .flatMap(ParquetFilters.createFilter(dataSchema, _))
         .reduceOption(FilterApi.and)
         .foreach(ParquetInputFormat.setFilterPredicate(conf, _))

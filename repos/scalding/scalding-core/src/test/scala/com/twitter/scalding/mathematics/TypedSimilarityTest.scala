@@ -33,7 +33,7 @@ class TypedCosineSimJob(args: Args) extends Job(args) {
     TypedTsv[(Int, Int)]("ingraph")
       .map { case (from, to) => Edge(from, to, ()) }
   }
-  // Just keep the degree
+    // Just keep the degree
     .map { edge => edge.mapData { _._2 } }
 
   simOf(graph, { n: Int => n % 2 == 0 }, { n: Int => n % 2 == 1 })

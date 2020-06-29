@@ -40,9 +40,9 @@ object DateProperties extends Properties("Date Properties") {
   implicit val absdur: Arbitrary[AbsoluteDuration] =
     Arbitrary {
       implicitly[Arbitrary[Long]].arbitrary
-      // Ignore Longs that are too big to fit, and make sure we can add any random 3 together
-      // Long.MaxValue / 1200 ms is the biggest that will fit, we divide by 3 to make sure
-      // we can add three together in tests
+        // Ignore Longs that are too big to fit, and make sure we can add any random 3 together
+        // Long.MaxValue / 1200 ms is the biggest that will fit, we divide by 3 to make sure
+        // we can add three together in tests
         .map { ms => fromMillisecs(ms / (1200 * 3)) }
     }
 

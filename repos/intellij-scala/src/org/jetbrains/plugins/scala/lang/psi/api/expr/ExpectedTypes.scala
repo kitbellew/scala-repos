@@ -108,8 +108,7 @@ private[expr] object ExpectedTypes {
       resolves.zip(types).map {
         case (r: ScalaResolveResult, tp) =>
           val isNamedDynamic =
-            r.isDynamic && r.name == ResolvableReferenceExpression
-              .APPLY_DYNAMIC_NAMED
+            r.isDynamic && r.name == ResolvableReferenceExpression.APPLY_DYNAMIC_NAMED
           (tp, isNamedDynamic)
         case (_, tp) => (tp, false)
       }

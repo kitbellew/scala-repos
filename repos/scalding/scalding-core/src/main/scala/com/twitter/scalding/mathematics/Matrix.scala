@@ -701,7 +701,7 @@ class Matrix[RowT, ColT, ValT](
       otherVSym: Fields,
       pairMonoid: Monoid[(ValT, ValU)])(joinedPipe: Pipe): Pipe = {
     joinedPipe
-    //Make sure the zeros are set correctly:
+      //Make sure the zeros are set correctly:
       .map(valSym -> valSym) { (x: ValT) =>
         if (null == x) pairMonoid.zero._1 else x
       }

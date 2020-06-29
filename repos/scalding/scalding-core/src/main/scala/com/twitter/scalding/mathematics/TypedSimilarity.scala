@@ -148,7 +148,7 @@ object TypedSimilarity extends Serializable {
         .group,
       g.reducers
     )
-    // Use reduceLeft to push to reducers, no benefit in mapside here
+      // Use reduceLeft to push to reducers, no benefit in mapside here
       .reduceLeft { (left, right) =>
         // The degrees we always take the left:
         val (leftCnt, deg1, deg2) = left

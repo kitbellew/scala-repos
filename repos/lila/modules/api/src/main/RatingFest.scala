@@ -70,8 +70,8 @@ object RatingFest {
       _ = log("Starting the party")
       _ <- lila.game.tube.gameTube |> { implicit gameTube =>
         val query = $query(lila.game.Query.rated)
-        // val query = $query.all
-        // .batch(100)
+          // val query = $query.all
+          // .batch(100)
           .sort($sort asc G.createdAt)
         var started = nowMillis
         $enumerate.bulk[Game](query, bulkSize, limit) { games =>

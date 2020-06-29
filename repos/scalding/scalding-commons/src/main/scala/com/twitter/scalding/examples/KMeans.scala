@@ -27,7 +27,7 @@ object KMeans {
   private def centroidOf(
       vecs: TraversableOnce[Vector[Double]]): Vector[Double] = {
     val (vec, count) = vecs
-    // add a 1 to each value to count the number of vectors in one pass:
+      // add a 1 to each value to count the number of vectors in one pass:
       .map { v => (v, 1) }
       // Here we add both the count and the vectors:
       .reduce { (ll, rr) =>
@@ -43,7 +43,7 @@ object KMeans {
       from: Vector[Double],
       centroids: TraversableOnce[(Id, Vector[Double])]): (Id, Vector[Double]) =
     centroids
-    // compute the distance to each center
+      // compute the distance to each center
       .map { case (id, cent) => (distance(from, cent), (id, cent)) }
       // take the minimum by the distance, ignoring the id and the centroid
       .minBy { case (dist, _) => dist }
@@ -85,7 +85,7 @@ object KMeans {
       (
         ComputedValue(
           pipe.group
-          // There is no need to use more than k reducers
+            // There is no need to use more than k reducers
             .withReducers(k)
             .mapValueStream { vectors => Iterator(centroidOf(vectors)) }
             // Now collect them all into one big
