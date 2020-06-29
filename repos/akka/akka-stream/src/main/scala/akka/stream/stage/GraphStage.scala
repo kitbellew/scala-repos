@@ -679,9 +679,7 @@ abstract class GraphStageLogic private[stream] (
   private final class Reading[T](
       in: Inlet[T],
       private var n: Int,
-      val previous: InHandler)(
-      andThen: T ⇒ Unit,
-      onComplete: () ⇒ Unit)
+      val previous: InHandler)(andThen: T ⇒ Unit, onComplete: () ⇒ Unit)
       extends InHandler {
     require(n > 0, "number of elements to read must be positive!")
 

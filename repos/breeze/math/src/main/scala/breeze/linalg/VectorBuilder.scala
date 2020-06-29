@@ -46,9 +46,7 @@ class VectorBuilder[@spec(Double, Int, Float, Long) E](
     private var _index: Array[Int],
     private var _data: Array[E],
     private var used: Int,
-    var length: Int)(implicit
-    ring: Semiring[E],
-    zero: Zero[E])
+    var length: Int)(implicit ring: Semiring[E], zero: Zero[E])
     extends NumericOps[VectorBuilder[E]]
     with Serializable {
 

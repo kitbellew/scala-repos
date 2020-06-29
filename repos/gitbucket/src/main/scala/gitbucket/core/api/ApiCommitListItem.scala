@@ -40,9 +40,7 @@ object ApiCommitListItem {
   case class Commit(
       message: String,
       author: ApiPersonIdent,
-      committer: ApiPersonIdent)(
-      sha: String,
-      repositoryName: RepositoryName) {
+      committer: ApiPersonIdent)(sha: String, repositoryName: RepositoryName) {
     val url = ApiPath(
       s"/api/v3/repos/${repositoryName.fullName}/git/commits/${sha}")
   }

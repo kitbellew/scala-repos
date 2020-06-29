@@ -195,9 +195,7 @@ object TypeParameter {
 case class ScMethodType(
     returnType: ScType,
     params: Seq[Parameter],
-    isImplicit: Boolean)(
-    val project: Project,
-    val scope: GlobalSearchScope)
+    isImplicit: Boolean)(val project: Project, val scope: GlobalSearchScope)
     extends NonValueType {
 
   def visitType(visitor: ScalaTypeVisitor) {

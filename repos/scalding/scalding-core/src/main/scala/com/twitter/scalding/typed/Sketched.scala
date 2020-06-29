@@ -36,9 +36,7 @@ case class Sketched[K, V](
     numReducers: Int,
     delta: Double,
     eps: Double,
-    seed: Int)(implicit
-    serialization: K => Array[Byte],
-    ordering: Ordering[K])
+    seed: Int)(implicit serialization: K => Array[Byte], ordering: Ordering[K])
     extends MustHaveReducers {
 
   def serialize(k: K): Array[Byte] = serialization(k)
