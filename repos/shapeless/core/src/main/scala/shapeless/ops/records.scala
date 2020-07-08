@@ -225,9 +225,7 @@ package record {
     msg = "No field ${F} with value of type ${A} in record ${L}")
   trait Modifier[L <: HList, F, A, B]
       extends DepFn2[L, A => B]
-      with Serializable {
-    type Out <: HList
-  }
+      with Serializable { type Out <: HList }
 
   object Modifier {
     def apply[L <: HList, F, A, B](implicit
