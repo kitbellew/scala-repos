@@ -1523,7 +1523,9 @@ object hlist {
     */
   trait Intersection[L <: HList, M <: HList]
       extends DepFn1[L]
-      with Serializable { type Out <: HList }
+      with Serializable {
+    type Out <: HList
+  }
 
   trait LowPriorityIntersection {
     type Aux[L <: HList, M <: HList, Out0 <: HList] = Intersection[L, M] {
@@ -2442,7 +2444,9 @@ object hlist {
     */
   trait ReversePrepend[P <: HList, S <: HList]
       extends DepFn2[P, S]
-      with Serializable { type Out <: HList }
+      with Serializable {
+    type Out <: HList
+  }
 
   trait LowPriorityReversePrepend {
     type Aux[P <: HList, S <: HList, Out0 <: HList] = ReversePrepend[P, S] {
@@ -2622,7 +2626,9 @@ object hlist {
     "Implicit not found: shapeless.Ops.ZipApply[${FL}, ${AL}]. The types of ${FL} and ${AL} are not compatible.")
   trait ZipApply[FL <: HList, AL <: HList]
       extends DepFn2[FL, AL]
-      with Serializable { type Out <: HList }
+      with Serializable {
+    type Out <: HList
+  }
 
   object ZipApply {
     def apply[FL <: HList, AL <: HList](implicit
@@ -2679,7 +2685,9 @@ object hlist {
     */
   trait ZipWith[L <: HList, R <: HList, P <: Poly2]
       extends DepFn2[L, R]
-      with Serializable { type Out <: HList }
+      with Serializable {
+    type Out <: HList
+  }
 
   object ZipWith {
     def apply[L <: HList, R <: HList, P <: Poly2](implicit
@@ -2723,7 +2731,9 @@ object hlist {
     */
   trait ZipWithKeys[K <: HList, V <: HList]
       extends DepFn1[V]
-      with Serializable { type Out <: HList }
+      with Serializable {
+    type Out <: HList
+  }
 
   object ZipWithKeys {
     import shapeless.labelled._
@@ -2938,7 +2948,9 @@ object hlist {
     */
   trait FlatMapInterleave[A, M <: HList]
       extends DepFn2[A, M]
-      with Serializable { type Out <: HList }
+      with Serializable {
+    type Out <: HList
+  }
 
   object FlatMapInterleave {
     def apply[A, M <: HList](implicit

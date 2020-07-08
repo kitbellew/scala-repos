@@ -501,7 +501,9 @@ object coproduct {
 
   trait ZipWithKeys[K <: HList, V <: Coproduct]
       extends DepFn1[V]
-      with Serializable { type Out <: Coproduct }
+      with Serializable {
+    type Out <: Coproduct
+  }
 
   object ZipWithKeys {
     import shapeless.labelled._
@@ -541,7 +543,9 @@ object coproduct {
     */
   trait ZipOne[C1 <: Coproduct, C2 <: Coproduct]
       extends DepFn2[C1, C2]
-      with Serializable { type Out <: Coproduct }
+      with Serializable {
+    type Out <: Coproduct
+  }
 
   object ZipOne {
     def apply[C1 <: Coproduct, C2 <: Coproduct](implicit
@@ -751,7 +755,9 @@ object coproduct {
 
   trait ExtendLeftBy[L <: Coproduct, R <: Coproduct]
       extends DepFn1[R]
-      with Serializable { type Out <: Coproduct }
+      with Serializable {
+    type Out <: Coproduct
+  }
 
   object ExtendLeftBy {
     def apply[L <: Coproduct, R <: Coproduct](implicit
@@ -776,7 +782,9 @@ object coproduct {
 
     trait Impl[RevL <: Coproduct, R <: Coproduct]
         extends DepFn1[R]
-        with Serializable { type Out <: Coproduct }
+        with Serializable {
+      type Out <: Coproduct
+    }
 
     object Impl {
       type Aux[RevL <: Coproduct, R <: Coproduct, Out0 <: Coproduct] =
@@ -802,7 +810,9 @@ object coproduct {
 
   trait ExtendRightBy[L <: Coproduct, R <: Coproduct]
       extends DepFn1[L]
-      with Serializable { type Out <: Coproduct }
+      with Serializable {
+    type Out <: Coproduct
+  }
 
   object ExtendRightBy {
     def apply[L <: Coproduct, R <: Coproduct](implicit
@@ -842,7 +852,9 @@ object coproduct {
     */
   trait RotateLeft[C <: Coproduct, N <: Nat]
       extends DepFn1[C]
-      with Serializable { type Out <: Coproduct }
+      with Serializable {
+    type Out <: Coproduct
+  }
 
   object RotateLeft extends LowPriorityRotateLeft {
     type Aux[C <: Coproduct, N <: Nat, Out0] = RotateLeft[C, N] {
@@ -952,7 +964,9 @@ object coproduct {
     */
   trait RotateRight[C <: Coproduct, N <: Nat]
       extends DepFn1[C]
-      with Serializable { type Out <: Coproduct }
+      with Serializable {
+    type Out <: Coproduct
+  }
 
   object RotateRight extends LowPriorityRotateRight {
     def apply[C <: Coproduct, N <: Nat](implicit
@@ -1293,7 +1307,9 @@ object coproduct {
     */
   trait Prepend[P <: Coproduct, S <: Coproduct]
       extends DepFn1[Either[P, S]]
-      with Serializable { type Out <: Coproduct }
+      with Serializable {
+    type Out <: Coproduct
+  }
 
   trait LowestPriorityPrepend {
     type Aux[P <: Coproduct, S <: Coproduct, Out0 <: Coproduct] =
