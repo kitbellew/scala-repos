@@ -17,7 +17,8 @@ object PlayTime {
   def apply(user: User): Fu[User.PlayTime] =
     user.playTime match {
       case Some(pt) => fuccess(pt)
-      case None => {
+      case None =>
+        {
           gameTube.coll
             .find(
               BSONDocument(
