@@ -328,42 +328,43 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   /**
     * Displays the file content of the specified branch or commit.
     */
-  val blobRoute =
-    get("/:owner/:repository/blob/*")(referrersOnly { repository =>
+  val blobRoute = get("/:owner/:repository/blob/*")(referrersOnly {
+    repository =>
       val (id, path) = splitPath(repository, multiParams("splat").head)
       val raw = params.get("raw").getOrElse("false").toBoolean
       using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
         git =>
           val revCommit =
             JGitUtil.getRevCommitFromId(git, git.getRepository.resolve(id))
-          getPathObjectId(git, path, revCommit).map {
-            objectId =>
-              if (raw) {
-                // Download (This route is left for backword compatibility)
-                JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
-                  contentType = FileUtil.getMimeType(path)
-                  response.setContentLength(loader.getSize.toInt)
-                  loader.copyTo(response.outputStream)
-                  ()
-                } getOrElse NotFound
-              } else {
-                html.blob(
-                  id,
-                  repository,
-                  path.split("/").toList,
-                  JGitUtil.getContentInfo(git, path, objectId),
-                  new JGitUtil.CommitInfo(
-                    JGitUtil.getLastModifiedCommit(git, revCommit, path)),
-                  hasWritePermission(
-                    repository.owner,
-                    repository.name,
-                    context.loginAccount),
-                  request.paths(2) == "blame"
-                )
-              }
-          } getOrElse NotFound
+          getPathObjectId(git, path, revCommit)
+            .map {
+              objectId =>
+                if (raw) {
+                  // Download (This route is left for backword compatibility)
+                  JGitUtil.getObjectLoaderFromId(git, objectId) { loader =>
+                    contentType = FileUtil.getMimeType(path)
+                    response.setContentLength(loader.getSize.toInt)
+                    loader.copyTo(response.outputStream)
+                    ()
+                  } getOrElse NotFound
+                } else {
+                  html.blob(
+                    id,
+                    repository,
+                    path.split("/").toList,
+                    JGitUtil.getContentInfo(git, path, objectId),
+                    new JGitUtil.CommitInfo(
+                      JGitUtil.getLastModifiedCommit(git, revCommit, path)),
+                    hasWritePermission(
+                      repository.owner,
+                      repository.name,
+                      context.loginAccount),
+                    request.paths(2) == "blame"
+                  )
+                }
+            } getOrElse NotFound
       }
-    })
+  })
 
   get("/:owner/:repository/blame/*") {
     blobRoute.action()
@@ -375,39 +376,38 @@ trait RepositoryViewerControllerBase extends ControllerBase {
   ajaxGet("/:owner/:repository/get-blame/*")(referrersOnly { repository =>
     val (id, path) = splitPath(repository, multiParams("splat").head)
     contentType = formats("json")
-    using(Git.open(getRepositoryDir(repository.owner, repository.name))) {
-      git =>
-        val last = git.log
-          .add(git.getRepository.resolve(id))
-          .addPath(path)
-          .setMaxCount(1)
-          .call
-          .iterator
-          .next
-          .name
-        Map(
-          "root" -> s"${context.baseUrl}/${repository.owner}/${repository.name}",
-          "id" -> id,
-          "path" -> path,
-          "last" -> last,
-          "blame" -> JGitUtil.getBlame(git, id, path).map { blame =>
-            Map(
-              "id" -> blame.id,
-              "author" -> view.helpers
-                .user(blame.authorName, blame.authorEmailAddress)
-                .toString,
-              "avatar" -> view.helpers
-                .avatarLink(blame.authorName, 32, blame.authorEmailAddress)
-                .toString,
-              "authed" -> helper.html.datetimeago(blame.authorTime).toString,
-              "prev" -> blame.prev,
-              "prevPath" -> blame.prevPath,
-              "commited" -> blame.commitTime.getTime,
-              "message" -> blame.message,
-              "lines" -> blame.lines
-            )
-          }
-        )
+    using(Git.open(getRepositoryDir(repository.owner, repository.name))) { git =>
+      val last = git.log
+        .add(git.getRepository.resolve(id))
+        .addPath(path)
+        .setMaxCount(1)
+        .call
+        .iterator
+        .next
+        .name
+      Map(
+        "root" -> s"${context.baseUrl}/${repository.owner}/${repository.name}",
+        "id" -> id,
+        "path" -> path,
+        "last" -> last,
+        "blame" -> JGitUtil.getBlame(git, id, path).map { blame =>
+          Map(
+            "id" -> blame.id,
+            "author" -> view.helpers
+              .user(blame.authorName, blame.authorEmailAddress)
+              .toString,
+            "avatar" -> view.helpers
+              .avatarLink(blame.authorName, 32, blame.authorEmailAddress)
+              .toString,
+            "authed" -> helper.html.datetimeago(blame.authorTime).toString,
+            "prev" -> blame.prev,
+            "prevPath" -> blame.prevPath,
+            "commited" -> blame.commitTime.getTime,
+            "message" -> blame.message,
+            "lines" -> blame.lines
+          )
+        }
+      )
     }
   })
 

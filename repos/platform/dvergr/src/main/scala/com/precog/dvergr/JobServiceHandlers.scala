@@ -431,71 +431,70 @@ class PutJobStateHandler(jobs: JobManager[Future])(implicit
       jobId <- request.parameters get 'jobId
       contentM <- request.content
     } yield {
-      contentM flatMap {
-        obj =>
-          (obj \ "state") match {
-            case JString("started") =>
-              transition(obj) { (timestamp, _) =>
-                jobs.start(jobId, timestamp) map (Validation.fromEither(
+      contentM flatMap { obj =>
+        (obj \ "state") match {
+          case JString("started") =>
+            transition(obj) { (timestamp, _) =>
+              jobs.start(jobId, timestamp) map (Validation.fromEither(
+                _)) map (_ map (_.state))
+            }
+
+          case JString("cancelled") =>
+            transition(obj) {
+              case (timestamp, Some(reason)) =>
+                jobs.cancel(jobId, reason, timestamp) map (Validation
+                  .fromEither(_)) map (_ map (_.state))
+              case (_, _) =>
+                Future(
+                  Failure("Missing required field 'reason' in request body."))
+            }
+
+          case JString("finished") =>
+            transition(obj) { (timestamp, _) =>
+              jobs.finish(jobId, timestamp) map (Validation.fromEither(
+                _)) map (_ map (_.state))
+            }
+
+          case JString("aborted") =>
+            transition(obj) {
+              case (timestamp, Some(reason)) =>
+                jobs.abort(jobId, reason, timestamp) map (Validation.fromEither(
                   _)) map (_ map (_.state))
-              }
+              case (_, _) =>
+                Future(
+                  Failure("Missing required field 'reason' in request body."))
+            }
 
-            case JString("cancelled") =>
-              transition(obj) {
-                case (timestamp, Some(reason)) =>
-                  jobs.cancel(jobId, reason, timestamp) map (Validation
-                    .fromEither(_)) map (_ map (_.state))
-                case (_, _) =>
-                  Future(
-                    Failure("Missing required field 'reason' in request body."))
-              }
+          case JString("expired") =>
+            transition(obj) { (timestamp, _) =>
+              jobs.expire(jobId, timestamp) map (Validation.fromEither(
+                _)) map (_ map (_.state))
+            }
 
-            case JString("finished") =>
-              transition(obj) { (timestamp, _) =>
-                jobs.finish(jobId, timestamp) map (Validation.fromEither(
-                  _)) map (_ map (_.state))
-              }
+          case JString(state) =>
+            Future(
+              HttpResponse[JValue](
+                BadRequest,
+                content = Some(JString(
+                  "Invalid 'state '%s'. Expected one of 'started', 'cancelled', 'finished', 'aborted' or 'expired'." format state
+                ))))
 
-            case JString("aborted") =>
-              transition(obj) {
-                case (timestamp, Some(reason)) =>
-                  jobs.abort(jobId, reason, timestamp) map (Validation
-                    .fromEither(_)) map (_ map (_.state))
-                case (_, _) =>
-                  Future(
-                    Failure("Missing required field 'reason' in request body."))
-              }
+          case JUndefined =>
+            Future(
+              HttpResponse[JValue](
+                BadRequest,
+                content = Some(JString("No 'state given."))))
 
-            case JString("expired") =>
-              transition(obj) { (timestamp, _) =>
-                jobs.expire(jobId, timestamp) map (Validation.fromEither(
-                  _)) map (_ map (_.state))
-              }
-
-            case JString(state) =>
-              Future(
-                HttpResponse[JValue](
-                  BadRequest,
-                  content = Some(JString(
-                    "Invalid 'state '%s'. Expected one of 'started', 'cancelled', 'finished', 'aborted' or 'expired'." format state
+          case other =>
+            Future(
+              HttpResponse[JValue](
+                BadRequest,
+                content = Some(
+                  JString(
+                    "Invalid 'state given: %s is not a string.".format(
+                      other.renderCompact)
                   ))))
-
-            case JUndefined =>
-              Future(
-                HttpResponse[JValue](
-                  BadRequest,
-                  content = Some(JString("No 'state given."))))
-
-            case other =>
-              Future(
-                HttpResponse[JValue](
-                  BadRequest,
-                  content = Some(
-                    JString(
-                      "Invalid 'state given: %s is not a string.".format(
-                        other.renderCompact)
-                    ))))
-          }
+        }
       }
     }) getOrElse {
       Future(

@@ -395,26 +395,23 @@ trait ApiControllerBase extends ControllerBase {
     repository =>
       val owner = repository.owner
       val name = repository.name
-      params("id").toIntOpt.flatMap {
-        issueId =>
-          getPullRequest(owner, name, issueId) map {
-            case (issue, pullreq) =>
-              using(Git.open(getRepositoryDir(owner, name))) {
-                git =>
-                  val oldId = git.getRepository.resolve(pullreq.commitIdFrom)
-                  val newId = git.getRepository.resolve(pullreq.commitIdTo)
-                  val repoFullName = RepositoryName(repository)
-                  val commits = git.log
-                    .addRange(oldId, newId)
-                    .call
-                    .iterator
-                    .asScala
-                    .map(c =>
-                      ApiCommitListItem(new CommitInfo(c), repoFullName))
-                    .toList
-                  JsonFormat(commits)
-              }
-          }
+      params("id").toIntOpt.flatMap { issueId =>
+        getPullRequest(owner, name, issueId) map {
+          case (issue, pullreq) =>
+            using(Git.open(getRepositoryDir(owner, name))) { git =>
+              val oldId = git.getRepository.resolve(pullreq.commitIdFrom)
+              val newId = git.getRepository.resolve(pullreq.commitIdTo)
+              val repoFullName = RepositoryName(repository)
+              val commits = git.log
+                .addRange(oldId, newId)
+                .call
+                .iterator
+                .asScala
+                .map(c => ApiCommitListItem(new CommitInfo(c), repoFullName))
+                .toList
+              JsonFormat(commits)
+            }
+        }
       } getOrElse NotFound
   })
 

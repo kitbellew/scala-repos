@@ -167,31 +167,28 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
                   M.point {
                     for {
                       db <- safeOp("Database " + dbName + " does not exist")(
-                        mongo.getDB(dbName)).flatMap {
-                        d =>
-                          if (!d.isAuthenticated && dbAuthParams.contains(
-                              dbName)) {
-                            logger.trace("Running auth setup for " + dbName)
-                            dbAuthParams.get(dbName).map(_.split(':')) flatMap {
-                              case Array(user, password) =>
-                                if (d
-                                    .authenticate(user, password.toCharArray)) {
-                                  Some(d)
-                                } else {
-                                  logger.error(
-                                    "Authentication failed for database " + dbName);
-                                  None
-                                }
-
-                              case invalid =>
+                        mongo.getDB(dbName)).flatMap { d =>
+                        if (!d.isAuthenticated && dbAuthParams.contains(
+                            dbName)) {
+                          logger.trace("Running auth setup for " + dbName)
+                          dbAuthParams.get(dbName).map(_.split(':')) flatMap {
+                            case Array(user, password) =>
+                              if (d.authenticate(user, password.toCharArray)) {
+                                Some(d)
+                              } else {
                                 logger.error(
-                                  "Invalid user:password for %s: \"%s\""
-                                    .format(dbName, invalid.mkString(":")));
+                                  "Authentication failed for database " + dbName);
                                 None
-                            }
-                          } else {
-                            Some(d)
+                              }
+
+                            case invalid =>
+                              logger.error(
+                                "Invalid user:password for %s: \"%s\""
+                                  .format(dbName, invalid.mkString(":"))); None
                           }
+                        } else {
+                          Some(d)
+                        }
                       }
                       coll <- safeOp(
                         "Collection " + collectionName + " does not exist") {

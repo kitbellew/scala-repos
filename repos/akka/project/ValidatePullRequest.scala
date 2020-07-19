@@ -143,33 +143,31 @@ object ValidatePullRequest extends AutoPlugin {
     },
     buildAllKeyword in Global in ValidatePR := """PLS BUILD ALL""".r,
     githubEnforcedBuildAll in Global in ValidatePR := {
-      sys.env.get(PullIdEnvVarName).map(_.toInt) flatMap {
-        prId =>
-          val log = streams.value.log
-          val buildAllMagicPhrase = (buildAllKeyword in ValidatePR).value
-          log.info("Checking GitHub comments for PR validation options...")
+      sys.env.get(PullIdEnvVarName).map(_.toInt) flatMap { prId =>
+        val log = streams.value.log
+        val buildAllMagicPhrase = (buildAllKeyword in ValidatePR).value
+        log.info("Checking GitHub comments for PR validation options...")
 
-          try {
-            import scala.collection.JavaConverters._
-            val gh = GitHubBuilder
-              .fromEnvironment()
-              .withOAuthToken(GitHub.envTokenOrThrow)
-              .build()
-            val comments =
-              gh.getRepository("akka/akka").getIssue(prId).getComments.asScala
+        try {
+          import scala.collection.JavaConverters._
+          val gh = GitHubBuilder
+            .fromEnvironment()
+            .withOAuthToken(GitHub.envTokenOrThrow)
+            .build()
+          val comments =
+            gh.getRepository("akka/akka").getIssue(prId).getComments.asScala
 
-            def triggersBuildAll(c: GHIssueComment): Boolean =
-              buildAllMagicPhrase.findFirstIn(c.getBody).isDefined
-            comments collectFirst {
-              case c if triggersBuildAll(c) =>
-                BuildCommentForcedAll(buildAllMagicPhrase.toString(), c)
-            }
-          } catch {
-            case ex: Exception =>
-              log.warn(
-                "Unable to reach GitHub! Exception was: " + ex.getMessage)
-              None
+          def triggersBuildAll(c: GHIssueComment): Boolean =
+            buildAllMagicPhrase.findFirstIn(c.getBody).isDefined
+          comments collectFirst {
+            case c if triggersBuildAll(c) =>
+              BuildCommentForcedAll(buildAllMagicPhrase.toString(), c)
           }
+        } catch {
+          case ex: Exception =>
+            log.warn("Unable to reach GitHub! Exception was: " + ex.getMessage)
+            None
+        }
       }
     },
     changedDirectories in Global in ValidatePR := {

@@ -294,10 +294,10 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
           }
       } { ws =>
         // #scalaws-process-xml
-        val futureResult: Future[scala.xml.NodeSeq] = ws.url(url).get().map {
-          response =>
+        val futureResult: Future[scala.xml.NodeSeq] =
+          ws.url(url).get().map { response =>
             response.xml \ "message"
-        }
+          }
         // #scalaws-process-xml
         await(futureResult).text must_== "Hello"
       }

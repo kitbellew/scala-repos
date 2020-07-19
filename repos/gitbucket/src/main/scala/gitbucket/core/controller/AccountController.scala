@@ -238,18 +238,17 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
   post("/:userName/_edit", editForm)(oneselfOnly { form =>
     val userName = params("userName")
-    getAccountByUserName(userName).map {
-      account =>
-        updateAccount(
-          account.copy(
-            password = form.password.map(sha1).getOrElse(account.password),
-            fullName = form.fullName,
-            mailAddress = form.mailAddress,
-            url = form.url))
+    getAccountByUserName(userName).map { account =>
+      updateAccount(
+        account.copy(
+          password = form.password.map(sha1).getOrElse(account.password),
+          fullName = form.fullName,
+          mailAddress = form.mailAddress,
+          url = form.url))
 
-        updateImage(userName, form.fileId, form.clearImage)
-        flash += "info" -> "Account information has been updated."
-        redirect(s"/${userName}/_edit")
+      updateImage(userName, form.fileId, form.clearImage)
+      flash += "info" -> "Account information has been updated."
+      redirect(s"/${userName}/_edit")
 
     } getOrElse NotFound
   })
@@ -257,8 +256,7 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   get("/:userName/_delete")(oneselfOnly {
     val userName = params("userName")
 
-    getAccountByUserName(userName, true).foreach {
-      account =>
+    getAccountByUserName(userName, true).foreach { account =>
 //      // Remove repositories
 //      getRepositoryNamesOfUser(userName).foreach { repositoryName =>
 //        deleteRepository(userName, repositoryName)
@@ -269,8 +267,8 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 //      // Remove from GROUP_MEMBER, COLLABORATOR and REPOSITORY
 //      removeUserRelatedData(userName)
 
-        removeUserRelatedData(userName)
-        updateAccount(account.copy(isRemoved = true))
+      removeUserRelatedData(userName)
+      updateAccount(account.copy(isRemoved = true))
     }
 
     session.invalidate
@@ -299,20 +297,19 @@ trait AccountControllerBase extends AccountManagementControllerBase {
 
   get("/:userName/_application")(oneselfOnly {
     val userName = params("userName")
-    getAccountByUserName(userName).map {
-      x =>
-        var tokens = getAccessTokens(x.userName)
-        val generatedToken = flash.get("generatedToken") match {
-          case Some((tokenId: Int, token: String)) => {
-            val gt = tokens.find(_.accessTokenId == tokenId)
-            gt.map { t =>
-              tokens = tokens.filterNot(_ == t)
-              (t, token)
-            }
+    getAccountByUserName(userName).map { x =>
+      var tokens = getAccessTokens(x.userName)
+      val generatedToken = flash.get("generatedToken") match {
+        case Some((tokenId: Int, token: String)) => {
+          val gt = tokens.find(_.accessTokenId == tokenId)
+          gt.map { t =>
+            tokens = tokens.filterNot(_ == t)
+            (t, token)
           }
-          case _ => None
         }
-        html.application(x, tokens, generatedToken)
+        case _ => None
+      }
+      html.application(x, tokens, generatedToken)
     } getOrElse NotFound
   })
 
@@ -387,21 +384,17 @@ trait AccountControllerBase extends AccountManagementControllerBase {
   })
 
   get("/:groupName/_deletegroup")(managersOnly {
-    defining(params("groupName")) {
-      groupName =>
-        // Remove from GROUP_MEMBER
-        updateGroupMembers(groupName, Nil)
-        // Remove repositories
-        getRepositoryNamesOfUser(groupName).foreach {
-          repositoryName =>
-            deleteRepository(groupName, repositoryName)
-            FileUtils.deleteDirectory(
-              getRepositoryDir(groupName, repositoryName))
-            FileUtils.deleteDirectory(
-              getWikiRepositoryDir(groupName, repositoryName))
-            FileUtils.deleteDirectory(
-              getTemporaryDir(groupName, repositoryName))
-        }
+    defining(params("groupName")) { groupName =>
+      // Remove from GROUP_MEMBER
+      updateGroupMembers(groupName, Nil)
+      // Remove repositories
+      getRepositoryNamesOfUser(groupName).foreach { repositoryName =>
+        deleteRepository(groupName, repositoryName)
+        FileUtils.deleteDirectory(getRepositoryDir(groupName, repositoryName))
+        FileUtils.deleteDirectory(
+          getWikiRepositoryDir(groupName, repositoryName))
+        FileUtils.deleteDirectory(getTemporaryDir(groupName, repositoryName))
+      }
     }
     redirect("/")
   })
@@ -418,23 +411,22 @@ trait AccountControllerBase extends AccountManagementControllerBase {
         }
         .toList) {
       case (groupName, members) =>
-        getAccountByUserName(groupName, true).map {
-          account =>
-            updateGroup(groupName, form.url, false)
+        getAccountByUserName(groupName, true).map { account =>
+          updateGroup(groupName, form.url, false)
 
-            // Update GROUP_MEMBER
-            updateGroupMembers(form.groupName, members)
-            // Update COLLABORATOR for group repositories
-            getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
-              removeCollaborators(form.groupName, repositoryName)
-              members.foreach {
-                case (userName, isManager) =>
-                  addCollaborator(form.groupName, repositoryName, userName)
-              }
+          // Update GROUP_MEMBER
+          updateGroupMembers(form.groupName, members)
+          // Update COLLABORATOR for group repositories
+          getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
+            removeCollaborators(form.groupName, repositoryName)
+            members.foreach {
+              case (userName, isManager) =>
+                addCollaborator(form.groupName, repositoryName, userName)
             }
+          }
 
-            updateImage(form.groupName, form.fileId, form.clearImage)
-            redirect(s"/${form.groupName}")
+          updateImage(form.groupName, form.fileId, form.clearImage)
+          redirect(s"/${form.groupName}")
 
         } getOrElse NotFound
     }

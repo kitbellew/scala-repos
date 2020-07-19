@@ -239,32 +239,31 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
 
   post("/admin/users/:name/_edituser", editUserForm)(adminOnly { form =>
     val userName = params("userName")
-    getAccountByUserName(userName, true).map {
-      account =>
-        if (form.isRemoved) {
-          // Remove repositories
-          //        getRepositoryNamesOfUser(userName).foreach { repositoryName =>
-          //          deleteRepository(userName, repositoryName)
-          //          FileUtils.deleteDirectory(getRepositoryDir(userName, repositoryName))
-          //          FileUtils.deleteDirectory(getWikiRepositoryDir(userName, repositoryName))
-          //          FileUtils.deleteDirectory(getTemporaryDir(userName, repositoryName))
-          //        }
-          // Remove from GROUP_MEMBER, COLLABORATOR and REPOSITORY
-          removeUserRelatedData(userName)
-        }
+    getAccountByUserName(userName, true).map { account =>
+      if (form.isRemoved) {
+        // Remove repositories
+        //        getRepositoryNamesOfUser(userName).foreach { repositoryName =>
+        //          deleteRepository(userName, repositoryName)
+        //          FileUtils.deleteDirectory(getRepositoryDir(userName, repositoryName))
+        //          FileUtils.deleteDirectory(getWikiRepositoryDir(userName, repositoryName))
+        //          FileUtils.deleteDirectory(getTemporaryDir(userName, repositoryName))
+        //        }
+        // Remove from GROUP_MEMBER, COLLABORATOR and REPOSITORY
+        removeUserRelatedData(userName)
+      }
 
-        updateAccount(
-          account.copy(
-            password = form.password.map(sha1).getOrElse(account.password),
-            fullName = form.fullName,
-            mailAddress = form.mailAddress,
-            isAdmin = form.isAdmin,
-            url = form.url,
-            isRemoved = form.isRemoved
-          ))
+      updateAccount(
+        account.copy(
+          password = form.password.map(sha1).getOrElse(account.password),
+          fullName = form.fullName,
+          mailAddress = form.mailAddress,
+          isAdmin = form.isAdmin,
+          url = form.url,
+          isRemoved = form.isRemoved
+        ))
 
-        updateImage(userName, form.fileId, form.clearImage)
-        redirect("/admin/users")
+      updateImage(userName, form.fileId, form.clearImage)
+      redirect("/admin/users")
 
     } getOrElse NotFound
   })
@@ -309,40 +308,37 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
         }
         .toList) {
       case (groupName, members) =>
-        getAccountByUserName(groupName, true).map {
-          account =>
-            updateGroup(groupName, form.url, form.isRemoved)
+        getAccountByUserName(groupName, true).map { account =>
+          updateGroup(groupName, form.url, form.isRemoved)
 
-            if (form.isRemoved) {
-              // Remove from GROUP_MEMBER
-              updateGroupMembers(form.groupName, Nil)
-              // Remove repositories
-              getRepositoryNamesOfUser(form.groupName).foreach {
-                repositoryName =>
-                  deleteRepository(groupName, repositoryName)
-                  FileUtils.deleteDirectory(
-                    getRepositoryDir(groupName, repositoryName))
-                  FileUtils.deleteDirectory(
-                    getWikiRepositoryDir(groupName, repositoryName))
-                  FileUtils.deleteDirectory(
-                    getTemporaryDir(groupName, repositoryName))
-              }
-            } else {
-              // Update GROUP_MEMBER
-              updateGroupMembers(form.groupName, members)
-              // Update COLLABORATOR for group repositories
-              getRepositoryNamesOfUser(form.groupName).foreach {
-                repositoryName =>
-                  removeCollaborators(form.groupName, repositoryName)
-                  members.foreach {
-                    case (userName, isManager) =>
-                      addCollaborator(form.groupName, repositoryName, userName)
-                  }
+          if (form.isRemoved) {
+            // Remove from GROUP_MEMBER
+            updateGroupMembers(form.groupName, Nil)
+            // Remove repositories
+            getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
+              deleteRepository(groupName, repositoryName)
+              FileUtils.deleteDirectory(
+                getRepositoryDir(groupName, repositoryName))
+              FileUtils.deleteDirectory(
+                getWikiRepositoryDir(groupName, repositoryName))
+              FileUtils.deleteDirectory(
+                getTemporaryDir(groupName, repositoryName))
+            }
+          } else {
+            // Update GROUP_MEMBER
+            updateGroupMembers(form.groupName, members)
+            // Update COLLABORATOR for group repositories
+            getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
+              removeCollaborators(form.groupName, repositoryName)
+              members.foreach {
+                case (userName, isManager) =>
+                  addCollaborator(form.groupName, repositoryName, userName)
               }
             }
+          }
 
-            updateImage(form.groupName, form.fileId, form.clearImage)
-            redirect("/admin/users")
+          updateImage(form.groupName, form.fileId, form.clearImage)
+          redirect("/admin/users")
 
         } getOrElse NotFound
     }

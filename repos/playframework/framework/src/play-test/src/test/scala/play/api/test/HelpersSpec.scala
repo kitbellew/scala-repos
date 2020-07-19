@@ -34,11 +34,11 @@ class HelpersSpec extends Specification {
         Map("MODE" -> "PostgreSQL", "DB_CLOSE_DELAY" -> "-1"))
       inMemoryDatabaseConfiguration.get("db.test.driver") must beSome(
         "org.h2.Driver")
-      inMemoryDatabaseConfiguration.get("db.test.url") must beSome.which {
-        url =>
-          """^jdbc:h2:mem:play-test([0-9-]+);MODE=PostgreSQL;DB_CLOSE_DELAY=-1$""".r
-            .findFirstIn(url)
-            .isDefined
+      inMemoryDatabaseConfiguration
+        .get("db.test.url") must beSome.which { url =>
+        """^jdbc:h2:mem:play-test([0-9-]+);MODE=PostgreSQL;DB_CLOSE_DELAY=-1$""".r
+          .findFirstIn(url)
+          .isDefined
       }
     }
   }

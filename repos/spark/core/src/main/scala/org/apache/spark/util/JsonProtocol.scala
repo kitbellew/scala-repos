@@ -748,8 +748,8 @@ private[spark] object JsonProtocol {
   def executorMetricsUpdateFromJson(
       json: JValue): SparkListenerExecutorMetricsUpdate = {
     val execInfo = (json \ "Executor ID").extract[String]
-    val accumUpdates = (json \ "Metrics Updated").extract[List[JValue]].map {
-      json =>
+    val accumUpdates =
+      (json \ "Metrics Updated").extract[List[JValue]].map { json =>
         val taskId = (json \ "Task ID").extract[Long]
         val stageId = (json \ "Stage ID").extract[Int]
         val stageAttemptId = (json \ "Stage Attempt ID").extract[Int]
@@ -758,7 +758,7 @@ private[spark] object JsonProtocol {
             .extract[List[JValue]]
             .map(accumulableInfoFromJson)
         (taskId, stageId, stageAttemptId, updates)
-    }
+      }
     SparkListenerExecutorMetricsUpdate(execInfo, accumUpdates)
   }
 

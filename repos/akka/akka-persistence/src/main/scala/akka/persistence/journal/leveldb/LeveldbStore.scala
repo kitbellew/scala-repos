@@ -65,27 +65,25 @@ private[persistence] trait LeveldbStore
 
     val result = Future.fromTry(Try {
       withBatch(batch ⇒
-        messages.map {
-          a ⇒
-            Try {
-              a.payload.foreach {
-                p ⇒
-                  val (p2, tags) = p.payload match {
-                    case Tagged(payload, tags) ⇒
-                      (p.withPayload(payload), tags)
-                    case _ ⇒ (p, Set.empty[String])
-                  }
-                  if (tags.nonEmpty && hasTagSubscribers)
-                    allTags = allTags union tags
-
-                  require(
-                    !p2.persistenceId.startsWith(tagPersistenceIdPrefix),
-                    s"persistenceId [${p.persistenceId}] must not start with $tagPersistenceIdPrefix")
-                  addToMessageBatch(p2, tags, batch)
+        messages.map { a ⇒
+          Try {
+            a.payload.foreach { p ⇒
+              val (p2, tags) = p.payload match {
+                case Tagged(payload, tags) ⇒
+                  (p.withPayload(payload), tags)
+                case _ ⇒ (p, Set.empty[String])
               }
-              if (hasPersistenceIdSubscribers)
-                persistenceIds += a.persistenceId
+              if (tags.nonEmpty && hasTagSubscribers)
+                allTags = allTags union tags
+
+              require(
+                !p2.persistenceId.startsWith(tagPersistenceIdPrefix),
+                s"persistenceId [${p.persistenceId}] must not start with $tagPersistenceIdPrefix")
+              addToMessageBatch(p2, tags, batch)
             }
+            if (hasPersistenceIdSubscribers)
+              persistenceIds += a.persistenceId
+          }
         })
     })
 

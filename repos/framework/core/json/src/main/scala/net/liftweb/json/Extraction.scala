@@ -114,8 +114,8 @@ object Extraction {
               JField(unmangleName(name), decompose(f get x))
           } match {
             case args =>
-              val fields = formats.fieldSerializer(x.getClass).map {
-                serializer =>
+              val fields =
+                formats.fieldSerializer(x.getClass).map { serializer =>
                   Reflection.fields(x.getClass).map {
                     case (mangledName, _) =>
                       val n = Meta.unmangleName(mangledName)
@@ -128,7 +128,7 @@ object Extraction {
                         }
                         .getOrElse(JField(n, JNothing))
                   }
-              } getOrElse Nil
+                } getOrElse Nil
               val uniqueFields =
                 fields filterNot (f => args.find(_.name == f.name).isDefined)
               mkObject(x.getClass, uniqueFields ++ args)

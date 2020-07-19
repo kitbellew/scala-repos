@@ -104,8 +104,8 @@ object FormattedStringParser extends StringParser {
 
     var refferredArguments: List[ScExpression] = Nil
 
-    val bindings = FormatSpecifierPattern.findAllMatchIn(formatString).map {
-      it =>
+    val bindings =
+      FormatSpecifierPattern.findAllMatchIn(formatString).map { it =>
         val specifier = {
           val span = Span(literal, it.start(0) + shift, it.end(0) + shift)
           val cleanFormat = {
@@ -138,7 +138,7 @@ object FormattedStringParser extends StringParser {
             Injection(remainingArguments.next(), Some(specifier))
           else UnboundSpecifier(specifier)
         }
-    }
+      }
 
     val texts = FormatSpecifierPattern.split(formatString).map { s =>
       if (literal.isMultiLineString) Text(s)

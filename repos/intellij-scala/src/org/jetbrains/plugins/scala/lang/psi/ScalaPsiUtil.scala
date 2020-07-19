@@ -2572,13 +2572,12 @@ object ScalaPsiUtil {
               val project = method.getProject
               val returnType: ScType =
                 ScType.create(method.getReturnType, project, scalaScope)
-              val params: Array[ScType] =
-                method.getParameterList.getParameters.map {
-                  param: PsiParameter =>
-                    ScType.create(
-                      param.getTypeElement.getType,
-                      project,
-                      scalaScope)
+              val params: Array[ScType] = method.getParameterList.getParameters
+                .map { param: PsiParameter =>
+                  ScType.create(
+                    param.getTypeElement.getType,
+                    project,
+                    scalaScope)
                 }
               val fun = ScFunctionType(returnType, params)(project, scalaScope)
               val subbed = sub.subst(fun)

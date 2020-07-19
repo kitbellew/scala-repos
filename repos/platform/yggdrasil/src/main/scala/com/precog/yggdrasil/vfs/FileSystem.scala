@@ -84,8 +84,8 @@ object PathData {
           }
 
         def validated(v: JValue) = {
-          val mimeTypeV = v.validated[String]("mimeType").flatMap {
-            mimeString =>
+          val mimeTypeV =
+            v.validated[String]("mimeType").flatMap { mimeString =>
               MimeTypes
                 .parseMimeTypes(mimeString)
                 .headOption
@@ -93,7 +93,7 @@ object PathData {
                   Extractor.Error.invalid(
                     "No recognized mimeType values foundin %s".format(
                       v.renderCompact)))
-          }
+            }
 
           (v.validated[String]("type") tuple mimeTypeV) flatMap {
             case ("blob", mimeType)                  => success(BLOB(mimeType))

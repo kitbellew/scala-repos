@@ -40,12 +40,12 @@ private object ScalaFacetData {
   def apply(properties: FacetProperties): ScalaFacetData = {
     val compilerSettings = ScalaCompilerSettings.from(properties)
 
-    val compilerLibraryId = properties.option("compilerLibraryLevel").flatMap {
-      level =>
+    val compilerLibraryId =
+      properties.option("compilerLibraryLevel").flatMap { level =>
         properties
           .option("compilerLibraryName")
           .map(LibraryReference(Level.fromFacetTitle(level), _))
-    }
+      }
 
     new ScalaFacetData(
       languageLevel = properties.string("languageLevel", "SCALA_2_11"),

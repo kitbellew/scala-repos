@@ -2007,26 +2007,25 @@ object Classpaths {
         val out = is.withIvy(s.log)(_.getSettings.getDefaultIvyUserDir)
         val uwConfig = (unresolvedWarningConfiguration in update).value
         val depDir = dependencyCacheDirectory.value
-        withExcludes(out, mod.classifiers, lock(app)) {
-          excludes =>
-            val uwConfig = (unresolvedWarningConfiguration in update).value
-            val logicalClock = LogicalClock(state.value.hashCode)
-            val depDir = dependencyCacheDirectory.value
-            IvyActions.updateClassifiers(
-              is,
-              GetClassifiersConfiguration(
-                mod,
-                excludes,
-                c.copy(artifactFilter = c.artifactFilter.invert),
-                ivyScala.value,
-                srcTypes,
-                docTypes),
-              uwConfig,
-              LogicalClock(state.value.hashCode),
-              Some(depDir),
-              Vector.empty,
-              s.log
-            )
+        withExcludes(out, mod.classifiers, lock(app)) { excludes =>
+          val uwConfig = (unresolvedWarningConfiguration in update).value
+          val logicalClock = LogicalClock(state.value.hashCode)
+          val depDir = dependencyCacheDirectory.value
+          IvyActions.updateClassifiers(
+            is,
+            GetClassifiersConfiguration(
+              mod,
+              excludes,
+              c.copy(artifactFilter = c.artifactFilter.invert),
+              ivyScala.value,
+              srcTypes,
+              docTypes),
+            uwConfig,
+            LogicalClock(state.value.hashCode),
+            Some(depDir),
+            Vector.empty,
+            s.log
+          )
         }
       } tag (Tags.Update, Tags.Network)
     )
@@ -2168,25 +2167,24 @@ object Classpaths {
           val out = is.withIvy(s.log)(_.getSettings.getDefaultIvyUserDir)
           val uwConfig = (unresolvedWarningConfiguration in update).value
           val depDir = dependencyCacheDirectory.value
-          withExcludes(out, mod.classifiers, lock(app)) {
-            excludes =>
-              val noExplicitCheck =
-                ivyScala.value.map(_.copy(checkExplicit = false))
-              IvyActions.transitiveScratch(
-                is,
-                "sbt",
-                GetClassifiersConfiguration(
-                  mod,
-                  excludes,
-                  c.copy(artifactFilter = c.artifactFilter.invert),
-                  noExplicitCheck,
-                  srcTypes,
-                  docTypes),
-                uwConfig,
-                LogicalClock(state.value.hashCode),
-                Some(depDir),
-                s.log
-              )
+          withExcludes(out, mod.classifiers, lock(app)) { excludes =>
+            val noExplicitCheck =
+              ivyScala.value.map(_.copy(checkExplicit = false))
+            IvyActions.transitiveScratch(
+              is,
+              "sbt",
+              GetClassifiersConfiguration(
+                mod,
+                excludes,
+                c.copy(artifactFilter = c.artifactFilter.invert),
+                noExplicitCheck,
+                srcTypes,
+                docTypes),
+              uwConfig,
+              LogicalClock(state.value.hashCode),
+              Some(depDir),
+              s.log
+            )
           }
         } tag (Tags.Update, Tags.Network)
       )) ++ Seq(

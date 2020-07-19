@@ -1171,14 +1171,14 @@ class PivotTest extends WordSpec with Matchers with FieldConversions {
           outBuf.toList.sorted shouldBe (input.sorted)
         }
       }
-      .sink[(String, String, String, String, Double)](Tsv("pivot_with_default")) {
-        outBuf =>
-          "pivot back to the original with the missing column replace by the specified default" in {
-            outBuf should have size 2
-            outBuf.toList.sorted shouldBe (List(
-              ("1", "a", "b", "c", 2.0),
-              ("2", "d", "e", "f", 2.0)).sorted)
-          }
+      .sink[(String, String, String, String, Double)](
+        Tsv("pivot_with_default")) { outBuf =>
+        "pivot back to the original with the missing column replace by the specified default" in {
+          outBuf should have size 2
+          outBuf.toList.sorted shouldBe (List(
+            ("1", "a", "b", "c", 2.0),
+            ("2", "d", "e", "f", 2.0)).sorted)
+        }
       }
       .run
       .finish

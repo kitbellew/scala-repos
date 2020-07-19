@@ -133,11 +133,11 @@ class Analyzer(
         // here use the CTE definition first, check table name only and ignore database name
         // see https://github.com/apache/spark/pull/4929#discussion_r27186638 for more info
         case u: UnresolvedRelation =>
-          val substituted = cteRelations.get(u.tableIdentifier.table).map {
-            relation =>
+          val substituted =
+            cteRelations.get(u.tableIdentifier.table).map { relation =>
               val withAlias = u.alias.map(SubqueryAlias(_, relation))
               withAlias.getOrElse(relation)
-          }
+            }
           substituted.getOrElse(u)
         case other =>
           // This cannot be done in ResolveSubquery because ResolveSubquery does not know the CTE.

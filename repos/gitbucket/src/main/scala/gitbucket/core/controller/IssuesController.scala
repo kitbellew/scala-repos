@@ -154,30 +154,28 @@ trait IssuesControllerBase extends ControllerBase {
           // record activity
           recordCreateIssueActivity(owner, name, userName, issueId, form.title)
 
-          getIssue(owner, name, issueId.toString).foreach {
-            issue =>
-              // extract references and create refer comment
-              createReferComment(
-                owner,
-                name,
-                issue,
-                form.title + " " + form.content.getOrElse(""),
-                context.loginAccount.get)
+          getIssue(owner, name, issueId.toString).foreach { issue =>
+            // extract references and create refer comment
+            createReferComment(
+              owner,
+              name,
+              issue,
+              form.title + " " + form.content.getOrElse(""),
+              context.loginAccount.get)
 
-              // call web hooks
-              callIssuesWebHook(
-                "opened",
-                repository,
-                issue,
-                context.baseUrl,
-                context.loginAccount.get)
+            // call web hooks
+            callIssuesWebHook(
+              "opened",
+              repository,
+              issue,
+              context.baseUrl,
+              context.loginAccount.get)
 
-              // notifications
-              Notifier()
-                .toNotify(repository, issue, form.content.getOrElse("")) {
-                  Notifier.msgIssue(
-                    s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
-                }
+            // notifications
+            Notifier().toNotify(repository, issue, form.content.getOrElse("")) {
+              Notifier.msgIssue(
+                s"${context.baseUrl}/${owner}/${name}/issues/${issueId}")
+            }
           }
 
           redirect(s"/${owner}/${name}/issues/${issueId}")
@@ -188,21 +186,20 @@ trait IssuesControllerBase extends ControllerBase {
     readableUsersOnly { (title, repository) =>
       defining(repository.owner, repository.name) {
         case (owner, name) =>
-          getIssue(owner, name, params("id")).map {
-            issue =>
-              if (isEditable(owner, name, issue.openedUserName)) {
-                // update issue
-                updateIssue(owner, name, issue.issueId, title, issue.content)
-                // extract references and create refer comment
-                createReferComment(
-                  owner,
-                  name,
-                  issue.copy(title = title),
-                  title,
-                  context.loginAccount.get)
+          getIssue(owner, name, params("id")).map { issue =>
+            if (isEditable(owner, name, issue.openedUserName)) {
+              // update issue
+              updateIssue(owner, name, issue.issueId, title, issue.content)
+              // extract references and create refer comment
+              createReferComment(
+                owner,
+                name,
+                issue.copy(title = title),
+                title,
+                context.loginAccount.get)
 
-                redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
-              } else Unauthorized
+              redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
+            } else Unauthorized
           } getOrElse NotFound
       }
     })
@@ -211,21 +208,20 @@ trait IssuesControllerBase extends ControllerBase {
     readableUsersOnly { (content, repository) =>
       defining(repository.owner, repository.name) {
         case (owner, name) =>
-          getIssue(owner, name, params("id")).map {
-            issue =>
-              if (isEditable(owner, name, issue.openedUserName)) {
-                // update issue
-                updateIssue(owner, name, issue.issueId, issue.title, content)
-                // extract references and create refer comment
-                createReferComment(
-                  owner,
-                  name,
-                  issue,
-                  content.getOrElse(""),
-                  context.loginAccount.get)
+          getIssue(owner, name, params("id")).map { issue =>
+            if (isEditable(owner, name, issue.openedUserName)) {
+              // update issue
+              updateIssue(owner, name, issue.issueId, issue.title, content)
+              // extract references and create refer comment
+              createReferComment(
+                owner,
+                name,
+                issue,
+                content.getOrElse(""),
+                context.loginAccount.get)
 
-                redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
-              } else Unauthorized
+              redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
+            } else Unauthorized
           } getOrElse NotFound
       }
     })
@@ -417,15 +413,14 @@ trait IssuesControllerBase extends ControllerBase {
         repository.name,
         params("id").toInt,
         milestoneId("milestoneId"))
-      milestoneId("milestoneId").map {
-        milestoneId =>
-          getMilestonesWithIssueCount(repository.owner, repository.name)
-            .find(_._1.milestoneId == milestoneId)
-            .map {
-              case (_, openCount, closeCount) =>
-                gitbucket.core.issues.milestones.html
-                  .progress(openCount + closeCount, closeCount)
-            } getOrElse NotFound
+      milestoneId("milestoneId").map { milestoneId =>
+        getMilestonesWithIssueCount(repository.owner, repository.name)
+          .find(_._1.milestoneId == milestoneId)
+          .map {
+            case (_, openCount, closeCount) =>
+              gitbucket.core.issues.milestones.html
+                .progress(openCount + closeCount, closeCount)
+          } getOrElse NotFound
       } getOrElse Ok()
   })
 

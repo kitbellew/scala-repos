@@ -72,25 +72,24 @@ class SbtResolverIndexesManager(val testIndexesDir: Option[File])
       .getInstance()
       .run(new Task.Backgroundable(null, "Indexing resolvers") {
         def run(progressIndicator: ProgressIndicator): Unit =
-          indexesToUpdate.foreach {
-            index =>
-              progressIndicator.setFraction(0.0)
-              progressIndicator.setText(index.root)
-              try {
-                index.update(Some(progressIndicator))
-              } catch {
-                case exc: ResolverException =>
-                  notifyWarning(exc.getMessage)
-                case exc: LockReleaseFailedException =>
-                  notifyWarning(
-                    SbtBundle(
-                      "sbt.resolverIndexer.luceneLockException",
-                      exc.getMessage))
-              } finally {
-                updatingIndexes synchronized {
-                  updatingIndexes -= index
-                }
+          indexesToUpdate.foreach { index =>
+            progressIndicator.setFraction(0.0)
+            progressIndicator.setText(index.root)
+            try {
+              index.update(Some(progressIndicator))
+            } catch {
+              case exc: ResolverException =>
+                notifyWarning(exc.getMessage)
+              case exc: LockReleaseFailedException =>
+                notifyWarning(
+                  SbtBundle(
+                    "sbt.resolverIndexer.luceneLockException",
+                    exc.getMessage))
+            } finally {
+              updatingIndexes synchronized {
+                updatingIndexes -= index
               }
+            }
           }
       })
   }

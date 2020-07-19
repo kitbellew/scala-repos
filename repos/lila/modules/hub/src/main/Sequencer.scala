@@ -43,16 +43,16 @@ final class Sequencer(
     work match {
       case ReceiveTimeout => self ! PoisonPill
       case Sequencer.Work(run, promiseOption, timeoutOption) =>
-        val future = timeoutOption.orElse(executionTimeout).fold(run()) {
-          timeout =>
+        val future =
+          timeoutOption.orElse(executionTimeout).fold(run()) { timeout =>
             run().withTimeout(
               duration = timeout,
               error =
                 lila.common.LilaException(s"Sequencer timed out after $timeout")
             )(context.system)
-        } andThenAnyway {
-          self ! Done
-        }
+          } andThenAnyway {
+            self ! Done
+          }
         promiseOption foreach (_ completeWith future)
       case x => logger.branch("Sequencer").warn(s"Unsupported message $x")
     }

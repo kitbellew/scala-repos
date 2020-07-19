@@ -80,24 +80,23 @@ object RoutesCompiler extends AutoPlugin {
             routesCompilerTasks in (agg.project, configuration.value)
           }
           .join
-          .map {
-            aggTasks: Seq[Seq[RoutesCompilerTask]] =>
-              // Aggregated tasks need to have forwards router compilation disabled and reverse router compilation enabled.
-              val reverseRouterTasks = aggTasks.flatten.map { task =>
-                task.copy(forwardsRouter = false, reverseRouter = true)
-              }
+          .map { aggTasks: Seq[Seq[RoutesCompilerTask]] =>
+            // Aggregated tasks need to have forwards router compilation disabled and reverse router compilation enabled.
+            val reverseRouterTasks = aggTasks.flatten.map { task =>
+              task.copy(forwardsRouter = false, reverseRouter = true)
+            }
 
-              // Find the routes compile tasks for this project
-              val thisProjectTasks = (sources in routes).value.map { file =>
-                RoutesCompilerTask(
-                  file,
-                  routesImport.value,
-                  forwardsRouter = true,
-                  reverseRouter = generateReverseRouter.value,
-                  namespaceReverseRouter = namespaceReverseRouter.value)
-              }
+            // Find the routes compile tasks for this project
+            val thisProjectTasks = (sources in routes).value.map { file =>
+              RoutesCompilerTask(
+                file,
+                routesImport.value,
+                forwardsRouter = true,
+                reverseRouter = generateReverseRouter.value,
+                namespaceReverseRouter = namespaceReverseRouter.value)
+            }
 
-              thisProjectTasks ++ reverseRouterTasks
+            thisProjectTasks ++ reverseRouterTasks
           }
       },
       watchSources in Defaults.ConfigGlobal <++= sources in routes,

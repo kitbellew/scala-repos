@@ -75,32 +75,31 @@ object Setup extends LilaController with TheftPrevention {
               ),
             {
               case config =>
-                userId ?? UserRepo.byId flatMap {
-                  destUser =>
-                    import lila.challenge.Challenge._
-                    val challenge = lila.challenge.Challenge.make(
-                      variant = config.variant,
-                      initialFen = config.fen,
-                      timeControl = config.makeClock map { c =>
-                        TimeControl.Clock(c.limit, c.increment)
-                      } orElse config.makeDaysPerTurn.map {
-                        TimeControl.Correspondence.apply
-                      } getOrElse TimeControl.Unlimited,
-                      mode = config.mode,
-                      color = config.color.name,
-                      challenger = (ctx.me, HTTPRequest sid req) match {
-                        case (Some(user), _) => Right(user)
-                        case (_, Some(sid))  => Left(sid)
-                        case _               => Left("no_sid")
-                      },
-                      destUser = destUser,
-                      rematchOf = none
-                    )
-                    env.processor.saveFriendConfig(config) >>
-                      (Env.challenge.api create challenge) >> negotiate(
-                      html = fuccess(
-                        Redirect(routes.Round.watcher(challenge.id, "white"))),
-                      api = _ => Challenge showChallenge challenge)
+                userId ?? UserRepo.byId flatMap { destUser =>
+                  import lila.challenge.Challenge._
+                  val challenge = lila.challenge.Challenge.make(
+                    variant = config.variant,
+                    initialFen = config.fen,
+                    timeControl = config.makeClock map { c =>
+                      TimeControl.Clock(c.limit, c.increment)
+                    } orElse config.makeDaysPerTurn.map {
+                      TimeControl.Correspondence.apply
+                    } getOrElse TimeControl.Unlimited,
+                    mode = config.mode,
+                    color = config.color.name,
+                    challenger = (ctx.me, HTTPRequest sid req) match {
+                      case (Some(user), _) => Right(user)
+                      case (_, Some(sid))  => Left(sid)
+                      case _               => Left("no_sid")
+                    },
+                    destUser = destUser,
+                    rematchOf = none
+                  )
+                  env.processor.saveFriendConfig(config) >>
+                    (Env.challenge.api create challenge) >> negotiate(
+                    html = fuccess(
+                      Redirect(routes.Round.watcher(challenge.id, "white"))),
+                    api = _ => Challenge showChallenge challenge)
                 }
             }
           )

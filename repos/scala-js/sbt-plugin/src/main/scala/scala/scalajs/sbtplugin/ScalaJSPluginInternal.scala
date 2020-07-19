@@ -262,24 +262,23 @@ object ScalaJSPluginInternal {
           FileFunction.cached(
             s.cacheDirectory,
             FilesInfo.lastModified,
-            FilesInfo.exists) {
-            _ => // We don't need the files
+            FilesInfo.exists) { _ => // We don't need the files
 
-              val stageName = stage match {
-                case Stage.FastOpt => "Fast"
-                case Stage.FullOpt => "Full"
-              }
+            val stageName = stage match {
+              case Stage.FastOpt => "Fast"
+              case Stage.FullOpt => "Full"
+            }
 
-              log.info(s"$stageName optimizing $output")
+            log.info(s"$stageName optimizing $output")
 
-              IO.createDirectory(output.getParentFile)
+            IO.createDirectory(output.getParentFile)
 
-              val linker = (scalaJSLinker in key).value
-              linker.link(ir, AtomicWritableFileVirtualJSFile(output), log)
+            val linker = (scalaJSLinker in key).value
+            linker.link(ir, AtomicWritableFileVirtualJSFile(output), log)
 
-              logIRCacheStats(log)
+            logIRCacheStats(log)
 
-              Set(output)
+            Set(output)
           }(realFiles.toSet)
 
           Attributed.blank(output)
@@ -449,13 +448,12 @@ object ScalaJSPluginInternal {
           Attributed.blank((artifactPath in packageScalaJSLauncher).value))
       else
         Def.task {
-          mainClass.value map {
-            mainCl =>
-              val file = (artifactPath in packageScalaJSLauncher).value
-              IO.write(file, launcherContent(mainCl), Charset.forName("UTF-8"))
+          mainClass.value map { mainCl =>
+            val file = (artifactPath in packageScalaJSLauncher).value
+            IO.write(file, launcherContent(mainCl), Charset.forName("UTF-8"))
 
-              // Attach the name of the main class used, (ab?)using the name key
-              Attributed(file)(AttributeMap.empty.put(name.key, mainCl))
+            // Attach the name of the main class used, (ab?)using the name key
+            Attributed(file)(AttributeMap.empty.put(name.key, mainCl))
           } getOrElse {
             sys.error(
               "Cannot write launcher file, since there is no or multiple mainClasses")

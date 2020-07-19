@@ -147,8 +147,8 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
       // JMX attributes (bean-style)
 
       def getClusterStatus: String = {
-        val members = clusterView.members.toSeq.sorted(Member.ordering).map {
-          m ⇒
+        val members =
+          clusterView.members.toSeq.sorted(Member.ordering).map { m ⇒
             s"""{
               |      "address": "${m.address}",
               |      "status": "${m.status}",
@@ -156,7 +156,7 @@ private[akka] class ClusterJmx(cluster: Cluster, log: LoggingAdapter) {
               |        ${m.roles.map("\"" + _ + "\"").mkString(",\n        ")}
               |      ]
               |    }""".stripMargin
-        } mkString (",\n    ")
+          } mkString (",\n    ")
 
         val unreachable =
           clusterView.reachability.observersGroupedByUnreachable.toSeq

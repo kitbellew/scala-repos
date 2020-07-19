@@ -223,22 +223,21 @@ object PlayDocsPlugin extends AutoPlugin {
         if (sbtFiles.nonEmpty) {
           log.info("Testing .sbt files...")
         }
-        val result = sbtFiles.map {
-          sbtFile =>
-            val relativeFile = relativeTo(baseDirectory.value)(sbtFile)
-              .getOrElse(sbtFile.getAbsolutePath)
-            try {
-              EvaluateConfigurations.evaluateConfiguration(
-                eval(),
-                sbtFile,
-                unit.imports)(unit.loader)
-              log.info(s"  ${Colors.green("+")} $relativeFile")
-              true
-            } catch {
-              case NonFatal(_) =>
-                log.error(s" ${Colors.yellow("x")} $relativeFile")
-                false
-            }
+        val result = sbtFiles.map { sbtFile =>
+          val relativeFile = relativeTo(baseDirectory.value)(sbtFile)
+            .getOrElse(sbtFile.getAbsolutePath)
+          try {
+            EvaluateConfigurations.evaluateConfiguration(
+              eval(),
+              sbtFile,
+              unit.imports)(unit.loader)
+            log.info(s"  ${Colors.green("+")} $relativeFile")
+            true
+          } catch {
+            case NonFatal(_) =>
+              log.error(s" ${Colors.yellow("x")} $relativeFile")
+              false
+          }
         }
         if (result.contains(false)) {
           throw new TestsFailedException

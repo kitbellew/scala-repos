@@ -329,11 +329,11 @@ class RowMatrixClusterSuite
     super.beforeAll()
     val m = 4
     val n = 200000
-    val rows = sc.parallelize(0 until m, 2).mapPartitionsWithIndex {
-      (idx, iter) =>
+    val rows =
+      sc.parallelize(0 until m, 2).mapPartitionsWithIndex { (idx, iter) =>
         val random = new Random(idx)
         iter.map(i => Vectors.dense(Array.fill(n)(random.nextDouble())))
-    }
+      }
     mat = new RowMatrix(rows)
   }
 

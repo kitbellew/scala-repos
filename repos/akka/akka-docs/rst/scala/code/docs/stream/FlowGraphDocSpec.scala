@@ -233,15 +233,14 @@ class FlowGraphDocSpec extends AkkaSpec {
     // This cannot produce any value:
     val cyclicFold: Source[Int, Future[Int]] =
       Source.fromGraph(GraphDSL.create(Sink.fold[Int, Int](0)(_ + _)) {
-        implicit builder =>
-          fold =>
-            // - Fold cannot complete until its upstream mapAsync completes
-            // - mapAsync cannot complete until the materialized Future produced by
-            //   fold completes
-            // As a result this Source will never emit anything, and its materialited
-            // Future will never complete
-            builder.materializedValue.mapAsync(4)(identity) ~> fold
-            SourceShape(builder.materializedValue.mapAsync(4)(identity).outlet)
+        implicit builder => fold =>
+          // - Fold cannot complete until its upstream mapAsync completes
+          // - mapAsync cannot complete until the materialized Future produced by
+          //   fold completes
+          // As a result this Source will never emit anything, and its materialited
+          // Future will never complete
+          builder.materializedValue.mapAsync(4)(identity) ~> fold
+          SourceShape(builder.materializedValue.mapAsync(4)(identity).outlet)
       })
     //#flow-graph-matvalue-cycle
   }

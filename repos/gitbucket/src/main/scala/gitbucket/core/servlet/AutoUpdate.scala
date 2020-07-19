@@ -47,47 +47,46 @@ object AutoUpdate {
     new Version(2, 7) {
       override def update(conn: Connection, cl: ClassLoader): Unit = {
         super.update(conn, cl)
-        conn.select("SELECT * FROM REPOSITORY") {
-          rs =>
-            // Rename attached files directory from /issues to /comments
-            val userName = rs.getString("USER_NAME")
-            val repoName = rs.getString("REPOSITORY_NAME")
-            defining(Directory.getAttachedDir(userName, repoName)) { newDir =>
-              val oldDir = new File(newDir.getParentFile, "issues")
-              if (oldDir.exists && oldDir.isDirectory) {
-                oldDir.renameTo(newDir)
-              }
+        conn.select("SELECT * FROM REPOSITORY") { rs =>
+          // Rename attached files directory from /issues to /comments
+          val userName = rs.getString("USER_NAME")
+          val repoName = rs.getString("REPOSITORY_NAME")
+          defining(Directory.getAttachedDir(userName, repoName)) { newDir =>
+            val oldDir = new File(newDir.getParentFile, "issues")
+            if (oldDir.exists && oldDir.isDirectory) {
+              oldDir.renameTo(newDir)
             }
-            // Update ORIGIN_USER_NAME and ORIGIN_REPOSITORY_NAME if it does not exist
-            val originalUserName = rs.getString("ORIGIN_USER_NAME")
-            val originalRepoName = rs.getString("ORIGIN_REPOSITORY_NAME")
-            if (originalUserName != null && originalRepoName != null) {
-              if (conn.selectInt(
-                  "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
-                  originalUserName,
-                  originalRepoName) == 0) {
-                conn.update(
-                  "UPDATE REPOSITORY SET ORIGIN_USER_NAME = NULL, ORIGIN_REPOSITORY_NAME = NULL " +
-                    "WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
-                  userName,
-                  repoName)
-              }
+          }
+          // Update ORIGIN_USER_NAME and ORIGIN_REPOSITORY_NAME if it does not exist
+          val originalUserName = rs.getString("ORIGIN_USER_NAME")
+          val originalRepoName = rs.getString("ORIGIN_REPOSITORY_NAME")
+          if (originalUserName != null && originalRepoName != null) {
+            if (conn.selectInt(
+                "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
+                originalUserName,
+                originalRepoName) == 0) {
+              conn.update(
+                "UPDATE REPOSITORY SET ORIGIN_USER_NAME = NULL, ORIGIN_REPOSITORY_NAME = NULL " +
+                  "WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
+                userName,
+                repoName)
             }
-            // Update PARENT_USER_NAME and PARENT_REPOSITORY_NAME if it does not exist
-            val parentUserName = rs.getString("PARENT_USER_NAME")
-            val parentRepoName = rs.getString("PARENT_REPOSITORY_NAME")
-            if (parentUserName != null && parentRepoName != null) {
-              if (conn.selectInt(
-                  "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
-                  parentUserName,
-                  parentRepoName) == 0) {
-                conn.update(
-                  "UPDATE REPOSITORY SET PARENT_USER_NAME = NULL, PARENT_REPOSITORY_NAME = NULL " +
-                    "WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
-                  userName,
-                  repoName)
-              }
+          }
+          // Update PARENT_USER_NAME and PARENT_REPOSITORY_NAME if it does not exist
+          val parentUserName = rs.getString("PARENT_USER_NAME")
+          val parentRepoName = rs.getString("PARENT_REPOSITORY_NAME")
+          if (parentUserName != null && parentRepoName != null) {
+            if (conn.selectInt(
+                "SELECT COUNT(*) FROM REPOSITORY WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
+                parentUserName,
+                parentRepoName) == 0) {
+              conn.update(
+                "UPDATE REPOSITORY SET PARENT_USER_NAME = NULL, PARENT_REPOSITORY_NAME = NULL " +
+                  "WHERE USER_NAME = ? AND REPOSITORY_NAME = ?",
+                userName,
+                repoName)
             }
+          }
         }
       }
     },
@@ -129,33 +128,30 @@ object AutoUpdate {
           "eu.medsea.mimeutil.detector.MagicMimeMimeDetector")
 
         super.update(conn, cl)
-        conn.select("SELECT USER_NAME, REPOSITORY_NAME FROM REPOSITORY") {
-          rs =>
-            defining(
-              Directory.getAttachedDir(
-                rs.getString("USER_NAME"),
-                rs.getString("REPOSITORY_NAME"))) {
-              dir =>
-                if (dir.exists && dir.isDirectory) {
-                  dir.listFiles.foreach {
-                    file =>
-                      if (file.getName.indexOf('.') < 0) {
-                        val mimeType = MimeUtil2
-                          .getMostSpecificMimeType(
-                            mimeUtil.getMimeTypes(
-                              file,
-                              new MimeType("application/octet-stream")))
-                          .toString
-                        if (mimeType.startsWith("image/")) {
-                          file.renameTo(
-                            new File(
-                              file.getParent,
-                              file.getName + "." + mimeType.split("/")(1)))
-                        }
-                      }
+        conn.select("SELECT USER_NAME, REPOSITORY_NAME FROM REPOSITORY") { rs =>
+          defining(
+            Directory.getAttachedDir(
+              rs.getString("USER_NAME"),
+              rs.getString("REPOSITORY_NAME"))) { dir =>
+            if (dir.exists && dir.isDirectory) {
+              dir.listFiles.foreach { file =>
+                if (file.getName.indexOf('.') < 0) {
+                  val mimeType = MimeUtil2
+                    .getMostSpecificMimeType(
+                      mimeUtil.getMimeTypes(
+                        file,
+                        new MimeType("application/octet-stream")))
+                    .toString
+                  if (mimeType.startsWith("image/")) {
+                    file.renameTo(
+                      new File(
+                        file.getParent,
+                        file.getName + "." + mimeType.split("/")(1)))
                   }
                 }
+              }
             }
+          }
         }
       }
     },
@@ -173,20 +169,19 @@ object AutoUpdate {
       override def update(conn: Connection, cl: ClassLoader): Unit = {
         super.update(conn, cl)
         // Fix wiki repository configuration
-        conn.select("SELECT USER_NAME, REPOSITORY_NAME FROM REPOSITORY") {
-          rs =>
-            using(
-              Git.open(
-                getWikiRepositoryDir(
-                  rs.getString("USER_NAME"),
-                  rs.getString("REPOSITORY_NAME")))) { git =>
-              defining(git.getRepository.getConfig) { config =>
-                if (!config.getBoolean("http", "receivepack", false)) {
-                  config.setBoolean("http", null, "receivepack", true)
-                  config.save
-                }
+        conn.select("SELECT USER_NAME, REPOSITORY_NAME FROM REPOSITORY") { rs =>
+          using(
+            Git.open(
+              getWikiRepositoryDir(
+                rs.getString("USER_NAME"),
+                rs.getString("REPOSITORY_NAME")))) { git =>
+            defining(git.getRepository.getConfig) { config =>
+              if (!config.getBoolean("http", "receivepack", false)) {
+                config.setBoolean("http", null, "receivepack", true)
+                config.save
               }
             }
+          }
         }
       }
     },

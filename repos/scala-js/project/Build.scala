@@ -192,45 +192,43 @@ object Build extends sbt.Build {
       val logger = streams.value.log
       val errorsSeen = mutable.Set.empty[String]
 
-      val fixJavaDocLink = {
-        (m: scala.util.matching.Regex.Match) =>
-          val frag = m.group(2)
+      val fixJavaDocLink = { (m: scala.util.matching.Regex.Match) =>
+        val frag = m.group(2)
 
-          // Fail when encountering links to class members
-          if (frag.contains("@") && !errorsSeen.contains(frag)) {
-            errorsSeen += frag
-            logger.error(s"Cannot fix JavaDoc link to member: $frag")
-          }
+        // Fail when encountering links to class members
+        if (frag.contains("@") && !errorsSeen.contains(frag)) {
+          errorsSeen += frag
+          logger.error(s"Cannot fix JavaDoc link to member: $frag")
+        }
 
-          m.group(1) + "?" + frag.replace('.', '/') + ".html"
+        m.group(1) + "?" + frag.replace('.', '/') + ".html"
       }
 
       FileFunction.cached(
         streams.value.cacheDirectory,
         FilesInfo.lastModified,
-        FilesInfo.exists) {
-        files =>
-          for {
-            file <- files
-            if file != additionalStylesFile
-          } yield {
-            val relPath = docPaths(file)
-            val outFile = outDir / relPath
+        FilesInfo.exists) { files =>
+        for {
+          file <- files
+          if file != additionalStylesFile
+        } yield {
+          val relPath = docPaths(file)
+          val outFile = outDir / relPath
 
-            if (relPath == "lib/template.css") {
-              val styles = IO.read(additionalStylesFile)
-              IO.copyFile(file, outFile)
-              IO.append(outFile, styles)
-            } else if (relPath.endsWith(".html")) {
-              val content = IO.read(file)
-              val patched = javadocAPIRe.replaceAllIn(content, fixJavaDocLink)
-              IO.write(outFile, patched)
-            } else {
-              IO.copyFile(file, outFile)
-            }
-
-            outFile
+          if (relPath == "lib/template.css") {
+            val styles = IO.read(additionalStylesFile)
+            IO.copyFile(file, outFile)
+            IO.append(outFile, styles)
+          } else if (relPath.endsWith(".html")) {
+            val content = IO.read(file)
+            val patched = javadocAPIRe.replaceAllIn(content, fixJavaDocLink)
+            IO.write(outFile, patched)
+          } else {
+            IO.copyFile(file, outFile)
           }
+
+          outFile
+        }
       }(docPaths.keySet + additionalStylesFile)
 
       if (errorsSeen.size > 0) sys.error("ScalaDoc patching had errors")

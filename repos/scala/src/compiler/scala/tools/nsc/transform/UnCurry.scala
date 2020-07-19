@@ -506,10 +506,10 @@ abstract class UnCurry
             translateSynchronized(tree) match {
               case dd @ DefDef(mods, name, tparams, _, tpt, rhs) =>
                 // Remove default argument trees from parameter ValDefs, SI-4812
-                val vparamssNoRhs = dd.vparamss mapConserve (_ mapConserve {
-                  p =>
+                val vparamssNoRhs =
+                  dd.vparamss mapConserve (_ mapConserve { p =>
                     treeCopy.ValDef(p, p.mods, p.name, p.tpt, EmptyTree)
-                })
+                  })
 
                 if (dd.symbol hasAnnotation VarargsClass) validateVarargs(dd)
 

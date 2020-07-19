@@ -178,8 +178,8 @@ class GradientBoostedTreesModel @Since("1.2.0") (
 
     val broadcastTrees = sc.broadcast(trees)
     (1 until numIterations).foreach { nTree =>
-      predictionAndError = remappedData.zip(predictionAndError).mapPartitions {
-        iter =>
+      predictionAndError =
+        remappedData.zip(predictionAndError).mapPartitions { iter =>
           val currentTree = broadcastTrees.value(nTree)
           val currentTreeWeight = localTreeWeights(nTree)
           iter.map {
@@ -189,7 +189,7 @@ class GradientBoostedTreesModel @Since("1.2.0") (
               val newError = loss.computeError(newPred, point.label)
               (newPred, newError)
           }
-      }
+        }
       evaluationArray(nTree) = predictionAndError.values.mean()
     }
 

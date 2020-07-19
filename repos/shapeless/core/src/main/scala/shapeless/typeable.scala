@@ -427,10 +427,10 @@ class TypeableMacros(val c: blackbox.Context) extends SingletonTypeUtils {
           c.abort(
             c.enclosingPosition,
             "No Typeable for a refinement with non-empty decls")
-        val parentTypeables = parents.filterNot(_ =:= typeOf[AnyRef]).map {
-          parent =>
+        val parentTypeables =
+          parents.filterNot(_ =:= typeOf[AnyRef]).map { parent =>
             c.inferImplicitValue(appliedType(typeableTpe, List(parent)))
-        }
+          }
         if (parentTypeables.exists(_ == EmptyTree))
           c.abort(
             c.enclosingPosition,

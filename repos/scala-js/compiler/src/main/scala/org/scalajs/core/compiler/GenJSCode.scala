@@ -1137,8 +1137,8 @@ abstract class GenJSCode
                * default method calling the impl class method.
                */
               val implClassSym = sym.owner.implClass
-              val implMethodSym = implClassSym.info.member(sym.name).suchThat {
-                s =>
+              val implMethodSym =
+                implClassSym.info.member(sym.name).suchThat { s =>
                   s.isMethod &&
                   s.tpe.params.size == sym.tpe.params.size + 1 &&
                   s.tpe.params.head.tpe =:= sym.owner.toTypeConstructor &&
@@ -1146,7 +1146,7 @@ abstract class GenJSCode
                     case (sParam, symParam) =>
                       sParam.tpe =:= symParam.tpe
                   }
-              }
+                }
               genTraitImplApply(
                 implMethodSym,
                 js.This()(currentClassType) :: jsParams.map(_.ref))

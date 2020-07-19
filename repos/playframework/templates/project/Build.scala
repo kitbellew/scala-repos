@@ -146,22 +146,21 @@ object Templates {
     testTemplates := {
       val preparedTemplates = syncTemplates.value
       val testDir = target.value / "template-tests"
-      preparedTemplates.foreach {
-        template =>
-          val templateDir = testDir / template.getName
-          IO.delete(templateDir)
-          IO.copyDirectory(template, templateDir)
-          streams.value.log.info("Testing template: " + template.getName)
-          @volatile var out = List.empty[String]
-          val rc = Process("sbt test", templateDir).!(StdOutLogger { s =>
-            out = s :: out
-          })
-          if (rc != 0) {
-            out.reverse.foreach(println)
-            streams.value.log.error(
-              "Template " + template.getName + " failed to build")
-            throw new TemplateBuildFailed(template.getName)
-          }
+      preparedTemplates.foreach { template =>
+        val templateDir = testDir / template.getName
+        IO.delete(templateDir)
+        IO.copyDirectory(template, templateDir)
+        streams.value.log.info("Testing template: " + template.getName)
+        @volatile var out = List.empty[String]
+        val rc = Process("sbt test", templateDir).!(StdOutLogger { s =>
+          out = s :: out
+        })
+        if (rc != 0) {
+          out.reverse.foreach(println)
+          streams.value.log.error(
+            "Template " + template.getName + " failed to build")
+          throw new TemplateBuildFailed(template.getName)
+        }
       }
     },
     zipTemplates := {
@@ -288,23 +287,22 @@ object Templates {
             case (name, key) =>
               clientCall("/activator/template/publish")
                 .post(s"url=http://downloads.typesafe.com/$key")
-                .flatMap {
-                  resp =>
-                    if (resp.status != 200) {
-                      logger.error("Error publishing template " + name)
-                      logger.error("Status code was: " + resp.status)
-                      logger.error("Body was: " + resp.body)
-                      throw new RuntimeException("Error publishing template")
-                    }
-                    val js = resp.json
-                    val uuid = (js \ "uuid").as[String]
-                    val statusUrl = (for {
-                      links <- (js \ "_links").asOpt[JsObject]
-                      status <-
-                        (links \ "activator/templates/status").asOpt[JsObject]
-                      url <- (status \ "href").asOpt[String]
-                    } yield url).getOrElse(s"/activator/template/status/$uuid")
-                    waitUntilNotPending(uuid, statusUrl)
+                .flatMap { resp =>
+                  if (resp.status != 200) {
+                    logger.error("Error publishing template " + name)
+                    logger.error("Status code was: " + resp.status)
+                    logger.error("Body was: " + resp.body)
+                    throw new RuntimeException("Error publishing template")
+                  }
+                  val js = resp.json
+                  val uuid = (js \ "uuid").as[String]
+                  val statusUrl = (for {
+                    links <- (js \ "_links").asOpt[JsObject]
+                    status <-
+                      (links \ "activator/templates/status").asOpt[JsObject]
+                    url <- (status \ "href").asOpt[String]
+                  } yield url).getOrElse(s"/activator/template/status/$uuid")
+                  waitUntilNotPending(uuid, statusUrl)
                 }
                 .map(result => (name, key, result))
           }
