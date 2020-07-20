@@ -274,25 +274,24 @@ object SparkBuild extends PomBuild {
       }
 
       var failed = 0
-      analysis.infos.allInfos.foreach {
-        case (k, i) =>
-          i.reportedProblems foreach { p =>
-            val deprecation = p.message.contains("is deprecated")
+      analysis.infos.allInfos.foreach { case (k, i) =>
+        i.reportedProblems foreach { p =>
+          val deprecation = p.message.contains("is deprecated")
 
-            if (!deprecation) {
-              failed = failed + 1
+          if (!deprecation) {
+            failed = failed + 1
+          }
+
+          val printer: (=> String) => Unit = s =>
+            if (deprecation) {
+              out.log.warn(s)
+            } else {
+              out.log.error("[warn] " + s)
             }
 
-            val printer: (=> String) => Unit = s =>
-              if (deprecation) {
-                out.log.warn(s)
-              } else {
-                out.log.error("[warn] " + s)
-              }
+          logProblem(printer, k, p)
 
-            logProblem(printer, k, p)
-
-          }
+        }
       }
 
       if (failed > 0) {

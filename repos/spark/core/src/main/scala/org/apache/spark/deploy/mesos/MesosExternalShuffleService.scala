@@ -109,13 +109,12 @@ private[mesos] class MesosExternalShuffleBlockHandler(
   private class CleanerThread extends Runnable {
     override def run(): Unit = {
       val now = System.nanoTime()
-      connectedApps.asScala.foreach {
-        case (appId, appState) =>
-          if (now - appState.lastHeartbeat > appState.heartbeatTimeout * 1000 * 1000) {
-            logInfo(s"Application $appId timed out. Removing shuffle files.")
-            connectedApps.remove(appId)
-            applicationRemoved(appId, true)
-          }
+      connectedApps.asScala.foreach { case (appId, appState) =>
+        if (now - appState.lastHeartbeat > appState.heartbeatTimeout * 1000 * 1000) {
+          logInfo(s"Application $appId timed out. Removing shuffle files.")
+          connectedApps.remove(appId)
+          applicationRemoved(appId, true)
+        }
       }
     }
   }

@@ -229,12 +229,11 @@ class MetricEvaluator[EI, Q, P, A, R](
     implicit lazy val formats = Utils.json4sDefaultFormats +
       new NameParamsSerializer
 
-    evalResultList.zipWithIndex.foreach {
-      case ((ep, r), idx) =>
-        logger.info(s"Iteration $idx")
-        logger.info(
-          s"EngineParams: ${JsonExtractor.engineParamsToJson(Both, ep)}")
-        logger.info(s"Result: $r")
+    evalResultList.zipWithIndex.foreach { case ((ep, r), idx) =>
+      logger.info(s"Iteration $idx")
+      logger.info(
+        s"EngineParams: ${JsonExtractor.engineParamsToJson(Both, ep)}")
+      logger.info(s"Result: $r")
     }
 
     // use max. take implicit from Metric.

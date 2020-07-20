@@ -17,11 +17,10 @@ class FileUploadDirectivesExamplesSpec extends RoutingSpec {
   "uploadedFile" in {
 
     val route =
-      uploadedFile("csv") {
-        case (metadata, file) =>
-          // do something with the file and file metadata ...
-          file.delete()
-          complete(StatusCodes.OK)
+      uploadedFile("csv") { case (metadata, file) =>
+        // do something with the file and file metadata ...
+        file.delete()
+        complete(StatusCodes.OK)
       }
 
     // tests:
@@ -46,18 +45,17 @@ class FileUploadDirectivesExamplesSpec extends RoutingSpec {
         implicit val materializer = ctx.materializer
         implicit val ec = ctx.executionContext
 
-        fileUpload("csv") {
-          case (metadata, byteSource) =>
-            val sumF: Future[Int] =
-              // sum the numbers as they arrive so that we can
-              // accept any size of file
-              byteSource
-                .via(Framing.delimiter(ByteString("\n"), 1024))
-                .mapConcat(_.utf8String.split(",").toVector)
-                .map(_.toInt)
-                .runFold(0) { (acc, n) => acc + n }
+        fileUpload("csv") { case (metadata, byteSource) =>
+          val sumF: Future[Int] =
+            // sum the numbers as they arrive so that we can
+            // accept any size of file
+            byteSource
+              .via(Framing.delimiter(ByteString("\n"), 1024))
+              .mapConcat(_.utf8String.split(",").toVector)
+              .map(_.toInt)
+              .runFold(0) { (acc, n) => acc + n }
 
-            onSuccess(sumF) { sum => complete(s"Sum: $sum") }
+          onSuccess(sumF) { sum => complete(s"Sum: $sum") }
         }
       }
 

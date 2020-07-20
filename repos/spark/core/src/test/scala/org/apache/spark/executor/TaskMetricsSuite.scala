@@ -679,14 +679,13 @@ private[spark] object TaskMetricsSuite extends Assertions {
       updates1: Seq[AccumulableInfo],
       updates2: Seq[AccumulableInfo]): Unit = {
     assert(updates1.size === updates2.size)
-    updates1.zip(updates2).foreach {
-      case (info1, info2) =>
-        // do not assert ID equals here
-        assert(info1.name === info2.name)
-        assert(info1.update === info2.update)
-        assert(info1.value === info2.value)
-        assert(info1.internal === info2.internal)
-        assert(info1.countFailedValues === info2.countFailedValues)
+    updates1.zip(updates2).foreach { case (info1, info2) =>
+      // do not assert ID equals here
+      assert(info1.name === info2.name)
+      assert(info1.update === info2.update)
+      assert(info1.value === info2.value)
+      assert(info1.internal === info2.internal)
+      assert(info1.countFailedValues === info2.countFailedValues)
     }
   }
 

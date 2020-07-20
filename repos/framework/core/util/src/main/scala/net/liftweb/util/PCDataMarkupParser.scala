@@ -299,9 +299,8 @@ object HtmlEntities {
     case (name, value) => (value.toChar, name)
   }: _*)
 
-  val entities = entList.map {
-    case (name, value) =>
-      (name, new ParsedEntityDecl(name, new IntDef(value.toChar.toString)))
+  val entities = entList.map { case (name, value) =>
+    (name, new ParsedEntityDecl(name, new IntDef(value.toChar.toString)))
   }
 
   def apply() = entities

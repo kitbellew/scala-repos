@@ -50,9 +50,8 @@ trait Monitor { self =>
       def handle(exc: Throwable): Boolean = {
         self
           .tryHandle(exc)
-          .rescue {
-            case exc1 =>
-              next.tryHandle(exc1)
+          .rescue { case exc1 =>
+            next.tryHandle(exc1)
           }
           .isReturn
       }
@@ -133,10 +132,9 @@ object Monitor extends Monitor {
     * An exception catcher that attempts to handle exceptions with
     * the current monitor.
     */
-  val catcher: PartialFunction[Throwable, Unit] = {
-    case exc =>
-      if (!handle(exc))
-        throw exc
+  val catcher: PartialFunction[Throwable, Unit] = { case exc =>
+    if (!handle(exc))
+      throw exc
   }
 
   /**

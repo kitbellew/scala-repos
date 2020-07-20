@@ -52,9 +52,8 @@ trait JsonCommand extends Command with JsonTypeConverterFactories {
   type CommandTypeConverterFactory[T] = JsonTypeConverterFactory[T]
 
   override def typeConverterBuilder[I](tc: CommandTypeConverterFactory[_]) =
-    ({
-      case r: JsonValueReader =>
-        tc.resolveJson.asInstanceOf[TypeConverter[I, _]]
+    ({ case r: JsonValueReader =>
+      tc.resolveJson.asInstanceOf[TypeConverter[I, _]]
     }: PartialFunction[ValueReader[_, _], TypeConverter[I, _]]) orElse super
       .typeConverterBuilder(tc)
 

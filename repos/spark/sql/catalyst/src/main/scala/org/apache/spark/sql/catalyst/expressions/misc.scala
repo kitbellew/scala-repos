@@ -473,15 +473,14 @@ case class Murmur3Hash(children: Seq[Expression], seed: Int)
 
       case StructType(fields) =>
         fields.zipWithIndex
-          .map {
-            case (field, index) =>
-              nullSafeElementHash(
-                input,
-                index.toString,
-                field.nullable,
-                field.dataType,
-                result,
-                ctx)
+          .map { case (field, index) =>
+            nullSafeElementHash(
+              input,
+              index.toString,
+              field.nullable,
+              field.dataType,
+              result,
+              ctx)
           }
           .mkString("\n")
 

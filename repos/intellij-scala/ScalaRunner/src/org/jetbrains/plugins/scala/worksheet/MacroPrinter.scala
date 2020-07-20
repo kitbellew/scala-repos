@@ -56,19 +56,16 @@ object MacroPrinter {
         Option(imp.apply(1)) flatMap {
           case defdef: c.universe.DefDef =>
             val a = s"${u.show(defdef.name)}${defdef.tparams
-              .map {
-                case tp =>
-                  u.show(tp, true, false, false, false).stripPrefix("type ")
+              .map { case tp =>
+                u.show(tp, true, false, false, false).stripPrefix("type ")
               }
               .mkString("[", ",", "]")}${defdef.vparamss
-              .map {
-                case vparams =>
-                  vparams
-                    .map {
-                      case param =>
-                        show(param, false, true, false, false).stripSuffix(" = _")
-                    }
-                    .mkString("(", ",", ")")
+              .map { case vparams =>
+                vparams
+                  .map { case param =>
+                    show(param, false, true, false, false).stripSuffix(" = _")
+                  }
+                  .mkString("(", ",", ")")
               }
               .mkString("")} => ${defdef.tpt.toString()}"
 

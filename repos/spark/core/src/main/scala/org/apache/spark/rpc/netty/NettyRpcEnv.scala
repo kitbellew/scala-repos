@@ -380,12 +380,11 @@ private[netty] class NettyRpcEnv(
         val clone = conf.clone()
 
         // Copy any RPC configuration that is not overridden in the spark.files namespace.
-        conf.getAll.foreach {
-          case (key, value) =>
-            if (key.startsWith(prefix)) {
-              val opt = key.substring(prefix.length())
-              clone.setIfMissing(s"spark.$module.io.$opt", value)
-            }
+        conf.getAll.foreach { case (key, value) =>
+          if (key.startsWith(prefix)) {
+            val opt = key.substring(prefix.length())
+            clone.setIfMissing(s"spark.$module.io.$opt", value)
+          }
         }
 
         val ioThreads = clone.getInt("spark.files.io.threads", 1)

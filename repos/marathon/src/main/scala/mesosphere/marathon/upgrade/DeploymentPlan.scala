@@ -132,8 +132,8 @@ final case class DeploymentPlan(
         steps
           .map { _.actions.map(actionString).mkString("  * ", "\n  * ", "") }
           .zipWithIndex
-          .map {
-            case (stepsString, index) => s"step ${index + 1}:\n$stepsString"
+          .map { case (stepsString, index) =>
+            s"step ${index + 1}:\n$stepsString"
           }
           .mkString("\n", "\n", "")
       } else " NO STEPS"

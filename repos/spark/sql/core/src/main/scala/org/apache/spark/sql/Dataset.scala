@@ -338,10 +338,10 @@ class Dataset[T] private[sql] (
         s"New column names (${colNames.size}): " + colNames.mkString(", ")
     )
 
-    val newCols = logicalPlan.output.zip(colNames).map {
-      case (oldAttribute, newName) =>
+    val newCols =
+      logicalPlan.output.zip(colNames).map { case (oldAttribute, newName) =>
         Column(oldAttribute).as(newName)
-    }
+      }
     select(newCols: _*)
   }
 
@@ -1886,10 +1886,9 @@ class Dataset[T] private[sql] (
          else cols).toList
 
       val ret: Seq[Row] = if (outputCols.nonEmpty) {
-        val aggExprs = statistics.flatMap {
-          case (_, colToAgg) =>
-            outputCols.map(c =>
-              Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
+        val aggExprs = statistics.flatMap { case (_, colToAgg) =>
+          outputCols.map(c =>
+            Column(Cast(colToAgg(Column(c).expr), StringType)).as(c))
         }
 
         val row = agg(aggExprs.head, aggExprs.tail: _*).head().toSeq

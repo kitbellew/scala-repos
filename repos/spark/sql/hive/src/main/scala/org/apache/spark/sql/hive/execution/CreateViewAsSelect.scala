@@ -93,13 +93,12 @@ private[hive] case class CreateViewAsSelect(
           CatalogColumn(a.name, HiveMetastoreTypes.toMetastoreType(a.dataType))
         }
       } else {
-        childSchema.zip(tableDesc.schema).map {
-          case (a, col) =>
-            CatalogColumn(
-              col.name,
-              HiveMetastoreTypes.toMetastoreType(a.dataType),
-              nullable = true,
-              col.comment)
+        childSchema.zip(tableDesc.schema).map { case (a, col) =>
+          CatalogColumn(
+            col.name,
+            HiveMetastoreTypes.toMetastoreType(a.dataType),
+            nullable = true,
+            col.comment)
         }
       }
     }
@@ -118,8 +117,8 @@ private[hive] case class CreateViewAsSelect(
       } else {
         columnNames
           .zip(tableDesc.schema.map(f => quote(f.name)))
-          .map {
-            case (name, alias) => s"$name AS $alias"
+          .map { case (name, alias) =>
+            s"$name AS $alias"
           }
           .mkString(", ")
       }

@@ -94,16 +94,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
         ((uindex, iindex), 1)
       }
-      .filter {
-        case ((u, i), v) =>
-          // keep events with valid user and item index
-          (u != -1) && (i != -1)
+      .filter { case ((u, i), v) =>
+        // keep events with valid user and item index
+        (u != -1) && (i != -1)
       }
       .reduceByKey(_ + _) // aggregate all view events of same user-item pair
-      .map {
-        case ((u, i), v) =>
-          // MLlibRating requires integer index for user and item
-          MLlibRating(u, i, v)
+      .map { case ((u, i), v) =>
+        // MLlibRating requires integer index for user and item
+        MLlibRating(u, i, v)
       }
       .cache()
 
@@ -128,9 +126,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     val userFeatures = m.userFeatures.collectAsMap.toMap
 
     // convert ID to Int index
-    val items = data.items.map {
-      case (id, item) =>
-        (itemStringIntMap(id), item)
+    val items = data.items.map { case (id, item) =>
+      (itemStringIntMap(id), item)
     }
 
     // join item with the trained productFeatures
@@ -177,23 +174,21 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       val uf = userFeature.get
       val indexScores: Map[Int, Double] =
         productFeatures.par // convert to parallel collection
-          .filter {
-            case (i, (item, feature)) =>
-              feature.isDefined &&
-                isCandidateItem(
-                  i = i,
-                  item = item,
-                  categories = query.categories,
-                  whiteList = whiteList,
-                  blackList = finalBlackList
-                )
+          .filter { case (i, (item, feature)) =>
+            feature.isDefined &&
+              isCandidateItem(
+                i = i,
+                item = item,
+                categories = query.categories,
+                whiteList = whiteList,
+                blackList = finalBlackList
+              )
           }
-          .map {
-            case (i, (item, feature)) =>
-              // NOTE: feature must be defined, so can call .get
-              val s = dotProduct(uf, feature.get)
-              // Can adjust score here
-              (i, s)
+          .map { case (i, (item, feature)) =>
+            // NOTE: feature must be defined, so can call .get
+            val s = dotProduct(uf, feature.get)
+            // Can adjust score here
+            (i, s)
           }
           .filter(_._2 > 0) // only keep items with score > 0
           .seq // convert back to sequential collection
@@ -210,13 +205,12 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       Array[(Int, Double)]()
     }
 
-    val itemScores = topScores.map {
-      case (i, s) =>
-        new ItemScore(
-          // convert item int index back to string ID
-          item = model.itemIntStringMap(i),
-          score = s
-        )
+    val itemScores = topScores.map { case (i, s) =>
+      new ItemScore(
+        // convert item int index back to string ID
+        item = model.itemIntStringMap(i),
+        score = s
+      )
     }
 
     new PredictedResult(itemScores)

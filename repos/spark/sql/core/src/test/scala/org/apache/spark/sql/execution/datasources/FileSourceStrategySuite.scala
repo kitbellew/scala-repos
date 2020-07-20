@@ -230,8 +230,8 @@ class FileSourceStrategySuite
   /** Plans the query and calls the provided validation function with the planned partitioning. */
   def checkScan(df: DataFrame)(func: Seq[FilePartition] => Unit): Unit = {
     val fileScan = df.queryExecution.executedPlan
-      .collect {
-        case DataSourceScan(_, scan: FileScanRDD, _, _) => scan
+      .collect { case DataSourceScan(_, scan: FileScanRDD, _, _) =>
+        scan
       }
       .headOption
       .getOrElse {
@@ -252,11 +252,10 @@ class FileSourceStrategySuite
     */
   def createTable(files: Seq[(String, Int)], buckets: Int = 0): DataFrame = {
     val tempDir = Utils.createTempDir()
-    files.foreach {
-      case (name, size) =>
-        val file = new File(tempDir, name)
-        assert(file.getParentFile.exists() || file.getParentFile.mkdirs())
-        util.stringToFile(file, "*" * size)
+    files.foreach { case (name, size) =>
+      val file = new File(tempDir, name)
+      assert(file.getParentFile.exists() || file.getParentFile.mkdirs())
+      util.stringToFile(file, "*" * size)
     }
 
     val df = sqlContext.read

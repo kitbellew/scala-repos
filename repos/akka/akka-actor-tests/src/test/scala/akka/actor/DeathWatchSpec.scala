@@ -199,20 +199,18 @@ trait DeathWatchSpec { this: AkkaSpec with ImplicitSender with DefaultTimeout �
 
     "be able to watch a child with the same name after the old died" in {
       val parent = system.actorOf(Props(new Actor {
-        def receive = {
-          case "NKOTB" ⇒
-            val currentKid = context.watch(
-              context.actorOf(
-                Props(new Actor {
-                  def receive = { case "NKOTB" ⇒ context stop self }
-                }),
-                "kid"))
-            currentKid forward "NKOTB"
-            context become {
-              case Terminated(`currentKid`) ⇒
-                testActor ! "GREEN"
-                context unbecome
-            }
+        def receive = { case "NKOTB" ⇒
+          val currentKid = context.watch(
+            context.actorOf(
+              Props(new Actor {
+                def receive = { case "NKOTB" ⇒ context stop self }
+              }),
+              "kid"))
+          currentKid forward "NKOTB"
+          context become { case Terminated(`currentKid`) ⇒
+            testActor ! "GREEN"
+            context unbecome
+          }
         }
       }).withDeploy(Deploy.local))
 

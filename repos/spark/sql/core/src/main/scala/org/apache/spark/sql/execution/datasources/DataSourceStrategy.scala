@@ -333,37 +333,35 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
 
               // Builds RDD[Row]s for each selected partition.
               val perPartitionRows: Seq[(Int, RDD[InternalRow])] =
-                partitions.flatMap {
-                  case Partition(partitionValues, files) =>
-                    val bucketed = files.groupBy { f =>
-                      BucketingUtils
-                        .getBucketId(f.getPath.getName)
-                        .getOrElse(
-                          sys.error(s"Invalid bucket file ${f.getPath}"))
-                    }
+                partitions.flatMap { case Partition(partitionValues, files) =>
+                  val bucketed = files.groupBy { f =>
+                    BucketingUtils
+                      .getBucketId(f.getPath.getName)
+                      .getOrElse(sys.error(s"Invalid bucket file ${f.getPath}"))
+                  }
 
-                    bucketed.map { bucketFiles =>
-                      // Don't scan any partition columns to save I/O.  Here we are being optimistic and
-                      // assuming partition columns data stored in data files are always consistent with
-                      // those partition values encoded in partition directory paths.
-                      val dataRows = relation.fileFormat.buildInternalScan(
-                        relation.sqlContext,
-                        relation.dataSchema,
-                        requiredDataColumns.map(_.name).toArray,
-                        filters,
-                        buckets,
-                        bucketFiles._2,
-                        confBroadcast,
-                        options)
+                  bucketed.map { bucketFiles =>
+                    // Don't scan any partition columns to save I/O.  Here we are being optimistic and
+                    // assuming partition columns data stored in data files are always consistent with
+                    // those partition values encoded in partition directory paths.
+                    val dataRows = relation.fileFormat.buildInternalScan(
+                      relation.sqlContext,
+                      relation.dataSchema,
+                      requiredDataColumns.map(_.name).toArray,
+                      filters,
+                      buckets,
+                      bucketFiles._2,
+                      confBroadcast,
+                      options)
 
-                      // Merges data values with partition values.
-                      bucketFiles._1 -> mergeWithPartitionValues(
-                        requiredColumns,
-                        requiredDataColumns,
-                        partitionColumns,
-                        partitionValues,
-                        dataRows)
-                    }
+                    // Merges data values with partition values.
+                    bucketFiles._1 -> mergeWithPartitionValues(
+                      requiredColumns,
+                      requiredDataColumns,
+                      partitionColumns,
+                      partitionValues,
+                      dataRows)
+                  }
                 }
 
               val bucketedDataMap: Map[Int, Seq[RDD[InternalRow]]] =
@@ -659,9 +657,8 @@ private[sql] object DataSourceStrategy extends Strategy with Logging {
     val filterSet = AttributeSet(filterPredicates.flatMap(_.references))
 
     val candidatePredicates = filterPredicates.map {
-      _ transform {
-        case a: AttributeReference =>
-          relation.attributeMap(a) // Match original case of attributes.
+      _ transform { case a: AttributeReference =>
+        relation.attributeMap(a) // Match original case of attributes.
       }
     }
 

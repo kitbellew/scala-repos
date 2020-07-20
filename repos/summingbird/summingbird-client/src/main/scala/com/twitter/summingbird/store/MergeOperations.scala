@@ -50,9 +50,8 @@ object MergeOperations {
       m1: Map[K, Future[Seq[Option[(BatchID, V)]]]],
       m2: Map[K, Future[Seq[Option[(BatchID, V)]]]])
       : Map[K, Future[Option[(BatchID, V)]]] =
-    Semigroup.plus(m1, m2).map {
-      case (k, v) =>
-        k -> v.map(sortedSum(_))
+    Semigroup.plus(m1, m2).map { case (k, v) =>
+      k -> v.map(sortedSum(_))
     }
 
   def dropBatches[K, V](
@@ -64,20 +63,18 @@ object MergeOperations {
     */
   def pivotBatches[K, V](m: Map[(K, BatchID), FOpt[V]])
       : Map[K, Future[Seq[Option[(BatchID, V)]]]] =
-    pivot.withValue(m).map {
-      case (k, it) =>
-        k -> collect(it.toSeq).map {
-          _.map { case (batchID, optV) => optV.map(batchID -> _) }
-        }
+    pivot.withValue(m).map { case (k, it) =>
+      k -> collect(it.toSeq).map {
+        _.map { case (batchID, optV) => optV.map(batchID -> _) }
+      }
     }
 
   def decrementOfflineBatch[K, V](m: Map[K, FOpt[(BatchID, V)]])
       : Map[K, Future[Seq[Option[(BatchID, V)]]]] =
-    m.map {
-      case (k, futureOptV) =>
-        k -> futureOptV.map { optV =>
-          Seq(optV.map { case (batchID, v) => (batchID.prev, v) })
-        }
+    m.map { case (k, futureOptV) =>
+      k -> futureOptV.map { optV =>
+        Seq(optV.map { case (batchID, v) => (batchID.prev, v) })
+      }
     }
 
   /**

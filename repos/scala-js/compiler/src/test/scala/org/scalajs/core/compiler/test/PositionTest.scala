@@ -18,17 +18,16 @@ class PositionTest extends JSASTTest {
     val source = new BatchSourceFile(name, """class A { def x = 1 }""")
 
     var found = false
-    sourceAST(source) traverse {
-      case lit: js.IntLiteral =>
-        found = true
-        assertEquals(
-          "Scheme of virtual file URI should be `virtualfile'",
-          "virtualfile",
-          lit.pos.source.getScheme)
-        assertEquals(
-          "Scheme specific part of virtual file URI should be its path",
-          name,
-          lit.pos.source.getSchemeSpecificPart)
+    sourceAST(source) traverse { case lit: js.IntLiteral =>
+      found = true
+      assertEquals(
+        "Scheme of virtual file URI should be `virtualfile'",
+        "virtualfile",
+        lit.pos.source.getScheme)
+      assertEquals(
+        "Scheme specific part of virtual file URI should be its path",
+        name,
+        lit.pos.source.getSchemeSpecificPart)
     }
 
     assertTrue("Should have IntLiteral tree", found)

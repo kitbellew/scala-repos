@@ -96,9 +96,8 @@ class SimpleOrderedRedeliverer(retryTimeout: FiniteDuration)
   /*
    * When [[Idle]], accept new requests and process them, replying with [[WillTry]].
    */
-  when(Idle) {
-    case Event(request: Deliver, _) =>
-      process(request, sender()) replying AcceptedForDelivery(request.uuid)
+  when(Idle) { case Event(request: Deliver, _) =>
+    process(request, sender()) replying AcceptedForDelivery(request.uuid)
   }
 
   when(AwaitingAck) {
@@ -147,13 +146,12 @@ class Receiver extends Actor {
     */
   def shouldSendAck = ThreadLocalRandom.current.nextDouble() < 0.25
 
-  def receive = {
-    case SimpleOrderedRedeliverer.Ackable(from, msg, uuid) =>
-      val goingToSendAck = shouldSendAck
-      println(s"""  [Receiver] got "$msg"; ${if (goingToSendAck) ""
-      else " ***NOT***"} going to send Ack this time""")
-      // Send a [[SimpleOrderedRedeliverer.Ack]] -- if they're lucky!
-      if (goingToSendAck) sender() ! SimpleOrderedRedeliverer.Ack(uuid)
+  def receive = { case SimpleOrderedRedeliverer.Ackable(from, msg, uuid) =>
+    val goingToSendAck = shouldSendAck
+    println(s"""  [Receiver] got "$msg"; ${if (goingToSendAck) ""
+    else " ***NOT***"} going to send Ack this time""")
+    // Send a [[SimpleOrderedRedeliverer.Ack]] -- if they're lucky!
+    if (goingToSendAck) sender() ! SimpleOrderedRedeliverer.Ack(uuid)
   }
 }
 

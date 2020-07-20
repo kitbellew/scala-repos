@@ -36,32 +36,31 @@ private[round] final class Player(
                 applyUci(game, uci, blur, lag))
               .prefixFailuresWith(s"$pov ")
               .fold(errs => fufail(ClientError(errs.shows)), fuccess)
-              .flatMap {
-                case (progress, moveOrDrop) =>
-                  (GameRepo save progress).mon(_.round.move.segment.save) >>-
-                    (pov.game.hasAi ! uciMemo.add(pov.game, moveOrDrop)) >>-
-                    notifyMove(moveOrDrop, progress.game) >>
-                    progress.game.finished.fold(
-                      moveFinish(progress.game, color) map {
-                        progress.events ::: _
-                      }, {
-                        cheatDetector(progress.game) addEffect {
-                          case Some(color) => round ! Cheat(color)
-                          case None =>
-                            if (progress.game.playableByAi)
-                              requestFishnet(progress.game)
-                            if (pov.opponent.isOfferingDraw)
-                              round ! DrawNo(pov.player.id)
-                            if (pov.player.isProposingTakeback)
-                              round ! TakebackNo(pov.player.id)
-                            moveOrDrop.left.toOption
-                              .ifTrue(pov.game.forecastable)
-                              .foreach { move =>
-                                round ! ForecastPlay(move)
-                              }
-                        } inject progress.events
-                      }
-                    ) >>- promiseOption.foreach(_.success(()))
+              .flatMap { case (progress, moveOrDrop) =>
+                (GameRepo save progress).mon(_.round.move.segment.save) >>-
+                  (pov.game.hasAi ! uciMemo.add(pov.game, moveOrDrop)) >>-
+                  notifyMove(moveOrDrop, progress.game) >>
+                  progress.game.finished.fold(
+                    moveFinish(progress.game, color) map {
+                      progress.events ::: _
+                    }, {
+                      cheatDetector(progress.game) addEffect {
+                        case Some(color) => round ! Cheat(color)
+                        case None =>
+                          if (progress.game.playableByAi)
+                            requestFishnet(progress.game)
+                          if (pov.opponent.isOfferingDraw)
+                            round ! DrawNo(pov.player.id)
+                          if (pov.player.isProposingTakeback)
+                            round ! TakebackNo(pov.player.id)
+                          moveOrDrop.left.toOption
+                            .ifTrue(pov.game.forecastable)
+                            .foreach { move =>
+                              round ! ForecastPlay(move)
+                            }
+                      } inject progress.events
+                    }
+                  ) >>- promiseOption.foreach(_.success(()))
               } addFailureEffect { e =>
               promiseOption.foreach(_ failure e)
             }
@@ -82,17 +81,16 @@ private[round] final class Player(
       if (currentFen == FEN(Forsyth >> game.toChess))
         applyUci(game, uci, blur = false, lag = 0.millis)
           .fold(errs => fufail(ClientError(errs.shows)), fuccess)
-          .flatMap {
-            case (progress, moveOrDrop) =>
-              (GameRepo save progress) >>-
-                uciMemo.add(progress.game, moveOrDrop) >>-
-                notifyMove(moveOrDrop, progress.game) >>
-                progress.game.finished.fold(
-                  moveFinish(progress.game, game.turnColor) map {
-                    progress.events ::: _
-                  },
-                  fuccess(progress.events)
-                )
+          .flatMap { case (progress, moveOrDrop) =>
+            (GameRepo save progress) >>-
+              uciMemo.add(progress.game, moveOrDrop) >>-
+              notifyMove(moveOrDrop, progress.game) >>
+              progress.game.finished.fold(
+                moveFinish(progress.game, game.turnColor) map {
+                  progress.events ::: _
+                },
+                fuccess(progress.events)
+              )
           }
       else
         requestFishnet(game) >> fufail(
@@ -113,9 +111,8 @@ private[round] final class Player(
         game.toChess.drop(role, pos, lag) map {
           case (ncg, drop) => ncg -> (Right(drop): MoveOrDrop)
         }
-    }).map {
-      case (newChessGame, moveOrDrop) =>
-        game.update(newChessGame, moveOrDrop, blur, lag.some) -> moveOrDrop
+    }).map { case (newChessGame, moveOrDrop) =>
+      game.update(newChessGame, moveOrDrop, blur, lag.some) -> moveOrDrop
     }
 
   private def notifyMove(moveOrDrop: MoveOrDrop, game: Game) {

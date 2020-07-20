@@ -132,24 +132,23 @@ class CircuitBreakerAsk(potentiallyFailingService: ActorRef)
 
   import context.dispatcher
 
-  override def receive: Receive = {
-    case AskFor(requestToForward) ⇒
-      (serviceCircuitBreaker ? Request(requestToForward))
-        .mapTo[Either[String, String]]
-        .onComplete {
-          case Success(Right(successResponse)) ⇒
-            //handle response
-            log.info("Got successful response {}", successResponse)
+  override def receive: Receive = { case AskFor(requestToForward) ⇒
+    (serviceCircuitBreaker ? Request(requestToForward))
+      .mapTo[Either[String, String]]
+      .onComplete {
+        case Success(Right(successResponse)) ⇒
+          //handle response
+          log.info("Got successful response {}", successResponse)
 
-          case Success(Left(failureResponse)) ⇒
-            //handle response
-            log.info("Got successful response {}", failureResponse)
+        case Success(Left(failureResponse)) ⇒
+          //handle response
+          log.info("Got successful response {}", failureResponse)
 
-          case Failure(exception) ⇒
-            //handle response
-            log.info("Got successful response {}", exception)
+        case Failure(exception) ⇒
+          //handle response
+          log.info("Got successful response {}", exception)
 
-        }
+      }
   }
 }
 //#ask-sample
@@ -176,20 +175,19 @@ class CircuitBreakerAskWithFailure(potentiallyFailingService: ActorRef)
 
   import context.dispatcher
 
-  override def receive: Receive = {
-    case AskFor(requestToForward) ⇒
-      (serviceCircuitBreaker ? Request(requestToForward)).failForOpenCircuit
-        .mapTo[String]
-        .onComplete {
-          case Success(successResponse) ⇒
-            //handle response
-            log.info("Got successful response {}", successResponse)
+  override def receive: Receive = { case AskFor(requestToForward) ⇒
+    (serviceCircuitBreaker ? Request(requestToForward)).failForOpenCircuit
+      .mapTo[String]
+      .onComplete {
+        case Success(successResponse) ⇒
+          //handle response
+          log.info("Got successful response {}", successResponse)
 
-          case Failure(exception) ⇒
-            //handle response
-            log.info("Got successful response {}", exception)
+        case Failure(exception) ⇒
+          //handle response
+          log.info("Got successful response {}", exception)
 
-        }
+      }
   }
 }
 //#ask-with-failure-sample
@@ -215,21 +213,20 @@ class CircuitBreakerAskWithCircuitBreaker(potentiallyFailingService: ActorRef)
 
   import context.dispatcher
 
-  override def receive: Receive = {
-    case AskFor(requestToForward) ⇒
-      serviceCircuitBreaker
-        .askWithCircuitBreaker(Request(requestToForward))
-        .mapTo[String]
-        .onComplete {
-          case Success(successResponse) ⇒
-            //handle response
-            log.info("Got successful response {}", successResponse)
+  override def receive: Receive = { case AskFor(requestToForward) ⇒
+    serviceCircuitBreaker
+      .askWithCircuitBreaker(Request(requestToForward))
+      .mapTo[String]
+      .onComplete {
+        case Success(successResponse) ⇒
+          //handle response
+          log.info("Got successful response {}", successResponse)
 
-          case Failure(exception) ⇒
-            //handle response
-            log.info("Got successful response {}", exception)
+        case Failure(exception) ⇒
+          //handle response
+          log.info("Got successful response {}", exception)
 
-        }
+      }
   }
 }
 //#ask-with-circuit-breaker-sample

@@ -369,9 +369,8 @@ private[akka] class ResizablePoolActor(supervisorStrategy: SupervisorStrategy)
   }
 
   override def receive =
-    ({
-      case Resize ⇒
-        resizerCell.resize(initial = false)
+    ({ case Resize ⇒
+      resizerCell.resize(initial = false)
     }: Actor.Receive) orElse super.receive
 
 }

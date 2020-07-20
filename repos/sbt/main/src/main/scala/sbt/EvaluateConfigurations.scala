@@ -162,9 +162,8 @@ object EvaluateConfigurations {
         (imp, DefinedSbtValues(definitions))
       }
     val allImports = importDefs.map(s => (s, -1)) ++ parsed.imports
-    val dslEntries = parsed.settings map {
-      case (dslExpression, range) =>
-        evaluateDslEntry(eval, name, allImports, dslExpression, range)
+    val dslEntries = parsed.settings map { case (dslExpression, range) =>
+      evaluateDslEntry(eval, name, allImports, dslExpression, range)
     }
     eval.unlinkDeferred()
     // Tracks all the files we generated from evaluating the sbt file.

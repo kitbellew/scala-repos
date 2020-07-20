@@ -24,15 +24,14 @@ object TestProject extends Build {
         managedClasspath in Provided,
         fullClasspath in Runtime,
         fullClasspath in Compile,
-        fullClasspath in Test) map {
-        case ((conf, expected), p, r, c, t) =>
-          val cp =
-            if (conf == Compile.name) c
-            else if (conf == Runtime.name) r
-            else if (conf == Provided.name) p
-            else if (conf == Test.name) t
-            else sys.error("Invalid config: " + conf)
-          checkServletAPI(cp.files, expected, conf)
+        fullClasspath in Test) map { case ((conf, expected), p, r, c, t) =>
+        val cp =
+          if (conf == Compile.name) c
+          else if (conf == Runtime.name) r
+          else if (conf == Provided.name) p
+          else if (conf == Test.name) t
+          else sys.error("Invalid config: " + conf)
+        checkServletAPI(cp.files, expected, conf)
       }
     }
   )

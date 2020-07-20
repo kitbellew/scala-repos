@@ -29,10 +29,9 @@ class DottyLibraryPropertiesEditor(
     override def actionPerformed(e: ActionEvent): Unit = {
       val version: String = ScalaLanguageLevel.Dotty.version
       val result = extensions.withProgressSynchronouslyTry(
-        s"Downloading Dotty $version (via SBT)") {
-        case listener =>
-          DottyDownloader.downloadDotty(version, s => listener(s))
-          BoxedUnit.UNIT
+        s"Downloading Dotty $version (via SBT)") { case listener =>
+        DottyDownloader.downloadDotty(version, s => listener(s))
+        BoxedUnit.UNIT
       }
 
       result match {

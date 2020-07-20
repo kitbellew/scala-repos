@@ -130,12 +130,11 @@ class EnsembleTree(
     * returns the entire tree
     */
   def getTree: List[TreeItem[String]] =
-    tree.map {
-      case (name, items) =>
-        new TreeItem[String](name) {
-          expanded = true
-          children = items
-        }
+    tree.map { case (name, items) =>
+      new TreeItem[String](name) {
+        expanded = true
+        children = items
+      }
     }.toList
 
   def getThumbs(keyName: String) = thumbnails(keyName)

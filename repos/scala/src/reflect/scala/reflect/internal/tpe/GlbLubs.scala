@@ -163,11 +163,10 @@ private[internal] trait GlbLubs {
           val newtps =
             tsBts map (ts => if (ts.head.typeSymbol == sym) ts.tail else ts)
           if (printLubs) {
-            val str = (newtps.zipWithIndex map {
-              case (tps, idx) =>
-                tps
-                  .map("        " + _ + "\n")
-                  .mkString("   (" + idx + ")\n", "", "\n")
+            val str = (newtps.zipWithIndex map { case (tps, idx) =>
+              tps
+                .map("        " + _ + "\n")
+                .mkString("   (" + idx + ")\n", "", "\n")
             }).mkString("")
 
             println("Frontier(\n" + str + ")")

@@ -99,11 +99,10 @@ private class MemcachedTracingFilter extends SimpleFilter[Command, Response] {
               val keys: immutable.Set[String] = immutable.Set(cmd.keys map {
                 case Buf.Utf8(s) => s
               }: _*)
-              val hits = values.map {
-                case value =>
-                  val Buf.Utf8(keyStr) = value.key
-                  Trace.recordBinary(keyStr, "Hit")
-                  keyStr
+              val hits = values.map { case value =>
+                val Buf.Utf8(keyStr) = value.key
+                Trace.recordBinary(keyStr, "Hit")
+                keyStr
               }
               val misses: immutable.Set[String] = keys -- hits
               misses foreach { k: String => Trace.recordBinary(k, "Miss") }

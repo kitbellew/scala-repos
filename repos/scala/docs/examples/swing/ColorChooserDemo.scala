@@ -24,9 +24,8 @@ object ColorChooserDemo extends SimpleSwingApplication {
   def ui =
     new BorderPanel {
       val colorChooser = new ColorChooser {
-        reactions += {
-          case ColorChanged(_, c) =>
-            banner.foreground = c
+        reactions += { case ColorChanged(_, c) =>
+          banner.foreground = c
         }
       }
 
@@ -47,12 +46,11 @@ object ColorChooserDemo extends SimpleSwingApplication {
 
       // Display a color selection dialog when button pressed
       val selectColor = new Button("Choose Background Color") {
-        reactions += {
-          case ButtonClicked(_) =>
-            ColorChooser.showDialog(this, "Test", Color.red) match {
-              case Some(c) => banner.background = c
-              case None    =>
-            }
+        reactions += { case ButtonClicked(_) =>
+          ColorChooser.showDialog(this, "Test", Color.red) match {
+            case Some(c) => banner.background = c
+            case None    =>
+          }
         }
       }
 

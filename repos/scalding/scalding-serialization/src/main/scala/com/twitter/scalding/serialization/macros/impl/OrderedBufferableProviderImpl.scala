@@ -78,11 +78,10 @@ object OrderedSerializationProviderImpl {
 
     scaldingBasicDispatchers(c)(buildDispatcher)
       .orElse(fallbackImplicitDispatcher(c))
-      .orElse {
-        case tpe: Type =>
-          c.abort(
-            c.enclosingPosition,
-            s"""Unable to find OrderedSerialization for type ${tpe}""")
+      .orElse { case tpe: Type =>
+        c.abort(
+          c.enclosingPosition,
+          s"""Unable to find OrderedSerialization for type ${tpe}""")
       }
   }
 

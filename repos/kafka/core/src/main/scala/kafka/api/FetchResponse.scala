@@ -186,9 +186,8 @@ object FetchResponse {
     val topicCount = buffer.getInt
     val pairs = (1 to topicCount).flatMap(_ => {
       val topicData = TopicData.readFrom(buffer)
-      topicData.partitionData.map {
-        case (partitionId, partitionData) =>
-          (TopicAndPartition(topicData.topic, partitionId), partitionData)
+      topicData.partitionData.map { case (partitionId, partitionData) =>
+        (TopicAndPartition(topicData.topic, partitionId), partitionData)
       }
     })
     FetchResponse(correlationId, Map(pairs: _*), requestVersion, throttleTime)
@@ -213,9 +212,8 @@ object FetchResponse {
         case (folded, (topic, partitionDataMap)) =>
           val topicData = TopicData(
             topic,
-            partitionDataMap.map {
-              case (topicAndPartition, partitionData) =>
-                (topicAndPartition.partition, partitionData)
+            partitionDataMap.map { case (topicAndPartition, partitionData) =>
+              (topicAndPartition.partition, partitionData)
             })
           folded + topicData.sizeInBytes
       }
@@ -319,9 +317,8 @@ class FetchResponseSend(val dest: String, val fetchResponse: FetchResponse)
           dest,
           TopicData(
             topic,
-            data.map {
-              case (topicAndPartition, message) =>
-                (topicAndPartition.partition, message)
+            data.map { case (topicAndPartition, message) =>
+              (topicAndPartition.partition, message)
             }))
     }))
 

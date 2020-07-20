@@ -51,17 +51,16 @@ class BucketedHistogramTest
 
     def assertPercentiles(maxVal: Long): Unit = {
       val actuals = h.getQuantiles(wantedPs)
-      actuals.zip(wantedPs).foreach {
-        case (actual, wantedP) =>
-          withClue(s"percentile=$wantedP") {
-            // verify that each percentile is within the error bounds.
-            val ideal = Math.round(wantedP * maxVal)
-            assertWithinError(ideal, actual)
+      actuals.zip(wantedPs).foreach { case (actual, wantedP) =>
+        withClue(s"percentile=$wantedP") {
+          // verify that each percentile is within the error bounds.
+          val ideal = Math.round(wantedP * maxVal)
+          assertWithinError(ideal, actual)
 
-            // verify that getting each percentile 1-at-a-time
-            // is the same as the bulk call
-            assert(h.percentile(wantedP) == actual)
-          }
+          // verify that getting each percentile 1-at-a-time
+          // is the same as the bulk call
+          assert(h.percentile(wantedP) == actual)
+        }
       }
     }
 

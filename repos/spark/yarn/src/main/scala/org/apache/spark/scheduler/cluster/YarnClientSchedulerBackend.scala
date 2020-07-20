@@ -99,17 +99,16 @@ private[spark] class YarnClientSchedulerBackend(
       "SPARK_WORKER_MEMORY" -> "SPARK_EXECUTOR_MEMORY or --executor-memory through spark-submit",
       "SPARK_WORKER_CORES" -> "SPARK_EXECUTOR_CORES or --executor-cores through spark-submit"
     )
-    optionTuples.foreach {
-      case (optionName, envVar, sparkProp) =>
-        if (sc.getConf.contains(sparkProp)) {
-          extraArgs += (optionName, sc.getConf.get(sparkProp))
-        } else if (envVar != null && System.getenv(envVar) != null) {
-          extraArgs += (optionName, System.getenv(envVar))
-          if (deprecatedEnvVars.contains(envVar)) {
-            logWarning(
-              s"NOTE: $envVar is deprecated. Use ${deprecatedEnvVars(envVar)} instead.")
-          }
+    optionTuples.foreach { case (optionName, envVar, sparkProp) =>
+      if (sc.getConf.contains(sparkProp)) {
+        extraArgs += (optionName, sc.getConf.get(sparkProp))
+      } else if (envVar != null && System.getenv(envVar) != null) {
+        extraArgs += (optionName, System.getenv(envVar))
+        if (deprecatedEnvVars.contains(envVar)) {
+          logWarning(
+            s"NOTE: $envVar is deprecated. Use ${deprecatedEnvVars(envVar)} instead.")
         }
+      }
     }
     // The app name is a special case because "spark.app.name" is required of all applications.
     // As a result, the corresponding "SPARK_YARN_APP_NAME" is already handled preemptively in

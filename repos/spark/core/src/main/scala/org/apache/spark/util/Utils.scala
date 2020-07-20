@@ -1997,14 +1997,12 @@ private[spark] object Utils extends Logging {
     val path = Option(filePath).getOrElse(getDefaultPropertiesFile())
     Option(path).foreach { confFile =>
       getPropertiesFromFile(confFile)
-        .filter {
-          case (k, v) =>
-            k.startsWith("spark.")
+        .filter { case (k, v) =>
+          k.startsWith("spark.")
         }
-        .foreach {
-          case (k, v) =>
-            conf.setIfMissing(k, v)
-            sys.props.getOrElseUpdate(k, v)
+        .foreach { case (k, v) =>
+          conf.setIfMissing(k, v)
+          sys.props.getOrElseUpdate(k, v)
         }
     }
     path
@@ -2069,14 +2067,13 @@ private[spark] object Utils extends Logging {
     val threadInfos = ManagementFactory.getThreadMXBean
       .dumpAllThreads(true, true)
       .filter(_ != null)
-    threadInfos.sortBy(_.getThreadId).map {
-      case threadInfo =>
-        val stackTrace = threadInfo.getStackTrace.map(_.toString).mkString("\n")
-        ThreadStackTrace(
-          threadInfo.getThreadId,
-          threadInfo.getThreadName,
-          threadInfo.getThreadState,
-          stackTrace)
+    threadInfos.sortBy(_.getThreadId).map { case threadInfo =>
+      val stackTrace = threadInfo.getStackTrace.map(_.toString).mkString("\n")
+      ThreadStackTrace(
+        threadInfo.getThreadId,
+        threadInfo.getThreadName,
+        threadInfo.getThreadState,
+        stackTrace)
     }
   }
 

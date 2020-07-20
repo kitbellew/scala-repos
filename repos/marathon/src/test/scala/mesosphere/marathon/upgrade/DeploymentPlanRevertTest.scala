@@ -523,9 +523,8 @@ class DeploymentPlanRevertTest
     val firstDeployment = deployments.head
 
     def performDeployments(orig: Group, deployments: Seq[Deployment]): Group = {
-      deployments.foldLeft(orig) {
-        case (last: Group, deployment: Deployment) =>
-          deployment.change(last)
+      deployments.foldLeft(orig) { case (last: Group, deployment: Deployment) =>
+        deployment.change(last)
       }
     }
 

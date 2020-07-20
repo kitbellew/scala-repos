@@ -259,9 +259,8 @@ case class MSet(kv: Map[ChannelBuffer, ChannelBuffer]) extends MultiSet {
   val command = Commands.MSET
 
   def toChannelBuffer = {
-    val kvList: Seq[ChannelBuffer] = kv.flatMap {
-      case (k, v) =>
-        k :: v :: Nil
+    val kvList: Seq[ChannelBuffer] = kv.flatMap { case (k, v) =>
+      k :: v :: Nil
     }(collection.breakOut)
     RedisCodec.toUnifiedFormat(CommandBytes.MSET +: kvList)
   }
@@ -276,9 +275,8 @@ case class MSetNx(kv: Map[ChannelBuffer, ChannelBuffer]) extends MultiSet {
   val command = Commands.MSETNX
 
   def toChannelBuffer = {
-    val kvList: Seq[ChannelBuffer] = kv.flatMap {
-      case (k, v) =>
-        k :: v :: Nil
+    val kvList: Seq[ChannelBuffer] = kv.flatMap { case (k, v) =>
+      k :: v :: Nil
     }(collection.breakOut)
     RedisCodec.toUnifiedFormat(CommandBytes.MSETNX +: kvList)
   }

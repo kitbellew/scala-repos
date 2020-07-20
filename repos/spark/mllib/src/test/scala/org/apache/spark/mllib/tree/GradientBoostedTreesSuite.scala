@@ -194,9 +194,8 @@ class GradientBoostedTreesSuite
         model.save(sc, path)
         val sameModel = GradientBoostedTreesModel.load(sc, path)
         assert(model.algo == sameModel.algo)
-        model.trees.zip(sameModel.trees).foreach {
-          case (treeA, treeB) =>
-            DecisionTreeSuite.checkEqual(treeA, treeB)
+        model.trees.zip(sameModel.trees).foreach { case (treeA, treeB) =>
+          DecisionTreeSuite.checkEqual(treeA, treeB)
         }
         assert(model.treeWeights === sameModel.treeWeights)
       } finally {
@@ -214,51 +213,50 @@ class GradientBoostedTreesSuite
 
     val algos = Array(Regression, Regression, Classification)
     val losses = Array(SquaredError, AbsoluteError, LogLoss)
-    algos.zip(losses).foreach {
-      case (algo, loss) =>
-        val treeStrategy = new Strategy(
-          algo = algo,
-          impurity = Variance,
-          maxDepth = 2,
-          categoricalFeaturesInfo = Map.empty)
-        val boostingStrategy =
-          new BoostingStrategy(
-            treeStrategy,
-            loss,
-            numIterations,
-            validationTol = 0.0)
-        val gbtValidate = new GradientBoostedTrees(boostingStrategy)
-          .runWithValidation(trainRdd, validateRdd)
-        val numTrees = gbtValidate.numTrees
-        assert(numTrees !== numIterations)
+    algos.zip(losses).foreach { case (algo, loss) =>
+      val treeStrategy = new Strategy(
+        algo = algo,
+        impurity = Variance,
+        maxDepth = 2,
+        categoricalFeaturesInfo = Map.empty)
+      val boostingStrategy =
+        new BoostingStrategy(
+          treeStrategy,
+          loss,
+          numIterations,
+          validationTol = 0.0)
+      val gbtValidate = new GradientBoostedTrees(boostingStrategy)
+        .runWithValidation(trainRdd, validateRdd)
+      val numTrees = gbtValidate.numTrees
+      assert(numTrees !== numIterations)
 
-        // Test that it performs better on the validation dataset.
-        val gbt = new GradientBoostedTrees(boostingStrategy).run(trainRdd)
-        val (errorWithoutValidation, errorWithValidation) = {
-          if (algo == Classification) {
-            val remappedRdd = validateRdd.map(x =>
-              new LabeledPoint(2 * x.label - 1, x.features))
-            (
-              loss.computeError(gbt, remappedRdd),
-              loss.computeError(gbtValidate, remappedRdd))
-          } else {
-            (
-              loss.computeError(gbt, validateRdd),
-              loss.computeError(gbtValidate, validateRdd))
-          }
+      // Test that it performs better on the validation dataset.
+      val gbt = new GradientBoostedTrees(boostingStrategy).run(trainRdd)
+      val (errorWithoutValidation, errorWithValidation) = {
+        if (algo == Classification) {
+          val remappedRdd =
+            validateRdd.map(x => new LabeledPoint(2 * x.label - 1, x.features))
+          (
+            loss.computeError(gbt, remappedRdd),
+            loss.computeError(gbtValidate, remappedRdd))
+        } else {
+          (
+            loss.computeError(gbt, validateRdd),
+            loss.computeError(gbtValidate, validateRdd))
         }
-        assert(errorWithValidation <= errorWithoutValidation)
+      }
+      assert(errorWithValidation <= errorWithoutValidation)
 
-        // Test that results from evaluateEachIteration comply with runWithValidation.
-        // Note that convergenceTol is set to 0.0
-        val evaluationArray = gbt.evaluateEachIteration(validateRdd, loss)
-        assert(evaluationArray.length === numIterations)
-        assert(evaluationArray(numTrees) > evaluationArray(numTrees - 1))
-        var i = 1
-        while (i < numTrees) {
-          assert(evaluationArray(i) <= evaluationArray(i - 1))
-          i += 1
-        }
+      // Test that results from evaluateEachIteration comply with runWithValidation.
+      // Note that convergenceTol is set to 0.0
+      val evaluationArray = gbt.evaluateEachIteration(validateRdd, loss)
+      assert(evaluationArray.length === numIterations)
+      assert(evaluationArray(numTrees) > evaluationArray(numTrees - 1))
+      var i = 1
+      while (i < numTrees) {
+        assert(evaluationArray(i) <= evaluationArray(i - 1))
+        i += 1
+      }
     }
   }
 

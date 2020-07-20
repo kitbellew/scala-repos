@@ -47,10 +47,9 @@ object ActivatorDist {
               dir) descendantsExcept ("*", gitignoreFileFilter) filter (_.isFile)
             filteredPathFinder pair Path.rebase(
               dir,
-              activatorDistDirectory / dir.name) map {
-              case (source, target) =>
-                s.log.info(s"copying: $source -> $target")
-                IO.copyFile(source, target, preserveLastModified = true)
+              activatorDistDirectory / dir.name) map { case (source, target) =>
+              s.log.info(s"copying: $source -> $target")
+              IO.copyFile(source, target, preserveLastModified = true)
             }
             val targetDir = activatorDistDirectory / dir.name
             val targetFile =

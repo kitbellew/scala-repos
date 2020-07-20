@@ -54,19 +54,17 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
     startWith(Idle, Uninitialized)
 
     //#when-syntax
-    when(Idle) {
-      case Event(SetTarget(ref), Uninitialized) =>
-        stay using Todo(ref, Vector.empty)
+    when(Idle) { case Event(SetTarget(ref), Uninitialized) =>
+      stay using Todo(ref, Vector.empty)
     }
     //#when-syntax
 
     //#transition-elided
-    onTransition {
-      case Active -> Idle =>
-        stateData match {
-          case Todo(ref, queue) => ref ! Batch(queue)
-          case _                => // nothing to do
-        }
+    onTransition { case Active -> Idle =>
+      stateData match {
+        case Todo(ref, queue) => ref ! Batch(queue)
+        case _                => // nothing to do
+      }
     }
     //#transition-elided
     //#when-syntax
@@ -112,9 +110,8 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
       object Tick
 
       //#modifier-syntax
-      when(SomeState) {
-        case Event(msg, _) =>
-          goto(Processing) using (newData) forMax (5 seconds) replying (WillDo)
+      when(SomeState) { case Event(msg, _) =>
+        goto(Processing) using (newData) forMax (5 seconds) replying (WillDo)
       }
       //#modifier-syntax
 
@@ -136,10 +133,9 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
       //#alt-transition-syntax
 
       //#stop-syntax
-      when(Error) {
-        case Event("stop", _) =>
-          // do cleanup ...
-          stop()
+      when(Error) { case Event("stop", _) =>
+        // do cleanup ...
+        stop()
       }
       //#stop-syntax
 
@@ -191,12 +187,11 @@ class FSMDocSpec extends MyFavoriteTestFrameWorkPlusAkkaTestKit {
     class MyFSM extends LoggingFSM[StateType, Data] {
       //#body-elided
       override def logDepth = 12
-      onTermination {
-        case StopEvent(FSM.Failure(_), state, data) =>
-          val lastEvents = getLog.mkString("\n\t")
-          log.warning(
-            "Failure in state " + state + " with data " + data + "\n" +
-              "Events leading up to this point:\n\t" + lastEvents)
+      onTermination { case StopEvent(FSM.Failure(_), state, data) =>
+        val lastEvents = getLog.mkString("\n\t")
+        log.warning(
+          "Failure in state " + state + " with data " + data + "\n" +
+            "Events leading up to this point:\n\t" + lastEvents)
       }
       // ...
       //#body-elided

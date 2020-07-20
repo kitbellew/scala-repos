@@ -500,10 +500,9 @@ protected class ConnectedClient(
 
     service(command).map {
       case Values(values) =>
-        val hits: Map[String, Value] = values.map {
-          case value =>
-            val Buf.Utf8(keyStr) = value.key
-            (keyStr, value)
+        val hits: Map[String, Value] = values.map { case value =>
+          val Buf.Utf8(keyStr) = value.key
+          (keyStr, value)
         }(breakOut)
         val misses = util.NotFound(keys, hits.keySet)
         GetResult(hits, misses)
@@ -1091,18 +1090,16 @@ private[finagle] class KetamaPartitionedClient(
         ketamaNodeSnap = ketamaNodeGrp()
 
         // remove old nodes and release clients
-        nodes --= (old &~ ketamaNodeSnap) collect {
-          case (key, node) =>
-            node.handle.release()
-            nodeLeaveCount.incr()
-            key
+        nodes --= (old &~ ketamaNodeSnap) collect { case (key, node) =>
+          node.handle.release()
+          nodeLeaveCount.incr()
+          key
         }
 
         // new joined node appears as Live state
-        nodes ++= (ketamaNodeSnap &~ old) collect {
-          case (key, node) =>
-            nodeJoinCount.incr()
-            key -> Node(node, NodeState.Live)
+        nodes ++= (ketamaNodeSnap &~ old) collect { case (key, node) =>
+          nodeJoinCount.incr()
+          key -> Node(node, NodeState.Live)
         }
 
         rebuildDistributor()
@@ -1396,11 +1393,10 @@ case class RubyMemCacheClientBuilder(
     val builder = _clientBuilder getOrElse ClientBuilder()
       .hostConnectionLimit(1)
       .daemon(true)
-    val clients = _nodes.map {
-      case (hostname, port, weight) =>
-        require(weight == 1, "Ruby memcache node weight must be 1")
-        Client(
-          builder.hosts(hostname + ":" + port).codec(text.Memcached()).build())
+    val clients = _nodes.map { case (hostname, port, weight) =>
+      require(weight == 1, "Ruby memcache node weight must be 1")
+      Client(
+        builder.hosts(hostname + ":" + port).codec(text.Memcached()).build())
     }
     new RubyMemCacheClient(clients)
   }
@@ -1452,14 +1448,10 @@ case class PHPMemCacheClientBuilder(
       .daemon(true)
     val keyHasher = KeyHasher.byName(_hashName.getOrElse("crc32-itu"))
     val clients = _nodes
-      .map {
-        case (hostname, port, weight) =>
-          val client = Client(
-            builder
-              .hosts(hostname + ":" + port)
-              .codec(text.Memcached())
-              .build())
-          for (i <- (1 to weight)) yield client
+      .map { case (hostname, port, weight) =>
+        val client = Client(
+          builder.hosts(hostname + ":" + port).codec(text.Memcached()).build())
+        for (i <- (1 to weight)) yield client
       }
       .flatten
       .toArray

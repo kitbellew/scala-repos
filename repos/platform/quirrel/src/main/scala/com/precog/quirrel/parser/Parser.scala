@@ -415,9 +415,8 @@ trait Parser extends RegexParsers with Filters with AST {
       }
 
       val expectedCounts = expectedCountPS.fold(Map()) { (left, right) =>
-        right.foldLeft(left) {
-          case (acc, (str, count)) =>
-            acc.updated(str, acc get str map (count +) getOrElse count)
+        right.foldLeft(left) { case (acc, (str, count)) =>
+          acc.updated(str, acc get str map (count +) getOrElse count)
         }
       }
 

@@ -173,8 +173,8 @@ object DependantsTest extends Properties("Dependants") {
       dependants.nodes.forall { n =>
         val output = dependants
           .transitiveDependantsTillOutput(n)
-          .collect {
-            case t: TailProducer[_, _] => t
+          .collect { case t: TailProducer[_, _] =>
+            t
           }
           .toSet[Producer[Memory, Any]]
 
@@ -189,8 +189,8 @@ object DependantsTest extends Properties("Dependants") {
       dependants.nodes.forall { n =>
         val depTillWrite = dependants.transitiveDependantsTillOutput(n)
         val writerDependencies = depTillWrite
-          .collect {
-            case t: TailProducer[_, _] => t
+          .collect { case t: TailProducer[_, _] =>
+            t
           }
           .flatMap { n => n :: Producer.transitiveDependenciesOf(n) }
           .toSet

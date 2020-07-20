@@ -34,9 +34,8 @@ case class TestBrowser(webDriver: WebDriver, baseUrl: Option[String])
     * }}}
     */
   def submit(selector: String, fields: (String, String)*): Fluent = {
-    fields.foreach {
-      case (fieldName, fieldValue) =>
-        fill(s"${selector} *[name=${fieldName}]").`with`(fieldValue)
+    fields.foreach { case (fieldName, fieldValue) =>
+      fill(s"${selector} *[name=${fieldName}]").`with`(fieldValue)
     }
     super.submit(selector)
   }

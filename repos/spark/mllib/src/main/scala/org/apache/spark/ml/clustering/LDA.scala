@@ -901,9 +901,8 @@ private[clustering] object LDA extends DefaultParamsReadable[LDA] {
       .withColumn("docId", monotonicallyIncreasingId())
       .select("docId", featuresCol)
       .rdd
-      .map {
-        case Row(docId: Long, features: Vector) =>
-          (docId, features)
+      .map { case Row(docId: Long, features: Vector) =>
+        (docId, features)
       }
   }
 

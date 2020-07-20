@@ -398,8 +398,8 @@ class ParquetMetastoreSuite extends ParquetPartitioningTest {
   def collectHadoopFsRelation(df: DataFrame): HadoopFsRelation = {
     val plan = df.queryExecution.analyzed
     plan
-      .collectFirst {
-        case LogicalRelation(r: HadoopFsRelation, _, _) => r
+      .collectFirst { case LogicalRelation(r: HadoopFsRelation, _, _) =>
+        r
       }
       .getOrElse {
         fail(s"Expecting a HadoopFsRelation 2, but got:\n$plan")

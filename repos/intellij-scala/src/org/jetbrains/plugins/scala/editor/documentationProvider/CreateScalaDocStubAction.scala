@@ -115,11 +115,10 @@ class CreateScalaDocStubAction
     def processParams[T <: ScNamedElement](
         groupNames: List[String],
         params: List[Seq[T]]) {
-      val paramMaps = groupNames zip params map {
-        case (name, param) =>
-          val paramMap = convertToParamMap(param)
-          filterTags(name, paramMap)
-          paramMap
+      val paramMaps = groupNames zip params map { case (name, param) =>
+        val paramMap = convertToParamMap(param)
+        filterTags(name, paramMap)
+        paramMap
       }
 
       val tags = oldComment.getTags
@@ -129,15 +128,14 @@ class CreateScalaDocStubAction
 
       (firstAnchor.getTextRange.getEndOffset /: (groupNames zip paramMaps)) {
         case (anchor, (name, paramMap)) =>
-          (anchor /: paramMap) {
-            case (currentAnchor, param) =>
-              val newTagText =
-                if (psiDocument.getText(
-                    new TextRange(currentAnchor - 1, currentAnchor)) == "*")
-                  s"$name ${param._2.getName} \n"
-                else s"* $name ${param._2.getName} \n"
-              psiDocument.insertString(currentAnchor, newTagText)
-              currentAnchor + newTagText.length
+          (anchor /: paramMap) { case (currentAnchor, param) =>
+            val newTagText =
+              if (psiDocument.getText(
+                  new TextRange(currentAnchor - 1, currentAnchor)) == "*")
+                s"$name ${param._2.getName} \n"
+              else s"* $name ${param._2.getName} \n"
+            psiDocument.insertString(currentAnchor, newTagText)
+            currentAnchor + newTagText.length
           }
       }
     }

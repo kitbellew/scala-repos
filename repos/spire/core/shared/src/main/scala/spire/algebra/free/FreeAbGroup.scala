@@ -15,9 +15,8 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     * [[AbGroup]] for `B`.
     */
   def run[B](f: A => B)(implicit B: AbGroup[B]): B =
-    terms.foldLeft(B.id) {
-      case (total, (a, n)) =>
-        B.op(total, B.combinen(f(a), n))
+    terms.foldLeft(B.id) { case (total, (a, n)) =>
+      B.op(total, B.combinen(f(a), n))
     }
 
   /**
@@ -73,11 +72,10 @@ final class FreeAbGroup[A] private (val terms: Map[A, Int]) extends AnyVal {
     * positive terms on the right.
     */
   def split[B](f: A => B)(implicit B: CMonoid[B]): (B, B) =
-    terms.foldLeft((B.id, B.id)) {
-      case ((ltotal, rtotal), (a, n)) =>
-        if (n < 0) (B.op(ltotal, B.combinen(f(a), -n)), rtotal)
-        else if (n > 0) (ltotal, B.op(rtotal, B.combinen(f(a), n)))
-        else (ltotal, rtotal)
+    terms.foldLeft((B.id, B.id)) { case ((ltotal, rtotal), (a, n)) =>
+      if (n < 0) (B.op(ltotal, B.combinen(f(a), -n)), rtotal)
+      else if (n > 0) (ltotal, B.op(rtotal, B.combinen(f(a), n)))
+      else (ltotal, rtotal)
     }
 
   /**

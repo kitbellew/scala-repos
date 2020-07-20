@@ -177,32 +177,31 @@ private[hive] class HadoopTableReader(
       } else {
         var existPathSet = collection.mutable.Set[String]()
         var pathPatternSet = collection.mutable.Set[String]()
-        partitionToDeserializer.filter {
-          case (partition, partDeserializer) =>
-            def updateExistPathSetByPathPattern(pathPatternStr: String) {
-              val pathPattern = new Path(pathPatternStr)
-              val fs = pathPattern.getFileSystem(sc.hiveconf)
-              val matches = fs.globStatus(pathPattern)
-              matches.foreach(fileStatus =>
-                existPathSet += fileStatus.getPath.toString)
-            }
-            // convert  /demo/data/year/month/day  to  /demo/data/*/*/*/
-            def getPathPatternByPath(parNum: Int, tempPath: Path): String = {
-              var path = tempPath
-              for (i <- (1 to parNum)) path = path.getParent
-              val tails = (1 to parNum).map(_ => "*").mkString("/", "/", "/")
-              path.toString + tails
-            }
+        partitionToDeserializer.filter { case (partition, partDeserializer) =>
+          def updateExistPathSetByPathPattern(pathPatternStr: String) {
+            val pathPattern = new Path(pathPatternStr)
+            val fs = pathPattern.getFileSystem(sc.hiveconf)
+            val matches = fs.globStatus(pathPattern)
+            matches.foreach(fileStatus =>
+              existPathSet += fileStatus.getPath.toString)
+          }
+          // convert  /demo/data/year/month/day  to  /demo/data/*/*/*/
+          def getPathPatternByPath(parNum: Int, tempPath: Path): String = {
+            var path = tempPath
+            for (i <- (1 to parNum)) path = path.getParent
+            val tails = (1 to parNum).map(_ => "*").mkString("/", "/", "/")
+            path.toString + tails
+          }
 
-            val partPath = partition.getDataLocation
-            val partNum =
-              Utilities.getPartitionDesc(partition).getPartSpec.size();
-            var pathPatternStr = getPathPatternByPath(partNum, partPath)
-            if (!pathPatternSet.contains(pathPatternStr)) {
-              pathPatternSet += pathPatternStr
-              updateExistPathSetByPathPattern(pathPatternStr)
-            }
-            existPathSet.contains(partPath.toString)
+          val partPath = partition.getDataLocation
+          val partNum =
+            Utilities.getPartitionDesc(partition).getPartSpec.size();
+          var pathPatternStr = getPathPatternByPath(partNum, partPath)
+          if (!pathPatternSet.contains(pathPatternStr)) {
+            pathPatternSet += pathPatternStr
+            updateExistPathSetByPathPattern(pathPatternStr)
+          }
+          existPathSet.contains(partPath.toString)
         }
       }
     }
@@ -238,20 +237,18 @@ private[hive] class HadoopTableReader(
         // Splits all attributes into two groups, partition key attributes and those that are not.
         // Attached indices indicate the position of each attribute in the output schema.
         val (partitionKeyAttrs, nonPartitionKeyAttrs) =
-          attributes.zipWithIndex.partition {
-            case (attr, _) =>
-              relation.partitionKeys.contains(attr)
+          attributes.zipWithIndex.partition { case (attr, _) =>
+            relation.partitionKeys.contains(attr)
           }
 
         def fillPartitionKeys(
             rawPartValues: Array[String],
             row: MutableRow): Unit = {
-          partitionKeyAttrs.foreach {
-            case (attr, ordinal) =>
-              val partOrdinal = relation.partitionKeys.indexOf(attr)
-              row(ordinal) = Cast(
-                Literal(rawPartValues(partOrdinal)),
-                attr.dataType).eval(null)
+          partitionKeyAttrs.foreach { case (attr, ordinal) =>
+            val partOrdinal = relation.partitionKeys.indexOf(attr)
+            row(ordinal) = Cast(
+              Literal(rawPartValues(partOrdinal)),
+              attr.dataType).eval(null)
           }
         }
 

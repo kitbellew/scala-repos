@@ -124,12 +124,11 @@ object ScalaMarkerType {
           case method: ScFunction =>
             val signatures = method.superSignaturesIncludingSelfType
             val elems = new mutable.HashSet[NavigatablePsiElement]
-            signatures.foreach {
-              case sig =>
-                sig.namedElement match {
-                  case nav: NavigatablePsiElement => elems += nav
-                  case _                          =>
-                }
+            signatures.foreach { case sig =>
+              sig.namedElement match {
+                case nav: NavigatablePsiElement => elems += nav
+                case _                          =>
+              }
             }
             elems.size match {
               case 0 =>
@@ -154,12 +153,11 @@ object ScalaMarkerType {
                 z,
                 withSelfType = true)
             val elems = new mutable.HashSet[NavigatablePsiElement]
-            signatures.foreach {
-              case sig =>
-                sig.namedElement match {
-                  case n: NavigatablePsiElement => elems += n
-                  case _                        =>
-                }
+            signatures.foreach { case sig =>
+              sig.namedElement match {
+                case n: NavigatablePsiElement => elems += n
+                case _                        =>
+              }
             }
             elems.size match {
               case 0 =>

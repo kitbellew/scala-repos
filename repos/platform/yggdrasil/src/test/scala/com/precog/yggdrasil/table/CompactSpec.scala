@@ -47,10 +47,8 @@ trait CompactSpec[M[+_]]
         val slices = cTable.slices.toStream.copoint
         val sizes = slices.map(_.size).toList
         val undefined = slices.map { slice =>
-          (0 until slice.size).foldLeft(0) {
-            case (acc, i) =>
-              if (!slice.columns.values.exists(_.isDefinedAt(i))) acc + 1
-              else acc
+          (0 until slice.size).foldLeft(0) { case (acc, i) =>
+            if (!slice.columns.values.exists(_.isDefinedAt(i))) acc + 1 else acc
           }
         }.toList
 

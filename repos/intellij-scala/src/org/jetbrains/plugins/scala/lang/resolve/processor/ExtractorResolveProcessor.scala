@@ -51,24 +51,23 @@ class ExtractorResolveProcessor(
               Some((meth, subst, Some(obj)))
             case _ => None
           }.toSeq
-          addResults(sigs.map {
-            case (m, subst, parent) =>
-              val resolveToMethod = new ScalaResolveResult(
-                m,
-                subst,
-                getImports(state),
-                fromType = getFromType(state),
-                parentElement = parent,
-                isAccessible = accessible)
-              val resolveToNamed = new ScalaResolveResult(
-                named,
-                subst,
-                getImports(state),
-                fromType = getFromType(state),
-                parentElement = parent,
-                isAccessible = accessible)
+          addResults(sigs.map { case (m, subst, parent) =>
+            val resolveToMethod = new ScalaResolveResult(
+              m,
+              subst,
+              getImports(state),
+              fromType = getFromType(state),
+              parentElement = parent,
+              isAccessible = accessible)
+            val resolveToNamed = new ScalaResolveResult(
+              named,
+              subst,
+              getImports(state),
+              fromType = getFromType(state),
+              parentElement = parent,
+              isAccessible = accessible)
 
-              resolveToMethod.copy(innerResolveResult = Option(resolveToNamed))
+            resolveToMethod.copy(innerResolveResult = Option(resolveToNamed))
           })
         }
         resultsFor("unapply")

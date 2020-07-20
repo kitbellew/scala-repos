@@ -88,9 +88,8 @@ class GradientDescentSuite
 
     // Add a extra variable consisting of all 1.0's for the intercept.
     val testData = GradientDescentSuite.generateGDInput(A, B, nPoints, 42)
-    val data = testData.map {
-      case LabeledPoint(label, features) =>
-        label -> MLUtils.appendBias(features)
+    val data = testData.map { case LabeledPoint(label, features) =>
+      label -> MLUtils.appendBias(features)
     }
 
     val dataRDD = sc.parallelize(data, 2).cache()
@@ -120,9 +119,8 @@ class GradientDescentSuite
 
     // Add a extra variable consisting of all 1.0's for the intercept.
     val testData = GradientDescentSuite.generateGDInput(2.0, -1.5, 10000, 42)
-    val data = testData.map {
-      case LabeledPoint(label, features) =>
-        label -> Vectors.dense(1.0 +: features.toArray)
+    val data = testData.map { case LabeledPoint(label, features) =>
+      label -> Vectors.dense(1.0 +: features.toArray)
     }
 
     val dataRDD = sc.parallelize(data, 2).cache()
@@ -186,9 +184,8 @@ class GradientDescentSuite
 
     // Add a extra variable consisting of all 1.0's for the intercept.
     val testData = GradientDescentSuite.generateGDInput(A, B, nPoints, 42)
-    val data = testData.map {
-      case LabeledPoint(label, features) =>
-        label -> MLUtils.appendBias(features)
+    val data = testData.map { case LabeledPoint(label, features) =>
+      label -> MLUtils.appendBias(features)
     }
 
     val dataRDD = sc.parallelize(data, 2).cache()

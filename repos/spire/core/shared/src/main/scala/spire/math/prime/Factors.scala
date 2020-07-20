@@ -79,17 +79,15 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
 
   def gcd(rhs: Factors): Factors =
     Factors(
-      lhs.factors.flatMap {
-        case (p, le) =>
-          rhs.factors.get(p).map(re => (p, le min re))
+      lhs.factors.flatMap { case (p, le) =>
+        rhs.factors.get(p).map(re => (p, le min re))
       },
       Positive)
 
   def lcm(rhs: Factors): Factors =
     Factors(
-      lhs.factors.foldLeft(rhs.factors) {
-        case (fs, (p, e)) =>
-          fs.updated(p, fs.getOrElse(p, 0) max e)
+      lhs.factors.foldLeft(rhs.factors) { case (fs, (p, e)) =>
+        fs.updated(p, fs.getOrElse(p, 0) max e)
       },
       Positive)
 
@@ -111,9 +109,8 @@ case class Factors(factors: Map[SafeLong, Int], sign: Sign)
     val sign = (lhs.sign * rhs.sign).toInt
     val (nn, dd) =
       (lhs.factors - rhs.factors).filter(_._2 != 0).partition(_._2 > 0)
-    val cc = lhs.factors.flatMap {
-      case (p, le) =>
-        rhs.factors.get(p).map(re => (p, le min re))
+    val cc = lhs.factors.flatMap { case (p, le) =>
+      rhs.factors.get(p).map(re => (p, le min re))
     }
     (sign, nn, dd.map { case (p, e) => (p, -e) }, cc)
   }

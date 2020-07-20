@@ -28,10 +28,9 @@ object UseRoleIgnoredMultiJvmSpec extends MultiNodeConfig {
 
     def this() = this(PoolRoutee)
 
-    def receive = {
-      case msg ⇒
-        log.info("msg = {}", msg)
-        sender() ! Reply(routeeType, self)
+    def receive = { case msg ⇒
+      log.info("msg = {}", msg)
+      sender() ! Reply(routeeType, self)
     }
   }
 

@@ -105,10 +105,9 @@ object NIHDBShardServer
         clock,
         Stoppable.fromFuture(platform.shutdown),
         asyncQueries)
-    } recoverWith {
-      case ex: Throwable =>
-        System.err.println("Could not start NIHDB Shard server!!!")
-        ex.printStackTrace
-        Promise.failed(ex)
+    } recoverWith { case ex: Throwable =>
+      System.err.println("Could not start NIHDB Shard server!!!")
+      ex.printStackTrace
+      Promise.failed(ex)
     }
 }

@@ -133,12 +133,11 @@ private object PoolSlot {
           s"The first message must be `ExposedPublisher` but was [$other]")
     }
 
-    def waitingForSubscribePending: Receive = {
-      case SubscribePending ⇒
-        exposedPublisher.takePendingSubscribers() foreach (s ⇒
-          self ! ActorPublisher.Internal.Subscribe(s))
-        log.debug("become unconnected, from subscriber pending")
-        context.become(unconnected)
+    def waitingForSubscribePending: Receive = { case SubscribePending ⇒
+      exposedPublisher.takePendingSubscribers() foreach (s ⇒
+        self ! ActorPublisher.Internal.Subscribe(s))
+      log.debug("become unconnected, from subscriber pending")
+      context.become(unconnected)
     }
 
     val unconnected: Receive = {

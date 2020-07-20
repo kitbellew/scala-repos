@@ -385,9 +385,8 @@ class InputOutputMetricsSuite
         assert(taskBytesWritten.length == 2)
         val outFiles =
           fs.listStatus(outPath).filter(_.getPath.getName != "_SUCCESS")
-        taskBytesWritten.zip(outFiles).foreach {
-          case (bytes, fileStatus) =>
-            assert(bytes >= fileStatus.getLen)
+        taskBytesWritten.zip(outFiles).foreach { case (bytes, fileStatus) =>
+          assert(bytes >= fileStatus.getLen)
         }
       } finally {
         fs.delete(outPath, true)

@@ -81,12 +81,11 @@ class EnumFieldSpec extends Specification with MongoTestKit {
       val er = EnumRec.createRecord.save()
 
       val erFromDb = EnumRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dow.value mustEqual WeekDay.Mon
-          er2.dowOptional.valueBox mustEqual Empty
-          er2.jsonobj.value mustEqual JsonObj(WeekDay.Mon)
+      erFromDb must beLike { case Full(er2) =>
+        er2 mustEqual er
+        er2.dow.value mustEqual WeekDay.Mon
+        er2.dowOptional.valueBox mustEqual Empty
+        er2.jsonobj.value mustEqual JsonObj(WeekDay.Mon)
       }
     }
 
@@ -99,11 +98,10 @@ class EnumFieldSpec extends Specification with MongoTestKit {
         .save()
 
       val erFromDb = EnumRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dow.value mustEqual WeekDay.Tue
-          er2.jsonobj.value mustEqual JsonObj(WeekDay.Sun)
+      erFromDb must beLike { case Full(er2) =>
+        er2 mustEqual er
+        er2.dow.value mustEqual WeekDay.Tue
+        er2.jsonobj.value mustEqual JsonObj(WeekDay.Sun)
       }
     }
 
@@ -115,10 +113,9 @@ class EnumFieldSpec extends Specification with MongoTestKit {
       er.save()
 
       val erFromDb = EnumRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dowOptional.valueBox mustEqual Empty
+      erFromDb must beLike { case Full(er2) =>
+        er2 mustEqual er
+        er2.dowOptional.valueBox mustEqual Empty
       }
     }
 
@@ -130,10 +127,9 @@ class EnumFieldSpec extends Specification with MongoTestKit {
       er.save()
 
       val erFromDb = EnumRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dowOptional.valueBox mustEqual Full(WeekDay.Sat)
+      erFromDb must beLike { case Full(er2) =>
+        er2 mustEqual er
+        er2.dowOptional.valueBox mustEqual Full(WeekDay.Sat)
       }
     }
   }

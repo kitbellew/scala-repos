@@ -632,11 +632,10 @@ class MapWithStateSuite
       expected.size === collected.size,
       s"number of collected $typ (${collected.size}) different from expected (${expected.size})" +
         debugString)
-    expected.zip(collected).foreach {
-      case (c, e) =>
-        assert(
-          c.toSet === e.toSet,
-          s"collected $typ is different from expected $debugString")
+    expected.zip(collected).foreach { case (c, e) =>
+      assert(
+        c.toSet === e.toSet,
+        s"collected $typ is different from expected $debugString")
     }
   }
 }

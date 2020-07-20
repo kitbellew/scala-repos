@@ -40,17 +40,14 @@ trait RandomForestSpecs extends EvalStackSpecs {
 
       results must haveSize(150)
 
-      results must haveAllElementsLike {
-        case (ids, value) =>
-          ids must haveSize(1)
-          value must beLike {
-            case SObject(obj) =>
-              obj.keySet mustEqual Set("model1")
-              obj("model1") must beLike {
-                case SString(str) =>
-                  categories must contain(str)
-              }
+      results must haveAllElementsLike { case (ids, value) =>
+        ids must haveSize(1)
+        value must beLike { case SObject(obj) =>
+          obj.keySet mustEqual Set("model1")
+          obj("model1") must beLike { case SString(str) =>
+            categories must contain(str)
           }
+        }
       }
     }
 
@@ -78,14 +75,12 @@ trait RandomForestSpecs extends EvalStackSpecs {
 
       results must haveSize(398)
 
-      results must haveAllElementsLike {
-        case (ids, value) =>
-          ids must haveSize(1)
-          value must beLike {
-            case SObject(obj) =>
-              obj.keySet mustEqual Set("model1")
-              obj("model1") must beLike { case SDecimal(_) => ok }
-          }
+      results must haveAllElementsLike { case (ids, value) =>
+        ids must haveSize(1)
+        value must beLike { case SObject(obj) =>
+          obj.keySet mustEqual Set("model1")
+          obj("model1") must beLike { case SDecimal(_) => ok }
+        }
       }
     }
 
@@ -103,21 +98,17 @@ trait RandomForestSpecs extends EvalStackSpecs {
 
       results must haveSize(150)
 
-      results must haveAllElementsLike {
-        case (ids, value) =>
-          ids must haveSize(1)
-          value must beLike {
-            case SObject(obj) =>
-              obj.keySet mustEqual Set("model1")
-              obj("model1") must beLike {
-                case SObject(pred) =>
-                  pred.keySet mustEqual Set("species")
-                  pred("species") must beLike {
-                    case SString(str) =>
-                      categories must contain(str)
-                  }
-              }
+      results must haveAllElementsLike { case (ids, value) =>
+        ids must haveSize(1)
+        value must beLike { case SObject(obj) =>
+          obj.keySet mustEqual Set("model1")
+          obj("model1") must beLike { case SObject(pred) =>
+            pred.keySet mustEqual Set("species")
+            pred("species") must beLike { case SString(str) =>
+              categories must contain(str)
+            }
           }
+        }
       }
     }
 
@@ -149,17 +140,14 @@ trait RandomForestSpecs extends EvalStackSpecs {
 
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, value) =>
-          ids must haveSize(0)
-          value must beLike {
-            case SObject(obj) =>
-              obj.keySet mustEqual Set("model1")
-              obj("model1") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (0.25)
-              }
+      results must haveAllElementsLike { case (ids, value) =>
+        ids must haveSize(0)
+        value must beLike { case SObject(obj) =>
+          obj.keySet mustEqual Set("model1")
+          obj("model1") must beLike { case SDecimal(d) =>
+            d.toDouble mustEqual (0.25)
           }
+        }
       }
     }
 
@@ -188,14 +176,12 @@ trait RandomForestSpecs extends EvalStackSpecs {
 
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, value) =>
-          ids must haveSize(0)
-          value must beLike {
-            case SDecimal(d) =>
-              //println("pred rate classification: " + d.toDouble)
-              d.toDouble must be_>(0.5)
-          }
+      results must haveAllElementsLike { case (ids, value) =>
+        ids must haveSize(0)
+        value must beLike { case SDecimal(d) =>
+          //println("pred rate classification: " + d.toDouble)
+          d.toDouble must be_>(0.5)
+        }
       }
     }
 
@@ -239,14 +225,12 @@ trait RandomForestSpecs extends EvalStackSpecs {
 
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, value) =>
-          ids must haveSize(0)
-          value must beLike {
-            case SDecimal(d) =>
-              // println("r^2 regression: " + d)
-              d.toDouble must be_>(0.6)
-          }
+      results must haveAllElementsLike { case (ids, value) =>
+        ids must haveSize(0)
+        value must beLike { case SDecimal(d) =>
+          // println("r^2 regression: " + d)
+          d.toDouble must be_>(0.6)
+        }
       }
     }
   }

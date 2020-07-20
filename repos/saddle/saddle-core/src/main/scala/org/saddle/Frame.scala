@@ -1557,12 +1557,10 @@ class Frame[RX: ST: ORD, CX: ST: ORD, T: ST](
     * in row-major order.
     */
   def toSeq: IndexedSeq[(RX, CX, T)] =
-    (Range(0, numRows) zip rowIx.toSeq).flatMap {
-      case (i, rx) =>
-        rowAt(i).toSeq.map {
-          case (cx, t) =>
-            (rx, cx, t)
-        }
+    (Range(0, numRows) zip rowIx.toSeq).flatMap { case (i, rx) =>
+      rowAt(i).toSeq.map { case (cx, t) =>
+        (rx, cx, t)
+      }
     }
 
   // ------------------------------------------------------

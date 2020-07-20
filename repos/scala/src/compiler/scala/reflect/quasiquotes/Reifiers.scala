@@ -60,25 +60,24 @@ trait Reifiers { self: Quasiquotes =>
       */
     def wrap(tree: Tree) =
       if (isReifyingExpressions) {
-        val freshdefs = nameMap.iterator.map {
-          case (origname, names) =>
-            assert(names.size == 1)
-            val FreshName(prefix) = origname
-            val nameTypeName =
-              if (origname.isTermName) tpnme.TermName else tpnme.TypeName
-            val freshName =
-              if (origname.isTermName) nme.freshTermName else nme.freshTypeName
-            // q"val ${names.head}: $u.$nameTypeName = $u.internal.reificationSupport.$freshName($prefix)"
-            ValDef(
-              NoMods,
-              names.head,
-              Select(u, nameTypeName),
-              Apply(
-                Select(
-                  Select(Select(u, nme.internal), nme.reificationSupport),
-                  freshName),
-                Literal(Constant(prefix)) :: Nil)
-            )
+        val freshdefs = nameMap.iterator.map { case (origname, names) =>
+          assert(names.size == 1)
+          val FreshName(prefix) = origname
+          val nameTypeName =
+            if (origname.isTermName) tpnme.TermName else tpnme.TypeName
+          val freshName =
+            if (origname.isTermName) nme.freshTermName else nme.freshTypeName
+          // q"val ${names.head}: $u.$nameTypeName = $u.internal.reificationSupport.$freshName($prefix)"
+          ValDef(
+            NoMods,
+            names.head,
+            Select(u, nameTypeName),
+            Apply(
+              Select(
+                Select(Select(u, nme.internal), nme.reificationSupport),
+                freshName),
+              Literal(Constant(prefix)) :: Nil)
+          )
         }.toList
         // q"..$freshdefs; $tree"
         SyntacticBlock(freshdefs :+ tree)
@@ -114,10 +113,9 @@ trait Reifiers { self: Quasiquotes =>
               nameMap
                 .collect {
                   case (_, nameset) if nameset.size >= 2 =>
-                    nameset.toList.sliding(2).map {
-                      case List(n1, n2) =>
-                        // q"$n1 == $n2"
-                        Apply(Select(Ident(n1), nme.EQ), List(Ident(n2)))
+                    nameset.toList.sliding(2).map { case List(n1, n2) =>
+                      // q"$n1 == $n2"
+                      Apply(Select(Ident(n1), nme.EQ), List(Ident(n2)))
                     }
                 }
                 .flatten
@@ -587,8 +585,8 @@ trait Reifiers { self: Quasiquotes =>
           case _                  => false
         }
         val (mods, flags) = modsPlaceholders
-          .map {
-            case ModsPlaceholder(hole: ApplyHole) => hole
+          .map { case ModsPlaceholder(hole: ApplyHole) =>
+            hole
           }
           .partition { hole =>
             if (hole.tpe <:< modsType) true

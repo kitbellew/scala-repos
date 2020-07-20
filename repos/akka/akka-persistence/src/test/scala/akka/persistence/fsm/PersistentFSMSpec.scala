@@ -477,8 +477,7 @@ object PersistentFSMSpec {
       case persistentEvent ⇒ client ! persistentEvent
     }
 
-    def receiveCommand = {
-      case _ ⇒ // do nothing
+    def receiveCommand = { case _ ⇒ // do nothing
     }
   }
 

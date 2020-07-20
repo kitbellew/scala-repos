@@ -85,16 +85,14 @@ private[storage] class BlockManagerSlaveEndpoint(
       logDebug(actionMessage)
       body
     }
-    future.onSuccess {
-      case response =>
-        logDebug("Done " + actionMessage + ", response is " + response)
-        context.reply(response)
-        logDebug("Sent response: " + response + " to " + context.senderAddress)
+    future.onSuccess { case response =>
+      logDebug("Done " + actionMessage + ", response is " + response)
+      context.reply(response)
+      logDebug("Sent response: " + response + " to " + context.senderAddress)
     }
-    future.onFailure {
-      case t: Throwable =>
-        logError("Error in " + actionMessage, t)
-        context.sendFailure(t)
+    future.onFailure { case t: Throwable =>
+      logError("Error in " + actionMessage, t)
+      context.sendFailure(t)
     }
   }
 

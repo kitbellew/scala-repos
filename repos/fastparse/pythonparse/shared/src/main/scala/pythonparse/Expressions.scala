@@ -79,12 +79,10 @@ object Expressions {
   val BitXor = op("^", Ast.operator.BitXor)
 
   def Chain(p: P[Ast.expr], op: P[Ast.operator]) =
-    P(p ~ (op ~ p).rep).map {
-      case (lhs, chunks) =>
-        chunks.foldLeft(lhs) {
-          case (lhs, (op, rhs)) =>
-            Ast.expr.BinOp(lhs, op, rhs)
-        }
+    P(p ~ (op ~ p).rep).map { case (lhs, chunks) =>
+      chunks.foldLeft(lhs) { case (lhs, (op, rhs)) =>
+        Ast.expr.BinOp(lhs, op, rhs)
+      }
     }
   val expr: P[Ast.expr] = P(Chain(xor_expr, BitOr))
   val xor_expr: P[Ast.expr] = P(Chain(and_expr, BitXor))
@@ -195,11 +193,10 @@ object Expressions {
   }
   val named_argument = P(NAME ~ "=" ~ test).map(Ast.keyword.tupled)
 
-  val comp_for: P[Ast.comprehension] =
-    P("for" ~ exprlist ~ "in" ~ or_test ~ comp_if.rep).map {
-      case (targets, test, ifs) =>
-        Ast.comprehension(tuplize(targets), test, ifs)
-    }
+  val comp_for: P[Ast.comprehension] = P(
+    "for" ~ exprlist ~ "in" ~ or_test ~ comp_if.rep).map {
+    case (targets, test, ifs) => Ast.comprehension(tuplize(targets), test, ifs)
+  }
   val comp_if: P[Ast.expr] = P("if" ~ test)
 
   val testlist1: P[Seq[Ast.expr]] = P(test.rep(1, sep = ","))

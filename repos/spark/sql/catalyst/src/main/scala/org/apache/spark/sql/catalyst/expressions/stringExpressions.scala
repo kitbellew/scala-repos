@@ -126,33 +126,32 @@ case class ConcatWs(children: Seq[Expression])
       val evals = children.map(_.gen(ctx))
       val (varargCount, varargBuild) = children.tail
         .zip(evals.tail)
-        .map {
-          case (child, eval) =>
-            child.dataType match {
-              case StringType =>
-                (
-                  "", // we count all the StringType arguments num at once below.
-                  s"$array[$idxInVararg ++] = ${eval.isNull} ? (UTF8String) null : ${eval.value};")
-              case _: ArrayType =>
-                val size = ctx.freshName("n")
-                (
-                  s"""
+        .map { case (child, eval) =>
+          child.dataType match {
+            case StringType =>
+              (
+                "", // we count all the StringType arguments num at once below.
+                s"$array[$idxInVararg ++] = ${eval.isNull} ? (UTF8String) null : ${eval.value};")
+            case _: ArrayType =>
+              val size = ctx.freshName("n")
+              (
+                s"""
               if (!${eval.isNull}) {
                 $varargNum += ${eval.value}.numElements();
               }
             """,
-                  s"""
+                s"""
             if (!${eval.isNull}) {
               final int $size = ${eval.value}.numElements();
               for (int j = 0; j < $size; j ++) {
                 $array[$idxInVararg ++] = ${ctx.getValue(
-                    eval.value,
-                    StringType,
-                    "j")};
+                  eval.value,
+                  StringType,
+                  "j")};
               }
             }
             """)
-            }
+          }
         }
         .unzip
 

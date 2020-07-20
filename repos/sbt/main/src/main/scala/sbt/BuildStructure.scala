@@ -186,10 +186,9 @@ final class DetectedPlugins(
     autoPluginAutoImports,
     topLevelAutoPluginAutoImports) =
     autoPlugins
-      .flatMap {
-        case DetectedAutoPlugin(name, ap, hasAutoImport) =>
-          if (hasAutoImport) Some(name)
-          else None
+      .flatMap { case DetectedAutoPlugin(name, ap, hasAutoImport) =>
+        if (hasAutoImport) Some(name)
+        else None
       }
       .partition(nonTopLevelPlugin)
 

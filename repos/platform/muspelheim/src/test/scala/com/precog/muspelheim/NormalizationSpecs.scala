@@ -26,25 +26,20 @@ trait NormalizationSpecs extends EvalStackSpecs {
   import stack._
 
   def summaryHeight(obj: Map[String, SValue]) = {
-    obj("count") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 993
+    obj("count") must beLike { case SDecimal(d) =>
+      d.toDouble mustEqual 993
     }
-    obj("mean") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 176.4370594159114
+    obj("mean") must beLike { case SDecimal(d) =>
+      d.toDouble mustEqual 176.4370594159114
     }
-    obj("min") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 140
+    obj("min") must beLike { case SDecimal(d) =>
+      d.toDouble mustEqual 140
     }
-    obj("max") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 208
+    obj("max") must beLike { case SDecimal(d) =>
+      d.toDouble mustEqual 208
     }
-    obj("stdDev") must beLike {
-      case SDecimal(d) =>
-        d.toDouble mustEqual 11.56375193112367
+    obj("stdDev") must beLike { case SDecimal(d) =>
+      d.toDouble mustEqual 11.56375193112367
     }
   }
 
@@ -97,9 +92,8 @@ trait NormalizationSpecs extends EvalStackSpecs {
 
         summaryHeight(obj)
 
-        obj("sqVariance") must beLike {
-          case SDecimal(d) =>
-            d.toDouble mustEqual 17881.13433742673
+        obj("sqVariance") must beLike { case SDecimal(d) =>
+          d.toDouble mustEqual 17881.13433742673
         }
       }
       case _ => ko
@@ -578,17 +572,16 @@ trait NormalizationSpecs extends EvalStackSpecs {
         ids must haveSize(0)
         elems.keySet mustEqual Set("model1")
 
-        elems("model1") must beLike {
-          case SObject(clusters) =>
-            clusters must haveSize(10)
-            clusters.keySet mustEqual clusterIds.toSet
+        elems("model1") must beLike { case SObject(clusters) =>
+          clusters must haveSize(10)
+          clusters.keySet mustEqual clusterIds.toSet
 
-            val checkClusters = clusterIds.forall { clusterId =>
-              clusterSchema(clusters, clusterId) == Set("age", "income")
-            }
+          val checkClusters = clusterIds.forall { clusterId =>
+            clusterSchema(clusters, clusterId) == Set("age", "income")
+          }
 
-            if (checkClusters) ok
-            else ko
+          if (checkClusters) ok
+          else ko
         }
 
       case _ => ko

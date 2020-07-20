@@ -393,11 +393,10 @@ class DefaultEventHandler[K, V](
                 p1._1.topic.compareTo(p2._1.topic) < 0 ||
                   (p1._1.topic.compareTo(
                     p2._1.topic) == 0 && p1._1.partition < p2._1.partition))
-              .map {
-                case (topicAndPartition, status) =>
-                  topicAndPartition.toString + ": " + Errors
-                    .forCode(status.error)
-                    .exceptionName
+              .map { case (topicAndPartition, status) =>
+                topicAndPartition.toString + ": " + Errors
+                  .forCode(status.error)
+                  .exceptionName
               }
               .mkString(",")
             warn(

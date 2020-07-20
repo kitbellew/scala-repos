@@ -104,9 +104,8 @@ private[spark] class BlockManagerMaster(
   /** Remove all blocks belonging to the given RDD. */
   def removeRdd(rddId: Int, blocking: Boolean) {
     val future = driverEndpoint.askWithRetry[Future[Seq[Int]]](RemoveRdd(rddId))
-    future.onFailure {
-      case e: Exception =>
-        logWarning(s"Failed to remove RDD $rddId - ${e.getMessage}", e)
+    future.onFailure { case e: Exception =>
+      logWarning(s"Failed to remove RDD $rddId - ${e.getMessage}", e)
     }(ThreadUtils.sameThread)
     if (blocking) {
       timeout.awaitResult(future)
@@ -117,9 +116,8 @@ private[spark] class BlockManagerMaster(
   def removeShuffle(shuffleId: Int, blocking: Boolean) {
     val future = driverEndpoint.askWithRetry[Future[Seq[Boolean]]](
       RemoveShuffle(shuffleId))
-    future.onFailure {
-      case e: Exception =>
-        logWarning(s"Failed to remove shuffle $shuffleId - ${e.getMessage}", e)
+    future.onFailure { case e: Exception =>
+      logWarning(s"Failed to remove shuffle $shuffleId - ${e.getMessage}", e)
     }(ThreadUtils.sameThread)
     if (blocking) {
       timeout.awaitResult(future)
@@ -133,12 +131,11 @@ private[spark] class BlockManagerMaster(
       blocking: Boolean) {
     val future = driverEndpoint.askWithRetry[Future[Seq[Int]]](
       RemoveBroadcast(broadcastId, removeFromMaster))
-    future.onFailure {
-      case e: Exception =>
-        logWarning(
-          s"Failed to remove broadcast $broadcastId" +
-            s" with removeFromMaster = $removeFromMaster - ${e.getMessage}",
-          e)
+    future.onFailure { case e: Exception =>
+      logWarning(
+        s"Failed to remove broadcast $broadcastId" +
+          s" with removeFromMaster = $removeFromMaster - ${e.getMessage}",
+        e)
     }(ThreadUtils.sameThread)
     if (blocking) {
       timeout.awaitResult(future)
@@ -195,9 +192,8 @@ private[spark] class BlockManagerMaster(
     }
     blockManagerIds
       .zip(blockStatus)
-      .flatMap {
-        case (blockManagerId, status) =>
-          status.map { s => (blockManagerId, s) }
+      .flatMap { case (blockManagerId, status) =>
+        status.map { s => (blockManagerId, s) }
       }
       .toMap
   }

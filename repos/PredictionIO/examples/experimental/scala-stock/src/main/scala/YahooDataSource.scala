@@ -108,19 +108,18 @@ class YahooDataSource(val params: YahooDataSource.Params)
       tList.zipWithIndex
         .drop(1)
         .filter { case (t, idx) => timeIndexSetOpt.map(_(t)).getOrElse(true) }
-        .map {
-          case (t, idx) =>
-            val adjReturn = (adjCloseList(idx) / adjCloseList(idx - 1)) - 1
+        .map { case (t, idx) =>
+          val adjReturn = (adjCloseList(idx) / adjCloseList(idx - 1)) - 1
 
-            val daily = YahooDataSource.Daily(
-              close = closeList(idx),
-              adjClose = adjCloseList(idx),
-              adjReturn = adjReturn,
-              volume = volumeList(idx),
-              active = true,
-              prevDate = tList(idx - 1))
+          val daily = YahooDataSource.Daily(
+            close = closeList(idx),
+            adjClose = adjCloseList(idx),
+            adjReturn = adjReturn,
+            volume = volumeList(idx),
+            active = true,
+            prevDate = tList(idx - 1))
 
-            (t -> daily)
+          (t -> daily)
         }
         .toMap
 
@@ -323,17 +322,13 @@ class YahooDataSource(val params: YahooDataSource.Params)
         }
       }
 
-    dataSet.map {
-      case (trainingData, queries) =>
-        /*
+    dataSet.map { case (trainingData, queries) =>
+      /*
       (dataParams,
         sc.parallelize(Array(trainingData)),
         sc.parallelize(queries))
-         */
-        (
-          sc.parallelize(Array(trainingData)),
-          dataParams,
-          sc.parallelize(queries))
+       */
+      (sc.parallelize(Array(trainingData)), dataParams, sc.parallelize(queries))
     }
   }
 }

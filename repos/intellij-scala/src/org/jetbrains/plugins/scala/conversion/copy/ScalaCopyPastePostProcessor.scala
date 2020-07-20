@@ -177,11 +177,10 @@ class ScalaCopyPastePostProcessor
         association.path.asString(
           ScalaCodeStyleSettings
             .getInstance(project)
-            .isImportMembersUsingUnderScore))).filter {
-        case Binding(_, path) =>
-          val index = path.lastIndexOf('.')
-          index != -1 && !Set("scala", "java.lang", "scala.Predef").contains(
-            path.substring(0, index))
+            .isImportMembersUsingUnderScore))).filter { case Binding(_, path) =>
+        val index = path.lastIndexOf('.')
+        index != -1 && !Set("scala", "java.lang", "scala.Predef").contains(
+          path.substring(0, index))
       }
 
     if (bindings.isEmpty) return

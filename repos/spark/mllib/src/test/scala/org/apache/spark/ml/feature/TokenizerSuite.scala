@@ -125,9 +125,8 @@ object RegexTokenizerSuite extends SparkFunSuite {
     t.transform(dataset)
       .select("tokens", "wantedTokens")
       .collect()
-      .foreach {
-        case Row(tokens, wantedTokens) =>
-          assert(tokens === wantedTokens)
+      .foreach { case Row(tokens, wantedTokens) =>
+        assert(tokens === wantedTokens)
       }
   }
 }

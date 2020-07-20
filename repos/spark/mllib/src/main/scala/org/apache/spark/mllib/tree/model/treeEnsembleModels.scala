@@ -182,12 +182,11 @@ class GradientBoostedTreesModel @Since("1.2.0") (
         remappedData.zip(predictionAndError).mapPartitions { iter =>
           val currentTree = broadcastTrees.value(nTree)
           val currentTreeWeight = localTreeWeights(nTree)
-          iter.map {
-            case (point, (pred, error)) =>
-              val newPred =
-                pred + currentTree.predict(point.features) * currentTreeWeight
-              val newError = loss.computeError(newPred, point.label)
-              (newPred, newError)
+          iter.map { case (point, (pred, error)) =>
+            val newPred =
+              pred + currentTree.predict(point.features) * currentTreeWeight
+            val newError = loss.computeError(newPred, point.label)
+            (newPred, newError)
           }
         }
       evaluationArray(nTree) = predictionAndError.values.mean()
@@ -253,11 +252,10 @@ object GradientBoostedTreesModel extends Loader[GradientBoostedTreesModel] {
       loss: Loss): RDD[(Double, Double)] = {
 
     val newPredError = data.zip(predictionAndError).mapPartitions { iter =>
-      iter.map {
-        case (lp, (pred, error)) =>
-          val newPred = pred + tree.predict(lp.features) * treeWeight
-          val newError = loss.computeError(newPred, lp.label)
-          (newPred, newError)
+      iter.map { case (lp, (pred, error)) =>
+        val newPred = pred + tree.predict(lp.features) * treeWeight
+        val newError = loss.computeError(newPred, lp.label)
+        (newPred, newError)
       }
     }
     newPredError
@@ -338,10 +336,9 @@ private[tree] sealed class TreeEnsembleModel(
     */
   private def predictByVoting(features: Vector): Double = {
     val votes = mutable.Map.empty[Int, Double]
-    trees.view.zip(treeWeights).foreach {
-      case (tree, weight) =>
-        val prediction = tree.predict(features).toInt
-        votes(prediction) = votes.getOrElse(prediction, 0.0) + weight
+    trees.view.zip(treeWeights).foreach { case (tree, weight) =>
+      val prediction = tree.predict(features).toInt
+      votes(prediction) = votes.getOrElse(prediction, 0.0) + weight
     }
     votes.maxBy(_._2)._1
   }
@@ -408,9 +405,8 @@ private[tree] sealed class TreeEnsembleModel(
   def toDebugString: String = {
     val header = toString + "\n"
     header + trees.zipWithIndex
-      .map {
-        case (tree, treeIndex) =>
-          s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
+      .map { case (tree, treeIndex) =>
+        s"  Tree $treeIndex:\n" + tree.topNode.subtreeToString(4)
       }
       .fold("")(_ + _)
   }
@@ -501,10 +497,8 @@ private[tree] object TreeEnsembleModel extends Logging {
       // Create Parquet data.
       val dataRDD = sc
         .parallelize(model.trees.zipWithIndex)
-        .flatMap {
-          case (tree, treeId) =>
-            tree.topNode.subtreeIterator.toSeq.map(node =>
-              NodeData(treeId, node))
+        .flatMap { case (tree, treeId) =>
+          tree.topNode.subtreeIterator.toSeq.map(node => NodeData(treeId, node))
         }
         .toDF()
       dataRDD.write.parquet(Loader.dataPath(path))

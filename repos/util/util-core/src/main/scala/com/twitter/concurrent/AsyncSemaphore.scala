@@ -118,12 +118,11 @@ class AsyncSemaphore protected (initialPermits: Int, maxWaiters: Option[Int]) {
             MaxWaitersExceededException
           case _ =>
             val promise = new Promise[Permit]
-            promise.setInterruptHandler {
-              case t: Throwable =>
-                self.synchronized {
-                  if (promise.updateIfEmpty(Throw(t)))
-                    waitq.remove(promise)
-                }
+            promise.setInterruptHandler { case t: Throwable =>
+              self.synchronized {
+                if (promise.updateIfEmpty(Throw(t)))
+                  waitq.remove(promise)
+              }
             }
             waitq.addLast(promise)
             promise

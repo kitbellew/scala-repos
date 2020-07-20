@@ -225,9 +225,8 @@ trait ShardQueryExecutorPlatform[M[+_]]
         }
 
       def page(table: N[Table]): N[Table] =
-        opts.page map {
-          case (offset, limit) =>
-            table map { _.takeRange(offset, limit) }
+        opts.page map { case (offset, limit) =>
+          table map { _.takeRange(offset, limit) }
         } getOrElse table
 
       page(sort(table map (_.compact(constants.SourceValue.Single))))

@@ -419,9 +419,8 @@ private[deploy] class Master(
       idToWorker.get(workerId) match {
         case Some(worker) =>
           for (exec <- executors) {
-            val executorMatches = worker.executors.exists {
-              case (_, e) =>
-                e.application.id == exec.appId && e.id == exec.execId
+            val executorMatches = worker.executors.exists { case (_, e) =>
+              e.application.id == exec.appId && e.id == exec.execId
             }
             if (!executorMatches) {
               // master doesn't recognize this executor. So just tell worker to kill it.
@@ -1173,17 +1172,16 @@ private[deploy] class Master(
       Some(ui)
     }(rebuildUIContext)
 
-    futureUI.onSuccess {
-      case Some(ui) =>
-        appIdToUI.put(app.id, ui)
-        // `self` can be null if we are already in the process of shutting down
-        // This happens frequently in tests where `local-cluster` is used
-        if (self != null) {
-          self.send(AttachCompletedRebuildUI(app.id))
-        }
-        // Application UI is successfully rebuilt, so link the Master UI to it
-        // NOTE - app.appUIUrlAtHistoryServer is volatile
-        app.appUIUrlAtHistoryServer = Some(ui.basePath)
+    futureUI.onSuccess { case Some(ui) =>
+      appIdToUI.put(app.id, ui)
+      // `self` can be null if we are already in the process of shutting down
+      // This happens frequently in tests where `local-cluster` is used
+      if (self != null) {
+        self.send(AttachCompletedRebuildUI(app.id))
+      }
+      // Application UI is successfully rebuilt, so link the Master UI to it
+      // NOTE - app.appUIUrlAtHistoryServer is volatile
+      app.appUIUrlAtHistoryServer = Some(ui.basePath)
     }(ThreadUtils.sameThread)
 
     futureUI.onFailure {

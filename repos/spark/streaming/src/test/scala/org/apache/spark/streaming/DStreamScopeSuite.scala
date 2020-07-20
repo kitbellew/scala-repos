@@ -214,14 +214,13 @@ class DStreamScopeSuite
 
     val rddScopes = generatedRDDs.map { _.scope }
     assertDefined(rddScopes: _*)
-    rddScopes.zipWithIndex.foreach {
-      case (rddScope, idx) =>
-        assert(rddScope.get.name === "reduceByKey")
-        assert(rddScope.get.parent.isDefined)
-        assertScopeCorrect(
-          foreachBaseScope.get,
-          rddScope.get.parent.get,
-          (idx + 1) * 1000)
+    rddScopes.zipWithIndex.foreach { case (rddScope, idx) =>
+      assert(rddScope.get.name === "reduceByKey")
+      assert(rddScope.get.parent.isDefined)
+      assertScopeCorrect(
+        foreachBaseScope.get,
+        rddScope.get.parent.get,
+        (idx + 1) * 1000)
     }
   }
 

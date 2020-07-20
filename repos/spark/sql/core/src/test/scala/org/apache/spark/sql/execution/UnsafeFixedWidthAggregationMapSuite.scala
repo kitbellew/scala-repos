@@ -202,16 +202,15 @@ class UnsafeFixedWidthAggregationMapSuite
 
     // Add more keys to the sorter and make sure the results come out sorted.
     val additionalKeys = randomStrings(1024)
-    additionalKeys.zipWithIndex.foreach {
-      case (str, i) =>
-        val buf =
-          map.getAggregationBuffer(InternalRow(UTF8String.fromString(str)))
-        buf.setInt(0, str.length)
+    additionalKeys.zipWithIndex.foreach { case (str, i) =>
+      val buf =
+        map.getAggregationBuffer(InternalRow(UTF8String.fromString(str)))
+      buf.setInt(0, str.length)
 
-        if ((i % 100) == 0) {
-          val sorter2 = map.destructAndCreateExternalSorter()
-          sorter.merge(sorter2)
-        }
+      if ((i % 100) == 0) {
+        val sorter2 = map.destructAndCreateExternalSorter()
+        sorter.merge(sorter2)
+      }
     }
     val sorter2 = map.destructAndCreateExternalSorter()
     sorter.merge(sorter2)
@@ -245,16 +244,15 @@ class UnsafeFixedWidthAggregationMapSuite
 
     // Add more keys to the sorter and make sure the results come out sorted.
     val additionalKeys = randomStrings(1024)
-    additionalKeys.zipWithIndex.foreach {
-      case (str, i) =>
-        val buf =
-          map.getAggregationBuffer(InternalRow(UTF8String.fromString(str)))
-        buf.setInt(0, str.length)
+    additionalKeys.zipWithIndex.foreach { case (str, i) =>
+      val buf =
+        map.getAggregationBuffer(InternalRow(UTF8String.fromString(str)))
+      buf.setInt(0, str.length)
 
-        if ((i % 100) == 0) {
-          val sorter2 = map.destructAndCreateExternalSorter()
-          sorter.merge(sorter2)
-        }
+      if ((i % 100) == 0) {
+        val sorter2 = map.destructAndCreateExternalSorter()
+        sorter.merge(sorter2)
+      }
     }
     val sorter2 = map.destructAndCreateExternalSorter()
     sorter.merge(sorter2)

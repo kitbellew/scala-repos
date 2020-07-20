@@ -45,11 +45,10 @@ object SharedLeveldbJournalSpec {
       case RecoveryCompleted ⇒ // ignore
       case payload ⇒ probe ! payload
     }
-    override def receiveCommand = {
-      case payload ⇒
-        persist(payload) { _ ⇒
-          probe ! payload
-        }
+    override def receiveCommand = { case payload ⇒
+      persist(payload) { _ ⇒
+        probe ! payload
+      }
     }
   }
 

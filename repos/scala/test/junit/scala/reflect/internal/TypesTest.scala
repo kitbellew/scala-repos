@@ -47,13 +47,12 @@ class TypesTest {
     val tp3 = ThisType(moduleClass)
     val tps = List(tp1, tp2, tp3)
     val results = mutable.Buffer[String]()
-    tps.permutations.foreach {
-      case ts @ List(a, b, c) =>
-        def tsShownRaw = ts.map(t => showRaw(t)).mkString(", ")
-        if (a <:< b && b <:< c && !(a <:< c))
-          results += s"<:< intransitive: $tsShownRaw"
-        if (a =:= b && b =:= c && !(a =:= c))
-          results += s"=:= intransitive: $tsShownRaw"
+    tps.permutations.foreach { case ts @ List(a, b, c) =>
+      def tsShownRaw = ts.map(t => showRaw(t)).mkString(", ")
+      if (a <:< b && b <:< c && !(a <:< c))
+        results += s"<:< intransitive: $tsShownRaw"
+      if (a =:= b && b =:= c && !(a =:= c))
+        results += s"=:= intransitive: $tsShownRaw"
     }
     results.toList match {
       case Nil => // okay

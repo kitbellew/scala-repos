@@ -70,12 +70,11 @@ case class ScalarMatch(
 
   def matches: Boolean = true
   def consumedResources: Iterable[Protos.Resource] = {
-    consumed.map {
-      case ScalarMatch.Consumption(value, role, reservation) =>
-        import mesosphere.mesos.protos.Implicits._
-        val builder = ScalarResource(resourceName, value, role).toBuilder
-        reservation.foreach(builder.setReservation(_))
-        builder.build()
+    consumed.map { case ScalarMatch.Consumption(value, role, reservation) =>
+      import mesosphere.mesos.protos.Implicits._
+      val builder = ScalarResource(resourceName, value, role).toBuilder
+      reservation.foreach(builder.setReservation(_))
+      builder.build()
     }
   }
 

@@ -78,15 +78,14 @@ class GBTClassifierSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   test("Binary classification with continuous features: Log Loss") {
     val categoricalFeatures = Map.empty[Int, Int]
-    testCombinations.foreach {
-      case (maxIter, learningRate, subsamplingRate) =>
-        val gbt = new GBTClassifier()
-          .setMaxDepth(2)
-          .setSubsamplingRate(subsamplingRate)
-          .setLossType("logistic")
-          .setMaxIter(maxIter)
-          .setStepSize(learningRate)
-        compareAPIs(data, None, gbt, categoricalFeatures)
+    testCombinations.foreach { case (maxIter, learningRate, subsamplingRate) =>
+      val gbt = new GBTClassifier()
+        .setMaxDepth(2)
+        .setSubsamplingRate(subsamplingRate)
+        .setLossType("logistic")
+        .setMaxIter(maxIter)
+        .setStepSize(learningRate)
+      compareAPIs(data, None, gbt, categoricalFeatures)
     }
   }
 

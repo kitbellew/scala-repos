@@ -289,9 +289,8 @@ class SimpleAclAuthorizerTest extends ZooKeeperTestHarness {
       new Resource(Group, "test-ConsumerGroup") -> acls
     )
 
-    resourceToAcls foreach {
-      case (key, value) =>
-        changeAclAndVerify(Set.empty[Acl], value, Set.empty[Acl], key)
+    resourceToAcls foreach { case (key, value) =>
+      changeAclAndVerify(Set.empty[Acl], value, Set.empty[Acl], key)
     }
     TestUtils.waitUntilTrue(
       () =>

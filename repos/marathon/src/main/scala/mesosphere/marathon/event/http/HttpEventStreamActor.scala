@@ -126,11 +126,10 @@ class HttpEventStreamActor(
 
   private[this] def unexpectedTerminationOfHandlerActor(
       actor: ActorRef): Unit = {
-    streamHandleActors.find(_._2 == actor).foreach {
-      case (handle, ref) =>
-        log.error(s"Actor terminated unexpectedly: $handle")
-        streamHandleActors -= handle
-        metrics.numberOfStreams.setValue(streamHandleActors.size)
+    streamHandleActors.find(_._2 == actor).foreach { case (handle, ref) =>
+      log.error(s"Actor terminated unexpectedly: $handle")
+      streamHandleActors -= handle
+      metrics.numberOfStreams.setValue(streamHandleActors.size)
     }
   }
 

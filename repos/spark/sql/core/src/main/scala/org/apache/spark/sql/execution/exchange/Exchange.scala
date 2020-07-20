@@ -78,22 +78,21 @@ case class ReuseExchange(conf: SQLConf) extends Rule[SparkPlan] {
     }
     // Build a hash map using schema of exchanges to avoid O(N*N) sameResult calls.
     val exchanges = mutable.HashMap[StructType, ArrayBuffer[Exchange]]()
-    plan.transformUp {
-      case exchange: Exchange =>
-        // the exchanges that have same results usually also have same schemas (same column names).
-        val sameSchema =
-          exchanges.getOrElseUpdate(exchange.schema, ArrayBuffer[Exchange]())
-        val samePlan = sameSchema.find { e =>
-          exchange.sameResult(e)
-        }
-        if (samePlan.isDefined) {
-          // Keep the output of this exchange, the following plans require that to resolve
-          // attributes.
-          ReusedExchange(exchange.output, samePlan.get)
-        } else {
-          sameSchema += exchange
-          exchange
-        }
+    plan.transformUp { case exchange: Exchange =>
+      // the exchanges that have same results usually also have same schemas (same column names).
+      val sameSchema =
+        exchanges.getOrElseUpdate(exchange.schema, ArrayBuffer[Exchange]())
+      val samePlan = sameSchema.find { e =>
+        exchange.sameResult(e)
+      }
+      if (samePlan.isDefined) {
+        // Keep the output of this exchange, the following plans require that to resolve
+        // attributes.
+        ReusedExchange(exchange.output, samePlan.get)
+      } else {
+        sameSchema += exchange
+        exchange
+      }
     }
   }
 }

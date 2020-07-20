@@ -235,9 +235,8 @@ class ConsumerIntegrationTest
 }
 
 class ErrorThrowingConsumer(override val endpointUri: String) extends Consumer {
-  def receive = {
-    case msg: CamelMessage ⇒
-      throw new TestException("error: %s" format msg.body)
+  def receive = { case msg: CamelMessage ⇒
+    throw new TestException("error: %s" format msg.body)
   }
   override def preRestart(reason: Throwable, message: Option[Any]) {
     super.preRestart(reason, message)
@@ -267,12 +266,11 @@ class ErrorRespondingConsumer(override val endpointUri: String)
 
 class FailingOnceConsumer(override val endpointUri: String) extends Consumer {
 
-  def receive = {
-    case msg: CamelMessage ⇒
-      if (msg.headerAs[Boolean]("CamelRedelivered").getOrElse(false))
-        sender() ! ("accepted: %s" format msg.body)
-      else
-        throw new TestException("rejected: %s" format msg.body)
+  def receive = { case msg: CamelMessage ⇒
+    if (msg.headerAs[Boolean]("CamelRedelivered").getOrElse(false))
+      sender() ! ("accepted: %s" format msg.body)
+    else
+      throw new TestException("rejected: %s" format msg.body)
   }
 
   final override def preRestart(reason: Throwable, message: Option[Any]) {

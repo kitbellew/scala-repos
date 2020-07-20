@@ -25,11 +25,10 @@ object FakesSpec extends PlaySpecification {
   "FakeApplication" should {
 
     "allow adding routes inline" in {
-      running(_.routes {
-        case ("GET", "/inline") =>
-          Action {
-            Results.Ok("inline route")
-          }
+      running(_.routes { case ("GET", "/inline") =>
+        Action {
+          Results.Ok("inline route")
+        }
       }) { app =>
         route(app, FakeRequest("GET", "/inline")) must beSome.which { result =>
           status(result) must equalTo(OK)
@@ -45,11 +44,10 @@ object FakesSpec extends PlaySpecification {
   "FakeRequest" should {
     def app =
       GuiceApplicationBuilder()
-        .routes {
-          case (PUT, "/process") =>
-            Action { req =>
-              Results.Ok(req.headers.get(CONTENT_TYPE) getOrElse "")
-            }
+        .routes { case (PUT, "/process") =>
+          Action { req =>
+            Results.Ok(req.headers.get(CONTENT_TYPE) getOrElse "")
+          }
         }
         .build()
 

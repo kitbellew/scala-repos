@@ -110,10 +110,9 @@ private final class Streaming(
         if (onAir != streams) {
           onAir = streams
           import makeTimeout.short
-          renderer ? event foreach {
-            case html: play.twirl.api.Html =>
-              context.system.lilaBus
-                .publish(lila.hub.actorApi.StreamsOnAir(html.body), 'streams)
+          renderer ? event foreach { case html: play.twirl.api.Html =>
+            context.system.lilaBus
+              .publish(lila.hub.actorApi.StreamsOnAir(html.body), 'streams)
           }
         }
         streamerList.get foreach { all =>

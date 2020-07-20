@@ -62,9 +62,8 @@ trait FlashCookieSpec
         await(ws.url("/flash").withFollowRedirects(follow = false).get())
       response.status must equalTo(SEE_OTHER)
       val flashCookie = readFlashCookie(response)
-      flashCookie must beSome.like {
-        case cookie =>
-          cookie.maxAge must beNone
+      flashCookie must beSome.like { case cookie =>
+        cookie.maxAge must beNone
       }
     }
 
@@ -72,10 +71,9 @@ trait FlashCookieSpec
       val response = await(ws.url("/flash").get())
       response.status must equalTo(OK)
       val flashCookie = readFlashCookie(response)
-      flashCookie must beSome.like {
-        case cookie =>
-          cookie.value must beNone
-          cookie.maxAge must beSome(0L)
+      flashCookie must beSome.like { case cookie =>
+        cookie.value must beNone
+        cookie.maxAge must beSome(0L)
       }
     }
 
@@ -92,9 +90,8 @@ trait FlashCookieSpec
         readFlashCookie(response2) must beSome.like {
           case cookie => cookie.value must beNone
         }
-        response2.cookie("some-cookie") must beSome.like {
-          case cookie =>
-            cookie.value must beSome("some-value")
+        response2.cookie("some-cookie") must beSome.like { case cookie =>
+          cookie.value must beSome("some-value")
         }
 
     }

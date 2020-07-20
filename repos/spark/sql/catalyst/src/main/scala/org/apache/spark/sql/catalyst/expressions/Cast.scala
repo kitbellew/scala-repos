@@ -74,14 +74,13 @@ object Cast {
 
       case (StructType(fromFields), StructType(toFields)) =>
         fromFields.length == toFields.length &&
-          fromFields.zip(toFields).forall {
-            case (fromField, toField) =>
-              canCast(fromField.dataType, toField.dataType) &&
-                resolvableNullability(
-                  fromField.nullable || forceNullable(
-                    fromField.dataType,
-                    toField.dataType),
-                  toField.nullable)
+          fromFields.zip(toFields).forall { case (fromField, toField) =>
+            canCast(fromField.dataType, toField.dataType) &&
+              resolvableNullability(
+                fromField.nullable || forceNullable(
+                  fromField.dataType,
+                  toField.dataType),
+                toField.nullable)
           }
 
       case (udt1: UserDefinedType[_], udt2: UserDefinedType[_])
@@ -1026,10 +1025,10 @@ case class Cast(child: Expression, dataType: DataType) extends UnaryExpression {
       to: StructType,
       ctx: CodegenContext): CastFunction = {
 
-    val fieldsCasts = from.fields.zip(to.fields).map {
-      case (fromField, toField) =>
+    val fieldsCasts =
+      from.fields.zip(to.fields).map { case (fromField, toField) =>
         nullSafeCastFunction(fromField.dataType, toField.dataType, ctx)
-    }
+      }
     val rowClass = classOf[GenericMutableRow].getName
     val result = ctx.freshName("result")
     val tmpRow = ctx.freshName("tmpRow")

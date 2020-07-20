@@ -215,12 +215,11 @@ object SessionMaster extends LiftActor with Loggable {
     import scala.collection.JavaConversions._
 
     val ses = lockRead(nsessions)
-    ses.foreach {
-      case (key, sess) =>
-        if (!sess.session.markedForShutDown_?) {
-          sess.session.markedForShutDown_? = true
-          this ! RemoveSession(key)
-        }
+    ses.foreach { case (key, sess) =>
+      if (!sess.session.markedForShutDown_?) {
+        sess.session.markedForShutDown_? = true
+        this ! RemoveSession(key)
+      }
     }
 
     while (true) {
@@ -235,29 +234,28 @@ object SessionMaster extends LiftActor with Loggable {
   private val reaction: PartialFunction[Any, Unit] = {
     case RemoveSession(sessionId) =>
       val ses = lockRead(nsessions)
-      (Box !! ses.get(sessionId)).foreach {
-        case SessionInfo(s, _, _, _, _) =>
-          killedSessions.put(s.underlyingId, Helpers.millis)
-          s.markedForShutDown_? = true
-          Schedule.schedule(
-            () => {
+      (Box !! ses.get(sessionId)).foreach { case SessionInfo(s, _, _, _, _) =>
+        killedSessions.put(s.underlyingId, Helpers.millis)
+        s.markedForShutDown_? = true
+        Schedule.schedule(
+          () => {
+            try {
+              s.doShutDown
               try {
-                s.doShutDown
-                try {
-                  s.httpSession.foreach(_.unlink(s))
-                } catch {
-                  case e: Exception => // ignore... sometimes you can't do this and it's okay
-                }
+                s.httpSession.foreach(_.unlink(s))
               } catch {
-                case e: Exception => logger.warn("Failure in remove session", e)
-
+                case e: Exception => // ignore... sometimes you can't do this and it's okay
               }
-            },
-            0.seconds
-          )
-          lockWrite {
-            nsessions.remove(sessionId)
-          }
+            } catch {
+              case e: Exception => logger.warn("Failure in remove session", e)
+
+            }
+          },
+          0.seconds
+        )
+        lockWrite {
+          nsessions.remove(sessionId)
+        }
       }
 
     case CheckAndPurge =>

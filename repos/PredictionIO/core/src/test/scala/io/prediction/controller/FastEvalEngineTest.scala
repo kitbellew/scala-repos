@@ -54,28 +54,27 @@ class FastEngineSuite extends FunSuite with Inside with SharedSparkContext {
 
         qpaSeq should have size qn
 
-        forAll(qpaSeq) {
-          case (q, p, a) =>
-            val Query(qId, qEx, qQx, _) = q
-            val Actual(aId, aEx, aQx) = a
-            qId shouldBe aId
-            qEx shouldBe ex
-            aEx shouldBe ex
-            qQx shouldBe aQx
+        forAll(qpaSeq) { case (q, p, a) =>
+          val Query(qId, qEx, qQx, _) = q
+          val Actual(aId, aEx, aQx) = a
+          qId shouldBe aId
+          qEx shouldBe ex
+          aEx shouldBe ex
+          qQx shouldBe aQx
 
-            inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
-                pId shouldBe 3
-                pQ shouldBe q
-                pModels shouldBe None
-                pPs should have size algoCount
-                pPs shouldBe Seq(
-                  Prediction(id = 20, q = q, models = Some(model0)),
-                  Prediction(id = 21, q = q, models = Some(model1)),
-                  Prediction(id = 22, q = q, models = Some(model2))
-                )
-              }
+          inside(p) {
+            case Prediction(pId, pQ, pModels, pPs) => {
+              pId shouldBe 3
+              pQ shouldBe q
+              pModels shouldBe None
+              pPs should have size algoCount
+              pPs shouldBe Seq(
+                Prediction(id = 20, q = q, models = Some(model0)),
+                Prediction(id = 21, q = q, models = Some(model1)),
+                Prediction(id = 22, q = q, models = Some(model2))
+              )
             }
+          }
         }
       }
     }

@@ -409,26 +409,24 @@ trait AccountControllerBase extends AccountManagementControllerBase {
             case Array(userName, isManager) => (userName, isManager.toBoolean)
           }
         }
-        .toList) {
-      case (groupName, members) =>
-        getAccountByUserName(groupName, true).map { account =>
-          updateGroup(groupName, form.url, false)
+        .toList) { case (groupName, members) =>
+      getAccountByUserName(groupName, true).map { account =>
+        updateGroup(groupName, form.url, false)
 
-          // Update GROUP_MEMBER
-          updateGroupMembers(form.groupName, members)
-          // Update COLLABORATOR for group repositories
-          getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
-            removeCollaborators(form.groupName, repositoryName)
-            members.foreach {
-              case (userName, isManager) =>
-                addCollaborator(form.groupName, repositoryName, userName)
-            }
+        // Update GROUP_MEMBER
+        updateGroupMembers(form.groupName, members)
+        // Update COLLABORATOR for group repositories
+        getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
+          removeCollaborators(form.groupName, repositoryName)
+          members.foreach { case (userName, isManager) =>
+            addCollaborator(form.groupName, repositoryName, userName)
           }
+        }
 
-          updateImage(form.groupName, form.fileId, form.clearImage)
-          redirect(s"/${form.groupName}")
+        updateImage(form.groupName, form.fileId, form.clearImage)
+        redirect(s"/${form.groupName}")
 
-        } getOrElse NotFound
+      } getOrElse NotFound
     }
   })
 

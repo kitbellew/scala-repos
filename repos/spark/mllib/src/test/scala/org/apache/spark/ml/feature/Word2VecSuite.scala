@@ -131,8 +131,8 @@ class Word2VecSuite
       .sort("word")
       .select("vector")
       .rdd
-      .map {
-        case Row(v: Vector) => v
+      .map { case Row(v: Vector) =>
+        v
       }
       .collect()
     // These expectations are just magic values, characterizing the current
@@ -152,11 +152,10 @@ class Word2VecSuite
         -0.13465698063373566)
     )
 
-    realVectors.zip(magicExpected).foreach {
-      case (real, expected) =>
-        assert(
-          real ~== expected absTol 1e-5,
-          "Actual vector is different from expected.")
+    realVectors.zip(magicExpected).foreach { case (real, expected) =>
+      assert(
+        real ~== expected absTol 1e-5,
+        "Actual vector is different from expected.")
     }
   }
 
@@ -181,16 +180,15 @@ class Word2VecSuite
     val (synonyms, similarity) = model
       .findSynonyms("a", 2)
       .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
+      .map { case Row(w: String, sim: Double) =>
+        (w, sim)
       }
       .collect()
       .unzip
 
     assert(synonyms.toArray === Array("b", "c"))
-    expectedSimilarity.zip(similarity).map {
-      case (expected, actual) =>
-        assert(math.abs((expected - actual) / expected) < 1e-5)
+    expectedSimilarity.zip(similarity).map { case (expected, actual) =>
+      assert(math.abs((expected - actual) / expected) < 1e-5)
     }
   }
 
@@ -215,8 +213,8 @@ class Word2VecSuite
     val (synonyms, similarity) = model
       .findSynonyms("a", 6)
       .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
+      .map { case Row(w: String, sim: Double) =>
+        (w, sim)
       }
       .collect()
       .unzip
@@ -233,8 +231,8 @@ class Word2VecSuite
     val (synonymsLarger, similarityLarger) = model
       .findSynonyms("a", 6)
       .rdd
-      .map {
-        case Row(w: String, sim: Double) => (w, sim)
+      .map { case Row(w: String, sim: Double) =>
+        (w, sim)
       }
       .collect()
       .unzip

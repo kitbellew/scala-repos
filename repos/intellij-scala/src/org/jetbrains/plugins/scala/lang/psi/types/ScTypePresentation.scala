@@ -328,13 +328,12 @@ trait ScTypePresentation {
               wilds) =>
           val wildcardsMap = ex.wildcardsMap()
           val replacingArgs = new ArrayBuffer[(ScType, ScExistentialArgument)]()
-          val left = wilds.filter {
-            case arg: ScExistentialArgument =>
-              val seq = wildcardsMap.getOrElse(arg, Seq.empty)
-              if (seq.length == 1 && typeArgs.exists(_ eq seq(0))) {
-                replacingArgs += ((seq(0), arg))
-                false
-              } else true
+          val left = wilds.filter { case arg: ScExistentialArgument =>
+            val seq = wildcardsMap.getOrElse(arg, Seq.empty)
+            if (seq.length == 1 && typeArgs.exists(_ eq seq(0))) {
+              replacingArgs += ((seq(0), arg))
+              false
+            } else true
           }
           val designatorText = innerTypeText(des)
           val typeArgsText = typeArgs

@@ -433,9 +433,8 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
 
     assertResult(false, "Incorrect cast detected\n" + analyzedPlan) {
       var hasCast = false
-      analyzedPlan.collect {
-        case p: Project =>
-          p.transformExpressionsUp { case c: Cast => hasCast = true; c }
+      analyzedPlan.collect { case p: Project =>
+        p.transformExpressionsUp { case c: Cast => hasCast = true; c }
       }
       hasCast
     }
@@ -1024,10 +1023,9 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
     sql("SELECT * FROM m")
       .collect()
       .zip(sql("SELECT * FROM src LIMIT 10").collect())
-      .foreach {
-        case (Row(map: Map[_, _]), Row(key: Int, value: String)) =>
-          assert(map.size === 1)
-          assert(map.head === (key, value))
+      .foreach { case (Row(map: Map[_, _]), Row(key: Int, value: String)) =>
+        assert(map.size === 1)
+        assert(map.head === (key, value))
       }
   }
 
@@ -1119,33 +1117,30 @@ class HiveQuerySuite extends HiveComparisonTest with BeforeAndAfter {
       Seq("NULL", "1") -> 3,
       Seq("NULL", "NULL") -> 4)
 
-    data.foreach {
-      case (parts, value) =>
-        sql(
-          s"""INSERT INTO TABLE dynamic_part_table PARTITION(partcol1, partcol2)
+    data.foreach { case (parts, value) =>
+      sql(s"""INSERT INTO TABLE dynamic_part_table PARTITION(partcol1, partcol2)
            |SELECT $value, ${parts.mkString(", ")} FROM src WHERE key=150
          """.stripMargin)
 
-        val partFolder = Seq("partcol1", "partcol2")
-          .zip(parts)
-          .map {
-            case (k, v) =>
-              if (v == "NULL") {
-                s"$k=${ConfVars.DEFAULTPARTITIONNAME.defaultStrVal}"
-              } else {
-                s"$k=$v"
-              }
+      val partFolder = Seq("partcol1", "partcol2")
+        .zip(parts)
+        .map { case (k, v) =>
+          if (v == "NULL") {
+            s"$k=${ConfVars.DEFAULTPARTITIONNAME.defaultStrVal}"
+          } else {
+            s"$k=$v"
           }
-          .mkString("/")
+        }
+        .mkString("/")
 
-        // Loads partition data to a temporary table to verify contents
-        val path = s"$warehousePath/dynamic_part_table/$partFolder/part-00000"
+      // Loads partition data to a temporary table to verify contents
+      val path = s"$warehousePath/dynamic_part_table/$partFolder/part-00000"
 
-        sql("DROP TABLE IF EXISTS dp_verify")
-        sql("CREATE TABLE dp_verify(intcol INT)")
-        sql(s"LOAD DATA LOCAL INPATH '$path' INTO TABLE dp_verify")
+      sql("DROP TABLE IF EXISTS dp_verify")
+      sql("CREATE TABLE dp_verify(intcol INT)")
+      sql(s"LOAD DATA LOCAL INPATH '$path' INTO TABLE dp_verify")
 
-        assert(sql("SELECT * FROM dp_verify").collect() === Array(Row(value)))
+      assert(sql("SELECT * FROM dp_verify").collect() === Array(Row(value)))
     }
   }
 

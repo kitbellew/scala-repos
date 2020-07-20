@@ -15,9 +15,8 @@ import akka.actor.ExtendedActorSystem
 
 object LogSourceSpec {
   class Reporter extends Actor with ActorLogging {
-    def receive = {
-      case s: String ⇒
-        log.info(s)
+    def receive = { case s: String ⇒
+      log.info(s)
     }
   }
 }

@@ -447,15 +447,13 @@ private[streaming] class ReceiverTracker(
           blockManagerId.executorId))
     } else {
       ssc.sparkContext.env.blockManager.master.getMemoryStatus
-        .filter {
-          case (blockManagerId, _) =>
-            blockManagerId.executorId != SparkContext.DRIVER_IDENTIFIER // Ignore the driver location
+        .filter { case (blockManagerId, _) =>
+          blockManagerId.executorId != SparkContext.DRIVER_IDENTIFIER // Ignore the driver location
         }
-        .map {
-          case (blockManagerId, _) =>
-            ExecutorCacheTaskLocation(
-              blockManagerId.host,
-              blockManagerId.executorId)
+        .map { case (blockManagerId, _) =>
+          ExecutorCacheTaskLocation(
+            blockManagerId.host,
+            blockManagerId.executorId)
         }
         .toSeq
     }

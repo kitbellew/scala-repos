@@ -142,17 +142,16 @@ class RangePartitioner[K: Ordering: ClassTag, V](
         val fraction = math.min(sampleSize / math.max(numItems, 1L), 1.0)
         val candidates = ArrayBuffer.empty[(K, Float)]
         val imbalancedPartitions = mutable.Set.empty[Int]
-        sketched.foreach {
-          case (idx, n, sample) =>
-            if (fraction * n > sampleSizePerPartition) {
-              imbalancedPartitions += idx
-            } else {
-              // The weight is 1 over the sampling probability.
-              val weight = (n.toDouble / sample.length).toFloat
-              for (key <- sample) {
-                candidates += ((key, weight))
-              }
+        sketched.foreach { case (idx, n, sample) =>
+          if (fraction * n > sampleSizePerPartition) {
+            imbalancedPartitions += idx
+          } else {
+            // The weight is 1 over the sampling probability.
+            val weight = (n.toDouble / sample.length).toFloat
+            for (key <- sample) {
+              candidates += ((key, weight))
             }
+          }
         }
         if (imbalancedPartitions.nonEmpty) {
           // Re-sample imbalanced partitions with the desired sampling probability.

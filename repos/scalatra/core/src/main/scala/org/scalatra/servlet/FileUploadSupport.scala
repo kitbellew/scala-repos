@@ -157,10 +157,9 @@ trait FileUploadSupport extends ServletBase with HasMultipartConfig {
       req: HttpServletRequest,
       bodyParams: BodyParams): Map[String, List[String]] = {
     var mergedParams = bodyParams.formParams
-    req.getParameterMap.asScala foreach {
-      case (name, values) =>
-        val formValues = mergedParams.getOrElse(name, List.empty)
-        mergedParams += name -> (values.toList ++ formValues)
+    req.getParameterMap.asScala foreach { case (name, values) =>
+      val formValues = mergedParams.getOrElse(name, List.empty)
+      mergedParams += name -> (values.toList ++ formValues)
     }
 
     mergedParams

@@ -36,8 +36,8 @@ private[io] class UdpListener(
   context.watch(bind.handler) // sign death pact
 
   val channel = bind.options
-    .collectFirst {
-      case creator: DatagramChannelCreator ⇒ creator
+    .collectFirst { case creator: DatagramChannelCreator ⇒
+      creator
     }
     .getOrElse(DatagramChannelCreator())
     .create()
@@ -71,13 +71,12 @@ private[io] class UdpListener(
         context.stop(self)
     }
 
-  def receive: Receive = {
-    case registration: ChannelRegistration ⇒
-      bindCommander ! Bound(
-        channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
-      context.become(
-        readHandlers(registration) orElse sendHandlers(registration),
-        discardOld = true)
+  def receive: Receive = { case registration: ChannelRegistration ⇒
+    bindCommander ! Bound(
+      channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
+    context.become(
+      readHandlers(registration) orElse sendHandlers(registration),
+      discardOld = true)
   }
 
   def readHandlers(registration: ChannelRegistration): Receive = {

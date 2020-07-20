@@ -283,9 +283,8 @@ object BytecodeUtils {
       from: LabelNode,
       to: LabelNode): Unit = {
     def substList(list: java.util.List[LabelNode]) = {
-      foreachWithIndex(list.asScala.toList) {
-        case (l, i) =>
-          if (l == from) list.set(i, to)
+      foreachWithIndex(list.asScala.toList) { case (l, i) =>
+        if (l == from) list.set(i, to)
       }
     }
     reference match {

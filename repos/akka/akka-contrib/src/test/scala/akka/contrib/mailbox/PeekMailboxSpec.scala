@@ -107,11 +107,10 @@ class PeekMailboxSpec
 
 //#demo
 class MyActor extends Actor {
-  def receive = {
-    case msg ⇒
-      println(msg)
-      doStuff(msg) // may fail
-      PeekMailboxExtension.ack()
+  def receive = { case msg ⇒
+    println(msg)
+    doStuff(msg) // may fail
+    PeekMailboxExtension.ack()
   }
 
   //#business-logic-elided

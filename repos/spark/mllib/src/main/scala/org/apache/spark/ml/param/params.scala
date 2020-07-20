@@ -984,9 +984,8 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
   override def toString: String = {
     map.toSeq
       .sortBy(_._1.name)
-      .map {
-        case (param, value) =>
-          s"\t${param.parent}-${param.name}: $value"
+      .map { case (param, value) =>
+        s"\t${param.parent}-${param.name}: $value"
       }
       .mkString("{\n", ",\n", "\n}")
   }
@@ -1016,9 +1015,8 @@ final class ParamMap private[ml] (private val map: mutable.Map[Param[Any], Any])
     */
   @Since("1.2.0")
   def toSeq: Seq[ParamPair[_]] = {
-    map.toSeq.map {
-      case (param, value) =>
-        ParamPair(param, value)
+    map.toSeq.map { case (param, value) =>
+      ParamPair(param, value)
     }
   }
 

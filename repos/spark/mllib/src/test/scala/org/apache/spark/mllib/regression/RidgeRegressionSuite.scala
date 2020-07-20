@@ -43,9 +43,8 @@ class RidgeRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
       input: Seq[LabeledPoint]): Double = {
     predictions
       .zip(input)
-      .map {
-        case (prediction, expected) =>
-          (prediction - expected.label) * (prediction - expected.label)
+      .map { case (prediction, expected) =>
+        (prediction - expected.label) * (prediction - expected.label)
       }
       .sum / predictions.size
   }

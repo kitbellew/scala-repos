@@ -59,8 +59,8 @@ private[json] object ScalaSigReader {
           .orElse {
             sig.topLevelObjects.map { obj =>
               val t = obj.infoType.asInstanceOf[TypeRefType]
-              t.symbol.children collect {
-                case c: ClassSymbol => c
+              t.symbol.children collect { case c: ClassSymbol =>
+                c
               } find (_.symbolInfo.name == clazz.getSimpleName)
             }.head
           }

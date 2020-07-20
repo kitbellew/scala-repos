@@ -278,15 +278,14 @@ private[expr] object ExpectedTypes {
               Array(
                 (callExpression.getNonValueType(TypingContext.empty), false))
           }
-          tps.foreach {
-            case (r, isDynamicNamed) =>
-              processArgsExpected(
-                res,
-                expr,
-                i,
-                r,
-                exprs,
-                isDynamicNamed = isDynamicNamed)
+          tps.foreach { case (r, isDynamicNamed) =>
+            processArgsExpected(
+              res,
+              expr,
+              i,
+              r,
+              exprs,
+              isDynamicNamed = isDynamicNamed)
           }
         }
         res.toArray
@@ -317,20 +316,18 @@ private[expr] object ExpectedTypes {
           if (!withResolvedFunction)
             mapResolves(op.shapeResolve, op.shapeMultiType)
           else mapResolves(op.multiResolve(false), op.multiType)
-        tps = tps.map {
-          case (tp, isDynamicNamed) =>
-            (infix.updateAccordingToExpectedType(tp), isDynamicNamed)
+        tps = tps.map { case (tp, isDynamicNamed) =>
+          (infix.updateAccordingToExpectedType(tp), isDynamicNamed)
         }
-        tps.foreach {
-          case (tp, isDynamicNamed) =>
-            processArgsExpected(
-              res,
-              zExpr,
-              0,
-              tp,
-              Seq(zExpr),
-              Some(infix),
-              isDynamicNamed = isDynamicNamed)
+        tps.foreach { case (tp, isDynamicNamed) =>
+          processArgsExpected(
+            res,
+            zExpr,
+            0,
+            tp,
+            Seq(zExpr),
+            Some(infix),
+            isDynamicNamed = isDynamicNamed)
         }
         res.toArray
       //SLS[4.1]
@@ -411,20 +408,18 @@ private[expr] object ExpectedTypes {
             case _                      => None
           }
           callOption.foreach(call =>
-            tps = tps.map {
-              case (r, isDynamicNamed) =>
-                (call.updateAccordingToExpectedType(r), isDynamicNamed)
+            tps = tps.map { case (r, isDynamicNamed) =>
+              (call.updateAccordingToExpectedType(r), isDynamicNamed)
             })
-          tps.foreach {
-            case (r, isDynamicNamed) =>
-              processArgsExpected(
-                res,
-                expr,
-                i,
-                r,
-                exprs,
-                callOption,
-                isDynamicNamed = isDynamicNamed)
+          tps.foreach { case (r, isDynamicNamed) =>
+            processArgsExpected(
+              res,
+              expr,
+              i,
+              r,
+              exprs,
+              callOption,
+              isDynamicNamed = isDynamicNamed)
           }
         } else {
           //it's constructor
@@ -552,9 +547,8 @@ private[expr] object ExpectedTypes {
         if (params.length == 1 && !params.head.isRepeated && exprs.length > 1) {
           params.head.paramType match {
             case ScTupleType(args) =>
-              applyForParams(args.zipWithIndex.map {
-                case (tpe, index) =>
-                  new Parameter("", None, tpe, false, false, false, index)
+              applyForParams(args.zipWithIndex.map { case (tpe, index) =>
+                new Parameter("", None, tpe, false, false, false, index)
               })
             case _ =>
           }
@@ -568,9 +562,8 @@ private[expr] object ExpectedTypes {
         if (newParams.length == 1 && !newParams.head.isRepeated && exprs.length > 1) {
           newParams.head.paramType match {
             case ScTupleType(args) =>
-              applyForParams(args.zipWithIndex.map {
-                case (tpe, index) =>
-                  new Parameter("", None, tpe, false, false, false, index)
+              applyForParams(args.zipWithIndex.map { case (tpe, index) =>
+                new Parameter("", None, tpe, false, false, false, index)
               })
             case _ =>
           }

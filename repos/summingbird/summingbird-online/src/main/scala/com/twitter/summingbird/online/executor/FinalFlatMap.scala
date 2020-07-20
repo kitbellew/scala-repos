@@ -90,18 +90,16 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
     } else {
       var mmMap = MMap[Int, (ListBuffer[S], MMap[Key, Value])]()
 
-      outData.toIterator.foreach {
-        case (k, (listS, v)) =>
-          val newK = summerShards.summerIdFor(k)
-          val (buffer, mmap) =
-            mmMap.getOrElseUpdate(newK, (ListBuffer[S](), MMap[Key, Value]()))
-          buffer ++= listS
-          mmap += k -> v
+      outData.toIterator.foreach { case (k, (listS, v)) =>
+        val newK = summerShards.summerIdFor(k)
+        val (buffer, mmap) =
+          mmMap.getOrElseUpdate(newK, (ListBuffer[S](), MMap[Key, Value]()))
+        buffer ++= listS
+        mmap += k -> v
       }
 
-      mmMap.toIterator.map {
-        case (outerKey, (listS, innerMap)) =>
-          (listS, Future.value(List((outerKey, innerMap))))
+      mmMap.toIterator.map { case (outerKey, (listS, innerMap)) =>
+        (listS, Future.value(List((outerKey, innerMap))))
       }
     }
   }
@@ -117,9 +115,8 @@ class FinalFlatMap[Event, Key, Value: Semigroup, S <: InputState[_], D, RC](
       if (itemL.size > 0) {
         state.fanOut(itemL.size)
         sCache
-          .addAll(itemL.map {
-            case (k, v) =>
-              k -> (List(state), v)
+          .addAll(itemL.map { case (k, v) =>
+            k -> (List(state), v)
           })
           .map(formatResult(_))
       } else { // Here we handle mapping to nothing, option map et. al

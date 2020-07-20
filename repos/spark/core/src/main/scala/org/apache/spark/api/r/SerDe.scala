@@ -376,12 +376,11 @@ private[spark] object SerDe {
         case v: scala.collection.Map[_, _] =>
           writeType(dos, "map")
           writeInt(dos, v.size)
-          v.foreach {
-            case (key, value) =>
-              writeKeyValue(
-                dos,
-                key.asInstanceOf[Object],
-                value.asInstanceOf[Object])
+          v.foreach { case (key, value) =>
+            writeKeyValue(
+              dos,
+              key.asInstanceOf[Object],
+              value.asInstanceOf[Object])
           }
 
         case _ =>

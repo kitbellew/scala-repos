@@ -164,13 +164,12 @@ abstract class BaseYarnClusterSuite
       .setPropertiesFile(propsFile)
       .addAppArgs(appArgs.toArray: _*)
 
-    sparkArgs.foreach {
-      case (name, value) =>
-        if (value != null) {
-          launcher.addSparkArg(name, value)
-        } else {
-          launcher.addSparkArg(name)
-        }
+    sparkArgs.foreach { case (name, value) =>
+      if (value != null) {
+        launcher.addSparkArg(name, value)
+      } else {
+        launcher.addSparkArg(name)
+      }
     }
     extraJars.foreach(launcher.addJar)
 
@@ -239,11 +238,10 @@ abstract class BaseYarnClusterSuite
     yarnCluster.getConfig().asScala.foreach { e =>
       props.setProperty("spark.hadoop." + e.getKey(), e.getValue())
     }
-    sys.props.foreach {
-      case (k, v) =>
-        if (k.startsWith("spark.")) {
-          props.setProperty(k, v)
-        }
+    sys.props.foreach { case (k, v) =>
+      if (k.startsWith("spark.")) {
+        props.setProperty(k, v)
+      }
     }
     extraConf.foreach { case (k, v) => props.setProperty(k, v) }
 

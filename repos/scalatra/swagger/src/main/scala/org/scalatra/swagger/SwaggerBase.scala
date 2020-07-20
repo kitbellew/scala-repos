@@ -100,10 +100,9 @@ trait SwaggerBaseBase extends Initializable with ScalatraBase {
       ("info" -> Option(swagger.apiInfo).map(Extraction.decompose(_)))
   }
 
-  error {
-    case t: Throwable =>
-      t.printStackTrace()
-      throw t
+  error { case t: Throwable =>
+    t.printStackTrace()
+    throw t
   }
 
 }

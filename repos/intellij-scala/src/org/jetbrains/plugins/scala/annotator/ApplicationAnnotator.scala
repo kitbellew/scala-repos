@@ -354,9 +354,8 @@ trait ApplicationAnnotator {
 
   private def formatParamClauses(paramClauses: ScParameters) = {
     def formatParams(parameters: Seq[ScParameter], types: Seq[ScType]) = {
-      val parts = parameters.zip(types).map {
-        case (p, t) =>
-          t.presentableText + (if (p.isRepeatedParameter) "*" else "")
+      val parts = parameters.zip(types).map { case (p, t) =>
+        t.presentableText + (if (p.isRepeatedParameter) "*" else "")
       }
       parenthesise(parts)
     }

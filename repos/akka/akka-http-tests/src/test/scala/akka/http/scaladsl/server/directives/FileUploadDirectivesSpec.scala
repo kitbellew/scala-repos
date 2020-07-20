@@ -28,10 +28,9 @@ class FileUploadDirectivesSpec extends RoutingSpec {
 
       try {
         Post("/", simpleMultipartUpload) ~> {
-          uploadedFile("fieldName") {
-            case (info, tmpFile) ⇒
-              file = Some(tmpFile)
-              complete(info.toString)
+          uploadedFile("fieldName") { case (info, tmpFile) ⇒
+            file = Some(tmpFile)
+            complete(info.toString)
           }
         } ~> check {
           file.isDefined === true
@@ -53,17 +52,16 @@ class FileUploadDirectivesSpec extends RoutingSpec {
       extractRequestContext { ctx ⇒
         implicit val mat = ctx.materializer
 
-        fileUpload("field1") {
-          case (info, bytes) ⇒
-            // stream the bytes somewhere
-            val allBytesF = bytes.runFold(ByteString()) { (all, bytes) ⇒
-              all ++ bytes
-            }
+        fileUpload("field1") { case (info, bytes) ⇒
+          // stream the bytes somewhere
+          val allBytesF = bytes.runFold(ByteString()) { (all, bytes) ⇒
+            all ++ bytes
+          }
 
-            // sum all individual file sizes
-            onSuccess(allBytesF) { allBytes ⇒
-              complete(allBytes)
-            }
+          // sum all individual file sizes
+          onSuccess(allBytesF) { allBytes ⇒
+            complete(allBytes)
+          }
         }
       }
 
@@ -119,17 +117,16 @@ class FileUploadDirectivesSpec extends RoutingSpec {
         extractRequestContext { ctx ⇒
           implicit val mat = ctx.materializer
 
-          fileUpload("missing") {
-            case (info, bytes) ⇒
-              // stream the bytes somewhere
-              val allBytesF = bytes.runFold(ByteString()) { (all, bytes) ⇒
-                all ++ bytes
-              }
+          fileUpload("missing") { case (info, bytes) ⇒
+            // stream the bytes somewhere
+            val allBytesF = bytes.runFold(ByteString()) { (all, bytes) ⇒
+              all ++ bytes
+            }
 
-              // sum all individual file sizes
-              onSuccess(allBytesF) { allBytes ⇒
-                complete(allBytes)
-              }
+            // sum all individual file sizes
+            onSuccess(allBytesF) { allBytes ⇒
+              complete(allBytes)
+            }
           }
         }
 

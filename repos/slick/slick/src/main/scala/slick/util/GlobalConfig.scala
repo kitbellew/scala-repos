@@ -78,14 +78,13 @@ class ConfigExtensionMethods(val c: Config) extends AnyVal {
   def toProperties: Properties = {
     def toProps(m: mutable.Map[String, ConfigValue]): Properties = {
       val props = new Properties(null)
-      m.foreach {
-        case (k, cv) =>
-          val v =
-            if (cv.valueType() == ConfigValueType.OBJECT)
-              toProps(cv.asInstanceOf[ConfigObject].asScala)
-            else if (cv.unwrapped eq null) null
-            else cv.unwrapped.toString
-          if (v ne null) props.put(k, v)
+      m.foreach { case (k, cv) =>
+        val v =
+          if (cv.valueType() == ConfigValueType.OBJECT)
+            toProps(cv.asInstanceOf[ConfigObject].asScala)
+          else if (cv.unwrapped eq null) null
+          else cv.unwrapped.toString
+        if (v ne null) props.put(k, v)
       }
       props
     }

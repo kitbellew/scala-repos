@@ -106,12 +106,11 @@ class FNSpec extends Specification {
      */
   }
 
-  val AddOneLongP = CF1P("testing::ct::addOneLong") {
-    case (c: LongColumn) =>
-      new LongColumn {
-        def isDefinedAt(row: Int) = c.isDefinedAt(row)
-        def apply(row: Int) = c(row) + 1
-      }
+  val AddOneLongP = CF1P("testing::ct::addOneLong") { case (c: LongColumn) =>
+    new LongColumn {
+      def isDefinedAt(row: Int) = c.isDefinedAt(row)
+      def apply(row: Int) = c(row) + 1
+    }
   }
 
   val DivZeroLongP = CF2P("testing::ct::divzerolong") {

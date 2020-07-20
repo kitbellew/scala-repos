@@ -236,13 +236,12 @@ class JavaCopyPastePostProcessor
             bounds.getStartOffset + text.length)
         }
 
-        markedAssociations.map {
-          case (association, marker) =>
-            val movedAssociation = association.copy(range = new TextRange(
-              marker.getStartOffset - bounds.getStartOffset,
-              marker.getEndOffset - bounds.getStartOffset))
-            marker.dispose()
-            movedAssociation
+        markedAssociations.map { case (association, marker) =>
+          val movedAssociation = association.copy(range = new TextRange(
+            marker.getStartOffset - bounds.getStartOffset,
+            marker.getEndOffset - bounds.getStartOffset))
+          marker.dispose()
+          movedAssociation
         }
       }
       scalaProcessor.processTransferableData(

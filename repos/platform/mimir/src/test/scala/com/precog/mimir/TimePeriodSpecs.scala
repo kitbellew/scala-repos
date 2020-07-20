@@ -230,14 +230,12 @@ trait TimePeriodSpecs[M[+_]]
             SString("1991-10-14T07:03:07.037Z")))
       )
 
-      result must haveAllElementsLike {
-        case (ids, obj) =>
-          ids must haveSize(1)
-          obj must beLike {
-            case SObject(fields) =>
-              fields.keys mustEqual Set("start", "end", "step", "range")
-              expected(fields("step")) mustEqual fields("range")
-          }
+      result must haveAllElementsLike { case (ids, obj) =>
+        ids must haveSize(1)
+        obj must beLike { case SObject(fields) =>
+          fields.keys mustEqual Set("start", "end", "step", "range")
+          expected(fields("step")) mustEqual fields("range")
+        }
       }
     }
 

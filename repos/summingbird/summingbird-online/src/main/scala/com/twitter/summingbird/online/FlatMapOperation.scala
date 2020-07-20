@@ -137,8 +137,8 @@ object FlatMapOperation {
           else {
             // Do the lookup
             val mres: Map[K, Future[Option[JoinedV]]] = store.multiGet(keySet)
-            val resultFutures = resultList.map {
-              case (k, v) => mres(k).map { k -> (v, _) }
+            val resultFutures = resultList.map { case (k, v) =>
+              mres(k).map { k -> (v, _) }
             }.toIndexedSeq
             Future.collect(resultFutures)
           }

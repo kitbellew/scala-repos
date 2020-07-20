@@ -38,9 +38,8 @@ final object Aggregation {
     xs match {
       case KeyValue(_, x) :: Nil => print(x.toString)
       case _ =>
-        xs foreach {
-          case KeyValue(key, value) =>
-            print(display(key) + "\n\t" + value.toString)
+        xs foreach { case KeyValue(key, value) =>
+          print(display(key) + "\n\t" + value.toString)
         }
     }
   type Values[T] = Seq[KeyValue[T]]

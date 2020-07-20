@@ -22,23 +22,21 @@ private[timeline] final class Push(
     unsubApi: UnsubApi)
     extends Actor {
 
-  def receive = {
-
-    case Propagate(data, propagations) =>
-      data match {
-        case _: ForumPost => lobbySocket ! NewForumPost
-        case _            =>
-      }
-      propagate(propagations) flatMap { users =>
-        unsubApi.filterUnsub(data.channel, users)
-      } foreach { users =>
-        if (users.nonEmpty)
-          makeEntry(users, data) >>-
-            (users foreach { u =>
-              lobbySocket ! ReloadTimeline(u)
-            })
-        lila.mon.timeline.notification(users.size)
-      }
+  def receive = { case Propagate(data, propagations) =>
+    data match {
+      case _: ForumPost => lobbySocket ! NewForumPost
+      case _            =>
+    }
+    propagate(propagations) flatMap { users =>
+      unsubApi.filterUnsub(data.channel, users)
+    } foreach { users =>
+      if (users.nonEmpty)
+        makeEntry(users, data) >>-
+          (users foreach { u =>
+            lobbySocket ! ReloadTimeline(u)
+          })
+      lila.mon.timeline.notification(users.size)
+    }
   }
 
   private def propagate(propagations: List[Propagation]): Fu[List[String]] =

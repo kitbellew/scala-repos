@@ -626,9 +626,8 @@ object Project extends ProjectExtra {
     if (dups.isEmpty)
       None
     else {
-      val dupStrs = dups map {
-        case (dir, scopes) =>
-          s"${dir.getAbsolutePath}:\n\t${scopes.mkString("\n\t")}"
+      val dupStrs = dups map { case (dir, scopes) =>
+        s"${dir.getAbsolutePath}:\n\t${scopes.mkString("\n\t")}"
       }
       Some(s"Overlapping output directories:${dupStrs.mkString}")
     }
@@ -815,9 +814,8 @@ object Project extends ProjectExtra {
       display: Show[ScopedKey[_]]): Relation[ScopedKey[_], ScopedKey[_]] = {
     type Rel = Relation[ScopedKey[_], ScopedKey[_]]
     val cMap = Def.flattenLocals(Def.compiled(settings, actual))
-    ((Relation.empty: Rel) /: cMap) {
-      case (r, (key, value)) =>
-        r + (key, value.dependencies)
+    ((Relation.empty: Rel) /: cMap) { case (r, (key, value)) =>
+      r + (key, value.dependencies)
     }
   }
 

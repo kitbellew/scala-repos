@@ -128,13 +128,12 @@ trait EntityPage extends HtmlPage {
 
       // Get path from root
       val rootToParentLis = tpl.toRoot.tail.reverse.zipWithIndex
-        .map {
-          case (pack, ind) =>
-            memberToHtml(
-              pack,
-              tpl,
-              indentation = ind,
-              isParent = (pack eq tpl.toRoot.tail.head))
+        .map { case (pack, ind) =>
+          memberToHtml(
+            pack,
+            tpl,
+            indentation = ind,
+            isParent = (pack eq tpl.toRoot.tail.head))
         }
 
       val parent = tpl.toRoot match {

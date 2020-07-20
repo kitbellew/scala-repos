@@ -1098,10 +1098,9 @@ object DAGSpecs extends Specification with DAG with FNDummyModule {
         id)(line)
 
       val result = input.mapDown { recurse =>
-        {
-          case graph @ dag.AbsoluteLoad(Const(CString(path)), tpe) =>
-            dag.AbsoluteLoad(Const(CString("/foo" + path))(graph.loc), tpe)(
-              graph.loc)
+        { case graph @ dag.AbsoluteLoad(Const(CString(path)), tpe) =>
+          dag.AbsoluteLoad(Const(CString("/foo" + path))(graph.loc), tpe)(
+            graph.loc)
         }
       }
 

@@ -782,12 +782,11 @@ private[spark] object SparkConf extends Logging {
       return
     }
 
-    allAlternatives.get(key).foreach {
-      case (newKey, cfg) =>
-        logWarning(
-          s"The configuration key '$key' has been deprecated as of Spark ${cfg.version} and " +
-            s"may be removed in the future. Please use the new key '$newKey' instead.")
-        return
+    allAlternatives.get(key).foreach { case (newKey, cfg) =>
+      logWarning(
+        s"The configuration key '$key' has been deprecated as of Spark ${cfg.version} and " +
+          s"may be removed in the future. Please use the new key '$newKey' instead.")
+      return
     }
     if (key.startsWith("spark.akka") || key.startsWith("spark.ssl.akka")) {
       logWarning(

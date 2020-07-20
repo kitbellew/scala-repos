@@ -5,10 +5,9 @@ import org.apache.mesos.{Protos => MesosProtos}
 case class ResourceLabels(labels: Map[String, String]) {
   lazy val mesosLabels: MesosProtos.Labels = {
     val labelsBuilder = MesosProtos.Labels.newBuilder()
-    labels.foreach {
-      case (k, v) =>
-        labelsBuilder.addLabels(
-          MesosProtos.Label.newBuilder().setKey(k).setValue(v))
+    labels.foreach { case (k, v) =>
+      labelsBuilder.addLabels(
+        MesosProtos.Label.newBuilder().setKey(k).setValue(v))
     }
     labelsBuilder.build()
   }

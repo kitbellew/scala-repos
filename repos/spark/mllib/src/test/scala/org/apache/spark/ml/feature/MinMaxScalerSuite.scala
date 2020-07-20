@@ -55,11 +55,10 @@ class MinMaxScalerSuite
       .transform(df)
       .select("expected", "scaled")
       .collect()
-      .foreach {
-        case Row(vector1: Vector, vector2: Vector) =>
-          assert(
-            vector1.equals(vector2),
-            "Transformed vector is different with expected.")
+      .foreach { case Row(vector1: Vector, vector2: Vector) =>
+        assert(
+          vector1.equals(vector2),
+          "Transformed vector is different with expected.")
       }
 
     // copied model must have the same parent.

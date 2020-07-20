@@ -226,9 +226,8 @@ class HttpHeaderParserSpec
           nextRandomString(nextRandomPrintableChar, nextRandomInt(4, 16))
         RawHeader(name, value)
       }
-      randomHeaders.take(300).foldLeft(0) {
-        case (acc, rawHeader) ⇒
-          acc + parseAndCache(rawHeader.toString + "\r\nx", rawHeader)
+      randomHeaders.take(300).foldLeft(0) { case (acc, rawHeader) ⇒
+        acc + parseAndCache(rawHeader.toString + "\r\nx", rawHeader)
       } should be < 300 // number of cache hits is smaller headers successfully parsed
     }
 
@@ -238,9 +237,8 @@ class HttpHeaderParserSpec
           host = nextRandomString(nextRandomAlphaNumChar, nextRandomInt(4, 8)),
           port = nextRandomInt(1000, 10000))
       }
-      randomHostHeaders.take(300).foldLeft(0) {
-        case (acc, header) ⇒
-          acc + parseAndCache(header.toString + "\r\nx", header)
+      randomHostHeaders.take(300).foldLeft(0) { case (acc, header) ⇒
+        acc + parseAndCache(header.toString + "\r\nx", header)
       } should be < 300 // number of cache hits is smaller headers successfully parsed
     }
 
@@ -250,9 +248,8 @@ class HttpHeaderParserSpec
           name = nextRandomString(nextRandomAlphaNumChar, 60),
           value = nextRandomString(nextRandomAlphaNumChar, 1000))
       }
-      randomHostHeaders.take(100).foldLeft(0) {
-        case (acc, header) ⇒
-          acc + parseAndCache(header.toString + "\r\nx", header)
+      randomHostHeaders.take(100).foldLeft(0) { case (acc, header) ⇒
+        acc + parseAndCache(header.toString + "\r\nx", header)
       } should be < 300 // number of cache hits is smaller headers successfully parsed
     }
 
@@ -262,9 +259,8 @@ class HttpHeaderParserSpec
           nextRandomString(nextRandomPrintableChar, nextRandomInt(4, 16))
         RawHeader("Fancy", value)
       }
-      randomHeaders.take(20).foldLeft(0) {
-        case (acc, rawHeader) ⇒
-          acc + parseAndCache(rawHeader.toString + "\r\nx", rawHeader)
+      randomHeaders.take(20).foldLeft(0) { case (acc, rawHeader) ⇒
+        acc + parseAndCache(rawHeader.toString + "\r\nx", rawHeader)
       } shouldEqual 12 // configured default per-header cache limit
     }
 
@@ -273,9 +269,8 @@ class HttpHeaderParserSpec
         `User-Agent`(
           nextRandomString(nextRandomAlphaNumChar, nextRandomInt(4, 16)))
       }
-      randomHeaders.take(40).foldLeft(0) {
-        case (acc, header) ⇒
-          acc + parseAndCache(header.toString + "\r\nx", header)
+      randomHeaders.take(40).foldLeft(0) { case (acc, header) ⇒
+        acc + parseAndCache(header.toString + "\r\nx", header)
       } shouldEqual 12 // configured default per-header cache limit
     }
   }

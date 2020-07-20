@@ -65,10 +65,9 @@ abstract class GenSerialClientDispatcher[Req, Rep, In, Out](
       case None =>
         Trace.recordClientAddr(localAddress)
 
-        p.setInterruptHandler {
-          case intr =>
-            if (p.updateIfEmpty(Throw(intr)))
-              trans.close()
+        p.setInterruptHandler { case intr =>
+          if (p.updateIfEmpty(Throw(intr)))
+            trans.close()
         }
 
         dispatch(req, p)

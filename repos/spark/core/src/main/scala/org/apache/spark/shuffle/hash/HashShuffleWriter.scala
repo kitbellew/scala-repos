@@ -116,26 +116,24 @@ private[spark] class HashShuffleWriter[K, V](
     // rename all shuffle files to final paths
     // Note: there is only one ShuffleBlockResolver in executor
     shuffleBlockResolver.synchronized {
-      shuffle.writers.zipWithIndex.foreach {
-        case (writer, i) =>
-          val output = blockManager.diskBlockManager.getFile(writer.blockId)
-          if (sizes(i) > 0) {
-            if (output.exists()) {
-              // Use length of existing file and delete our own temporary one
-              sizes(i) = output.length()
-              writer.file.delete()
-            } else {
-              // Commit by renaming our temporary file to something the fetcher expects
-              if (!writer.file.renameTo(output)) {
-                throw new IOException(
-                  s"fail to rename ${writer.file} to $output")
-              }
-            }
+      shuffle.writers.zipWithIndex.foreach { case (writer, i) =>
+        val output = blockManager.diskBlockManager.getFile(writer.blockId)
+        if (sizes(i) > 0) {
+          if (output.exists()) {
+            // Use length of existing file and delete our own temporary one
+            sizes(i) = output.length()
+            writer.file.delete()
           } else {
-            if (output.exists()) {
-              output.delete()
+            // Commit by renaming our temporary file to something the fetcher expects
+            if (!writer.file.renameTo(output)) {
+              throw new IOException(s"fail to rename ${writer.file} to $output")
             }
           }
+        } else {
+          if (output.exists()) {
+            output.delete()
+          }
+        }
       }
     }
     MapStatus(blockManager.shuffleServerId, sizes)

@@ -219,16 +219,15 @@ class SolvingTest {
   }
 
   implicit val ModelOrd: Ordering[TestSolver.TestSolver.Model] = Ordering.by {
-    _.toSeq.sortWith {
-      case ((sym1, v1), (sym2, v2)) =>
-        val SymName(name1) = sym1
-        val SymName(name2) = sym2
-        if (name1 < name2)
-          true
-        else if (name1 > name2)
-          false
-        else
-          v1 < v2
+    _.toSeq.sortWith { case ((sym1, v1), (sym2, v2)) =>
+      val SymName(name1) = sym1
+      val SymName(name2) = sym2
+      if (name1 < name2)
+        true
+      else if (name1 > name2)
+        false
+      else
+        v1 < v2
     }.toIterable
   }
 

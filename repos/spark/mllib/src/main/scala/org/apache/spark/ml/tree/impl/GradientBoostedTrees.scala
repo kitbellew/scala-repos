@@ -150,13 +150,11 @@ private[ml] object GradientBoostedTrees extends Logging {
       loss: OldLoss): RDD[(Double, Double)] = {
 
     val newPredError = data.zip(predictionAndError).mapPartitions { iter =>
-      iter.map {
-        case (lp, (pred, error)) =>
-          val newPred = pred + tree.rootNode
-            .predictImpl(lp.features)
-            .prediction * treeWeight
-          val newError = loss.computeError(newPred, lp.label)
-          (newPred, newError)
+      iter.map { case (lp, (pred, error)) =>
+        val newPred =
+          pred + tree.rootNode.predictImpl(lp.features).prediction * treeWeight
+        val newError = loss.computeError(newPred, lp.label)
+        (newPred, newError)
       }
     }
     newPredError
@@ -254,9 +252,8 @@ private[ml] object GradientBoostedTrees extends Logging {
     var doneLearning = false
     while (m < numIterations && !doneLearning) {
       // Update data with pseudo-residuals
-      val data = predError.zip(input).map {
-        case ((pred, _), point) =>
-          LabeledPoint(-loss.gradient(pred, point.label), point.features)
+      val data = predError.zip(input).map { case ((pred, _), point) =>
+        LabeledPoint(-loss.gradient(pred, point.label), point.features)
       }
 
       timer.start(s"building tree $m")

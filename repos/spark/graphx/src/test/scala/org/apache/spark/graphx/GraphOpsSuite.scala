@@ -48,11 +48,10 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       assert(nbrs.count === 100)
       assert(graph.numVertices === nbrs.count)
       nbrs.collect.foreach { case (vid, nbrs) => assert(nbrs.size === 2) }
-      nbrs.collect.foreach {
-        case (vid, nbrs) =>
-          val s = nbrs.toSet
-          assert(s.contains((vid + 1) % 100))
-          assert(s.contains(if (vid > 0) vid - 1 else 99))
+      nbrs.collect.foreach { case (vid, nbrs) =>
+        val s = nbrs.toSet
+        assert(s.contains((vid + 1) % 100))
+        assert(s.contains(if (vid > 0) vid - 1 else 99))
       }
     }
   }
@@ -125,11 +124,10 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val edges = graph.collectEdges(EdgeDirection.Out).cache()
       assert(edges.count == 100)
       edges.collect.foreach { case (vid, edges) => assert(edges.size == 1) }
-      edges.collect.foreach {
-        case (vid, edges) =>
-          val s = edges.toSet
-          val edgeDstIds = s.map(e => e.dstId)
-          assert(edgeDstIds.contains((vid + 1) % 100))
+      edges.collect.foreach { case (vid, edges) =>
+        val s = edges.toSet
+        val edgeDstIds = s.map(e => e.dstId)
+        assert(edgeDstIds.contains((vid + 1) % 100))
       }
     }
   }
@@ -140,11 +138,10 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val edges = graph.collectEdges(EdgeDirection.In).cache()
       assert(edges.count == 100)
       edges.collect.foreach { case (vid, edges) => assert(edges.size == 1) }
-      edges.collect.foreach {
-        case (vid, edges) =>
-          val s = edges.toSet
-          val edgeSrcIds = s.map(e => e.srcId)
-          assert(edgeSrcIds.contains(if (vid > 0) vid - 1 else 99))
+      edges.collect.foreach { case (vid, edges) =>
+        val s = edges.toSet
+        val edgeSrcIds = s.map(e => e.srcId)
+        assert(edgeSrcIds.contains(if (vid > 0) vid - 1 else 99))
       }
     }
   }
@@ -155,12 +152,11 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val edges = graph.collectEdges(EdgeDirection.Either).cache()
       assert(edges.count == 100)
       edges.collect.foreach { case (vid, edges) => assert(edges.size == 2) }
-      edges.collect.foreach {
-        case (vid, edges) =>
-          val s = edges.toSet
-          val edgeIds = s.map(e => if (vid != e.srcId) e.srcId else e.dstId)
-          assert(edgeIds.contains((vid + 1) % 100))
-          assert(edgeIds.contains(if (vid > 0) vid - 1 else 99))
+      edges.collect.foreach { case (vid, edges) =>
+        val s = edges.toSet
+        val edgeIds = s.map(e => if (vid != e.srcId) e.srcId else e.dstId)
+        assert(edgeIds.contains((vid + 1) % 100))
+        assert(edgeIds.contains(if (vid > 0) vid - 1 else 99))
       }
     }
   }
@@ -171,11 +167,10 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       val edges = graph.collectEdges(EdgeDirection.Out).cache()
       assert(edges.count == 49)
       edges.collect.foreach { case (vid, edges) => assert(edges.size == 1) }
-      edges.collect.foreach {
-        case (vid, edges) =>
-          val s = edges.toSet
-          val edgeDstIds = s.map(e => e.dstId)
-          assert(edgeDstIds.contains(vid + 1))
+      edges.collect.foreach { case (vid, edges) =>
+        val s = edges.toSet
+        val edgeDstIds = s.map(e => e.dstId)
+        assert(edgeDstIds.contains(vid + 1))
       }
     }
   }
@@ -188,11 +183,10 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       // not have any edges in the specified direction.
       assert(edges.count == 49)
       edges.collect.foreach { case (vid, edges) => assert(edges.size == 1) }
-      edges.collect.foreach {
-        case (vid, edges) =>
-          val s = edges.toSet
-          val edgeDstIds = s.map(e => e.srcId)
-          assert(edgeDstIds.contains((vid - 1) % 100))
+      edges.collect.foreach { case (vid, edges) =>
+        val s = edges.toSet
+        val edgeDstIds = s.map(e => e.srcId)
+        assert(edgeDstIds.contains((vid - 1) % 100))
       }
     }
   }
@@ -204,24 +198,22 @@ class GraphOpsSuite extends SparkFunSuite with LocalSparkContext {
       // We expect only 49 because collectEdges does not return vertices that do
       // not have any edges in the specified direction.
       assert(edges.count === 50)
-      edges.collect.foreach {
-        case (vid, edges) =>
-          if (vid > 0 && vid < 49) {
-            assert(edges.size == 2)
-          } else {
-            assert(edges.size == 1)
-          }
+      edges.collect.foreach { case (vid, edges) =>
+        if (vid > 0 && vid < 49) {
+          assert(edges.size == 2)
+        } else {
+          assert(edges.size == 1)
+        }
       }
-      edges.collect.foreach {
-        case (vid, edges) =>
-          val s = edges.toSet
-          val edgeIds = s.map(e => if (vid != e.srcId) e.srcId else e.dstId)
-          if (vid == 0) { assert(edgeIds.contains(1)) }
-          else if (vid == 49) { assert(edgeIds.contains(48)) }
-          else {
-            assert(edgeIds.contains(vid + 1))
-            assert(edgeIds.contains(vid - 1))
-          }
+      edges.collect.foreach { case (vid, edges) =>
+        val s = edges.toSet
+        val edgeIds = s.map(e => if (vid != e.srcId) e.srcId else e.dstId)
+        if (vid == 0) { assert(edgeIds.contains(1)) }
+        else if (vid == 49) { assert(edgeIds.contains(48)) }
+        else {
+          assert(edgeIds.contains(vid + 1))
+          assert(edgeIds.contains(vid - 1))
+        }
       }
     }
   }

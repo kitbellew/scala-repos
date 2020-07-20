@@ -179,16 +179,14 @@ sealed abstract class IterateeT[E, F[_], A] {
         in: Input[E]): IterateeT[E, F, (A, B)] =
       in(
         el = _ =>
-          step(x, in) flatMap {
-            case (a, xx) =>
-              step(y, in) flatMap {
-                case (b, yy) =>
-                  (a, b) match {
-                    case (Some((a, e)), Some((b, ee))) =>
-                      done((a, b), if (e.isEl) e else ee)
-                    case _ => cont(loop(xx, yy))
-                  }
+          step(x, in) flatMap { case (a, xx) =>
+            step(y, in) flatMap { case (b, yy) =>
+              (a, b) match {
+                case (Some((a, e)), Some((b, ee))) =>
+                  done((a, b), if (e.isEl) e else ee)
+                case _ => cont(loop(xx, yy))
               }
+            }
           },
         empty = cont(loop(x, y)),
         eof = (x &= enumEofT[E, F]) flatMap (a =>

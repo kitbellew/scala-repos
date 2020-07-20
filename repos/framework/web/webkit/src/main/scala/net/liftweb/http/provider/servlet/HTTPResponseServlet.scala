@@ -30,27 +30,26 @@ class HTTPResponseServlet(resp: HttpServletResponse) extends HTTPResponse {
   private var _status = 0;
 
   def addCookies(cookies: List[HTTPCookie]) =
-    cookies.foreach {
-      case c =>
-        val cookie = new javax.servlet.http.Cookie(c.name, c.value openOr null)
-        c.domain map (cookie.setDomain(_))
-        c.path map (cookie.setPath(_))
-        c.maxAge map (cookie.setMaxAge(_))
-        c.version map (cookie.setVersion(_))
-        c.secure_? map (cookie.setSecure(_))
-        c.httpOnly.foreach { bv =>
-          import scala.language.reflectiveCalls
+    cookies.foreach { case c =>
+      val cookie = new javax.servlet.http.Cookie(c.name, c.value openOr null)
+      c.domain map (cookie.setDomain(_))
+      c.path map (cookie.setPath(_))
+      c.maxAge map (cookie.setMaxAge(_))
+      c.version map (cookie.setVersion(_))
+      c.secure_? map (cookie.setSecure(_))
+      c.httpOnly.foreach { bv =>
+        import scala.language.reflectiveCalls
 
-          try {
-            val cook30 =
-              cookie.asInstanceOf[{ def setHttpOnly(b: Boolean): Unit }]
-            cook30.setHttpOnly(bv)
-          } catch {
-            case e: Exception => // swallow.. the exception will be thrown for Servlet 2.5 containers but work for servlet
-            // 3.0 containers
-          }
+        try {
+          val cook30 =
+            cookie.asInstanceOf[{ def setHttpOnly(b: Boolean): Unit }]
+          cook30.setHttpOnly(bv)
+        } catch {
+          case e: Exception => // swallow.. the exception will be thrown for Servlet 2.5 containers but work for servlet
+          // 3.0 containers
         }
-        resp.addCookie(cookie)
+      }
+      resp.addCookie(cookie)
     }
 
   private val shouldEncodeUrl = LiftRules.encodeJSessionIdInUrl_?

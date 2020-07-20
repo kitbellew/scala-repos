@@ -174,11 +174,10 @@ class AskSpec extends AkkaSpec {
 
       val echo = system.actorOf(
         Props(new Actor {
-          def receive = {
-            case x ⇒
-              val name = sender.path.name
-              val parent = sender.path.parent
-              context.actorSelection(parent / ".." / "temp" / name) ! x
+          def receive = { case x ⇒
+            val name = sender.path.name
+            val parent = sender.path.parent
+            context.actorSelection(parent / ".." / "temp" / name) ! x
           }
         }),
         "select-echo4"
@@ -198,11 +197,10 @@ class AskSpec extends AkkaSpec {
 
       val echo = system.actorOf(
         Props(new Actor {
-          def receive = {
-            case x ⇒
-              val name = sender.path.name
-              val parent = sender.path.parent
-              context.actorSelection(parent / "missing") ! x
+          def receive = { case x ⇒
+            val name = sender.path.name
+            val parent = sender.path.parent
+            context.actorSelection(parent / "missing") ! x
           }
         }),
         "select-echo5")
@@ -220,11 +218,10 @@ class AskSpec extends AkkaSpec {
 
       val echo = system.actorOf(
         Props(new Actor {
-          def receive = {
-            case x ⇒
-              val name = sender.path.name
-              val parent = sender.path.parent
-              context.actorSelection(sender().path / "missing") ! x
+          def receive = { case x ⇒
+            val name = sender.path.name
+            val parent = sender.path.parent
+            context.actorSelection(sender().path / "missing") ! x
           }
         }),
         "select-echo6"

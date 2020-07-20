@@ -116,16 +116,15 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
     store
       .multiMerge(kvs.mapValues(_._2))
       .iterator
-      .map {
-        case (k, beforeF) =>
-          val (tups, delta) = kvs(k)
-          (
-            tups,
-            beforeF
-              .flatMap { before =>
-                lockedOp.get.apply((k, (before, delta)))
-              }
-              .onSuccess { _ => successHandlerOpt.get.handlerFn.apply() })
+      .map { case (k, beforeF) =>
+        val (tups, delta) = kvs(k)
+        (
+          tups,
+          beforeF
+            .flatMap { before =>
+              lockedOp.get.apply((k, (before, delta)))
+            }
+            .onSuccess { _ => successHandlerOpt.get.handlerFn.apply() })
       }
       .toList
 
@@ -136,9 +135,8 @@ class Summer[Key, Value: Semigroup, Event, S, D, RC](
       val (_, innerTuples) = tupList
       assert(innerTuples.size > 0, "Maps coming in must not be empty")
       state.fanOut(innerTuples.size)
-      val cacheEntries = innerTuples.map {
-        case (k, v) =>
-          (k, (List(state), v))
+      val cacheEntries = innerTuples.map { case (k, v) =>
+        (k, (List(state), v))
       }
 
       sSummer.addAll(cacheEntries).map(handleResult(_))

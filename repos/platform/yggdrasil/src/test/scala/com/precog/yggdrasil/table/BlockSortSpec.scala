@@ -86,8 +86,8 @@ trait BlockSortSpec[M[+_]]
     // order) to match real sort semantics for disambiguation of equal
     // values
     val sorted = original.zipWithIndex
-      .map {
-        case (jv, i) => JValue.unsafeInsert(jv, globalIdPath, JNum(i))
+      .map { case (jv, i) =>
+        JValue.unsafeInsert(jv, globalIdPath, JNum(i))
       }
       .sortBy { v =>
         JArray(

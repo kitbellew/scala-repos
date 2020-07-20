@@ -136,78 +136,62 @@ class BijectionsTest extends FunSuite with GeneratorDrivenPropertyChecks {
   import BijectionsTest._
 
   test("netty http request -> finagle") {
-    forAll(arbNettyRequest) {
-      case (in: FullHttpRequest, body: String) =>
-        val out = Bijections.netty.requestToFinagle(in)
-        assert(out.getUri == in.uri)
-        assert(out.isChunked == false)
-        assert(out.contentString == body)
+    forAll(arbNettyRequest) { case (in: FullHttpRequest, body: String) =>
+      val out = Bijections.netty.requestToFinagle(in)
+      assert(out.getUri == in.uri)
+      assert(out.isChunked == false)
+      assert(out.contentString == body)
+      assert(
+        out.version == Bijections.netty.versionToFinagle(in.protocolVersion))
+      out.headerMap.foreach { case (k, v) =>
         assert(
-          out.version == Bijections.netty.versionToFinagle(in.protocolVersion))
-        out.headerMap.foreach {
-          case (k, v) =>
-            assert(
-              in.headers.getAll(k).asScala.toSet == out.headerMap
-                .getAll(k)
-                .toSet)
-        }
+          in.headers.getAll(k).asScala.toSet == out.headerMap.getAll(k).toSet)
+      }
     }
   }
 
   test("netty http response -> finagle") {
-    forAll(arbNettyResponse) {
-      case (in: FullHttpResponse, body: String) =>
-        val out = Bijections.netty.responseToFinagle(in)
-        assert(out.statusCode == in.status.code)
-        assert(out.isChunked == false)
-        assert(out.contentString == body)
+    forAll(arbNettyResponse) { case (in: FullHttpResponse, body: String) =>
+      val out = Bijections.netty.responseToFinagle(in)
+      assert(out.statusCode == in.status.code)
+      assert(out.isChunked == false)
+      assert(out.contentString == body)
+      assert(
+        out.version == Bijections.netty.versionToFinagle(in.protocolVersion))
+      out.headerMap.foreach { case (k, v) =>
         assert(
-          out.version == Bijections.netty.versionToFinagle(in.protocolVersion))
-        out.headerMap.foreach {
-          case (k, v) =>
-            assert(
-              in.headers.getAll(k).asScala.toSet == out.headerMap
-                .getAll(k)
-                .toSet)
-        }
+          in.headers.getAll(k).asScala.toSet == out.headerMap.getAll(k).toSet)
+      }
     }
   }
 
   test("finagle http response -> netty") {
-    forAll(arbResponse) {
-      case (in: Response, body: String) =>
-        val out = Bijections.finagle.responseToNetty(in)
-        assert(HttpUtil.isTransferEncodingChunked(out) == false)
+    forAll(arbResponse) { case (in: Response, body: String) =>
+      val out = Bijections.finagle.responseToNetty(in)
+      assert(HttpUtil.isTransferEncodingChunked(out) == false)
+      assert(
+        out.protocolVersion == Bijections.finagle.versionToNetty(in.version))
+      assert(out.content.toString(UTF_8) == body)
+      in.headerMap.foreach { case (k, v) =>
         assert(
-          out.protocolVersion == Bijections.finagle.versionToNetty(in.version))
-        assert(out.content.toString(UTF_8) == body)
-        in.headerMap.foreach {
-          case (k, v) =>
-            assert(
-              out.headers.getAll(k).asScala.toSet == in.headerMap
-                .getAll(k)
-                .toSet)
-        }
+          out.headers.getAll(k).asScala.toSet == in.headerMap.getAll(k).toSet)
+      }
     }
   }
 
   test("finagle http request -> netty") {
-    forAll(arbRequest) {
-      case (in: Request, body: String) =>
-        val out = Bijections.finagle.requestToNetty(in)
-        assert(HttpUtil.isTransferEncodingChunked(out) == false)
+    forAll(arbRequest) { case (in: Request, body: String) =>
+      val out = Bijections.finagle.requestToNetty(in)
+      assert(HttpUtil.isTransferEncodingChunked(out) == false)
+      assert(
+        out.protocolVersion == Bijections.finagle.versionToNetty(in.version))
+      assert(out.method == Bijections.finagle.methodToNetty(in.method))
+      assert(out.uri == in.getUri)
+      assert(out.content.toString(UTF_8) == body)
+      in.headerMap.foreach { case (k, v) =>
         assert(
-          out.protocolVersion == Bijections.finagle.versionToNetty(in.version))
-        assert(out.method == Bijections.finagle.methodToNetty(in.method))
-        assert(out.uri == in.getUri)
-        assert(out.content.toString(UTF_8) == body)
-        in.headerMap.foreach {
-          case (k, v) =>
-            assert(
-              out.headers.getAll(k).asScala.toSet == in.headerMap
-                .getAll(k)
-                .toSet)
-        }
+          out.headers.getAll(k).asScala.toSet == in.headerMap.getAll(k).toSet)
+      }
     }
   }
 }

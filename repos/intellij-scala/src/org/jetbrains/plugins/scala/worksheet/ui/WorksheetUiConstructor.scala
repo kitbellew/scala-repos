@@ -98,11 +98,10 @@ class WorksheetUiConstructor(base: JComponent, project: Project) {
     modulesBox fillModules project
     modulesBox.setToolTipText("Using class path of the module...")
 
-    defaultModule foreach {
-      case nn =>
-        val foundModule: Module =
-          ModuleManager getInstance project findModuleByName nn
-        if (foundModule != null) modulesBox setSelectedModule foundModule
+    defaultModule foreach { case nn =>
+      val foundModule: Module =
+        ModuleManager getInstance project findModuleByName nn
+      if (foundModule != null) modulesBox setSelectedModule foundModule
     }
 
     modulesBox.addActionListener(new ActionListener {

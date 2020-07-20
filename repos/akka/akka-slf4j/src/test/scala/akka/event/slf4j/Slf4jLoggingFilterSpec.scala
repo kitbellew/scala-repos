@@ -47,21 +47,19 @@ object Slf4jLoggingFilterSpec {
   }
 
   class DebugLevelProducer extends Actor with ActorLogging {
-    def receive = {
-      case s: String ⇒
-        log.warning(s)
-        log.info(s)
-        println("# DebugLevelProducer: " + log.isDebugEnabled)
-        log.debug(s)
+    def receive = { case s: String ⇒
+      log.warning(s)
+      log.info(s)
+      println("# DebugLevelProducer: " + log.isDebugEnabled)
+      log.debug(s)
     }
   }
 
   class WarningLevelProducer extends Actor with ActorLogging {
-    def receive = {
-      case s: String ⇒
-        log.warning(s)
-        log.info(s)
-        log.debug(s)
+    def receive = { case s: String ⇒
+      log.warning(s)
+      log.info(s)
+      log.debug(s)
     }
   }
 

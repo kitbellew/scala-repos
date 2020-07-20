@@ -209,10 +209,9 @@ abstract class MappedDecimal[T <: Mapper[T]](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedDecimal[T] =>
-            f.wholeSet(
-              if (v == null) defaultValue else coerce(BigDecimal(v.getTime)))
+        { case f: MappedDecimal[T] =>
+          f.wholeSet(
+            if (v == null) defaultValue else coerce(BigDecimal(v.getTime)))
         })
 
   def buildSetStringValue(
@@ -222,9 +221,8 @@ abstract class MappedDecimal[T <: Mapper[T]](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedDecimal[T] =>
-            f.wholeSet(if (v == null) defaultValue else coerce(BigDecimal(v)))
+        { case f: MappedDecimal[T] =>
+          f.wholeSet(if (v == null) defaultValue else coerce(BigDecimal(v)))
         })
 
   def buildSetLongValue(
@@ -234,9 +232,8 @@ abstract class MappedDecimal[T <: Mapper[T]](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedDecimal[T] =>
-            f.wholeSet(if (isNull) defaultValue else coerce(BigDecimal(v)))
+        { case f: MappedDecimal[T] =>
+          f.wholeSet(if (isNull) defaultValue else coerce(BigDecimal(v)))
         })
 
   def buildSetActualValue(
@@ -247,10 +244,9 @@ abstract class MappedDecimal[T <: Mapper[T]](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedDecimal[T] =>
-            f.wholeSet(
-              if (v == null) defaultValue else coerce(BigDecimal(v.toString)))
+        { case f: MappedDecimal[T] =>
+          f.wholeSet(
+            if (v == null) defaultValue else coerce(BigDecimal(v.toString)))
         })
 
   /**

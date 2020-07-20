@@ -90,9 +90,8 @@ private[spark] abstract class RestSubmissionServer(
     server.setThreadPool(threadPool)
     val mainHandler = new ServletContextHandler
     mainHandler.setContextPath("/")
-    contextToServlet.foreach {
-      case (prefix, servlet) =>
-        mainHandler.addServlet(new ServletHolder(servlet), prefix)
+    contextToServlet.foreach { case (prefix, servlet) =>
+      mainHandler.addServlet(new ServletHolder(servlet), prefix)
     }
     server.setHandler(mainHandler)
     server.start()

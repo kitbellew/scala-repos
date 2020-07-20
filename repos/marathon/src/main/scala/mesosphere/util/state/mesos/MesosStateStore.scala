@@ -73,22 +73,21 @@ class MesosStateStore(state: State, timeout: Duration) extends PersistentStore {
   override def allIds(): Future[Seq[ID]] = {
     futureToFuture(state.names())
       .map(_.asScala.toSeq)
-      .recover {
-        case NonFatal(ex) =>
-          // TODO: Currently this code path is taken when the zookeeper path does not exist yet. It would be nice
-          // to not log this as a warning.
-          //
-          // Unfortunately, this results in a NullPointerException in `throw e.getCause()` in BackToTheFuture because
-          // the native mesos code returns an ExecutionException without cause. Therefore, we cannot robustly
-          // differentiate between exceptions which are "normal" and exceptions which indicate real errors
-          // and we have to log them all.
-          log.warn(
-            s"Exception while calling $getClass.allIds(). " +
-              s"This problem should occur only with an empty zookeeper state. " +
-              s"In that case, you can ignore this message",
-            ex
-          )
-          Seq.empty[ID]
+      .recover { case NonFatal(ex) =>
+        // TODO: Currently this code path is taken when the zookeeper path does not exist yet. It would be nice
+        // to not log this as a warning.
+        //
+        // Unfortunately, this results in a NullPointerException in `throw e.getCause()` in BackToTheFuture because
+        // the native mesos code returns an ExecutionException without cause. Therefore, we cannot robustly
+        // differentiate between exceptions which are "normal" and exceptions which indicate real errors
+        // and we have to log them all.
+        log.warn(
+          s"Exception while calling $getClass.allIds(). " +
+            s"This problem should occur only with an empty zookeeper state. " +
+            s"In that case, you can ignore this message",
+          ex
+        )
+        Seq.empty[ID]
       }
   }
 

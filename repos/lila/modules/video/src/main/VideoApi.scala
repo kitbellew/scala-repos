@@ -238,21 +238,20 @@ private[video] final class VideoApi(videoColl: Coll, viewColl: Coll) {
               )
               .map(_.documents.flatMap(_.asOpt[TagNb]))
 
-        allPopular zip allPaths map {
-          case (all, paths) =>
-            val tags = all map { t =>
-              paths find (_._id == t._id) getOrElse TagNb(t._id, 0)
-            } filterNot (_.empty) take max
-            val missing = filterTags filterNot { t =>
-              tags exists (_.tag == t)
-            }
-            val list = tags.take(max - missing.size) ::: missing.flatMap { t =>
-              all find (_.tag == t)
-            }
-            list.sortBy { t =>
-              if (filterTags contains t.tag) Int.MinValue
-              else -t.nb
-            }
+        allPopular zip allPaths map { case (all, paths) =>
+          val tags = all map { t =>
+            paths find (_._id == t._id) getOrElse TagNb(t._id, 0)
+          } filterNot (_.empty) take max
+          val missing = filterTags filterNot { t =>
+            tags exists (_.tag == t)
+          }
+          val list = tags.take(max - missing.size) ::: missing.flatMap { t =>
+            all find (_.tag == t)
+          }
+          list.sortBy { t =>
+            if (filterTags contains t.tag) Int.MinValue
+            else -t.nb
+          }
         }
       },
       maxCapacity = 100

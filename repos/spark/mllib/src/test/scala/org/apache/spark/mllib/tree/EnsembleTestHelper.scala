@@ -52,10 +52,10 @@ object EnsembleTestHelper {
       input: Seq[LabeledPoint],
       requiredAccuracy: Double) {
     val predictions = input.map(x => model.predict(x.features))
-    val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
+    val numOffPredictions =
+      predictions.zip(input).count { case (prediction, expected) =>
         prediction != expected.label
-    }
+      }
     val accuracy = (input.length - numOffPredictions).toDouble / input.length
     assert(
       accuracy >= requiredAccuracy,
@@ -71,9 +71,8 @@ object EnsembleTestHelper {
       required: Double,
       metricName: String = "mse") {
     val predictions = input.map(x => model.predict(x.features))
-    val errors = predictions.zip(input).map {
-      case (prediction, point) =>
-        point.label - prediction
+    val errors = predictions.zip(input).map { case (prediction, point) =>
+      point.label - prediction
     }
     val metric = metricName match {
       case "mse" =>

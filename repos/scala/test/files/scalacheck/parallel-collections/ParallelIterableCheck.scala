@@ -114,56 +114,52 @@ abstract class ParallelIterableCheck[T](collName: String)
   }
 
   property("reductions must be equal for assoc. operators") =
-    forAll(collectionPairs) {
-      case (t, coll) =>
-        if (t.size != 0) {
-          val results = for ((op, ind) <- reduceOperators.zipWithIndex) yield {
-            val tr = t.reduceLeft(op)
-            val cr = coll.reduce(op)
-            if (tr != cr) {
-              println("from: " + t)
-              println("and: " + coll)
-              println("reducing with " + ind)
-              println(tr)
-              println(cr)
-            }
-            ("op index: " + ind) |: tr == cr
+    forAll(collectionPairs) { case (t, coll) =>
+      if (t.size != 0) {
+        val results = for ((op, ind) <- reduceOperators.zipWithIndex) yield {
+          val tr = t.reduceLeft(op)
+          val cr = coll.reduce(op)
+          if (tr != cr) {
+            println("from: " + t)
+            println("and: " + coll)
+            println("reducing with " + ind)
+            println(tr)
+            println(cr)
           }
-          results.reduceLeft(_ && _)
-        } else "has size 0" |: true
+          ("op index: " + ind) |: tr == cr
+        }
+        results.reduceLeft(_ && _)
+      } else "has size 0" |: true
     }
 
-  property("counts must be equal") = forAll(collectionPairs) {
-    case (t, coll) =>
-      val results = for ((pred, ind) <- countPredicates.zipWithIndex) yield {
-        val tc = t.count(pred)
-        val cc = coll.count(pred)
-        if (tc != cc) {
-          println("from: " + t + " - size: " + t.size)
-          println("and: " + coll + " - size: " + coll.toList.size)
-          println(tc)
-          println(cc)
-          printDebugInfo(coll)
-        }
-        ("op index: " + ind) |: tc == cc
+  property("counts must be equal") = forAll(collectionPairs) { case (t, coll) =>
+    val results = for ((pred, ind) <- countPredicates.zipWithIndex) yield {
+      val tc = t.count(pred)
+      val cc = coll.count(pred)
+      if (tc != cc) {
+        println("from: " + t + " - size: " + t.size)
+        println("and: " + coll + " - size: " + coll.toList.size)
+        println(tc)
+        println(cc)
+        printDebugInfo(coll)
       }
-      results.reduceLeft(_ && _)
+      ("op index: " + ind) |: tc == cc
+    }
+    results.reduceLeft(_ && _)
   }
 
-  property("forall must be equal") = forAll(collectionPairs) {
-    case (t, coll) =>
-      val results =
-        for ((pred, ind) <- forallPredicates.zipWithIndex)
-          yield ("op index: " + ind) |: t.forall(pred) == coll.forall(pred)
-      results.reduceLeft(_ && _)
+  property("forall must be equal") = forAll(collectionPairs) { case (t, coll) =>
+    val results =
+      for ((pred, ind) <- forallPredicates.zipWithIndex)
+        yield ("op index: " + ind) |: t.forall(pred) == coll.forall(pred)
+    results.reduceLeft(_ && _)
   }
 
-  property("exists must be equal") = forAll(collectionPairs) {
-    case (t, coll) =>
-      val results =
-        for ((pred, ind) <- existsPredicates.zipWithIndex)
-          yield ("op index: " + ind) |: t.exists(pred) == coll.exists(pred)
-      results.reduceLeft(_ && _)
+  property("exists must be equal") = forAll(collectionPairs) { case (t, coll) =>
+    val results =
+      for ((pred, ind) <- existsPredicates.zipWithIndex)
+        yield ("op index: " + ind) |: t.exists(pred) == coll.exists(pred)
+    results.reduceLeft(_ && _)
   }
 
   property("both must find or not find an element") = forAll(collectionPairs) {
@@ -377,20 +373,19 @@ abstract class ParallelIterableCheck[T](collName: String)
     }
 
   property("folds must be equal for assoc. operators") =
-    forAll(collectionPairs) {
-      case (t, coll) =>
-        (for (((first, op), ind) <- foldArguments.zipWithIndex) yield {
-          val tres = t.foldLeft(first)(op)
-          val cres = coll.fold(first)(op)
-          if (cres != tres) {
-            println("from: " + t)
-            println("and: " + coll)
-            println("folds are: ")
-            println(tres)
-            println(cres)
-          }
-          ("operator " + ind) |: tres == cres
-        }).reduceLeft(_ && _)
+    forAll(collectionPairs) { case (t, coll) =>
+      (for (((first, op), ind) <- foldArguments.zipWithIndex) yield {
+        val tres = t.foldLeft(first)(op)
+        val cres = coll.fold(first)(op)
+        if (cres != tres) {
+          println("from: " + t)
+          println("and: " + coll)
+          println("folds are: ")
+          println(tres)
+          println(cres)
+        }
+        ("operator " + ind) |: tres == cres
+      }).reduceLeft(_ && _)
     }
 
   property("++s must be equal") = forAll(collectionTriplets) {

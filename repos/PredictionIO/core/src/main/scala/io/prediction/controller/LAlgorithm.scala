@@ -70,9 +70,8 @@ abstract class LAlgorithm[PD, M: ClassTag, Q, P]
   def batchPredict(mRDD: RDD[M], qs: RDD[(Long, Q)]): RDD[(Long, P)] = {
     val glomQs: RDD[Array[(Long, Q)]] = qs.glom()
     val cartesian: RDD[(M, Array[(Long, Q)])] = mRDD.cartesian(glomQs)
-    cartesian.flatMap {
-      case (m, qArray) =>
-        qArray.map { case (qx, q) => (qx, predict(m, q)) }
+    cartesian.flatMap { case (m, qArray) =>
+      qArray.map { case (qx, q) => (qx, predict(m, q)) }
     }
   }
 

@@ -114,15 +114,13 @@ class InlineUtil[C <: Context with Singleton](val c: C) {
       override def transform(tree: Tree): Tree =
         tree match {
           case Apply(Select(Function(params, body), ApplyName), args) =>
-            params.zip(args).foldLeft(body) {
-              case (b, (param, arg)) =>
-                inlineSymbol(param.symbol, b, arg)
+            params.zip(args).foldLeft(body) { case (b, (param, arg)) =>
+              inlineSymbol(param.symbol, b, arg)
             }
 
           case Apply(Function(params, body), args) =>
-            params.zip(args).foldLeft(body) {
-              case (b, (param, arg)) =>
-                inlineSymbol(param.symbol, b, arg)
+            params.zip(args).foldLeft(body) { case (b, (param, arg)) =>
+              inlineSymbol(param.symbol, b, arg)
             }
 
           case _ =>

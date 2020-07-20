@@ -88,10 +88,9 @@ object FileToEvents extends Logging {
         executorEnv = Runner.envStringToMap(args.env))
       val rdd =
         sc.textFile(args.inputPath).filter(_.trim.nonEmpty).map { json =>
-          Try(read[Event](json)).recoverWith {
-            case e: Throwable =>
-              error(s"\nmalformed json => $json")
-              Failure(e)
+          Try(read[Event](json)).recoverWith { case e: Throwable =>
+            error(s"\nmalformed json => $json")
+            Failure(e)
           }.get
         }
       val events = Storage.getPEvents()

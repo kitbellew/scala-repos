@@ -33,11 +33,10 @@ class TransportAdapters(system: ExtendedActorSystem) extends Extension {
     for ((name, fqn) ← settings.Adapters) yield {
       name -> system.dynamicAccess
         .createInstanceFor[TransportAdapterProvider](fqn, immutable.Seq.empty)
-        .recover({
-          case e ⇒
-            throw new IllegalArgumentException(
-              s"Cannot instantiate transport adapter [${fqn}]",
-              e)
+        .recover({ case e ⇒
+          throw new IllegalArgumentException(
+            s"Cannot instantiate transport adapter [${fqn}]",
+            e)
         })
         .get
     }

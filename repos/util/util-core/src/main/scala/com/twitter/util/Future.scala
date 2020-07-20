@@ -128,10 +128,9 @@ object Future {
 
     val p = new Promise[Unit]
     val task = timer.schedule(howlong.fromNow) { p.setDone() }
-    p.setInterruptHandler {
-      case e =>
-        if (p.updateIfEmpty(Throw(e)))
-          task.cancel()
+    p.setInterruptHandler { case e =>
+      if (p.updateIfEmpty(Throw(e)))
+        task.cancel()
     }
     p
   }
@@ -1993,10 +1992,9 @@ abstract class Future[+A] extends Awaitable[A] {
     if (isDefined) return this
 
     val p = Promise.attached(this)
-    p setInterruptHandler {
-      case t: Throwable =>
-        if (p.detach())
-          p.setException(t)
+    p setInterruptHandler { case t: Throwable =>
+      if (p.detach())
+        p.setException(t)
     }
     p
   }
@@ -2862,9 +2860,8 @@ def join[%s](%s): Future[(%s)] = join(Seq(%s)) map { _ => (%s) }""".format(
     * to be satisfied and the rest of the futures.
     */
   def select[A](fs: JList[Future[A]]): Future[(Try[A], JList[Future[A]])] =
-    Future.select(fs.asScala) map {
-      case (first, rest) =>
-        (first, rest.asJava)
+    Future.select(fs.asScala) map { case (first, rest) =>
+      (first, rest.asJava)
     }
 
   /**

@@ -76,21 +76,19 @@ private[akka] class Mailboxes(
       .unwrapped
       .asScala
       .toMap
-      .foldLeft(Map.empty[Class[_ <: Any], String]) {
-        case (m, (k, v)) ⇒
-          dynamicAccess
-            .getClassFor[Any](k)
-            .map {
-              case x ⇒ m.updated(x, v.toString)
-            }
-            .recover {
-              case e ⇒
-                throw new ConfigurationException(
-                  s"Type [${k}] specified as akka.actor.mailbox.requirement " +
-                    s"[${v}] in config can't be loaded due to [${e.getMessage}]",
-                  e)
-            }
-            .get
+      .foldLeft(Map.empty[Class[_ <: Any], String]) { case (m, (k, v)) ⇒
+        dynamicAccess
+          .getClassFor[Any](k)
+          .map { case x ⇒
+            m.updated(x, v.toString)
+          }
+          .recover { case e ⇒
+            throw new ConfigurationException(
+              s"Type [${k}] specified as akka.actor.mailbox.requirement " +
+                s"[${v}] in config can't be loaded due to [${e.getMessage}]",
+              e)
+          }
+          .get
       }
   }
 
@@ -246,12 +244,11 @@ private[akka] class Mailboxes(
                   classOf[Config] -> conf)
                 dynamicAccess
                   .createInstanceFor[MailboxType](fqcn, args)
-                  .recover({
-                    case exception ⇒
-                      throw new IllegalArgumentException(
-                        s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
-                          " constructor with [akka.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
-                        exception)
+                  .recover({ case exception ⇒
+                    throw new IllegalArgumentException(
+                      s"Cannot instantiate MailboxType [$fqcn], defined in [$id], make sure it has a public" +
+                        " constructor with [akka.actor.ActorSystem.Settings, com.typesafe.config.Config] parameters",
+                      exception)
                   })
                   .get
             }

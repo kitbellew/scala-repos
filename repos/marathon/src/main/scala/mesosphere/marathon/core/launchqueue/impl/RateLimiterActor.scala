@@ -69,12 +69,11 @@ private class RateLimiterActor private (
       ).reduceLeft(_.orElse[Any, Unit](_))
     }
 
-  private[this] def receiveCleanup: Receive = {
-    case CleanupOverdueDelays =>
-      // If an app gets removed or updated, the delay should be reset.
-      // Still, we can remove overdue delays before that and also make leaks less likely
-      // by calling this periodically.
-      rateLimiter.cleanUpOverdueDelays()
+  private[this] def receiveCleanup: Receive = { case CleanupOverdueDelays =>
+    // If an app gets removed or updated, the delay should be reset.
+    // Still, we can remove overdue delays before that and also make leaks less likely
+    // by calling this periodically.
+    rateLimiter.cleanUpOverdueDelays()
   }
 
   private[this] def receiveDelayOps: Receive = {

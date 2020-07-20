@@ -156,43 +156,36 @@ object AndroidClassExtractor extends JavaConversionHelpers {
 
       accessors
         .groupBy(m => propName(m.getName))
-        .map {
-          case (name, methods) =>
-            val (_setters, _getters) = methods
-              .filter {
-                !_.toGenericString.contains("static")
-              }
-              .partition(_.getName.startsWith("set"))
-            val setters =
-              _setters.map(toAndroidMethod).sortBy(_.argTypes.head.name).toList
-            val getter = _getters.map(toAndroidMethod).headOption
-            def superGetterExists =
-              superClass
-                .map(_.getMethods.find(_.getName == "get" + name.capitalize))
-                .flatten
-                .nonEmpty
-
-            if (setters.isEmpty && (getter.isEmpty || getter.get.name
-                .startsWith("is"))) None
-            else {
-              val nameClashes = allMethodNames(name) || superGetterExists
-              val tpe =
-                getter.map(_.retType).getOrElse(setters.head.argTypes.head)
-              val switch =
-                if (name.endsWith("Enabled"))
-                  Some(name.replace("Enabled", "").capitalize)
-                else if (name.equals("enabled")) Some("")
-                else None
-
-              Some(
-                AndroidProperty(
-                  name,
-                  tpe,
-                  getter,
-                  setters,
-                  switch,
-                  nameClashes))
+        .map { case (name, methods) =>
+          val (_setters, _getters) = methods
+            .filter {
+              !_.toGenericString.contains("static")
             }
+            .partition(_.getName.startsWith("set"))
+          val setters =
+            _setters.map(toAndroidMethod).sortBy(_.argTypes.head.name).toList
+          val getter = _getters.map(toAndroidMethod).headOption
+          def superGetterExists =
+            superClass
+              .map(_.getMethods.find(_.getName == "get" + name.capitalize))
+              .flatten
+              .nonEmpty
+
+          if (setters.isEmpty && (getter.isEmpty || getter.get.name.startsWith(
+              "is"))) None
+          else {
+            val nameClashes = allMethodNames(name) || superGetterExists
+            val tpe =
+              getter.map(_.retType).getOrElse(setters.head.argTypes.head)
+            val switch =
+              if (name.endsWith("Enabled"))
+                Some(name.replace("Enabled", "").capitalize)
+              else if (name.equals("enabled")) Some("")
+              else None
+
+            Some(
+              AndroidProperty(name, tpe, getter, setters, switch, nameClashes))
+          }
         }
         .flatten
         .toList
@@ -314,11 +307,10 @@ object AndroidClassExtractor extends JavaConversionHelpers {
     // Find constructor not by fully qualified name
     def looseConstructorLookup(types: List[String]): Option[List[String]] =
       constructorNames
-        .find {
-          case (key, _) =>
-            types.zip(key).forall {
-              case (t, k) => t.endsWith(k)
-            }
+        .find { case (key, _) =>
+          types.zip(key).forall { case (t, k) =>
+            t.endsWith(k)
+          }
         }
         .map(_._2)
 

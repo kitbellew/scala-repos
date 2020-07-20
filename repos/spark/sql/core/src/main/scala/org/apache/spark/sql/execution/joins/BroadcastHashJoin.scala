@@ -201,16 +201,15 @@ case class BroadcastHashJoin(
       matched: String): Seq[ExprCode] = {
     ctx.currentVars = null
     ctx.INPUT_ROW = matched
-    buildPlan.output.zipWithIndex.map {
-      case (a, i) =>
-        val ev = BoundReference(i, a.dataType, a.nullable).gen(ctx)
-        if (joinType == Inner) {
-          ev
-        } else {
-          // the variables are needed even there is no matched rows
-          val isNull = ctx.freshName("isNull")
-          val value = ctx.freshName("value")
-          val code = s"""
+    buildPlan.output.zipWithIndex.map { case (a, i) =>
+      val ev = BoundReference(i, a.dataType, a.nullable).gen(ctx)
+      if (joinType == Inner) {
+        ev
+      } else {
+        // the variables are needed even there is no matched rows
+        val isNull = ctx.freshName("isNull")
+        val value = ctx.freshName("value")
+        val code = s"""
           |boolean $isNull = true;
           |${ctx.javaType(a.dataType)} $value = ${ctx.defaultValue(a.dataType)};
           |if ($matched != null) {
@@ -219,8 +218,8 @@ case class BroadcastHashJoin(
           |  $value = ${ev.value};
           |}
          """.stripMargin
-          ExprCode(code, isNull, value)
-        }
+        ExprCode(code, isNull, value)
+      }
     }
   }
 

@@ -159,21 +159,21 @@ object VFSPathUtils extends Logging {
                   case otherError =>
                     IO(\/.left(otherError))
                 },
-                {
-                  case VersionEntry(uuid, dataType, timestamp) =>
-                    containsNonemptyChild(Option(
+                { case VersionEntry(uuid, dataType, timestamp) =>
+                  containsNonemptyChild(
+                    Option(
                       pathDir0.listFiles(pathFileFilter)).toList.flatten) map {
-                      case true =>
-                        \/.right(
-                          PathMetadata(
-                            path,
-                            PathMetadata.DataDir(dataType.contentType)))
-                      case false =>
-                        \/.right(
-                          PathMetadata(
-                            path,
-                            PathMetadata.DataOnly(dataType.contentType)))
-                    }
+                    case true =>
+                      \/.right(
+                        PathMetadata(
+                          path,
+                          PathMetadata.DataDir(dataType.contentType)))
+                    case false =>
+                      \/.right(
+                        PathMetadata(
+                          path,
+                          PathMetadata.DataOnly(dataType.contentType)))
+                  }
                 }
               )
           }

@@ -8,10 +8,9 @@ object SCL4380 {
 
   class B extends A {
     override def f =
-      super.f orElse {
-        case z: Int =>
-          /*start*/
-          1 /*end*/ // error here
+      super.f orElse { case z: Int =>
+        /*start*/
+        1 /*end*/ // error here
       }
   }
 

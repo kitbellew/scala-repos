@@ -270,9 +270,8 @@ case class TungstenAggregate(
     val aggVals =
       updateExpr.map(BindReferences.bindReference(_, inputAttrs).gen(ctx))
     // aggregate buffer should be updated atomic
-    val updates = aggVals.zipWithIndex.map {
-      case (ev, i) =>
-        s"""
+    val updates = aggVals.zipWithIndex.map { case (ev, i) =>
+      s"""
          | ${bufVars(i).isNull} = ${ev.isNull};
          | ${bufVars(i).value} = ${ev.value};
        """.stripMargin
@@ -418,9 +417,8 @@ case class TungstenAggregate(
       // generate output using resultExpressions
       ctx.currentVars = null
       ctx.INPUT_ROW = keyTerm
-      val keyVars = groupingExpressions.zipWithIndex.map {
-        case (e, i) =>
-          BoundReference(i, e.dataType, e.nullable).gen(ctx)
+      val keyVars = groupingExpressions.zipWithIndex.map { case (e, i) =>
+        BoundReference(i, e.dataType, e.nullable).gen(ctx)
       }
       val evaluateKeyVars = evaluateVariables(keyVars)
       ctx.INPUT_ROW = bufferTerm
@@ -578,10 +576,9 @@ case class TungstenAggregate(
     // TODO: support subexpression elimination
     val evals =
       updateExpr.map(BindReferences.bindReference(_, inputAttr).gen(ctx))
-    val updates = evals.zipWithIndex.map {
-      case (ev, i) =>
-        val dt = updateExpr(i).dataType
-        ctx.updateColumn(buffer, dt, i, ev, updateExpr(i).nullable)
+    val updates = evals.zipWithIndex.map { case (ev, i) =>
+      val dt = updateExpr(i).dataType
+      ctx.updateColumn(buffer, dt, i, ev, updateExpr(i).nullable)
     }
 
     val (checkFallback, resetCoulter, incCounter) =

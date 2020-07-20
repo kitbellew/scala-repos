@@ -239,9 +239,8 @@ object FirstOrderMinimizer {
         oldState: State[T, _, _],
         oldInfo: Info): Info = {
       require(oldInfo.length == checks.length)
-      (checks zip oldInfo).map {
-        case (c, i) =>
-          c.update(newX, newGrad, newVal, oldState, i.asInstanceOf[c.Info])
+      (checks zip oldInfo).map { case (c, i) =>
+        c.update(newX, newGrad, newVal, oldState, i.asInstanceOf[c.Info])
       }
     }
 

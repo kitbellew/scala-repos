@@ -86,20 +86,19 @@ private final class ApnsActor(certificate: InputStream, password: String)
     Option(manager).foreach(_.shutdown())
   }
 
-  def receive = {
-    case ApplePush.Notification(token, alert, payload) =>
-      val payloadBuilder = new ApnsPayloadBuilder()
+  def receive = { case ApplePush.Notification(token, alert, payload) =>
+    val payloadBuilder = new ApnsPayloadBuilder()
 
-      payloadBuilder.setAlertBody(Json stringify alert)
-      payloadBuilder.setBadgeNumber(1)
-      payloadBuilder.addCustomProperty("data", Json stringify payload)
+    payloadBuilder.setAlertBody(Json stringify alert)
+    payloadBuilder.setBadgeNumber(1)
+    payloadBuilder.addCustomProperty("data", Json stringify payload)
 
-      val notif = new SimpleApnsPushNotification(
-        TokenUtil.tokenStringToByteArray(token),
-        payloadBuilder.buildWithDefaultMaximumLength())
+    val notif = new SimpleApnsPushNotification(
+      TokenUtil.tokenStringToByteArray(token),
+      payloadBuilder.buildWithDefaultMaximumLength())
 
-      logger.info(s"Sending alert=$alert, payload=$payload to $token")
+    logger.info(s"Sending alert=$alert, payload=$payload to $token")
 
-      getManager.getQueue().put(notif)
+    getManager.getQueue().put(notif)
   }
 }

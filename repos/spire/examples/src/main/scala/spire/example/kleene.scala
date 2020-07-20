@@ -569,10 +569,9 @@ object KleeneDemo {
 
     val weighted: Matrix[Tropical[Int]] = {
       val m = ArrayMatrix(Array.fill(dim.n * dim.n)(Tropical.inf[Int]))
-      edges.foreach {
-        case (Edge(y, x), n) =>
-          m(x, y) = Tropical(n)
-          m(y, x) = Tropical(n)
+      edges.foreach { case (Edge(y, x), n) =>
+        m(x, y) = Tropical(n)
+        m(y, x) = Tropical(n)
       }
       m
     }

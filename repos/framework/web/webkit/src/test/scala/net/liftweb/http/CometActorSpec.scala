@@ -49,9 +49,8 @@ object CometActorSpec extends Specification {
 
   "A CometActor" should {
     class RedirectingComet extends SpecCometActor {
-      override def lowPriority = {
-        case TestMessage =>
-          S.redirectTo("place")
+      override def lowPriority = { case TestMessage =>
+        S.redirectTo("place")
       }
     }
 
@@ -69,9 +68,8 @@ object CometActorSpec extends Specification {
     }
 
     class FunctionRedirectingComet extends SpecCometActor {
-      override def lowPriority = {
-        case TestMessage =>
-          S.redirectTo("place", () => "do stuff")
+      override def lowPriority = { case TestMessage =>
+        S.redirectTo("place", () => "do stuff")
       }
     }
 
@@ -81,15 +79,13 @@ object CometActorSpec extends Specification {
       comet ! TestMessage
 
       val matchingMessage =
-        comet.receivedMessages.collect {
-          case PartialUpdateMsg(update) =>
-            update()
+        comet.receivedMessages.collect { case PartialUpdateMsg(update) =>
+          update()
         }
 
-      matchingMessage must beLike {
-        case List(RedirectTo(redirectUri)) =>
-          redirectUri must startWith("place")
-          redirectUri must beMatching("^[^?]+\\?F[^=]+=_$".r)
+      matchingMessage must beLike { case List(RedirectTo(redirectUri)) =>
+        redirectUri must startWith("place")
+        redirectUri must beMatching("^[^?]+\\?F[^=]+=_$".r)
       }
     }
   }

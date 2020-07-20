@@ -130,10 +130,9 @@ trait Enumerator[E] {
       def apply[A](it: Iteratee[E, A]): Future[Iteratee[E, A]] =
         parent
           .apply(it)
-          .andThen {
-            case someTry =>
-              callback
-              someTry.get
+          .andThen { case someTry =>
+            callback
+            someTry.get
           }(pec)
 
     }
@@ -299,8 +298,8 @@ object Enumerator {
           Cont(step)
         }
         val ps = es.zipWithIndex
-          .map {
-            case (e, index) => e |>> iteratee[E](_.patch(index, Seq(true), 1))
+          .map { case (e, index) =>
+            e |>> iteratee[E](_.patch(index, Seq(true), 1))
           }
           .map(_.flatMap(_.pureFold(any => ())(dec)))
 
@@ -602,9 +601,8 @@ object Enumerator {
               Future.successful(None)
           }(dec)
 
-          next.onFailure {
-            case reason: Exception =>
-              onError(reason.getMessage(), Input.Empty)
+          next.onFailure { case reason: Exception =>
+            onError(reason.getMessage(), Input.Empty)
           }(dec)
 
           next.onComplete {

@@ -386,10 +386,9 @@ trait Polynomial[@sp(Double) C] { lhs =>
     * flip/mirror the polynomial about the y-axis.
     */
   def flip(implicit ring: Rng[C], eq: Eq[C]): Polynomial[C] =
-    mapTerms {
-      case term @ Term(coeff, exp) =>
-        if (exp % 2 == 0) term
-        else Term(-coeff, exp)
+    mapTerms { case term @ Term(coeff, exp) =>
+      if (exp % 2 == 0) term
+      else Term(-coeff, exp)
     }
 
   /**
@@ -399,9 +398,8 @@ trait Polynomial[@sp(Double) C] { lhs =>
     * @see http://en.wikipedia.org/wiki/Reciprocal_polynomial
     */
   def reciprocal(implicit ring: Semiring[C], eq: Eq[C]): Polynomial[C] =
-    mapTerms {
-      case term @ Term(coeff, exp) =>
-        Term(coeff, degree - exp)
+    mapTerms { case term @ Term(coeff, exp) =>
+      Term(coeff, degree - exp)
     }
 
   // EuclideanRing ops.

@@ -64,8 +64,7 @@ object TestkitDocSpec {
   }
 
   class Destination extends Actor {
-    def receive = {
-      case x => // Do something..
+    def receive = { case x => // Do something..
     }
   }
 
@@ -75,12 +74,10 @@ object TestkitDocSpec {
     //#logging-receive
     import akka.event.LoggingReceive
     def receive =
-      LoggingReceive {
-        case msg => // Do something ...
+      LoggingReceive { case msg => // Do something ...
       }
     def otherState: Receive =
-      LoggingReceive.withLabel("other") {
-        case msg => // Do something else ...
+      LoggingReceive.withLabel("other") { case msg => // Do something else ...
       }
     //#logging-receive
   }

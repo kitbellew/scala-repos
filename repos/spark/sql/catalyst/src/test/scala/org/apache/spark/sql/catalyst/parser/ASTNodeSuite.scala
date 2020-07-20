@@ -29,10 +29,9 @@ class ASTNodeSuite extends SparkFunSuite {
       ("SET", "foo=bar"),
       ("SET", "foo*)(@#^*@&!#^=bar")
     )
-    inputs.foreach {
-      case (command, arguments) =>
-        val node = ParseDriver.parsePlan(s"$command $arguments", null)
-        assert(node.remainder === arguments)
+    inputs.foreach { case (command, arguments) =>
+      val node = ParseDriver.parsePlan(s"$command $arguments", null)
+      assert(node.remainder === arguments)
     }
   }
 }

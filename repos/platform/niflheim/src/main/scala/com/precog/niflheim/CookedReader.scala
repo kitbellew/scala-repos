@@ -111,13 +111,12 @@ final class CookedReader(
         })
         .valueOr { nel => throw nel.head }
     } getOrElse {
-      metadata.valueOr(throw _).segments map {
-        case (segId, file0) =>
-          val file =
-            if (file0.isAbsolute) file0 else new File(baseDir, file0.getPath)
-          read(file) { channel =>
-            segmentFormat.reader.readSegment(channel)
-          }.valueOr(throw _)
+      metadata.valueOr(throw _).segments map { case (segId, file0) =>
+        val file =
+          if (file0.isAbsolute) file0 else new File(baseDir, file0.getPath)
+        read(file) { channel =>
+          segmentFormat.reader.readSegment(channel)
+        }.valueOr(throw _)
       }
     }
 
@@ -150,9 +149,8 @@ final class CookedReader(
     metadata map { md =>
       md.segments
         .groupBy(s => (s._1.cpath, s._1.ctype))
-        .map {
-          case ((cpath, ctype), segs) =>
-            (ColumnRef(cpath, ctype), segs.map(_._2).toList)
+        .map { case ((cpath, ctype), segs) =>
+          (ColumnRef(cpath, ctype), segs.map(_._2).toList)
         }
         .toMap
     }

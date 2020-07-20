@@ -944,10 +944,9 @@ private[cluster] object MetricsCollector {
         .createInstanceFor[MetricsCollector](
           fqcn,
           List(classOf[ActorSystem] -> system))
-        .recover {
-          case e ⇒
-            throw new ConfigurationException(
-              "Could not create custom metrics collector [" + fqcn + "] due to:" + e.toString)
+        .recover { case e ⇒
+          throw new ConfigurationException(
+            "Could not create custom metrics collector [" + fqcn + "] due to:" + e.toString)
         }
         .get
     }

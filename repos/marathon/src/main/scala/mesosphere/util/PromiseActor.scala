@@ -13,14 +13,13 @@ import scala.concurrent.Future
   *                 and only message
   */
 class PromiseActor(promise: Promise[Any]) extends Actor {
-  def receive: Receive = {
-    case x: Any =>
-      x match {
-        case Status.Failure(t) => promise.failure(t)
-        case Status.Success(x) => promise.success(x)
-        case _                 => promise.success(x)
-      }
-      context.stop(self)
+  def receive: Receive = { case x: Any =>
+    x match {
+      case Status.Failure(t) => promise.failure(t)
+      case Status.Success(x) => promise.success(x)
+      case _                 => promise.success(x)
+    }
+    context.stop(self)
   }
 }
 

@@ -238,9 +238,8 @@ class StringIndexerSuite
       .transform(transformed)
       .select("label", "sameLabel")
       .collect()
-      .foreach {
-        case Row(a: String, b: String) =>
-          assert(a === b)
+      .foreach { case Row(a: String, b: String) =>
+        assert(a === b)
       }
   }
 

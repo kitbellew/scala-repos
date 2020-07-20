@@ -157,14 +157,13 @@ class FSMTransitionSpec extends AkkaSpec with ImplicitSender {
         onTransition {
           case x -> y ⇒ nextStateData ! (x -> y)
         }
-        when(1) {
-          case Event("test", _) ⇒
-            try {
-              sender() ! s"failed: $nextStateData"
-            } catch {
-              case _: IllegalStateException ⇒ sender() ! "ok"
-            }
-            stay()
+        when(1) { case Event("test", _) ⇒
+          try {
+            sender() ! s"failed: $nextStateData"
+          } catch {
+            case _: IllegalStateException ⇒ sender() ! "ok"
+          }
+          stay()
         }
       }))
       fsmref ! "switch"

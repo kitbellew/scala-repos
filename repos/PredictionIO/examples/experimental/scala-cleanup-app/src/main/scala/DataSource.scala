@@ -58,18 +58,16 @@ class DataSource(val dsp: DataSourceParams)
         appId = dsp.appId,
         untilTime = Some(dsp.cutoffTime)
       )(sc)
-      .map {
-        case e =>
-          e.eventId.getOrElse("")
+      .map { case e =>
+        e.eventId.getOrElse("")
       }
       .collect
 
     var lastFuture: Future[Boolean] = Future[Boolean] { true }
-    eventsToRemove.foreach {
-      case eventId =>
-        if (eventId != "") {
-          lastFuture = lEventsDb.futureDelete(eventId, dsp.appId)
-        }
+    eventsToRemove.foreach { case eventId =>
+      if (eventId != "") {
+        lastFuture = lEventsDb.futureDelete(eventId, dsp.appId)
+      }
     }
     // No, it's not correct to just wait for the last result.
     // This program only demonstrates how to remove old events.

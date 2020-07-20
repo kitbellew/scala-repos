@@ -235,8 +235,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
         calledMethods += "start"
       }
 
-      override def receive: PartialFunction[Any, Unit] = {
-        case msg: String =>
+      override def receive: PartialFunction[Any, Unit] = { case msg: String =>
       }
 
       override def onStop(): Unit = {
@@ -261,8 +260,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           throw new RuntimeException("Oops!")
         }
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
+        override def receive: PartialFunction[Any, Unit] = { case m =>
         }
 
         override def onError(cause: Throwable): Unit = {
@@ -283,8 +281,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       new RpcEndpoint {
         override val rpcEnv = env
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
+        override def receive: PartialFunction[Any, Unit] = { case m =>
         }
 
         override def onError(cause: Throwable): Unit = {
@@ -341,8 +338,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
           callSelfSuccessfully = true
         }
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
+        override def receive: PartialFunction[Any, Unit] = { case m =>
         }
       }
     )
@@ -385,8 +381,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       new RpcEndpoint {
         override val rpcEnv = env
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
+        override def receive: PartialFunction[Any, Unit] = { case m =>
         }
 
         override def onStop(): Unit = {
@@ -443,8 +438,7 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       new RpcEndpoint {
         override val rpcEnv = env
 
-        override def receive: PartialFunction[Any, Unit] = {
-          case m =>
+        override def receive: PartialFunction[Any, Unit] = { case m =>
         }
 
         override def onStop(): Unit = {
@@ -943,11 +937,10 @@ abstract class RpcEnvSuite extends SparkFunSuite with BeforeAndAfterAll {
       (jar, jarUri),
       (subFile1, dir1Uri + "/file1"),
       (subFile2, dir2Uri + "/file2"))
-    files.foreach {
-      case (f, uri) =>
-        val destFile = new File(destDir, f.getName())
-        Utils.fetchFile(uri, destDir, conf, sm, hc, 0L, false)
-        assert(Files.equal(f, destFile))
+    files.foreach { case (f, uri) =>
+      val destFile = new File(destDir, f.getName())
+      Utils.fetchFile(uri, destDir, conf, sm, hc, 0L, false)
+      assert(Files.equal(f, destFile))
     }
 
     // Try to download files that do not exist.

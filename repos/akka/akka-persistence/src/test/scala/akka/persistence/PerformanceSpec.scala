@@ -55,24 +55,22 @@ object PerformanceSpec {
   class CommandsourcedTestPersistentActor(name: String)
       extends PerformanceTestPersistentActor(name) {
 
-    override val receiveCommand: Receive = controlBehavior orElse {
-      case cmd ⇒
-        persistAsync(cmd) { _ ⇒
-          if (lastSequenceNr % 1000 == 0) print(".")
-          if (lastSequenceNr == failAt) throw new TestException("boom")
-        }
+    override val receiveCommand: Receive = controlBehavior orElse { case cmd ⇒
+      persistAsync(cmd) { _ ⇒
+        if (lastSequenceNr % 1000 == 0) print(".")
+        if (lastSequenceNr == failAt) throw new TestException("boom")
+      }
     }
   }
 
   class EventsourcedTestPersistentActor(name: String)
       extends PerformanceTestPersistentActor(name) {
 
-    override val receiveCommand: Receive = controlBehavior orElse {
-      case cmd ⇒
-        persist(cmd) { _ ⇒
-          if (lastSequenceNr % 1000 == 0) print(".")
-          if (lastSequenceNr == failAt) throw new TestException("boom")
-        }
+    override val receiveCommand: Receive = controlBehavior orElse { case cmd ⇒
+      persist(cmd) { _ ⇒
+        if (lastSequenceNr % 1000 == 0) print(".")
+        if (lastSequenceNr == failAt) throw new TestException("boom")
+      }
     }
   }
 
@@ -88,11 +86,10 @@ object PerformanceSpec {
       if (lastSequenceNr == failAt) throw new TestException("boom")
     }
 
-    val receiveCommand: Receive = controlBehavior orElse {
-      case cmd ⇒
-        counter += 1
-        if (counter % 10 == 0) persist(cmd)(handler)
-        else persistAsync(cmd)(handler)
+    val receiveCommand: Receive = controlBehavior orElse { case cmd ⇒
+      counter += 1
+      if (counter % 10 == 0) persist(cmd)(handler)
+      else persistAsync(cmd)(handler)
     }
   }
 

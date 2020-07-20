@@ -73,9 +73,8 @@ private[manager] object OfferMatcherManagerActor {
     def addMatcher(matcher: OfferMatcher): OfferData =
       copy(matcherQueue = matcherQueue.enqueue(matcher))
     def nextMatcherOpt: Option[(OfferMatcher, OfferData)] = {
-      matcherQueue.dequeueOption map {
-        case (nextMatcher, newQueue) =>
-          nextMatcher -> copy(matcherQueue = newQueue)
+      matcherQueue.dequeueOption map { case (nextMatcher, newQueue) =>
+        nextMatcher -> copy(matcherQueue = newQueue)
       }
     }
 
@@ -301,13 +300,9 @@ private[impl] class OfferMatcherManagerActor private (
           data.offer.getId.getValue)
         nextMatcher
           .matchOffer(newData.deadline, newData.offer)
-          .recover {
-            case NonFatal(e) =>
-              log.warning("Received error from {}", e)
-              MatchedTaskOps(
-                data.offer.getId,
-                Seq.empty,
-                resendThisOffer = true)
+          .recover { case NonFatal(e) =>
+            log.warning("Received error from {}", e)
+            MatchedTaskOps(data.offer.getId, Seq.empty, resendThisOffer = true)
           }
           .pipeTo(self)
       case None => sendMatchResult(data, data.resendThisOffer)

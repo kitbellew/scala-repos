@@ -344,10 +344,9 @@ trait ListFunctions {
 
   private[this] def mapAccum[A, B, C](
       as: List[A])(c: C, f: (C, A) => (C, B)): (C, List[B]) =
-    as.foldLeft((c, Nil: List[B])) {
-      case ((c, bs), a) =>
-        val (c0, b) = f(c, a)
-        (c0, b :: bs)
+    as.foldLeft((c, Nil: List[B])) { case ((c, bs), a) =>
+      val (c0, b) = f(c, a)
+      (c0, b :: bs)
     }
 
   /** All of the `B`s, in order, and the final `C` acquired by a

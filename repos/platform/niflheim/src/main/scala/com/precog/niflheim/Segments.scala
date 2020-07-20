@@ -279,9 +279,8 @@ case class Segments(
         if (m.isEmpty) {
           addEmptyObject(row, tree)
         } else {
-          m.foreach {
-            case (key, j) =>
-              initializeSegments(row, j, tree.getField(key))
+          m.foreach { case (key, j) =>
+            initializeSegments(row, j, tree.getField(key))
           }
         }
 

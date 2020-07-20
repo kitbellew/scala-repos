@@ -147,27 +147,24 @@ class LinearRegressionSuite
     */
   ignore("export test data into CSV format") {
     datasetWithDenseFeature.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/LinearRegressionSuite/datasetWithDenseFeature")
 
     datasetWithDenseFeatureWithoutIntercept.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/LinearRegressionSuite/datasetWithDenseFeatureWithoutIntercept")
 
     datasetWithSparseFeature.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
@@ -244,13 +241,12 @@ class LinearRegressionSuite
         .transform(datasetWithDenseFeature)
         .select("features", "prediction")
         .collect()
-        .foreach {
-          case Row(features: DenseVector, prediction1: Double) =>
-            val prediction2 =
-              features(0) * model1.coefficients(0) + features(1) * model1
-                .coefficients(1) +
-                model1.intercept
-            assert(prediction1 ~== prediction2 relTol 1e-5)
+        .foreach { case Row(features: DenseVector, prediction1: Double) =>
+          val prediction2 =
+            features(0) * model1.coefficients(0) + features(1) * model1
+              .coefficients(1) +
+              model1.intercept
+          assert(prediction1 ~== prediction2 relTol 1e-5)
         }
     }
   }
@@ -365,13 +361,12 @@ class LinearRegressionSuite
           .transform(datasetWithDenseFeature)
           .select("features", "prediction")
           .collect()
-          .foreach {
-            case Row(features: DenseVector, prediction1: Double) =>
-              val prediction2 =
-                features(0) * model1.coefficients(0) + features(1) * model1
-                  .coefficients(1) +
-                  model1.intercept
-              assert(prediction1 ~== prediction2 relTol 1e-5)
+          .foreach { case Row(features: DenseVector, prediction1: Double) =>
+            val prediction2 =
+              features(0) * model1.coefficients(0) + features(1) * model1
+                .coefficients(1) +
+                model1.intercept
+            assert(prediction1 ~== prediction2 relTol 1e-5)
           }
       }
     }
@@ -437,13 +432,12 @@ class LinearRegressionSuite
           .transform(datasetWithDenseFeature)
           .select("features", "prediction")
           .collect()
-          .foreach {
-            case Row(features: DenseVector, prediction1: Double) =>
-              val prediction2 =
-                features(0) * model1.coefficients(0) + features(1) * model1
-                  .coefficients(1) +
-                  model1.intercept
-              assert(prediction1 ~== prediction2 relTol 1e-5)
+          .foreach { case Row(features: DenseVector, prediction1: Double) =>
+            val prediction2 =
+              features(0) * model1.coefficients(0) + features(1) * model1
+                .coefficients(1) +
+                model1.intercept
+            assert(prediction1 ~== prediction2 relTol 1e-5)
           }
       }
     }
@@ -498,13 +492,12 @@ class LinearRegressionSuite
         .transform(datasetWithDenseFeature)
         .select("features", "prediction")
         .collect()
-        .foreach {
-          case Row(features: DenseVector, prediction1: Double) =>
-            val prediction2 =
-              features(0) * model1.coefficients(0) + features(1) * model1
-                .coefficients(1) +
-                model1.intercept
-            assert(prediction1 ~== prediction2 relTol 1e-5)
+        .foreach { case Row(features: DenseVector, prediction1: Double) =>
+          val prediction2 =
+            features(0) * model1.coefficients(0) + features(1) * model1
+              .coefficients(1) +
+              model1.intercept
+          assert(prediction1 ~== prediction2 relTol 1e-5)
         }
     }
   }
@@ -561,13 +554,12 @@ class LinearRegressionSuite
         .transform(datasetWithDenseFeature)
         .select("features", "prediction")
         .collect()
-        .foreach {
-          case Row(features: DenseVector, prediction1: Double) =>
-            val prediction2 =
-              features(0) * model1.coefficients(0) + features(1) * model1
-                .coefficients(1) +
-                model1.intercept
-            assert(prediction1 ~== prediction2 relTol 1e-5)
+        .foreach { case Row(features: DenseVector, prediction1: Double) =>
+          val prediction2 =
+            features(0) * model1.coefficients(0) + features(1) * model1
+              .coefficients(1) +
+              model1.intercept
+          assert(prediction1 ~== prediction2 relTol 1e-5)
         }
     }
   }
@@ -630,13 +622,12 @@ class LinearRegressionSuite
           .transform(datasetWithDenseFeature)
           .select("features", "prediction")
           .collect()
-          .foreach {
-            case Row(features: DenseVector, prediction1: Double) =>
-              val prediction2 =
-                features(0) * model1.coefficients(0) + features(1) * model1
-                  .coefficients(1) +
-                  model1.intercept
-              assert(prediction1 ~== prediction2 relTol 1e-5)
+          .foreach { case Row(features: DenseVector, prediction1: Double) =>
+            val prediction2 =
+              features(0) * model1.coefficients(0) + features(1) * model1
+                .coefficients(1) +
+                model1.intercept
+            assert(prediction1 ~== prediction2 relTol 1e-5)
           }
       }
     }
@@ -703,13 +694,12 @@ class LinearRegressionSuite
           .transform(datasetWithDenseFeature)
           .select("features", "prediction")
           .collect()
-          .foreach {
-            case Row(features: DenseVector, prediction1: Double) =>
-              val prediction2 =
-                features(0) * model1.coefficients(0) + features(1) * model1
-                  .coefficients(1) +
-                  model1.intercept
-              assert(prediction1 ~== prediction2 relTol 1e-5)
+          .foreach { case Row(features: DenseVector, prediction1: Double) =>
+            val prediction2 =
+              features(0) * model1.coefficients(0) + features(1) * model1
+                .coefficients(1) +
+                model1.intercept
+            assert(prediction1 ~== prediction2 relTol 1e-5)
           }
       }
     }
@@ -831,19 +821,17 @@ class LinearRegressionSuite
       val expectedResiduals = datasetWithDenseFeature
         .select("features", "label")
         .rdd
-        .map {
-          case Row(features: DenseVector, label: Double) =>
-            val prediction =
-              features(0) * model.coefficients(0) + features(1) * model
-                .coefficients(1) +
-                model.intercept
-            label - prediction
+        .map { case Row(features: DenseVector, label: Double) =>
+          val prediction =
+            features(0) * model.coefficients(0) + features(1) * model
+              .coefficients(1) +
+              model.intercept
+          label - prediction
         }
         .zip(model.summary.residuals.rdd.map(_.getDouble(0)))
         .collect()
-        .foreach {
-          case (manualResidual: Double, resultResidual: Double) =>
-            assert(manualResidual ~== resultResidual relTol 1e-5)
+        .foreach { case (manualResidual: Double, resultResidual: Double) =>
+          assert(manualResidual ~== resultResidual relTol 1e-5)
         }
 
       /*
@@ -954,9 +942,8 @@ class LinearRegressionSuite
           0.1)
 
         val rnd = new Random(8392)
-        val signedData = activeData.map {
-          case p: LabeledPoint =>
-            (rnd.nextGaussian() > 0.0, p)
+        val signedData = activeData.map { case p: LabeledPoint =>
+          (rnd.nextGaussian() > 0.0, p)
         }
 
         val data1 = signedData.flatMap {

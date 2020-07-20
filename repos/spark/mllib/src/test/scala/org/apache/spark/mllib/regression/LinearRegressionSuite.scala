@@ -39,11 +39,11 @@ private object LinearRegressionSuite {
 class LinearRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
-    val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
+    val numOffPredictions =
+      predictions.zip(input).count { case (prediction, expected) =>
         // A prediction is off if the prediction is more than 0.5 away from expected value.
         math.abs(prediction - expected.label) > 0.5
-    }
+      }
     // At least 80% of the predictions should be on.
     assert(numOffPredictions < input.length / 5)
   }
@@ -123,10 +123,9 @@ class LinearRegressionSuite extends SparkFunSuite with MLlibTestSparkContext {
       LinearDataGenerator.generateLinearInput(0.0, Array(10.0, 10.0), 100, 42),
       2)
     val sparseRDD = denseRDD
-      .map {
-        case LabeledPoint(label, v) =>
-          val sv = Vectors.sparse(10000, Seq((0, v(0)), (9999, v(1))))
-          LabeledPoint(label, sv)
+      .map { case LabeledPoint(label, v) =>
+        val sv = Vectors.sparse(10000, Seq((0, v(0)), (9999, v(1))))
+        LabeledPoint(label, sv)
       }
       .cache()
     val linReg = new LinearRegressionWithSGD().setIntercept(false)

@@ -226,9 +226,8 @@ abstract class QueryPlan[PlanType <: QueryPlan[PlanType]]
     */
   def transformAllExpressions(
       rule: PartialFunction[Expression, Expression]): this.type = {
-    transform {
-      case q: QueryPlan[_] =>
-        q.transformExpressions(rule).asInstanceOf[PlanType]
+    transform { case q: QueryPlan[_] =>
+      q.transformExpressions(rule).asInstanceOf[PlanType]
     }.asInstanceOf[this.type]
   }
 

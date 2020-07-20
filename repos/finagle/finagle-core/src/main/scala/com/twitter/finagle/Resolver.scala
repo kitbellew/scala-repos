@@ -39,9 +39,8 @@ class ResolverNotFoundException(scheme: String)
 class MultipleResolversPerSchemeException(resolvers: Map[String, Seq[Resolver]])
     extends NoStacktrace {
   override def getMessage = {
-    val msgs = resolvers map {
-      case (scheme, rs) =>
-        "%s=(%s)".format(scheme, rs.map(_.getClass.getName).mkString(", "))
+    val msgs = resolvers map { case (scheme, rs) =>
+      "%s=(%s)".format(scheme, rs.map(_.getClass.getName).mkString(", "))
     } mkString (" ")
     "Multiple resolvers defined: %s".format(msgs)
   }
@@ -143,19 +142,18 @@ private[finagle] class InetResolver(
   def toAddr(hp: Seq[HostPortMetadata]): Future[Addr] = {
     val elapsed = Stopwatch.start()
     Future
-      .collectToTry(hp.map {
-        case (host, port, meta) =>
-          resolveHost(host).map { inetAddrs =>
-            inetAddrs.map { inetAddr =>
-              Address.Inet(new InetSocketAddress(inetAddr, port), meta)
-            }
+      .collectToTry(hp.map { case (host, port, meta) =>
+        resolveHost(host).map { inetAddrs =>
+          inetAddrs.map { inetAddr =>
+            Address.Inet(new InetSocketAddress(inetAddr, port), meta)
           }
+        }
       })
       .flatMap { seq: Seq[Try[Seq[Address]]] =>
         // Filter out all successes. If there was at least 1 success, consider
         // the entire operation a success
-        val results = seq.collect {
-          case Return(subset) => subset
+        val results = seq.collect { case Return(subset) =>
+          subset
         }.flatten
 
         // Consider any result a success. Ignore partial failures.
@@ -168,8 +166,8 @@ private[finagle] class InetResolver(
           failures.incr()
           log.warning("Resolution failed for all hosts")
 
-          seq.collectFirst {
-            case Throw(e) => e
+          seq.collectFirst { case Throw(e) =>
+            e
           } match {
             case Some(_: UnknownHostException) => Future.value(Addr.Neg)
             case Some(e)                       => Future.value(Addr.Failed(e))
@@ -208,9 +206,8 @@ private[finagle] class InetResolver(
   def bind(hosts: String): Var[Addr] =
     Try(parseHostPorts(hosts)) match {
       case Return(hp) =>
-        bindHostPortsToAddr(hp.map {
-          case (host, port) =>
-            (host, port, Addr.Metadata.empty)
+        bindHostPortsToAddr(hp.map { case (host, port) =>
+          (host, port, Addr.Metadata.empty)
         })
       case Throw(exc) =>
         Var.value(Addr.Failed(exc))

@@ -153,9 +153,8 @@ case class Window(
         // Construct the ordering. This is used to compare the result of current value projection
         // to the result of bound value projection. This is done manually because we want to use
         // Code Generation (if it is enabled).
-        val sortExprs = exprs.zipWithIndex.map {
-          case (e, i) =>
-            SortOrder(BoundReference(i, e.dataType, e.nullable), e.direction)
+        val sortExprs = exprs.zipWithIndex.map { case (e, i) =>
+          SortOrder(BoundReference(i, e.dataType, e.nullable), e.direction)
         }
         val ordering = newOrdering(sortExprs, Nil)
         RangeBoundOrdering(ordering, current, bound)
@@ -209,80 +208,79 @@ case class Window(
 
     // Map the groups to a (unbound) expression and frame factory pair.
     var numExpressions = 0
-    framedFunctions.toSeq.map {
-      case (key, (expressions, functionSeq)) =>
-        val ordinal = numExpressions
-        val functions = functionSeq.toArray
+    framedFunctions.toSeq.map { case (key, (expressions, functionSeq)) =>
+      val ordinal = numExpressions
+      val functions = functionSeq.toArray
 
-        // Construct an aggregate processor if we need one.
-        def processor =
-          AggregateProcessor(
-            functions,
-            ordinal,
-            child.output,
-            (expressions, schema) =>
-              newMutableProjection(
-                expressions,
-                schema,
-                subexpressionEliminationEnabled))
+      // Construct an aggregate processor if we need one.
+      def processor =
+        AggregateProcessor(
+          functions,
+          ordinal,
+          child.output,
+          (expressions, schema) =>
+            newMutableProjection(
+              expressions,
+              schema,
+              subexpressionEliminationEnabled))
 
-        // Create the factory
-        val factory = key match {
-          // Offset Frame
-          case ("OFFSET", RowFrame, Some(offset), Some(h)) if offset == h =>
-            target: MutableRow =>
-              new OffsetWindowFunctionFrame(
-                target,
-                ordinal,
-                functions,
-                child.output,
-                (expressions, schema) =>
-                  newMutableProjection(
-                    expressions,
-                    schema,
-                    subexpressionEliminationEnabled),
-                offset)
+      // Create the factory
+      val factory = key match {
+        // Offset Frame
+        case ("OFFSET", RowFrame, Some(offset), Some(h)) if offset == h =>
+          target: MutableRow =>
+            new OffsetWindowFunctionFrame(
+              target,
+              ordinal,
+              functions,
+              child.output,
+              (expressions, schema) =>
+                newMutableProjection(
+                  expressions,
+                  schema,
+                  subexpressionEliminationEnabled),
+              offset)
 
-          // Growing Frame.
-          case ("AGGREGATE", frameType, None, Some(high)) =>
-            target: MutableRow => {
-              new UnboundedPrecedingWindowFunctionFrame(
-                target,
-                processor,
-                createBoundOrdering(frameType, high))
-            }
+        // Growing Frame.
+        case ("AGGREGATE", frameType, None, Some(high)) =>
+          target: MutableRow => {
+            new UnboundedPrecedingWindowFunctionFrame(
+              target,
+              processor,
+              createBoundOrdering(frameType, high))
+          }
 
-          // Shrinking Frame.
-          case ("AGGREGATE", frameType, Some(low), None) =>
-            target: MutableRow => {
-              new UnboundedFollowingWindowFunctionFrame(
-                target,
-                processor,
-                createBoundOrdering(frameType, low))
-            }
+        // Shrinking Frame.
+        case ("AGGREGATE", frameType, Some(low), None) =>
+          target: MutableRow => {
+            new UnboundedFollowingWindowFunctionFrame(
+              target,
+              processor,
+              createBoundOrdering(frameType, low))
+          }
 
-          // Moving Frame.
-          case ("AGGREGATE", frameType, Some(low), Some(high)) =>
-            target: MutableRow => {
-              new SlidingWindowFunctionFrame(
-                target,
-                processor,
-                createBoundOrdering(frameType, low),
-                createBoundOrdering(frameType, high))
-            }
+        // Moving Frame.
+        case ("AGGREGATE", frameType, Some(low), Some(high)) =>
+          target: MutableRow => {
+            new SlidingWindowFunctionFrame(
+              target,
+              processor,
+              createBoundOrdering(frameType, low),
+              createBoundOrdering(frameType, high))
+          }
 
-          // Entire Partition Frame.
-          case ("AGGREGATE", frameType, None, None) =>
-            target: MutableRow => {
-              new UnboundedWindowFunctionFrame(target, processor)
-            }
-        }
+        // Entire Partition Frame.
+        case ("AGGREGATE", frameType, None, None) =>
+          target: MutableRow => {
+            new UnboundedWindowFunctionFrame(target, processor)
+          }
+      }
 
-        // Keep track of the number of expressions. This is a side-effect in a map...
-        numExpressions += expressions.size
+      // Keep track of the number of expressions. This is a side-effect in a map...
+      numExpressions += expressions.size
 
-        // Create the Frame Expression - Factory pair.
-        (expressions, factory)
+      // Create the Frame Expression - Factory pair.
+      (expressions, factory)
     }
   }
 
@@ -296,10 +294,9 @@ case class Window(
     */
   private[this] def createResultProjection(
       expressions: Seq[Expression]): UnsafeProjection = {
-    val references = expressions.zipWithIndex.map {
-      case (e, i) =>
-        // Results of window expressions will be on the right side of child's output
-        BoundReference(child.output.size + i, e.dataType, e.nullable)
+    val references = expressions.zipWithIndex.map { case (e, i) =>
+      // Results of window expressions will be on the right side of child's output
+      BoundReference(child.output.size + i, e.dataType, e.nullable)
     }
     val unboundToRefMap = expressions.zip(references).toMap
     val patchedWindowExpression =

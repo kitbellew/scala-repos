@@ -153,13 +153,12 @@ trait ReadWarmup { self: DarkRead =>
       frontResult: Future[GetResult],
       backResult: Future[GetResult]): Future[GetResult] = {
     // when readRepairDark, hit on front should repair miss on back in the background
-    Future.join(frontResult, backResult) onSuccess {
-      case (frontR, backR) =>
-        backR.misses foreach {
-          case key if frontR.hits.contains(key) =>
-            backendClient.set(key, frontR.hits.get(key).get.value)
-          case _ =>
-        }
+    Future.join(frontResult, backResult) onSuccess { case (frontR, backR) =>
+      backR.misses foreach {
+        case key if frontR.hits.contains(key) =>
+          backendClient.set(key, frontR.hits.get(key).get.value)
+        case _ =>
+      }
     }
 
     frontResult
@@ -168,13 +167,12 @@ trait ReadWarmup { self: DarkRead =>
   override protected def chooseGetsResult(
       frontResult: Future[GetsResult],
       backResult: Future[GetsResult]): Future[GetsResult] = {
-    Future.join(frontResult, backResult) onSuccess {
-      case (frontR, backR) =>
-        backR.misses foreach {
-          case key if frontR.hits.contains(key) =>
-            backendClient.set(key, frontR.hits.get(key).get.value)
-          case _ =>
-        }
+    Future.join(frontResult, backResult) onSuccess { case (frontR, backR) =>
+      backR.misses foreach {
+        case key if frontR.hits.contains(key) =>
+          backendClient.set(key, frontR.hits.get(key).get.value)
+        case _ =>
+      }
     }
 
     frontResult

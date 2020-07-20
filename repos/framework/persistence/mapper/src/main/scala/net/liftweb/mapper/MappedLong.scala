@@ -211,9 +211,8 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedEnumList[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
+        { case f: MappedEnumList[T, ENUM] =>
+          f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
         })
 
   def buildSetLongValue(
@@ -223,9 +222,8 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedEnumList[T, ENUM] =>
-            f.st(if (isNull) defaultValue else fromLong(v))
+        { case f: MappedEnumList[T, ENUM] =>
+          f.st(if (isNull) defaultValue else fromLong(v))
         })
 
   def buildSetStringValue(
@@ -235,9 +233,8 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedEnumList[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
+        { case f: MappedEnumList[T, ENUM] =>
+          f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
         })
 
   def buildSetDateValue(
@@ -247,9 +244,8 @@ abstract class MappedEnumList[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedEnumList[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
+        { case f: MappedEnumList[T, ENUM] =>
+          f.st(if (v eq null) defaultValue else fromLong(Helpers.toLong(v)))
         })
 
   def buildSetBooleanValue(
@@ -446,9 +442,8 @@ abstract class MappedNullableLong[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case f: MappedNullableLong[T] =>
-            f.st(if (v == null) Empty else Full(v.getTime))
+        { case f: MappedNullableLong[T] =>
+          f.st(if (v == null) Empty else Full(v.getTime))
         })
 
   def buildSetBooleanValue(
@@ -611,9 +606,8 @@ abstract class MappedLong[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case f: MappedLong[T] =>
-            f.st(if (v == null) defaultValue else v.getTime)
+        { case f: MappedLong[T] =>
+          f.st(if (v == null) defaultValue else v.getTime)
         })
 
   def buildSetBooleanValue(

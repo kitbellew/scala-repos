@@ -75,16 +75,15 @@ class MetricsExtensionSpec
 
       expected.size should ===(sampleCount)
 
-      history.zip(expected) foreach {
-        case (mockMetrics, expectedData) ⇒
-          (mockMetrics, expectedData) match {
-            case (
-                  Cpu(_, _, loadAverageMock, cpuCombinedMock, cpuStolenMock, _),
-                  (loadAverageEwma, cpuCombinedEwma, cpuStolenEwma)) ⇒
-              loadAverageMock.get should ===(loadAverageEwma +- epsilon)
-              cpuCombinedMock.get should ===(cpuCombinedEwma +- epsilon)
-              cpuStolenMock.get should ===(cpuStolenEwma +- epsilon)
-          }
+      history.zip(expected) foreach { case (mockMetrics, expectedData) ⇒
+        (mockMetrics, expectedData) match {
+          case (
+                Cpu(_, _, loadAverageMock, cpuCombinedMock, cpuStolenMock, _),
+                (loadAverageEwma, cpuCombinedEwma, cpuStolenEwma)) ⇒
+            loadAverageMock.get should ===(loadAverageEwma +- epsilon)
+            cpuCombinedMock.get should ===(cpuCombinedEwma +- epsilon)
+            cpuStolenMock.get should ===(cpuStolenEwma +- epsilon)
+        }
       }
     }
 

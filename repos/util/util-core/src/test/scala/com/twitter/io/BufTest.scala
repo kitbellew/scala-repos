@@ -463,17 +463,16 @@ class BufTest
       k <- Gen.choose(j, b.length)
     } yield (b, i, j, k)
 
-    forAll(bufSplits) {
-      case (buf, i, j, k) =>
-        // This `whenever` would be unnecessary if not for Shrinking, see:
-        // https://github.com/rickynils/scalacheck/issues/18.
-        whenever(i <= j && j <= k) {
-          val b1 = buf.slice(i, k)
-          val b2 = b1.slice(0, j - i)
+    forAll(bufSplits) { case (buf, i, j, k) =>
+      // This `whenever` would be unnecessary if not for Shrinking, see:
+      // https://github.com/rickynils/scalacheck/issues/18.
+      whenever(i <= j && j <= k) {
+        val b1 = buf.slice(i, k)
+        val b2 = b1.slice(0, j - i)
 
-          assert(b1.length == k - i)
-          assert(b2.length == j - i)
-        }
+        assert(b1.length == k - i)
+        assert(b2.length == j - i)
+      }
     }
   }
 }

@@ -44,9 +44,8 @@ object CValueGenerators {
     if (data.isEmpty) {
       Seq.empty
     } else {
-      val current = data.head.flattenWithPath flatMap {
-        case (path, jv) =>
-          CType.forJValue(jv) map { ct => (path, ct) }
+      val current = data.head.flattenWithPath flatMap { case (path, jv) =>
+        CType.forJValue(jv) map { ct => (path, ct) }
       }
 
       (current ++ inferSchema(data.tail)).distinct

@@ -170,8 +170,8 @@ trait Trees extends api.Trees {
               true
           }
 
-        (productIterator zip that.productIterator forall {
-          case (x, y) => equals0(x, y)
+        (productIterator zip that.productIterator forall { case (x, y) =>
+          equals0(x, y)
         }) && compareOriginals()
       })
 
@@ -238,9 +238,8 @@ trait Trees extends api.Trees {
     }
 
     def changeOwner(pairs: (Symbol, Symbol)*): Tree = {
-      pairs.foldLeft(this) {
-        case (t, (oldOwner, newOwner)) =>
-          new ChangeOwnerTraverser(oldOwner, newOwner) apply t
+      pairs.foldLeft(this) { case (t, (oldOwner, newOwner)) =>
+        new ChangeOwnerTraverser(oldOwner, newOwner) apply t
       }
     }
 

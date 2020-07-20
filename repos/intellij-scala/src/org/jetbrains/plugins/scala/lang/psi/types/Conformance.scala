@@ -1760,9 +1760,8 @@ object Conformance {
               val filterFunction
                   : (((String, PsiElement), HashSet[ScType])) => Boolean = {
                 case (id: (String, PsiElement), types: HashSet[ScType]) =>
-                  !tptsMap.values.exists {
-                    case tpt: ScTypeParameterType =>
-                      id == (tpt.name, ScalaPsiUtil.getPsiElementId(tpt.param))
+                  !tptsMap.values.exists { case tpt: ScTypeParameterType =>
+                    id == (tpt.name, ScalaPsiUtil.getPsiElementId(tpt.param))
                   }
               }
               val newUndefSubst = new ScUndefinedSubstitutor(

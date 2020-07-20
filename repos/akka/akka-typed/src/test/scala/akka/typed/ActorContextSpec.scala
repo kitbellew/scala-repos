@@ -249,9 +249,8 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
 
         if (!inert) s
         else
-          s.keep {
-            case (subj, child) ⇒
-              child ! BecomeInert(self)
+          s.keep { case (subj, child) ⇒
+            child ! BecomeInert(self)
           }.expectMessageKeep(500.millis) { (msg, _) ⇒
             msg should ===(BecameInert)
           }
@@ -303,16 +302,14 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           val log = muteExpectedException[Exception]("KABOOM1", occurrences = 1)
           subj ! Throw(ex)
           (subj, log)
-        }.expectFailureKeep(500.millis) {
-          case (f, (subj, _)) ⇒
-            f.cause should ===(ex)
-            f.child should ===(subj)
-            Failed.Restart
-        }.expectMessage(500.millis) {
-          case (msg, (subj, log)) ⇒
-            msg should ===(GotSignal(PreRestart(ex)))
-            log.assertDone(500.millis)
-            subj
+        }.expectFailureKeep(500.millis) { case (f, (subj, _)) ⇒
+          f.cause should ===(ex)
+          f.child should ===(subj)
+          Failed.Restart
+        }.expectMessage(500.millis) { case (msg, (subj, log)) ⇒
+          msg should ===(GotSignal(PreRestart(ex)))
+          log.assertDone(500.millis)
+          subj
         }.expectMessage(500.millis) { (msg, subj) ⇒
           msg should ===(GotSignal(PostRestart(ex)))
           ctx.stop(subj)
@@ -356,20 +353,17 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
               ) // necessary to avoid PostStop/Terminated interference
               (subj, child)
           }
-          .expectMessageKeep(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(BecameInert)
-              stop(subj)
-              ctx.watch(child)
-              ctx.watch(subj)
+          .expectMessageKeep(500.millis) { case (msg, (subj, child)) ⇒
+            msg should ===(BecameInert)
+            stop(subj)
+            ctx.watch(child)
+            ctx.watch(subj)
           }
-          .expectTermination(500.millis) {
-            case (t, (subj, child)) ⇒
-              if (t.ref === child) subj
-              else if (t.ref === subj) child
-              else
-                fail(
-                  s"expected termination of either $subj or $child but got $t")
+          .expectTermination(500.millis) { case (t, (subj, child)) ⇒
+            if (t.ref === child) subj
+            else if (t.ref === subj) child
+            else
+              fail(s"expected termination of either $subj or $child but got $t")
           }
           .expectTermination(500.millis) { (t, subj) ⇒
             t.ref should ===(subj)
@@ -384,10 +378,9 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
             Some("A"),
             ctx.spawnAdapter(ChildEvent),
             self,
-            inert = true) {
-            case (subj, child) ⇒
-              subj ! Kill(child, self)
-              child
+            inert = true) { case (subj, child) ⇒
+            subj ! Kill(child, self)
+            child
           }
           .expectMessageKeep(500.millis) { (msg, child) ⇒
             msg should ===(Killed)
@@ -409,17 +402,15 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
             subj ! Throw(ex)
             (subj, log)
           }
-          .expectFailureKeep(500.millis) {
-            case (f, (subj, log)) ⇒
-              f.child should ===(subj)
-              f.cause should ===(ex)
-              Failed.Restart
+          .expectFailureKeep(500.millis) { case (f, (subj, log)) ⇒
+            f.child should ===(subj)
+            f.cause should ===(ex)
+            Failed.Restart
           }
-          .expectMessage(500.millis) {
-            case (msg, (subj, log)) ⇒
-              msg should ===(GotSignal(PostRestart(ex)))
-              log.assertDone(500.millis)
-              subj
+          .expectMessage(500.millis) { case (msg, (subj, log)) ⇒
+            msg should ===(GotSignal(PostRestart(ex)))
+            log.assertDone(500.millis)
+            subj
           }
           .stimulate(_ ! Ping(self), _ ⇒ Pong1)
       })
@@ -472,11 +463,10 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
           .mkChild(Some("A"), ctx.spawnAdapter(ChildEvent), self) { pair ⇒
             (pair._1, pair._2, ctx.spawn(Props(behavior(ctx)), "A"))
           }
-          .expectMessage(500.millis) {
-            case (msg, (subj, child, other)) ⇒
-              msg should ===(GotSignal(PreStart))
-              subj ! Kill(other, ctx.self)
-              child
+          .expectMessage(500.millis) { case (msg, (subj, child, other)) ⇒
+            msg should ===(GotSignal(PreStart))
+            subj ! Kill(other, ctx.self)
+            child
           }
           .expectMessageKeep(500.millis) { (msg, _) ⇒
             msg should ===(NotKilled)
@@ -507,16 +497,14 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
-          .keep {
-            case (subj, child) ⇒
-              ctx.watch(child)
-              child ! Stop
+          .keep { case (subj, child) ⇒
+            ctx.watch(child)
+            child ! Stop
           }
-          .expectTermination(500.millis) {
-            case (t, (subj, child)) ⇒
-              t should ===(Terminated(child))
-              subj ! Watch(child, blackhole)
-              child
+          .expectTermination(500.millis) { case (t, (subj, child)) ⇒
+            t should ===(Terminated(child))
+            subj ! Watch(child, blackhole)
+            child
           }
           .expectMessage(500.millis) { (msg, child) ⇒
             msg should ===(GotSignal(Terminated(child)))
@@ -528,21 +516,18 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
-          .keep {
-            case (subj, child) ⇒
-              subj ! Watch(child, self)
+          .keep { case (subj, child) ⇒
+            subj ! Watch(child, self)
           }
-          .expectMessageKeep(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(Watched)
-              subj ! Unwatch(child, self)
+          .expectMessageKeep(500.millis) { case (msg, (subj, child)) ⇒
+            msg should ===(Watched)
+            subj ! Unwatch(child, self)
           }
-          .expectMessage(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(Unwatched)
-              ctx.watch(child)
-              child ! Stop
-              child
+          .expectMessage(500.millis) { case (msg, (subj, child)) ⇒
+            msg should ===(Unwatched)
+            ctx.watch(child)
+            child ! Stop
+            child
           }
           .expectTermination(500.millis) { (t, child) ⇒
             t should ===(Terminated(child))
@@ -554,28 +539,23 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
         val self = ctx.self
         startWith
           .mkChild(None, ctx.spawnAdapter(ChildEvent), self)
-          .keep {
-            case (subj, child) ⇒
-              subj ! Watch(child, self)
+          .keep { case (subj, child) ⇒
+            subj ! Watch(child, self)
           }
-          .expectMessageKeep(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(Watched)
-              subj ! BecomeCareless(self)
+          .expectMessageKeep(500.millis) { case (msg, (subj, child)) ⇒
+            msg should ===(Watched)
+            subj ! BecomeCareless(self)
           }
-          .expectMessageKeep(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(BecameCareless)
-              child ! Stop
+          .expectMessageKeep(500.millis) { case (msg, (subj, child)) ⇒
+            msg should ===(BecameCareless)
+            child ! Stop
           }
-          .expectFailureKeep(500.millis) {
-            case (f, (subj, child)) ⇒
-              f.child should ===(subj)
-              Failed.Stop
+          .expectFailureKeep(500.millis) { case (f, (subj, child)) ⇒
+            f.child should ===(subj)
+            Failed.Stop
           }
-          .expectMessage(500.millis) {
-            case (msg, (subj, child)) ⇒
-              msg should ===(GotSignal(PostStop))
+          .expectMessage(500.millis) { case (msg, (subj, child)) ⇒
+            msg should ===(GotSignal(PostStop))
           }
       })
 
@@ -644,11 +624,10 @@ class ActorContextSpec extends TypedSpec(ConfigFactory.parseString("""|akka {
             adapter ! Ping(ctx.self)
             (subj, adapter)
           }
-          .expectMessage(500.millis) {
-            case (msg, (subj, adapter)) ⇒
-              msg should ===(Pong1)
-              ctx.stop(subj)
-              adapter
+          .expectMessage(500.millis) { case (msg, (subj, adapter)) ⇒
+            msg should ===(Pong1)
+            ctx.stop(subj)
+            adapter
           }
           .expectMessageKeep(500.millis) { (msg, _) ⇒
             msg should ===(GotSignal(PostStop))

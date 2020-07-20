@@ -36,11 +36,10 @@ trait ReplConfig {
 
   private[nsc] def logAndDiscard[T](
       label: String,
-      alt: => T): PartialFunction[Throwable, T] = {
-    case t =>
-      repldbg(label + ": " + unwrap(t))
-      repltrace(stackTraceString(unwrap(t)))
-      alt
+      alt: => T): PartialFunction[Throwable, T] = { case t =>
+    repldbg(label + ": " + unwrap(t))
+    repltrace(stackTraceString(unwrap(t)))
+    alt
   }
   private[nsc] def substituteAndLog[T](alt: => T)(body: => T): T =
     substituteAndLog("" + alt, alt)(body)

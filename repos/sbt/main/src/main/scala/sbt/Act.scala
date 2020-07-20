@@ -283,13 +283,12 @@ object Act {
       knownValues: IMap[AttributeKey, Set]): Parser[AttributeEntry[_]] = {
     val keyp =
       knownIDParser(knownKeys, "Not a valid extra key") <~ token(':' ~ OptSpace)
-    keyp flatMap {
-      case key: AttributeKey[t] =>
-        val valueMap: Map[String, t] =
-          knownValues(key).map(v => (v.toString, v)).toMap
-        knownIDParser(valueMap, "extra value") map { value =>
-          AttributeEntry(key, value)
-        }
+    keyp flatMap { case key: AttributeKey[t] =>
+      val valueMap: Map[String, t] =
+        knownValues(key).map(v => (v.toString, v)).toMap
+      knownIDParser(valueMap, "extra value") map { value =>
+        AttributeEntry(key, value)
+      }
     }
   }
   def knownIDParser[T](knownKeys: Map[String, T], label: String): Parser[T] =

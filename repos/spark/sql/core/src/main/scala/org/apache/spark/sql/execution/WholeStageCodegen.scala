@@ -147,12 +147,11 @@ trait CodegenSupport extends SparkPlan {
       variables: Seq[ExprCode],
       required: AttributeSet): String = {
     var evaluateVars = ""
-    variables.zipWithIndex.foreach {
-      case (ev, i) =>
-        if (ev.code != "" && required.contains(attributes(i))) {
-          evaluateVars += ev.code.trim + "\n"
-          ev.code = ""
-        }
+    variables.zipWithIndex.foreach { case (ev, i) =>
+      if (ev.code != "" && required.contains(attributes(i))) {
+        evaluateVars += ev.code.trim + "\n"
+        ev.code = ""
+      }
     }
     evaluateVars
   }
@@ -183,9 +182,8 @@ trait CodegenSupport extends SparkPlan {
       if (row != null) {
         ctx.currentVars = null
         ctx.INPUT_ROW = row
-        child.output.zipWithIndex.map {
-          case (attr, i) =>
-            BoundReference(i, attr.dataType, attr.nullable).gen(ctx)
+        child.output.zipWithIndex.map { case (attr, i) =>
+          BoundReference(i, attr.dataType, attr.nullable).gen(ctx)
         }
       } else {
         input
@@ -411,9 +409,8 @@ case class WholeStageCodegen(child: SparkPlan)
     } else {
       assert(input != null)
       if (input.nonEmpty) {
-        val colExprs = output.zipWithIndex.map {
-          case (attr, i) =>
-            BoundReference(i, attr.dataType, attr.nullable)
+        val colExprs = output.zipWithIndex.map { case (attr, i) =>
+          BoundReference(i, attr.dataType, attr.nullable)
         }
         val evaluateInputs = evaluateVariables(input)
         // generate the code to create a UnsafeRow

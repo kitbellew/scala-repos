@@ -14,9 +14,8 @@ object Consumers {
     class Consumer1 extends Consumer {
       def endpointUri = "file:data/input/actor"
 
-      def receive = {
-        case msg: CamelMessage =>
-          println("received %s" format msg.bodyAs[String])
+      def receive = { case msg: CamelMessage =>
+        println("received %s" format msg.bodyAs[String])
       }
     }
     //#Consumer1
@@ -28,9 +27,8 @@ object Consumers {
     class Consumer2 extends Consumer {
       def endpointUri = "jetty:http://localhost:8877/camel/default"
 
-      def receive = {
-        case msg: CamelMessage =>
-          sender() ! ("Hello %s" format msg.bodyAs[String])
+      def receive = { case msg: CamelMessage =>
+        sender() ! ("Hello %s" format msg.bodyAs[String])
       }
     }
     //#Consumer2
@@ -46,14 +44,13 @@ object Consumers {
 
       def endpointUri = "jms:queue:test"
 
-      def receive = {
-        case msg: CamelMessage =>
-          sender() ! Ack
-          // on success
-          // ..
-          val someException = new Exception("e1")
-          // on failure
-          sender() ! Failure(someException)
+      def receive = { case msg: CamelMessage =>
+        sender() ! Ack
+        // on success
+        // ..
+        val someException = new Exception("e1")
+        // on failure
+        sender() ! Failure(someException)
       }
     }
     //#Consumer3
@@ -66,9 +63,8 @@ object Consumers {
     class Consumer4 extends Consumer {
       def endpointUri = "jetty:http://localhost:8877/camel/default"
       override def replyTimeout = 500 millis
-      def receive = {
-        case msg: CamelMessage =>
-          sender() ! ("Hello %s" format msg.bodyAs[String])
+      def receive = { case msg: CamelMessage =>
+        sender() ! ("Hello %s" format msg.bodyAs[String])
       }
     }
     //#Consumer4

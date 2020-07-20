@@ -61,9 +61,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     // collect SimilarUser as Map and convert ID to Int index
     val similarUsers: Map[Int, User] = data.users
-      .map {
-        case (id, similarUser) =>
-          (similarUserStringIntMap(id), similarUser)
+      .map { case (id, similarUser) =>
+        (similarUserStringIntMap(id), similarUser)
       }
       .collectAsMap()
       .toMap
@@ -85,15 +84,13 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
         ((uindex, iindex), 1)
       }
-      .filter {
-        case ((u, i), v) =>
-          // keep events with valid user and user index
-          (u != -1) && (i != -1)
+      .filter { case ((u, i), v) =>
+        // keep events with valid user and user index
+        (u != -1) && (i != -1)
       }
-      .map {
-        case ((u, i), v) =>
-          // MLlibRating requires integer index for user and user
-          MLlibRating(u, i, v)
+      .map { case ((u, i), v) =>
+        // MLlibRating requires integer index for user and user
+        MLlibRating(u, i, v)
       }
       .cache()
 
@@ -157,25 +154,23 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         .toArray
     }
 
-    val filteredScore = indexScores.view.filter {
-      case (i, v) =>
-        isCandidateSimilarUser(
-          i = i,
-          similarUsers = model.similarUsers,
-          queryList = queryList,
-          whiteList = whiteList,
-          blackList = blackList
-        )
+    val filteredScore = indexScores.view.filter { case (i, v) =>
+      isCandidateSimilarUser(
+        i = i,
+        similarUsers = model.similarUsers,
+        queryList = queryList,
+        whiteList = whiteList,
+        blackList = blackList
+      )
     }
 
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 
-    val similarUserScores = topScores.map {
-      case (i, s) =>
-        new similarUserScore(
-          user = model.similarUserIntStringMap(i),
-          score = s
-        )
+    val similarUserScores = topScores.map { case (i, s) =>
+      new similarUserScore(
+        user = model.similarUserIntStringMap(i),
+        score = s
+      )
     }
 
     new PredictedResult(similarUserScores)

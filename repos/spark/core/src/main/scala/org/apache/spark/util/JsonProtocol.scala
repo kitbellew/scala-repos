@@ -398,10 +398,9 @@ private[spark] object JsonProtocol {
         }
         .getOrElse(JNothing)
     val updatedBlocks =
-      JArray(taskMetrics.updatedBlockStatuses.toList.map {
-        case (id, status) =>
-          ("Block ID" -> id.toString) ~
-            ("Status" -> blockStatusToJson(status))
+      JArray(taskMetrics.updatedBlockStatuses.toList.map { case (id, status) =>
+        ("Block ID" -> id.toString) ~
+          ("Status" -> blockStatusToJson(status))
       })
     ("Executor Deserialize Time" -> taskMetrics.executorDeserializeTime) ~
       ("Executor Run Time" -> taskMetrics.executorRunTime) ~
@@ -526,12 +525,11 @@ private[spark] object JsonProtocol {
   }
 
   def stackTraceToJson(stackTrace: Array[StackTraceElement]): JValue = {
-    JArray(stackTrace.map {
-      case line =>
-        ("Declaring Class" -> line.getClassName) ~
-          ("Method Name" -> line.getMethodName) ~
-          ("File Name" -> line.getFileName) ~
-          ("Line Number" -> line.getLineNumber)
+    JArray(stackTrace.map { case line =>
+      ("Declaring Class" -> line.getClassName) ~
+        ("Method Name" -> line.getMethodName) ~
+        ("File Name" -> line.getFileName) ~
+        ("Line Number" -> line.getLineNumber)
     }.toList)
   }
 
@@ -1149,8 +1147,8 @@ private[spark] object JsonProtocol {
       .jsonOption(json)
       .map { value =>
         val properties = new Properties
-        mapFromJson(json).foreach {
-          case (k, v) => properties.setProperty(k, v)
+        mapFromJson(json).foreach { case (k, v) =>
+          properties.setProperty(k, v)
         }
         properties
       }

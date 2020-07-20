@@ -96,26 +96,23 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
       expectNull: Boolean = false,
       expectNaN: Boolean = false): Unit = {
     if (expectNull) {
-      domain.foreach {
-        case (v1, v2) =>
-          checkEvaluation(c(Literal(v1), Literal(v2)), null, create_row(null))
+      domain.foreach { case (v1, v2) =>
+        checkEvaluation(c(Literal(v1), Literal(v2)), null, create_row(null))
       }
     } else if (expectNaN) {
-      domain.foreach {
-        case (v1, v2) =>
-          checkNaN(c(Literal(v1), Literal(v2)), EmptyRow)
+      domain.foreach { case (v1, v2) =>
+        checkNaN(c(Literal(v1), Literal(v2)), EmptyRow)
       }
     } else {
-      domain.foreach {
-        case (v1, v2) =>
-          checkEvaluation(
-            c(Literal(v1), Literal(v2)),
-            f(v1 + 0.0, v2 + 0.0),
-            EmptyRow)
-          checkEvaluation(
-            c(Literal(v2), Literal(v1)),
-            f(v2 + 0.0, v1 + 0.0),
-            EmptyRow)
+      domain.foreach { case (v1, v2) =>
+        checkEvaluation(
+          c(Literal(v1), Literal(v2)),
+          f(v1 + 0.0, v2 + 0.0),
+          EmptyRow)
+        checkEvaluation(
+          c(Literal(v2), Literal(v1)),
+          f(v2 + 0.0, v1 + 0.0),
+          EmptyRow)
       }
     }
     checkEvaluation(
@@ -623,20 +620,16 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
     val f = (c1: Double, c2: Double) => math.log(c2) / math.log(c1)
     val domain = (1 to 20).map(v => (v * 0.1, v * 0.2))
 
-    domain.foreach {
-      case (v1, v2) =>
-        checkEvaluation(
-          Logarithm(Literal(v1), Literal(v2)),
-          f(v1 + 0.0, v2 + 0.0),
-          EmptyRow)
-        checkEvaluation(
-          Logarithm(Literal(v2), Literal(v1)),
-          f(v2 + 0.0, v1 + 0.0),
-          EmptyRow)
-        checkEvaluation(
-          new Logarithm(Literal(v1)),
-          f(math.E, v1 + 0.0),
-          EmptyRow)
+    domain.foreach { case (v1, v2) =>
+      checkEvaluation(
+        Logarithm(Literal(v1), Literal(v2)),
+        f(v1 + 0.0, v2 + 0.0),
+        EmptyRow)
+      checkEvaluation(
+        Logarithm(Literal(v2), Literal(v1)),
+        f(v2 + 0.0, v1 + 0.0),
+        EmptyRow)
+      checkEvaluation(new Logarithm(Literal(v1)), f(math.E, v1 + 0.0), EmptyRow)
     }
 
     // null input should yield null output
@@ -687,12 +680,11 @@ class MathFunctionsSuite extends SparkFunSuite with ExpressionEvalHelper {
         31415926535898000L, 31415926535897900L, 31415926535897930L) ++
         Seq.fill(7)(31415926535897932L)
 
-    scales.zipWithIndex.foreach {
-      case (scale, i) =>
-        checkEvaluation(Round(doublePi, scale), doubleResults(i), EmptyRow)
-        checkEvaluation(Round(shortPi, scale), shortResults(i), EmptyRow)
-        checkEvaluation(Round(intPi, scale), intResults(i), EmptyRow)
-        checkEvaluation(Round(longPi, scale), longResults(i), EmptyRow)
+    scales.zipWithIndex.foreach { case (scale, i) =>
+      checkEvaluation(Round(doublePi, scale), doubleResults(i), EmptyRow)
+      checkEvaluation(Round(shortPi, scale), shortResults(i), EmptyRow)
+      checkEvaluation(Round(intPi, scale), intResults(i), EmptyRow)
+      checkEvaluation(Round(longPi, scale), longResults(i), EmptyRow)
     }
 
     val bdResults: Seq[BigDecimal] = Seq(

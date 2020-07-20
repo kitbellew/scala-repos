@@ -104,31 +104,29 @@ private[stat] object ChiSqTest extends Logging {
             Map((startCol until endCol).map(col =>
               (col, mutable.HashSet.empty[Double])): _*)
           var i = 1
-          iter.flatMap {
-            case LabeledPoint(label, features) =>
-              if (i % 1000 == 0) {
-                if (distinctLabels.size > maxCategories) {
+          iter.flatMap { case LabeledPoint(label, features) =>
+            if (i % 1000 == 0) {
+              if (distinctLabels.size > maxCategories) {
+                throw new SparkException(
+                  s"Chi-square test expect factors (categorical values) but "
+                    + s"found more than $maxCategories distinct label values.")
+              }
+              allDistinctFeatures.foreach { case (col, distinctFeatures) =>
+                if (distinctFeatures.size > maxCategories) {
                   throw new SparkException(
                     s"Chi-square test expect factors (categorical values) but "
-                      + s"found more than $maxCategories distinct label values.")
-                }
-                allDistinctFeatures.foreach {
-                  case (col, distinctFeatures) =>
-                    if (distinctFeatures.size > maxCategories) {
-                      throw new SparkException(
-                        s"Chi-square test expect factors (categorical values) but "
-                          + s"found more than $maxCategories distinct values in column $col.")
-                    }
+                      + s"found more than $maxCategories distinct values in column $col.")
                 }
               }
-              i += 1
-              distinctLabels += label
-              val brzFeatures = features.toBreeze
-              (startCol until endCol).map { col =>
-                val feature = brzFeatures(col)
-                allDistinctFeatures(col) += feature
-                (col, feature, label)
-              }
+            }
+            i += 1
+            distinctLabels += label
+            val brzFeatures = features.toBreeze
+            (startCol until endCol).map { col =>
+              val feature = brzFeatures(col)
+              allDistinctFeatures(col) += feature
+              (col, feature, label)
+            }
           }
         }
         .countByValue()
@@ -144,20 +142,18 @@ private[stat] object ChiSqTest extends Logging {
           .toMap
       }
       val numLabels = labels.size
-      pairCounts.keys.groupBy(_._1).foreach {
-        case (col, keys) =>
-          val features = keys.map(_._2).toArray.distinct.zipWithIndex.toMap
-          val numRows = features.size
-          val contingency =
-            new BDM(numRows, numLabels, new Array[Double](numRows * numLabels))
-          keys.foreach {
-            case (_, feature, label) =>
-              val i = features(feature)
-              val j = labels(label)
-              contingency(i, j) += pairCounts((col, feature, label))
-          }
-          results(col) =
-            chiSquaredMatrix(Matrices.fromBreeze(contingency), methodName)
+      pairCounts.keys.groupBy(_._1).foreach { case (col, keys) =>
+        val features = keys.map(_._2).toArray.distinct.zipWithIndex.toMap
+        val numRows = features.size
+        val contingency =
+          new BDM(numRows, numLabels, new Array[Double](numRows * numLabels))
+        keys.foreach { case (_, feature, label) =>
+          val i = features(feature)
+          val j = labels(label)
+          contingency(i, j) += pairCounts((col, feature, label))
+        }
+        results(col) =
+          chiSquaredMatrix(Matrices.fromBreeze(contingency), methodName)
       }
       batch += 1
     }
@@ -204,8 +200,8 @@ private[stat] object ChiSqTest extends Logging {
     val scale = if (math.abs(obsSum - expSum) < 1e-7) 1.0 else obsSum / expSum
 
     // compute chi-squared statistic
-    val statistic = obsArr.zip(expArr).foldLeft(0.0) {
-      case (stat, (obs, exp)) =>
+    val statistic =
+      obsArr.zip(expArr).foldLeft(0.0) { case (stat, (obs, exp)) =>
         if (exp == 0.0) {
           if (obs == 0.0) {
             throw new IllegalArgumentException(
@@ -225,7 +221,7 @@ private[stat] object ChiSqTest extends Logging {
         } else {
           stat + method.chiSqFunc(obs, exp * scale)
         }
-    }
+      }
     val df = size - 1
     val pValue =
       1.0 - new ChiSquaredDistribution(df).cumulativeProbability(statistic)

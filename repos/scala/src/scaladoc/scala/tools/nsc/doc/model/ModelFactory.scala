@@ -358,26 +358,24 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
       val assumedSourceRoot = fixPath(settings.sourcepath.value) stripSuffix "/"
 
       if (!settings.docsourceurl.isDefault)
-        inSource map {
-          case (file, _) =>
-            val filePath = fixPath(file.path)
-              .replaceFirst("^" + assumedSourceRoot, "")
-              .stripSuffix(".scala")
-            val tplOwner = this.inTemplate.qualifiedName
-            val tplName = this.name
-            val patches = new Regex("""€\{(FILE_PATH|TPL_OWNER|TPL_NAME)\}""")
-            def substitute(name: String): String =
-              name match {
-                case "FILE_PATH" => filePath
-                case "TPL_OWNER" => tplOwner
-                case "TPL_NAME"  => tplName
-              }
-            val patchedString = patches.replaceAllIn(
-              settings.docsourceurl.value,
-              m =>
-                java.util.regex.Matcher
-                  .quoteReplacement(substitute(m.group(1))))
-            new java.net.URL(patchedString)
+        inSource map { case (file, _) =>
+          val filePath = fixPath(file.path)
+            .replaceFirst("^" + assumedSourceRoot, "")
+            .stripSuffix(".scala")
+          val tplOwner = this.inTemplate.qualifiedName
+          val tplName = this.name
+          val patches = new Regex("""€\{(FILE_PATH|TPL_OWNER|TPL_NAME)\}""")
+          def substitute(name: String): String =
+            name match {
+              case "FILE_PATH" => filePath
+              case "TPL_OWNER" => tplOwner
+              case "TPL_NAME"  => tplName
+            }
+          val patchedString = patches.replaceAllIn(
+            settings.docsourceurl.value,
+            m =>
+              java.util.regex.Matcher.quoteReplacement(substitute(m.group(1))))
+          new java.net.URL(patchedString)
         }
       else None
     }
@@ -484,14 +482,13 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         : List[(TemplateEntity, TypeEntity, ImplicitConversionImpl)] =
       conversions flatMap (conv =>
         if (!implicitExcluded(conv.conversionQualifiedName))
-          conv.targetTypeComponents map {
-            case (template, tpe) =>
-              template match {
-                case d: DocTemplateImpl if (d != this) =>
-                  d.registerImplicitlyConvertibleClass(this, conv)
-                case _ => // nothing
-              }
-              (template, tpe, conv)
+          conv.targetTypeComponents map { case (template, tpe) =>
+            template match {
+              case d: DocTemplateImpl if (d != this) =>
+                d.registerImplicitlyConvertibleClass(this, conv)
+              case _ => // nothing
+            }
+            (template, tpe, conv)
           }
         else List())
 
@@ -645,11 +642,10 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def valueParams = {
       val info = conversion.fold(sym.info)(_.toType memberInfo sym)
       info.paramss map { ps =>
-        (ps.zipWithIndex) map {
-          case (p, i) =>
-            if (p.nameString contains "$")
-              makeValueParam(p, inTpl, optimize("arg" + i))
-            else makeValueParam(p, inTpl)
+        (ps.zipWithIndex) map { case (p, i) =>
+          if (p.nameString contains "$")
+            makeValueParam(p, inTpl, optimize("arg" + i))
+          else makeValueParam(p, inTpl)
         }
       }
     }
@@ -1047,12 +1043,11 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
         val argTrees = annot.args map makeTree
         paramsOpt match {
           case Some(params) =>
-            params zip argTrees map {
-              case (param, tree) =>
-                new ValueArgument {
-                  def parameter = Some(param)
-                  def value = tree
-                }
+            params zip argTrees map { case (param, tree) =>
+              new ValueArgument {
+                def parameter = Some(param)
+                def value = tree
+              }
             }
           case None =>
             argTrees map { tree =>

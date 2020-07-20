@@ -421,9 +421,8 @@ trait IndicesModule[M[+_]]
           i += 1
         }
 
-        vt(slice) map {
-          case (_, slice2) =>
-            new SliceIndex(vals, dict, keyset, slice2.materialized)
+        vt(slice) map { case (_, slice2) =>
+          new SliceIndex(vals, dict, keyset, slice2.materialized)
         }
       }
     }
@@ -538,9 +537,8 @@ trait IndicesModule[M[+_]]
           sys.error("empty slice") // FIXME
         case (index, (ids, vals)) :: tail =>
           var rows = index.getRowsForKeys(ids, vals)
-          tail.foreach {
-            case (index, (ids, vals)) =>
-              rows = unionBuffers(rows, index.getRowsForKeys(ids, vals))
+          tail.foreach { case (index, (ids, vals)) =>
+            rows = unionBuffers(rows, index.getRowsForKeys(ids, vals))
           }
           index.buildSubSlice(rows)
       }

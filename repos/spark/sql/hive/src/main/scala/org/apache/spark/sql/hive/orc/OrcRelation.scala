@@ -339,14 +339,13 @@ private[orc] case class OrcTableScan(
 
     val wrappedConf = new SerializableConfiguration(conf)
 
-    rdd.mapPartitionsWithInputSplit {
-      case (split: OrcSplit, iterator) =>
-        val writableIterator = iterator.map(_._2)
-        fillObject(
-          split.getPath.toString,
-          wrappedConf.value,
-          writableIterator,
-          attributes)
+    rdd.mapPartitionsWithInputSplit { case (split: OrcSplit, iterator) =>
+      val writableIterator = iterator.map(_._2)
+      fillObject(
+        split.getPath.toString,
+        wrappedConf.value,
+        writableIterator,
+        attributes)
     }
   }
 }

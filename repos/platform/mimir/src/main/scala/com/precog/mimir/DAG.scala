@@ -81,15 +81,14 @@ trait DAG extends Instructions {
           case instructions.Map2Cross(op) => (op, Cross(None))
         }
 
-        val eitherRootsOp = maybeOpSort map {
-          case (op, joinSort) =>
-            continue {
-              case Right(right) :: Right(left) :: tl =>
-                Right(Right(Join(op, joinSort, left, right)(loc)) :: tl)
-              case Left(_) :: _ | _ :: Left(_) :: _ =>
-                Left(OperationOnBucket(instr))
-              case _ => Left(StackUnderflow(instr))
-            }
+        val eitherRootsOp = maybeOpSort map { case (op, joinSort) =>
+          continue {
+            case Right(right) :: Right(left) :: tl =>
+              Right(Right(Join(op, joinSort, left, right)(loc)) :: tl)
+            case Left(_) :: _ | _ :: Left(_) :: _ =>
+              Left(OperationOnBucket(instr))
+            case _ => Left(StackUnderflow(instr))
+          }
         }
 
         val eitherRootsAbom = Some(instr) collect {

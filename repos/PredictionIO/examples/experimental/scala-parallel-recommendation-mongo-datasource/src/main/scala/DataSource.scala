@@ -47,12 +47,11 @@ class DataSource(val dsp: DataSourceParams)
       classOf[BSONObject])
 
     // mongoRDD contains tuples of (ObjectId, BSONObject)
-    val ratings = mongoRDD.map {
-      case (id, bson) =>
-        Rating(
-          bson.get("uid").asInstanceOf[String],
-          bson.get("iid").asInstanceOf[String],
-          bson.get("rating").asInstanceOf[Double])
+    val ratings = mongoRDD.map { case (id, bson) =>
+      Rating(
+        bson.get("uid").asInstanceOf[String],
+        bson.get("iid").asInstanceOf[String],
+        bson.get("rating").asInstanceOf[Double])
     }
     new TrainingData(ratings)
   }

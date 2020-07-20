@@ -1568,9 +1568,8 @@ class JsonSuite extends QueryTest with SharedSQLContext with TestJsonData {
         struct,
         new MyDenseVectorUDT()
       )
-    val fields = dataTypes.zipWithIndex.map {
-      case (dataType, index) =>
-        StructField(s"col$index", dataType, nullable = true)
+    val fields = dataTypes.zipWithIndex.map { case (dataType, index) =>
+      StructField(s"col$index", dataType, nullable = true)
     }
     val schema = StructType(fields)
 

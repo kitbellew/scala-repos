@@ -105,11 +105,10 @@ class AppInfoBaseData(
     lazy val healthCountsFuture: Future[Map[Task.Id, Seq[Health]]] = {
       log.debug(s"retrieving health counts for app [${app.id}]")
       healthCheckManager.statuses(app.id)
-    }.recover {
-      case NonFatal(e) =>
-        throw new RuntimeException(
-          s"while retrieving health counts for app [${app.id}]",
-          e)
+    }.recover { case NonFatal(e) =>
+      throw new RuntimeException(
+        s"while retrieving health counts for app [${app.id}]",
+        e)
     }
 
     lazy val tasksForStats: Future[Iterable[TaskForStatistics]] = {
@@ -117,11 +116,10 @@ class AppInfoBaseData(
         tasks <- tasksFuture
         healthCounts <- healthCountsFuture
       } yield TaskForStatistics.forTasks(now, tasks, healthCounts)
-    }.recover {
-      case NonFatal(e) =>
-        throw new RuntimeException(
-          s"while calculating tasksForStats for app [${app.id}]",
-          e)
+    }.recover { case NonFatal(e) =>
+      throw new RuntimeException(
+        s"while calculating tasksForStats for app [${app.id}]",
+        e)
     }
 
     lazy val taskCountsFuture: Future[TaskCounts] = {
@@ -129,11 +127,10 @@ class AppInfoBaseData(
       for {
         tasks <- tasksForStats
       } yield TaskCounts(tasks)
-    }.recover {
-      case NonFatal(e) =>
-        throw new RuntimeException(
-          s"while calculating task counts for app [${app.id}]",
-          e)
+    }.recover { case NonFatal(e) =>
+      throw new RuntimeException(
+        s"while calculating task counts for app [${app.id}]",
+        e)
     }
 
     lazy val taskStatsFuture: Future[TaskStatsByVersion] = {
@@ -162,21 +159,19 @@ class AppInfoBaseData(
         tasksById <- tasksByIdFuture
         statuses <- healthStatusesFutures
       } yield statusesToEnrichedTasks(tasksById, statuses)
-    }.recover {
-      case NonFatal(e) =>
-        throw new RuntimeException(
-          s"while assembling rich tasks for app [${app.id}]",
-          e)
+    }.recover { case NonFatal(e) =>
+      throw new RuntimeException(
+        s"while assembling rich tasks for app [${app.id}]",
+        e)
     }
 
     lazy val maybeLastTaskFailureFuture: Future[Option[TaskFailure]] = {
       log.debug(s"retrieving last task failure for app [${app.id}]")
       taskFailureRepository.current(app.id)
-    }.recover {
-      case NonFatal(e) =>
-        throw new RuntimeException(
-          s"while retrieving last task failure for app [${app.id}]",
-          e)
+    }.recover { case NonFatal(e) =>
+      throw new RuntimeException(
+        s"while retrieving last task failure for app [${app.id}]",
+        e)
     }
   }
 }

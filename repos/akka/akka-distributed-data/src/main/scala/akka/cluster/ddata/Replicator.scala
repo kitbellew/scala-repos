@@ -641,11 +641,10 @@ object Replicator {
 
       def addSeen(node: Address): DataEnvelope = {
         var changed = false
-        val newRemovedNodePruning = pruning.map {
-          case (removed, pruningState) ⇒
-            val newPruningState = pruningState.addSeen(node)
-            changed = (newPruningState ne pruningState) || changed
-            (removed, newPruningState)
+        val newRemovedNodePruning = pruning.map { case (removed, pruningState) ⇒
+          val newPruningState = pruningState.addSeen(node)
+          changed = (newPruningState ne pruningState) || changed
+          (removed, newPruningState)
         }
         if (changed) copy(pruning = newRemovedNodePruning)
         else this
@@ -668,9 +667,8 @@ object Replicator {
         extends ReplicatorMessage {
       override def toString: String =
         (digests
-          .map {
-            case (key, bytes) ⇒
-              key + " -> " + bytes.map(byte ⇒ f"$byte%02x").mkString("")
+          .map { case (key, bytes) ⇒
+            key + " -> " + bytes.map(byte ⇒ f"$byte%02x").mkString("")
           })
           .mkString("Status(", ", ", ")")
     }
@@ -1281,16 +1279,15 @@ final class Replicator(settings: ReplicatorSettings)
         sender().path.address,
         updatedData.keys.mkString(", "))
     var replyData = Map.empty[String, DataEnvelope]
-    updatedData.foreach {
-      case (key, envelope) ⇒
-        val hadData = dataEntries.contains(key)
-        write(key, envelope)
-        if (sendBack) getData(key) match {
-          case Some(d) ⇒
-            if (hadData || d.pruning.nonEmpty)
-              replyData = replyData.updated(key, d)
-          case None ⇒
-        }
+    updatedData.foreach { case (key, envelope) ⇒
+      val hadData = dataEntries.contains(key)
+      write(key, envelope)
+      if (sendBack) getData(key) match {
+        case Some(d) ⇒
+          if (hadData || d.pruning.nonEmpty)
+            replyData = replyData.updated(key, d)
+        case None ⇒
+      }
     }
     if (sendBack && replyData.nonEmpty)
       sender() ! Gossip(replyData, sendBack = false)

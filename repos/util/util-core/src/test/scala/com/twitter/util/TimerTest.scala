@@ -337,10 +337,9 @@ class TimerTest
 
   private def testTimerUsesLocalMonitor(timer: Timer): Unit = {
     val seen = new AtomicInteger(0)
-    val monitor = Monitor.mk {
-      case _: SomeEx =>
-        seen.incrementAndGet()
-        true
+    val monitor = Monitor.mk { case _: SomeEx =>
+      seen.incrementAndGet()
+      true
     }
     Monitor.using(monitor) {
       timer.schedule(Time.now + 10.millis) { throw new SomeEx }

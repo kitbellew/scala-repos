@@ -210,10 +210,9 @@ private[remote] final case class FailureInjectorHandle(
   @volatile private var upstreamListener: HandleEventListener = null
 
   override val readHandlerPromise: Promise[HandleEventListener] = Promise()
-  readHandlerPromise.future.onSuccess {
-    case listener: HandleEventListener ⇒
-      upstreamListener = listener
-      wrappedHandle.readHandlerPromise.success(this)
+  readHandlerPromise.future.onSuccess { case listener: HandleEventListener ⇒
+    upstreamListener = listener
+    wrappedHandle.readHandlerPromise.success(this)
   }
 
   override def write(payload: ByteString): Boolean =

@@ -120,13 +120,12 @@ trait GenMapLike[A, +B, +Repr]
           (that canEqual this) &&
             (this.size == that.size) && {
             try {
-              this forall {
-                case (k, v) =>
-                  that.get(k.asInstanceOf[b]) match {
-                    case Some(`v`) =>
-                      true
-                    case _ => false
-                  }
+              this forall { case (k, v) =>
+                that.get(k.asInstanceOf[b]) match {
+                  case Some(`v`) =>
+                    true
+                  case _ => false
+                }
               }
             } catch {
               case ex: ClassCastException => false

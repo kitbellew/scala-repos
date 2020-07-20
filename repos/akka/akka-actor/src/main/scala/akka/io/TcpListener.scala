@@ -85,11 +85,10 @@ private[io] class TcpListener(
   override def supervisorStrategy =
     SelectionHandler.connectionSupervisorStrategy
 
-  def receive: Receive = {
-    case registration: ChannelRegistration ⇒
-      bindCommander ! Bound(
-        channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
-      context.become(bound(registration))
+  def receive: Receive = { case registration: ChannelRegistration ⇒
+    bindCommander ! Bound(
+      channel.socket.getLocalSocketAddress.asInstanceOf[InetSocketAddress])
+    context.become(bound(registration))
   }
 
   def bound(registration: ChannelRegistration): Receive = {

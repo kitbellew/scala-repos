@@ -88,10 +88,9 @@ private[spark] class CoalescedRDD[T: ClassTag](
   override def getPartitions: Array[Partition] = {
     val pc = new PartitionCoalescer(maxPartitions, prev, balanceSlack)
 
-    pc.run().zipWithIndex.map {
-      case (pg, i) =>
-        val ids = pg.arr.map(_.index).toArray
-        new CoalescedRDDPartition(i, prev, ids, pg.prefLoc)
+    pc.run().zipWithIndex.map { case (pg, i) =>
+      val ids = pg.arr.map(_.index).toArray
+      new CoalescedRDDPartition(i, prev, ids, pg.prefLoc)
     }
   }
 

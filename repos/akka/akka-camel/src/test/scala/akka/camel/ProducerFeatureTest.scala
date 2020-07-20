@@ -95,10 +95,9 @@ class ProducerFeatureTest
         CamelMessage("fail", Map(CamelMessage.MessageExchangeId -> "123"))
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         producer.tell(message, testActor)
-        expectMsgPF(timeoutDuration) {
-          case Failure(e: AkkaCamelException) ⇒
-            e.getMessage should ===("failure")
-            e.headers should ===(Map(CamelMessage.MessageExchangeId -> "123"))
+        expectMsgPF(timeoutDuration) { case Failure(e: AkkaCamelException) ⇒
+          e.getMessage should ===("failure")
+          e.headers should ===(Map(CamelMessage.MessageExchangeId -> "123"))
         }
       }
       Await.ready(latch, timeoutDuration)
@@ -150,10 +149,9 @@ class ProducerFeatureTest
 
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         producer.tell(message, testActor)
-        expectMsgPF(timeoutDuration) {
-          case Failure(e: AkkaCamelException) ⇒
-            e.getMessage should ===("failure")
-            e.headers should ===(Map(CamelMessage.MessageExchangeId -> "123"))
+        expectMsgPF(timeoutDuration) { case Failure(e: AkkaCamelException) ⇒
+          e.getMessage should ===("failure")
+          e.headers should ===(Map(CamelMessage.MessageExchangeId -> "123"))
         }
       }
     }
@@ -186,11 +184,10 @@ class ProducerFeatureTest
 
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         producer.tell(message, testActor)
-        expectMsgPF(timeoutDuration) {
-          case Failure(e: AkkaCamelException) ⇒
-            e.getMessage should ===("failure")
-            e.headers should ===(
-              Map(CamelMessage.MessageExchangeId -> "123", "test" -> "failure"))
+        expectMsgPF(timeoutDuration) { case Failure(e: AkkaCamelException) ⇒
+          e.getMessage should ===("failure")
+          e.headers should ===(
+            Map(CamelMessage.MessageExchangeId -> "123", "test" -> "failure"))
         }
       }
     }
@@ -254,11 +251,10 @@ class ProducerFeatureTest
         CamelMessage("fail", Map(CamelMessage.MessageExchangeId -> "123"))
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         producer.tell(message, testActor)
-        expectMsgPF(timeoutDuration) {
-          case Failure(e: AkkaCamelException) ⇒
-            e.getMessage should ===("failure")
-            e.headers should ===(
-              Map(CamelMessage.MessageExchangeId -> "123", "test" -> "failure"))
+        expectMsgPF(timeoutDuration) { case Failure(e: AkkaCamelException) ⇒
+          e.getMessage should ===("failure")
+          e.headers should ===(
+            Map(CamelMessage.MessageExchangeId -> "123", "test" -> "failure"))
         }
       }
     }
@@ -303,9 +299,8 @@ class ProducerFeatureTest
         "20-intermittentTest-producer")
       filterEvents(EventFilter[AkkaCamelException](occurrences = 1)) {
         val futureFailed = producer.tell("fail", testActor)
-        expectMsgPF(timeoutDuration) {
-          case Failure(e) ⇒
-            e.getMessage should ===("fail")
+        expectMsgPF(timeoutDuration) { case Failure(e) ⇒
+          e.getMessage should ===("fail")
         }
         producer.tell("OK", testActor)
         expectMsg("OK")
@@ -413,17 +408,16 @@ object ProducerFeatureTest {
   }
 
   class TestResponder extends Actor {
-    def receive = {
-      case msg: CamelMessage ⇒
-        msg.body match {
-          case "fail" ⇒
-            context.sender() ! akka.actor.Status.Failure(
-              new AkkaCamelException(new Exception("failure"), msg.headers))
-          case _ ⇒
-            context.sender() ! (msg.mapBody { body: String ⇒
-              "received %s" format body
-            })
-        }
+    def receive = { case msg: CamelMessage ⇒
+      msg.body match {
+        case "fail" ⇒
+          context.sender() ! akka.actor.Status.Failure(
+            new AkkaCamelException(new Exception("failure"), msg.headers))
+        case _ ⇒
+          context.sender() ! (msg.mapBody { body: String ⇒
+            "received %s" format body
+          })
+      }
     }
   }
 

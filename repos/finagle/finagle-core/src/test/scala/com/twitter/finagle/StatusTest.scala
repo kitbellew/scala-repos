@@ -43,21 +43,19 @@ class StatusTest
 
   // This test is borderline silly.
   test("Status.worst") {
-    forAll(status2) {
-      case (left, right) =>
-        val s = Status.worst(left, right)
-        Ordering[Status]
-          .equiv(left, right) || s == Ordering[Status].max(left, right)
+    forAll(status2) { case (left, right) =>
+      val s = Status.worst(left, right)
+      Ordering[Status]
+        .equiv(left, right) || s == Ordering[Status].max(left, right)
     }
   }
 
   // This test is borderline silly.
   test("Status.best") {
-    forAll(status2) {
-      case (left, right) =>
-        val s = Status.best(left, right)
-        Ordering[Status]
-          .equiv(left, right) || s == Ordering[Status].min(left, right)
+    forAll(status2) { case (left, right) =>
+      val s = Status.best(left, right)
+      Ordering[Status]
+        .equiv(left, right) || s == Ordering[Status].min(left, right)
     }
   }
 
@@ -90,11 +88,10 @@ class StatusTest
       right <- Gen.choose(0, ord.length - 1)
     } yield (left, right)
 
-    forAll(idx2) {
-      case (left, right) =>
-        Ordering[Status]
-          .compare(ord(left), ord(right))
-          .signum == (left - right).signum
+    forAll(idx2) { case (left, right) =>
+      Ordering[Status]
+        .compare(ord(left), ord(right))
+        .signum == (left - right).signum
     }
   }
 }

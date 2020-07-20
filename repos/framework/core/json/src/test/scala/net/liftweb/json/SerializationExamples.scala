@@ -313,41 +313,35 @@ object CustomSerializerExamples extends Specification {
                   JField("start", JInt(s)) :: JField("end", JInt(e)) :: Nil) =>
               new Interval(s.longValue, e.longValue)
           },
-          {
-            case x: Interval =>
-              JObject(
-                JField("start", JInt(BigInt(x.startTime))) ::
-                  JField("end", JInt(BigInt(x.endTime))) :: Nil)
+          { case x: Interval =>
+            JObject(
+              JField("start", JInt(BigInt(x.startTime))) ::
+                JField("end", JInt(BigInt(x.endTime))) :: Nil)
           }
         ))
 
   class PatternSerializer
       extends CustomSerializer[Pattern](format =>
         (
-          {
-            case JObject(JField("$pattern", JString(s)) :: Nil) =>
-              Pattern.compile(s)
+          { case JObject(JField("$pattern", JString(s)) :: Nil) =>
+            Pattern.compile(s)
           },
-          {
-            case x: Pattern =>
-              JObject(JField("$pattern", JString(x.pattern)) :: Nil)
+          { case x: Pattern =>
+            JObject(JField("$pattern", JString(x.pattern)) :: Nil)
           }
         ))
 
   class DateSerializer
       extends CustomSerializer[Date](format =>
         (
-          {
-            case JObject(List(JField("$dt", JString(s)))) =>
-              format.dateFormat
-                .parse(s)
-                .getOrElse(
-                  throw new MappingException("Can't parse " + s + " to Date"))
+          { case JObject(List(JField("$dt", JString(s)))) =>
+            format.dateFormat
+              .parse(s)
+              .getOrElse(
+                throw new MappingException("Can't parse " + s + " to Date"))
           },
-          {
-            case x: Date =>
-              JObject(
-                JField("$dt", JString(format.dateFormat.format(x))) :: Nil)
+          { case x: Date =>
+            JObject(JField("$dt", JString(format.dateFormat.format(x))) :: Nil)
           }
         ))
 

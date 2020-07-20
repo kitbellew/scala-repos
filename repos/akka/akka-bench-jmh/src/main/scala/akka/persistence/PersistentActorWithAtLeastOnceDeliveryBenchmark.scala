@@ -125,8 +125,7 @@ class NoPersistPersistentActorWithAtLeastOnceDelivery(
     case _ => // do nothing
   }
 
-  override def receiveRecover = {
-    case _ => // do nothing
+  override def receiveRecover = { case _ => // do nothing
   }
 
   val waitConfirm: Actor.Receive = {
@@ -164,8 +163,7 @@ class PersistPersistentActorWithAtLeastOnceDelivery(
     case _ => // do nothing
   }
 
-  override def receiveRecover = {
-    case _ => // do nothing
+  override def receiveRecover = { case _ => // do nothing
   }
 
   val waitConfirm: Actor.Receive = {
@@ -203,8 +201,7 @@ class PersistAsyncPersistentActorWithAtLeastOnceDelivery(
     case _ => // do nothing
   }
 
-  override def receiveRecover = {
-    case _ => // do nothing
+  override def receiveRecover = { case _ => // do nothing
   }
 
   val waitConfirm: Actor.Receive = {

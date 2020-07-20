@@ -37,10 +37,9 @@ class RichPresentationCompilerThatNeedsJavaLibsSpec
         "package com.example",
         "import java.io.File@0@") { (p, label, cc) =>
         val sym = cc.askSymbolInfoAt(p).get
-        inside(sym.declPos) {
-          case Some(LineSourcePosition(f, i)) =>
-            f.parts should contain("File.java")
-            i should be > 0
+        inside(sym.declPos) { case Some(LineSourcePosition(f, i)) =>
+          f.parts should contain("File.java")
+          i should be > 0
         }
       }
     }
@@ -108,9 +107,8 @@ class RichPresentationCompilerSpec
         "object @0@Bla@1@ { def !(x:Int) = x }",
         "object Abc { def main { Bla @2@!@3@ 0 } }") { (p, label, cc) =>
         val sym = cc.askSymbolInfoAt(p).get
-        inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) =>
-            i should be > 0
+        inside(sym.declPos) { case Some(OffsetSourcePosition(f, i)) =>
+          i should be > 0
         }
       }
     }
@@ -129,10 +127,9 @@ class RichPresentationCompilerSpec
         "package com.example",
         "object Bla { val x = 1 @0@+ 1 }") { (p, label, cc) =>
         val sym = cc.askSymbolInfoAt(p).get
-        inside(sym.declPos) {
-          case Some(OffsetSourcePosition(f, i)) =>
-            f.parts should contain("Int.scala")
-            i should be > 0
+        inside(sym.declPos) { case Some(OffsetSourcePosition(f, i)) =>
+          f.parts should contain("Int.scala")
+          i should be > 0
         }
       }
     }

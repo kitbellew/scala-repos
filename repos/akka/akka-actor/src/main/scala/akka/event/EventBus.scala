@@ -196,16 +196,14 @@ trait SubchannelClassification { this: EventBus ⇒
 
   private def removeFromCache(
       changes: immutable.Seq[(Classifier, Set[Subscriber])]): Unit =
-    cache = (cache /: changes) {
-      case (m, (c, cs)) ⇒
-        m.updated(c, m.getOrElse(c, Set.empty[Subscriber]) -- cs)
+    cache = (cache /: changes) { case (m, (c, cs)) ⇒
+      m.updated(c, m.getOrElse(c, Set.empty[Subscriber]) -- cs)
     }
 
   private def addToCache(
       changes: immutable.Seq[(Classifier, Set[Subscriber])]): Unit =
-    cache = (cache /: changes) {
-      case (m, (c, cs)) ⇒
-        m.updated(c, m.getOrElse(c, Set.empty[Subscriber]) ++ cs)
+    cache = (cache /: changes) { case (m, (c, cs)) ⇒
+      m.updated(c, m.getOrElse(c, Set.empty[Subscriber]) ++ cs)
     }
 
 }

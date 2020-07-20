@@ -142,66 +142,54 @@ object RejectionHandler {
           "HTTP method not allowed, supported methods: " + names.mkString(
             ", ")))
       }
-      .handle {
-        case AuthorizationFailedRejection ⇒
-          complete((
-            Forbidden,
-            "The supplied authentication is not authorized to access this resource"))
+      .handle { case AuthorizationFailedRejection ⇒
+        complete((
+          Forbidden,
+          "The supplied authentication is not authorized to access this resource"))
       }
-      .handle {
-        case MalformedFormFieldRejection(name, msg, _) ⇒
-          complete((
-            BadRequest,
-            "The form field '" + name + "' was malformed:\n" + msg))
+      .handle { case MalformedFormFieldRejection(name, msg, _) ⇒
+        complete(
+          (BadRequest, "The form field '" + name + "' was malformed:\n" + msg))
       }
-      .handle {
-        case MalformedHeaderRejection(headerName, msg, _) ⇒
-          complete((
-            BadRequest,
-            s"The value of HTTP header '$headerName' was malformed:\n" + msg))
+      .handle { case MalformedHeaderRejection(headerName, msg, _) ⇒
+        complete((
+          BadRequest,
+          s"The value of HTTP header '$headerName' was malformed:\n" + msg))
       }
-      .handle {
-        case MalformedQueryParamRejection(name, msg, _) ⇒
-          complete((
-            BadRequest,
-            "The query parameter '" + name + "' was malformed:\n" + msg))
+      .handle { case MalformedQueryParamRejection(name, msg, _) ⇒
+        complete((
+          BadRequest,
+          "The query parameter '" + name + "' was malformed:\n" + msg))
       }
-      .handle {
-        case MalformedRequestContentRejection(msg, _) ⇒
-          complete((BadRequest, "The request content was malformed:\n" + msg))
+      .handle { case MalformedRequestContentRejection(msg, _) ⇒
+        complete((BadRequest, "The request content was malformed:\n" + msg))
       }
-      .handle {
-        case MissingCookieRejection(cookieName) ⇒
-          complete((
-            BadRequest,
-            "Request is missing required cookie '" + cookieName + '\''))
+      .handle { case MissingCookieRejection(cookieName) ⇒
+        complete((
+          BadRequest,
+          "Request is missing required cookie '" + cookieName + '\''))
       }
-      .handle {
-        case MissingFormFieldRejection(fieldName) ⇒
-          complete((
-            BadRequest,
-            "Request is missing required form field '" + fieldName + '\''))
+      .handle { case MissingFormFieldRejection(fieldName) ⇒
+        complete((
+          BadRequest,
+          "Request is missing required form field '" + fieldName + '\''))
       }
-      .handle {
-        case MissingHeaderRejection(headerName) ⇒
-          complete((
-            BadRequest,
-            "Request is missing required HTTP header '" + headerName + '\''))
+      .handle { case MissingHeaderRejection(headerName) ⇒
+        complete((
+          BadRequest,
+          "Request is missing required HTTP header '" + headerName + '\''))
       }
-      .handle {
-        case MissingQueryParamRejection(paramName) ⇒
-          complete((
-            NotFound,
-            "Request is missing required query parameter '" + paramName + '\''))
+      .handle { case MissingQueryParamRejection(paramName) ⇒
+        complete((
+          NotFound,
+          "Request is missing required query parameter '" + paramName + '\''))
       }
-      .handle {
-        case RequestEntityExpectedRejection ⇒
-          complete((BadRequest, "Request entity expected but not supplied"))
+      .handle { case RequestEntityExpectedRejection ⇒
+        complete((BadRequest, "Request entity expected but not supplied"))
       }
-      .handle {
-        case TooManyRangesRejection(_) ⇒
-          complete(
-            (RequestedRangeNotSatisfiable, "Request contains too many ranges."))
+      .handle { case TooManyRangesRejection(_) ⇒
+        complete(
+          (RequestedRangeNotSatisfiable, "Request contains too many ranges."))
       }
       .handle {
         case UnsatisfiableRangeRejection(
@@ -263,9 +251,8 @@ object RejectionHandler {
           BadRequest,
           "The request's Content-Encoding is not supported. Expected:\n" + supported))
       }
-      .handle {
-        case ExpectedWebSocketRequestRejection ⇒
-          complete((BadRequest, "Expected WebSocket Upgrade request"))
+      .handle { case ExpectedWebSocketRequestRejection ⇒
+        complete((BadRequest, "Expected WebSocket Upgrade request"))
       }
       .handleAll[UnsupportedWebSocketSubprotocolRejection] { rejections ⇒
         val supported = rejections.map(_.supportedProtocol)

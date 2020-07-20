@@ -285,9 +285,8 @@ trait Event[+T] { self =>
   def toFuture(): Future[T] = {
     val p = new Promise[T]
     val c = register(Witness(p))
-    p.setInterruptHandler {
-      case exc =>
-        p.updateIfEmpty(Throw(exc))
+    p.setInterruptHandler { case exc =>
+      p.updateIfEmpty(Throw(exc))
     }
     p.ensure { c.close() }
   }

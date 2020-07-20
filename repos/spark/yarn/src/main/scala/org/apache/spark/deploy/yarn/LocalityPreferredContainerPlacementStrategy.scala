@@ -195,20 +195,19 @@ private[yarn] class LocalityPreferredContainerPlacementStrategy(
     val pendingHostToContainersMap = pendingHostToContainerCount(
       localityMatchedPendingAllocations)
 
-    hostToLocalTaskCount.map {
-      case (host, count) =>
-        val expectedCount =
-          count.toDouble * numExecutorsPending(
-            localityAwareTasks) / totalLocalTaskNum
-        // Take the locality of pending containers into consideration
-        val existedCount =
-          allocatedHostToContainersMap.get(host).map(_.size).getOrElse(0) +
-            pendingHostToContainersMap.getOrElse(host, 0.0)
+    hostToLocalTaskCount.map { case (host, count) =>
+      val expectedCount =
+        count.toDouble * numExecutorsPending(
+          localityAwareTasks) / totalLocalTaskNum
+      // Take the locality of pending containers into consideration
+      val existedCount =
+        allocatedHostToContainersMap.get(host).map(_.size).getOrElse(0) +
+          pendingHostToContainersMap.getOrElse(host, 0.0)
 
-        // If existing container can not fully satisfy the expected number of container,
-        // the required container number is expected count minus existed count. Otherwise the
-        // required container number is 0.
-        (host, math.max(0, (expectedCount - existedCount).ceil.toInt))
+      // If existing container can not fully satisfy the expected number of container,
+      // the required container number is expected count minus existed count. Otherwise the
+      // required container number is 0.
+      (host, math.max(0, (expectedCount - existedCount).ceil.toInt))
     }
   }
 

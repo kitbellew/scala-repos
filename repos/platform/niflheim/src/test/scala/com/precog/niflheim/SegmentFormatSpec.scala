@@ -54,13 +54,11 @@ class VersionedSegmentFormatSpec
 
       check { (segment0: Segment) =>
         val out = new InMemoryWritableByteChannel
-        old.writer.writeSegment(out, segment0) must beLike {
-          case Success(_) =>
-            val in = new InMemoryReadableByteChannel(out.toArray)
-            format.reader.readSegment(in) must beLike {
-              case Success(segment1) =>
-                areEqual(segment0, segment1)
-            }
+        old.writer.writeSegment(out, segment0) must beLike { case Success(_) =>
+          val in = new InMemoryReadableByteChannel(out.toArray)
+          format.reader.readSegment(in) must beLike { case Success(segment1) =>
+            areEqual(segment0, segment1)
+          }
         }
       }
     }

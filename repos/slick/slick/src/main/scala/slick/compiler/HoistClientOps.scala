@@ -28,9 +28,8 @@ class HoistClientOps extends Phase {
             case (ts, n, (n2, wrap)) => (n2, new AnonSymbol)
           }.toMap
           logger.debug("New defs: " + newDefsM)
-          val oldDefsM = hoisted.iterator.map {
-            case (ts, n, (n2, wrap)) =>
-              (ts, wrap(Select(Ref(rsm.generator), newDefsM(n2))))
+          val oldDefsM = hoisted.iterator.map { case (ts, n, (n2, wrap)) =>
+            (ts, wrap(Select(Ref(rsm.generator), newDefsM(n2))))
           }.toMap
           val bind2 = rewriteDBSide(
             Bind(

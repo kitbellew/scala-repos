@@ -117,12 +117,11 @@ trait StubColumnarTableModule[M[+_]] extends ColumnarTableModuleTestSupport[M] {
 
                   currentIndex += parsed.length
 
-                  parsed zip (Stream from index) map {
-                    case (value, id) =>
-                      JObject(
-                        JField("key", JArray(JNum(id) :: Nil)) :: JField(
-                          "value",
-                          value) :: Nil)
+                  parsed zip (Stream from index) map { case (value, id) =>
+                    JObject(
+                      JField("key", JArray(JNum(id) :: Nil)) :: JField(
+                        "value",
+                        value) :: Nil)
                   }
                 }
               }

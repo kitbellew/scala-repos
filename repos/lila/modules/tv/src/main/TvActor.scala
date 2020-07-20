@@ -41,9 +41,8 @@ private[tv] final class TvActor(
 
     case Select =>
       GameRepo.featuredCandidates foreach { candidates =>
-        channelActors foreach {
-          case (channel, actor) =>
-            actor forward ChannelActor.Select(candidates filter channel.filter)
+        channelActors foreach { case (channel, actor) =>
+          actor forward ChannelActor.Select(candidates filter channel.filter)
         }
       }
 

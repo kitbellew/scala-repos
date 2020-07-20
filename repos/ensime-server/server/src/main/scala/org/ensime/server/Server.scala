@@ -33,13 +33,12 @@ class ServerActor(
 ) extends Actor
     with ActorLogging {
 
-  override val supervisorStrategy = OneForOneStrategy() {
-    case ex: Exception =>
-      log.error(s"Error with monitor actor ${ex.getMessage}", ex)
-      self ! ShutdownRequest(
-        s"Monitor actor failed with ${ex.getClass} - ${ex.toString}",
-        isError = true)
-      Stop
+  override val supervisorStrategy = OneForOneStrategy() { case ex: Exception =>
+    log.error(s"Error with monitor actor ${ex.getMessage}", ex)
+    self ! ShutdownRequest(
+      s"Monitor actor failed with ${ex.getClass} - ${ex.toString}",
+      isError = true)
+    Stop
   }
 
   def initialiseChildren(): Unit = {
@@ -114,9 +113,8 @@ class ServerActor(
         self ! ShutdownRequest(t.toString, isError = true)
     }
   }
-  override def receive: Receive = {
-    case req: ShutdownRequest =>
-      triggerShutdown(req)
+  override def receive: Receive = { case req: ShutdownRequest =>
+    triggerShutdown(req)
   }
 
   def triggerShutdown(request: ShutdownRequest): Unit = {

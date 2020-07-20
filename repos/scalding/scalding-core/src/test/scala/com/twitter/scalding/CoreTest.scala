@@ -162,10 +162,9 @@ class MapToGroupBySizeSumMaxTest extends WordSpec with Matchers {
     val input = (0 to 100).map { i: Int => (i.toString, r.nextDouble.toString) }
     //Here is our expected output:
     val goldenOutput = input
-      .map {
-        case (line: String, x: String) =>
-          val xv = x.toDouble;
-          ((xv > 0.5), xv)
+      .map { case (line: String, x: String) =>
+        val xv = x.toDouble;
+        ((xv > 0.5), xv)
       }
       .groupBy { case (kx: Boolean, x: Double) => kx }
       .mapValues { vals =>
@@ -304,9 +303,8 @@ class JoinTest extends WordSpec with Matchers {
       .source(Tsv("fakeInput1"), input1)
       .source(Tsv("fakeInput2"), input2)
       .sink[(String, Int, Int)](Tsv("fakeOutput")) { outBuf =>
-        val actualOutput = outBuf.map {
-          case (k: String, v1: Int, v2: Int) =>
-            (k, (v1, v2))
+        val actualOutput = outBuf.map { case (k: String, v1: Int, v2: Int) =>
+          (k, (v1, v2))
         }.toMap
         "join tuples with the same key" in {
           correctOutput shouldBe actualOutput
@@ -380,9 +378,8 @@ class TinyJoinTest extends WordSpec with Matchers {
       .source(Tsv("fakeInput1"), input1)
       .source(Tsv("fakeInput2"), input2)
       .sink[(String, Int, Int)](Tsv("fakeOutput")) { outBuf =>
-        val actualOutput = outBuf.map {
-          case (k: String, v1: Int, v2: Int) =>
-            (k, (v1, v2))
+        val actualOutput = outBuf.map { case (k: String, v1: Int, v2: Int) =>
+          (k, (v1, v2))
         }.toMap
         (idx + ": join tuples with the same key") in {
           actualOutput shouldBe correctOutput
@@ -417,9 +414,8 @@ class TinyCollisionJoinTest extends WordSpec with Matchers {
       .source(Tsv("fakeInput1"), input1)
       .source(Tsv("fakeInput2"), input2)
       .sink[(String, Int, Int)](Tsv("fakeOutput")) { outBuf =>
-        val actualOutput = outBuf.map {
-          case (k: String, v1: Int, v2: Int) =>
-            (k, (v1, v2))
+        val actualOutput = outBuf.map { case (k: String, v1: Int, v2: Int) =>
+          (k, (v1, v2))
         }.toMap
         "join tuples with the same key" in {
           correctOutput shouldBe actualOutput
@@ -591,10 +587,9 @@ class MergeTest extends WordSpec with Matchers {
       (i.toString, r.nextDouble.toString + " " + r.nextDouble.toString)
     }
     //Here is our expected output:
-    val parsed = input.map {
-      case (line: String, x: String) =>
-        val t = x.split(" ").map { _.toDouble }
-        (t(0), t(1))
+    val parsed = input.map { case (line: String, x: String) =>
+      val t = x.split(" ").map { _.toDouble }
+      (t(0), t(1))
     }
     val big = parsed.filter(_._1 > 0.5)
     val small = parsed.filter(_._1 <= 0.5)

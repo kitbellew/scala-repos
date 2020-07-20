@@ -39,15 +39,14 @@ private[summingbird] object StormStatProvider extends PlatformStatProvider {
     metricsForJob.putIfAbsent(jobID, new ConcurrentHashMap[String, CountMetric])
     val jobMap = metricsForJob.get(jobID)
 
-    metrics.foreach {
-      case (groupName, metricName) =>
-        val k = groupName.getString + "/" + metricName.getString
-        val v = new CountMetric
+    metrics.foreach { case (groupName, metricName) =>
+      val k = groupName.getString + "/" + metricName.getString
+      val v = new CountMetric
 
-        if (jobMap.putIfAbsent(k, v) == null) {
-          logger.info(s"Registered metric $k with TopologyContext")
-          context.registerMetric(k, v, 60)
-        } // otherwise another bolt on the same jvm has beaten us to registering this.
+      if (jobMap.putIfAbsent(k, v) == null) {
+        logger.info(s"Registered metric $k with TopologyContext")
+        context.registerMetric(k, v, 60)
+      } // otherwise another bolt on the same jvm has beaten us to registering this.
     }
   }
 

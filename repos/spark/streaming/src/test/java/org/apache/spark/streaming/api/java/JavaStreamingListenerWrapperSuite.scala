@@ -241,11 +241,10 @@ class JavaStreamingListenerWrapperSuite extends SparkFunSuite {
     assert(javaBatchInfo.batchTime === batchInfo.batchTime)
     assert(
       javaBatchInfo.streamIdToInputInfo.size === batchInfo.streamIdToInputInfo.size)
-    batchInfo.streamIdToInputInfo.foreach {
-      case (streamId, streamInputInfo) =>
-        assertStreamingInfo(
-          javaBatchInfo.streamIdToInputInfo.get(streamId),
-          streamInputInfo)
+    batchInfo.streamIdToInputInfo.foreach { case (streamId, streamInputInfo) =>
+      assertStreamingInfo(
+        javaBatchInfo.streamIdToInputInfo.get(streamId),
+        streamInputInfo)
     }
     assert(javaBatchInfo.submissionTime === batchInfo.submissionTime)
     assert(

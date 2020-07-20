@@ -101,10 +101,10 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
   import NaiveBayes.{Multinomial, Bernoulli}
 
   def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
-    val numOfPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
+    val numOfPredictions =
+      predictions.zip(input).count { case (prediction, expected) =>
         prediction != expected.label
-    }
+      }
     // At least 80% of the predictions should be on.
     assert(numOfPredictions < input.length / 5)
   }
@@ -188,8 +188,8 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       val predicted = model.predictProbabilities(features).toArray
       assert(predicted.sum ~== 1.0 relTol 1.0e-10)
       val expected = expectedMultinomialProbabilities(model, features)
-      expected.zip(predicted).foreach {
-        case (e, p) => assert(e ~== p relTol 1.0e-10)
+      expected.zip(predicted).foreach { case (e, p) =>
+        assert(e ~== p relTol 1.0e-10)
       }
     }
   }
@@ -251,8 +251,8 @@ class NaiveBayesSuite extends SparkFunSuite with MLlibTestSparkContext {
       val predicted = model.predictProbabilities(features).toArray
       assert(predicted.sum ~== 1.0 relTol 1.0e-10)
       val expected = expectedBernoulliProbabilities(model, features)
-      expected.zip(predicted).foreach {
-        case (e, p) => assert(e ~== p relTol 1.0e-10)
+      expected.zip(predicted).foreach { case (e, p) =>
+        assert(e ~== p relTol 1.0e-10)
       }
     }
   }

@@ -1062,18 +1062,17 @@ private[spark] object SparkSubmitUtils {
     val repositoryList = remoteRepos.getOrElse("")
     // add any other remote repositories other than maven central
     if (repositoryList.trim.nonEmpty) {
-      repositoryList.split(",").zipWithIndex.foreach {
-        case (repo, i) =>
-          val brr: IBiblioResolver = new IBiblioResolver
-          brr.setM2compatible(true)
-          brr.setUsepoms(true)
-          brr.setRoot(repo)
-          brr.setName(s"repo-${i + 1}")
-          cr.add(brr)
-          // scalastyle:off println
-          printStream.println(
-            s"$repo added as a remote repository with the name: ${brr.getName}")
-        // scalastyle:on println
+      repositoryList.split(",").zipWithIndex.foreach { case (repo, i) =>
+        val brr: IBiblioResolver = new IBiblioResolver
+        brr.setM2compatible(true)
+        brr.setUsepoms(true)
+        brr.setRoot(repo)
+        brr.setName(s"repo-${i + 1}")
+        cr.add(brr)
+        // scalastyle:off println
+        printStream.println(
+          s"$repo added as a remote repository with the name: ${brr.getName}")
+      // scalastyle:on println
       }
     }
 

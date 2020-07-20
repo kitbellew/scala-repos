@@ -86,11 +86,9 @@ class MyEventsByTagPublisher(
         currentOffset = if (result.nonEmpty) result.last._1 else currentOffset
         val serialization = SerializationExtension(context.system)
 
-        buf = result.map {
-          case (id, bytes) ⇒
-            val p =
-              serialization.deserialize(bytes, classOf[PersistentRepr]).get
-            EventEnvelope(offset = id, p.persistenceId, p.sequenceNr, p.payload)
+        buf = result.map { case (id, bytes) ⇒
+          val p = serialization.deserialize(bytes, classOf[PersistentRepr]).get
+          EventEnvelope(offset = id, p.persistenceId, p.sequenceNr, p.payload)
         }
       } catch {
         case e: Exception ⇒

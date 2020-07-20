@@ -528,10 +528,9 @@ abstract class GenJSCode
 
     def genMethod(dd: DefDef): Option[js.MethodDef] =
       withNewLocalNameScope {
-        genMethodWithInfoBuilder(dd) map {
-          case (methodDef, infoBuilder) =>
-            currentClassInfoBuilder.addMethod(infoBuilder.result())
-            methodDef
+        genMethodWithInfoBuilder(dd) map { case (methodDef, infoBuilder) =>
+          currentClassInfoBuilder.addMethod(infoBuilder.result())
+          methodDef
         }
       }
 
@@ -705,9 +704,8 @@ abstract class GenJSCode
             if (encodeMethodSym(sym) == encodeMethodSym(callee)) {
               // Test whether args are trivial forwarders
               assert(args.size == params.size, "Argument count mismatch")
-              params.zip(args) forall {
-                case (param, arg) =>
-                  arg.symbol == param
+              params.zip(args) forall { case (param, arg) =>
+                arg.symbol == param
               }
             } else {
               false
@@ -809,9 +807,8 @@ abstract class GenJSCode
         s1 == s2 || // Shortcut
         s1.name == s2.name &&
         p1.size == p2.size &&
-        (p1 zip p2).forall {
-          case (s1, s2) =>
-            s1.tpe =:= s2.tpe
+        (p1 zip p2).forall { case (s1, s2) =>
+          s1.tpe =:= s2.tpe
         }
       }
 
@@ -2714,9 +2711,8 @@ abstract class GenJSCode
           val sParams = s.tpe.params
           !s.isBridge &&
           params.size == sParams.size &&
-          (params zip sParams).forall {
-            case (s1, s2) =>
-              s1.tpe =:= s2.tpe
+          (params zip sParams).forall { case (s1, s2) =>
+            s1.tpe =:= s2.tpe
           }
         }
 
@@ -2740,21 +2736,20 @@ abstract class GenJSCode
             genExpr(receiver))
         val callTrg = js.VarRef(callTrgIdent)(receiverType)
 
-        val arguments = args zip sym.tpe.params map {
-          case (arg, param) =>
-            /* No need for enteringPosterasure, because value classes are not
-             * supported as parameters of methods in structural types.
-             * We could do it for safety and future-proofing anyway, except that
-             * I am weary of calling enteringPosterasure for a reflective method
-             * symbol.
-             *
-             * Note also that this will typically unbox a primitive value that
-             * has just been boxed, or will .asInstanceOf[T] an expression which
-             * is already of type T. But the optimizer will get rid of that, and
-             * reflective calls are not numerous, so we don't complicate the
-             * compiler to eliminate them early.
-             */
-            fromAny(genExpr(arg), param.tpe)
+        val arguments = args zip sym.tpe.params map { case (arg, param) =>
+          /* No need for enteringPosterasure, because value classes are not
+           * supported as parameters of methods in structural types.
+           * We could do it for safety and future-proofing anyway, except that
+           * I am weary of calling enteringPosterasure for a reflective method
+           * symbol.
+           *
+           * Note also that this will typically unbox a primitive value that
+           * has just been boxed, or will .asInstanceOf[T] an expression which
+           * is already of type T. But the optimizer will get rid of that, and
+           * reflective calls are not numerous, so we don't complicate the
+           * compiler to eliminate them early.
+           */
+          fromAny(genExpr(arg), param.tpe)
         }
 
         val proxyIdent = encodeMethodSym(sym, reflProxy = true)

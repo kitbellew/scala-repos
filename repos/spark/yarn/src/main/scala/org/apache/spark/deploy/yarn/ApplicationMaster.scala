@@ -54,9 +54,8 @@ private[spark] class ApplicationMaster(
   // Load the properties file with the Spark configuration and set entries as system properties,
   // so that user code run inside the AM also has access to them.
   if (args.propertiesFile != null) {
-    Utils.getPropertiesFromFile(args.propertiesFile).foreach {
-      case (k, v) =>
-        sys.props(k) = v
+    Utils.getPropertiesFromFile(args.propertiesFile).foreach { case (k, v) =>
+      sys.props(k) = v
     }
   }
 

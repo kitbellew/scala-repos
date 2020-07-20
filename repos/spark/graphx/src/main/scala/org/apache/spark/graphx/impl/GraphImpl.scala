@@ -237,61 +237,60 @@ class GraphImpl[VD: ClassTag, ED: ClassTag] protected (
 
     // Map and combine.
     val preAgg = view.edges.partitionsRDD
-      .mapPartitions(_.flatMap {
-        case (pid, edgePartition) =>
-          // Choose scan method
-          val activeFraction = edgePartition.numActives.getOrElse(
-            0) / edgePartition.indexSize.toFloat
-          activeDirectionOpt match {
-            case Some(EdgeDirection.Both) =>
-              if (activeFraction < 0.8) {
-                edgePartition.aggregateMessagesIndexScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.Both)
-              } else {
-                edgePartition.aggregateMessagesEdgeScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.Both)
-              }
-            case Some(EdgeDirection.Either) =>
-              // TODO: Because we only have a clustered index on the source vertex ID, we can't filter
-              // the index here. Instead we have to scan all edges and then do the filter.
+      .mapPartitions(_.flatMap { case (pid, edgePartition) =>
+        // Choose scan method
+        val activeFraction = edgePartition.numActives.getOrElse(
+          0) / edgePartition.indexSize.toFloat
+        activeDirectionOpt match {
+          case Some(EdgeDirection.Both) =>
+            if (activeFraction < 0.8) {
+              edgePartition.aggregateMessagesIndexScan(
+                sendMsg,
+                mergeMsg,
+                tripletFields,
+                EdgeActiveness.Both)
+            } else {
               edgePartition.aggregateMessagesEdgeScan(
                 sendMsg,
                 mergeMsg,
                 tripletFields,
-                EdgeActiveness.Either)
-            case Some(EdgeDirection.Out) =>
-              if (activeFraction < 0.8) {
-                edgePartition.aggregateMessagesIndexScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.SrcOnly)
-              } else {
-                edgePartition.aggregateMessagesEdgeScan(
-                  sendMsg,
-                  mergeMsg,
-                  tripletFields,
-                  EdgeActiveness.SrcOnly)
-              }
-            case Some(EdgeDirection.In) =>
+                EdgeActiveness.Both)
+            }
+          case Some(EdgeDirection.Either) =>
+            // TODO: Because we only have a clustered index on the source vertex ID, we can't filter
+            // the index here. Instead we have to scan all edges and then do the filter.
+            edgePartition.aggregateMessagesEdgeScan(
+              sendMsg,
+              mergeMsg,
+              tripletFields,
+              EdgeActiveness.Either)
+          case Some(EdgeDirection.Out) =>
+            if (activeFraction < 0.8) {
+              edgePartition.aggregateMessagesIndexScan(
+                sendMsg,
+                mergeMsg,
+                tripletFields,
+                EdgeActiveness.SrcOnly)
+            } else {
               edgePartition.aggregateMessagesEdgeScan(
                 sendMsg,
                 mergeMsg,
                 tripletFields,
-                EdgeActiveness.DstOnly)
-            case _ => // None
-              edgePartition.aggregateMessagesEdgeScan(
-                sendMsg,
-                mergeMsg,
-                tripletFields,
-                EdgeActiveness.Neither)
-          }
+                EdgeActiveness.SrcOnly)
+            }
+          case Some(EdgeDirection.In) =>
+            edgePartition.aggregateMessagesEdgeScan(
+              sendMsg,
+              mergeMsg,
+              tripletFields,
+              EdgeActiveness.DstOnly)
+          case _ => // None
+            edgePartition.aggregateMessagesEdgeScan(
+              sendMsg,
+              mergeMsg,
+              tripletFields,
+              EdgeActiveness.Neither)
+        }
       })
       .setName("GraphImpl.aggregateMessages - preAgg")
 

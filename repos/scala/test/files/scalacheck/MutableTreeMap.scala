@@ -97,10 +97,9 @@ package scala.collection.mutable {
       val map = mutable.TreeMap[K, V]()
       map ++= entries
 
-      allEntries.forall {
-        case (k, v) =>
-          map.contains(k) == entries.contains(k) &&
-            map.get(k) == entries.get(k)
+      allEntries.forall { case (k, v) =>
+        map.contains(k) == entries.contains(k) &&
+          map.get(k) == entries.get(k)
       }
     }
 
@@ -242,12 +241,9 @@ package scala.collection.mutable {
         map ++= entries
 
         val mapView = map.rangeImpl(from, until)
-        allEntries.forall {
-          case (k, v) =>
-            mapView.contains(k) == (in(k, from, until) && entries.contains(
-              k)) &&
-              mapView.get(k) == (if (in(k, from, until)) entries.get(k)
-                                 else None)
+        allEntries.forall { case (k, v) =>
+          mapView.contains(k) == (in(k, from, until) && entries.contains(k)) &&
+            mapView.get(k) == (if (in(k, from, until)) entries.get(k) else None)
         }
     }
 
@@ -290,10 +286,9 @@ package scala.collection.mutable {
           until: Option[K]) =>
         val mapView = map.rangeImpl(from, until)
         mapView ++= entries
-        entries.toMap.forall {
-          case (k, v) =>
-            map.get(k) == Some(v) &&
-              mapView.get(k) == (if (in(k, from, until)) Some(v) else None)
+        entries.toMap.forall { case (k, v) =>
+          map.get(k) == Some(v) &&
+            mapView.get(k) == (if (in(k, from, until)) Some(v) else None)
         }
     }
 

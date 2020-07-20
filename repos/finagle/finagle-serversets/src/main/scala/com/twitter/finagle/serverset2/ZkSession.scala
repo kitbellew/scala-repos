@@ -84,11 +84,10 @@ private[serverset2] class ZkSession(
     */
   private def safeRetry[T](go: => Future[T]): Future[T] = {
     def loop(): Future[T] =
-      limit { go }.rescue {
-        case exc: KeeperException.ConnectionLoss =>
-          logger.warning(
-            s"ConnectionLoss to Zookeeper host. Session $sessionIdAsHex. Retrying")
-          retryWithDelay { loop() }
+      limit { go }.rescue { case exc: KeeperException.ConnectionLoss =>
+        logger.warning(
+          s"ConnectionLoss to Zookeeper host. Session $sessionIdAsHex. Retrying")
+        retryWithDelay { loop() }
       }
 
     loop()

@@ -183,9 +183,8 @@ private[spark] class TaskSchedulerImpl(
           stage,
           new HashMap[Int, TaskSetManager])
       stageTaskSets(taskSet.stageAttemptId) = manager
-      val conflictingTaskSet = stageTaskSets.exists {
-        case (_, ts) =>
-          ts.taskSet != taskSet && !ts.isZombie
+      val conflictingTaskSet = stageTaskSets.exists { case (_, ts) =>
+        ts.taskSet != taskSet && !ts.isZombie
       }
       if (conflictingTaskSet) {
         throw new IllegalStateException(
@@ -227,20 +226,19 @@ private[spark] class TaskSchedulerImpl(
     synchronized {
       logInfo("Cancelling stage " + stageId)
       taskSetsByStageIdAndAttempt.get(stageId).foreach { attempts =>
-        attempts.foreach {
-          case (_, tsm) =>
-            // There are two possible cases here:
-            // 1. The task set manager has been created and some tasks have been scheduled.
-            //    In this case, send a kill signal to the executors to kill the task and then abort
-            //    the stage.
-            // 2. The task set manager has been created but no tasks has been scheduled. In this case,
-            //    simply abort the stage.
-            tsm.runningTasksSet.foreach { tid =>
-              val execId = taskIdToExecutorId(tid)
-              backend.killTask(tid, execId, interruptThread)
-            }
-            tsm.abort("Stage %s cancelled".format(stageId))
-            logInfo("Stage %d was cancelled".format(stageId))
+        attempts.foreach { case (_, tsm) =>
+          // There are two possible cases here:
+          // 1. The task set manager has been created and some tasks have been scheduled.
+          //    In this case, send a kill signal to the executors to kill the task and then abort
+          //    the stage.
+          // 2. The task set manager has been created but no tasks has been scheduled. In this case,
+          //    simply abort the stage.
+          tsm.runningTasksSet.foreach { tid =>
+            val execId = taskIdToExecutorId(tid)
+            backend.killTask(tid, execId, interruptThread)
+          }
+          tsm.abort("Stage %s cancelled".format(stageId))
+          logInfo("Stage %d was cancelled".format(stageId))
         }
       }
     }
@@ -431,15 +429,10 @@ private[spark] class TaskSchedulerImpl(
     // (taskId, stageId, stageAttemptId, accumUpdates)
     val accumUpdatesWithTaskIds: Array[(Long, Int, Int, Seq[AccumulableInfo])] =
       synchronized {
-        accumUpdates.flatMap {
-          case (id, updates) =>
-            taskIdToTaskSetManager.get(id).map { taskSetMgr =>
-              (
-                id,
-                taskSetMgr.stageId,
-                taskSetMgr.taskSet.stageAttemptId,
-                updates)
-            }
+        accumUpdates.flatMap { case (id, updates) =>
+          taskIdToTaskSetManager.get(id).map { taskSetMgr =>
+            (id, taskSetMgr.stageId, taskSetMgr.taskSet.stageAttemptId, updates)
+          }
         }
       }
     dagScheduler.executorHeartbeatReceived(

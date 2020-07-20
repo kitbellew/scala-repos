@@ -193,9 +193,8 @@ class GaussianMixtureSuite extends SparkFunSuite with MLlibTestSparkContext {
     val gmm = new GaussianMixture().setK(2).setSeed(0).run(data)
 
     val batchPredictions = gmm.predict(data)
-    batchPredictions.zip(data).collect().foreach {
-      case (batchPred, datum) =>
-        assert(batchPred === gmm.predict(datum))
+    batchPredictions.zip(data).collect().foreach { case (batchPred, datum) =>
+      assert(batchPred === gmm.predict(datum))
     }
   }
 

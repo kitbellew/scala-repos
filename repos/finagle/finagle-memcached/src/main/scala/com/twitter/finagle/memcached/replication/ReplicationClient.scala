@@ -125,11 +125,9 @@ class BaseReplicationClient(
         case Seq() => Future.value(currentRes)
         case Seq(c, tail @ _*) =>
           val missing = currentRes.misses ++ currentRes.failures.keySet
-          c.getResult(missing) flatMap {
-            case res =>
-              val newRes =
-                GetResult.merged(Seq(GetResult(currentRes.hits), res))
-              loopGet(tail, newRes)
+          c.getResult(missing) flatMap { case res =>
+            val newRes = GetResult.merged(Seq(GetResult(currentRes.hits), res))
+            loopGet(tail, newRes)
           }
       }
 
@@ -273,9 +271,8 @@ class BaseReplicationClient(
     assert(clients.size == casUniques.size)
 
     // cannot use collectAndResolve helper here as this is the only case where there's no common op
-    Future.collect((clients zip casUniques) map {
-      case (c, u) =>
-        c.checkAndSet(key, flags, expiry, value, u).transform(Future.value)
+    Future.collect((clients zip casUniques) map { case (c, u) =>
+      c.checkAndSet(key, flags, expiry, value, u).transform(Future.value)
     }) map { toReplicationStatus }
   }
 

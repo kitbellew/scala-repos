@@ -270,20 +270,19 @@ class CallGraph[BT <: BTypes](val btypes: BT) {
       val consumerFrame = prodConsI.frameAt(consumerInsn)
       consumerFrame.stackTop - numConsumed + 1
     }
-    sams flatMap {
-      case (index, _) =>
-        val prods = prodConsI.initialProducersForValueAt(
-          consumerInsn,
-          firstConsumedSlot + index)
-        if (prods.size != 1) None
-        else {
-          val argInfo = prods.head match {
-            case LambdaMetaFactoryCall(_, _, _, _) => Some(FunctionLiteral)
-            case ParameterProducer(local)          => Some(ForwardedParam(local))
-            case _                                 => None
-          }
-          argInfo.map((index, _))
+    sams flatMap { case (index, _) =>
+      val prods = prodConsI.initialProducersForValueAt(
+        consumerInsn,
+        firstConsumedSlot + index)
+      if (prods.size != 1) None
+      else {
+        val argInfo = prods.head match {
+          case LambdaMetaFactoryCall(_, _, _, _) => Some(FunctionLiteral)
+          case ParameterProducer(local)          => Some(ForwardedParam(local))
+          case _                                 => None
         }
+        argInfo.map((index, _))
+      }
     }
   }
 

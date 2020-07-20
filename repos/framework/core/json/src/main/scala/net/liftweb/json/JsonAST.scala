@@ -366,9 +366,8 @@ object JsonAST {
       def rec(acc: A, v: JValue) = {
         v match {
           case JObject(l) =>
-            l.foldLeft(acc) {
-              case (a, field @ JField(name, value)) =>
-                value.foldField(f(a, field))(f)
+            l.foldLeft(acc) { case (a, field @ JField(name, value)) =>
+              value.foldField(f(a, field))(f)
             }
           case JArray(l) => l.foldLeft(acc)((a, e) => e.foldField(a)(f))
           case _         => acc
@@ -821,9 +820,8 @@ object JsonAST {
   case class JObject(obj: List[JField]) extends JValue {
     type Values = Map[String, Any]
     def values = {
-      obj.map {
-        case JField(name, value) =>
-          (name, value.values): (String, Any)
+      obj.map { case JField(name, value) =>
+        (name, value.values): (String, Any)
       }.toMap
     }
 
@@ -912,9 +910,8 @@ object JsonAST {
         ('\ufeff', '\ufeff'),
         ('\ufff0', '\uffff')
       )
-        .foldLeft(Set[Char]()) {
-          case (set, (start, end)) =>
-            set ++ (start to end).toSet
+        .foldLeft(Set[Char]()) { case (set, (start, end)) =>
+          set ++ (start to end).toSet
         }
 
     /**

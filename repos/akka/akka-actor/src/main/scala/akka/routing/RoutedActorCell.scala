@@ -221,17 +221,16 @@ private[akka] class RouterPoolActor(
   }
 
   override def receive =
-    ({
-      case AdjustPoolSize(change: Int) ⇒
-        if (change > 0) {
-          val newRoutees =
-            Vector.fill(change)(pool.newRoutee(cell.routeeProps, context))
-          cell.addRoutees(newRoutees)
-        } else if (change < 0) {
-          val currentRoutees = cell.router.routees
-          val abandon = currentRoutees.drop(currentRoutees.length + change)
-          cell.removeRoutees(abandon, stopChild = true)
-        }
+    ({ case AdjustPoolSize(change: Int) ⇒
+      if (change > 0) {
+        val newRoutees =
+          Vector.fill(change)(pool.newRoutee(cell.routeeProps, context))
+        cell.addRoutees(newRoutees)
+      } else if (change < 0) {
+        val currentRoutees = cell.router.routees
+        val abandon = currentRoutees.drop(currentRoutees.length + change)
+        cell.removeRoutees(abandon, stopChild = true)
+      }
     }: Actor.Receive) orElse super.receive
 
 }

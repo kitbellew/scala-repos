@@ -158,12 +158,11 @@ case class Filter(condition: Expression, child: SparkPlan)
 
     // Reset the isNull to false for the not-null columns, then the followed operators could
     // generate better code (remove dead branches).
-    val resultVars = input.zipWithIndex.map {
-      case (ev, i) =>
-        if (notNullAttributes.contains(child.output(i))) {
-          ev.isNull = "false"
-        }
-        ev
+    val resultVars = input.zipWithIndex.map { case (ev, i) =>
+      if (notNullAttributes.contains(child.output(i))) {
+        ev.isNull = "false"
+      }
+      ev
     }
     s"""
        |$filterOutNull

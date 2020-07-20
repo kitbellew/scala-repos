@@ -143,20 +143,18 @@ object ByteBufferPool {
     * the contiguous bytes in all the buffers.
     */
   def flipBytes: ByteBufferPoolS[Array[Byte]] =
-    State {
-      case (pool, sreffub) =>
-        val buffers = sreffub.reverse
-        ((pool, buffers), getBytesFrom(buffers))
+    State { case (pool, sreffub) =>
+      val buffers = sreffub.reverse
+      ((pool, buffers), getBytesFrom(buffers))
     }
 
   /**
     * Removes and releases all `ByteBuffer`s in the state to the pool.
     */
   def release: ByteBufferPoolS[Unit] =
-    State {
-      case (pool, buffers) =>
-        buffers foreach (pool.release(_))
-        ((pool, Nil), ())
+    State { case (pool, buffers) =>
+      buffers foreach (pool.release(_))
+      ((pool, Nil), ())
     }
 
   def getBytesFrom(buffers: List[ByteBuffer]): Array[Byte] = {

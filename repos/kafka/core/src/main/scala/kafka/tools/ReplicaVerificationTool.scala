@@ -158,21 +158,18 @@ object ReplicaVerificationTool extends Logging {
     val topicAndPartitionsPerBroker: Map[Int, Seq[TopicAndPartition]] =
       topicPartitionReplicaList
         .groupBy(_.replicaId)
-        .map {
-          case (brokerId, partitions) =>
-            brokerId -> partitions.map {
-              case partition =>
-                new TopicAndPartition(partition.topic, partition.partitionId)
-            }
+        .map { case (brokerId, partitions) =>
+          brokerId -> partitions.map { case partition =>
+            new TopicAndPartition(partition.topic, partition.partitionId)
+          }
         }
     debug("Topic partitions per broker: " + topicAndPartitionsPerBroker)
     val expectedReplicasPerTopicAndPartition: Map[TopicAndPartition, Int] =
       topicPartitionReplicaList
         .groupBy(replica =>
           new TopicAndPartition(replica.topic, replica.partitionId))
-        .map {
-          case (topicAndPartition, replicaSet) =>
-            topicAndPartition -> replicaSet.size
+        .map { case (topicAndPartition, replicaSet) =>
+          topicAndPartition -> replicaSet.size
         }
     debug(
       "Expected replicas per topic partition: " + expectedReplicasPerTopicAndPartition)
@@ -202,19 +199,18 @@ object ReplicaVerificationTool extends Logging {
     // create all replica fetcher threads
     val verificationBrokerId = topicAndPartitionsPerBroker.head._1
     val fetcherThreads: Iterable[ReplicaFetcher] =
-      topicAndPartitionsPerBroker.map {
-        case (brokerId, topicAndPartitions) =>
-          new ReplicaFetcher(
-            name = "ReplicaFetcher-" + brokerId,
-            sourceBroker = brokerMap(brokerId),
-            topicAndPartitions = topicAndPartitions,
-            replicaBuffer = replicaBuffer,
-            socketTimeout = 30000,
-            socketBufferSize = 256000,
-            fetchSize = fetchSize,
-            maxWait = maxWaitMs,
-            minBytes = 1,
-            doVerification = (brokerId == verificationBrokerId))
+      topicAndPartitionsPerBroker.map { case (brokerId, topicAndPartitions) =>
+        new ReplicaFetcher(
+          name = "ReplicaFetcher-" + brokerId,
+          sourceBroker = brokerMap(brokerId),
+          topicAndPartitions = topicAndPartitions,
+          replicaBuffer = replicaBuffer,
+          socketTimeout = 30000,
+          socketBufferSize = 256000,
+          fetchSize = fetchSize,
+          maxWait = maxWaitMs,
+          minBytes = 1,
+          doVerification = (brokerId == verificationBrokerId))
       }
 
     Runtime.getRuntime.addShutdownHook(new Thread() {
@@ -482,12 +478,11 @@ private class ReplicaFetcher(
     }
 
     if (response != null) {
-      response.data.foreach {
-        case (topicAndPartition, partitionData) =>
-          replicaBuffer.addFetchedData(
-            topicAndPartition,
-            sourceBroker.id,
-            partitionData)
+      response.data.foreach { case (topicAndPartition, partitionData) =>
+        replicaBuffer.addFetchedData(
+          topicAndPartition,
+          sourceBroker.id,
+          partitionData)
       }
     } else {
       for (topicAndPartition <- topicAndPartitions)

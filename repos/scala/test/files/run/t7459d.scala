@@ -3,10 +3,9 @@ class LM {
   case class CC(n: LM)
 
   // crash
-  val f: (LM => Any) = {
-    case tttt =>
-      val uuuu: (tttt.type, Any) = (tttt, 0)
-      new uuuu._1.Node[Any]()
+  val f: (LM => Any) = { case tttt =>
+    val uuuu: (tttt.type, Any) = (tttt, 0)
+    new uuuu._1.Node[Any]()
   }
 }
 

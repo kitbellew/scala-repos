@@ -386,14 +386,13 @@ object AhcWSSpec extends PlaySpecification with Mockito {
     }
 
     val patchFakeApp = GuiceApplicationBuilder()
-      .routes {
-        case ("PATCH", "/") =>
-          Action {
-            Results.Ok(play.api.libs.json.Json.parse("""{
+      .routes { case ("PATCH", "/") =>
+        Action {
+          Results.Ok(play.api.libs.json.Json.parse("""{
             |  "data": "body"
             |}
           """.stripMargin))
-          }
+        }
       }
       .build()
 
@@ -415,23 +414,22 @@ object AhcWSSpec extends PlaySpecification with Mockito {
       import java.util.zip._
       GuiceApplicationBuilder()
         .configure("play.ws.compressionEnabled" -> true)
-        .routes({
-          case ("GET", "/") =>
-            Action { request =>
-              request.headers.get("Accept-Encoding") match {
-                case Some(encoding) if encoding.contains("gzip") =>
-                  val os = new ByteArrayOutputStream
-                  val gzipOs = new GZIPOutputStream(os)
-                  gzipOs.write("gziped response".getBytes("utf-8"))
-                  gzipOs.close()
-                  Results
-                    .Ok(os.toByteArray)
-                    .as("text/plain")
-                    .withHeaders("Content-Encoding" -> "gzip")
-                case _ =>
-                  Results.Ok("plain response")
-              }
+        .routes({ case ("GET", "/") =>
+          Action { request =>
+            request.headers.get("Accept-Encoding") match {
+              case Some(encoding) if encoding.contains("gzip") =>
+                val os = new ByteArrayOutputStream
+                val gzipOs = new GZIPOutputStream(os)
+                gzipOs.write("gziped response".getBytes("utf-8"))
+                gzipOs.close()
+                Results
+                  .Ok(os.toByteArray)
+                  .as("text/plain")
+                  .withHeaders("Content-Encoding" -> "gzip")
+              case _ =>
+                Results.Ok("plain response")
             }
+          }
         })
         .build()
     }

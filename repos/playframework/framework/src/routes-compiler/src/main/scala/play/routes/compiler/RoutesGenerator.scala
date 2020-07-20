@@ -133,24 +133,23 @@ object StaticRoutesGenerator extends RoutesGenerator {
       additionalImports: Seq[String],
       routes: List[Route],
       namespaceReverseRouter: Boolean) = {
-    routes.groupBy(_.call.packageName).map {
-      case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
-        (packageName.replace(".", "/") + "/" + ReverseRoutesFile) ->
-          static.twirl
-            .reverseRouter(
-              sourceInfo,
-              namespace,
-              additionalImports,
-              packageName,
-              routes,
-              namespaceReverseRouter,
-              _.call.instantiate
-            )
-            .body
+    routes.groupBy(_.call.packageName).map { case (pn, routes) =>
+      val packageName = namespace
+        .filter(_ => namespaceReverseRouter)
+        .map(_ + "." + pn)
+        .getOrElse(pn)
+      (packageName.replace(".", "/") + "/" + ReverseRoutesFile) ->
+        static.twirl
+          .reverseRouter(
+            sourceInfo,
+            namespace,
+            additionalImports,
+            packageName,
+            routes,
+            namespaceReverseRouter,
+            _.call.instantiate
+          )
+          .body
     }
   }
 
@@ -160,25 +159,24 @@ object StaticRoutesGenerator extends RoutesGenerator {
       additionalImports: Seq[String],
       routes: List[Route],
       namespaceReverseRouter: Boolean) = {
-    routes.groupBy(_.call.packageName).map {
-      case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
-        (packageName
-          .replace(".", "/") + "/javascript/" + JavaScriptReverseRoutesFile) ->
-          static.twirl
-            .javascriptReverseRouter(
-              sourceInfo,
-              namespace,
-              additionalImports,
-              packageName,
-              routes,
-              namespaceReverseRouter,
-              _.call.instantiate
-            )
-            .body
+    routes.groupBy(_.call.packageName).map { case (pn, routes) =>
+      val packageName = namespace
+        .filter(_ => namespaceReverseRouter)
+        .map(_ + "." + pn)
+        .getOrElse(pn)
+      (packageName
+        .replace(".", "/") + "/javascript/" + JavaScriptReverseRoutesFile) ->
+        static.twirl
+          .javascriptReverseRouter(
+            sourceInfo,
+            namespace,
+            additionalImports,
+            packageName,
+            routes,
+            namespaceReverseRouter,
+            _.call.instantiate
+          )
+          .body
     }
   }
 
@@ -274,17 +272,16 @@ object InjectedRoutesGenerator extends RoutesGenerator {
 
     // Generate dependency descriptors for all includes
     val includesDeps = rules
-      .collect {
-        case include: Include => include
+      .collect { case include: Include =>
+        include
       }
       .groupBy(_.router)
       .zipWithIndex
-      .map {
-        case ((router, includes), index) =>
-          router -> Dependency(
-            router.replace('.', '_') + "_" + index,
-            router,
-            includes.head)
+      .map { case ((router, includes), index) =>
+        router -> Dependency(
+          router.replace('.', '_') + "_" + index,
+          router,
+          includes.head)
       }
       .toMap
 
@@ -356,24 +353,23 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       additionalImports: Seq[String],
       routes: List[Route],
       namespaceReverseRouter: Boolean) = {
-    routes.groupBy(_.call.packageName).map {
-      case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
-        (packageName.replace(".", "/") + "/" + ReverseRoutesFile) ->
-          static.twirl
-            .reverseRouter(
-              sourceInfo,
-              namespace,
-              additionalImports,
-              packageName,
-              routes,
-              namespaceReverseRouter,
-              _ => true
-            )
-            .body
+    routes.groupBy(_.call.packageName).map { case (pn, routes) =>
+      val packageName = namespace
+        .filter(_ => namespaceReverseRouter)
+        .map(_ + "." + pn)
+        .getOrElse(pn)
+      (packageName.replace(".", "/") + "/" + ReverseRoutesFile) ->
+        static.twirl
+          .reverseRouter(
+            sourceInfo,
+            namespace,
+            additionalImports,
+            packageName,
+            routes,
+            namespaceReverseRouter,
+            _ => true
+          )
+          .body
     }
   }
 
@@ -383,25 +379,24 @@ object InjectedRoutesGenerator extends RoutesGenerator {
       additionalImports: Seq[String],
       routes: List[Route],
       namespaceReverseRouter: Boolean) = {
-    routes.groupBy(_.call.packageName).map {
-      case (pn, routes) =>
-        val packageName = namespace
-          .filter(_ => namespaceReverseRouter)
-          .map(_ + "." + pn)
-          .getOrElse(pn)
-        (packageName
-          .replace(".", "/") + "/javascript/" + JavaScriptReverseRoutesFile) ->
-          static.twirl
-            .javascriptReverseRouter(
-              sourceInfo,
-              namespace,
-              additionalImports,
-              packageName,
-              routes,
-              namespaceReverseRouter,
-              _ => true
-            )
-            .body
+    routes.groupBy(_.call.packageName).map { case (pn, routes) =>
+      val packageName = namespace
+        .filter(_ => namespaceReverseRouter)
+        .map(_ + "." + pn)
+        .getOrElse(pn)
+      (packageName
+        .replace(".", "/") + "/javascript/" + JavaScriptReverseRoutesFile) ->
+        static.twirl
+          .javascriptReverseRouter(
+            sourceInfo,
+            namespace,
+            additionalImports,
+            packageName,
+            routes,
+            namespaceReverseRouter,
+            _ => true
+          )
+          .body
     }
   }
 

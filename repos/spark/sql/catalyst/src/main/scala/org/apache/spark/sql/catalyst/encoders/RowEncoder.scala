@@ -142,24 +142,23 @@ object RowEncoder {
           dataType = t)
 
       case StructType(fields) =>
-        val convertedFields = fields.zipWithIndex.map {
-          case (f, i) =>
-            val method = if (f.dataType.isInstanceOf[StructType]) {
-              "getStruct"
-            } else {
-              "get"
-            }
-            If(
-              Invoke(inputObject, "isNullAt", BooleanType, Literal(i) :: Nil),
-              Literal.create(null, f.dataType),
-              extractorsFor(
-                Invoke(
-                  inputObject,
-                  method,
-                  externalDataTypeFor(f.dataType),
-                  Literal(i) :: Nil),
-                f.dataType)
-            )
+        val convertedFields = fields.zipWithIndex.map { case (f, i) =>
+          val method = if (f.dataType.isInstanceOf[StructType]) {
+            "getStruct"
+          } else {
+            "get"
+          }
+          If(
+            Invoke(inputObject, "isNullAt", BooleanType, Literal(i) :: Nil),
+            Literal.create(null, f.dataType),
+            extractorsFor(
+              Invoke(
+                inputObject,
+                method,
+                externalDataTypeFor(f.dataType),
+                Literal(i) :: Nil),
+              f.dataType)
+          )
         }
         If(
           IsNull(inputObject),
@@ -183,18 +182,17 @@ object RowEncoder {
     }
 
   private def constructorFor(schema: StructType): Expression = {
-    val fields = schema.zipWithIndex.map {
-      case (f, i) =>
-        val dt = f.dataType match {
-          case p: PythonUserDefinedType => p.sqlType
-          case other                    => other
-        }
-        val field = BoundReference(i, dt, f.nullable)
-        If(
-          IsNull(field),
-          Literal.create(null, externalDataTypeFor(dt)),
-          constructorFor(field)
-        )
+    val fields = schema.zipWithIndex.map { case (f, i) =>
+      val dt = f.dataType match {
+        case p: PythonUserDefinedType => p.sqlType
+        case other                    => other
+      }
+      val field = BoundReference(i, dt, f.nullable)
+      If(
+        IsNull(field),
+        Literal.create(null, externalDataTypeFor(dt)),
+        constructorFor(field)
+      )
     }
     CreateExternalRow(fields, schema)
   }
@@ -265,12 +263,11 @@ object RowEncoder {
           keyData :: valueData :: Nil)
 
       case schema @ StructType(fields) =>
-        val convertedFields = fields.zipWithIndex.map {
-          case (f, i) =>
-            If(
-              Invoke(input, "isNullAt", BooleanType, Literal(i) :: Nil),
-              Literal.create(null, externalDataTypeFor(f.dataType)),
-              constructorFor(GetStructField(input, i)))
+        val convertedFields = fields.zipWithIndex.map { case (f, i) =>
+          If(
+            Invoke(input, "isNullAt", BooleanType, Literal(i) :: Nil),
+            Literal.create(null, externalDataTypeFor(f.dataType)),
+            constructorFor(GetStructField(input, i)))
         }
         If(
           IsNull(input),

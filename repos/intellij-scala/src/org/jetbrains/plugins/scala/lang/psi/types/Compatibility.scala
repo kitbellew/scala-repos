@@ -701,16 +701,15 @@ object Compatibility {
 
         checkConformanceExt(
           checkNames = false,
-          parameters = parameters.map {
-            case param: PsiParameter =>
-              new Parameter(
-                "",
-                None,
-                substitutor.subst(param.exactParamType()),
-                false,
-                param.isVarArgs,
-                false,
-                -1)
+          parameters = parameters.map { case param: PsiParameter =>
+            new Parameter(
+              "",
+              None,
+              substitutor.subst(param.exactParamType()),
+              false,
+              param.isVarArgs,
+              false,
+              -1)
           },
           exprs = exprs,
           checkWithImplicits = checkWithImplicits,

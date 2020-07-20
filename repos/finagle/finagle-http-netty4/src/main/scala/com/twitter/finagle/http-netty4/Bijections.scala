@@ -83,9 +83,8 @@ private[http4] object Bijections {
 
         case _ =>
           val result = new NettyHttp.DefaultHttpHeaders()
-          h.foreach {
-            case (k, v) =>
-              result.add(k, v)
+          h.foreach { case (k, v) =>
+            result.add(k, v)
           }
           result
       }

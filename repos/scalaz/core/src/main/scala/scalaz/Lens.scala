@@ -327,18 +327,17 @@ trait LensFamilyFunctions {
     (A2, B2 \/ C2),
     ((A1, B1) \/ (A1, C1)),
     ((A2, B2) \/ (A2, C2))] =
-    lensFamily {
-      case (a, e) =>
-        IndexedStore(
-          {
-            case -\/((aa, bb)) => (aa, -\/(bb))
-            case \/-((aa, cc)) => (aa, \/-(cc))
-          },
-          e match {
-            case -\/(b) => -\/(a, b)
-            case \/-(c) => \/-(a, c)
+    lensFamily { case (a, e) =>
+      IndexedStore(
+        {
+          case -\/((aa, bb)) => (aa, -\/(bb))
+          case \/-((aa, cc)) => (aa, \/-(cc))
+        },
+        e match {
+          case -\/(b) => -\/(a, b)
+          case \/-(c) => \/-(a, c)
 
-          })
+        })
     }
 
 }
@@ -444,18 +443,17 @@ trait LensFunctions extends LensFamilyFunctions {
         }))
 
   def distributeLens[A, B, C]: (A, B \/ C) @> ((A, B) \/ (A, C)) =
-    lens {
-      case (a, e) =>
-        Store(
-          {
-            case -\/((aa, bb)) => (aa, -\/(bb))
-            case \/-((aa, cc)) => (aa, \/-(cc))
-          },
-          e match {
-            case -\/(b) => -\/(a, b)
-            case \/-(c) => \/-(a, c)
+    lens { case (a, e) =>
+      Store(
+        {
+          case -\/((aa, bb)) => (aa, -\/(bb))
+          case \/-((aa, cc)) => (aa, \/-(cc))
+        },
+        e match {
+          case -\/(b) => -\/(a, b)
+          case \/-(c) => \/-(a, c)
 
-          })
+        })
     }
 }
 

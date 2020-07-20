@@ -172,12 +172,12 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       *  - are an AnyRef specialization and `t2` is bound to a subtype of AnyRef
       */
     def includes(t1: TypeEnv, t2: TypeEnv) =
-      t1 forall {
-        case (sym, tpe) =>
-          t2 get sym exists { t2tp =>
-            (tpe == t2tp) || !(isPrimitiveValueType(
-              tpe) || isPrimitiveValueType(t2tp)) // u.t.b. (t2tp <:< AnyRefTpe)
-          }
+      t1 forall { case (sym, tpe) =>
+        t2 get sym exists { t2tp =>
+          (tpe == t2tp) || !(isPrimitiveValueType(tpe) || isPrimitiveValueType(
+            t2tp
+          )) // u.t.b. (t2tp <:< AnyRefTpe)
+        }
       }
 
     /** Reduce the given environment to contain mappings only for type variables in tps. */
@@ -189,12 +189,11 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       *  to a type for which `sym` is specialized.
       */
     def isValid(env: TypeEnv, sym: Symbol): Boolean = {
-      env forall {
-        case (tvar, tpe) =>
-          tvar.isSpecialized && (concreteTypes(tvar) contains tpe) && {
-            (sym.typeParams contains tvar) ||
-            (sym.owner != rootMirror.RootClass && (sym.owner.typeParams contains tvar))
-          }
+      env forall { case (tvar, tpe) =>
+        tvar.isSpecialized && (concreteTypes(tvar) contains tpe) && {
+          (sym.typeParams contains tvar) ||
+          (sym.owner != rootMirror.RootClass && (sym.owner.typeParams contains tvar))
+        }
       }
     }
   }
@@ -1026,11 +1025,10 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
 
   // concise printing of type env
   private def pp(env: TypeEnv): String = {
-    env.toList.sortBy(_._1.name) map {
-      case (k, v) =>
-        val vsym = v.typeSymbol
-        if (k == vsym) "" + k.name
-        else k.name + ":" + vsym.name
+    env.toList.sortBy(_._1.name) map { case (k, v) =>
+      val vsym = v.typeSymbol
+      if (k == vsym) "" + k.name
+      else k.name + ":" + vsym.name
 
     } mkString ("env(", ", ", ")")
   }
@@ -1418,11 +1416,10 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
     *  A conflicting type environment could still be satisfiable.
     */
   def nonConflicting(env: TypeEnv) =
-    env forall {
-      case (tvar, tpe) =>
-        (subst(env, tvar.info.bounds.lo) <:< tpe) && (tpe <:< subst(
-          env,
-          tvar.info.bounds.hi))
+    env forall { case (tvar, tpe) =>
+      (subst(env, tvar.info.bounds.lo) <:< tpe) && (tpe <:< subst(
+        env,
+        tvar.info.bounds.hi))
     }
 
   /** The type environment is sound w.r.t. to all type bounds or only soft
@@ -1441,24 +1438,21 @@ abstract class SpecializeTypes extends InfoTransform with TypingTransformers {
       || specializedTypeVars(t2).nonEmpty)
     }
 
-    env forall {
-      case (tvar, tpe) =>
-        matches(tvar.info.bounds.lo, tpe) && matches(
-          tpe,
-          tvar.info.bounds.hi) || {
-          if (warnings)
-            reporter.warning(
-              tvar.pos,
-              "Bounds prevent specialization of " + tvar)
+    env forall { case (tvar, tpe) =>
+      matches(tvar.info.bounds.lo, tpe) && matches(
+        tpe,
+        tvar.info.bounds.hi) || {
+        if (warnings)
+          reporter.warning(tvar.pos, "Bounds prevent specialization of " + tvar)
 
-          debuglog(
-            "specvars: " +
-              tvar.info.bounds.lo + ": " +
-              specializedTypeVars(tvar.info.bounds.lo) + " " +
-              subst(env, tvar.info.bounds.hi) + ": " +
-              specializedTypeVars(subst(env, tvar.info.bounds.hi)))
-          false
-        }
+        debuglog(
+          "specvars: " +
+            tvar.info.bounds.lo + ": " +
+            specializedTypeVars(tvar.info.bounds.lo) + " " +
+            subst(env, tvar.info.bounds.hi) + ": " +
+            specializedTypeVars(subst(env, tvar.info.bounds.hi)))
+        false
+      }
     }
   }
 

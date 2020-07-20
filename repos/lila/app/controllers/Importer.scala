@@ -35,10 +35,9 @@ object Importer extends LilaController {
                   mod = isGranted(_.Hunter),
                   system = false))
             } inject Redirect(routes.Round.watcher(game.id, "white"))
-          } recover {
-            case e =>
-              logger.branch("importer").warn("sendGame", e)
-              Redirect(routes.Importer.importGame)
+          } recover { case e =>
+            logger.branch("importer").warn("sendGame", e)
+            Redirect(routes.Importer.importGame)
           }
       )
     }

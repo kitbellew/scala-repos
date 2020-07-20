@@ -489,9 +489,8 @@ class TestHiveContext(sc: SparkContext) extends HiveContext(sc) {
       // Lots of tests fail if we do not change the partition whitelist from the default.
       runSqlHive("set hive.metastore.partition.name.whitelist.pattern=.*")
 
-      configure().foreach {
-        case (k, v) =>
-          metadataHive.runSqlHive(s"SET $k=$v")
+      configure().foreach { case (k, v) =>
+        metadataHive.runSqlHive(s"SET $k=$v")
       }
       defaultOverrides()
 

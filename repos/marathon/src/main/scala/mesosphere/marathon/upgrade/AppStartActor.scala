@@ -37,8 +37,8 @@ class AppStartActor(
           new AppStartCanceledException("The app start has been cancelled"))) {
         scheduler
           .stopApp(driver, app)
-          .onFailure {
-            case NonFatal(e) => log.error(s"while stopping app ${app.id}", e)
+          .onFailure { case NonFatal(e) =>
+            log.error(s"while stopping app ${app.id}", e)
           }(context.dispatcher)
       }
     }

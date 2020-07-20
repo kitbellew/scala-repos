@@ -384,11 +384,10 @@ abstract class KafkaShardIngestActor(
                 requestor ! IngestErrors(
                   List("Error(s) retrieving data from Kafka: " + error.message))
             }
-            .onFailure {
-              case t: Throwable =>
-                runningBatches.getAndDecrement
-                logger.error("Failure during remote message read", t);
-                requestor ! IngestData(Nil)
+            .onFailure { case t: Throwable =>
+              runningBatches.getAndDecrement
+              logger.error("Failure during remote message read", t);
+              requestor ! IngestData(Nil)
             }
         } else {
 

@@ -179,12 +179,11 @@ private[ml] object RFormulaParser extends RegexParsers {
     interaction ^^ { case terms => ColumnInteraction(terms) } | dot | columnRef
 
   private val terms: Parser[List[Term]] =
-    (term ~ rep("+" ~ term | "-" ~ term)) ^^ {
-      case op ~ list =>
-        list.foldLeft(List(op)) {
-          case (left, "+" ~ right) => left ++ Seq(right)
-          case (left, "-" ~ right) => left ++ Seq(Deletion(right))
-        }
+    (term ~ rep("+" ~ term | "-" ~ term)) ^^ { case op ~ list =>
+      list.foldLeft(List(op)) {
+        case (left, "+" ~ right) => left ++ Seq(right)
+        case (left, "-" ~ right) => left ++ Seq(Deletion(right))
+      }
     }
 
   private val formula: Parser[ParsedRFormula] =

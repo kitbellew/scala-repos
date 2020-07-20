@@ -385,36 +385,34 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
 
   private def fill0(values: Seq[(String, Any)]): DataFrame = {
     // Error handling
-    values.foreach {
-      case (colName, replaceValue) =>
-        // Check column name exists
-        df.resolve(colName)
+    values.foreach { case (colName, replaceValue) =>
+      // Check column name exists
+      df.resolve(colName)
 
-        // Check data type
-        replaceValue match {
-          case _: jl.Double | _: jl.Float | _: jl.Integer | _: jl.Long |
-              _: jl.Boolean | _: String =>
-          // This is good
-          case _ =>
-            throw new IllegalArgumentException(
-              s"Unsupported value type ${replaceValue.getClass.getName} ($replaceValue).")
-        }
+      // Check data type
+      replaceValue match {
+        case _: jl.Double | _: jl.Float | _: jl.Integer | _: jl.Long |
+            _: jl.Boolean | _: String =>
+        // This is good
+        case _ =>
+          throw new IllegalArgumentException(
+            s"Unsupported value type ${replaceValue.getClass.getName} ($replaceValue).")
+      }
     }
 
     val columnEquals = df.sqlContext.sessionState.analyzer.resolver
     val projections = df.schema.fields.map { f =>
       values
         .find { case (k, _) => columnEquals(k, f.name) }
-        .map {
-          case (_, v) =>
-            v match {
-              case v: jl.Float   => fillCol[Double](f, v.toDouble)
-              case v: jl.Double  => fillCol[Double](f, v)
-              case v: jl.Long    => fillCol[Double](f, v.toDouble)
-              case v: jl.Integer => fillCol[Double](f, v.toDouble)
-              case v: jl.Boolean => fillCol[Boolean](f, v.booleanValue())
-              case v: String     => fillCol[String](f, v)
-            }
+        .map { case (_, v) =>
+          v match {
+            case v: jl.Float   => fillCol[Double](f, v.toDouble)
+            case v: jl.Double  => fillCol[Double](f, v)
+            case v: jl.Long    => fillCol[Double](f, v.toDouble)
+            case v: jl.Integer => fillCol[Double](f, v.toDouble)
+            case v: jl.Boolean => fillCol[Boolean](f, v.booleanValue())
+            case v: String     => fillCol[String](f, v)
+          }
         }
         .getOrElse(df.col(f.name))
     }
@@ -448,9 +446,8 @@ final class DataFrameNaFunctions private[sql] (df: DataFrame) {
       replacementMap: Map[_, _]): Column = {
     val keyExpr = df.col(col.name).expr
     def buildExpr(v: Any) = Cast(Literal(v), keyExpr.dataType)
-    val branches = replacementMap.flatMap {
-      case (source, target) =>
-        Seq(buildExpr(source), buildExpr(target))
+    val branches = replacementMap.flatMap { case (source, target) =>
+      Seq(buildExpr(source), buildExpr(target))
     }.toSeq
     new Column(CaseKeyWhen(keyExpr, branches :+ keyExpr)).as(col.name)
   }

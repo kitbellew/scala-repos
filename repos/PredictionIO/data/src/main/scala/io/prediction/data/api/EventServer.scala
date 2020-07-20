@@ -387,40 +387,37 @@ class EventServiceActor(
                           }
 
                           parseTime
-                            .flatMap {
-                              case (startTime, untilTime) =>
-                                val data = eventClient
-                                  .futureFind(
-                                    appId = appId,
-                                    channelId = channelId,
-                                    startTime = startTime,
-                                    untilTime = untilTime,
-                                    entityType = entityType,
-                                    entityId = entityId,
-                                    eventNames = eventName.map(List(_)),
-                                    targetEntityType =
-                                      targetEntityType.map(Some(_)),
-                                    targetEntityId =
-                                      targetEntityId.map(Some(_)),
-                                    limit = limit.orElse(Some(20)),
-                                    reversed = reversed
-                                  )
-                                  .map { eventIter =>
-                                    if (eventIter.hasNext) {
-                                      (StatusCodes.OK, eventIter.toArray)
-                                    } else {
-                                      (
-                                        StatusCodes.NotFound,
-                                        Map("message" -> "Not Found"))
-                                    }
+                            .flatMap { case (startTime, untilTime) =>
+                              val data = eventClient
+                                .futureFind(
+                                  appId = appId,
+                                  channelId = channelId,
+                                  startTime = startTime,
+                                  untilTime = untilTime,
+                                  entityType = entityType,
+                                  entityId = entityId,
+                                  eventNames = eventName.map(List(_)),
+                                  targetEntityType =
+                                    targetEntityType.map(Some(_)),
+                                  targetEntityId = targetEntityId.map(Some(_)),
+                                  limit = limit.orElse(Some(20)),
+                                  reversed = reversed
+                                )
+                                .map { eventIter =>
+                                  if (eventIter.hasNext) {
+                                    (StatusCodes.OK, eventIter.toArray)
+                                  } else {
+                                    (
+                                      StatusCodes.NotFound,
+                                      Map("message" -> "Not Found"))
                                   }
-                                data
+                                }
+                              data
                             }
-                            .recover {
-                              case e: Exception =>
-                                (
-                                  StatusCodes.BadRequest,
-                                  Map("message" -> s"${e}"))
+                            .recover { case e: Exception =>
+                              (
+                                StatusCodes.BadRequest,
+                                Map("message" -> s"${e}"))
                             }
                         }
                       }
@@ -469,11 +466,10 @@ class EventServiceActor(
                           }
                           result
                         }
-                        .recover {
-                          case exception =>
-                            Map(
-                              "status" -> StatusCodes.InternalServerError.intValue,
-                              "message" -> s"${exception.getMessage()}")
+                        .recover { case exception =>
+                          Map(
+                            "status" -> StatusCodes.InternalServerError.intValue,
+                            "message" -> s"${exception.getMessage()}")
                         }
                       data
                     } else {

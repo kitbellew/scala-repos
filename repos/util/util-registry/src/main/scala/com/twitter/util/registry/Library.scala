@@ -29,9 +29,8 @@ object Library {
         log.warning(s"""Tried to register a second library named "$name"""")
         None
       case None =>
-        params.foreach {
-          case (key, value) =>
-            registry.put(prefix :+ key, value)
+        params.foreach { case (key, value) =>
+          registry.put(prefix :+ key, value)
         }
         Some(new Roster(prefix, params.keySet, log))
     }

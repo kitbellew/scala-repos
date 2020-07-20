@@ -41,10 +41,9 @@ class HttpEventStreamHandleActor(
 
   override def receive: Receive = waitForEvent
 
-  def waitForEvent: Receive = {
-    case event: MarathonEvent =>
-      outstanding = event :: outstanding
-      sendAllMessages()
+  def waitForEvent: Receive = { case event: MarathonEvent =>
+    outstanding = event :: outstanding
+    sendAllMessages()
   }
 
   def stashEvents: Receive =

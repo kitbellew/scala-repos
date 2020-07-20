@@ -79,9 +79,8 @@ object DeveloperApiExample {
       .transform(test.toDF())
       .select("features", "label", "prediction")
       .collect()
-      .map {
-        case Row(features: Vector, label: Double, prediction: Double) =>
-          prediction
+      .map { case Row(features: Vector, label: Double, prediction: Double) =>
+        prediction
       }
       .sum
     assert(

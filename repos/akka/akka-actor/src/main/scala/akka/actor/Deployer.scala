@@ -149,8 +149,8 @@ private[akka] class Deployer(
       .root
       .unwrapped
       .asScala
-      .collect {
-        case (key, value: String) ⇒ (key -> value)
+      .collect { case (key, value: String) ⇒
+        (key -> value)
       }
       .toMap
 

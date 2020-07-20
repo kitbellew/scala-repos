@@ -166,9 +166,8 @@ object DesktopIngestShardServer
     guiNotifier.foreach(_("Internal services started, bringing up Precog"))
 
     this.run(config) map {
-      _.onSuccess {
-        case (runningState, stoppable) =>
-          guiNotifier.foreach(_("Precog startup complete"))
+      _.onSuccess { case (runningState, stoppable) =>
+        guiNotifier.foreach(_("Precog startup complete"))
       }.map { _ => PrecogUnit }
     }
   }
@@ -191,9 +190,8 @@ object DesktopIngestShardServer
         .onComplete { _ =>
           logger.info("Platform shutdown complete")
         }
-        .onFailure {
-          case t: Throwable =>
-            logger.error("Failure during platform shutdown", t)
+        .onFailure { case t: Throwable =>
+          logger.error("Failure during platform shutdown", t)
         }
     }
 

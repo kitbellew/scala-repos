@@ -13,23 +13,22 @@ class InetAddressDnsResolver(cache: SimpleDnsCache, config: Config)
   val positiveTtl = config.getDuration("positive-ttl", TimeUnit.MILLISECONDS)
   val negativeTtl = config.getDuration("negative-ttl", TimeUnit.MILLISECONDS)
 
-  override def receive = {
-    case Dns.Resolve(name) ⇒
-      val answer = cache.cached(name) match {
-        case Some(a) ⇒ a
-        case None ⇒
-          try {
-            val answer = Dns.Resolved(name, InetAddress.getAllByName(name))
-            cache.put(answer, positiveTtl)
+  override def receive = { case Dns.Resolve(name) ⇒
+    val answer = cache.cached(name) match {
+      case Some(a) ⇒ a
+      case None ⇒
+        try {
+          val answer = Dns.Resolved(name, InetAddress.getAllByName(name))
+          cache.put(answer, positiveTtl)
+          answer
+        } catch {
+          case e: UnknownHostException ⇒
+            val answer =
+              Dns.Resolved(name, immutable.Seq.empty, immutable.Seq.empty)
+            cache.put(answer, negativeTtl)
             answer
-          } catch {
-            case e: UnknownHostException ⇒
-              val answer =
-                Dns.Resolved(name, immutable.Seq.empty, immutable.Seq.empty)
-              cache.put(answer, negativeTtl)
-              answer
-          }
-      }
-      sender() ! answer
+        }
+    }
+    sender() ! answer
   }
 }

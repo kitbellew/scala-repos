@@ -823,18 +823,16 @@ class ClusterSingletonManager(
       stay
   }
 
-  onTransition {
-    case from -> to ⇒
-      logInfo("ClusterSingletonManager state change [{} -> {}]", from, to)
+  onTransition { case from -> to ⇒
+    logInfo("ClusterSingletonManager state change [{} -> {}]", from, to)
   }
 
-  onTransition {
-    case _ -> BecomingOldest ⇒
-      setTimer(
-        HandOverRetryTimer,
-        HandOverRetry(1),
-        handOverRetryInterval,
-        repeat = false)
+  onTransition { case _ -> BecomingOldest ⇒
+    setTimer(
+      HandOverRetryTimer,
+      HandOverRetry(1),
+      handOverRetryInterval,
+      repeat = false)
   }
 
   onTransition {

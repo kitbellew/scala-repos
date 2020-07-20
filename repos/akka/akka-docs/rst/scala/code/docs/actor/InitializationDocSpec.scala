@@ -9,8 +9,7 @@ import akka.testkit.{ImplicitSender, AkkaSpec}
 object InitializationDocSpec {
 
   class PreStartInitExample extends Actor {
-    override def receive = {
-      case _ => // Ignore
+    override def receive = { case _ => // Ignore
     }
 
     //#preStartInit
@@ -36,10 +35,9 @@ object InitializationDocSpec {
     //#messageInit
     var initializeMe: Option[String] = None
 
-    override def receive = {
-      case "init" =>
-        initializeMe = Some("Up and running")
-        context.become(initialized, discardOld = true)
+    override def receive = { case "init" =>
+      initializeMe = Some("Up and running")
+      context.become(initialized, discardOld = true)
 
     }
 

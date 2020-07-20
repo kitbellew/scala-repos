@@ -149,15 +149,14 @@ object AtLeastOnceDeliverySpec {
 
     var allReceived = Set.empty[Long]
 
-    def receive = {
-      case a @ Action(id, payload) ⇒
-        // discard duplicates (naive impl)
-        if (!allReceived.contains(id)) {
-          log.debug("Destination got {}, all count {}", a, allReceived.size + 1)
-          testActor ! a
-          allReceived += id
-        }
-        sender() ! ActionAck(id)
+    def receive = { case a @ Action(id, payload) ⇒
+      // discard duplicates (naive impl)
+      if (!allReceived.contains(id)) {
+        log.debug("Destination got {}, all count {}", a, allReceived.size + 1)
+        testActor ! a
+        allReceived += id
+      }
+      sender() ! ActionAck(id)
     }
   }
 
@@ -168,15 +167,14 @@ object AtLeastOnceDeliverySpec {
       extends Actor
       with ActorLogging {
     var count = 0
-    def receive = {
-      case msg ⇒
-        count += 1
-        if (count % dropMod != 0) {
-          log.debug("Pass msg {} count {}", msg, count)
-          target forward msg
-        } else {
-          log.debug("Drop msg {} count {}", msg, count)
-        }
+    def receive = { case msg ⇒
+      count += 1
+      if (count % dropMod != 0) {
+        log.debug("Pass msg {} count {}", msg, count)
+        target forward msg
+      } else {
+        log.debug("Drop msg {} count {}", msg, count)
+      }
     }
   }
 
@@ -185,11 +183,10 @@ object AtLeastOnceDeliverySpec {
       with AtLeastOnceDelivery {
     override def persistenceId = name
 
-    override def receiveCommand = {
-      case any ⇒
-        // this is not supported currently, so expecting exception
-        try deliver(context.actorSelection("*"))(id ⇒ s"$any$id")
-        catch { case ex: Exception ⇒ sender() ! Failure(ex) }
+    override def receiveCommand = { case any ⇒
+      // this is not supported currently, so expecting exception
+      try deliver(context.actorSelection("*"))(id ⇒ s"$any$id")
+      catch { case ex: Exception ⇒ sender() ! Failure(ex) }
     }
 
     override def receiveRecover = Actor.emptyBehavior
@@ -430,8 +427,8 @@ abstract class AtLeastOnceDeliverySpec(config: Config)
       probe.expectMsg(ReqAck)
       probe.expectMsg(ReqAck)
       val unconfirmed = probe
-        .receiveWhile(5.seconds) {
-          case UnconfirmedWarning(unconfirmed) ⇒ unconfirmed
+        .receiveWhile(5.seconds) { case UnconfirmedWarning(unconfirmed) ⇒
+          unconfirmed
         }
         .flatten
       unconfirmed.map(_.destination).toSet should ===(

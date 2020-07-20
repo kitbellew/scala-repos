@@ -14,30 +14,28 @@ private final class AggregationPipeline {
 
   private lazy val movetimeIdDispatcher =
     MovetimeRange.reversedNoInf.foldLeft[BSONValue](
-      BSONInteger(MovetimeRange.MTRInf.id)) {
-      case (acc, mtr) =>
-        BSONDocument(
-          "$cond" -> BSONArray(
-            BSONDocument(
-              "$lte" -> BSONArray("$" + F.moves("t"), mtr.tenths.last)),
-            mtr.id,
-            acc))
+      BSONInteger(MovetimeRange.MTRInf.id)) { case (acc, mtr) =>
+      BSONDocument(
+        "$cond" -> BSONArray(
+          BSONDocument(
+            "$lte" -> BSONArray("$" + F.moves("t"), mtr.tenths.last)),
+          mtr.id,
+          acc))
     }
   private lazy val materialIdDispatcher = BSONDocument(
     "$cond" -> BSONArray(
       BSONDocument("$eq" -> BSONArray("$" + F.moves("i"), 0)),
       MaterialRange.Equal.id,
       MaterialRange.reversedButEqualAndLast.foldLeft[BSONValue](
-        BSONInteger(MaterialRange.Up4.id)) {
-        case (acc, mat) =>
-          BSONDocument(
-            "$cond" -> BSONArray(
-              BSONDocument(
-                mat.negative.fold("$lt", "$lte") -> BSONArray(
-                  "$" + F.moves("i"),
-                  mat.imbalance)),
-              mat.id,
-              acc))
+        BSONInteger(MaterialRange.Up4.id)) { case (acc, mat) =>
+        BSONDocument(
+          "$cond" -> BSONArray(
+            BSONDocument(
+              mat.negative.fold("$lt", "$lte") -> BSONArray(
+                "$" + F.moves("i"),
+                mat.imbalance)),
+            mat.id,
+            acc))
       }
     ))
   private def dimensionGroupId(dim: Dimension[_]): BSONValue =

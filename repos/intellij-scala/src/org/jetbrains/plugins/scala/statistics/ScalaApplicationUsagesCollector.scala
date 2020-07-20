@@ -46,9 +46,8 @@ class ScalaApplicationUsagesCollector
         }
       }
 
-      scala_version.foreach {
-        case version: String =>
-          set += new UsageDescriptor(s"Scala: $version", 1)
+      scala_version.foreach { case version: String =>
+        set += new UsageDescriptor(s"Scala: $version", 1)
       }
 
       def checkLibrary(qual: String, library: String) {
@@ -103,9 +102,8 @@ class ScalaApplicationUsagesCollector
         checkLibrary("spray", "Spray")
         checkLibrary("monocle", "Monocle")
 
-        java_version.foreach {
-          case version: String =>
-            set += new UsageDescriptor(s"Java version: $version", 1)
+        java_version.foreach { case version: String =>
+          set += new UsageDescriptor(s"Java version: $version", 1)
         }
       } else {
         checkLibrary("play.api.mvc", s"Play2 for Java|$isPlayInstalled")

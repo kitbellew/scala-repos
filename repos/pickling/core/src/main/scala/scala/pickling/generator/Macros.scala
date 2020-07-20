@@ -82,9 +82,8 @@ private[pickling] trait PicklingMacros
       checkClassType(tpe)
       val sym = symbols.newClass(tpe)
       val impl = PicklingAlgorithm.run(generator)(sym, logger)
-      val tree2 = impl map {
-        case PickleUnpickleImplementation(alg2, alg) =>
-          generatePicklerClass[T](alg2)
+      val tree2 = impl map { case PickleUnpickleImplementation(alg2, alg) =>
+        generatePicklerClass[T](alg2)
       }
       tree2 match {
         case None =>
@@ -101,9 +100,8 @@ private[pickling] trait PicklingMacros
       checkClassType(tpe)
       val sym = symbols.newClass(tpe)
       val impl = PicklingAlgorithm.run(generator)(sym, logger)
-      val tree2 = impl map {
-        case PickleUnpickleImplementation(alg2, alg) =>
-          generateUnpicklerClass[T](alg)
+      val tree2 = impl map { case PickleUnpickleImplementation(alg2, alg) =>
+        generateUnpicklerClass[T](alg)
       }
       tree2 match {
         case None =>

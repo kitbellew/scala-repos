@@ -1008,9 +1008,8 @@ object getDummyBlocks {
       .map(_.asInstanceOf[ScInterpolatedStringLiteral])
       .flatMap(literal =>
         alignmentsMap
-          .find {
-            case (pointer, _) =>
-              pointer.getElement == literal
+          .find { case (pointer, _) =>
+            pointer.getElement == literal
           }
           .map(_._2))
       .getOrElse(Alignment.createAlignment(true))

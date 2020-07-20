@@ -189,11 +189,10 @@ abstract class ProductNodeShape[Level <: ShapeLevel, C, M <: C, U <: C, P <: C]
       shapes.map(_.packedShape.asInstanceOf[Shape[_ <: ShapeLevel, _, _, _]]))
       .asInstanceOf[Shape[Level, Packed, Unpacked, Packed]]
   def buildParams(extract: Any => Unpacked): Packed = {
-    val elems = shapes.iterator.zipWithIndex.map {
-      case (p, idx) =>
-        def chExtract(u: C): p.Unpacked =
-          getElement(u, idx).asInstanceOf[p.Unpacked]
-        p.buildParams(extract.andThen(chExtract))
+    val elems = shapes.iterator.zipWithIndex.map { case (p, idx) =>
+      def chExtract(u: C): p.Unpacked =
+        getElement(u, idx).asInstanceOf[p.Unpacked]
+      p.buildParams(extract.andThen(chExtract))
     }
     buildValue(elems.toIndexedSeq).asInstanceOf[Packed]
   }

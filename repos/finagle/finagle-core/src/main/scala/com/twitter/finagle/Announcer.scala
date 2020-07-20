@@ -29,9 +29,8 @@ class MultipleAnnouncersPerSchemeException(
     announcers: Map[String, Seq[Announcer]])
     extends NoStacktrace {
   override def getMessage = {
-    val msgs = announcers map {
-      case (scheme, rs) =>
-        "%s=(%s)".format(scheme, rs.map(_.getClass.getName).mkString(", "))
+    val msgs = announcers map { case (scheme, rs) =>
+      "%s=(%s)".format(scheme, rs.map(_.getClass.getName).mkString(", "))
     } mkString (" ")
     "Multiple announcers defined: %s".format(msgs)
   }

@@ -75,15 +75,45 @@ class DataSourceWithHiveMetastoreCatalogSuite
       "org.apache.hadoop.hive.ql.io.orc.OrcOutputFormat",
       "org.apache.hadoop.hive.ql.io.orc.OrcSerde"
     )
-  ).foreach {
-    case (provider, (inputFormat, outputFormat, serde)) =>
-      test(
-        s"Persist non-partitioned $provider relation into metastore as managed table") {
+  ).foreach { case (provider, (inputFormat, outputFormat, serde)) =>
+    test(
+      s"Persist non-partitioned $provider relation into metastore as managed table") {
+      withTable("t") {
+        withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") {
+          testDF.write
+            .mode(SaveMode.Overwrite)
+            .format(provider)
+            .saveAsTable("t")
+        }
+
+        val hiveTable = sessionState.catalog.client.getTable("default", "t")
+        assert(hiveTable.storage.inputFormat === Some(inputFormat))
+        assert(hiveTable.storage.outputFormat === Some(outputFormat))
+        assert(hiveTable.storage.serde === Some(serde))
+
+        assert(hiveTable.partitionColumns.isEmpty)
+        assert(hiveTable.tableType === CatalogTableType.MANAGED_TABLE)
+
+        val columns = hiveTable.schema
+        assert(columns.map(_.name) === Seq("d1", "d2"))
+        assert(columns.map(_.dataType) === Seq("decimal(10,3)", "string"))
+
+        checkAnswer(table("t"), testDF)
+        assert(runSqlHive("SELECT * FROM t") === Seq("1.1\t1", "2.1\t2"))
+      }
+    }
+
+    test(
+      s"Persist non-partitioned $provider relation into metastore as external table") {
+      withTempPath { dir =>
         withTable("t") {
+          val path = dir.getCanonicalFile
+
           withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") {
             testDF.write
               .mode(SaveMode.Overwrite)
               .format(provider)
+              .option("path", path.toString)
               .saveAsTable("t")
           }
 
@@ -92,8 +122,10 @@ class DataSourceWithHiveMetastoreCatalogSuite
           assert(hiveTable.storage.outputFormat === Some(outputFormat))
           assert(hiveTable.storage.serde === Some(serde))
 
-          assert(hiveTable.partitionColumns.isEmpty)
-          assert(hiveTable.tableType === CatalogTableType.MANAGED_TABLE)
+          assert(hiveTable.tableType === CatalogTableType.EXTERNAL_TABLE)
+          assert(
+            hiveTable.storage.locationUri ===
+              Some(path.toURI.toString.stripSuffix(File.separator)))
 
           val columns = hiveTable.schema
           assert(columns.map(_.name) === Seq("d1", "d2"))
@@ -103,68 +135,35 @@ class DataSourceWithHiveMetastoreCatalogSuite
           assert(runSqlHive("SELECT * FROM t") === Seq("1.1\t1", "2.1\t2"))
         }
       }
+    }
 
-      test(
-        s"Persist non-partitioned $provider relation into metastore as external table") {
-        withTempPath { dir =>
-          withTable("t") {
-            val path = dir.getCanonicalFile
+    test(
+      s"Persist non-partitioned $provider relation into metastore as managed table using CTAS") {
+      withTempPath { dir =>
+        withTable("t") {
+          val path = dir.getCanonicalPath
 
-            withSQLConf(SQLConf.PARQUET_WRITE_LEGACY_FORMAT.key -> "true") {
-              testDF.write
-                .mode(SaveMode.Overwrite)
-                .format(provider)
-                .option("path", path.toString)
-                .saveAsTable("t")
-            }
-
-            val hiveTable = sessionState.catalog.client.getTable("default", "t")
-            assert(hiveTable.storage.inputFormat === Some(inputFormat))
-            assert(hiveTable.storage.outputFormat === Some(outputFormat))
-            assert(hiveTable.storage.serde === Some(serde))
-
-            assert(hiveTable.tableType === CatalogTableType.EXTERNAL_TABLE)
-            assert(
-              hiveTable.storage.locationUri ===
-                Some(path.toURI.toString.stripSuffix(File.separator)))
-
-            val columns = hiveTable.schema
-            assert(columns.map(_.name) === Seq("d1", "d2"))
-            assert(columns.map(_.dataType) === Seq("decimal(10,3)", "string"))
-
-            checkAnswer(table("t"), testDF)
-            assert(runSqlHive("SELECT * FROM t") === Seq("1.1\t1", "2.1\t2"))
-          }
-        }
-      }
-
-      test(
-        s"Persist non-partitioned $provider relation into metastore as managed table using CTAS") {
-        withTempPath { dir =>
-          withTable("t") {
-            val path = dir.getCanonicalPath
-
-            sql(s"""CREATE TABLE t USING $provider
+          sql(s"""CREATE TABLE t USING $provider
                |OPTIONS (path '$path')
                |AS SELECT 1 AS d1, "val_1" AS d2
              """.stripMargin)
 
-            val hiveTable = sessionState.catalog.client.getTable("default", "t")
-            assert(hiveTable.storage.inputFormat === Some(inputFormat))
-            assert(hiveTable.storage.outputFormat === Some(outputFormat))
-            assert(hiveTable.storage.serde === Some(serde))
+          val hiveTable = sessionState.catalog.client.getTable("default", "t")
+          assert(hiveTable.storage.inputFormat === Some(inputFormat))
+          assert(hiveTable.storage.outputFormat === Some(outputFormat))
+          assert(hiveTable.storage.serde === Some(serde))
 
-            assert(hiveTable.partitionColumns.isEmpty)
-            assert(hiveTable.tableType === CatalogTableType.EXTERNAL_TABLE)
+          assert(hiveTable.partitionColumns.isEmpty)
+          assert(hiveTable.tableType === CatalogTableType.EXTERNAL_TABLE)
 
-            val columns = hiveTable.schema
-            assert(columns.map(_.name) === Seq("d1", "d2"))
-            assert(columns.map(_.dataType) === Seq("int", "string"))
+          val columns = hiveTable.schema
+          assert(columns.map(_.name) === Seq("d1", "d2"))
+          assert(columns.map(_.dataType) === Seq("int", "string"))
 
-            checkAnswer(table("t"), Row(1, "val_1"))
-            assert(runSqlHive("SELECT * FROM t") === Seq("1\tval_1"))
-          }
+          checkAnswer(table("t"), Row(1, "val_1"))
+          assert(runSqlHive("SELECT * FROM t") === Seq("1\tval_1"))
         }
       }
+    }
   }
 }

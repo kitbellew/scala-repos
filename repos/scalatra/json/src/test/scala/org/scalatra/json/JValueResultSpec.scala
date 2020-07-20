@@ -12,12 +12,11 @@ class Bottle(val of: String)
 class BottleSerializer
     extends CustomSerializer[Bottle](implicit formats =>
       (
-        {
-          case json: JValue =>
-            val b = for {
-              of <- (json \ "of").extractOpt[String]
-            } yield (new Bottle(of))
-            b.get
+        { case json: JValue =>
+          val b = for {
+            of <- (json \ "of").extractOpt[String]
+          } yield (new Bottle(of))
+          b.get
         },
         {
           case a: Bottle => JObject(JField("of", JString(a.of)))
@@ -91,9 +90,8 @@ class JValueResultSpec extends MutableScalatraSpec {
         Map("rum" -> new Bottle("rum"), "thing" -> NamedThing())
       }
 
-      error {
-        case t: Throwable =>
-          t.printStackTrace()
+      error { case t: Throwable =>
+        t.printStackTrace()
       }
     },
     "/*"

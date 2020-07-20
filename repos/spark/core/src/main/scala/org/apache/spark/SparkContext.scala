@@ -1040,13 +1040,12 @@ class SparkContext(config: SparkConf)
         classOf[LongWritable],
         classOf[BytesWritable],
         conf = conf)
-      val data = br.map {
-        case (k, v) =>
-          val bytes = v.getBytes
-          assert(
-            bytes.length == recordLength,
-            "Byte array does not have correct length")
-          bytes
+      val data = br.map { case (k, v) =>
+        val bytes = v.getBytes
+        assert(
+          bytes.length == recordLength,
+          "Byte array does not have correct length")
+        bytes
       }
       data
     }
@@ -1656,9 +1655,8 @@ class SparkContext(config: SparkConf)
     */
   def getExecutorMemoryStatus: Map[String, (Long, Long)] = {
     assertNotStopped()
-    env.blockManager.master.getMemoryStatus.map {
-      case (blockManagerId, mem) =>
-        (blockManagerId.host + ":" + blockManagerId.port, mem)
+    env.blockManager.master.getMemoryStatus.map { case (blockManagerId, mem) =>
+      (blockManagerId.host + ":" + blockManagerId.port, mem)
     }
   }
 

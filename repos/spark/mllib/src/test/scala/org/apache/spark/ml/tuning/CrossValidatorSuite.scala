@@ -334,14 +334,12 @@ object CrossValidatorSuite extends SparkFunSuite {
       pMaps: Array[ParamMap],
       pMaps2: Array[ParamMap]): Unit = {
     assert(pMaps.length === pMaps2.length)
-    pMaps.zip(pMaps2).foreach {
-      case (pMap, pMap2) =>
-        assert(pMap.size === pMap2.size)
-        pMap.toSeq.foreach {
-          case ParamPair(p, v) =>
-            assert(pMap2.contains(p))
-            assert(pMap2(p) === v)
-        }
+    pMaps.zip(pMaps2).foreach { case (pMap, pMap2) =>
+      assert(pMap.size === pMap2.size)
+      pMap.toSeq.foreach { case ParamPair(p, v) =>
+        assert(pMap2.contains(p))
+        assert(pMap2(p) === v)
+      }
     }
   }
 

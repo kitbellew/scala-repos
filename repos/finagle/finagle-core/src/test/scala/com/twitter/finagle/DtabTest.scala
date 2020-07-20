@@ -55,9 +55,8 @@ class DtabTest extends FunSuite with AssertionsForJUnit {
     b += Dentry.read("/c => /d")
     val dtab = b.result
 
-    val dtab1: Dtab = dtab map {
-      case Dentry(a, b) =>
-        Dentry.read("%s=>%s".format(a.show.toUpperCase, b.show.toUpperCase))
+    val dtab1: Dtab = dtab map { case Dentry(a, b) =>
+      Dentry.read("%s=>%s".format(a.show.toUpperCase, b.show.toUpperCase))
     }
 
     assert(dtab1.size == 2)

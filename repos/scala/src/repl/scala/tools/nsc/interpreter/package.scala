@@ -98,44 +98,41 @@ package object interpreter extends ReplConfig with ReplStrings {
       if (filtered.isEmpty)
         return "No implicits have been imported other than those in Predef."
 
-      filtered foreach {
-        case (source, syms) =>
-          p("/* " + syms.size + " implicit members imported from " + source.fullName + " */")
+      filtered foreach { case (source, syms) =>
+        p("/* " + syms.size + " implicit members imported from " + source.fullName + " */")
 
-          // This groups the members by where the symbol is defined
-          val byOwner = syms groupBy (_.owner)
-          val sortedOwners = byOwner.toList sortBy {
-            case (owner, _) =>
-              exitingTyper(source.info.baseClasses indexOf owner)
+        // This groups the members by where the symbol is defined
+        val byOwner = syms groupBy (_.owner)
+        val sortedOwners = byOwner.toList sortBy {
+          case (owner, _) => exitingTyper(source.info.baseClasses indexOf owner)
+        }
+
+        sortedOwners foreach { case (owner, members) =>
+          // Within each owner, we cluster results based on the final result type
+          // if there are more than a couple, and sort each cluster based on name.
+          // This is really just trying to make the 100 or so implicits imported
+          // by default into something readable.
+          val memberGroups: List[List[Symbol]] = {
+            val groups = members groupBy (_.tpe.finalResultType) toList
+            val (big, small) = groups partition (_._2.size > 3)
+            val xss = (
+              (big sortBy (_._1.toString) map (_._2)) :+
+                (small flatMap (_._2))
+            )
+
+            xss map (xs => xs sortBy (_.name.toString))
           }
 
-          sortedOwners foreach {
-            case (owner, members) =>
-              // Within each owner, we cluster results based on the final result type
-              // if there are more than a couple, and sort each cluster based on name.
-              // This is really just trying to make the 100 or so implicits imported
-              // by default into something readable.
-              val memberGroups: List[List[Symbol]] = {
-                val groups = members groupBy (_.tpe.finalResultType) toList
-                val (big, small) = groups partition (_._2.size > 3)
-                val xss = (
-                  (big sortBy (_._1.toString) map (_._2)) :+
-                    (small flatMap (_._2))
-                )
+          val ownerMessage =
+            if (owner == source) " defined in " else " inherited from "
+          p("  /* " + members.size + ownerMessage + owner.fullName + " */")
 
-                xss map (xs => xs sortBy (_.name.toString))
-              }
-
-              val ownerMessage =
-                if (owner == source) " defined in " else " inherited from "
-              p("  /* " + members.size + ownerMessage + owner.fullName + " */")
-
-              memberGroups foreach { group =>
-                group foreach (s => p("  " + intp.symbolDefString(s)))
-                p("")
-              }
+          memberGroups foreach { group =>
+            group foreach (s => p("  " + intp.symbolDefString(s)))
+            p("")
           }
-          p("")
+        }
+        p("")
       }
       ""
     }

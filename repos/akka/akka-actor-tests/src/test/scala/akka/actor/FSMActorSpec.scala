@@ -84,10 +84,9 @@ object FSMActorSpec {
       // dummy
     }
 
-    onTermination {
-      case StopEvent(FSM.Shutdown, Locked, _) ⇒
-        // stop is called from lockstate with shutdown as reason...
-        terminatedLatch.open()
+    onTermination { case StopEvent(FSM.Shutdown, Locked, _) ⇒
+      // stop is called from lockstate with shutdown as reason...
+      terminatedLatch.open()
     }
 
     // initialize the lock
@@ -232,10 +231,9 @@ class FSMActorSpec
         when("started", stateTimeout = 10 seconds) {
           case Event("stop", _) ⇒ stop()
         }
-        onTransition {
-          case "not-started" -> "started" ⇒
-            for (timerName ← timerNames)
-              setTimer(timerName, (), 10 seconds, false)
+        onTransition { case "not-started" -> "started" ⇒
+          for (timerName ← timerNames)
+            setTimer(timerName, (), 10 seconds, false)
         }
         onTermination {
           case _ ⇒ {
@@ -275,15 +273,13 @@ class FSMActorSpec
           EventFilter.debug(occurrences = 5) intercept {
             val fsm = TestActorRef(new Actor with LoggingFSM[Int, Null] {
               startWith(1, null)
-              when(1) {
-                case Event("go", _) ⇒
-                  setTimer("t", FSM.Shutdown, 1.5 seconds, false)
-                  goto(2)
+              when(1) { case Event("go", _) ⇒
+                setTimer("t", FSM.Shutdown, 1.5 seconds, false)
+                goto(2)
               }
-              when(2) {
-                case Event("stop", _) ⇒
-                  cancelTimer("t")
-                  stop
+              when(2) { case Event("stop", _) ⇒
+                cancelTimer("t")
+                stop
               }
               onTermination {
                 case StopEvent(r, _, _) ⇒ testActor ! r

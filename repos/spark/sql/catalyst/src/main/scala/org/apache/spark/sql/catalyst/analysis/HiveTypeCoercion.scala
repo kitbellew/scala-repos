@@ -192,19 +192,18 @@ object HiveTypeCoercion {
 
         case q: LogicalPlan =>
           val inputMap = q.inputSet.toSeq.map(a => (a.exprId, a)).toMap
-          q transformExpressions {
-            case a: AttributeReference =>
-              inputMap.get(a.exprId) match {
-                // This can happen when a Attribute reference is born in a non-leaf node, for example
-                // due to a call to an external script like in the Transform operator.
-                // TODO: Perhaps those should actually be aliases?
-                case None => a
-                // Leave the same if the dataTypes match.
-                case Some(newType) if a.dataType == newType.dataType => a
-                case Some(newType) =>
-                  logDebug(s"Promoting $a to $newType in ${q.simpleString}")
-                  newType
-              }
+          q transformExpressions { case a: AttributeReference =>
+            inputMap.get(a.exprId) match {
+              // This can happen when a Attribute reference is born in a non-leaf node, for example
+              // due to a call to an external script like in the Transform operator.
+              // TODO: Perhaps those should actually be aliases?
+              case None => a
+              // Leave the same if the dataTypes match.
+              case Some(newType) if a.dataType == newType.dataType => a
+              case Some(newType) =>
+                logDebug(s"Promoting $a to $newType in ${q.simpleString}")
+                newType
+            }
           }
       }
   }
@@ -591,14 +590,13 @@ object HiveTypeCoercion {
           maybeCommonType
             .map { commonType =>
               var changed = false
-              val newBranches = c.branches.map {
-                case (condition, value) =>
-                  if (value.dataType.sameType(commonType)) {
-                    (condition, value)
-                  } else {
-                    changed = true
-                    (condition, Cast(value, commonType))
-                  }
+              val newBranches = c.branches.map { case (condition, value) =>
+                if (value.dataType.sameType(commonType)) {
+                  (condition, value)
+                } else {
+                  changed = true
+                  (condition, Cast(value, commonType))
+                }
               }
               val newElseValue = c.elseValue.map { value =>
                 if (value.dataType.sameType(commonType)) {
@@ -696,24 +694,24 @@ object HiveTypeCoercion {
             .getOrElse(b) // If there is no applicable conversion, leave expression unchanged.
 
         case e: ImplicitCastInputTypes if e.inputTypes.nonEmpty =>
-          val children: Seq[Expression] = e.children.zip(e.inputTypes).map {
-            case (in, expected) =>
+          val children: Seq[Expression] =
+            e.children.zip(e.inputTypes).map { case (in, expected) =>
               // If we cannot do the implicit cast, just use the original input.
               implicitCast(in, expected).getOrElse(in)
-          }
+            }
           e.withNewChildren(children)
 
         case e: ExpectsInputTypes if e.inputTypes.nonEmpty =>
           // Convert NullType into some specific target type for ExpectsInputTypes that don't do
           // general implicit casting.
-          val children: Seq[Expression] = e.children.zip(e.inputTypes).map {
-            case (in, expected) =>
+          val children: Seq[Expression] =
+            e.children.zip(e.inputTypes).map { case (in, expected) =>
               if (in.dataType == NullType && !expected.acceptsType(NullType)) {
                 Literal.create(null, expected.defaultConcreteType)
               } else {
                 in
               }
-          }
+            }
           e.withNewChildren(children)
       }
 

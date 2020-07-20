@@ -43,8 +43,8 @@ case class Form[T](
     */
   val constraints: Map[String, Seq[(String, Seq[Any])]] = mapping.mappings
     .map { m =>
-      m.key -> m.constraints.collect {
-        case Constraint(Some(name), args) => name -> args
+      m.key -> m.constraints.collect { case Constraint(Some(name), args) =>
+        name -> args
       }
     }
     .filterNot(_._2.isEmpty)
@@ -57,8 +57,8 @@ case class Form[T](
     .map { m =>
       m.key -> m.format
     }
-    .collect {
-      case (k, Some(f)) => k -> f
+    .collect { case (k, Some(f)) =>
+      k -> f
     }
     .toMap
 
@@ -431,14 +431,13 @@ private[data] object FormUtils {
     js match {
       case JsObject(fields) => {
         fields
-          .map {
-            case (key, value) =>
-              fromJson(
-                Option(prefix)
-                  .filterNot(_.isEmpty)
-                  .map(_ + ".")
-                  .getOrElse("") + key,
-                value)
+          .map { case (key, value) =>
+            fromJson(
+              Option(prefix)
+                .filterNot(_.isEmpty)
+                .map(_ + ".")
+                .getOrElse("") + key,
+              value)
           }
           .foldLeft(Map.empty[String, String])(_ ++ _)
       }
@@ -629,8 +628,8 @@ trait Mapping[T] {
   protected def collectErrors(t: T): Seq[FormError] = {
     constraints
       .map(_(t))
-      .collect {
-        case Invalid(errors) => errors.toSeq
+      .collect { case Invalid(errors) =>
+        errors.toSeq
       }
       .flatten
       .map(ve => FormError(key, ve.messages, ve.args))
@@ -823,9 +822,8 @@ case class RepeatedMapping[T](
     */
   def unbindAndValidate(
       value: List[T]): (Map[String, String], Seq[FormError]) = {
-    val (datas, errors) = value.zipWithIndex.map {
-      case (t, i) =>
-        wrapped.withPrefix(key + "[" + i + "]").unbindAndValidate(t)
+    val (datas, errors) = value.zipWithIndex.map { case (t, i) =>
+      wrapped.withPrefix(key + "[" + i + "]").unbindAndValidate(t)
     }.unzip
     (
       datas.foldLeft(Map.empty[String, String])(_ ++ _),

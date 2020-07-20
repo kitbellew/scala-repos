@@ -179,13 +179,12 @@ object ClassPathImplComparator {
 
   private def checkExistenceOfClasses(classesToCheck: Seq[String])(
       classPath: ClassFileLookup[AbstractFile]): Boolean =
-    classesToCheck.foldLeft(true) {
-      case (res, classToCheck) =>
-        val found = classPath.findClass(classToCheck).isDefined
-        if (!found)
-          println(
-            s"Class $classToCheck not found"
-          ) // of course in this case the measured time will be affected by IO operation
-        found
+    classesToCheck.foldLeft(true) { case (res, classToCheck) =>
+      val found = classPath.findClass(classToCheck).isDefined
+      if (!found)
+        println(
+          s"Class $classToCheck not found"
+        ) // of course in this case the measured time will be affected by IO operation
+      found
     }
 }

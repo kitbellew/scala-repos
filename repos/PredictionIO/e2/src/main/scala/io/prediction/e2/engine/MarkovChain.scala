@@ -71,13 +71,12 @@ case class MarkovChainModel(
   def predict(currentState: Seq[Double]): Seq[Double] = {
     // multiply the input with transition matrix row by row
     val nextStateVectors = transitionVectors
-      .map {
-        case (rowIndex, vector) =>
-          val values = vector.indices.map { index =>
-            vector(index) * currentState(rowIndex)
-          }
+      .map { case (rowIndex, vector) =>
+        val values = vector.indices.map { index =>
+          vector(index) * currentState(rowIndex)
+        }
 
-          Vectors.sparse(currentState.size, vector.indices, values)
+        Vectors.sparse(currentState.size, vector.indices, values)
       }
       .collect()
 

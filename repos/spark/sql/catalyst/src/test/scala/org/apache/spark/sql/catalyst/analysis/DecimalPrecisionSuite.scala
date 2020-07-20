@@ -73,8 +73,8 @@ class DecimalPrecisionSuite extends PlanTest with BeforeAndAfter {
     val plan = Project(Alias(expression, "c")() :: Nil, relation)
     val comparison = analyzer
       .execute(plan)
-      .collect {
-        case Project(Alias(e: BinaryComparison, _) :: Nil, _) => e
+      .collect { case Project(Alias(e: BinaryComparison, _) :: Nil, _) =>
+        e
       }
       .head
     assert(comparison.left.dataType === expectedType)
@@ -91,9 +91,8 @@ class DecimalPrecisionSuite extends PlanTest with BeforeAndAfter {
         Project(Seq(Alias(right, "r")()), relation))
     val (l, r) = analyzer
       .execute(plan)
-      .collect {
-        case Union(Seq(child1, child2)) =>
-          (child1.output.head, child2.output.head)
+      .collect { case Union(Seq(child1, child2)) =>
+        (child1.output.head, child2.output.head)
       }
       .head
     assert(l.dataType === expectedType)

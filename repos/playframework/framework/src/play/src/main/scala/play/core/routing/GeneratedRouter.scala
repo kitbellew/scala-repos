@@ -198,9 +198,8 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6, a7))
       .fold(
         badRequest,
-        {
-          case (a1, a2, a3, a4, a5, a6, a7) =>
-            generator(a1, a2, a3, a4, a5, a6, a7)
+        { case (a1, a2, a3, a4, a5, a6, a7) =>
+          generator(a1, a2, a3, a4, a5, a6, a7)
         })
   }
 
@@ -221,9 +220,8 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6, a7, a8))
       .fold(
         badRequest,
-        {
-          case (a1, a2, a3, a4, a5, a6, a7, a8) =>
-            generator(a1, a2, a3, a4, a5, a6, a7, a8)
+        { case (a1, a2, a3, a4, a5, a6, a7, a8) =>
+          generator(a1, a2, a3, a4, a5, a6, a7, a8)
         })
   }
 
@@ -245,9 +243,8 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9))
       .fold(
         badRequest,
-        {
-          case (a1, a2, a3, a4, a5, a6, a7, a8, a9) =>
-            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9)
+        { case (a1, a2, a3, a4, a5, a6, a7, a8, a9) =>
+          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9)
         })
   }
 
@@ -271,9 +268,8 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10))
       .fold(
         badRequest,
-        {
-          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) =>
-            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
+        { case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10) =>
+          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10)
         })
   }
 
@@ -309,9 +305,8 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11))
       .fold(
         badRequest,
-        {
-          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) =>
-            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
+        { case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11) =>
+          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11)
         })
   }
 
@@ -349,9 +344,8 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12))
       .fold(
         badRequest,
-        {
-          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) =>
-            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)
+        { case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12) =>
+          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12)
         })
   }
 
@@ -392,9 +386,8 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13))
       .fold(
         badRequest,
-        {
-          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) =>
-            generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)
+        { case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13) =>
+          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13)
         })
   }
 
@@ -437,23 +430,8 @@ abstract class GeneratedRouter extends Router {
       yield (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14))
       .fold(
         badRequest,
-        {
-          case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14) =>
-            generator(
-              a1,
-              a2,
-              a3,
-              a4,
-              a5,
-              a6,
-              a7,
-              a8,
-              a9,
-              a10,
-              a11,
-              a12,
-              a13,
-              a14)
+        { case (a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14) =>
+          generator(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, a13, a14)
         })
   }
 

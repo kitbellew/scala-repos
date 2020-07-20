@@ -60,10 +60,9 @@ object Output {
   def flatLines(outputs: Values[Seq[String]])(f: Seq[String] => Seq[String])(
       implicit display: Show[ScopedKey[_]]): Seq[String] = {
     val single = outputs.size == 1
-    outputs flatMap {
-      case KeyValue(key, lines) =>
-        val flines = f(lines)
-        if (!single) bold(display(key)) +: flines else flines
+    outputs flatMap { case KeyValue(key, lines) =>
+      val flines = f(lines)
+      if (!single) bold(display(key)) +: flines else flines
     }
   }
 

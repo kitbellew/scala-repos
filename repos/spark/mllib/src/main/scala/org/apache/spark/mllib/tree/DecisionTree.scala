@@ -605,18 +605,17 @@ object DecisionTree extends Serializable with Logging {
     def binSeqOp(
         agg: Array[DTStatsAggregator],
         baggedPoint: BaggedPoint[TreePoint]): Array[DTStatsAggregator] = {
-      treeToNodeToIndexInfo.foreach {
-        case (treeIndex, nodeIndexToInfo) =>
-          val nodeIndex = predictNodeIndex(
-            topNodes(treeIndex),
-            baggedPoint.datum.binnedFeatures,
-            bins,
-            metadata.unorderedFeatures)
-          nodeBinSeqOp(
-            treeIndex,
-            nodeIndexToInfo.getOrElse(nodeIndex, null),
-            agg,
-            baggedPoint)
+      treeToNodeToIndexInfo.foreach { case (treeIndex, nodeIndexToInfo) =>
+        val nodeIndex = predictNodeIndex(
+          topNodes(treeIndex),
+          baggedPoint.datum.binnedFeatures,
+          bins,
+          metadata.unorderedFeatures)
+        nodeBinSeqOp(
+          treeIndex,
+          nodeIndexToInfo.getOrElse(nodeIndex, null),
+          agg,
+          baggedPoint)
       }
 
       agg
@@ -629,16 +628,15 @@ object DecisionTree extends Serializable with Logging {
         agg: Array[DTStatsAggregator],
         dataPoint: (BaggedPoint[TreePoint], Array[Int]))
         : Array[DTStatsAggregator] = {
-      treeToNodeToIndexInfo.foreach {
-        case (treeIndex, nodeIndexToInfo) =>
-          val baggedPoint = dataPoint._1
-          val nodeIdCache = dataPoint._2
-          val nodeIndex = nodeIdCache(treeIndex)
-          nodeBinSeqOp(
-            treeIndex,
-            nodeIndexToInfo.getOrElse(nodeIndex, null),
-            agg,
-            baggedPoint)
+      treeToNodeToIndexInfo.foreach { case (treeIndex, nodeIndexToInfo) =>
+        val baggedPoint = dataPoint._1
+        val nodeIdCache = dataPoint._2
+        val nodeIndex = nodeIdCache(treeIndex)
+        nodeBinSeqOp(
+          treeIndex,
+          nodeIndexToInfo.getOrElse(nodeIndex, null),
+          agg,
+          baggedPoint)
       }
 
       agg
@@ -670,12 +668,10 @@ object DecisionTree extends Serializable with Logging {
 
     // array of nodes to train indexed by node index in group
     val nodes = new Array[Node](numNodes)
-    nodesForGroup.foreach {
-      case (treeIndex, nodesForTree) =>
-        nodesForTree.foreach { node =>
-          nodes(treeToNodeToIndexInfo(treeIndex)(node.id).nodeIndexInGroup) =
-            node
-        }
+    nodesForGroup.foreach { case (treeIndex, nodesForTree) =>
+      nodesForTree.foreach { node =>
+        nodes(treeToNodeToIndexInfo(treeIndex)(node.id).nodeIndexInGroup) = node
+      }
     }
 
     // Calculate best splits for all nodes in the group
@@ -733,16 +729,15 @@ object DecisionTree extends Serializable with Logging {
 
     val nodeToBestSplits = partitionAggregates
       .reduceByKey((a, b) => a.merge(b))
-      .map {
-        case (nodeIndex, aggStats) =>
-          val featuresForNode = nodeToFeaturesBc.value.map { nodeToFeatures =>
-            nodeToFeatures(nodeIndex)
-          }
+      .map { case (nodeIndex, aggStats) =>
+        val featuresForNode = nodeToFeaturesBc.value.map { nodeToFeatures =>
+          nodeToFeatures(nodeIndex)
+        }
 
-          // find best split for each node
-          val (split: Split, stats: InformationGainStats, predict: Predict) =
-            binsToBestSplit(aggStats, splits, featuresForNode, nodes(nodeIndex))
-          (nodeIndex, (split, stats, predict))
+        // find best split for each node
+        val (split: Split, stats: InformationGainStats, predict: Predict) =
+          binsToBestSplit(aggStats, splits, featuresForNode, nodes(nodeIndex))
+        (nodeIndex, (split, stats, predict))
       }
       .collectAsMap()
 
@@ -756,67 +751,66 @@ object DecisionTree extends Serializable with Logging {
     }
 
     // Iterate over all nodes in this group.
-    nodesForGroup.foreach {
-      case (treeIndex, nodesForTree) =>
-        nodesForTree.foreach { node =>
-          val nodeIndex = node.id
-          val nodeInfo = treeToNodeToIndexInfo(treeIndex)(nodeIndex)
-          val aggNodeIndex = nodeInfo.nodeIndexInGroup
-          val (split: Split, stats: InformationGainStats, predict: Predict) =
-            nodeToBestSplits(aggNodeIndex)
-          logDebug("best split = " + split)
+    nodesForGroup.foreach { case (treeIndex, nodesForTree) =>
+      nodesForTree.foreach { node =>
+        val nodeIndex = node.id
+        val nodeInfo = treeToNodeToIndexInfo(treeIndex)(nodeIndex)
+        val aggNodeIndex = nodeInfo.nodeIndexInGroup
+        val (split: Split, stats: InformationGainStats, predict: Predict) =
+          nodeToBestSplits(aggNodeIndex)
+        logDebug("best split = " + split)
 
-          // Extract info for this node.  Create children if not leaf.
-          val isLeaf = (stats.gain <= 0) || (Node.indexToLevel(
-            nodeIndex) == metadata.maxDepth)
-          assert(node.id == nodeIndex)
-          node.predict = predict
-          node.isLeaf = isLeaf
-          node.stats = Some(stats)
-          node.impurity = stats.impurity
-          logDebug("Node = " + node)
+        // Extract info for this node.  Create children if not leaf.
+        val isLeaf = (stats.gain <= 0) || (Node.indexToLevel(
+          nodeIndex) == metadata.maxDepth)
+        assert(node.id == nodeIndex)
+        node.predict = predict
+        node.isLeaf = isLeaf
+        node.stats = Some(stats)
+        node.impurity = stats.impurity
+        logDebug("Node = " + node)
 
-          if (!isLeaf) {
-            node.split = Some(split)
-            val childIsLeaf =
-              (Node.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
-            val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
-            val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
-            node.leftNode = Some(
-              Node(
-                Node.leftChildIndex(nodeIndex),
-                stats.leftPredict,
-                stats.leftImpurity,
-                leftChildIsLeaf))
-            node.rightNode = Some(
-              Node(
-                Node.rightChildIndex(nodeIndex),
-                stats.rightPredict,
-                stats.rightImpurity,
-                rightChildIsLeaf))
+        if (!isLeaf) {
+          node.split = Some(split)
+          val childIsLeaf =
+            (Node.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
+          val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
+          val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
+          node.leftNode = Some(
+            Node(
+              Node.leftChildIndex(nodeIndex),
+              stats.leftPredict,
+              stats.leftImpurity,
+              leftChildIsLeaf))
+          node.rightNode = Some(
+            Node(
+              Node.rightChildIndex(nodeIndex),
+              stats.rightPredict,
+              stats.rightImpurity,
+              rightChildIsLeaf))
 
-            if (nodeIdCache.nonEmpty) {
-              val nodeIndexUpdater =
-                NodeIndexUpdater(split = split, nodeIndex = nodeIndex)
-              nodeIdUpdaters(treeIndex).put(nodeIndex, nodeIndexUpdater)
-            }
-
-            // enqueue left child and right child if they are not leaves
-            if (!leftChildIsLeaf) {
-              nodeQueue.enqueue((treeIndex, node.leftNode.get))
-            }
-            if (!rightChildIsLeaf) {
-              nodeQueue.enqueue((treeIndex, node.rightNode.get))
-            }
-
-            logDebug(
-              "leftChildIndex = " + node.leftNode.get.id +
-                ", impurity = " + stats.leftImpurity)
-            logDebug(
-              "rightChildIndex = " + node.rightNode.get.id +
-                ", impurity = " + stats.rightImpurity)
+          if (nodeIdCache.nonEmpty) {
+            val nodeIndexUpdater =
+              NodeIndexUpdater(split = split, nodeIndex = nodeIndex)
+            nodeIdUpdaters(treeIndex).put(nodeIndex, nodeIndexUpdater)
           }
+
+          // enqueue left child and right child if they are not leaves
+          if (!leftChildIsLeaf) {
+            nodeQueue.enqueue((treeIndex, node.leftNode.get))
+          }
+          if (!rightChildIsLeaf) {
+            nodeQueue.enqueue((treeIndex, node.rightNode.get))
+          }
+
+          logDebug(
+            "leftChildIndex = " + node.leftNode.get.id +
+              ", impurity = " + stats.leftImpurity)
+          logDebug(
+            "rightChildIndex = " + node.rightNode.get.id +
+              ", impurity = " + stats.rightImpurity)
         }
+      }
     }
 
     if (nodeIdCache.nonEmpty) {
@@ -951,26 +945,23 @@ object DecisionTree extends Serializable with Logging {
             // Find best split.
             val (bestFeatureSplitIndex, bestFeatureGainStats) =
               Range(0, numSplits)
-                .map {
-                  case splitIdx =>
-                    val leftChildStats = binAggregates.getImpurityCalculator(
+                .map { case splitIdx =>
+                  val leftChildStats = binAggregates.getImpurityCalculator(
+                    nodeFeatureOffset,
+                    splitIdx)
+                  val rightChildStats =
+                    binAggregates.getImpurityCalculator(
                       nodeFeatureOffset,
-                      splitIdx)
-                    val rightChildStats =
-                      binAggregates.getImpurityCalculator(
-                        nodeFeatureOffset,
-                        numSplits)
-                    rightChildStats.subtract(leftChildStats)
-                    predictWithImpurity = Some(
-                      predictWithImpurity.getOrElse(calculatePredictImpurity(
-                        leftChildStats,
-                        rightChildStats)))
-                    val gainStats = calculateGainForSplit(
-                      leftChildStats,
-                      rightChildStats,
-                      binAggregates.metadata,
-                      predictWithImpurity.get._2)
-                    (splitIdx, gainStats)
+                      numSplits)
+                  rightChildStats.subtract(leftChildStats)
+                  predictWithImpurity = Some(predictWithImpurity.getOrElse(
+                    calculatePredictImpurity(leftChildStats, rightChildStats)))
+                  val gainStats = calculateGainForSplit(
+                    leftChildStats,
+                    rightChildStats,
+                    binAggregates.metadata,
+                    predictWithImpurity.get._2)
+                  (splitIdx, gainStats)
                 }
                 .maxBy(_._2.gain)
             (splits(featureIndex)(bestFeatureSplitIndex), bestFeatureGainStats)
@@ -1201,9 +1192,8 @@ object DecisionTree extends Serializable with Logging {
         // slide across the split points pairwise to allocate the bins
         allSplits
           .sliding(2)
-          .map {
-            case Seq(left, right) =>
-              new Bin(left, right, Continuous, Double.MinValue)
+          .map { case Seq(left, right) =>
+            new Bin(left, right, Continuous, Double.MinValue)
           }
           .toArray
       }

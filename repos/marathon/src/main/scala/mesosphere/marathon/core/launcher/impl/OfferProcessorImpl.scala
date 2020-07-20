@@ -79,17 +79,13 @@ private[launcher] class OfferProcessorImpl(
           log.error(s"Could not process offer '${offer.getId.getValue}'", e)
           MatchedTaskOps(offer.getId, Seq.empty, resendThisOffer = true)
       }
-      .flatMap {
-        case MatchedTaskOps(offerId, tasks, resendThisOffer) =>
-          savingTasksTimeMeter.timeFuture {
-            saveTasks(tasks, savingDeadline).map { savedTasks =>
-              def notAllSaved: Boolean = savedTasks.size != tasks.size
-              MatchedTaskOps(
-                offerId,
-                savedTasks,
-                resendThisOffer || notAllSaved)
-            }
+      .flatMap { case MatchedTaskOps(offerId, tasks, resendThisOffer) =>
+        savingTasksTimeMeter.timeFuture {
+          saveTasks(tasks, savingDeadline).map { savedTasks =>
+            def notAllSaved: Boolean = savedTasks.size != tasks.size
+            MatchedTaskOps(offerId, savedTasks, resendThisOffer || notAllSaved)
           }
+        }
       }
       .flatMap {
         case MatchedTaskOps(offerId, Nil, resendThisOffer) =>
@@ -135,9 +131,8 @@ private[launcher] class OfferProcessorImpl(
           }
         }
       }
-      .recover {
-        case NonFatal(e) =>
-          throw new RuntimeException("while reverting task ops", e)
+      .recover { case NonFatal(e) =>
+        throw new RuntimeException("while reverting task ops", e)
       }
   }
 
@@ -167,14 +162,13 @@ private[launcher] class OfferProcessorImpl(
 
       persistedOp
         .map(_ => Some(taskOpWithSource))
-        .recoverWith {
-          case NonFatal(e) =>
-            savingTasksErrorMeter.mark()
-            taskOpWithSource.reject(s"storage error: $e")
-            log.warn(
-              s"error while storing task $taskId for app [${taskId.appId}]",
-              e)
-            revertTaskOps(Some(taskOpWithSource.op))
+        .recoverWith { case NonFatal(e) =>
+          savingTasksErrorMeter.mark()
+          taskOpWithSource.reject(s"storage error: $e")
+          log.warn(
+            s"error while storing task $taskId for app [${taskId.appId}]",
+            e)
+          revertTaskOps(Some(taskOpWithSource.op))
         }
         .map {
           case Some(savedTask) => Some(taskOpWithSource)

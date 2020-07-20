@@ -66,18 +66,17 @@ class DelayedProduce(
     extends DelayedOperation(delayMs) {
 
   // first update the acks pending variable according to the error code
-  produceMetadata.produceStatus.foreach {
-    case (topicPartition, status) =>
-      if (status.responseStatus.errorCode == Errors.NONE.code) {
-        // Timeout error state will be cleared when required acks are received
-        status.acksPending = true
-        status.responseStatus.errorCode = Errors.REQUEST_TIMED_OUT.code
-      } else {
-        status.acksPending = false
-      }
+  produceMetadata.produceStatus.foreach { case (topicPartition, status) =>
+    if (status.responseStatus.errorCode == Errors.NONE.code) {
+      // Timeout error state will be cleared when required acks are received
+      status.acksPending = true
+      status.responseStatus.errorCode = Errors.REQUEST_TIMED_OUT.code
+    } else {
+      status.acksPending = false
+    }
 
-      trace(
-        "Initial partition status for %s is %s".format(topicPartition, status))
+    trace(
+      "Initial partition status for %s is %s".format(topicPartition, status))
   }
 
   /**
@@ -92,33 +91,32 @@ class DelayedProduce(
     */
   override def tryComplete(): Boolean = {
     // check for each partition if it still has pending acks
-    produceMetadata.produceStatus.foreach {
-      case (topicAndPartition, status) =>
-        trace(
-          "Checking produce satisfaction for %s, current status %s"
-            .format(topicAndPartition, status))
-        // skip those partitions that have already been satisfied
-        if (status.acksPending) {
-          val partitionOpt = replicaManager.getPartition(
-            topicAndPartition.topic,
-            topicAndPartition.partition)
-          val (hasEnough, errorCode) = partitionOpt match {
-            case Some(partition) =>
-              partition.checkEnoughReplicasReachOffset(status.requiredOffset)
-            case None =>
-              // Case A
-              (false, Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
-          }
-          if (errorCode != Errors.NONE.code) {
-            // Case B.1
-            status.acksPending = false
-            status.responseStatus.errorCode = errorCode
-          } else if (hasEnough) {
-            // Case B.2
-            status.acksPending = false
-            status.responseStatus.errorCode = Errors.NONE.code
-          }
+    produceMetadata.produceStatus.foreach { case (topicAndPartition, status) =>
+      trace(
+        "Checking produce satisfaction for %s, current status %s"
+          .format(topicAndPartition, status))
+      // skip those partitions that have already been satisfied
+      if (status.acksPending) {
+        val partitionOpt = replicaManager.getPartition(
+          topicAndPartition.topic,
+          topicAndPartition.partition)
+        val (hasEnough, errorCode) = partitionOpt match {
+          case Some(partition) =>
+            partition.checkEnoughReplicasReachOffset(status.requiredOffset)
+          case None =>
+            // Case A
+            (false, Errors.UNKNOWN_TOPIC_OR_PARTITION.code)
         }
+        if (errorCode != Errors.NONE.code) {
+          // Case B.1
+          status.acksPending = false
+          status.responseStatus.errorCode = errorCode
+        } else if (hasEnough) {
+          // Case B.2
+          status.acksPending = false
+          status.responseStatus.errorCode = Errors.NONE.code
+        }
+      }
     }
 
     // check if each partition has satisfied at lease one of case A and case B
@@ -129,11 +127,10 @@ class DelayedProduce(
   }
 
   override def onExpiration() {
-    produceMetadata.produceStatus.foreach {
-      case (topicPartition, status) =>
-        if (status.acksPending) {
-          DelayedProduceMetrics.recordExpiration(topicPartition)
-        }
+    produceMetadata.produceStatus.foreach { case (topicPartition, status) =>
+      if (status.acksPending) {
+        DelayedProduceMetrics.recordExpiration(topicPartition)
+      }
     }
   }
 

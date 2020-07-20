@@ -30,11 +30,10 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
         // as leftJoin bs on e => (as join bs on e) unionAll as.filter(a => !exists(bs.filter(b => e(a, b)))).map(a => (a, nulls))
         val lgen2, rgen2, bgen = new AnonSymbol
         val on2 = on.replace(
-          {
-            case r @ Ref(sym) =>
-              if (sym == leftGen) Ref(lgen2)
-              else if (sym == rightGen) Ref(rgen2)
-              else r
+          { case r @ Ref(sym) =>
+            if (sym == leftGen) Ref(lgen2)
+            else if (sym == rightGen) Ref(rgen2)
+            else r
           },
           true)
         convert(
@@ -76,11 +75,10 @@ class EmulateOuterJoins(val useLeftJoin: Boolean, val useRightJoin: Boolean)
         // as fullJoin bs on e => (as leftJoin bs on e) unionAll bs.filter(b => !exists(as.filter(a => e(a, b)))).map(b => (nulls, b))
         val lgen2, rgen2, bgen = new AnonSymbol
         val on2 = on.replace(
-          {
-            case r @ Ref(sym) =>
-              if (sym == leftGen) Ref(lgen2)
-              else if (sym == rightGen) Ref(rgen2)
-              else r
+          { case r @ Ref(sym) =>
+            if (sym == leftGen) Ref(lgen2)
+            else if (sym == rightGen) Ref(rgen2)
+            else r
           },
           true)
         convert(

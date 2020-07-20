@@ -441,16 +441,15 @@ abstract class TreeGen {
 
     val (edefs, rest) = body span treeInfo.isEarlyDef
     val (evdefs, etdefs) = edefs partition treeInfo.isEarlyValDef
-    val gvdefs = evdefs map {
-      case vdef @ ValDef(_, _, tpt, _) =>
-        copyValDef(vdef)(
-          // atPos for the new tpt is necessary, since the original tpt might have no position
-          // (when missing type annotation for ValDef for example), so even though setOriginal modifies the
-          // position of TypeTree, it would still be NoPosition. That's what the author meant.
-          tpt = atPos(vdef.pos.focus)(
-            TypeTree() setOriginal tpt setPos tpt.pos.focus),
-          rhs = EmptyTree
-        )
+    val gvdefs = evdefs map { case vdef @ ValDef(_, _, tpt, _) =>
+      copyValDef(vdef)(
+        // atPos for the new tpt is necessary, since the original tpt might have no position
+        // (when missing type annotation for ValDef for example), so even though setOriginal modifies the
+        // position of TypeTree, it would still be NoPosition. That's what the author meant.
+        tpt = atPos(vdef.pos.focus)(
+          TypeTree() setOriginal tpt setPos tpt.pos.focus),
+        rhs = EmptyTree
+      )
     }
     val lvdefs = evdefs collect {
       case vdef: ValDef => copyValDef(vdef)(mods = vdef.mods | PRESUPER)

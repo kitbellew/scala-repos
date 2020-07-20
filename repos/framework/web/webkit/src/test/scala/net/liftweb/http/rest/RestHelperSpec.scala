@@ -56,9 +56,8 @@ class RestHelperSpec extends WebSpec(RestHelperSpecBoot.boot _) {
 
             helper.future.satisfy(JObject(Nil))
 
-            result.get must beLike {
-              case JsonResponse(_, _, _, code) =>
-                code must_== 200
+            result.get must beLike { case JsonResponse(_, _, _, code) =>
+              code must_== 200
             }
         }
     }
@@ -74,8 +73,7 @@ object RestHelperSpecRest extends RestHelper {
 case class FutureRestSpecHelper() extends RestHelper {
   val future = new LAFuture[JValue]
 
-  serve {
-    case "api" :: "futured" :: Nil Get _ =>
-      future
+  serve { case "api" :: "futured" :: Nil Get _ =>
+    future
   }
 }

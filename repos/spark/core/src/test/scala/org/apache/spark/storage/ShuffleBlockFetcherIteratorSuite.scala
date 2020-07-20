@@ -84,9 +84,8 @@ class ShuffleBlockFetcherIteratorSuite
       ShuffleBlockId(0, 0, 0) -> createMockManagedBuffer(),
       ShuffleBlockId(0, 1, 0) -> createMockManagedBuffer(),
       ShuffleBlockId(0, 2, 0) -> createMockManagedBuffer())
-    localBlocks.foreach {
-      case (blockId, buf) =>
-        doReturn(buf).when(blockManager).getBlockData(meq(blockId))
+    localBlocks.foreach { case (blockId, buf) =>
+      doReturn(buf).when(blockManager).getBlockData(meq(blockId))
     }
 
     // Make sure remote blocks would return

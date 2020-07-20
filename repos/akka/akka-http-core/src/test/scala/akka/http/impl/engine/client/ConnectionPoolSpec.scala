@@ -191,9 +191,8 @@ class ConnectionPoolSpec extends AkkaSpec("""
       responses mustContainLike {
         case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
       }
-      responses mustContainLike {
-        case (Failure(x), 43) ⇒
-          x.getMessage should include(ConnectionResetByPeerMessage)
+      responses mustContainLike { case (Failure(x), 43) ⇒
+        x.getMessage should include(ConnectionResetByPeerMessage)
       }
     }
 
@@ -245,9 +244,8 @@ class ConnectionPoolSpec extends AkkaSpec("""
       responses mustContainLike {
         case (Success(x), 42) ⇒ requestUri(x) should endWith("/a")
       }
-      responses mustContainLike {
-        case (Failure(x), 43) ⇒
-          x.getMessage should include(ConnectionResetByPeerMessage)
+      responses mustContainLike { case (Failure(x), 43) ⇒
+        x.getMessage should include(ConnectionResetByPeerMessage)
       }
       remainingResponsesToKill.get() shouldEqual 0
     }

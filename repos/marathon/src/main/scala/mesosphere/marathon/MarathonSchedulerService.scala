@@ -149,11 +149,10 @@ class MarathonSchedulerService @Inject() (
 
   def listRunningDeployments(): Future[Seq[DeploymentStepInfo]] =
     (schedulerActor ? RetrieveRunningDeployments)
-      .recoverWith {
-        case _: TimeoutException =>
-          Future.failed(
-            new TimeoutException(
-              s"Can not retrieve the list of running deployments in time"))
+      .recoverWith { case _: TimeoutException =>
+        Future.failed(
+          new TimeoutException(
+            s"Can not retrieve the list of running deployments in time"))
       }
       .mapTo[RunningDeployments]
       .map(_.plans)

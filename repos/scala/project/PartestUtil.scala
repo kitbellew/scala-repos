@@ -92,19 +92,18 @@ object PartestUtil {
         val matchingFileContent =
           try {
             val Pattern = ("(?i)" + x).r
-            testFiles.allTestCases.filter {
-              case (testFile, testPath) =>
-                val assocFiles =
-                  List(".check", ".flags").map(testFile.getParentFile / _)
-                val sourceFiles =
-                  if (testFile.isFile) List(testFile)
-                  else testFile.**(AllPassFilter).get.toList
-                val allFiles = testFile :: assocFiles ::: sourceFiles
-                allFiles.exists { f =>
-                  f.exists && f.isFile && Pattern
-                    .findFirstIn(IO.read(f))
-                    .isDefined
-                }
+            testFiles.allTestCases.filter { case (testFile, testPath) =>
+              val assocFiles =
+                List(".check", ".flags").map(testFile.getParentFile / _)
+              val sourceFiles =
+                if (testFile.isFile) List(testFile)
+                else testFile.**(AllPassFilter).get.toList
+              val allFiles = testFile :: assocFiles ::: sourceFiles
+              allFiles.exists { f =>
+                f.exists && f.isFile && Pattern
+                  .findFirstIn(IO.read(f))
+                  .isDefined
+              }
             }
           } catch {
             case _: Throwable => Nil

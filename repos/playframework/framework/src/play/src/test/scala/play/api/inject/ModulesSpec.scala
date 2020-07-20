@@ -37,10 +37,9 @@ class ModulesSpec extends Specification {
         ))
       val located: Seq[Any] = Modules.locate(env, conf)
       located.size must_== 1
-      located.head must beLike {
-        case mod: ScalaGuiceModule =>
-          mod.environment must_== env
-          mod.configuration must_== conf
+      located.head must beLike { case mod: ScalaGuiceModule =>
+        mod.environment must_== env
+        mod.configuration must_== conf
       }
     }
 
@@ -52,10 +51,9 @@ class ModulesSpec extends Specification {
         ))
       val located: Seq[Any] = Modules.locate(env, conf)
       located.size must_== 1
-      located.head must beLike {
-        case mod: JavaGuiceModule =>
-          mod.environment.underlying must_== env
-          mod.configuration.underlying must_== conf.underlying
+      located.head must beLike { case mod: JavaGuiceModule =>
+        mod.environment.underlying must_== env
+        mod.configuration.underlying must_== conf.underlying
       }
     }
 

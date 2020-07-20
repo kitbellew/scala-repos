@@ -66,10 +66,9 @@ private[netty3] class ChannelConnector[In, Out](
     val connectFuture = ch.connect(addr)
 
     val promise = new Promise[Transport[In, Out]]
-    promise setInterruptHandler {
-      case _cause =>
-        // Propagate cancellations onto the netty future.
-        connectFuture.cancel()
+    promise setInterruptHandler { case _cause =>
+      // Propagate cancellations onto the netty future.
+      connectFuture.cancel()
     }
 
     connectFuture.addListener(new ChannelFutureListener {

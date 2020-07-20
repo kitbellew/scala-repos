@@ -353,13 +353,12 @@ private[sql] class SQLListener(conf: SparkConf)
       accumulatorUpdates: Seq[(Long, Any)],
       paramFunc: Long => SQLMetricParam[SQLMetricValue[Any], Any])
       : Map[Long, String] = {
-    accumulatorUpdates.groupBy(_._1).map {
-      case (accumulatorId, values) =>
-        val param = paramFunc(accumulatorId)
-        (
-          accumulatorId,
-          param.stringValue(
-            values.map(_._2.asInstanceOf[SQLMetricValue[Any]].value)))
+    accumulatorUpdates.groupBy(_._1).map { case (accumulatorId, values) =>
+      val param = paramFunc(accumulatorId)
+      (
+        accumulatorId,
+        param.stringValue(
+          values.map(_._2.asInstanceOf[SQLMetricValue[Any]].value)))
     }
   }
 

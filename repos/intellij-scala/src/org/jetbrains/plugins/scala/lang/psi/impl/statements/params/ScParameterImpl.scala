@@ -67,21 +67,20 @@ class ScParameterImpl protected (
     if (stub != null) return stub.asInstanceOf[ScParameterStub].deprecatedName
     annotations.find(_.typeElement.getText.contains("deprecatedName")) match {
       case Some(deprecationAnnotation) =>
-        deprecationAnnotation.constructor.args.flatMap {
-          case args =>
-            val exprs = args.exprs
-            if (exprs.length != 1) None
-            else {
-              exprs(0) match {
-                case literal: ScLiteral
-                    if literal.getNode.getFirstChildNode != null &&
-                      literal.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tSYMBOL =>
-                  val literalText = literal.getText
-                  if (literalText.length < 2) None
-                  else Some(literalText.substring(1))
-                case _ => None
-              }
+        deprecationAnnotation.constructor.args.flatMap { case args =>
+          val exprs = args.exprs
+          if (exprs.length != 1) None
+          else {
+            exprs(0) match {
+              case literal: ScLiteral
+                  if literal.getNode.getFirstChildNode != null &&
+                    literal.getNode.getFirstChildNode.getElementType == ScalaTokenTypes.tSYMBOL =>
+                val literalText = literal.getText
+                if (literalText.length < 2) None
+                else Some(literalText.substring(1))
+              case _ => None
             }
+          }
         }
       case None => None
     }

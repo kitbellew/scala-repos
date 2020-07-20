@@ -44,10 +44,9 @@ class ChannelTransportTest
   test("channel.write before transport.read") {
     forAll { ss: Seq[String] =>
       val written = ss.map(s => channel.writeInbound(s))
-      written.zip(ss).foreach {
-        case (w, s) =>
-          assertSeenWhatsWritten(w, s, transport.read())
-          assert(transport.status == Status.Open)
+      written.zip(ss).foreach { case (w, s) =>
+        assertSeenWhatsWritten(w, s, transport.read())
+        assert(transport.status == Status.Open)
       }
     }
 
@@ -61,10 +60,9 @@ class ChannelTransportTest
       val seen = ss.map(_ => transport.read())
       val written = ss.map(s => channel.writeInbound(s))
 
-      written.zip(ss).zip(seen).foreach {
-        case ((w, s), f) =>
-          assertSeenWhatsWritten(w, s, f)
-          assert(transport.status == Status.Open)
+      written.zip(ss).zip(seen).foreach { case ((w, s), f) =>
+        assertSeenWhatsWritten(w, s, f)
+        assert(transport.status == Status.Open)
       }
     }
 

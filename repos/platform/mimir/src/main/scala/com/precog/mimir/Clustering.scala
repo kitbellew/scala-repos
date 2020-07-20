@@ -77,9 +77,8 @@ trait KMediansCoreSetClustering {
 
   case class CoreSetTree(tree: List[(Int, CoreSet)], k: Int) {
     def coreSet: CoreSet = {
-      val coresets = tree map {
-        case (_, coreset) =>
-          CoreSet.fromWeightedPoints(coreset._1, coreset._2, k, epsilon / 6.0)
+      val coresets = tree map { case (_, coreset) =>
+        CoreSet.fromWeightedPoints(coreset._1, coreset._2, k, epsilon / 6.0)
       }
 
       coresets.foldLeft((new Array[Array[Double]](0), new Array[Long](0))) {
@@ -123,9 +122,8 @@ trait KMediansCoreSetClustering {
       if (coreSetTree.k < k) {
         coreSetTree ++ this
       } else {
-        coreSetTree.tree.foldLeft(this) {
-          case (acc, (level, coreset)) =>
-            acc.insertCoreSet(coreset, level)
+        coreSetTree.tree.foldLeft(this) { case (acc, (level, coreset)) =>
+          acc.insertCoreSet(coreset, level)
         }
       }
     }
@@ -497,10 +495,9 @@ trait KMediansCoreSetClustering {
       new Array[Array[Double]](weightMap.size)
     var weights0: Array[Long] = new Array[Long](coreset0.length)
 
-    weightMap.zipWithIndex foreach {
-      case ((gridPoint, weight), i) =>
-        coreset0(i) = gridPoint.point
-        weights0(i) = weight
+    weightMap.zipWithIndex foreach { case ((gridPoint, weight), i) =>
+      coreset0(i) = gridPoint.point
+      weights0(i) = weight
     }
 
     (coreset0, weights0)

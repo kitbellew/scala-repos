@@ -200,9 +200,8 @@ class ScSyntheticFunction(
       manager,
       name,
       retType,
-      paramTypes.mapWithIndex {
-        case (p, index) =>
-          p.map(new Parameter("", None, _, false, false, false, index))
+      paramTypes.mapWithIndex { case (p, index) =>
+        p.map(new Parameter("", None, _, false, false, false, index))
       },
       Seq.empty)
 

@@ -147,9 +147,8 @@ class CoreModuleImpl @Inject() (
   private[this] lazy val offersWanted =
     offerMatcherManagerModule.globalOfferMatcherWantsOffers
       .combineLatest(offerMatcherReconcilerModule.offersWantedObservable)
-      .map {
-        case (managerWantsOffers, reconciliationWantsOffers) =>
-          managerWantsOffers || reconciliationWantsOffers
+      .map { case (managerWantsOffers, reconciliationWantsOffers) =>
+        managerWantsOffers || reconciliationWantsOffers
       }
 
   lazy val maybeOfferReviver = flowActors.maybeOfferReviver(

@@ -79,18 +79,17 @@ class MainTest extends AsyncTest[JdbcTestDB] { mainTest =>
 
     materialize(p1.mapResult { case (id, f, l) => User(id, f, l.orNull) })
       .flatMap { allUsers =>
-        allUsers shouldBe expectedUserTuples.map {
-          case (id, f, l) => User(id, f, l.orNull)
+        allUsers shouldBe expectedUserTuples.map { case (id, f, l) =>
+          User(id, f, l.orNull)
         }
         db.run(for {
           r1b <- q1b.result
-          _ = r1b shouldBe expectedUserTuples.map {
-            case (id, f, l) =>
-              (
-                id,
-                Some(f),
-                l,
-                if (id < 3) "low" else if (id < 6) "medium" else "high")
+          _ = r1b shouldBe expectedUserTuples.map { case (id, f, l) =>
+            (
+              id,
+              Some(f),
+              l,
+              if (id < 3) "low" else if (id < 6) "medium" else "high")
           }
           _ <- q2.result.head.map(_ shouldBe (Some("Nahasapeemapetilon"), 3))
         } yield allUsers)

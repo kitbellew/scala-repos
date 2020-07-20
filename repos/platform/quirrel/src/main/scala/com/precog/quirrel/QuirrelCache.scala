@@ -241,9 +241,8 @@ trait QuirrelCache extends AST { parser: Parser =>
       slots: Map[String, Slot]): Option[Expr] = {
     val index = buildBindingIndex(expr)
     val sortedBindings = bindings.zipWithIndex
-      .map {
-        case (b, i) =>
-          (b, index(i))
+      .map { case (b, i) =>
+        (b, index(i))
       }
       .sortBy(_._2)
       .map(_._1)
@@ -262,16 +261,14 @@ trait QuirrelCache extends AST { parser: Parser =>
     }.toMap
 
     val deltas: Map[Int, List[(Int, Int)]] = slots.toList
-      .map {
-        case (name, Slot(lineNum, colNum, oldWidth)) =>
-          val width = widths(name)
-          val delta = width - oldWidth
-          lineNum -> (colNum, delta)
+      .map { case (name, Slot(lineNum, colNum, oldWidth)) =>
+        val width = widths(name)
+        val delta = width - oldWidth
+        lineNum -> (colNum, delta)
       }
       .groupBy(_._1)
-      .map {
-        case (lineNum, ds) =>
-          (lineNum, ds.map(_._2).sortBy(_._1))
+      .map { case (lineNum, ds) =>
+        (lineNum, ds.map(_._2).sortBy(_._1))
       }
 
     { (loc: LineStream) =>
@@ -360,9 +357,8 @@ trait QuirrelCache extends AST { parser: Parser =>
 
         case ObjectDef(loc, props0) =>
           for {
-            props <- (props0 map {
-                case (prop, expr) =>
-                  repl(expr) map (prop -> _)
+            props <- (props0 map { case (prop, expr) =>
+                repl(expr) map (prop -> _)
               }: Vector[BindingS[(String, Expr)]]).sequence
           } yield ObjectDef(updateLoc(loc), props)
 
@@ -493,12 +489,11 @@ trait QuirrelCache extends AST { parser: Parser =>
         f: LineStream => Set[Expr]): Set[Expr] = {
       val s = query.toString
       val (key, bindings) = CacheKey.fromString(s)
-      cache.get(key).flatMap {
-        case (expr, slots) =>
-          resolveBindings(expr, bindings, slots) map { root =>
-            bindRoot(root, root)
-            root
-          }
+      cache.get(key).flatMap { case (expr, slots) =>
+        resolveBindings(expr, bindings, slots) map { root =>
+          bindRoot(root, root)
+          root
+        }
       } map { expr =>
         Set(expr)
       } getOrElse {

@@ -486,11 +486,10 @@ class ScalaJSJUnitPlugin(val global: Global) extends NscPlugin {
       private def mkParamSymbols(
           method: MethodSymbol,
           params: List[(String, Type)]): List[Symbol] = {
-        params.map {
-          case (pName, tpe) =>
-            val sym = method.newValueParameter(newTermName(pName))
-            sym.setInfo(tpe)
-            sym
+        params.map { case (pName, tpe) =>
+          val sym = method.newValueParameter(newTermName(pName))
+          sym.setInfo(tpe)
+          sym
         }
       }
 

@@ -32,19 +32,18 @@ class DataSource(val dsp: DataSourceParams)
         appId = dsp.appId,
         entityType = "item"
       )(sc)
-      .map {
-        case (entityId, properties) =>
-          try {
-            Item(
-              id = entityId,
-              categories = properties.get[List[String]]("categories"))
-          } catch {
-            case e: Exception =>
-              logger.error(
-                s"Failed to get properties ${properties} of" +
-                  s" item ${entityId}. Exception: ${e}.")
-              throw e
-          }
+      .map { case (entityId, properties) =>
+        try {
+          Item(
+            id = entityId,
+            categories = properties.get[List[String]]("categories"))
+        } catch {
+          case e: Exception =>
+            logger.error(
+              s"Failed to get properties ${properties} of" +
+                s" item ${entityId}. Exception: ${e}.")
+            throw e
+        }
       }
 
     val rateEventsRDD: RDD[Event] = eventsDb.find(

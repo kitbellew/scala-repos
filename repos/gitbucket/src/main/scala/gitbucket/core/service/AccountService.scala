@@ -218,9 +218,8 @@ trait AccountService {
   def updateGroupMembers(groupName: String, members: List[(String, Boolean)])(
       implicit s: Session): Unit = {
     GroupMembers.filter(_.groupName === groupName.bind).delete
-    members.foreach {
-      case (userName, isManager) =>
-        GroupMembers insert GroupMember(groupName, userName, isManager)
+    members.foreach { case (userName, isManager) =>
+      GroupMembers insert GroupMember(groupName, userName, isManager)
     }
   }
 

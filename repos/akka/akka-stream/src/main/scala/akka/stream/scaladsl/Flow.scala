@@ -315,16 +315,15 @@ final class Flow[-In, +Out, +Mat](private[stream] override val module: Module)
       .via(this)
       .toMat(Sink.asPublisher[Out](false))(
         Keep.both[Subscriber[In], Publisher[Out]])
-      .mapMaterializedValue {
-        case (sub, pub) ⇒
-          new Processor[In, Out] {
-            override def onError(t: Throwable): Unit = sub.onError(t)
-            override def onSubscribe(s: Subscription): Unit = sub.onSubscribe(s)
-            override def onComplete(): Unit = sub.onComplete()
-            override def onNext(t: In): Unit = sub.onNext(t)
-            override def subscribe(s: Subscriber[_ >: Out]): Unit =
-              pub.subscribe(s)
-          }
+      .mapMaterializedValue { case (sub, pub) ⇒
+        new Processor[In, Out] {
+          override def onError(t: Throwable): Unit = sub.onError(t)
+          override def onSubscribe(s: Subscription): Unit = sub.onSubscribe(s)
+          override def onComplete(): Unit = sub.onComplete()
+          override def onNext(t: In): Unit = sub.onNext(t)
+          override def subscribe(s: Subscriber[_ >: Out]): Unit =
+            pub.subscribe(s)
+        }
       }
 
   /** Converts this Scala DSL element to it's Java DSL counterpart. */

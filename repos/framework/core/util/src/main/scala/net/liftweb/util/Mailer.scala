@@ -138,9 +138,8 @@ trait Mailer extends SimpleInjector {
     customProperties.foreach { case (name, value) => p.put(name, value) }
     // allow the properties file to set/override system properties
 
-    Props.props.foreach {
-      case (name, value) =>
-        p.setProperty(name, value)
+    Props.props.foreach { case (name, value) =>
+      p.setProperty(name, value)
     }
     p
   }
@@ -184,13 +183,12 @@ trait Mailer extends SimpleInjector {
   // def host_=(hostname: String) = System.setProperty("mail.smtp.host", hostname)
 
   protected class MsgSender extends SpecializedLiftActor[MessageInfo] {
-    protected def messageHandler = {
-      case MessageInfo(from, subject, info) =>
-        try {
-          msgSendImpl(from, subject, info)
-        } catch {
-          case e: Exception => logger.error("Couldn't send mail", e)
-        }
+    protected def messageHandler = { case MessageInfo(from, subject, info) =>
+      try {
+        msgSendImpl(from, subject, info)
+      } catch {
+        case e: Exception => logger.error("Couldn't send mail", e)
+      }
     }
   }
 

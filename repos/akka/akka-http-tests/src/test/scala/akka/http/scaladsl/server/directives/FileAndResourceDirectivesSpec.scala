@@ -180,10 +180,9 @@ class FileAndResourceDirectivesSpec
         Get() ~> route ~> check {
           mediaType shouldEqual `text/html`
           forAtLeast(1, headers) { h ⇒
-            inside(h) {
-              case `Last-Modified`(dt) ⇒
-                DateTime(2011, 7, 1) should be < dt
-                dt.clicks should be < System.currentTimeMillis()
+            inside(h) { case `Last-Modified`(dt) ⇒
+              DateTime(2011, 7, 1) should be < dt
+              dt.clicks should be < System.currentTimeMillis()
             }
           }
           responseAs[String] shouldEqual "<p>Lorem ipsum!</p>"

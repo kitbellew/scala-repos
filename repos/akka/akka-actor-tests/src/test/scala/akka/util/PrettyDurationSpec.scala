@@ -27,11 +27,10 @@ class PrettyDurationSpec extends FlatSpec with Matchers {
       95.hours -> "3.958 d" ::
       Nil
 
-  cases foreach {
-    case (d, expectedValue) ⇒
-      it should s"print $d nanos as $expectedValue" in {
-        d.pretty should ===(expectedValue)
-      }
+  cases foreach { case (d, expectedValue) ⇒
+    it should s"print $d nanos as $expectedValue" in {
+      d.pretty should ===(expectedValue)
+    }
   }
 
   it should "work with infinity" in {

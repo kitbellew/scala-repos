@@ -816,14 +816,13 @@ object Defaults extends BuildCommon {
       config: Tests.Execution): Map[TestFramework, Runner] = {
     import Tests.Argument
     val opts = config.options.toList
-    frameworks.map {
-      case (tf, f) =>
-        val args = opts.flatMap {
-          case Argument(None | Some(`tf`), args) => args
-          case _                                 => Nil
-        }
-        val mainRunner = f.runner(args.toArray, Array.empty[String], loader)
-        tf -> mainRunner
+    frameworks.map { case (tf, f) =>
+      val args = opts.flatMap {
+        case Argument(None | Some(`tf`), args) => args
+        case _                                 => Nil
+      }
+      val mainRunner = f.runner(args.toArray, Array.empty[String], loader)
+      tf -> mainRunner
     }
   }
 
@@ -879,35 +878,32 @@ object Defaults extends BuildCommon {
       forkedParallelExecution: Boolean,
       javaOptions: Seq[String]): Task[Tests.Output] = {
     val runners = createTestRunners(frameworks, loader, config)
-    val groupTasks = groups map {
-      case Tests.Group(name, tests, runPolicy) =>
-        runPolicy match {
-          case Tests.SubProcess(opts) =>
-            s.log.debug(s"javaOptions: ${opts.runJVMOptions}")
-            val forkedConfig =
-              config.copy(parallel = config.parallel && forkedParallelExecution)
-            s.log.debug(
-              s"Forking tests - parallelism = ${forkedConfig.parallel}")
-            ForkTests(
-              runners,
-              tests.toList,
-              forkedConfig,
-              cp.files,
-              opts,
-              s.log) tag Tags.ForkedTestGroup
-          case Tests.InProcess =>
-            if (javaOptions.nonEmpty) {
-              s.log.warn("javaOptions will be ignored, fork is set to false")
-            }
-            Tests(frameworks, loader, runners, tests, config, s.log)
-        }
+    val groupTasks = groups map { case Tests.Group(name, tests, runPolicy) =>
+      runPolicy match {
+        case Tests.SubProcess(opts) =>
+          s.log.debug(s"javaOptions: ${opts.runJVMOptions}")
+          val forkedConfig =
+            config.copy(parallel = config.parallel && forkedParallelExecution)
+          s.log.debug(s"Forking tests - parallelism = ${forkedConfig.parallel}")
+          ForkTests(
+            runners,
+            tests.toList,
+            forkedConfig,
+            cp.files,
+            opts,
+            s.log) tag Tags.ForkedTestGroup
+        case Tests.InProcess =>
+          if (javaOptions.nonEmpty) {
+            s.log.warn("javaOptions will be ignored, fork is set to false")
+          }
+          Tests(frameworks, loader, runners, tests, config, s.log)
+      }
     }
     val output = Tests.foldTasks(groupTasks, config.parallel)
     output map { out =>
       val summaries =
-        runners map {
-          case (tf, r) =>
-            Tests.Summary(frameworks(tf).name, r.done())
+        runners map { case (tf, r) =>
+          Tests.Summary(frameworks(tf).name, r.done())
         }
       out.copy(summaries = summaries)
     }
@@ -1515,14 +1511,13 @@ object Defaults extends BuildCommon {
       includeRoot: Boolean = true,
       classpath: Boolean = true,
       aggregate: Boolean = false): Initialize[Seq[V]] =
-    Def.bind((loadedBuild, thisProjectRef).identity) {
-      case (lb, base) =>
-        transitiveDependencies(
-          base,
-          lb,
-          includeRoot,
-          classpath,
-          aggregate) map init join;
+    Def.bind((loadedBuild, thisProjectRef).identity) { case (lb, base) =>
+      transitiveDependencies(
+        base,
+        lb,
+        includeRoot,
+        classpath,
+        aggregate) map init join;
     }
 
   def transitiveDependencies(
@@ -2449,9 +2444,8 @@ object Classpaths {
             (s.key.key == libraryDependencies.key) &&
             (s.key.scope.project == Select(projRef))
           }
-          Map(settings flatMap {
-            case s: Setting[Seq[ModuleID]] @unchecked =>
-              s.init.evaluate(empty) map { _ -> s.pos }
+          Map(settings flatMap { case s: Setting[Seq[ModuleID]] @unchecked =>
+            s.init.evaluate(empty) map { _ -> s.pos }
           }: _*)
         } catch {
           case _: Throwable => Map()
@@ -2837,13 +2831,12 @@ object Classpaths {
     up.filter(
       configurationFilter(config.name) && artifactFilter(`type` = jarTypes))
       .toSeq
-      .map {
-        case (conf, module, art, file) =>
-          Attributed(file)(
-            AttributeMap.empty
-              .put(artifact.key, art)
-              .put(moduleID.key, module)
-              .put(configuration.key, config))
+      .map { case (conf, module, art, file) =>
+        Attributed(file)(
+          AttributeMap.empty
+            .put(artifact.key, art)
+            .put(moduleID.key, module)
+            .put(configuration.key, config))
       } distinct;
 
   def findUnmanagedJars(
@@ -3107,19 +3100,17 @@ trait BuildExtra extends BuildCommon with DefExtra {
       projectResolver,
       updateOptions,
       streams).identityMap
-    ivyConfiguration <<= (uri zipWith other) {
-      case (u, otherTask) =>
-        otherTask map {
-          case (base, app, pr, uo, s) =>
-            val extraResolvers = if (addMultiResolver) pr :: Nil else Nil
-            new ExternalIvyConfiguration(
-              base,
-              u,
-              Option(lock(app)),
-              extraResolvers,
-              uo,
-              s.log)
-        }
+    ivyConfiguration <<= (uri zipWith other) { case (u, otherTask) =>
+      otherTask map { case (base, app, pr, uo, s) =>
+        val extraResolvers = if (addMultiResolver) pr :: Nil else Nil
+        new ExternalIvyConfiguration(
+          base,
+          u,
+          Option(lock(app)),
+          extraResolvers,
+          uo,
+          s.log)
+      }
     }
   }
   private[this] def inBase(name: String): Initialize[File] =
@@ -3173,9 +3164,8 @@ trait BuildExtra extends BuildCommon with DefExtra {
         fullClasspath in config,
         streams,
         result).identityMap) { (rTask, t) =>
-        (t, rTask) map {
-          case ((cp, s, args), r) =>
-            toError(r.run(mainClass, data(cp), baseArguments ++ args, s.log))
+        (t, rTask) map { case ((cp, s, args), r) =>
+          toError(r.run(mainClass, data(cp), baseArguments ++ args, s.log))
         }
       }
     }
@@ -3186,12 +3176,10 @@ trait BuildExtra extends BuildCommon with DefExtra {
       arguments: String*): Setting[Task[Unit]] =
     scoped <<= (initScoped(scoped.scopedKey, runnerInit) zipWith (
       fullClasspath in config,
-      streams).identityMap) {
-      case (rTask, t) =>
-        (t, rTask) map {
-          case ((cp, s), r) =>
-            toError(r.run(mainClass, data(cp), arguments, s.log))
-        }
+      streams).identityMap) { case (rTask, t) =>
+      (t, rTask) map { case ((cp, s), r) =>
+        toError(r.run(mainClass, data(cp), arguments, s.log))
+      }
     }
   def initScoped[T](sk: ScopedKey[_], i: Initialize[T]): Initialize[T] =
     initScope(fillTaskAxis(sk.scope, sk.key), i)

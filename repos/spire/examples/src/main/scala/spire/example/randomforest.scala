@@ -348,9 +348,8 @@ class RandomForestClassification[V, @sp(Double) F, K](implicit
     def -(k: K) = new GiniIndex(m + (k -> (m.getOrElse(k, 0) - 1)))
     def error: F = {
       val n = F.fromInt(m.foldLeft(0)(_ + _._2))
-      m.foldLeft(F.zero) {
-        case (idx, (k, cnt)) =>
-          idx + (F.fromInt(cnt) / n)
+      m.foldLeft(F.zero) { case (idx, (k, cnt)) =>
+        idx + (F.fromInt(cnt) / n)
       }
     }
     def value: K = m.maxBy(_._2)._1

@@ -22,11 +22,10 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
         print(s"Processing ${file.getName}: ")
         val buildSbt = Source.fromFile(file).getLines().mkString("\n")
         SbtParser(file, buildSbt.lines.toSeq) must throwA[MessageOnlyException]
-          .like {
-            case exp =>
-              val message = exp.getMessage
-              println(s"${exp.getMessage}")
-              message must contain(file.getName)
+          .like { case exp =>
+            val message = exp.getMessage
+            println(s"${exp.getMessage}")
+            message must contain(file.getName)
           }
         containsLineNumber(buildSbt)
       }
@@ -56,11 +55,10 @@ class ErrorSpec extends AbstractSpec with ScalaCheck {
           |val s = '
         """.stripMargin
       SbtParser(SbtParser.FAKE_FILE, buildSbt.lines.toSeq) must throwA[
-        MessageOnlyException].like {
-        case exp =>
-          val message = exp.getMessage
-          println(s"${exp.getMessage}")
-          message must contain(SbtParser.FAKE_FILE.getName)
+        MessageOnlyException].like { case exp =>
+        val message = exp.getMessage
+        println(s"${exp.getMessage}")
+        message must contain(SbtParser.FAKE_FILE.getName)
       }
     }
 

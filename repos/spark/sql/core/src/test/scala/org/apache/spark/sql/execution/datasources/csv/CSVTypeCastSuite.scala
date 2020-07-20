@@ -32,12 +32,11 @@ class CSVTypeCastSuite extends SparkFunSuite {
     val decimalValues = Seq(10.05, 1000.01, 158058049.001)
     val decimalType = new DecimalType()
 
-    stringValues.zip(decimalValues).foreach {
-      case (strVal, decimalVal) =>
-        val decimalValue = new BigDecimal(decimalVal.toString)
-        assert(
-          CSVTypeCast.castTo(strVal, decimalType) ===
-            Decimal(decimalValue, decimalType.precision, decimalType.scale))
+    stringValues.zip(decimalValues).foreach { case (strVal, decimalVal) =>
+      val decimalValue = new BigDecimal(decimalVal.toString)
+      assert(
+        CSVTypeCast.castTo(strVal, decimalType) ===
+          Decimal(decimalValue, decimalType.precision, decimalType.scale))
     }
   }
 

@@ -50,9 +50,8 @@ final class InMemoryFileStorage[M[+_]](implicit M: Monad[M])
 
   def load(file: String): M[Option[FileData[M]]] =
     M.point {
-      files get file map {
-        case (mimeType, data) =>
-          FileData(mimeType, data :: StreamT.empty[M, Array[Byte]])
+      files get file map { case (mimeType, data) =>
+        FileData(mimeType, data :: StreamT.empty[M, Array[Byte]])
       }
     }
 

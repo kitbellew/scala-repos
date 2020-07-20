@@ -17,16 +17,14 @@ object JsonFormat {
   val jsonFormats =
     Serialization.formats(NoTypeHints) + new CustomSerializer[Date](format =>
       (
-        {
-          case JString(s) =>
-            Try(parserISO.parseDateTime(s)).toOption
-              .map(_.toDate)
-              .getOrElse(
-                throw new MappingException("Can't convert " + s + " to Date"))
+        { case JString(s) =>
+          Try(parserISO.parseDateTime(s)).toOption
+            .map(_.toDate)
+            .getOrElse(
+              throw new MappingException("Can't convert " + s + " to Date"))
         },
-        {
-          case x: Date =>
-            JString(parserISO.print(new DateTime(x).withZone(DateTimeZone.UTC)))
+        { case x: Date =>
+          JString(parserISO.print(new DateTime(x).withZone(DateTimeZone.UTC)))
         }
       )) + FieldSerializer[ApiUser]() +
       FieldSerializer[ApiPullRequest]() +

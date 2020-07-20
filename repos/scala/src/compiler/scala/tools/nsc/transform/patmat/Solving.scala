@@ -242,14 +242,13 @@ trait Solving extends Logic {
                 //  1 < i < n
                 val s1 = newLiteral()
                 /\(-convertSym(x1), s1)
-                val snMinus = mid.foldLeft(s1) {
-                  case (siMinus, sym) =>
-                    val xi = convertSym(sym)
-                    val si = newLiteral()
-                    /\(-xi, si)
-                    /\(-siMinus, si)
-                    /\(-xi, -siMinus)
-                    si
+                val snMinus = mid.foldLeft(s1) { case (siMinus, sym) =>
+                  val xi = convertSym(sym)
+                  val si = newLiteral()
+                  /\(-xi, si)
+                  /\(-siMinus, si)
+                  /\(-xi, -siMinus)
+                  si
                 }
                 /\(-convertSym(xn), -snMinus)
               } else {

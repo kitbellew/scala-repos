@@ -87,10 +87,10 @@ trait EvaluationInstances {
 class EvaluationInstanceSerializer
     extends CustomSerializer[EvaluationInstance](format =>
       (
-        {
-          case JObject(fields) =>
-            implicit val formats = DefaultFormats
-            fields.foldLeft(EvaluationInstance()) {
+        { case JObject(fields) =>
+          implicit val formats = DefaultFormats
+          fields
+            .foldLeft(EvaluationInstance()) {
               case (i, field) =>
                 field match {
                   case JField("id", JString(id)) => i.copy(id = id)
@@ -127,29 +127,24 @@ class EvaluationInstanceSerializer
                 }
             }
         },
-        {
-          case i: EvaluationInstance =>
-            JObject(
-              JField("id", JString(i.id)) ::
-                JField("status", JString(i.status)) ::
-                JField("startTime", JString(i.startTime.toString)) ::
-                JField("endTime", JString(i.endTime.toString)) ::
-                JField("evaluationClass", JString(i.evaluationClass)) ::
-                JField(
-                  "engineParamsGeneratorClass",
-                  JString(i.engineParamsGeneratorClass)) ::
-                JField("batch", JString(i.batch)) ::
-                JField("env", Extraction.decompose(i.env)(DefaultFormats)) ::
-                JField(
-                  "sparkConf",
-                  Extraction.decompose(i.sparkConf)(DefaultFormats)) ::
-                JField("evaluatorResults", JString(i.evaluatorResults)) ::
-                JField(
-                  "evaluatorResultsHTML",
-                  JString(i.evaluatorResultsHTML)) ::
-                JField(
-                  "evaluatorResultsJSON",
-                  JString(i.evaluatorResultsJSON)) ::
-                Nil
-            )
+        { case i: EvaluationInstance =>
+          JObject(
+            JField("id", JString(i.id)) ::
+              JField("status", JString(i.status)) ::
+              JField("startTime", JString(i.startTime.toString)) ::
+              JField("endTime", JString(i.endTime.toString)) ::
+              JField("evaluationClass", JString(i.evaluationClass)) ::
+              JField(
+                "engineParamsGeneratorClass",
+                JString(i.engineParamsGeneratorClass)) ::
+              JField("batch", JString(i.batch)) ::
+              JField("env", Extraction.decompose(i.env)(DefaultFormats)) ::
+              JField(
+                "sparkConf",
+                Extraction.decompose(i.sparkConf)(DefaultFormats)) ::
+              JField("evaluatorResults", JString(i.evaluatorResults)) ::
+              JField("evaluatorResultsHTML", JString(i.evaluatorResultsHTML)) ::
+              JField("evaluatorResultsJSON", JString(i.evaluatorResultsJSON)) ::
+              Nil
+          )
         }))

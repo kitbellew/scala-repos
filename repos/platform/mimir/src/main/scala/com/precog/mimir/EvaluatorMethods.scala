@@ -65,9 +65,8 @@ trait EvaluatorMethodsModule[M[+_]]
               trans.WrapArray(transRValue(element, target))
             }: _*)
           case RObject(fields) =>
-            InnerObjectConcat(fields.toSeq map {
-              case (key, value) =>
-                trans.WrapObject(transRValue(value, target), key)
+            InnerObjectConcat(fields.toSeq map { case (key, value) =>
+              trans.WrapObject(transRValue(value, target), key)
             }: _*)
           case _ =>
             sys.error("Can't handle RValue")

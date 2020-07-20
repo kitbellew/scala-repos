@@ -193,9 +193,8 @@ object gen {
   def freeAbGroup[A: Arbitrary]: Gen[FreeAbGroup[A]] =
     for {
       tpls <- arbitrary[List[(A, Short)]]
-    } yield tpls.foldLeft(FreeAbGroup.id[A]) {
-      case (acc, (a, n)) =>
-        acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
+    } yield tpls.foldLeft(FreeAbGroup.id[A]) { case (acc, (a, n)) =>
+      acc |+| Group[FreeAbGroup[A]].combinen(FreeAbGroup(a), n.toInt)
     }
 
   val perm: Gen[Perm] =

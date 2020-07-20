@@ -512,8 +512,8 @@ trait HttpHelpers {
     */
   def paramsToUrlParams(params: List[(String, String)]): String =
     params
-      .map {
-        case (n, v) => urlEncode(n) + "=" + urlEncode(v)
+      .map { case (n, v) =>
+        urlEncode(n) + "=" + urlEncode(v)
       }
       .mkString("&")
 

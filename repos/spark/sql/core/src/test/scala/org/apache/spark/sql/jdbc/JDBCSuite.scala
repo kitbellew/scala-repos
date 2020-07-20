@@ -855,9 +855,8 @@ class JDBCSuite
       assert(!List("testPass", "testUser").exists(r.toString.contains))
     }
     // test the JdbcRelation toString output
-    df.queryExecution.analyzed.collect {
-      case r: LogicalRelation =>
-        assert(r.relation.toString == "JDBCRelation(TEST.PEOPLE)")
+    df.queryExecution.analyzed.collect { case r: LogicalRelation =>
+      assert(r.relation.toString == "JDBCRelation(TEST.PEOPLE)")
     }
   }
 

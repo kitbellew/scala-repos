@@ -17,8 +17,7 @@ object SnapshotRecoveryLocalStoreSpec {
       case SaveSnapshotSuccess(md) ⇒ probe ! md.sequenceNr
       case GetState ⇒ probe ! state
     }
-    def receiveRecover = {
-      case _ ⇒
+    def receiveRecover = { case _ ⇒
     }
   }
 
@@ -27,8 +26,7 @@ object SnapshotRecoveryLocalStoreSpec {
       with TurnOffRecoverOnStart
       with ActorLogging {
 
-    def receiveCommand = {
-      case _ ⇒
+    def receiveCommand = { case _ ⇒
     }
     def receiveRecover = {
       case other ⇒ probe ! other

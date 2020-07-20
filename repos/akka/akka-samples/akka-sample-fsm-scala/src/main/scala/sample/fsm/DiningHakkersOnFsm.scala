@@ -38,9 +38,8 @@ class Chopstick extends Actor with FSM[ChopstickState, TakenBy] {
   startWith(Available, TakenBy(system.deadLetters))
 
   // When a chopstick is available, it can be taken by a some hakker
-  when(Available) {
-    case Event(Take, _) =>
-      goto(Taken) using TakenBy(sender()) replying Taken(self)
+  when(Available) { case Event(Take, _) =>
+    goto(Taken) using TakenBy(sender()) replying Taken(self)
   }
 
   // When a chopstick is taken by a hakker
@@ -91,19 +90,17 @@ class FSMHakker(name: String, left: ActorRef, right: ActorRef)
   //All hakkers start waiting
   startWith(Waiting, TakenChopsticks(None, None))
 
-  when(Waiting) {
-    case Event(Think, _) =>
-      println("%s starts to think".format(name))
-      startThinking(5.seconds)
+  when(Waiting) { case Event(Think, _) =>
+    println("%s starts to think".format(name))
+    startThinking(5.seconds)
   }
 
   //When a hakker is thinking it can become hungry
   //and try to pick up its chopsticks and eat
-  when(Thinking) {
-    case Event(StateTimeout, _) =>
-      left ! Take
-      right ! Take
-      goto(Hungry)
+  when(Thinking) { case Event(StateTimeout, _) =>
+    left ! Take
+    right ! Take
+    goto(Hungry)
   }
 
   // When a hakker is hungry it tries to pick up its chopsticks and eat
@@ -155,12 +152,11 @@ class FSMHakker(name: String, left: ActorRef, right: ActorRef)
 
   // When a hakker is eating, he can decide to start to think,
   // then he puts down his chopsticks and starts to think
-  when(Eating) {
-    case Event(StateTimeout, _) =>
-      println("%s puts down his chopsticks and starts to think".format(name))
-      left ! Put
-      right ! Put
-      startThinking(5.seconds)
+  when(Eating) { case Event(StateTimeout, _) =>
+    println("%s puts down his chopsticks and starts to think".format(name))
+    left ! Put
+    right ! Put
+    startThinking(5.seconds)
   }
 
   // Initialize the hakker

@@ -70,9 +70,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
         .result(
           client.get(Seq("foo", "baz", "notthere"))
         )
-        .map {
-          case (key, Buf.Utf8(value)) =>
-            (key, value)
+        .map { case (key, Buf.Utf8(value)) =>
+          (key, value)
         }
     assert(result == Map("foo" -> "bar", "baz" -> "boing"))
   }
@@ -87,9 +86,8 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
           .result(
             client.gets(Seq("foos", "bazs", "somethingelse"))
           )
-          .map {
-            case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
-              (key, (value, casUnique))
+          .map { case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
+            (key, (value, casUnique))
           }
       val expected =
         Map(
@@ -235,10 +233,9 @@ class MemcachedTest extends FunSuite with BeforeAndAfter {
 
     // one memcache host alive
     val clientSet =
-      (0 to 20).foldLeft(Set[Client]()) {
-        case (s, i) =>
-          val c = partitionedClient.clientOf(s"foo$i")
-          s + c
+      (0 to 20).foldLeft(Set[Client]()) { case (s, i) =>
+        val c = partitionedClient.clientOf(s"foo$i")
+        s + c
       }
     assert(clientSet.size == 1)
 

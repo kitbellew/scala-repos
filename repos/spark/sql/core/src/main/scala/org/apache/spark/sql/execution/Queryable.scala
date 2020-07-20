@@ -91,13 +91,12 @@ private[sql] trait Queryable {
 
     // column names
     rows.head.zipWithIndex
-      .map {
-        case (cell, i) =>
-          if (truncate) {
-            StringUtils.leftPad(cell, colWidths(i))
-          } else {
-            StringUtils.rightPad(cell, colWidths(i))
-          }
+      .map { case (cell, i) =>
+        if (truncate) {
+          StringUtils.leftPad(cell, colWidths(i))
+        } else {
+          StringUtils.rightPad(cell, colWidths(i))
+        }
       }
       .addString(sb, "|", "|", "|\n")
 
@@ -106,13 +105,12 @@ private[sql] trait Queryable {
     // data
     rows.tail.map {
       _.zipWithIndex
-        .map {
-          case (cell, i) =>
-            if (truncate) {
-              StringUtils.leftPad(cell.toString, colWidths(i))
-            } else {
-              StringUtils.rightPad(cell.toString, colWidths(i))
-            }
+        .map { case (cell, i) =>
+          if (truncate) {
+            StringUtils.leftPad(cell.toString, colWidths(i))
+          } else {
+            StringUtils.rightPad(cell.toString, colWidths(i))
+          }
         }
         .addString(sb, "|", "|", "|\n")
     }

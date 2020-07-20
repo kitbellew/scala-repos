@@ -224,81 +224,71 @@ class GeneralizedLinearRegressionSuite
     */
   ignore("export test data into CSV format") {
     datasetGaussianIdentity.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGaussianIdentity")
     datasetGaussianLog.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGaussianLog")
     datasetGaussianInverse.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGaussianInverse")
     datasetBinomial.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetBinomial")
     datasetPoissonLog.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetPoissonLog")
     datasetPoissonIdentity.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetPoissonIdentity")
     datasetPoissonSqrt.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetPoissonSqrt")
     datasetGammaInverse.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGammaInverse")
     datasetGammaIdentity.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
         "target/tmp/GeneralizedLinearRegressionSuite/datasetGammaIdentity")
     datasetGammaLog.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile(
@@ -409,14 +399,13 @@ class GeneralizedLinearRegressionSuite
           .transform(dataset)
           .select("features", "prediction")
           .collect()
-          .foreach {
-            case Row(features: DenseVector, prediction1: Double) =>
-              val eta = BLAS.dot(features, model.coefficients) + model.intercept
-              val prediction2 = familyLink.fitted(eta)
-              assert(
-                prediction1 ~= prediction2 relTol 1e-5,
-                "Prediction mismatch: GLM with " +
-                  s"gaussian family, $link link and fitIntercept = $fitIntercept.")
+          .foreach { case Row(features: DenseVector, prediction1: Double) =>
+            val eta = BLAS.dot(features, model.coefficients) + model.intercept
+            val prediction2 = familyLink.fitted(eta)
+            assert(
+              prediction1 ~= prediction2 relTol 1e-5,
+              "Prediction mismatch: GLM with " +
+                s"gaussian family, $link link and fitIntercept = $fitIntercept.")
           }
 
         idx += 1
@@ -546,14 +535,13 @@ class GeneralizedLinearRegressionSuite
           .transform(dataset)
           .select("features", "prediction")
           .collect()
-          .foreach {
-            case Row(features: DenseVector, prediction1: Double) =>
-              val eta = BLAS.dot(features, model.coefficients) + model.intercept
-              val prediction2 = familyLink.fitted(eta)
-              assert(
-                prediction1 ~= prediction2 relTol 1e-5,
-                "Prediction mismatch: GLM with " +
-                  s"binomial family, $link link and fitIntercept = $fitIntercept.")
+          .foreach { case Row(features: DenseVector, prediction1: Double) =>
+            val eta = BLAS.dot(features, model.coefficients) + model.intercept
+            val prediction2 = familyLink.fitted(eta)
+            assert(
+              prediction1 ~= prediction2 relTol 1e-5,
+              "Prediction mismatch: GLM with " +
+                s"binomial family, $link link and fitIntercept = $fitIntercept.")
           }
 
         idx += 1
@@ -630,14 +618,13 @@ class GeneralizedLinearRegressionSuite
           .transform(dataset)
           .select("features", "prediction")
           .collect()
-          .foreach {
-            case Row(features: DenseVector, prediction1: Double) =>
-              val eta = BLAS.dot(features, model.coefficients) + model.intercept
-              val prediction2 = familyLink.fitted(eta)
-              assert(
-                prediction1 ~= prediction2 relTol 1e-5,
-                "Prediction mismatch: GLM with " +
-                  s"poisson family, $link link and fitIntercept = $fitIntercept.")
+          .foreach { case Row(features: DenseVector, prediction1: Double) =>
+            val eta = BLAS.dot(features, model.coefficients) + model.intercept
+            val prediction2 = familyLink.fitted(eta)
+            assert(
+              prediction1 ~= prediction2 relTol 1e-5,
+              "Prediction mismatch: GLM with " +
+                s"poisson family, $link link and fitIntercept = $fitIntercept.")
           }
 
         idx += 1
@@ -714,14 +701,13 @@ class GeneralizedLinearRegressionSuite
           .transform(dataset)
           .select("features", "prediction")
           .collect()
-          .foreach {
-            case Row(features: DenseVector, prediction1: Double) =>
-              val eta = BLAS.dot(features, model.coefficients) + model.intercept
-              val prediction2 = familyLink.fitted(eta)
-              assert(
-                prediction1 ~= prediction2 relTol 1e-5,
-                "Prediction mismatch: GLM with " +
-                  s"gamma family, $link link and fitIntercept = $fitIntercept.")
+          .foreach { case Row(features: DenseVector, prediction1: Double) =>
+            val eta = BLAS.dot(features, model.coefficients) + model.intercept
+            val prediction2 = familyLink.fitted(eta)
+            assert(
+              prediction1 ~= prediction2 relTol 1e-5,
+              "Prediction mismatch: GLM with " +
+                s"gamma family, $link link and fitIntercept = $fitIntercept.")
           }
 
         idx += 1

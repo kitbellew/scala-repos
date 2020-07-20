@@ -573,13 +573,12 @@ private[persistence] trait Eventsourced
       override def stateReceive(receive: Receive, message: Any) =
         message match {
           case LoadSnapshotResult(sso, toSnr) ⇒
-            sso.foreach {
-              case SelectedSnapshot(metadata, snapshot) ⇒
-                setLastSequenceNr(metadata.sequenceNr)
-                // Since we are recovering we can ignore the receive behavior from the stack
-                Eventsourced.super.aroundReceive(
-                  recoveryBehavior,
-                  SnapshotOffer(metadata, snapshot))
+            sso.foreach { case SelectedSnapshot(metadata, snapshot) ⇒
+              setLastSequenceNr(metadata.sequenceNr)
+              // Since we are recovering we can ignore the receive behavior from the stack
+              Eventsourced.super.aroundReceive(
+                recoveryBehavior,
+                SnapshotOffer(metadata, snapshot))
             }
             changeState(recovering(recoveryBehavior))
             journal ! ReplayMessages(

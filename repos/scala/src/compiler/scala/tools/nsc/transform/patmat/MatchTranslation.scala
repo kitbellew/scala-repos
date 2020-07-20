@@ -631,12 +631,11 @@ trait MatchTranslation {
               (paramAccessors exists (x =>
                 x.isMutable || definitions.isRepeated(x)))) {
 
-              subPatBinders.zipWithIndex.flatMap {
-                case (binder, idx) =>
-                  val param = paramAccessorAt(idx)
-                  if (param.isMutable || (definitions.isRepeated(
-                      param) && !aligner.isStar)) binder :: Nil
-                  else Nil
+              subPatBinders.zipWithIndex.flatMap { case (binder, idx) =>
+                val param = paramAccessorAt(idx)
+                if (param.isMutable || (definitions.isRepeated(
+                    param) && !aligner.isStar)) binder :: Nil
+                else Nil
               }
             } else Nil
           )

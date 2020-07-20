@@ -173,9 +173,8 @@ class Engine[TD, EI, PD, Q, P, A](
       algoParamsList.size > 0,
       "EngineParams.algorithmParamsList must have at least 1 element.")
 
-    val algorithms = algoParamsList.map {
-      case (algoName, algoParams) =>
-        Doer(algorithmClassMap(algoName), algoParams)
+    val algorithms = algoParamsList.map { case (algoName, algoParams) =>
+      Doer(algorithmClassMap(algoName), algoParams)
     }
 
     val models = Engine.train(sc, dataSource, preparator, algorithms, params)
@@ -208,9 +207,8 @@ class Engine[TD, EI, PD, Q, P, A](
       params: WorkflowParams): Seq[Any] = {
 
     val algoParamsList = engineParams.algorithmParamsList
-    val algorithms = algoParamsList.map {
-      case (algoName, algoParams) =>
-        Doer(algorithmClassMap(algoName), algoParams)
+    val algorithms = algoParamsList.map { case (algoName, algoParams) =>
+      Doer(algorithmClassMap(algoName), algoParams)
     }
 
     val models = if (persistedModels.exists(m => m.isInstanceOf[Unit.type])) {
@@ -227,12 +225,11 @@ class Engine[TD, EI, PD, Q, P, A](
       val td = dataSource.readTrainingBase(sc)
       val pd = preparator.prepareBase(sc, td)
 
-      val models = algorithms.zip(persistedModels).map {
-        case (algo, m) =>
-          m match {
-            case Unit => algo.trainBase(sc, pd)
-            case _    => m
-          }
+      val models = algorithms.zip(persistedModels).map { case (algo, m) =>
+        m match {
+          case Unit => algo.trainBase(sc, pd)
+          case _    => m
+        }
       }
       models
     } else {
@@ -302,13 +299,12 @@ class Engine[TD, EI, PD, Q, P, A](
     logger.info(s"engineInstanceId=$engineInstanceId")
 
     algoTuples.zipWithIndex
-      .map {
-        case ((name, params, algo, model), ax) =>
-          algo.makePersistentModel(
-            sc = sc,
-            modelId = Seq(engineInstanceId, ax, name).mkString("-"),
-            algoParams = params,
-            bm = model)
+      .map { case ((name, params, algo, model), ax) =>
+        algo.makePersistentModel(
+          sc = sc,
+          modelId = Seq(engineInstanceId, ax, name).mkString("-"),
+          algoParams = params,
+          bm = model)
       }
   }
 

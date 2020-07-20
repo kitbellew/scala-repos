@@ -97,8 +97,8 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
 
   def partitionsOnBroker(brokerId: Int): Set[TopicAndPartition] = {
     partitionReplicaAssignment
-      .filter {
-        case (topicAndPartition, replicas) => replicas.contains(brokerId)
+      .filter { case (topicAndPartition, replicas) =>
+        replicas.contains(brokerId)
       }
       .map { case (topicAndPartition, replicas) => topicAndPartition }
       .toSet
@@ -108,15 +108,14 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
     brokerIds
       .map { brokerId =>
         partitionReplicaAssignment
-          .filter {
-            case (topicAndPartition, replicas) => replicas.contains(brokerId)
+          .filter { case (topicAndPartition, replicas) =>
+            replicas.contains(brokerId)
           }
-          .map {
-            case (topicAndPartition, replicas) =>
-              new PartitionAndReplica(
-                topicAndPartition.topic,
-                topicAndPartition.partition,
-                brokerId)
+          .map { case (topicAndPartition, replicas) =>
+            new PartitionAndReplica(
+              topicAndPartition.topic,
+              topicAndPartition.partition,
+              brokerId)
           }
       }
       .flatten
@@ -125,27 +124,24 @@ class ControllerContext(val zkUtils: ZkUtils, val zkSessionTimeout: Int) {
 
   def replicasForTopic(topic: String): Set[PartitionAndReplica] = {
     partitionReplicaAssignment
-      .filter {
-        case (topicAndPartition, replicas) =>
-          topicAndPartition.topic.equals(topic)
+      .filter { case (topicAndPartition, replicas) =>
+        topicAndPartition.topic.equals(topic)
       }
-      .map {
-        case (topicAndPartition, replicas) =>
-          replicas.map { r =>
-            new PartitionAndReplica(
-              topicAndPartition.topic,
-              topicAndPartition.partition,
-              r)
-          }
+      .map { case (topicAndPartition, replicas) =>
+        replicas.map { r =>
+          new PartitionAndReplica(
+            topicAndPartition.topic,
+            topicAndPartition.partition,
+            r)
+        }
       }
       .flatten
       .toSet
   }
 
   def partitionsForTopic(topic: String): collection.Set[TopicAndPartition] = {
-    partitionReplicaAssignment.filter {
-      case (topicAndPartition, replicas) =>
-        topicAndPartition.topic.equals(topic)
+    partitionReplicaAssignment.filter { case (topicAndPartition, replicas) =>
+      topicAndPartition.topic.equals(topic)
     }.keySet
   }
 
@@ -405,11 +401,10 @@ class KafkaController(
             "All leaders = " + controllerContext.partitionLeadershipInfo
               .mkString(","))
           controllerContext.partitionLeadershipInfo
-            .filter {
-              case (topicAndPartition, leaderIsrAndControllerEpoch) =>
-                leaderIsrAndControllerEpoch.leaderAndIsr.leader == id && controllerContext
-                  .partitionReplicaAssignment(topicAndPartition)
-                  .size > 1
+            .filter { case (topicAndPartition, leaderIsrAndControllerEpoch) =>
+              leaderIsrAndControllerEpoch.leaderAndIsr.leader == id && controllerContext
+                .partitionReplicaAssignment(topicAndPartition)
+                .size > 1
             }
             .map(_._1)
         }
@@ -1102,9 +1097,8 @@ class KafkaController(
       zkUtils.getChildrenParentMayNotExist(ZkUtils.DeleteTopicsPath).toSet
     val topicsWithReplicasOnDeadBrokers =
       controllerContext.partitionReplicaAssignment
-        .filter {
-          case (partition, replicas) =>
-            replicas.exists(r => !controllerContext.liveBrokerIds.contains(r))
+        .filter { case (partition, replicas) =>
+          replicas.exists(r => !controllerContext.liveBrokerIds.contains(r))
         }
         .keySet
         .map(_.topic)
@@ -1720,9 +1714,8 @@ class KafkaController(
           controllerContext.partitionReplicaAssignment
             .filterNot(p =>
               deleteTopicManager.isTopicQueuedUpForDeletion(p._1.topic))
-            .groupBy {
-              case (topicAndPartition, assignedReplicas) =>
-                assignedReplicas.head
+            .groupBy { case (topicAndPartition, assignedReplicas) =>
+              assignedReplicas.head
             }
       }
       debug(
@@ -1980,12 +1973,11 @@ class IsrChangeNotificationListener(controller: KafkaController)
           val isrChanges = m.asInstanceOf[Map[String, Any]]
           val topicAndPartitionList =
             isrChanges("partitions").asInstanceOf[List[Any]]
-          topicAndPartitionList.foreach {
-            case tp =>
-              val topicAndPartition = tp.asInstanceOf[Map[String, Any]]
-              val topic = topicAndPartition("topic").asInstanceOf[String]
-              val partition = topicAndPartition("partition").asInstanceOf[Int]
-              topicAndPartitions += TopicAndPartition(topic, partition)
+          topicAndPartitionList.foreach { case tp =>
+            val topicAndPartition = tp.asInstanceOf[Map[String, Any]]
+            val topic = topicAndPartition("topic").asInstanceOf[String]
+            val partition = topicAndPartition("partition").asInstanceOf[Int]
+            topicAndPartitions += TopicAndPartition(topic, partition)
           }
           topicAndPartitions
         case None =>

@@ -46,21 +46,18 @@ case object TimedOut
 case object CantUnderstand
 
 class SavingsAccountProxy extends Actor {
-  def receive = {
-    case GetAccountBalances(id: Long) ⇒
-      sender() ! SavingsAccountBalances(Some(List((1, 150000), (2, 29000))))
+  def receive = { case GetAccountBalances(id: Long) ⇒
+    sender() ! SavingsAccountBalances(Some(List((1, 150000), (2, 29000))))
   }
 }
 class CheckingAccountProxy extends Actor {
-  def receive = {
-    case GetAccountBalances(id: Long) ⇒
-      sender() ! CheckingAccountBalances(Some(List((3, 15000))))
+  def receive = { case GetAccountBalances(id: Long) ⇒
+    sender() ! CheckingAccountBalances(Some(List((3, 15000))))
   }
 }
 class MoneyMarketAccountProxy extends Actor {
-  def receive = {
-    case GetAccountBalances(id: Long) ⇒
-      sender() ! MoneyMarketAccountBalances(None)
+  def receive = { case GetAccountBalances(id: Long) ⇒
+    sender() ! MoneyMarketAccountBalances(None)
   }
 }
 
@@ -104,29 +101,26 @@ class AccountBalanceRetriever extends Actor with Aggregator {
     //#expect-balance
     def fetchCheckingAccountsBalance() {
       context.actorOf(Props[CheckingAccountProxy]) ! GetAccountBalances(id)
-      expectOnce {
-        case CheckingAccountBalances(balances) ⇒
-          results += (Checking -> balances)
-          collectBalances()
+      expectOnce { case CheckingAccountBalances(balances) ⇒
+        results += (Checking -> balances)
+        collectBalances()
       }
     }
     //#expect-balance
 
     def fetchSavingsAccountsBalance() {
       context.actorOf(Props[SavingsAccountProxy]) ! GetAccountBalances(id)
-      expectOnce {
-        case SavingsAccountBalances(balances) ⇒
-          results += (Savings -> balances)
-          collectBalances()
+      expectOnce { case SavingsAccountBalances(balances) ⇒
+        results += (Savings -> balances)
+        collectBalances()
       }
     }
 
     def fetchMoneyMarketAccountsBalance() {
       context.actorOf(Props[MoneyMarketAccountProxy]) ! GetAccountBalances(id)
-      expectOnce {
-        case MoneyMarketAccountBalances(balances) ⇒
-          results += (MoneyMarket -> balances)
-          collectBalances()
+      expectOnce { case MoneyMarketAccountBalances(balances) ⇒
+        results += (MoneyMarket -> balances)
+        collectBalances()
       }
     }
 
@@ -365,17 +359,15 @@ class WorkListSpec extends FunSuiteLike {
 
   val workList2 = WorkList.empty[PartialFunction[Any, Unit]]
 
-  val fn1: PartialFunction[Any, Unit] = {
-    case s: String ⇒
-      val result1 = workList2 remove fn1
-      assert(result1 === true, "First remove must return true")
-      val result2 = workList2 remove fn1
-      assert(result2 === false, "Second remove must return false")
+  val fn1: PartialFunction[Any, Unit] = { case s: String ⇒
+    val result1 = workList2 remove fn1
+    assert(result1 === true, "First remove must return true")
+    val result2 = workList2 remove fn1
+    assert(result2 === false, "Second remove must return false")
   }
 
-  val fn2: PartialFunction[Any, Unit] = {
-    case s: String ⇒
-      workList2.add(fn1, permanent = true)
+  val fn2: PartialFunction[Any, Unit] = { case s: String ⇒
+    workList2.add(fn1, permanent = true)
   }
 
   test("Reentrant insert") {

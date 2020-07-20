@@ -17,19 +17,17 @@ final class HyperLogLogCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode PFADD with one element", CodecTest) {
-    unwrap(codec(wrap("PFADD foo bar\r\n"))) {
-      case PFAdd(key, List(element)) =>
-        assert(CBToString(key) == "foo")
-        assert(CBToString(element) == "bar")
+    unwrap(codec(wrap("PFADD foo bar\r\n"))) { case PFAdd(key, List(element)) =>
+      assert(CBToString(key) == "foo")
+      assert(CBToString(element) == "bar")
     }
   }
 
   test("Correctly encode PFADD with two elements", CodecTest) {
-    unwrap(codec(wrap("PFADD foo bar baz\r\n"))) {
-      case PFAdd(key, elements) =>
-        assert(CBToString(key) == "foo")
-        assert(CBToString(elements(0)) == "bar")
-        assert(CBToString(elements(1)) == "baz")
+    unwrap(codec(wrap("PFADD foo bar baz\r\n"))) { case PFAdd(key, elements) =>
+      assert(CBToString(key) == "foo")
+      assert(CBToString(elements(0)) == "bar")
+      assert(CBToString(elements(1)) == "baz")
     }
   }
 
@@ -42,17 +40,15 @@ final class HyperLogLogCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode PFCOUNT with one key", CodecTest) {
-    unwrap(codec(wrap("PFCOUNT foo\r\n"))) {
-      case PFCount(List(key)) =>
-        assert(CBToString(key) == "foo")
+    unwrap(codec(wrap("PFCOUNT foo\r\n"))) { case PFCount(List(key)) =>
+      assert(CBToString(key) == "foo")
     }
   }
 
   test("Correctly encode PFCOUNT with two keys", CodecTest) {
-    unwrap(codec(wrap("PFCOUNT foo bar\r\n"))) {
-      case PFCount(keys) =>
-        assert(CBToString(keys(0)) == "foo")
-        assert(CBToString(keys(1)) == "bar")
+    unwrap(codec(wrap("PFCOUNT foo bar\r\n"))) { case PFCount(keys) =>
+      assert(CBToString(keys(0)) == "foo")
+      assert(CBToString(keys(1)) == "bar")
     }
   }
 

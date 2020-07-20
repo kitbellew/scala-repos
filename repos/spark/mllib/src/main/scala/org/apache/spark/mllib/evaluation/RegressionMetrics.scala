@@ -58,9 +58,8 @@ class RegressionMetrics @Since("2.0.0") (
     */
   private lazy val summary: MultivariateStatisticalSummary = {
     val summary: MultivariateStatisticalSummary = predictionAndObservations
-      .map {
-        case (prediction, observation) =>
-          Vectors.dense(observation, observation - prediction)
+      .map { case (prediction, observation) =>
+        Vectors.dense(observation, observation - prediction)
       }
       .aggregate(new MultivariateOnlineSummarizer())(
         (summary, v) => summary.add(v),
@@ -75,8 +74,8 @@ class RegressionMetrics @Since("2.0.0") (
   private lazy val SSreg = {
     val yMean = summary.mean(0)
     predictionAndObservations
-      .map {
-        case (prediction, _) => math.pow(prediction - yMean, 2)
+      .map { case (prediction, _) =>
+        math.pow(prediction - yMean, 2)
       }
       .sum()
   }

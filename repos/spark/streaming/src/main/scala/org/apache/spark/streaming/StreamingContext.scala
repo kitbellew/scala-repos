@@ -482,14 +482,13 @@ class StreamingContext private[streaming] (
           FileInputDStream.defaultFilter: Path => Boolean,
           newFilesOnly = true,
           conf)
-      val data = br.map {
-        case (k, v) =>
-          val bytes = v.getBytes
-          require(
-            bytes.length == recordLength,
-            "Byte array does not have correct length. " +
-              s"${bytes.length} did not equal recordLength: $recordLength")
-          bytes
+      val data = br.map { case (k, v) =>
+        val bytes = v.getBytes
+        require(
+          bytes.length == recordLength,
+          "Byte array does not have correct length. " +
+            s"${bytes.length} did not equal recordLength: $recordLength")
+        bytes
       }
       data
     }

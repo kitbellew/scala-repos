@@ -135,9 +135,8 @@ trait RefactoringHandler { self: Analyzer =>
           case Left(e) => throw e
         }
       }
-      .collect {
-        case Success((f, contents, formatted)) =>
-          TextEdit(f, 0, contents.length, formatted)
+      .collect { case Success((f, contents, formatted)) =>
+        TextEdit(f, 0, contents.length, formatted)
       }
     FileUtils.writeChanges(changeList, cs)
   }

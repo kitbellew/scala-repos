@@ -89,12 +89,11 @@ object ScalaMacroDebuggingUtil {
       //unpack debug info
       val offsets = ListBuffer.empty[(Int, Int, Int)]
       @inline def parse(s: String) = Integer parseInt s
-      line split '|' foreach {
-        case s =>
-          val nums = s split ","
-          if (nums.length == 3) {
-            offsets.append((parse(nums(0)), parse(nums(1)), parse(nums(2))))
-          }
+      line split '|' foreach { case s =>
+        val nums = s split ","
+        if (nums.length == 3) {
+          offsets.append((parse(nums(0)), parse(nums(1)), parse(nums(2))))
+        }
       }
       SYNTHETIC_OFFSETS_MAP += (canonicalPath -> offsets.result())
       // /unpack

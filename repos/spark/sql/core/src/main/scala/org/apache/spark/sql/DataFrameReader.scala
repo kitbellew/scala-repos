@@ -286,9 +286,8 @@ class DataFrameReader private[sql] (sqlContext: SQLContext) extends Logging {
       parts: Array[Partition],
       connectionProperties: Properties): DataFrame = {
     val props = new Properties()
-    extraOptions.foreach {
-      case (key, value) =>
-        props.put(key, value)
+    extraOptions.foreach { case (key, value) =>
+      props.put(key, value)
     }
     // connectionProperties should override settings in extraOptions
     props.putAll(connectionProperties)

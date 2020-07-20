@@ -73,8 +73,7 @@ class JavaCompilerSpec
         test2) should matchPattern { case None => }
       cc.askLinkPos(
         JavaFqn("org.example", "Test2.Bar", None),
-        test2) should matchPattern {
-        case Some(OffsetSourcePosition(f, 260)) =>
+        test2) should matchPattern { case Some(OffsetSourcePosition(f, 260)) =>
       }
     //    cc.askLinkPos(JavaFqn("org.example", "Test2", Some("compute()")), test2) should matchPattern { case Some(OffsetSourcePosition(f, 58)) => }
 

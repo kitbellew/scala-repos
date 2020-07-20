@@ -125,10 +125,9 @@ class ReliableKafkaStreamSuite
 
   test("Reliable Kafka input stream with multiple topics") {
     val topics = Map("topic1" -> 1, "topic2" -> 1, "topic3" -> 1)
-    topics.foreach {
-      case (t, _) =>
-        kafkaTestUtils.createTopic(t)
-        kafkaTestUtils.sendMessages(t, data)
+    topics.foreach { case (t, _) =>
+      kafkaTestUtils.createTopic(t)
+      kafkaTestUtils.sendMessages(t, data)
     }
 
     // Before started, verify all the group/topic/partition offsets are 0.

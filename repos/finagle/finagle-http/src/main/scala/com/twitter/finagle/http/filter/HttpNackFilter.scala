@@ -56,10 +56,9 @@ private[finagle] class HttpNackFilter(statsReceiver: StatsReceiver)
   def apply(
       request: Request,
       service: Service[Request, Response]): Future[Response] = {
-    service(request).handle {
-      case RetryPolicy.RetryableWriteException(_) =>
-        nackCounts.incr()
-        NackResponse
+    service(request).handle { case RetryPolicy.RetryableWriteException(_) =>
+      nackCounts.incr()
+      NackResponse
     }
   }
 }

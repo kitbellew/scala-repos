@@ -66,9 +66,8 @@ case class NativeConnector(
         c
       } apply ()
     }.flatten
-      .rescue {
-        case e: NativeConnector.ConnectTimeoutException =>
-          release() flatMap { _ => Future.exception(e) }
+      .rescue { case e: NativeConnector.ConnectTimeoutException =>
+        release() flatMap { _ => Future.exception(e) }
       }
 
   /**

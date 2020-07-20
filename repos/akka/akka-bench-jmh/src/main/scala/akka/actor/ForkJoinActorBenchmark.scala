@@ -117,13 +117,12 @@ object ForkJoinActorBenchmark {
   }
   class PingPong extends Actor {
     var left = messages / 2
-    def receive = {
-      case `message` =>
-        if (left <= 1)
-          context stop self
+    def receive = { case `message` =>
+      if (left <= 1)
+        context stop self
 
-        sender() ! message
-        left -= 1
+      sender() ! message
+      left -= 1
     }
   }
 }

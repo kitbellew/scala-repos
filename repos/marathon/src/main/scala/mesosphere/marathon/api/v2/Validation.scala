@@ -57,12 +57,11 @@ object Validation {
         f.violations
           .flatMap(allRuleViolationsWithFullDescription(_))
           .groupBy(_.description)
-          .map {
-            case (description, ruleViolation) =>
-              Json.obj(
-                "path" -> description,
-                "errors" -> ruleViolation.map(r => JsString(r.constraint))
-              )
+          .map { case (description, ruleViolation) =>
+            Json.obj(
+              "path" -> description,
+              "errors" -> ruleViolation.map(r => JsString(r.constraint))
+            )
           }
       }
     )

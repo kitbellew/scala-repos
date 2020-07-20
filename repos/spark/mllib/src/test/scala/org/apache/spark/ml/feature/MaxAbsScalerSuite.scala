@@ -51,11 +51,10 @@ class MaxAbsScalerSuite
       .transform(df)
       .select("expected", "scaled")
       .collect()
-      .foreach {
-        case Row(vector1: Vector, vector2: Vector) =>
-          assert(
-            vector1.equals(vector2),
-            s"MaxAbsScaler ut error: $vector2 should be $vector1")
+      .foreach { case Row(vector1: Vector, vector2: Vector) =>
+        assert(
+          vector1.equals(vector2),
+          s"MaxAbsScaler ut error: $vector2 should be $vector1")
       }
 
     // copied model must have the same parent.

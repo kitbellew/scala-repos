@@ -48,23 +48,21 @@ object QueueLaws extends Properties("Queue") {
   property("Queue works with finished futures") = forAll { (items: List[Int]) =>
     val q = Queue.linkedBlocking[(Int, Try[Int])]
     items.foreach { i => q.put((i, Try(i * i))) }
-    q.foldLeft((0, true)) {
-      case ((cnt, good), (i, ti)) =>
-        ti match {
-          case Return(ii) => (cnt + 1, good)
-          case Throw(e)   => (cnt + 1, false)
-        }
+    q.foldLeft((0, true)) { case ((cnt, good), (i, ti)) =>
+      ti match {
+        case Return(ii) => (cnt + 1, good)
+        case Throw(e)   => (cnt + 1, false)
+      }
     } == (items.size, true)
   }
   property("Queue.linkedNonBlocking works") = forAll { (items: List[Int]) =>
     val q = Queue.linkedNonBlocking[(Int, Try[Int])]
     items.foreach { i => q.put((i, Try(i * i))) }
-    q.foldLeft((0, true)) {
-      case ((cnt, good), (i, ti)) =>
-        ti match {
-          case Return(ii) => (cnt + 1, good)
-          case Throw(e)   => (cnt + 1, false)
-        }
+    q.foldLeft((0, true)) { case ((cnt, good), (i, ti)) =>
+      ti match {
+        case Return(ii) => (cnt + 1, good)
+        case Throw(e)   => (cnt + 1, false)
+      }
     } == (items.size, true)
   }
   property("Queue foreach works") = forAll { (items: List[Int]) =>
@@ -72,9 +70,8 @@ object QueueLaws extends Properties("Queue") {
     val q = Queue.arrayBlocking[(Int, Try[Int])](items.size + 1)
     items.foreach { i => q.put((i, Try(i * i))) }
     var works = true
-    q.foreach {
-      case (i, Return(ii)) =>
-        works = works && (ii == i * i)
+    q.foreach { case (i, Return(ii)) =>
+      works = works && (ii == i * i)
     }
     works && (q.size == 0)
   }
@@ -82,9 +79,8 @@ object QueueLaws extends Properties("Queue") {
     // Make sure we can fit everything
     val q = Queue.arrayBlocking[(Int, Try[Int])](items.size + 1)
     items.foreach { i => q.put((i, Try(i * i))) }
-    q.foldLeft(true) {
-      case (works, (i, Return(ii))) =>
-        (ii == i * i)
+    q.foldLeft(true) { case (works, (i, Return(ii))) =>
+      (ii == i * i)
     } && (q.size == 0)
   }
 

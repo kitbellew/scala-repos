@@ -681,11 +681,10 @@ class DAGSchedulerSuite
     checkStageId(stageId, attemptIdx, stageAttempt)
     complete(
       stageAttempt,
-      stageAttempt.tasks.zipWithIndex.map {
-        case (task, idx) =>
-          (
-            Success,
-            makeMapStatus("host" + ('A' + idx).toChar, numShufflePartitions))
+      stageAttempt.tasks.zipWithIndex.map { case (task, idx) =>
+        (
+          Success,
+          makeMapStatus("host" + ('A' + idx).toChar, numShufflePartitions))
       }.toSeq)
   }
 
@@ -705,16 +704,15 @@ class DAGSchedulerSuite
     checkStageId(stageId, attemptIdx, stageAttempt)
     complete(
       stageAttempt,
-      stageAttempt.tasks.zipWithIndex.map {
-        case (task, idx) =>
-          (
-            FetchFailed(
-              makeBlockManagerId("hostA"),
-              shuffleDep.shuffleId,
-              0,
-              idx,
-              "ignored"),
-            null)
+      stageAttempt.tasks.zipWithIndex.map { case (task, idx) =>
+        (
+          FetchFailed(
+            makeBlockManagerId("hostA"),
+            shuffleDep.shuffleId,
+            0,
+            idx,
+            "ignored"),
+          null)
       }.toSeq
     )
   }
@@ -733,9 +731,8 @@ class DAGSchedulerSuite
     val stageAttempt = taskSets.last
     checkStageId(stageId, attemptIdx, stageAttempt)
     assert(scheduler.stageIdToStage(stageId).isInstanceOf[ResultStage])
-    val taskResults = stageAttempt.tasks.zipWithIndex.map {
-      case (task, idx) =>
-        (Success, partitionToResult(idx))
+    val taskResults = stageAttempt.tasks.zipWithIndex.map { case (task, idx) =>
+      (Success, partitionToResult(idx))
     }
     complete(stageAttempt, taskResults.toSeq)
   }

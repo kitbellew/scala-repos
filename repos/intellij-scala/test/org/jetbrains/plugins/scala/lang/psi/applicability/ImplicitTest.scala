@@ -9,14 +9,11 @@ import org.jetbrains.plugins.scala.lang.psi.types._
 
 class ImplicitTest extends ApplicabilityTestBase {
   def testExplicitArguments() {
-    assertProblemsFunction("", "(implicit p: A)", "(A)") {
-      case Nil =>
+    assertProblemsFunction("", "(implicit p: A)", "(A)") { case Nil =>
     }
-    assertProblemsConstructor("", "()(implicit p: A)", "()(A)") {
-      case Nil =>
+    assertProblemsConstructor("", "()(implicit p: A)", "()(A)") { case Nil =>
     }
-    assertProblemsFunction("", "(implicit a: A, b: B)", "(A, B)") {
-      case Nil =>
+    assertProblemsFunction("", "(implicit a: A, b: B)", "(A, B)") { case Nil =>
     }
   }
 
@@ -30,14 +27,12 @@ class ImplicitTest extends ApplicabilityTestBase {
     assertProblemsFunction(
       "implicit val a = A; implicit val b = B",
       "(implicit a: A, b: B)",
-      "") {
-      case Nil =>
+      "") { case Nil =>
     }
   }
 
   def testEmptyArguments() {
-    assertProblemsConstructor("", "(implicit p: A)", "") {
-      case Nil =>
+    assertProblemsConstructor("", "(implicit p: A)", "") { case Nil =>
     }
   }
 
@@ -55,8 +50,7 @@ class ImplicitTest extends ApplicabilityTestBase {
     assertProblemsFunction(
       "implicit val v = B",
       "(implicit a: A, b: B)",
-      "(A)") {
-      case MissedValueParameter(Parameter("b")) :: Nil =>
+      "(A)") { case MissedValueParameter(Parameter("b")) :: Nil =>
     }
   }
 }

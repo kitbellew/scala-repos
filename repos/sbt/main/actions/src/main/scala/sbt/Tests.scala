@@ -271,20 +271,19 @@ object Tests {
       loader: ClassLoader,
       testFun: TestFunction,
       nestedTasks: Seq[TestTask]): Seq[(String, TestFunction)] =
-    nestedTasks.view.zipWithIndex map {
-      case (nt, idx) =>
-        val testFunDef = testFun.taskDef
-        (
-          testFunDef.fullyQualifiedName,
-          TestFramework.createTestFunction(
-            loader,
-            new TaskDef(
-              testFunDef.fullyQualifiedName + "-" + idx,
-              testFunDef.fingerprint,
-              testFunDef.explicitlySpecified,
-              testFunDef.selectors),
-            testFun.runner,
-            nt))
+    nestedTasks.view.zipWithIndex map { case (nt, idx) =>
+      val testFunDef = testFun.taskDef
+      (
+        testFunDef.fullyQualifiedName,
+        TestFramework.createTestFunction(
+          loader,
+          new TaskDef(
+            testFunDef.fullyQualifiedName + "-" + idx,
+            testFunDef.fingerprint,
+            testFunDef.explicitlySpecified,
+            testFunDef.selectors),
+          testFun.runner,
+          nt))
     }
 
   def makeParallel(
@@ -301,13 +300,12 @@ object Tests {
     val tasks = runnables.map {
       case (name, test) => toTask(loader, name, test, tags)
     }
-    tasks.join.map(_.foldLeft(Map.empty[String, SuiteResult]) {
-      case (sum, e) =>
-        val merged = sum.toSeq ++ e.toSeq
-        val grouped = merged.groupBy(_._1)
-        grouped.mapValues(_.map(_._2).foldLeft(SuiteResult.Empty) {
-          case (resultSum, result) => resultSum + result
-        })
+    tasks.join.map(_.foldLeft(Map.empty[String, SuiteResult]) { case (sum, e) =>
+      val merged = sum.toSeq ++ e.toSeq
+      val grouped = merged.groupBy(_._1)
+      grouped.mapValues(_.map(_._2).foldLeft(SuiteResult.Empty) {
+        case (resultSum, result) => resultSum + result
+      })
     })
   }
 
@@ -319,17 +317,16 @@ object Tests {
     val base = task { (name, fun.apply()) }
     val taggedBase =
       base.tagw(tags: _*).tag(fun.tags.map(ConcurrentRestrictions.Tag(_)): _*)
-    taggedBase flatMap {
-      case (name, (result, nested)) =>
-        val nestedRunnables = createNestedRunnables(loader, fun, nested)
-        toTasks(loader, nestedRunnables, tags).map { currentResultMap =>
-          val newResult =
-            currentResultMap.get(name) match {
-              case Some(currentResult) => currentResult + result
-              case None                => result
-            }
-          currentResultMap.updated(name, newResult)
-        }
+    taggedBase flatMap { case (name, (result, nested)) =>
+      val nestedRunnables = createNestedRunnables(loader, fun, nested)
+      toTasks(loader, nestedRunnables, tags).map { currentResultMap =>
+        val newResult =
+          currentResultMap.get(name) match {
+            case Some(currentResult) => currentResult + result
+            case None                => result
+          }
+        currentResultMap.updated(name, newResult)
+      }
     }
   }
 
@@ -367,9 +364,8 @@ object Tests {
     else if (parallel)
       reduced(
         results.toIndexedSeq,
-        {
-          case (Output(v1, m1, _), Output(v2, m2, _)) =>
-            Output(if (v1.id < v2.id) v2 else v1, m1 ++ m2, Iterable.empty)
+        { case (Output(v1, m1, _), Output(v2, m2, _)) =>
+          Output(if (v1.id < v2.id) v2 else v1, m1 ++ m2, Iterable.empty)
         })
     else {
       def sequence(

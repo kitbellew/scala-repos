@@ -143,9 +143,8 @@ object LookupJoin extends Serializable {
       (K, (Option[(T, JoinedV)], Option[(T, V, Option[JoinedV])]))] =
       left
         .map { case (t, (k, v)) => (k, (t, Left(v): Either[V, JoinedV])) }
-        .++(right.map {
-          case (t, (k, joinedV)) =>
-            (k, (t, Right(joinedV): Either[V, JoinedV]))
+        .++(right.map { case (t, (k, joinedV)) =>
+          (k, (t, Right(joinedV): Either[V, JoinedV]))
         })
         .group
         .withReducers(reducers.getOrElse(-1)) // -1 means default in scalding
@@ -202,13 +201,12 @@ object LookupJoin extends Serializable {
         .toTypedPipe
 
     // Now, get rid of residual state from the scanLeft above:
-    joined.flatMap {
-      case (k, (_, optV)) =>
-        // filter out every event that produced a Right(delta) above,
-        // leaving only the leftJoin events that occurred above:
-        optV.map {
-          case (t, v, optJoined) => (t, (k, (v, optJoined)))
-        }
+    joined.flatMap { case (k, (_, optV)) =>
+      // filter out every event that produced a Right(delta) above,
+      // leaving only the leftJoin events that occurred above:
+      optV.map {
+        case (t, v, optJoined) => (t, (k, (v, optJoined)))
+      }
     }
   }
 }

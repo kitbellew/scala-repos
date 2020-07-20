@@ -265,10 +265,9 @@ object Actor extends ListenerManagement {
     case object Spawn
     actorOf(new Actor() {
       self.dispatcher = dispatcher
-      def receive = {
-        case Spawn =>
-          try { body }
-          finally { self.stop() }
+      def receive = { case Spawn =>
+        try { body }
+        finally { self.stop() }
       }
     }).start() ! Spawn
   }

@@ -34,14 +34,13 @@ private[io] class UdpSender(
   }
   channelRegistry.register(channel, initialOps = 0)
 
-  def receive: Receive = {
-    case registration: ChannelRegistration ⇒
-      options.foreach {
-        case v2: Inet.SocketOptionV2 ⇒ v2.afterConnect(channel.socket)
-        case _ ⇒
-      }
-      commander ! SimpleSenderReady
-      context.become(sendHandlers(registration))
+  def receive: Receive = { case registration: ChannelRegistration ⇒
+    options.foreach {
+      case v2: Inet.SocketOptionV2 ⇒ v2.afterConnect(channel.socket)
+      case _ ⇒
+    }
+    commander ! SimpleSenderReady
+    context.become(sendHandlers(registration))
   }
 
   override def postStop(): Unit =

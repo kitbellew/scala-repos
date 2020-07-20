@@ -30,11 +30,10 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
       op: (Expression, Expression) => Expression,
       truthTable: Seq[(Any, Any, Any)]) {
     test(s"3VL $name") {
-      truthTable.foreach {
-        case (l, r, answer) =>
-          val expr =
-            op(Literal.create(l, BooleanType), Literal.create(r, BooleanType))
-          checkEvaluation(expr, answer)
+      truthTable.foreach { case (l, r, answer) =>
+        val expr =
+          op(Literal.create(l, BooleanType), Literal.create(r, BooleanType))
+        checkEvaluation(expr, answer)
       }
     }
   }
@@ -69,9 +68,8 @@ class PredicateSuite extends SparkFunSuite with ExpressionEvalHelper {
       (true, false) ::
         (false, true) ::
         (null, null) :: Nil
-    notTrueTable.foreach {
-      case (v, answer) =>
-        checkEvaluation(Not(Literal.create(v, BooleanType)), answer)
+    notTrueTable.foreach { case (v, answer) =>
+      checkEvaluation(Not(Literal.create(v, BooleanType)), answer)
     }
     checkConsistencyBetweenInterpretedAndCodegen(Not, BooleanType)
   }

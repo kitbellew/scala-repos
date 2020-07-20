@@ -175,10 +175,9 @@ object Hashers {
         case Match(selector, cases, default) =>
           mixTag(TagMatch)
           mixTree(selector)
-          cases foreach {
-            case (patterns, body) =>
-              mixTrees(patterns)
-              mixTree(body)
+          cases foreach { case (patterns, body) =>
+            mixTrees(patterns)
+            mixTree(body)
           }
           mixTree(default)
           mixType(tree.tpe)
@@ -372,10 +371,9 @@ object Hashers {
 
         case JSObjectConstr(fields) =>
           mixTag(TagJSObjectConstr)
-          fields foreach {
-            case (pn, value) =>
-              mixPropertyName(pn)
-              mixTree(value)
+          fields foreach { case (pn, value) =>
+            mixPropertyName(pn)
+            mixTree(value)
           }
 
         case JSLinkingInfo() =>

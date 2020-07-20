@@ -105,9 +105,8 @@ object NGramSuite extends SparkFunSuite {
     t.transform(dataset)
       .select("nGrams", "wantedNGrams")
       .collect()
-      .foreach {
-        case Row(actualNGrams, wantedNGrams) =>
-          assert(actualNGrams === wantedNGrams)
+      .foreach { case Row(actualNGrams, wantedNGrams) =>
+        assert(actualNGrams === wantedNGrams)
       }
   }
 }

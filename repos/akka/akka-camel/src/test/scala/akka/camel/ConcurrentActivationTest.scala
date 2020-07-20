@@ -174,9 +174,8 @@ class Registrar(
       actorRefs.foreach { aref ⇒
         context.stop(aref)
         val result = camel.deactivationFutureFor(aref)
-        result.onFailure {
-          case e ⇒
-            log.error("deactivationFutureFor {} failed: {}", aref, e.getMessage)
+        result.onFailure { case e ⇒
+          log.error("deactivationFutureFor {} failed: {}", aref, e.getMessage)
         }
         deActivations += result
         if (deActivations.size == number * 2) {

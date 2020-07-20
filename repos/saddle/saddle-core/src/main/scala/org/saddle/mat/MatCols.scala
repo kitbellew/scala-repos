@@ -74,11 +74,10 @@ class MatCols[A: ST](cols: IndexedSeq[Vec[A]])
   // take all vecs that match provided type, along with their locations
   private[saddle] def takeType[B: ST]: (IndexedSeq[Vec[B]], Array[Int]) = {
     val bSt = implicitly[ST[B]]
-    val filt = cols.zipWithIndex.filter {
-      case (col, ix) =>
-        col.scalarTag.runtimeClass.isPrimitive && (bSt.isAny || bSt.isAnyVal) ||
-          !bSt.isAnyVal && bSt.runtimeClass.isAssignableFrom(
-            col.scalarTag.runtimeClass)
+    val filt = cols.zipWithIndex.filter { case (col, ix) =>
+      col.scalarTag.runtimeClass.isPrimitive && (bSt.isAny || bSt.isAnyVal) ||
+        !bSt.isAnyVal && bSt.runtimeClass.isAssignableFrom(
+          col.scalarTag.runtimeClass)
     }
     val (vecs, locs) = filt.unzip
     (vecs.asInstanceOf[IndexedSeq[Vec[B]]], locs.toArray)

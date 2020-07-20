@@ -145,10 +145,9 @@ trait LinearRegressionSpecs[M[+_]]
   def computeRSquared(ys: List[Seq[Double]]) = {
     val yMeans = ys map { seq => seq.sum / seq.size }
 
-    val ssTotals = ys.zip(yMeans) map {
-      case (ys, yMean) =>
-        val diffs = ys map { y => math.pow(y - yMean, 2d) }
-        diffs.sum
+    val ssTotals = ys.zip(yMeans) map { case (ys, yMean) =>
+      val diffs = ys map { y => math.pow(y - yMean, 2d) }
+      diffs.sum
     }
     val ssTotal = ssTotals.sum / ssTotals.size
 
@@ -481,10 +480,9 @@ trait LinearRegressionSpecs[M[+_]]
 
     val zipped = actualErrors zip errors
 
-    val resultErrors = zipped map {
-      case (actual, err) =>
-        val z = actual zip combineResults(num, err)
-        z map { case (e, es) => isOk(e, es) }
+    val resultErrors = zipped map { case (actual, err) =>
+      val z = actual zip combineResults(num, err)
+      z map { case (e, es) => isOk(e, es) }
     }
 
     val expected = Array.fill(num)(true)

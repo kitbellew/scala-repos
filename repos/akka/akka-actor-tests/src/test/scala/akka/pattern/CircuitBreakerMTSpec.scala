@@ -44,10 +44,9 @@ class CircuitBreakerMTSpec extends AkkaSpec {
         aFewActive.countDown()
         Await.ready(aFewActive, 5.seconds.dilated)
         "succeed"
-      }) recoverWith {
-        case _: CircuitBreakerOpenException ⇒
-          aFewActive.countDown()
-          Future.successful("CBO")
+      }) recoverWith { case _: CircuitBreakerOpenException ⇒
+        aFewActive.countDown()
+        Future.successful("CBO")
       }
     }
 

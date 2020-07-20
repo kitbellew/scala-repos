@@ -120,10 +120,9 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
   private def makeExecutorEvent(
       executorUIDatas: HashMap[String, ExecutorUIData]): Seq[String] = {
     val events = ListBuffer[String]()
-    executorUIDatas.foreach {
-      case (executorId, event) =>
-        val addedEvent =
-          s"""
+    executorUIDatas.foreach { case (executorId, event) =>
+      val addedEvent =
+        s"""
              |{
              |  'className': 'executor added',
              |  'group': 'executors',
@@ -135,11 +134,11 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
              |    'data-html="true">Executor ${executorId} added</div>'
              |}
            """.stripMargin
-        events += addedEvent
+      events += addedEvent
 
-        if (event.finishTime.isDefined) {
-          val removedEvent =
-            s"""
+      if (event.finishTime.isDefined) {
+        val removedEvent =
+          s"""
                |{
                |  'className': 'executor removed',
                |  'group': 'executors',
@@ -148,17 +147,17 @@ private[ui] class AllJobsPage(parent: JobsTab) extends WebUIPage("") {
                |    'data-toggle="tooltip" data-placement="bottom"' +
                |    'data-title="Executor ${executorId}<br>' +
                |    'Removed at ${UIUtils.formatDate(
-              new Date(event.finishTime.get))}' +
+            new Date(event.finishTime.get))}' +
                |    '${if (event.finishReason.isDefined) {
-              s"""<br>Reason: ${event.finishReason.get}"""
-            } else {
-              ""
-            }}"' +
+            s"""<br>Reason: ${event.finishReason.get}"""
+          } else {
+            ""
+          }}"' +
                |    'data-html="true">Executor ${executorId} removed</div>'
                |}
              """.stripMargin
-          events += removedEvent
-        }
+        events += removedEvent
+      }
     }
     events.toSeq
   }

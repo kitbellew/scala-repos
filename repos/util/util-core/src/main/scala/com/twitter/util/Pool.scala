@@ -35,9 +35,8 @@ class SimplePool[A](items: mutable.Queue[Future[A]]) extends Pool[A] {
         Some((requests.dequeue(), items.dequeue()))
       else
         None
-    } map {
-      case (request, item) =>
-        item respond (request() = _)
+    } map { case (request, item) =>
+      item respond (request() = _)
     }
   }
 }

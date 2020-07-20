@@ -100,9 +100,8 @@ class WholeTextFileRecordReaderSuite
     val dir = Utils.createTempDir()
     logInfo(s"Local disk address is ${dir.toString}.")
 
-    WholeTextFileRecordReaderSuite.files.foreach {
-      case (filename, contents) =>
-        createNativeFile(dir, filename, contents, false)
+    WholeTextFileRecordReaderSuite.files.foreach { case (filename, contents) =>
+      createNativeFile(dir, filename, contents, false)
     }
 
     val res = sc.wholeTextFiles(dir.toString, 3).collect()
@@ -129,9 +128,8 @@ class WholeTextFileRecordReaderSuite
     val dir = Utils.createTempDir()
     logInfo(s"Local disk address is ${dir.toString}.")
 
-    WholeTextFileRecordReaderSuite.files.foreach {
-      case (filename, contents) =>
-        createNativeFile(dir, filename, contents, true)
+    WholeTextFileRecordReaderSuite.files.foreach { case (filename, contents) =>
+      createNativeFile(dir, filename, contents, true)
     }
 
     val res = sc.wholeTextFiles(dir.toString, 3).collect()
@@ -168,13 +166,12 @@ object WholeTextFileRecordReaderSuite {
 
   private val files = fileLengths
     .zip(fileNames)
-    .map {
-      case (upperBound, filename) =>
-        filename -> Stream
-          .continually(testWords.toList.toStream)
-          .flatten
-          .take(upperBound)
-          .toArray
+    .map { case (upperBound, filename) =>
+      filename -> Stream
+        .continually(testWords.toList.toStream)
+        .flatten
+        .take(upperBound)
+        .toArray
     }
     .toMap
 }

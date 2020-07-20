@@ -17,8 +17,7 @@ class TestActor(override val persistenceId: String) extends PersistentActor {
 
   import TestActor.DeleteCmd
 
-  val receiveRecover: Receive = {
-    case evt: String ⇒
+  val receiveRecover: Receive = { case evt: String ⇒
   }
 
   val receiveCommand: Receive = {

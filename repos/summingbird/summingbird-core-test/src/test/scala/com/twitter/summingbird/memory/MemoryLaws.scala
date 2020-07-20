@@ -140,10 +140,9 @@ class MemoryLaws extends WordSpec {
         items1
           .flatMap(fnA)
       )
-      .forall {
-        case (k, v) =>
-          val lv: JoinedU = serviceFn(k).getOrElse(Monoid.zero[JoinedU])
-          Equiv[JoinedU].equiv(v, lv)
+      .forall { case (k, v) =>
+        val lv: JoinedU = serviceFn(k).getOrElse(Monoid.zero[JoinedU])
+        Equiv[JoinedU].equiv(v, lv)
       }
 
     val finalStoreMatches = MapAlgebra
@@ -153,10 +152,9 @@ class MemoryLaws extends WordSpec {
           .map { case (k, u) => (k, (u, serviceFn(k))) }
           .flatMap(postJoinFn)
       )
-      .forall {
-        case (k, v) =>
-          val lv = lookupFn(k).getOrElse(Monoid.zero[V])
-          Equiv[V].equiv(v, lv)
+      .forall { case (k, v) =>
+        val lv = lookupFn(k).getOrElse(Monoid.zero[V])
+        Equiv[V].equiv(v, lv)
       }
 
     storeAndServiceMatches && finalStoreMatches
@@ -305,13 +303,12 @@ class MemoryLaws extends WordSpec {
       val summed = source
         .map { v => (v, v) }
         .sumByKey(store)
-        .map {
-          case (_, (existingEventOpt, currentEvent)) =>
-            existingEventOpt
-              .map { existingEvent =>
-                Semigroup.plus(existingEvent, currentEvent)
-              }
-              .getOrElse(currentEvent)
+        .map { case (_, (existingEventOpt, currentEvent)) =>
+          existingEventOpt
+            .map { existingEvent =>
+              Semigroup.plus(existingEvent, currentEvent)
+            }
+            .getOrElse(currentEvent)
         }
 
       val write1 = summed.write(sink)

@@ -35,20 +35,18 @@ object Test extends App {
     (dir, name, dir / s"${name}.scala")
   }
 
-  dirNameAndPath foreach {
-    case (dir, name, path) =>
-      dir.createDirectory()
-      val file = path.jfile
-      val out = new FileWriter(file)
-      try out.write(s"object ${name}\n")
-      finally out.close
+  dirNameAndPath foreach { case (dir, name, path) =>
+    dir.createDirectory()
+    val file = path.jfile
+    val out = new FileWriter(file)
+    try out.write(s"object ${name}\n")
+    finally out.close
   }
 
   val success = (scala.Console withOut ps) {
-    dirNameAndPath foreach {
-      case (path, name, _) =>
-        CompileClient.process(
-          Array("-verbose", "-current-dir", path.toString, s"${name}.scala"))
+    dirNameAndPath foreach { case (path, name, _) =>
+      CompileClient.process(
+        Array("-verbose", "-current-dir", path.toString, s"${name}.scala"))
     }
 
     CompileClient.process(Array("-shutdown"))
@@ -58,11 +56,10 @@ object Test extends App {
   val msg = baos.toString()
 
   assert(success, s"got a failure. Full results were: \n${msg}")
-  dirNameAndPath foreach {
-    case (_, _, path) =>
-      val expected = s"Input files after normalizing paths: ${path}"
-      assert(
-        msg contains expected,
-        s"could not find '${expected}' in output. Full results were: \n${msg}")
+  dirNameAndPath foreach { case (_, _, path) =>
+    val expected = s"Input files after normalizing paths: ${path}"
+    assert(
+      msg contains expected,
+      s"could not find '${expected}' in output. Full results were: \n${msg}")
   }
 }

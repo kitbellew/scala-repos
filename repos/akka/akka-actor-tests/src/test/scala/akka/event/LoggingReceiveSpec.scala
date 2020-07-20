@@ -79,8 +79,7 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
           def receive =
             new LoggingReceive(
               Some("funky"),
-              {
-                case null ⇒
+              { case null ⇒
               })
         }))
         a ! "hallo"
@@ -100,8 +99,7 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
         system.eventStream.subscribe(testActor, classOf[UnhandledMessage])
 
-        val r: Actor.Receive = {
-          case null ⇒
+        val r: Actor.Receive = { case null ⇒
         }
 
         val actor = TestActorRef(new Actor {
@@ -165,8 +163,7 @@ class LoggingReceiveSpec extends WordSpec with BeforeAndAfterAll {
       new TestKit(appAuto) {
         system.eventStream.subscribe(testActor, classOf[Logging.Debug])
         val actor = TestActorRef(new Actor {
-          def receive = {
-            case _ ⇒
+          def receive = { case _ ⇒
           }
         })
         val name = actor.path.toString

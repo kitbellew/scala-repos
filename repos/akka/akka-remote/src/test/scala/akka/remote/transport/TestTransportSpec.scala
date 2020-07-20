@@ -158,8 +158,7 @@ class TestTransportSpec
 
       handleA.disassociate()
 
-      expectMsgPF(timeout.duration) {
-        case Disassociated(_) ⇒
+      expectMsgPF(timeout.duration) { case Disassociated(_) ⇒
       }
 
       awaitCond(!registry.existsAssociation(addressA, addressB))

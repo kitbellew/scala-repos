@@ -471,9 +471,8 @@ trait WSRequest {
   @deprecated("2.5.0", """Use WS.withMethod("GET").stream()""")
   def get[A](consumer: WSResponseHeaders => Iteratee[Array[Byte], A])(implicit
       ec: ExecutionContext): Future[Iteratee[Array[Byte], A]] = {
-    getStream().flatMap {
-      case (response, enumerator) =>
-        enumerator(consumer(response))
+    getStream().flatMap { case (response, enumerator) =>
+      enumerator(consumer(response))
     }
   }
 

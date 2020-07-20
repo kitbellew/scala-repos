@@ -140,9 +140,8 @@ case class Intersect(left: LogicalPlan, right: LogicalPlan)
     left.outputSet.intersect(right.outputSet).isEmpty
 
   override def output: Seq[Attribute] =
-    left.output.zip(right.output).map {
-      case (leftAttr, rightAttr) =>
-        leftAttr.withNullability(leftAttr.nullable && rightAttr.nullable)
+    left.output.zip(right.output).map { case (leftAttr, rightAttr) =>
+      leftAttr.withNullability(leftAttr.nullable && rightAttr.nullable)
     }
 
   override protected def validConstraints: Set[Expression] =

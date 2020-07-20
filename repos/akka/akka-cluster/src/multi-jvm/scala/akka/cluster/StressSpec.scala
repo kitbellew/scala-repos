@@ -414,10 +414,9 @@ private[cluster] object StressMultiJvmSpec extends MultiNodeConfig {
   class ClusterResultHistory extends Actor with ActorLogging {
     var history = Vector.empty[AggregatedClusterResult]
 
-    def receive = {
-      case result: AggregatedClusterResult ⇒
-        history :+= result
-        log.info("Cluster result history\n" + formatHistory)
+    def receive = { case result: AggregatedClusterResult ⇒
+      history :+= result
+      log.info("Cluster result history\n" + formatHistory)
     }
 
     def formatHistory: String =

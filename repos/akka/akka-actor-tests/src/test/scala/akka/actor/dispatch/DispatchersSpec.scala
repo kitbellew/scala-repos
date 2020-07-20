@@ -135,8 +135,7 @@ class DispatchersSpec
   def assertMyDispatcherIsUsed(actor: ActorRef): Unit = {
     actor ! "what's the name?"
     val Expected = "(DispatchersSpec-myapp.mydispatcher-[1-9][0-9]*)".r
-    expectMsgPF() {
-      case Expected(x) ⇒
+    expectMsgPF() { case Expected(x) ⇒
     }
   }
 
@@ -198,8 +197,7 @@ class DispatchersSpec
           "myapp.thread-pool-dispatcher")) ! "what's the name?"
       val Expected =
         "(DispatchersSpec-myapp.thread-pool-dispatcher-[1-9][0-9]*)".r
-      expectMsgPF() {
-        case Expected(x) ⇒
+      expectMsgPF() { case Expected(x) ⇒
       }
     }
 
@@ -207,8 +205,7 @@ class DispatchersSpec
       system.actorOf(Props[ThreadNameEcho]) ! "what's the name?"
       val Expected =
         "(DispatchersSpec-akka.actor.default-dispatcher-[1-9][0-9]*)".r
-      expectMsgPF() {
-        case Expected(x) ⇒
+      expectMsgPF() { case Expected(x) ⇒
       }
     }
 
@@ -218,8 +215,7 @@ class DispatchersSpec
           "myapp.my-pinned-dispatcher")) ! "what's the name?"
       val Expected =
         "(DispatchersSpec-myapp.my-pinned-dispatcher-[1-9][0-9]*)".r
-      expectMsgPF() {
-        case Expected(x) ⇒
+      expectMsgPF() { case Expected(x) ⇒
       }
     }
 
@@ -229,8 +225,7 @@ class DispatchersSpec
           "myapp.balancing-dispatcher")) ! "what's the name?"
       val Expected =
         "(DispatchersSpec-myapp.balancing-dispatcher-[1-9][0-9]*)".r
-      expectMsgPF() {
-        case Expected(x) ⇒
+      expectMsgPF() { case Expected(x) ⇒
       }
     }
 
@@ -254,8 +249,7 @@ class DispatchersSpec
       routee ! "what's the name?"
       val Expected =
         """(DispatchersSpec-akka\.actor\.deployment\./pool1\.pool-dispatcher-[1-9][0-9]*)""".r
-      expectMsgPF() {
-        case Expected(x) ⇒
+      expectMsgPF() { case Expected(x) ⇒
       }
     }
 
@@ -265,11 +259,9 @@ class DispatchersSpec
         name = "balanced") ! "what's the name?"
       val Expected =
         """(DispatchersSpec-BalancingPool-/balanced-[1-9][0-9]*)""".r
-      expectMsgPF() {
-        case Expected(x) ⇒
+      expectMsgPF() { case Expected(x) ⇒
       }
-      expectMsgPF() {
-        case Expected(x) ⇒
+      expectMsgPF() { case Expected(x) ⇒
       }
     }
   }

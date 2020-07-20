@@ -157,18 +157,16 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
     }
 
   def checkDataType(dt1: Seq[DataType], dt2: Seq[DataType]): Unit = {
-    dt1.zip(dt2).foreach {
-      case (dd1, dd2) =>
-        assert(
-          dd1.getClass === dd2.getClass
-        ) // DecimalType doesn't has the default precision info
+    dt1.zip(dt2).foreach { case (dd1, dd2) =>
+      assert(
+        dd1.getClass === dd2.getClass
+      ) // DecimalType doesn't has the default precision info
     }
   }
 
   def checkValues(row1: Seq[Any], row2: Seq[Any]): Unit = {
-    row1.zip(row2).foreach {
-      case (r1, r2) =>
-        checkValue(r1, r2)
+    row1.zip(row2).foreach { case (r1, r2) =>
+      checkValue(r1, r2)
     }
   }
 
@@ -176,9 +174,8 @@ class HiveInspectorSuite extends SparkFunSuite with HiveInspectors {
       row1: Seq[Any],
       row2: InternalRow,
       row2Schema: StructType): Unit = {
-    row1.zip(row2.toSeq(row2Schema)).foreach {
-      case (r1, r2) =>
-        checkValue(r1, r2)
+    row1.zip(row2.toSeq(row2Schema)).foreach { case (r1, r2) =>
+      checkValue(r1, r2)
     }
   }
 

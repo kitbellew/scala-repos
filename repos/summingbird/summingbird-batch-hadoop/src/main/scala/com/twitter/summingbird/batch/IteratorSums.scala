@@ -85,11 +85,10 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
 
       // The StatefulSummer (wrongly?) needs this, but it is never used
       def semigroup =
-        Semigroup.from {
-          case ((lk, lv), (rk, rv)) =>
-            // if the keys match, sum, else return the new pair
-            if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv))
-            else (rk, rv)
+        Semigroup.from { case ((lk, lv), (rk, rv)) =>
+          // if the keys match, sum, else return the new pair
+          if (Equiv[K].equiv(lk, rk)) (rk, Semigroup.plus(lv, rv))
+          else (rk, rv)
         }
 
       var lastK: Option[K] = None
@@ -132,11 +131,10 @@ private[summingbird] object IteratorSums extends java.io.Serializable {
   def partials[U, V: Semigroup](
       in: Iterator[(U, V)]): Iterator[(U, (Option[V], V))] = {
     var prev: Option[V] = None
-    in.map {
-      case (k, v) =>
-        val stored = prev
-        prev = Some(prev.map(Semigroup.plus(_, v)).getOrElse(v))
-        (k, (stored, v))
+    in.map { case (k, v) =>
+      val stored = prev
+      prev = Some(prev.map(Semigroup.plus(_, v)).getOrElse(v))
+      (k, (stored, v))
     }
   }
 }

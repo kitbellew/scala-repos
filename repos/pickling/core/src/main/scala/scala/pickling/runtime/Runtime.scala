@@ -113,44 +113,42 @@ class InterpretedPicklerRuntime(classLoader: ClassLoader, preclazz: Class[_])(
           def putFields() = {
             // TODO: need to support modules and other special guys here
             lazy val im = mirror.reflect(picklee)
-            fields.foreach {
-              case (fir, isEffFinal) =>
-                val fldMirror = im.reflectField(fir.field.get)
-                val fldValue: Any = fldMirror.get
-                // debug("pickling field value: " + fldValue)
+            fields.foreach { case (fir, isEffFinal) =>
+              val fldMirror = im.reflectField(fir.field.get)
+              val fldValue: Any = fldMirror.get
+              // debug("pickling field value: " + fldValue)
 
-                val fldClass = if (fldValue != null) fldValue.getClass else null
-                // by using only the class we convert Int to Integer
-                // therefore we pass fir.tpe (as pretpe) in addition to the class and use it for the is primitive check
-                //val fldRuntime = new InterpretedPicklerRuntime(classLoader, fldClass)
-                val fldTag = FastTypeTag.mkRaw(fldClass, mirror)
-                val fldPickler = scala.pickling.internal.currentRuntime.picklers
-                  .genPickler(classLoader, fldClass, fldTag)
-                  .asInstanceOf[Pickler[Any]]
+              val fldClass = if (fldValue != null) fldValue.getClass else null
+              // by using only the class we convert Int to Integer
+              // therefore we pass fir.tpe (as pretpe) in addition to the class and use it for the is primitive check
+              //val fldRuntime = new InterpretedPicklerRuntime(classLoader, fldClass)
+              val fldTag = FastTypeTag.mkRaw(fldClass, mirror)
+              val fldPickler = scala.pickling.internal.currentRuntime.picklers
+                .genPickler(classLoader, fldClass, fldTag)
+                .asInstanceOf[Pickler[Any]]
 
-                builder.putField(
-                  fir.name,
-                  b => {
-                    if (isEffFinal) {
-                      b.hintElidedType(fldTag)
-                      pickleInto(fir.tpe, fldValue, b, fldPickler)
-                    } else {
-                      val subPicklee = fldValue
-                      if (subPicklee == null || subPicklee.getClass == mirror
-                          .runtimeClass(fir.tpe.erasure))
-                        b.hintElidedType(fldTag)
-                      else ()
-                      pickleInto(fir.tpe, subPicklee, b, fldPickler)
-                    }
+              builder.putField(
+                fir.name,
+                b => {
+                  if (isEffFinal) {
+                    b.hintElidedType(fldTag)
+                    pickleInto(fir.tpe, fldValue, b, fldPickler)
+                  } else {
+                    val subPicklee = fldValue
+                    if (subPicklee == null || subPicklee.getClass == mirror
+                        .runtimeClass(fir.tpe.erasure)) b.hintElidedType(fldTag)
+                    else ()
+                    pickleInto(fir.tpe, subPicklee, b, fldPickler)
                   }
-                )
+                }
+              )
 
-              // builder.putField(fir.name, b => {
-              //   val fstaticTpe = fir.tpe.erasure
-              //   if (fldClass == null || fldClass == mirror.runtimeClass(fstaticTpe)) builder.hintDynamicallyElidedType()
-              //   if (fstaticTpe.typeSymbol.isEffectivelyFinal) builder.hintStaticallyElidedType()
-              //   fldPickler.pickle(fldValue, b)
-              // })
+            // builder.putField(fir.name, b => {
+            //   val fstaticTpe = fir.tpe.erasure
+            //   if (fldClass == null || fldClass == mirror.runtimeClass(fstaticTpe)) builder.hintDynamicallyElidedType()
+            //   if (fstaticTpe.typeSymbol.isEffectivelyFinal) builder.hintStaticallyElidedType()
+            //   fldPickler.pickle(fldValue, b)
+            // })
             }
           }
           builder.beginEntry(picklee, tag)
@@ -278,16 +276,15 @@ class InterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(implicit
             //debug(s"pendingFields: ${pendingFields.size}")
             //debug(s"fieldVals: ${fieldVals.size}")
 
-            pendingFields.zip(fieldVals) foreach {
-              case (fir, fval) =>
-                if (fir.field.nonEmpty) {
-                  val fmX = im.reflectField(fir.field.get)
-                  fmX.set(fval)
-                } else {
-                  val javaField = clazz.getDeclaredField(fir.name)
-                  javaField.setAccessible(true)
-                  javaField.set(inst, fval)
-                }
+            pendingFields.zip(fieldVals) foreach { case (fir, fval) =>
+              if (fir.field.nonEmpty) {
+                val fmX = im.reflectField(fir.field.get)
+                fmX.set(fval)
+              } else {
+                val javaField = clazz.getDeclaredField(fir.name)
+                javaField.setAccessible(true)
+                javaField.set(inst, fval)
+              }
             }
 
             inst
@@ -384,16 +381,15 @@ class ShareNothingInterpretedUnpicklerRuntime(mirror: Mirror, typeTag: String)(
             //debug(s"pendingFields: ${pendingFields.size}")
             //debug(s"fieldVals: ${fieldVals.size}")
 
-            pendingFields.zip(fieldVals) foreach {
-              case (fir, fval) =>
-                if (fir.field.nonEmpty) {
-                  val fmX = im.reflectField(fir.field.get)
-                  fmX.set(fval)
-                } else {
-                  val javaField = clazz.getDeclaredField(fir.name)
-                  javaField.setAccessible(true)
-                  javaField.set(inst, fval)
-                }
+            pendingFields.zip(fieldVals) foreach { case (fir, fval) =>
+              if (fir.field.nonEmpty) {
+                val fmX = im.reflectField(fir.field.get)
+                fmX.set(fval)
+              } else {
+                val javaField = clazz.getDeclaredField(fir.name)
+                javaField.setAccessible(true)
+                javaField.set(inst, fval)
+              }
             }
 
             inst

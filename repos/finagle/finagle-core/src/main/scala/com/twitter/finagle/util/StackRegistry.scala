@@ -110,40 +110,36 @@ trait StackRegistry {
 
   private[this] def addEntries(entry: Entry): Unit = {
     val gRegistry = GlobalRegistry.get
-    entry.modules.foreach {
-      case Module(paramName, _, reflected) =>
-        reflected.foreach {
-          case (field, value) =>
-            val key = Seq(
-              registryName,
-              entry.protocolLibrary,
-              entry.name,
-              entry.addr,
-              paramName,
-              field)
-            if (gRegistry.put(key, value).isEmpty)
-              numEntries.incrementAndGet()
-        }
+    entry.modules.foreach { case Module(paramName, _, reflected) =>
+      reflected.foreach { case (field, value) =>
+        val key = Seq(
+          registryName,
+          entry.protocolLibrary,
+          entry.name,
+          entry.addr,
+          paramName,
+          field)
+        if (gRegistry.put(key, value).isEmpty)
+          numEntries.incrementAndGet()
+      }
     }
   }
 
   private[this] def removeEntries(entry: Entry): Unit = {
     val gRegistry = GlobalRegistry.get
     val name = entry.name
-    entry.modules.foreach {
-      case Module(paramName, _, reflected) =>
-        reflected.foreach {
-          case (field, value) =>
-            val key = Seq(
-              registryName,
-              entry.protocolLibrary,
-              name,
-              entry.addr,
-              paramName,
-              field)
-            if (gRegistry.remove(key).isDefined)
-              numEntries.decrementAndGet()
-        }
+    entry.modules.foreach { case Module(paramName, _, reflected) =>
+      reflected.foreach { case (field, value) =>
+        val key = Seq(
+          registryName,
+          entry.protocolLibrary,
+          name,
+          entry.addr,
+          paramName,
+          field)
+        if (gRegistry.remove(key).isDefined)
+          numEntries.decrementAndGet()
+      }
     }
   }
 

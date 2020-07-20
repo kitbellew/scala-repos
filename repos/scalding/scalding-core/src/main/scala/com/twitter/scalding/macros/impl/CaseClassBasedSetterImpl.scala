@@ -112,9 +112,8 @@ object CaseClassBasedSetterImpl {
           OptionSetter(matchField(innerType))
         case tpe
             if (tpe.typeSymbol.isClass && tpe.typeSymbol.asClass.isCaseClass) =>
-          CaseClassSetter(expandMethod(normalized(tpe)).map {
-            case (fn, tpe) =>
-              (fn, matchField(tpe))
+          CaseClassSetter(expandMethod(normalized(tpe)).map { case (fn, tpe) =>
+            (fn, matchField(tpe))
           })
         case tpe if allowUnknownTypes =>
           DefaultSetter

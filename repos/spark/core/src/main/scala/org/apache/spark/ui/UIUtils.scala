@@ -102,12 +102,11 @@ private[spark] object UIUtils extends Logging {
         day -> s"$hourString $minuteString $secondString",
         week -> s"$dayString $hourString $minuteString",
         year -> s"$weekString $dayString $hourString"
-      ).foreach {
-        case (durationLimit, durationString) =>
-          if (ms < durationLimit) {
-            // if time is less than the limit (upto year)
-            return durationString
-          }
+      ).foreach { case (durationLimit, durationString) =>
+        if (ms < durationLimit) {
+          // if time is less than the limit (upto year)
+          return durationString
+        }
       }
       // if time is more than a year
       return s"$yearString $weekString $dayString"
@@ -463,9 +462,8 @@ private[spark] object UIUtils extends Logging {
 
       // Verify that this has only anchors and span (we are wrapping in span)
       val allowedNodeLabels = Set("a", "span")
-      val illegalNodes = xml \\ "_" filterNot {
-        case node: Node =>
-          allowedNodeLabels.contains(node.label)
+      val illegalNodes = xml \\ "_" filterNot { case node: Node =>
+        allowedNodeLabels.contains(node.label)
       }
       if (illegalNodes.nonEmpty) {
         throw new IllegalArgumentException(

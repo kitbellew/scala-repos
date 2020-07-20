@@ -67,11 +67,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "not send chunked responses when given a Content-Length" in {
       requestFromServer("/hello") { request =>
         request.get()
-      } {
-        case ("GET", "/hello") =>
-          Action {
-            Ok("greetings").withHeaders(CONTENT_LENGTH -> "9")
-          }
+      } { case ("GET", "/hello") =>
+        Action {
+          Ok("greetings").withHeaders(CONTENT_LENGTH -> "9")
+        }
       } { response =>
         response.status must_== 200
         response.header(CONTENT_TYPE) must_== Some("text/plain; charset=UTF-8")
@@ -95,11 +94,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
         request
           .withHeaders(ACCEPT_ENCODING -> "utf-8", ACCEPT_LANGUAGE -> "en-NZ")
           .get()
-      } {
-        case ("GET", "/abc") =>
-          Action { implicit request =>
-            Ok(headerDump(ACCEPT_ENCODING, ACCEPT_LANGUAGE))
-          }
+      } { case ("GET", "/abc") =>
+        Action { implicit request =>
+          Ok(headerDump(ACCEPT_ENCODING, ACCEPT_LANGUAGE))
+        }
       } { response =>
         response.status must_== 200
         response.body must_== "<utf-8>; <en-NZ>"
@@ -114,11 +112,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
             ACCEPT_LANGUAGE -> "en-US"
           )
           .get()
-      } {
-        case ("GET", "/abc") =>
-          Action { implicit request =>
-            Ok(request.uri)
-          }
+      } { case ("GET", "/abc") =>
+        Action { implicit request =>
+          Ok(request.uri)
+        }
       } { response =>
         response.status must_== 200
         response.body must_== "/abc?foo=bar"
@@ -135,11 +132,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
             `Raw-Request-URI`.name -> "/foo/bar/baz"
           )
           .get()
-      } {
-        case ("GET", "/abc") =>
-          Action { implicit request =>
-            Ok(request.uri)
-          }
+      } { case ("GET", "/abc") =>
+        Action { implicit request =>
+          Ok(request.uri)
+        }
       } { response =>
         response.status must_== 200
         response.body must_== "/abc?foo=bar"
@@ -149,12 +145,11 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "pass POST request bodies to Actions" in {
       requestFromServer("/greet") { request =>
         request.post("Bob")
-      } {
-        case ("POST", "/greet") =>
-          Action(parse.text) { implicit request =>
-            val name = request.body
-            Ok(s"Hello $name")
-          }
+      } { case ("POST", "/greet") =>
+        Action(parse.text) { implicit request =>
+          val name = request.body
+          Ok(s"Hello $name")
+        }
       } { response =>
         response.status must_== 200
         response.body must_== "Hello Bob"
@@ -164,11 +159,10 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "send response statüs" in {
       requestFromServer("/def") { request =>
         request.get()
-      } {
-        case ("GET", "/abc") =>
-          Action { implicit request =>
-            ???
-          }
+      } { case ("GET", "/abc") =>
+        Action { implicit request =>
+          ???
+        }
       } { response =>
         response.status must_== 404
       }
@@ -185,12 +179,11 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
     "pass tag of HTTP_SERVER->akka-http to Actions" in {
       requestFromServer("/httpServerTag") { request =>
         request.get()
-      } {
-        case ("GET", "/httpServerTag") =>
-          Action { implicit request =>
-            val httpServer = request.tags.get("HTTP_SERVER")
-            Ok(httpServer.toString)
-          }
+      } { case ("GET", "/httpServerTag") =>
+        Action { implicit request =>
+          val httpServer = request.tags.get("HTTP_SERVER")
+          Ok(httpServer.toString)
+        }
       } { response =>
         response.status must_== 200
         response.body must_== "Some(akka-http)"
@@ -210,8 +203,8 @@ object AkkaHttpServerSpec extends PlaySpecification with WsTestClient {
         def testStartAndStop(i: Int) = {
           val resultString = s"result-$i"
           val app = GuiceApplicationBuilder()
-            .routes {
-              case ("GET", "/") => Action(Ok(resultString))
+            .routes { case ("GET", "/") =>
+              Action(Ok(resultString))
             }
             .build()
           val server = TestServer(

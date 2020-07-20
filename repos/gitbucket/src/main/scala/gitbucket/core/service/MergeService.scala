@@ -158,27 +158,26 @@ trait MergeService {
       localBranch,
       remoteUserName,
       remoteRepositoryName,
-      remoteBranch).map {
-      case (newTreeId, oldBaseId, oldHeadId) =>
-        using(Git.open(getRepositoryDir(localUserName, localRepositoryName))) {
-          git =>
-            val committer =
-              new PersonIdent(loginAccount.fullName, loginAccount.mailAddress)
-            val newCommit = Util.createMergeCommit(
-              git.getRepository,
-              newTreeId,
-              committer,
-              message,
-              Seq(oldBaseId, oldHeadId))
-            Util.updateRefs(
-              git.getRepository,
-              s"refs/heads/${localBranch}",
-              newCommit,
-              false,
-              committer,
-              Some("merge"))
-        }
-        oldBaseId
+      remoteBranch).map { case (newTreeId, oldBaseId, oldHeadId) =>
+      using(Git.open(getRepositoryDir(localUserName, localRepositoryName))) {
+        git =>
+          val committer =
+            new PersonIdent(loginAccount.fullName, loginAccount.mailAddress)
+          val newCommit = Util.createMergeCommit(
+            git.getRepository,
+            newTreeId,
+            committer,
+            message,
+            Seq(oldBaseId, oldHeadId))
+          Util.updateRefs(
+            git.getRepository,
+            s"refs/heads/${localBranch}",
+            newCommit,
+            false,
+            committer,
+            Some("merge"))
+      }
+      oldBaseId
     }
   }
 

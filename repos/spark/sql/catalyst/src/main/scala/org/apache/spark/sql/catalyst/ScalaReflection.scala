@@ -829,10 +829,9 @@ trait ScalaReflection {
         case t if t <:< localTypeOf[Product] =>
           val params = getConstructorParameters(t)
           Schema(
-            StructType(params.map {
-              case (fieldName, fieldType) =>
-                val Schema(dataType, nullable) = schemaFor(fieldType)
-                StructField(fieldName, dataType, nullable)
+            StructType(params.map { case (fieldName, fieldType) =>
+              val Schema(dataType, nullable) = schemaFor(fieldType)
+              StructField(fieldName, dataType, nullable)
             }),
             nullable = true
           )

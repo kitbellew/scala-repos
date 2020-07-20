@@ -206,12 +206,11 @@ object BigDecimalRootRefinement {
         h: Rational): Polynomial[BigDecimal] = {
       val n = poly.degree
       poly
-        .mapTerms {
-          case Term(coeff, k) =>
-            val a = BigDecimal(
-              h.denominator.toBigInteger.pow(n - k),
-              MathContext.UNLIMITED)
-            Term(coeff * a, k)
+        .mapTerms { case Term(coeff, k) =>
+          val a = BigDecimal(
+            h.denominator.toBigInteger.pow(n - k),
+            MathContext.UNLIMITED)
+          Term(coeff * a, k)
         }
         .compose(Polynomial.linear[BigDecimal](
           BigDecimal(h.denominator.toBigInteger, MathContext.UNLIMITED),

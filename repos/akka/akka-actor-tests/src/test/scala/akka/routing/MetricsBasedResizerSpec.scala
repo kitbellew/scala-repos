@@ -28,10 +28,9 @@ object MetricsBasedResizerSpec {
     */
   class TestLatchingActor(implicit timeout: Timeout) extends Actor {
 
-    def receive = {
-      case Latches(first, second) ⇒
-        first.countDown()
-        Try(Await.ready(second, timeout.duration))
+    def receive = { case Latches(first, second) ⇒
+      first.countDown()
+      Try(Await.ready(second, timeout.duration))
     }
   }
 

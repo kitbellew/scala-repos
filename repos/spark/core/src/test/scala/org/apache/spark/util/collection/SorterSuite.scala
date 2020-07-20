@@ -63,10 +63,9 @@ class SorterSuite extends SparkFunSuite with Logging {
     new Sorter(new KVArraySortDataFormat[Double, Number])
       .sort(keyValueArray, 0, keys.length, Ordering.Double)
 
-    keys.zipWithIndex.foreach {
-      case (k, i) =>
-        assert(k === keyValueArray(2 * i))
-        assert(kvMap(k) === keyValueArray(2 * i + 1))
+    keys.zipWithIndex.foreach { case (k, i) =>
+      assert(k === keyValueArray(2 * i))
+      assert(kvMap(k) === keyValueArray(2 * i + 1))
     }
   }
 

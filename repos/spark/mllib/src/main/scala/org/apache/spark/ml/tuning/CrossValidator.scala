@@ -108,25 +108,23 @@ class CrossValidator @Since("1.2.0") (@Since("1.4.0") override val uid: String)
     val numModels = epm.length
     val metrics = new Array[Double](epm.length)
     val splits = MLUtils.kFold(dataset.rdd, $(numFolds), $(seed))
-    splits.zipWithIndex.foreach {
-      case ((training, validation), splitIndex) =>
-        val trainingDataset = sqlCtx.createDataFrame(training, schema).cache()
-        val validationDataset =
-          sqlCtx.createDataFrame(validation, schema).cache()
-        // multi-model training
-        logDebug(s"Train split $splitIndex with multiple sets of parameters.")
-        val models = est.fit(trainingDataset, epm).asInstanceOf[Seq[Model[_]]]
-        trainingDataset.unpersist()
-        var i = 0
-        while (i < numModels) {
-          // TODO: duplicate evaluator to take extra params from input
-          val metric =
-            eval.evaluate(models(i).transform(validationDataset, epm(i)))
-          logDebug(s"Got metric $metric for model trained with ${epm(i)}.")
-          metrics(i) += metric
-          i += 1
-        }
-        validationDataset.unpersist()
+    splits.zipWithIndex.foreach { case ((training, validation), splitIndex) =>
+      val trainingDataset = sqlCtx.createDataFrame(training, schema).cache()
+      val validationDataset = sqlCtx.createDataFrame(validation, schema).cache()
+      // multi-model training
+      logDebug(s"Train split $splitIndex with multiple sets of parameters.")
+      val models = est.fit(trainingDataset, epm).asInstanceOf[Seq[Model[_]]]
+      trainingDataset.unpersist()
+      var i = 0
+      while (i < numModels) {
+        // TODO: duplicate evaluator to take extra params from input
+        val metric =
+          eval.evaluate(models(i).transform(validationDataset, epm(i)))
+        logDebug(s"Got metric $metric for model trained with ${epm(i)}.")
+        metrics(i) += metric
+        i += 1
+      }
+      validationDataset.unpersist()
     }
     f2jBLAS.dscal(numModels, 1.0 / $(numFolds), metrics, 1)
     logInfo(s"Average cross-validation metrics: ${metrics.toSeq}")
@@ -255,17 +253,15 @@ object CrossValidator extends MLReadable[CrossValidator] {
       // Extraneous Params would cause problems when loading the estimatorParamMaps.
       val uidToInstance: Map[String, Params] =
         CrossValidatorReader.getUidMap(instance)
-      instance.getEstimatorParamMaps.foreach {
-        case pMap: ParamMap =>
-          pMap.toSeq.foreach {
-            case ParamPair(p, v) =>
-              require(
-                uidToInstance.contains(p.parent),
-                s"CrossValidator save requires all Params in" +
-                  s" estimatorParamMaps to apply to this CrossValidator, its Estimator, or its" +
-                  s" Evaluator.  An extraneous Param was found: $p"
-              )
-          }
+      instance.getEstimatorParamMaps.foreach { case pMap: ParamMap =>
+        pMap.toSeq.foreach { case ParamPair(p, v) =>
+          require(
+            uidToInstance.contains(p.parent),
+            s"CrossValidator save requires all Params in" +
+              s" estimatorParamMaps to apply to this CrossValidator, its Estimator, or its" +
+              s" Evaluator.  An extraneous Param was found: $p"
+          )
+        }
       }
     }
 
@@ -278,15 +274,13 @@ object CrossValidator extends MLReadable[CrossValidator] {
 
       val estimatorParamMapsJson = compact(
         render(
-          instance.getEstimatorParamMaps.map {
-            case paramMap =>
-              paramMap.toSeq.map {
-                case ParamPair(p, v) =>
-                  Map(
-                    "parent" -> p.parent,
-                    "name" -> p.name,
-                    "value" -> p.jsonEncode(v))
-              }
+          instance.getEstimatorParamMaps.map { case paramMap =>
+            paramMap.toSeq.map { case ParamPair(p, v) =>
+              Map(
+                "parent" -> p.parent,
+                "name" -> p.name,
+                "value" -> p.jsonEncode(v))
+            }
           }.toSeq
         ))
       val jsonParams = List(
@@ -332,12 +326,11 @@ object CrossValidator extends MLReadable[CrossValidator] {
         (metadata.params \ "estimatorParamMaps")
           .extract[Seq[Seq[Map[String, String]]]]
           .map { pMap =>
-            val paramPairs = pMap.map {
-              case pInfo: Map[String, String] =>
-                val est = uidToParams(pInfo("parent"))
-                val param = est.getParam(pInfo("name"))
-                val value = param.jsonDecode(pInfo("value"))
-                param -> value
+            val paramPairs = pMap.map { case pInfo: Map[String, String] =>
+              val est = uidToParams(pInfo("parent"))
+              val param = est.getParam(pInfo("name"))
+              val value = param.jsonDecode(pInfo("value"))
+              param -> value
             }
             ParamMap(paramPairs: _*)
           }

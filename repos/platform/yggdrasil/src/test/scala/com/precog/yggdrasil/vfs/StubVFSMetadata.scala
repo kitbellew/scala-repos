@@ -92,9 +92,8 @@ class StubVFSMetadata[M[+_]](
       }
 
       children <- getPathMeta(path) map {
-        _ flatMap {
-          case t @ (ColumnRef(s, ctype), count) =>
-            if (s.hasPrefix(property)) s.take(property.length + 1) else None
+        _ flatMap { case t @ (ColumnRef(s, ctype), count) =>
+          if (s.hasPrefix(property)) s.take(property.length + 1) else None
         }
       }
     } yield PathStructure(types, children.toSet)

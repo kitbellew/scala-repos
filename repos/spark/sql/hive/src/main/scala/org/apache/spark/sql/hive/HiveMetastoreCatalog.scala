@@ -272,9 +272,8 @@ private[hive] class HiveMetastoreCatalog(
       tableProperties.put(
         "spark.sql.sources.schema.numParts",
         parts.size.toString)
-      parts.zipWithIndex.foreach {
-        case (part, index) =>
-          tableProperties.put(s"spark.sql.sources.schema.part.$index", part)
+      parts.zipWithIndex.foreach { case (part, index) =>
+        tableProperties.put(s"spark.sql.sources.schema.part.$index", part)
       }
     }
 
@@ -282,11 +281,8 @@ private[hive] class HiveMetastoreCatalog(
       tableProperties.put(
         "spark.sql.sources.schema.numPartCols",
         partitionColumns.length.toString)
-      partitionColumns.zipWithIndex.foreach {
-        case (partCol, index) =>
-          tableProperties.put(
-            s"spark.sql.sources.schema.partCol.$index",
-            partCol)
+      partitionColumns.zipWithIndex.foreach { case (partCol, index) =>
+        tableProperties.put(s"spark.sql.sources.schema.partCol.$index", partCol)
       }
     }
 
@@ -300,22 +296,20 @@ private[hive] class HiveMetastoreCatalog(
       tableProperties.put(
         "spark.sql.sources.schema.numBucketCols",
         bucketColumnNames.length.toString)
-      bucketColumnNames.zipWithIndex.foreach {
-        case (bucketCol, index) =>
-          tableProperties.put(
-            s"spark.sql.sources.schema.bucketCol.$index",
-            bucketCol)
+      bucketColumnNames.zipWithIndex.foreach { case (bucketCol, index) =>
+        tableProperties.put(
+          s"spark.sql.sources.schema.bucketCol.$index",
+          bucketCol)
       }
 
       if (sortColumnNames.nonEmpty) {
         tableProperties.put(
           "spark.sql.sources.schema.numSortCols",
           sortColumnNames.length.toString)
-        sortColumnNames.zipWithIndex.foreach {
-          case (sortCol, index) =>
-            tableProperties.put(
-              s"spark.sql.sources.schema.sortCol.$index",
-              sortCol)
+        sortColumnNames.zipWithIndex.foreach { case (sortCol, index) =>
+          tableProperties.put(
+            s"spark.sql.sources.schema.sortCol.$index",
+            sortCol)
         }
       }
     }

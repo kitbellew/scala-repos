@@ -304,9 +304,8 @@ object DecisionTreeModel extends Loader[DecisionTreeModel] with Logging {
         .groupBy(_.treeId)
         .mapValues(_.toArray)
         .collect()
-        .map {
-          case (treeId, data) =>
-            (treeId, constructTree(data))
+        .map { case (treeId, data) =>
+          (treeId, constructTree(data))
         }
         .sortBy(_._1)
       val numTrees = trees.length

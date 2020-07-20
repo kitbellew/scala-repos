@@ -150,9 +150,8 @@ trait MapSubInstances extends MapSubInstances0 with MapSubFunctions {
           else (m1, m2Instance, (Semigroup[V].append(_: V, _: V)).flip)
         }
 
-        from.foldLeft(to) {
-          case (to, (k, v)) =>
-            ab_+(to, k, to.get(k).map(semigroup(_, v)).getOrElse(v))
+        from.foldLeft(to) { case (to, (k, v)) =>
+          ab_+(to, k, to.get(k).map(semigroup(_, v)).getOrElse(v))
         }
       }
     }

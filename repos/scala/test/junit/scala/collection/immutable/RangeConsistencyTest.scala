@@ -91,15 +91,14 @@ class RangeConsistencyTest {
           x => BigInt(x)
         )
 
-        lr.foreach {
-          case (n, t) =>
-            assert(
-              t match {
-                case Failure(_) => n > Int.MaxValue
-                case Success(m) => n == m
-              },
-              (r.start, r.end, r.step, r.isInclusive, lpuff, lstride, n, t)
-            )
+        lr.foreach { case (n, t) =>
+          assert(
+            t match {
+              case Failure(_) => n > Int.MaxValue
+              case Success(m) => n == m
+            },
+            (r.start, r.end, r.step, r.isInclusive, lpuff, lstride, n, t)
+          )
         }
 
         val bipuff = rn.nextInt(3) match {
@@ -114,15 +113,14 @@ class RangeConsistencyTest {
         }
         val bir = r2nr[BigInt](r, bipuff, bistride, (a, b) => true, identity)
 
-        bir.foreach {
-          case (n, t) =>
-            assert(
-              t match {
-                case Failure(_) => n > Int.MaxValue
-                case Success(m) => n == m
-              },
-              (r.start, r.end, r.step, r.isInclusive, bipuff, bistride, n, t)
-            )
+        bir.foreach { case (n, t) =>
+          assert(
+            t match {
+              case Failure(_) => n > Int.MaxValue
+              case Success(m) => n == m
+            },
+            (r.start, r.end, r.step, r.isInclusive, bipuff, bistride, n, t)
+          )
         }
       }
     }

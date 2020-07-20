@@ -209,9 +209,8 @@ trait LEvents {
     ).map { eventIt =>
       val dm = LEventAggregator.aggregateProperties(eventIt)
       if (required.isDefined) {
-        dm.filter {
-          case (k, v) =>
-            required.get.map(v.contains(_)).reduce(_ && _)
+        dm.filter { case (k, v) =>
+          required.get.map(v.contains(_)).reduce(_ && _)
         }
       } else dm
     }

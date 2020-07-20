@@ -137,38 +137,36 @@ private[upgrade] object DeploymentPlanReverter {
     }
 
     // sort groups so that inner groups are processed first
-    val sortedGroupChanges = groupChanges.sortWith {
-      case (change1, change2) =>
-        // both groups are supposed to have the same path id (if there are any)
-        def pathId(change: (Option[Group], Option[Group])): PathId = {
-          Seq(change._1, change._2).flatten
-            .map(_.id)
-            .headOption
-            .getOrElse(PathId.empty)
-        }
+    val sortedGroupChanges = groupChanges.sortWith { case (change1, change2) =>
+      // both groups are supposed to have the same path id (if there are any)
+      def pathId(change: (Option[Group], Option[Group])): PathId = {
+        Seq(change._1, change._2).flatten
+          .map(_.id)
+          .headOption
+          .getOrElse(PathId.empty)
+      }
 
-        pathId(change1) > pathId(change2)
+      pathId(change1) > pathId(change2)
     }
 
-    sortedGroupChanges.foldLeft(group) {
-      case (result, groupUpdate) =>
-        groupUpdate match {
-          case (Some(oldGroup), None) =>
-            result.update(oldGroup.id, revertGroupRemoval(oldGroup), version)
+    sortedGroupChanges.foldLeft(group) { case (result, groupUpdate) =>
+      groupUpdate match {
+        case (Some(oldGroup), None) =>
+          result.update(oldGroup.id, revertGroupRemoval(oldGroup), version)
 
-          case (Some(oldGroup), Some(newGroup)) =>
-            result.update(
-              oldGroup.id,
-              revertDependencyChanges(oldGroup, newGroup),
-              version)
+        case (Some(oldGroup), Some(newGroup)) =>
+          result.update(
+            oldGroup.id,
+            revertDependencyChanges(oldGroup, newGroup),
+            version)
 
-          case (None, Some(newGroup)) =>
-            revertGroupAddition(result, newGroup)
+        case (None, Some(newGroup)) =>
+          revertGroupAddition(result, newGroup)
 
-          case (None, None) =>
-            log.warn("processing unexpected NOOP in group changes")
-            result
-        }
+        case (None, None) =>
+          log.warn("processing unexpected NOOP in group changes")
+          result
+      }
     }
   }
 
@@ -183,22 +181,21 @@ private[upgrade] object DeploymentPlanReverter {
       changes: Seq[(Option[AppDefinition], Option[AppDefinition])])(
       g: Group): Group = {
 
-    changes.foldLeft(g) {
-      case (result, appUpdate) =>
-        appUpdate match {
-          case (Some(oldApp), _) => //removal or change
-            log.debug("revert to old app definition {}", oldApp.id)
-            result.updateApp(oldApp.id, _ => oldApp, version)
-          case (None, Some(newApp)) =>
-            log.debug("remove app definition {}", newApp.id)
-            result.update(
-              newApp.id.parent,
-              _.removeApplication(newApp.id),
-              version)
-          case (None, None) =>
-            log.warn("processing unexpected NOOP in app changes")
-            result
-        }
+    changes.foldLeft(g) { case (result, appUpdate) =>
+      appUpdate match {
+        case (Some(oldApp), _) => //removal or change
+          log.debug("revert to old app definition {}", oldApp.id)
+          result.updateApp(oldApp.id, _ => oldApp, version)
+        case (None, Some(newApp)) =>
+          log.debug("remove app definition {}", newApp.id)
+          result.update(
+            newApp.id.parent,
+            _.removeApplication(newApp.id),
+            version)
+        case (None, None) =>
+          log.warn("processing unexpected NOOP in app changes")
+          result
+      }
     }
   }
 }

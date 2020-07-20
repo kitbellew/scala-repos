@@ -498,104 +498,100 @@ class ReplicaManager(
       messagesPerPartition: Map[TopicPartition, MessageSet],
       requiredAcks: Short): Map[TopicPartition, LogAppendResult] = {
     trace("Append [%s] to local log ".format(messagesPerPartition))
-    messagesPerPartition.map {
-      case (topicPartition, messages) =>
-        BrokerTopicStats
-          .getBrokerTopicStats(topicPartition.topic)
-          .totalProduceRequestRate
-          .mark()
-        BrokerTopicStats
-          .getBrokerAllTopicsStats()
-          .totalProduceRequestRate
-          .mark()
+    messagesPerPartition.map { case (topicPartition, messages) =>
+      BrokerTopicStats
+        .getBrokerTopicStats(topicPartition.topic)
+        .totalProduceRequestRate
+        .mark()
+      BrokerTopicStats.getBrokerAllTopicsStats().totalProduceRequestRate.mark()
 
-        // reject appending to internal topics if it is not allowed
-        if (TopicConstants.INTERNAL_TOPICS.contains(
-            topicPartition.topic) && !internalTopicsAllowed) {
-          (
-            topicPartition,
-            LogAppendResult(
-              LogAppendInfo.UnknownLogAppendInfo,
-              Some(
-                new InvalidTopicException(
-                  "Cannot append to internal topic %s".format(
-                    topicPartition.topic)))))
-        } else {
-          try {
-            val partitionOpt =
-              getPartition(topicPartition.topic, topicPartition.partition)
-            val info = partitionOpt match {
-              case Some(partition) =>
-                partition.appendMessagesToLeader(
-                  messages.asInstanceOf[ByteBufferMessageSet],
-                  requiredAcks)
-              case None =>
-                throw new UnknownTopicOrPartitionException(
-                  "Partition %s doesn't exist on %d"
-                    .format(topicPartition, localBrokerId))
-            }
-
-            val numAppendedMessages =
-              if (info.firstOffset == -1L || info.lastOffset == -1L)
-                0
-              else
-                info.lastOffset - info.firstOffset + 1
-
-            // update stats for successfully appended bytes and messages as bytesInRate and messageInRate
-            BrokerTopicStats
-              .getBrokerTopicStats(topicPartition.topic)
-              .bytesInRate
-              .mark(messages.sizeInBytes)
-            BrokerTopicStats.getBrokerAllTopicsStats.bytesInRate.mark(
-              messages.sizeInBytes)
-            BrokerTopicStats
-              .getBrokerTopicStats(topicPartition.topic)
-              .messagesInRate
-              .mark(numAppendedMessages)
-            BrokerTopicStats.getBrokerAllTopicsStats.messagesInRate.mark(
-              numAppendedMessages)
-
-            trace(
-              "%d bytes written to log %s-%d beginning at offset %d and ending at offset %d"
-                .format(
-                  messages.sizeInBytes,
-                  topicPartition.topic,
-                  topicPartition.partition,
-                  info.firstOffset,
-                  info.lastOffset))
-            (topicPartition, LogAppendResult(info))
-          } catch {
-            // NOTE: Failed produce requests metric is not incremented for known exceptions
-            // it is supposed to indicate un-expected failures of a broker in handling a produce request
-            case e: KafkaStorageException =>
-              fatal(
-                "Halting due to unrecoverable I/O error while handling produce request: ",
-                e)
-              Runtime.getRuntime.halt(1)
-              (topicPartition, null)
-            case e @ (_: UnknownTopicOrPartitionException |
-                _: NotLeaderForPartitionException | _: RecordTooLargeException |
-                _: RecordBatchTooLargeException | _: CorruptRecordException |
-                _: InvalidMessageException | _: InvalidTimestampException) =>
-              (
-                topicPartition,
-                LogAppendResult(LogAppendInfo.UnknownLogAppendInfo, Some(e)))
-            case t: Throwable =>
-              BrokerTopicStats
-                .getBrokerTopicStats(topicPartition.topic)
-                .failedProduceRequestRate
-                .mark()
-              BrokerTopicStats.getBrokerAllTopicsStats.failedProduceRequestRate
-                .mark()
-              error(
-                "Error processing append operation on partition %s".format(
-                  topicPartition),
-                t)
-              (
-                topicPartition,
-                LogAppendResult(LogAppendInfo.UnknownLogAppendInfo, Some(t)))
+      // reject appending to internal topics if it is not allowed
+      if (TopicConstants.INTERNAL_TOPICS.contains(
+          topicPartition.topic) && !internalTopicsAllowed) {
+        (
+          topicPartition,
+          LogAppendResult(
+            LogAppendInfo.UnknownLogAppendInfo,
+            Some(
+              new InvalidTopicException(
+                "Cannot append to internal topic %s".format(
+                  topicPartition.topic)))))
+      } else {
+        try {
+          val partitionOpt =
+            getPartition(topicPartition.topic, topicPartition.partition)
+          val info = partitionOpt match {
+            case Some(partition) =>
+              partition.appendMessagesToLeader(
+                messages.asInstanceOf[ByteBufferMessageSet],
+                requiredAcks)
+            case None =>
+              throw new UnknownTopicOrPartitionException(
+                "Partition %s doesn't exist on %d"
+                  .format(topicPartition, localBrokerId))
           }
+
+          val numAppendedMessages =
+            if (info.firstOffset == -1L || info.lastOffset == -1L)
+              0
+            else
+              info.lastOffset - info.firstOffset + 1
+
+          // update stats for successfully appended bytes and messages as bytesInRate and messageInRate
+          BrokerTopicStats
+            .getBrokerTopicStats(topicPartition.topic)
+            .bytesInRate
+            .mark(messages.sizeInBytes)
+          BrokerTopicStats.getBrokerAllTopicsStats.bytesInRate.mark(
+            messages.sizeInBytes)
+          BrokerTopicStats
+            .getBrokerTopicStats(topicPartition.topic)
+            .messagesInRate
+            .mark(numAppendedMessages)
+          BrokerTopicStats.getBrokerAllTopicsStats.messagesInRate.mark(
+            numAppendedMessages)
+
+          trace(
+            "%d bytes written to log %s-%d beginning at offset %d and ending at offset %d"
+              .format(
+                messages.sizeInBytes,
+                topicPartition.topic,
+                topicPartition.partition,
+                info.firstOffset,
+                info.lastOffset))
+          (topicPartition, LogAppendResult(info))
+        } catch {
+          // NOTE: Failed produce requests metric is not incremented for known exceptions
+          // it is supposed to indicate un-expected failures of a broker in handling a produce request
+          case e: KafkaStorageException =>
+            fatal(
+              "Halting due to unrecoverable I/O error while handling produce request: ",
+              e)
+            Runtime.getRuntime.halt(1)
+            (topicPartition, null)
+          case e @ (_: UnknownTopicOrPartitionException |
+              _: NotLeaderForPartitionException | _: RecordTooLargeException |
+              _: RecordBatchTooLargeException | _: CorruptRecordException |
+              _: InvalidMessageException | _: InvalidTimestampException) =>
+            (
+              topicPartition,
+              LogAppendResult(LogAppendInfo.UnknownLogAppendInfo, Some(e)))
+          case t: Throwable =>
+            BrokerTopicStats
+              .getBrokerTopicStats(topicPartition.topic)
+              .failedProduceRequestRate
+              .mark()
+            BrokerTopicStats.getBrokerAllTopicsStats.failedProduceRequestRate
+              .mark()
+            error(
+              "Error processing append operation on partition %s".format(
+                topicPartition),
+              t)
+            (
+              topicPartition,
+              LogAppendResult(LogAppendInfo.UnknownLogAppendInfo, Some(t)))
         }
+      }
     }
   }
 
@@ -1010,23 +1006,22 @@ class ReplicaManager(
       replicaFetcherManager.removeFetcherForPartitions(
         partitionState.keySet.map(new TopicAndPartition(_)))
       // Update the partition information to be the leader
-      partitionState.foreach {
-        case (partition, partitionStateInfo) =>
-          if (partition.makeLeader(
-              controllerId,
-              partitionStateInfo,
-              correlationId))
-            partitionsToMakeLeaders += partition
-          else
-            stateChangeLogger.info(
-              ("Broker %d skipped the become-leader state change after marking its partition as leader with correlation id %d from " +
-                "controller %d epoch %d for partition %s since it is already the leader for the partition.")
-                .format(
-                  localBrokerId,
-                  correlationId,
-                  controllerId,
-                  epoch,
-                  TopicAndPartition(partition.topic, partition.partitionId)));
+      partitionState.foreach { case (partition, partitionStateInfo) =>
+        if (partition.makeLeader(
+            controllerId,
+            partitionStateInfo,
+            correlationId))
+          partitionsToMakeLeaders += partition
+        else
+          stateChangeLogger.info(
+            ("Broker %d skipped the become-leader state change after marking its partition as leader with correlation id %d from " +
+              "controller %d epoch %d for partition %s since it is already the leader for the partition.")
+              .format(
+                localBrokerId,
+                correlationId,
+                controllerId,
+                epoch,
+                TopicAndPartition(partition.topic, partition.partitionId)));
       }
       partitionsToMakeLeaders.foreach { partition =>
         stateChangeLogger.trace(
@@ -1118,35 +1113,20 @@ class ReplicaManager(
     try {
 
       // TODO: Delete leaders from LeaderAndIsrRequest
-      partitionState.foreach {
-        case (partition, partitionStateInfo) =>
-          val newLeaderBrokerId = partitionStateInfo.leader
-          metadataCache.getAliveBrokers.find(_.id == newLeaderBrokerId) match {
-            // Only change partition state when the leader is available
-            case Some(leaderBroker) =>
-              if (partition.makeFollower(
-                  controllerId,
-                  partitionStateInfo,
-                  correlationId))
-                partitionsToMakeFollower += partition
-              else
-                stateChangeLogger.info(
-                  ("Broker %d skipped the become-follower state change after marking its partition as follower with correlation id %d from " +
-                    "controller %d epoch %d for partition [%s,%d] since the new leader %d is the same as the old leader")
-                    .format(
-                      localBrokerId,
-                      correlationId,
-                      controllerId,
-                      partitionStateInfo.controllerEpoch,
-                      partition.topic,
-                      partition.partitionId,
-                      newLeaderBrokerId))
-            case None =>
-              // The leader broker should always be present in the metadata cache.
-              // If not, we should record the error message and abort the transition process for this partition
-              stateChangeLogger.error(
-                ("Broker %d received LeaderAndIsrRequest with correlation id %d from controller" +
-                  " %d epoch %d for partition [%s,%d] but cannot become follower since the new leader %d is unavailable.")
+      partitionState.foreach { case (partition, partitionStateInfo) =>
+        val newLeaderBrokerId = partitionStateInfo.leader
+        metadataCache.getAliveBrokers.find(_.id == newLeaderBrokerId) match {
+          // Only change partition state when the leader is available
+          case Some(leaderBroker) =>
+            if (partition.makeFollower(
+                controllerId,
+                partitionStateInfo,
+                correlationId))
+              partitionsToMakeFollower += partition
+            else
+              stateChangeLogger.info(
+                ("Broker %d skipped the become-follower state change after marking its partition as follower with correlation id %d from " +
+                  "controller %d epoch %d for partition [%s,%d] since the new leader %d is the same as the old leader")
                   .format(
                     localBrokerId,
                     correlationId,
@@ -1155,10 +1135,24 @@ class ReplicaManager(
                     partition.topic,
                     partition.partitionId,
                     newLeaderBrokerId))
-              // Create the local replica even if the leader is unavailable. This is required to ensure that we include
-              // the partition's high watermark in the checkpoint file (see KAFKA-1647)
-              partition.getOrCreateReplica()
-          }
+          case None =>
+            // The leader broker should always be present in the metadata cache.
+            // If not, we should record the error message and abort the transition process for this partition
+            stateChangeLogger.error(
+              ("Broker %d received LeaderAndIsrRequest with correlation id %d from controller" +
+                " %d epoch %d for partition [%s,%d] but cannot become follower since the new leader %d is unavailable.")
+                .format(
+                  localBrokerId,
+                  correlationId,
+                  controllerId,
+                  partitionStateInfo.controllerEpoch,
+                  partition.topic,
+                  partition.partitionId,
+                  newLeaderBrokerId))
+            // Create the local replica even if the leader is unavailable. This is required to ensure that we include
+            // the partition's high watermark in the checkpoint file (see KAFKA-1647)
+            partition.getOrCreateReplica()
+        }
       }
 
       replicaFetcherManager.removeFetcherForPartitions(
@@ -1286,23 +1280,20 @@ class ReplicaManager(
     debug(
       "Recording follower broker %d log read results: %s "
         .format(replicaId, readResults))
-    readResults.foreach {
-      case (topicAndPartition, readResult) =>
-        getPartition(
-          topicAndPartition.topic,
-          topicAndPartition.partition) match {
-          case Some(partition) =>
-            partition.updateReplicaLogReadResult(replicaId, readResult)
+    readResults.foreach { case (topicAndPartition, readResult) =>
+      getPartition(topicAndPartition.topic, topicAndPartition.partition) match {
+        case Some(partition) =>
+          partition.updateReplicaLogReadResult(replicaId, readResult)
 
-            // for producer requests with ack > 1, we need to check
-            // if they can be unblocked after some follower's log end offsets have moved
-            tryCompleteDelayedProduce(
-              new TopicPartitionOperationKey(topicAndPartition))
-          case None =>
-            warn(
-              "While recording the replica LEO, the partition %s hasn't been created."
-                .format(topicAndPartition))
-        }
+          // for producer requests with ack > 1, we need to check
+          // if they can be unblocked after some follower's log end offsets have moved
+          tryCompleteDelayedProduce(
+            new TopicPartitionOperationKey(topicAndPartition))
+        case None =>
+          warn(
+            "While recording the replica LEO, the partition %s hasn't been created."
+              .format(topicAndPartition))
+      }
     }
   }
 

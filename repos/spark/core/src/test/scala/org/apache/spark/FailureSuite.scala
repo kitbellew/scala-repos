@@ -69,16 +69,15 @@ class FailureSuite extends SparkFunSuite with LocalSparkContext {
       .makeRDD(1 to 3)
       .map(x => (x, x))
       .groupByKey(3)
-      .map {
-        case (k, v) =>
-          FailureSuiteState.synchronized {
-            FailureSuiteState.tasksRun += 1
-            if (k == 1 && FailureSuiteState.tasksFailed == 0) {
-              FailureSuiteState.tasksFailed += 1
-              throw new Exception("Intentional task failure")
-            }
+      .map { case (k, v) =>
+        FailureSuiteState.synchronized {
+          FailureSuiteState.tasksRun += 1
+          if (k == 1 && FailureSuiteState.tasksFailed == 0) {
+            FailureSuiteState.tasksFailed += 1
+            throw new Exception("Intentional task failure")
           }
-          (k, v.head * v.head)
+        }
+        (k, v.head * v.head)
       }
       .collect()
     FailureSuiteState.synchronized {

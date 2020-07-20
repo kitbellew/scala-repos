@@ -882,9 +882,8 @@ trait StandardLiftables { self: Universe =>
     implicit def unliftTuple2[T1, T2](implicit
         UnliftT1: Unliftable[T1],
         UnliftT2: Unliftable[T2]): Unliftable[Tuple2[T1, T2]] =
-      Unliftable {
-        case SyntacticTuple(UnliftT1(v1) :: UnliftT2(v2) :: Nil) =>
-          Tuple2(v1, v2)
+      Unliftable { case SyntacticTuple(UnliftT1(v1) :: UnliftT2(v2) :: Nil) =>
+        Tuple2(v1, v2)
       }
     implicit def unliftTuple3[T1, T2, T3](implicit
         UnliftT1: Unliftable[T1],

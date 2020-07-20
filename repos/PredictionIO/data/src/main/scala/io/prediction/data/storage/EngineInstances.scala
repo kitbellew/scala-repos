@@ -104,27 +104,27 @@ trait EngineInstances {
 class EngineInstanceSerializer
     extends CustomSerializer[EngineInstance](format =>
       (
-        {
-          case JObject(fields) =>
-            implicit val formats = DefaultFormats
-            val seed = EngineInstance(
-              id = "",
-              status = "",
-              startTime = DateTime.now,
-              endTime = DateTime.now,
-              engineId = "",
-              engineVersion = "",
-              engineVariant = "",
-              engineFactory = "",
-              batch = "",
-              env = Map(),
-              sparkConf = Map(),
-              dataSourceParams = "",
-              preparatorParams = "",
-              algorithmsParams = "",
-              servingParams = ""
-            )
-            fields.foldLeft(seed) {
+        { case JObject(fields) =>
+          implicit val formats = DefaultFormats
+          val seed = EngineInstance(
+            id = "",
+            status = "",
+            startTime = DateTime.now,
+            endTime = DateTime.now,
+            engineId = "",
+            engineVersion = "",
+            engineVariant = "",
+            engineFactory = "",
+            batch = "",
+            env = Map(),
+            sparkConf = Map(),
+            dataSourceParams = "",
+            preparatorParams = "",
+            algorithmsParams = "",
+            servingParams = ""
+          )
+          fields
+            .foldLeft(seed) {
               case (i, field) =>
                 field match {
                   case JField("id", JString(id)) => i.copy(id = id)
@@ -160,25 +160,24 @@ class EngineInstanceSerializer
                 }
             }
         },
-        {
-          case i: EngineInstance =>
-            JObject(
-              JField("id", JString(i.id)) ::
-                JField("status", JString(i.status)) ::
-                JField("startTime", JString(i.startTime.toString)) ::
-                JField("endTime", JString(i.endTime.toString)) ::
-                JField("engineId", JString(i.engineId)) ::
-                JField("engineVersion", JString(i.engineVersion)) ::
-                JField("engineVariant", JString(i.engineVariant)) ::
-                JField("engineFactory", JString(i.engineFactory)) ::
-                JField("batch", JString(i.batch)) ::
-                JField("env", Extraction.decompose(i.env)(DefaultFormats)) ::
-                JField(
-                  "sparkConf",
-                  Extraction.decompose(i.sparkConf)(DefaultFormats)) ::
-                JField("dataSourceParams", JString(i.dataSourceParams)) ::
-                JField("preparatorParams", JString(i.preparatorParams)) ::
-                JField("algorithmsParams", JString(i.algorithmsParams)) ::
-                JField("servingParams", JString(i.servingParams)) ::
-                Nil)
+        { case i: EngineInstance =>
+          JObject(
+            JField("id", JString(i.id)) ::
+              JField("status", JString(i.status)) ::
+              JField("startTime", JString(i.startTime.toString)) ::
+              JField("endTime", JString(i.endTime.toString)) ::
+              JField("engineId", JString(i.engineId)) ::
+              JField("engineVersion", JString(i.engineVersion)) ::
+              JField("engineVariant", JString(i.engineVariant)) ::
+              JField("engineFactory", JString(i.engineFactory)) ::
+              JField("batch", JString(i.batch)) ::
+              JField("env", Extraction.decompose(i.env)(DefaultFormats)) ::
+              JField(
+                "sparkConf",
+                Extraction.decompose(i.sparkConf)(DefaultFormats)) ::
+              JField("dataSourceParams", JString(i.dataSourceParams)) ::
+              JField("preparatorParams", JString(i.preparatorParams)) ::
+              JField("algorithmsParams", JString(i.algorithmsParams)) ::
+              JField("servingParams", JString(i.servingParams)) ::
+              Nil)
         }))

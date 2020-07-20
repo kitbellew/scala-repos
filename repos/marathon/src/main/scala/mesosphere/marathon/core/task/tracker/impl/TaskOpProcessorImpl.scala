@@ -167,13 +167,12 @@ private[tracker] class TaskOpProcessorImpl(
           case None =>
             taskTrackerRef ! TaskTrackerActor.TaskRemoved(op.taskId, ack(None))
         }
-        .recover {
-          case NonFatal(loadingFailure) =>
-            log.warn(
-              s"${op.taskId} of app [${op.taskId.appId}]: task reloading failed as well",
-              loadingFailure
-            )
-            throw cause
+        .recover { case NonFatal(loadingFailure) =>
+          log.warn(
+            s"${op.taskId} of app [${op.taskId.appId}]: task reloading failed as well",
+            loadingFailure
+          )
+          throw cause
         }
   }
 }

@@ -65,8 +65,7 @@ object SettingsExtensionDocSpec {
     val connection = connect(settings.DbUri, settings.CircuitBreakerTimeout)
 
     //#extension-usage-actor
-    def receive = {
-      case someMessage =>
+    def receive = { case someMessage =>
     }
 
     def connect(dbUri: String, circuitBreakerTimeout: Duration) = {

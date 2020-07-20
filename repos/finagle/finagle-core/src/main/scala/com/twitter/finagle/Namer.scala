@@ -200,13 +200,13 @@ object Namer {
           // - if all activities are pending, the union is pending.
           // - if no subtree is Ok, and there are failures, retain the first failure.
 
-          val oks = seq.collect {
-            case Activity.Ok(t) => t
+          val oks = seq.collect { case Activity.Ok(t) =>
+            t
           }
           if (oks.isEmpty) {
             seq
-              .collectFirst {
-                case f @ Activity.Failed(_) => f
+              .collectFirst { case f @ Activity.Failed(_) =>
+                f
               }
               .getOrElse(Activity.Pending)
           } else {

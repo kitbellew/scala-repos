@@ -64,8 +64,8 @@ trait Picklers { self: Global =>
 
   implicit lazy val sourceFile: Pickler[SourceFile] =
     (pkl[AbstractFile] ~ pkl[Diff])
-      .wrapped[SourceFile] {
-        case f ~ d => new BatchSourceFile(f, patch(f, d))
+      .wrapped[SourceFile] { case f ~ d =>
+        new BatchSourceFile(f, patch(f, d))
       } { f =>
         f.file ~ delta(f.file, f.content)
       }
@@ -80,17 +80,15 @@ trait Picklers { self: Global =>
 
   lazy val rangePosition: CondPickler[Position] =
     (pkl[SourceFile] ~ pkl[Int] ~ pkl[Int] ~ pkl[Int])
-      .wrapped {
-        case source ~ start ~ point ~ end =>
-          Position.range(source, start, point, end)
+      .wrapped { case source ~ start ~ point ~ end =>
+        Position.range(source, start, point, end)
       } { p => p.source ~ p.start ~ p.point ~ p.end }
       .asClass(classOf[Position])
 
   lazy val transparentPosition: CondPickler[Position] =
     (pkl[SourceFile] ~ pkl[Int] ~ pkl[Int] ~ pkl[Int])
-      .wrapped {
-        case source ~ start ~ point ~ end =>
-          Position.range(source, start, point, end).makeTransparent
+      .wrapped { case source ~ start ~ point ~ end =>
+        Position.range(source, start, point, end).makeTransparent
       } { p => p.source ~ p.start ~ p.point ~ p.end }
       .asClass(classOf[Position])
 
@@ -166,9 +164,8 @@ trait Picklers { self: Global =>
 
   implicit def askTypeItem: CondPickler[AskTypeItem] =
     (pkl[SourceFile] ~ pkl[Boolean])
-      .wrapped {
-        case source ~ forceReload =>
-          new AskTypeItem(source, forceReload, new Response)
+      .wrapped { case source ~ forceReload =>
+        new AskTypeItem(source, forceReload, new Response)
       } { w => w.source ~ w.forceReload }
       .asClass(classOf[AskTypeItem])
 
@@ -189,8 +186,8 @@ trait Picklers { self: Global =>
 
   implicit def askLinkPosItem: CondPickler[AskLinkPosItem] =
     (pkl[Symbol] ~ pkl[SourceFile])
-      .wrapped {
-        case sym ~ source => new AskLinkPosItem(sym, source, new Response)
+      .wrapped { case sym ~ source =>
+        new AskLinkPosItem(sym, source, new Response)
       } { item => item.sym ~ item.source }
       .asClass(classOf[AskLinkPosItem])
 
@@ -198,9 +195,8 @@ trait Picklers { self: Global =>
     (pkl[Symbol] ~ pkl[SourceFile] ~ pkl[Symbol] ~ pkl[List[(
         Symbol,
         SourceFile)]])
-      .wrapped {
-        case sym ~ source ~ site ~ fragments =>
-          new AskDocCommentItem(sym, source, site, fragments, new Response)
+      .wrapped { case sym ~ source ~ site ~ fragments =>
+        new AskDocCommentItem(sym, source, site, fragments, new Response)
       } { item => item.sym ~ item.source ~ item.site ~ item.fragments }
       .asClass(classOf[AskDocCommentItem])
 
@@ -213,9 +209,8 @@ trait Picklers { self: Global =>
 
   implicit def askParsedEnteredItem: CondPickler[AskParsedEnteredItem] =
     (pkl[SourceFile] ~ pkl[Boolean])
-      .wrapped {
-        case source ~ keepLoaded =>
-          new AskParsedEnteredItem(source, keepLoaded, new Response)
+      .wrapped { case source ~ keepLoaded =>
+        new AskParsedEnteredItem(source, keepLoaded, new Response)
       } { w => w.source ~ w.keepLoaded }
       .asClass(classOf[AskParsedEnteredItem])
 

@@ -21,30 +21,29 @@ class JavaAccessorMethodCalledAsEmptyParenInspection
       "ScalaJavaAccessorMethodCalledAsEmptyParen",
       "Java accessor method called as empty-paren") {
 
-  def actionFor(holder: ProblemsHolder) = {
-    case e: ScReferenceExpression =>
-      e.getParent match {
-        case call: ScMethodCall =>
-          call.getParent match {
-            case callParent: ScMethodCall => // do nothing
-            case _ =>
-              if (call.argumentExpressions.isEmpty) {
-                e.resolve() match {
-                  case _: ScalaPsiElement => // do nothing
-                  case (m: PsiMethod)
-                      if m.isAccessor && !isOverloadedMethod(e) && hasSameType(
-                        call,
-                        e) =>
-                    holder.registerProblem(
-                      e.nameId,
-                      getDisplayName,
-                      new RemoveCallParentheses(call))
-                  case _ =>
-                }
+  def actionFor(holder: ProblemsHolder) = { case e: ScReferenceExpression =>
+    e.getParent match {
+      case call: ScMethodCall =>
+        call.getParent match {
+          case callParent: ScMethodCall => // do nothing
+          case _ =>
+            if (call.argumentExpressions.isEmpty) {
+              e.resolve() match {
+                case _: ScalaPsiElement => // do nothing
+                case (m: PsiMethod)
+                    if m.isAccessor && !isOverloadedMethod(e) && hasSameType(
+                      call,
+                      e) =>
+                  holder.registerProblem(
+                    e.nameId,
+                    getDisplayName,
+                    new RemoveCallParentheses(call))
+                case _ =>
               }
-          }
-        case _ =>
-      }
+            }
+        }
+      case _ =>
+    }
   }
 
   private def isOverloadedMethod(ref: ScReferenceExpression) = {

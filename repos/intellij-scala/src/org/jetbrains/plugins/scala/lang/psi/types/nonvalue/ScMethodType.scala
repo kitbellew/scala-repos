@@ -323,26 +323,25 @@ case class ScTypePolymorphicType(
       new HashMap[(String, PsiElement), ScType] ++ typeParameters.map(tp => {
         var contraVariant = 0
         var coOrInVariant = 0
-        internalType.recursiveVarianceUpdate {
-          case (typez: ScType, i: Int) =>
-            val pair = typez match {
-              case tp: ScTypeParameterType =>
-                (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-              case ScUndefinedType(tp) =>
-                (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-              case ScAbstractType(tp, _, _) =>
-                (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
-              case _ => null
+        internalType.recursiveVarianceUpdate { case (typez: ScType, i: Int) =>
+          val pair = typez match {
+            case tp: ScTypeParameterType =>
+              (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+            case ScUndefinedType(tp) =>
+              (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+            case ScAbstractType(tp, _, _) =>
+              (tp.name, ScalaPsiUtil.getPsiElementId(tp.param))
+            case _ => null
+          }
+          if (pair != null) {
+            val (tpName, id) = pair
+            if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
+                tp.ptp)) {
+              if (i == -1) contraVariant += 1
+              else coOrInVariant += 1
             }
-            if (pair != null) {
-              val (tpName, id) = pair
-              if (tp.name == tpName && id == ScalaPsiUtil.getPsiElementId(
-                  tp.ptp)) {
-                if (i == -1) contraVariant += 1
-                else coOrInVariant += 1
-              }
-            }
-            (false, typez)
+          }
+          (false, typez)
         }
         if (coOrInVariant == 0 && contraVariant != 0)
           (

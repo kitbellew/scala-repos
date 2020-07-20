@@ -324,13 +324,12 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
   def parameter: Parser[Parameter] =
     ((identifier | tickedIdentifier) <~ ignoreWhiteSpace) ~ opt(
       parameterType) ~ (ignoreWhiteSpace ~> opt(
-      parameterDefaultValue | parameterFixedValue)) ^^ {
-      case name ~ t ~ d =>
-        Parameter(
-          name,
-          t.getOrElse("String"),
-          d.filter(_.startsWith("=")).map(_.drop(1)),
-          d.filter(_.startsWith("?")).map(_.drop(2)))
+      parameterDefaultValue | parameterFixedValue)) ^^ { case name ~ t ~ d =>
+      Parameter(
+        name,
+        t.getOrElse("String"),
+        d.filter(_.startsWith("=")).map(_.drop(1)),
+        d.filter(_.startsWith("?")).map(_.drop(2)))
     }
 
   def parameters: Parser[List[Parameter]] =
@@ -382,22 +381,21 @@ private[routes] class RoutesFileParser extends JavaTokenParsers {
       "HTTP Verb (GET, POST, ...), include (->) or comment (#) expected") <~ (newLine | EOF)
 
   def parser: Parser[List[Rule]] =
-    phrase((blankLine | sentence *) <~ end) ^^ {
-      case routes =>
-        routes.reverse
-          .foldLeft(List[(Option[Rule], List[Comment])]()) {
-            case (s, r @ Route(_, _, _, _)) => (Some(r), List()) :: s
-            case (s, i @ Include(_, _))     => (Some(i), List()) :: s
-            case (s, c @ ())                => (None, List()) :: s
-            case ((r, comments) :: others, c @ Comment(_)) =>
-              (r, c :: comments) :: others
-            case (s, _) => s
-          }
-          .collect {
-            case (Some(r @ Route(_, _, _, _)), comments) =>
-              r.copy(comments = comments).setPos(r.pos)
-            case (Some(i @ Include(_, _)), _) => i
-          }
+    phrase((blankLine | sentence *) <~ end) ^^ { case routes =>
+      routes.reverse
+        .foldLeft(List[(Option[Rule], List[Comment])]()) {
+          case (s, r @ Route(_, _, _, _)) => (Some(r), List()) :: s
+          case (s, i @ Include(_, _))     => (Some(i), List()) :: s
+          case (s, c @ ())                => (None, List()) :: s
+          case ((r, comments) :: others, c @ Comment(_)) =>
+            (r, c :: comments) :: others
+          case (s, _) => s
+        }
+        .collect {
+          case (Some(r @ Route(_, _, _, _)), comments) =>
+            r.copy(comments = comments).setPos(r.pos)
+          case (Some(i @ Include(_, _)), _) => i
+        }
     }
 
   def parse(text: String): ParseResult[List[Rule]] = {

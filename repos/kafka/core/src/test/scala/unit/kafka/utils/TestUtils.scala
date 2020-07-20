@@ -238,9 +238,8 @@ object TestUtils extends Logging {
       protocolAndPorts += SecurityProtocol.SASL_SSL -> saslSslPort
 
     val listeners = protocolAndPorts
-      .map {
-        case (protocol, port) =>
-          s"${protocol.name}://localhost:$port"
+      .map { case (protocol, port) =>
+        s"${protocol.name}://localhost:$port"
       }
       .mkString(",")
 
@@ -257,8 +256,8 @@ object TestUtils extends Logging {
     props.put("log.cleaner.dedupe.buffer.size", "2097152")
     rack.foreach(props.put("broker.rack", _))
 
-    if (protocolAndPorts.exists {
-        case (protocol, _) => usesSslTransportLayer(protocol)
+    if (protocolAndPorts.exists { case (protocol, _) =>
+        usesSslTransportLayer(protocol)
       })
       props.putAll(
         sslConfigs(Mode.SERVER, false, trustStoreFile, s"server$nodeId"))
@@ -292,10 +291,9 @@ object TestUtils extends Logging {
       replicationFactor,
       topicConfig)
     // wait until the update metadata request for new topic reaches all servers
-    (0 until numPartitions).map {
-      case i =>
-        TestUtils.waitUntilMetadataIsPropagated(servers, topic, i)
-        i -> TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, i)
+    (0 until numPartitions).map { case i =>
+      TestUtils.waitUntilMetadataIsPropagated(servers, topic, i)
+      i -> TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, i)
     }.toMap
   }
 
@@ -316,10 +314,9 @@ object TestUtils extends Logging {
       topic,
       partitionReplicaAssignment)
     // wait until the update metadata request for new topic reaches all servers
-    partitionReplicaAssignment.keySet.map {
-      case i =>
-        TestUtils.waitUntilMetadataIsPropagated(servers, topic, i)
-        i -> TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, i)
+    partitionReplicaAssignment.keySet.map { case i =>
+      TestUtils.waitUntilMetadataIsPropagated(servers, topic, i)
+      i -> TestUtils.waitUntilLeaderIsElectedOrChanged(zkUtils, topic, i)
     }.toMap
   }
 
@@ -583,9 +580,8 @@ object TestUtils extends Logging {
       ProducerConfig.LINGER_MS_CONFIG -> lingerMs.toString
     )
 
-    defaultProps.foreach {
-      case (key, value) =>
-        if (!producerProps.containsKey(key)) producerProps.put(key, value)
+    defaultProps.foreach { case (key, value) =>
+      if (!producerProps.containsKey(key)) producerProps.put(key, value)
     }
 
     /*
@@ -647,9 +643,8 @@ object TestUtils extends Logging {
       ConsumerConfig.GROUP_ID_CONFIG -> groupId
     )
 
-    defaultProps.foreach {
-      case (key, value) =>
-        if (!consumerProps.containsKey(key)) consumerProps.put(key, value)
+    defaultProps.foreach { case (key, value) =>
+      if (!consumerProps.containsKey(key)) consumerProps.put(key, value)
     }
 
     /*

@@ -35,10 +35,9 @@ class ArrayCheck extends Specification with ScalaCheck {
           loc <- Gen.listOf(Gen.choose(-1, arr.length - 1))
         } yield (arr.toArray, loc.toArray)
 
-      forAll(arrAndLocs) {
-        case (arr: Array[Double], locs: Array[Int]) =>
-          val v = Vec(array.take(arr, locs, 0d))
-          array.sum(arr, locs, 0d) must_== v.sum
+      forAll(arrAndLocs) { case (arr: Array[Double], locs: Array[Int]) =>
+        val v = Vec(array.take(arr, locs, 0d))
+        array.sum(arr, locs, 0d) must_== v.sum
       }
     }
 
@@ -49,10 +48,9 @@ class ArrayCheck extends Specification with ScalaCheck {
           loc <- Gen.listOf(Gen.choose(-1, arr.length - 1))
         } yield (arr.toArray, loc.toArray)
 
-      forAll(arrAndLocs) {
-        case (arr: Array[Int], locs: Array[Int]) =>
-          val v = Vec(array.take(arr, locs, 0))
-          array.sum(arr, locs, 0) must_== v.sum
+      forAll(arrAndLocs) { case (arr: Array[Int], locs: Array[Int]) =>
+        val v = Vec(array.take(arr, locs, 0))
+        array.sum(arr, locs, 0) must_== v.sum
       }
     }
   }

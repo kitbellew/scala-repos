@@ -27,13 +27,12 @@ class ContinueOnErrorStep(wrapped: TaskStatusUpdateStep)
       wrapped.processUpdate(timestamp, task, mesosStatus))
     maybeProcessed match {
       case Some(processed) =>
-        processed.recover {
-          case NonFatal(e) =>
-            log.error(
-              "while executing step {} for [{}], continue with other steps",
-              wrapped.name,
-              mesosStatus.getTaskId.getValue,
-              e)
+        processed.recover { case NonFatal(e) =>
+          log.error(
+            "while executing step {} for [{}], continue with other steps",
+            wrapped.name,
+            mesosStatus.getTaskId.getValue,
+            e)
         }
       case None =>
         log.error(

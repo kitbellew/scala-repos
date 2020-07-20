@@ -71,8 +71,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       val q2 = (for {
         u <- us
         t <- ts if t.a === u.id
-      } yield (u, t)).groupBy(_._1.id).map {
-        case (id, q) => (id, q.length, q.map(_._2.a).sum, q.map(_._2.b).sum)
+      } yield (u, t)).groupBy(_._1.id).map { case (id, q) =>
+        (id, q.length, q.map(_._2.a).sum, q.map(_._2.b).sum)
       }
       db.run(mark("q2", q2.result)).map {
         r2t: Seq[(Int, Int, Option[Int], Option[Int])] =>
@@ -121,15 +121,14 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
         (u, t) <- us joinLeft ts on (_.id === _.a)
       } yield (u, t))
         .groupBy(_._1.id)
-        .map {
-          case (id, q) =>
-            (
-              id,
-              q.length,
-              q.map(_._1).length,
-              q.map(_._2).length,
-              q.map(_._2.map(_.a)).length,
-              q.map(_._2.map(_.a)).countDefined)
+        .map { case (id, q) =>
+          (
+            id,
+            q.length,
+            q.map(_._1).length,
+            q.map(_._2).length,
+            q.map(_._2.map(_.a)).length,
+            q.map(_._2.map(_.a)).countDefined)
         })
         .to[Set]
       db.run(mark("q6", q6.result))
@@ -142,14 +141,13 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
     }.flatMap { _ =>
       val q7 = ts
         .groupBy(_.a)
-        .map {
-          case (a, ts) =>
-            (
-              a,
-              ts.map(_.b).sum,
-              ts.map(_.b).min,
-              ts.map(_.b).max,
-              ts.map(_.b).avg)
+        .map { case (a, ts) =>
+          (
+            a,
+            ts.map(_.b).sum,
+            ts.map(_.b).min,
+            ts.map(_.b).max,
+            ts.map(_.b).avg)
         }
         .to[Set]
       db.run(mark("q7", q7.result))
@@ -204,8 +202,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
     }.flatMap { _ =>
       val q10 = ((for {
         m <- ts
-      } yield m) groupBy (_.a) map {
-        case (id, data) => (id, data.map(_.b.asColumnOf[Option[Double]]).max)
+      } yield m) groupBy (_.a) map { case (id, data) =>
+        (id, data.map(_.b.asColumnOf[Option[Double]]).max)
       }).to[Set]
       db.run(mark("q10", q10.result))
         .map(_ shouldBe Set((2, Some(5.0)), (1, Some(3.0)), (3, Some(9.0))))
@@ -286,8 +284,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       q1 =
         Tabs
           .groupBy(t => (t.col1, t.col2, t.col3))
-          .map {
-            case (grp, t) => (grp._1, grp._2, t.map(_.col4).sum)
+          .map { case (grp, t) =>
+            (grp._1, grp._2, t.map(_.col4).sum)
           }
           .to[Set]
       _ <- q1.result.map(
@@ -298,8 +296,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       q2 =
         Tabs
           .groupBy(t => ((t.col1, t.col2), t.col3))
-          .map {
-            case (grp, t) => (grp._1._1, grp._1._2, t.map(_.col4).sum)
+          .map { case (grp, t) =>
+            (grp._1._1, grp._1._2, t.map(_.col4).sum)
           }
           .to[Set]
       _ <- q2.result.map(
@@ -310,8 +308,8 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       q3 =
         Tabs
           .groupBy(_.col1)
-          .map {
-            case (grp, t) => (grp, t.map(x => x.col4 + x.col5).sum)
+          .map { case (grp, t) =>
+            (grp, t.map(x => x.col4 + x.col5).sum)
           }
           .to[Set]
       _ <- q3.result.map(_ shouldBe Set(("baz", Some(12)), ("foo", Some(24))))
@@ -340,10 +338,9 @@ class AggregateTest extends AsyncTest[RelationalTestDB] {
       q1 = as.groupBy(_.id).map(_._2.map(x => x).map(x => x.a).min)
       _ <- q1.result.map(v => v.toList shouldBe Nil)
       q2 = (as joinLeft bs on (_.id === _.id))
-        .map {
-          case (c, so) =>
-            val nameo = so.map(_.b)
-            (c, so, nameo)
+        .map { case (c, so) =>
+          val nameo = so.map(_.b)
+          (c, so, nameo)
         }
         .groupBy { prop =>
           val c = prop._1

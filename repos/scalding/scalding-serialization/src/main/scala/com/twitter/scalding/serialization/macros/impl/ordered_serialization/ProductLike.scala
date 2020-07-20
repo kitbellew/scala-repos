@@ -56,13 +56,12 @@ object ProductLike {
 
     val currentHash = freshT("last")
 
-    val hashUpdates = elementData.map {
-      case (tpe, accessorSymbol, tBuf) =>
-        val target = freshT("target")
-        q"""
+    val hashUpdates = elementData.map { case (tpe, accessorSymbol, tBuf) =>
+      val target = freshT("target")
+      q"""
           val $target = $element.$accessorSymbol
             $currentHash = _root_.com.twitter.scalding.serialization.MurmurHashUtils.mixH1($currentHash, ${tBuf
-          .hash(target)})
+        .hash(target)})
           """
     }
 
@@ -182,17 +181,16 @@ object ProductLike {
     val innerElementB = freshT("innerElementB")
 
     elementData
-      .map {
-        case (tpe, accessorSymbol, tBuf) =>
-          val curCmp = freshT("curCmp")
-          val cmpTree = q"""
+      .map { case (tpe, accessorSymbol, tBuf) =>
+        val curCmp = freshT("curCmp")
+        val cmpTree = q"""
             val $curCmp: Int = {
               val $innerElementA = $elementA.$accessorSymbol
               val $innerElementB = $elementB.$accessorSymbol
               ${tBuf.compare(innerElementA, innerElementB)}
             }
           """
-          (cmpTree, curCmp)
+        (cmpTree, curCmp)
       }
       .reverse // go through last to first
       .foldLeft(None: Option[Tree]) {

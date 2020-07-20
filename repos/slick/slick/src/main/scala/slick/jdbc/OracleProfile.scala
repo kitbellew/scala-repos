@@ -204,15 +204,13 @@ trait OracleProfile extends JdbcProfile {
     override val dropPhase2 = dropAutoIncSequences ++ super.dropPhase2
 
     def createAutoIncSequences =
-      columns.flatMap {
-        case cb: ColumnDDLBuilder =>
-          cb.createSequenceAndTrigger(table)
+      columns.flatMap { case cb: ColumnDDLBuilder =>
+        cb.createSequenceAndTrigger(table)
       }
 
     def dropAutoIncSequences =
-      columns.flatMap {
-        case cb: ColumnDDLBuilder =>
-          cb.dropTriggerAndSequence(table)
+      columns.flatMap { case cb: ColumnDDLBuilder =>
+        cb.dropTriggerAndSequence(table)
       }
 
     override protected def addForeignKey(fk: ForeignKey, sb: StringBuilder) {

@@ -93,19 +93,18 @@ object SystemMessageDeliveryStressTest {
 
     override def preStart(): Unit = self ! "sendnext"
 
-    override def receive = {
-      case "sendnext" ⇒
-        targetRef.sendSystemMessage(Failed(null, null, counter))
-        counter += 1
-        burstCounter += 1
+    override def receive = { case "sendnext" ⇒
+      targetRef.sendSystemMessage(Failed(null, null, counter))
+      counter += 1
+      burstCounter += 1
 
-        if (counter < msgCount) {
-          if (burstCounter < burstSize) self ! "sendnext"
-          else {
-            burstCounter = 0
-            context.system.scheduler.scheduleOnce(burstDelay, self, "sendnext")
-          }
+      if (counter < msgCount) {
+        if (burstCounter < burstSize) self ! "sendnext"
+        else {
+          burstCounter = 0
+          context.system.scheduler.scheduleOnce(burstDelay, self, "sendnext")
         }
+      }
     }
   }
 

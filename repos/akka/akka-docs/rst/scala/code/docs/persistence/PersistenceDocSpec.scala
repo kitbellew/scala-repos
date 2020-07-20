@@ -54,8 +54,7 @@ object PersistenceDocSpec {
         case evt => //...
       }
 
-      override def receiveCommand: Receive = {
-        case msg => //...
+      override def receiveCommand: Receive = { case msg => //...
       }
       //#recovery-completed
     }
@@ -78,11 +77,9 @@ object PersistenceDocSpec {
       override def persistenceId = "my-stable-persistence-id"
       //#persistence-id-override
 
-      override def receiveRecover: Receive = {
-        case _ =>
+      override def receiveRecover: Receive = { case _ =>
       }
-      override def receiveCommand: Receive = {
-        case _ =>
+      override def receiveCommand: Receive = { case _ =>
       }
     }
   }
@@ -143,10 +140,9 @@ object PersistenceDocSpec {
     }
 
     class MyDestination extends Actor {
-      def receive = {
-        case Msg(deliveryId, s) =>
-          // ...
-          sender() ! Confirm(deliveryId)
+      def receive = { case Msg(deliveryId, s) =>
+        // ...
+        sender() ! Confirm(deliveryId)
       }
     }
     //#at-least-once-example
@@ -204,8 +200,7 @@ object PersistenceDocSpec {
 
       override def persistenceId = "my-stable-persistence-id"
 
-      override def receiveRecover: Receive = {
-        case _ => // handle recovery here
+      override def receiveRecover: Receive = { case _ => // handle recovery here
       }
 
       override def receiveCommand: Receive = {
@@ -239,8 +234,7 @@ object PersistenceDocSpec {
 
       override def persistenceId = "my-stable-persistence-id"
 
-      override def receiveRecover: Receive = {
-        case _ => // handle recovery here
+      override def receiveRecover: Receive = { case _ => // handle recovery here
       }
 
       override def receiveCommand: Receive = {
@@ -276,28 +270,26 @@ object PersistenceDocSpec {
     class MyPersistentActor extends PersistentActor {
       override def persistenceId = "my-stable-persistence-id"
 
-      override def receiveRecover: Receive = {
-        case _ => // handle recovery here
+      override def receiveRecover: Receive = { case _ => // handle recovery here
       }
 
       //#nested-persist-persist
-      override def receiveCommand: Receive = {
-        case c: String =>
-          sender() ! c
+      override def receiveCommand: Receive = { case c: String =>
+        sender() ! c
 
-          persist(s"$c-1-outer") { outer1 =>
-            sender() ! outer1
-            persist(s"$c-1-inner") { inner1 =>
-              sender() ! inner1
-            }
+        persist(s"$c-1-outer") { outer1 =>
+          sender() ! outer1
+          persist(s"$c-1-inner") { inner1 =>
+            sender() ! inner1
           }
+        }
 
-          persist(s"$c-2-outer") { outer2 =>
-            sender() ! outer2
-            persist(s"$c-2-inner") { inner2 =>
-              sender() ! inner2
-            }
+        persist(s"$c-2-outer") { outer2 =>
+          sender() ! outer2
+          persist(s"$c-2-inner") { inner2 =>
+            sender() ! inner2
           }
+        }
       }
       //#nested-persist-persist
     }
@@ -324,22 +316,20 @@ object PersistenceDocSpec {
     class MyPersistAsyncActor extends PersistentActor {
       override def persistenceId = "my-stable-persistence-id"
 
-      override def receiveRecover: Receive = {
-        case _ => // handle recovery here
+      override def receiveRecover: Receive = { case _ => // handle recovery here
       }
 
       //#nested-persistAsync-persistAsync
-      override def receiveCommand: Receive = {
-        case c: String =>
-          sender() ! c
-          persistAsync(c + "-outer-1") { outer ⇒
-            sender() ! outer
-            persistAsync(c + "-inner-1") { inner ⇒ sender() ! inner }
-          }
-          persistAsync(c + "-outer-2") { outer ⇒
-            sender() ! outer
-            persistAsync(c + "-inner-2") { inner ⇒ sender() ! inner }
-          }
+      override def receiveCommand: Receive = { case c: String =>
+        sender() ! c
+        persistAsync(c + "-outer-1") { outer ⇒
+          sender() ! outer
+          persistAsync(c + "-inner-1") { inner ⇒ sender() ! inner }
+        }
+        persistAsync(c + "-outer-2") { outer ⇒
+          sender() ! outer
+          persistAsync(c + "-inner-2") { inner ⇒ sender() ! inner }
+        }
       }
       //#nested-persistAsync-persistAsync
     }
@@ -384,8 +374,7 @@ object PersistenceDocSpec {
           context.stop(self)
       }
 
-      override def receiveRecover: Receive = {
-        case _ => // handle recovery here
+      override def receiveRecover: Receive = { case _ => // handle recovery here
       }
     }
     //#safe-shutdown

@@ -100,9 +100,8 @@ final class ClusterSettings(val config: Config, val systemName: String) {
     cc.getConfig("role")
       .root
       .asScala
-      .collect {
-        case (key, value: ConfigObject) ⇒
-          (key -> value.toConfig.getInt("min-nr-of-members"))
+      .collect { case (key, value: ConfigObject) ⇒
+        (key -> value.toConfig.getInt("min-nr-of-members"))
       }
       .toMap
   }

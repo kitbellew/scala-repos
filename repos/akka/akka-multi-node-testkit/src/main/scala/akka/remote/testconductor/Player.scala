@@ -322,9 +322,8 @@ private[akka] class ClientFSM(name: RoleName, controllerAddr: InetSocketAddress)
       stay
   }
 
-  onTermination {
-    case StopEvent(_, _, Data(Some(channel), _)) ⇒
-      channel.close()
+  onTermination { case StopEvent(_, _, Data(Some(channel), _)) ⇒
+    channel.close()
   }
 
   initialize()

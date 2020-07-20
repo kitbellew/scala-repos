@@ -314,9 +314,8 @@ private[sbt] object SettingCompletions {
 
   /** Produce a new parser that allows the input accepted by `p` to be quoted in backticks. */
   def optionallyQuoted[T](p: Parser[T]): Parser[T] =
-    (Backtick.? ~ p) flatMap {
-      case (quote, id) =>
-        if (quote.isDefined) Backtick.? ^^^ id else success(id)
+    (Backtick.? ~ p) flatMap { case (quote, id) =>
+      if (quote.isDefined) Backtick.? ^^^ id else success(id)
     }
 
   /**
@@ -383,16 +382,14 @@ private[sbt] object SettingCompletions {
     else if (showDescriptions) {
       val withDescriptions = in map { case (id, key) => (id, description(key)) }
       val padded = CommandUtil.aligned("", "   ", withDescriptions)
-      (padded, in).zipped.map {
-        case (line, (id, key)) =>
-          Completion.tokenDisplay(
-            append = appendString(id),
-            display = line + "\n")
+      (padded, in).zipped.map { case (line, (id, key)) =>
+        Completion.tokenDisplay(
+          append = appendString(id),
+          display = line + "\n")
       }
     } else
-      in map {
-        case (id, key) =>
-          Completion.tokenDisplay(display = id, append = appendString(id))
+      in map { case (id, key) =>
+        Completion.tokenDisplay(display = id, append = appendString(id))
       }
   }
 

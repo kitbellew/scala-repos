@@ -23,9 +23,8 @@ class ScalaChangeSignatureProcessor(
     new ChangeSignatureViewDescriptor(changeInfo.getMethod)
 
   override def performRefactoring(usages: Array[UsageInfo]): Unit = {
-    changeInfo.newParams.flatten.zipWithIndex.foreach {
-      case (p, idx) =>
-        p.defaultForJava = changeInfo.defaultParameterForJava(p, idx)
+    changeInfo.newParams.flatten.zipWithIndex.foreach { case (p, idx) =>
+      p.defaultForJava = changeInfo.defaultParameterForJava(p, idx)
     }
 
     val sortedUsages = usages.sortBy {

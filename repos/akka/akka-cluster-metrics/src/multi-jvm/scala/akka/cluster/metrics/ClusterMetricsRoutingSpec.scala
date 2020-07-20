@@ -33,24 +33,23 @@ object AdaptiveLoadBalancingRouterConfig extends MultiNodeConfig {
 
   class Memory extends Actor with ActorLogging {
     var usedMemory: Array[Array[Int]] = _
-    def receive = {
-      case AllocateMemory ⇒
-        val heap = ManagementFactory.getMemoryMXBean.getHeapMemoryUsage
-        // getMax can be undefined (-1)
-        val max = math.max(heap.getMax, heap.getCommitted)
-        val used = heap.getUsed
-        log.info("used heap before: [{}] bytes, of max [{}]", used, heap.getMax)
-        // allocate 70% of free space
-        val allocateBytes = (0.7 * (max - used)).toInt
-        val numberOfArrays = allocateBytes / 1024
-        usedMemory = Array.ofDim(
-          numberOfArrays,
-          248
-        ) // each 248 element Int array will use ~ 1 kB
-        log.info(
-          "used heap after: [{}] bytes",
-          ManagementFactory.getMemoryMXBean.getHeapMemoryUsage.getUsed)
-        sender() ! "done"
+    def receive = { case AllocateMemory ⇒
+      val heap = ManagementFactory.getMemoryMXBean.getHeapMemoryUsage
+      // getMax can be undefined (-1)
+      val max = math.max(heap.getMax, heap.getCommitted)
+      val used = heap.getUsed
+      log.info("used heap before: [{}] bytes, of max [{}]", used, heap.getMax)
+      // allocate 70% of free space
+      val allocateBytes = (0.7 * (max - used)).toInt
+      val numberOfArrays = allocateBytes / 1024
+      usedMemory = Array.ofDim(
+        numberOfArrays,
+        248
+      ) // each 248 element Int array will use ~ 1 kB
+      log.info(
+        "used heap after: [{}] bytes",
+        ManagementFactory.getMemoryMXBean.getHeapMemoryUsage.getUsed)
+      sender() ! "done"
     }
   }
 

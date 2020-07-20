@@ -325,17 +325,15 @@ class EventServiceSpec
                 Some(JObject(fields)),
                 _),
               _) =>
-          fields("errors") must beLike {
-            case JArray(errors) =>
-              atLeastOnce(errors) {
-                case JObject(fields) =>
-                  fields("reason") must beLike {
-                    case JString(s) =>
-                      s must startWith(
-                        "Cannot ingest values with more than 1024 primitive fields.")
-                  }
-                case _ => ko
-              }
+          fields("errors") must beLike { case JArray(errors) =>
+            atLeastOnce(errors) {
+              case JObject(fields) =>
+                fields("reason") must beLike { case JString(s) =>
+                  s must startWith(
+                    "Cannot ingest values with more than 1024 primitive fields.")
+                }
+              case _ => ko
+            }
           }
       }
     }

@@ -213,11 +213,10 @@ class DeploymentActorTest
         )
       )
 
-      plan.steps.zipWithIndex.foreach {
-        case (step, num) =>
-          managerProbe.expectMsg(
-            5.seconds,
-            DeploymentStepInfo(plan, step, num + 1))
+      plan.steps.zipWithIndex.foreach { case (step, num) =>
+        managerProbe.expectMsg(
+          5.seconds,
+          DeploymentStepInfo(plan, step, num + 1))
       }
 
       managerProbe.expectMsg(5.seconds, DeploymentFinished(plan))
@@ -459,11 +458,10 @@ class DeploymentActorTest
         )
       )
 
-      plan.steps.zipWithIndex.foreach {
-        case (step, num) =>
-          managerProbe.expectMsg(
-            5.seconds,
-            DeploymentStepInfo(plan, step, num + 1))
+      plan.steps.zipWithIndex.foreach { case (step, num) =>
+        managerProbe.expectMsg(
+          5.seconds,
+          DeploymentStepInfo(plan, step, num + 1))
       }
 
       managerProbe.expectMsg(5.seconds, DeploymentFinished(plan))

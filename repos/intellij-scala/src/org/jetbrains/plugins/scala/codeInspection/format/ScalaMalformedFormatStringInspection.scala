@@ -43,15 +43,14 @@ import org.jetbrains.plugins.scala.format.{Injection, Span, _}
   */
 
 class ScalaMalformedFormatStringInspection extends AbstractInspection {
-  def actionFor(holder: ProblemsHolder) = {
-    case element =>
-      val representation = FormattedStringParser
-        .parse(element)
-        .orElse(PrintStringParser.parse(element))
-        .orElse(InterpolatedStringParser.parse(element))
+  def actionFor(holder: ProblemsHolder) = { case element =>
+    val representation = FormattedStringParser
+      .parse(element)
+      .orElse(PrintStringParser.parse(element))
+      .orElse(InterpolatedStringParser.parse(element))
 
-      for (parts <- representation; part <- parts)
-        inspect(part, holder)
+    for (parts <- representation; part <- parts)
+      inspect(part, holder)
   }
 
   private def inspect(part: StringPart, holder: ProblemsHolder) {

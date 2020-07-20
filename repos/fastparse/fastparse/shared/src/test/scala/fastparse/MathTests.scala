@@ -10,14 +10,13 @@ import utest._
 object MathTests extends TestSuite {
   def eval(tree: (Int, Seq[(String, Int)])) = {
     val (base, ops) = tree
-    ops.foldLeft(base) {
-      case (left, (op, right)) =>
-        op match {
-          case "+" => left + right
-          case "-" => left - right
-          case "*" => left * right
-          case "/" => left / right
-        }
+    ops.foldLeft(base) { case (left, (op, right)) =>
+      op match {
+        case "+" => left + right
+        case "-" => left - right
+        case "*" => left * right
+        case "/" => left / right
+      }
     }
   }
 

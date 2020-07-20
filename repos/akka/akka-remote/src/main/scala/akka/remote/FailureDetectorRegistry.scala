@@ -76,11 +76,10 @@ private[akka] object FailureDetectorLoader {
         List(
           classOf[Config] -> config,
           classOf[EventStream] -> system.eventStream))
-      .recover({
-        case e ⇒
-          throw new ConfigurationException(
-            s"Could not create custom failure detector [$fqcn] due to: ${e.toString}",
-            e)
+      .recover({ case e ⇒
+        throw new ConfigurationException(
+          s"Could not create custom failure detector [$fqcn] due to: ${e.toString}",
+          e)
       })
       .get
   }

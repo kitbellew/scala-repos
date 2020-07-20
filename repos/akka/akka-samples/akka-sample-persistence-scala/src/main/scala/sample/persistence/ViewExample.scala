@@ -11,12 +11,11 @@ object ViewExample extends App {
 
     var count = 1
 
-    def receiveCommand: Receive = {
-      case payload: String =>
-        println(s"persistentActor received ${payload} (nr = ${count})")
-        persist(payload + count) { evt =>
-          count += 1
-        }
+    def receiveCommand: Receive = { case payload: String =>
+      println(s"persistentActor received ${payload} (nr = ${count})")
+      persist(payload + count) { evt =>
+        count += 1
+      }
     }
 
     def receiveRecover: Receive = {

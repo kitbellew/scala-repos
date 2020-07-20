@@ -95,12 +95,11 @@ private[spark] class BlockStatusListener extends SparkListener {
 
   def allExecutorStreamBlockStatus: Seq[ExecutorStreamBlockStatus] =
     synchronized {
-      blockManagers.map {
-        case (blockManagerId, blocks) =>
-          ExecutorStreamBlockStatus(
-            blockManagerId.executorId,
-            blockManagerId.hostPort,
-            blocks.values.toSeq)
+      blockManagers.map { case (blockManagerId, blocks) =>
+        ExecutorStreamBlockStatus(
+          blockManagerId.executorId,
+          blockManagerId.hostPort,
+          blocks.values.toSeq)
       }.toSeq
     }
 }

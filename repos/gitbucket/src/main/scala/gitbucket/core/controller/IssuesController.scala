@@ -108,17 +108,16 @@ trait IssuesControllerBase extends ControllerBase {
   })
 
   get("/:owner/:repository/issues/new")(readableUsersOnly { repository =>
-    defining(repository.owner, repository.name) {
-      case (owner, name) =>
-        html.create(
-          (getCollaborators(owner, name) ::: (if (getAccountByUserName(
-                                                  owner).get.isGroupAccount) Nil
-                                              else List(owner))).sorted,
-          getMilestones(owner, name),
-          getLabels(owner, name),
-          hasWritePermission(owner, name, context.loginAccount),
-          repository
-        )
+    defining(repository.owner, repository.name) { case (owner, name) =>
+      html.create(
+        (getCollaborators(owner, name) ::: (if (getAccountByUserName(
+                                                owner).get.isGroupAccount) Nil
+                                            else List(owner))).sorted,
+        getMilestones(owner, name),
+        getLabels(owner, name),
+        hasWritePermission(owner, name, context.loginAccount),
+        repository
+      )
     }
   })
 
@@ -184,45 +183,43 @@ trait IssuesControllerBase extends ControllerBase {
 
   ajaxPost("/:owner/:repository/issues/edit_title/:id", issueTitleEditForm)(
     readableUsersOnly { (title, repository) =>
-      defining(repository.owner, repository.name) {
-        case (owner, name) =>
-          getIssue(owner, name, params("id")).map { issue =>
-            if (isEditable(owner, name, issue.openedUserName)) {
-              // update issue
-              updateIssue(owner, name, issue.issueId, title, issue.content)
-              // extract references and create refer comment
-              createReferComment(
-                owner,
-                name,
-                issue.copy(title = title),
-                title,
-                context.loginAccount.get)
+      defining(repository.owner, repository.name) { case (owner, name) =>
+        getIssue(owner, name, params("id")).map { issue =>
+          if (isEditable(owner, name, issue.openedUserName)) {
+            // update issue
+            updateIssue(owner, name, issue.issueId, title, issue.content)
+            // extract references and create refer comment
+            createReferComment(
+              owner,
+              name,
+              issue.copy(title = title),
+              title,
+              context.loginAccount.get)
 
-              redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
-            } else Unauthorized
-          } getOrElse NotFound
+            redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
+          } else Unauthorized
+        } getOrElse NotFound
       }
     })
 
   ajaxPost("/:owner/:repository/issues/edit/:id", issueEditForm)(
     readableUsersOnly { (content, repository) =>
-      defining(repository.owner, repository.name) {
-        case (owner, name) =>
-          getIssue(owner, name, params("id")).map { issue =>
-            if (isEditable(owner, name, issue.openedUserName)) {
-              // update issue
-              updateIssue(owner, name, issue.issueId, issue.title, content)
-              // extract references and create refer comment
-              createReferComment(
-                owner,
-                name,
-                issue,
-                content.getOrElse(""),
-                context.loginAccount.get)
+      defining(repository.owner, repository.name) { case (owner, name) =>
+        getIssue(owner, name, params("id")).map { issue =>
+          if (isEditable(owner, name, issue.openedUserName)) {
+            // update issue
+            updateIssue(owner, name, issue.issueId, issue.title, content)
+            // extract references and create refer comment
+            createReferComment(
+              owner,
+              name,
+              issue,
+              content.getOrElse(""),
+              context.loginAccount.get)
 
-              redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
-            } else Unauthorized
-          } getOrElse NotFound
+            redirect(s"/${owner}/${name}/issues/_data/${issue.issueId}")
+          } else Unauthorized
+        } getOrElse NotFound
       }
     })
 
@@ -268,27 +265,25 @@ trait IssuesControllerBase extends ControllerBase {
 
   ajaxPost("/:owner/:repository/issue_comments/edit/:id", commentForm)(
     readableUsersOnly { (form, repository) =>
-      defining(repository.owner, repository.name) {
-        case (owner, name) =>
-          getComment(owner, name, params("id")).map { comment =>
-            if (isEditable(owner, name, comment.commentedUserName)) {
-              updateComment(comment.commentId, form.content)
-              redirect(
-                s"/${owner}/${name}/issue_comments/_data/${comment.commentId}")
-            } else Unauthorized
-          } getOrElse NotFound
+      defining(repository.owner, repository.name) { case (owner, name) =>
+        getComment(owner, name, params("id")).map { comment =>
+          if (isEditable(owner, name, comment.commentedUserName)) {
+            updateComment(comment.commentId, form.content)
+            redirect(
+              s"/${owner}/${name}/issue_comments/_data/${comment.commentId}")
+          } else Unauthorized
+        } getOrElse NotFound
       }
     })
 
   ajaxPost("/:owner/:repository/issue_comments/delete/:id")(readableUsersOnly {
     repository =>
-      defining(repository.owner, repository.name) {
-        case (owner, name) =>
-          getComment(owner, name, params("id")).map { comment =>
-            if (isEditable(owner, name, comment.commentedUserName)) {
-              Ok(deleteComment(comment.commentId))
-            } else Unauthorized
-          } getOrElse NotFound
+      defining(repository.owner, repository.name) { case (owner, name) =>
+        getComment(owner, name, params("id")).map { comment =>
+          if (isEditable(owner, name, comment.commentedUserName)) {
+            Ok(deleteComment(comment.commentId))
+          } else Unauthorized
+        } getOrElse NotFound
       }
   })
 
@@ -416,10 +411,9 @@ trait IssuesControllerBase extends ControllerBase {
       milestoneId("milestoneId").map { milestoneId =>
         getMilestonesWithIssueCount(repository.owner, repository.name)
           .find(_._1.milestoneId == milestoneId)
-          .map {
-            case (_, openCount, closeCount) =>
-              gitbucket.core.issues.milestones.html
-                .progress(openCount + closeCount, closeCount)
+          .map { case (_, openCount, closeCount) =>
+            gitbucket.core.issues.milestones.html
+              .progress(openCount + closeCount, closeCount)
           } getOrElse NotFound
       } getOrElse Ok()
   })
@@ -520,56 +514,52 @@ trait IssuesControllerBase extends ControllerBase {
   }
 
   private def searchIssues(repository: RepositoryService.RepositoryInfo) = {
-    defining(repository.owner, repository.name) {
-      case (owner, repoName) =>
-        val page = IssueSearchCondition.page(request)
-        val sessionKey = Keys.Session.Issues(owner, repoName)
+    defining(repository.owner, repository.name) { case (owner, repoName) =>
+      val page = IssueSearchCondition.page(request)
+      val sessionKey = Keys.Session.Issues(owner, repoName)
 
-        // retrieve search condition
-        val condition = session.putAndGet(
-          sessionKey,
-          if (request.hasQueryString) {
-            val q = request.getParameter("q")
-            if (q == null || q.trim.isEmpty) {
-              IssueSearchCondition(request)
-            } else {
-              IssueSearchCondition(
-                q,
-                getMilestones(owner, repoName)
-                  .map(x => (x.title, x.milestoneId))
-                  .toMap)
-            }
-          } else
-            session
-              .getAs[IssueSearchCondition](sessionKey)
-              .getOrElse(IssueSearchCondition())
-        )
-
-        html.list(
-          "issues",
-          searchIssue(
-            condition,
-            false,
-            (page - 1) * IssueLimit,
-            IssueLimit,
-            owner -> repoName),
-          page,
-          if (!getAccountByUserName(owner).exists(_.isGroupAccount)) {
-            (getCollaborators(owner, repoName) :+ owner).sorted
+      // retrieve search condition
+      val condition = session.putAndGet(
+        sessionKey,
+        if (request.hasQueryString) {
+          val q = request.getParameter("q")
+          if (q == null || q.trim.isEmpty) {
+            IssueSearchCondition(request)
           } else {
-            getCollaborators(owner, repoName)
-          },
-          getMilestones(owner, repoName),
-          getLabels(owner, repoName),
-          countIssue(condition.copy(state = "open"), false, owner -> repoName),
-          countIssue(
-            condition.copy(state = "closed"),
-            false,
-            owner -> repoName),
+            IssueSearchCondition(
+              q,
+              getMilestones(owner, repoName)
+                .map(x => (x.title, x.milestoneId))
+                .toMap)
+          }
+        } else
+          session
+            .getAs[IssueSearchCondition](sessionKey)
+            .getOrElse(IssueSearchCondition())
+      )
+
+      html.list(
+        "issues",
+        searchIssue(
           condition,
-          repository,
-          hasWritePermission(owner, repoName, context.loginAccount)
-        )
+          false,
+          (page - 1) * IssueLimit,
+          IssueLimit,
+          owner -> repoName),
+        page,
+        if (!getAccountByUserName(owner).exists(_.isGroupAccount)) {
+          (getCollaborators(owner, repoName) :+ owner).sorted
+        } else {
+          getCollaborators(owner, repoName)
+        },
+        getMilestones(owner, repoName),
+        getLabels(owner, repoName),
+        countIssue(condition.copy(state = "open"), false, owner -> repoName),
+        countIssue(condition.copy(state = "closed"), false, owner -> repoName),
+        condition,
+        repository,
+        hasWritePermission(owner, repoName, context.loginAccount)
+      )
     }
   }
 }

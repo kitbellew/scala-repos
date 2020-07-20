@@ -176,15 +176,14 @@ class DefaultIngestProcessingSelectors(
         request.headers
           .header[`Content-Type`]
           .toSeq
-          .flatMap(_.mimeTypes) collectFirst {
-          case JSON_STREAM =>
-            new JSONIngestProcessing(
-              apiKey,
-              path,
-              authorities,
-              JSONStreamStyle,
-              maxFields,
-              ingestStore)
+          .flatMap(_.mimeTypes) collectFirst { case JSON_STREAM =>
+          new JSONIngestProcessing(
+            apiKey,
+            path,
+            authorities,
+            JSONStreamStyle,
+            maxFields,
+            ingestStore)
         } orElse {
           Some(
             new JSONIngestProcessing(

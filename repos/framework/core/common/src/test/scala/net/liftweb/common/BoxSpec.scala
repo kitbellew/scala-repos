@@ -415,9 +415,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
       val singleBox =
         someBoxes.toSingleBox("This should be in the param failure.")
 
-      singleBox must beLike {
-        case ParamFailure(message, _, _, _) =>
-          message must_== "This should be in the param failure."
+      singleBox must beLike { case ParamFailure(message, _, _, _) =>
+        message must_== "This should be in the param failure."
       }
     }
 
@@ -441,9 +440,8 @@ class BoxSpec extends Specification with ScalaCheck with BoxGenerator {
               Empty,
               Full(Failure("BACON WHY U BACON")))))
 
-      singleBox must beLike {
-        case ParamFailure(_, _, chain, _) =>
-          chain must_== Full(expectedChain)
+      singleBox must beLike { case ParamFailure(_, _, chain, _) =>
+        chain must_== Full(expectedChain)
       }
     }
   }

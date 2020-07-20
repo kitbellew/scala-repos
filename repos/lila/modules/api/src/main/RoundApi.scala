@@ -139,12 +139,11 @@ private[api] final class RoundApi(
     else json
 
   private def withAnalysis(a: Option[(Pgn, Analysis)])(json: JsObject) =
-    a.fold(json) {
-      case (pgn, analysis) =>
-        json + ("analysis" -> Json.obj(
-          "white" -> analysisApi.player(chess.Color.White)(analysis),
-          "black" -> analysisApi.player(chess.Color.Black)(analysis)
-        ))
+    a.fold(json) { case (pgn, analysis) =>
+      json + ("analysis" -> Json.obj(
+        "white" -> analysisApi.player(chess.Color.White)(analysis),
+        "black" -> analysisApi.player(chess.Color.Black)(analysis)
+      ))
     }
 
   private def withTournament(pov: Pov, tourOption: Option[TourAndRanks])(

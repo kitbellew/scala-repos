@@ -123,16 +123,15 @@ private[niflheim] object RawLoader {
     // for each event, write its rows to the rawlog
     var row = 0
     val values = mutable.ArrayBuffer.empty[JValue]
-    events.foreach {
-      case (eventid, count) =>
-        var i = 0
-        while (i < count) {
-          values.append(rows(row))
-          row += 1
-          i += 1
-        }
-        writeEvents(os, eventid, values)
-        values.clear()
+    events.foreach { case (eventid, count) =>
+      var i = 0
+      while (i < count) {
+        values.append(rows(row))
+        row += 1
+        i += 1
+      }
+      writeEvents(os, eventid, values)
+      values.clear()
     }
 
     // rename the rawlog file to indicate corruption

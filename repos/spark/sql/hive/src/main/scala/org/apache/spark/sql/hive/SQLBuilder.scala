@@ -177,11 +177,10 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         val qualifiedName =
           s"${quoteIdentifier(database)}.${quoteIdentifier(table)}"
         sample
-          .map {
-            case (lowerBound, upperBound) =>
-              val fraction =
-                math.min(100, math.max(0, (upperBound - lowerBound) * 100))
-              qualifiedName + " TABLESAMPLE(" + fraction + " PERCENT)"
+          .map { case (lowerBound, upperBound) =>
+            val fraction =
+              math.min(100, math.max(0, (upperBound - lowerBound) * 100))
+            qualifiedName + " TABLESAMPLE(" + fraction + " PERCENT)"
           }
           .getOrElse(qualifiedName)
 
@@ -364,33 +363,32 @@ class SQLBuilder(logicalPlan: LogicalPlan, sqlContext: SQLContext)
         .map(e => s"(${e.map(_.sql).mkString(", ")})")
         .mkString(", ") + ")"
 
-    val aggExprs = agg.aggregateExpressions.map {
-      case aggExpr =>
-        val originalAggExpr = aggExpr.transformDown {
-          // grouping_id() is converted to VirtualColumn.groupingIdName by Analyzer. Revert it back.
-          case ar: AttributeReference if ar == gid => GroupingID(Nil)
-          case ar: AttributeReference if groupByAttrMap.contains(ar) =>
-            groupByAttrMap(ar)
-          case a @ Cast(
-                BitwiseAnd(
-                  ShiftRight(
-                    ar: AttributeReference,
-                    Literal(value: Any, IntegerType)),
-                  Literal(1, IntegerType)),
-                ByteType) if ar == gid =>
-            // for converting an expression to its original SQL format grouping(col)
-            val idx = groupByExprs.length - 1 - value.asInstanceOf[Int]
-            groupByExprs.lift(idx).map(Grouping).getOrElse(a)
-        }
+    val aggExprs = agg.aggregateExpressions.map { case aggExpr =>
+      val originalAggExpr = aggExpr.transformDown {
+        // grouping_id() is converted to VirtualColumn.groupingIdName by Analyzer. Revert it back.
+        case ar: AttributeReference if ar == gid => GroupingID(Nil)
+        case ar: AttributeReference if groupByAttrMap.contains(ar) =>
+          groupByAttrMap(ar)
+        case a @ Cast(
+              BitwiseAnd(
+                ShiftRight(
+                  ar: AttributeReference,
+                  Literal(value: Any, IntegerType)),
+                Literal(1, IntegerType)),
+              ByteType) if ar == gid =>
+          // for converting an expression to its original SQL format grouping(col)
+          val idx = groupByExprs.length - 1 - value.asInstanceOf[Int]
+          groupByExprs.lift(idx).map(Grouping).getOrElse(a)
+      }
 
-        originalAggExpr match {
-          // Ancestor operators may reference the output of this grouping set, and we use exprId to
-          // generate a unique name for each attribute, so we should make sure the transformed
-          // aggregate expression won't change the output, i.e. exprId and alias name should remain
-          // the same.
-          case ne: NamedExpression if ne.exprId == aggExpr.exprId => ne
-          case e                                                  => Alias(e, normalizedName(aggExpr))(exprId = aggExpr.exprId)
-        }
+      originalAggExpr match {
+        // Ancestor operators may reference the output of this grouping set, and we use exprId to
+        // generate a unique name for each attribute, so we should make sure the transformed
+        // aggregate expression won't change the output, i.e. exprId and alias name should remain
+        // the same.
+        case ne: NamedExpression if ne.exprId == aggExpr.exprId => ne
+        case e                                                  => Alias(e, normalizedName(aggExpr))(exprId = aggExpr.exprId)
+      }
     }
 
     build(

@@ -2,10 +2,9 @@ class LM {
   class Node[B1]
 
   // crash
-  val g: (CC => Any) = {
-    case CC(tttt) =>
-      tttt.## // no crash
-      new tttt.Node[Any]()
+  val g: (CC => Any) = { case CC(tttt) =>
+    tttt.## // no crash
+    new tttt.Node[Any]()
   }
 }
 

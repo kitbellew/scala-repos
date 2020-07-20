@@ -87,62 +87,60 @@ class CopyWorksheetAction extends AnAction with TopComponentAction {
     var lastLeftEnd = 0
     var lastRightEnd = 0
 
-    marker map {
-      case m: WorksheetFoldRegionDelegate =>
-        (0 /: m.getWorksheetGroup.getCorrespondInfo) {
-          case (
-                lastEnd,
-                (
-                  rightStartOffset,
-                  rightEndOffset,
-                  leftOffset,
-                  spaces,
-                  leftLength)) =>
-            val leftStart = {
-              var j = lastEnd
+    marker map { case m: WorksheetFoldRegionDelegate =>
+      (0 /: m.getWorksheetGroup.getCorrespondInfo) {
+        case (
+              lastEnd,
+              (
+                rightStartOffset,
+                rightEndOffset,
+                leftOffset,
+                spaces,
+                leftLength)) =>
+          val leftStart = {
+            var j = lastEnd
 
-              while (getFromLeft(
-                  j).trim.length == 0 && j < leftDocument.getLineCount) j += 1
-              if (j == leftDocument.getLineCount) return result.toString()
-              else j
-            }
-            val currentLeftStart = leftDocument getLineNumber leftOffset
-            val leftEnd = leftDocument getLineNumber leftOffset // + spaces
+            while (getFromLeft(
+                j).trim.length == 0 && j < leftDocument.getLineCount) j += 1
+            if (j == leftDocument.getLineCount) return result.toString() else j
+          }
+          val currentLeftStart = leftDocument getLineNumber leftOffset
+          val leftEnd = leftDocument getLineNumber leftOffset // + spaces
 
-            val rightStart = rightDocument getLineNumber rightStartOffset
-            val rightEnd = rightDocument getLineNumber rightEndOffset
+          val rightStart = rightDocument getLineNumber rightStartOffset
+          val rightEnd = rightDocument getLineNumber rightEndOffset
 
-            for (k <- lastEnd until leftStart) {
-              append2Result(" ", " ", " ")
-            }
+          for (k <- lastEnd until leftStart) {
+            append2Result(" ", " ", " ")
+          }
 
-            for (i <- leftStart to leftEnd) {
-              val txt = getFromLeft(i)
+          for (i <- leftStart to leftEnd) {
+            val txt = getFromLeft(i)
 
-              append2Result(
-                txt,
-                getFromRight(rightStart + i - currentLeftStart),
-                " ")
-            }
+            append2Result(
+              txt,
+              getFromRight(rightStart + i - currentLeftStart),
+              " ")
+          }
 
-            if (spaces > 0) for (j <- (spaces - 1).to(0, -1)) {
-              result append fullShift
-              result append "//"
-              result append {
-                rightDocument getText {
-                  new TextRange(
-                    rightDocument getLineStartOffset (rightEnd - j),
-                    rightDocument getLineEndOffset (rightEnd - j))
-                }
+          if (spaces > 0) for (j <- (spaces - 1).to(0, -1)) {
+            result append fullShift
+            result append "//"
+            result append {
+              rightDocument getText {
+                new TextRange(
+                  rightDocument getLineStartOffset (rightEnd - j),
+                  rightDocument getLineEndOffset (rightEnd - j))
               }
-              result append lineSeparator
             }
+            result append lineSeparator
+          }
 
-            lastLeftEnd = leftEnd + 1
-            lastRightEnd = rightEnd + 1
+          lastLeftEnd = leftEnd + 1
+          lastRightEnd = rightEnd + 1
 
-            (leftDocument getLineNumber leftOffset) + leftLength
-        }
+          (leftDocument getLineNumber leftOffset) + leftLength
+      }
     }
 
     for (i <- 0 until (leftDocument.getLineCount - lastLeftEnd))

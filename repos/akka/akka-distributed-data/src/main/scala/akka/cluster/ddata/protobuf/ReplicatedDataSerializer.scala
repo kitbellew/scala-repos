@@ -324,13 +324,12 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
 
   def versionVectorToProto(versionVector: VersionVector): rd.VersionVector = {
     val b = rd.VersionVector.newBuilder()
-    versionVector.versionsIterator.foreach {
-      case (node, value) ⇒
-        b.addEntries(
-          rd.VersionVector.Entry
-            .newBuilder()
-            .setNode(uniqueAddressToProto(node))
-            .setVersion(value))
+    versionVector.versionsIterator.foreach { case (node, value) ⇒
+      b.addEntries(
+        rd.VersionVector.Entry
+          .newBuilder()
+          .setNode(uniqueAddressToProto(node))
+          .setVersion(value))
     }
     b.build()
   }
@@ -413,13 +412,12 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       .setKeys(orsetToProto(pncountermap.underlying.keys))
     pncountermap.underlying.entries.toVector
       .sortBy { case (key, _) ⇒ key }
-      .foreach {
-        case (key, value: PNCounter) ⇒
-          b.addEntries(
-            rd.PNCounterMap.Entry
-              .newBuilder()
-              .setKey(key)
-              .setValue(pncounterToProto(value)))
+      .foreach { case (key, value: PNCounter) ⇒
+        b.addEntries(
+          rd.PNCounterMap.Entry
+            .newBuilder()
+            .setKey(key)
+            .setValue(pncounterToProto(value)))
       }
     b.build()
   }
@@ -442,13 +440,12 @@ class ReplicatedDataSerializer(val system: ExtendedActorSystem)
       rd.ORMultiMap.newBuilder().setKeys(orsetToProto(multimap.underlying.keys))
     multimap.underlying.entries.toVector
       .sortBy { case (key, _) ⇒ key }
-      .foreach {
-        case (key, value) ⇒
-          b.addEntries(
-            rd.ORMultiMap.Entry
-              .newBuilder()
-              .setKey(key)
-              .setValue(orsetToProto(value)))
+      .foreach { case (key, value) ⇒
+        b.addEntries(
+          rd.ORMultiMap.Entry
+            .newBuilder()
+            .setKey(key)
+            .setValue(orsetToProto(value)))
       }
     b.build()
   }

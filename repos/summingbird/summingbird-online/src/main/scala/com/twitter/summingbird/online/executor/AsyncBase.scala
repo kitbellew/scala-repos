@@ -75,16 +75,15 @@ abstract class AsyncBase[I, O, S, D, RC](
     fut.onSuccess {
       iter: TraversableOnce[(Seq[S], Future[TraversableOnce[O]])] =>
         // Collect the result onto our responses
-        val iterSize = iter.foldLeft(0) {
-          case (iterSize, (tups, res)) =>
-            res.onSuccess { t => responses.put(((tups, Success(t)))) }
-            res.onFailure { t => responses.put(((tups, Failure(t)))) }
-            // Make sure there are not too many outstanding:
-            if (addOutstandingFuture(res.unit)) {
-              iterSize + 1
-            } else {
-              iterSize
-            }
+        val iterSize = iter.foldLeft(0) { case (iterSize, (tups, res)) =>
+          res.onSuccess { t => responses.put(((tups, Success(t)))) }
+          res.onFailure { t => responses.put(((tups, Failure(t)))) }
+          // Make sure there are not too many outstanding:
+          if (addOutstandingFuture(res.unit)) {
+            iterSize + 1
+          } else {
+            iterSize
+          }
         }
         if (outstandingFutures.size > maxWaitingFutures.get) {
           /*

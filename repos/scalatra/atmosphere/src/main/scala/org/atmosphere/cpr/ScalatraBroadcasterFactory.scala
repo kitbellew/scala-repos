@@ -76,11 +76,10 @@ class ScalatraBroadcasterFactory(
     }
 
     var bc: BroadcasterConfig = null
-    store foreach {
-      case (k, b) =>
-        b.resumeAll()
-        b.destroy()
-        bc = b.getBroadcasterConfig
+    store foreach { case (k, b) =>
+      b.resumeAll()
+      b.destroy()
+      bc = b.getBroadcasterConfig
     }
     if (bc != null) bc.forceDestroy()
 

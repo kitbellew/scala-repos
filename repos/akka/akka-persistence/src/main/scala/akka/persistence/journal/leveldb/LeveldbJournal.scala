@@ -54,8 +54,8 @@ private[persistence] class LeveldbJournal extends {
         .map { highSeqNr ⇒
           RecoverySuccess(highSeqNr)
         }
-        .recover {
-          case e ⇒ ReplayMessagesFailure(e)
+        .recover { case e ⇒
+          ReplayMessagesFailure(e)
         }
         .pipeTo(replyTo)
 

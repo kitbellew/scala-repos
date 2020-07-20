@@ -229,18 +229,16 @@ class BoxUnbox[BT <: BTypes](val btypes: BT) {
             (getLocal(tp.getSize), tp))(collection.breakOut)
 
           // store boxed value(s) into localSlots
-          val storeOps = localSlots.toList reverseMap {
-            case (slot, tp) =>
-              new VarInsnNode(tp.getOpcode(ISTORE), slot)
+          val storeOps = localSlots.toList reverseMap { case (slot, tp) =>
+            new VarInsnNode(tp.getOpcode(ISTORE), slot)
           }
           val storeInitialValues = creation.loadInitialValues match {
             case Some(ops) => ops ::: storeOps
             case None      => storeOps
           }
           if (keepBox) {
-            val loadOps: List[VarInsnNode] = localSlots.map({
-              case (slot, tp) =>
-                new VarInsnNode(tp.getOpcode(ILOAD), slot)
+            val loadOps: List[VarInsnNode] = localSlots.map({ case (slot, tp) =>
+              new VarInsnNode(tp.getOpcode(ILOAD), slot)
             })(collection.breakOut)
             toInsertBefore(creation.valuesConsumer) =
               storeInitialValues ::: loadOps

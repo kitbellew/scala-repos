@@ -18,9 +18,8 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
     val builder = new ProcessBuilder(args.tail: _*)
     builder.directory(new File(args.head))
 
-    descriptor = Option(builder.start()) map {
-      case p =>
-        createDescriptor(p, consumer).startListening()
+    descriptor = Option(builder.start()) map { case p =>
+      createDescriptor(p, consumer).startListening()
     }
 
     if (isRunning) state = true
@@ -31,14 +30,13 @@ class LocalSbtWatcherExec extends SbtWatcherExec {
 
     descriptor.foreach(_.stopListening())
 
-    descriptor.foreach {
-      case d =>
-        val process = d.getProcess
-        val writer =
-          new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
+    descriptor.foreach { case d =>
+      val process = d.getProcess
+      val writer =
+        new BufferedWriter(new OutputStreamWriter(process.getOutputStream))
 
-        writer.newLine()
-        writer.flush()
+      writer.newLine()
+      writer.flush()
     }
 
     state = false

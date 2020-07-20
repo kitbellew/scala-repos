@@ -157,15 +157,12 @@ trait HttpComponentsClient extends Client {
       case r: HttpEntityEnclosingRequestBase =>
         val multipartEntity = new MultipartEntity(
           HttpMultipartMode.BROWSER_COMPATIBLE)
-        params.foreach {
-          case (name, value) =>
-            multipartEntity.addPart(
-              new FormBodyPart(name, new StringBody(value)))
+        params.foreach { case (name, value) =>
+          multipartEntity.addPart(new FormBodyPart(name, new StringBody(value)))
         }
 
-        files.foreach {
-          case (name, file) =>
-            multipartEntity.addPart(name, createBody(name, file))
+        files.foreach { case (name, file) =>
+          multipartEntity.addPart(name, createBody(name, file))
         }
 
         r.setEntity(multipartEntity)

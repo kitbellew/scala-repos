@@ -201,9 +201,8 @@ abstract class MappedDateTime[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case f: MappedDateTime[T] =>
-            f.st(if (isNull) Empty else Full(new Date(v)))
+        { case f: MappedDateTime[T] =>
+          f.st(if (isNull) Empty else Full(new Date(v)))
         })
 
   def buildSetStringValue(

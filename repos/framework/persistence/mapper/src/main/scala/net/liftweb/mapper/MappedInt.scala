@@ -161,11 +161,9 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedEnum[T, ENUM] =>
-            f.st(
-              if (v eq null) defaultValue
-              else fromInt(Helpers.toInt(v.toString)))
+        { case f: MappedEnum[T, ENUM] =>
+          f.st(
+            if (v eq null) defaultValue else fromInt(Helpers.toInt(v.toString)))
         })
 
   def buildSetLongValue(
@@ -175,9 +173,8 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedEnum[T, ENUM] =>
-            f.st(if (isNull) defaultValue else fromInt(v.toInt))
+        { case f: MappedEnum[T, ENUM] =>
+          f.st(if (isNull) defaultValue else fromInt(v.toInt))
         })
 
   def buildSetStringValue(
@@ -187,9 +184,8 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedEnum[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
+        { case f: MappedEnum[T, ENUM] =>
+          f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
         })
 
   def buildSetDateValue(
@@ -199,9 +195,8 @@ abstract class MappedEnum[T <: Mapper[T], ENUM <: Enumeration](
       doField(
         inst,
         accessor,
-        {
-          case f: MappedEnum[T, ENUM] =>
-            f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
+        { case f: MappedEnum[T, ENUM] =>
+          f.st(if (v eq null) defaultValue else fromInt(Helpers.toInt(v)))
         })
 
   def buildSetBooleanValue(

@@ -8,9 +8,8 @@ object PublishSubscribe {
   class Subscriber(name: String, uri: String) extends Actor with Consumer {
     def endpointUri = uri
 
-    def receive = {
-      case msg: CamelMessage =>
-        println("%s received: %s" format (name, msg.body))
+    def receive = { case msg: CamelMessage =>
+      println("%s received: %s" format (name, msg.body))
     }
   }
 

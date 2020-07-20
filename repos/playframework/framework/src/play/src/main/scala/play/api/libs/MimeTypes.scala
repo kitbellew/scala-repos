@@ -41,9 +41,8 @@ object MimeTypes {
             .map { key =>
               (key, config.getString(key))
             }
-            .collect {
-              case ((key, Some(value))) =>
-                (key, value)
+            .collect { case ((key, Some(value))) =>
+              (key, value)
             }
             .toMap
         }

@@ -41,22 +41,17 @@ object MultipartFormDataParserSpec extends PlaySpecification {
   val parse = new BodyParsers() {}.parse
 
   def checkResult(result: Either[Result, MultipartFormData[TemporaryFile]]) = {
-    result must beRight.like {
-      case parts =>
-        parts.dataParts.get("text1") must_== Some(Seq("the first text field"))
-        parts.dataParts.get("text2:colon") must_== Some(
-          Seq("the second text field"))
-        parts.files must haveLength(2)
-        parts.file("file1") must beSome.like {
-          case filePart =>
-            PlayIO.readFileAsString(
-              filePart.ref.file) must_== "the first file\r\n"
-        }
-        parts.file("file2") must beSome.like {
-          case filePart =>
-            PlayIO.readFileAsString(
-              filePart.ref.file) must_== "the second file\r\n"
-        }
+    result must beRight.like { case parts =>
+      parts.dataParts.get("text1") must_== Some(Seq("the first text field"))
+      parts.dataParts.get("text2:colon") must_== Some(
+        Seq("the second text field"))
+      parts.files must haveLength(2)
+      parts.file("file1") must beSome.like { case filePart =>
+        PlayIO.readFileAsString(filePart.ref.file) must_== "the first file\r\n"
+      }
+      parts.file("file2") must beSome.like { case filePart =>
+        PlayIO.readFileAsString(filePart.ref.file) must_== "the second file\r\n"
+      }
     }
   }
 

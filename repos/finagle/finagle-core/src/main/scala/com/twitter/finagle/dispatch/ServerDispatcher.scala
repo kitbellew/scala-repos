@@ -63,9 +63,8 @@ abstract class GenSerialServerDispatcher[Req, Rep, In, Out](
         } finally Local.restore(save)
         p map { res => (res, eos) }
       } else Eof
-    } flatMap {
-      case (rep, eos) =>
-        Future.join(handle(rep), eos).unit
+    } flatMap { case (rep, eos) =>
+      Future.join(handle(rep), eos).unit
     } respond {
       case Return(()) if state.get ne Closed =>
         loop()

@@ -121,76 +121,72 @@ class AdaptorsTest extends FunSuite with GeneratorDrivenPropertyChecks {
     }
 
   test("netty: http request to netty") {
-    forAll(arbRequest) {
-      case (in: Request, body: String) =>
-        if (in.isChunked) {
-          val exc = intercept[Exception] { Await.result(NettyAdaptor.in(in)) }
-          assert(NettyAdaptor.NoStreaming == exc)
-        } else {
-          val out = Await.result(NettyAdaptor.in(in))
-          assert(out.getProtocolVersion == from(in.version))
-          assert(out.getMethod == from(in.method))
-          assert(out.getUri == in.getUri)
-          assert(out.headers == in.headers)
-          assert(out.isChunked == in.isChunked)
-          assert(out.getContent == in.getContent)
-        }
+    forAll(arbRequest) { case (in: Request, body: String) =>
+      if (in.isChunked) {
+        val exc = intercept[Exception] { Await.result(NettyAdaptor.in(in)) }
+        assert(NettyAdaptor.NoStreaming == exc)
+      } else {
+        val out = Await.result(NettyAdaptor.in(in))
+        assert(out.getProtocolVersion == from(in.version))
+        assert(out.getMethod == from(in.method))
+        assert(out.getUri == in.getUri)
+        assert(out.headers == in.headers)
+        assert(out.isChunked == in.isChunked)
+        assert(out.getContent == in.getContent)
+      }
     }
   }
 
   test("netty: netty response to http") {
-    forAll(arbNettyResponse) {
-      case (in: HttpResponse, body: String) =>
-        if (in.isChunked) {
-          val exc = intercept[Exception] { Await.result(NettyAdaptor.out(in)) }
-          assert(NettyAdaptor.NoStreaming == exc)
-        } else {
-          val out = Await.result(NettyAdaptor.out(in))
-          assert(out.version == from(in.getProtocolVersion))
-          assert(out.status == from(in.getStatus))
-          assert(out.headers == in.headers)
-          assert(out.isChunked == in.isChunked)
-          assert(out.getContent == in.getContent)
-        }
+    forAll(arbNettyResponse) { case (in: HttpResponse, body: String) =>
+      if (in.isChunked) {
+        val exc = intercept[Exception] { Await.result(NettyAdaptor.out(in)) }
+        assert(NettyAdaptor.NoStreaming == exc)
+      } else {
+        val out = Await.result(NettyAdaptor.out(in))
+        assert(out.version == from(in.getProtocolVersion))
+        assert(out.status == from(in.getStatus))
+        assert(out.headers == in.headers)
+        assert(out.isChunked == in.isChunked)
+        assert(out.getContent == in.getContent)
+      }
     }
   }
 
   test("http: netty request to http") {
-    forAll(arbNettyRequest) {
-      case (in: HttpRequest, body: String) =>
-        if (in.isChunked) {
-          val exc = intercept[Exception] {
-            Await.result(NettyClientAdaptor.in(in))
-          }
-          assert(NettyClientAdaptor.NoStreaming == exc)
-        } else {
-          val out = Await.result(NettyClientAdaptor.in(in))
-          assert(out.version == from(in.getProtocolVersion))
-          assert(out.method == from(in.getMethod))
-          assert(out.getUri == in.getUri)
-          assert(out.headers == in.headers)
-          assert(out.isChunked == in.isChunked)
-          assert(out.getContent == in.getContent)
+    forAll(arbNettyRequest) { case (in: HttpRequest, body: String) =>
+      if (in.isChunked) {
+        val exc = intercept[Exception] {
+          Await.result(NettyClientAdaptor.in(in))
         }
+        assert(NettyClientAdaptor.NoStreaming == exc)
+      } else {
+        val out = Await.result(NettyClientAdaptor.in(in))
+        assert(out.version == from(in.getProtocolVersion))
+        assert(out.method == from(in.getMethod))
+        assert(out.getUri == in.getUri)
+        assert(out.headers == in.headers)
+        assert(out.isChunked == in.isChunked)
+        assert(out.getContent == in.getContent)
+      }
     }
   }
 
   test("http: http response to netty") {
-    forAll(arbResponse) {
-      case (in: Response, body: String) =>
-        if (in.isChunked) {
-          val exc = intercept[Exception] {
-            Await.result(NettyClientAdaptor.out(in))
-          }
-          assert(NettyClientAdaptor.NoStreaming == exc)
-        } else {
-          val out = Await.result(NettyClientAdaptor.out(in))
-          assert(out.getProtocolVersion == from(in.version))
-          assert(out.getStatus == from(in.status))
-          assert(out.headers == in.headers)
-          assert(out.isChunked == in.isChunked)
-          assert(out.getContent == BufChannelBuffer(in.content))
+    forAll(arbResponse) { case (in: Response, body: String) =>
+      if (in.isChunked) {
+        val exc = intercept[Exception] {
+          Await.result(NettyClientAdaptor.out(in))
         }
+        assert(NettyClientAdaptor.NoStreaming == exc)
+      } else {
+        val out = Await.result(NettyClientAdaptor.out(in))
+        assert(out.getProtocolVersion == from(in.version))
+        assert(out.getStatus == from(in.status))
+        assert(out.headers == in.headers)
+        assert(out.isChunked == in.isChunked)
+        assert(out.getContent == BufChannelBuffer(in.content))
+      }
     }
   }
 }

@@ -73,18 +73,17 @@ trait RackAwareTest {
     val leaderCount = mutable.Map[Int, Int]()
     val partitionCount = mutable.Map[Int, Int]()
     val partitionRackMap = mutable.Map[Int, List[String]]()
-    assignment.foreach {
-      case (partitionId, replicaList) =>
-        val leader = replicaList.head
-        leaderCount(leader) = leaderCount.getOrElse(leader, 0) + 1
-        for (brokerId <- replicaList) {
-          partitionCount(brokerId) = partitionCount.getOrElse(brokerId, 0) + 1
-          val rack = brokerRackMapping.getOrElse(
-            brokerId,
-            sys.error(s"No mapping found for $brokerId in `brokerRackMapping`"))
-          partitionRackMap(partitionId) =
-            rack :: partitionRackMap.getOrElse(partitionId, List())
-        }
+    assignment.foreach { case (partitionId, replicaList) =>
+      val leader = replicaList.head
+      leaderCount(leader) = leaderCount.getOrElse(leader, 0) + 1
+      for (brokerId <- replicaList) {
+        partitionCount(brokerId) = partitionCount.getOrElse(brokerId, 0) + 1
+        val rack = brokerRackMapping.getOrElse(
+          brokerId,
+          sys.error(s"No mapping found for $brokerId in `brokerRackMapping`"))
+        partitionRackMap(partitionId) =
+          rack :: partitionRackMap.getOrElse(partitionId, List())
+      }
     }
     ReplicaDistributions(partitionRackMap, leaderCount, partitionCount)
   }
@@ -92,9 +91,8 @@ trait RackAwareTest {
   def toBrokerMetadata(
       rackMap: Map[Int, String],
       brokersWithoutRack: Seq[Int] = Seq.empty): Seq[BrokerMetadata] =
-    rackMap.toSeq.map {
-      case (brokerId, rack) =>
-        BrokerMetadata(brokerId, Some(rack))
+    rackMap.toSeq.map { case (brokerId, rack) =>
+      BrokerMetadata(brokerId, Some(rack))
     } ++ brokersWithoutRack
       .map { brokerId =>
         BrokerMetadata(brokerId, None)

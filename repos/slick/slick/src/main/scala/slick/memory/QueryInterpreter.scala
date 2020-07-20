@@ -399,8 +399,8 @@ class QueryInterpreter(db: HeapBackend#Database, params: Any) extends Logging {
         val chV = ch.map(n => (n.nodeType, run(n)))
         logDebug("[chV: " + chV.mkString(", ") + "]")
         if (n.nodeType.isInstanceOf[OptionType]) {
-          if (chV.exists {
-              case (t, v) => t.isInstanceOf[OptionType] && (v == None)
+          if (chV.exists { case (t, v) =>
+              t.isInstanceOf[OptionType] && (v == None)
             }) None
           else {
             val chPlainV = chV.map {

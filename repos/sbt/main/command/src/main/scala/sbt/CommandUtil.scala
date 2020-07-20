@@ -69,16 +69,15 @@ object CommandUtil {
       selected: String,
       detailMap: Map[String, String]): Map[String, String] = {
     val pattern = Pattern.compile(selected, HelpPatternFlags)
-    detailMap flatMap {
-      case (k, v) =>
-        val contentMatches = Highlight.showMatches(pattern)(v)
-        val keyMatches = Highlight.showMatches(pattern)(k)
-        val keyString = Highlight.bold(keyMatches getOrElse k)
-        val contentString = contentMatches getOrElse v
-        if (keyMatches.isDefined || contentMatches.isDefined)
-          (keyString, contentString) :: Nil
-        else
-          Nil
+    detailMap flatMap { case (k, v) =>
+      val contentMatches = Highlight.showMatches(pattern)(v)
+      val keyMatches = Highlight.showMatches(pattern)(k)
+      val keyString = Highlight.bold(keyMatches getOrElse k)
+      val contentString = contentMatches getOrElse v
+      if (keyMatches.isDefined || contentMatches.isDefined)
+        (keyString, contentString) :: Nil
+      else
+        Nil
     }
   }
   def layoutDetails(details: Map[String, String]): String =

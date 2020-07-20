@@ -198,34 +198,33 @@ private[tournament] final class Scheduler(api: TournamentApi) extends Actor {
           ) |
           List( // random opening replaces hourly 2 times a day
             11 -> opening1,
-            23 -> opening2)).flatMap {
-          case (hour, opening) =>
-            List(
-              Schedule(
-                Hourly,
-                Bullet,
-                Standard,
-                opening,
-                at(today, hour) |> orTomorrow),
-              Schedule(
-                Hourly,
-                SuperBlitz,
-                Standard,
-                opening,
-                at(today, hour) |> orTomorrow),
-              Schedule(
-                Hourly,
-                Blitz,
-                Standard,
-                opening,
-                at(today, hour) |> orTomorrow),
-              Schedule(
-                Hourly,
-                Classical,
-                Standard,
-                opening,
-                at(today, hour) |> orTomorrow)
-            )
+            23 -> opening2)).flatMap { case (hour, opening) =>
+          List(
+            Schedule(
+              Hourly,
+              Bullet,
+              Standard,
+              opening,
+              at(today, hour) |> orTomorrow),
+            Schedule(
+              Hourly,
+              SuperBlitz,
+              Standard,
+              opening,
+              at(today, hour) |> orTomorrow),
+            Schedule(
+              Hourly,
+              Blitz,
+              Standard,
+              opening,
+              at(today, hour) |> orTomorrow),
+            Schedule(
+              Hourly,
+              Classical,
+              Standard,
+              opening,
+              at(today, hour) |> orTomorrow)
+          )
         },
         // hourly standard tournaments!
         (0 to 6).toList.flatMap { hourDelta =>

@@ -109,13 +109,12 @@ object Play2Keys {
     class StringParsedKey(name: String) extends ParsedKey[String](name) {
       override def allIn(allKeys: Map[String, Map[String, ParsedValue[_]]])
           : Seq[(String, String)] = {
-        in(allKeys) map {
-          case vs =>
-            vs.toSeq flatMap {
-              case (projectName, projectValue: StringParsedValue) =>
-                Some((projectName, projectValue.parsed))
-              case _ => None
-            }
+        in(allKeys) map { case vs =>
+          vs.toSeq flatMap {
+            case (projectName, projectValue: StringParsedValue) =>
+              Some((projectName, projectValue.parsed))
+            case _ => None
+          }
         } getOrElse Seq.empty
       }
     }
@@ -124,13 +123,12 @@ object Play2Keys {
         extends ParsedKey[Seq[String]](name) {
       override def allIn(allKeys: Map[String, Map[String, ParsedValue[_]]])
           : Seq[(String, Seq[String])] = {
-        in(allKeys) map {
-          case vs =>
-            vs.toSeq flatMap {
-              case (projectName, projectValue: SeqStringParsedValue) =>
-                Some((projectName, projectValue.parsed))
-              case _ => None
-            }
+        in(allKeys) map { case vs =>
+          vs.toSeq flatMap {
+            case (projectName, projectValue: SeqStringParsedValue) =>
+              Some((projectName, projectValue.parsed))
+            case _ => None
+          }
         } getOrElse Seq.empty
       }
     }

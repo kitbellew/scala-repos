@@ -180,22 +180,21 @@ abstract class SparkPlan
     */
   protected def waitForSubqueries(): Unit = {
     // fill in the result of subqueries
-    subqueryResults.foreach {
-      case (e, futureResult) =>
-        val rows = Await.result(futureResult, Duration.Inf)
-        if (rows.length > 1) {
-          sys.error(
-            s"more than one row returned by a subquery used as an expression:\n${e.plan}")
-        }
-        if (rows.length == 1) {
-          assert(
-            rows(0).numFields == 1,
-            s"Expects 1 field, but got ${rows(0).numFields}; something went wrong in analysis")
-          e.updateResult(rows(0).get(0, e.dataType))
-        } else {
-          // If there is no rows returned, the result should be null.
-          e.updateResult(null)
-        }
+    subqueryResults.foreach { case (e, futureResult) =>
+      val rows = Await.result(futureResult, Duration.Inf)
+      if (rows.length > 1) {
+        sys.error(
+          s"more than one row returned by a subquery used as an expression:\n${e.plan}")
+      }
+      if (rows.length == 1) {
+        assert(
+          rows(0).numFields == 1,
+          s"Expects 1 field, but got ${rows(0).numFields}; something went wrong in analysis")
+        e.updateResult(rows(0).get(0, e.dataType))
+      } else {
+        // If there is no rows returned, the result should be null.
+        e.updateResult(null)
+      }
     }
     subqueryResults.clear()
   }
@@ -393,9 +392,8 @@ abstract class SparkPlan
     */
   protected def newNaturalAscendingOrdering(
       dataTypes: Seq[DataType]): Ordering[InternalRow] = {
-    val order: Seq[SortOrder] = dataTypes.zipWithIndex.map {
-      case (dt, index) =>
-        new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
+    val order: Seq[SortOrder] = dataTypes.zipWithIndex.map { case (dt, index) =>
+      new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
     }
     newOrdering(order, Seq.empty)
   }

@@ -119,11 +119,10 @@ trait Namers extends MethodSynthesis {
     def contextFile = context.unit.source.file
     def typeErrorHandler[T](
         tree: Tree,
-        alt: T): PartialFunction[Throwable, T] = {
-      case ex: TypeError =>
-        // H@ need to ensure that we handle only cyclic references
-        TypeSigError(tree, ex)
-        alt
+        alt: T): PartialFunction[Throwable, T] = { case ex: TypeError =>
+      // H@ need to ensure that we handle only cyclic references
+      TypeSigError(tree, ex)
+      alt
     }
 
     // All lazy vals need accessors, including those owned by terms (e.g., in method) or private[this] in a class

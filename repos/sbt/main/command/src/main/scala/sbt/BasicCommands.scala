@@ -183,19 +183,18 @@ object BasicCommands {
 
   def call =
     Command(ApplyCommand, Help.more(ApplyCommand, ApplyDetailed))(_ =>
-      callParser) {
-      case (state, (cp, args)) =>
-        val parentLoader = getClass.getClassLoader
-        state.log.info(
-          "Applying State transformations " + args
-            .mkString(", ") + (if (cp.isEmpty) ""
-                               else " from " + cp.mkString(File.pathSeparator)))
-        val loader =
-          if (cp.isEmpty) parentLoader
-          else toLoader(cp.map(f => new File(f)), parentLoader)
-        val loaded = args.map(arg =>
-          ModuleUtilities.getObject(arg, loader).asInstanceOf[State => State])
-        (state /: loaded)((s, obj) => obj(s))
+      callParser) { case (state, (cp, args)) =>
+      val parentLoader = getClass.getClassLoader
+      state.log.info(
+        "Applying State transformations " + args
+          .mkString(", ") + (if (cp.isEmpty) ""
+                             else " from " + cp.mkString(File.pathSeparator)))
+      val loader =
+        if (cp.isEmpty) parentLoader
+        else toLoader(cp.map(f => new File(f)), parentLoader)
+      val loaded = args.map(arg =>
+        ModuleUtilities.getObject(arg, loader).asInstanceOf[State => State])
+      (state /: loaded)((s, obj) => obj(s))
     }
   def callParser: Parser[(Seq[String], Seq[String])] =
     token(Space) ~> ((classpathOptionParser ?? Nil) ~ rep1sep(

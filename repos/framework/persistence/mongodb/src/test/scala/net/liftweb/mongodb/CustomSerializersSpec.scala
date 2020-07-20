@@ -112,9 +112,8 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      Person.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
+      Person.find(jack._id) must beLike { case Some(j) =>
+        j._id mustEqual jack._id
       }
     }
 
@@ -128,9 +127,8 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithObjectId.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
+      PersonWithObjectId.find(jack._id) must beLike { case Some(j) =>
+        j._id mustEqual jack._id
       }
     }
 
@@ -146,10 +144,9 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithPattern.find(jack._id) must beLike {
-        case Some(j) =>
-          j.pattern.pattern mustEqual jack.pattern.pattern
-          j.pattern.flags mustEqual jack.pattern.flags
+      PersonWithPattern.find(jack._id) must beLike { case Some(j) =>
+        j.pattern.pattern mustEqual jack.pattern.pattern
+        j.pattern.flags mustEqual jack.pattern.flags
       }
     }
 
@@ -164,9 +161,8 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithDateTime.find(jack._id) must beLike {
-        case Some(j) =>
-          j.birthDate mustEqual jack.birthDate
+      PersonWithDateTime.find(jack._id) must beLike { case Some(j) =>
+        j.birthDate mustEqual jack.birthDate
       }
     }
 
@@ -183,9 +179,8 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithDate.find(jack._id) must beLike {
-        case Some(j) =>
-          j.birthDate mustEqual jack.birthDate
+      PersonWithDate.find(jack._id) must beLike { case Some(j) =>
+        j.birthDate mustEqual jack.birthDate
       }
     }
 
@@ -200,9 +195,8 @@ class CustomSerializersSpec extends Specification with MongoTestKit {
       jack.save
 
       // retrieve it and compare
-      PersonWithUUID.find(jack._id) must beLike {
-        case Some(j) =>
-          j._id mustEqual jack._id
+      PersonWithUUID.find(jack._id) must beLike { case Some(j) =>
+        j._id mustEqual jack._id
       }
     }
   }

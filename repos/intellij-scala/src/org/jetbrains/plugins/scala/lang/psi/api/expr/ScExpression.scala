@@ -515,14 +515,13 @@ trait ScExpression
       val unders = ScUnderScoreSectionUtil.underscores(ScExpression.this)
       if (unders.isEmpty) innerType(TypingContext.empty)
       else {
-        val params = unders.zipWithIndex.map {
-          case (u, index) =>
-            val tpe = u
-              .getNonValueType(TypingContext.empty, ignoreBaseType)
-              .getOrAny
-              .inferValueType
-              .unpackedType
-            new Parameter("", None, tpe, false, false, false, index)
+        val params = unders.zipWithIndex.map { case (u, index) =>
+          val tpe = u
+            .getNonValueType(TypingContext.empty, ignoreBaseType)
+            .getOrAny
+            .inferValueType
+            .unpackedType
+          new Parameter("", None, tpe, false, false, false, index)
         }
         val methType =
           new ScMethodType(

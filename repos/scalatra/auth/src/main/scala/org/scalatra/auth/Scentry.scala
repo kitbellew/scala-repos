@@ -126,10 +126,9 @@ class Scentry[UserType <: AnyRef](
   def toSession: PartialFunction[UserType, String] =
     serialize orElse missingSerializer
 
-  private def missingSerializer: PartialFunction[UserType, String] = {
-    case _ ⇒
-      throw new RuntimeException(
-        "You need to provide a session serializer for Scentry")
+  private def missingSerializer: PartialFunction[UserType, String] = { case _ ⇒
+    throw new RuntimeException(
+      "You need to provide a session serializer for Scentry")
   }
 
   private def missingDeserializer: PartialFunction[String, UserType] = {
@@ -147,11 +146,10 @@ class Scentry[UserType <: AnyRef](
   def authenticate(names: String*)(implicit
       request: HttpServletRequest,
       response: HttpServletResponse): Option[UserType] = {
-    val r = runAuthentication(names: _*) map {
-      case (stratName, usr) ⇒
-        runCallbacks() { _.afterAuthenticate(stratName, usr) }
-        user_=(usr)
-        user
+    val r = runAuthentication(names: _*) map { case (stratName, usr) ⇒
+      runCallbacks() { _.afterAuthenticate(stratName, usr) }
+      user_=(usr)
+      user
     }
     if (names.isEmpty) r orElse {
       defaultUnauthenticated foreach (_.apply()); None

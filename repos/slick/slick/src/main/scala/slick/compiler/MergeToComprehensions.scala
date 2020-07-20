@@ -295,15 +295,14 @@ class MergeToComprehensions extends Phase {
               s"Mappings for `on` clause in Join $ls/$rs: " + mappingsM)
             val on2 = on1
               .replace(
-                {
-                  case p @ FwdPathOnTypeSymbol(ts, _ :: s :: Nil) =>
-                    //logger.debug(s"Finding ($ts, $s)")
-                    mappingsM.get((ts, s)) match {
-                      case Some(ElementSymbol(idx) :: ss) =>
-                        //logger.debug(s"Found $idx :: $ss")
-                        FwdPath((if (idx == 1) ls else rs) :: ss)
-                      case _ => p
-                    }
+                { case p @ FwdPathOnTypeSymbol(ts, _ :: s :: Nil) =>
+                  //logger.debug(s"Finding ($ts, $s)")
+                  mappingsM.get((ts, s)) match {
+                    case Some(ElementSymbol(idx) :: ss) =>
+                      //logger.debug(s"Found $idx :: $ss")
+                      FwdPath((if (idx == 1) ls else rs) :: ss)
+                    case _ => p
+                  }
                 },
                 bottomUp = true
               )
@@ -493,19 +492,18 @@ class MergeToComprehensions extends Phase {
         val (n2, map1) = dealias(from)(f)
         logger.debug("Recombining aliasing Bind mappings " + defs)
         val map1M = map1.iterator.toMap
-        val map2 = defs.map {
-          case (f1, p) =>
-            val sel = p
-              .findNode {
-                case Select(_ :@ NominalType(_, _), _) => true
-                case _                                 => false
-              }
-              .getOrElse(
-                throw new SlickTreeException(
-                  "Missing path on top of TypeSymbol in:",
-                  p))
-            val Select(_ :@ NominalType(ts2, _), f2) = sel
-            (ts1, f1) -> map1M((ts2, f2))
+        val map2 = defs.map { case (f1, p) =>
+          val sel = p
+            .findNode {
+              case Select(_ :@ NominalType(_, _), _) => true
+              case _                                 => false
+            }
+            .getOrElse(
+              throw new SlickTreeException(
+                "Missing path on top of TypeSymbol in:",
+                p))
+          val Select(_ :@ NominalType(ts2, _), f2) = sel
+          (ts1, f1) -> map1M((ts2, f2))
         }
         (n2, map2)
       case n => f(n)
@@ -519,12 +517,11 @@ class MergeToComprehensions extends Phase {
     val Pure(StructNode(base), _) = c.select
     val baseM = base.iterator.toMap
     n1.replace(
-      {
-        case n @ Select(_ :@ NominalType(ts, _), s) =>
-          r.get((ts, s)) match {
-            case Some(s2) => baseM(s2)
-            case None     => n
-          }
+      { case n @ Select(_ :@ NominalType(ts, _), s) =>
+        r.get((ts, s)) match {
+          case Some(s2) => baseM(s2)
+          case None     => n
+        }
       },
       bottomUp = true,
       keepType = true)

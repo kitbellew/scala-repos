@@ -106,9 +106,8 @@ object PluginManagerImpl {
       .\("plugins")
       .as[JsObject]
       .fields
-      .map {
-        case (id, value) =>
-          JsObject(value.as[JsObject].fields :+ ("id" -> JsString(id)))
+      .map { case (id, value) =>
+        JsObject(value.as[JsObject].fields :+ ("id" -> JsString(id)))
       }
       .map(_.as[PluginDefinition])
     PluginDefinitions(plugins)

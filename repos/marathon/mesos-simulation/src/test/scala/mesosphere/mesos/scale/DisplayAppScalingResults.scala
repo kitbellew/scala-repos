@@ -53,8 +53,8 @@ object DisplayAppScalingResults {
       (allMetrics.last \ name)
         .as[JsObject]
         .value
-        .map {
-          case (name, value) => name -> value.as[JsObject]
+        .map { case (name, value) =>
+          name -> value.as[JsObject]
         }
         .toMap
     }

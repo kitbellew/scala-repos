@@ -28,11 +28,10 @@ object Codegen {
     if (anyvals || all) {
       val av = new AnyVals {}
 
-      av.make() foreach {
-        case (name, code) =>
-          val file = (out / (name + ".scala")).toFile
-          echo("Writing: " + file)
-          file writeAll code
+      av.make() foreach { case (name, code) =>
+        val file = (out / (name + ".scala")).toFile
+        echo("Writing: " + file)
+        file writeAll code
       }
     }
   }

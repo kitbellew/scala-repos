@@ -303,46 +303,40 @@ class SecurityServiceSpec
   "Security service" should {
     "get existing API key" in {
       getAPIKeyDetails(user1.apiKey) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) =>
-            jtd.validated[v1.APIKeyDetails] must beLike {
-              case Success(details) =>
-                details.apiKey must_== user1.apiKey
-                details.name must_== user1.name
-                details.description must_== user1.description
-                details.grants.map(_.grantId) must_== user1.grants
-            }
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) =>
+          jtd.validated[v1.APIKeyDetails] must beLike { case Success(details) =>
+            details.apiKey must_== user1.apiKey
+            details.name must_== user1.name
+            details.description must_== user1.description
+            details.grants.map(_.grantId) must_== user1.grants
+          }
         }
       }
     }
 
     "get existing API key without issuer" in {
       getAPIKeyDetails(user5.apiKey) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) =>
-            jtd.validated[v1.APIKeyDetails] must beLike {
-              case Success(details) =>
-                details.apiKey must_== user5.apiKey
-                details.name must_== user5.name
-                details.description must_== user5.description
-                details.grants.map(_.grantId) must_== user5.grants
-                details.issuerChain must beEmpty
-            }
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) =>
+          jtd.validated[v1.APIKeyDetails] must beLike { case Success(details) =>
+            details.apiKey must_== user5.apiKey
+            details.name must_== user5.name
+            details.description must_== user5.description
+            details.grants.map(_.grantId) must_== user5.grants
+            details.issuerChain must beEmpty
+          }
         }
       }
     }
     "get existing API key with issuer" in {
       getFullAPIKeyDetails(user5.apiKey, rootAPIKey) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) =>
-            jtd.validated[v1.APIKeyDetails] must beLike {
-              case Success(details) =>
-                details.apiKey must_== user5.apiKey
-                details.name must_== user5.name
-                details.description must_== user5.description
-                details.grants.map(_.grantId) must_== user5.grants
-                details.issuerChain mustEqual List(user1.apiKey, rootAPIKey)
-            }
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jtd), _) =>
+          jtd.validated[v1.APIKeyDetails] must beLike { case Success(details) =>
+            details.apiKey must_== user5.apiKey
+            details.name must_== user5.name
+            details.description must_== user5.description
+            details.grants.map(_.grantId) must_== user5.grants
+            details.issuerChain mustEqual List(user1.apiKey, rootAPIKey)
+          }
         }
       }
     }
@@ -362,12 +356,11 @@ class SecurityServiceSpec
 
     "enumerate existing API keys" in {
       getAPIKeys(user1.apiKey) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jts), _) =>
-            val ks = jts.deserialize[Set[v1.APIKeyDetails]]
-            ks must haveSize(3)
-            ks.map(_.apiKey) must containAllOf(List(user5.apiKey, user6.apiKey))
-          // ks.map(_.apiKey) must haveTheSameElementsAs(allAPIKeys.filter(_.issuerKey.exists(_ == user1.apiKey)).map(_.apiKey))
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jts), _) =>
+          val ks = jts.deserialize[Set[v1.APIKeyDetails]]
+          ks must haveSize(3)
+          ks.map(_.apiKey) must containAllOf(List(user5.apiKey, user6.apiKey))
+        // ks.map(_.apiKey) must haveTheSameElementsAs(allAPIKeys.filter(_.issuerKey.exists(_ == user1.apiKey)).map(_.apiKey))
         }
       }
     }
@@ -376,10 +369,9 @@ class SecurityServiceSpec
       val request =
         v1.NewAPIKeyRequest(Some("root-like"), None, rootGrantRequests)
       createAPIKey(rootAPIKey, request) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
-            val id = jid.deserialize[v1.APIKeyDetails]
-            id.apiKey.length must be_>(0)
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
+          val id = jid.deserialize[v1.APIKeyDetails]
+          id.apiKey.length must be_>(0)
         }
       }
     }
@@ -390,10 +382,9 @@ class SecurityServiceSpec
         None,
         Set(standardGrant("non-root-1")))
       createAPIKey(rootAPIKey, request) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
-            val id = jid.deserialize[v1.APIKeyDetails]
-            id.apiKey.length must be_>(0)
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
+          val id = jid.deserialize[v1.APIKeyDetails]
+          id.apiKey.length must be_>(0)
         }
       }
     }
@@ -412,10 +403,9 @@ class SecurityServiceSpec
       } yield jtd.deserialize[v1.APIKeyDetails]
 
       result must awaited(to) {
-        beLike {
-          case v1.APIKeyDetails(apiKey, name, description, grants, _) =>
-            grants.flatMap(_.permissions) must haveTheSameElementsAs(
-              user1Grant.permissions)
+        beLike { case v1.APIKeyDetails(apiKey, name, description, grants, _) =>
+          grants.flatMap(_.permissions) must haveTheSameElementsAs(
+            user1Grant.permissions)
         }
       }
     }
@@ -467,10 +457,9 @@ class SecurityServiceSpec
                 _,
                 Some(JObject(elems)),
                 _) if elems.contains("error") =>
-            elems("error") must beLike {
-              case JString(msg) =>
-                msg must startWith(
-                  "Requestor lacks permission to assign given grants to API key")
+            elems("error") must beLike { case JString(msg) =>
+              msg must startWith(
+                "Requestor lacks permission to assign given grants to API key")
             }
         }
       }
@@ -478,11 +467,9 @@ class SecurityServiceSpec
 
     "retrieve the grants associated with a given API key" in {
       getAPIKeyGrants(user1.apiKey) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) =>
-            val gs = jgs.deserialize[Set[v1.GrantDetails]]
-            gs.map(_.grantId) must haveTheSameElementsAs(
-              Seq(user1Grant.grantId))
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) =>
+          val gs = jgs.deserialize[Set[v1.GrantDetails]]
+          gs.map(_.grantId) must haveTheSameElementsAs(Seq(user1Grant.grantId))
         }
       }
     }
@@ -500,16 +487,15 @@ class SecurityServiceSpec
 
     "get existing grant" in {
       getGrantDetails(user1.apiKey, user1Grant.grantId) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jgd), _) =>
-            jgd.deserialize[v1.GrantDetails] must beLike {
-              case v1.GrantDetails(gid, gname, gdesc, perms, _, exp) =>
-                gid must_== user1Grant.grantId
-                gname must_== user1Grant.name
-                gdesc must_== user1Grant.description
-                perms must_== user1Grant.permissions
-                exp must_== user1Grant.expirationDate
-            }
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jgd), _) =>
+          jgd.deserialize[v1.GrantDetails] must beLike {
+            case v1.GrantDetails(gid, gname, gdesc, perms, _, exp) =>
+              gid must_== user1Grant.grantId
+              gname must_== user1Grant.name
+              gdesc must_== user1Grant.description
+              perms must_== user1Grant.permissions
+              exp must_== user1Grant.expirationDate
+          }
         }
       }
     }
@@ -537,10 +523,9 @@ class SecurityServiceSpec
           Set(
             ReadPermission(Path("/user1/read-me"), WrittenByAccount("user1"))),
           None)) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
-            val id = jid.deserialize[v1.GrantDetails]
-            id.grantId.length must be_>(0)
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
+          val id = jid.deserialize[v1.GrantDetails]
+          id.grantId.length must be_>(0)
         }
       }
     }
@@ -560,10 +545,8 @@ class SecurityServiceSpec
                 _,
                 Some(JObject(elems)),
                 _) if elems.contains("error") =>
-            elems("error") must beLike {
-              case JString(msg) =>
-                msg must startWith(
-                  "Requestor lacks permissions to create grant")
+            elems("error") must beLike { case JString(msg) =>
+              msg must startWith("Requestor lacks permissions to create grant")
             }
         }
       }
@@ -582,10 +565,9 @@ class SecurityServiceSpec
 
     "retrieve the child grants of the given grant" in {
       getGrantChildren(user4.apiKey, user4Grant.grantId) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) =>
-            val gs = jgs.deserialize[Set[v1.GrantDetails]]
-            gs.map(_.grantId) must_== Set(user4DerivedGrant.grantId)
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jgs), _) =>
+          val gs = jgs.deserialize[Set[v1.GrantDetails]]
+          gs.map(_.grantId) must_== Set(user4DerivedGrant.grantId)
         }
       }
     }
@@ -601,10 +583,9 @@ class SecurityServiceSpec
           Set(ReadPermission(Path("/user1/secret"), WrittenByAccount("user1"))),
           None)
       ) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
-            val id = jid.deserialize[v1.GrantDetails]
-            id.grantId.length must be_>(0)
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jid), _) =>
+          val id = jid.deserialize[v1.GrantDetails]
+          id.grantId.length must be_>(0)
         }
       }
     }
@@ -638,12 +619,11 @@ class SecurityServiceSpec
 
     "retrieve permissions for a given path owned by user" in {
       getPermissions(user1.apiKey, Path("/user1")) must awaited(to) {
-        beLike {
-          case HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) =>
-            val perms =
-              jperms.deserialize[Set[Permission]] map Permission.accessType
-            val types = Set("read", "write", "delete")
-            perms must_== types
+        beLike { case HttpResponse(HttpStatus(OK, _), _, Some(jperms), _) =>
+          val perms =
+            jperms.deserialize[Set[Permission]] map Permission.accessType
+          val types = Set("read", "write", "delete")
+          perms must_== types
         }
       }
     }

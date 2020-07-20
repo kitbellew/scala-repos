@@ -75,9 +75,8 @@ object Docs {
         "play/docs/content/webjars/" + playVersion)
 
       // Gather all the conf files into the project
-      val referenceConfMappings = confs.map {
-        case (projectName, conf) =>
-          conf -> s"play/docs/content/confs/$projectName/${conf.getName}"
+      val referenceConfMappings = confs.map { case (projectName, conf) =>
+        conf -> s"play/docs/content/confs/$projectName/${conf.getName}"
       }
 
       docMappings ++ apiDocMappings ++ webjarMappings ++ referenceConfMappings
@@ -104,9 +103,8 @@ object Docs {
             webjars.*** pair rebase(webjars, "webjars/" + playVersion)
 
           // Gather all the conf files into the project
-          val referenceConfs = allConfs.value.map {
-            case (projectName, conf) =>
-              conf -> s"confs/$projectName/${conf.getName}"
+          val referenceConfs = allConfs.value.map { case (projectName, conf) =>
+            conf -> s"confs/$projectName/${conf.getName}"
           }
 
           docMappings ++ webjarMappings ++ referenceConfs

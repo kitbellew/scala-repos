@@ -104,10 +104,9 @@ object ActorSubscriberSpec {
   }
 
   class Worker extends Actor {
-    def receive = {
-      case Work(id) ⇒
-        // ...
-        sender() ! Reply(id)
+    def receive = { case Work(id) ⇒
+      // ...
+      sender() ! Reply(id)
     }
   }
 }

@@ -13,11 +13,10 @@ class StopActor(toStop: ActorRef, promise: Promise[Boolean], reason: Throwable)
     toStop ! Cancel(reason)
   }
 
-  def receive: Receive = {
-    case Terminated(`toStop`) =>
-      promise.success(true)
-      log.debug(s"$toStop has successfully been stopped.")
-      context.unwatch(toStop)
-      context.stop(self)
+  def receive: Receive = { case Terminated(`toStop`) =>
+    promise.success(true)
+    log.debug(s"$toStop has successfully been stopped.")
+    context.unwatch(toStop)
+    context.stop(self)
   }
 }

@@ -322,9 +322,8 @@ trait ImplicitPathMatcherConstruction {
     if (valueMap.isEmpty) PathMatchers.nothingMatcher
     else
       valueMap
-        .map {
-          case (prefix, value) ⇒
-            stringExtractionPair2PathMatcher((prefix, value))
+        .map { case (prefix, value) ⇒
+          stringExtractionPair2PathMatcher((prefix, value))
         }
         .reduceLeft(_ | _)
 }

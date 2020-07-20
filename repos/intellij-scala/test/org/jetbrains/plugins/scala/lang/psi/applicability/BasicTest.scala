@@ -9,23 +9,17 @@ import org.jetbrains.plugins.scala.lang.psi.types._
 
 class BasicTest extends ApplicabilityTestBase {
   def testFine() {
-    assertProblems("", "") {
-      case Nil =>
+    assertProblems("", "") { case Nil =>
     }
-    assertProblems("()", "()") {
-      case Nil =>
+    assertProblems("()", "()") { case Nil =>
     }
-    assertProblems("()", "") {
-      case Nil =>
+    assertProblems("()", "") { case Nil =>
     }
-    assertProblems("(p: A)", "(A)") {
-      case Nil =>
+    assertProblems("(p: A)", "(A)") { case Nil =>
     }
-    assertProblems("(a: A, b: B)", "(A, B)") {
-      case Nil =>
+    assertProblems("(a: A, b: B)", "(A, B)") { case Nil =>
     }
-    assertProblems("(a: A)(b: B)", "(A)(B)") {
-      case Nil =>
+    assertProblems("(a: A)(b: B)", "(A)(B)") { case Nil =>
     }
   }
 
@@ -45,8 +39,7 @@ class BasicTest extends ApplicabilityTestBase {
   }*/
 
   def testTooManyArguments() {
-    assertProblems("()", "(A)") {
-      case ExcessArgument(Expression("A")) :: Nil =>
+    assertProblems("()", "(A)") { case ExcessArgument(Expression("A")) :: Nil =>
     }
     assertProblems("()", "(A, B)") {
       case ExcessArgument(Expression("A")) :: ExcessArgument(

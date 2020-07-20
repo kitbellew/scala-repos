@@ -240,9 +240,8 @@ class PowerIterationClustering private[clustering] (
     val v = powerIter(w, maxIterations)
     val assignments = kMeans(v, k).mapPartitions(
       { iter =>
-        iter.map {
-          case (id, cluster) =>
-            Assignment(id, cluster)
+        iter.map { case (id, cluster) =>
+          Assignment(id, cluster)
         }
       },
       preservesPartitioning = true)
@@ -296,17 +295,16 @@ object PowerIterationClustering extends Logging {
     */
   private[clustering] def normalize(
       similarities: RDD[(Long, Long, Double)]): Graph[Double, Double] = {
-    val edges = similarities.flatMap {
-      case (i, j, s) =>
-        if (s < 0.0) {
-          throw new SparkException(
-            "Similarity must be nonnegative but found s($i, $j) = $s.")
-        }
-        if (i != j) {
-          Seq(Edge(i, j, s), Edge(j, i, s))
-        } else {
-          None
-        }
+    val edges = similarities.flatMap { case (i, j, s) =>
+      if (s < 0.0) {
+        throw new SparkException(
+          "Similarity must be nonnegative but found s($i, $j) = $s.")
+      }
+      if (i != j) {
+        Seq(Edge(i, j, s), Edge(j, i, s))
+      } else {
+        None
+      }
     }
     val gA = Graph.fromEdges(edges, 0.0)
     val vD = gA.aggregateMessages[Double](
@@ -337,9 +335,8 @@ object PowerIterationClustering extends Logging {
       .mapPartitionsWithIndex(
         (part, iter) => {
           val random = new XORShiftRandom(part)
-          iter.map {
-            case (id, _) =>
-              (id, random.nextGaussian())
+          iter.map { case (id, _) =>
+            (id, random.nextGaussian())
           }
         },
         preservesPartitioning = true)
@@ -397,9 +394,8 @@ object PowerIterationClustering extends Logging {
       val v1 = v.mapValues(x => x / norm)
       // compare difference
       val delta = curG
-        .joinVertices(v1) {
-          case (_, x, y) =>
-            math.abs(x - y)
+        .joinVertices(v1) { case (_, x, y) =>
+          math.abs(x - y)
         }
         .vertices
         .values

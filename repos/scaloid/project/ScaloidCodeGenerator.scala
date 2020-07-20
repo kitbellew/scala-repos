@@ -197,8 +197,8 @@ class ScaloidCodeGenerator(
       case t :: Nil => "p: " + genType(t)
       case ts =>
         ts.zipWithIndex
-          .map {
-            case (t, i) => s"p${i + 1}: ${genType(t)}"
+          .map { case (t, i) =>
+            s"p${i + 1}: ${genType(t)}"
           }
           .mkString(", ")
     }
@@ -208,8 +208,8 @@ class ScaloidCodeGenerator(
       case t :: Nil => "p"
       case ts =>
         ts.zipWithIndex
-          .map {
-            case (_, i) => "p" + (i + 1)
+          .map { case (_, i) =>
+            "p" + (i + 1)
           }
           .mkString(", ")
     }

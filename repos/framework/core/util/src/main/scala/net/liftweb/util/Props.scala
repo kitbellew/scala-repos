@@ -395,24 +395,23 @@ private[util] trait Props extends Logger {
         }
 
     // find the first property file that is available
-    first(vendStreams) {
-      case (str, streamBox) =>
-        tried ::= str
-        for {
-          stream <- streamBox()
-        } yield {
-          val ret = new Properties
-          val ba = Helpers.readWholeStream(stream)
-          try {
-            ret.loadFromXML(new ByteArrayInputStream(ba))
-            debug("Loaded XML properties from resource %s".format(str))
-          } catch {
-            case _: InvalidPropertiesFormatException =>
-              ret.load(new ByteArrayInputStream(ba))
-              debug("Loaded key/value properties from resource %s".format(str))
-          }
-          ret
+    first(vendStreams) { case (str, streamBox) =>
+      tried ::= str
+      for {
+        stream <- streamBox()
+      } yield {
+        val ret = new Properties
+        val ba = Helpers.readWholeStream(stream)
+        try {
+          ret.loadFromXML(new ByteArrayInputStream(ba))
+          debug("Loaded XML properties from resource %s".format(str))
+        } catch {
+          case _: InvalidPropertiesFormatException =>
+            ret.load(new ByteArrayInputStream(ba))
+            debug("Loaded key/value properties from resource %s".format(str))
         }
+        ret
+      }
     } match {
       // if we've got a propety file, create name/value pairs and turn them into a Map
       case Full(prop) =>

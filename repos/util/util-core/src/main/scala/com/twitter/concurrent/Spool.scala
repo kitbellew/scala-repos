@@ -116,9 +116,8 @@ sealed trait Spool[+A] {
     else
       new LazyCons(
         (head, that.head),
-        Future.join(tail, that.tail).map {
-          case (thisTail, thatTail) =>
-            thisTail.zip(thatTail)
+        Future.join(tail, that.tail).map { case (thisTail, thatTail) =>
+          thisTail.zip(thatTail)
         }
       )
 

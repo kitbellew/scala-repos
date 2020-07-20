@@ -131,9 +131,8 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
         seed = 42)
       val centers2 = model2.clusterCenters
 
-      centers1.zip(centers2).foreach {
-        case (c1, c2) =>
-          assert(c1 ~== c2 absTol 1e-14)
+      centers1.zip(centers2).foreach { case (c1, c2) =>
+        assert(c1 ~== c2 absTol 1e-14)
       }
     }
   }
@@ -324,17 +323,16 @@ class KMeansSuite extends SparkFunSuite with MLlibTestSparkContext {
     val tempDir = Utils.createTempDir()
     val path = tempDir.toURI.toString
 
-    Array(true, false).foreach {
-      case selector =>
-        val model = KMeansSuite.createModel(10, 3, selector)
-        // Save model, load it back, and compare.
-        try {
-          model.save(sc, path)
-          val sameModel = KMeansModel.load(sc, path)
-          KMeansSuite.checkEqual(model, sameModel)
-        } finally {
-          Utils.deleteRecursively(tempDir)
-        }
+    Array(true, false).foreach { case selector =>
+      val model = KMeansSuite.createModel(10, 3, selector)
+      // Save model, load it back, and compare.
+      try {
+        model.save(sc, path)
+        val sameModel = KMeansModel.load(sc, path)
+        KMeansSuite.checkEqual(model, sameModel)
+      } finally {
+        Utils.deleteRecursively(tempDir)
+      }
     }
   }
 

@@ -80,9 +80,8 @@ class PerfTestSuiteSpec extends Specification {
         query("2")
       }
 
-      weird.test must beLike {
-        case Tree.Node(Group(name), _) =>
-          name must contain("weird")
+      weird.test must beLike { case Tree.Node(Group(name), _) =>
+        name must contain("weird")
       }
     }
 
@@ -109,9 +108,8 @@ class PerfTestSuiteSpec extends Specification {
   "the test selector" should {
     "select whole tree if root is true" in {
       val t = ex select ((_, _) => true)
-      t must beLike {
-        case Some(t) =>
-          treeEq[PerfTest].equal(t, ex.test) must beTrue
+      t must beLike { case Some(t) =>
+        treeEq[PerfTest].equal(t, ex.test) must beTrue
       }
     }
 
@@ -121,14 +119,13 @@ class PerfTestSuiteSpec extends Specification {
         case (_, _)           => false
       }
 
-      ts must beLike {
-        case Some(Tree.Node(Group(_), ts)) =>
-          ts must haveTheSameElementsAs(
-            List(
-              Tree.leaf[PerfTest](RunQuery("1")),
-              Tree.leaf[PerfTest](RunQuery("2")),
-              Tree.leaf[PerfTest](RunQuery("3"))
-            )) ^^ (treeEq[PerfTest].equal(_, _))
+      ts must beLike { case Some(Tree.Node(Group(_), ts)) =>
+        ts must haveTheSameElementsAs(
+          List(
+            Tree.leaf[PerfTest](RunQuery("1")),
+            Tree.leaf[PerfTest](RunQuery("2")),
+            Tree.leaf[PerfTest](RunQuery("3"))
+          )) ^^ (treeEq[PerfTest].equal(_, _))
       }
     }
   }

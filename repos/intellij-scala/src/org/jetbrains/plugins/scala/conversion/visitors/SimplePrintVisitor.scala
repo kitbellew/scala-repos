@@ -782,10 +782,9 @@ class SimplePrintVisitor extends IntermediateTreeVisitor {
       }
     } else if (resourcesList.nonEmpty) {
       printer.append(" finally {\n")
-      resourcesList.foreach {
-        case (name: String, variable: IntermediateNode) =>
-          val cname = escapeKeyword(name)
-          printer.append(s"if ($cname != null) $cname.close()\n")
+      resourcesList.foreach { case (name: String, variable: IntermediateNode) =>
+        val cname = escapeKeyword(name)
+        printer.append(s"if ($cname != null) $cname.close()\n")
       }
       printer.append("}")
     }

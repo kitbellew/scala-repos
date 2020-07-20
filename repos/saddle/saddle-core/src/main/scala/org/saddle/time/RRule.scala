@@ -268,14 +268,13 @@ case class RRule private (
       dt2dtv(dt),
       inzone.toTimeZone)
 
-    val iterWithJoins = joins.foldLeft(riter) {
-      case (i1, (rrule, t)) =>
-        val tmpfrom = t.map { dt2dtv } getOrElse dt2dtv(dt)
-        val tmpiter = RecurrenceIteratorFactory.createRecurrenceIterator(
-          rrule.toICal,
-          tmpfrom,
-          inzone.toTimeZone)
-        RecurrenceIteratorFactory.join(i1, tmpiter)
+    val iterWithJoins = joins.foldLeft(riter) { case (i1, (rrule, t)) =>
+      val tmpfrom = t.map { dt2dtv } getOrElse dt2dtv(dt)
+      val tmpiter = RecurrenceIteratorFactory.createRecurrenceIterator(
+        rrule.toICal,
+        tmpfrom,
+        inzone.toTimeZone)
+      RecurrenceIteratorFactory.join(i1, tmpiter)
     }
 
     val iterWithJoinsWithExcepts = excepts.foldLeft(iterWithJoins) {

@@ -110,14 +110,13 @@ class ClientTest extends FunSuite with MockitoSugar {
 
         val errf = (h.error ?)
 
-        delays.zipWithIndex foreach {
-          case (delay, i) =>
-            verify(client, times(i + 1)).read("foo")
-            error ! new Exception("sad panda")
-            tc.advance(delay)
-            timer.tick()
-            verify(client, times(i + 2)).read("foo")
-            assert(errf.isDefined == false)
+        delays.zipWithIndex foreach { case (delay, i) =>
+          verify(client, times(i + 1)).read("foo")
+          error ! new Exception("sad panda")
+          tc.advance(delay)
+          timer.tick()
+          verify(client, times(i + 2)).read("foo")
+          assert(errf.isDefined == false)
         }
 
         error ! new Exception("final sad panda")
@@ -151,9 +150,8 @@ class ClientTest extends FunSuite with MockitoSugar {
       when(factory.apply()) thenReturn Future(service)
       val promise = new Promise[Response]()
       @volatile var wasInterrupted = false
-      promise.setInterruptHandler {
-        case _cause =>
-          wasInterrupted = true
+      promise.setInterruptHandler { case _cause =>
+        wasInterrupted = true
       }
       when(service(open)) thenReturn promise
       when(service(closeAndOpen)) thenReturn promise
@@ -178,9 +176,8 @@ class ClientTest extends FunSuite with MockitoSugar {
     val promise = new Promise[Seq[Item]]()
 
     @volatile var wasInterrupted = false
-    promise.setInterruptHandler {
-      case _cause =>
-        wasInterrupted = true
+    promise.setInterruptHandler { case _cause =>
+      wasInterrupted = true
     }
 
     when(

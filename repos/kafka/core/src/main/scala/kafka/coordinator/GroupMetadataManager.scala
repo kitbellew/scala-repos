@@ -401,14 +401,13 @@ class GroupMetadataManager(
         // Return offsets for all partitions owned by this consumer group. (this only applies to consumers that commit offsets to Kafka.)
         offsetsCache
           .filter(_._1.group == group)
-          .map {
-            case (groupTopicPartition, offsetAndMetadata) =>
-              (
-                groupTopicPartition.topicPartition,
-                new OffsetFetchResponse.PartitionData(
-                  offsetAndMetadata.offset,
-                  offsetAndMetadata.metadata,
-                  Errors.NONE.code))
+          .map { case (groupTopicPartition, offsetAndMetadata) =>
+            (
+              groupTopicPartition.topicPartition,
+              new OffsetFetchResponse.PartitionData(
+                offsetAndMetadata.offset,
+                offsetAndMetadata.metadata,
+                Errors.NONE.code))
           }
           .toMap
       } else {
@@ -685,67 +684,66 @@ class GroupMetadataManager(
 
       // delete the expired offsets from the table and generate tombstone messages to remove them from the log
       val tombstonesForPartition = expiredOffsets
-        .map {
-          case (groupTopicAndPartition, offsetAndMetadata) =>
-            val offsetsPartition = partitionFor(groupTopicAndPartition.group)
-            trace(
-              "Removing expired offset and metadata for %s: %s"
-                .format(groupTopicAndPartition, offsetAndMetadata))
+        .map { case (groupTopicAndPartition, offsetAndMetadata) =>
+          val offsetsPartition = partitionFor(groupTopicAndPartition.group)
+          trace(
+            "Removing expired offset and metadata for %s: %s"
+              .format(groupTopicAndPartition, offsetAndMetadata))
 
-            offsetsCache.remove(groupTopicAndPartition)
+          offsetsCache.remove(groupTopicAndPartition)
 
-            val commitKey = GroupMetadataManager.offsetCommitKey(
-              groupTopicAndPartition.group,
-              groupTopicAndPartition.topicPartition.topic,
-              groupTopicAndPartition.topicPartition.partition)
+          val commitKey = GroupMetadataManager.offsetCommitKey(
+            groupTopicAndPartition.group,
+            groupTopicAndPartition.topicPartition.topic,
+            groupTopicAndPartition.topicPartition.partition)
 
-            val (magicValue, timestamp) =
-              getMessageFormatVersionAndTimestamp(offsetsPartition)
-            (
-              offsetsPartition,
-              new Message(
-                bytes = null,
-                key = commitKey,
-                timestamp = timestamp,
-                magicValue = magicValue))
+          val (magicValue, timestamp) =
+            getMessageFormatVersionAndTimestamp(offsetsPartition)
+          (
+            offsetsPartition,
+            new Message(
+              bytes = null,
+              key = commitKey,
+              timestamp = timestamp,
+              magicValue = magicValue))
         }
         .groupBy { case (partition, tombstone) => partition }
 
       // Append the tombstone messages to the offset partitions. It is okay if the replicas don't receive these (say,
       // if we crash or leaders move) since the new leaders will get rid of expired offsets during their own purge cycles.
-      tombstonesForPartition.flatMap {
-        case (offsetsPartition, tombstones) =>
-          val partitionOpt = replicaManager.getPartition(
+      tombstonesForPartition.flatMap { case (offsetsPartition, tombstones) =>
+        val partitionOpt = replicaManager.getPartition(
+          TopicConstants.GROUP_METADATA_TOPIC_NAME,
+          offsetsPartition)
+        partitionOpt.map { partition =>
+          val appendPartition = TopicAndPartition(
             TopicConstants.GROUP_METADATA_TOPIC_NAME,
             offsetsPartition)
-          partitionOpt.map { partition =>
-            val appendPartition = TopicAndPartition(
-              TopicConstants.GROUP_METADATA_TOPIC_NAME,
-              offsetsPartition)
-            val messages = tombstones.map(_._2).toSeq
+          val messages = tombstones.map(_._2).toSeq
 
-            trace(
-              "Marked %d offsets in %s for deletion."
-                .format(messages.size, appendPartition))
+          trace(
+            "Marked %d offsets in %s for deletion."
+              .format(messages.size, appendPartition))
 
-            try {
-              // do not need to require acks since even if the tombstone is lost,
-              // it will be appended again in the next purge cycle
-              partition.appendMessagesToLeader(
-                new ByteBufferMessageSet(
-                  config.offsetsTopicCompressionCodec,
-                  messages: _*))
-              tombstones.size
-            } catch {
-              case t: Throwable =>
-                error(
-                  "Failed to mark %d expired offsets for deletion in %s."
-                    .format(messages.size, appendPartition),
-                  t)
-                // ignore and continue
-                0
-            }
+          try {
+            // do not need to require acks since even if the tombstone is lost,
+            // it will be appended again in the next purge cycle
+            partition.appendMessagesToLeader(
+              new ByteBufferMessageSet(
+                config.offsetsTopicCompressionCodec,
+                messages: _*))
+            tombstones.size
+          } catch {
+            case t: Throwable =>
+              error(
+                "Failed to mark %d expired offsets for deletion in %s.".format(
+                  messages.size,
+                  appendPartition),
+                t)
+              // ignore and continue
+              0
           }
+        }
       }.sum
     }
 

@@ -51,11 +51,10 @@ private[tracker] class TaskCreationHandlerAndUpdaterDelegate(
     val deadline = clock.now + timeout.duration
     val op: ForwardTaskOp =
       TaskTrackerActor.ForwardTaskOp(deadline, taskId, action)
-    (taskTrackerRef ? op).mapTo[Unit].recover {
-      case NonFatal(e) =>
-        throw new RuntimeException(
-          s"while asking for $action on app [${taskId.appId}] and $taskId",
-          e)
+    (taskTrackerRef ? op).mapTo[Unit].recover { case NonFatal(e) =>
+      throw new RuntimeException(
+        s"while asking for $action on app [${taskId.appId}] and $taskId",
+        e)
     }
   }
 }

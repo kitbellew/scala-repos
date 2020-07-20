@@ -204,11 +204,10 @@ class BlockMatrix @Since("1.3.0") (
   /** Estimates the dimensions of the matrix. */
   private def estimateDim(): Unit = {
     val (rows, cols) = blockInfo
-      .map {
-        case ((blockRowIndex, blockColIndex), (m, n)) =>
-          (
-            blockRowIndex.toLong * rowsPerBlock + m,
-            blockColIndex.toLong * colsPerBlock + n)
+      .map { case ((blockRowIndex, blockColIndex), (m, n)) =>
+        (
+          blockRowIndex.toLong * rowsPerBlock + m,
+          blockColIndex.toLong * colsPerBlock + n)
       }
       .reduce { (x0, x1) =>
         (math.max(x0._1, x1._1), math.max(x0._2, x1._2))
@@ -235,13 +234,12 @@ class BlockMatrix @Since("1.3.0") (
     logDebug("BlockMatrix dimensions are okay...")
 
     // Check if there are multiple MatrixBlocks with the same index.
-    blockInfo.countByKey().foreach {
-      case (key, cnt) =>
-        if (cnt > 1) {
-          throw new SparkException(
-            s"Found multiple MatrixBlocks with the indices $key. Please " +
-              "remove blocks with duplicate indices.")
-        }
+    blockInfo.countByKey().foreach { case (key, cnt) =>
+      if (cnt > 1) {
+        throw new SparkException(
+          s"Found multiple MatrixBlocks with the indices $key. Please " +
+            "remove blocks with duplicate indices.")
+      }
     }
     logDebug("MatrixBlock indices are okay...")
     // Check if each MatrixBlock (except edges) has the dimensions rowsPerBlock x colsPerBlock
@@ -250,20 +248,19 @@ class BlockMatrix @Since("1.3.0") (
       s"dimensions different than rowsPerBlock: $rowsPerBlock, and " +
         s"colsPerBlock: $colsPerBlock. Blocks on the right and bottom edges can have smaller " +
         s"dimensions. You may use the repartition method to fix this issue."
-    blockInfo.foreach {
-      case ((blockRowIndex, blockColIndex), (m, n)) =>
-        if ((blockRowIndex < numRowBlocks - 1 && m != rowsPerBlock) ||
-          (blockRowIndex == numRowBlocks - 1 && (m <= 0 || m > rowsPerBlock))) {
-          throw new SparkException(
-            s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
-              dimensionMsg)
-        }
-        if ((blockColIndex < numColBlocks - 1 && n != colsPerBlock) ||
-          (blockColIndex == numColBlocks - 1 && (n <= 0 || n > colsPerBlock))) {
-          throw new SparkException(
-            s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
-              dimensionMsg)
-        }
+    blockInfo.foreach { case ((blockRowIndex, blockColIndex), (m, n)) =>
+      if ((blockRowIndex < numRowBlocks - 1 && m != rowsPerBlock) ||
+        (blockRowIndex == numRowBlocks - 1 && (m <= 0 || m > rowsPerBlock))) {
+        throw new SparkException(
+          s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
+            dimensionMsg)
+      }
+      if ((blockColIndex < numColBlocks - 1 && n != colsPerBlock) ||
+        (blockColIndex == numColBlocks - 1 && (n <= 0 || n > colsPerBlock))) {
+        throw new SparkException(
+          s"The MatrixBlock at ($blockRowIndex, $blockColIndex) has " +
+            dimensionMsg)
+      }
     }
     logDebug("MatrixBlock dimensions are okay...")
     logDebug("BlockMatrix is valid!")
@@ -334,14 +331,13 @@ class BlockMatrix @Since("1.3.0") (
       logWarning(s"Storing this matrix will require $mem MB of memory!")
     val localBlocks = blocks.collect()
     val values = new Array[Double](m * n)
-    localBlocks.foreach {
-      case ((blockRowIndex, blockColIndex), submat) =>
-        val rowOffset = blockRowIndex * rowsPerBlock
-        val colOffset = blockColIndex * colsPerBlock
-        submat.foreachActive { (i, j, v) =>
-          val indexOffset = (j + colOffset) * m + rowOffset + i
-          values(indexOffset) = v
-        }
+    localBlocks.foreach { case ((blockRowIndex, blockColIndex), submat) =>
+      val rowOffset = blockRowIndex * rowsPerBlock
+      val colOffset = blockColIndex * colsPerBlock
+      submat.foreachActive { (i, j, v) =>
+        val indexOffset = (j + colOffset) * m + rowOffset + i
+        values(indexOffset) = v
+      }
     }
     new DenseMatrix(m, n, values)
   }
@@ -391,27 +387,26 @@ class BlockMatrix @Since("1.3.0") (
     if (rowsPerBlock == other.rowsPerBlock && colsPerBlock == other.colsPerBlock) {
       val newBlocks = blocks
         .cogroup(other.blocks, createPartitioner())
-        .map {
-          case ((blockRowIndex, blockColIndex), (a, b)) =>
-            if (a.size > 1 || b.size > 1) {
-              throw new SparkException(
-                "There are multiple MatrixBlocks with indices: " +
-                  s"($blockRowIndex, $blockColIndex). Please remove them.")
-            }
-            if (a.isEmpty) {
-              val zeroBlock = BM.zeros[Double](b.head.numRows, b.head.numCols)
-              val result = binMap(zeroBlock, b.head.toBreeze)
-              new MatrixBlock(
-                (blockRowIndex, blockColIndex),
-                Matrices.fromBreeze(result))
-            } else if (b.isEmpty) {
-              new MatrixBlock((blockRowIndex, blockColIndex), a.head)
-            } else {
-              val result = binMap(a.head.toBreeze, b.head.toBreeze)
-              new MatrixBlock(
-                (blockRowIndex, blockColIndex),
-                Matrices.fromBreeze(result))
-            }
+        .map { case ((blockRowIndex, blockColIndex), (a, b)) =>
+          if (a.size > 1 || b.size > 1) {
+            throw new SparkException(
+              "There are multiple MatrixBlocks with indices: " +
+                s"($blockRowIndex, $blockColIndex). Please remove them.")
+          }
+          if (a.isEmpty) {
+            val zeroBlock = BM.zeros[Double](b.head.numRows, b.head.numCols)
+            val result = binMap(zeroBlock, b.head.toBreeze)
+            new MatrixBlock(
+              (blockRowIndex, blockColIndex),
+              Matrices.fromBreeze(result))
+          } else if (b.isEmpty) {
+            new MatrixBlock((blockRowIndex, blockColIndex), a.head)
+          } else {
+            val result = binMap(a.head.toBreeze, b.head.toBreeze)
+            new MatrixBlock(
+              (blockRowIndex, blockColIndex),
+              Matrices.fromBreeze(result))
+          }
         }
       new BlockMatrix(
         newBlocks,
@@ -470,19 +465,17 @@ class BlockMatrix @Since("1.3.0") (
     val leftMatrix =
       blockInfo.keys.collect() // blockInfo should already be cached
     val rightMatrix = other.blocks.keys.collect()
-    val leftDestinations = leftMatrix.map {
-      case (rowIndex, colIndex) =>
-        val rightCounterparts = rightMatrix.filter(_._1 == colIndex)
-        val partitions =
-          rightCounterparts.map(b => partitioner.getPartition((rowIndex, b._2)))
-        ((rowIndex, colIndex), partitions.toSet)
+    val leftDestinations = leftMatrix.map { case (rowIndex, colIndex) =>
+      val rightCounterparts = rightMatrix.filter(_._1 == colIndex)
+      val partitions =
+        rightCounterparts.map(b => partitioner.getPartition((rowIndex, b._2)))
+      ((rowIndex, colIndex), partitions.toSet)
     }.toMap
-    val rightDestinations = rightMatrix.map {
-      case (rowIndex, colIndex) =>
-        val leftCounterparts = leftMatrix.filter(_._2 == rowIndex)
-        val partitions =
-          leftCounterparts.map(b => partitioner.getPartition((b._1, colIndex)))
-        ((rowIndex, colIndex), partitions.toSet)
+    val rightDestinations = rightMatrix.map { case (rowIndex, colIndex) =>
+      val leftCounterparts = leftMatrix.filter(_._2 == rowIndex)
+      val partitions =
+        leftCounterparts.map(b => partitioner.getPartition((b._1, colIndex)))
+      ((rowIndex, colIndex), partitions.toSet)
     }.toMap
     (leftDestinations, rightDestinations)
   }
@@ -532,23 +525,21 @@ class BlockMatrix @Since("1.3.0") (
       }
       val newBlocks = flatA
         .cogroup(flatB, resultPartitioner)
-        .flatMap {
-          case (pId, (a, b)) =>
-            a.flatMap {
-              case (leftRowIndex, leftColIndex, leftBlock) =>
-                b.filter(_._1 == leftColIndex).map {
-                  case (rightRowIndex, rightColIndex, rightBlock) =>
-                    val C = rightBlock match {
-                      case dense: DenseMatrix => leftBlock.multiply(dense)
-                      case sparse: SparseMatrix =>
-                        leftBlock.multiply(sparse.toDense)
-                      case _ =>
-                        throw new SparkException(
-                          s"Unrecognized matrix type ${rightBlock.getClass}.")
-                    }
-                    ((leftRowIndex, rightColIndex), C.toBreeze)
+        .flatMap { case (pId, (a, b)) =>
+          a.flatMap { case (leftRowIndex, leftColIndex, leftBlock) =>
+            b.filter(_._1 == leftColIndex).map {
+              case (rightRowIndex, rightColIndex, rightBlock) =>
+                val C = rightBlock match {
+                  case dense: DenseMatrix => leftBlock.multiply(dense)
+                  case sparse: SparseMatrix =>
+                    leftBlock.multiply(sparse.toDense)
+                  case _ =>
+                    throw new SparkException(
+                      s"Unrecognized matrix type ${rightBlock.getClass}.")
                 }
+                ((leftRowIndex, rightColIndex), C.toBreeze)
             }
+          }
         }
         .reduceByKey(resultPartitioner, (a, b) => a + b)
         .mapValues(Matrices.fromBreeze)

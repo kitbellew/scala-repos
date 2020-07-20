@@ -251,17 +251,14 @@ object SparkPlanTest {
     // A very simple resolver to make writing tests easier. In contrast to the real resolver
     // this is always case sensitive and does not try to handle scoping or complex type resolution.
     val resolvedPlan = sqlContext.sessionState.prepareForExecution.execute(
-      outputPlan transform {
-        case plan: SparkPlan =>
-          val inputMap =
-            plan.children.flatMap(_.output).map(a => (a.name, a)).toMap
-          plan transformExpressions {
-            case UnresolvedAttribute(Seq(u)) =>
-              inputMap.getOrElse(
-                u,
-                sys.error(
-                  s"Invalid Test: Cannot resolve $u given input $inputMap"))
-          }
+      outputPlan transform { case plan: SparkPlan =>
+        val inputMap =
+          plan.children.flatMap(_.output).map(a => (a.name, a)).toMap
+        plan transformExpressions { case UnresolvedAttribute(Seq(u)) =>
+          inputMap.getOrElse(
+            u,
+            sys.error(s"Invalid Test: Cannot resolve $u given input $inputMap"))
+        }
       }
     )
     resolvedPlan.executeCollectPublic().toSeq

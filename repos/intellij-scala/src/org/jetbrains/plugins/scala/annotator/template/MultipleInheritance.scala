@@ -20,9 +20,8 @@ object MultipleInheritance extends AnnotatorPart[ScTemplateDefinition] {
       holder: AnnotationHolder,
       typeAware: Boolean) {
     definition.refs
-      .map {
-        case (s: ScTypeElement, o: Option[(PsiClass, ScSubstitutor)]) =>
-          (s, o.map(_._1))
+      .map { case (s: ScTypeElement, o: Option[(PsiClass, ScSubstitutor)]) =>
+        (s, o.map(_._1))
       }
       .groupBy(_._2)
       .foreach {

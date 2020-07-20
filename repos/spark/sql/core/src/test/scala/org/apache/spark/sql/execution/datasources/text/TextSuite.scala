@@ -82,17 +82,16 @@ class TextSuite extends QueryTest with SharedSQLContext {
     val testDf = sqlContext.read.text(testFile)
     val extensionNameMap =
       Map("bzip2" -> ".bz2", "deflate" -> ".deflate", "gzip" -> ".gz")
-    extensionNameMap.foreach {
-      case (codecName, extension) =>
-        val tempDir = Utils.createTempDir()
-        val tempDirPath = tempDir.getAbsolutePath
-        testDf.write
-          .option("compression", codecName)
-          .mode(SaveMode.Overwrite)
-          .text(tempDirPath)
-        val compressedFiles = new File(tempDirPath).listFiles()
-        assert(compressedFiles.exists(_.getName.endsWith(s".txt$extension")))
-        verifyFrame(sqlContext.read.text(tempDirPath).toDF())
+    extensionNameMap.foreach { case (codecName, extension) =>
+      val tempDir = Utils.createTempDir()
+      val tempDirPath = tempDir.getAbsolutePath
+      testDf.write
+        .option("compression", codecName)
+        .mode(SaveMode.Overwrite)
+        .text(tempDirPath)
+      val compressedFiles = new File(tempDirPath).listFiles()
+      assert(compressedFiles.exists(_.getName.endsWith(s".txt$extension")))
+      verifyFrame(sqlContext.read.text(tempDirPath).toDF())
     }
 
     val errMsg = intercept[IllegalArgumentException] {

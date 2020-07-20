@@ -136,11 +136,10 @@ private[sql] object PartitioningUtils {
       val fields = {
         val PartitionValues(columnNames, literals) =
           resolvedPartitionValues.head
-        columnNames.zip(literals).map {
-          case (name, Literal(_, dataType)) =>
-            // We always assume partition columns are nullable since we've no idea whether null values
-            // will be appended in the future.
-            StructField(name, dataType, nullable = true)
+        columnNames.zip(literals).map { case (name, Literal(_, dataType)) =>
+          // We always assume partition columns are nullable since we've no idea whether null values
+          // will be appended in the future.
+          StructField(name, dataType, nullable = true)
         }
       }
 
@@ -291,9 +290,8 @@ private[sql] object PartitioningUtils {
       }
 
       // Fills resolved literals back to each partition
-      values.zipWithIndex.map {
-        case (d, index) =>
-          d.copy(literals = resolvedValues.map(_(index)))
+      values.zipWithIndex.map { case (d, index) =>
+        d.copy(literals = resolvedValues.map(_(index)))
       }
     }
   }
@@ -416,9 +414,8 @@ private[sql] object PartitioningUtils {
       if (topType == NullType) StringType else topType
     }
 
-    literals.map {
-      case l @ Literal(_, dataType) =>
-        Literal.create(Cast(l, desiredType).eval(), desiredType)
+    literals.map { case l @ Literal(_, dataType) =>
+      Literal.create(Cast(l, desiredType).eval(), desiredType)
     }
   }
 

@@ -205,9 +205,8 @@ class FlowDocSpec extends AkkaSpec {
     // It is also possible to map over the materialized values. In r9 we had a
     // doubly nested pair, but we want to flatten it out
     val r11: RunnableGraph[(Promise[Option[Int]], Cancellable, Future[Int])] =
-      r9.mapMaterializedValue {
-        case ((promise, cancellable), future) =>
-          (promise, cancellable, future)
+      r9.mapMaterializedValue { case ((promise, cancellable), future) =>
+        (promise, cancellable, future)
       }
 
     // Now we can use pattern matching to get the resulting materialized values

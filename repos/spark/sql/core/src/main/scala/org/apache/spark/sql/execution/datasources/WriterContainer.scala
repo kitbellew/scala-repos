@@ -378,17 +378,16 @@ private[sql] class DynamicPartitionWriterContainer(
 
   // Expressions that given a partition key build a string like: col1=val/col2=val/...
   private def partitionStringExpression: Seq[Expression] = {
-    partitionColumns.zipWithIndex.flatMap {
-      case (c, i) =>
-        val escaped =
-          ScalaUDF(
-            PartitioningUtils.escapePathName _,
-            StringType,
-            Seq(Cast(c, StringType)),
-            Seq(StringType))
-        val str = If(IsNull(c), Literal(defaultPartitionName), escaped)
-        val partitionName = Literal(c.name + "=") :: str :: Nil
-        if (i == 0) partitionName else Literal(Path.SEPARATOR) :: partitionName
+    partitionColumns.zipWithIndex.flatMap { case (c, i) =>
+      val escaped =
+        ScalaUDF(
+          PartitioningUtils.escapePathName _,
+          StringType,
+          Seq(Cast(c, StringType)),
+          Seq(StringType))
+      val str = If(IsNull(c), Literal(defaultPartitionName), escaped)
+      val partitionName = Literal(c.name + "=") :: str :: Nil
+      if (i == 0) partitionName else Literal(Path.SEPARATOR) :: partitionName
     }
   }
 

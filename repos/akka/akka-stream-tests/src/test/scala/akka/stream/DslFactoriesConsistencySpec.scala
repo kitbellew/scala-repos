@@ -204,10 +204,9 @@ class DslFactoriesConsistencySpec extends WordSpec with Matchers {
       Ignore(_ ⇒ true, _.contains("$"), _ ⇒ true, _ ⇒ true)
     )
 
-    ignores.foldLeft(false) {
-      case (acc, i) ⇒
-        acc || (i.cls(m.declaringClass) && i.name(m.name) && i.parameters(
-          m.parameterTypes.length) && i.paramTypes(m.parameterTypes))
+    ignores.foldLeft(false) { case (acc, i) ⇒
+      acc || (i.cls(m.declaringClass) && i.name(m.name) && i.parameters(
+        m.parameterTypes.length) && i.paramTypes(m.parameterTypes))
     }
   }
 

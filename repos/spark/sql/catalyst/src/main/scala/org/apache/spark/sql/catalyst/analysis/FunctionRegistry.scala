@@ -89,9 +89,8 @@ class SimpleFunctionRegistry extends FunctionRegistry {
   def copy(): SimpleFunctionRegistry =
     synchronized {
       val registry = new SimpleFunctionRegistry
-      functionBuilders.iterator.foreach {
-        case (name, (info, builder)) =>
-          registry.registerFunction(name, info, builder)
+      functionBuilders.iterator.foreach { case (name, (info, builder)) =>
+        registry.registerFunction(name, info, builder)
       }
       registry
     }

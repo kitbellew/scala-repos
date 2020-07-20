@@ -103,17 +103,15 @@ trait StatsReceiverWithCumulativeGauges extends StatsReceiver { self =>
           "of Gauges. Indicative of a leak or code registering the same gauge more " +
           s"often than expected. (For $toString)"
       ) {
-        val largeCgs = gauges.asScala.flatMap {
-          case (ks, cg) =>
-            if (cg.totalSize >= 100000) Some(ks -> cg.totalSize)
-            else None
+        val largeCgs = gauges.asScala.flatMap { case (ks, cg) =>
+          if (cg.totalSize >= 100000) Some(ks -> cg.totalSize)
+          else None
         }
         if (largeCgs.isEmpty) {
           Nil
         } else {
-          largeCgs.map {
-            case (ks, size) =>
-              Issue(ks.mkString("/") + "=" + size)
+          largeCgs.map { case (ks, size) =>
+            Issue(ks.mkString("/") + "=" + size)
           }.toSeq
         }
       })

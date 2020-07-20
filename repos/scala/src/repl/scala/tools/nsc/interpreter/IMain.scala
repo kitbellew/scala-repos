@@ -460,8 +460,8 @@ class IMain(
       req.defines filterNot (s =>
         req.defines contains s.companionSymbol) foreach { newSym =>
         val oldSym = replScope lookup newSym.name.companionName
-        if (Seq(oldSym, newSym).permutations exists {
-            case Seq(s1, s2) => s1.isClass && s2.isModule
+        if (Seq(oldSym, newSym).permutations exists { case Seq(s1, s2) =>
+            s1.isClass && s2.isModule
           }) {
           replwarn(
             s"warning: previously defined $oldSym is not a companion to $newSym.")
@@ -920,15 +920,14 @@ class IMain(
         xs match {
           case Nil => Nil
           case ((pos, msg)) :: rest =>
-            val filtered = rest filter {
-              case (pos0, msg0) =>
-                (msg != msg0) || (pos.lineContent.trim != pos0.lineContent.trim) || {
-                  // same messages and same line content after whitespace removal
-                  // but we want to let through multiple warnings on the same line
-                  // from the same run.  The untrimmed line will be the same since
-                  // there's no whitespace indenting blowing it.
-                  (pos.lineContent == pos0.lineContent)
-                }
+            val filtered = rest filter { case (pos0, msg0) =>
+              (msg != msg0) || (pos.lineContent.trim != pos0.lineContent.trim) || {
+                // same messages and same line content after whitespace removal
+                // but we want to let through multiple warnings on the same line
+                // from the same run.  The untrimmed line will be the same since
+                // there's no whitespace indenting blowing it.
+                (pos.lineContent == pos0.lineContent)
+              }
             }
             ((pos, msg)) :: loop(filtered)
         }

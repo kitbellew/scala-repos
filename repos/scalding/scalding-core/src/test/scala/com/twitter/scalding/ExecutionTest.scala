@@ -314,24 +314,20 @@ class ExecutionTest extends WordSpec with Matchers {
             List((i, i), (i, i))
           }
           .sumByKey
-          .map {
-            case (k, v) =>
-              (k.toInt, v)
+          .map { case (k, v) =>
+            (k.toInt, v)
           }
           .sumByKey
-          .map {
-            case (k, v) =>
-              (k.toLong, v)
+          .map { case (k, v) =>
+            (k.toLong, v)
           }
           .sumByKey
-          .map {
-            case (k, v) =>
-              (k.toString, v)
+          .map { case (k, v) =>
+            (k.toString, v)
           }
           .sumByKey
-          .map {
-            case (k, v) =>
-              (MyCustomType(k), v)
+          .map { case (k, v) =>
+            (MyCustomType(k), v)
           }
           .sumByKey
           .writeExecution(TypedTsv(s"/tmp/asdf_${idx}"))

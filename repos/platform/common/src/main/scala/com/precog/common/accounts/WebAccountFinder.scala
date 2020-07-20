@@ -149,11 +149,10 @@ class WebAccountFinder(
             "Unexpected response from accounts service for findAccountByAPIKey: " + res)
           left(
             "Unexpected response from accounts service; unable to proceed: " + res)
-      } recoverWith {
-        case ex =>
-          logger.error("findAccountByAPIKey for " + apiKey + "failed.", ex)
-          Promise.successful(left(
-            "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
+      } recoverWith { case ex =>
+        logger.error("findAccountByAPIKey for " + apiKey + "failed.", ex)
+        Promise.successful(left(
+          "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
       })
     }
   }
@@ -173,11 +172,10 @@ class WebAccountFinder(
             "Unexpected response from accounts serviceon findAccountDetailsById: " + res)
           left(
             "Unexpected response from accounts service; unable to proceed: " + res)
-      } recoverWith {
-        case ex =>
-          logger.error("findAccountById for " + accountId + "failed.", ex)
-          Promise.successful(left(
-            "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
+      } recoverWith { case ex =>
+        logger.error("findAccountById for " + accountId + "failed.", ex)
+        Promise.successful(left(
+          "Client error accessing accounts service; unable to proceed: " + ex.getMessage))
       })
     }
   }

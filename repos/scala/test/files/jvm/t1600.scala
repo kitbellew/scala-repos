@@ -62,12 +62,11 @@ object Test {
     assert(
       expectedSize == map.size,
       "expected map size: " + expectedSize + ", actual size: " + map.size)
-    map.foreach {
-      case (k, v) =>
-        assert(
-          map.contains(k),
-          "contains should return true for key in the map, key: " + k)
-        assert(map(k) == v)
+    map.foreach { case (k, v) =>
+      assert(
+        map.contains(k),
+        "contains should return true for key in the map, key: " + k)
+      assert(map(k) == v)
     }
   }
 

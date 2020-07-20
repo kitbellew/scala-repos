@@ -11,14 +11,12 @@ class TypedStatementAnnotatorTest extends SimpleTestCase {
     "class A; class B; object A extends A; object B extends B\n"
 
   def testFine() {
-    assertMatches(messages("A: A")) {
-      case Nil =>
+    assertMatches(messages("A: A")) { case Nil =>
     }
   }
 
   def testTypeMismatch() {
-    assertMatches(messages("B: A")) {
-      case Error("B", TypeMismatch()) :: Nil =>
+    assertMatches(messages("B: A")) { case Error("B", TypeMismatch()) :: Nil =>
     }
   }
 

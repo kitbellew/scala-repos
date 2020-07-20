@@ -729,10 +729,9 @@ abstract class RefChecks
           // to consolidate getters and setters.
           val grouped =
             missing groupBy (sym => analyzer.underlyingSymbol(sym).name)
-          val missingMethods = grouped.toList flatMap {
-            case (name, syms) =>
-              if (syms exists (_.isSetter)) syms filterNot (_.isGetter)
-              else syms
+          val missingMethods = grouped.toList flatMap { case (name, syms) =>
+            if (syms exists (_.isSetter)) syms filterNot (_.isGetter)
+            else syms
           }
 
           def stubImplementations: List[String] = {

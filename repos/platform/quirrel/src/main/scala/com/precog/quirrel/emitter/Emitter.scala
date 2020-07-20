@@ -144,14 +144,12 @@ trait Emitter
 
     def operandStackSizes(is: Vector[Instruction]): Vector[Int] = {
       (is
-        .foldLeft((Vector(0), 0)) {
-          case ((vector, cur), instr) =>
-            val delta =
-              (instr.operandStackDelta._2 - instr.operandStackDelta._1)
+        .foldLeft((Vector(0), 0)) { case ((vector, cur), instr) =>
+          val delta = (instr.operandStackDelta._2 - instr.operandStackDelta._1)
 
-            val total = cur + delta
+          val total = cur + delta
 
-            (vector :+ total, total)
+          (vector :+ total, total)
         })
         ._1
     }
@@ -511,10 +509,8 @@ trait Emitter
         }
       }
 
-      val actualStates = params zip actuals map {
-        case (name, expr) =>
-          labelFormal(Identifier(Vector(), name), let)(
-            emitExpr(expr, dispatches))
+      val actualStates = params zip actuals map { case (name, expr) =>
+        labelFormal(Identifier(Vector(), name), let)(emitExpr(expr, dispatches))
       }
 
       StateT.apply[Id, Emission, Unit] { e =>
@@ -679,9 +675,8 @@ trait Emitter
             val (groups, indices) = provToElements.foldLeft(
               (Vector.empty[EmitterState], Vector.empty[Int])) {
               case ((allStates, allIndices), (provenance, elements)) => {
-                val singles = elements.map {
-                  case (expr, _) =>
-                    emitExpr(expr, dispatches) >> emitInstr(Map1(WrapArray))
+                val singles = elements.map { case (expr, _) =>
+                  emitExpr(expr, dispatches) >> emitInstr(Map1(WrapArray))
                 }
                 val indices = elements.map(_._2)
 

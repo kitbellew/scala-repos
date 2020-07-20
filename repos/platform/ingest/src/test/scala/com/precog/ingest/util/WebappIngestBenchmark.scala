@@ -120,31 +120,30 @@ abstract class IngestProducer(args: Array[String])
     val timeout = new Timeout(120000)
     def errorCount = errors
     override def run() {
-      samples.foreach {
-        case (path, sample) =>
-          val event = Ingest(
-            "bogus",
-            Path(path),
-            None,
-            Vector(sample.next._1),
-            None,
-            new Instant(),
-            StreamRef.Append)
+      samples.foreach { case (path, sample) =>
+        val event = Ingest(
+          "bogus",
+          Path(path),
+          None,
+          Vector(sample.next._1),
+          None,
+          new Instant(),
+          StreamRef.Append)
 
-          0.until(messages).foreach { i =>
-            if (i % 10 == 0 && verbose)
-              println("Sending to [%s]: %d".format(path, i))
-            try {
-              send(event, timeout)
-            } catch {
-              case ex =>
-                ex.printStackTrace
-                errors += 1
-            }
-            if (delay > 0) {
-              Thread.sleep(delay)
-            }
+        0.until(messages).foreach { i =>
+          if (i % 10 == 0 && verbose)
+            println("Sending to [%s]: %d".format(path, i))
+          try {
+            send(event, timeout)
+          } catch {
+            case ex =>
+              ex.printStackTrace
+              errors += 1
           }
+          if (delay > 0) {
+            Thread.sleep(delay)
+          }
+        }
       }
     }
   }

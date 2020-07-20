@@ -93,21 +93,19 @@ object BindReferences extends Logging {
       input: Seq[Attribute],
       allowFailures: Boolean = false): A = {
     expression
-      .transform {
-        case a: AttributeReference =>
-          attachTree(a, "Binding attribute") {
-            val ordinal = input.indexWhere(_.exprId == a.exprId)
-            if (ordinal == -1) {
-              if (allowFailures) {
-                a
-              } else {
-                sys.error(
-                  s"Couldn't find $a in ${input.mkString("[", ",", "]")}")
-              }
+      .transform { case a: AttributeReference =>
+        attachTree(a, "Binding attribute") {
+          val ordinal = input.indexWhere(_.exprId == a.exprId)
+          if (ordinal == -1) {
+            if (allowFailures) {
+              a
             } else {
-              BoundReference(ordinal, a.dataType, input(ordinal).nullable)
+              sys.error(s"Couldn't find $a in ${input.mkString("[", ",", "]")}")
             }
+          } else {
+            BoundReference(ordinal, a.dataType, input(ordinal).nullable)
           }
+        }
       }
       .asInstanceOf[
         A

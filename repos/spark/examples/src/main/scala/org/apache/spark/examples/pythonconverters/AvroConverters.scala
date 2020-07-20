@@ -58,9 +58,8 @@ object AvroConversionUtil extends Serializable {
     val map = new java.util.HashMap[String, Any]
     obj match {
       case record: IndexedRecord =>
-        record.getSchema.getFields.asScala.zipWithIndex.foreach {
-          case (f, i) =>
-            map.put(f.name, fromAvro(record.get(i), f.schema))
+        record.getSchema.getFields.asScala.zipWithIndex.foreach { case (f, i) =>
+          map.put(f.name, fromAvro(record.get(i), f.schema))
         }
       case other =>
         throw new SparkException(
@@ -73,9 +72,8 @@ object AvroConversionUtil extends Serializable {
     obj
       .asInstanceOf[JMap[_, _]]
       .asScala
-      .map {
-        case (key, value) =>
-          (key.toString, fromAvro(value, schema.getValueType))
+      .map { case (key, value) =>
+        (key.toString, fromAvro(value, schema.getValueType))
       }
       .asJava
   }

@@ -375,21 +375,20 @@ object ScalaDocumentationProvider {
       var commentToProcess = selectComment2()
 
       while (commentToProcess.isDefined) {
-        commentToProcess foreach {
-          case c =>
-            c.getTags.filter(_.getName == MyScaladocParsing.DEFINE_TAG) map {
-              case tag: ScDocTag =>
-                val vEl = tag.getValueElement
-                val a = (
-                  if (vEl != null) vEl.getText else "",
-                  tag.getAllText(handler).trim)
+        commentToProcess foreach { case c =>
+          c.getTags.filter(_.getName == MyScaladocParsing.DEFINE_TAG) map {
+            case tag: ScDocTag =>
+              val vEl = tag.getValueElement
+              val a = (
+                if (vEl != null) vEl.getText else "",
+                tag.getAllText(handler).trim)
 
-                if (a._1 != "") myCache += a
-                a
-            } foreach {
-              case (tName, v) if tName == name => return Option(v)
-              case _                           =>
-            }
+              if (a._1 != "") myCache += a
+              a
+          } foreach {
+            case (tName, v) if tName == name => return Option(v)
+            case _                           =>
+          }
         }
 
         lastProcessedComment = commentToProcess
@@ -638,27 +637,26 @@ object ScalaDocumentationProvider {
             .append(MyScaladocParsing.THROWS_TAG)
             .append(" ")
           annotation.constructor.args.foreach(a =>
-            a.exprs.headOption.map {
-              case exprHead =>
-                exprHead.getType(TypingContext.empty) match {
-                  case Success(head, _) =>
-                    head match {
-                      case ScParameterizedType(_, args) =>
-                        args.headOption match {
-                          case a: Some[ScType] =>
-                            ScType.extractClass(
-                              a.get,
-                              Option(function.getProject)) match {
-                              case Some(clazz) =>
-                                buffer append clazz.qualifiedName
-                              case _ =>
-                            }
-                          case _ =>
-                        }
-                      case _ =>
-                    }
-                  case _ =>
-                }
+            a.exprs.headOption.map { case exprHead =>
+              exprHead.getType(TypingContext.empty) match {
+                case Success(head, _) =>
+                  head match {
+                    case ScParameterizedType(_, args) =>
+                      args.headOption match {
+                        case a: Some[ScType] =>
+                          ScType.extractClass(
+                            a.get,
+                            Option(function.getProject)) match {
+                            case Some(clazz) =>
+                              buffer append clazz.qualifiedName
+                            case _ =>
+                          }
+                        case _ =>
+                      }
+                    case _ =>
+                  }
+                case _ =>
+              }
             })
 
           buffer.append(" \n")

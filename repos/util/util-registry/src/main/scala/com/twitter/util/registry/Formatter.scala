@@ -51,20 +51,19 @@ object Formatter {
 
   def asMap(registry: Registry): Map[String, Object] = {
     var map: Map[String, Object] = Map.empty[String, Object]
-    registry.foreach {
-      case Entry(keys, value) =>
-        try {
-          map = add(map, keys, value)
-        } catch {
-          case Collision =>
-            log.severe(s"collided on (${keys.mkString(",")}) -> $value")
-          case InvalidType =>
-            log.severe(
-              s"found an invalid type on (${keys.mkString(",")}) -> $value")
-          case Empty =>
-            val returnString = s"(${keys.mkString(",")}) -> $value"
-            log.severe(s"incorrectly found an empty seq on $returnString")
-        }
+    registry.foreach { case Entry(keys, value) =>
+      try {
+        map = add(map, keys, value)
+      } catch {
+        case Collision =>
+          log.severe(s"collided on (${keys.mkString(",")}) -> $value")
+        case InvalidType =>
+          log.severe(
+            s"found an invalid type on (${keys.mkString(",")}) -> $value")
+        case Empty =>
+          val returnString = s"(${keys.mkString(",")}) -> $value"
+          log.severe(s"incorrectly found an empty seq on $returnString")
+      }
     }
     Map("registry" -> map)
   }

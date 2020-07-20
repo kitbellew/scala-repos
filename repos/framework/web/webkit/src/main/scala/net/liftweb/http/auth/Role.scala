@@ -104,11 +104,10 @@ trait Role {
     * Removes this Role from its parent
     */
   def detach: Box[Role] = {
-    this.parent.map {
-      case p =>
-        p.childs = p.childs.filter(role => role.name != this.name)
-        this.parent = Empty
-        this
+    this.parent.map { case p =>
+      p.childs = p.childs.filter(role => role.name != this.name)
+      this.parent = Empty
+      this
     }
   }
 

@@ -23,8 +23,8 @@ object MarkdownParser {
     (in \ "body").toList match {
       case Nil => in
       case xs =>
-        xs.collect {
-          case e: Elem => e
+        xs.collect { case e: Elem =>
+          e
         }.flatMap(_.child)
     }
   }
@@ -38,8 +38,8 @@ object MarkdownParser {
         "<html><head><title>I eat yaks</title></head><body>" + str + "</body></html>")
       info <- res.map { res =>
         (res \ "body")
-          .collect {
-            case e: Elem => e
+          .collect { case e: Elem =>
+            e
           }
           .flatMap(_.child)
       }

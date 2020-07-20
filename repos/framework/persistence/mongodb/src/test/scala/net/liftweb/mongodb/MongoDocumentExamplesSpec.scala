@@ -690,11 +690,10 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
       PatternDoc(ObjectId.get, Pattern.compile("^Mo", Pattern.CASE_INSENSITIVE))
     pdoc1.save
 
-    PatternDoc.find(pdoc1._id) must beLike {
-      case Some(pdoc) =>
-        pdoc._id must_== pdoc1._id
-        pdoc.regx.pattern must_== pdoc1.regx.pattern
-        pdoc.regx.flags must_== pdoc1.regx.flags
+    PatternDoc.find(pdoc1._id) must beLike { case Some(pdoc) =>
+      pdoc._id must_== pdoc1._id
+      pdoc.regx.pattern must_== pdoc1.regx.pattern
+      pdoc.regx.flags must_== pdoc1.regx.flags
     }
   }
 
@@ -714,16 +713,14 @@ class MongoDocumentExamplesSpec extends Specification with MongoTestKit {
     }
 
     val fromDb = StringDateDoc.find(newId)
-    fromDb must beLike {
-      case Some(sdd) =>
-        sdd._id must_== newId
-        sdd.dt must_== newDt
-        sdd.save
+    fromDb must beLike { case Some(sdd) =>
+      sdd._id must_== newId
+      sdd.dt must_== newDt
+      sdd.save
 
-        StringDateDoc.find(newId) must beLike {
-          case Some(sdd2) =>
-            sdd2.dt must_== sdd.dt
-        }
+      StringDateDoc.find(newId) must beLike { case Some(sdd2) =>
+        sdd2.dt must_== sdd.dt
+      }
     }
   }
 }

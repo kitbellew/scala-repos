@@ -74,11 +74,10 @@ object Tournament extends LilaController {
             env
               .version(tour.id)
               .zip(chatOf(tour))
-              .flatMap {
-                case (version, chat) =>
-                  env.jsonView(tour, page, ctx.userId, none, version.some) map {
-                    html.tournament.show(tour, _, chat)
-                  }
+              .flatMap { case (version, chat) =>
+                env.jsonView(tour, page, ctx.userId, none, version.some) map {
+                  html.tournament.show(tour, _, chat)
+                }
               }
               .map { Ok(_) }
               .mon(_.http.response.tournament.show.website)

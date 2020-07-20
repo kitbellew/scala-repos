@@ -191,26 +191,24 @@ private object PartitionAssignorTest extends Logging {
       .andReturn(consumers)
     EasyMock.expectLastCall().anyTimes()
 
-    scenario.subscriptions.foreach {
-      case (consumerId, subscriptionInfo) =>
-        EasyMock
-          .expect(
-            zkClient.readData(
-              "/consumers/%s/ids/%s".format(scenario.group, consumerId),
-              new Stat()))
-          .andReturn(subscriptionInfo.registrationString)
-        EasyMock.expectLastCall().anyTimes()
+    scenario.subscriptions.foreach { case (consumerId, subscriptionInfo) =>
+      EasyMock
+        .expect(
+          zkClient.readData(
+            "/consumers/%s/ids/%s".format(scenario.group, consumerId),
+            new Stat()))
+        .andReturn(subscriptionInfo.registrationString)
+      EasyMock.expectLastCall().anyTimes()
     }
 
-    scenario.topicPartitionCounts.foreach {
-      case (topic, partitionCount) =>
-        val replicaAssignment = Map((0 until partitionCount).map(partition =>
-          (partition.toString, Seq(0))): _*)
-        EasyMock
-          .expect(
-            zkClient.readData("/brokers/topics/%s".format(topic), new Stat()))
-          .andReturn(zkUtils.replicaAssignmentZkData(replicaAssignment))
-        EasyMock.expectLastCall().anyTimes()
+    scenario.topicPartitionCounts.foreach { case (topic, partitionCount) =>
+      val replicaAssignment = Map((0 until partitionCount).map(partition =>
+        (partition.toString, Seq(0))): _*)
+      EasyMock
+        .expect(
+          zkClient.readData("/brokers/topics/%s".format(topic), new Stat()))
+        .andReturn(zkUtils.replicaAssignmentZkData(replicaAssignment))
+      EasyMock.expectLastCall().anyTimes()
     }
 
     EasyMock
@@ -241,14 +239,13 @@ private object PartitionAssignorTest extends Logging {
     val globalAssignment =
       collection.mutable.Map[TopicAndPartition, ConsumerThreadId]()
     assignments.foreach(assignment => {
-      assignment.foreach {
-        case (topicPartition, owner) =>
-          val previousOwnerOpt = globalAssignment.put(topicPartition, owner)
-          assertTrue(
-            "Scenario %s: %s is assigned to two owners.".format(
-              scenario,
-              topicPartition),
-            previousOwnerOpt.isEmpty)
+      assignment.foreach { case (topicPartition, owner) =>
+        val previousOwnerOpt = globalAssignment.put(topicPartition, owner)
+        assertTrue(
+          "Scenario %s: %s is assigned to two owners.".format(
+            scenario,
+            topicPartition),
+          previousOwnerOpt.isEmpty)
       }
     })
 
@@ -283,10 +280,9 @@ private object PartitionAssignorTest extends Logging {
   private def partitionCountPerStream(
       assignment: collection.Map[TopicAndPartition, ConsumerThreadId]) = {
     val ownedCounts = collection.mutable.Map[ConsumerThreadId, Int]()
-    assignment.foreach {
-      case (topicPartition, owner) =>
-        val updatedCount = ownedCounts.getOrElse(owner, 0) + 1
-        ownedCounts.put(owner, updatedCount)
+    assignment.foreach { case (topicPartition, owner) =>
+      val updatedCount = ownedCounts.getOrElse(owner, 0) + 1
+      ownedCounts.put(owner, updatedCount)
     }
     ownedCounts
   }

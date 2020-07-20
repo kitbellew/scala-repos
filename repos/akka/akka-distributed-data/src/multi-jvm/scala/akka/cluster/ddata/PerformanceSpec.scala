@@ -40,11 +40,10 @@ object PerformanceSpec extends MultiNodeConfig {
     Props(new CountDown(latch)).withDeploy(Deploy.local)
 
   class CountDown(latch: TestLatch) extends Actor {
-    def receive = {
-      case _ ⇒
-        latch.countDown()
-        if (latch.isOpen)
-          context.stop(self)
+    def receive = { case _ ⇒
+      latch.countDown()
+      if (latch.isOpen)
+        context.stop(self)
     }
   }
 

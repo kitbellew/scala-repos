@@ -184,9 +184,8 @@ class LoggingFilterTest extends FunSuite {
     )
 
   test("escape() escapes non-printable, non-ASCII") {
-    UnescapedEscaped.foreach {
-      case (input, escaped) =>
-        assert(LogFormatter.escape(input) == escaped)
+    UnescapedEscaped.foreach { case (input, escaped) =>
+      assert(LogFormatter.escape(input) == escaped)
     }
   }
 }

@@ -717,9 +717,8 @@ class RowMatrix @Since("1.0.0") (
         }
       }
       .reduceByKey(_ + _)
-      .map {
-        case ((i, j), sim) =>
-          MatrixEntry(i.toLong, j.toLong, sim)
+      .map { case ((i, j), sim) =>
+        MatrixEntry(i.toLong, j.toLong, sim)
       }
     new CoordinateMatrix(sims, numCols(), numCols())
   }
@@ -730,9 +729,8 @@ class RowMatrix @Since("1.0.0") (
     val mat = BDM.zeros[Double](m, n)
     var i = 0
     rows.collect().foreach { vector =>
-      vector.foreachActive {
-        case (j, v) =>
-          mat(i, j) = v
+      vector.foreachActive { case (j, v) =>
+        mat(i, j) = v
       }
       i += 1
     }

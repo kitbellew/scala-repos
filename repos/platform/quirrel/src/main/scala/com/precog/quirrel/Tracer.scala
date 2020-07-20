@@ -144,9 +144,8 @@ trait Tracer extends parser.AST with typer.Binder {
         }
       }
 
-      val result = newTargets flatMap {
-        case (idx, grph) =>
-          loop(stack :+ grph)(idx)
+      val result = newTargets flatMap { case (idx, grph) =>
+        loop(stack :+ grph)(idx)
       }
 
       if (result.isEmpty) stack

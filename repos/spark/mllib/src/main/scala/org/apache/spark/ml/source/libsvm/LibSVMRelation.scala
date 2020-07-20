@@ -64,10 +64,9 @@ private[libsvm] class LibSVMOutputWriter(
     val label = row.get(0)
     val vector = row.get(1).asInstanceOf[Vector]
     val sb = new StringBuilder(label.toString)
-    vector.foreachActive {
-      case (i, v) =>
-        sb += ' '
-        sb ++= s"${i + 1}:$v"
+    vector.foreachActive { case (i, v) =>
+      sb += ' '
+      sb ++= s"${i + 1}:$v"
     }
     buffer.set(sb.mkString)
     recordWriter.write(NullWritable.get(), buffer)

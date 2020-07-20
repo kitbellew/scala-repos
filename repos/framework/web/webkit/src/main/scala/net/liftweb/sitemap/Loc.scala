@@ -90,16 +90,14 @@ trait Loc[T] {
   def paramValue: Box[T] = calcValue.flatMap(f => f()) or staticValue
 
   private lazy val staticValue: Box[T] = {
-    allParams.collectFirst {
-      case Loc.Value(v) =>
-        v.asInstanceOf[T]
+    allParams.collectFirst { case Loc.Value(v) =>
+      v.asInstanceOf[T]
     }
   }
 
   private lazy val calcValue: Box[() => Box[T]] = {
-    params.collectFirst {
-      case Loc.CalcValue(f: Function0[_]) =>
-        f.asInstanceOf[() => Box[T]]
+    params.collectFirst { case Loc.CalcValue(f: Function0[_]) =>
+      f.asInstanceOf[() => Box[T]]
     }
   }
 
@@ -143,8 +141,8 @@ trait Loc[T] {
       case menu =>
         menu._parent match {
           case Full(parentMenu: Menu) =>
-            if (!params.collect {
-                case i: Loc.UseParentParams => true
+            if (!params.collect { case i: Loc.UseParentParams =>
+                true
               }.isEmpty) {
               parentMenu.loc.allParams.asInstanceOf[List[Loc.LocParam[Any]]]
             } else {

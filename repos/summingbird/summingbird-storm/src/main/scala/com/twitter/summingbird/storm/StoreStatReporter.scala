@@ -56,12 +56,11 @@ class MergeableStatReporter[K, V](
       request: Map[K1, Future[Option[V]]]) = {
     multiMergeMetric.incr()
     multiMergeTuplesMetric.incrBy(request.size)
-    request.map {
-      case (k, v) =>
-        val failureWrapV = v.onFailure { _ =>
-          multiMergeTupleFailedMetric.incr()
-        }.unit
-        (k, failureWrapV)
+    request.map { case (k, v) =>
+      val failureWrapV = v.onFailure { _ =>
+        multiMergeTupleFailedMetric.incr()
+      }.unit
+      (k, failureWrapV)
     }
   }
 }
@@ -89,12 +88,11 @@ class StoreStatReporter[K, V](context: TopologyContext, val self: Store[K, V])
     multiGetMetric.incr()
     multiGetTuplesMetric.incrBy(request.size)
 
-    request.map {
-      case (k, v) =>
-        val failureWrapV = v.onFailure { _ =>
-          multiGetTupleFailedMetric.incr()
-        }.unit
-        (k, failureWrapV)
+    request.map { case (k, v) =>
+      val failureWrapV = v.onFailure { _ =>
+        multiGetTupleFailedMetric.incr()
+      }.unit
+      (k, failureWrapV)
     }
   }
 
@@ -118,12 +116,11 @@ class StoreStatReporter[K, V](context: TopologyContext, val self: Store[K, V])
     multiPutMetric.incr()
     multiPutTuplesMetric.incrBy(request.size)
 
-    request.map {
-      case (k, v) =>
-        val failureWrapV = v.onFailure { _ =>
-          multiPutTupleFailedMetric.incr()
-        }.unit
-        (k, failureWrapV)
+    request.map { case (k, v) =>
+      val failureWrapV = v.onFailure { _ =>
+        multiPutTupleFailedMetric.incr()
+      }.unit
+      (k, failureWrapV)
     }
   }
 }

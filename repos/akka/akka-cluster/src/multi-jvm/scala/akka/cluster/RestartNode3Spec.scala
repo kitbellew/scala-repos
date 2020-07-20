@@ -78,10 +78,9 @@ abstract class RestartNode3Spec
       runOn(first, third) {
         system.actorOf(
           Props(new Actor {
-            def receive = {
-              case a: UniqueAddress ⇒
-                secondUniqueAddress = a
-                sender() ! "ok"
+            def receive = { case a: UniqueAddress ⇒
+              secondUniqueAddress = a
+              sender() ! "ok"
             }
           }).withDeploy(Deploy.local),
           name = "address-receiver")

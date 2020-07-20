@@ -27,9 +27,8 @@ final class StringCodecSuite extends RedisRequestTest {
   test("Correctly encode APPEND") {
     val foo = StringToChannelBuffer("foo")
 
-    unwrap(codec(wrap("APPEND foo bar\r\n"))) {
-      case Append(foo, value) =>
-        assert(BytesToString(value.array) == "bar")
+    unwrap(codec(wrap("APPEND foo bar\r\n"))) { case Append(foo, value) =>
+      assert(BytesToString(value.array) == "bar")
     }
   }
 
@@ -178,9 +177,8 @@ final class StringCodecSuite extends RedisRequestTest {
   test("Correctly encode GETSET") {
     val key = StringToChannelBuffer("key")
 
-    unwrap(codec(wrap("GETSET key value\r\n"))) {
-      case GetSet(key, value) =>
-        assert(BytesToString(value.array) == "value")
+    unwrap(codec(wrap("GETSET key value\r\n"))) { case GetSet(key, value) =>
+      assert(BytesToString(value.array) == "value")
     }
   }
 
@@ -236,10 +234,9 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode MSETNX") {
-    unwrap(codec(wrap("MSETNX foo bar\r\n"))) {
-      case MSetNx(map) =>
-        assert(map.contains(foo))
-        assert(BytesToString(map(foo).array) == "bar")
+    unwrap(codec(wrap("MSETNX foo bar\r\n"))) { case MSetNx(map) =>
+      assert(map.contains(foo))
+      assert(BytesToString(map(foo).array) == "bar")
     }
   }
 
@@ -260,9 +257,8 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode SET") {
-    unwrap(codec(wrap("SET foo bar\r\n"))) {
-      case Set(foo, bar, _, _, _) =>
-        assert(BytesToString(bar.array) == "bar")
+    unwrap(codec(wrap("SET foo bar\r\n"))) { case Set(foo, bar, _, _, _) =>
+      assert(BytesToString(bar.array) == "bar")
     }
   }
 
@@ -328,9 +324,8 @@ final class StringCodecSuite extends RedisRequestTest {
   }
 
   test("Correctly encode SETNX") {
-    unwrap(codec(wrap("SETNX key value\r\n"))) {
-      case SetNx(key, value) =>
-        assert(BytesToString(value.array) == "value")
+    unwrap(codec(wrap("SETNX key value\r\n"))) { case SetNx(key, value) =>
+      assert(BytesToString(value.array) == "value")
     }
   }
 

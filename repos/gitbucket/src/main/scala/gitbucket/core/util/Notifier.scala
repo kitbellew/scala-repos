@@ -102,34 +102,32 @@ class Mailer(private val smtp: Smtp) extends Notifier {
                 enableRefsLink = true,
                 enableAnchor = false,
                 enableLineBreaks = false
-              ))) {
-          case (subject, msg) =>
-            recipients(issue) { to =>
-              val email = new HtmlEmail
-              email.setHostName(smtp.host)
-              email.setSmtpPort(smtp.port.get)
-              smtp.user.foreach { user =>
-                email.setAuthenticator(
-                  new DefaultAuthenticator(user, smtp.password.getOrElse("")))
-              }
-              smtp.ssl.foreach { ssl =>
-                email.setSSLOnConnect(ssl)
-              }
-              smtp.fromAddress
-                .map(_ -> smtp.fromName.getOrElse(
-                  context.loginAccount.get.userName))
-                .orElse(Some(
-                  "notifications@gitbucket.com" -> context.loginAccount.get.userName))
-                .foreach {
-                  case (address, name) =>
-                    email.setFrom(address, name)
-                }
-              email.setCharset("UTF-8")
-              email.setSubject(subject)
-              email.setHtmlMsg(msg)
-
-              email.addTo(to).send
+              ))) { case (subject, msg) =>
+          recipients(issue) { to =>
+            val email = new HtmlEmail
+            email.setHostName(smtp.host)
+            email.setSmtpPort(smtp.port.get)
+            smtp.user.foreach { user =>
+              email.setAuthenticator(
+                new DefaultAuthenticator(user, smtp.password.getOrElse("")))
             }
+            smtp.ssl.foreach { ssl =>
+              email.setSSLOnConnect(ssl)
+            }
+            smtp.fromAddress
+              .map(
+                _ -> smtp.fromName.getOrElse(context.loginAccount.get.userName))
+              .orElse(Some(
+                "notifications@gitbucket.com" -> context.loginAccount.get.userName))
+              .foreach { case (address, name) =>
+                email.setFrom(address, name)
+              }
+            email.setCharset("UTF-8")
+            email.setSubject(subject)
+            email.setHtmlMsg(msg)
+
+            email.addTo(to).send
+          }
         }
       }
       "Notifications Successful."

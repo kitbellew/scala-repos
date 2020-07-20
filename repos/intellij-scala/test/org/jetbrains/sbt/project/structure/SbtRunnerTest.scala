@@ -89,11 +89,10 @@ class SbtRunnerTest extends UsefulTestCase {
     using(
       new JarOutputStream(
         new BufferedOutputStream(new FileOutputStream(launcherFile)))) { out =>
-      entries.foreach {
-        case (name, contents) =>
-          out.putNextEntry(new ZipEntry(name))
-          out.write(contents.getBytes)
-          out.closeEntry()
+      entries.foreach { case (name, contents) =>
+        out.putNextEntry(new ZipEntry(name))
+        out.write(contents.getBytes)
+        out.closeEntry()
       }
     }
     launcherFile

@@ -117,12 +117,11 @@ object Test extends Properties("TreeSet") {
       until <- choose(from, tree.size)
     } yield (tree, from, until)
 
-  property("slice") = forAll(genSliceParms) {
-    case (subject, from, until) =>
-      val slice = subject.slice(from, until)
-      slice.size == until - from && subject.toSeq == subject
-        .take(from)
-        .toSeq ++ slice ++ subject.drop(until)
+  property("slice") = forAll(genSliceParms) { case (subject, from, until) =>
+    val slice = subject.slice(from, until)
+    slice.size == until - from && subject.toSeq == subject
+      .take(from)
+      .toSeq ++ slice ++ subject.drop(until)
   }
 
   property("takeWhile") = forAll { (subject: TreeSet[Int]) =>

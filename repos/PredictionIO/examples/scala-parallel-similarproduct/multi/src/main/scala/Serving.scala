@@ -23,20 +23,19 @@ class Serving extends LServing[Query, PredictedResult] {
       }
 
       predictedResults.zipWithIndex
-        .map {
-          case (pr, i) =>
-            pr.itemScores.map { is =>
-              // standardize score (z-score)
-              // if standard deviation is 0 (when all items have the same score,
-              // meaning all items are ranked equally), return 0.
-              val score = if (mvList(i).stdDev == 0) {
-                0
-              } else {
-                (is.score - mvList(i).mean) / mvList(i).stdDev
-              }
-
-              ItemScore(is.item, score)
+        .map { case (pr, i) =>
+          pr.itemScores.map { is =>
+            // standardize score (z-score)
+            // if standard deviation is 0 (when all items have the same score,
+            // meaning all items are ranked equally), return 0.
+            val score = if (mvList(i).stdDev == 0) {
+              0
+            } else {
+              (is.score - mvList(i).mean) / mvList(i).stdDev
             }
+
+            ItemScore(is.item, score)
+          }
         }
     }
 

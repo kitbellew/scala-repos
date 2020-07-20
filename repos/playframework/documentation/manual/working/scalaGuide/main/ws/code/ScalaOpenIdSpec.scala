@@ -63,10 +63,9 @@ object ScalaOpenIdSpec extends PlaySpecification {
       openIdClient
         .verifiedId(request)
         .map(info => Ok(info.id + "\n" + info.attributes))
-        .recover {
-          case t: Throwable =>
-            // Here you should look at the error, and give feedback to the user
-            Redirect(routes.Application.login)
+        .recover { case t: Throwable =>
+          // Here you should look at the error, and give feedback to the user
+          Redirect(routes.Application.login)
         }
     }
   //#flow

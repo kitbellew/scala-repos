@@ -132,21 +132,20 @@ class MethodResolveProcessor(
             case _ => None
           }.toSeq
           val seq = sigs
-            .map {
-              case (m, subst) =>
-                new ScalaResolveResult(
-                  m,
-                  subst,
-                  getImports(state),
-                  nameShadow,
-                  implicitConversionClass,
-                  implicitFunction = implFunction,
-                  implicitType = implType,
-                  fromType = fromType,
-                  parentElement = Some(obj),
-                  isAccessible = accessible && isAccessible(m, ref),
-                  isForwardReference = forwardReference,
-                  unresolvedTypeParameters = unresolvedTypeParameters)
+            .map { case (m, subst) =>
+              new ScalaResolveResult(
+                m,
+                subst,
+                getImports(state),
+                nameShadow,
+                implicitConversionClass,
+                implicitFunction = implFunction,
+                implicitType = implType,
+                fromType = fromType,
+                parentElement = Some(obj),
+                isAccessible = accessible && isAccessible(m, ref),
+                isForwardReference = forwardReference,
+                unresolvedTypeParameters = unresolvedTypeParameters)
             }
             .filter {
               case r => !accessibility || r.isAccessible
@@ -689,28 +688,27 @@ object MethodResolveProcessor {
                 val clazz1: ScTemplateDefinition = m.containingClass
                 if (clazz1 == null) true
                 else {
-                  _input.forall {
-                    case r2: ScalaResolveResult =>
-                      r2.element match {
-                        case f: ScFunction if f.hasParameterClause => true
-                        case b2: ScTypedDefinition =>
-                          b2.nameContext match {
-                            case m2: ScMember =>
-                              val clazz2: ScTemplateDefinition =
-                                m2.containingClass
-                              if (clazz2 == null) true
+                  _input.forall { case r2: ScalaResolveResult =>
+                    r2.element match {
+                      case f: ScFunction if f.hasParameterClause => true
+                      case b2: ScTypedDefinition =>
+                        b2.nameContext match {
+                          case m2: ScMember =>
+                            val clazz2: ScTemplateDefinition =
+                              m2.containingClass
+                            if (clazz2 == null) true
+                            else {
+                              if (clazz1 == clazz2) true
                               else {
-                                if (clazz1 == clazz2) true
-                                else {
-                                  ScalaPsiUtil.cachedDeepIsInheritor(
-                                    clazz1,
-                                    clazz2)
-                                }
+                                ScalaPsiUtil.cachedDeepIsInheritor(
+                                  clazz1,
+                                  clazz2)
                               }
-                            case _ => true
-                          }
-                        case _ => true
-                      }
+                            }
+                          case _ => true
+                        }
+                      case _ => true
+                    }
                   }
                 }
               case _ => true

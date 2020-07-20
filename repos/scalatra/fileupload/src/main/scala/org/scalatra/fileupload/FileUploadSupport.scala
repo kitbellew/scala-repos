@@ -44,10 +44,9 @@ trait FileUploadSupport extends ServletBase {
           val bodyParams = extractMultipartParams(req)
           var mergedParams = bodyParams.formParams
           // Add the query string parameters
-          req.getParameterMap foreach {
-            case (name, values) =>
-              val formValues = mergedParams.getOrElse(name, List.empty)
-              mergedParams += name -> (values.toList ++ formValues)
+          req.getParameterMap foreach { case (name, values) =>
+            val formValues = mergedParams.getOrElse(name, List.empty)
+            mergedParams += name -> (values.toList ++ formValues)
           }
           wrapRequest(req, mergedParams)
         } else req

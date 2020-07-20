@@ -1247,25 +1247,24 @@ trait BlockStoreColumnarTableModule[M[+_]]
                 indices = openedJdbmState.indices + (indexMapKey -> sliceIndex),
                 insertCount = count))
 
-        } map {
-          case (index, jdbmState) =>
-            val newInsertCount = storeRows(
-              kslice,
-              vslice,
-              index.keyRowFormat,
-              vEncoder,
-              index.storage,
-              jdbmState.insertCount)
+        } map { case (index, jdbmState) =>
+          val newInsertCount = storeRows(
+            kslice,
+            vslice,
+            index.keyRowFormat,
+            vEncoder,
+            index.storage,
+            jdbmState.insertCount)
 
-            // Although we have a global count of inserts, we also want to
-            // specifically track counts on the index since some operations
-            // may not use all indices (e.g. groupByN)
-            val newIndex = index.copy(count =
-              index.count + (newInsertCount - jdbmState.insertCount))
+          // Although we have a global count of inserts, we also want to
+          // specifically track counts on the index since some operations
+          // may not use all indices (e.g. groupByN)
+          val newIndex = index.copy(count =
+            index.count + (newInsertCount - jdbmState.insertCount))
 
-            jdbmState.copy(
-              indices = jdbmState.indices + (indexMapKey -> newIndex),
-              insertCount = newInsertCount)
+          jdbmState.copy(
+            indices = jdbmState.indices + (indexMapKey -> newIndex),
+            insertCount = newInsertCount)
 
         } getOrElse {
           // sort k/vslice and shove into SortedSlice.
@@ -1393,37 +1392,35 @@ trait BlockStoreColumnarTableModule[M[+_]]
 
           StreamT(stream.uncons flatMap {
             case Some((head, tail)) =>
-              keyTrans.advance(head) flatMap {
-                case (keyTrans0, headKey) =>
-                  val headBuf = new ArrayIntList(head.size)
-                  val indexBuf = new ArrayIntList(index.size)
+              keyTrans.advance(head) flatMap { case (keyTrans0, headKey) =>
+                val headBuf = new ArrayIntList(head.size)
+                val indexBuf = new ArrayIntList(index.size)
 
-                  val rowMap = hashed.mapRowsFrom(headKey)
+                val rowMap = hashed.mapRowsFrom(headKey)
 
-                  @tailrec def loop(row: Int): Unit =
-                    if (row < head.size) {
-                      rowMap(row) { indexRow =>
-                        headBuf.add(row)
-                        indexBuf.add(indexRow)
-                      }
-                      loop(row + 1)
+                @tailrec def loop(row: Int): Unit =
+                  if (row < head.size) {
+                    rowMap(row) { indexRow =>
+                      headBuf.add(row)
+                      indexBuf.add(indexRow)
                     }
-
-                  loop(0)
-
-                  val (index0, head0) =
-                    (index.remap(indexBuf), head.remap(headBuf))
-                  val advancedM = if (flip) {
-                    joinTrans.advance(head0, index0)
-                  } else {
-                    joinTrans.advance(index0, head0)
+                    loop(row + 1)
                   }
-                  advancedM map {
-                    case (joinTrans0, slice) =>
-                      StreamT.Yield(
-                        slice,
-                        joinWithHash(tail, keyTrans0, joinTrans0, hashed))
-                  }
+
+                loop(0)
+
+                val (index0, head0) =
+                  (index.remap(indexBuf), head.remap(headBuf))
+                val advancedM = if (flip) {
+                  joinTrans.advance(head0, index0)
+                } else {
+                  joinTrans.advance(index0, head0)
+                }
+                advancedM map { case (joinTrans0, slice) =>
+                  StreamT.Yield(
+                    slice,
+                    joinWithHash(tail, keyTrans0, joinTrans0, hashed))
+                }
               }
 
             case None =>

@@ -79,19 +79,18 @@ object JsonUtil {
   def parseManyFromStream[M[+_]: Monad](
       stream: StreamT[M, Array[Byte]]): StreamT[M, AsyncParse] = {
     // create a new stream, using the current stream and parser
-    StreamT.unfoldM((stream, AsyncParser.stream())) {
-      case (stream, parser) =>
-        stream.uncons map {
-          case Some((bytes, tail)) =>
-            // parse the current byte buffer, keeping track of the
-            // new parser instance we were given back
-            val (r, parser2) = parser(More(ByteBuffer.wrap(bytes)))
-            Some((r, (tail, parser2)))
-          case None =>
-            // once we're out of byte buffers, send None to signal EOF
-            val (r, parser2) = parser(Done)
-            Some((r, (StreamT.empty, parser2)))
-        }
+    StreamT.unfoldM((stream, AsyncParser.stream())) { case (stream, parser) =>
+      stream.uncons map {
+        case Some((bytes, tail)) =>
+          // parse the current byte buffer, keeping track of the
+          // new parser instance we were given back
+          val (r, parser2) = parser(More(ByteBuffer.wrap(bytes)))
+          Some((r, (tail, parser2)))
+        case None =>
+          // once we're out of byte buffers, send None to signal EOF
+          val (r, parser2) = parser(Done)
+          Some((r, (StreamT.empty, parser2)))
+      }
     }
   }
 }

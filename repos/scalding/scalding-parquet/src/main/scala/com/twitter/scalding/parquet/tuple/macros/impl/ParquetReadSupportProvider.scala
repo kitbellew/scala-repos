@@ -215,10 +215,9 @@ object ParquetReadSupportProvider {
       outerTpe.declarations
         .collect { case m: MethodSymbol if m.isCaseAccessor => m }
         .zipWithIndex
-        .map {
-          case (accessorMethod, idx) =>
-            val fieldType = accessorMethod.returnType
-            matchField(idx, fieldType, NOT_A_COLLECTION)
+        .map { case (accessorMethod, idx) =>
+          val fieldType = accessorMethod.returnType
+          matchField(idx, fieldType, NOT_A_COLLECTION)
         }
         .toList
 
@@ -229,9 +228,8 @@ object ParquetReadSupportProvider {
         emptyTreeList,
         emptyTreeList,
         emptyTreeList,
-        emptyTreeList) {
-        case ((t1, t2, t3, t4), (l1, l2, l3, l4)) =>
-          (t1 :: l1, t2 :: l2, t3 :: l3, t4 :: l4)
+        emptyTreeList) { case ((t1, t2, t3, t4), (l1, l2, l3, l4)) =>
+        (t1 :: l1, t2 :: l2, t3 :: l3, t4 :: l4)
       }
     }
 

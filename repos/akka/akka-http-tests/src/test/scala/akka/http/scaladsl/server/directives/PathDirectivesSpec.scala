@@ -402,10 +402,9 @@ class PathDirectivesSpec extends RoutingSpec with Inside {
   private def checkRedirectTo(expectedUri: Uri) =
     check {
       status shouldBe a[Redirection]
-      inside(header[Location]) {
-        case Some(Location(uri)) ⇒
-          (if (expectedUri.isAbsolute) uri
-           else uri.toRelative) shouldEqual expectedUri
+      inside(header[Location]) { case Some(Location(uri)) ⇒
+        (if (expectedUri.isAbsolute) uri
+         else uri.toRelative) shouldEqual expectedUri
       }
     }
 }

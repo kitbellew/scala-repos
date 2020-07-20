@@ -629,9 +629,8 @@ trait OpTreeContext[OpTreeCtx <: ParserMacros.ParserContext] {
                 }
               val valDefs = args
                 .zip(argTypeTrees)
-                .map {
-                  case (a, t) ⇒
-                    q"val ${a.name} = valueStack.pop().asInstanceOf[${t.tpe}]"
+                .map { case (a, t) ⇒
+                  q"val ${a.name} = valueStack.pop().asInstanceOf[${t.tpe}]"
                 }
                 .reverse
               block(valDefs, rewrite(body))

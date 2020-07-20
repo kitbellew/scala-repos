@@ -153,11 +153,10 @@ private[sql] class CacheManager extends Logging {
 
   /** Replaces segments of the given logical plan with cached versions where possible. */
   private[sql] def useCachedData(plan: LogicalPlan): LogicalPlan = {
-    plan transformDown {
-      case currentFragment =>
-        lookupCachedData(currentFragment)
-          .map(_.cachedRepresentation.withOutput(currentFragment.output))
-          .getOrElse(currentFragment)
+    plan transformDown { case currentFragment =>
+      lookupCachedData(currentFragment)
+        .map(_.cachedRepresentation.withOutput(currentFragment.output))
+        .getOrElse(currentFragment)
     }
   }
 

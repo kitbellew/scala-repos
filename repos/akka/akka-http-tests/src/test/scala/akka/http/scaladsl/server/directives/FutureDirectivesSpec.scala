@@ -16,9 +16,8 @@ class FutureDirectivesSpec extends RoutingSpec {
   def throwTestException[T](msgPrefix: String): T ⇒ Nothing =
     t ⇒ throw new TestException(msgPrefix + t)
 
-  implicit val exceptionHandler = ExceptionHandler {
-    case e: TestException ⇒
-      complete((StatusCodes.InternalServerError, "Oops. " + e))
+  implicit val exceptionHandler = ExceptionHandler { case e: TestException ⇒
+    complete((StatusCodes.InternalServerError, "Oops. " + e))
   }
 
   "The `onComplete` directive" should {

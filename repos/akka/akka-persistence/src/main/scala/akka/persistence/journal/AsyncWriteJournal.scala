@@ -208,8 +208,8 @@ trait AsyncWriteJournal extends Actor with WriteJournalBase with AsyncRecovery {
           .map { highSeqNr ⇒
             RecoverySuccess(highSeqNr)
           }
-          .recover {
-            case e ⇒ ReplayMessagesFailure(e)
+          .recover { case e ⇒
+            ReplayMessagesFailure(e)
           }
           .pipeTo(replyTo)
           .onSuccess {

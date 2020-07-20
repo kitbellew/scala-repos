@@ -598,9 +598,8 @@ trait Implicits {
       // otherwise, the macro writer could check `c.openMacros` and `c.openImplicits` and do `c.abort` when expansions are deemed to be divergent
       // upon receiving `c.abort` the typechecker will decide that the corresponding implicit search has failed
       // which will fail the entire stack of implicit searches, producing a nice error message provided by the programmer
-      (context.openImplicits find {
-        case OpenImplicit(info, tp, tree1) =>
-          !info.sym.isMacro && tree1.symbol == tree.symbol && dominates(pt, tp)
+      (context.openImplicits find { case OpenImplicit(info, tp, tree1) =>
+        !info.sym.isMacro && tree1.symbol == tree.symbol && dominates(pt, tp)
       }) match {
         case Some(pending) =>
           //println("Pending implicit "+pending+" dominates "+pt+"/"+undetParams) //@MDEBUG

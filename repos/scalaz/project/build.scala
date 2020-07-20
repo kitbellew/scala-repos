@@ -235,9 +235,8 @@ object build extends Build {
           ("rwallace", "Richard Wallace"),
           ("nuttycom", "Kris Nuttycombe"),
           ("larsrh", "Lars Hupel")
-        ).map {
-          case (id, name) =>
-            <developer>
+        ).map { case (id, name) =>
+          <developer>
                 <id>{id}</id>
                 <name>{name}</name>
                 <url>http://github.com/{id}</url>

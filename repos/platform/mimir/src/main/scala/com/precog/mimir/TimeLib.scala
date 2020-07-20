@@ -176,13 +176,12 @@ trait TimeLibModule[M[+_]] extends ColumnarTableLibModule[M] {
     object ParsePeriod extends Op1F1(TimeNamespace, "parsePeriod") {
       val tpe = UnaryOperationType(JTextT, JPeriodT)
       def f1(ctx: MorphContext): F1 =
-        CF1P("builtin::time::parsePeriod") {
-          case (c: StrColumn) =>
-            new PeriodColumn {
-              def isDefinedAt(row: Int) =
-                c.isDefinedAt(row) && isValidPeriod(c(row))
-              def apply(row: Int): Period = new Period(c(row))
-            }
+        CF1P("builtin::time::parsePeriod") { case (c: StrColumn) =>
+          new PeriodColumn {
+            def isDefinedAt(row: Int) =
+              c.isDefinedAt(row) && isValidPeriod(c(row))
+            def apply(row: Int): Period = new Period(c(row))
+          }
         }
     }
 

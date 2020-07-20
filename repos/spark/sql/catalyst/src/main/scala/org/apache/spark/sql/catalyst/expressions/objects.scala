@@ -536,10 +536,9 @@ case class CreateExternalRow(children: Seq[Expression], schema: StructType)
       final Object[] $values = new Object[${children.size}];
     """ +
       children.zipWithIndex
-        .map {
-          case (e, i) =>
-            val eval = e.gen(ctx)
-            eval.code + s"""
+        .map { case (e, i) =>
+          val eval = e.gen(ctx)
+          eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
@@ -667,10 +666,9 @@ case class InitializeJavaBean(
   override def genCode(ctx: CodegenContext, ev: ExprCode): String = {
     val instanceGen = beanInstance.gen(ctx)
 
-    val initialize = setters.map {
-      case (setterMethod, fieldValue) =>
-        val fieldGen = fieldValue.gen(ctx)
-        s"""
+    val initialize = setters.map { case (setterMethod, fieldValue) =>
+      val fieldGen = fieldValue.gen(ctx)
+      s"""
            ${fieldGen.code}
            ${instanceGen.value}.$setterMethod(${fieldGen.value});
          """

@@ -69,10 +69,9 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
     // activate the extension
     val mediator = DistributedPubSub(context.system).mediator
 
-    def receive = {
-      case in: String ⇒
-        val out = in.toUpperCase
-        mediator ! Publish("content", out)
+    def receive = { case in: String ⇒
+      val out = in.toUpperCase
+      mediator ! Publish("content", out)
     }
   }
   //#publisher
@@ -99,13 +98,12 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
     // activate the extension
     val mediator = DistributedPubSub(context.system).mediator
 
-    def receive = {
-      case in: String ⇒
-        val out = in.toUpperCase
-        mediator ! Send(
-          path = "/user/destination",
-          msg = out,
-          localAffinity = true)
+    def receive = { case in: String ⇒
+      val out = in.toUpperCase
+      mediator ! Send(
+        path = "/user/destination",
+        msg = out,
+        localAffinity = true)
     }
   }
   //#sender
@@ -117,9 +115,8 @@ object DistributedPubSubMediatorSpec extends MultiNodeConfig {
     // register to the path
     mediator ! Put(self)
 
-    def receive = {
-      case s: String ⇒
-        log.info("Got {}", s)
+    def receive = { case s: String ⇒
+      log.info("Got {}", s)
     }
   }
   //#send-destination

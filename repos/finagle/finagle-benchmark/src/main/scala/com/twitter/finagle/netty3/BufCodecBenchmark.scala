@@ -29,16 +29,14 @@ class BufCodecBenchmark extends StdBenchAnnotations {
   def setup(): Unit = {
     val values = List.fill(size)("value")
 
-    bufs = values.map {
-      case v =>
-        Buf.ByteArray.Owned(v.getBytes(Charsets.Utf8))
+    bufs = values.map { case v =>
+      Buf.ByteArray.Owned(v.getBytes(Charsets.Utf8))
     }
 
     encodedBuf = TwitterBuf.encode(bufs)
 
-    cbs = values.map {
-      case v =>
-        ChannelBuffers.wrappedBuffer(v.getBytes(Charsets.Utf8))
+    cbs = values.map { case v =>
+      ChannelBuffers.wrappedBuffer(v.getBytes(Charsets.Utf8))
     }
 
     encodedCB = NettyChannelBuffer.encode(cbs)

@@ -573,10 +573,9 @@ abstract class MultiReaderBuilder[Req, Rep, Builder] private[kestrel] (
             case _ => client.readReliably(config.queueName)
           }
 
-          handle.error foreach {
-            case NonFatal(cause) =>
-              logger.warning(s"Closing service factory for address: ${addr}")
-              factory.close()
+          handle.error foreach { case NonFatal(cause) =>
+            logger.warning(s"Closing service factory for address: ${addr}")
+            factory.close()
           }
 
           logger.info(s"Host ${addr} joined for reading ${config.queueName} " +

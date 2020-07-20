@@ -113,9 +113,8 @@ class FlowRecoverWithSpec extends AkkaSpec {
     "terminate with exception if altrnative source failed" in assertAllStagesStopped {
       Source(1 to 3)
         .map { a ⇒ if (a == 3) throw new IndexOutOfBoundsException() else a }
-        .recoverWith {
-          case t: IndexOutOfBoundsException ⇒
-            Source(List(11, 22)).map(m ⇒ if (m == 22) throw ex else m)
+        .recoverWith { case t: IndexOutOfBoundsException ⇒
+          Source(List(11, 22)).map(m ⇒ if (m == 22) throw ex else m)
         }
         .runWith(TestSink.probe[Int])
         .request(2)

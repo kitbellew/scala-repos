@@ -304,15 +304,14 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
     unconfirmed.iterator
       .filter { case (_, delivery) ⇒ delivery.timestamp <= deadline }
       .take(redeliveryBurstLimit)
-      .foreach {
-        case (deliveryId, delivery) ⇒
-          send(deliveryId, delivery, now)
+      .foreach { case (deliveryId, delivery) ⇒
+        send(deliveryId, delivery, now)
 
-          if (delivery.attempt == warnAfterNumberOfUnconfirmedAttempts)
-            warnings :+= UnconfirmedDelivery(
-              deliveryId,
-              delivery.destination,
-              delivery.message)
+        if (delivery.attempt == warnAfterNumberOfUnconfirmedAttempts)
+          warnings :+= UnconfirmedDelivery(
+            deliveryId,
+            delivery.destination,
+            delivery.message)
       }
 
     if (warnings.nonEmpty)
@@ -340,9 +339,8 @@ trait AtLeastOnceDeliveryLike extends Eventsourced {
   def getDeliverySnapshot: AtLeastOnceDeliverySnapshot =
     AtLeastOnceDeliverySnapshot(
       deliverySequenceNr,
-      unconfirmed.map {
-        case (deliveryId, d) ⇒
-          UnconfirmedDelivery(deliveryId, d.destination, d.message)
+      unconfirmed.map { case (deliveryId, d) ⇒
+        UnconfirmedDelivery(deliveryId, d.destination, d.message)
       }(breakOut))
 
   /**

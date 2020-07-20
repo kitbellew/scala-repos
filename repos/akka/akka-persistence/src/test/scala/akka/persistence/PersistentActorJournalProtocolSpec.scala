@@ -109,9 +109,8 @@ class PersistentActorJournalProtocolSpec
       w.messages.zip(msgs).foreach {
         case (AtomicWrite(writes), msg) ⇒
           writes.size should ===(msg.msg.size)
-          writes.zip(msg.msg).foreach {
-            case (PersistentRepr(evt, _), m) ⇒
-              evt should ===(m)
+          writes.zip(msg.msg).foreach { case (PersistentRepr(evt, _), m) ⇒
+            evt should ===(m)
           }
         case x ⇒ fail(s"unexpected $x")
       }

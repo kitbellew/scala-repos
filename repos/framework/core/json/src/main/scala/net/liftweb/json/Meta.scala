@@ -129,13 +129,12 @@ private[json] object Meta {
         case (c, args) =>
           DeclaredConstructor(
             c,
-            args.map {
-              case (name, t) =>
-                toArg(
-                  unmangleName(name),
-                  t,
-                  visited,
-                  Context(name, c.getDeclaringClass, args))
+            args.map { case (name, t) =>
+              toArg(
+                unmangleName(name),
+                t,
+                visited,
+                Context(name, c.getDeclaringClass, args))
             })
       }
     }
@@ -161,15 +160,14 @@ private[json] object Meta {
         t match {
           case x: ParameterizedType =>
             val typeArgs = x.getActualTypeArguments.toList.zipWithIndex
-              .map {
-                case (t, idx) =>
-                  if (t == classOf[java.lang.Object])
-                    ScalaSigReader.readConstructor(
-                      context.argName,
-                      context.containingClass,
-                      idx,
-                      context.allArgs.map(_._1))
-                  else t
+              .map { case (t, idx) =>
+                if (t == classOf[java.lang.Object])
+                  ScalaSigReader.readConstructor(
+                    context.argName,
+                    context.containingClass,
+                    idx,
+                    context.allArgs.map(_._1))
+                else t
               }
             Some(mkParameterizedType(x.getRawType, typeArgs))
           case _ => None
@@ -231,18 +229,17 @@ private[json] object Meta {
     } else {
       mappings.memoize(
         (clazz, typeArgs),
-        {
-          case (t, _) =>
-            val c = rawClassOf(t)
-            val (pt, typeInfo) =
-              if (typeArgs.isEmpty) {
-                (t, TypeInfo(c, None))
-              } else {
-                val t = mkParameterizedType(c, typeArgs)
-                (t, TypeInfo(c, Some(t)))
-              }
+        { case (t, _) =>
+          val c = rawClassOf(t)
+          val (pt, typeInfo) =
+            if (typeArgs.isEmpty) {
+              (t, TypeInfo(c, None))
+            } else {
+              val t = mkParameterizedType(c, typeArgs)
+              (t, TypeInfo(c, Some(t)))
+            }
 
-            Constructor(typeInfo, constructors(pt, Set(), None))
+          Constructor(typeInfo, constructors(pt, Set(), None))
         }
       )
     }

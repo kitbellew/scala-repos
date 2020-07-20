@@ -77,8 +77,8 @@ class ScDocTagImpl(node: ASTNode)
         TokenSet.orSet(
           TokenSet.create(ScalaDocTokenType.DOC_COMMENT_DATA),
           ScalaDocTokenType.ALL_SCALADOC_SYNTAX_ELEMENTS))
-      .map {
-        case nd => handler(nd.getPsi)
+      .map { case nd =>
+        handler(nd.getPsi)
       }
       .mkString(" ")
 }

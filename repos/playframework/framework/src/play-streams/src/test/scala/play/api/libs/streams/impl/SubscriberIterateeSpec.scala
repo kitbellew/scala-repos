@@ -37,61 +37,57 @@ object SubscriberIterateeSpec extends Specification {
 
     "not enter cont state until demand is requested" in new TestEnv {
       val step = iteratee.unflatten
-      next() must beLike {
-        case OnSubscribe(sub) =>
-          isEmptyAfterDelay() must beTrue
-          step.isCompleted must beFalse
-          sub.request(1)
-          await(step) must beAnInstanceOf[Step.Cont[_, _]]
+      next() must beLike { case OnSubscribe(sub) =>
+        isEmptyAfterDelay() must beTrue
+        step.isCompleted must beFalse
+        sub.request(1)
+        await(step) must beAnInstanceOf[Step.Cont[_, _]]
       }
     }
 
     "publish events one at a time in response to demand" in new TestEnv {
       val result = Enumerator(10, 20, 30) |>>> iteratee
-      next() must beLike {
-        case OnSubscribe(sub) =>
-          isEmptyAfterDelay() must beTrue
-          sub.request(1)
-          next() must_== OnNext(10)
-          isEmptyAfterDelay() must beTrue
-          sub.request(1)
-          next() must_== OnNext(20)
-          isEmptyAfterDelay() must beTrue
-          sub.request(1)
-          next() must_== OnNext(30)
-          isEmptyAfterDelay() must beTrue
-          sub.request(1)
-          next() must_== OnComplete
+      next() must beLike { case OnSubscribe(sub) =>
+        isEmptyAfterDelay() must beTrue
+        sub.request(1)
+        next() must_== OnNext(10)
+        isEmptyAfterDelay() must beTrue
+        sub.request(1)
+        next() must_== OnNext(20)
+        isEmptyAfterDelay() must beTrue
+        sub.request(1)
+        next() must_== OnNext(30)
+        isEmptyAfterDelay() must beTrue
+        sub.request(1)
+        next() must_== OnComplete
       }
       await(result) must_== ()
     }
 
     "publish events in batches in response to demand" in new TestEnv {
       val result = Enumerator(10, 20, 30) |>>> iteratee
-      next() must beLike {
-        case OnSubscribe(sub) =>
-          isEmptyAfterDelay() must beTrue
-          sub.request(2)
-          next() must_== OnNext(10)
-          next() must_== OnNext(20)
-          isEmptyAfterDelay() must beTrue
-          sub.request(2)
-          next() must_== OnNext(30)
-          next() must_== OnComplete
+      next() must beLike { case OnSubscribe(sub) =>
+        isEmptyAfterDelay() must beTrue
+        sub.request(2)
+        next() must_== OnNext(10)
+        next() must_== OnNext(20)
+        isEmptyAfterDelay() must beTrue
+        sub.request(2)
+        next() must_== OnNext(30)
+        next() must_== OnComplete
       }
       await(result) must_== ()
     }
 
     "publish events all at once in response to demand" in new TestEnv {
       val result = Enumerator(10, 20, 30) |>>> iteratee
-      next() must beLike {
-        case OnSubscribe(sub) =>
-          isEmptyAfterDelay() must beTrue
-          sub.request(10)
-          next() must_== OnNext(10)
-          next() must_== OnNext(20)
-          next() must_== OnNext(30)
-          next() must_== OnComplete
+      next() must beLike { case OnSubscribe(sub) =>
+        isEmptyAfterDelay() must beTrue
+        sub.request(10)
+        next() must_== OnNext(10)
+        next() must_== OnNext(20)
+        next() must_== OnNext(30)
+        next() must_== OnComplete
       }
       await(result) must_== ()
     }
@@ -99,12 +95,11 @@ object SubscriberIterateeSpec extends Specification {
     "become done when the stream is cancelled" in new TestEnv {
       val result = Enumerator(10, 20, 30) |>>> iteratee.flatMap(_ =>
         Iteratee.getChunks[Int])
-      next() must beLike {
-        case OnSubscribe(sub) =>
-          sub.request(1)
-          next() must_== OnNext(10)
-          sub.cancel()
-          isEmptyAfterDelay() must beTrue
+      next() must beLike { case OnSubscribe(sub) =>
+        sub.request(1)
+        next() must_== OnNext(10)
+        sub.cancel()
+        isEmptyAfterDelay() must beTrue
       }
       await(result) must_== Seq(20, 30)
     }

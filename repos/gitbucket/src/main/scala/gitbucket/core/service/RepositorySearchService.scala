@@ -49,14 +49,13 @@ trait RepositorySearchService { self: IssuesService =>
         val files = searchRepositoryFiles(git, query)
         val commits =
           JGitUtil.getLatestCommitFromPaths(git, files.map(_._1), "HEAD")
-        files.map {
-          case (path, text) =>
-            val (highlightText, lineNumber) = getHighlightText(text, query)
-            FileSearchResult(
-              path,
-              commits(path).getCommitterIdent.getWhen,
-              highlightText,
-              lineNumber)
+        files.map { case (path, text) =>
+          val (highlightText, lineNumber) = getHighlightText(text, query)
+          FileSearchResult(
+            path,
+            commits(path).getCommitterIdent.getWhen,
+            highlightText,
+            lineNumber)
         }
       }
     }

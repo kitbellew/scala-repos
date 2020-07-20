@@ -163,10 +163,9 @@ class MonitorTest extends WordSpec with MockitoSugar {
       class F1 extends Exception
 
       var ran = false
-      val m = Monitor.mk {
-        case _: E1 =>
-          ran = true
-          true
+      val m = Monitor.mk { case _: E1 =>
+        ran = true
+        true
       }
     }
 

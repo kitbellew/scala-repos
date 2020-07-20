@@ -177,13 +177,12 @@ class DocResolver(
   // for java stuff, really
   def resolve(sig: DocSig): Option[String] = resolve(DocSigPair(sig, sig))
 
-  def receive: Receive = {
-    case p: DocSigPair =>
-      val response = resolve(p) match {
-        case Some(path) => StringResponse(path)
-        case None       => FalseResponse
-      }
-      sender() ! response
+  def receive: Receive = { case p: DocSigPair =>
+    val response = resolve(p) match {
+      case Some(path) => StringResponse(path)
+      case None       => FalseResponse
+    }
+    sender() ! response
   }
 
 }

@@ -93,9 +93,8 @@ class PartitionStateMachine(controller: KafkaController) extends Logging {
   // de-register topic and partition change listeners
   def deregisterListeners() {
     deregisterTopicChangeListener()
-    partitionModificationsListeners.foreach {
-      case (topic, listener) =>
-        zkUtils.zkClient.unsubscribeDataChanges(getTopicPath(topic), listener)
+    partitionModificationsListeners.foreach { case (topic, listener) =>
+      zkUtils.zkClient.unsubscribeDataChanges(getTopicPath(topic), listener)
     }
     partitionModificationsListeners.clear()
     if (controller.config.deleteTopicEnable)

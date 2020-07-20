@@ -15,11 +15,9 @@ trait SequentialActor extends Actor {
 
   def futureTimeout: Option[FiniteDuration] = none
 
-  private def idle: Receive = {
-
-    case msg =>
-      context become busy
-      processThenDone(msg)
+  private def idle: Receive = { case msg =>
+    context become busy
+    processThenDone(msg)
   }
 
   private def busy: Receive = {

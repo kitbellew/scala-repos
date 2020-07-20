@@ -133,14 +133,13 @@ private[spark] class MesosSchedulerBackend(
         .setName("SPARK_EXECUTOR_OPTS")
         .setValue(extraJavaOpts)
         .build())
-    sc.executorEnvs.foreach {
-      case (key, value) =>
-        environment.addVariables(
-          Environment.Variable
-            .newBuilder()
-            .setName(key)
-            .setValue(value)
-            .build())
+    sc.executorEnvs.foreach { case (key, value) =>
+      environment.addVariables(
+        Environment.Variable
+          .newBuilder()
+          .setName(key)
+          .setValue(value)
+          .build())
     }
     val command = CommandInfo
       .newBuilder()
@@ -359,23 +358,22 @@ private[spark] class MesosSchedulerBackend(
       val filters =
         Filters.newBuilder().setRefuseSeconds(1).build() // TODO: lower timeout?
 
-      mesosTasks.foreach {
-        case (slaveId, tasks) =>
-          slaveIdToWorkerOffer
-            .get(slaveId)
-            .foreach(o =>
-              listenerBus.post(
-                SparkListenerExecutorAdded(
-                  System.currentTimeMillis(),
-                  slaveId,
-                  // TODO: Add support for log urls for Mesos
-                  new ExecutorInfo(o.host, o.cores, Map.empty))))
-          logTrace(
-            s"Launching Mesos tasks on slave '$slaveId', tasks:\n${getTasksSummary(tasks)}")
-          d.launchTasks(
-            Collections.singleton(slaveIdToOffer(slaveId).getId),
-            tasks,
-            filters)
+      mesosTasks.foreach { case (slaveId, tasks) =>
+        slaveIdToWorkerOffer
+          .get(slaveId)
+          .foreach(o =>
+            listenerBus.post(
+              SparkListenerExecutorAdded(
+                System.currentTimeMillis(),
+                slaveId,
+                // TODO: Add support for log urls for Mesos
+                new ExecutorInfo(o.host, o.cores, Map.empty))))
+        logTrace(
+          s"Launching Mesos tasks on slave '$slaveId', tasks:\n${getTasksSummary(tasks)}")
+        d.launchTasks(
+          Collections.singleton(slaveIdToOffer(slaveId).getId),
+          tasks,
+          filters)
       }
 
       // Decline offers that weren't used

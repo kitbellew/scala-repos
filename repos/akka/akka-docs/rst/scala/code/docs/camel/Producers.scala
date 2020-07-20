@@ -32,9 +32,8 @@ object Producers {
     import akka.actor.{Props, ActorSystem}
 
     class ResponseReceiver extends Actor {
-      def receive = {
-        case msg: CamelMessage =>
-        // do something with the forwarded response
+      def receive = { case msg: CamelMessage =>
+      // do something with the forwarded response
       }
     }
 
@@ -112,10 +111,9 @@ object Producers {
     //#ProducerTemplate
     import akka.actor.Actor
     class MyActor extends Actor {
-      def receive = {
-        case msg =>
-          val template = CamelExtension(context.system).template
-          template.sendBody("direct:news", msg)
+      def receive = { case msg =>
+        val template = CamelExtension(context.system).template
+        template.sendBody("direct:news", msg)
       }
     }
     //#ProducerTemplate
@@ -124,10 +122,9 @@ object Producers {
     //#RequestProducerTemplate
     import akka.actor.Actor
     class MyActor extends Actor {
-      def receive = {
-        case msg =>
-          val template = CamelExtension(context.system).template
-          sender() ! template.requestBody("direct:news", msg)
+      def receive = { case msg =>
+        val template = CamelExtension(context.system).template
+        sender() ! template.requestBody("direct:news", msg)
       }
     }
     //#RequestProducerTemplate

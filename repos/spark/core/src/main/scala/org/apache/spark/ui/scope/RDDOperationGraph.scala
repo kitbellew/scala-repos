@@ -167,18 +167,17 @@ private[ui] object RDDOperationGraph extends Logging {
     val internalEdges = new ListBuffer[RDDOperationEdge]
     val outgoingEdges = new ListBuffer[RDDOperationEdge]
     val incomingEdges = new ListBuffer[RDDOperationEdge]
-    edges.foreach {
-      case e: RDDOperationEdge =>
-        val fromThisGraph = nodes.contains(e.fromId)
-        val toThisGraph = nodes.contains(e.toId)
-        (fromThisGraph, toThisGraph) match {
-          case (true, true)  => internalEdges += e
-          case (true, false) => outgoingEdges += e
-          case (false, true) => incomingEdges += e
-          // should never happen
-          case _ =>
-            logWarning(s"Found an orphan edge in stage ${stage.stageId}: $e")
-        }
+    edges.foreach { case e: RDDOperationEdge =>
+      val fromThisGraph = nodes.contains(e.fromId)
+      val toThisGraph = nodes.contains(e.toId)
+      (fromThisGraph, toThisGraph) match {
+        case (true, true)  => internalEdges += e
+        case (true, false) => outgoingEdges += e
+        case (false, true) => incomingEdges += e
+        // should never happen
+        case _ =>
+          logWarning(s"Found an orphan edge in stage ${stage.stageId}: $e")
+      }
     }
 
     RDDOperationGraph(internalEdges, outgoingEdges, incomingEdges, rootCluster)

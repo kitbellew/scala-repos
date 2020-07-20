@@ -91,10 +91,9 @@ class HttpEventModule(httpEventConfiguration: HttpEventConfiguration)
       urls foreach { url =>
         val f =
           (actor ? Subscribe(local_ip, url)).mapTo[MarathonSubscriptionEvent]
-        f.onFailure {
-          case th: Throwable =>
-            log.warn(
-              s"Failed to add $url to event subscribers. exception message => ${th.getMessage}")
+        f.onFailure { case th: Throwable =>
+          log.warn(
+            s"Failed to add $url to event subscribers. exception message => ${th.getMessage}")
         }(ExecutionContext.global)
       }
     }

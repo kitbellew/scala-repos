@@ -111,9 +111,8 @@ class RemoteRoundRobinSpec
           Map(
             node(first).address -> 0,
             node(second).address -> 0,
-            node(third).address -> 0)) {
-          case (replyMap, address) ⇒
-            replyMap + (address -> (replyMap(address) + 1))
+            node(third).address -> 0)) { case (replyMap, address) ⇒
+          replyMap + (address -> (replyMap(address) + 1))
         }
 
         enterBarrier("broadcast-end")
@@ -210,9 +209,8 @@ class RemoteRoundRobinSpec
           Map(
             node(first).address -> 0,
             node(second).address -> 0,
-            node(third).address -> 0)) {
-          case (replyMap, address) ⇒
-            replyMap + (address -> (replyMap(address) + 1))
+            node(third).address -> 0)) { case (replyMap, address) ⇒
+          replyMap + (address -> (replyMap(address) + 1))
         }
 
         enterBarrier("end")

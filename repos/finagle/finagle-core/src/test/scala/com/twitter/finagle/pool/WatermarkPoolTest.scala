@@ -271,11 +271,10 @@ class WatermarkPoolTest extends FunSpec with MockitoSugar {
         when(service.status).thenReturn(Status.Open)
       }
 
-      mocks zip services foreach {
-        case (mock, service) =>
-          service.close()
-          verify(mock).status
-          verify(mock, never()).close(any[Time])
+      mocks zip services foreach { case (mock, service) =>
+        service.close()
+        verify(mock).status
+        verify(mock, never()).close(any[Time])
       }
     }
 

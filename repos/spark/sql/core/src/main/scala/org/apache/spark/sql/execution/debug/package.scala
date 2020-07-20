@@ -111,11 +111,9 @@ package object debug {
     def dumpStats(): Unit = {
       logDebug(s"== ${child.simpleString} ==")
       logDebug(s"Tuples output: ${tupleCount.value}")
-      child.output.zip(columnStats).foreach {
-        case (attr, metric) =>
-          val actualDataTypes =
-            metric.elementTypes.value.mkString("{", ",", "}")
-          logDebug(s" ${attr.name} ${attr.dataType}: $actualDataTypes")
+      child.output.zip(columnStats).foreach { case (attr, metric) =>
+        val actualDataTypes = metric.elementTypes.value.mkString("{", ",", "}")
+        logDebug(s" ${attr.name} ${attr.dataType}: $actualDataTypes")
       }
     }
 

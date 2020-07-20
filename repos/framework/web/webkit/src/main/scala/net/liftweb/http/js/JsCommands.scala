@@ -152,9 +152,8 @@ trait JsObj extends JsExp {
       case (key, exp) => props.exists { case (k, e) => k == key }
     }
     // replaced props
-    val rp = props.map {
-      case (key, exp) =>
-        ep.find { case (k, e) => k == key }.getOrElse(key -> exp)
+    val rp = props.map { case (key, exp) =>
+      ep.find { case (k, e) => k == key }.getOrElse(key -> exp)
     }
 
     new JsObj {
@@ -1011,13 +1010,12 @@ object JsCmds {
     var y = null;
     """ +
         opts
-          .map {
-            case (value, text) =>
-              "y=document.createElement('option'); " +
-                "y.text = " + text.encJs + "; " +
-                "y.value = " + value.encJs + "; " +
-                (if (Full(value) == dflt) "y.selected = true; " else "") +
-                " try {x.add(y, null);} catch(e) {if (typeof(e) == 'object' && typeof(e.number) == 'number' && (e.number & 0xFFFF) == 5){ x.add(y,x.options.length); } } "
+          .map { case (value, text) =>
+            "y=document.createElement('option'); " +
+              "y.text = " + text.encJs + "; " +
+              "y.value = " + value.encJs + "; " +
+              (if (Full(value) == dflt) "y.selected = true; " else "") +
+              " try {x.add(y, null);} catch(e) {if (typeof(e) == 'object' && typeof(e.number) == 'number' && (e.number & 0xFFFF) == 5){ x.add(y,x.options.length); } } "
           }
           .mkString("\n") + "};"
   }

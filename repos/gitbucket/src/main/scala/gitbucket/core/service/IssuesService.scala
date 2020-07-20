@@ -39,9 +39,8 @@ trait IssuesService {
       .innerJoin(Accounts)
       .on((t1, t2) => t1.commentedUserName === t2.userName)
       .innerJoin(Issues)
-      .on {
-        case ((t1, t2), t3) =>
-          t3.byIssue(t1.userName, t1.repositoryName, t1.issueId)
+      .on { case ((t1, t2), t3) =>
+        t3.byIssue(t1.userName, t1.repositoryName, t1.issueId)
       }
       .map { case ((t1, t2), t3) => (t1, t2, t3) }
       .list
@@ -114,17 +113,14 @@ trait IssuesService {
         t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
       }
       .innerJoin(Labels)
-      .on {
-        case ((t1, t2), t3) =>
-          t2.byLabel(t3.userName, t3.repositoryName, t3.labelId)
+      .on { case ((t1, t2), t3) =>
+        t2.byLabel(t3.userName, t3.repositoryName, t3.labelId)
       }
-      .groupBy {
-        case ((t1, t2), t3) =>
-          t3.labelName
+      .groupBy { case ((t1, t2), t3) =>
+        t3.labelName
       }
-      .map {
-        case (labelName, t) =>
-          labelName -> t.length
+      .map { case (labelName, t) =>
+        labelName -> t.length
       }
       .toMap
   }
@@ -219,29 +215,25 @@ trait IssuesService {
     val result =
       searchIssueQueryBase(condition, pullRequest, offset, limit, repos)
         .leftJoin(IssueLabels)
-        .on {
-          case ((t1, t2), t3) =>
-            t1.byIssue(t3.userName, t3.repositoryName, t3.issueId)
+        .on { case ((t1, t2), t3) =>
+          t1.byIssue(t3.userName, t3.repositoryName, t3.issueId)
         }
         .leftJoin(Labels)
-        .on {
-          case (((t1, t2), t3), t4) =>
-            t3.byLabel(t4.userName, t4.repositoryName, t4.labelId)
+        .on { case (((t1, t2), t3), t4) =>
+          t3.byLabel(t4.userName, t4.repositoryName, t4.labelId)
         }
         .leftJoin(Milestones)
-        .on {
-          case ((((t1, t2), t3), t4), t5) =>
-            t1.byMilestone(t5.userName, t5.repositoryName, t5.milestoneId)
+        .on { case ((((t1, t2), t3), t4), t5) =>
+          t1.byMilestone(t5.userName, t5.repositoryName, t5.milestoneId)
         }
-        .map {
-          case ((((t1, t2), t3), t4), t5) =>
-            (
-              t1,
-              t2.commentCount,
-              t4.labelId.?,
-              t4.labelName.?,
-              t4.color.?,
-              t5.title.?)
+        .map { case ((((t1, t2), t3), t4), t5) =>
+          (
+            t1,
+            t2.commentCount,
+            t4.labelId.?,
+            t4.labelName.?,
+            t4.color.?,
+            t5.title.?)
         }
         .list
         .splitWith { (c1, c2) =>
@@ -289,26 +281,23 @@ trait IssuesService {
     // get issues and comment count and labels
     searchIssueQueryBase(condition, true, offset, limit, repos)
       .innerJoin(PullRequests)
-      .on {
-        case ((t1, t2), t3) =>
-          t3.byPrimaryKey(t1.userName, t1.repositoryName, t1.issueId)
+      .on { case ((t1, t2), t3) =>
+        t3.byPrimaryKey(t1.userName, t1.repositoryName, t1.issueId)
       }
       .innerJoin(Repositories)
-      .on {
-        case (((t1, t2), t3), t4) =>
-          t4.byRepository(t1.userName, t1.repositoryName)
+      .on { case (((t1, t2), t3), t4) =>
+        t4.byRepository(t1.userName, t1.repositoryName)
       }
       .innerJoin(Accounts)
-      .on {
-        case ((((t1, t2), t3), t4), t5) => t5.userName === t1.openedUserName
+      .on { case ((((t1, t2), t3), t4), t5) =>
+        t5.userName === t1.openedUserName
       }
       .innerJoin(Accounts)
-      .on {
-        case (((((t1, t2), t3), t4), t5), t6) => t6.userName === t4.userName
+      .on { case (((((t1, t2), t3), t4), t5), t6) =>
+        t6.userName === t4.userName
       }
-      .map {
-        case (((((t1, t2), t3), t4), t5), t6) =>
-          (t1, t5, t2.commentCount, t3, t4, t6)
+      .map { case (((((t1, t2), t3), t4), t5), t6) =>
+        (t1, t5, t2.commentCount, t3, t4, t6)
       }
       .list
   }
@@ -322,19 +311,18 @@ trait IssuesService {
     searchIssueQuery(repos, condition, pullRequest)
       .innerJoin(IssueOutline)
       .on { (t1, t2) => t1.byIssue(t2.userName, t2.repositoryName, t2.issueId) }
-      .sortBy {
-        case (t1, t2) =>
-          (condition.sort match {
-            case "created"  => t1.registeredDate
-            case "comments" => t2.commentCount
-            case "updated"  => t1.updatedDate
-          }) match {
-            case sort =>
-              condition.direction match {
-                case "asc"  => sort asc
-                case "desc" => sort desc
-              }
-          }
+      .sortBy { case (t1, t2) =>
+        (condition.sort match {
+          case "created"  => t1.registeredDate
+          case "comments" => t2.commentCount
+          case "updated"  => t1.updatedDate
+        }) match {
+          case sort =>
+            condition.direction match {
+              case "asc"  => sort asc
+              case "desc" => sort desc
+            }
+        }
       }
       .drop(offset)
       .take(limit)
@@ -531,60 +519,51 @@ trait IssuesService {
     val issues = Issues
       .filter(_.byRepository(owner, repository))
       .innerJoin(IssueOutline)
-      .on {
-        case (t1, t2) =>
-          t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
+      .on { case (t1, t2) =>
+        t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
       }
-      .filter {
-        case (t1, t2) =>
-          keywords
-            .map { keyword =>
-              (t1.title.toLowerCase like (s"%${likeEncode(keyword)}%", '^')) ||
-              (t1.content.toLowerCase like (s"%${likeEncode(keyword)}%", '^'))
-            }
-            .reduceLeft(_ && _)
+      .filter { case (t1, t2) =>
+        keywords
+          .map { keyword =>
+            (t1.title.toLowerCase like (s"%${likeEncode(keyword)}%", '^')) ||
+            (t1.content.toLowerCase like (s"%${likeEncode(keyword)}%", '^'))
+          }
+          .reduceLeft(_ && _)
       }
-      .map {
-        case (t1, t2) =>
-          (t1, 0, t1.content.?, t2.commentCount)
+      .map { case (t1, t2) =>
+        (t1, 0, t1.content.?, t2.commentCount)
       }
 
     // Search IssueComment
     val comments = IssueComments
       .filter(_.byRepository(owner, repository))
       .innerJoin(Issues)
-      .on {
-        case (t1, t2) =>
-          t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
+      .on { case (t1, t2) =>
+        t1.byIssue(t2.userName, t2.repositoryName, t2.issueId)
       }
       .innerJoin(IssueOutline)
-      .on {
-        case ((t1, t2), t3) =>
-          t2.byIssue(t3.userName, t3.repositoryName, t3.issueId)
+      .on { case ((t1, t2), t3) =>
+        t2.byIssue(t3.userName, t3.repositoryName, t3.issueId)
       }
-      .filter {
-        case ((t1, t2), t3) =>
-          keywords
-            .map { query =>
-              t1.content.toLowerCase like (s"%${likeEncode(query)}%", '^')
-            }
-            .reduceLeft(_ && _)
+      .filter { case ((t1, t2), t3) =>
+        keywords
+          .map { query =>
+            t1.content.toLowerCase like (s"%${likeEncode(query)}%", '^')
+          }
+          .reduceLeft(_ && _)
       }
-      .map {
-        case ((t1, t2), t3) =>
-          (t2, t1.commentId, t1.content.?, t3.commentCount)
+      .map { case ((t1, t2), t3) =>
+        (t2, t1.commentId, t1.content.?, t3.commentCount)
       }
 
     issues
       .union(comments)
-      .sortBy {
-        case (issue, commentId, _, _) =>
-          issue.issueId -> commentId
+      .sortBy { case (issue, commentId, _, _) =>
+        issue.issueId -> commentId
       }
       .list
-      .splitWith {
-        case ((issue1, _, _, _), (issue2, _, _, _)) =>
-          issue1.issueId == issue2.issueId
+      .splitWith { case ((issue1, _, _, _), (issue2, _, _, _)) =>
+        issue1.issueId == issue2.issueId
       }
       .map {
         _.head match {
@@ -762,9 +741,8 @@ object IssuesService {
           }
         }
         .groupBy(_._1)
-        .map {
-          case (key, values) =>
-            key -> values.map(_._2).toSeq
+        .map { case (key, values) =>
+          key -> values.map(_._2).toSeq
         }
 
       val (sort, direction) = conditions

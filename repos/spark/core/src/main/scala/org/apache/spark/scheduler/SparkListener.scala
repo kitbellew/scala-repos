@@ -326,9 +326,8 @@ class StatsReportListener extends SparkListener with Logging {
       taskInfoMetrics)
 
     // Runtime breakdown
-    val runtimePcts = taskInfoMetrics.map {
-      case (info, metrics) =>
-        RuntimePercentage(info.duration, metrics)
+    val runtimePcts = taskInfoMetrics.map { case (info, metrics) =>
+      RuntimePercentage(info.duration, metrics)
     }
     showDistribution(
       "executor (non-fetch) time pct: ",

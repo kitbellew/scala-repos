@@ -365,9 +365,8 @@ class PrefixSpanSuite extends SparkFunSuite with MLlibTestSparkContext {
       (Array(Array(3)), 2L),
       (Array(Array(1), Array(3)), 2L),
       (Array(Array(1, 2)), 3L)
-    ).map {
-      case (pattern, count) =>
-        (pattern.map(itemSet => itemSet.map(intToString)), count)
+    ).map { case (pattern, count) =>
+      (pattern.map(itemSet => itemSet.map(intToString)), count)
     }
     compareResults(expected, model.freqSequences.collect())
   }

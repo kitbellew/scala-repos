@@ -197,9 +197,8 @@ class TransportTest extends FunSuite with GeneratorDrivenPropertyChecks {
     val trans1 = new Transport[String, String] {
       val p = new Promise[String]
       var theIntr: Throwable = null
-      p.setInterruptHandler {
-        case intr =>
-          theIntr = intr
+      p.setInterruptHandler { case intr =>
+        theIntr = intr
       }
       def write(s: String) = ???
       def read() = p

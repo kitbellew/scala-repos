@@ -625,10 +625,9 @@ private[akka] class LocalActorRefProvider private[akka] (
     * Overridable supervision strategy to be used by the “/user” guardian.
     */
   protected def rootGuardianStrategy: SupervisorStrategy =
-    OneForOneStrategy() {
-      case ex ⇒
-        log.error(ex, "guardian failed, shutting down system")
-        SupervisorStrategy.Stop
+    OneForOneStrategy() { case ex ⇒
+      log.error(ex, "guardian failed, shutting down system")
+      SupervisorStrategy.Stop
     }
 
   /**

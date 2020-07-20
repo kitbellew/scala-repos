@@ -258,15 +258,14 @@ case class SortMergeJoin(
   private def copyKeys(
       ctx: CodegenContext,
       vars: Seq[ExprCode]): Seq[ExprCode] = {
-    vars.zipWithIndex.map {
-      case (ev, i) =>
-        val value = ctx.freshName("value")
-        ctx.addMutableState(ctx.javaType(leftKeys(i).dataType), value, "")
-        val code =
-          s"""
+    vars.zipWithIndex.map { case (ev, i) =>
+      val value = ctx.freshName("value")
+      ctx.addMutableState(ctx.javaType(leftKeys(i).dataType), value, "")
+      val code =
+        s"""
            |$value = ${ev.value};
          """.stripMargin
-        ExprCode(code, "false", value)
+      ExprCode(code, "false", value)
     }
   }
 
@@ -274,9 +273,8 @@ case class SortMergeJoin(
       ctx: CodegenContext,
       a: Seq[ExprCode],
       b: Seq[ExprCode]): String = {
-    val comparisons = a.zip(b).zipWithIndex.map {
-      case ((l, r), i) =>
-        s"""
+    val comparisons = a.zip(b).zipWithIndex.map { case ((l, r), i) =>
+      s"""
          |if (comp == 0) {
          |  comp = ${ctx.genComp(leftKeys(i).dataType, l.value, r.value)};
          |}
@@ -386,24 +384,23 @@ case class SortMergeJoin(
       ctx: CodegenContext,
       leftRow: String): Seq[ExprCode] = {
     ctx.INPUT_ROW = leftRow
-    left.output.zipWithIndex.map {
-      case (a, i) =>
-        val value = ctx.freshName("value")
-        val valueCode = ctx.getValue(leftRow, a.dataType, i.toString)
-        // declare it as class member, so we can access the column before or in the loop.
-        ctx.addMutableState(ctx.javaType(a.dataType), value, "")
-        if (a.nullable) {
-          val isNull = ctx.freshName("isNull")
-          ctx.addMutableState("boolean", isNull, "")
-          val code =
-            s"""
+    left.output.zipWithIndex.map { case (a, i) =>
+      val value = ctx.freshName("value")
+      val valueCode = ctx.getValue(leftRow, a.dataType, i.toString)
+      // declare it as class member, so we can access the column before or in the loop.
+      ctx.addMutableState(ctx.javaType(a.dataType), value, "")
+      if (a.nullable) {
+        val isNull = ctx.freshName("isNull")
+        ctx.addMutableState("boolean", isNull, "")
+        val code =
+          s"""
              |$isNull = $leftRow.isNullAt($i);
              |$value = $isNull ? ${ctx.defaultValue(a.dataType)} : ($valueCode);
            """.stripMargin
-          ExprCode(code, isNull, value)
-        } else {
-          ExprCode(s"$value = $valueCode;", "false", value)
-        }
+        ExprCode(code, isNull, value)
+      } else {
+        ExprCode(s"$value = $valueCode;", "false", value)
+      }
     }
   }
 
@@ -415,9 +412,8 @@ case class SortMergeJoin(
       ctx: CodegenContext,
       rightRow: String): Seq[ExprCode] = {
     ctx.INPUT_ROW = rightRow
-    right.output.zipWithIndex.map {
-      case (a, i) =>
-        BoundReference(i, a.dataType, a.nullable).gen(ctx)
+    right.output.zipWithIndex.map { case (a, i) =>
+      BoundReference(i, a.dataType, a.nullable).gen(ctx)
     }
   }
 
@@ -433,10 +429,10 @@ case class SortMergeJoin(
       variables: Seq[ExprCode]): (String, String) = {
     if (condition.isDefined) {
       val condRefs = condition.get.references
-      val (used, notUsed) = attributes.zip(variables).partition {
-        case (a, ev) =>
+      val (used, notUsed) =
+        attributes.zip(variables).partition { case (a, ev) =>
           condRefs.contains(a)
-      }
+        }
       val beforeCond = evaluateVariables(used.map(_._2))
       val afterCond = evaluateVariables(notUsed.map(_._2))
       (beforeCond, afterCond)

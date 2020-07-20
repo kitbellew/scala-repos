@@ -127,9 +127,8 @@ private[ml] object TreeTests extends SparkFunSuite {
     */
   def checkEqual(a: TreeEnsembleModel, b: TreeEnsembleModel): Unit = {
     try {
-      a.trees.zip(b.trees).foreach {
-        case (treeA, treeB) =>
-          TreeTests.checkEqual(treeA, treeB)
+      a.trees.zip(b.trees).foreach { case (treeA, treeB) =>
+        TreeTests.checkEqual(treeA, treeB)
       }
       assert(a.treeWeights === b.treeWeights)
     } catch {

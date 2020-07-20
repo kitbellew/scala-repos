@@ -61,42 +61,40 @@ object GenerateMutableProjection
       case _         => true
     }.unzip
     val exprVals = ctx.generateExpressions(validExpr, useSubexprElimination)
-    val projectionCodes = exprVals.zip(index).map {
-      case (ev, i) =>
-        val e = expressions(i)
-        if (e.nullable) {
-          val isNull = s"isNull_$i"
-          val value = s"value_$i"
-          ctx.addMutableState("boolean", isNull, s"this.$isNull = true;")
-          ctx.addMutableState(
-            ctx.javaType(e.dataType),
-            value,
-            s"this.$value = ${ctx.defaultValue(e.dataType)};")
-          s"""
+    val projectionCodes = exprVals.zip(index).map { case (ev, i) =>
+      val e = expressions(i)
+      if (e.nullable) {
+        val isNull = s"isNull_$i"
+        val value = s"value_$i"
+        ctx.addMutableState("boolean", isNull, s"this.$isNull = true;")
+        ctx.addMutableState(
+          ctx.javaType(e.dataType),
+          value,
+          s"this.$value = ${ctx.defaultValue(e.dataType)};")
+        s"""
             ${ev.code}
             this.$isNull = ${ev.isNull};
             this.$value = ${ev.value};
            """
-        } else {
-          val value = s"value_$i"
-          ctx.addMutableState(
-            ctx.javaType(e.dataType),
-            value,
-            s"this.$value = ${ctx.defaultValue(e.dataType)};")
-          s"""
+      } else {
+        val value = s"value_$i"
+        ctx.addMutableState(
+          ctx.javaType(e.dataType),
+          value,
+          s"this.$value = ${ctx.defaultValue(e.dataType)};")
+        s"""
             ${ev.code}
             this.$value = ${ev.value};
            """
-        }
+      }
     }
 
     // Evaluate all the subexpressions.
     val evalSubexpr = ctx.subexprFunctions.mkString("\n")
 
-    val updates = validExpr.zip(index).map {
-      case (e, i) =>
-        val ev = ExprCode("", s"this.isNull_$i", s"this.value_$i")
-        ctx.updateColumn("mutableRow", e.dataType, i, ev, e.nullable)
+    val updates = validExpr.zip(index).map { case (e, i) =>
+      val ev = ExprCode("", s"this.isNull_$i", s"this.value_$i")
+      ctx.updateColumn("mutableRow", e.dataType, i, ev, e.nullable)
     }
 
     val allProjections = ctx.splitExpressions(ctx.INPUT_ROW, projectionCodes)

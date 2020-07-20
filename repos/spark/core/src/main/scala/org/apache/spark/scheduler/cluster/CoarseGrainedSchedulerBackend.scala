@@ -230,9 +230,8 @@ private[spark] class CoarseGrainedSchedulerBackend(
     private def makeOffers() {
       // Filter out executors under killing
       val activeExecutors = executorDataMap.filterKeys(executorIsAlive)
-      val workOffers = activeExecutors.map {
-        case (id, executorData) =>
-          new WorkerOffer(id, executorData.executorHost, executorData.freeCores)
+      val workOffers = activeExecutors.map { case (id, executorData) =>
+        new WorkerOffer(id, executorData.executorHost, executorData.freeCores)
       }.toSeq
       launchTasks(scheduler.resourceOffers(workOffers))
     }
@@ -428,9 +427,9 @@ private[spark] class CoarseGrainedSchedulerBackend(
 
         // Remove all the lingering executors that should be removed but not yet. The reason might be
         // because (1) disconnected event is not yet received; (2) executors die silently.
-        executorDataMap.toMap.foreach {
-          case (eid, _) =>
-            driverEndpoint.askWithRetry[Boolean](RemoveExecutor(
+        executorDataMap.toMap.foreach { case (eid, _) =>
+          driverEndpoint.askWithRetry[Boolean](
+            RemoveExecutor(
               eid,
               SlaveLost("Stale executor after cluster manager re-registered.")))
         }

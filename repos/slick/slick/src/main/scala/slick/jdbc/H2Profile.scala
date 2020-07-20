@@ -68,11 +68,10 @@ trait H2Profile extends JdbcProfile {
         override def default =
           rawDefault
             .map((_, tpe))
-            .collect {
-              case (v, "java.util.UUID") =>
-                Some(
-                  Some(java.util.UUID.fromString(v.replaceAll("[\'\"]", "")))
-                ) //strip quotes
+            .collect { case (v, "java.util.UUID") =>
+              Some(
+                Some(java.util.UUID.fromString(v.replaceAll("[\'\"]", "")))
+              ) //strip quotes
             }
             .getOrElse { super.default }
         override def tpe =

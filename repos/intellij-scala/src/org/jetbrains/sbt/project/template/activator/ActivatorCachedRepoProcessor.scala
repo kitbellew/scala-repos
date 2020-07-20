@@ -49,13 +49,12 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         case io: IOException => error("Can't download index", io)
       }
 
-      downloaded flatMap {
-        case str =>
-          str.split('\n').find {
-            case s => s.trim startsWith CACHE_HASH
-          } map {
-            case hashStr => hashStr.trim.stripPrefix(CACHE_HASH)
-          }
+      downloaded flatMap { case str =>
+        str.split('\n').find {
+          case s => s.trim startsWith CACHE_HASH
+        } map {
+          case hashStr => hashStr.trim.stripPrefix(CACHE_HASH)
+        }
       }
     }
 
@@ -67,19 +66,18 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
         .flatMap(a => indexFile.map(b => (a, b._1)))
         .exists(a => a._1 == a._2)) indexFile.map(_._2)
     else {
-      extractHash() flatMap {
-        case hash =>
-          val tmpFile = FileUtil.createTempFile(s"index-$hash", ".zip", true)
-          val downloaded = ActivatorRepoProcessor.downloadFile(
-            s"$urlString/${indexName(hash)}",
-            tmpFile.getCanonicalPath,
-            errorStr,
-            ProgressManager.getInstance().getProgressIndicator)
+      extractHash() flatMap { case hash =>
+        val tmpFile = FileUtil.createTempFile(s"index-$hash", ".zip", true)
+        val downloaded = ActivatorRepoProcessor.downloadFile(
+          s"$urlString/${indexName(hash)}",
+          tmpFile.getCanonicalPath,
+          errorStr,
+          ProgressManager.getInstance().getProgressIndicator)
 
-          if (downloaded) {
-            indexFile = Some((hash, tmpFile))
-            Some(tmpFile)
-          } else None
+        if (downloaded) {
+          indexFile = Some((hash, tmpFile))
+          Some(tmpFile)
+        } else None
       }
     }
   }
@@ -99,10 +97,9 @@ class ActivatorCachedRepoProcessor extends ProjectComponent {
 
     try {
       template.usingTempDirectoryWithHandler("index-activator", None)(
-        {
-          case io: IOException =>
-            error("Can't process templates list", io);
-            Map.empty[String, ActivatorRepoProcessor.DocData]
+        { case io: IOException =>
+          error("Can't process templates list", io);
+          Map.empty[String, ActivatorRepoProcessor.DocData]
         },
         { case io: IOException => }) { extracted =>
         ZipUtil.extract(location, extracted, null)

@@ -191,9 +191,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     "SPARK-8930: explode should fail with a meaningful message if it takes a star") {
     val df = Seq(("1", "1,2"), ("2", "4"), ("3", "7,8,9")).toDF("prefix", "csv")
     val e = intercept[AnalysisException] {
-      df.explode($"*") {
-        case Row(prefix: String, csv: String) =>
-          csv.split(",").map(v => Tuple1(prefix + ":" + v)).toSeq
+      df.explode($"*") { case Row(prefix: String, csv: String) =>
+        csv.split(",").map(v => Tuple1(prefix + ":" + v)).toSeq
       }.queryExecution
         .assertAnalyzed()
     }
@@ -201,9 +200,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       e.getMessage.contains(
         "Cannot explode *, explode can only be applied on a specific column."))
 
-    df.explode('prefix, 'csv) {
-      case Row(prefix: String, csv: String) =>
-        csv.split(",").map(v => Tuple1(prefix + ":" + v)).toSeq
+    df.explode('prefix, 'csv) { case Row(prefix: String, csv: String) =>
+      csv.split(",").map(v => Tuple1(prefix + ":" + v)).toSeq
     }.queryExecution
       .assertAnalyzed()
   }
@@ -452,9 +450,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       df,
       testData
         .collect()
-        .map {
-          case Row(key: Int, value: String) =>
-            Row(key, value, key + 1)
+        .map { case Row(key: Int, value: String) =>
+          Row(key, value, key + 1)
         }
         .toSeq)
     assert(df.schema.map(_.name) === Seq("key", "value", "newCol"))
@@ -541,9 +538,8 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
       df,
       testData
         .collect()
-        .map {
-          case Row(key: Int, value: String) =>
-            Row(key, value, key + 1)
+        .map { case Row(key: Int, value: String) =>
+          Row(key, value, key + 1)
         }
         .toSeq)
     assert(df.schema.map(_.name) === Seq("key", "valueRenamed", "newCol"))
@@ -1149,10 +1145,9 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     // When generating expected results at here, we need to follow the implementation of
     // Rand expression.
     def expected(df: DataFrame): Seq[Row] = {
-      df.rdd.collectPartitions().zipWithIndex.flatMap {
-        case (data, index) =>
-          val rng = new org.apache.spark.util.random.XORShiftRandom(7 + index)
-          data.filter(_.getInt(0) < rng.nextDouble() * 10)
+      df.rdd.collectPartitions().zipWithIndex.flatMap { case (data, index) =>
+        val rng = new org.apache.spark.util.random.XORShiftRandom(7 + index)
+        data.filter(_.getInt(0) < rng.nextDouble() * 10)
       }
     }
 
@@ -1163,10 +1158,9 @@ class DataFrameSuite extends QueryTest with SharedSQLContext {
     )
     checkAnswer(
       union.select(rand(7)),
-      union.rdd.collectPartitions().zipWithIndex.flatMap {
-        case (data, index) =>
-          val rng = new org.apache.spark.util.random.XORShiftRandom(7 + index)
-          data.map(_ => rng.nextDouble()).map(i => Row(i))
+      union.rdd.collectPartitions().zipWithIndex.flatMap { case (data, index) =>
+        val rng = new org.apache.spark.util.random.XORShiftRandom(7 + index)
+        data.map(_ => rng.nextDouble()).map(i => Row(i))
       }
     )
 

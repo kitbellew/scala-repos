@@ -58,9 +58,8 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
         numEdges10,
         maxVertexId,
         seed = 12345)
-    assert(edges10_round1.zip(edges10_round2).forall {
-      case (e1, e2) =>
-        e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
+    assert(edges10_round1.zip(edges10_round2).forall { case (e1, e2) =>
+      e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
     })
 
     val edges10_round3 =
@@ -69,9 +68,8 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
         numEdges10,
         maxVertexId,
         seed = 3467)
-    assert(!edges10_round1.zip(edges10_round3).forall {
-      case (e1, e2) =>
-        e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
+    assert(!edges10_round1.zip(edges10_round3).forall { case (e1, e2) =>
+      e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
     })
   }
 

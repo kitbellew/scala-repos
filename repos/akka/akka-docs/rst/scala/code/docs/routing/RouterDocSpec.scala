@@ -283,8 +283,7 @@ router-dispatcher {}
   //#router-in-actor
 
   class Worker extends Actor {
-    def receive = {
-      case _ =>
+    def receive = { case _ =>
     }
   }
 
@@ -296,8 +295,7 @@ router-dispatcher {}
     // ...
     //#create-worker-actors
 
-    def receive = {
-      case _ =>
+    def receive = { case _ =>
     }
   }
 
@@ -491,8 +489,7 @@ router-dispatcher {}
       context.actorOf(FromConfig.props(Props[Worker]), "router31")
     //#optimal-size-exploring-resize-pool
 
-    def receive = {
-      case _ =>
+    def receive = { case _ =>
     }
 
   }

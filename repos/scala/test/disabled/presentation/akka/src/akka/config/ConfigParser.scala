@@ -50,10 +50,9 @@ class ConfigParser(
   def root = rep(includeFile | assignment | sectionOpen | sectionClose)
 
   def includeFile =
-    "include" ~> string ^^ {
-      case filename: String =>
-        new ConfigParser(prefix, map, importer) parse importer.importFile(
-          filename)
+    "include" ~> string ^^ { case filename: String =>
+      new ConfigParser(prefix, map, importer) parse importer.importFile(
+        filename)
     }
 
   def assignment =

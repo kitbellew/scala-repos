@@ -95,15 +95,14 @@ trait ArgHelper {
     * @return Command Line Parameters
     */
   private[this] def argString(describedArgs: Seq[DescribedArg]): String = {
-    describedArgs.foldLeft("") {
-      case (str, describedArg) =>
-        val msg = describedArg match {
-          case RequiredArg(key, _) => s"--$key VALUE "
-          case OptionalArg(key, _) => s"[--$key VALUE] "
-          case ListArg(key, _)     => s"[--$key VALUE VALUE2] "
-          case BooleanArg(key, _)  => s"[--$key] "
-        }
-        str + msg
+    describedArgs.foldLeft("") { case (str, describedArg) =>
+      val msg = describedArg match {
+        case RequiredArg(key, _) => s"--$key VALUE "
+        case OptionalArg(key, _) => s"[--$key VALUE] "
+        case ListArg(key, _)     => s"[--$key VALUE VALUE2] "
+        case BooleanArg(key, _)  => s"[--$key] "
+      }
+      str + msg
     } + "[--help]"
   }
 
@@ -114,18 +113,17 @@ trait ArgHelper {
     * @return Detailed Help for the Args
     */
   private[this] def help(describedArgs: Seq[DescribedArg]): String = {
-    describedArgs.foldLeft("") {
-      case (str, describedArg) =>
-        val msg = describedArg match {
-          case RequiredArg(key, description) =>
-            s"--$key(Required) :: $description \n"
-          case OptionalArg(key, description) =>
-            s"--$key(Optional) :: $description \n"
-          case ListArg(key, description) => s"--$key(List) :: $description \n"
-          case BooleanArg(key, description) =>
-            s"--$key(Boolean) :: $description \n"
-        }
-        str + msg
+    describedArgs.foldLeft("") { case (str, describedArg) =>
+      val msg = describedArg match {
+        case RequiredArg(key, description) =>
+          s"--$key(Required) :: $description \n"
+        case OptionalArg(key, description) =>
+          s"--$key(Optional) :: $description \n"
+        case ListArg(key, description) => s"--$key(List) :: $description \n"
+        case BooleanArg(key, description) =>
+          s"--$key(Boolean) :: $description \n"
+      }
+      str + msg
     } + "--help :: Show this help message."
   }
 }

@@ -116,12 +116,11 @@ final class PgnDump(
     }
 
   private def turns(moves: List[String], from: Int): List[chessPgn.Turn] =
-    (moves grouped 2).zipWithIndex.toList map {
-      case (moves, index) =>
-        chessPgn.Turn(
-          number = index + from,
-          white = moves.headOption filter (".." !=) map { chessPgn.Move(_) },
-          black = moves lift 1 map { chessPgn.Move(_) })
+    (moves grouped 2).zipWithIndex.toList map { case (moves, index) =>
+      chessPgn.Turn(
+        number = index + from,
+        white = moves.headOption filter (".." !=) map { chessPgn.Move(_) },
+        black = moves lift 1 map { chessPgn.Move(_) })
     } filterNot (_.isEmpty)
 }
 

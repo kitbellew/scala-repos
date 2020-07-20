@@ -47,9 +47,8 @@ object Page extends LilaController {
       (for {
         variant <- chess.variant.Variant.byKey get key
         perfType <- lila.rating.PerfType byVariant variant
-      } yield OptionOk(Prismic getVariant variant) {
-        case (doc, resolver) =>
-          views.html.site.variant(doc, resolver, variant, perfType)
+      } yield OptionOk(Prismic getVariant variant) { case (doc, resolver) =>
+        views.html.site.variant(doc, resolver, variant, perfType)
       }) | notFound
     }
 }

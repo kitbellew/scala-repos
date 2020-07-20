@@ -102,8 +102,8 @@ object Ratatoskr {
       "")
 
     commands
-      .foldLeft(initial) {
-        case (acc, cmd) => acc :+ "%-20s : %s".format(cmd.name, cmd.description)
+      .foldLeft(initial) { case (acc, cmd) =>
+        acc :+ "%-20s : %s".format(cmd.name, cmd.description)
       }
       .mkString("\n")
   }
@@ -500,47 +500,45 @@ object KafkaTools extends Command {
               "\"%s\"".format(accountLookup.getOrElse(acct, acct))
             }
             .mkString(","))
-        slices.foreach {
-          case (index, byAccount) =>
-            val accountTotals =
-              trackedAccounts.sorted.map(byAccount.getOrElse(_, 0L))
-            (index match {
-              case ExactTime(time, _) => Some(time)
-              case i: Interpolated    => interpolationMap.get(i)
-            }).foreach { timestamp =>
-              //println(index + " => " + timestamp)
-              println(
-                "%d,%d,%s".format(
-                  timestamp,
-                  accountTotals.sum,
-                  accountTotals.mkString(",")))
-            }
+        slices.foreach { case (index, byAccount) =>
+          val accountTotals =
+            trackedAccounts.sorted.map(byAccount.getOrElse(_, 0L))
+          (index match {
+            case ExactTime(time, _) => Some(time)
+            case i: Interpolated    => interpolationMap.get(i)
+          }).foreach { timestamp =>
+            //println(index + " => " + timestamp)
+            println(
+              "%d,%d,%s".format(
+                timestamp,
+                accountTotals.sum,
+                accountTotals.mkString(",")))
+          }
         }
       } else {
-        slices.foreach {
-          case (index, byAccount) =>
-            (index match {
-              case ExactTime(time, _) => Some(time)
-              case i: Interpolated    => interpolationMap.get(i)
-            }).foreach { timestamp =>
-              //println(index + " => " + timestamp)
-              println(
-                JObject(
-                  "index" -> JNum(timestamp),
-                  "account" -> JString("total"),
-                  "size" -> JNum(byAccount.map(_._2).sum)).renderCompact)
-              trackedAccounts.foreach { account =>
-                if (byAccount.contains(account)) {
-                  println(
-                    JObject(
-                      "index" -> JNum(timestamp),
-                      "account" -> JString(
-                        accountLookup.getOrElse(account, account)),
-                      "size" -> JNum(
-                        byAccount.getOrElse(account, 0L))).renderCompact)
-                }
+        slices.foreach { case (index, byAccount) =>
+          (index match {
+            case ExactTime(time, _) => Some(time)
+            case i: Interpolated    => interpolationMap.get(i)
+          }).foreach { timestamp =>
+            //println(index + " => " + timestamp)
+            println(
+              JObject(
+                "index" -> JNum(timestamp),
+                "account" -> JString("total"),
+                "size" -> JNum(byAccount.map(_._2).sum)).renderCompact)
+            trackedAccounts.foreach { account =>
+              if (byAccount.contains(account)) {
+                println(
+                  JObject(
+                    "index" -> JNum(timestamp),
+                    "account" -> JString(
+                      accountLookup.getOrElse(account, account)),
+                    "size" -> JNum(
+                      byAccount.getOrElse(account, 0L))).renderCompact)
               }
             }
+          }
         }
       }
       sys.exit(0) // due to BlueEyes holding things open for mongo
@@ -667,11 +665,10 @@ object KafkaTools extends Command {
           data.foreach(v => println(v.serialize.renderPretty))
       }
 
-      parsed.valueOr {
-        case other =>
-          println(
-            "Message %d: %s was not an ingest request."
-              .format(i + 1, other.toString))
+      parsed.valueOr { case other =>
+        println(
+          "Message %d: %s was not an ingest request."
+            .format(i + 1, other.toString))
       }
     }
   }
@@ -763,25 +760,23 @@ object ZookeeperTools extends Command {
       println("Checkpoint updated: %s with %s".format(path, data))
     }
 
-    config.checkpointUpdate.foreach {
-      case (path, data) =>
-        data match {
-          case "initial" =>
-            println("Loading initial checkpoint")
-            setCheckpoint(path, YggCheckpoint.Empty)
-          case s =>
-            println("Loading initial checkpoint from : " + s)
-            setCheckpoint(
-              path,
-              parseCheckpoint(s).valueOr(err => sys.error(err.message)))
-        }
+    config.checkpointUpdate.foreach { case (path, data) =>
+      data match {
+        case "initial" =>
+          println("Loading initial checkpoint")
+          setCheckpoint(path, YggCheckpoint.Empty)
+        case s =>
+          println("Loading initial checkpoint from : " + s)
+          setCheckpoint(
+            path,
+            parseCheckpoint(s).valueOr(err => sys.error(err.message)))
+      }
     }
 
-    config.relayAgentUpdate.foreach {
-      case (path, data) =>
-        setRelayState(
-          path,
-          parseRelayState(data).valueOr(err => sys.error(err.message)))
+    config.relayAgentUpdate.foreach { case (path, data) =>
+      setRelayState(
+        path,
+        parseRelayState(data).valueOr(err => sys.error(err.message)))
     }
   }
 
@@ -794,10 +789,9 @@ object ZookeeperTools extends Command {
         println("no %s at: %s".format(name, path))
       case children =>
         println("%s for: %s".format(name, path))
-        children.foreach {
-          case (child, data) =>
-            println("  %s".format(child))
-            println("    %s".format(data))
+        children.foreach { case (child, data) =>
+          println("  %s".format(child))
+          println("    %s".format(data))
         }
     }
   }
@@ -1129,58 +1123,57 @@ object ImportTools extends Command with Logging {
       }
 
     def runIngest(apiKey: APIKey) =
-      config.input.toStream traverse {
-        case (db, input) =>
-          val path = Path(db)
-          logger.info("Inserting batch: %s:%s".format(db, input))
+      config.input.toStream traverse { case (db, input) =>
+        val path = Path(db)
+        logger.info("Inserting batch: %s:%s".format(db, input))
 
-          val bufSize = 8 * 1024 * 1024
-          val f = new File(input)
-          val ch = new FileInputStream(f).getChannel
-          val bb = ByteBuffer.allocate(bufSize)
+        val bufSize = 8 * 1024 * 1024
+        val f = new File(input)
+        val ch = new FileInputStream(f).getChannel
+        val bb = ByteBuffer.allocate(bufSize)
 
-          def loop(offset: Long, p: AsyncParser): Future[Unit] = {
-            val n = ch.read(bb)
-            bb.flip()
+        def loop(offset: Long, p: AsyncParser): Future[Unit] = {
+          val n = ch.read(bb)
+          bb.flip()
 
-            val input = if (n >= 0) More(bb) else Done
-            val (AsyncParse(errors, results), parser) = p(input)
+          val input = if (n >= 0) More(bb) else Done
+          val (AsyncParse(errors, results), parser) = p(input)
 
-            if (!errors.isEmpty) {
-              sys.error(
-                "found %d parse errors.\nfirst 5 were: %s" format (errors.length, errors
-                  .take(5)))
-            } else if (results.size > 0) {
-              val eventidobj = EventId(pid, sid.getAndIncrement)
-              logger.info("Sending %d events".format(results.size))
-              val records = results map { IngestRecord(eventidobj, _) }
-              val update = IngestData(
-                Seq(
-                  (
-                    offset,
-                    IngestMessage(
-                      apiKey,
-                      path,
-                      authorities,
-                      records,
-                      None,
-                      yggConfig.clock.instant,
-                      StreamRef.Append)))
-              )
+          if (!errors.isEmpty) {
+            sys.error(
+              "found %d parse errors.\nfirst 5 were: %s" format (errors.length, errors
+                .take(5)))
+          } else if (results.size > 0) {
+            val eventidobj = EventId(pid, sid.getAndIncrement)
+            logger.info("Sending %d events".format(results.size))
+            val records = results map { IngestRecord(eventidobj, _) }
+            val update = IngestData(
+              Seq(
+                (
+                  offset,
+                  IngestMessage(
+                    apiKey,
+                    path,
+                    authorities,
+                    records,
+                    None,
+                    yggConfig.clock.instant,
+                    StreamRef.Append)))
+            )
 
-              (vfsModule.projectionsActor ? update) flatMap { _ =>
-                logger.info("Batch saved")
-                bb.flip()
-                if (n >= 0) loop(offset + 1, parser) else Future(())
-              }
-            } else {
+            (vfsModule.projectionsActor ? update) flatMap { _ =>
+              logger.info("Batch saved")
+              bb.flip()
               if (n >= 0) loop(offset + 1, parser) else Future(())
             }
+          } else {
+            if (n >= 0) loop(offset + 1, parser) else Future(())
           }
+        }
 
-          loop(0L, AsyncParser.stream()) onComplete {
-            case _ => ch.close()
-          }
+        loop(0L, AsyncParser.stream()) onComplete {
+          case _ => ch.close()
+        }
       }
 
     val complete =

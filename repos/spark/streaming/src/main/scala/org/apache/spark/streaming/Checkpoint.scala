@@ -74,11 +74,10 @@ private[streaming] class Checkpoint(
     // Add Yarn proxy filter specific configurations to the recovered SparkConf
     val filter = "org.apache.hadoop.yarn.server.webproxy.amfilter.AmIpFilter"
     val filterPrefix = s"spark.$filter.param."
-    newReloadConf.getAll.foreach {
-      case (k, v) =>
-        if (k.startsWith(filterPrefix) && k.length > filterPrefix.length) {
-          newSparkConf.set(k, v)
-        }
+    newReloadConf.getAll.foreach { case (k, v) =>
+      if (k.startsWith(filterPrefix) && k.length > filterPrefix.length) {
+        newSparkConf.set(k, v)
+      }
     }
 
     newSparkConf

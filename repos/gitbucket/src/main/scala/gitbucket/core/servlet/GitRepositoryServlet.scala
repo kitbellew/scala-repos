@@ -72,10 +72,9 @@ class GitBucketRepositoryResolver(parent: FileResolver[HttpServletRequest])
     // Rewrite repository path if routing is marched
     PluginRegistry()
       .getRepositoryRouting("/" + name)
-      .map {
-        case GitRepositoryRouting(urlPattern, localPath, _) =>
-          val path = urlPattern.r.replaceFirstIn(name, localPath)
-          resolver.open(req, path)
+      .map { case GitRepositoryRouting(urlPattern, localPath, _) =>
+        val path = urlPattern.r.replaceFirstIn(name, localPath)
+        resolver.open(req, path)
       }
       .getOrElse {
         parent.open(req, name)

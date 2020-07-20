@@ -180,11 +180,10 @@ object VecTime {
     val databuf = Array.ofDim[Long](sz)
 
     var c = 0 // byte counter
-    vecs.zipWithIndex.foreach {
-      case (v, vidx) =>
-        val vlen = v.length
-        var i = 0
-        while (i < vlen) { databuf(c) = v.times(i); i += 1; c += 1 }
+    vecs.zipWithIndex.foreach { case (v, vidx) =>
+      val vlen = v.length
+      var i = 0
+      while (i < vlen) { databuf(c) = v.times(i); i += 1; c += 1 }
     }
 
     new VecTime(Vec(databuf))

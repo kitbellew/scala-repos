@@ -73,13 +73,12 @@ object GraphGenerators extends Logging {
         (src, sampleLogNormal(mu, sigma, numVertices, seed = (seed1 ^ src)))
       }
 
-    val edges = vertices.flatMap {
-      case (src, degree) =>
-        generateRandomEdges(
-          src.toInt,
-          degree.toInt,
-          numVertices,
-          seed = (seed2 ^ src))
+    val edges = vertices.flatMap { case (src, degree) =>
+      generateRandomEdges(
+        src.toInt,
+        degree.toInt,
+        numVertices,
+        seed = (seed2 ^ src))
     }
 
     Graph(vertices, edges, 0)
@@ -275,12 +274,11 @@ object GraphGenerators extends Logging {
       }
     val edges: RDD[Edge[Double]] =
       vertices
-        .flatMap {
-          case (vid, (r, c)) =>
-            (if (r + 1 < rows) { Seq((sub2ind(r, c), sub2ind(r + 1, c))) }
-             else { Seq.empty }) ++
-              (if (c + 1 < cols) { Seq((sub2ind(r, c), sub2ind(r, c + 1))) }
-               else { Seq.empty })
+        .flatMap { case (vid, (r, c)) =>
+          (if (r + 1 < rows) { Seq((sub2ind(r, c), sub2ind(r + 1, c))) }
+           else { Seq.empty }) ++
+            (if (c + 1 < cols) { Seq((sub2ind(r, c), sub2ind(r, c + 1))) }
+             else { Seq.empty })
         }
         .map { case (src, dst) => Edge(src, dst, 1.0) }
     Graph(vertices, edges)

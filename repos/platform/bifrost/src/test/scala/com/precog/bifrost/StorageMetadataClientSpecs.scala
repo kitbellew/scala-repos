@@ -60,10 +60,9 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
       client
         .browse("", Path("/foo/"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case JArray(results) =>
-          results.map(_ \ "name") must haveTheSameElementsAs(
-            JString("bar/") :: JString("bar1/") :: JString("bar2/") :: Nil)
+        .copoint must beLike { case JArray(results) =>
+        results.map(_ \ "name") must haveTheSameElementsAs(
+          JString("bar/") :: JString("bar1/") :: JString("bar2/") :: Nil)
       }
     }
   }
@@ -102,11 +101,10 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
       client
         .structure("", Path("/foo/bar"), CPath.Identity)
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case result =>
-          result must_== JObject(
-            "children" -> JArray(JString(".bar") :: JString(".baz") :: Nil),
-            "types" -> JObject())
+        .copoint must beLike { case result =>
+        result must_== JObject(
+          "children" -> JArray(JString(".bar") :: JString(".baz") :: Nil),
+          "types" -> JObject())
       }
     }
 
@@ -114,11 +112,10 @@ abstract class BrowseServiceSpecs[M[+_]](implicit
       client
         .structure("", Path("/foo/bar"), CPath("bar"))
         .valueOr(e => sys.error(e.toString))
-        .copoint must beLike {
-        case result =>
-          result must_== JObject(
-            "children" -> JArray(),
-            "types" -> JObject("Number" -> JNum(50)))
+        .copoint must beLike { case result =>
+        result must_== JObject(
+          "children" -> JArray(),
+          "types" -> JObject("Number" -> JNum(50)))
       }
     }
 

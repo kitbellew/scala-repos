@@ -71,9 +71,8 @@ class PerfTestUtil(rootDir: File, runs: Int = 30) {
         case None => None
         case Some((a, b)) =>
           Some(Statistics(MetricSpace[Long].distance(a, b), tails = tails))
-      } map {
-        case (t, stats) =>
-          (t, stats map (_ * (1 / 1000000.0))) // Convert to ms.
+      } map { case (t, stats) =>
+        (t, stats map (_ * (1 / 1000000.0))) // Convert to ms.
       }
 
       // result.toJson.toString

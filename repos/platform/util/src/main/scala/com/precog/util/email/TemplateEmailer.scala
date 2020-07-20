@@ -92,20 +92,18 @@ abstract class TemplateEmailer(
       // Process the templates and insert values
       msg.setSubject(engine.layout(source(subjectTemplate), templateParams))
 
-      val transformed = bodyTemplates.map {
-        case (template, mimetype) =>
-          (
-            engine.layout(source(template), templateParams),
-            mimetype + "; charset=utf-8")
+      val transformed = bodyTemplates.map { case (template, mimetype) =>
+        (
+          engine.layout(source(template), templateParams),
+          mimetype + "; charset=utf-8")
       }
 
       if (transformed.size > 1) {
         val multi = new MimeMultipart("alternative")
-        transformed.foreach {
-          case (content, mimetype) =>
-            val bodyPart = new MimeBodyPart
-            bodyPart.setContent(content, mimetype)
-            multi.addBodyPart(bodyPart)
+        transformed.foreach { case (content, mimetype) =>
+          val bodyPart = new MimeBodyPart
+          bodyPart.setContent(content, mimetype)
+          multi.addBodyPart(bodyPart)
         }
         msg.setContent(multi)
       } else {

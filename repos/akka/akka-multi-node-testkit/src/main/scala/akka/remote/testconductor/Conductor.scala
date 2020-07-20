@@ -87,9 +87,8 @@ trait Conductor { this: TestConductorExt ⇒
       "controller")
     import Settings.BarrierTimeout
     import system.dispatcher
-    controller ? GetSockAddr flatMap {
-      case sockAddr: InetSocketAddress ⇒
-        startClient(name, sockAddr) map (_ ⇒ sockAddr)
+    controller ? GetSockAddr flatMap { case sockAddr: InetSocketAddress ⇒
+      startClient(name, sockAddr) map (_ ⇒ sockAddr)
     }
   }
 
@@ -373,10 +372,9 @@ private[akka] class ServerFSM(val controller: ActorRef, val channel: Channel)
     case Event(ClientDisconnected, None) ⇒ stop()
   }
 
-  onTermination {
-    case _ ⇒
-      controller ! ClientDisconnected(roleName)
-      channel.close()
+  onTermination { case _ ⇒
+    controller ! ClientDisconnected(roleName)
+    channel.close()
   }
 
   when(Initial, stateTimeout = 10 seconds) {

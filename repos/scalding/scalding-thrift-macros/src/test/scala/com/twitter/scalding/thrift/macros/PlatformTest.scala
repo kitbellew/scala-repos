@@ -37,9 +37,8 @@ class CompareJob[T: OrderedSerialization](in: Iterable[T], args: Args)
     }
     .map(_ -> 1L)
     .sumByKey
-    .map {
-      case (k, v) =>
-        (k.hashCode, v)
+    .map { case (k, v) =>
+      (k.hashCode, v)
     }
     .write(TypedTsv[(Int, Long)]("output"))
 }

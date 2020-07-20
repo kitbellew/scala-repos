@@ -45,12 +45,11 @@ trait SchedulerSpec
 
       val tickActor, tickActor2 = system.actorOf(Props(new Actor {
         var ticks = 0
-        def receive = {
-          case Tick ⇒
-            if (ticks < 3) {
-              sender() ! Tock
-              ticks += 1
-            }
+        def receive = { case Tick ⇒
+          if (ticks < 3) {
+            sender() ! Tock
+            ticks += 1
+          }
         }
       }))
       // run every 50 milliseconds
@@ -236,13 +235,12 @@ trait SchedulerSpec
       final case class Msg(ts: Long)
 
       val actor = system.actorOf(Props(new Actor {
-        def receive = {
-          case Msg(ts) ⇒
-            val now = System.nanoTime
-            // Make sure that no message has been dispatched before the scheduled time (10ms) has occurred
-            if (now < ts)
-              throw new RuntimeException("Interval is too small: " + (now - ts))
-            ticks.countDown()
+        def receive = { case Msg(ts) ⇒
+          val now = System.nanoTime
+          // Make sure that no message has been dispatched before the scheduled time (10ms) has occurred
+          if (now < ts)
+            throw new RuntimeException("Interval is too small: " + (now - ts))
+          ticks.countDown()
         }
       }))
 

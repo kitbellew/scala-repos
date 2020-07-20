@@ -68,10 +68,10 @@ object SVMSuite {
 class SVMSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
-    val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
+    val numOffPredictions =
+      predictions.zip(input).count { case (prediction, expected) =>
         prediction != expected.label
-    }
+      }
     // At least 80% of the predictions should be on.
     assert(numOffPredictions < input.length / 5)
   }

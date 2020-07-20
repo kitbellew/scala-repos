@@ -138,10 +138,9 @@ class DataServiceHandler[A](
                       "Could not locate content for path " + path))
               }
           )
-        } recover {
-          case ex =>
-            logger.error("Exception thrown in readResource evaluation.", ex)
-            HttpResponse(InternalServerError)
+        } recover { case ex =>
+          logger.error("Exception thrown in readResource evaluation.", ex)
+          HttpResponse(InternalServerError)
         }
       }
     }

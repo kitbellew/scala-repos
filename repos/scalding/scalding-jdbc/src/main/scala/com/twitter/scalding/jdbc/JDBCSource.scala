@@ -103,9 +103,8 @@ abstract class JDBCSource extends Source with ColumnDefiner with JdbcDriver {
   def toSqlCreateString: String = {
     def addBackTicks(str: String) = "`" + str + "`"
     val allCols = columns
-      .map {
-        case ColumnDefinition(ColumnName(name), Definition(defn)) =>
-          addBackTicks(name) + " " + defn
+      .map { case ColumnDefinition(ColumnName(name), Definition(defn)) =>
+        addBackTicks(name) + " " + defn
       }
       .mkString(",\n")
 

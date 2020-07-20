@@ -39,9 +39,8 @@ object TestJob {
 
   implicit def keyPairInjection[T](implicit
       toS: Injection[T, String]): Injection[(T, BatchID), Array[Byte]] =
-    Injection.build[(T, BatchID), Array[Byte]] {
-      case (t, batchID) =>
-        (t.as[String] + ":" + batchID.as[String]).as[Array[Byte]]
+    Injection.build[(T, BatchID), Array[Byte]] { case (t, batchID) =>
+      (t.as[String] + ":" + batchID.as[String]).as[Array[Byte]]
     } { bytes: Array[Byte] =>
       for {
         deser <- bytes.as[Try[String]]

@@ -131,16 +131,15 @@ object WrappedSerialization {
         (it.getKey, it.getValue)
       }
       .filter(_._1.startsWith(confKey))
-      .map {
-        case (_, clsbuf) =>
-          clsbuf.split(":") match {
-            case Array(className, serialization) =>
-              // Jump through a hoop to get scalac happy
-              def deser[T](cls: Class[T]): ClassSerialization[T] =
-                (cls, deserialize[Serialization[T]](serialization))
-              deser(conf.getClassByName(className))
-            case _ => sys.error(s"ill formed bufferables: ${clsbuf}")
-          }
+      .map { case (_, clsbuf) =>
+        clsbuf.split(":") match {
+          case Array(className, serialization) =>
+            // Jump through a hoop to get scalac happy
+            def deser[T](cls: Class[T]): ClassSerialization[T] =
+              (cls, deserialize[Serialization[T]](serialization))
+            deser(conf.getClassByName(className))
+          case _ => sys.error(s"ill formed bufferables: ${clsbuf}")
+        }
       }
       .toMap
 }

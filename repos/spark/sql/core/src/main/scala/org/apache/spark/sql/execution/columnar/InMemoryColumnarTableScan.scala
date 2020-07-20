@@ -368,10 +368,9 @@ private[sql] case class InMemoryColumnarTableScan(
             if (!partitionFilter(cachedBatch.stats)) {
               def statsString: String =
                 schemaIndex
-                  .map {
-                    case (a, i) =>
-                      val value = cachedBatch.stats.get(i, a.dataType)
-                      s"${a.name}: $value"
+                  .map { case (a, i) =>
+                    val value = cachedBatch.stats.get(i, a.dataType)
+                    s"${a.name}: $value"
                   }
                   .mkString(", ")
               logInfo(s"Skipping partition based on stats $statsString")

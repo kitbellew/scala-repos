@@ -25,20 +25,19 @@ class DeadLetterListener extends Actor {
   override def postStop(): Unit =
     eventStream.unsubscribe(self)
 
-  def receive = {
-    case DeadLetter(message, snd, rcp) ⇒
-      count += 1
-      val done = maxCount != Int.MaxValue && count >= maxCount
-      val doneMsg = if (done) ", no more dead letters will be logged" else ""
-      eventStream.publish(
-        Info(
-          rcp.path.toString,
-          rcp.getClass,
-          s"Message [${message.getClass.getName}] from $snd to $rcp was not delivered. [$count] dead letters encountered$doneMsg. " +
-            "This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' " +
-            "and 'akka.log-dead-letters-during-shutdown'."
-        ))
-      if (done) context.stop(self)
+  def receive = { case DeadLetter(message, snd, rcp) ⇒
+    count += 1
+    val done = maxCount != Int.MaxValue && count >= maxCount
+    val doneMsg = if (done) ", no more dead letters will be logged" else ""
+    eventStream.publish(
+      Info(
+        rcp.path.toString,
+        rcp.getClass,
+        s"Message [${message.getClass.getName}] from $snd to $rcp was not delivered. [$count] dead letters encountered$doneMsg. " +
+          "This logging can be turned off or adjusted with configuration settings 'akka.log-dead-letters' " +
+          "and 'akka.log-dead-letters-during-shutdown'."
+      ))
+    if (done) context.stop(self)
   }
 
 }

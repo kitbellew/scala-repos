@@ -72,10 +72,9 @@ object SupervisorSpec {
   }
 
   class Creator(target: ActorRef) extends Actor {
-    override val supervisorStrategy = OneForOneStrategy() {
-      case ex ⇒
-        target ! ((self, sender(), ex))
-        SupervisorStrategy.Stop
+    override val supervisorStrategy = OneForOneStrategy() { case ex ⇒
+      target ! ((self, sender(), ex))
+      SupervisorStrategy.Stop
     }
     def receive = {
       case p: Props ⇒ sender() ! context.actorOf(p)

@@ -273,7 +273,6 @@ class ForkRun(sbt: ActorRef, configKey: String, args: Seq[String], log: Logger)
     context become shuttingDown
   }
 
-  def shuttingDown: Receive = {
-    case _ => // ignore messages while shutting down
+  def shuttingDown: Receive = { case _ => // ignore messages while shutting down
   }
 }

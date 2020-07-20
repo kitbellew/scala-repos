@@ -262,9 +262,8 @@ class GroupManager @Singleton @Inject() (
           servicePorts,
           AppDefinition.RandomPortDefinition,
           AppDefinition.RandomPortValue)
-        .map {
-          case (portDefinition, servicePort) =>
-            portDefinition.copy(port = servicePort)
+        .map { case (portDefinition, servicePort) =>
+          portDefinition.copy(port = servicePort)
         }
     }
 

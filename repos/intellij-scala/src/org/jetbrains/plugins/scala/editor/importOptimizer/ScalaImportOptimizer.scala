@@ -161,9 +161,8 @@ class ScalaImportOptimizer extends ImportOptimizer {
     val importsInfo =
       collectRanges(namesAtRangeStart, createInfo(_, isImportUsed))
 
-    val optimized = importsInfo.map {
-      case (range, rangeInfo) =>
-        (range, optimizedImportInfos(rangeInfo, settings))
+    val optimized = importsInfo.map { case (range, rangeInfo) =>
+      (range, optimizedImportInfos(rangeInfo, settings))
     }
 
     new Runnable {

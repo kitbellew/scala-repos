@@ -358,11 +358,10 @@ trait SortedPaginatorSnippet[T, C]
     */
   override def paginate: CssSel = {
     val headerTransforms =
-      headers.zipWithIndex.map {
-        case ((binding, _), colIndex) =>
-          s".$binding *" #> { ns: NodeSeq =>
-            <a href={sortedPageUrl(first, sortedBy(colIndex))}>{ns}</a>
-          }
+      headers.zipWithIndex.map { case ((binding, _), colIndex) =>
+        s".$binding *" #> { ns: NodeSeq =>
+          <a href={sortedPageUrl(first, sortedBy(colIndex))}>{ns}</a>
+        }
       }
 
     headerTransforms.foldLeft(super.paginate)(_ & _)

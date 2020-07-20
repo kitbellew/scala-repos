@@ -291,13 +291,11 @@ object ColumnarTableModule extends Logging {
       val ncols = items.length
 
       // load each column into strings
-      val columns = items.map {
-        case (_, col) =>
-          renderColumn(col, height)
+      val columns = items.map { case (_, col) =>
+        renderColumn(col, height)
       }
-      val positions = items.map {
-        case (ColumnRef(path, _), _) =>
-          indices.columnForPath(path.toString)
+      val positions = items.map { case (ColumnRef(path, _), _) =>
+        indices.columnForPath(path.toString)
       }
 
       val sb = new StringBuilder()
@@ -337,15 +335,14 @@ object ColumnarTableModule extends Logging {
       (indices, CharBuffer.wrap(sb))
     }
 
-    StreamT.unfoldM((slices, none[Indices])) {
-      case (stream, pastIndices) =>
-        stream.uncons.map {
-          case Some((slice, tail)) =>
-            val (indices, cb) = renderSlice(pastIndices, slice)
-            Some((cb, (tail, Some(indices))))
-          case None =>
-            None
-        }
+    StreamT.unfoldM((slices, none[Indices])) { case (stream, pastIndices) =>
+      stream.uncons.map {
+        case Some((slice, tail)) =>
+          val (indices, cb) = renderSlice(pastIndices, slice)
+          Some((cb, (tail, Some(indices))))
+        case None =>
+          None
+      }
     }
   }
 
@@ -556,9 +553,8 @@ trait ColumnarTableModule[M[+_]]
             back <- {
               head map {
                 case (s, sx) => {
-                  sliceTransform.f(state, s) map {
-                    case (nextState, s0) =>
-                      StreamT.Yield(s0, stream(nextState, sx))
+                  sliceTransform.f(state, s) map { case (nextState, s0) =>
+                    StreamT.Yield(s0, stream(nextState, sx))
                   }
                 }
               } getOrElse {
@@ -649,9 +645,8 @@ trait ColumnarTableModule[M[+_]]
               keys0: collection.Set[Key],
               keys1: collection.Set[Key]): collection.Set[Key] = {
             def consistent(key0: Key, key1: Key): Boolean =
-              (key0 zip key1).forall {
-                case (k0, k1) =>
-                  k0 == k1 || k0 == CUndefined || k1 == CUndefined
+              (key0 zip key1).forall { case (k0, k1) =>
+                k0 == k1 || k0 == CUndefined || k1 == CUndefined
               }
 
             def merge(key0: Key, key1: Key): Key =
@@ -889,9 +884,8 @@ trait ColumnarTableModule[M[+_]]
       val former = new (Id.Id ~> M) {
         def apply[A](a: Id.Id[A]): M[A] = M.point(a)
       }
-      loop(slices, Nil, 0L).map {
-        case (stream, size) =>
-          Table(StreamT.fromIterable(stream).trans(former), ExactSize(size))
+      loop(slices, Nil, 0L).map { case (stream, size) =>
+        Table(StreamT.fromIterable(stream).trans(former), ExactSize(size))
       }
     }
 
@@ -1694,41 +1688,36 @@ trait ColumnarTableModule[M[+_]]
           // between all slices.
 
           val results = (0 until lhead.size by lrowsPerSlice)
-            .foldLeft(M.point((a0, List.empty[Slice]))) {
-              case (accM, offset) =>
-                accM flatMap {
-                  case (a, acc) =>
-                    val rows =
-                      math.min(sliceSize, (lhead.size - offset) * rhead.size)
+            .foldLeft(M.point((a0, List.empty[Slice]))) { case (accM, offset) =>
+              accM flatMap { case (a, acc) =>
+                val rows =
+                  math.min(sliceSize, (lhead.size - offset) * rhead.size)
 
-                    val lslice = new Slice {
-                      val size = rows
-                      val columns = lhead.columns.lazyMapValues(Remap({ i =>
-                        offset + (i / rhead.size)
-                      })(_).get)
-                    }
-
-                    val rslice = new Slice {
-                      val size = rows
-                      val columns =
-                        if (rhead.size == 0)
-                          rhead.columns.lazyMapValues(Empty(_).get)
-                        else
-                          rhead.columns.lazyMapValues(
-                            Remap(_ % rhead.size)(_).get)
-                    }
-
-                    transform.f(a, lslice, rslice) map {
-                      case (b, resultSlice) =>
-                        (b, resultSlice :: acc)
-                    }
+                val lslice = new Slice {
+                  val size = rows
+                  val columns = lhead.columns.lazyMapValues(Remap({ i =>
+                    offset + (i / rhead.size)
+                  })(_).get)
                 }
+
+                val rslice = new Slice {
+                  val size = rows
+                  val columns =
+                    if (rhead.size == 0)
+                      rhead.columns.lazyMapValues(Empty(_).get)
+                    else
+                      rhead.columns.lazyMapValues(Remap(_ % rhead.size)(_).get)
+                }
+
+                transform.f(a, lslice, rslice) map { case (b, resultSlice) =>
+                  (b, resultSlice :: acc)
+                }
+              }
             }
 
-          results map {
-            case (a1, slices) =>
-              val sliceStream = slices.reverse.toStream
-              (a1, StreamT.fromStream(M.point(sliceStream)))
+          results map { case (a1, slices) =>
+            val sliceStream = slices.reverse.toStream
+            (a1, StreamT.fromStream(M.point(sliceStream)))
           }
         }
 
@@ -1765,9 +1754,8 @@ trait ColumnarTableModule[M[+_]]
             a0: A): StreamT[M, Slice] = {
           StreamT(left.uncons flatMap {
             case Some((lhead, ltail0)) =>
-              crossBothSingle(lhead, rhead)(a0) map {
-                case (a1, prefix) =>
-                  StreamT.Skip(prefix ++ crossRightSingle(ltail0, rhead)(a1))
+              crossBothSingle(lhead, rhead)(a0) map { case (a1, prefix) =>
+                StreamT.Skip(prefix ++ crossRightSingle(ltail0, rhead)(a1))
               }
 
             case None =>

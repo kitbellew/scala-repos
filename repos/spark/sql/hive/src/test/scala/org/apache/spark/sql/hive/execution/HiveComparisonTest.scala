@@ -295,9 +295,8 @@ abstract class HiveComparisonTest
       lazy val consoleTestCase = {
         val quotes = "\"\"\""
         queryList.zipWithIndex
-          .map {
-            case (query, i) =>
-              s"""val q$i = sql($quotes$query$quotes); q$i.collect()"""
+          .map { case (query, i) =>
+            s"""val q$i = sql($quotes$query$quotes); q$i.collect()"""
           }
           .mkString("\n== Console version of this test ==\n", "\n", "\n")
       }
@@ -417,27 +416,26 @@ abstract class HiveComparisonTest
         // Run w/ catalyst
         val catalystResults = queryList
           .zip(hiveResults)
-          .map {
-            case (queryString, hive) =>
-              var query: TestHive.QueryExecution = null
-              try {
-                query = {
-                  val originalQuery = new TestHive.QueryExecution(queryString)
-                  val containsCommands = originalQuery.analyzed.collectFirst {
-                    case _: Command                    => ()
-                    case _: LogicalInsertIntoHiveTable => ()
-                  }.nonEmpty
+          .map { case (queryString, hive) =>
+            var query: TestHive.QueryExecution = null
+            try {
+              query = {
+                val originalQuery = new TestHive.QueryExecution(queryString)
+                val containsCommands = originalQuery.analyzed.collectFirst {
+                  case _: Command                    => ()
+                  case _: LogicalInsertIntoHiveTable => ()
+                }.nonEmpty
 
-                  if (containsCommands) {
-                    originalQuery
-                  } else {
-                    val convertedSQL =
-                      try {
-                        new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
-                      } catch {
-                        case NonFatal(e) =>
-                          fail(
-                            s"""Cannot convert the following HiveQL query plan back to SQL query string:
+                if (containsCommands) {
+                  originalQuery
+                } else {
+                  val convertedSQL =
+                    try {
+                      new SQLBuilder(originalQuery.analyzed, TestHive).toSQL
+                    } catch {
+                      case NonFatal(e) =>
+                        fail(
+                          s"""Cannot convert the following HiveQL query plan back to SQL query string:
                         |
                         |# Original HiveQL query string:
                         |$queryString
@@ -445,20 +443,20 @@ abstract class HiveComparisonTest
                         |# Resolved query plan:
                         |${originalQuery.analyzed.treeString}
                      """.stripMargin,
-                            e
-                          )
-                      }
+                          e
+                        )
+                    }
 
-                    try {
-                      val queryExecution =
-                        new TestHive.QueryExecution(convertedSQL)
-                      // Trigger the analysis of this converted SQL query.
-                      queryExecution.analyzed
-                      queryExecution
-                    } catch {
-                      case NonFatal(e) =>
-                        fail(
-                          s"""Failed to analyze the converted SQL string:
+                  try {
+                    val queryExecution =
+                      new TestHive.QueryExecution(convertedSQL)
+                    // Trigger the analysis of this converted SQL query.
+                    queryExecution.analyzed
+                    queryExecution
+                  } catch {
+                    case NonFatal(e) =>
+                      fail(
+                        s"""Failed to analyze the converted SQL string:
                         |
                         |# Original HiveQL query string:
                         |$queryString
@@ -469,17 +467,17 @@ abstract class HiveComparisonTest
                         |# Converted SQL query string:
                         |$convertedSQL
                      """.stripMargin,
-                          e
-                        )
-                    }
+                        e
+                      )
                   }
                 }
+              }
 
-                (query, prepareAnswer(query, query.stringResult()))
-              } catch {
-                case e: Throwable =>
-                  val errorMessage =
-                    s"""
+              (query, prepareAnswer(query, query.stringResult()))
+            } catch {
+              case e: Throwable =>
+                val errorMessage =
+                  s"""
                   |Failed to execute query using catalyst:
                   |Error: ${e.getMessage}
                   |${stackTraceToString(e)}
@@ -488,11 +486,11 @@ abstract class HiveComparisonTest
                   |== HIVE - ${hive.size} row(s) ==
                   |${hive.mkString("\n")}
                 """.stripMargin
-                  stringToFile(
-                    new File(failedDirectory, testCaseName),
-                    errorMessage + consoleTestCase)
-                  fail(errorMessage)
-              }
+                stringToFile(
+                  new File(failedDirectory, testCaseName),
+                  errorMessage + consoleTestCase)
+                fail(errorMessage)
+            }
           }
           .toSeq
 
@@ -533,19 +531,18 @@ abstract class HiveComparisonTest
                   TestHive.reset()
                   val executions = queryList.map(new TestHive.QueryExecution(_))
                   executions.foreach(_.toRdd)
-                  val tablesGenerated = queryList.zip(executions).flatMap {
-                    case (q, e) =>
+                  val tablesGenerated =
+                    queryList.zip(executions).flatMap { case (q, e) =>
                       e.sparkPlan.collect {
                         case i: InsertIntoHiveTable
                             if tablesRead contains i.table.tableName =>
                           (q, e, i)
                       }
-                  }
+                    }
 
                   tablesGenerated
-                    .map {
-                      case (hiveql, execution, insert) =>
-                        s"""
+                    .map { case (hiveql, execution, insert) =>
+                      s"""
                      |=== Generated Table ===
                      |$hiveql
                      |$execution

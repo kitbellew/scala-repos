@@ -116,9 +116,8 @@ class TaskBuilder(
 
     val host: Option[String] = Some(offer.getHostname)
 
-    val labels = app.labels.map {
-      case (key, value) =>
-        Label.newBuilder.setKey(key).setValue(value).build()
+    val labels = app.labels.map { case (key, value) =>
+      Label.newBuilder.setKey(key).setValue(value).build()
     }
 
     val taskId = newTaskId(app.id)
@@ -219,13 +218,12 @@ class TaskBuilder(
         // overwrite them the port numbers assigned to this particular task.
         app.portDefinitions
           .zip(hostPorts)
-          .map {
-            case (portDefinition, hostPort) =>
-              PortDefinitionSerializer
-                .toProto(portDefinition)
-                .toBuilder
-                .setNumber(hostPort)
-                .build
+          .map { case (portDefinition, hostPort) =>
+            PortDefinitionSerializer
+              .toProto(portDefinition)
+              .toBuilder
+              .setNumber(hostPort)
+              .build
           }
           .asJava
     }
@@ -246,21 +244,20 @@ class TaskBuilder(
       app.container.foreach { c =>
         val portMappings = c.docker.map { d =>
           d.portMappings.map { pms =>
-            pms zip ports map {
-              case (mapping, port) =>
-                // Use case: containerPort = 0 and hostPort = 0
-                //
-                // For apps that have their own service registry and require p2p communication,
-                // they will need to advertise
-                // the externally visible ports that their components come up on.
-                // Since they generally know there container port and advertise that, this is
-                // fixed most easily if the container port is the same as the externally visible host
-                // port.
-                if (mapping.containerPort == 0) {
-                  mapping.copy(hostPort = port, containerPort = port)
-                } else {
-                  mapping.copy(hostPort = port)
-                }
+            pms zip ports map { case (mapping, port) =>
+              // Use case: containerPort = 0 and hostPort = 0
+              //
+              // For apps that have their own service registry and require p2p communication,
+              // they will need to advertise
+              // the externally visible ports that their components come up on.
+              // Since they generally know there container port and advertise that, this is
+              // fixed most easily if the container port is the same as the externally visible host
+              // port.
+              if (mapping.containerPort == 0) {
+                mapping.copy(hostPort = port, containerPort = port)
+              } else {
+                mapping.copy(hostPort = port)
+              }
             }
           }
         }
@@ -282,9 +279,8 @@ class TaskBuilder(
       app.ipAddress.foreach { ipAddress =>
         val ipAddressLabels = Labels
           .newBuilder()
-          .addAllLabels(ipAddress.labels.map {
-            case (key, value) =>
-              Label.newBuilder.setKey(key).setValue(value).build()
+          .addAllLabels(ipAddress.labels.map { case (key, value) =>
+            Label.newBuilder.setKey(key).setValue(value).build()
           }.asJava)
         val networkInfo: NetworkInfo.Builder =
           NetworkInfo
@@ -381,16 +377,14 @@ object TaskBuilder {
     } else {
       val env = Map.newBuilder[String, String]
 
-      assignedPorts.zipWithIndex.foreach {
-        case (p, n) =>
-          env += (s"PORT$n" -> p.toString)
+      assignedPorts.zipWithIndex.foreach { case (p, n) =>
+        env += (s"PORT$n" -> p.toString)
       }
 
-      definedPorts.zip(assignedPorts).foreach {
-        case (defined, assigned) =>
-          if (defined != AppDefinition.RandomPortValue) {
-            env += (s"PORT_$defined" -> assigned.toString)
-          }
+      definedPorts.zip(assignedPorts).foreach { case (defined, assigned) =>
+        if (defined != AppDefinition.RandomPortValue) {
+          env += (s"PORT_$defined" -> assigned.toString)
+        }
       }
 
       env += ("PORT" -> assignedPorts.head.toString)

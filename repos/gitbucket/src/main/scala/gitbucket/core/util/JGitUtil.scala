@@ -331,9 +331,8 @@ object JGitUtil {
         if (restList.isEmpty) {
           result
         } else if (!revIterator.hasNext) { // maybe, revCommit has only 1 log. other case, restList be empty
-          result ++ restList.map {
-            case (tuple, map) =>
-              tupleAdd(tuple, map.values.headOption.getOrElse(revCommit))
+          result ++ restList.map { case (tuple, map) =>
+            tupleAdd(tuple, map.values.headOption.getOrElse(revCommit))
           }
         } else {
           val newCommit = revIterator.next
@@ -363,14 +362,13 @@ object JGitUtil {
                 }
               }
             }
-            rest.values.map {
-              case (tuple, parentsMap) =>
-                val restParentsMap = parentsMap - newCommit
-                if (restParentsMap.isEmpty) {
-                  nextResult +:= tupleAdd(tuple, parentsMap(newCommit))
-                } else {
-                  nextRest +:= tuple -> restParentsMap
-                }
+            rest.values.map { case (tuple, parentsMap) =>
+              val restParentsMap = parentsMap - newCommit
+              if (restParentsMap.isEmpty) {
+                nextResult +:= tupleAdd(tuple, parentsMap(newCommit))
+              } else {
+                nextRest +:= tuple -> restParentsMap
+              }
             }
             findLastCommits(nextResult, nextRest, revIterator)
           }
@@ -397,19 +395,18 @@ object JGitUtil {
         .getOrElse(Map())
       findLastCommits(List.empty, fileList.map(a => a -> nextParentsMap), it)
         .map(simplifyPath)
-        .map {
-          case (objectId, fileMode, name, linkUrl, commit) =>
-            FileInfo(
-              objectId,
-              fileMode == FileMode.TREE || fileMode == FileMode.GITLINK,
-              name,
-              getSummaryMessage(commit.getFullMessage, commit.getShortMessage),
-              commit.getName,
-              commit.getAuthorIdent.getWhen,
-              commit.getAuthorIdent.getName,
-              commit.getAuthorIdent.getEmailAddress,
-              linkUrl
-            )
+        .map { case (objectId, fileMode, name, linkUrl, commit) =>
+          FileInfo(
+            objectId,
+            fileMode == FileMode.TREE || fileMode == FileMode.GITLINK,
+            name,
+            getSummaryMessage(commit.getFullMessage, commit.getShortMessage),
+            commit.getName,
+            commit.getAuthorIdent.getWhen,
+            commit.getAuthorIdent.getName,
+            commit.getAuthorIdent.getEmailAddress,
+            linkUrl
+          )
         }
         .sortWith { (file1, file2) =>
           (file1.isDirectory, file2.isDirectory) match {

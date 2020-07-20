@@ -62,11 +62,10 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
           }
         }
 
-      Server.withRouter() {
-        case _ =>
-          Action(echo) { req =>
-            Ok.chunked(req.body)
-          }
+      Server.withRouter() { case _ =>
+        Action(echo) { req =>
+          Ok.chunked(req.body)
+        }
       } { implicit port =>
         withClient(block)
       }
@@ -135,9 +134,8 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
       import java.net.MalformedURLException
 
       ws.url("/get?=&foo").aka("invalid request") must throwA[RuntimeException]
-        .like {
-          case e: RuntimeException =>
-            e.getCause must beAnInstanceOf[MalformedURLException]
+        .like { case e: RuntimeException =>
+          e.getCause must beAnInstanceOf[MalformedURLException]
         }
     }
 
@@ -260,11 +258,10 @@ trait WSSpec extends PlaySpecification with ServerIntegrationSpecification {
           }
         }
 
-      Server.withRouter() {
-        case _ =>
-          Action(echo) { req =>
-            Ok.chunked(req.body)
-          }
+      Server.withRouter() { case _ =>
+        Action(echo) { req =>
+          Ok.chunked(req.body)
+        }
       } { implicit port =>
         WsTestClient.withClient(block)
       }

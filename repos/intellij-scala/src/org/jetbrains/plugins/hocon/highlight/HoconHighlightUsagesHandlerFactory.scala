@@ -24,9 +24,8 @@ class HoconHighlightUsagesHandlerFactory
         case null | _: PsiFile => false
         case _                 => true
       }
-      .collectFirst {
-        case hkey: HKey =>
-          new HoconHighlightKeyUsagesHandler(editor, file, hkey)
+      .collectFirst { case hkey: HKey =>
+        new HoconHighlightKeyUsagesHandler(editor, file, hkey)
       }
       .orNull
 }

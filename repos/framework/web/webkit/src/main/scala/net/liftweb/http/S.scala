@@ -978,9 +978,8 @@ trait S extends HasParams with Loggable with UserAgentCalculator {
           .Call(
             "lift.registerComets",
             js.JE.JsObj(
-              cometVersions.toList.map {
-                case CometVersionPair(guid, version) =>
-                  (guid, js.JE.Num(version))
+              cometVersions.toList.map { case CometVersionPair(guid, version) =>
+                (guid, js.JE.Num(version))
               }: _*
             ),
             // Don't kick off a new comet request client-side if we're responding

@@ -133,35 +133,33 @@ class Pipeline @Since("1.4.0") (@Since("1.4.0") override val uid: String)
     val theStages = $(stages)
     // Search for the last estimator.
     var indexOfLastEstimator = -1
-    theStages.view.zipWithIndex.foreach {
-      case (stage, index) =>
-        stage match {
-          case _: Estimator[_] =>
-            indexOfLastEstimator = index
-          case _ =>
-        }
+    theStages.view.zipWithIndex.foreach { case (stage, index) =>
+      stage match {
+        case _: Estimator[_] =>
+          indexOfLastEstimator = index
+        case _ =>
+      }
     }
     var curDataset = dataset
     val transformers = ListBuffer.empty[Transformer]
-    theStages.view.zipWithIndex.foreach {
-      case (stage, index) =>
-        if (index <= indexOfLastEstimator) {
-          val transformer = stage match {
-            case estimator: Estimator[_] =>
-              estimator.fit(curDataset)
-            case t: Transformer =>
-              t
-            case _ =>
-              throw new IllegalArgumentException(
-                s"Do not support stage $stage of type ${stage.getClass}")
-          }
-          if (index < indexOfLastEstimator) {
-            curDataset = transformer.transform(curDataset)
-          }
-          transformers += transformer
-        } else {
-          transformers += stage.asInstanceOf[Transformer]
+    theStages.view.zipWithIndex.foreach { case (stage, index) =>
+      if (index <= indexOfLastEstimator) {
+        val transformer = stage match {
+          case estimator: Estimator[_] =>
+            estimator.fit(curDataset)
+          case t: Transformer =>
+            t
+          case _ =>
+            throw new IllegalArgumentException(
+              s"Do not support stage $stage of type ${stage.getClass}")
         }
+        if (index < indexOfLastEstimator) {
+          curDataset = transformer.transform(curDataset)
+        }
+        transformers += transformer
+      } else {
+        transformers += stage.asInstanceOf[Transformer]
+      }
     }
 
     new PipelineModel(uid, transformers.toArray).setParent(this)
@@ -254,10 +252,8 @@ object Pipeline extends MLReadable[Pipeline] {
 
       // Save stages
       val stagesDir = new Path(path, "stages").toString
-      stages.zipWithIndex.foreach {
-        case (stage: MLWritable, idx: Int) =>
-          stage.write.save(
-            getStagePath(stage.uid, idx, stages.length, stagesDir))
+      stages.zipWithIndex.foreach { case (stage: MLWritable, idx: Int) =>
+        stage.write.save(getStagePath(stage.uid, idx, stages.length, stagesDir))
       }
     }
 

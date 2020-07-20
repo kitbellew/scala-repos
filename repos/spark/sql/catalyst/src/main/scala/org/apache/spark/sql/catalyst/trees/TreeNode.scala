@@ -671,8 +671,8 @@ abstract class TreeNode[BaseType <: TreeNode[BaseType]] extends Product {
           assert(fieldNames.length == fieldValues.length)
           ("product-class" -> JString(p.getClass.getName)) :: fieldNames
             .zip(fieldValues)
-            .map {
-              case (name, value) => name -> parseToJson(value)
+            .map { case (name, value) =>
+              name -> parseToJson(value)
             }
             .toList
         } catch {
@@ -819,9 +819,8 @@ object TreeNode {
         case t if t <:< localTypeOf[Map[_, _]] =>
           val TypeRef(_, _, Seq(keyType, valueType)) = t
           val JObject(fields) = value
-          fields.map {
-            case (name, value) =>
-              name -> parseFromJson(value, valueType, children, sc)
+          fields.map { case (name, value) =>
+            name -> parseFromJson(value, valueType, children, sc)
           }.toMap
         case t if t <:< localTypeOf[RDD[_]] =>
           new EmptyRDD[Any](sc)
@@ -850,9 +849,8 @@ object TreeNode {
       value: JValue,
       children: Seq[TreeNode[_]],
       sc: SparkContext): AnyRef = {
-    val parameters: Array[AnyRef] = fields.map {
-      case (fieldName, fieldType) =>
-        parseFromJson(value \ fieldName, fieldType, children, sc)
+    val parameters: Array[AnyRef] = fields.map { case (fieldName, fieldType) =>
+      parseFromJson(value \ fieldName, fieldType, children, sc)
     }.toArray
     val ctor = Utils
       .classForName(clsName)

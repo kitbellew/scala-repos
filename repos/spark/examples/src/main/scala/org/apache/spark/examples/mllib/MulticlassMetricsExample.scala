@@ -48,10 +48,9 @@ object MulticlassMetricsExample {
       .run(training)
 
     // Compute raw scores on the test set
-    val predictionAndLabels = test.map {
-      case LabeledPoint(label, features) =>
-        val prediction = model.predict(features)
-        (prediction, label)
+    val predictionAndLabels = test.map { case LabeledPoint(label, features) =>
+      val prediction = model.predict(features)
+      (prediction, label)
     }
 
     // Instantiate metrics object

@@ -132,12 +132,11 @@ sealed abstract class EphemeralStream[A] {
       cons(head(), cons(q.head(), tail() interleave q.tail()))
 
   def take(n: Int): EphemeralStream[A] =
-    unfold((n, this)) {
-      case (len, xs) =>
-        if (len > 0 && !xs.isEmpty)
-          Some((xs.head(), (len - 1, xs.tail())))
-        else
-          None
+    unfold((n, this)) { case (len, xs) =>
+      if (len > 0 && !xs.isEmpty)
+        Some((xs.head(), (len - 1, xs.tail())))
+      else
+        None
     }
 
   def takeWhile(p: A => Boolean): EphemeralStream[A] =

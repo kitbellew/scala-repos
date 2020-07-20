@@ -57,12 +57,11 @@ trait CurlFormat {
     b.append(" \\\n")
 
     // headers
-    request.headers.foreach {
-      case (k, values) =>
-        values.foreach { v =>
-          b.append(s"  --header '${quote(k)}: ${quote(v)}'")
-          b.append(" \\\n")
-        }
+    request.headers.foreach { case (k, values) =>
+      values.foreach { v =>
+        b.append(s"  --header '${quote(k)}: ${quote(v)}'")
+        b.append(" \\\n")
+      }
     }
 
     // body (note that this has only been checked for text, not binary)

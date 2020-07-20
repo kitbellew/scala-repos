@@ -26,10 +26,9 @@ object UserInfos {
       def apply(user: User): Fu[UserInfos] =
         fetchAttempts(user.id) map { attempts =>
           new UserInfos(user, makeHistory(attempts), makeChart(attempts))
-        } recover {
-          case e: Exception =>
-            logger.error("user infos", e)
-            new UserInfos(user, Nil, JsArray())
+        } recover { case e: Exception =>
+          logger.error("user infos", e)
+          new UserInfos(user, Nil, JsArray())
         }
 
       def apply(user: Option[User]): Fu[Option[UserInfos]] =

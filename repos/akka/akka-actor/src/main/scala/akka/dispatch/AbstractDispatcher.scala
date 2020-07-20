@@ -386,17 +386,16 @@ abstract class MessageDispatcherConfigurator(
             classOf[DispatcherPrerequisites] -> prerequisites)
           prerequisites.dynamicAccess
             .createInstanceFor[ExecutorServiceConfigurator](fqcn, args)
-            .recover({
-              case exception ⇒
-                throw new IllegalArgumentException(
-                  ("""Cannot instantiate ExecutorServiceConfigurator ("executor = [%s]"), defined in [%s],
+            .recover({ case exception ⇒
+              throw new IllegalArgumentException(
+                ("""Cannot instantiate ExecutorServiceConfigurator ("executor = [%s]"), defined in [%s],
                 make sure it has an accessible constructor with a [%s,%s] signature""")
-                    .format(
-                      fqcn,
-                      config.getString("id"),
-                      classOf[Config],
-                      classOf[DispatcherPrerequisites]),
-                  exception)
+                  .format(
+                    fqcn,
+                    config.getString("id"),
+                    classOf[Config],
+                    classOf[DispatcherPrerequisites]),
+                exception)
             })
             .get
       }

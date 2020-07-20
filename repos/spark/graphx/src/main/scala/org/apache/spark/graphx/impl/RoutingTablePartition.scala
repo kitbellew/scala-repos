@@ -81,9 +81,8 @@ private[graphx] object RoutingTablePartition {
       dstFlags(pid) += (position & 0x2) != 0
     }
 
-    new RoutingTablePartition(pid2vid.zipWithIndex.map {
-      case (vids, pid) =>
-        (vids.trim().array, toBitSet(srcFlags(pid)), toBitSet(dstFlags(pid)))
+    new RoutingTablePartition(pid2vid.zipWithIndex.map { case (vids, pid) =>
+      (vids.trim().array, toBitSet(srcFlags(pid)), toBitSet(dstFlags(pid)))
     })
   }
 

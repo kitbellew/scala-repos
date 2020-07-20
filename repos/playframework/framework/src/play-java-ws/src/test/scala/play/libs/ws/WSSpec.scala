@@ -16,14 +16,13 @@ object WSSpec extends PlaySpecification {
 
   "WS.url().post(InputStream)" should {
 
-    val uploadApp = FakeApplication(withRoutes = {
-      case ("POST", "/") =>
-        Action { request =>
-          request.body.asRaw.fold[Result](BadRequest) { raw =>
-            val size = raw.size
-            Ok(s"size=$size")
-          }
+    val uploadApp = FakeApplication(withRoutes = { case ("POST", "/") =>
+      Action { request =>
+        request.body.asRaw.fold[Result](BadRequest) { raw =>
+          val size = raw.size
+          Ok(s"size=$size")
         }
+      }
     })
 
     "uploads the stream" in new WithServer(app = uploadApp, port = 3333) {

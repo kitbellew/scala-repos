@@ -121,9 +121,8 @@ class MultipleGroupByJob(args: Args) extends Job(args) {
     .map { k => (k, 1L) }
     .group[String, Long](implicitly, stringOrdSer)
     .sum
-    .map {
-      case (k, _) =>
-        ((k, k), 1L)
+    .map { case (k, _) =>
+      ((k, k), 1L)
     }
     .sumByKey[(String, String), Long](implicitly, stringTup2OrdSer, implicitly)
     .map(_._1._1)

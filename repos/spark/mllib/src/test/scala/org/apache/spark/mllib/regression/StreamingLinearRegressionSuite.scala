@@ -47,11 +47,11 @@ class StreamingLinearRegressionSuite extends SparkFunSuite with TestSuiteBase {
 
   // Assert that model predictions are correct
   def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
-    val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
+    val numOffPredictions =
+      predictions.zip(input).count { case (prediction, expected) =>
         // A prediction is off if the prediction is more than 0.5 away from expected value.
         math.abs(prediction - expected.label) > 0.5
-    }
+      }
     // At least 80% of the predictions should be on.
     assert(numOffPredictions < input.length / 5)
   }

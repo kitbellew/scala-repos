@@ -103,9 +103,8 @@ trait Plugin {
       registry: PluginRegistry,
       context: ServletContext,
       settings: SystemSettings): Unit = {
-    (images ++ images(registry, context, settings)).foreach {
-      case (id, in) =>
-        registry.addImage(id, in)
+    (images ++ images(registry, context, settings)).foreach { case (id, in) =>
+      registry.addImage(id, in)
     }
     (controllers ++ controllers(registry, context, settings)).foreach {
       case (path, controller) =>

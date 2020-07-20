@@ -43,15 +43,14 @@ trait GroupFinder extends parser.AST with Tracer {
     btraces flatMap { btrace =>
       val result = codrill(btrace)
 
-      val mapped = result map {
-        case (sigma, where) =>
-          val dtrace = btrace map { _._2 } dropWhile {
-            !_.isInstanceOf[Where]
-          } collect {
-            case d: Dispatch if d.binding.isInstanceOf[LetBinding] => d
-          }
+      val mapped = result map { case (sigma, where) =>
+        val dtrace = btrace map { _._2 } dropWhile {
+          !_.isInstanceOf[Where]
+        } collect {
+          case d: Dispatch if d.binding.isInstanceOf[LetBinding] => d
+        }
 
-          (sigma, where, dtrace)
+        (sigma, where, dtrace)
       }
 
       /*
@@ -66,9 +65,8 @@ trait GroupFinder extends parser.AST with Tracer {
        * allow it through and the compiler will fail to solve 'a.  Leaving
        * this case unresolve for now since macros are going away.
        */
-      mapped filter {
-        case (_, _, dtrace) =>
-          dispatches filter { _.actuals.length > 0 } forall dtrace.contains
+      mapped filter { case (_, _, dtrace) =>
+        dispatches filter { _.actuals.length > 0 } forall dtrace.contains
       }
     }
   }

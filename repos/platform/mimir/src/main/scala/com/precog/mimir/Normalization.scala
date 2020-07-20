@@ -123,12 +123,11 @@ trait NormalizationHelperModule[M[+_]]
             val stdDevCols = getColumns(StdDev)
 
             val totalColumns: List[(CPath, (NumColumn, NumColumn))] = {
-              meanCols flatMap {
-                case (cpathMean, colMean) =>
-                  stdDevCols collect {
-                    case (cpathStdDev, colStdDev) if cpathMean == cpathStdDev =>
-                      (cpathMean, (colMean, colStdDev))
-                  }
+              meanCols flatMap { case (cpathMean, colMean) =>
+                stdDevCols collect {
+                  case (cpathStdDev, colStdDev) if cpathMean == cpathStdDev =>
+                    (cpathMean, (colMean, colStdDev))
+                }
               }
             }
 
@@ -147,11 +146,10 @@ trait NormalizationHelperModule[M[+_]]
           mapper: Summary => CMapper[M],
           table: Table,
           ctx: MorphContext): M[Table] = {
-        val resultTables = summary map {
-          case singleSummary =>
-            val spec = liftToValues(
-              trans.MapWith(trans.TransSpec1.Id, mapper(singleSummary)))
-            table.transform(spec)
+        val resultTables = summary map { case singleSummary =>
+          val spec = liftToValues(
+            trans.MapWith(trans.TransSpec1.Id, mapper(singleSummary)))
+          table.transform(spec)
         }
 
         val result = resultTables reduceOption {
@@ -171,9 +169,8 @@ trait NormalizationHelperModule[M[+_]]
           def map(
               cols: Map[ColumnRef, Column],
               range: Range): Map[ColumnRef, Column] = {
-            val numericCols = cols filter {
-              case (ColumnRef(cpath, ctype), _) =>
-                ctype.isNumeric
+            val numericCols = cols filter { case (ColumnRef(cpath, ctype), _) =>
+              ctype.isNumeric
             }
 
             val groupedCols: Map[CPath, Map[ColumnRef, Column]] =
@@ -183,9 +180,8 @@ trait NormalizationHelperModule[M[+_]]
 
             def continue: Map[ColumnRef, Column] = {
               val unifiedCols: Map[ColumnRef, Column] = {
-                groupedCols map {
-                  case (cpath, refs) =>
-                    (ColumnRef(cpath, CNum), unifyNumColumns(refs.values))
+                groupedCols map { case (cpath, refs) =>
+                  (ColumnRef(cpath, CNum), unifyNumColumns(refs.values))
                 }
               }
 
@@ -221,15 +217,13 @@ trait NormalizationHelperModule[M[+_]]
                 }
               }
 
-              resultsAll map {
-                case (ref, col) =>
-                  (ref, intersectColumn(col))
+              resultsAll map { case (ref, col) =>
+                (ref, intersectColumn(col))
               }
             }
 
-            val subsumes = singleSummary forall {
-              case (cpath, _) =>
-                groupedCols.keySet exists { _.hasSuffix(cpath) }
+            val subsumes = singleSummary forall { case (cpath, _) =>
+              groupedCols.keySet exists { _.hasSuffix(cpath) }
             }
 
             if (subsumes)

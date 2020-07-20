@@ -173,11 +173,10 @@ object CompilerBenchmark {
     }
     val q3b = coffees.flatMap { c =>
       val cf = Query((c, 42)).filter(_._1.price < 900)
-      cf.flatMap {
-        case (cf, num) =>
-          suppliers.filter(_.id === c.supID).map { s =>
-            (c.name, s.name, cf.name, cf.total, cf.totalComputed, num)
-          }
+      cf.flatMap { case (cf, num) =>
+        suppliers.filter(_.id === c.supID).map { s =>
+          (c.name, s.name, cf.name, cf.total, cf.totalComputed, num)
+        }
       }
     }
     def q4 =
@@ -326,15 +325,14 @@ object CompilerBenchmark {
     val q5a = as.to[Set].filter(_.b === "b").map(_.id)
     val q5b = as.filter(_.b === "b").to[Set].map(_.id)
     val q5c = as.filter(_.b === "b").map(_.id).to[Set]
-    val q6 = (as join as).groupBy(j => (j._1.a, j._1.b)).map {
-      case (ab, rs) =>
-        (
-          ab,
-          rs.length,
-          rs.map(_._1).length,
-          rs.map(_._2).length,
-          rs.map(_._1.id).max,
-          rs.map(_._1.id).length)
+    val q6 = (as join as).groupBy(j => (j._1.a, j._1.b)).map { case (ab, rs) =>
+      (
+        ab,
+        rs.length,
+        rs.map(_._1).length,
+        rs.map(_._2).length,
+        rs.map(_._1.id).max,
+        rs.map(_._1.id).length)
     }
     val q7 = q6.filter(_._1._1 === "a").map(_._5.getOrElse(0))
     val q8 = as.sortBy(_.id.desc).map(_.a)

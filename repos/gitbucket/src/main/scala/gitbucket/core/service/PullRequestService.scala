@@ -46,11 +46,10 @@ trait PullRequestService { self: IssuesService =>
       .on { (t1, t2) =>
         t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId)
       }
-      .filter {
-        case (t1, t2) =>
-          (t2.closed === closed.bind) &&
-            (t1.userName === owner.get.bind, owner.isDefined) &&
-            (t1.repositoryName === repository.get.bind, repository.isDefined)
+      .filter { case (t1, t2) =>
+        (t2.closed === closed.bind) &&
+          (t1.userName === owner.get.bind, owner.isDefined) &&
+          (t1.repositoryName === repository.get.bind, repository.isDefined)
       }
       .groupBy { case (t1, t2) => t2.openedUserName }
       .map { case (userName, t) => userName -> t.length }
@@ -107,12 +106,11 @@ trait PullRequestService { self: IssuesService =>
       .on { (t1, t2) =>
         t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId)
       }
-      .filter {
-        case (t1, t2) =>
-          (t1.requestUserName === userName.bind) &&
-            (t1.requestRepositoryName === repositoryName.bind) &&
-            (t1.requestBranch === branch.bind) &&
-            (t2.closed === closed.bind)
+      .filter { case (t1, t2) =>
+        (t1.requestUserName === userName.bind) &&
+          (t1.requestRepositoryName === repositoryName.bind) &&
+          (t1.requestBranch === branch.bind) &&
+          (t2.closed === closed.bind)
       }
       .map { case (t1, t2) => t1 }
       .list
@@ -135,14 +133,13 @@ trait PullRequestService { self: IssuesService =>
       .on { (t1, t2) =>
         t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId)
       }
-      .filter {
-        case (t1, t2) =>
-          (t1.requestUserName === userName.bind) &&
-            (t1.requestRepositoryName === repositoryName.bind) &&
-            (t1.requestBranch === branch.bind) &&
-            (t1.userName === userName.bind) &&
-            (t1.repositoryName === repositoryName.bind) &&
-            (t2.closed === false.bind)
+      .filter { case (t1, t2) =>
+        (t1.requestUserName === userName.bind) &&
+          (t1.requestRepositoryName === repositoryName.bind) &&
+          (t1.requestBranch === branch.bind) &&
+          (t1.userName === userName.bind) &&
+          (t1.repositoryName === repositoryName.bind) &&
+          (t2.closed === false.bind)
       }
       .sortBy { case (t1, t2) => t1.branch =!= defaultBranch.bind }
       .firstOption
@@ -189,15 +186,14 @@ trait PullRequestService { self: IssuesService =>
         .on { (t1, t2) =>
           t1.byPrimaryKey(t2.userName, t2.repositoryName, t2.issueId)
         }
-        .filter {
-          case (t1, t2) =>
-            (t1.userName === userName.bind) &&
-              (t1.repositoryName === repositoryName.bind) &&
-              (t1.branch === toBranch.bind) &&
-              (t1.requestUserName === userName.bind) &&
-              (t1.requestRepositoryName === repositoryName.bind) &&
-              (t1.requestBranch === fromBranch.bind) &&
-              (t1.commitIdTo === commitId.bind)
+        .filter { case (t1, t2) =>
+          (t1.userName === userName.bind) &&
+            (t1.repositoryName === repositoryName.bind) &&
+            (t1.branch === toBranch.bind) &&
+            (t1.requestUserName === userName.bind) &&
+            (t1.requestRepositoryName === repositoryName.bind) &&
+            (t1.requestBranch === fromBranch.bind) &&
+            (t1.commitIdTo === commitId.bind)
         }
         .firstOption
     }

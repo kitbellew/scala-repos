@@ -64,12 +64,11 @@ private[spark] object AllRDDResource {
     val blocks = storageStatusList
       .flatMap { _.rddBlocksById(rddId) }
       .sortWith { _._1.name < _._1.name }
-      .map {
-        case (blockId, status) =>
-          (
-            blockId,
-            status,
-            blockLocations.getOrElse(blockId, Seq[String]("Unknown")))
+      .map { case (blockId, status) =>
+        (
+          blockId,
+          status,
+          blockLocations.getOrElse(blockId, Seq[String]("Unknown")))
       }
 
     val dataDistribution = if (includeDetails) {
@@ -85,15 +84,14 @@ private[spark] object AllRDDResource {
       None
     }
     val partitions = if (includeDetails) {
-      Some(blocks.map {
-        case (id, block, locations) =>
-          new RDDPartitionInfo(
-            blockName = id.name,
-            storageLevel = block.storageLevel.description,
-            memoryUsed = block.memSize,
-            diskUsed = block.diskSize,
-            executors = locations
-          )
+      Some(blocks.map { case (id, block, locations) =>
+        new RDDPartitionInfo(
+          blockName = id.name,
+          storageLevel = block.storageLevel.description,
+          memoryUsed = block.memSize,
+          diskUsed = block.diskSize,
+          executors = locations
+        )
       })
     } else {
       None

@@ -44,9 +44,8 @@ class ScalatraBootstrap extends LifeCycle {
     // Register controllers
     context.mount(new AnonymousAccessController, "/*")
 
-    PluginRegistry().getControllers.foreach {
-      case (controller, path) =>
-        context.mount(controller, path)
+    PluginRegistry().getControllers.foreach { case (controller, path) =>
+      context.mount(controller, path)
     }
 
     context.mount(new IndexController, "/")

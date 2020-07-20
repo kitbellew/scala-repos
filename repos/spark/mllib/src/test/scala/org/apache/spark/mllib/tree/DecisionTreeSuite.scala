@@ -1102,10 +1102,10 @@ object DecisionTreeSuite extends SparkFunSuite {
       input: Seq[LabeledPoint],
       requiredAccuracy: Double) {
     val predictions = input.map(x => model.predict(x.features))
-    val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
+    val numOffPredictions =
+      predictions.zip(input).count { case (prediction, expected) =>
         prediction != expected.label
-    }
+      }
     val accuracy = (input.length - numOffPredictions).toDouble / input.length
     assert(
       accuracy >= requiredAccuracy,
@@ -1119,10 +1119,9 @@ object DecisionTreeSuite extends SparkFunSuite {
     val predictions = input.map(x => model.predict(x.features))
     val squaredError = predictions
       .zip(input)
-      .map {
-        case (prediction, expected) =>
-          val err = prediction - expected.label
-          err * err
+      .map { case (prediction, expected) =>
+        val err = prediction - expected.label
+        err * err
       }
       .sum
     val mse = squaredError / input.length

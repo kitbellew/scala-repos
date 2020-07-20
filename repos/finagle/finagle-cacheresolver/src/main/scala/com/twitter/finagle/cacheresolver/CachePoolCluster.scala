@@ -74,11 +74,10 @@ class TwitterCacheResolver extends Resolver {
   }
 
   private def toUnresolvedAddr(g: Set[CacheNode]): Addr = {
-    val set: Set[Address] = g.map {
-      case CacheNode(host, port, weight, key) =>
-        val ia = InetSocketAddress.createUnresolved(host, port)
-        val metadata = CacheNodeMetadata(weight, key)
-        Address.Inet(ia, CacheNodeMetadata.toAddrMetadata(metadata))
+    val set: Set[Address] = g.map { case CacheNode(host, port, weight, key) =>
+      val ia = InetSocketAddress.createUnresolved(host, port)
+      val metadata = CacheNodeMetadata(weight, key)
+      Address.Inet(ia, CacheNodeMetadata.toAddrMetadata(metadata))
     }
     Addr.Bound(set)
   }
@@ -209,9 +208,8 @@ object CachePoolCluster {
         zkClient,
         ZooKeeperUtils.EVERYONE_READ_CREATOR_ALL,
         zkPath)
-    ) map {
-      case addr: InetSocketAddress =>
-        CacheNode(addr.getHostName, addr.getPort, 1)
+    ) map { case addr: InetSocketAddress =>
+      CacheNode(addr.getHostName, addr.getPort, 1)
     }
 }
 

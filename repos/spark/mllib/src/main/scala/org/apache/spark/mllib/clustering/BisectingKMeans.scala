@@ -175,16 +175,14 @@ class BisectingKMeans private (
     var level = 1
     while (activeClusters.nonEmpty && numLeafClustersNeeded > 0 && level < LEVEL_LIMIT) {
       // Divisible clusters are sufficiently large and have non-trivial cost.
-      var divisibleClusters = activeClusters.filter {
-        case (_, summary) =>
-          (summary.size >= minSize) && (summary.cost > MLUtils.EPSILON * summary.size)
+      var divisibleClusters = activeClusters.filter { case (_, summary) =>
+        (summary.size >= minSize) && (summary.cost > MLUtils.EPSILON * summary.size)
       }
       // If we don't need all divisible clusters, take the larger ones.
       if (divisibleClusters.size > numLeafClustersNeeded) {
         divisibleClusters = divisibleClusters.toSeq
-          .sortBy {
-            case (_, summary) =>
-              -summary.size
+          .sortBy { case (_, summary) =>
+            -summary.size
           }
           .take(numLeafClustersNeeded)
           .toMap
@@ -193,12 +191,11 @@ class BisectingKMeans private (
         val divisibleIndices = divisibleClusters.keys.toSet
         logInfo(s"Dividing ${divisibleIndices.size} clusters on level $level.")
         var newClusterCenters = divisibleClusters
-          .flatMap {
-            case (index, summary) =>
-              val (left, right) = splitCenter(summary.center, random)
-              Iterator(
-                (leftChildIndex(index), left),
-                (rightChildIndex(index), right))
+          .flatMap { case (index, summary) =>
+            val (left, right) = splitCenter(summary.center, random)
+            Iterator(
+              (leftChildIndex(index), left),
+              (rightChildIndex(index), right))
           }
           .map(
             identity
@@ -208,9 +205,8 @@ class BisectingKMeans private (
         for (iter <- 0 until maxIterations) {
           newAssignments =
             updateAssignments(assignments, divisibleIndices, newClusterCenters)
-              .filter {
-                case (index, _) =>
-                  divisibleIndices.contains(parentIndex(index))
+              .filter { case (index, _) =>
+                divisibleIndices.contains(parentIndex(index))
               }
           newClusters = summarize(d, newAssignments)
           newClusterCenters = newClusters.mapValues(_.center).map(identity)
@@ -364,17 +360,16 @@ private object BisectingKMeans extends Serializable {
       divisibleIndices: Set[Long],
       newClusterCenters: Map[Long, VectorWithNorm])
       : RDD[(Long, VectorWithNorm)] = {
-    assignments.map {
-      case (index, v) =>
-        if (divisibleIndices.contains(index)) {
-          val children = Seq(leftChildIndex(index), rightChildIndex(index))
-          val selected = children.minBy { child =>
-            KMeans.fastSquaredDistance(newClusterCenters(child), v)
-          }
-          (selected, v)
-        } else {
-          (index, v)
+    assignments.map { case (index, v) =>
+      if (divisibleIndices.contains(index)) {
+        val children = Seq(leftChildIndex(index), rightChildIndex(index))
+        val selected = children.minBy { child =>
+          KMeans.fastSquaredDistance(newClusterCenters(child), v)
         }
+        (selected, v)
+      } else {
+        (index, v)
+      }
     }
   }
 

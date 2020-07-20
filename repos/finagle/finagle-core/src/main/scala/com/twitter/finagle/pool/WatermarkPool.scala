@@ -128,14 +128,13 @@ class WatermarkPool[Req, Rep](
           val p = new Promise[Service[Req, Rep]]
           numWaiters.incr()
           waiters.addLast(p)
-          p.setInterruptHandler {
-            case _cause =>
-              if (thePool.synchronized(waiters.remove(p))) {
-                val failure = Failure.adapt(
-                  new CancelledConnectionException(_cause),
-                  Failure.Restartable | Failure.Interrupted)
-                p.setException(failure)
-              }
+          p.setInterruptHandler { case _cause =>
+            if (thePool.synchronized(waiters.remove(p))) {
+              val failure = Failure.adapt(
+                new CancelledConnectionException(_cause),
+                Failure.Restartable | Failure.Interrupted)
+              p.setException(failure)
+            }
           }
           return p
       }
@@ -152,12 +151,10 @@ class WatermarkPool[Req, Rep](
         flushWaiters()
       }
     }
-    p.setInterruptHandler {
-      case e =>
-        val failure =
-          Failure.adapt(e, Failure.Restartable | Failure.Interrupted)
-        if (p.updateIfEmpty(Throw(failure)))
-          underlying.onSuccess { _.close() }
+    p.setInterruptHandler { case e =>
+      val failure = Failure.adapt(e, Failure.Restartable | Failure.Interrupted)
+      if (p.updateIfEmpty(Throw(failure)))
+        underlying.onSuccess { _.close() }
     }
     p
   }

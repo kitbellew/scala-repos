@@ -119,12 +119,11 @@ private[remote] object Remoting {
         case NonFatal(e) ⇒ Restart
       }
 
-    def receive = {
-      case RegisterTransportActor(props, name) ⇒
-        sender() ! context.actorOf(
-          RARP(context.system).configureDispatcher(
-            props.withDeploy(Deploy.local)),
-          name)
+    def receive = { case RegisterTransportActor(props, name) ⇒
+      sender() ! context.actorOf(
+        RARP(context.system).configureDispatcher(
+          props.withDeploy(Deploy.local)),
+        name)
     }
   }
 
@@ -293,12 +292,11 @@ private[remote] class Remoting(
     provider.remoteSettings.UntrustedMode
 
   private[akka] def boundAddresses: Map[String, Set[Address]] = {
-    transportMapping.map {
-      case (scheme, transports) ⇒
-        scheme -> transports.flatMap {
-          // Need to do like this for binary compatibility reasons
-          case (t, _) ⇒ Option(t.boundAddress)
-        }
+    transportMapping.map { case (scheme, transports) ⇒
+      scheme -> transports.flatMap {
+        // Need to do like this for binary compatibility reasons
+        case (t, _) ⇒ Option(t.boundAddress)
+      }
     }
   }
 }
@@ -736,14 +734,13 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
       }
 
       // Stop all matching stashed connections
-      stashedInbound = stashedInbound.map {
-        case (writer, associations) ⇒
-          writer -> associations.filter { assoc ⇒
-            val handle = assoc.association.asInstanceOf[AkkaProtocolHandle]
-            val drop = matchesQuarantine(handle)
-            if (drop) handle.disassociate()
-            !drop
-          }
+      stashedInbound = stashedInbound.map { case (writer, associations) ⇒
+        writer -> associations.filter { assoc ⇒
+          val handle = assoc.association.asInstanceOf[AkkaProtocolHandle]
+          val drop = matchesQuarantine(handle)
+          if (drop) handle.disassociate()
+          !drop
+        }
       }
 
       uidToQuarantineOption foreach { uid ⇒
@@ -951,14 +948,12 @@ private[remote] class EndpointManager(conf: Config, log: LoggingAdapter)
         //   Driver
         val driver = extendedSystem.dynamicAccess
           .createInstanceFor[Transport](fqn, args)
-          .recover({
-
-            case exception ⇒
-              throw new IllegalArgumentException(
-                s"Cannot instantiate transport [$fqn]. " +
-                  "Make sure it extends [akka.remote.transport.Transport] and has constructor with " +
-                  "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
-                exception)
+          .recover({ case exception ⇒
+            throw new IllegalArgumentException(
+              s"Cannot instantiate transport [$fqn]. " +
+                "Make sure it extends [akka.remote.transport.Transport] and has constructor with " +
+                "[akka.actor.ExtendedActorSystem] and [com.typesafe.config.Config] parameters",
+              exception)
 
           })
           .get

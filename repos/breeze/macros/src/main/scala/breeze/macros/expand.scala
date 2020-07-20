@@ -132,8 +132,8 @@ object expand {
   private def mkName(
       c: Context)(name: c.Name, typeMap: Map[c.Name, c.Type]): String = {
     name.toString + "_" + typeMap
-      .map {
-        case (k, v) => v.toString.reverse.takeWhile(_ != '.').reverse
+      .map { case (k, v) =>
+        v.toString.reverse.takeWhile(_ != '.').reverse
       }
       .mkString("_")
   }
@@ -153,9 +153,8 @@ object expand {
         }
     }
 
-    val termTypeMap = typeMap.map {
-      case (name, tpe) =>
-        (name.toTermName: c.Name) -> Ident(tpe.typeSymbol.name.toTermName)
+    val termTypeMap = typeMap.map { case (name, tpe) =>
+      (name.toTermName: c.Name) -> Ident(tpe.typeSymbol.name.toTermName)
     }
 
     new Transformer() {
@@ -246,17 +245,16 @@ object expand {
       targs: Seq[c.Name]): Seq[Map[c.Name, c.Type]] = {
     import c.mirror.universe._
     mods.annotations
-      .collect {
-        case t @ q"new expand.exclude(...$args)" =>
-          for (aa <- args)
-            if (aa.length != targs.length)
-              c.error(
-                t.pos,
-                "arguments to @exclude does not have the same arity as the type symbols!")
-          args.map(aa =>
-            (targs zip aa
-              .map(c.typeCheck(_))
-              .map(_.symbol.asModule.companionSymbol.asType.toType)).toMap)
+      .collect { case t @ q"new expand.exclude(...$args)" =>
+        for (aa <- args)
+          if (aa.length != targs.length)
+            c.error(
+              t.pos,
+              "arguments to @exclude does not have the same arity as the type symbols!")
+        args.map(aa =>
+          (targs zip aa
+            .map(c.typeCheck(_))
+            .map(_.symbol.asModule.companionSymbol.asType.toType)).toMap)
       }
       .flatten
       .toSeq
@@ -265,8 +263,8 @@ object expand {
   private def checkValify(c: Context)(mods: c.Modifiers) = {
     import c.mirror.universe._
     mods.annotations
-      .collectFirst {
-        case q"new expand.valify" => true
+      .collectFirst { case q"new expand.valify" =>
+        true
       }
       .getOrElse(false)
   }

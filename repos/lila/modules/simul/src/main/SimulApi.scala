@@ -87,15 +87,11 @@ private[simul] final class SimulApi(
               host =>
                 started.pairings.map(makeGame(started, host)).sequenceFu map {
                   games =>
-                    games.headOption foreach {
-                      case (game, _) =>
-                        sendTo(
-                          simul.id,
-                          actorApi.StartSimul(game, simul.hostId))
+                    games.headOption foreach { case (game, _) =>
+                      sendTo(simul.id, actorApi.StartSimul(game, simul.hostId))
                     }
-                    games.foldLeft(started) {
-                      case (s, (g, hostColor)) =>
-                        s.setPairingHostColor(g.id, hostColor)
+                    games.foldLeft(started) { case (s, (g, hostColor)) =>
+                      s.setPairingHostColor(g.id, hostColor)
                     }
                 }
             } flatMap update

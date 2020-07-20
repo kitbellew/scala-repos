@@ -95,10 +95,9 @@ private[akka] final case class TailChoppingRoutees(
         s"Ask timed out on [$sender] after [$within.toMillis} ms]")))
 
     val f = promise.future
-    f.onComplete {
-      case _ ⇒
-        tryWithNext.cancel()
-        sendTimeout.cancel()
+    f.onComplete { case _ ⇒
+      tryWithNext.cancel()
+      sendTimeout.cancel()
     }
     f.pipeTo(sender)
   }

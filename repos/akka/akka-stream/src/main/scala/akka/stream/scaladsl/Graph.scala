@@ -600,43 +600,42 @@ final class Partition[T](outputPorts: Int, partitioner: T ⇒ Int)
         }
       )
 
-      out.zipWithIndex.foreach {
-        case (o, idx) ⇒
-          setHandler(
-            o,
-            new OutHandler {
-              override def onPull() = {
+      out.zipWithIndex.foreach { case (o, idx) ⇒
+        setHandler(
+          o,
+          new OutHandler {
+            override def onPull() = {
 
-                if (outPendingElem != null) {
-                  val elem = outPendingElem.asInstanceOf[T]
-                  if (idx == outPendingIdx) {
-                    push(o, elem)
-                    outPendingElem = null
-                    if (!isClosed(in)) {
-                      if (!hasBeenPulled(in)) {
-                        pull(in)
-                      }
-                    } else
-                      completeStage()
-                  }
-                } else if (!hasBeenPulled(in))
-                  pull(in)
-              }
-
-              override def onDownstreamFinish(): Unit = {
-                downstreamRunning -= 1
-                if (downstreamRunning == 0)
-                  completeStage()
-                else if (outPendingElem != null) {
-                  if (idx == outPendingIdx) {
-                    outPendingElem = null
-                    if (!hasBeenPulled(in))
+              if (outPendingElem != null) {
+                val elem = outPendingElem.asInstanceOf[T]
+                if (idx == outPendingIdx) {
+                  push(o, elem)
+                  outPendingElem = null
+                  if (!isClosed(in)) {
+                    if (!hasBeenPulled(in)) {
                       pull(in)
-                  }
+                    }
+                  } else
+                    completeStage()
+                }
+              } else if (!hasBeenPulled(in))
+                pull(in)
+            }
+
+            override def onDownstreamFinish(): Unit = {
+              downstreamRunning -= 1
+              if (downstreamRunning == 0)
+                completeStage()
+              else if (outPendingElem != null) {
+                if (idx == outPendingIdx) {
+                  outPendingElem = null
+                  if (!hasBeenPulled(in))
+                    pull(in)
                 }
               }
             }
-          )
+          }
+        )
       }
     }
 

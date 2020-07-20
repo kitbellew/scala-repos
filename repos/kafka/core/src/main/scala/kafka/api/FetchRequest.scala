@@ -111,18 +111,17 @@ case class FetchRequest(
     buffer.putInt(maxWait)
     buffer.putInt(minBytes)
     buffer.putInt(requestInfoGroupedByTopic.size) // topic count
-    requestInfoGroupedByTopic.foreach {
-      case (topic, partitionFetchInfos) =>
-        writeShortString(buffer, topic)
-        buffer.putInt(partitionFetchInfos.size) // partition count
-        partitionFetchInfos.foreach {
-          case (
-                TopicAndPartition(_, partition),
-                PartitionFetchInfo(offset, fetchSize)) =>
-            buffer.putInt(partition)
-            buffer.putLong(offset)
-            buffer.putInt(fetchSize)
-        }
+    requestInfoGroupedByTopic.foreach { case (topic, partitionFetchInfos) =>
+      writeShortString(buffer, topic)
+      buffer.putInt(partitionFetchInfos.size) // partition count
+      partitionFetchInfos.foreach {
+        case (
+              TopicAndPartition(_, partition),
+              PartitionFetchInfo(offset, fetchSize)) =>
+          buffer.putInt(partition)
+          buffer.putLong(offset)
+          buffer.putInt(fetchSize)
+      }
     }
   }
 

@@ -164,9 +164,8 @@ object StepWise {
   }
 
   def apply[T](f: (ActorContext[T], StartWith[T]) ⇒ Steps[T, _]): Behavior[T] =
-    Full {
-      case Sig(ctx, PreStart) ⇒
-        run(ctx, f(ctx, new StartWith(keepTraces = false)).ops.reverse, ())
+    Full { case Sig(ctx, PreStart) ⇒
+      run(ctx, f(ctx, new StartWith(keepTraces = false)).ops.reverse, ())
     }
 
   private def throwTimeout(trace: Trace, message: String): Nothing =

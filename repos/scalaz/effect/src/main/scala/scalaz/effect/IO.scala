@@ -290,12 +290,11 @@ object IO extends IOInstances {
     def after(hsIORef: IORef[List[RefCountedFinalizer]]) =
       for {
         hs <- hsIORef.read
-        _ <- hs.foldRight[IO[Unit]](IO.ioUnit) {
-          case (r, o) =>
-            for {
-              refCnt <- r.refcount.mod(_ - 1)
-              _ <- if (refCnt == 0) r.finalizer else IO.ioUnit
-            } yield ()
+        _ <- hs.foldRight[IO[Unit]](IO.ioUnit) { case (r, o) =>
+          for {
+            refCnt <- r.refcount.mod(_ - 1)
+            _ <- if (refCnt == 0) r.finalizer else IO.ioUnit
+          } yield ()
         }
       } yield ()
     newIORef(List[RefCountedFinalizer]()).bracketIO(after)(s =>
@@ -307,9 +306,8 @@ object IO extends IOInstances {
       BindRec[Trampoline]
         .tailrecM[(Tower[IvoryTower], A), (Tower[IvoryTower], B)] {
           case (nw0, x) =>
-            f(x)(nw0).map {
-              case (nw1, e) =>
-                e.bimap((nw1, _), (nw1, _))
+            f(x)(nw0).map { case (nw1, e) =>
+              e.bimap((nw1, _), (nw1, _))
             }
         }((rw, a)))
 

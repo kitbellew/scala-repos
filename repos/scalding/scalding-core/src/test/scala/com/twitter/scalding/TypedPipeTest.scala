@@ -741,9 +741,8 @@ class TJoinWordCount(args: Args) extends Job(args) {
   first
     .outerJoin(second)
     .toTypedPipe
-    .map {
-      case (word, (firstCount, secondCount)) =>
-        (word, firstCount.getOrElse(0), secondCount.getOrElse(0))
+    .map { case (word, (firstCount, secondCount)) =>
+      (word, firstCount.getOrElse(0), secondCount.getOrElse(0))
     }
     .write(TypedText.tsv[(String, Int, Int)]("out"))
 }
@@ -1201,9 +1200,8 @@ class TypedMultiJoinJobTest extends WordSpec with Matchers {
                 v2 <- d2.get(k)
               } yield (v0s, (k, v1, v2)))
             }
-            .flatMap {
-              case (v0s, (k, v1, v2)) =>
-                v0s.map { (k, _, v1, v2) }
+            .flatMap { case (v0s, (k, v1, v2)) =>
+              v0s.map { (k, _, v1, v2) }
             }
             .toList
             .sorted
@@ -1273,9 +1271,8 @@ class TypedMultiSelfJoinJobTest extends WordSpec with Matchers {
                 v2 <- d2.get(k)
               } yield (v0s, (k, v1, v2)))
             }
-            .flatMap {
-              case (v0s, (k, v1, v2)) =>
-                v0s.map { (k, _, v1, v2) }
+            .flatMap { case (v0s, (k, v1, v2)) =>
+              v0s.map { (k, _, v1, v2) }
             }
             .toList
             .sorted

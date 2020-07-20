@@ -30,8 +30,7 @@ class StreamTcpDocSpec extends AkkaSpec {
         Tcp().bind("127.0.0.1", 8888).to(Sink.ignore).run()
 
       binding.map { b =>
-        b.unbind() onComplete {
-          case _ => // ...
+        b.unbind() onComplete { case _ => // ...
         }
       }
       //#echo-server-simple-bind

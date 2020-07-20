@@ -485,11 +485,10 @@ private[transport] class ThrottledAssociation(
     startWith(WaitModeAndUpstreamListener, Uninitialized)
   }
 
-  when(WaitExposedHandle) {
-    case Event(Handle(handle), Uninitialized) ⇒
-      // register to downstream layer and wait for origin
-      originalHandle.readHandlerPromise.success(ActorHandleEventListener(self))
-      goto(WaitOrigin) using ExposedHandle(handle)
+  when(WaitExposedHandle) { case Event(Handle(handle), Uninitialized) ⇒
+    // register to downstream layer and wait for origin
+    originalHandle.readHandlerPromise.success(ActorHandleEventListener(self))
+    goto(WaitOrigin) using ExposedHandle(handle)
   }
 
   when(WaitOrigin) {

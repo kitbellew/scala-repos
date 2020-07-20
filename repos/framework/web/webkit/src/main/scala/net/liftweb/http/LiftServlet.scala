@@ -205,9 +205,8 @@ class LiftServlet extends Loggable {
 
   private def authPassed_?(req: Req): Boolean = {
 
-    val checkRoles: (Role, List[Role]) => Boolean = {
-      case (resRole, roles) =>
-        (false /: roles)((l, r) => l || resRole.isChildOf(r.name))
+    val checkRoles: (Role, List[Role]) => Boolean = { case (resRole, roles) =>
+      (false /: roles)((l, r) => l || resRole.isChildOf(r.name))
     }
 
     val role = NamedPF.applyBox(req, LiftRules.httpAuthProtectedResource.toList)
@@ -275,9 +274,8 @@ class LiftServlet extends Loggable {
 
     def authPassed_?(req: Req): Boolean = {
 
-      val checkRoles: (Role, List[Role]) => Boolean = {
-        case (resRole, roles) =>
-          (false /: roles)((l, r) => l || resRole.isChildOf(r.name))
+      val checkRoles: (Role, List[Role]) => Boolean = { case (resRole, roles) =>
+        (false /: roles)((l, r) => l || resRole.isChildOf(r.name))
       }
 
       val role =
@@ -940,12 +938,8 @@ class LiftServlet extends Loggable {
       originalRequest: Req)
       : Either[Box[LiftResponse], () => Box[LiftResponse]] = {
     val actors: List[(LiftCometActor, Long)] =
-      requestState.params.toList.flatMap {
-        case (name, when) =>
-          sessionActor
-            .getAsyncComponent(name)
-            .toList
-            .map(c => (c, toLong(when)))
+      requestState.params.toList.flatMap { case (name, when) =>
+        sessionActor.getAsyncComponent(name).toList.map(c => (c, toLong(when)))
       }
 
     if (actors.isEmpty)
@@ -1106,10 +1100,9 @@ class LiftServlet extends Loggable {
       val org = Map(headers: _*)
 
       toInsure
-        .foldLeft(org) {
-          case (map, (key, value)) =>
-            if (map.contains(key)) map
-            else map + (key -> value)
+        .foldLeft(org) { case (map, (key, value)) =>
+          if (map.contains(key)) map
+          else map + (key -> value)
         }
         .toList
 

@@ -126,15 +126,14 @@ trait SymbolTables {
       newSymtab = newSymtab filter {
         case ((sym, _)) => newAliases exists (_._1 == sym)
       }
-      newSymtab = newSymtab map {
-        case ((sym, tree)) =>
-          val ValDef(mods, primaryName, tpt, rhs) = tree
-          val tree1 =
-            if (!(newAliases contains ((sym, primaryName)))) {
-              val primaryName1 = newAliases.find(_._1 == sym).get._2
-              ValDef(mods, primaryName1, tpt, rhs).copyAttrs(tree)
-            } else tree
-          (sym, tree1)
+      newSymtab = newSymtab map { case ((sym, tree)) =>
+        val ValDef(mods, primaryName, tpt, rhs) = tree
+        val tree1 =
+          if (!(newAliases contains ((sym, primaryName)))) {
+            val primaryName1 = newAliases.find(_._1 == sym).get._2
+            ValDef(mods, primaryName1, tpt, rhs).copyAttrs(tree)
+          } else tree
+        (sym, tree1)
       }
       new SymbolTable(newSymtab, newAliases)
     }

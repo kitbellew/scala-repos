@@ -205,9 +205,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       // Structs are converted to `Row`s
       checkAnswer(
         df,
-        data.map {
-          case Tuple1(struct) =>
-            Row(Row(struct.productIterator.toSeq: _*))
+        data.map { case Tuple1(struct) =>
+          Row(Row(struct.productIterator.toSeq: _*))
         })
     }
   }
@@ -218,9 +217,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
       // Structs are converted to `Row`s
       checkAnswer(
         df,
-        data.map {
-          case Tuple1(struct) =>
-            Row(Row(struct.productIterator.toSeq: _*))
+        data.map { case Tuple1(struct) =>
+          Row(Row(struct.productIterator.toSeq: _*))
         })
     }
   }
@@ -230,9 +228,8 @@ class ParquetIOSuite extends QueryTest with ParquetTest with SharedSQLContext {
     withParquetDataFrame(data) { df =>
       checkAnswer(
         df,
-        data.map {
-          case Tuple1(m) =>
-            Row(m.mapValues(struct => Row(struct.productIterator.toSeq: _*)))
+        data.map { case Tuple1(m) =>
+          Row(m.mapValues(struct => Row(struct.productIterator.toSeq: _*)))
         })
     }
   }

@@ -151,15 +151,13 @@ final class EMLDAOptimizer extends LDAOptimizer {
     // Initially, we use random soft assignments of tokens to topics (random gamma).
     val docTermVertices: RDD[(VertexId, TopicCounts)] = {
       val verticesTMP: RDD[(VertexId, TopicCounts)] =
-        edges.mapPartitionsWithIndex {
-          case (partIndex, partEdges) =>
-            val random = new Random(partIndex + randomSeed)
-            partEdges.flatMap { edge =>
-              val gamma =
-                normalize(BDV.fill[Double](k)(random.nextDouble()), 1.0)
-              val sum = gamma * edge.attr
-              Seq((edge.srcId, sum), (edge.dstId, sum))
-            }
+        edges.mapPartitionsWithIndex { case (partIndex, partEdges) =>
+          val random = new Random(partIndex + randomSeed)
+          partEdges.flatMap { edge =>
+            val gamma = normalize(BDV.fill[Double](k)(random.nextDouble()), 1.0)
+            val sum = gamma * edge.attr
+            Seq((edge.srcId, sum), (edge.dstId, sum))
+          }
         }
       verticesTMP.reduceByKey(_ + _)
     }
@@ -453,9 +451,8 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
       require(
         lda.getAsymmetricDocConcentration.size == k,
         s"alpha must have length k, got: $alpha")
-      lda.getAsymmetricDocConcentration.foreachActive {
-        case (_, x) =>
-          require(x >= 0, s"all entries in alpha must be >= 0, got: $alpha")
+      lda.getAsymmetricDocConcentration.foreachActive { case (_, x) =>
+        require(x >= 0, s"all entries in alpha must be >= 0, got: $alpha")
       }
       lda.getAsymmetricDocConcentration
     }
@@ -502,20 +499,19 @@ final class OnlineLDAOptimizer extends LDAOptimizer {
 
         val stat = BDM.zeros[Double](k, vocabSize)
         var gammaPart = List[BDV[Double]]()
-        nonEmptyDocs.foreach {
-          case (_, termCounts: Vector) =>
-            val ids: List[Int] = termCounts match {
-              case v: DenseVector  => (0 until v.size).toList
-              case v: SparseVector => v.indices.toList
-            }
-            val (gammad, sstats) = OnlineLDAOptimizer.variationalTopicInference(
-              termCounts,
-              expElogbetaBc.value,
-              alpha,
-              gammaShape,
-              k)
-            stat(::, ids) := stat(::, ids).toDenseMatrix + sstats
-            gammaPart = gammad :: gammaPart
+        nonEmptyDocs.foreach { case (_, termCounts: Vector) =>
+          val ids: List[Int] = termCounts match {
+            case v: DenseVector  => (0 until v.size).toList
+            case v: SparseVector => v.indices.toList
+          }
+          val (gammad, sstats) = OnlineLDAOptimizer.variationalTopicInference(
+            termCounts,
+            expElogbetaBc.value,
+            alpha,
+            gammaShape,
+            k)
+          stat(::, ids) := stat(::, ids).toDenseMatrix + sstats
+          gammaPart = gammad :: gammaPart
         }
         Iterator((stat, gammaPart))
     }

@@ -54,13 +54,12 @@ class StorageStatusListener(conf: SparkConf) extends SparkListener {
       execId: String,
       updatedBlocks: Seq[(BlockId, BlockStatus)]) {
     executorIdToStorageStatus.get(execId).foreach { storageStatus =>
-      updatedBlocks.foreach {
-        case (blockId, updatedStatus) =>
-          if (updatedStatus.storageLevel == StorageLevel.NONE) {
-            storageStatus.removeBlock(blockId)
-          } else {
-            storageStatus.updateBlock(blockId, updatedStatus)
-          }
+      updatedBlocks.foreach { case (blockId, updatedStatus) =>
+        if (updatedStatus.storageLevel == StorageLevel.NONE) {
+          storageStatus.removeBlock(blockId)
+        } else {
+          storageStatus.updateBlock(blockId, updatedStatus)
+        }
       }
     }
   }

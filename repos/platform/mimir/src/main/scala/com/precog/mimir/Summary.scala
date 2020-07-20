@@ -78,9 +78,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         val jtypes: List[Option[JType]] = {
           val grouped =
             Schema.flatten(jtpe, List.empty[ColumnRef]).groupBy(_.selector)
-          val numerics = grouped filter {
-            case (cpath, refs) =>
-              refs.map(_.ctype).exists(_.isNumeric)
+          val numerics = grouped filter { case (cpath, refs) =>
+            refs.map(_.ctype).exists(_.isNumeric)
           }
 
           // handles case when we have multiple numeric columns at same path
@@ -89,9 +88,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           }
           val sortedNumerics = singleNumerics.distinct.sortBy(_._1).reverse
 
-          sortedNumerics map {
-            case (cpath, ctype) =>
-              Schema.mkType(Seq(ColumnRef(cpath, ctype)))
+          sortedNumerics map { case (cpath, ctype) =>
+            Schema.mkType(Seq(ColumnRef(cpath, ctype)))
           }
         }
 
@@ -130,9 +128,8 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
           schemas.toSeq map { jtype =>
             val flattened = Schema.flatten(jtype, List.empty[ColumnRef])
 
-            val values = flattened filter {
-              case ref =>
-                ref.selector.hasPrefix(paths.Value) && ref.ctype.isNumeric
+            val values = flattened filter { case ref =>
+              ref.selector.hasPrefix(paths.Value) && ref.ctype.isNumeric
             }
 
             Schema.mkType(values.toSeq)
@@ -161,20 +158,18 @@ trait SummaryLibModule[M[+_]] extends ReductionLibModule[M] {
         }
 
         val resultTables: M[Seq[Table]] = tablesWithType flatMap {
-          _.map {
-            case (table, jtype) =>
-              reduceTable(table, jtype, ctx)
+          _.map { case (table, jtype) =>
+            reduceTable(table, jtype, ctx)
           }.toStream.sequence map (_.toSeq)
         }
 
         val objectTables: M[Seq[Table]] = resultTables map {
-          _.zipWithIndex map {
-            case (tbl, idx) =>
-              val modelId = "model" + (idx + 1)
-              tbl.transform(
-                trans.WrapObject(
-                  DerefObjectStatic(TransSpec1.Id, paths.Value),
-                  modelId))
+          _.zipWithIndex map { case (tbl, idx) =>
+            val modelId = "model" + (idx + 1)
+            tbl.transform(
+              trans.WrapObject(
+                DerefObjectStatic(TransSpec1.Id, paths.Value),
+                modelId))
           }
         }
 

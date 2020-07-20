@@ -174,11 +174,10 @@ case class CaseWhen(
     //     }
     //   }
     // }
-    val cases = branches.map {
-      case (condExpr, valueExpr) =>
-        val cond = condExpr.gen(ctx)
-        val res = valueExpr.gen(ctx)
-        s"""
+    val cases = branches.map { case (condExpr, valueExpr) =>
+      val cond = condExpr.gen(ctx)
+      val res = valueExpr.gen(ctx)
+      s"""
         ${cond.code}
         if (!${cond.isNull} && ${cond.value}) {
           ${res.code}

@@ -56,10 +56,9 @@ object RemoteReDeploymentMultiJvmSpec extends MultiNodeConfig {
   }
 
   class Echo(target: ActorRef) extends Actor with ActorLogging {
-    def receive = {
-      case msg ⇒
-        log.info(s"received $msg from ${sender()}")
-        target ! msg
+    def receive = { case msg ⇒
+      log.info(s"received $msg from ${sender()}")
+      target ! msg
     }
   }
   def echoProps(target: ActorRef) = Props(new Echo(target))

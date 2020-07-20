@@ -435,27 +435,25 @@ class LowLevelOutgoingConnectionSpec
                 ByteString(entityBase take bytes)))
 
           def expectEntity[T <: HttpEntity: ClassTag](bytes: Int) =
-            inside(response) {
-              case HttpResponse(_, _, entity: T, _) ⇒
-                entity
-                  .toStrict(100.millis)
-                  .awaitResult(100.millis)
-                  .data
-                  .utf8String shouldEqual entityBase.take(bytes)
+            inside(response) { case HttpResponse(_, _, entity: T, _) ⇒
+              entity
+                .toStrict(100.millis)
+                .awaitResult(100.millis)
+                .data
+                .utf8String shouldEqual entityBase.take(bytes)
             }
 
           def expectSizeErrorInEntityOfType[T <: HttpEntity: ClassTag](
               limit: Int,
               actualSize: Option[Long] = None) =
-            inside(response) {
-              case HttpResponse(_, _, entity: T, _) ⇒
-                def gatherBytes =
-                  entity.dataBytes
-                    .runFold(ByteString.empty)(_ ++ _)
-                    .awaitResult(100.millis)
-                (the[Exception] thrownBy gatherBytes).getCause shouldEqual EntityStreamSizeException(
-                  limit,
-                  actualSize)
+            inside(response) { case HttpResponse(_, _, entity: T, _) ⇒
+              def gatherBytes =
+                entity.dataBytes
+                  .runFold(ByteString.empty)(_ ++ _)
+                  .awaitResult(100.millis)
+              (the[Exception] thrownBy gatherBytes).getCause shouldEqual EntityStreamSizeException(
+                limit,
+                actualSize)
             }
         }
       }
@@ -835,8 +833,8 @@ class LowLevelOutgoingConnectionSpec
             import GraphDSL.Implicits._
             Source.fromPublisher(netIn) ~> Flow[ByteString].map(
               SessionBytes(null, _)) ~> client.in2
-            client.out1 ~> Flow[SslTlsOutbound].collect {
-              case SendBytes(x) ⇒ x
+            client.out1 ~> Flow[SslTlsOutbound].collect { case SendBytes(x) ⇒
+              x
             } ~> Sink.fromSubscriber(netOut)
             Source.fromPublisher(requests) ~> client.in1
             client.out2 ~> Sink.fromSubscriber(responses)

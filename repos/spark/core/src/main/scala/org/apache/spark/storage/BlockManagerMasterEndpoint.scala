@@ -263,16 +263,14 @@ private[spark] class BlockManagerMasterEndpoint(
 
   // Return a map from the block manager id to max memory and remaining memory.
   private def memoryStatus: Map[BlockManagerId, (Long, Long)] = {
-    blockManagerInfo.map {
-      case (blockManagerId, info) =>
-        (blockManagerId, (info.maxMem, info.remainingMem))
+    blockManagerInfo.map { case (blockManagerId, info) =>
+      (blockManagerId, (info.maxMem, info.remainingMem))
     }.toMap
   }
 
   private def storageStatus: Array[StorageStatus] = {
-    blockManagerInfo.map {
-      case (blockManagerId, info) =>
-        new StorageStatus(blockManagerId, info.maxMem, info.blocks.asScala)
+    blockManagerInfo.map { case (blockManagerId, info) =>
+      new StorageStatus(blockManagerId, info.maxMem, info.blocks.asScala)
     }.toArray
   }
 

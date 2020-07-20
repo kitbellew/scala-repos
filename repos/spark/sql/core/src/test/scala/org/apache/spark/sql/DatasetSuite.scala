@@ -300,9 +300,8 @@ class DatasetSuite extends QueryTest with SharedSQLContext {
   test("groupBy function, flatMap") {
     val ds = Seq(("a", 10), ("a", 20), ("b", 1), ("b", 2), ("c", 1)).toDS()
     val grouped = ds.groupByKey(v => (v._1, "word"))
-    val agged = grouped.flatMapGroups {
-      case (g, iter) =>
-        Iterator(g._1, iter.map(_._2).sum.toString)
+    val agged = grouped.flatMapGroups { case (g, iter) =>
+      Iterator(g._1, iter.map(_._2).sum.toString)
     }
 
     checkDataset(agged, "a", "30", "b", "3", "c", "1")

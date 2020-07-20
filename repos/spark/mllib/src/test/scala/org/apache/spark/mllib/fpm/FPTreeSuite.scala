@@ -104,9 +104,8 @@ class FPTreeSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val freqItemsets = tree
       .extract(3L)
-      .map {
-        case (items, count) =>
-          (items.toSet, count)
+      .map { case (items, count) =>
+        (items.toSet, count)
       }
       .toSet
     val expected = Set((Set("a"), 4L), (Set("b"), 5L), (Set("a", "b"), 3L))

@@ -120,13 +120,12 @@ class SwaggerSpec extends ScalatraSpec with JsonMatchers {
         val props = (j \ "models" \ "Pet" \ "properties")
           .asInstanceOf[JObject]
           .values
-          .map {
-            case (x, y) ⇒
-              x → y
-                .asInstanceOf[Map[String, BigInt]]
-                .get("position")
-                .flatMap(x ⇒ parseInt(x.toString))
-                .getOrElse(0)
+          .map { case (x, y) ⇒
+            x → y
+              .asInstanceOf[Map[String, BigInt]]
+              .get("position")
+              .flatMap(x ⇒ parseInt(x.toString))
+              .getOrElse(0)
           }
           .toList sortBy (_._2) map (_._1)
         props must_== propOrder

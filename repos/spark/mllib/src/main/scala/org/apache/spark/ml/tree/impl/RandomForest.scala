@@ -474,16 +474,15 @@ private[ml] object RandomForest extends Logging {
     def binSeqOp(
         agg: Array[DTStatsAggregator],
         baggedPoint: BaggedPoint[TreePoint]): Array[DTStatsAggregator] = {
-      treeToNodeToIndexInfo.foreach {
-        case (treeIndex, nodeIndexToInfo) =>
-          val nodeIndex = topNodes(treeIndex).predictImpl(
-            baggedPoint.datum.binnedFeatures,
-            splits)
-          nodeBinSeqOp(
-            treeIndex,
-            nodeIndexToInfo.getOrElse(nodeIndex, null),
-            agg,
-            baggedPoint)
+      treeToNodeToIndexInfo.foreach { case (treeIndex, nodeIndexToInfo) =>
+        val nodeIndex = topNodes(treeIndex).predictImpl(
+          baggedPoint.datum.binnedFeatures,
+          splits)
+        nodeBinSeqOp(
+          treeIndex,
+          nodeIndexToInfo.getOrElse(nodeIndex, null),
+          agg,
+          baggedPoint)
       }
       agg
     }
@@ -495,16 +494,15 @@ private[ml] object RandomForest extends Logging {
         agg: Array[DTStatsAggregator],
         dataPoint: (BaggedPoint[TreePoint], Array[Int]))
         : Array[DTStatsAggregator] = {
-      treeToNodeToIndexInfo.foreach {
-        case (treeIndex, nodeIndexToInfo) =>
-          val baggedPoint = dataPoint._1
-          val nodeIdCache = dataPoint._2
-          val nodeIndex = nodeIdCache(treeIndex)
-          nodeBinSeqOp(
-            treeIndex,
-            nodeIndexToInfo.getOrElse(nodeIndex, null),
-            agg,
-            baggedPoint)
+      treeToNodeToIndexInfo.foreach { case (treeIndex, nodeIndexToInfo) =>
+        val baggedPoint = dataPoint._1
+        val nodeIdCache = dataPoint._2
+        val nodeIndex = nodeIdCache(treeIndex)
+        nodeBinSeqOp(
+          treeIndex,
+          nodeIndexToInfo.getOrElse(nodeIndex, null),
+          agg,
+          baggedPoint)
       }
 
       agg
@@ -534,12 +532,10 @@ private[ml] object RandomForest extends Logging {
 
     // array of nodes to train indexed by node index in group
     val nodes = new Array[LearningNode](numNodes)
-    nodesForGroup.foreach {
-      case (treeIndex, nodesForTree) =>
-        nodesForTree.foreach { node =>
-          nodes(treeToNodeToIndexInfo(treeIndex)(node.id).nodeIndexInGroup) =
-            node
-        }
+    nodesForGroup.foreach { case (treeIndex, nodesForTree) =>
+      nodesForTree.foreach { node =>
+        nodes(treeToNodeToIndexInfo(treeIndex)(node.id).nodeIndexInGroup) = node
+      }
     }
 
     // Calculate best splits for all nodes in the group
@@ -596,17 +592,15 @@ private[ml] object RandomForest extends Logging {
 
     val nodeToBestSplits = partitionAggregates
       .reduceByKey((a, b) => a.merge(b))
-      .map {
-        case (nodeIndex, aggStats) =>
-          val featuresForNode = nodeToFeaturesBc.value.flatMap {
-            nodeToFeatures =>
-              Some(nodeToFeatures(nodeIndex))
-          }
+      .map { case (nodeIndex, aggStats) =>
+        val featuresForNode = nodeToFeaturesBc.value.flatMap { nodeToFeatures =>
+          Some(nodeToFeatures(nodeIndex))
+        }
 
-          // find best split for each node
-          val (split: Split, stats: ImpurityStats) =
-            binsToBestSplit(aggStats, splits, featuresForNode, nodes(nodeIndex))
-          (nodeIndex, (split, stats))
+        // find best split for each node
+        val (split: Split, stats: ImpurityStats) =
+          binsToBestSplit(aggStats, splits, featuresForNode, nodes(nodeIndex))
+        (nodeIndex, (split, stats))
       }
       .collectAsMap()
 
@@ -619,65 +613,64 @@ private[ml] object RandomForest extends Logging {
       null
     }
     // Iterate over all nodes in this group.
-    nodesForGroup.foreach {
-      case (treeIndex, nodesForTree) =>
-        nodesForTree.foreach { node =>
-          val nodeIndex = node.id
-          val nodeInfo = treeToNodeToIndexInfo(treeIndex)(nodeIndex)
-          val aggNodeIndex = nodeInfo.nodeIndexInGroup
-          val (split: Split, stats: ImpurityStats) =
-            nodeToBestSplits(aggNodeIndex)
-          logDebug("best split = " + split)
+    nodesForGroup.foreach { case (treeIndex, nodesForTree) =>
+      nodesForTree.foreach { node =>
+        val nodeIndex = node.id
+        val nodeInfo = treeToNodeToIndexInfo(treeIndex)(nodeIndex)
+        val aggNodeIndex = nodeInfo.nodeIndexInGroup
+        val (split: Split, stats: ImpurityStats) =
+          nodeToBestSplits(aggNodeIndex)
+        logDebug("best split = " + split)
 
-          // Extract info for this node.  Create children if not leaf.
-          val isLeaf =
-            (stats.gain <= 0) || (LearningNode.indexToLevel(
-              nodeIndex) == metadata.maxDepth)
-          node.isLeaf = isLeaf
-          node.stats = stats
-          logDebug("Node = " + node)
+        // Extract info for this node.  Create children if not leaf.
+        val isLeaf =
+          (stats.gain <= 0) || (LearningNode.indexToLevel(
+            nodeIndex) == metadata.maxDepth)
+        node.isLeaf = isLeaf
+        node.stats = stats
+        logDebug("Node = " + node)
 
-          if (!isLeaf) {
-            node.split = Some(split)
-            val childIsLeaf =
-              (LearningNode.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
-            val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
-            val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
-            node.leftChild = Some(
-              LearningNode(
-                LearningNode.leftChildIndex(nodeIndex),
-                leftChildIsLeaf,
-                ImpurityStats.getEmptyImpurityStats(
-                  stats.leftImpurityCalculator)))
-            node.rightChild = Some(
-              LearningNode(
-                LearningNode.rightChildIndex(nodeIndex),
-                rightChildIsLeaf,
-                ImpurityStats.getEmptyImpurityStats(
-                  stats.rightImpurityCalculator)))
+        if (!isLeaf) {
+          node.split = Some(split)
+          val childIsLeaf =
+            (LearningNode.indexToLevel(nodeIndex) + 1) == metadata.maxDepth
+          val leftChildIsLeaf = childIsLeaf || (stats.leftImpurity == 0.0)
+          val rightChildIsLeaf = childIsLeaf || (stats.rightImpurity == 0.0)
+          node.leftChild = Some(
+            LearningNode(
+              LearningNode.leftChildIndex(nodeIndex),
+              leftChildIsLeaf,
+              ImpurityStats.getEmptyImpurityStats(
+                stats.leftImpurityCalculator)))
+          node.rightChild = Some(
+            LearningNode(
+              LearningNode.rightChildIndex(nodeIndex),
+              rightChildIsLeaf,
+              ImpurityStats.getEmptyImpurityStats(
+                stats.rightImpurityCalculator)))
 
-            if (nodeIdCache.nonEmpty) {
-              val nodeIndexUpdater =
-                NodeIndexUpdater(split = split, nodeIndex = nodeIndex)
-              nodeIdUpdaters(treeIndex).put(nodeIndex, nodeIndexUpdater)
-            }
-
-            // enqueue left child and right child if they are not leaves
-            if (!leftChildIsLeaf) {
-              nodeQueue.enqueue((treeIndex, node.leftChild.get))
-            }
-            if (!rightChildIsLeaf) {
-              nodeQueue.enqueue((treeIndex, node.rightChild.get))
-            }
-
-            logDebug(
-              "leftChildIndex = " + node.leftChild.get.id +
-                ", impurity = " + stats.leftImpurity)
-            logDebug(
-              "rightChildIndex = " + node.rightChild.get.id +
-                ", impurity = " + stats.rightImpurity)
+          if (nodeIdCache.nonEmpty) {
+            val nodeIndexUpdater =
+              NodeIndexUpdater(split = split, nodeIndex = nodeIndex)
+            nodeIdUpdaters(treeIndex).put(nodeIndex, nodeIndexUpdater)
           }
+
+          // enqueue left child and right child if they are not leaves
+          if (!leftChildIsLeaf) {
+            nodeQueue.enqueue((treeIndex, node.leftChild.get))
+          }
+          if (!rightChildIsLeaf) {
+            nodeQueue.enqueue((treeIndex, node.rightChild.get))
+          }
+
+          logDebug(
+            "leftChildIndex = " + node.leftChild.get.id +
+              ", impurity = " + stats.leftImpurity)
+          logDebug(
+            "rightChildIndex = " + node.rightChild.get.id +
+              ", impurity = " + stats.rightImpurity)
         }
+      }
     }
 
     if (nodeIdCache.nonEmpty) {
@@ -795,22 +788,21 @@ private[ml] object RandomForest extends Logging {
             // Find best split.
             val (bestFeatureSplitIndex, bestFeatureGainStats) =
               Range(0, numSplits)
-                .map {
-                  case splitIdx =>
-                    val leftChildStats = binAggregates.getImpurityCalculator(
+                .map { case splitIdx =>
+                  val leftChildStats = binAggregates.getImpurityCalculator(
+                    nodeFeatureOffset,
+                    splitIdx)
+                  val rightChildStats =
+                    binAggregates.getImpurityCalculator(
                       nodeFeatureOffset,
-                      splitIdx)
-                    val rightChildStats =
-                      binAggregates.getImpurityCalculator(
-                        nodeFeatureOffset,
-                        numSplits)
-                    rightChildStats.subtract(leftChildStats)
-                    gainAndImpurityStats = calculateImpurityStats(
-                      gainAndImpurityStats,
-                      leftChildStats,
-                      rightChildStats,
-                      binAggregates.metadata)
-                    (splitIdx, gainAndImpurityStats)
+                      numSplits)
+                  rightChildStats.subtract(leftChildStats)
+                  gainAndImpurityStats = calculateImpurityStats(
+                    gainAndImpurityStats,
+                    leftChildStats,
+                    rightChildStats,
+                    binAggregates.metadata)
+                  (splitIdx, gainAndImpurityStats)
                 }
                 .maxBy(_._2.gain)
             (splits(featureIndex)(bestFeatureSplitIndex), bestFeatureGainStats)
@@ -1020,14 +1012,13 @@ private[ml] object RandomForest extends Logging {
         .flatMap(point =>
           continuousFeatures.map(idx => (idx, point.features(idx))))
         .groupByKey(numPartitions)
-        .map {
-          case (idx, samples) =>
-            val thresholds =
-              findSplitsForContinuousFeature(samples, metadata, idx)
-            val splits: Array[Split] =
-              thresholds.map(thresh => new ContinuousSplit(idx, thresh))
-            logDebug(s"featureIndex = $idx, numSplits = ${splits.length}")
-            (idx, splits)
+        .map { case (idx, samples) =>
+          val thresholds =
+            findSplitsForContinuousFeature(samples, metadata, idx)
+          val splits: Array[Split] =
+            thresholds.map(thresh => new ContinuousSplit(idx, thresh))
+          logDebug(s"featureIndex = $idx, numSplits = ${splits.length}")
+          (idx, splits)
         }
         .collectAsMap()
     }
@@ -1292,10 +1283,9 @@ private[ml] object RandomForest extends Logging {
       // TODO: In the future, also support normalizing by tree.rootNode.impurityStats.count?
       val treeNorm = importances.map(_._2).sum
       if (treeNorm != 0) {
-        importances.foreach {
-          case (idx, impt) =>
-            val normImpt = impt / treeNorm
-            totalImportances.changeValue(idx, normImpt, _ + normImpt)
+        importances.foreach { case (idx, impt) =>
+          val normImpt = impt / treeNorm
+          totalImportances.changeValue(idx, normImpt, _ + normImpt)
         }
       }
     }

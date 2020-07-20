@@ -447,9 +447,8 @@ class NaiveBayes private (
 
     val numLabels = aggregated.length
     var numDocuments = 0L
-    aggregated.foreach {
-      case (_, (n, _)) =>
-        numDocuments += n
+    aggregated.foreach { case (_, (n, _)) =>
+      numDocuments += n
     }
     val numFeatures = aggregated.head match { case (_, (_, v)) => v.size }
 
@@ -459,24 +458,23 @@ class NaiveBayes private (
 
     val piLogDenom = math.log(numDocuments + numLabels * lambda)
     var i = 0
-    aggregated.foreach {
-      case (label, (n, sumTermFreqs)) =>
-        labels(i) = label
-        pi(i) = math.log(n + lambda) - piLogDenom
-        val thetaLogDenom = modelType match {
-          case Multinomial =>
-            math.log(sumTermFreqs.values.sum + numFeatures * lambda)
-          case Bernoulli => math.log(n + 2.0 * lambda)
-          case _         =>
-            // This should never happen.
-            throw new UnknownError(s"Invalid modelType: $modelType.")
-        }
-        var j = 0
-        while (j < numFeatures) {
-          theta(i)(j) = math.log(sumTermFreqs(j) + lambda) - thetaLogDenom
-          j += 1
-        }
-        i += 1
+    aggregated.foreach { case (label, (n, sumTermFreqs)) =>
+      labels(i) = label
+      pi(i) = math.log(n + lambda) - piLogDenom
+      val thetaLogDenom = modelType match {
+        case Multinomial =>
+          math.log(sumTermFreqs.values.sum + numFeatures * lambda)
+        case Bernoulli => math.log(n + 2.0 * lambda)
+        case _         =>
+          // This should never happen.
+          throw new UnknownError(s"Invalid modelType: $modelType.")
+      }
+      var j = 0
+      while (j < numFeatures) {
+        theta(i)(j) = math.log(sumTermFreqs(j) + lambda) - thetaLogDenom
+        j += 1
+      }
+      i += 1
     }
 
     new NaiveBayesModel(labels, pi, theta, modelType)

@@ -78,9 +78,8 @@ trait SliceColumnarTableModule[M[+_]]
               constraints: Option[Set[ColumnRef]]): StreamT[M, Slice] = {
             StreamT.unfoldM[M, Slice, Option[proj.Key]](None) { key =>
               proj.getBlockAfter(key, constraints).map { b =>
-                b.map {
-                  case BlockProjectionData(_, maxKey, slice) =>
-                    (slice, Some(maxKey))
+                b.map { case BlockProjectionData(_, maxKey, slice) =>
+                  (slice, Some(maxKey))
                 }
               }
             }

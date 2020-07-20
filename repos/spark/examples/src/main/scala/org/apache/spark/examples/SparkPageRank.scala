@@ -65,10 +65,9 @@ object SparkPageRank {
     var ranks = links.mapValues(v => 1.0)
 
     for (i <- 1 to iters) {
-      val contribs = links.join(ranks).values.flatMap {
-        case (urls, rank) =>
-          val size = urls.size
-          urls.map(url => (url, rank / size))
+      val contribs = links.join(ranks).values.flatMap { case (urls, rank) =>
+        val size = urls.size
+        urls.map(url => (url, rank / size))
       }
       ranks = contribs.reduceByKey(_ + _).mapValues(0.15 + 0.85 * _)
     }

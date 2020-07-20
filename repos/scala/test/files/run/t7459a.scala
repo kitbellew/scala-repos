@@ -3,9 +3,8 @@ class LM {
   case class CC(n: LM)
 
   // crash
-  val f: (LM => Any) = {
-    case tttt =>
-      new tttt.Node[Any]()
+  val f: (LM => Any) = { case tttt =>
+    new tttt.Node[Any]()
   }
 }
 

@@ -62,9 +62,8 @@ object GridPageRank {
 class PageRankSuite extends SparkFunSuite with LocalSparkContext {
 
   def compareRanks(a: VertexRDD[Double], b: VertexRDD[Double]): Double = {
-    a.leftJoin(b) {
-      case (id, a, bOpt) =>
-        (a - bOpt.getOrElse(0.0)) * (a - bOpt.getOrElse(0.0))
+    a.leftJoin(b) { case (id, a, bOpt) =>
+      (a - bOpt.getOrElse(0.0)) * (a - bOpt.getOrElse(0.0))
     }.map { case (id, error) => error }
       .sum()
   }
@@ -90,13 +89,11 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
         .sum()
       assert(notMatching === 0)
 
-      val staticErrors = staticRanks2.map {
-        case (vid, pr) =>
-          val p = math.abs(
-            pr - (resetProb + (1.0 - resetProb) * (resetProb * (nVertices - 1))))
-          val correct =
-            (vid > 0 && pr == resetProb) || (vid == 0L && p < 1.0e-5)
-          if (!correct) 1 else 0
+      val staticErrors = staticRanks2.map { case (vid, pr) =>
+        val p = math.abs(
+          pr - (resetProb + (1.0 - resetProb) * (resetProb * (nVertices - 1))))
+        val correct = (vid > 0 && pr == resetProb) || (vid == 0L && p < 1.0e-5)
+        if (!correct) 1 else 0
       }
       assert(staticErrors.sum === 0)
 
@@ -128,11 +125,10 @@ class PageRankSuite extends SparkFunSuite with LocalSparkContext {
         .sum
       assert(notMatching === 0)
 
-      val staticErrors = staticRanks2.map {
-        case (vid, pr) =>
-          val correct = (vid > 0 && pr == 0.0) ||
-            (vid == 0 && pr == resetProb)
-          if (!correct) 1 else 0
+      val staticErrors = staticRanks2.map { case (vid, pr) =>
+        val correct = (vid > 0 && pr == 0.0) ||
+          (vid == 0 && pr == resetProb)
+        if (!correct) 1 else 0
       }
       assert(staticErrors.sum === 0)
 

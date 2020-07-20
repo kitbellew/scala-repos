@@ -190,12 +190,11 @@ final case class StructNode(elements: ConstArray[(TermSymbol, Node)])
     copy(elements = elements.zip(gen).map { case (e, s) => (s, e._2) })
 
   override protected def buildType: Type =
-    StructType(elements.map {
-      case (s, n) =>
-        val t = n.nodeType
-        if (t == UnassignedType)
-          throw new SlickException(s"StructNode child $s has UnassignedType")
-        (s, t)
+    StructType(elements.map { case (s, n) =>
+      val t = n.nodeType
+      if (t == UnassignedType)
+        throw new SlickException(s"StructNode child $s has UnassignedType")
+      (s, t)
     })
 }
 
@@ -859,11 +858,10 @@ final case class IfThenElse(clauses: ConstArray[Node]) extends SimplyTypedNode {
       keepType: Boolean,
       pred: Int => Boolean): IfThenElse = {
     var equal = true
-    val mapped = clauses.zipWithIndex.map {
-      case (n, i) =>
-        val n2 = if (pred(i)) f(n) else n
-        if (n2 ne n) equal = false
-        n2
+    val mapped = clauses.zipWithIndex.map { case (n, i) =>
+      val n2 = if (pred(i)) f(n) else n
+      if (n2 ne n) equal = false
+      n2
     }
     val this2 = if (equal) this else rebuild(mapped)
     if (peekType == UnassignedType || !keepType) this2 else this2 :@ peekType

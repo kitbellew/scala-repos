@@ -25,9 +25,8 @@ private[camel] class CamelSupervisor extends Actor with CamelSupport {
   private val registry: ActorRef =
     context.actorOf(Props(classOf[Registry], activationTracker), "registry")
 
-  override val supervisorStrategy = OneForOneStrategy() {
-    case NonFatal(e) ⇒
-      Resume
+  override val supervisorStrategy = OneForOneStrategy() { case NonFatal(e) ⇒
+    Resume
   }
 
   def receive = {
@@ -207,21 +206,19 @@ private[camel] class ProducerRegistrar(activationTracker: ActorRef)
           case NonFatal(e) ⇒ throw new ActorActivationException(producer, e)
         }
       } else {
-        camelObjects.get(producer) foreach {
-          case (endpoint, processor) ⇒
-            producer ! CamelProducerObjects(endpoint, processor)
+        camelObjects.get(producer) foreach { case (endpoint, processor) ⇒
+          producer ! CamelProducerObjects(endpoint, processor)
         }
       }
     case DeRegister(producer) ⇒
-      camelObjects.get(producer) foreach {
-        case (_, processor) ⇒
-          try {
-            camelObjects.get(producer).foreach(_._2.stop())
-            camelObjects -= producer
-            activationTracker ! EndpointDeActivated(producer)
-          } catch {
-            case NonFatal(e) ⇒ throw new ActorDeActivationException(producer, e)
-          }
+      camelObjects.get(producer) foreach { case (_, processor) ⇒
+        try {
+          camelObjects.get(producer).foreach(_._2.stop())
+          camelObjects -= producer
+          activationTracker ! EndpointDeActivated(producer)
+        } catch {
+          case NonFatal(e) ⇒ throw new ActorDeActivationException(producer, e)
+        }
       }
   }
 }

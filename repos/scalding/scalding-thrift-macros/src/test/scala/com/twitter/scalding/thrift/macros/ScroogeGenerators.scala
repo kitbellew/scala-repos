@@ -296,10 +296,9 @@ object ScroogeGenerators {
             .listOf(arb[(Map[Int, Int], Map[Int, Int])])
             .map(
               _.toMap
-                .map {
-                  case (k, v) =>
-                    k.asInstanceOf[collection.Map[Int, Int]] -> v
-                      .asInstanceOf[collection.Map[Int, Int]]
+                .map { case (k, v) =>
+                  k.asInstanceOf[collection.Map[Int, Int]] -> v
+                    .asInstanceOf[collection.Map[Int, Int]]
                 }
                 .asInstanceOf[collection.Map[
                   collection.Map[Int, Int],

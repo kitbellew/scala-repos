@@ -55,18 +55,16 @@ class UdpIntegrationSpec
 
       def checkSendingToClient(): Unit = {
         server ! Send(data, clientAddress)
-        expectMsgPF() {
-          case Received(d, a) ⇒
-            d should ===(data)
-            a should ===(serverAddress)
+        expectMsgPF() { case Received(d, a) ⇒
+          d should ===(data)
+          a should ===(serverAddress)
         }
       }
       def checkSendingToServer(): Unit = {
         client ! Send(data, serverAddress)
-        expectMsgPF() {
-          case Received(d, a) ⇒
-            d should ===(data)
-            a should ===(clientAddress)
+        expectMsgPF() { case Received(d, a) ⇒
+          d should ===(data)
+          a should ===(clientAddress)
         }
       }
 

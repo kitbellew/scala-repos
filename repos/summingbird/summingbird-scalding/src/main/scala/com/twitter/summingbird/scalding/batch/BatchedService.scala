@@ -120,18 +120,17 @@ trait BatchedService[K, V] extends ExternalService[K, V] {
           val toRead =
             batchOps.intersect(bInt, timeSpan) // No need to read more than this
           getKeys((toRead, mode)).right
-            .map {
-              case ((available, outM), getFlow) =>
-                /*
-                 * Note we can open more batches than we need to join, but
-                 * we will deal with that when we do the join (by filtering first,
-                 * then grouping on (key, batchID) to parallelize.
-                 */
-                (
-                  (available, outM),
-                  Scalding.limitTimes(
-                    available,
-                    batchedLookup(available, getFlow, batchLastFlow, existing)))
+            .map { case ((available, outM), getFlow) =>
+              /*
+               * Note we can open more batches than we need to join, but
+               * we will deal with that when we do the join (by filtering first,
+               * then grouping on (key, batchID) to parallelize.
+               */
+              (
+                (available, outM),
+                Scalding.limitTimes(
+                  available,
+                  batchedLookup(available, getFlow, batchLastFlow, existing)))
             }
         }
       }

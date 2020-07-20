@@ -174,11 +174,10 @@ class FsHistoryProviderSuite
           false))
 
       // Make sure the UI can be rendered.
-      list.foreach {
-        case info =>
-          val appUi = provider.getAppUI(info.id, None)
-          appUi should not be null
-          appUi should not be None
+      list.foreach { case info =>
+        val appUi = provider.getAppUI(info.id, None)
+        appUi should not be null
+        appUi should not be None
       }
     }
   }
@@ -340,12 +339,11 @@ class FsHistoryProviderSuite
       list.last.attempts.size should be(3)
       list.head.attempts.head.attemptId should be(Some("attempt1"))
 
-      list.foreach {
-        case app =>
-          app.attempts.foreach { attempt =>
-            val appUi = provider.getAppUI(app.id, attempt.attemptId)
-            appUi should not be null
-          }
+      list.foreach { case app =>
+        app.attempts.foreach { attempt =>
+          val appUi = provider.getAppUI(app.id, attempt.attemptId)
+          appUi should not be null
+        }
       }
 
     }

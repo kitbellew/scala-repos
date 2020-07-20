@@ -54,11 +54,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         ("getting-result-time-proportion", "Getting Result Time")
       )
 
-      legendPairs.zipWithIndex.map {
-        case ((classAttr, name), index) =>
-          <rect x={5 + (index / 3) * 210 + "px"} y={
-            10 + (index % 3) * 15 + "px"
-          }
+      legendPairs.zipWithIndex.map { case ((classAttr, name), index) =>
+        <rect x={5 + (index / 3) * 210 + "px"} y={10 + (index % 3) * 15 + "px"}
                 width="10px" height="10px" class={classAttr}></rect>
                 <text x={25 + (index / 3) * 210 + "px"}
                   y={20 + (index % 3) * 15 + "px"}>{name}</text>
@@ -427,16 +424,14 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               </span>
             </td> +: getFormattedTimeQuantiles(deserializationTimes)
 
-          val serviceTimes = validTasks.map {
-            case TaskUIData(_, metrics, _) =>
-              metrics.get.executorRunTime.toDouble
+          val serviceTimes = validTasks.map { case TaskUIData(_, metrics, _) =>
+            metrics.get.executorRunTime.toDouble
           }
           val serviceQuantiles =
             <td>Duration</td> +: getFormattedTimeQuantiles(serviceTimes)
 
-          val gcTimes = validTasks.map {
-            case TaskUIData(_, metrics, _) =>
-              metrics.get.jvmGCTime.toDouble
+          val gcTimes = validTasks.map { case TaskUIData(_, metrics, _) =>
+            metrics.get.jvmGCTime.toDouble
           }
           val gcQuantiles =
             <td>
@@ -506,33 +501,26 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
               }</td>)
           }
 
-          val inputSizes = validTasks.map {
-            case TaskUIData(_, metrics, _) =>
-              metrics.get.inputMetrics.map(_.bytesRead).getOrElse(0L).toDouble
+          val inputSizes = validTasks.map { case TaskUIData(_, metrics, _) =>
+            metrics.get.inputMetrics.map(_.bytesRead).getOrElse(0L).toDouble
           }
 
-          val inputRecords = validTasks.map {
-            case TaskUIData(_, metrics, _) =>
-              metrics.get.inputMetrics.map(_.recordsRead).getOrElse(0L).toDouble
+          val inputRecords = validTasks.map { case TaskUIData(_, metrics, _) =>
+            metrics.get.inputMetrics.map(_.recordsRead).getOrElse(0L).toDouble
           }
 
           val inputQuantiles = <td>Input Size / Records</td> +:
             getFormattedSizeQuantilesWithRecords(inputSizes, inputRecords)
 
-          val outputSizes = validTasks.map {
-            case TaskUIData(_, metrics, _) =>
-              metrics.get.outputMetrics
-                .map(_.bytesWritten)
-                .getOrElse(0L)
-                .toDouble
+          val outputSizes = validTasks.map { case TaskUIData(_, metrics, _) =>
+            metrics.get.outputMetrics.map(_.bytesWritten).getOrElse(0L).toDouble
           }
 
-          val outputRecords = validTasks.map {
-            case TaskUIData(_, metrics, _) =>
-              metrics.get.outputMetrics
-                .map(_.recordsWritten)
-                .getOrElse(0L)
-                .toDouble
+          val outputRecords = validTasks.map { case TaskUIData(_, metrics, _) =>
+            metrics.get.outputMetrics
+              .map(_.recordsWritten)
+              .getOrElse(0L)
+              .toDouble
           }
 
           val outputQuantiles = <td>Output Size / Records</td> +:
@@ -878,9 +866,8 @@ private[ui] class StagePage(parent: StagesTab) extends WebUIPage("stage") {
         .mkString("[", ",", "]")
 
     val groupArrayStr = executorsSet
-      .map {
-        case (executorId, host) =>
-          s"""
+      .map { case (executorId, host) =>
+        s"""
             {
               'id': '$executorId',
               'content': '$executorId / $host',
@@ -1591,32 +1578,31 @@ private[ui] class TaskPagedTable(
     }
 
     val headerRow: Seq[Node] = {
-      taskHeadersAndCssClasses.map {
-        case (header, cssClass) =>
-          if (header == sortColumn) {
-            val headerLink = Unparsed(
-              basePath +
-                s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
-                s"&task.desc=${!desc}" +
-                s"&task.pageSize=$pageSize")
-            val arrow = if (desc) "&#x25BE;" else "&#x25B4;" // UP or DOWN
-            <th class={cssClass}>
+      taskHeadersAndCssClasses.map { case (header, cssClass) =>
+        if (header == sortColumn) {
+          val headerLink = Unparsed(
+            basePath +
+              s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
+              s"&task.desc=${!desc}" +
+              s"&task.pageSize=$pageSize")
+          val arrow = if (desc) "&#x25BE;" else "&#x25B4;" // UP or DOWN
+          <th class={cssClass}>
             <a href={headerLink}>
               {header}
               <span>&nbsp;{Unparsed(arrow)}</span>
             </a>
           </th>
-          } else {
-            val headerLink = Unparsed(
-              basePath +
-                s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
-                s"&task.pageSize=$pageSize")
-            <th class={cssClass}>
+        } else {
+          val headerLink = Unparsed(
+            basePath +
+              s"&task.sort=${URLEncoder.encode(header, "UTF-8")}" +
+              s"&task.pageSize=$pageSize")
+          <th class={cssClass}>
             <a href={headerLink}>
               {header}
             </a>
           </th>
-          }
+        }
       }
     }
     <thead>{headerRow}</thead>

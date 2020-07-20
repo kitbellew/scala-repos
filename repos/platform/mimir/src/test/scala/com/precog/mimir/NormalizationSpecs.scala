@@ -61,35 +61,29 @@ trait NormalizationSpecs[M[+_]]
           ids must haveSize(0)
           obj.keySet mustEqual Set("model1")
 
-          obj("model1") must beLike {
-            case SObject(summary) =>
-              summary.keySet mustEqual Set(
-                "count",
-                "stdDev",
-                "min",
-                "max",
-                "mean")
+          obj("model1") must beLike { case SObject(summary) =>
+            summary.keySet mustEqual Set(
+              "count",
+              "stdDev",
+              "min",
+              "max",
+              "mean")
 
-              summary("count") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (13)
-              }
-              summary("mean") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (-37940.51855769231)
-              }
-              summary("stdDev") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (133416.18997644997)
-              }
-              summary("min") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (-500000)
-              }
-              summary("max") must beLike {
-                case SDecimal(d) =>
-                  d.toDouble mustEqual (9999)
-              }
+            summary("count") must beLike { case SDecimal(d) =>
+              d.toDouble mustEqual (13)
+            }
+            summary("mean") must beLike { case SDecimal(d) =>
+              d.toDouble mustEqual (-37940.51855769231)
+            }
+            summary("stdDev") must beLike { case SDecimal(d) =>
+              d.toDouble mustEqual (133416.18997644997)
+            }
+            summary("min") must beLike { case SDecimal(d) =>
+              d.toDouble mustEqual (-500000)
+            }
+            summary("max") must beLike { case SDecimal(d) =>
+              d.toDouble mustEqual (9999)
+            }
           }
         }
 

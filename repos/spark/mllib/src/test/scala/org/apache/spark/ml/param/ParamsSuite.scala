@@ -160,13 +160,12 @@ class ParamsSuite extends SparkFunSuite {
         val json = param.jsonEncode(value)
         val decoded = param.jsonDecode(json)
         assert(decoded.length === value.length)
-        decoded.zip(value).foreach {
-          case (actual, expected) =>
-            if (expected.isNaN) {
-              assert(actual.isNaN)
-            } else {
-              assert(actual === expected)
-            }
+        decoded.zip(value).foreach { case (actual, expected) =>
+          if (expected.isNaN) {
+            assert(actual.isNaN)
+          } else {
+            assert(actual === expected)
+          }
         }
       }
     }
@@ -400,9 +399,8 @@ class ParamsSuite extends SparkFunSuite {
     val filteredParamMap = paramMap.filter(params1)
 
     assert(filteredParamMap.size === 2)
-    filteredParamMap.toSeq.foreach {
-      case ParamPair(p, _) =>
-        assert(p.parent === params1.uid)
+    filteredParamMap.toSeq.foreach { case ParamPair(p, _) =>
+      assert(p.parent === params1.uid)
     }
 
     // At the previous implementation of ParamMap#filter,

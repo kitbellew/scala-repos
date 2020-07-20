@@ -45,11 +45,10 @@ object Pref extends LilaController {
   def set(name: String) =
     OpenBody { implicit ctx =>
       implicit val req = ctx.body
-      (setters get name) ?? {
-        case (form, fn) =>
-          FormResult(form) { v =>
-            fn(v, ctx) map { cookie => Ok(()).withCookies(cookie) }
-          }
+      (setters get name) ?? { case (form, fn) =>
+        FormResult(form) { v =>
+          fn(v, ctx) map { cookie => Ok(()).withCookies(cookie) }
+        }
       }
     }
 

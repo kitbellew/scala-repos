@@ -113,9 +113,8 @@ class SbtClient(baseDirectory: File, log: Logger, logEvents: Boolean)
     // can only wait so long - set up race.
     context.system.scheduler.scheduleOnce(10.seconds, self, ShutdownTimeout)
 
-    {
-      case SbtConnectionProxy.Closed | ShutdownTimeout =>
-        context.system.shutdown()
+    { case SbtConnectionProxy.Closed | ShutdownTimeout =>
+      context.system.shutdown()
     }
   }
 }
@@ -127,9 +126,8 @@ object SbtEvents {
 class SbtEvents(logger: Logger) extends Actor {
   import sbt.protocol._
 
-  def receive = {
-    case TaskLogEvent(id, LogMessage(level, message)) =>
-      if (accepted(message)) logger.log(level, message)
+  def receive = { case TaskLogEvent(id, LogMessage(level, message)) =>
+    if (accepted(message)) logger.log(level, message)
   }
 
   // log events from sbt server currently have duplicates that are

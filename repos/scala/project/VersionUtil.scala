@@ -151,12 +151,11 @@ object VersionUtil {
     val in = new FileInputStream(file("versions.properties"))
     try props.load(in)
     finally in.close()
-    props.asScala.toMap.map {
-      case (k, v) =>
-        (
-          k,
-          sys.props.getOrElse(k, v)
-        ) // allow system properties to override versions.properties
+    props.asScala.toMap.map { case (k, v) =>
+      (
+        k,
+        sys.props.getOrElse(k, v)
+      ) // allow system properties to override versions.properties
     }
   }
 

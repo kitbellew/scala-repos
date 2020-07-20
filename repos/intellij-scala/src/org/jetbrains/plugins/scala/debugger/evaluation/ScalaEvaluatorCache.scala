@@ -55,10 +55,9 @@ class ScalaEvaluatorCache(project: Project)
     val offset = position.getOffset
     if (!cachedStamp.get(file).contains(file.getModificationStamp)) {
       cachedStamp(file) = file.getModificationStamp
-      cachedEvaluators.filterKeys(_._1 == file).foreach {
-        case (pos, map) =>
-          map.clear()
-          cachedEvaluators.remove(pos)
+      cachedEvaluators.filterKeys(_._1 == file).foreach { case (pos, map) =>
+        map.clear()
+        cachedEvaluators.remove(pos)
       }
       None
     } else {

@@ -307,14 +307,13 @@ class ScImplicitlyConvertible(
             place.getResolveScope,
             ScalaPsiManager.ClassCategory.TYPE
           )
-      ) collect {
-        case cl: ScTrait =>
-          ScParameterizedType(
-            ScType.designator(cl),
-            cl.typeParameters.map(tp =>
-              new ScUndefinedType(
-                new ScTypeParameterType(tp, ScSubstitutor.empty),
-                1)))
+      ) collect { case cl: ScTrait =>
+        ScParameterizedType(
+          ScType.designator(cl),
+          cl.typeParameters.map(tp =>
+            new ScUndefinedType(
+              new ScTypeParameterType(tp, ScSubstitutor.empty),
+              1)))
       } flatMap {
         case p: ScParameterizedType => Some(p)
         case _                      => None
@@ -453,9 +452,8 @@ class ScImplicitlyConvertible(
                           .map(_.parameters)
                           .toSeq
                           .flatten
-                          .map {
-                            case (param: ScParameter) =>
-                              (new Parameter(param), typez)
+                          .map { case (param: ScParameter) =>
+                            (new Parameter(param), typez)
                           }
                           .toMap
                       } else Map.empty
@@ -495,17 +493,16 @@ class ScImplicitlyConvertible(
                                 subst followed dependentSubst followed unSubst)
                           inferredParams
                             .zip(expr)
-                            .map {
-                              case (param: Parameter, expr: Expression) =>
-                                (
-                                  param,
-                                  expr
-                                    .getTypeAfterImplicitConversion(
-                                      checkImplicits = true,
-                                      isShape = false,
-                                      None)
-                                    ._1
-                                    .get)
+                            .map { case (param: Parameter, expr: Expression) =>
+                              (
+                                param,
+                                expr
+                                  .getTypeAfterImplicitConversion(
+                                    checkImplicits = true,
+                                    isShape = false,
+                                    None)
+                                  ._1
+                                  .get)
                             }
                             .toMap
                         } else Map.empty

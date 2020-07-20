@@ -153,14 +153,13 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
       pageSize)
 
     // Insert the keys and values into the sorter
-    inputData.foreach {
-      case (k, v) =>
-        sorter.insertKV(k.asInstanceOf[UnsafeRow], v.asInstanceOf[UnsafeRow])
-        // 1% chance we will spill
-        if (rand.nextDouble() < 0.01 && spill) {
-          memoryManager.markExecutionAsOutOfMemoryOnce()
-          sorter.closeCurrentPage()
-        }
+    inputData.foreach { case (k, v) =>
+      sorter.insertKV(k.asInstanceOf[UnsafeRow], v.asInstanceOf[UnsafeRow])
+      // 1% chance we will spill
+      if (rand.nextDouble() < 0.01 && spill) {
+        memoryManager.markExecutionAsOutOfMemoryOnce()
+        sorter.closeCurrentPage()
+      }
     }
 
     // Collect the sorted output
@@ -188,19 +187,18 @@ class UnsafeKVExternalSorterSuite extends SparkFunSuite with SharedSQLContext {
 
     // Testing to make sure output from the sorter is sorted by key
     var prevK: InternalRow = null
-    out.zipWithIndex.foreach {
-      case ((k, v), i) =>
-        if (prevK != null) {
-          assert(
-            keyOrdering.compare(prevK, k) <= 0,
-            s"""
+    out.zipWithIndex.foreach { case ((k, v), i) =>
+      if (prevK != null) {
+        assert(
+          keyOrdering.compare(prevK, k) <= 0,
+          s"""
              |key is not in sorted order:
              |previous key: $prevK
              |current key : $k
              """.stripMargin
-          )
-        }
-        prevK = k
+        )
+      }
+      prevK = k
     }
 
     // Testing to make sure the key/value in output matches input

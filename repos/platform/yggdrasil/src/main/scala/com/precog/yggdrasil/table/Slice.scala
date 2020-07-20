@@ -87,9 +87,8 @@ trait Slice { source =>
 
   def definedAt: BitSet = {
     val defined = BitSetUtil.create()
-    columns foreach {
-      case (_, col) =>
-        defined.or(col.definedAt(0, size))
+    columns foreach { case (_, col) =>
+      defined.or(col.definedAt(0, size))
     }
     defined
   }
@@ -106,12 +105,11 @@ trait Slice { source =>
           result <- f(col)
         } yield result
 
-        resultColumns.groupBy(_.tpe) map {
-          case (tpe, cols) =>
-            (
-              ColumnRef(CPath.Identity, tpe),
-              cols.reduceLeft((c1, c2) =>
-                Column.unionRightSemigroup.append(c1, c2)))
+        resultColumns.groupBy(_.tpe) map { case (tpe, cols) =>
+          (
+            ColumnRef(CPath.Identity, tpe),
+            cols.reduceLeft((c1, c2) =>
+              Column.unionRightSemigroup.append(c1, c2)))
         }
       }
     }
@@ -126,14 +124,13 @@ trait Slice { source =>
           result <- f(col)
         } yield (ref.copy(ctype = result.tpe), result)
 
-        resultColumns.groupBy(_._1) map {
-          case (ref, pairs) =>
-            (
-              ref,
-              pairs
-                .map(_._2)
-                .reduceLeft((c1, c2) =>
-                  Column.unionRightSemigroup.append(c1, c2)))
+        resultColumns.groupBy(_._1) map { case (ref, pairs) =>
+          (
+            ref,
+            pairs
+              .map(_._2)
+              .reduceLeft((c1, c2) =>
+                Column.unionRightSemigroup.append(c1, c2)))
         } toMap
       }
     }
@@ -457,12 +454,11 @@ trait Slice { source =>
               cElemType,
               CPath(cPath: _*)))
             xs =>
-              Some(xs.zipWithIndex map {
-                case (x, j) =>
-                  mappers get j match {
-                    case Some(f) => f(x)
-                    case None    => x
-                  }
+              Some(xs.zipWithIndex map { case (x, j) =>
+                mappers get j match {
+                  case Some(f) => f(x)
+                  case None    => x
+                }
               })
           case (
                 JArrayHomogeneousT(jType),
@@ -605,9 +601,8 @@ trait Slice { source =>
       }: _*)
 
       val size = source.size
-      val columns = source.columns map {
-        case (ColumnRef(selector, ctype), v) =>
-          ColumnRef(arraylessPrefix \ selector, ctype) -> v
+      val columns = source.columns map { case (ColumnRef(selector, ctype), v) =>
+        ColumnRef(arraylessPrefix \ selector, ctype) -> v
       }
     }
 
@@ -683,12 +678,11 @@ trait Slice { source =>
           result <- f(col)
         } yield result
 
-        resultColumns.groupBy(_.tpe) map {
-          case (tpe, cols) =>
-            (
-              ColumnRef(to, tpe),
-              cols.reduceLeft((c1, c2) =>
-                Column.unionRightSemigroup.append(c1, c2)))
+        resultColumns.groupBy(_.tpe) map { case (tpe, cols) =>
+          (
+            ColumnRef(to, tpe),
+            cols.reduceLeft((c1, c2) =>
+              Column.unionRightSemigroup.append(c1, c2)))
         }
       }
     }
@@ -708,12 +702,11 @@ trait Slice { source =>
           result <- f(left, right)
         } yield result
 
-        resultColumns.groupBy(_.tpe) map {
-          case (tpe, cols) =>
-            (
-              ColumnRef(to, tpe),
-              cols.reduceLeft((c1, c2) =>
-                Column.unionRightSemigroup.append(c1, c2)))
+        resultColumns.groupBy(_.tpe) map { case (tpe, cols) =>
+          (
+            ColumnRef(to, tpe),
+            cols.reduceLeft((c1, c2) =>
+              Column.unionRightSemigroup.append(c1, c2)))
         }
       }
     }
@@ -768,9 +761,8 @@ trait Slice { source =>
           }
 
           Loop.range(0, filter.size) { i =>
-            val numBools = grouped.values map {
-              case refs =>
-                refs.values.toArray.exists(_.isDefinedAt(i))
+            val numBools = grouped.values map { case refs =>
+              refs.values.toArray.exists(_.isDefinedAt(i))
             }
 
             val numBool = numBools reduce { _ && _ }
@@ -900,9 +892,8 @@ trait Slice { source =>
         case Left(cols0) =>
           val cols = cols0.toList
             .sortBy(_._1)
-            .map {
-              case (_, col) =>
-                Column.rowOrder(col)
+            .map { case (_, col) =>
+              Column.rowOrder(col)
             }
             .toArray
 
@@ -971,12 +962,11 @@ trait Slice { source =>
     val keySlice = new Slice {
       val size = source.size
       val columns: Map[ColumnRef, Column] = {
-        prefixes.zipWithIndex.flatMap({
-          case (prefix, i) =>
-            source.columns collect {
-              case (ColumnRef(path, tpe), col) if path hasPrefix prefix =>
-                (ColumnRef(CPathIndex(i) \ path, tpe), col)
-            }
+        prefixes.zipWithIndex.flatMap({ case (prefix, i) =>
+          source.columns collect {
+            case (ColumnRef(path, tpe), col) if path hasPrefix prefix =>
+              (ColumnRef(CPathIndex(i) \ path, tpe), col)
+          }
         })(collection.breakOut)
       }
     }
@@ -1029,11 +1019,10 @@ trait Slice { source =>
     new Slice {
       val size = source.size min other.size
       val columns: Map[ColumnRef, Column] =
-        other.columns.foldLeft(source.columns) {
-          case (acc, (ref, col)) =>
-            acc + (ref -> (acc get ref flatMap { c =>
-              cf.util.UnionRight(c, col)
-            } getOrElse col))
+        other.columns.foldLeft(source.columns) { case (acc, (ref, col)) =>
+          acc + (ref -> (acc get ref flatMap { c =>
+            cf.util.UnionRight(c, col)
+          } getOrElse col))
         }
     }
   }
@@ -1829,10 +1818,9 @@ trait Slice { source =>
   }
 
   def toString(row: Int): Option[String] = {
-    (columns.toList.sortBy(_._1) map {
-      case (ref, col) =>
-        ref.toString + ": " + (if (col.isDefinedAt(row)) col.strValue(row)
-                               else "(undefined)")
+    (columns.toList.sortBy(_._1) map { case (ref, col) =>
+      ref.toString + ": " + (if (col.isDefinedAt(row)) col.strValue(row)
+                             else "(undefined)")
     }) match {
       case Nil => None
       case l   => Some(l.mkString("[", ", ", "]"))
@@ -1975,9 +1963,8 @@ object Slice {
       slices.foldLeft((Map.empty[ColumnRef, List[(Int, Column)]], 0)) {
         case ((cols, offset), slice) if slice.size > 0 =>
           (
-            slice.columns.foldLeft(cols) {
-              case (acc, (ref, col)) =>
-                acc + (ref -> ((offset, col) :: acc.getOrElse(ref, Nil)))
+            slice.columns.foldLeft(cols) { case (acc, (ref, col)) =>
+              acc + (ref -> ((offset, col) :: acc.getOrElse(ref, Nil)))
             },
             offset + slice.size)
 
@@ -1986,9 +1973,8 @@ object Slice {
 
     val slice = new Slice {
       val size = _size
-      val columns = _columns.flatMap {
-        case (ref, parts) =>
-          cf.util.NConcat(parts) map ((ref, _))
+      val columns = _columns.flatMap { case (ref, parts) =>
+        cf.util.NConcat(parts) map ((ref, _))
       }
     }
 

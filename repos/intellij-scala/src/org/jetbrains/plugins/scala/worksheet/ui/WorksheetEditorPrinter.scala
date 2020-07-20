@@ -299,9 +299,8 @@ class WorksheetEditorPrinter(
                           group,
                           limit
                         )
-                    } foreach {
-                      case region =>
-                        viewerFolding addFoldRegion region
+                    } foreach { case region =>
+                      viewerFolding addFoldRegion region
                     }
 
                     WorksheetFoldGroup.save(file, group)
@@ -405,22 +404,21 @@ object WorksheetEditorPrinter {
     }
 
     def createListener(recipient: Editor, don: Editor) =
-      foldGroup map {
-        case group =>
-          new CaretAdapter {
-            override def caretPositionChanged(e: CaretEvent) {
-              if (!e.getEditor
-                  .asInstanceOf[EditorImpl]
-                  .getContentComponent
-                  .hasFocus) return
-              recipient.getCaretModel.moveToVisualPosition(
-                new VisualPosition(
-                  Math.min(
-                    group left2rightOffset don.getCaretModel.getVisualPosition.getLine,
-                    recipient.getDocument.getLineCount),
-                  0))
-            }
+      foldGroup map { case group =>
+        new CaretAdapter {
+          override def caretPositionChanged(e: CaretEvent) {
+            if (!e.getEditor
+                .asInstanceOf[EditorImpl]
+                .getContentComponent
+                .hasFocus) return
+            recipient.getCaretModel.moveToVisualPosition(
+              new VisualPosition(
+                Math.min(
+                  group left2rightOffset don.getCaretModel.getVisualPosition.getLine,
+                  recipient.getDocument.getLineCount),
+                0))
           }
+        }
       } getOrElse new CaretAdapter {
         override def caretPositionChanged(e: CaretEvent) {
           if (!e.getEditor
@@ -467,13 +465,12 @@ object WorksheetEditorPrinter {
 
             originalEditor.putUserData(DIFF_SYNC_SUPPORT, syncSupport)
 
-            diffSplitter foreach {
-              case splitter =>
-                viewerImpl.getScrollPane.getVerticalScrollBar
-                  .addAdjustmentListener(new AdjustmentListener {
-                    override def adjustmentValueChanged(
-                        e: AdjustmentEvent): Unit = splitter.redrawDiffs()
-                  })
+            diffSplitter foreach { case splitter =>
+              viewerImpl.getScrollPane.getVerticalScrollBar
+                .addAdjustmentListener(new AdjustmentListener {
+                  override def adjustmentValueChanged(
+                      e: AdjustmentEvent): Unit = splitter.redrawDiffs()
+                })
             }
           }
         }

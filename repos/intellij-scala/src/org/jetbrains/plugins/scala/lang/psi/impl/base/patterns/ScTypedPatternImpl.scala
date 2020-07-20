@@ -136,9 +136,8 @@ class ScTypedPatternImpl(node: ASTNode)
           }
         expectedType match {
           case Some(expectedType) =>
-            typeElementType.map {
-              case resType =>
-                Bounds.glb(expectedType, resType, checkWeak = false)
+            typeElementType.map { case resType =>
+              Bounds.glb(expectedType, resType, checkWeak = false)
             }
           case _ => typeElementType
         }

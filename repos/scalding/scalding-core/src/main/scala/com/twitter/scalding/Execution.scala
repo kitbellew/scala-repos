@@ -788,9 +788,8 @@ object Execution {
                       scheduleToWrites(conf, mode, cache, h._1, tail.map(_._1))
                     // Complete all of the promises we put into the cache
                     // with this future counters set
-                    weDoOperation.foreach {
-                      case (toWrite, promise) =>
-                        promise.completeWith(futCounters)
+                    weDoOperation.foreach { case (toWrite, promise) =>
+                      promise.completeWith(futCounters)
                     }
                     futCounters
                   case Nil =>

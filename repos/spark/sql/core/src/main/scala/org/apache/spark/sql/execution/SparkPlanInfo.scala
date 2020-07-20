@@ -55,12 +55,11 @@ private[sql] object SparkPlanInfo {
       case ReusedExchange(_, child) => child :: Nil
       case _                        => plan.children ++ plan.subqueries
     }
-    val metrics = plan.metrics.toSeq.map {
-      case (key, metric) =>
-        new SQLMetricInfo(
-          metric.name.getOrElse(key),
-          metric.id,
-          Utils.getFormattedClassName(metric.param))
+    val metrics = plan.metrics.toSeq.map { case (key, metric) =>
+      new SQLMetricInfo(
+        metric.name.getOrElse(key),
+        metric.id,
+        Utils.getFormattedClassName(metric.param))
     }
 
     new SparkPlanInfo(

@@ -46,38 +46,36 @@ private[round] final class SocketHandler(
       {
         case ("p", o) => o int "v" foreach { v => socket ! PingVersion(uid, v) }
         case ("move", o) =>
-          parseMove(o) foreach {
-            case (move, blur, lag) =>
-              val promise = Promise[Unit]
-              promise.future onFailure {
-                case _: Exception => socket ! Resync(uid)
-              }
-              send(
-                HumanPlay(
-                  playerId,
-                  move,
-                  blur,
-                  lag.millis,
-                  promise.some
-                ))
-              member push ackEvent
+          parseMove(o) foreach { case (move, blur, lag) =>
+            val promise = Promise[Unit]
+            promise.future onFailure {
+              case _: Exception => socket ! Resync(uid)
+            }
+            send(
+              HumanPlay(
+                playerId,
+                move,
+                blur,
+                lag.millis,
+                promise.some
+              ))
+            member push ackEvent
           }
         case ("drop", o) =>
-          parseDrop(o) foreach {
-            case (drop, blur, lag) =>
-              member push ackEvent
-              val promise = Promise[Unit]
-              promise.future onFailure {
-                case _: Exception => socket ! Resync(uid)
-              }
-              send(
-                HumanPlay(
-                  playerId,
-                  drop,
-                  blur,
-                  lag.millis,
-                  promise.some
-                ))
+          parseDrop(o) foreach { case (drop, blur, lag) =>
+            member push ackEvent
+            val promise = Promise[Unit]
+            promise.future onFailure {
+              case _: Exception => socket ! Resync(uid)
+            }
+            send(
+              HumanPlay(
+                playerId,
+                drop,
+                blur,
+                lag.millis,
+                promise.some
+              ))
           }
         case ("rematch-yes", _)  => send(RematchYes(playerId))
         case ("rematch-no", _)   => send(RematchNo(playerId))

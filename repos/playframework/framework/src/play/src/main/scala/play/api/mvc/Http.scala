@@ -483,9 +483,8 @@ package play.api.mvc {
 
     override def hashCode = {
       toMap
-        .map {
-          case (name, value) =>
-            name.toLowerCase(Locale.ENGLISH) -> value
+        .map { case (name, value) =>
+          name.toLowerCase(Locale.ENGLISH) -> value
         }
         .hashCode()
     }
@@ -592,9 +591,8 @@ package play.api.mvc {
       */
     def encode(data: Map[String, String]): String = {
       val encoded = data
-        .map {
-          case (k, v) =>
-            URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
+        .map { case (k, v) =>
+          URLEncoder.encode(k, "UTF-8") + "=" + URLEncoder.encode(v, "UTF-8")
         }
         .mkString("&")
       if (isSigned)

@@ -143,9 +143,8 @@ final class JsonView {
       "filters" -> (filters
         .split('/')
         .map(_ split ':')
-        .collect {
-          case Array(key, values) =>
-            key -> JsArray(values.split(',').map(JsString.apply))
+        .collect { case Array(key, values) =>
+          key -> JsArray(values.split(',').map(JsString.apply))
         }
         .toMap: Map[String, JsArray])
     )

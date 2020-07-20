@@ -94,9 +94,8 @@ case class GlobifierOps(implicit tz: TimeZone, dp: DateParser) {
           case (curDate, (base, _)) =>
             base.addTo(curDate)
         }
-        val endDate = lists.foldLeft(baseDate) {
-          case (curDate, (_, dur)) =>
-            dur.addTo(curDate)
+        val endDate = lists.foldLeft(baseDate) { case (curDate, (_, dur)) =>
+          dur.addTo(curDate)
         }
         DateRange(baseDate, endDate - Millisecs(1))
       }

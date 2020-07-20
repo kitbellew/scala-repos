@@ -784,9 +784,8 @@ object ScalaJSPluginInternal {
 
       val detector = new FrameworkDetector(jsEnv)
 
-      detector.detect(frameworks) map {
-        case (tf, name) =>
-          (tf, new ScalaJSFramework(name, jsEnv, logger, console))
+      detector.detect(frameworks) map { case (tf, name) =>
+        (tf, new ScalaJSFramework(name, jsEnv, logger, console))
       }
     },
     // Override default to avoid triggering a test:fastOptJS in a test:compile

@@ -283,28 +283,27 @@ object Templates {
         }
 
         val futures: Seq[Future[(String, String, Either[String, String])]] =
-          uploaded.map {
-            case (name, key) =>
-              clientCall("/activator/template/publish")
-                .post(s"url=http://downloads.typesafe.com/$key")
-                .flatMap { resp =>
-                  if (resp.status != 200) {
-                    logger.error("Error publishing template " + name)
-                    logger.error("Status code was: " + resp.status)
-                    logger.error("Body was: " + resp.body)
-                    throw new RuntimeException("Error publishing template")
-                  }
-                  val js = resp.json
-                  val uuid = (js \ "uuid").as[String]
-                  val statusUrl = (for {
-                    links <- (js \ "_links").asOpt[JsObject]
-                    status <-
-                      (links \ "activator/templates/status").asOpt[JsObject]
-                    url <- (status \ "href").asOpt[String]
-                  } yield url).getOrElse(s"/activator/template/status/$uuid")
-                  waitUntilNotPending(uuid, statusUrl)
+          uploaded.map { case (name, key) =>
+            clientCall("/activator/template/publish")
+              .post(s"url=http://downloads.typesafe.com/$key")
+              .flatMap { resp =>
+                if (resp.status != 200) {
+                  logger.error("Error publishing template " + name)
+                  logger.error("Status code was: " + resp.status)
+                  logger.error("Body was: " + resp.body)
+                  throw new RuntimeException("Error publishing template")
                 }
-                .map(result => (name, key, result))
+                val js = resp.json
+                val uuid = (js \ "uuid").as[String]
+                val statusUrl = (for {
+                  links <- (js \ "_links").asOpt[JsObject]
+                  status <-
+                    (links \ "activator/templates/status").asOpt[JsObject]
+                  url <- (status \ "href").asOpt[String]
+                } yield url).getOrElse(s"/activator/template/status/$uuid")
+                waitUntilNotPending(uuid, statusUrl)
+              }
+              .map(result => (name, key, result))
           }
 
         val results = Await.result(Future.sequence(futures), 1.hour)

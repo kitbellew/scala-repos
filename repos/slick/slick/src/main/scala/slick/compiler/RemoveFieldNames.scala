@@ -64,9 +64,8 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                     ProductNode(
                       ConstArray
                         .from(ch
-                          .map {
-                            case (s, n) =>
-                              (requiredSyms.getOrElse(s, Int.MaxValue), n)
+                          .map { case (s, n) =>
+                            (requiredSyms.getOrElse(s, Int.MaxValue), n)
                           }
                           .toSeq
                           .sortBy(_._1))
@@ -77,9 +76,8 @@ class RemoveFieldNames(val alwaysKeepSubqueryNames: Boolean = false)
                   StructNode(
                     ConstArray
                       .from(ch
-                        .map {
-                          case (s, n) =>
-                            (requiredSyms.getOrElse(s, Int.MaxValue), (s, n))
+                        .map { case (s, n) =>
+                          (requiredSyms.getOrElse(s, Int.MaxValue), (s, n))
                         }
                         .toSeq
                         .sortBy(_._1))

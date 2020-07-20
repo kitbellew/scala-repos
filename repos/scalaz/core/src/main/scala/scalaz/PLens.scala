@@ -200,12 +200,11 @@ sealed abstract class PLensFamily[A1, A2, B1, B2] {
   /** Two disjoint partial lenses can be paired */
   def product[C1, C2, D1, D2](that: PLensFamily[C1, C2, D1, D2])
       : PLensFamily[(A1, C1), (A2, C2), (B1, D1), (B2, D2)] =
-    plensFamily {
-      case (a, c) =>
-        for {
-          q <- run(a)
-          r <- that run c
-        } yield q *** r
+    plensFamily { case (a, c) =>
+      for {
+        q <- run(a)
+        r <- that run c
+      } yield q *** r
     }
 
   /** alias for `product` */

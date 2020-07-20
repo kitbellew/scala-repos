@@ -47,17 +47,15 @@ private[akka] object RemoteActorRefProvider {
 
     startWith(Uninitialized, None)
 
-    when(Uninitialized) {
-      case Event(i: Internals, _) ⇒
-        systemGuardian ! RegisterTerminationHook
-        goto(Idle) using Some(i)
+    when(Uninitialized) { case Event(i: Internals, _) ⇒
+      systemGuardian ! RegisterTerminationHook
+      goto(Idle) using Some(i)
     }
 
-    when(Idle) {
-      case Event(TerminationHook, Some(internals)) ⇒
-        log.info("Shutting down remote daemon.")
-        internals.remoteDaemon ! TerminationHook
-        goto(WaitDaemonShutdown)
+    when(Idle) { case Event(TerminationHook, Some(internals)) ⇒
+      log.info("Shutting down remote daemon.")
+      internals.remoteDaemon ! TerminationHook
+      goto(WaitDaemonShutdown)
     }
 
     // TODO: state timeout

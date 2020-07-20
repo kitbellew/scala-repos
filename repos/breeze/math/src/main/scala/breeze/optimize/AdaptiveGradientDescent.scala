@@ -152,13 +152,12 @@ object AdaptiveGradientDescent {
       space.zipMapValues.map(
         res,
         s,
-        {
-          case (x_half, s_i) =>
-            if (x_half.abs < tlambda / s_i) {
-              0.0
-            } else {
-              (x_half - math.signum(x_half) * tlambda / s_i)
-            }
+        { case (x_half, s_i) =>
+          if (x_half.abs < tlambda / s_i) {
+            0.0
+          } else {
+            (x_half - math.signum(x_half) * tlambda / s_i)
+          }
         })
     }
 

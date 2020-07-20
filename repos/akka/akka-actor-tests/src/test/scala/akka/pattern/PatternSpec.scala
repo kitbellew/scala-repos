@@ -14,9 +14,8 @@ import scala.concurrent.duration._
 object PatternSpec {
   final case class Work(duration: Duration)
   class TargetActor extends Actor {
-    def receive = {
-      case (testLatch: TestLatch, duration: FiniteDuration) ⇒
-        Await.ready(testLatch, duration)
+    def receive = { case (testLatch: TestLatch, duration: FiniteDuration) ⇒
+      Await.ready(testLatch, duration)
     }
   }
 }

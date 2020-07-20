@@ -232,22 +232,21 @@ class DotDiagramGenerator(settings: doc.Settings, dotRunner: DotRunner)
       subClasses.map(n => node2Dot(n)).mkString +
       superClasses.map(n => node2Dot(n)).mkString +
       // inheritance edges
-      edges.map {
-        case (from, tos) =>
-          tos
-            .map(to => {
-              val id = "graph" + counter + "_" + node2Index(
-                to) + "_" + node2Index(from)
-              // the X -> Y edge is inverted twice to keep the diagram flowing the right way
-              // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
-              "node" + node2Index(to) + " -> node" + node2Index(from) +
-                " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
-                "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
-                                              " are subtypes of "
-                                            else " is a subtype of ") +
-                to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
-            })
-            .mkString
+      edges.map { case (from, tos) =>
+        tos
+          .map(to => {
+            val id =
+              "graph" + counter + "_" + node2Index(to) + "_" + node2Index(from)
+            // the X -> Y edge is inverted twice to keep the diagram flowing the right way
+            // that is, an edge from node X to Y will result in a dot instruction nodeY -> nodeX [dir="back"]
+            "node" + node2Index(to) + " -> node" + node2Index(from) +
+              " [id=\"" + cssClass(to, from) + "|" + id + "\", " +
+              "tooltip=\"" + from.name + (if (from.name.endsWith(MultiSuffix))
+                                            " are subtypes of "
+                                          else " is a subtype of ") +
+              to.name + "\", dir=\"back\", arrowtail=\"empty\"];\n"
+          })
+          .mkString
       }.mkString +
       "}"
 

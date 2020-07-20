@@ -72,8 +72,7 @@ trait DB extends Loggable {
     * Use S.queryLog to get the list of (statement, duration) entries or set an analyzer function using
     * S.addAnalyzer
     */
-  @volatile var queryCollector: LogFunc = {
-    case (query: DBLog, time) =>
+  @volatile var queryCollector: LogFunc = { case (query: DBLog, time) =>
   }
 
   /**

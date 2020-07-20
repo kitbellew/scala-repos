@@ -155,20 +155,19 @@ private[util] class RestrictParallelExecutionsActor(
   }
 
   private[this] def startNext(): Unit = {
-    queue.dequeueOption.foreach {
-      case (next, newQueue) =>
-        queue = newQueue
-        active += 1
+    queue.dequeueOption.foreach { case (next, newQueue) =>
+      queue = newQueue
+      active += 1
 
-        val future: Future[_] =
-          try metrics.processingTimer.timeFuture(next.func())
-          catch { case NonFatal(e) => Future.failed(e) }
+      val future: Future[_] =
+        try metrics.processingTimer.timeFuture(next.func())
+        catch { case NonFatal(e) => Future.failed(e) }
 
-        val myself = self
-        future.onComplete { (result: Try[_]) =>
-          next.complete(result)
-          myself ! Finished
-        }(CallerThreadExecutionContext.callerThreadExecutionContext)
+      val myself = self
+      future.onComplete { (result: Try[_]) =>
+        next.complete(result)
+        myself ! Finished
+      }(CallerThreadExecutionContext.callerThreadExecutionContext)
     }
   }
 }

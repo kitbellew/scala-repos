@@ -223,18 +223,16 @@ object VectorIndexer extends DefaultParamsReadable[VectorIndexer] {
       // Filter out features which are declared continuous.
       featureValueSets.zipWithIndex
         .filter(_._1.size <= maxCategories)
-        .map {
-          case (featureValues: OpenHashSet[Double], featureIndex: Int) =>
-            var sortedFeatureValues =
-              featureValues.iterator.filter(_ != 0.0).toArray.sorted
-            val zeroExists =
-              sortedFeatureValues.length + 1 == featureValues.size
-            if (zeroExists) {
-              sortedFeatureValues = 0.0 +: sortedFeatureValues
-            }
-            val categoryMap: Map[Double, Int] =
-              sortedFeatureValues.zipWithIndex.toMap
-            (featureIndex, categoryMap)
+        .map { case (featureValues: OpenHashSet[Double], featureIndex: Int) =>
+          var sortedFeatureValues =
+            featureValues.iterator.filter(_ != 0.0).toArray.sorted
+          val zeroExists = sortedFeatureValues.length + 1 == featureValues.size
+          if (zeroExists) {
+            sortedFeatureValues = 0.0 +: sortedFeatureValues
+          }
+          val categoryMap: Map[Double, Int] =
+            sortedFeatureValues.zipWithIndex.toMap
+          (featureIndex, categoryMap)
         }
         .toMap
     }

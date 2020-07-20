@@ -73,35 +73,33 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
     new scala.util.parsing.input.CharArrayReader(in.toCharArray)
   type Elem = Char
 
-  lazy val contentParser = Parser[String] {
-    case in =>
-      val content = new StringBuilder;
-      var seqDone = 0;
+  lazy val contentParser = Parser[String] { case in =>
+    val content = new StringBuilder;
+    var seqDone = 0;
 
-      def walk(in: Input)(f: Char => Boolean): Input = {
-        var seq = in
-        while (!seq.atEnd && !f(seq first)) {
-          seq = seq rest
-        }
-        seq rest
+    def walk(in: Input)(f: Char => Boolean): Input = {
+      var seq = in
+      while (!seq.atEnd && !f(seq first)) {
+        seq = seq rest
       }
+      seq rest
+    }
 
-      val rest = walk(in) {
-        case c =>
-          content append c
-          c.toLower match {
-            case 'u' if (seqDone == 0) => seqDone = 1;
-            case 'r' if (seqDone == 1) => seqDone = 2;
-            case 'l' if (seqDone == 2) => seqDone = 3;
-            case ' ' | '\t' | '\n' | '\r' if (seqDone == 3 || seqDone == 4) =>
-              seqDone = 4
-            case '(' if (seqDone == 3 || seqDone == 4) => seqDone = 5
-            case _                                     => seqDone = 0
-          }
-          seqDone == 5;
+    val rest = walk(in) { case c =>
+      content append c
+      c.toLower match {
+        case 'u' if (seqDone == 0) => seqDone = 1;
+        case 'r' if (seqDone == 1) => seqDone = 2;
+        case 'l' if (seqDone == 2) => seqDone = 3;
+        case ' ' | '\t' | '\n' | '\r' if (seqDone == 3 || seqDone == 4) =>
+          seqDone = 4
+        case '(' if (seqDone == 3 || seqDone == 4) => seqDone = 5
+        case _                                     => seqDone = 0
       }
+      seqDone == 5;
+    }
 
-      Success(content toString, rest);
+    Success(content toString, rest);
   }
 
   lazy val spaces = (elem(' ') | elem('\t') | elem('\n') | elem('\r')).*
@@ -119,9 +117,8 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
           c == ' ' || c == '_' ||
           c == '#' || c == ',' ||
           c == '%' || additionalCharacters.contains(c)
-    ).+ ^^ {
-      case l =>
-        l.mkString("")
+    ).+ ^^ { case l =>
+      l.mkString("")
     }
   }
 
@@ -165,12 +162,10 @@ case class CssUrlPrefixer(prefix: String) extends Parsers {
   lazy val phrase =
     (((contentParser ~ singleQuotedPath) |||
       (contentParser ~ doubleQuotedPath) |||
-      (contentParser ~ quotelessPath)).* ^^ {
-      case l =>
-        l.flatMap(f => f._1 + f._2).mkString("")
-    }) ~ contentParser ^^ {
-      case a ~ b =>
-        a + b
+      (contentParser ~ quotelessPath)).* ^^ { case l =>
+      l.flatMap(f => f._1 + f._2).mkString("")
+    }) ~ contentParser ^^ { case a ~ b =>
+      a + b
     }
 
   def fixCss(cssString: String): Box[String] = {

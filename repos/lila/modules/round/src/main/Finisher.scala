@@ -91,12 +91,11 @@ private[round] final class Finisher(
 
   private def updateCountAndPerfs(finish: FinishGame): Funit =
     (!finish.isVsSelf && !finish.game.aborted) ?? {
-      (finish.white |@| finish.black).tupled ?? {
-        case (white, black) =>
-          crosstableApi add finish.game zip perfsUpdater.save(
-            finish.game,
-            white,
-            black)
+      (finish.white |@| finish.black).tupled ?? { case (white, black) =>
+        crosstableApi add finish.game zip perfsUpdater.save(
+          finish.game,
+          white,
+          black)
       } zip
         (finish.white ?? incNbGames(finish.game)) zip
         (finish.black ?? incNbGames(finish.game)) void

@@ -102,13 +102,12 @@ class DecisionTreeRegressorSuite
       .select(model.getFeaturesCol, model.getVarianceCol)
       .collect()
 
-    predictions.foreach {
-      case Row(features: Vector, variance: Double) =>
-        val expectedVariance =
-          model.rootNode.predictImpl(features).impurityStats.calculate()
-        assert(
-          variance === expectedVariance,
-          s"Expected variance $expectedVariance but got $variance.")
+    predictions.foreach { case Row(features: Vector, variance: Double) =>
+      val expectedVariance =
+        model.rootNode.predictImpl(features).impurityStats.calculate()
+      assert(
+        variance === expectedVariance,
+        s"Expected variance $expectedVariance but got $variance.")
     }
   }
 

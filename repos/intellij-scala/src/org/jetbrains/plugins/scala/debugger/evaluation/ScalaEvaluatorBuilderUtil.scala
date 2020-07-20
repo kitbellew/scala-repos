@@ -709,10 +709,9 @@ private[evaluation] trait ScalaEvaluatorBuilderUtil {
         case _            => return arguments
       }
 
-      arguments.zipWithIndex.map {
-        case (arg, i) =>
-          if (params.length <= i || isOfPrimitiveType(params(i))) arg
-          else boxEvaluator(arg)
+      arguments.zipWithIndex.map { case (arg, i) =>
+        if (params.length <= i || isOfPrimitiveType(params(i))) arg
+        else boxEvaluator(arg)
       }
     }
 

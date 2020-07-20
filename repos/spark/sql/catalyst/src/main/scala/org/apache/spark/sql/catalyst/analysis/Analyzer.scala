@@ -141,9 +141,8 @@ class Analyzer(
           substituted.getOrElse(u)
         case other =>
           // This cannot be done in ResolveSubquery because ResolveSubquery does not know the CTE.
-          other transformExpressions {
-            case e: SubqueryExpression =>
-              e.withNewPlan(substituteCTE(e.query, cteRelations))
+          other transformExpressions { case e: SubqueryExpression =>
+            e.withNewPlan(substituteCTE(e.query, cteRelations))
           }
       }
     }
@@ -157,20 +156,19 @@ class Analyzer(
       plan resolveOperators {
         // Lookup WindowSpecDefinitions. This rule works with unresolved children.
         case WithWindowDefinition(windowDefinitions, child) =>
-          child.transform {
-            case p =>
-              p.transformExpressions {
-                case UnresolvedWindowExpression(
-                      c,
-                      WindowSpecReference(windowName)) =>
-                  val errorMessage =
-                    s"Window specification $windowName is not defined in the WINDOW clause."
-                  val windowSpecDefinition =
-                    windowDefinitions.getOrElse(
-                      windowName,
-                      failAnalysis(errorMessage))
-                  WindowExpression(c, windowSpecDefinition)
-              }
+          child.transform { case p =>
+            p.transformExpressions {
+              case UnresolvedWindowExpression(
+                    c,
+                    WindowSpecReference(windowName)) =>
+                val errorMessage =
+                  s"Window specification $windowName is not defined in the WINDOW clause."
+                val windowSpecDefinition =
+                  windowDefinitions.getOrElse(
+                    windowName,
+                    failAnalysis(errorMessage))
+                WindowExpression(c, windowSpecDefinition)
+            }
           }
       }
   }
@@ -181,22 +179,21 @@ class Analyzer(
   object ResolveAliases extends Rule[LogicalPlan] {
     private def assignAliases(exprs: Seq[NamedExpression]) = {
       exprs.zipWithIndex
-        .map {
-          case (expr, i) =>
-            expr transformUp {
-              case u @ UnresolvedAlias(child, optionalAliasName) =>
-                child match {
-                  case ne: NamedExpression              => ne
-                  case e if !e.resolved                 => u
-                  case g: Generator                     => MultiAlias(g, Nil)
-                  case c @ Cast(ne: NamedExpression, _) => Alias(c, ne.name)()
-                  case e: ExtractValue                  => Alias(e, usePrettyExpression(e).sql)()
-                  case e =>
-                    Alias(
-                      e,
-                      optionalAliasName.getOrElse(usePrettyExpression(e).sql))()
-                }
-            }
+        .map { case (expr, i) =>
+          expr transformUp {
+            case u @ UnresolvedAlias(child, optionalAliasName) =>
+              child match {
+                case ne: NamedExpression              => ne
+                case e if !e.resolved                 => u
+                case g: Generator                     => MultiAlias(g, Nil)
+                case c @ Cast(ne: NamedExpression, _) => Alias(c, ne.name)()
+                case e: ExtractValue                  => Alias(e, usePrettyExpression(e).sql)()
+                case e =>
+                  Alias(
+                    e,
+                    optionalAliasName.getOrElse(usePrettyExpression(e).sql))()
+              }
+          }
         }
         .asInstanceOf[Seq[NamedExpression]]
     }
@@ -526,15 +523,10 @@ class Analyzer(
             oldRelation.output.zip(newRelation.output))
           val newRight = right transformUp {
             case r if r == oldRelation => newRelation
-          } transformUp {
-            case other =>
-              other transformExpressions {
-                case a: Attribute =>
-                  attributeRewrites
-                    .get(a)
-                    .getOrElse(a)
-                    .withQualifiers(a.qualifiers)
-              }
+          } transformUp { case other =>
+            other transformExpressions { case a: Attribute =>
+              attributeRewrites.get(a).getOrElse(a).withQualifiers(a.qualifiers)
+            }
           }
           newRight
       }
@@ -633,14 +625,13 @@ class Analyzer(
               new TreeNodeRef(deserializer) -> attributes
           }.toMap
 
-          o.transformExpressions {
-            case expr =>
-              deserializerToAttributes
-                .get(new TreeNodeRef(expr))
-                .map { attributes =>
-                  resolveDeserializer(expr, attributes)
-                }
-                .getOrElse(expr)
+          o.transformExpressions { case expr =>
+            deserializerToAttributes
+              .get(new TreeNodeRef(expr))
+              .map { attributes =>
+                resolveDeserializer(expr, attributes)
+              }
+              .getOrElse(expr)
           }
 
         case q: LogicalPlan =>
@@ -860,31 +851,30 @@ class Analyzer(
     */
   object ResolveFunctions extends Rule[LogicalPlan] {
     def apply(plan: LogicalPlan): LogicalPlan =
-      plan resolveOperators {
-        case q: LogicalPlan =>
-          q transformExpressions {
-            case u if !u.childrenResolved =>
-              u // Skip until children are resolved.
-            case u @ UnresolvedFunction(name, children, isDistinct) =>
-              withPosition(u) {
-                registry.lookupFunction(name, children) match {
-                  // DISTINCT is not meaningful for a Max or a Min.
-                  case max: Max if isDistinct =>
-                    AggregateExpression(max, Complete, isDistinct = false)
-                  case min: Min if isDistinct =>
-                    AggregateExpression(min, Complete, isDistinct = false)
-                  // AggregateWindowFunctions are AggregateFunctions that can only be evaluated within
-                  // the context of a Window clause. They do not need to be wrapped in an
-                  // AggregateExpression.
-                  case wf: AggregateWindowFunction => wf
-                  // We get an aggregate function, we need to wrap it in an AggregateExpression.
-                  case agg: AggregateFunction =>
-                    AggregateExpression(agg, Complete, isDistinct)
-                  // This function is not an aggregate function, just return the resolved one.
-                  case other => other
-                }
+      plan resolveOperators { case q: LogicalPlan =>
+        q transformExpressions {
+          case u if !u.childrenResolved =>
+            u // Skip until children are resolved.
+          case u @ UnresolvedFunction(name, children, isDistinct) =>
+            withPosition(u) {
+              registry.lookupFunction(name, children) match {
+                // DISTINCT is not meaningful for a Max or a Min.
+                case max: Max if isDistinct =>
+                  AggregateExpression(max, Complete, isDistinct = false)
+                case min: Min if isDistinct =>
+                  AggregateExpression(min, Complete, isDistinct = false)
+                // AggregateWindowFunctions are AggregateFunctions that can only be evaluated within
+                // the context of a Window clause. They do not need to be wrapped in an
+                // AggregateExpression.
+                case wf: AggregateWindowFunction => wf
+                // We get an aggregate function, we need to wrap it in an AggregateExpression.
+                case agg: AggregateFunction =>
+                  AggregateExpression(agg, Complete, isDistinct)
+                // This function is not an aggregate function, just return the resolved one.
+                case other => other
               }
-          }
+            }
+        }
       }
   }
 
@@ -1143,9 +1133,8 @@ class Analyzer(
       val elementTypes = generator.elementTypes
 
       if (names.length == elementTypes.length) {
-        names.zip(elementTypes).map {
-          case (name, (t, nullable, _)) =>
-            AttributeReference(name, t, nullable)()
+        names.zip(elementTypes).map { case (name, (t, nullable, _)) =>
+          AttributeReference(name, t, nullable)()
         }
       } else if (names.isEmpty) {
         elementTypes.map {
@@ -1469,12 +1458,11 @@ class Analyzer(
               }
             }
             .toMap
-          val newPlan = p.transformExpressions {
-            case e =>
-              nondeterministicExprs
-                .get(new TreeNodeRef(e))
-                .map(_.toAttribute)
-                .getOrElse(e)
+          val newPlan = p.transformExpressions { case e =>
+            nondeterministicExprs
+              .get(new TreeNodeRef(e))
+              .map(_.toAttribute)
+              .getOrElse(e)
           }
           val newChild =
             Project(p.child.output ++ nondeterministicExprs.values, p.child)
@@ -1494,23 +1482,21 @@ class Analyzer(
         case p if !p.resolved => p // Skip unresolved nodes.
 
         case p =>
-          p transformExpressionsUp {
+          p transformExpressionsUp { case udf @ ScalaUDF(func, _, inputs, _) =>
+            val parameterTypes = ScalaReflection.getParameterTypes(func)
+            assert(parameterTypes.length == inputs.length)
 
-            case udf @ ScalaUDF(func, _, inputs, _) =>
-              val parameterTypes = ScalaReflection.getParameterTypes(func)
-              assert(parameterTypes.length == inputs.length)
-
-              val inputsNullCheck = parameterTypes
-                .zip(inputs)
-                // TODO: skip null handling for not-nullable primitive inputs after we can completely
-                // trust the `nullable` information.
-                // .filter { case (cls, expr) => cls.isPrimitive && expr.nullable }
-                .filter { case (cls, _) => cls.isPrimitive }
-                .map { case (_, expr) => IsNull(expr) }
-                .reduceLeftOption[Expression]((e1, e2) => Or(e1, e2))
-              inputsNullCheck
-                .map(If(_, Literal.create(null, udf.dataType), udf))
-                .getOrElse(udf)
+            val inputsNullCheck = parameterTypes
+              .zip(inputs)
+              // TODO: skip null handling for not-nullable primitive inputs after we can completely
+              // trust the `nullable` information.
+              // .filter { case (cls, expr) => cls.isPrimitive && expr.nullable }
+              .filter { case (cls, _) => cls.isPrimitive }
+              .map { case (_, expr) => IsNull(expr) }
+              .reduceLeftOption[Expression]((e1, e2) => Or(e1, e2))
+            inputsNullCheck
+              .map(If(_, Literal.create(null, udf.dataType), udf))
+              .getOrElse(udf)
           }
       }
   }
@@ -1520,28 +1506,27 @@ class Analyzer(
     */
   object ResolveWindowFrame extends Rule[LogicalPlan] {
     def apply(plan: LogicalPlan): LogicalPlan =
-      plan transform {
-        case logical: LogicalPlan =>
-          logical transformExpressions {
-            case WindowExpression(
-                  wf: WindowFunction,
-                  WindowSpecDefinition(_, _, f: SpecifiedWindowFrame))
-                if wf.frame != UnspecifiedFrame && wf.frame != f =>
-              failAnalysis(
-                s"Window Frame $f must match the required frame ${wf.frame}")
-            case WindowExpression(
-                  wf: WindowFunction,
-                  s @ WindowSpecDefinition(_, o, UnspecifiedFrame))
-                if wf.frame != UnspecifiedFrame =>
-              WindowExpression(wf, s.copy(frameSpecification = wf.frame))
-            case we @ WindowExpression(
-                  e,
-                  s @ WindowSpecDefinition(_, o, UnspecifiedFrame)) =>
-              val frame = SpecifiedWindowFrame.defaultWindowFrame(
-                o.nonEmpty,
-                acceptWindowFrame = true)
-              we.copy(windowSpec = s.copy(frameSpecification = frame))
-          }
+      plan transform { case logical: LogicalPlan =>
+        logical transformExpressions {
+          case WindowExpression(
+                wf: WindowFunction,
+                WindowSpecDefinition(_, _, f: SpecifiedWindowFrame))
+              if wf.frame != UnspecifiedFrame && wf.frame != f =>
+            failAnalysis(
+              s"Window Frame $f must match the required frame ${wf.frame}")
+          case WindowExpression(
+                wf: WindowFunction,
+                s @ WindowSpecDefinition(_, o, UnspecifiedFrame))
+              if wf.frame != UnspecifiedFrame =>
+            WindowExpression(wf, s.copy(frameSpecification = wf.frame))
+          case we @ WindowExpression(
+                e,
+                s @ WindowSpecDefinition(_, o, UnspecifiedFrame)) =>
+            val frame = SpecifiedWindowFrame.defaultWindowFrame(
+              o.nonEmpty,
+              acceptWindowFrame = true)
+            we.copy(windowSpec = s.copy(frameSpecification = frame))
+        }
       }
   }
 
@@ -1550,16 +1535,15 @@ class Analyzer(
     */
   object ResolveWindowOrder extends Rule[LogicalPlan] {
     def apply(plan: LogicalPlan): LogicalPlan =
-      plan transform {
-        case logical: LogicalPlan =>
-          logical transformExpressions {
-            case WindowExpression(wf: WindowFunction, spec)
-                if spec.orderSpec.isEmpty =>
-              failAnalysis(s"WindowFunction $wf requires window to be ordered")
-            case WindowExpression(rank: RankLike, spec) if spec.resolved =>
-              val order = spec.orderSpec.map(_.child)
-              WindowExpression(rank.withOrder(order), spec)
-          }
+      plan transform { case logical: LogicalPlan =>
+        logical transformExpressions {
+          case WindowExpression(wf: WindowFunction, spec)
+              if spec.orderSpec.isEmpty =>
+            failAnalysis(s"WindowFunction $wf requires window to be ordered")
+          case WindowExpression(rank: RankLike, spec) if spec.resolved =>
+            val order = spec.orderSpec.map(_.child)
+            WindowExpression(rank.withOrder(order), spec)
+        }
       }
   }
 

@@ -288,9 +288,8 @@ trait LineParsers extends InlineParsers {
     * language token, optional whitespace
     */
   val extendedFencedCodeLine: Parser[ExtendedFencedCode] =
-    fencedCodeLine ~ """\w+[\t\v ]*""".r ^^ {
-      case prefix ~ languageToken =>
-        new ExtendedFencedCode(prefix.fullLine, languageToken)
+    fencedCodeLine ~ """\w+[\t\v ]*""".r ^^ { case prefix ~ languageToken =>
+      new ExtendedFencedCode(prefix.fullLine, languageToken)
     }
 
   /** Matches any line. Only called when all other line parsers have failed.

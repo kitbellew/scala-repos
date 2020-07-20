@@ -75,24 +75,23 @@ class PartitioningSuite
     val partitioners =
       partitionSizes.map(p => (p, new RangePartitioner(p, rdd)))
     val decoratedRangeBounds = PrivateMethod[Array[Int]]('rangeBounds)
-    partitioners.map {
-      case (numPartitions, partitioner) =>
-        val rangeBounds = partitioner.invokePrivate(decoratedRangeBounds())
-        1.to(1000).map { element =>
-          {
-            val partition = partitioner.getPartition(element)
-            if (numPartitions > 1) {
-              if (partition < rangeBounds.size) {
-                assert(element <= rangeBounds(partition))
-              }
-              if (partition > 0) {
-                assert(element > rangeBounds(partition - 1))
-              }
-            } else {
-              assert(partition === 0)
+    partitioners.map { case (numPartitions, partitioner) =>
+      val rangeBounds = partitioner.invokePrivate(decoratedRangeBounds())
+      1.to(1000).map { element =>
+        {
+          val partition = partitioner.getPartition(element)
+          if (numPartitions > 1) {
+            if (partition < rangeBounds.size) {
+              assert(element <= rangeBounds(partition))
             }
+            if (partition > 0) {
+              assert(element > rangeBounds(partition - 1))
+            }
+          } else {
+            assert(partition === 0)
           }
         }
+      }
     }
   }
 
@@ -119,10 +118,9 @@ class PartitioningSuite
     val sampleSizePerPartition = 10
     val (count, sketched) = RangePartitioner.sketch(rdd, sampleSizePerPartition)
     assert(count === rdd.count())
-    sketched.foreach {
-      case (idx, n, sample) =>
-        assert(n === idx)
-        assert(sample.size === math.min(n, sampleSizePerPartition))
+    sketched.foreach { case (idx, n, sample) =>
+      assert(n === idx)
+      assert(sample.size === math.min(n, sampleSizePerPartition))
     }
   }
 

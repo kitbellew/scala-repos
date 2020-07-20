@@ -293,21 +293,19 @@ object CPath {
             case PathWithLeaf(path, v) => PathWithLeaf(path.tail, v)
           })
 
-        val result = grouped.toSeq.sortBy(_._1) map {
-          case (node, paths) =>
-            node match {
-              case (field: CPathField) => FieldNode(field, recurse(paths))
-              case (index: CPathIndex) => IndexNode(index, recurse(paths))
-              case _                   => sys.error("CPathArray and CPathMeta not supported")
-            }
+        val result = grouped.toSeq.sortBy(_._1) map { case (node, paths) =>
+          node match {
+            case (field: CPathField) => FieldNode(field, recurse(paths))
+            case (index: CPathIndex) => IndexNode(index, recurse(paths))
+            case _                   => sys.error("CPathArray and CPathMeta not supported")
+          }
         }
         result
       }
     }
 
-    val leaves = pathsAndValues.sortBy(_._1) map {
-      case (path, value) =>
-        PathWithLeaf[A](path.nodes, value)
+    val leaves = pathsAndValues.sortBy(_._1) map { case (path, value) =>
+      PathWithLeaf[A](path.nodes, value)
     }
 
     RootNode(inner(leaves))

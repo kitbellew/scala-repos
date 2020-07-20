@@ -154,14 +154,13 @@ private[lobby] final class Lobby(
       case Vector() => fuccess(none)
       case h +: rest =>
         Biter.canJoin(h, hook.user) ?? ! {
-          (h.user |@| hook.user).tupled ?? {
-            case (u1, u2) =>
-              GameRepo.lastGameBetween(
-                u1.id,
-                u2.id,
-                DateTime.now minusHours 1) map {
-                _ ?? (_.aborted)
-              }
+          (h.user |@| hook.user).tupled ?? { case (u1, u2) =>
+            GameRepo.lastGameBetween(
+              u1.id,
+              u2.id,
+              DateTime.now minusHours 1) map {
+              _ ?? (_.aborted)
+            }
           }
         } flatMap {
           case true  => fuccess(h.some)

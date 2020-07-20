@@ -228,10 +228,9 @@ class DateTest extends WordSpec {
     "have each partition disjoint and adjacent" in {
       def eachIsDisjoint(d: DateRange, dur: Duration) {
         val dl = d.each(dur)
-        assert(dl.zip(dl.tail).forall {
-          case (da, db) =>
-            da.isBefore(db.start) && db.isAfter(da.end) && ((da.end + Millisecs(
-              1)) == db.start)
+        assert(dl.zip(dl.tail).forall { case (da, db) =>
+          da.isBefore(db.start) && db.isAfter(da.end) && ((da.end + Millisecs(
+            1)) == db.start)
         })
       }
       eachIsDisjoint(DateRange("2010-10-01", "2010-10-03"), Days(1))

@@ -270,13 +270,12 @@ class Reversi(jQuery: JQueryStatic, playground: JQuery) {
   }
 
   def computeScore(): (Int, Int) = {
-    allSquares.foldLeft((0, 0)) {
-      case ((white, black), square) =>
-        square.owner match {
-          case White    => (white + 1, black)
-          case Black    => (white, black + 1)
-          case NoPlayer => (white, black)
-        }
+    allSquares.foldLeft((0, 0)) { case ((white, black), square) =>
+      square.owner match {
+        case White    => (white + 1, black)
+        case Black    => (white, black + 1)
+        case NoPlayer => (white, black)
+      }
     }
   }
 

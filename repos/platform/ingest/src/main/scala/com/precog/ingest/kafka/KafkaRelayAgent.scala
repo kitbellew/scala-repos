@@ -169,22 +169,21 @@ final class KafkaRelayAgent(
         ingestBatch(newOffset, batch + 1, newDelay, newWaitCount)
       }
 
-      ingestStep onFailure {
-        case ex =>
-          if (retries > 0) {
-            logger.error(
-              "An unexpected error occurred relaying messages from the local queue; retrying from offset %d batch %d."
-                .format(offset, batch),
-              ex)
-            ingestBatch(offset, batch, delay, waitCount, retries - 1)
-          } else {
-            logger.error(
-              "Batch relay failed at offset %d batch %d. Data transfer to central queue halted pending manual intervention."
-                .format(offset, batch),
-              ex)
-            runnable = false
-            stopPromise.success(PrecogUnit)
-          }
+      ingestStep onFailure { case ex =>
+        if (retries > 0) {
+          logger.error(
+            "An unexpected error occurred relaying messages from the local queue; retrying from offset %d batch %d."
+              .format(offset, batch),
+            ex)
+          ingestBatch(offset, batch, delay, waitCount, retries - 1)
+        } else {
+          logger.error(
+            "Batch relay failed at offset %d batch %d. Data transfer to central queue halted pending manual intervention."
+              .format(offset, batch),
+            ex)
+          runnable = false
+          stopPromise.success(PrecogUnit)
+        }
       }
     } else {
       logger.info(
@@ -306,14 +305,12 @@ final class KafkaRelayAgent(
         producer.send {
           new ProducerData[String, Message](centralTopic, identified)
         }
-      } onFailure {
-        case ex =>
-          logger.error(
-            "An error occurred forwarding messages from the local queue to central.",
-            ex)
-      } onSuccess {
-        case _ =>
-          if (messages.nonEmpty) eventIdSeq.saveState(messages.last.offset)
+      } onFailure { case ex =>
+        logger.error(
+          "An error occurred forwarding messages from the local queue to central.",
+          ex)
+      } onSuccess { case _ =>
+        if (messages.nonEmpty) eventIdSeq.saveState(messages.last.offset)
       }
     } valueOr { error =>
       Promise successful {

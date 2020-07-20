@@ -126,9 +126,8 @@ class CforTest extends SpireProperties {
 
   property("destructure tuples") {
     var t = 0
-    cfor((0, 0))(_._1 < 3, t => (t._1 + 1, t._2 + 2)) {
-      case (a, b) =>
-        t += 3 * a + b
+    cfor((0, 0))(_._1 < 3, t => (t._1 + 1, t._2 + 2)) { case (a, b) =>
+      t += 3 * a + b
     }
     t shouldBe 15
   }

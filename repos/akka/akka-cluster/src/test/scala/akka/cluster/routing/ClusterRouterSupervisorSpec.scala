@@ -12,9 +12,8 @@ object ClusterRouterSupervisorSpec {
 
   class KillableActor(testActor: ActorRef) extends Actor {
 
-    def receive = {
-      case "go away" ⇒
-        throw new IllegalArgumentException("Goodbye then!")
+    def receive = { case "go away" ⇒
+      throw new IllegalArgumentException("Goodbye then!")
     }
 
   }

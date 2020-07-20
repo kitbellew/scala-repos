@@ -90,9 +90,8 @@ trait ExecutionContext {
       flow match {
         case hadoopFlow: HadoopFlow =>
           val flowSteps = hadoopFlow.getFlowSteps.asScala
-          flowSteps.foreach {
-            case baseFlowStep: BaseFlowStep[JobConf] =>
-              updateStepConfigWithDescriptions(baseFlowStep)
+          flowSteps.foreach { case baseFlowStep: BaseFlowStep[JobConf] =>
+            updateStepConfigWithDescriptions(baseFlowStep)
           }
         case _ => // descriptions not yet supported in other modes
       }

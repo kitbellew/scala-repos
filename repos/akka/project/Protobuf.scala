@@ -55,23 +55,22 @@ object Protobuf {
         val targets = target.value
         val cache = targets / "protoc" / "cache"
 
-        (sourceDirs zip targetDirs) map {
-          case (src, dst) =>
-            val relative = src
-              .relativeTo(sources)
-              .getOrElse(throw new Exception(
-                s"path $src is not a in source tree $sources"))
-              .toString
-            val tmp = targets / "protoc" / relative
-            IO.delete(tmp)
-            generate(cmd, src, tmp, log)
-            transformDirectory(
-              tmp,
-              dst,
-              _ => true,
-              transformFile(_.replace("com.google.protobuf", "akka.protobuf")),
-              cache,
-              log)
+        (sourceDirs zip targetDirs) map { case (src, dst) =>
+          val relative = src
+            .relativeTo(sources)
+            .getOrElse(throw new Exception(
+              s"path $src is not a in source tree $sources"))
+            .toString
+          val tmp = targets / "protoc" / relative
+          IO.delete(tmp)
+          generate(cmd, src, tmp, log)
+          transformDirectory(
+            tmp,
+            dst,
+            _ => true,
+            transformFile(_.replace("com.google.protobuf", "akka.protobuf")),
+            cache,
+            log)
         }
       }
     }

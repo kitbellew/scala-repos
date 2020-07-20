@@ -108,22 +108,20 @@ sealed trait SValue {
       case SObject(m) =>
         if (m.isEmpty) List((JPath(), CEmptyObject))
         else {
-          m.toSeq.flatMap {
-            case (name, value) =>
-              value.structure map {
-                case (path, ctype) => (JPathField(name) \ path, ctype)
-              }
+          m.toSeq.flatMap { case (name, value) =>
+            value.structure map {
+              case (path, ctype) => (JPathField(name) \ path, ctype)
+            }
           }
         }
 
       case SArray(a) =>
         if (a.isEmpty) List((JPath(), CEmptyArray))
         else {
-          a.zipWithIndex.flatMap {
-            case (value, index) =>
-              value.structure map {
-                case (path, ctype) => (JPathIndex(index) \ path, ctype)
-              }
+          a.zipWithIndex.flatMap { case (value, index) =>
+            value.structure map {
+              case (path, ctype) => (JPathIndex(index) \ path, ctype)
+            }
           }
         }
 
@@ -203,9 +201,8 @@ trait SValueInstances {
         (o2: Map[String, SValue]) => {
           (o1.size ?|? o2.size) |+|
             (o1.toSeq.sortBy(_._1) zip o2.toSeq.sortBy(_._1))
-              .foldLeft[Ordering](EQ) {
-                case (ord, ((k1, v1), (k2, v2))) =>
-                  ord |+| (k1 ?|? k2) |+| (v1 ?|? v2)
+              .foldLeft[Ordering](EQ) { case (ord, ((k1, v1), (k2, v2))) =>
+                ord |+| (k1 ?|? k2) |+| (v1 ?|? v2)
               }
         }
 

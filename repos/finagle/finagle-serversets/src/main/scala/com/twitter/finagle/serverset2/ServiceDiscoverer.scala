@@ -126,14 +126,13 @@ private[serverset2] class ServiceDiscoverer(
       readStat: Stat,
       glob: String
   ): Activity[Seq[Entity]] = {
-    actZkSession.flatMap {
-      case zkSession =>
-        cache.setSession(zkSession)
-        zkSession.globOf(path + glob).flatMap { paths =>
-          // Remove any cached entries not surfaced by globOf from our cache
-          (cache.keys &~ paths).foreach(cache.remove)
-          bulkResolveMemberData(path, paths.toSeq, cache, readStat)
-        }
+    actZkSession.flatMap { case zkSession =>
+      cache.setSession(zkSession)
+      zkSession.globOf(path + glob).flatMap { paths =>
+        // Remove any cached entries not surfaced by globOf from our cache
+        (cache.keys &~ paths).foreach(cache.remove)
+        bulkResolveMemberData(path, paths.toSeq, cache, readStat)
+      }
     }
   }
 

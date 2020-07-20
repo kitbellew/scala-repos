@@ -165,12 +165,11 @@ case class BaseBolt[I, O](
       executor.executeTick
     }
 
-    curResults.foreach {
-      case (tups, res) =>
-        res match {
-          case Success(outs) => finish(tups, outs)
-          case Failure(t)    => fail(tups, t)
-        }
+    curResults.foreach { case (tups, res) =>
+      res match {
+        case Success(outs) => finish(tups, outs)
+        case Failure(t)    => fail(tups, t)
+      }
     }
   }
 

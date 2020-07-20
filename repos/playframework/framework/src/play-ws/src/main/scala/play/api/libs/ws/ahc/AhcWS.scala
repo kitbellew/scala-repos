@@ -317,9 +317,8 @@ case class AhcWSRequest(
                 HttpHeaders.Values.APPLICATION_X_WWW_FORM_URLENCODED) && calc.isDefined) {
               // If we are taking responsibility for setting the request body, we should block any
               // externally defined Content-Length field (see #5221 for the details)
-              val filteredHeaders = this.headers.filterNot {
-                case (k, v) =>
-                  k.equalsIgnoreCase(HttpHeaders.Names.CONTENT_LENGTH)
+              val filteredHeaders = this.headers.filterNot { case (k, v) =>
+                k.equalsIgnoreCase(HttpHeaders.Names.CONTENT_LENGTH)
               }
 
               // extract the content type and the charset

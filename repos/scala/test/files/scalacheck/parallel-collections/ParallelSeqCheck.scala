@@ -77,19 +77,18 @@ abstract class ParallelSeqCheck[T](collName: String)
   }
 
   property("segmentLengths must be equal") =
-    forAll(collectionPairsWithLengths) {
-      case (s, coll, len) =>
-        (for ((pred, ind) <- segmentLengthPredicates.zipWithIndex) yield {
-          val slen = s.segmentLength(pred, if (len < 0) 0 else len)
-          val clen = coll.segmentLength(pred, len)
-          if (slen != clen) {
-            println("from: " + s)
-            println("and: " + coll)
-            println(slen)
-            println(clen)
-          }
-          ("operator " + ind) |: slen == clen
-        }).reduceLeft(_ && _)
+    forAll(collectionPairsWithLengths) { case (s, coll, len) =>
+      (for ((pred, ind) <- segmentLengthPredicates.zipWithIndex) yield {
+        val slen = s.segmentLength(pred, if (len < 0) 0 else len)
+        val clen = coll.segmentLength(pred, len)
+        if (slen != clen) {
+          println("from: " + s)
+          println("and: " + coll)
+          println(slen)
+          println(clen)
+        }
+        ("operator " + ind) |: slen == clen
+      }).reduceLeft(_ && _)
     }
 
   property("prefixLengths must be equal") = forAll(collectionPairs) {
@@ -116,14 +115,13 @@ abstract class ParallelSeqCheck[T](collName: String)
   }
 
   property("lastIndexWheres must be equal") =
-    forAll(collectionPairsWithLengths) {
-      case (s, coll, len) =>
-        (for ((pred, ind) <- lastIndexWherePredicates.zipWithIndex) yield {
-          val end = if (len >= s.size) s.size - 1 else len
-          val sind = s.lastIndexWhere(pred, end)
-          val cind = coll.lastIndexWhere(pred, end)
-          ("operator " + ind) |: sind == cind
-        }).reduceLeft(_ && _)
+    forAll(collectionPairsWithLengths) { case (s, coll, len) =>
+      (for ((pred, ind) <- lastIndexWherePredicates.zipWithIndex) yield {
+        val end = if (len >= s.size) s.size - 1 else len
+        val sind = s.lastIndexWhere(pred, end)
+        val cind = coll.lastIndexWhere(pred, end)
+        ("operator " + ind) |: sind == cind
+      }).reduceLeft(_ && _)
     }
 
   property("reverses must be equal") = forAll(collectionPairs) {

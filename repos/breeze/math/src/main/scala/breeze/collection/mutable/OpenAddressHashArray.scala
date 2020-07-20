@@ -190,13 +190,12 @@ final class OpenAddressHashArray[
         (this eq that) ||
           (this.size == that.size) && {
             try {
-              this.iterator forall {
-                case (k, v) =>
-                  that(k) match {
-                    case `v` =>
-                      true
-                    case _ => false
-                  }
+              this.iterator forall { case (k, v) =>
+                that(k) match {
+                  case `v` =>
+                    true
+                  case _ => false
+                }
               }
             } catch {
               case ex: ClassCastException =>

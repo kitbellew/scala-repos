@@ -112,8 +112,8 @@ trait SQLiteProfile extends JdbcProfile {
         override def default =
           meta.columnDef
             .map((_, tpe))
-            .collect {
-              case ("null", _) => Some(None) // 3.7.15-M1
+            .collect { case ("null", _) =>
+              Some(None) // 3.7.15-M1
             }
             .getOrElse { super.default }
         override def tpe =

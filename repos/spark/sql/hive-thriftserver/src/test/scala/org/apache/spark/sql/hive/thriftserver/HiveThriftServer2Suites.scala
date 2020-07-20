@@ -888,10 +888,9 @@ abstract class HiveThriftServer2Test
             Try(startThriftServer(listeningPort, attempt))
           }
       }
-      .recover {
-        case cause: Throwable =>
-          dumpLogs()
-          throw cause
+      .recover { case cause: Throwable =>
+        dumpLogs()
+        throw cause
       }
       .get
 

@@ -52,9 +52,8 @@ private[twitter] object ServerAdmissionControl {
     * be called before the server construction to take effect.
     */
   def register(pairs: (String, TypeAgnostic)*): Unit =
-    pairs.foreach {
-      case (name, filter) =>
-        acs.putIfAbsent(name, filter)
+    pairs.foreach { case (name, filter) =>
+      acs.putIfAbsent(name, filter)
     }
 
   /**

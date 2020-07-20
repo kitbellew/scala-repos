@@ -90,10 +90,9 @@ trait ScTypeAliasDefinition extends ScTypeAlias {
       val varianceAndBoundsMatch = cls match {
         case sc0 @ (_: ScClass | _: ScTrait) =>
           val sc = sc0.asInstanceOf[ScTypeParametersOwner]
-          (typeParameters corresponds sc.typeParameters) {
-            case (tp1, tp2) =>
-              tp1.variance == tp2.variance && tp1.upperBound == tp2.upperBound && tp1.lowerBound == tp2.lowerBound &&
-                tp1.contextBound.isEmpty && tp2.contextBound.isEmpty && tp1.viewBound.isEmpty && tp2.viewBound.isEmpty
+          (typeParameters corresponds sc.typeParameters) { case (tp1, tp2) =>
+            tp1.variance == tp2.variance && tp1.upperBound == tp2.upperBound && tp1.lowerBound == tp2.lowerBound &&
+              tp1.contextBound.isEmpty && tp2.contextBound.isEmpty && tp1.viewBound.isEmpty && tp2.viewBound.isEmpty
           }
         case _ => // Java class
           (typeParameters corresponds cls.getTypeParameters) {

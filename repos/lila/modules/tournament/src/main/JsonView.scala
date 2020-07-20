@@ -290,18 +290,17 @@ final class JsonView(
     TournamentRepo finishedById id flatMap {
       _ ?? { tour =>
         PlayerRepo.bestByTourWithRank(id, 3).flatMap {
-          _.map {
-            case rp @ RankedPlayer(_, player) =>
-              for {
-                pairings <- PairingRepo.finishedByPlayerChronological(
-                  tour.id,
-                  player.userId)
-                sheet =
-                  tour.system.scoringSystem.sheet(tour, player.userId, pairings)
-                tpr <- performance(tour, player, pairings)
-              } yield playerJson(sheet.some, tour, rp) ++ Json.obj(
-                "nb" -> sheetNbs(player.userId, sheet, pairings),
-                "performance" -> tpr)
+          _.map { case rp @ RankedPlayer(_, player) =>
+            for {
+              pairings <- PairingRepo.finishedByPlayerChronological(
+                tour.id,
+                player.userId)
+              sheet =
+                tour.system.scoringSystem.sheet(tour, player.userId, pairings)
+              tpr <- performance(tour, player, pairings)
+            } yield playerJson(sheet.some, tour, rp) ++ Json.obj(
+              "nb" -> sheetNbs(player.userId, sheet, pairings),
+              "performance" -> tpr)
           }.sequenceFu
         } map { l => JsArray(l).some }
       }

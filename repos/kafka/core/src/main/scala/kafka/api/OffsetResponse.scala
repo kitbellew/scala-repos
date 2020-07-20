@@ -85,17 +85,16 @@ case class OffsetResponse(
   def writeTo(buffer: ByteBuffer) {
     buffer.putInt(correlationId)
     buffer.putInt(offsetsGroupedByTopic.size) // topic count
-    offsetsGroupedByTopic.foreach {
-      case ((topic, errorAndOffsetsMap)) =>
-        writeShortString(buffer, topic)
-        buffer.putInt(errorAndOffsetsMap.size) // partition count
-        errorAndOffsetsMap.foreach {
-          case ((TopicAndPartition(_, partition), errorAndOffsets)) =>
-            buffer.putInt(partition)
-            buffer.putShort(errorAndOffsets.error)
-            buffer.putInt(errorAndOffsets.offsets.size) // offset array length
-            errorAndOffsets.offsets.foreach(buffer.putLong(_))
-        }
+    offsetsGroupedByTopic.foreach { case ((topic, errorAndOffsetsMap)) =>
+      writeShortString(buffer, topic)
+      buffer.putInt(errorAndOffsetsMap.size) // partition count
+      errorAndOffsetsMap.foreach {
+        case ((TopicAndPartition(_, partition), errorAndOffsets)) =>
+          buffer.putInt(partition)
+          buffer.putShort(errorAndOffsets.error)
+          buffer.putInt(errorAndOffsets.offsets.size) // offset array length
+          errorAndOffsets.offsets.foreach(buffer.putLong(_))
+      }
     }
   }
 

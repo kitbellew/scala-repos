@@ -22,16 +22,15 @@ class FlowSlidingSpec extends AkkaSpec with GeneratorDrivenPropertyChecks {
   "Sliding" must {
     import org.scalacheck.Shrink.shrinkAny
     def check(gen: Gen[(Int, Int, Int)]): Unit =
-      forAll(gen, MinSize(1000), MaxSize(1000)) {
-        case (len, win, step) ⇒
-          val af = Source
-            .fromIterator(() ⇒ Iterator.from(0).take(len))
-            .sliding(win, step)
-            .runFold(Seq.empty[Seq[Int]])(_ :+ _)
-          val cf = Source
-            .fromIterator(() ⇒ Iterator.from(0).take(len).sliding(win, step))
-            .runFold(Seq.empty[Seq[Int]])(_ :+ _)
-          af.futureValue should be(cf.futureValue)
+      forAll(gen, MinSize(1000), MaxSize(1000)) { case (len, win, step) ⇒
+        val af = Source
+          .fromIterator(() ⇒ Iterator.from(0).take(len))
+          .sliding(win, step)
+          .runFold(Seq.empty[Seq[Int]])(_ :+ _)
+        val cf = Source
+          .fromIterator(() ⇒ Iterator.from(0).take(len).sliding(win, step))
+          .runFold(Seq.empty[Seq[Int]])(_ :+ _)
+        af.futureValue should be(cf.futureValue)
       }
 
     "behave just like collections sliding with step < window" in assertAllStagesStopped {

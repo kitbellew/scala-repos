@@ -56,8 +56,7 @@ abstract class SimpleTestCase extends UsefulTestCase {
   }
 
   def assertNothing[T](actual: T) {
-    assertMatches(actual) {
-      case Nil =>
+    assertMatches(actual) { case Nil =>
     }
   }
 

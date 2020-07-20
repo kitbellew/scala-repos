@@ -11,9 +11,8 @@ class TypedSketchJoinJobForEmptyKeys(args: Args) extends Job(args) {
   leftTypedPipe
     .sketch(1)
     .leftJoin(rightTypedPipe)
-    .map {
-      case (a, (b, c)) =>
-        (a, b, c.getOrElse(-1))
+    .map { case (a, (b, c)) =>
+      (a, b, c.getOrElse(-1))
     }
     .write(TypedTsv("output"))
 }

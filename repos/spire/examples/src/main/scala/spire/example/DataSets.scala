@@ -30,9 +30,8 @@ final class DataSet[V, @sp(Double) F, @sp(Double) K](
         case Missing(v0, _)   => s"${varType(v0)} with missing values"
       }
 
-    val vars = variables.zipWithIndex map {
-      case (v, i) =>
-        s"    %2d. ${v.label} (${varType(v)})" format (i + 1)
+    val vars = variables.zipWithIndex map { case (v, i) =>
+      s"    %2d. ${v.label} (${varType(v)})" format (i + 1)
     } mkString "\n"
 
     s"""$name - ${data.size} points with ${variables.size} variables (${space.dimensions} effective):
@@ -65,9 +64,8 @@ object DataSet {
     // Perform our first pass, building the conversion functions.
     val builders = variables map (_.apply())
     lines foreach { fields =>
-      builders zip fields foreach {
-        case (b, s) =>
-          b += s
+      builders zip fields foreach { case (b, s) =>
+        b += s
       }
     }
 
@@ -77,11 +75,10 @@ object DataSet {
       lines.foldLeft((Int.MaxValue, List.empty[(CC[F], K)])) {
         case ((dim, res), fields) =>
           val bldr = cbf()
-          val vd = (maps zip fields).foldLeft(0) {
-            case (acc, (f, s)) =>
-              val vars = f(s)
-              bldr ++= vars
-              acc + vars.size
+          val vd = (maps zip fields).foldLeft(0) { case (acc, (f, s)) =>
+            val vars = f(s)
+            bldr ++= vars
+            acc + vars.size
           }
           (math.min(dim, vd), (bldr.result(), out._2(fields(out._1))) :: res)
       }
@@ -271,9 +268,8 @@ object CrossValidation {
         val len = (right0.size + n - 1) / n
         val (removed, right) = right0.splitAt(len)
         val predict = train(dataset.space)(left ++ right)
-        val results = removed map {
-          case (in, out) =>
-            Result(in, out, predict(in))
+        val results = removed map { case (in, out) =>
+          Result(in, out, predict(in))
         }
         loop(left ++ removed, right, n - 1, sum + score(results))
       }
@@ -293,9 +289,8 @@ object CrossValidation {
     implicit val field = dataset.space.scalar
 
     def accuracy(results: List[Result[V, K]]): F = {
-      results.foldLeft(field.zero) {
-        case (acc, Result(_, output, predicted)) =>
-          acc + (if (predicted == output) field.one else field.zero)
+      results.foldLeft(field.zero) { case (acc, Result(_, output, predicted)) =>
+        acc + (if (predicted == output) field.one else field.zero)
       } / results.size
     }
 

@@ -463,12 +463,11 @@ private[hive] trait HiveInspectors {
             soi.getAllStructFieldRefs.asScala
               .zip(wrappers)
               .zipWithIndex
-              .foreach {
-                case ((field, wrapper), i) =>
-                  soi.setStructFieldData(
-                    struct,
-                    field,
-                    wrapper(row.get(i, schema(i).dataType)))
+              .foreach { case ((field, wrapper), i) =>
+                soi.setStructFieldData(
+                  struct,
+                  field,
+                  wrapper(row.get(i, schema(i).dataType)))
               }
             struct
           } else {

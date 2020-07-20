@@ -206,10 +206,9 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
         cancelled <- cancel(jobId, 5)
       } yield (ticks, query)
 
-      result.copoint must beLike {
-        case (ticks, query) =>
-          query.copoint must throwA[QueryCancelledException]
-          ticks.get must be_<(10)
+      result.copoint must beLike { case (ticks, query) =>
+        query.copoint must throwA[QueryCancelledException]
+        ticks.get must be_<(10)
       }
     }
 
@@ -237,10 +236,9 @@ class ManagedQueryModuleSpec extends TestManagedQueryModule with Specification {
     }
 
     "be expireable" in {
-      execute(10, Some(3)).copoint must beLike {
-        case (_, ticks, query) =>
-          query.copoint must throwA[QueryExpiredException]
-          ticks.get must be_<(10)
+      execute(10, Some(3)).copoint must beLike { case (_, ticks, query) =>
+        query.copoint must throwA[QueryExpiredException]
+        ticks.get must be_<(10)
       }
     }
 

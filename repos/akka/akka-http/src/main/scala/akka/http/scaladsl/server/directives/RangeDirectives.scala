@@ -110,11 +110,10 @@ trait RangeDirectives {
                 bcast ~> flow
                   .buffer(16, OverflowStrategy.backpressure)
                   .prefixAndTail(0)
-                  .map {
-                    case (_, bytes) ⇒
-                      Multipart.ByteRanges.BodyPart(
-                        range.contentRange(length),
-                        HttpEntity(entity.contentType, range.length, bytes))
+                  .map { case (_, bytes) ⇒
+                    Multipart.ByteRanges.BodyPart(
+                      range.contentRange(length),
+                      HttpEntity(entity.contentType, range.length, bytes))
                   } ~> merge
               }
               entity.dataBytes ~> bcast

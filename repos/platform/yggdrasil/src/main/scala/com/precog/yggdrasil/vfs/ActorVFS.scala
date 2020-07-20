@@ -381,11 +381,10 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         for {
           // it's necessary to group by path then traverse since each path will respond to ingest independently.
           // -- a bit of a leak of implementation detail, but that's the actor model for you.
-          allResults <- (data groupBy {
-              case (offset, msg) => msg.path
-            }).toStream traverse {
-            case (path, subset) =>
-              (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
+          allResults <- (data groupBy { case (offset, msg) =>
+              msg.path
+            }).toStream traverse { case (path, subset) =>
+            (projectionsActor ? IngestData(subset)).mapTo[WriteResult]
           }
         } yield {
           val errors: List[ResourceError] = allResults.toList collect {
@@ -515,10 +514,9 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
           "Received request to find children of %s".format(path.path))
         VFSPathUtils.findChildren(baseDir, path) map { children =>
           sender ! PathChildren(path, children)
-        } except {
-          case t: Throwable =>
-            logger.error("Error obtaining path children for " + path, t)
-            IO { sender ! PathOpFailure(path, IOError(t)) }
+        } except { case t: Throwable =>
+          logger.error("Error obtaining path children for " + path, t)
+          IO { sender ! PathOpFailure(path, IOError(t)) }
         } unsafePerformIO
 
       case FindPathMetadata(path) =>
@@ -549,43 +547,39 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         val requestor = sender
         val groupedAndPermissioned = messages
           .groupBy({ case (_, event) => event.path })
-          .toStream traverse {
-          case (path, pathMessages) =>
-            targetActor(path) map { pathActor =>
-              pathMessages.map(_._2.apiKey).distinct.toStream traverse {
-                apiKey =>
-                  permissionsFinder.writePermissions(
-                    apiKey,
-                    path,
-                    clock.instant()) map { apiKey -> _ }
-              } map { perms =>
-                val allPerms: Map[APIKey, Set[WritePermission]] =
-                  perms.map(Map(_)).suml
-                val (totalArchives, totalEvents, totalStoreFiles) =
-                  pathMessages.foldLeft((0, 0, 0)) {
-                    case (
-                          (archived, events, storeFiles),
-                          (_, IngestMessage(_, _, _, data, _, _, _))) =>
-                      (archived, events + data.size, storeFiles)
-                    case (
-                          (archived, events, storeFiles),
-                          (_, am: ArchiveMessage)) =>
-                      (archived + 1, events, storeFiles)
-                    case (
-                          (archived, events, storeFiles),
-                          (_, sf: StoreFileMessage)) =>
-                      (archived, events, storeFiles + 1)
-                  }
-                logger.debug(
-                  "Sending %d archives, %d storeFiles, and %d events to %s"
-                    .format(totalArchives, totalStoreFiles, totalEvents, path))
-                pathActor.tell(IngestBundle(pathMessages, allPerms), requestor)
-              }
-            } except {
-              case t: Throwable =>
-                IO(
-                  logger.error("Failure during version log open on " + path, t))
+          .toStream traverse { case (path, pathMessages) =>
+          targetActor(path) map { pathActor =>
+            pathMessages.map(_._2.apiKey).distinct.toStream traverse { apiKey =>
+              permissionsFinder.writePermissions(
+                apiKey,
+                path,
+                clock.instant()) map { apiKey -> _ }
+            } map { perms =>
+              val allPerms: Map[APIKey, Set[WritePermission]] =
+                perms.map(Map(_)).suml
+              val (totalArchives, totalEvents, totalStoreFiles) =
+                pathMessages.foldLeft((0, 0, 0)) {
+                  case (
+                        (archived, events, storeFiles),
+                        (_, IngestMessage(_, _, _, data, _, _, _))) =>
+                    (archived, events + data.size, storeFiles)
+                  case (
+                        (archived, events, storeFiles),
+                        (_, am: ArchiveMessage)) =>
+                    (archived + 1, events, storeFiles)
+                  case (
+                        (archived, events, storeFiles),
+                        (_, sf: StoreFileMessage)) =>
+                    (archived, events, storeFiles + 1)
+                }
+              logger.debug(
+                "Sending %d archives, %d storeFiles, and %d events to %s"
+                  .format(totalArchives, totalStoreFiles, totalEvents, path))
+              pathActor.tell(IngestBundle(pathMessages, allPerms), requestor)
             }
+          } except { case t: Throwable =>
+            IO(logger.error("Failure during version log open on " + path, t))
+          }
         }
 
         groupedAndPermissioned.unsafePerformIO
@@ -655,22 +649,21 @@ trait ActorVFSModule extends VFSModule[Future, Slice] {
         right(IO(r))
       } getOrElse {
         logger.debug("Opening new resource for " + version)
-        versionLog.find(version) map {
-          case VersionEntry(v, _, _) =>
-            val dir = versionDir(v)
-            val openf = if (NIHDB.hasProjection(dir)) {
-              resourceBuilder.openNIHDB _
-            } else { resourceBuilder.openBlob _ }
+        versionLog.find(version) map { case VersionEntry(v, _, _) =>
+          val dir = versionDir(v)
+          val openf = if (NIHDB.hasProjection(dir)) {
+            resourceBuilder.openNIHDB _
+          } else { resourceBuilder.openBlob _ }
 
-            for {
-              resource <- EitherT {
-                openf(dir) flatMap {
-                  _ tap { resourceV =>
-                    IO(resourceV foreach { r => versions += (version -> r) })
-                  }
+          for {
+            resource <- EitherT {
+              openf(dir) flatMap {
+                _ tap { resourceV =>
+                  IO(resourceV foreach { r => versions += (version -> r) })
                 }
               }
-            } yield resource
+            }
+          } yield resource
         } getOrElse {
           left(
             IO(Corrupt("No version %s found to exist for resource %s."

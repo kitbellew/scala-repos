@@ -253,13 +253,12 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
   private def statusToProto(status: Status): dm.Status = {
     val b = dm.Status.newBuilder()
     b.setChunk(status.chunk).setTotChunks(status.totChunks)
-    val entries = status.digests.foreach {
-      case (key, digest) ⇒
-        b.addEntries(
-          dm.Status.Entry
-            .newBuilder()
-            .setKey(key)
-            .setDigest(ByteString.copyFrom(digest.toArray)))
+    val entries = status.digests.foreach { case (key, digest) ⇒
+      b.addEntries(
+        dm.Status.Entry
+          .newBuilder()
+          .setKey(key)
+          .setDigest(ByteString.copyFrom(digest.toArray)))
     }
     b.build()
   }
@@ -275,13 +274,12 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
 
   private def gossipToProto(gossip: Gossip): dm.Gossip = {
     val b = dm.Gossip.newBuilder().setSendBack(gossip.sendBack)
-    val entries = gossip.updatedData.foreach {
-      case (key, data) ⇒
-        b.addEntries(
-          dm.Gossip.Entry
-            .newBuilder()
-            .setKey(key)
-            .setEnvelope(dataEnvelopeToProto(data)))
+    val entries = gossip.updatedData.foreach { case (key, data) ⇒
+      b.addEntries(
+        dm.Gossip.Entry
+          .newBuilder()
+          .setKey(key)
+          .setEnvelope(dataEnvelopeToProto(data)))
     }
     b.build()
   }
@@ -429,23 +427,22 @@ class ReplicatorMessageSerializer(val system: ExtendedActorSystem)
     val dataEnvelopeBuilder = dm.DataEnvelope
       .newBuilder()
       .setData(otherMessageToProto(dataEnvelope.data))
-    dataEnvelope.pruning.foreach {
-      case (removedAddress, state) ⇒
-        val b = dm.DataEnvelope.PruningEntry
-          .newBuilder()
-          .setRemovedAddress(uniqueAddressToProto(removedAddress))
-          .setOwnerAddress(uniqueAddressToProto(state.owner))
-        state.phase match {
-          case PruningState.PruningInitialized(seen) ⇒
-            seen.toVector
-              .sorted(Member.addressOrdering)
-              .map(addressToProto)
-              .foreach { a ⇒ b.addSeen(a) }
-            b.setPerformed(false)
-          case PruningState.PruningPerformed ⇒
-            b.setPerformed(true)
-        }
-        dataEnvelopeBuilder.addPruning(b)
+    dataEnvelope.pruning.foreach { case (removedAddress, state) ⇒
+      val b = dm.DataEnvelope.PruningEntry
+        .newBuilder()
+        .setRemovedAddress(uniqueAddressToProto(removedAddress))
+        .setOwnerAddress(uniqueAddressToProto(state.owner))
+      state.phase match {
+        case PruningState.PruningInitialized(seen) ⇒
+          seen.toVector
+            .sorted(Member.addressOrdering)
+            .map(addressToProto)
+            .foreach { a ⇒ b.addSeen(a) }
+          b.setPerformed(false)
+        case PruningState.PruningPerformed ⇒
+          b.setPerformed(true)
+      }
+      dataEnvelopeBuilder.addPruning(b)
     }
     dataEnvelopeBuilder.build()
   }

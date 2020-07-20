@@ -194,14 +194,13 @@ class RewriteJoins extends Phase {
           },
           stopOnMatch = true)
         val Bind(_, _, Pure(StructNode(struct1), pts)) = b
-        val foundRefs = sRefs.map {
-          case (p, pOnBGen) =>
+        val foundRefs = sRefs.map { case (p, pOnBGen) =>
+          (
+            p,
             (
-              p,
-              (
-                pOnBGen, /*None: Option[Symbol]*/ struct1
-                  .find { case (s, n) => pOnBGen == n }
-                  .map(_._1)))
+              pOnBGen, /*None: Option[Symbol]*/ struct1
+                .find { case (s, n) => pOnBGen == n }
+                .map(_._1)))
         }.toMap
         logger.debug(
           "Found references in predicate: " + foundRefs.mkString(", "))
@@ -225,15 +224,14 @@ class RewriteJoins extends Phase {
                 pts),
               tss1 + pts)
         val fs = new AnonSymbol
-        val pred = pred1.replace {
-          case p: Select =>
-            allRefs
-              .get(p)
-              .map(s =>
-                Select(
-                  Ref(fs) :@ b.nodeType.asCollectionType.elementType,
-                  s) :@ p.nodeType)
-              .getOrElse(p)
+        val pred = pred1.replace { case p: Select =>
+          allRefs
+            .get(p)
+            .map(s =>
+              Select(
+                Ref(fs) :@ b.nodeType.asCollectionType.elementType,
+                s) :@ p.nodeType)
+            .getOrElse(p)
         }
         val res = Filter(fs, Bind(b.generator, from1, sel), pred).infer()
         logger.debug(
@@ -358,9 +356,8 @@ class RewriteJoins extends Phase {
           },
           keepType = true
         ))
-      if (logger.isDebugEnabled) m2.foreach {
-        case (p, n) =>
-          logger.debug("Replacement for " + FwdPath.toString(p) + ":", n)
+      if (logger.isDebugEnabled) m2.foreach { case (p, n) =>
+        logger.debug("Replacement for " + FwdPath.toString(p) + ":", n)
       }
       (j2, m2)
     }
@@ -435,10 +432,8 @@ class RewriteJoins extends Phase {
             Bind(s2, f, Pure(StructNode(p1), ts1)),
             Pure(StructNode(p2), ts2)) =>
         def isAliasing(s: ConstArray[(TermSymbol, Node)]) =
-          s.forall {
-            case (_, n) =>
-              n.collect({ case Path(_) => true }, stopOnMatch = true)
-                .length <= 1
+          s.forall { case (_, n) =>
+            n.collect({ case Path(_) => true }, stopOnMatch = true).length <= 1
           }
         val a1 = isAliasing(p1)
         if (a1 || isAliasing(p2)) {
@@ -449,15 +444,14 @@ class RewriteJoins extends Phase {
             s2,
             f,
             Pure(
-              StructNode(p2.map {
-                case (f1, n) =>
-                  (
-                    f1,
-                    n.replace(
-                      {
-                        case Select(Ref(s), f2) if s == s1 => m(f2)
-                      },
-                      keepType = true))
+              StructNode(p2.map { case (f1, n) =>
+                (
+                  f1,
+                  n.replace(
+                    {
+                      case Select(Ref(s), f2) if s == s1 => m(f2)
+                    },
+                    keepType = true))
               }),
               ts2)).infer()
         } else b

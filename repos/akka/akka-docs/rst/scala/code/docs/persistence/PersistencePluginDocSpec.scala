@@ -122,9 +122,8 @@ object SharedLeveldbPluginDocSpec {
         "akka.tcp://example@127.0.0.1:2552/user/store") ! Identify(1)
     }
 
-    def receive = {
-      case ActorIdentity(1, Some(store)) =>
-        SharedLeveldbJournal.setStore(store, context.system)
+    def receive = { case ActorIdentity(1, Some(store)) =>
+      SharedLeveldbJournal.setStore(store, context.system)
     }
   }
   //#shared-store-usage

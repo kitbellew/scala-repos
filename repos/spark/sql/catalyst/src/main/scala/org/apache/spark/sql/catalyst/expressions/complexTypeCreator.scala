@@ -56,10 +56,9 @@ case class CreateArray(children: Seq[Expression]) extends Expression {
       final Object[] $values = new Object[${children.size}];
     """ +
       children.zipWithIndex
-        .map {
-          case (e, i) =>
-            val eval = e.gen(ctx)
-            eval.code + s"""
+        .map { case (e, i) =>
+          val eval = e.gen(ctx)
+          eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
@@ -82,18 +81,17 @@ case class CreateStruct(children: Seq[Expression]) extends Expression {
   override def foldable: Boolean = children.forall(_.foldable)
 
   override lazy val dataType: StructType = {
-    val fields = children.zipWithIndex.map {
-      case (child, idx) =>
-        child match {
-          case ne: NamedExpression =>
-            StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
-          case _ =>
-            StructField(
-              s"col${idx + 1}",
-              child.dataType,
-              child.nullable,
-              Metadata.empty)
-        }
+    val fields = children.zipWithIndex.map { case (child, idx) =>
+      child match {
+        case ne: NamedExpression =>
+          StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
+        case _ =>
+          StructField(
+            s"col${idx + 1}",
+            child.dataType,
+            child.nullable,
+            Metadata.empty)
+      }
     }
     StructType(fields)
   }
@@ -112,10 +110,9 @@ case class CreateStruct(children: Seq[Expression]) extends Expression {
       final Object[] $values = new Object[${children.size}];
     """ +
       children.zipWithIndex
-        .map {
-          case (e, i) =>
-            val eval = e.gen(ctx)
-            eval.code + s"""
+        .map { case (e, i) =>
+          val eval = e.gen(ctx)
+          eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
@@ -156,13 +153,12 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
   private lazy val names = nameExprs.map(_.eval(EmptyRow))
 
   override lazy val dataType: StructType = {
-    val fields = names.zip(valExprs).map {
-      case (name, valExpr) =>
-        StructField(
-          name.asInstanceOf[UTF8String].toString,
-          valExpr.dataType,
-          valExpr.nullable,
-          Metadata.empty)
+    val fields = names.zip(valExprs).map { case (name, valExpr) =>
+      StructField(
+        name.asInstanceOf[UTF8String].toString,
+        valExpr.dataType,
+        valExpr.nullable,
+        Metadata.empty)
     }
     StructType(fields)
   }
@@ -202,10 +198,9 @@ case class CreateNamedStruct(children: Seq[Expression]) extends Expression {
       final Object[] $values = new Object[${valExprs.size}];
     """ +
       valExprs.zipWithIndex
-        .map {
-          case (e, i) =>
-            val eval = e.gen(ctx)
-            eval.code + s"""
+        .map { case (e, i) =>
+          val eval = e.gen(ctx)
+          eval.code + s"""
           if (${eval.isNull}) {
             $values[$i] = null;
           } else {
@@ -232,18 +227,17 @@ case class CreateStructUnsafe(children: Seq[Expression]) extends Expression {
   override lazy val resolved: Boolean = childrenResolved
 
   override lazy val dataType: StructType = {
-    val fields = children.zipWithIndex.map {
-      case (child, idx) =>
-        child match {
-          case ne: NamedExpression =>
-            StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
-          case _ =>
-            StructField(
-              s"col${idx + 1}",
-              child.dataType,
-              child.nullable,
-              Metadata.empty)
-        }
+    val fields = children.zipWithIndex.map { case (child, idx) =>
+      child match {
+        case ne: NamedExpression =>
+          StructField(ne.name, ne.dataType, ne.nullable, ne.metadata)
+        case _ =>
+          StructField(
+            s"col${idx + 1}",
+            child.dataType,
+            child.nullable,
+            Metadata.empty)
+      }
     }
     StructType(fields)
   }
@@ -284,9 +278,8 @@ case class CreateNamedStructUnsafe(children: Seq[Expression])
   private lazy val names = nameExprs.map(_.eval(EmptyRow).toString)
 
   override lazy val dataType: StructType = {
-    val fields = names.zip(valExprs).map {
-      case (name, valExpr) =>
-        StructField(name, valExpr.dataType, valExpr.nullable, Metadata.empty)
+    val fields = names.zip(valExprs).map { case (name, valExpr) =>
+      StructField(name, valExpr.dataType, valExpr.nullable, Metadata.empty)
     }
     StructType(fields)
   }

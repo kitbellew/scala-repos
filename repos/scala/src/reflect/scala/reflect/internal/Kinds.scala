@@ -417,12 +417,11 @@ trait Kinds {
         s0: StringState): StringState = {
       var s: StringState = s0
       s = s.append(v.symbolicString).appendHead(order, sym).append("[")
-      args.zipWithIndex foreach {
-        case (arg, i) =>
-          s = arg.kind.buildState(arg.sym, arg.variance)(s)
-          if (i != args.size - 1) {
-            s = s.append(",")
-          }
+      args.zipWithIndex foreach { case (arg, i) =>
+        s = arg.kind.buildState(arg.sym, arg.variance)(s)
+        if (i != args.size - 1) {
+          s = s.append(",")
+        }
       }
       s = s.append("]").append(bounds.scalaNotation(_.toString))
       s

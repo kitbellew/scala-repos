@@ -62,24 +62,23 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
   } yield (startMs, maxMs, seed)
 
   test("decorrelatedJittered") {
-    forAll(decorrelatedGen) {
-      case (startMs: Long, maxMs: Long, seed: Long) =>
-        val rng = Rng(seed)
-        val backoffs = Backoff
-          .decorrelatedJittered(startMs.millis, maxMs.millis, rng)
-          .take(10)
-          .force
-          .toSeq
+    forAll(decorrelatedGen) { case (startMs: Long, maxMs: Long, seed: Long) =>
+      val rng = Rng(seed)
+      val backoffs = Backoff
+        .decorrelatedJittered(startMs.millis, maxMs.millis, rng)
+        .take(10)
+        .force
+        .toSeq
 
-        // 5ms and then randos between 5ms and 3x the previous value (capped at `maximum`)
-        assert(startMs.millis == backoffs.head)
-        var prev = startMs.millis
-        backoffs.tail.foreach { b =>
-          assert(b >= startMs.millis)
-          assert(b <= prev * 3)
-          assert(b <= maxMs.millis)
-          prev = b
-        }
+      // 5ms and then randos between 5ms and 3x the previous value (capped at `maximum`)
+      assert(startMs.millis == backoffs.head)
+      var prev = startMs.millis
+      backoffs.tail.foreach { b =>
+        assert(b >= startMs.millis)
+        assert(b <= prev * 3)
+        assert(b <= maxMs.millis)
+        prev = b
+      }
     }
   }
 
@@ -106,10 +105,9 @@ class BackoffTest extends FunSuite with GeneratorDrivenPropertyChecks {
         (80, 120),
         (80, 120),
         (80, 120))
-      backoffs.tail.zip(ranges).foreach {
-        case (b, (min, max)) =>
-          assert(b >= min)
-          assert(b <= max)
+      backoffs.tail.zip(ranges).foreach { case (b, (min, max)) =>
+        assert(b >= min)
+        assert(b <= max)
       }
 
       val manyBackoffs =

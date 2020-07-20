@@ -350,21 +350,20 @@ abstract class DStream[T: ClassTag](
             }
           }
 
-        rddOption.foreach {
-          case newRDD =>
-            // Register the generated RDD for caching and checkpointing
-            if (storageLevel != StorageLevel.NONE) {
-              newRDD.persist(storageLevel)
-              logDebug(
-                s"Persisting RDD ${newRDD.id} for time $time to $storageLevel")
-            }
-            if (checkpointDuration != null && (time - zeroTime).isMultipleOf(
-                checkpointDuration)) {
-              newRDD.checkpoint()
-              logInfo(
-                s"Marking RDD ${newRDD.id} for time $time for checkpointing")
-            }
-            generatedRDDs.put(time, newRDD)
+        rddOption.foreach { case newRDD =>
+          // Register the generated RDD for caching and checkpointing
+          if (storageLevel != StorageLevel.NONE) {
+            newRDD.persist(storageLevel)
+            logDebug(
+              s"Persisting RDD ${newRDD.id} for time $time to $storageLevel")
+          }
+          if (checkpointDuration != null && (time - zeroTime).isMultipleOf(
+              checkpointDuration)) {
+            newRDD.checkpoint()
+            logInfo(
+              s"Marking RDD ${newRDD.id} for time $time for checkpointing")
+          }
+          generatedRDDs.put(time, newRDD)
         }
         rddOption
       } else {

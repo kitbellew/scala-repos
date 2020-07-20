@@ -154,11 +154,9 @@ implicit def ${name}(implicit $dependencies): GR[${TableClass.elementType}] = GR
         s"def ? = $rhs"
       }
       def optionFactory = {
-        val accessors = columns.zipWithIndex.map {
-          case (c, i) =>
-            val accessor = if (columns.size > 1) tuple(i) else "r"
-            if (c.fakeNullable || c.model.nullable) accessor
-            else s"$accessor.get"
+        val accessors = columns.zipWithIndex.map { case (c, i) =>
+          val accessor = if (columns.size > 1) tuple(i) else "r"
+          if (c.fakeNullable || c.model.nullable) accessor else s"$accessor.get"
         }
         val fac = s"$factory(${compoundValue(accessors)})"
         val discriminator = columns.zipWithIndex.collect {

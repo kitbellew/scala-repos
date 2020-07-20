@@ -87,23 +87,22 @@ class ListTablesSuite
       StructField("tableName", StringType, false) ::
         StructField("isTemporary", BooleanType, false) :: Nil)
 
-    Seq(sqlContext.tables(), sql("SHOW TABLes")).foreach {
-      case tableDF =>
-        assert(expectedSchema === tableDF.schema)
+    Seq(sqlContext.tables(), sql("SHOW TABLes")).foreach { case tableDF =>
+      assert(expectedSchema === tableDF.schema)
 
-        tableDF.registerTempTable("tables")
-        checkAnswer(
-          sql(
-            "SELECT isTemporary, tableName from tables WHERE tableName = 'ListTablesSuiteTable'"),
-          Row(true, "ListTablesSuiteTable")
-        )
-        checkAnswer(
-          sqlContext
-            .tables()
-            .filter("tableName = 'tables'")
-            .select("tableName", "isTemporary"),
-          Row("tables", true))
-        sqlContext.dropTempTable("tables")
+      tableDF.registerTempTable("tables")
+      checkAnswer(
+        sql(
+          "SELECT isTemporary, tableName from tables WHERE tableName = 'ListTablesSuiteTable'"),
+        Row(true, "ListTablesSuiteTable")
+      )
+      checkAnswer(
+        sqlContext
+          .tables()
+          .filter("tableName = 'tables'")
+          .select("tableName", "isTemporary"),
+        Row("tables", true))
+      sqlContext.dropTempTable("tables")
     }
   }
 }

@@ -97,9 +97,8 @@ class NIHDBFileStoreSpec
 
       (projectionsActor ? Read(testPath, Version.Current))
         .mapTo[ReadResult]
-        .copoint must beLike {
-        case ReadSuccess(_, blob: BlobResource) =>
-          blob.asString.run.copoint must beSome(loremIpsum)
+        .copoint must beLike { case ReadSuccess(_, blob: BlobResource) =>
+        blob.asString.run.copoint must beSome(loremIpsum)
       }
     }
 
@@ -150,9 +149,8 @@ class NIHDBFileStoreSpec
 
       (projectionsActor ? Read(testPath, Version.Current))
         .mapTo[ReadResult]
-        .copoint must beLike {
-        case ReadSuccess(_, proj: NIHDBResource) =>
-          proj.db.length.copoint mustEqual 2
+        .copoint must beLike { case ReadSuccess(_, proj: NIHDBResource) =>
+        proj.db.length.copoint mustEqual 2
       }
     }
   }

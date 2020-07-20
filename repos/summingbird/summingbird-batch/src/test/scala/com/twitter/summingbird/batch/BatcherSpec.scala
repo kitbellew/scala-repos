@@ -22,11 +22,10 @@ class BatcherSpec extends WordSpec {
   val hourlyBatcher = Batcher.ofHours(1)
   import OrderedFromOrderingExt._
   def assertRelation(other: Batcher, m: Map[Long, Iterable[Long]]) =
-    m.foreach {
-      case (input, expected) =>
-        assert(
-          other.enclosedBy(BatchID(input), hourlyBatcher).toList ==
-            expected.map(BatchID(_)).toList)
+    m.foreach { case (input, expected) =>
+      assert(
+        other.enclosedBy(BatchID(input), hourlyBatcher).toList ==
+          expected.map(BatchID(_)).toList)
     }
 
   "DurationBatcher should properly enclose a smaller, offset batcher" in {

@@ -53,11 +53,10 @@ object GenerateOrdering
     * Creates a code gen ordering for sorting this schema, in ascending order.
     */
   def create(schema: StructType): BaseOrdering = {
-    create(schema.zipWithIndex.map {
-      case (field, ordinal) =>
-        SortOrder(
-          BoundReference(ordinal, field.dataType, nullable = true),
-          Ascending)
+    create(schema.zipWithIndex.map { case (field, ordinal) =>
+      SortOrder(
+        BoundReference(ordinal, field.dataType, nullable = true),
+        Ascending)
     })
   }
 
@@ -66,10 +65,10 @@ object GenerateOrdering
     * (i.e. ascending order by field 1, then field 2, ..., then field n.
     */
   def genComparisons(ctx: CodegenContext, schema: StructType): String = {
-    val ordering = schema.fields.map(_.dataType).zipWithIndex.map {
-      case (dt, index) =>
+    val ordering =
+      schema.fields.map(_.dataType).zipWithIndex.map { case (dt, index) =>
         new SortOrder(BoundReference(index, dt, nullable = true), Ascending)
-    }
+      }
     genComparisons(ctx, ordering)
   }
 

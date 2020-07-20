@@ -41,12 +41,11 @@ trait RandomStackSpecs extends EvalStackSpecs {
 
       result must haveSize(resultClicks.size)
 
-      result must haveAllElementsLike {
-        case (ids, SDecimal(d)) =>
-          ids must haveSize(1)
+      result must haveAllElementsLike { case (ids, SDecimal(d)) =>
+        ids must haveSize(1)
 
-          d must be_>=(BigDecimal(0))
-          d must be_<(BigDecimal(1))
+        d must be_>=(BigDecimal(0))
+        d must be_<(BigDecimal(1))
       }
     }
 
@@ -77,18 +76,16 @@ trait RandomStackSpecs extends EvalStackSpecs {
         SString("page-" + i.toString)
       }.toSet
 
-      result must haveAllElementsLike {
-        case (ids, SObject(fields)) =>
-          ids must haveSize(1)
-          fields.keys mustEqual Set("pageId", "rand")
+      result must haveAllElementsLike { case (ids, SObject(fields)) =>
+        ids must haveSize(1)
+        fields.keys mustEqual Set("pageId", "rand")
 
-          pageIds must contain(fields("pageId"))
+        pageIds must contain(fields("pageId"))
 
-          fields("rand") must beLike {
-            case SDecimal(d) =>
-              d must be_>=(BigDecimal(0))
-              d must be_<(BigDecimal(1))
-          }
+        fields("rand") must beLike { case SDecimal(d) =>
+          d must be_>=(BigDecimal(0))
+          d must be_<(BigDecimal(1))
+        }
       }
     }
 
@@ -117,16 +114,14 @@ trait RandomStackSpecs extends EvalStackSpecs {
 
       result must haveSize(resultClicks.size)
 
-      result must haveAllElementsLike {
-        case (ids, SObject(fields)) =>
-          ids must haveSize(2)
+      result must haveAllElementsLike { case (ids, SObject(fields)) =>
+        ids must haveSize(2)
 
-          fields.keys must contain("predict")
+        fields.keys must contain("predict")
 
-          fields("predict") must beLike {
-            case SString(str) =>
-              Set("foo", "bar") must contain(str)
-          }
+        fields("predict") must beLike { case SString(str) =>
+          Set("foo", "bar") must contain(str)
+        }
       }
     }
 
@@ -145,12 +140,11 @@ trait RandomStackSpecs extends EvalStackSpecs {
 
       result must haveSize(resultClicks.size)
 
-      result must haveAllElementsLike {
-        case (ids, SDecimal(d)) =>
-          ids must haveSize(1)
+      result must haveAllElementsLike { case (ids, SDecimal(d)) =>
+        ids must haveSize(1)
 
-          d must be_>=(BigDecimal(0))
-          d must be_<(BigDecimal(0.5))
+        d must be_>=(BigDecimal(0))
+        d must be_<(BigDecimal(0.5))
       }
     }.pendingUntilFixed
 
@@ -169,10 +163,9 @@ trait RandomStackSpecs extends EvalStackSpecs {
 
       result must haveSize(resultClicks.size)
 
-      result must haveAllElementsLike {
-        case (ids, SDecimal(d)) =>
-          ids must haveSize(1)
-          d mustEqual (0)
+      result must haveAllElementsLike { case (ids, SDecimal(d)) =>
+        ids must haveSize(1)
+        d mustEqual (0)
       }
     }.pendingUntilFixed
 
@@ -191,12 +184,11 @@ trait RandomStackSpecs extends EvalStackSpecs {
 
       result must haveSize(resultClicks.size)
 
-      result must haveAllElementsLike {
-        case (ids, SDecimal(d)) =>
-          ids must haveSize(1)
+      result must haveAllElementsLike { case (ids, SDecimal(d)) =>
+        ids must haveSize(1)
 
-          d must be_>=(BigDecimal(10))
-          d must be_<(BigDecimal(11))
+        d must be_>=(BigDecimal(10))
+        d must be_<(BigDecimal(11))
       }
     }.pendingUntilFixed
   }

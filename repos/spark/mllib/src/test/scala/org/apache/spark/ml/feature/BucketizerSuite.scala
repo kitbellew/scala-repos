@@ -55,11 +55,10 @@ class BucketizerSuite
       .transform(dataFrame)
       .select("result", "expected")
       .collect()
-      .foreach {
-        case Row(x: Double, y: Double) =>
-          assert(
-            x === y,
-            s"The feature value is not correct after bucketing.  Expected $y but found $x")
+      .foreach { case Row(x: Double, y: Double) =>
+        assert(
+          x === y,
+          s"The feature value is not correct after bucketing.  Expected $y but found $x")
       }
 
     // Check for exceptions when using a set of invalid feature values.
@@ -104,11 +103,10 @@ class BucketizerSuite
       .transform(dataFrame)
       .select("result", "expected")
       .collect()
-      .foreach {
-        case Row(x: Double, y: Double) =>
-          assert(
-            x === y,
-            s"The feature value is not correct after bucketing.  Expected $y but found $x")
+      .foreach { case Row(x: Double, y: Double) =>
+        assert(
+          x === y,
+          s"The feature value is not correct after bucketing.  Expected $y but found $x")
       }
   }
 

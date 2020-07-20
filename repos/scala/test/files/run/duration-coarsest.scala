@@ -11,11 +11,10 @@ object Test extends App {
     (48 hours, 2 days),
     (5 seconds, 5 seconds),
     (1 second, 1 second)
-  ) foreach {
-    case (x, expected) =>
-      val actual = x.toCoarsest
-      assert(actual.unit == expected.unit, s"$actual, $expected")
-      assert(actual.length == expected.length, s"$actual, $expected")
+  ) foreach { case (x, expected) =>
+    val actual = x.toCoarsest
+    assert(actual.unit == expected.unit, s"$actual, $expected")
+    assert(actual.length == expected.length, s"$actual, $expected")
   }
 
   List(

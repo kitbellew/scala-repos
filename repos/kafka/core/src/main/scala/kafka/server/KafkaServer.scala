@@ -732,10 +732,10 @@ class KafkaServer(
     val defaultProps = KafkaServer.copyKafkaConfigToLog(config)
     val defaultLogConfig = LogConfig(defaultProps)
 
-    val configs = AdminUtils.fetchAllTopicConfigs(zkUtils).map {
-      case (topic, configs) =>
+    val configs =
+      AdminUtils.fetchAllTopicConfigs(zkUtils).map { case (topic, configs) =>
         topic -> LogConfig.fromProps(defaultProps, configs)
-    }
+      }
     // read the log configurations from zookeeper
     val cleanerConfig = CleanerConfig(
       numThreads = config.logCleanerThreads,

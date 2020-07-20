@@ -90,9 +90,8 @@ trait TypeInferencerSpecs[M[+_]]
           case (path, ctpes) => path -> (ctpes ++ left.getOrElse(path, Set()))
         }
       }
-      left ++ right.map {
-        case (file, jtpes) =>
-          file -> mergeAux(jtpes, left.getOrElse(file, Map()))
+      left ++ right.map { case (file, jtpes) =>
+        file -> mergeAux(jtpes, left.getOrElse(file, Map()))
       }
     }
 

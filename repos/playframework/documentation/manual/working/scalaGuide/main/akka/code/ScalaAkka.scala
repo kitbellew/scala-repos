@@ -209,9 +209,8 @@ package scalaguide.akka {
     class HelloActor extends Actor {
       import HelloActor._
 
-      def receive = {
-        case SayHello(name: String) =>
-          sender() ! "Hello, " + name
+      def receive = { case SayHello(name: String) =>
+        sender() ! "Hello, " + name
       }
     }
 //#actor
@@ -231,9 +230,8 @@ package scalaguide.akka {
 
       val config = configuration.getString("my.config").getOrElse("none")
 
-      def receive = {
-        case GetConfig =>
-          sender() ! config
+      def receive = { case GetConfig =>
+        sender() ! config
       }
     }
 //#injected
@@ -260,9 +258,8 @@ package scalaguide.akka {
 
       val config = configuration.getString(key).getOrElse("none")
 
-      def receive = {
-        case GetConfig =>
-          sender() ! config
+      def receive = { case GetConfig =>
+        sender() ! config
       }
     }
 //#injectedchild
@@ -282,10 +279,9 @@ package scalaguide.akka {
         with InjectedActorSupport {
       import ParentActor._
 
-      def receive = {
-        case GetChild(key: String) =>
-          val child: ActorRef = injectedChild(childFactory(key), key)
-          sender() ! child
+      def receive = { case GetChild(key: String) =>
+        val child: ActorRef = injectedChild(childFactory(key), key)
+        sender() ! child
       }
     }
 //#injectedparent

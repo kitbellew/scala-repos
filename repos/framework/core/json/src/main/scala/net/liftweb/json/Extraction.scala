@@ -108,25 +108,23 @@ object Extraction {
           val constructorArgs = primaryConstructorArgs(x.getClass).map {
             case (name, _) => (name, fields.get(name))
           }
-          constructorArgs.collect {
-            case (name, Some(f)) =>
-              f.setAccessible(true)
-              JField(unmangleName(name), decompose(f get x))
+          constructorArgs.collect { case (name, Some(f)) =>
+            f.setAccessible(true)
+            JField(unmangleName(name), decompose(f get x))
           } match {
             case args =>
               val fields =
                 formats.fieldSerializer(x.getClass).map { serializer =>
-                  Reflection.fields(x.getClass).map {
-                    case (mangledName, _) =>
-                      val n = Meta.unmangleName(mangledName)
-                      val fieldVal = Reflection.getField(x, mangledName)
-                      val s = serializer.serializer orElse Map(
-                        (n, fieldVal) -> Some(n, fieldVal))
-                      s((n, fieldVal))
-                        .map {
-                          case (name, value) => JField(name, decompose(value))
-                        }
-                        .getOrElse(JField(n, JNothing))
+                  Reflection.fields(x.getClass).map { case (mangledName, _) =>
+                    val n = Meta.unmangleName(mangledName)
+                    val fieldVal = Reflection.getField(x, mangledName)
+                    val s = serializer.serializer orElse Map(
+                      (n, fieldVal) -> Some(n, fieldVal))
+                    s((n, fieldVal))
+                      .map { case (name, value) =>
+                        JField(name, decompose(value))
+                      }
+                      .getOrElse(JField(n, JNothing))
                   }
                 } getOrElse Nil
               val uniqueFields =
@@ -291,25 +289,23 @@ object Extraction {
                   .fields(a.getClass)
                   .filterNot(f => constructorArgNames.contains(f._1))
 
-              fieldsToSet.foreach {
-                case (name, typeInfo) =>
-                  jsonFields.get(name).foreach {
-                    case (n, v) =>
-                      val typeArgs = typeInfo.parameterizedType
-                        .map(_.getActualTypeArguments
-                          .map(_.asInstanceOf[Class[_]])
-                          .toList
-                          .zipWithIndex
-                          .map {
-                            case (t, idx) =>
-                              if (t == classOf[java.lang.Object])
-                                ScalaSigReader.readField(name, a.getClass, idx)
-                              else t
-                          })
-                      val value =
-                        extract0(v, typeInfo.clazz, typeArgs.getOrElse(Nil))
-                      Reflection.setField(a, n, value)
-                  }
+              fieldsToSet.foreach { case (name, typeInfo) =>
+                jsonFields.get(name).foreach { case (n, v) =>
+                  val typeArgs = typeInfo.parameterizedType
+                    .map(
+                      _.getActualTypeArguments
+                        .map(_.asInstanceOf[Class[_]])
+                        .toList
+                        .zipWithIndex
+                        .map { case (t, idx) =>
+                          if (t == classOf[java.lang.Object])
+                            ScalaSigReader.readField(name, a.getClass, idx)
+                          else t
+                        })
+                  val value =
+                    extract0(v, typeInfo.clazz, typeArgs.getOrElse(Nil))
+                  Reflection.setField(a, n, value)
+                }
               }
             }
             a

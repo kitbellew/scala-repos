@@ -80,19 +80,18 @@ class NetworkClientBlockingOps(val client: NetworkClient) extends AnyVal {
       time: JTime): Option[ClientResponse] = {
     client.send(request, time.milliseconds())
 
-    pollUntilFound(timeout) {
-      case (responses, _) =>
-        val response = responses.find { response =>
-          response.request.request.header.correlationId == request.request.header.correlationId
+    pollUntilFound(timeout) { case (responses, _) =>
+      val response = responses.find { response =>
+        response.request.request.header.correlationId == request.request.header.correlationId
+      }
+      response.foreach { r =>
+        if (r.wasDisconnected) {
+          val destination = request.request.destination
+          throw new IOException(
+            s"Connection to $destination was disconnected before the response was read")
         }
-        response.foreach { r =>
-          if (r.wasDisconnected) {
-            val destination = request.request.destination
-            throw new IOException(
-              s"Connection to $destination was disconnected before the response was read")
-          }
-        }
-        response
+      }
+      response
     }
 
   }

@@ -1770,45 +1770,43 @@ trait StatsLibModule[M[+_]]
         val m2 = mutable.Map.empty[ColumnRef, Column]
         val nums = mutable.Map.empty[CPath, List[Column]]
 
-        m.foreach {
-          case (ref @ ColumnRef(path, ctype), col) =>
-            if (ctype == CLong || ctype == CDouble || ctype == CNum) {
-              nums(path) = col :: nums.getOrElse(path, Nil)
-            } else {
-              m2(ref) = col
-            }
+        m.foreach { case (ref @ ColumnRef(path, ctype), col) =>
+          if (ctype == CLong || ctype == CDouble || ctype == CNum) {
+            nums(path) = col :: nums.getOrElse(path, Nil)
+          } else {
+            m2(ref) = col
+          }
         }
 
         val start = r.start
         val end = r.end
         val len = r.size
 
-        nums.foreach {
-          case (path, cols) =>
-            val bs = new BitSet()
-            val arr = new Array[BigDecimal](len)
-            cols.foreach {
-              case col: LongColumn =>
-                val bs2 = col.definedAt(start, end)
-                Loop.range(0, len)(j =>
-                  if (bs2.get(j)) arr(j) = BigDecimal(col(j + start)))
-                bs.or(bs2)
-              case col: DoubleColumn =>
-                val bs2 = col.definedAt(start, end)
-                Loop.range(0, len)(j =>
-                  if (bs2.get(j)) arr(j) = BigDecimal(col(j + start)))
-                bs.or(bs2)
-              case col: NumColumn =>
-                val bs2 = col.definedAt(start, end)
-                Loop.range(0, r.size)(j =>
-                  if (bs2.get(j)) arr(j) = col(j + start))
-                bs.or(bs2)
-              case col =>
-                sys.error("unexpected column found: %s" format col)
-            }
+        nums.foreach { case (path, cols) =>
+          val bs = new BitSet()
+          val arr = new Array[BigDecimal](len)
+          cols.foreach {
+            case col: LongColumn =>
+              val bs2 = col.definedAt(start, end)
+              Loop.range(0, len)(j =>
+                if (bs2.get(j)) arr(j) = BigDecimal(col(j + start)))
+              bs.or(bs2)
+            case col: DoubleColumn =>
+              val bs2 = col.definedAt(start, end)
+              Loop.range(0, len)(j =>
+                if (bs2.get(j)) arr(j) = BigDecimal(col(j + start)))
+              bs.or(bs2)
+            case col: NumColumn =>
+              val bs2 = col.definedAt(start, end)
+              Loop.range(0, r.size)(j =>
+                if (bs2.get(j)) arr(j) = col(j + start))
+              bs.or(bs2)
+            case col =>
+              sys.error("unexpected column found: %s" format col)
+          }
 
-            m2(ColumnRef(path, CNum)) =
-              shiftColumn(ArrayNumColumn(bs, arr), start)
+          m2(ColumnRef(path, CNum)) =
+            shiftColumn(ArrayNumColumn(bs, arr), start)
         }
         m2.toMap
       }
@@ -1870,8 +1868,8 @@ trait StatsLibModule[M[+_]]
           curr: Long,
           next: Long): RankContext = {
         val items = m
-          .filter {
-            case (k, v) => v.isDefinedAt(lastRow)
+          .filter { case (k, v) =>
+            v.isDefinedAt(lastRow)
           }
           .map {
             case (k, v) => (k, v.cValue(lastRow))

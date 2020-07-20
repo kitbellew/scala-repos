@@ -634,11 +634,10 @@ class LiftSession(
       funcs: Map[String, S.AFuncHolder],
       uniqueId: String,
       when: Long): Unit = {
-    funcs.foreach {
-      case (name, func) =>
-        nmessageCallback.put(
-          name,
-          if (func.owner == Full(uniqueId)) func else func.duplicate(uniqueId))
+    funcs.foreach { case (name, func) =>
+      nmessageCallback.put(
+        name,
+        if (func.owner == Full(uniqueId)) func else func.duplicate(uniqueId))
     }
   }
 
@@ -2848,8 +2847,8 @@ class LiftSession(
         atWhat.toList match {
           case Nil => s
           case xs =>
-            xs.map {
-              case (id, replacement) => (("#" + id) #> replacement)
+            xs.map { case (id, replacement) =>
+              (("#" + id) #> replacement)
             }.reduceLeft(_ & _)(s)
         }
       case _ => atWhat.valuesIterator.toSeq.flatMap(_.toSeq).toList

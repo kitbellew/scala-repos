@@ -91,12 +91,11 @@ object WorksheetSourceProcessor {
     val importsProcessed = mutable.HashSet[ScImportStmt]()
 
     @inline def withCompilerVersion[T](if210: => T, if211: => T, dflt: => T) =
-      Option(RunWorksheetAction getModuleFor srcFile) flatMap {
-        case module =>
-          module.scalaSdk.flatMap(_.compilerVersion).collect {
-            case v if v.startsWith("2.10") => if210
-            case v if v.startsWith("2.11") => if211
-          }
+      Option(RunWorksheetAction getModuleFor srcFile) flatMap { case module =>
+        module.scalaSdk.flatMap(_.compilerVersion).collect {
+          case v if v.startsWith("2.10") => if210
+          case v if v.startsWith("2.11") => if211
+        }
       } getOrElse dflt
 
     val macroPrinterName =
@@ -135,36 +134,35 @@ object WorksheetSourceProcessor {
       }
 
     @inline def psiToLineNumbers(psi: PsiElement): Option[String] =
-      ifDocument map {
-        case document =>
-          var actualPsi = psi
+      ifDocument map { case document =>
+        var actualPsi = psi
 
-          actualPsi.getFirstChild match {
-            case _: PsiComment =>
-              @tailrec
-              def iter(wsOrComment: PsiElement): PsiElement = {
-                wsOrComment match {
-                  case comment: PsiComment =>
-                    appendPsiComment(comment)
-                    iter(comment.getNextSibling)
-                  case ws: PsiWhiteSpace =>
-                    appendPsiWhitespace(ws)
-                    iter(ws.getNextSibling)
-                  case a: PsiElement if a.getTextRange.isEmpty =>
-                    iter(a.getNextSibling)
-                  case a: PsiElement => a
-                  case _             => psi
-                }
+        actualPsi.getFirstChild match {
+          case _: PsiComment =>
+            @tailrec
+            def iter(wsOrComment: PsiElement): PsiElement = {
+              wsOrComment match {
+                case comment: PsiComment =>
+                  appendPsiComment(comment)
+                  iter(comment.getNextSibling)
+                case ws: PsiWhiteSpace =>
+                  appendPsiWhitespace(ws)
+                  iter(ws.getNextSibling)
+                case a: PsiElement if a.getTextRange.isEmpty =>
+                  iter(a.getNextSibling)
+                case a: PsiElement => a
+                case _             => psi
               }
+            }
 
-              actualPsi = iter(actualPsi.getFirstChild)
-            case _ =>
-          }
+            actualPsi = iter(actualPsi.getFirstChild)
+          case _ =>
+        }
 
-          val start =
-            actualPsi.getTextRange.getStartOffset //actualPsi for start and psi for end - it is intentional
-          val end = psi.getTextRange.getEndOffset
-          s"${document getLineNumber start}|${document getLineNumber end}"
+        val start =
+          actualPsi.getTextRange.getStartOffset //actualPsi for start and psi for end - it is intentional
+        val end = psi.getTextRange.getEndOffset
+        s"${document getLineNumber start}|${document getLineNumber end}"
       }
 
     @inline def appendPsiLineInfo(
@@ -196,10 +194,8 @@ object WorksheetSourceProcessor {
       ifDocument map { document =>
         document.getLineNumber(range.getEndOffset) - document.getLineNumber(
           range.getStartOffset) + (1 - backOffset)
-      } map {
-        case differ =>
-          for (_ <- 0 until differ)
-            objectRes append printMethodName append "()\n"
+      } map { case differ =>
+        for (_ <- 0 until differ) objectRes append printMethodName append "()\n"
       } getOrElse {
         val count = countNls(comment.getText) - backOffset
 
@@ -212,10 +208,9 @@ object WorksheetSourceProcessor {
       if (comment.getNode.getElementType != ScalaTokenTypes.tLINE_COMMENT)
         return
 
-      val count = ifDocument map {
-        case d =>
-          d.getLineNumber(range.getEndOffset) - d.getLineNumber(
-            range.getStartOffset) + 1
+      val count = ifDocument map { case d =>
+        d.getLineNumber(range.getEndOffset) - d.getLineNumber(
+          range.getStartOffset) + 1
       } getOrElse countNls(comment.getText)
 
       for (_ <- 0 until count) classRes append "//\n"
@@ -276,23 +271,22 @@ object WorksheetSourceProcessor {
         currentQual = currentQual.qualifier.orNull
       }
 
-      lastFound exists {
-        case (lastQualifier, el) =>
-          val text = imp.getText
-          val qualifierName = lastQualifier.qualName
-          val lineNums = psiToLineNumbers(imp)
-          val memberName =
-            if (el.isInstanceOf[ScValue] || el
-                .isInstanceOf[ScVariable]) //variable to avoid weird errors
-              variableInstanceName(qualifierName)
-            else qualifierName
+      lastFound exists { case (lastQualifier, el) =>
+        val text = imp.getText
+        val qualifierName = lastQualifier.qualName
+        val lineNums = psiToLineNumbers(imp)
+        val memberName =
+          if (el.isInstanceOf[ScValue] || el
+              .isInstanceOf[ScVariable]) //variable to avoid weird errors
+            variableInstanceName(qualifierName)
+          else qualifierName
 
-          objectRes append
-            s";{val $qualifierName = $instanceName.$memberName; $printMethodName($macroPrinterName.printImportInfo({$text;}))}\n"
-          classRes append s"$text${insertNlsFromWs(imp)}"
+        objectRes append
+          s";{val $qualifierName = $instanceName.$memberName; $printMethodName($macroPrinterName.printImportInfo({$text;}))}\n"
+        classRes append s"$text${insertNlsFromWs(imp)}"
 
-          appendPsiLineInfo(imp, lineNums)
-          true
+        appendPsiLineInfo(imp, lineNums)
+        true
       }
     }
 
@@ -372,14 +366,13 @@ object WorksheetSourceProcessor {
       case valDef: ScPatternDefinition =>
         withPrecomputeLines(
           valDef, {
-            valDef.bindings foreach {
-              case p =>
-                val pName = p.name
-                val defName = variableInstanceName(pName)
+            valDef.bindings foreach { case p =>
+              val pName = p.name
+              val defName = variableInstanceName(pName)
 
-                classRes append s"def $defName = $pName;$END_GENERATED_MARKER"
-                objectRes append (printMethodName + "(\"" + startText + pName + ": \" + " + withTempVar(
-                  defName) + ")\n")
+              classRes append s"def $defName = $pName;$END_GENERATED_MARKER"
+              objectRes append (printMethodName + "(\"" + startText + pName + ": \" + " + withTempVar(
+                defName) + ")\n")
             }
           }
         )
@@ -414,12 +407,11 @@ object WorksheetSourceProcessor {
         }
 
         classRes append txt append ";"
-        varDef.declaredNames foreach {
-          case pName =>
-            objectRes append (
-              printMethodName + "(\"" + startText + pName + ": \" + " + withTempVar(
-                pName /*, withInstance = false*/ ) + ")\n"
-            )
+        varDef.declaredNames foreach { case pName =>
+          objectRes append (
+            printMethodName + "(\"" + startText + pName + ": \" + " + withTempVar(
+              pName /*, withInstance = false*/ ) + ")\n"
+          )
         }
 
         appendPsiLineInfo(varDef, lineNum)

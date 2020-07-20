@@ -34,11 +34,10 @@ class ScalaInjectedStringLiteralManipulator
       case inter: ScInterpolatedStringLiteral =>
         val quotes = if (inter.isMultiLineString) "\"\"\"" else "\""
 
-        inter.reference.map {
-          case ref =>
-            ScalaPsiElementFactory.createExpressionFromText(
-              s"${ref.getText}$quotes$newContent$quotes",
-              expr.getManager)
+        inter.reference.map { case ref =>
+          ScalaPsiElementFactory.createExpressionFromText(
+            s"${ref.getText}$quotes$newContent$quotes",
+            expr.getManager)
         } match {
           case Some(l: ScLiteral) =>
             expr.replace(l)

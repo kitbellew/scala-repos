@@ -25,9 +25,8 @@ object QaQuestion extends QaController {
         Redirect(routes.QaQuestion.index())
       }
       else
-        Env.qa search query zip fetchPopular map {
-          case (questions, popular) =>
-            Ok(html.qa.search(query, questions, popular))
+        Env.qa search query zip fetchPopular map { case (questions, popular) =>
+          Ok(html.qa.search(query, questions, popular))
         }
     }
 

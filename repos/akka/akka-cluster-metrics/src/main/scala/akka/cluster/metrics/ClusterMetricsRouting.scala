@@ -289,13 +289,12 @@ case object HeapMetricsSelector extends CapacityMetricsSelector {
   def getInstance = this
 
   override def capacity(nodeMetrics: Set[NodeMetrics]): Map[Address, Double] = {
-    nodeMetrics.collect {
-      case HeapMemory(address, _, used, committed, max) ⇒
-        val capacity = max match {
-          case None ⇒ (committed - used).toDouble / committed
-          case Some(m) ⇒ (m - used).toDouble / m
-        }
-        (address, capacity)
+    nodeMetrics.collect { case HeapMemory(address, _, used, committed, max) ⇒
+      val capacity = max match {
+        case None ⇒ (committed - used).toDouble / committed
+        case Some(m) ⇒ (m - used).toDouble / m
+      }
+      (address, capacity)
     }.toMap
   }
 }
@@ -435,13 +434,12 @@ object MetricsSelector {
         val args = List(classOf[Config] -> config)
         dynamicAccess
           .createInstanceFor[MetricsSelector](fqn, args)
-          .recover({
-            case exception ⇒
-              throw new IllegalArgumentException(
-                (s"Cannot instantiate metrics-selector [$fqn], " +
-                  "make sure it extends [akka.cluster.routing.MetricsSelector] and " +
-                  "has constructor with [com.typesafe.config.Config] parameter"),
-                exception)
+          .recover({ case exception ⇒
+            throw new IllegalArgumentException(
+              (s"Cannot instantiate metrics-selector [$fqn], " +
+                "make sure it extends [akka.cluster.routing.MetricsSelector] and " +
+                "has constructor with [com.typesafe.config.Config] parameter"),
+              exception)
           })
           .get
     }

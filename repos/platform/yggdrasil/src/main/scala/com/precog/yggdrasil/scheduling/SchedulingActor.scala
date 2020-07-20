@@ -249,34 +249,32 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
             consumeStream(0, storedQueryResult.data) map { totalSize =>
               ourself ! TaskComplete(task.id, clock.now(), totalSize, None)
               PrecogUnit
-            } recoverWith {
-              case t: Throwable =>
-                for {
-                  _ <- storedQueryResult.cachingJob.traverse { jobId =>
-                    jobManager.abort(jobId, t.getMessage) map {
-                      case Right(jobAbortSuccess) =>
-                        ourself ! TaskComplete(
-                          task.id,
-                          clock.now(),
-                          0,
-                          Option(t.getMessage) orElse Some(t.getClass.toString))
-                      case Left(jobAbortFailure) =>
-                        sys.error(jobAbortFailure.toString)
-                    }
+            } recoverWith { case t: Throwable =>
+              for {
+                _ <- storedQueryResult.cachingJob.traverse { jobId =>
+                  jobManager.abort(jobId, t.getMessage) map {
+                    case Right(jobAbortSuccess) =>
+                      ourself ! TaskComplete(
+                        task.id,
+                        clock.now(),
+                        0,
+                        Option(t.getMessage) orElse Some(t.getClass.toString))
+                    case Left(jobAbortFailure) =>
+                      sys.error(jobAbortFailure.toString)
                   }
-                } yield PrecogUnit
+                }
+              } yield PrecogUnit
             }
           }
         ) flatMap {
           identity[Future[PrecogUnit]]
-        } onFailure {
-          case t: Throwable =>
-            logger.error("Scheduled query execution failed by thrown error.", t)
-            ourself ! TaskComplete(
-              task.id,
-              clock.now(),
-              0,
-              Option(t.getMessage) orElse Some(t.getClass.toString)): PrecogUnit
+        } onFailure { case t: Throwable =>
+          logger.error("Scheduled query execution failed by thrown error.", t)
+          ourself ! TaskComplete(
+            task.id,
+            clock.now(),
+            0,
+            Option(t.getMessage) orElse Some(t.getClass.toString)): PrecogUnit
         }
       }
     }
@@ -311,10 +309,9 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
             }
         }
 
-        addResult.run.map(_ => taskId) recover {
-          case t: Throwable =>
-            logger.error("Error adding task " + newTask, t)
-            \/.left("Internal error adding task")
+        addResult.run.map(_ => taskId) recover { case t: Throwable =>
+          logger.error("Error adding task " + newTask, t)
+          \/.left("Internal error adding task")
         } pipeTo sender
 
       case DeleteTask(id) =>
@@ -324,10 +321,9 @@ trait SchedulingActorModule extends SecureVFSModule[Future, Slice] {
           result
         }
 
-        deleteResult.run recover {
-          case t: Throwable =>
-            logger.error("Error deleting task " + id, t)
-            \/.left("Internal error deleting task")
+        deleteResult.run recover { case t: Throwable =>
+          logger.error("Error deleting task " + id, t)
+          \/.left("Internal error deleting task")
         } pipeTo sender
 
       case StatusForTask(id, limit) =>

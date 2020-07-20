@@ -366,13 +366,12 @@ class JavapClass(
       } map {
         case true => JpResult(showable(klass, filter))
         case _    => JpResult(reporter.reportable())
-      } recoverWith {
-        case e: java.lang.reflect.InvocationTargetException =>
-          e.getCause match {
-            case t: IllegalArgumentException =>
-              Success(JpResult(t.getMessage)) // bad option
-            case x => Failure(x)
-          }
+      } recoverWith { case e: java.lang.reflect.InvocationTargetException =>
+        e.getCause match {
+          case t: IllegalArgumentException =>
+            Success(JpResult(t.getMessage)) // bad option
+          case x => Failure(x)
+        }
       } lastly {
         reporter.clear()
       }

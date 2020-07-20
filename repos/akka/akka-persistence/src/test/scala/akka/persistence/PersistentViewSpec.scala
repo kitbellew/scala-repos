@@ -18,8 +18,7 @@ object PersistentViewSpec {
       case msg ⇒ persist(msg) { m ⇒ probe ! s"${m}-${lastSequenceNr}" }
     }
 
-    override def receiveRecover: Receive = {
-      case _ ⇒ // do nothing...
+    override def receiveRecover: Receive = { case _ ⇒ // do nothing...
     }
   }
 
@@ -107,9 +106,8 @@ object PersistentViewSpec {
     override def autoUpdateInterval: FiniteDuration = 50.millis
     override def autoUpdateReplayMax: Long = 2
 
-    def receive = {
-      case payload ⇒
-        probe ! s"replicated-${payload}-${lastSequenceNr}"
+    def receive = { case payload ⇒
+      probe ! s"replicated-${payload}-${lastSequenceNr}"
     }
   }
 

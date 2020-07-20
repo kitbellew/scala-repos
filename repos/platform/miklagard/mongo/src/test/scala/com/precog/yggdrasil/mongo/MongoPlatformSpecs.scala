@@ -216,17 +216,16 @@ trait MongoPlatformSpecs
       // Rewrite paths of the form /foo/bar/baz to /test/foo_bar_baz
       val pathFixTS = Map1(
         Leaf(Source),
-        CF1P("fix_paths") {
-          case orig: StrColumn =>
-            new StrColumn {
-              def apply(row: Int): String = {
-                val newPath =
-                  "/test/" + orig(row).replaceAll("^/|/$", "").replace('/', '_')
-                logger.debug("Fixed %s to %s".format(orig(row), newPath))
-                newPath
-              }
-              def isDefinedAt(row: Int) = orig.isDefinedAt(row)
+        CF1P("fix_paths") { case orig: StrColumn =>
+          new StrColumn {
+            def apply(row: Int): String = {
+              val newPath =
+                "/test/" + orig(row).replaceAll("^/|/$", "").replace('/', '_')
+              logger.debug("Fixed %s to %s".format(orig(row), newPath))
+              newPath
             }
+            def isDefinedAt(row: Int) = orig.isDefinedAt(row)
+          }
         }
       )
       val transformed = table.transform(pathFixTS)

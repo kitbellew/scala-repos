@@ -57,9 +57,8 @@ final class Env(
   def cli =
     new lila.common.Cli {
       import tube._
-      def process = {
-        case "forum" :: "denormalize" :: Nil =>
-          topicApi.denormalize >> categApi.denormalize inject "Forum denormalized"
+      def process = { case "forum" :: "denormalize" :: Nil =>
+        topicApi.denormalize >> categApi.denormalize inject "Forum denormalized"
       }
     }
 

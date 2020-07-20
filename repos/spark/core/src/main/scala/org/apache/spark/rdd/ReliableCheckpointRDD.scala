@@ -77,12 +77,11 @@ private[spark] class ReliableCheckpointRDD[T: ClassTag](
       .filter(_.getName.startsWith("part-"))
       .sortBy(_.toString)
     // Fail fast if input files are invalid
-    inputFiles.zipWithIndex.foreach {
-      case (path, i) =>
-        if (!path.toString.endsWith(
-            ReliableCheckpointRDD.checkpointFileName(i))) {
-          throw new SparkException(s"Invalid checkpoint file: $path")
-        }
+    inputFiles.zipWithIndex.foreach { case (path, i) =>
+      if (!path.toString.endsWith(
+          ReliableCheckpointRDD.checkpointFileName(i))) {
+        throw new SparkException(s"Invalid checkpoint file: $path")
+      }
     }
     Array.tabulate(inputFiles.length)(i => new CheckpointRDDPartition(i))
   }

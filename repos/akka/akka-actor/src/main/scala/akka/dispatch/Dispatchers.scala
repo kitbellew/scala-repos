@@ -201,14 +201,13 @@ class Dispatchers(
           classOf[DispatcherPrerequisites] -> prerequisites)
         prerequisites.dynamicAccess
           .createInstanceFor[MessageDispatcherConfigurator](fqn, args)
-          .recover({
-            case exception ⇒
-              throw new ConfigurationException(
-                ("Cannot instantiate MessageDispatcherConfigurator type [%s], defined in [%s], " +
-                  "make sure it has constructor with [com.typesafe.config.Config] and " +
-                  "[akka.dispatch.DispatcherPrerequisites] parameters")
-                  .format(fqn, cfg.getString("id")),
-                exception)
+          .recover({ case exception ⇒
+            throw new ConfigurationException(
+              ("Cannot instantiate MessageDispatcherConfigurator type [%s], defined in [%s], " +
+                "make sure it has constructor with [com.typesafe.config.Config] and " +
+                "[akka.dispatch.DispatcherPrerequisites] parameters")
+                .format(fqn, cfg.getString("id")),
+              exception)
           })
           .get
     }

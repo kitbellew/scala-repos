@@ -352,9 +352,8 @@ trait FutureCombinators extends TestBase {
       val cause = new RuntimeException
       val f = Future {
         throw cause
-      } recover {
-        case re: RuntimeException =>
-          "recovered"
+      } recover { case re: RuntimeException =>
+        "recovered"
       }
       f onSuccess { case x => done(x == "recovered") }
       f onFailure { case any => done(false) }
@@ -377,9 +376,8 @@ trait FutureCombinators extends TestBase {
       val cause = new RuntimeException
       val f = Future {
         throw cause
-      } recoverWith {
-        case re: RuntimeException =>
-          Future { "recovered" }
+      } recoverWith { case re: RuntimeException =>
+        Future { "recovered" }
       }
       f onSuccess { case x => done(x == "recovered") }
       f onFailure { case any => done(false) }
@@ -390,9 +388,8 @@ trait FutureCombinators extends TestBase {
       val cause = new RuntimeException
       val f = Future {
         throw cause
-      } recoverWith {
-        case te: TimeoutException =>
-          Future { "timeout" }
+      } recoverWith { case te: TimeoutException =>
+        Future { "timeout" }
       }
       f onSuccess { case x => done(false) }
       f onFailure { case any => done(any == cause) }
@@ -776,10 +773,9 @@ trait CustomExecutionContext extends TestBase {
       blocking {
         once { done =>
           val f = Future(assertNoEC())(defaultEC)
-          f onSuccess {
-            case _ =>
-              assertEC()
-              done(true)
+          f onSuccess { case _ =>
+            assertEC()
+            done(true)
           }
           assertNoEC()
         }
@@ -795,10 +791,9 @@ trait CustomExecutionContext extends TestBase {
       blocking {
         once { done =>
           val f = Promise.successful(10).future
-          f onSuccess {
-            case _ =>
-              assertEC()
-              done(true)
+          f onSuccess { case _ =>
+            assertEC()
+            done(true)
           }
         }
       }

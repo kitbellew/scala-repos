@@ -57,9 +57,8 @@ object FlatMapBoltProvider {
     FlatMapOperation.generic[(Timestamp, T), ((K, BatchID), (Timestamp, V))]({
       case (ts, data) =>
         existingOp.apply(data).map { vals =>
-          vals.map {
-            case (k, v) =>
-              ((k, batcher.batchOf(ts)), (ts, v))
+          vals.map { case (k, v) =>
+            ((k, batcher.batchOf(ts)), (ts, v))
           }
         }
     })

@@ -58,13 +58,12 @@ class ALSSuite
       val tests = Seq.fill(5)(
         (random.nextInt(numBlocks), random.nextInt(maxLocalIndex))) ++
         Seq((0, 0), (numBlocks - 1, maxLocalIndex))
-      tests.foreach {
-        case (blockId, localIndex) =>
-          val err =
-            s"Failed with numBlocks=$numBlocks, blockId=$blockId, and localIndex=$localIndex."
-          val encoded = encoder.encode(blockId, localIndex)
-          assert(encoder.blockId(encoded) === blockId, err)
-          assert(encoder.localIndex(encoded) === localIndex, err)
+      tests.foreach { case (blockId, localIndex) =>
+        val err =
+          s"Failed with numBlocks=$numBlocks, blockId=$blockId, and localIndex=$localIndex."
+        val encoded = encoder.encode(blockId, localIndex)
+        assert(encoder.blockId(encoded) === blockId, err)
+        assert(encoder.localIndex(encoded) === localIndex, err)
       }
     }
   }
@@ -384,25 +383,22 @@ class ALSSuite
         // We limit the ratings and the predictions to interval [0, 1] and compute the weighted RMSE
         // with the confidence scores as weights.
         val (totalWeight, weightedSumSq) = predictions
-          .map {
-            case (rating, prediction) =>
-              val confidence = 1.0 + alpha * math.abs(rating)
-              val rating01 = math.max(math.min(rating, 1.0), 0.0)
-              val prediction01 = math.max(math.min(prediction, 1.0), 0.0)
-              val err = prediction01 - rating01
-              (confidence, confidence * err * err)
+          .map { case (rating, prediction) =>
+            val confidence = 1.0 + alpha * math.abs(rating)
+            val rating01 = math.max(math.min(rating, 1.0), 0.0)
+            val prediction01 = math.max(math.min(prediction, 1.0), 0.0)
+            val err = prediction01 - rating01
+            (confidence, confidence * err * err)
           }
-          .reduce {
-            case ((c0, e0), (c1, e1)) =>
-              (c0 + c1, e0 + e1)
+          .reduce { case ((c0, e0), (c1, e1)) =>
+            (c0 + c1, e0 + e1)
           }
         math.sqrt(weightedSumSq / totalWeight)
       } else {
         val mse = predictions
-          .map {
-            case (rating, prediction) =>
-              val err = rating - prediction
-              err * err
+          .map { case (rating, prediction) =>
+            val err = rating - prediction
+            err * err
           }
           .mean()
         math.sqrt(mse)
@@ -599,12 +595,11 @@ class ALSSuite
       val part = userFactors.partitioner.get
       userFactors
         .mapPartitionsWithIndex { (idx, items) =>
-          items.foreach {
-            case (id, _) =>
-              if (part.getPartition(id) != idx) {
-                throw new SparkException(
-                  s"$tpe with ID $id should not be in partition $idx.")
-              }
+          items.foreach { case (id, _) =>
+            if (part.getPartition(id) != idx) {
+              throw new SparkException(
+                s"$tpe with ID $id should not be in partition $idx.")
+            }
           }
           Iterator.empty
         }
@@ -635,9 +630,8 @@ class ALSSuite
     import ALSSuite._
     val (ratings, _) = genExplicitTestData(numUsers = 4, numItems = 4, rank = 1)
     val als = new ALS()
-    allEstimatorParamSettings.foreach {
-      case (p, v) =>
-        als.set(als.getParam(p), v)
+    allEstimatorParamSettings.foreach { case (p, v) =>
+      als.set(als.getParam(p), v)
     }
     val sqlContext = this.sqlContext
     import sqlContext.implicits._
@@ -645,26 +639,23 @@ class ALSSuite
 
     // Test Estimator save/load
     val als2 = testDefaultReadWrite(als)
-    allEstimatorParamSettings.foreach {
-      case (p, v) =>
-        val param = als.getParam(p)
-        assert(als.get(param).get === als2.get(param).get)
+    allEstimatorParamSettings.foreach { case (p, v) =>
+      val param = als.getParam(p)
+      assert(als.get(param).get === als2.get(param).get)
     }
 
     // Test Model save/load
     val model2 = testDefaultReadWrite(model)
-    allModelParamSettings.foreach {
-      case (p, v) =>
-        val param = model.getParam(p)
-        assert(model.get(param).get === model2.get(param).get)
+    allModelParamSettings.foreach { case (p, v) =>
+      val param = model.getParam(p)
+      assert(model.get(param).get === model2.get(param).get)
     }
     assert(model.rank === model2.rank)
     def getFactors(df: DataFrame): Set[(Int, Array[Float])] = {
       df.select("id", "features")
         .collect()
-        .map {
-          case r =>
-            (r.getInt(0), r.getAs[Array[Float]](1))
+        .map { case r =>
+          (r.getInt(0), r.getAs[Array[Float]](1))
         }
         .toSet
     }

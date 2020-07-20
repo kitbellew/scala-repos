@@ -226,9 +226,8 @@ private[coordinator] class GroupMetadata(
     if (is(Dead) || is(PreparingRebalance))
       throw new IllegalStateException(
         "Cannot obtain member metadata for group in state %s".format(state))
-    members.map {
-      case (memberId, memberMetadata) =>
-        (memberId, memberMetadata.metadata(protocol))
+    members.map { case (memberId, memberMetadata) =>
+      (memberId, memberMetadata.metadata(protocol))
     }.toMap
   }
 

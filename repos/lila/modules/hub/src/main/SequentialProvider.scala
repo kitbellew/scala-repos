@@ -25,11 +25,9 @@ trait SequentialProvider extends Actor {
 
   val windowCount = new lila.common.WindowCount(1 second)
 
-  private def idle: Receive = {
-
-    case msg =>
-      context become busy
-      processThenDone(Envelope(msg, sender))
+  private def idle: Receive = { case msg =>
+    context become busy
+    processThenDone(Envelope(msg, sender))
   }
 
   private def busy: Receive = {

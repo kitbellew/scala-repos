@@ -17,8 +17,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   """
 
   def testVariable() {
-    assertMatches(messages("var v = A; v = A")) {
-      case Nil =>
+    assertMatches(messages("var v = A; v = A")) { case Nil =>
     }
     assertMatches(messages("var v = A; v = B")) {
       case Error("B", TypeMismatch()) :: Nil =>
@@ -51,8 +50,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   }
 
   def testClassParameter() {
-    assertMatches(messages("case class C(var p: A) { p = A }")) {
-      case Nil =>
+    assertMatches(messages("case class C(var p: A) { p = A }")) { case Nil =>
     }
     assertMatches(messages("class C(p: A) { p = B }")) {
       case Error("p = B", ReassignmentToVal()) :: Nil =>
@@ -60,8 +58,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   }
 
   def testClassVariableParameter() {
-    assertMatches(messages("class C(var p: A) { p = A }")) {
-      case Nil =>
+    assertMatches(messages("class C(var p: A) { p = A }")) { case Nil =>
     }
     // TODO right expression "B" must have expected type
 //    assertMatches(messages("class C(var p: A) { p = B }")) {
@@ -125,8 +122,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   }
 
   def testNamedParameterClause() {
-    assertMatches(messages("def blerg(a: Any)= 0; blerg(a = 0)")) {
-      case Nil =>
+    assertMatches(messages("def blerg(a: Any)= 0; blerg(a = 0)")) { case Nil =>
     }
   }
 
@@ -138,8 +134,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   }
 
   def testVarInsideVar() {
-    assertMatches(messages("val x = { var a = A; a = A }")) {
-      case Nil =>
+    assertMatches(messages("val x = { var a = A; a = A }")) { case Nil =>
     }
     assertMatches(messages("val x = { var a = A; a = B }")) {
       case Error("B", TypeMismatch()) :: Nil =>
@@ -153,8 +148,7 @@ class AssignmentAnnotatorTest extends SimpleTestCase {
   }
 
   def testSetter() {
-    assertMatches(messages("def a = A; def a_=(x: A) {}; a = A")) {
-      case Nil =>
+    assertMatches(messages("def a = A; def a_=(x: A) {}; a = A")) { case Nil =>
     }
     assertMatches(
       messages("def a(implicit b: B) = A; def a_=(x: A) {}; a = A")) {

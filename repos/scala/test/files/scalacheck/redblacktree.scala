@@ -125,9 +125,8 @@ package scala.collection.immutable.redblacktree {
       height(t) <= (2 * (32 - Integer.numberOfLeadingZeros(count(t) + 2)) - 2)
 
     def setup(invariant: Tree[String, Int] => Boolean) =
-      forAll(genInput) {
-        case (tree, parm, newTree) =>
-          invariant(newTree)
+      forAll(genInput) { case (tree, parm, newTree) =>
+        invariant(newTree)
       }
 
     property("root is black") = setup(rootIsBlack)
@@ -182,9 +181,8 @@ package scala.collection.immutable.redblacktree {
 
     property("update modifies values") = forAll(genInput) {
       case (tree, parm, newTree) =>
-        nodeAt(tree, parm) forall {
-          case (key, _) =>
-            iterator(newTree) contains (key, newValue)
+        nodeAt(tree, parm) forall { case (key, _) =>
+          iterator(newTree) contains (key, newValue)
         }
     }
   }
@@ -205,9 +203,8 @@ package scala.collection.immutable.redblacktree {
 
     property("delete removes elements") = forAll(genInput) {
       case (tree, parm, newTree) =>
-        nodeAt(tree, parm) forall {
-          case (key, _) =>
-            !treeContains(newTree, key)
+        nodeAt(tree, parm) forall { case (key, _) =>
+          !treeContains(newTree, key)
         }
     }
   }
@@ -269,9 +266,8 @@ package scala.collection.immutable.redblacktree {
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] = drop(tree, parm)
 
-    property("drop") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        iterator(tree).drop(parm).toList == iterator(newTree).toList
+    property("drop") = forAll(genInput) { case (tree, parm, newTree) =>
+      iterator(tree).drop(parm).toList == iterator(newTree).toList
     }
   }
 
@@ -285,9 +281,8 @@ package scala.collection.immutable.redblacktree {
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] = take(tree, parm)
 
-    property("take") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        iterator(tree).take(parm).toList == iterator(newTree).toList
+    property("take") = forAll(genInput) { case (tree, parm, newTree) =>
+      iterator(tree).take(parm).toList == iterator(newTree).toList
     }
   }
 
@@ -304,10 +299,8 @@ package scala.collection.immutable.redblacktree {
         tree: Tree[String, Int],
         parm: ModifyParm): Tree[String, Int] = slice(tree, parm._1, parm._2)
 
-    property("slice") = forAll(genInput) {
-      case (tree, parm, newTree) =>
-        iterator(tree).slice(parm._1, parm._2).toList == iterator(
-          newTree).toList
+    property("slice") = forAll(genInput) { case (tree, parm, newTree) =>
+      iterator(tree).slice(parm._1, parm._2).toList == iterator(newTree).toList
     }
   }
 }

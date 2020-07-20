@@ -100,13 +100,12 @@ case class OffsetFetchRequest(
       e: Throwable,
       requestChannel: RequestChannel,
       request: RequestChannel.Request): Unit = {
-    val responseMap = requestInfo.map {
-      case (topicAndPartition) =>
-        (
-          topicAndPartition,
-          OffsetMetadataAndError(
-            Errors.forException(e).code
-          ))
+    val responseMap = requestInfo.map { case (topicAndPartition) =>
+      (
+        topicAndPartition,
+        OffsetMetadataAndError(
+          Errors.forException(e).code
+        ))
     }.toMap
     val errorResponse = OffsetFetchResponse(
       requestInfo = responseMap,

@@ -59,10 +59,9 @@ class Stats(val startTime: DateTime) {
       appId: Int,
       m: mutable.Map[(Int, K), V]): Seq[KV[K, V]] = {
     m.toSeq
-      .flatMap {
-        case (k, v) =>
-          if (k._1 == appId) { Seq(KV(k._2, v)) }
-          else { Seq() }
+      .flatMap { case (k, v) =>
+        if (k._1 == appId) { Seq(KV(k._2, v)) }
+        else { Seq() }
       }
   }
 

@@ -425,9 +425,8 @@ abstract class ShuffleSuite
       mapOutput1.get.getSizeForBlock(0) === mapOutput1.get.getSizeForBlock(0))
 
     // register one of the map outputs -- doesn't matter which one
-    mapOutput1.foreach {
-      case mapStatus =>
-        mapTrackerMaster.registerMapOutputs(0, Array(mapStatus))
+    mapOutput1.foreach { case mapStatus =>
+      mapTrackerMaster.registerMapOutputs(0, Array(mapStatus))
     }
 
     val reader = manager.getReader[Int, Int](

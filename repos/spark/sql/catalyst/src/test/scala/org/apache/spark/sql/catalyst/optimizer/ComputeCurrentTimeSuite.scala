@@ -48,10 +48,9 @@ class ComputeCurrentTimeSuite extends PlanTest {
     val max = (System.currentTimeMillis() + 1) * 1000
 
     val lits = new scala.collection.mutable.ArrayBuffer[Long]
-    plan.transformAllExpressions {
-      case e: Literal =>
-        lits += e.value.asInstanceOf[Long]
-        e
+    plan.transformAllExpressions { case e: Literal =>
+      lits += e.value.asInstanceOf[Long]
+      e
     }
     assert(lits.size == 2)
     assert(lits(0) >= min && lits(0) <= max)
@@ -69,10 +68,9 @@ class ComputeCurrentTimeSuite extends PlanTest {
     val max = DateTimeUtils.millisToDays(System.currentTimeMillis())
 
     val lits = new scala.collection.mutable.ArrayBuffer[Int]
-    plan.transformAllExpressions {
-      case e: Literal =>
-        lits += e.value.asInstanceOf[Int]
-        e
+    plan.transformAllExpressions { case e: Literal =>
+      lits += e.value.asInstanceOf[Int]
+      e
     }
     assert(lits.size == 2)
     assert(lits(0) >= min && lits(0) <= max)

@@ -264,9 +264,8 @@ abstract class UnPickler {
               Some(("org.scala-lang.modules", "scala-swing"))
             else None
 
-          (module map {
-            case (group, art) =>
-              s"""\n(NOTE: It looks like the $art module is missing; try adding a dependency on "$group" : "$art".
+          (module map { case (group, art) =>
+            s"""\n(NOTE: It looks like the $art module is missing; try adding a dependency on "$group" : "$art".
                |       See http://docs.scala-lang.org/overviews/ for more information.)""".stripMargin
           } getOrElse "")
         }

@@ -382,8 +382,7 @@ class MockSpecializedLiftActor[T] extends SpecializedLiftActor[T] {
 
   // We aren't required to implement a real message handler for the Mock actor
   // since the message handler never runs.
-  override def messageHandler: PartialFunction[T, Unit] = {
-    case _ =>
+  override def messageHandler: PartialFunction[T, Unit] = { case _ =>
   }
 
   /**

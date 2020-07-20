@@ -113,11 +113,10 @@ final class CrosstableApi(coll: Coll) {
                 Match(selector),
                 List(GroupField(Game.BSONFields.winnerId)("nb" -> SumValue(1))))
               .map(
-                _.documents.foldLeft(ctDraft) {
-                  case (ct, obj) =>
-                    obj.getAs[Int]("nb").fold(ct) { nb =>
-                      ct.addWins(obj.getAs[String]("_id"), nb)
-                    }
+                _.documents.foldLeft(ctDraft) { case (ct, obj) =>
+                  obj.getAs[Int]("nb").fold(ct) { nb =>
+                    ct.addWins(obj.getAs[String]("_id"), nb)
+                  }
                 }
               )
 

@@ -32,13 +32,12 @@ class ScalaMissingWhileBodyFixer extends ScalaFixer {
             whileStatement) && whileStatement.condition.isDefined =>
         NoOperation
       case _ =>
-        whileStatement.getRightParenthesis map {
-          case rParenth =>
-            moveToEnd(editor, rParenth)
+        whileStatement.getRightParenthesis map { case rParenth =>
+          moveToEnd(editor, rParenth)
 
-            doc.insertString(rParenth.getTextRange.getEndOffset, " {}")
+          doc.insertString(rParenth.getTextRange.getEndOffset, " {}")
 
-            WithEnter(2)
+          WithEnter(2)
         } getOrElse NoOperation
     }
   }

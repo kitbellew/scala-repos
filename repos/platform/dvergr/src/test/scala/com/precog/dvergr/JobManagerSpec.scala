@@ -419,21 +419,20 @@ trait JobManagerSpec[M[+_]] extends Specification {
         .createJob(validAPIKey, "b", "c", None, Some(new DateTime))
         .copoint
         .id
-      jobs.cancel(job2Id, "Muwahaha").copoint must beLike {
-        case Right(job2) =>
-          val job2State = job2.state
+      jobs.cancel(job2Id, "Muwahaha").copoint must beLike { case Right(job2) =>
+        val job2State = job2.state
 
-          jobs.abort(job2.id, "Blagawaga").copoint must beLike {
-            case Right(
-                  Job(
-                    `job2Id`,
-                    _,
-                    _,
-                    _,
-                    _,
-                    Aborted("Blagawaga", _, `job2State`))) =>
-              ok
-          }
+        jobs.abort(job2.id, "Blagawaga").copoint must beLike {
+          case Right(
+                Job(
+                  `job2Id`,
+                  _,
+                  _,
+                  _,
+                  _,
+                  Aborted("Blagawaga", _, `job2State`))) =>
+            ok
+        }
       }
 
       val job3 = jobs.createJob(validAPIKey, "b", "c", None, None).copoint

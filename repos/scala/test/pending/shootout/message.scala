@@ -18,18 +18,17 @@ object message {
 
       override def run() = {
         while (true) {
-          receive {
-            case Message(value) =>
-              val j = value + 1
-              if (null != next) {
-                next ! Message(j)
-              } else {
-                sum = sum + j
-                if (sum >= finalSum) {
-                  Console.println(sum);
-                  System.exit(0) // exit without cleaning up
-                }
+          receive { case Message(value) =>
+            val j = value + 1
+            if (null != next) {
+              next ! Message(j)
+            } else {
+              sum = sum + j
+              if (sum >= finalSum) {
+                Console.println(sum);
+                System.exit(0) // exit without cleaning up
               }
+            }
           }
         }
       }

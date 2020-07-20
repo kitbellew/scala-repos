@@ -73,21 +73,20 @@ case class HadoopPlatformJobTest(
     copy(flowCheckers = flowCheckers :+ checker)
 
   private def createSources() {
-    dataToCreate foreach {
-      case (location, lines) =>
-        val tmpFile = File.createTempFile("hadoop_platform", "job_test")
-        tmpFile.deleteOnExit()
-        if (!lines.isEmpty) {
-          val os = new BufferedWriter(new FileWriter(tmpFile))
-          os.write(lines.head)
-          lines.tail.foreach { str =>
-            os.newLine()
-            os.write(str)
-          }
-          os.close()
+    dataToCreate foreach { case (location, lines) =>
+      val tmpFile = File.createTempFile("hadoop_platform", "job_test")
+      tmpFile.deleteOnExit()
+      if (!lines.isEmpty) {
+        val os = new BufferedWriter(new FileWriter(tmpFile))
+        os.write(lines.head)
+        lines.tail.foreach { str =>
+          os.newLine()
+          os.write(str)
         }
-        cluster.putFile(tmpFile, location)
-        tmpFile.delete()
+        os.close()
+      }
+      cluster.putFile(tmpFile, location)
+      tmpFile.delete()
     }
 
     sourceWriters.foreach { cons => runJob(initJob(cons)) }

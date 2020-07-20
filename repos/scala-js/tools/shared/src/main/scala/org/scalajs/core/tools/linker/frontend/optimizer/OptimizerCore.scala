@@ -3527,8 +3527,8 @@ private[optimizer] abstract class OptimizerCore(
               val refinedOrigType =
                 origTypes.reduce(constrainedLub(_, _, resultType))
               actualTypes
-                .collectFirst {
-                  case actualType: RecordType => actualType
+                .collectFirst { case actualType: RecordType =>
+                  actualType
                 }
                 .fold[TailRec[Tree]] {
                   // None of the returned types are records

@@ -139,14 +139,13 @@ object JsonExtractor {
   private def paramsToJValue(
       extractorOption: JsonExtractorOption,
       params: Seq[(String, Params)]) = {
-    val jValues = params.map {
-      case (name, param) =>
-        // to be replaced JValue needs to be done by Json4s, otherwise the tuple JValue will be wrong
-        val toBeReplacedJValue =
-          JsonExtractor.toJValue(JsonExtractorOption.Json4sNative, (name, null))
-        val paramJValue = JsonExtractor.toJValue(extractorOption, param)
+    val jValues = params.map { case (name, param) =>
+      // to be replaced JValue needs to be done by Json4s, otherwise the tuple JValue will be wrong
+      val toBeReplacedJValue =
+        JsonExtractor.toJValue(JsonExtractorOption.Json4sNative, (name, null))
+      val paramJValue = JsonExtractor.toJValue(extractorOption, param)
 
-        toBeReplacedJValue.replace(name :: Nil, paramJValue)
+      toBeReplacedJValue.replace(name :: Nil, paramJValue)
     }
 
     JArray(jValues.toList)

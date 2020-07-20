@@ -133,9 +133,8 @@ class DirectKafkaStreamSuite
 
         // Verify whether number of elements in each partition
         // matches with the corresponding offset range
-        collected.foreach {
-          case (partSize, rangeSize) =>
-            assert(partSize === rangeSize, "offset ranges are wrong")
+        collected.foreach { case (partSize, rangeSize) =>
+          assert(partSize === rangeSize, "offset ranges are wrong")
         }
       }
     stream.foreachRDD { rdd =>

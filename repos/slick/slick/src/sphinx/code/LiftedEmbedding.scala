@@ -315,9 +315,8 @@ object LiftedEmbedding extends App {
         s <- c.supplier
       } yield (c, s)).groupBy(_._1.supID)
 
-      val q2 = q.map {
-        case (supID, css) =>
-          (supID, css.length, css.map(_._1.price).avg)
+      val q2 = q.map { case (supID, css) =>
+        (supID, css.length, css.map(_._1.price).avg)
       }
       // compiles to SQL:
       //   select x2."SUP_ID", count(1), avg(x2."PRICE")

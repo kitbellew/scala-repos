@@ -52,9 +52,8 @@ object ScalaWebSockets extends PlaySpecification {
         runWebSocket(
           Samples.Controller1.socket,
           Source.single(TextMessage("foo")),
-          1) must beRight.like {
-          case list =>
-            list must_== List(TextMessage("I received your message: foo"))
+          1) must beRight.like { case list =>
+          list must_== List(TextMessage("I received your message: foo"))
         }
       }
 
@@ -193,9 +192,8 @@ object Samples {
     }
 
     class MyWebSocketActor(out: ActorRef) extends Actor {
-      def receive = {
-        case msg: String =>
-          out ! ("I received your message: " + msg)
+      def receive = { case msg: String =>
+        out ! ("I received your message: " + msg)
       }
     }
     //#example-actor
@@ -225,9 +223,8 @@ object Samples {
 
     class MyWebSocketActor(out: ActorRef) extends Actor {
       import play.api.libs.json.JsValue
-      def receive = {
-        case msg: JsValue =>
-          out ! msg
+      def receive = { case msg: JsValue =>
+        out ! msg
       }
     }
 
@@ -256,9 +253,8 @@ object Samples {
     case class OutEvent(bar: String)
 
     class MyWebSocketActor(out: ActorRef) extends Actor {
-      def receive = {
-        case InEvent(foo) =>
-          out ! OutEvent(foo)
+      def receive = { case InEvent(foo) =>
+        out ! OutEvent(foo)
       }
     }
 

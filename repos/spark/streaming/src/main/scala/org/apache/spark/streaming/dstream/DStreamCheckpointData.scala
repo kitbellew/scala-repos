@@ -86,24 +86,23 @@ private[streaming] class DStreamCheckpointData[T: ClassTag](dstream: DStream[T])
         val filesToDelete =
           timeToCheckpointFile.filter(_._1 < lastCheckpointFileTime)
         logDebug("Files to delete:\n" + filesToDelete.mkString(","))
-        filesToDelete.foreach {
-          case (time, file) =>
-            try {
-              val path = new Path(file)
-              if (fileSystem == null) {
-                fileSystem = path.getFileSystem(
-                  dstream.ssc.sparkContext.hadoopConfiguration)
-              }
-              fileSystem.delete(path, true)
-              timeToCheckpointFile -= time
-              logInfo("Deleted checkpoint file '" + file + "' for time " + time)
-            } catch {
-              case e: Exception =>
-                logWarning(
-                  "Error deleting old checkpoint file '" + file + "' for time " + time,
-                  e)
-                fileSystem = null
+        filesToDelete.foreach { case (time, file) =>
+          try {
+            val path = new Path(file)
+            if (fileSystem == null) {
+              fileSystem =
+                path.getFileSystem(dstream.ssc.sparkContext.hadoopConfiguration)
             }
+            fileSystem.delete(path, true)
+            timeToCheckpointFile -= time
+            logInfo("Deleted checkpoint file '" + file + "' for time " + time)
+          } catch {
+            case e: Exception =>
+              logWarning(
+                "Error deleting old checkpoint file '" + file + "' for time " + time,
+                e)
+              fileSystem = null
+          }
         }
       case None =>
         logDebug("Nothing to delete")

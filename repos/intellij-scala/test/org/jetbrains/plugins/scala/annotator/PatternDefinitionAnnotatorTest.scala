@@ -15,17 +15,13 @@ class PatternDefinitionAnnotatorTest extends SimpleTestCase {
     "class A; class B; object A extends A; object B extends B\n"
 
   def testFine() {
-    assertMatches(messages("val v = A")) {
-      case Nil =>
+    assertMatches(messages("val v = A")) { case Nil =>
     }
-    assertMatches(messages("val v: A = A")) {
-      case Nil =>
+    assertMatches(messages("val v: A = A")) { case Nil =>
     }
-    assertMatches(messages("val foo, bar = A")) {
-      case Nil =>
+    assertMatches(messages("val foo, bar = A")) { case Nil =>
     }
-    assertMatches(messages("val foo, bar: A = A")) {
-      case Nil =>
+    assertMatches(messages("val foo, bar: A = A")) { case Nil =>
     }
   }
 
@@ -55,8 +51,7 @@ class PatternDefinitionAnnotatorTest extends SimpleTestCase {
   }*/
 
   def testWildchar() {
-    assertMatches(messages("val v: A = _")) {
-      case Nil =>
+    assertMatches(messages("val v: A = _")) { case Nil =>
     }
   }
 

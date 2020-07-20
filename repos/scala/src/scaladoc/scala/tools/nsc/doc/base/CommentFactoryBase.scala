@@ -76,26 +76,24 @@ trait CommentFactoryBase { this: MemberLookupBase =>
             Some(groupId.toString.trim)
           case _ => None
         }
-      val groupPrio = groupPrio0 flatMap {
-        case (group, body) =>
-          try {
-            body match {
-              case Body(List(Paragraph(Chain(List(Summary(Text(prio))))))) =>
-                List(group -> prio.trim.toInt)
-              case _ => List()
-            }
-          } catch {
-            case _: java.lang.NumberFormatException => List()
-          }
-      }
-      val groupNames = groupNames0 flatMap {
-        case (group, body) =>
+      val groupPrio = groupPrio0 flatMap { case (group, body) =>
+        try {
           body match {
-            case Body(List(Paragraph(Chain(List(Summary(Text(name)))))))
-                if (!name.trim.contains("\n")) =>
-              List(group -> (name.trim))
+            case Body(List(Paragraph(Chain(List(Summary(Text(prio))))))) =>
+              List(group -> prio.trim.toInt)
             case _ => List()
           }
+        } catch {
+          case _: java.lang.NumberFormatException => List()
+        }
+      }
+      val groupNames = groupNames0 flatMap { case (group, body) =>
+        body match {
+          case Body(List(Paragraph(Chain(List(Summary(Text(name)))))))
+              if (!name.trim.contains("\n")) =>
+            List(group -> (name.trim))
+          case _ => List()
+        }
       }
 
       override val shortDescription: Option[Text] =
@@ -480,17 +478,16 @@ trait CommentFactoryBase { this: MemberLookupBase =>
           def linkedExceptions: Map[String, Body] = {
             val m = allSymsOneTag(SimpleTagKey("throws"), filterEmpty = false)
 
-            m.map {
-              case (name, body) =>
-                val link = memberLookup(pos, name, site)
-                val newBody = body match {
-                  case Body(List(Paragraph(Chain(content)))) =>
-                    val descr = Text(" ") +: content
-                    val entityLink = EntityLink(Monospace(Text(name)), link)
-                    Body(List(Paragraph(Chain(entityLink +: descr))))
-                  case _ => body
-                }
-                (name, newBody)
+            m.map { case (name, body) =>
+              val link = memberLookup(pos, name, site)
+              val newBody = body match {
+                case Body(List(Paragraph(Chain(content)))) =>
+                  val descr = Text(" ") +: content
+                  val entityLink = EntityLink(Monospace(Text(name)), link)
+                  Body(List(Paragraph(Chain(entityLink +: descr))))
+                case _ => body
+              }
+              (name, newBody)
             }
           }
 

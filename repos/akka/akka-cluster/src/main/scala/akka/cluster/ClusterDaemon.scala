@@ -245,24 +245,22 @@ private[cluster] final class ClusterCoreSupervisor
   }
 
   override val supervisorStrategy =
-    OneForOneStrategy() {
-      case NonFatal(e) ⇒
-        log.error(
-          e,
-          "Cluster node [{}] crashed, [{}] - shutting down...",
-          Cluster(context.system).selfAddress,
-          e.getMessage)
-        self ! PoisonPill
-        Stop
+    OneForOneStrategy() { case NonFatal(e) ⇒
+      log.error(
+        e,
+        "Cluster node [{}] crashed, [{}] - shutting down...",
+        Cluster(context.system).selfAddress,
+        e.getMessage)
+      self ! PoisonPill
+      Stop
     }
 
   override def postStop(): Unit = Cluster(context.system).shutdown()
 
-  def receive = {
-    case InternalClusterAction.GetClusterCoreRef ⇒
-      if (coreDaemon.isEmpty)
-        createChildren()
-      coreDaemon.foreach(sender() ! _)
+  def receive = { case InternalClusterAction.GetClusterCoreRef ⇒
+    if (coreDaemon.isEmpty)
+      createChildren()
+    coreDaemon.foreach(sender() ! _)
   }
 }
 

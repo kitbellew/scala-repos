@@ -115,12 +115,11 @@ class BrowseSupport[M[+_]: Bind](vfs: VFSMetadata[M]) {
             case ResourceError.NotFound(_) => \/.right(JUndefined)
             case otherError                => \/.left(otherError)
           },
-          {
-            case PathStructure(types, children) =>
-              \/.right(
-                JObject(
-                  "children" -> children.serialize,
-                  "types" -> JObject(normalizeTypes(types))))
+          { case PathStructure(types, children) =>
+            \/.right(
+              JObject(
+                "children" -> children.serialize,
+                "types" -> JObject(normalizeTypes(types))))
           }
         )
     }

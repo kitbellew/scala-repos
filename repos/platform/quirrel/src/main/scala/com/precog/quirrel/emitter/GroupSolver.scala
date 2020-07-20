@@ -463,8 +463,8 @@ trait GroupSolver
       }
     }
 
-    if (back.isDefined && !(errors collect {
-        case Error(tpe) => tpe
+    if (back.isDefined && !(errors collect { case Error(tpe) =>
+        tpe
       } contains ConstraintsWithinInnerSolve))
       (back, Set())
     else

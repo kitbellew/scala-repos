@@ -308,14 +308,13 @@ object TestGraphs {
             .groupBy(_._1)
             .mapValues { l => scanSum(l.iterator.map(_._2)).toList }
             .toIterable
-            .flatMap {
-              case (k, lv) => lv.map { case (optju, ju) => (k, (optju, ju)) }
+            .flatMap { case (k, lv) =>
+              lv.map { case (optju, ju) => (k, (optju, ju)) }
             }
         }
         .toIterable
-        .flatMap {
-          case (time, lv) =>
-            lv.map { case (k, (optju, ju)) => (time, (k, (optju, ju))) }
+        .flatMap { case (time, lv) =>
+          lv.map { case (k, (optju, ju)) => (time, (k, (optju, ju))) }
         }
 
     // zip the left and right streams
@@ -357,12 +356,11 @@ object TestGraphs {
             }
         }
         .toList
-        .flatMap {
-          case (k, lv) => lv.map { case ((_, optuju)) => (k, optuju) }
+        .flatMap { case (k, lv) =>
+          lv.map { case ((_, optuju)) => (k, optuju) }
         }
-        .flatMap {
-          case (k, opt) =>
-            opt.map { case (time, u, optju) => (time, (k, (u, optju))) }
+        .flatMap { case (k, opt) =>
+          opt.map { case (time, u, optju) => (time, (k, (u, optju))) }
         }
 
     // compute the final store result after join
@@ -487,9 +485,8 @@ object TestGraphs {
     // compute the first store using the join stream as input
     val storeAfterFlatMap = MapAlgebra.sumByKey(
       leftStream
-        .flatMap {
-          case (k, opt) =>
-            opt.map { case (time, (u, optv)) => (time, (k, (u, optv))) }
+        .flatMap { case (k, opt) =>
+          opt.map { case (time, (u, optv)) => (time, (k, (u, optv))) }
         }
         .flatMap(flatMapFn(_))
         .map { case (time, (k, v)) => (k, v) } // drop the time
@@ -724,15 +721,14 @@ class TestGraphs[
     }
     run(platform, plan)
     val lookupFn = toLookupFn(currentStore)
-    TestGraphs.diamondJobInScala(items)(fnA)(fnB).forall {
-      case (k, v) =>
-        val lv = lookupFn(k).getOrElse(Monoid.zero)
-        val eqv = Equiv[V].equiv(v, lv)
-        if (!eqv) {
-          println(
-            s"in diamondChecker: $k, $v is scala result, but platform gave $lv")
-        }
-        eqv
+    TestGraphs.diamondJobInScala(items)(fnA)(fnB).forall { case (k, v) =>
+      val lv = lookupFn(k).getOrElse(Monoid.zero)
+      val eqv = Equiv[V].equiv(v, lv)
+      if (!eqv) {
+        println(
+          s"in diamondChecker: $k, $v is scala result, but platform gave $lv")
+      }
+      eqv
     } && toSinkChecker(currentSink, items)
   }
 
@@ -756,10 +752,9 @@ class TestGraphs[
     }
     run(platform, plan)
     val lookupFn = toLookupFn(currentStore)
-    TestGraphs.singleStepInScala(items)(fn).forall {
-      case (k, v) =>
-        val lv = lookupFn(k).getOrElse(Monoid.zero)
-        Equiv[V].equiv(v, lv)
+    TestGraphs.singleStepInScala(items)(fn).forall { case (k, v) =>
+      val lv = lookupFn(k).getOrElse(Monoid.zero)
+      Equiv[V].equiv(v, lv)
     }
   }
 
@@ -798,10 +793,9 @@ class TestGraphs[
           .map { case (k, u) => (k, (u, serviceFn(k))) }
           .flatMap(postJoinFn)
       )
-      .forall {
-        case (k, v) =>
-          val lv = lookupFn(k).getOrElse(Monoid.zero)
-          Equiv[V].equiv(v, lv)
+      .forall { case (k, v) =>
+        val lv = lookupFn(k).getOrElse(Monoid.zero)
+        Equiv[V].equiv(v, lv)
       }
   }
 }

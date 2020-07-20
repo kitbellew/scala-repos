@@ -68,11 +68,10 @@ trait IdSourceScannerModuleSpec[M[+_]]
       val idCols0 = scan(5, blockSize)(scanner)
       val idCols1 = scan(5, blockSize)(scanner)
 
-      (idCols0 zip idCols1) map {
-        case (idCol0, idCol1) =>
-          (0 until blockSize) foreach { row =>
-            idCol0(row) must_== idCol1(row)
-          }
+      (idCols0 zip idCols1) map { case (idCol0, idCol1) =>
+        (0 until blockSize) foreach { row =>
+          idCol0(row) must_== idCol1(row)
+        }
       }
       ok
     }

@@ -150,13 +150,12 @@ abstract class ToolBoxFactory[U <: JavaUniverse](val u: U) { factorySelf =>
             extractFreeTerms(expr1, wrapFreeTermRefs = false)
           var expr2 = exprAndFreeTerms._1
           val freeTerms = exprAndFreeTerms._2
-          val dummies = freeTerms.map {
-            case (freeTerm, name) =>
-              ValDef(
-                NoMods,
-                name,
-                TypeTree(freeTerm.info),
-                Select(Ident(PredefModule), newTermName("$qmark$qmark$qmark")))
+          val dummies = freeTerms.map { case (freeTerm, name) =>
+            ValDef(
+              NoMods,
+              name,
+              TypeTree(freeTerm.info),
+              Select(Ident(PredefModule), newTermName("$qmark$qmark$qmark")))
           }.toList
           expr2 = Block(dummies, expr2)
 

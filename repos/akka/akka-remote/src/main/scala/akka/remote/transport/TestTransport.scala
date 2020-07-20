@@ -61,24 +61,23 @@ class TestTransport(
         remoteHandle.writable = false
 
         // Pass a non-writable handle to remote first
-        remoteListenerFuture flatMap {
-          case listener ⇒
-            listener notify InboundAssociation(remoteHandle)
-            val remoteHandlerFuture = remoteHandle.readHandlerPromise.future
+        remoteListenerFuture flatMap { case listener ⇒
+          listener notify InboundAssociation(remoteHandle)
+          val remoteHandlerFuture = remoteHandle.readHandlerPromise.future
 
-            // Registration of reader at local finishes the registration and enables communication
-            for {
-              remoteListener ← remoteHandlerFuture
-              localListener ← localHandle.readHandlerPromise.future
-            } {
-              registry.registerListenerPair(
-                localHandle.key,
-                (localListener, remoteListener))
-              localHandle.writable = true
-              remoteHandle.writable = true
-            }
+          // Registration of reader at local finishes the registration and enables communication
+          for {
+            remoteListener ← remoteHandlerFuture
+            localListener ← localHandle.readHandlerPromise.future
+          } {
+            registry.registerListenerPair(
+              localHandle.key,
+              (localListener, remoteListener))
+            localHandle.writable = true
+            remoteHandle.writable = true
+          }
 
-            remoteHandlerFuture.map { _ ⇒ localHandle }
+          remoteHandlerFuture.map { _ ⇒ localHandle }
         }
 
       case None ⇒
@@ -173,10 +172,9 @@ class TestTransport(
       defaultBehavior = {
         defaultWrite _
       },
-      logCallback = {
-        case (handle, payload) ⇒
-          registry.logActivity(
-            WriteAttempt(handle.localAddress, handle.remoteAddress, payload))
+      logCallback = { case (handle, payload) ⇒
+        registry.logActivity(
+          WriteAttempt(handle.localAddress, handle.remoteAddress, payload))
       })
 
   /**

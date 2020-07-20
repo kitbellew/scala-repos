@@ -112,10 +112,9 @@ class HttpServerDispatcher(
         failureReceiver.counter(Throwables.mkString(t): _*).incr()
         rep.reader.discard()
       }
-      p.setInterruptHandler {
-        case intr =>
-          rep.reader.discard()
-          f.raise(intr)
+      p.setInterruptHandler { case intr =>
+        rep.reader.discard()
+        f.raise(intr)
       }
       p
     } else {

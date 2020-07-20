@@ -58,15 +58,14 @@ object FileUtils {
     val newFiles = changes.collect { case ed: NewFile => ed }
     try {
       val rewriteList = newFiles.map { ed => (ed.file, ed.text) } ++
-        editsByFile.map {
-          case (file, fileChanges) =>
-            readFile(file, cs) match {
-              case Right(contents) =>
-                val newContents =
-                  FileEditHelper.applyEdits(fileChanges.toList, contents)
-                (file, newContents)
-              case Left(e) => throw e
-            }
+        editsByFile.map { case (file, fileChanges) =>
+          readFile(file, cs) match {
+            case Right(contents) =>
+              val newContents =
+                FileEditHelper.applyEdits(fileChanges.toList, contents)
+              (file, newContents)
+            case Left(e) => throw e
+          }
         }
 
       val deleteFiles = changes.collect { case ed: DeleteFile => ed }
@@ -96,17 +95,16 @@ object FileUtils {
     try {
       val diffContents =
         editsByFile
-          .map {
-            case (file, fileChanges) =>
-              readFile(file, cs) match {
-                case Right(contents) =>
-                  FileEditHelper.diffFromTextEdits(
-                    fileChanges,
-                    contents,
-                    file,
-                    file)
-                case Left(e) => throw e
-              }
+          .map { case (file, fileChanges) =>
+            readFile(file, cs) match {
+              case Right(contents) =>
+                FileEditHelper.diffFromTextEdits(
+                  fileChanges,
+                  contents,
+                  file,
+                  file)
+              case Left(e) => throw e
+            }
           }
           .mkString("\n")
 

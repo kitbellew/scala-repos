@@ -90,8 +90,8 @@ object Box extends BoxTrait with Tryo {
       if (theListOfBoxes.exists(_.isInstanceOf[Failure])) {
         val failureChain =
           theListOfBoxes
-            .collect {
-              case fail: Failure => fail
+            .collect { case fail: Failure =>
+              fail
             }
             .reduceRight { (topmostFailure, latestFailure) =>
               topmostFailure.copy(chain = Full(latestFailure))

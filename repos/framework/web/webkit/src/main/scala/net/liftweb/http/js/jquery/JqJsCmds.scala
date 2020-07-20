@@ -222,9 +222,8 @@ object JqJE {
     override def toJsCmd =
       "keypress(function(e) {" +
         what
-          .map {
-            case (chr, cmd) =>
-              "if (e.which == " + chr.toInt + ") {" + cmd.toJsCmd + "}"
+          .map { case (chr, cmd) =>
+            "if (e.which == " + chr.toInt + ") {" + cmd.toJsCmd + "}"
           }
           .mkString(" else \n") +
         "})"

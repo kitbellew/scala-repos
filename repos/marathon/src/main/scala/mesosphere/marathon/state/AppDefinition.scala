@@ -107,12 +107,11 @@ case class AppDefinition(
     val cpusResource = ScalarResource(Resource.CPUS, cpus)
     val memResource = ScalarResource(Resource.MEM, mem)
     val diskResource = ScalarResource(Resource.DISK, disk)
-    val appLabels = labels.map {
-      case (key, value) =>
-        mesos.Parameter.newBuilder
-          .setKey(key)
-          .setValue(value)
-          .build
+    val appLabels = labels.map { case (key, value) =>
+      mesos.Parameter.newBuilder
+        .setKey(key)
+        .setValue(value)
+        .build
     }
 
     val builder = Protos.ServiceDefinition.newBuilder

@@ -409,10 +409,9 @@ private trait WriterTBindRec[F[_], W]
 
   def tailrecM[A, B](f: A => WriterT[F, W, A \/ B])(a: A): WriterT[F, W, B] = {
     def go(t: (W, A)): F[(W, A) \/ (W, B)] =
-      F.map(f(t._2).run) {
-        case (w0, e) =>
-          val w1 = W.append(t._1, w0)
-          e.bimap((w1, _), (w1, _))
+      F.map(f(t._2).run) { case (w0, e) =>
+        val w1 = W.append(t._1, w0)
+        e.bimap((w1, _), (w1, _))
       }
 
     WriterT(F.bind(f(a).run) {

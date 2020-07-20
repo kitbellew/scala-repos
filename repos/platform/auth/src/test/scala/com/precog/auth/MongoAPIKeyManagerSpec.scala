@@ -66,9 +66,8 @@ class MongoAPIKeyManagerSpec
     "find API key present" in new TestAPIKeyManager {
       val result = Await.result(apiKeyManager.findAPIKey(rootAPIKey), timeout)
 
-      result must beLike {
-        case Some(APIKeyRecord(apiKey, _, _, _, _, _)) =>
-          apiKey must_== rootAPIKey
+      result must beLike { case Some(APIKeyRecord(apiKey, _, _, _, _, _)) =>
+        apiKey must_== rootAPIKey
       }
     }
 
@@ -103,10 +102,9 @@ class MongoAPIKeyManagerSpec
 
       val result = Await.result(fResult, timeout)
 
-      result must beLike {
-        case APIKeyRecord(_, n, _, _, g, _) =>
-          n must beSome(name)
-          g must beEmpty
+      result must beLike { case APIKeyRecord(_, n, _, _, g, _) =>
+        n must beSome(name)
+        g must beEmpty
       }
     }
 
@@ -150,10 +148,9 @@ class MongoAPIKeyManagerSpec
 
       val result = Await.result(fut, timeout)
 
-      result must beLike {
-        case (Some(t1), Some(t2), None, Some(t3)) =>
-          t1 must_== t2
-          t1 must_== t3
+      result must beLike { case (Some(t1), Some(t2), None, Some(t3)) =>
+        t1 must_== t2
+        t1 must_== t3
       }
     }
 
@@ -177,10 +174,9 @@ class MongoAPIKeyManagerSpec
 
       val result = Await.result(fut, timeout)
 
-      result must beLike {
-        case (Some(t1), Some(t2), None, None, Some(t4)) =>
-          t1 must_== t2
-          t1 must_== t4
+      result must beLike { case (Some(t1), Some(t2), None, None, Some(t4)) =>
+        t1 must_== t2
+        t1 must_== t4
       }
     }
   }

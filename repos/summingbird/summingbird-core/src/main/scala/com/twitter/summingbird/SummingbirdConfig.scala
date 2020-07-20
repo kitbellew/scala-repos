@@ -35,12 +35,11 @@ trait SummingbirdConfig { self =>
     }
   def updated(newMap: Map[String, AnyRef]): SummingbirdConfig = {
     val removedKeys: Set[String] = keys.toSet -- newMap.keys
-    val changedOrAddedKeys = newMap.flatMap {
-      case (k, v) =>
-        val oldVal = get(k)
-        if (oldVal != Some(v)) {
-          Some((k, v))
-        } else None
+    val changedOrAddedKeys = newMap.flatMap { case (k, v) =>
+      val oldVal = get(k)
+      if (oldVal != Some(v)) {
+        Some((k, v))
+      } else None
     }
     val newWithoutRemoved = removedKeys.foldLeft(self)(_.remove(_))
     changedOrAddedKeys.foldLeft(newWithoutRemoved) { _ + _ }

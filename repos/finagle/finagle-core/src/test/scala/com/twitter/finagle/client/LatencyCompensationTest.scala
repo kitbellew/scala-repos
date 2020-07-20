@@ -75,9 +75,8 @@ class LatencyCompensationTest
 
     class TestPromise[T] extends Promise[T] {
       @volatile var interrupted: Option[Throwable] = None
-      setInterruptHandler {
-        case exc =>
-          interrupted = Some(exc)
+      setInterruptHandler { case exc =>
+        interrupted = Some(exc)
       }
     }
     val receive, respond = new TestPromise[String]

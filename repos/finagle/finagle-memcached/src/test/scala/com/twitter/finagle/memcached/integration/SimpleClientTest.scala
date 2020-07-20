@@ -78,9 +78,8 @@ class SimpleClientTest extends FunSuite with BeforeAndAfter {
       Await.result(client.set("bazs", Buf.Utf8("zyx")))
       val result = Await
         .result(client.gets(Seq("foos", "bazs", "somethingelse")))
-        .map {
-          case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
-            (key, (value, casUnique))
+        .map { case (key, (Buf.Utf8(value), Buf.Utf8(casUnique))) =>
+          (key, (value, casUnique))
         }
 
       assert(

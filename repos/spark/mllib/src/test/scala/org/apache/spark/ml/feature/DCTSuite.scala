@@ -82,9 +82,8 @@ class DCTSuite
       .transform(dataset)
       .select("resultVec", "wantedVec")
       .collect()
-      .foreach {
-        case Row(resultVec: Vector, wantedVec: Vector) =>
-          assert(Vectors.sqdist(resultVec, wantedVec) < 1e-6)
+      .foreach { case Row(resultVec: Vector, wantedVec: Vector) =>
+        assert(Vectors.sqdist(resultVec, wantedVec) < 1e-6)
       }
   }
 }

@@ -113,16 +113,14 @@ object MLUtils {
     } else {
       parsed.persist(StorageLevel.MEMORY_ONLY)
       parsed
-        .map {
-          case (label, indices, values) =>
-            indices.lastOption.getOrElse(0)
+        .map { case (label, indices, values) =>
+          indices.lastOption.getOrElse(0)
         }
         .reduce(math.max) + 1
     }
 
-    parsed.map {
-      case (label, indices, values) =>
-        LabeledPoint(label, Vectors.sparse(d, indices, values))
+    parsed.map { case (label, indices, values) =>
+      LabeledPoint(label, Vectors.sparse(d, indices, values))
     }
   }
 
@@ -190,15 +188,13 @@ object MLUtils {
   @Since("1.0.0")
   def saveAsLibSVMFile(data: RDD[LabeledPoint], dir: String) {
     // TODO: allow to specify label precision and feature precision.
-    val dataStr = data.map {
-      case LabeledPoint(label, features) =>
-        val sb = new StringBuilder(label.toString)
-        features.foreachActive {
-          case (i, v) =>
-            sb += ' '
-            sb ++= s"${i + 1}:$v"
-        }
-        sb.mkString
+    val dataStr = data.map { case LabeledPoint(label, features) =>
+      val sb = new StringBuilder(label.toString)
+      features.foreachActive { case (i, v) =>
+        sb += ' '
+        sb ++= s"${i + 1}:$v"
+      }
+      sb.mkString
     }
     dataStr.saveAsTextFile(dir)
   }

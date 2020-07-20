@@ -22,14 +22,12 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
   """
 
   def testEmpty() {
-    assertMatches(messages("")) {
-      case Nil =>
+    assertMatches(messages("")) { case Nil =>
     }
   }
 
   def testFine() {
-    assertMatches(messages("def f(p: Any) {}; f(null)")) {
-      case Nil =>
+    assertMatches(messages("def f(p: Any) {}; f(null)")) { case Nil =>
     }
   }
 
@@ -78,8 +76,7 @@ class ApplicationAnnotatorTest extends SimpleTestCase {
   }
 
   def testUnresolvedParameter() {
-    assertMatches(messages("def f(a: Any) {}; f(b = null)")) {
-      case Nil =>
+    assertMatches(messages("def f(a: Any) {}; f(b = null)")) { case Nil =>
     }
   }
 

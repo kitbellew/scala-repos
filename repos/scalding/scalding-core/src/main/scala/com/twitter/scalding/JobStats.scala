@@ -90,10 +90,9 @@ object JobStats {
     else {
       Try(a.toString.toInt)
         .recoverWith { case t: Throwable => Try(a.toString.toDouble) }
-        .recover {
-          case t: Throwable =>
-            val s = a.toString
-            "\"%s\"".format(s)
+        .recover { case t: Throwable =>
+          val s = a.toString
+          "\"%s\"".format(s)
         }
         .get
         .toString

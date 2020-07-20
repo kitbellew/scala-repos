@@ -148,8 +148,8 @@ private[http] object WebSocket {
         .splitWhen(
           _.isMessageEnd
         ) // FIXME using splitAfter from #16885 would simplify protocol a lot
-        .collect {
-          case m: MessageDataPart ⇒ m
+        .collect { case m: MessageDataPart ⇒
+          m
         }
         .via(collectMessage)
         .concatSubstreams

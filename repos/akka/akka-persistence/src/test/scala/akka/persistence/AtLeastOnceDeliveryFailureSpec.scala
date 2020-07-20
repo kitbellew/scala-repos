@@ -99,13 +99,12 @@ object AtLeastOnceDeliveryFailureSpec {
         persist(MsgConfirmed(deliveryId, i))(updateState)
     }
 
-    def receiveRecover: Receive = {
-      case evt: Evt ⇒
-        updateState(evt)
-        if (shouldFail(replayProcessingFailureRate))
-          throw new TestException(debugMessage(s"replay failed at event $evt"))
-        else
-          log.debug(debugMessage(s"replayed event $evt"))
+    def receiveRecover: Receive = { case evt: Evt ⇒
+      updateState(evt)
+      if (shouldFail(replayProcessingFailureRate))
+        throw new TestException(debugMessage(s"replay failed at event $evt"))
+      else
+        log.debug(debugMessage(s"replayed event $evt"))
     }
 
     def updateState(evt: Evt): Unit =
@@ -144,18 +143,17 @@ object AtLeastOnceDeliveryFailureSpec {
       .getConfig("akka.persistence.destination.chaos")
     val confirmFailureRate = config.getDouble("confirm-failure-rate")
 
-    def receive = {
-      case m @ Msg(deliveryId, i) ⇒
-        if (shouldFail(confirmFailureRate)) {
-          log.debug(debugMessage("confirm message failed", m))
-        } else if (contains(i)) {
-          log.debug(debugMessage("ignored duplicate", m))
-          sender() ! Confirm(deliveryId, i)
-        } else {
-          add(i)
-          sender() ! Confirm(deliveryId, i)
-          log.debug(debugMessage("received and confirmed message", m))
-        }
+    def receive = { case m @ Msg(deliveryId, i) ⇒
+      if (shouldFail(confirmFailureRate)) {
+        log.debug(debugMessage("confirm message failed", m))
+      } else if (contains(i)) {
+        log.debug(debugMessage("ignored duplicate", m))
+        sender() ! Confirm(deliveryId, i)
+      } else {
+        add(i)
+        sender() ! Confirm(deliveryId, i)
+        log.debug(debugMessage("received and confirmed message", m))
+      }
     }
 
     private def debugMessage(msg: String, m: Msg): String =

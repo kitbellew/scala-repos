@@ -48,10 +48,9 @@ class SpdyClientDispatcher(trans: Transport[HttpRequest, HttpResponse])
       } else {
         promiseMap.put(streamId, p)
 
-        p.setInterruptHandler {
-          case cause =>
-            promiseMap.remove(streamId)
-            p.updateIfEmpty(Throw(cause))
+        p.setInterruptHandler { case cause =>
+          promiseMap.remove(streamId)
+          p.updateIfEmpty(Throw(cause))
         }
 
         trans.write(req) onFailure { cause =>

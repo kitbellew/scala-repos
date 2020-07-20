@@ -56,11 +56,9 @@ object GenerateSafeProjection
 
     val rowClass = classOf[GenericInternalRow].getName
 
-    val fieldWriters = schema.map(_.dataType).zipWithIndex.map {
-      case (dt, i) =>
-        val converter =
-          convertToSafe(ctx, ctx.getValue(tmp, dt, i.toString), dt)
-        s"""
+    val fieldWriters = schema.map(_.dataType).zipWithIndex.map { case (dt, i) =>
+      val converter = convertToSafe(ctx, ctx.getValue(tmp, dt, i.toString), dt)
+      s"""
         if (!$tmp.isNullAt($i)) {
           ${converter.code}
           $values[$i] = ${converter.value};

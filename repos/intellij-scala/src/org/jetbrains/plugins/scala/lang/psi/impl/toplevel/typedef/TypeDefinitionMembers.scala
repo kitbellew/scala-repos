@@ -1376,10 +1376,9 @@ object TypeDefinitionMembers {
   def processEnum(clazz: PsiClass, process: PsiMethod => Boolean): Boolean = {
     var containsValues = false
     if (clazz.isEnum && !clazz.isInstanceOf[ScTemplateDefinition]) {
-      containsValues = clazz.getMethods.exists {
-        case method =>
-          method.getName == "values" && method.getParameterList.getParametersCount == 0 &&
-            method.hasModifierProperty("static")
+      containsValues = clazz.getMethods.exists { case method =>
+        method.getName == "values" && method.getParameterList.getParametersCount == 0 &&
+          method.hasModifierProperty("static")
       }
     }
 

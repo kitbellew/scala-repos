@@ -71,9 +71,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     // collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) =>
-          (itemStringIntMap(id), item)
+      .map { case (id, item) =>
+        (itemStringIntMap(id), item)
       }
       .collectAsMap
       .toMap
@@ -94,16 +93,14 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
         ((uindex, iindex), 1)
       }
-      .filter {
-        case ((u, i), v) =>
-          // keep events with valid user and item index
-          (u != -1) && (i != -1)
+      .filter { case ((u, i), v) =>
+        // keep events with valid user and item index
+        (u != -1) && (i != -1)
       }
       .reduceByKey(_ + _) // aggregate all view events of same user-item pair
-      .map {
-        case ((u, i), v) =>
-          // MLlibRating requires integer index for user and item
-          MLlibRating(u, i, v)
+      .map { case ((u, i), v) =>
+        // MLlibRating requires integer index for user and item
+        MLlibRating(u, i, v)
       }
       .cache()
 
@@ -168,30 +165,28 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
         .toArray
     }
 
-    val filteredScore = indexScores.view.filter {
-      case (i, v) =>
-        isCandidateItem(
-          i = i,
-          items = model.items,
-          categories = query.categories,
-          queryList = queryList,
-          whiteList = whiteList,
-          blackList = blackList
-        )
+    val filteredScore = indexScores.view.filter { case (i, v) =>
+      isCandidateItem(
+        i = i,
+        items = model.items,
+        categories = query.categories,
+        queryList = queryList,
+        whiteList = whiteList,
+        blackList = blackList
+      )
     }
 
     val topScores = getTopN(filteredScore, query.num)(ord).toArray
 
-    val itemScores = topScores.map {
-      case (i, s) =>
-        val it = model.items(i)
-        new ItemScore(
-          item = model.itemIntStringMap(i),
-          title = it.title,
-          date = it.date,
-          imdbUrl = it.imdbUrl,
-          score = s
-        )
+    val itemScores = topScores.map { case (i, s) =>
+      val it = model.items(i)
+      new ItemScore(
+        item = model.itemIntStringMap(i),
+        title = it.title,
+        date = it.date,
+        imdbUrl = it.imdbUrl,
+        score = s
+      )
     }
 
     new PredictedResult(itemScores)

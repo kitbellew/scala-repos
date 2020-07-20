@@ -21,10 +21,9 @@ class FileUploadExample
       content,
       url(_, includeServletPath = false))
 
-  error {
-    case e: SizeConstraintExceededException =>
-      RequestEntityTooLarge(
-        displayPage(<p>The file you uploaded exceeded the 3 MB limit.</p>))
+  error { case e: SizeConstraintExceededException =>
+    RequestEntityTooLarge(
+      displayPage(<p>The file you uploaded exceeded the 3 MB limit.</p>))
   }
 
   get("/") {

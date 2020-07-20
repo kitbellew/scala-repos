@@ -44,14 +44,12 @@ trait TopComponentAction extends TopComponentDisplayable {
     presentation setIcon actionIcon
     presentation setEnabled true
 
-    val text = shortcutId flatMap {
-      case id =>
-        KeymapManager.getInstance.getActiveKeymap
-          .getShortcuts(id)
-          .headOption map {
-          case shortcut =>
-            genericText + (" (" + KeymapUtil.getShortcutText(shortcut) + ")")
-        }
+    val text = shortcutId flatMap { case id =>
+      KeymapManager.getInstance.getActiveKeymap
+        .getShortcuts(id)
+        .headOption map { case shortcut =>
+        genericText + (" (" + KeymapUtil.getShortcutText(shortcut) + ")")
+      }
     } getOrElse genericText
 
     presentation setText text

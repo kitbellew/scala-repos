@@ -305,14 +305,13 @@ private[spark] class ExecutorAllocationManager(
 
       updateAndSyncNumExecutorsTarget(now)
 
-      removeTimes.retain {
-        case (executorId, expireTime) =>
-          val expired = now >= expireTime
-          if (expired) {
-            initializing = false
-            removeExecutor(executorId)
-          }
-          !expired
+      removeTimes.retain { case (executorId, expireTime) =>
+        val expired = now >= expireTime
+        if (expired) {
+          initializing = false
+          removeExecutor(executorId)
+        }
+        !expired
       }
     }
 
@@ -751,9 +750,8 @@ private[spark] class ExecutorAllocationManager(
       * Note: This is not thread-safe without the caller owning the `allocationManager` lock.
       */
     def totalPendingTasks(): Int = {
-      stageIdToNumTasks.map {
-        case (stageId, numTasks) =>
-          numTasks - stageIdToTaskIndices.get(stageId).map(_.size).getOrElse(0)
+      stageIdToNumTasks.map { case (stageId, numTasks) =>
+        numTasks - stageIdToTaskIndices.get(stageId).map(_.size).getOrElse(0)
       }.sum
     }
 
@@ -785,10 +783,9 @@ private[spark] class ExecutorAllocationManager(
       stageIdToExecutorPlacementHints.values.foreach {
         case (numTasksPending, localities) =>
           localityAwareTasks += numTasksPending
-          localities.foreach {
-            case (hostname, count) =>
-              val updatedCount = localityToCount.getOrElse(hostname, 0) + count
-              localityToCount(hostname) = updatedCount
+          localities.foreach { case (hostname, count) =>
+            val updatedCount = localityToCount.getOrElse(hostname, 0) + count
+            localityToCount(hostname) = updatedCount
           }
       }
 

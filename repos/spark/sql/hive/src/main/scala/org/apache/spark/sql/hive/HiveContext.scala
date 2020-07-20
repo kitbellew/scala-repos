@@ -532,9 +532,8 @@ class HiveContext private[hive] (
       ConfVars.SPARK_JOB_MONITOR_TIMEOUT -> TimeUnit.SECONDS,
       ConfVars.SPARK_RPC_CLIENT_CONNECT_TIMEOUT -> TimeUnit.MILLISECONDS,
       ConfVars.SPARK_RPC_CLIENT_HANDSHAKE_TIMEOUT -> TimeUnit.MILLISECONDS
-    ).map {
-      case (confVar, unit) =>
-        confVar.varname -> hiveconf.getTimeVar(confVar, unit).toString
+    ).map { case (confVar, unit) =>
+      confVar.varname -> hiveconf.getTimeVar(confVar, unit).toString
     }.toMap
   }
 
@@ -791,19 +790,17 @@ private[hive] object HiveContext {
       case (struct: Row, StructType(fields)) =>
         struct.toSeq
           .zip(fields)
-          .map {
-            case (v, t) =>
-              s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
+          .map { case (v, t) =>
+            s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
           }
           .mkString("{", ",", "}")
       case (seq: Seq[_], ArrayType(typ, _)) =>
         seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
       case (map: Map[_, _], MapType(kType, vType, _)) =>
         map
-          .map {
-            case (key, value) =>
-              toHiveStructString((key, kType)) + ":" + toHiveStructString(
-                (value, vType))
+          .map { case (key, value) =>
+            toHiveStructString((key, kType)) + ":" + toHiveStructString(
+              (value, vType))
           }
           .toSeq
           .sorted
@@ -825,19 +822,17 @@ private[hive] object HiveContext {
       case (struct: Row, StructType(fields)) =>
         struct.toSeq
           .zip(fields)
-          .map {
-            case (v, t) =>
-              s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
+          .map { case (v, t) =>
+            s""""${t.name}":${toHiveStructString(v, t.dataType)}"""
           }
           .mkString("{", ",", "}")
       case (seq: Seq[_], ArrayType(typ, _)) =>
         seq.map(v => (v, typ)).map(toHiveStructString).mkString("[", ",", "]")
       case (map: Map[_, _], MapType(kType, vType, _)) =>
         map
-          .map {
-            case (key, value) =>
-              toHiveStructString((key, kType)) + ":" + toHiveStructString(
-                (value, vType))
+          .map { case (key, value) =>
+            toHiveStructString((key, kType)) + ":" + toHiveStructString(
+              (value, vType))
           }
           .toSeq
           .sorted

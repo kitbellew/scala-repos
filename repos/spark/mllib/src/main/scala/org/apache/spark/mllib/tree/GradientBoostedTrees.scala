@@ -265,9 +265,8 @@ object GradientBoostedTrees extends Logging {
     var doneLearning = false
     while (m < numIterations && !doneLearning) {
       // Update data with pseudo-residuals
-      val data = predError.zip(input).map {
-        case ((pred, _), point) =>
-          LabeledPoint(-loss.gradient(pred, point.label), point.features)
+      val data = predError.zip(input).map { case ((pred, _), point) =>
+        LabeledPoint(-loss.gradient(pred, point.label), point.features)
       }
 
       timer.start(s"building tree $m")

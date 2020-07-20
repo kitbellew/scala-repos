@@ -109,9 +109,8 @@ class VectorSlicerSuite
       assert(resultMetadata.numAttributes === expectedMetadata.numAttributes)
       resultMetadata.attributes.get
         .zip(expectedMetadata.attributes.get)
-        .foreach {
-          case (a, b) =>
-            assert(a === b)
+        .foreach { case (a, b) =>
+          assert(a === b)
         }
     }
 

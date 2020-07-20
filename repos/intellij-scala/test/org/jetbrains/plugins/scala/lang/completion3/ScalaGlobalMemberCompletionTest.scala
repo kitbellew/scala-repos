@@ -284,9 +284,8 @@ class Test {
     configureFromFileTextAdapter("dummyGlobalMemberInherited.scala", fileText)
     val (activeLookup, _) =
       complete(completionType = CompletionType.BASIC, time = 3)
-    val lookups = activeLookup.collect {
-      case sli: ScalaLookupItem =>
-        sli.containingClass.name + "." + sli.getLookupString
+    val lookups = activeLookup.collect { case sli: ScalaLookupItem =>
+      sli.containingClass.name + "." + sli.getLookupString
     }
     val expected = Set(
       "D1.zeeGlobalDefInherited",

@@ -31,23 +31,21 @@ private class BackoffOnRestartSupervisor(
   override val supervisorStrategy = OneForOneStrategy(
     strategy.maxNrOfRetries,
     strategy.withinTimeRange,
-    strategy.loggingEnabled) {
-    case ex ⇒
-      val defaultDirective: Directive =
-        super.supervisorStrategy.decider.applyOrElse(ex, (_: Any) ⇒ Escalate)
+    strategy.loggingEnabled) { case ex ⇒
+    val defaultDirective: Directive =
+      super.supervisorStrategy.decider.applyOrElse(ex, (_: Any) ⇒ Escalate)
 
-      strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective) match {
+    strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective) match {
 
-        // Whatever the final Directive is, we will translate all Restarts
-        // to our own Restarts, which involves stopping the child.
-        case Restart ⇒
-          val childRef = sender()
-          become(
-            waitChildTerminatedBeforeBackoff(childRef) orElse handleBackoff)
-          Stop
+      // Whatever the final Directive is, we will translate all Restarts
+      // to our own Restarts, which involves stopping the child.
+      case Restart ⇒
+        val childRef = sender()
+        become(waitChildTerminatedBeforeBackoff(childRef) orElse handleBackoff)
+        Stop
 
-        case other ⇒ other
-      }
+      case other ⇒ other
+    }
   }
 
   def waitChildTerminatedBeforeBackoff(childRef: ActorRef): Receive = {
@@ -68,10 +66,9 @@ private class BackoffOnRestartSupervisor(
     case StartChild ⇒ // Ignore it, we will schedule a new one once current child terminated.
   }
 
-  def onTerminated: Receive = {
-    case Terminated(child) ⇒
-      log.debug(s"Terminating, because child [$child] terminated itself")
-      stop(self)
+  def onTerminated: Receive = { case Terminated(child) ⇒
+    log.debug(s"Terminating, because child [$child] terminated itself")
+    stop(self)
   }
 
   def receive = onTerminated orElse handleBackoff

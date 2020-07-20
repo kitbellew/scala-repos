@@ -201,13 +201,11 @@ final class BackoffSupervisor(
       OneForOneStrategy(
         oneForOne.maxNrOfRetries,
         oneForOne.withinTimeRange,
-        oneForOne.loggingEnabled) {
-        case ex ⇒
-          val defaultDirective: Directive =
-            super.supervisorStrategy.decider
-              .applyOrElse(ex, (_: Any) ⇒ Escalate)
+        oneForOne.loggingEnabled) { case ex ⇒
+        val defaultDirective: Directive =
+          super.supervisorStrategy.decider.applyOrElse(ex, (_: Any) ⇒ Escalate)
 
-          strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective)
+        strategy.decider.applyOrElse(ex, (_: Any) ⇒ defaultDirective)
       }
     case s ⇒ s
   }

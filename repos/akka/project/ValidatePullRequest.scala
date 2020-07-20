@@ -100,22 +100,21 @@ object ValidatePullRequest extends AutoPlugin {
       graphsToTest: Seq[(Configuration, ModuleGraph)])(log: Logger): Boolean = {
     val dirsOrExperimental =
       changedDirs.flatMap(dir => Set(dir, s"$dir-experimental"))
-    graphsToTest exists {
-      case (ivyScope, deps) =>
-        log.debug(s"Analysing [$ivyScope] scoped dependencies...")
+    graphsToTest exists { case (ivyScope, deps) =>
+      log.debug(s"Analysing [$ivyScope] scoped dependencies...")
 
-        deps.nodes.foreach { m ⇒ log.debug(" -> " + m.id) }
+      deps.nodes.foreach { m ⇒ log.debug(" -> " + m.id) }
 
-        // if this project depends on a modified module, we must test it
-        deps.nodes.exists { m =>
-          // match just by name, we'd rather include too much than too little
-          val dependsOnModule = dirsOrExperimental.find(m.id.name contains _)
-          val depends = dependsOnModule.isDefined
-          if (depends)
-            log.info(
-              s"Project [$name] must be verified, because depends on [${dependsOnModule.get}]")
-          depends
-        }
+      // if this project depends on a modified module, we must test it
+      deps.nodes.exists { m =>
+        // match just by name, we'd rather include too much than too little
+        val dependsOnModule = dirsOrExperimental.find(m.id.name contains _)
+        val depends = dependsOnModule.isDefined
+        if (depends)
+          log.info(
+            s"Project [$name] must be verified, because depends on [${dependsOnModule.get}]")
+        depends
+      }
     }
   }
 
@@ -287,9 +286,8 @@ object ValidatePullRequest extends AutoPlugin {
         validationTasks
           .map(taskKey => Def.task { taskKey.value })
           .foldLeft(zero) { (acc, current) =>
-            acc.zipWith(current) {
-              case (taskSeq, task) =>
-                taskSeq :+ task.asInstanceOf[Task[Any]]
+            acc.zipWith(current) { case (taskSeq, task) =>
+              taskSeq :+ task.asInstanceOf[Task[Any]]
             }
           } apply { tasks: Seq[Task[Any]] =>
           tasks.join map { seq =>

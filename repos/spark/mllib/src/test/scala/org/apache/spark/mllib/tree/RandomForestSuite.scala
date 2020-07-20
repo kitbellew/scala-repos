@@ -326,9 +326,8 @@ class RandomForestSuite extends SparkFunSuite with MLlibTestSparkContext {
         model.save(sc, path)
         val sameModel = RandomForestModel.load(sc, path)
         assert(model.algo == sameModel.algo)
-        model.trees.zip(sameModel.trees).foreach {
-          case (treeA, treeB) =>
-            DecisionTreeSuite.checkEqual(treeA, treeB)
+        model.trees.zip(sameModel.trees).foreach { case (treeA, treeB) =>
+          DecisionTreeSuite.checkEqual(treeA, treeB)
         }
       } finally {
         Utils.deleteRecursively(tempDir)

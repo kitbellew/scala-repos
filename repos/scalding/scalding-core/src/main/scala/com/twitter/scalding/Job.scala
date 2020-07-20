@@ -303,9 +303,8 @@ class Job(val args: Args) extends FieldConversions with java.io.Serializable {
       val jobStats = Stats.getAllCustomCounters
       if (!jobStats.isEmpty) {
         println("Dumping custom counters:")
-        jobStats.foreach {
-          case (counter, value) =>
-            println("%s\t%s".format(counter, value))
+        jobStats.foreach { case (counter, value) =>
+          println("%s\t%s".format(counter, value))
         }
       }
     }

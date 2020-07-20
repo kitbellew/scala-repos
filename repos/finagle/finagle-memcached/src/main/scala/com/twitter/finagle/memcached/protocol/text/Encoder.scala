@@ -57,33 +57,31 @@ class Encoder extends OneToOneEncoder {
         buffer
       case ValueLines(lines) =>
         val buffer = ChannelBuffers.dynamicBuffer(100 * lines.size)
-        lines foreach {
-          case TokensWithData(tokens, data, casUnique) =>
-            tokens foreach { token =>
-              buffer.writeBytes(BufChannelBuffer(token), 0, token.length)
-              buffer.writeBytes(SPACE)
-            }
-            buffer.writeBytes(BufChannelBuffer(Buf.Utf8(data.length.toString)))
-            casUnique foreach { token =>
-              buffer.writeBytes(SPACE)
-              buffer.writeBytes(BufChannelBuffer(token), 0, token.length)
-            }
-            buffer.writeBytes(DELIMITER)
-            buffer.writeBytes(BufChannelBuffer(data), 0, data.length)
-            buffer.writeBytes(DELIMITER)
+        lines foreach { case TokensWithData(tokens, data, casUnique) =>
+          tokens foreach { token =>
+            buffer.writeBytes(BufChannelBuffer(token), 0, token.length)
+            buffer.writeBytes(SPACE)
+          }
+          buffer.writeBytes(BufChannelBuffer(Buf.Utf8(data.length.toString)))
+          casUnique foreach { token =>
+            buffer.writeBytes(SPACE)
+            buffer.writeBytes(BufChannelBuffer(token), 0, token.length)
+          }
+          buffer.writeBytes(DELIMITER)
+          buffer.writeBytes(BufChannelBuffer(data), 0, data.length)
+          buffer.writeBytes(DELIMITER)
         }
         buffer.writeBytes(END)
         buffer.writeBytes(DELIMITER)
         buffer
       case StatLines(lines) =>
         val buffer = ChannelBuffers.dynamicBuffer(100 * lines.size)
-        lines foreach {
-          case Tokens(tokens) =>
-            tokens foreach { token =>
-              buffer.writeBytes(BufChannelBuffer(token), 0, token.length)
-              buffer.writeBytes(SPACE)
-            }
-            buffer.writeBytes(DELIMITER)
+        lines foreach { case Tokens(tokens) =>
+          tokens foreach { token =>
+            buffer.writeBytes(BufChannelBuffer(token), 0, token.length)
+            buffer.writeBytes(SPACE)
+          }
+          buffer.writeBytes(DELIMITER)
         }
         buffer.writeBytes(END)
         buffer.writeBytes(DELIMITER)

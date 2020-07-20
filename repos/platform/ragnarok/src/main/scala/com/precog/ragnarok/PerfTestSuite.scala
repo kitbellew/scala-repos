@@ -117,9 +117,8 @@ trait PerfTestSuite extends Logging {
 
       runner.startup()
 
-      config.ingest foreach {
-        case (db, file) =>
-          runner.ingest(db, file).unsafePerformIO
+      config.ingest foreach { case (db, file) =>
+        runner.ingest(db, file).unsafePerformIO
       }
 
       select(config.select getOrElse ((_, _) => true)) foreach { test =>
@@ -129,9 +128,8 @@ trait PerfTestSuite extends Logging {
           test,
           runner,
           runs = config.runs,
-          outliers = config.outliers) map {
-          case (t, stats) =>
-            (t, stats map (_ * (1 / 1000000.0))) // Convert to ms.
+          outliers = config.outliers) map { case (t, stats) =>
+          (t, stats map (_ * (1 / 1000000.0))) // Convert to ms.
         }
 
         def withPrinter[A](f: PrintStream => A): A = {

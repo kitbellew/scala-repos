@@ -98,24 +98,22 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
       tpe match {
         case JArrayFixedT(elements) if current.nonEmpty =>
           elements
-            .map {
-              case (index, childType) =>
-                val newPaths = current.map { s => s + "[" + index + "]" }
-                jTypeToProperties(childType, newPaths)
+            .map { case (index, childType) =>
+              val newPaths = current.map { s => s + "[" + index + "]" }
+              jTypeToProperties(childType, newPaths)
             }
             .toSet
             .flatten
 
         case JObjectFixedT(fields) =>
           fields
-            .map {
-              case (name, childType) =>
-                val newPaths = if (current.nonEmpty) {
-                  current.map { s => s + "." + name }
-                } else {
-                  Set(name)
-                }
-                jTypeToProperties(childType, newPaths)
+            .map { case (name, childType) =>
+              val newPaths = if (current.nonEmpty) {
+                current.map { s => s + "." + name }
+              } else {
+                Set(name)
+              }
+              jTypeToProperties(childType, newPaths)
             }
             .toSet
             .flatten
@@ -423,9 +421,8 @@ trait MongoColumnarTableModule extends BlockStoreColumnarTableModule[Future] {
         dbObjIter.hasNext,
         row,
         acc
-          .map({
-            case ((rprefix, cType), col) =>
-              (ColumnRef(CPath(rprefix.reverse), cType), col)
+          .map({ case ((rprefix, cType), col) =>
+            (ColumnRef(CPath(rprefix.reverse), cType), col)
           })
           .toMap)
     }

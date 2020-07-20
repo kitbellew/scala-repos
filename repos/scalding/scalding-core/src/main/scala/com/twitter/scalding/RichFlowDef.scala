@@ -58,9 +58,8 @@ class RichFlowDef(val fd: FlowDef) {
     Option(left).getOrElse(right)
 
   private[this] def mergeLeft[K, V](left: JMap[K, V], right: JMap[K, V]) {
-    right.asScala.foreach {
-      case (k, v) =>
-        if (!left.containsKey(k)) left.put(k, v)
+    right.asScala.foreach { case (k, v) =>
+      if (!left.containsKey(k)) left.put(k, v)
     }
   }
   private[this] def appendLeft[T](left: JList[T], right: JList[T]) {

@@ -691,14 +691,12 @@ private[stream] object Fusing {
     def dump(): Unit = {
       println("StructuralInfo:")
       println("  newIns:")
-      newIns.asScala.foreach {
-        case (k, v) ⇒
-          println(s"    $k (${hash(k)}) -> ${v.map(hash).mkString(",")}")
+      newIns.asScala.foreach { case (k, v) ⇒
+        println(s"    $k (${hash(k)}) -> ${v.map(hash).mkString(",")}")
       }
       println("  newOuts:")
-      newOuts.asScala.foreach {
-        case (k, v) ⇒
-          println(s"    $k (${hash(k)}) -> ${v.map(hash).mkString(",")}")
+      newOuts.asScala.foreach { case (k, v) ⇒
+        println(s"    $k (${hash(k)}) -> ${v.map(hash).mkString(",")}")
       }
     }
 

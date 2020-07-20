@@ -202,13 +202,12 @@ private[parquet] class CatalystRowConverter(
     parquetType.getFields.asScala
       .zip(catalystType)
       .zipWithIndex
-      .map {
-        case ((parquetFieldType, catalystField), ordinal) =>
-          // Converted field value should be set to the `ordinal`-th cell of `currentRow`
-          newConverter(
-            parquetFieldType,
-            catalystField.dataType,
-            new RowUpdater(currentRow, ordinal))
+      .map { case ((parquetFieldType, catalystField), ordinal) =>
+        // Converted field value should be set to the `ordinal`-th cell of `currentRow`
+        newConverter(
+          parquetFieldType,
+          catalystField.dataType,
+          new RowUpdater(currentRow, ordinal))
       }
       .toArray
   }

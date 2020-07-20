@@ -83,9 +83,8 @@ object AkkaProtocolStressTest {
     }
 
     // Make sure the other side eventually "gets the message"
-    def done: Receive = {
-      case ResendFinal ⇒
-        controller ! ((maxSeq, losses))
+    def done: Receive = { case ResendFinal ⇒
+      controller ! ((maxSeq, losses))
     }
   }
 
@@ -126,10 +125,9 @@ class AkkaProtocolStressTest
       val tester =
         system.actorOf(Props(classOf[SequenceVerifier], here, self)) ! "start"
 
-      expectMsgPF(60.seconds) {
-        case (received: Int, lost: Int) ⇒
-          log.debug(
-            s" ######## Received ${received - lost} messages from ${received} ########")
+      expectMsgPF(60.seconds) { case (received: Int, lost: Int) ⇒
+        log.debug(
+          s" ######## Received ${received - lost} messages from ${received} ########")
       }
     }
   }

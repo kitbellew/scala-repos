@@ -130,12 +130,11 @@ class Statements(indent: Int) {
     P(
       kw("from") ~ (named | unNamed) ~ kw(
         "import") ~ (star | "(" ~ import_as_names ~ ")" | import_as_names))
-      .map {
-        case (dots, module, names) =>
-          Ast.stmt.ImportFrom(
-            module.map(Ast.identifier),
-            names,
-            dots.map(_.length))
+      .map { case (dots, module, names) =>
+        Ast.stmt.ImportFrom(
+          module.map(Ast.identifier),
+          names,
+          dots.map(_.length))
       }
   }
   val import_as_name: P[Ast.alias] =
@@ -165,14 +164,12 @@ class Statements(indent: Int) {
     val firstIf = P(kw("if") ~/ test ~ ":" ~~ suite)
     val elifs = P((space_indents ~~ kw("elif") ~/ test ~ ":" ~~ suite).repX)
     val lastElse = P((space_indents ~~ kw("else") ~/ ":" ~~ suite).?)
-    P(firstIf ~~ elifs ~~ lastElse).map {
-      case (test, body, elifs, orelse) =>
-        val (init :+ last) = (test, body) +: elifs
-        val (last_test, last_body) = last
-        init.foldRight(
-          Ast.stmt.If(last_test, last_body, orelse.toSeq.flatten)) {
-          case ((test, body), rhs) => Ast.stmt.If(test, body, Seq(rhs))
-        }
+    P(firstIf ~~ elifs ~~ lastElse).map { case (test, body, elifs, orelse) =>
+      val (init :+ last) = (test, body) +: elifs
+      val (last_test, last_body) = last
+      init.foldRight(Ast.stmt.If(last_test, last_body, orelse.toSeq.flatten)) {
+        case ((test, body), rhs) => Ast.stmt.If(test, body, Seq(rhs))
+      }
     }
   }
   val space_indents = P(spaces.repX ~~ " ".repX(indent))

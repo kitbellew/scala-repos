@@ -76,9 +76,8 @@ class EndToEndTest extends FunSuite {
         Future { latch.countDown() }
       }
 
-      clientRes.messages.foreach {
-        case Buf.Utf8(str) =>
-          result += str
+      clientRes.messages.foreach { case Buf.Utf8(str) =>
+        result += str
       }
 
       messages !! Buf.Utf8("1")
@@ -104,10 +103,9 @@ class EndToEndTest extends FunSuite {
 
       val latch = new CountDownLatch(3)
       var result = ""
-      clientRes.messages.foreach {
-        case Buf.Utf8(str) =>
-          result += str
-          latch.countDown()
+      clientRes.messages.foreach { case Buf.Utf8(str) =>
+        result += str
+        latch.countDown()
       }
 
       latch.within(1.second)
@@ -268,9 +266,8 @@ class EndToEndTest extends FunSuite {
         Future { latch.countDown() }
       }
 
-      clientRes.messages.foreach {
-        case Buf.Utf8(str) =>
-          result += str
+      clientRes.messages.foreach { case Buf.Utf8(str) =>
+        result += str
       }
 
       FuturePool.unboundedPool {

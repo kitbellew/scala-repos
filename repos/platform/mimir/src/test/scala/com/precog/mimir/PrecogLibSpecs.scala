@@ -98,9 +98,8 @@ trait PrecogLibSpecs[M[+_]]
 
       val result = testEval(input)
       result must haveSize(6)
-      val numbers = result flatMap {
-        case (_, SObject(fields)) =>
-          fields get "abc" collect { case SDecimal(n) => n }
+      val numbers = result flatMap { case (_, SObject(fields)) =>
+        fields get "abc" collect { case SDecimal(n) => n }
       }
       numbers must_== Set(0, -1, 1, 42, 1, -23)
     }

@@ -255,11 +255,10 @@ abstract class RDD[T: ClassTag](
     checkpointRDD.map(_.partitions).getOrElse {
       if (partitions_ == null) {
         partitions_ = getPartitions
-        partitions_.zipWithIndex.foreach {
-          case (partition, index) =>
-            require(
-              partition.index == index,
-              s"partitions($index).partition == ${partition.index}, but it should equal $index")
+        partitions_.zipWithIndex.foreach { case (partition, index) =>
+          require(
+            partition.index == index,
+            s"partitions($index).partition == ${partition.index}, but it should equal $index")
         }
       }
       partitions_
@@ -675,9 +674,8 @@ abstract class RDD[T: ClassTag](
       this
         .map(v => (v, null))
         .cogroup(other.map(v => (v, null)))
-        .filter {
-          case (_, (leftGroup, rightGroup)) =>
-            leftGroup.nonEmpty && rightGroup.nonEmpty
+        .filter { case (_, (leftGroup, rightGroup)) =>
+          leftGroup.nonEmpty && rightGroup.nonEmpty
         }
         .keys
     }
@@ -696,9 +694,8 @@ abstract class RDD[T: ClassTag](
       this
         .map(v => (v, null))
         .cogroup(other.map(v => (v, null)), partitioner)
-        .filter {
-          case (_, (leftGroup, rightGroup)) =>
-            leftGroup.nonEmpty && rightGroup.nonEmpty
+        .filter { case (_, (leftGroup, rightGroup)) =>
+          leftGroup.nonEmpty && rightGroup.nonEmpty
         }
         .keys
     }
@@ -1407,12 +1404,10 @@ abstract class RDD[T: ClassTag](
   def zipWithUniqueId(): RDD[(T, Long)] =
     withScope {
       val n = this.partitions.length.toLong
-      this.mapPartitionsWithIndex {
-        case (k, iter) =>
-          iter.zipWithIndex.map {
-            case (item, i) =>
-              (item, i * n + k)
-          }
+      this.mapPartitionsWithIndex { case (k, iter) =>
+        iter.zipWithIndex.map { case (item, i) =>
+          (item, i * n + k)
+        }
       }
     }
 

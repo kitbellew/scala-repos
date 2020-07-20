@@ -22,10 +22,9 @@ private[puzzle] final class Daily(
   def apply(): Fu[Option[DailyPuzzle]] = cache apply true
 
   private def find: Fu[Option[DailyPuzzle]] =
-    (findCurrent orElse findNew) recover {
-      case e: Exception =>
-        logger.error("find daily", e)
-        none
+    (findCurrent orElse findNew) recover { case e: Exception =>
+      logger.error("find daily", e)
+      none
     } flatMap {
       case Some(puzzle) => makeDaily(puzzle)
       case None =>
@@ -41,10 +40,9 @@ private[puzzle] final class Daily(
           DailyPuzzle(html, puzzle.color, puzzle.id).some
       }
     }
-  } recover {
-    case e: Exception =>
-      logger.warn("make daily", e)
-      none
+  } recover { case e: Exception =>
+    logger.warn("make daily", e)
+    none
   }
 
   private def findCurrent =

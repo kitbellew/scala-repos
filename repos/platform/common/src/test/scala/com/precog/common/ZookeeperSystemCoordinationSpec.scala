@@ -199,9 +199,8 @@ class ZookeeperSystemCoordinationSpec extends Specification {
 
         val result = sc2.loadYggCheckpoint("bifrost")
 
-        result must beLike {
-          case Some(Success(out)) =>
-            in must_== out
+        result must beLike { case Some(Success(out)) =>
+          in must_== out
         }
     }
 

@@ -65,24 +65,23 @@ case class MostSpecificUtil(elem: PsiElement, length: Int) {
       applicable: Set[(ScalaResolveResult, ScSubstitutor)])
       : Option[ScalaResolveResult] = {
     mostSpecificGeneric(
-      applicable.map {
-        case (r, subst) =>
-          r.innerResolveResult match {
-            case Some(rr) =>
-              new InnerScalaResolveResult(
-                rr.element,
-                rr.implicitConversionClass,
-                r,
-                subst,
-                implicitCase = true)
-            case None =>
-              new InnerScalaResolveResult(
-                r.element,
-                r.implicitConversionClass,
-                r,
-                subst,
-                implicitCase = true)
-          }
+      applicable.map { case (r, subst) =>
+        r.innerResolveResult match {
+          case Some(rr) =>
+            new InnerScalaResolveResult(
+              rr.element,
+              rr.implicitConversionClass,
+              r,
+              subst,
+              implicitCase = true)
+          case None =>
+            new InnerScalaResolveResult(
+              r.element,
+              r.implicitConversionClass,
+              r,
+              subst,
+              implicitCase = true)
+        }
       },
       noImplicit = true
     ).map(_.repr)

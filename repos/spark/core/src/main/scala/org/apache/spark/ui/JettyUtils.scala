@@ -230,47 +230,43 @@ private[spark] object JettyUtils extends Logging {
   def addFilters(handlers: Seq[ServletContextHandler], conf: SparkConf) {
     val filters: Array[String] =
       conf.get("spark.ui.filters", "").split(',').map(_.trim())
-    filters.foreach {
-      case filter: String =>
-        if (!filter.isEmpty) {
-          logInfo("Adding filter: " + filter)
-          val holder: FilterHolder = new FilterHolder()
-          holder.setClassName(filter)
-          // Get any parameters for each filter
-          conf
-            .get("spark." + filter + ".params", "")
-            .split(',')
-            .map(_.trim())
-            .toSet
-            .foreach { param: String =>
-              if (!param.isEmpty) {
-                val parts = param.split("=")
-                if (parts.length == 2)
-                  holder.setInitParameter(parts(0), parts(1))
-              }
+    filters.foreach { case filter: String =>
+      if (!filter.isEmpty) {
+        logInfo("Adding filter: " + filter)
+        val holder: FilterHolder = new FilterHolder()
+        holder.setClassName(filter)
+        // Get any parameters for each filter
+        conf
+          .get("spark." + filter + ".params", "")
+          .split(',')
+          .map(_.trim())
+          .toSet
+          .foreach { param: String =>
+            if (!param.isEmpty) {
+              val parts = param.split("=")
+              if (parts.length == 2) holder.setInitParameter(parts(0), parts(1))
             }
-
-          val prefix = s"spark.$filter.param."
-          conf.getAll
-            .filter {
-              case (k, v) =>
-                k.length() > prefix.length() && k.startsWith(prefix)
-            }
-            .foreach {
-              case (k, v) =>
-                holder.setInitParameter(k.substring(prefix.length()), v)
-            }
-
-          val enumDispatcher = java.util.EnumSet.of(
-            DispatcherType.ASYNC,
-            DispatcherType.ERROR,
-            DispatcherType.FORWARD,
-            DispatcherType.INCLUDE,
-            DispatcherType.REQUEST)
-          handlers.foreach {
-            case (handler) => handler.addFilter(holder, "/*", enumDispatcher)
           }
+
+        val prefix = s"spark.$filter.param."
+        conf.getAll
+          .filter { case (k, v) =>
+            k.length() > prefix.length() && k.startsWith(prefix)
+          }
+          .foreach { case (k, v) =>
+            holder.setInitParameter(k.substring(prefix.length()), v)
+          }
+
+        val enumDispatcher = java.util.EnumSet.of(
+          DispatcherType.ASYNC,
+          DispatcherType.ERROR,
+          DispatcherType.FORWARD,
+          DispatcherType.INCLUDE,
+          DispatcherType.REQUEST)
+        handlers.foreach {
+          case (handler) => handler.addFilter(holder, "/*", enumDispatcher)
         }
+      }
     }
   }
 

@@ -357,11 +357,10 @@ class ExpandSums extends Phase {
     */
   def collectDiscriminatorCandidates(
       n: Node): Set[(TypeSymbol, List[TermSymbol])] =
-    n.collectAll[(TypeSymbol, List[TermSymbol])] {
-      case OptionApply(ch) =>
-        ch.collect[(TypeSymbol, List[TermSymbol])] {
-          case PathOnTypeSymbol(ts, ss) => (ts, ss)
-        }
+    n.collectAll[(TypeSymbol, List[TermSymbol])] { case OptionApply(ch) =>
+      ch.collect[(TypeSymbol, List[TermSymbol])] {
+        case PathOnTypeSymbol(ts, ss) => (ts, ss)
+      }
     }.toSet
 
   object PathOnTypeSymbol {
@@ -388,19 +387,17 @@ class ExpandSums extends Phase {
         case cast @ Library.SilentCast(ch) :@ Type.Structural(
               ProductType(typeCh)) =>
           invalidate(ch)
-          val elems = typeCh.zipWithIndex.map {
-            case (t, idx) =>
-              tr(
-                Library.SilentCast
-                  .typed(t, ch.select(ElementSymbol(idx + 1)))
-                  .infer())
+          val elems = typeCh.zipWithIndex.map { case (t, idx) =>
+            tr(
+              Library.SilentCast
+                .typed(t, ch.select(ElementSymbol(idx + 1)))
+                .infer())
           }
           ProductNode(elems).infer()
         case Library.SilentCast(ch) :@ Type.Structural(StructType(typeCh)) =>
           invalidate(ch)
-          val elems = typeCh.map {
-            case (sym, t) =>
-              (sym, tr(Library.SilentCast.typed(t, ch.select(sym)).infer()))
+          val elems = typeCh.map { case (sym, t) =>
+            (sym, tr(Library.SilentCast.typed(t, ch.select(sym)).infer()))
           }
           StructNode(elems).infer()
 
@@ -423,9 +420,8 @@ class ExpandSums extends Phase {
           }
           ProductNode(ch).infer()
         case (cond @ IfThenElse(_)) :@ Type.Structural(StructType(chTypes)) =>
-          val ch = chTypes.map {
-            case (sym, _) =>
-              (sym, tr(cond.mapResultClauses(n => n.select(sym)).infer()))
+          val ch = chTypes.map { case (sym, _) =>
+            (sym, tr(cond.mapResultClauses(n => n.select(sym)).infer()))
           }
           StructNode(ch).infer()
 

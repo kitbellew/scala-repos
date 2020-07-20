@@ -226,9 +226,8 @@ class GraphSuite extends SparkFunSuite with LocalSparkContext {
       // Trigger initial vertex replication
       graph0.triplets.foreach(x => {})
       // Change type of replicated vertices, but preserve erased type
-      val graph1 = graph0.mapVertices {
-        case (vid, integerOpt) =>
-          integerOpt.map((x: java.lang.Integer) => x.toDouble: java.lang.Double)
+      val graph1 = graph0.mapVertices { case (vid, integerOpt) =>
+        integerOpt.map((x: java.lang.Integer) => x.toDouble: java.lang.Double)
       }
       // Access replicated vertices, exposing the erased type
       val graph2 = graph1.mapTriplets(t => t.srcAttr.get)

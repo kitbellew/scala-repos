@@ -94,21 +94,18 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     // Check: topic summaries
     val topicSummary = model
       .describeTopics()
-      .map {
-        case (terms, termWeights) =>
-          Vectors.sparse(tinyVocabSize, terms, termWeights)
+      .map { case (terms, termWeights) =>
+        Vectors.sparse(tinyVocabSize, terms, termWeights)
       }
       .sortBy(_.toString)
     val localTopicSummary = localModel
       .describeTopics()
-      .map {
-        case (terms, termWeights) =>
-          Vectors.sparse(tinyVocabSize, terms, termWeights)
+      .map { case (terms, termWeights) =>
+        Vectors.sparse(tinyVocabSize, terms, termWeights)
       }
       .sortBy(_.toString)
-    topicSummary.zip(localTopicSummary).foreach {
-      case (topics, topicsLocal) =>
-        assert(topics ~== topicsLocal absTol 0.01)
+    topicSummary.zip(localTopicSummary).foreach { case (topics, topicsLocal) =>
+      assert(topics ~== topicsLocal absTol 0.01)
     }
 
     // Check: per-doc topic distributions
@@ -122,10 +119,9 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     assert(
       nonEmptyTinyCorpus.map(_._1).toSet === topicDistributions.map(_._1).toSet)
     //  Ensure we have proper distributions
-    topicDistributions.foreach {
-      case (docId, topicDistribution) =>
-        assert(topicDistribution.size === tinyK)
-        assert(topicDistribution.toArray.sum ~== 1.0 absTol 1e-5)
+    topicDistributions.foreach { case (docId, topicDistribution) =>
+      assert(topicDistribution.size === tinyK)
+      assert(topicDistribution.toArray.sum ~== 1.0 absTol 1e-5)
     }
 
     val top2TopicsPerDoc =
@@ -174,18 +170,17 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
     val topTopicAssignments: Map[Long, (Array[Int], Array[Int])] =
       model.topicAssignments.collect().map(x => x._1 -> (x._2, x._3)).toMap
     assert(topTopicAssignments.keys.max < tinyCorpus.length)
-    tinyCorpus.foreach {
-      case (docID: Long, doc: Vector) =>
-        if (topTopicAssignments.contains(docID)) {
-          val (inds, vals) = topTopicAssignments(docID)
-          assert(inds.length === doc.numNonzeros)
-          // For "term" in actual doc,
-          // check that it has a topic assigned.
-          doc.foreachActive((term, wcnt) =>
-            assert(wcnt === 0 || inds.contains(term)))
-        } else {
-          assert(doc.numNonzeros === 0)
-        }
+    tinyCorpus.foreach { case (docID: Long, doc: Vector) =>
+      if (topTopicAssignments.contains(docID)) {
+        val (inds, vals) = topTopicAssignments(docID)
+        assert(inds.length === doc.numNonzeros)
+        // For "term" in actual doc,
+        // check that it has a topic assigned.
+        doc.foreachActive((term, wcnt) =>
+          assert(wcnt === 0 || inds.contains(term)))
+      } else {
+        assert(doc.numNonzeros === 0)
+      }
     }
   }
 
@@ -311,9 +306,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val ldaModel = lda.run(docs)
     val topicIndices = ldaModel.describeTopics(maxTermsPerTopic = 10)
-    val topics = topicIndices.map {
-      case (terms, termWeights) =>
-        terms.zip(termWeights)
+    val topics = topicIndices.map { case (terms, termWeights) =>
+      terms.zip(termWeights)
     }
 
     // check distribution for each topic, typical distribution is (0.3, 0.3, 0.3, 0.02, 0.02, 0.02)
@@ -419,29 +413,26 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val actualPredictions = ldaModel.topicDistributions(docs).cache()
     val topTopics = actualPredictions
-      .map {
-        case (id, topics) =>
-          // convert results to expectedPredictions format, which only has highest probability topic
-          val topicsBz = topics.toBreeze.toDenseVector
-          (id, (argmax(topicsBz), max(topicsBz)))
+      .map { case (id, topics) =>
+        // convert results to expectedPredictions format, which only has highest probability topic
+        val topicsBz = topics.toBreeze.toDenseVector
+        (id, (argmax(topicsBz), max(topicsBz)))
       }
       .sortByKey()
       .values
       .collect()
 
-    expectedPredictions.zip(topTopics).foreach {
-      case (expected, actual) =>
-        assert(
-          expected._1 === actual._1 && (expected._2 ~== actual._2 relTol 1e-3d))
+    expectedPredictions.zip(topTopics).foreach { case (expected, actual) =>
+      assert(
+        expected._1 === actual._1 && (expected._2 ~== actual._2 relTol 1e-3d))
     }
 
     docs
       .collect()
       .map(doc => ldaModel.topicDistribution(doc._2))
       .zip(actualPredictions.map(_._2).collect())
-      .foreach {
-        case (single, batch) =>
-          assert(single ~== batch relTol 1e-3d)
+      .foreach { case (single, batch) =>
+        assert(single ~== batch relTol 1e-3d)
       }
     actualPredictions.unpersist()
   }
@@ -463,9 +454,8 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val ldaModel = lda.run(docs)
     val topicIndices = ldaModel.describeTopics(maxTermsPerTopic = 10)
-    val topics = topicIndices.map {
-      case (terms, termWeights) =>
-        terms.zip(termWeights)
+    val topics = topicIndices.map { case (terms, termWeights) =>
+      terms.zip(termWeights)
     }
 
     /* Verify results with Python:
@@ -595,14 +585,14 @@ class LDASuite extends SparkFunSuite with MLlibTestSparkContext {
           .sortByKey()
           .collect())
       val edge = graph.edges
-        .map {
-          case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
+        .map { case Edge(sid: Long, did: Long, nos: Double) =>
+          (sid, did, nos)
         }
         .sortBy(x => (x._1, x._2))
         .collect()
       val sameEdge = sameGraph.edges
-        .map {
-          case Edge(sid: Long, did: Long, nos: Double) => (sid, did, nos)
+        .map { case Edge(sid: Long, did: Long, nos: Double) =>
+          (sid, did, nos)
         }
         .sortBy(x => (x._1, x._2))
         .collect()

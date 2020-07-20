@@ -65,13 +65,12 @@ object UserInfo {
         .orElse(params.get("openid.identity").flatMap(_.headOption))
 
     def axAttributes =
-      params.foldLeft(Map[String, String]()) {
-        case (result, (key, values)) =>
-          extractAxAttribute.lift(key) flatMap {
-            case (fullKey, shortKey) if signedFields.contains(fullKey) =>
-              values.headOption map { value => Map(shortKey -> value) }
-            case _ => None
-          } map (result ++ _) getOrElse result
+      params.foldLeft(Map[String, String]()) { case (result, (key, values)) =>
+        extractAxAttribute.lift(key) flatMap {
+          case (fullKey, shortKey) if signedFields.contains(fullKey) =>
+            values.headOption map { value => Map(shortKey -> value) }
+          case _ => None
+        } map (result ++ _) getOrElse result
       }
   }
 

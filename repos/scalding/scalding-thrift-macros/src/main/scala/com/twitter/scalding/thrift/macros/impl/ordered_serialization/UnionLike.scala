@@ -36,31 +36,30 @@ object UnionLike {
     val idxCmp = freshT("idxCmp")
 
     val compareSameTypes: Tree = subData
-      .foldLeft(Option.empty[Tree]) {
-        case (existing, (idx, tpe, optiTBuf)) =>
-          val commonCmp: Tree = optiTBuf
-            .map { tBuf =>
-              tBuf.compareBinary(inputStreamA, inputStreamB)
-            }
-            .getOrElse[Tree](q"0")
+      .foldLeft(Option.empty[Tree]) { case (existing, (idx, tpe, optiTBuf)) =>
+        val commonCmp: Tree = optiTBuf
+          .map { tBuf =>
+            tBuf.compareBinary(inputStreamA, inputStreamB)
+          }
+          .getOrElse[Tree](q"0")
 
-          existing match {
-            case Some(t) =>
-              Some(q"""
+        existing match {
+          case Some(t) =>
+            Some(q"""
               if($valueA == $idx) {
                 $commonCmp
               } else {
                 $t
               }
             """)
-            case None =>
-              Some(q"""
+          case None =>
+            Some(q"""
                 if($valueA == $idx) {
                   $commonCmp
                 } else {
                   sys.error("Unable to compare unknown type")
                 }""")
-          }
+        }
       }
       .get
 
@@ -170,30 +169,29 @@ object UnionLike {
     def freshT(id: String) = newTermName(c.fresh(id))
 
     val prevSizeData = subData
-      .foldLeft(Option.empty[Tree]) {
-        case (optiTree, (idx, tpe, tBufOpt)) =>
-          val baseLenT: Tree = tBufOpt
-            .map { tBuf =>
-              tBuf.length(q"$element.asInstanceOf[$tpe]") match {
-                case m: MaybeLengthCalculation[_] =>
-                  m.asInstanceOf[MaybeLengthCalculation[c.type]].t
+      .foldLeft(Option.empty[Tree]) { case (optiTree, (idx, tpe, tBufOpt)) =>
+        val baseLenT: Tree = tBufOpt
+          .map { tBuf =>
+            tBuf.length(q"$element.asInstanceOf[$tpe]") match {
+              case m: MaybeLengthCalculation[_] =>
+                m.asInstanceOf[MaybeLengthCalculation[c.type]].t
 
-                case f: FastLengthCalculation[_] =>
-                  q"""_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f
-                    .asInstanceOf[FastLengthCalculation[c.type]]
-                    .t})"""
+              case f: FastLengthCalculation[_] =>
+                q"""_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(${f
+                  .asInstanceOf[FastLengthCalculation[c.type]]
+                  .t})"""
 
-                case _: NoLengthCalculationAvailable[_] =>
-                  return NoLengthCalculationAvailable(c)
-                case e =>
-                  sys.error("unexpected input to union length code of " + e)
-              }
+              case _: NoLengthCalculationAvailable[_] =>
+                return NoLengthCalculationAvailable(c)
+              case e =>
+                sys.error("unexpected input to union length code of " + e)
             }
-            .getOrElse(
-              q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(1)")
-          val tmpPreLen = freshT("tmpPreLen")
+          }
+          .getOrElse(
+            q"_root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.DynamicLen(1)")
+        val tmpPreLen = freshT("tmpPreLen")
 
-          val lenT = q"""
+        val lenT = q"""
         val $tmpPreLen: _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.MaybeLength  = $baseLenT
 
         ($tmpPreLen match {
@@ -205,23 +203,23 @@ object UnionLike {
             _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.NoLengthCalculation
           }): _root_.com.twitter.scalding.serialization.macros.impl.ordered_serialization.runtime_helpers.MaybeLength
         """
-          optiTree match {
-            case Some(t) =>
-              Some(q"""
+        optiTree match {
+          case Some(t) =>
+            Some(q"""
             if($element.isInstanceOf[$tpe]) {
               $lenT
             } else {
               $t
             }
           """)
-            case None =>
-              Some(q"""
+          case None =>
+            Some(q"""
             if($element.isInstanceOf[$tpe]) {
             $lenT
           } else {
             sys.error("Did not understand thrift union type")
             }""")
-          }
+        }
       }
       .get
 
@@ -238,36 +236,35 @@ object UnionLike {
     val valueA = freshT("valueA")
 
     val expandedOut = subData
-      .foldLeft(Option.empty[Tree]) {
-        case (existing, (idx, tpe, optiTBuf)) =>
-          val extract = optiTBuf
-            .map { tBuf =>
-              q"""
+      .foldLeft(Option.empty[Tree]) { case (existing, (idx, tpe, optiTBuf)) =>
+        val extract = optiTBuf
+          .map { tBuf =>
+            q"""
             ${tBuf.get(inputStream)}
           """
-            }
-            .getOrElse {
-              q"""(new Object).asInstanceOf[$tpe]"""
-            }
+          }
+          .getOrElse {
+            q"""(new Object).asInstanceOf[$tpe]"""
+          }
 
-          existing match {
-            case Some(t) =>
-              Some(q"""
+        existing match {
+          case Some(t) =>
+            Some(q"""
             if($valueA == $idx) {
               $extract : $tpe
             } else {
               $t
             }
           """)
-            case None =>
-              Some(q"""
+          case None =>
+            Some(q"""
           if($valueA == $idx) {
             $extract
           } else {
             sys.error("Did not understand thrift union idx: " + $valueA)
           }
             """)
-          }
+        }
       }
       .get
 
@@ -292,25 +289,24 @@ object UnionLike {
     val idxB = freshT("idxB")
 
     val toIdOpt: Tree = subData
-      .foldLeft(Option.empty[Tree]) {
-        case (existing, (idx, tpe, _)) =>
-          existing match {
-            case Some(t) =>
-              Some(q"""
+      .foldLeft(Option.empty[Tree]) { case (existing, (idx, tpe, _)) =>
+        existing match {
+          case Some(t) =>
+            Some(q"""
             if($arg.isInstanceOf[$tpe]) {
               $idx
             } else {
               $t
             }
           """)
-            case None =>
-              Some(q"""
+          case None =>
+            Some(q"""
               if($arg.isInstanceOf[$tpe]) {
                 $idx
               } else {
                 sys.error("Unable to compare unknown type")
               }""")
-          }
+        }
       }
       .get
 

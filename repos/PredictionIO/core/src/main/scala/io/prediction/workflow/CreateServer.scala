@@ -247,9 +247,8 @@ object CreateServer extends Logging {
       params = WorkflowParams()
     )
 
-    val algorithms = engineParams.algorithmParamsList.map {
-      case (n, p) =>
-        Doer(engine.algorithmClassMap(n), p)
+    val algorithms = engineParams.algorithmParamsList.map { case (n, p) =>
+      Doer(engine.algorithmClassMap(n), p)
     }
 
     val servingParamsWithName = engineParams.servingParams
@@ -280,9 +279,8 @@ object CreateServer extends Logging {
 class UpgradeActor(engineClass: String) extends Actor {
   val log = Logging(context.system, this)
   implicit val system = context.system
-  def receive: Actor.Receive = {
-    case x: UpgradeCheck =>
-      WorkflowUtils.checkUpgrade("deployment", engineClass)
+  def receive: Actor.Receive = { case x: UpgradeCheck =>
+    WorkflowUtils.checkUpgrade("deployment", engineClass)
   }
 }
 
@@ -550,9 +548,8 @@ class ServerActor[Q, P](
                 // finally Serving.serve.
                 val supplementedQuery = serving.supplementBase(query)
                 // TODO: Parallelize the following.
-                val predictions = algorithms.zipWithIndex.map {
-                  case (a, ai) =>
-                    a.predictBase(models(ai), supplementedQuery)
+                val predictions = algorithms.zipWithIndex.map { case (a, ai) =>
+                  a.predictBase(models(ai), supplementedQuery)
                 }
                 // Notice that it is by design to call Serving.serve with the
                 // *original* query.

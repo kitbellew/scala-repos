@@ -222,13 +222,10 @@ class ScSimpleTypeElementImpl(node: ASTNode)
                 val subst = new ScSubstitutor(
                   s.typeParameters
                     .zip(params)
-                    .map {
-                      case (tpClass: ScTypeParam, tpConstr: ScTypeParam) =>
-                        (
-                          (tpClass.name, ScalaPsiUtil.getPsiElementId(tpClass)),
-                          new ScTypeParameterType(
-                            tpConstr,
-                            ScSubstitutor.empty))
+                    .map { case (tpClass: ScTypeParam, tpConstr: ScTypeParam) =>
+                      (
+                        (tpClass.name, ScalaPsiUtil.getPsiElementId(tpClass)),
+                        new ScTypeParameterType(tpConstr, ScSubstitutor.empty))
                     }
                     .toMap,
                   Map.empty,

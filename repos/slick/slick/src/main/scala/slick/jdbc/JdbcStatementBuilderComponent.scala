@@ -233,10 +233,9 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
         buildSelectModifiers(c)
         c.select match {
           case Pure(StructNode(ch), _) =>
-            b.sep(ch, ", ") {
-              case (sym, n) =>
-                buildSelectPart(n)
-                b" as `$sym"
+            b.sep(ch, ", ") { case (sym, n) =>
+              buildSelectPart(n)
+              b" as `$sym"
             }
             if (ch.isEmpty) b"1"
           case Pure(ProductNode(ch), _) =>
@@ -267,11 +266,10 @@ trait JdbcStatementBuilderComponent { self: JdbcProfile =>
             scalarFrom.foreach { s => b"\nfrom $s" }
           case from =>
             b"\nfrom "
-            b.sep(from, ", ") {
-              case (sym, n) =>
-                buildFrom(
-                  n,
-                  if (Some(sym) == currentUniqueFrom) None else Some(sym))
+            b.sep(from, ", ") { case (sym, n) =>
+              buildFrom(
+                n,
+                if (Some(sym) == currentUniqueFrom) None else Some(sym))
             }
         }
       }

@@ -57,15 +57,13 @@ case class OffsetCommitResponse(
   def writeTo(buffer: ByteBuffer) {
     buffer.putInt(correlationId)
     buffer.putInt(commitStatusGroupedByTopic.size)
-    commitStatusGroupedByTopic.foreach {
-      case (topic, statusMap) =>
-        ApiUtils.writeShortString(buffer, topic)
-        buffer.putInt(statusMap.size) // partition count
-        statusMap.foreach {
-          case (topicAndPartition, errorCode) =>
-            buffer.putInt(topicAndPartition.partition)
-            buffer.putShort(errorCode)
-        }
+    commitStatusGroupedByTopic.foreach { case (topic, statusMap) =>
+      ApiUtils.writeShortString(buffer, topic)
+      buffer.putInt(statusMap.size) // partition count
+      statusMap.foreach { case (topicAndPartition, errorCode) =>
+        buffer.putInt(topicAndPartition.partition)
+        buffer.putShort(errorCode)
+      }
     }
   }
 

@@ -509,9 +509,8 @@ private final class Analyzer(
         leftCls != rightCls && {
           val leftInfo = _classInfos.get(leftCls)
           val rightInfo = _classInfos.get(rightCls)
-          leftInfo.zip(rightInfo).exists {
-            case (l, r) =>
-              l.ancestors.contains(r)
+          leftInfo.zip(rightInfo).exists { case (l, r) =>
+            l.ancestors.contains(r)
           }
         }
       }

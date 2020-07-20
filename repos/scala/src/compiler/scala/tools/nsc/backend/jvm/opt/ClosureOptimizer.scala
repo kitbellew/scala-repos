@@ -455,25 +455,23 @@ class ClosureOptimizer[BT <: BTypes](val btypes: BT) {
         .classNodeAndSource(lambdaBodyHandle.getOwner)
         .map(_._2 == CompilationUnit)
         .getOrElse(false)
-    val callee = bodyMethod.map({
-      case (bodyMethodNode, bodyMethodDeclClass) =>
-        val bodyDeclClassType =
-          classBTypeFromParsedClassfile(bodyMethodDeclClass)
-        val canInlineFromSource =
-          compilerSettings.YoptInlineGlobal || bodyMethodIsBeingCompiled
-        Callee(
-          callee = bodyMethodNode,
-          calleeDeclarationClass = bodyDeclClassType,
-          safeToInline = canInlineFromSource,
-          safeToRewrite =
-            false, // the lambda body method is not a trait interface method
-          canInlineFromSource = canInlineFromSource,
-          annotatedInline = false,
-          annotatedNoInline = false,
-          samParamTypes =
-            callGraph.samParamTypes(bodyMethodNode, bodyDeclClassType),
-          calleeInfoWarning = None
-        )
+    val callee = bodyMethod.map({ case (bodyMethodNode, bodyMethodDeclClass) =>
+      val bodyDeclClassType = classBTypeFromParsedClassfile(bodyMethodDeclClass)
+      val canInlineFromSource =
+        compilerSettings.YoptInlineGlobal || bodyMethodIsBeingCompiled
+      Callee(
+        callee = bodyMethodNode,
+        calleeDeclarationClass = bodyDeclClassType,
+        safeToInline = canInlineFromSource,
+        safeToRewrite =
+          false, // the lambda body method is not a trait interface method
+        canInlineFromSource = canInlineFromSource,
+        annotatedInline = false,
+        annotatedNoInline = false,
+        samParamTypes =
+          callGraph.samParamTypes(bodyMethodNode, bodyDeclClassType),
+        calleeInfoWarning = None
+      )
     })
     val argInfos = closureInit.capturedArgInfos ++ originalCallsite
       .map(cs =>

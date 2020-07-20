@@ -554,18 +554,17 @@ private[spark] class Client(
     List(
       (APP_JAR_NAME, args.userJar, APP_JAR),
       ("log4j.properties", oldLog4jConf.orNull, null)
-    ).foreach {
-      case (destName, path, confKey) =>
-        if (path != null && !path.trim().isEmpty()) {
-          val (isLocal, localizedPath) =
-            distribute(path, destName = Some(destName))
-          if (isLocal && confKey != null) {
-            require(localizedPath != null, s"Path $path already distributed.")
-            // If the resource is intended for local use only, handle this downstream
-            // by setting the appropriate property
-            sparkConf.set(confKey, localizedPath)
-          }
+    ).foreach { case (destName, path, confKey) =>
+      if (path != null && !path.trim().isEmpty()) {
+        val (isLocal, localizedPath) =
+          distribute(path, destName = Some(destName))
+        if (isLocal && confKey != null) {
+          require(localizedPath != null, s"Path $path already distributed.")
+          // If the resource is intended for local use only, handle this downstream
+          // by setting the appropriate property
+          sparkConf.set(confKey, localizedPath)
         }
+      }
     }
 
     /**
@@ -580,17 +579,16 @@ private[spark] class Client(
       (args.addJars, LocalResourceType.FILE, true),
       (args.files, LocalResourceType.FILE, false),
       (args.archives, LocalResourceType.ARCHIVE, false)
-    ).foreach {
-      case (flist, resType, addToClasspath) =>
-        if (flist != null && !flist.isEmpty()) {
-          flist.split(',').foreach { file =>
-            val (_, localizedPath) = distribute(file, resType = resType)
-            require(localizedPath != null)
-            if (addToClasspath) {
-              cachedSecondaryJarLinks += localizedPath
-            }
+    ).foreach { case (flist, resType, addToClasspath) =>
+      if (flist != null && !flist.isEmpty()) {
+        flist.split(',').foreach { file =>
+          val (_, localizedPath) = distribute(file, resType = resType)
+          require(localizedPath != null)
+          if (addToClasspath) {
+            cachedSecondaryJarLinks += localizedPath
           }
         }
+      }
     }
     if (cachedSecondaryJarLinks.nonEmpty) {
       sparkConf.set(SECONDARY_JARS, cachedSecondaryJarLinks)
@@ -680,13 +678,12 @@ private[spark] class Client(
 
     try {
       confStream.setLevel(0)
-      hadoopConfFiles.foreach {
-        case (name, file) =>
-          if (file.canRead()) {
-            confStream.putNextEntry(new ZipEntry(name))
-            Files.copy(file, confStream)
-            confStream.closeEntry()
-          }
+      hadoopConfFiles.foreach { case (name, file) =>
+        if (file.canRead()) {
+          confStream.putNextEntry(new ZipEntry(name))
+          Files.copy(file, confStream)
+          confStream.closeEntry()
+        }
       }
 
       // Save Spark configuration to a file in the archive.
@@ -1173,10 +1170,9 @@ private[spark] class Client(
 
     // Use more loggable format if value is null or empty
     details
-      .map {
-        case (k, v) =>
-          val newValue = Option(v).filter(_.nonEmpty).getOrElse("N/A")
-          s"\n\t $k: $newValue"
+      .map { case (k, v) =>
+        val newValue = Option(v).filter(_.nonEmpty).getOrElse("N/A")
+        s"\n\t $k: $newValue"
       }
       .mkString("")
   }

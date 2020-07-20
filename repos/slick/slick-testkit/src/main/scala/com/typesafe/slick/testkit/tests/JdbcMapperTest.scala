@@ -178,15 +178,14 @@ class JdbcMapperTest extends AsyncTest[JdbcTestDB] {
           (p2i1, p2i2, p2i3, p2i4, p2i5, p2i6),
           (p3i1, p3i2, p3i3, p3i4, p3i5, p3i6),
           (p4i1, p4i2, p4i3, p4i4, p4i5, p4i6)
-        ).shaped <> ({
-          case (id, p1, p2, p3, p4) =>
-            // We could do this without .shaped but then we'd have to write a type annotation for the parameters
-            Whole(
-              id,
-              Part.tupled.apply(p1),
-              Part.tupled.apply(p2),
-              Part.tupled.apply(p3),
-              Part.tupled.apply(p4))
+        ).shaped <> ({ case (id, p1, p2, p3, p4) =>
+          // We could do this without .shaped but then we'd have to write a type annotation for the parameters
+          Whole(
+            id,
+            Part.tupled.apply(p1),
+            Part.tupled.apply(p2),
+            Part.tupled.apply(p3),
+            Part.tupled.apply(p4))
         }, { w: Whole =>
           def f(p: Part) = Part.unapply(p).get
           Some((w.id, f(w.p1), f(w.p2), f(w.p3), f(w.p4)))

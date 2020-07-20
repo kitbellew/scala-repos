@@ -258,15 +258,12 @@ object RunWorksheetAction {
   def isScratchWorksheet(
       vFileOpt: Option[VirtualFile],
       project: Project): Boolean =
-    vFileOpt.exists {
-      case vFile =>
-        ScratchFileService
-          .getInstance()
-          .getRootType(vFile)
-          .isInstanceOf[ScratchRootType] &&
-          ScalaProjectSettings
-            .getInstance(project)
-            .isTreatScratchFilesAsWorksheet
+    vFileOpt.exists { case vFile =>
+      ScratchFileService
+        .getInstance()
+        .getRootType(vFile)
+        .isInstanceOf[ScratchRootType] &&
+        ScalaProjectSettings.getInstance(project).isTreatScratchFilesAsWorksheet
     }
 
   def isScratchWorksheet(file: PsiFile): Boolean =
@@ -283,11 +280,9 @@ object RunWorksheetAction {
   }
 
   def getModuleFor(file: PsiFile): Module =
-    WorksheetCompiler.getModuleForCpName(file) flatMap {
-      case name =>
-        scala.extensions.inReadAction {
-          Option(
-            ModuleManager getInstance file.getProject findModuleByName name)
-        }
+    WorksheetCompiler.getModuleForCpName(file) flatMap { case name =>
+      scala.extensions.inReadAction {
+        Option(ModuleManager getInstance file.getProject findModuleByName name)
+      }
     } getOrElse getModuleFor(file.getVirtualFile, file.getProject)
 }

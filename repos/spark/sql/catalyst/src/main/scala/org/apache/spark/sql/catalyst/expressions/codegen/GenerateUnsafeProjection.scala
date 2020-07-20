@@ -51,13 +51,12 @@ object GenerateUnsafeProjection
       input: String,
       fieldTypes: Seq[DataType],
       bufferHolder: String): String = {
-    val fieldEvals = fieldTypes.zipWithIndex.map {
-      case (dt, i) =>
-        val fieldName = ctx.freshName("fieldName")
-        val code =
-          s"final ${ctx.javaType(dt)} $fieldName = ${ctx.getValue(input, dt, i.toString)};"
-        val isNull = s"$input.isNullAt($i)"
-        ExprCode(code, isNull, fieldName)
+    val fieldEvals = fieldTypes.zipWithIndex.map { case (dt, i) =>
+      val fieldName = ctx.freshName("fieldName")
+      val code =
+        s"final ${ctx.javaType(dt)} $fieldName = ${ctx.getValue(input, dt, i.toString)};"
+      val isNull = s"$input.isNullAt($i)"
+      ExprCode(code, isNull, fieldName)
     }
 
     s"""

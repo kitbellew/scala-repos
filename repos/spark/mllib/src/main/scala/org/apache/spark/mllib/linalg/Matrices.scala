@@ -837,28 +837,27 @@ object SparseMatrix {
     var prevRow = -1
     var prevVal = 0.0
     // Append a dummy entry to include the last one at the end of the loop.
-    (sortedEntries.view :+ (numRows, numCols, 1.0)).foreach {
-      case (i, j, v) =>
-        if (v != 0) {
-          if (i == prevRow && j == prevCol) {
-            prevVal += v
-          } else {
-            if (prevVal != 0) {
-              require(
-                prevRow >= 0 && prevRow < numRows,
-                s"Row index out of range [0, $numRows): $prevRow.")
-              nnz += 1
-              rowIndices += prevRow
-              values += prevVal
-            }
-            prevRow = i
-            prevVal = v
-            while (prevCol < j) {
-              colPtrs(prevCol + 1) = nnz
-              prevCol += 1
-            }
+    (sortedEntries.view :+ (numRows, numCols, 1.0)).foreach { case (i, j, v) =>
+      if (v != 0) {
+        if (i == prevRow && j == prevCol) {
+          prevVal += v
+        } else {
+          if (prevVal != 0) {
+            require(
+              prevRow >= 0 && prevRow < numRows,
+              s"Row index out of range [0, $numRows): $prevRow.")
+            nnz += 1
+            rowIndices += prevRow
+            values += prevVal
+          }
+          prevRow = i
+          prevVal = v
+          while (prevCol < j) {
+            colPtrs(prevCol + 1) = nnz
+            prevCol += 1
           }
         }
+      }
     }
     new SparseMatrix(
       numRows,

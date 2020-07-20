@@ -362,43 +362,38 @@ object Load {
       transformProjectOnly(loaded.root, rootProject, injectSettings.global)) ++
       inScope(GlobalScope)(
         pluginGlobalSettings(loaded) ++ loaded.autos.globalSettings) ++
-      loaded.units.toSeq.flatMap {
-        case (uri, build) =>
-          val plugins = build.unit.plugins.detected.plugins.values
-          val pluginBuildSettings =
-            plugins.flatMap(_.buildSettings) ++ loaded.autos.buildSettings(uri)
-          val pluginNotThis =
-            plugins.flatMap(_.settings) filterNot isProjectThis
-          val projectSettings = build.defined flatMap {
-            case (id, project) =>
-              val ref = ProjectRef(uri, id)
-              val defineConfig: Seq[Setting[_]] =
-                for (c <- project.configurations)
-                  yield ((configuration in (ref, ConfigKey(c.name))) :== c)
-              val builtin: Seq[Setting[_]] =
-                (thisProject :== project) +: (thisProjectRef :== ref) +: defineConfig
-              val settings =
-                builtin ++ project.settings ++ injectSettings.project
-              // map This to thisScope, Select(p) to mapRef(uri, rootProject, p)
-              transformSettings(projectScope(ref), uri, rootProject, settings)
-          }
-          val buildScope = Scope(Select(BuildRef(uri)), Global, Global, Global)
-          val buildBase = baseDirectory :== build.localBase
-          val buildSettings = transformSettings(
-            buildScope,
-            uri,
-            rootProject,
-            pluginNotThis ++ pluginBuildSettings ++ (buildBase +: build.buildSettings))
-          buildSettings ++ projectSettings
+      loaded.units.toSeq.flatMap { case (uri, build) =>
+        val plugins = build.unit.plugins.detected.plugins.values
+        val pluginBuildSettings =
+          plugins.flatMap(_.buildSettings) ++ loaded.autos.buildSettings(uri)
+        val pluginNotThis = plugins.flatMap(_.settings) filterNot isProjectThis
+        val projectSettings = build.defined flatMap { case (id, project) =>
+          val ref = ProjectRef(uri, id)
+          val defineConfig: Seq[Setting[_]] =
+            for (c <- project.configurations)
+              yield ((configuration in (ref, ConfigKey(c.name))) :== c)
+          val builtin: Seq[Setting[_]] =
+            (thisProject :== project) +: (thisProjectRef :== ref) +: defineConfig
+          val settings = builtin ++ project.settings ++ injectSettings.project
+          // map This to thisScope, Select(p) to mapRef(uri, rootProject, p)
+          transformSettings(projectScope(ref), uri, rootProject, settings)
+        }
+        val buildScope = Scope(Select(BuildRef(uri)), Global, Global, Global)
+        val buildBase = baseDirectory :== build.localBase
+        val buildSettings = transformSettings(
+          buildScope,
+          uri,
+          rootProject,
+          pluginNotThis ++ pluginBuildSettings ++ (buildBase +: build.buildSettings))
+        buildSettings ++ projectSettings
       }
   }
   @deprecated(
     "Does not account for AutoPlugins and will be made private.",
     "0.13.2")
   def pluginGlobalSettings(loaded: sbt.LoadedBuild): Seq[Setting[_]] =
-    loaded.units.toSeq flatMap {
-      case (_, build) =>
-        build.unit.plugins.detected.plugins.values flatMap { _.globalSettings }
+    loaded.units.toSeq flatMap { case (_, build) =>
+      build.unit.plugins.detected.plugins.values flatMap { _.globalSettings }
     }
 
   @deprecated("No longer used.", "0.13.0")
@@ -611,12 +606,10 @@ object Load {
   def resolveAll(
       builds: Map[URI, sbt.PartBuildUnit]): Map[URI, sbt.LoadedBuildUnit] = {
     val rootProject = getRootProject(builds)
-    builds map {
-      case (uri, unit) =>
-        (
-          uri,
-          unit.resolveRefs(ref =>
-            Scope.resolveProjectRef(uri, rootProject, ref)))
+    builds map { case (uri, unit) =>
+      (
+        uri,
+        unit.resolveRefs(ref => Scope.resolveProjectRef(uri, rootProject, ref)))
     }
   }
   def checkAll(
@@ -646,10 +639,9 @@ object Load {
   }
   def resolveProjects(loaded: sbt.PartBuild): sbt.LoadedBuild = {
     val rootProject = getRootProject(loaded.units)
-    val units = loaded.units map {
-      case (uri, unit) =>
-        IO.assertAbsolute(uri)
-        (uri, resolveProjects(uri, unit, rootProject))
+    val units = loaded.units map { case (uri, unit) =>
+      IO.assertAbsolute(uri)
+      (uri, resolveProjects(uri, unit, rootProject))
     }
     new sbt.LoadedBuild(loaded.root, units)
   }

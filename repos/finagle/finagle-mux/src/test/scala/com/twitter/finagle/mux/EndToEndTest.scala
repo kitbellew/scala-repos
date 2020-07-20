@@ -49,9 +49,8 @@ class EndToEndTest
   test("Discard request properly sent") {
     @volatile var handled = false
     val p = Promise[Response]()
-    p.setInterruptHandler {
-      case t: Throwable =>
-        handled = true
+    p.setInterruptHandler { case t: Throwable =>
+      handled = true
     }
 
     val svc = Service.mk[Request, Response](_ => p)

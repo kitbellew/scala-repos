@@ -485,19 +485,18 @@ private[sql] object StatFunctions extends Logging {
         s"exceed 1e4. Currently $columnSize")
     val table = counts
       .groupBy(_.get(0))
-      .map {
-        case (col1Item, rows) =>
-          val countsRow = new GenericMutableRow(columnSize + 1)
-          rows.foreach { (row: Row) =>
-            // row.get(0) is column 1
-            // row.get(1) is column 2
-            // row.get(2) is the frequency
-            val columnIndex = distinctCol2.get(cleanElement(row.get(1))).get
-            countsRow.setLong(columnIndex + 1, row.getLong(2))
-          }
-          // the value of col1 is the first value, the rest are the counts
-          countsRow.update(0, UTF8String.fromString(cleanElement(col1Item)))
-          countsRow
+      .map { case (col1Item, rows) =>
+        val countsRow = new GenericMutableRow(columnSize + 1)
+        rows.foreach { (row: Row) =>
+          // row.get(0) is column 1
+          // row.get(1) is column 2
+          // row.get(2) is the frequency
+          val columnIndex = distinctCol2.get(cleanElement(row.get(1))).get
+          countsRow.setLong(columnIndex + 1, row.getLong(2))
+        }
+        // the value of col1 is the first value, the rest are the counts
+        countsRow.update(0, UTF8String.fromString(cleanElement(col1Item)))
+        countsRow
       }
       .toSeq
     // Back ticks can't exist in DataFrame column names, therefore drop them. To be able to accept

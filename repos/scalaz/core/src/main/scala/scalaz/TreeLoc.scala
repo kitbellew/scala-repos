@@ -441,9 +441,8 @@ sealed abstract class TreeLocInstances {
                 G.apply3(
                   ForestT1.traverse1(OneAnd(x, xs))(f),
                   f(fa._2),
-                  ForestT1.traverse1(OneAnd(y, ys))(f)) {
-                  case (l, c, r) =>
-                    (l.head #:: l.tail, c, r.head #:: r.tail)
+                  ForestT1.traverse1(OneAnd(y, ys))(f)) { case (l, c, r) =>
+                  (l.head #:: l.tail, c, r.head #:: r.tail)
                 }
               case (x #:: xs, _) =>
                 G.apply2(ForestT1.traverse1(OneAnd(x, xs))(f), f(fa._2)) {

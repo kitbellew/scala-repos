@@ -216,13 +216,12 @@ trait ScType {
 
 object ScType extends ScTypePresentation with ScTypePsiTypeBridge {
   def typeParamsDepth(typeParams: Array[TypeParameter]): Int = {
-    typeParams.map {
-      case typeParam =>
-        val boundsDepth =
-          typeParam.lowerType().typeDepth.max(typeParam.upperType().typeDepth)
-        if (typeParam.typeParams.nonEmpty) {
-          (typeParamsDepth(typeParam.typeParams.toArray) + 1).max(boundsDepth)
-        } else boundsDepth
+    typeParams.map { case typeParam =>
+      val boundsDepth =
+        typeParam.lowerType().typeDepth.max(typeParam.upperType().typeDepth)
+      if (typeParam.typeParams.nonEmpty) {
+        (typeParamsDepth(typeParam.typeParams.toArray) + 1).max(boundsDepth)
+      } else boundsDepth
     }.max
   }
 

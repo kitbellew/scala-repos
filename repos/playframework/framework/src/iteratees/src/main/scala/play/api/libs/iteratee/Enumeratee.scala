@@ -365,12 +365,11 @@ object Enumeratee {
         new CheckDone[From, To] {
           val pec = ec.prepare()
 
-          def step[A](k: K[To, A]): K[From, Iteratee[To, A]] = {
-            case in =>
-              new CheckDone[From, To] {
-                def continue[A](k: K[To, A]) = Cont(step(k))
-              } &> Iteratee.flatten(
-                Future(f(in))(pec).flatMap(_.apply(Cont(k)))(dec))
+          def step[A](k: K[To, A]): K[From, Iteratee[To, A]] = { case in =>
+            new CheckDone[From, To] {
+              def continue[A](k: K[To, A]) = Cont(step(k))
+            } &> Iteratee.flatten(
+              Future(f(in))(pec).flatMap(_.apply(Cont(k)))(dec))
           }
 
           def continue[A](k: K[To, A]) = Cont(step(k))
@@ -945,10 +944,9 @@ object Enumeratee {
                 .map({ s =>
                   s.it
                 })(dec)
-                .recover({
-                  case NonFatal(e) =>
-                    f(e, in)
-                    Cont(step(it))
+                .recover({ case NonFatal(e) =>
+                  f(e, in)
+                  Cont(step(it))
                 })(pec)
               Iteratee.flatten(next)
             case Input.EOF =>

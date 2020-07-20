@@ -273,8 +273,8 @@ object Typeable extends TupleTypeableInstances with LowPriorityTypeable {
             .isAssignableFrom(t.getClass)) {
           val c = t.asInstanceOf[Product with T]
           val f = c.productIterator.toList
-          if ((f zip fields).forall {
-              case (f, castF) => castF.cast(f).isDefined
+          if ((f zip fields).forall { case (f, castF) =>
+              castF.cast(f).isDefined
             }) Some(c)
           else None
         } else None

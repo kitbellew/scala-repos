@@ -106,9 +106,8 @@ object NIHDB {
       actorSystem: ActorSystem) = {
     NIHDBActor.open(chef, baseDir, cookThreshold, timeout, txLogScheduler) map {
       _ map {
-        _ map {
-          case (authorities, actor) =>
-            new NIHDBImpl(actor, timeout, authorities)
+        _ map { case (authorities, actor) =>
+          new NIHDBImpl(actor, timeout, authorities)
         }
       }
     }
@@ -389,11 +388,10 @@ private[niflheim] class NIHDBActor private (
       logger.debug("Initial block state = " + blockState)
 
       // Re-fire any restored pending cooks
-      blockState.pending.foreach {
-        case (id, reader) =>
-          logger.debug(
-            "Restarting pending cook on block %s:%d".format(baseDir, id))
-          chef ! Prepare(id, cookSequence.getAndIncrement, cookedDir, reader)
+      blockState.pending.foreach { case (id, reader) =>
+        logger.debug(
+          "Restarting pending cook on block %s:%d".format(baseDir, id))
+        chef ! Prepare(id, cookSequence.getAndIncrement, cookedDir, reader)
       }
 
       new State(txLog, blockState, currentBlocks)
@@ -421,9 +419,8 @@ private[niflheim] class NIHDBActor private (
 
   private def close = {
     IO(logger.debug("Closing projection in " + baseDir)) >> quiesce
-  } except {
-    case t: Throwable =>
-      IO { logger.error("Error during close", t) }
+  } except { case t: Throwable =>
+    IO { logger.error("Error during close", t) }
   } ensuring {
     IO { workLock.release }
   }
@@ -548,9 +545,8 @@ private[niflheim] case class ProjectionState(
     cookedMap: Map[Long, String],
     authorities: Authorities) {
   def readers(baseDir: File): List[CookedReader] =
-    cookedMap.map {
-      case (id, metadataFile) =>
-        CookedReader.load(baseDir, new File(metadataFile))
+    cookedMap.map { case (id, metadataFile) =>
+      CookedReader.load(baseDir, new File(metadataFile))
     }.toList
 }
 

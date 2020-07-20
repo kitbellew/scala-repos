@@ -117,9 +117,8 @@ class CodegenContext {
 
   def declareMutableStates(): String = {
     mutableStates
-      .map {
-        case (javaType, variableName, _) =>
-          s"private $javaType $variableName;"
+      .map { case (javaType, variableName, _) =>
+        s"private $javaType $variableName;"
       }
       .mkString("\n")
   }
@@ -541,16 +540,15 @@ class CodegenContext {
       blocks.head
     } else {
       val apply = freshName("apply")
-      val functions = blocks.zipWithIndex.map {
-        case (body, i) =>
-          val name = s"${apply}_$i"
-          val code = s"""
+      val functions = blocks.zipWithIndex.map { case (body, i) =>
+        val name = s"${apply}_$i"
+        val code = s"""
            |private void $name(InternalRow $row) {
            |  $body
            |}
          """.stripMargin
-          addNewFunction(name, code)
-          name
+        addNewFunction(name, code)
+        name
       }
 
       functions.map(name => s"$name($row);").mkString("\n")

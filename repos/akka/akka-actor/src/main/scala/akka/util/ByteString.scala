@@ -678,11 +678,10 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
 
   @inline protected final def fillByteBuffer(len: Int, byteOrder: ByteOrder)(
       fill: ByteBuffer ⇒ Unit): this.type = {
-    fillArray(len) {
-      case (array, start) ⇒
-        val buffer = ByteBuffer.wrap(array, start, len)
-        buffer.order(byteOrder)
-        fill(buffer)
+    fillArray(len) { case (array, start) ⇒
+      val buffer = ByteBuffer.wrap(array, start, len)
+      buffer.order(byteOrder)
+      fill(buffer)
     }
   }
 
@@ -880,9 +879,8 @@ final class ByteStringBuilder extends Builder[Byte, ByteString] {
     * Add a number of Bytes from an array to this builder.
     */
   def putBytes(array: Array[Byte], start: Int, len: Int): this.type =
-    fillArray(len) {
-      case (target, targetOffset) ⇒
-        Array.copy(array, start, target, targetOffset, len)
+    fillArray(len) { case (target, targetOffset) ⇒
+      Array.copy(array, start, target, targetOffset, len)
     }
 
   /**

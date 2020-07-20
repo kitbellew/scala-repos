@@ -48,8 +48,7 @@ private[cacheresolver] object CacheNodeMetadata {
     * and key of the [[CacheNodeMetadata]].
     */
   def unapply(metadata: Addr.Metadata): Option[(Int, Option[String])] =
-    fromAddrMetadata(metadata).map {
-      case CacheNodeMetadata(weight, key) =>
-        (weight, key)
+    fromAddrMetadata(metadata).map { case CacheNodeMetadata(weight, key) =>
+      (weight, key)
     }
 }

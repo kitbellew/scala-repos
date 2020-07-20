@@ -128,9 +128,8 @@ object ActorPublisherSpec {
 
     override val requestStrategy = WatermarkRequestStrategy(10)
 
-    def receive = {
-      case OnNext(s: String) ⇒
-        probe ! s
+    def receive = { case OnNext(s: String) ⇒
+      probe ! s
     }
   }
 

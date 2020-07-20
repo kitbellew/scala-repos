@@ -52,9 +52,8 @@ trait Parsers { self: Quasiquotes =>
               if containsOffset(start2, end2) =>
             (pos2, offset - start2)
         }
-        .map {
-          case (pos, offset) =>
-            pos.withPoint(pos.point + offset)
+        .map { case (pos, offset) =>
+          pos.withPoint(pos.point + offset)
         }
         .toList
         .headOption

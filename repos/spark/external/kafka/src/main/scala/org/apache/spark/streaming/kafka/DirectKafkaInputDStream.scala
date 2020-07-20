@@ -101,18 +101,16 @@ private[streaming] class DirectKafkaInputDStream[
     val effectiveRateLimitPerPartition =
       estimatedRateLimit.filter(_ > 0) match {
         case Some(rate) =>
-          val lagPerPartition = offsets.map {
-            case (tp, offset) =>
-              tp -> Math.max(offset - currentOffsets(tp), 0)
+          val lagPerPartition = offsets.map { case (tp, offset) =>
+            tp -> Math.max(offset - currentOffsets(tp), 0)
           }
           val totalLag = lagPerPartition.values.sum
 
-          lagPerPartition.map {
-            case (tp, lag) =>
-              val backpressureRate = Math.round(lag / totalLag.toFloat * rate)
-              tp -> (if (maxRateLimitPerPartition > 0) {
-                       Math.min(backpressureRate, maxRateLimitPerPartition)
-                     } else backpressureRate)
+          lagPerPartition.map { case (tp, lag) =>
+            val backpressureRate = Math.round(lag / totalLag.toFloat * rate)
+            tp -> (if (maxRateLimitPerPartition > 0) {
+                     Math.min(backpressureRate, maxRateLimitPerPartition)
+                   } else backpressureRate)
           }
         case None =>
           offsets.map { case (tp, offset) => tp -> maxRateLimitPerPartition }
@@ -157,11 +155,10 @@ private[streaming] class DirectKafkaInputDStream[
 
     maxMessagesPerPartition(offsets)
       .map { mmp =>
-        mmp.map {
-          case (tp, messages) =>
-            val lo = leaderOffsets(tp)
-            tp -> lo.copy(offset =
-              Math.min(currentOffsets(tp) + messages, lo.offset))
+        mmp.map { case (tp, messages) =>
+          val lo = leaderOffsets(tp)
+          tp -> lo.copy(offset =
+            Math.min(currentOffsets(tp) + messages, lo.offset))
         }
       }
       .getOrElse(leaderOffsets)
@@ -177,10 +174,9 @@ private[streaming] class DirectKafkaInputDStream[
       messageHandler)
 
     // Report the record number and metadata of this batch interval to InputInfoTracker.
-    val offsetRanges = currentOffsets.map {
-      case (tp, fo) =>
-        val uo = untilOffsets(tp)
-        OffsetRange(tp.topic, tp.partition, fo, uo.offset)
+    val offsetRanges = currentOffsets.map { case (tp, fo) =>
+      val uo = untilOffsets(tp)
+      OffsetRange(tp.topic, tp.partition, fo, uo.offset)
     }
     val description = offsetRanges
       .filter { offsetRange =>
@@ -234,16 +230,14 @@ private[streaming] class DirectKafkaInputDStream[
       val topics = fromOffsets.keySet
       val leaders = KafkaCluster.checkErrors(kc.findLeaders(topics))
 
-      batchForTime.toSeq.sortBy(_._1)(Time.ordering).foreach {
-        case (t, b) =>
-          logInfo(
-            s"Restoring KafkaRDD for time $t ${b.mkString("[", ", ", "]")}")
-          generatedRDDs += t -> new KafkaRDD[K, V, U, T, R](
-            context.sparkContext,
-            kafkaParams,
-            b.map(OffsetRange(_)),
-            leaders,
-            messageHandler)
+      batchForTime.toSeq.sortBy(_._1)(Time.ordering).foreach { case (t, b) =>
+        logInfo(s"Restoring KafkaRDD for time $t ${b.mkString("[", ", ", "]")}")
+        generatedRDDs += t -> new KafkaRDD[K, V, U, T, R](
+          context.sparkContext,
+          kafkaParams,
+          b.map(OffsetRange(_)),
+          leaders,
+          messageHandler)
       }
     }
   }

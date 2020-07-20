@@ -733,12 +733,11 @@ trait CssBindImplicits {
       * @return the function that will transform an incoming DOM based on the transform rules
       */
     def #>[T](replacement: => T)(implicit converter: CanBind[T]): CssSel = {
-      cssSelector.collect {
-        case EnclosedSelector(a, b) =>
-          new CssBindPromoter(stringSelector, Full(a)) #> nsFunc({ ns =>
-            new CssBindPromoter(stringSelector, Full(b))
-              .#>(replacement)(converter)(ns)
-          }) // (CanBind.nodeSeqFuncTransform)
+      cssSelector.collect { case EnclosedSelector(a, b) =>
+        new CssBindPromoter(stringSelector, Full(a)) #> nsFunc({ ns =>
+          new CssBindPromoter(stringSelector, Full(b))
+            .#>(replacement)(converter)(ns)
+        }) // (CanBind.nodeSeqFuncTransform)
       } openOr {
         new CssBindImpl(stringSelector, cssSelector) {
           def calculate(in: NodeSeq): Seq[NodeSeq] = converter(replacement)(in)

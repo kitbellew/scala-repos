@@ -59,9 +59,8 @@ class Tools[C <: Context](val c: C) {
       .headOption map { annotation =>
       annotation.javaArgs(newTermName("value")) match {
         case ArrayArgument(klasses) =>
-          klasses.toList map {
-            case LiteralArgument(constant) =>
-              constant.value.asInstanceOf[Type].typeSymbol.asType
+          klasses.toList map { case LiteralArgument(constant) =>
+            constant.value.asInstanceOf[Type].typeSymbol.asType
           }
       }
     }

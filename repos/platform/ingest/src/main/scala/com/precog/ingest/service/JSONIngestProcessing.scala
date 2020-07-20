@@ -341,9 +341,8 @@ final class JSONIngestProcessing(
             errorHandling,
             storeMode,
             Some(jobId),
-            dataStream) map {
-            case IngestReport(ingested, errors) =>
-              BatchResult(ingested + errors.size, ingested, Vector(errors: _*))
+            dataStream) map { case IngestReport(ingested, errors) =>
+            BatchResult(ingested + errors.size, ingested, Vector(errors: _*))
           }
       }
     }

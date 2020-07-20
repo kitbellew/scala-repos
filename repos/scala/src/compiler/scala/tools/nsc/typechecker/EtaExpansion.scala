@@ -134,9 +134,8 @@ trait EtaExpansion { self: Analyzer =>
             (valDef, isRepeated)
           }
           atPos(tree.pos.makeTransparent) {
-            val args = params.map {
-              case (valDef, isRepeated) =>
-                gen.paramToArg(Ident(valDef.name), isRepeated)
+            val args = params.map { case (valDef, isRepeated) =>
+              gen.paramToArg(Ident(valDef.name), isRepeated)
             }
             Function(params.map(_._1), expand(Apply(tree, args), restpe))
           }

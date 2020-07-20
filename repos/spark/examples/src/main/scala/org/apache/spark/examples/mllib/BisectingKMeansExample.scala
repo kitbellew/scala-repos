@@ -50,9 +50,8 @@ object BisectingKMeansExample {
 
     // Show the compute cost and the cluster centers
     println(s"Compute Cost: ${model.computeCost(data)}")
-    model.clusterCenters.zipWithIndex.foreach {
-      case (center, idx) =>
-        println(s"Cluster Center ${idx}: ${center}")
+    model.clusterCenters.zipWithIndex.foreach { case (center, idx) =>
+      println(s"Cluster Center ${idx}: ${center}")
     }
     // $example off$
 

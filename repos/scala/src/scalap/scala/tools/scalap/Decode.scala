@@ -55,17 +55,16 @@ object Decode {
     val classFile = ClassFileParser.parse(byteCode)
     import classFile._
 
-    classFile annotation SCALA_SIG_ANNOTATION map {
-      case Annotation(_, els) =>
-        val bytesElem =
-          els find (x => constant(x.elementNameIndex) == BYTES_VALUE) orNull
-        val _bytes = bytesElem.elementValue match {
-          case ConstValueIndex(x) => constantWrapped(x)
-        }
-        val bytes = _bytes.asInstanceOf[StringBytesPair].bytes
-        val length = ByteCodecs.decode(bytes)
+    classFile annotation SCALA_SIG_ANNOTATION map { case Annotation(_, els) =>
+      val bytesElem =
+        els find (x => constant(x.elementNameIndex) == BYTES_VALUE) orNull
+      val _bytes = bytesElem.elementValue match {
+        case ConstValueIndex(x) => constantWrapped(x)
+      }
+      val bytes = _bytes.asInstanceOf[StringBytesPair].bytes
+      val length = ByteCodecs.decode(bytes)
 
-        bytes take length
+      bytes take length
     }
   }
 

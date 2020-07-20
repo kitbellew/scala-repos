@@ -161,14 +161,13 @@ class BigDecimalTest {
         BigDecimal.valueOf(123456789d, mc6)
       )
     )
-    sameRounding.map(_.zipWithIndex).foreach {
-      case xs =>
-        for ((a, i) <- xs; (b, j) <- xs) {
-          assert(a == b, s"$a != $b (#$i != #$j) but should be the same")
-          assert(
-            a.## == b.##,
-            s"Hash code mismatch in equal BigDecimals: #$i != #$j")
-        }
+    sameRounding.map(_.zipWithIndex).foreach { case xs =>
+      for ((a, i) <- xs; (b, j) <- xs) {
+        assert(a == b, s"$a != $b (#$i != #$j) but should be the same")
+        assert(
+          a.## == b.##,
+          s"Hash code mismatch in equal BigDecimals: #$i != #$j")
+      }
     }
     val List(xs, ys) = sameRounding.map(_.zipWithIndex)
     for ((a, i) <- xs; (b, j) <- ys)

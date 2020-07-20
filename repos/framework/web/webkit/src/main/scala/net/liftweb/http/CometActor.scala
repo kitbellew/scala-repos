@@ -856,9 +856,8 @@ trait BaseCometActor
 
   def mediumPriority: PartialFunction[Any, Unit] = Map.empty
 
-  private[http] def _lowPriority: PartialFunction[Any, Unit] = {
-    case s =>
-      logger.debug("CometActor " + this + " got unexpected message " + s)
+  private[http] def _lowPriority: PartialFunction[Any, Unit] = { case s =>
+    logger.debug("CometActor " + this + " got unexpected message " + s)
   }
 
   private lazy val _mediumPriority: PartialFunction[Any, Unit] = {

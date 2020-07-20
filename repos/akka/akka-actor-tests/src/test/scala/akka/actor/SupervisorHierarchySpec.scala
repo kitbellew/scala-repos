@@ -278,16 +278,15 @@ object SupervisorHierarchySpec {
       log :+= Event(
         "restarted " + suspendCount + " " + cause,
         identityHashCode(this))
-      state.kids foreach {
-        case (childPath, kidSize) ⇒
-          val name = childPath.name
-          if (context.child(name).isEmpty) {
-            listener ! Died(childPath)
-            val props = Props(
-              new Hierarchy(kidSize, breadth, listener, myLevel + 1, random))
-              .withDispatcher("hierarchy")
-            context.watch(context.actorOf(props, name))
-          }
+      state.kids foreach { case (childPath, kidSize) ⇒
+        val name = childPath.name
+        if (context.child(name).isEmpty) {
+          listener ! Died(childPath)
+          val props = Props(
+            new Hierarchy(kidSize, breadth, listener, myLevel + 1, random))
+            .withDispatcher("hierarchy")
+          context.watch(context.actorOf(props, name))
+        }
       }
       if (context.children.size != state.kids.size) {
         abort(
@@ -524,15 +523,14 @@ object SupervisorHierarchySpec {
     // number of Work packages to execute for the test
     startWith(Idle, size * 1000)
 
-    when(Idle) {
-      case Event(Init, _) ⇒
-        hierarchy = context.watch(
-          context.actorOf(
-            Props(new Hierarchy(size, breadth, self, 0, random))
-              .withDispatcher("hierarchy"),
-            "head"))
-        setTimer("phase", StateTimeout, 5 seconds, false)
-        goto(Init)
+    when(Idle) { case Event(Init, _) ⇒
+      hierarchy = context.watch(
+        context.actorOf(
+          Props(new Hierarchy(size, breadth, self, 0, random))
+            .withDispatcher("hierarchy"),
+          "head"))
+      setTimer("phase", StateTimeout, 5 seconds, false)
+      goto(Init)
     }
 
     when(Init) {
@@ -550,13 +548,12 @@ object SupervisorHierarchySpec {
         stop()
     }
 
-    onTransition {
-      case Init -> Stress ⇒
-        self ! Work
-        idleChildren = children
-        activeChildren = children
-        // set timeout for completion of the whole test (i.e. including Finishing and Stopping)
-        setTimer("phase", StateTimeout, 90.seconds.dilated, false)
+    onTransition { case Init -> Stress ⇒
+      self ! Work
+      idleChildren = children
+      activeChildren = children
+      // set timeout for completion of the whole test (i.e. including Finishing and Stopping)
+      setTimer("phase", StateTimeout, 90.seconds.dilated, false)
     }
 
     val workSchedule = 50.millis
@@ -643,11 +640,10 @@ object SupervisorHierarchySpec {
         if (pingChildren.isEmpty) goto(LastPing) else stay
     }
 
-    onTransition {
-      case _ -> LastPing ⇒
-        idleChildren foreach (_ ! "ping")
-        pingChildren ++= idleChildren
-        idleChildren = Vector.empty
+    onTransition { case _ -> LastPing ⇒
+      idleChildren foreach (_ ! "ping")
+      pingChildren ++= idleChildren
+      idleChildren = Vector.empty
     }
 
     when(LastPing) {
@@ -660,10 +656,9 @@ object SupervisorHierarchySpec {
         if (pingChildren.isEmpty) goto(Stopping) else stay
     }
 
-    onTransition {
-      case _ -> Stopping ⇒
-        ignoreNotResumedLogs = false
-        hierarchy ! PingOfDeath
+    onTransition { case _ -> Stopping ⇒
+      ignoreNotResumedLogs = false
+      hierarchy ! PingOfDeath
     }
 
     when(Stopping, stateTimeout = 5.seconds.dilated) {
@@ -922,9 +917,8 @@ class SupervisorHierarchySpec
       val slowResumer = system.actorOf(
         Props(new Actor {
           override def supervisorStrategy =
-            OneForOneStrategy() {
-              case _ ⇒
-                Await.ready(latch, 4.seconds.dilated); SupervisorStrategy.Resume
+            OneForOneStrategy() { case _ ⇒
+              Await.ready(latch, 4.seconds.dilated); SupervisorStrategy.Resume
             }
           def receive = {
             case "spawn" ⇒ sender() ! context.actorOf(Props[Resumer])
@@ -966,10 +960,9 @@ class SupervisorHierarchySpec
         val failResumer = system.actorOf(
           Props(new Actor {
             override def supervisorStrategy =
-              OneForOneStrategy() {
-                case e: ActorInitializationException ⇒
-                  if (createAttempt.get % 2 == 0) SupervisorStrategy.Resume
-                  else SupervisorStrategy.Restart
+              OneForOneStrategy() { case e: ActorInitializationException ⇒
+                if (createAttempt.get % 2 == 0) SupervisorStrategy.Resume
+                else SupervisorStrategy.Restart
               }
 
             val child = context.actorOf(

@@ -403,9 +403,8 @@ class Product(val i: Int) extends Group("Product") with Arity {
     (mdefs, targs).zipped
       .map((_, _))
       .zipWithIndex
-      .map {
-        case ((method, typeName), index) =>
-          """|  /** A projection of element %d of this Product.
+      .map { case ((method, typeName), index) =>
+        """|  /** A projection of element %d of this Product.
          |   *  @return   A projection of element %d.
          |   */
          |  def %s: %s

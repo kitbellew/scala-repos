@@ -108,8 +108,7 @@ class ScalaXmlSupportSpec
   }
 
   def shouldHaveFailedWithSAXParseException(result: Future[NodeSeq]) =
-    inside(Await.result(result.failed, 1.second)) {
-      case _: SAXParseException ⇒
+    inside(Await.result(result.failed, 1.second)) { case _: SAXParseException ⇒
     }
 
   def withTempFile[T](content: String)(f: File ⇒ T): T = {

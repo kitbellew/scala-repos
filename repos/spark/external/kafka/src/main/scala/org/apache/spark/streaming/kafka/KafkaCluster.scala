@@ -446,12 +446,11 @@ object KafkaCluster {
           "Must specify metadata.broker.list or bootstrap.servers"))
 
       val props = new Properties()
-      kafkaParams.foreach {
-        case (key, value) =>
-          // prevent warnings on parameters ConsumerConfig doesn't know about
-          if (key != "metadata.broker.list" && key != "bootstrap.servers") {
-            props.put(key, value)
-          }
+      kafkaParams.foreach { case (key, value) =>
+        // prevent warnings on parameters ConsumerConfig doesn't know about
+        if (key != "metadata.broker.list" && key != "bootstrap.servers") {
+          props.put(key, value)
+        }
       }
 
       Seq("zookeeper.connect", "group.id").foreach { s =>

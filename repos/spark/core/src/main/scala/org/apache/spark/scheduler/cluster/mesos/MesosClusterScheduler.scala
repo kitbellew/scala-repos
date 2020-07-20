@@ -373,18 +373,17 @@ private[spark] class MesosClusterScheduler(
       this.masterInfo = Some(masterInfo)
       if (!pendingRecover.isEmpty) {
         // Start task reconciliation if we need to recover.
-        val statuses = pendingRecover.collect {
-          case (taskId, slaveId) =>
-            val newStatus = TaskStatus
-              .newBuilder()
-              .setTaskId(TaskID.newBuilder().setValue(taskId).build())
-              .setSlaveId(slaveId)
-              .setState(MesosTaskState.TASK_STAGING)
-              .build()
-            launchedDrivers
-              .get(taskId)
-              .map(_.mesosTaskStatus.getOrElse(newStatus))
-              .getOrElse(newStatus)
+        val statuses = pendingRecover.collect { case (taskId, slaveId) =>
+          val newStatus = TaskStatus
+            .newBuilder()
+            .setTaskId(TaskID.newBuilder().setValue(taskId).build())
+            .setSlaveId(slaveId)
+            .setState(MesosTaskState.TASK_STAGING)
+            .build()
+          launchedDrivers
+            .get(taskId)
+            .map(_.mesosTaskStatus.getOrElse(newStatus))
+            .getOrElse(newStatus)
         }
         // TODO: Page the status updates to avoid trying to reconcile
         // a large amount of tasks at once.
@@ -410,10 +409,9 @@ private[spark] class MesosClusterScheduler(
       ""
     }
     val envBuilder = Environment.newBuilder()
-    desc.command.environment.foreach {
-      case (k, v) =>
-        envBuilder.addVariables(
-          Variable.newBuilder().setName(k).setValue(v).build())
+    desc.command.environment.foreach { case (k, v) =>
+      envBuilder.addVariables(
+        Variable.newBuilder().setName(k).setValue(v).build())
     }
     // Pass all spark properties to executor.
     val executorOpts =
@@ -626,9 +624,8 @@ private[spark] class MesosClusterScheduler(
         currentOffers,
         tasks)
     }
-    tasks.foreach {
-      case (offerId, taskInfos) =>
-        driver.launchTasks(Collections.singleton(offerId), taskInfos.asJava)
+    tasks.foreach { case (offerId, taskInfos) =>
+      driver.launchTasks(Collections.singleton(offerId), taskInfos.asJava)
     }
 
     for (o <- currentOffers if !tasks.contains(o.offerId)) {

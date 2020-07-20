@@ -468,17 +468,15 @@ private[history] class CacheMetrics(prefix: String) extends Source {
     * This includes registering metrics with [[metricRegistry]]
     */
   private def init(): Unit = {
-    allMetrics.foreach {
-      case (name, metric) =>
-        metricRegistry.register(MetricRegistry.name(prefix, name), metric)
+    allMetrics.foreach { case (name, metric) =>
+      metricRegistry.register(MetricRegistry.name(prefix, name), metric)
     }
   }
 
   override def toString: String = {
     val sb = new StringBuilder()
-    counters.foreach {
-      case (name, counter) =>
-        sb.append(name).append(" = ").append(counter.getCount).append('\n')
+    counters.foreach { case (name, counter) =>
+      sb.append(name).append(" = ").append(counter.getCount).append('\n')
     }
     sb.toString()
   }

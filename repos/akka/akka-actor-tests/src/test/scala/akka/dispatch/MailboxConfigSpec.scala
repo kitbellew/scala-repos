@@ -321,12 +321,11 @@ class SingleConsumerOnlyMailboxVerificationSpec
     val runner = system.actorOf(Props(new Actor {
       val a, b = context.watch(context.actorOf(Props(new Actor {
         var n = total / 2
-        def receive = {
-          case Ping ⇒
-            n -= 1
-            sender() ! Ping
-            if (n == 0)
-              context stop self
+        def receive = { case Ping ⇒
+          n -= 1
+          sender() ! Ping
+          if (n == 0)
+            context stop self
         }
       }).withDispatcher(dispatcherId)))
       def receive = {

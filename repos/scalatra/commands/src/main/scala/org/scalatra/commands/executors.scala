@@ -128,23 +128,21 @@ abstract class AsyncExecutor[T <: Command, S](
     if (cmd.isValid) {
       val res = handle(cmd)
 
-      res onSuccess {
-        case r ⇒
-          def plur(count: Int) = if (count == 1) "failure" else "failures"
-          val resultLog = r.fold(
-            { failures ⇒
-              s"with ${failures.size} ${plur(failures.size)}.\n${failures.list}"
-            },
-            { _ ⇒ "successfully" })
-          logger.debug(s"Command [${cmd.getClass.getName}] executed $resultLog")
+      res onSuccess { case r ⇒
+        def plur(count: Int) = if (count == 1) "failure" else "failures"
+        val resultLog = r.fold(
+          { failures ⇒
+            s"with ${failures.size} ${plur(failures.size)}.\n${failures.list}"
+          },
+          { _ ⇒ "successfully" })
+        logger.debug(s"Command [${cmd.getClass.getName}] executed $resultLog")
       }
 
-      res recover {
-        case t: Throwable =>
-          logger.error(s"Command [${cmd.getClass.getName}] failed.", t)
-          ValidationError(
-            s"Failed to execute ${cmd.getClass.getSimpleName.underscore.humanize}",
-            UnknownError).failureNel[S]
+      res recover { case t: Throwable =>
+        logger.error(s"Command [${cmd.getClass.getName}] failed.", t)
+        ValidationError(
+          s"Failed to execute ${cmd.getClass.getSimpleName.underscore.humanize}",
+          UnknownError).failureNel[S]
       }
     } else {
       val f = cmd.errors.map(_.validation) collect {

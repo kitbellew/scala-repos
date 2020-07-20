@@ -92,9 +92,8 @@ class CoordinateMatrix @Since("1.0.0") (
     val indexedRows = entries
       .map(entry => (entry.i, (entry.j.toInt, entry.value)))
       .groupByKey()
-      .map {
-        case (i, vectorEntries) =>
-          IndexedRow(i, Vectors.sparse(n, vectorEntries.toSeq))
+      .map { case (i, vectorEntries) =>
+        IndexedRow(i, Vectors.sparse(n, vectorEntries.toSeq))
       }
     new IndexedRowMatrix(indexedRows, numRows(), n)
   }
@@ -150,17 +149,14 @@ class CoordinateMatrix @Since("1.0.0") (
           (rowId.toInt, colId.toInt, entry.value))
       }
       .groupByKey(partitioner)
-      .map {
-        case ((blockRowIndex, blockColIndex), entry) =>
-          val effRows = math
-            .min(m - blockRowIndex.toLong * rowsPerBlock, rowsPerBlock)
-            .toInt
-          val effCols = math
-            .min(n - blockColIndex.toLong * colsPerBlock, colsPerBlock)
-            .toInt
-          (
-            (blockRowIndex, blockColIndex),
-            SparseMatrix.fromCOO(effRows, effCols, entry))
+      .map { case ((blockRowIndex, blockColIndex), entry) =>
+        val effRows =
+          math.min(m - blockRowIndex.toLong * rowsPerBlock, rowsPerBlock).toInt
+        val effCols =
+          math.min(n - blockColIndex.toLong * colsPerBlock, colsPerBlock).toInt
+        (
+          (blockRowIndex, blockColIndex),
+          SparseMatrix.fromCOO(effRows, effCols, entry))
       }
     new BlockMatrix(blocks, rowsPerBlock, colsPerBlock, m, n)
   }
@@ -182,9 +178,8 @@ class CoordinateMatrix @Since("1.0.0") (
     val m = numRows().toInt
     val n = numCols().toInt
     val mat = BDM.zeros[Double](m, n)
-    entries.collect().foreach {
-      case MatrixEntry(i, j, value) =>
-        mat(i.toInt, j.toInt) = value
+    entries.collect().foreach { case MatrixEntry(i, j, value) =>
+      mat(i.toInt, j.toInt) = value
     }
     mat
   }

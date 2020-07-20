@@ -493,27 +493,25 @@ class CopyProp[BT <: BTypes](val btypes: BT) {
         runQueue()
 
       var changed = false
-      toInsertAfter foreach {
-        case (target, insn) =>
-          nextExecutableInstructionOrLabel(target) match {
-            // `insn` is of type `InsnNode`, so we only need to check the Opcode when comparing to another instruction
-            case Some(next)
-                if next.getOpcode == insn.getOpcode && toRemove(next) =>
-              // Inserting and removing a POP at the same place should not enable `changed`. This happens
-              // when a POP directly follows a producer that cannot be eliminated, e.g. INVOKESTATIC A.m ()I; POP
-              // The POP is initially added to `toRemove`, and the `INVOKESTATIC` producer is added to the queue.
-              // Because the producer cannot be elided, a POP is added to `toInsertAfter`.
-              toRemove -= next
+      toInsertAfter foreach { case (target, insn) =>
+        nextExecutableInstructionOrLabel(target) match {
+          // `insn` is of type `InsnNode`, so we only need to check the Opcode when comparing to another instruction
+          case Some(next)
+              if next.getOpcode == insn.getOpcode && toRemove(next) =>
+            // Inserting and removing a POP at the same place should not enable `changed`. This happens
+            // when a POP directly follows a producer that cannot be eliminated, e.g. INVOKESTATIC A.m ()I; POP
+            // The POP is initially added to `toRemove`, and the `INVOKESTATIC` producer is added to the queue.
+            // Because the producer cannot be elided, a POP is added to `toInsertAfter`.
+            toRemove -= next
 
-            case _ =>
-              changed = true
-              method.instructions.insert(target, insn)
-          }
+          case _ =>
+            changed = true
+            method.instructions.insert(target, insn)
+        }
       }
-      toInsertBefore foreach {
-        case (target, insns) =>
-          changed = true
-          insns.foreach(method.instructions.insertBefore(target, _))
+      toInsertBefore foreach { case (target, insns) =>
+        changed = true
+        insns.foreach(method.instructions.insertBefore(target, _))
       }
       toRemove foreach { insn =>
         changed = true

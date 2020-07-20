@@ -101,9 +101,8 @@ class HttpEventActor(
       .map { subscribers =>
         me ! Broadcast(event, subscribers)
       }
-      .onFailure {
-        case NonFatal(e) =>
-          log.error("While trying to resolve subscribers for event {}", event)
+      .onFailure { case NonFatal(e) =>
+        log.error("While trying to resolve subscribers for event {}", event)
       }
   }
 
@@ -134,10 +133,9 @@ class HttpEventActor(
     val response = pipeline(context.dispatcher)(request)
 
     import context.dispatcher
-    response.onComplete {
-      case _ =>
-        metrics.outstandingCallbacks.dec()
-        metrics.callbackResponseTime.update(start.until(clock.now()))
+    response.onComplete { case _ =>
+      metrics.outstandingCallbacks.dec()
+      metrics.callbackResponseTime.update(start.until(clock.now()))
     }
     response.onComplete {
       case Success(res) if res.status.isSuccess =>

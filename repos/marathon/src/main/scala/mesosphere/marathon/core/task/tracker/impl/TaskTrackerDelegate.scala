@@ -40,12 +40,11 @@ private[tracker] class TaskTrackerDelegate(
     def futureCall(): Future[TaskTracker.TasksByApp] =
       (taskTrackerRef ? TaskTrackerActor.List)
         .mapTo[TaskTracker.TasksByApp]
-        .recover {
-          case e: AskTimeoutException =>
-            throw new TimeoutException(
-              s"timeout while calling list. If you know what you are doing, you can adjust the timeout " +
-                s"with --${config.internalTaskTrackerRequestTimeout.name}."
-            )
+        .recover { case e: AskTimeoutException =>
+          throw new TimeoutException(
+            s"timeout while calling list. If you know what you are doing, you can adjust the timeout " +
+              s"with --${config.internalTaskTrackerRequestTimeout.name}."
+          )
         }
     tasksByAppTimer.fold(futureCall())(_.timeFuture(futureCall()))
   }

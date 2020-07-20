@@ -81,10 +81,9 @@ trait ObservableBuffer[A]
     var curr = n - 1
     val msg = elems.foldLeft(new Script[A]() with Undoable {
       def undo() { throw new UnsupportedOperationException("cannot undo") }
-    }) {
-      case (msg, elem) =>
-        curr += 1
-        msg += Include(Index(curr), elem)
+    }) { case (msg, elem) =>
+      curr += 1
+      msg += Include(Index(curr), elem)
     }
     publish(msg)
   }

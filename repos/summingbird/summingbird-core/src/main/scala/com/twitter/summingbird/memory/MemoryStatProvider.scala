@@ -85,9 +85,8 @@ private[summingbird] object MemoryStatProvider extends PlatformStatProvider {
     * @param counters - list of counter names with format (group, name)
     */
   def registerCounters(jobID: JobId, counters: Seq[(Group, Name)]): Unit = {
-    val memoryCounters = counters.map {
-      case (group, name) =>
-        (group.getString + "/" + name.getString, new MemoryCounter())
+    val memoryCounters = counters.map { case (group, name) =>
+      (group.getString + "/" + name.getString, new MemoryCounter())
     }.toMap
 
     @annotation.tailrec

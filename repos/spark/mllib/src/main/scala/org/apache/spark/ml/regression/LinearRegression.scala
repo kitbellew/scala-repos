@@ -179,8 +179,8 @@ class LinearRegression @Since("1.3.0") (
       .select(col($(featuresCol)))
       .limit(1)
       .rdd
-      .map {
-        case Row(features: Vector) => features.size
+      .map { case Row(features: Vector) =>
+        features.size
       }
       .first()
     val w = if ($(weightCol).isEmpty) lit(1.0) else col($(weightCol))

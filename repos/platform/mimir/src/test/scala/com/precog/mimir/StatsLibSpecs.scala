@@ -263,8 +263,8 @@ trait StatsLibSpecs[M[+_]]
 
       // this is ugly, but so is the structure coming out of testEval :/
       val result: List[Map[String, SValue]] = testEval(input).toList
-        .map {
-          case (Vector(k), SObject(v)) => (k, v)
+        .map { case (Vector(k), SObject(v)) =>
+          (k, v)
         }
         .sorted(ordering)
         .map(_._2)
@@ -377,8 +377,8 @@ trait StatsLibSpecs[M[+_]]
 
       // this is ugly, but so is the structure coming out of testEval :/
       val result: List[Map[String, SValue]] = testEval(input).toList
-        .map {
-          case (Vector(k), SObject(v)) => (k, v)
+        .map { case (Vector(k), SObject(v)) =>
+          (k, v)
         }
         .sorted(ordering)
         .map(_._2)

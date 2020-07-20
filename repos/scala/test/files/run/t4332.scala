@@ -38,9 +38,8 @@ object Test extends DirectTest {
       case (owner, _) => viewType baseTypeIndex owner
     }
     val report = grouped
-      .map {
-        case (owner, syms) =>
-          s"\n$owner\n${"-" * 70}\n${syms.map(_.defString).sorted.mkString("\n")}"
+      .map { case (owner, syms) =>
+        s"\n$owner\n${"-" * 70}\n${syms.map(_.defString).sorted.mkString("\n")}"
       }
       .mkString("\n")
     println(report)

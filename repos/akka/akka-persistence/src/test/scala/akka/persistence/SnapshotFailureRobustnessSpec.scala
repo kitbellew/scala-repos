@@ -182,10 +182,9 @@ class SnapshotFailureRobustnessSpec
       expectMsg(2)
       val criteria = SnapshotSelectionCriteria(maxSequenceNr = 10)
       p ! DeleteSnapshots(criteria)
-      expectMsgPF() {
-        case DeleteSnapshotsFailure(criteria, cause) ⇒
-          // ok, expected failure
-          cause.getMessage should include("Failed to delete")
+      expectMsgPF() { case DeleteSnapshotsFailure(criteria, cause) ⇒
+        // ok, expected failure
+        cause.getMessage should include("Failed to delete")
       }
     }
   }

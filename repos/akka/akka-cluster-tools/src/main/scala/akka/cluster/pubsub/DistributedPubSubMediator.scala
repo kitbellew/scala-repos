@@ -432,11 +432,10 @@ object DistributedPubSubMediator {
 
     class Group(val emptyTimeToLive: FiniteDuration, routingLogic: RoutingLogic)
         extends TopicLike {
-      def business = {
-        case SendToOneSubscriber(msg) ⇒
-          if (subscribers.nonEmpty)
-            Router(routingLogic, (subscribers map ActorRefRoutee).toVector)
-              .route(wrapIfNeeded(msg), sender())
+      def business = { case SendToOneSubscriber(msg) ⇒
+        if (subscribers.nonEmpty)
+          Router(routingLogic, (subscribers map ActorRefRoutee).toVector)
+            .route(wrapIfNeeded(msg), sender())
       }
     }
 
@@ -742,11 +741,10 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     case _: MemberEvent ⇒ // not of interest
 
     case Count ⇒
-      val count = registry.map {
-        case (owner, bucket) ⇒
-          bucket.content.count {
-            case (_, valueHolder) ⇒ valueHolder.ref.isDefined
-          }
+      val count = registry.map { case (owner, bucket) ⇒
+        bucket.content.count {
+          case (_, valueHolder) ⇒ valueHolder.ref.isDefined
+        }
       }.sum
       sender() ! count
   }
@@ -860,16 +858,14 @@ class DistributedPubSubMediator(settings: DistributedPubSubSettings)
     else Some(addresses(ThreadLocalRandom.current nextInt addresses.size))
 
   def prune(): Unit = {
-    registry foreach {
-      case (owner, bucket) ⇒
-        val oldRemoved = bucket.content.collect {
-          case (key, ValueHolder(version, None))
-              if (bucket.version - version > removedTimeToLiveMillis) ⇒
-            key
-        }
-        if (oldRemoved.nonEmpty)
-          registry += owner -> bucket.copy(content =
-            bucket.content -- oldRemoved)
+    registry foreach { case (owner, bucket) ⇒
+      val oldRemoved = bucket.content.collect {
+        case (key, ValueHolder(version, None))
+            if (bucket.version - version > removedTimeToLiveMillis) ⇒
+          key
+      }
+      if (oldRemoved.nonEmpty)
+        registry += owner -> bucket.copy(content = bucket.content -- oldRemoved)
     }
   }
 

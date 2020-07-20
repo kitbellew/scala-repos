@@ -95,9 +95,8 @@ trait SegmentFormatSupport {
       values <- listOfN(length, g)
     } yield {
       val array = manifest[A].newArray(length)
-      values.zipWithIndex foreach {
-        case (v, i) =>
-          array(i) = v
+      values.zipWithIndex foreach { case (v, i) =>
+        array(i) = v
       }
       array
     }
@@ -175,14 +174,13 @@ trait SegmentFormatMatchers { self: Specification with ScalaCheck =>
 
   def surviveRoundTripWithFormat(format: SegmentFormat)(segment0: Segment) = {
     val out = new InMemoryWritableByteChannel
-    format.writer.writeSegment(out, segment0) must beLike {
-      case Success(_) =>
-        format.reader.readSegment(
-          new InMemoryReadableByteChannel(out.toArray)) must beLike {
-          case Success(segment1) =>
-            //
-            areEqual(segment0, segment1)
-        }
+    format.writer.writeSegment(out, segment0) must beLike { case Success(_) =>
+      format.reader.readSegment(
+        new InMemoryReadableByteChannel(out.toArray)) must beLike {
+        case Success(segment1) =>
+          //
+          areEqual(segment0, segment1)
+      }
     }
   }
 }

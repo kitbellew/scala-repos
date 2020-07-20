@@ -159,52 +159,48 @@ private[finagle] class TrafficDistributor[Req, Rep](
       addrs: Event[Activity.State[Set[Address]]]
   ): Event[Activity.State[Set[WeightedFactory[Req, Rep]]]] = {
     val init = Map.empty[Address, WeightedFactory[Req, Rep]]
-    safelyScanLeft(init, addrs) {
-      case (active, addrs) =>
-        // Note, if an update contains multiple `Address` instances
-        // with duplicate `weight` metadata, only one of the instances and its associated
-        // factory is cached. Last write wins.
-        val weightedAddrs: Set[(Address, Double)] =
-          addrs.map(WeightedAddress.extract)
-        val merged = weightedAddrs.foldLeft(active) {
-          case (cache, (addr, weight)) =>
-            cache.get(addr) match {
-              // An update with an existing Address that has a new weight
-              // results in the the weight being overwritten but the [[ServiceFactory]]
-              // instance is maintained.
-              case Some(wf @ WeightedFactory(_, _, w)) if w != weight =>
-                cache.updated(addr, wf.copy(weight = weight))
-              case None =>
-                // The `closeGate` allows us to defer closing an endpoint service
-                // factory until it is removed from this cache. Without it, an endpoint may
-                // be closed prematurely when moving across weight classes if the
-                // weight class is removed.
-                val closeGate = new Promise[Unit]
-                val endpoint = new ServiceFactoryProxy(newEndpoint(addr)) {
-                  override def close(when: Time) =
-                    (closeGate or outerClose).before { super.close(when) }
-                }
-                cache.updated(
-                  addr,
-                  WeightedFactory(endpoint, closeGate, weight))
-              case _ => cache
-            }
-        }
+    safelyScanLeft(init, addrs) { case (active, addrs) =>
+      // Note, if an update contains multiple `Address` instances
+      // with duplicate `weight` metadata, only one of the instances and its associated
+      // factory is cached. Last write wins.
+      val weightedAddrs: Set[(Address, Double)] =
+        addrs.map(WeightedAddress.extract)
+      val merged = weightedAddrs.foldLeft(active) {
+        case (cache, (addr, weight)) =>
+          cache.get(addr) match {
+            // An update with an existing Address that has a new weight
+            // results in the the weight being overwritten but the [[ServiceFactory]]
+            // instance is maintained.
+            case Some(wf @ WeightedFactory(_, _, w)) if w != weight =>
+              cache.updated(addr, wf.copy(weight = weight))
+            case None =>
+              // The `closeGate` allows us to defer closing an endpoint service
+              // factory until it is removed from this cache. Without it, an endpoint may
+              // be closed prematurely when moving across weight classes if the
+              // weight class is removed.
+              val closeGate = new Promise[Unit]
+              val endpoint = new ServiceFactoryProxy(newEndpoint(addr)) {
+                override def close(when: Time) =
+                  (closeGate or outerClose).before { super.close(when) }
+              }
+              cache.updated(addr, WeightedFactory(endpoint, closeGate, weight))
+            case _ => cache
+          }
+      }
 
-        // Remove stale cache entries. When `eagerEviction` is false cache
-        // entries are only removed in subsequent stream updates.
-        val removed = merged.keySet -- weightedAddrs.map(_._1)
-        removed.foldLeft(merged) {
-          case (cache, addr) =>
-            cache.get(addr) match {
-              case Some(WeightedFactory(f, g, _))
-                  if eagerEviction || f.status != Status.Open =>
-                g.setDone()
-                f.close()
-                cache - addr
-              case _ => cache
-            }
+      // Remove stale cache entries. When `eagerEviction` is false cache
+      // entries are only removed in subsequent stream updates.
+      val removed = merged.keySet -- weightedAddrs.map(_._1)
+      removed.foldLeft(merged) { case (cache, addr) =>
+        cache.get(addr) match {
+          case Some(WeightedFactory(f, g, _))
+              if eagerEviction || f.status != Status.Open =>
+            g.setDone()
+            f.close()
+            cache - addr
+          case _ => cache
         }
+      }
     }.map {
       case Activity.Ok(cache)          => Activity.Ok(cache.values.toSet)
       case Activity.Pending            => Activity.Pending
@@ -222,48 +218,43 @@ private[finagle] class TrafficDistributor[Req, Rep](
     // Cache entries are balancer instances together with their backing collection
     // which is updatable. The entries are keyed by weight class.
     val init = Map.empty[Double, CachedBalancer[Req, Rep]]
-    safelyScanLeft(init, endpoints) {
-      case (balancers, activeSet) =>
-        val weightedGroups: Map[Double, Set[WeightedFactory[Req, Rep]]] =
-          activeSet.groupBy(_.weight)
+    safelyScanLeft(init, endpoints) { case (balancers, activeSet) =>
+      val weightedGroups: Map[Double, Set[WeightedFactory[Req, Rep]]] =
+        activeSet.groupBy(_.weight)
 
-        val merged = weightedGroups.foldLeft(balancers) {
-          case (cache, (weight, factories)) =>
-            val unweighted = factories.map {
-              case WeightedFactory(f, _, _) => f
-            }
-            val newCacheEntry = if (cache.contains(weight)) {
-              // an update that contains an existing weight class updates
-              // the balancers backing collection.
-              val cached = cache(weight)
-              cached.endpoints.update(Activity.Ok(unweighted))
-              cached.copy(size = unweighted.size)
-            } else {
-              val endpoints: BalancerEndpoints[Req, Rep] =
-                Var(Activity.Ok(unweighted))
-              val lb = newBalancer(Activity(endpoints))
-              CachedBalancer(lb, endpoints, unweighted.size)
-            }
-            cache + (weight -> newCacheEntry)
-        }
+      val merged = weightedGroups.foldLeft(balancers) {
+        case (cache, (weight, factories)) =>
+          val unweighted = factories.map { case WeightedFactory(f, _, _) => f }
+          val newCacheEntry = if (cache.contains(weight)) {
+            // an update that contains an existing weight class updates
+            // the balancers backing collection.
+            val cached = cache(weight)
+            cached.endpoints.update(Activity.Ok(unweighted))
+            cached.copy(size = unweighted.size)
+          } else {
+            val endpoints: BalancerEndpoints[Req, Rep] =
+              Var(Activity.Ok(unweighted))
+            val lb = newBalancer(Activity(endpoints))
+            CachedBalancer(lb, endpoints, unweighted.size)
+          }
+          cache + (weight -> newCacheEntry)
+      }
 
-        // weight classes that no longer exist in the update are removed from
-        // the cache and the associated balancer instances are closed.
-        val removed = balancers.keySet -- weightedGroups.keySet
-        removed.foldLeft(merged) {
-          case (cache, weight) =>
-            cache.get(weight) match {
-              case Some(CachedBalancer(bal, _, _)) =>
-                bal.close()
-                cache - weight
-              case _ => cache
-            }
+      // weight classes that no longer exist in the update are removed from
+      // the cache and the associated balancer instances are closed.
+      val removed = balancers.keySet -- weightedGroups.keySet
+      removed.foldLeft(merged) { case (cache, weight) =>
+        cache.get(weight) match {
+          case Some(CachedBalancer(bal, _, _)) =>
+            bal.close()
+            cache - weight
+          case _ => cache
         }
+      }
     }.map {
       case Activity.Ok(cache) =>
-        Activity.Ok(cache.map {
-          case (weight, CachedBalancer(bal, _, size)) =>
-            WeightClass(bal, weight, size)
+        Activity.Ok(cache.map { case (weight, CachedBalancer(bal, _, size)) =>
+          WeightClass(bal, weight, size)
         })
       case Activity.Pending            => Activity.Pending
       case failed @ Activity.Failed(_) => failed

@@ -89,9 +89,8 @@ object Metrics {
             throw e
         }
       import mesosphere.util.CallerThreadExecutionContext.callerThreadExecutionContext
-      f.onComplete {
-        case _ =>
-          timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
+      f.onComplete { case _ =>
+        timer.update(System.nanoTime() - startTime, TimeUnit.NANOSECONDS)
       }
       f
     }

@@ -161,9 +161,8 @@ class StreamExecution(
         }
 
         assert(sources.size == storedProgress.size)
-        sources.zip(storedProgress).foreach {
-          case (source, offset) =>
-            offset.foreach(streamProgress.update(source, _))
+        sources.zip(storedProgress).foreach { case (source, offset) =>
+          offset.foreach(streamProgress.update(source, _))
         }
       case None => // We are starting this stream for the first time.
       case _ =>

@@ -1015,10 +1015,9 @@ object JavaToScala {
               .asInstanceOf[ParameterConstruction]
             (p.name, p.scCompType, false)
           } else {
-            fieldInfo.foreach {
-              case (field, statement) =>
-                dropFields += field
-                dropStatements += statement
+            fieldInfo.foreach { case (field, statement) =>
+              dropFields += field
+              dropStatements += statement
             }
             val p = convertPsiToIntermdeiate(
               fieldInfo.head._1,

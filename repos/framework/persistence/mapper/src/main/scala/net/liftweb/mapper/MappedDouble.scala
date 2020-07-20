@@ -165,9 +165,8 @@ abstract class MappedDouble[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case f: MappedDouble[T] =>
-            f.st(if (v == null) defaultValue else v.getTime)
+        { case f: MappedDouble[T] =>
+          f.st(if (v == null) defaultValue else v.getTime)
         })
 
   def buildSetStringValue(

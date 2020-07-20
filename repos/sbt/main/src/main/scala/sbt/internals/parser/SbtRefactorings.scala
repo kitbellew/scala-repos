@@ -54,13 +54,11 @@ private[sbt] object SbtRefactorings {
   }
 
   private def recordCommands(commands: Seq[SessionSetting], split: SbtParser) =
-    commands.flatMap {
-      case (_, command) =>
-        val map = toTreeStringMap(command)
-        map.flatMap {
-          case (name, statement) =>
-            treesToReplacements(split, name, command)
-        }
+    commands.flatMap { case (_, command) =>
+      val map = toTreeStringMap(command)
+      map.flatMap { case (name, statement) =>
+        treesToReplacements(split, name, command)
+      }
     }
 
   private def treesToReplacements(
@@ -85,9 +83,8 @@ private[sbt] object SbtRefactorings {
   private def toTreeStringMap(command: Seq[String]) = {
     val split = SbtParser(FAKE_FILE, command)
     val trees = split.settingsTrees
-    val seq = trees.map {
-      case (statement, tree) =>
-        (extractSettingName(tree), statement)
+    val seq = trees.map { case (statement, tree) =>
+      (extractSettingName(tree), statement)
     }
     seq.toMap
   }

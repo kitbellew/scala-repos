@@ -13,14 +13,11 @@ class BeCloseToVecProportional[T: Numeric: ClassManifest](v: Vec[T], delta: T)
     val num = implicitly[Numeric[T]]
     result(
       v.length == 0 || {
-        val res = v.toSeq.zipWithIndex map {
-          case (n, i) =>
-            num.lteq(
-              num.minus(n, num.abs(num.times(delta, n))),
-              x.value.raw(i)) &&
-              num.lteq(
-                x.value.raw(i),
-                num.plus(n, num.abs(num.times(delta, n))))
+        val res = v.toSeq.zipWithIndex map { case (n, i) =>
+          num.lteq(
+            num.minus(n, num.abs(num.times(delta, n))),
+            x.value.raw(i)) &&
+            num.lteq(x.value.raw(i), num.plus(n, num.abs(num.times(delta, n))))
         }
         Vec(res: _*).all
       },

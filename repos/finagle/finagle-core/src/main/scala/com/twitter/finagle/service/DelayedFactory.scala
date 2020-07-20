@@ -34,12 +34,11 @@ class DelayedFactory[Req, Rep](
       f: Future[ServiceFactory[Req, Rep]]
   ): Future[ServiceFactory[Req, Rep]] = {
     val p = Promise.attached(f)
-    p setInterruptHandler {
-      case t: Throwable =>
-        if (p.detach()) {
-          q.remove(p)
-          p.setException(Failure.adapt(t, Failure.Interrupted))
-        }
+    p setInterruptHandler { case t: Throwable =>
+      if (p.detach()) {
+        q.remove(p)
+        p.setException(Failure.adapt(t, Failure.Interrupted))
+      }
     }
     q.add(p)
     p

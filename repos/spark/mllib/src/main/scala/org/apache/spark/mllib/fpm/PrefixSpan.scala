@@ -153,9 +153,8 @@ class PrefixSpan private (
         uniqItems.toIterator.map((_, 1L))
       }
       .reduceByKey(_ + _)
-      .filter {
-        case (_, count) =>
-          count >= minCount
+      .filter { case (_, count) =>
+        count >= minCount
       }
       .collect()
     val freqItems = freqItemAndCounts.sortBy(-_._2).map(_._1)
@@ -217,9 +216,8 @@ class PrefixSpan private (
       sequenceBuilder.result()
     }
 
-    val freqSequences = results.map {
-      case (seq: Array[Int], count: Long) =>
-        new FreqSequence(toPublicRepr(seq), count)
+    val freqSequences = results.map { case (seq: Array[Int], count: Long) =>
+      new FreqSequence(toPublicRepr(seq), count)
     }
     new PrefixSpanModel(freqSequences)
   }
@@ -298,24 +296,22 @@ object PrefixSpan extends Logging {
             }
           }
         }
-        .reduceByKey {
-          case ((c0, s0), (c1, s1)) =>
-            (c0 + c1, s0 + s1)
+        .reduceByKey { case ((c0, s0), (c1, s1)) =>
+          (c0 + c1, s0 + s1)
         }
         .filter { case (_, (c, _)) => c >= minCount }
         .collect()
       val newLargePrefixes = mutable.Map.empty[Int, Prefix]
-      freqPrefixes.foreach {
-        case ((id, item), (count, projDBSize)) =>
-          val newPrefix = largePrefixes(id) :+ item
-          localFreqPatterns += ((newPrefix.items :+ 0, count))
-          if (newPrefix.length < maxPatternLength) {
-            if (projDBSize > maxLocalProjDBSize) {
-              newLargePrefixes += newPrefix.id -> newPrefix
-            } else {
-              smallPrefixes += newPrefix.id -> newPrefix
-            }
+      freqPrefixes.foreach { case ((id, item), (count, projDBSize)) =>
+        val newPrefix = largePrefixes(id) :+ item
+        localFreqPatterns += ((newPrefix.items :+ 0, count))
+        if (newPrefix.length < maxPatternLength) {
+          if (projDBSize > maxLocalProjDBSize) {
+            newLargePrefixes += newPrefix.id -> newPrefix
+          } else {
+            smallPrefixes += newPrefix.id -> newPrefix
           }
+        }
       }
       largePrefixes = newLargePrefixes
     }
@@ -336,17 +332,16 @@ object PrefixSpan extends Logging {
             .filter(_._2.nonEmpty)
         }
         .groupByKey()
-        .flatMap {
-          case (id, projPostfixes) =>
-            val prefix = bcSmallPrefixes.value(id)
-            val localPrefixSpan =
-              new LocalPrefixSpan(minCount, maxPatternLength - prefix.length)
-            // TODO: We collect projected postfixes into memory. We should also compare the performance
-            // TODO: of keeping them on shuffle files.
-            localPrefixSpan.run(projPostfixes.toArray).map {
-              case (pattern, count) =>
-                (prefix.items ++ pattern, count)
-            }
+        .flatMap { case (id, projPostfixes) =>
+          val prefix = bcSmallPrefixes.value(id)
+          val localPrefixSpan =
+            new LocalPrefixSpan(minCount, maxPatternLength - prefix.length)
+          // TODO: We collect projected postfixes into memory. We should also compare the performance
+          // TODO: of keeping them on shuffle files.
+          localPrefixSpan.run(projPostfixes.toArray).map {
+            case (pattern, count) =>
+              (prefix.items ++ pattern, count)
+          }
         }
       // Union local frequent patterns and distributed ones.
       freqPatterns = freqPatterns ++ distributedFreqPattern

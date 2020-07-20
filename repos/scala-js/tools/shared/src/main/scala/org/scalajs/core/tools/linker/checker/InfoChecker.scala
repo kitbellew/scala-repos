@@ -106,11 +106,10 @@ private final class InfoChecker(
     def mapIncludes(
         actual: Map[String, List[String]],
         expected: Map[String, List[String]]) = {
-      expected forall {
-        case (cls, expectedMethods) =>
-          actual.get(cls) exists { actualMethods =>
-            listIncludes(actualMethods, expectedMethods)
-          }
+      expected forall { case (cls, expectedMethods) =>
+        actual.get(cls) exists { actualMethods =>
+          listIncludes(actualMethods, expectedMethods)
+        }
       }
     }
 

@@ -1100,8 +1100,8 @@ trait AbstractScreen extends Factory with Loggable {
   protected def grabParams(
       in: Seq[FilterOrValidate[_]]): List[SHtml.ElemAttr] = {
     val sl = in.toList
-    in.collect {
-      case FormFieldId(id) => ("id" -> id): SHtml.ElemAttr
+    in.collect { case FormFieldId(id) =>
+      ("id" -> id): SHtml.ElemAttr
     }.headOption
       .toList :::
       sl.collect {
@@ -1370,11 +1370,10 @@ trait ScreenWizardRendered extends Loggable {
         myNotices match {
           case Nil => remove(_.errors)
           case xs =>
-            replaceChildren(_.errors) #> xs.map {
-              case (noticeType, msg, _) =>
-                val metaData: MetaData =
-                  noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
-                nsSetChildren(_.error, msg) & update(_.error, metaData)
+            replaceChildren(_.errors) #> xs.map { case (noticeType, msg, _) =>
+              val metaData: MetaData =
+                noticeTypeToAttr(theScreen).map(_(noticeType)) openOr Null
+              nsSetChildren(_.error, msg) & update(_.error, metaData)
             }
         }
 
@@ -1435,19 +1434,18 @@ trait ScreenWizardRendered extends Loggable {
           })) % liftScreenAttr("nextAction")
         }</form> %
           theScreen.additionalAttributes) ++
-          prevId.toList.map {
-            case (id, func) =>
-              <form id={id} action={url} method="post">{
-                SHtml.hidden(() => {
-                  snapshot.restore();
-                  val res = func();
-                  if (!ajax_?) {
-                    val localSnapshot = createSnapshot;
-                    S.seeOther(url, () => localSnapshot.restore)
-                  }
-                  res
-                }) % liftScreenAttr("restoreAction")
-              }</form>
+          prevId.toList.map { case (id, func) =>
+            <form id={id} action={url} method="post">{
+              SHtml.hidden(() => {
+                snapshot.restore();
+                val res = func();
+                if (!ajax_?) {
+                  val localSnapshot = createSnapshot;
+                  S.seeOther(url, () => localSnapshot.restore)
+                }
+                res
+              }) % liftScreenAttr("restoreAction")
+            }</form>
           } ++
           <form id={cancelId._1} action={url} method="post">{
             SHtml.hidden(() => {
@@ -1652,12 +1650,11 @@ trait LiftScreen
     extends AbstractScreen
     with StatefulSnippet
     with ScreenWizardRendered {
-  def dispatch = {
-    case _ =>
-      template => {
-        _defaultXml.set(template)
-        this.toForm
-      }
+  def dispatch = { case _ =>
+    template => {
+      _defaultXml.set(template)
+      this.toForm
+    }
   }
 
   protected object SavedDefaultXml extends ScreenVar[NodeSeq](defaultXml) {

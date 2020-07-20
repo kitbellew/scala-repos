@@ -203,10 +203,9 @@ trait Jvm {
     @volatile var buffer = Nil: List[Gc]
 
     // We assume that timestamps from foreachGc are monotonic.
-    foreachGc {
-      case gc @ Gc(_, _, timestamp, _) =>
-        val floor = timestamp - bufferFor
-        buffer = (gc :: buffer).takeWhile(_.timestamp > floor)
+    foreachGc { case gc @ Gc(_, _, timestamp, _) =>
+      val floor = timestamp - bufferFor
+      buffer = (gc :: buffer).takeWhile(_.timestamp > floor)
     }
 
     (since: Time) => buffer.takeWhile(_.timestamp > since)

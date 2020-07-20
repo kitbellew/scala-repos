@@ -14,11 +14,9 @@ final class Sequencer(
 
   receiveTimeout.foreach(context.setReceiveTimeout)
 
-  private def idle: Receive = {
-
-    case msg =>
-      context become busy
-      processThenDone(msg)
+  private def idle: Receive = { case msg =>
+    context become busy
+    processThenDone(msg)
   }
 
   private def busy: Receive = {

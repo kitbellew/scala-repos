@@ -195,17 +195,16 @@ class HoconObjectEntryMover extends LineMover {
     def trySpecializedFieldMove(objField: HObjectField) = {
       val sourceRange = lineRange(objField)
 
-      fieldToAscendOutOf(objField).map {
-        case (enclosingField, prefixToAdd) =>
-          val targetRange =
-            if (down)
-              new LineRange(sourceRange.endLine, endLine(enclosingField) + 1)
-            else new LineRange(startLine(enclosingField), sourceRange.startLine)
-          val mod = PrefixModification(
-            objField.getTextOffset,
-            0,
-            prefixToAdd.mkString("", ".", "."))
-          (sourceRange, targetRange, Some(mod))
+      fieldToAscendOutOf(objField).map { case (enclosingField, prefixToAdd) =>
+        val targetRange =
+          if (down)
+            new LineRange(sourceRange.endLine, endLine(enclosingField) + 1)
+          else new LineRange(startLine(enclosingField), sourceRange.startLine)
+        val mod = PrefixModification(
+          objField.getTextOffset,
+          0,
+          prefixToAdd.mkString("", ".", "."))
+        (sourceRange, targetRange, Some(mod))
 
       } orElse fieldToDescendInto(objField).map {
         case (adjacentField, prefixToRemove) =>
@@ -252,11 +251,10 @@ class HoconObjectEntryMover extends LineMover {
           tryEntryMove(include)
       }
 
-    rangesOpt.foreach {
-      case (source, target, prefixMod) =>
-        info.toMove = source
-        info.toMove2 = target
-        info.putUserData(PrefixModKey, prefixMod)
+    rangesOpt.foreach { case (source, target, prefixMod) =>
+      info.toMove = source
+      info.toMove2 = target
+      info.putUserData(PrefixModKey, prefixMod)
     }
     rangesOpt.isDefined
   }

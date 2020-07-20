@@ -77,11 +77,10 @@ final class Env(
           moretimeDuration = Moretime,
           activeTtl = ActiveTtl)
       def receive: Receive =
-        ({
-          case actorApi.GetNbRounds =>
-            nbRounds = size
-            system.lilaBus
-              .publish(lila.hub.actorApi.round.NbRounds(nbRounds), 'nbRounds)
+        ({ case actorApi.GetNbRounds =>
+          nbRounds = size
+          system.lilaBus
+            .publish(lila.hub.actorApi.round.NbRounds(nbRounds), 'nbRounds)
         }: Receive) orElse actorMapReceive
     }),
     name = ActorMapName

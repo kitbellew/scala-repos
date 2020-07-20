@@ -224,13 +224,12 @@ abstract class ClusterShardingLeavingSpec(
         val firstAddress = node(first).address
         awaitAssert {
           val probe = TestProbe()
-          locations.foreach {
-            case (id, ref) ⇒
-              region.tell(Ping(id), probe.ref)
-              if (ref.path.address == firstAddress)
-                probe.expectMsgType[ActorRef](1.second) should not be (ref)
-              else
-                probe.expectMsg(1.second, ref) // should not move
+          locations.foreach { case (id, ref) ⇒
+            region.tell(Ping(id), probe.ref)
+            if (ref.path.address == firstAddress)
+              probe.expectMsgType[ActorRef](1.second) should not be (ref)
+            else
+              probe.expectMsg(1.second, ref) // should not move
           }
         }
       }

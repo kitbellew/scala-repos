@@ -1221,9 +1221,8 @@ trait TransformSpec[M[+_]]
       def isOk(results: M[Stream[JValue]]) =
         results.copoint must_== (sample.data flatMap {
           case JObject(fields) => {
-            val back = JObject(fields filter {
-              case (name, value) =>
-                name == "value" && value.isInstanceOf[JObject]
+            val back = JObject(fields filter { case (name, value) =>
+              name == "value" && value.isInstanceOf[JObject]
             })
             if (back \ "value" \ "value1" == JUndefined || back \ "value" \ "value2" == JUndefined)
               None

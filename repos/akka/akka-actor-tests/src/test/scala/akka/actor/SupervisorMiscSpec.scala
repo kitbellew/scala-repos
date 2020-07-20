@@ -80,9 +80,8 @@ class SupervisorMiscSpec
           "actor3" -> actor3,
           "actor4" -> actor4) map {
           case (id, ref) ⇒ (id, ref ? "status")
-        } foreach {
-          case (id, f) ⇒
-            (id, Await.result(f, timeout.duration)) should ===((id, "OK"))
+        } foreach { case (id, f) ⇒
+          (id, Await.result(f, timeout.duration)) should ===((id, "OK"))
         }
       }
     }
@@ -130,16 +129,15 @@ class SupervisorMiscSpec
 
     "not be able to recreate child when old child is alive" in {
       val parent = system.actorOf(Props(new Actor {
-        def receive = {
-          case "engage" ⇒
-            try {
-              val kid = context.actorOf(Props.empty, "foo")
-              context.stop(kid)
-              context.actorOf(Props.empty, "foo")
-              testActor ! "red"
-            } catch {
-              case e: InvalidActorNameException ⇒ testActor ! "green"
-            }
+        def receive = { case "engage" ⇒
+          try {
+            val kid = context.actorOf(Props.empty, "foo")
+            context.stop(kid)
+            context.actorOf(Props.empty, "foo")
+            testActor ! "red"
+          } catch {
+            case e: InvalidActorNameException ⇒ testActor ! "green"
+          }
         }
       }))
       parent ! "engage"

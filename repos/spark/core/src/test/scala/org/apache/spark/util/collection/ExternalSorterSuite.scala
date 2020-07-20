@@ -177,10 +177,9 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       ("pomatoes", "eructation") // 568647356
     )
 
-    collisionPairs.foreach {
-      case (w1, w2) =>
-        // String.hashCode is documented to use a specific algorithm, but check just in case
-        assert(w1.hashCode === w2.hashCode)
+    collisionPairs.foreach { case (w1, w2) =>
+      // String.hashCode is documented to use a specific algorithm, but check just in case
+      assert(w1.hashCode === w2.hashCode)
     }
 
     val toInsert = (1 to size).iterator.map(_.toString).map(s => (s, s)) ++
@@ -521,12 +520,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         .reduceByKey(math.max _, numReduceTasks)
         .collect()
       assert(result.length === size / 2)
-      result.foreach {
-        case (k, v) =>
-          val expected = k * 2 + 1
-          assert(
-            v === expected,
-            s"Value for $k was wrong: expected $expected, got $v")
+      result.foreach { case (k, v) =>
+        val expected = k * 2 + 1
+        assert(
+          v === expected,
+          s"Value for $k was wrong: expected $expected, got $v")
       }
     }
 
@@ -537,13 +535,12 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         .groupByKey(numReduceTasks)
         .collect()
       assert(result.length == size / 2)
-      result.foreach {
-        case (i, seq) =>
-          val actual = seq.toSet
-          val expected = Set(i * 2, i * 2 + 1)
-          assert(
-            actual === expected,
-            s"Value for $i was wrong: expected $expected, got $actual")
+      result.foreach { case (i, seq) =>
+        val actual = seq.toSet
+        val expected = Set(i * 2, i * 2 + 1)
+        assert(
+          actual === expected,
+          s"Value for $i was wrong: expected $expected, got $actual")
       }
     }
 
@@ -552,17 +549,16 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
       val rdd2 = sc.parallelize(0 until size).map { i => (i / 2, i) }
       val result = rdd1.cogroup(rdd2, numReduceTasks).collect()
       assert(result.length === size / 2)
-      result.foreach {
-        case (i, (seq1, seq2)) =>
-          val actual1 = seq1.toSet
-          val actual2 = seq2.toSet
-          val expected = Set(i * 2, i * 2 + 1)
-          assert(
-            actual1 === expected,
-            s"Value 1 for $i was wrong: expected $expected, got $actual1")
-          assert(
-            actual2 === expected,
-            s"Value 2 for $i was wrong: expected $expected, got $actual2")
+      result.foreach { case (i, (seq1, seq2)) =>
+        val actual1 = seq1.toSet
+        val actual2 = seq2.toSet
+        val expected = Set(i * 2, i * 2 + 1)
+        assert(
+          actual1 === expected,
+          s"Value 1 for $i was wrong: expected $expected, got $actual1")
+        assert(
+          actual2 === expected,
+          s"Value 2 for $i was wrong: expected $expected, got $actual2")
       }
     }
 
@@ -574,12 +570,11 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
         .collect()
       val expected = (0 until size).map { i => (i / 2, i) }.toArray
       assert(result.length === size)
-      result.zipWithIndex.foreach {
-        case ((k, _), i) =>
-          val (expectedKey, _) = expected(i)
-          assert(
-            k === expectedKey,
-            s"Value for $i was wrong: expected $expectedKey, got $k")
+      result.zipWithIndex.foreach { case ((k, _), i) =>
+        val (expectedKey, _) = expected(i)
+        assert(
+          k === expectedKey,
+          s"Value for $i was wrong: expected $expectedKey, got $k")
       }
     }
   }
@@ -772,11 +767,10 @@ class ExternalSorterSuite extends SparkFunSuite with LocalSparkContext {
 
     // To validate the hash ordering of key
     var minKey = Int.MinValue
-    sorter2.iterator.foreach {
-      case (k, v) =>
-        val h = k.hashCode()
-        assert(h >= minKey)
-        minKey = h
+    sorter2.iterator.foreach { case (k, v) =>
+      val h = k.hashCode()
+      assert(h >= minKey)
+      minKey = h
     }
 
     sorter2.stop()

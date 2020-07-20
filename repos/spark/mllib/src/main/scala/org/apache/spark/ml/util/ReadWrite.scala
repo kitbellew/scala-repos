@@ -297,9 +297,8 @@ private[ml] object DefaultParamsReader {
       params match {
         case JObject(pairs) =>
           val values = pairs
-            .filter {
-              case (pName, jsonValue) =>
-                pName == paramName
+            .filter { case (pName, jsonValue) =>
+              pName == paramName
             }
             .map(_._2)
           assert(
@@ -361,11 +360,10 @@ private[ml] object DefaultParamsReader {
     implicit val format = DefaultFormats
     metadata.params match {
       case JObject(pairs) =>
-        pairs.foreach {
-          case (paramName, jsonValue) =>
-            val param = instance.getParam(paramName)
-            val value = param.jsonDecode(compact(render(jsonValue)))
-            instance.set(param, value)
+        pairs.foreach { case (paramName, jsonValue) =>
+          val param = instance.getParam(paramName)
+          val value = param.jsonDecode(compact(render(jsonValue)))
+          instance.set(param, value)
         }
       case _ =>
         throw new IllegalArgumentException(

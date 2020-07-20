@@ -97,9 +97,8 @@ object FormFieldDirectives extends FormFieldDirectives {
       }
     }
 
-    _formFieldSeq.map {
-      case seq ⇒
-        append(Map.empty, seq)
+    _formFieldSeq.map { case seq ⇒
+      append(Map.empty, seq)
     }
   }
 

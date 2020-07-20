@@ -173,15 +173,14 @@ object ScalaPsiUtil {
       s: ScAnnotationsHolder,
       noResolve: Boolean = false): Boolean = {
     if (noResolve) {
-      s.annotations.exists {
-        case annot =>
-          Set(
-            "scala.reflect.BooleanBeanProperty",
-            "reflect.BooleanBeanProperty",
-            "BooleanBeanProperty",
-            "scala.beans.BooleanBeanProperty",
-            "beans.BooleanBeanProperty").contains(
-            annot.typeElement.getText.replace(" ", ""))
+      s.annotations.exists { case annot =>
+        Set(
+          "scala.reflect.BooleanBeanProperty",
+          "reflect.BooleanBeanProperty",
+          "BooleanBeanProperty",
+          "scala.beans.BooleanBeanProperty",
+          "beans.BooleanBeanProperty").contains(
+          annot.typeElement.getText.replace(" ", ""))
       }
     } else {
       s.hasAnnotation("scala.reflect.BooleanBeanProperty").isDefined ||
@@ -193,15 +192,14 @@ object ScalaPsiUtil {
       s: ScAnnotationsHolder,
       noResolve: Boolean = false): Boolean = {
     if (noResolve) {
-      s.annotations.exists {
-        case annot =>
-          Set(
-            "scala.reflect.BeanProperty",
-            "reflect.BeanProperty",
-            "BeanProperty",
-            "scala.beans.BeanProperty",
-            "beans.BeanProperty").contains(
-            annot.typeElement.getText.replace(" ", ""))
+      s.annotations.exists { case annot =>
+        Set(
+          "scala.reflect.BeanProperty",
+          "reflect.BeanProperty",
+          "BeanProperty",
+          "scala.beans.BeanProperty",
+          "beans.BeanProperty").contains(
+          annot.typeElement.getText.replace(" ", ""))
       }
     } else {
       s.hasAnnotation("scala.reflect.BeanProperty").isDefined ||
@@ -372,14 +370,13 @@ object ScalaPsiUtil {
           e.getResolveScope,
           ScalaPsiManager.ClassCategory.TYPE
         )
-    ) collect {
-      case cl: ScTrait =>
-        ScParameterizedType(
-          ScType.designator(cl),
-          cl.typeParameters.map(tp =>
-            new ScUndefinedType(
-              new ScTypeParameterType(tp, ScSubstitutor.empty),
-              1)))
+    ) collect { case cl: ScTrait =>
+      ScParameterizedType(
+        ScType.designator(cl),
+        cl.typeParameters.map(tp =>
+          new ScUndefinedType(
+            new ScTypeParameterType(tp, ScSubstitutor.empty),
+            1)))
     } flatMap {
       case p: ScParameterizedType => Some(p)
       case _                      => None

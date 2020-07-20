@@ -366,17 +366,16 @@ object PlayDocsValidation {
     val (matchingFiles, changedPathFiles) =
       matchingFilesByName.partition(f => f._1.name == f._2.name)
     val (codeSampleIssues, okFiles) = matchingFiles
-      .map {
-        case (actualFile, upstreamFile) =>
-          val missingCodeSamples = upstreamFile.codeSamples.filterNot(
-            hasCodeSample(actualFile.codeSamples))
-          val introducedCodeSamples = actualFile.codeSamples.filterNot(
-            hasCodeSample(actualFile.codeSamples))
-          TranslationCodeSamples(
-            actualFile.name,
-            missingCodeSamples,
-            introducedCodeSamples,
-            upstreamFile.codeSamples.size)
+      .map { case (actualFile, upstreamFile) =>
+        val missingCodeSamples = upstreamFile.codeSamples.filterNot(
+          hasCodeSample(actualFile.codeSamples))
+        val introducedCodeSamples = actualFile.codeSamples.filterNot(
+          hasCodeSample(actualFile.codeSamples))
+        TranslationCodeSamples(
+          actualFile.name,
+          missingCodeSamples,
+          introducedCodeSamples,
+          upstreamFile.codeSamples.size)
       }
       .partition(c =>
         c.missingCodeSamples.nonEmpty || c.introducedCodeSamples.nonEmpty)

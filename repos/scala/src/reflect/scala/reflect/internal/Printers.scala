@@ -1319,10 +1319,9 @@ trait Printers extends api.Printers { self: SymbolTable =>
       val footnotes = get[T]
       if (footnotes.nonEmpty) {
         printer.print(EOL)
-        footnotes.zipWithIndex foreach {
-          case ((fi, any), ii) =>
-            printer.print("[", fi, "] ", any)
-            if (ii < footnotes.length - 1) printer.print(EOL)
+        footnotes.zipWithIndex foreach { case ((fi, any), ii) =>
+          printer.print("[", fi, "] ", any)
+          if (ii < footnotes.length - 1) printer.print(EOL)
         }
       }
     }

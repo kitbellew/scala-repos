@@ -206,25 +206,23 @@ private[akka] class ClusterShardingMessageSerializer(
 
   private def coordinatorStateToProto(state: State): sm.CoordinatorState = {
     val regions = state.regions
-      .map {
-        case (regionRef, _) ⇒ Serialization.serializedActorPath(regionRef)
+      .map { case (regionRef, _) ⇒
+        Serialization.serializedActorPath(regionRef)
       }
       .toVector
       .asJava
 
     val builder = sm.CoordinatorState.newBuilder()
 
-    state.shards.foreach {
-      case (shardId, regionRef) ⇒
-        val b = sm.CoordinatorState.ShardEntry
-          .newBuilder()
-          .setShardId(shardId)
-          .setRegionRef(Serialization.serializedActorPath(regionRef))
-        builder.addShards(b)
+    state.shards.foreach { case (shardId, regionRef) ⇒
+      val b = sm.CoordinatorState.ShardEntry
+        .newBuilder()
+        .setShardId(shardId)
+        .setRegionRef(Serialization.serializedActorPath(regionRef))
+      builder.addShards(b)
     }
-    state.regions.foreach {
-      case (regionRef, _) ⇒
-        builder.addRegions(Serialization.serializedActorPath(regionRef))
+    state.regions.foreach { case (regionRef, _) ⇒
+      builder.addRegions(Serialization.serializedActorPath(regionRef))
     }
     state.regionProxies.foreach { ref ⇒
       builder.addRegionProxies(Serialization.serializedActorPath(ref))
@@ -247,9 +245,8 @@ private[akka] class ClusterShardingMessageSerializer(
       state.getRegionsList.asScala.toVector
         .map(resolveActorRef(_) -> Vector.empty[String])(breakOut)
     val regions: Map[ActorRef, Vector[String]] =
-      shards.foldLeft(regionsZero) {
-        case (acc, (shardId, regionRef)) ⇒
-          acc.updated(regionRef, acc(regionRef) :+ shardId)
+      shards.foldLeft(regionsZero) { case (acc, (shardId, regionRef)) ⇒
+        acc.updated(regionRef, acc(regionRef) :+ shardId)
       }
 
     val proxies: Set[ActorRef] = state.getRegionProxiesList.asScala.map {

@@ -188,11 +188,10 @@ class CSCMatrix[@spec(Double, Int, Float, Long) V: Zero](
   override def toString(maxLines: Int, maxWidth: Int): String = {
     val buf = new StringBuilder()
     buf ++= ("%d x %d CSCMatrix".format(rows, cols))
-    activeIterator.take(maxLines - 1).foreach {
-      case ((r, c), v) =>
-        buf += '\n'
-        buf ++= "(%d,%d) ".format(r, c)
-        buf ++= v.toString
+    activeIterator.take(maxLines - 1).foreach { case ((r, c), v) =>
+      buf += '\n'
+      buf ++= "(%d,%d) ".format(r, c)
+      buf ++= v.toString
     }
     buf.toString()
   }

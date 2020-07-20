@@ -61,12 +61,11 @@ private[akka] class ActorRefSourceActor(
 
     }: Receive).orElse(requestElem).orElse(receiveElem)
 
-  def requestElem: Receive = {
-    case _: Request ⇒
-      // totalDemand is tracked by super
-      if (bufferSize != 0)
-        while (totalDemand > 0L && !buffer.isEmpty)
-          onNext(buffer.dequeue())
+  def requestElem: Receive = { case _: Request ⇒
+    // totalDemand is tracked by super
+    if (bufferSize != 0)
+      while (totalDemand > 0L && !buffer.isEmpty)
+        onNext(buffer.dequeue())
   }
 
   def receiveElem: Receive = {

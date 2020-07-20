@@ -42,12 +42,11 @@ object CSVRelation extends Logging {
       params: CSVOptions): RDD[Array[String]] = {
     // If header is set, make sure firstLine is materialized before sending to executors.
     file.mapPartitionsWithIndex(
-      {
-        case (split, iter) =>
-          new BulkCsvReader(
-            if (params.headerFlag) iter.filterNot(_ == firstLine) else iter,
-            params,
-            headers = header)
+      { case (split, iter) =>
+        new BulkCsvReader(
+          if (params.headerFlag) iter.filterNot(_ == firstLine) else iter,
+          params,
+          headers = header)
       },
       true)
   }
@@ -71,12 +70,11 @@ object CSVRelation extends Logging {
     }
     val safeRequiredIndices = new Array[Int](safeRequiredFields.length)
     schemaFields.zipWithIndex
-      .filter {
-        case (field, _) => safeRequiredFields.contains(field)
+      .filter { case (field, _) =>
+        safeRequiredFields.contains(field)
       }
-      .foreach {
-        case (field, index) =>
-          safeRequiredIndices(safeRequiredFields.indexOf(field)) = index
+      .foreach { case (field, index) =>
+        safeRequiredIndices(safeRequiredFields.indexOf(field)) = index
       }
     val requiredSize = requiredFields.length
     val row = new GenericMutableRow(requiredSize)

@@ -167,9 +167,8 @@ trait Foldable[F[_]] { self =>
     * @return the element at index `i` in a `Some`, or `None` if the given index falls outside of the range
     */
   def index[A](fa: F[A], i: Int): Option[A] =
-    foldLeft[A, (Int, Option[A])](fa, (0, None)) {
-      case ((idx, elem), curr) =>
-        (idx + 1, elem orElse { if (idx == i) Some(curr) else None })
+    foldLeft[A, (Int, Option[A])](fa, (0, None)) { case ((idx, elem), curr) =>
+      (idx + 1, elem orElse { if (idx == i) Some(curr) else None })
     }._2
 
   /**
@@ -332,20 +331,18 @@ trait Foldable[F[_]] { self =>
 
   /** ``O(n log n)`` complexity */
   def distinct[A](fa: F[A])(implicit A: Order[A]): IList[A] =
-    foldLeft(fa, (ISet.empty[A], IList.empty[A])) {
-      case ((seen, acc), a) =>
-        if (seen.notMember(a))
-          (seen.insert(a), a :: acc)
-        else (seen, acc)
+    foldLeft(fa, (ISet.empty[A], IList.empty[A])) { case ((seen, acc), a) =>
+      if (seen.notMember(a))
+        (seen.insert(a), a :: acc)
+      else (seen, acc)
     }._2.reverse
 
   /** ``O(n^2^)`` complexity */
   def distinctE[A](fa: F[A])(implicit A: Equal[A]): IList[A] =
-    foldLeft(fa, IList.empty[A]) {
-      case (seen, a) =>
-        if (!IList.instances.element(seen, a))
-          a :: seen
-        else seen
+    foldLeft(fa, IList.empty[A]) { case (seen, a) =>
+      if (!IList.instances.element(seen, a))
+        a :: seen
+      else seen
     }.reverse
 
   def collapse[X[_], A](x: F[A])(implicit A: ApplicativePlus[X]): X[A] =

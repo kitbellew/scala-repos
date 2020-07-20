@@ -44,9 +44,8 @@ object CategoricalNaiveBayes {
           (c: (Long, Array[Map[String, Long]]), features: Array[String]) => {
             (
               c._1 + 1L,
-              c._2.zip(features).map {
-                case (m, feature) =>
-                  m.updated(feature, m(feature) + 1L)
+              c._2.zip(features).map { case (m, feature) =>
+                m.updated(feature, m(feature) + 1L)
               })
           },
         mergeCombiners = (
@@ -59,22 +58,20 @@ object CategoricalNaiveBayes {
 
           (
             labelCount1 + labelCount2,
-            featureCounts1.zip(featureCounts2).map {
-              case (m1, m2) =>
-                m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
+            featureCounts1.zip(featureCounts2).map { case (m1, m2) =>
+              m2 ++ m2.map { case (k, v) => k -> (v + m2(k)) }
             })
         }
       )
-      .mapValues {
-        case (labelCount, featureCounts) =>
-          val featureLikelihoods = featureCounts.map { featureCount =>
-            // mapValues does not return a serializable map
-            featureCount
-              .mapValues(count => math.log(count.toDouble / labelCount))
-              .map(identity)
-          }
+      .mapValues { case (labelCount, featureCounts) =>
+        val featureLikelihoods = featureCounts.map { featureCount =>
+          // mapValues does not return a serializable map
+          featureCount
+            .mapValues(count => math.log(count.toDouble / labelCount))
+            .map(identity)
+        }
 
-          (labelCount, featureLikelihoods)
+        (labelCount, featureLikelihoods)
       }
       .collect()
       .toMap
@@ -135,13 +132,13 @@ case class CategoricalNaiveBayesModel(
     val prior = priors(label)
     val likelihood = likelihoods(label)
 
-    val likelihoodScores = features.zip(likelihood).map {
-      case (feature, featureLikelihoods) =>
+    val likelihoodScores =
+      features.zip(likelihood).map { case (feature, featureLikelihoods) =>
         featureLikelihoods.getOrElse(
           feature,
           defaultLikelihood(featureLikelihoods.values.toSeq)
         )
-    }
+      }
 
     prior + likelihoodScores.sum
   }

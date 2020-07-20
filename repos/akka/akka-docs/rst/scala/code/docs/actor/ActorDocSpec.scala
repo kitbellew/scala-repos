@@ -75,8 +75,7 @@ class DemoActorWrapper extends Actor {
     context.actorOf(DemoActor.props(42), "demo")
     // ...
     //#props-factory
-    def receive = {
-      case msg =>
+    def receive = { case msg =>
     }
     //#props-factory
   }
@@ -121,18 +120,17 @@ class Hook extends Actor {
 }
 
 class ReplyException extends Actor {
-  def receive = {
-    case _ =>
-      //#reply-exception
-      try {
-        val result = operation()
-        sender() ! result
-      } catch {
-        case e: Exception =>
-          sender() ! akka.actor.Status.Failure(e)
-          throw e
-      }
+  def receive = { case _ =>
     //#reply-exception
+    try {
+      val result = operation()
+      sender() ! result
+    } catch {
+      case e: Exception =>
+        sender() ! akka.actor.Status.Failure(e)
+        throw e
+    }
+  //#reply-exception
   }
 
   def operation(): String = { "Hi" }
@@ -183,8 +181,7 @@ class Manager extends Actor {
 //#gracefulStop-actor
 
 class Cruncher extends Actor {
-  def receive = {
-    case "crunch" => // crunch...
+  def receive = { case "crunch" => // crunch...
   }
 }
 
@@ -194,17 +191,15 @@ class Swapper extends Actor {
   import context._
   val log = Logging(system, this)
 
-  def receive = {
-    case Swap =>
-      log.info("Hi")
-      become(
-        {
-          case Swap =>
-            log.info("Ho")
-            unbecome() // resets the latest 'become' (just for fun)
-        },
-        discardOld = false
-      ) // push on top instead of replace
+  def receive = { case Swap =>
+    log.info("Hi")
+    become(
+      { case Swap =>
+        log.info("Ho")
+        unbecome() // resets the latest 'become' (just for fun)
+      },
+      discardOld = false
+    ) // push on top instead of replace
   }
 }
 
@@ -225,9 +220,8 @@ object SwapperApp extends App {
 trait ProducerBehavior {
   this: Actor =>
 
-  val producerBehavior: Receive = {
-    case GiveMeThings =>
-      sender() ! Give("thing")
+  val producerBehavior: Receive = { case GiveMeThings =>
+    sender() ! Give("thing")
   }
 }
 

@@ -264,10 +264,10 @@ object StreamRef {
             (jv, Create.apply _)
           }) orElse ((other \? "replace") map { jv =>
             (jv, Replace.apply _)
-          }) map {
-            case (jv, f) =>
-              (jv.validated[UUID]("uuid") |@| jv.validated[Boolean](
-                "terminal")) { f }
+          }) map { case (jv, f) =>
+            (jv.validated[UUID]("uuid") |@| jv.validated[Boolean]("terminal")) {
+              f
+            }
           } getOrElse {
             Failure(Invalid("Storage mode %s not recogized.".format(other)))
           }

@@ -238,32 +238,31 @@ trait RepositoryService { self: AccountService =>
           }
           .map { t => t.activityId -> t.message }
           .list
-          .foreach {
-            case (activityId, message) =>
-              Activities
-                .filter(_.activityId === activityId.bind)
-                .map(_.message)
-                .update(
-                  message
-                    .replace(
-                      s"[repo:${oldUserName}/${oldRepositoryName}]",
-                      s"[repo:${newUserName}/${newRepositoryName}]")
-                    .replace(
-                      s"[branch:${oldUserName}/${oldRepositoryName}#",
-                      s"[branch:${newUserName}/${newRepositoryName}#")
-                    .replace(
-                      s"[tag:${oldUserName}/${oldRepositoryName}#",
-                      s"[tag:${newUserName}/${newRepositoryName}#")
-                    .replace(
-                      s"[pullreq:${oldUserName}/${oldRepositoryName}#",
-                      s"[pullreq:${newUserName}/${newRepositoryName}#")
-                    .replace(
-                      s"[issue:${oldUserName}/${oldRepositoryName}#",
-                      s"[issue:${newUserName}/${newRepositoryName}#")
-                    .replace(
-                      s"[commit:${oldUserName}/${oldRepositoryName}@",
-                      s"[commit:${newUserName}/${newRepositoryName}@")
-                )
+          .foreach { case (activityId, message) =>
+            Activities
+              .filter(_.activityId === activityId.bind)
+              .map(_.message)
+              .update(
+                message
+                  .replace(
+                    s"[repo:${oldUserName}/${oldRepositoryName}]",
+                    s"[repo:${newUserName}/${newRepositoryName}]")
+                  .replace(
+                    s"[branch:${oldUserName}/${oldRepositoryName}#",
+                    s"[branch:${newUserName}/${newRepositoryName}#")
+                  .replace(
+                    s"[tag:${oldUserName}/${oldRepositoryName}#",
+                    s"[tag:${newUserName}/${newRepositoryName}#")
+                  .replace(
+                    s"[pullreq:${oldUserName}/${oldRepositoryName}#",
+                    s"[pullreq:${newUserName}/${newRepositoryName}#")
+                  .replace(
+                    s"[issue:${oldUserName}/${oldRepositoryName}#",
+                    s"[issue:${newUserName}/${newRepositoryName}#")
+                  .replace(
+                    s"[commit:${oldUserName}/${oldRepositoryName}@",
+                    s"[commit:${newUserName}/${newRepositoryName}@")
+              )
           }
       }
     }
@@ -292,12 +291,11 @@ trait RepositoryService { self: AccountService =>
       }
       .map { x => (x.userName, x.repositoryName) }
       .list
-      .foreach {
-        case (userName, repositoryName) =>
-          Repositories
-            .filter(_.byRepository(userName, repositoryName))
-            .map(x => (x.originUserName ?, x.originRepositoryName ?))
-            .update(None, None)
+      .foreach { case (userName, repositoryName) =>
+        Repositories
+          .filter(_.byRepository(userName, repositoryName))
+          .map(x => (x.originUserName ?, x.originRepositoryName ?))
+          .update(None, None)
       }
 
     // Update PARENT_USER_NAME and PARENT_REPOSITORY_NAME
@@ -307,12 +305,11 @@ trait RepositoryService { self: AccountService =>
       }
       .map { x => (x.userName, x.repositoryName) }
       .list
-      .foreach {
-        case (userName, repositoryName) =>
-          Repositories
-            .filter(_.byRepository(userName, repositoryName))
-            .map(x => (x.parentUserName ?, x.parentRepositoryName ?))
-            .update(None, None)
+      .foreach { case (userName, repositoryName) =>
+        Repositories
+          .filter(_.byRepository(userName, repositoryName))
+          .map(x => (x.parentUserName ?, x.parentRepositoryName ?))
+          .update(None, None)
       }
   }
 

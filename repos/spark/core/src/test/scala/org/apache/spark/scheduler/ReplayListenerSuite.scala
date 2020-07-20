@@ -142,12 +142,11 @@ class ReplayListenerSuite extends SparkFunSuite with BeforeAndAfter {
     assert(sc.eventLogger.isDefined)
     val originalEvents = sc.eventLogger.get.loggedEvents
     val replayedEvents = eventMonster.loggedEvents
-    originalEvents.zip(replayedEvents).foreach {
-      case (e1, e2) =>
-        // Don't compare the JSON here because accumulators in StageInfo may be out of order
-        JsonProtocolSuite.assertEquals(
-          JsonProtocol.sparkEventFromJson(e1),
-          JsonProtocol.sparkEventFromJson(e2))
+    originalEvents.zip(replayedEvents).foreach { case (e1, e2) =>
+      // Don't compare the JSON here because accumulators in StageInfo may be out of order
+      JsonProtocolSuite.assertEquals(
+        JsonProtocol.sparkEventFromJson(e1),
+        JsonProtocol.sparkEventFromJson(e2))
     }
   }
 

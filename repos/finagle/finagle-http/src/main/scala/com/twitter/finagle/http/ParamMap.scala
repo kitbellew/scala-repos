@@ -99,9 +99,8 @@ abstract class ParamMap
 
   override def toString = {
     val encoder = new QueryStringEncoder("", Charset.forName("utf-8"))
-    iterator foreach {
-      case (k, v) =>
-        encoder.addParam(k, v)
+    iterator foreach { case (k, v) =>
+      encoder.addParam(k, v)
     }
     encoder.toString
   }

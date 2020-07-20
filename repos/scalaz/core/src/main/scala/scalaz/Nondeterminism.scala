@@ -145,10 +145,8 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
 
   def gatherUnordered1[A](fs: NonEmptyList[F[A]]): F[NonEmptyList[A]] = {
     val R = implicitly[Reducer[A, List[A]]]
-    bind(chooseAny(fs.head, fs.tail.toList)) {
-      case (a, residuals) =>
-        map(reduceUnordered(residuals)(R))(list =>
-          NonEmptyList.nels(a, list: _*))
+    bind(chooseAny(fs.head, fs.tail.toList)) { case (a, residuals) =>
+      map(reduceUnordered(residuals)(R))(list => NonEmptyList.nels(a, list: _*))
     }
   }
 
@@ -160,9 +158,8 @@ trait Nondeterminism[F[_]] extends Monad[F] { self =>
   def reduceUnordered[A, M](fs: Seq[F[A]])(implicit R: Reducer[A, M]): F[M] =
     if (fs.isEmpty) point(R.zero)
     else
-      bind(chooseAny(fs.head, fs.tail)) {
-        case (a, residuals) =>
-          map(reduceUnordered(residuals))(R.cons(a, _))
+      bind(chooseAny(fs.head, fs.tail)) { case (a, residuals) =>
+        map(reduceUnordered(residuals))(R.cons(a, _))
       }
 
   /**

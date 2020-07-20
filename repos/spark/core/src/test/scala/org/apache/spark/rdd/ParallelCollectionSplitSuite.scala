@@ -173,16 +173,15 @@ class ParallelCollectionSplitSuite extends SparkFunSuite with Checkers {
       step <- Gen.choose(-5, 5) suchThat (_ != 0)
       n <- Gen.choose(1, 100)
     } yield (a until b by step, n)
-    val prop = forAll(gen) {
-      case (d: Range, n: Int) =>
-        val slices = ParallelCollectionRDD.slice(d, n)
-        ("n slices" |: slices.size == n) &&
-        ("all ranges" |: slices.forall(_.isInstanceOf[Range])) &&
-        ("concat to d" |: Seq.concat(slices: _*).mkString(",") == d.mkString(
-          ",")) &&
-        ("equal sizes" |: slices
-          .map(_.size)
-          .forall(x => x == d.size / n || x == d.size / n + 1))
+    val prop = forAll(gen) { case (d: Range, n: Int) =>
+      val slices = ParallelCollectionRDD.slice(d, n)
+      ("n slices" |: slices.size == n) &&
+      ("all ranges" |: slices.forall(_.isInstanceOf[Range])) &&
+      ("concat to d" |: Seq.concat(slices: _*).mkString(",") == d.mkString(
+        ",")) &&
+      ("equal sizes" |: slices
+        .map(_.size)
+        .forall(x => x == d.size / n || x == d.size / n + 1))
     }
     check(prop)
   }
@@ -194,16 +193,15 @@ class ParallelCollectionSplitSuite extends SparkFunSuite with Checkers {
       step <- Gen.choose(-5, 5) suchThat (_ != 0)
       n <- Gen.choose(1, 100)
     } yield (a to b by step, n)
-    val prop = forAll(gen) {
-      case (d: Range, n: Int) =>
-        val slices = ParallelCollectionRDD.slice(d, n)
-        ("n slices" |: slices.size == n) &&
-        ("all ranges" |: slices.forall(_.isInstanceOf[Range])) &&
-        ("concat to d" |: Seq.concat(slices: _*).mkString(",") == d.mkString(
-          ",")) &&
-        ("equal sizes" |: slices
-          .map(_.size)
-          .forall(x => x == d.size / n || x == d.size / n + 1))
+    val prop = forAll(gen) { case (d: Range, n: Int) =>
+      val slices = ParallelCollectionRDD.slice(d, n)
+      ("n slices" |: slices.size == n) &&
+      ("all ranges" |: slices.forall(_.isInstanceOf[Range])) &&
+      ("concat to d" |: Seq.concat(slices: _*).mkString(",") == d.mkString(
+        ",")) &&
+      ("equal sizes" |: slices
+        .map(_.size)
+        .forall(x => x == d.size / n || x == d.size / n + 1))
     }
     check(prop)
   }

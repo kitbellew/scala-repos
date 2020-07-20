@@ -67,8 +67,8 @@ final class JUnitClassMetadata(
 
   def getFixMethodOrderAnnotation: FixMethodOrder = {
     classAnnotations
-      .collectFirst {
-        case fmo: FixMethodOrder => fmo
+      .collectFirst { case fmo: FixMethodOrder =>
+        fmo
       }
       .getOrElse(new FixMethodOrder)
   }

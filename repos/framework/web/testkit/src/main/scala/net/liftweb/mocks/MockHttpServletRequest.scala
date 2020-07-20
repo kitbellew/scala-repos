@@ -424,10 +424,9 @@ class MockHttpServletRequest(
     // Build a new map based on the parameters List
     var newMap = Map[String, List[String]]().withDefault(ignore => Nil)
 
-    parameters.foreach {
-      case (k, v) =>
-        newMap += k -> (newMap(
-          k) ::: v :: Nil) // Ugly, but it works and keeps order
+    parameters.foreach { case (k, v) =>
+      newMap += k -> (newMap(
+        k) ::: v :: Nil) // Ugly, but it works and keeps order
     }
 
     newMap

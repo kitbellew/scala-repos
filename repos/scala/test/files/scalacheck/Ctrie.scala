@@ -134,17 +134,16 @@ object Test extends Properties("concurrent.TrieMap") {
     }
   }
 
-  property("concurrent update") = forAll(threadCountsAndSizes) {
-    case (p, sz) =>
-      val ct = new TrieMap[Wrap, Int]
+  property("concurrent update") = forAll(threadCountsAndSizes) { case (p, sz) =>
+    val ct = new TrieMap[Wrap, Int]
 
-      inParallel(p) { idx =>
-        for (i <- elementRange(idx, p, sz)) ct(Wrap(i)) = i
-      }
+    inParallel(p) { idx =>
+      for (i <- elementRange(idx, p, sz)) ct(Wrap(i)) = i
+    }
 
-      (0 until sz) forall {
-        case i => ct(Wrap(i)) == i
-      }
+    (0 until sz) forall {
+      case i => ct(Wrap(i)) == i
+    }
   }
 
   property("concurrent remove") = forAll(threadCounts, sizes) { (p, sz) =>

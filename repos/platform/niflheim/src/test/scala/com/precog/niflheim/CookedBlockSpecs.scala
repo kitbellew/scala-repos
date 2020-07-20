@@ -82,13 +82,11 @@ trait CookedBlockFormatSpecs
   def surviveRoundTrip(format: CookedBlockFormat)(
       segments0: CookedBlockMetadata) = {
     val out = new InMemoryWritableByteChannel
-    format.writeCookedBlock(out, segments0) must beLike {
-      case Success(_) =>
-        val in = new InMemoryReadableByteChannel(out.toArray)
-        format.readCookedBlock(in) must beLike {
-          case Success(segments1) =>
-            segments1 must_== segments0
-        }
+    format.writeCookedBlock(out, segments0) must beLike { case Success(_) =>
+      val in = new InMemoryReadableByteChannel(out.toArray)
+      format.readCookedBlock(in) must beLike { case Success(segments1) =>
+        segments1 must_== segments0
+      }
     }
   }
 }

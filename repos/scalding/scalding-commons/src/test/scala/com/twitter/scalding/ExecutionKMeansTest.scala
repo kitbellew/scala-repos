@@ -42,9 +42,8 @@ class ExecutionKMeansTest extends WordSpec with Matchers {
       })
 
       val labels = KMeans(k, vectors)
-        .flatMap {
-          case (_, _, labeledPipe) =>
-            labeledPipe.toIterableExecution
+        .flatMap { case (_, _, labeledPipe) =>
+          labeledPipe.toIterableExecution
         }
         .waitFor(Config.default, Local(false))
         .get
@@ -56,10 +55,9 @@ class ExecutionKMeansTest extends WordSpec with Matchers {
 
       // The rule is this: if two vectors share the same prefix,
       // the should be in the same cluster
-      byCluster.foreach {
-        case (clusterId, vs) =>
-          val id = vs.head._1
-          vs.foreach { case (thisId, _) => id shouldBe thisId }
+      byCluster.foreach { case (clusterId, vs) =>
+        val id = vs.head._1
+        vs.foreach { case (thisId, _) => id shouldBe thisId }
       }
     }
   }

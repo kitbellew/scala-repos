@@ -117,13 +117,12 @@ abstract class TimeSeqPathedSource(
 
   // Override because we want to check UNGLOBIFIED paths that each are present.
   override def hdfsReadPathsAreGood(conf: Configuration): Boolean =
-    getPathStatuses(conf).forall {
-      case (path, good) =>
-        if (!good) {
-          System.err.println(
-            "[ERROR] Path: " + path + " is missing in: " + toString)
-        }
-        good
+    getPathStatuses(conf).forall { case (path, good) =>
+      if (!good) {
+        System.err.println(
+          "[ERROR] Path: " + path + " is missing in: " + toString)
+      }
+      good
     }
 
   override def toString =

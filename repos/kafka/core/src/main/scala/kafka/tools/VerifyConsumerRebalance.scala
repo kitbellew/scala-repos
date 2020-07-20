@@ -94,61 +94,61 @@ object VerifyConsumerRebalance extends Logging {
     val partitionsPerTopicMap =
       zkUtils.getPartitionsForTopics(consumersPerTopicMap.keySet.toSeq)
 
-    partitionsPerTopicMap.foreach {
-      case (topic, partitions) =>
-        val topicDirs = new ZKGroupTopicDirs(group, topic)
-        info(
-          "Alive partitions for topic %s are %s "
-            .format(topic, partitions.toString))
-        info(
-          "Alive consumers for topic %s => %s "
-            .format(topic, consumersPerTopicMap.get(topic)))
-        val partitionsWithOwners =
-          zkUtils.getChildrenParentMayNotExist(topicDirs.consumerOwnerDir)
-        if (partitionsWithOwners.size == 0) {
-          error("No owners for any partitions for topic " + topic)
+    partitionsPerTopicMap.foreach { case (topic, partitions) =>
+      val topicDirs = new ZKGroupTopicDirs(group, topic)
+      info(
+        "Alive partitions for topic %s are %s "
+          .format(topic, partitions.toString))
+      info(
+        "Alive consumers for topic %s => %s "
+          .format(topic, consumersPerTopicMap.get(topic)))
+      val partitionsWithOwners =
+        zkUtils.getChildrenParentMayNotExist(topicDirs.consumerOwnerDir)
+      if (partitionsWithOwners.size == 0) {
+        error("No owners for any partitions for topic " + topic)
+        rebalanceSucceeded = false
+      }
+      debug(
+        "Children of " + topicDirs.consumerOwnerDir + " = " + partitionsWithOwners.toString)
+      val consumerIdsForTopic = consumersPerTopicMap.get(topic)
+
+      // for each available partition for topic, check if an owner exists
+      partitions.foreach { partition =>
+        // check if there is a node for [partition]
+        if (!partitionsWithOwners.contains(partition.toString)) {
+          error("No owner for partition [%s,%d]".format(topic, partition))
           rebalanceSucceeded = false
         }
-        debug(
-          "Children of " + topicDirs.consumerOwnerDir + " = " + partitionsWithOwners.toString)
-        val consumerIdsForTopic = consumersPerTopicMap.get(topic)
-
-        // for each available partition for topic, check if an owner exists
-        partitions.foreach { partition =>
-          // check if there is a node for [partition]
-          if (!partitionsWithOwners.contains(partition.toString)) {
-            error("No owner for partition [%s,%d]".format(topic, partition))
-            rebalanceSucceeded = false
+        // try reading the partition owner path for see if a valid consumer id exists there
+        val partitionOwnerPath = topicDirs.consumerOwnerDir + "/" + partition
+        val partitionOwner =
+          zkUtils.readDataMaybeNull(partitionOwnerPath)._1 match {
+            case Some(m) => m
+            case None    => null
           }
-          // try reading the partition owner path for see if a valid consumer id exists there
-          val partitionOwnerPath = topicDirs.consumerOwnerDir + "/" + partition
-          val partitionOwner =
-            zkUtils.readDataMaybeNull(partitionOwnerPath)._1 match {
-              case Some(m) => m
-              case None    => null
-            }
-          if (partitionOwner == null) {
-            error("No owner for partition [%s,%d]".format(topic, partition))
-            rebalanceSucceeded = false
-          } else {
-            // check if the owner is a valid consumer id
-            consumerIdsForTopic match {
-              case Some(consumerIds) =>
-                if (!consumerIds.contains(partitionOwner)) {
-                  error(("Owner %s for partition [%s,%d] is not a valid member of consumer " +
+        if (partitionOwner == null) {
+          error("No owner for partition [%s,%d]".format(topic, partition))
+          rebalanceSucceeded = false
+        } else {
+          // check if the owner is a valid consumer id
+          consumerIdsForTopic match {
+            case Some(consumerIds) =>
+              if (!consumerIds.contains(partitionOwner)) {
+                error(
+                  ("Owner %s for partition [%s,%d] is not a valid member of consumer " +
                     "group %s").format(partitionOwner, topic, partition, group))
-                  rebalanceSucceeded = false
-                } else
-                  info(
-                    "Owner of partition [%s,%d] is %s"
-                      .format(topic, partition, partitionOwner))
-              case None => {
-                error("No consumer ids registered for topic " + topic)
                 rebalanceSucceeded = false
-              }
+              } else
+                info(
+                  "Owner of partition [%s,%d] is %s"
+                    .format(topic, partition, partitionOwner))
+            case None => {
+              error("No consumer ids registered for topic " + topic)
+              rebalanceSucceeded = false
             }
           }
         }
+      }
 
     }
 

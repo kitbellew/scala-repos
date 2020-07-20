@@ -162,10 +162,9 @@ class LabelledMacros(val c: whitebox.Context)
         }
 
     val labelledTpe =
-      fields.foldRight(nilTpe) {
-        case ((keyTpe, valueTpe), acc) =>
-          val fieldTpe = mkFieldTpe(keyTpe, valueTpe)
-          appliedType(consTpe, List(fieldTpe, acc))
+      fields.foldRight(nilTpe) { case ((keyTpe, valueTpe), acc) =>
+        val fieldTpe = mkFieldTpe(keyTpe, valueTpe)
+        appliedType(consTpe, List(fieldTpe, acc))
       }
 
     typeCarrier(labelledTpe)
@@ -196,9 +195,8 @@ class LabelledMacros(val c: whitebox.Context)
         }
 
     val tpe =
-      elemTypes.foldRight(nilTpe) {
-        case (elemTpe, acc) =>
-          appliedType(consTpe, List(elemTpe, acc))
+      elemTypes.foldRight(nilTpe) { case (elemTpe, acc) =>
+        appliedType(consTpe, List(elemTpe, acc))
       }
 
     typeCarrier(tpe)

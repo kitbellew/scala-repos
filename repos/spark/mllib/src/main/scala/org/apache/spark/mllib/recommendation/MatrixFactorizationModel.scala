@@ -239,12 +239,11 @@ class MatrixFactorizationModel @Since("0.8.0") (
   def recommendProductsForUsers(num: Int): RDD[(Int, Array[Rating])] = {
     MatrixFactorizationModel
       .recommendForAll(rank, userFeatures, productFeatures, num)
-      .map {
-        case (user, top) =>
-          val ratings = top.map {
-            case (product, rating) => Rating(user, product, rating)
-          }
-          (user, ratings)
+      .map { case (user, top) =>
+        val ratings = top.map { case (product, rating) =>
+          Rating(user, product, rating)
+        }
+        (user, ratings)
       }
   }
 
@@ -260,12 +259,11 @@ class MatrixFactorizationModel @Since("0.8.0") (
   def recommendUsersForProducts(num: Int): RDD[(Int, Array[Rating])] = {
     MatrixFactorizationModel
       .recommendForAll(rank, productFeatures, userFeatures, num)
-      .map {
-        case (product, top) =>
-          val ratings = top.map {
-            case (user, rating) => Rating(user, product, rating)
-          }
-          (product, ratings)
+      .map { case (product, top) =>
+        val ratings = top.map { case (user, rating) =>
+          Rating(user, product, rating)
+        }
+        (product, ratings)
       }
   }
 }
@@ -282,9 +280,8 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
       recommendToFeatures: Array[Double],
       recommendableFeatures: RDD[(Int, Array[Double])],
       num: Int): Array[(Int, Double)] = {
-    val scored = recommendableFeatures.map {
-      case (id, features) =>
-        (id, blas.ddot(features.length, recommendToFeatures, 1, features, 1))
+    val scored = recommendableFeatures.map { case (id, features) =>
+      (id, blas.ddot(features.length, recommendToFeatures, 1, features, 1))
     }
     scored.top(num)(Ordering.by(_._2))
   }
@@ -336,11 +333,10 @@ object MatrixFactorizationModel extends Loader[MatrixFactorizationModel] {
         val factors = mutable.ArrayBuilder.make[Double]
         factors.sizeHint(blockStorage)
         var i = 0
-        grouped.foreach {
-          case (id, factor) =>
-            ids += id
-            factors ++= factor
-            i += 1
+        grouped.foreach { case (id, factor) =>
+          ids += id
+          factors ++= factor
+          i += 1
         }
         (ids.result(), new DenseMatrix(rank, i, factors.result()))
       }

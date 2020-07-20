@@ -41,11 +41,10 @@ class MessageTest extends FunSuite {
       "x" -> null,
       ";;;;;;" -> null
     )
-    tests.foreach {
-      case (header, expected) =>
-        val request = Request()
-        request.headers.set("Content-Type", header)
-        assert(request.charset == Option(expected))
+    tests.foreach { case (header, expected) =>
+      val request = Request()
+      request.headers.set("Content-Type", header)
+      assert(request.charset == Option(expected))
     }
   }
 
@@ -60,12 +59,11 @@ class MessageTest extends FunSuite {
       (";" -> "b") -> ";charset=b",
       ("" -> "b") -> ";charset=b"
     )
-    tests.foreach {
-      case ((header, charset), expected) =>
-        val request = Request()
-        request.headers.set("Content-Type", header)
-        request.charset = charset
-        assert(request.headers.get("Content-Type") == expected)
+    tests.foreach { case ((header, charset), expected) =>
+      val request = Request()
+      request.headers.set("Content-Type", header)
+      request.charset = charset
+      assert(request.headers.get("Content-Type") == expected)
     }
   }
 
@@ -80,13 +78,12 @@ class MessageTest extends FunSuite {
       "  application/json  ;  charset=utf-8  " -> "application/json",
       "APPLICATION/JSON" -> "application/json"
     )
-    tests.foreach {
-      case (header, expected) =>
-        val request = Request()
-        request.headers.set("Content-Type", header)
-        // shorthand for empty mediaTypes really being returned as None after being parsed.
-        assert(
-          request.mediaType == (if (expected.isEmpty) None else Some(expected)))
+    tests.foreach { case (header, expected) =>
+      val request = Request()
+      request.headers.set("Content-Type", header)
+      // shorthand for empty mediaTypes really being returned as None after being parsed.
+      assert(
+        request.mediaType == (if (expected.isEmpty) None else Some(expected)))
     }
   }
 
@@ -104,12 +101,11 @@ class MessageTest extends FunSuite {
       (";" -> "y") -> "y",
       ("" -> "y") -> "y"
     )
-    tests.foreach {
-      case ((header, mediaType), expected) =>
-        val request = Request()
-        request.headers.set("Content-Type", header)
-        request.mediaType = mediaType
-        assert(request.headers.get("Content-Type") == expected)
+    tests.foreach { case ((header, mediaType), expected) =>
+      val request = Request()
+      request.headers.set("Content-Type", header)
+      request.mediaType = mediaType
+      assert(request.headers.get("Content-Type") == expected)
     }
   }
 

@@ -58,15 +58,14 @@ case class TreePrinter(
                          else " " + cBlue + di.attrInfo + cNormal))
       }
       val children = di.children.toIndexedSeq
-      children.zipWithIndex.foreach {
-        case ((name, value), idx) =>
-          val (p1, p2) =
-            if (idx == children.size - 1) (lastChildPrefix1, lastChildPrefix2)
-            else (childPrefix1, childPrefix2)
-          val (cp1, cp2) =
-            if (level % 2 == 0) (cBlue + p1, cBlue + p2)
-            else (cGreen + p1, cGreen + p2)
-          dump(value, prefix2 + cp1, prefix2 + cp2, name, level + 1)
+      children.zipWithIndex.foreach { case ((name, value), idx) =>
+        val (p1, p2) =
+          if (idx == children.size - 1) (lastChildPrefix1, lastChildPrefix2)
+          else (childPrefix1, childPrefix2)
+        val (cp1, cp2) =
+          if (level % 2 == 0) (cBlue + p1, cBlue + p2)
+          else (cGreen + p1, cGreen + p2)
+        dump(value, prefix2 + cp1, prefix2 + cp2, name, level + 1)
       }
     }
     dump(n, if (firstPrefix ne null) firstPrefix else prefix, prefix, name, 0)

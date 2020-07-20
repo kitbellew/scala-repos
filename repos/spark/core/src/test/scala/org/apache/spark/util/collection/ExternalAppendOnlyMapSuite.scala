@@ -203,20 +203,19 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
     val rdd2 = sc.parallelize(1 to 4).map(i => (i % 2, i))
     val result = rdd1.cogroup(rdd2).collect()
 
-    result.foreach {
-      case (i, (seq1, seq2)) =>
-        i match {
-          case 0 =>
-            assert(seq1.toSet === Set[Int]() && seq2.toSet === Set[Int](2, 4))
-          case 1 =>
-            assert(seq1.toSet === Set[Int](1) && seq2.toSet === Set[Int](1, 3))
-          case 2 =>
-            assert(seq1.toSet === Set[Int](2) && seq2.toSet === Set[Int]())
-          case 3 =>
-            assert(seq1.toSet === Set[Int](3) && seq2.toSet === Set[Int]())
-          case 4 =>
-            assert(seq1.toSet === Set[Int](4) && seq2.toSet === Set[Int]())
-        }
+    result.foreach { case (i, (seq1, seq2)) =>
+      i match {
+        case 0 =>
+          assert(seq1.toSet === Set[Int]() && seq2.toSet === Set[Int](2, 4))
+        case 1 =>
+          assert(seq1.toSet === Set[Int](1) && seq2.toSet === Set[Int](1, 3))
+        case 2 =>
+          assert(seq1.toSet === Set[Int](2) && seq2.toSet === Set[Int]())
+        case 3 =>
+          assert(seq1.toSet === Set[Int](3) && seq2.toSet === Set[Int]())
+        case 4 =>
+          assert(seq1.toSet === Set[Int](4) && seq2.toSet === Set[Int]())
+      }
     }
     sc.stop()
   }
@@ -271,12 +270,11 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
         .reduceByKey(math.max)
         .collect()
       assert(result.length === size / 2)
-      result.foreach {
-        case (k, v) =>
-          val expected = k * 2 + 1
-          assert(
-            v === expected,
-            s"Value for $k was wrong: expected $expected, got $v")
+      result.foreach { case (k, v) =>
+        val expected = k * 2 + 1
+        assert(
+          v === expected,
+          s"Value for $k was wrong: expected $expected, got $v")
       }
     }
 
@@ -287,13 +285,12 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
         .groupByKey()
         .collect()
       assert(result.length == size / 2)
-      result.foreach {
-        case (i, seq) =>
-          val actual = seq.toSet
-          val expected = Set(i * 2, i * 2 + 1)
-          assert(
-            actual === expected,
-            s"Value for $i was wrong: expected $expected, got $actual")
+      result.foreach { case (i, seq) =>
+        val actual = seq.toSet
+        val expected = Set(i * 2, i * 2 + 1)
+        assert(
+          actual === expected,
+          s"Value for $i was wrong: expected $expected, got $actual")
       }
     }
 
@@ -302,17 +299,16 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
       val rdd2 = sc.parallelize(0 until size).map { i => (i / 2, i) }
       val result = rdd1.cogroup(rdd2).collect()
       assert(result.length === size / 2)
-      result.foreach {
-        case (i, (seq1, seq2)) =>
-          val actual1 = seq1.toSet
-          val actual2 = seq2.toSet
-          val expected = Set(i * 2, i * 2 + 1)
-          assert(
-            actual1 === expected,
-            s"Value 1 for $i was wrong: expected $expected, got $actual1")
-          assert(
-            actual2 === expected,
-            s"Value 2 for $i was wrong: expected $expected, got $actual2")
+      result.foreach { case (i, (seq1, seq2)) =>
+        val actual1 = seq1.toSet
+        val actual2 = seq2.toSet
+        val expected = Set(i * 2, i * 2 + 1)
+        assert(
+          actual1 === expected,
+          s"Value 1 for $i was wrong: expected $expected, got $actual1")
+        assert(
+          actual2 === expected,
+          s"Value 2 for $i was wrong: expected $expected, got $actual2")
       }
     }
 
@@ -343,17 +339,15 @@ class ExternalAppendOnlyMapSuite extends SparkFunSuite with LocalSparkContext {
       ("pomatoes", "eructation") // 568647356
     )
 
-    collisionPairs.foreach {
-      case (w1, w2) =>
-        // String.hashCode is documented to use a specific algorithm, but check just in case
-        assert(w1.hashCode === w2.hashCode)
+    collisionPairs.foreach { case (w1, w2) =>
+      // String.hashCode is documented to use a specific algorithm, but check just in case
+      assert(w1.hashCode === w2.hashCode)
     }
 
     map.insertAll((1 to size).iterator.map(_.toString).map(i => (i, i)))
-    collisionPairs.foreach {
-      case (w1, w2) =>
-        map.insert(w1, w2)
-        map.insert(w2, w1)
+    collisionPairs.foreach { case (w1, w2) =>
+      map.insert(w1, w2)
+      map.insert(w2, w1)
     }
     assert(map.numSpills > 0, "map did not spill")
 

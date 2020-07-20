@@ -343,9 +343,8 @@ class FlowStageSpec
         .receiveWithin(1.second)
       received.size should be < 200
       received
-        .foldLeft((true, 1)) {
-          case ((flag, last), next) ⇒
-            (flag && (last == next || last == next - 1), next)
+        .foldLeft((true, 1)) { case ((flag, last), next) ⇒
+          (flag && (last == next || last == next - 1), next)
         }
         ._1 should be(true)
     }

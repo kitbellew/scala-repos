@@ -9,12 +9,11 @@ trait MapInstances extends algebra.std.MapInstances {
     new Eq[Map[A, B]] {
       def eqv(lhs: Map[A, B], rhs: Map[A, B]): Boolean = {
         def checkKeys: Boolean =
-          lhs.forall {
-            case (k, v1) =>
-              rhs.get(k) match {
-                case Some(v2) => v1 === v2
-                case None     => false
-              }
+          lhs.forall { case (k, v1) =>
+            rhs.get(k) match {
+              case Some(v2) => v1 === v2
+              case None     => false
+            }
           }
         (lhs eq rhs) || (lhs.size == rhs.size && checkKeys)
       }
@@ -25,9 +24,8 @@ trait MapInstances extends algebra.std.MapInstances {
       showB: Show[B]): Show[Map[A, B]] =
     Show.show[Map[A, B]] { m =>
       val body = m
-        .map {
-          case (a, b) =>
-            s"${showA.show(a)} -> ${showB.show(b)})"
+        .map { case (a, b) =>
+          s"${showA.show(a)} -> ${showB.show(b)})"
         }
         .mkString(",")
       s"Map($body)"
@@ -58,9 +56,8 @@ trait MapInstances extends algebra.std.MapInstances {
 
       override def ap2[A, B, Z](
           f: Map[K, (A, B) => Z])(fa: Map[K, A], fb: Map[K, B]): Map[K, Z] =
-        f.flatMap {
-          case (k, f) =>
-            for { a <- fa.get(k); b <- fb.get(k) } yield (k, f(a, b))
+        f.flatMap { case (k, f) =>
+          for { a <- fa.get(k); b <- fb.get(k) } yield (k, f(a, b))
         }
 
       def flatMap[A, B](fa: Map[K, A])(f: (A) => Map[K, B]): Map[K, B] =

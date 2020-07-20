@@ -77,12 +77,11 @@ object Test extends InteractiveTest {
           fragments: List[(Symbol, SourceFile)]): Option[Comment] = {
         val docResponse = new Response[(String, String, Position)]
         askDocComment(sym, source, sym.owner, fragments, docResponse)
-        docResponse.get.left.toOption flatMap {
-          case (expanded, raw, pos) =>
-            if (expanded.isEmpty)
-              None
-            else
-              Some(ask { () => parseAtSymbol(expanded, raw, pos, sym.owner) })
+        docResponse.get.left.toOption flatMap { case (expanded, raw, pos) =>
+          if (expanded.isEmpty)
+            None
+          else
+            Some(ask { () => parseAtSymbol(expanded, raw, pos, sym.owner) })
         }
       }
     }

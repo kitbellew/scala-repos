@@ -327,14 +327,13 @@ trait ModelFactoryImplicitSupport {
   def makeSubstitutionConstraints(
       subst: TreeTypeSubstituter,
       inTpl: DocTemplateImpl): List[Constraint] =
-    (subst.from zip subst.to) map {
-      case (from, to) =>
-        new EqualTypeParamConstraint {
-          error(
-            "Scaladoc implicits: Unexpected type substitution constraint from: " + from + " to: " + to)
-          val typeParamName = from.toString
-          val rhs = makeType(to, inTpl)
-        }
+    (subst.from zip subst.to) map { case (from, to) =>
+      new EqualTypeParamConstraint {
+        error(
+          "Scaladoc implicits: Unexpected type substitution constraint from: " + from + " to: " + to)
+        val typeParamName = from.toString
+        val rhs = makeType(to, inTpl)
+      }
     }
 
   def makeBoundedConstraints(

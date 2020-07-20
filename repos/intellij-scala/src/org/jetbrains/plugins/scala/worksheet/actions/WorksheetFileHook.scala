@@ -72,15 +72,14 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
             val vFile = file.getVirtualFile
             if (vFile == null) return
 
-            WorksheetFileHook getPanel vFile foreach {
-              case ref =>
-                val panel = ref.get()
-                if (panel != null) {
-                  panel.getComponents.foreach {
-                    case ab: ActionButton => ab.addNotify()
-                    case _                =>
-                  }
+            WorksheetFileHook getPanel vFile foreach { case ref =>
+              val panel = ref.get()
+              if (panel != null) {
+                panel.getComponents.foreach {
+                  case ab: ActionButton => ab.addNotify()
+                  case _                =>
                 }
+              }
             }
           }
         }
@@ -99,15 +98,14 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
     val editors = myFileEditorManager.getAllEditors(file)
 
     for (editor <- editors) {
-      WorksheetFileHook.getAndRemovePanel(file) foreach {
-        case ref =>
-          val p = ref.get()
+      WorksheetFileHook.getAndRemovePanel(file) foreach { case ref =>
+        val p = ref.get()
 
-          ApplicationManager.getApplication.invokeLater(new Runnable {
-            override def run() {
-              if (p != null) myFileEditorManager.removeTopComponent(editor, p)
-            }
-          })
+        ApplicationManager.getApplication.invokeLater(new Runnable {
+          override def run() {
+            if (p != null) myFileEditorManager.removeTopComponent(editor, p)
+          }
+        })
       }
 
       val panel = new WorksheetFileHook.MyPanel(file)
@@ -136,14 +134,13 @@ class WorksheetFileHook(private val project: Project) extends ProjectComponent {
   private def cleanAndAdd(
       file: VirtualFile,
       action: Option[TopComponentDisplayable]) {
-    WorksheetFileHook getPanel file foreach {
-      case panelRef =>
-        val panel = panelRef.get()
-        if (panel != null) {
-          val c = panel getComponent 0
-          if (c != null) panel remove c
-          action foreach (_.init(panel))
-        }
+    WorksheetFileHook getPanel file foreach { case panelRef =>
+      val panel = panelRef.get()
+      if (panel != null) {
+        val c = panel getComponent 0
+        if (c != null) panel remove c
+        action foreach (_.init(panel))
+      }
     }
   }
 

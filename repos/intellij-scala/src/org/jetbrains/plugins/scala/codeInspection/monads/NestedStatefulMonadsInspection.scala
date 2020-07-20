@@ -17,15 +17,14 @@ object NestedStatefulMonadsInspection {
 
 final class NestedStatefulMonadsInspection
     extends AbstractInspection(Annotation) {
-  override def actionFor(holder: ProblemsHolder) = {
-    case call: ScMethodCall =>
-      val project = call.getProject
-      call.getType().getOrAny match {
-        case outer @ ScParameterizedType(_, typeArgs)
-            if isStatefulMonadType(outer, project) && typeArgs.exists(
-              isStatefulMonadType(_, project)) =>
-          holder.registerProblem(call, Annotation)
-        case _ =>
-      }
+  override def actionFor(holder: ProblemsHolder) = { case call: ScMethodCall =>
+    val project = call.getProject
+    call.getType().getOrAny match {
+      case outer @ ScParameterizedType(_, typeArgs)
+          if isStatefulMonadType(outer, project) && typeArgs.exists(
+            isStatefulMonadType(_, project)) =>
+        holder.registerProblem(call, Annotation)
+      case _ =>
+    }
   }
 }

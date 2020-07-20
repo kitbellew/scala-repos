@@ -24,9 +24,8 @@ class ExpandTables extends Phase {
         tpe: Type): Node =
       tpe match {
         case p: ProductType =>
-          ProductNode(p.elements.zipWithIndex.map {
-            case (t, i) =>
-              createResult(expansions, Select(path, ElementSymbol(i + 1)), t)
+          ProductNode(p.elements.zipWithIndex.map { case (t, i) =>
+            createResult(expansions, Select(path, ElementSymbol(i + 1)), t)
           })
         case NominalType(tsym: TableIdentitySymbol, _)
             if expansions contains tsym =>
@@ -61,13 +60,10 @@ class ExpandTables extends Phase {
             }
             .toSeq
             .groupBy(_._1)
-            .map {
-              case (ts, v) =>
-                (
-                  ts,
-                  NominalType(
-                    ts,
-                    StructType(ConstArray.from(v.map(_._2).toMap))))
+            .map { case (ts, v) =>
+              (
+                ts,
+                NominalType(ts, StructType(ConstArray.from(v.map(_._2).toMap))))
             }
           logger.debug(
             "Found Selects for NominalTypes: " + structs.keySet.mkString(", "))
@@ -103,9 +99,8 @@ class ExpandTables extends Phase {
               logger.debug("Expanding tables in Distinct")
               tree2
                 .replace(
-                  {
-                    case Distinct(s, f, o) =>
-                      Distinct(s, f, createResult(tables, Ref(s), o.nodeType))
+                  { case Distinct(s, f, o) =>
+                    Distinct(s, f, createResult(tables, Ref(s), o.nodeType))
                   },
                   bottomUp = true)
                 .infer()

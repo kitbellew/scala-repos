@@ -125,9 +125,8 @@ object ClientUtils extends Logging {
   def parseBrokerList(brokerListStr: String): Seq[BrokerEndPoint] = {
     val brokersStr = CoreUtils.parseCsvList(brokerListStr)
 
-    brokersStr.zipWithIndex.map {
-      case (address, brokerId) =>
-        BrokerEndPoint.createBrokerEndPoint(brokerId, address)
+    brokersStr.zipWithIndex.map { case (address, brokerId) =>
+      BrokerEndPoint.createBrokerEndPoint(brokerId, address)
     }
   }
 

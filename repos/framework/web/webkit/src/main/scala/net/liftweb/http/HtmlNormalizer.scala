@@ -182,14 +182,13 @@ private[http] final object HtmlNormalizer {
       elementId: String,
       eventAttributes: List[EventAttribute]): JsCmd = {
     eventAttributes
-      .map {
-        case EventAttribute(name, handlerJs) =>
-          Call(
-            "lift.onEvent",
-            elementId,
-            name,
-            AnonFunc("event", JsRaw(handlerJs).cmd)
-          ).cmd
+      .map { case EventAttribute(name, handlerJs) =>
+        Call(
+          "lift.onEvent",
+          elementId,
+          name,
+          AnonFunc("event", JsRaw(handlerJs).cmd)
+        ).cmd
       }
       .foldLeft(Noop)(_ & _)
   }

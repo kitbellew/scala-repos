@@ -79,9 +79,8 @@ object Analytics extends Logging {
         val outFname = options.remove("output").getOrElse("")
         val numIterOpt = options.remove("numIter").map(_.toInt)
 
-        options.foreach {
-          case (opt, _) =>
-            throw new IllegalArgumentException("Invalid option: " + opt)
+        options.foreach { case (opt, _) =>
+          throw new IllegalArgumentException("Invalid option: " + opt)
         }
 
         println("======================================")
@@ -119,9 +118,8 @@ object Analytics extends Logging {
         sc.stop()
 
       case "cc" =>
-        options.foreach {
-          case (opt, _) =>
-            throw new IllegalArgumentException("Invalid option: " + opt)
+        options.foreach { case (opt, _) =>
+          throw new IllegalArgumentException("Invalid option: " + opt)
         }
 
         println("======================================")
@@ -149,9 +147,8 @@ object Analytics extends Logging {
         sc.stop()
 
       case "triangles" =>
-        options.foreach {
-          case (opt, _) =>
-            throw new IllegalArgumentException("Invalid option: " + opt)
+        options.foreach { case (opt, _) =>
+          throw new IllegalArgumentException("Invalid option: " + opt)
         }
 
         println("======================================")

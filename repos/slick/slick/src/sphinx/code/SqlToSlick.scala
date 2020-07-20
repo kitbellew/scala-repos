@@ -248,8 +248,8 @@ object SqlToSlick extends App {
           //#slickQueryGroupBy
           people
             .groupBy(p => p.addressId)
-            .map {
-              case (addressId, group) => (addressId, group.map(_.age).avg)
+            .map { case (addressId, group) =>
+              (addressId, group.map(_.age).avg)
             }
             .result
         //#slickQueryGroupBy
@@ -273,8 +273,8 @@ object SqlToSlick extends App {
           //#slickQueryHaving
           people
             .groupBy(p => p.addressId)
-            .map {
-              case (addressId, group) => (addressId, group.map(_.age).avg)
+            .map { case (addressId, group) =>
+              (addressId, group.map(_.age).avg)
             }
             .filter { case (addressId, avgAge) => avgAge > 50 }
             .map(_._1)

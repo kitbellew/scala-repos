@@ -203,9 +203,8 @@ object MongoDB {
     */
   def closeAll(): Unit = {
     import scala.collection.JavaConversions._
-    dbs.values.foreach {
-      case (mngo, _) =>
-        mngo.close()
+    dbs.values.foreach { case (mngo, _) =>
+      mngo.close()
     }
     dbs.clear()
   }

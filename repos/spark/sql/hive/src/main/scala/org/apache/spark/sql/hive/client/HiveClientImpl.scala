@@ -143,14 +143,13 @@ private[hive] class HiveClientImpl(
           // We call initialConf.setClassLoader(initClassLoader) at here to make
           // this action explicit.
           initialConf.setClassLoader(initClassLoader)
-          config.foreach {
-            case (k, v) =>
-              if (k.toLowerCase.contains("password")) {
-                logDebug(s"Hive Config: $k=xxx")
-              } else {
-                logDebug(s"Hive Config: $k=$v")
-              }
-              initialConf.set(k, v)
+          config.foreach { case (k, v) =>
+            if (k.toLowerCase.contains("password")) {
+              logDebug(s"Hive Config: $k=xxx")
+            } else {
+              logDebug(s"Hive Config: $k=$v")
+            }
+            initialConf.set(k, v)
           }
           val state = new SessionState(initialConf)
           if (clientLoader.cachedHive != null) {
@@ -437,14 +436,11 @@ private[hive] class HiveClientImpl(
         "number of old and new partition specs differ")
       val catalogTable = getTable(db, table)
       val hiveTable = toHiveTable(catalogTable)
-      specs.zip(newSpecs).foreach {
-        case (oldSpec, newSpec) =>
-          val hivePart = getPartitionOption(catalogTable, oldSpec)
-            .map { p => toHivePartition(p.copy(spec = newSpec), hiveTable) }
-            .getOrElse {
-              throw new NoSuchPartitionException(db, table, oldSpec)
-            }
-          client.renamePartition(hiveTable, oldSpec.asJava, hivePart)
+      specs.zip(newSpecs).foreach { case (oldSpec, newSpec) =>
+        val hivePart = getPartitionOption(catalogTable, oldSpec)
+          .map { p => toHivePartition(p.copy(spec = newSpec), hiveTable) }
+          .getOrElse { throw new NoSuchPartitionException(db, table, oldSpec) }
+        client.renamePartition(hiveTable, oldSpec.asJava, hivePart)
       }
     }
 

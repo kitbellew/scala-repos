@@ -49,12 +49,8 @@ case class ParallelDataSource(val dsp: DataSourceParams)
     MLUtils
       .kFold(points, dsp.k, dsp.seed)
       .zipWithIndex
-      .map {
-        case (dataSet, index) =>
-          (
-            Int.box(index),
-            dataSet._1,
-            dataSet._2.map(p => (p.features, p.label)))
+      .map { case (dataSet, index) =>
+        (Int.box(index), dataSet._1, dataSet._2.map(p => (p.features, p.label)))
       }
   }
 }
@@ -120,17 +116,15 @@ object Run {
 class VectorSerializer
     extends CustomSerializer[Vector](format =>
       (
-        {
-          case JArray(x) =>
-            val v = x.toArray.map { y =>
-              y match {
-                case JDouble(z) => z
-              }
+        { case JArray(x) =>
+          val v = x.toArray.map { y =>
+            y match {
+              case JDouble(z) => z
             }
-            new DenseVector(v)
+          }
+          new DenseVector(v)
         },
-        {
-          case x: Vector =>
-            JArray(x.toArray.toList.map(d => JDouble(d)))
+        { case x: Vector =>
+          JArray(x.toArray.toList.map(d => JDouble(d)))
         }
       ))

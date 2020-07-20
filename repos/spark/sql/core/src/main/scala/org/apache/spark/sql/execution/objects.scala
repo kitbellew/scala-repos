@@ -146,10 +146,9 @@ case class MapGroups(
       val getValue = generateToObject(valueDeserializer, dataAttributes)
       val outputObject = generateToRow(serializer)
 
-      grouped.flatMap {
-        case (key, rowIter) =>
-          val result = func(getKey(key), rowIter.map(getValue))
-          result.map(outputObject)
+      grouped.flatMap { case (key, rowIter) =>
+        val result = func(getKey(key), rowIter.map(getValue))
+        result.map(outputObject)
       }
     }
   }

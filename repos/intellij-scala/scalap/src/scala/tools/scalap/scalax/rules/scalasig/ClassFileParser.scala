@@ -132,9 +132,8 @@ object ClassFileParser extends ByteCodeReader {
   val fieldRef = memberRef("Field")
   val methodRef = memberRef("Method")
   val interfaceMethodRef = memberRef("InterfaceMethod")
-  val nameAndType = u2 ~ u2 ^^ add1 {
-    case name ~ descriptor =>
-      pool => "NameAndType: " + pool(name) + ", " + pool(descriptor)
+  val nameAndType = u2 ~ u2 ^^ add1 { case name ~ descriptor =>
+    pool => "NameAndType: " + pool(name) + ", " + pool(descriptor)
   }
   val methodHandle = u1 ~ u2 ^^ add1 {
     case refKind ~ refIndex => pool => "MethodHandle: " + pool(refIndex)
@@ -218,11 +217,9 @@ object ClassFileParser extends ByteCodeReader {
 
   // TODO create a useful object, not just a string
   def memberRef(description: String) =
-    u2 ~ u2 ^^ add1 {
-      case classReference ~ nameAndTypeRef =>
-        pool =>
-          description + ": " + pool(classReference) + ", " + pool(
-            nameAndTypeRef)
+    u2 ~ u2 ^^ add1 { case classReference ~ nameAndTypeRef =>
+      pool =>
+        description + ": " + pool(classReference) + ", " + pool(nameAndTypeRef)
     }
 
   def add1[T](f: T => ConstantPool => Any)(raw: T)(pool: ConstantPool) =

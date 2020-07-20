@@ -18,11 +18,10 @@ object Cli extends LilaController {
       implicit val req = ctx.body
       form.bindFromRequest.fold(
         err => fuccess(BadRequest("invalid cli call")),
-        {
-          case (command, password) =>
-            CliAuth(password) {
-              Env.api.cli(command.split(" ").toList) map { res => Ok(res) }
-            }
+        { case (command, password) =>
+          CliAuth(password) {
+            Env.api.cli(command.split(" ").toList) map { res => Ok(res) }
+          }
         })
     }
 

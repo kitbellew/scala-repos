@@ -98,11 +98,10 @@ object RoutesCompiler {
 
     RoutesFileParser.parse(routeFile).right.map { rules =>
       val generated = generator.generate(task, namespace, rules)
-      generated.map {
-        case (filename, content) =>
-          val file = new File(generatedDir, filename)
-          FileUtils.writeStringToFile(file, content, implicitly[Codec].name)
-          file
+      generated.map { case (filename, content) =>
+        val file = new File(generatedDir, filename)
+        FileUtils.writeStringToFile(file, content, implicitly[Codec].name)
+        file
       }
     }
   }

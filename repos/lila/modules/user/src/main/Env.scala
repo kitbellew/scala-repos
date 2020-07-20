@@ -51,9 +51,8 @@ final class Env(
   def cli =
     new lila.common.Cli {
       import tube.userTube
-      def process = {
-        case "user" :: "email" :: userId :: email :: Nil =>
-          UserRepo.email(User normalize userId, email) inject "done"
+      def process = { case "user" :: "email" :: userId :: email :: Nil =>
+        UserRepo.email(User normalize userId, email) inject "done"
       }
     }
 

@@ -27,11 +27,10 @@ private[relation] final class RelationActor(
 
     // triggers following reloading for this user id
     case ReloadOnlineFriends(userId) =>
-      onlineFriends(userId) foreach {
-        case OnlineFriends(users) =>
-          bus.publish(
-            SendTo(userId, "following_onlines", users.map(_.titleName)),
-            'users)
+      onlineFriends(userId) foreach { case OnlineFriends(users) =>
+        bus.publish(
+          SendTo(userId, "following_onlines", users.map(_.titleName)),
+          'users)
       }
 
     case NotifyMovement =>

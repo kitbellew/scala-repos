@@ -390,14 +390,11 @@ private[kafka] class ZookeeperConsumerConnector(
   def commitOffsets(isAutoCommit: Boolean) {
 
     val offsetsToCommit =
-      immutable.Map(topicRegistry.flatMap {
-        case (topic, partitionTopicInfos) =>
-          partitionTopicInfos.map {
-            case (partition, info) =>
-              TopicAndPartition(
-                info.topic,
-                info.partitionId) -> OffsetAndMetadata(info.getConsumeOffset())
-          }
+      immutable.Map(topicRegistry.flatMap { case (topic, partitionTopicInfos) =>
+        partitionTopicInfos.map { case (partition, info) =>
+          TopicAndPartition(info.topic, info.partitionId) -> OffsetAndMetadata(
+            info.getConsumeOffset())
+        }
       }.toSeq: _*)
 
     commitOffsets(offsetsToCommit, isAutoCommit)
@@ -446,23 +443,22 @@ private[kafka] class ZookeeperConsumerConnector(
                   false,
                   false,
                   false,
-                  0) {
-                  case (folded, (topicPartition, errorCode)) =>
-                    if (errorCode == Errors.NONE.code && config.dualCommitEnabled) {
-                      val offset = offsetsToCommit(topicPartition).offset
-                      commitOffsetToZooKeeper(topicPartition, offset)
-                    }
+                  0) { case (folded, (topicPartition, errorCode)) =>
+                  if (errorCode == Errors.NONE.code && config.dualCommitEnabled) {
+                    val offset = offsetsToCommit(topicPartition).offset
+                    commitOffsetToZooKeeper(topicPartition, offset)
+                  }
 
-                    (
-                      folded._1 || // update commitFailed
-                        errorCode != Errors.NONE.code,
-                      folded._2 || // update retryableIfFailed - (only metadata too large is not retryable)
-                        (errorCode != Errors.NONE.code && errorCode != Errors.OFFSET_METADATA_TOO_LARGE.code),
-                      folded._3 || // update shouldRefreshCoordinator
-                        errorCode == Errors.NOT_COORDINATOR_FOR_GROUP.code ||
-                        errorCode == Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
-                      // update error count
-                      folded._4 + (if (errorCode != Errors.NONE.code) 1 else 0))
+                  (
+                    folded._1 || // update commitFailed
+                      errorCode != Errors.NONE.code,
+                    folded._2 || // update retryableIfFailed - (only metadata too large is not retryable)
+                      (errorCode != Errors.NONE.code && errorCode != Errors.OFFSET_METADATA_TOO_LARGE.code),
+                    folded._3 || // update shouldRefreshCoordinator
+                      errorCode == Errors.NOT_COORDINATOR_FOR_GROUP.code ||
+                      errorCode == Errors.GROUP_COORDINATOR_NOT_AVAILABLE.code,
+                    // update error count
+                    folded._4 + (if (errorCode != Errors.NONE.code) 1 else 0))
                 }
               }
               debug(errorCount + " errors in offset commit response.")
@@ -902,17 +898,16 @@ private[kafka] class ZookeeperConsumerConnector(
             allTopicsOwnedPartitionsCount = partitionAssignment.size
 
             partitionAssignment.view
-              .groupBy {
-                case (topicPartition, consumerThreadId) => topicPartition.topic
+              .groupBy { case (topicPartition, consumerThreadId) =>
+                topicPartition.topic
               }
-              .foreach {
-                case (topic, partitionThreadPairs) =>
-                  newGauge(
-                    "OwnedPartitionsCount",
-                    new Gauge[Int] {
-                      def value() = partitionThreadPairs.size
-                    },
-                    ownedPartitionsCountMetricTags(topic))
+              .foreach { case (topic, partitionThreadPairs) =>
+                newGauge(
+                  "OwnedPartitionsCount",
+                  new Gauge[Int] {
+                    def value() = partitionThreadPairs.size
+                  },
+                  ownedPartitionsCountMetricTags(topic))
               }
 
             topicRegistry = currentTopicRegistry

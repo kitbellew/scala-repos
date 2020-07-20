@@ -1,18 +1,18 @@
 /**
-  * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
-  */
+ * Copyright (C) 2009-2016 Lightbend Inc. <http://www.lightbend.com>
+ */
 package docs.actor
 
 import akka.actor._
 import scala.collection.mutable.ListBuffer
 
 /**
-  * Requirements are as follows:
-  * The first thing the actor needs to do, is to subscribe to a channel of events,
-  * Then it must replay (process) all "old" events
-  * Then it has to wait for a GoAhead signal to begin processing the new events
-  * It mustn't "miss" events that happen between catching up with the old events and getting the GoAhead signal
-  */
+ * Requirements are as follows:
+ * The first thing the actor needs to do, is to subscribe to a channel of events,
+ * Then it must replay (process) all "old" events
+ * Then it has to wait for a GoAhead signal to begin processing the new events
+ * It mustn't "miss" events that happen between catching up with the old events and getting the GoAhead signal
+ */
 class UnnestedReceives extends Actor {
   import context.become
   //If you need to store sender/senderFuture you can change it to ListBuffer[(Any, Channel)]

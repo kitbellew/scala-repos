@@ -151,9 +151,8 @@ class LineTokenizer() extends Parsers {
   /** Very dumb parser for XML chunks.
     */
   def xmlChunk =
-    xmlChunkStart ~ (notXmlChunkEnd *) ~ xmlChunkEnd ^^ {
-      case s ~ ms ~ e =>
-        new XmlChunk(s + "\n" + ms.mkString("\n") + "\n" + e + "\n")
+    xmlChunkStart ~ (notXmlChunkEnd *) ~ xmlChunkEnd ^^ { case s ~ ms ~ e =>
+      new XmlChunk(s + "\n" + ms.mkString("\n") + "\n" + e + "\n")
     }
 
   /** Parses Markdown Lines. Always succeeds.
@@ -216,17 +215,16 @@ class LineTokenizer() extends Parsers {
   /** Parses first level line tokens, i.e. Markdown lines, XML chunks and link definitions.
     */
   def tokens: Parser[MarkdownLineReader] =
-    phrase((preprocessToken | lineToken) *) ^^ {
-      case ts =>
-        val lines = new ArrayBuffer[MarkdownLine]()
-        val lookup = new HashMap[String, LinkDefinition]()
-        for (t <- ts) {
-          t match {
-            case ld: LinkDefinition => lookup(ld.id) = ld
-            case ml: MarkdownLine   => lines.append(ml)
-          }
+    phrase((preprocessToken | lineToken) *) ^^ { case ts =>
+      val lines = new ArrayBuffer[MarkdownLine]()
+      val lookup = new HashMap[String, LinkDefinition]()
+      for (t <- ts) {
+        t match {
+          case ld: LinkDefinition => lookup(ld.id) = ld
+          case ml: MarkdownLine   => lines.append(ml)
         }
-        new MarkdownLineReader(lines.toList, lookup.toMap)
+      }
+      new MarkdownLineReader(lines.toList, lookup.toMap)
     }
 
   /** Simple preprocessing: split the input at each newline. These whole lines are then fed to

@@ -151,9 +151,8 @@ class MongoQueryExecutor(
             // See https://groups.google.com/forum/#!topic/mongodb-user/HbE5wNOfl6k for details
 
             val finalNames = dbs
-              .foldLeft(dbs.toSet) {
-                case (acc, dbName) =>
-                  acc.filterNot { t => t.startsWith(dbName) && t != dbName }
+              .foldLeft(dbs.toSet) { case (acc, dbName) =>
+                acc.filterNot { t => t.startsWith(dbName) && t != dbName }
               }
               .toList
               .sorted

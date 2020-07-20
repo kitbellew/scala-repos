@@ -164,19 +164,18 @@ trait ManagedQueryModule extends YggConfigComponent with Logging {
   implicit def sink(implicit M: JobQueryTFMonad) =
     new (JobQueryTF ~> Future) {
       def apply[A](f: JobQueryTF[A]): Future[A] =
-        f.run recover {
-          case ex =>
-            M.jobId map { jobId =>
-              jobManager.addMessage(
-                jobId,
-                JobManager.channels.ServerError,
-                JString("Internal server error."))
-              jobManager.abort(
-                jobId,
-                "Internal server error.",
-                yggConfig.clock.now())
-            }
-            throw ex
+        f.run recover { case ex =>
+          M.jobId map { jobId =>
+            jobManager.addMessage(
+              jobId,
+              JobManager.channels.ServerError,
+              JString("Internal server error."))
+            jobManager.abort(
+              jobId,
+              "Internal server error.",
+              yggConfig.clock.now())
+          }
+          throw ex
         } map {
           case Running(_, value) =>
             value

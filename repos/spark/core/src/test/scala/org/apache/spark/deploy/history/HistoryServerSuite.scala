@@ -150,43 +150,42 @@ class HistoryServerSuite
 
   // run a bunch of characterization tests -- just verify the behavior is the same as what is saved
   // in the test resource folder
-  cases.foreach {
-    case (name, path) =>
-      test(name) {
-        val (code, jsonOpt, errOpt) = getContentAndCode(path)
-        code should be(HttpServletResponse.SC_OK)
-        jsonOpt should be('defined)
-        errOpt should be(None)
-        val jsonOrg = jsonOpt.get
+  cases.foreach { case (name, path) =>
+    test(name) {
+      val (code, jsonOpt, errOpt) = getContentAndCode(path)
+      code should be(HttpServletResponse.SC_OK)
+      jsonOpt should be('defined)
+      errOpt should be(None)
+      val jsonOrg = jsonOpt.get
 
-        // SPARK-10873 added the lastUpdated field for each application's attempt,
-        // the REST API returns the last modified time of EVENT LOG file for this field.
-        // It is not applicable to hard-code this dynamic field in a static expected file,
-        // so here we skip checking the lastUpdated field's value (setting it as "").
-        val json = if (jsonOrg.indexOf("lastUpdated") >= 0) {
-          val subStrings = jsonOrg.split(",")
-          for (i <- subStrings.indices) {
-            if (subStrings(i).indexOf("lastUpdated") >= 0) {
-              subStrings(i) = "\"lastUpdated\":\"\""
-            }
+      // SPARK-10873 added the lastUpdated field for each application's attempt,
+      // the REST API returns the last modified time of EVENT LOG file for this field.
+      // It is not applicable to hard-code this dynamic field in a static expected file,
+      // so here we skip checking the lastUpdated field's value (setting it as "").
+      val json = if (jsonOrg.indexOf("lastUpdated") >= 0) {
+        val subStrings = jsonOrg.split(",")
+        for (i <- subStrings.indices) {
+          if (subStrings(i).indexOf("lastUpdated") >= 0) {
+            subStrings(i) = "\"lastUpdated\":\"\""
           }
-          subStrings.mkString(",")
-        } else {
-          jsonOrg
         }
-
-        val exp = IOUtils.toString(
-          new FileInputStream(
-            new File(
-              expRoot,
-              HistoryServerSuite.sanitizePath(name) + "_expectation.json")))
-        // compare the ASTs so formatting differences don't cause failures
-        import org.json4s._
-        import org.json4s.jackson.JsonMethods._
-        val jsonAst = parse(json)
-        val expAst = parse(exp)
-        assertValidDataInJson(jsonAst, expAst)
+        subStrings.mkString(",")
+      } else {
+        jsonOrg
       }
+
+      val exp = IOUtils.toString(
+        new FileInputStream(
+          new File(
+            expRoot,
+            HistoryServerSuite.sanitizePath(name) + "_expectation.json")))
+      // compare the ASTs so formatting differences don't cause failures
+      import org.json4s._
+      import org.json4s.jackson.JsonMethods._
+      val jsonAst = parse(json)
+      val expAst = parse(exp)
+      assertValidDataInJson(jsonAst, expAst)
+    }
   }
 
   test("download all logs for app with multiple attempts") {
@@ -536,9 +535,8 @@ object HistoryServerSuite {
     suite.expRoot.mkdirs()
     try {
       suite.init()
-      suite.cases.foreach {
-        case (name, path) =>
-          suite.generateExpectation(name, path)
+      suite.cases.foreach { case (name, path) =>
+        suite.generateExpectation(name, path)
       }
     } finally {
       suite.stop()

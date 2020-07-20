@@ -286,18 +286,17 @@ class ScalaLanguageInjector(myInjectionConfiguration: Configuration)
                 if interpolated.reference exists (mapping containsKey _.getText) =>
               true
             case _ => false
-          } foreach {
-            case literal: ScInterpolatedStringLiteral =>
-              val languageId = mapping get literal.reference.get.getText
-              val injectedLanguage = InjectedLanguage create languageId
-              val list = new util.ArrayList[
-                Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]
+          } foreach { case literal: ScInterpolatedStringLiteral =>
+            val languageId = mapping get literal.reference.get.getText
+            val injectedLanguage = InjectedLanguage create languageId
+            val list = new util.ArrayList[
+              Trinity[PsiLanguageInjectionHost, InjectedLanguage, TextRange]]
 
-              if (injectedLanguage != null) {
-                ScalaLanguageInjector handleInjectionImpl (literal, injectedLanguage, new BaseInjection(
-                  support.getId), list)
-                allInjections put (injectedLanguage, list)
-              }
+            if (injectedLanguage != null) {
+              ScalaLanguageInjector handleInjectionImpl (literal, injectedLanguage, new BaseInjection(
+                support.getId), list)
+              allInjections put (injectedLanguage, list)
+            }
           }
 
           val languages = allInjections.keySet().iterator()

@@ -821,11 +821,10 @@ class RichPipe(val pipe: Pipe)
     val allPipes = go(pipe, Set[Pipe](), ToVisit[Pipe](Queue.empty, Set.empty))
 
     FlowStateMap.get(flowDef).foreach { fstm =>
-      fstm.flowConfigUpdates.foreach {
-        case (k, v) =>
-          allPipes.foreach { p =>
-            p.getStepConfigDef().setProperty(k, v)
-          }
+      fstm.flowConfigUpdates.foreach { case (k, v) =>
+        allPipes.foreach { p =>
+          p.getStepConfigDef().setProperty(k, v)
+        }
       }
     }
     pipe

@@ -48,11 +48,10 @@ private[io] class UdpConnection(
     doConnect(remoteAddress)
   }
 
-  def resolving(): Receive = {
-    case r: Dns.Resolved ⇒
-      reportConnectFailure {
-        doConnect(new InetSocketAddress(r.addr, remoteAddress.getPort))
-      }
+  def resolving(): Receive = { case r: Dns.Resolved ⇒
+    reportConnectFailure {
+      doConnect(new InetSocketAddress(r.addr, remoteAddress.getPort))
+    }
   }
 
   def doConnect(address: InetSocketAddress): Unit = {
@@ -68,14 +67,13 @@ private[io] class UdpConnection(
     log.debug("Successfully connected to [{}]", remoteAddress)
   }
 
-  def receive = {
-    case registration: ChannelRegistration ⇒
-      options.foreach {
-        case v2: Inet.SocketOptionV2 ⇒ v2.afterConnect(channel.socket)
-        case _ ⇒
-      }
-      commander ! Connected
-      context.become(connected(registration), discardOld = true)
+  def receive = { case registration: ChannelRegistration ⇒
+    options.foreach {
+      case v2: Inet.SocketOptionV2 ⇒ v2.afterConnect(channel.socket)
+      case _ ⇒
+    }
+    commander ! Connected
+    context.become(connected(registration), discardOld = true)
   }
 
   def connected(registration: ChannelRegistration): Receive = {

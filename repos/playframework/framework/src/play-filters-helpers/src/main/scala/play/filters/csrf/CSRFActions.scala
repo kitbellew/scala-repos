@@ -181,13 +181,12 @@ class CSRFAction(
         .toMat(Sink.head[Source[ByteString, _]])(Keep.right)
     ).mapFuture { validatedBodySource =>
       action(request).run(validatedBodySource)
-    }.recoverWith {
-      case NoTokenInBody =>
-        clearTokenIfInvalid(
-          request,
-          config,
-          errorHandler,
-          "No CSRF token found in body")
+    }.recoverWith { case NoTokenInBody =>
+      clearTokenIfInvalid(
+        request,
+        config,
+        errorHandler,
+        "No CSRF token found in body")
     }
   }
 

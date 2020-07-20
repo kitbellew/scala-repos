@@ -119,17 +119,15 @@ object PairingSystem extends AbstractPairingSystem {
       // optimized for speed
       def score(pairs: Combination): Score = {
         var i = 0
-        pairs.foreach {
-          case (a, b) =>
-            // lower is better
-            i = i + Math.abs(a.rank - b.rank) * 1000 +
-              Math.abs(a.player.rating - b.player.rating) +
-              justPlayedTogether(a.player.userId, b.player.userId).?? {
-                if (veryMuchJustPlayedTogether(
-                    a.player.userId,
-                    b.player.userId)) 9000 * 1000
-                else 8000 * 1000
-              }
+        pairs.foreach { case (a, b) =>
+          // lower is better
+          i = i + Math.abs(a.rank - b.rank) * 1000 +
+            Math.abs(a.player.rating - b.player.rating) +
+            justPlayedTogether(a.player.userId, b.player.userId).?? {
+              if (veryMuchJustPlayedTogether(a.player.userId, b.player.userId))
+                9000 * 1000
+              else 8000 * 1000
+            }
         }
         i
       }
@@ -154,16 +152,15 @@ object PairingSystem extends AbstractPairingSystem {
         nextCombos(from) match {
           case Nil => End
           case nexts =>
-            nexts.foldLeft(none[Combination]) {
-              case (current, next) =>
-                val toBeat = current.fold(than)(score)
-                if (score(next) >= toBeat) current
-                else if (continue) findBetter(next, toBeat) match {
-                  case Found(b) => b.some
-                  case End      => next.some
-                  case NoBetter => current
-                }
-                else current
+            nexts.foldLeft(none[Combination]) { case (current, next) =>
+              val toBeat = current.fold(than)(score)
+              if (score(next) >= toBeat) current
+              else if (continue) findBetter(next, toBeat) match {
+                case Found(b) => b.some
+                case End      => next.some
+                case NoBetter => current
+              }
+              else current
             } match {
               case Some(best) => Found(best)
               case None       => NoBetter

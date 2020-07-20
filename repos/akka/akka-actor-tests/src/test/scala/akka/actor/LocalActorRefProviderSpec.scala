@@ -45,11 +45,10 @@ class LocalActorRefProviderSpec
       val childName = "akka%3A%2F%2FClusterSystem%40127.0.0.1%3A2552"
       val a = system.actorOf(Props(new Actor {
         val child = context.actorOf(Props.empty, name = childName)
-        def receive = {
-          case "lookup" ⇒
-            if (childName == child.path.name)
-              sender() ! context.actorFor(childName)
-            else sender() ! s"$childName is not ${child.path.name}!"
+        def receive = { case "lookup" ⇒
+          if (childName == child.path.name)
+            sender() ! context.actorFor(childName)
+          else sender() ! s"$childName is not ${child.path.name}!"
         }
       }))
       a.tell("lookup", testActor)
@@ -164,9 +163,8 @@ class LocalActorRefProviderSpec
 
     "only create one instance of an actor from within the same message invocation" in {
       val supervisor = system.actorOf(Props(new Actor {
-        def receive = {
-          case "" ⇒
-            val a, b = context.actorOf(Props.empty, "duplicate")
+        def receive = { case "" ⇒
+          val a, b = context.actorOf(Props.empty, "duplicate")
         }
       }))
       EventFilter[InvalidActorNameException](occurrences = 1) intercept {

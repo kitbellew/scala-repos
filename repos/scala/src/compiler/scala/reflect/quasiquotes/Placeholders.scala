@@ -46,11 +46,10 @@ trait Placeholders { self: Quasiquotes =>
       case _           => global.abort("unreachable")
     }
 
-    foreach2(iargs, parts.init) {
-      case (tree, (p, pos)) =>
-        val (part, rank) = parseDots(p)
-        appendPart(part, pos)
-        appendHole(tree, rank)
+    foreach2(iargs, parts.init) { case (tree, (p, pos)) =>
+      val (part, rank) = parseDots(p)
+      appendPart(part, pos)
+      appendHole(tree, rank)
     }
     val (p, pos) = parts.last
     appendPart(p, pos)

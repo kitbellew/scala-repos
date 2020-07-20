@@ -66,10 +66,10 @@ object RankingMetricsExample {
     }
 
     // Get sorted top ten predictions for each user and then scale from [0, 1]
-    val userRecommended = model.recommendProductsForUsers(10).map {
-      case (user, recs) =>
+    val userRecommended =
+      model.recommendProductsForUsers(10).map { case (user, recs) =>
         (user, recs.map(scaledRating))
-    }
+      }
 
     // Assume that any movie a user rated 3 or higher (which maps to a 1) is a relevant document
     // Compare with top ten most relevant documents

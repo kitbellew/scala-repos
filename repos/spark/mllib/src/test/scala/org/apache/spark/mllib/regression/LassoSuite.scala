@@ -38,11 +38,11 @@ private object LassoSuite {
 class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
 
   def validatePrediction(predictions: Seq[Double], input: Seq[LabeledPoint]) {
-    val numOffPredictions = predictions.zip(input).count {
-      case (prediction, expected) =>
+    val numOffPredictions =
+      predictions.zip(input).count { case (prediction, expected) =>
         // A prediction is off if the prediction is more than 0.5 away from expected value.
         math.abs(prediction - expected.label) > 0.5
-    }
+      }
     // At least 80% of the predictions should be on.
     assert(numOffPredictions < input.length / 5)
   }
@@ -56,9 +56,8 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val testData = LinearDataGenerator
       .generateLinearInput(A, Array[Double](B, C), nPoints, 42)
-      .map {
-        case LabeledPoint(label, features) =>
-          LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
+      .map { case LabeledPoint(label, features) =>
+        LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
       }
     val testRDD = sc.parallelize(testData, 2).cache()
 
@@ -79,9 +78,8 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val validationData = LinearDataGenerator
       .generateLinearInput(A, Array[Double](B, C), nPoints, 17)
-      .map {
-        case LabeledPoint(label, features) =>
-          LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
+      .map { case LabeledPoint(label, features) =>
+        LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
       }
     val validationRDD = sc.parallelize(validationData, 2)
 
@@ -105,9 +103,8 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val testData = LinearDataGenerator
       .generateLinearInput(A, Array[Double](B, C), nPoints, 42)
-      .map {
-        case LabeledPoint(label, features) =>
-          LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
+      .map { case LabeledPoint(label, features) =>
+        LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
       }
 
     val initialA = -1.0
@@ -138,9 +135,8 @@ class LassoSuite extends SparkFunSuite with MLlibTestSparkContext {
 
     val validationData = LinearDataGenerator
       .generateLinearInput(A, Array[Double](B, C), nPoints, 17)
-      .map {
-        case LabeledPoint(label, features) =>
-          LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
+      .map { case LabeledPoint(label, features) =>
+        LabeledPoint(label, Vectors.dense(1.0 +: features.toArray))
       }
     val validationRDD = sc.parallelize(validationData, 2)
 

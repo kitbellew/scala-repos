@@ -279,11 +279,8 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
     }
     val rdd2 = sc.parallelize(randStacked)
     val counted2 = rdd2.countApproxDistinctByKey(relativeSD).collect()
-    counted2.foreach {
-      case (k, count) =>
-        assert(
-          error(count, k) < relativeSD,
-          s"${error(count, k)} < $relativeSD")
+    counted2.foreach { case (k, count) =>
+      assert(error(count, k) < relativeSD, s"${error(count, k)} < $relativeSD")
     }
   }
 
@@ -759,13 +756,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       }
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
-      sampleCounts.foreach {
-        case (k, v) =>
-          assertBinomialSample(
-            exact = exact,
-            actual = v.toInt,
-            trials = trials(k).toInt,
-            p = samplingRate)
+      sampleCounts.foreach { case (k, v) =>
+        assertBinomialSample(
+          exact = exact,
+          actual = v.toInt,
+          trials = trials(k).toInt,
+          p = samplingRate)
       }
       assert(takeSample.size === takeSample.toSet.size)
       takeSample.foreach { x =>
@@ -792,13 +788,12 @@ class PairRDDFunctionsSuite extends SparkFunSuite with SharedSparkContext {
       }
       val sampleCounts = sample.countByKey()
       val takeSample = sample.collect()
-      sampleCounts.foreach {
-        case (k, v) =>
-          assertPoissonSample(
-            exact,
-            actual = v.toInt,
-            trials = trials(k).toInt,
-            p = samplingRate)
+      sampleCounts.foreach { case (k, v) =>
+        assertPoissonSample(
+          exact,
+          actual = v.toInt,
+          trials = trials(k).toInt,
+          p = samplingRate)
       }
       val groupedByKey = takeSample.groupBy(_._1)
       for ((key, v) <- groupedByKey) {

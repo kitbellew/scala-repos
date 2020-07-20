@@ -165,12 +165,11 @@ private[persistence] class LocalSnapshotStore
     else
       files
         .map(_.getName)
-        .collect {
-          case FilenamePattern(pid, snr, tms) ⇒
-            SnapshotMetadata(
-              URLDecoder.decode(pid, UTF_8),
-              snr.toLong,
-              tms.toLong)
+        .collect { case FilenamePattern(pid, snr, tms) ⇒
+          SnapshotMetadata(
+            URLDecoder.decode(pid, UTF_8),
+            snr.toLong,
+            tms.toLong)
         }
         .filter(md ⇒ criteria.matches(md) && !saving.contains(md))
         .toVector

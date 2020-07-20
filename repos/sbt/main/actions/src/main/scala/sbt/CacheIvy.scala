@@ -152,27 +152,26 @@ object CacheIvy {
           m.configurations,
           m.licenses,
           m.callers),
-      {
-        case (m, as, ms, s, pd, r, a, e, ed, er, p, h, ea, d, b, cs, ls, ks) =>
-          new ModuleReport(
-            m,
-            as,
-            ms,
-            s,
-            pd map { new ju.Date(_) },
-            r,
-            a,
-            e,
-            ed,
-            er,
-            p,
-            h,
-            ea,
-            d,
-            b,
-            cs,
-            ls,
-            ks)
+      { case (m, as, ms, s, pd, r, a, e, ed, er, p, h, ea, d, b, cs, ls, ks) =>
+        new ModuleReport(
+          m,
+          as,
+          ms,
+          s,
+          pd map { new ju.Date(_) },
+          r,
+          a,
+          e,
+          ed,
+          er,
+          p,
+          h,
+          ea,
+          d,
+          b,
+          cs,
+          ls,
+          ks)
       }
     )
   }
@@ -228,9 +227,8 @@ object CacheIvy {
           c.isChangingDependency,
           c.isTransitiveDependency,
           c.isDirectlyForceDependency),
-      {
-        case (c, cc, ea, fd, cd, td, df) =>
-          new Caller(c, cc, ea, fd, cd, td, df)
+      { case (c, cc, ea, fd, cd, td, df) =>
+        new Caller(c, cc, ea, fd, cd, td, df)
       }
     )
   implicit def exclusionRuleFormat(implicit
@@ -297,9 +295,8 @@ object CacheIvy {
             m.exclusions,
             m.extraAttributes,
             m.crossVersion)),
-      {
-        case ((o, n, r, cs, br), (ch, t, f, as, incl, excl, x, cv)) =>
-          ModuleID(o, n, r, cs, ch, t, f, as, incl, excl, x, cv, br)
+      { case ((o, n, r, cs, br), (ch, t, f, as, incl, excl, x, cv)) =>
+        ModuleID(o, n, r, cs, ch, t, f, as, incl, excl, x, cv, br)
       }
     )
   // For some reason sbinary seems to detect unserialized instance Set[ModuleID] to be not equal. #1620

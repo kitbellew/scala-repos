@@ -112,14 +112,13 @@ object AlterTableCommandParser {
       case Token("TOK_TABLEPROPERTIES", propsList) =>
         propsList.flatMap {
           case Token("TOK_TABLEPROPLIST", props) =>
-            props.map {
-              case Token("TOK_TABLEPROPERTY", key :: value :: Nil) =>
-                val k = cleanAndUnquoteString(key.text)
-                val v = value match {
-                  case Token("TOK_NULL", Nil) => null
-                  case _                      => cleanAndUnquoteString(value.text)
-                }
-                (k, v)
+            props.map { case Token("TOK_TABLEPROPERTY", key :: value :: Nil) =>
+              val k = cleanAndUnquoteString(key.text)
+              val v = value match {
+                case Token("TOK_NULL", Nil) => null
+                case _                      => cleanAndUnquoteString(value.text)
+              }
+              (k, v)
             }
           case _ =>
             parseFailed("Invalid ALTER TABLE command", node)

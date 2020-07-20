@@ -42,8 +42,7 @@ class SchedulerDocSpec extends AkkaSpec(Map("akka.loglevel" -> "INFO")) {
       //#schedule-recurring
       val Tick = "tick"
       class TickActor extends Actor {
-        def receive = {
-          case Tick => //Do something
+        def receive = { case Tick => //Do something
         }
       }
       val tickActor = system.actorOf(Props(classOf[TickActor], this))

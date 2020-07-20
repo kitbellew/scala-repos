@@ -137,30 +137,27 @@ class ReplicatorPruningSpec
         within(15.seconds) {
           awaitAssert {
             replicator ! Get(KeyA, ReadLocal)
-            expectMsgPF() {
-              case g @ GetSuccess(KeyA, _) ⇒
-                g.get(KeyA).value should be(9)
-                g.get(KeyA).needPruningFrom(thirdUniqueAddress) should be(false)
+            expectMsgPF() { case g @ GetSuccess(KeyA, _) ⇒
+              g.get(KeyA).value should be(9)
+              g.get(KeyA).needPruningFrom(thirdUniqueAddress) should be(false)
             }
           }
         }
         within(5.seconds) {
           awaitAssert {
             replicator ! Get(KeyB, ReadLocal)
-            expectMsgPF() {
-              case g @ GetSuccess(KeyB, _) ⇒
-                g.get(KeyB).elements should be(Set("a", "b", "c"))
-                g.get(KeyB).needPruningFrom(thirdUniqueAddress) should be(false)
+            expectMsgPF() { case g @ GetSuccess(KeyB, _) ⇒
+              g.get(KeyB).elements should be(Set("a", "b", "c"))
+              g.get(KeyB).needPruningFrom(thirdUniqueAddress) should be(false)
             }
           }
         }
         within(5.seconds) {
           awaitAssert {
             replicator ! Get(KeyC, ReadLocal)
-            expectMsgPF() {
-              case g @ GetSuccess(KeyC, _) ⇒
-                g.get(KeyC).entries should be(Map("x" -> 3L, "y" -> 3L))
-                g.get(KeyC).needPruningFrom(thirdUniqueAddress) should be(false)
+            expectMsgPF() { case g @ GetSuccess(KeyC, _) ⇒
+              g.get(KeyC).entries should be(Map("x" -> 3L, "y" -> 3L))
+              g.get(KeyC).needPruningFrom(thirdUniqueAddress) should be(false)
             }
           }
         }
@@ -171,11 +168,10 @@ class ReplicatorPruningSpec
       // client can update anyway
       def updateAfterPruning(expectedValue: Int): Unit = {
         replicator ! Update(KeyA, GCounter(), WriteAll(timeout), None)(_ + 1)
-        expectMsgPF() {
-          case UpdateSuccess(KeyA, _) ⇒
-            replicator ! Get(KeyA, ReadLocal)
-            val retrieved = expectMsgType[GetSuccess[GCounter]].dataValue
-            retrieved.value should be(expectedValue)
+        expectMsgPF() { case UpdateSuccess(KeyA, _) ⇒
+          replicator ! Get(KeyA, ReadLocal)
+          val retrieved = expectMsgType[GetSuccess[GCounter]].dataValue
+          retrieved.value should be(expectedValue)
         }
       }
       runOn(first) {

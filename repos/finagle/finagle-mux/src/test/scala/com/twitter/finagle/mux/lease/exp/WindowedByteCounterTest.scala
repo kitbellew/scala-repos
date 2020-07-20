@@ -80,9 +80,8 @@ class WindowedByteCounterTest
     val h = new ByteCounterHelper {}
     import h._
 
-    withCounter(fakeBean, fakePool) {
-      case (counter, _) =>
-        assert(counter.rate() == 0)
+    withCounter(fakeBean, fakePool) { case (counter, _) =>
+      assert(counter.rate() == 0)
     }
   }
 
@@ -90,16 +89,15 @@ class WindowedByteCounterTest
     val h = new ByteCounterHelper {}
     import h._
 
-    withCounter(fakeBean, fakePool) {
-      case (counter, nextPeriod) =>
-        val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
-        for (i <- 0 until WindowedByteCounter.N) {
-          fakePool.setSnapshot(usage.copy(used = (1 + i).kilobytes))
-          nextPeriod()
-        }
+    withCounter(fakeBean, fakePool) { case (counter, nextPeriod) =>
+      val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
+      for (i <- 0 until WindowedByteCounter.N) {
+        fakePool.setSnapshot(usage.copy(used = (1 + i).kilobytes))
+        nextPeriod()
+      }
 
-        assert(counter
-          .rate() == (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds)
+      assert(counter
+        .rate() == (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds)
     }
   }
 
@@ -107,26 +105,25 @@ class WindowedByteCounterTest
     val h = new ByteCounterHelper {}
     import h._
 
-    withCounter(fakeBean, fakePool) {
-      case (counter, nextPeriod) =>
-        val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
-        for (i <- 1 to WindowedByteCounter.N) {
-          fakePool.setSnapshot(usage.copy(used = i.kilobytes))
-          nextPeriod()
-        }
+    withCounter(fakeBean, fakePool) { case (counter, nextPeriod) =>
+      val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
+      for (i <- 1 to WindowedByteCounter.N) {
+        fakePool.setSnapshot(usage.copy(used = i.kilobytes))
+        nextPeriod()
+      }
 
-        assert(counter
-          .rate() == (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds)
+      assert(counter
+        .rate() == (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds)
 
-        for (i <- 1 to WindowedByteCounter.N) {
-          fakePool.setSnapshot(
-            usage.copy(used =
-              WindowedByteCounter.N.kilobytes + (i * 2).kilobytes))
-          nextPeriod()
-        }
+      for (i <- 1 to WindowedByteCounter.N) {
+        fakePool.setSnapshot(
+          usage.copy(used =
+            WindowedByteCounter.N.kilobytes + (i * 2).kilobytes))
+        nextPeriod()
+      }
 
-        assert(counter
-          .rate() == (2 * (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds))
+      assert(counter
+        .rate() == (2 * (WindowedByteCounter.N.kilobytes).inBytes / WindowedByteCounter.W.inMilliseconds))
     }
   }
 
@@ -134,20 +131,18 @@ class WindowedByteCounterTest
     val h = new ByteCounterHelper {}
     import h._
 
-    withCounter(fakeBean, fakePool) {
-      case (counter, nextPeriod) =>
-        val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
-        var x = StorageUnit.zero
-        val rand = new Random(0)
+    withCounter(fakeBean, fakePool) { case (counter, nextPeriod) =>
+      val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
+      var x = StorageUnit.zero
+      val rand = new Random(0)
 
-        for (i <- 0 until WindowedByteCounter.N) {
-          x += rand.nextInt(100).kilobytes
-          fakePool.setSnapshot(usage.copy(used = x))
-          nextPeriod()
-        }
+      for (i <- 0 until WindowedByteCounter.N) {
+        x += rand.nextInt(100).kilobytes
+        fakePool.setSnapshot(usage.copy(used = x))
+        nextPeriod()
+      }
 
-        assert(
-          counter.rate() == x.inBytes / WindowedByteCounter.W.inMilliseconds)
+      assert(counter.rate() == x.inBytes / WindowedByteCounter.W.inMilliseconds)
     }
   }
 
@@ -155,31 +150,30 @@ class WindowedByteCounterTest
     val h = new ByteCounterHelper {}
     import h._
 
-    withCounter(fakeBean, fakePool) {
-      case (counter, nextPeriod) =>
-        val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
-        var x = StorageUnit.zero
+    withCounter(fakeBean, fakePool) { case (counter, nextPeriod) =>
+      val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
+      var x = StorageUnit.zero
 
-        for (i <- 0 until WindowedByteCounter.N / 2) {
-          x += 1.kilobytes
-          fakePool.setSnapshot(usage.copy(used = x))
-          nextPeriod()
-        }
-
-        x = StorageUnit.zero
-        // bump gc number
-        fakeBean.getCollectionCount = 1
-        fakePool.setSnapshot(usage)
+      for (i <- 0 until WindowedByteCounter.N / 2) {
+        x += 1.kilobytes
+        fakePool.setSnapshot(usage.copy(used = x))
         nextPeriod()
+      }
 
-        for (i <- WindowedByteCounter.N / 2 until WindowedByteCounter.N) {
-          x += 1.kilobytes
-          fakePool.setSnapshot(usage.copy(used = x))
-          nextPeriod()
-        }
+      x = StorageUnit.zero
+      // bump gc number
+      fakeBean.getCollectionCount = 1
+      fakePool.setSnapshot(usage)
+      nextPeriod()
 
-        assert(counter
-          .rate() == WindowedByteCounter.N.kilobytes.inBytes / WindowedByteCounter.W.inMilliseconds)
+      for (i <- WindowedByteCounter.N / 2 until WindowedByteCounter.N) {
+        x += 1.kilobytes
+        fakePool.setSnapshot(usage.copy(used = x))
+        nextPeriod()
+      }
+
+      assert(counter
+        .rate() == WindowedByteCounter.N.kilobytes.inBytes / WindowedByteCounter.W.inMilliseconds)
     }
   }
 
@@ -187,33 +181,32 @@ class WindowedByteCounterTest
     val h = new ByteCounterHelper {}
     import h._
 
-    withCounter(fakeBean, fakePool) {
-      case (counter, nextPeriod) =>
-        val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
-        var x = StorageUnit.zero
+    withCounter(fakeBean, fakePool) { case (counter, nextPeriod) =>
+      val usage = new FakeMemoryUsage(0.bytes, 10.megabytes)
+      var x = StorageUnit.zero
 
-        assert(counter.lastGc == Time.now)
+      assert(counter.lastGc == Time.now)
 
-        for (i <- 0 until WindowedByteCounter.N / 2) {
-          x += 1.kilobytes
-          fakePool.setSnapshot(usage.copy(used = x))
-          nextPeriod()
-        }
-
-        x = StorageUnit.zero
-        // bump gc number
-        fakeBean.getCollectionCount = 1
-        fakePool.setSnapshot(usage)
+      for (i <- 0 until WindowedByteCounter.N / 2) {
+        x += 1.kilobytes
+        fakePool.setSnapshot(usage.copy(used = x))
         nextPeriod()
-        val saved = Time.now
+      }
 
-        for (i <- WindowedByteCounter.N / 2 until WindowedByteCounter.N) {
-          x += 1.kilobytes
-          fakePool.setSnapshot(usage.copy(used = x))
-          nextPeriod()
-        }
+      x = StorageUnit.zero
+      // bump gc number
+      fakeBean.getCollectionCount = 1
+      fakePool.setSnapshot(usage)
+      nextPeriod()
+      val saved = Time.now
 
-        assert(counter.lastGc == saved)
+      for (i <- WindowedByteCounter.N / 2 until WindowedByteCounter.N) {
+        x += 1.kilobytes
+        fakePool.setSnapshot(usage.copy(used = x))
+        nextPeriod()
+      }
+
+      assert(counter.lastGc == saved)
     }
   }
 }

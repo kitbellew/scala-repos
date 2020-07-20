@@ -158,9 +158,8 @@ class CSVIngestProcessing(
           case (h, pos :: Nil) =>
             (pos -> JPath(JPathField(h))) :: Nil
           case (h, ps) =>
-            ps.reverse.zipWithIndex map {
-              case (pos, i) =>
-                (pos -> JPath(JPathField(h), JPathIndex(i)))
+            ps.reverse.zipWithIndex map { case (pos, i) =>
+              (pos -> JPath(JPathField(h), JPathIndex(i)))
             }
         }
         .sortBy(_._1)
@@ -179,53 +178,52 @@ class CSVIngestProcessing(
           ingested: Int,
           errors: Vector[(Int, String)]): Future[IngestResult] = {
         // TODO: handle errors in readBatch
-        M.point(readBatch(reader, Vector())) flatMap {
-          case (done, batch) =>
-            if (batch.isEmpty) {
-              // the batch will only be empty if there's nothing left to read, but the batch size
-              // boundary was hit on the previous read and so it was not discovered that we didn't
-              // need to continue until now. This could be cleaner via a more CPS'ed style, but meh.
-              // This empty record is just stored to send the terminated streamRef.
-              ingestStore.store(
-                apiKey,
-                path,
-                authorities,
-                Nil,
-                jobId,
-                streamRef.terminate) flatMap { _ =>
-                M.point(BatchResult(total, ingested, errors))
-              }
-            } else {
-              val types = CsvType.inferTypes(batch.iterator)
-              val jvals = batch map { row =>
-                (paths zip types zip row).foldLeft(JUndefined: JValue) {
-                  case (obj, ((path, tpe), s)) =>
-                    JValue.unsafeInsert(obj, path, tpe(s))
-                }
-              }
-
-              ingestStore.store(
-                apiKey,
-                path,
-                authorities,
-                jvals,
-                jobId,
-                if (done) streamRef.terminate else streamRef) flatMap { _ =>
-                if (done)
-                  M.point(
-                    BatchResult(
-                      total + batch.length,
-                      ingested + batch.length,
-                      errors))
-                else
-                  readBatches(
-                    paths,
-                    reader,
-                    total + batch.length,
-                    ingested + batch.length,
-                    errors)
+        M.point(readBatch(reader, Vector())) flatMap { case (done, batch) =>
+          if (batch.isEmpty) {
+            // the batch will only be empty if there's nothing left to read, but the batch size
+            // boundary was hit on the previous read and so it was not discovered that we didn't
+            // need to continue until now. This could be cleaner via a more CPS'ed style, but meh.
+            // This empty record is just stored to send the terminated streamRef.
+            ingestStore.store(
+              apiKey,
+              path,
+              authorities,
+              Nil,
+              jobId,
+              streamRef.terminate) flatMap { _ =>
+              M.point(BatchResult(total, ingested, errors))
+            }
+          } else {
+            val types = CsvType.inferTypes(batch.iterator)
+            val jvals = batch map { row =>
+              (paths zip types zip row).foldLeft(JUndefined: JValue) {
+                case (obj, ((path, tpe), s)) =>
+                  JValue.unsafeInsert(obj, path, tpe(s))
               }
             }
+
+            ingestStore.store(
+              apiKey,
+              path,
+              authorities,
+              jvals,
+              jobId,
+              if (done) streamRef.terminate else streamRef) flatMap { _ =>
+              if (done)
+                M.point(
+                  BatchResult(
+                    total + batch.length,
+                    ingested + batch.length,
+                    errors))
+              else
+                readBatches(
+                  paths,
+                  reader,
+                  total + batch.length,
+                  ingested + batch.length,
+                  errors)
+            }
+          }
         }
       }
 

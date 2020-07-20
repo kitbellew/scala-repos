@@ -106,17 +106,16 @@ private class DynNameFactory[Req, Rep](
           val p = new Promise[Service[Req, Rep]]
           val elapsed = Stopwatch.start()
           val el = (conn, p, elapsed)
-          p setInterruptHandler {
-            case exc =>
-              synchronized {
-                state match {
-                  case Pending(q) if q contains el =>
-                    state = Pending(q filter (_ != el))
-                    latencyStat.add(elapsed().inMicroseconds)
-                    p.setException(new CancelledConnectionException(exc))
-                  case _ =>
-                }
+          p setInterruptHandler { case exc =>
+            synchronized {
+              state match {
+                case Pending(q) if q contains el =>
+                  state = Pending(q filter (_ != el))
+                  latencyStat.add(elapsed().inMicroseconds)
+                  p.setException(new CancelledConnectionException(exc))
+                case _ =>
               }
+            }
           }
           state = Pending(q enqueue el)
           p

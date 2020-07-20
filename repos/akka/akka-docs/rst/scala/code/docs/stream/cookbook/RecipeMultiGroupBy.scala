@@ -34,12 +34,11 @@ class RecipeMultiGroupBy extends RecipeSpec {
 
       val multiGroups = messageAndTopic
         .groupBy(2, _._2)
-        .map {
-          case (msg, topic) =>
-            // do what needs to be done
-            //#multi-groupby
-            (msg, topic)
+        .map { case (msg, topic) =>
+          // do what needs to be done
           //#multi-groupby
+          (msg, topic)
+        //#multi-groupby
         }
       //#multi-groupby
 

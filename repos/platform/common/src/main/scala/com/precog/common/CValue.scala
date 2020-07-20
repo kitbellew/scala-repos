@@ -61,9 +61,8 @@ sealed trait RValue { self =>
           Vector((path, CEmptyArray))
 
         case RObject(fields) =>
-          fields.foldLeft(Vector.empty[(CPath, CValue)]) {
-            case (acc, field) =>
-              acc ++ flatten0(path \ field._1)(field._2)
+          fields.foldLeft(Vector.empty[(CPath, CValue)]) { case (acc, field) =>
+            acc ++ flatten0(path \ field._1)(field._2)
           }
 
         case RArray(elems) =>
@@ -215,9 +214,8 @@ object CValue {
         (ad.toStandardDuration).compareTo(bd.toStandardDuration)
       case (CArray(as, CArrayType(atpe)), CArray(bs, CArrayType(btpe)))
           if atpe == btpe =>
-        (as.view zip bs.view) map {
-          case (a, b) =>
-            compareValues(atpe(a), btpe(b))
+        (as.view zip bs.view) map { case (a, b) =>
+          compareValues(atpe(a), btpe(b))
         } find (_ != 0) getOrElse (as.size - bs.size)
       case (a: CNumericValue[_], b: CNumericValue[_]) =>
         compareValues(
@@ -540,9 +538,8 @@ case class CArrayType[@spec(Boolean, Long, Double) A](elemType: CValueType[A])
   def apply(value: Array[A]) = CArray(value, this)
 
   def order(as: Array[A], bs: Array[A]) =
-    (as zip bs) map {
-      case (a, b) =>
-        elemType.order(a, b)
+    (as zip bs) map { case (a, b) =>
+      elemType.order(a, b)
     } find (_ != EQ) getOrElse Ordering.fromInt(as.size - bs.size)
 
   def jValueFor(as: Array[A]) =

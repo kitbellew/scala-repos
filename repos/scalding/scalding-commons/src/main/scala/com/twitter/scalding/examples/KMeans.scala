@@ -135,11 +135,10 @@ object KMeans {
         step: Int): Execution[
       (Int, ValuePipe[List[LabeledVector]], TypedPipe[LabeledVector])] =
       kmeansStep(k, s, c, p).getAndResetCounters
-        .flatMap {
-          case ((nextC, nextP), counters) =>
-            val changed = counters(key)
-            if (changed == 0L) Execution.from((step, nextC, nextP))
-            else go(s, nextC, nextP, step + 1)
+        .flatMap { case ((nextC, nextP), counters) =>
+          val changed = counters(key)
+          if (changed == 0L) Execution.from((step, nextC, nextP))
+          else go(s, nextC, nextP, step + 1)
         }
 
     Execution.withId { implicit uid =>

@@ -340,13 +340,8 @@ trait EvaluatorModule[M[+_]]
 
           assumptionCheck(graph) flatMap {
             assumedResult: Option[(Table, TableOrder)] =>
-              val liftedAssumption = assumedResult map {
-                case (table, sort) =>
-                  monadState point PendingTable(
-                    table,
-                    graph,
-                    TransSpec1.Id,
-                    sort)
+              val liftedAssumption = assumedResult map { case (table, sort) =>
+                monadState point PendingTable(table, graph, TransSpec1.Id, sort)
               }
 
               liftedAssumption getOrElse memoizedResult
@@ -383,68 +378,62 @@ trait EvaluatorModule[M[+_]]
           def valueSpec = DerefObjectStatic(Leaf(Source), paths.Value)
           (prepareEval(left, splits) |@| prepareEval(
             right,
-            splits)).tupled flatMap {
-            case (ptLeft, ptRight) =>
-              val lTable = ptLeft.table.transform(liftToValues(ptLeft.trans))
-              val rTable = ptRight.table.transform(liftToValues(ptRight.trans))
-              val crossSpec = buildWrappedCrossSpec(spec)
-              val resultM = Table.cross(
-                lTable.compact(valueSpec),
-                rTable.compact(valueSpec),
-                hint)(crossSpec)
+            splits)).tupled flatMap { case (ptLeft, ptRight) =>
+            val lTable = ptLeft.table.transform(liftToValues(ptLeft.trans))
+            val rTable = ptRight.table.transform(liftToValues(ptRight.trans))
+            val crossSpec = buildWrappedCrossSpec(spec)
+            val resultM = Table.cross(
+              lTable.compact(valueSpec),
+              rTable.compact(valueSpec),
+              hint)(crossSpec)
 
-              transState liftM mn(resultM map {
-                case (joinOrder, table) =>
-                  val sort = joinOrder match {
-                    case CrossLeft =>
-                      ptLeft.sort match {
-                        case IdentityOrder(ids) =>
-                          val rIds = ptRight.sort match {
-                            case IdentityOrder(rIds)
-                                if graph.uniqueIdentities =>
-                              rIds
-                            case _ => Vector.empty
-                          }
-                          IdentityOrder(
-                            ids ++ rIds.map(_ + left.identities.length))
-
-                        case otherSort => otherSort
+            transState liftM mn(resultM map { case (joinOrder, table) =>
+              val sort = joinOrder match {
+                case CrossLeft =>
+                  ptLeft.sort match {
+                    case IdentityOrder(ids) =>
+                      val rIds = ptRight.sort match {
+                        case IdentityOrder(rIds) if graph.uniqueIdentities =>
+                          rIds
+                        case _ => Vector.empty
                       }
+                      IdentityOrder(ids ++ rIds.map(_ + left.identities.length))
 
-                    case CrossRight =>
-                      ptRight.sort match {
-                        case IdentityOrder(ids) =>
-                          val lIds = ptLeft.sort match {
-                            case IdentityOrder(lIds)
-                                if graph.uniqueIdentities =>
-                              lIds
-                            case _ => Vector.empty
-                          }
-                          IdentityOrder(
-                            ids.map(_ + left.identities.length) ++ lIds)
-
-                        case valueOrder => valueOrder
-                      }
-
-                    case CrossLeftRight => // Not actually hit yet. Soon!
-                      (ptLeft.sort, ptRight.sort) match {
-                        case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
-                          IdentityOrder(
-                            lIds ++ rIds.map(_ + left.identities.length))
-                        case (otherSort, _) => otherSort
-                      }
-
-                    case CrossRightLeft => // Not actually hit yet. Soon!
-                      (ptLeft.sort, ptRight.sort) match {
-                        case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
-                          IdentityOrder(
-                            rIds.map(_ + left.identities.length) ++ lIds)
-                        case (otherSort, _) => otherSort
-                      }
+                    case otherSort => otherSort
                   }
 
-                  PendingTable(table, graph, TransSpec1.Id, sort)
-              })
+                case CrossRight =>
+                  ptRight.sort match {
+                    case IdentityOrder(ids) =>
+                      val lIds = ptLeft.sort match {
+                        case IdentityOrder(lIds) if graph.uniqueIdentities =>
+                          lIds
+                        case _ => Vector.empty
+                      }
+                      IdentityOrder(ids.map(_ + left.identities.length) ++ lIds)
+
+                    case valueOrder => valueOrder
+                  }
+
+                case CrossLeftRight => // Not actually hit yet. Soon!
+                  (ptLeft.sort, ptRight.sort) match {
+                    case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
+                      IdentityOrder(
+                        lIds ++ rIds.map(_ + left.identities.length))
+                    case (otherSort, _) => otherSort
+                  }
+
+                case CrossRightLeft => // Not actually hit yet. Soon!
+                  (ptLeft.sort, ptRight.sort) match {
+                    case (IdentityOrder(lIds), IdentityOrder(rIds)) =>
+                      IdentityOrder(
+                        rIds.map(_ + left.identities.length) ++ lIds)
+                    case (otherSort, _) => otherSort
+                  }
+              }
+
+              PendingTable(table, graph, TransSpec1.Id, sort)
+            })
           }
         }
 
@@ -544,19 +533,18 @@ trait EvaluatorModule[M[+_]]
                   joinSpec)
             }
 
-            resultM map {
-              case (joinOrder, result) =>
-                val sort = (joinKey, joinOrder) match {
-                  case (ValueJoin(id), KeyOrder)  => ValueOrder(id)
-                  case (ValueJoin(_), LeftOrder)  => leftSort
-                  case (ValueJoin(_), RightOrder) => rightSort
-                  case (IdentityJoin(ids), KeyOrder) =>
-                    IdentityOrder(Vector.range(0, ids.size))
-                  case (IdentityJoin(ids), LeftOrder)  => leftSort
-                  case (IdentityJoin(ids), RightOrder) => rightSort
-                }
+            resultM map { case (joinOrder, result) =>
+              val sort = (joinKey, joinOrder) match {
+                case (ValueJoin(id), KeyOrder)  => ValueOrder(id)
+                case (ValueJoin(_), LeftOrder)  => leftSort
+                case (ValueJoin(_), RightOrder) => rightSort
+                case (IdentityJoin(ids), KeyOrder) =>
+                  IdentityOrder(Vector.range(0, ids.size))
+                case (IdentityJoin(ids), LeftOrder)  => leftSort
+                case (IdentityJoin(ids), RightOrder) => rightSort
+              }
 
-                PendingTable(result, graph, TransSpec1.Id, sort)
+              PendingTable(result, graph, TransSpec1.Id, sort)
             }
           }
 
@@ -837,36 +825,34 @@ trait EvaluatorModule[M[+_]]
                     val pair = (prepareEval(left, splits) |@| prepareEval(
                       right,
                       splits)).tupled
-                    pair flatMap {
-                      case (ptLeft, ptRight) =>
-                        val leftTable =
-                          ptLeft.table.transform(liftToValues(ptLeft.trans))
-                        val rightTable =
-                          ptRight.table.transform(liftToValues(ptRight.trans))
-                        def sort(policy: IdentityPolicy): TableOrder =
-                          policy match {
-                            case IdentityPolicy.Retain.Left  => ptLeft.sort
-                            case IdentityPolicy.Retain.Right => ptRight.sort
-                            case IdentityPolicy.Retain.Merge =>
-                              IdentityOrder.empty
-                            case IdentityPolicy.Retain.Cross => ptLeft.sort
-                            case IdentityPolicy.Synthesize =>
-                              IdentityOrder.single
-                            case IdentityPolicy.Strip => IdentityOrder.empty
-                            case IdentityPolicy.Product(leftPolicy, _) =>
-                              sort(leftPolicy)
-                          }
+                    pair flatMap { case (ptLeft, ptRight) =>
+                      val leftTable =
+                        ptLeft.table.transform(liftToValues(ptLeft.trans))
+                      val rightTable =
+                        ptRight.table.transform(liftToValues(ptRight.trans))
+                      def sort(policy: IdentityPolicy): TableOrder =
+                        policy match {
+                          case IdentityPolicy.Retain.Left  => ptLeft.sort
+                          case IdentityPolicy.Retain.Right => ptRight.sort
+                          case IdentityPolicy.Retain.Merge =>
+                            IdentityOrder.empty
+                          case IdentityPolicy.Retain.Cross => ptLeft.sort
+                          case IdentityPolicy.Synthesize   => IdentityOrder.single
+                          case IdentityPolicy.Strip        => IdentityOrder.empty
+                          case IdentityPolicy.Product(leftPolicy, _) =>
+                            sort(leftPolicy)
+                        }
 
-                        transState liftM mn(f(leftTable, rightTable) map {
-                          case (table, morph1) =>
-                            (
-                              morph1,
-                              PendingTable(
-                                table,
-                                graph,
-                                TransSpec1.Id,
-                                sort(idPolicy)))
-                        })
+                      transState liftM mn(f(leftTable, rightTable) map {
+                        case (table, morph1) =>
+                          (
+                            morph1,
+                            PendingTable(
+                              table,
+                              graph,
+                              TransSpec1.Id,
+                              sort(idPolicy)))
+                      })
                     }
                 }
 
@@ -911,9 +897,8 @@ trait EvaluatorModule[M[+_]]
               def makeJArray(idx: Int)(tpe: JType): JType =
                 JArrayFixedT(Map(idx -> tpe))
 
-              val original = firstCoalesce.zipWithIndex map {
-                case (red, idx) =>
-                  (red, Some(makeJArray(idx) _))
+              val original = firstCoalesce.zipWithIndex map { case (red, idx) =>
+                (red, Some(makeJArray(idx) _))
               }
               val reduction = coalesce(original)
 

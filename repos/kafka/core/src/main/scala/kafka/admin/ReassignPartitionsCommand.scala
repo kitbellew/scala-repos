@@ -152,17 +152,16 @@ object ReassignPartitionsCommand extends Logging {
       Some(brokerListToReassign))
 
     val partitionsToBeReassigned = mutable.Map[TopicAndPartition, Seq[Int]]()
-    groupedByTopic.foreach {
-      case (topic, assignment) =>
-        val (_, replicas) = assignment.head
-        val assignedReplicas = AdminUtils.assignReplicasToBrokers(
-          brokerMetadatas,
-          assignment.size,
-          replicas.size)
-        partitionsToBeReassigned ++= assignedReplicas.map {
-          case (partition, replicas) =>
-            (TopicAndPartition(topic, partition) -> replicas)
-        }
+    groupedByTopic.foreach { case (topic, assignment) =>
+      val (_, replicas) = assignment.head
+      val assignedReplicas = AdminUtils.assignReplicasToBrokers(
+        brokerMetadatas,
+        assignment.size,
+        replicas.size)
+      partitionsToBeReassigned ++= assignedReplicas.map {
+        case (partition, replicas) =>
+          (TopicAndPartition(topic, partition) -> replicas)
+      }
     }
 
     (partitionsToBeReassigned, currentAssignment)
@@ -197,11 +196,10 @@ object ReassignPartitionsCommand extends Logging {
       .filter { case (tp, duplicatedReplicas) => duplicatedReplicas.nonEmpty }
     if (duplicateEntries.nonEmpty) {
       val duplicatesMsg = duplicateEntries
-        .map {
-          case (tp, duplicateReplicas) =>
-            "%s contains multiple entries for %s".format(
-              tp,
-              duplicateReplicas.mkString(","))
+        .map { case (tp, duplicateReplicas) =>
+          "%s contains multiple entries for %s".format(
+            tp,
+            duplicateReplicas.mkString(","))
         }
         .mkString(". ")
       throw new AdminCommandFailedException(

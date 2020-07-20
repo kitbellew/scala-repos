@@ -34,11 +34,10 @@ class Chopstick extends Actor {
   }
 
   //When a Chopstick is available, it can be taken by a hakker
-  def available: Receive = {
-    case Take(hakker) =>
-      log.info(self.path + " is taken by " + hakker)
-      become(takenBy(hakker))
-      hakker ! Taken(self)
+  def available: Receive = { case Take(hakker) =>
+    log.info(self.path + " is taken by " + hakker)
+    become(takenBy(hakker))
+    hakker ! Taken(self)
   }
 
   //A Chopstick begins its existence as available

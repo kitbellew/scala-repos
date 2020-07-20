@@ -72,12 +72,11 @@ private object TrafficDistributorTest {
   def distribution(balancers: Set[Balancer]): Set[(Double, Int, Int)] = {
     balancers.flatMap { b =>
       val endpoints = b.endpoints.sample()
-      endpoints.map {
-        case s: ServiceFactoryProxy[_, _] =>
-          s.self match {
-            case AddressFactory(WeightedTestAddr(_, w)) =>
-              (w * endpoints.size, endpoints.size, b.offeredLoad)
-          }
+      endpoints.map { case s: ServiceFactoryProxy[_, _] =>
+        s.self match {
+          case AddressFactory(WeightedTestAddr(_, w)) =>
+            (w * endpoints.size, endpoints.size, b.offeredLoad)
+        }
       }
     }
   }
@@ -145,10 +144,9 @@ class TrafficDistributorTest extends FunSuite {
       val ε: Double = 0.01
       val weightClasses = Seq((1.0, 1000), (2.0, 5), (10.0, 150))
       val classes = weightClasses.flatMap(weightClass.tupled).toSet
-      val weightSum = weightClasses.foldLeft(0.0) {
-        case (sum, tup) =>
-          val (w, t) = tup
-          sum + (w * t)
+      val weightSum = weightClasses.foldLeft(0.0) { case (sum, tup) =>
+        val (w, t) = tup
+        sum + (w * t)
       }
 
       val dest = Var(Activity.Ok(classes))

@@ -76,14 +76,13 @@ object MacroUtil {
     ScType
       .extractClass(scType, Some(project))
       .filter(_.isInstanceOf[ScTypeDefinition])
-      .map {
-        case typeDef: ScTypeDefinition =>
-          val lookupItem = new ScalaLookupItem(
-            typeDef,
-            typeDef.getTruncedQualifiedName,
-            Option(typeDef.getContainingClass))
-          lookupItem.shouldImport = true
-          lookupItem
+      .map { case typeDef: ScTypeDefinition =>
+        val lookupItem = new ScalaLookupItem(
+          typeDef,
+          typeDef.getTruncedQualifiedName,
+          Option(typeDef.getContainingClass))
+        lookupItem.shouldImport = true
+        lookupItem
       }
   }
 

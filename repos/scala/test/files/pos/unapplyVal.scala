@@ -27,8 +27,7 @@ object unapplyJoins extends App { // bug #1257
   class Buffer {
     object Get extends Sync
 
-    val jp: PartialFunction[Any, Any] = {
-      case Get() =>
+    val jp: PartialFunction[Any, Any] = { case Get() =>
     }
   }
 

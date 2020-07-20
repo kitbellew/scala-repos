@@ -126,59 +126,58 @@ private[ui] class ExecutorTable(
 
     listener.stageIdToData.get((stageId, stageAttemptId)) match {
       case Some(stageData: StageUIData) =>
-        stageData.executorSummary.toSeq.sortBy(_._1).map {
-          case (k, v) =>
-            <tr>
+        stageData.executorSummary.toSeq.sortBy(_._1).map { case (k, v) =>
+          <tr>
             <td>{k}</td>
             <td>{executorIdToAddress.getOrElse(k, "CANNOT FIND ADDRESS")}</td>
             <td sorttable_customkey={v.taskTime.toString}>{
-              UIUtils.formatDuration(v.taskTime)
-            }</td>
+            UIUtils.formatDuration(v.taskTime)
+          }</td>
             <td>{v.failedTasks + v.succeededTasks}</td>
             <td>{v.failedTasks}</td>
             <td>{v.succeededTasks}</td>
             {
-              if (stageData.hasInput) {
-                <td sorttable_customkey={v.inputBytes.toString}>
+            if (stageData.hasInput) {
+              <td sorttable_customkey={v.inputBytes.toString}>
                 {s"${Utils.bytesToString(v.inputBytes)} / ${v.inputRecords}"}
               </td>
-              }
             }
+          }
             {
-              if (stageData.hasOutput) {
-                <td sorttable_customkey={v.outputBytes.toString}>
+            if (stageData.hasOutput) {
+              <td sorttable_customkey={v.outputBytes.toString}>
                 {s"${Utils.bytesToString(v.outputBytes)} / ${v.outputRecords}"}
               </td>
-              }
             }
+          }
             {
-              if (stageData.hasShuffleRead) {
-                <td sorttable_customkey={v.shuffleRead.toString}>
+            if (stageData.hasShuffleRead) {
+              <td sorttable_customkey={v.shuffleRead.toString}>
                 {
-                  s"${Utils.bytesToString(v.shuffleRead)} / ${v.shuffleReadRecords}"
-                }
-              </td>
+                s"${Utils.bytesToString(v.shuffleRead)} / ${v.shuffleReadRecords}"
               }
+              </td>
             }
+          }
             {
-              if (stageData.hasShuffleWrite) {
-                <td sorttable_customkey={v.shuffleWrite.toString}>
+            if (stageData.hasShuffleWrite) {
+              <td sorttable_customkey={v.shuffleWrite.toString}>
                 {
-                  s"${Utils.bytesToString(v.shuffleWrite)} / ${v.shuffleWriteRecords}"
-                }
-              </td>
+                s"${Utils.bytesToString(v.shuffleWrite)} / ${v.shuffleWriteRecords}"
               }
+              </td>
             }
+          }
             {
-              if (stageData.hasBytesSpilled) {
-                <td sorttable_customkey={v.memoryBytesSpilled.toString}>
+            if (stageData.hasBytesSpilled) {
+              <td sorttable_customkey={v.memoryBytesSpilled.toString}>
                 {Utils.bytesToString(v.memoryBytesSpilled)}
               </td>
               <td sorttable_customkey={v.diskBytesSpilled.toString}>
                 {Utils.bytesToString(v.diskBytesSpilled)}
               </td>
-              }
             }
+          }
           </tr>
         }
       case None =>

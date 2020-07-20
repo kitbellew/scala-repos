@@ -626,10 +626,9 @@ class JsonProtocolSuite extends SparkFunSuite {
     val blocks = Seq[(BlockId, BlockStatus)](
       (TestBlockId("meebo"), BlockStatus(StorageLevel.MEMORY_ONLY, 1L, 2L)),
       (TestBlockId("feebo"), BlockStatus(StorageLevel.DISK_ONLY, 3L, 4L)))
-    val blocksJson = JArray(blocks.toList.map {
-      case (id, status) =>
-        ("Block ID" -> id.toString) ~
-          ("Status" -> JsonProtocol.blockStatusToJson(status))
+    val blocksJson = JArray(blocks.toList.map { case (id, status) =>
+      ("Block ID" -> id.toString) ~
+        ("Status" -> JsonProtocol.blockStatusToJson(status))
     })
     testAccumValue(Some(RESULT_SIZE), 3L, JInt(3))
     testAccumValue(Some(shuffleRead.REMOTE_BLOCKS_FETCHED), 2, JInt(2))
@@ -988,9 +987,8 @@ private[spark] object JsonProtocolSuite extends Assertions {
       seq2: Seq[T],
       assertEquals: (T, T) => Unit) {
     assert(seq1.length === seq2.length)
-    seq1.zip(seq2).foreach {
-      case (t1, t2) =>
-        assertEquals(t1, t2)
+    seq1.zip(seq2).foreach { case (t1, t2) =>
+      assertEquals(t1, t2)
     }
   }
 

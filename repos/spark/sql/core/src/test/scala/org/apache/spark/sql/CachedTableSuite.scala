@@ -173,8 +173,8 @@ class CachedTableSuite
         .table("testData")
         .queryExecution
         .withCachedData
-        .collect {
-          case r: InMemoryRelation => r
+        .collect { case r: InMemoryRelation =>
+          r
         }
         .size
     }

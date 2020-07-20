@@ -283,13 +283,11 @@ class FPGrowth private (
       .aggregateByKey(new FPTree[Int], partitioner.numPartitions)(
         (tree, transaction) => tree.add(transaction, 1L),
         (tree1, tree2) => tree1.merge(tree2))
-      .flatMap {
-        case (part, tree) =>
-          tree.extract(minCount, x => partitioner.getPartition(x) == part)
+      .flatMap { case (part, tree) =>
+        tree.extract(minCount, x => partitioner.getPartition(x) == part)
       }
-      .map {
-        case (ranks, count) =>
-          new FreqItemset(ranks.map(i => freqItems(i)).toArray, count)
+      .map { case (ranks, count) =>
+        new FreqItemset(ranks.map(i => freqItems(i)).toArray, count)
       }
   }
 

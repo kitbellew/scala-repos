@@ -2147,10 +2147,9 @@ private[emitter] class JSDesugaring(internalOptions: InternalOptions) {
     def isLocalMutable(ident: Ident): Boolean = vars(ident.name)
 
     def withParams(params: List[ParamDef]): Env = {
-      params.foldLeft(this) {
-        case (env, ParamDef(name, tpe, mutable, _)) =>
-          // ParamDefs may not contain record types
-          env.withDef(name, mutable)
+      params.foldLeft(this) { case (env, ParamDef(name, tpe, mutable, _)) =>
+        // ParamDefs may not contain record types
+        env.withDef(name, mutable)
       }
     }
 

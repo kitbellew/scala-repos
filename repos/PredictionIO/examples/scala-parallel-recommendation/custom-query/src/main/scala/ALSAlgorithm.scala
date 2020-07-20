@@ -44,9 +44,8 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
 
     // HOWTO: collect Item as Map and convert ID to Int index
     val items: Map[Int, Item] = data.items
-      .map {
-        case (id, item) ⇒
-          (itemStringIntMap(id), item)
+      .map { case (id, item) ⇒
+        (itemStringIntMap(id), item)
       }
       .collectAsMap
       .toMap
@@ -113,12 +112,11 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
     implicit val ord = Ordering.by[(Int, Double), Double](_._2)
     val topScores = getTopN(filteredScores, query.num).toArray
 
-    val itemScores = topScores.map {
-      case (i, s) ⇒
-        new ItemScore(
-          item = model.itemIntStringMap(i),
-          score = s,
-          creationYear = model.items(i).creationYear)
+    val itemScores = topScores.map { case (i, s) ⇒
+      new ItemScore(
+        item = model.itemIntStringMap(i),
+        score = s,
+        creationYear = model.items(i).creationYear)
     }
 
     new PredictedResult(itemScores)
@@ -166,10 +164,9 @@ class ALSAlgorithm(val ap: ALSAlgorithmParams)
       selectedScores: Array[(Int, Double)],
       items: Map[Int, Item],
       query: Query) =
-    selectedScores.view.filter {
-      case (iId, _) ⇒
-        items(iId).creationYear
-          .map(icr ⇒ query.creationYear.forall(icr >= _))
-          .getOrElse(true)
+    selectedScores.view.filter { case (iId, _) ⇒
+      items(iId).creationYear
+        .map(icr ⇒ query.creationYear.forall(icr >= _))
+        .getOrElse(true)
     }
 }

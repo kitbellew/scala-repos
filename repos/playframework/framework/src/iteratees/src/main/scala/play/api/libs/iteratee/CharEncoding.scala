@@ -39,10 +39,9 @@ object CharEncoding {
               { result =>
                 Error(s"coding error: $result", in)
               },
-              {
-                case (bytes, remaining) =>
-                  val newIt = Iteratee.flatten(it.feed(Input.El(bytes)))
-                  Cont(step(remaining)(newIt))
+              { case (bytes, remaining) =>
+                val newIt = Iteratee.flatten(it.feed(Input.El(bytes)))
+                Cont(step(remaining)(newIt))
               })
           case _ => Done(it)
         }(defaultExecutionContext)
@@ -54,12 +53,11 @@ object CharEncoding {
           { result =>
             Error(s"coding error: $result", in)
           },
-          {
-            case (string, remaining) =>
-              val newIt = Iteratee.flatten(
-                it.feed(Input.El(string))
-                  .flatMap(_.feed(in))(defaultExecutionContext))
-              Done(newIt)
+          { case (string, remaining) =>
+            val newIt = Iteratee.flatten(
+              it.feed(Input.El(string))
+                .flatMap(_.feed(in))(defaultExecutionContext))
+            Done(newIt)
           }
         )
     }

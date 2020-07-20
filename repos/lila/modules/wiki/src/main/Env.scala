@@ -20,9 +20,8 @@ final class Env(config: Config, db: lila.db.Env) {
 
   def cli =
     new lila.common.Cli {
-      def process = {
-        case "wiki" :: "fetch" :: Nil =>
-          fetcher.apply inject "Fetched wiki from github"
+      def process = { case "wiki" :: "fetch" :: Nil =>
+        fetcher.apply inject "Fetched wiki from github"
       }
     }
 }

@@ -144,19 +144,18 @@ package ll {
       permuteAsSeenFrom(targs)
         .groupBy(_._1)
         .toList
-        .sortBy(_._1.toString) flatMap {
-        case (site, xs) =>
-          block(fmt(site)) {
-            fmt("type", "seen from prefix", "is") ::
-              fmt("----", "----------------", "--") :: {
-              xs.groupBy(_._2).toList.sortBy(_._1.toString) flatMap {
-                case (tp, ys) =>
-                  (ys map {
-                    case (_, _, prefix, seen) => fmt(tp, prefix, seen)
-                  }).sorted.distinct
-              }
+        .sortBy(_._1.toString) flatMap { case (site, xs) =>
+        block(fmt(site)) {
+          fmt("type", "seen from prefix", "is") ::
+            fmt("----", "----------------", "--") :: {
+            xs.groupBy(_._2).toList.sortBy(_._1.toString) flatMap {
+              case (tp, ys) =>
+                (ys map {
+                  case (_, _, prefix, seen) => fmt(tp, prefix, seen)
+                }).sorted.distinct
             }
           }
+        }
       }
     }
   }

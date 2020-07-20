@@ -64,9 +64,8 @@ trait BatchedSink[T] extends Sink[T] {
         val range = batcher.toInterval(batch)
         writeStream(
           batch,
-          inPipe.filter {
-            case (time, _) =>
-              range(time)
+          inPipe.filter { case (time, _) =>
+            range(time)
           })(flowMode._1, flowMode._2)
       }
       inPipe
@@ -90,17 +89,15 @@ trait BatchedSink[T] extends Sink[T] {
         case list => Some((list.min, list.max))
       }
 
-      val newlyWritten = batchesToWrite.map {
-        case (lower, upper) =>
-          // Compute the times we need to read of the deltas
-          val incBatches = Interval.leftClosedRightOpen(lower, upper.next)
-          batchOps
-            .readBatched(incBatches, mode, incoming)
-            .right
-            .map {
-              case (inbatches, flow2Pipe) =>
-                (inbatches, writeBatches(inbatches, flow2Pipe))
-            }
+      val newlyWritten = batchesToWrite.map { case (lower, upper) =>
+        // Compute the times we need to read of the deltas
+        val incBatches = Interval.leftClosedRightOpen(lower, upper.next)
+        batchOps
+          .readBatched(incBatches, mode, incoming)
+          .right
+          .map { case (inbatches, flow2Pipe) =>
+            (inbatches, writeBatches(inbatches, flow2Pipe))
+          }
       }
       // This data is already on disk and will not be recomputed
       val existing = batchStreams

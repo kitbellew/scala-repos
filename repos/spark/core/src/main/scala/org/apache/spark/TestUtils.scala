@@ -84,13 +84,12 @@ private[spark] object TestUtils {
     val tempDir = Option(dir).getOrElse(Utils.createTempDir())
     val jarFile = File.createTempFile("testJar", ".jar", tempDir)
     val jarStream = new JarOutputStream(new FileOutputStream(jarFile))
-    files.foreach {
-      case (k, v) =>
-        val entry = new JarEntry(k)
-        jarStream.putNextEntry(entry)
-        ByteStreams.copy(
-          new ByteArrayInputStream(v.getBytes(StandardCharsets.UTF_8)),
-          jarStream)
+    files.foreach { case (k, v) =>
+      val entry = new JarEntry(k)
+      jarStream.putNextEntry(entry)
+      ByteStreams.copy(
+        new ByteArrayInputStream(v.getBytes(StandardCharsets.UTF_8)),
+        jarStream)
     }
     jarStream.close()
     jarFile.toURI.toURL

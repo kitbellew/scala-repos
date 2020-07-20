@@ -191,9 +191,8 @@ case class Sort(
     if (row != null) {
       s"$sorterVariable.insertRow((UnsafeRow)$row);"
     } else {
-      val colExprs = child.output.zipWithIndex.map {
-        case (attr, i) =>
-          BoundReference(i, attr.dataType, attr.nullable)
+      val colExprs = child.output.zipWithIndex.map { case (attr, i) =>
+        BoundReference(i, attr.dataType, attr.nullable)
       }
 
       ctx.currentVars = input

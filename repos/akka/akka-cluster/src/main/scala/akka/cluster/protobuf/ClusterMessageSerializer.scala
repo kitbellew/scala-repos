@@ -39,19 +39,17 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
   private val fromBinaryMap = collection.immutable
     .HashMap[Class[_ <: ClusterMessage], Array[Byte] ⇒ AnyRef](
-      classOf[InternalClusterAction.Join] -> {
-        case bytes ⇒
-          val m = cm.Join.parseFrom(bytes)
-          InternalClusterAction.Join(
-            uniqueAddressFromProto(m.getNode),
-            Set.empty[String] ++ m.getRolesList.asScala)
+      classOf[InternalClusterAction.Join] -> { case bytes ⇒
+        val m = cm.Join.parseFrom(bytes)
+        InternalClusterAction.Join(
+          uniqueAddressFromProto(m.getNode),
+          Set.empty[String] ++ m.getRolesList.asScala)
       },
-      classOf[InternalClusterAction.Welcome] -> {
-        case bytes ⇒
-          val m = cm.Welcome.parseFrom(decompress(bytes))
-          InternalClusterAction.Welcome(
-            uniqueAddressFromProto(m.getFrom),
-            gossipFromProto(m.getGossip))
+      classOf[InternalClusterAction.Welcome] -> { case bytes ⇒
+        val m = cm.Welcome.parseFrom(decompress(bytes))
+        InternalClusterAction.Welcome(
+          uniqueAddressFromProto(m.getFrom),
+          gossipFromProto(m.getGossip))
       },
       classOf[ClusterUserAction.Leave] -> (bytes ⇒
         ClusterUserAction.Leave(addressFromBinary(bytes))),
@@ -289,22 +287,21 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
 
     def reachabilityToProto(reachability: Reachability)
         : Iterable[cm.ObserverReachability.Builder] = {
-      reachability.versions.map {
-        case (observer, version) ⇒
-          val subjectReachability = reachability
-            .recordsFrom(observer)
-            .map(r ⇒
-              cm.SubjectReachability
-                .newBuilder()
-                .setAddressIndex(mapUniqueAddress(r.subject))
-                .setStatus(cm.ReachabilityStatus.valueOf(
-                  reachabilityStatusToInt(r.status)))
-                .setVersion(r.version))
-          cm.ObserverReachability
-            .newBuilder()
-            .setAddressIndex(mapUniqueAddress(observer))
-            .setVersion(version)
-            .addAllSubjectReachability(subjectReachability.map(_.build).asJava)
+      reachability.versions.map { case (observer, version) ⇒
+        val subjectReachability = reachability
+          .recordsFrom(observer)
+          .map(r ⇒
+            cm.SubjectReachability
+              .newBuilder()
+              .setAddressIndex(mapUniqueAddress(r.subject))
+              .setStatus(cm.ReachabilityStatus.valueOf(
+                reachabilityStatusToInt(r.status)))
+              .setVersion(r.version))
+        cm.ObserverReachability
+          .newBuilder()
+          .setAddressIndex(mapUniqueAddress(observer))
+          .setVersion(version)
+          .addAllSubjectReachability(subjectReachability.map(_.build).asJava)
       }
     }
 
@@ -331,12 +328,11 @@ class ClusterMessageSerializer(val system: ExtendedActorSystem)
       version: VectorClock,
       hashMapping: Map[String, Int]): cm.VectorClock.Builder = {
     val versions: Iterable[cm.VectorClock.Version.Builder] =
-      version.versions.map {
-        case (n, t) ⇒
-          cm.VectorClock.Version
-            .newBuilder()
-            .setHashIndex(mapWithErrorMessage(hashMapping, n, "hash"))
-            .setTimestamp(t)
+      version.versions.map { case (n, t) ⇒
+        cm.VectorClock.Version
+          .newBuilder()
+          .setHashIndex(mapWithErrorMessage(hashMapping, n, "hash"))
+          .setTimestamp(t)
       }
     cm.VectorClock
       .newBuilder()

@@ -40,15 +40,14 @@ private[i18n] object TransInfos {
   def apply(messages: Messages, keys: I18nKeys): TransInfos =
     TransInfos {
       val nbMessages = keys.count
-      LangList.sortedList.filter(_._1 != defaultCode) map {
-        case (code, name) =>
-          TransInfo(
-            lang = Lang(code),
-            name = name,
-            contributors = Contributors(code),
-            nbTranslated = messages.get(code) ?? (_.size),
-            nbMissing = nbMessages - (messages.get(code) ?? (_.size))
-          )
+      LangList.sortedList.filter(_._1 != defaultCode) map { case (code, name) =>
+        TransInfo(
+          lang = Lang(code),
+          name = name,
+          contributors = Contributors(code),
+          nbTranslated = messages.get(code) ?? (_.size),
+          nbMissing = nbMessages - (messages.get(code) ?? (_.size))
+        )
       }
     }
 }

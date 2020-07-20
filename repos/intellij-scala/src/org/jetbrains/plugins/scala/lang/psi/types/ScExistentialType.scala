@@ -257,17 +257,15 @@ case class ScExistentialType(
         case c @ ScCompoundType(comps, signatureMap, typeMap) =>
           val newSet = rejected ++ typeMap.map(_._1)
           comps.foreach(checkRecursive(_, newSet))
-          signatureMap.foreach {
-            case (s, rt) =>
-              s.substitutedTypes.foreach(_.foreach(f =>
-                checkRecursive(f(), newSet)))
-              s.typeParams.foreach {
-                case tParam: TypeParameter =>
-                  tParam.update {
-                    case tp: ScType => checkRecursive(tp, newSet); tp
-                  }
+          signatureMap.foreach { case (s, rt) =>
+            s.substitutedTypes.foreach(_.foreach(f =>
+              checkRecursive(f(), newSet)))
+            s.typeParams.foreach { case tParam: TypeParameter =>
+              tParam.update {
+                case tp: ScType => checkRecursive(tp, newSet); tp
               }
-              checkRecursive(rt, newSet)
+            }
+            checkRecursive(rt, newSet)
           }
           typeMap.foreach(_._2.updateTypes {
             case tp: ScType => checkRecursive(tp, newSet); tp
@@ -324,10 +322,9 @@ case class ScExistentialType(
       }
     }
     checkRecursive(this, HashSet.empty)
-    wildcards.foreach {
-      case ScExistentialArgument(_, args, lower, upper) =>
-        checkRecursive(lower, HashSet.empty)
-        checkRecursive(upper, HashSet.empty)
+    wildcards.foreach { case ScExistentialArgument(_, args, lower, upper) =>
+      checkRecursive(lower, HashSet.empty)
+      checkRecursive(upper, HashSet.empty)
     }
     res
   }
@@ -359,44 +356,42 @@ case class ScExistentialType(
 
         new ScCompoundType(
           components,
-          signatureMap.map {
-            case (s, sctype) =>
-              val pTypes: List[Seq[() => ScType]] =
-                s.substitutedTypes.map(_.map(f =>
-                  () => updateRecursive(f(), newSet, variance)))
-              val tParams: Array[TypeParameter] =
-                if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-                else s.typeParams.map(updateTypeParam)
-              val rt: ScType = updateRecursive(sctype, newSet, -variance)
-              (
-                new Signature(
-                  s.name,
-                  pTypes,
-                  s.paramLength,
-                  tParams,
-                  ScSubstitutor.empty,
-                  s.namedElement match {
-                    case fun: ScFunction =>
-                      ScFunction.getCompoundCopy(
-                        pTypes.map(_.map(_()).toList),
-                        tParams.toList,
-                        rt,
-                        fun)
-                    case b: ScBindingPattern =>
-                      ScBindingPattern.getCompoundCopy(rt, b)
-                    case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
-                    case named        => named
-                  },
-                  s.hasRepeatedParam),
-                rt)
+          signatureMap.map { case (s, sctype) =>
+            val pTypes: List[Seq[() => ScType]] =
+              s.substitutedTypes.map(_.map(f =>
+                () => updateRecursive(f(), newSet, variance)))
+            val tParams: Array[TypeParameter] =
+              if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
+              else s.typeParams.map(updateTypeParam)
+            val rt: ScType = updateRecursive(sctype, newSet, -variance)
+            (
+              new Signature(
+                s.name,
+                pTypes,
+                s.paramLength,
+                tParams,
+                ScSubstitutor.empty,
+                s.namedElement match {
+                  case fun: ScFunction =>
+                    ScFunction.getCompoundCopy(
+                      pTypes.map(_.map(_()).toList),
+                      tParams.toList,
+                      rt,
+                      fun)
+                  case b: ScBindingPattern =>
+                    ScBindingPattern.getCompoundCopy(rt, b)
+                  case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
+                  case named        => named
+                },
+                s.hasRepeatedParam),
+              rt)
           },
-          typeMap.map {
-            case (s, sign) =>
-              (
-                s,
-                sign.updateTypesWithVariance(
-                  updateRecursive(_, newSet, _),
-                  variance))
+          typeMap.map { case (s, sign) =>
+            (
+              s,
+              sign.updateTypesWithVariance(
+                updateRecursive(_, newSet, _),
+                variance))
           })
       case ScProjectionType(_, _, _) => tp
       case JavaArrayType(_)          => tp
@@ -600,13 +595,12 @@ case class ScExistentialType(
 
   override def typeDepth: Int = {
     def typeParamsDepth(typeParams: List[ScTypeParameterType]): Int = {
-      typeParams.map {
-        case typeParam =>
-          val boundsDepth =
-            typeParam.lower.v.typeDepth.max(typeParam.upper.v.typeDepth)
-          if (typeParam.args.nonEmpty) {
-            (typeParamsDepth(typeParam.args) + 1).max(boundsDepth)
-          } else boundsDepth
+      typeParams.map { case typeParam =>
+        val boundsDepth =
+          typeParam.lower.v.typeDepth.max(typeParam.upper.v.typeDepth)
+        if (typeParam.args.nonEmpty) {
+          (typeParamsDepth(typeParam.args) + 1).max(boundsDepth)
+        } else boundsDepth
       }.max
     }
 
@@ -758,11 +752,10 @@ case class ScSkolemizedType(
     r match {
       case ScSkolemizedType(rname, rargs, rlower, rupper) =>
         if (args.length != rargs.length) return (false, uSubst)
-        args.zip(rargs) foreach {
-          case (tpt1, tpt2) =>
-            val t = Equivalence.equivInner(tpt1, tpt2, u, falseUndef)
-            if (!t._1) return (false, u)
-            u = t._2
+        args.zip(rargs) foreach { case (tpt1, tpt2) =>
+          val t = Equivalence.equivInner(tpt1, tpt2, u, falseUndef)
+          if (!t._1) return (false, u)
+          u = t._2
         }
         var t = Equivalence.equivInner(lower, rlower, u, falseUndef)
         if (!t._1) return (false, u)

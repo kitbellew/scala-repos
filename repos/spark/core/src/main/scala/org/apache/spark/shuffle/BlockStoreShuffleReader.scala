@@ -56,9 +56,8 @@ private[spark] class BlockStoreShuffleReader[K, C](
       SparkEnv.get.conf.getInt("spark.reducer.maxReqsInFlight", Int.MaxValue))
 
     // Wrap the streams for compression based on configuration
-    val wrappedStreams = blockFetcherItr.map {
-      case (blockId, inputStream) =>
-        blockManager.wrapForCompression(blockId, inputStream)
+    val wrappedStreams = blockFetcherItr.map { case (blockId, inputStream) =>
+      blockManager.wrapForCompression(blockId, inputStream)
     }
 
     val serializerInstance = dep.serializer.newInstance()

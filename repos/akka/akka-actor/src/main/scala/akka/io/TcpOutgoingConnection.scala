@@ -55,23 +55,22 @@ private[io] class TcpOutgoingConnection(
     }
   }
 
-  def receive: Receive = {
-    case registration: ChannelRegistration ⇒
-      reportConnectFailure {
-        if (remoteAddress.isUnresolved) {
-          log.debug("Resolving {} before connecting", remoteAddress.getHostName)
-          Dns.resolve(remoteAddress.getHostName)(system, self) match {
-            case None ⇒
-              context.become(resolving(registration))
-            case Some(resolved) ⇒
-              register(
-                new InetSocketAddress(resolved.addr, remoteAddress.getPort),
-                registration)
-          }
-        } else {
-          register(remoteAddress, registration)
+  def receive: Receive = { case registration: ChannelRegistration ⇒
+    reportConnectFailure {
+      if (remoteAddress.isUnresolved) {
+        log.debug("Resolving {} before connecting", remoteAddress.getHostName)
+        Dns.resolve(remoteAddress.getHostName)(system, self) match {
+          case None ⇒
+            context.become(resolving(registration))
+          case Some(resolved) ⇒
+            register(
+              new InetSocketAddress(resolved.addr, remoteAddress.getPort),
+              registration)
         }
+      } else {
+        register(remoteAddress, registration)
       }
+    }
   }
 
   def resolving(registration: ChannelRegistration): Receive = {

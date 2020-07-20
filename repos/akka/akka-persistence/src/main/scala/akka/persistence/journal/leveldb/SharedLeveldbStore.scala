@@ -71,8 +71,8 @@ class SharedLeveldbStore extends {
         .map { highSeqNr ⇒
           ReplaySuccess(highSeqNr)
         }
-        .recover {
-          case e ⇒ ReplayFailure(e)
+        .recover { case e ⇒
+          ReplayFailure(e)
         }
         .pipeTo(replyTo)
   }

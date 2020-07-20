@@ -126,17 +126,15 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
       batches: List[BatchID],
       lastVals: TypedPipe[(BatchID, (K, V))]): FlowProducer[Unit] = {
     logger.info("writing batches: {}", batches)
-    Reader[FlowInput, Unit] {
-      case (flow, mode) =>
-        // make sure we checkpoint to disk to avoid double computation:
-        val checked = if (batches.size > 1) lastVals.forceToDisk else lastVals
-        batches.foreach { batchID =>
-          val thisBatch = checked.filter {
-            case (b, kv) =>
-              (b == batchID) && !pruning.prune(kv, batcher.latestTimeOf(b))
-          }
-          writeLast(batchID, thisBatch.values)(flow, mode)
+    Reader[FlowInput, Unit] { case (flow, mode) =>
+      // make sure we checkpoint to disk to avoid double computation:
+      val checked = if (batches.size > 1) lastVals.forceToDisk else lastVals
+      batches.foreach { batchID =>
+        val thisBatch = checked.filter { case (b, kv) =>
+          (b == batchID) && !pruning.prune(kv, batcher.latestTimeOf(b))
         }
+        writeLast(batchID, thisBatch.values)(flow, mode)
+      }
     }
   }
 
@@ -148,10 +146,9 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     implicit val timeValueSemigroup: Semigroup[(Timestamp, V)] =
       IteratorSums.optimizedPairSemigroup[Timestamp, V](1000)
 
-    val inits = ins.map {
-      case (t, (k, v)) =>
-        val batch = capturedBatcher.batchOf(t)
-        (LTuple2(k, batch), (t, v))
+    val inits = ins.map { case (t, (k, v)) =>
+      val batch = capturedBatcher.batchOf(t)
+      (LTuple2(k, batch), (t, v))
     }
     (commutativity match {
       case Commutative    => inits.sumByLocalKeys
@@ -271,24 +268,20 @@ trait BatchedStore[K, V] extends scalding.Store[K, V] { self =>
     def toLastFormat(res: TypedPipe[
       (K, (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
         : TypedPipe[(BatchID, (K, V))] =
-      res.flatMap {
-        case (k, (batchid, (prev, v))) =>
-          val totalSum =
-            Semigroup.plus[Option[(Timestamp, V)]](flatOpt(prev), v)
-          totalSum.map { case (_, sumv) => (batchid, (k, sumv)) }
+      res.flatMap { case (k, (batchid, (prev, v))) =>
+        val totalSum = Semigroup.plus[Option[(Timestamp, V)]](flatOpt(prev), v)
+        totalSum.map { case (_, sumv) => (batchid, (k, sumv)) }
       }
 
     // This builds the format we send to consumer nodes
     def toOutputFormat(res: TypedPipe[
       (K, (BatchID, (Option[Option[(Timestamp, V)]], Option[(Timestamp, V)])))])
         : TypedPipe[(Timestamp, (K, (Option[V], V)))] =
-      res.flatMap {
-        case (k, (batchid, (optopt, opt))) =>
-          opt.map {
-            case (ts, v) =>
-              val prev = flatOpt(optopt).map(_._2)
-              (ts, (k, (prev, v)))
-          }
+      res.flatMap { case (k, (batchid, (optopt, opt))) =>
+        opt.map { case (ts, v) =>
+          val prev = flatOpt(optopt).map(_._2)
+          (ts, (k, (prev, v)))
+        }
       }
 
     // Now in the flow-producer monad; do it:

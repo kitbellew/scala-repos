@@ -186,9 +186,8 @@ abstract class QueryTest extends PlanTest {
       actualAnswer.length == expectedAnswer.length,
       s"actual num rows ${actualAnswer.length} != expected num of rows ${expectedAnswer.length}")
 
-    actualAnswer.zip(expectedAnswer).foreach {
-      case (actualRow, expectedRow) =>
-        QueryTest.checkAggregatesWithTol(actualRow, expectedRow, absTol)
+    actualAnswer.zip(expectedAnswer).foreach { case (actualRow, expectedRow) =>
+      QueryTest.checkAggregatesWithTol(actualRow, expectedRow, absTol)
     }
   }
 

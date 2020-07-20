@@ -67,16 +67,15 @@ object PersistentActorFailureSpec {
 
     def checkSerializable(
         messages: immutable.Seq[AtomicWrite]): immutable.Seq[Try[Unit]] =
-      messages.collect {
-        case a: AtomicWrite ⇒
-          a.payload.collectFirst {
-            case PersistentRepr(Evt(s: String), _: Long)
-                if s.contains("not serializable") ⇒
-              s
-          } match {
-            case Some(s) ⇒ Failure(new SimulatedSerializationException(s))
-            case None ⇒ AsyncWriteJournal.successUnit
-          }
+      messages.collect { case a: AtomicWrite ⇒
+        a.payload.collectFirst {
+          case PersistentRepr(Evt(s: String), _: Long)
+              if s.contains("not serializable") ⇒
+            s
+        } match {
+          case Some(s) ⇒ Failure(new SimulatedSerializationException(s))
+          case None ⇒ AsyncWriteJournal.successUnit
+        }
       }
 
     def isCorrupt(events: Seq[PersistentRepr]): Boolean =
@@ -100,10 +99,9 @@ object PersistentActorFailureSpec {
 
   class Supervisor(testActor: ActorRef) extends Actor {
     override def supervisorStrategy =
-      OneForOneStrategy(loggingEnabled = false) {
-        case e ⇒
-          testActor ! e
-          SupervisorStrategy.Restart
+      OneForOneStrategy(loggingEnabled = false) { case e ⇒
+        testActor ! e
+        SupervisorStrategy.Restart
       }
 
     def receive = {
@@ -114,10 +112,9 @@ object PersistentActorFailureSpec {
 
   class ResumingSupervisor(testActor: ActorRef) extends Supervisor(testActor) {
     override def supervisorStrategy =
-      OneForOneStrategy(loggingEnabled = false) {
-        case e ⇒
-          testActor ! e
-          SupervisorStrategy.Resume
+      OneForOneStrategy(loggingEnabled = false) { case e ⇒
+        testActor ! e
+        SupervisorStrategy.Resume
       }
 
   }

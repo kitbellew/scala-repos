@@ -234,18 +234,17 @@ object TestFramework {
 
     val startTask = foreachListenerSafe(_.doInit)
     val testTasks =
-      tests flatMap {
-        case (framework, testDefinitions) =>
-          val runner = runners(framework)
-          val testTasks = withContextLoader(loader) {
-            runner.tasks(testDefinitions)
-          }
-          for (testTask <- testTasks) yield {
-            val taskDef = testTask.taskDef
-            (
-              taskDef.fullyQualifiedName,
-              createTestFunction(loader, taskDef, runner, testTask))
-          }
+      tests flatMap { case (framework, testDefinitions) =>
+        val runner = runners(framework)
+        val testTasks = withContextLoader(loader) {
+          runner.tasks(testDefinitions)
+        }
+        for (testTask <- testTasks) yield {
+          val taskDef = testTask.taskDef
+          (
+            taskDef.fullyQualifiedName,
+            createTestFunction(loader, taskDef, runner, testTask))
+        }
       }
 
     val endTask = (result: TestResult.Value) =>

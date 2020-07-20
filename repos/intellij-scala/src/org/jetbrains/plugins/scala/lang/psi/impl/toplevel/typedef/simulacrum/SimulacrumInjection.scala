@@ -87,103 +87,98 @@ class SimulacrumInjection extends SyntheticMembersInjector {
               }
             }
             val ops = clazz.functions
-              .flatMap {
-                case f: ScFunction =>
-                  f.parameters.headOption
-                    .flatMap(_.getType(TypingContext.empty).toOption)
-                    .flatMap(tp => isProperTpt(tp)) match {
-                    case Some(funTypeParamToLift) =>
-                      val annotation =
-                        f.findAnnotationNoAliases("simulacrum.op")
-                      val names =
-                        annotation match {
-                          case a: ScAnnotation =>
-                            a.constructor.args match {
-                              case Some(args) =>
-                                args.exprs.headOption match {
-                                  case Some(l: ScLiteral) if l.isString =>
-                                    l.getValue match {
-                                      case value: String =>
-                                        args.exprs match {
-                                          case Seq(_, second) =>
-                                            second match {
-                                              case l: ScLiteral
-                                                  if l.getValue == true =>
-                                                Seq(value, f.name)
-                                              case a: ScAssignStmt =>
-                                                a.getRExpression match {
-                                                  case Some(l: ScLiteral)
-                                                      if l.getValue == true =>
-                                                    Seq(value, f.name)
-                                                  case _ => Seq(value)
-                                                }
-                                              case _ => Seq(value)
-                                            }
-                                          case _ => Seq(value)
-                                        }
-                                      case _ => Seq(f.name)
-                                    }
-                                  case _ => Seq(f.name)
-                                }
-                              case None => Seq(f.name)
-                            }
-                          case _ => Seq(f.name)
-                        }
-                      names.map {
-                        case name =>
-                          val substOpt = funTypeParamToLift match {
-                            case Some(typeParam) if tpAdditional.nonEmpty =>
-                              val subst = ScSubstitutor.empty.bindT(
-                                (typeParam.name, typeParam.getId),
-                                new ScTypeParameterType(
-                                  ScalaPsiElementFactory
-                                    .createTypeParameterFromText(
-                                      tpAdditional.get,
-                                      source.getManager),
-                                  ScSubstitutor.empty
-                                )
-                              )
-                              Some(subst)
-                            case _ => None
+              .flatMap { case f: ScFunction =>
+                f.parameters.headOption
+                  .flatMap(_.getType(TypingContext.empty).toOption)
+                  .flatMap(tp => isProperTpt(tp)) match {
+                  case Some(funTypeParamToLift) =>
+                    val annotation = f.findAnnotationNoAliases("simulacrum.op")
+                    val names =
+                      annotation match {
+                        case a: ScAnnotation =>
+                          a.constructor.args match {
+                            case Some(args) =>
+                              args.exprs.headOption match {
+                                case Some(l: ScLiteral) if l.isString =>
+                                  l.getValue match {
+                                    case value: String =>
+                                      args.exprs match {
+                                        case Seq(_, second) =>
+                                          second match {
+                                            case l: ScLiteral
+                                                if l.getValue == true =>
+                                              Seq(value, f.name)
+                                            case a: ScAssignStmt =>
+                                              a.getRExpression match {
+                                                case Some(l: ScLiteral)
+                                                    if l.getValue == true =>
+                                                  Seq(value, f.name)
+                                                case _ => Seq(value)
+                                              }
+                                            case _ => Seq(value)
+                                          }
+                                        case _ => Seq(value)
+                                      }
+                                    case _ => Seq(f.name)
+                                  }
+                                case _ => Seq(f.name)
+                              }
+                            case None => Seq(f.name)
                           }
-                          def paramText(p: ScParameter): String = {
-                            substOpt match {
-                              case Some(subst) =>
-                                p.name + " : " + subst
-                                  .subst(
-                                    p.getType(TypingContext.empty).getOrAny)
-                                  .canonicalText
-                              case _ => p.getText
-                            }
-                          }
-                          def clauseText(p: ScParameterClause): String = {
-                            p.parameters
-                              .map(paramText)
-                              .mkString(
-                                "(" + (if (p.isImplicit) "implicit " else ""),
-                                ", ",
-                                ")")
-                          }
-                          val typeParamClasue =
-                            f.typeParametersClause.map(_.getText).getOrElse("")
-                          val headParams =
-                            f.paramClauses.clauses.head.parameters.tail
-                              .map(paramText)
-                          val restHeadClause =
-                            if (headParams.isEmpty) ""
-                            else headParams.mkString("(", ", ", ")")
-                          val restClauses = f.paramClauses.clauses.tail
-                            .map(clauseText)
-                            .mkString("")
-                          val rt = substOpt match {
-                            case Some(subst) =>
-                              subst.subst(f.returnType.getOrAny).canonicalText
-                            case None => f.returnType.getOrAny.canonicalText
-                          }
-                          s"def $name$typeParamClasue$restHeadClause$restClauses: $rt = ???"
+                        case _ => Seq(f.name)
                       }
-                    case _ => Seq.empty
-                  }
+                    names.map { case name =>
+                      val substOpt = funTypeParamToLift match {
+                        case Some(typeParam) if tpAdditional.nonEmpty =>
+                          val subst = ScSubstitutor.empty.bindT(
+                            (typeParam.name, typeParam.getId),
+                            new ScTypeParameterType(
+                              ScalaPsiElementFactory
+                                .createTypeParameterFromText(
+                                  tpAdditional.get,
+                                  source.getManager),
+                              ScSubstitutor.empty
+                            )
+                          )
+                          Some(subst)
+                        case _ => None
+                      }
+                      def paramText(p: ScParameter): String = {
+                        substOpt match {
+                          case Some(subst) =>
+                            p.name + " : " + subst
+                              .subst(p.getType(TypingContext.empty).getOrAny)
+                              .canonicalText
+                          case _ => p.getText
+                        }
+                      }
+                      def clauseText(p: ScParameterClause): String = {
+                        p.parameters
+                          .map(paramText)
+                          .mkString(
+                            "(" + (if (p.isImplicit) "implicit " else ""),
+                            ", ",
+                            ")")
+                      }
+                      val typeParamClasue =
+                        f.typeParametersClause.map(_.getText).getOrElse("")
+                      val headParams =
+                        f.paramClauses.clauses.head.parameters.tail
+                          .map(paramText)
+                      val restHeadClause =
+                        if (headParams.isEmpty) ""
+                        else headParams.mkString("(", ", ", ")")
+                      val restClauses =
+                        f.paramClauses.clauses.tail.map(clauseText).mkString("")
+                      val rt = substOpt match {
+                        case Some(subst) =>
+                          subst.subst(f.returnType.getOrAny).canonicalText
+                        case None => f.returnType.getOrAny.canonicalText
+                      }
+                      s"def $name$typeParamClasue$restHeadClause$restClauses: $rt = ???"
+                    }
+                  case _ => Seq.empty
+                }
               }
               .mkString("\n  ")
             val className = clazz.name
@@ -200,31 +195,30 @@ class SimulacrumInjection extends SyntheticMembersInjector {
 
             val AllOpsSupers = clazz.extendsBlock.templateParents.toSeq
               .flatMap(parents =>
-                parents.typeElements.flatMap {
-                  case te =>
-                    te.getType(TypingContext.empty) match {
-                      case Success(ScParameterizedType(classType, Seq(tp)), _)
-                          if isProperTpt(tp).isDefined =>
-                        def fromType: Seq[String] = {
-                          ScType.extractClass(
-                            classType,
-                            Some(clazz.getProject)) match {
-                            case Some(cl: ScTypeDefinition) =>
-                              Seq(
-                                s" with ${cl.qualifiedName}.AllOps[$tpName$additionalWithComma]")
-                            case _ => Seq.empty
-                          }
+                parents.typeElements.flatMap { case te =>
+                  te.getType(TypingContext.empty) match {
+                    case Success(ScParameterizedType(classType, Seq(tp)), _)
+                        if isProperTpt(tp).isDefined =>
+                      def fromType: Seq[String] = {
+                        ScType.extractClass(
+                          classType,
+                          Some(clazz.getProject)) match {
+                          case Some(cl: ScTypeDefinition) =>
+                            Seq(
+                              s" with ${cl.qualifiedName}.AllOps[$tpName$additionalWithComma]")
+                          case _ => Seq.empty
                         }
-                        //in most cases we have to resolve exactly the same reference
-                        //but with .AllOps it will go into companion object
-                        (for {
-                          ScParameterizedTypeElement(pte, _) <- Option(te)
-                          ScSimpleTypeElement(Some(ref)) <- Option(pte)
-                        } yield Seq(
-                          s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]"))
-                          .getOrElse(fromType)
-                      case _ => Seq.empty
-                    }
+                      }
+                      //in most cases we have to resolve exactly the same reference
+                      //but with .AllOps it will go into companion object
+                      (for {
+                        ScParameterizedTypeElement(pte, _) <- Option(te)
+                        ScSimpleTypeElement(Some(ref)) <- Option(pte)
+                      } yield Seq(
+                        s" with ${ref.getText}.AllOps[$tpName$additionalWithComma]"))
+                        .getOrElse(fromType)
+                    case _ => Seq.empty
+                  }
                 })
               .mkString
 

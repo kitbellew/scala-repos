@@ -294,16 +294,15 @@ class VectorIndexerSuite
         .fromStructField(indexedPoints.schema("indexed"))
         .attributes
         .get
-    featureAttributes.zip(transAttributes).foreach {
-      case (orig, trans) =>
-        assert(orig.name === trans.name)
-        (orig, trans) match {
-          case (orig: NumericAttribute, trans: NumericAttribute) =>
-            assert(orig.max.nonEmpty && orig.max === trans.max)
-          case _ =>
-          // do nothing
-          // TODO: Once input features marked as categorical are handled correctly, check that here.
-        }
+    featureAttributes.zip(transAttributes).foreach { case (orig, trans) =>
+      assert(orig.name === trans.name)
+      (orig, trans) match {
+        case (orig: NumericAttribute, trans: NumericAttribute) =>
+          assert(orig.max.nonEmpty && orig.max === trans.max)
+        case _ =>
+        // do nothing
+        // TODO: Once input features marked as categorical are handled correctly, check that here.
+      }
     }
   }
 

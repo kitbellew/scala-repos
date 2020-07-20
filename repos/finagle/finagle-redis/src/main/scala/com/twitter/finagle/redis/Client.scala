@@ -198,11 +198,10 @@ private[redis] class ConnectedTransactionalClient(
       multi(svc) before {
         val cmdQueue = cmds map { cmd => svc(cmd) }
         Future.collect(cmdQueue).unit before exec(svc)
-      } rescue {
-        case e =>
-          svc(Discard).unit before {
-            Future.exception(ClientError("Transaction failed: " + e.toString))
-          }
+      } rescue { case e =>
+        svc(Discard).unit before {
+          Future.exception(ClientError("Transaction failed: " + e.toString))
+        }
       } ensure {
         svc.close()
       }

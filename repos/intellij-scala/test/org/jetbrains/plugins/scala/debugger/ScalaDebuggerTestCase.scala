@@ -154,21 +154,20 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
   protected def clearBreakpoints() = breakpoints.clear()
 
   private def addBreakpoints() {
-    breakpoints.foreach {
-      case (fileName, line, ordinal) =>
-        val ioFile = new File(srcDir, fileName)
-        val file = getVirtualFile(ioFile)
-        val xBreakpointManager =
-          XDebuggerManager.getInstance(getProject).getBreakpointManager
-        val properties = new JavaLineBreakpointProperties
-        properties.setLambdaOrdinal(ordinal)
-        inWriteAction {
-          xBreakpointManager.addLineBreakpoint(
-            scalaLineBreakpointType,
-            file.getUrl,
-            line,
-            properties)
-        }
+    breakpoints.foreach { case (fileName, line, ordinal) =>
+      val ioFile = new File(srcDir, fileName)
+      val file = getVirtualFile(ioFile)
+      val xBreakpointManager =
+        XDebuggerManager.getInstance(getProject).getBreakpointManager
+      val properties = new JavaLineBreakpointProperties
+      properties.setLambdaOrdinal(ordinal)
+      inWriteAction {
+        xBreakpointManager.addLineBreakpoint(
+          scalaLineBreakpointType,
+          file.getUrl,
+          line,
+          properties)
+      }
     }
   }
 
@@ -305,9 +304,8 @@ abstract class ScalaDebuggerTestCase extends ScalaDebuggerTestBase {
       fragmentsWithResults: (String, String)*): Unit = {
     runDebugger() {
       waitForBreakpoint()
-      fragmentsWithResults.foreach {
-        case (fragment, result) =>
-          evalEquals(fragment.stripMargin.trim().replace("\r", ""), result)
+      fragmentsWithResults.foreach { case (fragment, result) =>
+        evalEquals(fragment.stripMargin.trim().replace("\r", ""), result)
       }
     }
   }

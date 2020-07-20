@@ -191,19 +191,17 @@ class JavaWriter(classfile: Classfile, writer: Writer)
     }
     var statics: List[cf.Member] = Nil
     print(" {").indent.newline
-    cf.fields foreach {
-      case m @ cf.Member(_, flags, name, tpe, attribs) =>
-        if (isStatic(flags))
-          statics = m :: statics
-        else
-          printField(flags, name, tpe, attribs)
+    cf.fields foreach { case m @ cf.Member(_, flags, name, tpe, attribs) =>
+      if (isStatic(flags))
+        statics = m :: statics
+      else
+        printField(flags, name, tpe, attribs)
     }
-    cf.methods foreach {
-      case m @ cf.Member(_, flags, name, tpe, attribs) =>
-        if (isStatic(flags))
-          statics = m :: statics
-        else
-          printMethod(flags, name, tpe, attribs)
+    cf.methods foreach { case m @ cf.Member(_, flags, name, tpe, attribs) =>
+      if (isStatic(flags))
+        statics = m :: statics
+      else
+        printMethod(flags, name, tpe, attribs)
     }
     undent.print("}").newline
     if (!statics.isEmpty) {

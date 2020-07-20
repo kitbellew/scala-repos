@@ -619,9 +619,8 @@ trait ProvenanceChecker extends parser.AST with Binder {
               val zipped = ids zip (actuals map { _.provenance })
 
               def sub(target: Provenance): Provenance = {
-                zipped.foldLeft(target) {
-                  case (target, (id, sub)) =>
-                    substituteParam(id, let, target, sub)
+                zipped.foldLeft(target) { case (target, (id, sub)) =>
+                  substituteParam(id, let, target, sub)
                 }
               }
 

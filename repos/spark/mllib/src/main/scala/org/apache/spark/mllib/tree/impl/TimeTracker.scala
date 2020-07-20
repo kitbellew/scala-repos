@@ -68,9 +68,8 @@ private[spark] class TimeTracker extends Serializable {
     */
   override def toString: String = {
     totals
-      .map {
-        case (label, elapsed) =>
-          s"  $label: ${elapsed / 1e9}"
+      .map { case (label, elapsed) =>
+        s"  $label: ${elapsed / 1e9}"
       }
       .mkString("\n")
   }

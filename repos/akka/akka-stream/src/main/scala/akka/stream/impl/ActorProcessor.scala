@@ -148,10 +148,9 @@ private[akka] abstract class BatchingInputBuffer(val size: Int, val pump: Pump)
     case OnSubscribe(subscription) ⇒ subscription.cancel() // spec rule 2.5
   }
 
-  protected def completed: Actor.Receive = {
-    case OnSubscribe(subscription) ⇒
-      throw new IllegalStateException(
-        "onSubscribe called after onError or onComplete")
+  protected def completed: Actor.Receive = { case OnSubscribe(subscription) ⇒
+    throw new IllegalStateException(
+      "onSubscribe called after onError or onComplete")
   }
 
   protected def inputOnError(e: Throwable): Unit = {

@@ -384,9 +384,8 @@ class TypedActorSpec
             case e: IllegalStateException if e.getMessage == "expected" ⇒
               SupervisorStrategy.Resume
           }
-          def receive = {
-            case p: TypedProps[_] ⇒
-              context.sender() ! TypedActor(context).typedActorOf(p)
+          def receive = { case p: TypedProps[_] ⇒
+            context.sender() ! TypedActor(context).typedActorOf(p)
           }
         }))
         val t = Await.result(

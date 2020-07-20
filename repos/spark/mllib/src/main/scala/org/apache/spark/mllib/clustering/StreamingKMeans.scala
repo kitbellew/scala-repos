@@ -96,9 +96,8 @@ class StreamingKMeansModel @Since("1.2.0") (
     val discount = timeUnit match {
       case StreamingKMeans.BATCHES => decayFactor
       case StreamingKMeans.POINTS =>
-        val numNewPoints = pointStats.view.map {
-          case (_, (_, n)) =>
-            n
+        val numNewPoints = pointStats.view.map { case (_, (_, n)) =>
+          n
         }.sum
         math.pow(decayFactor, numNewPoints)
     }
@@ -107,26 +106,25 @@ class StreamingKMeansModel @Since("1.2.0") (
     BLAS.scal(discount, Vectors.dense(clusterWeights))
 
     // implement update rule
-    pointStats.foreach {
-      case (label, (sum, count)) =>
-        val centroid = clusterCenters(label)
+    pointStats.foreach { case (label, (sum, count)) =>
+      val centroid = clusterCenters(label)
 
-        val updatedWeight = clusterWeights(label) + count
-        val lambda = count / math.max(updatedWeight, 1e-16)
+      val updatedWeight = clusterWeights(label) + count
+      val lambda = count / math.max(updatedWeight, 1e-16)
 
-        clusterWeights(label) = updatedWeight
-        BLAS.scal(1.0 - lambda, centroid)
-        BLAS.axpy(lambda / count, sum, centroid)
+      clusterWeights(label) = updatedWeight
+      BLAS.scal(1.0 - lambda, centroid)
+      BLAS.axpy(lambda / count, sum, centroid)
 
-        // display the updated cluster centers
-        val display = clusterCenters(label).size match {
-          case x if x > 100 =>
-            centroid.toArray.take(100).mkString("[", ",", "...")
-          case _ => centroid.toArray.mkString("[", ",", "]")
-        }
+      // display the updated cluster centers
+      val display = clusterCenters(label).size match {
+        case x if x > 100 =>
+          centroid.toArray.take(100).mkString("[", ",", "...")
+        case _ => centroid.toArray.mkString("[", ",", "]")
+      }
 
-        logInfo(
-          s"Cluster $label updated with weight $updatedWeight and centroid: $display")
+      logInfo(
+        s"Cluster $label updated with weight $updatedWeight and centroid: $display")
     }
 
     // Check whether the smallest cluster is dying. If so, split the largest cluster.

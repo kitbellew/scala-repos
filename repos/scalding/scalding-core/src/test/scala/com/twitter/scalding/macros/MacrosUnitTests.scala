@@ -350,9 +350,8 @@ class MacrosUnitTests extends WordSpec with Matchers {
           classOf[String],
           classOf[String]))
       val names = List("a1.x", "a1.y", "a2.x", "a2.y", "y")
-      names.zipWithIndex.foreach {
-        case (name, indx) =>
-          assert(fields.get(indx) === name)
+      names.zipWithIndex.foreach { case (name, indx) =>
+        assert(fields.get(indx) === name)
       }
     }
 
@@ -383,9 +382,8 @@ class MacrosUnitTests extends WordSpec with Matchers {
           classOf[String],
           classOf[String]))
       val names = (0 until fields.size)
-      names.zipWithIndex.foreach {
-        case (name, indx) =>
-          assert(fields.get(indx) === name)
+      names.zipWithIndex.foreach { case (name, indx) =>
+        assert(fields.get(indx) === name)
       }
     }
   }

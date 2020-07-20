@@ -6,10 +6,9 @@ trait TypeInferenceBug {
   def foo(bs: B) {
     val as1: List[(TTT, Int)] = null
 
-    as1.foldLeft(bs) {
-      case (b, (a, i: Int)) =>
-        /*start*/
-        b /*end*/
+    as1.foldLeft(bs) { case (b, (a, i: Int)) =>
+      /*start*/
+      b /*end*/
     }
 
   }

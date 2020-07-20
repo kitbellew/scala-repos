@@ -101,19 +101,18 @@ case class ProducerRequest(
 
     //save the topic structure
     buffer.putInt(dataGroupedByTopic.size) //the number of topics
-    dataGroupedByTopic.foreach {
-      case (topic, topicAndPartitionData) =>
-        writeShortString(buffer, topic) //write the topic
-        buffer.putInt(topicAndPartitionData.size) //the number of partitions
-        topicAndPartitionData.foreach(partitionAndData => {
-          val partition = partitionAndData._1.partition
-          val partitionMessageData = partitionAndData._2
-          val bytes = partitionMessageData.buffer
-          buffer.putInt(partition)
-          buffer.putInt(bytes.limit)
-          buffer.put(bytes)
-          bytes.rewind
-        })
+    dataGroupedByTopic.foreach { case (topic, topicAndPartitionData) =>
+      writeShortString(buffer, topic) //write the topic
+      buffer.putInt(topicAndPartitionData.size) //the number of partitions
+      topicAndPartitionData.foreach(partitionAndData => {
+        val partition = partitionAndData._1.partition
+        val partitionMessageData = partitionAndData._2
+        val bytes = partitionMessageData.buffer
+        buffer.putInt(partition)
+        buffer.putInt(bytes.limit)
+        buffer.put(bytes)
+        bytes.rewind
+      })
     }
   }
 
@@ -151,14 +150,13 @@ case class ProducerRequest(
     if (request.requestObj.asInstanceOf[ProducerRequest].requiredAcks == 0) {
       requestChannel.closeConnection(request.processor, request)
     } else {
-      val producerResponseStatus = data.map {
-        case (topicAndPartition, data) =>
-          (
-            topicAndPartition,
-            ProducerResponseStatus(
-              Errors.forException(e).code,
-              -1L,
-              Message.NoTimestamp))
+      val producerResponseStatus = data.map { case (topicAndPartition, data) =>
+        (
+          topicAndPartition,
+          ProducerResponseStatus(
+            Errors.forException(e).code,
+            -1L,
+            Message.NoTimestamp))
       }
       val errorResponse =
         ProducerResponse(correlationId, producerResponseStatus)

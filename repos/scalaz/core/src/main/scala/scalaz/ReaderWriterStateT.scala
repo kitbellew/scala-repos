@@ -203,10 +203,9 @@ private trait ReaderWriterStateTBindRec[F[_], R, W, S]
   def tailrecM[A, B](f: A => ReaderWriterStateT[F, R, W, S, A \/ B])(
       a: A): ReaderWriterStateT[F, R, W, S, B] = {
     def go(r: R)(t: (W, A, S)): F[(W, A, S) \/ (W, B, S)] =
-      F.map(f(t._2).run(r, t._3)) {
-        case (w0, e, s0) =>
-          val w1 = W.append(t._1, w0)
-          e.bimap((w1, _, s0), (w1, _, s0))
+      F.map(f(t._2).run(r, t._3)) { case (w0, e, s0) =>
+        val w1 = W.append(t._1, w0)
+        e.bimap((w1, _, s0), (w1, _, s0))
       }
 
     ReaderWriterStateT((r, s) =>

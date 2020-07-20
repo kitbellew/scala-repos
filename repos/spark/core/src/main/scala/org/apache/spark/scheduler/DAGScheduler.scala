@@ -534,47 +534,45 @@ private[spark] class DAGScheduler(
     } else {
       stageIdToStage
         .filterKeys(stageId => registeredStages.get.contains(stageId))
-        .foreach {
-          case (stageId, stage) =>
-            val jobSet = stage.jobIds
-            if (!jobSet.contains(job.jobId)) {
-              logError(
-                "Job %d not registered for stage %d even though that stage was registered for the job"
-                  .format(job.jobId, stageId))
-            } else {
-              def removeStage(stageId: Int) {
-                // data structures based on Stage
-                for (stage <- stageIdToStage.get(stageId)) {
-                  if (runningStages.contains(stage)) {
-                    logDebug("Removing running stage %d".format(stageId))
-                    runningStages -= stage
-                  }
-                  for ((k, v) <- shuffleToMapStage.find(_._2 == stage)) {
-                    shuffleToMapStage.remove(k)
-                  }
-                  if (waitingStages.contains(stage)) {
-                    logDebug(
-                      "Removing stage %d from waiting set.".format(stageId))
-                    waitingStages -= stage
-                  }
-                  if (failedStages.contains(stage)) {
-                    logDebug(
-                      "Removing stage %d from failed set.".format(stageId))
-                    failedStages -= stage
-                  }
+        .foreach { case (stageId, stage) =>
+          val jobSet = stage.jobIds
+          if (!jobSet.contains(job.jobId)) {
+            logError(
+              "Job %d not registered for stage %d even though that stage was registered for the job"
+                .format(job.jobId, stageId))
+          } else {
+            def removeStage(stageId: Int) {
+              // data structures based on Stage
+              for (stage <- stageIdToStage.get(stageId)) {
+                if (runningStages.contains(stage)) {
+                  logDebug("Removing running stage %d".format(stageId))
+                  runningStages -= stage
                 }
-                // data structures based on StageId
-                stageIdToStage -= stageId
-                logDebug(
-                  "After removal of stage %d, remaining stages = %d"
-                    .format(stageId, stageIdToStage.size))
+                for ((k, v) <- shuffleToMapStage.find(_._2 == stage)) {
+                  shuffleToMapStage.remove(k)
+                }
+                if (waitingStages.contains(stage)) {
+                  logDebug(
+                    "Removing stage %d from waiting set.".format(stageId))
+                  waitingStages -= stage
+                }
+                if (failedStages.contains(stage)) {
+                  logDebug("Removing stage %d from failed set.".format(stageId))
+                  failedStages -= stage
+                }
               }
-
-              jobSet -= job.jobId
-              if (jobSet.isEmpty) { // no other job needs this stage
-                removeStage(stageId)
-              }
+              // data structures based on StageId
+              stageIdToStage -= stageId
+              logDebug(
+                "After removal of stage %d, remaining stages = %d"
+                  .format(stageId, stageIdToStage.size))
             }
+
+            jobSet -= job.jobId
+            if (jobSet.isEmpty) { // no other job needs this stage
+              removeStage(stageId)
+            }
+          }
         }
     }
     jobIdToStageIds -= job.jobId

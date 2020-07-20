@@ -224,11 +224,10 @@ object SupervisorStrategy extends SupervisorStrategyLowPriorityImplicits {
   def makeDecider(flat: Iterable[CauseDirective]): Decider = {
     val directives = sort(flat)
 
-    {
-      case x ⇒
-        directives collectFirst {
-          case (c, d) if c isInstance x ⇒ d
-        } getOrElse Escalate
+    { case x ⇒
+      directives collectFirst {
+        case (c, d) if c isInstance x ⇒ d
+      } getOrElse Escalate
     }
   }
 

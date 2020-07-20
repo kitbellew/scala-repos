@@ -109,9 +109,8 @@ object PowerIterationClusteringExample {
       model.assignments.collect().groupBy(_.cluster).mapValues(_.map(_.id))
     val assignments = clusters.toList.sortBy { case (k, v) => v.length }
     val assignmentsStr = assignments
-      .map {
-        case (k, v) =>
-          s"$k -> ${v.sorted.mkString("[", ",", "]")}"
+      .map { case (k, v) =>
+        s"$k -> ${v.sorted.mkString("[", ",", "]")}"
       }
       .mkString(", ")
     val sizesStr = assignments
@@ -141,14 +140,14 @@ object PowerIterationClusteringExample {
       generateCircle(i, i * nPoints)
     }.zipWithIndex
     val rdd = sc.parallelize(points)
-    val distancesRdd = rdd.cartesian(rdd).flatMap {
-      case (((x0, y0), i0), ((x1, y1), i1)) =>
+    val distancesRdd =
+      rdd.cartesian(rdd).flatMap { case (((x0, y0), i0), ((x1, y1), i1)) =>
         if (i0 < i1) {
           Some((i0.toLong, i1.toLong, gaussianSimilarity((x0, y0), (x1, y1))))
         } else {
           None
         }
-    }
+      }
     distancesRdd
   }
 

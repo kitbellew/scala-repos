@@ -97,10 +97,9 @@ trait GrouperSpec[M[+_]]
   }
 
   def augmentWithIdentities(json: Stream[JValue]) =
-    json.zipWithIndex map {
-      case (v, i) =>
-        JObject(
-          JField("key", JArray(JNum(i) :: Nil)) :: JField("value", v) :: Nil)
+    json.zipWithIndex map { case (v, i) =>
+      JObject(
+        JField("key", JArray(JNum(i) :: Nil)) :: JField("value", v) :: Nil)
     }
 
   def testHistogramByValue(set: Stream[Int]) = {
@@ -125,11 +124,10 @@ trait GrouperSpec[M[+_]]
         gs1 <- map(groupId)
         gs1Json <- gs1.toJson
       } yield {
-        key.toJValue must beLike {
-          case jo: JObject =>
-            (jo \ "tic_a") match {
-              case JNum(i) => set must contain(i)
-            }
+        key.toJValue must beLike { case jo: JObject =>
+          (jo \ "tic_a") match {
+            case JNum(i) => set must contain(i)
+          }
         }
 
         val histoKey = key.toJValue(tic_aj)
@@ -166,11 +164,10 @@ trait GrouperSpec[M[+_]]
 
     val data = augmentWithIdentities(set.map(JNum(_)))
 
-    val doubleF1 = CF1P("testing::doubleF1") {
-      case c: LongColumn =>
-        new Map1Column(c) with LongColumn {
-          def apply(row: Int) = c(row) * 2
-        }
+    val doubleF1 = CF1P("testing::doubleF1") { case c: LongColumn =>
+      new Map1Column(c) with LongColumn {
+        def apply(row: Int) = c(row) * 2
+      }
     }
 
     val groupId = module.newGroupId
@@ -193,11 +190,10 @@ trait GrouperSpec[M[+_]]
         gs1 <- map(groupId)
         gs1Json <- gs1.toJson
       } yield {
-        key.toJValue must beLike {
-          case jo: JObject =>
-            (jo \ "tic_a") match {
-              case JNum(i) => set must contain(i)
-            }
+        key.toJValue must beLike { case jo: JObject =>
+          (jo \ "tic_a") match {
+            case JNum(i) => set must contain(i)
+          }
         }
 
         val histoKey = key.toJValue(tic_aj)
@@ -233,11 +229,10 @@ trait GrouperSpec[M[+_]]
 
     val data = augmentWithIdentities(set.map(JNum(_)))
 
-    val mod2 = CF1P("testing::mod2") {
-      case c: LongColumn =>
-        new Map1Column(c) with LongColumn {
-          def apply(row: Int) = c(row) % 2
-        }
+    val mod2 = CF1P("testing::mod2") { case c: LongColumn =>
+      new Map1Column(c) with LongColumn {
+        def apply(row: Int) = c(row) % 2
+      }
     }
 
     val groupId = module.newGroupId
@@ -254,11 +249,10 @@ trait GrouperSpec[M[+_]]
         gs1 <- map(groupId)
         gs1Json <- gs1.toJson
       } yield {
-        key.toJValue must beLike {
-          case jo: JObject =>
-            (jo \ "tic_a") match {
-              case JNum(i) => set.map(_ % 2) must contain(i)
-            }
+        key.toJValue must beLike { case jo: JObject =>
+          (jo \ "tic_a") match {
+            case JNum(i) => set.map(_ % 2) must contain(i)
+          }
         }
 
         val histoKey = key.toJValue(tic_aj)
@@ -657,10 +651,8 @@ trait GrouperSpec[M[+_]]
     import trans._
     import constants._
 
-    val data1 = augmentWithIdentities(rawData1 map {
-      case (a, b0) =>
-        JObject(
-          JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
+    val data1 = augmentWithIdentities(rawData1 map { case (a, b0) =>
+      JObject(JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
     })
 
     val data2 = augmentWithIdentities(rawData2 map { v =>
@@ -775,10 +767,8 @@ trait GrouperSpec[M[+_]]
     import trans._
     import constants._
 
-    val data1 = augmentWithIdentities(rawData1 map {
-      case (a, b0) =>
-        JObject(
-          JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
+    val data1 = augmentWithIdentities(rawData1 map { case (a, b0) =>
+      JObject(JField("a", JNum(a)) :: b0.map(b => JField("b", JNum(b))).toList)
     })
 
     val data2 = augmentWithIdentities(rawData2 map { v =>

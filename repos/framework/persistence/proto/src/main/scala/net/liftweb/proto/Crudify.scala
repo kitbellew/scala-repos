@@ -228,9 +228,8 @@ trait Crudify {
       // the name of the page
       def name = "View " + Prefix
 
-      override val snippets: SnippetTest = {
-        case ("crud.view", Full(wp)) =>
-          displayRecord(wp.asInstanceOf[TheCrudType])
+      override val snippets: SnippetTest = { case ("crud.view", Full(wp)) =>
+        displayRecord(wp.asInstanceOf[TheCrudType])
       }
 
       def defaultValue = Empty
@@ -276,9 +275,8 @@ trait Crudify {
       // the name of the page
       def name = "Edit " + Prefix
 
-      override val snippets: SnippetTest = {
-        case ("crud.edit", Full(wp)) =>
-          crudDoForm(wp.asInstanceOf[TheCrudType], S.?("Save"))
+      override val snippets: SnippetTest = { case ("crud.edit", Full(wp)) =>
+        crudDoForm(wp.asInstanceOf[TheCrudType], S.?("Save"))
       }
 
       def defaultValue = Empty
@@ -397,9 +395,8 @@ trait Crudify {
       // the name of the page
       def name = "Delete " + Prefix
 
-      override val snippets: SnippetTest = {
-        case ("crud.delete", Full(wp)) =>
-          crudyDelete(wp.asInstanceOf[TheCrudType])
+      override val snippets: SnippetTest = { case ("crud.delete", Full(wp)) =>
+        crudyDelete(wp.asInstanceOf[TheCrudType])
       }
 
       def defaultValue = Empty

@@ -141,9 +141,8 @@ trait JobStateSerialization {
           extractBase(obj) map (Expired(_, _)).tupled
 
         case "finished" =>
-          extractBase(obj) flatMap {
-            case (timestamp, previous) =>
-              success(Finished(timestamp, previous))
+          extractBase(obj) flatMap { case (timestamp, previous) =>
+            success(Finished(timestamp, previous))
           }
       }
     }

@@ -391,9 +391,8 @@ private[engine] final class HttpHeaderParser private (
           p2: String,
           p3: String) = {
         val (lines, mainIx) = recurse(subNodeIx)
-        val prefixedLines = lines.zipWithIndex map {
-          case (line, ix) ⇒
-            (if (ix < mainIx) p1 else if (ix > mainIx) p3 else p2) :: line
+        val prefixedLines = lines.zipWithIndex map { case (line, ix) ⇒
+          (if (ix < mainIx) p1 else if (ix > mainIx) p3 else p2) :: line
         }
         prefixedLines -> mainIx
       }
@@ -436,11 +435,10 @@ private[engine] final class HttpHeaderParser private (
     }
     val sb = new JStringBuilder()
     val (lines, mainLineIx) = recurse()
-    lines.zipWithIndex foreach {
-      case (line, ix) ⇒
-        sb.append(if (ix == mainLineIx) '-' else ' ')
-        line foreach (s ⇒ sb.append(s))
-        sb.append('\n')
+    lines.zipWithIndex foreach { case (line, ix) ⇒
+      sb.append(if (ix == mainLineIx) '-' else ' ')
+      line foreach (s ⇒ sb.append(s))
+      sb.append('\n')
     }
     sb.toString
   }
@@ -478,8 +476,8 @@ private[engine] final class HttpHeaderParser private (
       (c >> 8).toString + (if ((c & 0xff) > 0) "/" + (c & 0xff).toChar
                            else "/Ω")
     s"nodes: ${nodes take nodeCount map char mkString ", "}\n" +
-      s"branchData: ${branchData take branchDataCount grouped 3 map {
-        case Array(a, b, c) ⇒ s"$a/$b/$c"
+      s"branchData: ${branchData take branchDataCount grouped 3 map { case Array(a, b, c) ⇒
+        s"$a/$b/$c"
       } mkString ", "}\n" +
       s"values: ${values take valueCount mkString ", "}"
   }

@@ -70,21 +70,20 @@ class HyperLogLogPlusPlusSuite extends SparkFunSuite {
       ns: Seq[Int],
       f: Int => Int,
       c: Int => Int): Unit = {
-    rsds.flatMap(rsd => ns.map(n => (rsd, n))).foreach {
-      case (rsd, n) =>
-        val (hll, input, buffer) = createEstimator(rsd)
-        var i = 0
-        while (i < n) {
-          input.setInt(0, f(i))
-          hll.update(buffer, input)
-          i += 1
-        }
-        val estimate = hll.eval(buffer).asInstanceOf[Long].toDouble
-        val cardinality = c(n)
-        val error = math.abs((estimate / cardinality.toDouble) - 1.0d)
-        assert(
-          error < hll.trueRsd * 3.0d,
-          "Error should be within 3 std. errors.")
+    rsds.flatMap(rsd => ns.map(n => (rsd, n))).foreach { case (rsd, n) =>
+      val (hll, input, buffer) = createEstimator(rsd)
+      var i = 0
+      while (i < n) {
+        input.setInt(0, f(i))
+        hll.update(buffer, input)
+        i += 1
+      }
+      val estimate = hll.eval(buffer).asInstanceOf[Long].toDouble
+      val cardinality = c(n)
+      val error = math.abs((estimate / cardinality.toDouble) - 1.0d)
+      assert(
+        error < hll.trueRsd * 3.0d,
+        "Error should be within 3 std. errors.")
     }
   }
 

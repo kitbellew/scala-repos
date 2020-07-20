@@ -63,11 +63,10 @@ object InetSocketAddressUtil {
 
   private[finagle] def resolveHostPortsSeq(
       hostPorts: Seq[HostPort]): Seq[Seq[SocketAddress]] =
-    hostPorts map {
-      case (host, port) =>
-        (InetAddress.getAllByName(host) map { addr =>
-          new InetSocketAddress(addr, port)
-        }).toSeq
+    hostPorts map { case (host, port) =>
+      (InetAddress.getAllByName(host) map { addr =>
+        new InetSocketAddress(addr, port)
+      }).toSeq
     }
 
   /**
@@ -83,12 +82,11 @@ object InetSocketAddressUtil {
   def parseHosts(hosts: String): Seq[InetSocketAddress] = {
     if (hosts == ":*") return Seq(new InetSocketAddress(0))
 
-    (parseHostPorts(hosts) map {
-      case (host, port) =>
-        if (host == "")
-          new InetSocketAddress(port)
-        else
-          new InetSocketAddress(host, port)
+    (parseHostPorts(hosts) map { case (host, port) =>
+      if (host == "")
+        new InetSocketAddress(port)
+      else
+        new InetSocketAddress(host, port)
     }).toList
   }
 }

@@ -67,15 +67,14 @@ object CodeGenerator extends App {
               }
           }
       })
-    codegenFuture.onSuccess {
-      case codegen =>
-        codegen.writeToFile(
-          "slick.jdbc.H2Profile",
-          "some/folder/",
-          "some.packag",
-          "Tables",
-          "Tables.scala"
-        )
+    codegenFuture.onSuccess { case codegen =>
+      codegen.writeToFile(
+        "slick.jdbc.H2Profile",
+        "some/folder/",
+        "some.packag",
+        "Tables",
+        "Tables.scala"
+      )
     }
     //#customization
   }

@@ -394,21 +394,19 @@ class BlockManagerSuite
     val broadcast2BlockId2 = BroadcastBlockId(2, "_")
 
     // insert broadcast blocks in both the stores
-    Seq(driverStore, executorStore).foreach {
-      case s =>
-        s.putSingle(broadcast0BlockId, a1, StorageLevel.DISK_ONLY)
-        s.putSingle(broadcast1BlockId, a2, StorageLevel.DISK_ONLY)
-        s.putSingle(broadcast2BlockId, a3, StorageLevel.DISK_ONLY)
-        s.putSingle(broadcast2BlockId2, a4, StorageLevel.DISK_ONLY)
+    Seq(driverStore, executorStore).foreach { case s =>
+      s.putSingle(broadcast0BlockId, a1, StorageLevel.DISK_ONLY)
+      s.putSingle(broadcast1BlockId, a2, StorageLevel.DISK_ONLY)
+      s.putSingle(broadcast2BlockId, a3, StorageLevel.DISK_ONLY)
+      s.putSingle(broadcast2BlockId2, a4, StorageLevel.DISK_ONLY)
     }
 
     // verify whether the blocks exist in both the stores
-    Seq(driverStore, executorStore).foreach {
-      case s =>
-        assert(s.hasLocalBlock(broadcast0BlockId))
-        assert(s.hasLocalBlock(broadcast1BlockId))
-        assert(s.hasLocalBlock(broadcast2BlockId))
-        assert(s.hasLocalBlock(broadcast2BlockId2))
+    Seq(driverStore, executorStore).foreach { case s =>
+      assert(s.hasLocalBlock(broadcast0BlockId))
+      assert(s.hasLocalBlock(broadcast1BlockId))
+      assert(s.hasLocalBlock(broadcast2BlockId))
+      assert(s.hasLocalBlock(broadcast2BlockId2))
     }
 
     // remove broadcast 0 block only from executors
@@ -1095,15 +1093,14 @@ class BlockManagerSuite
         tellMaster = true)
     }
     assert(updatedBlocks3.size === 2)
-    updatedBlocks3.foreach {
-      case (id, status) =>
-        id match {
-          case TestBlockId("list1") =>
-            assert(status.storageLevel === StorageLevel.NONE)
-          case TestBlockId("list3") =>
-            assert(status.storageLevel === StorageLevel.MEMORY_ONLY)
-          case _ => fail("Updated block is neither list1 nor list3")
-        }
+    updatedBlocks3.foreach { case (id, status) =>
+      id match {
+        case TestBlockId("list1") =>
+          assert(status.storageLevel === StorageLevel.NONE)
+        case TestBlockId("list3") =>
+          assert(status.storageLevel === StorageLevel.MEMORY_ONLY)
+        case _ => fail("Updated block is neither list1 nor list3")
+      }
     }
     assert(store.memoryStore.contains("list3"), "list3 was not in memory store")
 
@@ -1116,15 +1113,14 @@ class BlockManagerSuite
         tellMaster = true)
     }
     assert(updatedBlocks4.size === 2)
-    updatedBlocks4.foreach {
-      case (id, status) =>
-        id match {
-          case TestBlockId("list2") =>
-            assert(status.storageLevel === StorageLevel.DISK_ONLY)
-          case TestBlockId("list4") =>
-            assert(status.storageLevel === StorageLevel.MEMORY_ONLY)
-          case _ => fail("Updated block is neither list2 nor list4")
-        }
+    updatedBlocks4.foreach { case (id, status) =>
+      id match {
+        case TestBlockId("list2") =>
+          assert(status.storageLevel === StorageLevel.DISK_ONLY)
+        case TestBlockId("list4") =>
+          assert(status.storageLevel === StorageLevel.MEMORY_ONLY)
+        case _ => fail("Updated block is neither list2 nor list4")
+      }
     }
     assert(store.diskStore.contains("list2"), "list2 was not in disk store")
     assert(store.memoryStore.contains("list4"), "list4 was not in memory store")
@@ -1401,9 +1397,8 @@ class BlockManagerSuite
     ) // we returned an iterator
     assert(!memoryStore.contains("someBlock2"))
     assert(putResult.isLeft)
-    bigList.iterator.zip(putResult.left.get).foreach {
-      case (e, a) =>
-        assert(e === a, "putIterator() did not return original values!")
+    bigList.iterator.zip(putResult.left.get).foreach { case (e, a) =>
+      assert(e === a, "putIterator() did not return original values!")
     }
     // The unroll memory was freed once the iterator returned by putIterator() was fully traversed.
     assert(memoryStore.currentUnrollMemoryForThisTask === 0)

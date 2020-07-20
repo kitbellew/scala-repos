@@ -52,16 +52,15 @@ class BasicAuthenticationFilter
     try {
       PluginRegistry()
         .getRepositoryRouting(request.gitRepositoryPath)
-        .map {
-          case GitRepositoryRouting(_, _, filter) =>
-            // served by plug-ins
-            pluginRepository(
-              request,
-              wrappedResponse,
-              chain,
-              settings,
-              isUpdating,
-              filter)
+        .map { case GitRepositoryRouting(_, _, filter) =>
+          // served by plug-ins
+          pluginRepository(
+            request,
+            wrappedResponse,
+            chain,
+            settings,
+            isUpdating,
+            filter)
 
         }
         .getOrElse {

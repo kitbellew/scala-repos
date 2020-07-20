@@ -99,9 +99,8 @@ object Auth extends LilaController {
       if (Env.security.tor isExitNode ctx.req.remoteAddress)
         Unauthorized(html.auth.tor()).fuccess
       else {
-        forms.signup.websiteWithCaptcha map {
-          case (form, captcha) =>
-            Ok(html.auth.signup(form, captcha, env.RecaptchaPublicKey))
+        forms.signup.websiteWithCaptcha map { case (form, captcha) =>
+          Ok(html.auth.signup(form, captcha, env.RecaptchaPublicKey))
         }
       }
     }
@@ -133,13 +132,9 @@ object Auth extends LilaController {
             data =>
               env.recaptcha.verify(data.recaptchaResponse, req).flatMap {
                 case false =>
-                  forms.signup.websiteWithCaptcha map {
-                    case (form, captcha) =>
-                      BadRequest(
-                        html.auth.signup(
-                          form fill data,
-                          captcha,
-                          env.RecaptchaPublicKey))
+                  forms.signup.websiteWithCaptcha map { case (form, captcha) =>
+                    BadRequest(html.auth
+                      .signup(form fill data, captcha, env.RecaptchaPublicKey))
                   }
                 case true =>
                   lila.mon.user.register.website()
@@ -154,14 +149,13 @@ object Auth extends LilaController {
                       none)
                     .flatten(s"No user could be created for ${data.username}")
                     .map(_ -> email)
-                    .flatMap {
-                      case (user, email) =>
-                        env.emailConfirm.send(user, email) >> {
-                          if (env.emailConfirm.effective)
-                            Redirect(
-                              routes.Auth.checkYourEmail(user.username)).fuccess
-                          else saveAuthAndRedirect(user)
-                        }
+                    .flatMap { case (user, email) =>
+                      env.emailConfirm.send(user, email) >> {
+                        if (env.emailConfirm.effective)
+                          Redirect(
+                            routes.Auth.checkYourEmail(user.username)).fuccess
+                        else saveAuthAndRedirect(user)
+                      }
                     }
               }
           ),
@@ -258,9 +252,8 @@ object Auth extends LilaController {
               Env.security.passwordReset.send(user, email) inject Redirect(
                 routes.Auth.passwordResetSent(data.email))
             case _ =>
-              forms.passwordResetWithCaptcha map {
-                case (form, captcha) =>
-                  BadRequest(html.auth.passwordReset(form, captcha, false.some))
+              forms.passwordResetWithCaptcha map { case (form, captcha) =>
+                BadRequest(html.auth.passwordReset(form, captcha, false.some))
               }
           }
         }

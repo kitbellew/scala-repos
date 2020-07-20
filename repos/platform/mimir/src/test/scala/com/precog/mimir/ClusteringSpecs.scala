@@ -122,9 +122,8 @@ trait ClusteringLibSpecs[M[+_]]
         result must haveAllElementsLike {
           case (ids, SObject(obj)) if ids.size == 0 =>
             obj.keys mustEqual Set("model1")
-            obj("model1") must beLike {
-              case SObject(clusterMap) =>
-                isGoodCluster(clusterMap, points, centers, k, dimension)
+            obj("model1") must beLike { case SObject(clusterMap) =>
+              isGoodCluster(clusterMap, points, centers, k, dimension)
             }
         }
       }
@@ -146,12 +145,11 @@ trait ClusteringLibSpecs[M[+_]]
       result must haveAllElementsLike {
         case (ids, SObject(obj)) if ids.size == 0 =>
           obj.keys mustEqual Set("model1")
-          obj("model1") must beLike {
-            case SObject(clusterMap) =>
-              clusterMap.keys mustEqual clusterIds
-              clusterIds.map(clusterMap(_)) must haveAllElementsLike {
-                case SDecimal(d) => d mustEqual (4.4)
-              }
+          obj("model1") must beLike { case SObject(clusterMap) =>
+            clusterMap.keys mustEqual clusterIds
+            clusterIds.map(clusterMap(_)) must haveAllElementsLike {
+              case SDecimal(d) => d mustEqual (4.4)
+            }
           }
       }
     }
@@ -175,17 +173,16 @@ trait ClusteringLibSpecs[M[+_]]
       result must haveAllElementsLike {
         case (ids, SObject(obj)) if ids.size == 0 =>
           obj.keys mustEqual Set("model1")
-          obj("model1") must beLike {
-            case SObject(clusterMap) =>
-              clusterMap.keys mustEqual clusterIds
-              clusterIds.map(clusterMap(_)) must haveAllElementsLike {
-                case SDecimal(d) => expected must contain(d)
-              }
+          obj("model1") must beLike { case SObject(clusterMap) =>
+            clusterMap.keys mustEqual clusterIds
+            clusterIds.map(clusterMap(_)) must haveAllElementsLike {
+              case SDecimal(d) => expected must contain(d)
+            }
 
-              val actual = clusterIds.map(clusterMap(_)) collect {
-                case SDecimal(d) => d
-              }
-              actual.toSet mustEqual expected
+            val actual = clusterIds.map(clusterMap(_)) collect {
+              case SDecimal(d) => d
+            }
+            actual.toSet mustEqual expected
           }
       }
     }
@@ -209,17 +206,16 @@ trait ClusteringLibSpecs[M[+_]]
       result must haveAllElementsLike {
         case (ids, SObject(obj)) if ids.size == 0 =>
           obj.keys mustEqual Set("model1")
-          obj("model1") must beLike {
-            case SObject(clusterMap) =>
-              clusterMap.keys mustEqual clusterIds
-              clusterIds.map(clusterMap(_)) must haveAllElementsLike {
-                case SObject(obj) => expected must contain(obj)
-              }
+          obj("model1") must beLike { case SObject(clusterMap) =>
+            clusterMap.keys mustEqual clusterIds
+            clusterIds.map(clusterMap(_)) must haveAllElementsLike {
+              case SObject(obj) => expected must contain(obj)
+            }
 
-              val actual = clusterIds.map(clusterMap(_)) collect {
-                case SObject(obj) => obj
-              }
-              actual.toSet mustEqual expected
+            val actual = clusterIds.map(clusterMap(_)) collect {
+              case SObject(obj) => obj
+            }
+            actual.toSet mustEqual expected
           }
       }
     }
@@ -248,26 +244,25 @@ trait ClusteringLibSpecs[M[+_]]
             obj.keys mustEqual Set("model1", "model2")
 
             def checkmodel(model: SValue) =
-              model must beLike {
-                case SObject(clusterMap) =>
-                  clusterMap("cluster1") must beLike {
-                    case SObject(schemadCluster) =>
-                      if (schemadCluster contains "a") {
-                        isGoodCluster(
-                          clusterMap,
-                          pointsA,
-                          centersA,
-                          k,
-                          dimensionA)
-                      } else {
-                        isGoodCluster(
-                          clusterMap,
-                          pointsB,
-                          centersB,
-                          k,
-                          dimensionB)
-                      }
-                  }
+              model must beLike { case SObject(clusterMap) =>
+                clusterMap("cluster1") must beLike {
+                  case SObject(schemadCluster) =>
+                    if (schemadCluster contains "a") {
+                      isGoodCluster(
+                        clusterMap,
+                        pointsA,
+                        centersA,
+                        k,
+                        dimensionA)
+                    } else {
+                      isGoodCluster(
+                        clusterMap,
+                        pointsB,
+                        centersB,
+                        k,
+                        dimensionB)
+                    }
+                }
               }
 
             checkmodel(obj("model1"))
@@ -299,14 +294,13 @@ trait ClusteringLibSpecs[M[+_]]
             obj.keys mustEqual Set("model1", "model2")
 
             def checkmodel(model: SValue) =
-              model must beLike {
-                case SObject(clusterMap) =>
-                  clusterMap("cluster1") must beLike {
-                    case SArray(arr) if arr.size == 6 =>
-                      isGoodCluster(clusterMap, pointsA, centersA, k, dimension)
-                    case SArray(arr) if arr.size == 9 =>
-                      ok
-                  }
+              model must beLike { case SObject(clusterMap) =>
+                clusterMap("cluster1") must beLike {
+                  case SArray(arr) if arr.size == 6 =>
+                    isGoodCluster(clusterMap, pointsA, centersA, k, dimension)
+                  case SArray(arr) if arr.size == 9 =>
+                    ok
+                }
               }
 
             checkmodel(obj("model1"))
@@ -326,9 +320,8 @@ trait ClusteringLibSpecs[M[+_]]
   }
 
   def makeClusters(centers: Array[Array[Double]]) = {
-    RObject(pointsToJson(centers).zipWithIndex.map {
-      case (ctr, idx) =>
-        ("cluster" + (idx + 1), ctr)
+    RObject(pointsToJson(centers).zipWithIndex.map { case (ctr, idx) =>
+      ("cluster" + (idx + 1), ctr)
     }.toMap)
   }
 
@@ -358,23 +351,21 @@ trait ClusteringLibSpecs[M[+_]]
       point: RValue) = {
     model.keySet mustEqual Set("clusterId", "clusterCenter")
 
-    model("clusterId") must beLike {
-      case SString(clusterId) =>
-        clusterId must_== assignments(point)
+    model("clusterId") must beLike { case SString(clusterId) =>
+      clusterId must_== assignments(point)
     }
 
-    model("clusterCenter") must beLike {
-      case SArray(arr0) =>
-        val arr = arr0 collect { case SDecimal(d) => d }
+    model("clusterCenter") must beLike { case SArray(arr0) =>
+      val arr = arr0 collect { case SDecimal(d) => d }
 
-        val rvalue = clusterMap((model("clusterId"): @unchecked) match {
-          case SString(s) => s
-        })
-        val res = (rvalue: @unchecked) match {
-          case RArray(values) => values collect { case CNum(x) => x }
-        }
+      val rvalue = clusterMap((model("clusterId"): @unchecked) match {
+        case SString(s) => s
+      })
+      val res = (rvalue: @unchecked) match {
+        case RArray(values) => values collect { case CNum(x) => x }
+      }
 
-        arr must_== res
+      arr must_== res
     }
   }
 
@@ -400,17 +391,15 @@ trait ClusteringLibSpecs[M[+_]]
 
           result must haveSize(size)
 
-          result must haveAllElementsLike {
-            case (ids, SObject(obj)) =>
-              ids.length mustEqual 2
-              obj.keySet mustEqual Set("point", "model1")
+          result must haveAllElementsLike { case (ids, SObject(obj)) =>
+            ids.length mustEqual 2
+            obj.keySet mustEqual Set("point", "model1")
 
-              val point = obj("point")
+            val point = obj("point")
 
-              obj("model1") must beLike {
-                case SObject(model) =>
-                  testCluster(model, clusterMap, assignments, point.toRValue)
-              }
+            obj("model1") must beLike { case SObject(model) =>
+              testCluster(model, clusterMap, assignments, point.toRValue)
+            }
           }
         }
       }
@@ -445,38 +434,30 @@ trait ClusteringLibSpecs[M[+_]]
 
           result must haveSize(points.size)
 
-          result must haveAllElementsLike {
-            case (ids, SObject(obj)) =>
-              ids.length mustEqual 2
+          result must haveAllElementsLike { case (ids, SObject(obj)) =>
+            ids.length mustEqual 2
 
-              (obj.keySet mustEqual Set("point", "model1")) or
-                (obj.keySet mustEqual Set("point", "model1", "model2"))
+            (obj.keySet mustEqual Set("point", "model1")) or
+              (obj.keySet mustEqual Set("point", "model1", "model2"))
 
-              val point = obj("point")
+            val point = obj("point")
 
-              point must beLike {
-                case SArray(arr) =>
-                  (arr must haveSize(dimensionA)) or
-                    (arr must haveSize(dimensionB))
+            point must beLike { case SArray(arr) =>
+              (arr must haveSize(dimensionA)) or
+                (arr must haveSize(dimensionB))
+            }
+
+            obj("model1") must beLike { case SObject(model) =>
+              testCluster(model, clusterMapA, assignmentsA, point.toRValue)
+            }
+
+            if (obj.contains("model2")) {
+              obj("model2") must beLike { case SObject(model) =>
+                testCluster(model, clusterMapB, assignmentsB, point.toRValue)
               }
-
-              obj("model1") must beLike {
-                case SObject(model) =>
-                  testCluster(model, clusterMapA, assignmentsA, point.toRValue)
-              }
-
-              if (obj.contains("model2")) {
-                obj("model2") must beLike {
-                  case SObject(model) =>
-                    testCluster(
-                      model,
-                      clusterMapB,
-                      assignmentsB,
-                      point.toRValue)
-                }
-              } else {
-                ok
-              }
+            } else {
+              ok
+            }
           }
         }
       }
@@ -509,18 +490,16 @@ trait ClusteringLibSpecs[M[+_]]
 
           result must haveSize(size)
 
-          result must haveAllElementsLike {
-            case (ids, SObject(obj)) =>
-              ids.length mustEqual 2
+          result must haveAllElementsLike { case (ids, SObject(obj)) =>
+            ids.length mustEqual 2
 
-              (obj.keySet mustEqual Set("point", "model1"))
+            (obj.keySet mustEqual Set("point", "model1"))
 
-              val point = obj("point")
+            val point = obj("point")
 
-              obj("model1") must beLike {
-                case SObject(model) =>
-                  testCluster(model, clusterMap, assignments, point.toRValue)
-              }
+            obj("model1") must beLike { case SObject(model) =>
+              testCluster(model, clusterMap, assignments, point.toRValue)
+            }
           }
         }
       }

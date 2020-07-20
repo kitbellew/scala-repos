@@ -139,11 +139,10 @@ class ScalaExtractMethodHandler extends RefactoringActionHandler {
     }
 
     val (lastReturn, lastExprType) = elements.reverse
-      .collectFirst {
-        case expr: ScExpression =>
-          (
-            checkLastReturn(expr),
-            Some(expr.getType(TypingContext.empty).getOrAny))
+      .collectFirst { case expr: ScExpression =>
+        (
+          checkLastReturn(expr),
+          Some(expr.getType(TypingContext.empty).getOrAny))
       }
       .getOrElse((false, None))
 

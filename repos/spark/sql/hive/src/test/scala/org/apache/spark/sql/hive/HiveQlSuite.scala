@@ -37,9 +37,8 @@ class HiveQlSuite extends SparkFunSuite with BeforeAndAfterAll {
   private def extractTableDesc(sql: String): (CatalogTable, Boolean) = {
     parser
       .parsePlan(sql)
-      .collect {
-        case CreateTableAsSelect(desc, child, allowExisting) =>
-          (desc, allowExisting)
+      .collect { case CreateTableAsSelect(desc, child, allowExisting) =>
+        (desc, allowExisting)
       }
       .head
   }

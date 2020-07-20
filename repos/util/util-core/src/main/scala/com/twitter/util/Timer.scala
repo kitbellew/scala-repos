@@ -88,15 +88,14 @@ trait Timer {
         p.update(Try(f))
     }
 
-    p.setInterruptHandler {
-      case cause =>
-        if (isFirst()) {
-          task.cancel()
+    p.setInterruptHandler { case cause =>
+      if (isFirst()) {
+        task.cancel()
 
-          val exc = new CancellationException
-          exc.initCause(cause)
-          p.setException(exc)
-        }
+        val exc = new CancellationException
+        exc.initCause(cause)
+        p.setException(exc)
+      }
     }
     p
   }

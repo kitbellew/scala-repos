@@ -35,9 +35,8 @@ class HakkerTracker extends PersistentActor {
 
   override def persistenceId: String = "hakkerTracker"
 
-  override def receiveRecover: Receive = {
-    case evt: DomainEvent =>
-      state = state.updated(evt)
+  override def receiveRecover: Receive = { case evt: DomainEvent =>
+    state = state.updated(evt)
   }
 
   override def receiveCommand: Receive = {

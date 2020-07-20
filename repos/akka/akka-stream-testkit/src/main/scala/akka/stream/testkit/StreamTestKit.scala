@@ -563,10 +563,9 @@ object TestSubscriber {
     }
 
     def expectNextPF[T](f: PartialFunction[Any, T]): T = {
-      expectEventPF {
-        case OnNext(n) ⇒
-          assert(f.isDefinedAt(n))
-          f(n)
+      expectEventPF { case OnNext(n) ⇒
+        assert(f.isDefinedAt(n))
+        f(n)
       }
     }
 

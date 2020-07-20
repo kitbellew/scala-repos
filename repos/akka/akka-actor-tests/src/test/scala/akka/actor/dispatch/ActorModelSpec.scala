@@ -499,13 +499,12 @@ abstract class ActorModelSpec(config: String)
                         case (ll: ActorCell, rr: ActorCell) ⇒
                           ll.self.path compareTo rr.self.path
                       }
-                  } foreach {
-                    case cell: ActorCell ⇒
-                      System.err.println(
-                        " - " + cell.self.path + " " + cell.isTerminated + " " + cell.mailbox.currentStatus + " "
-                          + cell.mailbox.numberOfMessages + " " + cell.mailbox
-                          .systemDrain(SystemMessageList.LNil)
-                          .size)
+                  } foreach { case cell: ActorCell ⇒
+                    System.err.println(
+                      " - " + cell.self.path + " " + cell.isTerminated + " " + cell.mailbox.currentStatus + " "
+                        + cell.mailbox.numberOfMessages + " " + cell.mailbox
+                        .systemDrain(SystemMessageList.LNil)
+                        .size)
                   }
 
                   System.err.println(
@@ -547,10 +546,9 @@ abstract class ActorModelSpec(config: String)
 
         val c = system.scheduler.scheduleOnce(2.seconds) {
           import collection.JavaConverters._
-          Thread.getAllStackTraces().asScala foreach {
-            case (thread, stack) ⇒
-              println(s"$thread:")
-              stack foreach (s ⇒ println(s"\t$s"))
+          Thread.getAllStackTraces().asScala foreach { case (thread, stack) ⇒
+            println(s"$thread:")
+            stack foreach (s ⇒ println(s"\t$s"))
           }
         }
         assert(Await.result(f1, timeout.duration) === "foo")

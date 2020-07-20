@@ -185,9 +185,8 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
     "when posting data" should {
 
-      "post with form url encoded body" in withServer {
-        case ("POST", "/") =>
-          Action(BodyParsers.parse.urlFormEncoded)(r => Ok(r.body("key").head))
+      "post with form url encoded body" in withServer { case ("POST", "/") =>
+        Action(BodyParsers.parse.urlFormEncoded)(r => Ok(r.body("key").head))
       } { ws =>
         val response =
           //#url-encoded
@@ -243,13 +242,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
 
     "when processing a response" should {
 
-      "handle as JSON" in withServer {
-        case ("GET", "/") =>
-          Action {
-            import play.api.libs.json._
-            implicit val personWrites = Json.writes[Person]
-            Ok(Json.obj("person" -> Person("Steve", 23)))
-          }
+      "handle as JSON" in withServer { case ("GET", "/") =>
+        Action {
+          import play.api.libs.json._
+          implicit val personWrites = Json.writes[Person]
+          Ok(Json.obj("person" -> Person("Steve", 23)))
+        }
       } { ws =>
         // #scalaws-process-json
         val futureResult: Future[String] = ws.url(url).get().map { response =>
@@ -260,13 +258,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         await(futureResult) must_== "Steve"
       }
 
-      "handle as JSON with an implicit" in withServer {
-        case ("GET", "/") =>
-          Action {
-            import play.api.libs.json._
-            implicit val personWrites = Json.writes[Person]
-            Ok(Json.obj("person" -> Person("Steve", 23)))
-          }
+      "handle as JSON with an implicit" in withServer { case ("GET", "/") =>
+        Action {
+          import play.api.libs.json._
+          implicit val personWrites = Json.writes[Person]
+          Ok(Json.obj("person" -> Person("Steve", 23)))
+        }
       } { ws =>
         // #scalaws-process-json-with-implicit
         import play.api.libs.json._
@@ -285,13 +282,12 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         }
       }
 
-      "handle as XML" in withServer {
-        case ("GET", "/") =>
-          Action {
-            Ok("""<?xml version="1.0" encoding="utf-8"?>
+      "handle as XML" in withServer { case ("GET", "/") =>
+        Action {
+          Ok("""<?xml version="1.0" encoding="utf-8"?>
                 |<wrapper><message status="OK">Hello</message></wrapper>
               """.stripMargin).as("text/xml")
-          }
+        }
       } { ws =>
         // #scalaws-process-xml
         val futureResult: Future[scala.xml.NodeSeq] =
@@ -341,12 +337,11 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
             // materialize and run the stream
             res.body
               .runWith(sink)
-              .andThen {
-                case result =>
-                  // Close the output stream whether there was an error or not
-                  outputStream.close()
-                  // Get the result or rethrow the error
-                  result.get
+              .andThen { case result =>
+                // Close the output stream whether there was an error or not
+                outputStream.close()
+                // Get the result or rethrow the error
+                result.get
               }
               .map(_ => file)
           }
@@ -453,10 +448,9 @@ class ScalaWSSpec extends PlaySpecification with Results with AfterAll {
         responseThree <- ws.url(responseTwo.body).get()
       } yield responseThree
 
-      futureResponse.recover {
-        case e: Exception =>
-          val exceptionData = Map("error" -> Seq(e.getMessage))
-          ws.url(exceptionUrl).post(exceptionData)
+      futureResponse.recover { case e: Exception =>
+        val exceptionData = Map("error" -> Seq(e.getMessage))
+        ws.url(exceptionUrl).post(exceptionData)
       }
       // #scalaws-forcomprehension
 

@@ -718,13 +718,11 @@ class BasicOperationsSuite extends TestSuiteBase {
         val persistentRddIds = new mutable.HashMap[Time, Int]
 
         def collectRddInfo() { // get all RDD info required for verification
-          networkStream.generatedRDDs.foreach {
-            case (time, rdd) =>
-              blockRdds(time) = rdd.asInstanceOf[BlockRDD[_]]
+          networkStream.generatedRDDs.foreach { case (time, rdd) =>
+            blockRdds(time) = rdd.asInstanceOf[BlockRDD[_]]
           }
-          mappedStream.generatedRDDs.foreach {
-            case (time, rdd) =>
-              persistentRddIds(time) = rdd.id
+          mappedStream.generatedRDDs.foreach { case (time, rdd) =>
+            persistentRddIds(time) = rdd.id
           }
         }
 

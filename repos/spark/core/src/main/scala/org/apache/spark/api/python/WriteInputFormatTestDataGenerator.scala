@@ -156,9 +156,8 @@ object WriteInputFormatTestDataGenerator {
       Seq((1, true), (2, true), (2, false), (3, true), (2, false), (1, false))
     sc.parallelize(bools).saveAsSequenceFile(boolPath)
     sc.parallelize(intKeys)
-      .map {
-        case (k, v) =>
-          (new IntWritable(k), NullWritable.get())
+      .map { case (k, v) =>
+        (new IntWritable(k), NullWritable.get())
       }
       .saveAsSequenceFile(nullPath)
 
@@ -169,11 +168,10 @@ object WriteInputFormatTestDataGenerator {
       (3, Array(4.0, 5.0, 6.0))
     )
     sc.parallelize(data, numSlices = 2)
-      .map {
-        case (k, v) =>
-          val va = new DoubleArrayWritable
-          va.set(v.map(new DoubleWritable(_)))
-          (new IntWritable(k), va)
+      .map { case (k, v) =>
+        val va = new DoubleArrayWritable
+        va.set(v.map(new DoubleWritable(_)))
+        (new IntWritable(k), va)
       }
       .saveAsNewAPIHadoopFile[SequenceFileOutputFormat[
         IntWritable,
@@ -188,14 +186,12 @@ object WriteInputFormatTestDataGenerator {
       (1, Map(3.0 -> "bb"))
     )
     sc.parallelize(mapData, numSlices = 2)
-      .map {
-        case (i, m) =>
-          val mw = new MapWritable()
-          m.foreach {
-            case (k, v) =>
-              mw.put(new DoubleWritable(k), new Text(v))
-          }
-          (new IntWritable(i), mw)
+      .map { case (i, m) =>
+        val mw = new MapWritable()
+        m.foreach { case (k, v) =>
+          mw.put(new DoubleWritable(k), new Text(v))
+        }
+        (new IntWritable(i), mw)
       }
       .saveAsSequenceFile(mapPath)
 

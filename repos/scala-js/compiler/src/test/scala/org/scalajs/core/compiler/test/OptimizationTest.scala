@@ -94,8 +94,7 @@ class OptimizationTest extends JSASTTest {
       val o = new js.Object
       val a = new js.Array
     }
-    """.hasNot("any reference to the global scope") {
-      case js.JSLinkingInfo() =>
+    """.hasNot("any reference to the global scope") { case js.JSLinkingInfo() =>
     }
 
   }

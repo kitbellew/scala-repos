@@ -166,10 +166,9 @@ private[changeSignature] trait ScalaChangeSignatureUsageHandler {
 
     val params =
       if (paramTypes.size == names.size)
-        names.zip(paramTypes).map {
-          case (name, tpe) =>
-            ScalaExtractMethodUtils
-              .typedName(name, tpe.canonicalText, usage.expr.getProject)
+        names.zip(paramTypes).map { case (name, tpe) =>
+          ScalaExtractMethodUtils
+            .typedName(name, tpe.canonicalText, usage.expr.getProject)
         }
       else names
     val clause = params.mkString("(", ", ", ")")

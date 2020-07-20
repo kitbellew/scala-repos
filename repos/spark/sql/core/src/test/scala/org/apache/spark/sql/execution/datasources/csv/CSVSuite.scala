@@ -87,13 +87,12 @@ class CSVSuite extends QueryTest with SharedSQLContext with SQLTestUtils {
         if (withHeader) df.select("year").collect()
         else df.select("C0").collect()
 
-      years.zipWithIndex.foreach {
-        case (year, index) =>
-          if (checkTypes) {
-            assert(year === Row(actualYears(index).toInt))
-          } else {
-            assert(year === Row(actualYears(index)))
-          }
+      years.zipWithIndex.foreach { case (year, index) =>
+        if (checkTypes) {
+          assert(year === Row(actualYears(index).toInt))
+        } else {
+          assert(year === Row(actualYears(index)))
+        }
       }
     }
   }

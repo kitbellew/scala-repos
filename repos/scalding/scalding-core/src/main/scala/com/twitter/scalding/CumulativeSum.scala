@@ -42,13 +42,12 @@ object CumulativeSum {
         ordK: Ordering[K]): SortedGrouped[K, (U, V)] = {
       pipe.group
         .sortBy { case (u, _) => u }
-        .scanLeft(Nil: List[(U, V)]) {
-          case (acc, (u, v)) =>
-            acc match {
-              case List((previousU, previousSum)) =>
-                List((u, sg.plus(previousSum, v)))
-              case _ => List((u, v))
-            }
+        .scanLeft(Nil: List[(U, V)]) { case (acc, (u, v)) =>
+          acc match {
+            case List((previousU, previousSum)) =>
+              List((u, sg.plus(previousSum, v)))
+            case _ => List((u, v))
+          }
         }
         .flattenValues
     }
@@ -72,44 +71,37 @@ object CumulativeSum {
         .map { case ((k, s), v) => (k, (s, v)) }
         .group
         .sortBy { case (s, v) => s }
-        .scanLeft(None: Option[(Option[V], V, S)]) {
-          case (acc, (s, v)) =>
-            acc match {
-              case Some((previousPreviousSum, previousSum, previousS)) => {
-                Some((Some(previousSum), sg.plus(v, previousSum), s))
-              }
-              case _ => Some((None, v, s))
+        .scanLeft(None: Option[(Option[V], V, S)]) { case (acc, (s, v)) =>
+          acc match {
+            case Some((previousPreviousSum, previousSum, previousS)) => {
+              Some((Some(previousSum), sg.plus(v, previousSum), s))
             }
+            case _ => Some((None, v, s))
+          }
         }
-        .flatMap {
-          case (k, maybeAcc) =>
-            for (acc <- maybeAcc;
-              previousSum <- acc._1) yield {
-              (k, acc._3) -> (None, previousSum)
-            }
+        .flatMap { case (k, maybeAcc) =>
+          for (acc <- maybeAcc;
+            previousSum <- acc._1) yield { (k, acc._3) -> (None, previousSum) }
         }
 
       val summands = pipe
-        .map {
-          case (k, (u, v)) =>
-            (k, partition(u)) -> (Some(u), v)
+        .map { case (k, (u, v)) =>
+          (k, partition(u)) -> (Some(u), v)
         } ++ sumPerS
 
       summands.group
         .sortBy { case (u, _) => u }
-        .scanLeft(None: Option[(Option[U], V)]) {
-          case (acc, (maybeU, v)) =>
-            acc match {
-              case Some((_, previousSum)) =>
-                Some((maybeU, sg.plus(v, previousSum)))
-              case _ => Some((maybeU, v))
-            }
+        .scanLeft(None: Option[(Option[U], V)]) { case (acc, (maybeU, v)) =>
+          acc match {
+            case Some((_, previousSum)) =>
+              Some((maybeU, sg.plus(v, previousSum)))
+            case _ => Some((maybeU, v))
+          }
         }
-        .flatMap {
-          case ((k, s), acc) =>
-            for (uv <- acc; u <- uv._1) yield {
-              (k, (u, uv._2))
-            }
+        .flatMap { case ((k, s), acc) =>
+          for (uv <- acc; u <- uv._1) yield {
+            (k, (u, uv._2))
+          }
         }
     }
   }

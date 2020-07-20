@@ -305,8 +305,8 @@ private[http] class HttpResponseRendererFactory(
                 else if (connHeader != null && connHeader.hasUpgrade) {
                   r ~~ connHeader ~~ CrLf
                   headers
-                    .collectFirst {
-                      case u: UpgradeToWebSocketResponseHeader ⇒ u
+                    .collectFirst { case u: UpgradeToWebSocketResponseHeader ⇒
+                      u
                     }
                     .foreach { header ⇒
                       closeMode = SwitchToWebSocket(header.handler)

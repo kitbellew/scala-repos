@@ -320,9 +320,8 @@ private[server] class NettyModelConversion(
             new DefaultHttpContent(byteStringToByteBuf(bytes))
           case HttpChunk.LastChunk(trailers) =>
             val lastChunk = new DefaultLastHttpContent()
-            trailers.headers.foreach {
-              case (name, value) =>
-                lastChunk.trailingHeaders().add(name, value)
+            trailers.headers.foreach { case (name, value) =>
+              lastChunk.trailingHeaders().add(name, value)
             }
             lastChunk
         }

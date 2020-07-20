@@ -83,14 +83,13 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
       withServer(
         Seq(
           "play.http.filters" -> classOf[CsrfFilters].getName
-        )) {
-        case _ =>
-          Action(
-            _.body.asFormUrlEncoded
-              .flatMap(_.get("foo"))
-              .flatMap(_.headOption)
-              .map(Results.Ok(_))
-              .getOrElse(Results.NotFound))
+        )) { case _ =>
+        Action(
+          _.body.asFormUrlEncoded
+            .flatMap(_.get("foo"))
+            .flatMap(_.headOption)
+            .map(Results.Ok(_))
+            .getOrElse(Results.NotFound))
       } {
         val token = crypto.generateSignedToken
         import play.api.Play.current
@@ -107,19 +106,18 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
         "play.filters.csrf.body.bufferSize" -> "200",
         "play.http.filters" -> classOf[CsrfFilters].getName
       )
-      .routes {
-        case _ =>
-          Action { req =>
-            (for {
-              body <- req.body.asFormUrlEncoded
-              foos <- body.get("foo")
-              foo <- foos.headOption
-              buffereds <- body.get("buffered")
-              buffered <- buffereds.headOption
-            } yield {
-              Results.Ok(foo + " " + buffered)
-            }).getOrElse(Results.NotFound)
-          }
+      .routes { case _ =>
+        Action { req =>
+          (for {
+            body <- req.body.asFormUrlEncoded
+            foos <- body.get("foo")
+            foo <- foos.headOption
+            buffereds <- body.get("buffered")
+            buffered <- buffereds.headOption
+          } yield {
+            Results.Ok(foo + " " + buffered)
+          }).getOrElse(Results.NotFound)
+        }
       }
       .build()
 
@@ -235,13 +233,12 @@ object CSRFFilterSpec extends CSRFCommonSpecs {
         withServer(
           configuration ++ Seq(
             "play.http.filters" -> classOf[CsrfFilters].getName)
-        ) {
-          case _ =>
-            Action { implicit req =>
-              CSRF.getToken(req).map { token =>
-                Results.Ok(token.value)
-              } getOrElse Results.NotFound
-            }
+        ) { case _ =>
+          Action { implicit req =>
+            CSRF.getToken(req).map { token =>
+              Results.Ok(token.value)
+            } getOrElse Results.NotFound
+          }
         } {
           import play.api.Play.current
           handleResponse(

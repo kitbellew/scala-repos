@@ -73,9 +73,8 @@ class LogisticRegressionSuite
     */
   ignore("export test data into CSV format") {
     binaryDataset.rdd
-      .map {
-        case Row(label: Double, features: Vector) =>
-          label + "," + features.toArray.mkString(",")
+      .map { case Row(label: Double, features: Vector) =>
+        label + "," + features.toArray.mkString(",")
       }
       .repartition(1)
       .saveAsTextFile("target/tmp/LogisticRegressionSuite/binaryDataset")
@@ -969,13 +968,12 @@ class LogisticRegressionSuite
           42)
 
       // Let's over-sample the positive samples twice.
-      val data1 = testData.flatMap {
-        case labeledPoint: LabeledPoint =>
-          if (labeledPoint.label == 1.0) {
-            Iterator(labeledPoint, labeledPoint)
-          } else {
-            Iterator(labeledPoint)
-          }
+      val data1 = testData.flatMap { case labeledPoint: LabeledPoint =>
+        if (labeledPoint.label == 1.0) {
+          Iterator(labeledPoint, labeledPoint)
+        } else {
+          Iterator(labeledPoint)
+        }
       }
 
       val rnd = new Random(8392)

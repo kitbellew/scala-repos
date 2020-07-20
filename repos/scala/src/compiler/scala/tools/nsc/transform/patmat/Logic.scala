@@ -402,21 +402,20 @@ trait Logic extends Debugging {
           else addAxiom(symForStaticTp)
         }
 
-        v.implications foreach {
-          case (sym, implied, excluded) =>
-            // when sym is true, what must hold...
-            implied foreach (impliedSym => addAxiom(Or(Not(sym), impliedSym)))
-            // ... and what must not?
-            excluded foreach { excludedSym =>
-              val exclusive = v.groupedDomains.exists { domain =>
-                domain.contains(sym) && domain.contains(excludedSym)
-              }
-
-              // TODO: populate `v.exclusiveDomains` with `Set`s from the start, and optimize to:
-              // val exclusive = v.exclusiveDomains.exists { inDomain => inDomain(sym) && inDomain(excludedSym) }
-              if (!exclusive)
-                addAxiom(Or(Not(sym), Not(excludedSym)))
+        v.implications foreach { case (sym, implied, excluded) =>
+          // when sym is true, what must hold...
+          implied foreach (impliedSym => addAxiom(Or(Not(sym), impliedSym)))
+          // ... and what must not?
+          excluded foreach { excludedSym =>
+            val exclusive = v.groupedDomains.exists { domain =>
+              domain.contains(sym) && domain.contains(excludedSym)
             }
+
+            // TODO: populate `v.exclusiveDomains` with `Set`s from the start, and optimize to:
+            // val exclusive = v.exclusiveDomains.exists { inDomain => inDomain(sym) && inDomain(excludedSym) }
+            if (!exclusive)
+              addAxiom(Or(Not(sym), Not(excludedSym)))
+          }
         }
 
         // all symbols in a domain are mutually exclusive

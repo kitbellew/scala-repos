@@ -205,16 +205,15 @@ class AsyncMeter private[concurrent] (
     val tup = (p, permits)
 
     if (q.offer(tup)) {
-      p.setInterruptHandler {
-        case t: Throwable =>
-          // must synchronize on removals-see explanation by declaration of queue
-          val rem = synchronized { q.remove(tup) }
-          if (rem) {
-            val e =
-              new CancellationException("Request for permits was cancelled.")
-            e.initCause(t)
-            p.setException(e)
-          }
+      p.setInterruptHandler { case t: Throwable =>
+        // must synchronize on removals-see explanation by declaration of queue
+        val rem = synchronized { q.remove(tup) }
+        if (rem) {
+          val e =
+            new CancellationException("Request for permits was cancelled.")
+          e.initCause(t)
+          p.setException(e)
+        }
       }
       restartTimerIfDead()
       p

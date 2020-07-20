@@ -498,35 +498,34 @@ class ScSubstitutor(
         }
         val middleRes = ScCompoundType(
           comps.map(substInternal),
-          signatureMap.map {
-            case (s: Signature, tp: ScType) =>
-              val pTypes: List[Seq[() => ScType]] =
-                s.substitutedTypes.map(_.map(f => () => substInternal(f())))
-              val tParams: Array[TypeParameter] =
-                if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
-                else s.typeParams.map(substTypeParam)
-              val rt: ScType = substInternal(tp)
-              (
-                new Signature(
-                  s.name,
-                  pTypes,
-                  s.paramLength,
-                  tParams,
-                  ScSubstitutor.empty,
-                  s.namedElement match {
-                    case fun: ScFunction =>
-                      ScFunction.getCompoundCopy(
-                        pTypes.map(_.map(_()).toList),
-                        tParams.toList,
-                        rt,
-                        fun)
-                    case b: ScBindingPattern =>
-                      ScBindingPattern.getCompoundCopy(rt, b)
-                    case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
-                    case named        => named
-                  },
-                  s.hasRepeatedParam),
-                rt)
+          signatureMap.map { case (s: Signature, tp: ScType) =>
+            val pTypes: List[Seq[() => ScType]] =
+              s.substitutedTypes.map(_.map(f => () => substInternal(f())))
+            val tParams: Array[TypeParameter] =
+              if (s.typeParams.length == 0) TypeParameter.EMPTY_ARRAY
+              else s.typeParams.map(substTypeParam)
+            val rt: ScType = substInternal(tp)
+            (
+              new Signature(
+                s.name,
+                pTypes,
+                s.paramLength,
+                tParams,
+                ScSubstitutor.empty,
+                s.namedElement match {
+                  case fun: ScFunction =>
+                    ScFunction.getCompoundCopy(
+                      pTypes.map(_.map(_()).toList),
+                      tParams.toList,
+                      rt,
+                      fun)
+                  case b: ScBindingPattern =>
+                    ScBindingPattern.getCompoundCopy(rt, b)
+                  case f: ScFieldId => ScFieldId.getCompoundCopy(rt, f)
+                  case named        => named
+                },
+                s.hasRepeatedParam),
+              rt)
           },
           typeMap.map {
             case (s, sign) => (s, sign.updateTypes(substInternal))

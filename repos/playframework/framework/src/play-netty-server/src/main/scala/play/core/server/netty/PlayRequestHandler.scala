@@ -157,13 +157,12 @@ private[play] class PlayRequestHandler(val server: NettyServer)
                   factory))
 
           }
-          .recoverWith {
-            case error =>
-              app.errorHandler.onServerError(requestHeader, error).flatMap {
-                result =>
-                  val action = EssentialAction(_ => Accumulator.done(result))
-                  handleAction(action, requestHeader, request, Some(app))
-              }
+          .recoverWith { case error =>
+            app.errorHandler.onServerError(requestHeader, error).flatMap {
+              result =>
+                val action = EssentialAction(_ => Accumulator.done(result))
+                handleAction(action, requestHeader, request, Some(app))
+            }
           }
 
       //handle bad websocket request
@@ -211,12 +210,9 @@ private[play] class PlayRequestHandler(val server: NettyServer)
             ctx.writeAndFlush(httpResponse)
           }
 
-          f.recover {
-            case error: Exception =>
-              logger.error("Exception caught in channelRead future", error)
-              sendSimpleErrorResponse(
-                ctx,
-                HttpResponseStatus.SERVICE_UNAVAILABLE)
+          f.recover { case error: Exception =>
+            logger.error("Exception caught in channelRead future", error)
+            sendSimpleErrorResponse(ctx, HttpResponseStatus.SERVICE_UNAVAILABLE)
           }
         }
     }
@@ -297,21 +293,19 @@ private[play] class PlayRequestHandler(val server: NettyServer)
     }
 
     resultFuture
-      .recoverWith {
-        case error =>
-          logger.error("Cannot invoke the action", error)
-          errorHandler(app).onServerError(requestHeader, error)
+      .recoverWith { case error =>
+        logger.error("Cannot invoke the action", error)
+        errorHandler(app).onServerError(requestHeader, error)
       }
-      .map {
-        case result =>
-          val cleanedResult =
-            ServerResultUtils.cleanFlashCookie(requestHeader, result)
-          val validated =
-            ServerResultUtils.validateResult(requestHeader, cleanedResult)
-          modelConversion.convertResult(
-            validated,
-            requestHeader,
-            request.getProtocolVersion)
+      .map { case result =>
+        val cleanedResult =
+          ServerResultUtils.cleanFlashCookie(requestHeader, result)
+        val validated =
+          ServerResultUtils.validateResult(requestHeader, cleanedResult)
+        modelConversion.convertResult(
+          validated,
+          requestHeader,
+          request.getProtocolVersion)
       }
   }
 

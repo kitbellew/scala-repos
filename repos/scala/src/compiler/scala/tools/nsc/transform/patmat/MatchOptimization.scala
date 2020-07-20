@@ -69,16 +69,14 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
             tested ++= nonTrivial
 
             // is there an earlier test that checks our condition and whose dependencies are implied by ours?
-            dependencies find {
-              case (priorTest, deps) =>
-                ((simplify(
-                  priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
-                  (nonTrivial subsetOf deps) // or if it depends on a superset of our conditions
-                ) && (deps subsetOf tested) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
-            } foreach {
-              case (priorTest, _) =>
-                // if so, note the dependency in both tests
-                priorTest registerReuseBy test
+            dependencies find { case (priorTest, deps) =>
+              ((simplify(
+                priorTest.prop) == nonTrivial) || // our conditions are implied by priorTest if it checks the same thing directly
+                (nonTrivial subsetOf deps) // or if it depends on a superset of our conditions
+              ) && (deps subsetOf tested) // the conditions we've tested when we are here in the match satisfy the prior test, and hence what it tested
+            } foreach { case (priorTest, _) =>
+              // if so, note the dependency in both tests
+              priorTest registerReuseBy test
             }
 
             dependencies(test) = tested.toSet // copies
@@ -507,55 +505,54 @@ trait MatchOptimization extends MatchTreeMaking with MatchAnalysis {
         // generate if-then-else for 1 case switch (avoids verify error... can't imagine a one-case switch being faster than if-then-else anyway)
         if (cases.isEmpty || cases.tail.isEmpty) Nil
         else {
-          val caseDefs = cases map {
-            case (scrutSym, makers) =>
-              makers match {
-                // default case
-                case GuardAndBodyTreeMakers(guard, body) =>
-                  Some(defaultCase(scrutSym, guard, body))
-                // constant (or typetest for typeSwitch)
-                case SwitchableTreeMaker(pattern) :: GuardAndBodyTreeMakers(
-                      guard,
-                      body) =>
-                  Some(CaseDef(pattern, guard, body))
-                // alternatives
-                case AlternativesTreeMaker(
-                      _,
-                      altss,
-                      pos) :: GuardAndBodyTreeMakers(guard, body)
-                    if alternativesSupported =>
-                  val switchableAlts = altss map {
-                    case SwitchableTreeMaker(pattern) :: Nil =>
-                      Some(pattern)
-                    case _ =>
-                      None
-                  }
+          val caseDefs = cases map { case (scrutSym, makers) =>
+            makers match {
+              // default case
+              case GuardAndBodyTreeMakers(guard, body) =>
+                Some(defaultCase(scrutSym, guard, body))
+              // constant (or typetest for typeSwitch)
+              case SwitchableTreeMaker(pattern) :: GuardAndBodyTreeMakers(
+                    guard,
+                    body) =>
+                Some(CaseDef(pattern, guard, body))
+              // alternatives
+              case AlternativesTreeMaker(
+                    _,
+                    altss,
+                    pos) :: GuardAndBodyTreeMakers(guard, body)
+                  if alternativesSupported =>
+                val switchableAlts = altss map {
+                  case SwitchableTreeMaker(pattern) :: Nil =>
+                    Some(pattern)
+                  case _ =>
+                    None
+                }
 
-                  // succeed if they were all switchable
-                  sequence(switchableAlts) map { switchableAlts =>
-                    def extractConst(t: Tree) =
-                      t match {
-                        case Literal(const) => const
-                        case _              => t
-                      }
-                    // SI-7290 Discard duplicate alternatives that would crash the backend
-                    val distinctAlts = distinctBy(switchableAlts)(extractConst)
-                    if (distinctAlts.size < switchableAlts.size) {
-                      val duplicated = switchableAlts
-                        .groupBy(extractConst)
-                        .flatMap(
-                          _._2.drop(1).take(1)
-                        ) // report the first duplicated
-                      reporter.warning(
-                        pos,
-                        s"Pattern contains duplicate alternatives: ${duplicated.mkString(", ")}")
+                // succeed if they were all switchable
+                sequence(switchableAlts) map { switchableAlts =>
+                  def extractConst(t: Tree) =
+                    t match {
+                      case Literal(const) => const
+                      case _              => t
                     }
-                    CaseDef(Alternative(distinctAlts), guard, body)
+                  // SI-7290 Discard duplicate alternatives that would crash the backend
+                  val distinctAlts = distinctBy(switchableAlts)(extractConst)
+                  if (distinctAlts.size < switchableAlts.size) {
+                    val duplicated = switchableAlts
+                      .groupBy(extractConst)
+                      .flatMap(
+                        _._2.drop(1).take(1)
+                      ) // report the first duplicated
+                    reporter.warning(
+                      pos,
+                      s"Pattern contains duplicate alternatives: ${duplicated.mkString(", ")}")
                   }
-                case _ =>
-                  // debug.patmat("can't emit switch for "+ makers)
-                  None //failure (can't translate pattern to a switch)
-              }
+                  CaseDef(Alternative(distinctAlts), guard, body)
+                }
+              case _ =>
+                // debug.patmat("can't emit switch for "+ makers)
+                None //failure (can't translate pattern to a switch)
+            }
           }
 
           val caseDefsWithGuards = sequence(caseDefs) match {

@@ -176,23 +176,22 @@ case class Expand(
     }
 
     // Part 2: switch/case statements
-    val cases = projections.zipWithIndex.map {
-      case (exprs, row) =>
-        var updateCode = ""
-        for (col <- exprs.indices) {
-          if (!sameOutput(col)) {
-            val ev =
-              BindReferences.bindReference(exprs(col), child.output).gen(ctx)
-            updateCode +=
-              s"""
+    val cases = projections.zipWithIndex.map { case (exprs, row) =>
+      var updateCode = ""
+      for (col <- exprs.indices) {
+        if (!sameOutput(col)) {
+          val ev =
+            BindReferences.bindReference(exprs(col), child.output).gen(ctx)
+          updateCode +=
+            s"""
                |${ev.code}
                |${outputColumns(col).isNull} = ${ev.isNull};
                |${outputColumns(col).value} = ${ev.value};
             """.stripMargin
-          }
         }
+      }
 
-        s"""
+      s"""
          |case $row:
          |  ${updateCode.trim}
          |  break;

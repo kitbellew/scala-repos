@@ -136,9 +136,8 @@ class InputStreamsSuite extends TestSuiteBase with BeforeAndAfter {
           fail("Timeout: cannot finish all batches in 30 seconds")
         }
 
-        networkStream.generatedRDDs.foreach {
-          case (_, rdd) =>
-            assert(!rdd.isInstanceOf[WriteAheadLogBackedBlockRDD[_]])
+        networkStream.generatedRDDs.foreach { case (_, rdd) =>
+          assert(!rdd.isInstanceOf[WriteAheadLogBackedBlockRDD[_]])
         }
       }
     }

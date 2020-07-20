@@ -152,15 +152,14 @@ class ClusterClientTest
       }),
       TimeOut)
 
-    val tmpClients = testServers map {
-      case (server) =>
-        Client(
-          ClientBuilder()
-            .hosts(server.address)
-            .codec(new Memcached)
-            .hostConnectionLimit(1)
-            .daemon(true)
-            .build())
+    val tmpClients = testServers map { case (server) =>
+      Client(
+        ClientBuilder()
+          .hosts(server.address)
+          .codec(new Memcached)
+          .hostConnectionLimit(1)
+          .daemon(true)
+          .build())
     }
 
     (0 until count).foreach { n =>

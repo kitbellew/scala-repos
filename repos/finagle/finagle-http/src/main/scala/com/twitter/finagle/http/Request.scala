@@ -170,11 +170,10 @@ abstract class Request extends Message with HttpRequestProxy {
 
   /** Get all parameters. */
   def getParams(): JList[JMap.Entry[String, String]] =
-    (params.toList.map {
-      case (k, v) =>
-        // cast to appease asJava
-        (new AbstractMap.SimpleImmutableEntry(k, v))
-          .asInstanceOf[JMap.Entry[String, String]]
+    (params.toList.map { case (k, v) =>
+      // cast to appease asJava
+      (new AbstractMap.SimpleImmutableEntry(k, v))
+        .asInstanceOf[JMap.Entry[String, String]]
     }).asJava
 
   /** Check if parameter exists. */
@@ -253,9 +252,8 @@ object Request {
     */
   def apply(uri: String, params: Tuple2[String, String]*): Request = {
     val encoder = new QueryStringEncoder(uri)
-    params.foreach {
-      case (key, value) =>
-        encoder.addParam(key, value)
+    params.foreach { case (key, value) =>
+      encoder.addParam(key, value)
     }
     apply(Method.Get, encoder.toString)
   }
@@ -336,9 +334,8 @@ object Request {
   /** Create a query string from URI and parameters. */
   def queryString(uri: String, params: Tuple2[String, String]*): String = {
     val encoder = new QueryStringEncoder(uri)
-    params.foreach {
-      case (key, value) =>
-        encoder.addParam(key, value)
+    params.foreach { case (key, value) =>
+      encoder.addParam(key, value)
     }
     encoder.toString
   }

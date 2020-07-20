@@ -283,10 +283,8 @@ class FutureSpec
           filterException[ArithmeticException] {
             val actor1 = system.actorOf(Props[TestActor])
             val actor2 = system.actorOf(Props(new Actor {
-              def receive = {
-                case s: String ⇒
-                  sender() ! Status.Failure(
-                    new ArithmeticException("/ by zero"))
+              def receive = { case s: String ⇒
+                sender() ! Status.Failure(new ArithmeticException("/ by zero"))
               }
             }))
             val future = actor1 ? "Hello" flatMap {
@@ -620,10 +618,9 @@ class FutureSpec
       "traverse Futures" in {
         val oddActor = system.actorOf(Props(new Actor {
           var counter = 1
-          def receive = {
-            case 'GetNext ⇒
-              sender() ! counter
-              counter += 2
+          def receive = { case 'GetNext ⇒
+            sender() ! counter
+            counter += 2
           }
         }))
 

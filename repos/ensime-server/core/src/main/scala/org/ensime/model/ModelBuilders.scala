@@ -83,52 +83,51 @@ trait ModelBuilders { self: RichPresentationCompiler =>
       case ((s1, _), (s2, _)) => s1.tpe <:< s2.tpe
     }
 
-    membersByOwner.map {
-      case (ownerSym, members) =>
-        // If all the members in this interface were
-        // provided by the same view, remember that
-        // view for later display to user.
-        val byView = members.groupBy(_.viaView)
-        val viaView = if (byView.size == 1) {
-          byView.keys.headOption.filter(_ != NoSymbol)
-        } else { None }
+    membersByOwner.map { case (ownerSym, members) =>
+      // If all the members in this interface were
+      // provided by the same view, remember that
+      // view for later display to user.
+      val byView = members.groupBy(_.viaView)
+      val viaView = if (byView.size == 1) {
+        byView.keys.headOption.filter(_ != NoSymbol)
+      } else { None }
 
-        // Do one top level sort by name on members, before
-        // subdividing into kinds of members.
-        val sortedMembers = members.toList.sortWith { (a, b) =>
-          a.sym.nameString <= b.sym.nameString
-        }
+      // Do one top level sort by name on members, before
+      // subdividing into kinds of members.
+      val sortedMembers = members.toList.sortWith { (a, b) =>
+        a.sym.nameString <= b.sym.nameString
+      }
 
-        // Convert type members into NamedTypeMemberInfos
-        // and divide into different kinds..
+      // Convert type members into NamedTypeMemberInfos
+      // and divide into different kinds..
 
-        val nestedTypes = new mutable.ArrayBuffer[NamedTypeMemberInfo]()
-        val constructors = new mutable.ArrayBuffer[NamedTypeMemberInfo]()
-        val fields = new mutable.ArrayBuffer[NamedTypeMemberInfo]()
-        val methods = new mutable.ArrayBuffer[NamedTypeMemberInfo]()
+      val nestedTypes = new mutable.ArrayBuffer[NamedTypeMemberInfo]()
+      val constructors = new mutable.ArrayBuffer[NamedTypeMemberInfo]()
+      val fields = new mutable.ArrayBuffer[NamedTypeMemberInfo]()
+      val methods = new mutable.ArrayBuffer[NamedTypeMemberInfo]()
 
-        for (tm <- sortedMembers) {
-          val info = NamedTypeMemberInfo(tm)
-          val decl = info.declAs
-          if (decl == DeclaredAs.Method) {
-            if (info.name == "this") {
-              constructors += info
-            } else {
-              methods += info
-            }
-          } else if (decl == DeclaredAs.Field) {
-            fields += info
-          } else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
-            decl == DeclaredAs.Interface || decl == DeclaredAs.Object) {
-            nestedTypes += info
+      for (tm <- sortedMembers) {
+        val info = NamedTypeMemberInfo(tm)
+        val decl = info.declAs
+        if (decl == DeclaredAs.Method) {
+          if (info.name == "this") {
+            constructors += info
+          } else {
+            methods += info
           }
+        } else if (decl == DeclaredAs.Field) {
+          fields += info
+        } else if (decl == DeclaredAs.Class || decl == DeclaredAs.Trait ||
+          decl == DeclaredAs.Interface || decl == DeclaredAs.Object) {
+          nestedTypes += info
         }
+      }
 
-        val sortedInfos = nestedTypes ++ fields ++ constructors ++ methods
+      val sortedInfos = nestedTypes ++ fields ++ constructors ++ methods
 
-        new InterfaceInfo(
-          TypeInfo(ownerSym.tpe, PosNeededAvail, sortedInfos),
-          viaView.map(_.name.toString))
+      new InterfaceInfo(
+        TypeInfo(ownerSym.tpe, PosNeededAvail, sortedInfos),
+        viaView.map(_.name.toString))
     }
   }
 

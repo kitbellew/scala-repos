@@ -63,15 +63,14 @@ class DeploymentManager(
           new DeploymentCanceledException("The upgrade has been cancelled"))
       }
 
-      Future.sequence(cancellations) onComplete {
-        case _ =>
-          log.info(
-            s"Conflicting deployments for deployment ${plan.id} have been canceled")
-          scheduler.schedulerActor ! ConflictingDeploymentsCanceled(
-            plan.id,
-            if (conflictingDeployments.nonEmpty) {
-              conflictingDeployments.map(_.plan).to[Seq]
-            } else Seq(plan))
+      Future.sequence(cancellations) onComplete { case _ =>
+        log.info(
+          s"Conflicting deployments for deployment ${plan.id} have been canceled")
+        scheduler.schedulerActor ! ConflictingDeploymentsCanceled(
+          plan.id,
+          if (conflictingDeployments.nonEmpty) {
+            conflictingDeployments.map(_.plan).to[Seq]
+          } else Seq(plan))
       }
 
     case CancelAllDeployments =>

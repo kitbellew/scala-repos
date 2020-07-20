@@ -180,9 +180,8 @@ class InMemoryColumnarQuerySuite extends QueryTest with SharedSQLContext {
         MapType(StringType, LongType),
         struct
       )
-    val fields = dataTypes.zipWithIndex.map {
-      case (dataType, index) =>
-        StructField(s"col$index", dataType, true)
+    val fields = dataTypes.zipWithIndex.map { case (dataType, index) =>
+      StructField(s"col$index", dataType, true)
     }
     val allColumns = fields.map(_.name).mkString(",")
     val schema = StructType(fields)

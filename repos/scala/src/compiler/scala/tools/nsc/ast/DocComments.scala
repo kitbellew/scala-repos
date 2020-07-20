@@ -471,9 +471,8 @@ trait DocComments { self: Global =>
           val (key, value) = str.splitAt(skipVariable(str, start))
           key.drop(start) -> value
         }
-      } map {
-        case (key, Trim(value)) =>
-          variableName(key) -> value.replaceAll("\\s+\\*+$", "")
+      } map { case (key, Trim(value)) =>
+        variableName(key) -> value.replaceAll("\\s+\\*+$", "")
       }
     }
   }

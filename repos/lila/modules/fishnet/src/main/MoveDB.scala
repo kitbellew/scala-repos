@@ -28,14 +28,13 @@ private final class MoveDB {
   def size = coll.size
 
   def oldestNonAcquired =
-    coll.foldLeft(none[Move]) {
-      case (acc, (_, m)) =>
-        if (m.nonAcquired) Some {
-          acc.fold(m) { a =>
-            if (m.createdAt isBefore a.createdAt) m else a
-          }
+    coll.foldLeft(none[Move]) { case (acc, (_, m)) =>
+      if (m.nonAcquired) Some {
+        acc.fold(m) { a =>
+          if (m.createdAt isBefore a.createdAt) m else a
         }
-        else acc
+      }
+      else acc
     }
 
   def updateOrGiveUp(move: Move) =

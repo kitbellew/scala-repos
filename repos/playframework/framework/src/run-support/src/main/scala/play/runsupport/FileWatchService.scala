@@ -87,12 +87,10 @@ object FileWatchService {
           new JDK7FileWatchService(logger)
         // If Windows, Linux or OSX, use JNotify but fall back to SBT
         case (Windows | Linux | OSX) =>
-          JNotifyFileWatchService(targetDirectory).recover {
-            case e =>
-              logger.warn(
-                "Error loading JNotify watch service: " + e.getMessage)
-              logger.trace(e)
-              new PollingFileWatchService(pollDelayMillis)
+          JNotifyFileWatchService(targetDirectory).recover { case e =>
+            logger.warn("Error loading JNotify watch service: " + e.getMessage)
+            logger.trace(e)
+            new PollingFileWatchService(pollDelayMillis)
           }.get
         case _ => new PollingFileWatchService(pollDelayMillis)
       }

@@ -129,12 +129,11 @@ trait LoggingBus extends ActorEventBus {
             .map({
               case actorClass ⇒ addLogger(system, actorClass, level, logName)
             })
-            .recover({
-              case e ⇒
-                throw new ConfigurationException(
-                  "Logger specified in config can't be loaded [" + loggerName +
-                    "] due to [" + e.toString + "]",
-                  e)
+            .recover({ case e ⇒
+              throw new ConfigurationException(
+                "Logger specified in config can't be loaded [" + loggerName +
+                  "] due to [" + e.toString + "]",
+                e)
             })
             .get
         }
@@ -147,13 +146,12 @@ trait LoggingBus extends ActorEventBus {
           subscribe(
             system.systemActorOf(
               Props(new Actor {
-                def receive = {
-                  case UnhandledMessage(msg, sender, rcp) ⇒
-                    publish(
-                      Debug(
-                        rcp.path.toString,
-                        rcp.getClass,
-                        "unhandled message from " + sender + ": " + msg))
+                def receive = { case UnhandledMessage(msg, sender, rcp) ⇒
+                  publish(
+                    Debug(
+                      rcp.path.toString,
+                      rcp.getClass,
+                      "unhandled message from " + sender + ": " + msg))
                 }
               }),
               "UnhandledMessageForwarder"

@@ -389,9 +389,8 @@ trait ColumnarTableModuleSpec[M[+_]]
             InnerObjectConcat(Leaf(SourceLeft), Leaf(SourceRight)))
           .slices
           .uncons
-          .copoint must beLike {
-          case Some((head, _)) =>
-            head.size must beLessThanOrEqualTo(yggConfig.maxSliceSize)
+          .copoint must beLike { case Some((head, _)) =>
+          head.size must beLessThanOrEqualTo(yggConfig.maxSliceSize)
         }
       }
 

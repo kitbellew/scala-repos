@@ -92,8 +92,7 @@ class WebSocketBoilerplateSpec extends EnsimeSpec with SharedTestKitFixture {
 
       Source.single(input).via(endpoints).runWith(Sink.head).pipeTo(client.ref)
 
-      client.expectMsgPF() {
-        case Status.Failure(_) =>
+      client.expectMsgPF() { case Status.Failure(_) =>
       }
   }
 
@@ -111,8 +110,7 @@ class WebSocketBoilerplateSpec extends EnsimeSpec with SharedTestKitFixture {
 
       Source.single(input).via(endpoints).runWith(Sink.head).pipeTo(client.ref)
 
-      client.expectMsgPF() {
-        case Status.Failure(e: DeserializationException) =>
+      client.expectMsgPF() { case Status.Failure(e: DeserializationException) =>
       }
   }
 

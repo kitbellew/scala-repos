@@ -358,17 +358,16 @@ object LAFuture {
       for (i <- 0 to len) { vals.insert(i, Empty) }
       var gotCnt = 0
 
-      future.toList.zipWithIndex.foreach {
-        case (f, idx) =>
-          f.foreach { v =>
-            sync.synchronized {
-              vals.insert(idx, Full(v))
-              gotCnt += 1
-              if (gotCnt >= len) {
-                ret.satisfy(vals.toList.flatten)
-              }
+      future.toList.zipWithIndex.foreach { case (f, idx) =>
+        f.foreach { v =>
+          sync.synchronized {
+            vals.insert(idx, Full(v))
+            gotCnt += 1
+            if (gotCnt >= len) {
+              ret.satisfy(vals.toList.flatten)
             }
           }
+        }
       }
     }
 
@@ -394,25 +393,24 @@ object LAFuture {
       for (i <- 0 to len) { vals.insert(i, Empty) }
       var gotCnt = 0
 
-      future.toList.zipWithIndex.foreach {
-        case (f, idx) =>
-          f.foreach { vb =>
-            sync.synchronized {
-              vb match {
-                case Full(v) => {
-                  vals.insert(idx, Full(v))
-                  gotCnt += 1
-                  if (gotCnt >= len) {
-                    ret.satisfy(Full(vals.toList.flatten))
-                  }
+      future.toList.zipWithIndex.foreach { case (f, idx) =>
+        f.foreach { vb =>
+          sync.synchronized {
+            vb match {
+              case Full(v) => {
+                vals.insert(idx, Full(v))
+                gotCnt += 1
+                if (gotCnt >= len) {
+                  ret.satisfy(Full(vals.toList.flatten))
                 }
+              }
 
-                case eb: EmptyBox => {
-                  ret.satisfy(eb)
-                }
+              case eb: EmptyBox => {
+                ret.satisfy(eb)
               }
             }
           }
+        }
       }
     }
 

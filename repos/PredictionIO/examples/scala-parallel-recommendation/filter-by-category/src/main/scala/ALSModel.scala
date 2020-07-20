@@ -39,9 +39,8 @@ class ALSModel(
       recommendableFeatures: RDD[(Int, Array[Double])],
       num: Int): Array[(Int, Double)] = {
     val recommendToVector = new DoubleMatrix(recommendToFeatures)
-    val scored = recommendableFeatures.map {
-      case (id, features) =>
-        (id, recommendToVector.dot(new DoubleMatrix(features)))
+    val scored = recommendableFeatures.map { case (id, features) =>
+      (id, recommendToVector.dot(new DoubleMatrix(features)))
     }
     scored.top(num)(Ordering.by(_._2))
   }

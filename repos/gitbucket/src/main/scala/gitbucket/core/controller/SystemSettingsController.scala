@@ -306,41 +306,39 @@ trait SystemSettingsControllerBase extends AccountManagementControllerBase {
             case Array(userName, isManager) => (userName, isManager.toBoolean)
           }
         }
-        .toList) {
-      case (groupName, members) =>
-        getAccountByUserName(groupName, true).map { account =>
-          updateGroup(groupName, form.url, form.isRemoved)
+        .toList) { case (groupName, members) =>
+      getAccountByUserName(groupName, true).map { account =>
+        updateGroup(groupName, form.url, form.isRemoved)
 
-          if (form.isRemoved) {
-            // Remove from GROUP_MEMBER
-            updateGroupMembers(form.groupName, Nil)
-            // Remove repositories
-            getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
-              deleteRepository(groupName, repositoryName)
-              FileUtils.deleteDirectory(
-                getRepositoryDir(groupName, repositoryName))
-              FileUtils.deleteDirectory(
-                getWikiRepositoryDir(groupName, repositoryName))
-              FileUtils.deleteDirectory(
-                getTemporaryDir(groupName, repositoryName))
-            }
-          } else {
-            // Update GROUP_MEMBER
-            updateGroupMembers(form.groupName, members)
-            // Update COLLABORATOR for group repositories
-            getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
-              removeCollaborators(form.groupName, repositoryName)
-              members.foreach {
-                case (userName, isManager) =>
-                  addCollaborator(form.groupName, repositoryName, userName)
-              }
+        if (form.isRemoved) {
+          // Remove from GROUP_MEMBER
+          updateGroupMembers(form.groupName, Nil)
+          // Remove repositories
+          getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
+            deleteRepository(groupName, repositoryName)
+            FileUtils.deleteDirectory(
+              getRepositoryDir(groupName, repositoryName))
+            FileUtils.deleteDirectory(
+              getWikiRepositoryDir(groupName, repositoryName))
+            FileUtils.deleteDirectory(
+              getTemporaryDir(groupName, repositoryName))
+          }
+        } else {
+          // Update GROUP_MEMBER
+          updateGroupMembers(form.groupName, members)
+          // Update COLLABORATOR for group repositories
+          getRepositoryNamesOfUser(form.groupName).foreach { repositoryName =>
+            removeCollaborators(form.groupName, repositoryName)
+            members.foreach { case (userName, isManager) =>
+              addCollaborator(form.groupName, repositoryName, userName)
             }
           }
+        }
 
-          updateImage(form.groupName, form.fileId, form.clearImage)
-          redirect("/admin/users")
+        updateImage(form.groupName, form.fileId, form.clearImage)
+        redirect("/admin/users")
 
-        } getOrElse NotFound
+      } getOrElse NotFound
     }
   })
 

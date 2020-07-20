@@ -46,15 +46,14 @@ class CreateAggregates extends Phase {
                   case _ => Vector(s1 -> from1)
                 }) ++ temp.map { case (s, n) => (s, Pure(n)) }
                 val from2 = sources.init
-                  .foldRight(sources.last._2) {
-                    case ((_, n), z) =>
-                      Join(
-                        new AnonSymbol,
-                        new AnonSymbol,
-                        n,
-                        z,
-                        JoinType.Inner,
-                        LiteralNode(true))
+                  .foldRight(sources.last._2) { case ((_, n), z) =>
+                    Join(
+                      new AnonSymbol,
+                      new AnonSymbol,
+                      n,
+                      z,
+                      JoinType.Inner,
+                      LiteralNode(true))
                   }
                   .infer()
                 logger.debug("New 'from' with joined aggregates:", from2)
@@ -63,10 +62,9 @@ class CreateAggregates extends Phase {
                   case _ =>
                     val len = sources.length
                     val it = Iterator.iterate(s1)(_ => ElementSymbol(2))
-                    sources.zipWithIndex.map {
-                      case ((s, _), i) =>
-                        val l = List.iterate(s1, i + 1)(_ => ElementSymbol(2))
-                        s -> (if (i == len - 1) l else l :+ ElementSymbol(1))
+                    sources.zipWithIndex.map { case ((s, _), i) =>
+                      val l = List.iterate(s1, i + 1)(_ => ElementSymbol(2))
+                      s -> (if (i == len - 1) l else l :+ ElementSymbol(1))
                     }.toMap
                 }
                 logger.debug("Replacement paths: " + repl)

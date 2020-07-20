@@ -226,9 +226,8 @@ class KMeans private (
     // Compute squared norms and cache them.
     val norms = data.map(Vectors.norm(_, 2.0))
     norms.persist()
-    val zippedData = data.zip(norms).map {
-      case (v, norm) =>
-        new VectorWithNorm(v, norm)
+    val zippedData = data.zip(norms).map { case (v, norm) =>
+      new VectorWithNorm(v, norm)
     }
     val model = runAlgorithm(zippedData)
     norms.unpersist()
@@ -436,11 +435,10 @@ class KMeans private (
       val preCosts = costs
       costs = data
         .zip(preCosts)
-        .map {
-          case (point, cost) =>
-            Array.tabulate(runs) { r =>
-              math.min(KMeans.pointCost(bcNewCenters.value(r), point), cost(r))
-            }
+        .map { case (point, cost) =>
+          Array.tabulate(runs) { r =>
+            math.min(KMeans.pointCost(bcNewCenters.value(r), point), cost(r))
+          }
         }
         .persist(StorageLevel.MEMORY_AND_DISK)
       val sumCosts = costs
@@ -472,19 +470,17 @@ class KMeans private (
         .zip(costs)
         .mapPartitionsWithIndex { (index, pointsWithCosts) =>
           val rand = new XORShiftRandom(seed ^ (step << 16) ^ index)
-          pointsWithCosts.flatMap {
-            case (p, c) =>
-              val rs = (0 until runs).filter { r =>
-                rand.nextDouble() < 2.0 * c(r) * k / sumCosts(r)
-              }
-              if (rs.length > 0) Some((p, rs)) else None
+          pointsWithCosts.flatMap { case (p, c) =>
+            val rs = (0 until runs).filter { r =>
+              rand.nextDouble() < 2.0 * c(r) * k / sumCosts(r)
+            }
+            if (rs.length > 0) Some((p, rs)) else None
           }
         }
         .collect()
       mergeNewCenters()
-      chosen.foreach {
-        case (p, rs) =>
-          rs.foreach(newCenters(_) += p.toDense)
+      chosen.foreach { case (p, rs) =>
+        rs.foreach(newCenters(_) += p.toDense)
       }
       step += 1
     }

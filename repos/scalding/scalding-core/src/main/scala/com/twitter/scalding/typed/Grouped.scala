@@ -113,12 +113,11 @@ object Grouped {
 
     WrappedSerialization.rawSetBinary(
       List((cls, boxordSer)),
-      {
-        case (k: String, v: String) =>
-          FlowStateMap.mutate(flowDef) { st =>
-            val newSt = st.addConfigSetting(k + cls, v)
-            (newSt, ())
-          }
+      { case (k: String, v: String) =>
+        FlowStateMap.mutate(flowDef) { st =>
+          val newSt = st.addConfigSetting(k + cls, v)
+          (newSt, ())
+        }
       })
     (boxfn, boxordSer)
   }

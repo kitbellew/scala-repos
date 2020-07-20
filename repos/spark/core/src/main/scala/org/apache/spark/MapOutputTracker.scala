@@ -449,9 +449,8 @@ private[spark] class MapOutputTrackerMaster(conf: SparkConf)
             }
             mapIdx = mapIdx + 1
           }
-          val topLocs = locs.filter {
-            case (loc, size) =>
-              size.toDouble / totalOutputSize >= fractionThreshold
+          val topLocs = locs.filter { case (loc, size) =>
+            size.toDouble / totalOutputSize >= fractionThreshold
           }
           // Return if we have any locations which satisfy the required threshold
           if (topLocs.nonEmpty) {

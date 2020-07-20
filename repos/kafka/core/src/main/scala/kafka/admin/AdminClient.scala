@@ -71,14 +71,13 @@ class AdminClient(
   }
 
   private def sendAnyNode(api: ApiKeys, request: AbstractRequest): Struct = {
-    bootstrapBrokers.foreach {
-      case broker =>
-        try {
-          return send(broker, api, request)
-        } catch {
-          case e: Exception =>
-            debug(s"Request ${api} failed against node ${broker}", e)
-        }
+    bootstrapBrokers.foreach { case broker =>
+      try {
+        return send(broker, api, request)
+      } catch {
+        case e: Exception =>
+          debug(s"Request ${api} failed against node ${broker}", e)
+      }
     }
     throw new RuntimeException(
       s"Request ${api} failed on brokers ${bootstrapBrokers}")
@@ -113,17 +112,16 @@ class AdminClient(
   }
 
   def listAllGroups(): Map[Node, List[GroupOverview]] = {
-    findAllBrokers.map {
-      case broker =>
-        broker -> {
-          try {
-            listGroups(broker)
-          } catch {
-            case e: Exception =>
-              debug(s"Failed to find groups from broker ${broker}", e)
-              List[GroupOverview]()
-          }
+    findAllBrokers.map { case broker =>
+      broker -> {
+        try {
+          listGroups(broker)
+        } catch {
+          case e: Exception =>
+            debug(s"Failed to find groups from broker ${broker}", e)
+            List[GroupOverview]()
         }
+      }
     }.toMap
   }
 

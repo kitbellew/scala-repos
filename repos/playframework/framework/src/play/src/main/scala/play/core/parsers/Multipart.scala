@@ -108,9 +108,8 @@ object Multipart {
               }
 
             def bufferExceededError =
-              parts.collectFirst {
-                case MaxMemoryBufferExceeded(msg) =>
-                  createBadResult(msg, REQUEST_ENTITY_TOO_LARGE)(request)
+              parts.collectFirst { case MaxMemoryBufferExceeded(msg) =>
+                createBadResult(msg, REQUEST_ENTITY_TOO_LARGE)(request)
               }
 
             parseError orElse bufferExceededError getOrElse {

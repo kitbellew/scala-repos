@@ -156,9 +156,8 @@ trait Dist[@sp A] extends Any { self =>
     rawHistogram(n).map { case (k, v) => (k, 1.0 * v / n) }
 
   def rawHistogram(n: Int)(implicit gen: Generator): Map[A, Int] =
-    toStream(gen).take(n).foldLeft(Map.empty[A, Int]) {
-      case (h, a) =>
-        h.updated(a, h.getOrElse(a, 0) + 1)
+    toStream(gen).take(n).foldLeft(Map.empty[A, Int]) { case (h, a) =>
+      h.updated(a, h.getOrElse(a, 0) + 1)
     }
 }
 
@@ -292,12 +291,11 @@ object Dist extends DistInstances8 {
     val ws = new Array[Double](tpls.length)
     var i = 0
     var total = 0.0
-    tpls.foreach {
-      case (w, d) =>
-        total += w
-        ws(i) = total
-        ds(i) = d
-        i += 1
+    tpls.foreach { case (w, d) =>
+      total += w
+      ws(i) = total
+      ds(i) = d
+      i += 1
     }
 
     new DistFromGen({ g =>

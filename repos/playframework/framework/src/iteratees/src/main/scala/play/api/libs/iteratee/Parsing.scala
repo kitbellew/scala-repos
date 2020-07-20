@@ -113,29 +113,27 @@ object Parsing {
                             k => Future.successful((i._1, k(Input.El(m)))),
                             (err, e) => throw new Exception())(dec))(dec)
                     }
-                  fed.flatMap {
-                    case (ss, i) =>
-                      i.fold1(
-                        (a, e) =>
-                          Future.successful(
-                            Done(Done(a, e), inputOrEmpty(ss ++ suffix))),
-                        k =>
-                          Future.successful(
-                            Cont[
-                              Array[Byte],
-                              Iteratee[MatchInfo[Array[Byte]], A]](
-                              (in: Input[Array[Byte]]) =>
-                                in match {
-                                  case Input.EOF =>
-                                    Done(
-                                      k(Input.El(Unmatched(suffix))),
-                                      Input.EOF
-                                    ) //suffix maybe empty
-                                  case other =>
-                                    step(ss ++ suffix, Cont(k))(other)
-                                })),
-                        (err, e) => throw new Exception()
-                      )(dec)
+                  fed.flatMap { case (ss, i) =>
+                    i.fold1(
+                      (a, e) =>
+                        Future.successful(
+                          Done(Done(a, e), inputOrEmpty(ss ++ suffix))),
+                      k =>
+                        Future.successful(
+                          Cont[
+                            Array[Byte],
+                            Iteratee[MatchInfo[Array[Byte]], A]](
+                            (in: Input[Array[Byte]]) =>
+                              in match {
+                                case Input.EOF =>
+                                  Done(
+                                    k(Input.El(Unmatched(suffix))),
+                                    Input.EOF
+                                  ) //suffix maybe empty
+                                case other => step(ss ++ suffix, Cont(k))(other)
+                              })),
+                      (err, e) => throw new Exception()
+                    )(dec)
                   }(dec)
                 },
                 (err, e) => throw new Exception()

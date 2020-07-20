@@ -918,9 +918,8 @@ abstract class AggregationQuerySuite
     // SortBasedAggregate to use a safe row as the aggregation buffer.
     Seq(dataTypes, UnsafeRow.mutableFieldTypes.asScala.toSeq).foreach {
       dataTypes =>
-        val fields = dataTypes.zipWithIndex.map {
-          case (dataType, index) =>
-            StructField(s"col$index", dataType, nullable = true)
+        val fields = dataTypes.zipWithIndex.map { case (dataType, index) =>
+          StructField(s"col$index", dataType, nullable = true)
         }
         // The schema used for data generator.
         val schemaForGenerator = StructType(fields)

@@ -134,9 +134,8 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       mj.join(this.asInstanceOf[Matrix2[R, C, Boolean]], vec)
     implicit val ord2: Ordering[C2] = vec.colOrd
     lazy val resultPipe = joinedBool
-      .flatMap {
-        case (key, ((row, bool), (col2, v))) =>
-          if (bool) Some((row, col2), v) else None // filter early
+      .flatMap { case (key, ((row, bool), (col2, v))) =>
+        if (bool) Some((row, col2), v) else None // filter early
       }
       .group // TODO we could be lazy with this group and combine with a sum
       .sum
@@ -158,13 +157,12 @@ sealed trait Matrix2[R, C, V] extends Serializable {
       mon: Monoid[V],
       ring: Ring[NewValT]): Matrix2[R, C, NewValT] = {
     lazy val newPipe = toTypedPipe
-      .map {
-        case (r, c, x) =>
-          (
-            r,
-            c,
-            if (mon.isNonZero(x)) { ring.one }
-            else { ring.zero })
+      .map { case (r, c, x) =>
+        (
+          r,
+          c,
+          if (mon.isNonZero(x)) { ring.one }
+          else { ring.zero })
       }
       .filter { kv => ring.isNonZero(kv._3) }
     MatrixLiteral(newPipe, this.sizeHint)
@@ -407,9 +405,8 @@ case class Product[R, C, C2, V](
         val localRing = ring
         joiner
           .join(left, right)
-          .map {
-            case (key, ((l1, lv), (r2, rv))) =>
-              (l1, r2, localRing.times(lv, rv))
+          .map { case (key, ((l1, lv), (r2, rv))) =>
+            (l1, r2, localRing.times(lv, rv))
           }
       }
     } else {
@@ -692,9 +689,8 @@ trait Scalar2[V] extends Serializable {
       f: Field[V]): MatrixLiteral[R, C, V] =
     MatrixLiteral(
       that.toTypedPipe
-        .mapWithValue(value) {
-          case ((r, c, v), optV) =>
-            (r, c, f.div(v, optV.getOrElse(f.zero)))
+        .mapWithValue(value) { case ((r, c, v), optV) =>
+          (r, c, f.div(v, optV.getOrElse(f.zero)))
         },
       that.sizeHint)(that.rowOrd, that.colOrd)
 
@@ -702,9 +698,8 @@ trait Scalar2[V] extends Serializable {
       ring: Ring[V]): MatrixLiteral[R, C, V] =
     MatrixLiteral(
       that.toTypedPipe
-        .mapWithValue(value) {
-          case ((r, c, v), optV) =>
-            (r, c, ring.times(optV.getOrElse(ring.zero), v))
+        .mapWithValue(value) { case ((r, c, v), optV) =>
+          (r, c, ring.times(optV.getOrElse(ring.zero), v))
         },
       that.sizeHint)(that.rowOrd, that.colOrd)
 

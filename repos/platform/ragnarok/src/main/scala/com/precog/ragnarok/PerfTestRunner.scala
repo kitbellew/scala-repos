@@ -86,9 +86,8 @@ trait PerfTestRunner[M[+_], T] {
   def runM[A](test: Tree[(PerfTest, A)]): M[RunResult[A]] = {
     test match {
       case Tree.Node((test @ RunQuery(q), a), _) =>
-        timeQuery(q) map {
-          case (t, _) =>
-            Tree.leaf((test, a, Some(t)))
+        timeQuery(q) map { case (t, _) =>
+          Tree.leaf((test, a, Some(t)))
         }
 
       case Tree.Node((RunSequential, a), tests) =>

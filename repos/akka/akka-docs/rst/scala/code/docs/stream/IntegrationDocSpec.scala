@@ -91,10 +91,9 @@ object IntegrationDocSpec {
   final case object SaveDone
 
   class DatabaseService(probe: ActorRef) extends Actor {
-    override def receive = {
-      case Save(tweet: Tweet) =>
-        probe ! tweet.author.handle
-        sender() ! SaveDone
+    override def receive = { case Save(tweet: Tweet) =>
+      probe ! tweet.author.handle
+      sender() ! SaveDone
     }
   }
 

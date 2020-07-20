@@ -104,14 +104,13 @@ object ExpressionEncoder {
   def tuple(encoders: Seq[ExpressionEncoder[_]]): ExpressionEncoder[_] = {
     encoders.foreach(_.assertUnresolved())
 
-    val schema = StructType(encoders.zipWithIndex.map {
-      case (e, i) =>
-        val (dataType, nullable) = if (e.flat) {
-          e.schema.head.dataType -> e.schema.head.nullable
-        } else {
-          e.schema -> true
-        }
-        StructField(s"_${i + 1}", dataType, nullable)
+    val schema = StructType(encoders.zipWithIndex.map { case (e, i) =>
+      val (dataType, nullable) = if (e.flat) {
+        e.schema.head.dataType -> e.schema.head.nullable
+      } else {
+        e.schema -> true
+      }
+      StructField(s"_${i + 1}", dataType, nullable)
     })
 
     val cls = Utils.getContextOrSparkClassLoader.loadClass(
@@ -123,33 +122,29 @@ object ExpressionEncoder {
         case other       => CreateStruct(other.toRowExpressions)
       }
       .zipWithIndex
-      .map {
-        case (expr, index) =>
-          expr.transformUp {
-            case BoundReference(0, t, _) =>
-              Invoke(
-                BoundReference(0, ObjectType(cls), nullable = true),
-                s"_${index + 1}",
-                t)
-          }
+      .map { case (expr, index) =>
+        expr.transformUp { case BoundReference(0, t, _) =>
+          Invoke(
+            BoundReference(0, ObjectType(cls), nullable = true),
+            s"_${index + 1}",
+            t)
+        }
       }
 
-    val fromRowExpressions = encoders.zipWithIndex.map {
-      case (enc, index) =>
-        if (enc.flat) {
-          enc.fromRowExpression.transform {
-            case b: BoundReference => b.copy(ordinal = index)
-          }
-        } else {
-          val input = BoundReference(index, enc.schema, nullable = true)
-          enc.fromRowExpression.transformUp {
-            case UnresolvedAttribute(nameParts) =>
-              assert(nameParts.length == 1)
-              UnresolvedExtractValue(input, Literal(nameParts.head))
-            case BoundReference(ordinal, dt, _) =>
-              GetStructField(input, ordinal)
-          }
+    val fromRowExpressions = encoders.zipWithIndex.map { case (enc, index) =>
+      if (enc.flat) {
+        enc.fromRowExpression.transform {
+          case b: BoundReference => b.copy(ordinal = index)
         }
+      } else {
+        val input = BoundReference(index, enc.schema, nullable = true)
+        enc.fromRowExpression.transformUp {
+          case UnresolvedAttribute(nameParts) =>
+            assert(nameParts.length == 1)
+            UnresolvedExtractValue(input, Literal(nameParts.head))
+          case BoundReference(ordinal, dt, _) => GetStructField(input, ordinal)
+        }
+      }
     }
 
     val fromRowExpression =
@@ -335,12 +330,11 @@ case class ExpressionEncoder[T](
         }
       case _ =>
     }
-    exprToMaxOrdinal.foreach {
-      case (expr, maxOrdinal) =>
-        val schema = expr.dataType.asInstanceOf[StructType]
-        if (maxOrdinal != schema.length - 1) {
-          fail(schema, maxOrdinal)
-        }
+    exprToMaxOrdinal.foreach { case (expr, maxOrdinal) =>
+      val schema = expr.dataType.asInstanceOf[StructType]
+      if (maxOrdinal != schema.length - 1) {
+        fail(schema, maxOrdinal)
+      }
     }
   }
 

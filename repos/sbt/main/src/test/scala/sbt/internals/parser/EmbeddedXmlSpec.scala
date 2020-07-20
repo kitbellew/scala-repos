@@ -29,14 +29,13 @@ class EmbeddedXmlSpec extends CheckIfParsedSpec {
                          |
                          |""".stripMargin
 
-      split(buildSbt) must throwA[MessageOnlyException].like {
-        case exception =>
-          val index =
-            buildSbt.lines.indexWhere(line => line.contains(errorLine)) + 1
-          val numberRegex = """(\d+)""".r
-          val message = exception.getMessage
-          val list = numberRegex.findAllIn(message).toList
-          list must contain(index.toString)
+      split(buildSbt) must throwA[MessageOnlyException].like { case exception =>
+        val index =
+          buildSbt.lines.indexWhere(line => line.contains(errorLine)) + 1
+        val numberRegex = """(\d+)""".r
+        val message = exception.getMessage
+        val list = numberRegex.findAllIn(message).toList
+        list must contain(index.toString)
       }
 
     }

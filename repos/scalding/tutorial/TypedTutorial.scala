@@ -143,13 +143,12 @@ class TypedTutorial(args: Args) extends Job(args) {
 
       // Split lines into words, but keep their original line offset with them.
       val wordsWithLine: Grouped[String, Long] =
-        lines.flatMap {
-          case (offset, line) =>
-            // split into words
-            line
-              .split("\\s")
-              // keep the line offset with them
-              .map(word => (word.toLowerCase, offset))
+        lines.flatMap { case (offset, line) =>
+          // split into words
+          line
+            .split("\\s")
+            // keep the line offset with them
+            .map(word => (word.toLowerCase, offset))
         }
         // make the 'word' field the key
           .group

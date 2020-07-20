@@ -67,9 +67,8 @@ class HttpServerExampleSpec
     val bindingFuture: Future[ServerBinding] =
       Http().bindAndHandle(handler, host, port)
 
-    bindingFuture.onFailure {
-      case ex: Exception =>
-        log.error(ex, "Failed to bind to {}:{}!", host, port)
+    bindingFuture.onFailure { case ex: Exception =>
+      log.error(ex, "Failed to bind to {}:{}!", host, port)
     }
 
   }
@@ -93,9 +92,8 @@ class HttpServerExampleSpec
       .to(handleConnections) // Sink[Http.IncomingConnection, _]
       .run()
 
-    bindingFuture.onFailure {
-      case ex: Exception =>
-        log.error(ex, "Failed to bind to {}:{}!", host, port)
+    bindingFuture.onFailure { case ex: Exception =>
+      log.error(ex, "Failed to bind to {}:{}!", host, port)
     }
   }
 
@@ -136,10 +134,9 @@ class HttpServerExampleSpec
     val serverSource = Http().bind(host, port)
 
     val reactToConnectionFailure = Flow[HttpRequest]
-      .recover[HttpRequest] {
-        case ex =>
-          // handle the failure somehow
-          throw ex
+      .recover[HttpRequest] { case ex =>
+        // handle the failure somehow
+        throw ex
       }
 
     val httpEcho = Flow[HttpRequest]

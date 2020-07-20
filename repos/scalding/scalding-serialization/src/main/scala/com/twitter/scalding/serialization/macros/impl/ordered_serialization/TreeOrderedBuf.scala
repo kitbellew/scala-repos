@@ -227,10 +227,9 @@ object TreeOrderedBuf {
       }
     }
 
-    val lazyVariables = t.lazyOuterVariables.map {
-      case (n, t) =>
-        val termName = newTermName(n)
-        q"""lazy val $termName = $t"""
+    val lazyVariables = t.lazyOuterVariables.map { case (n, t) =>
+      val termName = newTermName(n)
+      q"""lazy val $termName = $t"""
     }
 
     val element = freshT("element")

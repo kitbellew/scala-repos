@@ -53,9 +53,8 @@ class CrossValidationTest
   def toTestTrain(dataSplit: Fold): (Seq[LabeledPoint], Seq[LabeledPoint]) = {
     val trainingData = dataSplit._1.labeledPoints
     val queryActual = dataSplit._3
-    val testingData = queryActual.map {
-      case (query, actual) =>
-        LabeledPoint(actual.label, query.features)
+    val testingData = queryActual.map { case (query, actual) =>
+      LabeledPoint(actual.label, query.features)
     }
     (trainingData, testingData.collect().toSeq)
   }
@@ -84,9 +83,8 @@ class CrossValidationTest
   "Testing data size" should "be within 1 of total / evalK" in {
     val labeledPointsRDD = sc.parallelize(labeledPoints)
     val splits = evalKs.map(k => k -> splitData(k, labeledPointsRDD))
-    val diffs = splits.map {
-      case (k, folds) =>
-        folds.map(fold => fold._3.count() - dataCount / k)
+    val diffs = splits.map { case (k, folds) =>
+      folds.map(fold => fold._3.count() - dataCount / k)
     }
     forAll(diffs) { foldDiffs => foldDiffs.max should be <= 1L }
     diffs.map(folds => folds.sum) should be(evalKs.map(k => dataCount % k))

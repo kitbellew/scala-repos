@@ -167,19 +167,18 @@ object CsvImplicits {
 
         def writeRows(rsm: ScalarTag[RX]) {
           // now write each row of the frame
-          frame.toRowSeq.foreach {
-            case (ridx, row) =>
-              stream write {
-                val seq =
-                  if (!withRowIx)
-                    row.values.toSeq.map(_.toString)
-                  else
-                    rsm.strList(ridx) ++: row.values.toSeq.map(_.toString)
+          frame.toRowSeq.foreach { case (ridx, row) =>
+            stream write {
+              val seq =
+                if (!withRowIx)
+                  row.values.toSeq.map(_.toString)
+                else
+                  rsm.strList(ridx) ++: row.values.toSeq.map(_.toString)
 
-                quotify(seq).mkString(separ).getBytes(settings.encoding)
-              }
+              quotify(seq).mkString(separ).getBytes(settings.encoding)
+            }
 
-              stream.write(newLine)
+            stream.write(newLine)
           }
         }
 

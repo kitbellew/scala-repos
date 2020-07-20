@@ -45,9 +45,8 @@ class ZookeeperServerSetClusterSpec extends FunSuite with MockitoSugar {
     def registerHost(
         socketAddr: InetSocketAddress,
         extraEndpoints: EndpointMap) {
-      val additionalEndpoints = extraEndpoints map {
-        case (name, addr) =>
-          name -> new Endpoint(addr.getHostName, addr.getPort)
+      val additionalEndpoints = extraEndpoints map { case (name, addr) =>
+        name -> new Endpoint(addr.getHostName, addr.getPort)
       }
 
       val serviceInstance = new ServiceInstance(

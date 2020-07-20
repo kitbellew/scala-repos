@@ -100,18 +100,16 @@ class LanguageFeatureInspection
       "scala.language",
       "existentials",
       _.existentials,
-      _.existentials = true) {
-      case e: ScExistentialClause =>
-        e.firstChild.getOrElse(e) // TODO Exclude reducible existential types
+      _.existentials = true) { case e: ScExistentialClause =>
+      e.firstChild.getOrElse(e) // TODO Exclude reducible existential types
     },
     Feature(
       "macro definition",
       "scala.language.experimental",
       "macros",
       _.macros,
-      _.macros = true) {
-      case e: ScMacroDefinition =>
-        e.children.find(it => it.getText == "macro").getOrElse(e)
+      _.macros = true) { case e: ScMacroDefinition =>
+      e.children.find(it => it.getText == "macro").getOrElse(e)
     }
   )
 

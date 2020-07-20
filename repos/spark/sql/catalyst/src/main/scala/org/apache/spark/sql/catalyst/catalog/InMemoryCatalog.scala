@@ -298,12 +298,11 @@ class InMemoryCatalog extends ExternalCatalog {
       require(
         specs.size == newSpecs.size,
         "number of old and new partition specs differ")
-      specs.zip(newSpecs).foreach {
-        case (oldSpec, newSpec) =>
-          val newPart = getPartition(db, table, oldSpec).copy(spec = newSpec)
-          val existingParts = catalog(db).tables(table).partitions
-          existingParts.remove(oldSpec)
-          existingParts.put(newSpec, newPart)
+      specs.zip(newSpecs).foreach { case (oldSpec, newSpec) =>
+        val newPart = getPartition(db, table, oldSpec).copy(spec = newSpec)
+        val existingParts = catalog(db).tables(table).partitions
+        existingParts.remove(oldSpec)
+        existingParts.put(newSpec, newPart)
       }
     }
 

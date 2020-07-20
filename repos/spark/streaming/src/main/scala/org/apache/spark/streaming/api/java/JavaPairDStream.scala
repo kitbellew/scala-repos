@@ -791,9 +791,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
       : JavaPairDStream[K, (Optional[V], Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.fullOuterJoin(other.dstream)
-    joinResult.mapValues {
-      case (v, w) =>
-        (JavaUtils.optionToOptional(v), JavaUtils.optionToOptional(w))
+    joinResult.mapValues { case (v, w) =>
+      (JavaUtils.optionToOptional(v), JavaUtils.optionToOptional(w))
     }
   }
 
@@ -808,9 +807,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   ): JavaPairDStream[K, (Optional[V], Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.fullOuterJoin(other.dstream, numPartitions)
-    joinResult.mapValues {
-      case (v, w) =>
-        (JavaUtils.optionToOptional(v), JavaUtils.optionToOptional(w))
+    joinResult.mapValues { case (v, w) =>
+      (JavaUtils.optionToOptional(v), JavaUtils.optionToOptional(w))
     }
   }
 
@@ -825,9 +823,8 @@ class JavaPairDStream[K, V](val dstream: DStream[(K, V)])(
   ): JavaPairDStream[K, (Optional[V], Optional[W])] = {
     implicit val cm: ClassTag[W] = fakeClassTag
     val joinResult = dstream.fullOuterJoin(other.dstream, partitioner)
-    joinResult.mapValues {
-      case (v, w) =>
-        (JavaUtils.optionToOptional(v), JavaUtils.optionToOptional(w))
+    joinResult.mapValues { case (v, w) =>
+      (JavaUtils.optionToOptional(v), JavaUtils.optionToOptional(w))
     }
   }
 

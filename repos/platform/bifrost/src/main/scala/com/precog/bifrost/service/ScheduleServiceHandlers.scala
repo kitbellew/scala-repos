@@ -245,9 +245,8 @@ class ScheduledQueryStatusServiceHandler[A](scheduler: Scheduler[Future])(
       }
       limit <- Validation.fromTryCatch {
         request.parameters.get('last) map (_.toInt)
-      } leftMap {
-        case ex: NumberFormatException =>
-          DispatchError(BadRequest, "Invalid last limit: " + ex.getMessage)
+      } leftMap { case ex: NumberFormatException =>
+        DispatchError(BadRequest, "Invalid last limit: " + ex.getMessage)
       }
     } yield {
       scheduler.statusForTask(id, limit) map {

@@ -229,9 +229,8 @@ private class ScalaConfiguration(project: MavenProject) {
         .toOption
         .zip(plugin.getChildTextTrim("artifactId").toOption)
         .zip(plugin.getChildTextTrim("version").toOption)
-        .map {
-          case ((groupId, artifactId), version) =>
-            new MavenId(groupId, artifactId, version)
+        .map { case ((groupId, artifactId), version) =>
+          new MavenId(groupId, artifactId, version)
         }
     }
   }

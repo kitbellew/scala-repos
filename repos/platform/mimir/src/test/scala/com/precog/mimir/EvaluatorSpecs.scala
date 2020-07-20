@@ -149,12 +149,11 @@ trait EvaluatorTestSupport[M[+_]]
 
                   currentIndex += parsed.length
 
-                  parsed zip (Stream from index) map {
-                    case (value, id) =>
-                      JObject(
-                        JField("key", JArray(JNum(id) :: Nil)) :: JField(
-                          "value",
-                          value) :: Nil)
+                  parsed zip (Stream from index) map { case (value, id) =>
+                    JObject(
+                      JField("key", JArray(JNum(id) :: Nil)) :: JField(
+                        "value",
+                        value) :: Nil)
                   }
                 }
               }
@@ -1432,11 +1431,10 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input) { result =>
         result must haveSize(100)
 
-        result must haveAllElementsLike {
-          case (ids, SObject(obj)) =>
-            ids must haveSize(1)
-            obj must haveSize(1)
-            obj must haveKey("aa")
+        result must haveAllElementsLike { case (ids, SObject(obj)) =>
+          ids must haveSize(1)
+          obj must haveSize(1)
+          obj must haveKey("aa")
         }
       }
     }
@@ -2051,10 +2049,9 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input) { result =>
         result must haveSize(101)
 
-        result must haveAllElementsLike {
-          case (ids, SObject(obj)) =>
-            ids must haveSize(1)
-            obj must haveKey("time")
+        result must haveAllElementsLike { case (ids, SObject(obj)) =>
+          ids must haveSize(1)
+          obj must haveKey("time")
         }
       }
     }
@@ -2740,11 +2737,10 @@ trait EvaluatorSpecs[M[+_]]
         testEval(input) { result =>
           result must haveSize(1)
 
-          result must haveAllElementsLike {
-            case (ids, SObject(obj)) =>
-              ids must haveSize(1)
-              obj must haveKey("foo")
-              obj must haveValue(SString("bar"))
+          result must haveAllElementsLike { case (ids, SObject(obj)) =>
+            ids must haveSize(1)
+            obj must haveKey("foo")
+            obj must haveValue(SString("bar"))
           }
         }
       }
@@ -3411,36 +3407,35 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input) { result =>
         result must haveSize(10)
 
-        result must haveAllElementsLike {
-          case (ids, SObject(obj)) =>
-            ids must haveSize(1)
-            obj must haveKey("user")
-            obj must haveKey("num")
+        result must haveAllElementsLike { case (ids, SObject(obj)) =>
+          ids must haveSize(1)
+          obj must haveKey("user")
+          obj must haveKey("num")
 
-            obj("user") must beLike {
-              case SString(str) => {
-                str must beOneOf(
-                  "daniel",
-                  "kris",
-                  "derek",
-                  "nick",
-                  "john",
-                  "alissa",
-                  "franco",
-                  "matthew",
-                  "jason")
-              }
-              case SNull => ok
+          obj("user") must beLike {
+            case SString(str) => {
+              str must beOneOf(
+                "daniel",
+                "kris",
+                "derek",
+                "nick",
+                "john",
+                "alissa",
+                "franco",
+                "matthew",
+                "jason")
             }
+            case SNull => ok
+          }
 
-            val user = (obj("user"): @unchecked) match {
-              case SString(user) => user
-              case SNull         => SNull
-            }
+          val user = (obj("user"): @unchecked) match {
+            case SString(user) => user
+            case SNull         => SNull
+          }
 
-            obj("num") must beLike {
-              case SDecimal(d) => d mustEqual Expected(user)
-            }
+          obj("num") must beLike {
+            case SDecimal(d) => d mustEqual Expected(user)
+          }
         }
       }
     }
@@ -3504,36 +3499,35 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input) { result =>
         result must haveSize(10)
 
-        result must haveAllElementsLike {
-          case (ids, SObject(obj)) =>
-            ids must haveSize(1)
-            obj must haveKey("user")
-            obj must haveKey("num")
+        result must haveAllElementsLike { case (ids, SObject(obj)) =>
+          ids must haveSize(1)
+          obj must haveKey("user")
+          obj must haveKey("num")
 
-            obj("user") must beLike {
-              case SString(str) => {
-                str must beOneOf(
-                  "daniel",
-                  "kris",
-                  "derek",
-                  "nick",
-                  "john",
-                  "alissa",
-                  "franco",
-                  "matthew",
-                  "jason")
-              }
-              case SNull => ok
+          obj("user") must beLike {
+            case SString(str) => {
+              str must beOneOf(
+                "daniel",
+                "kris",
+                "derek",
+                "nick",
+                "john",
+                "alissa",
+                "franco",
+                "matthew",
+                "jason")
             }
+            case SNull => ok
+          }
 
-            val user = (obj("user"): @unchecked) match {
-              case SString(user) => user
-              case SNull         => SNull
-            }
+          val user = (obj("user"): @unchecked) match {
+            case SString(user) => user
+            case SNull         => SNull
+          }
 
-            obj("num") must beLike {
-              case SDecimal(d) => d mustEqual Expected(user)
-            }
+          obj("num") must beLike {
+            case SDecimal(d) => d mustEqual Expected(user)
+          }
         }
       }
     }
@@ -3635,11 +3629,10 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input) { result =>
         result must haveSize(3)
 
-        result must haveAllElementsLike {
-          case (ids, SObject(obj)) =>
-            ids must haveSize(1)
-            obj must haveKey("user")
-            obj("user") must_== SNull
+        result must haveAllElementsLike { case (ids, SObject(obj)) =>
+          ids must haveSize(1)
+          obj must haveKey("user")
+          obj("user") must_== SNull
         }
       }
     }
@@ -3882,12 +3875,11 @@ trait EvaluatorSpecs[M[+_]]
       testEval(input) { result =>
         result must haveSize(10000)
 
-        result must haveAllElementsLike {
-          case (ids, SObject(obj)) =>
-            ids.size mustEqual (2)
-            obj must haveSize(2)
-            obj must haveKey("aa")
-            obj must haveKey("bb")
+        result must haveAllElementsLike { case (ids, SObject(obj)) =>
+          ids.size mustEqual (2)
+          obj must haveSize(2)
+          obj must haveKey("aa")
+          obj must haveKey("bb")
         }
       }
     }
@@ -3980,10 +3972,9 @@ trait EvaluatorSpecs[M[+_]]
           }
           decis.sorted mustEqual expectedResult.sorted
 
-          result must haveAllElementsLike {
-            case (ids, SDecimal(d)) =>
-              ids must haveSize(2)
-              expectedResult must contain(d)
+          result must haveAllElementsLike { case (ids, SDecimal(d)) =>
+            ids must haveSize(2)
+            expectedResult must contain(d)
           }
         }
       }
@@ -4071,10 +4062,9 @@ trait EvaluatorSpecs[M[+_]]
           }
           decis.sorted mustEqual expectedResult.sorted
 
-          result must haveAllElementsLike {
-            case (ids, SDecimal(d)) =>
-              ids must haveSize(2)
-              expectedResult must contain(d)
+          result must haveAllElementsLike { case (ids, SDecimal(d)) =>
+            ids must haveSize(2)
+            expectedResult must contain(d)
           }
         }
       }

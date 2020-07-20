@@ -104,9 +104,8 @@ final class RegressionEvaluator @Since("1.4.0") (
         col($(predictionCol)).cast(DoubleType),
         col($(labelCol)).cast(DoubleType))
       .rdd
-      .map {
-        case Row(prediction: Double, label: Double) =>
-          (prediction, label)
+      .map { case Row(prediction: Double, label: Double) =>
+        (prediction, label)
       }
     val metrics = new RegressionMetrics(predictionAndLabels)
     val metric = $(metricName) match {

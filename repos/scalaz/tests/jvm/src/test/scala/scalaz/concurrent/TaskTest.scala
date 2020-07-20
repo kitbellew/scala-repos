@@ -28,9 +28,8 @@ object TaskTest extends SpecLite {
   val combinations = (options tuple options)
 
   "left associated binds" ! check {
-    combinations.forall {
-      case (seed, cur) =>
-        leftAssociatedBinds(seed, cur).unsafePerformSync == correct
+    combinations.forall { case (seed, cur) =>
+      leftAssociatedBinds(seed, cur).unsafePerformSync == correct
     }
   }
 

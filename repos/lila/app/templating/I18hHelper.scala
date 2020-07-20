@@ -43,12 +43,11 @@ trait I18nHelper {
     Html {
       pool
         .preferredNames(ctx.req, 3)
-        .map {
-          case (code, name) =>
-            """<a class="lang_fallback" lang="%s" href="%s">%s</a>""".format(
-              code,
-              langUrl(Lang(code))(I18nDomain(ctx.req.domain)),
-              name)
+        .map { case (code, name) =>
+          """<a class="lang_fallback" lang="%s" href="%s">%s</a>""".format(
+            code,
+            langUrl(Lang(code))(I18nDomain(ctx.req.domain)),
+            name)
         }
         .mkString("")
         .replace(uriPlaceholder, ctx.req.uri)

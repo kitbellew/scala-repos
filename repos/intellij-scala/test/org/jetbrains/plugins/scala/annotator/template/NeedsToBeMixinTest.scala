@@ -22,8 +22,7 @@ class NeedsToBeMixinTest extends AnnotatorTestBase(NeedsToBeMixin) {
         |}
         |class C extends T
       """.stripMargin
-      )) {
-      case Error("C", Message) :: Nil =>
+      )) { case Error("C", Message) :: Nil =>
     }
   }
 

@@ -151,18 +151,17 @@ class SbtProjectResolver
   def createModuleDependencies(
       projects: Seq[sbtStructure.ProjectData],
       moduleNodes: Seq[ModuleNode]): Unit = {
-    projects.zip(moduleNodes).foreach {
-      case (moduleProject, moduleNode) =>
-        moduleProject.dependencies.projects.foreach { dependencyId =>
-          val dependency = moduleNodes
-            .find(_.getId == dependencyId.project)
-            .getOrElse(throw new ExternalSystemException(
-              "Cannot find project dependency: " + dependencyId.project))
-          val data = new ModuleDependencyNode(moduleNode, dependency)
-          data.setScope(scopeFor(dependencyId.configuration))
-          data.setExported(true)
-          moduleNode.add(data)
-        }
+    projects.zip(moduleNodes).foreach { case (moduleProject, moduleNode) =>
+      moduleProject.dependencies.projects.foreach { dependencyId =>
+        val dependency = moduleNodes
+          .find(_.getId == dependencyId.project)
+          .getOrElse(throw new ExternalSystemException(
+            "Cannot find project dependency: " + dependencyId.project))
+        val data = new ModuleDependencyNode(moduleNode, dependency)
+        data.setScope(scopeFor(dependencyId.configuration))
+        data.setExported(true)
+        moduleNode.add(data)
+      }
     }
   }
 

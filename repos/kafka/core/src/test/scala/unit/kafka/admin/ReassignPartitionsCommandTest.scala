@@ -59,9 +59,8 @@ class ReassignPartitionsCommandTest
         topicJson,
         disableRackAware = false)
 
-    val assignment = proposedAssignment map {
-      case (topicPartition, replicas) =>
-        (topicPartition.partition, replicas)
+    val assignment = proposedAssignment map { case (topicPartition, replicas) =>
+      (topicPartition.partition, replicas)
     }
     checkReplicaDistribution(
       assignment,

@@ -33,20 +33,19 @@ class DataSource(val dsp: DataSourceParams)
         appId = dsp.appId,
         entityType = "user"
       )(sc)
-      .map {
-        case (entityId, properties) =>
-          val user =
-            try {
-              User()
-            } catch {
-              case e: Exception => {
-                logger.error(
-                  s"Failed to get properties ${properties} of" +
-                    s" user ${entityId}. Exception: ${e}.")
-                throw e
-              }
+      .map { case (entityId, properties) =>
+        val user =
+          try {
+            User()
+          } catch {
+            case e: Exception => {
+              logger.error(
+                s"Failed to get properties ${properties} of" +
+                  s" user ${entityId}. Exception: ${e}.")
+              throw e
             }
-          (entityId, user)
+          }
+        (entityId, user)
       }
       .cache()
 
@@ -56,23 +55,22 @@ class DataSource(val dsp: DataSourceParams)
         appId = dsp.appId,
         entityType = "item"
       )(sc)
-      .map {
-        case (entityId, properties) =>
-          val item =
-            try {
-              // Assume categories is optional property of item.
-              Item(
-                categories = properties.getOpt[List[String]]("categories"),
-                year = properties.get[Int]("year"))
-            } catch {
-              case e: Exception => {
-                logger.error(
-                  s"Failed to get properties ${properties} of" +
-                    s" item ${entityId}. Exception: ${e}.")
-                throw e
-              }
+      .map { case (entityId, properties) =>
+        val item =
+          try {
+            // Assume categories is optional property of item.
+            Item(
+              categories = properties.getOpt[List[String]]("categories"),
+              year = properties.get[Int]("year"))
+          } catch {
+            case e: Exception => {
+              logger.error(
+                s"Failed to get properties ${properties} of" +
+                  s" item ${entityId}. Exception: ${e}.")
+              throw e
             }
-          (entityId, item)
+          }
+        (entityId, item)
       }
       .cache()
 

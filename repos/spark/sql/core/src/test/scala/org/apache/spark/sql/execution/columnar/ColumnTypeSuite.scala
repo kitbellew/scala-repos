@@ -57,11 +57,10 @@ class ColumnTypeSuite extends SparkFunSuite with Logging {
       MAP_TYPE -> 32
     )
 
-    checks.foreach {
-      case (columnType, expectedSize) =>
-        assertResult(expectedSize, s"Wrong defaultSize for $columnType") {
-          columnType.defaultSize
-        }
+    checks.foreach { case (columnType, expectedSize) =>
+      assertResult(expectedSize, s"Wrong defaultSize for $columnType") {
+        columnType.defaultSize
+      }
     }
   }
 

@@ -176,8 +176,8 @@ class ClientStore[K, V: Semigroup](
          * offline batch <= batch.next
          * for the key
          */
-        .map {
-          case (k, bv) => (k, ClientStore.offlineLTEQBatch(k, batch.next, bv))
+        .map { case (k, bv) =>
+          (k, ClientStore.offlineLTEQBatch(k, batch.next, bv))
         }(breakOut)
 
     // For combining later we move the offline result batch id from being the exclusive upper bound

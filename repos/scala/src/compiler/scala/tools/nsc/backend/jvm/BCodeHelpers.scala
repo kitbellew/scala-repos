@@ -293,33 +293,32 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
     // primitive methods (e.g., `isInstanceOf`) have non-erased types, which confuses [[typeToBType]].
     val methodInlineInfos = classSym.info.decls.iterator
       .filter(m => m.isMethod && !scalaPrimitives.isPrimitive(m))
-      .flatMap({
-        case methodSym =>
-          if (completeSilentlyAndCheckErroneous(methodSym)) {
-            // Happens due to SI-9111. Just don't provide any MethodInlineInfo for that method, we don't need fail the compiler.
-            if (!classSym.isJavaDefined)
-              devWarning("SI-9111 should only be possible for Java classes")
-            warning = Some(ClassSymbolInfoFailureSI9111(classSym.fullName))
-            None
-          } else {
-            val name = methodSym.javaSimpleName.toString // same as in genDefDef
-            val signature = name + methodSymToDescriptor(methodSym)
+      .flatMap({ case methodSym =>
+        if (completeSilentlyAndCheckErroneous(methodSym)) {
+          // Happens due to SI-9111. Just don't provide any MethodInlineInfo for that method, we don't need fail the compiler.
+          if (!classSym.isJavaDefined)
+            devWarning("SI-9111 should only be possible for Java classes")
+          warning = Some(ClassSymbolInfoFailureSI9111(classSym.fullName))
+          None
+        } else {
+          val name = methodSym.javaSimpleName.toString // same as in genDefDef
+          val signature = name + methodSymToDescriptor(methodSym)
 
-            // Some detours are required here because of changing flags (lateDEFERRED):
-            // 1. Why the phase travel? Concrete trait methods obtain the lateDEFERRED flag in Mixin.
-            //    This makes isEffectivelyFinalOrNotOverridden false, which would prevent non-final
-            //    but non-overridden methods of sealed traits from being inlined.
-            val effectivelyFinal = exitingPickler(
-              methodSym.isEffectivelyFinalOrNotOverridden) && !(methodSym.owner.isTrait && methodSym.isModule)
+          // Some detours are required here because of changing flags (lateDEFERRED):
+          // 1. Why the phase travel? Concrete trait methods obtain the lateDEFERRED flag in Mixin.
+          //    This makes isEffectivelyFinalOrNotOverridden false, which would prevent non-final
+          //    but non-overridden methods of sealed traits from being inlined.
+          val effectivelyFinal = exitingPickler(
+            methodSym.isEffectivelyFinalOrNotOverridden) && !(methodSym.owner.isTrait && methodSym.isModule)
 
-            val info = MethodInlineInfo(
-              effectivelyFinal = effectivelyFinal,
-              traitMethodWithStaticImplementation = false,
-              annotatedInline = methodSym.hasAnnotation(ScalaInlineClass),
-              annotatedNoInline = methodSym.hasAnnotation(ScalaNoInlineClass)
-            )
-            Some((signature, info))
-          }
+          val info = MethodInlineInfo(
+            effectivelyFinal = effectivelyFinal,
+            traitMethodWithStaticImplementation = false,
+            annotatedInline = methodSym.hasAnnotation(ScalaInlineClass),
+            annotatedNoInline = methodSym.hasAnnotation(ScalaNoInlineClass)
+          )
+          Some((signature, info))
+        }
       })
       .toMap
 
@@ -352,12 +351,11 @@ abstract class BCodeHelpers extends BCodeIdiomatic with BytecodeWriters {
       .Try {
         outputDirectory(csym)
       }
-      .recover {
-        case ex: Throwable =>
-          reporter.error(
-            cunit.body.pos,
-            s"Couldn't create file for class $cName\n${ex.getMessage}")
-          null
+      .recover { case ex: Throwable =>
+        reporter.error(
+          cunit.body.pos,
+          s"Couldn't create file for class $cName\n${ex.getMessage}")
+        null
       }
       .get
 

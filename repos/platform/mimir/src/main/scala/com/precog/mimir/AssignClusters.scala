@@ -77,11 +77,10 @@ trait AssignClusterModule[M[+_]]
                         CPathField(clusterName),
                         rest @ _*),
                       ctype) =>
-                  Schema.mkType(ref :: Nil) flatMap {
-                    case jType =>
-                      schema.columns(jType) collectFirst {
-                        case (col: DoubleColumn) => col
-                      }
+                  Schema.mkType(ref :: Nil) flatMap { case jType =>
+                    schema.columns(jType) collectFirst {
+                      case (col: DoubleColumn) => col
+                    }
                   } map { col =>
                     (
                       modelName,
@@ -94,30 +93,28 @@ trait AssignClusterModule[M[+_]]
               } groupBy { _._1 }
             }
 
-            val modelsByCluster = modelTuples map {
-              case (modelId, models) =>
-                (modelId, models.groupBy(_._2))
+            val modelsByCluster = modelTuples map { case (modelId, models) =>
+              (modelId, models.groupBy(_._2))
             }
 
             { (i: Int) =>
-              val models0 = modelsByCluster.map {
-                case (modelId, clusters) =>
-                  val modelClusters0: Array[ModelCluster] = clusters.map {
-                    case (clusterId, colInfo) =>
-                      val featureValues = colInfo.collect {
-                        case (_, _, cpath, col) if col.isDefinedAt(i) =>
-                          cpath -> col(i)
-                      }.toMap
+              val models0 = modelsByCluster.map { case (modelId, clusters) =>
+                val modelClusters0: Array[ModelCluster] = clusters.map {
+                  case (clusterId, colInfo) =>
+                    val featureValues = colInfo.collect {
+                      case (_, _, cpath, col) if col.isDefinedAt(i) =>
+                        cpath -> col(i)
+                    }.toMap
 
-                      ModelCluster(clusterId, featureValues)
-                  }.toArray
+                    ModelCluster(clusterId, featureValues)
+                }.toArray
 
-                  val modelClusters = modelClusters0 filter {
-                    case ModelCluster(_, featureValues) =>
-                      !featureValues.isEmpty
-                  }
+                val modelClusters = modelClusters0 filter {
+                  case ModelCluster(_, featureValues) =>
+                    !featureValues.isEmpty
+                }
 
-                  Model(modelId, modelClusters)
+                Model(modelId, modelClusters)
               }.toSet
 
               models0 filter {
@@ -152,9 +149,8 @@ trait AssignClusterModule[M[+_]]
                     _.featureValues.keys
                   }.toSet
 
-                  val res = cols filter {
-                    case (ColumnRef(cpath, ctype), col) =>
-                      featurePaths.contains(cpath)
+                  val res = cols filter { case (ColumnRef(cpath, ctype), col) =>
+                    featurePaths.contains(cpath)
                   }
 
                   val resPaths = res map {
@@ -180,135 +176,130 @@ trait AssignClusterModule[M[+_]]
                 val result: Set[Map[ColumnRef, Column]] = {
 
                   val modelsResult: Set[Map[ColumnRef, Column]] =
-                    modelSet.models map {
-                      case model =>
-                        val includedModel = included(model)
-                        val definedModel = defined(includedModel)
+                    modelSet.models map { case model =>
+                      val includedModel = included(model)
+                      val definedModel = defined(includedModel)
 
-                        val clusterIds: Array[String] = model.clusters map {
-                          _.name
+                      val clusterIds: Array[String] = model.clusters map {
+                        _.name
+                      }
+                      val clusterCenters: Array[Array[Double]] =
+                        (model.clusters).map {
+                          _.featureValues.toArray
+                            .sortBy { case (path, _) => path }
+                            .map { case (_, col) => col }
+                            .toArray
                         }
-                        val clusterCenters: Array[Array[Double]] =
-                          (model.clusters).map {
-                            _.featureValues.toArray
-                              .sortBy { case (path, _) => path }
-                              .map { case (_, col) => col }
-                              .toArray
+
+                      val centerPaths: Array[CPath] =
+                        model.clusters collectFirst { case (m: ModelCluster) =>
+                          m.featureValues.keys.toArray.sorted
+                        } getOrElse Array.empty[CPath]
+
+                      val featureColumns0 = includedModel.collect {
+                        case (ref, col: DoubleColumn) => (ref, col)
+                      }.toArray sortBy { case (ColumnRef(path, _), _) => path }
+                      val featureColumns = featureColumns0 map {
+                        case (_, col) => col
+                      }
+
+                      val numFeatures = featureColumns.size
+
+                      val filtered = filteredRange(includedModel).toArray
+                      val len = filtered.length
+
+                      val resultArray = {
+                        var k = range.start
+                        val arr = new Array[String](range.end - range.start)
+
+                        while (k < len) {
+                          val row: Int = filtered(k)
+
+                          val feature = new Array[Double](numFeatures)
+                          var i = 0
+                          while (i < feature.length) {
+                            feature(i) = featureColumns(i)(row)
+                            i += 1
                           }
 
-                        val centerPaths: Array[CPath] =
-                          model.clusters collectFirst {
-                            case (m: ModelCluster) =>
-                              m.featureValues.keys.toArray.sorted
-                          } getOrElse Array.empty[CPath]
+                          var minDistSq = Double.PositiveInfinity
+                          var minCluster = -1
+                          i = 0
+                          while (i < clusterCenters.length) {
+                            // TODO: Don't box for fancy operators...
 
-                        val featureColumns0 = includedModel.collect {
-                          case (ref, col: DoubleColumn) => (ref, col)
-                        }.toArray sortBy {
-                          case (ColumnRef(path, _), _) => path
-                        }
-                        val featureColumns = featureColumns0 map {
-                          case (_, col) => col
-                        }
-
-                        val numFeatures = featureColumns.size
-
-                        val filtered = filteredRange(includedModel).toArray
-                        val len = filtered.length
-
-                        val resultArray = {
-                          var k = range.start
-                          val arr = new Array[String](range.end - range.start)
-
-                          while (k < len) {
-                            val row: Int = filtered(k)
-
-                            val feature = new Array[Double](numFeatures)
-                            var i = 0
-                            while (i < feature.length) {
-                              feature(i) = featureColumns(i)(row)
-                              i += 1
+                            val diff = (feature - clusterCenters(i))
+                            val distSq = diff dot diff
+                            if (distSq < minDistSq) {
+                              minDistSq = distSq
+                              minCluster = i
                             }
-
-                            var minDistSq = Double.PositiveInfinity
-                            var minCluster = -1
-                            i = 0
-                            while (i < clusterCenters.length) {
-                              // TODO: Don't box for fancy operators...
-
-                              val diff = (feature - clusterCenters(i))
-                              val distSq = diff dot diff
-                              if (distSq < minDistSq) {
-                                minDistSq = distSq
-                                minCluster = i
-                              }
-                              i += 1
-                            }
-
-                            arr(row) = clusterIds(minCluster)
-                            k += 1
+                            i += 1
                           }
-                          arr
+
+                          arr(row) = clusterIds(minCluster)
+                          k += 1
                         }
+                        arr
+                      }
 
-                        def transposeResults(values: Array[Array[Double]]) = {
-                          var k = 0
-                          val acc =
-                            Array.fill(centerPaths.length)(Array.empty[Double])
+                      def transposeResults(values: Array[Array[Double]]) = {
+                        var k = 0
+                        val acc =
+                          Array.fill(centerPaths.length)(Array.empty[Double])
 
-                          while (k < values.length) {
-                            var i = 0
-                            val li = values(k)
+                        while (k < values.length) {
+                          var i = 0
+                          val li = values(k)
 
-                            while (i < li.length) {
-                              acc(i) = acc(i) :+ li(i)
-                              i += 1
-                            }
-                            k += 1
+                          while (i < li.length) {
+                            acc(i) = acc(i) :+ li(i)
+                            i += 1
                           }
-                          acc
+                          k += 1
                         }
+                        acc
+                      }
 
-                        val transposed = transposeResults(clusterCenters)
+                      val transposed = transposeResults(clusterCenters)
 
-                        val clusterIdWithIdx: Map[String, Int] =
-                          clusterIds.zipWithIndex.toMap
+                      val clusterIdWithIdx: Map[String, Int] =
+                        clusterIds.zipWithIndex.toMap
 
-                        val colsByPath: Array[Column] = transposed map {
-                          coords =>
-                            new BitsetColumn(definedModel) with DoubleColumn {
-                              def apply(row: Int) =
-                                coords(clusterIdWithIdx(resultArray(row)))
-                            }
+                      val colsByPath: Array[Column] = transposed map { coords =>
+                        new BitsetColumn(definedModel) with DoubleColumn {
+                          def apply(row: Int) =
+                            coords(clusterIdWithIdx(resultArray(row)))
                         }
+                      }
 
-                        assert(colsByPath.length == centerPaths.length)
-                        val zipped: Array[(Column, CPath)] =
-                          colsByPath zip centerPaths
+                      assert(colsByPath.length == centerPaths.length)
+                      val zipped: Array[(Column, CPath)] =
+                        colsByPath zip centerPaths
 
-                        val pref = CPath(TableModule.paths.Value)
+                      val pref = CPath(TableModule.paths.Value)
 
-                        val centers: Map[ColumnRef, Column] = zipped.collect {
-                          case (col, path) if path.hasPrefix(pref) =>
-                            val path0 = CPath(
-                              TableModule.paths.Value,
-                              CPathField(model.name),
-                              CPathField("clusterCenter"))
-                            ColumnRef(
-                              path0 \ path.dropPrefix(pref).get,
-                              CDouble) -> col
-                        }.toMap
+                      val centers: Map[ColumnRef, Column] = zipped.collect {
+                        case (col, path) if path.hasPrefix(pref) =>
+                          val path0 = CPath(
+                            TableModule.paths.Value,
+                            CPathField(model.name),
+                            CPathField("clusterCenter"))
+                          ColumnRef(
+                            path0 \ path.dropPrefix(pref).get,
+                            CDouble) -> col
+                      }.toMap
 
-                        val idPath = CPath(
-                          TableModule.paths.Value,
-                          CPathField(model.name),
-                          CPathField("clusterId"))
-                        val centerId = Map(
-                          ColumnRef(idPath, CString) -> ArrayStrColumn(
-                            definedModel,
-                            resultArray))
+                      val idPath = CPath(
+                        TableModule.paths.Value,
+                        CPathField(model.name),
+                        CPathField("clusterId"))
+                      val centerId = Map(
+                        ColumnRef(idPath, CString) -> ArrayStrColumn(
+                          definedModel,
+                          resultArray))
 
-                        centers ++ centerId
+                      centers ++ centerId
                     }
 
                   modelsResult ++ Set(Model.idRes(cols, modelSet))

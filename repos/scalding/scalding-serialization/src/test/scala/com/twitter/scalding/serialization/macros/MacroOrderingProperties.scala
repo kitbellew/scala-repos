@@ -308,20 +308,19 @@ class MacroOrderingProperties
       obuf: OrderedSerialization[T]) = {
     val serializedA = serializeSeq(i.map(_._1))
     val serializedB = serializeSeq(i.map(_._2))
-    i.foreach {
-      case (a, b) =>
-        val compareBinary =
-          obuf.compareBinary(serializedA, serializedB).unsafeToInt
-        val compareMem = obuf.compare(a, b)
-        if (compareBinary < 0) {
-          assert(
-            compareMem < 0,
-            s"Compare binary: $compareBinary, and compareMem : $compareMem must have the same sign")
-        } else if (compareBinary > 0) {
-          assert(
-            compareMem > 0,
-            s"Compare binary: $compareBinary, and compareMem : $compareMem must have the same sign")
-        }
+    i.foreach { case (a, b) =>
+      val compareBinary =
+        obuf.compareBinary(serializedA, serializedB).unsafeToInt
+      val compareMem = obuf.compare(a, b)
+      if (compareBinary < 0) {
+        assert(
+          compareMem < 0,
+          s"Compare binary: $compareBinary, and compareMem : $compareMem must have the same sign")
+      } else if (compareBinary > 0) {
+        assert(
+          compareMem > 0,
+          s"Compare binary: $compareBinary, and compareMem : $compareMem must have the same sign")
+      }
     }
   }
 

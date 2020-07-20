@@ -589,27 +589,25 @@ trait RepositoryViewerControllerBase extends ControllerBase {
 
   ajaxPost("/:owner/:repository/commit_comments/edit/:id", commentForm)(
     readableUsersOnly { (form, repository) =>
-      defining(repository.owner, repository.name) {
-        case (owner, name) =>
-          getCommitComment(owner, name, params("id")).map { comment =>
-            if (isEditable(owner, name, comment.commentedUserName)) {
-              updateCommitComment(comment.commentId, form.content)
-              redirect(
-                s"/${owner}/${name}/commit_comments/_data/${comment.commentId}")
-            } else Unauthorized
-          } getOrElse NotFound
+      defining(repository.owner, repository.name) { case (owner, name) =>
+        getCommitComment(owner, name, params("id")).map { comment =>
+          if (isEditable(owner, name, comment.commentedUserName)) {
+            updateCommitComment(comment.commentId, form.content)
+            redirect(
+              s"/${owner}/${name}/commit_comments/_data/${comment.commentId}")
+          } else Unauthorized
+        } getOrElse NotFound
       }
     })
 
   ajaxPost("/:owner/:repository/commit_comments/delete/:id")(readableUsersOnly {
     repository =>
-      defining(repository.owner, repository.name) {
-        case (owner, name) =>
-          getCommitComment(owner, name, params("id")).map { comment =>
-            if (isEditable(owner, name, comment.commentedUserName)) {
-              Ok(deleteCommitComment(comment.commentId))
-            } else Unauthorized
-          } getOrElse NotFound
+      defining(repository.owner, repository.name) { case (owner, name) =>
+        getCommitComment(owner, name, params("id")).map { comment =>
+          if (isEditable(owner, name, comment.commentedUserName)) {
+            Ok(deleteCommitComment(comment.commentId))
+          } else Unauthorized
+        } getOrElse NotFound
       }
   })
 

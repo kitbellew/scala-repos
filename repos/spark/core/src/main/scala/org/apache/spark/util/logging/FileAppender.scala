@@ -152,13 +152,12 @@ private[spark] object FileAppender extends Logging {
           None
       }
       validatedParams
-        .map {
-          case (interval, pattern) =>
-            new RollingFileAppender(
-              inputStream,
-              file,
-              new TimeBasedRollingPolicy(interval, pattern),
-              conf)
+        .map { case (interval, pattern) =>
+          new RollingFileAppender(
+            inputStream,
+            file,
+            new TimeBasedRollingPolicy(interval, pattern),
+            conf)
         }
         .getOrElse {
           new FileAppender(inputStream, file)

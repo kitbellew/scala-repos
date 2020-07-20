@@ -898,13 +898,12 @@ class LinearAlgebraTest
       c <- Gen.choose(0, 2)
     } yield (r, c)
 
-    val pcLists = Prop.forAll(colRowGen) {
-      case (r: Int, c: Int) =>
-        val dld = c * 5 + r
-        bcsc(r, c) = dld
-        rcsc(dld % 3, dld / 3) = dld
-        reshape(bcsc, 3, 5) === rcsc &&
-        reshape(rcsc, 5, 3) === bcsc
+    val pcLists = Prop.forAll(colRowGen) { case (r: Int, c: Int) =>
+      val dld = c * 5 + r
+      bcsc(r, c) = dld
+      rcsc(dld % 3, dld / 3) = dld
+      reshape(bcsc, 3, 5) === rcsc &&
+      reshape(rcsc, 5, 3) === bcsc
     }
     check(pcLists)
   }

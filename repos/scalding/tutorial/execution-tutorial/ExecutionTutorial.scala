@@ -54,9 +54,8 @@ object MyExecJob extends ExecutionApp {
           t match {
             case Success(iter) =>
               val file = new PrintWriter(new File(args("output")))
-              iter.foreach {
-                case (k, v) =>
-                  file.write(s"$k\t$v\n")
+              iter.foreach { case (k, v) =>
+                file.write(s"$k\t$v\n")
               }
               file.close
             case Failure(e) => println("Error: " + e.toString)

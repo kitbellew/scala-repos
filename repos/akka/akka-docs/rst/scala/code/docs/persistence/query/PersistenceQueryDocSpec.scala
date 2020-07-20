@@ -174,10 +174,9 @@ object PersistenceQueryDocSpec {
 
     var state: ComplexState = ComplexState()
 
-    def receive = {
-      case m =>
-        state = updateState(state, m)
-        if (state.readyToSave) store.save(Record(state))
+    def receive = { case m =>
+      state = updateState(state, m)
+      if (state.readyToSave) store.save(Record(state))
     }
 
     def updateState(state: ComplexState, msg: Any): ComplexState = {

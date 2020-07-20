@@ -585,12 +585,11 @@ object util {
         new BitsetColumn(definedAt & c.definedAt(from, to)) with NullColumn
     }
 
-  val isSatisfied = CF1P("builtin::ct::isSatisfied") {
-    case c: BoolColumn =>
-      new BoolColumn {
-        def isDefinedAt(row: Int) = c.isDefinedAt(row) && c(row)
-        def apply(row: Int) = isDefinedAt(row)
-      }
+  val isSatisfied = CF1P("builtin::ct::isSatisfied") { case c: BoolColumn =>
+    new BoolColumn {
+      def isDefinedAt(row: Int) = c.isDefinedAt(row) && c(row)
+      def apply(row: Int) = isDefinedAt(row)
+    }
   }
 
   def FilterComplement(complement: Column) =

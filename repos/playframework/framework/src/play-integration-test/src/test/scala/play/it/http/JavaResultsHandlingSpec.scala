@@ -37,8 +37,8 @@ trait JavaResultsHandlingSpec
     def makeRequest[T](controller: MockController)(block: WSResponse => T) = {
       implicit val port = testServerPort
       lazy val app: Application = GuiceApplicationBuilder()
-        .routes {
-          case _ => JAction(app, controller)
+        .routes { case _ =>
+          JAction(app, controller)
         }
         .build()
 
@@ -98,10 +98,9 @@ trait JavaResultsHandlingSpec
         })
       }
     }) { response =>
-      response.header(CONTENT_TYPE) must beSome.like {
-        case value =>
-          value.toLowerCase(
-            java.util.Locale.ENGLISH) must_== "text/event-stream; charset=utf-8"
+      response.header(CONTENT_TYPE) must beSome.like { case value =>
+        value.toLowerCase(
+          java.util.Locale.ENGLISH) must_== "text/event-stream; charset=utf-8"
       }
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone
@@ -152,10 +151,8 @@ trait JavaResultsHandlingSpec
         Results.ok().chunked(eventSource).as("text/event-stream")
       }
     }) { response =>
-      response.header(CONTENT_TYPE) must beSome.like {
-        case value =>
-          value.toLowerCase(
-            java.util.Locale.ENGLISH) must_== "text/event-stream"
+      response.header(CONTENT_TYPE) must beSome.like { case value =>
+        value.toLowerCase(java.util.Locale.ENGLISH) must_== "text/event-stream"
       }
       response.header(TRANSFER_ENCODING) must beSome("chunked")
       response.header(CONTENT_LENGTH) must beNone

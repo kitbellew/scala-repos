@@ -262,9 +262,8 @@ class SimpleAclAuthorizer extends Authorizer with Logging {
         .mapValues { versionedAcls =>
           versionedAcls.acls.filter(_.principal == principal)
         }
-        .filter {
-          case (_, acls) =>
-            acls.nonEmpty
+        .filter { case (_, acls) =>
+          acls.nonEmpty
         }
         .toMap
     }

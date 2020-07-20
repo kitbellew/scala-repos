@@ -47,18 +47,17 @@ private[typed] class ActorAdapter[T](_initialBehavior: () ⇒ Behavior[T])
       case other ⇒ super.unhandled(other)
     }
 
-  override val supervisorStrategy = a.OneForOneStrategy() {
-    case ex ⇒
-      import Failed._
-      import akka.actor.{SupervisorStrategy ⇒ s}
-      val f = Failed(ex, ActorRef(sender()))
-      next(behavior.management(ctx, f), f)
-      f.getDecision match {
-        case Resume ⇒ s.Resume
-        case Restart ⇒ s.Restart
-        case Stop ⇒ s.Stop
-        case _ ⇒ s.Escalate
-      }
+  override val supervisorStrategy = a.OneForOneStrategy() { case ex ⇒
+    import Failed._
+    import akka.actor.{SupervisorStrategy ⇒ s}
+    val f = Failed(ex, ActorRef(sender()))
+    next(behavior.management(ctx, f), f)
+    f.getDecision match {
+      case Resume ⇒ s.Resume
+      case Restart ⇒ s.Restart
+      case Stop ⇒ s.Stop
+      case _ ⇒ s.Escalate
+    }
   }
 
   override def preStart(): Unit =

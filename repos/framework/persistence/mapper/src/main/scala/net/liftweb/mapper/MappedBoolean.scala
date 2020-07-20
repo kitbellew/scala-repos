@@ -167,9 +167,8 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case tv: MappedBoolean[T] =>
-            tv.allSet(if (isNull) Empty else Full(v != 0L))
+        { case tv: MappedBoolean[T] =>
+          tv.allSet(if (isNull) Empty else Full(v != 0L))
         })
 
   def buildSetStringValue(
@@ -179,9 +178,8 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case tv: MappedBoolean[T] =>
-            tv.allSet(if (v == null) Empty else Full(toBoolean(v)))
+        { case tv: MappedBoolean[T] =>
+          tv.allSet(if (v == null) Empty else Full(toBoolean(v)))
         })
 
   def buildSetDateValue(
@@ -191,9 +189,8 @@ abstract class MappedBoolean[T <: Mapper[T]](val fieldOwner: T)
       doField(
         inst,
         accessor,
-        {
-          case tv: MappedBoolean[T] =>
-            tv.allSet(if (v == null) Empty else Full(true))
+        { case tv: MappedBoolean[T] =>
+          tv.allSet(if (v == null) Empty else Full(true))
         })
 
   def buildSetBooleanValue(

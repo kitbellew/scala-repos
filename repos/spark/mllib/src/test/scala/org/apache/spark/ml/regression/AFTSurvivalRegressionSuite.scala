@@ -60,16 +60,14 @@ class AFTSurvivalRegressionSuite
     */
   ignore("export test data into CSV format") {
     datasetUnivariate.rdd
-      .map {
-        case Row(features: Vector, label: Double, censor: Double) =>
-          features.toArray.mkString(",") + "," + censor + "," + label
+      .map { case Row(features: Vector, label: Double, censor: Double) =>
+        features.toArray.mkString(",") + "," + censor + "," + label
       }
       .repartition(1)
       .saveAsTextFile("target/tmp/AFTSurvivalRegressionSuite/datasetUnivariate")
     datasetMultivariate.rdd
-      .map {
-        case Row(features: Vector, label: Double, censor: Double) =>
-          features.toArray.mkString(",") + "," + censor + "," + label
+      .map { case Row(features: Vector, label: Double, censor: Double) =>
+        features.toArray.mkString(",") + "," + censor + "," + label
       }
       .repartition(1)
       .saveAsTextFile(
@@ -379,9 +377,8 @@ class AFTSurvivalRegressionSuite
     outputDf
       .select("features", "prediction")
       .collect()
-      .foreach {
-        case Row(features: Vector, prediction: Double) =>
-          assert(prediction ~== model.predict(features) relTol 1e-5)
+      .foreach { case Row(features: Vector, prediction: Double) =>
+        assert(prediction ~== model.predict(features) relTol 1e-5)
       }
   }
 

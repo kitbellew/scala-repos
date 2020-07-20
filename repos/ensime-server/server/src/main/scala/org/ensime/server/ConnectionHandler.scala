@@ -42,9 +42,8 @@ class ConnectionHandler(
       target forward Canonised(outgoing)
   }
 
-  def receiveEvents: Receive = {
-    case outgoing: EnsimeEvent =>
-      target forward RpcResponseEnvelope(None, Canonised(outgoing))
+  def receiveEvents: Receive = { case outgoing: EnsimeEvent =>
+    target forward RpcResponseEnvelope(None, Canonised(outgoing))
   }
 
 }

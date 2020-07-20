@@ -260,24 +260,22 @@ class InternalAccumulatorSuite extends SparkFunSuite with LocalSparkContext {
       .asInstanceOf[ShuffleDependency[_, _, _]]
       .shuffleHandle
       .shuffleId
-    val rdd = x.mapPartitionsWithIndex {
-      case (i, iter) =>
-        // Fail the first stage attempt. Here we use the task attempt ID to determine this.
-        // This job runs 2 stages, and we're in the second stage. Therefore, any task attempt
-        // ID that's < 2 * numPartitions belongs to the first attempt of this stage.
-        val taskContext = TaskContext.get()
-        val isFirstStageAttempt =
-          taskContext.taskAttemptId() < numPartitions * 2
-        if (isFirstStageAttempt) {
-          throw new FetchFailedException(
-            SparkEnv.get.blockManager.blockManagerId,
-            sid,
-            taskContext.partitionId(),
-            taskContext.partitionId(),
-            "simulated fetch failure")
-        } else {
-          iter
-        }
+    val rdd = x.mapPartitionsWithIndex { case (i, iter) =>
+      // Fail the first stage attempt. Here we use the task attempt ID to determine this.
+      // This job runs 2 stages, and we're in the second stage. Therefore, any task attempt
+      // ID that's < 2 * numPartitions belongs to the first attempt of this stage.
+      val taskContext = TaskContext.get()
+      val isFirstStageAttempt = taskContext.taskAttemptId() < numPartitions * 2
+      if (isFirstStageAttempt) {
+        throw new FetchFailedException(
+          SparkEnv.get.blockManager.blockManagerId,
+          sid,
+          taskContext.partitionId(),
+          taskContext.partitionId(),
+          "simulated fetch failure")
+      } else {
+        iter
+      }
     }
 
     // Register asserts in job completion callback to avoid flakiness

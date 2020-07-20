@@ -40,8 +40,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
         |    case Select(a, b) => // cannot resolve extractor
         |  }
         |}
-      """.stripMargin)) {
-      case Nil =>
+      """.stripMargin)) { case Nil =>
     }
   }
 
@@ -56,8 +55,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
         |  private val something = 8
         |}
         |}
-      """.stripMargin)) {
-      case Nil =>
+      """.stripMargin)) { case Nil =>
     }
   }
 
@@ -68,8 +66,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
         |class B(val x: Int) extends A(x)
         |case class C(x: Int) extends A(x)
         |}
-      """.stripMargin)) {
-      case Nil =>
+      """.stripMargin)) { case Nil =>
     }
   }
 
@@ -101,8 +98,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
         |  def foo(): Int
         |}
         |}
-      """.stripMargin)) {
-      case Nil =>
+      """.stripMargin)) { case Nil =>
     }
   }
 
@@ -185,8 +181,7 @@ class OverridingAnnotatorTest extends SimpleTestCase {
         |  }
         |}
       """.stripMargin
-    assertMatches(messages(code)) {
-      case Nil =>
+    assertMatches(messages(code)) { case Nil =>
     }
   }
 

@@ -29,10 +29,9 @@ class SimplifyBooleanExprWithLiteralIntention
       project: Project,
       editor: Editor,
       element: PsiElement): Boolean = {
-    findSimplifiableParent(element).exists {
-      case expr =>
-        val offset = editor.getCaretModel.getOffset
-        offset >= expr.getTextRange.getStartOffset && offset <= expr.getTextRange.getEndOffset
+    findSimplifiableParent(element).exists { case expr =>
+      val offset = editor.getCaretModel.getOffset
+      offset >= expr.getTextRange.getStartOffset && offset <= expr.getTextRange.getEndOffset
     }
   }
 

@@ -67,9 +67,8 @@ case class Ping(replyTo: ActorRef)
 case object Pong
 
 class Actor1 extends Actor {
-  def receive = {
-    case Ping(replyTo) =>
-      replyTo ! Pong
+  def receive = { case Ping(replyTo) =>
+    replyTo ! Pong
   }
 }
 

@@ -18,13 +18,12 @@ class StringLiteralProcessor extends CopyPastePreProcessor {
       startOffsets: Array[Int],
       endOffsets: Array[Int],
       text: String) = {
-    val literal = startOffsets.zip(endOffsets).forall {
-      case (a, b) =>
-        val e = file.findElementAt(a);
-        e.isInstanceOf[
-          PsiElement] && e.getLanguage == ScalaFileType.SCALA_LANGUAGE && e.getNode != null &&
-        e.getNode.getElementType == ScalaTokenTypes.tSTRING &&
-        a > e.getTextRange.getStartOffset && b < e.getTextRange.getEndOffset
+    val literal = startOffsets.zip(endOffsets).forall { case (a, b) =>
+      val e = file.findElementAt(a);
+      e.isInstanceOf[
+        PsiElement] && e.getLanguage == ScalaFileType.SCALA_LANGUAGE && e.getNode != null &&
+      e.getNode.getElementType == ScalaTokenTypes.tSTRING &&
+      a > e.getTextRange.getStartOffset && b < e.getTextRange.getEndOffset
     }
     if (literal) StringUtil.unescapeStringCharacters(text) else null
   }

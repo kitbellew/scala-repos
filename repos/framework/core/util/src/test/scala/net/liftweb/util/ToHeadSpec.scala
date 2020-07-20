@@ -40,12 +40,11 @@ object ToHeadSpec extends Specification with XmlMatchers {
           .filter(_ ne null)
       } yield (act, exp)
 
-      susfiles must beLike {
-        case Full(sus) =>
-          val actual = secureXML.load(sus._1)
-          val expected = secureXML.load(sus._2)
-          mergeToHtmlHead(actual).toString.replaceAll("\\s", "") must_==
-            (expected.toString.replaceAll("\\s", ""))
+      susfiles must beLike { case Full(sus) =>
+        val actual = secureXML.load(sus._1)
+        val expected = secureXML.load(sus._2)
+        mergeToHtmlHead(actual).toString.replaceAll("\\s", "") must_==
+          (expected.toString.replaceAll("\\s", ""))
       }
     }
 
@@ -57,11 +56,10 @@ object ToHeadSpec extends Specification with XmlMatchers {
           .filter(_ ne null)
       } yield (act, exp)
 
-      susfiles must beLike {
-        case Full(sus) =>
-          val actual = secureXML.load(sus._1)
-          val expected = secureXML.load(sus._2)
-          mergeToHtmlHead(actual) must ==/(expected)
+      susfiles must beLike { case Full(sus) =>
+        val actual = secureXML.load(sus._1)
+        val expected = secureXML.load(sus._2)
+        mergeToHtmlHead(actual) must ==/(expected)
       }
     }
 
@@ -73,12 +71,11 @@ object ToHeadSpec extends Specification with XmlMatchers {
           .filter(_ ne null)
       } yield (act, exp)
 
-      susfiles must beLike {
-        case Full(sus) =>
-          val actual = secureXML.load(sus._1)
-          val expected = secureXML.load(sus._2)
-          mergeToHtmlHead(actual).toString.replaceAll("\\s", "") must_==
-            (expected.toString.replaceAll("\\s", ""))
+      susfiles must beLike { case Full(sus) =>
+        val actual = secureXML.load(sus._1)
+        val expected = secureXML.load(sus._2)
+        mergeToHtmlHead(actual).toString.replaceAll("\\s", "") must_==
+          (expected.toString.replaceAll("\\s", ""))
       }
     }
   }

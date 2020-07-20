@@ -930,10 +930,9 @@ final case class IterablePipe[T](iterable: Iterable[T]) extends TypedPipe[T] {
       kvit
         .groupBy(_._1)
         // use map to force this so it is not lazy.
-        .map {
-          case (k, kvs) =>
-            // These lists are never empty, get is safe.
-            (k, Semigroup.sumOption(kvs.iterator.map(_._2)).get)
+        .map { case (k, kvs) =>
+          // These lists are never empty, get is safe.
+          (k, Semigroup.sumOption(kvs.iterator.map(_._2)).get)
         })
   }
 
@@ -1022,13 +1021,12 @@ class TypedPipeFactory[T] private (
   }
 
   override def toIterableExecution: Execution[Iterable[T]] =
-    Execution.getConfigMode.flatMap {
-      case (conf, mode) =>
-        // This can only terminate in TypedPipeInst, which will
-        // keep the reference to this flowDef
-        val flowDef = new FlowDef
-        val (nextPipe, stackTraces) = unwrap(this, Array())(flowDef, mode)
-        nextPipe.toIterableExecution
+    Execution.getConfigMode.flatMap { case (conf, mode) =>
+      // This can only terminate in TypedPipeInst, which will
+      // keep the reference to this flowDef
+      val flowDef = new FlowDef
+      val (nextPipe, stackTraces) = unwrap(this, Array())(flowDef, mode)
+      nextPipe.toIterableExecution
     }
 
   @annotation.tailrec
@@ -1161,16 +1159,15 @@ class TypedPipeInst[T] private[scalding] (
       case Some((tap, fields, Converter(conv))) =>
         // To convert from java iterator to scala below
         import scala.collection.JavaConverters._
-        Execution.getConfigMode.map {
-          case (conf, m) =>
-            // Verify the mode has not changed due to invalid TypedPipe DAG construction
-            checkMode(m)
-            new Iterable[T] {
-              def iterator =
-                m.openForRead(conf, tap)
-                  .asScala
-                  .map(tup => conv(tup.selectEntry(fields)))
-            }
+        Execution.getConfigMode.map { case (conf, m) =>
+          // Verify the mode has not changed due to invalid TypedPipe DAG construction
+          checkMode(m)
+          new Iterable[T] {
+            def iterator =
+              m.openForRead(conf, tap)
+                .asScala
+                .map(tup => conv(tup.selectEntry(fields)))
+          }
         }
       case _ => forceToDiskExecution.flatMap(_.toIterableExecution)
     }

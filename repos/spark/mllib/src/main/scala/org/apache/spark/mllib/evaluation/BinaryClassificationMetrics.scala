@@ -205,21 +205,19 @@ class BinaryClassificationMetrics @Since("1.3.0") (
     val cumulativeCounts = binnedCounts.mapPartitionsWithIndex(
       (index: Int, iter: Iterator[(Double, BinaryLabelCounter)]) => {
         val cumCount = partitionwiseCumulativeCounts(index)
-        iter.map {
-          case (score, c) =>
-            cumCount += c
-            (score, cumCount.clone())
+        iter.map { case (score, c) =>
+          cumCount += c
+          (score, cumCount.clone())
         }
       },
       preservesPartitioning = true
     )
     cumulativeCounts.persist()
-    val confusions = cumulativeCounts.map {
-      case (score, cumCount) =>
-        (
-          score,
-          BinaryConfusionMatrixImpl(cumCount, totalCount)
-            .asInstanceOf[BinaryConfusionMatrix])
+    val confusions = cumulativeCounts.map { case (score, cumCount) =>
+      (
+        score,
+        BinaryConfusionMatrixImpl(cumCount, totalCount)
+          .asInstanceOf[BinaryConfusionMatrix])
     }
     (cumulativeCounts, confusions)
   }
@@ -227,9 +225,8 @@ class BinaryClassificationMetrics @Since("1.3.0") (
   /** Creates a curve of (threshold, metric). */
   private def createCurve(
       y: BinaryClassificationMetricComputer): RDD[(Double, Double)] = {
-    confusions.map {
-      case (s, c) =>
-        (s, y(c))
+    confusions.map { case (s, c) =>
+      (s, y(c))
     }
   }
 
@@ -237,9 +234,8 @@ class BinaryClassificationMetrics @Since("1.3.0") (
   private def createCurve(
       x: BinaryClassificationMetricComputer,
       y: BinaryClassificationMetricComputer): RDD[(Double, Double)] = {
-    confusions.map {
-      case (_, c) =>
-        (x(c), y(c))
+    confusions.map { case (_, c) =>
+      (x(c), y(c))
     }
   }
 }

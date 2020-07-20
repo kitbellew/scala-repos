@@ -39,14 +39,13 @@ object TcpLeakApp extends App {
       .toMat(Sink.head)(Keep.right)
       .run())
     .last
-    .onComplete {
-      case error ⇒
-        println(s"Error: $error")
-        Thread.sleep(10000)
-        println(
-          "===================== \n\n" + system
-            .asInstanceOf[ActorSystemImpl]
-            .printTree + "\n\n========================")
+    .onComplete { case error ⇒
+      println(s"Error: $error")
+      Thread.sleep(10000)
+      println(
+        "===================== \n\n" + system
+          .asInstanceOf[ActorSystemImpl]
+          .printTree + "\n\n========================")
     }
 
   readLine()

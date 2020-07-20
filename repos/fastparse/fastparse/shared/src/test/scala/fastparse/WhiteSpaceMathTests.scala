@@ -15,14 +15,13 @@ object WhiteSpaceMathTests extends TestSuite {
   import White._
   def eval(tree: (Int, Seq[(String, Int)])): Int = {
     val (base, ops) = tree
-    ops.foldLeft(base) {
-      case (left, (op, right)) =>
-        op match {
-          case "+" => left + right
-          case "-" => left - right
-          case "*" => left * right
-          case "/" => left / right
-        }
+    ops.foldLeft(base) { case (left, (op, right)) =>
+      op match {
+        case "+" => left + right
+        case "-" => left - right
+        case "*" => left * right
+        case "/" => left / right
+      }
     }
   }
   val number: P[Int] = P(CharIn('0' to '9').rep(1).!.map(_.toInt))

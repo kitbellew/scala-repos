@@ -80,9 +80,8 @@ trait FileStorageSpec[M[+_]] extends Specification {
         file <- fs.load("f2")
       } yield file
 
-      file.copoint must beLike {
-        case Some(FileData(Some(HTML), data)) =>
-          encode(data).copoint must_== "Goodbye, cruel world."
+      file.copoint must beLike { case Some(FileData(Some(HTML), data)) =>
+        encode(data).copoint must_== "Goodbye, cruel world."
       }
     }
 

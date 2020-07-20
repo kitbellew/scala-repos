@@ -62,8 +62,7 @@ object RemoveInternalClusterShardingDataSpec {
       case _ ⇒
     }
 
-    override def receiveCommand: Receive = {
-      case _ ⇒
+    override def receiveCommand: Receive = { case _ ⇒
     }
   }
 
@@ -83,8 +82,7 @@ object RemoveInternalClusterShardingDataSpec {
         context.stop(self)
     }
 
-    override def receiveCommand: Receive = {
-      case _ ⇒
+    override def receiveCommand: Receive = { case _ ⇒
     }
   }
 

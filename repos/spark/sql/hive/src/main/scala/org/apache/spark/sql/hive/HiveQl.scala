@@ -335,12 +335,11 @@ private[hive] class HiveQl(conf: ParserConf)
               properties ++= getProperties(list)
           }
 
-          maybeComment.foreach {
-            case Token("TOK_TABLECOMMENT", child :: Nil) =>
-              val comment = unescapeSQLString(child.text)
-              if (comment ne null) {
-                properties += ("comment" -> comment)
-              }
+          maybeComment.foreach { case Token("TOK_TABLECOMMENT", child :: Nil) =>
+            val comment = unescapeSQLString(child.text)
+            if (comment ne null) {
+              properties += ("comment" -> comment)
+            }
           }
 
           createView(
@@ -492,13 +491,12 @@ private[hive] class HiveQl(conf: ParserConf)
                 .children
                 .head
                 .children
-                .map {
-                  case Token(_, Token(prop, Nil) :: valueNode) =>
-                    val value = valueNode.headOption
-                      .map(_.text)
-                      .map(unescapeSQLString)
-                      .orNull
-                    (unescapeSQLString(prop), value)
+                .map { case Token(_, Token(prop, Nil) :: valueNode) =>
+                  val value = valueNode.headOption
+                    .map(_.text)
+                    .map(unescapeSQLString)
+                    .orNull
+                  (unescapeSQLString(prop), value)
                 }
                 .toMap
               tableDesc = tableDesc.withNewStorage(
@@ -644,9 +642,8 @@ private[hive] class HiveQl(conf: ParserConf)
         val (output, schemaLess) = outputClause match {
           case Token("TOK_ALIASLIST", aliases) :: Nil =>
             (
-              aliases.map {
-                case Token(name, Nil) =>
-                  AttributeReference(cleanIdentifier(name), StringType)()
+              aliases.map { case Token(name, Nil) =>
+                AttributeReference(cleanIdentifier(name), StringType)()
               },
               false)
           case Token("TOK_TABCOLLIST", attributes) :: Nil =>

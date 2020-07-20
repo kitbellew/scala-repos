@@ -45,14 +45,12 @@ object ColumnDefinitionProviderImpl {
     apply.paramss.head
       .map(_.asTerm)
       .zipWithIndex
-      .flatMap {
-        case (p, i) =>
-          if (!p.isParamWithDefault) None
-          else {
-            val getterName = newTermName("apply$default$" + (i + 1))
-            Some(
-              p.name.toString -> c.Expr(q"${moduleSym}.$getterName.toString"))
-          }
+      .flatMap { case (p, i) =>
+        if (!p.isParamWithDefault) None
+        else {
+          val getterName = newTermName("apply$default$" + (i + 1))
+          Some(p.name.toString -> c.Expr(q"${moduleSym}.$getterName.toString"))
+        }
       }
       .toMap
   }
@@ -176,13 +174,11 @@ object ColumnDefinitionProviderImpl {
             m.name.toString.trim -> mappedAnnotations
           }
           .groupBy(_._1)
-          .map {
-            case (k, l) =>
-              (k, l.map(_._2).reduce(_ ++ _))
+          .map { case (k, l) =>
+            (k, l.map(_._2).reduce(_ ++ _))
           }
-          .filter {
-            case (k, v) =>
-              !v.isEmpty
+          .filter { case (k, v) =>
+            !v.isEmpty
           }
 
       outerTpe.declarations
@@ -209,15 +205,14 @@ object ColumnDefinitionProviderImpl {
             }
           (m, fieldName, defaultVal, annotationInfo)
         }
-        .map {
-          case (accessorMethod, fieldName, defaultVal, annotationInfo) =>
-            matchField(
-              outerAccessorTree :+ accessorMethod,
-              accessorMethod.returnType,
-              FieldName(fieldName),
-              defaultVal,
-              annotationInfo,
-              false)
+        .map { case (accessorMethod, fieldName, defaultVal, annotationInfo) =>
+          matchField(
+            outerAccessorTree :+ accessorMethod,
+            accessorMethod.returnType,
+            FieldName(fieldName),
+            defaultVal,
+            annotationInfo,
+            false)
         }
         .toList
         // This algorithm returns the error from the first exception we run into.
@@ -261,23 +256,22 @@ object ColumnDefinitionProviderImpl {
 
     val columnFormats = getColumnFormats[T](c)
 
-    columnFormats.map {
-      case cf: ColumnFormat[_] =>
-        val nullableVal =
-          if (cf.nullable)
-            q"_root_.com.twitter.scalding.db.Nullable"
-          else
-            q"_root_.com.twitter.scalding.db.NotNullable"
-        val fieldTypeSelect =
-          Select(q"_root_.com.twitter.scalding.db", newTermName(cf.fieldType))
-        val res = q"""new _root_.com.twitter.scalding.db.ColumnDefinition(
+    columnFormats.map { case cf: ColumnFormat[_] =>
+      val nullableVal =
+        if (cf.nullable)
+          q"_root_.com.twitter.scalding.db.Nullable"
+        else
+          q"_root_.com.twitter.scalding.db.NotNullable"
+      val fieldTypeSelect =
+        Select(q"_root_.com.twitter.scalding.db", newTermName(cf.fieldType))
+      val res = q"""new _root_.com.twitter.scalding.db.ColumnDefinition(
         $fieldTypeSelect,
         _root_.com.twitter.scalding.db.ColumnName(${cf.fieldName.toStr}),
         $nullableVal,
         ${cf.sizeOpt},
         ${cf.defaultValue})
         """
-        c.Expr[ColumnDefinition](res)
+      c.Expr[ColumnDefinition](res)
     }
   }
 

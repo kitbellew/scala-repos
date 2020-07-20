@@ -69,12 +69,11 @@ case class ScalarSubquery(@transient executedPlan: SparkPlan, exprId: ExprId)
   */
 case class PlanSubqueries(sessionState: SessionState) extends Rule[SparkPlan] {
   def apply(plan: SparkPlan): SparkPlan = {
-    plan.transformAllExpressions {
-      case subquery: expressions.ScalarSubquery =>
-        val sparkPlan =
-          sessionState.planner.plan(ReturnAnswer(subquery.query)).next()
-        val executedPlan = sessionState.prepareForExecution.execute(sparkPlan)
-        ScalarSubquery(executedPlan, subquery.exprId)
+    plan.transformAllExpressions { case subquery: expressions.ScalarSubquery =>
+      val sparkPlan =
+        sessionState.planner.plan(ReturnAnswer(subquery.query)).next()
+      val executedPlan = sessionState.prepareForExecution.execute(sparkPlan)
+      ScalarSubquery(executedPlan, subquery.exprId)
     }
   }
 }

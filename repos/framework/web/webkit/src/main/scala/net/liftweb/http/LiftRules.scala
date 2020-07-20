@@ -1625,15 +1625,14 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
     )
 
   @volatile var defaultHeaders
-      : PartialFunction[(NodeSeq, Req), List[(String, String)]] = {
-    case _ =>
-      val d = Helpers.nowAsInternetDate
+      : PartialFunction[(NodeSeq, Req), List[(String, String)]] = { case _ =>
+    val d = Helpers.nowAsInternetDate
 
-      List(
-        "Expires" -> d,
-        "Date" -> d,
-        "Cache-Control" -> "no-cache, private, no-store",
-        "Pragma" -> "no-cache")
+    List(
+      "Expires" -> d,
+      "Date" -> d,
+      "Cache-Control" -> "no-cache, private, no-store",
+      "Pragma" -> "no-cache")
   }
 
   /**
@@ -1987,32 +1986,31 @@ class LiftRules() extends Factory with FormVendor with LazyLoggable {
   /**
     * Determines the path parts and suffix from given path parts
     */
-  val suffixSplitters = RulesSeq[SplitSuffixPF].append {
-    case parts =>
-      val last = parts.last
-      val idx: Int = {
-        val firstDot = last.indexOf(".")
-        val len = last.length
-        if (firstDot + 1 == len)
-          -1 // if the dot is the last character, don't split
+  val suffixSplitters = RulesSeq[SplitSuffixPF].append { case parts =>
+    val last = parts.last
+    val idx: Int = {
+      val firstDot = last.indexOf(".")
+      val len = last.length
+      if (firstDot + 1 == len)
+        -1 // if the dot is the last character, don't split
+      else {
+        if (last.indexOf(".", firstDot + 1) != -1)
+          -1 // if there are multiple dots, don't split out
         else {
-          if (last.indexOf(".", firstDot + 1) != -1)
-            -1 // if there are multiple dots, don't split out
-          else {
-            val suffix = last.substring(firstDot + 1)
-            // if the suffix isn't in the list of suffixes we care about, don't split it
-            if (!LiftRules.explicitlyParsedSuffixes.contains(
-                suffix.toLowerCase)) -1
-            else firstDot
-          }
+          val suffix = last.substring(firstDot + 1)
+          // if the suffix isn't in the list of suffixes we care about, don't split it
+          if (!LiftRules.explicitlyParsedSuffixes.contains(suffix.toLowerCase))
+            -1
+          else firstDot
         }
       }
+    }
 
-      if (idx == -1) (parts, "")
-      else
-        (
-          parts.dropRight(1) ::: List(last.substring(0, idx)),
-          last.substring(idx + 1))
+    if (idx == -1) (parts, "")
+    else
+      (
+        parts.dropRight(1) ::: List(last.substring(0, idx)),
+        last.substring(idx + 1))
 
   }
 

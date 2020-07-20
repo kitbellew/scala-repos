@@ -209,25 +209,23 @@ class EngineSuite extends FunSuite with Inside with SharedSparkContext {
 
         qpaSeq should have size qn
 
-        forAll(qpaSeq) {
-          case (q, p, a) =>
-            val Query(qId, qEx, qQx, _) = q
-            val Actual(aId, aEx, aQx) = a
-            qId shouldBe aId
-            qEx shouldBe ex
-            aEx shouldBe ex
-            qQx shouldBe aQx
+        forAll(qpaSeq) { case (q, p, a) =>
+          val Query(qId, qEx, qQx, _) = q
+          val Actual(aId, aEx, aQx) = a
+          qId shouldBe aId
+          qEx shouldBe ex
+          aEx shouldBe ex
+          qQx shouldBe aQx
 
-            inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
-                pId shouldBe 3
-                pQ shouldBe q
-                pModels shouldBe None
-                pPs should have size algoCount
-                pPs shouldBe Seq(
-                  Prediction(id = 2, q = q, models = Some(model0)))
-              }
+          inside(p) {
+            case Prediction(pId, pQ, pModels, pPs) => {
+              pId shouldBe 3
+              pQ shouldBe q
+              pModels shouldBe None
+              pPs should have size algoCount
+              pPs shouldBe Seq(Prediction(id = 2, q = q, models = Some(model0)))
             }
+          }
         }
       }
     }
@@ -331,11 +329,10 @@ class EngineTrainSuite extends FunSuite with SharedSparkContext {
     val expectedResults =
       Seq(LAlgo0.Model(2, pd), LAlgo1.Model(3, pd), LAlgo0.Model(4, pd))
 
-    forAll(models.zip(expectedResults)) {
-      case (model, expected) =>
-        model shouldBe a[RDD[_]]
-        val localModel = model.asInstanceOf[RDD[_]].collect
-        localModel should contain theSameElementsAs Seq(expected)
+    forAll(models.zip(expectedResults)) { case (model, expected) =>
+      model shouldBe a[RDD[_]]
+      val localModel = model.asInstanceOf[RDD[_]].collect
+      localModel should contain theSameElementsAs Seq(expected)
     }
   }
 
@@ -438,25 +435,23 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
         evalInfo shouldBe EvalInfo(1)
 
         val qpaSeq: Seq[(Query, Prediction, Actual)] = qpaRDD.collect
-        forAll(qpaSeq) {
-          case (q, p, a) =>
-            val Query(qId, qEx, qQx, _) = q
-            val Actual(aId, aEx, aQx) = a
-            qId shouldBe aId
-            qEx shouldBe ex
-            aEx shouldBe ex
-            qQx shouldBe aQx
+        forAll(qpaSeq) { case (q, p, a) =>
+          val Query(qId, qEx, qQx, _) = q
+          val Actual(aId, aEx, aQx) = a
+          qId shouldBe aId
+          qEx shouldBe ex
+          aEx shouldBe ex
+          qQx shouldBe aQx
 
-            inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
-                pId shouldBe 10
-                pQ shouldBe q
-                pModels shouldBe None
-                pPs should have size 1
-                pPs shouldBe Seq(
-                  Prediction(id = 3, q = q, models = Some(model0)))
-              }
+          inside(p) {
+            case Prediction(pId, pQ, pModels, pPs) => {
+              pId shouldBe 10
+              pQ shouldBe q
+              pModels shouldBe None
+              pPs should have size 1
+              pPs shouldBe Seq(Prediction(id = 3, q = q, models = Some(model0)))
             }
+          }
         }
 
       }
@@ -487,28 +482,27 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
         evalInfo shouldBe EvalInfo(1)
 
         val qpaSeq: Seq[(Query, Prediction, Actual)] = qpaRDD.collect
-        forAll(qpaSeq) {
-          case (q, p, a) =>
-            val Query(qId, qEx, qQx, _) = q
-            val Actual(aId, aEx, aQx) = a
-            qId shouldBe aId
-            qEx shouldBe ex
-            aEx shouldBe ex
-            qQx shouldBe aQx
+        forAll(qpaSeq) { case (q, p, a) =>
+          val Query(qId, qEx, qQx, _) = q
+          val Actual(aId, aEx, aQx) = a
+          qId shouldBe aId
+          qEx shouldBe ex
+          aEx shouldBe ex
+          qQx shouldBe aQx
 
-            inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
-                pId shouldBe 10
-                pQ shouldBe q
-                pModels shouldBe None
-                pPs should have size 3
-                pPs shouldBe Seq(
-                  Prediction(id = 3, q = q, models = Some(model0)),
-                  Prediction(id = 4, q = q, models = Some(model1)),
-                  Prediction(id = 5, q = q, models = Some(model2))
-                )
-              }
+          inside(p) {
+            case Prediction(pId, pQ, pModels, pPs) => {
+              pId shouldBe 10
+              pQ shouldBe q
+              pModels shouldBe None
+              pPs should have size 3
+              pPs shouldBe Seq(
+                Prediction(id = 3, q = q, models = Some(model0)),
+                Prediction(id = 4, q = q, models = Some(model1)),
+                Prediction(id = 5, q = q, models = Some(model2))
+              )
             }
+          }
         }
       }
     }
@@ -537,32 +531,31 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
         evalInfo shouldBe EvalInfo(1)
 
         val qpaSeq: Seq[(Query, Prediction, Actual)] = qpaRDD.collect
-        forAll(qpaSeq) {
-          case (q, p, a) =>
-            val Query(qId, qEx, qQx, qSupp) = q
-            val Actual(aId, aEx, aQx) = a
-            qId shouldBe aId
-            qEx shouldBe ex
-            aEx shouldBe ex
-            qQx shouldBe aQx
-            qSupp shouldBe false
+        forAll(qpaSeq) { case (q, p, a) =>
+          val Query(qId, qEx, qQx, qSupp) = q
+          val Actual(aId, aEx, aQx) = a
+          qId shouldBe aId
+          qEx shouldBe ex
+          aEx shouldBe ex
+          qQx shouldBe aQx
+          qSupp shouldBe false
 
-            inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
-                pId shouldBe 10
-                pQ shouldBe q
-                pModels shouldBe None
-                pPs should have size 3
-                // queries inside prediction should have supp set to true, since it
-                // represents what the algorithms see.
-                val qSupp = q.copy(supp = true)
-                pPs shouldBe Seq(
-                  Prediction(id = 3, q = qSupp, models = Some(model0)),
-                  Prediction(id = 4, q = qSupp, models = Some(model1)),
-                  Prediction(id = 5, q = qSupp, models = Some(model2))
-                )
-              }
+          inside(p) {
+            case Prediction(pId, pQ, pModels, pPs) => {
+              pId shouldBe 10
+              pQ shouldBe q
+              pModels shouldBe None
+              pPs should have size 3
+              // queries inside prediction should have supp set to true, since it
+              // represents what the algorithms see.
+              val qSupp = q.copy(supp = true)
+              pPs shouldBe Seq(
+                Prediction(id = 3, q = qSupp, models = Some(model0)),
+                Prediction(id = 4, q = qSupp, models = Some(model1)),
+                Prediction(id = 5, q = qSupp, models = Some(model2))
+              )
             }
+          }
         }
       }
     }
@@ -591,28 +584,27 @@ class EngineEvalSuite extends FunSuite with Inside with SharedSparkContext {
         evalInfo shouldBe EvalInfo(1)
 
         val qpaSeq: Seq[(Query, Prediction, Actual)] = qpaRDD.collect
-        forAll(qpaSeq) {
-          case (q, p, a) =>
-            val Query(qId, qEx, qQx, _) = q
-            val Actual(aId, aEx, aQx) = a
-            qId shouldBe aId
-            qEx shouldBe ex
-            aEx shouldBe ex
-            qQx shouldBe aQx
+        forAll(qpaSeq) { case (q, p, a) =>
+          val Query(qId, qEx, qQx, _) = q
+          val Actual(aId, aEx, aQx) = a
+          qId shouldBe aId
+          qEx shouldBe ex
+          aEx shouldBe ex
+          qQx shouldBe aQx
 
-            inside(p) {
-              case Prediction(pId, pQ, pModels, pPs) => {
-                pId shouldBe 10
-                pQ shouldBe q
-                pModels shouldBe None
-                pPs should have size 3
-                pPs shouldBe Seq(
-                  Prediction(id = 3, q = q, models = Some(model0)),
-                  Prediction(id = 4, q = q, models = Some(model1)),
-                  Prediction(id = 5, q = q, models = Some(model2))
-                )
-              }
+          inside(p) {
+            case Prediction(pId, pQ, pModels, pPs) => {
+              pId shouldBe 10
+              pQ shouldBe q
+              pModels shouldBe None
+              pPs should have size 3
+              pPs shouldBe Seq(
+                Prediction(id = 3, q = q, models = Some(model0)),
+                Prediction(id = 4, q = q, models = Some(model1)),
+                Prediction(id = 5, q = q, models = Some(model2))
+              )
             }
+          }
         }
 
       }

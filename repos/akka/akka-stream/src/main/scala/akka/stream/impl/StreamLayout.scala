@@ -81,13 +81,12 @@ object StreamLayout {
           Set.empty[InPort],
           Set.empty[InPort],
           Set.empty[OutPort],
-          Set.empty[OutPort])) {
-        case ((ai, di, ao, doo), sm) ⇒
-          (
-            ai ++ sm.inPorts,
-            di ++ ai.intersect(sm.inPorts),
-            ao ++ sm.outPorts,
-            doo ++ ao.intersect(sm.outPorts))
+          Set.empty[OutPort])) { case ((ai, di, ao, doo), sm) ⇒
+        (
+          ai ++ sm.inPorts,
+          di ++ ai.intersect(sm.inPorts),
+          ao ++ sm.outPorts,
+          doo ++ ao.intersect(sm.outPorts))
       }
     if (dupIn.nonEmpty)
       problems ::= s"duplicate ports in submodules ${ins(dupIn)}"
@@ -956,16 +955,14 @@ private[stream] abstract class MaterializerSession(
     // the original module and assign them to the copy ports in the outer scope that we will return to
     enclosing.copyOf.shape.inlets.iterator
       .zip(enclosing.shape.inlets.iterator)
-      .foreach {
-        case (original, exposed) ⇒
-          assignPort(exposed, scopeSubscribers.get(original))
+      .foreach { case (original, exposed) ⇒
+        assignPort(exposed, scopeSubscribers.get(original))
       }
 
     enclosing.copyOf.shape.outlets.iterator
       .zip(enclosing.shape.outlets.iterator)
-      .foreach {
-        case (original, exposed) ⇒
-          assignPort(exposed, scopePublishers.get(original))
+      .foreach { case (original, exposed) ⇒
+        assignPort(exposed, scopePublishers.get(original))
       }
   }
 

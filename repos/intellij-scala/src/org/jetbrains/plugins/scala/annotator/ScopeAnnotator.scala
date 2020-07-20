@@ -58,17 +58,16 @@ trait ScopeAnnotator {
     }
     element match {
       case f: ScForStatement =>
-        f.enumerators.foreach {
-          case enumerator =>
-            val elements = new ArrayBuffer[PsiElement]()
-            enumerator.children.foreach {
-              case generator: ScGenerator =>
-                checkScope(elements.toSeq: _*)
-                elements.clear()
-                elements += generator
-              case child => elements += child
-            }
-            checkScope(elements.toSeq: _*)
+        f.enumerators.foreach { case enumerator =>
+          val elements = new ArrayBuffer[PsiElement]()
+          enumerator.children.foreach {
+            case generator: ScGenerator =>
+              checkScope(elements.toSeq: _*)
+              elements.clear()
+              elements += generator
+            case child => elements += child
+          }
+          checkScope(elements.toSeq: _*)
         }
       case _ => checkScope(element)
     }
@@ -80,26 +79,25 @@ trait ScopeAnnotator {
     var parameters: Definitions = List()
     var caseClasses: Definitions = List()
     var objects: Definitions = List()
-    elements.foreach {
-      case element =>
-        if (element.isInstanceOf[ScTemplateBody]) element match {
-          case Parent(Parent(aClass: ScClass)) =>
-            parameters :::= aClass.parameters.toList
-          case _ =>
-        }
+    elements.foreach { case element =>
+      if (element.isInstanceOf[ScTemplateBody]) element match {
+        case Parent(Parent(aClass: ScClass)) =>
+          parameters :::= aClass.parameters.toList
+        case _ =>
+      }
 
-        element.children.foreach {
-          _.depthFirst(!_.isScope).foreach {
-            case e: ScObject            => objects ::= e
-            case e: ScFunction          => if (e.typeParameters.isEmpty) terms ::= e
-            case e: ScTypedDefinition   => terms ::= e
-            case e: ScTypeAlias         => types ::= e
-            case e: ScTypeParam         => types ::= e
-            case e: ScClass if e.isCase => caseClasses ::= e
-            case e: ScTypeDefinition    => types ::= e
-            case _                      =>
-          }
+      element.children.foreach {
+        _.depthFirst(!_.isScope).foreach {
+          case e: ScObject            => objects ::= e
+          case e: ScFunction          => if (e.typeParameters.isEmpty) terms ::= e
+          case e: ScTypedDefinition   => terms ::= e
+          case e: ScTypeAlias         => types ::= e
+          case e: ScTypeParam         => types ::= e
+          case e: ScClass if e.isCase => caseClasses ::= e
+          case e: ScTypeDefinition    => types ::= e
+          case _                      =>
         }
+      }
     }
 
     (types, terms, parameters, caseClasses, objects)
@@ -132,9 +130,8 @@ trait ScopeAnnotator {
     else TypeParameters.replaceFirstIn(s, "")
 
   private def format(parameters: Seq[ScParameter], types: Seq[ScType]) = {
-    val parts = parameters.zip(types).map {
-      case (p, t) =>
-        eraseType(t.canonicalText) + (if (p.isRepeatedParameter) "*" else "")
+    val parts = parameters.zip(types).map { case (p, t) =>
+      eraseType(t.canonicalText) + (if (p.isRepeatedParameter) "*" else "")
     }
     "(%s)".format(parts.mkString(", "))
   }

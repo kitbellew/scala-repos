@@ -174,10 +174,9 @@ class SerializeSpec extends AkkaSpec(SerializationTests.serializeConf) {
 
     "not serialize ActorCell" in {
       val a = system.actorOf(Props(new Actor {
-        def receive = {
-          case o: ObjectOutputStream ⇒
-            try o.writeObject(this)
-            catch { case _: NotSerializableException ⇒ testActor ! "pass" }
+        def receive = { case o: ObjectOutputStream ⇒
+          try o.writeObject(this)
+          catch { case _: NotSerializableException ⇒ testActor ! "pass" }
         }
       }))
       a ! new ObjectOutputStream(new ByteArrayOutputStream())

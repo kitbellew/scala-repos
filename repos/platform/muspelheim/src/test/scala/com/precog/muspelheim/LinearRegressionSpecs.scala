@@ -51,11 +51,10 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
     val resStdErr = fields("residualStandardError")
     val varCovar = fields("varianceCovarianceMatrix")
 
-    resStdErr must beLike {
-      case SObject(obj) =>
-        obj.keySet mustEqual Set("estimate", "degreesOfFreedom")
-        obj("estimate") must beLike { case SDecimal(_) => ok }
-        obj("degreesOfFreedom") must beLike { case SDecimal(_) => ok }
+    resStdErr must beLike { case SObject(obj) =>
+      obj.keySet mustEqual Set("estimate", "degreesOfFreedom")
+      obj("estimate") must beLike { case SDecimal(_) => ok }
+      obj("degreesOfFreedom") must beLike { case SDecimal(_) => ok }
     }
 
     rSquared must beLike { case SDecimal(_) => ok }
@@ -164,59 +163,54 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
         val resStdErr = fields("residualStandardError")
         val varCovar = fields("varianceCovarianceMatrix")
 
-        arr(0) must beLike {
-          case SObject(obj) =>
-            obj.keys mustEqual {
-              if (constant) Set("const", "height")
-              else Set("height")
-            }
+        arr(0) must beLike { case SObject(obj) =>
+          obj.keys mustEqual {
+            if (constant) Set("const", "height")
+            else Set("height")
+          }
 
-            obj("height") must beLike {
-              case SObject(height) =>
-                height.keys mustEqual Set("estimate", "standardError")
+          obj("height") must beLike { case SObject(height) =>
+            height.keys mustEqual Set("estimate", "standardError")
 
-                height("estimate") must beLike {
-                  case SDecimal(d) => resValues(0) = d; ok
-                }
-                height("standardError") must beLike {
-                  case SDecimal(d) => resValues(1) = d; ok
-                }
+            height("estimate") must beLike {
+              case SDecimal(d) => resValues(0) = d; ok
             }
-            if (constant) {
-              obj("const") must beLike {
-                case SObject(const) =>
-                  const.keys mustEqual Set("estimate", "standardError")
+            height("standardError") must beLike {
+              case SDecimal(d) => resValues(1) = d; ok
+            }
+          }
+          if (constant) {
+            obj("const") must beLike { case SObject(const) =>
+              const.keys mustEqual Set("estimate", "standardError")
 
-                  const("estimate") mustEqual SDecimal(0)
-                  const("standardError") mustEqual SDecimal(0)
-              }
-            } else {
-              ok
+              const("estimate") mustEqual SDecimal(0)
+              const("standardError") mustEqual SDecimal(0)
             }
+          } else {
+            ok
+          }
         }
 
-        arr(1) must beLike {
-          case SObject(obj) =>
-            obj.keys mustEqual Set("estimate", "standardError")
+        arr(1) must beLike { case SObject(obj) =>
+          obj.keys mustEqual Set("estimate", "standardError")
 
-            obj("estimate") must beLike {
-              case SDecimal(d) => resValues(2) = d; ok
-            }
-            obj("standardError") must beLike {
-              case SDecimal(d) => resValues(3) = d; ok
-            }
+          obj("estimate") must beLike {
+            case SDecimal(d) => resValues(2) = d; ok
+          }
+          obj("standardError") must beLike {
+            case SDecimal(d) => resValues(3) = d; ok
+          }
         }
 
         rSquared must beLike { case SDecimal(d) => resValues(4) = d; ok }
-        resStdErr must beLike {
-          case SObject(obj) =>
-            obj.keySet mustEqual Set("estimate", "degreesOfFreedom")
-            obj("estimate") must beLike {
-              case SDecimal(d) => resValues(5) = d; ok
-            }
-            obj("degreesOfFreedom") must beLike {
-              case SDecimal(d) => resValues(6) = d; ok
-            }
+        resStdErr must beLike { case SObject(obj) =>
+          obj.keySet mustEqual Set("estimate", "degreesOfFreedom")
+          obj("estimate") must beLike {
+            case SDecimal(d) => resValues(5) = d; ok
+          }
+          obj("degreesOfFreedom") must beLike {
+            case SDecimal(d) => resValues(6) = d; ok
+          }
         }
         varCovar must beLike { case SArray(arr) => resVarCovar(0) = arr; ok }
       }
@@ -267,14 +261,13 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       }.get
       result must haveSize(count)
 
-      result must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(1)
-          elems.keys mustEqual Set("model1")
+      result must haveAllElementsLike { case (ids, SObject(elems)) =>
+        ids must haveSize(1)
+        elems.keys mustEqual Set("model1")
 
-          elems("model1") must beLike {
-            case SObject(model) => testPredict(model)
-          }
+        elems("model1") must beLike {
+          case SObject(model) => testPredict(model)
+        }
       }
     }
 
@@ -361,16 +354,15 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
 
           val SArray(arr) = fields("coefficients")
 
-          arr(0) must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual Set("rate", "rate2")
+          arr(0) must beLike { case SObject(obj) =>
+            obj.keys mustEqual Set("rate", "rate2")
 
-              obj("rate2") must beLike {
-                case SObject(height) => handleCoeffs(height)
-              }
-              obj("rate") must beLike {
-                case SObject(const) => handleZero(const)
-              }
+            obj("rate2") must beLike {
+              case SObject(height) => handleCoeffs(height)
+            }
+            obj("rate") must beLike {
+              case SObject(const) => handleZero(const)
+            }
           }
 
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
@@ -405,19 +397,18 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
 
           val SArray(arr) = fields("coefficients")
 
-          arr(0) must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual Set("rate", "rateprice", "price")
+          arr(0) must beLike { case SObject(obj) =>
+            obj.keys mustEqual Set("rate", "rateprice", "price")
 
-              obj("rate") must beLike {
-                case SObject(rate) => handleCoeffs(rate)
-              }
-              obj("rateprice") must beLike {
-                case SObject(rateprice) => handleCoeffs(rateprice)
-              }
-              obj("price") must beLike {
-                case SObject(price) => handleZero(price)
-              }
+            obj("rate") must beLike {
+              case SObject(rate) => handleCoeffs(rate)
+            }
+            obj("rateprice") must beLike {
+              case SObject(rateprice) => handleCoeffs(rateprice)
+            }
+            obj("price") must beLike {
+              case SObject(price) => handleZero(price)
+            }
           }
 
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
@@ -453,22 +444,21 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
 
           val SArray(arr) = fields("coefficients")
 
-          arr(0) must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual Set("rate", "rateprice", "price", "zzz")
+          arr(0) must beLike { case SObject(obj) =>
+            obj.keys mustEqual Set("rate", "rateprice", "price", "zzz")
 
-              obj("price") must beLike {
-                case SObject(price) => handleZero(price)
-              }
-              obj("rateprice") must beLike {
-                case SObject(rateprice) => handleCoeffs(rateprice)
-              }
-              obj("zzz") must beLike {
-                case SObject(zzz) => handleCoeffs(zzz)
-              }
-              obj("rate") must beLike {
-                case SObject(rate) => handleZero(rate)
-              }
+            obj("price") must beLike {
+              case SObject(price) => handleZero(price)
+            }
+            obj("rateprice") must beLike {
+              case SObject(rateprice) => handleCoeffs(rateprice)
+            }
+            obj("zzz") must beLike {
+              case SObject(zzz) => handleCoeffs(zzz)
+            }
+            obj("rate") must beLike {
+              case SObject(rate) => handleZero(rate)
+            }
           }
 
           arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
@@ -488,27 +478,25 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       val results = evalE(input)
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(0)
-          elems.keys mustEqual Set("model1")
+      results must haveAllElementsLike { case (ids, SObject(elems)) =>
+        ids must haveSize(0)
+        elems.keys mustEqual Set("model1")
 
-          val SObject(fields) = elems("model1")
+        val SObject(fields) = elems("model1")
 
-          val SArray(arr) = fields("coefficients")
+        val SArray(arr) = fields("coefficients")
 
-          arr(0) must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual Set("height")
+        arr(0) must beLike { case SObject(obj) =>
+          obj.keys mustEqual Set("height")
 
-              obj("height") must beLike {
-                case SObject(height) => handleCoeffs(height)
-              }
+          obj("height") must beLike {
+            case SObject(height) => handleCoeffs(height)
           }
+        }
 
-          arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
+        arr(1) must beLike { case SObject(obj) => handleCoeffs(obj) }
 
-          checkFields(fields)
+        checkFields(fields)
       }
     }
 
@@ -524,14 +512,13 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
 
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(0)
-          elems.keys mustEqual Set("model1")
+      results must haveAllElementsLike { case (ids, SObject(elems)) =>
+        ids must haveSize(0)
+        elems.keys mustEqual Set("model1")
 
-          elems("model1") must beLike {
-            case SObject(model) => testPredict(model)
-          }
+        elems("model1") must beLike {
+          case SObject(model) => testPredict(model)
+        }
       }
     }
 
@@ -542,17 +529,15 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
         "predictionInterval")
 
       model("fit") must beLike { case SDecimal(_) => ok }
-      model("confidenceInterval") must beLike {
-        case SArray(arr) =>
-          arr must haveSize(2)
-          arr(0) must beLike { case SDecimal(_) => ok }
-          arr(1) must beLike { case SDecimal(_) => ok }
+      model("confidenceInterval") must beLike { case SArray(arr) =>
+        arr must haveSize(2)
+        arr(0) must beLike { case SDecimal(_) => ok }
+        arr(1) must beLike { case SDecimal(_) => ok }
       }
-      model("predictionInterval") must beLike {
-        case SArray(arr) =>
-          arr must haveSize(2)
-          arr(0) must beLike { case SDecimal(_) => ok }
-          arr(1) must beLike { case SDecimal(_) => ok }
+      model("predictionInterval") must beLike { case SArray(arr) =>
+        arr must haveSize(2)
+        arr(0) must beLike { case SDecimal(_) => ok }
+        arr(1) must beLike { case SDecimal(_) => ok }
       }
     }
 
@@ -572,13 +557,12 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
 
           elems.keys must contain("predictedWeight")
 
-          elems("predictedWeight") must beLike {
-            case SObject(obj) =>
-              obj.keySet mustEqual Set("model1")
+          elems("predictedWeight") must beLike { case SObject(obj) =>
+            obj.keySet mustEqual Set("model1")
 
-              obj("model1") must beLike {
-                case SObject(model) => testPredict(model)
-              }
+            obj("model1") must beLike {
+              case SObject(model) => testPredict(model)
+            }
           }
         }
       }
@@ -658,13 +642,12 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
           ids must haveSize(2)
           elems.keys mustEqual Set("predictedWeight", "model1")
 
-          elems("predictedWeight") must beLike {
-            case SObject(obj) =>
-              obj.keys mustEqual Set("model1")
+          elems("predictedWeight") must beLike { case SObject(obj) =>
+            obj.keys mustEqual Set("model1")
 
-              obj("model1") must beLike {
-                case SObject(model) => testPredict(model)
-              }
+            obj("model1") must beLike {
+              case SObject(model) => testPredict(model)
+            }
           }
         }
       }
@@ -694,10 +677,9 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
 
       results must haveSize(1)
 
-      results must haveAllElementsLike {
-        case (ids, SObject(elems)) =>
-          ids must haveSize(0)
-          elems.keys mustEqual Set("model1", "model2", "model3", "model4")
+      results must haveAllElementsLike { case (ids, SObject(elems)) =>
+        ids must haveSize(0)
+        elems.keys mustEqual Set("model1", "model2", "model3", "model4")
       }
     }
 
@@ -759,60 +741,58 @@ trait LinearRegressionSpecs extends EvalStackSpecs {
       model must haveSize(1)
       prediction must haveSize(25)
 
-      model must haveAllElementsLike {
-        case (ids, values) =>
-          ids must haveSize(0)
-          values mustEqual
-            SObject(
-              Map("model1" -> SObject(Map(
-                "residualStandardError" -> SObject(Map(
-                  "degreesOfFreedom" -> SDecimal(21),
-                  "estimate" -> SDecimal(0.5714938945329378))),
-                "varianceCovarianceMatrix" -> SArray(Vector(
-                  SArray(Vector(
-                    SDecimal(0.029179094730367727),
-                    SDecimal(0.000005132290591506178),
-                    SDecimal(0.0012941789523089743),
-                    SDecimal(-4.641629704480576))),
-                  SArray(Vector(
-                    SDecimal(0.000005132290591506234),
-                    SDecimal(1.7232175428295578e-7),
-                    SDecimal(0.0000026890467037135995),
-                    SDecimal(0.0014286230989684486))),
-                  SArray(Vector(
-                    SDecimal(0.0012941789523089743),
-                    SDecimal(0.000002689046703713597),
-                    SDecimal(0.0015709703355553353),
-                    SDecimal(-0.2661999465513123))),
-                  SArray(Vector(
-                    SDecimal(-4.641629704480575),
-                    SDecimal(0.0014286230989684614),
-                    SDecimal(-0.2661999465513122),
-                    SDecimal(1389.6506067743135)))
+      model must haveAllElementsLike { case (ids, values) =>
+        ids must haveSize(0)
+        values mustEqual
+          SObject(
+            Map("model1" -> SObject(Map(
+              "residualStandardError" -> SObject(Map(
+                "degreesOfFreedom" -> SDecimal(21),
+                "estimate" -> SDecimal(0.5714938945329378))),
+              "varianceCovarianceMatrix" -> SArray(Vector(
+                SArray(Vector(
+                  SDecimal(0.029179094730367727),
+                  SDecimal(0.000005132290591506178),
+                  SDecimal(0.0012941789523089743),
+                  SDecimal(-4.641629704480576))),
+                SArray(Vector(
+                  SDecimal(0.000005132290591506234),
+                  SDecimal(1.7232175428295578e-7),
+                  SDecimal(0.0000026890467037135995),
+                  SDecimal(0.0014286230989684486))),
+                SArray(Vector(
+                  SDecimal(0.0012941789523089743),
+                  SDecimal(0.000002689046703713597),
+                  SDecimal(0.0015709703355553353),
+                  SDecimal(-0.2661999465513123))),
+                SArray(Vector(
+                  SDecimal(-4.641629704480575),
+                  SDecimal(0.0014286230989684614),
+                  SDecimal(-0.2661999465513122),
+                  SDecimal(1389.6506067743135)))
+              )),
+              "coefficients" -> SArray(Vector(
+                SObject(Map(
+                  "x1" -> SObject(Map(
+                    "estimate" -> SDecimal(-0.000353609260803943),
+                    "standardError" -> SDecimal(0.0004151165550576799))),
+                  "x2" -> SObject(Map(
+                    "standardError" -> SDecimal(0.03963546815108074),
+                    "estimate" -> SDecimal(0.058266092643983664))),
+                  "x3" -> SObject(Map(
+                    "standardError" -> SDecimal(37.2780177420194),
+                    "estimate" -> SDecimal(-13.04059432806976)))
                 )),
-                "coefficients" -> SArray(Vector(
-                  SObject(Map(
-                    "x1" -> SObject(Map(
-                      "estimate" -> SDecimal(-0.000353609260803943),
-                      "standardError" -> SDecimal(0.0004151165550576799))),
-                    "x2" -> SObject(Map(
-                      "standardError" -> SDecimal(0.03963546815108074),
-                      "estimate" -> SDecimal(0.058266092643983664))),
-                    "x3" -> SObject(Map(
-                      "standardError" -> SDecimal(37.2780177420194),
-                      "estimate" -> SDecimal(-13.04059432806976)))
-                  )),
-                  SObject(Map(
-                    "estimate" -> SDecimal(0.06398145974561122),
-                    "standardError" -> SDecimal(0.17081889453560964)))
-                )),
-                "RSquared" -> SDecimal(0.1389644021522881)
-              ))))
+                SObject(Map(
+                  "estimate" -> SDecimal(0.06398145974561122),
+                  "standardError" -> SDecimal(0.17081889453560964)))
+              )),
+              "RSquared" -> SDecimal(0.1389644021522881)
+            ))))
       }
 
-      prediction must haveAllElementsLike {
-        case (ids, _) =>
-          ids must haveSize(1)
+      prediction must haveAllElementsLike { case (ids, _) =>
+        ids must haveSize(1)
       }
 
       val predResults = prediction collect { case (_, values) => values }

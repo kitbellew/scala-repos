@@ -20,20 +20,18 @@ object ScalaUdpDocSpec {
     import context.system
     IO(Udp) ! Udp.SimpleSender
 
-    def receive = {
-      case Udp.SimpleSenderReady =>
-        context.become(ready(sender()))
-        //#sender
-        sender() ! Udp.Send(ByteString("hello"), remote)
+    def receive = { case Udp.SimpleSenderReady =>
+      context.become(ready(sender()))
       //#sender
+      sender() ! Udp.Send(ByteString("hello"), remote)
+    //#sender
     }
 
-    def ready(send: ActorRef): Receive = {
-      case msg: String =>
-        send ! Udp.Send(ByteString(msg), remote)
-        //#sender
-        if (msg == "world") send ! PoisonPill
+    def ready(send: ActorRef): Receive = { case msg: String =>
+      send ! Udp.Send(ByteString(msg), remote)
       //#sender
+      if (msg == "world") send ! PoisonPill
+    //#sender
     }
   }
   //#sender
@@ -43,12 +41,11 @@ object ScalaUdpDocSpec {
     import context.system
     IO(Udp) ! Udp.Bind(self, new InetSocketAddress("localhost", 0))
 
-    def receive = {
-      case Udp.Bound(local) =>
-        //#listener
-        nextActor forward local
-        //#listener
-        context.become(ready(sender()))
+    def receive = { case Udp.Bound(local) =>
+      //#listener
+      nextActor forward local
+      //#listener
+      context.become(ready(sender()))
     }
 
     def ready(socket: ActorRef): Receive = {
@@ -70,12 +67,11 @@ object ScalaUdpDocSpec {
     import context.system
     IO(UdpConnected) ! UdpConnected.Connect(self, remote)
 
-    def receive = {
-      case UdpConnected.Connected =>
-        context.become(ready(sender()))
-        //#connected
-        sender() ! UdpConnected.Send(ByteString("hello"))
+    def receive = { case UdpConnected.Connected =>
+      context.become(ready(sender()))
       //#connected
+      sender() ! UdpConnected.Send(ByteString("hello"))
+    //#connected
     }
 
     def ready(connection: ActorRef): Receive = {

@@ -93,10 +93,10 @@ class BinaryClassificationMetricsSuite
     val numFalsePositives = Seq(0, 1, 2, 3)
     val numPositives = 4
     val numNegatives = 3
-    val precisions = numTruePositives.zip(numFalsePositives).map {
-      case (t, f) =>
+    val precisions =
+      numTruePositives.zip(numFalsePositives).map { case (t, f) =>
         t.toDouble / (t + f)
-    }
+      }
     val recalls = numTruePositives.map(t => t.toDouble / numPositives)
     val fpr = numFalsePositives.map(f => f.toDouble / numNegatives)
     val rocCurve = Seq((0.0, 0.0)) ++ fpr.zip(recalls) ++ Seq((1.0, 1.0))

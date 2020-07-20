@@ -459,12 +459,11 @@ class HttpServerSpec
              |Host: example.com
              |
              |""")
-      inside(expectRequest()) {
-        case HttpRequest(GET, _, _, _, _) ⇒
-          responses.sendNext(
-            HttpResponse(entity = HttpEntity
-              .Strict(ContentTypes.`text/plain(UTF-8)`, ByteString("abcd"))))
-          expectResponseWithWipedDate("""|HTTP/1.1 200 OK
+      inside(expectRequest()) { case HttpRequest(GET, _, _, _, _) ⇒
+        responses.sendNext(
+          HttpResponse(entity = HttpEntity
+            .Strict(ContentTypes.`text/plain(UTF-8)`, ByteString("abcd"))))
+        expectResponseWithWipedDate("""|HTTP/1.1 200 OK
                |Server: akka-http/test
                |Date: XXXX
                |Content-Type: text/plain; charset=UTF-8
@@ -480,16 +479,15 @@ class HttpServerSpec
              |
              |""")
       val data = TestPublisher.manualProbe[ByteString]()
-      inside(expectRequest()) {
-        case HttpRequest(GET, _, _, _, _) ⇒
-          responses.sendNext(
-            HttpResponse(entity = HttpEntity.Default(
-              ContentTypes.`text/plain(UTF-8)`,
-              4,
-              Source.fromPublisher(data))))
-          val dataSub = data.expectSubscription()
-          dataSub.expectCancellation()
-          expectResponseWithWipedDate("""|HTTP/1.1 200 OK
+      inside(expectRequest()) { case HttpRequest(GET, _, _, _, _) ⇒
+        responses.sendNext(
+          HttpResponse(entity = HttpEntity.Default(
+            ContentTypes.`text/plain(UTF-8)`,
+            4,
+            Source.fromPublisher(data))))
+        val dataSub = data.expectSubscription()
+        dataSub.expectCancellation()
+        expectResponseWithWipedDate("""|HTTP/1.1 200 OK
                |Server: akka-http/test
                |Date: XXXX
                |Content-Type: text/plain; charset=UTF-8
@@ -505,15 +503,14 @@ class HttpServerSpec
              |
              |""")
       val data = TestPublisher.manualProbe[ByteString]()
-      inside(expectRequest()) {
-        case HttpRequest(GET, _, _, _, _) ⇒
-          responses.sendNext(
-            HttpResponse(entity = HttpEntity.CloseDelimited(
-              ContentTypes.`text/plain(UTF-8)`,
-              Source.fromPublisher(data))))
-          val dataSub = data.expectSubscription()
-          dataSub.expectCancellation()
-          expectResponseWithWipedDate("""|HTTP/1.1 200 OK
+      inside(expectRequest()) { case HttpRequest(GET, _, _, _, _) ⇒
+        responses.sendNext(
+          HttpResponse(entity = HttpEntity.CloseDelimited(
+            ContentTypes.`text/plain(UTF-8)`,
+            Source.fromPublisher(data))))
+        val dataSub = data.expectSubscription()
+        dataSub.expectCancellation()
+        expectResponseWithWipedDate("""|HTTP/1.1 200 OK
                |Server: akka-http/test
                |Date: XXXX
                |Content-Type: text/plain; charset=UTF-8
@@ -530,15 +527,14 @@ class HttpServerSpec
              |
              |""")
       val data = TestPublisher.manualProbe[ChunkStreamPart]()
-      inside(expectRequest()) {
-        case HttpRequest(GET, _, _, _, _) ⇒
-          responses.sendNext(
-            HttpResponse(entity = HttpEntity.Chunked(
-              ContentTypes.`text/plain(UTF-8)`,
-              Source.fromPublisher(data))))
-          val dataSub = data.expectSubscription()
-          dataSub.expectCancellation()
-          expectResponseWithWipedDate("""|HTTP/1.1 200 OK
+      inside(expectRequest()) { case HttpRequest(GET, _, _, _, _) ⇒
+        responses.sendNext(
+          HttpResponse(entity = HttpEntity.Chunked(
+            ContentTypes.`text/plain(UTF-8)`,
+            Source.fromPublisher(data))))
+        val dataSub = data.expectSubscription()
+        dataSub.expectCancellation()
+        expectResponseWithWipedDate("""|HTTP/1.1 200 OK
                |Server: akka-http/test
                |Date: XXXX
                |Transfer-Encoding: chunked
@@ -555,15 +551,14 @@ class HttpServerSpec
              |
              |""")
       val data = TestPublisher.manualProbe[ByteString]()
-      inside(expectRequest()) {
-        case HttpRequest(GET, _, _, _, _) ⇒
-          responses.sendNext(
-            HttpResponse(entity = CloseDelimited(
-              ContentTypes.`text/plain(UTF-8)`,
-              Source.fromPublisher(data))))
-          val dataSub = data.expectSubscription()
-          dataSub.expectCancellation()
-          netOut.expectBytes(1)
+      inside(expectRequest()) { case HttpRequest(GET, _, _, _, _) ⇒
+        responses.sendNext(
+          HttpResponse(entity = CloseDelimited(
+            ContentTypes.`text/plain(UTF-8)`,
+            Source.fromPublisher(data))))
+        val dataSub = data.expectSubscription()
+        dataSub.expectCancellation()
+        netOut.expectBytes(1)
       }
       netOut.expectComplete()
     }
@@ -943,13 +938,12 @@ class HttpServerSpec
 
         implicit class XRequest(request: HttpRequest) {
           def expectEntity[T <: HttpEntity: ClassTag](bytes: Int) =
-            inside(request) {
-              case HttpRequest(POST, _, _, entity: T, _) ⇒
-                entity
-                  .toStrict(100.millis)
-                  .awaitResult(100.millis)
-                  .data
-                  .utf8String shouldEqual entityBase.take(bytes)
+            inside(request) { case HttpRequest(POST, _, _, entity: T, _) ⇒
+              entity
+                .toStrict(100.millis)
+                .awaitResult(100.millis)
+                .data
+                .utf8String shouldEqual entityBase.take(bytes)
             }
 
           def expectDefaultEntityWithSizeError(limit: Int, actualSize: Int) =

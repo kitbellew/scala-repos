@@ -392,10 +392,9 @@ abstract class AsyncTest[TDB >: Null <: TestDB](implicit
         Thread.sleep(delay.toMillis)
         thunk
       }(ec)
-      f.onFailure {
-        case t =>
-          pr.tryFailure(t)
-          sub.cancel()
+      f.onFailure { case t =>
+        pr.tryFailure(t)
+        sub.cancel()
       }
       f
     }

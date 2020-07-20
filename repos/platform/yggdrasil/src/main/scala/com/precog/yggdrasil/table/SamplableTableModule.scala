@@ -117,15 +117,14 @@ trait SamplableColumnarTableModule[M[+_]] extends SamplableTableModule[M] {
 
           case None =>
             M.point {
-              states map {
-                case SampleState(inserter, length, _) =>
-                  val len = length min sampleSize
-                  inserter map { _.toSlice(len) } map { slice =>
-                    Table(slice :: StreamT.empty[M, Slice], ExactSize(len))
-                      .paged(yggConfig.maxSliceSize)
-                  } getOrElse {
-                    Table(StreamT.empty[M, Slice], ExactSize(0))
-                  }
+              states map { case SampleState(inserter, length, _) =>
+                val len = length min sampleSize
+                inserter map { _.toSlice(len) } map { slice =>
+                  Table(slice :: StreamT.empty[M, Slice], ExactSize(len))
+                    .paged(yggConfig.maxSliceSize)
+                } getOrElse {
+                  Table(StreamT.empty[M, Slice], ExactSize(0))
+                }
               }
             }
         }

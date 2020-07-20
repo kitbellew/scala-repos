@@ -525,9 +525,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
         val spec = DeepMap1(TransSpec1.Id, cf.util.CoerceToDouble)
         val table0 = table.transform(spec)
 
-        extract[Double](table0) {
-          case col: DoubleColumn =>
-            (row: Int) => col(row)
+        extract[Double](table0) { case col: DoubleColumn =>
+          (row: Int) => col(row)
         }
       }
 
@@ -709,9 +708,8 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
           def apply(table: Table, ctx: MorphContext): M[Table] = {
 
             lazy val models: Map[String, (JType, F)] =
-              forests.zipWithIndex.map({
-                case (elem, i) =>
-                  ("model" + (i + 1)) -> elem
+              forests.zipWithIndex.map({ case (elem, i) =>
+                ("model" + (i + 1)) -> elem
               })(collection.breakOut)
 
             lazy val specs: Seq[TransSpec1] = models.map({
@@ -760,11 +758,10 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                         }
 
                         val cols = makeColumns(defined, values)
-                        acc ++ cols map {
-                          case (ColumnRef(cpath, ctype), col) =>
-                            ColumnRef(
-                              CPath(paths.Value, CPathField(modelId)) \ cpath,
-                              ctype) -> col
+                        acc ++ cols map { case (ColumnRef(cpath, ctype), col) =>
+                          ColumnRef(
+                            CPath(paths.Value, CPathField(modelId)) \ cpath,
+                            ctype) -> col
                         }
                     }
                   val keyColumns = head.deref(paths.Key).wrap(paths.Key).columns

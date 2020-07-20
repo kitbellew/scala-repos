@@ -139,9 +139,8 @@ private[python] class JavaToWritableConverter extends Converter[Any, Writable] {
       case null                 => NullWritable.get()
       case map: java.util.Map[_, _] =>
         val mapWritable = new MapWritable()
-        map.asScala.foreach {
-          case (k, v) =>
-            mapWritable.put(convertToWritable(k), convertToWritable(v))
+        map.asScala.foreach { case (k, v) =>
+          mapWritable.put(convertToWritable(k), convertToWritable(v))
         }
         mapWritable
       case array: Array[Any] => {

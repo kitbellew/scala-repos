@@ -30,10 +30,9 @@ object FutureDocSpec {
 
   class OddActor extends Actor {
     var n = 1
-    def receive = {
-      case GetNext =>
-        sender() ! n
-        n += 2
+    def receive = { case GetNext =>
+      sender() ! n
+      n += 2
     }
   }
 }

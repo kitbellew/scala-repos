@@ -39,9 +39,8 @@ class Broadcaster extends Actor with ActorLogging {
   def receive = {
     case Register =>
       subscribers += sender()
-      persistant.foreach {
-        case (originalSender, message) =>
-          sender() tell (message, originalSender)
+      persistant.foreach { case (originalSender, message) =>
+        sender() tell (message, originalSender)
       }
 
     case Unregister => subscribers -= sender()

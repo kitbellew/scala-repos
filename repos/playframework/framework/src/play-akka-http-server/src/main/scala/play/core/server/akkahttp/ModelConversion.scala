@@ -200,16 +200,15 @@ private[akkahttp] class ModelConversion(
   private def convertHeaders(
       headers: Iterable[(String, String)]): immutable.Seq[HttpHeader] = {
     headers
-      .map {
-        case (name, value) =>
-          HttpHeader.parse(name, value) match {
-            case HttpHeader.ParsingResult.Ok(
-                  header,
-                  errors /* errors are ignored if Ok */ ) =>
-              header
-            case HttpHeader.ParsingResult.Error(error) =>
-              sys.error(s"Error parsing header: $error")
-          }
+      .map { case (name, value) =>
+        HttpHeader.parse(name, value) match {
+          case HttpHeader.ParsingResult.Ok(
+                header,
+                errors /* errors are ignored if Ok */ ) =>
+            header
+          case HttpHeader.ParsingResult.Error(error) =>
+            sys.error(s"Error parsing header: $error")
+        }
       }
       .to[immutable.Seq]
   }

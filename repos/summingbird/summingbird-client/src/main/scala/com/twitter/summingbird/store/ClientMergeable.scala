@@ -121,21 +121,19 @@ class ClientMergeable[K, V: Semigroup](
     val result = ks
       .groupBy { case ((_, batchId), _) => batchId }
       .iterator
-      .map {
-        case (batch, kvs) =>
-          val batchKeys: Set[K] = kvs.map { case ((k, _), _) => k }(breakOut)
-          val existing: Map[K, FOpt[V]] =
-            readable.multiGetBatch[K](batch.prev, batchKeys)
-          // Now we merge into the current store:
-          val preMerge: Map[K, FOpt[V]] = onlineStore
-            .multiMerge(kvs)
-            .map { case ((k, _), v) => (k, v) }(breakOut)
+      .map { case (batch, kvs) =>
+        val batchKeys: Set[K] = kvs.map { case ((k, _), _) => k }(breakOut)
+        val existing: Map[K, FOpt[V]] =
+          readable.multiGetBatch[K](batch.prev, batchKeys)
+        // Now we merge into the current store:
+        val preMerge: Map[K, FOpt[V]] = onlineStore
+          .multiMerge(kvs)
+          .map { case ((k, _), v) => (k, v) }(breakOut)
 
-          (batch, mm.plus(existing, preMerge))
+        (batch, mm.plus(existing, preMerge))
       }
-      .flatMap {
-        case (b, kvs) =>
-          kvs.iterator.map { case (k, v) => ((k, b), v) }
+      .flatMap { case (b, kvs) =>
+        kvs.iterator.map { case (k, v) => ((k, b), v) }
       }
       .toMap
     // Since the type is a subclass, we need to jump through this hoop:

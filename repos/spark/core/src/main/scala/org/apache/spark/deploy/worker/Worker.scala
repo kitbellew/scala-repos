@@ -482,9 +482,8 @@ private[deploy] class Worker(
             }
         }(cleanupThreadExecutor)
 
-        cleanupFuture.onFailure {
-          case e: Throwable =>
-            logError("App dir cleanup failed: " + e.getMessage, e)
+        cleanupFuture.onFailure { case e: Throwable =>
+          logError("App dir cleanup failed: " + e.getMessage, e)
         }(cleanupThreadExecutor)
 
       case MasterChanged(masterRef, masterWebUiUrl) =>

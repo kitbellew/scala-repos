@@ -32,11 +32,10 @@ class LauncherBackendSuite extends SparkFunSuite with Matchers {
   private val tests =
     Seq("local" -> "local", "standalone/client" -> "local-cluster[1,1,1024]")
 
-  tests.foreach {
-    case (name, master) =>
-      test(s"$name: launcher handle") {
-        testWithMaster(master)
-      }
+  tests.foreach { case (name, master) =>
+    test(s"$name: launcher handle") {
+      testWithMaster(master)
+    }
   }
 
   private def testWithMaster(master: String): Unit = {

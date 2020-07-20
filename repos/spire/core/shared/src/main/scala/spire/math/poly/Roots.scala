@@ -59,15 +59,13 @@ object Roots {
     if (poly == Polynomial.zero[BigDecimal]) {
       Polynomial.zero[BigInt]
     } else {
-      val terms = poly.terms.map {
-        case Term(c, e) =>
-          Term(c.bigDecimal.stripTrailingZeros, e)
+      val terms = poly.terms.map { case Term(c, e) =>
+        Term(c.bigDecimal.stripTrailingZeros, e)
       }
       val maxScale = terms.map(_.coeff.scale).max
-      Polynomial(terms.map {
-        case Term(c, e) =>
-          val c0 = BigInt(c.movePointRight(maxScale).unscaledValue)
-          Term(c0, e)
+      Polynomial(terms.map { case Term(c, e) =>
+        val c0 = BigInt(c.movePointRight(maxScale).unscaledValue)
+        Term(c0, e)
       })
     }
   }

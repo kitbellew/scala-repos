@@ -53,10 +53,9 @@ class OffsetCheckpoint(val file: File) extends Logging {
         writer.write(offsets.size.toString)
         writer.newLine()
 
-        offsets.foreach {
-          case (topicPart, offset) =>
-            writer.write(s"${topicPart.topic} ${topicPart.partition} $offset")
-            writer.newLine()
+        offsets.foreach { case (topicPart, offset) =>
+          writer.write(s"${topicPart.topic} ${topicPart.partition} $offset")
+          writer.newLine()
         }
 
         writer.flush()

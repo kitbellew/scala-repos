@@ -53,14 +53,13 @@ class HttpMuxer(
     val path = normalize(request.path)
 
     // find the longest pattern that matches (the patterns are already sorted)
-    val matching = sorted.find {
-      case (pattern, _) =>
-        if (pattern == "")
-          path == "/" || path == "" // special cases
-        else if (pattern.endsWith("/"))
-          path.startsWith(pattern) // prefix match
-        else
-          path == pattern // exact match
+    val matching = sorted.find { case (pattern, _) =>
+      if (pattern == "")
+        path == "/" || path == "" // special cases
+      else if (pattern.endsWith("/"))
+        path.startsWith(pattern) // prefix match
+      else
+        path == pattern // exact match
     }
 
     matching match {

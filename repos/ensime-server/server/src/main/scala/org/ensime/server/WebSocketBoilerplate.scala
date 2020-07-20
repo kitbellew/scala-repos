@@ -109,9 +109,8 @@ object WebSocketBoilerplate {
           throw new IllegalArgumentException("not a valid message")
       }
       .via(flow)
-      .map {
-        case e: Outgoing =>
-          TextMessage.Strict(e.toJson.toString(printer)): Message
+      .map { case e: Outgoing =>
+        TextMessage.Strict(e.toJson.toString(printer)): Message
       }
   }
 

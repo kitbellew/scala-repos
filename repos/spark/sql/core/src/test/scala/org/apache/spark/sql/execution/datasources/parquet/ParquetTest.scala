@@ -121,11 +121,10 @@ private[sql] trait ParquetTest extends SQLTestUtils {
       basePath: File,
       defaultPartitionName: String,
       partitionCols: (String, Any)*): File = {
-    val partNames = partitionCols.map {
-      case (k, v) =>
-        val valueString =
-          if (v == null || v == "") defaultPartitionName else v.toString
-        s"$k=$valueString"
+    val partNames = partitionCols.map { case (k, v) =>
+      val valueString =
+        if (v == null || v == "") defaultPartitionName else v.toString
+      s"$k=$valueString"
     }
 
     val partDir = partNames.foldLeft(basePath) { (parent, child) =>

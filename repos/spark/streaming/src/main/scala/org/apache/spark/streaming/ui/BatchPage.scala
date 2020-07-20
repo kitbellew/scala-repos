@@ -320,21 +320,19 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
 
     val outputOps: Seq[(OutputOperationUIData, Seq[SparkJobId])] =
       batchUIData.outputOperations
-        .map {
-          case (outputOpId, outputOperation) =>
-            val sparkJobIds =
-              outputOpIdToSparkJobIds.getOrElse(outputOpId, Seq.empty)
-            (outputOperation, sparkJobIds)
+        .map { case (outputOpId, outputOperation) =>
+          val sparkJobIds =
+            outputOpIdToSparkJobIds.getOrElse(outputOpId, Seq.empty)
+          (outputOperation, sparkJobIds)
         }
         .toSeq
         .sortBy(_._1.id)
     sparkListener.synchronized {
-      val outputOpWithJobs = outputOps.map {
-        case (outputOpData, sparkJobIds) =>
-          (
-            outputOpData,
-            sparkJobIds.map(sparkJobId =>
-              SparkJobIdWithUIData(sparkJobId, getJobData(sparkJobId))))
+      val outputOpWithJobs = outputOps.map { case (outputOpData, sparkJobIds) =>
+        (
+          outputOpData,
+          sparkJobIds.map(sparkJobId =>
+            SparkJobIdWithUIData(sparkJobId, getJobData(sparkJobId))))
       }
 
       <table id="batch-job-table" class="table table-bordered table-striped table-condensed">
@@ -343,9 +341,8 @@ private[ui] class BatchPage(parent: StreamingTab) extends WebUIPage("batch") {
         </thead>
         <tbody>
           {
-        outputOpWithJobs.map {
-          case (outputOpData, sparkJobIds) =>
-            generateOutputOpIdRow(outputOpData, sparkJobIds)
+        outputOpWithJobs.map { case (outputOpData, sparkJobIds) =>
+          generateOutputOpIdRow(outputOpData, sparkJobIds)
         }
       }
         </tbody>

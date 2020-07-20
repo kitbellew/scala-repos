@@ -1068,11 +1068,10 @@ abstract class BCodeBodyBuilder extends BCodeSkelBuilder {
       } // `locals` is known to contain `param` because `genDefDef()` visited `labelDefsAtOrUnder`
 
       // second assign one by one to the LabelDef's variables.
-      aps.reverse foreach {
-        case (_, param) =>
-          // TODO FIXME a "this" param results from tail-call xform. If so, the `else` branch seems perfectly fine. And the `then` branch must be wrong.
-          if (param.name == nme.THIS) mnode.visitVarInsn(asm.Opcodes.ASTORE, 0)
-          else locals.store(param)
+      aps.reverse foreach { case (_, param) =>
+        // TODO FIXME a "this" param results from tail-call xform. If so, the `else` branch seems perfectly fine. And the `then` branch must be wrong.
+        if (param.name == nme.THIS) mnode.visitVarInsn(asm.Opcodes.ASTORE, 0)
+        else locals.store(param)
       }
 
     }

@@ -346,9 +346,8 @@ object Vectors {
       elements: JavaIterable[(JavaInteger, JavaDouble)]): Vector = {
     sparse(
       size,
-      elements.asScala.map {
-        case (i, x) =>
-          (i.intValue(), x.doubleValue())
+      elements.asScala.map { case (i, x) =>
+        (i.intValue(), x.doubleValue())
       }.toSeq)
   }
 

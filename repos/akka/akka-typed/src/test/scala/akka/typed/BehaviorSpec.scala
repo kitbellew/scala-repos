@@ -506,10 +506,9 @@ class BehaviorSpec extends TypedSpec {
 
   trait Or extends Common {
     private def strange(monitor: ActorRef[Event]): Behavior[Command] =
-      ScalaDSL.Full {
-        case ScalaDSL.Msg(_, Ping | AuxPing(_)) ⇒
-          monitor ! Pong
-          ScalaDSL.Unhandled
+      ScalaDSL.Full { case ScalaDSL.Msg(_, Ping | AuxPing(_)) ⇒
+        monitor ! Pong
+        ScalaDSL.Unhandled
       }
 
     private def behavior2(monitor: ActorRef[Event]): Behavior[Command] =

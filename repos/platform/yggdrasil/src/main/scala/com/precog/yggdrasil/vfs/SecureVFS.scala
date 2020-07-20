@@ -191,9 +191,8 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
             permitted <- EitherT.right(
               permissionsFinder.findBrowsableChildren(apiKey, path))
           } yield {
-            children filter {
-              case PathMetadata(child, _) =>
-                permitted.exists(_.isEqualOrParentOf(path / child))
+            children filter { case PathMetadata(child, _) =>
+              permitted.exists(_.isEqualOrParentOf(path / child))
             }
           }
       }
@@ -387,54 +386,52 @@ trait SecureVFSModule[M[+_], Block] extends VFSModule[M, Block] {
         clock: Clock)(blockf: Block => Block): StreamT[M, Block] = {
       val streamId = java.util.UUID.randomUUID()
 
-      StreamT.unfoldM((0, stream)) {
-        case (pseudoOffset, s) =>
-          s.uncons flatMap {
-            case Some((x, xs)) =>
-              val ingestRecords =
-                VFS.toJsonElements(blockf(x)).zipWithIndex map {
-                  case (v, i) => IngestRecord(EventId(pseudoOffset, i), v)
-                }
+      StreamT.unfoldM((0, stream)) { case (pseudoOffset, s) =>
+        s.uncons flatMap {
+          case Some((x, xs)) =>
+            val ingestRecords = VFS.toJsonElements(blockf(x)).zipWithIndex map {
+              case (v, i) => IngestRecord(EventId(pseudoOffset, i), v)
+            }
 
-              logger.debug(
-                "Persisting %d stream records (from slice of size %d) to %s"
-                  .format(ingestRecords.size, VFS.blockSize(x), path))
+            logger.debug(
+              "Persisting %d stream records (from slice of size %d) to %s"
+                .format(ingestRecords.size, VFS.blockSize(x), path))
 
-              for {
-                terminal <- xs.isEmpty
-                par <- {
-                  // FIXME: is Replace always desired here? Any case
-                  // where we might want Create? AFAICT, this is only
-                  // used for caching queries right now.
-                  val streamRef = StreamRef.Replace(streamId, terminal)
-                  val msg = IngestMessage(
-                    apiKey,
-                    path,
-                    writeAs,
-                    ingestRecords,
-                    jobId,
-                    clock.instant(),
-                    streamRef)
-                  vfs.writeAllSync(Seq((pseudoOffset, msg))).run
-                }
-              } yield {
-                par.fold(
-                  errors => {
-                    logger.error(
-                      "Unable to complete persistence of result stream by %s to %s as %s: %s"
-                        .format(apiKey, path.path, writeAs, errors.shows))
-                    None
-                  },
-                  _ => Some((x, (pseudoOffset + 1, xs)))
-                )
+            for {
+              terminal <- xs.isEmpty
+              par <- {
+                // FIXME: is Replace always desired here? Any case
+                // where we might want Create? AFAICT, this is only
+                // used for caching queries right now.
+                val streamRef = StreamRef.Replace(streamId, terminal)
+                val msg = IngestMessage(
+                  apiKey,
+                  path,
+                  writeAs,
+                  ingestRecords,
+                  jobId,
+                  clock.instant(),
+                  streamRef)
+                vfs.writeAllSync(Seq((pseudoOffset, msg))).run
               }
+            } yield {
+              par.fold(
+                errors => {
+                  logger.error(
+                    "Unable to complete persistence of result stream by %s to %s as %s: %s"
+                      .format(apiKey, path.path, writeAs, errors.shows))
+                  None
+                },
+                _ => Some((x, (pseudoOffset + 1, xs)))
+              )
+            }
 
-            case None =>
-              logger.debug(
-                "Persist stream for query by %s writing to %s complete."
-                  .format(apiKey, path.path))
-              None.point[M]
-          }
+          case None =>
+            logger.debug(
+              "Persist stream for query by %s writing to %s complete."
+                .format(apiKey, path.path))
+            None.point[M]
+        }
       }
     }
   }

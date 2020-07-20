@@ -321,11 +321,10 @@ trait LogisticRegressionLibModule[M[+_]]
           }
 
           val objectTables: M[Seq[Table]] = reducedTables map {
-            _.zipWithIndex map {
-              case (tbl, idx) =>
-                val modelId = "model" + (idx + 1)
-                tbl.transform(
-                  liftToValues(trans.WrapObject(TransSpec1.Id, modelId)))
+            _.zipWithIndex map { case (tbl, idx) =>
+              val modelId = "model" + (idx + 1)
+              tbl.transform(
+                liftToValues(trans.WrapObject(TransSpec1.Id, modelId)))
             }
           }
 

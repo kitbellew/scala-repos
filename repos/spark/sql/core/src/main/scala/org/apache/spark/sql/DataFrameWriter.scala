@@ -450,9 +450,8 @@ final class DataFrameWriter private[sql] (df: DataFrame) {
       table: String,
       connectionProperties: Properties): Unit = {
     val props = new Properties()
-    extraOptions.foreach {
-      case (key, value) =>
-        props.put(key, value)
+    extraOptions.foreach { case (key, value) =>
+      props.put(key, value)
     }
     // connectionProperties should override settings in extraOptions
     props.putAll(connectionProperties)

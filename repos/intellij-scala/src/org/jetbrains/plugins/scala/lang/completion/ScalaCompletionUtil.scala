@@ -97,11 +97,10 @@ object ScalaCompletionUtil {
       }
       paramNamesWithTypes.+=(name -> param)
     }
-    val iter = paramNamesWithTypes.map {
-      case (s, tp) =>
-        s + ": " + (if (canonical) {
-                      ScType.canonicalText(tp)
-                    } else ScType.presentableText(tp))
+    val iter = paramNamesWithTypes.map { case (s, tp) =>
+      s + ": " + (if (canonical) {
+                    ScType.canonicalText(tp)
+                  } else ScType.presentableText(tp))
     }
     val paramsString =
       if (paramNamesWithTypes.size != 1 || !braceArgs)

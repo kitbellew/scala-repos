@@ -222,33 +222,31 @@ class FileJobManager[M[+_]] private[FileJobManager] (
 
     cache
       .get(jobId)
-      .map {
-        case FileJobState(_, status, _) =>
-          status match {
-            case Some(curStatus)
-                if curStatus.id == prevStatus.getOrElse(curStatus.id) =>
-              for (m <- addMessage(jobId, JobManager.channels.Status, jval))
-                yield {
-                  val Some(s) = Status.fromMessage(m)
-                  cache += (jobId -> cache(jobId).copy(status = Some(s)))
-                  Right(s)
-                }
+      .map { case FileJobState(_, status, _) =>
+        status match {
+          case Some(curStatus)
+              if curStatus.id == prevStatus.getOrElse(curStatus.id) =>
+            for (m <- addMessage(jobId, JobManager.channels.Status, jval))
+              yield {
+                val Some(s) = Status.fromMessage(m)
+                cache += (jobId -> cache(jobId).copy(status = Some(s)))
+                Right(s)
+              }
 
-            case Some(_) =>
-              M.point(Left("Current status did not match expected status."))
+          case Some(_) =>
+            M.point(Left("Current status did not match expected status."))
 
-            case None if prevStatus.isDefined =>
-              M.point(
-                Left("Job has not yet started, yet a status was expected."))
+          case None if prevStatus.isDefined =>
+            M.point(Left("Job has not yet started, yet a status was expected."))
 
-            case None =>
-              for (m <- addMessage(jobId, JobManager.channels.Status, jval))
-                yield {
-                  val Some(s) = Status.fromMessage(m)
-                  cache += (jobId -> cache(jobId).copy(status = Some(s)))
-                  Right(s)
-                }
-          }
+          case None =>
+            for (m <- addMessage(jobId, JobManager.channels.Status, jval))
+              yield {
+                val Some(s) = Status.fromMessage(m)
+                cache += (jobId -> cache(jobId).copy(status = Some(s)))
+                Right(s)
+              }
+        }
       }
       .getOrElse(M.point(Left("No job found for jobId " + jobId)))
   }

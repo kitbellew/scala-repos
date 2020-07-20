@@ -374,10 +374,9 @@ class CircuitBreakerProxySpec extends AkkaSpec() with GivenWhenThen {
       Given("An actor that will terminate when receiving a message")
       import akka.actor.ActorDSL._
       val suicidalActor = actor(new Act {
-        become {
-          case anyMessage ⇒
-            sender() ! "dying now"
-            context stop self
+        become { case anyMessage ⇒
+          sender() ! "dying now"
+          context stop self
         }
       })
 

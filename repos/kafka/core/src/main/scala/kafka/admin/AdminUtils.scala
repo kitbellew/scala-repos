@@ -277,9 +277,8 @@ object AdminUtils extends Logging {
     brokerRackMap.toSeq
       .map { case (id, rack) => (rack, id) }
       .groupBy { case (rack, _) => rack }
-      .map {
-        case (rack, rackAndIdList) =>
-          (rack, rackAndIdList.map { case (_, id) => id }.sorted)
+      .map { case (rack, rackAndIdList) =>
+        (rack, rackAndIdList.map { case (_, id) => id }.sorted)
       }
   }
 

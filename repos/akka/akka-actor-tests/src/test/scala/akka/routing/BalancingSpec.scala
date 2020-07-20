@@ -17,13 +17,12 @@ object BalancingSpec {
 
   class Worker(latch: TestLatch) extends Actor {
     lazy val id = counter.getAndIncrement()
-    def receive = {
-      case msg: Int ⇒
-        if (id != 1)
-          Await.ready(latch, 1.minute)
-        else if (msg <= 10)
-          Thread.sleep(50) // dispatch to other routees
-        sender() ! id
+    def receive = { case msg: Int ⇒
+      if (id != 1)
+        Await.ready(latch, 1.minute)
+      else if (msg <= 10)
+        Thread.sleep(50) // dispatch to other routees
+      sender() ! id
     }
   }
 

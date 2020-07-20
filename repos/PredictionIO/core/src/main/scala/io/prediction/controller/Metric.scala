@@ -61,9 +61,8 @@ private[prediction] trait StatsMetricHelper[EI, Q, P, A] {
       sc: SparkContext,
       evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): StatCounter = {
     val doubleRDD = sc.union(
-      evalDataSet.map {
-        case (_, qpaRDD) =>
-          qpaRDD.map { case (q, p, a) => calculate(q, p, a) }
+      evalDataSet.map { case (_, qpaRDD) =>
+        qpaRDD.map { case (q, p, a) => calculate(q, p, a) }
       }
     )
 
@@ -78,9 +77,8 @@ private[prediction] trait StatsOptionMetricHelper[EI, Q, P, A] {
       sc: SparkContext,
       evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): StatCounter = {
     val doubleRDD = sc.union(
-      evalDataSet.map {
-        case (_, qpaRDD) =>
-          qpaRDD.flatMap { case (q, p, a) => calculate(q, p, a) }
+      evalDataSet.map { case (_, qpaRDD) =>
+        qpaRDD.flatMap { case (q, p, a) => calculate(q, p, a) }
       }
     )
 
@@ -222,9 +220,8 @@ abstract class SumMetric[EI, Q, P, A, R: ClassTag](implicit num: Numeric[R])
 
   def calculate(sc: SparkContext, evalDataSet: Seq[(EI, RDD[(Q, P, A)])]): R = {
     val union: RDD[R] = sc.union(
-      evalDataSet.map {
-        case (_, qpaRDD) =>
-          qpaRDD.map { case (q, p, a) => calculate(q, p, a) }
+      evalDataSet.map { case (_, qpaRDD) =>
+        qpaRDD.map { case (q, p, a) => calculate(q, p, a) }
       }
     )
 

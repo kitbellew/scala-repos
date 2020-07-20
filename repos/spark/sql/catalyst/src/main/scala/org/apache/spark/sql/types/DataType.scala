@@ -234,11 +234,8 @@ object DataType {
           equalsIgnoreNullability(leftValueType, rightValueType)
       case (StructType(leftFields), StructType(rightFields)) =>
         leftFields.length == rightFields.length &&
-          leftFields.zip(rightFields).forall {
-            case (l, r) =>
-              l.name == r.name && equalsIgnoreNullability(
-                l.dataType,
-                r.dataType)
+          leftFields.zip(rightFields).forall { case (l, r) =>
+            l.name == r.name && equalsIgnoreNullability(l.dataType, r.dataType)
           }
       case (l, r) => l == r
     }
@@ -272,13 +269,12 @@ object DataType {
 
       case (StructType(fromFields), StructType(toFields)) =>
         fromFields.length == toFields.length &&
-          fromFields.zip(toFields).forall {
-            case (fromField, toField) =>
-              fromField.name == toField.name &&
-                (toField.nullable || !fromField.nullable) &&
-                equalsIgnoreCompatibleNullability(
-                  fromField.dataType,
-                  toField.dataType)
+          fromFields.zip(toFields).forall { case (fromField, toField) =>
+            fromField.name == toField.name &&
+              (toField.nullable || !fromField.nullable) &&
+              equalsIgnoreCompatibleNullability(
+                fromField.dataType,
+                toField.dataType)
           }
 
       case (fromDataType, toDataType) => fromDataType == toDataType

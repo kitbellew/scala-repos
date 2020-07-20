@@ -350,14 +350,13 @@ class ScalaPositionManager(val debugProcess: DebugProcess)
         defaultArgIndex: String): Option[PsiElement] = {
       try {
         val paramNumber = defaultArgIndex.toInt - 1
-        possiblePositions.find {
-          case e =>
-            val scParameters =
-              PsiTreeUtil.getParentOfType(e, classOf[ScParameters])
-            if (scParameters != null) {
-              val param = scParameters.params(paramNumber)
-              param.isDefaultParam && param.isAncestorOf(e)
-            } else false
+        possiblePositions.find { case e =>
+          val scParameters =
+            PsiTreeUtil.getParentOfType(e, classOf[ScParameters])
+          if (scParameters != null) {
+            val param = scParameters.params(paramNumber)
+            param.isDefaultParam && param.isAncestorOf(e)
+          } else false
         }
       } catch {
         case e: Exception => None

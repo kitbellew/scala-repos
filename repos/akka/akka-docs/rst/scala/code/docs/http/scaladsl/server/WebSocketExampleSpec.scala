@@ -87,10 +87,9 @@ class WebSocketExampleSpec extends WordSpec with Matchers {
     // returns a greeting message for that name
     val greeterWebSocketService =
       Flow[Message]
-        .collect {
-          case tm: TextMessage ⇒
-            TextMessage(Source.single("Hello ") ++ tm.textStream)
-          // ignore binary messages
+        .collect { case tm: TextMessage ⇒
+          TextMessage(Source.single("Hello ") ++ tm.textStream)
+        // ignore binary messages
         }
 
     //#websocket-routing

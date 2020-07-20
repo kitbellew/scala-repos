@@ -154,9 +154,8 @@ trait EvaluatorModule
         case NullLit(_) => (Vector(), JNull) :: Nil
 
         case ObjectDef(loc, props) => {
-          val propResults = props map {
-            case (name, expr) =>
-              (name, loopForJoin(env, restrict)(expr), expr.provenance)
+          val propResults = props map { case (name, expr) =>
+            (name, loopForJoin(env, restrict)(expr), expr.provenance)
           }
 
           val wrappedResults = propResults map {
@@ -239,9 +238,8 @@ trait EvaluatorModule
             loopForJoin(env, restrict)(left),
             left.provenance,
             loopForJoin(env, restrict)(right),
-            right.provenance) {
-            case (JArray(values), JNum(index)) =>
-              values(index.toInt)
+            right.provenance) { case (JArray(values), JNum(index)) =>
+            values(index.toInt)
           }
         }
 

@@ -206,10 +206,9 @@ private[spark] object OutputCommitCoordinator {
       extends RpcEndpoint
       with Logging {
 
-    override def receive: PartialFunction[Any, Unit] = {
-      case StopCoordinator =>
-        logInfo("OutputCommitCoordinator stopped!")
-        stop()
+    override def receive: PartialFunction[Any, Unit] = { case StopCoordinator =>
+      logInfo("OutputCommitCoordinator stopped!")
+      stop()
     }
 
     override def receiveAndReply(

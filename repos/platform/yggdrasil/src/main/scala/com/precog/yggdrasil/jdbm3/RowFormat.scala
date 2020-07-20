@@ -397,9 +397,8 @@ trait ValueRowFormat extends RowFormat with RowFormatSupport {
     require(columnRefs.size == cols.size)
 
     val colValueEncoders: Array[ColumnValueEncoder] = {
-      (columnRefs zip cols).map({
-        case (ColumnRef(_, cType), col) =>
-          getColumnEncoder(cType, col)
+      (columnRefs zip cols).map({ case (ColumnRef(_, cType), col) =>
+        getColumnEncoder(cType, col)
       })(collection.breakOut)
     }
 
@@ -601,53 +600,52 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
     import ByteBufferPool._
 
     val colValueEncoders: Array[ColumnValueEncoder] =
-      zipWithSelectors(cols).map({
-        case (_, colsAndTypes) =>
-          val writers: Seq[ColumnValueEncoder] = colsAndTypes map {
-            case (col, cType) =>
-              val writer = getColumnEncoder(cType, col)
-              new ColumnValueEncoder {
-                def encode(
-                    row: Int,
-                    buffer: ByteBuffer,
-                    pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-                  val flag = SortingRowFormat.flagForCType(cType)
-                  if (buffer.remaining() > 0) {
-                    buffer.put(flag)
-                    writer.encode(row, buffer, pool)
-                  } else {
-                    val nextBuffer = pool.acquire
-                    nextBuffer.put(flag)
-                    writer.encode(row, nextBuffer, pool) match {
-                      case Some(buffers) => Some(buffer :: buffers)
-                      case None          => Some(buffer :: nextBuffer :: Nil)
-                    }
-                  }
-                }
-              }
-          }
-
-          val selCols: Seq[Column] = colsAndTypes map (_._1)
-
-          new ColumnValueEncoder {
-            def encode(
-                row: Int,
-                buffer: ByteBuffer,
-                pool: ByteBufferPool): Option[List[ByteBuffer]] = {
-              (writers zip selCols) find (_._2.isDefinedAt(row)) map (_._1
-                .encode(row, buffer, pool)) getOrElse {
-                val flag = SortingRowFormat.flagForCType(CUndefined)
+      zipWithSelectors(cols).map({ case (_, colsAndTypes) =>
+        val writers: Seq[ColumnValueEncoder] = colsAndTypes map {
+          case (col, cType) =>
+            val writer = getColumnEncoder(cType, col)
+            new ColumnValueEncoder {
+              def encode(
+                  row: Int,
+                  buffer: ByteBuffer,
+                  pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+                val flag = SortingRowFormat.flagForCType(cType)
                 if (buffer.remaining() > 0) {
                   buffer.put(flag)
-                  None
+                  writer.encode(row, buffer, pool)
                 } else {
                   val nextBuffer = pool.acquire
                   nextBuffer.put(flag)
-                  Some(buffer :: nextBuffer :: Nil)
+                  writer.encode(row, nextBuffer, pool) match {
+                    case Some(buffers) => Some(buffer :: buffers)
+                    case None          => Some(buffer :: nextBuffer :: Nil)
+                  }
                 }
               }
             }
+        }
+
+        val selCols: Seq[Column] = colsAndTypes map (_._1)
+
+        new ColumnValueEncoder {
+          def encode(
+              row: Int,
+              buffer: ByteBuffer,
+              pool: ByteBufferPool): Option[List[ByteBuffer]] = {
+            (writers zip selCols) find (_._2.isDefinedAt(row)) map (_._1
+              .encode(row, buffer, pool)) getOrElse {
+              val flag = SortingRowFormat.flagForCType(CUndefined)
+              if (buffer.remaining() > 0) {
+                buffer.put(flag)
+                None
+              } else {
+                val nextBuffer = pool.acquire
+                nextBuffer.put(flag)
+                Some(buffer :: nextBuffer :: Nil)
+              }
+            }
           }
+        }
       })(collection.breakOut)
 
     new ColumnEncoder {
@@ -659,14 +657,13 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
 
   def ColumnDecoder(cols: Seq[ArrayColumn[_]]) = {
     val decoders: List[Map[Byte, ColumnValueDecoder]] =
-      zipWithSelectors(cols) map {
-        case (_, colsWithTypes) =>
-          val decoders: Map[Byte, ColumnValueDecoder] =
-            (for ((col, cType) <- colsWithTypes) yield {
-              (flagForCType(cType), getColumnDecoder(cType, col))
-            })(collection.breakOut)
+      zipWithSelectors(cols) map { case (_, colsWithTypes) =>
+        val decoders: Map[Byte, ColumnValueDecoder] =
+          (for ((col, cType) <- colsWithTypes) yield {
+            (flagForCType(cType), getColumnDecoder(cType, col))
+          })(collection.breakOut)
 
-          decoders
+        decoders
       }
 
     new ColumnDecoder {
@@ -693,9 +690,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
 
   def encode(cValues: List[CValue]): Array[Byte] = {
 
-    val cvals: List[CValue] = zipWithSelectors(cValues) map {
-      case (_, cvals) =>
-        cvals map (_._1) find (_ != CUndefined) getOrElse CUndefined
+    val cvals: List[CValue] = zipWithSelectors(cValues) map { case (_, cvals) =>
+      cvals map (_._1) find (_ != CUndefined) getOrElse CUndefined
     }
 
     import ByteBufferPool._
@@ -739,9 +735,8 @@ trait SortingRowFormat extends RowFormat with StdCodecs with RowFormatSupport {
       }
     }
 
-    selectors.map {
-      case (_, cTypes) =>
-        readForSelector(cTypes)
+    selectors.map { case (_, cTypes) =>
+      readForSelector(cTypes)
     }.flatten
   }
 

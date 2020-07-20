@@ -76,11 +76,10 @@ object OAuthRequestVerifier {
         oauthToken must beSome(requestToken.token)
         oauthConsumerKey must beSome(consumerKey.key)
         oauthSignatureMethod must beSome("HMAC-SHA1")
-        oauthTimestamp must beSome.like {
-          case timestamp =>
-            // Verify no more than 100 seconds in the past
-            timestamp.toLong must beGreaterThan(
-              System.currentTimeMillis() / 1000 - 100)
+        oauthTimestamp must beSome.like { case timestamp =>
+          // Verify no more than 100 seconds in the past
+          timestamp.toLong must beGreaterThan(
+            System.currentTimeMillis() / 1000 - 100)
         }
 
         // Verify the signature
@@ -100,15 +99,14 @@ object OAuthRequestVerifier {
             collectedParams ++ form
           case _ => collectedParams
         }
-        oauthSignature must beSome.like {
-          case signature =>
-            val ourSignature = signParams(
-              method,
-              baseUrl,
-              collectedParamsWithBody,
-              consumerKey.secret,
-              requestToken.secret)
-            signature must_== ourSignature
+        oauthSignature must beSome.like { case signature =>
+          val ourSignature = signParams(
+            method,
+            baseUrl,
+            collectedParamsWithBody,
+            consumerKey.secret,
+            requestToken.secret)
+          signature must_== ourSignature
         }
     }
 
@@ -124,12 +122,12 @@ object OAuthRequestVerifier {
 
     // Params must be percent encoded before they are sorted
     val parameterString = params
-      .map {
-        case (key, value) => percentEncode(key) -> percentEncode(value)
+      .map { case (key, value) =>
+        percentEncode(key) -> percentEncode(value)
       }
       .sorted
-      .map {
-        case (key, value) => s"$key=$value"
+      .map { case (key, value) =>
+        s"$key=$value"
       }
       .mkString("&")
 

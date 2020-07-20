@@ -87,13 +87,11 @@ class `persistAsync, defer`(respondAfter: Int) extends PersistentActor {
 
   override def persistenceId: String = self.path.name
 
-  override def receiveCommand = {
-    case n: Int =>
-      persistAsync(Evt(n)) { e => }
-      deferAsync(Evt(n)) { e => if (e.i == respondAfter) sender() ! e.i }
+  override def receiveCommand = { case n: Int =>
+    persistAsync(Evt(n)) { e => }
+    deferAsync(Evt(n)) { e => if (e.i == respondAfter) sender() ! e.i }
   }
-  override def receiveRecover = {
-    case _ => // do nothing
+  override def receiveRecover = { case _ => // do nothing
   }
 }
 class `persistAsync, defer, respond ASAP`(respondAfter: Int)
@@ -101,13 +99,11 @@ class `persistAsync, defer, respond ASAP`(respondAfter: Int)
 
   override def persistenceId: String = self.path.name
 
-  override def receiveCommand = {
-    case n: Int =>
-      persistAsync(Evt(n)) { e => }
-      deferAsync(Evt(n)) { e => }
-      if (n == respondAfter) sender() ! n
+  override def receiveCommand = { case n: Int =>
+    persistAsync(Evt(n)) { e => }
+    deferAsync(Evt(n)) { e => }
+    if (n == respondAfter) sender() ! n
   }
-  override def receiveRecover = {
-    case _ => // do nothing
+  override def receiveRecover = { case _ => // do nothing
   }
 }

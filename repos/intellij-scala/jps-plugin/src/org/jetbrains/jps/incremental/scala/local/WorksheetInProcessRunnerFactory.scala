@@ -96,55 +96,52 @@ class WorksheetInProcessRunnerFactory {
     }
 
     def loadAndRun(arguments: Arguments, client: EventGeneratingClient) {
-      arguments.worksheetFiles.headOption.map {
-        case className =>
-          def toUrlSpec(p: String) = new File(p).toURI.toURL
+      arguments.worksheetFiles.headOption.map { case className =>
+        def toUrlSpec(p: String) = new File(p).toURI.toURL
 
-          val compilerUrls = arguments.compilerData.compilerJars map {
-            case CompilerJars(lib, compiler, extra) =>
-              Seq(lib, compiler) ++ extra
-          } map (a => a.map(_.getCanonicalPath)) getOrElse Seq.empty
+        val compilerUrls = arguments.compilerData.compilerJars map {
+          case CompilerJars(lib, compiler, extra) => Seq(lib, compiler) ++ extra
+        } map (a => a.map(_.getCanonicalPath)) getOrElse Seq.empty
 
-          val worksheetUrls = arguments.worksheetFiles.tail.map(toUrlSpec)
-          val compilerUrlSeq = compilerUrls.map(toUrlSpec)
-          val classpathUrls =
-            arguments.compilationData.classpath.map(_.toURI.toURL)
+        val worksheetUrls = arguments.worksheetFiles.tail.map(toUrlSpec)
+        val compilerUrlSeq = compilerUrls.map(toUrlSpec)
+        val classpathUrls =
+          arguments.compilationData.classpath.map(_.toURI.toURL)
 
-          val classLoader = new URLClassLoader(
-            worksheetUrls.toArray,
-            getClassLoader(
-              compilerUrlSeq,
-              classpathUrls diff worksheetUrls.map(_.toURI.toURL)))
+        val classLoader = new URLClassLoader(
+          worksheetUrls.toArray,
+          getClassLoader(
+            compilerUrlSeq,
+            classpathUrls diff worksheetUrls.map(_.toURI.toURL)))
 
-          try {
-            val cl = Class.forName(className, true, classLoader)
+        try {
+          val cl = Class.forName(className, true, classLoader)
 
-            cl.getDeclaredMethods.find {
-              case m => m.getName == "main"
-            } map {
-              case method =>
-                System.out match {
-                  case threadLocal: ThreadLocalPrintStream =>
-                    threadLocal.init(new PrintStream(myOut))
-                  case _ => System.setOut(new PrintStream(myOut))
-                }
-                method.invoke(null, null)
+          cl.getDeclaredMethods.find {
+            case m => m.getName == "main"
+          } map { case method =>
+            System.out match {
+              case threadLocal: ThreadLocalPrintStream =>
+                threadLocal.init(new PrintStream(myOut))
+              case _ => System.setOut(new PrintStream(myOut))
             }
-          } catch {
-            case userEx: InvocationTargetException =>
-              myOut.flush()
-
-              val e = if (userEx.getCause != null) userEx.getCause else userEx
-              cleanStackTrace(
-                e,
-                arguments.compilationData.sources.headOption.orNull.getName,
-                className + "$" + className
-              ).printStackTrace(new PrintStream(myOut, false))
-            case e: Exception =>
-              client trace e
-          } finally {
-            myOut.flush()
+            method.invoke(null, null)
           }
+        } catch {
+          case userEx: InvocationTargetException =>
+            myOut.flush()
+
+            val e = if (userEx.getCause != null) userEx.getCause else userEx
+            cleanStackTrace(
+              e,
+              arguments.compilationData.sources.headOption.orNull.getName,
+              className + "$" + className
+            ).printStackTrace(new PrintStream(myOut, false))
+          case e: Exception =>
+            client trace e
+        } finally {
+          myOut.flush()
+        }
       }
     }
 

@@ -52,10 +52,9 @@ class ContentTypeTestServlet(system: ActorSystem) extends ScalatraServlet {
 
     var firstSender: ActorRef = _
 
-    def receive = {
-      case 1 =>
-        firstSender = sender
-        context.become(secondReceive)
+    def receive = { case 1 =>
+      firstSender = sender
+      context.become(secondReceive)
     }
 
     def secondReceive: Receive = {
@@ -140,10 +139,9 @@ class ContentTypeTest extends ScalatraFunSuite with BeforeAndAfterAll {
 
   test("contentType is threadsafe") {
     class RequestActor extends Actor {
-      def receive = {
-        case i: Int =>
-          val res = get("/concurrent/" + i) { response }
-          sender ! (i, res.mediaType)
+      def receive = { case i: Int =>
+        val res = get("/concurrent/" + i) { response }
+        sender ! (i, res.mediaType)
       }
     }
 

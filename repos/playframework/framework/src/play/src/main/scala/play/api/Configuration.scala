@@ -1040,9 +1040,8 @@ private[play] class PlayConfig(val underlying: Config) {
     } else {
       underlying.getConfig(prototypePath.replace("$path", path))
     }
-    get[Map[String, Config]](path).map {
-      case (key, config) =>
-        key -> new PlayConfig(config.withFallback(prototype))
+    get[Map[String, Config]](path).map { case (key, config) =>
+      key -> new PlayConfig(config.withFallback(prototype))
     }.toMap
   }
 

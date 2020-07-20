@@ -323,31 +323,29 @@ class LocalLDAModel private[spark] (
     val corpusPart =
       documents
         .filter(_._2.numNonzeros > 0)
-        .map {
-          case (id: Long, termCounts: Vector) =>
-            val localElogbeta = ElogbetaBc.value
-            var docBound = 0.0d
-            val (gammad: BDV[Double], _) =
-              OnlineLDAOptimizer.variationalTopicInference(
-                termCounts,
-                exp(localElogbeta),
-                brzAlpha,
-                gammaShape,
-                k)
-            val Elogthetad: BDV[Double] = LDAUtils.dirichletExpectation(gammad)
+        .map { case (id: Long, termCounts: Vector) =>
+          val localElogbeta = ElogbetaBc.value
+          var docBound = 0.0d
+          val (gammad: BDV[Double], _) =
+            OnlineLDAOptimizer.variationalTopicInference(
+              termCounts,
+              exp(localElogbeta),
+              brzAlpha,
+              gammaShape,
+              k)
+          val Elogthetad: BDV[Double] = LDAUtils.dirichletExpectation(gammad)
 
-            // E[log p(doc | theta, beta)]
-            termCounts.foreachActive {
-              case (idx, count) =>
-                docBound += count * LDAUtils.logSumExp(
-                  Elogthetad + localElogbeta(idx, ::).t)
-            }
-            // E[log p(theta | alpha) - log q(theta | gamma)]
-            docBound += sum((brzAlpha - gammad) :* Elogthetad)
-            docBound += sum(lgamma(gammad) - lgamma(brzAlpha))
-            docBound += lgamma(sum(brzAlpha)) - lgamma(sum(gammad))
+          // E[log p(doc | theta, beta)]
+          termCounts.foreachActive { case (idx, count) =>
+            docBound += count * LDAUtils.logSumExp(
+              Elogthetad + localElogbeta(idx, ::).t)
+          }
+          // E[log p(theta | alpha) - log q(theta | gamma)]
+          docBound += sum((brzAlpha - gammad) :* Elogthetad)
+          docBound += sum(lgamma(gammad) - lgamma(brzAlpha))
+          docBound += lgamma(sum(brzAlpha)) - lgamma(sum(gammad))
 
-            docBound
+          docBound
         }
         .sum()
 
@@ -384,19 +382,18 @@ class LocalLDAModel private[spark] (
     val gammaShape = this.gammaShape
     val k = this.k
 
-    documents.map {
-      case (id: Long, termCounts: Vector) =>
-        if (termCounts.numNonzeros == 0) {
-          (id, Vectors.zeros(k))
-        } else {
-          val (gamma, _) = OnlineLDAOptimizer.variationalTopicInference(
-            termCounts,
-            expElogbetaBc.value,
-            docConcentrationBrz,
-            gammaShape,
-            k)
-          (id, Vectors.dense(normalize(gamma, 1.0).toArray))
-        }
+    documents.map { case (id: Long, termCounts: Vector) =>
+      if (termCounts.numNonzeros == 0) {
+        (id, Vectors.zeros(k))
+      } else {
+        val (gamma, _) = OnlineLDAOptimizer.variationalTopicInference(
+          termCounts,
+          expElogbetaBc.value,
+          docConcentrationBrz,
+          gammaShape,
+          k)
+        (id, Vectors.dense(normalize(gamma, 1.0).toArray))
+      }
     }
   }
 
@@ -522,9 +519,8 @@ object LocalLDAModel extends Loader[LocalLDAModel] {
       val k = topics.length
 
       val brzTopics = BDM.zeros[Double](vocabSize, k)
-      topics.foreach {
-        case Row(vec: Vector, ind: Int) =>
-          brzTopics(::, ind) := vec.toBreeze
+      topics.foreach { case Row(vec: Vector, ind: Int) =>
+        brzTopics(::, ind) := vec.toBreeze
       }
       val topicsMat = Matrices.fromBreeze(brzTopics)
 
@@ -621,20 +617,18 @@ class DistributedLDAModel private[clustering] (
     val termTopicCounts: Array[(Int, TopicCounts)] =
       graph.vertices
         .filter(_._1 < 0)
-        .map {
-          case (termIndex, cnts) =>
-            (index2term(termIndex), cnts)
+        .map { case (termIndex, cnts) =>
+          (index2term(termIndex), cnts)
         }
         .collect()
     // Convert to Matrix
     val brzTopics = BDM.zeros[Double](vocabSize, k)
-    termTopicCounts.foreach {
-      case (term, cnts) =>
-        var j = 0
-        while (j < k) {
-          brzTopics(term, j) = cnts(j)
-          j += 1
-        }
+    termTopicCounts.foreach { case (term, cnts) =>
+      var j = 0
+      while (j < k) {
+        brzTopics(term, j) = cnts(j)
+        j += 1
+      }
     }
     Matrices.fromBreeze(brzTopics)
   }
@@ -982,9 +976,8 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
       val verticesPath =
         new Path(Loader.dataPath(path), "topicCounts").toUri.toString
       graph.vertices
-        .map {
-          case (ind, vertex) =>
-            VertexData(ind, Vectors.fromBreeze(vertex))
+        .map { case (ind, vertex) =>
+          VertexData(ind, Vectors.fromBreeze(vertex))
         }
         .toDF()
         .write
@@ -993,9 +986,8 @@ object DistributedLDAModel extends Loader[DistributedLDAModel] {
       val edgesPath =
         new Path(Loader.dataPath(path), "tokenCounts").toUri.toString
       graph.edges
-        .map {
-          case Edge(srcId, dstId, prop) =>
-            EdgeData(srcId, dstId, prop)
+        .map { case Edge(srcId, dstId, prop) =>
+          EdgeData(srcId, dstId, prop)
         }
         .toDF()
         .write

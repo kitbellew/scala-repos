@@ -34,8 +34,7 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
   """
 
   def testEmpty() {
-    assertMatches(messages("")) {
-      case Nil =>
+    assertMatches(messages("")) { case Nil =>
     }
   }
 
@@ -57,8 +56,7 @@ class ConstructorAnnotatorTest extends SimpleTestCase {
       "new Alias[Int](0)"
     )
     for { code <- codes } {
-      assertMatches(messages(code)) {
-        case Nil =>
+      assertMatches(messages(code)) { case Nil =>
       }
     }
   }

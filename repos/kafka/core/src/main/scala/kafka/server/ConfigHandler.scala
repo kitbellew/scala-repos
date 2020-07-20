@@ -68,9 +68,8 @@ class TopicConfigHandler(
       /* combine the default properties with the overrides in zk to create the new LogConfig */
       val props = new Properties()
       props.putAll(logManager.defaultConfig.originals)
-      topicConfig.asScala.foreach {
-        case (key, value) =>
-          if (key != configNameToExclude) props.put(key, value)
+      topicConfig.asScala.foreach { case (key, value) =>
+        if (key != configNameToExclude) props.put(key, value)
       }
       val logConfig = LogConfig(props)
       logs.foreach(_.config = logConfig)

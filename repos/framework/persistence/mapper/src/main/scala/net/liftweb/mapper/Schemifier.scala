@@ -437,12 +437,11 @@ object Schemifier extends Loggable {
     }
     // val q = quad(rs)
     // q.foreach{case (name, col, pos) => byColumn.get(col) match {case Some(li) => byColumn(col) = (name, col, pos) :: li case _ => byColumn(col) = List((name, col, pos))}}
-    q.foreach {
-      case (name, col, pos) =>
-        byName.get(name) match {
-          case Some(li) => byName(name) = col :: li
-          case _        => byName(name) = List(col)
-        }
+    q.foreach { case (name, col, pos) =>
+      byName.get(name) match {
+        case Some(li) => byName(name) = col :: li
+        case _        => byName(name) = List(col)
+      }
     }
     val indexedFields: List[List[String]] = byName.map {
       case (name, value) => value.sortWith(_ < _)

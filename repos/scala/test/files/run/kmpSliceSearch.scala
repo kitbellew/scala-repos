@@ -63,9 +63,8 @@ object Test {
       List(1, 1, 1, 1, 1, 2),
       5 to 9
     )
-    (haystacks zip needles) foreach {
-      case (hay, nee) =>
-        println(hay.indexOfSlice(nee, 2) + " " + hay.lastIndexOfSlice(nee, 13))
+    (haystacks zip needles) foreach { case (hay, nee) =>
+      println(hay.indexOfSlice(nee, 2) + " " + hay.lastIndexOfSlice(nee, 13))
     }
   }
 }

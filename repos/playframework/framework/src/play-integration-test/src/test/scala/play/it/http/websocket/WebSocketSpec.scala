@@ -47,8 +47,8 @@ trait WebSocketSpec
       block: Application => A): A = {
     val currentApp = new AtomicReference[Application]
     val app = GuiceApplicationBuilder()
-      .routes {
-        case _ => webSocket(currentApp.get())
+      .routes { case _ =>
+        webSocket(currentApp.get())
       }
       .build()
     currentApp.set(app)
@@ -79,9 +79,8 @@ trait WebSocketSpec
     }
 
   def closeFrame(status: Int = 1000): Matcher[ExtendedMessage] =
-    beLike {
-      case SimpleMessage(CloseMessage(statusCode, _), _) =>
-        statusCode must beSome(status)
+    beLike { case SimpleMessage(CloseMessage(statusCode, _), _) =>
+      statusCode must beSome(status)
     }
 
   def consumeFrames[A]: Sink[A, Future[List[A]]] =
@@ -400,9 +399,8 @@ trait WebSocketSpec
           WebSocket.acceptWithActor[String, String] { req => out =>
             Props(new Actor() {
               var messages = List.empty[String]
-              def receive = {
-                case msg: String =>
-                  messages = msg :: messages
+              def receive = { case msg: String =>
+                messages = msg :: messages
               }
               override def postStop() = {
                 consumed.success(messages.reverse)

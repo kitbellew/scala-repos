@@ -56,25 +56,24 @@ class ImmutableLRUTest extends FunSuite with GeneratorDrivenPropertyChecks {
       entry <- Gen.oneOf(entries)
     } yield (entries, entry._1, entry._2)
 
-    forAll(gen) {
-      case (entries, k, v) =>
-        val lru =
-          buildLRU(ImmutableLRU[String, Double](entries.size + 1), entries)
+    forAll(gen) { case (entries, k, v) =>
+      val lru =
+        buildLRU(ImmutableLRU[String, Double](entries.size + 1), entries)
 
-        // make sure it's there
-        assert(lru.get(k)._1 == Some(v))
+      // make sure it's there
+      assert(lru.get(k)._1 == Some(v))
 
-        // remove once
-        val (key, newLru) = lru.remove(k)
-        assert(key == Some(v))
+      // remove once
+      val (key, newLru) = lru.remove(k)
+      assert(key == Some(v))
 
-        // remove it again
-        val (key2, _) = newLru.remove(k)
-        assert(key2 == None)
+      // remove it again
+      val (key2, _) = newLru.remove(k)
+      assert(key2 == None)
 
-        // still should be able to get it out of the original
-        val (key3, _) = lru.remove(k)
-        assert(key3 == Some(v))
+      // still should be able to get it out of the original
+      val (key3, _) = lru.remove(k)
+      assert(key3 == Some(v))
     }
   }
 }

@@ -897,9 +897,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       new MapPartitionsRDD[(K, U), (K, V)](
         self,
         (context, pid, iter) =>
-          iter.flatMap {
-            case (k, v) =>
-              cleanF(v).map(x => (k, x))
+          iter.flatMap { case (k, v) =>
+            cleanF(v).map(x => (k, x))
           },
         preservesPartitioning = true)
     }
@@ -922,13 +921,12 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       }
       val cg =
         new CoGroupedRDD[K](Seq(self, other1, other2, other3), partitioner)
-      cg.mapValues {
-        case Array(vs, w1s, w2s, w3s) =>
-          (
-            vs.asInstanceOf[Iterable[V]],
-            w1s.asInstanceOf[Iterable[W1]],
-            w2s.asInstanceOf[Iterable[W2]],
-            w3s.asInstanceOf[Iterable[W3]])
+      cg.mapValues { case Array(vs, w1s, w2s, w3s) =>
+        (
+          vs.asInstanceOf[Iterable[V]],
+          w1s.asInstanceOf[Iterable[W1]],
+          w2s.asInstanceOf[Iterable[W2]],
+          w3s.asInstanceOf[Iterable[W3]])
       }
     }
 
@@ -945,9 +943,8 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
           "Default partitioner cannot partition array keys.")
       }
       val cg = new CoGroupedRDD[K](Seq(self, other), partitioner)
-      cg.mapValues {
-        case Array(vs, w1s) =>
-          (vs.asInstanceOf[Iterable[V]], w1s.asInstanceOf[Iterable[W]])
+      cg.mapValues { case Array(vs, w1s) =>
+        (vs.asInstanceOf[Iterable[V]], w1s.asInstanceOf[Iterable[W]])
       }
     }
 
@@ -966,12 +963,11 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
           "Default partitioner cannot partition array keys.")
       }
       val cg = new CoGroupedRDD[K](Seq(self, other1, other2), partitioner)
-      cg.mapValues {
-        case Array(vs, w1s, w2s) =>
-          (
-            vs.asInstanceOf[Iterable[V]],
-            w1s.asInstanceOf[Iterable[W1]],
-            w2s.asInstanceOf[Iterable[W2]])
+      cg.mapValues { case Array(vs, w1s, w2s) =>
+        (
+          vs.asInstanceOf[Iterable[V]],
+          w1s.asInstanceOf[Iterable[W1]],
+          w2s.asInstanceOf[Iterable[W2]])
       }
     }
 
@@ -1347,10 +1343,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
             writer.close(hadoopContext)
           }
           committer.commitTask(hadoopContext)
-          outputMetricsAndBytesWrittenCallback.foreach {
-            case (om, callback) =>
-              om.setBytesWritten(callback())
-              om.setRecordsWritten(recordsWritten)
+          outputMetricsAndBytesWrittenCallback.foreach { case (om, callback) =>
+            om.setBytesWritten(callback())
+            om.setRecordsWritten(recordsWritten)
           }
           1
         }: Int
@@ -1446,10 +1441,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
           writer.close()
         }
         writer.commit()
-        outputMetricsAndBytesWrittenCallback.foreach {
-          case (om, callback) =>
-            om.setBytesWritten(callback())
-            om.setRecordsWritten(recordsWritten)
+        outputMetricsAndBytesWrittenCallback.foreach { case (om, callback) =>
+          om.setBytesWritten(callback())
+          om.setRecordsWritten(recordsWritten)
         }
       }
 
@@ -1474,10 +1468,9 @@ class PairRDDFunctions[K, V](self: RDD[(K, V)])(implicit
       outputMetricsAndBytesWrittenCallback: Option[(OutputMetrics, () => Long)],
       recordsWritten: Long): Unit = {
     if (recordsWritten % PairRDDFunctions.RECORDS_BETWEEN_BYTES_WRITTEN_METRIC_UPDATES == 0) {
-      outputMetricsAndBytesWrittenCallback.foreach {
-        case (om, callback) =>
-          om.setBytesWritten(callback())
-          om.setRecordsWritten(recordsWritten)
+      outputMetricsAndBytesWrittenCallback.foreach { case (om, callback) =>
+        om.setBytesWritten(callback())
+        om.setRecordsWritten(recordsWritten)
       }
     }
   }

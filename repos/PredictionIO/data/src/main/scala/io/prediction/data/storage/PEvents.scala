@@ -120,9 +120,8 @@ trait PEvents extends Serializable {
     val dmRDD = PEventAggregator.aggregateProperties(eventRDD)
 
     required map { r =>
-      dmRDD.filter {
-        case (k, v) =>
-          r.map(v.contains(_)).reduce(_ && _)
+      dmRDD.filter { case (k, v) =>
+        r.map(v.contains(_)).reduce(_ && _)
       }
     } getOrElse dmRDD
   }
@@ -147,19 +146,18 @@ trait PEvents extends Serializable {
       untilTime = untilTime,
       required = required
     )(sc)
-      .map {
-        case (id, dm) =>
-          try {
-            (id, extract(dm))
-          } catch {
-            case e: Exception => {
-              logger.error(
-                s"Failed to get extract entity from DataMap $dm of " +
-                  s"entityId $id.",
-                e)
-              throw e
-            }
+      .map { case (id, dm) =>
+        try {
+          (id, extract(dm))
+        } catch {
+          case e: Exception => {
+            logger.error(
+              s"Failed to get extract entity from DataMap $dm of " +
+                s"entityId $id.",
+              e)
+            throw e
           }
+        }
       }
       .collectAsMap
       .toMap

@@ -89,13 +89,12 @@ object ReceivePipelineSpec {
 
     def notifyDuration(duration: Long): Unit
 
-    pipelineInner {
-      case msg: Any ⇒
-        val start = 1L // = currentTimeMillis
-        Inner(msg).andAfter {
-          val end = 100L // = currentTimeMillis
-          notifyDuration(end - start)
-        }
+    pipelineInner { case msg: Any ⇒
+      val start = 1L // = currentTimeMillis
+      Inner(msg).andAfter {
+        val end = 100L // = currentTimeMillis
+        notifyDuration(end - start)
+      }
     }
   }
 }
@@ -201,8 +200,7 @@ object PersistentReceivePipelineSpec {
     }
 
     override def receiveCommand: Receive = becomeAndReply
-    override def receiveRecover: Receive = {
-      case _ ⇒ // ...
+    override def receiveRecover: Receive = { case _ ⇒ // ...
     }
   }
 
@@ -440,13 +438,12 @@ object InterceptorSamples {
   def logTimeTaken(time: Long) = ???
 
   //#interceptor-sample2
-  val timerInterceptor: Interceptor = {
-    case e ⇒
-      val start = System.nanoTime
-      Inner(e).andAfter {
-        val end = System.nanoTime
-        logTimeTaken(end - start)
-      }
+  val timerInterceptor: Interceptor = { case e ⇒
+    val start = System.nanoTime
+    Inner(e).andAfter {
+      val end = System.nanoTime
+      logTimeTaken(end - start)
+    }
   }
   //#interceptor-sample2
 
@@ -475,19 +472,17 @@ object MixinSample extends App {
   trait I18nInterceptor {
     this: ReceivePipeline ⇒
 
-    pipelineInner {
-      case m @ Message(_, I18nText(loc, key)) ⇒
-        Inner(m.copy(text = texts(s"${key}_$loc")))
+    pipelineInner { case m @ Message(_, I18nText(loc, key)) ⇒
+      Inner(m.copy(text = texts(s"${key}_$loc")))
     }
   }
 
   trait AuditInterceptor {
     this: ReceivePipeline ⇒
 
-    pipelineOuter {
-      case m @ Message(Some(author), text) ⇒
-        println(s"$author is about to say: $text")
-        Inner(m)
+    pipelineOuter { case m @ Message(Some(author), text) ⇒
+      println(s"$author is about to say: $text")
+      Inner(m)
     }
   }
   //#mixin-interceptors
@@ -501,9 +496,8 @@ object MixinSample extends App {
       with I18nInterceptor
       with AuditInterceptor {
 
-    override def receive: Receive = {
-      case Message(author, text) ⇒
-        println(s"${author.getOrElse("Unknown")} says '$text'")
+    override def receive: Receive = { case Message(author, text) ⇒
+      println(s"${author.getOrElse("Unknown")} says '$text'")
     }
   }
 
@@ -530,12 +524,11 @@ object UnhandledSample extends App {
   trait PrivateInterceptor {
     this: ReceivePipeline ⇒
 
-    pipelineInner {
-      case PrivateMessage(Some(userId), msg) ⇒
-        if (isGranted(userId))
-          Inner(msg)
-        else
-          HandledCompletely
+    pipelineInner { case PrivateMessage(Some(userId), msg) ⇒
+      if (isGranted(userId))
+        Inner(msg)
+      else
+        HandledCompletely
     }
   }
   //#unhandled
@@ -551,13 +544,12 @@ object AfterSamples {
 
     def logTimeTaken(time: Long) = log.debug(s"Time taken: $time ns")
 
-    pipelineOuter {
-      case e ⇒
-        val start = System.nanoTime
-        Inner(e).andAfter {
-          val end = System.nanoTime
-          logTimeTaken(end - start)
-        }
+    pipelineOuter { case e ⇒
+      val start = System.nanoTime
+      Inner(e).andAfter {
+        val end = System.nanoTime
+        logTimeTaken(end - start)
+      }
     }
   }
   //#interceptor-after

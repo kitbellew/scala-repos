@@ -36,8 +36,8 @@ object Test {
       println("recovering")
       val recovered = Future
         .failed(new Throwable())
-        .recoverWith {
-          case _ => Future.successful(2)
+        .recoverWith { case _ =>
+          Future.successful(2)
         }(ec)
       await(recovered)
     }

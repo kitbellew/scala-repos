@@ -68,10 +68,9 @@ package record {
       if (!(lTpe <:< hlistTpe))
         abort(s"$lTpe is not a record type")
 
-      val lTpes = unpackHListTpe(lTpe).zipWithIndex.flatMap {
-        case (fTpe, i) =>
-          val (k, v) = unpackFieldType(fTpe)
-          if (k =:= kTpe) Some((v, i)) else None
+      val lTpes = unpackHListTpe(lTpe).zipWithIndex.flatMap { case (fTpe, i) =>
+        val (k, v) = unpackFieldType(fTpe)
+        if (k =:= kTpe) Some((v, i)) else None
       }
       lTpes.headOption match {
         case Some((vTpe, i)) =>

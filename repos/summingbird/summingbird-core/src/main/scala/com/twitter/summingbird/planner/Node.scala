@@ -160,9 +160,8 @@ case class Dag[P <: Platform[P]](
     Producer.transitiveDependenciesOf(p)
 
   def toStringWithPrefix(prefix: String): String = {
-    prefix + "Dag\n" + nodes.foldLeft("") {
-      case (str, node) =>
-        str + node.toStringWithPrefix(prefix + "\t") + "\n"
+    prefix + "Dag\n" + nodes.foldLeft("") { case (str, node) =>
+      str + node.toStringWithPrefix(prefix + "\t") + "\n"
     }
   }
 

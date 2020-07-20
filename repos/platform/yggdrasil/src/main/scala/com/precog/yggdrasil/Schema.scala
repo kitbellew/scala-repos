@@ -88,23 +88,21 @@ object Schema {
           ColumnRef(CPath(nodes.reverse), CEmptyObject) :: Nil
 
         case JArrayFixedT(indices) =>
-          indices.toList.flatMap {
-            case (idx, tpe) =>
-              val refs0 = refs collect {
-                case ColumnRef(CPath(CPathIndex(`idx`), rest @ _*), ctype) =>
-                  ColumnRef(CPath(rest: _*), ctype)
-              }
-              buildPath(CPathIndex(idx) :: nodes, refs0, tpe)
+          indices.toList.flatMap { case (idx, tpe) =>
+            val refs0 = refs collect {
+              case ColumnRef(CPath(CPathIndex(`idx`), rest @ _*), ctype) =>
+                ColumnRef(CPath(rest: _*), ctype)
+            }
+            buildPath(CPathIndex(idx) :: nodes, refs0, tpe)
           }
 
         case JObjectFixedT(fields) => {
-          fields.toList.flatMap {
-            case (field, tpe) =>
-              val refs0 = refs collect {
-                case ColumnRef(CPath(CPathField(`field`), rest @ _*), ctype) =>
-                  ColumnRef(CPath(rest: _*), ctype)
-              }
-              buildPath(CPathField(field) :: nodes, refs0, tpe)
+          fields.toList.flatMap { case (field, tpe) =>
+            val refs0 = refs collect {
+              case ColumnRef(CPath(CPathField(`field`), rest @ _*), ctype) =>
+                ColumnRef(CPath(rest: _*), ctype)
+            }
+            buildPath(CPathField(field) :: nodes, refs0, tpe)
           }
         }
 
@@ -199,9 +197,8 @@ object Schema {
       cols: Map[ColumnRef, Column],
       size: Int): Int => Boolean = {
     def handleRoot(providedCTypes: Seq[CType], cols: Map[ColumnRef, Column]) = {
-      val filteredCols = cols filter {
-        case (ColumnRef(path, ctpe), _) =>
-          path == seenPath && providedCTypes.contains(ctpe)
+      val filteredCols = cols filter { case (ColumnRef(path, ctpe), _) =>
+        path == seenPath && providedCTypes.contains(ctpe)
       }
       val bits = filteredCols.values map {
         _.definedAt(0, size)
@@ -214,22 +211,21 @@ object Schema {
         emptyCType: CType,
         checkNode: CPathNode => Boolean,
         cols: Map[ColumnRef, Column]) = {
-      val objCols = cols filter {
-        case (ColumnRef(path, ctpe), _) =>
-          val emptyCrit = path == seenPath && ctpe == emptyCType
+      val objCols = cols filter { case (ColumnRef(path, ctpe), _) =>
+        val emptyCrit = path == seenPath && ctpe == emptyCType
 
-          lazy val seenPathLength = seenPath.nodes.length
-          lazy val nonemptyCrit = {
-            if (seenPathLength + 1 <= path.nodes.length) {
-              val pathToCompare = path.nodes.take(seenPathLength)
-              pathToCompare == seenPath.nodes && checkNode(
-                path.nodes(seenPathLength))
-            } else {
-              false
-            }
+        lazy val seenPathLength = seenPath.nodes.length
+        lazy val nonemptyCrit = {
+          if (seenPathLength + 1 <= path.nodes.length) {
+            val pathToCompare = path.nodes.take(seenPathLength)
+            pathToCompare == seenPath.nodes && checkNode(
+              path.nodes(seenPathLength))
+          } else {
+            false
           }
+        }
 
-          emptyCrit || nonemptyCrit
+        emptyCrit || nonemptyCrit
       }
       val objBits = objCols.values map {
         _.definedAt(0, size)
@@ -239,9 +235,8 @@ object Schema {
     }
 
     def handleEmpty(emptyCType: CType, cols: Map[ColumnRef, Column]) = {
-      val emptyCols = cols filter {
-        case (ColumnRef(path, ctpe), _) =>
-          path == seenPath && ctpe == emptyCType
+      val emptyCols = cols filter { case (ColumnRef(path, ctpe), _) =>
+        path == seenPath && ctpe == emptyCType
       }
       val emptyBits = emptyCols.values map {
         _.definedAt(0, size)
@@ -321,8 +316,8 @@ object Schema {
     }
 
     val elements = ctpes
-      .collect {
-        case ColumnRef(CPath(CPathIndex(i), _*), _) => i
+      .collect { case ColumnRef(CPath(CPathIndex(i), _*), _) =>
+        i
       }
       .toSet
       .flatMap { (i: Int) =>
@@ -462,9 +457,8 @@ object Schema {
         val keys = fields.keySet
         keys.forall { key =>
           subsumes(
-            ctpes.collect {
-              case (CPath(CPathField(`key`), tail @ _*), ctpe) =>
-                (CPath(tail: _*), ctpe)
+            ctpes.collect { case (CPath(CPathField(`key`), tail @ _*), ctpe) =>
+              (CPath(tail: _*), ctpe)
             },
             fields(key))
         }

@@ -252,9 +252,8 @@ object TypeAdjuster extends ApplicationAdapter {
           info.origTypeElem.getProject))
       val holders = infosToHolders.map(_._2)
       val maxHolders = holders.filter(h => !holders.exists(_.isAncestorOf(h)))
-      infosToHolders.map {
-        case (i, h) =>
-          (i, maxHolders.find(PsiTreeUtil.isAncestor(_, h, false)).get)
+      infosToHolders.map { case (i, h) =>
+        (i, maxHolders.find(PsiTreeUtil.isAncestor(_, h, false)).get)
       }
     }
 

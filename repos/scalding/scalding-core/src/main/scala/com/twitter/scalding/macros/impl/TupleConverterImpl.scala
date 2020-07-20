@@ -78,10 +78,9 @@ object TupleConverterImpl {
       val columns = members.map(_.columns).sum
       def applyTree(offset: Int) = {
         val trees = members
-          .scanLeft((offset, Option.empty[Tree])) {
-            case ((o, _), cb) =>
-              val nextOffset = o + cb.columns
-              (nextOffset, Some(cb.applyTree(o)))
+          .scanLeft((offset, Option.empty[Tree])) { case ((o, _), cb) =>
+            val nextOffset = o + cb.columns
+            (nextOffset, Some(cb.applyTree(o)))
           }
           .collect { case (_, Some(tree)) => tree }
 

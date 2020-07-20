@@ -20,16 +20,14 @@ object Simul extends LilaController {
     NotFound(html.simul.notFound())
 
   val home = Open { implicit ctx =>
-    fetchSimuls map {
-      case ((created, started), finished) =>
-        Ok(html.simul.home(created, started, finished))
+    fetchSimuls map { case ((created, started), finished) =>
+      Ok(html.simul.home(created, started, finished))
     }
   }
 
   val homeReload = Open { implicit ctx =>
-    fetchSimuls map {
-      case ((created, started), finished) =>
-        Ok(html.simul.homeInner(created, started, finished))
+    fetchSimuls map { case ((created, started), finished) =>
+      Ok(html.simul.homeInner(created, started, finished))
     }
   }
 
@@ -42,9 +40,8 @@ object Simul extends LilaController {
         _.fold(simulNotFound.fuccess) { sim =>
           env.version(sim.id) zip
             env.jsonView(sim) zip
-            chatOf(sim) map {
-            case ((version, data), chat) =>
-              html.simul.show(sim, version, data, chat)
+            chatOf(sim) map { case ((version, data), chat) =>
+            html.simul.show(sim, version, data, chat)
           }
         }
       } map NoCache

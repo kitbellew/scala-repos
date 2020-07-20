@@ -520,24 +520,22 @@ object Scalding {
                 flowToPipe <-
                   deltaLogOpt
                     .map { del =>
-                      leftPf.join(del).map {
-                        case (ftpA, ftpB) =>
-                          Scalding.joinFP(
-                            ftpA,
-                            ftpB
-                          ) // extra producer for store, join the two FlowToPipes
+                      leftPf.join(del).map { case (ftpA, ftpB) =>
+                        Scalding.joinFP(
+                          ftpA,
+                          ftpB
+                        ) // extra producer for store, join the two FlowToPipes
                       }
                     }
                     .getOrElse(leftPf.map { p =>
                       p.map((_, TypedPipe.empty))
                     }) // no extra producer for store
-                servOut = flowToPipe.map {
-                  case (lpipe, dpipe) =>
-                    InternalService.loopJoin[Timestamp, K, V, U](
-                      lpipe,
-                      dpipe,
-                      flatMapFn,
-                      Some(reducers))
+                servOut = flowToPipe.map { case (lpipe, dpipe) =>
+                  InternalService.loopJoin[Timestamp, K, V, U](
+                    lpipe,
+                    dpipe,
+                    flatMapFn,
+                    Some(reducers))
                 }
                 // servOut is both the store output and the join output
                 plannedStore = servOut.map(_._1)
@@ -558,9 +556,8 @@ object Scalding {
             (
               fmp.map { flowP =>
                 flowP.map { typedPipe =>
-                  typedPipe.flatMap {
-                    case (time, item) =>
-                      op(item).map((time, _))
+                  typedPipe.flatMap { case (time, item) =>
+                    op(item).map((time, _))
                   }
                 }
               },
@@ -571,9 +568,8 @@ object Scalding {
             (
               fmp.map { flowP =>
                 flowP.map { typedPipe =>
-                  typedPipe.flatMap {
-                    case (time, (k, v)) =>
-                      op(v).map { u => (time, (k, u)) }
+                  typedPipe.flatMap { case (time, (k, v)) =>
+                    op(v).map { u => (time, (k, u)) }
                   }
                 }
               },
@@ -612,9 +608,8 @@ object Scalding {
             (
               maybeMerged.map { flowP =>
                 flowP.map { typedPipe =>
-                  typedPipe.flatMap {
-                    case (time, (k, v)) =>
-                      op(k).map { newK => (time, (newK, v)) }
+                  typedPipe.flatMap { case (time, (k, v)) =>
+                    op(k).map { newK => (time, (newK, v)) }
                   }
                 }
               },
@@ -633,9 +628,8 @@ object Scalding {
             (
               fmpSharded.map { flowP =>
                 flowP.map { typedPipe =>
-                  typedPipe.flatMap {
-                    case (time, item) =>
-                      op(item).map((time, _))
+                  typedPipe.flatMap { case (time, item) =>
+                    op(item).map((time, _))
                   }
                 }
               },
@@ -704,9 +698,8 @@ object Scalding {
       mode: Mode): Try[(DateRange, TypedPipe[(Timestamp, T)])] = {
     val ts = dr.as[Interval[Timestamp]]
     val pf = planProducer(opts, prod)
-    toPipe(ts, fd, mode, pf).right.map {
-      case (ts, pipe) =>
-        (ts.as[Option[DateRange]].get, pipe)
+    toPipe(ts, fd, mode, pf).right.map { case (ts, pipe) =>
+      (ts.as[Option[DateRange]].get, pipe)
     }
   }
 
@@ -744,11 +737,10 @@ object Scalding {
       pf: PipeFactory[T]): Try[TimedPipe[T]] = {
     logger.info("Planning on interval: {}", timeSpan.as[Option[DateRange]])
     pf((timeSpan, mode)).right
-      .flatMap {
-        case (((ts, m), flowDefMutator)) =>
-          if (ts != timeSpan)
-            Left(List("Could not load all of %s, only %s".format(ts, timeSpan)))
-          else Right(flowDefMutator((flowDef, m)))
+      .flatMap { case (((ts, m), flowDefMutator)) =>
+        if (ts != timeSpan)
+          Left(List("Could not load all of %s, only %s".format(ts, timeSpan)))
+        else Right(flowDefMutator((flowDef, m)))
       }
   }
 }
@@ -853,18 +845,17 @@ class Scalding(
     Scalding
       .toPipe(timeSpan, flowDef, mode, pf)
       .right
-      .flatMap {
-        case (ts, pipe) =>
-          // Now we have a populated flowDef, time to let Cascading do it's thing:
-          try {
-            if (flowDef.getSinks.isEmpty) {
-              Right((ts, None))
-            } else {
-              Right((ts, Some(mode.newFlowConnector(config).connect(flowDef))))
-            }
-          } catch {
-            case NonFatal(e) => toTry(e)
+      .flatMap { case (ts, pipe) =>
+        // Now we have a populated flowDef, time to let Cascading do it's thing:
+        try {
+          if (flowDef.getSinks.isEmpty) {
+            Right((ts, None))
+          } else {
+            Right((ts, Some(mode.newFlowConnector(config).connect(flowDef))))
           }
+        } catch {
+          case NonFatal(e) => toTry(e)
+        }
       }
   }
 

@@ -66,14 +66,13 @@ abstract class KinesisBackedBlockRDDTests(aggregateTestData: Boolean)
       shardIdToSeqNumbers = shardIdToDataAndSeqNumbers.mapValues {
         _.map { _._2 }
       }
-      shardIdToRange = shardIdToSeqNumbers.map {
-        case (shardId, seqNumbers) =>
-          val seqNumRange = SequenceNumberRange(
-            testUtils.streamName,
-            shardId,
-            seqNumbers.head,
-            seqNumbers.last)
-          (shardId, seqNumRange)
+      shardIdToRange = shardIdToSeqNumbers.map { case (shardId, seqNumbers) =>
+        val seqNumRange = SequenceNumberRange(
+          testUtils.streamName,
+          shardId,
+          seqNumbers.head,
+          seqNumbers.last)
+        (shardId, seqNumRange)
       }
       allRanges = shardIdToRange.values.toSeq
     }

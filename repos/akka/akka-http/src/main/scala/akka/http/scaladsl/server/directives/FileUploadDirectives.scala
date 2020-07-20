@@ -30,23 +30,22 @@ trait FileUploadDirectives {
       import ctx.executionContext
       import ctx.materializer
 
-      fileUpload(fieldName).flatMap {
-        case (fileInfo, bytes) ⇒
-          val destination = File.createTempFile("akka-http-upload", ".tmp")
-          val uploadedF: Future[(FileInfo, File)] = bytes
-            .runWith(FileIO.toFile(destination))
-            .map(_ ⇒ (fileInfo, destination))
+      fileUpload(fieldName).flatMap { case (fileInfo, bytes) ⇒
+        val destination = File.createTempFile("akka-http-upload", ".tmp")
+        val uploadedF: Future[(FileInfo, File)] = bytes
+          .runWith(FileIO.toFile(destination))
+          .map(_ ⇒ (fileInfo, destination))
 
-          onComplete[(FileInfo, File)](uploadedF).flatMap {
+        onComplete[(FileInfo, File)](uploadedF).flatMap {
 
-            case Success(uploaded) ⇒
-              provide(uploaded)
+          case Success(uploaded) ⇒
+            provide(uploaded)
 
-            case Failure(ex) ⇒
-              destination.delete()
-              failWith(ex)
+          case Failure(ex) ⇒
+            destination.delete()
+            failWith(ex)
 
-          }
+        }
       }
     }
 

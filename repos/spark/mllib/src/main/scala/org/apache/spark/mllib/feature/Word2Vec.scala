@@ -338,105 +338,97 @@ class Word2Vec extends Serializable with Logging {
     for (k <- 1 to numIterations) {
       val bcSyn0Global = sc.broadcast(syn0Global)
       val bcSyn1Global = sc.broadcast(syn1Global)
-      val partial = newSentences.mapPartitionsWithIndex {
-        case (idx, iter) =>
-          val random =
-            new XORShiftRandom(seed ^ ((idx + 1) << 16) ^ ((-k - 1) << 8))
-          val syn0Modify = new Array[Int](vocabSize)
-          val syn1Modify = new Array[Int](vocabSize)
-          val model =
-            iter.foldLeft((bcSyn0Global.value, bcSyn1Global.value, 0L, 0L)) {
-              case ((syn0, syn1, lastWordCount, wordCount), sentence) =>
-                var lwc = lastWordCount
-                var wc = wordCount
-                if (wordCount - lastWordCount > 10000) {
-                  lwc = wordCount
-                  // TODO: discount by iteration?
-                  alpha =
-                    learningRate * (1 - numPartitions * wordCount.toDouble / (trainWordsCount + 1))
-                  if (alpha < learningRate * 0.0001)
-                    alpha = learningRate * 0.0001
-                  logInfo("wordCount = " + wordCount + ", alpha = " + alpha)
-                }
-                wc += sentence.length
-                var pos = 0
-                while (pos < sentence.length) {
-                  val word = sentence(pos)
-                  val b = random.nextInt(window)
-                  // Train Skip-gram
-                  var a = b
-                  while (a < window * 2 + 1 - b) {
-                    if (a != window) {
-                      val c = pos - window + a
-                      if (c >= 0 && c < sentence.length) {
-                        val lastWord = sentence(c)
-                        val l1 = lastWord * vectorSize
-                        val neu1e = new Array[Float](vectorSize)
-                        // Hierarchical softmax
-                        var d = 0
-                        while (d < bcVocab.value(word).codeLen) {
-                          val inner = bcVocab.value(word).point(d)
-                          val l2 = inner * vectorSize
-                          // Propagate hidden -> output
-                          var f =
-                            blas.sdot(vectorSize, syn0, l1, 1, syn1, l2, 1)
-                          if (f > -MAX_EXP && f < MAX_EXP) {
-                            val ind =
-                              ((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)).toInt
-                            f = expTable.value(ind)
-                            val g = ((1 - bcVocab
-                              .value(word)
-                              .code(d) - f) * alpha).toFloat
-                            blas.saxpy(vectorSize, g, syn1, l2, 1, neu1e, 0, 1)
-                            blas.saxpy(vectorSize, g, syn0, l1, 1, syn1, l2, 1)
-                            syn1Modify(inner) += 1
-                          }
-                          d += 1
+      val partial = newSentences.mapPartitionsWithIndex { case (idx, iter) =>
+        val random =
+          new XORShiftRandom(seed ^ ((idx + 1) << 16) ^ ((-k - 1) << 8))
+        val syn0Modify = new Array[Int](vocabSize)
+        val syn1Modify = new Array[Int](vocabSize)
+        val model =
+          iter.foldLeft((bcSyn0Global.value, bcSyn1Global.value, 0L, 0L)) {
+            case ((syn0, syn1, lastWordCount, wordCount), sentence) =>
+              var lwc = lastWordCount
+              var wc = wordCount
+              if (wordCount - lastWordCount > 10000) {
+                lwc = wordCount
+                // TODO: discount by iteration?
+                alpha =
+                  learningRate * (1 - numPartitions * wordCount.toDouble / (trainWordsCount + 1))
+                if (alpha < learningRate * 0.0001) alpha = learningRate * 0.0001
+                logInfo("wordCount = " + wordCount + ", alpha = " + alpha)
+              }
+              wc += sentence.length
+              var pos = 0
+              while (pos < sentence.length) {
+                val word = sentence(pos)
+                val b = random.nextInt(window)
+                // Train Skip-gram
+                var a = b
+                while (a < window * 2 + 1 - b) {
+                  if (a != window) {
+                    val c = pos - window + a
+                    if (c >= 0 && c < sentence.length) {
+                      val lastWord = sentence(c)
+                      val l1 = lastWord * vectorSize
+                      val neu1e = new Array[Float](vectorSize)
+                      // Hierarchical softmax
+                      var d = 0
+                      while (d < bcVocab.value(word).codeLen) {
+                        val inner = bcVocab.value(word).point(d)
+                        val l2 = inner * vectorSize
+                        // Propagate hidden -> output
+                        var f = blas.sdot(vectorSize, syn0, l1, 1, syn1, l2, 1)
+                        if (f > -MAX_EXP && f < MAX_EXP) {
+                          val ind =
+                            ((f + MAX_EXP) * (EXP_TABLE_SIZE / MAX_EXP / 2.0)).toInt
+                          f = expTable.value(ind)
+                          val g = ((1 - bcVocab
+                            .value(word)
+                            .code(d) - f) * alpha).toFloat
+                          blas.saxpy(vectorSize, g, syn1, l2, 1, neu1e, 0, 1)
+                          blas.saxpy(vectorSize, g, syn0, l1, 1, syn1, l2, 1)
+                          syn1Modify(inner) += 1
                         }
-                        blas.saxpy(vectorSize, 1.0f, neu1e, 0, 1, syn0, l1, 1)
-                        syn0Modify(lastWord) += 1
+                        d += 1
                       }
+                      blas.saxpy(vectorSize, 1.0f, neu1e, 0, 1, syn0, l1, 1)
+                      syn0Modify(lastWord) += 1
                     }
-                    a += 1
                   }
-                  pos += 1
+                  a += 1
                 }
-                (syn0, syn1, lwc, wc)
-            }
-          val syn0Local = model._1
-          val syn1Local = model._2
-          // Only output modified vectors.
-          Iterator
-            .tabulate(vocabSize) { index =>
-              if (syn0Modify(index) > 0) {
-                Some(
-                  (
-                    index,
-                    syn0Local
-                      .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
-                None
+                pos += 1
               }
+              (syn0, syn1, lwc, wc)
+          }
+        val syn0Local = model._1
+        val syn1Local = model._2
+        // Only output modified vectors.
+        Iterator
+          .tabulate(vocabSize) { index =>
+            if (syn0Modify(index) > 0) {
+              Some((
+                index,
+                syn0Local.slice(index * vectorSize, (index + 1) * vectorSize)))
+            } else {
+              None
             }
-            .flatten ++ Iterator
-            .tabulate(vocabSize) { index =>
-              if (syn1Modify(index) > 0) {
-                Some(
-                  (
-                    index + vocabSize,
-                    syn1Local
-                      .slice(index * vectorSize, (index + 1) * vectorSize)))
-              } else {
-                None
-              }
+          }
+          .flatten ++ Iterator
+          .tabulate(vocabSize) { index =>
+            if (syn1Modify(index) > 0) {
+              Some((
+                index + vocabSize,
+                syn1Local.slice(index * vectorSize, (index + 1) * vectorSize)))
+            } else {
+              None
             }
-            .flatten
+          }
+          .flatten
       }
       val synAgg = partial
-        .reduceByKey {
-          case (v1, v2) =>
-            blas.saxpy(vectorSize, 1.0f, v2, 1, v1, 1)
-            v1
+        .reduceByKey { case (v1, v2) =>
+          blas.saxpy(vectorSize, 1.0f, v2, 1, v1, 1)
+          v1
         }
         .collect()
       var i = 0
@@ -608,9 +600,8 @@ class Word2VecModel private[spark] (
       .take(num + 1)
       .tail
     if (vecNorm != 0.0f) {
-      topResults = topResults.map {
-        case (word, cosVal) =>
-          (word, cosVal / vecNorm)
+      topResults = topResults.map { case (word, cosVal) =>
+        (word, cosVal / vecNorm)
       }
     }
     topResults.toArray
@@ -621,11 +612,8 @@ class Word2VecModel private[spark] (
     */
   @Since("1.2.0")
   def getVectors: Map[String, Array[Float]] = {
-    wordIndex.map {
-      case (word, ind) =>
-        (
-          word,
-          wordVectors.slice(vectorSize * ind, vectorSize * ind + vectorSize))
+    wordIndex.map { case (word, ind) =>
+      (word, wordVectors.slice(vectorSize * ind, vectorSize * ind + vectorSize))
     }
   }
 

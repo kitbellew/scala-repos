@@ -447,9 +447,8 @@ class LazyMacros(val c: whitebox.Context)
     def resolve(state: State)(inst: Instance): Option[(State, Instance)] =
       resolve0(state)(inst.instTpe)
         .filter { case (_, tree, _) => !tree.equalsStructure(inst.ident) }
-        .map {
-          case (state0, extInst, actualTpe) =>
-            state0.closeInst(inst.instTpe, extInst, actualTpe)
+        .map { case (state0, extInst, actualTpe) =>
+          state0.closeInst(inst.instTpe, extInst, actualTpe)
         }
 
     def resolve0(state: State)(tpe: Type): Option[(State, Tree, Type)] = {
@@ -460,9 +459,8 @@ class LazyMacros(val c: whitebox.Context)
             stripRefinements(tpe).flatMap(State.resolveInstance(state))
           )
 
-      extInstOpt.map {
-        case (state0, extInst) =>
-          (state0, extInst, extInst.tpe.finalResultType)
+      extInstOpt.map { case (state0, extInst) =>
+        (state0, extInst, extInst.tpe.finalResultType)
       }
     }
 

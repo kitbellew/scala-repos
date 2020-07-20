@@ -90,9 +90,8 @@ object HtmlHelpersSpec extends Specification with HtmlHelpers with XmlMatchers {
       </whoa>
 
     "find the element with a requested id in a NodeSeq" in {
-      findId(xml, "boom") must beLike {
-        case Some(element) =>
-          element must ==/(<thing id="boom">Boom</thing>)
+      findId(xml, "boom") must beLike { case Some(element) =>
+        element must ==/(<thing id="boom">Boom</thing>)
       }
     }
 

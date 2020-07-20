@@ -65,9 +65,8 @@ private class BatchedOperations(batcher: Batcher) {
       in: PipeFactory[T]): Try[(Interval[Timestamp], FlowToPipe[T])] =
     // Read the delta stream for the needed times
     in((inTimes, mode)).right
-      .map {
-        case ((availableInput, innerm), f2p) =>
-          (availableInput, f2p)
+      .map { case ((availableInput, innerm), f2p) =>
+        (availableInput, f2p)
       }
 
   def readBatched[T](
@@ -77,10 +76,9 @@ private class BatchedOperations(batcher: Batcher) {
     val inTimes = batchToTimestamp(inBatches)
     // Read the delta stream for the needed times
     in((inTimes, mode)).right
-      .map {
-        case ((availableInput, innerm), f2p) =>
-          val batchesWeCanBuild = batcher.batchesCoveredBy(availableInput)
-          (batchesWeCanBuild, f2p)
+      .map { case ((availableInput, innerm), f2p) =>
+        val batchesWeCanBuild = batcher.batchesCoveredBy(availableInput)
+        (batchesWeCanBuild, f2p)
       }
   }
 }

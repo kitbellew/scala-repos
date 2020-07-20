@@ -122,9 +122,8 @@ object QuirrelCacheSpecs
       result3 must haveSize(1)
 
       def varLoc(name: String)(e: Expr) = {
-        findNode(e) {
-          case Dispatch(loc, Identifier(_, `name`), _) =>
-            (loc.lineNum, loc.colNum)
+        findNode(e) { case Dispatch(loc, Identifier(_, `name`), _) =>
+          (loc.lineNum, loc.colNum)
         }
       }
 

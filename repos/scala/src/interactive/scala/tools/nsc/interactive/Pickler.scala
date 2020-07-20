@@ -374,8 +374,8 @@ object Pickler {
       p2: Pickler[T2],
       p3: Pickler[T3]): Pickler[(T1, T2, T3)] =
     (p1 ~ p2 ~ p3)
-      .wrapped { case x1 ~ x2 ~ x3 => (x1, x2, x3) } {
-        case (x1, x2, x3) => x1 ~ x2 ~ x3
+      .wrapped { case x1 ~ x2 ~ x3 => (x1, x2, x3) } { case (x1, x2, x3) =>
+        x1 ~ x2 ~ x3
       }
       .labelled("tuple3")
 

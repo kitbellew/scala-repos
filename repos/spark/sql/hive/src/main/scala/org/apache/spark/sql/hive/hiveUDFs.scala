@@ -305,9 +305,8 @@ private[hive] case class HiveGenericUDF(
   @transient
   private lazy val deferredObjects = argumentInspectors
     .zip(children)
-    .map {
-      case (inspect, child) =>
-        new DeferredObjectAdapter(inspect, child.dataType)
+    .map { case (inspect, child) =>
+      new DeferredObjectAdapter(inspect, child.dataType)
     }
     .toArray[DeferredObject]
 

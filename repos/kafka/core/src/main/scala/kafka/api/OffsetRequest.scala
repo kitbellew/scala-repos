@@ -91,16 +91,15 @@ case class OffsetRequest(
     buffer.putInt(replicaId)
 
     buffer.putInt(requestInfoGroupedByTopic.size) // topic count
-    requestInfoGroupedByTopic.foreach {
-      case ((topic, partitionInfos)) =>
-        writeShortString(buffer, topic)
-        buffer.putInt(partitionInfos.size) // partition count
-        partitionInfos.foreach {
-          case (TopicAndPartition(_, partition), partitionInfo) =>
-            buffer.putInt(partition)
-            buffer.putLong(partitionInfo.time)
-            buffer.putInt(partitionInfo.maxNumOffsets)
-        }
+    requestInfoGroupedByTopic.foreach { case ((topic, partitionInfos)) =>
+      writeShortString(buffer, topic)
+      buffer.putInt(partitionInfos.size) // partition count
+      partitionInfos.foreach {
+        case (TopicAndPartition(_, partition), partitionInfo) =>
+          buffer.putInt(partition)
+          buffer.putLong(partitionInfo.time)
+          buffer.putInt(partitionInfo.maxNumOffsets)
+      }
     }
   }
 

@@ -90,8 +90,7 @@ class VarianceTest extends SimpleTestCase {
   }
 
   def testValueCovariantParam() {
-    assertMatches(messages("trait M[+S] {val k: S}")) {
-      case Nil =>
+    assertMatches(messages("trait M[+S] {val k: S}")) { case Nil =>
     }
   }
 
@@ -108,14 +107,12 @@ class VarianceTest extends SimpleTestCase {
   }
 
   def testTypeBoundsNoError() {
-    assertMatches(messages("trait U[M[+X] <: W[X], W[+_]")) {
-      case Nil =>
+    assertMatches(messages("trait U[M[+X] <: W[X], W[+_]")) { case Nil =>
     }
   }
 
   def testTypeBoundNoErrorParameterized() {
-    assertMatches(messages("trait V[M[X <: Bound[X]], Bound[_]]")) {
-      case Nil =>
+    assertMatches(messages("trait V[M[X <: Bound[X]], Bound[_]]")) { case Nil =>
     }
   }
 
@@ -151,8 +148,7 @@ class VarianceTest extends SimpleTestCase {
         |  }
         |
         |  println(new Sum(0, List(1, 2)).sel)
-        |}""".stripMargin)) {
-      case Nil =>
+        |}""".stripMargin)) { case Nil =>
     }
   }
 
@@ -161,8 +157,7 @@ class VarianceTest extends SimpleTestCase {
         |class Test[+T]{
         |  var arr: Array[T@uncheckedVariance] = null
         |}
-      """.stripMargin)) {
-      case Nil =>
+      """.stripMargin)) { case Nil =>
     }
   }
 
@@ -173,8 +168,7 @@ class VarianceTest extends SimpleTestCase {
         |class Test[+T] {
         |  var arr: Array[T@uV] = null
         |}
-      """.stripMargin)) {
-      case Nil =>
+      """.stripMargin)) { case Nil =>
     }
   }
 

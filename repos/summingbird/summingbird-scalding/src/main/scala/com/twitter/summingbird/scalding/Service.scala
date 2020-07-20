@@ -298,13 +298,11 @@ private[scalding] object InternalService {
       // We forceToDisk because we can't do two writes from one TypedPipe
       .forceToDisk
 
-    val leftOut = bothPipes.collect {
-      case (k, (Some((t, vu)), _)) =>
-        (t, (k, vu))
+    val leftOut = bothPipes.collect { case (k, (Some((t, vu)), _)) =>
+      (t, (k, vu))
     }
-    val rightOut = bothPipes.collect {
-      case (k, (_, Some((t, optuu)))) =>
-        (t, (k, optuu))
+    val rightOut = bothPipes.collect { case (k, (_, Some((t, optuu)))) =>
+      (t, (k, optuu))
     }
     (leftOut, rightOut)
   }

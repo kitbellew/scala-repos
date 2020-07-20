@@ -1239,9 +1239,8 @@ trait SHtml extends Loggable {
       func.owner)
     fmapFunc((testFunc)) { funcName =>
       (attrs.foldLeft(<select>{
-        opts.flatMap {
-          case option =>
-            optionToElem(option) % selected(deflt.exists(_ == option.value))
+        opts.flatMap { case option =>
+          optionToElem(option) % selected(deflt.exists(_ == option.value))
         }
       }</select>)(_ % _)) %
         ("onchange" -> (jsFunc match {
@@ -2263,9 +2262,8 @@ trait SHtml extends Loggable {
 
     attrs.foldLeft(fmapFunc(testFunc) { fn =>
       <select name={fn}>{
-        opts.flatMap {
-          case option =>
-            optionToElem(option) % selected(deflt.exists(_ == option.value))
+        opts.flatMap { case option =>
+          optionToElem(option) % selected(deflt.exists(_ == option.value))
         }
       }</select>
     })(_ % _)
@@ -2303,9 +2301,8 @@ trait SHtml extends Loggable {
       attrs: ElemAttr*): Elem =
     fmapFunc(func) { funcName =>
       attrs.foldLeft(<select name={funcName}>{
-        opts.flatMap {
-          case option =>
-            optionToElem(option) % selected(deflt.exists(_ == option.value))
+        opts.flatMap { case option =>
+          optionToElem(option) % selected(deflt.exists(_ == option.value))
         }
       }</select>)(_ % _)
     }
@@ -2345,9 +2342,8 @@ trait SHtml extends Loggable {
       NodeSeq.fromSeq(
         List(
           attrs.foldLeft(<select multiple="true" name={funcName}>{
-            opts.flatMap {
-              case option =>
-                optionToElem(option) % selected(deflt.contains(option.value))
+            opts.flatMap { case option =>
+              optionToElem(option) % selected(deflt.contains(option.value))
             }
           }</select>)(_ % _),
           <input type="hidden" value={hiddenId} name={funcName}/>
@@ -2432,9 +2428,8 @@ trait SHtml extends Loggable {
       import net.liftweb.http.js.JsCmds.JsCrVar
       funcName =>
         (attrs.foldLeft(<select>{
-          opts.flatMap {
-            case option =>
-              optionToElem(option) % selected(deflt.exists(_ == option.value))
+          opts.flatMap { case option =>
+            optionToElem(option) % selected(deflt.exists(_ == option.value))
           }
         }</select>)(_ % _)) %
           ("onchange" -> (jsFunc match {
@@ -2661,16 +2656,15 @@ trait SHtml extends Loggable {
 
     S.fmapFunc(selectionHandler _)(funcName => {
       cssSelToValue
-        .map {
-          case (cssSel, value) =>
-            s"$cssSel [name]" #> funcName &
-              s"$cssSel [value]" #> radioOptions(value) &
-              s"$cssSel [checked]" #> {
-                if (initialValue === value)
-                  Some("true")
-                else
-                  None
-              }
+        .map { case (cssSel, value) =>
+          s"$cssSel [name]" #> funcName &
+            s"$cssSel [value]" #> radioOptions(value) &
+            s"$cssSel [checked]" #> {
+              if (initialValue === value)
+                Some("true")
+              else
+                None
+            }
         }
         .reduceLeft(_ & _)
     })

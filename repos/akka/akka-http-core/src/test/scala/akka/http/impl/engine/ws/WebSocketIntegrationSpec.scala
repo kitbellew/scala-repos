@@ -35,16 +35,13 @@ class WebSocketIntegrationSpec
       .assertAllStagesStopped {
         val source = TestPublisher.probe[Message]()
         val bindingFuture = Http().bindAndHandleSync(
-          {
-            case HttpRequest(_, _, headers, _, _) ⇒
-              val upgrade = headers.collectFirst {
-                case u: UpgradeToWebSocket ⇒ u
-              }.get
-              upgrade.handleMessages(
-                Flow.fromSinkAndSource(
-                  Sink.ignore,
-                  Source.fromPublisher(source)),
-                None)
+          { case HttpRequest(_, _, headers, _, _) ⇒
+            val upgrade = headers.collectFirst {
+              case u: UpgradeToWebSocket ⇒ u
+            }.get
+            upgrade.handleMessages(
+              Flow.fromSinkAndSource(Sink.ignore, Source.fromPublisher(source)),
+              None)
           },
           interface = "localhost",
           port = 0
@@ -76,16 +73,13 @@ class WebSocketIntegrationSpec
       .assertAllStagesStopped {
         val source = TestPublisher.probe[Message]()
         val bindingFuture = Http().bindAndHandleSync(
-          {
-            case HttpRequest(_, _, headers, _, _) ⇒
-              val upgrade = headers.collectFirst {
-                case u: UpgradeToWebSocket ⇒ u
-              }.get
-              upgrade.handleMessages(
-                Flow.fromSinkAndSource(
-                  Sink.ignore,
-                  Source.fromPublisher(source)),
-                None)
+          { case HttpRequest(_, _, headers, _, _) ⇒
+            val upgrade = headers.collectFirst {
+              case u: UpgradeToWebSocket ⇒ u
+            }.get
+            upgrade.handleMessages(
+              Flow.fromSinkAndSource(Sink.ignore, Source.fromPublisher(source)),
+              None)
           },
           interface = "localhost",
           port = 0
@@ -131,12 +125,11 @@ class WebSocketIntegrationSpec
       .assertAllStagesStopped {
 
         val bindingFuture = Http().bindAndHandleSync(
-          {
-            case HttpRequest(_, _, headers, _, _) ⇒
-              val upgrade = headers.collectFirst {
-                case u: UpgradeToWebSocket ⇒ u
-              }.get
-              upgrade.handleMessages(Flow.apply, None)
+          { case HttpRequest(_, _, headers, _, _) ⇒
+            val upgrade = headers.collectFirst {
+              case u: UpgradeToWebSocket ⇒ u
+            }.get
+            upgrade.handleMessages(Flow.apply, None)
           },
           interface = "localhost",
           port = 0
@@ -183,12 +176,11 @@ class WebSocketIntegrationSpec
         })
 
         val bindingFuture = Http().bindAndHandleSync(
-          {
-            case HttpRequest(_, _, headers, _, _) ⇒
-              val upgrade = headers.collectFirst {
-                case u: UpgradeToWebSocket ⇒ u
-              }.get
-              upgrade.handleMessages(handler, None)
+          { case HttpRequest(_, _, headers, _, _) ⇒
+            val upgrade = headers.collectFirst {
+              case u: UpgradeToWebSocket ⇒ u
+            }.get
+            upgrade.handleMessages(handler, None)
           },
           interface = "localhost",
           port = 0

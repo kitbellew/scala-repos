@@ -55,18 +55,16 @@ private[streaming] object MapWithStateRDDRecord {
 
     // Call the mapping function on each record in the data iterator, and accordingly
     // update the states touched, and collect the data returned by the mapping function
-    dataIterator.foreach {
-      case (key, value) =>
-        wrappedState.wrap(newStateMap.get(key))
-        val returned =
-          mappingFunction(batchTime, key, Some(value), wrappedState)
-        if (wrappedState.isRemoved) {
-          newStateMap.remove(key)
-        } else if (wrappedState.isUpdated
-          || (wrappedState.exists && timeoutThresholdTime.isDefined)) {
-          newStateMap.put(key, wrappedState.get(), batchTime.milliseconds)
-        }
-        mappedData ++= returned
+    dataIterator.foreach { case (key, value) =>
+      wrappedState.wrap(newStateMap.get(key))
+      val returned = mappingFunction(batchTime, key, Some(value), wrappedState)
+      if (wrappedState.isRemoved) {
+        newStateMap.remove(key)
+      } else if (wrappedState.isUpdated
+        || (wrappedState.exists && timeoutThresholdTime.isDefined)) {
+        newStateMap.put(key, wrappedState.get(), batchTime.milliseconds)
+      }
+      mappedData ++= returned
     }
 
     // Get the timed out state records, call the mapping function on each and collect the
@@ -209,9 +207,8 @@ private[streaming] object MapWithStateRDD {
       .mapPartitions(
         { iterator =>
           val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
-          iterator.foreach {
-            case (key, state) =>
-              stateMap.put(key, state, updateTime.milliseconds)
+          iterator.foreach { case (key, state) =>
+            stateMap.put(key, state, updateTime.milliseconds)
           }
           Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
         },
@@ -243,9 +240,8 @@ private[streaming] object MapWithStateRDD {
       .mapPartitions(
         { iterator =>
           val stateMap = StateMap.create[K, S](SparkEnv.get.conf)
-          iterator.foreach {
-            case (key, (state, updateTime)) =>
-              stateMap.put(key, state, updateTime)
+          iterator.foreach { case (key, (state, updateTime)) =>
+            stateMap.put(key, state, updateTime)
           }
           Iterator(MapWithStateRDDRecord(stateMap, Seq.empty[E]))
         },

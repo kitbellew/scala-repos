@@ -97,8 +97,7 @@ private[testadapter] object ComUtils {
     case ("ok", "") => Some(())
   }
 
-  val okHandler: Handler[Unit] = {
-    case ("ok", "") =>
+  val okHandler: Handler[Unit] = { case ("ok", "") =>
   }
 
 }

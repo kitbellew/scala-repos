@@ -345,11 +345,10 @@ trait CaseClassMacros extends ReprTypes {
 
   def mkDependentRef(prefix: Type, path: List[Name]): (Type, Symbol) = {
     val (_, pre, sym) =
-      path.foldLeft((prefix, NoType, NoSymbol)) {
-        case ((pre, _, sym), nme) =>
-          val sym0 = pre.member(nme)
-          val pre0 = sym0.typeSignature
-          (pre0, pre, sym0)
+      path.foldLeft((prefix, NoType, NoSymbol)) { case ((pre, _, sym), nme) =>
+        val sym0 = pre.member(nme)
+        val pre0 = sym0.typeSignature
+        (pre0, pre, sym0)
       }
     (pre, sym)
   }
@@ -572,9 +571,8 @@ trait CaseClassMacros extends ReprTypes {
   }
 
   def mkCompoundTypTree(nil: Type, cons: Type, items: List[Type]): Tree =
-    items.foldRight(mkAttributedRef(nil): Tree) {
-      case (tpe, acc) =>
-        AppliedTypeTree(mkAttributedRef(cons), List(mkTypTree(tpe), acc))
+    items.foldRight(mkAttributedRef(nil): Tree) { case (tpe, acc) =>
+      AppliedTypeTree(mkAttributedRef(cons), List(mkTypTree(tpe), acc))
     }
 
   def mkCompoundTypTree1(
@@ -583,11 +581,10 @@ trait CaseClassMacros extends ReprTypes {
       items: List[Type],
       param: Type,
       arg: TypeName): Tree =
-    items.foldRight(mkAttributedRef(nil): Tree) {
-      case (tpe, acc) =>
-        AppliedTypeTree(
-          mkAttributedRef(cons),
-          List(appliedTypTree1(tpe, param, arg), acc))
+    items.foldRight(mkAttributedRef(nil): Tree) { case (tpe, acc) =>
+      AppliedTypeTree(
+        mkAttributedRef(cons),
+        List(appliedTypTree1(tpe, param, arg), acc))
     }
 
   def mkHListTypTree(items: List[Type]): Tree =
@@ -980,10 +977,10 @@ trait CaseClassMacros extends ReprTypes {
         val elems = elems0.map {
           case (name, tpe) => (TermName(c.freshName("pat")), tpe)
         }
-        val pattern = pq"${companionRef(tpe)}(..${elems.map {
-          case (binder, tpe) =>
+        val pattern =
+          pq"${companionRef(tpe)}(..${elems.map { case (binder, tpe) =>
             if (isVararg(tpe)) pq"$binder @ $repWCard" else pq"$binder"
-        }})"
+          }})"
         val reprPattern =
           elems.foldRight(q"_root_.shapeless.HNil": Tree) {
             case ((bound, _), acc) => pq"_root_.shapeless.::($bound, $acc)"
@@ -1061,10 +1058,10 @@ trait CaseClassMacros extends ReprTypes {
           val elems = args.map {
             case (name, tpe) => (TermName(c.freshName("pat")), name, tpe)
           }
-          val pattern = pq"${companionRef(tpe)}(..${elems.map {
-            case (binder, _, tpe) =>
+          val pattern =
+            pq"${companionRef(tpe)}(..${elems.map { case (binder, _, tpe) =>
               if (isVararg(tpe)) pq"$binder @ $repWCard" else pq"$binder"
-          }})"
+            }})"
           val rhs = elems.map {
             case (binder, _, tpe) => narrow(q"$binder", tpe)
           }

@@ -188,9 +188,8 @@ private[yarn] class ExecutorRunnable(
     // authentication settings.
     sparkConf.getAll
       .filter { case (k, v) => SparkConf.isExecutorStartupConf(k) }
-      .foreach {
-        case (k, v) =>
-          javaOpts += YarnSparkHadoopUtil.escapeForShell(s"-D$k=$v")
+      .foreach { case (k, v) =>
+        javaOpts += YarnSparkHadoopUtil.escapeForShell(s"-D$k=$v")
       }
 
     // Commenting it out for now - so that people can refer to the properties if required. Remove
@@ -346,11 +345,10 @@ private[yarn] class ExecutorRunnable(
       false,
       sparkConf.get(EXECUTOR_CLASS_PATH))
 
-    sparkConf.getExecutorEnv.foreach {
-      case (key, value) =>
-        // This assumes each executor environment variable set here is a path
-        // This is kept for backward compatibility and consistency with hadoop
-        YarnSparkHadoopUtil.addPathToEnvironment(env, key, value)
+    sparkConf.getExecutorEnv.foreach { case (key, value) =>
+      // This assumes each executor environment variable set here is a path
+      // This is kept for backward compatibility and consistency with hadoop
+      YarnSparkHadoopUtil.addPathToEnvironment(env, key, value)
     }
 
     // Keep this for backwards compatibility but users should move to the config

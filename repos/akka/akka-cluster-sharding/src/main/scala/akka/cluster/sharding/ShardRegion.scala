@@ -352,13 +352,12 @@ object ShardRegion {
 
     var remaining = entities
 
-    def receive = {
-      case Terminated(ref) ⇒
-        remaining -= ref
-        if (remaining.isEmpty) {
-          replyTo ! ShardStopped(shard)
-          context stop self
-        }
+    def receive = { case Terminated(ref) ⇒
+      remaining -= ref
+      if (remaining.isEmpty) {
+        replyTo ! ShardStopped(shard)
+        context stop self
+      }
     }
   }
 
@@ -645,13 +644,12 @@ class ShardRegion(
   def replyToRegionStateQuery(ref: ActorRef): Unit = {
     askAllShards[Shard.CurrentShardState](Shard.GetCurrentShardState)
       .map { shardStates ⇒
-        CurrentShardRegionState(shardStates.map {
-          case (shardId, state) ⇒
-            ShardRegion.ShardState(shardId, state.entityIds)
+        CurrentShardRegionState(shardStates.map { case (shardId, state) ⇒
+          ShardRegion.ShardState(shardId, state.entityIds)
         }.toSet)
       }
-      .recover {
-        case x: AskTimeoutException ⇒ CurrentShardRegionState(Set.empty)
+      .recover { case x: AskTimeoutException ⇒
+        CurrentShardRegionState(Set.empty)
       }
       .pipeTo(ref)
   }
@@ -663,8 +661,8 @@ class ShardRegion(
           case (shardId, stats) ⇒ (shardId, stats.entityCount)
         }.toMap)
       }
-      .recover {
-        case x: AskTimeoutException ⇒ ShardRegionStats(Map.empty)
+      .recover { case x: AskTimeoutException ⇒
+        ShardRegionStats(Map.empty)
       }
       .pipeTo(ref)
   }
@@ -695,18 +693,17 @@ class ShardRegion(
     if (entityProps.isDefined) Register(self) else RegisterProxy(self)
 
   def requestShardBufferHomes(): Unit = {
-    shardBuffers.foreach {
-      case (shard, buf) ⇒
-        coordinator.foreach { c ⇒
-          val logMsg =
-            "Retry request for shard [{}] homes from coordinator at [{}]. [{}] buffered messages."
-          if (retryCount >= 5)
-            log.warning(logMsg, shard, c, buf.size)
-          else
-            log.debug(logMsg, shard, c, buf.size)
+    shardBuffers.foreach { case (shard, buf) ⇒
+      coordinator.foreach { c ⇒
+        val logMsg =
+          "Retry request for shard [{}] homes from coordinator at [{}]. [{}] buffered messages."
+        if (retryCount >= 5)
+          log.warning(logMsg, shard, c, buf.size)
+        else
+          log.debug(logMsg, shard, c, buf.size)
 
-          c ! GetShardHome(shard)
-        }
+        c ! GetShardHome(shard)
+      }
     }
   }
 

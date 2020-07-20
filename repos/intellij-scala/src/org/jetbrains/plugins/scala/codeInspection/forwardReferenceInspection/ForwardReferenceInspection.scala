@@ -15,37 +15,36 @@ import org.jetbrains.plugins.scala.lang.resolve.ScalaResolveResult
   * Alefas
   */
 class ForwardReferenceInspection extends AbstractInspection {
-  def actionFor(holder: ProblemsHolder) = {
-    case ref: ScReferenceExpression =>
-      val member: ScMember = PsiTreeUtil.getParentOfType(ref, classOf[ScMember])
-      if (member != null) {
-        member.getContext match {
-          case tb: ScTemplateBody
-              if member.isInstanceOf[ScValue] || member
-                .isInstanceOf[ScVariable] =>
-            ref.bind() match {
-              case Some(r: ScalaResolveResult) =>
-                ScalaPsiUtil.nameContext(r.getActualElement) match {
-                  case resolved
-                      if resolved.isInstanceOf[ScValue] || resolved
-                        .isInstanceOf[ScVariable] =>
-                    if (resolved.getParent == tb && !member.hasModifierProperty(
-                        "lazy") &&
-                      !resolved
-                        .asInstanceOf[ScMember]
-                        .hasModifierProperty("lazy") &&
-                      resolved.getTextOffset > member.getTextOffset) {
-                      holder.registerProblem(
-                        ref,
-                        ScalaBundle.message(
-                          "suspicicious.forward.reference.template.body"))
-                    }
-                  case _ =>
-                }
-              case _ =>
-            }
-          case _ =>
-        }
+  def actionFor(holder: ProblemsHolder) = { case ref: ScReferenceExpression =>
+    val member: ScMember = PsiTreeUtil.getParentOfType(ref, classOf[ScMember])
+    if (member != null) {
+      member.getContext match {
+        case tb: ScTemplateBody
+            if member.isInstanceOf[ScValue] || member
+              .isInstanceOf[ScVariable] =>
+          ref.bind() match {
+            case Some(r: ScalaResolveResult) =>
+              ScalaPsiUtil.nameContext(r.getActualElement) match {
+                case resolved
+                    if resolved.isInstanceOf[ScValue] || resolved
+                      .isInstanceOf[ScVariable] =>
+                  if (resolved.getParent == tb && !member.hasModifierProperty(
+                      "lazy") &&
+                    !resolved
+                      .asInstanceOf[ScMember]
+                      .hasModifierProperty("lazy") &&
+                    resolved.getTextOffset > member.getTextOffset) {
+                    holder.registerProblem(
+                      ref,
+                      ScalaBundle.message(
+                        "suspicicious.forward.reference.template.body"))
+                  }
+                case _ =>
+              }
+            case _ =>
+          }
+        case _ =>
       }
+    }
   }
 }

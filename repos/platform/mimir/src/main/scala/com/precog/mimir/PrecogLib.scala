@@ -143,14 +143,13 @@ trait PrecogLibModule[M[+_]]
             jfield("accountId", account.accountId),
             jfield("email", account.email))
           val chunks: List[((String, Map[String, JValue]), BitSet)] =
-            chunks0 map {
-              case (row, members) =>
-                val url = urls(row)
-                val opts = options.toJValue(row) match {
-                  case JObject(elems) => elems ++ baseOpts
-                  case _              => baseOpts
-                }
-                ((url, opts), members)
+            chunks0 map { case (row, members) =>
+              val url = urls(row)
+              val opts = options.toJValue(row) match {
+                case JObject(elems) => elems ++ baseOpts
+                case _              => baseOpts
+              }
+              ((url, opts), members)
             }
 
           val resultsM: M[List[Result[Slice]]] = chunks traverse {
@@ -160,9 +159,8 @@ trait PrecogLibModule[M[+_]]
 
               concatenate(stream) map ("[" + _ + "]") flatMap { data =>
                 val fields = opts.mapValues(_.renderCompact) + ("data" -> data)
-                val requestBody = fields map {
-                  case (field, value) =>
-                    JString(field).renderCompact + ":" + value
+                val requestBody = fields map { case (field, value) =>
+                  JString(field).renderCompact + ":" + value
                 } mkString ("{", ",", "}")
 
                 def populate(data: List[JValue]): Validation[Error, Slice] = {

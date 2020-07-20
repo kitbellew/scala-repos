@@ -139,14 +139,12 @@ class AsyncRDDActionsSuite
           "Should not have reached this code path (onComplete matching Failure)")
         throw new Exception("Task should succeed")
     }
-    f.onSuccess {
-      case a: Any =>
-        sem.release()
+    f.onSuccess { case a: Any =>
+      sem.release()
     }
-    f.onFailure {
-      case t =>
-        info("Should not have reached this code path (onFailure)")
-        throw new Exception("Task should succeed")
+    f.onFailure { case t =>
+      info("Should not have reached this code path (onFailure)")
+      throw new Exception("Task should succeed")
     }
     assert(f.get() === 10)
 
@@ -179,14 +177,12 @@ class AsyncRDDActionsSuite
       case scala.util.Failure(e) =>
         sem.release()
     }
-    f.onSuccess {
-      case a: Any =>
-        info("Should not have reached this code path (onSuccess)")
-        throw new Exception("Task should fail")
+    f.onSuccess { case a: Any =>
+      info("Should not have reached this code path (onSuccess)")
+      throw new Exception("Task should fail")
     }
-    f.onFailure {
-      case t =>
-        sem.release()
+    f.onFailure { case t =>
+      sem.release()
     }
     intercept[SparkException] {
       f.get()

@@ -188,8 +188,8 @@ object ShardCoordinator {
         val (regionWithLeastShards, leastShards) =
           currentShardAllocations.minBy { case (_, v) ⇒ v.size }
         val mostShards = currentShardAllocations
-          .collect {
-            case (_, v) ⇒ v.filterNot(s ⇒ rebalanceInProgress(s))
+          .collect { case (_, v) ⇒
+            v.filterNot(s ⇒ rebalanceInProgress(s))
           }
           .maxBy(_.size)
         if (mostShards.size - leastShards.size >= rebalanceThreshold)
@@ -615,9 +615,8 @@ abstract class ShardCoordinator(
                           Some(region),
                           getShardHomeSender)
                       }
-                      .recover {
-                        case _ ⇒
-                          AllocateShardResult(shard, None, getShardHomeSender)
+                      .recover { case _ ⇒
+                        AllocateShardResult(shard, None, getShardHomeSender)
                       }
                       .pipeTo(self)
                 }
@@ -656,8 +655,8 @@ abstract class ShardCoordinator(
               // continue when future is completed
               shardsFuture
                 .map { shards ⇒ RebalanceResult(shards) }
-                .recover {
-                  case _ ⇒ RebalanceResult(Set.empty)
+                .recover { case _ ⇒
+                  RebalanceResult(Set.empty)
                 }
                 .pipeTo(self)
           }
@@ -714,9 +713,8 @@ abstract class ShardCoordinator(
                 address -> stats
             }.toMap)
           }
-          .recover {
-            case x: AskTimeoutException ⇒
-              ShardRegion.ClusterShardingStats(Map.empty)
+          .recover { case x: AskTimeoutException ⇒
+            ShardRegion.ClusterShardingStats(Map.empty)
           }
           .pipeTo(sender())
 
@@ -768,13 +766,12 @@ abstract class ShardCoordinator(
     // This is an optimization that makes it operational faster and reduces the
     // amount of lost messages during startup.
     val nodes = cluster.state.members.map(_.address)
-    state.regions.foreach {
-      case (ref, _) ⇒
-        val a = ref.path.address
-        if (a.hasLocalScope || nodes(a))
-          context.watch(ref)
-        else
-          regionTerminated(ref) // not part of cluster
+    state.regions.foreach { case (ref, _) ⇒
+      val a = ref.path.address
+      if (a.hasLocalScope || nodes(a))
+        context.watch(ref)
+      else
+        regionTerminated(ref) // not part of cluster
     }
     state.regionProxies.foreach { ref ⇒
       val a = ref.path.address
@@ -818,8 +815,7 @@ abstract class ShardCoordinator(
       }
     }
 
-  def shuttingDown: Receive = {
-    case _ ⇒ // ignore all
+  def shuttingDown: Receive = { case _ ⇒ // ignore all
   }
 
   def sendHostShardMsg(shard: ShardId, region: ActorRef): Unit = {
@@ -955,10 +951,9 @@ class PersistentShardCoordinator(
   override def receiveCommand: Receive = waitingForStateInitialized
 
   def waitingForStateInitialized: Receive =
-    ({
-      case StateInitialized ⇒
-        stateInitialized()
-        context.become(active.orElse[Any, Unit](receiveSnapshotResult))
+    ({ case StateInitialized ⇒
+      stateInitialized()
+      context.become(active.orElse[Any, Unit](receiveSnapshotResult))
 
     }: Receive)
       .orElse[Any, Unit](receiveTerminated)

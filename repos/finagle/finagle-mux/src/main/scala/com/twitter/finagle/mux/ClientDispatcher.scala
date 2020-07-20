@@ -60,16 +60,15 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
   private[this] def readLoop(): Future[Unit] =
     trans.read().flatMap(processAndRead)
 
-  readLoop().onFailure {
-    case exc: Throwable =>
-      trans.close()
-      val result = Throw(exc)
-      for (tag <- tags) {
-        // unmap the `tag` here to prevent the associated promise from
-        // being fetched from the tag map again, and setting a value twice.
-        for (u <- messages.unmap(tag))
-          u() = result
-      }
+  readLoop().onFailure { case exc: Throwable =>
+    trans.close()
+    val result = Throw(exc)
+    for (tag <- tags) {
+      // unmap the `tag` here to prevent the associated promise from
+      // being fetched from the tag map again, and setting a value twice.
+      for (u <- messages.unmap(tag))
+        u() = result
+    }
   }
 
   private[this] def process(msg: Message): Unit =
@@ -97,15 +96,14 @@ private[twitter] class ClientDispatcher(trans: Transport[Message, Message])
         val msg = f(tag)
         trans.write(msg).transform {
           case Return(_) =>
-            p.setInterruptHandler {
-              case cause =>
-                // We replace the current Updatable, if any, with a stand-in to reserve
-                // the tag of discarded requests until Tdiscarded is acknowledged by the
-                // peer.
-                for (u <- messages.maybeRemap(msg.tag, Empty)) {
-                  trans.write(Message.Tdiscarded(msg.tag, cause.toString))
-                  u() = Throw(cause)
-                }
+            p.setInterruptHandler { case cause =>
+              // We replace the current Updatable, if any, with a stand-in to reserve
+              // the tag of discarded requests until Tdiscarded is acknowledged by the
+              // peer.
+              for (u <- messages.maybeRemap(msg.tag, Empty)) {
+                trans.write(Message.Tdiscarded(msg.tag, cause.toString))
+                u() = Throw(cause)
+              }
             }
             p
           case t @ Throw(_) =>

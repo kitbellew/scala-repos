@@ -1056,8 +1056,8 @@ trait StringLibSpecs[M[+_]]
 
     def mogrify(result: Set[(Vector[SValue], SValue)]): List[Vector[String]] =
       result.toList
-        .map {
-          case (Vector(n), SArray(elems)) => (n, elems)
+        .map { case (Vector(n), SArray(elems)) =>
+          (n, elems)
         }
         .sorted(o)
         .map(_._2.map { case SString(s) => s })

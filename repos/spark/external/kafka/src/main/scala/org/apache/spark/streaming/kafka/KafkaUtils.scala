@@ -245,9 +245,8 @@ object KafkaUtils {
            kc.getLatestLeaderOffsets(topicPartitions)
          }).right
     } yield {
-      leaderOffsets.map {
-        case (tp, lo) =>
-          (tp, lo.offset)
+      leaderOffsets.map { case (tp, lo) =>
+        (tp, lo.offset)
       }
     }
     KafkaCluster.checkErrors(result)

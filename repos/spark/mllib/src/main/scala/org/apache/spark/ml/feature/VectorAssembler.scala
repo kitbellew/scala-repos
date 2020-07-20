@@ -78,14 +78,13 @@ class VectorAssembler(override val uid: String)
           val group = AttributeGroup.fromStructField(field)
           if (group.attributes.isDefined) {
             // If attributes are defined, copy them with updated names.
-            group.attributes.get.zipWithIndex.map {
-              case (attr, i) =>
-                if (attr.name.isDefined) {
-                  // TODO: Define a rigorous naming scheme.
-                  attr.withName(c + "_" + attr.name.get)
-                } else {
-                  attr.withName(c + "_" + i)
-                }
+            group.attributes.get.zipWithIndex.map { case (attr, i) =>
+              if (attr.name.isDefined) {
+                // TODO: Define a rigorous naming scheme.
+                attr.withName(c + "_" + attr.name.get)
+              } else {
+                attr.withName(c + "_" + i)
+              }
             }
           } else {
             // Otherwise, treat all attributes as numeric. If we cannot get the number of attributes
@@ -160,12 +159,11 @@ object VectorAssembler extends DefaultParamsReadable[VectorAssembler] {
         }
         cur += 1
       case vec: Vector =>
-        vec.foreachActive {
-          case (i, v) =>
-            if (v != 0.0) {
-              indices += cur + i
-              values += v
-            }
+        vec.foreachActive { case (i, v) =>
+          if (v != 0.0) {
+            indices += cur + i
+            values += v
+          }
         }
         cur += vec.size
       case null =>

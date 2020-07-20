@@ -58,13 +58,12 @@ object ActorCreationPerfSpec {
     def waiting(number: Int, replyTo: ActorRef): Receive = {
       var current = number
 
-      {
-        case Alive ⇒
-          current -= 1
-          if (current == 0) {
-            replyTo ! Waited
-            context.unbecome()
-          }
+      { case Alive ⇒
+        current -= 1
+        if (current == 0) {
+          replyTo ! Waited
+          context.unbecome()
+        }
       }
     }
   }
@@ -89,13 +88,12 @@ object ActorCreationPerfSpec {
     def waiting(number: Int, replyTo: ActorRef): Receive = {
       var current = number
 
-      {
-        case Alive ⇒
-          current -= 1
-          if (current == 0) {
-            replyTo ! Waited
-            context.unbecome()
-          }
+      { case Alive ⇒
+        current -= 1
+        if (current == 0) {
+          replyTo ! Waited
+          context.unbecome()
+        }
       }
     }
   }
@@ -140,8 +138,7 @@ class ActorCreationPerfSpec
     }
 
     driver ! WaitForChildren
-    expectMsgPF(15 seconds, s"$scenarioName waiting for Waited") {
-      case Waited ⇒
+    expectMsgPF(15 seconds, s"$scenarioName waiting for Waited") { case Waited ⇒
     }
 
     driver ! PoisonPill
@@ -169,8 +166,7 @@ class ActorCreationPerfSpec
     }
 
     driver ! WaitForChildren
-    expectMsgPF(15 seconds, s"$scenarioName waiting for Waited") {
-      case Waited ⇒
+    expectMsgPF(15 seconds, s"$scenarioName waiting for Waited") { case Waited ⇒
     }
 
     gc()

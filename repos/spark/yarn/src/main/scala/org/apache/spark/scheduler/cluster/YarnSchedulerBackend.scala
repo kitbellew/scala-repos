@@ -291,10 +291,9 @@ private[spark] abstract class YarnSchedulerBackend(
           case Some(am) =>
             Future {
               context.reply(am.askWithRetry[Boolean](r))
-            } onFailure {
-              case NonFatal(e) =>
-                logError(s"Sending $r to AM was unsuccessful", e)
-                context.sendFailure(e)
+            } onFailure { case NonFatal(e) =>
+              logError(s"Sending $r to AM was unsuccessful", e)
+              context.sendFailure(e)
             }
           case None =>
             logWarning(
@@ -307,10 +306,9 @@ private[spark] abstract class YarnSchedulerBackend(
           case Some(am) =>
             Future {
               context.reply(am.askWithRetry[Boolean](k))
-            } onFailure {
-              case NonFatal(e) =>
-                logError(s"Sending $k to AM was unsuccessful", e)
-                context.sendFailure(e)
+            } onFailure { case NonFatal(e) =>
+              logError(s"Sending $k to AM was unsuccessful", e)
+              context.sendFailure(e)
             }
           case None =>
             logWarning(

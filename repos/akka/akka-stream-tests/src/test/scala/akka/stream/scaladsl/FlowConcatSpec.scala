@@ -179,12 +179,11 @@ class FlowConcatSpec extends BaseTwoStreamsSetup {
       val sink = testFlow
         .concatMat(Source(1 to 5))(Keep.both)
         .to(Sink.ignore)
-        .mapMaterializedValue[String] {
-          case ((m1, m2), m3) ⇒
-            m1.isInstanceOf[NotUsed] should be(true)
-            m2.isInstanceOf[NotUsed] should be(true)
-            m3.isInstanceOf[NotUsed] should be(true)
-            "boo"
+        .mapMaterializedValue[String] { case ((m1, m2), m3) ⇒
+          m1.isInstanceOf[NotUsed] should be(true)
+          m2.isInstanceOf[NotUsed] should be(true)
+          m3.isInstanceOf[NotUsed] should be(true)
+          "boo"
         }
       Source(10 to 15).runWith(sink) should be("boo")
     }

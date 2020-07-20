@@ -50,9 +50,8 @@ object ClusterSingletonManagerLeaveSpec extends MultiNodeConfig {
       testActor ! "stopped"
     }
 
-    def receive = {
-      case _ ⇒
-        sender() ! self
+    def receive = { case _ ⇒
+      sender() ! self
     }
   }
 }

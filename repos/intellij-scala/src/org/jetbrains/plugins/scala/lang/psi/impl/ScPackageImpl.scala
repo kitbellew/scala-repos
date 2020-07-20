@@ -102,9 +102,8 @@ class ScPackageImpl private (val pack: PsiPackage)
           "scala") match {
           case Some(obj: ScObject) =>
             var newState = state
-            obj.getType(TypingContext.empty).foreach {
-              case tp: ScType =>
-                newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
+            obj.getType(TypingContext.empty).foreach { case tp: ScType =>
+              newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
             }
             if (!obj.processDeclarations(
                 processor,
@@ -117,9 +116,8 @@ class ScPackageImpl private (val pack: PsiPackage)
         findPackageObject(scope) match {
           case Some(obj: ScObject) =>
             var newState = state
-            obj.getType(TypingContext.empty).foreach {
-              case tp: ScType =>
-                newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
+            obj.getType(TypingContext.empty).foreach { case tp: ScType =>
+              newState = state.put(BaseProcessor.FROM_TYPE_KEY, tp)
             }
             if (!obj.processDeclarations(
                 processor,

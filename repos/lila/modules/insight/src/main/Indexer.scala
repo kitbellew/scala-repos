@@ -96,13 +96,12 @@ private final class Indexer(storage: Storage, sequencer: ActorRef) {
           }
         } &>
         Enumeratee.grouped(Iteratee takeUpTo 50) |>>>
-        Iteratee.foldM[Seq[Seq[Entry]], Int](fromNumber) {
-          case (number, xs) =>
-            val entries = xs.flatten.sortBy(_.date).zipWithIndex.map {
-              case (e, i) => e.copy(number = number + i)
-            }
-            val nextNumber = number + entries.size
-            storage bulkInsert entries inject nextNumber
+        Iteratee.foldM[Seq[Seq[Entry]], Int](fromNumber) { case (number, xs) =>
+          val entries = xs.flatten.sortBy(_.date).zipWithIndex.map {
+            case (e, i) => e.copy(number = number + i)
+          }
+          val nextNumber = number + entries.size
+          storage bulkInsert entries inject nextNumber
         }
     } void
   }

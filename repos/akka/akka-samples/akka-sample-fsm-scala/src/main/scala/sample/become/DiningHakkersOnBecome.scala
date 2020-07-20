@@ -35,10 +35,9 @@ class Chopstick extends Actor {
   }
 
   //When a Chopstick is available, it can be taken by a hakker
-  def available: Receive = {
-    case Take(hakker) =>
-      become(takenBy(hakker))
-      hakker ! Taken(self)
+  def available: Receive = { case Take(hakker) =>
+    become(takenBy(hakker))
+    hakker ! Taken(self)
   }
 
   //A Chopstick begins its existence as available
@@ -54,11 +53,10 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor {
 
   //When a hakker is thinking it can become hungry
   //and try to pick up its chopsticks and eat
-  def thinking: Receive = {
-    case Eat =>
-      become(hungry)
-      left ! Take(self)
-      right ! Take(self)
+  def thinking: Receive = { case Eat =>
+    become(hungry)
+    left ! Take(self)
+    right ! Take(self)
   }
 
   //When a hakker is hungry it tries to pick up its chopsticks and eat
@@ -105,19 +103,17 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor {
 
   //When a hakker is eating, he can decide to start to think,
   //then he puts down his chopsticks and starts to think
-  def eating: Receive = {
-    case Think =>
-      left ! Put(self)
-      right ! Put(self)
-      println("%s puts down his chopsticks and starts to think".format(name))
-      startThinking(5.seconds)
+  def eating: Receive = { case Think =>
+    left ! Put(self)
+    right ! Put(self)
+    println("%s puts down his chopsticks and starts to think".format(name))
+    startThinking(5.seconds)
   }
 
   //All hakkers start in a non-eating state
-  def receive = {
-    case Think =>
-      println("%s starts to think".format(name))
-      startThinking(5.seconds)
+  def receive = { case Think =>
+    println("%s starts to think".format(name))
+    startThinking(5.seconds)
   }
 
   private def startThinking(duration: FiniteDuration): Unit = {

@@ -118,21 +118,19 @@ final class ScalaJSRunner private[testadapter] (
 
   /** A handler for messages sent from the slave to the master */
   private[testadapter] def msgHandler(
-      slave: ComJSRunner): LoopHandler[Nothing] = {
-    case ("msg", msg) =>
-      val optReply = synchronized {
-        master.send(s"msg:$msg")
-        ComUtils.receiveResponse(master) {
-          case ("ok", msg) =>
-            if (msg.startsWith(":s:")) Some(msg.stripPrefix(":s:"))
-            else None
-        }
+      slave: ComJSRunner): LoopHandler[Nothing] = { case ("msg", msg) =>
+    val optReply = synchronized {
+      master.send(s"msg:$msg")
+      ComUtils.receiveResponse(master) { case ("ok", msg) =>
+        if (msg.startsWith(":s:")) Some(msg.stripPrefix(":s:"))
+        else None
       }
+    }
 
-      for (reply <- optReply)
-        slave.send(s"msg:$reply")
+    for (reply <- optReply)
+      slave.send(s"msg:$reply")
 
-      None
+    None
   }
 
   // Slave Management
@@ -231,8 +229,7 @@ final class ScalaJSRunner private[testadapter] (
     }
 
     master.send("newRunner:" + jsonToString(data))
-    ComUtils.receiveResponse(master) {
-      case ("ok", "") =>
+    ComUtils.receiveResponse(master) { case ("ok", "") =>
     }
   }
 

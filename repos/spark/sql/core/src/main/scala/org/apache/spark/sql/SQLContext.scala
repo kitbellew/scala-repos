@@ -879,8 +879,8 @@ class SQLContext private[sql] (
   def tableNames(): Array[String] = {
     sessionState.catalog
       .getTables(None)
-      .map {
-        case (tableName, _) => tableName
+      .map { case (tableName, _) =>
+        tableName
       }
       .toArray
   }
@@ -894,8 +894,8 @@ class SQLContext private[sql] (
   def tableNames(databaseName: String): Array[String] = {
     sessionState.catalog
       .getTables(Some(databaseName))
-      .map {
-        case (tableName, _) => tableName
+      .map { case (tableName, _) =>
+        tableName
       }
       .toArray
   }
@@ -1068,9 +1068,8 @@ object SQLContext {
       beanInfo.getPropertyDescriptors
         .filterNot(_.getName == "class")
         .map(_.getReadMethod)
-    val methodsToConverts = extractors.zip(attrs).map {
-      case (e, attr) =>
-        (e, CatalystTypeConverters.createToCatalystConverter(attr.dataType))
+    val methodsToConverts = extractors.zip(attrs).map { case (e, attr) =>
+      (e, CatalystTypeConverters.createToCatalystConverter(attr.dataType))
     }
     data.map { element =>
       new GenericInternalRow(

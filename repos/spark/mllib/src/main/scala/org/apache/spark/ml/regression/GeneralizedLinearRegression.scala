@@ -226,9 +226,8 @@ class GeneralizedLinearRegression @Since("2.0.0") (
       .select(col($(featuresCol)))
       .limit(1)
       .rdd
-      .map {
-        case Row(features: Vector) =>
-          features.size
+      .map { case Row(features: Vector) =>
+        features.size
       }
       .first()
     if (numFeatures > WeightedLeastSquares.MAX_NUM_FEATURES) {
@@ -242,9 +241,8 @@ class GeneralizedLinearRegression @Since("2.0.0") (
     val instances: RDD[Instance] = dataset
       .select(col($(labelCol)), w, col($(featuresCol)))
       .rdd
-      .map {
-        case Row(label: Double, weight: Double, features: Vector) =>
-          Instance(label, weight, features)
+      .map { case Row(label: Double, weight: Double, features: Vector) =>
+        Instance(label, weight, features)
       }
 
     if (familyObj == Gaussian && linkObj == Identity) {
@@ -515,9 +513,8 @@ object GeneralizedLinearRegression
         numInstances: Double,
         weightSum: Double): Double = {
       -2.0 * predictions
-        .map {
-          case (y: Double, mu: Double, weight: Double) =>
-            weight * dist.Binomial(1, mu).logProbabilityOf(math.round(y).toInt)
+        .map { case (y: Double, mu: Double, weight: Double) =>
+          weight * dist.Binomial(1, mu).logProbabilityOf(math.round(y).toInt)
         }
         .sum()
     }
@@ -561,9 +558,8 @@ object GeneralizedLinearRegression
         numInstances: Double,
         weightSum: Double): Double = {
       -2.0 * predictions
-        .map {
-          case (y: Double, mu: Double, weight: Double) =>
-            weight * dist.Poisson(mu).logProbabilityOf(y.toInt)
+        .map { case (y: Double, mu: Double, weight: Double) =>
+          weight * dist.Poisson(mu).logProbabilityOf(y.toInt)
         }
         .sum()
     }
@@ -608,9 +604,8 @@ object GeneralizedLinearRegression
         weightSum: Double): Double = {
       val disp = deviance / weightSum
       -2.0 * predictions
-        .map {
-          case (y: Double, mu: Double, weight: Double) =>
-            weight * dist.Gamma(1.0 / disp, mu * disp).logPdf(y)
+        .map { case (y: Double, mu: Double, weight: Double) =>
+          weight * dist.Gamma(1.0 / disp, mu * disp).logPdf(y)
         }
         .sum() + 2.0
     }
@@ -1009,9 +1004,8 @@ class GeneralizedLinearRegressionSummary private[regression] (
     predictions
       .select(col(model.getLabelCol), w)
       .rdd
-      .map {
-        case Row(y: Double, weight: Double) =>
-          family.deviance(y, wtdmu, weight)
+      .map { case Row(y: Double, weight: Double) =>
+        family.deviance(y, wtdmu, weight)
       }
       .sum()
   }
@@ -1026,9 +1020,8 @@ class GeneralizedLinearRegressionSummary private[regression] (
     predictions
       .select(col(model.getLabelCol), col(predictionCol), w)
       .rdd
-      .map {
-        case Row(label: Double, pred: Double, weight: Double) =>
-          family.deviance(label, pred, weight)
+      .map { case Row(label: Double, pred: Double, weight: Double) =>
+        family.deviance(label, pred, weight)
       }
       .sum()
   }
@@ -1060,9 +1053,8 @@ class GeneralizedLinearRegressionSummary private[regression] (
     val t = predictions
       .select(col(model.getLabelCol), col(predictionCol), w)
       .rdd
-      .map {
-        case Row(label: Double, pred: Double, weight: Double) =>
-          (label, pred, weight)
+      .map { case Row(label: Double, pred: Double, weight: Double) =>
+        (label, pred, weight)
       }
     family.aic(t, deviance, numInstances, weightSum) + 2 * rank
   }

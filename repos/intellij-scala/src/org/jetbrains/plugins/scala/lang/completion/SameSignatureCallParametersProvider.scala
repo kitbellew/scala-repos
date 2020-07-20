@@ -186,36 +186,34 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
                     if !clazz.hasTypeParameters || (clazz.hasTypeParameters &&
                       typeElement.isInstanceOf[ScParameterizedTypeElement]) =>
                   clazz.constructors.toSeq
-                    .map {
-                      case fun: ScMethodLike =>
-                        val params = fun.effectiveParameterClauses
-                        if (params.length > index)
-                          params(index).effectiveParameters.map(p =>
-                            (
-                              p.name,
-                              subst.subst(
-                                p.getType(TypingContext.empty).getOrAny)))
-                        else Seq.empty
+                    .map { case fun: ScMethodLike =>
+                      val params = fun.effectiveParameterClauses
+                      if (params.length > index)
+                        params(index).effectiveParameters.map(p =>
+                          (
+                            p.name,
+                            subst.subst(
+                              p.getType(TypingContext.empty).getOrAny)))
+                      else Seq.empty
                     }
                     .filter(_.length > 1)
                 case Some((clazz: PsiClass, subst))
                     if !clazz.hasTypeParameters || (clazz.hasTypeParameters &&
                       typeElement.isInstanceOf[ScParameterizedTypeElement]) =>
                   clazz.getConstructors.toSeq
-                    .map {
-                      case c: PsiMethod =>
-                        if (index != 0) Seq.empty
-                        else
-                          c.getParameterList.getParameters.toSeq.map {
-                            case p: PsiParameter =>
-                              (
-                                p.name,
-                                subst.subst(
-                                  ScType.create(
-                                    p.getType,
-                                    typeElement.getProject,
-                                    typeElement.getResolveScope)))
-                          }
+                    .map { case c: PsiMethod =>
+                      if (index != 0) Seq.empty
+                      else
+                        c.getParameterList.getParameters.toSeq.map {
+                          case p: PsiParameter =>
+                            (
+                              p.name,
+                              subst.subst(
+                                ScType.create(
+                                  p.getType,
+                                  typeElement.getProject,
+                                  typeElement.getResolveScope)))
+                        }
                     }
                     .filter(_.length > 1)
                 case _ => Seq.empty
@@ -240,15 +238,14 @@ class SameSignatureCallParametersProvider extends ScalaCompletionContributor {
     for (signature <- signatures if signature.forall(_._1 != null)) {
       val names = new ArrayBuffer[String]()
       val res = signature
-        .map {
-          case (name: String, tp: ScType) =>
-            methodLike.parameterList.params.find(_.name == name) match {
-              case Some(param)
-                  if param.getType(TypingContext.empty).getOrAny.conforms(tp) =>
-                names += name
-                name
-              case _ => names += ""
-            }
+        .map { case (name: String, tp: ScType) =>
+          methodLike.parameterList.params.find(_.name == name) match {
+            case Some(param)
+                if param.getType(TypingContext.empty).getOrAny.conforms(tp) =>
+              names += name
+              name
+            case _ => names += ""
+          }
         }
         .mkString(", ")
       if (!names.contains("")) {

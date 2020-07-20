@@ -344,12 +344,11 @@ class KafkaApis(
         offsetCommitRequest.offsetData.asScala.toMap -- invalidRequestsInfo.keys
 
       val (authorizedRequestInfo, unauthorizedRequestInfo) =
-        filteredRequestInfo.partition {
-          case (topicPartition, offsetMetadata) =>
-            authorize(
-              request.session,
-              Read,
-              new Resource(Topic, topicPartition.topic))
+        filteredRequestInfo.partition { case (topicPartition, offsetMetadata) =>
+          authorize(
+            request.session,
+            Read,
+            new Resource(Topic, topicPartition.topic))
         }
 
       // the callback for sending an offset commit response
@@ -359,13 +358,12 @@ class KafkaApis(
           commitStatus ++ unauthorizedRequestInfo.mapValues(_ =>
             Errors.TOPIC_AUTHORIZATION_FAILED.code)
 
-        mergedCommitStatus.foreach {
-          case (topicPartition, errorCode) =>
-            if (errorCode != Errors.NONE.code) {
-              debug(
-                s"Offset commit request with correlation id ${header.correlationId} from client ${header.clientId} " +
-                  s"on partition $topicPartition failed due to ${Errors.forCode(errorCode).exceptionName}")
-            }
+        mergedCommitStatus.foreach { case (topicPartition, errorCode) =>
+          if (errorCode != Errors.NONE.code) {
+            debug(
+              s"Offset commit request with correlation id ${header.correlationId} from client ${header.clientId} " +
+                s"on partition $topicPartition failed due to ${Errors.forCode(errorCode).exceptionName}")
+          }
         }
         val combinedCommitStatus = mergedCommitStatus.mapValues(
           new JShort(_)) ++ invalidRequestsInfo.map(
@@ -485,18 +483,17 @@ class KafkaApis(
 
       var errorInResponse = false
 
-      mergedResponseStatus.foreach {
-        case (topicPartition, status) =>
-          if (status.errorCode != Errors.NONE.code) {
-            errorInResponse = true
-            debug(
-              "Produce request with correlation id %d from client %s on partition %s failed due to %s"
-                .format(
-                  request.header.correlationId,
-                  request.header.clientId,
-                  topicPartition,
-                  Errors.forCode(status.errorCode).exceptionName))
-          }
+      mergedResponseStatus.foreach { case (topicPartition, status) =>
+        if (status.errorCode != Errors.NONE.code) {
+          errorInResponse = true
+          debug(
+            "Produce request with correlation id %d from client %s on partition %s failed due to %s"
+              .format(
+                request.header.correlationId,
+                request.header.clientId,
+                topicPartition,
+                Errors.forCode(status.errorCode).exceptionName))
+        }
       }
 
       def produceResponseCallback(delayTimeMs: Int) {
@@ -506,11 +503,8 @@ class KafkaApis(
           // the producer client will know that some error has happened and will refresh its metadata
           if (errorInResponse) {
             val exceptionsSummary = mergedResponseStatus
-              .map {
-                case (topicPartition, status) =>
-                  topicPartition -> Errors
-                    .forCode(status.errorCode)
-                    .exceptionName
+              .map { case (topicPartition, status) =>
+                topicPartition -> Errors.forCode(status.errorCode).exceptionName
               }
               .mkString(", ")
             info(
@@ -588,12 +582,11 @@ class KafkaApis(
     val fetchRequest = request.requestObj.asInstanceOf[FetchRequest]
 
     val (authorizedRequestInfo, unauthorizedRequestInfo) =
-      fetchRequest.requestInfo.partition {
-        case (topicAndPartition, _) =>
-          authorize(
-            request.session,
-            Read,
-            new Resource(Topic, topicAndPartition.topic))
+      fetchRequest.requestInfo.partition { case (topicAndPartition, _) =>
+        authorize(
+          request.session,
+          Read,
+          new Resource(Topic, topicAndPartition.topic))
       }
 
     val unauthorizedPartitionData = unauthorizedRequestInfo.mapValues { _ =>
@@ -612,54 +605,52 @@ class KafkaApis(
       val convertedPartitionData =
         // Need to down-convert message when consumer only takes magic value 0.
         if (fetchRequest.versionId <= 1) {
-          responsePartitionData.map {
-            case (tp, data) =>
-              // We only do down-conversion when:
-              // 1. The message format version configured for the topic is using magic value > 0, and
-              // 2. The message set contains message whose magic > 0
-              // This is to reduce the message format conversion as much as possible. The conversion will only occur
-              // when new message format is used for the topic and we see an old request.
-              // Please note that if the message format is changed from a higher version back to lower version this
-              // test might break because some messages in new message format can be delivered to consumers before 0.10.0.0
-              // without format down conversion.
-              val convertedData =
-                if (replicaManager
-                    .getMessageFormatVersion(tp)
-                    .exists(_ > Message.MagicValue_V0) &&
-                  !data.messages.isMagicValueInAllWrapperMessages(
-                    Message.MagicValue_V0)) {
-                  trace(
-                    s"Down converting message to V0 for fetch request from ${fetchRequest.clientId}")
-                  new FetchResponsePartitionData(
-                    data.error,
-                    data.hw,
-                    data.messages
-                      .asInstanceOf[FileMessageSet]
-                      .toMessageFormat(Message.MagicValue_V0))
-                } else data
+          responsePartitionData.map { case (tp, data) =>
+            // We only do down-conversion when:
+            // 1. The message format version configured for the topic is using magic value > 0, and
+            // 2. The message set contains message whose magic > 0
+            // This is to reduce the message format conversion as much as possible. The conversion will only occur
+            // when new message format is used for the topic and we see an old request.
+            // Please note that if the message format is changed from a higher version back to lower version this
+            // test might break because some messages in new message format can be delivered to consumers before 0.10.0.0
+            // without format down conversion.
+            val convertedData =
+              if (replicaManager
+                  .getMessageFormatVersion(tp)
+                  .exists(_ > Message.MagicValue_V0) &&
+                !data.messages.isMagicValueInAllWrapperMessages(
+                  Message.MagicValue_V0)) {
+                trace(
+                  s"Down converting message to V0 for fetch request from ${fetchRequest.clientId}")
+                new FetchResponsePartitionData(
+                  data.error,
+                  data.hw,
+                  data.messages
+                    .asInstanceOf[FileMessageSet]
+                    .toMessageFormat(Message.MagicValue_V0))
+              } else data
 
-              tp -> convertedData
+            tp -> convertedData
           }
         } else responsePartitionData
 
       val mergedPartitionData =
         convertedPartitionData ++ unauthorizedPartitionData
 
-      mergedPartitionData.foreach {
-        case (topicAndPartition, data) =>
-          if (data.error != Errors.NONE.code)
-            debug(
-              s"Fetch request with correlation id ${fetchRequest.correlationId} from client ${fetchRequest.clientId} " +
-                s"on partition $topicAndPartition failed due to ${Errors.forCode(data.error).exceptionName}")
-          // record the bytes out metrics only when the response is being sent
-          BrokerTopicStats
-            .getBrokerTopicStats(topicAndPartition.topic)
-            .bytesOutRate
-            .mark(data.messages.sizeInBytes)
-          BrokerTopicStats
-            .getBrokerAllTopicsStats()
-            .bytesOutRate
-            .mark(data.messages.sizeInBytes)
+      mergedPartitionData.foreach { case (topicAndPartition, data) =>
+        if (data.error != Errors.NONE.code)
+          debug(
+            s"Fetch request with correlation id ${fetchRequest.correlationId} from client ${fetchRequest.clientId} " +
+              s"on partition $topicAndPartition failed due to ${Errors.forCode(data.error).exceptionName}")
+        // record the bytes out metrics only when the response is being sent
+        BrokerTopicStats
+          .getBrokerTopicStats(topicAndPartition.topic)
+          .bytesOutRate
+          .mark(data.messages.sizeInBytes)
+        BrokerTopicStats
+          .getBrokerAllTopicsStats()
+          .bytesOutRate
+          .mark(data.messages.sizeInBytes)
       }
 
       def fetchResponseCallback(delayTimeMs: Int) {
@@ -714,12 +705,11 @@ class KafkaApis(
     val offsetRequest = request.body.asInstanceOf[ListOffsetRequest]
 
     val (authorizedRequestInfo, unauthorizedRequestInfo) =
-      offsetRequest.offsetData.asScala.partition {
-        case (topicPartition, _) =>
-          authorize(
-            request.session,
-            Describe,
-            new Resource(Topic, topicPartition.topic))
+      offsetRequest.offsetData.asScala.partition { case (topicPartition, _) =>
+        authorize(
+          request.session,
+          Describe,
+          new Resource(Topic, topicPartition.topic))
       }
 
     val unauthorizedResponseStatus = unauthorizedRequestInfo.mapValues(_ =>
@@ -1193,33 +1183,32 @@ class KafkaApis(
     val groups = describeRequest
       .groupIds()
       .asScala
-      .map {
-        case groupId =>
-          if (!authorize(
-              request.session,
-              Describe,
-              new Resource(Group, groupId))) {
-            groupId -> DescribeGroupsResponse.GroupMetadata.forError(
-              Errors.GROUP_AUTHORIZATION_FAILED)
-          } else {
-            val (error, summary) = coordinator.handleDescribeGroup(groupId)
-            val members = summary.members.map { member =>
-              val metadata = ByteBuffer.wrap(member.metadata)
-              val assignment = ByteBuffer.wrap(member.assignment)
-              new DescribeGroupsResponse.GroupMember(
-                member.memberId,
-                member.clientId,
-                member.clientHost,
-                metadata,
-                assignment)
-            }
-            groupId -> new DescribeGroupsResponse.GroupMetadata(
-              error.code,
-              summary.state,
-              summary.protocolType,
-              summary.protocol,
-              members.asJava)
+      .map { case groupId =>
+        if (!authorize(
+            request.session,
+            Describe,
+            new Resource(Group, groupId))) {
+          groupId -> DescribeGroupsResponse.GroupMetadata.forError(
+            Errors.GROUP_AUTHORIZATION_FAILED)
+        } else {
+          val (error, summary) = coordinator.handleDescribeGroup(groupId)
+          val members = summary.members.map { member =>
+            val metadata = ByteBuffer.wrap(member.metadata)
+            val assignment = ByteBuffer.wrap(member.assignment)
+            new DescribeGroupsResponse.GroupMember(
+              member.memberId,
+              member.clientId,
+              member.clientHost,
+              metadata,
+              assignment)
           }
+          groupId -> new DescribeGroupsResponse.GroupMetadata(
+            error.code,
+            summary.state,
+            summary.protocolType,
+            summary.protocol,
+            members.asJava)
+        }
       }
       .toMap
 
@@ -1256,9 +1245,8 @@ class KafkaApis(
 
     // the callback for sending a join-group response
     def sendResponseCallback(joinResult: JoinGroupResult) {
-      val members = joinResult.members map {
-        case (memberId, metadataArray) =>
-          (memberId, ByteBuffer.wrap(metadataArray))
+      val members = joinResult.members map { case (memberId, metadataArray) =>
+        (memberId, ByteBuffer.wrap(metadataArray))
       }
       val responseBody = new JoinGroupResponse(
         joinResult.errorCode,
@@ -1457,9 +1445,8 @@ class KafkaApis(
   }
 
   def close() {
-    quotaManagers.foreach {
-      case (apiKey, quotaManager) =>
-        quotaManager.shutdown()
+    quotaManagers.foreach { case (apiKey, quotaManager) =>
+      quotaManager.shutdown()
     }
     info("Shutdown complete.")
   }

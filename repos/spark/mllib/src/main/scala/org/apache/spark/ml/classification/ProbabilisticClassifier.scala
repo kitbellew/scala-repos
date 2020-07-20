@@ -210,9 +210,8 @@ abstract class ProbabilisticClassificationModel[
     } else {
       val thresholds: Array[Double] = getThresholds
       val scaledProbability: Array[Double] =
-        probability.toArray.zip(thresholds).map {
-          case (p, t) =>
-            if (t == 0.0) Double.PositiveInfinity else p / t
+        probability.toArray.zip(thresholds).map { case (p, t) =>
+          if (t == 0.0) Double.PositiveInfinity else p / t
         }
       Vectors.dense(scaledProbability).argmax
     }

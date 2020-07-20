@@ -48,14 +48,14 @@ private[csv] object CSVInferSchema {
     val rootTypes: Array[DataType] =
       tokenRdd.aggregate(startType)(inferRowType(nullValue), mergeRowTypes)
 
-    val structFields = header.zip(rootTypes).map {
-      case (thisHeader, rootType) =>
+    val structFields =
+      header.zip(rootTypes).map { case (thisHeader, rootType) =>
         val dType = rootType match {
           case _: NullType => StringType
           case other       => other
         }
         StructField(thisHeader, dType, nullable = true)
-    }
+      }
 
     StructType(structFields)
   }
@@ -74,9 +74,8 @@ private[csv] object CSVInferSchema {
   def mergeRowTypes(
       first: Array[DataType],
       second: Array[DataType]): Array[DataType] = {
-    first.zipAll(second, NullType, NullType).map {
-      case (a, b) =>
-        findTightestCommonType(a, b).getOrElse(NullType)
+    first.zipAll(second, NullType, NullType).map { case (a, b) =>
+      findTightestCommonType(a, b).getOrElse(NullType)
     }
   }
 

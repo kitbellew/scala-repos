@@ -120,14 +120,13 @@ class ConsumerFetcherThread(
   protected def buildFetchRequest(
       partitionMap: collection.Map[TopicAndPartition, PartitionFetchState])
       : FetchRequest = {
-    partitionMap.foreach {
-      case ((topicAndPartition, partitionFetchState)) =>
-        if (partitionFetchState.isActive)
-          fetchRequestBuilder.addFetch(
-            topicAndPartition.topic,
-            topicAndPartition.partition,
-            partitionFetchState.offset,
-            fetchSize)
+    partitionMap.foreach { case ((topicAndPartition, partitionFetchState)) =>
+      if (partitionFetchState.isActive)
+        fetchRequestBuilder.addFetch(
+          topicAndPartition.topic,
+          topicAndPartition.partition,
+          partitionFetchState.offset,
+          fetchSize)
     }
 
     new FetchRequest(fetchRequestBuilder.build())

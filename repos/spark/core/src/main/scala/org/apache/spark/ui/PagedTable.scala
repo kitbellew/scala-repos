@@ -189,9 +189,8 @@ private[ui] trait PagedTable[T] {
             .filterKeys(_ != prevPageSizeFormField)
             .filterKeys(_ != pageNumberFormField)
             .mapValues(URLDecoder.decode(_, "UTF-8"))
-            .map {
-              case (k, v) =>
-                <input type="hidden" name={k} value={v} />
+            .map { case (k, v) =>
+              <input type="hidden" name={k} value={v} />
             }
         } else {
           Seq.empty

@@ -1191,15 +1191,14 @@ class SparkIMain(
         xs match {
           case Nil => Nil
           case ((pos, msg)) :: rest =>
-            val filtered = rest filter {
-              case (pos0, msg0) =>
-                (msg != msg0) || (pos.lineContent.trim != pos0.lineContent.trim) || {
-                  // same messages and same line content after whitespace removal
-                  // but we want to let through multiple warnings on the same line
-                  // from the same run.  The untrimmed line will be the same since
-                  // there's no whitespace indenting blowing it.
-                  (pos.lineContent == pos0.lineContent)
-                }
+            val filtered = rest filter { case (pos0, msg0) =>
+              (msg != msg0) || (pos.lineContent.trim != pos0.lineContent.trim) || {
+                // same messages and same line content after whitespace removal
+                // but we want to let through multiple warnings on the same line
+                // from the same run.  The untrimmed line will be the same since
+                // there's no whitespace indenting blowing it.
+                (pos.lineContent == pos0.lineContent)
+              }
             }
             ((pos, msg)) :: loop(filtered)
         }

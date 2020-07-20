@@ -186,8 +186,8 @@ object ScalaAfterNewCompletionUtil {
       : ScalaLookupItem = {
     val name: String = psiClass.name
     val isRenamed = renamesMap
-      .filter {
-        case (aName, (renamed, aClazz)) => aName == name && aClazz == psiClass
+      .filter { case (aName, (renamed, aClazz)) =>
+        aName == name && aClazz == psiClass
       }
       .map(_._2._1)
       .headOption

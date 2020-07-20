@@ -84,12 +84,11 @@ object EnumNameFieldSpec extends Specification with MongoTestKit {
       val er = EnumNameRec.createRecord.save()
 
       val erFromDb = EnumNameRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dow.value mustEqual WeekDay.Mon
-          er2.dowOptional.valueBox mustEqual Empty
-          er2.jsonobj.value mustEqual JsonObj(WeekDay.Mon)
+      erFromDb must beLike { case Full(er2) =>
+        er2 mustEqual er
+        er2.dow.value mustEqual WeekDay.Mon
+        er2.dowOptional.valueBox mustEqual Empty
+        er2.jsonobj.value mustEqual JsonObj(WeekDay.Mon)
       }
     }
 
@@ -102,11 +101,10 @@ object EnumNameFieldSpec extends Specification with MongoTestKit {
         .save()
 
       val erFromDb = EnumNameRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dow.value mustEqual WeekDay.Tue
-          er2.jsonobj.value mustEqual JsonObj(WeekDay.Sun)
+      erFromDb must beLike { case Full(er2) =>
+        er2 mustEqual er
+        er2.dow.value mustEqual WeekDay.Tue
+        er2.jsonobj.value mustEqual JsonObj(WeekDay.Sun)
       }
     }
 
@@ -118,10 +116,9 @@ object EnumNameFieldSpec extends Specification with MongoTestKit {
       er.save()
 
       val erFromDb = EnumNameRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dowOptional.valueBox mustEqual Empty
+      erFromDb must beLike { case Full(er2) =>
+        er2 mustEqual er
+        er2.dowOptional.valueBox mustEqual Empty
       }
     }
 
@@ -133,10 +130,9 @@ object EnumNameFieldSpec extends Specification with MongoTestKit {
       er.save()
 
       val erFromDb = EnumNameRec.find(er.id.get)
-      erFromDb must beLike {
-        case Full(er2) =>
-          er2 mustEqual er
-          er2.dowOptional.valueBox mustEqual Full(WeekDay.Sat)
+      erFromDb must beLike { case Full(er2) =>
+        er2 mustEqual er
+        er2.dowOptional.valueBox mustEqual Full(WeekDay.Sat)
       }
     }
   }

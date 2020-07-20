@@ -92,18 +92,17 @@ class SearchService(
     // a snapshot of everything that we want to index
     def findBases(): Set[FileObject] = {
       log.info("findBases")
-      config.modules.flatMap {
-        case (name, m) =>
-          m.targetDirs.flatMap {
-            case d if !d.exists() => Nil
-            case d if d.isJar     => List(vfs.vfile(d))
-            case d                => scan(vfs.vfile(d))
-          } ::: m.testTargetDirs.flatMap {
-            case d if !d.exists() => Nil
-            case d if d.isJar     => List(vfs.vfile(d))
-            case d                => scan(vfs.vfile(d))
-          } :::
-            m.compileJars.map(vfs.vfile) ::: m.testJars.map(vfs.vfile)
+      config.modules.flatMap { case (name, m) =>
+        m.targetDirs.flatMap {
+          case d if !d.exists() => Nil
+          case d if d.isJar     => List(vfs.vfile(d))
+          case d                => scan(vfs.vfile(d))
+        } ::: m.testTargetDirs.flatMap {
+          case d if !d.exists() => Nil
+          case d if d.isJar     => List(vfs.vfile(d))
+          case d                => scan(vfs.vfile(d))
+        } :::
+          m.compileJars.map(vfs.vfile) ::: m.testJars.map(vfs.vfile)
       }
     }.toSet ++ config.javaLibs.map(vfs.vfile)
 
@@ -360,10 +359,9 @@ class IndexingQueueActor(searchService: SearchService)
       log.debug(s"Indexing ${batch.size} files")
 
       Future
-        .sequence(batch.map {
-          case (_, f) =>
-            if (!f.exists()) Future.successful(f -> Nil)
-            else searchService.extractSymbolsFromClassOrJar(f).map(f ->)
+        .sequence(batch.map { case (_, f) =>
+          if (!f.exists()) Future.successful(f -> Nil)
+          else searchService.extractSymbolsFromClassOrJar(f).map(f ->)
         })
         .onComplete {
           case Failure(t) =>

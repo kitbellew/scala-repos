@@ -28,10 +28,9 @@ class NativeJsonCommandSpecServlet
     else "FAIL"
   }
 
-  error {
-    case e =>
-      e.printStackTrace()
-      throw e
+  error { case e =>
+    e.printStackTrace()
+    throw e
   }
 
 }

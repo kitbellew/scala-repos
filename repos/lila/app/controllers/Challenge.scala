@@ -152,14 +152,13 @@ object Challenge extends LilaController {
             fuccess(s"{{user}} doesn't accept challenges from you.".some)
           case false =>
             Env.pref.api getPref user zip Env.relation.api
-              .fetchFollows(user.id, me.id) map {
-              case (pref, follow) =>
-                lila.pref.Pref.Challenge.block(
-                  me,
-                  user,
-                  pref.challenge,
-                  follow,
-                  fromCheat = me.engine && !user.engine)
+              .fetchFollows(user.id, me.id) map { case (pref, follow) =>
+              lila.pref.Pref.Challenge.block(
+                me,
+                user,
+                pref.challenge,
+                follow,
+                fromCheat = me.engine && !user.engine)
             }
         }
     }

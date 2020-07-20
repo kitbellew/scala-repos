@@ -96,8 +96,8 @@ private[pickling] class IrScalaSymbols[
     // TODO - Should we iterate down ALL of the hierarchy here for members, or make the algorithms do it later...
     private val allMethods = {
       val constructorArgs = tpe.members
-        .collect {
-          case meth: MethodSymbol => meth
+        .collect { case meth: MethodSymbol =>
+          meth
         }
         .toList
         .filter { x =>

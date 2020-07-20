@@ -110,26 +110,23 @@ trait DefaultReadWriteTest extends TempDirectory { self: Suite =>
       testParams: Map[String, Any],
       checkModelData: (M, M) => Unit): Unit = {
     // Set some Params to make sure set Params are serialized.
-    testParams.foreach {
-      case (p, v) =>
-        estimator.set(estimator.getParam(p), v)
+    testParams.foreach { case (p, v) =>
+      estimator.set(estimator.getParam(p), v)
     }
     val model = estimator.fit(dataset)
 
     // Test Estimator save/load
     val estimator2 = testDefaultReadWrite(estimator)
-    testParams.foreach {
-      case (p, v) =>
-        val param = estimator.getParam(p)
-        assert(estimator.get(param).get === estimator2.get(param).get)
+    testParams.foreach { case (p, v) =>
+      val param = estimator.getParam(p)
+      assert(estimator.get(param).get === estimator2.get(param).get)
     }
 
     // Test Model save/load
     val model2 = testDefaultReadWrite(model)
-    testParams.foreach {
-      case (p, v) =>
-        val param = model.getParam(p)
-        assert(model.get(param).get === model2.get(param).get)
+    testParams.foreach { case (p, v) =>
+      val param = model.getParam(p)
+      assert(model.get(param).get === model2.get(param).get)
     }
 
     checkModelData(model, model2)

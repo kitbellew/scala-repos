@@ -64,10 +64,9 @@ trait TimeComparisonSpecs[M[+_]]
 
     result must haveSize(1)
 
-    result must haveAllElementsLike {
-      case (ids, SBoolean(d)) =>
-        ids must haveSize(0)
-        d mustEqual (expected)
+    result must haveAllElementsLike { case (ids, SBoolean(d)) =>
+      ids must haveSize(0)
+      d mustEqual (expected)
     }
   }
 
@@ -239,10 +238,9 @@ trait TimeComparisonSpecs[M[+_]]
 
     result must haveSize(1)
 
-    result must haveAllElementsLike {
-      case (ids, SString(str)) =>
-        ids must haveSize(0)
-        str mustEqual (expected)
+    result must haveAllElementsLike { case (ids, SString(str)) =>
+      ids must haveSize(0)
+      str mustEqual (expected)
     }
   }
 

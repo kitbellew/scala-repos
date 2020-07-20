@@ -325,9 +325,8 @@ trait FiltersSpec extends Specification with ServerIntegrationSpecification {
     def apply(next: EssentialAction) =
       EssentialAction { request =>
         try {
-          next(request).recover {
-            case t: Throwable =>
-              Results.InternalServerError(t.getMessage)
+          next(request).recover { case t: Throwable =>
+            Results.InternalServerError(t.getMessage)
           }(play.api.libs.concurrent.Execution.Implicits.defaultContext)
         } catch {
           case t: Throwable =>

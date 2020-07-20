@@ -126,13 +126,12 @@ class DefaultSource extends FileFormat with DataSourceRegister {
         val bufferHolder = new BufferHolder(unsafeRow)
         val unsafeRowWriter = new UnsafeRowWriter(bufferHolder, 1)
 
-        iter.map {
-          case (_, line) =>
-            // Writes to an UnsafeRow directly
-            bufferHolder.reset()
-            unsafeRowWriter.write(0, line.getBytes, 0, line.getLength)
-            unsafeRow.setTotalSize(bufferHolder.totalSize())
-            unsafeRow
+        iter.map { case (_, line) =>
+          // Writes to an UnsafeRow directly
+          bufferHolder.reset()
+          unsafeRowWriter.write(0, line.getBytes, 0, line.getLength)
+          unsafeRow.setTotalSize(bufferHolder.totalSize())
+          unsafeRow
         }
       }
   }
