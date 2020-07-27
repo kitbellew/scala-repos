@@ -32,8 +32,7 @@ class RuntimeRefRenderer extends NodeRendererImpl {
   override def setName(name: String) {}
   override def isEnabled: Boolean =
     ScalaDebuggerSettings.getInstance().DONT_SHOW_RUNTIME_REFS
-  override def setEnabled(enabled: Boolean) {
-    /*see ScalaDebuggerSettingsConfigurable */
+  override def setEnabled(enabled: Boolean) { /*see ScalaDebuggerSettingsConfigurable */
   }
   override def getUniqueId: String = "ScalaRuntimeRefRenderer"
 

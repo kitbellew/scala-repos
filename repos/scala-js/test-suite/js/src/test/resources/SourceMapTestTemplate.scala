@@ -172,8 +172,7 @@ class SourceMapTest {
     /**/
     val reparsed = json.read(unparsed) /**/
 
-    for (json <- Seq(parsed, reparsed)) {
-      /**/
+    for (json <- Seq(parsed, reparsed)) { /**/
       assert(get(json, 0) == "JSON Test Pattern pass1")
       /**/
       assert(get(json, 5) == true)
@@ -208,15 +207,13 @@ sealed trait JsBoolean extends JsValue {
 }
 
 case object JsFalse extends JsBoolean {
-  def value = {
-    /**/
+  def value = { /**/
     false
   }
 }
 
 case object JsTrue extends JsBoolean {
-  def value = {
-    /**/
+  def value = { /**/
     true
   }
 }
@@ -234,8 +231,7 @@ trait Writer {
         sb.append('"') /**/
         /**/
         var i = 0 /**/
-        while (i < s.length) {
-          /**/
+        while (i < s.length) { /**/
           /**/
           s.charAt(i) match {
             case '\\' =>
@@ -419,10 +415,8 @@ class Json extends Writer2 {
     var chLinePos: Int = 0
     var chCharPos: Int = 0
 
-    def chNext() = {
-      /**/
-      if (pos < size) {
-        /**/
+    def chNext() = { /**/
+      if (pos < size) { /**/
         //ch = s1(pos).toInt
         /**/
         ch = s.charAt(pos) /**/
@@ -430,14 +424,12 @@ class Json extends Writer2 {
         chKind =
           /**
             */
-          if (ch < 255) {
-            /**/
+          if (ch < 255) { /**/
             /**/
             /**
               */
             charKind(ch)
-          } else {
-            /**/
+          } else { /**/
             /**/
             /**
               */
@@ -447,8 +439,7 @@ class Json extends Writer2 {
         if (ch == '\n'.toInt) {
           chLinePos += 1
           chCharPos = 1
-        } else {
-          /**/
+        } else { /**/
           chCharPos += 1 /**/
         }
       } else {
@@ -638,8 +629,7 @@ class Json extends Writer2 {
     def handleArray(): JsArray = {
       tokenNext()
       var result = List.empty[JsValue]
-      while (tokenKind != RARR) {
-        /**/
+      while (tokenKind != RARR) { /**/
         result = getJson() :: result
         /**/
         tokenKind match {

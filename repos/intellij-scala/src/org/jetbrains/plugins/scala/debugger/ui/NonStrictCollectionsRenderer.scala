@@ -61,8 +61,7 @@ class NonStrictCollectionsRenderer extends NodeRendererImpl {
 
   override def isEnabled: Boolean = !mustNotExpandStreams
 
-  override def setEnabled(enabled: Boolean) {
-    /*see ScalaDebuggerSettingsConfigurable */
+  override def setEnabled(enabled: Boolean) { /*see ScalaDebuggerSettingsConfigurable */
   }
 
   private def mustNotExpandStreams: Boolean =

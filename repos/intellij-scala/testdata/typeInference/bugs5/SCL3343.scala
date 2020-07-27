@@ -1,8 +1,7 @@
 class Omg[A] {
   def wtf(qwe: A => Unit) {}
   def ewq() {
-    wtf {
-      /*start*/
+    wtf { /*start*/
       _ == "sumfing" /*end*/
     }
   }

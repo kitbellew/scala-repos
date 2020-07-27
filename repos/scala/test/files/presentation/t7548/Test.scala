@@ -1,8 +1,7 @@
 import scala.tools.nsc.interactive.tests.InteractiveTest
 
 object Test extends InteractiveTest {
-  override protected def loadSources() {
-    /* don't parse or typecheck sources */
+  override protected def loadSources() { /* don't parse or typecheck sources */
   }
 
   import compiler._

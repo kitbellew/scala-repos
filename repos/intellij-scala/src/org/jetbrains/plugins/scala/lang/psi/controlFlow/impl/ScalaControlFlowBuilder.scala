@@ -407,8 +407,7 @@ class ScalaControlFlowBuilder(
     if (policy == ExtractMethodControlFlowPolicy) addFreeVariables(stmt)
   }
 
-  override def visitTypeDefinition(typedef: ScTypeDefinition) {
-    /* Do not visit inner classes either */
+  override def visitTypeDefinition(typedef: ScTypeDefinition) { /* Do not visit inner classes either */
   }
 
   override def visitBlockExpression(block: ScBlockExpr) {

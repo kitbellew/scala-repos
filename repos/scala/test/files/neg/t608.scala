@@ -6,8 +6,7 @@ trait CrashDueToTypeError {
     type s <: Bifunctor
 
     // uncomment        this-vvvvvvvvvvvvvvvvvvvvvvvvvvvv, and it compiles
-    def bimap[c](f: a => c): s {
-      /*type s=Bifunctor.this.s;*/
+    def bimap[c](f: a => c): s { /*type s=Bifunctor.this.s;*/
       type a = c;
     }
   }
