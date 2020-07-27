@@ -144,7 +144,6 @@ class Tester(ntests: Int, inputs: Array[SourceFile], settings: Settings) {
     }
     for (i <- 0 until randomBatchesPerSourceFile()) {
       val changes = Vector.fill( /**/ randomChangesPerBatch()) {
-
         /**/
         new Change(
           sfidx,

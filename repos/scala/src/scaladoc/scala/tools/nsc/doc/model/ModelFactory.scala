@@ -308,9 +308,9 @@ class ModelFactory(val global: Global, val settings: doc.Settings) {
     def isDocTemplate = false
     lazy val definitionName = optimize(
       inDefinitionTemplates.head.qualifiedName + "." + name)
-    def valueParams: List[List[ValueParam]] =
-      Nil /** TODO, these are now only computed for DocTemplates
-        */
+    def valueParams: List[List[ValueParam]] = Nil
+
+    /** TODO, these are now only computed for DocTemplates */
 
     def parentTypes =
       if (sym.hasPackageFlag || sym == AnyClass) List()

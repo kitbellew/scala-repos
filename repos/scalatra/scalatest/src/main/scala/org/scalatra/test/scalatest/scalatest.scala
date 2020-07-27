@@ -6,7 +6,8 @@ import org.scalatest._
 import org.scalatest.junit.{JUnit3Suite, JUnitRunner, JUnitSuite}
 import org.scalatest.testng.TestNGSuite
 
-@RunWith(classOf[JUnitRunner]) /**
+@RunWith(classOf[JUnitRunner])
+/**
   * Provides Scalatra test support to ScalaTest suites.  The servlet tester
   * is started before the first test in the suite and stopped after the last.
   */

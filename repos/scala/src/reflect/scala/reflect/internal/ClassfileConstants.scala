@@ -38,7 +38,8 @@ object ClassfileConstants {
     *  Note for future reference: see this thread on ACC_SUPER and
     *  how its enforcement differs on the android vm.
     *    https://groups.google.com/forum/?hl=en#!topic/jvm-languages/jVhzvq8-ZIk
-    */ // Class   Field   Method
+    */
+  // Class   Field   Method
   final val JAVA_ACC_PUBLIC = 0x0001 //   X       X        X
   final val JAVA_ACC_PRIVATE = 0x0002 //           X        X
   final val JAVA_ACC_PROTECTED = 0x0004 //           X        X

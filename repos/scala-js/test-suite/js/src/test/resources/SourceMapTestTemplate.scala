@@ -81,16 +81,15 @@ class SourceMapTest {
   }
 
   def get(json: JsValue, index: Int) = {
-
     /**/
     /**/
     json.asInstanceOf[JsArray].value(index).value
   }
 
   def get(json: JsValue, index: Int, fieldName: String) = {
-
     /**/
-    /**/ /**
+    /**/
+    /**
       */
     json
       .asInstanceOf[JsArray]
@@ -100,7 +99,6 @@ class SourceMapTest {
       .value
   }
   def run() = {
-
     /**/
     /**/
     val ugly =
@@ -175,10 +173,8 @@ class SourceMapTest {
     val reparsed = json.read(unparsed) /**/
 
     for (json <- Seq(parsed, reparsed)) {
-
       /**/
       assert(get(json, 0) == "JSON Test Pattern pass1")
-
       /**/
       assert(get(json, 5) == true)
       assert(get(json, 6) == false)
@@ -191,7 +187,6 @@ class SourceMapTest {
         "jsontext") == "{\"object with 1 member\":[\"array with 1 element\"]}")
       assert(get(json, 19) == "rosebud") /**/
     }
-
     /**/
   }
 }
@@ -214,7 +209,6 @@ sealed trait JsBoolean extends JsValue {
 
 case object JsFalse extends JsBoolean {
   def value = {
-
     /**/
     false
   }
@@ -222,7 +216,6 @@ case object JsFalse extends JsBoolean {
 
 case object JsTrue extends JsBoolean {
   def value = {
-
     /**/
     true
   }
@@ -233,7 +226,6 @@ case object JsNull extends JsValue {
 }
 
 trait Writer {
-
   /**/
   def writeToBuffer(v: JsValue, sb: StringBuffer): Unit =
     v match {
@@ -243,7 +235,6 @@ trait Writer {
         /**/
         var i = 0 /**/
         while (i < s.length) {
-
           /**/
           /**/
           s.charAt(i) match {
@@ -271,19 +262,15 @@ trait Writer {
           }
           i += 1
         }
-
         /**/
         sb.append('"')
-
       /**/
       case JsObject(kvs) =>
         /**/
         sb.append("{")
-
         /**/
         var first = true
         kvs.foreach(kv => {
-
           /**/
           val (k, v) = kv
           if (first)
@@ -294,7 +281,6 @@ trait Writer {
           /**/
           writeToBuffer(JsString(k), sb)
           sb.append(": ")
-
           /**/
           writeToBuffer(v, sb)
         })
@@ -316,20 +302,16 @@ trait Writer {
       case JsTrue      => sb.append("true")
       case JsNull      => sb.append("null")
     }
-
   /**/
 }
 class Writer2 extends Writer {
-
   /**/
   def write(v: JsValue): String = {
-
     /**/
     val sb = new StringBuffer()
     writeToBuffer(v, sb)
     sb.toString
   }
-
   /**/
 }
 class Json extends Writer2 {
@@ -375,7 +357,6 @@ class Json extends Writer2 {
     val RARR = 10
     val BLANK = 11
     val EOF = 12
-
     /**/
     // *** Character => CharKind Map ***
 
@@ -439,35 +420,34 @@ class Json extends Writer2 {
     var chCharPos: Int = 0
 
     def chNext() = {
-
       /**/
       if (pos < size) {
-
         /**/
         //ch = s1(pos).toInt
         /**/
         ch = s.charAt(pos) /**/
         /**/
-        chKind = /**
-          */ if (ch < 255) {
-
-          /**/
-          /**/ /**
+        chKind =
+          /**
             */
-          charKind(ch)
-        } else {
-
-          /**/
-          /**/ /**
-            */
-          Other
-        } /**/
+          if (ch < 255) {
+            /**/
+            /**/
+            /**
+              */
+            charKind(ch)
+          } else {
+            /**/
+            /**/
+            /**
+              */
+            Other
+          } /**/
         pos += 1
         if (ch == '\n'.toInt) {
           chLinePos += 1
           chCharPos = 1
         } else {
-
           /**/
           chCharPos += 1 /**/
         }
@@ -523,7 +503,6 @@ class Json extends Writer2 {
       } else {
         k1
       }
-
       /**/
       tokenKind = k2 /**/
       /**/
@@ -646,12 +625,10 @@ class Json extends Writer2 {
         }
       } while (tokenKind == BLANK)
     }
-
     /**/
     def tokenError(msg: String): Nothing = {
       throw new Json.Exception(msg, s, linePos, charPos)
     }
-
     /**/
     // *** PARSER ***
 
@@ -662,10 +639,8 @@ class Json extends Writer2 {
       tokenNext()
       var result = List.empty[JsValue]
       while (tokenKind != RARR) {
-
         /**/
         result = getJson() :: result
-
         /**/
         tokenKind match {
           case COMMA =>
@@ -682,7 +657,6 @@ class Json extends Writer2 {
     def handleObject(): JsObject = {
       tokenNext()
       var result = List.empty[(String, JsValue)]
-
       /**/
       while (tokenKind != ROBJ) {
         if (tokenKind != STRING && tokenKind != ID)
