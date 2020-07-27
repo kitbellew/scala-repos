@@ -351,15 +351,15 @@ trait Kinds {
           case Head(o, _, _) => o
           case _             => 0
         }).max
-        StringState((tokens /: (0 to maxOrder)) {
-          (ts: Seq[ScalaNotation], o: Int) =>
+        StringState(
+          (tokens /: (0 to maxOrder)) { (ts: Seq[ScalaNotation], o: Int) =>
             if (countByOrder(o) <= 1)
               ts map {
                 case Head(`o`, _, a) => Head(o, None, a)
                 case t               => t
               }
             else ts
-        })
+          })
       }
       // Replace Head(o, n, Some(_)) with Head(o, n, None), so F[F] becomes F[A].
       def removeAlias: StringState = {

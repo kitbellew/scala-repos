@@ -109,12 +109,12 @@ class ConsumerFetcherManager(
       }
 
       try {
-        addFetcherForPartitions(leaderForPartitionsMap.map {
-          case (topicAndPartition, broker) =>
+        addFetcherForPartitions(
+          leaderForPartitionsMap.map { case (topicAndPartition, broker) =>
             topicAndPartition -> BrokerAndInitialOffset(
               broker,
               partitionMap(topicAndPartition).getFetchOffset())
-        })
+          })
       } catch {
         case t: Throwable => {
           if (!isRunning.get())

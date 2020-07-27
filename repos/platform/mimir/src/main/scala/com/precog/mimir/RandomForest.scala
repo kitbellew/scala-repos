@@ -712,12 +712,12 @@ trait RandomForestLibModule[M[+_]] extends ColumnarTableLibModule[M] {
                 ("model" + (i + 1)) -> elem
               })(collection.breakOut)
 
-            lazy val specs: Seq[TransSpec1] = models.map({
-              case (modelId, (jtype, _)) =>
+            lazy val specs: Seq[TransSpec1] =
+              models.map({ case (modelId, (jtype, _)) =>
                 trans.WrapObject(
                   trans.TypedSubsumes(TransSpec1.Id, jtype),
                   modelId)
-            })(collection.breakOut)
+              })(collection.breakOut)
 
             lazy val spec: TransSpec1 = liftToValues(
               OuterObjectConcat(specs: _*))

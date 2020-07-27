@@ -202,19 +202,17 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
     (rSum == expected) :| str(r)
   }
 
-  property("length") =
-    forAll(myGen suchThat (r => expectedSize(r).toInt == expectedSize(r))) {
-      r =>
+  property("length") = forAll(
+    myGen suchThat (r => expectedSize(r).toInt == expectedSize(r))) { r =>
 //    println("length "+str(r))
-        (r.length == expectedSize(r)) :| str(r)
-    }
+    (r.length == expectedSize(r)) :| str(r)
+  }
 
-  property("isEmpty") =
-    forAll(myGen suchThat (r => expectedSize(r).toInt == expectedSize(r))) {
-      r =>
+  property("isEmpty") = forAll(
+    myGen suchThat (r => expectedSize(r).toInt == expectedSize(r))) { r =>
 //    println("isEmpty "+str(r))
-        (r.isEmpty == (expectedSize(r) == 0L)) :| str(r)
-    }
+    (r.isEmpty == (expectedSize(r) == 0L)) :| str(r)
+  }
 
   property("contains") = forAll(myGen, arbInt.arbitrary) { (r, x) =>
 //    println("contains "+str(r))
@@ -236,15 +234,14 @@ abstract class RangeTest(kind: String) extends Properties("Range " + kind) {
       r) + " / " + str(t) + ": " + x
   }
 
-  property("init") =
-    forAll(myGen suchThat (r => expectedSize(r).toInt == expectedSize(r))) {
-      r =>
+  property("init") = forAll(
+    myGen suchThat (r => expectedSize(r).toInt == expectedSize(r))) { r =>
 //    println("init "+str(r))
-        (r.size == 0) || {
-          val t = r.init
-          (t.size + 1 == r.size) && (t.isEmpty || t.head == r.head)
-        }
+    (r.size == 0) || {
+      val t = r.init
+      (t.size + 1 == r.size) && (t.isEmpty || t.head == r.head)
     }
+  }
 
   property("takeWhile") = forAll(
     myGen suchThat (r => expectedSize(r).toInt == expectedSize(r)),

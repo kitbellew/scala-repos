@@ -35,11 +35,11 @@ class ClusterRouterSupervisorSpec extends AkkaSpec("""
         ClusterRouterPool(
           RoundRobinPool(
             nrOfInstances = 1,
-            supervisorStrategy = OneForOneStrategy(loggingEnabled = false) {
-              case _ ⇒
+            supervisorStrategy =
+              OneForOneStrategy(loggingEnabled = false) { case _ ⇒
                 testActor ! "supervised"
                 SupervisorStrategy.Stop
-            }),
+              }),
           ClusterRouterPoolSettings(
             totalInstances = 1,
             maxInstancesPerNode = 1,

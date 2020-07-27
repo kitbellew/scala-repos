@@ -965,12 +965,12 @@ private[spark] object JsonProtocol {
 
     // Updated blocks
     Utils.jsonOption(json \ "Updated Blocks").foreach { blocksJson =>
-      metrics.setUpdatedBlockStatuses(blocksJson.extract[List[JValue]].map {
-        blockJson =>
+      metrics.setUpdatedBlockStatuses(
+        blocksJson.extract[List[JValue]].map { blockJson =>
           val id = BlockId((blockJson \ "Block ID").extract[String])
           val status = blockStatusFromJson(blockJson \ "Status")
           (id, status)
-      })
+        })
     }
 
     metrics

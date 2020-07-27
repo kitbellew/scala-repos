@@ -105,10 +105,10 @@ class HttpExt(private val config: Config)(implicit val system: ActorSystem)
     connections
       .map { case Tcp.IncomingConnection(localAddress, remoteAddress, flow) ⇒
         val layer = serverLayer(settings, Some(remoteAddress), log)
-        val flowWithTimeoutRecovered = flow.via(MapError {
-          case t: TimeoutException ⇒
+        val flowWithTimeoutRecovered =
+          flow.via(MapError { case t: TimeoutException ⇒
             new HttpConnectionTimeoutException(t.getMessage)
-        })
+          })
         IncomingConnection(
           localAddress,
           remoteAddress,

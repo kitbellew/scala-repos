@@ -127,30 +127,30 @@ object SimpleExpression {
   def unary[T1, R: TypedType](
       f: (Node, JdbcStatementBuilderComponent#QueryBuilder) => Unit)
       : (Rep[T1] => Rep[R]) = {
-    val g = apply({
-      (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
+    val g =
+      apply({ (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), qb)
-    });
+      });
     { t1: Rep[T1] => g(Seq(t1)) }
   }
 
   def binary[T1, T2, R: TypedType](
       f: (Node, Node, JdbcStatementBuilderComponent#QueryBuilder) => Unit)
       : ((Rep[T1], Rep[T2]) => Rep[R]) = {
-    val g = apply({
-      (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
+    val g =
+      apply({ (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), ch(1), qb)
-    });
+      });
     { (t1: Rep[T1], t2: Rep[T2]) => g(Seq(t1, t2)) }
   }
 
   def ternary[T1, T2, T3, R: TypedType](
       f: (Node, Node, Node, JdbcStatementBuilderComponent#QueryBuilder) => Unit)
       : ((Rep[T1], Rep[T2], Rep[T3]) => Rep[R]) = {
-    val g = apply({
-      (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
+    val g =
+      apply({ (ch: Seq[Node], qb: JdbcStatementBuilderComponent#QueryBuilder) =>
         f(ch(0), ch(1), ch(2), qb)
-    });
+      });
     { (t1: Rep[T1], t2: Rep[T2], t3: Rep[T3]) => g(Seq(t1, t2, t3)) }
   }
 }

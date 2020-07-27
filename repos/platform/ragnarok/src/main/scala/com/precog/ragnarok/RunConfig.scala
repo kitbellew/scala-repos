@@ -155,10 +155,10 @@ object RunConfig {
           args,
           config map { config =>
             val g = { (path: List[String], _: Any) => path contains test }
-            val select = config.select map {
-              f => (path: List[String], test: PerfTest) =>
+            val select =
+              config.select map { f => (path: List[String], test: PerfTest) =>
                 (f(path, test) || g(path, test))
-            } orElse Some(g)
+              } orElse Some(g)
 
             config.copy(select = select)
           }

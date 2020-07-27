@@ -572,8 +572,8 @@ object ScalaReflection extends ScalaReflection {
 
           case t if t <:< localTypeOf[Product] =>
             val params = getConstructorParameters(t)
-            val nonNullOutput = CreateNamedStruct(params.flatMap {
-              case (fieldName, fieldType) =>
+            val nonNullOutput =
+              CreateNamedStruct(params.flatMap { case (fieldName, fieldType) =>
                 val fieldValue =
                   Invoke(inputObject, fieldName, dataTypeFor(fieldType))
                 val clsName = getClassNameFromType(fieldType)
@@ -583,7 +583,7 @@ object ScalaReflection extends ScalaReflection {
                   fieldValue,
                   fieldType,
                   newPath) :: Nil
-            })
+              })
             val nullOutput =
               expressions.Literal.create(null, nonNullOutput.dataType)
             expressions.If(IsNull(inputObject), nullOutput, nonNullOutput)

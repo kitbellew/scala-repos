@@ -978,19 +978,19 @@ trait EvaluatorModule[M[+_]]
                 grouping <- resolveTopLevelGroup(spec, splits)
                 state <- monadState.gets(identity)
                 grouping2 <- transState liftM grouping
-                result <- transState liftM mn(Table.merge(grouping2) {
-                  (key, map) =>
+                result <-
+                  transState liftM mn(Table.merge(grouping2) { (key, map) =>
                     val splits2 = splits + (id -> (map andThen mn))
-                    val rewritten = params.foldLeft(child) {
-                      case (child, param) =>
+                    val rewritten =
+                      params.foldLeft(child) { case (child, param) =>
                         val subKey = key \ param.id.toString
                         replaceNode(child, param, Const(subKey)(param.loc))
-                    }
+                      }
 
                     val back =
                       fullEval(rewritten, splits2, id :: splits.keys.toList)
                     back.eval(state)
-                })
+                  })
               } yield {
                 result.transform(idSpec)
               }

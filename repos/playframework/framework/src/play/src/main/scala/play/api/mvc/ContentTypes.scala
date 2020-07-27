@@ -825,8 +825,8 @@ trait BodyParsers {
         accumulator: Accumulator[ByteString, Either[Result, A]])
         : Accumulator[ByteString, Either[Result, A]] = {
       val takeUpToFlow = Flow.fromGraph(new BodyParsers.TakeUpTo(maxLength))
-      Accumulator(takeUpToFlow.toMat(accumulator.toSink) {
-        (statusFuture, resultFuture) =>
+      Accumulator(
+        takeUpToFlow.toMat(accumulator.toSink) { (statusFuture, resultFuture) =>
           import play.api.libs.iteratee.Execution.Implicits.trampoline
           val defaultCtx =
             play.api.libs.concurrent.Execution.Implicits.defaultContext
@@ -842,7 +842,7 @@ trait BodyParsers {
               badResult.map(Left(_))
             case MaxSizeNotExceeded => resultFuture
           }
-      })
+        })
     }
 
     /**

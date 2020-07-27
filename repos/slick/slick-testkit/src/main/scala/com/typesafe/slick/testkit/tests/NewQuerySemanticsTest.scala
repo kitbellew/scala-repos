@@ -399,14 +399,16 @@ class NewQuerySemanticsTest extends AsyncTest[RelationalTestDB] {
 
     def a6 =
       seq(
-        q7b.result.named("Union with filter on the outside").map(_.toSet).map {
-          r7b =>
+        q7b.result
+          .named("Union with filter on the outside")
+          .map(_.toSet)
+          .map { r7b =>
             r7b shouldBe Set(
               ("French_Roast", 49, 1),
               ("Espresso", 150, 2),
               ("French_Roast_Decaf", 49, 2)
             )
-        },
+          },
         q8.result.named("Outer join").map(_.toSet).map { r8 =>
           r8 shouldBe Set(
             ("Colombian", Some("Colombian")),

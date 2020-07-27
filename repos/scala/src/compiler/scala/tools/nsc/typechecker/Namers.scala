@@ -1620,15 +1620,15 @@ trait Namers extends MethodSynthesis {
         // parse the annotations only once.
         if (!annotated.isInitialized) tree match {
           case defn: MemberDef =>
-            val ainfos = defn.mods.annotations filterNot (_ eq null) map {
-              ann =>
+            val ainfos =
+              defn.mods.annotations filterNot (_ eq null) map { ann =>
                 val ctx = typer.context
                 val annCtx = ctx.makeNonSilent(ann)
                 // need to be lazy, #1782. beforeTyper to allow inferView in annotation args, SI-5892.
                 AnnotationInfo lazily {
                   enteringTyper(newTyper(annCtx) typedAnnotation ann)
                 }
-            }
+              }
             if (ainfos.nonEmpty) {
               annotated setAnnotations ainfos
               if (annotated.isTypeSkolem)

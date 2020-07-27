@@ -186,11 +186,11 @@ object LazilyGeneratedOrdering {
     * Creates a [[LazilyGeneratedOrdering]] for the given schema, in natural ascending order.
     */
   def forSchema(schema: StructType): LazilyGeneratedOrdering = {
-    new LazilyGeneratedOrdering(schema.zipWithIndex.map {
-      case (field, ordinal) =>
+    new LazilyGeneratedOrdering(
+      schema.zipWithIndex.map { case (field, ordinal) =>
         SortOrder(
           BoundReference(ordinal, field.dataType, nullable = true),
           Ascending)
-    })
+      })
   }
 }

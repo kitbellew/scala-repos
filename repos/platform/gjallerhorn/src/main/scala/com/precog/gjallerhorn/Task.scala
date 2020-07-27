@@ -196,14 +196,14 @@ abstract class Task(settings: Settings) extends Specification {
         .addQueryParameter("apiKey", authApiKey))()
 
   def grantBody(perms: List[(String, String, List[String])]): String =
-    JObject("permissions" -> JArray(perms.map {
-      case (accessType, path, owners) =>
+    JObject(
+      "permissions" -> JArray(perms.map { case (accessType, path, owners) =>
         val ids = JArray(owners.map(JString(_)))
         JObject(
           "accessType" -> JString(accessType),
           "path" -> JString(path),
           "ownerAccountIds" -> ids)
-    })).renderCompact
+      })).renderCompact
 
   def createGrant(
       apiKey: String,

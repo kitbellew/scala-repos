@@ -629,10 +629,10 @@ object ScalaJSPluginInternal {
       if (javaSystemProperties.isEmpty) {
         Nil
       } else {
-        val formattedProps = javaSystemProperties.map {
-          case (propName, propValue) =>
+        val formattedProps =
+          javaSystemProperties.map { case (propName, propValue) =>
             "\"" + escapeJS(propName) + "\": \"" + escapeJS(propValue) + "\""
-        }
+          }
         val code = {
           "var __ScalaJSEnv = (typeof __ScalaJSEnv === \"object\" && __ScalaJSEnv) ? __ScalaJSEnv : {};\n" +
             "__ScalaJSEnv.javaSystemProperties = {" + formattedProps.mkString(

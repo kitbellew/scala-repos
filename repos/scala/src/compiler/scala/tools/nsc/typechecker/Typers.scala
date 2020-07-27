@@ -6347,15 +6347,14 @@ trait Typers
       }
 
       def typedExistentialTypeTree(tree: ExistentialTypeTree) = {
-        val tree1 =
-          typerWithLocalContext(context.makeNewScope(tree, context.owner)) {
-            typer =>
-              if (context.inTypeConstructorAllowed)
-                typer.context.withinTypeConstructorAllowed(
-                  typer.typedExistentialTypeTree(tree, mode))
-              else
-                typer.typedExistentialTypeTree(tree, mode)
-          }
+        val tree1 = typerWithLocalContext(
+          context.makeNewScope(tree, context.owner)) { typer =>
+          if (context.inTypeConstructorAllowed)
+            typer.context.withinTypeConstructorAllowed(
+              typer.typedExistentialTypeTree(tree, mode))
+          else
+            typer.typedExistentialTypeTree(tree, mode)
+        }
         checkExistentialsFeature(tree1.pos, tree1.tpe, "the existential type")
         tree1
       }

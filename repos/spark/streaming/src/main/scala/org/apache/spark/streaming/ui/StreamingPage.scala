@@ -238,14 +238,14 @@ private[ui] class StreamingPage(parent: StreamingTab)
         batchInfo.numRecords * 1000.0 / listener.batchDuration)
     })
 
-    val schedulingDelay = new MillisecondsStatUIData(batches.flatMap {
-      batchInfo =>
+    val schedulingDelay = new MillisecondsStatUIData(
+      batches.flatMap { batchInfo =>
         batchInfo.schedulingDelay.map(batchInfo.batchTime.milliseconds -> _)
-    })
-    val processingTime = new MillisecondsStatUIData(batches.flatMap {
-      batchInfo =>
+      })
+    val processingTime = new MillisecondsStatUIData(
+      batches.flatMap { batchInfo =>
         batchInfo.processingDelay.map(batchInfo.batchTime.milliseconds -> _)
-    })
+      })
     val totalDelay = new MillisecondsStatUIData(batches.flatMap { batchInfo =>
       batchInfo.totalDelay.map(batchInfo.batchTime.milliseconds -> _)
     })

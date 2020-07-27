@@ -180,12 +180,12 @@ private[akka] class DistributedPubSubMessageSerializer(
 
   private def deltaFromProto(delta: dm.Delta): Delta =
     Delta(delta.getBucketsList.asScala.toVector.map { b ⇒
-      val content: TreeMap[String, ValueHolder] = b.getContentList.asScala.map {
-        entry ⇒
+      val content: TreeMap[String, ValueHolder] =
+        b.getContentList.asScala.map { entry ⇒
           entry.getKey -> ValueHolder(
             entry.getVersion,
             if (entry.hasRef) Some(resolveActorRef(entry.getRef)) else None)
-      }(breakOut)
+        }(breakOut)
       Bucket(addressFromProto(b.getOwner), b.getVersion, content)
     })
 

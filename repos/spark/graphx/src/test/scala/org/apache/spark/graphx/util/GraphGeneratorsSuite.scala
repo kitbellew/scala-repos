@@ -123,10 +123,10 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
       val graph_round1_edges = graph_round1.edges.collect()
       val graph_round2_edges = graph_round2.edges.collect()
 
-      assert(graph_round1_edges.zip(graph_round2_edges).forall {
-        case (e1, e2) =>
+      assert(
+        graph_round1_edges.zip(graph_round2_edges).forall { case (e1, e2) =>
           e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
-      })
+        })
 
       val graph_round3 =
         GraphGenerators.logNormalGraph(
@@ -138,10 +138,10 @@ class GraphGeneratorsSuite extends SparkFunSuite with LocalSparkContext {
 
       val graph_round3_edges = graph_round3.edges.collect()
 
-      assert(!graph_round1_edges.zip(graph_round3_edges).forall {
-        case (e1, e2) =>
+      assert(
+        !graph_round1_edges.zip(graph_round3_edges).forall { case (e1, e2) =>
           e1.srcId == e2.srcId && e1.dstId == e2.dstId && e1.attr == e2.attr
-      })
+        })
     }
   }
 

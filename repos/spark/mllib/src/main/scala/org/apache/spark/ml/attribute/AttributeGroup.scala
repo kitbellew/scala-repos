@@ -71,10 +71,10 @@ class AttributeGroup private (
   /**
     * Optional array of attributes. At most one of `numAttributes` and `attributes` can be defined.
     */
-  val attributes: Option[Array[Attribute]] = attrs.map(_.view.zipWithIndex.map {
-    case (attr, i) =>
+  val attributes: Option[Array[Attribute]] =
+    attrs.map(_.view.zipWithIndex.map { case (attr, i) =>
       attr.withIndex(i)
-  }.toArray)
+    }.toArray)
 
   private lazy val nameToIndex: Map[String, Int] = {
     attributes

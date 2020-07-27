@@ -125,15 +125,15 @@ object Upgrade_0_8_3 {
           val toTargetEntityType = fromTargetEntityType
             .map { et => NameMap.getOrElse(et, et) }
 
-          val toProperties = DataMap(fromEvent.properties.fields.map {
-            case (k, v) =>
+          val toProperties =
+            DataMap(fromEvent.properties.fields.map { case (k, v) =>
               val newK = if (obsProperties.contains(k)) {
                 val nK = k.stripPrefix("pio_")
                 logger.info(s"property ${k} will be renamed to ${nK}")
                 nK
               } else k
               (newK, v)
-          })
+            })
 
           val toEvent = fromEvent.copy(
             entityType = toEntityType,

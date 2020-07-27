@@ -66,8 +66,8 @@ class FlowJoinSpec
     "allow for merge cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
-        implicit b ⇒ sink ⇒
+      val flow1 =
+        Flow.fromGraph(GraphDSL.create(Sink.head[String]) { implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(Merge[String](2))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -76,7 +76,7 @@ class FlowJoinSpec
           broadcast.out(0) ~> sink
 
           FlowShape(merge.in(1), broadcast.out(1))
-      })
+        })
 
       whenReady(flow1.join(Flow[String]).run())(_ shouldBe "lonely traveler")
     }
@@ -84,8 +84,8 @@ class FlowJoinSpec
     "allow for merge preferred cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
-        implicit b ⇒ sink ⇒
+      val flow1 =
+        Flow.fromGraph(GraphDSL.create(Sink.head[String]) { implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(MergePreferred[String](1))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -94,7 +94,7 @@ class FlowJoinSpec
           broadcast.out(0) ~> sink
 
           FlowShape(merge.in(0), broadcast.out(1))
-      })
+        })
 
       whenReady(flow1.join(Flow[String]).run())(_ shouldBe "lonely traveler")
     }
@@ -157,8 +157,8 @@ class FlowJoinSpec
     "allow for interleave cycle" in assertAllStagesStopped {
       val source = Source.single("lonely traveler")
 
-      val flow1 = Flow.fromGraph(GraphDSL.create(Sink.head[String]) {
-        implicit b ⇒ sink ⇒
+      val flow1 =
+        Flow.fromGraph(GraphDSL.create(Sink.head[String]) { implicit b ⇒ sink ⇒
           import GraphDSL.Implicits._
           val merge = b.add(Interleave[String](2, 1))
           val broadcast = b.add(Broadcast[String](2, eagerCancel = true))
@@ -167,7 +167,7 @@ class FlowJoinSpec
           broadcast.out(0) ~> sink
 
           FlowShape(merge.in(1), broadcast.out(1))
-      })
+        })
 
       whenReady(flow1.join(Flow[String]).run())(_ shouldBe "lonely traveler")
     }

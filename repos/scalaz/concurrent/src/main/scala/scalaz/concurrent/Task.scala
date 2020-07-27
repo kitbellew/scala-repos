@@ -333,10 +333,10 @@ object Task {
       def bind[A, B](a: Task[A])(f: A => Task[B]): Task[B] =
         a flatMap f
       def chooseAny[A](h: Task[A], t: Seq[Task[A]]): Task[(A, Seq[Task[A]])] =
-        new Task(F.map(F.chooseAny(h.get, t map (_ get))) {
-          case (a, residuals) =>
+        new Task(
+          F.map(F.chooseAny(h.get, t map (_ get))) { case (a, residuals) =>
             a.map((_, residuals.map(new Task(_))))
-        })
+          })
       override def gatherUnordered[A](fs: Seq[Task[A]]): Task[List[A]] = {
         new Task(F.map(F.gatherUnordered(fs.map(_ get)))(eithers =>
           Traverse[List].sequenceU(eithers)))

@@ -91,8 +91,8 @@ object Templates {
       // directories in Git, but they're not needed in the templates.
       def fileFilter(f: File) = { !f.isDirectory && (f.getName != ".gitkeep") }
 
-      val mappings: Seq[(File, File)] = templateSourcesList.flatMap {
-        case templateSources: TemplateSources =>
+      val mappings: Seq[(File, File)] =
+        templateSourcesList.flatMap { case templateSources: TemplateSources =>
           val relativeMappings: Seq[(File, String)] =
             templateSources.sourceDirs.flatMap(dir =>
               dir.***.filter(fileFilter(_)) x relativeTo(dir))
@@ -101,7 +101,7 @@ object Templates {
             case (orig, targ) if !ignore.contains(orig.getName) =>
               (orig, outDir / templateSources.name / targ)
           }
-      }
+        }
 
       // Sync files, caching sync data in file "prepared-templates".
       Sync(streams.value.cacheDirectory / "prepared-templates")(mappings)
